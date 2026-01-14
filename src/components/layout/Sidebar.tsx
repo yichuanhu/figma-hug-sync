@@ -29,6 +29,7 @@ interface SidebarProps {
 const Sidebar = ({ collapsed }: SidebarProps) => {
   const [expandedKeys, setExpandedKeys] = useState<string[]>(['开发中心']);
   const [selectedKey, setSelectedKey] = useState('流程开发');
+  const [hoveredKey, setHoveredKey] = useState<string | null>(null);
 
   const mainMenuItems: MenuItem[] = [
     { key: '首页', label: '首页', icon: <IconHome /> },
@@ -65,6 +66,7 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
 
   const handleSelect = (key: string) => {
     setSelectedKey(key);
+    setHoveredKey(null);
   };
 
   const renderMenuItem = (item: MenuItem, isChild = false) => {
@@ -72,9 +74,23 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
     const isExpanded = expandedKeys.includes(item.key);
     const isSelected = selectedKey === item.key;
     const hasSelectedChild = item.children?.some(child => selectedKey === child.key);
+    const isHovered = hoveredKey === item.key;
 
     return (
-      <div key={item.key}>
+      <div 
+        key={item.key} 
+        style={{ position: 'relative' }}
+        onMouseEnter={() => {
+          if (collapsed && hasChildren) {
+            setHoveredKey(item.key);
+          }
+        }}
+        onMouseLeave={() => {
+          if (collapsed && hasChildren) {
+            setHoveredKey(null);
+          }
+        }}
+      >
         <div
           style={{
             display: 'flex',
@@ -98,9 +114,9 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
             }
           }}
           onClick={() => {
-            if (hasChildren) {
+            if (hasChildren && !collapsed) {
               toggleExpand(item.key);
-            } else {
+            } else if (!hasChildren) {
               handleSelect(item.key);
             }
           }}
@@ -165,7 +181,51 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
           )}
         </div>
 
-        {/* 子菜单 */}
+        {/* 收起时的悬浮下拉菜单 */}
+        {collapsed && hasChildren && isHovered && (
+          <div
+            style={{
+              position: 'absolute',
+              left: '100%',
+              top: 0,
+              backgroundColor: '#fff',
+              borderRadius: 8,
+              boxShadow: '0 4px 14px rgba(0, 0, 0, 0.15)',
+              padding: '8px 0',
+              minWidth: 140,
+              zIndex: 1000,
+            }}
+          >
+            {item.children!.map(child => {
+              const isChildSelected = selectedKey === child.key;
+              return (
+                <div
+                  key={child.key}
+                  style={{
+                    padding: '12px 24px',
+                    cursor: 'pointer',
+                    fontSize: 14,
+                    color: isChildSelected ? 'var(--semi-color-primary)' : 'var(--semi-color-text-0)',
+                    fontWeight: isChildSelected ? 500 : 400,
+                    backgroundColor: 'transparent',
+                    transition: 'background-color 0.2s',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.04)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                  }}
+                  onClick={() => handleSelect(child.key)}
+                >
+                  {child.label}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* 展开时的子菜单 */}
         {hasChildren && isExpanded && !collapsed && (
           <div>
             {item.children!.map(child => renderMenuItem(child, true))}
