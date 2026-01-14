@@ -1,6 +1,6 @@
 import { useState, ReactNode } from 'react';
 import { Button } from '@douyinfe/semi-ui';
-import { IconColumnsStroked } from '@douyinfe/semi-icons';
+import { PanelLeftClose } from 'lucide-react';
 import Sidebar from './Sidebar';
 import laiyeLogo from '@/assets/laiye-logo.png';
 
@@ -48,7 +48,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
             />
           )}
           <Button 
-            icon={<IconColumnsStroked />} 
+            icon={<PanelLeftClose size={20} strokeWidth={1.5} />} 
             theme="borderless"
             onClick={() => setCollapsed(!collapsed)}
             style={{ 
