@@ -1,3 +1,4 @@
+import { useState, useMemo } from 'react';
 import { 
   Breadcrumb, 
   Typography, 
@@ -13,6 +14,8 @@ import { IconSearch, IconFilter, IconPlus, IconDownload, IconMore } from '@douyi
 const { Title, Text } = Typography;
 
 const ProcessDevelopment = () => {
+  const [searchValue, setSearchValue] = useState('');
+
   const columns = [
     {
       title: '流程名称',
@@ -116,9 +119,9 @@ const ProcessDevelopment = () => {
     },
   ];
 
-  const data = Array(10).fill(null).map((_, index) => ({
+  const allData = Array(10).fill(null).map((_, index) => ({
     key: index,
-    name: '财务报销流程',
+    name: index % 2 === 0 ? '财务报销流程' : '人事审批流程',
     description: '自动处理财务报销审批流程，包括发票识别、金额核对、审批通知',
     status: index < 5 ? '已发布' : '草稿',
     language: index % 3 === 1 ? 'BotScript' : 'python',
@@ -130,6 +133,15 @@ const ProcessDevelopment = () => {
     },
     updatedAt: '2022-10-31',
   }));
+
+  const filteredData = useMemo(() => {
+    if (!searchValue.trim()) {
+      return allData;
+    }
+    return allData.filter(item => 
+      item.name.toLowerCase().includes(searchValue.toLowerCase().trim())
+    );
+  }, [searchValue]);
 
   return (
     <div style={{ padding: '20px 24px', minHeight: '100%' }}>
@@ -158,6 +170,8 @@ const ProcessDevelopment = () => {
             prefix={<IconSearch />}
             placeholder="搜索流程名称"
             style={{ width: 240 }}
+            value={searchValue}
+            onChange={(value) => setSearchValue(value)}
           />
           <Button icon={<IconFilter />} theme="light">
             筛选
@@ -176,7 +190,7 @@ const ProcessDevelopment = () => {
       {/* 表格 */}
       <Table 
         columns={columns} 
-        dataSource={data}
+        dataSource={filteredData}
         pagination={{
           currentPage: 1,
           pageSize: 10,
