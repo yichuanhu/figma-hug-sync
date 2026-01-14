@@ -1,6 +1,6 @@
 import { useState, ReactNode } from 'react';
 import { Button } from '@douyinfe/semi-ui';
-import { IconMenu } from '@douyinfe/semi-icons';
+import { IconSidebar } from '@douyinfe/semi-icons';
 import Sidebar from './Sidebar';
 import laiyeLogo from '@/assets/laiye-logo.png';
 
@@ -48,7 +48,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
             />
           )}
           <Button 
-            icon={<IconMenu />} 
+            icon={<IconSidebar />} 
             theme="borderless"
             onClick={() => setCollapsed(!collapsed)}
             style={{ 
