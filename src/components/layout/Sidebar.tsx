@@ -91,51 +91,39 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
           }
         }}
       >
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: collapsed ? 'center' : 'flex-start',
-            cursor: 'pointer',
-            transition: 'all 0.2s',
-            position: 'relative',
-            padding: isChild ? '10px 16px 10px 44px' : (collapsed ? '12px 0' : '12px 16px'),
-            backgroundColor: isSelected ? '#F5F5F5' : 'transparent',
-            color: 'var(--semi-color-text-0)',
-          }}
-          onMouseEnter={(e) => {
-            if (!isSelected) {
-              e.currentTarget.style.backgroundColor = '#F5F5F5';
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (!isSelected) {
-              e.currentTarget.style.backgroundColor = 'transparent';
-            }
-          }}
-          onClick={() => {
-            if (hasChildren && !collapsed) {
-              toggleExpand(item.key);
-            } else if (!hasChildren) {
-              handleSelect(item.key);
-            }
-          }}
-        >
-          {/* 选中状态的左侧黄条 */}
-          {isSelected && (
-            <div 
-              style={{
-                position: 'absolute',
-                left: 0,
-                top: '50%',
-                transform: 'translateY(-50%)',
-                height: 20,
-                width: 3,
-                backgroundColor: '#FFE600',
-                borderRadius: '0 2px 2px 0'
-              }}
-            />
-          )}
+        {/* 外层容器用于padding */}
+        <div style={{ padding: collapsed ? '0' : '0 8px' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: collapsed ? 'center' : 'flex-start',
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              position: 'relative',
+              padding: isChild ? '10px 16px 10px 36px' : (collapsed ? '12px 0' : '12px 8px'),
+              backgroundColor: isSelected ? '#F5F5F5' : 'transparent',
+              borderRadius: 6,
+              color: 'var(--semi-color-text-0)',
+            }}
+            onMouseEnter={(e) => {
+              if (!isSelected) {
+                e.currentTarget.style.backgroundColor = '#F5F5F5';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!isSelected) {
+                e.currentTarget.style.backgroundColor = 'transparent';
+              }
+            }}
+            onClick={() => {
+              if (hasChildren && !collapsed) {
+                toggleExpand(item.key);
+              } else if (!hasChildren) {
+                handleSelect(item.key);
+              }
+            }}
+          >
 
           {/* 图标 */}
           {item.icon && (
@@ -153,46 +141,47 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
             </div>
           )}
           
-          {/* 文字 */}
-          {!collapsed && (
-            <>
-              <span 
-                style={{ 
-                  flex: 1,
-                  fontSize: 14,
-                  whiteSpace: 'nowrap',
-                  fontWeight: isSelected ? 500 : 400,
-                }}
-              >
-                {item.label}
-              </span>
-              
-              {/* Badge - 显示在文字右侧 */}
-              {item.badge && (
-                <span
-                  style={{
-                    backgroundColor: '#FF4D4F',
-                    color: '#fff',
-                    fontSize: 12,
-                    fontWeight: 500,
-                    padding: '2px 8px',
-                    borderRadius: 10,
-                    marginRight: 8,
-                    lineHeight: 1.2,
+            {/* 文字 */}
+            {!collapsed && (
+              <>
+                <span 
+                  style={{ 
+                    flex: 1,
+                    fontSize: 14,
+                    whiteSpace: 'nowrap',
+                    fontWeight: isSelected ? 600 : 400,
                   }}
                 >
-                  {item.badge > 99 ? '99+' : item.badge}
+                  {item.label}
                 </span>
-              )}
               
-              {/* 展开箭头 */}
-              {hasChildren && (
-                <span style={{ color: 'var(--semi-color-text-2)' }}>
-                  {isExpanded ? <IconChevronUp size="small" /> : <IconChevronDown size="small" />}
-                </span>
-              )}
-            </>
-          )}
+                {/* Badge - 显示在文字右侧 */}
+                {item.badge && (
+                  <span
+                    style={{
+                      backgroundColor: '#FF4D4F',
+                      color: '#fff',
+                      fontSize: 12,
+                      fontWeight: 500,
+                      padding: '2px 8px',
+                      borderRadius: 10,
+                      marginRight: 8,
+                      lineHeight: 1.2,
+                    }}
+                  >
+                    {item.badge > 99 ? '99+' : item.badge}
+                  </span>
+                )}
+                
+                {/* 展开箭头 */}
+                {hasChildren && (
+                  <span style={{ color: 'var(--semi-color-text-2)' }}>
+                    {isExpanded ? <IconChevronUp size="small" /> : <IconChevronDown size="small" />}
+                  </span>
+                )}
+              </>
+            )}
+          </div>
         </div>
 
         {/* 收起时的悬浮下拉菜单 */}
@@ -210,51 +199,39 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
               zIndex: 1000,
             }}
           >
-            {item.children!.map(child => {
-              const isChildSelected = selectedKey === child.key;
-              return (
-                <div
-                  key={child.key}
-                  style={{
-                    padding: '12px 24px',
-                    cursor: 'pointer',
-                    fontSize: 14,
-                    color: 'var(--semi-color-text-0)',
-                    fontWeight: isChildSelected ? 500 : 400,
-                    backgroundColor: isChildSelected ? '#F5F5F5' : 'transparent',
-                    position: 'relative',
-                    transition: 'background-color 0.2s',
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isChildSelected) {
-                      e.currentTarget.style.backgroundColor = '#F5F5F5';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isChildSelected) {
-                      e.currentTarget.style.backgroundColor = 'transparent';
-                    }
-                  }}
-                  onClick={() => handleSelect(child.key)}
-                >
-                  {isChildSelected && (
-                    <div 
-                      style={{
-                        position: 'absolute',
-                        left: 0,
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        height: 20,
-                        width: 3,
-                        backgroundColor: '#FFE600',
-                        borderRadius: '0 2px 2px 0'
-                      }}
-                    />
-                  )}
-                  {child.label}
-                </div>
-              );
-            })}
+            <div style={{ padding: '0 8px' }}>
+              {item.children!.map(child => {
+                const isChildSelected = selectedKey === child.key;
+                return (
+                  <div
+                    key={child.key}
+                    style={{
+                      padding: '10px 16px',
+                      cursor: 'pointer',
+                      fontSize: 14,
+                      color: 'var(--semi-color-text-0)',
+                      fontWeight: isChildSelected ? 600 : 400,
+                      backgroundColor: isChildSelected ? '#F5F5F5' : 'transparent',
+                      borderRadius: 6,
+                      transition: 'background-color 0.2s',
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isChildSelected) {
+                        e.currentTarget.style.backgroundColor = '#F5F5F5';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isChildSelected) {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                      }
+                    }}
+                    onClick={() => handleSelect(child.key)}
+                  >
+                    {child.label}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
 
