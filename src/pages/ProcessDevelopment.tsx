@@ -70,9 +70,18 @@ const ProcessDevelopment = () => {
       dataIndex: 'creator',
       key: 'creator',
       width: 120,
-      render: (creator: { name: string; avatar: string }) => (
+      render: (creator: { name: string }) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Avatar size="small" src={creator.avatar} />
+          <Avatar 
+            size="small" 
+            style={{ 
+              backgroundColor: '#FFE600',
+              color: 'var(--semi-color-text-0)',
+              flexShrink: 0
+            }}
+          >
+            {creator.name.charAt(0)}
+          </Avatar>
           <span>{creator.name}</span>
         </div>
       ),
