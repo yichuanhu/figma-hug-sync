@@ -48,12 +48,14 @@ const AppLayout = ({ children }: AppLayoutProps) => {
             />
           )}
           <Button 
-            icon={<img src={layoutIcon} alt="toggle" style={{ width: 18, height: 18 }} />} 
+            icon={<img src={layoutIcon} alt="toggle" style={{ width: 18, height: 18, flexShrink: 0 }} />} 
             theme="borderless"
             onClick={() => setCollapsed(!collapsed)}
             style={{ 
               marginLeft: collapsed ? 'auto' : 0, 
-              marginRight: collapsed ? 'auto' : 0 
+              marginRight: collapsed ? 'auto' : 0,
+              minWidth: 32,
+              padding: 7,
             }}
           />
         </div>
