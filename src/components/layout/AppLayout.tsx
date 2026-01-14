@@ -26,6 +26,8 @@ const AppLayout = ({ children }: AppLayoutProps) => {
           borderRight: '1px solid var(--semi-color-border)',
           transition: 'width 0.2s',
           flexShrink: 0,
+          position: 'relative',
+          zIndex: 100,
         }}
       >
         {/* Logo 区域 */}
@@ -58,7 +60,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
         </div>
         
         {/* 导航区域 */}
-        <div style={{ flex: 1, overflow: 'hidden' }}>
+        <div style={{ flex: 1, overflow: 'visible' }}>
           <Sidebar collapsed={collapsed} />
         </div>
       </div>
