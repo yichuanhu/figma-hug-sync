@@ -101,7 +101,8 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
               cursor: 'pointer',
               transition: 'all 0.2s',
               position: 'relative',
-              padding: isChild ? '10px 16px 10px 36px' : (collapsed ? '12px 0' : '12px 8px'),
+              height: 36,
+              padding: isChild ? '0 16px 0 36px' : (collapsed ? '0' : '0 8px'),
               backgroundColor: isSelected ? '#F5F5F5' : 'transparent',
               borderRadius: 6,
               color: 'var(--semi-color-text-0)',
@@ -206,7 +207,10 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
                   <div
                     key={child.key}
                     style={{
-                      padding: '10px 16px',
+                      height: 36,
+                      display: 'flex',
+                      alignItems: 'center',
+                      padding: '0 16px',
                       cursor: 'pointer',
                       fontSize: 14,
                       color: 'var(--semi-color-text-0)',
