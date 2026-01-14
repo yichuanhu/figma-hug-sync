@@ -2,7 +2,6 @@ import { useState, ReactNode } from 'react';
 import { Layout, Button } from '@douyinfe/semi-ui';
 import { IconMenu } from '@douyinfe/semi-icons';
 import Sidebar from './Sidebar';
-import FooterNav from './FooterNav';
 
 const { Sider, Content } = Layout;
 
@@ -18,25 +17,27 @@ const AppLayout = ({ children }: AppLayoutProps) => {
       <Sider 
         style={{ 
           backgroundColor: '#fff',
-          borderRight: '1px solid #e8e8e8',
+          borderRight: '1px solid var(--semi-color-border)',
           display: 'flex',
-          flexDirection: 'column'
+          flexDirection: 'column',
+          width: collapsed ? 60 : 180,
+          minWidth: collapsed ? 60 : 180,
         }}
       >
         {/* Logo 区域 */}
         <div style={{ 
-          height: 60, 
+          height: 56, 
           display: 'flex', 
           alignItems: 'center', 
           justifyContent: 'space-between',
           padding: '0 16px',
-          borderBottom: '1px solid #e8e8e8'
+          borderBottom: '1px solid var(--semi-color-border)'
         }}>
           {!collapsed && (
             <span style={{ 
-              fontSize: 20, 
+              fontSize: 18, 
               fontWeight: 'bold',
-              color: '#1890ff'
+              color: 'var(--semi-color-primary)'
             }}>
               LAIYE
             </span>
@@ -45,22 +46,16 @@ const AppLayout = ({ children }: AppLayoutProps) => {
             icon={<IconMenu />} 
             theme="borderless"
             onClick={() => setCollapsed(!collapsed)}
+            style={{ marginLeft: collapsed ? 'auto' : 0, marginRight: collapsed ? 'auto' : 0 }}
           />
         </div>
         
-        {/* 主导航 */}
-        <div style={{ flex: 1, overflow: 'auto' }}>
-          <Sidebar collapsed={collapsed} />
-        </div>
-        
-        {/* 底部导航 */}
-        <div style={{ borderTop: '1px solid #e8e8e8' }}>
-          <FooterNav collapsed={collapsed} />
-        </div>
+        {/* 导航区域 */}
+        <Sidebar collapsed={collapsed} />
       </Sider>
       
       <Content style={{ 
-        backgroundColor: '#f5f5f5', 
+        backgroundColor: 'var(--semi-color-bg-0)', 
         overflow: 'auto',
         padding: 0
       }}>
