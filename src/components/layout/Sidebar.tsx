@@ -202,7 +202,17 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
             e.currentTarget.style.backgroundColor = 'transparent';
           }}
         >
-          <Avatar size="small" color="blue" style={{ marginRight: collapsed ? 0 : 12 }}>L</Avatar>
+          <Avatar 
+            size="small" 
+            style={{ 
+              marginRight: collapsed ? 0 : 12,
+              backgroundColor: '#FFE600',
+              color: 'var(--semi-color-text-0)',
+              flexShrink: 0
+            }}
+          >
+            L
+          </Avatar>
           {!collapsed && (
             <>
               <span style={{ flex: 1, fontSize: 14, color: 'var(--semi-color-text-0)' }}>LingHui</span>
