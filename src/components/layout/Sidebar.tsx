@@ -236,9 +236,9 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'visible' }}>
       {/* 主导航 */}
-      <div style={{ flex: 1, overflowY: 'auto', paddingTop: 8, paddingBottom: 8 }}>
+      <div style={{ flex: 1, overflowY: collapsed ? 'visible' : 'auto', overflowX: 'visible', paddingTop: 8, paddingBottom: 8 }}>
         {mainMenuItems.map(item => renderMenuItem(item))}
       </div>
 
