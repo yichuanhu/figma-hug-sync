@@ -1,8 +1,8 @@
 import { useState, ReactNode } from 'react';
 import { Button } from '@douyinfe/semi-ui';
-import { PanelLeftClose } from 'lucide-react';
 import Sidebar from './Sidebar';
 import laiyeLogo from '@/assets/laiye-logo.png';
+import layoutIcon from '@/assets/icons/layout.svg';
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -48,7 +48,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
             />
           )}
           <Button 
-            icon={<PanelLeftClose size={20} strokeWidth={1.5} />} 
+            icon={<img src={layoutIcon} alt="toggle" style={{ width: 18, height: 18 }} />} 
             theme="borderless"
             onClick={() => setCollapsed(!collapsed)}
             style={{ 
