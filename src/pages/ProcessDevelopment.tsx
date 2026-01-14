@@ -7,14 +7,56 @@ import {
   Table, 
   Tag, 
   Avatar,
-  Dropdown
+  Dropdown,
+  Popover,
+  Checkbox,
+  Space
 } from '@douyinfe/semi-ui';
 import { IconSearch, IconFilter, IconPlus, IconDownload, IconMore } from '@douyinfe/semi-icons';
 
 const { Title, Text } = Typography;
+const CheckboxGroup = Checkbox.Group;
+
+interface FilterState {
+  status: string[];
+  language: string[];
+  organization: string[];
+  creator: string[];
+}
 
 const ProcessDevelopment = () => {
   const [searchValue, setSearchValue] = useState('');
+  const [filters, setFilters] = useState<FilterState>({
+    status: [],
+    language: [],
+    organization: [],
+    creator: [],
+  });
+  const [filterVisible, setFilterVisible] = useState(false);
+
+  // 筛选选项
+  const filterOptions = {
+    status: ['已发布', '草稿'],
+    language: ['python', 'BotScript'],
+    organization: ['财务部', '人事部', '技术部', '运营部'],
+    creator: ['姜鹏志', '李明', '王芳', '张伟'],
+  };
+
+  const handleFilterChange = (key: keyof FilterState, values: string[]) => {
+    setFilters(prev => ({ ...prev, [key]: values }));
+  };
+
+  const clearFilters = () => {
+    setFilters({
+      status: [],
+      language: [],
+      organization: [],
+      creator: [],
+    });
+  };
+
+  const hasActiveFilters = Object.values(filters).some(arr => arr.length > 0);
+  const activeFilterCount = Object.values(filters).reduce((sum, arr) => sum + arr.length, 0);
 
   const columns = [
     {
@@ -134,13 +176,86 @@ const ProcessDevelopment = () => {
   }));
 
   const filteredData = useMemo(() => {
-    if (!searchValue.trim()) {
-      return allData;
+    let data = allData;
+
+    // 关键词搜索
+    if (searchValue.trim()) {
+      data = data.filter(item => 
+        item.name.toLowerCase().includes(searchValue.toLowerCase().trim())
+      );
     }
-    return allData.filter(item => 
-      item.name.toLowerCase().includes(searchValue.toLowerCase().trim())
-    );
-  }, [searchValue]);
+
+    // 状态筛选
+    if (filters.status.length > 0) {
+      data = data.filter(item => filters.status.includes(item.status));
+    }
+
+    // 语言筛选
+    if (filters.language.length > 0) {
+      data = data.filter(item => filters.language.includes(item.language));
+    }
+
+    // 归属组织筛选
+    if (filters.organization.length > 0) {
+      data = data.filter(item => filters.organization.includes(item.organization));
+    }
+
+    // 创建者筛选
+    if (filters.creator.length > 0) {
+      data = data.filter(item => filters.creator.includes(item.creator.name));
+    }
+
+    return data;
+  }, [searchValue, filters]);
+
+  const filterContent = (
+    <div style={{ padding: 16, width: 280 }}>
+      <div style={{ marginBottom: 16 }}>
+        <Text strong style={{ display: 'block', marginBottom: 8 }}>流程状态</Text>
+        <CheckboxGroup
+          value={filters.status}
+          onChange={(values) => handleFilterChange('status', values as string[])}
+          options={filterOptions.status}
+          direction="horizontal"
+        />
+      </div>
+      <div style={{ marginBottom: 16 }}>
+        <Text strong style={{ display: 'block', marginBottom: 8 }}>语言</Text>
+        <CheckboxGroup
+          value={filters.language}
+          onChange={(values) => handleFilterChange('language', values as string[])}
+          options={filterOptions.language}
+          direction="horizontal"
+        />
+      </div>
+      <div style={{ marginBottom: 16 }}>
+        <Text strong style={{ display: 'block', marginBottom: 8 }}>归属组织</Text>
+        <CheckboxGroup
+          value={filters.organization}
+          onChange={(values) => handleFilterChange('organization', values as string[])}
+          options={filterOptions.organization}
+          direction="horizontal"
+        />
+      </div>
+      <div style={{ marginBottom: 16 }}>
+        <Text strong style={{ display: 'block', marginBottom: 8 }}>创建者</Text>
+        <CheckboxGroup
+          value={filters.creator}
+          onChange={(values) => handleFilterChange('creator', values as string[])}
+          options={filterOptions.creator}
+          direction="horizontal"
+        />
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--semi-color-border)', paddingTop: 12 }}>
+        <Button theme="borderless" onClick={clearFilters} disabled={!hasActiveFilters}>
+          重置
+        </Button>
+        <Button theme="solid" type="primary" onClick={() => setFilterVisible(false)}>
+          确定
+        </Button>
+      </div>
+    </div>
+  );
 
   return (
     <div style={{ padding: '20px 24px', minHeight: '100%' }}>
@@ -172,9 +287,21 @@ const ProcessDevelopment = () => {
             value={searchValue}
             onChange={(value) => setSearchValue(value)}
           />
-          <Button icon={<IconFilter />} theme="light">
-            筛选
-          </Button>
+          <Popover
+            visible={filterVisible}
+            onVisibleChange={setFilterVisible}
+            trigger="click"
+            position="bottomLeft"
+            content={filterContent}
+          >
+            <Button 
+              icon={<IconFilter />} 
+              theme={hasActiveFilters ? 'solid' : 'light'}
+              type={hasActiveFilters ? 'primary' : 'tertiary'}
+            >
+              筛选{activeFilterCount > 0 ? ` (${activeFilterCount})` : ''}
+            </Button>
+          </Popover>
         </div>
         <div style={{ display: 'flex', gap: 12 }}>
           <Button icon={<IconDownload />} theme="light">
