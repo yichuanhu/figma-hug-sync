@@ -97,9 +97,7 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
     >
       <Form
         onSubmit={handleSubmit}
-        labelPosition="left"
-        labelWidth={80}
-        labelAlign="right"
+        labelPosition="top"
         style={{ paddingTop: 12 }}
       >
         <Form.Input
@@ -115,7 +113,7 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
         <Form.TextArea
           field="description"
           label="流程描述"
-          placeholder="请输入流程描述"
+          placeholder="请输入流程描述，例如：自动处理电商平台的订单，包括订单验证、库存检查、发货通知"
           autosize={{ minRows: 3, maxRows: 6 }}
           rules={[
             { required: true, message: '请输入流程描述' },
@@ -130,7 +128,6 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
           initValue="原生流程"
           optionList={processTypeOptions}
           rules={[{ required: true, message: '请选择流程类型' }]}
-          style={{ width: '100%' }}
         />
 
         <Form.Select
@@ -139,7 +136,6 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
           placeholder="请选择关联需求（可选）"
           optionList={requirementOptions}
           showClear
-          style={{ width: '100%' }}
         />
 
         <Form.Select
@@ -148,7 +144,6 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
           placeholder="请选择归属组织"
           optionList={organizationOptions}
           rules={[{ required: true, message: '请选择归属组织' }]}
-          style={{ width: '100%' }}
         />
 
         <div style={{ 
