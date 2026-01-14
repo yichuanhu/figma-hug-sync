@@ -79,10 +79,11 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
           style={{
             display: 'flex',
             alignItems: 'center',
+            justifyContent: collapsed ? 'center' : 'flex-start',
             cursor: 'pointer',
             transition: 'all 0.2s',
             position: 'relative',
-            padding: isChild ? '10px 16px 10px 44px' : '12px 16px',
+            padding: isChild ? '10px 16px 10px 44px' : (collapsed ? '12px 0' : '12px 16px'),
             backgroundColor: isSelected ? 'rgba(0, 119, 250, 0.08)' : 'transparent',
             color: isSelected || hasSelectedChild ? 'var(--semi-color-primary)' : 'var(--semi-color-text-0)',
           }}
@@ -190,9 +191,10 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
           style={{ 
             display: 'flex',
             alignItems: 'center',
+            justifyContent: collapsed ? 'center' : 'flex-start',
             cursor: 'pointer',
             transition: 'all 0.2s',
-            padding: '12px 16px',
+            padding: collapsed ? '12px 0' : '12px 16px',
             marginTop: 4
           }}
           onMouseEnter={(e) => {
