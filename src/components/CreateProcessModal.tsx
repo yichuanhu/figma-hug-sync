@@ -134,7 +134,7 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
         <Form.Select
           field="relatedRequirement"
           label="关联需求"
-          placeholder="请选择关联需求（可选）"
+          placeholder="请选择"
           optionList={requirementOptions}
           showClear
           style={{ width: '100%' }}
@@ -143,7 +143,7 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
         <Form.Select
           field="organization"
           label="归属组织"
-          placeholder="请选择归属组织"
+          placeholder="请选择"
           optionList={organizationOptions}
           rules={[{ required: true, message: '请选择归属组织' }]}
           style={{ width: '100%' }}
