@@ -108,7 +108,6 @@ const ProcessDevelopment = () => {
           render={
             <Dropdown.Menu>
               <Dropdown.Item>编辑</Dropdown.Item>
-              <Dropdown.Item>复制</Dropdown.Item>
               <Dropdown.Item type="danger">删除</Dropdown.Item>
             </Dropdown.Menu>
           }
