@@ -1,0 +1,77 @@
+interface IconProps {
+  size?: number;
+  className?: string;
+}
+
+const SchedulingIcon = ({ size = 20, className }: IconProps) => (
+  <svg 
+    width={size} 
+    height={size} 
+    viewBox="0 0 28 28" 
+    fill="none" 
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <path d="M10.333 23.083C10.333 23.5892 9.92311 23.9998 9.41699 24C8.91073 24 8.5 23.5893 8.5 23.083V18.583H10.333V23.083ZM13.417 23.083C13.417 23.5893 13.0062 24 12.5 24C11.9937 24 11.583 23.5893 11.583 23.083V18.583H13.417V23.083ZM16.5 23.083C16.5 23.5893 16.0893 24 15.583 24C15.0769 23.9998 14.667 23.5892 14.667 23.083V18.583H16.5V23.083ZM19.583 23.083C19.583 23.5892 19.1731 23.9998 18.667 24C18.1607 24 17.75 23.5893 17.75 23.083V18.583H19.583V23.083ZM8.5 18.583H3.91699C3.41084 18.583 3.00017 18.1731 3 17.667C3 17.1607 3.41073 16.75 3.91699 16.75H8.5V18.583ZM11.583 18.583H10.333V16.75H11.583V18.583ZM14.667 18.583H13.417V16.75H14.667V18.583ZM17.75 18.583H16.5V16.75H17.75V18.583ZM24.083 16.75C24.5893 16.75 25 17.1607 25 17.667C24.9998 18.1731 24.5892 18.583 24.083 18.583H19.583V16.75H24.083ZM10.333 16.75H8.5V15.5H10.333V16.75ZM13.417 16.75H11.583V15.5H13.417V16.75ZM16.5 16.75H14.667V15.5H16.5V16.75ZM19.583 16.75H17.75V15.5H19.583V16.75ZM8.5 15.5H3.91699C3.41073 15.5 3 15.0893 3 14.583C3.00018 14.0769 3.41084 13.667 3.91699 13.667H8.5V15.5ZM11.583 15.5H10.333V13.667H11.583V15.5ZM14.667 15.5H13.417V13.667H14.667V15.5ZM17.75 15.5H16.5V13.667H17.75V15.5ZM24.083 13.667C24.5892 13.667 24.9998 14.0769 25 14.583C25 15.0893 24.5893 15.5 24.083 15.5H19.583V13.667H24.083ZM10.333 13.667H8.5V12.417H10.333V13.667ZM13.417 13.667H11.583V12.417H13.417V13.667ZM16.5 13.667H14.667V12.417H16.5V13.667ZM19.583 13.667H17.75V12.417H19.583V13.667ZM8.5 12.417H3.91699C3.41073 12.417 3 12.0063 3 11.5C3 10.9937 3.41073 10.583 3.91699 10.583H8.5V12.417ZM11.583 12.417H10.333V10.583H11.583V12.417ZM14.667 12.417H13.417V10.583H14.667V12.417ZM17.75 12.417H16.5V10.583H17.75V12.417ZM24.083 10.583C24.5893 10.583 25 10.9937 25 11.5C25 12.0063 24.5893 12.417 24.083 12.417H19.583V10.583H24.083ZM10.333 10.583H8.5V9.33301H10.333V10.583ZM13.417 10.583H11.583V9.33301H13.417V10.583ZM16.5 10.583H14.667V9.33301H16.5V10.583ZM19.583 10.583H17.75V9.33301H19.583V10.583ZM8.5 9.33301H3.91699C3.41084 9.33301 3.00017 8.92311 3 8.41699C3 7.91073 3.41073 7.5 3.91699 7.5H8.5V9.33301ZM11.583 9.33301H10.333V7.5H11.583V9.33301ZM14.667 9.33301H13.417V7.5H14.667V9.33301ZM17.75 9.33301H16.5V7.5H17.75V9.33301ZM24.083 7.5C24.5893 7.5 25 7.91073 25 8.41699C24.9998 8.92311 24.5892 9.33301 24.083 9.33301H19.583V7.5H24.083ZM9.41699 2C9.92311 2.00016 10.333 2.41083 10.333 2.91699V7.5H8.5V2.91699C8.5 2.41073 8.91073 2 9.41699 2ZM12.5 2C13.0062 2.00002 13.417 2.41074 13.417 2.91699V7.5H11.583V2.91699C11.583 2.41073 11.9937 2 12.5 2ZM15.583 2C16.0893 2 16.5 2.41073 16.5 2.91699V7.5H14.667V2.91699C14.667 2.41083 15.0769 2.00016 15.583 2ZM18.667 2C19.1731 2.00018 19.583 2.41084 19.583 2.91699V7.5H17.75V2.91699C17.75 2.41073 18.1607 2 18.667 2Z" fill="url(#paint0_sched)"/>
+    <g filter="url(#filter0_sched)">
+      <path d="M4 8.16129C4 5.31079 5.98985 3 8.44444 3H19.5556C22.0102 3 24 5.31079 24 8.16129V17.8387C24 20.6892 22.0102 23 19.5556 23H8.44444C5.98985 23 4 20.6892 4 17.8387V8.16129Z" fill="url(#paint1_sched)" shapeRendering="crispEdges"/>
+      <path d="M4 8.16129C4 5.31079 5.98985 3 8.44444 3H19.5556C22.0102 3 24 5.31079 24 8.16129V17.8387C24 20.6892 22.0102 23 19.5556 23H8.44444C5.98985 23 4 20.6892 4 17.8387V8.16129Z" fill="#0077FA" fillOpacity="0.25" shapeRendering="crispEdges"/>
+    </g>
+    <path d="M7 10.3077C7 7.92862 8.92862 6 11.3077 6H16.6923C19.0714 6 21 7.92862 21 10.3077V15.6923C21 18.0714 19.0714 20 16.6923 20H11.3077C8.92862 20 7 18.0714 7 15.6923V10.3077Z" fill="url(#paint2_sched)"/>
+    <g filter="url(#filter1_sched)">
+      <path d="M19.5556 22.8888V23H8.44444V22.8888H19.5556ZM23.8888 17.8389V8.16113C23.8887 5.3559 21.9337 3.11122 19.5556 3.11122H8.44444C6.06627 3.11122 4.11129 5.3559 4.11122 8.16113V17.8389C4.11129 20.6441 6.06627 22.8888 8.44444 22.8888V23L8.21549 22.9935C5.943 22.8596 4.1211 20.7432 4.00597 18.1042L4 17.8389V8.16113C4.00007 5.3107 5.98989 3 8.44444 3H19.5556C22.0101 3 23.9999 5.3107 24 8.16113V17.8389L23.994 18.1042C23.8789 20.7432 22.057 22.8596 19.7845 22.9935L19.5556 23V22.8888C21.9337 22.8888 23.8887 20.6441 23.8888 17.8389Z" fill="url(#paint3_sched)" shapeRendering="crispEdges"/>
+    </g>
+    <defs>
+      <filter id="filter0_sched" x="-6" y="-7" width="40" height="40" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+        <feFlood floodOpacity="0" result="BackgroundImageFix"/>
+        <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+        <feOffset dy="1"/>
+        <feGaussianBlur stdDeviation="2"/>
+        <feComposite in2="hardAlpha" operator="out"/>
+        <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.12 0"/>
+        <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/>
+        <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+        <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+        <feOffset dy="1"/>
+        <feGaussianBlur stdDeviation="1.5"/>
+        <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+        <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.1 0"/>
+        <feBlend mode="normal" in2="shape" result="effect2_innerShadow"/>
+      </filter>
+      <filter id="filter1_sched" x="-6" y="-7" width="40" height="40" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+        <feFlood floodOpacity="0" result="BackgroundImageFix"/>
+        <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+        <feOffset dy="1"/>
+        <feGaussianBlur stdDeviation="2"/>
+        <feComposite in2="hardAlpha" operator="out"/>
+        <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.12 0"/>
+        <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/>
+        <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+        <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+        <feOffset dy="1"/>
+        <feGaussianBlur stdDeviation="1.5"/>
+        <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+        <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.1 0"/>
+        <feBlend mode="normal" in2="shape" result="effect2_innerShadow"/>
+      </filter>
+      <linearGradient id="paint0_sched" x1="14" y1="2" x2="14" y2="24" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#0077FA"/>
+        <stop offset="1" stopColor="#113CC2"/>
+      </linearGradient>
+      <linearGradient id="paint1_sched" x1="14" y1="2.16667" x2="14" y2="23" gradientUnits="userSpaceOnUse">
+        <stop stopColor="white" stopOpacity="0.1"/>
+        <stop offset="1" stopColor="white" stopOpacity="0"/>
+      </linearGradient>
+      <linearGradient id="paint2_sched" x1="14" y1="6" x2="14" y2="20" gradientUnits="userSpaceOnUse">
+        <stop stopColor="white"/>
+        <stop offset="1" stopColor="white" stopOpacity="0.3"/>
+      </linearGradient>
+      <linearGradient id="paint3_sched" x1="14" y1="3" x2="14" y2="23" gradientUnits="userSpaceOnUse">
+        <stop stopColor="white" stopOpacity="0.15"/>
+        <stop offset="1" stopColor="white" stopOpacity="0"/>
+      </linearGradient>
+    </defs>
+  </svg>
+);
+
+export default SchedulingIcon;

@@ -10,12 +10,14 @@ import {
 } from '@douyinfe/semi-icons';
 
 // 自定义导航图标
-import homeIcon from '@/assets/icons/home.svg';
-import requirementsIcon from '@/assets/icons/requirements.svg';
-import developmentIcon from '@/assets/icons/development.svg';
-import schedulingIcon from '@/assets/icons/scheduling.svg';
-import operationsIcon from '@/assets/icons/operations.svg';
-import businessIcon from '@/assets/icons/business.svg';
+import { 
+  HomeIcon, 
+  RequirementsIcon, 
+  DevelopmentIcon, 
+  SchedulingIcon, 
+  OperationsIcon, 
+  BusinessIcon 
+} from '@/components/icons';
 
 interface MenuItem {
   key: string;
@@ -35,12 +37,12 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
   const [hoveredKey, setHoveredKey] = useState<string | null>(null);
 
   const mainMenuItems: MenuItem[] = [
-    { key: '首页', label: '首页', icon: <img src={homeIcon} alt="首页" style={{ width: 20, height: 20 }} /> },
-    { key: '需求中心', label: '需求中心', icon: <img src={requirementsIcon} alt="需求中心" style={{ width: 20, height: 20 }} /> },
+    { key: '首页', label: '首页', icon: <HomeIcon size={20} /> },
+    { key: '需求中心', label: '需求中心', icon: <RequirementsIcon size={20} /> },
     { 
       key: '开发中心', 
       label: '开发中心', 
-      icon: <img src={developmentIcon} alt="开发中心" style={{ width: 20, height: 20 }} />,
+      icon: <DevelopmentIcon size={20} />,
       children: [
         { key: '流程开发', label: '流程开发' },
         { key: '组件开发', label: '组件开发' },
@@ -48,9 +50,9 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
         { key: '开发效能', label: '开发效能' },
       ]
     },
-    { key: '调度中心', label: '调度中心', icon: <img src={schedulingIcon} alt="调度中心" style={{ width: 20, height: 20 }} /> },
-    { key: '运营中心', label: '运营中心', icon: <img src={businessIcon} alt="运营中心" style={{ width: 20, height: 20 }} /> },
-    { key: '运维中心', label: '运维中心', icon: <img src={operationsIcon} alt="运维中心" style={{ width: 20, height: 20 }} /> },
+    { key: '调度中心', label: '调度中心', icon: <SchedulingIcon size={20} /> },
+    { key: '运营中心', label: '运营中心', icon: <BusinessIcon size={20} /> },
+    { key: '运维中心', label: '运维中心', icon: <OperationsIcon size={20} /> },
   ];
 
   const bottomMenuItems: MenuItem[] = [
