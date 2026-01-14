@@ -1,9 +1,7 @@
 import { useState, ReactNode } from 'react';
-import { Layout, Button } from '@douyinfe/semi-ui';
+import { Button } from '@douyinfe/semi-ui';
 import { IconMenu } from '@douyinfe/semi-icons';
 import Sidebar from './Sidebar';
-
-const { Sider, Content } = Layout;
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -12,26 +10,33 @@ interface AppLayoutProps {
 const AppLayout = ({ children }: AppLayoutProps) => {
   const [collapsed, setCollapsed] = useState(false);
 
+  const sidebarWidth = collapsed ? 60 : 180;
+
   return (
-    <Layout style={{ height: '100vh' }}>
-      <Sider 
+    <div style={{ display: 'flex', height: '100vh', width: '100%' }}>
+      {/* 侧边栏 */}
+      <div 
         style={{ 
-          backgroundColor: '#fff',
-          borderRight: '1px solid var(--semi-color-border)',
+          width: sidebarWidth, 
+          minWidth: sidebarWidth,
+          height: '100vh',
           display: 'flex',
           flexDirection: 'column',
-          width: collapsed ? 60 : 180,
-          minWidth: collapsed ? 60 : 180,
+          backgroundColor: '#fff',
+          borderRight: '1px solid var(--semi-color-border)',
+          transition: 'width 0.2s',
+          flexShrink: 0,
         }}
       >
         {/* Logo 区域 */}
         <div style={{ 
           height: 56, 
-          display: 'flex', 
-          alignItems: 'center', 
+          display: 'flex',
+          alignItems: 'center',
           justifyContent: 'space-between',
           padding: '0 16px',
-          borderBottom: '1px solid var(--semi-color-border)'
+          borderBottom: '1px solid var(--semi-color-border)',
+          flexShrink: 0,
         }}>
           {!collapsed && (
             <span style={{ 
@@ -46,22 +51,28 @@ const AppLayout = ({ children }: AppLayoutProps) => {
             icon={<IconMenu />} 
             theme="borderless"
             onClick={() => setCollapsed(!collapsed)}
-            style={{ marginLeft: collapsed ? 'auto' : 0, marginRight: collapsed ? 'auto' : 0 }}
+            style={{ 
+              marginLeft: collapsed ? 'auto' : 0, 
+              marginRight: collapsed ? 'auto' : 0 
+            }}
           />
         </div>
         
         {/* 导航区域 */}
-        <Sidebar collapsed={collapsed} />
-      </Sider>
+        <div style={{ flex: 1, overflow: 'hidden' }}>
+          <Sidebar collapsed={collapsed} />
+        </div>
+      </div>
       
-      <Content style={{ 
-        backgroundColor: 'var(--semi-color-bg-0)', 
+      {/* 内容区域 */}
+      <div style={{ 
+        flex: 1,
         overflow: 'auto',
-        padding: 0
+        backgroundColor: 'var(--semi-color-bg-0)',
       }}>
         {children}
-      </Content>
-    </Layout>
+      </div>
+    </div>
   );
 };
 
