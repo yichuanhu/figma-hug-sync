@@ -91,13 +91,15 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
       visible={visible}
       onCancel={onCancel}
       footer={null}
-      width={600}
+      width={520}
       closeOnEsc
       maskClosable={false}
     >
       <Form
         onSubmit={handleSubmit}
-        labelPosition="top"
+        labelPosition="left"
+        labelWidth={80}
+        labelAlign="right"
         style={{ paddingTop: 12 }}
       >
         <Form.Input
@@ -113,7 +115,7 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
         <Form.TextArea
           field="description"
           label="流程描述"
-          placeholder="请输入流程描述，例如：自动处理电商平台的订单，包括订单验证、库存检查、发货通知"
+          placeholder="请输入流程描述"
           autosize={{ minRows: 3, maxRows: 6 }}
           rules={[
             { required: true, message: '请输入流程描述' },
@@ -121,29 +123,22 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
           ]}
         />
 
-        <div style={{ display: 'flex', gap: 16 }}>
-          <div style={{ flex: 1 }}>
-            <Form.Select
-              field="type"
-              label="流程类型"
-              placeholder="请选择流程类型"
-              initValue="原生流程"
-              optionList={processTypeOptions}
-              rules={[{ required: true, message: '请选择流程类型' }]}
-              style={{ width: '100%' }}
-            />
-          </div>
-          <div style={{ flex: 1 }}>
-            <Form.Select
-              field="relatedRequirement"
-              label="关联需求"
-              placeholder="请选择关联需求（可选）"
-              optionList={requirementOptions}
-              showClear
-              style={{ width: '100%' }}
-            />
-          </div>
-        </div>
+        <Form.Select
+          field="type"
+          label="流程类型"
+          placeholder="请选择流程类型"
+          initValue="原生流程"
+          optionList={processTypeOptions}
+          rules={[{ required: true, message: '请选择流程类型' }]}
+        />
+
+        <Form.Select
+          field="relatedRequirement"
+          label="关联需求"
+          placeholder="请选择关联需求（可选）"
+          optionList={requirementOptions}
+          showClear
+        />
 
         <Form.Select
           field="organization"
