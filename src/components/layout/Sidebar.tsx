@@ -100,12 +100,12 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
             transition: 'all 0.2s',
             position: 'relative',
             padding: isChild ? '10px 16px 10px 44px' : (collapsed ? '12px 0' : '12px 16px'),
-            backgroundColor: isSelected ? 'rgba(0, 119, 250, 0.08)' : 'transparent',
-            color: isSelected || hasSelectedChild ? 'var(--semi-color-primary)' : 'var(--semi-color-text-0)',
+            backgroundColor: isSelected ? '#F5F5F5' : 'transparent',
+            color: 'var(--semi-color-text-0)',
           }}
           onMouseEnter={(e) => {
             if (!isSelected) {
-              e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.04)';
+              e.currentTarget.style.backgroundColor = '#F5F5F5';
             }
           }}
           onMouseLeave={(e) => {
@@ -121,16 +121,18 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
             }
           }}
         >
-          {/* 选中状态的左侧蓝条 */}
-          {isSelected && isChild && (
+          {/* 选中状态的左侧黄条 */}
+          {isSelected && (
             <div 
               style={{
                 position: 'absolute',
                 left: 0,
-                top: 0,
-                bottom: 0,
+                top: '50%',
+                transform: 'translateY(-50%)',
+                height: 20,
                 width: 3,
-                backgroundColor: 'var(--semi-color-primary)'
+                backgroundColor: '#FFE600',
+                borderRadius: '0 2px 2px 0'
               }}
             />
           )}
@@ -144,16 +146,10 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
                 justifyContent: 'center',
                 width: 20,
                 marginRight: collapsed ? 0 : 12,
-                color: isSelected || hasSelectedChild ? 'var(--semi-color-primary)' : 'var(--semi-color-text-2)' 
+                color: 'var(--semi-color-text-2)' 
               }}
             >
-              {item.badge ? (
-                <Badge count={item.badge} overflowCount={99} type="danger">
-                  {item.icon}
-                </Badge>
-              ) : (
-                item.icon
-              )}
+              {item.icon}
             </div>
           )}
           
@@ -170,6 +166,24 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
               >
                 {item.label}
               </span>
+              
+              {/* Badge - 显示在文字右侧 */}
+              {item.badge && (
+                <span
+                  style={{
+                    backgroundColor: '#FF4D4F',
+                    color: '#fff',
+                    fontSize: 12,
+                    fontWeight: 500,
+                    padding: '2px 8px',
+                    borderRadius: 10,
+                    marginRight: 8,
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {item.badge > 99 ? '99+' : item.badge}
+                </span>
+              )}
               
               {/* 展开箭头 */}
               {hasChildren && (
@@ -205,19 +219,38 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
                     padding: '12px 24px',
                     cursor: 'pointer',
                     fontSize: 14,
-                    color: isChildSelected ? 'var(--semi-color-primary)' : 'var(--semi-color-text-0)',
+                    color: 'var(--semi-color-text-0)',
                     fontWeight: isChildSelected ? 500 : 400,
-                    backgroundColor: 'transparent',
+                    backgroundColor: isChildSelected ? '#F5F5F5' : 'transparent',
+                    position: 'relative',
                     transition: 'background-color 0.2s',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.04)';
+                    if (!isChildSelected) {
+                      e.currentTarget.style.backgroundColor = '#F5F5F5';
+                    }
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'transparent';
+                    if (!isChildSelected) {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                    }
                   }}
                   onClick={() => handleSelect(child.key)}
                 >
+                  {isChildSelected && (
+                    <div 
+                      style={{
+                        position: 'absolute',
+                        left: 0,
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        height: 20,
+                        width: 3,
+                        backgroundColor: '#FFE600',
+                        borderRadius: '0 2px 2px 0'
+                      }}
+                    />
+                  )}
                   {child.label}
                 </div>
               );
