@@ -79,7 +79,7 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
     return (
       <div 
         key={item.key} 
-        style={{ position: 'relative' }}
+        style={{ position: 'relative', marginBottom: 4 }}
         onMouseEnter={() => {
           if (collapsed && hasChildren) {
             setHoveredKey(item.key);
@@ -200,7 +200,7 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
             }}
           >
             <div style={{ padding: '0 8px' }}>
-              {item.children!.map(child => {
+              {item.children!.map((child, index) => {
                 const isChildSelected = selectedKey === child.key;
                 return (
                   <div
@@ -213,6 +213,7 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
                       fontWeight: isChildSelected ? 600 : 400,
                       backgroundColor: isChildSelected ? '#F5F5F5' : 'transparent',
                       borderRadius: 6,
+                      marginBottom: index < item.children!.length - 1 ? 4 : 0,
                       transition: 'background-color 0.2s',
                     }}
                     onMouseEnter={(e) => {
