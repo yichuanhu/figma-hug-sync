@@ -35,7 +35,6 @@ const AppLayout = ({ children }: AppLayoutProps) => {
           alignItems: 'center',
           justifyContent: 'space-between',
           padding: '0 16px',
-          borderBottom: '1px solid var(--semi-color-border)',
           flexShrink: 0,
         }}>
           {!collapsed && (
