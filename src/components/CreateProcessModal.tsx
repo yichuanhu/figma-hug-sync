@@ -91,7 +91,7 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
       visible={visible}
       onCancel={onCancel}
       footer={null}
-      width={520}
+      width={600}
       closeOnEsc
       maskClosable={false}
     >
@@ -121,22 +121,29 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
           ]}
         />
 
-        <Form.Select
-          field="type"
-          label="流程类型"
-          placeholder="请选择流程类型"
-          initValue="原生流程"
-          optionList={processTypeOptions}
-          rules={[{ required: true, message: '请选择流程类型' }]}
-        />
-
-        <Form.Select
-          field="relatedRequirement"
-          label="关联需求"
-          placeholder="请选择关联需求（可选）"
-          optionList={requirementOptions}
-          showClear
-        />
+        <div style={{ display: 'flex', gap: 16 }}>
+          <div style={{ flex: 1 }}>
+            <Form.Select
+              field="type"
+              label="流程类型"
+              placeholder="请选择流程类型"
+              initValue="原生流程"
+              optionList={processTypeOptions}
+              rules={[{ required: true, message: '请选择流程类型' }]}
+              style={{ width: '100%' }}
+            />
+          </div>
+          <div style={{ flex: 1 }}>
+            <Form.Select
+              field="relatedRequirement"
+              label="关联需求"
+              placeholder="请选择关联需求（可选）"
+              optionList={requirementOptions}
+              showClear
+              style={{ width: '100%' }}
+            />
+          </div>
+        </div>
 
         <Form.Select
           field="organization"
