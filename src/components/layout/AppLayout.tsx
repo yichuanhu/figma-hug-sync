@@ -2,6 +2,7 @@ import { useState, ReactNode } from 'react';
 import { Button } from '@douyinfe/semi-ui';
 import { IconMenu } from '@douyinfe/semi-icons';
 import Sidebar from './Sidebar';
+import laiyeLogo from '@/assets/laiye-logo.png';
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -40,13 +41,11 @@ const AppLayout = ({ children }: AppLayoutProps) => {
           flexShrink: 0,
         }}>
           {!collapsed && (
-            <span style={{ 
-              fontSize: 18, 
-              fontWeight: 'bold',
-              color: 'var(--semi-color-primary)'
-            }}>
-              LAIYE
-            </span>
+            <img 
+              src={laiyeLogo} 
+              alt="Laiye" 
+              style={{ height: 20 }}
+            />
           )}
           <Button 
             icon={<IconMenu />} 
