@@ -128,6 +128,7 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
           initValue="原生流程"
           optionList={processTypeOptions}
           rules={[{ required: true, message: '请选择流程类型' }]}
+          style={{ width: '100%' }}
         />
 
         <Form.Select
@@ -136,6 +137,7 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
           placeholder="请选择关联需求（可选）"
           optionList={requirementOptions}
           showClear
+          style={{ width: '100%' }}
         />
 
         <Form.Select
@@ -144,6 +146,7 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
           placeholder="请选择归属组织"
           optionList={organizationOptions}
           rules={[{ required: true, message: '请选择归属组织' }]}
+          style={{ width: '100%' }}
         />
 
         <div style={{ 
