@@ -12,19 +12,17 @@ const DevelopmentIcon = ({ size = 20, className }: IconProps) => (
     xmlns="http://www.w3.org/2000/svg"
     className={className}
   >
-    <g clipPath="url(#clip0_dev)">
-      <path d="M1.09088 4.36364C1.09088 2.55616 2.55613 1.09091 4.36361 1.09091H8.72725C10.5347 1.09091 12 2.55616 12 4.36364V8.72727C12 10.5347 10.5347 12 8.72725 12H4.36361C2.55613 12 1.09088 10.5347 1.09088 8.72727V4.36364Z" fill="url(#paint0_dev)"/>
-      <g filter="url(#filter0_dev)">
-        <path d="M4.90912 9.81818C4.90912 7.40821 6.86279 5.45454 9.27276 5.45454H18C20.41 5.45454 22.3637 7.40821 22.3637 9.81818V18.5455C22.3637 20.9554 20.41 22.9091 18 22.9091H9.27276C6.86279 22.9091 4.90912 20.9554 4.90912 18.5455V9.81818Z" fill="url(#paint1_dev)" shapeRendering="crispEdges"/>
-        <path d="M4.90912 9.81818C4.90912 7.40821 6.86279 5.45454 9.27276 5.45454H18C20.41 5.45454 22.3637 7.40821 22.3637 9.81818V18.5455C22.3637 20.9554 20.41 22.9091 18 22.9091H9.27276C6.86279 22.9091 4.90912 20.9554 4.90912 18.5455V9.81818Z" fill="#0077FA" fillOpacity="0.25" shapeRendering="crispEdges"/>
-        <path d="M9.2724 5.55415H17.9999C20.3546 5.55415 22.2634 7.46325 22.2636 9.81783V18.5454C22.2636 20.9001 20.3547 22.809 17.9999 22.809H9.2724C6.91782 22.8088 5.00873 20.9 5.00873 18.5454V9.81783C5.00892 7.46337 6.91794 5.55435 9.2724 5.55415Z" stroke="url(#paint2_dev)" strokeWidth="0.2" shapeRendering="crispEdges"/>
-      </g>
-      <path d="M10.7803 11.1807C11.1637 10.7834 11.7969 10.7719 12.1943 11.1553C12.5916 11.5388 12.6031 12.172 12.2197 12.5693L10.414 14.4385L12.1943 16.1553C12.5917 16.5386 12.6029 17.1718 12.2197 17.5693C11.8364 17.9667 11.2032 17.9779 10.8056 17.5947L8.30564 15.1846C8.11493 15.0005 8.00484 14.7484 7.99998 14.4834C7.9952 14.2182 8.09604 13.9614 8.28025 13.7705L10.7803 11.1807Z" fill="url(#paint3_dev)"/>
-      <path d="M16.139 11.1553C16.5364 10.7719 17.1696 10.7834 17.5531 11.1807L20.0531 13.7705C20.2373 13.9614 20.3382 14.2182 20.3334 14.4834C20.3285 14.7484 20.2184 15.0005 20.0277 15.1846L17.5277 17.5947C17.1302 17.9779 16.497 17.9667 16.1137 17.5693C15.7304 17.1718 15.7417 16.5386 16.139 16.1553L17.9183 14.4385L16.1137 12.5693C15.7303 12.172 15.7417 11.5388 16.139 11.1553Z" fill="url(#paint4_dev)"/>
-      <path d="M14.0153 9.82715C14.1108 9.28342 14.6287 8.91948 15.1726 9.01465C15.7165 9.10989 16.0803 9.62887 15.9851 10.1729L14.527 18.5059C14.4318 19.0498 13.9128 19.4136 13.3688 19.3184C12.8252 19.223 12.4613 18.7049 12.5563 18.1611L14.0153 9.82715Z" fill="url(#paint5_dev)"/>
+    <path d="M1.09088 4.36364C1.09088 2.55616 2.55613 1.09091 4.36361 1.09091H8.72725C10.5347 1.09091 12 2.55616 12 4.36364V8.72727C12 10.5347 10.5347 12 8.72725 12H4.36361C2.55613 12 1.09088 10.5347 1.09088 8.72727V4.36364Z" fill="url(#dev_paint0)"/>
+    <g filter="url(#dev_filter0)">
+      <path d="M4.90912 9.81818C4.90912 7.40821 6.86279 5.45454 9.27276 5.45454H18C20.41 5.45454 22.3637 7.40821 22.3637 9.81818V18.5455C22.3637 20.9554 20.41 22.9091 18 22.9091H9.27276C6.86279 22.9091 4.90912 20.9554 4.90912 18.5455V9.81818Z" fill="url(#dev_paint1)"/>
+      <path d="M4.90912 9.81818C4.90912 7.40821 6.86279 5.45454 9.27276 5.45454H18C20.41 5.45454 22.3637 7.40821 22.3637 9.81818V18.5455C22.3637 20.9554 20.41 22.9091 18 22.9091H9.27276C6.86279 22.9091 4.90912 20.9554 4.90912 18.5455V9.81818Z" fill="#0077FA" fillOpacity="0.25"/>
+      <path d="M9.2724 5.55415H17.9999C20.3546 5.55415 22.2634 7.46325 22.2636 9.81783V18.5454C22.2636 20.9001 20.3547 22.809 17.9999 22.809H9.2724C6.91782 22.8088 5.00873 20.9 5.00873 18.5454V9.81783C5.00892 7.46337 6.91794 5.55435 9.2724 5.55415Z" stroke="url(#dev_paint2)" strokeWidth="0.2"/>
     </g>
+    <path d="M10.7803 11.1807C11.1637 10.7834 11.7969 10.7719 12.1943 11.1553C12.5916 11.5388 12.6031 12.172 12.2197 12.5693L10.414 14.4385L12.1943 16.1553C12.5917 16.5386 12.6029 17.1718 12.2197 17.5693C11.8364 17.9667 11.2032 17.9779 10.8056 17.5947L8.30564 15.1846C8.11493 15.0005 8.00484 14.7484 7.99998 14.4834C7.9952 14.2182 8.09604 13.9614 8.28025 13.7705L10.7803 11.1807Z" fill="url(#dev_paint3)"/>
+    <path d="M16.139 11.1553C16.5364 10.7719 17.1696 10.7834 17.5531 11.1807L20.0531 13.7705C20.2373 13.9614 20.3382 14.2182 20.3334 14.4834C20.3285 14.7484 20.2184 15.0005 20.0277 15.1846L17.5277 17.5947C17.1302 17.9779 16.497 17.9667 16.1137 17.5693C15.7304 17.1718 15.7417 16.5386 16.139 16.1553L17.9183 14.4385L16.1137 12.5693C15.7303 12.172 15.7417 11.5388 16.139 11.1553Z" fill="url(#dev_paint4)"/>
+    <path d="M14.0153 9.82715C14.1108 9.28342 14.6287 8.91948 15.1726 9.01465C15.7165 9.10989 16.0803 9.62887 15.9851 10.1729L14.527 18.5059C14.4318 19.0498 13.9128 19.4136 13.3688 19.3184C12.8252 19.223 12.4613 18.7049 12.5563 18.1611L14.0153 9.82715Z" fill="url(#dev_paint5)"/>
     <defs>
-      <filter id="filter0_dev" x="-5.09088" y="-4.54546" width="37.4545" height="37.4545" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+      <filter id="dev_filter0" x="-5.09088" y="-4.54546" width="37.4545" height="37.4545" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
         <feFlood floodOpacity="0" result="BackgroundImageFix"/>
         <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
         <feOffset/>
@@ -40,33 +38,30 @@ const DevelopmentIcon = ({ size = 20, className }: IconProps) => (
         <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.1 0"/>
         <feBlend mode="normal" in2="shape" result="effect2_innerShadow"/>
       </filter>
-      <linearGradient id="paint0_dev" x1="6.54543" y1="1.09091" x2="6.54543" y2="12" gradientUnits="userSpaceOnUse">
+      <linearGradient id="dev_paint0" x1="6.54543" y1="1.09091" x2="6.54543" y2="12" gradientUnits="userSpaceOnUse">
         <stop stopColor="#0077FA"/>
         <stop offset="1" stopColor="#113CC2"/>
       </linearGradient>
-      <linearGradient id="paint1_dev" x1="13.6364" y1="4.72727" x2="13.6364" y2="22.9091" gradientUnits="userSpaceOnUse">
+      <linearGradient id="dev_paint1" x1="13.6364" y1="4.72727" x2="13.6364" y2="22.9091" gradientUnits="userSpaceOnUse">
         <stop stopColor="white" stopOpacity="0.1"/>
         <stop offset="1" stopColor="white" stopOpacity="0"/>
       </linearGradient>
-      <linearGradient id="paint2_dev" x1="13.6364" y1="5.45454" x2="13.6364" y2="22.9091" gradientUnits="userSpaceOnUse">
+      <linearGradient id="dev_paint2" x1="13.6364" y1="5.45454" x2="13.6364" y2="22.9091" gradientUnits="userSpaceOnUse">
         <stop stopColor="white" stopOpacity="0.15"/>
         <stop offset="1" stopColor="white" stopOpacity="0"/>
       </linearGradient>
-      <linearGradient id="paint3_dev" x1="10.2499" y1="10.8751" x2="10.2499" y2="17.8749" gradientUnits="userSpaceOnUse">
+      <linearGradient id="dev_paint3" x1="10.2499" y1="10.8751" x2="10.2499" y2="17.8749" gradientUnits="userSpaceOnUse">
         <stop stopColor="white"/>
         <stop offset="1" stopColor="white" stopOpacity="0.3"/>
       </linearGradient>
-      <linearGradient id="paint4_dev" x1="18.0835" y1="10.8751" x2="18.0835" y2="17.8749" gradientUnits="userSpaceOnUse">
+      <linearGradient id="dev_paint4" x1="18.0835" y1="10.8751" x2="18.0835" y2="17.8749" gradientUnits="userSpaceOnUse">
         <stop stopColor="white"/>
         <stop offset="1" stopColor="white" stopOpacity="0.3"/>
       </linearGradient>
-      <linearGradient id="paint5_dev" x1="14.2707" y1="8.99953" x2="14.2707" y2="19.3335" gradientUnits="userSpaceOnUse">
+      <linearGradient id="dev_paint5" x1="14.2707" y1="8.99953" x2="14.2707" y2="19.3335" gradientUnits="userSpaceOnUse">
         <stop stopColor="white"/>
         <stop offset="1" stopColor="white" stopOpacity="0.3"/>
       </linearGradient>
-      <clipPath id="clip0_dev">
-        <rect width="24" height="24" fill="white"/>
-      </clipPath>
     </defs>
   </svg>
 );
