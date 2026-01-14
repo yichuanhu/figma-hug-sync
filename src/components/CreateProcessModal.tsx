@@ -155,6 +155,7 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
           gap: 12, 
           marginTop: 12,
           paddingTop: 16,
+          paddingBottom: 12,
           borderTop: '1px solid var(--semi-color-border)'
         }}>
           <Button theme="light" onClick={onCancel}>
