@@ -9,10 +9,10 @@ import {
   Avatar,
   Dropdown,
   Popover,
-  Checkbox,
-  Space
+  Checkbox
 } from '@douyinfe/semi-ui';
 import { IconSearch, IconFilter, IconPlus, IconDownload, IconMore } from '@douyinfe/semi-icons';
+import CreateProcessModal from '@/components/CreateProcessModal';
 
 const { Title, Text } = Typography;
 const CheckboxGroup = Checkbox.Group;
@@ -33,6 +33,7 @@ const ProcessDevelopment = () => {
     creator: [],
   });
   const [filterVisible, setFilterVisible] = useState(false);
+  const [createModalVisible, setCreateModalVisible] = useState(false);
 
   // 筛选选项
   const filterOptions = {
@@ -307,7 +308,12 @@ const ProcessDevelopment = () => {
           <Button icon={<IconDownload />} theme="light">
             导入流程
           </Button>
-          <Button icon={<IconPlus />} theme="solid" type="primary">
+          <Button 
+            icon={<IconPlus />} 
+            theme="solid" 
+            type="primary"
+            onClick={() => setCreateModalVisible(true)}
+          >
             新建流程
           </Button>
         </div>
@@ -326,6 +332,12 @@ const ProcessDevelopment = () => {
           formatPageText: (page) => `显示第 ${page?.currentStart} 条-第 ${page?.currentEnd} 条，共 ${page?.total} 条`,
         }}
         style={{ backgroundColor: '#fff' }}
+      />
+
+      {/* 新建流程弹窗 */}
+      <CreateProcessModal
+        visible={createModalVisible}
+        onCancel={() => setCreateModalVisible(false)}
       />
     </div>
   );
