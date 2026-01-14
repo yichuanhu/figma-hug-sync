@@ -92,7 +92,7 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
         }}
       >
         {/* 外层容器用于padding */}
-        <div style={{ padding: collapsed ? '0' : '0 8px' }}>
+        <div style={{ padding: '0 8px' }}>
           <div
             style={{
               display: 'flex',
