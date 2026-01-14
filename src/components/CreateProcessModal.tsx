@@ -153,7 +153,7 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
           display: 'flex', 
           justifyContent: 'flex-end', 
           gap: 12, 
-          marginTop: 24,
+          marginTop: 12,
           paddingTop: 16,
           borderTop: '1px solid var(--semi-color-border)'
         }}>
