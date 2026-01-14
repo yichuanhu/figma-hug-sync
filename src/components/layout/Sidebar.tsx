@@ -182,7 +182,7 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
       </div>
 
       {/* 底部导航 */}
-      <div style={{ borderTop: '1px solid var(--semi-color-border)', paddingTop: 8, paddingBottom: 8 }}>
+      <div style={{ paddingTop: 8, paddingBottom: 8 }}>
         {bottomMenuItems.map(item => renderMenuItem(item))}
         
         {/* 用户信息 */}
@@ -193,8 +193,7 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
             cursor: 'pointer',
             transition: 'all 0.2s',
             padding: '12px 16px',
-            marginTop: 4,
-            borderTop: '1px solid var(--semi-color-border)'
+            marginTop: 4
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.04)';
