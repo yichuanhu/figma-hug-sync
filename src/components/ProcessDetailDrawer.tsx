@@ -1,10 +1,14 @@
+import { useState } from 'react';
 import { 
   SideSheet, 
   Typography, 
   Button, 
   Tag,
   Descriptions,
-  Divider
+  Tabs,
+  TabPane,
+  Table,
+  Empty
 } from '@douyinfe/semi-ui';
 import { IconEdit, IconPlay, IconDelete } from '@douyinfe/semi-icons';
 
@@ -39,6 +43,8 @@ const ProcessDetailDrawer = ({
   onRun,
   onDelete 
 }: ProcessDetailDrawerProps) => {
+  const [activeTab, setActiveTab] = useState('detail');
+
   if (!processData) return null;
 
   const descriptionData = [
@@ -86,45 +92,154 @@ const ProcessDetailDrawer = ({
     });
   }
 
+  // 版本列表模拟数据
+  const versionColumns = [
+    { title: '版本号', dataIndex: 'version', key: 'version' },
+    { title: '发布时间', dataIndex: 'publishedAt', key: 'publishedAt' },
+    { title: '发布人', dataIndex: 'publisher', key: 'publisher' },
+    { title: '备注', dataIndex: 'remark', key: 'remark' },
+  ];
+
+  const versionData = [
+    { key: 1, version: '1.2.0', publishedAt: '2024-01-15 10:30', publisher: '姜鹏志', remark: '修复审批逻辑' },
+    { key: 2, version: '1.1.0', publishedAt: '2024-01-10 14:20', publisher: '姜鹏志', remark: '新增通知功能' },
+    { key: 3, version: '1.0.0', publishedAt: '2024-01-05 09:00', publisher: '姜鹏志', remark: '初始版本' },
+  ];
+
+  // 运行记录模拟数据
+  const runColumns = [
+    { title: '运行ID', dataIndex: 'runId', key: 'runId' },
+    { title: '开始时间', dataIndex: 'startTime', key: 'startTime' },
+    { title: '结束时间', dataIndex: 'endTime', key: 'endTime' },
+    { 
+      title: '状态', 
+      dataIndex: 'status', 
+      key: 'status',
+      render: (status: string) => (
+        <Tag color={status === '成功' ? 'green' : status === '失败' ? 'red' : 'blue'} type="light">
+          {status}
+        </Tag>
+      )
+    },
+  ];
+
+  const runData = [
+    { key: 1, runId: 'RUN-001', startTime: '2024-01-15 10:30:00', endTime: '2024-01-15 10:30:45', status: '成功' },
+    { key: 2, runId: 'RUN-002', startTime: '2024-01-14 15:20:00', endTime: '2024-01-14 15:21:30', status: '失败' },
+    { key: 3, runId: 'RUN-003', startTime: '2024-01-13 09:00:00', endTime: '2024-01-13 09:00:30', status: '成功' },
+  ];
+
+  // 变更历史模拟数据
+  const changeColumns = [
+    { title: '变更时间', dataIndex: 'changeTime', key: 'changeTime' },
+    { title: '变更类型', dataIndex: 'changeType', key: 'changeType' },
+    { title: '变更人', dataIndex: 'changer', key: 'changer' },
+    { title: '变更内容', dataIndex: 'changeContent', key: 'changeContent' },
+  ];
+
+  const changeData = [
+    { key: 1, changeTime: '2024-01-15 10:30', changeType: '发布', changer: '姜鹏志', changeContent: '发布版本 1.2.0' },
+    { key: 2, changeTime: '2024-01-14 16:00', changeType: '编辑', changer: '姜鹏志', changeContent: '修改流程描述' },
+    { key: 3, changeTime: '2024-01-10 14:20', changeType: '发布', changer: '姜鹏志', changeContent: '发布版本 1.1.0' },
+  ];
+
   return (
     <SideSheet
       title={
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Title heading={5} style={{ margin: 0 }}>{processData.name}</Title>
-          <Text type="tertiary" size="small">{processData.id}</Text>
-        </div>
-      }
-      visible={visible}
-      onCancel={onClose}
-      width={480}
-      footer={
         <div style={{ 
           display: 'flex', 
-          justifyContent: 'space-between',
-          padding: '12px 0'
+          justifyContent: 'space-between', 
+          alignItems: 'center',
+          width: '100%',
+          paddingRight: 40
         }}>
-          <Button 
-            icon={<IconDelete />} 
-            type="danger" 
-            theme="borderless"
-            onClick={onDelete}
-          >
-            删除
-          </Button>
-          <div style={{ display: 'flex', gap: 12 }}>
-            <Button icon={<IconEdit />} theme="light" onClick={onEdit}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <Title heading={5} style={{ margin: 0 }}>{processData.name}</Title>
+            <Text type="tertiary" size="small">{processData.id}</Text>
+          </div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <Button 
+              icon={<IconDelete />} 
+              type="danger" 
+              theme="borderless"
+              size="small"
+              onClick={onDelete}
+            >
+              删除
+            </Button>
+            <Button icon={<IconEdit />} theme="light" size="small" onClick={onEdit}>
               编辑
             </Button>
-            <Button icon={<IconPlay />} theme="solid" type="primary" onClick={onRun}>
+            <Button icon={<IconPlay />} theme="solid" type="primary" size="small" onClick={onRun}>
               运行
             </Button>
           </div>
         </div>
       }
+      visible={visible}
+      onCancel={onClose}
+      width={560}
+      footer={null}
+      headerStyle={{ borderBottom: '1px solid var(--semi-color-border)' }}
+      bodyStyle={{ padding: 0 }}
     >
-      <div style={{ padding: '8px 0' }}>
-        <Descriptions data={descriptionData} />
-      </div>
+      <Tabs 
+        activeKey={activeTab} 
+        onChange={setActiveTab}
+        style={{ height: '100%' }}
+        tabBarStyle={{ padding: '0 24px' }}
+      >
+        <TabPane tab="流程详情" itemKey="detail">
+          <div style={{ padding: '16px 24px' }}>
+            <Descriptions data={descriptionData} />
+          </div>
+        </TabPane>
+        
+        <TabPane tab="版本列表" itemKey="versions">
+          <div style={{ padding: '16px 24px' }}>
+            {versionData.length > 0 ? (
+              <Table 
+                columns={versionColumns} 
+                dataSource={versionData} 
+                pagination={false}
+                size="small"
+              />
+            ) : (
+              <Empty description="暂无版本记录" />
+            )}
+          </div>
+        </TabPane>
+        
+        <TabPane tab="运行记录" itemKey="runs">
+          <div style={{ padding: '16px 24px' }}>
+            {runData.length > 0 ? (
+              <Table 
+                columns={runColumns} 
+                dataSource={runData} 
+                pagination={false}
+                size="small"
+              />
+            ) : (
+              <Empty description="暂无运行记录" />
+            )}
+          </div>
+        </TabPane>
+        
+        <TabPane tab="变更历史" itemKey="changes">
+          <div style={{ padding: '16px 24px' }}>
+            {changeData.length > 0 ? (
+              <Table 
+                columns={changeColumns} 
+                dataSource={changeData} 
+                pagination={false}
+                size="small"
+              />
+            ) : (
+              <Empty description="暂无变更历史" />
+            )}
+          </div>
+        </TabPane>
+      </Tabs>
     </SideSheet>
   );
 };
