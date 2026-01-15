@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { 
   SideSheet, 
   Typography, 
@@ -10,7 +10,8 @@ import {
   Table,
   Empty,
   Divider,
-  Tooltip
+  Tooltip,
+  DatePicker
 } from '@douyinfe/semi-ui';
 import { IconEditStroked, IconPlay, IconDeleteStroked, IconExternalOpenStroked } from '@douyinfe/semi-icons';
 
@@ -48,6 +49,7 @@ const ProcessDetailDrawer = ({
   onDelete 
 }: ProcessDetailDrawerProps) => {
   const [activeTab, setActiveTab] = useState('detail');
+  const [changeTimeRange, setChangeTimeRange] = useState<[Date, Date] | null>(null);
 
   if (!processData) return null;
 
@@ -141,11 +143,25 @@ const ProcessDetailDrawer = ({
     { title: '变更内容', dataIndex: 'changeContent', key: 'changeContent' },
   ];
 
-  const changeData = [
+  const allChangeData = [
     { key: 1, changeTime: '2024-01-15 10:30', changeType: '发布', changer: '姜鹏志', changeContent: '发布版本 1.2.0' },
     { key: 2, changeTime: '2024-01-14 16:00', changeType: '编辑', changer: '姜鹏志', changeContent: '修改流程描述' },
     { key: 3, changeTime: '2024-01-10 14:20', changeType: '发布', changer: '姜鹏志', changeContent: '发布版本 1.1.0' },
+    { key: 4, changeTime: '2024-01-05 09:00', changeType: '创建', changer: '姜鹏志', changeContent: '创建流程' },
+    { key: 5, changeTime: '2023-12-28 14:30', changeType: '编辑', changer: '姜鹏志', changeContent: '修改流程配置' },
   ];
+
+  // 根据时间范围筛选变更历史
+  const filteredChangeData = useMemo(() => {
+    if (!changeTimeRange || !changeTimeRange[0] || !changeTimeRange[1]) {
+      return allChangeData;
+    }
+    const [startDate, endDate] = changeTimeRange;
+    return allChangeData.filter(item => {
+      const itemDate = new Date(item.changeTime.replace(' ', 'T'));
+      return itemDate >= startDate && itemDate <= endDate;
+    });
+  }, [changeTimeRange]);
 
   return (
     <SideSheet
@@ -239,10 +255,20 @@ const ProcessDetailDrawer = ({
         
         <TabPane tab="变更历史" itemKey="changes">
           <div style={{ padding: '16px 24px' }}>
-            {changeData.length > 0 ? (
+            <div style={{ marginBottom: 16 }}>
+              <DatePicker
+                type="dateTimeRange"
+                value={changeTimeRange as [Date, Date] | undefined}
+                onChange={(value) => setChangeTimeRange(value as [Date, Date] | null)}
+                placeholder={['开始时间', '结束时间']}
+                style={{ width: '100%' }}
+                showClear
+              />
+            </div>
+            {filteredChangeData.length > 0 ? (
               <Table 
                 columns={changeColumns} 
-                dataSource={changeData} 
+                dataSource={filteredChangeData} 
                 pagination={false}
                 size="small"
               />
