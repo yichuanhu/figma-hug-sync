@@ -397,7 +397,8 @@ const ProcessDevelopment = () => {
           .process-table .semi-table-pagination-outer {
             background-color: #F7F8FA;
             padding: 12px 16px;
-            border-radius: 0 0 8px 8px;
+            margin-top: 16px;
+            border-radius: 8px;
           }
         `}</style>
       </div>
