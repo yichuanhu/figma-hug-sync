@@ -656,7 +656,6 @@ const WorkerManagement = () => {
             showTotal: true,
             showSizeChanger: true,
             formatPageText: (page) => `显示第 ${page?.currentStart} 条-第 ${page?.currentEnd} 条，共 ${page?.total} 条`,
-            style: { padding: '12px 16px' }
           }}
         />
       </div>
