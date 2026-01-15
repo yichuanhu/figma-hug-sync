@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Badge, Avatar } from '@douyinfe/semi-ui';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { Avatar } from '@douyinfe/semi-ui';
 import { 
   IconBell, 
   IconBookStroked, 
@@ -25,6 +26,7 @@ interface MenuItem {
   icon?: React.ReactNode;
   children?: MenuItem[];
   badge?: number;
+  path?: string;
 }
 
 interface SidebarProps {
@@ -32,20 +34,34 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ collapsed }: SidebarProps) => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [expandedKeys, setExpandedKeys] = useState<string[]>(['开发中心']);
-  const [selectedKey, setSelectedKey] = useState('流程开发');
   const [hoveredKey, setHoveredKey] = useState<string | null>(null);
 
+  // 根据当前路由获取选中的菜单key
+  const getSelectedKeyByPath = (pathname: string): string => {
+    if (pathname === '/worker-management' || pathname.startsWith('/worker-management/')) {
+      return '流程机器人管理';
+    }
+    if (pathname === '/process-development' || pathname === '/') {
+      return '流程开发';
+    }
+    return '';
+  };
+
+  const selectedKey = getSelectedKeyByPath(location.pathname);
+
   const mainMenuItems: MenuItem[] = [
-    { key: '首页', label: '首页', icon: <HomeIcon size={20} /> },
+    { key: '首页', label: '首页', icon: <HomeIcon size={20} />, path: '/' },
     { key: '需求中心', label: '需求中心', icon: <RequirementsIcon size={20} /> },
     { 
       key: '开发中心', 
       label: '开发中心', 
       icon: <DevelopmentIcon size={20} />,
       children: [
-        { key: '流程开发', label: '流程开发' },
-        { key: '流程机器人管理', label: '流程机器人管理' },
+        { key: '流程开发', label: '流程开发', path: '/process-development' },
+        { key: '流程机器人管理', label: '流程机器人管理', path: '/worker-management' },
       ]
     },
     { key: '调度中心', label: '调度中心', icon: <SchedulingIcon size={20} /> },
@@ -67,9 +83,11 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
     );
   };
 
-  const handleSelect = (key: string) => {
-    setSelectedKey(key);
+  const handleSelect = (key: string, path?: string) => {
     setHoveredKey(null);
+    if (path) {
+      navigate(path);
+    }
   };
 
   const renderMenuItem = (item: MenuItem, isChild = false) => {
@@ -124,7 +142,7 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
               if (hasChildren && !collapsed) {
                 toggleExpand(item.key);
               } else if (!hasChildren) {
-                handleSelect(item.key);
+                handleSelect(item.key, item.path);
               }
             }}
           >
@@ -233,7 +251,7 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
                         e.currentTarget.style.backgroundColor = 'transparent';
                       }
                     }}
-                    onClick={() => handleSelect(child.key)}
+                    onClick={() => handleSelect(child.key, child.path)}
                   >
                     {child.label}
                   </div>
