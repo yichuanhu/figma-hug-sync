@@ -229,20 +229,20 @@ const mockWorkers: WorkerData[] = [
   },
 ];
 
-// 状态配置
-const statusConfig: Record<WorkerStatus, { color: string; text: string; dot: string }> = {
-  OFFLINE: { color: 'grey', text: '离线', dot: '⚪' },
-  IDLE: { color: 'green', text: '空闲', dot: '🟢' },
-  BUSY: { color: 'blue', text: '忙碌', dot: '🔵' },
-  FAULT: { color: 'red', text: '故障', dot: '🔴' },
-  MAINTENANCE: { color: 'orange', text: '维护中', dot: '🟡' },
+// 状态配置 - 去掉图标
+const statusConfig: Record<WorkerStatus, { color: string; text: string }> = {
+  OFFLINE: { color: 'grey', text: '离线' },
+  IDLE: { color: 'green', text: '空闲' },
+  BUSY: { color: 'blue', text: '忙碌' },
+  FAULT: { color: 'red', text: '故障' },
+  MAINTENANCE: { color: 'orange', text: '维护中' },
 };
 
-// 优先级配置
-const priorityConfig: Record<Priority, { icon: string; text: string; color: string }> = {
-  HIGH: { icon: '🔥', text: '高', color: 'red' },
-  MEDIUM: { icon: '●', text: '中', color: 'blue' },
-  LOW: { icon: '○', text: '低', color: 'grey' },
+// 优先级配置 - 使用Tag颜色
+const priorityConfig: Record<Priority, { text: string; color: string }> = {
+  HIGH: { text: '高', color: 'red' },
+  MEDIUM: { text: '中', color: 'blue' },
+  LOW: { text: '低', color: 'grey' },
 };
 
 const WorkerManagement = () => {
@@ -346,7 +346,7 @@ const WorkerManagement = () => {
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <span style={{ fontWeight: 500 }}>{name}</span>
             {record.syncStatus === 'PENDING' && (
-              <Tag color="orange" size="small" type="light">⚠️待同步</Tag>
+              <Tag color="orange" size="small" type="light">待同步</Tag>
             )}
           </div>
           <div style={{ color: 'var(--semi-color-text-2)', fontSize: 12, marginTop: 2 }}>
@@ -364,7 +364,7 @@ const WorkerManagement = () => {
         const config = statusConfig[status];
         return (
           <Tag color={config.color as 'grey' | 'green' | 'blue' | 'red' | 'orange'} type="light">
-            {config.dot} {config.text}
+            {config.text}
           </Tag>
         );
       },
@@ -383,9 +383,9 @@ const WorkerManagement = () => {
       render: (priority: Priority) => {
         const config = priorityConfig[priority];
         return (
-          <span style={{ color: `var(--semi-color-${config.color})` }}>
-            {config.icon} {config.text}
-          </span>
+          <Tag color={config.color as 'red' | 'blue' | 'grey'} type="light">
+            {config.text}
+          </Tag>
         );
       },
     },
@@ -407,58 +407,67 @@ const WorkerManagement = () => {
       dataIndex: 'receiveTasks',
       key: 'receiveTasks',
       width: 90,
-      render: (receiveTasks: boolean) => (
-        <Switch checked={receiveTasks} size="small" disabled />
-      ),
+      render: (receiveTasks: boolean, record: WorkerData) => {
+        // 只有在线且非故障状态才允许操作
+        const canOperate = record.status !== 'OFFLINE' && record.status !== 'FAULT';
+        return (
+          <Switch 
+            checked={receiveTasks} 
+            size="small" 
+            disabled={!canOperate}
+            onChange={(checked) => {
+              console.log('切换接收任务状态:', record.id, checked);
+              // 这里可以添加实际的状态更新逻辑
+            }}
+          />
+        );
+      },
     },
     {
       title: '操作',
       dataIndex: 'action',
       key: 'action',
-      width: 100,
+      width: 60,
       render: (_: unknown, record: WorkerData) => (
-        <div style={{ display: 'flex', gap: 4 }}>
+        <Dropdown
+          trigger="click"
+          position="bottomRight"
+          render={
+            <Dropdown.Menu>
+              <Dropdown.Item 
+                icon={<IconEyeOpenedStroked />} 
+                onClick={() => openDetail(record)}
+              >
+                查看详情
+              </Dropdown.Item>
+              <Dropdown.Item 
+                icon={<IconKey />} 
+                onClick={() => openKeyModal(record)}
+              >
+                查看密钥
+              </Dropdown.Item>
+              <Dropdown.Item 
+                icon={<IconEditStroked />} 
+                onClick={() => handleEdit(record)}
+              >
+                编辑
+              </Dropdown.Item>
+              <Dropdown.Item 
+                icon={<IconDeleteStroked />} 
+                type="danger" 
+                onClick={() => openDeleteModal(record)}
+              >
+                删除
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          }
+        >
           <Button 
-            icon={<IconKey />} 
+            icon={<IconMore />} 
             theme="borderless" 
-            size="small"
-            onClick={(e) => openKeyModal(record, e)}
+            onClick={(e) => e.stopPropagation()}
           />
-          <Dropdown
-            trigger="click"
-            position="bottomRight"
-            render={
-              <Dropdown.Menu>
-                <Dropdown.Item 
-                  icon={<IconEyeOpenedStroked />} 
-                  onClick={() => openDetail(record)}
-                >
-                  查看详情
-                </Dropdown.Item>
-                <Dropdown.Item 
-                  icon={<IconEditStroked />} 
-                  onClick={(e) => handleEdit(record, e as unknown as React.MouseEvent)}
-                >
-                  编辑
-                </Dropdown.Item>
-                <Dropdown.Item 
-                  icon={<IconDeleteStroked />} 
-                  type="danger" 
-                  onClick={(e) => openDeleteModal(record, e as unknown as React.MouseEvent)}
-                >
-                  删除
-                </Dropdown.Item>
-              </Dropdown.Menu>
-            }
-          >
-            <Button 
-              icon={<IconMore />} 
-              theme="borderless" 
-              size="small"
-              onClick={(e) => e.stopPropagation()}
-            />
-          </Dropdown>
-        </div>
+        </Dropdown>
       ),
     },
   ];
