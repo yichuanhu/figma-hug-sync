@@ -9,7 +9,8 @@ import {
   TabPane,
   Table,
   Empty,
-  Divider
+  Divider,
+  Tooltip
 } from '@douyinfe/semi-ui';
 import { IconEditStroked, IconPlay, IconDeleteStroked } from '@douyinfe/semi-icons';
 
@@ -159,14 +160,20 @@ const ProcessDetailDrawer = ({
             <Text type="tertiary" size="small">{processData.id}</Text>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <Button 
-              icon={<IconDeleteStroked />} 
-              theme="borderless"
-              size="small"
-              onClick={onDelete}
-            />
-            <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={onEdit} />
-            <Button icon={<IconPlay />} theme="borderless" size="small" onClick={onRun} />
+            <Tooltip content="删除">
+              <Button 
+                icon={<IconDeleteStroked />} 
+                theme="borderless"
+                size="small"
+                onClick={onDelete}
+              />
+            </Tooltip>
+            <Tooltip content="编辑">
+              <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={onEdit} />
+            </Tooltip>
+            <Tooltip content="运行">
+              <Button icon={<IconPlay />} theme="borderless" size="small" onClick={onRun} />
+            </Tooltip>
             <Divider layout="vertical" style={{ height: 16, margin: '0 8px 0 8px', marginRight: 24 }} />
           </div>
         </div>
