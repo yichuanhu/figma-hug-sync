@@ -10,7 +10,8 @@ import {
   Dropdown,
   Popover,
   Checkbox,
-  Pagination
+  Pagination,
+  Tooltip
 } from '@douyinfe/semi-ui';
 import { IconSearch, IconFilter, IconPlus, IconDownload, IconMore, IconEyeOpenedStroked, IconEditStroked, IconPlay, IconDeleteStroked } from '@douyinfe/semi-icons';
 import CreateProcessModal from '@/components/CreateProcessModal';
@@ -116,6 +117,18 @@ const ProcessDevelopment = () => {
       dataIndex: 'description',
       key: 'description',
       width: 280,
+      render: (description: string) => (
+        <Tooltip content={description} position="top">
+          <div style={{
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            maxWidth: 260
+          }}>
+            {description}
+          </div>
+        </Tooltip>
+      ),
     },
     {
       title: '状态',
