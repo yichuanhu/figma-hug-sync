@@ -152,7 +152,7 @@ const ProcessDetailDrawer = ({
           justifyContent: 'space-between', 
           alignItems: 'center',
           width: '100%',
-          paddingRight: 40
+          paddingRight: 0
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <Title heading={5} style={{ margin: 0 }}>{processData.name}</Title>
