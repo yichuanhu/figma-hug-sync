@@ -132,12 +132,14 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
           field="name"
           label="流程名称"
           placeholder="请输入流程名称"
+          trigger="blur"
           rules={[
             { required: true, message: '请输入流程名称' },
             { min: 1, message: '流程名称长度必须在1-100字符之间' },
             { max: 100, message: '流程名称长度必须在1-100字符之间' },
             { validator: validateProcessNameUnique },
           ]}
+          showClear
         />
         
         <Form.TextArea
@@ -146,6 +148,7 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
           placeholder="请输入流程描述，例如：自动处理电商平台的订单，包括订单验证、库存检查、发货通知"
           autosize={{ minRows: 3, maxRows: 6 }}
           maxCount={500}
+          trigger="blur"
           rules={[
             { required: true, message: '请输入流程描述' },
             { min: 1, message: '流程描述长度必须在1-500字符之间' },
