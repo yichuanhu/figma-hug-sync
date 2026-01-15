@@ -45,7 +45,7 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
       icon: <DevelopmentIcon size={20} />,
       children: [
         { key: '流程开发', label: '流程开发' },
-        { key: '机器人管理', label: '机器人管理' },
+        { key: '流程机器人管理', label: '流程机器人管理' },
       ]
     },
     { key: '调度中心', label: '调度中心', icon: <SchedulingIcon size={20} /> },
