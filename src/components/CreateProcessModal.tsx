@@ -96,9 +96,6 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
       Toast.success('流程创建成功！');
       onCancel();
       onSuccess?.();
-      
-      // 跳转到流程详情页
-      navigate(`/process-detail/${processId}`, { state: { processData } });
     } catch (error) {
       Toast.error('创建失败，请重试');
     } finally {
