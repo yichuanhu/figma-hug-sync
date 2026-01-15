@@ -289,14 +289,6 @@ const ProcessDetailDrawer = ({
         <TabPane tab="运行记录" itemKey="runs">
           <div style={{ padding: '16px 24px' }}>
             <div style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
-              <DatePicker
-                type="dateTimeRange"
-                value={runTimeRange as [Date, Date] | undefined}
-                onChange={(value) => setRunTimeRange(value as [Date, Date] | null)}
-                placeholder={['开始时间', '结束时间']}
-                style={{ flex: 1 }}
-                showClear
-              />
               <Select
                 placeholder="状态"
                 multiple
@@ -304,6 +296,14 @@ const ProcessDetailDrawer = ({
                 onChange={(value) => setSelectedRunStatuses(value as string[])}
                 optionList={runStatusOptions}
                 style={{ width: 140 }}
+                showClear
+              />
+              <DatePicker
+                type="dateTimeRange"
+                value={runTimeRange as [Date, Date] | undefined}
+                onChange={(value) => setRunTimeRange(value as [Date, Date] | null)}
+                placeholder={['开始时间', '结束时间']}
+                style={{ flex: 1 }}
                 showClear
               />
             </div>
@@ -323,14 +323,6 @@ const ProcessDetailDrawer = ({
         <TabPane tab="变更历史" itemKey="changes">
           <div style={{ padding: '16px 24px' }}>
             <div style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
-              <DatePicker
-                type="dateTimeRange"
-                value={changeTimeRange as [Date, Date] | undefined}
-                onChange={(value) => setChangeTimeRange(value as [Date, Date] | null)}
-                placeholder={['开始时间', '结束时间']}
-                style={{ flex: 1 }}
-                showClear
-              />
               <Select
                 placeholder="变更人"
                 multiple
@@ -338,6 +330,14 @@ const ProcessDetailDrawer = ({
                 onChange={(value) => setSelectedChangers(value as string[])}
                 optionList={changerOptions}
                 style={{ width: 160 }}
+                showClear
+              />
+              <DatePicker
+                type="dateTimeRange"
+                value={changeTimeRange as [Date, Date] | undefined}
+                onChange={(value) => setChangeTimeRange(value as [Date, Date] | null)}
+                placeholder={['开始时间', '结束时间']}
+                style={{ flex: 1 }}
                 showClear
               />
             </div>
