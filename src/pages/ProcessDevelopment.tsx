@@ -15,6 +15,7 @@ import {
 } from '@douyinfe/semi-ui';
 import { IconSearch, IconFilter, IconPlus, IconDownload, IconMore, IconExternalOpenStroked, IconEditStroked, IconPlay, IconDeleteStroked } from '@douyinfe/semi-icons';
 import CreateProcessModal from '@/components/CreateProcessModal';
+import EditProcessModal from '@/components/EditProcessModal';
 import ProcessDetailDrawer from '@/components/ProcessDetailDrawer';
 import { useOpenProcess } from '@/hooks/useOpenProcess';
 
@@ -38,6 +39,7 @@ const ProcessDevelopment = () => {
   });
   const [filterVisible, setFilterVisible] = useState(false);
   const [createModalVisible, setCreateModalVisible] = useState(false);
+  const [editModalVisible, setEditModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [selectedProcess, setSelectedProcess] = useState<{
     id: string;
@@ -49,6 +51,14 @@ const ProcessDevelopment = () => {
     createdAt: string;
     language?: string;
     version?: string;
+  } | null>(null);
+  const [editingProcess, setEditingProcess] = useState<{
+    id: string;
+    name: string;
+    description: string;
+    organization: string;
+    type?: string;
+    relatedRequirement?: string;
   } | null>(null);
 
   const { openProcess, OpenProcessModal } = useOpenProcess();
@@ -71,8 +81,22 @@ const ProcessDevelopment = () => {
   };
 
   // 操作处理函数
-  const handleEdit = () => {
-    console.log('编辑流程:', selectedProcess?.id);
+  const handleEdit = (record?: typeof allData[0]) => {
+    const processRecord = record || (selectedProcess ? allData.find(d => 
+      `PROC-2024-${String(d.key).padStart(3, '0')}` === selectedProcess.id
+    ) : null);
+    
+    if (processRecord) {
+      const processId = `PROC-2024-${String(processRecord.key).padStart(3, '0')}`;
+      setEditingProcess({
+        id: processId,
+        name: processRecord.name,
+        description: processRecord.description,
+        organization: processRecord.organization,
+        type: '原生流程',
+      });
+      setEditModalVisible(true);
+    }
   };
 
   const handleRun = () => {
@@ -221,7 +245,7 @@ const ProcessDevelopment = () => {
               >
                 打开流程
               </Dropdown.Item>
-              <Dropdown.Item icon={<IconEditStroked />} onClick={handleEdit}>编辑</Dropdown.Item>
+              <Dropdown.Item icon={<IconEditStroked />} onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>编辑</Dropdown.Item>
               <Dropdown.Item icon={<IconPlay />} onClick={handleRun}>运行</Dropdown.Item>
               <Dropdown.Item icon={<IconDeleteStroked />} type="danger" onClick={handleDelete}>删除</Dropdown.Item>
             </Dropdown.Menu>
@@ -438,12 +462,23 @@ const ProcessDevelopment = () => {
         onCancel={() => setCreateModalVisible(false)}
       />
 
+      {/* 编辑流程弹窗 */}
+      <EditProcessModal
+        visible={editModalVisible}
+        onCancel={() => setEditModalVisible(false)}
+        processData={editingProcess}
+        onSuccess={(updatedData) => {
+          console.log('流程已更新:', updatedData);
+          // 这里可以更新本地数据或刷新列表
+        }}
+      />
+
       {/* 流程详情抽屉 */}
       <ProcessDetailDrawer
         visible={detailDrawerVisible}
         onClose={() => setDetailDrawerVisible(false)}
         processData={selectedProcess}
-        onEdit={handleEdit}
+        onEdit={() => handleEdit()}
         onRun={handleRun}
         onDelete={handleDelete}
         onOpen={() => selectedProcess && openProcess(selectedProcess)}
