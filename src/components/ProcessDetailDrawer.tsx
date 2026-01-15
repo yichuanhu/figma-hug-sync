@@ -293,6 +293,7 @@ const ProcessDetailDrawer = ({
               <Select
                 placeholder="状态"
                 multiple
+                maxTagCount={1}
                 value={selectedRunStatuses}
                 onChange={(value) => setSelectedRunStatuses(value as string[])}
                 optionList={runStatusOptions}
