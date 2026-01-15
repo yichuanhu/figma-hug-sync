@@ -321,14 +321,25 @@ const ProcessDetailDrawer = ({
         okText="确定"
         cancelText="取消"
         width={400}
+        footer={
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Checkbox 
+              checked={dontRemindAgain} 
+              onChange={(e) => setDontRemindAgain(e.target.checked)}
+            >
+              以后不再提醒
+            </Checkbox>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <Button onClick={() => {
+                setOpenConfirmVisible(false);
+                setDontRemindAgain(false);
+              }}>取消</Button>
+              <Button theme="solid" onClick={handleConfirmOpen}>确定</Button>
+            </div>
+          </div>
+        }
       >
-        <p style={{ marginBottom: 16 }}>即将唤起客户端在本地打开流程「{processData.name}」，是否继续？</p>
-        <Checkbox 
-          checked={dontRemindAgain} 
-          onChange={(e) => setDontRemindAgain(e.target.checked)}
-        >
-          以后不再提醒
-        </Checkbox>
+        <p>即将唤起客户端在本地打开流程「{processData.name}」，是否继续？</p>
       </Modal>
     </SideSheet>
   );
