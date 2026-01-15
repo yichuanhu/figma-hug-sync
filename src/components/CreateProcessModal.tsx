@@ -138,6 +138,7 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
           label="流程描述"
           placeholder="请输入流程描述，例如：自动处理电商平台的订单，包括订单验证、库存检查、发货通知"
           autosize={{ minRows: 3, maxRows: 6 }}
+          maxCount={500}
           rules={[
             { required: true, message: '请输入流程描述' },
             { min: 1, message: '流程描述长度必须在1-500字符之间' },
