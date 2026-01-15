@@ -390,6 +390,7 @@ const ProcessDevelopment = () => {
             showTotal: true,
             showSizeChanger: true,
             formatPageText: (page) => `显示第 ${page?.currentStart} 条-第 ${page?.currentEnd} 条，共 ${page?.total} 条`,
+            style: { paddingLeft: 16, paddingRight: 16 }
           }}
         />
       </div>
