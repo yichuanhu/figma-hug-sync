@@ -377,6 +377,7 @@ const ProcessDevelopment = () => {
         overflow: 'hidden'
       }}>
         <Table 
+          className="process-table"
           columns={columns} 
           dataSource={filteredData}
           onRow={(record) => ({
@@ -390,9 +391,15 @@ const ProcessDevelopment = () => {
             showTotal: true,
             showSizeChanger: true,
             formatPageText: (page) => `显示第 ${page?.currentStart} 条-第 ${page?.currentEnd} 条，共 ${page?.total} 条`,
-            style: { paddingLeft: 16, paddingRight: 16, paddingTop: 12, paddingBottom: 12, backgroundColor: '#F7F8FA' }
           }}
         />
+        <style>{`
+          .process-table .semi-table-pagination-outer {
+            background-color: #F7F8FA;
+            padding: 12px 16px;
+            border-radius: 0 0 8px 8px;
+          }
+        `}</style>
       </div>
 
       {/* 新建流程弹窗 */}
