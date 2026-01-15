@@ -10,7 +10,7 @@ import {
   Table,
   Empty
 } from '@douyinfe/semi-ui';
-import { IconEdit, IconPlay, IconDelete } from '@douyinfe/semi-icons';
+import { IconEditStroked, IconPlay, IconDeleteStroked } from '@douyinfe/semi-icons';
 
 const { Title, Text } = Typography;
 
@@ -159,13 +159,13 @@ const ProcessDetailDrawer = ({
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
             <Button 
-              icon={<IconDelete />} 
+              icon={<IconDeleteStroked />} 
               type="danger" 
               theme="borderless"
               size="small"
               onClick={onDelete}
             />
-            <Button icon={<IconEdit />} theme="light" size="small" onClick={onEdit} />
+            <Button icon={<IconEditStroked />} theme="light" size="small" onClick={onEdit} />
             <Button icon={<IconPlay />} theme="solid" type="primary" size="small" onClick={onRun} />
           </div>
         </div>
