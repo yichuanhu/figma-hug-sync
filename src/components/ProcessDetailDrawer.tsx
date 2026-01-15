@@ -17,6 +17,15 @@ import { IconEditStroked, IconPlay, IconDeleteStroked, IconExternalOpenStroked }
 
 const { Title, Text } = Typography;
 
+// 变更历史模拟数据 (移到组件外部)
+const allChangeData = [
+  { key: 1, changeTime: '2024-01-15 10:30', changeType: '发布', changer: '姜鹏志', changeContent: '发布版本 1.2.0' },
+  { key: 2, changeTime: '2024-01-14 16:00', changeType: '编辑', changer: '姜鹏志', changeContent: '修改流程描述' },
+  { key: 3, changeTime: '2024-01-10 14:20', changeType: '发布', changer: '姜鹏志', changeContent: '发布版本 1.1.0' },
+  { key: 4, changeTime: '2024-01-05 09:00', changeType: '创建', changer: '姜鹏志', changeContent: '创建流程' },
+  { key: 5, changeTime: '2023-12-28 14:30', changeType: '编辑', changer: '姜鹏志', changeContent: '修改流程配置' },
+];
+
 interface ProcessData {
   id: string;
   name: string;
@@ -50,6 +59,18 @@ const ProcessDetailDrawer = ({
 }: ProcessDetailDrawerProps) => {
   const [activeTab, setActiveTab] = useState('detail');
   const [changeTimeRange, setChangeTimeRange] = useState<[Date, Date] | null>(null);
+
+  // 根据时间范围筛选变更历史 (必须在 early return 之前)
+  const filteredChangeData = useMemo(() => {
+    if (!changeTimeRange || !changeTimeRange[0] || !changeTimeRange[1]) {
+      return allChangeData;
+    }
+    const [startDate, endDate] = changeTimeRange;
+    return allChangeData.filter(item => {
+      const itemDate = new Date(item.changeTime.replace(' ', 'T'));
+      return itemDate >= startDate && itemDate <= endDate;
+    });
+  }, [changeTimeRange]);
 
   if (!processData) return null;
 
@@ -143,25 +164,6 @@ const ProcessDetailDrawer = ({
     { title: '变更内容', dataIndex: 'changeContent', key: 'changeContent' },
   ];
 
-  const allChangeData = [
-    { key: 1, changeTime: '2024-01-15 10:30', changeType: '发布', changer: '姜鹏志', changeContent: '发布版本 1.2.0' },
-    { key: 2, changeTime: '2024-01-14 16:00', changeType: '编辑', changer: '姜鹏志', changeContent: '修改流程描述' },
-    { key: 3, changeTime: '2024-01-10 14:20', changeType: '发布', changer: '姜鹏志', changeContent: '发布版本 1.1.0' },
-    { key: 4, changeTime: '2024-01-05 09:00', changeType: '创建', changer: '姜鹏志', changeContent: '创建流程' },
-    { key: 5, changeTime: '2023-12-28 14:30', changeType: '编辑', changer: '姜鹏志', changeContent: '修改流程配置' },
-  ];
-
-  // 根据时间范围筛选变更历史
-  const filteredChangeData = useMemo(() => {
-    if (!changeTimeRange || !changeTimeRange[0] || !changeTimeRange[1]) {
-      return allChangeData;
-    }
-    const [startDate, endDate] = changeTimeRange;
-    return allChangeData.filter(item => {
-      const itemDate = new Date(item.changeTime.replace(' ', 'T'));
-      return itemDate >= startDate && itemDate <= endDate;
-    });
-  }, [changeTimeRange]);
 
   return (
     <SideSheet
