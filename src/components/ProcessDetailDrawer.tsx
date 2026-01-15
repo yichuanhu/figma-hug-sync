@@ -33,6 +33,22 @@ const changerOptions = [...new Set(allChangeData.map(item => item.changer))].map
   label: changer
 }));
 
+// 运行记录模拟数据 (移到组件外部)
+const allRunData = [
+  { key: 1, runId: 'RUN-001', startTime: '2024-01-15 10:30:00', endTime: '2024-01-15 10:30:45', status: '成功' },
+  { key: 2, runId: 'RUN-002', startTime: '2024-01-14 15:20:00', endTime: '2024-01-14 15:21:30', status: '失败' },
+  { key: 3, runId: 'RUN-003', startTime: '2024-01-13 09:00:00', endTime: '2024-01-13 09:00:30', status: '成功' },
+  { key: 4, runId: 'RUN-004', startTime: '2024-01-12 14:00:00', endTime: '2024-01-12 14:01:15', status: '运行中' },
+  { key: 5, runId: 'RUN-005', startTime: '2024-01-11 08:30:00', endTime: '2024-01-11 08:31:00', status: '成功' },
+];
+
+// 运行状态选项
+const runStatusOptions = [
+  { value: '成功', label: '成功' },
+  { value: '失败', label: '失败' },
+  { value: '运行中', label: '运行中' },
+];
+
 interface ProcessData {
   id: string;
   name: string;
@@ -67,6 +83,8 @@ const ProcessDetailDrawer = ({
   const [activeTab, setActiveTab] = useState('detail');
   const [changeTimeRange, setChangeTimeRange] = useState<[Date, Date] | null>(null);
   const [selectedChangers, setSelectedChangers] = useState<string[]>([]);
+  const [runTimeRange, setRunTimeRange] = useState<[Date, Date] | null>(null);
+  const [selectedRunStatuses, setSelectedRunStatuses] = useState<string[]>([]);
 
   // 根据时间范围和变更人筛选变更历史 (必须在 early return 之前)
   const filteredChangeData = useMemo(() => {
@@ -86,6 +104,25 @@ const ProcessDetailDrawer = ({
       return true;
     });
   }, [changeTimeRange, selectedChangers]);
+
+  // 根据时间范围和状态筛选运行记录 (必须在 early return 之前)
+  const filteredRunData = useMemo(() => {
+    return allRunData.filter(item => {
+      // 时间范围筛选
+      if (runTimeRange && runTimeRange[0] && runTimeRange[1]) {
+        const [startDate, endDate] = runTimeRange;
+        const itemDate = new Date(item.startTime.replace(' ', 'T'));
+        if (itemDate < startDate || itemDate > endDate) {
+          return false;
+        }
+      }
+      // 状态筛选
+      if (selectedRunStatuses.length > 0 && !selectedRunStatuses.includes(item.status)) {
+        return false;
+      }
+      return true;
+    });
+  }, [runTimeRange, selectedRunStatuses]);
 
   if (!processData) return null;
 
@@ -148,7 +185,7 @@ const ProcessDetailDrawer = ({
     { key: 3, version: '1.0.0', publishedAt: '2024-01-05 09:00', publisher: '姜鹏志', remark: '初始版本' },
   ];
 
-  // 运行记录模拟数据
+  // 运行记录列定义
   const runColumns = [
     { title: '运行ID', dataIndex: 'runId', key: 'runId' },
     { title: '开始时间', dataIndex: 'startTime', key: 'startTime' },
@@ -163,12 +200,6 @@ const ProcessDetailDrawer = ({
         </Tag>
       )
     },
-  ];
-
-  const runData = [
-    { key: 1, runId: 'RUN-001', startTime: '2024-01-15 10:30:00', endTime: '2024-01-15 10:30:45', status: '成功' },
-    { key: 2, runId: 'RUN-002', startTime: '2024-01-14 15:20:00', endTime: '2024-01-14 15:21:30', status: '失败' },
-    { key: 3, runId: 'RUN-003', startTime: '2024-01-13 09:00:00', endTime: '2024-01-13 09:00:30', status: '成功' },
   ];
 
   // 变更历史模拟数据
@@ -257,10 +288,29 @@ const ProcessDetailDrawer = ({
         
         <TabPane tab="运行记录" itemKey="runs">
           <div style={{ padding: '16px 24px' }}>
-            {runData.length > 0 ? (
+            <div style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
+              <DatePicker
+                type="dateTimeRange"
+                value={runTimeRange as [Date, Date] | undefined}
+                onChange={(value) => setRunTimeRange(value as [Date, Date] | null)}
+                placeholder={['开始时间', '结束时间']}
+                style={{ flex: 1 }}
+                showClear
+              />
+              <Select
+                placeholder="状态"
+                multiple
+                value={selectedRunStatuses}
+                onChange={(value) => setSelectedRunStatuses(value as string[])}
+                optionList={runStatusOptions}
+                style={{ width: 140 }}
+                showClear
+              />
+            </div>
+            {filteredRunData.length > 0 ? (
               <Table 
                 columns={runColumns} 
-                dataSource={runData} 
+                dataSource={filteredRunData} 
                 pagination={false}
                 size="small"
               />
