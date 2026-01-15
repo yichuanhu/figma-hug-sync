@@ -150,6 +150,7 @@ const ProcessDevelopment = () => {
           position="bottomRight"
           render={
             <Dropdown.Menu>
+              <Dropdown.Item>打开流程</Dropdown.Item>
               <Dropdown.Item>编辑</Dropdown.Item>
               <Dropdown.Item>运行</Dropdown.Item>
               <Dropdown.Item type="danger">删除</Dropdown.Item>
