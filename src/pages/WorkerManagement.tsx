@@ -433,6 +433,7 @@ const WorkerManagement = () => {
       title: '流程机器人名称',
       dataIndex: 'name',
       key: 'name',
+      width: 200,
       render: (name: string, record: WorkerData) => (
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -451,8 +452,7 @@ const WorkerManagement = () => {
       title: '状态',
       dataIndex: 'status',
       key: 'status',
-      width: 80,
-      align: 'center' as const,
+      width: 100,
       render: (status: WorkerStatus) => {
         const config = statusConfig[status];
         return (
@@ -466,14 +466,13 @@ const WorkerManagement = () => {
       title: 'IP地址',
       dataIndex: 'ipAddress',
       key: 'ipAddress',
-      width: 130,
+      width: 120,
     },
     {
       title: '任务调度优先级',
       dataIndex: 'priority',
       key: 'priority',
       width: 120,
-      align: 'center' as const,
       render: (priority: Priority) => {
         const config = priorityConfig[priority];
         return (
@@ -488,13 +487,12 @@ const WorkerManagement = () => {
       dataIndex: 'clientVersion',
       key: 'clientVersion',
       width: 100,
-      align: 'center' as const,
     },
     {
       title: '最近连接时间',
       dataIndex: 'lastHeartbeatTime',
       key: 'lastHeartbeatTime',
-      width: 170,
+      width: 160,
       sorter: true,
     },
     {
@@ -502,7 +500,6 @@ const WorkerManagement = () => {
       dataIndex: 'receiveTasks',
       key: 'receiveTasks',
       width: 90,
-      align: 'center' as const,
       render: (receiveTasks: boolean, record: WorkerData) => {
         // 只有在线且非故障状态才允许操作
         const canOperate = record.status !== 'OFFLINE' && record.status !== 'FAULT';
@@ -523,8 +520,7 @@ const WorkerManagement = () => {
       title: '操作',
       dataIndex: 'action',
       key: 'action',
-      width: 70,
-      align: 'center' as const,
+      width: 60,
       render: (_: unknown, record: WorkerData) => (
         <Dropdown
           trigger="click"
