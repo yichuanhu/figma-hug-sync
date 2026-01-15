@@ -8,7 +8,8 @@ import {
   Tabs,
   TabPane,
   Table,
-  Empty
+  Empty,
+  Divider
 } from '@douyinfe/semi-ui';
 import { IconEditStroked, IconPlay, IconDeleteStroked } from '@douyinfe/semi-icons';
 
@@ -157,7 +158,7 @@ const ProcessDetailDrawer = ({
             <Title heading={5} style={{ margin: 0 }}>{processData.name}</Title>
             <Text type="tertiary" size="small">{processData.id}</Text>
           </div>
-          <div style={{ display: 'flex', gap: 8 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
             <Button 
               icon={<IconDeleteStroked />} 
               theme="borderless"
@@ -166,6 +167,7 @@ const ProcessDetailDrawer = ({
             />
             <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={onEdit} />
             <Button icon={<IconPlay />} theme="borderless" size="small" onClick={onRun} />
+            <Divider layout="vertical" style={{ height: 16, margin: '0 8px' }} />
           </div>
         </div>
       }
