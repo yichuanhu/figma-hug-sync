@@ -9,7 +9,8 @@ import {
   Avatar,
   Dropdown,
   Popover,
-  Checkbox
+  Checkbox,
+  Pagination
 } from '@douyinfe/semi-ui';
 import { IconSearch, IconFilter, IconPlus, IconDownload, IconMore, IconEyeOpenedStroked, IconEditStroked, IconPlay, IconDeleteStroked } from '@douyinfe/semi-icons';
 import CreateProcessModal from '@/components/CreateProcessModal';
@@ -377,30 +378,34 @@ const ProcessDevelopment = () => {
         overflow: 'hidden'
       }}>
         <Table 
-          className="process-table"
           columns={columns} 
           dataSource={filteredData}
           onRow={(record) => ({
             onClick: () => openProcessDetail(record as typeof allData[0]),
             style: { cursor: 'pointer' }
           })}
-          pagination={{
-            currentPage: 1,
-            pageSize: 10,
-            total: 46,
-            showTotal: true,
-            showSizeChanger: true,
-            formatPageText: (page) => `显示第 ${page?.currentStart} 条-第 ${page?.currentEnd} 条，共 ${page?.total} 条`,
-          }}
+          pagination={false}
         />
-        <style>{`
-          .process-table .semi-table-pagination-outer {
-            background-color: #F7F8FA;
-            padding: 12px 16px;
-            margin-top: 16px;
-            border-radius: 8px;
-          }
-        `}</style>
+      </div>
+
+      {/* 分页区域 */}
+      <div style={{ 
+        backgroundColor: '#F7F8FA', 
+        padding: '12px 16px',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginTop: 16
+      }}>
+        <Text type="tertiary" style={{ fontSize: 14 }}>
+          显示第 1 条-第 10 条，共 46 条
+        </Text>
+        <Pagination 
+          total={46} 
+          pageSize={10} 
+          currentPage={1}
+          showSizeChanger
+        />
       </div>
 
       {/* 新建流程弹窗 */}
