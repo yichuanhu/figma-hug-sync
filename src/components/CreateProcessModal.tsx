@@ -161,6 +161,9 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
           <Button theme="light" onClick={onCancel}>
             取消
           </Button>
+          <Button theme="light" type="tertiary">
+            运行
+          </Button>
           <Button htmlType="submit" theme="solid" type="primary" loading={loading}>
             创建
           </Button>
