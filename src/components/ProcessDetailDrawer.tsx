@@ -12,7 +12,8 @@ import {
   Divider,
   Tooltip,
   Modal,
-  Toast
+  Toast,
+  Checkbox
 } from '@douyinfe/semi-ui';
 import { IconEditStroked, IconPlay, IconDeleteStroked, IconExternalOpenStroked } from '@douyinfe/semi-icons';
 
@@ -51,16 +52,21 @@ const ProcessDetailDrawer = ({
 }: ProcessDetailDrawerProps) => {
   const [activeTab, setActiveTab] = useState('detail');
   const [openConfirmVisible, setOpenConfirmVisible] = useState(false);
+  const [dontRemindAgain, setDontRemindAgain] = useState(false);
 
   if (!processData) return null;
 
   const handleOpenProcess = () => {
-    setOpenConfirmVisible(true);
+    // 检查是否设置了不再提醒
+    const skipConfirm = localStorage.getItem('skipOpenProcessConfirm') === 'true';
+    if (skipConfirm) {
+      triggerClientOpen();
+    } else {
+      setOpenConfirmVisible(true);
+    }
   };
 
-  const handleConfirmOpen = () => {
-    setOpenConfirmVisible(false);
-    
+  const triggerClientOpen = () => {
     // 模拟客户端协议唤起
     const clientProtocol = `laiye-client://open-process?id=${processData.id}`;
     
@@ -90,6 +96,16 @@ const ProcessDetailDrawer = ({
     
     // 调用原有的 onOpen 回调
     onOpen?.();
+  };
+
+  const handleConfirmOpen = () => {
+    // 保存用户的不再提醒设置
+    if (dontRemindAgain) {
+      localStorage.setItem('skipOpenProcessConfirm', 'true');
+    }
+    setOpenConfirmVisible(false);
+    setDontRemindAgain(false);
+    triggerClientOpen();
   };
 
   const descriptionData = [
@@ -298,12 +314,21 @@ const ProcessDetailDrawer = ({
         title="打开流程"
         visible={openConfirmVisible}
         onOk={handleConfirmOpen}
-        onCancel={() => setOpenConfirmVisible(false)}
+        onCancel={() => {
+          setOpenConfirmVisible(false);
+          setDontRemindAgain(false);
+        }}
         okText="确定"
         cancelText="取消"
         width={400}
       >
-        <p>即将唤起客户端在本地打开流程「{processData.name}」，是否继续？</p>
+        <p style={{ marginBottom: 16 }}>即将唤起客户端在本地打开流程「{processData.name}」，是否继续？</p>
+        <Checkbox 
+          checked={dontRemindAgain} 
+          onChange={(e) => setDontRemindAgain(e.target.checked)}
+        >
+          以后不再提醒
+        </Checkbox>
       </Modal>
     </SideSheet>
   );
