@@ -391,7 +391,6 @@ const ProcessDevelopment = () => {
       {/* 分页区域 */}
       <div style={{ 
         backgroundColor: '#F7F8FA', 
-        padding: '12px 0',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
