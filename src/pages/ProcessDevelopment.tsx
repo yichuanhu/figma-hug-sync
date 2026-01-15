@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { 
   Breadcrumb, 
   Typography, 
@@ -62,6 +62,11 @@ const ProcessDevelopment = () => {
   } | null>(null);
 
   const { openProcess, OpenProcessModal } = useOpenProcess();
+
+  // 临时重置"不再提醒"设置（执行一次后可删除此代码）
+  useEffect(() => {
+    localStorage.removeItem('skipOpenProcessConfirm');
+  }, []);
 
   // 打开流程详情抽屉
   const openProcessDetail = (record: typeof processListData[0]) => {
