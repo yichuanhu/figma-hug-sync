@@ -35,11 +35,11 @@ const changerOptions = [...new Set(allChangeData.map(item => item.changer))].map
 
 // 运行记录模拟数据 (移到组件外部)
 const allRunData = [
-  { key: 1, runId: 'RUN-001', startTime: '2024-01-15 10:30:00', endTime: '2024-01-15 10:30:45', status: '成功' },
-  { key: 2, runId: 'RUN-002', startTime: '2024-01-14 15:20:00', endTime: '2024-01-14 15:21:30', status: '失败' },
-  { key: 3, runId: 'RUN-003', startTime: '2024-01-13 09:00:00', endTime: '2024-01-13 09:00:30', status: '成功' },
-  { key: 4, runId: 'RUN-004', startTime: '2024-01-12 14:00:00', endTime: '2024-01-12 14:01:15', status: '运行中' },
-  { key: 5, runId: 'RUN-005', startTime: '2024-01-11 08:30:00', endTime: '2024-01-11 08:31:00', status: '成功' },
+  { key: 1, taskId: 'TASK-001', robot: 'RPA-机器人-01', creator: '姜鹏志', createdTime: '2024-01-15 10:30:00', status: '成功' },
+  { key: 2, taskId: 'TASK-002', robot: 'RPA-机器人-02', creator: '李明', createdTime: '2024-01-14 15:20:00', status: '失败' },
+  { key: 3, taskId: 'TASK-003', robot: 'RPA-机器人-01', creator: '王芳', createdTime: '2024-01-13 09:00:00', status: '成功' },
+  { key: 4, taskId: 'TASK-004', robot: 'RPA-机器人-03', creator: '姜鹏志', createdTime: '2024-01-12 14:00:00', status: '运行中' },
+  { key: 5, taskId: 'TASK-005', robot: 'RPA-机器人-02', creator: '李明', createdTime: '2024-01-11 08:30:00', status: '成功' },
 ];
 
 // 运行状态选项
@@ -111,7 +111,7 @@ const ProcessDetailDrawer = ({
       // 时间范围筛选
       if (runTimeRange && runTimeRange[0] && runTimeRange[1]) {
         const [startDate, endDate] = runTimeRange;
-        const itemDate = new Date(item.startTime.replace(' ', 'T'));
+        const itemDate = new Date(item.createdTime.replace(' ', 'T'));
         if (itemDate < startDate || itemDate > endDate) {
           return false;
         }
@@ -187,11 +187,12 @@ const ProcessDetailDrawer = ({
 
   // 运行记录列定义
   const runColumns = [
-    { title: '运行ID', dataIndex: 'runId', key: 'runId' },
-    { title: '开始时间', dataIndex: 'startTime', key: 'startTime' },
-    { title: '结束时间', dataIndex: 'endTime', key: 'endTime' },
+    { title: '任务编号', dataIndex: 'taskId', key: 'taskId' },
+    { title: '流程机器人', dataIndex: 'robot', key: 'robot' },
+    { title: '创建者', dataIndex: 'creator', key: 'creator' },
+    { title: '创建时间', dataIndex: 'createdTime', key: 'createdTime' },
     { 
-      title: '状态', 
+      title: '任务状态', 
       dataIndex: 'status', 
       key: 'status',
       render: (status: string) => (
