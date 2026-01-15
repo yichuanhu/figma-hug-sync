@@ -12,7 +12,7 @@ import {
   Divider,
   Tooltip
 } from '@douyinfe/semi-ui';
-import { IconEditStroked, IconPlay, IconDeleteStroked, IconEyeOpenedStroked } from '@douyinfe/semi-icons';
+import { IconEditStroked, IconPlay, IconDeleteStroked, IconExternalOpenStroked } from '@douyinfe/semi-icons';
 
 const { Title, Text } = Typography;
 
@@ -164,7 +164,7 @@ const ProcessDetailDrawer = ({
           <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
             <Tooltip content="打开流程">
               <Button 
-                icon={<IconEyeOpenedStroked />} 
+                icon={<IconExternalOpenStroked />} 
                 theme="borderless"
                 size="small"
                 onClick={onOpen}
