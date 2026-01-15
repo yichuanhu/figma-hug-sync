@@ -525,6 +525,7 @@ const WorkerManagement = () => {
           trigger="click"
           position="bottomRight"
           stopPropagation={true}
+          clickToHide={true}
           render={
             <Dropdown.Menu>
               <Dropdown.Item 
