@@ -167,7 +167,7 @@ const ProcessDetailDrawer = ({
             />
             <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={onEdit} />
             <Button icon={<IconPlay />} theme="borderless" size="small" onClick={onRun} />
-            <Divider layout="vertical" style={{ height: 16, margin: '0 8px 0 8px', marginRight: 24 }} />
+            <Divider layout="vertical" style={{ height: 16, marginLeft: 24, marginRight: 24 }} />
           </div>
         </div>
       }
