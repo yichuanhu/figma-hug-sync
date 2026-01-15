@@ -13,7 +13,7 @@ import {
   Pagination,
   Tooltip
 } from '@douyinfe/semi-ui';
-import { IconSearch, IconFilter, IconPlus, IconDownload, IconMore, IconEyeOpenedStroked, IconEditStroked, IconPlay, IconDeleteStroked } from '@douyinfe/semi-icons';
+import { IconSearch, IconFilter, IconPlus, IconDownload, IconMore, IconExternalOpenStroked, IconEditStroked, IconPlay, IconDeleteStroked } from '@douyinfe/semi-icons';
 import CreateProcessModal from '@/components/CreateProcessModal';
 import ProcessDetailDrawer from '@/components/ProcessDetailDrawer';
 
@@ -208,7 +208,7 @@ const ProcessDevelopment = () => {
           position="bottomRight"
           render={
             <Dropdown.Menu>
-              <Dropdown.Item icon={<IconEyeOpenedStroked />} onClick={() => openProcessDetail(record)}>打开流程</Dropdown.Item>
+              <Dropdown.Item icon={<IconExternalOpenStroked />} onClick={() => openProcessDetail(record)}>打开流程</Dropdown.Item>
               <Dropdown.Item icon={<IconEditStroked />} onClick={handleEdit}>编辑</Dropdown.Item>
               <Dropdown.Item icon={<IconPlay />} onClick={handleRun}>运行</Dropdown.Item>
               <Dropdown.Item icon={<IconDeleteStroked />} type="danger" onClick={handleDelete}>删除</Dropdown.Item>
