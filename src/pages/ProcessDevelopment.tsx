@@ -12,8 +12,8 @@ import {
   Checkbox
 } from '@douyinfe/semi-ui';
 import { IconSearch, IconFilter, IconPlus, IconDownload, IconMore } from '@douyinfe/semi-icons';
-import { useNavigate } from 'react-router-dom';
 import CreateProcessModal from '@/components/CreateProcessModal';
+import ProcessDetailDrawer from '@/components/ProcessDetailDrawer';
 
 const { Title, Text } = Typography;
 const CheckboxGroup = Checkbox.Group;
@@ -26,7 +26,6 @@ interface FilterState {
 }
 
 const ProcessDevelopment = () => {
-  const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState('');
   const [filters, setFilters] = useState<FilterState>({
     status: [],
@@ -36,6 +35,49 @@ const ProcessDevelopment = () => {
   });
   const [filterVisible, setFilterVisible] = useState(false);
   const [createModalVisible, setCreateModalVisible] = useState(false);
+  const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
+  const [selectedProcess, setSelectedProcess] = useState<{
+    id: string;
+    name: string;
+    description: string;
+    status: string;
+    organization: string;
+    creator: string;
+    createdAt: string;
+    language?: string;
+    version?: string;
+  } | null>(null);
+
+  // 打开流程详情抽屉
+  const openProcessDetail = (record: typeof allData[0]) => {
+    const processId = `PROC-2024-${String(record.key).padStart(3, '0')}`;
+    setSelectedProcess({
+      id: processId,
+      name: record.name,
+      description: record.description,
+      status: record.status,
+      organization: record.organization,
+      creator: record.creator.name,
+      createdAt: record.updatedAt,
+      language: record.language,
+      version: record.version,
+    });
+    setDetailDrawerVisible(true);
+  };
+
+  // 操作处理函数
+  const handleEdit = () => {
+    console.log('编辑流程:', selectedProcess?.id);
+  };
+
+  const handleRun = () => {
+    console.log('运行流程:', selectedProcess?.id);
+  };
+
+  const handleDelete = () => {
+    console.log('删除流程:', selectedProcess?.id);
+    setDetailDrawerVisible(false);
+  };
 
   // 筛选选项
   const filterOptions = {
@@ -146,20 +188,24 @@ const ProcessDevelopment = () => {
       dataIndex: 'action',
       key: 'action',
       width: 60,
-      render: () => (
+      render: (_: unknown, record: typeof allData[0]) => (
         <Dropdown
           trigger="click"
           position="bottomRight"
           render={
             <Dropdown.Menu>
-              <Dropdown.Item>打开流程</Dropdown.Item>
-              <Dropdown.Item>编辑</Dropdown.Item>
-              <Dropdown.Item>运行</Dropdown.Item>
-              <Dropdown.Item type="danger">删除</Dropdown.Item>
+              <Dropdown.Item onClick={() => openProcessDetail(record)}>打开流程</Dropdown.Item>
+              <Dropdown.Item onClick={handleEdit}>编辑</Dropdown.Item>
+              <Dropdown.Item onClick={handleRun}>运行</Dropdown.Item>
+              <Dropdown.Item type="danger" onClick={handleDelete}>删除</Dropdown.Item>
             </Dropdown.Menu>
           }
         >
-          <Button icon={<IconMore />} theme="borderless" />
+          <Button 
+            icon={<IconMore />} 
+            theme="borderless" 
+            onClick={(e) => e.stopPropagation()}
+          />
         </Dropdown>
       ),
     },
@@ -328,22 +374,7 @@ const ProcessDevelopment = () => {
         columns={columns} 
         dataSource={filteredData}
         onRow={(record) => ({
-          onClick: () => {
-            const processId = `PROC-2024-${String(record?.key).padStart(3, '0')}`;
-            navigate(`/process-detail/${processId}`, { 
-              state: { 
-                processData: {
-                  id: processId,
-                  name: record?.name,
-                  description: record?.description,
-                  status: record?.status,
-                  organization: record?.organization,
-                  creator: record?.creator?.name,
-                  createdAt: record?.updatedAt,
-                }
-              } 
-            });
-          },
+          onClick: () => openProcessDetail(record as typeof allData[0]),
           style: { cursor: 'pointer' }
         })}
         pagination={{
@@ -361,6 +392,16 @@ const ProcessDevelopment = () => {
       <CreateProcessModal
         visible={createModalVisible}
         onCancel={() => setCreateModalVisible(false)}
+      />
+
+      {/* 流程详情抽屉 */}
+      <ProcessDetailDrawer
+        visible={detailDrawerVisible}
+        onClose={() => setDetailDrawerVisible(false)}
+        processData={selectedProcess}
+        onEdit={handleEdit}
+        onRun={handleRun}
+        onDelete={handleDelete}
       />
     </div>
   );
