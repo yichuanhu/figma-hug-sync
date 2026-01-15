@@ -178,7 +178,7 @@ const ProcessDetailDrawer = ({
             </Tooltip>
             <Tooltip content="删除">
               <Button 
-                icon={<IconDeleteStroked />} 
+                icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />} 
                 theme="borderless"
                 size="small"
                 onClick={onDelete}
