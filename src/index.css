@@ -12,3 +12,13 @@ body {
 .semi-layout {
   min-height: 100vh;
 }
+
+/* 表格行悬停效果 */
+.semi-table-tbody > .semi-table-row:hover > .semi-table-row-cell {
+  background-color: #F0F4FF !important;
+  transition: background-color 0.2s ease;
+}
+
+.semi-table-tbody > .semi-table-row > .semi-table-row-cell {
+  transition: background-color 0.2s ease;
+}
