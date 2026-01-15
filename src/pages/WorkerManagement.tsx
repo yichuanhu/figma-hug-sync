@@ -634,11 +634,6 @@ const WorkerManagement = () => {
         </Button>
       </div>
 
-      {/* 列表信息 */}
-      <div style={{ marginBottom: 12 }}>
-        <Text type="tertiary">流程机器人列表 (共 {filteredData.length} 条记录)</Text>
-      </div>
-
       {/* 表格 */}
       <Table 
         columns={columns} 
