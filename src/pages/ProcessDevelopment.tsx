@@ -370,23 +370,29 @@ const ProcessDevelopment = () => {
       </div>
 
       {/* 表格 */}
-      <Table 
-        columns={columns} 
-        dataSource={filteredData}
-        onRow={(record) => ({
-          onClick: () => openProcessDetail(record as typeof allData[0]),
-          style: { cursor: 'pointer' }
-        })}
-        pagination={{
-          currentPage: 1,
-          pageSize: 10,
-          total: 46,
-          showTotal: true,
-          showSizeChanger: true,
-          formatPageText: (page) => `显示第 ${page?.currentStart} 条-第 ${page?.currentEnd} 条，共 ${page?.total} 条`,
-        }}
-        style={{ backgroundColor: '#fff' }}
-      />
+      <div style={{ 
+        backgroundColor: '#fff', 
+        borderRadius: 8, 
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03)',
+        overflow: 'hidden'
+      }}>
+        <Table 
+          columns={columns} 
+          dataSource={filteredData}
+          onRow={(record) => ({
+            onClick: () => openProcessDetail(record as typeof allData[0]),
+            style: { cursor: 'pointer' }
+          })}
+          pagination={{
+            currentPage: 1,
+            pageSize: 10,
+            total: 46,
+            showTotal: true,
+            showSizeChanger: true,
+            formatPageText: (page) => `显示第 ${page?.currentStart} 条-第 ${page?.currentEnd} 条，共 ${page?.total} 条`,
+          }}
+        />
+      </div>
 
       {/* 新建流程弹窗 */}
       <CreateProcessModal
