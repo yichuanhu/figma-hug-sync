@@ -11,7 +11,8 @@ import {
   Empty,
   Divider,
   Tooltip,
-  DatePicker
+  DatePicker,
+  Select
 } from '@douyinfe/semi-ui';
 import { IconEditStroked, IconPlay, IconDeleteStroked, IconExternalOpenStroked } from '@douyinfe/semi-icons';
 
@@ -20,11 +21,17 @@ const { Title, Text } = Typography;
 // 变更历史模拟数据 (移到组件外部)
 const allChangeData = [
   { key: 1, changeTime: '2024-01-15 10:30', changeType: '发布', changer: '姜鹏志', changeContent: '发布版本 1.2.0' },
-  { key: 2, changeTime: '2024-01-14 16:00', changeType: '编辑', changer: '姜鹏志', changeContent: '修改流程描述' },
+  { key: 2, changeTime: '2024-01-14 16:00', changeType: '编辑', changer: '李明', changeContent: '修改流程描述' },
   { key: 3, changeTime: '2024-01-10 14:20', changeType: '发布', changer: '姜鹏志', changeContent: '发布版本 1.1.0' },
-  { key: 4, changeTime: '2024-01-05 09:00', changeType: '创建', changer: '姜鹏志', changeContent: '创建流程' },
-  { key: 5, changeTime: '2023-12-28 14:30', changeType: '编辑', changer: '姜鹏志', changeContent: '修改流程配置' },
+  { key: 4, changeTime: '2024-01-05 09:00', changeType: '创建', changer: '王芳', changeContent: '创建流程' },
+  { key: 5, changeTime: '2023-12-28 14:30', changeType: '编辑', changer: '李明', changeContent: '修改流程配置' },
 ];
+
+// 从数据中提取变更人选项
+const changerOptions = [...new Set(allChangeData.map(item => item.changer))].map(changer => ({
+  value: changer,
+  label: changer
+}));
 
 interface ProcessData {
   id: string;
@@ -59,18 +66,26 @@ const ProcessDetailDrawer = ({
 }: ProcessDetailDrawerProps) => {
   const [activeTab, setActiveTab] = useState('detail');
   const [changeTimeRange, setChangeTimeRange] = useState<[Date, Date] | null>(null);
+  const [selectedChangers, setSelectedChangers] = useState<string[]>([]);
 
-  // 根据时间范围筛选变更历史 (必须在 early return 之前)
+  // 根据时间范围和变更人筛选变更历史 (必须在 early return 之前)
   const filteredChangeData = useMemo(() => {
-    if (!changeTimeRange || !changeTimeRange[0] || !changeTimeRange[1]) {
-      return allChangeData;
-    }
-    const [startDate, endDate] = changeTimeRange;
     return allChangeData.filter(item => {
-      const itemDate = new Date(item.changeTime.replace(' ', 'T'));
-      return itemDate >= startDate && itemDate <= endDate;
+      // 时间范围筛选
+      if (changeTimeRange && changeTimeRange[0] && changeTimeRange[1]) {
+        const [startDate, endDate] = changeTimeRange;
+        const itemDate = new Date(item.changeTime.replace(' ', 'T'));
+        if (itemDate < startDate || itemDate > endDate) {
+          return false;
+        }
+      }
+      // 变更人筛选
+      if (selectedChangers.length > 0 && !selectedChangers.includes(item.changer)) {
+        return false;
+      }
+      return true;
     });
-  }, [changeTimeRange]);
+  }, [changeTimeRange, selectedChangers]);
 
   if (!processData) return null;
 
@@ -257,13 +272,22 @@ const ProcessDetailDrawer = ({
         
         <TabPane tab="变更历史" itemKey="changes">
           <div style={{ padding: '16px 24px' }}>
-            <div style={{ marginBottom: 16 }}>
+            <div style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
               <DatePicker
                 type="dateTimeRange"
                 value={changeTimeRange as [Date, Date] | undefined}
                 onChange={(value) => setChangeTimeRange(value as [Date, Date] | null)}
                 placeholder={['开始时间', '结束时间']}
-                style={{ width: '100%' }}
+                style={{ flex: 1 }}
+                showClear
+              />
+              <Select
+                placeholder="变更人"
+                multiple
+                value={selectedChangers}
+                onChange={(value) => setSelectedChangers(value as string[])}
+                optionList={changerOptions}
+                style={{ width: 160 }}
                 showClear
               />
             </div>
