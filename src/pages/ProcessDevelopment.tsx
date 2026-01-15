@@ -11,7 +11,7 @@ import {
   Popover,
   Checkbox
 } from '@douyinfe/semi-ui';
-import { IconSearch, IconFilter, IconPlus, IconDownload, IconMore } from '@douyinfe/semi-icons';
+import { IconSearch, IconFilter, IconPlus, IconDownload, IconMore, IconEyeOpened, IconEdit, IconPlayCircle, IconDelete } from '@douyinfe/semi-icons';
 import CreateProcessModal from '@/components/CreateProcessModal';
 import ProcessDetailDrawer from '@/components/ProcessDetailDrawer';
 
@@ -194,10 +194,10 @@ const ProcessDevelopment = () => {
           position="bottomRight"
           render={
             <Dropdown.Menu>
-              <Dropdown.Item onClick={() => openProcessDetail(record)}>打开流程</Dropdown.Item>
-              <Dropdown.Item onClick={handleEdit}>编辑</Dropdown.Item>
-              <Dropdown.Item onClick={handleRun}>运行</Dropdown.Item>
-              <Dropdown.Item type="danger" onClick={handleDelete}>删除</Dropdown.Item>
+              <Dropdown.Item icon={<IconEyeOpened />} onClick={() => openProcessDetail(record)}>打开流程</Dropdown.Item>
+              <Dropdown.Item icon={<IconEdit />} onClick={handleEdit}>编辑</Dropdown.Item>
+              <Dropdown.Item icon={<IconPlayCircle />} onClick={handleRun}>运行</Dropdown.Item>
+              <Dropdown.Item icon={<IconDelete />} type="danger" onClick={handleDelete}>删除</Dropdown.Item>
             </Dropdown.Menu>
           }
         >
