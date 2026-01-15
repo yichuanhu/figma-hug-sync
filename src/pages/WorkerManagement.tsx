@@ -7,12 +7,13 @@ import {
   Table, 
   Tag, 
   Dropdown,
-  Select,
   Switch,
-  Modal
+  Popover,
+  Checkbox
 } from '@douyinfe/semi-ui';
 import { 
   IconSearch, 
+  IconFilter,
   IconPlus, 
   IconMore, 
   IconEyeOpenedStroked, 
@@ -26,6 +27,7 @@ import WorkerKeyModal from '@/components/worker/WorkerKeyModal';
 import WorkerDeleteModal from '@/components/worker/WorkerDeleteModal';
 
 const { Title, Text } = Typography;
+const CheckboxGroup = Checkbox.Group;
 
 // 机器人状态类型
 type WorkerStatus = 'OFFLINE' | 'IDLE' | 'BUSY' | 'FAULT' | 'MAINTENANCE';
@@ -245,11 +247,41 @@ const priorityConfig: Record<Priority, { text: string; color: string }> = {
   LOW: { text: '低', color: 'grey' },
 };
 
+// 筛选选项
+const filterOptions = {
+  status: [
+    { label: '离线', value: 'OFFLINE' },
+    { label: '空闲', value: 'IDLE' },
+    { label: '忙碌', value: 'BUSY' },
+    { label: '故障', value: 'FAULT' },
+    { label: '维护中', value: 'MAINTENANCE' },
+  ],
+  syncStatus: [
+    { label: '已同步', value: 'SYNCED' },
+    { label: '待同步', value: 'PENDING' },
+  ],
+  priority: [
+    { label: '高', value: 'HIGH' },
+    { label: '中', value: 'MEDIUM' },
+    { label: '低', value: 'LOW' },
+  ],
+};
+
+interface FilterState {
+  status: string[];
+  syncStatus: string[];
+  priority: string[];
+}
+
 const WorkerManagement = () => {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [syncStatusFilter, setSyncStatusFilter] = useState<string>('all');
+  const [filters, setFilters] = useState<FilterState>({
+    status: [],
+    syncStatus: [],
+    priority: [],
+  });
+  const [filterVisible, setFilterVisible] = useState(false);
   
   // 抽屉和弹窗状态
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
@@ -258,6 +290,21 @@ const WorkerManagement = () => {
   const [keyModalWorker, setKeyModalWorker] = useState<WorkerData | null>(null);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [deleteModalWorker, setDeleteModalWorker] = useState<WorkerData | null>(null);
+
+  const handleFilterChange = (key: keyof FilterState, values: string[]) => {
+    setFilters(prev => ({ ...prev, [key]: values }));
+  };
+
+  const clearFilters = () => {
+    setFilters({
+      status: [],
+      syncStatus: [],
+      priority: [],
+    });
+  };
+
+  const hasActiveFilters = Object.values(filters).some(arr => arr.length > 0);
+  const activeFilterCount = Object.values(filters).reduce((sum, arr) => sum + arr.length, 0);
 
   // 筛选后的数据
   const filteredData = useMemo(() => {
@@ -273,17 +320,62 @@ const WorkerManagement = () => {
     }
 
     // 状态筛选
-    if (statusFilter !== 'all') {
-      data = data.filter(item => item.status === statusFilter);
+    if (filters.status.length > 0) {
+      data = data.filter(item => filters.status.includes(item.status));
     }
 
     // 同步状态筛选
-    if (syncStatusFilter !== 'all') {
-      data = data.filter(item => item.syncStatus === syncStatusFilter);
+    if (filters.syncStatus.length > 0) {
+      data = data.filter(item => filters.syncStatus.includes(item.syncStatus));
+    }
+
+    // 优先级筛选
+    if (filters.priority.length > 0) {
+      data = data.filter(item => filters.priority.includes(item.priority));
     }
 
     return data;
-  }, [searchValue, statusFilter, syncStatusFilter]);
+  }, [searchValue, filters]);
+
+  const filterContent = (
+    <div style={{ padding: 16, width: 280 }}>
+      <div style={{ marginBottom: 16 }}>
+        <Text strong style={{ display: 'block', marginBottom: 8 }}>机器人状态</Text>
+        <CheckboxGroup
+          value={filters.status}
+          onChange={(values) => handleFilterChange('status', values as string[])}
+          options={filterOptions.status}
+          direction="horizontal"
+        />
+      </div>
+      <div style={{ marginBottom: 16 }}>
+        <Text strong style={{ display: 'block', marginBottom: 8 }}>同步状态</Text>
+        <CheckboxGroup
+          value={filters.syncStatus}
+          onChange={(values) => handleFilterChange('syncStatus', values as string[])}
+          options={filterOptions.syncStatus}
+          direction="horizontal"
+        />
+      </div>
+      <div style={{ marginBottom: 16 }}>
+        <Text strong style={{ display: 'block', marginBottom: 8 }}>任务调度优先级</Text>
+        <CheckboxGroup
+          value={filters.priority}
+          onChange={(values) => handleFilterChange('priority', values as string[])}
+          options={filterOptions.priority}
+          direction="horizontal"
+        />
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--semi-color-border)', paddingTop: 12 }}>
+        <Button theme="borderless" onClick={clearFilters} disabled={!hasActiveFilters}>
+          重置
+        </Button>
+        <Button theme="solid" type="primary" onClick={() => setFilterVisible(false)}>
+          确定
+        </Button>
+      </div>
+    </div>
+  );
 
   // 打开详情抽屉
   const openDetail = (worker: WorkerData) => {
@@ -495,29 +587,6 @@ const WorkerManagement = () => {
         marginBottom: 16 
       }}>
         <div style={{ display: 'flex', gap: 12 }}>
-          <Select
-            value={statusFilter}
-            onChange={(value) => setStatusFilter(value as string)}
-            style={{ width: 140 }}
-            placeholder="流程机器人状态"
-          >
-            <Select.Option value="all">全部状态</Select.Option>
-            <Select.Option value="OFFLINE">⚪ 离线</Select.Option>
-            <Select.Option value="IDLE">🟢 空闲</Select.Option>
-            <Select.Option value="BUSY">🔵 忙碌</Select.Option>
-            <Select.Option value="FAULT">🔴 故障</Select.Option>
-            <Select.Option value="MAINTENANCE">🟡 维护中</Select.Option>
-          </Select>
-          <Select
-            value={syncStatusFilter}
-            onChange={(value) => setSyncStatusFilter(value as string)}
-            style={{ width: 140 }}
-            placeholder="属性同步状态"
-          >
-            <Select.Option value="all">全部</Select.Option>
-            <Select.Option value="SYNCED">已同步</Select.Option>
-            <Select.Option value="PENDING">待同步</Select.Option>
-          </Select>
           <Input 
             prefix={<IconSearch />}
             placeholder="搜索流程机器人名称、IP地址..."
@@ -525,6 +594,21 @@ const WorkerManagement = () => {
             value={searchValue}
             onChange={(value) => setSearchValue(value)}
           />
+          <Popover
+            visible={filterVisible}
+            onVisibleChange={setFilterVisible}
+            trigger="click"
+            position="bottomLeft"
+            content={filterContent}
+          >
+            <Button 
+              icon={<IconFilter />} 
+              theme={hasActiveFilters ? 'solid' : 'light'}
+              type={hasActiveFilters ? 'primary' : 'tertiary'}
+            >
+              筛选{activeFilterCount > 0 ? ` (${activeFilterCount})` : ''}
+            </Button>
+          </Popover>
         </div>
         <Button 
           icon={<IconPlus />} 
