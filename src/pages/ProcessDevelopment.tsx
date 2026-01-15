@@ -12,6 +12,7 @@ import {
   Checkbox
 } from '@douyinfe/semi-ui';
 import { IconSearch, IconFilter, IconPlus, IconDownload, IconMore } from '@douyinfe/semi-icons';
+import { useNavigate } from 'react-router-dom';
 import CreateProcessModal from '@/components/CreateProcessModal';
 
 const { Title, Text } = Typography;
@@ -25,6 +26,7 @@ interface FilterState {
 }
 
 const ProcessDevelopment = () => {
+  const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState('');
   const [filters, setFilters] = useState<FilterState>({
     status: [],
@@ -325,6 +327,25 @@ const ProcessDevelopment = () => {
       <Table 
         columns={columns} 
         dataSource={filteredData}
+        onRow={(record) => ({
+          onClick: () => {
+            const processId = `PROC-2024-${String(record?.key).padStart(3, '0')}`;
+            navigate(`/process-detail/${processId}`, { 
+              state: { 
+                processData: {
+                  id: processId,
+                  name: record?.name,
+                  description: record?.description,
+                  status: record?.status,
+                  organization: record?.organization,
+                  creator: record?.creator?.name,
+                  createdAt: record?.updatedAt,
+                }
+              } 
+            });
+          },
+          style: { cursor: 'pointer' }
+        })}
         pagination={{
           currentPage: 1,
           pageSize: 10,
