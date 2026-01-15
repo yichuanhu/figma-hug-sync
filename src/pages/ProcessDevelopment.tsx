@@ -64,7 +64,7 @@ const ProcessDevelopment = () => {
   const { openProcess, OpenProcessModal } = useOpenProcess();
 
   // 打开流程详情抽屉
-  const openProcessDetail = (record: typeof allData[0]) => {
+  const openProcessDetail = (record: typeof processListData[0]) => {
     const processId = `PROC-2024-${String(record.key).padStart(3, '0')}`;
     setSelectedProcess({
       id: processId,
@@ -81,8 +81,8 @@ const ProcessDevelopment = () => {
   };
 
   // 操作处理函数
-  const handleEdit = (record?: typeof allData[0]) => {
-    const processRecord = record || (selectedProcess ? allData.find(d => 
+  const handleEdit = (record?: typeof processListData[0]) => {
+    const processRecord = record || (selectedProcess ? processListData.find(d => 
       `PROC-2024-${String(d.key).padStart(3, '0')}` === selectedProcess.id
     ) : null);
     
@@ -229,7 +229,7 @@ const ProcessDevelopment = () => {
       dataIndex: 'action',
       key: 'action',
       width: 60,
-      render: (_: unknown, record: typeof allData[0]) => (
+      render: (_: unknown, record: typeof processListData[0]) => (
         <Dropdown
           trigger="click"
           position="bottomRight"
@@ -261,8 +261,8 @@ const ProcessDevelopment = () => {
     },
   ];
 
-  const allData = Array(10).fill(null).map((_, index) => ({
-    key: index,
+  const initialData = Array(10).fill(null).map((_, index) => ({
+    key: index + 1,
     name: index % 2 === 0 ? '财务报销流程' : '人事审批流程',
     description: '自动处理财务报销审批流程，包括发票识别、金额核对、审批通知',
     status: index < 5 ? '已发布' : '草稿',
@@ -276,8 +276,10 @@ const ProcessDevelopment = () => {
     updatedAt: '2022-10-31',
   }));
 
+  const [processListData, setProcessListData] = useState(initialData);
+
   const filteredData = useMemo(() => {
-    let data = allData;
+    let data = processListData;
 
     // 关键词搜索
     if (searchValue.trim()) {
@@ -307,7 +309,7 @@ const ProcessDevelopment = () => {
     }
 
     return data;
-  }, [searchValue, filters]);
+  }, [searchValue, filters, processListData]);
 
   const filterContent = (
     <div style={{ padding: 16, width: 280 }}>
@@ -430,7 +432,7 @@ const ProcessDevelopment = () => {
           columns={columns} 
           dataSource={filteredData}
           onRow={(record) => ({
-            onClick: () => openProcessDetail(record as typeof allData[0]),
+            onClick: () => openProcessDetail(record as typeof processListData[0]),
             style: { cursor: 'pointer' }
           })}
           pagination={false}
@@ -461,6 +463,24 @@ const ProcessDevelopment = () => {
         visible={createModalVisible}
         onCancel={() => setCreateModalVisible(false)}
         onSuccess={(processData) => {
+          // 将新创建的流程添加到列表第一行
+          const newProcess = {
+            key: Date.now(),
+            name: processData.name,
+            description: processData.description,
+            status: processData.status,
+            language: 'python' as const,
+            version: '1.0.0',
+            organization: processData.organization,
+            creator: {
+              name: processData.creator,
+              avatar: '',
+            },
+            updatedAt: new Date().toLocaleDateString('zh-CN').replace(/\//g, '-'),
+          };
+          setProcessListData(prev => [newProcess, ...prev]);
+          
+          // 打开详情抽屉
           setSelectedProcess({
             id: processData.id,
             name: processData.name,
