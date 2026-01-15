@@ -70,7 +70,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
       <div style={{ 
         flex: 1,
         overflow: 'auto',
-        backgroundColor: 'var(--semi-color-bg-0)',
+        backgroundColor: '#F7F8FA',
       }}>
         {children}
       </div>
