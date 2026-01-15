@@ -12,7 +12,7 @@ import {
   Divider,
   Tooltip
 } from '@douyinfe/semi-ui';
-import { IconEditStroked, IconPlay, IconDeleteStroked } from '@douyinfe/semi-icons';
+import { IconEditStroked, IconPlay, IconDeleteStroked, IconEyeOpenedStroked } from '@douyinfe/semi-icons';
 
 const { Title, Text } = Typography;
 
@@ -32,6 +32,7 @@ interface ProcessDetailDrawerProps {
   visible: boolean;
   onClose: () => void;
   processData: ProcessData | null;
+  onOpen?: () => void;
   onEdit?: () => void;
   onRun?: () => void;
   onDelete?: () => void;
@@ -41,6 +42,7 @@ const ProcessDetailDrawer = ({
   visible, 
   onClose, 
   processData,
+  onOpen,
   onEdit,
   onRun,
   onDelete 
@@ -160,6 +162,14 @@ const ProcessDetailDrawer = ({
             <Text type="tertiary" size="small">{processData.id}</Text>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <Tooltip content="打开流程">
+              <Button 
+                icon={<IconEyeOpenedStroked />} 
+                theme="borderless"
+                size="small"
+                onClick={onOpen}
+              />
+            </Tooltip>
             <Tooltip content="删除">
               <Button 
                 icon={<IconDeleteStroked />} 
