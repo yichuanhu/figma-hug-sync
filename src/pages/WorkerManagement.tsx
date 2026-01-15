@@ -635,24 +635,30 @@ const WorkerManagement = () => {
       </div>
 
       {/* 表格 */}
-      <Table 
-        columns={columns} 
-        dataSource={filteredData}
-        rowKey="id"
-        onRow={(record) => ({
-          onClick: () => openDetail(record as WorkerData),
-          style: { cursor: 'pointer' }
-        })}
-        pagination={{
-          currentPage: 1,
-          pageSize: 10,
-          total: filteredData.length,
-          showTotal: true,
-          showSizeChanger: true,
-          formatPageText: (page) => `显示第 ${page?.currentStart} 条-第 ${page?.currentEnd} 条，共 ${page?.total} 条`,
-        }}
-        style={{ backgroundColor: '#fff' }}
-      />
+      <div style={{ 
+        backgroundColor: '#fff', 
+        borderRadius: 8, 
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03)',
+        overflow: 'hidden'
+      }}>
+        <Table 
+          columns={columns} 
+          dataSource={filteredData}
+          rowKey="id"
+          onRow={(record) => ({
+            onClick: () => openDetail(record as WorkerData),
+            style: { cursor: 'pointer' }
+          })}
+          pagination={{
+            currentPage: 1,
+            pageSize: 10,
+            total: filteredData.length,
+            showTotal: true,
+            showSizeChanger: true,
+            formatPageText: (page) => `显示第 ${page?.currentStart} 条-第 ${page?.currentEnd} 条，共 ${page?.total} 条`,
+          }}
+        />
+      </div>
 
       {/* 详情抽屉 */}
       <WorkerDetailDrawer
