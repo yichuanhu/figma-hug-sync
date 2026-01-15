@@ -24,6 +24,27 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
     return `PROC-${year}-${randomNum}`;
   };
 
+  // 模拟已存在的流程名称列表（实际应从API获取）
+  const existingProcessNames = [
+    '订单自动处理流程',
+    '财务报销审批流程',
+    '人事入职流程',
+  ];
+
+  // 检查流程名称是否唯一
+  const validateProcessNameUnique = (
+    rule: unknown, 
+    value: string, 
+    callback: (error?: string) => void
+  ) => {
+    if (value && existingProcessNames.includes(value.trim())) {
+      callback('流程名称已存在，请使用其他名称');
+      return false;
+    }
+    callback();
+    return true;
+  };
+
   // 关联需求选项
   const requirementOptions = [
     { value: 'REQ-2024-001', label: 'REQ-2024-001 - 订单自动处理需求' },
@@ -106,7 +127,9 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
           placeholder="请输入流程名称"
           rules={[
             { required: true, message: '请输入流程名称' },
-            { max: 50, message: '流程名称不能超过50个字符' },
+            { min: 1, message: '流程名称长度必须在1-100字符之间' },
+            { max: 100, message: '流程名称长度必须在1-100字符之间' },
+            { validator: validateProcessNameUnique },
           ]}
         />
         
@@ -117,7 +140,8 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
           autosize={{ minRows: 3, maxRows: 6 }}
           rules={[
             { required: true, message: '请输入流程描述' },
-            { max: 500, message: '流程描述不能超过500个字符' },
+            { min: 1, message: '流程描述长度必须在1-500字符之间' },
+            { max: 500, message: '流程描述长度必须在1-500字符之间' },
           ]}
         />
 
