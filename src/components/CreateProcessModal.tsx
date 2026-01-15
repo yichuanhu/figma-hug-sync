@@ -119,7 +119,7 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
       <Form
         onSubmit={handleSubmit}
         labelPosition="top"
-        style={{ paddingTop: 20 }}
+        style={{ paddingTop: 4 }}
       >
         <Form.Input
           field="name"
