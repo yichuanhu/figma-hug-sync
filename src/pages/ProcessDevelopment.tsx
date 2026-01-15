@@ -16,6 +16,7 @@ import {
 import { IconSearch, IconFilter, IconPlus, IconDownload, IconMore, IconExternalOpenStroked, IconEditStroked, IconPlay, IconDeleteStroked } from '@douyinfe/semi-icons';
 import CreateProcessModal from '@/components/CreateProcessModal';
 import ProcessDetailDrawer from '@/components/ProcessDetailDrawer';
+import { useOpenProcess } from '@/hooks/useOpenProcess';
 
 const { Title, Text } = Typography;
 const CheckboxGroup = Checkbox.Group;
@@ -49,6 +50,8 @@ const ProcessDevelopment = () => {
     language?: string;
     version?: string;
   } | null>(null);
+
+  const { openProcess, OpenProcessModal } = useOpenProcess();
 
   // 打开流程详情抽屉
   const openProcessDetail = (record: typeof allData[0]) => {
@@ -208,7 +211,16 @@ const ProcessDevelopment = () => {
           position="bottomRight"
           render={
             <Dropdown.Menu>
-              <Dropdown.Item icon={<IconExternalOpenStroked />} onClick={() => openProcessDetail(record)}>打开流程</Dropdown.Item>
+              <Dropdown.Item 
+                icon={<IconExternalOpenStroked />} 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const processId = `PROC-2024-${String(record.key).padStart(3, '0')}`;
+                  openProcess({ id: processId, name: record.name });
+                }}
+              >
+                打开流程
+              </Dropdown.Item>
               <Dropdown.Item icon={<IconEditStroked />} onClick={handleEdit}>编辑</Dropdown.Item>
               <Dropdown.Item icon={<IconPlay />} onClick={handleRun}>运行</Dropdown.Item>
               <Dropdown.Item icon={<IconDeleteStroked />} type="danger" onClick={handleDelete}>删除</Dropdown.Item>
@@ -434,7 +446,11 @@ const ProcessDevelopment = () => {
         onEdit={handleEdit}
         onRun={handleRun}
         onDelete={handleDelete}
+        onOpen={() => selectedProcess && openProcess(selectedProcess)}
       />
+
+      {/* 打开流程确认弹窗 */}
+      <OpenProcessModal />
     </div>
   );
 };

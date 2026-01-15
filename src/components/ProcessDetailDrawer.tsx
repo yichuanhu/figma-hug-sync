@@ -10,10 +10,7 @@ import {
   Table,
   Empty,
   Divider,
-  Tooltip,
-  Modal,
-  Toast,
-  Checkbox
+  Tooltip
 } from '@douyinfe/semi-ui';
 import { IconEditStroked, IconPlay, IconDeleteStroked, IconExternalOpenStroked } from '@douyinfe/semi-icons';
 
@@ -51,62 +48,8 @@ const ProcessDetailDrawer = ({
   onDelete 
 }: ProcessDetailDrawerProps) => {
   const [activeTab, setActiveTab] = useState('detail');
-  const [openConfirmVisible, setOpenConfirmVisible] = useState(false);
-  const [dontRemindAgain, setDontRemindAgain] = useState(false);
 
   if (!processData) return null;
-
-  const handleOpenProcess = () => {
-    // 检查是否设置了不再提醒
-    const skipConfirm = localStorage.getItem('skipOpenProcessConfirm') === 'true';
-    if (skipConfirm) {
-      triggerClientOpen();
-    } else {
-      setOpenConfirmVisible(true);
-    }
-  };
-
-  const triggerClientOpen = () => {
-    // 模拟客户端协议唤起
-    const clientProtocol = `laiye-client://open-process?id=${processData.id}`;
-    
-    // 创建隐藏的 iframe 尝试唤起客户端
-    const iframe = document.createElement('iframe');
-    iframe.style.display = 'none';
-    iframe.src = clientProtocol;
-    document.body.appendChild(iframe);
-    
-    // 设置超时检测，如果无法唤起则提示用户
-    const timeout = setTimeout(() => {
-      document.body.removeChild(iframe);
-      Toast.error({
-        content: '无法唤起客户端，请确认已安装客户端程序',
-        duration: 3
-      });
-    }, 2000);
-    
-    // 监听页面失焦（说明客户端被成功唤起）
-    const handleBlur = () => {
-      clearTimeout(timeout);
-      document.body.removeChild(iframe);
-      window.removeEventListener('blur', handleBlur);
-    };
-    
-    window.addEventListener('blur', handleBlur);
-    
-    // 调用原有的 onOpen 回调
-    onOpen?.();
-  };
-
-  const handleConfirmOpen = () => {
-    // 保存用户的不再提醒设置
-    if (dontRemindAgain) {
-      localStorage.setItem('skipOpenProcessConfirm', 'true');
-    }
-    setOpenConfirmVisible(false);
-    setDontRemindAgain(false);
-    triggerClientOpen();
-  };
 
   const descriptionData = [
     { key: '流程ID', value: processData.id },
@@ -224,7 +167,7 @@ const ProcessDetailDrawer = ({
                 icon={<IconExternalOpenStroked />} 
                 theme="borderless"
                 size="small"
-                onClick={handleOpenProcess}
+                onClick={onOpen}
               />
             </Tooltip>
             <Tooltip content="编辑">
@@ -309,38 +252,6 @@ const ProcessDetailDrawer = ({
           </div>
         </TabPane>
       </Tabs>
-
-      <Modal
-        title="打开流程"
-        visible={openConfirmVisible}
-        onOk={handleConfirmOpen}
-        onCancel={() => {
-          setOpenConfirmVisible(false);
-          setDontRemindAgain(false);
-        }}
-        okText="确定"
-        cancelText="取消"
-        width={400}
-        footer={
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Checkbox 
-              checked={dontRemindAgain} 
-              onChange={(e) => setDontRemindAgain(e.target.checked)}
-            >
-              以后不再提醒
-            </Checkbox>
-            <div style={{ display: 'flex', gap: 8 }}>
-              <Button onClick={() => {
-                setOpenConfirmVisible(false);
-                setDontRemindAgain(false);
-              }}>取消</Button>
-              <Button theme="solid" onClick={handleConfirmOpen}>确定</Button>
-            </div>
-          </div>
-        }
-      >
-        <p>即将唤起客户端在本地打开流程「{processData.name}」，是否继续？</p>
-      </Modal>
     </SideSheet>
   );
 };
