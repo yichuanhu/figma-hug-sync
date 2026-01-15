@@ -9,7 +9,8 @@ import {
   Dropdown,
   Switch,
   Popover,
-  Checkbox
+  Checkbox,
+  Pagination
 } from '@douyinfe/semi-ui';
 import { 
   IconSearch, 
@@ -649,14 +650,26 @@ const WorkerManagement = () => {
             onClick: () => openDetail(record as WorkerData),
             style: { cursor: 'pointer' }
           })}
-          pagination={{
-            currentPage: 1,
-            pageSize: 10,
-            total: filteredData.length,
-            showTotal: true,
-            showSizeChanger: true,
-            formatPageText: (page) => `显示第 ${page?.currentStart} 条-第 ${page?.currentEnd} 条，共 ${page?.total} 条`,
-          }}
+          pagination={false}
+        />
+      </div>
+
+      {/* 分页区域 */}
+      <div style={{ 
+        backgroundColor: '#F7F8FA', 
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginTop: 16
+      }}>
+        <Text type="tertiary" style={{ fontSize: 14 }}>
+          显示第 1 条-第 {Math.min(10, filteredData.length)} 条，共 {filteredData.length} 条
+        </Text>
+        <Pagination 
+          total={filteredData.length} 
+          pageSize={10} 
+          currentPage={1}
+          showSizeChanger
         />
       </div>
 
