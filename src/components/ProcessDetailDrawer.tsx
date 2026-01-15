@@ -164,15 +164,9 @@ const ProcessDetailDrawer = ({
               theme="borderless"
               size="small"
               onClick={onDelete}
-            >
-              删除
-            </Button>
-            <Button icon={<IconEdit />} theme="light" size="small" onClick={onEdit}>
-              编辑
-            </Button>
-            <Button icon={<IconPlay />} theme="solid" type="primary" size="small" onClick={onRun}>
-              运行
-            </Button>
+            />
+            <Button icon={<IconEdit />} theme="light" size="small" onClick={onEdit} />
+            <Button icon={<IconPlay />} theme="solid" type="primary" size="small" onClick={onRun} />
           </div>
         </div>
       }
