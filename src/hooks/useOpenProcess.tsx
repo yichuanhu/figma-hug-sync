@@ -74,6 +74,7 @@ export const useOpenProcess = () => {
       visible={confirmVisible}
       onCancel={handleCancel}
       width={400}
+      motion={false}
       footer={
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Checkbox 
