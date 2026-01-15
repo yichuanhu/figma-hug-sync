@@ -524,30 +524,43 @@ const WorkerManagement = () => {
         <Dropdown
           trigger="click"
           position="bottomRight"
+          stopPropagation={true}
           render={
             <Dropdown.Menu>
               <Dropdown.Item 
                 icon={<IconEyeOpenedStroked />} 
-                onClick={() => openDetail(record)}
+                onClick={(e) => {
+                  e?.stopPropagation?.();
+                  openDetail(record);
+                }}
               >
                 查看详情
               </Dropdown.Item>
               <Dropdown.Item 
                 icon={<IconKey />} 
-                onClick={() => openKeyModal(record)}
+                onClick={(e) => {
+                  e?.stopPropagation?.();
+                  openKeyModal(record);
+                }}
               >
                 查看密钥
               </Dropdown.Item>
               <Dropdown.Item 
                 icon={<IconEditStroked />} 
-                onClick={() => handleEdit(record)}
+                onClick={(e) => {
+                  e?.stopPropagation?.();
+                  handleEdit(record);
+                }}
               >
                 编辑
               </Dropdown.Item>
               <Dropdown.Item 
                 icon={<IconDeleteStroked />} 
                 type="danger" 
-                onClick={() => openDeleteModal(record)}
+                onClick={(e) => {
+                  e?.stopPropagation?.();
+                  openDeleteModal(record);
+                }}
               >
                 删除
               </Dropdown.Item>
