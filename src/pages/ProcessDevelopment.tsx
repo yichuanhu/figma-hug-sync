@@ -460,6 +460,18 @@ const ProcessDevelopment = () => {
       <CreateProcessModal
         visible={createModalVisible}
         onCancel={() => setCreateModalVisible(false)}
+        onSuccess={(processData) => {
+          setSelectedProcess({
+            id: processData.id,
+            name: processData.name,
+            description: processData.description,
+            status: processData.status,
+            organization: processData.organization,
+            creator: processData.creator,
+            createdAt: processData.createdAt,
+          });
+          setDetailDrawerVisible(true);
+        }}
       />
 
       {/* 编辑流程弹窗 */}

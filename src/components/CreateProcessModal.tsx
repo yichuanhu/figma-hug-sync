@@ -7,10 +7,20 @@ import {
 } from '@douyinfe/semi-ui';
 import { useNavigate } from 'react-router-dom';
 
+interface ProcessData {
+  id: string;
+  name: string;
+  description: string;
+  status: string;
+  organization: string;
+  creator: string;
+  createdAt: string;
+}
+
 interface CreateProcessModalProps {
   visible: boolean;
   onCancel: () => void;
-  onSuccess?: () => void;
+  onSuccess?: (processData: ProcessData) => void;
 }
 
 const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModalProps) => {
@@ -95,7 +105,7 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
 
       Toast.success('流程创建成功！');
       onCancel();
-      onSuccess?.();
+      onSuccess?.(processData);
     } catch (error) {
       Toast.error('创建失败，请重试');
     } finally {
