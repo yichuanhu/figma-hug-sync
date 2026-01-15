@@ -170,6 +170,12 @@ const ProcessDetailDrawer = ({
                 onClick={onOpen}
               />
             </Tooltip>
+            <Tooltip content="编辑">
+              <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={onEdit} />
+            </Tooltip>
+            <Tooltip content="运行">
+              <Button icon={<IconPlay />} theme="borderless" size="small" onClick={onRun} />
+            </Tooltip>
             <Tooltip content="删除">
               <Button 
                 icon={<IconDeleteStroked />} 
@@ -177,12 +183,6 @@ const ProcessDetailDrawer = ({
                 size="small"
                 onClick={onDelete}
               />
-            </Tooltip>
-            <Tooltip content="编辑">
-              <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={onEdit} />
-            </Tooltip>
-            <Tooltip content="运行">
-              <Button icon={<IconPlay />} theme="borderless" size="small" onClick={onRun} />
             </Tooltip>
             <Divider layout="vertical" style={{ height: 16, margin: '0 8px 0 8px', marginRight: 24 }} />
           </div>
