@@ -160,13 +160,12 @@ const ProcessDetailDrawer = ({
           <div style={{ display: 'flex', gap: 8 }}>
             <Button 
               icon={<IconDeleteStroked />} 
-              type="danger" 
               theme="borderless"
               size="small"
               onClick={onDelete}
             />
-            <Button icon={<IconEditStroked />} theme="light" size="small" onClick={onEdit} />
-            <Button icon={<IconPlay />} theme="solid" type="primary" size="small" onClick={onRun} />
+            <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={onEdit} />
+            <Button icon={<IconPlay />} theme="borderless" size="small" onClick={onRun} />
           </div>
         </div>
       }
