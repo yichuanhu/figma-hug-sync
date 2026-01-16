@@ -299,7 +299,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
               display: 'flex',
               alignItems: 'center',
               cursor: 'pointer',
-              padding: isChild ? '10px 16px 10px 28px' : '10px 12px',
+              padding: '10px 12px',
               borderRadius: 6,
               color: 'var(--semi-color-text-0)',
             }}
@@ -373,7 +373,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
               display: 'flex',
               alignItems: 'center',
               cursor: 'pointer',
-              padding: isChild ? '10px 12px 10px 44px' : '10px 12px',
+              padding: '10px 12px',
               borderRadius: 6,
               color: 'var(--semi-color-text-0)',
             }}
