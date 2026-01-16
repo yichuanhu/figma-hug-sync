@@ -556,7 +556,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
           overflow: 'hidden',
           backgroundColor: '#fff',
           borderRadius: 8,
-          margin: '8px 0 8px 16px',
+          margin: '8px 0 8px 8px',
           boxShadow: '0 0 1px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.04)',
         }}>
           {/* 菜单标题栏 */}
