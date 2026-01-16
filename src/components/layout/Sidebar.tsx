@@ -291,7 +291,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     const isSelected = selectedKey === item.key;
 
     return (
-      <div key={item.key} style={{ marginBottom: 2 }}>
+      <div key={item.key} style={{ marginBottom: 4 }}>
         <div style={{ padding: '0 8px' }}>
           <div
             className={`sidebar-menu-item ${isSelected ? 'selected' : ''}`}
@@ -365,7 +365,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     return (
       <div 
         key={item.key} 
-        style={{ marginBottom: isChild ? 0 : 2 }}
+        style={{ marginBottom: isChild ? 0 : 4 }}
       >
         <div style={{ padding: '0 8px' }}>
           <div
