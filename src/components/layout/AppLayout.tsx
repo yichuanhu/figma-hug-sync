@@ -40,7 +40,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
         flexDirection: 'column',
       }}>
         <div style={{
-          backgroundColor: '#fff',
+          backgroundColor: 'var(--semi-color-bg-0)',
           borderRadius: 8,
           boxShadow: '0 0 1px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.04)',
           height: '100%',
