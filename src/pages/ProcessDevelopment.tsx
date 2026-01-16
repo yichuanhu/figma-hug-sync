@@ -14,7 +14,7 @@ import {
   Pagination,
   Tooltip
 } from '@douyinfe/semi-ui';
-import { IconSearch, IconFilter, IconPlus, IconMore, IconExternalOpenStroked, IconEditStroked, IconPlay, IconDeleteStroked } from '@douyinfe/semi-icons';
+import { IconSearch, IconFilter, IconPlus, IconDownload, IconMore, IconExternalOpenStroked, IconEditStroked, IconPlay, IconDeleteStroked } from '@douyinfe/semi-icons';
 import CreateProcessModal from '@/components/CreateProcessModal';
 import EditProcessModal from '@/components/EditProcessModal';
 import ProcessDetailDrawer from '@/components/ProcessDetailDrawer';
@@ -150,14 +150,14 @@ const ProcessDevelopment = () => {
       title: '描述',
       dataIndex: 'description',
       key: 'description',
-      width: 240,
+      width: 280,
       render: (description: string) => (
         <Tooltip content={description} position="top">
           <div style={{
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
-            maxWidth: 220
+            maxWidth: 260
           }}>
             {description}
           </div>
@@ -183,6 +183,17 @@ const ProcessDevelopment = () => {
       render: (language: string) => (
         <Tag color={language === 'python' ? 'blue' : 'cyan'} type="light">
           {language}
+        </Tag>
+      ),
+    },
+    {
+      title: '版本',
+      dataIndex: 'version',
+      key: 'version',
+      width: 80,
+      render: (version: string) => (
+        <Tag color="grey" type="ghost">
+          {version}
         </Tag>
       ),
     },
@@ -214,7 +225,7 @@ const ProcessDevelopment = () => {
       ),
     },
     {
-      title: '创建日期',
+      title: '最后修改',
       dataIndex: 'updatedAt',
       key: 'updatedAt',
       width: 120,
@@ -357,18 +368,18 @@ const ProcessDevelopment = () => {
   );
 
   return (
-    <div style={{ padding: '16px 24px', minHeight: '100%' }}>
+    <div style={{ padding: '20px 24px', minHeight: '100%' }}>
       {/* 面包屑 */}
-      <Breadcrumb style={{ marginBottom: 20 }}>
+      <Breadcrumb style={{ marginBottom: 16 }}>
         <Breadcrumb.Item onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>首页</Breadcrumb.Item>
         <Breadcrumb.Item>开发中心</Breadcrumb.Item>
-        <Breadcrumb.Item>流程开发</Breadcrumb.Item>
+        <Breadcrumb.Item>自动化流程</Breadcrumb.Item>
       </Breadcrumb>
 
       {/* 标题区域 */}
       <div style={{ marginBottom: 24 }}>
-        <Title heading={2} style={{ marginBottom: 8, fontWeight: 600 }}>流程开发</Title>
-        <Text type="tertiary" style={{ fontSize: 14 }}>创建和管理自动化流程，配置流程资源和版本</Text>
+        <Title heading={3} style={{ marginBottom: 8 }}>自动化流程</Title>
+        <Text type="tertiary">创建和管理自动化流程，配置流程资源和版本</Text>
       </div>
 
       {/* 操作栏 */}
@@ -381,8 +392,8 @@ const ProcessDevelopment = () => {
         <div style={{ display: 'flex', gap: 12 }}>
           <Input 
             prefix={<IconSearch />}
-            placeholder="搜索流程"
-            style={{ width: 200 }}
+            placeholder="搜索流程名称"
+            style={{ width: 240 }}
             value={searchValue}
             onChange={(value) => setSearchValue(value)}
           />
@@ -402,20 +413,26 @@ const ProcessDevelopment = () => {
             </Button>
           </Popover>
         </div>
-        <Button 
-          icon={<IconPlus />} 
-          theme="solid" 
-          type="primary"
-          onClick={() => setCreateModalVisible(true)}
-        >
-          新建流程
-        </Button>
+        <div style={{ display: 'flex', gap: 12 }}>
+          <Button icon={<IconDownload />} theme="light">
+            导入流程
+          </Button>
+          <Button 
+            icon={<IconPlus />} 
+            theme="solid" 
+            type="primary"
+            onClick={() => setCreateModalVisible(true)}
+          >
+            新建流程
+          </Button>
+        </div>
       </div>
 
       {/* 表格 */}
       <div style={{ 
         backgroundColor: '#fff', 
-        borderRadius: 8,
+        borderRadius: 8, 
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03)',
         overflow: 'hidden'
       }}>
         <Table 
