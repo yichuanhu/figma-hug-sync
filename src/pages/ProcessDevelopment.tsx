@@ -371,12 +371,12 @@ const ProcessDevelopment = () => {
       <Breadcrumb style={{ marginBottom: 16 }}>
         <Breadcrumb.Item>首页</Breadcrumb.Item>
         <Breadcrumb.Item>开发中心</Breadcrumb.Item>
-        <Breadcrumb.Item>流程开发</Breadcrumb.Item>
+        <Breadcrumb.Item>自动化流程</Breadcrumb.Item>
       </Breadcrumb>
 
       {/* 标题区域 */}
       <div style={{ marginBottom: 24 }}>
-        <Title heading={3} style={{ marginBottom: 8 }}>流程开发</Title>
+        <Title heading={3} style={{ marginBottom: 8 }}>自动化流程</Title>
         <Text type="tertiary">创建和管理自动化流程，配置流程资源和版本</Text>
       </div>
 
