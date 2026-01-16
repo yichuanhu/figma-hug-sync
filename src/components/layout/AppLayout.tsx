@@ -45,7 +45,6 @@ const AppLayout = ({ children }: AppLayoutProps) => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            borderRight: collapsed ? 'none' : '1px solid var(--semi-color-border)',
           }}>
             <img 
               src={laiyeLogo} 
