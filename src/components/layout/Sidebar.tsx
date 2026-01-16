@@ -487,7 +487,6 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
           alignItems: 'center',
           paddingTop: 8,
           paddingBottom: 8,
-          borderRight: collapsed ? 'none' : '1px solid var(--semi-color-border)',
           overflow: 'visible',
         }}
       >
