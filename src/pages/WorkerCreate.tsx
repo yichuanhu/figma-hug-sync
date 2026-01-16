@@ -74,9 +74,9 @@ const WorkerCreate = () => {
     <AppLayout>
       <div style={{ padding: '20px 24px', minHeight: '100%' }}>
         <Breadcrumb style={{ marginBottom: 16 }}>
-          <Breadcrumb.Item>首页</Breadcrumb.Item>
+          <Breadcrumb.Item onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>首页</Breadcrumb.Item>
           <Breadcrumb.Item>开发中心</Breadcrumb.Item>
-          <Breadcrumb.Item>流程机器人管理</Breadcrumb.Item>
+          <Breadcrumb.Item onClick={() => navigate('/worker-management')} style={{ cursor: 'pointer' }}>流程机器人管理</Breadcrumb.Item>
           <Breadcrumb.Item>新建流程机器人</Breadcrumb.Item>
         </Breadcrumb>
 
