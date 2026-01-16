@@ -530,8 +530,59 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
 
       {/* 右侧详细菜单 - 仅在未收起时显示 */}
       {!collapsed && (
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflowY: 'auto', paddingTop: 8, paddingBottom: 8 }}>
-          {getCurrentCenterMenu().map(item => renderDetailMenuItem(item))}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+          {/* 菜单标题栏 */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '12px 12px 12px 8px',
+            flexShrink: 0,
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div style={{ 
+                width: 20, 
+                height: 20,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'var(--semi-color-text-2)',
+              }}>
+                {centerMenuItems.find(c => c.key === activeCenterKey)?.icon}
+              </div>
+              <span style={{
+                fontSize: 14,
+                fontWeight: 600,
+                color: 'var(--semi-color-text-0)',
+              }}>
+                {activeCenterKey}
+              </span>
+            </div>
+            <div
+              className="sidebar-icon-btn"
+              style={{
+                minWidth: 32,
+                width: 32,
+                height: 32,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                borderRadius: 6,
+                padding: 7,
+                flexShrink: 0,
+              }}
+              onClick={onToggleCollapse}
+              title="收起侧边栏"
+            >
+              <img src={layoutIcon} alt="collapse" style={{ width: 18, height: 18 }} />
+            </div>
+          </div>
+          
+          {/* 菜单列表 */}
+          <div style={{ flex: 1, overflowY: 'auto', paddingBottom: 8 }}>
+            {getCurrentCenterMenu().map(item => renderDetailMenuItem(item))}
+          </div>
         </div>
       )}
     </div>
