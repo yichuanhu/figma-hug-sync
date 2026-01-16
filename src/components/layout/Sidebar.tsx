@@ -49,10 +49,10 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
   // 中心级别菜单（左侧图标栏）
   const centerMenuItems: MenuItem[] = [
     { key: '首页', label: '首页', icon: <HomeIcon size={20} />, path: '/' },
-    { key: '需求中心', label: '需求中心', icon: <RequirementsIcon size={20} /> },
     { key: '开发中心', label: '开发中心', icon: <DevelopmentIcon size={20} /> },
     { key: '调度中心', label: '调度中心', icon: <SchedulingIcon size={20} /> },
     { key: '运营中心', label: '运营中心', icon: <BusinessIcon size={20} /> },
+    { key: '需求中心', label: '需求中心', icon: <RequirementsIcon size={20} /> },
     { key: '运维中心', label: '运维中心', icon: <OperationsIcon size={20} /> },
   ];
 
