@@ -13,7 +13,8 @@ import {
   Checkbox,
   Pagination,
   Tooltip,
-  Empty
+  Empty,
+  Skeleton
 } from '@douyinfe/semi-ui';
 import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-illustrations';
 import { IconSearch, IconFilter, IconPlus, IconDownload, IconMore, IconExternalOpenStroked, IconEditStroked, IconPlay, IconDeleteStroked } from '@douyinfe/semi-icons';
@@ -145,6 +146,81 @@ const ProcessDevelopment = () => {
 
   const hasActiveFilters = Object.values(filters).some(arr => arr.length > 0);
   const activeFilterCount = Object.values(filters).reduce((sum, arr) => sum + arr.length, 0);
+
+  // 骨架屏数据
+  const skeletonData = Array(8).fill(null).map((_, index) => ({ key: `skeleton-${index}` }));
+
+  // 骨架屏列配置
+  const skeletonColumns = [
+    {
+      title: '流程名称',
+      dataIndex: 'name',
+      key: 'name',
+      width: 120,
+      render: () => <Skeleton.Paragraph rows={1} style={{ width: 80 }} />,
+    },
+    {
+      title: '描述',
+      dataIndex: 'description',
+      key: 'description',
+      width: 280,
+      render: () => <Skeleton.Paragraph rows={1} style={{ width: 200 }} />,
+    },
+    {
+      title: '状态',
+      dataIndex: 'status',
+      key: 'status',
+      width: 80,
+      render: () => <Skeleton.Paragraph rows={1} style={{ width: 50 }} />,
+    },
+    {
+      title: '语言',
+      dataIndex: 'language',
+      key: 'language',
+      width: 100,
+      render: () => <Skeleton.Paragraph rows={1} style={{ width: 60 }} />,
+    },
+    {
+      title: '版本',
+      dataIndex: 'version',
+      key: 'version',
+      width: 80,
+      render: () => <Skeleton.Paragraph rows={1} style={{ width: 40 }} />,
+    },
+    {
+      title: '归属组织',
+      dataIndex: 'organization',
+      key: 'organization',
+      width: 100,
+      render: () => <Skeleton.Paragraph rows={1} style={{ width: 60 }} />,
+    },
+    {
+      title: '创建者',
+      dataIndex: 'creator',
+      key: 'creator',
+      width: 120,
+      render: () => (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <Skeleton.Avatar size="small" />
+          <Skeleton.Paragraph rows={1} style={{ width: 50 }} />
+        </div>
+      ),
+    },
+    {
+      title: '最后修改',
+      dataIndex: 'updatedAt',
+      key: 'updatedAt',
+      width: 120,
+      render: () => <Skeleton.Paragraph rows={1} style={{ width: 70 }} />,
+    },
+    {
+      title: '操作',
+      dataIndex: 'action',
+      key: 'action',
+      width: 60,
+      render: () => <Skeleton.Paragraph rows={1} style={{ width: 24 }} />,
+    },
+  ];
 
   const columns = [
     {
@@ -449,29 +525,41 @@ const ProcessDevelopment = () => {
         padding: '0 24px',
         minHeight: 0,
       }}>
-        <Table 
-          columns={columns} 
-          dataSource={filteredData}
-          loading={loading}
-          empty={
-            <Empty
-              image={<IllustrationNoResult style={{ width: 150, height: 150 }} />}
-              darkModeImage={<IllustrationNoResultDark style={{ width: 150, height: 150 }} />}
-              title="暂无数据"
-              description={hasActiveFilters || searchValue ? "没有找到匹配的流程，请尝试调整筛选条件" : "还没有创建任何流程，点击「新建流程」开始"}
-            />
-          }
-          onRow={(record) => ({
-            onClick: () => openProcessDetail(record as typeof processListData[0]),
-            style: { cursor: 'pointer' }
-          })}
-          pagination={false}
-          scroll={{ y: 'calc(100vh - 320px)' }}
-          style={{ 
-            borderRadius: 8, 
-            overflow: 'hidden',
-          }}
-        />
+        {loading ? (
+          <Table 
+            columns={skeletonColumns} 
+            dataSource={skeletonData}
+            pagination={false}
+            scroll={{ y: 'calc(100vh - 320px)' }}
+            style={{ 
+              borderRadius: 8, 
+              overflow: 'hidden',
+            }}
+          />
+        ) : (
+          <Table 
+            columns={columns} 
+            dataSource={filteredData}
+            empty={
+              <Empty
+                image={<IllustrationNoResult style={{ width: 150, height: 150 }} />}
+                darkModeImage={<IllustrationNoResultDark style={{ width: 150, height: 150 }} />}
+                title="暂无数据"
+                description={hasActiveFilters || searchValue ? "没有找到匹配的流程，请尝试调整筛选条件" : "还没有创建任何流程，点击「新建流程」开始"}
+              />
+            }
+            onRow={(record) => ({
+              onClick: () => openProcessDetail(record as typeof processListData[0]),
+              style: { cursor: 'pointer' }
+            })}
+            pagination={false}
+            scroll={{ y: 'calc(100vh - 320px)' }}
+            style={{ 
+              borderRadius: 8, 
+              overflow: 'hidden',
+            }}
+          />
+        )}
       </div>
 
       {/* 分页区域 */}
