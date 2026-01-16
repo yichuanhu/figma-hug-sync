@@ -381,86 +381,96 @@ const ProcessDevelopment = () => {
         </Breadcrumb>
       </div>
 
-      {/* 可滚动内容区域 */}
-      <div style={{ flex: 1, overflow: 'auto', padding: '20px 24px' }}>
-
       {/* 标题区域 */}
-      <div style={{ marginBottom: 24 }}>
-        <Title heading={3} style={{ marginBottom: 8 }}>自动化流程</Title>
-        <Text type="tertiary">创建和管理自动化流程，配置流程资源和版本</Text>
-      </div>
+      <div style={{ padding: '20px 24px 0', flexShrink: 0 }}>
+        <div style={{ marginBottom: 24 }}>
+          <Title heading={3} style={{ marginBottom: 8 }}>自动化流程</Title>
+          <Text type="tertiary">创建和管理自动化流程，配置流程资源和版本</Text>
+        </div>
 
-      {/* 操作栏 */}
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center',
-        marginBottom: 16 
-      }}>
-        <div style={{ display: 'flex', gap: 12 }}>
-          <Input 
-            prefix={<IconSearch />}
-            placeholder="搜索流程名称"
-            style={{ width: 240 }}
-            value={searchValue}
-            onChange={(value) => setSearchValue(value)}
-          />
-          <Popover
-            visible={filterVisible}
-            onVisibleChange={setFilterVisible}
-            trigger="click"
-            position="bottomLeft"
-            content={filterContent}
-          >
-            <Button 
-              icon={<IconFilter />} 
-              theme={hasActiveFilters ? 'solid' : 'light'}
-              type={hasActiveFilters ? 'primary' : 'tertiary'}
+        {/* 操作栏 */}
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center',
+          marginBottom: 16 
+        }}>
+          <div style={{ display: 'flex', gap: 12 }}>
+            <Input 
+              prefix={<IconSearch />}
+              placeholder="搜索流程名称"
+              style={{ width: 240 }}
+              value={searchValue}
+              onChange={(value) => setSearchValue(value)}
+            />
+            <Popover
+              visible={filterVisible}
+              onVisibleChange={setFilterVisible}
+              trigger="click"
+              position="bottomLeft"
+              content={filterContent}
             >
-              筛选{activeFilterCount > 0 ? ` (${activeFilterCount})` : ''}
+              <Button 
+                icon={<IconFilter />} 
+                theme={hasActiveFilters ? 'solid' : 'light'}
+                type={hasActiveFilters ? 'primary' : 'tertiary'}
+              >
+                筛选{activeFilterCount > 0 ? ` (${activeFilterCount})` : ''}
+              </Button>
+            </Popover>
+          </div>
+          <div style={{ display: 'flex', gap: 12 }}>
+            <Button icon={<IconDownload />} theme="light">
+              导入流程
             </Button>
-          </Popover>
-        </div>
-        <div style={{ display: 'flex', gap: 12 }}>
-          <Button icon={<IconDownload />} theme="light">
-            导入流程
-          </Button>
-          <Button 
-            icon={<IconPlus />} 
-            theme="solid" 
-            type="primary"
-            onClick={() => setCreateModalVisible(true)}
-          >
-            新建流程
-          </Button>
+            <Button 
+              icon={<IconPlus />} 
+              theme="solid" 
+              type="primary"
+              onClick={() => setCreateModalVisible(true)}
+            >
+              新建流程
+            </Button>
+          </div>
         </div>
       </div>
 
-      {/* 表格 */}
+      {/* 表格区域 - 仅表格滚动 */}
       <div style={{ 
-        backgroundColor: '#fff', 
-        borderRadius: 8, 
-        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03)',
-        overflow: 'hidden'
+        flex: 1, 
+        overflow: 'hidden', 
+        padding: '0 24px',
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: 0,
       }}>
-        <Table 
-          columns={columns} 
-          dataSource={filteredData}
-          onRow={(record) => ({
-            onClick: () => openProcessDetail(record as typeof processListData[0]),
-            style: { cursor: 'pointer' }
-          })}
-          pagination={false}
-        />
+        <div style={{ 
+          flex: 1,
+          backgroundColor: '#fff', 
+          borderRadius: 8, 
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03)',
+          overflow: 'auto',
+          minHeight: 0,
+        }}>
+          <Table 
+            columns={columns} 
+            dataSource={filteredData}
+            onRow={(record) => ({
+              onClick: () => openProcessDetail(record as typeof processListData[0]),
+              style: { cursor: 'pointer' }
+            })}
+            pagination={false}
+          />
+        </div>
       </div>
 
       {/* 分页区域 */}
       <div style={{ 
-        backgroundColor: '#F7F8FA', 
+        padding: '16px 24px',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginTop: 16
+        flexShrink: 0,
       }}>
         <Text type="tertiary" style={{ fontSize: 14 }}>
           显示第 1 条-第 10 条，共 46 条
@@ -471,8 +481,6 @@ const ProcessDevelopment = () => {
           currentPage={1}
           showSizeChanger
         />
-      </div>
-
       </div>
 
       {/* 新建流程弹窗 */}
