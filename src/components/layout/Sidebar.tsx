@@ -361,7 +361,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     return (
       <div 
         key={item.key} 
-        style={{ marginBottom: 4 }}
+        style={{ marginBottom: isChild ? 0 : 2 }}
       >
         <div style={{ padding: '0 8px' }}>
           <div
@@ -371,7 +371,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
               alignItems: 'center',
               cursor: 'pointer',
               height: 36,
-              padding: isChild ? '0 16px 0 28px' : '0 8px',
+              padding: isChild ? '0 12px 0 44px' : '0 12px',
               borderRadius: 6,
               color: 'var(--semi-color-text-0)',
             }}
@@ -390,9 +390,10 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  width: 20,
+                  width: 18,
                   marginRight: 8,
-                  color: 'var(--semi-color-text-2)' 
+                  color: 'var(--semi-color-text-2)',
+                  fontSize: 16,
                 }}
               >
                 {item.icon}
@@ -413,7 +414,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
             
             {/* 展开箭头 */}
             {hasChildren && (
-              <span style={{ color: 'var(--semi-color-text-2)' }}>
+              <span style={{ color: 'var(--semi-color-text-3)', display: 'flex', alignItems: 'center' }}>
                 {isExpanded ? <IconChevronUp size="small" /> : <IconChevronDown size="small" />}
               </span>
             )}
@@ -422,7 +423,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
 
         {/* 展开的子菜单 */}
         {hasChildren && isExpanded && (
-          <div>
+          <div style={{ marginTop: 2 }}>
             {item.children!.map(child => renderDetailMenuItem(child, true))}
           </div>
         )}
@@ -558,13 +559,13 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            padding: '12px 12px 12px 8px',
+            padding: '12px 8px 12px 16px',
             flexShrink: 0,
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <div style={{ 
-                width: 20, 
-                height: 20,
+                width: 18, 
+                height: 18,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -583,15 +584,13 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
             <div
               className="sidebar-icon-btn"
               style={{
-                minWidth: 32,
-                width: 32,
-                height: 32,
+                width: 28,
+                height: 28,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 cursor: 'pointer',
                 borderRadius: 6,
-                padding: 7,
                 flexShrink: 0,
               }}
               onClick={onToggleCollapse}
