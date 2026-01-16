@@ -41,7 +41,8 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [expandedKeys, setExpandedKeys] = useState<string[]>(['开发任务管理']);
-  const [hoveredKey, setHoveredKey] = useState<string | null>(null);
+  const [hoveredCenterKey, setHoveredCenterKey] = useState<string | null>(null);
+  const [floatingExpandedKeys, setFloatingExpandedKeys] = useState<string[]>(['开发任务管理']);
   const [activeCenterKey, setActiveCenterKey] = useState<string>('开发中心');
 
   // 中心级别菜单（左侧图标栏）
@@ -129,54 +130,205 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
     );
   };
 
+  const toggleFloatingExpand = (key: string) => {
+    setFloatingExpandedKeys(prev => 
+      prev.includes(key) 
+        ? prev.filter(k => k !== key)
+        : [...prev, key]
+    );
+  };
+
   const handleSelect = (key: string, path?: string) => {
-    setHoveredKey(null);
+    setHoveredCenterKey(null);
     if (path) {
       navigate(path);
     }
   };
 
   const handleCenterClick = (item: MenuItem) => {
-    setActiveCenterKey(item.key);
     if (item.path) {
       navigate(item.path);
+      setHoveredCenterKey(null);
+    } else {
+      setActiveCenterKey(item.key);
     }
+  };
+
+  // 获取中心对应的详细菜单
+  const getCenterMenu = (centerKey: string) => {
+    if (centerKey === '开发中心') {
+      return developmentCenterMenu;
+    }
+    return [];
   };
 
   // 渲染左侧图标栏的菜单项
   const renderIconMenuItem = (item: MenuItem) => {
     const isActive = activeCenterKey === item.key;
+    const hasSubMenu = getCenterMenu(item.key).length > 0;
+    const isHovered = hoveredCenterKey === item.key;
     
     return (
       <div
         key={item.key}
         style={{
-          width: 40,
-          height: 40,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          cursor: 'pointer',
-          borderRadius: 8,
-          backgroundColor: isActive ? '#E6F7FF' : 'transparent',
-          color: isActive ? '#1890FF' : 'var(--semi-color-text-2)',
-          marginBottom: 4,
-          transition: 'all 0.2s',
+          position: 'relative',
         }}
-        onMouseEnter={(e) => {
-          if (!isActive) {
-            e.currentTarget.style.backgroundColor = '#F5F5F5';
+        onMouseEnter={() => {
+          if (collapsed && hasSubMenu) {
+            setHoveredCenterKey(item.key);
           }
         }}
-        onMouseLeave={(e) => {
-          if (!isActive) {
-            e.currentTarget.style.backgroundColor = 'transparent';
+        onMouseLeave={() => {
+          if (collapsed && hasSubMenu) {
+            setHoveredCenterKey(null);
           }
         }}
-        onClick={() => handleCenterClick(item)}
-        title={item.label}
       >
-        {item.icon}
+        <div
+          style={{
+            width: 40,
+            height: 40,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            borderRadius: 8,
+            backgroundColor: isActive ? '#E6F7FF' : 'transparent',
+            color: isActive ? '#1890FF' : 'var(--semi-color-text-2)',
+            marginBottom: 4,
+            transition: 'all 0.2s',
+          }}
+          onMouseEnter={(e) => {
+            if (!isActive) {
+              e.currentTarget.style.backgroundColor = '#F5F5F5';
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!isActive) {
+              e.currentTarget.style.backgroundColor = 'transparent';
+            }
+          }}
+          onClick={() => handleCenterClick(item)}
+          title={item.label}
+        >
+          {item.icon}
+        </div>
+
+        {/* 收起时的浮动菜单 */}
+        {collapsed && hasSubMenu && isHovered && (
+          <div
+            style={{
+              position: 'absolute',
+              left: '100%',
+              top: 0,
+              backgroundColor: '#fff',
+              borderRadius: 8,
+              boxShadow: '0 4px 14px rgba(0, 0, 0, 0.15)',
+              padding: '8px 0',
+              minWidth: 180,
+              zIndex: 1000,
+              maxHeight: 'calc(100vh - 100px)',
+              overflowY: 'auto',
+            }}
+          >
+            {/* 浮动菜单标题 */}
+            <div style={{
+              padding: '8px 16px 12px',
+              fontSize: 14,
+              fontWeight: 600,
+              color: 'var(--semi-color-text-0)',
+              borderBottom: '1px solid var(--semi-color-border)',
+              marginBottom: 8,
+            }}>
+              {item.label}
+            </div>
+            {getCenterMenu(item.key).map(menuItem => renderFloatingMenuItem(menuItem))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // 渲染浮动菜单项
+  const renderFloatingMenuItem = (item: MenuItem, isChild = false) => {
+    const hasChildren = item.children && item.children.length > 0;
+    const isExpanded = floatingExpandedKeys.includes(item.key);
+    const isSelected = selectedKey === item.key;
+
+    return (
+      <div key={item.key} style={{ marginBottom: 2 }}>
+        <div style={{ padding: '0 8px' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              height: 36,
+              padding: isChild ? '0 16px 0 28px' : '0 12px',
+              backgroundColor: isSelected ? '#F5F5F5' : 'transparent',
+              borderRadius: 6,
+              color: 'var(--semi-color-text-0)',
+            }}
+            onMouseEnter={(e) => {
+              if (!isSelected) {
+                e.currentTarget.style.backgroundColor = '#F5F5F5';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!isSelected) {
+                e.currentTarget.style.backgroundColor = 'transparent';
+              }
+            }}
+            onClick={() => {
+              if (hasChildren) {
+                toggleFloatingExpand(item.key);
+              } else {
+                handleSelect(item.key, item.path);
+              }
+            }}
+          >
+            {/* 图标 - 只有一级菜单显示 */}
+            {!isChild && item.icon && (
+              <div 
+                style={{ 
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 20,
+                  marginRight: 8,
+                  color: 'var(--semi-color-text-2)' 
+                }}
+              >
+                {item.icon}
+              </div>
+            )}
+            
+            <span 
+              style={{ 
+                flex: 1,
+                fontSize: 14,
+                whiteSpace: 'nowrap',
+                fontWeight: isSelected ? 600 : 400,
+              }}
+            >
+              {item.label}
+            </span>
+            
+            {hasChildren && (
+              <span style={{ color: 'var(--semi-color-text-2)' }}>
+                {isExpanded ? <IconChevronUp size="small" /> : <IconChevronDown size="small" />}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {hasChildren && isExpanded && (
+          <div>
+            {item.children!.map(child => renderFloatingMenuItem(child, true))}
+          </div>
+        )}
       </div>
     );
   };
@@ -186,7 +338,6 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
     const hasChildren = item.children && item.children.length > 0;
     const isExpanded = expandedKeys.includes(item.key);
     const isSelected = selectedKey === item.key;
-    const hasSelectedChild = item.children?.some(child => selectedKey === child.key);
 
     return (
       <div 
@@ -317,14 +468,11 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
 
   // 获取当前中心的详细菜单
   const getCurrentCenterMenu = () => {
-    if (activeCenterKey === '开发中心') {
-      return developmentCenterMenu;
-    }
-    return [];
+    return getCenterMenu(activeCenterKey);
   };
 
   return (
-    <div style={{ display: 'flex', height: '100%' }}>
+    <div style={{ display: 'flex', height: '100%', overflow: 'visible' }}>
       {/* 左侧图标栏 */}
       <div 
         style={{ 
@@ -334,11 +482,12 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
           alignItems: 'center',
           paddingTop: 8,
           paddingBottom: 8,
-          borderRight: '1px solid var(--semi-color-border)',
+          borderRight: collapsed ? 'none' : '1px solid var(--semi-color-border)',
+          overflow: 'visible',
         }}
       >
         {/* 中心图标 */}
-        <div style={{ flex: 1 }}>
+        <div style={{ flex: 1, overflow: 'visible' }}>
           {centerMenuItems.map(item => renderIconMenuItem(item))}
         </div>
         
