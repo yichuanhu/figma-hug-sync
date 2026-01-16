@@ -41,3 +41,12 @@ body {
 .sidebar-menu-item.selected {
   background-color: #F5F5F5;
 }
+
+/* Breadcrumb hover styles */
+.semi-breadcrumb-item-link {
+  transition: color 0.2s;
+}
+
+.semi-breadcrumb-item:not(:last-child) .semi-breadcrumb-item-link:hover {
+  color: var(--semi-color-text-0) !important;
+}
