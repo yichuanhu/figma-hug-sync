@@ -13,6 +13,7 @@ import {
   IconSend
 } from '@douyinfe/semi-icons';
 import layoutIcon from '@/assets/icons/layout.svg';
+import laiyeLogo from '@/assets/laiye-logo.png';
 
 // 自定义导航图标
 import { 
@@ -478,18 +479,31 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
 
   return (
     <div style={{ display: 'flex', height: '100%', overflow: 'visible' }}>
-      {/* 左侧图标栏 */}
+      {/* 左侧图标栏 - 包含Logo */}
       <div 
         style={{ 
           width: 56, 
           display: 'flex', 
           flexDirection: 'column', 
           alignItems: 'center',
-          paddingTop: 0,
           paddingBottom: 8,
           overflow: 'visible',
         }}
       >
+        {/* Logo区域 */}
+        <div style={{
+          height: 56,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexShrink: 0,
+        }}>
+          <img 
+            src={laiyeLogo} 
+            alt="Laiye" 
+            style={{ height: 16, width: 'auto' }}
+          />
+        </div>
         {/* 中心图标 */}
         <div style={{ flex: 1, overflow: 'visible' }}>
           {centerMenuItems.map(item => renderIconMenuItem(item))}
