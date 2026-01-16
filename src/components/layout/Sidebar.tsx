@@ -470,9 +470,8 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
 
   // 渲染底部菜单项
   const renderBottomMenuItem = (item: MenuItem) => {
-    return (
+    const iconButton = (
       <div
-        key={item.key}
         style={{
           width: 40,
           height: 40,
@@ -492,7 +491,6 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
         onMouseLeave={(e) => {
           e.currentTarget.style.backgroundColor = 'transparent';
         }}
-        title={item.label}
       >
         {item.icon}
         {item.badge && (
@@ -509,6 +507,12 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
           />
         )}
       </div>
+    );
+
+    return (
+      <Tooltip key={item.key} content={item.label} position="right">
+        {iconButton}
+      </Tooltip>
     );
   };
 
@@ -541,34 +545,36 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
         <div>
           {bottomMenuItems.map(item => renderBottomMenuItem(item))}
           {/* 用户头像 */}
-          <div
-            style={{
-              width: 40,
-              height: 40,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              borderRadius: 8,
-              marginTop: 4,
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#F5F5F5';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'transparent';
-            }}
-          >
-            <Avatar 
-              size="small" 
-              style={{ 
-                backgroundColor: '#FFE600',
-                color: 'var(--semi-color-text-0)',
+          <Tooltip content="个人中心" position="right">
+            <div
+              style={{
+                width: 40,
+                height: 40,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                borderRadius: 8,
+                marginTop: 4,
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#F5F5F5';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
               }}
             >
-              L
-            </Avatar>
-          </div>
+              <Avatar 
+                size="small" 
+                style={{ 
+                  backgroundColor: '#FFE600',
+                  color: 'var(--semi-color-text-0)',
+                }}
+              >
+                L
+              </Avatar>
+            </div>
+          </Tooltip>
         </div>
       </div>
 
