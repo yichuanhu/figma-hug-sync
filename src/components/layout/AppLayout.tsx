@@ -8,7 +8,7 @@ interface AppLayoutProps {
 const AppLayout = ({ children }: AppLayoutProps) => {
   const [collapsed, setCollapsed] = useState(false);
 
-  const sidebarWidth = collapsed ? 56 : 240;
+  const sidebarWidth = collapsed ? 60 : 'auto';
 
   return (
     <div style={{ display: 'flex', height: '100vh', width: '100%' }}>
@@ -16,7 +16,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
       <div 
         style={{ 
           width: sidebarWidth, 
-          minWidth: sidebarWidth,
+          minWidth: collapsed ? 60 : 'auto',
           height: '100vh',
           display: 'flex',
           flexDirection: 'row',

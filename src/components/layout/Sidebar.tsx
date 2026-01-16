@@ -483,7 +483,8 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
       {/* 左侧图标栏 - 包含Logo */}
       <div 
         style={{ 
-          width: 56, 
+          width: 60, 
+          minWidth: 60,
           display: 'flex', 
           flexDirection: 'column', 
           alignItems: 'center',
@@ -545,13 +546,14 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
       {/* 右侧详细菜单 - 仅在未收起时显示 */}
       {!collapsed && (
         <div style={{ 
-          flex: 1, 
+          minWidth: 180,
+          width: 'fit-content',
           display: 'flex', 
           flexDirection: 'column', 
           overflow: 'hidden',
           backgroundColor: '#fff',
           borderRadius: 8,
-          margin: '8px 8px 8px 0',
+          margin: '8px 8px 8px 16px',
           boxShadow: '0 0 1px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.04)',
         }}>
           {/* 菜单标题栏 */}
