@@ -52,61 +52,71 @@ const ProcessDetail = () => {
   ];
 
   return (
-    <div style={{ padding: '20px 24px', minHeight: '100%' }}>
-      {/* 面包屑 */}
-      <Breadcrumb style={{ marginBottom: 16 }}>
-        <Breadcrumb.Item onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>首页</Breadcrumb.Item>
-        <Breadcrumb.Item>开发中心</Breadcrumb.Item>
-        <Breadcrumb.Item onClick={() => navigate('/process-development')} style={{ cursor: 'pointer' }}>自动化流程</Breadcrumb.Item>
-        <Breadcrumb.Item>流程详情</Breadcrumb.Item>
-      </Breadcrumb>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      {/* 固定面包屑 */}
+      <div style={{ 
+        padding: '12px 24px',
+        flexShrink: 0,
+      }}>
+        <Breadcrumb>
+          <Breadcrumb.Item onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>首页</Breadcrumb.Item>
+          <Breadcrumb.Item>开发中心</Breadcrumb.Item>
+          <Breadcrumb.Item onClick={() => navigate('/process-development')} style={{ cursor: 'pointer' }}>自动化流程</Breadcrumb.Item>
+          <Breadcrumb.Item>流程详情</Breadcrumb.Item>
+        </Breadcrumb>
+      </div>
 
       {/* 标题区域 */}
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'flex-start',
-        marginBottom: 24 
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <Button 
-            icon={<IconArrowLeft />} 
-            theme="borderless"
-            onClick={() => navigate('/process-development')}
-          />
-          <div>
-            <Title heading={3} style={{ marginBottom: 4 }}>{processData.name}</Title>
-            <Text type="tertiary">{processData.id}</Text>
+      <div style={{ padding: '20px 24px 0', flexShrink: 0 }}>
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'flex-start',
+          marginBottom: 24 
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <Button 
+              icon={<IconArrowLeft />} 
+              theme="borderless"
+              onClick={() => navigate('/process-development')}
+            />
+            <div>
+              <Title heading={3} style={{ marginBottom: 4 }}>{processData.name}</Title>
+              <Text type="tertiary">{processData.id}</Text>
+            </div>
           </div>
-        </div>
-        <div style={{ display: 'flex', gap: 12 }}>
-          <Button icon={<IconEdit />} theme="light">
-            编辑流程
-          </Button>
-          <Button icon={<IconPlay />} theme="solid" type="primary">
-            运行流程
-          </Button>
+          <div style={{ display: 'flex', gap: 12 }}>
+            <Button icon={<IconEdit />} theme="light">
+              编辑流程
+            </Button>
+            <Button icon={<IconPlay />} theme="solid" type="primary">
+              运行流程
+            </Button>
+          </div>
         </div>
       </div>
 
-      {/* 基本信息卡片 */}
-      <Card title="基本信息" style={{ marginBottom: 24 }}>
-        <Descriptions data={descriptionData} />
-      </Card>
+      {/* 可滚动内容区域 */}
+      <div style={{ flex: 1, overflow: 'auto', padding: '0 24px 24px' }}>
+        {/* 基本信息卡片 */}
+        <Card title="基本信息" style={{ marginBottom: 24 }}>
+          <Descriptions data={descriptionData} />
+        </Card>
 
-      {/* 流程设计区域占位 */}
-      <Card title="流程设计">
-        <div style={{ 
-          height: 400, 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center',
-          backgroundColor: 'var(--semi-color-fill-0)',
-          borderRadius: 8
-        }}>
-          <Text type="tertiary">流程设计器区域</Text>
-        </div>
-      </Card>
+        {/* 流程设计区域占位 */}
+        <Card title="流程设计">
+          <div style={{ 
+            height: 400, 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            backgroundColor: 'var(--semi-color-fill-0)',
+            borderRadius: 8
+          }}>
+            <Text type="tertiary">流程设计器区域</Text>
+          </div>
+        </Card>
+      </div>
     </div>
   );
 };
