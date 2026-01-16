@@ -12,8 +12,10 @@ import {
   Popover,
   Checkbox,
   Pagination,
-  Tooltip
+  Tooltip,
+  Empty
 } from '@douyinfe/semi-ui';
+import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-illustrations';
 import { IconSearch, IconFilter, IconPlus, IconDownload, IconMore, IconExternalOpenStroked, IconEditStroked, IconPlay, IconDeleteStroked } from '@douyinfe/semi-icons';
 import CreateProcessModal from '@/components/CreateProcessModal';
 import EditProcessModal from '@/components/EditProcessModal';
@@ -451,6 +453,14 @@ const ProcessDevelopment = () => {
           columns={columns} 
           dataSource={filteredData}
           loading={loading}
+          empty={
+            <Empty
+              image={<IllustrationNoResult style={{ width: 150, height: 150 }} />}
+              darkModeImage={<IllustrationNoResultDark style={{ width: 150, height: 150 }} />}
+              title="暂无数据"
+              description={hasActiveFilters || searchValue ? "没有找到匹配的流程，请尝试调整筛选条件" : "还没有创建任何流程，点击「新建流程」开始"}
+            />
+          }
           onRow={(record) => ({
             onClick: () => openProcessDetail(record as typeof processListData[0]),
             style: { cursor: 'pointer' }
