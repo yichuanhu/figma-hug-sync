@@ -533,7 +533,8 @@ const WorkerManagement = () => {
       dataIndex: 'status',
       key: 'status',
       width: 100,
-      render: (status: WorkerStatus) => {
+      render: (status: WorkerStatus | undefined) => {
+        if (!status) return null;
         const config = statusConfig[status];
         return (
           <Tag color={config.color as 'grey' | 'green' | 'blue' | 'red' | 'orange'} type="light">
@@ -553,7 +554,8 @@ const WorkerManagement = () => {
       dataIndex: 'priority',
       key: 'priority',
       width: 120,
-      render: (priority: Priority) => {
+      render: (priority: Priority | undefined) => {
+        if (!priority) return null;
         const config = priorityConfig[priority];
         return (
           <Tag color={config.color as 'red' | 'blue' | 'grey'} type="light">
