@@ -364,7 +364,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     return (
       <div 
         key={item.key} 
-        style={{ marginBottom: isChild ? 0 : 4 }}
+        style={{ marginBottom: 4 }}
       >
         <div style={{ padding: '0 8px' }}>
           <div
