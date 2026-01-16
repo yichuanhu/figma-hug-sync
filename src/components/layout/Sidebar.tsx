@@ -379,27 +379,8 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
 
       {/* 右侧详细菜单 - 仅在未收起时显示 */}
       {!collapsed && (
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-          {/* 当前中心标题 */}
-          <div 
-            style={{ 
-              height: 44,
-              display: 'flex',
-              alignItems: 'center',
-              padding: '0 16px',
-              fontSize: 14,
-              fontWeight: 600,
-              color: 'var(--semi-color-text-0)',
-              borderBottom: '1px solid var(--semi-color-border)',
-            }}
-          >
-            {activeCenterKey}
-          </div>
-
-          {/* 详细菜单列表 */}
-          <div style={{ flex: 1, overflowY: 'auto', paddingTop: 8, paddingBottom: 8 }}>
-            {getCurrentCenterMenu().map(item => renderDetailMenuItem(item))}
-          </div>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflowY: 'auto', paddingTop: 8, paddingBottom: 8 }}>
+          {getCurrentCenterMenu().map(item => renderDetailMenuItem(item))}
         </div>
       )}
     </div>
