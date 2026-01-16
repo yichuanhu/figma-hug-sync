@@ -49,7 +49,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
             <img 
               src={laiyeLogo} 
               alt="Laiye" 
-              style={{ height: 20, width: 'auto', margin: '0 4px' }}
+              style={{ height: 20, width: 'auto', margin: '0 12px' }}
             />
           </div>
           
