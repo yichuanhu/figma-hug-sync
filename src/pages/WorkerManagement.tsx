@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { 
   Breadcrumb, 
   Typography, 
@@ -10,8 +10,11 @@ import {
   Switch,
   Popover,
   Checkbox,
-  Pagination
+  Pagination,
+  Skeleton,
+  Empty
 } from '@douyinfe/semi-ui';
+import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-illustrations';
 import { 
   IconSearch, 
   IconFilter,
@@ -283,6 +286,15 @@ const WorkerManagement = () => {
     priority: [],
   });
   const [filterVisible, setFilterVisible] = useState(false);
+  const [loading, setLoading] = useState(true);
+  
+  // 模拟加载数据
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
   
   // 抽屉和弹窗状态
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
@@ -427,6 +439,74 @@ const WorkerManagement = () => {
       openDeleteModal(selectedWorker);
     }
   };
+
+  // 骨架屏数据
+  const skeletonData = Array(6).fill(null).map((_, index) => ({ id: `skeleton-${index}` }));
+
+  // 骨架屏列配置
+  const skeletonColumns = [
+    {
+      title: '流程机器人名称',
+      dataIndex: 'name',
+      key: 'name',
+      width: 200,
+      render: () => (
+        <div>
+          <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 120 }} />} loading active />
+          <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 80, marginTop: 4 }} />} loading active />
+        </div>
+      ),
+    },
+    {
+      title: '状态',
+      dataIndex: 'status',
+      key: 'status',
+      width: 100,
+      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 50 }} />} loading active />,
+    },
+    {
+      title: 'IP地址',
+      dataIndex: 'ipAddress',
+      key: 'ipAddress',
+      width: 120,
+      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 90 }} />} loading active />,
+    },
+    {
+      title: '任务调度优先级',
+      dataIndex: 'priority',
+      key: 'priority',
+      width: 120,
+      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 40 }} />} loading active />,
+    },
+    {
+      title: '客户端版本',
+      dataIndex: 'clientVersion',
+      key: 'clientVersion',
+      width: 100,
+      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 50 }} />} loading active />,
+    },
+    {
+      title: '最近连接时间',
+      dataIndex: 'lastHeartbeatTime',
+      key: 'lastHeartbeatTime',
+      width: 160,
+      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 120 }} />} loading active />,
+    },
+    {
+      title: '接收任务',
+      dataIndex: 'receiveTasks',
+      key: 'receiveTasks',
+      width: 90,
+      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 40 }} />} loading active />,
+    },
+    {
+      title: '操作',
+      dataIndex: 'action',
+      key: 'action',
+      width: 60,
+      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 24 }} />} loading active />,
+    },
+  ];
 
   const columns = [
     {
@@ -580,87 +660,121 @@ const WorkerManagement = () => {
   ];
 
   return (
-    <div style={{ padding: '20px 24px', minHeight: '100%' }}>
-      {/* 面包屑 */}
-      <Breadcrumb style={{ marginBottom: 16 }}>
-        <Breadcrumb.Item onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>首页</Breadcrumb.Item>
-        <Breadcrumb.Item>开发中心</Breadcrumb.Item>
-        <Breadcrumb.Item>流程机器人管理</Breadcrumb.Item>
-      </Breadcrumb>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      {/* 固定面包屑 */}
+      <div style={{ 
+        padding: '12px 24px',
+        flexShrink: 0,
+      }}>
+        <Breadcrumb>
+          <Breadcrumb.Item onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>首页</Breadcrumb.Item>
+          <Breadcrumb.Item>开发中心</Breadcrumb.Item>
+          <Breadcrumb.Item>流程机器人管理</Breadcrumb.Item>
+        </Breadcrumb>
+      </div>
 
       {/* 标题区域 */}
-      <div style={{ marginBottom: 24 }}>
-        <Title heading={3} style={{ marginBottom: 8 }}>流程机器人管理</Title>
-        <Text type="tertiary">管理无人值守流程机器人，配置机器人参数和连接信息</Text>
-      </div>
-
-      {/* 操作栏 */}
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center',
-        marginBottom: 16 
-      }}>
-        <div style={{ display: 'flex', gap: 12 }}>
-          <Input 
-            prefix={<IconSearch />}
-            placeholder="搜索流程机器人名称、IP地址..."
-            style={{ width: 280 }}
-            value={searchValue}
-            onChange={(value) => setSearchValue(value)}
-          />
-          <Popover
-            visible={filterVisible}
-            onVisibleChange={setFilterVisible}
-            trigger="click"
-            position="bottomLeft"
-            content={filterContent}
-          >
-            <Button 
-              icon={<IconFilter />} 
-              theme={hasActiveFilters ? 'solid' : 'light'}
-              type={hasActiveFilters ? 'primary' : 'tertiary'}
-            >
-              筛选{activeFilterCount > 0 ? ` (${activeFilterCount})` : ''}
-            </Button>
-          </Popover>
+      <div style={{ padding: '20px 24px 0', flexShrink: 0 }}>
+        <div style={{ marginBottom: 24 }}>
+          <Title heading={3} style={{ marginBottom: 8 }}>流程机器人管理</Title>
+          <Text type="tertiary">管理无人值守流程机器人，配置机器人参数和连接信息</Text>
         </div>
-        <Button 
-          icon={<IconPlus />} 
-          theme="solid" 
-          type="primary"
-          onClick={() => navigate('/worker-management/create')}
-        >
-          新建流程机器人
-        </Button>
+
+        {/* 操作栏 */}
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center',
+          marginBottom: 16 
+        }}>
+          <div style={{ display: 'flex', gap: 12 }}>
+            <Input 
+              prefix={<IconSearch />}
+              placeholder="搜索流程机器人名称、IP地址..."
+              style={{ width: 280 }}
+              value={searchValue}
+              onChange={(value) => setSearchValue(value)}
+            />
+            <Popover
+              visible={filterVisible}
+              onVisibleChange={setFilterVisible}
+              trigger="click"
+              position="bottomLeft"
+              content={filterContent}
+            >
+              <Button 
+                icon={<IconFilter />} 
+                theme={hasActiveFilters ? 'solid' : 'light'}
+                type={hasActiveFilters ? 'primary' : 'tertiary'}
+              >
+                筛选{activeFilterCount > 0 ? ` (${activeFilterCount})` : ''}
+              </Button>
+            </Popover>
+          </div>
+          <Button 
+            icon={<IconPlus />} 
+            theme="solid" 
+            type="primary"
+            onClick={() => navigate('/worker-management/create')}
+          >
+            新建流程机器人
+          </Button>
+        </div>
       </div>
 
-      {/* 表格 */}
+      {/* 表格区域 */}
       <div style={{ 
-        backgroundColor: '#fff', 
-        borderRadius: 8, 
-        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03)',
-        overflow: 'hidden'
+        flex: 1, 
+        overflow: 'hidden', 
+        padding: '0 24px',
+        minHeight: 0,
       }}>
-        <Table 
-          columns={columns} 
-          dataSource={filteredData}
-          rowKey="id"
-          onRow={(record) => ({
-            onClick: () => openDetail(record as WorkerData),
-            style: { cursor: 'pointer' }
-          })}
-          pagination={false}
-        />
+        {loading ? (
+          <Table 
+            columns={skeletonColumns} 
+            dataSource={skeletonData}
+            rowKey="id"
+            pagination={false}
+            scroll={{ y: 'calc(100vh - 320px)' }}
+            style={{ 
+              borderRadius: 8, 
+              overflow: 'hidden',
+            }}
+          />
+        ) : (
+          <Table 
+            columns={columns} 
+            dataSource={filteredData}
+            rowKey="id"
+            empty={
+              <Empty
+                image={<IllustrationNoResult style={{ width: 150, height: 150 }} />}
+                darkModeImage={<IllustrationNoResultDark style={{ width: 150, height: 150 }} />}
+                title="暂无数据"
+                description={hasActiveFilters || searchValue ? "没有找到匹配的机器人，请尝试调整筛选条件" : "还没有创建任何机器人，点击「新建流程机器人」开始"}
+              />
+            }
+            onRow={(record) => ({
+              onClick: () => openDetail(record as WorkerData),
+              style: { cursor: 'pointer' }
+            })}
+            pagination={false}
+            scroll={{ y: 'calc(100vh - 320px)' }}
+            style={{ 
+              borderRadius: 8, 
+              overflow: 'hidden',
+            }}
+          />
+        )}
       </div>
 
       {/* 分页区域 */}
       <div style={{ 
-        backgroundColor: '#F7F8FA', 
+        padding: '16px 24px',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginTop: 16
+        flexShrink: 0,
       }}>
         <Text type="tertiary" style={{ fontSize: 14 }}>
           显示第 1 条-第 {Math.min(10, filteredData.length)} 条，共 {filteredData.length} 条
