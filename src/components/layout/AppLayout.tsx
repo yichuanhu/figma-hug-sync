@@ -20,7 +20,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
           height: '100vh',
           display: 'flex',
           flexDirection: 'row',
-          backgroundColor: '#F7F8FA',
+          backgroundColor: 'var(--semi-color-default)',
           transition: 'width 0.2s',
           flexShrink: 0,
           position: 'relative',
@@ -34,7 +34,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
       <div style={{ 
         flex: 1,
         overflow: 'hidden',
-        backgroundColor: '#F7F8FA',
+        backgroundColor: 'var(--semi-color-default)',
         padding: 8,
         display: 'flex',
         flexDirection: 'column',
