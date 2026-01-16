@@ -530,7 +530,16 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
 
       {/* 右侧详细菜单 - 仅在未收起时显示 */}
       {!collapsed && (
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        <div style={{ 
+          flex: 1, 
+          display: 'flex', 
+          flexDirection: 'column', 
+          overflow: 'hidden',
+          backgroundColor: '#fff',
+          borderRadius: 12,
+          margin: '8px 8px 8px 0',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
+        }}>
           {/* 菜单标题栏 */}
           <div style={{
             display: 'flex',
