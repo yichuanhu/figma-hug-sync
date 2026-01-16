@@ -368,13 +368,22 @@ const ProcessDevelopment = () => {
   );
 
   return (
-    <div style={{ padding: '20px 24px', minHeight: '100%' }}>
-      {/* 面包屑 */}
-      <Breadcrumb style={{ marginBottom: 16 }}>
-        <Breadcrumb.Item onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>首页</Breadcrumb.Item>
-        <Breadcrumb.Item>开发中心</Breadcrumb.Item>
-        <Breadcrumb.Item>自动化流程</Breadcrumb.Item>
-      </Breadcrumb>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      {/* 固定面包屑 */}
+      <div style={{ 
+        padding: '12px 24px',
+        borderBottom: '1px solid var(--semi-color-border)',
+        flexShrink: 0,
+      }}>
+        <Breadcrumb>
+          <Breadcrumb.Item onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>首页</Breadcrumb.Item>
+          <Breadcrumb.Item>开发中心</Breadcrumb.Item>
+          <Breadcrumb.Item>自动化流程</Breadcrumb.Item>
+        </Breadcrumb>
+      </div>
+
+      {/* 可滚动内容区域 */}
+      <div style={{ flex: 1, overflow: 'auto', padding: '20px 24px' }}>
 
       {/* 标题区域 */}
       <div style={{ marginBottom: 24 }}>
@@ -463,6 +472,8 @@ const ProcessDevelopment = () => {
           currentPage={1}
           showSizeChanger
         />
+      </div>
+
       </div>
 
       {/* 新建流程弹窗 */}

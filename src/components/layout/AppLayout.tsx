@@ -33,16 +33,20 @@ const AppLayout = ({ children }: AppLayoutProps) => {
       {/* 内容区域 */}
       <div style={{ 
         flex: 1,
-        overflow: 'auto',
+        overflow: 'hidden',
         backgroundColor: '#F7F8FA',
         padding: 8,
+        display: 'flex',
+        flexDirection: 'column',
       }}>
         <div style={{
           backgroundColor: '#fff',
           borderRadius: 8,
           boxShadow: '0 0 1px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.04)',
           height: '100%',
-          overflow: 'auto',
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
         }}>
           {children}
         </div>
