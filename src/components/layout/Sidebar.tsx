@@ -536,9 +536,9 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
           flexDirection: 'column', 
           overflow: 'hidden',
           backgroundColor: '#fff',
-          borderRadius: 12,
+          borderRadius: 8,
           margin: '8px 8px 8px 0',
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
+          boxShadow: '0 0 1px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.04)',
         }}>
           {/* 菜单标题栏 */}
           <div style={{
