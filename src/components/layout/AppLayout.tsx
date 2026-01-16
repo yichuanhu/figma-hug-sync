@@ -55,33 +55,12 @@ const AppLayout = ({ children }: AppLayoutProps) => {
             />
           </div>
           
-          {/* 右侧中心标题和收起按钮 - 仅展开时显示 */}
+          {/* 右侧空白区域 - 仅展开时显示，为卡片式菜单提供背景 */}
           {!collapsed && (
             <div style={{
               flex: 1,
               height: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              padding: '0 12px 0 16px',
-            }}>
-              <span style={{ 
-                fontSize: 14, 
-                fontWeight: 600, 
-                color: 'var(--semi-color-text-0)' 
-              }}>
-                开发中心
-              </span>
-              <Button 
-                icon={<img src={layoutIcon} alt="toggle" style={{ width: 18, height: 18, flexShrink: 0 }} />} 
-                theme="borderless"
-                onClick={() => setCollapsed(!collapsed)}
-                style={{ 
-                  minWidth: 32,
-                  padding: 7,
-                }}
-              />
-            </div>
+            }} />
           )}
         </div>
         
