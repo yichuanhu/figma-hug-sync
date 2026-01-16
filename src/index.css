@@ -23,11 +23,11 @@ body {
 }
 
 .sidebar-icon-btn.active {
-  background-color: #E6F7FF;
+  background-color: #F5F5F5;
 }
 
 .sidebar-icon-btn.active:hover {
-  background-color: #E6F7FF;
+  background-color: #F5F5F5;
 }
 
 .sidebar-menu-item {
