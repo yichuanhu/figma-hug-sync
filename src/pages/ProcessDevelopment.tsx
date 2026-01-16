@@ -435,33 +435,27 @@ const ProcessDevelopment = () => {
         </div>
       </div>
 
-      {/* 表格区域 - 仅表格滚动 */}
+      {/* 表格区域 */}
       <div style={{ 
         flex: 1, 
         overflow: 'hidden', 
         padding: '0 24px',
-        display: 'flex',
-        flexDirection: 'column',
         minHeight: 0,
       }}>
-        <div style={{ 
-          flex: 1,
-          backgroundColor: '#fff', 
-          borderRadius: 8, 
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03)',
-          overflow: 'auto',
-          minHeight: 0,
-        }}>
-          <Table 
-            columns={columns} 
-            dataSource={filteredData}
-            onRow={(record) => ({
-              onClick: () => openProcessDetail(record as typeof processListData[0]),
-              style: { cursor: 'pointer' }
-            })}
-            pagination={false}
-          />
-        </div>
+        <Table 
+          columns={columns} 
+          dataSource={filteredData}
+          onRow={(record) => ({
+            onClick: () => openProcessDetail(record as typeof processListData[0]),
+            style: { cursor: 'pointer' }
+          })}
+          pagination={false}
+          scroll={{ y: 'calc(100vh - 320px)' }}
+          style={{ 
+            borderRadius: 8, 
+            overflow: 'hidden',
+          }}
+        />
       </div>
 
       {/* 分页区域 */}
