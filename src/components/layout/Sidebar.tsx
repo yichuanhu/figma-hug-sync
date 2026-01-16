@@ -218,10 +218,13 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
               position: 'absolute',
               left: '100%',
               top: 0,
+              marginLeft: 16,
               backgroundColor: '#fff',
               borderRadius: 8,
               boxShadow: '0 4px 14px rgba(0, 0, 0, 0.15)',
               minWidth: 180,
+              maxWidth: 280,
+              width: 'fit-content',
               zIndex: 1000,
               display: 'flex',
               flexDirection: 'column',
@@ -242,6 +245,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
                 fontSize: 14,
                 fontWeight: 600,
                 color: 'var(--semi-color-text-0)',
+                whiteSpace: 'nowrap',
               }}>
                 {item.label}
               </span>
@@ -547,6 +551,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
       {!collapsed && (
         <div style={{ 
           minWidth: 180,
+          maxWidth: 280,
           width: 'fit-content',
           display: 'flex', 
           flexDirection: 'column', 
@@ -579,6 +584,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
                 fontSize: 14,
                 fontWeight: 600,
                 color: 'var(--semi-color-text-0)',
+                whiteSpace: 'nowrap',
               }}>
                 {activeCenterKey}
               </span>
