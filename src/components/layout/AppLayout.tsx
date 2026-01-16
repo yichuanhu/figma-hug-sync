@@ -35,7 +35,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
         flex: 1,
         overflow: 'hidden',
         backgroundColor: '#F7F8FA',
-        padding: 8,
+        padding: '8px 8px 8px 16px',
         display: 'flex',
         flexDirection: 'column',
       }}>
