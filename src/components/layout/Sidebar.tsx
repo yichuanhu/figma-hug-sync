@@ -35,9 +35,10 @@ interface MenuItem {
 
 interface SidebarProps {
   collapsed: boolean;
+  onToggleCollapse?: () => void;
 }
 
-const Sidebar = ({ collapsed }: SidebarProps) => {
+const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [expandedKeys, setExpandedKeys] = useState<string[]>(['开发任务管理']);
@@ -225,25 +226,65 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
               backgroundColor: '#fff',
               borderRadius: 8,
               boxShadow: '0 4px 14px rgba(0, 0, 0, 0.15)',
-              padding: '8px 0',
               minWidth: 180,
               zIndex: 1000,
-              maxHeight: 'calc(100vh - 100px)',
-              overflowY: 'auto',
+              display: 'flex',
+              flexDirection: 'column',
+              height: 480,
+              maxHeight: 'calc(100vh - 120px)',
             }}
           >
-            {/* 浮动菜单标题 */}
+            {/* 浮动菜单标题和展开按钮 */}
             <div style={{
-              padding: '8px 16px 12px',
-              fontSize: 14,
-              fontWeight: 600,
-              color: 'var(--semi-color-text-0)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '12px 12px 12px 16px',
               borderBottom: '1px solid var(--semi-color-border)',
-              marginBottom: 8,
+              flexShrink: 0,
             }}>
-              {item.label}
+              <span style={{
+                fontSize: 14,
+                fontWeight: 600,
+                color: 'var(--semi-color-text-0)',
+              }}>
+                {item.label}
+              </span>
+              <div
+                style={{
+                  width: 28,
+                  height: 28,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  borderRadius: 6,
+                  color: 'var(--semi-color-text-2)',
+                  transition: 'all 0.2s',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#F5F5F5';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onToggleCollapse?.();
+                }}
+                title="展开侧边栏"
+              >
+                <IconChevronRight size="small" />
+              </div>
             </div>
-            {getCenterMenu(item.key).map(menuItem => renderFloatingMenuItem(menuItem))}
+            {/* 菜单列表 - 可滚动 */}
+            <div style={{ 
+              flex: 1, 
+              overflowY: 'auto', 
+              padding: '8px 0',
+            }}>
+              {getCenterMenu(item.key).map(menuItem => renderFloatingMenuItem(menuItem))}
+            </div>
           </div>
         )}
       </div>

@@ -87,7 +87,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
         
         {/* 导航区域 */}
         <div style={{ flex: 1, overflow: 'visible' }}>
-          <Sidebar collapsed={collapsed} />
+          <Sidebar collapsed={collapsed} onToggleCollapse={() => setCollapsed(!collapsed)} />
         </div>
       </div>
       
