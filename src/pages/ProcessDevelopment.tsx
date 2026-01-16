@@ -372,7 +372,6 @@ const ProcessDevelopment = () => {
       {/* 固定面包屑 */}
       <div style={{ 
         padding: '12px 24px',
-        borderBottom: '1px solid var(--semi-color-border)',
         flexShrink: 0,
       }}>
         <Breadcrumb>
