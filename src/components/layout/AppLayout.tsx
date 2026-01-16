@@ -31,33 +31,58 @@ const AppLayout = ({ children }: AppLayoutProps) => {
           zIndex: 100,
         }}
       >
-        {/* Logo 区域 */}
+        {/* 顶部区域：Logo + 中心标题 */}
         <div style={{ 
           height: 56, 
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '0 16px',
           flexShrink: 0,
         }}>
-          {!collapsed && (
+          {/* 左侧 Logo 区域 - 固定56px宽度 */}
+          <div style={{
+            width: 56,
+            minWidth: 56,
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRight: collapsed ? 'none' : '1px solid var(--semi-color-border)',
+          }}>
             <img 
               src={laiyeLogo} 
               alt="Laiye" 
-              style={{ height: 20 }}
+              style={{ height: 20, width: 'auto' }}
             />
+          </div>
+          
+          {/* 右侧中心标题和收起按钮 - 仅展开时显示 */}
+          {!collapsed && (
+            <div style={{
+              flex: 1,
+              height: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '0 12px 0 16px',
+            }}>
+              <span style={{ 
+                fontSize: 14, 
+                fontWeight: 600, 
+                color: 'var(--semi-color-text-0)' 
+              }}>
+                开发中心
+              </span>
+              <Button 
+                icon={<img src={layoutIcon} alt="toggle" style={{ width: 18, height: 18, flexShrink: 0 }} />} 
+                theme="borderless"
+                onClick={() => setCollapsed(!collapsed)}
+                style={{ 
+                  minWidth: 32,
+                  padding: 7,
+                }}
+              />
+            </div>
           )}
-          <Button 
-            icon={<img src={layoutIcon} alt="toggle" style={{ width: 18, height: 18, flexShrink: 0 }} />} 
-            theme="borderless"
-            onClick={() => setCollapsed(!collapsed)}
-            style={{ 
-              marginLeft: collapsed ? 'auto' : 0, 
-              marginRight: collapsed ? 'auto' : 0,
-              minWidth: 32,
-              padding: 7,
-            }}
-          />
         </div>
         
         {/* 导航区域 */}
