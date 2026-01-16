@@ -40,6 +40,7 @@ const ProcessDevelopment = () => {
     creator: [],
   });
   const [filterVisible, setFilterVisible] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
@@ -65,9 +66,13 @@ const ProcessDevelopment = () => {
 
   const { openProcess, OpenProcessModal } = useOpenProcess();
 
-  // 临时重置"不再提醒"设置（执行一次后可删除此代码）
+  // 模拟加载数据
   useEffect(() => {
     localStorage.removeItem('skipOpenProcessConfirm');
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+    return () => clearTimeout(timer);
   }, []);
 
   // 打开流程详情抽屉
@@ -445,6 +450,7 @@ const ProcessDevelopment = () => {
         <Table 
           columns={columns} 
           dataSource={filteredData}
+          loading={loading}
           onRow={(record) => ({
             onClick: () => openProcessDetail(record as typeof processListData[0]),
             style: { cursor: 'pointer' }
