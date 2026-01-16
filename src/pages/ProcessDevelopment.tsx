@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   Breadcrumb, 
   Typography, 
@@ -30,6 +31,7 @@ interface FilterState {
 }
 
 const ProcessDevelopment = () => {
+  const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState('');
   const [filters, setFilters] = useState<FilterState>({
     status: [],
@@ -369,7 +371,7 @@ const ProcessDevelopment = () => {
     <div style={{ padding: '20px 24px', minHeight: '100%' }}>
       {/* 面包屑 */}
       <Breadcrumb style={{ marginBottom: 16 }}>
-        <Breadcrumb.Item>首页</Breadcrumb.Item>
+        <Breadcrumb.Item onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>首页</Breadcrumb.Item>
         <Breadcrumb.Item>开发中心</Breadcrumb.Item>
         <Breadcrumb.Item>自动化流程</Breadcrumb.Item>
       </Breadcrumb>
