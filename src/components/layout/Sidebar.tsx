@@ -6,13 +6,13 @@ import {
   IconBookStroked, 
   IconCloud,
   IconChevronDown,
-  IconChevronRight,
   IconChevronUp,
   IconGridView,
   IconFile,
   IconFolder,
   IconSend
 } from '@douyinfe/semi-icons';
+import layoutIcon from '@/assets/icons/layout.svg';
 
 // 自定义导航图标
 import { 
@@ -274,7 +274,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
                 }}
                 title="展开侧边栏"
               >
-                <IconChevronRight size="small" />
+                <img src={layoutIcon} alt="expand" style={{ width: 16, height: 16 }} />
               </div>
             </div>
             {/* 菜单列表 - 可滚动 */}
