@@ -332,7 +332,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
                 flex: 1,
                 fontSize: 14,
                 whiteSpace: 'nowrap',
-                fontWeight: isSelected ? 600 : 400,
+                fontWeight: hasChildren ? 600 : (isSelected ? 600 : 400),
               }}
             >
               {item.label}
@@ -408,7 +408,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
                 flex: 1,
                 fontSize: 14,
                 whiteSpace: 'nowrap',
-                fontWeight: isSelected ? 600 : 400,
+                fontWeight: hasChildren ? 600 : (isSelected ? 600 : 400),
               }}
             >
               {item.label}
