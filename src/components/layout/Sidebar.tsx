@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Avatar } from '@douyinfe/semi-ui';
+import { Avatar, Tooltip } from '@douyinfe/semi-ui';
 import { 
   IconBell, 
   IconBookStroked, 
@@ -169,6 +169,37 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     const hasSubMenu = getCenterMenu(item.key).length > 0;
     const isHovered = hoveredCenterKey === item.key;
     
+    const iconButton = (
+      <div
+        style={{
+          width: 40,
+          height: 40,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'pointer',
+          borderRadius: 8,
+          backgroundColor: isActive ? '#E6F7FF' : 'transparent',
+          color: isActive ? '#1890FF' : 'var(--semi-color-text-2)',
+          marginBottom: 4,
+          transition: 'all 0.2s',
+        }}
+        onMouseEnter={(e) => {
+          if (!isActive) {
+            e.currentTarget.style.backgroundColor = '#F5F5F5';
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (!isActive) {
+            e.currentTarget.style.backgroundColor = 'transparent';
+          }
+        }}
+        onClick={() => handleCenterClick(item)}
+      >
+        {item.icon}
+      </div>
+    );
+
     return (
       <div
         key={item.key}
@@ -186,35 +217,9 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
           }
         }}
       >
-        <div
-          style={{
-            width: 40,
-            height: 40,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            borderRadius: 8,
-            backgroundColor: isActive ? '#E6F7FF' : 'transparent',
-            color: isActive ? '#1890FF' : 'var(--semi-color-text-2)',
-            marginBottom: 4,
-            transition: 'all 0.2s',
-          }}
-          onMouseEnter={(e) => {
-            if (!isActive) {
-              e.currentTarget.style.backgroundColor = '#F5F5F5';
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (!isActive) {
-              e.currentTarget.style.backgroundColor = 'transparent';
-            }
-          }}
-          onClick={() => handleCenterClick(item)}
-          title={item.label}
-        >
-          {item.icon}
-        </div>
+        <Tooltip content={item.label} position="right">
+          {iconButton}
+        </Tooltip>
 
         {/* 收起时的浮动菜单 */}
         {collapsed && hasSubMenu && isHovered && (
