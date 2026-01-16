@@ -157,42 +157,42 @@ const ProcessDevelopment = () => {
       dataIndex: 'name',
       key: 'name',
       width: 120,
-      render: () => <Skeleton.Paragraph rows={1} style={{ width: 80 }} />,
+      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 80 }} />} loading active />,
     },
     {
       title: '描述',
       dataIndex: 'description',
       key: 'description',
       width: 280,
-      render: () => <Skeleton.Paragraph rows={1} style={{ width: 200 }} />,
+      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 200 }} />} loading active />,
     },
     {
       title: '状态',
       dataIndex: 'status',
       key: 'status',
       width: 80,
-      render: () => <Skeleton.Paragraph rows={1} style={{ width: 50 }} />,
+      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 50 }} />} loading active />,
     },
     {
       title: '语言',
       dataIndex: 'language',
       key: 'language',
       width: 100,
-      render: () => <Skeleton.Paragraph rows={1} style={{ width: 60 }} />,
+      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 60 }} />} loading active />,
     },
     {
       title: '版本',
       dataIndex: 'version',
       key: 'version',
       width: 80,
-      render: () => <Skeleton.Paragraph rows={1} style={{ width: 40 }} />,
+      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 40 }} />} loading active />,
     },
     {
       title: '归属组织',
       dataIndex: 'organization',
       key: 'organization',
       width: 100,
-      render: () => <Skeleton.Paragraph rows={1} style={{ width: 60 }} />,
+      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 60 }} />} loading active />,
     },
     {
       title: '创建者',
@@ -201,8 +201,8 @@ const ProcessDevelopment = () => {
       width: 120,
       render: () => (
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Skeleton.Avatar size="small" />
-          <Skeleton.Paragraph rows={1} style={{ width: 50 }} />
+          <Skeleton placeholder={<Skeleton.Avatar size="small" />} loading active />
+          <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 50 }} />} loading active />
         </div>
       ),
     },
@@ -211,14 +211,14 @@ const ProcessDevelopment = () => {
       dataIndex: 'updatedAt',
       key: 'updatedAt',
       width: 120,
-      render: () => <Skeleton.Paragraph rows={1} style={{ width: 70 }} />,
+      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 70 }} />} loading active />,
     },
     {
       title: '操作',
       dataIndex: 'action',
       key: 'action',
       width: 60,
-      render: () => <Skeleton.Paragraph rows={1} style={{ width: 24 }} />,
+      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 24 }} />} loading active />,
     },
   ];
 
