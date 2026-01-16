@@ -12,3 +12,32 @@ body {
 .semi-layout {
   min-height: 100vh;
 }
+
+/* Sidebar hover effects */
+.sidebar-icon-btn {
+  transition: background-color 0.2s;
+}
+
+.sidebar-icon-btn:hover {
+  background-color: #F5F5F5;
+}
+
+.sidebar-icon-btn.active {
+  background-color: #E6F7FF;
+}
+
+.sidebar-icon-btn.active:hover {
+  background-color: #E6F7FF;
+}
+
+.sidebar-menu-item {
+  transition: background-color 0.2s;
+}
+
+.sidebar-menu-item:hover {
+  background-color: #F5F5F5;
+}
+
+.sidebar-menu-item.selected {
+  background-color: #F5F5F5;
+}

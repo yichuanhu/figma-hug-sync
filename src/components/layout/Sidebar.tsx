@@ -171,6 +171,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     
     const iconButton = (
       <div
+        className={`sidebar-icon-btn ${isActive ? 'active' : ''}`}
         style={{
           width: 40,
           height: 40,
@@ -179,20 +180,8 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
           justifyContent: 'center',
           cursor: 'pointer',
           borderRadius: 8,
-          backgroundColor: isActive ? '#E6F7FF' : 'transparent',
           color: isActive ? '#1890FF' : 'var(--semi-color-text-2)',
           marginBottom: 4,
-          transition: 'all 0.2s',
-        }}
-        onMouseEnter={(e) => {
-          if (!isActive) {
-            e.currentTarget.style.backgroundColor = '#F5F5F5';
-          }
-        }}
-        onMouseLeave={(e) => {
-          if (!isActive) {
-            e.currentTarget.style.backgroundColor = 'transparent';
-          }
         }}
         onClick={() => handleCenterClick(item)}
       >
@@ -256,6 +245,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
                 {item.label}
               </span>
               <div
+                className="sidebar-icon-btn"
                 style={{
                   width: 28,
                   height: 28,
@@ -265,13 +255,6 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
                   cursor: 'pointer',
                   borderRadius: 6,
                   color: 'var(--semi-color-text-2)',
-                  transition: 'all 0.2s',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#F5F5F5';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
                 }}
                 onClick={(e) => {
                   e.stopPropagation();
@@ -306,26 +289,15 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
       <div key={item.key} style={{ marginBottom: 2 }}>
         <div style={{ padding: '0 8px' }}>
           <div
+            className={`sidebar-menu-item ${isSelected ? 'selected' : ''}`}
             style={{
               display: 'flex',
               alignItems: 'center',
               cursor: 'pointer',
-              transition: 'all 0.2s',
               height: 36,
               padding: isChild ? '0 16px 0 28px' : '0 12px',
-              backgroundColor: isSelected ? '#F5F5F5' : 'transparent',
               borderRadius: 6,
               color: 'var(--semi-color-text-0)',
-            }}
-            onMouseEnter={(e) => {
-              if (!isSelected) {
-                e.currentTarget.style.backgroundColor = '#F5F5F5';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!isSelected) {
-                e.currentTarget.style.backgroundColor = 'transparent';
-              }
             }}
             onClick={() => {
               if (hasChildren) {
@@ -392,26 +364,15 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
       >
         <div style={{ padding: '0 8px' }}>
           <div
+            className={`sidebar-menu-item ${isSelected ? 'selected' : ''}`}
             style={{
               display: 'flex',
               alignItems: 'center',
               cursor: 'pointer',
-              transition: 'all 0.2s',
               height: 36,
               padding: isChild ? '0 16px 0 28px' : '0 8px',
-              backgroundColor: isSelected ? '#F5F5F5' : 'transparent',
               borderRadius: 6,
               color: 'var(--semi-color-text-0)',
-            }}
-            onMouseEnter={(e) => {
-              if (!isSelected) {
-                e.currentTarget.style.backgroundColor = '#F5F5F5';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!isSelected) {
-                e.currentTarget.style.backgroundColor = 'transparent';
-              }
             }}
             onClick={() => {
               if (hasChildren) {
@@ -472,6 +433,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
   const renderBottomMenuItem = (item: MenuItem) => {
     const iconButton = (
       <div
+        className="sidebar-icon-btn"
         style={{
           width: 40,
           height: 40,
@@ -483,13 +445,6 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
           position: 'relative',
           color: 'var(--semi-color-text-2)',
           marginBottom: 4,
-          transition: 'all 0.2s',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = '#F5F5F5';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = 'transparent';
         }}
       >
         {item.icon}
@@ -547,6 +502,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
           {/* 用户头像 */}
           <Tooltip content="个人中心" position="right">
             <div
+              className="sidebar-icon-btn"
               style={{
                 width: 40,
                 height: 40,
@@ -556,12 +512,6 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
                 cursor: 'pointer',
                 borderRadius: 8,
                 marginTop: 4,
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#F5F5F5';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent';
               }}
             >
               <Avatar 
