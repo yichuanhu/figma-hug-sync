@@ -1,5 +1,5 @@
 import AppLayout from '@/components/layout/AppLayout';
-import WorkerManagement from './WorkerManagement';
+import WorkerManagement from './index';
 
 const WorkerManagementPage = () => {
   return (

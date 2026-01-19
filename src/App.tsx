@@ -2,15 +2,16 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import ProcessDetail from "./pages/ProcessDetail";
-import WorkerManagementPage from "./pages/WorkerManagementPage";
-import WorkerCreate from "./pages/WorkerCreate";
-import WorkerEdit from "./pages/WorkerEdit";
-import DevelopmentWorkbench from "./pages/DevelopmentWorkbench";
-import SchedulingWorkbench from "./pages/SchedulingWorkbench";
-import OperationsWorkbench from "./pages/OperationsWorkbench";
-import RequirementsWorkbench from "./pages/RequirementsWorkbench";
-import MaintenanceWorkbench from "./pages/MaintenanceWorkbench";
+// Development
+import { DevelopmentWorkbench, ProcessDetail } from "./pages/Development";
+// Operations
+import { OperationsWorkbench, WorkerManagementPage, WorkerCreate, WorkerEdit } from "./pages/Operations";
+// Maintenance
+import { MaintenanceWorkbench } from "./pages/Maintenance";
+// Requirements
+import { RequirementsWorkbench } from "./pages/Requirements";
+// Scheduling
+import { SchedulingWorkbench } from "./pages/Scheduling";
 
 const queryClient = new QueryClient();
 
