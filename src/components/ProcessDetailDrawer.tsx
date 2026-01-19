@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useCallback } from 'react';
+import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
 import { 
   SideSheet, 
   Typography, 
@@ -86,10 +86,13 @@ const ProcessDetailDrawer = ({
   const [runTimeRange, setRunTimeRange] = useState<[Date, Date] | null>(null);
   const [selectedRunStatuses, setSelectedRunStatuses] = useState<string[]>([]);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [drawerWidth, setDrawerWidth] = useState(576);
+  const [drawerWidth, setDrawerWidth] = useState(() => {
+    const saved = localStorage.getItem('processDetailDrawerWidth');
+    return saved ? Math.max(Number(saved), 576) : 576;
+  });
   const isResizing = useRef(false);
   const startX = useRef(0);
-  const startWidth = useRef(576);
+  const startWidth = useRef(drawerWidth);
 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
@@ -117,6 +120,11 @@ const ProcessDetailDrawer = ({
 
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
+  }, [drawerWidth]);
+
+  // 保存抽屉宽度到 localStorage
+  useEffect(() => {
+    localStorage.setItem('processDetailDrawerWidth', String(drawerWidth));
   }, [drawerWidth]);
 
   const toggleFullscreen = useCallback(() => {

@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { 
   SideSheet, 
   Typography, 
@@ -116,10 +116,13 @@ const WorkerDetailDrawer = ({
 }: WorkerDetailDrawerProps) => {
   const [activeTab, setActiveTab] = useState('info');
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [drawerWidth, setDrawerWidth] = useState(656);
+  const [drawerWidth, setDrawerWidth] = useState(() => {
+    const saved = localStorage.getItem('workerDetailDrawerWidth');
+    return saved ? Math.max(Number(saved), 576) : 656;
+  });
   const isResizing = useRef(false);
   const startX = useRef(0);
-  const startWidth = useRef(656);
+  const startWidth = useRef(drawerWidth);
 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
@@ -147,6 +150,11 @@ const WorkerDetailDrawer = ({
 
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
+  }, [drawerWidth]);
+
+  // 保存抽屉宽度到 localStorage
+  useEffect(() => {
+    localStorage.setItem('workerDetailDrawerWidth', String(drawerWidth));
   }, [drawerWidth]);
 
   const toggleFullscreen = useCallback(() => {
