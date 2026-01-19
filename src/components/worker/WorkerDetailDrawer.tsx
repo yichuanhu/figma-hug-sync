@@ -259,6 +259,7 @@ const WorkerDetailDrawer = ({
       onCancel={onClose}
       placement="right"
       width={isFullscreen ? '100%' : drawerWidth}
+      mask={false}
       footer={null}
       headerStyle={{ borderBottom: '1px solid var(--semi-color-border)' }}
       bodyStyle={{ padding: 0, position: 'relative' }}
