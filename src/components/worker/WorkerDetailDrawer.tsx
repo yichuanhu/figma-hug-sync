@@ -215,7 +215,8 @@ const WorkerDetailDrawer = ({
       headerStyle={{ borderBottom: '1px solid var(--semi-color-border)' }}
       bodyStyle={{ padding: 0 }}
       style={{
-        margin: 8,
+        top: 8,
+        right: 8,
         height: 'calc(100% - 16px)',
         borderRadius: 8,
         overflow: 'hidden'
