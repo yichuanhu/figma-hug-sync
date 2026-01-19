@@ -66,25 +66,10 @@ body {
   color: inherit !important;
 }
 
-/* SideSheet 右侧定位修复 */
-.semi-sidesheet.semi-sidesheet-right {
-  left: auto !important;
-  right: 0 !important;
-}
-
-.semi-sidesheet-right .semi-sidesheet-inner-wrap {
-  right: 0 !important;
-  left: auto !important;
-}
-
 /* SideSheet 卡片样式 */
-.card-sidesheet .semi-sidesheet-inner-wrap {
+.semi-sidesheet-inner {
   margin: 8px;
-  margin-left: 0;
-}
-
-.card-sidesheet .semi-sidesheet-inner {
-  height: 100% !important;
+  height: calc(100% - 16px) !important;
   border-radius: 8px !important;
   overflow: hidden;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
@@ -113,9 +98,4 @@ body {
 /* 去掉抽屉遮罩背景 */
 .semi-sidesheet-mask {
   background-color: transparent !important;
-}
-
-/* 可调整宽度的抽屉样式 */
-.resizable-sidesheet .semi-sidesheet-inner {
-  position: relative;
 }
