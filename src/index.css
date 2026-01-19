@@ -66,14 +66,9 @@ body {
   color: inherit !important;
 }
 
-/* SideSheet 卡片样式 - 右侧抽屉 */
-.card-sidesheet.semi-sidesheet {
-  right: 0 !important;
-  left: auto !important;
-}
-
+/* SideSheet 卡片样式 */
 .card-sidesheet .semi-sidesheet-inner {
-  margin: 8px 8px 8px 0;
+  margin: 8px 8px 8px 0 !important;
   height: calc(100% - 16px) !important;
   border-radius: 8px !important;
   overflow: hidden;
@@ -81,27 +76,27 @@ body {
   background-color: var(--semi-color-default) !important;
 }
 
-.semi-sidesheet-header,
-.semi-sidesheet-body,
-.semi-sidesheet-body .semi-tabs,
-.semi-sidesheet-body .semi-tabs-bar,
-.semi-sidesheet-body .semi-tabs-content,
-.semi-sidesheet-body .semi-tabs-pane,
-.semi-sidesheet-body .semi-table,
-.semi-sidesheet-body .semi-table-wrapper,
-.semi-sidesheet-body .semi-table-body,
-.semi-sidesheet-body .semi-table-thead,
-.semi-sidesheet-body .semi-table-tbody,
-.semi-sidesheet-body .semi-table-row,
-.semi-sidesheet-body .semi-table-row-cell,
-.semi-sidesheet-body .semi-table-thead .semi-table-row-head,
-.semi-sidesheet-body .semi-descriptions,
-.semi-sidesheet-body .semi-descriptions-item {
+.card-sidesheet .semi-sidesheet-header,
+.card-sidesheet .semi-sidesheet-body,
+.card-sidesheet .semi-sidesheet-body .semi-tabs,
+.card-sidesheet .semi-sidesheet-body .semi-tabs-bar,
+.card-sidesheet .semi-sidesheet-body .semi-tabs-content,
+.card-sidesheet .semi-sidesheet-body .semi-tabs-pane,
+.card-sidesheet .semi-sidesheet-body .semi-table,
+.card-sidesheet .semi-sidesheet-body .semi-table-wrapper,
+.card-sidesheet .semi-sidesheet-body .semi-table-body,
+.card-sidesheet .semi-sidesheet-body .semi-table-thead,
+.card-sidesheet .semi-sidesheet-body .semi-table-tbody,
+.card-sidesheet .semi-sidesheet-body .semi-table-row,
+.card-sidesheet .semi-sidesheet-body .semi-table-row-cell,
+.card-sidesheet .semi-sidesheet-body .semi-table-thead .semi-table-row-head,
+.card-sidesheet .semi-sidesheet-body .semi-descriptions,
+.card-sidesheet .semi-sidesheet-body .semi-descriptions-item {
   background-color: var(--semi-color-default) !important;
 }
 
 /* 去掉抽屉遮罩背景 */
-.semi-sidesheet-mask {
+.card-sidesheet .semi-sidesheet-mask {
   background-color: transparent !important;
 }
 
@@ -110,35 +105,10 @@ body {
   position: relative;
 }
 
-/* 拖拽把手 - 放在抽屉左侧边缘 */
-.resizable-sidesheet .semi-sidesheet-inner::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 6px;
-  cursor: ew-resize;
-  z-index: 100;
-  transition: background-color 0.2s;
-}
-
-.resizable-sidesheet .semi-sidesheet-inner:hover::before {
-  background-color: var(--semi-color-primary-light-hover);
-}
-
-.resizable-sidesheet .semi-sidesheet-inner::before:active {
-  background-color: var(--semi-color-primary);
-}
-
 /* 全屏抽屉样式 */
 .fullscreen-sidesheet .semi-sidesheet-inner {
   margin: 0 !important;
   height: 100% !important;
   width: 100% !important;
   border-radius: 0 !important;
-}
-
-.fullscreen-sidesheet .semi-sidesheet-inner::before {
-  display: none;
 }
