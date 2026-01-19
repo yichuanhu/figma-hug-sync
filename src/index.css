@@ -76,6 +76,11 @@ body {
   background-color: var(--semi-color-default) !important;
 }
 
+.semi-sidesheet-header,
+.semi-sidesheet-body {
+  background-color: var(--semi-color-default) !important;
+}
+
 /* 去掉抽屉遮罩背景 */
 .semi-sidesheet-mask {
   background-color: transparent !important;
