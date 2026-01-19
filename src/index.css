@@ -67,15 +67,9 @@ body {
 }
 
 /* SideSheet 卡片样式 */
-.semi-sidesheet {
-  top: 8px !important;
-  right: 8px !important;
-  bottom: 8px !important;
+.semi-sidesheet-inner {
+  margin: 8px;
   height: calc(100% - 16px) !important;
   border-radius: 8px !important;
   overflow: hidden;
-}
-
-.semi-sidesheet-inner {
-  border-radius: 8px !important;
 }
