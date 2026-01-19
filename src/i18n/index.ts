@@ -1,19 +1,16 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import zhCN from '@/locales/zh-CN.json';
-
-const resources = {
-  'zh-CN': {
-    translation: zhCN,
-  },
-};
+import HttpBackend from 'i18next-http-backend';
 
 i18n
+  .use(HttpBackend)
   .use(initReactI18next)
   .init({
-    resources,
     lng: 'zh-CN',
     fallbackLng: 'zh-CN',
+    backend: {
+      loadPath: '/i18n/{{lng}}.json',
+    },
     interpolation: {
       escapeValue: false,
     },
