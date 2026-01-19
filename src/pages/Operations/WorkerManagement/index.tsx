@@ -26,9 +26,9 @@ import {
   IconKey
 } from '@douyinfe/semi-icons';
 import { useNavigate } from 'react-router-dom';
-import WorkerDetailDrawer from '@/components/worker/WorkerDetailDrawer';
-import WorkerKeyModal from '@/components/worker/WorkerKeyModal';
-import WorkerDeleteModal from '@/components/worker/WorkerDeleteModal';
+import WorkerDetailDrawer from './components/WorkerDetailDrawer';
+import WorkerKeyModal from './components/WorkerKeyModal';
+import WorkerDeleteModal from './components/WorkerDeleteModal';
 
 const { Title, Text } = Typography;
 const CheckboxGroup = Checkbox.Group;
