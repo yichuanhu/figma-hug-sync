@@ -66,10 +66,19 @@ body {
   color: inherit !important;
 }
 
-/* SideSheet 卡片样式 - 右侧抽屉 */
-.semi-sidesheet-right .semi-sidesheet-inner {
-  margin: 8px 8px 8px 0;
-  height: calc(100% - 16px) !important;
+/* SideSheet 卡片样式 */
+.card-sidesheet.semi-sidesheet-right {
+  left: auto !important;
+  right: 0 !important;
+}
+
+.card-sidesheet .semi-sidesheet-inner-wrap {
+  margin: 8px;
+  margin-left: 0;
+}
+
+.card-sidesheet .semi-sidesheet-inner {
+  height: 100% !important;
   border-radius: 8px !important;
   overflow: hidden;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
