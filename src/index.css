@@ -81,7 +81,17 @@ body {
 .semi-sidesheet-body .semi-tabs,
 .semi-sidesheet-body .semi-tabs-bar,
 .semi-sidesheet-body .semi-tabs-content,
-.semi-sidesheet-body .semi-tabs-pane {
+.semi-sidesheet-body .semi-tabs-pane,
+.semi-sidesheet-body .semi-table,
+.semi-sidesheet-body .semi-table-wrapper,
+.semi-sidesheet-body .semi-table-body,
+.semi-sidesheet-body .semi-table-thead,
+.semi-sidesheet-body .semi-table-tbody,
+.semi-sidesheet-body .semi-table-row,
+.semi-sidesheet-body .semi-table-row-cell,
+.semi-sidesheet-body .semi-table-thead .semi-table-row-head,
+.semi-sidesheet-body .semi-descriptions,
+.semi-sidesheet-body .semi-descriptions-item {
   background-color: var(--semi-color-default) !important;
 }
 
