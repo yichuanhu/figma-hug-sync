@@ -1,0 +1,138 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+// 确保布局占满全屏
+#root {
+  height: 100vh;
+}
+
+.semi-layout {
+  min-height: 100vh;
+}
+
+// Sidebar hover effects
+.sidebar-icon-btn {
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #F5F5F5;
+  }
+
+  &.active {
+    background-color: #F5F5F5;
+
+    &:hover {
+      background-color: #F5F5F5;
+    }
+  }
+}
+
+.sidebar-menu-item {
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #F5F5F5;
+  }
+
+  &.selected {
+    background-color: #F5F5F5;
+  }
+}
+
+// Breadcrumb hover styles
+.semi-breadcrumb-item {
+  transition: color 0.2s;
+
+  &:not(:last-child) {
+    cursor: pointer;
+
+    &:hover,
+    &:hover * {
+      color: #1C1F23 !important;
+    }
+  }
+
+  // 最后一层面包屑无hover效果
+  &:last-child {
+    cursor: default;
+
+    &:hover,
+    &:hover * {
+      color: inherit !important;
+    }
+  }
+}
+
+// SideSheet 卡片样式 - 右侧抽屉
+.card-sidesheet {
+  display: flex !important;
+  justify-content: flex-end !important;
+
+  .semi-sidesheet-inner {
+    margin: 8px !important;
+    margin-left: 0 !important;
+    height: calc(100% - 16px) !important;
+    border-radius: 8px !important;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    background-color: var(--semi-color-default) !important;
+  }
+
+  .semi-sidesheet-header,
+  .semi-sidesheet-body {
+    background-color: var(--semi-color-default) !important;
+  }
+
+  .semi-sidesheet-body {
+    .semi-tabs,
+    .semi-tabs-bar,
+    .semi-tabs-content,
+    .semi-tabs-pane {
+      background-color: var(--semi-color-default) !important;
+    }
+
+    .semi-table,
+    .semi-table-wrapper,
+    .semi-table-body,
+    .semi-table-thead,
+    .semi-table-tbody,
+    .semi-table-row,
+    .semi-table-row-cell {
+      background-color: var(--semi-color-default) !important;
+    }
+
+    .semi-table-thead .semi-table-row-head {
+      background-color: var(--semi-color-default) !important;
+    }
+
+    .semi-descriptions,
+    .semi-descriptions-item {
+      background-color: var(--semi-color-default) !important;
+    }
+  }
+
+  // 去掉抽屉遮罩背景
+  .semi-sidesheet-mask {
+    background-color: transparent !important;
+  }
+}
+
+// 可拖拽调整宽度的抽屉
+.resizable-sidesheet {
+  .semi-sidesheet-inner {
+    position: relative;
+  }
+}
+
+// 全屏抽屉样式
+.fullscreen-sidesheet {
+  .semi-sidesheet-inner {
+    margin: 0 !important;
+    height: 100% !important;
+    width: 100% !important;
+    border-radius: 0 !important;
+  }
+}
