@@ -78,7 +78,7 @@ const ProcessDevelopment = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // 打开流程详情抽屉
+  // 打开流程详情抽屉或切换内容
   const openProcessDetail = (record: typeof processListData[0]) => {
     const processId = `PROC-2024-${String(record.key).padStart(3, '0')}`;
     setSelectedProcess({
@@ -92,7 +92,10 @@ const ProcessDevelopment = () => {
       language: record.language,
       version: record.version,
     });
-    setDetailDrawerVisible(true);
+    // 如果抽屉未打开则打开，已打开则内容自动切换
+    if (!detailDrawerVisible) {
+      setDetailDrawerVisible(true);
+    }
   };
 
   // 操作处理函数
