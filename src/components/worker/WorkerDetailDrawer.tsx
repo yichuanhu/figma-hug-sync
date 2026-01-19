@@ -133,7 +133,7 @@ const WorkerDetailDrawer = ({
     const handleMouseMove = (e: MouseEvent) => {
       if (!isResizing.current) return;
       const diff = startX.current - e.clientX;
-      const newWidth = Math.min(Math.max(startWidth.current + diff, 400), window.innerWidth - 100);
+      const newWidth = Math.min(Math.max(startWidth.current + diff, 576), window.innerWidth - 100);
       setDrawerWidth(newWidth);
     };
 
