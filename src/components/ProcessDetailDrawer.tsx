@@ -214,59 +214,97 @@ const ProcessDetailDrawer = ({
 
   return (
     <SideSheet
-      title={
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center',
-          width: '100%',
-          paddingRight: 0
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Title heading={5} style={{ margin: 0 }}>{processData.name}</Title>
-            <Text type="tertiary" size="small">{processData.id}</Text>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <Tooltip content="打开流程">
-              <Button 
-                icon={<IconExternalOpenStroked />} 
-                theme="borderless"
-                size="small"
-                onClick={onOpen}
-              />
-            </Tooltip>
-            <Tooltip content="编辑">
-              <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={onEdit} />
-            </Tooltip>
-            <Tooltip content="运行">
-              <Button icon={<IconPlay />} theme="borderless" size="small" onClick={onRun} />
-            </Tooltip>
-            <Tooltip content="删除">
-              <Button 
-                icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />} 
-                theme="borderless"
-                size="small"
-                onClick={onDelete}
-              />
-            </Tooltip>
-            <Divider layout="vertical" style={{ height: 16, margin: '0 8px 0 8px', marginRight: 24 }} />
-          </div>
-        </div>
-      }
+      title={<Title heading={5} style={{ margin: 0 }}>流程详情</Title>}
       visible={visible}
       onCancel={onClose}
       width={560}
       footer={null}
       headerStyle={{ borderBottom: '1px solid var(--semi-color-border)' }}
-      bodyStyle={{ padding: 0 }}
+      bodyStyle={{ padding: 0, overflowY: 'auto' }}
     >
+      {/* 流程头部信息区 */}
+      <div style={{ 
+        padding: '24px', 
+        borderBottom: '1px solid var(--semi-color-border)'
+      }}>
+        <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+          {/* 流程图标 */}
+          <div style={{ 
+            width: 64, 
+            height: 64, 
+            borderRadius: 8, 
+            backgroundColor: 'var(--semi-color-primary-light-default)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0
+          }}>
+            <IconPlay style={{ fontSize: 28, color: 'var(--semi-color-primary)' }} />
+          </div>
+          {/* 流程基本信息 */}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+              <Title heading={5} style={{ margin: 0 }}>{processData.name}</Title>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+              <Text type="tertiary" size="small">来自</Text>
+              <Text size="small">{processData.creator}</Text>
+              <Text type="tertiary" size="small">{processData.createdAt}</Text>
+              {processData.version && (
+                <>
+                  <Text type="tertiary" size="small">|</Text>
+                  <Text type="tertiary" size="small">版本：{processData.version}</Text>
+                </>
+              )}
+            </div>
+          </div>
+          {/* 状态标签 */}
+          <Tag 
+            color={processData.status === '已发布' ? 'green' : 'grey'} 
+            type="light"
+            style={{ flexShrink: 0 }}
+          >
+            {processData.status}
+          </Tag>
+        </div>
+        {/* 操作按钮 */}
+        <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
+          <Button 
+            icon={<IconExternalOpenStroked />} 
+            onClick={onOpen}
+          >
+            打开
+          </Button>
+          <Button icon={<IconEditStroked />} onClick={onEdit}>
+            编辑
+          </Button>
+          <Button icon={<IconPlay />} onClick={onRun}>
+            运行
+          </Button>
+          <Button 
+            icon={<IconDeleteStroked />} 
+            type="danger"
+            onClick={onDelete}
+          >
+            删除
+          </Button>
+        </div>
+      </div>
+
+      {/* 流程描述 */}
+      <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--semi-color-border)' }}>
+        <Title heading={6} style={{ margin: '0 0 8px 0' }}>流程描述</Title>
+        <Text type="secondary">{processData.description || '暂无描述'}</Text>
+      </div>
+
+      {/* 详细信息区域 */}
       <Tabs 
         activeKey={activeTab} 
         onChange={setActiveTab}
-        style={{ height: '100%' }}
+        style={{ height: 'auto' }}
         tabBarStyle={{ padding: '0 24px' }}
       >
-        <TabPane tab="流程详情" itemKey="detail">
+        <TabPane tab="基本信息" itemKey="detail">
           <div style={{ padding: '16px 24px' }}>
             <Descriptions data={descriptionData} />
           </div>
