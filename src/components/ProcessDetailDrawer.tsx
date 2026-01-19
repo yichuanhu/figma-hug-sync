@@ -271,7 +271,7 @@ const ProcessDetailDrawer = ({
             <Title heading={5} style={{ margin: 0 }}>{processData.name}</Title>
             <Text type="tertiary" size="small">{processData.id}</Text>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <Tooltip content="打开流程">
               <Button 
                 icon={<IconExternalOpenStroked />} 
