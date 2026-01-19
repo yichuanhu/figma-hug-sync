@@ -6,6 +6,11 @@ import ProcessDetail from "./pages/ProcessDetail";
 import WorkerManagementPage from "./pages/WorkerManagementPage";
 import WorkerCreate from "./pages/WorkerCreate";
 import WorkerEdit from "./pages/WorkerEdit";
+import DevelopmentWorkbench from "./pages/DevelopmentWorkbench";
+import SchedulingWorkbench from "./pages/SchedulingWorkbench";
+import OperationsWorkbench from "./pages/OperationsWorkbench";
+import RequirementsWorkbench from "./pages/RequirementsWorkbench";
+import MaintenanceWorkbench from "./pages/MaintenanceWorkbench";
 
 const queryClient = new QueryClient();
 
@@ -19,6 +24,11 @@ const App = () => (
         <Route path="/worker-management" element={<WorkerManagementPage />} />
         <Route path="/worker-management/create" element={<WorkerCreate />} />
         <Route path="/worker-management/edit/:id" element={<WorkerEdit />} />
+        <Route path="/development-workbench" element={<DevelopmentWorkbench />} />
+        <Route path="/scheduling-workbench" element={<SchedulingWorkbench />} />
+        <Route path="/operations-workbench" element={<OperationsWorkbench />} />
+        <Route path="/requirements-workbench" element={<RequirementsWorkbench />} />
+        <Route path="/maintenance-workbench" element={<MaintenanceWorkbench />} />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />
       </Routes>
