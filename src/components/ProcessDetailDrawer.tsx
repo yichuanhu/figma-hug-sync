@@ -14,7 +14,7 @@ import {
   DatePicker,
   Select
 } from '@douyinfe/semi-ui';
-import { IconEditStroked, IconPlay, IconDeleteStroked, IconExternalOpenStroked, IconMaximize, IconMinimize } from '@douyinfe/semi-icons';
+import { IconEditStroked, IconPlay, IconDeleteStroked, IconExternalOpenStroked, IconMaximize, IconMinimize, IconClose } from '@douyinfe/semi-icons';
 
 const { Title, Text } = Typography;
 
@@ -294,13 +294,22 @@ const ProcessDetailDrawer = ({
                 onClick={onDelete}
               />
             </Tooltip>
-            <Divider layout="vertical" style={{ height: 16, margin: '0 8px 0 8px' }} />
+            <Divider layout="vertical" style={{ height: 16, margin: '0 8px 0 4px' }} />
             <Tooltip content={isFullscreen ? "退出全屏" : "全屏"}>
               <Button 
                 icon={isFullscreen ? <IconMinimize /> : <IconMaximize />} 
                 theme="borderless"
                 size="small"
                 onClick={toggleFullscreen}
+              />
+            </Tooltip>
+            <Tooltip content="关闭">
+              <Button 
+                icon={<IconClose />} 
+                theme="borderless"
+                size="small"
+                onClick={onClose}
+                style={{ marginLeft: 4 }}
               />
             </Tooltip>
           </div>
@@ -312,6 +321,7 @@ const ProcessDetailDrawer = ({
       width={isFullscreen ? '100%' : drawerWidth}
       mask={false}
       footer={null}
+      closable={false}
       headerStyle={{ borderBottom: '1px solid var(--semi-color-border)' }}
       bodyStyle={{ padding: 0, position: 'relative' }}
       className={`card-sidesheet resizable-sidesheet ${isFullscreen ? 'fullscreen-sidesheet' : ''}`}
