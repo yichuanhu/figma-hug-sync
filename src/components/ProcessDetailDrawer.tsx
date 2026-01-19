@@ -92,6 +92,8 @@ const ProcessDetailDrawer = ({
   const startWidth = useRef(576);
 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     isResizing.current = true;
     startX.current = e.clientX;
     startWidth.current = drawerWidth;
@@ -301,13 +303,21 @@ const ProcessDetailDrawer = ({
       width={isFullscreen ? '100%' : drawerWidth}
       footer={null}
       headerStyle={{ borderBottom: '1px solid var(--semi-color-border)' }}
-      bodyStyle={{ padding: 0 }}
+      bodyStyle={{ padding: 0, position: 'relative' }}
       className={`card-sidesheet resizable-sidesheet ${isFullscreen ? 'fullscreen-sidesheet' : ''}`}
     >
       {/* 拖拽调整宽度的把手 */}
       {!isFullscreen && (
         <div
-          className="sidesheet-resize-handle"
+          style={{
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            bottom: 0,
+            width: 6,
+            cursor: 'ew-resize',
+            zIndex: 100,
+          }}
           onMouseDown={handleMouseDown}
         />
       )}
