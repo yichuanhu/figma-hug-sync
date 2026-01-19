@@ -45,7 +45,41 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
   const [expandedKeys, setExpandedKeys] = useState<string[]>(['开发任务管理']);
   const [hoveredCenterKey, setHoveredCenterKey] = useState<string | null>(null);
   const [floatingExpandedKeys, setFloatingExpandedKeys] = useState<string[]>(['开发任务管理']);
-  const [activeCenterKey, setActiveCenterKey] = useState<string>('开发中心');
+
+  // 根据当前路由获取激活的中心
+  const getActiveCenterByPath = (pathname: string): string => {
+    // 开发中心相关路由
+    if (pathname === '/development-workbench' || 
+        pathname === '/process-development' || 
+        pathname.startsWith('/process-detail/') ||
+        pathname === '/worker-management' || 
+        pathname.startsWith('/worker-management/')) {
+      return '开发中心';
+    }
+    // 调度中心相关路由
+    if (pathname === '/scheduling-workbench' || pathname.startsWith('/scheduling')) {
+      return '调度中心';
+    }
+    // 运营中心相关路由
+    if (pathname === '/operations-workbench' || pathname.startsWith('/operations')) {
+      return '运营中心';
+    }
+    // 需求中心相关路由
+    if (pathname === '/requirements-workbench' || pathname.startsWith('/requirements')) {
+      return '需求中心';
+    }
+    // 运维中心相关路由
+    if (pathname === '/maintenance-workbench' || pathname.startsWith('/maintenance')) {
+      return '运维中心';
+    }
+    // 首页
+    if (pathname === '/') {
+      return '首页';
+    }
+    return '开发中心';
+  };
+
+  const activeCenterKey = getActiveCenterByPath(location.pathname);
 
   // 中心级别菜单（左侧图标栏）
   const centerMenuItems: MenuItem[] = [
@@ -148,7 +182,6 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
   };
 
   const handleCenterClick = (item: MenuItem) => {
-    setActiveCenterKey(item.key);
     if (item.path) {
       navigate(item.path);
       setHoveredCenterKey(null);
