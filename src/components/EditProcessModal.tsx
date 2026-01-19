@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { 
   Modal, 
   Form, 
@@ -23,6 +24,7 @@ interface EditProcessModalProps {
 }
 
 const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditProcessModalProps) => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
 
   // 模拟已存在的流程名称列表（排除当前编辑的流程）
@@ -44,7 +46,7 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
       return true;
     }
     if (value && existingProcessNames.includes(value.trim())) {
-      callback('流程名称已存在，请使用其他名称');
+      callback(t('createProcess.validation.nameExists'));
       return false;
     }
     callback();
@@ -87,11 +89,11 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
         type: values.type as string,
       };
 
-      Toast.success('流程更新成功！');
+      Toast.success(t('editProcess.success'));
       onSuccess?.(updatedData);
       onCancel();
     } catch (error) {
-      Toast.error('更新失败，请重试');
+      Toast.error(t('editProcess.error'));
     } finally {
       setLoading(false);
     }
@@ -99,7 +101,7 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
 
   return (
     <Modal
-      title="编辑流程"
+      title={t('editProcess.title')}
       visible={visible}
       onCancel={onCancel}
       footer={null}
@@ -122,42 +124,42 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
       >
         <Form.Input
           field="name"
-          label="流程名称"
-          placeholder="请输入流程名称"
+          label={t('createProcess.fields.name')}
+          placeholder={t('createProcess.fields.namePlaceholder')}
           rules={[
-            { required: true, message: '请输入流程名称' },
-            { min: 1, message: '流程名称长度必须在1-100字符之间' },
-            { max: 100, message: '流程名称长度必须在1-100字符之间' },
+            { required: true, message: t('createProcess.validation.nameRequired') },
+            { min: 1, message: t('createProcess.validation.nameLengthError') },
+            { max: 100, message: t('createProcess.validation.nameLengthError') },
             { validator: validateProcessNameUnique },
           ]}
         />
         
         <Form.TextArea
           field="description"
-          label="流程描述"
-          placeholder="请输入流程描述，例如：自动处理电商平台的订单，包括订单验证、库存检查、发货通知"
+          label={t('createProcess.fields.description')}
+          placeholder={t('createProcess.fields.descriptionPlaceholder')}
           autosize={{ minRows: 3, maxRows: 6 }}
           maxCount={500}
           rules={[
-            { required: true, message: '请输入流程描述' },
-            { min: 1, message: '流程描述长度必须在1-500字符之间' },
-            { max: 500, message: '流程描述长度必须在1-500字符之间' },
+            { required: true, message: t('createProcess.validation.descriptionRequired') },
+            { min: 1, message: t('createProcess.validation.descriptionLengthError') },
+            { max: 500, message: t('createProcess.validation.descriptionLengthError') },
           ]}
         />
 
         <Form.Select
           field="type"
-          label="流程类型"
-          placeholder="请选择流程类型"
+          label={t('createProcess.fields.type')}
+          placeholder={t('createProcess.fields.typePlaceholder')}
           optionList={processTypeOptions}
-          rules={[{ required: true, message: '请选择流程类型' }]}
+          rules={[{ required: true, message: t('createProcess.validation.typeRequired') }]}
           style={{ width: '100%' }}
         />
 
         <Form.Select
           field="relatedRequirement"
-          label="关联需求"
-          placeholder="请选择"
+          label={t('createProcess.fields.relatedRequirement')}
+          placeholder={t('createProcess.fields.relatedRequirementPlaceholder')}
           optionList={requirementOptions}
           showClear
           style={{ width: '100%' }}
@@ -165,10 +167,10 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
 
         <Form.Select
           field="organization"
-          label="归属组织"
-          placeholder="请选择"
+          label={t('createProcess.fields.organization')}
+          placeholder={t('createProcess.fields.organizationPlaceholder')}
           optionList={organizationOptions}
-          rules={[{ required: true, message: '请选择归属组织' }]}
+          rules={[{ required: true, message: t('createProcess.validation.organizationRequired') }]}
           style={{ width: '100%' }}
         />
 
@@ -182,10 +184,10 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
           borderTop: '1px solid var(--semi-color-border)'
         }}>
           <Button theme="light" onClick={onCancel}>
-            取消
+            {t('common.cancel')}
           </Button>
           <Button htmlType="submit" theme="solid" type="primary" loading={loading}>
-            保存
+            {t('common.save')}
           </Button>
         </div>
       </Form>

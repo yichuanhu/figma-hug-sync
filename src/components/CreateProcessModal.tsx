@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { 
   Modal, 
   Form, 
@@ -25,6 +26,7 @@ interface CreateProcessModalProps {
 
 const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModalProps) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
 
   // 生成流程ID
@@ -48,7 +50,7 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
     callback: (error?: string) => void
   ) => {
     if (value && existingProcessNames.includes(value.trim())) {
-      callback('流程名称已存在，请使用其他名称');
+      callback(t('createProcess.validation.nameExists'));
       return false;
     }
     callback();
@@ -98,16 +100,16 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
         type: values.type as string,
         relatedRequirement: values.relatedRequirement as string,
         organization: values.organization as string,
-        status: '草稿',
+        status: t('development.status.draft'),
         creator: '当前用户', // 实际应从用户上下文获取
         createdAt: now,
       };
 
-      Toast.success('流程创建成功！');
+      Toast.success(t('createProcess.success'));
       onCancel();
       onSuccess?.(processData);
     } catch (error) {
-      Toast.error('创建失败，请重试');
+      Toast.error(t('createProcess.error'));
     } finally {
       setLoading(false);
     }
@@ -115,7 +117,7 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
 
   return (
     <Modal
-      title="新建流程"
+      title={t('createProcess.title')}
       visible={visible}
       onCancel={onCancel}
       footer={null}
@@ -130,13 +132,13 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
       >
         <Form.Input
           field="name"
-          label="流程名称"
-          placeholder="请输入流程名称"
+          label={t('createProcess.fields.name')}
+          placeholder={t('createProcess.fields.namePlaceholder')}
           trigger="blur"
           rules={[
-            { required: true, message: '请输入流程名称' },
-            { min: 1, message: '流程名称长度必须在1-100字符之间' },
-            { max: 100, message: '流程名称长度必须在1-100字符之间' },
+            { required: true, message: t('createProcess.validation.nameRequired') },
+            { min: 1, message: t('createProcess.validation.nameLengthError') },
+            { max: 100, message: t('createProcess.validation.nameLengthError') },
             { validator: validateProcessNameUnique },
           ]}
           showClear
@@ -144,32 +146,32 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
         
         <Form.TextArea
           field="description"
-          label="流程描述"
-          placeholder="请输入流程描述，例如：自动处理电商平台的订单，包括订单验证、库存检查、发货通知"
+          label={t('createProcess.fields.description')}
+          placeholder={t('createProcess.fields.descriptionPlaceholder')}
           autosize={{ minRows: 3, maxRows: 6 }}
           maxCount={500}
           trigger="blur"
           rules={[
-            { required: true, message: '请输入流程描述' },
-            { min: 1, message: '流程描述长度必须在1-500字符之间' },
-            { max: 500, message: '流程描述长度必须在1-500字符之间' },
+            { required: true, message: t('createProcess.validation.descriptionRequired') },
+            { min: 1, message: t('createProcess.validation.descriptionLengthError') },
+            { max: 500, message: t('createProcess.validation.descriptionLengthError') },
           ]}
         />
 
         <Form.Select
           field="type"
-          label="流程类型"
-          placeholder="请选择流程类型"
+          label={t('createProcess.fields.type')}
+          placeholder={t('createProcess.fields.typePlaceholder')}
           initValue="原生流程"
           optionList={processTypeOptions}
-          rules={[{ required: true, message: '请选择流程类型' }]}
+          rules={[{ required: true, message: t('createProcess.validation.typeRequired') }]}
           style={{ width: '100%' }}
         />
 
         <Form.Select
           field="relatedRequirement"
-          label="关联需求"
-          placeholder="请选择"
+          label={t('createProcess.fields.relatedRequirement')}
+          placeholder={t('createProcess.fields.relatedRequirementPlaceholder')}
           optionList={requirementOptions}
           showClear
           style={{ width: '100%' }}
@@ -177,10 +179,10 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
 
         <Form.Select
           field="organization"
-          label="归属组织"
-          placeholder="请选择"
+          label={t('createProcess.fields.organization')}
+          placeholder={t('createProcess.fields.organizationPlaceholder')}
           optionList={organizationOptions}
-          rules={[{ required: true, message: '请选择归属组织' }]}
+          rules={[{ required: true, message: t('createProcess.validation.organizationRequired') }]}
           style={{ width: '100%' }}
         />
 
@@ -194,10 +196,10 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
           borderTop: '1px solid var(--semi-color-border)'
         }}>
           <Button theme="light" onClick={onCancel}>
-            取消
+            {t('common.cancel')}
           </Button>
           <Button htmlType="submit" theme="solid" type="primary" loading={loading}>
-            创建
+            {t('common.create')}
           </Button>
         </div>
       </Form>

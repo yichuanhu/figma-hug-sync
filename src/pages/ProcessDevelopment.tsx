@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { 
   Breadcrumb, 
   Typography, 
@@ -35,6 +36,7 @@ interface FilterState {
 
 const ProcessDevelopment = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [searchValue, setSearchValue] = useState('');
   const [filters, setFilters] = useState<FilterState>({
     status: [],
@@ -128,7 +130,7 @@ const ProcessDevelopment = () => {
 
   // 筛选选项
   const filterOptions = {
-    status: ['已发布', '草稿'],
+    status: [t('development.status.published'), t('development.status.draft')],
     language: ['python', 'BotScript'],
     organization: ['财务部', '人事部', '技术部', '运营部'],
     creator: ['姜鹏志', '李明', '王芳', '张伟'],
@@ -156,49 +158,49 @@ const ProcessDevelopment = () => {
   // 骨架屏列配置
   const skeletonColumns = [
     {
-      title: '流程名称',
+      title: t('development.table.processName'),
       dataIndex: 'name',
       key: 'name',
       width: 120,
       render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 80 }} />} loading active />,
     },
     {
-      title: '描述',
+      title: t('development.table.processDescription'),
       dataIndex: 'description',
       key: 'description',
       width: 280,
       render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 200 }} />} loading active />,
     },
     {
-      title: '状态',
+      title: t('development.table.status'),
       dataIndex: 'status',
       key: 'status',
       width: 80,
       render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 50 }} />} loading active />,
     },
     {
-      title: '语言',
+      title: t('development.table.language'),
       dataIndex: 'language',
       key: 'language',
       width: 100,
       render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 60 }} />} loading active />,
     },
     {
-      title: '版本',
+      title: t('development.table.version'),
       dataIndex: 'version',
       key: 'version',
       width: 80,
       render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 40 }} />} loading active />,
     },
     {
-      title: '归属组织',
+      title: t('development.table.organization'),
       dataIndex: 'organization',
       key: 'organization',
       width: 100,
       render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 60 }} />} loading active />,
     },
     {
-      title: '创建者',
+      title: t('development.table.creator'),
       dataIndex: 'creator',
       key: 'creator',
       width: 120,
@@ -210,14 +212,14 @@ const ProcessDevelopment = () => {
       ),
     },
     {
-      title: '最后修改',
+      title: t('development.table.lastModified'),
       dataIndex: 'updatedAt',
       key: 'updatedAt',
       width: 120,
       render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 70 }} />} loading active />,
     },
     {
-      title: '操作',
+      title: t('development.table.actions'),
       dataIndex: 'action',
       key: 'action',
       width: 60,
@@ -227,13 +229,13 @@ const ProcessDevelopment = () => {
 
   const columns = [
     {
-      title: '流程名称',
+      title: t('development.table.processName'),
       dataIndex: 'name',
       key: 'name',
       width: 120,
     },
     {
-      title: '描述',
+      title: t('development.table.processDescription'),
       dataIndex: 'description',
       key: 'description',
       width: 280,
@@ -251,18 +253,18 @@ const ProcessDevelopment = () => {
       ),
     },
     {
-      title: '状态',
+      title: t('development.table.status'),
       dataIndex: 'status',
       key: 'status',
       width: 80,
       render: (status: string) => (
-        <Tag color={status === '已发布' ? 'green' : 'grey'} type="light">
+        <Tag color={status === t('development.status.published') ? 'green' : 'grey'} type="light">
           {status}
         </Tag>
       ),
     },
     {
-      title: '语言',
+      title: t('development.table.language'),
       dataIndex: 'language',
       key: 'language',
       width: 100,
@@ -273,7 +275,7 @@ const ProcessDevelopment = () => {
       ),
     },
     {
-      title: '版本',
+      title: t('development.table.version'),
       dataIndex: 'version',
       key: 'version',
       width: 80,
@@ -284,13 +286,13 @@ const ProcessDevelopment = () => {
       ),
     },
     {
-      title: '归属组织',
+      title: t('development.table.organization'),
       dataIndex: 'organization',
       key: 'organization',
       width: 100,
     },
     {
-      title: '创建者',
+      title: t('development.table.creator'),
       dataIndex: 'creator',
       key: 'creator',
       width: 120,
@@ -314,14 +316,14 @@ const ProcessDevelopment = () => {
       },
     },
     {
-      title: '最后修改',
+      title: t('development.table.lastModified'),
       dataIndex: 'updatedAt',
       key: 'updatedAt',
       width: 120,
       sorter: true,
     },
     {
-      title: '操作',
+      title: t('development.table.actions'),
       dataIndex: 'action',
       key: 'action',
       width: 60,
@@ -339,11 +341,11 @@ const ProcessDevelopment = () => {
                   openProcess({ id: processId, name: record.name });
                 }}
               >
-                打开流程
+                {t('development.actions.openProcess')}
               </Dropdown.Item>
-              <Dropdown.Item icon={<IconEditStroked />} onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>编辑</Dropdown.Item>
-              <Dropdown.Item icon={<IconPlay />} onClick={handleRun}>运行</Dropdown.Item>
-              <Dropdown.Item icon={<IconDeleteStroked />} type="danger" onClick={handleDelete}>删除</Dropdown.Item>
+              <Dropdown.Item icon={<IconEditStroked />} onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>{t('development.actions.edit')}</Dropdown.Item>
+              <Dropdown.Item icon={<IconPlay />} onClick={handleRun}>{t('development.actions.run')}</Dropdown.Item>
+              <Dropdown.Item icon={<IconDeleteStroked />} type="danger" onClick={handleDelete}>{t('development.actions.delete')}</Dropdown.Item>
             </Dropdown.Menu>
           }
         >
@@ -361,7 +363,7 @@ const ProcessDevelopment = () => {
     key: index + 1,
     name: index % 2 === 0 ? '财务报销流程' : '人事审批流程',
     description: '自动处理财务报销审批流程，包括发票识别、金额核对、审批通知',
-    status: index < 5 ? '已发布' : '草稿',
+    status: index < 5 ? t('development.status.published') : t('development.status.draft'),
     language: index % 3 === 1 ? 'BotScript' : 'python',
     version: '1.2.0',
     organization: '财务部',
@@ -410,7 +412,7 @@ const ProcessDevelopment = () => {
   const filterContent = (
     <div style={{ padding: 16, width: 280 }}>
       <div style={{ marginBottom: 16 }}>
-        <Text strong style={{ display: 'block', marginBottom: 8 }}>流程状态</Text>
+        <Text strong style={{ display: 'block', marginBottom: 8 }}>{t('development.filter.processStatus')}</Text>
         <CheckboxGroup
           value={filters.status}
           onChange={(values) => handleFilterChange('status', values as string[])}
@@ -419,7 +421,7 @@ const ProcessDevelopment = () => {
         />
       </div>
       <div style={{ marginBottom: 16 }}>
-        <Text strong style={{ display: 'block', marginBottom: 8 }}>语言</Text>
+        <Text strong style={{ display: 'block', marginBottom: 8 }}>{t('development.filter.language')}</Text>
         <CheckboxGroup
           value={filters.language}
           onChange={(values) => handleFilterChange('language', values as string[])}
@@ -428,7 +430,7 @@ const ProcessDevelopment = () => {
         />
       </div>
       <div style={{ marginBottom: 16 }}>
-        <Text strong style={{ display: 'block', marginBottom: 8 }}>归属组织</Text>
+        <Text strong style={{ display: 'block', marginBottom: 8 }}>{t('development.filter.organization')}</Text>
         <CheckboxGroup
           value={filters.organization}
           onChange={(values) => handleFilterChange('organization', values as string[])}
@@ -437,7 +439,7 @@ const ProcessDevelopment = () => {
         />
       </div>
       <div style={{ marginBottom: 16 }}>
-        <Text strong style={{ display: 'block', marginBottom: 8 }}>创建者</Text>
+        <Text strong style={{ display: 'block', marginBottom: 8 }}>{t('development.filter.creator')}</Text>
         <CheckboxGroup
           value={filters.creator}
           onChange={(values) => handleFilterChange('creator', values as string[])}
@@ -447,10 +449,10 @@ const ProcessDevelopment = () => {
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--semi-color-border)', paddingTop: 12 }}>
         <Button theme="borderless" onClick={clearFilters} disabled={!hasActiveFilters}>
-          重置
+          {t('common.reset')}
         </Button>
         <Button theme="solid" type="primary" onClick={() => setFilterVisible(false)}>
-          确定
+          {t('common.confirm')}
         </Button>
       </div>
     </div>
@@ -464,17 +466,17 @@ const ProcessDevelopment = () => {
         flexShrink: 0,
       }}>
         <Breadcrumb>
-          <Breadcrumb.Item onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>首页</Breadcrumb.Item>
-          <Breadcrumb.Item>开发中心</Breadcrumb.Item>
-          <Breadcrumb.Item>自动化流程</Breadcrumb.Item>
+          <Breadcrumb.Item onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>{t('common.home')}</Breadcrumb.Item>
+          <Breadcrumb.Item>{t('development.breadcrumb.developmentCenter')}</Breadcrumb.Item>
+          <Breadcrumb.Item>{t('development.breadcrumb.automationProcess')}</Breadcrumb.Item>
         </Breadcrumb>
       </div>
 
       {/* 标题区域 */}
       <div style={{ padding: '20px 24px 0', flexShrink: 0 }}>
         <div style={{ marginBottom: 24 }}>
-          <Title heading={3} style={{ marginBottom: 8 }}>自动化流程</Title>
-          <Text type="tertiary">创建和管理自动化流程，配置流程资源和版本</Text>
+          <Title heading={3} style={{ marginBottom: 8 }}>{t('development.title')}</Title>
+          <Text type="tertiary">{t('development.description')}</Text>
         </div>
 
         {/* 操作栏 */}
@@ -487,7 +489,7 @@ const ProcessDevelopment = () => {
           <div style={{ display: 'flex', gap: 12 }}>
             <Input 
               prefix={<IconSearch />}
-              placeholder="搜索流程名称"
+              placeholder={t('development.searchPlaceholder')}
               style={{ width: 240 }}
               value={searchValue}
               onChange={(value) => setSearchValue(value)}
@@ -504,13 +506,13 @@ const ProcessDevelopment = () => {
                 theme={hasActiveFilters ? 'solid' : 'light'}
                 type={hasActiveFilters ? 'primary' : 'tertiary'}
               >
-                筛选{activeFilterCount > 0 ? ` (${activeFilterCount})` : ''}
+                {t('common.filter')}{activeFilterCount > 0 ? ` (${activeFilterCount})` : ''}
               </Button>
             </Popover>
           </div>
           <div style={{ display: 'flex', gap: 12 }}>
             <Button icon={<IconDownload />} theme="light">
-              导入流程
+              {t('development.importProcess')}
             </Button>
             <Button 
               icon={<IconPlus />} 
@@ -518,7 +520,7 @@ const ProcessDevelopment = () => {
               type="primary"
               onClick={() => setCreateModalVisible(true)}
             >
-              新建流程
+              {t('development.createProcess')}
             </Button>
           </div>
         </div>
@@ -550,8 +552,8 @@ const ProcessDevelopment = () => {
               <Empty
                 image={<IllustrationNoResult style={{ width: 150, height: 150 }} />}
                 darkModeImage={<IllustrationNoResultDark style={{ width: 150, height: 150 }} />}
-                title="暂无数据"
-                description={hasActiveFilters || searchValue ? "没有找到匹配的流程，请尝试调整筛选条件" : "还没有创建任何流程，点击「新建流程」开始"}
+                title={t('development.empty.title')}
+                description={hasActiveFilters || searchValue ? t('development.empty.filterDescription') : t('development.empty.defaultDescription')}
               />
             }
             onRow={(record) => {
@@ -584,7 +586,7 @@ const ProcessDevelopment = () => {
         flexShrink: 0,
       }}>
         <Text type="tertiary" style={{ fontSize: 14 }}>
-          显示第 1 条-第 10 条，共 46 条
+          {t('common.showingRecords', { start: 1, end: 10, total: 46 })}
         </Text>
         <Pagination 
           total={46} 

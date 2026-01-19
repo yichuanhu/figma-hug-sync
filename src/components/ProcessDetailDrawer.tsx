@@ -1,4 +1,5 @@
 import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { 
   SideSheet, 
   Typography, 
@@ -42,13 +43,6 @@ const allRunData = [
   { key: 5, taskId: 'TASK-005', robot: 'RPA-机器人-02', creator: '李明', createdTime: '2024-01-11 08:30:00', status: '成功' },
 ];
 
-// 运行状态选项
-const runStatusOptions = [
-  { value: '成功', label: '成功' },
-  { value: '失败', label: '失败' },
-  { value: '运行中', label: '运行中' },
-];
-
 interface ProcessData {
   id: string;
   name: string;
@@ -80,6 +74,7 @@ const ProcessDetailDrawer = ({
   onRun,
   onDelete 
 }: ProcessDetailDrawerProps) => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('detail');
   const [changeTimeRange, setChangeTimeRange] = useState<[Date, Date] | null>(null);
   const [selectedChangers, setSelectedChangers] = useState<string[]>([]);
@@ -93,6 +88,13 @@ const ProcessDetailDrawer = ({
   const isResizing = useRef(false);
   const startX = useRef(0);
   const startWidth = useRef(drawerWidth);
+
+  // 运行状态选项
+  const runStatusOptions = [
+    { value: t('processDetail.runStatus.success'), label: t('processDetail.runStatus.success') },
+    { value: t('processDetail.runStatus.failed'), label: t('processDetail.runStatus.failed') },
+    { value: t('processDetail.runStatus.running'), label: t('processDetail.runStatus.running') },
+  ];
 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
@@ -172,17 +174,17 @@ const ProcessDetailDrawer = ({
   if (!processData) return null;
 
   const descriptionData = [
-    { key: '流程ID', value: processData.id },
-    { key: '流程名称', value: processData.name },
-    { key: '流程描述', value: processData.description || '-' },
-    { key: '归属组织', value: processData.organization },
-    { key: '创建者', value: processData.creator },
-    { key: '创建时间', value: processData.createdAt },
+    { key: t('processDetail.fields.processId'), value: processData.id },
+    { key: t('processDetail.fields.processName'), value: processData.name },
+    { key: t('processDetail.fields.processDescription'), value: processData.description || '-' },
+    { key: t('processDetail.fields.organization'), value: processData.organization },
+    { key: t('processDetail.fields.creator'), value: processData.creator },
+    { key: t('processDetail.fields.createdAt'), value: processData.createdAt },
     { 
-      key: '状态', 
+      key: t('processDetail.fields.status'), 
       value: (
         <Tag 
-          color={processData.status === '已发布' ? 'green' : 'grey'} 
+          color={processData.status === t('development.status.published') ? 'green' : 'grey'} 
           type="light"
         >
           {processData.status}
@@ -193,7 +195,7 @@ const ProcessDetailDrawer = ({
 
   if (processData.language) {
     descriptionData.splice(3, 0, { 
-      key: '语言', 
+      key: t('processDetail.fields.language'), 
       value: (
         <Tag 
           color={processData.language === 'python' ? 'blue' : 'cyan'} 
@@ -207,7 +209,7 @@ const ProcessDetailDrawer = ({
 
   if (processData.version) {
     descriptionData.splice(4, 0, { 
-      key: '版本', 
+      key: t('processDetail.fields.version'), 
       value: (
         <Tag color="grey" type="ghost">
           {processData.version}
@@ -218,10 +220,10 @@ const ProcessDetailDrawer = ({
 
   // 版本列表模拟数据
   const versionColumns = [
-    { title: '版本号', dataIndex: 'version', key: 'version' },
-    { title: '发布时间', dataIndex: 'publishedAt', key: 'publishedAt' },
-    { title: '发布人', dataIndex: 'publisher', key: 'publisher' },
-    { title: '备注', dataIndex: 'remark', key: 'remark' },
+    { title: t('processDetail.versionTable.version'), dataIndex: 'version', key: 'version' },
+    { title: t('processDetail.versionTable.publishedAt'), dataIndex: 'publishedAt', key: 'publishedAt' },
+    { title: t('processDetail.versionTable.publisher'), dataIndex: 'publisher', key: 'publisher' },
+    { title: t('processDetail.versionTable.remark'), dataIndex: 'remark', key: 'remark' },
   ];
 
   const versionData = [
@@ -232,16 +234,16 @@ const ProcessDetailDrawer = ({
 
   // 运行记录列定义
   const runColumns = [
-    { title: '任务编号', dataIndex: 'taskId', key: 'taskId' },
-    { title: '流程机器人', dataIndex: 'robot', key: 'robot' },
-    { title: '创建者', dataIndex: 'creator', key: 'creator' },
-    { title: '创建时间', dataIndex: 'createdTime', key: 'createdTime' },
+    { title: t('processDetail.runTable.taskId'), dataIndex: 'taskId', key: 'taskId' },
+    { title: t('processDetail.runTable.robot'), dataIndex: 'robot', key: 'robot' },
+    { title: t('processDetail.runTable.creator'), dataIndex: 'creator', key: 'creator' },
+    { title: t('processDetail.runTable.createdTime'), dataIndex: 'createdTime', key: 'createdTime' },
     { 
-      title: '任务状态', 
+      title: t('processDetail.runTable.status'), 
       dataIndex: 'status', 
       key: 'status',
       render: (status: string) => (
-        <Tag color={status === '成功' ? 'green' : status === '失败' ? 'red' : 'blue'} type="light">
+        <Tag color={status === t('processDetail.runStatus.success') ? 'green' : status === t('processDetail.runStatus.failed') ? 'red' : 'blue'} type="light">
           {status}
         </Tag>
       )
@@ -250,10 +252,10 @@ const ProcessDetailDrawer = ({
 
   // 变更历史模拟数据
   const changeColumns = [
-    { title: '变更时间', dataIndex: 'changeTime', key: 'changeTime' },
-    { title: '变更类型', dataIndex: 'changeType', key: 'changeType' },
-    { title: '变更人', dataIndex: 'changer', key: 'changer' },
-    { title: '变更内容', dataIndex: 'changeContent', key: 'changeContent' },
+    { title: t('processDetail.changeTable.changeTime'), dataIndex: 'changeTime', key: 'changeTime' },
+    { title: t('processDetail.changeTable.changeType'), dataIndex: 'changeType', key: 'changeType' },
+    { title: t('processDetail.changeTable.changer'), dataIndex: 'changer', key: 'changer' },
+    { title: t('processDetail.changeTable.changeContent'), dataIndex: 'changeContent', key: 'changeContent' },
   ];
 
 
@@ -272,7 +274,7 @@ const ProcessDetailDrawer = ({
             <Text type="tertiary" size="small">{processData.id}</Text>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <Tooltip content="打开流程">
+            <Tooltip content={t('development.actions.openProcess')}>
               <Button 
                 icon={<IconExternalOpenStroked />} 
                 theme="borderless"
@@ -280,13 +282,13 @@ const ProcessDetailDrawer = ({
                 onClick={onOpen}
               />
             </Tooltip>
-            <Tooltip content="编辑">
+            <Tooltip content={t('common.edit')}>
               <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={onEdit} />
             </Tooltip>
-            <Tooltip content="运行">
+            <Tooltip content={t('common.run')}>
               <Button icon={<IconPlay />} theme="borderless" size="small" onClick={onRun} />
             </Tooltip>
-            <Tooltip content="删除">
+            <Tooltip content={t('common.delete')}>
               <Button 
                 icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />} 
                 theme="borderless"
@@ -295,7 +297,7 @@ const ProcessDetailDrawer = ({
               />
             </Tooltip>
             <Divider layout="vertical" style={{ height: 16, margin: '0 8px 0 4px' }} />
-            <Tooltip content={isFullscreen ? "退出全屏" : "全屏"}>
+            <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
               <Button 
                 icon={isFullscreen ? <IconMinimize /> : <IconMaximize />} 
                 theme="borderless"
@@ -303,7 +305,7 @@ const ProcessDetailDrawer = ({
                 onClick={toggleFullscreen}
               />
             </Tooltip>
-            <Tooltip content="关闭">
+            <Tooltip content={t('common.close')}>
               <Button 
                 icon={<IconClose />} 
                 theme="borderless"
@@ -347,13 +349,13 @@ const ProcessDetailDrawer = ({
         style={{ height: '100%' }}
         tabBarStyle={{ padding: '0 24px' }}
       >
-        <TabPane tab="流程详情" itemKey="detail">
+        <TabPane tab={t('processDetail.tabs.detail')} itemKey="detail">
           <div style={{ padding: '16px 24px' }}>
             <Descriptions data={descriptionData} />
           </div>
         </TabPane>
         
-        <TabPane tab="版本列表" itemKey="versions">
+        <TabPane tab={t('processDetail.tabs.versions')} itemKey="versions">
           <div style={{ padding: '16px 24px' }}>
             {versionData.length > 0 ? (
               <Table 
@@ -363,16 +365,16 @@ const ProcessDetailDrawer = ({
                 size="small"
               />
             ) : (
-              <Empty description="暂无版本记录" />
+              <Empty description={t('processDetail.empty.noVersions')} />
             )}
           </div>
         </TabPane>
         
-        <TabPane tab="运行记录" itemKey="runs">
+        <TabPane tab={t('processDetail.tabs.runs')} itemKey="runs">
           <div style={{ padding: '16px 24px' }}>
             <div style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
               <Select
-                placeholder="状态"
+                placeholder={t('processDetail.filter.statusPlaceholder')}
                 multiple
                 maxTagCount={1}
                 value={selectedRunStatuses}
@@ -385,7 +387,7 @@ const ProcessDetailDrawer = ({
                 type="dateTimeRange"
                 value={runTimeRange as [Date, Date] | undefined}
                 onChange={(value) => setRunTimeRange(value as [Date, Date] | null)}
-                placeholder={['开始时间', '结束时间']}
+                placeholder={[t('common.startTime'), t('common.endTime')]}
                 style={{ flex: 1 }}
                 showClear
               />
@@ -398,16 +400,16 @@ const ProcessDetailDrawer = ({
                 size="small"
               />
             ) : (
-              <Empty description="暂无运行记录" />
+              <Empty description={t('processDetail.empty.noRuns')} />
             )}
           </div>
         </TabPane>
         
-        <TabPane tab="变更历史" itemKey="changes">
+        <TabPane tab={t('processDetail.tabs.changes')} itemKey="changes">
           <div style={{ padding: '16px 24px' }}>
             <div style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
               <Select
-                placeholder="变更人"
+                placeholder={t('processDetail.filter.changerPlaceholder')}
                 multiple
                 value={selectedChangers}
                 onChange={(value) => setSelectedChangers(value as string[])}
@@ -419,7 +421,7 @@ const ProcessDetailDrawer = ({
                 type="dateTimeRange"
                 value={changeTimeRange as [Date, Date] | undefined}
                 onChange={(value) => setChangeTimeRange(value as [Date, Date] | null)}
-                placeholder={['开始时间', '结束时间']}
+                placeholder={[t('common.startTime'), t('common.endTime')]}
                 style={{ flex: 1 }}
                 showClear
               />
@@ -432,7 +434,7 @@ const ProcessDetailDrawer = ({
                 size="small"
               />
             ) : (
-              <Empty description="暂无变更历史" />
+              <Empty description={t('processDetail.empty.noChanges')} />
             )}
           </div>
         </TabPane>
