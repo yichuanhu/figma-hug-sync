@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { 
@@ -10,45 +10,99 @@ import {
   Tag, 
   Avatar,
   Dropdown,
-  Popover,
-  Checkbox,
   Pagination,
   Tooltip,
   Empty,
   Skeleton
 } from '@douyinfe/semi-ui';
 import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-illustrations';
-import { IconSearch, IconFilter, IconPlus, IconDownload, IconMore, IconExternalOpenStroked, IconEditStroked, IconPlay, IconDeleteStroked } from '@douyinfe/semi-icons';
+import { IconSearch, IconPlus, IconDownload, IconMore, IconExternalOpenStroked, IconEditStroked, IconPlay, IconDeleteStroked } from '@douyinfe/semi-icons';
 import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
 import ProcessDetailDrawer from './components/ProcessDetailDrawer';
 import { useOpenProcess } from './hooks/useOpenProcess';
 
 const { Title, Text } = Typography;
-const CheckboxGroup = Checkbox.Group;
 
-interface FilterState {
-  status: string[];
-  language: string[];
-  organization: string[];
-  creator: string[];
+interface ProcessItem {
+  key: number;
+  name: string;
+  description: string;
+  status: string;
+  language: string;
+  version: string;
+  organization: string;
+  creator: {
+    name: string;
+    avatar: string;
+  };
+  updatedAt: string;
 }
+
+interface PaginationState {
+  current: number;
+  pageSize: number;
+  total: number;
+}
+
+// 模拟API请求 - 获取流程列表
+const fetchProcessList = async (params: {
+  page: number;
+  pageSize: number;
+  keyword?: string;
+}): Promise<{ data: ProcessItem[]; total: number }> => {
+  // 模拟网络延迟
+  await new Promise(resolve => setTimeout(resolve, 500));
+  
+  // 生成模拟数据
+  const allData: ProcessItem[] = Array(46).fill(null).map((_, index) => ({
+    key: index + 1,
+    name: index % 3 === 0 ? '财务报销流程' : index % 3 === 1 ? '人事审批流程' : '采购申请流程',
+    description: '自动处理财务报销审批流程，包括发票识别、金额核对、审批通知',
+    status: index % 2 === 0 ? 'published' : 'draft',
+    language: index % 3 === 1 ? 'BotScript' : 'python',
+    version: `1.${index % 5}.0`,
+    organization: index % 4 === 0 ? '财务部' : index % 4 === 1 ? '人事部' : index % 4 === 2 ? '技术部' : '运营部',
+    creator: {
+      name: index % 3 === 0 ? '姜鹏志' : index % 3 === 1 ? '李明' : '王芳',
+      avatar: '',
+    },
+    updatedAt: `2024-0${(index % 9) + 1}-${String((index % 28) + 1).padStart(2, '0')}`,
+  }));
+
+  // 模拟关键词搜索
+  let filteredData = allData;
+  if (params.keyword?.trim()) {
+    filteredData = allData.filter(item => 
+      item.name.toLowerCase().includes(params.keyword!.toLowerCase().trim())
+    );
+  }
+
+  // 模拟分页
+  const start = (params.page - 1) * params.pageSize;
+  const end = start + params.pageSize;
+  const paginatedData = filteredData.slice(start, end);
+
+  return {
+    data: paginatedData,
+    total: filteredData.length,
+  };
+};
 
 const ProcessDevelopment = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [searchValue, setSearchValue] = useState('');
-  const [filters, setFilters] = useState<FilterState>({
-    status: [],
-    language: [],
-    organization: [],
-    creator: [],
-  });
-  const [filterVisible, setFilterVisible] = useState(false);
   const [loading, setLoading] = useState(true);
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
+  const [processListData, setProcessListData] = useState<ProcessItem[]>([]);
+  const [pagination, setPagination] = useState<PaginationState>({
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  });
   const [selectedProcess, setSelectedProcess] = useState<{
     id: string;
     name: string;
@@ -71,17 +125,46 @@ const ProcessDevelopment = () => {
 
   const { openProcess, OpenProcessModal } = useOpenProcess();
 
-  // 模拟加载数据
+  // 加载数据
+  const loadData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const result = await fetchProcessList({
+        page: pagination.current,
+        pageSize: pagination.pageSize,
+        keyword: searchValue,
+      });
+      setProcessListData(result.data);
+      setPagination(prev => ({ ...prev, total: result.total }));
+    } finally {
+      setLoading(false);
+    }
+  }, [pagination.current, pagination.pageSize, searchValue]);
+
+  // 初始化加载
   useEffect(() => {
     localStorage.removeItem('skipOpenProcessConfirm');
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, []);
+    loadData();
+  }, [loadData]);
+
+  // 分页变化
+  const handlePageChange = (currentPage: number) => {
+    setPagination(prev => ({ ...prev, current: currentPage }));
+  };
+
+  // 每页条数变化
+  const handlePageSizeChange = (pageSize: number) => {
+    setPagination(prev => ({ ...prev, current: 1, pageSize }));
+  };
+
+  // 搜索
+  const handleSearch = (value: string) => {
+    setSearchValue(value);
+    setPagination(prev => ({ ...prev, current: 1 }));
+  };
 
   // 打开流程详情抽屉或切换内容
-  const openProcessDetail = (record: typeof processListData[0]) => {
+  const openProcessDetail = (record: ProcessItem) => {
     const processId = `PROC-2024-${String(record.key).padStart(3, '0')}`;
     setSelectedProcess({
       id: processId,
@@ -94,14 +177,13 @@ const ProcessDevelopment = () => {
       language: record.language,
       version: record.version,
     });
-    // 如果抽屉未打开则打开，已打开则内容自动切换
     if (!detailDrawerVisible) {
       setDetailDrawerVisible(true);
     }
   };
 
   // 操作处理函数
-  const handleEdit = (record?: typeof processListData[0]) => {
+  const handleEdit = (record?: ProcessItem) => {
     const processRecord = record || (selectedProcess ? processListData.find(d => 
       `PROC-2024-${String(d.key).padStart(3, '0')}` === selectedProcess.id
     ) : null);
@@ -127,30 +209,6 @@ const ProcessDevelopment = () => {
     console.log('删除流程:', selectedProcess?.id);
     setDetailDrawerVisible(false);
   };
-
-  // 筛选选项
-  const filterOptions = {
-    status: [t('development.status.published'), t('development.status.draft')],
-    language: ['python', 'BotScript'],
-    organization: ['财务部', '人事部', '技术部', '运营部'],
-    creator: ['姜鹏志', '李明', '王芳', '张伟'],
-  };
-
-  const handleFilterChange = (key: keyof FilterState, values: string[]) => {
-    setFilters(prev => ({ ...prev, [key]: values }));
-  };
-
-  const clearFilters = () => {
-    setFilters({
-      status: [],
-      language: [],
-      organization: [],
-      creator: [],
-    });
-  };
-
-  const hasActiveFilters = Object.values(filters).some(arr => arr.length > 0);
-  const activeFilterCount = Object.values(filters).reduce((sum, arr) => sum + arr.length, 0);
 
   // 骨架屏数据
   const skeletonData = Array(8).fill(null).map((_, index) => ({ key: `skeleton-${index}` }));
@@ -258,8 +316,8 @@ const ProcessDevelopment = () => {
       key: 'status',
       width: 80,
       render: (status: string) => (
-        <Tag color={status === t('development.status.published') ? 'green' : 'grey'} type="light">
-          {status}
+        <Tag color={status === 'published' ? 'green' : 'grey'} type="light">
+          {status === 'published' ? t('development.status.published') : t('development.status.draft')}
         </Tag>
       ),
     },
@@ -327,7 +385,7 @@ const ProcessDevelopment = () => {
       dataIndex: 'action',
       key: 'action',
       width: 60,
-      render: (_: unknown, record: typeof processListData[0]) => (
+      render: (_: unknown, record: ProcessItem) => (
         <Dropdown
           trigger="click"
           position="bottomRight"
@@ -359,104 +417,9 @@ const ProcessDevelopment = () => {
     },
   ];
 
-  const initialData = Array(10).fill(null).map((_, index) => ({
-    key: index + 1,
-    name: index % 2 === 0 ? '财务报销流程' : '人事审批流程',
-    description: '自动处理财务报销审批流程，包括发票识别、金额核对、审批通知',
-    status: index < 5 ? t('development.status.published') : t('development.status.draft'),
-    language: index % 3 === 1 ? 'BotScript' : 'python',
-    version: '1.2.0',
-    organization: '财务部',
-    creator: {
-      name: '姜鹏志',
-      avatar: '',
-    },
-    updatedAt: '2022-10-31',
-  }));
-
-  const [processListData, setProcessListData] = useState(initialData);
-
-  const filteredData = useMemo(() => {
-    let data = processListData;
-
-    // 关键词搜索
-    if (searchValue.trim()) {
-      data = data.filter(item => 
-        item.name.toLowerCase().includes(searchValue.toLowerCase().trim())
-      );
-    }
-
-    // 状态筛选
-    if (filters.status.length > 0) {
-      data = data.filter(item => filters.status.includes(item.status));
-    }
-
-    // 语言筛选
-    if (filters.language.length > 0) {
-      data = data.filter(item => filters.language.includes(item.language));
-    }
-
-    // 归属组织筛选
-    if (filters.organization.length > 0) {
-      data = data.filter(item => filters.organization.includes(item.organization));
-    }
-
-    // 创建者筛选
-    if (filters.creator.length > 0) {
-      data = data.filter(item => filters.creator.includes(item.creator.name));
-    }
-
-    return data;
-  }, [searchValue, filters, processListData]);
-
-  const filterContent = (
-    <div style={{ padding: 16, width: 280 }}>
-      <div style={{ marginBottom: 16 }}>
-        <Text strong style={{ display: 'block', marginBottom: 8 }}>{t('development.filter.processStatus')}</Text>
-        <CheckboxGroup
-          value={filters.status}
-          onChange={(values) => handleFilterChange('status', values as string[])}
-          options={filterOptions.status}
-          direction="horizontal"
-        />
-      </div>
-      <div style={{ marginBottom: 16 }}>
-        <Text strong style={{ display: 'block', marginBottom: 8 }}>{t('development.filter.language')}</Text>
-        <CheckboxGroup
-          value={filters.language}
-          onChange={(values) => handleFilterChange('language', values as string[])}
-          options={filterOptions.language}
-          direction="horizontal"
-        />
-      </div>
-      <div style={{ marginBottom: 16 }}>
-        <Text strong style={{ display: 'block', marginBottom: 8 }}>{t('development.filter.organization')}</Text>
-        <CheckboxGroup
-          value={filters.organization}
-          onChange={(values) => handleFilterChange('organization', values as string[])}
-          options={filterOptions.organization}
-          direction="horizontal"
-        />
-      </div>
-      <div style={{ marginBottom: 16 }}>
-        <Text strong style={{ display: 'block', marginBottom: 8 }}>{t('development.filter.creator')}</Text>
-        <CheckboxGroup
-          value={filters.creator}
-          onChange={(values) => handleFilterChange('creator', values as string[])}
-          options={filterOptions.creator}
-          direction="horizontal"
-        />
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--semi-color-border)', paddingTop: 12 }}>
-        <Button theme="borderless" onClick={clearFilters} disabled={!hasActiveFilters}>
-          {t('common.reset')}
-        </Button>
-        <Button theme="solid" type="primary" onClick={() => setFilterVisible(false)}>
-          {t('common.confirm')}
-        </Button>
-      </div>
-    </div>
-  );
+  // 计算显示范围
+  const start = (pagination.current - 1) * pagination.pageSize + 1;
+  const end = Math.min(pagination.current * pagination.pageSize, pagination.total);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -492,23 +455,8 @@ const ProcessDevelopment = () => {
               placeholder={t('development.searchPlaceholder')}
               style={{ width: 240 }}
               value={searchValue}
-              onChange={(value) => setSearchValue(value)}
+              onChange={handleSearch}
             />
-            <Popover
-              visible={filterVisible}
-              onVisibleChange={setFilterVisible}
-              trigger="click"
-              position="bottomLeft"
-              content={filterContent}
-            >
-              <Button 
-                icon={<IconFilter />} 
-                theme={hasActiveFilters ? 'solid' : 'light'}
-                type={hasActiveFilters ? 'primary' : 'tertiary'}
-              >
-                {t('common.filter')}{activeFilterCount > 0 ? ` (${activeFilterCount})` : ''}
-              </Button>
-            </Popover>
           </div>
           <div style={{ display: 'flex', gap: 12 }}>
             <Button icon={<IconDownload />} theme="light">
@@ -547,20 +495,20 @@ const ProcessDevelopment = () => {
         ) : (
           <Table 
             columns={columns} 
-            dataSource={filteredData}
+            dataSource={processListData}
             empty={
               <Empty
                 image={<IllustrationNoResult style={{ width: 150, height: 150 }} />}
                 darkModeImage={<IllustrationNoResultDark style={{ width: 150, height: 150 }} />}
                 title={t('development.empty.title')}
-                description={hasActiveFilters || searchValue ? t('development.empty.filterDescription') : t('development.empty.defaultDescription')}
+                description={searchValue ? t('development.empty.filterDescription') : t('development.empty.defaultDescription')}
               />
             }
             onRow={(record) => {
               const processId = `PROC-2024-${String(record.key).padStart(3, '0')}`;
               const isSelected = selectedProcess?.id === processId && detailDrawerVisible;
               return {
-                onClick: () => openProcessDetail(record as typeof processListData[0]),
+                onClick: () => openProcessDetail(record as ProcessItem),
                 style: { 
                   cursor: 'pointer',
                   backgroundColor: isSelected ? 'var(--semi-color-primary-light-default)' : undefined,
@@ -586,12 +534,17 @@ const ProcessDevelopment = () => {
         flexShrink: 0,
       }}>
         <Text type="tertiary" style={{ fontSize: 14 }}>
-          {t('common.showingRecords', { start: 1, end: 10, total: 46 })}
+          {pagination.total > 0 
+            ? t('common.showingRecords', { start, end, total: pagination.total })
+            : t('common.noRecords')
+          }
         </Text>
         <Pagination 
-          total={46} 
-          pageSize={10} 
-          currentPage={1}
+          total={pagination.total} 
+          pageSize={pagination.pageSize} 
+          currentPage={pagination.current}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
           showSizeChanger
         />
       </div>
@@ -601,22 +554,8 @@ const ProcessDevelopment = () => {
         visible={createModalVisible}
         onCancel={() => setCreateModalVisible(false)}
         onSuccess={(processData) => {
-          // 将新创建的流程添加到列表第一行
-          const newProcess = {
-            key: Date.now(),
-            name: processData.name,
-            description: processData.description,
-            status: processData.status,
-            language: 'python' as const,
-            version: '1.0.0',
-            organization: processData.organization,
-            creator: {
-              name: processData.creator,
-              avatar: '',
-            },
-            updatedAt: new Date().toLocaleDateString('zh-CN').replace(/\//g, '-'),
-          };
-          setProcessListData(prev => [newProcess, ...prev]);
+          // 重新加载数据
+          loadData();
           
           // 打开详情抽屉
           setSelectedProcess({
@@ -639,7 +578,8 @@ const ProcessDevelopment = () => {
         processData={editingProcess}
         onSuccess={(updatedData) => {
           console.log('流程已更新:', updatedData);
-          // 这里可以更新本地数据或刷新列表
+          // 重新加载数据
+          loadData();
         }}
       />
 
