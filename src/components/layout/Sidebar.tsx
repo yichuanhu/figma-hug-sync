@@ -50,11 +50,11 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
   // 中心级别菜单（左侧图标栏）
   const centerMenuItems: MenuItem[] = [
     { key: '首页', label: '首页', icon: <HomeIcon size={20} />, path: '/' },
-    { key: '开发中心', label: '开发中心', icon: <DevelopmentIcon size={20} /> },
-    { key: '调度中心', label: '调度中心', icon: <SchedulingIcon size={20} /> },
-    { key: '运营中心', label: '运营中心', icon: <BusinessIcon size={20} /> },
-    { key: '需求中心', label: '需求中心', icon: <RequirementsIcon size={20} /> },
-    { key: '运维中心', label: '运维中心', icon: <OperationsIcon size={20} /> },
+    { key: '开发中心', label: '开发中心', icon: <DevelopmentIcon size={20} />, path: '/development-workbench' },
+    { key: '调度中心', label: '调度中心', icon: <SchedulingIcon size={20} />, path: '/scheduling-workbench' },
+    { key: '运营中心', label: '运营中心', icon: <BusinessIcon size={20} />, path: '/operations-workbench' },
+    { key: '需求中心', label: '需求中心', icon: <RequirementsIcon size={20} />, path: '/requirements-workbench' },
+    { key: '运维中心', label: '运维中心', icon: <OperationsIcon size={20} />, path: '/maintenance-workbench' },
   ];
 
   // 开发中心的详细菜单结构
@@ -148,11 +148,10 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
   };
 
   const handleCenterClick = (item: MenuItem) => {
+    setActiveCenterKey(item.key);
     if (item.path) {
       navigate(item.path);
       setHoveredCenterKey(null);
-    } else {
-      setActiveCenterKey(item.key);
     }
   };
 
