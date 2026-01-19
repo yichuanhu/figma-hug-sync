@@ -66,12 +66,18 @@ body {
   color: inherit !important;
 }
 
-/* SideSheet 卡片样式 */
-.card-sidesheet.semi-sidesheet-right {
+/* SideSheet 右侧定位修复 */
+.semi-sidesheet.semi-sidesheet-right {
   left: auto !important;
   right: 0 !important;
 }
 
+.semi-sidesheet-right .semi-sidesheet-inner-wrap {
+  right: 0 !important;
+  left: auto !important;
+}
+
+/* SideSheet 卡片样式 */
 .card-sidesheet .semi-sidesheet-inner-wrap {
   margin: 8px;
   margin-left: 0;
