@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { 
   SideSheet, 
   Typography, 
@@ -14,7 +14,14 @@ import {
   DatePicker,
   Select
 } from '@douyinfe/semi-ui';
-import { IconEditStroked, IconPlay, IconDeleteStroked, IconExternalOpenStroked } from '@douyinfe/semi-icons';
+import { 
+  IconEditStroked, 
+  IconPlay, 
+  IconDeleteStroked, 
+  IconExternalOpenStroked,
+  IconMaximize,
+  IconMinimize
+} from '@douyinfe/semi-icons';
 
 const { Title, Text } = Typography;
 
@@ -85,6 +92,51 @@ const ProcessDetailDrawer = ({
   const [selectedChangers, setSelectedChangers] = useState<string[]>([]);
   const [runTimeRange, setRunTimeRange] = useState<[Date, Date] | null>(null);
   const [selectedRunStatuses, setSelectedRunStatuses] = useState<string[]>([]);
+  const [drawerWidth, setDrawerWidth] = useState(576);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isResizing, setIsResizing] = useState(false);
+
+  const minWidth = 400;
+  const maxWidth = typeof window !== 'undefined' ? window.innerWidth - 100 : 1200;
+
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsResizing(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isResizing) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const newWidth = window.innerWidth - e.clientX;
+      setDrawerWidth(Math.max(minWidth, Math.min(maxWidth, newWidth)));
+    };
+
+    const handleMouseUp = () => {
+      setIsResizing(false);
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    };
+  }, [isResizing, maxWidth]);
+
+  const toggleFullscreen = useCallback(() => {
+    if (isFullscreen) {
+      setDrawerWidth(576);
+    } else {
+      setDrawerWidth(window.innerWidth - 16);
+    }
+    setIsFullscreen(!isFullscreen);
+  }, [isFullscreen]);
 
   // 根据时间范围和变更人筛选变更历史 (必须在 early return 之前)
   const filteredChangeData = useMemo(() => {
@@ -249,18 +301,52 @@ const ProcessDetailDrawer = ({
                 onClick={onDelete}
               />
             </Tooltip>
-            <Divider layout="vertical" style={{ height: 16, margin: '0 8px 0 8px', marginRight: 24 }} />
+            <Divider layout="vertical" style={{ height: 16, margin: '0 8px' }} />
+            <Tooltip content={isFullscreen ? "退出全屏" : "全屏"}>
+              <Button 
+                icon={isFullscreen ? <IconMinimize /> : <IconMaximize />} 
+                theme="borderless"
+                size="small"
+                onClick={toggleFullscreen}
+              />
+            </Tooltip>
+            <div style={{ width: 24 }} />
           </div>
         </div>
       }
       visible={visible}
       onCancel={onClose}
-      width={576}
+      width={drawerWidth}
       footer={null}
       headerStyle={{ borderBottom: '1px solid var(--semi-color-border)' }}
       bodyStyle={{ padding: 0 }}
-      className="card-sidesheet"
+      className="card-sidesheet resizable-sidesheet"
     >
+      {/* 拖拽调整宽度手柄 */}
+      <div
+        onMouseDown={handleMouseDown}
+        style={{
+          position: 'absolute',
+          left: 0,
+          top: 0,
+          bottom: 0,
+          width: 6,
+          cursor: 'col-resize',
+          zIndex: 10,
+          backgroundColor: isResizing ? 'var(--semi-color-primary-light-default)' : 'transparent',
+          transition: 'background-color 0.15s',
+        }}
+        onMouseEnter={(e) => {
+          if (!isResizing) {
+            (e.target as HTMLElement).style.backgroundColor = 'var(--semi-color-fill-0)';
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (!isResizing) {
+            (e.target as HTMLElement).style.backgroundColor = 'transparent';
+          }
+        }}
+      />
       <Tabs 
         activeKey={activeTab} 
         onChange={setActiveTab}
