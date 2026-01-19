@@ -99,3 +99,8 @@ body {
 .semi-sidesheet-mask {
   background-color: transparent !important;
 }
+
+/* 可调整宽度的抽屉样式 */
+.resizable-sidesheet .semi-sidesheet-inner {
+  position: relative;
+}
