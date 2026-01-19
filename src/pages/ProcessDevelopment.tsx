@@ -554,10 +554,17 @@ const ProcessDevelopment = () => {
                 description={hasActiveFilters || searchValue ? "没有找到匹配的流程，请尝试调整筛选条件" : "还没有创建任何流程，点击「新建流程」开始"}
               />
             }
-            onRow={(record) => ({
-              onClick: () => openProcessDetail(record as typeof processListData[0]),
-              style: { cursor: 'pointer' }
-            })}
+            onRow={(record) => {
+              const processId = `PROC-2024-${String(record.key).padStart(3, '0')}`;
+              const isSelected = selectedProcess?.id === processId && detailDrawerVisible;
+              return {
+                onClick: () => openProcessDetail(record as typeof processListData[0]),
+                style: { 
+                  cursor: 'pointer',
+                  backgroundColor: isSelected ? 'var(--semi-color-primary-light-default)' : undefined,
+                }
+              };
+            }}
             pagination={false}
             scroll={{ y: 'calc(100vh - 320px)' }}
             style={{ 
