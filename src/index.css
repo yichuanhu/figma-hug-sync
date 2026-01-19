@@ -99,3 +99,35 @@ body {
 .semi-sidesheet-mask {
   background-color: transparent !important;
 }
+
+/* 可拖拽调整宽度的抽屉 */
+.resizable-sidesheet .semi-sidesheet-inner {
+  position: relative;
+}
+
+.sidesheet-resize-handle {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  cursor: ew-resize;
+  z-index: 10;
+  transition: background-color 0.2s;
+}
+
+.sidesheet-resize-handle:hover {
+  background-color: var(--semi-color-primary-light-hover);
+}
+
+.sidesheet-resize-handle:active {
+  background-color: var(--semi-color-primary);
+}
+
+/* 全屏抽屉样式 */
+.fullscreen-sidesheet .semi-sidesheet-inner {
+  margin: 0 !important;
+  height: 100% !important;
+  width: 100% !important;
+  border-radius: 0 !important;
+}

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { 
   SideSheet, 
   Typography, 
@@ -9,9 +9,11 @@ import {
   TabPane,
   Table,
   Empty,
-  Switch
+  Switch,
+  Tooltip,
+  Divider
 } from '@douyinfe/semi-ui';
-import { IconEditStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
+import { IconEditStroked, IconDeleteStroked, IconMaximize, IconMinimize } from '@douyinfe/semi-icons';
 
 const { Title, Text } = Typography;
 
@@ -113,6 +115,41 @@ const WorkerDetailDrawer = ({
   onDelete 
 }: WorkerDetailDrawerProps) => {
   const [activeTab, setActiveTab] = useState('info');
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [drawerWidth, setDrawerWidth] = useState(656);
+  const isResizing = useRef(false);
+  const startX = useRef(0);
+  const startWidth = useRef(656);
+
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    isResizing.current = true;
+    startX.current = e.clientX;
+    startWidth.current = drawerWidth;
+    document.body.style.cursor = 'ew-resize';
+    document.body.style.userSelect = 'none';
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isResizing.current) return;
+      const diff = startX.current - e.clientX;
+      const newWidth = Math.min(Math.max(startWidth.current + diff, 400), window.innerWidth - 100);
+      setDrawerWidth(newWidth);
+    };
+
+    const handleMouseUp = () => {
+      isResizing.current = false;
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+  }, [drawerWidth]);
+
+  const toggleFullscreen = useCallback(() => {
+    setIsFullscreen(prev => !prev);
+  }, []);
 
   if (!workerData) return null;
 
@@ -189,33 +226,48 @@ const WorkerDetailDrawer = ({
           justifyContent: 'space-between', 
           alignItems: 'center',
           width: '100%',
-          paddingRight: 40
+          paddingRight: 0
         }}>
           <Title heading={5} style={{ margin: 0 }}>流程机器人详情</Title>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <Button icon={<IconEditStroked />} theme="light" size="small" onClick={onEdit}>
-              编辑
-            </Button>
-            <Button 
-              icon={<IconDeleteStroked />} 
-              type="danger" 
-              theme="borderless"
-              size="small"
-              onClick={onDelete}
-            >
-              删除
-            </Button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <Tooltip content="编辑">
+              <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={onEdit} />
+            </Tooltip>
+            <Tooltip content="删除">
+              <Button 
+                icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />} 
+                theme="borderless"
+                size="small"
+                onClick={onDelete}
+              />
+            </Tooltip>
+            <Divider layout="vertical" style={{ height: 16, margin: '0 8px 0 8px' }} />
+            <Tooltip content={isFullscreen ? "退出全屏" : "全屏"}>
+              <Button 
+                icon={isFullscreen ? <IconMinimize /> : <IconMaximize />} 
+                theme="borderless"
+                size="small"
+                onClick={toggleFullscreen}
+              />
+            </Tooltip>
           </div>
         </div>
       }
       visible={visible}
       onCancel={onClose}
-      width={656}
+      width={isFullscreen ? '100%' : drawerWidth}
       footer={null}
       headerStyle={{ borderBottom: '1px solid var(--semi-color-border)' }}
       bodyStyle={{ padding: 0 }}
-      className="card-sidesheet"
+      className={`card-sidesheet resizable-sidesheet ${isFullscreen ? 'fullscreen-sidesheet' : ''}`}
     >
+      {/* 拖拽调整宽度的把手 */}
+      {!isFullscreen && (
+        <div
+          className="sidesheet-resize-handle"
+          onMouseDown={handleMouseDown}
+        />
+      )}
       <Tabs 
         activeKey={activeTab} 
         onChange={setActiveTab}
