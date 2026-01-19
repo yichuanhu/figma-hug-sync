@@ -316,6 +316,7 @@ const ProcessDetailDrawer = ({
       }
       visible={visible}
       onCancel={onClose}
+      placement="right"
       width={drawerWidth}
       footer={null}
       headerStyle={{ borderBottom: '1px solid var(--semi-color-border)' }}
