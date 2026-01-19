@@ -3,5 +3,7 @@ import App from "./App.tsx";
 // 直接导入 laiye 主题的编译后 CSS
 import '@semi-bot/semi-theme-laiye/semi.css';
 import './index.css';
+// 导入 i18n 配置
+import './i18n';
 
 createRoot(document.getElementById("root")!).render(<App />);

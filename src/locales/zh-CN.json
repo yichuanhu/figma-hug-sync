@@ -1,0 +1,154 @@
+{
+  "common": {
+    "title": "APA",
+    "home": "首页",
+    "cancel": "取消",
+    "confirm": "确定",
+    "save": "保存",
+    "delete": "删除",
+    "edit": "编辑",
+    "create": "创建",
+    "reset": "重置",
+    "search": "搜索",
+    "filter": "筛选",
+    "import": "导入",
+    "export": "导出",
+    "run": "运行",
+    "open": "打开",
+    "close": "关闭",
+    "fullscreen": "全屏",
+    "exitFullscreen": "退出全屏",
+    "noData": "暂无数据",
+    "status": "状态",
+    "actions": "操作",
+    "showingRecords": "显示第 {{start}} 条-第 {{end}} 条，共 {{total}} 条",
+    "startTime": "开始时间",
+    "endTime": "结束时间"
+  },
+  "development": {
+    "breadcrumb": {
+      "developmentCenter": "开发中心",
+      "automationProcess": "自动化流程"
+    },
+    "title": "自动化流程",
+    "description": "创建和管理自动化流程，配置流程资源和版本",
+    "searchPlaceholder": "搜索流程名称",
+    "importProcess": "导入流程",
+    "createProcess": "新建流程",
+    "table": {
+      "processName": "流程名称",
+      "processDescription": "描述",
+      "status": "状态",
+      "language": "语言",
+      "version": "版本",
+      "organization": "归属组织",
+      "creator": "创建者",
+      "lastModified": "最后修改",
+      "actions": "操作"
+    },
+    "filter": {
+      "processStatus": "流程状态",
+      "language": "语言",
+      "organization": "归属组织",
+      "creator": "创建者"
+    },
+    "status": {
+      "published": "已发布",
+      "draft": "草稿"
+    },
+    "actions": {
+      "openProcess": "打开流程",
+      "edit": "编辑",
+      "run": "运行",
+      "delete": "删除"
+    },
+    "empty": {
+      "title": "暂无数据",
+      "filterDescription": "没有找到匹配的流程，请尝试调整筛选条件",
+      "defaultDescription": "还没有创建任何流程，点击「新建流程」开始"
+    }
+  },
+  "processDetail": {
+    "tabs": {
+      "detail": "流程详情",
+      "versions": "版本列表",
+      "runs": "运行记录",
+      "changes": "变更历史"
+    },
+    "fields": {
+      "processId": "流程ID",
+      "processName": "流程名称",
+      "processDescription": "流程描述",
+      "organization": "归属组织",
+      "creator": "创建者",
+      "createdAt": "创建时间",
+      "status": "状态",
+      "language": "语言",
+      "version": "版本"
+    },
+    "versionTable": {
+      "version": "版本号",
+      "publishedAt": "发布时间",
+      "publisher": "发布人",
+      "remark": "备注"
+    },
+    "runTable": {
+      "taskId": "任务编号",
+      "robot": "流程机器人",
+      "creator": "创建者",
+      "createdTime": "创建时间",
+      "status": "任务状态"
+    },
+    "changeTable": {
+      "changeTime": "变更时间",
+      "changeType": "变更类型",
+      "changer": "变更人",
+      "changeContent": "变更内容"
+    },
+    "runStatus": {
+      "success": "成功",
+      "failed": "失败",
+      "running": "运行中"
+    },
+    "empty": {
+      "noVersions": "暂无版本记录",
+      "noRuns": "暂无运行记录",
+      "noChanges": "暂无变更历史"
+    },
+    "filter": {
+      "statusPlaceholder": "状态",
+      "changerPlaceholder": "变更人"
+    }
+  },
+  "createProcess": {
+    "title": "新建流程",
+    "fields": {
+      "name": "流程名称",
+      "namePlaceholder": "请输入流程名称",
+      "description": "流程描述",
+      "descriptionPlaceholder": "请输入流程描述，例如：自动处理电商平台的订单，包括订单验证、库存检查、发货通知",
+      "type": "流程类型",
+      "typePlaceholder": "请选择流程类型",
+      "relatedRequirement": "关联需求",
+      "relatedRequirementPlaceholder": "请选择",
+      "organization": "归属组织",
+      "organizationPlaceholder": "请选择"
+    },
+    "validation": {
+      "nameRequired": "请输入流程名称",
+      "nameLengthError": "流程名称长度必须在1-100字符之间",
+      "nameExists": "流程名称已存在，请使用其他名称",
+      "descriptionRequired": "请输入流程描述",
+      "descriptionLengthError": "流程描述长度必须在1-500字符之间",
+      "typeRequired": "请选择流程类型",
+      "organizationRequired": "请选择归属组织"
+    },
+    "success": "流程创建成功！",
+    "error": "创建失败，请重试"
+  },
+  "editProcess": {
+    "title": "编辑流程",
+    "success": "流程更新成功！",
+    "error": "更新失败，请重试"
+  }
+}
