@@ -77,7 +77,11 @@ body {
 }
 
 .semi-sidesheet-header,
-.semi-sidesheet-body {
+.semi-sidesheet-body,
+.semi-sidesheet-body .semi-tabs,
+.semi-sidesheet-body .semi-tabs-bar,
+.semi-sidesheet-body .semi-tabs-content,
+.semi-sidesheet-body .semi-tabs-pane {
   background-color: var(--semi-color-default) !important;
 }
 
