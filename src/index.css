@@ -105,22 +105,24 @@ body {
   position: relative;
 }
 
-.sidesheet-resize-handle {
+/* 拖拽把手 - 放在抽屉左侧边缘 */
+.resizable-sidesheet .semi-sidesheet-inner::before {
+  content: '';
   position: absolute;
   left: 0;
   top: 0;
   bottom: 0;
   width: 6px;
   cursor: ew-resize;
-  z-index: 10;
+  z-index: 100;
   transition: background-color 0.2s;
 }
 
-.sidesheet-resize-handle:hover {
+.resizable-sidesheet .semi-sidesheet-inner:hover::before {
   background-color: var(--semi-color-primary-light-hover);
 }
 
-.sidesheet-resize-handle:active {
+.resizable-sidesheet .semi-sidesheet-inner::before:active {
   background-color: var(--semi-color-primary);
 }
 
@@ -130,4 +132,8 @@ body {
   height: 100% !important;
   width: 100% !important;
   border-radius: 0 !important;
+}
+
+.fullscreen-sidesheet .semi-sidesheet-inner::before {
+  display: none;
 }
