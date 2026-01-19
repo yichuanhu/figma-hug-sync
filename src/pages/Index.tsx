@@ -1,5 +1,5 @@
 import AppLayout from '@/components/layout/AppLayout';
-import ProcessDevelopment from './ProcessDevelopment';
+import ProcessDevelopment from './Development/ProcessDevelopment';
 
 const Index = () => {
   return (
