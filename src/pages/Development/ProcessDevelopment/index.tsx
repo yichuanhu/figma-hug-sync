@@ -19,10 +19,10 @@ import {
 } from '@douyinfe/semi-ui';
 import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-illustrations';
 import { IconSearch, IconFilter, IconPlus, IconDownload, IconMore, IconExternalOpenStroked, IconEditStroked, IconPlay, IconDeleteStroked } from '@douyinfe/semi-icons';
-import CreateProcessModal from '@/components/CreateProcessModal';
-import EditProcessModal from '@/components/EditProcessModal';
-import ProcessDetailDrawer from '@/components/ProcessDetailDrawer';
-import { useOpenProcess } from '@/hooks/useOpenProcess';
+import CreateProcessModal from './components/CreateProcessModal';
+import EditProcessModal from './components/EditProcessModal';
+import ProcessDetailDrawer from './components/ProcessDetailDrawer';
+import { useOpenProcess } from './hooks/useOpenProcess';
 
 const { Title, Text } = Typography;
 const CheckboxGroup = Checkbox.Group;
