@@ -239,7 +239,7 @@ const WorkerDetailDrawer = ({
           paddingRight: 0
         }}>
           <Title heading={5} style={{ margin: 0 }}>流程机器人详情</Title>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
             <Tooltip content="编辑">
               <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={onEdit} />
             </Tooltip>
