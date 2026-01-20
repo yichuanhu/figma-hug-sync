@@ -23,6 +23,7 @@ import './index.less';
 const { Title, Text } = Typography;
 
 interface ProcessItem {
+  id: string;
   key: number;
   name: string;
   description: string;
@@ -34,6 +35,7 @@ interface ProcessItem {
     name: string;
     avatar: string;
   };
+  createdAt: string;
   updatedAt: string;
 }
 
@@ -58,6 +60,7 @@ const fetchProcessList = async (params: {
   
   // 生成模拟数据
   const allData: ProcessItem[] = Array(46).fill(null).map((_, index) => ({
+    id: `PROC-2024-${String(index + 1).padStart(3, '0')}`,
     key: index + 1,
     name: index % 3 === 0 ? '财务报销流程' : index % 3 === 1 ? '人事审批流程' : '采购申请流程',
     description: '自动处理财务报销审批流程，包括发票识别、金额核对、审批通知',
@@ -69,6 +72,7 @@ const fetchProcessList = async (params: {
       name: index % 3 === 0 ? '姜鹏志' : index % 3 === 1 ? '李明' : '王芳',
       avatar: '',
     },
+    createdAt: `2024-0${(index % 9) + 1}-${String((index % 28) + 1).padStart(2, '0')}`,
     updatedAt: `2024-0${(index % 9) + 1}-${String((index % 28) + 1).padStart(2, '0')}`,
   }));
 
@@ -107,17 +111,7 @@ const ProcessDevelopment = () => {
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [processListData, setProcessListData] = useState<ProcessItem[]>([]);
-  const [selectedProcess, setSelectedProcess] = useState<{
-    id: string;
-    name: string;
-    description: string;
-    status: string;
-    organization: string;
-    creator: string;
-    createdAt: string;
-    language?: string;
-    version?: string;
-  } | null>(null);
+  const [selectedProcess, setSelectedProcess] = useState<ProcessItem | null>(null);
   const [editingProcess, setEditingProcess] = useState<{
     id: string;
     name: string;
@@ -163,18 +157,7 @@ const ProcessDevelopment = () => {
 
   // 打开流程详情抽屉或切换内容
   const openProcessDetail = (record: ProcessItem) => {
-    const processId = `PROC-2024-${String(record.key).padStart(3, '0')}`;
-    setSelectedProcess({
-      id: processId,
-      name: record.name,
-      description: record.description,
-      status: record.status,
-      organization: record.organization,
-      creator: record.creator.name,
-      createdAt: record.updatedAt,
-      language: record.language,
-      version: record.version,
-    });
+    setSelectedProcess(record);
     if (!detailDrawerVisible) {
       setDetailDrawerVisible(true);
     }
@@ -182,14 +165,11 @@ const ProcessDevelopment = () => {
 
   // 操作处理函数
   const handleEdit = (record?: ProcessItem) => {
-    const processRecord = record || (selectedProcess ? processListData.find(d => 
-      `PROC-2024-${String(d.key).padStart(3, '0')}` === selectedProcess.id
-    ) : null);
+    const processRecord = record || selectedProcess;
     
     if (processRecord) {
-      const processId = `PROC-2024-${String(processRecord.key).padStart(3, '0')}`;
       setEditingProcess({
-        id: processId,
+        id: processRecord.id,
         name: processRecord.name,
         description: processRecord.description,
         organization: processRecord.organization,
@@ -387,8 +367,7 @@ const ProcessDevelopment = () => {
           dataSource={processListData}
           loading={loading}
           onRow={(record) => {
-            const processId = `PROC-2024-${String(record.key).padStart(3, '0')}`;
-            const isSelected = selectedProcess?.id === processId && detailDrawerVisible;
+            const isSelected = selectedProcess?.id === record.id && detailDrawerVisible;
             return {
               onClick: () => openProcessDetail(record as ProcessItem),
               className: isSelected ? 'process-development-row-selected' : undefined,
@@ -429,12 +408,16 @@ const ProcessDevelopment = () => {
           // 打开详情抽屉
           setSelectedProcess({
             id: processData.id,
+            key: 0,
             name: processData.name,
             description: processData.description,
             status: processData.status,
+            language: '',
+            version: '1.0.0',
             organization: processData.organization,
-            creator: processData.creator,
+            creator: { name: processData.creator, avatar: '' },
             createdAt: processData.createdAt,
+            updatedAt: processData.createdAt,
           });
           setDetailDrawerVisible(true);
         }}
