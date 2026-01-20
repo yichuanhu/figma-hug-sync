@@ -10,9 +10,7 @@ import {
   Switch,
   Popover,
   Checkbox,
-  Pagination,
-  Skeleton,
-  Empty
+  Pagination
 } from '@douyinfe/semi-ui';
 import {
   IconSearch, 
@@ -502,74 +500,6 @@ const WorkerManagement = () => {
     }
   };
 
-  // 骨架屏数据
-  const skeletonData = Array(6).fill(null).map((_, index) => ({ id: `skeleton-${index}` }));
-
-  // 骨架屏列配置
-  const skeletonColumns = [
-    {
-      title: t('worker.table.workerName'),
-      dataIndex: 'name',
-      key: 'name',
-      width: 200,
-      render: () => (
-        <div className="skeleton-name-cell">
-          <Skeleton placeholder={<Skeleton.Paragraph rows={1} className="skeleton-name" />} loading active />
-          <Skeleton placeholder={<Skeleton.Paragraph rows={1} className="skeleton-name-sub" />} loading active />
-        </div>
-      ),
-    },
-    {
-      title: t('worker.table.status'),
-      dataIndex: 'status',
-      key: 'status',
-      width: 100,
-      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} className="skeleton-status" />} loading active />,
-    },
-    {
-      title: t('worker.table.ipAddress'),
-      dataIndex: 'ipAddress',
-      key: 'ipAddress',
-      width: 120,
-      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} className="skeleton-ip" />} loading active />,
-    },
-    {
-      title: t('worker.table.priority'),
-      dataIndex: 'priority',
-      key: 'priority',
-      width: 120,
-      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} className="skeleton-priority" />} loading active />,
-    },
-    {
-      title: t('worker.table.clientVersion'),
-      dataIndex: 'clientVersion',
-      key: 'clientVersion',
-      width: 100,
-      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} className="skeleton-version" />} loading active />,
-    },
-    {
-      title: t('worker.table.lastHeartbeat'),
-      dataIndex: 'lastHeartbeatTime',
-      key: 'lastHeartbeatTime',
-      width: 160,
-      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} className="skeleton-time" />} loading active />,
-    },
-    {
-      title: t('worker.table.receiveTasks'),
-      dataIndex: 'receiveTasks',
-      key: 'receiveTasks',
-      width: 90,
-      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} className="skeleton-switch" />} loading active />,
-    },
-    {
-      title: t('worker.table.actions'),
-      dataIndex: 'action',
-      key: 'action',
-      width: 60,
-      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} className="skeleton-action" />} loading active />,
-    },
-  ];
-
   const columns = [
     {
       title: t('worker.table.workerName'),
@@ -783,27 +713,18 @@ const WorkerManagement = () => {
 
       {/* 表格区域 */}
       <div className="worker-management-table">
-        {loading ? (
-          <Table 
-            columns={skeletonColumns} 
-            dataSource={skeletonData}
-            rowKey="id"
-            pagination={false}
-            scroll={{ y: 'calc(100vh - 320px)' }}
-          />
-        ) : (
-          <Table 
-            columns={columns} 
-            dataSource={workerListData}
-            rowKey="id"
-            onRow={(record) => ({
-              onClick: () => openDetail(record as WorkerData),
-              style: { cursor: 'pointer' }
-            })}
-            pagination={false}
-            scroll={{ y: 'calc(100vh - 320px)' }}
-          />
-        )}
+        <Table 
+          columns={columns} 
+          dataSource={workerListData}
+          loading={loading}
+          rowKey="id"
+          onRow={(record) => ({
+            onClick: () => openDetail(record as WorkerData),
+            style: { cursor: 'pointer' }
+          })}
+          pagination={false}
+          scroll={{ y: 'calc(100vh - 320px)' }}
+        />
       </div>
 
       {/* 分页区域 */}
