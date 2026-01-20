@@ -9,8 +9,7 @@ import {
   Dropdown,
   Switch,
   Popover,
-  Checkbox,
-  Pagination
+  Checkbox
 } from '@douyinfe/semi-ui';
 import {
   IconSearch, 
@@ -377,16 +376,6 @@ const WorkerManagement = () => {
     loadData();
   }, [loadData]);
 
-  // 分页变化
-  const handlePageChange = (currentPage: number) => {
-    setPagination(prev => ({ ...prev, current: currentPage }));
-  };
-
-  // 每页条数变化
-  const handlePageSizeChange = (pageSize: number) => {
-    setPagination(prev => ({ ...prev, current: 1, pageSize }));
-  };
-
   // 搜索
   const handleSearch = (value: string) => {
     setSearchValue(value);
@@ -652,10 +641,6 @@ const WorkerManagement = () => {
     },
   ];
 
-  // 计算显示范围
-  const start = (pagination.current - 1) * pagination.pageSize + 1;
-  const end = Math.min(pagination.current * pagination.pageSize, pagination.total);
-
   return (
     <div className="worker-management">
       {/* 固定面包屑 */}
@@ -722,26 +707,16 @@ const WorkerManagement = () => {
             onClick: () => openDetail(record as WorkerData),
             style: { cursor: 'pointer' }
           })}
-          pagination={false}
+          pagination={{
+            total: pagination.total,
+            pageSize: pagination.pageSize,
+            currentPage: pagination.current,
+            onPageChange: (page) => setPagination(prev => ({ ...prev, current: page })),
+            onPageSizeChange: (pageSize) => setPagination(prev => ({ ...prev, current: 1, pageSize })),
+            showSizeChanger: true,
+            showTotal: true,
+          }}
           scroll={{ y: 'calc(100vh - 320px)' }}
-        />
-      </div>
-
-      {/* 分页区域 */}
-      <div className="worker-management-pagination">
-        <Text type="tertiary" className="pagination-info">
-          {pagination.total > 0 
-            ? t('common.showingRecords', { start, end, total: pagination.total })
-            : t('common.noRecords')
-          }
-        </Text>
-        <Pagination 
-          total={pagination.total} 
-          pageSize={pagination.pageSize} 
-          currentPage={pagination.current}
-          onPageChange={handlePageChange}
-          onPageSizeChange={handlePageSizeChange}
-          showSizeChanger
         />
       </div>
 
