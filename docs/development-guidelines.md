@@ -87,30 +87,42 @@ hooks/
 
 ### 2.3 Less 嵌套规范
 
-使用 BEM 风格命名，结合 Less 嵌套：
+**必须使用嵌套的类结构（.parent .child）而不是 BEM 连接符（&-modifier）**，以避免全局样式污染：
 
 ```less
-.process-development {
+// ✅ 正确 - 使用嵌套
+.sidebar {
   display: flex;
-  flex-direction: column;
-  
-  &-header {
-    padding: 20px 24px;
-    
-    &-title {
-      margin-bottom: 24px;
+  height: 100%;
+
+  .sidebar-icon-bar {
+    width: 60px;
+    display: flex;
+    flex-direction: column;
+
+    &.with-border {
+      border-right: 1px solid var(--semi-color-border);
     }
-    
-    &-toolbar {
+  }
+
+  .sidebar-menu-item {
+    margin-bottom: 4px;
+
+    .sidebar-menu-content {
       display: flex;
-      justify-content: space-between;
+      cursor: pointer;
+
+      &.selected {
+        background-color: var(--semi-color-primary-light-default);
+      }
     }
   }
-  
-  &-table {
-    flex: 1;
-    overflow: hidden;
-  }
+}
+
+// ❌ 错误 - 不使用 BEM 连接符
+.sidebar {
+  &-icon-bar { ... }  // 错误：会生成 .sidebar-icon-bar（单层）
+  &-menu-item { ... } // 这种方式容易造成全局冲突
 }
 ```
 

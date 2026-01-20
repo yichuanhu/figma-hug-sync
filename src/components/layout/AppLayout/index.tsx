@@ -1,6 +1,6 @@
 import { useState, ReactNode } from 'react';
-import Sidebar from './Sidebar';
-import './AppLayout.less';
+import Sidebar from '../Sidebar';
+import './index.less';
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -15,12 +15,10 @@ const AppLayout = ({ children }: AppLayoutProps) => {
       <div className={`app-layout-sidebar ${collapsed ? 'collapsed' : 'expanded'}`}>
         <Sidebar collapsed={collapsed} onToggleCollapse={() => setCollapsed(!collapsed)} />
       </div>
-      
+
       {/* 内容区域 */}
       <div className="app-layout-content">
-        <div className="app-layout-content-card">
-          {children}
-        </div>
+        <div className="app-layout-content-card">{children}</div>
       </div>
     </div>
   );
