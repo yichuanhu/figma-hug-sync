@@ -6,6 +6,8 @@
 
 ```
 src/
+├── api/                       # API 定义和类型
+│   └── process.ts             # 自动化流程 API
 ├── assets/                    # 静态资源（图片、图标等）
 │   └── icons/                 # SVG 图标
 ├── components/                # 公共组件
@@ -29,6 +31,32 @@ src/
     ├── global.less
     ├── pm.less
     └── index.less
+```
+
+### 1.1 API 文件夹规范
+
+`src/api/` 目录存放后端 API 定义文件：
+
+- **文件来源**：API 定义文件由后端自动生成，前端直接使用
+- **类型复用**：组件应直接导入 API 文件中的类型，不需要重复定义
+- **Mock 数据**：开发阶段的 Mock 数据应参考 API 类型生成
+- **扩展类型**：如需前端特有字段，使用 `extends` 或 `Omit/Pick` 扩展 API 类型
+
+```tsx
+// 推荐 - 导入并扩展 API 类型
+import type { LYProcessResponse, GetProcessesParams } from '@/api/process';
+
+interface ProcessItem extends Omit<LYProcessResponse, 'creator_id'> {
+  // 前端扩展字段
+  creator: { name: string; avatar: string };
+}
+
+// 不推荐 - 重复定义类型
+interface ProcessItem {
+  id: string;
+  name: string;
+  // ...
+}
 ```
 
 ### 模块文件夹结构

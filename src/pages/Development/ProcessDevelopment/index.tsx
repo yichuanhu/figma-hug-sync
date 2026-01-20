@@ -14,6 +14,7 @@ import {
   Col
 } from '@douyinfe/semi-ui';
 import { IconSearch, IconPlus, IconDownload, IconMore, IconExternalOpenStroked, IconEditStroked, IconPlay, IconDeleteStroked } from '@douyinfe/semi-icons';
+import type { LYProcessResponse, GetProcessesParams, LYRangeResponse } from '@/api/process';
 import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
 import ProcessDetailDrawer from './components/ProcessDetailDrawer';
@@ -22,56 +23,48 @@ import './index.less';
 
 const { Title, Text } = Typography;
 
-interface ProcessItem {
-  id: string;
+// 扩展 API 类型，添加前端需要的字段
+interface ProcessItem extends Omit<LYProcessResponse, 'creator_id' | 'current_version_id' | 'requirement_id' | 'process_type'> {
   key: number;
-  name: string;
-  description: string;
-  status: string;
-  language: string;
   version: string;
   organization: string;
   creator: {
     name: string;
     avatar: string;
   };
-  createdAt: string;
-  updatedAt: string;
 }
 
-interface QueryParams {
+interface QueryParams extends Pick<GetProcessesParams, 'keyword'> {
   page: number;
   pageSize: number;
-  keyword: string;
 }
 
-interface PaginationInfo {
-  total: number;
-}
+interface PaginationInfo extends Pick<LYRangeResponse, 'total'> {}
 
 // 模拟API请求 - 获取流程列表
-const fetchProcessList = async (params: {
-  page: number;
-  pageSize: number;
-  keyword?: string;
-}): Promise<{ data: ProcessItem[]; total: number }> => {
+// 参考 API: GET /processes (GetProcessesParams -> LYListResponseLYProcessResponse)
+const fetchProcessList = async (params: QueryParams): Promise<{ data: ProcessItem[]; total: number }> => {
   await new Promise(resolve => setTimeout(resolve, 500));
   
+  // Mock 数据基于 LYProcessResponse 类型生成
   const allData: ProcessItem[] = Array(46).fill(null).map((_, index) => ({
+    // LYProcessResponse 标准字段
     id: `PROC-2024-${String(index + 1).padStart(3, '0')}`,
-    key: index + 1,
     name: index % 3 === 0 ? '财务报销流程' : index % 3 === 1 ? '人事审批流程' : '采购申请流程',
     description: '自动处理财务报销审批流程，包括发票识别、金额核对、审批通知',
+    language: index % 3 === 1 ? 'BotScript' : 'Python',
     status: index % 2 === 0 ? 'published' : 'draft',
-    language: index % 3 === 1 ? 'BotScript' : 'python',
+    timeout: 60,
+    created_at: `2024-0${(index % 9) + 1}-${String((index % 28) + 1).padStart(2, '0')}`,
+    updated_at: `2024-0${(index % 9) + 1}-${String((index % 28) + 1).padStart(2, '0')}`,
+    // 前端扩展字段
+    key: index + 1,
     version: `1.${index % 5}.0`,
     organization: index % 4 === 0 ? '财务部' : index % 4 === 1 ? '人事部' : index % 4 === 2 ? '技术部' : '运营部',
     creator: {
       name: index % 3 === 0 ? '姜鹏志' : index % 3 === 1 ? '李明' : '王芳',
       avatar: '',
     },
-    createdAt: `2024-0${(index % 9) + 1}-${String((index % 28) + 1).padStart(2, '0')}`,
-    updatedAt: `2024-0${(index % 9) + 1}-${String((index % 28) + 1).padStart(2, '0')}`,
   }));
 
   let filteredData = allData;
@@ -237,7 +230,7 @@ const ProcessDevelopment = () => {
 
       <CreateProcessModal visible={createModalVisible} onCancel={() => setCreateModalVisible(false)} onSuccess={(processData) => {
         loadData();
-        setSelectedProcess({ id: processData.id, key: 0, name: processData.name, description: processData.description, status: processData.status, language: '', version: '1.0.0', organization: processData.organization, creator: { name: processData.creator, avatar: '' }, createdAt: processData.createdAt, updatedAt: processData.createdAt });
+        setSelectedProcess({ id: processData.id, key: 0, name: processData.name, description: processData.description ?? '', status: processData.status, language: 'Python', timeout: 60, version: '1.0.0', organization: processData.organization, creator: { name: processData.creator, avatar: '' }, created_at: processData.createdAt, updated_at: processData.createdAt });
         setDetailDrawerVisible(true);
       }} />
       <EditProcessModal visible={editModalVisible} onCancel={() => setEditModalVisible(false)} processData={editingProcess} onSuccess={(updatedData) => { console.log('流程已更新:', updatedData); loadData(); }} />

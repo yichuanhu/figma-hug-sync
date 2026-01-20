@@ -24,16 +24,20 @@ const allRunData = [
   { key: 5, taskId: 'TASK-005', robot: 'RPA-机器人-02', creator: '李明', createdTime: '2024-01-11 08:30:00', status: '成功' },
 ];
 
+// 使用 API 类型扩展，与页面组件保持一致
 interface ProcessData {
   id: string;
   name: string;
-  description: string;
+  description?: string | null;
   status: string;
+  language: string;
+  timeout: number;
+  created_at: string | null;
+  updated_at: string | null;
+  // 前端扩展字段
   organization: string;
-  creator: { name: string; avatar: string };
-  createdAt: string;
-  language?: string;
   version?: string;
+  creator: { name: string; avatar: string };
 }
 
 interface ProcessDetailDrawerProps {
@@ -97,10 +101,10 @@ const ProcessDetailDrawer = ({ visible, onClose, processData, onOpen, onEdit, on
     { key: t('processDetail.fields.processDescription'), value: processData.description || '-' },
     { key: t('processDetail.fields.organization'), value: processData.organization },
     { key: t('processDetail.fields.creator'), value: processData.creator.name },
-    { key: t('processDetail.fields.createdAt'), value: processData.createdAt },
+    { key: t('processDetail.fields.createdAt'), value: processData.created_at || '-' },
     { key: t('processDetail.fields.status'), value: <Tag color={processData.status === t('development.status.published') ? 'green' : 'grey'} type="light">{processData.status}</Tag> },
   ];
-  if (processData.language) descriptionData.splice(3, 0, { key: t('processDetail.fields.language'), value: <Tag color={processData.language === 'python' ? 'blue' : 'cyan'} type="light">{processData.language}</Tag> as unknown as string });
+  if (processData.language) descriptionData.splice(3, 0, { key: t('processDetail.fields.language'), value: <Tag color={processData.language === 'Python' ? 'blue' : 'cyan'} type="light">{processData.language}</Tag> as unknown as string });
   if (processData.version) descriptionData.splice(4, 0, { key: t('processDetail.fields.version'), value: <Tag color="grey" type="ghost">{processData.version}</Tag> as unknown as string });
 
   const versionColumns = [
