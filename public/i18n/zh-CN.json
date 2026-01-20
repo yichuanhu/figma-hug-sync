@@ -28,7 +28,10 @@
     "yes": "是",
     "no": "否",
     "copy": "复制",
-    "description": "描述"
+    "description": "描述",
+    "creator": "创建者",
+    "createTime": "创建时间",
+    "updateTime": "更新时间"
   },
   "sidebar": {
     "home": "首页",
@@ -73,13 +76,7 @@
     "importProcess": "导入流程",
     "createProcess": "新建流程",
     "table": {
-      "processName": "流程名称",
-      "processDescription": "描述",
-      "status": "状态",
-      "creatorName": "创建者",
-      "createTime": "创建时间",
-      "updateTime": "更新时间",
-      "actions": "操作"
+      "processName": "流程名称"
     },
     "filter": {
       "processStatus": "流程状态",

@@ -293,7 +293,7 @@ const ProcessDevelopment = () => {
       }),
     },
     {
-      title: t('development.table.processDescription'),
+      title: t('common.description'),
       dataIndex: 'description',
       key: 'description',
       width: 320,
@@ -304,7 +304,7 @@ const ProcessDevelopment = () => {
       ),
     },
     {
-      title: t('development.table.status'),
+      title: t('common.status'),
       dataIndex: 'status',
       key: 'status',
       width: 100,
@@ -315,7 +315,7 @@ const ProcessDevelopment = () => {
       ),
     },
     {
-      title: t('development.table.creator'),
+      title: t('common.creator'),
       dataIndex: 'creatorName',
       key: 'creatorName',
       width: 120,
@@ -332,7 +332,7 @@ const ProcessDevelopment = () => {
       },
     },
     {
-      title: t('development.table.createTime'),
+      title: t('common.createTime'),
       dataIndex: 'createTime',
       key: 'createTime',
       width: 160,
@@ -342,7 +342,7 @@ const ProcessDevelopment = () => {
       }),
     },
     {
-      title: t('development.table.updateTime'),
+      title: t('common.updateTime'),
       dataIndex: 'updateTime',
       key: 'updateTime',
       width: 160,
@@ -352,7 +352,7 @@ const ProcessDevelopment = () => {
       }),
     },
     {
-      title: t('development.table.actions'),
+      title: t('common.actions'),
       dataIndex: 'action',
       key: 'action',
       width: 60,

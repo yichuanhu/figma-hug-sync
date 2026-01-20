@@ -160,12 +160,12 @@ const ProcessDetailDrawer = ({ visible, onClose, processData, onOpen, onEdit, on
   const descriptionData = [
     { key: t('processDetail.fields.processId'), value: processData.id },
     { key: t('processDetail.fields.processName'), value: processData.name },
-    { key: t('processDetail.fields.processDescription'), value: processData.description || '-' },
-    { key: t('processDetail.fields.creator'), value: processData.creatorName },
-    { key: t('processDetail.fields.createdAt'), value: processData.createTime },
-    { key: t('processDetail.fields.updateTime'), value: processData.updateTime },
+    { key: t('common.description'), value: processData.description || '-' },
+    { key: t('common.creator'), value: processData.creatorName },
+    { key: t('common.createTime'), value: processData.createTime },
+    { key: t('common.updateTime'), value: processData.updateTime },
     {
-      key: t('processDetail.fields.status'),
+      key: t('common.status'),
       value: (
         <Tag color={getStatusColor(processData.status)} type="light">
           {t(getStatusI18nKey(processData.status))}
