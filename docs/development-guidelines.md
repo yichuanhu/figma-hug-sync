@@ -101,6 +101,50 @@ background-color: #ffffff;
 color: #333333;
 ```
 
+### 2.5 优先使用 Semi UI 组件布局
+
+**布局优先级**：优先使用 Semi UI 提供的布局组件，而非自定义 CSS：
+
+1. **栅格系统**：使用 `Row` 和 `Col` 组件进行响应式布局
+2. **间距组件**：使用 `Space` 组件处理元素间距
+3. **Flex 布局**：仅在组件不满足需求时使用 CSS flexbox
+
+```tsx
+// 推荐 - 使用 Semi UI 组件
+import { Row, Col, Space } from '@douyinfe/semi-ui';
+
+<Row type="flex" justify="space-between" align="middle">
+  <Col>
+    <Space>
+      <Input prefix={<IconSearch />} placeholder="搜索" />
+      <Button icon={<IconFilter />}>筛选</Button>
+    </Space>
+  </Col>
+  <Col>
+    <Button theme="solid" type="primary">新建</Button>
+  </Col>
+</Row>
+
+// 不推荐 - 使用自定义 CSS
+<div className="toolbar">
+  <div className="toolbar-left">...</div>
+  <div className="toolbar-right">...</div>
+</div>
+```
+
+**Less 文件同步原则**：
+- 当使用 Semi UI 组件替代 CSS 布局时，必须同步删除 Less 文件中对应的冗余样式代码
+- 保留必要的间距、边距等无法由组件处理的样式
+- 在 Less 文件中添加注释说明布局由组件处理
+
+```less
+// 示例：布局已由 Semi UI 组件处理
+&-toolbar {
+  margin-bottom: 16px;
+  // 布局使用 Semi UI Row/Col/Space 组件，不在此定义
+}
+```
+
 ---
 
 ## 3. 导入路径规范
