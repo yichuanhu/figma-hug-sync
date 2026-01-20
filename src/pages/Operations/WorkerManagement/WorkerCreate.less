@@ -1,62 +1,59 @@
 // WorkerCreate 创建机器人页面样式
-.worker-form {
+.worker-form-page {
   padding: 20px 24px;
   min-height: 100%;
 
   // 面包屑
-  &-breadcrumb {
+  .breadcrumb {
     margin-bottom: 16px;
 
-    &-item {
+    .breadcrumb-item {
       cursor: pointer;
     }
   }
 
   // 标题区域
-  &-header {
+  .header {
     margin-bottom: 24px;
 
-    &-title {
+    .title {
       margin-bottom: 8px;
     }
   }
 
   // 表单容器
-  &-container {
+  .form-container {
     max-width: 720px;
-  }
 
-  // 卡片
-  &-card {
-    margin-bottom: 24px;
-  }
+    // 卡片
+    .form-card {
+      margin-bottom: 24px;
 
-  // 卡片内容
-  &-card-content {
-    padding: 0 16px;
-  }
+      .card-content {
+        padding: 0 16px;
 
-  // 表单字段
-  &-field {
-    margin-bottom: 16px;
-  }
+        // 表单字段
+        .form-field {
+          margin-bottom: 16px;
 
-  // 字段标签
-  &-label {
-    display: block;
-    margin-bottom: 8px;
-  }
+          .field-label {
+            display: block;
+            margin-bottom: 8px;
+          }
 
-  // Select 全宽
-  &-select-full {
-    width: 100%;
-  }
+          .select-full {
+            width: 100%;
+          }
+        }
+      }
+    }
 
-  // 底部按钮区域
-  &-footer {
-    display: flex;
-    gap: 12px;
-    padding-bottom: 24px;
+    // 底部按钮区域
+    .form-footer {
+      display: flex;
+      gap: 12px;
+      padding-bottom: 24px;
+    }
   }
 }
 

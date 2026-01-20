@@ -20,16 +20,16 @@ const AppLayout = ({ children }: AppLayoutProps) => {
   return (
     <div className="app-layout">
       {/* 侧边栏 */}
-      <div className={`app-layout-sidebar ${collapsed ? 'app-layout-sidebar--collapsed' : 'app-layout-sidebar--expanded'}`}>
+      <div className={`app-layout sidebar-container ${collapsed ? 'collapsed' : 'expanded'}`}>
         <Sidebar collapsed={collapsed} onToggleCollapse={() => setCollapsed(!collapsed)} />
       </div>
       
       {/* 内容区域 */}
-      <div className="app-layout-content">
-        <div className="app-layout-card">
+      <div className="app-layout content-area">
+        <div className="content-card">
           {/* 面包屑导航 */}
           {breadcrumbs.length > 0 && (
-            <div className="app-layout-breadcrumb">
+            <div className="breadcrumb-container">
               <Breadcrumb>
                 {breadcrumbs.map((item, index) => (
                   <Breadcrumb.Item
@@ -44,7 +44,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
           )}
           
           {/* 页面内容 */}
-          <div className="app-layout-page">
+          <div className="page-content">
             {children}
           </div>
         </div>

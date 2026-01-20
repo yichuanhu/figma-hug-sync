@@ -13,10 +13,10 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="not-found">
-      <div className="not-found-content">
-        <Title heading={1} className="not-found-title">404</Title>
-        <Text type="tertiary" className="not-found-text">
+    <div className="not-found-page">
+      <div className="content">
+        <Title heading={1} className="title">404</Title>
+        <Text type="tertiary" className="text">
           页面未找到
         </Text>
         <Button theme="solid" type="primary" onClick={() => window.location.href = '/'}>
