@@ -49,27 +49,23 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
   // 根据当前路由获取激活的中心
   const getActiveCenterByPath = (pathname: string): string => {
     // 开发中心相关路由
-    if (pathname === '/development-workbench' || 
-        pathname === '/process-development' || 
-        pathname.startsWith('/process-detail/') ||
-        pathname === '/worker-management' || 
-        pathname.startsWith('/worker-management/')) {
+    if (pathname.startsWith('/dev')) {
       return 'developmentCenter';
     }
-    // 调度中心相关路由
-    if (pathname === '/scheduling-workbench' || pathname.startsWith('/scheduling')) {
-      return 'schedulingCenter';
-    }
     // 运营中心相关路由
-    if (pathname === '/operations-workbench' || pathname.startsWith('/operations')) {
+    if (pathname.startsWith('/ops')) {
       return 'operationsCenter';
     }
+    // 调度中心相关路由
+    if (pathname.startsWith('/scheduling')) {
+      return 'schedulingCenter';
+    }
     // 需求中心相关路由
-    if (pathname === '/requirements-workbench' || pathname.startsWith('/requirements')) {
+    if (pathname.startsWith('/requirements')) {
       return 'requirementsCenter';
     }
     // 运维中心相关路由
-    if (pathname === '/maintenance-workbench' || pathname.startsWith('/maintenance')) {
+    if (pathname.startsWith('/maintenance')) {
       return 'maintenanceCenter';
     }
     // 首页
@@ -84,22 +80,22 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
   // 中心级别菜单（左侧图标栏）
   const centerMenuItems: MenuItem[] = [
     { key: 'home', labelKey: 'sidebar.home', icon: <HomeIcon size={20} />, path: '/' },
-    { key: 'developmentCenter', labelKey: 'sidebar.developmentCenter', icon: <DevelopmentIcon size={20} />, path: '/development-workbench' },
-    { key: 'schedulingCenter', labelKey: 'sidebar.schedulingCenter', icon: <SchedulingIcon size={20} />, path: '/scheduling-workbench' },
-    { key: 'operationsCenter', labelKey: 'sidebar.operationsCenter', icon: <BusinessIcon size={20} />, path: '/operations-workbench' },
-    { key: 'requirementsCenter', labelKey: 'sidebar.requirementsCenter', icon: <RequirementsIcon size={20} />, path: '/requirements-workbench' },
-    { key: 'maintenanceCenter', labelKey: 'sidebar.maintenanceCenter', icon: <OperationsIcon size={20} />, path: '/maintenance-workbench' },
+    { key: 'developmentCenter', labelKey: 'sidebar.developmentCenter', icon: <DevelopmentIcon size={20} />, path: '/dev/workbench' },
+    { key: 'schedulingCenter', labelKey: 'sidebar.schedulingCenter', icon: <SchedulingIcon size={20} />, path: '/scheduling/workbench' },
+    { key: 'operationsCenter', labelKey: 'sidebar.operationsCenter', icon: <BusinessIcon size={20} />, path: '/ops/workbench' },
+    { key: 'requirementsCenter', labelKey: 'sidebar.requirementsCenter', icon: <RequirementsIcon size={20} />, path: '/requirements/workbench' },
+    { key: 'maintenanceCenter', labelKey: 'sidebar.maintenanceCenter', icon: <OperationsIcon size={20} />, path: '/maintenance/workbench' },
   ];
 
   // 开发中心的详细菜单结构
   const developmentCenterMenu: MenuItem[] = [
-    { key: 'developmentWorkbench', labelKey: 'sidebar.developmentWorkbench', icon: <IconGridView /> },
+    { key: 'developmentWorkbench', labelKey: 'sidebar.developmentWorkbench', icon: <IconGridView />, path: '/dev/workbench' },
     { 
       key: 'developmentTaskManagement', 
       labelKey: 'sidebar.developmentTaskManagement', 
       icon: <IconFile />,
       children: [
-        { key: 'automationProcess', labelKey: 'sidebar.automationProcess', path: '/process-development' },
+        { key: 'automationProcess', labelKey: 'sidebar.automationProcess', path: '/dev/task-mgmt/process-development' },
         { key: 'documentProcessing', labelKey: 'sidebar.documentProcessing' },
         { key: 'agentApplication', labelKey: 'sidebar.agentApplication' },
         { key: 'humanMachineProcess', labelKey: 'sidebar.humanMachineProcess' },
@@ -124,7 +120,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
         { key: 'processAssets', labelKey: 'sidebar.processAssets' },
         { key: 'knowledgeAssets', labelKey: 'sidebar.knowledgeAssets' },
         { key: 'connectionAssets', labelKey: 'sidebar.connectionAssets' },
-        { key: 'workerManagement', labelKey: 'sidebar.workerManagement', path: '/worker-management' },
+        { key: 'workerManagement', labelKey: 'sidebar.workerManagement', path: '/ops/asset-mgmt/worker-management' },
       ]
     },
     { 
@@ -147,10 +143,10 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
 
   // 根据当前路由获取选中的菜单key
   const getSelectedKeyByPath = (pathname: string): string => {
-    if (pathname === '/worker-management' || pathname.startsWith('/worker-management/')) {
+    if (pathname.includes('/worker-management')) {
       return 'workerManagement';
     }
-    if (pathname === '/process-development' || pathname === '/') {
+    if (pathname.includes('/process-development') || pathname === '/') {
       return 'automationProcess';
     }
     return '';

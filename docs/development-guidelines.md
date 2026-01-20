@@ -150,20 +150,65 @@ import './index.less';
 
 ---
 
-## 5. 页面布局规范
+## 5. 路由规范
 
-### 5.1 标准页面结构
+### 5.1 路由配置
+
+- 路由配置集中在 `src/router/index.tsx` 中
+- 使用 `react-router-dom`
+- 支持多级嵌套结构
+- 每个路由需配置 `meta.title` 用于面包屑
+
+```typescript
+// 路由配置示例
+const routes: AppRouteObject[] = [
+  {
+    path: '/dev',
+    meta: { title: '开发中心' },
+    element: <Outlet />,
+    children: [
+      {
+        path: 'task-mgmt',
+        meta: { title: '开发任务管理' },
+        element: <Outlet />,
+        children: [
+          {
+            path: 'process-development',
+            element: <ProcessDevelopment />,
+            meta: { title: '自动化流程' },
+          }
+        ],
+      }
+    ],
+  }
+];
+```
+
+### 5.2 路由渲染
+
+- 路由渲染组件在 `src/router/Routers.tsx`
+- 使用递归方式渲染嵌套路由
+- 布局组件 `AppLayout` 包裹所有页面
+
+### 5.3 面包屑
+
+- 面包屑由 `AppLayout` 组件统一处理
+- 根据路由配置的 `meta.title` 自动生成
+- 页面组件内**不再单独处理面包屑**
+- 面包屑生成逻辑在 `src/router/utils.ts`
+
+---
+
+## 6. 页面布局规范
+
+### 6.1 标准页面结构
 
 所有页面遵循统一布局模式：
-- 固定头部：面包屑 + 操作按钮
+- 固定头部：标题 + 操作按钮（面包屑由Layout处理）
 - 可滚动内容区：数据表格
 
 ```tsx
 <div className="module-name">
-  <div className="module-name-breadcrumb">
-    <Breadcrumb />
-  </div>
-  
   <div className="module-name-header">
     <div className="module-name-header-title">
       <Title />
@@ -179,7 +224,7 @@ import './index.less';
 </div>
 ```
 
-### 5.2 表格规范
+### 6.2 表格规范
 
 - 使用 Semi UI Table 组件内置分页功能
 - 不单独使用 Pagination 组件
@@ -188,14 +233,14 @@ import './index.less';
 
 ---
 
-## 6. 国际化规范
+## 7. 国际化规范
 
-### 6.1 配置
+### 7.1 配置
 
 - 使用 `react-i18next` 和 `i18next-http-backend`
 - 语言文件放在 `public/i18n/{{lng}}.json`
 
-### 6.2 使用方式
+### 7.2 使用方式
 
 ```typescript
 import { useTranslation } from 'react-i18next';
@@ -206,22 +251,29 @@ const Component = () => {
 };
 ```
 
----
+## 8. 其他约定
 
-## 7. 其他约定
+### 8.1 目录结构
 
-### 7.1 路由配置
+```
+src/
+├── router/                    # 路由配置
+│   ├── index.tsx              # 路由定义
+│   ├── Routers.tsx            # 路由渲染组件
+│   └── utils.ts               # 路由工具函数（面包屑生成等）
+├── components/
+│   └── layout/
+│       └── AppLayout.tsx      # 布局组件（含面包屑）
+└── pages/                     # 页面组件（不含面包屑）
+```
 
-- 路由集中在 `src/App.tsx` 中配置
-- 使用 `react-router-dom`
-
-### 7.2 状态管理
+### 8.2 状态管理
 
 - 使用 `@tanstack/react-query` 进行数据获取
 - 组件内状态使用 `useState`
 - 复杂状态逻辑抽取到自定义 hooks
 
-### 7.3 开发原则
+### 8.3 开发原则
 
 - 严格按照设计稿还原
 - 不添加设计稿中没有的功能或菜单

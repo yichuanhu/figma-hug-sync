@@ -1,5 +1,8 @@
 import { useState, ReactNode } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Breadcrumb } from '@douyinfe/semi-ui';
 import Sidebar from './Sidebar';
+import { generateBreadcrumbs } from '@/router/utils';
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -7,8 +10,13 @@ interface AppLayoutProps {
 
 const AppLayout = ({ children }: AppLayoutProps) => {
   const [collapsed, setCollapsed] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const sidebarWidth = collapsed ? 60 : 'auto';
+  
+  // 根据当前路由生成面包屑
+  const breadcrumbs = generateBreadcrumbs(location.pathname);
 
   return (
     <div style={{ display: 'flex', height: '100vh', width: '100%' }}>
@@ -48,7 +56,26 @@ const AppLayout = ({ children }: AppLayoutProps) => {
           display: 'flex',
           flexDirection: 'column',
         }}>
-          {children}
+          {/* 面包屑导航 */}
+          {breadcrumbs.length > 0 && (
+            <div style={{ padding: '12px 24px', flexShrink: 0 }}>
+              <Breadcrumb>
+                {breadcrumbs.map((item, index) => (
+                  <Breadcrumb.Item
+                    key={index}
+                    onClick={item.path ? () => navigate(item.path!) : undefined}
+                  >
+                    {item.title}
+                  </Breadcrumb.Item>
+                ))}
+              </Breadcrumb>
+            </div>
+          )}
+          
+          {/* 页面内容 */}
+          <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+            {children}
+          </div>
         </div>
       </div>
     </div>

@@ -1,6 +1,5 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import { 
-  Breadcrumb, 
   Typography, 
   Input, 
   Button, 
@@ -462,7 +461,7 @@ const WorkerManagement = () => {
   // 编辑机器人
   const handleEdit = (worker: WorkerData, e?: React.MouseEvent) => {
     e?.stopPropagation();
-    navigate(`/worker-management/edit/${worker.id}`);
+    navigate(`/ops/asset-mgmt/worker-management/edit/${worker.id}`);
   };
 
   // 确认删除
@@ -477,7 +476,7 @@ const WorkerManagement = () => {
   const handleEditFromDrawer = () => {
     if (selectedWorker) {
       setDetailDrawerVisible(false);
-      navigate(`/worker-management/edit/${selectedWorker.id}`);
+      navigate(`/ops/asset-mgmt/worker-management/edit/${selectedWorker.id}`);
     }
   };
 
@@ -643,15 +642,6 @@ const WorkerManagement = () => {
 
   return (
     <div className="worker-management">
-      {/* 固定面包屑 */}
-      <div className="worker-management-breadcrumb">
-        <Breadcrumb>
-          <Breadcrumb.Item onClick={() => navigate('/')}>{t('common.home')}</Breadcrumb.Item>
-          <Breadcrumb.Item>{t('worker.breadcrumb.developmentCenter')}</Breadcrumb.Item>
-          <Breadcrumb.Item>{t('worker.breadcrumb.workerManagement')}</Breadcrumb.Item>
-        </Breadcrumb>
-      </div>
-
       {/* 标题区域 */}
       <div className="worker-management-header">
         <div className="worker-management-header-title">
