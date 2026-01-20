@@ -1,0 +1,129 @@
+// WorkerManagement 页面样式
+.worker-management {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  // 面包屑区域
+  &-breadcrumb {
+    padding: 12px 24px;
+    flex-shrink: 0;
+  }
+
+  // 标题区域
+  &-header {
+    padding: 20px 24px 0;
+    flex-shrink: 0;
+
+    &-title {
+      margin-bottom: 24px;
+
+      .title {
+        margin-bottom: 8px;
+      }
+    }
+
+    &-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    &-search {
+      display: flex;
+      gap: 12px;
+    }
+  }
+
+  // 表格区域
+  &-table {
+    flex: 1;
+    overflow: hidden;
+    padding: 0 24px;
+    min-height: 0;
+
+    .semi-table {
+      border-radius: 8px;
+      overflow: hidden;
+    }
+  }
+
+  // 分页区域
+  &-pagination {
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+  }
+}
+
+// 筛选弹窗内容
+.filter-popover {
+  padding: 16px;
+  width: 280px;
+
+  &-section {
+    margin-bottom: 16px;
+  }
+
+  &-label {
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  &-footer {
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid var(--semi-color-border);
+    padding-top: 12px;
+  }
+}
+
+// 表格单元格样式
+.worker-name-cell {
+  &-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &-name {
+    font-weight: 500;
+  }
+
+  &-username {
+    color: var(--semi-color-text-2);
+    font-size: 12px;
+    margin-top: 2px;
+  }
+}
+
+// 骨架屏样式
+.skeleton-name { width: 120px; }
+.skeleton-name-sub { width: 80px; margin-top: 4px; }
+.skeleton-status { width: 50px; }
+.skeleton-ip { width: 90px; }
+.skeleton-priority { width: 40px; }
+.skeleton-version { width: 50px; }
+.skeleton-time { width: 120px; }
+.skeleton-switch { width: 40px; }
+.skeleton-action { width: 24px; }
+
+// 骨架屏名称单元格
+.skeleton-name-cell {
+  display: flex;
+  flex-direction: column;
+}
+
+// 分页信息
+.pagination-info {
+  font-size: 14px;
+}
+
+// 空状态图片
+.empty-image {
+  width: 150px;
+  height: 150px;
+}
