@@ -2,7 +2,7 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SideSheet, Typography, Button, Tag, Descriptions, Tabs, TabPane, Table, Switch, Tooltip, Divider } from '@douyinfe/semi-ui';
 import { IconEditStroked, IconDeleteStroked, IconMaximize, IconMinimize, IconClose } from '@douyinfe/semi-icons';
-import './WorkerDetailDrawer.less';
+import './index.less';
 
 const { Title, Text } = Typography;
 
@@ -135,7 +135,7 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onDelete }: 
     {
       key: t('worker.detail.fields.priority'),
       value: (
-        <span className={`worker-detail-drawer drawer-tabs tab-content priority ${priorityCfg.color}`}>
+        <span className={`worker-detail-drawer-priority worker-detail-drawer-priority--${priorityCfg.color}`}>
           {priorityCfg.icon} {priorityCfg.text}
         </span>
       ),
@@ -181,23 +181,23 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onDelete }: 
   return (
     <SideSheet
       title={
-        <div className="worker-detail-drawer drawer-header">
-          <Title heading={5} className="worker-detail-drawer drawer-header title">
+        <div className="worker-detail-drawer-header">
+          <Title heading={5} className="worker-detail-drawer-header-title">
             {t('worker.detail.title')}
           </Title>
-          <div className="worker-detail-drawer drawer-header actions">
+          <div className="worker-detail-drawer-header-actions">
             <Tooltip content={t('common.edit')}>
               <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={onEdit} />
             </Tooltip>
             <Tooltip content={t('common.delete')}>
-              <Button icon={<IconDeleteStroked className="worker-detail-drawer drawer-header actions delete-icon" />} theme="borderless" size="small" onClick={onDelete} />
+              <Button icon={<IconDeleteStroked className="worker-detail-drawer-header-delete-icon" />} theme="borderless" size="small" onClick={onDelete} />
             </Tooltip>
-            <Divider layout="vertical" className="worker-detail-drawer drawer-header actions divider" />
+            <Divider layout="vertical" className="worker-detail-drawer-header-divider" />
             <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
               <Button icon={isFullscreen ? <IconMinimize /> : <IconMaximize />} theme="borderless" size="small" onClick={toggleFullscreen} />
             </Tooltip>
             <Tooltip content={t('common.close')}>
-              <Button icon={<IconClose />} theme="borderless" size="small" onClick={onClose} className="worker-detail-drawer drawer-header actions close-btn" />
+              <Button icon={<IconClose />} theme="borderless" size="small" onClick={onClose} className="worker-detail-drawer-header-close-btn" />
             </Tooltip>
           </div>
         </div>
@@ -211,26 +211,26 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onDelete }: 
       closable={false}
       className={`card-sidesheet resizable-sidesheet worker-detail-drawer ${isFullscreen ? 'fullscreen-sidesheet' : ''}`}
     >
-      {!isFullscreen && <div className="worker-detail-drawer resize-handle" onMouseDown={handleMouseDown} />}
-      <Tabs activeKey={activeTab} onChange={setActiveTab} className="worker-detail-drawer drawer-tabs">
+      {!isFullscreen && <div className="worker-detail-drawer-resize-handle" onMouseDown={handleMouseDown} />}
+      <Tabs activeKey={activeTab} onChange={setActiveTab} className="worker-detail-drawer-tabs">
         <TabPane tab={t('worker.detail.tabs.info')} itemKey="info">
-          <div className="worker-detail-drawer drawer-tabs tab-content">
-            <div className="worker-detail-drawer drawer-tabs tab-content info-section">
-              <Text strong className="worker-detail-drawer drawer-tabs tab-content info-section info-title">
+          <div className="worker-detail-drawer-tab-content">
+            <div className="worker-detail-drawer-info-section">
+              <Text strong className="worker-detail-drawer-info-title">
                 {t('worker.detail.basicInfo')}
               </Text>
               <Descriptions data={basicInfoData} />
             </div>
 
-            <div className="worker-detail-drawer drawer-tabs tab-content info-section">
-              <Text strong className="worker-detail-drawer drawer-tabs tab-content info-section info-title">
+            <div className="worker-detail-drawer-info-section">
+              <Text strong className="worker-detail-drawer-info-title">
                 {t('worker.detail.detailInfo')}
               </Text>
               <Descriptions data={detailInfoData} />
             </div>
 
-            <div className="worker-detail-drawer drawer-tabs tab-content info-section">
-              <Text strong className="worker-detail-drawer drawer-tabs tab-content info-section info-title">
+            <div className="worker-detail-drawer-info-section">
+              <Text strong className="worker-detail-drawer-info-title">
                 {t('worker.detail.hostInfo')}
               </Text>
               <Descriptions data={hostInfoData} />
@@ -248,7 +248,7 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onDelete }: 
         </TabPane>
 
         <TabPane tab={t('worker.detail.tabs.history')} itemKey="history">
-          <div className="worker-detail-drawer drawer-tabs tab-content">
+          <div className="worker-detail-drawer-tab-content">
             <Table columns={changeColumns} dataSource={mockChangeHistory} pagination={{ pageSize: 10, showTotal: true }} size="small" />
           </div>
         </TabPane>

@@ -2,7 +2,7 @@ import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SideSheet, Typography, Button, Tag, Descriptions, Tabs, TabPane, Table, Divider, Tooltip, DatePicker, Select } from '@douyinfe/semi-ui';
 import { IconEditStroked, IconPlay, IconDeleteStroked, IconExternalOpenStroked, IconMaximize, IconMinimize, IconClose } from '@douyinfe/semi-icons';
-import './ProcessDetailDrawer.less';
+import './index.less';
 
 const { Title, Text } = Typography;
 
@@ -212,16 +212,16 @@ const ProcessDetailDrawer = ({ visible, onClose, processData, onOpen, onEdit, on
   return (
     <SideSheet
       title={
-        <div className="process-detail-drawer drawer-header">
-          <div className="process-detail-drawer drawer-header title-section">
-            <Title heading={5} className="process-detail-drawer drawer-header title-section title">
+        <div className="process-detail-drawer-header">
+          <div className="process-detail-drawer-header-title-section">
+            <Title heading={5} className="process-detail-drawer-header-title">
               {processData.name}
             </Title>
             <Text type="tertiary" size="small">
               {processData.id}
             </Text>
           </div>
-          <div className="process-detail-drawer drawer-header actions">
+          <div className="process-detail-drawer-header-actions">
             <Tooltip content={t('development.actions.openProcess')}>
               <Button icon={<IconExternalOpenStroked />} theme="borderless" size="small" onClick={onOpen} />
             </Tooltip>
@@ -232,14 +232,14 @@ const ProcessDetailDrawer = ({ visible, onClose, processData, onOpen, onEdit, on
               <Button icon={<IconPlay />} theme="borderless" size="small" onClick={onRun} />
             </Tooltip>
             <Tooltip content={t('common.delete')}>
-              <Button icon={<IconDeleteStroked className="process-detail-drawer drawer-header actions delete-icon" />} theme="borderless" size="small" onClick={onDelete} />
+              <Button icon={<IconDeleteStroked className="process-detail-drawer-header-delete-icon" />} theme="borderless" size="small" onClick={onDelete} />
             </Tooltip>
-            <Divider layout="vertical" className="process-detail-drawer drawer-header actions divider" />
+            <Divider layout="vertical" className="process-detail-drawer-header-divider" />
             <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
               <Button icon={isFullscreen ? <IconMinimize /> : <IconMaximize />} theme="borderless" size="small" onClick={toggleFullscreen} />
             </Tooltip>
             <Tooltip content={t('common.close')}>
-              <Button icon={<IconClose />} theme="borderless" size="small" onClick={onClose} className="process-detail-drawer drawer-header actions close-btn" />
+              <Button icon={<IconClose />} theme="borderless" size="small" onClick={onClose} className="process-detail-drawer-header-close-btn" />
             </Tooltip>
           </div>
         </div>
@@ -253,23 +253,23 @@ const ProcessDetailDrawer = ({ visible, onClose, processData, onOpen, onEdit, on
       closable={false}
       className={`card-sidesheet resizable-sidesheet process-detail-drawer ${isFullscreen ? 'fullscreen-sidesheet' : ''}`}
     >
-      {!isFullscreen && <div className="process-detail-drawer resize-handle" onMouseDown={handleMouseDown} />}
-      <Tabs activeKey={activeTab} onChange={setActiveTab} className="process-detail-drawer drawer-tabs">
+      {!isFullscreen && <div className="process-detail-drawer-resize-handle" onMouseDown={handleMouseDown} />}
+      <Tabs activeKey={activeTab} onChange={setActiveTab} className="process-detail-drawer-tabs">
         <TabPane tab={t('processDetail.tabs.detail')} itemKey="detail">
-          <div className="process-detail-drawer drawer-tabs tab-content">
+          <div className="process-detail-drawer-tab-content">
             <Descriptions data={descriptionData} />
           </div>
         </TabPane>
 
         <TabPane tab={t('processDetail.tabs.versions')} itemKey="versions">
-          <div className="process-detail-drawer drawer-tabs tab-content">
+          <div className="process-detail-drawer-tab-content">
             <Table columns={versionColumns} dataSource={versionData} pagination={false} size="small" />
           </div>
         </TabPane>
 
         <TabPane tab={t('processDetail.tabs.runs')} itemKey="runs">
-          <div className="process-detail-drawer drawer-tabs tab-content">
-            <div className="process-detail-drawer drawer-tabs tab-content filters">
+          <div className="process-detail-drawer-tab-content">
+            <div className="process-detail-drawer-filters">
               <Select
                 placeholder={t('processDetail.filter.statusPlaceholder')}
                 multiple
@@ -277,7 +277,7 @@ const ProcessDetailDrawer = ({ visible, onClose, processData, onOpen, onEdit, on
                 value={selectedRunStatuses}
                 onChange={(value) => setSelectedRunStatuses(value as string[])}
                 optionList={runStatusOptions}
-                className="process-detail-drawer drawer-tabs tab-content filters filter-select"
+                className="process-detail-drawer-filter-select"
                 showClear
               />
               <DatePicker
@@ -285,7 +285,7 @@ const ProcessDetailDrawer = ({ visible, onClose, processData, onOpen, onEdit, on
                 value={runTimeRange as [Date, Date] | undefined}
                 onChange={(value) => setRunTimeRange(value as [Date, Date] | null)}
                 placeholder={[t('common.startTime'), t('common.endTime')]}
-                className="process-detail-drawer drawer-tabs tab-content filters filter-date"
+                className="process-detail-drawer-filter-date"
                 showClear
               />
             </div>
@@ -294,15 +294,15 @@ const ProcessDetailDrawer = ({ visible, onClose, processData, onOpen, onEdit, on
         </TabPane>
 
         <TabPane tab={t('processDetail.tabs.changes')} itemKey="changes">
-          <div className="process-detail-drawer drawer-tabs tab-content">
-            <div className="process-detail-drawer drawer-tabs tab-content filters">
+          <div className="process-detail-drawer-tab-content">
+            <div className="process-detail-drawer-filters">
               <Select
                 placeholder={t('processDetail.filter.changerPlaceholder')}
                 multiple
                 value={selectedChangers}
                 onChange={(value) => setSelectedChangers(value as string[])}
                 optionList={changerOptions}
-                className="process-detail-drawer drawer-tabs tab-content filters filter-select wide"
+                className="process-detail-drawer-filter-select process-detail-drawer-filter-select--wide"
                 showClear
               />
               <DatePicker
@@ -310,7 +310,7 @@ const ProcessDetailDrawer = ({ visible, onClose, processData, onOpen, onEdit, on
                 value={changeTimeRange as [Date, Date] | undefined}
                 onChange={(value) => setChangeTimeRange(value as [Date, Date] | null)}
                 placeholder={[t('common.startTime'), t('common.endTime')]}
-                className="process-detail-drawer drawer-tabs tab-content filters filter-date"
+                className="process-detail-drawer-filter-date"
                 showClear
               />
             </div>
