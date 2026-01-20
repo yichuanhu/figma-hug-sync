@@ -23,7 +23,7 @@ import {
   IconKey
 } from '@douyinfe/semi-icons';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import { useI18n } from '@laiye_packages/uci-react';
 import WorkerDetailDrawer from './components/WorkerDetailDrawer';
 import WorkerKeyModal from './components/WorkerKeyModal';
 import WorkerDeleteModal from './components/WorkerDeleteModal';
@@ -295,7 +295,7 @@ const fetchWorkerList = async (params: {
 
 const WorkerManagement = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t } = useI18n();
   const [searchValue, setSearchValue] = useState('');
   const [filters, setFilters] = useState<FilterState>({
     status: [],

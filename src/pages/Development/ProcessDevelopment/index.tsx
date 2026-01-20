@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import { useI18n } from '@laiye_packages/uci-react';
 import { 
   Breadcrumb, 
   Typography, 
@@ -97,7 +97,7 @@ const fetchProcessList = async (params: {
 
 const ProcessDevelopment = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t } = useI18n();
   const [queryParams, setQueryParams] = useState<QueryParams>({
     page: 1,
     pageSize: 10,

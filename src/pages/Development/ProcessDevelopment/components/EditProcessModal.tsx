@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useI18n } from '@laiye_packages/uci-react';
 import { 
   Modal, 
   Form, 
@@ -24,7 +24,7 @@ interface EditProcessModalProps {
 }
 
 const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditProcessModalProps) => {
-  const { t } = useTranslation();
+  const { t } = useI18n();
   const [loading, setLoading] = useState(false);
 
   // 模拟已存在的流程名称列表（排除当前编辑的流程）

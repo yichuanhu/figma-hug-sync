@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useI18n } from '@laiye_packages/uci-react';
 import { 
   SideSheet, 
   Typography, 
@@ -76,7 +76,7 @@ const ProcessDetailDrawer = ({
   onRun,
   onDelete 
 }: ProcessDetailDrawerProps) => {
-  const { t } = useTranslation();
+  const { t } = useI18n();
   const [activeTab, setActiveTab] = useState('detail');
   const [changeTimeRange, setChangeTimeRange] = useState<[Date, Date] | null>(null);
   const [selectedChangers, setSelectedChangers] = useState<string[]>([]);
