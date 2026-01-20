@@ -10,7 +10,6 @@ import {
   Tag, 
   Avatar,
   Dropdown,
-  Pagination,
   Tooltip
 } from '@douyinfe/semi-ui';
 import { IconSearch, IconPlus, IconDownload, IconMore, IconExternalOpenStroked, IconEditStroked, IconPlay, IconDeleteStroked } from '@douyinfe/semi-icons';
@@ -139,16 +138,6 @@ const ProcessDevelopment = () => {
   useEffect(() => {
     loadData();
   }, [loadData]);
-
-  // 分页变化
-  const handlePageChange = (page: number) => {
-    setQueryParams(prev => ({ ...prev, page }));
-  };
-
-  // 每页条数变化
-  const handlePageSizeChange = (pageSize: number) => {
-    setQueryParams(prev => ({ ...prev, page: 1, pageSize }));
-  };
 
   // 搜索
   const handleSearch = (keyword: string) => {
@@ -311,10 +300,6 @@ const ProcessDevelopment = () => {
     },
   ];
 
-  // 计算显示范围
-  const start = (queryParams.page - 1) * queryParams.pageSize + 1;
-  const end = Math.min(queryParams.page * queryParams.pageSize, paginationInfo.total);
-
   return (
     <div className="process-development">
       {/* 固定面包屑 */}
@@ -374,26 +359,16 @@ const ProcessDevelopment = () => {
               style: { cursor: 'pointer' }
             };
           }}
-          pagination={false}
+          pagination={{
+            total: paginationInfo.total,
+            pageSize: queryParams.pageSize,
+            currentPage: queryParams.page,
+            onPageChange: (page) => setQueryParams(prev => ({ ...prev, page })),
+            onPageSizeChange: (pageSize) => setQueryParams(prev => ({ ...prev, page: 1, pageSize })),
+            showSizeChanger: true,
+            showTotal: true,
+          }}
           scroll={{ y: 'calc(100vh - 320px)' }}
-        />
-      </div>
-
-      {/* 分页区域 */}
-      <div className="process-development-pagination">
-        <Text type="tertiary" className="pagination-info">
-          {paginationInfo.total > 0 
-            ? t('common.showingRecords', { start, end, total: paginationInfo.total })
-            : t('common.noRecords')
-          }
-        </Text>
-        <Pagination
-          total={paginationInfo.total} 
-          pageSize={queryParams.pageSize} 
-          currentPage={queryParams.page}
-          onPageChange={handlePageChange}
-          onPageSizeChange={handlePageSizeChange}
-          showSizeChanger
         />
       </div>
 
