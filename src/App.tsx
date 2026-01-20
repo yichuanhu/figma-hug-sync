@@ -4,7 +4,6 @@ import Index from "@/pages/Index";
 import NotFound from "@/pages/NotFound";
 // Development
 import DevelopmentWorkbench from "@/pages/Development/DevelopmentWorkbench";
-import ProcessDetail from "@/pages/Development/ProcessDevelopment/ProcessDetail";
 // Operations
 import OperationsWorkbench from "@/pages/Operations/OperationsWorkbench";
 import WorkerManagementPage from "@/pages/Operations/WorkerManagement/WorkerManagementPage";
@@ -25,7 +24,7 @@ const App = () => (
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/process-development" element={<Index />} />
-        <Route path="/process-detail/:id" element={<ProcessDetail />} />
+        
         <Route path="/worker-management" element={<WorkerManagementPage />} />
         <Route path="/worker-management/create" element={<WorkerCreate />} />
         <Route path="/worker-management/edit/:id" element={<WorkerEdit />} />
