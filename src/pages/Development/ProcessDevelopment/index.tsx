@@ -39,9 +39,13 @@ interface ProcessItem {
   updatedAt: string;
 }
 
-interface PaginationState {
-  current: number;
+interface QueryParams {
+  page: number;
   pageSize: number;
+  keyword: string;
+}
+
+interface PaginationInfo {
   total: number;
 }
 
@@ -92,17 +96,19 @@ const fetchProcessList = async (params: {
 const ProcessDevelopment = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [searchValue, setSearchValue] = useState('');
+  const [queryParams, setQueryParams] = useState<QueryParams>({
+    page: 1,
+    pageSize: 10,
+    keyword: '',
+  });
+  const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>({
+    total: 0,
+  });
   const [loading, setLoading] = useState(true);
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [processListData, setProcessListData] = useState<ProcessItem[]>([]);
-  const [pagination, setPagination] = useState<PaginationState>({
-    current: 1,
-    pageSize: 10,
-    total: 0,
-  });
   const [selectedProcess, setSelectedProcess] = useState<{
     id: string;
     name: string;
@@ -129,17 +135,13 @@ const ProcessDevelopment = () => {
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const result = await fetchProcessList({
-        page: pagination.current,
-        pageSize: pagination.pageSize,
-        keyword: searchValue,
-      });
+      const result = await fetchProcessList(queryParams);
       setProcessListData(result.data);
-      setPagination(prev => ({ ...prev, total: result.total }));
+      setPaginationInfo({ total: result.total });
     } finally {
       setLoading(false);
     }
-  }, [pagination.current, pagination.pageSize, searchValue]);
+  }, [queryParams]);
 
   // 初始化加载
   useEffect(() => {
@@ -147,19 +149,18 @@ const ProcessDevelopment = () => {
   }, [loadData]);
 
   // 分页变化
-  const handlePageChange = (currentPage: number) => {
-    setPagination(prev => ({ ...prev, current: currentPage }));
+  const handlePageChange = (page: number) => {
+    setQueryParams(prev => ({ ...prev, page }));
   };
 
   // 每页条数变化
   const handlePageSizeChange = (pageSize: number) => {
-    setPagination(prev => ({ ...prev, current: 1, pageSize }));
+    setQueryParams(prev => ({ ...prev, page: 1, pageSize }));
   };
 
   // 搜索
-  const handleSearch = (value: string) => {
-    setSearchValue(value);
-    setPagination(prev => ({ ...prev, current: 1 }));
+  const handleSearch = (keyword: string) => {
+    setQueryParams(prev => ({ ...prev, page: 1, keyword }));
   };
 
   // 打开流程详情抽屉或切换内容
@@ -408,8 +409,8 @@ const ProcessDevelopment = () => {
   ];
 
   // 计算显示范围
-  const start = (pagination.current - 1) * pagination.pageSize + 1;
-  const end = Math.min(pagination.current * pagination.pageSize, pagination.total);
+  const start = (queryParams.page - 1) * queryParams.pageSize + 1;
+  const end = Math.min(queryParams.page * queryParams.pageSize, paginationInfo.total);
 
   return (
     <div className="process-development">
@@ -436,7 +437,7 @@ const ProcessDevelopment = () => {
               prefix={<IconSearch />}
               placeholder={t('development.searchPlaceholder')}
               style={{ width: 240 }}
-              value={searchValue}
+              value={queryParams.keyword}
               onChange={handleSearch}
             />
           </div>
@@ -487,15 +488,15 @@ const ProcessDevelopment = () => {
       {/* 分页区域 */}
       <div className="process-development-pagination">
         <Text type="tertiary" className="pagination-info">
-          {pagination.total > 0 
-            ? t('common.showingRecords', { start, end, total: pagination.total })
+          {paginationInfo.total > 0 
+            ? t('common.showingRecords', { start, end, total: paginationInfo.total })
             : t('common.noRecords')
           }
         </Text>
         <Pagination
-          total={pagination.total} 
-          pageSize={pagination.pageSize} 
-          currentPage={pagination.current}
+          total={paginationInfo.total} 
+          pageSize={queryParams.pageSize} 
+          currentPage={queryParams.page}
           onPageChange={handlePageChange}
           onPageSizeChange={handlePageSizeChange}
           showSizeChanger
