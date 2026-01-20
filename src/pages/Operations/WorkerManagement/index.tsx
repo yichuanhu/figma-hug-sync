@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { 
   Breadcrumb, 
   Typography, 
@@ -26,9 +26,11 @@ import {
   IconKey
 } from '@douyinfe/semi-icons';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import WorkerDetailDrawer from './components/WorkerDetailDrawer';
 import WorkerKeyModal from './components/WorkerKeyModal';
 import WorkerDeleteModal from './components/WorkerDeleteModal';
+import './index.less';
 
 const { Title, Text } = Typography;
 const CheckboxGroup = Checkbox.Group;
@@ -235,50 +237,68 @@ const mockWorkers: WorkerData[] = [
   },
 ];
 
-// 状态配置 - 去掉图标
-const statusConfig: Record<WorkerStatus, { color: string; text: string }> = {
-  OFFLINE: { color: 'grey', text: '离线' },
-  IDLE: { color: 'green', text: '空闲' },
-  BUSY: { color: 'blue', text: '忙碌' },
-  FAULT: { color: 'red', text: '故障' },
-  MAINTENANCE: { color: 'orange', text: '维护中' },
-};
-
-// 优先级配置 - 使用Tag颜色
-const priorityConfig: Record<Priority, { text: string; color: string }> = {
-  HIGH: { text: '高', color: 'red' },
-  MEDIUM: { text: '中', color: 'blue' },
-  LOW: { text: '低', color: 'grey' },
-};
-
-// 筛选选项
-const filterOptions = {
-  status: [
-    { label: '离线', value: 'OFFLINE' },
-    { label: '空闲', value: 'IDLE' },
-    { label: '忙碌', value: 'BUSY' },
-    { label: '故障', value: 'FAULT' },
-    { label: '维护中', value: 'MAINTENANCE' },
-  ],
-  syncStatus: [
-    { label: '已同步', value: 'SYNCED' },
-    { label: '待同步', value: 'PENDING' },
-  ],
-  priority: [
-    { label: '高', value: 'HIGH' },
-    { label: '中', value: 'MEDIUM' },
-    { label: '低', value: 'LOW' },
-  ],
-};
-
 interface FilterState {
   status: string[];
   syncStatus: string[];
   priority: string[];
 }
 
+interface PaginationState {
+  current: number;
+  pageSize: number;
+  total: number;
+}
+
+// 模拟API请求 - 获取机器人列表
+const fetchWorkerList = async (params: {
+  page: number;
+  pageSize: number;
+  keyword?: string;
+  filters?: FilterState;
+}): Promise<{ data: WorkerData[]; total: number }> => {
+  // 模拟网络延迟
+  await new Promise(resolve => setTimeout(resolve, 500));
+  
+  let data = [...mockWorkers];
+
+  // 关键词搜索（名称或IP）
+  if (params.keyword?.trim()) {
+    const keyword = params.keyword.toLowerCase().trim();
+    data = data.filter(item => 
+      item.name.toLowerCase().includes(keyword) ||
+      item.ipAddress.toLowerCase().includes(keyword)
+    );
+  }
+
+  // 状态筛选
+  if (params.filters?.status && params.filters.status.length > 0) {
+    data = data.filter(item => params.filters!.status.includes(item.status));
+  }
+
+  // 同步状态筛选
+  if (params.filters?.syncStatus && params.filters.syncStatus.length > 0) {
+    data = data.filter(item => params.filters!.syncStatus.includes(item.syncStatus));
+  }
+
+  // 优先级筛选
+  if (params.filters?.priority && params.filters.priority.length > 0) {
+    data = data.filter(item => params.filters!.priority.includes(item.priority));
+  }
+
+  // 模拟分页
+  const start = (params.page - 1) * params.pageSize;
+  const end = start + params.pageSize;
+  const paginatedData = data.slice(start, end);
+
+  return {
+    data: paginatedData,
+    total: data.length,
+  };
+};
+
 const WorkerManagement = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [searchValue, setSearchValue] = useState('');
   const [filters, setFilters] = useState<FilterState>({
     status: [],
@@ -287,14 +307,12 @@ const WorkerManagement = () => {
   });
   const [filterVisible, setFilterVisible] = useState(false);
   const [loading, setLoading] = useState(true);
-  
-  // 模拟加载数据
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, []);
+  const [workerListData, setWorkerListData] = useState<WorkerData[]>([]);
+  const [pagination, setPagination] = useState<PaginationState>({
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  });
   
   // 抽屉和弹窗状态
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
@@ -304,8 +322,83 @@ const WorkerManagement = () => {
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [deleteModalWorker, setDeleteModalWorker] = useState<WorkerData | null>(null);
 
+  // 状态配置
+  const statusConfig: Record<WorkerStatus, { color: string; text: string }> = useMemo(() => ({
+    OFFLINE: { color: 'grey', text: t('worker.status.offline') },
+    IDLE: { color: 'green', text: t('worker.status.idle') },
+    BUSY: { color: 'blue', text: t('worker.status.busy') },
+    FAULT: { color: 'red', text: t('worker.status.fault') },
+    MAINTENANCE: { color: 'orange', text: t('worker.status.maintenance') },
+  }), [t]);
+
+  // 优先级配置
+  const priorityConfig: Record<Priority, { text: string; color: string }> = useMemo(() => ({
+    HIGH: { text: t('worker.priority.high'), color: 'red' },
+    MEDIUM: { text: t('worker.priority.medium'), color: 'blue' },
+    LOW: { text: t('worker.priority.low'), color: 'grey' },
+  }), [t]);
+
+  // 筛选选项
+  const filterOptions = useMemo(() => ({
+    status: [
+      { label: t('worker.status.offline'), value: 'OFFLINE' },
+      { label: t('worker.status.idle'), value: 'IDLE' },
+      { label: t('worker.status.busy'), value: 'BUSY' },
+      { label: t('worker.status.fault'), value: 'FAULT' },
+      { label: t('worker.status.maintenance'), value: 'MAINTENANCE' },
+    ],
+    syncStatus: [
+      { label: t('worker.syncStatus.synced'), value: 'SYNCED' },
+      { label: t('worker.syncStatus.pending'), value: 'PENDING' },
+    ],
+    priority: [
+      { label: t('worker.priority.high'), value: 'HIGH' },
+      { label: t('worker.priority.medium'), value: 'MEDIUM' },
+      { label: t('worker.priority.low'), value: 'LOW' },
+    ],
+  }), [t]);
+
+  // 加载数据
+  const loadData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const result = await fetchWorkerList({
+        page: pagination.current,
+        pageSize: pagination.pageSize,
+        keyword: searchValue,
+        filters,
+      });
+      setWorkerListData(result.data);
+      setPagination(prev => ({ ...prev, total: result.total }));
+    } finally {
+      setLoading(false);
+    }
+  }, [pagination.current, pagination.pageSize, searchValue, filters]);
+
+  // 初始化加载
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
+  // 分页变化
+  const handlePageChange = (currentPage: number) => {
+    setPagination(prev => ({ ...prev, current: currentPage }));
+  };
+
+  // 每页条数变化
+  const handlePageSizeChange = (pageSize: number) => {
+    setPagination(prev => ({ ...prev, current: 1, pageSize }));
+  };
+
+  // 搜索
+  const handleSearch = (value: string) => {
+    setSearchValue(value);
+    setPagination(prev => ({ ...prev, current: 1 }));
+  };
+
   const handleFilterChange = (key: keyof FilterState, values: string[]) => {
     setFilters(prev => ({ ...prev, [key]: values }));
+    setPagination(prev => ({ ...prev, current: 1 }));
   };
 
   const clearFilters = () => {
@@ -314,46 +407,16 @@ const WorkerManagement = () => {
       syncStatus: [],
       priority: [],
     });
+    setPagination(prev => ({ ...prev, current: 1 }));
   };
 
   const hasActiveFilters = Object.values(filters).some(arr => arr.length > 0);
   const activeFilterCount = Object.values(filters).reduce((sum, arr) => sum + arr.length, 0);
 
-  // 筛选后的数据
-  const filteredData = useMemo(() => {
-    let data = mockWorkers;
-
-    // 关键词搜索（名称或IP）
-    if (searchValue.trim()) {
-      const keyword = searchValue.toLowerCase().trim();
-      data = data.filter(item => 
-        item.name.toLowerCase().includes(keyword) ||
-        item.ipAddress.toLowerCase().includes(keyword)
-      );
-    }
-
-    // 状态筛选
-    if (filters.status.length > 0) {
-      data = data.filter(item => filters.status.includes(item.status));
-    }
-
-    // 同步状态筛选
-    if (filters.syncStatus.length > 0) {
-      data = data.filter(item => filters.syncStatus.includes(item.syncStatus));
-    }
-
-    // 优先级筛选
-    if (filters.priority.length > 0) {
-      data = data.filter(item => filters.priority.includes(item.priority));
-    }
-
-    return data;
-  }, [searchValue, filters]);
-
   const filterContent = (
-    <div style={{ padding: 16, width: 280 }}>
-      <div style={{ marginBottom: 16 }}>
-        <Text strong style={{ display: 'block', marginBottom: 8 }}>机器人状态</Text>
+    <div className="filter-popover">
+      <div className="filter-popover-section">
+        <Text strong className="filter-popover-label">{t('worker.filter.workerStatus')}</Text>
         <CheckboxGroup
           value={filters.status}
           onChange={(values) => handleFilterChange('status', values as string[])}
@@ -361,8 +424,8 @@ const WorkerManagement = () => {
           direction="horizontal"
         />
       </div>
-      <div style={{ marginBottom: 16 }}>
-        <Text strong style={{ display: 'block', marginBottom: 8 }}>同步状态</Text>
+      <div className="filter-popover-section">
+        <Text strong className="filter-popover-label">{t('worker.filter.syncStatus')}</Text>
         <CheckboxGroup
           value={filters.syncStatus}
           onChange={(values) => handleFilterChange('syncStatus', values as string[])}
@@ -370,8 +433,8 @@ const WorkerManagement = () => {
           direction="horizontal"
         />
       </div>
-      <div style={{ marginBottom: 16 }}>
-        <Text strong style={{ display: 'block', marginBottom: 8 }}>任务调度优先级</Text>
+      <div className="filter-popover-section">
+        <Text strong className="filter-popover-label">{t('worker.filter.priority')}</Text>
         <CheckboxGroup
           value={filters.priority}
           onChange={(values) => handleFilterChange('priority', values as string[])}
@@ -379,12 +442,12 @@ const WorkerManagement = () => {
           direction="horizontal"
         />
       </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--semi-color-border)', paddingTop: 12 }}>
+      <div className="filter-popover-footer">
         <Button theme="borderless" onClick={clearFilters} disabled={!hasActiveFilters}>
-          重置
+          {t('common.reset')}
         </Button>
         <Button theme="solid" type="primary" onClick={() => setFilterVisible(false)}>
-          确定
+          {t('common.confirm')}
         </Button>
       </div>
     </div>
@@ -421,7 +484,7 @@ const WorkerManagement = () => {
     console.log('删除机器人:', deleteModalWorker?.id);
     setDeleteModalVisible(false);
     setDeleteModalWorker(null);
-    // 这里可以添加实际的删除逻辑
+    loadData();
   };
 
   // 从详情抽屉跳转到编辑
@@ -446,90 +509,90 @@ const WorkerManagement = () => {
   // 骨架屏列配置
   const skeletonColumns = [
     {
-      title: '流程机器人名称',
+      title: t('worker.table.workerName'),
       dataIndex: 'name',
       key: 'name',
       width: 200,
       render: () => (
-        <div>
-          <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 120 }} />} loading active />
-          <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 80, marginTop: 4 }} />} loading active />
+        <div className="skeleton-name-cell">
+          <Skeleton placeholder={<Skeleton.Paragraph rows={1} className="skeleton-name" />} loading active />
+          <Skeleton placeholder={<Skeleton.Paragraph rows={1} className="skeleton-name-sub" />} loading active />
         </div>
       ),
     },
     {
-      title: '状态',
+      title: t('worker.table.status'),
       dataIndex: 'status',
       key: 'status',
       width: 100,
-      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 50 }} />} loading active />,
+      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} className="skeleton-status" />} loading active />,
     },
     {
-      title: 'IP地址',
+      title: t('worker.table.ipAddress'),
       dataIndex: 'ipAddress',
       key: 'ipAddress',
       width: 120,
-      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 90 }} />} loading active />,
+      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} className="skeleton-ip" />} loading active />,
     },
     {
-      title: '任务调度优先级',
+      title: t('worker.table.priority'),
       dataIndex: 'priority',
       key: 'priority',
       width: 120,
-      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 40 }} />} loading active />,
+      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} className="skeleton-priority" />} loading active />,
     },
     {
-      title: '客户端版本',
+      title: t('worker.table.clientVersion'),
       dataIndex: 'clientVersion',
       key: 'clientVersion',
       width: 100,
-      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 50 }} />} loading active />,
+      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} className="skeleton-version" />} loading active />,
     },
     {
-      title: '最近连接时间',
+      title: t('worker.table.lastHeartbeat'),
       dataIndex: 'lastHeartbeatTime',
       key: 'lastHeartbeatTime',
       width: 160,
-      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 120 }} />} loading active />,
+      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} className="skeleton-time" />} loading active />,
     },
     {
-      title: '接收任务',
+      title: t('worker.table.receiveTasks'),
       dataIndex: 'receiveTasks',
       key: 'receiveTasks',
       width: 90,
-      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 40 }} />} loading active />,
+      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} className="skeleton-switch" />} loading active />,
     },
     {
-      title: '操作',
+      title: t('worker.table.actions'),
       dataIndex: 'action',
       key: 'action',
       width: 60,
-      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 24 }} />} loading active />,
+      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} className="skeleton-action" />} loading active />,
     },
   ];
 
   const columns = [
     {
-      title: '流程机器人名称',
+      title: t('worker.table.workerName'),
       dataIndex: 'name',
       key: 'name',
       width: 200,
       render: (name: string, record: WorkerData) => (
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ fontWeight: 500 }}>{name}</span>
+          <div className="worker-name-cell-header">
+            <span className="worker-name-cell-name">{name}</span>
             {record.syncStatus === 'PENDING' && (
-              <Tag color="orange" size="small" type="light">待同步</Tag>
+              <Tag color="orange" size="small" type="light">{t('worker.syncStatus.pending')}</Tag>
             )}
           </div>
-          <div style={{ color: 'var(--semi-color-text-2)', fontSize: 12, marginTop: 2 }}>
+          <div className="worker-name-cell-username">
             {record.username || '-'}
           </div>
         </div>
       ),
     },
     {
-      title: '状态',
+      title: t('worker.table.status'),
       dataIndex: 'status',
       key: 'status',
       width: 100,
@@ -544,13 +607,13 @@ const WorkerManagement = () => {
       },
     },
     {
-      title: 'IP地址',
+      title: t('worker.table.ipAddress'),
       dataIndex: 'ipAddress',
       key: 'ipAddress',
       width: 120,
     },
     {
-      title: '任务调度优先级',
+      title: t('worker.table.priority'),
       dataIndex: 'priority',
       key: 'priority',
       width: 120,
@@ -565,20 +628,20 @@ const WorkerManagement = () => {
       },
     },
     {
-      title: '客户端版本',
+      title: t('worker.table.clientVersion'),
       dataIndex: 'clientVersion',
       key: 'clientVersion',
       width: 100,
     },
     {
-      title: '最近连接时间',
+      title: t('worker.table.lastHeartbeat'),
       dataIndex: 'lastHeartbeatTime',
       key: 'lastHeartbeatTime',
       width: 160,
       sorter: true,
     },
     {
-      title: '接收任务',
+      title: t('worker.table.receiveTasks'),
       dataIndex: 'receiveTasks',
       key: 'receiveTasks',
       width: 90,
@@ -592,14 +655,13 @@ const WorkerManagement = () => {
             disabled={!canOperate}
             onChange={(checked) => {
               console.log('切换接收任务状态:', record.id, checked);
-              // 这里可以添加实际的状态更新逻辑
             }}
           />
         );
       },
     },
     {
-      title: '操作',
+      title: t('worker.table.actions'),
       dataIndex: 'action',
       key: 'action',
       width: 60,
@@ -618,7 +680,7 @@ const WorkerManagement = () => {
                   openDetail(record);
                 }}
               >
-                查看详情
+                {t('worker.actions.viewDetail')}
               </Dropdown.Item>
               <Dropdown.Item 
                 icon={<IconKey />} 
@@ -627,7 +689,7 @@ const WorkerManagement = () => {
                   openKeyModal(record);
                 }}
               >
-                查看密钥
+                {t('worker.actions.viewKey')}
               </Dropdown.Item>
               <Dropdown.Item 
                 icon={<IconEditStroked />} 
@@ -636,7 +698,7 @@ const WorkerManagement = () => {
                   handleEdit(record);
                 }}
               >
-                编辑
+                {t('worker.actions.edit')}
               </Dropdown.Item>
               <Dropdown.Item 
                 icon={<IconDeleteStroked />} 
@@ -646,7 +708,7 @@ const WorkerManagement = () => {
                   openDeleteModal(record);
                 }}
               >
-                删除
+                {t('worker.actions.delete')}
               </Dropdown.Item>
             </Dropdown.Menu>
           }
@@ -661,41 +723,37 @@ const WorkerManagement = () => {
     },
   ];
 
+  // 计算显示范围
+  const start = (pagination.current - 1) * pagination.pageSize + 1;
+  const end = Math.min(pagination.current * pagination.pageSize, pagination.total);
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+    <div className="worker-management">
       {/* 固定面包屑 */}
-      <div style={{ 
-        padding: '12px 24px',
-        flexShrink: 0,
-      }}>
+      <div className="worker-management-breadcrumb">
         <Breadcrumb>
-          <Breadcrumb.Item onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>首页</Breadcrumb.Item>
-          <Breadcrumb.Item>开发中心</Breadcrumb.Item>
-          <Breadcrumb.Item>流程机器人管理</Breadcrumb.Item>
+          <Breadcrumb.Item onClick={() => navigate('/')}>{t('common.home')}</Breadcrumb.Item>
+          <Breadcrumb.Item>{t('worker.breadcrumb.developmentCenter')}</Breadcrumb.Item>
+          <Breadcrumb.Item>{t('worker.breadcrumb.workerManagement')}</Breadcrumb.Item>
         </Breadcrumb>
       </div>
 
       {/* 标题区域 */}
-      <div style={{ padding: '20px 24px 0', flexShrink: 0 }}>
-        <div style={{ marginBottom: 24 }}>
-          <Title heading={3} style={{ marginBottom: 8 }}>流程机器人管理</Title>
-          <Text type="tertiary">管理无人值守流程机器人，配置机器人参数和连接信息</Text>
+      <div className="worker-management-header">
+        <div className="worker-management-header-title">
+          <Title heading={3} className="title">{t('worker.title')}</Title>
+          <Text type="tertiary">{t('worker.description')}</Text>
         </div>
 
         {/* 操作栏 */}
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center',
-          marginBottom: 16 
-        }}>
-          <div style={{ display: 'flex', gap: 12 }}>
+        <div className="worker-management-header-toolbar">
+          <div className="worker-management-header-search">
             <Input 
               prefix={<IconSearch />}
-              placeholder="搜索流程机器人名称、IP地址..."
+              placeholder={t('worker.searchPlaceholder')}
               style={{ width: 280 }}
               value={searchValue}
-              onChange={(value) => setSearchValue(value)}
+              onChange={handleSearch}
             />
             <Popover
               visible={filterVisible}
@@ -709,7 +767,7 @@ const WorkerManagement = () => {
                 theme={hasActiveFilters ? 'solid' : 'light'}
                 type={hasActiveFilters ? 'primary' : 'tertiary'}
               >
-                筛选{activeFilterCount > 0 ? ` (${activeFilterCount})` : ''}
+                {t('common.filter')}{activeFilterCount > 0 ? ` (${activeFilterCount})` : ''}
               </Button>
             </Popover>
           </div>
@@ -719,18 +777,13 @@ const WorkerManagement = () => {
             type="primary"
             onClick={() => navigate('/worker-management/create')}
           >
-            新建流程机器人
+            {t('worker.createWorker')}
           </Button>
         </div>
       </div>
 
       {/* 表格区域 */}
-      <div style={{ 
-        flex: 1, 
-        overflow: 'hidden', 
-        padding: '0 24px',
-        minHeight: 0,
-      }}>
+      <div className="worker-management-table">
         {loading ? (
           <Table 
             columns={skeletonColumns} 
@@ -738,22 +791,18 @@ const WorkerManagement = () => {
             rowKey="id"
             pagination={false}
             scroll={{ y: 'calc(100vh - 320px)' }}
-            style={{ 
-              borderRadius: 8, 
-              overflow: 'hidden',
-            }}
           />
         ) : (
           <Table 
             columns={columns} 
-            dataSource={filteredData}
+            dataSource={workerListData}
             rowKey="id"
             empty={
               <Empty
-                image={<IllustrationNoResult style={{ width: 150, height: 150 }} />}
-                darkModeImage={<IllustrationNoResultDark style={{ width: 150, height: 150 }} />}
-                title="暂无数据"
-                description={hasActiveFilters || searchValue ? "没有找到匹配的机器人，请尝试调整筛选条件" : "还没有创建任何机器人，点击「新建流程机器人」开始"}
+                image={<IllustrationNoResult className="empty-image" />}
+                darkModeImage={<IllustrationNoResultDark className="empty-image" />}
+                title={t('worker.empty.title')}
+                description={hasActiveFilters || searchValue ? t('worker.empty.filterDescription') : t('worker.empty.defaultDescription')}
               />
             }
             onRow={(record) => ({
@@ -762,29 +811,24 @@ const WorkerManagement = () => {
             })}
             pagination={false}
             scroll={{ y: 'calc(100vh - 320px)' }}
-            style={{ 
-              borderRadius: 8, 
-              overflow: 'hidden',
-            }}
           />
         )}
       </div>
 
       {/* 分页区域 */}
-      <div style={{ 
-        padding: '16px 24px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flexShrink: 0,
-      }}>
-        <Text type="tertiary" style={{ fontSize: 14 }}>
-          显示第 1 条-第 {Math.min(10, filteredData.length)} 条，共 {filteredData.length} 条
+      <div className="worker-management-pagination">
+        <Text type="tertiary" className="pagination-info">
+          {pagination.total > 0 
+            ? t('common.showingRecords', { start, end, total: pagination.total })
+            : t('common.noRecords')
+          }
         </Text>
         <Pagination 
-          total={filteredData.length} 
-          pageSize={10} 
-          currentPage={1}
+          total={pagination.total} 
+          pageSize={pagination.pageSize} 
+          currentPage={pagination.current}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
           showSizeChanger
         />
       </div>
