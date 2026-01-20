@@ -1,0 +1,114 @@
+// ProcessDevelopment 页面样式
+.process-development {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  // 面包屑区域
+  &-breadcrumb {
+    padding: 12px 24px;
+    flex-shrink: 0;
+  }
+
+  // 标题区域
+  &-header {
+    padding: 20px 24px 0;
+    flex-shrink: 0;
+
+    &-title {
+      margin-bottom: 24px;
+
+      .title {
+        margin-bottom: 8px;
+      }
+    }
+
+    &-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    &-search {
+      display: flex;
+      gap: 12px;
+    }
+
+    &-actions {
+      display: flex;
+      gap: 12px;
+    }
+  }
+
+  // 表格区域
+  &-table {
+    flex: 1;
+    overflow: hidden;
+    padding: 0 24px;
+    min-height: 0;
+
+    .semi-table {
+      border-radius: 8px;
+      overflow: hidden;
+    }
+  }
+
+  // 分页区域
+  &-pagination {
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  // 单元格样式
+  &-cell-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 260px;
+  }
+
+  &-cell-creator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  // 表格行选中状态
+  &-row-selected {
+    background-color: var(--semi-color-primary-light-default);
+  }
+}
+
+// 骨架屏创建者列样式
+.skeleton-creator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+// 骨架屏宽度
+.skeleton-name { width: 80px; }
+.skeleton-description { width: 200px; }
+.skeleton-status { width: 50px; }
+.skeleton-language { width: 60px; }
+.skeleton-version { width: 40px; }
+.skeleton-organization { width: 60px; }
+.skeleton-creator-name { width: 50px; }
+.skeleton-date { width: 70px; }
+.skeleton-action { width: 24px; }
+
+// 创建者头像
+.avatar-creator {
+  background-color: #FFE600;
+  color: var(--semi-color-text-0);
+  flex-shrink: 0;
+}
+
+// 分页信息
+.pagination-info {
+  font-size: 14px;
+}

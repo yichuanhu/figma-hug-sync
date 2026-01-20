@@ -21,6 +21,7 @@ import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
 import ProcessDetailDrawer from './components/ProcessDetailDrawer';
 import { useOpenProcess } from './hooks/useOpenProcess';
+import './index.less';
 
 const { Title, Text } = Typography;
 
@@ -220,42 +221,42 @@ const ProcessDevelopment = () => {
       dataIndex: 'name',
       key: 'name',
       width: 120,
-      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 80 }} />} loading active />,
+      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} className="skeleton-name" />} loading active />,
     },
     {
       title: t('development.table.processDescription'),
       dataIndex: 'description',
       key: 'description',
       width: 280,
-      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 200 }} />} loading active />,
+      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} className="skeleton-description" />} loading active />,
     },
     {
       title: t('development.table.status'),
       dataIndex: 'status',
       key: 'status',
       width: 80,
-      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 50 }} />} loading active />,
+      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} className="skeleton-status" />} loading active />,
     },
     {
       title: t('development.table.language'),
       dataIndex: 'language',
       key: 'language',
       width: 100,
-      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 60 }} />} loading active />,
+      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} className="skeleton-language" />} loading active />,
     },
     {
       title: t('development.table.version'),
       dataIndex: 'version',
       key: 'version',
       width: 80,
-      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 40 }} />} loading active />,
+      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} className="skeleton-version" />} loading active />,
     },
     {
       title: t('development.table.organization'),
       dataIndex: 'organization',
       key: 'organization',
       width: 100,
-      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 60 }} />} loading active />,
+      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} className="skeleton-organization" />} loading active />,
     },
     {
       title: t('development.table.creator'),
@@ -263,9 +264,9 @@ const ProcessDevelopment = () => {
       key: 'creator',
       width: 120,
       render: () => (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div className="skeleton-creator">
           <Skeleton placeholder={<Skeleton.Avatar size="small" />} loading active />
-          <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 50 }} />} loading active />
+          <Skeleton placeholder={<Skeleton.Paragraph rows={1} className="skeleton-creator-name" />} loading active />
         </div>
       ),
     },
@@ -274,14 +275,14 @@ const ProcessDevelopment = () => {
       dataIndex: 'updatedAt',
       key: 'updatedAt',
       width: 120,
-      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 70 }} />} loading active />,
+      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} className="skeleton-date" />} loading active />,
     },
     {
       title: t('development.table.actions'),
       dataIndex: 'action',
       key: 'action',
       width: 60,
-      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} style={{ width: 24 }} />} loading active />,
+      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} className="skeleton-action" />} loading active />,
     },
   ];
 
@@ -299,12 +300,7 @@ const ProcessDevelopment = () => {
       width: 280,
       render: (description: string) => (
         <Tooltip content={description} position="top">
-          <div style={{
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-            maxWidth: 260
-          }}>
+          <div className="process-development-cell-ellipsis">
             {description}
           </div>
         </Tooltip>
@@ -357,14 +353,10 @@ const ProcessDevelopment = () => {
       render: (creator: { name: string } | undefined) => {
         if (!creator) return null;
         return (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div className="process-development-cell-creator">
             <Avatar 
               size="small" 
-              style={{ 
-                backgroundColor: '#FFE600',
-                color: 'var(--semi-color-text-0)',
-                flexShrink: 0
-              }}
+              className="avatar-creator"
             >
               {creator.name.charAt(0)}
             </Avatar>
@@ -422,34 +414,26 @@ const ProcessDevelopment = () => {
   const end = Math.min(pagination.current * pagination.pageSize, pagination.total);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+    <div className="process-development">
       {/* 固定面包屑 */}
-      <div style={{ 
-        padding: '12px 24px',
-        flexShrink: 0,
-      }}>
+      <div className="process-development-breadcrumb">
         <Breadcrumb>
-          <Breadcrumb.Item onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>{t('common.home')}</Breadcrumb.Item>
+          <Breadcrumb.Item onClick={() => navigate('/')}>{t('common.home')}</Breadcrumb.Item>
           <Breadcrumb.Item>{t('development.breadcrumb.developmentCenter')}</Breadcrumb.Item>
           <Breadcrumb.Item>{t('development.breadcrumb.automationProcess')}</Breadcrumb.Item>
         </Breadcrumb>
       </div>
 
       {/* 标题区域 */}
-      <div style={{ padding: '20px 24px 0', flexShrink: 0 }}>
-        <div style={{ marginBottom: 24 }}>
-          <Title heading={3} style={{ marginBottom: 8 }}>{t('development.title')}</Title>
+      <div className="process-development-header">
+        <div className="process-development-header-title">
+          <Title heading={3} className="title">{t('development.title')}</Title>
           <Text type="tertiary">{t('development.description')}</Text>
         </div>
 
         {/* 操作栏 */}
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center',
-          marginBottom: 16 
-        }}>
-          <div style={{ display: 'flex', gap: 12 }}>
+        <div className="process-development-header-toolbar">
+          <div className="process-development-header-search">
             <Input 
               prefix={<IconSearch />}
               placeholder={t('development.searchPlaceholder')}
@@ -458,7 +442,7 @@ const ProcessDevelopment = () => {
               onChange={handleSearch}
             />
           </div>
-          <div style={{ display: 'flex', gap: 12 }}>
+          <div className="process-development-header-actions">
             <Button icon={<IconDownload />} theme="light">
               {t('development.importProcess')}
             </Button>
@@ -475,22 +459,13 @@ const ProcessDevelopment = () => {
       </div>
 
       {/* 表格区域 */}
-      <div style={{ 
-        flex: 1, 
-        overflow: 'hidden', 
-        padding: '0 24px',
-        minHeight: 0,
-      }}>
+      <div className="process-development-table">
         {loading ? (
           <Table 
             columns={skeletonColumns} 
             dataSource={skeletonData}
             pagination={false}
             scroll={{ y: 'calc(100vh - 320px)' }}
-            style={{ 
-              borderRadius: 8, 
-              overflow: 'hidden',
-            }}
           />
         ) : (
           <Table 
@@ -509,37 +484,25 @@ const ProcessDevelopment = () => {
               const isSelected = selectedProcess?.id === processId && detailDrawerVisible;
               return {
                 onClick: () => openProcessDetail(record as ProcessItem),
-                style: { 
-                  cursor: 'pointer',
-                  backgroundColor: isSelected ? 'var(--semi-color-primary-light-default)' : undefined,
-                }
+                className: isSelected ? 'process-development-row-selected' : undefined,
+                style: { cursor: 'pointer' }
               };
             }}
             pagination={false}
             scroll={{ y: 'calc(100vh - 320px)' }}
-            style={{ 
-              borderRadius: 8, 
-              overflow: 'hidden',
-            }}
           />
         )}
       </div>
 
       {/* 分页区域 */}
-      <div style={{ 
-        padding: '16px 24px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flexShrink: 0,
-      }}>
-        <Text type="tertiary" style={{ fontSize: 14 }}>
+      <div className="process-development-pagination">
+        <Text type="tertiary" className="pagination-info">
           {pagination.total > 0 
             ? t('common.showingRecords', { start, end, total: pagination.total })
             : t('common.noRecords')
           }
         </Text>
-        <Pagination 
+        <Pagination
           total={pagination.total} 
           pageSize={pagination.pageSize} 
           currentPage={pagination.current}
