@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Typography, Button, Toast } from '@douyinfe/semi-ui';
 import { IconCopy } from '@douyinfe/semi-icons';
+import './WorkerKeyModal.less';
 
 const { Text } = Typography;
 
@@ -44,26 +45,16 @@ const WorkerKeyModal = ({ visible, onClose, workerData }: WorkerKeyModalProps) =
       width={480}
       centered
     >
-      <div style={{ padding: '16px 0' }}>
-        <Text type="secondary" style={{ display: 'block', marginBottom: 12 }}>
+      <div className="worker-key-modal-content">
+        <Text type="secondary" className="worker-key-modal-description">
           {t('worker.keyModal.description')}
         </Text>
         
-        <div style={{ 
-          backgroundColor: 'var(--semi-color-fill-0)',
-          border: '1px solid var(--semi-color-border)',
-          borderRadius: 6,
-          padding: 16,
-          marginBottom: 16,
-          wordBreak: 'break-all',
-          fontFamily: 'monospace',
-          fontSize: 13,
-          lineHeight: 1.6,
-        }}>
+        <div className="worker-key-modal-token">
           {workerData.deviceToken}
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <div className="worker-key-modal-footer">
           <Button 
             icon={<IconCopy />} 
             theme="solid" 

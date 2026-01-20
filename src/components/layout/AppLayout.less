@@ -1,0 +1,63 @@
+// AppLayout 布局样式
+.app-layout {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+
+  // 侧边栏容器
+  &-sidebar {
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+    background-color: var(--semi-color-default);
+    transition: width 0.2s;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 100;
+
+    &--collapsed {
+      width: 60px;
+      min-width: 60px;
+    }
+
+    &--expanded {
+      width: auto;
+      min-width: auto;
+    }
+  }
+
+  // 内容区域
+  &-content {
+    flex: 1;
+    overflow: hidden;
+    background-color: var(--semi-color-default);
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  // 内容卡片
+  &-card {
+    background-color: var(--semi-color-bg-0);
+    border-radius: 8px;
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.04);
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  // 面包屑容器
+  &-breadcrumb {
+    padding: 12px 24px;
+    flex-shrink: 0;
+  }
+
+  // 页面内容区域
+  &-page {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+}
