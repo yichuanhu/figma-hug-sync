@@ -9,7 +9,6 @@ import {
   Tabs,
   TabPane,
   Table,
-  Empty,
   Divider,
   Tooltip,
   DatePicker,
@@ -357,16 +356,12 @@ const ProcessDetailDrawer = ({
         
         <TabPane tab={t('processDetail.tabs.versions')} itemKey="versions">
           <div style={{ padding: '16px 24px' }}>
-            {versionData.length > 0 ? (
-              <Table 
-                columns={versionColumns} 
-                dataSource={versionData} 
-                pagination={false}
-                size="small"
-              />
-            ) : (
-              <Empty description={t('processDetail.empty.noVersions')} />
-            )}
+            <Table 
+              columns={versionColumns} 
+              dataSource={versionData} 
+              pagination={false}
+              size="small"
+            />
           </div>
         </TabPane>
         
@@ -392,16 +387,12 @@ const ProcessDetailDrawer = ({
                 showClear
               />
             </div>
-            {filteredRunData.length > 0 ? (
-              <Table 
-                columns={runColumns} 
-                dataSource={filteredRunData} 
-                pagination={false}
-                size="small"
-              />
-            ) : (
-              <Empty description={t('processDetail.empty.noRuns')} />
-            )}
+            <Table 
+              columns={runColumns} 
+              dataSource={filteredRunData} 
+              pagination={false}
+              size="small"
+            />
           </div>
         </TabPane>
         
@@ -426,16 +417,12 @@ const ProcessDetailDrawer = ({
                 showClear
               />
             </div>
-            {filteredChangeData.length > 0 ? (
-              <Table 
-                columns={changeColumns} 
-                dataSource={filteredChangeData} 
-                pagination={false}
-                size="small"
-              />
-            ) : (
-              <Empty description={t('processDetail.empty.noChanges')} />
-            )}
+            <Table 
+              columns={changeColumns} 
+              dataSource={filteredChangeData} 
+              pagination={false}
+              size="small"
+            />
           </div>
         </TabPane>
       </Tabs>
