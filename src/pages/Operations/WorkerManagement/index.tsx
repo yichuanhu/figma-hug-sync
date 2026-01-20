@@ -23,9 +23,9 @@ import {
 } from '@douyinfe/semi-icons';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import WorkerDetailDrawer from './components/WorkerDetailDrawer';
-import WorkerKeyModal from './components/WorkerKeyModal';
-import WorkerDeleteModal from './components/WorkerDeleteModal';
+import WorkerDetailDrawer from '@/pages/Operations/WorkerManagement/components/WorkerDetailDrawer';
+import WorkerKeyModal from '@/pages/Operations/WorkerManagement/components/WorkerKeyModal';
+import WorkerDeleteModal from '@/pages/Operations/WorkerManagement/components/WorkerDeleteModal';
 import './index.less';
 
 const { Title, Text } = Typography;
