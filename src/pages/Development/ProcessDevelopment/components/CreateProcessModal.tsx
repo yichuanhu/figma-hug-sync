@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useI18n } from '@laiye_packages/uci-react';
+import { useTranslation } from 'react-i18next';
 import { 
   Modal, 
   Form, 
@@ -26,7 +26,7 @@ interface CreateProcessModalProps {
 
 const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModalProps) => {
   const navigate = useNavigate();
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
 
   // 生成流程ID
