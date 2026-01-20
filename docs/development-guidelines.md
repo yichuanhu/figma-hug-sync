@@ -39,6 +39,34 @@ src/
 - `components/` - 模块专用组件（如有）
 - `hooks/` - 模块专用 hooks（如有）
 
+### 组件文件夹规范（重要）
+
+**所有组件必须使用文件夹结构**，不允许使用单独的 `.tsx` 文件：
+
+```
+// ✅ 正确 - 组件放在文件夹中
+components/
+├── CreateProcessModal/
+│   ├── index.tsx      # 组件逻辑
+│   └── index.less     # 组件样式
+├── EditProcessModal/
+│   ├── index.tsx
+│   └── index.less
+
+// ❌ 错误 - 不允许单独文件
+components/
+├── CreateProcessModal.tsx
+├── EditProcessModal.tsx
+```
+
+同样适用于 hooks：
+```
+hooks/
+├── useOpenProcess/
+│   ├── index.tsx
+│   └── index.less    # 如有样式需求
+```
+
 **注意：不使用 index.ts 桶文件（barrel files），直接引入具体文件。**
 
 ---

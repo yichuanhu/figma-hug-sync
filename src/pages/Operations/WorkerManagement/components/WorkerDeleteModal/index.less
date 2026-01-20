@@ -1,0 +1,33 @@
+// WorkerDeleteModal 删除确认弹窗样式
+.worker-delete-modal {
+  &-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    &-icon {
+      color: var(--semi-color-danger);
+    }
+  }
+
+  &-content {
+    padding: 8px 0;
+  }
+
+  &-alert {
+    background-color: var(--semi-color-danger-light-default);
+    border: 1px solid var(--semi-color-danger);
+    border-radius: 6px;
+    padding: 16px;
+
+    &-title {
+      display: block;
+      margin-bottom: 8px;
+    }
+  }
+
+  &-message {
+    display: block;
+    margin-bottom: 8px;
+  }
+}

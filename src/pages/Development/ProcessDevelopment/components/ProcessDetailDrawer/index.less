@@ -1,46 +1,45 @@
 // ProcessDetailDrawer 流程详情抽屉样式
 .process-detail-drawer {
   // 标题区域
-  .drawer-header {
+  &-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
     padding-right: 0;
 
-    .title-section {
+    &-title-section {
       display: flex;
       align-items: center;
       gap: 8px;
-
-      .title {
-        margin: 0;
-      }
     }
 
-    // 操作按钮区域
-    .actions {
+    &-title {
+      margin: 0;
+    }
+
+    &-actions {
       display: flex;
       align-items: center;
       gap: 4px;
+    }
 
-      .delete-icon {
-        color: var(--semi-color-danger);
-      }
+    &-delete-icon {
+      color: var(--semi-color-danger);
+    }
 
-      .divider {
-        height: 16px;
-        margin: 0 8px 0 4px;
-      }
+    &-divider {
+      height: 16px;
+      margin: 0 8px 0 4px;
+    }
 
-      .close-btn {
-        margin-left: 4px;
-      }
+    &-close-btn {
+      margin-left: 4px;
     }
   }
 
   // 拖拽把手
-  .resize-handle {
+  &-resize-handle {
     position: absolute;
     left: 0;
     top: 0;
@@ -51,31 +50,32 @@
   }
 
   // Tab 容器
-  .drawer-tabs {
+  &-tabs {
     height: 100%;
+  }
 
-    .tab-content {
-      padding: 16px 24px;
+  // Tab 内容
+  &-tab-content {
+    padding: 16px 24px;
+  }
 
-      // 筛选器区域
-      .filters {
-        display: flex;
-        gap: 12px;
-        margin-bottom: 16px;
+  // 筛选器区域
+  &-filters {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
 
-        .filter-select {
-          width: 140px;
+  &-filter-select {
+    width: 140px;
 
-          &.wide {
-            width: 160px;
-          }
-        }
-
-        .filter-date {
-          flex: 1;
-        }
-      }
+    &--wide {
+      width: 160px;
     }
+  }
+
+  &-filter-date {
+    flex: 1;
   }
 }
 

@@ -1,12 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { 
-  Modal, 
-  Form, 
-  Toast,
-  Button
-} from '@douyinfe/semi-ui';
-import { useNavigate } from 'react-router-dom';
+import { Modal, Form, Toast, Button } from '@douyinfe/semi-ui';
+import './index.less';
 
 interface ProcessData {
   id: string;
@@ -25,30 +20,18 @@ interface CreateProcessModalProps {
 }
 
 const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModalProps) => {
-  const navigate = useNavigate();
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
 
-  // 生成流程ID
   const generateProcessId = () => {
     const year = new Date().getFullYear();
     const randomNum = String(Math.floor(Math.random() * 1000)).padStart(3, '0');
     return `PROC-${year}-${randomNum}`;
   };
 
-  // 模拟已存在的流程名称列表（实际应从API获取）
-  const existingProcessNames = [
-    '订单自动处理流程',
-    '财务报销审批流程',
-    '人事入职流程',
-  ];
+  const existingProcessNames = ['订单自动处理流程', '财务报销审批流程', '人事入职流程'];
 
-  // 检查流程名称是否唯一
-  const validateProcessNameUnique = (
-    rule: unknown, 
-    value: string, 
-    callback: (error?: string) => void
-  ) => {
+  const validateProcessNameUnique = (rule: unknown, value: string, callback: (error?: string) => void) => {
     if (value && existingProcessNames.includes(value.trim())) {
       callback(t('createProcess.validation.nameExists'));
       return false;
@@ -57,14 +40,12 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
     return true;
   };
 
-  // 关联需求选项
   const requirementOptions = [
     { value: 'REQ-2024-001', label: 'REQ-2024-001 - 订单自动处理需求' },
     { value: 'REQ-2024-002', label: 'REQ-2024-002 - 财务报销自动化' },
     { value: 'REQ-2024-003', label: 'REQ-2024-003 - 人事审批流程优化' },
   ];
 
-  // 归属组织选项
   const organizationOptions = [
     { value: '财务部', label: '财务部' },
     { value: '人事部', label: '人事部' },
@@ -72,18 +53,12 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
     { value: '运营部', label: '运营部' },
   ];
 
-  // 流程类型选项
-  const processTypeOptions = [
-    { value: '原生流程', label: '原生流程' },
-  ];
+  const processTypeOptions = [{ value: '原生流程', label: '原生流程' }];
 
   const handleSubmit = async (values: Record<string, unknown>) => {
     setLoading(true);
-    
     try {
-      // 模拟API调用延迟
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
+      await new Promise((resolve) => setTimeout(resolve, 500));
       const processId = generateProcessId();
       const now = new Date().toLocaleString('zh-CN', {
         year: 'numeric',
@@ -92,7 +67,6 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
         hour: '2-digit',
         minute: '2-digit',
       });
-
       const processData = {
         id: processId,
         name: values.name as string,
@@ -101,14 +75,13 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
         relatedRequirement: values.relatedRequirement as string,
         organization: values.organization as string,
         status: t('development.status.draft'),
-        creator: '当前用户', // 实际应从用户上下文获取
+        creator: '当前用户',
         createdAt: now,
       };
-
       Toast.success(t('createProcess.success'));
       onCancel();
       onSuccess?.(processData);
-    } catch (error) {
+    } catch {
       Toast.error(t('createProcess.error'));
     } finally {
       setLoading(false);
@@ -116,20 +89,8 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
   };
 
   return (
-    <Modal
-      title={t('createProcess.title')}
-      visible={visible}
-      onCancel={onCancel}
-      footer={null}
-      width={520}
-      closeOnEsc
-      maskClosable={false}
-    >
-      <Form
-        onSubmit={handleSubmit}
-        labelPosition="top"
-        style={{ paddingTop: 4 }}
-      >
+    <Modal title={t('createProcess.title')} visible={visible} onCancel={onCancel} footer={null} width={520} closeOnEsc maskClosable={false}>
+      <Form onSubmit={handleSubmit} labelPosition="top" className="create-process-modal-form">
         <Form.Input
           field="name"
           label={t('createProcess.fields.name')}
@@ -143,7 +104,7 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
           ]}
           showClear
         />
-        
+
         <Form.TextArea
           field="description"
           label={t('createProcess.fields.description')}
@@ -165,7 +126,7 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
           initValue="原生流程"
           optionList={processTypeOptions}
           rules={[{ required: true, message: t('createProcess.validation.typeRequired') }]}
-          style={{ width: '100%' }}
+          className="create-process-modal-select-full"
         />
 
         <Form.Select
@@ -174,7 +135,7 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
           placeholder={t('createProcess.fields.relatedRequirementPlaceholder')}
           optionList={requirementOptions}
           showClear
-          style={{ width: '100%' }}
+          className="create-process-modal-select-full"
         />
 
         <Form.Select
@@ -183,18 +144,10 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
           placeholder={t('createProcess.fields.organizationPlaceholder')}
           optionList={organizationOptions}
           rules={[{ required: true, message: t('createProcess.validation.organizationRequired') }]}
-          style={{ width: '100%' }}
+          className="create-process-modal-select-full"
         />
 
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'flex-end', 
-          gap: 12, 
-          marginTop: 12,
-          paddingTop: 16,
-          paddingBottom: 12,
-          borderTop: '1px solid var(--semi-color-border)'
-        }}>
+        <div className="create-process-modal-footer">
           <Button theme="light" onClick={onCancel}>
             {t('common.cancel')}
           </Button>
