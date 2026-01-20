@@ -1,0 +1,41 @@
+/*
+ * @Description: padding & margin
+ */
+// 4-60
+.loop(@counter) when(@counter > 0) {
+    .m-l-@{counter} {
+        margin-left: (1px * @counter);
+    }
+
+    .m-r-@{counter} {
+        margin-right: (1px * @counter);
+    }
+
+    .m-t-@{counter} {
+        margin-top: (1px * @counter);
+    }
+
+    .m-b-@{counter} {
+        margin-bottom: (1px * @counter);
+    }
+
+    .p-l-@{counter} {
+        padding-left: (1px * @counter);
+    }
+
+    .p-r-@{counter} {
+        padding-right: (1px * @counter);
+    }
+
+    .p-t-@{counter} {
+        padding-top: (1px * @counter);
+    }
+
+    .p-b-@{counter} {
+        padding-bottom: (1px * @counter);
+    }
+
+    .loop((@counter - 4))
+}
+
+.loop(64);
