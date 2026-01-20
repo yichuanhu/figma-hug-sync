@@ -1,8 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { 
-  Breadcrumb, 
   Typography, 
   Input, 
   Button, 
@@ -95,7 +93,6 @@ const fetchProcessList = async (params: {
 };
 
 const ProcessDevelopment = () => {
-  const navigate = useNavigate();
   const { t } = useTranslation();
   const [queryParams, setQueryParams] = useState<QueryParams>({
     page: 1,
@@ -302,15 +299,6 @@ const ProcessDevelopment = () => {
 
   return (
     <div className="process-development">
-      {/* 固定面包屑 */}
-      <div className="process-development-breadcrumb">
-        <Breadcrumb>
-          <Breadcrumb.Item onClick={() => navigate('/')}>{t('common.home')}</Breadcrumb.Item>
-          <Breadcrumb.Item>{t('development.breadcrumb.developmentCenter')}</Breadcrumb.Item>
-          <Breadcrumb.Item>{t('development.breadcrumb.automationProcess')}</Breadcrumb.Item>
-        </Breadcrumb>
-      </div>
-
       {/* 标题区域 */}
       <div className="process-development-header">
         <div className="process-development-header-title">
