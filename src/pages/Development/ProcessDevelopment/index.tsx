@@ -14,7 +14,7 @@ import {
   Col
 } from '@douyinfe/semi-ui';
 import { IconSearch, IconPlus, IconDownload, IconMore, IconExternalOpenStroked, IconEditStroked, IconPlay, IconDeleteStroked } from '@douyinfe/semi-icons';
-import type { LYProcessResponse, GetProcessesParams, LYRangeResponse } from '@/api/process';
+import type { LYProcessResponse, GetProcessesParams, LYRangeResponse } from '@/api';
 import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
 import ProcessDetailDrawer from './components/ProcessDetailDrawer';
