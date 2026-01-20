@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Modal, Button, Checkbox, Toast } from '@douyinfe/semi-ui';
 
 interface ProcessInfo {
@@ -7,6 +8,7 @@ interface ProcessInfo {
 }
 
 export const useOpenProcess = () => {
+  const { t } = useTranslation();
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [dontRemindAgain, setDontRemindAgain] = useState(false);
   const [currentProcess, setCurrentProcess] = useState<ProcessInfo | null>(null);
@@ -25,7 +27,7 @@ export const useOpenProcess = () => {
     const timeout = setTimeout(() => {
       document.body.removeChild(iframe);
       Toast.error({
-        content: '无法唤起客户端，请确认已安装客户端程序',
+        content: t('openProcess.clientError'),
         duration: 3
       });
     }, 2000);
@@ -70,7 +72,7 @@ export const useOpenProcess = () => {
 
   const OpenProcessModal = () => (
     <Modal
-      title="打开流程"
+      title={t('openProcess.title')}
       visible={confirmVisible}
       onCancel={handleCancel}
       width={400}
@@ -81,16 +83,16 @@ export const useOpenProcess = () => {
             checked={dontRemindAgain} 
             onChange={(e) => setDontRemindAgain(e.target.checked)}
           >
-            以后不再提醒
+            {t('openProcess.dontRemindAgain')}
           </Checkbox>
           <div style={{ display: 'flex', gap: 8 }}>
-            <Button onClick={handleCancel}>取消</Button>
-            <Button theme="solid" onClick={handleConfirmOpen}>确定</Button>
+            <Button onClick={handleCancel}>{t('common.cancel')}</Button>
+            <Button theme="solid" onClick={handleConfirmOpen}>{t('common.confirm')}</Button>
           </div>
         </div>
       }
     >
-      <p>即将唤起客户端在本地打开流程「{currentProcess?.name}」，是否继续？</p>
+      <p>{t('openProcess.confirmMessage', { name: currentProcess?.name })}</p>
     </Modal>
   );
 
