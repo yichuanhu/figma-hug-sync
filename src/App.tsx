@@ -1,17 +1,21 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
+import Index from "@/pages/Index";
+import NotFound from "@/pages/NotFound";
 // Development
-import { DevelopmentWorkbench, ProcessDetail } from "./pages/Development";
+import DevelopmentWorkbench from "@/pages/Development/DevelopmentWorkbench";
+import ProcessDetail from "@/pages/Development/ProcessDevelopment/ProcessDetail";
 // Operations
-import { OperationsWorkbench, WorkerManagementPage, WorkerCreate, WorkerEdit } from "./pages/Operations";
+import OperationsWorkbench from "@/pages/Operations/OperationsWorkbench";
+import WorkerManagementPage from "@/pages/Operations/WorkerManagement/WorkerManagementPage";
+import WorkerCreate from "@/pages/Operations/WorkerManagement/WorkerCreate";
+import WorkerEdit from "@/pages/Operations/WorkerManagement/WorkerEdit";
 // Maintenance
-import { MaintenanceWorkbench } from "./pages/Maintenance";
+import MaintenanceWorkbench from "@/pages/Maintenance/MaintenanceWorkbench";
 // Requirements
-import { RequirementsWorkbench } from "./pages/Requirements";
+import RequirementsWorkbench from "@/pages/Requirements/RequirementsWorkbench";
 // Scheduling
-import { SchedulingWorkbench } from "./pages/Scheduling";
+import SchedulingWorkbench from "@/pages/Scheduling/SchedulingWorkbench";
 
 const queryClient = new QueryClient();
 

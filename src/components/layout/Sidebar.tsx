@@ -17,14 +17,12 @@ import layoutIcon from '@/assets/icons/layout.svg';
 import laiyeLogo from '@/assets/laiye-logo.png';
 
 // 自定义导航图标
-import { 
-  HomeIcon, 
-  RequirementsIcon, 
-  DevelopmentIcon, 
-  SchedulingIcon, 
-  OperationsIcon, 
-  BusinessIcon 
-} from '@/components/icons';
+import HomeIcon from '@/components/icons/HomeIcon';
+import RequirementsIcon from '@/components/icons/RequirementsIcon';
+import DevelopmentIcon from '@/components/icons/DevelopmentIcon';
+import SchedulingIcon from '@/components/icons/SchedulingIcon';
+import OperationsIcon from '@/components/icons/OperationsIcon';
+import BusinessIcon from '@/components/icons/BusinessIcon';
 
 interface MenuItem {
   key: string;
