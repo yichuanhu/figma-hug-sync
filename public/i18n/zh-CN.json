@@ -76,11 +76,9 @@
       "processName": "流程名称",
       "processDescription": "描述",
       "status": "状态",
-      "language": "语言",
-      "version": "版本",
-      "organization": "归属组织",
-      "creator": "创建者",
-      "lastModified": "最后修改",
+      "creatorName": "创建者",
+      "createTime": "创建时间",
+      "updateTime": "更新时间",
       "actions": "操作"
     },
     "filter": {
