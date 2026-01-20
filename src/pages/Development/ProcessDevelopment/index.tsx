@@ -39,7 +39,6 @@ export interface ProcessItem {
   name: string; // 流程名称，1-100字符
   description: string; // 流程描述，最大500字符
   status: ProcessStatus; // 流程状态
-  statusDisplayName: string; // 流程状态显示名称
   creatorName: string; // 创建者名称
   createTime: string; // 创建时间，格式：YYYY-MM-DD HH:mm:ss
   updateTime: string; // 更新时间，格式：YYYY-MM-DD HH:mm:ss
@@ -63,10 +62,10 @@ interface PaginationInfo {
 }
 
 // 状态配置 - 使用 Semi UI 支持的 TagColor 类型
-const statusConfig: Record<ProcessStatus, { color: 'grey' | 'green' | 'orange'; displayName: string }> = {
-  DEVELOPING: { color: 'grey', displayName: '开发中' },
-  PUBLISHED: { color: 'green', displayName: '已发布' },
-  ARCHIVED: { color: 'orange', displayName: '已归档' },
+const statusConfig: Record<ProcessStatus, { color: 'grey' | 'green' | 'orange'; i18nKey: string }> = {
+  DEVELOPING: { color: 'grey', i18nKey: 'development.status.developing' },
+  PUBLISHED: { color: 'green', i18nKey: 'development.status.published' },
+  ARCHIVED: { color: 'orange', i18nKey: 'development.status.archived' },
 };
 
 // 生成UUID v4
@@ -121,7 +120,6 @@ const generateMockProcessList = (): ProcessItem[] => {
         name: processNames[index % processNames.length],
         description: descriptions[index % descriptions.length],
         status,
-        statusDisplayName: statusConfig[status].displayName,
         creatorName: creators[index % creators.length],
         createTime: createDate.toISOString().replace('T', ' ').substring(0, 19),
         updateTime: updateDate.toISOString().replace('T', ' ').substring(0, 19),
@@ -310,9 +308,9 @@ const ProcessDevelopment = () => {
       dataIndex: 'status',
       key: 'status',
       width: 100,
-      render: (status: ProcessStatus, record: ProcessItem) => (
+      render: (status: ProcessStatus) => (
         <Tag color={statusConfig[status]?.color || 'grey'} type="light">
-          {record.statusDisplayName}
+          {t(statusConfig[status]?.i18nKey || 'development.status.developing')}
         </Tag>
       ),
     },
@@ -484,7 +482,6 @@ const ProcessDevelopment = () => {
             name: processData.name,
             description: processData.description,
             status: 'DEVELOPING',
-            statusDisplayName: '开发中',
             creatorName: processData.creator,
             createTime: processData.createdAt,
             updateTime: processData.createdAt,

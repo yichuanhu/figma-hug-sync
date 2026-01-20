@@ -88,8 +88,9 @@
       "creator": "创建者"
     },
     "status": {
+      "developing": "开发中",
       "published": "已发布",
-      "draft": "草稿"
+      "archived": "已归档"
     },
     "actions": {
       "openProcess": "打开流程",

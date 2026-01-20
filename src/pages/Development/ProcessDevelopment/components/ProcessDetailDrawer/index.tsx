@@ -35,7 +35,6 @@ interface ProcessData {
   name: string;
   description: string;
   status: ProcessStatus;
-  statusDisplayName: string;
   creatorName: string;
   createTime: string;
   updateTime: string;
@@ -145,6 +144,19 @@ const ProcessDetailDrawer = ({ visible, onClose, processData, onOpen, onEdit, on
     }
   };
 
+  // 状态 i18n key 配置
+  const getStatusI18nKey = (status: ProcessStatus): string => {
+    switch (status) {
+      case 'PUBLISHED':
+        return 'development.status.published';
+      case 'ARCHIVED':
+        return 'development.status.archived';
+      case 'DEVELOPING':
+      default:
+        return 'development.status.developing';
+    }
+  };
+
   const descriptionData = [
     { key: t('processDetail.fields.processId'), value: processData.id },
     { key: t('processDetail.fields.processName'), value: processData.name },
@@ -156,7 +168,7 @@ const ProcessDetailDrawer = ({ visible, onClose, processData, onOpen, onEdit, on
       key: t('processDetail.fields.status'),
       value: (
         <Tag color={getStatusColor(processData.status)} type="light">
-          {processData.statusDisplayName}
+          {t(getStatusI18nKey(processData.status))}
         </Tag>
       ),
     },
