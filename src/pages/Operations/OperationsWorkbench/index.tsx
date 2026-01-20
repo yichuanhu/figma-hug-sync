@@ -1,34 +1,28 @@
 import AppLayout from '@/components/layout/AppLayout';
 import { Breadcrumb } from '@douyinfe/semi-ui';
 import { IconHome } from '@douyinfe/semi-icons';
+import './index.less';
 
 const OperationsWorkbench = () => {
   return (
     <AppLayout>
-      <div style={{ padding: '20px 24px' }}>
-        <Breadcrumb>
-          <Breadcrumb.Item icon={<IconHome />} href="/">首页</Breadcrumb.Item>
-          <Breadcrumb.Item>运营中心</Breadcrumb.Item>
-          <Breadcrumb.Item>运营工作台</Breadcrumb.Item>
-        </Breadcrumb>
+      <div className="operations-workbench">
+        <div className="operations-workbench breadcrumb">
+          <Breadcrumb>
+            <Breadcrumb.Item icon={<IconHome />} href="/">首页</Breadcrumb.Item>
+            <Breadcrumb.Item>运营中心</Breadcrumb.Item>
+            <Breadcrumb.Item>运营工作台</Breadcrumb.Item>
+          </Breadcrumb>
+        </div>
         
-        <h1 style={{ 
-          fontSize: 20, 
-          fontWeight: 600, 
-          marginTop: 16,
-          marginBottom: 24,
-          color: 'var(--semi-color-text-0)'
-        }}>
-          运营工作台
-        </h1>
+        <div className="operations-workbench header">
+          <h1 className="operations-workbench header title">运营工作台</h1>
+        </div>
 
-        <div style={{
-          backgroundColor: 'var(--semi-color-bg-0)',
-          borderRadius: 8,
-          padding: 24,
-          minHeight: 400,
-        }}>
-          <p style={{ color: 'var(--semi-color-text-2)' }}>运营工作台内容区域</p>
+        <div className="operations-workbench content">
+          <div className="operations-workbench content content-card">
+            <p className="operations-workbench content content-card placeholder-text">运营工作台内容区域</p>
+          </div>
         </div>
       </div>
     </AppLayout>

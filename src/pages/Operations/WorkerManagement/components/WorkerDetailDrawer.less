@@ -1,0 +1,97 @@
+// WorkerDetailDrawer 机器人详情抽屉样式
+.worker-detail-drawer {
+  // 标题区域
+  .drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding-right: 0;
+
+    .title {
+      margin: 0;
+    }
+
+    // 操作按钮区域
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+
+      .delete-icon {
+        color: var(--semi-color-danger);
+      }
+
+      .divider {
+        height: 16px;
+        margin: 0 8px 0 4px;
+      }
+
+      .close-btn {
+        margin-left: 4px;
+      }
+    }
+  }
+
+  // 拖拽把手
+  .resize-handle {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    cursor: ew-resize;
+    z-index: 100;
+  }
+
+  // Tab 容器
+  .drawer-tabs {
+    height: 100%;
+
+    .tab-content {
+      padding: 16px 24px;
+
+      // 信息区块
+      .info-section {
+        margin-bottom: 24px;
+
+        .info-title {
+          display: block;
+          margin-bottom: 12px;
+          font-size: 14px;
+        }
+      }
+
+      // 优先级文字
+      .priority {
+        &.red {
+          color: var(--semi-color-red);
+        }
+
+        &.blue {
+          color: var(--semi-color-blue);
+        }
+
+        &.grey {
+          color: var(--semi-color-grey);
+        }
+      }
+    }
+  }
+}
+
+// 全局覆盖 - SideSheet header 和 body 样式
+.card-sidesheet.worker-detail-drawer {
+  .semi-sidesheet-header {
+    border-bottom: 1px solid var(--semi-color-border);
+  }
+
+  .semi-sidesheet-body {
+    padding: 0;
+    position: relative;
+  }
+
+  .semi-tabs-bar {
+    padding: 0 24px;
+  }
+}
