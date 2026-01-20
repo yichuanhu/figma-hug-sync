@@ -1,13 +1,42 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter } from "react-router-dom";
-import Routers from "@/router/Routers";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Index from "@/pages/Index";
+import NotFound from "@/pages/NotFound";
+// Development
+import DevelopmentWorkbench from "@/pages/Development/DevelopmentWorkbench";
+import ProcessDetail from "@/pages/Development/ProcessDevelopment/ProcessDetail";
+// Operations
+import OperationsWorkbench from "@/pages/Operations/OperationsWorkbench";
+import WorkerManagementPage from "@/pages/Operations/WorkerManagement/WorkerManagementPage";
+import WorkerCreate from "@/pages/Operations/WorkerManagement/WorkerCreate";
+import WorkerEdit from "@/pages/Operations/WorkerManagement/WorkerEdit";
+// Maintenance
+import MaintenanceWorkbench from "@/pages/Maintenance/MaintenanceWorkbench";
+// Requirements
+import RequirementsWorkbench from "@/pages/Requirements/RequirementsWorkbench";
+// Scheduling
+import SchedulingWorkbench from "@/pages/Scheduling/SchedulingWorkbench";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
-      <Routers />
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="/process-development" element={<Index />} />
+        <Route path="/process-detail/:id" element={<ProcessDetail />} />
+        <Route path="/worker-management" element={<WorkerManagementPage />} />
+        <Route path="/worker-management/create" element={<WorkerCreate />} />
+        <Route path="/worker-management/edit/:id" element={<WorkerEdit />} />
+        <Route path="/development-workbench" element={<DevelopmentWorkbench />} />
+        <Route path="/scheduling-workbench" element={<SchedulingWorkbench />} />
+        <Route path="/operations-workbench" element={<OperationsWorkbench />} />
+        <Route path="/requirements-workbench" element={<RequirementsWorkbench />} />
+        <Route path="/maintenance-workbench" element={<MaintenanceWorkbench />} />
+        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     </BrowserRouter>
   </QueryClientProvider>
 );

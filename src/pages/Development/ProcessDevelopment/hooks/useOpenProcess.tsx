@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Button, Checkbox, Toast } from '@douyinfe/semi-ui';
-import './index.less';
 
 interface ProcessInfo {
   id: string;
@@ -15,26 +14,36 @@ export const useOpenProcess = () => {
   const [currentProcess, setCurrentProcess] = useState<ProcessInfo | null>(null);
 
   const triggerClientOpen = (processId: string) => {
+    // 模拟客户端协议唤起
     const clientProtocol = `laiye-client://open-process?id=${processId}`;
+    
+    // 创建隐藏的 iframe 尝试唤起客户端
     const iframe = document.createElement('iframe');
     iframe.style.display = 'none';
     iframe.src = clientProtocol;
     document.body.appendChild(iframe);
     
+    // 设置超时检测，如果无法唤起则提示用户
     const timeout = setTimeout(() => {
       document.body.removeChild(iframe);
-      Toast.error({ content: t('openProcess.clientError'), duration: 3 });
+      Toast.error({
+        content: t('openProcess.clientError'),
+        duration: 3
+      });
     }, 2000);
     
+    // 监听页面失焦（说明客户端被成功唤起）
     const handleBlur = () => {
       clearTimeout(timeout);
       document.body.removeChild(iframe);
       window.removeEventListener('blur', handleBlur);
     };
+    
     window.addEventListener('blur', handleBlur);
   };
 
   const openProcess = (process: ProcessInfo) => {
+    // 检查是否设置了不再提醒
     const skipConfirm = localStorage.getItem('skipOpenProcessConfirm') === 'true';
     if (skipConfirm) {
       triggerClientOpen(process.id);
@@ -45,6 +54,7 @@ export const useOpenProcess = () => {
   };
 
   const handleConfirmOpen = () => {
+    // 保存用户的不再提醒设置
     if (dontRemindAgain) {
       localStorage.setItem('skipOpenProcessConfirm', 'true');
     }
@@ -68,11 +78,14 @@ export const useOpenProcess = () => {
       width={400}
       motion={false}
       footer={
-        <div className="open-process-modal-footer">
-          <Checkbox checked={dontRemindAgain} onChange={(e) => setDontRemindAgain(e.target.checked)}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Checkbox 
+            checked={dontRemindAgain} 
+            onChange={(e) => setDontRemindAgain(e.target.checked)}
+          >
             {t('openProcess.dontRemindAgain')}
           </Checkbox>
-          <div className="open-process-modal-buttons">
+          <div style={{ display: 'flex', gap: 8 }}>
             <Button onClick={handleCancel}>{t('common.cancel')}</Button>
             <Button theme="solid" onClick={handleConfirmOpen}>{t('common.confirm')}</Button>
           </div>
@@ -83,5 +96,8 @@ export const useOpenProcess = () => {
     </Modal>
   );
 
-  return { openProcess, OpenProcessModal };
+  return {
+    openProcess,
+    OpenProcessModal
+  };
 };

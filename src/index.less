@@ -13,38 +13,32 @@ body {
   min-height: 100vh;
 }
 
-// Sidebar hover effects - 层级嵌套
-.sidebar {
-  .icon-bar {
-    .icon-btn {
-      transition: background-color 0.2s;
+// Sidebar hover effects
+.sidebar-icon-btn {
+  transition: background-color 0.2s;
 
-      &:hover {
-        background-color: #F5F5F5;
-      }
-
-      &.active {
-        background-color: #F5F5F5;
-
-        &:hover {
-          background-color: #F5F5F5;
-        }
-      }
-    }
+  &:hover {
+    background-color: #F5F5F5;
   }
 
-  .menu-item {
-    .menu-content {
-      transition: background-color 0.2s;
+  &.active {
+    background-color: #F5F5F5;
 
-      &:hover {
-        background-color: #F5F5F5;
-      }
-
-      &.selected {
-        background-color: #F5F5F5;
-      }
+    &:hover {
+      background-color: #F5F5F5;
     }
+  }
+}
+
+.sidebar-menu-item {
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #F5F5F5;
+  }
+
+  &.selected {
+    background-color: #F5F5F5;
   }
 }
 

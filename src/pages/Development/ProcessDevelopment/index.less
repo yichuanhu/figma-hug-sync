@@ -4,6 +4,12 @@
   flex-direction: column;
   height: 100%;
 
+  // 面包屑区域
+  &-breadcrumb {
+    padding: 12px 24px;
+    flex-shrink: 0;
+  }
+
   // 标题区域
   &-header {
     padding: 20px 24px 0;
@@ -18,8 +24,20 @@
     }
 
     &-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 16px;
-      // 布局使用 Semi UI Row/Col/Space 组件，不在此定义
+    }
+
+    &-search {
+      display: flex;
+      gap: 12px;
+    }
+
+    &-actions {
+      display: flex;
+      gap: 12px;
     }
   }
 

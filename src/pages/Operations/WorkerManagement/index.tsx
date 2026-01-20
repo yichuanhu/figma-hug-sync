@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import { 
+  Breadcrumb, 
   Typography, 
   Input, 
   Button, 
@@ -8,10 +9,7 @@ import {
   Dropdown,
   Switch,
   Popover,
-  Checkbox,
-  Space,
-  Row,
-  Col
+  Checkbox
 } from '@douyinfe/semi-ui';
 import {
   IconSearch, 
@@ -464,7 +462,7 @@ const WorkerManagement = () => {
   // 编辑机器人
   const handleEdit = (worker: WorkerData, e?: React.MouseEvent) => {
     e?.stopPropagation();
-    navigate(`/ops/asset-mgmt/worker-management/edit/${worker.id}`);
+    navigate(`/worker-management/edit/${worker.id}`);
   };
 
   // 确认删除
@@ -479,7 +477,7 @@ const WorkerManagement = () => {
   const handleEditFromDrawer = () => {
     if (selectedWorker) {
       setDetailDrawerVisible(false);
-      navigate(`/ops/asset-mgmt/worker-management/edit/${selectedWorker.id}`);
+      navigate(`/worker-management/edit/${selectedWorker.id}`);
     }
   };
 
@@ -645,6 +643,15 @@ const WorkerManagement = () => {
 
   return (
     <div className="worker-management">
+      {/* 固定面包屑 */}
+      <div className="worker-management-breadcrumb">
+        <Breadcrumb>
+          <Breadcrumb.Item onClick={() => navigate('/')}>{t('common.home')}</Breadcrumb.Item>
+          <Breadcrumb.Item>{t('worker.breadcrumb.developmentCenter')}</Breadcrumb.Item>
+          <Breadcrumb.Item>{t('worker.breadcrumb.workerManagement')}</Breadcrumb.Item>
+        </Breadcrumb>
+      </div>
+
       {/* 标题区域 */}
       <div className="worker-management-header">
         <div className="worker-management-header-title">
@@ -652,45 +659,41 @@ const WorkerManagement = () => {
           <Text type="tertiary">{t('worker.description')}</Text>
         </div>
 
-        {/* 操作栏 - 使用Row/Col栅格布局 */}
-        <Row type="flex" justify="space-between" align="middle" className="worker-management-header-toolbar">
-          <Col>
-            <Space spacing={12}>
-              <Input 
-                prefix={<IconSearch />}
-                placeholder={t('worker.searchPlaceholder')}
-                style={{ width: 280 }}
-                value={searchValue}
-                onChange={handleSearch}
-              />
-              <Popover
-                visible={filterVisible}
-                onVisibleChange={setFilterVisible}
-                trigger="click"
-                position="bottomLeft"
-                content={filterContent}
-              >
-                <Button 
-                  icon={<IconFilter />} 
-                  theme={hasActiveFilters ? 'solid' : 'light'}
-                  type={hasActiveFilters ? 'primary' : 'tertiary'}
-                >
-                  {t('common.filter')}{activeFilterCount > 0 ? ` (${activeFilterCount})` : ''}
-                </Button>
-              </Popover>
-            </Space>
-          </Col>
-          <Col>
-            <Button 
-              icon={<IconPlus />} 
-              theme="solid" 
-              type="primary"
-              onClick={() => navigate('/worker-management/create')}
+        {/* 操作栏 */}
+        <div className="worker-management-header-toolbar">
+          <div className="worker-management-header-search">
+            <Input 
+              prefix={<IconSearch />}
+              placeholder={t('worker.searchPlaceholder')}
+              style={{ width: 280 }}
+              value={searchValue}
+              onChange={handleSearch}
+            />
+            <Popover
+              visible={filterVisible}
+              onVisibleChange={setFilterVisible}
+              trigger="click"
+              position="bottomLeft"
+              content={filterContent}
             >
-              {t('worker.createWorker')}
-            </Button>
-          </Col>
-        </Row>
+              <Button 
+                icon={<IconFilter />} 
+                theme={hasActiveFilters ? 'solid' : 'light'}
+                type={hasActiveFilters ? 'primary' : 'tertiary'}
+              >
+                {t('common.filter')}{activeFilterCount > 0 ? ` (${activeFilterCount})` : ''}
+              </Button>
+            </Popover>
+          </div>
+          <Button 
+            icon={<IconPlus />} 
+            theme="solid" 
+            type="primary"
+            onClick={() => navigate('/worker-management/create')}
+          >
+            {t('worker.createWorker')}
+          </Button>
+        </div>
       </div>
 
       {/* 表格区域 */}
