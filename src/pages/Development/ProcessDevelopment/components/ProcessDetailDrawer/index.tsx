@@ -27,16 +27,18 @@ const allRunData = [
   { key: 5, taskId: 'TASK-005', robot: 'RPA-机器人-02', creator: '李明', createdTime: '2024-01-11 08:30:00', status: '成功' },
 ];
 
+// 流程状态枚举
+type ProcessStatus = 'DEVELOPING' | 'PUBLISHED' | 'ARCHIVED';
+
 interface ProcessData {
   id: string;
   name: string;
   description: string;
-  status: string;
-  organization: string;
-  creator: { name: string; avatar: string };
-  createdAt: string;
-  language?: string;
-  version?: string;
+  status: ProcessStatus;
+  statusDisplayName: string;
+  creatorName: string;
+  createTime: string;
+  updateTime: string;
 }
 
 interface ProcessDetailDrawerProps {
@@ -130,44 +132,35 @@ const ProcessDetailDrawer = ({ visible, onClose, processData, onOpen, onEdit, on
 
   if (!processData) return null;
 
+  // 状态颜色配置
+  const getStatusColor = (status: ProcessStatus): 'grey' | 'green' | 'orange' => {
+    switch (status) {
+      case 'PUBLISHED':
+        return 'green';
+      case 'ARCHIVED':
+        return 'orange';
+      case 'DEVELOPING':
+      default:
+        return 'grey';
+    }
+  };
+
   const descriptionData = [
     { key: t('processDetail.fields.processId'), value: processData.id },
     { key: t('processDetail.fields.processName'), value: processData.name },
     { key: t('processDetail.fields.processDescription'), value: processData.description || '-' },
-    { key: t('processDetail.fields.organization'), value: processData.organization },
-    { key: t('processDetail.fields.creator'), value: processData.creator.name },
-    { key: t('processDetail.fields.createdAt'), value: processData.createdAt },
+    { key: t('processDetail.fields.creator'), value: processData.creatorName },
+    { key: t('processDetail.fields.createdAt'), value: processData.createTime },
+    { key: t('processDetail.fields.updateTime'), value: processData.updateTime },
     {
       key: t('processDetail.fields.status'),
       value: (
-        <Tag color={processData.status === t('development.status.published') ? 'green' : 'grey'} type="light">
-          {processData.status}
+        <Tag color={getStatusColor(processData.status)} type="light">
+          {processData.statusDisplayName}
         </Tag>
       ),
     },
   ];
-
-  if (processData.language) {
-    descriptionData.splice(3, 0, {
-      key: t('processDetail.fields.language'),
-      value: (
-        <Tag color={processData.language === 'python' ? 'blue' : 'cyan'} type="light">
-          {processData.language}
-        </Tag>
-      ) as unknown as string,
-    });
-  }
-
-  if (processData.version) {
-    descriptionData.splice(4, 0, {
-      key: t('processDetail.fields.version'),
-      value: (
-        <Tag color="grey" type="ghost">
-          {processData.version}
-        </Tag>
-      ) as unknown as string,
-    });
-  }
 
   const versionColumns = [
     { title: t('processDetail.versionTable.version'), dataIndex: 'version', key: 'version' },

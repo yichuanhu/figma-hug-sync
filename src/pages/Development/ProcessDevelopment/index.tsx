@@ -1,18 +1,27 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { 
-  Breadcrumb, 
-  Typography, 
-  Input, 
-  Button, 
-  Table, 
-  Tag, 
+import {
+  Breadcrumb,
+  Typography,
+  Input,
+  Button,
+  Table,
+  Tag,
   Avatar,
   Dropdown,
-  Tooltip
+  Tooltip,
 } from '@douyinfe/semi-ui';
-import { IconSearch, IconPlus, IconDownload, IconMore, IconExternalOpenStroked, IconEditStroked, IconPlay, IconDeleteStroked } from '@douyinfe/semi-icons';
+import {
+  IconSearch,
+  IconPlus,
+  IconDownload,
+  IconMore,
+  IconExternalOpenStroked,
+  IconEditStroked,
+  IconPlay,
+  IconDeleteStroked,
+} from '@douyinfe/semi-icons';
 import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
 import ProcessDetailDrawer from './components/ProcessDetailDrawer';
@@ -21,76 +30,163 @@ import './index.less';
 
 const { Title, Text } = Typography;
 
-interface ProcessItem {
-  id: string;
-  key: number;
-  name: string;
-  description: string;
-  status: string;
-  language: string;
-  version: string;
-  organization: string;
-  creator: {
-    name: string;
-    avatar: string;
-  };
-  createdAt: string;
-  updatedAt: string;
+// 流程状态枚举
+type ProcessStatus = 'DEVELOPING' | 'PUBLISHED' | 'ARCHIVED';
+
+// 流程列表项接口 - 根据需求文档5.1.2定义
+export interface ProcessItem {
+  id: string; // UUID
+  name: string; // 流程名称，1-100字符
+  description: string; // 流程描述，最大500字符
+  status: ProcessStatus; // 流程状态
+  statusDisplayName: string; // 流程状态显示名称
+  creatorName: string; // 创建者名称
+  createTime: string; // 创建时间，格式：YYYY-MM-DD HH:mm:ss
+  updateTime: string; // 更新时间，格式：YYYY-MM-DD HH:mm:ss
 }
 
+// 查询参数接口 - 根据需求文档5.1.1定义
 interface QueryParams {
-  page: number;
-  pageSize: number;
-  keyword: string;
+  page: number; // 页码，>= 1，默认1
+  pageSize: number; // 每页数量，1-100，默认20
+  keyword: string; // 搜索关键词，1-100字符
+  sortBy: 'createTime' | 'updateTime' | 'name'; // 排序字段
+  sortOrder: 'asc' | 'desc'; // 排序方向
 }
 
+// 分页信息接口 - 根据需求文档5.1.3定义
 interface PaginationInfo {
-  total: number;
+  total: number; // 总记录数
+  page: number; // 当前页码
+  pageSize: number; // 每页数量
+  totalPages: number; // 总页数
 }
+
+// 状态配置 - 使用 Semi UI 支持的 TagColor 类型
+const statusConfig: Record<ProcessStatus, { color: 'grey' | 'green' | 'orange'; displayName: string }> = {
+  DEVELOPING: { color: 'grey', displayName: '开发中' },
+  PUBLISHED: { color: 'green', displayName: '已发布' },
+  ARCHIVED: { color: 'orange', displayName: '已归档' },
+};
+
+// 生成UUID v4
+const generateUUID = (): string => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+};
+
+// 生成模拟数据
+const generateMockProcessList = (): ProcessItem[] => {
+  const processNames = [
+    '订单自动处理',
+    '财务报销审批',
+    '人事入职流程',
+    '采购申请流程',
+    '合同审批流程',
+    '发票识别处理',
+    '客户信息同步',
+    '库存盘点流程',
+    '销售数据汇总',
+    '报表自动生成',
+  ];
+
+  const descriptions = [
+    '自动处理销售订单，包括订单验证、库存检查、发货通知',
+    '自动处理财务报销审批流程，包括发票识别、金额核对、审批通知',
+    '自动化处理新员工入职流程，包括账号创建、权限分配、培训安排',
+    '自动处理采购申请，包括供应商比价、审批流程、订单生成',
+    '自动化合同审批流程，包括合同模板匹配、条款审核、签章流程',
+    '自动识别和处理各类发票，包括OCR识别、信息提取、入账处理',
+    '自动同步客户信息到各个业务系统，保持数据一致性',
+    '自动执行库存盘点任务，生成差异报告，触发补货流程',
+    '自动汇总各渠道销售数据，生成分析报告，发送给相关负责人',
+    '定时自动生成各类业务报表，支持多种格式导出和分发',
+  ];
+
+  const creators = ['张三', '李四', '王五', '赵六', '钱七', '孙八', '周九', '吴十'];
+  const statuses: ProcessStatus[] = ['DEVELOPING', 'PUBLISHED', 'ARCHIVED'];
+
+  return Array(46)
+    .fill(null)
+    .map((_, index) => {
+      const status = statuses[index % 3];
+      const createDate = new Date(2025, 0, 1 + (index % 20), 10 + (index % 12), (index * 7) % 60, 0);
+      const updateDate = new Date(createDate.getTime() + (index % 10) * 24 * 60 * 60 * 1000);
+
+      return {
+        id: generateUUID(),
+        name: processNames[index % processNames.length],
+        description: descriptions[index % descriptions.length],
+        status,
+        statusDisplayName: statusConfig[status].displayName,
+        creatorName: creators[index % creators.length],
+        createTime: createDate.toISOString().replace('T', ' ').substring(0, 19),
+        updateTime: updateDate.toISOString().replace('T', ' ').substring(0, 19),
+      };
+    });
+};
+
+// 模拟数据存储
+let mockProcessData = generateMockProcessList();
 
 // 模拟API请求 - 获取流程列表
-const fetchProcessList = async (params: {
-  page: number;
-  pageSize: number;
-  keyword?: string;
-}): Promise<{ data: ProcessItem[]; total: number }> => {
+const fetchProcessList = async (params: QueryParams): Promise<{ data: ProcessItem[]; pagination: PaginationInfo }> => {
   // 模拟网络延迟
-  await new Promise(resolve => setTimeout(resolve, 500));
-  
-  // 生成模拟数据
-  const allData: ProcessItem[] = Array(46).fill(null).map((_, index) => ({
-    id: `PROC-2024-${String(index + 1).padStart(3, '0')}`,
-    key: index + 1,
-    name: index % 3 === 0 ? '财务报销流程' : index % 3 === 1 ? '人事审批流程' : '采购申请流程',
-    description: '自动处理财务报销审批流程，包括发票识别、金额核对、审批通知',
-    status: index % 2 === 0 ? 'published' : 'draft',
-    language: index % 3 === 1 ? 'BotScript' : 'python',
-    version: `1.${index % 5}.0`,
-    organization: index % 4 === 0 ? '财务部' : index % 4 === 1 ? '人事部' : index % 4 === 2 ? '技术部' : '运营部',
-    creator: {
-      name: index % 3 === 0 ? '姜鹏志' : index % 3 === 1 ? '李明' : '王芳',
-      avatar: '',
-    },
-    createdAt: `2024-0${(index % 9) + 1}-${String((index % 28) + 1).padStart(2, '0')}`,
-    updatedAt: `2024-0${(index % 9) + 1}-${String((index % 28) + 1).padStart(2, '0')}`,
-  }));
+  await new Promise((resolve) => setTimeout(resolve, 500));
 
-  // 模拟关键词搜索
-  let filteredData = allData;
+  let filteredData = [...mockProcessData];
+
+  // 搜索过滤 - 同时匹配流程名称和描述（OR关系）
   if (params.keyword?.trim()) {
-    filteredData = allData.filter(item => 
-      item.name.toLowerCase().includes(params.keyword!.toLowerCase().trim())
+    const keyword = params.keyword.toLowerCase().trim();
+    filteredData = filteredData.filter(
+      (item) => item.name.toLowerCase().includes(keyword) || item.description.toLowerCase().includes(keyword),
     );
   }
 
-  // 模拟分页
+  // 排序处理
+  filteredData.sort((a, b) => {
+    let valueA: string;
+    let valueB: string;
+
+    switch (params.sortBy) {
+      case 'name':
+        valueA = a.name;
+        valueB = b.name;
+        break;
+      case 'updateTime':
+        valueA = a.updateTime;
+        valueB = b.updateTime;
+        break;
+      case 'createTime':
+      default:
+        valueA = a.createTime;
+        valueB = b.createTime;
+        break;
+    }
+
+    const comparison = valueA.localeCompare(valueB);
+    return params.sortOrder === 'asc' ? comparison : -comparison;
+  });
+
+  // 计算分页
+  const total = filteredData.length;
+  const totalPages = Math.ceil(total / params.pageSize) || 1;
   const start = (params.page - 1) * params.pageSize;
   const end = start + params.pageSize;
   const paginatedData = filteredData.slice(start, end);
 
   return {
     data: paginatedData,
-    total: filteredData.length,
+    pagination: {
+      total,
+      page: params.page,
+      pageSize: params.pageSize,
+      totalPages,
+    },
   };
 };
 
@@ -99,11 +195,16 @@ const ProcessDevelopment = () => {
   const { t } = useTranslation();
   const [queryParams, setQueryParams] = useState<QueryParams>({
     page: 1,
-    pageSize: 10,
+    pageSize: 20, // 默认每页20条
     keyword: '',
+    sortBy: 'createTime',
+    sortOrder: 'desc', // 默认按创建时间降序
   });
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>({
     total: 0,
+    page: 1,
+    pageSize: 20,
+    totalPages: 1,
   });
   const [loading, setLoading] = useState(true);
   const [createModalVisible, setCreateModalVisible] = useState(false);
@@ -115,9 +216,6 @@ const ProcessDevelopment = () => {
     id: string;
     name: string;
     description: string;
-    organization: string;
-    type?: string;
-    relatedRequirement?: string;
   } | null>(null);
 
   const { openProcess, OpenProcessModal } = useOpenProcess();
@@ -128,7 +226,7 @@ const ProcessDevelopment = () => {
     try {
       const result = await fetchProcessList(queryParams);
       setProcessListData(result.data);
-      setPaginationInfo({ total: result.total });
+      setPaginationInfo(result.pagination);
     } finally {
       setLoading(false);
     }
@@ -139,9 +237,9 @@ const ProcessDevelopment = () => {
     loadData();
   }, [loadData]);
 
-  // 搜索
+  // 搜索（支持防抖可在Input组件层实现）
   const handleSearch = (keyword: string) => {
-    setQueryParams(prev => ({ ...prev, page: 1, keyword }));
+    setQueryParams((prev) => ({ ...prev, page: 1, keyword }));
   };
 
   // 打开流程详情抽屉或切换内容
@@ -155,14 +253,12 @@ const ProcessDevelopment = () => {
   // 操作处理函数
   const handleEdit = (record?: ProcessItem) => {
     const processRecord = record || selectedProcess;
-    
+
     if (processRecord) {
       setEditingProcess({
         id: processRecord.id,
         name: processRecord.name,
         description: processRecord.description,
-        organization: processRecord.organization,
-        type: '原生流程',
       });
       setEditModalVisible(true);
     }
@@ -177,23 +273,35 @@ const ProcessDevelopment = () => {
     setDetailDrawerVisible(false);
   };
 
+  // 表格排序处理
+  const handleSort = (sortBy: 'createTime' | 'updateTime' | 'name') => {
+    setQueryParams((prev) => ({
+      ...prev,
+      page: 1,
+      sortBy,
+      sortOrder: prev.sortBy === sortBy && prev.sortOrder === 'desc' ? 'asc' : 'desc',
+    }));
+  };
+
   const columns = [
     {
       title: t('development.table.processName'),
       dataIndex: 'name',
       key: 'name',
-      width: 120,
+      width: 160,
+      sorter: true,
+      onHeaderCell: () => ({
+        onClick: () => handleSort('name'),
+      }),
     },
     {
       title: t('development.table.processDescription'),
       dataIndex: 'description',
       key: 'description',
-      width: 280,
+      width: 320,
       render: (description: string) => (
         <Tooltip content={description} position="top">
-          <div className="process-development-cell-ellipsis">
-            {description}
-          </div>
+          <div className="process-development-cell-ellipsis">{description}</div>
         </Tooltip>
       ),
     },
@@ -201,67 +309,49 @@ const ProcessDevelopment = () => {
       title: t('development.table.status'),
       dataIndex: 'status',
       key: 'status',
-      width: 80,
-      render: (status: string) => (
-        <Tag color={status === 'published' ? 'green' : 'grey'} type="light">
-          {status === 'published' ? t('development.status.published') : t('development.status.draft')}
-        </Tag>
-      ),
-    },
-    {
-      title: t('development.table.language'),
-      dataIndex: 'language',
-      key: 'language',
       width: 100,
-      render: (language: string) => (
-        <Tag color={language === 'python' ? 'blue' : 'cyan'} type="light">
-          {language}
+      render: (status: ProcessStatus, record: ProcessItem) => (
+        <Tag color={statusConfig[status]?.color || 'grey'} type="light">
+          {record.statusDisplayName}
         </Tag>
       ),
-    },
-    {
-      title: t('development.table.version'),
-      dataIndex: 'version',
-      key: 'version',
-      width: 80,
-      render: (version: string) => (
-        <Tag color="grey" type="ghost">
-          {version}
-        </Tag>
-      ),
-    },
-    {
-      title: t('development.table.organization'),
-      dataIndex: 'organization',
-      key: 'organization',
-      width: 100,
     },
     {
       title: t('development.table.creator'),
-      dataIndex: 'creator',
-      key: 'creator',
+      dataIndex: 'creatorName',
+      key: 'creatorName',
       width: 120,
-      render: (creator: { name: string } | undefined) => {
-        if (!creator) return null;
+      render: (creatorName: string) => {
+        if (!creatorName) return null;
         return (
           <div className="process-development-cell-creator">
-            <Avatar 
-              size="small" 
-              className="avatar-creator"
-            >
-              {creator.name.charAt(0)}
+            <Avatar size="small" className="avatar-creator">
+              {creatorName.charAt(0)}
             </Avatar>
-            <span>{creator.name}</span>
+            <span>{creatorName}</span>
           </div>
         );
       },
     },
     {
-      title: t('development.table.lastModified'),
-      dataIndex: 'updatedAt',
-      key: 'updatedAt',
-      width: 120,
+      title: t('development.table.createTime'),
+      dataIndex: 'createTime',
+      key: 'createTime',
+      width: 160,
       sorter: true,
+      onHeaderCell: () => ({
+        onClick: () => handleSort('createTime'),
+      }),
+    },
+    {
+      title: t('development.table.updateTime'),
+      dataIndex: 'updateTime',
+      key: 'updateTime',
+      width: 160,
+      sorter: true,
+      onHeaderCell: () => ({
+        onClick: () => handleSort('updateTime'),
+      }),
     },
     {
       title: t('development.table.actions'),
@@ -272,29 +362,37 @@ const ProcessDevelopment = () => {
         <Dropdown
           trigger="click"
           position="bottomRight"
+          clickToHide
           render={
             <Dropdown.Menu>
-              <Dropdown.Item 
-                icon={<IconExternalOpenStroked />} 
+              <Dropdown.Item
+                icon={<IconExternalOpenStroked />}
                 onClick={(e) => {
                   e.stopPropagation();
-                  const processId = `PROC-2024-${String(record.key).padStart(3, '0')}`;
-                  openProcess({ id: processId, name: record.name });
+                  openProcess({ id: record.id, name: record.name });
                 }}
               >
                 {t('development.actions.openProcess')}
               </Dropdown.Item>
-              <Dropdown.Item icon={<IconEditStroked />} onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>{t('development.actions.edit')}</Dropdown.Item>
-              <Dropdown.Item icon={<IconPlay />} onClick={handleRun}>{t('development.actions.run')}</Dropdown.Item>
-              <Dropdown.Item icon={<IconDeleteStroked />} type="danger" onClick={handleDelete}>{t('development.actions.delete')}</Dropdown.Item>
+              <Dropdown.Item
+                icon={<IconEditStroked />}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleEdit(record);
+                }}
+              >
+                {t('development.actions.edit')}
+              </Dropdown.Item>
+              <Dropdown.Item icon={<IconPlay />} onClick={handleRun}>
+                {t('development.actions.run')}
+              </Dropdown.Item>
+              <Dropdown.Item icon={<IconDeleteStroked />} type="danger" onClick={handleDelete}>
+                {t('development.actions.delete')}
+              </Dropdown.Item>
             </Dropdown.Menu>
           }
         >
-          <Button 
-            icon={<IconMore />} 
-            theme="borderless" 
-            onClick={(e) => e.stopPropagation()}
-          />
+          <Button icon={<IconMore />} theme="borderless" onClick={(e) => e.stopPropagation()} />
         </Dropdown>
       ),
     },
@@ -314,31 +412,30 @@ const ProcessDevelopment = () => {
       {/* 标题区域 */}
       <div className="process-development-header">
         <div className="process-development-header-title">
-          <Title heading={3} className="title">{t('development.title')}</Title>
+          <Title heading={3} className="title">
+            {t('development.title')}
+          </Title>
           <Text type="tertiary">{t('development.description')}</Text>
         </div>
 
         {/* 操作栏 */}
         <div className="process-development-header-toolbar">
           <div className="process-development-header-search">
-            <Input 
+            <Input
               prefix={<IconSearch />}
               placeholder={t('development.searchPlaceholder')}
-              style={{ width: 240 }}
+              className="process-development-search-input"
               value={queryParams.keyword}
               onChange={handleSearch}
+              showClear
+              maxLength={100}
             />
           </div>
           <div className="process-development-header-actions">
             <Button icon={<IconDownload />} theme="light">
               {t('development.importProcess')}
             </Button>
-            <Button 
-              icon={<IconPlus />} 
-              theme="solid" 
-              type="primary"
-              onClick={() => setCreateModalVisible(true)}
-            >
+            <Button icon={<IconPlus />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
               {t('development.createProcess')}
             </Button>
           </div>
@@ -347,24 +444,25 @@ const ProcessDevelopment = () => {
 
       {/* 表格区域 */}
       <div className="process-development-table">
-        <Table 
-          columns={columns} 
+        <Table
+          columns={columns}
           dataSource={processListData}
           loading={loading}
+          rowKey="id"
           onRow={(record) => {
-            const isSelected = selectedProcess?.id === record.id && detailDrawerVisible;
+            const isSelected = selectedProcess?.id === record?.id && detailDrawerVisible;
             return {
-              onClick: () => openProcessDetail(record as ProcessItem),
+              onClick: () => record && openProcessDetail(record as ProcessItem),
               className: isSelected ? 'process-development-row-selected' : undefined,
-              style: { cursor: 'pointer' }
+              style: { cursor: 'pointer' },
             };
           }}
           pagination={{
             total: paginationInfo.total,
             pageSize: queryParams.pageSize,
             currentPage: queryParams.page,
-            onPageChange: (page) => setQueryParams(prev => ({ ...prev, page })),
-            onPageSizeChange: (pageSize) => setQueryParams(prev => ({ ...prev, page: 1, pageSize })),
+            onPageChange: (page) => setQueryParams((prev) => ({ ...prev, page })),
+            onPageSizeChange: (pageSize) => setQueryParams((prev) => ({ ...prev, page: 1, pageSize })),
             showSizeChanger: true,
             showTotal: true,
           }}
@@ -379,21 +477,19 @@ const ProcessDevelopment = () => {
         onSuccess={(processData) => {
           // 重新加载数据
           loadData();
-          
-          // 打开详情抽屉
-          setSelectedProcess({
+
+          // 创建新的ProcessItem并打开详情抽屉
+          const newProcess: ProcessItem = {
             id: processData.id,
-            key: 0,
             name: processData.name,
             description: processData.description,
-            status: processData.status,
-            language: '',
-            version: '1.0.0',
-            organization: processData.organization,
-            creator: { name: processData.creator, avatar: '' },
-            createdAt: processData.createdAt,
-            updatedAt: processData.createdAt,
-          });
+            status: 'DEVELOPING',
+            statusDisplayName: '开发中',
+            creatorName: processData.creator,
+            createTime: processData.createdAt,
+            updateTime: processData.createdAt,
+          };
+          setSelectedProcess(newProcess);
           setDetailDrawerVisible(true);
         }}
       />
