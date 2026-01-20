@@ -1,0 +1,96 @@
+// ProcessDetailDrawer 流程详情抽屉样式
+.process-detail-drawer {
+  // 标题区域
+  .drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding-right: 0;
+
+    .title-section {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .title {
+        margin: 0;
+      }
+    }
+
+    // 操作按钮区域
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+
+      .delete-icon {
+        color: var(--semi-color-danger);
+      }
+
+      .divider {
+        height: 16px;
+        margin: 0 8px 0 4px;
+      }
+
+      .close-btn {
+        margin-left: 4px;
+      }
+    }
+  }
+
+  // 拖拽把手
+  .resize-handle {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    cursor: ew-resize;
+    z-index: 100;
+  }
+
+  // Tab 容器
+  .drawer-tabs {
+    height: 100%;
+
+    .tab-content {
+      padding: 16px 24px;
+
+      // 筛选器区域
+      .filters {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 16px;
+
+        .filter-select {
+          width: 140px;
+
+          &.wide {
+            width: 160px;
+          }
+        }
+
+        .filter-date {
+          flex: 1;
+        }
+      }
+    }
+  }
+}
+
+// 全局覆盖 - SideSheet header 和 body 样式
+.card-sidesheet.process-detail-drawer {
+  .semi-sidesheet-header {
+    border-bottom: 1px solid var(--semi-color-border);
+  }
+
+  .semi-sidesheet-body {
+    padding: 0;
+    position: relative;
+  }
+
+  .semi-tabs-bar {
+    padding: 0 24px;
+  }
+}

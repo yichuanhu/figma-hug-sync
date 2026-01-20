@@ -1,24 +1,11 @@
 import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { 
-  SideSheet, 
-  Typography, 
-  Button, 
-  Tag,
-  Descriptions,
-  Tabs,
-  TabPane,
-  Table,
-  Divider,
-  Tooltip,
-  DatePicker,
-  Select
-} from '@douyinfe/semi-ui';
+import { SideSheet, Typography, Button, Tag, Descriptions, Tabs, TabPane, Table, Divider, Tooltip, DatePicker, Select } from '@douyinfe/semi-ui';
 import { IconEditStroked, IconPlay, IconDeleteStroked, IconExternalOpenStroked, IconMaximize, IconMinimize, IconClose } from '@douyinfe/semi-icons';
+import './ProcessDetailDrawer.less';
 
 const { Title, Text } = Typography;
 
-// 变更历史模拟数据 (移到组件外部)
 const allChangeData = [
   { key: 1, changeTime: '2024-01-15 10:30', changeType: '发布', changer: '姜鹏志', changeContent: '发布版本 1.2.0' },
   { key: 2, changeTime: '2024-01-14 16:00', changeType: '编辑', changer: '李明', changeContent: '修改流程描述' },
@@ -27,13 +14,11 @@ const allChangeData = [
   { key: 5, changeTime: '2023-12-28 14:30', changeType: '编辑', changer: '李明', changeContent: '修改流程配置' },
 ];
 
-// 从数据中提取变更人选项
-const changerOptions = [...new Set(allChangeData.map(item => item.changer))].map(changer => ({
+const changerOptions = [...new Set(allChangeData.map((item) => item.changer))].map((changer) => ({
   value: changer,
-  label: changer
+  label: changer,
 }));
 
-// 运行记录模拟数据 (移到组件外部)
 const allRunData = [
   { key: 1, taskId: 'TASK-001', robot: 'RPA-机器人-01', creator: '姜鹏志', createdTime: '2024-01-15 10:30:00', status: '成功' },
   { key: 2, taskId: 'TASK-002', robot: 'RPA-机器人-02', creator: '李明', createdTime: '2024-01-14 15:20:00', status: '失败' },
@@ -48,10 +33,7 @@ interface ProcessData {
   description: string;
   status: string;
   organization: string;
-  creator: {
-    name: string;
-    avatar: string;
-  };
+  creator: { name: string; avatar: string };
   createdAt: string;
   language?: string;
   version?: string;
@@ -67,15 +49,7 @@ interface ProcessDetailDrawerProps {
   onDelete?: () => void;
 }
 
-const ProcessDetailDrawer = ({ 
-  visible, 
-  onClose, 
-  processData,
-  onOpen,
-  onEdit,
-  onRun,
-  onDelete 
-}: ProcessDetailDrawerProps) => {
+const ProcessDetailDrawer = ({ visible, onClose, processData, onOpen, onEdit, onRun, onDelete }: ProcessDetailDrawerProps) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('detail');
   const [changeTimeRange, setChangeTimeRange] = useState<[Date, Date] | null>(null);
@@ -91,84 +65,65 @@ const ProcessDetailDrawer = ({
   const startX = useRef(0);
   const startWidth = useRef(drawerWidth);
 
-  // 运行状态选项
   const runStatusOptions = [
     { value: t('processDetail.runStatus.success'), label: t('processDetail.runStatus.success') },
     { value: t('processDetail.runStatus.failed'), label: t('processDetail.runStatus.failed') },
     { value: t('processDetail.runStatus.running'), label: t('processDetail.runStatus.running') },
   ];
 
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    isResizing.current = true;
-    startX.current = e.clientX;
-    startWidth.current = drawerWidth;
-    document.body.style.cursor = 'ew-resize';
-    document.body.style.userSelect = 'none';
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      isResizing.current = true;
+      startX.current = e.clientX;
+      startWidth.current = drawerWidth;
+      document.body.style.cursor = 'ew-resize';
+      document.body.style.userSelect = 'none';
+      const handleMouseMove = (e: MouseEvent) => {
+        if (!isResizing.current) return;
+        const diff = startX.current - e.clientX;
+        setDrawerWidth(Math.min(Math.max(startWidth.current + diff, 576), window.innerWidth - 100));
+      };
+      const handleMouseUp = () => {
+        isResizing.current = false;
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    },
+    [drawerWidth],
+  );
 
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!isResizing.current) return;
-      const diff = startX.current - e.clientX;
-      const newWidth = Math.min(Math.max(startWidth.current + diff, 576), window.innerWidth - 100);
-      setDrawerWidth(newWidth);
-    };
-
-    const handleMouseUp = () => {
-      isResizing.current = false;
-      document.body.style.cursor = '';
-      document.body.style.userSelect = '';
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-  }, [drawerWidth]);
-
-  // 保存抽屉宽度到 localStorage
   useEffect(() => {
     localStorage.setItem('processDetailDrawerWidth', String(drawerWidth));
   }, [drawerWidth]);
 
   const toggleFullscreen = useCallback(() => {
-    setIsFullscreen(prev => !prev);
+    setIsFullscreen((prev) => !prev);
   }, []);
 
-  // 根据时间范围和变更人筛选变更历史 (必须在 early return 之前)
   const filteredChangeData = useMemo(() => {
-    return allChangeData.filter(item => {
-      // 时间范围筛选
+    return allChangeData.filter((item) => {
       if (changeTimeRange && changeTimeRange[0] && changeTimeRange[1]) {
-        const [startDate, endDate] = changeTimeRange;
         const itemDate = new Date(item.changeTime.replace(' ', 'T'));
-        if (itemDate < startDate || itemDate > endDate) {
-          return false;
-        }
+        if (itemDate < changeTimeRange[0] || itemDate > changeTimeRange[1]) return false;
       }
-      // 变更人筛选
-      if (selectedChangers.length > 0 && !selectedChangers.includes(item.changer)) {
-        return false;
-      }
+      if (selectedChangers.length > 0 && !selectedChangers.includes(item.changer)) return false;
       return true;
     });
   }, [changeTimeRange, selectedChangers]);
 
-  // 根据时间范围和状态筛选运行记录 (必须在 early return 之前)
   const filteredRunData = useMemo(() => {
-    return allRunData.filter(item => {
-      // 时间范围筛选
+    return allRunData.filter((item) => {
       if (runTimeRange && runTimeRange[0] && runTimeRange[1]) {
-        const [startDate, endDate] = runTimeRange;
         const itemDate = new Date(item.createdTime.replace(' ', 'T'));
-        if (itemDate < startDate || itemDate > endDate) {
-          return false;
-        }
+        if (itemDate < runTimeRange[0] || itemDate > runTimeRange[1]) return false;
       }
-      // 状态筛选
-      if (selectedRunStatuses.length > 0 && !selectedRunStatuses.includes(item.status)) {
-        return false;
-      }
+      if (selectedRunStatuses.length > 0 && !selectedRunStatuses.includes(item.status)) return false;
       return true;
     });
   }, [runTimeRange, selectedRunStatuses]);
@@ -182,45 +137,38 @@ const ProcessDetailDrawer = ({
     { key: t('processDetail.fields.organization'), value: processData.organization },
     { key: t('processDetail.fields.creator'), value: processData.creator.name },
     { key: t('processDetail.fields.createdAt'), value: processData.createdAt },
-    { 
-      key: t('processDetail.fields.status'), 
+    {
+      key: t('processDetail.fields.status'),
       value: (
-        <Tag 
-          color={processData.status === t('development.status.published') ? 'green' : 'grey'} 
-          type="light"
-        >
+        <Tag color={processData.status === t('development.status.published') ? 'green' : 'grey'} type="light">
           {processData.status}
         </Tag>
-      ) 
+      ),
     },
   ];
 
   if (processData.language) {
-    descriptionData.splice(3, 0, { 
-      key: t('processDetail.fields.language'), 
+    descriptionData.splice(3, 0, {
+      key: t('processDetail.fields.language'),
       value: (
-        <Tag 
-          color={processData.language === 'python' ? 'blue' : 'cyan'} 
-          type="light"
-        >
+        <Tag color={processData.language === 'python' ? 'blue' : 'cyan'} type="light">
           {processData.language}
         </Tag>
-      ) as unknown as string
+      ) as unknown as string,
     });
   }
 
   if (processData.version) {
-    descriptionData.splice(4, 0, { 
-      key: t('processDetail.fields.version'), 
+    descriptionData.splice(4, 0, {
+      key: t('processDetail.fields.version'),
       value: (
         <Tag color="grey" type="ghost">
           {processData.version}
         </Tag>
-      ) as unknown as string
+      ) as unknown as string,
     });
   }
 
-  // 版本列表模拟数据
   const versionColumns = [
     { title: t('processDetail.versionTable.version'), dataIndex: 'version', key: 'version' },
     { title: t('processDetail.versionTable.publishedAt'), dataIndex: 'publishedAt', key: 'publishedAt' },
@@ -234,25 +182,26 @@ const ProcessDetailDrawer = ({
     { key: 3, version: '1.0.0', publishedAt: '2024-01-05 09:00', publisher: '姜鹏志', remark: '初始版本' },
   ];
 
-  // 运行记录列定义
   const runColumns = [
     { title: t('processDetail.runTable.taskId'), dataIndex: 'taskId', key: 'taskId' },
     { title: t('processDetail.runTable.robot'), dataIndex: 'robot', key: 'robot' },
     { title: t('processDetail.runTable.creator'), dataIndex: 'creator', key: 'creator' },
     { title: t('processDetail.runTable.createdTime'), dataIndex: 'createdTime', key: 'createdTime' },
-    { 
-      title: t('processDetail.runTable.status'), 
-      dataIndex: 'status', 
+    {
+      title: t('processDetail.runTable.status'),
+      dataIndex: 'status',
       key: 'status',
       render: (status: string) => (
-        <Tag color={status === t('processDetail.runStatus.success') ? 'green' : status === t('processDetail.runStatus.failed') ? 'red' : 'blue'} type="light">
+        <Tag
+          color={status === t('processDetail.runStatus.success') ? 'green' : status === t('processDetail.runStatus.failed') ? 'red' : 'blue'}
+          type="light"
+        >
           {status}
         </Tag>
-      )
+      ),
     },
   ];
 
-  // 变更历史模拟数据
   const changeColumns = [
     { title: t('processDetail.changeTable.changeTime'), dataIndex: 'changeTime', key: 'changeTime' },
     { title: t('processDetail.changeTable.changeType'), dataIndex: 'changeType', key: 'changeType' },
@@ -260,29 +209,21 @@ const ProcessDetailDrawer = ({
     { title: t('processDetail.changeTable.changeContent'), dataIndex: 'changeContent', key: 'changeContent' },
   ];
 
-
   return (
     <SideSheet
       title={
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center',
-          width: '100%',
-          paddingRight: 0
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Title heading={5} style={{ margin: 0 }}>{processData.name}</Title>
-            <Text type="tertiary" size="small">{processData.id}</Text>
+        <div className="process-detail-drawer drawer-header">
+          <div className="process-detail-drawer drawer-header title-section">
+            <Title heading={5} className="process-detail-drawer drawer-header title-section title">
+              {processData.name}
+            </Title>
+            <Text type="tertiary" size="small">
+              {processData.id}
+            </Text>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+          <div className="process-detail-drawer drawer-header actions">
             <Tooltip content={t('development.actions.openProcess')}>
-              <Button 
-                icon={<IconExternalOpenStroked />} 
-                theme="borderless"
-                size="small"
-                onClick={onOpen}
-              />
+              <Button icon={<IconExternalOpenStroked />} theme="borderless" size="small" onClick={onOpen} />
             </Tooltip>
             <Tooltip content={t('common.edit')}>
               <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={onEdit} />
@@ -291,30 +232,14 @@ const ProcessDetailDrawer = ({
               <Button icon={<IconPlay />} theme="borderless" size="small" onClick={onRun} />
             </Tooltip>
             <Tooltip content={t('common.delete')}>
-              <Button 
-                icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />} 
-                theme="borderless"
-                size="small"
-                onClick={onDelete}
-              />
+              <Button icon={<IconDeleteStroked className="process-detail-drawer drawer-header actions delete-icon" />} theme="borderless" size="small" onClick={onDelete} />
             </Tooltip>
-            <Divider layout="vertical" style={{ height: 16, margin: '0 8px 0 4px' }} />
+            <Divider layout="vertical" className="process-detail-drawer drawer-header actions divider" />
             <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
-              <Button 
-                icon={isFullscreen ? <IconMinimize /> : <IconMaximize />} 
-                theme="borderless"
-                size="small"
-                onClick={toggleFullscreen}
-              />
+              <Button icon={isFullscreen ? <IconMinimize /> : <IconMaximize />} theme="borderless" size="small" onClick={toggleFullscreen} />
             </Tooltip>
             <Tooltip content={t('common.close')}>
-              <Button 
-                icon={<IconClose />} 
-                theme="borderless"
-                size="small"
-                onClick={onClose}
-                style={{ marginLeft: 4 }}
-              />
+              <Button icon={<IconClose />} theme="borderless" size="small" onClick={onClose} className="process-detail-drawer drawer-header actions close-btn" />
             </Tooltip>
           </div>
         </div>
@@ -326,51 +251,25 @@ const ProcessDetailDrawer = ({
       mask={false}
       footer={null}
       closable={false}
-      headerStyle={{ borderBottom: '1px solid var(--semi-color-border)' }}
-      bodyStyle={{ padding: 0, position: 'relative' }}
-      className={`card-sidesheet resizable-sidesheet ${isFullscreen ? 'fullscreen-sidesheet' : ''}`}
+      className={`card-sidesheet resizable-sidesheet process-detail-drawer ${isFullscreen ? 'fullscreen-sidesheet' : ''}`}
     >
-      {/* 拖拽调整宽度的把手 */}
-      {!isFullscreen && (
-        <div
-          style={{
-            position: 'absolute',
-            left: 0,
-            top: 0,
-            bottom: 0,
-            width: 6,
-            cursor: 'ew-resize',
-            zIndex: 100,
-          }}
-          onMouseDown={handleMouseDown}
-        />
-      )}
-      <Tabs 
-        activeKey={activeTab} 
-        onChange={setActiveTab}
-        style={{ height: '100%' }}
-        tabBarStyle={{ padding: '0 24px' }}
-      >
+      {!isFullscreen && <div className="process-detail-drawer resize-handle" onMouseDown={handleMouseDown} />}
+      <Tabs activeKey={activeTab} onChange={setActiveTab} className="process-detail-drawer drawer-tabs">
         <TabPane tab={t('processDetail.tabs.detail')} itemKey="detail">
-          <div style={{ padding: '16px 24px' }}>
+          <div className="process-detail-drawer drawer-tabs tab-content">
             <Descriptions data={descriptionData} />
           </div>
         </TabPane>
-        
+
         <TabPane tab={t('processDetail.tabs.versions')} itemKey="versions">
-          <div style={{ padding: '16px 24px' }}>
-            <Table 
-              columns={versionColumns} 
-              dataSource={versionData} 
-              pagination={false}
-              size="small"
-            />
+          <div className="process-detail-drawer drawer-tabs tab-content">
+            <Table columns={versionColumns} dataSource={versionData} pagination={false} size="small" />
           </div>
         </TabPane>
-        
+
         <TabPane tab={t('processDetail.tabs.runs')} itemKey="runs">
-          <div style={{ padding: '16px 24px' }}>
-            <div style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
+          <div className="process-detail-drawer drawer-tabs tab-content">
+            <div className="process-detail-drawer drawer-tabs tab-content filters">
               <Select
                 placeholder={t('processDetail.filter.statusPlaceholder')}
                 multiple
@@ -378,7 +277,7 @@ const ProcessDetailDrawer = ({
                 value={selectedRunStatuses}
                 onChange={(value) => setSelectedRunStatuses(value as string[])}
                 optionList={runStatusOptions}
-                style={{ width: 140 }}
+                className="process-detail-drawer drawer-tabs tab-content filters filter-select"
                 showClear
               />
               <DatePicker
@@ -386,29 +285,24 @@ const ProcessDetailDrawer = ({
                 value={runTimeRange as [Date, Date] | undefined}
                 onChange={(value) => setRunTimeRange(value as [Date, Date] | null)}
                 placeholder={[t('common.startTime'), t('common.endTime')]}
-                style={{ flex: 1 }}
+                className="process-detail-drawer drawer-tabs tab-content filters filter-date"
                 showClear
               />
             </div>
-            <Table 
-              columns={runColumns} 
-              dataSource={filteredRunData} 
-              pagination={false}
-              size="small"
-            />
+            <Table columns={runColumns} dataSource={filteredRunData} pagination={false} size="small" />
           </div>
         </TabPane>
-        
+
         <TabPane tab={t('processDetail.tabs.changes')} itemKey="changes">
-          <div style={{ padding: '16px 24px' }}>
-            <div style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
+          <div className="process-detail-drawer drawer-tabs tab-content">
+            <div className="process-detail-drawer drawer-tabs tab-content filters">
               <Select
                 placeholder={t('processDetail.filter.changerPlaceholder')}
                 multiple
                 value={selectedChangers}
                 onChange={(value) => setSelectedChangers(value as string[])}
                 optionList={changerOptions}
-                style={{ width: 160 }}
+                className="process-detail-drawer drawer-tabs tab-content filters filter-select wide"
                 showClear
               />
               <DatePicker
@@ -416,16 +310,11 @@ const ProcessDetailDrawer = ({
                 value={changeTimeRange as [Date, Date] | undefined}
                 onChange={(value) => setChangeTimeRange(value as [Date, Date] | null)}
                 placeholder={[t('common.startTime'), t('common.endTime')]}
-                style={{ flex: 1 }}
+                className="process-detail-drawer drawer-tabs tab-content filters filter-date"
                 showClear
               />
             </div>
-            <Table 
-              columns={changeColumns} 
-              dataSource={filteredChangeData} 
-              pagination={false}
-              size="small"
-            />
+            <Table columns={changeColumns} dataSource={filteredChangeData} pagination={false} size="small" />
           </div>
         </TabPane>
       </Tabs>
