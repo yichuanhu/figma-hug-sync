@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Avatar, Tooltip } from '@douyinfe/semi-ui';
 import { 
   IconBell, 
@@ -27,7 +28,7 @@ import {
 
 interface MenuItem {
   key: string;
-  label: string;
+  labelKey: string;
   icon?: React.ReactNode;
   children?: MenuItem[];
   badge?: number;
@@ -42,9 +43,10 @@ interface SidebarProps {
 const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [expandedKeys, setExpandedKeys] = useState<string[]>(['开发任务管理']);
+  const { t } = useTranslation();
+  const [expandedKeys, setExpandedKeys] = useState<string[]>(['developmentTaskManagement']);
   const [hoveredCenterKey, setHoveredCenterKey] = useState<string | null>(null);
-  const [floatingExpandedKeys, setFloatingExpandedKeys] = useState<string[]>(['开发任务管理']);
+  const [floatingExpandedKeys, setFloatingExpandedKeys] = useState<string[]>(['developmentTaskManagement']);
 
   // 根据当前路由获取激活的中心
   const getActiveCenterByPath = (pathname: string): string => {
@@ -54,104 +56,104 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
         pathname.startsWith('/process-detail/') ||
         pathname === '/worker-management' || 
         pathname.startsWith('/worker-management/')) {
-      return '开发中心';
+      return 'developmentCenter';
     }
     // 调度中心相关路由
     if (pathname === '/scheduling-workbench' || pathname.startsWith('/scheduling')) {
-      return '调度中心';
+      return 'schedulingCenter';
     }
     // 运营中心相关路由
     if (pathname === '/operations-workbench' || pathname.startsWith('/operations')) {
-      return '运营中心';
+      return 'operationsCenter';
     }
     // 需求中心相关路由
     if (pathname === '/requirements-workbench' || pathname.startsWith('/requirements')) {
-      return '需求中心';
+      return 'requirementsCenter';
     }
     // 运维中心相关路由
     if (pathname === '/maintenance-workbench' || pathname.startsWith('/maintenance')) {
-      return '运维中心';
+      return 'maintenanceCenter';
     }
     // 首页
     if (pathname === '/') {
-      return '首页';
+      return 'home';
     }
-    return '开发中心';
+    return 'developmentCenter';
   };
 
   const activeCenterKey = getActiveCenterByPath(location.pathname);
 
   // 中心级别菜单（左侧图标栏）
   const centerMenuItems: MenuItem[] = [
-    { key: '首页', label: '首页', icon: <HomeIcon size={20} />, path: '/' },
-    { key: '开发中心', label: '开发中心', icon: <DevelopmentIcon size={20} />, path: '/development-workbench' },
-    { key: '调度中心', label: '调度中心', icon: <SchedulingIcon size={20} />, path: '/scheduling-workbench' },
-    { key: '运营中心', label: '运营中心', icon: <BusinessIcon size={20} />, path: '/operations-workbench' },
-    { key: '需求中心', label: '需求中心', icon: <RequirementsIcon size={20} />, path: '/requirements-workbench' },
-    { key: '运维中心', label: '运维中心', icon: <OperationsIcon size={20} />, path: '/maintenance-workbench' },
+    { key: 'home', labelKey: 'sidebar.home', icon: <HomeIcon size={20} />, path: '/' },
+    { key: 'developmentCenter', labelKey: 'sidebar.developmentCenter', icon: <DevelopmentIcon size={20} />, path: '/development-workbench' },
+    { key: 'schedulingCenter', labelKey: 'sidebar.schedulingCenter', icon: <SchedulingIcon size={20} />, path: '/scheduling-workbench' },
+    { key: 'operationsCenter', labelKey: 'sidebar.operationsCenter', icon: <BusinessIcon size={20} />, path: '/operations-workbench' },
+    { key: 'requirementsCenter', labelKey: 'sidebar.requirementsCenter', icon: <RequirementsIcon size={20} />, path: '/requirements-workbench' },
+    { key: 'maintenanceCenter', labelKey: 'sidebar.maintenanceCenter', icon: <OperationsIcon size={20} />, path: '/maintenance-workbench' },
   ];
 
   // 开发中心的详细菜单结构
   const developmentCenterMenu: MenuItem[] = [
-    { key: '开发工作台', label: '开发工作台', icon: <IconGridView /> },
+    { key: 'developmentWorkbench', labelKey: 'sidebar.developmentWorkbench', icon: <IconGridView /> },
     { 
-      key: '开发任务管理', 
-      label: '开发任务管理', 
+      key: 'developmentTaskManagement', 
+      labelKey: 'sidebar.developmentTaskManagement', 
       icon: <IconFile />,
       children: [
-        { key: '自动化流程', label: '自动化流程', path: '/process-development' },
-        { key: '文档处理应用', label: '文档处理应用' },
-        { key: '智能体应用', label: '智能体应用' },
-        { key: '人机协同流程', label: '人机协同流程' },
+        { key: 'automationProcess', labelKey: 'sidebar.automationProcess', path: '/process-development' },
+        { key: 'documentProcessing', labelKey: 'sidebar.documentProcessing' },
+        { key: 'agentApplication', labelKey: 'sidebar.agentApplication' },
+        { key: 'humanMachineProcess', labelKey: 'sidebar.humanMachineProcess' },
       ]
     },
     { 
-      key: '业务资产配置', 
-      label: '业务资产配置', 
+      key: 'businessAssetConfig', 
+      labelKey: 'sidebar.businessAssetConfig', 
       icon: <IconFolder />,
       children: [
-        { key: '队列', label: '队列' },
-        { key: '凭据', label: '凭据' },
-        { key: '参数', label: '参数' },
-        { key: '文件', label: '文件' },
+        { key: 'queue', labelKey: 'sidebar.queue' },
+        { key: 'credentials', labelKey: 'sidebar.credentials' },
+        { key: 'parameters', labelKey: 'sidebar.parameters' },
+        { key: 'files', labelKey: 'sidebar.files' },
       ]
     },
     { 
-      key: '能力资产管理', 
-      label: '能力资产管理', 
+      key: 'capabilityAssetManagement', 
+      labelKey: 'sidebar.capabilityAssetManagement', 
       icon: <IconFolder />,
       children: [
-        { key: '流程资产', label: '流程资产' },
-        { key: '知识资产', label: '知识资产' },
-        { key: '连接资产', label: '连接资产' },
-        { key: '流程机器人管理', label: '流程机器人管理', path: '/worker-management' },
+        { key: 'processAssets', labelKey: 'sidebar.processAssets' },
+        { key: 'knowledgeAssets', labelKey: 'sidebar.knowledgeAssets' },
+        { key: 'connectionAssets', labelKey: 'sidebar.connectionAssets' },
+        { key: 'workerManagement', labelKey: 'sidebar.workerManagement', path: '/worker-management' },
       ]
     },
     { 
-      key: '发布管理', 
-      label: '发布管理', 
+      key: 'publishManagement', 
+      labelKey: 'sidebar.publishManagement', 
       icon: <IconSend />,
       children: [
-        { key: '发布列表', label: '发布列表' },
-        { key: '新建发布', label: '新建发布' },
-        { key: '发布历史', label: '发布历史' },
+        { key: 'publishList', labelKey: 'sidebar.publishList' },
+        { key: 'newPublish', labelKey: 'sidebar.newPublish' },
+        { key: 'publishHistory', labelKey: 'sidebar.publishHistory' },
       ]
     },
   ];
 
   const bottomMenuItems: MenuItem[] = [
-    { key: '消息中心', label: '消息中心', icon: <IconBell />, badge: 999 },
-    { key: '用户指南', label: '用户指南', icon: <IconBookStroked /> },
-    { key: '资源下载', label: '资源下载', icon: <IconCloud /> },
+    { key: 'messageCenter', labelKey: 'sidebar.messageCenter', icon: <IconBell />, badge: 999 },
+    { key: 'userGuide', labelKey: 'sidebar.userGuide', icon: <IconBookStroked /> },
+    { key: 'resourceDownload', labelKey: 'sidebar.resourceDownload', icon: <IconCloud /> },
   ];
 
   // 根据当前路由获取选中的菜单key
   const getSelectedKeyByPath = (pathname: string): string => {
     if (pathname === '/worker-management' || pathname.startsWith('/worker-management/')) {
-      return '流程机器人管理';
+      return 'workerManagement';
     }
     if (pathname === '/process-development' || pathname === '/') {
-      return '自动化流程';
+      return 'automationProcess';
     }
     return '';
   };
@@ -190,7 +192,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
 
   // 获取中心对应的详细菜单
   const getCenterMenu = (centerKey: string) => {
-    if (centerKey === '开发中心') {
+    if (centerKey === 'developmentCenter') {
       return developmentCenterMenu;
     }
     return [];
@@ -201,6 +203,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     const isActive = activeCenterKey === item.key;
     const hasSubMenu = getCenterMenu(item.key).length > 0;
     const isHovered = hoveredCenterKey === item.key;
+    const label = t(item.labelKey);
     
     const iconButton = (
       <div
@@ -239,7 +242,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
           }
         }}
       >
-        <Tooltip content={item.label} position="right">
+        <Tooltip content={label} position="right">
           {iconButton}
         </Tooltip>
 
@@ -279,7 +282,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
                 color: 'var(--semi-color-text-0)',
                 whiteSpace: 'nowrap',
               }}>
-                {item.label}
+                {label}
               </span>
               <div
                 className="sidebar-icon-btn"
@@ -297,7 +300,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
                   e.stopPropagation();
                   onToggleCollapse?.();
                 }}
-                title="展开侧边栏"
+                title={t('sidebar.expandSidebar')}
               >
                 <img src={layoutIcon} alt="expand" style={{ width: 16, height: 16 }} />
               </div>
@@ -321,6 +324,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     const hasChildren = item.children && item.children.length > 0;
     const isExpanded = floatingExpandedKeys.includes(item.key);
     const isSelected = selectedKey === item.key;
+    const label = t(item.labelKey);
 
     return (
       <div key={item.key} style={{ marginBottom: 4 }}>
@@ -367,7 +371,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
                 fontWeight: hasChildren ? 600 : (isSelected ? 600 : 400),
               }}
             >
-              {item.label}
+              {label}
             </span>
             
             {hasChildren && (
@@ -392,6 +396,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     const hasChildren = item.children && item.children.length > 0;
     const isExpanded = expandedKeys.includes(item.key);
     const isSelected = selectedKey === item.key;
+    const label = t(item.labelKey);
 
     return (
       <div 
@@ -443,7 +448,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
                 fontWeight: hasChildren ? 600 : (isSelected ? 600 : 400),
               }}
             >
-              {item.label}
+              {label}
             </span>
             
             {/* 展开箭头 */}
@@ -467,6 +472,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
 
   // 渲染底部菜单项
   const renderBottomMenuItem = (item: MenuItem) => {
+    const label = t(item.labelKey);
     const iconButton = (
       <div
         className="sidebar-icon-btn"
@@ -501,124 +507,112 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     );
 
     return (
-      <Tooltip key={item.key} content={item.label} position="right">
-        {iconButton}
-      </Tooltip>
+      <div key={item.key}>
+        <Tooltip content={label} position="right">
+          {iconButton}
+        </Tooltip>
+      </div>
     );
   };
 
   // 获取当前中心的详细菜单
-  const getCurrentCenterMenu = () => {
-    return getCenterMenu(activeCenterKey);
-  };
+  const currentCenterMenu = getCenterMenu(activeCenterKey);
+  const currentCenterLabel = centerMenuItems.find(item => item.key === activeCenterKey)?.labelKey;
 
   return (
-    <div style={{ display: 'flex', height: '100%', overflow: 'visible' }}>
-      {/* 左侧图标栏 - 包含Logo */}
-      <div 
-        style={{ 
-          width: 60, 
-          minWidth: 60,
-          display: 'flex', 
-          flexDirection: 'column', 
+    <div style={{ display: 'flex', height: '100%' }}>
+      {/* 左侧图标栏 */}
+      <div
+        style={{
+          width: 60,
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
           alignItems: 'center',
-          paddingBottom: 8,
-          overflow: 'visible',
+          paddingTop: 12,
+          paddingBottom: 12,
+          borderRight: collapsed ? 'none' : '1px solid var(--semi-color-border)',
+          flexShrink: 0,
         }}
       >
-        {/* Logo区域 */}
-        <div style={{
-          height: 56,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexShrink: 0,
-        }}>
+        {/* Logo */}
+        <div
+          style={{
+            width: 40,
+            height: 40,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: 12,
+          }}
+        >
           <img 
             src={laiyeLogo} 
             alt="Laiye" 
-            style={{ height: 16, width: 'auto' }}
+            style={{ 
+              width: 28, 
+              height: 28, 
+              objectFit: 'contain' 
+            }} 
           />
         </div>
-        {/* 中心图标 */}
-        <div style={{ flex: 1, overflow: 'visible' }}>
-          {centerMenuItems.map(item => renderIconMenuItem(item))}
+
+        {/* 主菜单图标 */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+          {centerMenuItems.map(renderIconMenuItem)}
         </div>
-        
-        {/* 底部图标 */}
-        <div>
-          {bottomMenuItems.map(item => renderBottomMenuItem(item))}
+
+        {/* 底部菜单图标 */}
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          {bottomMenuItems.map(renderBottomMenuItem)}
+          
           {/* 用户头像 */}
-          <Tooltip content="个人中心" position="right">
-            <div
-              className="sidebar-icon-btn"
-              style={{
-                width: 40,
-                height: 40,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                borderRadius: 8,
-                marginTop: 4,
-              }}
-            >
+          <div style={{ marginTop: 8 }}>
+            <Tooltip content="admin" position="right">
               <Avatar 
                 size="small" 
                 style={{ 
-                  backgroundColor: '#FFE600',
-                  color: 'var(--semi-color-text-0)',
+                  backgroundColor: '#1890FF',
+                  cursor: 'pointer',
                 }}
               >
-                L
+                A
               </Avatar>
-            </div>
-          </Tooltip>
+            </Tooltip>
+          </div>
         </div>
       </div>
 
-      {/* 右侧详细菜单 - 仅在未收起时显示 */}
-      {!collapsed && (
-        <div style={{ 
-          minWidth: 180,
-          maxWidth: 280,
-          width: 'fit-content',
-          display: 'flex', 
-          flexDirection: 'column', 
-          overflow: 'hidden',
-          backgroundColor: 'var(--semi-color-bg-0)',
-          borderRadius: 8,
-          margin: '8px 0 8px 8px',
-          boxShadow: '0 0 1px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.04)',
-        }}>
-          {/* 菜单标题栏 */}
-          <div style={{
+      {/* 右侧详细菜单 - 仅在展开时显示 */}
+      {!collapsed && currentCenterMenu.length > 0 && (
+        <div
+          style={{
+            width: 200,
+            height: '100%',
             display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '12px 8px 12px 16px',
-            flexShrink: 0,
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div style={{ 
-                width: 18, 
-                height: 18,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'var(--semi-color-text-2)',
-              }}>
-                {centerMenuItems.find(c => c.key === activeCenterKey)?.icon}
-              </div>
-              <span style={{
+            flexDirection: 'column',
+            backgroundColor: 'var(--semi-color-bg-0)',
+          }}
+        >
+          {/* 中心标题 */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '16px 12px 16px 16px',
+              borderBottom: '1px solid var(--semi-color-border)',
+            }}
+          >
+            <span
+              style={{
                 fontSize: 14,
                 fontWeight: 600,
                 color: 'var(--semi-color-text-0)',
-                whiteSpace: 'nowrap',
-              }}>
-                {activeCenterKey}
-              </span>
-            </div>
+              }}
+            >
+              {currentCenterLabel ? t(currentCenterLabel) : ''}
+            </span>
             <div
               className="sidebar-icon-btn"
               style={{
@@ -629,18 +623,24 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
                 justifyContent: 'center',
                 cursor: 'pointer',
                 borderRadius: 6,
-                flexShrink: 0,
+                color: 'var(--semi-color-text-2)',
               }}
               onClick={onToggleCollapse}
-              title="收起侧边栏"
+              title={t('sidebar.expandSidebar')}
             >
-              <img src={layoutIcon} alt="collapse" style={{ width: 18, height: 18 }} />
+              <img src={layoutIcon} alt="collapse" style={{ width: 16, height: 16 }} />
             </div>
           </div>
-          
+
           {/* 菜单列表 */}
-          <div style={{ flex: 1, overflowY: 'auto', paddingBottom: 8 }}>
-            {getCurrentCenterMenu().map(item => renderDetailMenuItem(item))}
+          <div
+            style={{
+              flex: 1,
+              overflowY: 'auto',
+              padding: '8px 0',
+            }}
+          >
+            {currentCenterMenu.map(item => renderDetailMenuItem(item))}
           </div>
         </div>
       )}

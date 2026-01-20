@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Modal, Typography, Button, Toast } from '@douyinfe/semi-ui';
 import { IconCopy } from '@douyinfe/semi-icons';
 
@@ -17,6 +18,7 @@ interface WorkerKeyModalProps {
 }
 
 const WorkerKeyModal = ({ visible, onClose, workerData }: WorkerKeyModalProps) => {
+  const { t } = useTranslation();
   const [copying, setCopying] = useState(false);
 
   if (!workerData) return null;
@@ -25,9 +27,9 @@ const WorkerKeyModal = ({ visible, onClose, workerData }: WorkerKeyModalProps) =
     try {
       setCopying(true);
       await navigator.clipboard.writeText(workerData.deviceToken);
-      Toast.success('密钥已复制到剪贴板');
+      Toast.success(t('worker.keyModal.copySuccess'));
     } catch (err) {
-      Toast.error('复制失败，请手动复制');
+      Toast.error(t('worker.keyModal.copyError'));
     } finally {
       setCopying(false);
     }
@@ -35,7 +37,7 @@ const WorkerKeyModal = ({ visible, onClose, workerData }: WorkerKeyModalProps) =
 
   return (
     <Modal
-      title={`流程机器人密钥 - ${workerData.name}`}
+      title={t('worker.keyModal.title', { name: workerData.name })}
       visible={visible}
       onCancel={onClose}
       footer={null}
@@ -44,7 +46,7 @@ const WorkerKeyModal = ({ visible, onClose, workerData }: WorkerKeyModalProps) =
     >
       <div style={{ padding: '16px 0' }}>
         <Text type="secondary" style={{ display: 'block', marginBottom: 12 }}>
-          请妥善保管此密钥，用于机器人客户端连接平台时的身份验证。
+          {t('worker.keyModal.description')}
         </Text>
         
         <div style={{ 
@@ -69,7 +71,7 @@ const WorkerKeyModal = ({ visible, onClose, workerData }: WorkerKeyModalProps) =
             onClick={handleCopy}
             loading={copying}
           >
-            复制
+            {t('common.copy')}
           </Button>
         </div>
       </div>

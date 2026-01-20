@@ -24,7 +24,43 @@
     "actions": "操作",
     "showingRecords": "显示第 {{start}} 条-第 {{end}} 条，共 {{total}} 条",
     "startTime": "开始时间",
-    "endTime": "结束时间"
+    "endTime": "结束时间",
+    "yes": "是",
+    "no": "否",
+    "copy": "复制",
+    "description": "描述"
+  },
+  "sidebar": {
+    "home": "首页",
+    "developmentCenter": "开发中心",
+    "schedulingCenter": "调度中心",
+    "operationsCenter": "运营中心",
+    "requirementsCenter": "需求中心",
+    "maintenanceCenter": "运维中心",
+    "developmentWorkbench": "开发工作台",
+    "developmentTaskManagement": "开发任务管理",
+    "automationProcess": "自动化流程",
+    "documentProcessing": "文档处理应用",
+    "agentApplication": "智能体应用",
+    "humanMachineProcess": "人机协同流程",
+    "businessAssetConfig": "业务资产配置",
+    "queue": "队列",
+    "credentials": "凭据",
+    "parameters": "参数",
+    "files": "文件",
+    "capabilityAssetManagement": "能力资产管理",
+    "processAssets": "流程资产",
+    "knowledgeAssets": "知识资产",
+    "connectionAssets": "连接资产",
+    "workerManagement": "流程机器人管理",
+    "publishManagement": "发布管理",
+    "publishList": "发布列表",
+    "newPublish": "新建发布",
+    "publishHistory": "发布历史",
+    "messageCenter": "消息中心",
+    "userGuide": "用户指南",
+    "resourceDownload": "资源下载",
+    "expandSidebar": "展开侧边栏"
   },
   "development": {
     "breadcrumb": {
@@ -152,6 +188,12 @@
     "success": "流程更新成功！",
     "error": "更新失败，请重试"
   },
+  "openProcess": {
+    "title": "打开流程",
+    "dontRemindAgain": "以后不再提醒",
+    "confirmMessage": "即将唤起客户端在本地打开流程「{{name}}」，是否继续？",
+    "clientError": "无法唤起客户端，请确认已安装客户端程序"
+  },
   "worker": {
     "breadcrumb": {
       "developmentCenter": "开发中心",
@@ -204,17 +246,118 @@
       "defaultDescription": "还没有创建任何机器人，点击「新建流程机器人」开始"
     },
     "keyModal": {
-      "title": "设备密钥",
+      "title": "流程机器人密钥 - {{name}}",
       "workerName": "机器人名称",
       "deviceToken": "设备Token",
       "copy": "复制",
-      "copySuccess": "设备密钥已复制到剪贴板",
-      "copyError": "复制失败，请手动复制"
+      "copySuccess": "密钥已复制到剪贴板",
+      "copyError": "复制失败，请手动复制",
+      "description": "请妥善保管此密钥，用于机器人客户端连接平台时的身份验证。"
     },
     "deleteModal": {
-      "title": "删除机器人",
-      "confirmMessage": "确定要删除机器人「{{name}}」吗？此操作不可恢复。",
-      "hasPendingTasks": "该机器人当前正在执行任务，无法删除。请等待任务完成后再试。"
+      "title": "删除确认",
+      "confirmMessage": "确定要删除流程机器人「{{name}}」吗？",
+      "deleteWarning": "删除后将无法恢复，该机器人将不再参与任务调度。如果该设备没有其他机器人关联，设备也将被一并删除。",
+      "hasPendingTasks": "当前流程机器人有未完成任务，请等待任务完成或取消相关任务后再执行删除操作。",
+      "cannotDelete": "无法删除流程机器人",
+      "confirmDelete": "确认删除"
+    },
+    "detail": {
+      "title": "流程机器人详情",
+      "tabs": {
+        "info": "流程机器人信息",
+        "history": "变更历史"
+      },
+      "basicInfo": "基本信息",
+      "detailInfo": "详细信息",
+      "hostInfo": "主机信息",
+      "fields": {
+        "workerName": "流程机器人名称",
+        "group": "所属分组",
+        "description": "描述",
+        "status": "状态",
+        "priority": "任务调度优先级",
+        "receiveTasks": "是否接收任务",
+        "desktopType": "桌面类型",
+        "account": "帐户",
+        "passwordSyncStatus": "密码同步状态",
+        "forceLogin": "强制挤占登录",
+        "resolution": "分辨率",
+        "clientVersion": "客户端版本",
+        "lastHeartbeat": "最近连接时间",
+        "machineCode": "机器码",
+        "hostName": "主机名称",
+        "hostIp": "主机IP",
+        "os": "操作系统",
+        "arch": "系统架构",
+        "cpuModel": "CPU型号",
+        "cpuCores": "CPU核心数",
+        "memoryCapacity": "内存容量",
+        "robotCount": "流程机器人数量",
+        "createdAt": "创建时间",
+        "creator": "创建者"
+      },
+      "desktopTypes": {
+        "console": "本地桌面型",
+        "notConsole": "远程桌面型"
+      },
+      "syncStatusText": {
+        "synced": "✓ 已同步",
+        "pending": "⚠️ 待同步"
+      },
+      "changeHistory": {
+        "time": "时间",
+        "type": "操作类型",
+        "operator": "操作人",
+        "detail": "详细信息"
+      }
+    },
+    "create": {
+      "title": "新建流程机器人",
+      "description": "配置流程机器人的基本信息和运行环境参数",
+      "basicInfo": "基本信息",
+      "runtimeConfig": "运行环境配置",
+      "connectionParams": "连接参数",
+      "fields": {
+        "workerName": "流程机器人名称",
+        "workerNamePlaceholder": "请输入流程机器人名称",
+        "description": "描述",
+        "descriptionPlaceholder": "请输入描述（选填）",
+        "priority": "任务调度优先级",
+        "useSameDevice": "和已有流程机器人运行在同一机器上",
+        "selectWorker": "请选择流程机器人",
+        "desktopType": "桌面类型",
+        "localDesktop": "本地桌面型",
+        "remoteDesktop": "远程桌面型",
+        "account": "帐户",
+        "accountPlaceholder": "请输入帐户，如 DOMAIN\\robot01",
+        "password": "密码",
+        "passwordPlaceholder": "请输入密码（选填）",
+        "unlockScreen": "新建流程机器人时解锁屏幕",
+        "resolution": "分辨率",
+        "resolutionPlaceholder": "如 1920x1080",
+        "forceLogin": "帐户已登录时强制重新挤占登录"
+      },
+      "validation": {
+        "nameRequired": "流程机器人名称不能为空",
+        "accountRequired": "帐户不能为空",
+        "requiredEmpty": "必填字段不能为空"
+      },
+      "success": "创建成功",
+      "cancelConfirm": {
+        "title": "确认取消",
+        "content": "确认取消新建机器人吗？已填写的信息将丢失。"
+      }
+    },
+    "edit": {
+      "title": "编辑流程机器人",
+      "description": "修改流程机器人的配置信息",
+      "fields": {
+        "receiveTasks": "是否接收任务",
+        "passwordPlaceholder": "留空则不修改",
+        "unlockScreen": "解锁屏幕"
+      },
+      "success": "保存成功"
     }
   }
 }

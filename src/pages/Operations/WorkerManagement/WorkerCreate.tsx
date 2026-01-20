@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { 
   Breadcrumb, 
   Typography, 
@@ -27,6 +28,7 @@ const existingWorkers = [
 
 const WorkerCreate = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState<string>('MEDIUM');
@@ -42,11 +44,11 @@ const WorkerCreate = () => {
 
   const handleSubmit = async () => {
     if (!name.trim()) {
-      Toast.error('流程机器人名称不能为空');
+      Toast.error(t('worker.create.validation.nameRequired'));
       return;
     }
     if (!username.trim()) {
-      Toast.error('帐户不能为空');
+      Toast.error(t('worker.create.validation.accountRequired'));
       return;
     }
 
@@ -54,15 +56,15 @@ const WorkerCreate = () => {
     await new Promise(resolve => setTimeout(resolve, 1000));
     setSubmitting(false);
     
-    Toast.success('创建成功');
+    Toast.success(t('worker.create.success'));
     navigate('/worker-management');
   };
 
   const handleCancel = () => {
     if (name || description || username) {
       Modal.confirm({
-        title: '确认取消',
-        content: '确认取消新建机器人吗？已填写的信息将丢失。',
+        title: t('worker.create.cancelConfirm.title'),
+        content: t('worker.create.cancelConfirm.content'),
         onOk: () => navigate('/worker-management'),
       });
     } else {
@@ -74,102 +76,102 @@ const WorkerCreate = () => {
     <AppLayout>
       <div style={{ padding: '20px 24px', minHeight: '100%' }}>
         <Breadcrumb style={{ marginBottom: 16 }}>
-          <Breadcrumb.Item onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>首页</Breadcrumb.Item>
-          <Breadcrumb.Item>开发中心</Breadcrumb.Item>
-          <Breadcrumb.Item onClick={() => navigate('/worker-management')} style={{ cursor: 'pointer' }}>流程机器人管理</Breadcrumb.Item>
-          <Breadcrumb.Item>新建流程机器人</Breadcrumb.Item>
+          <Breadcrumb.Item onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>{t('common.home')}</Breadcrumb.Item>
+          <Breadcrumb.Item>{t('worker.breadcrumb.developmentCenter')}</Breadcrumb.Item>
+          <Breadcrumb.Item onClick={() => navigate('/worker-management')} style={{ cursor: 'pointer' }}>{t('worker.breadcrumb.workerManagement')}</Breadcrumb.Item>
+          <Breadcrumb.Item>{t('worker.create.title')}</Breadcrumb.Item>
         </Breadcrumb>
 
         <div style={{ marginBottom: 24 }}>
-          <Title heading={3} style={{ marginBottom: 8 }}>新建流程机器人</Title>
-          <Text type="tertiary">配置流程机器人的基本信息和运行环境参数</Text>
+          <Title heading={3} style={{ marginBottom: 8 }}>{t('worker.create.title')}</Title>
+          <Text type="tertiary">{t('worker.create.description')}</Text>
         </div>
 
         <div style={{ maxWidth: 720 }}>
-          <Card title="基本信息" style={{ marginBottom: 24 }}>
+          <Card title={t('worker.create.basicInfo')} style={{ marginBottom: 24 }}>
             <div style={{ padding: '0 16px' }}>
               <div style={{ marginBottom: 16 }}>
-                <Text strong style={{ display: 'block', marginBottom: 8 }}>流程机器人名称 *</Text>
-                <Input placeholder="请输入流程机器人名称" value={name} onChange={setName} showClear />
+                <Text strong style={{ display: 'block', marginBottom: 8 }}>{t('worker.create.fields.workerName')} *</Text>
+                <Input placeholder={t('worker.create.fields.workerNamePlaceholder')} value={name} onChange={setName} showClear />
               </div>
               <div style={{ marginBottom: 16 }}>
-                <Text strong style={{ display: 'block', marginBottom: 8 }}>描述</Text>
-                <TextArea placeholder="请输入描述（选填）" value={description} onChange={setDescription} rows={3} maxCount={500} />
+                <Text strong style={{ display: 'block', marginBottom: 8 }}>{t('common.description')}</Text>
+                <TextArea placeholder={t('worker.create.fields.descriptionPlaceholder')} value={description} onChange={setDescription} rows={3} maxCount={500} />
               </div>
               <div style={{ marginBottom: 16 }}>
-                <Text strong style={{ display: 'block', marginBottom: 8 }}>任务调度优先级</Text>
+                <Text strong style={{ display: 'block', marginBottom: 8 }}>{t('worker.create.fields.priority')}</Text>
                 <Select value={priority} onChange={(v) => setPriority(v as string)} style={{ width: '100%' }}>
-                  <Select.Option value="HIGH">🔥 高</Select.Option>
-                  <Select.Option value="MEDIUM">● 中</Select.Option>
-                  <Select.Option value="LOW">○ 低</Select.Option>
+                  <Select.Option value="HIGH">🔥 {t('worker.priority.high')}</Select.Option>
+                  <Select.Option value="MEDIUM">● {t('worker.priority.medium')}</Select.Option>
+                  <Select.Option value="LOW">○ {t('worker.priority.low')}</Select.Option>
                 </Select>
               </div>
             </div>
           </Card>
 
-          <Card title="运行环境配置" style={{ marginBottom: 24 }}>
+          <Card title={t('worker.create.runtimeConfig')} style={{ marginBottom: 24 }}>
             <div style={{ padding: '0 16px' }}>
               <div style={{ marginBottom: 16 }}>
                 <Checkbox checked={useSameDevice} onChange={(e) => setUseSameDevice(e.target.checked)}>
-                  和已有流程机器人运行在同一机器上
+                  {t('worker.create.fields.useSameDevice')}
                 </Checkbox>
               </div>
               {useSameDevice && (
                 <div style={{ marginBottom: 16 }}>
-                  <Text strong style={{ display: 'block', marginBottom: 8 }}>请选择流程机器人</Text>
-                  <Select value={existingWorkerId} onChange={(v) => setExistingWorkerId(v as string)} style={{ width: '100%' }} placeholder="请选择">
+                  <Text strong style={{ display: 'block', marginBottom: 8 }}>{t('worker.create.fields.selectWorker')}</Text>
+                  <Select value={existingWorkerId} onChange={(v) => setExistingWorkerId(v as string)} style={{ width: '100%' }} placeholder={t('createProcess.fields.relatedRequirementPlaceholder')}>
                     {existingWorkers.map(w => <Select.Option key={w.id} value={w.id}>{w.name}</Select.Option>)}
                   </Select>
                 </div>
               )}
               <div style={{ marginBottom: 16 }}>
-                <Text strong style={{ display: 'block', marginBottom: 8 }}>桌面类型 *</Text>
+                <Text strong style={{ display: 'block', marginBottom: 8 }}>{t('worker.create.fields.desktopType')} *</Text>
                 <RadioGroup value={desktopType} onChange={(e) => setDesktopType(e.target.value)}>
-                  <Radio value="Console">本地桌面型</Radio>
-                  <Radio value="NotConsole">远程桌面型</Radio>
+                  <Radio value="Console">{t('worker.create.fields.localDesktop')}</Radio>
+                  <Radio value="NotConsole">{t('worker.create.fields.remoteDesktop')}</Radio>
                 </RadioGroup>
               </div>
             </div>
           </Card>
 
-          <Card title="连接参数" style={{ marginBottom: 24 }}>
+          <Card title={t('worker.create.connectionParams')} style={{ marginBottom: 24 }}>
             <div style={{ padding: '0 16px' }}>
               <div style={{ marginBottom: 16 }}>
-                <Text strong style={{ display: 'block', marginBottom: 8 }}>帐户 *</Text>
-                <Input placeholder="请输入帐户，如 DOMAIN\robot01" value={username} onChange={setUsername} showClear />
+                <Text strong style={{ display: 'block', marginBottom: 8 }}>{t('worker.create.fields.account')} *</Text>
+                <Input placeholder={t('worker.create.fields.accountPlaceholder')} value={username} onChange={setUsername} showClear />
               </div>
               <div style={{ marginBottom: 16 }}>
-                <Text strong style={{ display: 'block', marginBottom: 8 }}>密码</Text>
-                <Input mode="password" placeholder="请输入密码（选填）" value={password} onChange={setPassword} />
+                <Text strong style={{ display: 'block', marginBottom: 8 }}>{t('worker.create.fields.password')}</Text>
+                <Input mode="password" placeholder={t('worker.create.fields.passwordPlaceholder')} value={password} onChange={setPassword} />
               </div>
               {desktopType === 'Console' && (
                 <div style={{ marginBottom: 16 }}>
-                  <Text strong style={{ display: 'block', marginBottom: 8 }}>新建流程机器人时解锁屏幕</Text>
+                  <Text strong style={{ display: 'block', marginBottom: 8 }}>{t('worker.create.fields.unlockScreen')}</Text>
                   <RadioGroup value={enableAutoUnlock} onChange={(e) => setEnableAutoUnlock(e.target.value)}>
-                    <Radio value={true}>是</Radio>
-                    <Radio value={false}>否</Radio>
+                    <Radio value={true}>{t('common.yes')}</Radio>
+                    <Radio value={false}>{t('common.no')}</Radio>
                   </RadioGroup>
                 </div>
               )}
               {desktopType === 'NotConsole' && (
                 <div style={{ marginBottom: 16 }}>
-                  <Text strong style={{ display: 'block', marginBottom: 8 }}>分辨率</Text>
-                  <Input placeholder="如 1920x1080" value={displaySize} onChange={setDisplaySize} showClear />
+                  <Text strong style={{ display: 'block', marginBottom: 8 }}>{t('worker.create.fields.resolution')}</Text>
+                  <Input placeholder={t('worker.create.fields.resolutionPlaceholder')} value={displaySize} onChange={setDisplaySize} showClear />
                 </div>
               )}
               <div style={{ marginBottom: 16 }}>
-                <Text strong style={{ display: 'block', marginBottom: 8 }}>帐户已登录时强制重新挤占登录</Text>
+                <Text strong style={{ display: 'block', marginBottom: 8 }}>{t('worker.create.fields.forceLogin')}</Text>
                 <RadioGroup value={forceLogin} onChange={(e) => setForceLogin(e.target.value)}>
-                  <Radio value={true}>是</Radio>
-                  <Radio value={false}>否</Radio>
+                  <Radio value={true}>{t('common.yes')}</Radio>
+                  <Radio value={false}>{t('common.no')}</Radio>
                 </RadioGroup>
               </div>
             </div>
           </Card>
 
           <div style={{ display: 'flex', gap: 12, paddingBottom: 24 }}>
-            <Button onClick={handleCancel}>取消</Button>
-            <Button theme="solid" type="primary" onClick={handleSubmit} loading={submitting}>保存</Button>
+            <Button onClick={handleCancel}>{t('common.cancel')}</Button>
+            <Button theme="solid" type="primary" onClick={handleSubmit} loading={submitting}>{t('common.save')}</Button>
           </div>
         </div>
       </div>
