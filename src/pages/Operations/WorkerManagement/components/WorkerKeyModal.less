@@ -1,27 +1,27 @@
 // WorkerKeyModal 密钥弹窗样式
 .worker-key-modal {
-  &-content {
+  .modal-content {
     padding: 16px 0;
+
+    .description {
+      display: block;
+      margin-bottom: 12px;
+    }
+
+    .token-display {
+      background-color: var(--semi-color-fill-0);
+      border: 1px solid var(--semi-color-border);
+      border-radius: 6px;
+      padding: 16px;
+      margin-bottom: 16px;
+      word-break: break-all;
+      font-family: monospace;
+      font-size: 13px;
+      line-height: 1.6;
+    }
   }
 
-  &-description {
-    display: block;
-    margin-bottom: 12px;
-  }
-
-  &-token {
-    background-color: var(--semi-color-fill-0);
-    border: 1px solid var(--semi-color-border);
-    border-radius: 6px;
-    padding: 16px;
-    margin-bottom: 16px;
-    word-break: break-all;
-    font-family: monospace;
-    font-size: 13px;
-    line-height: 1.6;
-  }
-
-  &-footer {
+  .modal-footer {
     display: flex;
     justify-content: center;
   }
