@@ -28,7 +28,7 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
       return true;
     }
     if (value && existingProcessNames.includes(value.trim())) {
-      callback(t('createProcess.validation.nameExists'));
+      callback(t('development.processDevelopment.createModal.validation.nameExists'));
       return false;
     }
     callback();
@@ -45,18 +45,18 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
         name: values.name as string,
         description: values.description as string,
       };
-      Toast.success(t('editProcess.success'));
+      Toast.success(t('development.processDevelopment.editModal.success'));
       onSuccess?.(updatedData);
       onCancel();
     } catch {
-      Toast.error(t('editProcess.error'));
+      Toast.error(t('development.processDevelopment.editModal.error'));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Modal title={t('editProcess.title')} visible={visible} onCancel={onCancel} footer={null} width={520} closeOnEsc maskClosable={false}>
+    <Modal title={t('development.processDevelopment.editModal.title')} visible={visible} onCancel={onCancel} footer={null} width={520} closeOnEsc maskClosable={false}>
       <Form
         onSubmit={handleSubmit}
         labelPosition="top"
@@ -69,24 +69,24 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
       >
         <Form.Input
           field="name"
-          label={t('createProcess.fields.name')}
-          placeholder={t('createProcess.fields.namePlaceholder')}
+          label={t('development.processDevelopment.fields.processName')}
+          placeholder={t('development.processDevelopment.createModal.fields.namePlaceholder')}
           rules={[
-            { required: true, message: t('createProcess.validation.nameRequired') },
-            { min: 1, message: t('createProcess.validation.nameLengthError') },
-            { max: 100, message: t('createProcess.validation.nameLengthError') },
+            { required: true, message: t('development.processDevelopment.createModal.validation.nameRequired') },
+            { min: 1, message: t('development.processDevelopment.createModal.validation.nameLengthError') },
+            { max: 100, message: t('development.processDevelopment.createModal.validation.nameLengthError') },
             { validator: validateProcessNameUnique },
           ]}
         />
 
         <Form.TextArea
           field="description"
-          label={t('createProcess.fields.description')}
-          placeholder={t('createProcess.fields.descriptionPlaceholder')}
+          label={t('common.description')}
+          placeholder={t('development.processDevelopment.createModal.fields.descriptionPlaceholder')}
           autosize={{ minRows: 3, maxRows: 6 }}
           maxCount={500}
           rules={[
-            { max: 500, message: t('createProcess.validation.descriptionLengthError') },
+            { max: 500, message: t('development.processDevelopment.createModal.validation.descriptionLengthError') },
           ]}
         />
 
