@@ -67,9 +67,9 @@ const ProcessDetailDrawer = ({ visible, onClose, processData, onOpen, onEdit, on
   const startWidth = useRef(drawerWidth);
 
   const runStatusOptions = [
-    { value: t('processDetail.runStatus.success'), label: t('processDetail.runStatus.success') },
-    { value: t('processDetail.runStatus.failed'), label: t('processDetail.runStatus.failed') },
-    { value: t('processDetail.runStatus.running'), label: t('processDetail.runStatus.running') },
+    { value: t('development.processDevelopment.detail.runStatus.success'), label: t('development.processDevelopment.detail.runStatus.success') },
+    { value: t('development.processDevelopment.detail.runStatus.failed'), label: t('development.processDevelopment.detail.runStatus.failed') },
+    { value: t('development.processDevelopment.detail.runStatus.running'), label: t('development.processDevelopment.detail.runStatus.running') },
   ];
 
   const handleMouseDown = useCallback(
@@ -148,18 +148,18 @@ const ProcessDetailDrawer = ({ visible, onClose, processData, onOpen, onEdit, on
   const getStatusI18nKey = (status: ProcessStatus): string => {
     switch (status) {
       case 'PUBLISHED':
-        return 'development.status.published';
+        return 'development.processDevelopment.status.published';
       case 'ARCHIVED':
-        return 'development.status.archived';
+        return 'development.processDevelopment.status.archived';
       case 'DEVELOPING':
       default:
-        return 'development.status.developing';
+        return 'development.processDevelopment.status.developing';
     }
   };
 
   const descriptionData = [
-    { key: t('processDetail.fields.processId'), value: processData.id },
-    { key: t('processDetail.fields.processName'), value: processData.name },
+    { key: t('development.processDevelopment.fields.processId'), value: processData.id },
+    { key: t('development.processDevelopment.fields.processName'), value: processData.name },
     { key: t('common.description'), value: processData.description || '-' },
     { key: t('common.creator'), value: processData.creatorName },
     { key: t('common.createTime'), value: processData.createTime },
@@ -175,10 +175,10 @@ const ProcessDetailDrawer = ({ visible, onClose, processData, onOpen, onEdit, on
   ];
 
   const versionColumns = [
-    { title: t('processDetail.versionTable.version'), dataIndex: 'version', key: 'version' },
-    { title: t('processDetail.versionTable.publishedAt'), dataIndex: 'publishedAt', key: 'publishedAt' },
-    { title: t('processDetail.versionTable.publisher'), dataIndex: 'publisher', key: 'publisher' },
-    { title: t('processDetail.versionTable.remark'), dataIndex: 'remark', key: 'remark' },
+    { title: t('development.processDevelopment.detail.versionTable.version'), dataIndex: 'version', key: 'version' },
+    { title: t('development.processDevelopment.detail.versionTable.publishedAt'), dataIndex: 'publishedAt', key: 'publishedAt' },
+    { title: t('development.processDevelopment.detail.versionTable.publisher'), dataIndex: 'publisher', key: 'publisher' },
+    { title: t('development.processDevelopment.detail.versionTable.remark'), dataIndex: 'remark', key: 'remark' },
   ];
 
   const versionData = [
@@ -188,17 +188,17 @@ const ProcessDetailDrawer = ({ visible, onClose, processData, onOpen, onEdit, on
   ];
 
   const runColumns = [
-    { title: t('processDetail.runTable.taskId'), dataIndex: 'taskId', key: 'taskId' },
-    { title: t('processDetail.runTable.robot'), dataIndex: 'robot', key: 'robot' },
-    { title: t('processDetail.runTable.creator'), dataIndex: 'creator', key: 'creator' },
-    { title: t('processDetail.runTable.createdTime'), dataIndex: 'createdTime', key: 'createdTime' },
+    { title: t('development.processDevelopment.detail.runTable.taskId'), dataIndex: 'taskId', key: 'taskId' },
+    { title: t('development.processDevelopment.detail.runTable.robot'), dataIndex: 'robot', key: 'robot' },
+    { title: t('common.creator'), dataIndex: 'creator', key: 'creator' },
+    { title: t('common.createTime'), dataIndex: 'createdTime', key: 'createdTime' },
     {
-      title: t('processDetail.runTable.status'),
+      title: t('development.processDevelopment.detail.runTable.taskStatus'),
       dataIndex: 'status',
       key: 'status',
       render: (status: string) => (
         <Tag
-          color={status === t('processDetail.runStatus.success') ? 'green' : status === t('processDetail.runStatus.failed') ? 'red' : 'blue'}
+          color={status === t('development.processDevelopment.detail.runStatus.success') ? 'green' : status === t('development.processDevelopment.detail.runStatus.failed') ? 'red' : 'blue'}
           type="light"
         >
           {status}
@@ -208,10 +208,10 @@ const ProcessDetailDrawer = ({ visible, onClose, processData, onOpen, onEdit, on
   ];
 
   const changeColumns = [
-    { title: t('processDetail.changeTable.changeTime'), dataIndex: 'changeTime', key: 'changeTime' },
-    { title: t('processDetail.changeTable.changeType'), dataIndex: 'changeType', key: 'changeType' },
-    { title: t('processDetail.changeTable.changer'), dataIndex: 'changer', key: 'changer' },
-    { title: t('processDetail.changeTable.changeContent'), dataIndex: 'changeContent', key: 'changeContent' },
+    { title: t('development.processDevelopment.detail.changeTable.changeTime'), dataIndex: 'changeTime', key: 'changeTime' },
+    { title: t('development.processDevelopment.detail.changeTable.changeType'), dataIndex: 'changeType', key: 'changeType' },
+    { title: t('development.processDevelopment.detail.changeTable.changer'), dataIndex: 'changer', key: 'changer' },
+    { title: t('development.processDevelopment.detail.changeTable.changeContent'), dataIndex: 'changeContent', key: 'changeContent' },
   ];
 
   return (
@@ -227,7 +227,7 @@ const ProcessDetailDrawer = ({ visible, onClose, processData, onOpen, onEdit, on
             </Text>
           </div>
           <div className="process-detail-drawer-header-actions">
-            <Tooltip content={t('development.actions.openProcess')}>
+            <Tooltip content={t('development.processDevelopment.actions.openProcess')}>
               <Button icon={<IconExternalOpenStroked />} theme="borderless" size="small" onClick={onOpen} />
             </Tooltip>
             <Tooltip content={t('common.edit')}>
@@ -260,23 +260,23 @@ const ProcessDetailDrawer = ({ visible, onClose, processData, onOpen, onEdit, on
     >
       {!isFullscreen && <div className="process-detail-drawer-resize-handle" onMouseDown={handleMouseDown} />}
       <Tabs activeKey={activeTab} onChange={setActiveTab} className="process-detail-drawer-tabs">
-        <TabPane tab={t('processDetail.tabs.detail')} itemKey="detail">
+        <TabPane tab={t('development.processDevelopment.detail.tabs.detail')} itemKey="detail">
           <div className="process-detail-drawer-tab-content">
             <Descriptions data={descriptionData} />
           </div>
         </TabPane>
 
-        <TabPane tab={t('processDetail.tabs.versions')} itemKey="versions">
+        <TabPane tab={t('development.processDevelopment.detail.tabs.versions')} itemKey="versions">
           <div className="process-detail-drawer-tab-content">
             <Table columns={versionColumns} dataSource={versionData} pagination={false} size="small" />
           </div>
         </TabPane>
 
-        <TabPane tab={t('processDetail.tabs.runs')} itemKey="runs">
+        <TabPane tab={t('development.processDevelopment.detail.tabs.runs')} itemKey="runs">
           <div className="process-detail-drawer-tab-content">
             <div className="process-detail-drawer-filters">
               <Select
-                placeholder={t('processDetail.filter.statusPlaceholder')}
+                placeholder={t('development.processDevelopment.detail.filter.statusPlaceholder')}
                 multiple
                 maxTagCount={1}
                 value={selectedRunStatuses}
@@ -298,11 +298,11 @@ const ProcessDetailDrawer = ({ visible, onClose, processData, onOpen, onEdit, on
           </div>
         </TabPane>
 
-        <TabPane tab={t('processDetail.tabs.changes')} itemKey="changes">
+        <TabPane tab={t('development.processDevelopment.detail.tabs.changes')} itemKey="changes">
           <div className="process-detail-drawer-tab-content">
             <div className="process-detail-drawer-filters">
               <Select
-                placeholder={t('processDetail.filter.changerPlaceholder')}
+                placeholder={t('development.processDevelopment.detail.filter.changerPlaceholder')}
                 multiple
                 value={selectedChangers}
                 onChange={(value) => setSelectedChangers(value as string[])}

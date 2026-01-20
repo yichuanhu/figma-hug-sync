@@ -63,9 +63,9 @@ interface PaginationInfo {
 
 // 状态配置 - 使用 Semi UI 支持的 TagColor 类型
 const statusConfig: Record<ProcessStatus, { color: 'grey' | 'green' | 'orange'; i18nKey: string }> = {
-  DEVELOPING: { color: 'grey', i18nKey: 'development.status.developing' },
-  PUBLISHED: { color: 'green', i18nKey: 'development.status.published' },
-  ARCHIVED: { color: 'orange', i18nKey: 'development.status.archived' },
+  DEVELOPING: { color: 'grey', i18nKey: 'development.processDevelopment.status.developing' },
+  PUBLISHED: { color: 'green', i18nKey: 'development.processDevelopment.status.published' },
+  ARCHIVED: { color: 'orange', i18nKey: 'development.processDevelopment.status.archived' },
 };
 
 // 生成UUID v4
@@ -283,7 +283,7 @@ const ProcessDevelopment = () => {
 
   const columns = [
     {
-      title: t('development.table.processName'),
+      title: t('development.processDevelopment.fields.processName'),
       dataIndex: 'name',
       key: 'name',
       width: 160,
@@ -310,7 +310,7 @@ const ProcessDevelopment = () => {
       width: 100,
       render: (status: ProcessStatus) => (
         <Tag color={statusConfig[status]?.color || 'grey'} type="light">
-          {t(statusConfig[status]?.i18nKey || 'development.status.developing')}
+          {t(statusConfig[status]?.i18nKey || 'development.processDevelopment.status.developing')}
         </Tag>
       ),
     },
@@ -370,7 +370,7 @@ const ProcessDevelopment = () => {
                   openProcess({ id: record.id, name: record.name });
                 }}
               >
-                {t('development.actions.openProcess')}
+                {t('development.processDevelopment.actions.openProcess')}
               </Dropdown.Item>
               <Dropdown.Item
                 icon={<IconEditStroked />}
@@ -379,13 +379,13 @@ const ProcessDevelopment = () => {
                   handleEdit(record);
                 }}
               >
-                {t('development.actions.edit')}
+                {t('common.edit')}
               </Dropdown.Item>
               <Dropdown.Item icon={<IconPlay />} onClick={handleRun}>
-                {t('development.actions.run')}
+                {t('common.run')}
               </Dropdown.Item>
               <Dropdown.Item icon={<IconDeleteStroked />} type="danger" onClick={handleDelete}>
-                {t('development.actions.delete')}
+                {t('common.delete')}
               </Dropdown.Item>
             </Dropdown.Menu>
           }
@@ -402,8 +402,8 @@ const ProcessDevelopment = () => {
       <div className="process-development-breadcrumb">
         <Breadcrumb>
           <Breadcrumb.Item onClick={() => navigate('/')}>{t('common.home')}</Breadcrumb.Item>
-          <Breadcrumb.Item>{t('development.breadcrumb.developmentCenter')}</Breadcrumb.Item>
-          <Breadcrumb.Item>{t('development.breadcrumb.automationProcess')}</Breadcrumb.Item>
+          <Breadcrumb.Item>{t('development.processDevelopment.breadcrumb.developmentCenter')}</Breadcrumb.Item>
+          <Breadcrumb.Item>{t('development.processDevelopment.breadcrumb.automationProcess')}</Breadcrumb.Item>
         </Breadcrumb>
       </div>
 
@@ -411,9 +411,9 @@ const ProcessDevelopment = () => {
       <div className="process-development-header">
         <div className="process-development-header-title">
           <Title heading={3} className="title">
-            {t('development.title')}
+            {t('development.processDevelopment.title')}
           </Title>
-          <Text type="tertiary">{t('development.description')}</Text>
+          <Text type="tertiary">{t('development.processDevelopment.description')}</Text>
         </div>
 
         {/* 操作栏 */}
@@ -421,7 +421,7 @@ const ProcessDevelopment = () => {
           <div className="process-development-header-search">
             <Input
               prefix={<IconSearch />}
-              placeholder={t('development.searchPlaceholder')}
+              placeholder={t('development.processDevelopment.searchPlaceholder')}
               className="process-development-search-input"
               value={queryParams.keyword}
               onChange={handleSearch}
@@ -431,10 +431,10 @@ const ProcessDevelopment = () => {
           </div>
           <div className="process-development-header-actions">
             <Button icon={<IconDownload />} theme="light">
-              {t('development.importProcess')}
+              {t('development.processDevelopment.importProcess')}
             </Button>
             <Button icon={<IconPlus />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
-              {t('development.createProcess')}
+              {t('development.processDevelopment.createProcess')}
             </Button>
           </div>
         </div>

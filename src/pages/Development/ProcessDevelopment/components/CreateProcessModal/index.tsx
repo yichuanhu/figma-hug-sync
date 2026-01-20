@@ -33,27 +33,13 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
 
   const validateProcessNameUnique = (rule: unknown, value: string, callback: (error?: string) => void) => {
     if (value && existingProcessNames.includes(value.trim())) {
-      callback(t('createProcess.validation.nameExists'));
+      callback(t('development.processDevelopment.createModal.validation.nameExists'));
       return false;
     }
     callback();
     return true;
   };
 
-  const requirementOptions = [
-    { value: 'REQ-2024-001', label: 'REQ-2024-001 - 订单自动处理需求' },
-    { value: 'REQ-2024-002', label: 'REQ-2024-002 - 财务报销自动化' },
-    { value: 'REQ-2024-003', label: 'REQ-2024-003 - 人事审批流程优化' },
-  ];
-
-  const organizationOptions = [
-    { value: '财务部', label: '财务部' },
-    { value: '人事部', label: '人事部' },
-    { value: '技术部', label: '技术部' },
-    { value: '运营部', label: '运营部' },
-  ];
-
-  const processTypeOptions = [{ value: '原生流程', label: '原生流程' }];
 
   const handleSubmit = async (values: Record<string, unknown>) => {
     setLoading(true);
@@ -71,35 +57,33 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
         id: processId,
         name: values.name as string,
         description: values.description as string,
-        type: values.type as string,
-        relatedRequirement: values.relatedRequirement as string,
-        organization: values.organization as string,
-        status: t('development.status.draft'),
+        organization: '',
+        status: t('development.processDevelopment.status.developing'),
         creator: '当前用户',
         createdAt: now,
       };
-      Toast.success(t('createProcess.success'));
+      Toast.success(t('development.processDevelopment.createModal.success'));
       onCancel();
       onSuccess?.(processData);
     } catch {
-      Toast.error(t('createProcess.error'));
+      Toast.error(t('development.processDevelopment.createModal.error'));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Modal title={t('createProcess.title')} visible={visible} onCancel={onCancel} footer={null} width={520} closeOnEsc maskClosable={false}>
+    <Modal title={t('development.processDevelopment.createModal.title')} visible={visible} onCancel={onCancel} footer={null} width={520} closeOnEsc maskClosable={false}>
       <Form onSubmit={handleSubmit} labelPosition="top" className="create-process-modal-form">
         <Form.Input
           field="name"
-          label={t('createProcess.fields.name')}
-          placeholder={t('createProcess.fields.namePlaceholder')}
+          label={t('development.processDevelopment.fields.processName')}
+          placeholder={t('development.processDevelopment.createModal.fields.namePlaceholder')}
           trigger="blur"
           rules={[
-            { required: true, message: t('createProcess.validation.nameRequired') },
-            { min: 1, message: t('createProcess.validation.nameLengthError') },
-            { max: 100, message: t('createProcess.validation.nameLengthError') },
+            { required: true, message: t('development.processDevelopment.createModal.validation.nameRequired') },
+            { min: 1, message: t('development.processDevelopment.createModal.validation.nameLengthError') },
+            { max: 100, message: t('development.processDevelopment.createModal.validation.nameLengthError') },
             { validator: validateProcessNameUnique },
           ]}
           showClear
@@ -107,44 +91,16 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
 
         <Form.TextArea
           field="description"
-          label={t('createProcess.fields.description')}
-          placeholder={t('createProcess.fields.descriptionPlaceholder')}
+          label={t('common.description')}
+          placeholder={t('development.processDevelopment.createModal.fields.descriptionPlaceholder')}
           autosize={{ minRows: 3, maxRows: 6 }}
           maxCount={500}
           trigger="blur"
           rules={[
-            { required: true, message: t('createProcess.validation.descriptionRequired') },
-            { min: 1, message: t('createProcess.validation.descriptionLengthError') },
-            { max: 500, message: t('createProcess.validation.descriptionLengthError') },
+            { required: true, message: t('development.processDevelopment.createModal.validation.descriptionRequired') },
+            { min: 1, message: t('development.processDevelopment.createModal.validation.descriptionLengthError') },
+            { max: 500, message: t('development.processDevelopment.createModal.validation.descriptionLengthError') },
           ]}
-        />
-
-        <Form.Select
-          field="type"
-          label={t('createProcess.fields.type')}
-          placeholder={t('createProcess.fields.typePlaceholder')}
-          initValue="原生流程"
-          optionList={processTypeOptions}
-          rules={[{ required: true, message: t('createProcess.validation.typeRequired') }]}
-          className="create-process-modal-select-full"
-        />
-
-        <Form.Select
-          field="relatedRequirement"
-          label={t('createProcess.fields.relatedRequirement')}
-          placeholder={t('createProcess.fields.relatedRequirementPlaceholder')}
-          optionList={requirementOptions}
-          showClear
-          className="create-process-modal-select-full"
-        />
-
-        <Form.Select
-          field="organization"
-          label={t('createProcess.fields.organization')}
-          placeholder={t('createProcess.fields.organizationPlaceholder')}
-          optionList={organizationOptions}
-          rules={[{ required: true, message: t('createProcess.validation.organizationRequired') }]}
-          className="create-process-modal-select-full"
         />
 
         <div className="create-process-modal-footer">

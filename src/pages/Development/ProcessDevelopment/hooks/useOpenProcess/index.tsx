@@ -23,7 +23,7 @@ export const useOpenProcess = () => {
 
     const timeout = setTimeout(() => {
       document.body.removeChild(iframe);
-      Toast.error({ content: t('openProcess.clientError'), duration: 3 });
+      Toast.error({ content: t('development.processDevelopment.openProcess.clientError'), duration: 3 });
     }, 2000);
 
     const handleBlur = () => {
@@ -63,7 +63,7 @@ export const useOpenProcess = () => {
 
   const OpenProcessModal = () => (
     <Modal
-      title={t('openProcess.title')}
+      title={t('development.processDevelopment.openProcess.title')}
       visible={confirmVisible}
       onCancel={handleCancel}
       width={400}
@@ -71,7 +71,7 @@ export const useOpenProcess = () => {
       footer={
         <div className="open-process-modal-footer">
           <Checkbox checked={dontRemindAgain} onChange={(e) => setDontRemindAgain(e.target.checked)}>
-            {t('openProcess.dontRemindAgain')}
+            {t('development.processDevelopment.openProcess.dontRemindAgain')}
           </Checkbox>
           <div className="open-process-modal-footer-buttons">
             <Button onClick={handleCancel}>{t('common.cancel')}</Button>
@@ -82,7 +82,7 @@ export const useOpenProcess = () => {
         </div>
       }
     >
-      <p>{t('openProcess.confirmMessage', { name: currentProcess?.name })}</p>
+      <p>{t('development.processDevelopment.openProcess.confirmMessage', { name: currentProcess?.name })}</p>
     </Modal>
   );
 
