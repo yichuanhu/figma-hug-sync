@@ -143,7 +143,6 @@ const ProcessDevelopment = () => {
 
   // 初始化加载
   useEffect(() => {
-    localStorage.removeItem('skipOpenProcessConfirm');
     loadData();
   }, [loadData]);
 
