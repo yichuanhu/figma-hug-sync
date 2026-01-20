@@ -1,15 +1,15 @@
 // WorkerManagement 页面样式
-.worker-management {
+.worker-management-page {
   display: flex;
   flex-direction: column;
   height: 100%;
 
   // 标题区域
-  &-header {
+  .page-header {
     padding: 20px 24px 0;
     flex-shrink: 0;
 
-    &-title {
+    .title-section {
       margin-bottom: 24px;
 
       .title {
@@ -17,14 +17,14 @@
       }
     }
 
-    &-toolbar {
+    .toolbar {
       margin-bottom: 16px;
       // 布局使用 Semi UI Row/Col/Space 组件，不在此定义
     }
   }
 
   // 表格区域
-  &-table {
+  .table-section {
     flex: 1;
     overflow: hidden;
     padding: 0 24px;
@@ -35,24 +35,23 @@
       overflow: hidden;
     }
   }
-
 }
 
 // 筛选弹窗内容
-.filter-popover {
+.worker-filter-popover {
   padding: 16px;
   width: 280px;
 
-  &-section {
+  .filter-section {
     margin-bottom: 16px;
+
+    .filter-label {
+      display: block;
+      margin-bottom: 8px;
+    }
   }
 
-  &-label {
-    display: block;
-    margin-bottom: 8px;
-  }
-
-  &-footer {
+  .filter-footer {
     display: flex;
     justify-content: space-between;
     border-top: 1px solid var(--semi-color-border);
@@ -62,17 +61,17 @@
 
 // 表格单元格样式
 .worker-name-cell {
-  &-header {
+  .cell-header {
     display: flex;
     align-items: center;
     gap: 8px;
   }
 
-  &-name {
+  .cell-name {
     font-weight: 500;
   }
 
-  &-username {
+  .cell-username {
     color: var(--semi-color-text-2);
     font-size: 12px;
     margin-top: 2px;

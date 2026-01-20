@@ -1,43 +1,40 @@
 // WorkerDetailDrawer 机器人详情抽屉样式
 .worker-detail-drawer {
   // 标题区域
-  &-header {
+  .drawer-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
     padding-right: 0;
-  }
 
-  &-title {
-    margin: 0;
-  }
+    .title {
+      margin: 0;
+    }
 
-  // 操作按钮区域
-  &-actions {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
+    // 操作按钮区域
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
 
-  // 删除按钮图标
-  &-delete-icon {
-    color: var(--semi-color-danger);
-  }
+      .delete-icon {
+        color: var(--semi-color-danger);
+      }
 
-  // 分隔线
-  &-divider {
-    height: 16px;
-    margin: 0 8px 0 4px;
-  }
+      .divider {
+        height: 16px;
+        margin: 0 8px 0 4px;
+      }
 
-  // 关闭按钮
-  &-close-btn {
-    margin-left: 4px;
+      .close-btn {
+        margin-left: 4px;
+      }
+    }
   }
 
   // 拖拽把手
-  &-resize-handle {
+  .resize-handle {
     position: absolute;
     left: 0;
     top: 0;
@@ -48,38 +45,37 @@
   }
 
   // Tab 容器
-  &-tabs {
+  .drawer-tabs {
     height: 100%;
-  }
 
-  // Tab 内容区域
-  &-tab-content {
-    padding: 16px 24px;
-  }
+    .tab-content {
+      padding: 16px 24px;
 
-  // 信息区块
-  &-info-section {
-    margin-bottom: 24px;
-  }
+      // 信息区块
+      .info-section {
+        margin-bottom: 24px;
 
-  &-info-title {
-    display: block;
-    margin-bottom: 12px;
-    font-size: 14px;
-  }
+        .info-title {
+          display: block;
+          margin-bottom: 12px;
+          font-size: 14px;
+        }
+      }
 
-  // 优先级文字
-  &-priority {
-    &--high {
-      color: var(--semi-color-red);
-    }
+      // 优先级文字
+      .priority {
+        &.high {
+          color: var(--semi-color-red);
+        }
 
-    &--medium {
-      color: var(--semi-color-blue);
-    }
+        &.medium {
+          color: var(--semi-color-blue);
+        }
 
-    &--low {
-      color: var(--semi-color-grey);
+        &.low {
+          color: var(--semi-color-grey);
+        }
+      }
     }
   }
 }

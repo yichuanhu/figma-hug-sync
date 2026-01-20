@@ -152,7 +152,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
       >
         <Tooltip content={label} position="right">
           <div
-            className={`sidebar-icon-btn ${isActive ? 'active' : ''}`}
+            className={`sidebar icon-bar icon-btn ${isActive ? 'active' : ''}`}
             onClick={() => handleCenterClick(item)}
           >
             {item.icon}
@@ -160,14 +160,14 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
         </Tooltip>
 
         {collapsed && hasSubMenu && isHovered && (
-          <div className="sidebar-floating-menu">
-            <div className="sidebar-floating-header">
-              <span className="sidebar-floating-title">{label}</span>
-              <div className="sidebar-icon-btn sidebar-icon-btn-small" onClick={(e) => { e.stopPropagation(); onToggleCollapse?.(); }} title={t('sidebar.expandSidebar')}>
-                <img src={layoutIcon} alt="expand" className="sidebar-layout-icon" />
+          <div className="sidebar floating-menu">
+            <div className="floating-header">
+              <span className="floating-title">{label}</span>
+              <div className="sidebar icon-bar icon-btn-small" onClick={(e) => { e.stopPropagation(); onToggleCollapse?.(); }} title={t('sidebar.expandSidebar')}>
+                <img src={layoutIcon} alt="expand" className="layout-icon" />
               </div>
             </div>
-            <div className="sidebar-floating-list">
+            <div className="floating-list">
               {getCenterMenu(item.key).map(menuItem => renderFloatingMenuItem(menuItem))}
             </div>
           </div>
@@ -183,16 +183,16 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     const label = t(item.labelKey);
 
     return (
-      <div key={item.key} className="sidebar-menu-item">
+      <div key={item.key} className="sidebar menu-item">
         <div
-          className={`sidebar-menu-item sidebar-menu-content ${isChild ? 'sidebar-menu-content--child' : ''} ${isSelected ? 'selected' : ''}`}
+          className={`menu-content ${isChild ? 'floating-child' : ''} ${isSelected ? 'selected' : ''}`}
           onClick={() => { hasChildren ? toggleFloatingExpand(item.key) : handleSelect(item.key, item.path); }}
         >
-          {!isChild && item.icon && <div className="sidebar-menu-icon">{item.icon}</div>}
-          <span className={`sidebar-menu-text ${hasChildren ? 'sidebar-menu-text--parent' : ''} ${isSelected ? 'sidebar-menu-text--selected' : ''}`}>{label}</span>
-          {hasChildren && <span className="sidebar-menu-arrow">{isExpanded ? <IconChevronUp size="small" /> : <IconChevronDown size="small" />}</span>}
+          {!isChild && item.icon && <div className="menu-icon">{item.icon}</div>}
+          <span className={`menu-text ${hasChildren ? 'parent' : ''} ${isSelected ? 'selected' : ''}`}>{label}</span>
+          {hasChildren && <span className="menu-arrow">{isExpanded ? <IconChevronUp size="small" /> : <IconChevronDown size="small" />}</span>}
         </div>
-        {hasChildren && isExpanded && <div>{item.children!.map(child => renderFloatingMenuItem(child, true))}</div>}
+        {hasChildren && isExpanded && <div className="submenu">{item.children!.map(child => renderFloatingMenuItem(child, true))}</div>}
       </div>
     );
   };
@@ -204,16 +204,16 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     const label = t(item.labelKey);
 
     return (
-      <div key={item.key} className="sidebar-menu-item">
+      <div key={item.key} className="sidebar menu-item">
         <div
-          className={`sidebar-menu-item sidebar-menu-content ${isChild ? 'sidebar-menu-content--floating-child' : ''} ${isSelected ? 'selected' : ''}`}
+          className={`menu-content ${isChild ? 'child' : ''} ${isSelected ? 'selected' : ''}`}
           onClick={() => { hasChildren ? toggleExpand(item.key) : handleSelect(item.key, item.path); }}
         >
-          {!isChild && item.icon && <div className="sidebar-menu-icon sidebar-menu-icon--detail">{item.icon}</div>}
-          <span className={`sidebar-menu-text ${hasChildren ? 'sidebar-menu-text--parent' : ''} ${isSelected ? 'sidebar-menu-text--selected' : ''}`}>{label}</span>
-          {hasChildren && <span className="sidebar-menu-arrow">{isExpanded ? <IconChevronUp size="small" /> : <IconChevronDown size="small" />}</span>}
+          {!isChild && item.icon && <div className="menu-icon detail">{item.icon}</div>}
+          <span className={`menu-text ${hasChildren ? 'parent' : ''} ${isSelected ? 'selected' : ''}`}>{label}</span>
+          {hasChildren && <span className="menu-arrow">{isExpanded ? <IconChevronUp size="small" /> : <IconChevronDown size="small" />}</span>}
         </div>
-        {hasChildren && isExpanded && <div className="sidebar-submenu">{item.children!.map(child => renderDetailMenuItem(child, true))}</div>}
+        {hasChildren && isExpanded && <div className="submenu">{item.children!.map(child => renderDetailMenuItem(child, true))}</div>}
       </div>
     );
   };
@@ -223,9 +223,9 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     return (
       <div key={item.key}>
         <Tooltip content={label} position="right">
-          <div className="sidebar-icon-btn">
+          <div className="sidebar icon-bar icon-btn">
             {item.icon}
-            {item.badge && <span className="sidebar-badge-dot" />}
+            {item.badge && <span className="badge-dot" />}
           </div>
         </Tooltip>
       </div>
@@ -237,14 +237,14 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
 
   return (
     <div className="sidebar">
-      <div className={`sidebar-icon-bar ${!collapsed ? 'sidebar-icon-bar--with-border' : ''}`}>
-        <div className="sidebar-logo">
-          <img src={laiyeLogo} alt="Laiye" className="sidebar-logo-img" />
+      <div className={`icon-bar ${!collapsed ? 'with-border' : ''}`}>
+        <div className="logo">
+          <img src={laiyeLogo} alt="Laiye" className="logo-img" />
         </div>
-        <div className="sidebar-main-icons">{centerMenuItems.map(renderIconMenuItem)}</div>
-        <div className="sidebar-bottom-icons">
+        <div className="main-icons">{centerMenuItems.map(renderIconMenuItem)}</div>
+        <div className="bottom-icons">
           {bottomMenuItems.map(renderBottomMenuItem)}
-          <div className="sidebar-avatar">
+          <div className="avatar">
             <Tooltip content="admin" position="right">
               <Avatar size="small" style={{ backgroundColor: '#1890FF', cursor: 'pointer' }}>A</Avatar>
             </Tooltip>
@@ -253,14 +253,14 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
       </div>
 
       {!collapsed && currentCenterMenu.length > 0 && (
-        <div className="sidebar-detail-panel">
-          <div className="sidebar-detail-header">
-            <span className="sidebar-detail-title">{currentCenterLabel ? t(currentCenterLabel) : ''}</span>
-            <div className="sidebar-icon-btn sidebar-icon-btn-small" onClick={onToggleCollapse} title={t('sidebar.expandSidebar')}>
-              <img src={layoutIcon} alt="collapse" className="sidebar-layout-icon" />
+        <div className="detail-panel">
+          <div className="detail-header">
+            <span className="detail-title">{currentCenterLabel ? t(currentCenterLabel) : ''}</span>
+            <div className="sidebar icon-bar icon-btn-small" onClick={onToggleCollapse} title={t('sidebar.expandSidebar')}>
+              <img src={layoutIcon} alt="collapse" className="layout-icon" />
             </div>
           </div>
-          <div className="sidebar-detail-list">{currentCenterMenu.map(item => renderDetailMenuItem(item))}</div>
+          <div className="detail-list">{currentCenterMenu.map(item => renderDetailMenuItem(item))}</div>
         </div>
       )}
     </div>
