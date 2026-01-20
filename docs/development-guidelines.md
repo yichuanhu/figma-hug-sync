@@ -409,3 +409,68 @@ src/
 - 严格按照设计稿还原
 - 不添加设计稿中没有的功能或菜单
 - 视觉样式修改需确认后再执行
+
+---
+
+## 9. 代码格式化规范
+
+项目使用 Prettier 进行代码格式化，配置文件位于项目根目录 `.prettierrc`。
+
+### 9.1 Prettier 配置
+
+```json
+{
+  "semi": true,              // 使用分号
+  "singleQuote": true,       // 使用单引号
+  "tabWidth": 4,             // 缩进宽度 4 空格
+  "trailingComma": "es5",    // ES5 兼容的尾逗号
+  "printWidth": 160,         // 每行最大 160 字符
+  "bracketSpacing": true,    // 对象括号内空格
+  "arrowParens": "avoid",    // 箭头函数单参数不加括号
+  "endOfLine": "auto"        // 自动换行符
+}
+```
+
+### 9.2 格式化忽略
+
+`.prettierignore` 配置忽略的文件：
+
+```
+# Lock files
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+```
+
+### 9.3 代码示例
+
+```tsx
+// 遵循 Prettier 配置的代码风格
+import { useState, useCallback, useMemo } from 'react';
+import { Button, Table, Modal, Form, Input, Select, Space, Row, Col, Typography } from '@douyinfe/semi-ui';
+
+const Component = () => {
+    const [visible, setVisible] = useState(false);
+    const [data, setData] = useState<DataItem[]>([]);
+
+    const handleSubmit = useCallback(values => {
+        console.log('提交数据:', values);
+        setVisible(false);
+    }, []);
+
+    const columns = useMemo(
+        () => [
+            { title: '名称', dataIndex: 'name', key: 'name' },
+            { title: '状态', dataIndex: 'status', key: 'status' },
+        ],
+        []
+    );
+
+    return (
+        <div className="component-container">
+            <Button onClick={() => setVisible(true)}>打开</Button>
+            <Table columns={columns} dataSource={data} />
+        </div>
+    );
+};
+```
