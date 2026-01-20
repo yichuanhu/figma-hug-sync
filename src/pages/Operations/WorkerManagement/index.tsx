@@ -8,7 +8,10 @@ import {
   Dropdown,
   Switch,
   Popover,
-  Checkbox
+  Checkbox,
+  Space,
+  Row,
+  Col
 } from '@douyinfe/semi-ui';
 import {
   IconSearch, 
@@ -649,41 +652,45 @@ const WorkerManagement = () => {
           <Text type="tertiary">{t('worker.description')}</Text>
         </div>
 
-        {/* 操作栏 */}
-        <div className="worker-management-header-toolbar">
-          <div className="worker-management-header-search">
-            <Input 
-              prefix={<IconSearch />}
-              placeholder={t('worker.searchPlaceholder')}
-              style={{ width: 280 }}
-              value={searchValue}
-              onChange={handleSearch}
-            />
-            <Popover
-              visible={filterVisible}
-              onVisibleChange={setFilterVisible}
-              trigger="click"
-              position="bottomLeft"
-              content={filterContent}
-            >
-              <Button 
-                icon={<IconFilter />} 
-                theme={hasActiveFilters ? 'solid' : 'light'}
-                type={hasActiveFilters ? 'primary' : 'tertiary'}
+        {/* 操作栏 - 使用Row/Col栅格布局 */}
+        <Row type="flex" justify="space-between" align="middle" className="worker-management-header-toolbar">
+          <Col>
+            <Space spacing={12}>
+              <Input 
+                prefix={<IconSearch />}
+                placeholder={t('worker.searchPlaceholder')}
+                style={{ width: 280 }}
+                value={searchValue}
+                onChange={handleSearch}
+              />
+              <Popover
+                visible={filterVisible}
+                onVisibleChange={setFilterVisible}
+                trigger="click"
+                position="bottomLeft"
+                content={filterContent}
               >
-                {t('common.filter')}{activeFilterCount > 0 ? ` (${activeFilterCount})` : ''}
-              </Button>
-            </Popover>
-          </div>
-          <Button 
-            icon={<IconPlus />} 
-            theme="solid" 
-            type="primary"
-            onClick={() => navigate('/worker-management/create')}
-          >
-            {t('worker.createWorker')}
-          </Button>
-        </div>
+                <Button 
+                  icon={<IconFilter />} 
+                  theme={hasActiveFilters ? 'solid' : 'light'}
+                  type={hasActiveFilters ? 'primary' : 'tertiary'}
+                >
+                  {t('common.filter')}{activeFilterCount > 0 ? ` (${activeFilterCount})` : ''}
+                </Button>
+              </Popover>
+            </Space>
+          </Col>
+          <Col>
+            <Button 
+              icon={<IconPlus />} 
+              theme="solid" 
+              type="primary"
+              onClick={() => navigate('/worker-management/create')}
+            >
+              {t('worker.createWorker')}
+            </Button>
+          </Col>
+        </Row>
       </div>
 
       {/* 表格区域 */}

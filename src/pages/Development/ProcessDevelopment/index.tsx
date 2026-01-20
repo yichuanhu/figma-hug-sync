@@ -8,7 +8,10 @@ import {
   Tag, 
   Avatar,
   Dropdown,
-  Tooltip
+  Tooltip,
+  Space,
+  Row,
+  Col
 } from '@douyinfe/semi-ui';
 import { IconSearch, IconPlus, IconDownload, IconMore, IconExternalOpenStroked, IconEditStroked, IconPlay, IconDeleteStroked } from '@douyinfe/semi-icons';
 import CreateProcessModal from './components/CreateProcessModal';
@@ -52,10 +55,8 @@ const fetchProcessList = async (params: {
   pageSize: number;
   keyword?: string;
 }): Promise<{ data: ProcessItem[]; total: number }> => {
-  // 模拟网络延迟
   await new Promise(resolve => setTimeout(resolve, 500));
   
-  // 生成模拟数据
   const allData: ProcessItem[] = Array(46).fill(null).map((_, index) => ({
     id: `PROC-2024-${String(index + 1).padStart(3, '0')}`,
     key: index + 1,
@@ -73,53 +74,32 @@ const fetchProcessList = async (params: {
     updatedAt: `2024-0${(index % 9) + 1}-${String((index % 28) + 1).padStart(2, '0')}`,
   }));
 
-  // 模拟关键词搜索
   let filteredData = allData;
   if (params.keyword?.trim()) {
-    filteredData = allData.filter(item => 
-      item.name.toLowerCase().includes(params.keyword!.toLowerCase().trim())
-    );
+    filteredData = allData.filter(item => item.name.toLowerCase().includes(params.keyword!.toLowerCase().trim()));
   }
 
-  // 模拟分页
   const start = (params.page - 1) * params.pageSize;
   const end = start + params.pageSize;
   const paginatedData = filteredData.slice(start, end);
 
-  return {
-    data: paginatedData,
-    total: filteredData.length,
-  };
+  return { data: paginatedData, total: filteredData.length };
 };
 
 const ProcessDevelopment = () => {
   const { t } = useTranslation();
-  const [queryParams, setQueryParams] = useState<QueryParams>({
-    page: 1,
-    pageSize: 10,
-    keyword: '',
-  });
-  const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>({
-    total: 0,
-  });
+  const [queryParams, setQueryParams] = useState<QueryParams>({ page: 1, pageSize: 10, keyword: '' });
+  const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>({ total: 0 });
   const [loading, setLoading] = useState(true);
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [processListData, setProcessListData] = useState<ProcessItem[]>([]);
   const [selectedProcess, setSelectedProcess] = useState<ProcessItem | null>(null);
-  const [editingProcess, setEditingProcess] = useState<{
-    id: string;
-    name: string;
-    description: string;
-    organization: string;
-    type?: string;
-    relatedRequirement?: string;
-  } | null>(null);
+  const [editingProcess, setEditingProcess] = useState<{ id: string; name: string; description: string; organization: string; type?: string; relatedRequirement?: string; } | null>(null);
 
   const { openProcess, OpenProcessModal } = useOpenProcess();
 
-  // 加载数据
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
@@ -131,167 +111,72 @@ const ProcessDevelopment = () => {
     }
   }, [queryParams]);
 
-  // 初始化加载
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
+  useEffect(() => { loadData(); }, [loadData]);
 
-  // 搜索
-  const handleSearch = (keyword: string) => {
-    setQueryParams(prev => ({ ...prev, page: 1, keyword }));
-  };
+  const handleSearch = (keyword: string) => { setQueryParams(prev => ({ ...prev, page: 1, keyword })); };
 
-  // 打开流程详情抽屉或切换内容
   const openProcessDetail = (record: ProcessItem) => {
     setSelectedProcess(record);
-    if (!detailDrawerVisible) {
-      setDetailDrawerVisible(true);
-    }
+    if (!detailDrawerVisible) setDetailDrawerVisible(true);
   };
 
-  // 操作处理函数
   const handleEdit = (record?: ProcessItem) => {
     const processRecord = record || selectedProcess;
-    
     if (processRecord) {
-      setEditingProcess({
-        id: processRecord.id,
-        name: processRecord.name,
-        description: processRecord.description,
-        organization: processRecord.organization,
-        type: '原生流程',
-      });
+      setEditingProcess({ id: processRecord.id, name: processRecord.name, description: processRecord.description, organization: processRecord.organization, type: '原生流程' });
       setEditModalVisible(true);
     }
   };
 
-  const handleRun = () => {
-    console.log('运行流程:', selectedProcess?.id);
-  };
-
-  const handleDelete = () => {
-    console.log('删除流程:', selectedProcess?.id);
-    setDetailDrawerVisible(false);
-  };
+  const handleRun = () => { console.log('运行流程:', selectedProcess?.id); };
+  const handleDelete = () => { console.log('删除流程:', selectedProcess?.id); setDetailDrawerVisible(false); };
 
   const columns = [
-    {
-      title: t('development.table.processName'),
-      dataIndex: 'name',
-      key: 'name',
-      width: 120,
-    },
-    {
-      title: t('development.table.processDescription'),
-      dataIndex: 'description',
-      key: 'description',
-      width: 280,
+    { title: t('development.table.processName'), dataIndex: 'name', key: 'name', width: 120 },
+    { title: t('development.table.processDescription'), dataIndex: 'description', key: 'description', width: 280,
       render: (description: string) => (
         <Tooltip content={description} position="top">
-          <div className="process-development-cell-ellipsis">
-            {description}
-          </div>
+          <div className="process-development-cell-ellipsis">{description}</div>
         </Tooltip>
       ),
     },
-    {
-      title: t('development.table.status'),
-      dataIndex: 'status',
-      key: 'status',
-      width: 80,
-      render: (status: string) => (
-        <Tag color={status === 'published' ? 'green' : 'grey'} type="light">
-          {status === 'published' ? t('development.status.published') : t('development.status.draft')}
-        </Tag>
-      ),
+    { title: t('development.table.status'), dataIndex: 'status', key: 'status', width: 80,
+      render: (status: string) => <Tag color={status === 'published' ? 'green' : 'grey'} type="light">{status === 'published' ? t('development.status.published') : t('development.status.draft')}</Tag>,
     },
-    {
-      title: t('development.table.language'),
-      dataIndex: 'language',
-      key: 'language',
-      width: 100,
-      render: (language: string) => (
-        <Tag color={language === 'python' ? 'blue' : 'cyan'} type="light">
-          {language}
-        </Tag>
-      ),
+    { title: t('development.table.language'), dataIndex: 'language', key: 'language', width: 100,
+      render: (language: string) => <Tag color={language === 'python' ? 'blue' : 'cyan'} type="light">{language}</Tag>,
     },
-    {
-      title: t('development.table.version'),
-      dataIndex: 'version',
-      key: 'version',
-      width: 80,
-      render: (version: string) => (
-        <Tag color="grey" type="ghost">
-          {version}
-        </Tag>
-      ),
+    { title: t('development.table.version'), dataIndex: 'version', key: 'version', width: 80,
+      render: (version: string) => <Tag color="grey" type="ghost">{version}</Tag>,
     },
-    {
-      title: t('development.table.organization'),
-      dataIndex: 'organization',
-      key: 'organization',
-      width: 100,
-    },
-    {
-      title: t('development.table.creator'),
-      dataIndex: 'creator',
-      key: 'creator',
-      width: 120,
+    { title: t('development.table.organization'), dataIndex: 'organization', key: 'organization', width: 100 },
+    { title: t('development.table.creator'), dataIndex: 'creator', key: 'creator', width: 120,
       render: (creator: { name: string } | undefined) => {
         if (!creator) return null;
         return (
-          <div className="process-development-cell-creator">
-            <Avatar 
-              size="small" 
-              className="avatar-creator"
-            >
-              {creator.name.charAt(0)}
-            </Avatar>
+          <Space spacing={8}>
+            <Avatar size="small" className="avatar-creator">{creator.name.charAt(0)}</Avatar>
             <span>{creator.name}</span>
-          </div>
+          </Space>
         );
       },
     },
-    {
-      title: t('development.table.lastModified'),
-      dataIndex: 'updatedAt',
-      key: 'updatedAt',
-      width: 120,
-      sorter: true,
-    },
-    {
-      title: t('development.table.actions'),
-      dataIndex: 'action',
-      key: 'action',
-      width: 60,
+    { title: t('development.table.lastModified'), dataIndex: 'updatedAt', key: 'updatedAt', width: 120, sorter: true },
+    { title: t('development.table.actions'), dataIndex: 'action', key: 'action', width: 60,
       render: (_: unknown, record: ProcessItem) => (
         <Dropdown
           trigger="click"
           position="bottomRight"
           render={
             <Dropdown.Menu>
-              <Dropdown.Item 
-                icon={<IconExternalOpenStroked />} 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  const processId = `PROC-2024-${String(record.key).padStart(3, '0')}`;
-                  openProcess({ id: processId, name: record.name });
-                }}
-              >
-                {t('development.actions.openProcess')}
-              </Dropdown.Item>
+              <Dropdown.Item icon={<IconExternalOpenStroked />} onClick={(e) => { e.stopPropagation(); openProcess({ id: `PROC-2024-${String(record.key).padStart(3, '0')}`, name: record.name }); }}>{t('development.actions.openProcess')}</Dropdown.Item>
               <Dropdown.Item icon={<IconEditStroked />} onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>{t('development.actions.edit')}</Dropdown.Item>
               <Dropdown.Item icon={<IconPlay />} onClick={handleRun}>{t('development.actions.run')}</Dropdown.Item>
               <Dropdown.Item icon={<IconDeleteStroked />} type="danger" onClick={handleDelete}>{t('development.actions.delete')}</Dropdown.Item>
             </Dropdown.Menu>
           }
         >
-          <Button 
-            icon={<IconMore />} 
-            theme="borderless" 
-            onClick={(e) => e.stopPropagation()}
-          />
+          <Button icon={<IconMore />} theme="borderless" onClick={(e) => e.stopPropagation()} />
         </Dropdown>
       ),
     },
@@ -306,9 +191,9 @@ const ProcessDevelopment = () => {
           <Text type="tertiary">{t('development.description')}</Text>
         </div>
 
-        {/* 操作栏 */}
-        <div className="process-development-header-toolbar">
-          <div className="process-development-header-search">
+        {/* 操作栏 - 使用Row/Col栅格布局 */}
+        <Row type="flex" justify="space-between" align="middle" className="process-development-header-toolbar">
+          <Col>
             <Input 
               prefix={<IconSearch />}
               placeholder={t('development.searchPlaceholder')}
@@ -316,21 +201,14 @@ const ProcessDevelopment = () => {
               value={queryParams.keyword}
               onChange={handleSearch}
             />
-          </div>
-          <div className="process-development-header-actions">
-            <Button icon={<IconDownload />} theme="light">
-              {t('development.importProcess')}
-            </Button>
-            <Button 
-              icon={<IconPlus />} 
-              theme="solid" 
-              type="primary"
-              onClick={() => setCreateModalVisible(true)}
-            >
-              {t('development.createProcess')}
-            </Button>
-          </div>
-        </div>
+          </Col>
+          <Col>
+            <Space spacing={12}>
+              <Button icon={<IconDownload />} theme="light">{t('development.importProcess')}</Button>
+              <Button icon={<IconPlus />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>{t('development.createProcess')}</Button>
+            </Space>
+          </Col>
+        </Row>
       </div>
 
       {/* 表格区域 */}
@@ -339,14 +217,11 @@ const ProcessDevelopment = () => {
           columns={columns} 
           dataSource={processListData}
           loading={loading}
-          onRow={(record) => {
-            const isSelected = selectedProcess?.id === record.id && detailDrawerVisible;
-            return {
-              onClick: () => openProcessDetail(record as ProcessItem),
-              className: isSelected ? 'process-development-row-selected' : undefined,
-              style: { cursor: 'pointer' }
-            };
-          }}
+          onRow={(record) => ({
+            onClick: () => openProcessDetail(record as ProcessItem),
+            className: selectedProcess?.id === record.id && detailDrawerVisible ? 'process-development-row-selected' : undefined,
+            style: { cursor: 'pointer' }
+          })}
           pagination={{
             total: paginationInfo.total,
             pageSize: queryParams.pageSize,
@@ -360,56 +235,13 @@ const ProcessDevelopment = () => {
         />
       </div>
 
-      {/* 新建流程弹窗 */}
-      <CreateProcessModal
-        visible={createModalVisible}
-        onCancel={() => setCreateModalVisible(false)}
-        onSuccess={(processData) => {
-          // 重新加载数据
-          loadData();
-          
-          // 打开详情抽屉
-          setSelectedProcess({
-            id: processData.id,
-            key: 0,
-            name: processData.name,
-            description: processData.description,
-            status: processData.status,
-            language: '',
-            version: '1.0.0',
-            organization: processData.organization,
-            creator: { name: processData.creator, avatar: '' },
-            createdAt: processData.createdAt,
-            updatedAt: processData.createdAt,
-          });
-          setDetailDrawerVisible(true);
-        }}
-      />
-
-      {/* 编辑流程弹窗 */}
-      <EditProcessModal
-        visible={editModalVisible}
-        onCancel={() => setEditModalVisible(false)}
-        processData={editingProcess}
-        onSuccess={(updatedData) => {
-          console.log('流程已更新:', updatedData);
-          // 重新加载数据
-          loadData();
-        }}
-      />
-
-      {/* 流程详情抽屉 */}
-      <ProcessDetailDrawer
-        visible={detailDrawerVisible}
-        onClose={() => setDetailDrawerVisible(false)}
-        processData={selectedProcess}
-        onEdit={() => handleEdit()}
-        onRun={handleRun}
-        onDelete={handleDelete}
-        onOpen={() => selectedProcess && openProcess(selectedProcess)}
-      />
-
-      {/* 打开流程确认弹窗 */}
+      <CreateProcessModal visible={createModalVisible} onCancel={() => setCreateModalVisible(false)} onSuccess={(processData) => {
+        loadData();
+        setSelectedProcess({ id: processData.id, key: 0, name: processData.name, description: processData.description, status: processData.status, language: '', version: '1.0.0', organization: processData.organization, creator: { name: processData.creator, avatar: '' }, createdAt: processData.createdAt, updatedAt: processData.createdAt });
+        setDetailDrawerVisible(true);
+      }} />
+      <EditProcessModal visible={editModalVisible} onCancel={() => setEditModalVisible(false)} processData={editingProcess} onSuccess={(updatedData) => { console.log('流程已更新:', updatedData); loadData(); }} />
+      <ProcessDetailDrawer visible={detailDrawerVisible} onClose={() => setDetailDrawerVisible(false)} processData={selectedProcess} onEdit={() => handleEdit()} onRun={handleRun} onDelete={handleDelete} onOpen={() => selectedProcess && openProcess(selectedProcess)} />
       <OpenProcessModal />
     </div>
   );
