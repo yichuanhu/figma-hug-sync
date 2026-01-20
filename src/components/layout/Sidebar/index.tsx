@@ -21,7 +21,7 @@ import DevelopmentIcon from '@/components/icons/DevelopmentIcon';
 import SchedulingIcon from '@/components/icons/SchedulingIcon';
 import OperationsIcon from '@/components/icons/OperationsIcon';
 import BusinessIcon from '@/components/icons/BusinessIcon';
-import './Sidebar.less';
+import './index.less';
 
 interface MenuItem {
   key: string;

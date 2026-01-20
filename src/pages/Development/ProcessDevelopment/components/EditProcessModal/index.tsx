@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Form, Toast, Button } from '@douyinfe/semi-ui';
-import './CreateProcessModal.less';
+import './index.less';
 
 interface ProcessData {
   id: string;

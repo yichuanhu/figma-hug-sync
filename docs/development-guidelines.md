@@ -59,15 +59,57 @@ interface ProcessItem {
 }
 ```
 
-### 模块文件夹结构
+### 1.2 组件文件夹结构规范
 
-每个模块文件夹应包含：
-- `index.tsx` - 主入口文件
-- `index.less` - 模块样式文件
-- `components/` - 模块专用组件（如有）
-- `hooks/` - 模块专用 hooks（如有）
+**每个组件/Hook 必须使用独立文件夹**，包含 `index.tsx` 和 `index.less`：
 
-**注意：不使用 index.ts 桶文件（barrel files），直接引入具体文件。**
+```
+src/
+├── components/
+│   ├── layout/
+│   │   ├── AppLayout/
+│   │   │   ├── index.tsx     # 组件入口
+│   │   │   └── index.less    # 组件样式
+│   │   └── Sidebar/
+│   │       ├── index.tsx
+│   │       └── index.less
+│   └── icons/
+│       └── HomeIcon/
+│           └── index.tsx     # 纯图标组件可省略 less
+├── pages/
+│   └── Development/
+│       └── ProcessDevelopment/
+│           ├── index.tsx
+│           ├── index.less
+│           ├── components/
+│           │   ├── CreateProcessModal/
+│           │   │   ├── index.tsx
+│           │   │   └── index.less
+│           │   └── ProcessDetailDrawer/
+│           │       ├── index.tsx
+│           │       └── index.less
+│           └── hooks/
+│               └── useOpenProcess/
+│                   ├── index.tsx
+│                   └── index.less
+```
+
+**命名规范**：
+- 文件夹名使用 PascalCase（如 `CreateProcessModal`）
+- 入口文件固定为 `index.tsx`
+- 样式文件固定为 `index.less`
+- 导入时使用文件夹路径（如 `./components/CreateProcessModal`）
+
+```tsx
+// ✅ 推荐
+import CreateProcessModal from './components/CreateProcessModal';
+import { useOpenProcess } from './hooks/useOpenProcess';
+
+// ❌ 不推荐 - 直接文件名
+import CreateProcessModal from './components/CreateProcessModal.tsx';
+```
+
+**注意：不使用 index.ts 桶文件（barrel files），直接引入具体文件夹。**
 
 ---
 

@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Modal, Typography } from '@douyinfe/semi-ui';
 import { IconAlertTriangle } from '@douyinfe/semi-icons';
-import './WorkerDeleteModal.less';
+import './index.less';
 
 const { Text } = Typography;
 
