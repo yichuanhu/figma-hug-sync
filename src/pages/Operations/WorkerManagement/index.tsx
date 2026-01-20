@@ -14,8 +14,7 @@ import {
   Skeleton,
   Empty
 } from '@douyinfe/semi-ui';
-import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-illustrations';
-import { 
+import {
   IconSearch, 
   IconFilter,
   IconPlus, 
@@ -797,14 +796,6 @@ const WorkerManagement = () => {
             columns={columns} 
             dataSource={workerListData}
             rowKey="id"
-            empty={
-              <Empty
-                image={<IllustrationNoResult className="empty-image" />}
-                darkModeImage={<IllustrationNoResultDark className="empty-image" />}
-                title={t('worker.empty.title')}
-                description={hasActiveFilters || searchValue ? t('worker.empty.filterDescription') : t('worker.empty.defaultDescription')}
-              />
-            }
             onRow={(record) => ({
               onClick: () => openDetail(record as WorkerData),
               style: { cursor: 'pointer' }

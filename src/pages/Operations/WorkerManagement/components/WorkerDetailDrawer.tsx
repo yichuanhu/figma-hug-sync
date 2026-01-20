@@ -8,7 +8,6 @@ import {
   Tabs,
   TabPane,
   Table,
-  Empty,
   Switch,
   Tooltip,
   Divider
@@ -342,19 +341,15 @@ const WorkerDetailDrawer = ({
         
         <TabPane tab="变更历史" itemKey="history">
           <div style={{ padding: '16px 24px' }}>
-            {mockChangeHistory.length > 0 ? (
-              <Table 
-                columns={changeColumns} 
-                dataSource={mockChangeHistory} 
-                pagination={{
-                  pageSize: 10,
-                  showTotal: true,
-                }}
-                size="small"
-              />
-            ) : (
-              <Empty description="暂无变更历史" />
-            )}
+            <Table 
+              columns={changeColumns} 
+              dataSource={mockChangeHistory} 
+              pagination={{
+                pageSize: 10,
+                showTotal: true,
+              }}
+              size="small"
+            />
           </div>
         </TabPane>
       </Tabs>

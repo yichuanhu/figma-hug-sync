@@ -15,7 +15,6 @@ import {
   Empty,
   Skeleton
 } from '@douyinfe/semi-ui';
-import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-illustrations';
 import { IconSearch, IconPlus, IconDownload, IconMore, IconExternalOpenStroked, IconEditStroked, IconPlay, IconDeleteStroked } from '@douyinfe/semi-icons';
 import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
@@ -471,14 +470,6 @@ const ProcessDevelopment = () => {
           <Table 
             columns={columns} 
             dataSource={processListData}
-            empty={
-              <Empty
-                image={<IllustrationNoResult style={{ width: 150, height: 150 }} />}
-                darkModeImage={<IllustrationNoResultDark style={{ width: 150, height: 150 }} />}
-                title={t('development.empty.title')}
-                description={searchValue ? t('development.empty.filterDescription') : t('development.empty.defaultDescription')}
-              />
-            }
             onRow={(record) => {
               const processId = `PROC-2024-${String(record.key).padStart(3, '0')}`;
               const isSelected = selectedProcess?.id === processId && detailDrawerVisible;
