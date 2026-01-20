@@ -11,9 +11,7 @@ import {
   Avatar,
   Dropdown,
   Pagination,
-  Tooltip,
-  Empty,
-  Skeleton
+  Tooltip
 } from '@douyinfe/semi-ui';
 import { IconSearch, IconPlus, IconDownload, IconMore, IconExternalOpenStroked, IconEditStroked, IconPlay, IconDeleteStroked } from '@douyinfe/semi-icons';
 import CreateProcessModal from './components/CreateProcessModal';
@@ -210,81 +208,6 @@ const ProcessDevelopment = () => {
     setDetailDrawerVisible(false);
   };
 
-  // 骨架屏数据
-  const skeletonData = Array(8).fill(null).map((_, index) => ({ key: `skeleton-${index}` }));
-
-  // 骨架屏列配置
-  const skeletonColumns = [
-    {
-      title: t('development.table.processName'),
-      dataIndex: 'name',
-      key: 'name',
-      width: 120,
-      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} className="skeleton-name" />} loading active />,
-    },
-    {
-      title: t('development.table.processDescription'),
-      dataIndex: 'description',
-      key: 'description',
-      width: 280,
-      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} className="skeleton-description" />} loading active />,
-    },
-    {
-      title: t('development.table.status'),
-      dataIndex: 'status',
-      key: 'status',
-      width: 80,
-      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} className="skeleton-status" />} loading active />,
-    },
-    {
-      title: t('development.table.language'),
-      dataIndex: 'language',
-      key: 'language',
-      width: 100,
-      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} className="skeleton-language" />} loading active />,
-    },
-    {
-      title: t('development.table.version'),
-      dataIndex: 'version',
-      key: 'version',
-      width: 80,
-      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} className="skeleton-version" />} loading active />,
-    },
-    {
-      title: t('development.table.organization'),
-      dataIndex: 'organization',
-      key: 'organization',
-      width: 100,
-      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} className="skeleton-organization" />} loading active />,
-    },
-    {
-      title: t('development.table.creator'),
-      dataIndex: 'creator',
-      key: 'creator',
-      width: 120,
-      render: () => (
-        <div className="skeleton-creator">
-          <Skeleton placeholder={<Skeleton.Avatar size="small" />} loading active />
-          <Skeleton placeholder={<Skeleton.Paragraph rows={1} className="skeleton-creator-name" />} loading active />
-        </div>
-      ),
-    },
-    {
-      title: t('development.table.lastModified'),
-      dataIndex: 'updatedAt',
-      key: 'updatedAt',
-      width: 120,
-      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} className="skeleton-date" />} loading active />,
-    },
-    {
-      title: t('development.table.actions'),
-      dataIndex: 'action',
-      key: 'action',
-      width: 60,
-      render: () => <Skeleton placeholder={<Skeleton.Paragraph rows={1} className="skeleton-action" />} loading active />,
-    },
-  ];
-
   const columns = [
     {
       title: t('development.table.processName'),
@@ -459,30 +382,22 @@ const ProcessDevelopment = () => {
 
       {/* 表格区域 */}
       <div className="process-development-table">
-        {loading ? (
-          <Table 
-            columns={skeletonColumns} 
-            dataSource={skeletonData}
-            pagination={false}
-            scroll={{ y: 'calc(100vh - 320px)' }}
-          />
-        ) : (
-          <Table 
-            columns={columns} 
-            dataSource={processListData}
-            onRow={(record) => {
-              const processId = `PROC-2024-${String(record.key).padStart(3, '0')}`;
-              const isSelected = selectedProcess?.id === processId && detailDrawerVisible;
-              return {
-                onClick: () => openProcessDetail(record as ProcessItem),
-                className: isSelected ? 'process-development-row-selected' : undefined,
-                style: { cursor: 'pointer' }
-              };
-            }}
-            pagination={false}
-            scroll={{ y: 'calc(100vh - 320px)' }}
-          />
-        )}
+        <Table 
+          columns={columns} 
+          dataSource={processListData}
+          loading={loading}
+          onRow={(record) => {
+            const processId = `PROC-2024-${String(record.key).padStart(3, '0')}`;
+            const isSelected = selectedProcess?.id === processId && detailDrawerVisible;
+            return {
+              onClick: () => openProcessDetail(record as ProcessItem),
+              className: isSelected ? 'process-development-row-selected' : undefined,
+              style: { cursor: 'pointer' }
+            };
+          }}
+          pagination={false}
+          scroll={{ y: 'calc(100vh - 320px)' }}
+        />
       </div>
 
       {/* 分页区域 */}
