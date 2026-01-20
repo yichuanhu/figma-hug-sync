@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Button, Checkbox, Toast } from '@douyinfe/semi-ui';
-import './useOpenProcess.less';
+import './index.less';
 
 interface ProcessInfo {
   id: string;

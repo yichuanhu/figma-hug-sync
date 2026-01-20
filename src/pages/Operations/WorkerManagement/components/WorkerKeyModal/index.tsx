@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Typography, Button, Toast } from '@douyinfe/semi-ui';
 import { IconCopy } from '@douyinfe/semi-icons';
-import './WorkerKeyModal.less';
+import './index.less';
 
 const { Text } = Typography;
 

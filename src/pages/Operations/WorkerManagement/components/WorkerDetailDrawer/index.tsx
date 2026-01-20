@@ -2,7 +2,7 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SideSheet, Typography, Button, Tag, Descriptions, Tabs, TabPane, Table, Switch, Tooltip, Divider } from '@douyinfe/semi-ui';
 import { IconEditStroked, IconDeleteStroked, IconMaximize, IconMinimize, IconClose } from '@douyinfe/semi-icons';
-import './WorkerDetailDrawer.less';
+import './index.less';
 
 const { Title, Text } = Typography;
 

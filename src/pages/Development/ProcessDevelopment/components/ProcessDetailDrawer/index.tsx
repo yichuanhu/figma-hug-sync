@@ -2,7 +2,7 @@ import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SideSheet, Typography, Button, Tag, Descriptions, Tabs, TabPane, Table, Divider, Tooltip, DatePicker, Select } from '@douyinfe/semi-ui';
 import { IconEditStroked, IconPlay, IconDeleteStroked, IconExternalOpenStroked, IconMaximize, IconMinimize, IconClose } from '@douyinfe/semi-icons';
-import './ProcessDetailDrawer.less';
+import './index.less';
 
 const { Title, Text } = Typography;
 

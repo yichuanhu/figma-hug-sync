@@ -1,9 +1,9 @@
 import { useState, ReactNode } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Breadcrumb } from '@douyinfe/semi-ui';
-import Sidebar from './Sidebar';
+import Sidebar from '../Sidebar';
 import { generateBreadcrumbs } from '@/router/utils';
-import './AppLayout.less';
+import './index.less';
 
 interface AppLayoutProps {
   children: ReactNode;
