@@ -48,7 +48,10 @@ interface ProcessData {
   description: string;
   status: string;
   organization: string;
-  creator: string;
+  creator: {
+    name: string;
+    avatar: string;
+  };
   createdAt: string;
   language?: string;
   version?: string;
@@ -177,7 +180,7 @@ const ProcessDetailDrawer = ({
     { key: t('processDetail.fields.processName'), value: processData.name },
     { key: t('processDetail.fields.processDescription'), value: processData.description || '-' },
     { key: t('processDetail.fields.organization'), value: processData.organization },
-    { key: t('processDetail.fields.creator'), value: processData.creator },
+    { key: t('processDetail.fields.creator'), value: processData.creator.name },
     { key: t('processDetail.fields.createdAt'), value: processData.createdAt },
     { 
       key: t('processDetail.fields.status'), 
