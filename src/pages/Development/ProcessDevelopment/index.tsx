@@ -13,9 +13,9 @@ import {
   Tooltip
 } from '@douyinfe/semi-ui';
 import { IconSearch, IconPlus, IconDownload, IconMore, IconExternalOpenStroked, IconEditStroked, IconPlay, IconDeleteStroked } from '@douyinfe/semi-icons';
-import CreateProcessModal from '@/pages/Development/ProcessDevelopment/components/CreateProcessModal';
-import EditProcessModal from '@/pages/Development/ProcessDevelopment/components/EditProcessModal';
-import ProcessDetailDrawer from '@/pages/Development/ProcessDevelopment/components/ProcessDetailDrawer';
+import CreateProcessModal from './components/CreateProcessModal';
+import EditProcessModal from './components/EditProcessModal';
+import ProcessDetailDrawer from './components/ProcessDetailDrawer';
 import { useOpenProcess } from './hooks/useOpenProcess';
 import './index.less';
 
