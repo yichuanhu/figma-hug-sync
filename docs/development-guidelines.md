@@ -87,32 +87,49 @@ interface ProcessItem {
 
 ### 2.3 Less 嵌套规范
 
-使用 BEM 风格命名，结合 Less 嵌套：
+**使用层级嵌套避免样式冲突**：
+
+- **禁止使用 `&-` 连字符拼接**：容易产生一级类名，导致全局样式冲突
+- **推荐使用嵌套子类**：使用 `.parent .child` 结构确保样式隔离
+- 顶层类名应具有模块唯一性，如 `.create-process-modal`、`.worker-detail-drawer`
 
 ```less
-.process-development {
-  display: flex;
-  flex-direction: column;
-  
-  &-header {
-    padding: 20px 24px;
-    
-    &-title {
-      margin-bottom: 24px;
-    }
-    
-    &-toolbar {
-      display: flex;
-      justify-content: space-between;
+// ✅ 推荐 - 层级嵌套
+.create-process-modal {
+  .modal-form {
+    padding-top: 4px;
+
+    .select-full {
+      width: 100%;
     }
   }
-  
-  &-table {
-    flex: 1;
-    overflow: hidden;
+
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+  }
+}
+
+// ❌ 不推荐 - 使用 &- 拼接产生平级类名
+.create-process-modal {
+  &-form {
+    padding-top: 4px;
+  }
+
+  &-select-full {
+    width: 100%;
+  }
+
+  &-footer {
+    display: flex;
   }
 }
 ```
+
+**说明**：
+- `&-form` 编译后为 `.create-process-modal-form`，是独立的一级选择器
+- `.modal-form` 嵌套在父级下，编译后为 `.create-process-modal .modal-form`，具有层级隔离
 
 ### 2.4 使用 Semi Design Token
 
