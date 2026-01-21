@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Upload, Button, Toast, Banner } from '@douyinfe/semi-ui';
-import { IconFile, IconInbox, IconAlertCircle } from '@douyinfe/semi-icons';
+import { IconFile, IconInbox, IconAlertCircle, IconClose } from '@douyinfe/semi-icons';
 import type { FileItem } from '@douyinfe/semi-ui/lib/es/upload';
 import type { LYProcessResponse } from '@/api';
 import './index.less';
@@ -111,11 +111,7 @@ const UploadVersionModal = ({ visible, onCancel, processData, onSuccess }: Uploa
             type="warning"
             icon={<IconAlertCircle />}
             description={t('development.processDevelopment.detail.uploadVersion.nameMismatchWarning')}
-            closeIcon={
-              <span className="upload-version-modal-warning-close">
-                {t('development.processDevelopment.detail.uploadVersion.gotIt')}
-              </span>
-            }
+            closeIcon={<IconClose />}
             onClose={handleDismissWarning}
             className="upload-version-modal-warning"
           />
