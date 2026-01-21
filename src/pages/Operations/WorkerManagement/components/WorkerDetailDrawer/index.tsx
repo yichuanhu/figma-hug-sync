@@ -2,47 +2,15 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SideSheet, Typography, Button, Tag, Descriptions, Tabs, TabPane, Table, Switch, Tooltip, Divider, Row, Col, Space } from '@douyinfe/semi-ui';
 import { IconEditStroked, IconDeleteStroked, IconMaximize, IconMinimize, IconClose } from '@douyinfe/semi-icons';
+import type { LYWorkerResponse } from '@/api';
 import './index.less';
 
 const { Title, Text } = Typography;
 
-type WorkerStatus = 'OFFLINE' | 'IDLE' | 'BUSY' | 'FAULT' | 'MAINTENANCE';
-type SyncStatus = 'SYNCED' | 'PENDING';
-type Priority = 'HIGH' | 'MEDIUM' | 'LOW';
-
-interface WorkerData {
-  id: string;
-  name: string;
-  description: string;
-  status: WorkerStatus;
-  syncStatus: SyncStatus;
-  ipAddress: string;
-  priority: Priority;
-  clientVersion: string;
-  lastHeartbeatTime: string;
-  receiveTasks: boolean;
-  username: string;
-  desktopType: 'Console' | 'NotConsole';
-  displaySize?: string;
-  enableAutoUnlock?: boolean;
-  forceLogin: boolean;
-  deviceToken: string;
-  machineCode: string;
-  hostName: string;
-  os: string;
-  arch: string;
-  cpuModel: string;
-  cpuCores: number;
-  memoryCapacity: string;
-  robotCount: number;
-  createdAt: string;
-  creator: string;
-}
-
 interface WorkerDetailDrawerProps {
   visible: boolean;
   onClose: () => void;
-  workerData: WorkerData | null;
+  workerData: LYWorkerResponse | null;
   onEdit?: () => void;
   onDelete?: () => void;
 }
@@ -103,6 +71,9 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onDelete }: 
 
   if (!workerData) return null;
 
+  type WorkerStatus = LYWorkerResponse['status'];
+  type Priority = LYWorkerResponse['priority'];
+
   const statusConfig: Record<WorkerStatus, { color: string; text: string; dot: string }> = {
     OFFLINE: { color: 'grey', text: t('worker.status.offline'), dot: '⚪' },
     IDLE: { color: 'green', text: t('worker.status.idle'), dot: '🟢' },
@@ -140,35 +111,35 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onDelete }: 
         </span>
       ),
     },
-    { key: t('worker.detail.fields.receiveTasks'), value: <Switch checked={workerData.receiveTasks} size="small" disabled /> },
+    { key: t('worker.detail.fields.receiveTasks'), value: <Switch checked={workerData.receive_tasks} size="small" disabled /> },
   ];
 
   const detailInfoData = [
     {
       key: t('worker.detail.fields.desktopType'),
-      value: workerData.desktopType === 'Console' ? t('worker.detail.desktopTypes.console') : t('worker.detail.desktopTypes.notConsole'),
+      value: workerData.desktop_type === 'Console' ? t('worker.detail.desktopTypes.console') : t('worker.detail.desktopTypes.notConsole'),
     },
     { key: t('worker.detail.fields.account'), value: workerData.username },
     {
       key: t('worker.detail.fields.passwordSyncStatus'),
-      value: workerData.syncStatus === 'SYNCED' ? t('worker.detail.syncStatusText.synced') : t('worker.detail.syncStatusText.pending'),
+      value: workerData.sync_status === 'SYNCED' ? t('worker.detail.syncStatusText.synced') : t('worker.detail.syncStatusText.pending'),
     },
-    { key: t('worker.detail.fields.forceLogin'), value: workerData.forceLogin ? `☑ ${t('common.yes')}` : `☐ ${t('common.no')}` },
-    { key: t('worker.detail.fields.resolution'), value: workerData.displaySize || '-' },
-    { key: t('worker.detail.fields.clientVersion'), value: workerData.clientVersion },
-    { key: t('worker.detail.fields.lastHeartbeat'), value: workerData.lastHeartbeatTime },
+    { key: t('worker.detail.fields.forceLogin'), value: workerData.force_login ? `☑ ${t('common.yes')}` : `☐ ${t('common.no')}` },
+    { key: t('worker.detail.fields.resolution'), value: workerData.display_size || '-' },
+    { key: t('worker.detail.fields.clientVersion'), value: workerData.client_version },
+    { key: t('worker.detail.fields.lastHeartbeat'), value: workerData.last_heartbeat_time },
   ];
 
   const hostInfoData = [
-    { key: t('worker.detail.fields.machineCode'), value: workerData.machineCode },
-    { key: t('worker.detail.fields.hostName'), value: workerData.hostName },
-    { key: t('worker.detail.fields.hostIp'), value: workerData.ipAddress },
+    { key: t('worker.detail.fields.machineCode'), value: workerData.machine_code },
+    { key: t('worker.detail.fields.hostName'), value: workerData.host_name },
+    { key: t('worker.detail.fields.hostIp'), value: workerData.ip_address },
     { key: t('worker.detail.fields.os'), value: workerData.os },
     { key: t('worker.detail.fields.arch'), value: workerData.arch },
-    { key: t('worker.detail.fields.cpuModel'), value: workerData.cpuModel },
-    { key: t('worker.detail.fields.cpuCores'), value: `${workerData.cpuCores}核` },
-    { key: t('worker.detail.fields.memoryCapacity'), value: workerData.memoryCapacity },
-    { key: t('worker.detail.fields.robotCount'), value: `${workerData.robotCount}台` },
+    { key: t('worker.detail.fields.cpuModel'), value: workerData.cpu_model },
+    { key: t('worker.detail.fields.cpuCores'), value: `${workerData.cpu_cores}核` },
+    { key: t('worker.detail.fields.memoryCapacity'), value: workerData.memory_capacity },
+    { key: t('worker.detail.fields.robotCount'), value: `${workerData.robot_count}台` },
   ];
 
   const changeColumns = [
@@ -243,8 +214,8 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onDelete }: 
             <div>
               <Descriptions
                 data={[
-                  { key: t('worker.detail.fields.createdAt'), value: workerData.createdAt },
-                  { key: t('worker.detail.fields.creator'), value: workerData.creator },
+                  { key: t('worker.detail.fields.createdAt'), value: workerData.created_at },
+                  { key: t('worker.detail.fields.creator'), value: workerData.creator_id },
                 ]}
               />
             </div>

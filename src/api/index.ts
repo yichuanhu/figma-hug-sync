@@ -177,6 +177,17 @@ export interface LYListResponseLYPendingApprovalResponse {
   list: LYPendingApprovalResponse[];
 }
 
+/** LYListResponse[LYWorkerResponse] */
+export interface LYListResponseLYWorkerResponse {
+  /** 范围 */
+  range?: LYRangeResponse | null;
+  /**
+   * List
+   * 列表
+   */
+  list: LYWorkerResponse[];
+}
+
 /** LYListResponse[LYProcessResponse] */
 export interface LYListResponseLYProcessResponse {
   /** 范围 */
@@ -565,6 +576,172 @@ export interface ValidationError {
   msg: string;
   /** Error Type */
   type: string;
+}
+
+/**
+ * LYWorkerResponse
+ * 机器人响应模型
+ */
+export interface LYWorkerResponse {
+  /**
+   * Id
+   * 机器人ID
+   */
+  id: string;
+  /**
+   * Name
+   * 机器人名称
+   */
+  name: string;
+  /**
+   * Description
+   * 机器人描述
+   */
+  description?: string | null;
+  /**
+   * Status
+   * 机器人状态 (OFFLINE/IDLE/BUSY/FAULT/MAINTENANCE)
+   */
+  status: 'OFFLINE' | 'IDLE' | 'BUSY' | 'FAULT' | 'MAINTENANCE';
+  /**
+   * Sync Status
+   * 同步状态 (SYNCED/PENDING)
+   */
+  sync_status: 'SYNCED' | 'PENDING';
+  /**
+   * Ip Address
+   * IP地址
+   */
+  ip_address: string;
+  /**
+   * Priority
+   * 优先级 (HIGH/MEDIUM/LOW)
+   */
+  priority: 'HIGH' | 'MEDIUM' | 'LOW';
+  /**
+   * Client Version
+   * 客户端版本
+   */
+  client_version: string;
+  /**
+   * Last Heartbeat Time
+   * 最后心跳时间
+   */
+  last_heartbeat_time: string;
+  /**
+   * Receive Tasks
+   * 是否接收任务
+   */
+  receive_tasks: boolean;
+  /**
+   * Username
+   * 用户名
+   */
+  username: string;
+  /**
+   * Desktop Type
+   * 桌面类型 (Console/NotConsole)
+   */
+  desktop_type: 'Console' | 'NotConsole';
+  /**
+   * Display Size
+   * 显示尺寸
+   */
+  display_size?: string | null;
+  /**
+   * Enable Auto Unlock
+   * 是否启用自动解锁
+   */
+  enable_auto_unlock?: boolean | null;
+  /**
+   * Force Login
+   * 是否强制登录
+   */
+  force_login: boolean;
+  /**
+   * Device Token
+   * 设备令牌
+   */
+  device_token: string;
+  /**
+   * Machine Code
+   * 机器码
+   */
+  machine_code: string;
+  /**
+   * Host Name
+   * 主机名
+   */
+  host_name: string;
+  /**
+   * Os
+   * 操作系统
+   */
+  os: string;
+  /**
+   * Arch
+   * 系统架构
+   */
+  arch: string;
+  /**
+   * Cpu Model
+   * CPU型号
+   */
+  cpu_model: string;
+  /**
+   * Cpu Cores
+   * CPU核心数
+   */
+  cpu_cores: number;
+  /**
+   * Memory Capacity
+   * 内存容量
+   */
+  memory_capacity: string;
+  /**
+   * Robot Count
+   * 机器人数量
+   */
+  robot_count: number;
+  /**
+   * Created At
+   * 创建时间
+   */
+  created_at: string;
+  /**
+   * Creator Id
+   * 创建者ID
+   */
+  creator_id: string;
+}
+
+/**
+ * GetWorkersParams
+ * 机器人列表查询参数
+ */
+export interface GetWorkersParams {
+  /** Keyword */
+  keyword?: string | null;
+  /** Status */
+  status?: string | null;
+  /** Sync Status */
+  sync_status?: string | null;
+  /** Priority */
+  priority?: string | null;
+  /**
+   * Offset
+   * 查询偏移量
+   * @min 0
+   * @default 0
+   */
+  offset?: number;
+  /**
+   * Size
+   * 查询数量
+   * @min 0
+   * @default 20
+   */
+  size?: number;
 }
 
 /**

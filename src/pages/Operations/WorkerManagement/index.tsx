@@ -30,232 +30,187 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import WorkerDetailDrawer from './components/WorkerDetailDrawer';
 import WorkerKeyModal from './components/WorkerKeyModal';
+import type { LYWorkerResponse, LYListResponseLYWorkerResponse, GetWorkersParams } from '@/api';
 import './index.less';
 
 const { Title, Text } = Typography;
 const CheckboxGroup = Checkbox.Group;
 
-// 机器人状态类型
-type WorkerStatus = 'OFFLINE' | 'IDLE' | 'BUSY' | 'FAULT' | 'MAINTENANCE';
-type SyncStatus = 'SYNCED' | 'PENDING';
-type Priority = 'HIGH' | 'MEDIUM' | 'LOW';
-
-// 机器人数据接口
-export interface WorkerData {
-  id: string;
-  name: string;
-  description: string;
-  status: WorkerStatus;
-  syncStatus: SyncStatus;
-  ipAddress: string;
-  priority: Priority;
-  clientVersion: string;
-  lastHeartbeatTime: string;
-  receiveTasks: boolean;
-  username: string;
-  desktopType: 'Console' | 'NotConsole';
-  displaySize?: string;
-  enableAutoUnlock?: boolean;
-  forceLogin: boolean;
-  deviceToken: string;
-  // 主机信息
-  machineCode: string;
-  hostName: string;
-  os: string;
-  arch: string;
-  cpuModel: string;
-  cpuCores: number;
-  memoryCapacity: string;
-  robotCount: number;
-  createdAt: string;
-  creator: string;
-}
-
-// Mock数据
-const mockWorkers: WorkerData[] = [
+// Mock数据 - 使用API类型
+const mockWorkers: LYWorkerResponse[] = [
   {
     id: '550e8400-e29b-41d4-a716-446655440001',
     name: '财务机器人-01',
     description: '用于财务流程自动化的机器人',
     status: 'IDLE',
-    syncStatus: 'SYNCED',
-    ipAddress: '10.0.1.100',
+    sync_status: 'SYNCED',
+    ip_address: '10.0.1.100',
     priority: 'HIGH',
-    clientVersion: 'v6.7.0',
-    lastHeartbeatTime: '2025-01-08 10:25:33',
-    receiveTasks: true,
+    client_version: 'v6.7.0',
+    last_heartbeat_time: '2025-01-08 10:25:33',
+    receive_tasks: true,
     username: 'DOMAIN\\robot01',
-    desktopType: 'Console',
-    enableAutoUnlock: true,
-    forceLogin: false,
-    deviceToken: 'abc123xyz789def456ghi012jkl345mno678pqr901stu234vwx567yzabc890',
-    machineCode: 'F11FD4447A215F380A40',
-    hostName: 'WIN-SERVER-01',
+    desktop_type: 'Console',
+    enable_auto_unlock: true,
+    force_login: false,
+    device_token: 'abc123xyz789def456ghi012jkl345mno678pqr901stu234vwx567yzabc890',
+    machine_code: 'F11FD4447A215F380A40',
+    host_name: 'WIN-SERVER-01',
     os: 'Windows Server 2019 Standard 64位',
     arch: 'x64',
-    cpuModel: 'Intel(R) Xeon(R) CPU E5-2680 v4 @ 2.40GHz',
-    cpuCores: 8,
-    memoryCapacity: '32 GB',
-    robotCount: 1,
-    createdAt: '2025-01-05 14:30:00',
-    creator: 'admin',
+    cpu_model: 'Intel(R) Xeon(R) CPU E5-2680 v4 @ 2.40GHz',
+    cpu_cores: 8,
+    memory_capacity: '32 GB',
+    robot_count: 1,
+    created_at: '2025-01-05 14:30:00',
+    creator_id: 'admin',
   },
   {
     id: '550e8400-e29b-41d4-a716-446655440002',
     name: '财务机器人-02',
     description: '用于财务报表自动化的机器人',
     status: 'BUSY',
-    syncStatus: 'PENDING',
-    ipAddress: '10.0.1.101',
+    sync_status: 'PENDING',
+    ip_address: '10.0.1.101',
     priority: 'MEDIUM',
-    clientVersion: 'v6.7.0',
-    lastHeartbeatTime: '2025-01-08 10:20:15',
-    receiveTasks: true,
+    client_version: 'v6.7.0',
+    last_heartbeat_time: '2025-01-08 10:20:15',
+    receive_tasks: true,
     username: 'DOMAIN\\robot02',
-    desktopType: 'NotConsole',
-    displaySize: '1920x1080',
-    forceLogin: true,
-    deviceToken: 'def456ghi012jkl345mno678pqr901stu234vwx567yzabc890abc123xyz789',
-    machineCode: 'A22GE5558B326G491B51',
-    hostName: 'WIN-SERVER-02',
+    desktop_type: 'NotConsole',
+    display_size: '1920x1080',
+    force_login: true,
+    device_token: 'def456ghi012jkl345mno678pqr901stu234vwx567yzabc890abc123xyz789',
+    machine_code: 'A22GE5558B326G491B51',
+    host_name: 'WIN-SERVER-02',
     os: 'Windows Server 2019 Standard 64位',
     arch: 'x64',
-    cpuModel: 'Intel(R) Xeon(R) CPU E5-2680 v4 @ 2.40GHz',
-    cpuCores: 8,
-    memoryCapacity: '16 GB',
-    robotCount: 2,
-    createdAt: '2025-01-06 09:15:00',
-    creator: 'admin',
+    cpu_model: 'Intel(R) Xeon(R) CPU E5-2680 v4 @ 2.40GHz',
+    cpu_cores: 8,
+    memory_capacity: '16 GB',
+    robot_count: 2,
+    created_at: '2025-01-06 09:15:00',
+    creator_id: 'admin',
   },
   {
     id: '550e8400-e29b-41d4-a716-446655440003',
     name: '财务机器人-03',
     description: '用于发票处理的机器人',
     status: 'OFFLINE',
-    syncStatus: 'SYNCED',
-    ipAddress: '10.0.1.102',
+    sync_status: 'SYNCED',
+    ip_address: '10.0.1.102',
     priority: 'HIGH',
-    clientVersion: 'v6.6.0',
-    lastHeartbeatTime: '2025-01-07 16:30:22',
-    receiveTasks: false,
+    client_version: 'v6.6.0',
+    last_heartbeat_time: '2025-01-07 16:30:22',
+    receive_tasks: false,
     username: 'DOMAIN\\robot03',
-    desktopType: 'Console',
-    enableAutoUnlock: false,
-    forceLogin: false,
-    deviceToken: 'ghi012jkl345mno678pqr901stu234vwx567yzabc890abc123xyz789def456',
-    machineCode: 'B33HF6669C437H502C62',
-    hostName: 'WIN-SERVER-03',
+    desktop_type: 'Console',
+    enable_auto_unlock: false,
+    force_login: false,
+    device_token: 'ghi012jkl345mno678pqr901stu234vwx567yzabc890abc123xyz789def456',
+    machine_code: 'B33HF6669C437H502C62',
+    host_name: 'WIN-SERVER-03',
     os: 'Windows 10 Pro 64位',
     arch: 'x64',
-    cpuModel: 'Intel(R) Core(TM) i7-8700 @ 3.20GHz',
-    cpuCores: 6,
-    memoryCapacity: '16 GB',
-    robotCount: 1,
-    createdAt: '2025-01-04 11:20:00',
-    creator: 'admin',
+    cpu_model: 'Intel(R) Core(TM) i7-8700 @ 3.20GHz',
+    cpu_cores: 6,
+    memory_capacity: '16 GB',
+    robot_count: 1,
+    created_at: '2025-01-04 11:20:00',
+    creator_id: 'admin',
   },
   {
     id: '550e8400-e29b-41d4-a716-446655440004',
     name: '人力机器人-01',
     description: '用于人事审批流程的机器人',
     status: 'FAULT',
-    syncStatus: 'SYNCED',
-    ipAddress: '10.0.1.103',
+    sync_status: 'SYNCED',
+    ip_address: '10.0.1.103',
     priority: 'LOW',
-    clientVersion: 'v6.5.0',
-    lastHeartbeatTime: '2025-01-06 09:15:00',
-    receiveTasks: false,
+    client_version: 'v6.5.0',
+    last_heartbeat_time: '2025-01-06 09:15:00',
+    receive_tasks: false,
     username: 'DOMAIN\\hr01',
-    desktopType: 'Console',
-    enableAutoUnlock: true,
-    forceLogin: true,
-    deviceToken: 'jkl345mno678pqr901stu234vwx567yzabc890abc123xyz789def456ghi012',
-    machineCode: 'C44IG7770D548I613D73',
-    hostName: 'WIN-HR-01',
+    desktop_type: 'Console',
+    enable_auto_unlock: true,
+    force_login: true,
+    device_token: 'jkl345mno678pqr901stu234vwx567yzabc890abc123xyz789def456ghi012',
+    machine_code: 'C44IG7770D548I613D73',
+    host_name: 'WIN-HR-01',
     os: 'Windows 10 Pro 64位',
     arch: 'x64',
-    cpuModel: 'Intel(R) Core(TM) i5-8400 @ 2.80GHz',
-    cpuCores: 6,
-    memoryCapacity: '8 GB',
-    robotCount: 1,
-    createdAt: '2025-01-03 15:45:00',
-    creator: 'hr_admin',
+    cpu_model: 'Intel(R) Core(TM) i5-8400 @ 2.80GHz',
+    cpu_cores: 6,
+    memory_capacity: '8 GB',
+    robot_count: 1,
+    created_at: '2025-01-03 15:45:00',
+    creator_id: 'hr_admin',
   },
   {
     id: '550e8400-e29b-41d4-a716-446655440005',
     name: '运维机器人-01',
     description: '用于运维巡检的机器人',
     status: 'IDLE',
-    syncStatus: 'SYNCED',
-    ipAddress: '10.0.2.50',
+    sync_status: 'SYNCED',
+    ip_address: '10.0.2.50',
     priority: 'MEDIUM',
-    clientVersion: 'v6.7.0',
-    lastHeartbeatTime: '2025-01-08 10:22:00',
-    receiveTasks: true,
+    client_version: 'v6.7.0',
+    last_heartbeat_time: '2025-01-08 10:22:00',
+    receive_tasks: true,
     username: 'ops01',
-    desktopType: 'NotConsole',
-    displaySize: '2560x1440',
-    forceLogin: false,
-    deviceToken: 'mno678pqr901stu234vwx567yzabc890abc123xyz789def456ghi012jkl345',
-    machineCode: 'D55JH8881E659J724E84',
-    hostName: 'WIN-OPS-01',
+    desktop_type: 'NotConsole',
+    display_size: '2560x1440',
+    force_login: false,
+    device_token: 'mno678pqr901stu234vwx567yzabc890abc123xyz789def456ghi012jkl345',
+    machine_code: 'D55JH8881E659J724E84',
+    host_name: 'WIN-OPS-01',
     os: 'Windows Server 2022 Standard 64位',
     arch: 'x64',
-    cpuModel: 'AMD Ryzen 9 5900X 12-Core Processor',
-    cpuCores: 12,
-    memoryCapacity: '64 GB',
-    robotCount: 1,
-    createdAt: '2025-01-02 08:30:00',
-    creator: 'ops_admin',
+    cpu_model: 'AMD Ryzen 9 5900X 12-Core Processor',
+    cpu_cores: 12,
+    memory_capacity: '64 GB',
+    robot_count: 1,
+    created_at: '2025-01-02 08:30:00',
+    creator_id: 'ops_admin',
   },
   {
     id: '550e8400-e29b-41d4-a716-446655440006',
     name: '测试机器人-01',
     description: '用于自动化测试的机器人',
     status: 'MAINTENANCE',
-    syncStatus: 'SYNCED',
-    ipAddress: '10.0.3.10',
+    sync_status: 'SYNCED',
+    ip_address: '10.0.3.10',
     priority: 'LOW',
-    clientVersion: 'v6.7.0',
-    lastHeartbeatTime: '2025-01-08 09:00:00',
-    receiveTasks: false,
+    client_version: 'v6.7.0',
+    last_heartbeat_time: '2025-01-08 09:00:00',
+    receive_tasks: false,
     username: 'DOMAIN\\test01',
-    desktopType: 'Console',
-    enableAutoUnlock: true,
-    forceLogin: false,
-    deviceToken: 'pqr901stu234vwx567yzabc890abc123xyz789def456ghi012jkl345mno678',
-    machineCode: 'E66KI9992F760K835F95',
-    hostName: 'WIN-TEST-01',
+    desktop_type: 'Console',
+    enable_auto_unlock: true,
+    force_login: false,
+    device_token: 'pqr901stu234vwx567yzabc890abc123xyz789def456ghi012jkl345mno678',
+    machine_code: 'E66KI9992F760K835F95',
+    host_name: 'WIN-TEST-01',
     os: 'Windows 11 Pro 64位',
     arch: 'x64',
-    cpuModel: 'Intel(R) Core(TM) i9-12900K @ 3.20GHz',
-    cpuCores: 16,
-    memoryCapacity: '32 GB',
-    robotCount: 1,
-    createdAt: '2025-01-01 10:00:00',
-    creator: 'qa_admin',
+    cpu_model: 'Intel(R) Core(TM) i9-12900K @ 3.20GHz',
+    cpu_cores: 16,
+    memory_capacity: '32 GB',
+    robot_count: 1,
+    created_at: '2025-01-01 10:00:00',
+    creator_id: 'qa_admin',
   },
 ];
 
 interface FilterState {
   status: string[];
-  syncStatus: string[];
+  sync_status: string[];
   priority: string[];
 }
 
-interface PaginationState {
-  current: number;
-  pageSize: number;
-  total: number;
-}
+// ============= 数据获取 - 返回LYListResponseLYWorkerResponse =============
 
-// 模拟API请求 - 获取机器人列表
-const fetchWorkerList = async (params: {
-  page: number;
-  pageSize: number;
-  keyword?: string;
-  filters?: FilterState;
-}): Promise<{ data: WorkerData[]; total: number }> => {
+const fetchWorkerList = async (params: GetWorkersParams & { filters?: FilterState }): Promise<LYListResponseLYWorkerResponse> => {
   // 模拟网络延迟
   await new Promise(resolve => setTimeout(resolve, 500));
   
@@ -266,7 +221,7 @@ const fetchWorkerList = async (params: {
     const keyword = params.keyword.toLowerCase().trim();
     data = data.filter(item => 
       item.name.toLowerCase().includes(keyword) ||
-      item.ipAddress.toLowerCase().includes(keyword)
+      item.ip_address.toLowerCase().includes(keyword)
     );
   }
 
@@ -276,8 +231,8 @@ const fetchWorkerList = async (params: {
   }
 
   // 同步状态筛选
-  if (params.filters?.syncStatus && params.filters.syncStatus.length > 0) {
-    data = data.filter(item => params.filters!.syncStatus.includes(item.syncStatus));
+  if (params.filters?.sync_status && params.filters.sync_status.length > 0) {
+    data = data.filter(item => params.filters!.sync_status.includes(item.sync_status));
   }
 
   // 优先级筛选
@@ -285,42 +240,57 @@ const fetchWorkerList = async (params: {
     data = data.filter(item => params.filters!.priority.includes(item.priority));
   }
 
-  // 模拟分页
-  const start = (params.page - 1) * params.pageSize;
-  const end = start + params.pageSize;
-  const paginatedData = data.slice(start, end);
+  const total = data.length;
+  const offset = params.offset || 0;
+  const size = params.size || 20;
+  const paginatedData = data.slice(offset, offset + size);
 
+  // 返回LYListResponseLYWorkerResponse格式
   return {
-    data: paginatedData,
-    total: data.length,
+    range: {
+      offset,
+      size,
+      total,
+    },
+    list: paginatedData,
   };
 };
 
 const WorkerManagement = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [searchValue, setSearchValue] = useState('');
+  
+  // 查询参数 - 使用API类型
+  const [queryParams, setQueryParams] = useState<GetWorkersParams>({
+    offset: 0,
+    size: 20,
+    keyword: undefined,
+  });
+  
   const [filters, setFilters] = useState<FilterState>({
     status: [],
-    syncStatus: [],
+    sync_status: [],
     priority: [],
   });
   const [filterVisible, setFilterVisible] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [workerListData, setWorkerListData] = useState<WorkerData[]>([]);
-  const [pagination, setPagination] = useState<PaginationState>({
-    current: 1,
-    pageSize: 10,
-    total: 0,
+  
+  // 列表响应数据 - 直接使用API LYListResponseLYWorkerResponse
+  const [listResponse, setListResponse] = useState<LYListResponseLYWorkerResponse>({
+    range: { offset: 0, size: 20, total: 0 },
+    list: [],
   });
   
   // 抽屉和弹窗状态
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
-  const [selectedWorker, setSelectedWorker] = useState<WorkerData | null>(null);
+  const [selectedWorker, setSelectedWorker] = useState<LYWorkerResponse | null>(null);
   const [keyModalVisible, setKeyModalVisible] = useState(false);
-  const [keyModalWorker, setKeyModalWorker] = useState<WorkerData | null>(null);
+  const [keyModalWorker, setKeyModalWorker] = useState<LYWorkerResponse | null>(null);
 
   // 状态配置
+  type WorkerStatus = LYWorkerResponse['status'];
+  type Priority = LYWorkerResponse['priority'];
+  
   const statusConfig: Record<WorkerStatus, { color: string; text: string }> = useMemo(() => ({
     OFFLINE: { color: 'grey', text: t('worker.status.offline') },
     IDLE: { color: 'green', text: t('worker.status.idle') },
@@ -345,7 +315,7 @@ const WorkerManagement = () => {
       { label: t('worker.status.fault'), value: 'FAULT' },
       { label: t('worker.status.maintenance'), value: 'MAINTENANCE' },
     ],
-    syncStatus: [
+    sync_status: [
       { label: t('worker.syncStatus.synced'), value: 'SYNCED' },
       { label: t('worker.syncStatus.pending'), value: 'PENDING' },
     ],
@@ -360,18 +330,15 @@ const WorkerManagement = () => {
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const result = await fetchWorkerList({
-        page: pagination.current,
-        pageSize: pagination.pageSize,
-        keyword: searchValue,
+      const response = await fetchWorkerList({
+        ...queryParams,
         filters,
       });
-      setWorkerListData(result.data);
-      setPagination(prev => ({ ...prev, total: result.total }));
+      setListResponse(response);
     } finally {
       setLoading(false);
     }
-  }, [pagination.current, pagination.pageSize, searchValue, filters]);
+  }, [queryParams, filters]);
 
   // 初始化加载
   useEffect(() => {
@@ -380,22 +347,21 @@ const WorkerManagement = () => {
 
   // 搜索
   const handleSearch = (value: string) => {
-    setSearchValue(value);
-    setPagination(prev => ({ ...prev, current: 1 }));
+    setQueryParams(prev => ({ ...prev, keyword: value || undefined, offset: 0 }));
   };
 
   const handleFilterChange = (key: keyof FilterState, values: string[]) => {
     setFilters(prev => ({ ...prev, [key]: values }));
-    setPagination(prev => ({ ...prev, current: 1 }));
+    setQueryParams(prev => ({ ...prev, offset: 0 }));
   };
 
   const clearFilters = () => {
     setFilters({
       status: [],
-      syncStatus: [],
+      sync_status: [],
       priority: [],
     });
-    setPagination(prev => ({ ...prev, current: 1 }));
+    setQueryParams(prev => ({ ...prev, offset: 0 }));
   };
 
   const hasActiveFilters = Object.values(filters).some(arr => arr.length > 0);
@@ -415,9 +381,9 @@ const WorkerManagement = () => {
       <div className="filter-popover-section">
         <Text strong className="filter-popover-label">{t('worker.filter.syncStatus')}</Text>
         <CheckboxGroup
-          value={filters.syncStatus}
-          onChange={(values) => handleFilterChange('syncStatus', values as string[])}
-          options={filterOptions.syncStatus}
+          value={filters.sync_status}
+          onChange={(values) => handleFilterChange('sync_status', values as string[])}
+          options={filterOptions.sync_status}
           direction="horizontal"
         />
       </div>
@@ -442,20 +408,20 @@ const WorkerManagement = () => {
   );
 
   // 打开详情抽屉
-  const openDetail = (worker: WorkerData) => {
+  const openDetail = (worker: LYWorkerResponse) => {
     setSelectedWorker(worker);
     setDetailDrawerVisible(true);
   };
 
   // 打开密钥弹窗
-  const openKeyModal = (worker: WorkerData, e?: React.MouseEvent) => {
+  const openKeyModal = (worker: LYWorkerResponse, e?: React.MouseEvent) => {
     e?.stopPropagation();
     setKeyModalWorker(worker);
     setKeyModalVisible(true);
   };
 
   // 删除确认
-  const handleDeleteClick = (worker: WorkerData, e?: React.MouseEvent) => {
+  const handleDeleteClick = (worker: LYWorkerResponse, e?: React.MouseEvent) => {
     e?.stopPropagation();
     
     // 检查是否有未完成任务
@@ -522,10 +488,16 @@ const WorkerManagement = () => {
   };
 
   // 编辑机器人
-  const handleEdit = (worker: WorkerData, e?: React.MouseEvent) => {
+  const handleEdit = (worker: LYWorkerResponse, e?: React.MouseEvent) => {
     e?.stopPropagation();
     navigate(`/worker-management/edit/${worker.id}`);
   };
+
+  // 从响应中获取分页信息
+  const { range, list } = listResponse;
+  const currentPage = Math.floor((range?.offset || 0) / (range?.size || 20)) + 1;
+  const pageSize = range?.size || 20;
+  const total = range?.total || 0;
 
   const columns = [
     {
@@ -533,11 +505,11 @@ const WorkerManagement = () => {
       dataIndex: 'name',
       key: 'name',
       width: 200,
-      render: (name: string, record: WorkerData) => (
+      render: (name: string, record: LYWorkerResponse) => (
         <div>
           <div className="worker-name-cell-header">
             <span className="worker-name-cell-name">{name}</span>
-            {record.syncStatus === 'PENDING' && (
+            {record.sync_status === 'PENDING' && (
               <Tag color="orange" size="small" type="light">{t('worker.syncStatus.pending')}</Tag>
             )}
           </div>
@@ -564,8 +536,8 @@ const WorkerManagement = () => {
     },
     {
       title: t('worker.table.ipAddress'),
-      dataIndex: 'ipAddress',
-      key: 'ipAddress',
+      dataIndex: 'ip_address',
+      key: 'ip_address',
       width: 120,
     },
     {
@@ -585,23 +557,23 @@ const WorkerManagement = () => {
     },
     {
       title: t('worker.table.clientVersion'),
-      dataIndex: 'clientVersion',
-      key: 'clientVersion',
+      dataIndex: 'client_version',
+      key: 'client_version',
       width: 100,
     },
     {
       title: t('worker.table.lastHeartbeat'),
-      dataIndex: 'lastHeartbeatTime',
-      key: 'lastHeartbeatTime',
+      dataIndex: 'last_heartbeat_time',
+      key: 'last_heartbeat_time',
       width: 160,
       sorter: true,
     },
     {
       title: t('worker.table.receiveTasks'),
-      dataIndex: 'receiveTasks',
-      key: 'receiveTasks',
+      dataIndex: 'receive_tasks',
+      key: 'receive_tasks',
       width: 90,
-      render: (receiveTasks: boolean, record: WorkerData) => {
+      render: (receiveTasks: boolean, record: LYWorkerResponse) => {
         // 只有在线且非故障状态才允许操作
         const canOperate = record.status !== 'OFFLINE' && record.status !== 'FAULT';
         return (
@@ -621,7 +593,7 @@ const WorkerManagement = () => {
       dataIndex: 'action',
       key: 'action',
       width: 60,
-      render: (_: unknown, record: WorkerData) => (
+      render: (_: unknown, record: LYWorkerResponse) => (
         <Dropdown
           trigger="click"
           position="bottomRight"
@@ -705,7 +677,7 @@ const WorkerManagement = () => {
                 prefix={<IconSearch />}
                 placeholder={t('worker.searchPlaceholder')}
                 className="worker-management-search-input"
-                value={searchValue}
+                value={queryParams.keyword || ''}
                 onChange={handleSearch}
               />
               <Popover
@@ -742,19 +714,21 @@ const WorkerManagement = () => {
       <div className="worker-management-table">
         <Table 
           columns={columns} 
-          dataSource={workerListData}
+          dataSource={list}
           loading={loading}
           rowKey="id"
           onRow={(record) => ({
-            onClick: () => openDetail(record as WorkerData),
+            onClick: () => openDetail(record as LYWorkerResponse),
             style: { cursor: 'pointer' }
           })}
           pagination={{
-            total: pagination.total,
-            pageSize: pagination.pageSize,
-            currentPage: pagination.current,
-            onPageChange: (page) => setPagination(prev => ({ ...prev, current: page })),
-            onPageSizeChange: (pageSize) => setPagination(prev => ({ ...prev, current: 1, pageSize })),
+            total,
+            pageSize,
+            currentPage,
+            onPageChange: (page) => {
+              setQueryParams(prev => ({ ...prev, offset: (page - 1) * pageSize }));
+            },
+            onPageSizeChange: (newPageSize) => setQueryParams(prev => ({ ...prev, offset: 0, size: newPageSize })),
             showSizeChanger: true,
             showTotal: true,
           }}
