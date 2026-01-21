@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { debounce } from 'lodash';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -233,10 +234,14 @@ const ProcessDevelopment = () => {
     loadData();
   }, [loadData]);
 
-  // 搜索
-  const handleSearch = (keyword: string) => {
-    setQueryParams((prev) => ({ ...prev, offset: 0, keyword }));
-  };
+  // 搜索 - 使用防抖处理
+  const handleSearch = useMemo(
+    () =>
+      debounce((value: string) => {
+        setQueryParams((prev) => ({ ...prev, offset: 0, keyword: value }));
+      }, 500),
+    []
+  );
 
   // 打开流程详情抽屉
   const openProcessDetail = (record: LYProcessResponse) => {
