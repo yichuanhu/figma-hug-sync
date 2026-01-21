@@ -290,19 +290,31 @@ const ProcessDevelopment = () => {
       cancelText: t('common.cancel'),
       okButtonProps: { type: 'danger' },
       onOk: async () => {
-        // 模拟删除 API 调用
-        await new Promise(resolve => setTimeout(resolve, 500));
-        console.log('删除流程:', processToDelete.id);
-        
-        // 关闭抽屉
-        setDetailDrawerVisible(false);
-        setSelectedProcess(null);
-        
-        // 重新加载数据
-        loadData();
-        
-        // 显示成功提示
-        Toast.success(t('development.processDevelopment.deleteModal.success'));
+        try {
+          // 模拟删除 API 调用
+          await new Promise((resolve, reject) => {
+            setTimeout(() => {
+              // 模拟成功（实际场景中根据API响应处理）
+              resolve(true);
+            }, 500);
+          });
+          
+          console.log('删除流程:', processToDelete.id);
+          
+          // 关闭抽屉
+          setDetailDrawerVisible(false);
+          setSelectedProcess(null);
+          
+          // 重新加载数据
+          loadData();
+          
+          // 显示成功提示
+          Toast.success(t('development.processDevelopment.deleteModal.success'));
+        } catch (error) {
+          // 显示错误提示
+          Toast.error(t('development.processDevelopment.deleteModal.error'));
+          throw error; // 抛出错误让 Modal 保持打开状态
+        }
       },
     });
   };
