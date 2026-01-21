@@ -13,14 +13,12 @@ import {
   Tooltip,
   Row,
   Col,
-  Space,
   Modal,
   Toast,
 } from '@douyinfe/semi-ui';
 import {
   IconSearch,
   IconPlus,
-  IconDownload,
   IconMore,
   IconExternalOpenStroked,
   IconEditStroked,
@@ -476,14 +474,9 @@ const ProcessDevelopment = () => {
             />
           </Col>
           <Col>
-            <Space>
-              <Button icon={<IconDownload />} theme="light">
-                {t('development.processDevelopment.importProcess')}
-              </Button>
-              <Button icon={<IconPlus />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
-                {t('development.processDevelopment.createProcess')}
-              </Button>
-            </Space>
+            <Button icon={<IconPlus />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
+              {t('development.processDevelopment.createProcess')}
+            </Button>
           </Col>
         </Row>
       </div>
