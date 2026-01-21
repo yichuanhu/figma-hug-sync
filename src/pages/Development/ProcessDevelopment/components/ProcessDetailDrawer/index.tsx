@@ -1,6 +1,6 @@
 import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SideSheet, Typography, Button, Tag, Descriptions, Tabs, TabPane, Table, Divider, Tooltip, DatePicker, Select } from '@douyinfe/semi-ui';
+import { SideSheet, Typography, Button, Tag, Descriptions, Tabs, TabPane, Table, Divider, Tooltip, DatePicker, Select, Row, Col, Space } from '@douyinfe/semi-ui';
 import { IconEditStroked, IconPlay, IconDeleteStroked, IconExternalOpenStroked, IconMaximize, IconMinimize, IconClose } from '@douyinfe/semi-icons';
 import './index.less';
 
@@ -217,37 +217,41 @@ const ProcessDetailDrawer = ({ visible, onClose, processData, onOpen, onEdit, on
   return (
     <SideSheet
       title={
-        <div className="process-detail-drawer-header">
-          <div className="process-detail-drawer-header-title-section">
-            <Title heading={5} className="process-detail-drawer-header-title">
-              {processData.name}
-            </Title>
-            <Text type="tertiary" size="small">
-              {processData.id}
-            </Text>
-          </div>
-          <div className="process-detail-drawer-header-actions">
-            <Tooltip content={t('development.processDevelopment.actions.openProcess')}>
-              <Button icon={<IconExternalOpenStroked />} theme="borderless" size="small" onClick={onOpen} />
-            </Tooltip>
-            <Tooltip content={t('common.edit')}>
-              <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={onEdit} />
-            </Tooltip>
-            <Tooltip content={t('common.run')}>
-              <Button icon={<IconPlay />} theme="borderless" size="small" onClick={onRun} />
-            </Tooltip>
-            <Tooltip content={t('common.delete')}>
-              <Button icon={<IconDeleteStroked className="process-detail-drawer-header-delete-icon" />} theme="borderless" size="small" onClick={onDelete} />
-            </Tooltip>
-            <Divider layout="vertical" className="process-detail-drawer-header-divider" />
-            <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
-              <Button icon={isFullscreen ? <IconMinimize /> : <IconMaximize />} theme="borderless" size="small" onClick={toggleFullscreen} />
-            </Tooltip>
-            <Tooltip content={t('common.close')}>
-              <Button icon={<IconClose />} theme="borderless" size="small" onClick={onClose} className="process-detail-drawer-header-close-btn" />
-            </Tooltip>
-          </div>
-        </div>
+        <Row type="flex" justify="space-between" align="middle" className="process-detail-drawer-header">
+          <Col>
+            <Space>
+              <Title heading={5} className="process-detail-drawer-header-title">
+                {processData.name}
+              </Title>
+              <Text type="tertiary" size="small">
+                {processData.id}
+              </Text>
+            </Space>
+          </Col>
+          <Col>
+            <Space spacing={4}>
+              <Tooltip content={t('development.processDevelopment.actions.openProcess')}>
+                <Button icon={<IconExternalOpenStroked />} theme="borderless" size="small" onClick={onOpen} />
+              </Tooltip>
+              <Tooltip content={t('common.edit')}>
+                <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={onEdit} />
+              </Tooltip>
+              <Tooltip content={t('common.run')}>
+                <Button icon={<IconPlay />} theme="borderless" size="small" onClick={onRun} />
+              </Tooltip>
+              <Tooltip content={t('common.delete')}>
+                <Button icon={<IconDeleteStroked className="process-detail-drawer-header-delete-icon" />} theme="borderless" size="small" onClick={onDelete} />
+              </Tooltip>
+              <Divider layout="vertical" className="process-detail-drawer-header-divider" />
+              <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
+                <Button icon={isFullscreen ? <IconMinimize /> : <IconMaximize />} theme="borderless" size="small" onClick={toggleFullscreen} />
+              </Tooltip>
+              <Tooltip content={t('common.close')}>
+                <Button icon={<IconClose />} theme="borderless" size="small" onClick={onClose} className="process-detail-drawer-header-close-btn" />
+              </Tooltip>
+            </Space>
+          </Col>
+        </Row>
       }
       visible={visible}
       onCancel={onClose}

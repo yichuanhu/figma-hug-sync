@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SideSheet, Typography, Button, Tag, Descriptions, Tabs, TabPane, Table, Switch, Tooltip, Divider } from '@douyinfe/semi-ui';
+import { SideSheet, Typography, Button, Tag, Descriptions, Tabs, TabPane, Table, Switch, Tooltip, Divider, Row, Col, Space } from '@douyinfe/semi-ui';
 import { IconEditStroked, IconDeleteStroked, IconMaximize, IconMinimize, IconClose } from '@douyinfe/semi-icons';
 import './index.less';
 
@@ -181,26 +181,30 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onDelete }: 
   return (
     <SideSheet
       title={
-        <div className="worker-detail-drawer-header">
-          <Title heading={5} className="worker-detail-drawer-header-title">
-            {t('worker.detail.title')}
-          </Title>
-          <div className="worker-detail-drawer-header-actions">
-            <Tooltip content={t('common.edit')}>
-              <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={onEdit} />
-            </Tooltip>
-            <Tooltip content={t('common.delete')}>
-              <Button icon={<IconDeleteStroked className="worker-detail-drawer-header-delete-icon" />} theme="borderless" size="small" onClick={onDelete} />
-            </Tooltip>
-            <Divider layout="vertical" className="worker-detail-drawer-header-divider" />
-            <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
-              <Button icon={isFullscreen ? <IconMinimize /> : <IconMaximize />} theme="borderless" size="small" onClick={toggleFullscreen} />
-            </Tooltip>
-            <Tooltip content={t('common.close')}>
-              <Button icon={<IconClose />} theme="borderless" size="small" onClick={onClose} className="worker-detail-drawer-header-close-btn" />
-            </Tooltip>
-          </div>
-        </div>
+        <Row type="flex" justify="space-between" align="middle" className="worker-detail-drawer-header">
+          <Col>
+            <Title heading={5} className="worker-detail-drawer-header-title">
+              {t('worker.detail.title')}
+            </Title>
+          </Col>
+          <Col>
+            <Space spacing={4}>
+              <Tooltip content={t('common.edit')}>
+                <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={onEdit} />
+              </Tooltip>
+              <Tooltip content={t('common.delete')}>
+                <Button icon={<IconDeleteStroked className="worker-detail-drawer-header-delete-icon" />} theme="borderless" size="small" onClick={onDelete} />
+              </Tooltip>
+              <Divider layout="vertical" className="worker-detail-drawer-header-divider" />
+              <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
+                <Button icon={isFullscreen ? <IconMinimize /> : <IconMaximize />} theme="borderless" size="small" onClick={toggleFullscreen} />
+              </Tooltip>
+              <Tooltip content={t('common.close')}>
+                <Button icon={<IconClose />} theme="borderless" size="small" onClick={onClose} className="worker-detail-drawer-header-close-btn" />
+              </Tooltip>
+            </Space>
+          </Col>
+        </Row>
       }
       visible={visible}
       onCancel={onClose}
