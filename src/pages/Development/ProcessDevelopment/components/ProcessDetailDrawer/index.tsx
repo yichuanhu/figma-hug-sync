@@ -26,34 +26,14 @@ import {
   IconMinimize,
   IconClose,
 } from '@douyinfe/semi-icons';
-import type { LYProcessVersionResponse } from '@/api';
+import type { LYProcessResponse, LYProcessVersionResponse } from '@/api';
 import './index.less';
 
 const { Title, Text } = Typography;
 
-// ============= 类型定义 - 基于API类型 =============
+// ============= Mock数据生成 - 基于API类型 =============
 
-// 流程状态枚举 - 与API LYProcessResponse.status对应
-type ProcessStatus = 'DEVELOPING' | 'PUBLISHED' | 'ARCHIVED';
-
-// 流程数据接口 - 与ProcessItem保持一致
-interface ProcessData {
-  id: string;
-  name: string;
-  description: string;
-  status: ProcessStatus;
-  creatorName: string;
-  createTime: string;
-  updateTime: string;
-  language?: string;
-  processType?: string;
-  timeout?: number;
-  currentVersionId?: string | null;
-  creatorId?: string;
-  requirementId?: string | null;
-}
-
-// 变更记录数据结构
+// 变更记录数据 (暂无对应API类型，使用本地定义)
 interface ChangeRecord {
   key: number;
   changeTime: string;
@@ -62,7 +42,7 @@ interface ChangeRecord {
   changeContent: string;
 }
 
-// 运行记录数据结构
+// 运行记录数据 (暂无对应API类型，使用本地定义)
 interface RunRecord {
   key: number;
   taskId: string;
@@ -72,7 +52,7 @@ interface RunRecord {
   status: string;
 }
 
-// 版本数据结构 - 基于LYProcessVersionResponse
+// 版本记录 - 基于LYProcessVersionResponse简化
 interface VersionRecord {
   key: number;
   version: string;
@@ -81,10 +61,8 @@ interface VersionRecord {
   remark: string;
 }
 
-// ============= Mock数据生成 =============
-
-// 生成Mock变更记录
-const generateMockChangeRecords = (): ChangeRecord[] => [
+// Mock数据
+const allChangeData: ChangeRecord[] = [
   { key: 1, changeTime: '2024-01-15 10:30', changeType: '发布', changer: '姜鹏志', changeContent: '发布版本 1.2.0' },
   { key: 2, changeTime: '2024-01-14 16:00', changeType: '编辑', changer: '李明', changeContent: '修改流程描述' },
   { key: 3, changeTime: '2024-01-10 14:20', changeType: '发布', changer: '姜鹏志', changeContent: '发布版本 1.1.0' },
@@ -92,78 +70,53 @@ const generateMockChangeRecords = (): ChangeRecord[] => [
   { key: 5, changeTime: '2023-12-28 14:30', changeType: '编辑', changer: '李明', changeContent: '修改流程配置' },
 ];
 
-// 生成Mock运行记录
-const generateMockRunRecords = (): RunRecord[] => [
-  {
-    key: 1,
-    taskId: 'TASK-001',
-    robot: 'RPA-机器人-01',
-    creator: '姜鹏志',
-    createdTime: '2024-01-15 10:30:00',
-    status: '成功',
-  },
-  {
-    key: 2,
-    taskId: 'TASK-002',
-    robot: 'RPA-机器人-02',
-    creator: '李明',
-    createdTime: '2024-01-14 15:20:00',
-    status: '失败',
-  },
-  {
-    key: 3,
-    taskId: 'TASK-003',
-    robot: 'RPA-机器人-01',
-    creator: '王芳',
-    createdTime: '2024-01-13 09:00:00',
-    status: '成功',
-  },
-  {
-    key: 4,
-    taskId: 'TASK-004',
-    robot: 'RPA-机器人-03',
-    creator: '姜鹏志',
-    createdTime: '2024-01-12 14:00:00',
-    status: '运行中',
-  },
-  {
-    key: 5,
-    taskId: 'TASK-005',
-    robot: 'RPA-机器人-02',
-    creator: '李明',
-    createdTime: '2024-01-11 08:30:00',
-    status: '成功',
-  },
+const allRunData: RunRecord[] = [
+  { key: 1, taskId: 'TASK-001', robot: 'RPA-机器人-01', creator: '姜鹏志', createdTime: '2024-01-15 10:30:00', status: '成功' },
+  { key: 2, taskId: 'TASK-002', robot: 'RPA-机器人-02', creator: '李明', createdTime: '2024-01-14 15:20:00', status: '失败' },
+  { key: 3, taskId: 'TASK-003', robot: 'RPA-机器人-01', creator: '王芳', createdTime: '2024-01-13 09:00:00', status: '成功' },
+  { key: 4, taskId: 'TASK-004', robot: 'RPA-机器人-03', creator: '姜鹏志', createdTime: '2024-01-12 14:00:00', status: '运行中' },
+  { key: 5, taskId: 'TASK-005', robot: 'RPA-机器人-02', creator: '李明', createdTime: '2024-01-11 08:30:00', status: '成功' },
 ];
 
-// 生成Mock版本记录 - 基于LYProcessVersionResponse格式
-const generateMockVersionRecords = (): VersionRecord[] => [
+const versionData: VersionRecord[] = [
   { key: 1, version: '1.2.0', publishedAt: '2024-01-15 10:30', publisher: '姜鹏志', remark: '修复审批逻辑' },
   { key: 2, version: '1.1.0', publishedAt: '2024-01-10 14:20', publisher: '姜鹏志', remark: '新增通知功能' },
   { key: 3, version: '1.0.0', publishedAt: '2024-01-05 09:00', publisher: '姜鹏志', remark: '初始版本' },
 ];
-
-// Mock数据
-const allChangeData = generateMockChangeRecords();
-const allRunData = generateMockRunRecords();
-const versionData = generateMockVersionRecords();
 
 const changerOptions = [...new Set(allChangeData.map((item) => item.changer))].map((changer) => ({
   value: changer,
   label: changer,
 }));
 
+// 模拟创建者ID到名称的映射
+const mockCreatorNameMap: Record<string, string> = {
+  'user-001': '张三',
+  'user-002': '李四',
+  'user-003': '王五',
+  'user-004': '赵六',
+  'user-005': '钱七',
+};
+
 // ============= 组件Props =============
 
 interface ProcessDetailDrawerProps {
   visible: boolean;
   onClose: () => void;
-  processData: ProcessData | null;
+  processData: LYProcessResponse | null;
   onOpen?: () => void;
   onEdit?: () => void;
   onRun?: () => void;
   onDelete?: () => void;
 }
+
+// ============= 状态配置 =============
+
+const statusConfig: Record<string, { color: 'grey' | 'green' | 'orange'; i18nKey: string }> = {
+  DEVELOPING: { color: 'grey', i18nKey: 'development.processDevelopment.status.developing' },
+  PUBLISHED: { color: 'green', i18nKey: 'development.processDevelopment.status.published' },
+  ARCHIVED: { color: 'orange', i18nKey: 'development.processDevelopment.status.archived' },
+};
 
 // ============= 组件 =============
 
@@ -192,18 +145,9 @@ const ProcessDetailDrawer = ({
   const startWidth = useRef(drawerWidth);
 
   const runStatusOptions = [
-    {
-      value: t('development.processDevelopment.detail.runStatus.success'),
-      label: t('development.processDevelopment.detail.runStatus.success'),
-    },
-    {
-      value: t('development.processDevelopment.detail.runStatus.failed'),
-      label: t('development.processDevelopment.detail.runStatus.failed'),
-    },
-    {
-      value: t('development.processDevelopment.detail.runStatus.running'),
-      label: t('development.processDevelopment.detail.runStatus.running'),
-    },
+    { value: t('development.processDevelopment.detail.runStatus.success'), label: t('development.processDevelopment.detail.runStatus.success') },
+    { value: t('development.processDevelopment.detail.runStatus.failed'), label: t('development.processDevelopment.detail.runStatus.failed') },
+    { value: t('development.processDevelopment.detail.runStatus.running'), label: t('development.processDevelopment.detail.runStatus.running') },
   ];
 
   const handleMouseDown = useCallback(
@@ -265,65 +209,36 @@ const ProcessDetailDrawer = ({
 
   if (!processData) return null;
 
-  // 状态颜色配置
-  const getStatusColor = (status: ProcessStatus): 'grey' | 'green' | 'orange' => {
-    switch (status) {
-      case 'PUBLISHED':
-        return 'green';
-      case 'ARCHIVED':
-        return 'orange';
-      case 'DEVELOPING':
-      default:
-        return 'grey';
-    }
+  // 格式化日期时间
+  const formatDateTime = (dateStr: string | null): string => {
+    if (!dateStr) return '-';
+    return dateStr.replace('T', ' ').substring(0, 19);
   };
 
-  // 状态 i18n key 配置
-  const getStatusI18nKey = (status: ProcessStatus): string => {
-    switch (status) {
-      case 'PUBLISHED':
-        return 'development.processDevelopment.status.published';
-      case 'ARCHIVED':
-        return 'development.processDevelopment.status.archived';
-      case 'DEVELOPING':
-      default:
-        return 'development.processDevelopment.status.developing';
-    }
-  };
+  // 获取创建者名称
+  const creatorName = mockCreatorNameMap[processData.creator_id] || processData.creator_id;
 
   const descriptionData = [
     { key: t('development.processDevelopment.fields.processId'), value: processData.id },
     { key: t('development.processDevelopment.fields.processName'), value: processData.name },
     { key: t('common.description'), value: processData.description || '-' },
-    { key: t('common.creator'), value: processData.creatorName },
-    { key: t('common.createTime'), value: processData.createTime },
-    { key: t('common.updateTime'), value: processData.updateTime },
+    { key: t('common.creator'), value: creatorName },
+    { key: t('common.createTime'), value: formatDateTime(processData.created_at) },
+    { key: t('common.updateTime'), value: formatDateTime(processData.updated_at) },
     {
       key: t('common.status'),
       value: (
-        <Tag color={getStatusColor(processData.status)} type="light">
-          {t(getStatusI18nKey(processData.status))}
+        <Tag color={statusConfig[processData.status]?.color || 'grey'} type="light">
+          {t(statusConfig[processData.status]?.i18nKey || 'development.processDevelopment.status.developing')}
         </Tag>
       ),
     },
   ];
 
   const versionColumns = [
-    {
-      title: t('development.processDevelopment.detail.versionTable.version'),
-      dataIndex: 'version',
-      key: 'version',
-    },
-    {
-      title: t('development.processDevelopment.detail.versionTable.publishedAt'),
-      dataIndex: 'publishedAt',
-      key: 'publishedAt',
-    },
-    {
-      title: t('development.processDevelopment.detail.versionTable.publisher'),
-      dataIndex: 'publisher',
-      key: 'publisher',
-    },
+    { title: t('development.processDevelopment.detail.versionTable.version'), dataIndex: 'version', key: 'version' },
+    { title: t('development.processDevelopment.detail.versionTable.publishedAt'), dataIndex: 'publishedAt', key: 'publishedAt' },
+    { title: t('development.processDevelopment.detail.versionTable.publisher'), dataIndex: 'publisher', key: 'publisher' },
     { title: t('development.processDevelopment.detail.versionTable.remark'), dataIndex: 'remark', key: 'remark' },
   ];
 
@@ -354,22 +269,10 @@ const ProcessDetailDrawer = ({
   ];
 
   const changeColumns = [
-    {
-      title: t('development.processDevelopment.detail.changeTable.changeTime'),
-      dataIndex: 'changeTime',
-      key: 'changeTime',
-    },
-    {
-      title: t('development.processDevelopment.detail.changeTable.changeType'),
-      dataIndex: 'changeType',
-      key: 'changeType',
-    },
+    { title: t('development.processDevelopment.detail.changeTable.changeTime'), dataIndex: 'changeTime', key: 'changeTime' },
+    { title: t('development.processDevelopment.detail.changeTable.changeType'), dataIndex: 'changeType', key: 'changeType' },
     { title: t('development.processDevelopment.detail.changeTable.changer'), dataIndex: 'changer', key: 'changer' },
-    {
-      title: t('development.processDevelopment.detail.changeTable.changeContent'),
-      dataIndex: 'changeContent',
-      key: 'changeContent',
-    },
+    { title: t('development.processDevelopment.detail.changeTable.changeContent'), dataIndex: 'changeContent', key: 'changeContent' },
   ];
 
   return (
@@ -398,30 +301,14 @@ const ProcessDetailDrawer = ({
                 <Button icon={<IconPlay />} theme="borderless" size="small" onClick={onRun} />
               </Tooltip>
               <Tooltip content={t('common.delete')}>
-                <Button
-                  icon={<IconDeleteStroked className="process-detail-drawer-header-delete-icon" />}
-                  theme="borderless"
-                  size="small"
-                  onClick={onDelete}
-                />
+                <Button icon={<IconDeleteStroked className="process-detail-drawer-header-delete-icon" />} theme="borderless" size="small" onClick={onDelete} />
               </Tooltip>
               <Divider layout="vertical" className="process-detail-drawer-header-divider" />
               <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
-                <Button
-                  icon={isFullscreen ? <IconMinimize /> : <IconMaximize />}
-                  theme="borderless"
-                  size="small"
-                  onClick={toggleFullscreen}
-                />
+                <Button icon={isFullscreen ? <IconMinimize /> : <IconMaximize />} theme="borderless" size="small" onClick={toggleFullscreen} />
               </Tooltip>
               <Tooltip content={t('common.close')}>
-                <Button
-                  icon={<IconClose />}
-                  theme="borderless"
-                  size="small"
-                  onClick={onClose}
-                  className="process-detail-drawer-header-close-btn"
-                />
+                <Button icon={<IconClose />} theme="borderless" size="small" onClick={onClose} className="process-detail-drawer-header-close-btn" />
               </Tooltip>
             </Space>
           </Col>
