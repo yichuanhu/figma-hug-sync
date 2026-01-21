@@ -14,6 +14,7 @@ import {
   Row,
   Col,
   Space,
+  Modal,
 } from '@douyinfe/semi-ui';
 import {
   IconSearch,
@@ -28,7 +29,6 @@ import {
 import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
 import ProcessDetailDrawer from './components/ProcessDetailDrawer';
-import ProcessDeleteModal from './components/ProcessDeleteModal';
 import { useOpenProcess } from './hooks/useOpenProcess';
 import './index.less';
 
@@ -219,9 +219,6 @@ const ProcessDevelopment = () => {
     name: string;
     description: string;
   } | null>(null);
-  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
-  const [deletingProcess, setDeletingProcess] = useState<ProcessItem | null>(null);
-  const [deleteLoading, setDeleteLoading] = useState(false);
 
   const { openProcess, OpenProcessModal } = useOpenProcess();
 
@@ -273,37 +270,37 @@ const ProcessDevelopment = () => {
     console.log('运行流程:', selectedProcess?.id);
   };
 
-  // 打开删除确认弹窗
+  // 删除确认
   const handleDeleteClick = (record?: ProcessItem) => {
     const processToDelete = record || selectedProcess;
-    if (processToDelete) {
-      setDeletingProcess(processToDelete);
-      setDeleteModalVisible(true);
-    }
-  };
+    if (!processToDelete) return;
 
-  // 确认删除
-  const handleDeleteConfirm = async () => {
-    if (!deletingProcess) return;
-    
-    setDeleteLoading(true);
-    try {
-      // 模拟删除 API 调用
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      console.log('删除流程:', deletingProcess.id);
-      
-      // 关闭弹窗和抽屉
-      setDeleteModalVisible(false);
-      setDeletingProcess(null);
-      setDetailDrawerVisible(false);
-      setSelectedProcess(null);
-      
-      // 重新加载数据
-      loadData();
-    } finally {
-      setDeleteLoading(false);
-    }
+    Modal.confirm({
+      title: t('development.processDevelopment.deleteModal.title'),
+      content: (
+        <>
+          <div>{t('development.processDevelopment.deleteModal.confirmMessage', { name: processToDelete.name })}</div>
+          <div style={{ color: 'var(--semi-color-text-2)', marginTop: 8 }}>
+            {t('development.processDevelopment.deleteModal.deleteWarning')}
+          </div>
+        </>
+      ),
+      okText: t('development.processDevelopment.deleteModal.confirmDelete'),
+      cancelText: t('common.cancel'),
+      okButtonProps: { type: 'danger' },
+      onOk: async () => {
+        // 模拟删除 API 调用
+        await new Promise(resolve => setTimeout(resolve, 500));
+        console.log('删除流程:', processToDelete.id);
+        
+        // 关闭抽屉
+        setDetailDrawerVisible(false);
+        setSelectedProcess(null);
+        
+        // 重新加载数据
+        loadData();
+      },
+    });
   };
 
   // 表格排序处理
@@ -558,17 +555,6 @@ const ProcessDevelopment = () => {
         onOpen={() => selectedProcess && openProcess(selectedProcess)}
       />
 
-      {/* 删除确认弹窗 */}
-      <ProcessDeleteModal
-        visible={deleteModalVisible}
-        onClose={() => {
-          setDeleteModalVisible(false);
-          setDeletingProcess(null);
-        }}
-        processData={deletingProcess}
-        onConfirm={handleDeleteConfirm}
-        loading={deleteLoading}
-      />
 
       {/* 打开流程确认弹窗 */}
       <OpenProcessModal />
