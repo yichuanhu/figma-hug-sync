@@ -47,7 +47,7 @@ const UploadVersionModal = ({ visible, onCancel, processData, onSuccess }: Uploa
 
   const handleUpload = useCallback(async () => {
     if (fileList.length === 0) {
-      Toast.warning(t('development.processDevelopment.uploadVersion.validation.fileRequired'));
+      Toast.warning(t('development.processDevelopment.detail.uploadVersion.validation.fileRequired'));
       return;
     }
 
@@ -55,13 +55,13 @@ const UploadVersionModal = ({ visible, onCancel, processData, onSuccess }: Uploa
     try {
       // 模拟上传延迟
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      Toast.success(t('development.processDevelopment.uploadVersion.success'));
+      Toast.success(t('development.processDevelopment.detail.uploadVersion.success'));
       setFileList([]);
       setShowNameMismatchWarning(false);
       onSuccess?.();
       onCancel();
     } catch (error) {
-      Toast.error(t('development.processDevelopment.uploadVersion.error'));
+      Toast.error(t('development.processDevelopment.detail.uploadVersion.error'));
     } finally {
       setUploading(false);
     }
@@ -85,7 +85,7 @@ const UploadVersionModal = ({ visible, onCancel, processData, onSuccess }: Uploa
 
   return (
     <Modal
-      title={t('development.processDevelopment.uploadVersion.title')}
+      title={t('development.processDevelopment.detail.uploadVersion.title')}
       visible={visible}
       onCancel={handleClose}
       footer={
@@ -97,7 +97,7 @@ const UploadVersionModal = ({ visible, onCancel, processData, onSuccess }: Uploa
             loading={uploading}
             disabled={fileList.length === 0}
           >
-            {t('development.processDevelopment.uploadVersion.upload')}
+            {t('development.processDevelopment.detail.uploadVersion.upload')}
           </Button>
           <Button onClick={handleClose}>{t('common.cancel')}</Button>
         </>
@@ -109,8 +109,8 @@ const UploadVersionModal = ({ visible, onCancel, processData, onSuccess }: Uploa
         {showNameMismatchWarning && (
           <Banner
             type="warning"
-            description={t('development.processDevelopment.uploadVersion.nameMismatchWarning')}
-            closeIcon={t('development.processDevelopment.uploadVersion.gotIt')}
+            description={t('development.processDevelopment.detail.uploadVersion.nameMismatchWarning')}
+            closeIcon={t('development.processDevelopment.detail.uploadVersion.gotIt')}
             onClose={handleDismissWarning}
             className="upload-version-modal-warning"
           />
@@ -121,8 +121,8 @@ const UploadVersionModal = ({ visible, onCancel, processData, onSuccess }: Uploa
           accept=".bot"
           limit={1}
           draggable
-          dragMainText={t('development.processDevelopment.uploadVersion.dragText')}
-          dragSubText={t('development.processDevelopment.uploadVersion.dragSubText')}
+          dragMainText={t('development.processDevelopment.detail.uploadVersion.dragText')}
+          dragSubText={t('development.processDevelopment.detail.uploadVersion.dragSubText')}
           onChange={handleFileChange}
           onRemove={handleRemove}
           className="upload-version-modal-uploader"
