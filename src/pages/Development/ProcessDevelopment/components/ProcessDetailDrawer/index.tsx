@@ -18,6 +18,7 @@ import {
   Space,
   Switch,
   Toast,
+  Modal,
 } from '@douyinfe/semi-ui';
 import {
   IconEditStroked,
@@ -345,13 +346,24 @@ const ProcessDetailDrawer = ({
     return data;
   }, [versionData]);
 
-  // 处理版本激活/停用
+  // 处理版本激活/停用 - 只允许开启一个版本
   const handleVersionActiveChange = useCallback((versionId: string, checked: boolean) => {
-    setVersionData(prevData => 
-      prevData.map(v => 
-        v.id === versionId ? { ...v, is_active: checked } : v
-      )
-    );
+    if (checked) {
+      // 开启新版本时，关闭其他所有版本
+      setVersionData(prevData => 
+        prevData.map(v => ({
+          ...v,
+          is_active: v.id === versionId ? true : false
+        }))
+      );
+    } else {
+      // 关闭版本
+      setVersionData(prevData => 
+        prevData.map(v => 
+          v.id === versionId ? { ...v, is_active: false } : v
+        )
+      );
+    }
     
     const version = versionData.find(v => v.id === versionId);
     if (version) {
@@ -362,6 +374,30 @@ const ProcessDetailDrawer = ({
       );
     }
   }, [versionData, t]);
+
+  // 处理删除版本
+  const handleDeleteVersion = useCallback((version: VersionDetailData) => {
+    // 开启的版本不允许删除
+    if (version.is_active) {
+      Toast.warning(t('development.processDevelopment.detail.versionList.cannotDeleteActive'));
+      return;
+    }
+
+    Modal.confirm({
+      title: t('development.processDevelopment.detail.versionList.deleteConfirmTitle'),
+      content: t('development.processDevelopment.detail.versionList.deleteConfirmContent', { version: version.version }),
+      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      okType: 'danger',
+      onOk: () => {
+        setVersionData(prevData => prevData.filter(v => v.id !== version.id));
+        // 如果删除的是当前选中的版本，清除选中状态
+        if (selectedVersionId === version.id) {
+          setSelectedVersionId(null);
+        }
+        Toast.success(t('development.processDevelopment.detail.versionList.deleteSuccess', { version: version.version }));
+      },
+    });
+  }, [t, selectedVersionId]);
 
   // 当前选中的版本详情
   const selectedVersion = useMemo(() => {
@@ -595,13 +631,19 @@ const ProcessDetailDrawer = ({
                       {t('development.processDevelopment.detail.versionDetail.basicInfo')}
                     </Text>
                     <Descriptions data={getVersionDescriptionData(selectedVersion)} align="left" />
-                    <Button
-                      icon={<IconDeleteStroked />}
-                      type="tertiary"
-                      className="process-detail-drawer-version-detail-delete-btn"
+                    <Tooltip 
+                      content={selectedVersion.is_active ? t('development.processDevelopment.detail.versionList.cannotDeleteActive') : undefined}
                     >
-                      {t('development.processDevelopment.detail.versionList.deleteVersion')}
-                    </Button>
+                      <Button
+                        icon={<IconDeleteStroked />}
+                        type="tertiary"
+                        className="process-detail-drawer-version-detail-delete-btn"
+                        disabled={selectedVersion.is_active}
+                        onClick={() => handleDeleteVersion(selectedVersion)}
+                      >
+                        {t('development.processDevelopment.detail.versionList.deleteVersion')}
+                      </Button>
+                    </Tooltip>
                   </div>
 
                   {/* 流程输入 */}
