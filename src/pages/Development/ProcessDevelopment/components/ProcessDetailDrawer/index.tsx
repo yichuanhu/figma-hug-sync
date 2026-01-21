@@ -327,7 +327,7 @@ const ProcessDetailDrawer = ({
       <Tabs activeKey={activeTab} onChange={setActiveTab} className="process-detail-drawer-tabs">
         <TabPane tab={t('development.processDevelopment.detail.tabs.detail')} itemKey="detail">
           <div className="process-detail-drawer-tab-content">
-            <Descriptions data={descriptionData} />
+            <Descriptions data={descriptionData} align="left" />
           </div>
         </TabPane>
 
