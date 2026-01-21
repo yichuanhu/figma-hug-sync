@@ -198,74 +198,74 @@
 
   // 菜单项
   .sidebar-menu-item {
-    margin-bottom: 4px;
-
     .sidebar-menu-item-wrapper {
       padding: 0 8px;
     }
+  }
 
-    .sidebar-menu-content {
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      padding: 10px 12px;
-      border-radius: 6px;
-      color: var(--semi-color-text-0);
+  // 菜单内容 - 独立样式避免嵌套hover问题
+  .sidebar-menu-content {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 10px 12px;
+    border-radius: 6px;
+    color: var(--semi-color-text-0);
+    margin-bottom: 2px;
 
-      &:hover {
-        background-color: #F5F5F5;
-      }
-
-      &.selected {
-        background-color: var(--semi-color-primary-light-default);
-      }
-
-      &.child {
-        padding-left: 38px;
-      }
-
-      &.floating-child {
-        padding-left: 40px;
-      }
+    &:hover {
+      background-color: #F5F5F5;
     }
 
-    .sidebar-menu-icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 20px;
-      margin-right: 8px;
-      color: var(--semi-color-text-2);
-
-      &.detail-icon {
-        width: 18px;
-        font-size: 16px;
-      }
+    &.selected {
+      background-color: var(--semi-color-primary-light-default);
     }
 
-    .sidebar-menu-text {
-      flex: 1;
-      font-size: 14px;
-      white-space: nowrap;
-
-      &.parent {
-        font-weight: 600;
-      }
-
-      &.selected {
-        font-weight: 600;
-      }
+    &.child {
+      padding-left: 38px;
     }
 
-    .sidebar-menu-arrow {
-      color: var(--semi-color-text-3);
-      display: flex;
-      align-items: center;
+    &.floating-child {
+      padding-left: 40px;
+    }
+  }
+
+  .sidebar-menu-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    margin-right: 8px;
+    color: var(--semi-color-text-2);
+
+    &.detail-icon {
+      width: 18px;
+      font-size: 16px;
+    }
+  }
+
+  .sidebar-menu-text {
+    flex: 1;
+    font-size: 14px;
+    white-space: nowrap;
+
+    &.parent {
+      font-weight: 600;
     }
 
-    // 子菜单容器
-    .sidebar-submenu {
-      margin-top: 2px;
+    &.selected {
+      font-weight: 600;
     }
+  }
+
+  .sidebar-menu-arrow {
+    color: var(--semi-color-text-3);
+    display: flex;
+    align-items: center;
+  }
+
+  // 子菜单容器
+  .sidebar-submenu {
+    margin-top: 0;
   }
 }
