@@ -280,14 +280,9 @@ const ProcessDetailDrawer = ({
       title={
         <Row type="flex" justify="space-between" align="middle" className="process-detail-drawer-header">
           <Col>
-            <Space>
-              <Title heading={5} className="process-detail-drawer-header-title">
-                {processData.name}
-              </Title>
-              <Text type="tertiary" size="small">
-                {processData.id}
-              </Text>
-            </Space>
+            <Title heading={5} className="process-detail-drawer-header-title">
+              {processData.name}
+            </Title>
           </Col>
           <Col>
             <Space spacing={4}>
