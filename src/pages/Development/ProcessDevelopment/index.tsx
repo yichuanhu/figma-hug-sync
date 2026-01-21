@@ -11,6 +11,9 @@ import {
   Avatar,
   Dropdown,
   Tooltip,
+  Row,
+  Col,
+  Space,
 } from '@douyinfe/semi-ui';
 import {
   IconSearch,
@@ -417,8 +420,8 @@ const ProcessDevelopment = () => {
         </div>
 
         {/* 操作栏 */}
-        <div className="process-development-header-toolbar">
-          <div className="process-development-header-search">
+        <Row type="flex" justify="space-between" align="middle" className="process-development-header-toolbar">
+          <Col>
             <Input
               prefix={<IconSearch />}
               placeholder={t('development.processDevelopment.searchPlaceholder')}
@@ -428,16 +431,18 @@ const ProcessDevelopment = () => {
               showClear
               maxLength={100}
             />
-          </div>
-          <div className="process-development-header-actions">
-            <Button icon={<IconDownload />} theme="light">
-              {t('development.processDevelopment.importProcess')}
-            </Button>
-            <Button icon={<IconPlus />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
-              {t('development.processDevelopment.createProcess')}
-            </Button>
-          </div>
-        </div>
+          </Col>
+          <Col>
+            <Space>
+              <Button icon={<IconDownload />} theme="light">
+                {t('development.processDevelopment.importProcess')}
+              </Button>
+              <Button icon={<IconPlus />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
+                {t('development.processDevelopment.createProcess')}
+              </Button>
+            </Space>
+          </Col>
+        </Row>
       </div>
 
       {/* 表格区域 */}
