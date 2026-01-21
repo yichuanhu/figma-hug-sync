@@ -1,31 +1,37 @@
 import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SideSheet, Typography, Button, Tag, Descriptions, Tabs, TabPane, Table, Divider, Tooltip, DatePicker, Select, Row, Col, Space } from '@douyinfe/semi-ui';
-import { IconEditStroked, IconPlay, IconDeleteStroked, IconExternalOpenStroked, IconMaximize, IconMinimize, IconClose } from '@douyinfe/semi-icons';
+import {
+  SideSheet,
+  Typography,
+  Button,
+  Tag,
+  Descriptions,
+  Tabs,
+  TabPane,
+  Table,
+  Divider,
+  Tooltip,
+  DatePicker,
+  Select,
+  Row,
+  Col,
+  Space,
+} from '@douyinfe/semi-ui';
+import {
+  IconEditStroked,
+  IconPlay,
+  IconDeleteStroked,
+  IconExternalOpenStroked,
+  IconMaximize,
+  IconMinimize,
+  IconClose,
+} from '@douyinfe/semi-icons';
+import type { LYProcessVersionResponse } from '@/api';
 import './index.less';
 
 const { Title, Text } = Typography;
 
-const allChangeData = [
-  { key: 1, changeTime: '2024-01-15 10:30', changeType: '发布', changer: '姜鹏志', changeContent: '发布版本 1.2.0' },
-  { key: 2, changeTime: '2024-01-14 16:00', changeType: '编辑', changer: '李明', changeContent: '修改流程描述' },
-  { key: 3, changeTime: '2024-01-10 14:20', changeType: '发布', changer: '姜鹏志', changeContent: '发布版本 1.1.0' },
-  { key: 4, changeTime: '2024-01-05 09:00', changeType: '创建', changer: '王芳', changeContent: '创建流程' },
-  { key: 5, changeTime: '2023-12-28 14:30', changeType: '编辑', changer: '李明', changeContent: '修改流程配置' },
-];
-
-const changerOptions = [...new Set(allChangeData.map((item) => item.changer))].map((changer) => ({
-  value: changer,
-  label: changer,
-}));
-
-const allRunData = [
-  { key: 1, taskId: 'TASK-001', robot: 'RPA-机器人-01', creator: '姜鹏志', createdTime: '2024-01-15 10:30:00', status: '成功' },
-  { key: 2, taskId: 'TASK-002', robot: 'RPA-机器人-02', creator: '李明', createdTime: '2024-01-14 15:20:00', status: '失败' },
-  { key: 3, taskId: 'TASK-003', robot: 'RPA-机器人-01', creator: '王芳', createdTime: '2024-01-13 09:00:00', status: '成功' },
-  { key: 4, taskId: 'TASK-004', robot: 'RPA-机器人-03', creator: '姜鹏志', createdTime: '2024-01-12 14:00:00', status: '运行中' },
-  { key: 5, taskId: 'TASK-005', robot: 'RPA-机器人-02', creator: '李明', createdTime: '2024-01-11 08:30:00', status: '成功' },
-];
+// ============= 类型定义 - 基于API类型 =============
 
 // 流程状态枚举 - 与API LYProcessResponse.status对应
 type ProcessStatus = 'DEVELOPING' | 'PUBLISHED' | 'ARCHIVED';
@@ -39,7 +45,6 @@ interface ProcessData {
   creatorName: string;
   createTime: string;
   updateTime: string;
-  // 扩展字段（可选）
   language?: string;
   processType?: string;
   timeout?: number;
@@ -47,6 +52,108 @@ interface ProcessData {
   creatorId?: string;
   requirementId?: string | null;
 }
+
+// 变更记录数据结构
+interface ChangeRecord {
+  key: number;
+  changeTime: string;
+  changeType: string;
+  changer: string;
+  changeContent: string;
+}
+
+// 运行记录数据结构
+interface RunRecord {
+  key: number;
+  taskId: string;
+  robot: string;
+  creator: string;
+  createdTime: string;
+  status: string;
+}
+
+// 版本数据结构 - 基于LYProcessVersionResponse
+interface VersionRecord {
+  key: number;
+  version: string;
+  publishedAt: string;
+  publisher: string;
+  remark: string;
+}
+
+// ============= Mock数据生成 =============
+
+// 生成Mock变更记录
+const generateMockChangeRecords = (): ChangeRecord[] => [
+  { key: 1, changeTime: '2024-01-15 10:30', changeType: '发布', changer: '姜鹏志', changeContent: '发布版本 1.2.0' },
+  { key: 2, changeTime: '2024-01-14 16:00', changeType: '编辑', changer: '李明', changeContent: '修改流程描述' },
+  { key: 3, changeTime: '2024-01-10 14:20', changeType: '发布', changer: '姜鹏志', changeContent: '发布版本 1.1.0' },
+  { key: 4, changeTime: '2024-01-05 09:00', changeType: '创建', changer: '王芳', changeContent: '创建流程' },
+  { key: 5, changeTime: '2023-12-28 14:30', changeType: '编辑', changer: '李明', changeContent: '修改流程配置' },
+];
+
+// 生成Mock运行记录
+const generateMockRunRecords = (): RunRecord[] => [
+  {
+    key: 1,
+    taskId: 'TASK-001',
+    robot: 'RPA-机器人-01',
+    creator: '姜鹏志',
+    createdTime: '2024-01-15 10:30:00',
+    status: '成功',
+  },
+  {
+    key: 2,
+    taskId: 'TASK-002',
+    robot: 'RPA-机器人-02',
+    creator: '李明',
+    createdTime: '2024-01-14 15:20:00',
+    status: '失败',
+  },
+  {
+    key: 3,
+    taskId: 'TASK-003',
+    robot: 'RPA-机器人-01',
+    creator: '王芳',
+    createdTime: '2024-01-13 09:00:00',
+    status: '成功',
+  },
+  {
+    key: 4,
+    taskId: 'TASK-004',
+    robot: 'RPA-机器人-03',
+    creator: '姜鹏志',
+    createdTime: '2024-01-12 14:00:00',
+    status: '运行中',
+  },
+  {
+    key: 5,
+    taskId: 'TASK-005',
+    robot: 'RPA-机器人-02',
+    creator: '李明',
+    createdTime: '2024-01-11 08:30:00',
+    status: '成功',
+  },
+];
+
+// 生成Mock版本记录 - 基于LYProcessVersionResponse格式
+const generateMockVersionRecords = (): VersionRecord[] => [
+  { key: 1, version: '1.2.0', publishedAt: '2024-01-15 10:30', publisher: '姜鹏志', remark: '修复审批逻辑' },
+  { key: 2, version: '1.1.0', publishedAt: '2024-01-10 14:20', publisher: '姜鹏志', remark: '新增通知功能' },
+  { key: 3, version: '1.0.0', publishedAt: '2024-01-05 09:00', publisher: '姜鹏志', remark: '初始版本' },
+];
+
+// Mock数据
+const allChangeData = generateMockChangeRecords();
+const allRunData = generateMockRunRecords();
+const versionData = generateMockVersionRecords();
+
+const changerOptions = [...new Set(allChangeData.map((item) => item.changer))].map((changer) => ({
+  value: changer,
+  label: changer,
+}));
+
+// ============= 组件Props =============
 
 interface ProcessDetailDrawerProps {
   visible: boolean;
@@ -58,7 +165,17 @@ interface ProcessDetailDrawerProps {
   onDelete?: () => void;
 }
 
-const ProcessDetailDrawer = ({ visible, onClose, processData, onOpen, onEdit, onRun, onDelete }: ProcessDetailDrawerProps) => {
+// ============= 组件 =============
+
+const ProcessDetailDrawer = ({
+  visible,
+  onClose,
+  processData,
+  onOpen,
+  onEdit,
+  onRun,
+  onDelete,
+}: ProcessDetailDrawerProps) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('detail');
   const [changeTimeRange, setChangeTimeRange] = useState<[Date, Date] | null>(null);
@@ -75,9 +192,18 @@ const ProcessDetailDrawer = ({ visible, onClose, processData, onOpen, onEdit, on
   const startWidth = useRef(drawerWidth);
 
   const runStatusOptions = [
-    { value: t('development.processDevelopment.detail.runStatus.success'), label: t('development.processDevelopment.detail.runStatus.success') },
-    { value: t('development.processDevelopment.detail.runStatus.failed'), label: t('development.processDevelopment.detail.runStatus.failed') },
-    { value: t('development.processDevelopment.detail.runStatus.running'), label: t('development.processDevelopment.detail.runStatus.running') },
+    {
+      value: t('development.processDevelopment.detail.runStatus.success'),
+      label: t('development.processDevelopment.detail.runStatus.success'),
+    },
+    {
+      value: t('development.processDevelopment.detail.runStatus.failed'),
+      label: t('development.processDevelopment.detail.runStatus.failed'),
+    },
+    {
+      value: t('development.processDevelopment.detail.runStatus.running'),
+      label: t('development.processDevelopment.detail.runStatus.running'),
+    },
   ];
 
   const handleMouseDown = useCallback(
@@ -183,16 +309,22 @@ const ProcessDetailDrawer = ({ visible, onClose, processData, onOpen, onEdit, on
   ];
 
   const versionColumns = [
-    { title: t('development.processDevelopment.detail.versionTable.version'), dataIndex: 'version', key: 'version' },
-    { title: t('development.processDevelopment.detail.versionTable.publishedAt'), dataIndex: 'publishedAt', key: 'publishedAt' },
-    { title: t('development.processDevelopment.detail.versionTable.publisher'), dataIndex: 'publisher', key: 'publisher' },
+    {
+      title: t('development.processDevelopment.detail.versionTable.version'),
+      dataIndex: 'version',
+      key: 'version',
+    },
+    {
+      title: t('development.processDevelopment.detail.versionTable.publishedAt'),
+      dataIndex: 'publishedAt',
+      key: 'publishedAt',
+    },
+    {
+      title: t('development.processDevelopment.detail.versionTable.publisher'),
+      dataIndex: 'publisher',
+      key: 'publisher',
+    },
     { title: t('development.processDevelopment.detail.versionTable.remark'), dataIndex: 'remark', key: 'remark' },
-  ];
-
-  const versionData = [
-    { key: 1, version: '1.2.0', publishedAt: '2024-01-15 10:30', publisher: '姜鹏志', remark: '修复审批逻辑' },
-    { key: 2, version: '1.1.0', publishedAt: '2024-01-10 14:20', publisher: '姜鹏志', remark: '新增通知功能' },
-    { key: 3, version: '1.0.0', publishedAt: '2024-01-05 09:00', publisher: '姜鹏志', remark: '初始版本' },
   ];
 
   const runColumns = [
@@ -206,7 +338,13 @@ const ProcessDetailDrawer = ({ visible, onClose, processData, onOpen, onEdit, on
       key: 'status',
       render: (status: string) => (
         <Tag
-          color={status === t('development.processDevelopment.detail.runStatus.success') ? 'green' : status === t('development.processDevelopment.detail.runStatus.failed') ? 'red' : 'blue'}
+          color={
+            status === t('development.processDevelopment.detail.runStatus.success')
+              ? 'green'
+              : status === t('development.processDevelopment.detail.runStatus.failed')
+                ? 'red'
+                : 'blue'
+          }
           type="light"
         >
           {status}
@@ -216,10 +354,22 @@ const ProcessDetailDrawer = ({ visible, onClose, processData, onOpen, onEdit, on
   ];
 
   const changeColumns = [
-    { title: t('development.processDevelopment.detail.changeTable.changeTime'), dataIndex: 'changeTime', key: 'changeTime' },
-    { title: t('development.processDevelopment.detail.changeTable.changeType'), dataIndex: 'changeType', key: 'changeType' },
+    {
+      title: t('development.processDevelopment.detail.changeTable.changeTime'),
+      dataIndex: 'changeTime',
+      key: 'changeTime',
+    },
+    {
+      title: t('development.processDevelopment.detail.changeTable.changeType'),
+      dataIndex: 'changeType',
+      key: 'changeType',
+    },
     { title: t('development.processDevelopment.detail.changeTable.changer'), dataIndex: 'changer', key: 'changer' },
-    { title: t('development.processDevelopment.detail.changeTable.changeContent'), dataIndex: 'changeContent', key: 'changeContent' },
+    {
+      title: t('development.processDevelopment.detail.changeTable.changeContent'),
+      dataIndex: 'changeContent',
+      key: 'changeContent',
+    },
   ];
 
   return (
@@ -248,14 +398,30 @@ const ProcessDetailDrawer = ({ visible, onClose, processData, onOpen, onEdit, on
                 <Button icon={<IconPlay />} theme="borderless" size="small" onClick={onRun} />
               </Tooltip>
               <Tooltip content={t('common.delete')}>
-                <Button icon={<IconDeleteStroked className="process-detail-drawer-header-delete-icon" />} theme="borderless" size="small" onClick={onDelete} />
+                <Button
+                  icon={<IconDeleteStroked className="process-detail-drawer-header-delete-icon" />}
+                  theme="borderless"
+                  size="small"
+                  onClick={onDelete}
+                />
               </Tooltip>
               <Divider layout="vertical" className="process-detail-drawer-header-divider" />
               <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
-                <Button icon={isFullscreen ? <IconMinimize /> : <IconMaximize />} theme="borderless" size="small" onClick={toggleFullscreen} />
+                <Button
+                  icon={isFullscreen ? <IconMinimize /> : <IconMaximize />}
+                  theme="borderless"
+                  size="small"
+                  onClick={toggleFullscreen}
+                />
               </Tooltip>
               <Tooltip content={t('common.close')}>
-                <Button icon={<IconClose />} theme="borderless" size="small" onClick={onClose} className="process-detail-drawer-header-close-btn" />
+                <Button
+                  icon={<IconClose />}
+                  theme="borderless"
+                  size="small"
+                  onClick={onClose}
+                  className="process-detail-drawer-header-close-btn"
+                />
               </Tooltip>
             </Space>
           </Col>

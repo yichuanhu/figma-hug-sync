@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Form, Toast, Button } from '@douyinfe/semi-ui';
-import type { LYUpdateProcessRequest } from '@/api';
-import processApi from '@/api';
+import type { LYUpdateProcessRequest, LYProcessResponse } from '@/api';
 import './index.less';
 
-// 编辑流程的数据结构
+// 编辑流程的数据结构 - 基于LYProcessResponse
 interface ProcessData {
   id: string;
   name: string;
@@ -18,6 +17,29 @@ interface EditProcessModalProps {
   processData: ProcessData | null;
   onSuccess?: (updatedData: ProcessData) => void;
 }
+
+// 生成Mock的更新响应
+const generateMockUpdateResponse = (
+  processId: string,
+  request: LYUpdateProcessRequest,
+  originalData: ProcessData,
+): LYProcessResponse => {
+  const now = new Date().toISOString();
+  return {
+    id: processId,
+    name: request.name || originalData.name,
+    description: request.description || originalData.description,
+    language: 'Python',
+    process_type: 'RPA',
+    timeout: request.timeout || 60,
+    status: 'DEVELOPING',
+    current_version_id: null,
+    creator_id: 'user-001',
+    requirement_id: null,
+    created_at: now,
+    updated_at: now,
+  };
+};
 
 const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditProcessModalProps) => {
   const { t } = useTranslation();
@@ -40,52 +62,49 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
 
   const handleSubmit = async (values: Record<string, unknown>) => {
     if (!processData?.id) return;
-    
+
     setLoading(true);
     try {
-      // 构建API请求参数
+      // 构建API请求参数 - 使用LYUpdateProcessRequest类型
       const updateRequest: LYUpdateProcessRequest = {
         name: values.name as string,
         description: (values.description as string) || undefined,
       };
 
-      // 调用API更新流程
-      const response = await processApi.addProcessesByProcessId(processData.id, updateRequest);
-      
-      if (response.code === 'success' && response.data) {
-        const updatedData: ProcessData = {
-          id: response.data.id,
-          name: response.data.name,
-          description: response.data.description || '',
-        };
-        
-        Toast.success(t('development.processDevelopment.editModal.success'));
-        onSuccess?.(updatedData);
-        onCancel();
-      } else {
-        throw new Error(response.message || 'Update process failed');
-      }
-    } catch (error) {
-      console.warn('API调用失败，使用模拟更新:', error);
-      
-      // 备用：模拟更新
+      // 模拟API调用延迟
       await new Promise((resolve) => setTimeout(resolve, 300));
+
+      // 生成Mock响应
+      const mockResponse = generateMockUpdateResponse(processData.id, updateRequest, processData);
+
+      // 转换为返回数据格式
       const updatedData: ProcessData = {
-        id: processData.id,
-        name: values.name as string,
-        description: (values.description as string) || '',
+        id: mockResponse.id,
+        name: mockResponse.name,
+        description: mockResponse.description || '',
       };
-      
+
       Toast.success(t('development.processDevelopment.editModal.success'));
       onSuccess?.(updatedData);
       onCancel();
+    } catch (error) {
+      console.error('更新流程失败:', error);
+      Toast.error(t('development.processDevelopment.editModal.error'));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Modal title={t('development.processDevelopment.editModal.title')} visible={visible} onCancel={onCancel} footer={null} width={520} closeOnEsc maskClosable={false}>
+    <Modal
+      title={t('development.processDevelopment.editModal.title')}
+      visible={visible}
+      onCancel={onCancel}
+      footer={null}
+      width={520}
+      closeOnEsc
+      maskClosable={false}
+    >
       <Form
         onSubmit={handleSubmit}
         labelPosition="top"

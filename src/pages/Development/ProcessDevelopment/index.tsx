@@ -36,60 +36,50 @@ import './index.less';
 
 const { Title, Text } = Typography;
 
+// ============= 类型定义 - 直接使用API类型 =============
+
 // 流程状态枚举 - 与API LYProcessResponse.status对应
 type ProcessStatus = 'DEVELOPING' | 'PUBLISHED' | 'ARCHIVED';
 
-// 前端流程列表项接口 - 扩展自LYProcessResponse，适配前端展示需要
-export interface ProcessItem {
-  id: string; // 对应 LYProcessResponse.id
-  name: string; // 对应 LYProcessResponse.name
-  description: string; // 对应 LYProcessResponse.description
-  status: ProcessStatus; // 对应 LYProcessResponse.status
-  creatorName: string; // 由 LYProcessResponse.creator_id 映射
-  createTime: string; // 对应 LYProcessResponse.created_at，格式化后
-  updateTime: string; // 对应 LYProcessResponse.updated_at，格式化后
-  // 以下为扩展字段，保留API原始数据
-  language?: string; // 对应 LYProcessResponse.language
-  processType?: string; // 对应 LYProcessResponse.process_type
-  timeout?: number; // 对应 LYProcessResponse.timeout
-  currentVersionId?: string | null; // 对应 LYProcessResponse.current_version_id
-  creatorId?: string; // 对应 LYProcessResponse.creator_id
-  requirementId?: string | null; // 对应 LYProcessResponse.requirement_id
+// 前端流程列表项接口 - 扩展自LYProcessResponse
+export interface ProcessItem extends Pick<LYProcessResponse, 'id' | 'name' | 'language' | 'timeout'> {
+  description: string;
+  status: ProcessStatus;
+  creatorName: string;
+  createTime: string;
+  updateTime: string;
+  processType?: string;
+  currentVersionId?: string | null;
+  creatorId?: string;
+  requirementId?: string | null;
 }
 
-// 查询参数接口 - 对应API GetProcessesParams
+// 查询参数接口 - 映射自API GetProcessesParams
 interface QueryParams {
-  page: number; // 页码，>= 1，默认1 (转换为offset)
-  pageSize: number; // 每页数量，1-100，默认20 (对应size)
-  keyword: string; // 搜索关键词 (对应keyword)
-  sortBy: 'createTime' | 'updateTime' | 'name'; // 排序字段 (对应sort_by: created_at/updated_at/name)
-  sortOrder: 'asc' | 'desc'; // 排序方向 (对应sort_order)
+  page: number;
+  pageSize: number;
+  keyword: string;
+  sortBy: 'createTime' | 'updateTime' | 'name';
+  sortOrder: 'asc' | 'desc';
 }
 
-// 分页信息接口 - 对应API LYRangeResponse
+// 分页信息接口 - 映射自API LYRangeResponse
 interface PaginationInfo {
-  total: number; // 总记录数 (对应LYRangeResponse.total)
-  page: number; // 当前页码
-  pageSize: number; // 每页数量 (对应LYRangeResponse.size)
-  totalPages: number; // 总页数
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
 }
 
-// 将前端QueryParams转换为API GetProcessesParams
-const toApiParams = (params: QueryParams): GetProcessesParams => {
-  // sortBy字段映射: 前端使用驼峰，API使用下划线
-  const sortByMap: Record<string, string> = {
-    createTime: 'created_at',
-    updateTime: 'updated_at',
-    name: 'name',
-  };
-  
-  return {
-    keyword: params.keyword || undefined,
-    sort_by: sortByMap[params.sortBy] || 'updated_at',
-    sort_order: params.sortOrder,
-    offset: (params.page - 1) * params.pageSize,
-    size: params.pageSize,
-  };
+// ============= 工具函数 =============
+
+// 生成UUID v4
+const generateUUID = (): string => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
 };
 
 // 格式化日期时间
@@ -101,6 +91,23 @@ const formatDateTime = (dateStr: string | null): string => {
   } catch {
     return dateStr;
   }
+};
+
+// 将前端QueryParams转换为API GetProcessesParams
+const toApiParams = (params: QueryParams): GetProcessesParams => {
+  const sortByMap: Record<string, string> = {
+    createTime: 'created_at',
+    updateTime: 'updated_at',
+    name: 'name',
+  };
+
+  return {
+    keyword: params.keyword || undefined,
+    sort_by: sortByMap[params.sortBy] || 'updated_at',
+    sort_order: params.sortOrder,
+    offset: (params.page - 1) * params.pageSize,
+    size: params.pageSize,
+  };
 };
 
 // 将API LYProcessResponse转换为前端ProcessItem
@@ -128,7 +135,7 @@ const toPaginationInfo = (range: LYRangeResponse | null | undefined, pageSize: n
   const offset = range?.offset || 0;
   const page = Math.floor(offset / pageSize) + 1;
   const totalPages = Math.ceil(total / pageSize) || 1;
-  
+
   return {
     total,
     page,
@@ -137,24 +144,10 @@ const toPaginationInfo = (range: LYRangeResponse | null | undefined, pageSize: n
   };
 };
 
-// 状态配置 - 使用 Semi UI 支持的 TagColor 类型
-const statusConfig: Record<ProcessStatus, { color: 'grey' | 'green' | 'orange'; i18nKey: string }> = {
-  DEVELOPING: { color: 'grey', i18nKey: 'development.processDevelopment.status.developing' },
-  PUBLISHED: { color: 'green', i18nKey: 'development.processDevelopment.status.published' },
-  ARCHIVED: { color: 'orange', i18nKey: 'development.processDevelopment.status.archived' },
-};
+// ============= Mock数据生成 - 基于API类型 =============
 
-// 生成UUID v4
-const generateUUID = (): string => {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-    const r = (Math.random() * 16) | 0;
-    const v = c === 'x' ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
-};
-
-// 生成模拟数据
-const generateMockProcessList = (): ProcessItem[] => {
+// 生成符合LYProcessResponse格式的Mock数据
+const generateMockLYProcessResponse = (index: number): LYProcessResponse => {
   const processNames = [
     '订单自动处理',
     '财务报销审批',
@@ -181,32 +174,41 @@ const generateMockProcessList = (): ProcessItem[] => {
     '定时自动生成各类业务报表，支持多种格式导出和分发',
   ];
 
-  const creators = ['张三', '李四', '王五', '赵六', '钱七', '孙八', '周九', '吴十'];
+  const creatorIds = ['user-001', 'user-002', 'user-003', 'user-004', 'user-005'];
   const statuses: ProcessStatus[] = ['DEVELOPING', 'PUBLISHED', 'ARCHIVED'];
+  const languages = ['Python', 'JavaScript', 'Java'];
+  const processTypes = ['RPA', 'AI', 'Hybrid'];
 
-  return Array(46)
-    .fill(null)
-    .map((_, index) => {
-      const status = statuses[index % 3];
-      const createDate = new Date(2025, 0, 1 + (index % 20), 10 + (index % 12), (index * 7) % 60, 0);
-      const updateDate = new Date(createDate.getTime() + (index % 10) * 24 * 60 * 60 * 1000);
+  const createDate = new Date(2025, 0, 1 + (index % 20), 10 + (index % 12), (index * 7) % 60, 0);
+  const updateDate = new Date(createDate.getTime() + (index % 10) * 24 * 60 * 60 * 1000);
 
-      return {
-        id: generateUUID(),
-        name: processNames[index % processNames.length],
-        description: descriptions[index % descriptions.length],
-        status,
-        creatorName: creators[index % creators.length],
-        createTime: createDate.toISOString().replace('T', ' ').substring(0, 19),
-        updateTime: updateDate.toISOString().replace('T', ' ').substring(0, 19),
-      };
-    });
+  return {
+    id: generateUUID(),
+    name: processNames[index % processNames.length],
+    description: descriptions[index % descriptions.length],
+    language: languages[index % languages.length],
+    process_type: processTypes[index % processTypes.length],
+    timeout: 60 + (index % 5) * 30,
+    status: statuses[index % 3],
+    current_version_id: index % 2 === 0 ? `ver-${generateUUID().substring(0, 8)}` : null,
+    creator_id: creatorIds[index % creatorIds.length],
+    requirement_id: index % 3 === 0 ? `req-${generateUUID().substring(0, 8)}` : null,
+    created_at: createDate.toISOString(),
+    updated_at: updateDate.toISOString(),
+  };
 };
 
-// 模拟数据存储 (用于API不可用时的备用)
+// 生成Mock流程列表
+const generateMockProcessList = (): LYProcessResponse[] => {
+  return Array(46)
+    .fill(null)
+    .map((_, index) => generateMockLYProcessResponse(index));
+};
+
+// Mock数据存储
 let mockProcessData = generateMockProcessList();
 
-// 模拟创建者ID到名称的映射 (实际应用中应从用户服务获取)
+// 模拟创建者ID到名称的映射
 const mockCreatorNameMap: Record<string, string> = {
   'user-001': '张三',
   'user-002': '李四',
@@ -215,101 +217,93 @@ const mockCreatorNameMap: Record<string, string> = {
   'user-005': '钱七',
 };
 
-// 使用API获取流程列表
-import processApi from '@/api';
+// ============= 数据获取 =============
 
 const fetchProcessList = async (params: QueryParams): Promise<{ data: ProcessItem[]; pagination: PaginationInfo }> => {
-  try {
-    // 转换为API参数格式
-    const apiParams = toApiParams(params);
-    
-    // 调用API
-    const response = await processApi.getProcesses(apiParams);
-    
-    // 检查响应状态
-    if (response.code === 'success' && response.data) {
-      // 转换响应数据为前端格式
-      const processItems = response.data.list.map((item) => toProcessItem(item, mockCreatorNameMap));
-      const pagination = toPaginationInfo(response.data.range, params.pageSize);
-      
-      return {
-        data: processItems,
-        pagination,
-      };
-    }
-    
-    // API返回错误，抛出异常以触发备用逻辑
-    throw new Error(response.message || 'API request failed');
-  } catch (error) {
-    // API调用失败时，使用模拟数据作为备用
-    console.warn('API调用失败，使用模拟数据:', error);
-    
-    // 模拟网络延迟
-    await new Promise((resolve) => setTimeout(resolve, 300));
+  // 模拟网络延迟
+  await new Promise((resolve) => setTimeout(resolve, 300));
 
-    let filteredData = [...mockProcessData];
+  // 转换为API参数格式（预留API调用）
+  const apiParams = toApiParams(params);
+  console.log('API参数:', apiParams);
 
-    // 搜索过滤 - 同时匹配流程名称和描述（OR关系）
-    if (params.keyword?.trim()) {
-      const keyword = params.keyword.toLowerCase().trim();
-      filteredData = filteredData.filter(
-        (item) => item.name.toLowerCase().includes(keyword) || item.description.toLowerCase().includes(keyword),
-      );
-    }
+  let filteredData = [...mockProcessData];
 
-    // 排序处理
-    filteredData.sort((a, b) => {
-      let valueA: string;
-      let valueB: string;
-
-      switch (params.sortBy) {
-        case 'name':
-          valueA = a.name;
-          valueB = b.name;
-          break;
-        case 'updateTime':
-          valueA = a.updateTime;
-          valueB = b.updateTime;
-          break;
-        case 'createTime':
-        default:
-          valueA = a.createTime;
-          valueB = b.createTime;
-          break;
-      }
-
-      const comparison = valueA.localeCompare(valueB);
-      return params.sortOrder === 'asc' ? comparison : -comparison;
-    });
-
-    // 计算分页
-    const total = filteredData.length;
-    const totalPages = Math.ceil(total / params.pageSize) || 1;
-    const start = (params.page - 1) * params.pageSize;
-    const end = start + params.pageSize;
-    const paginatedData = filteredData.slice(start, end);
-
-    return {
-      data: paginatedData,
-      pagination: {
-        total,
-        page: params.page,
-        pageSize: params.pageSize,
-        totalPages,
-      },
-    };
+  // 搜索过滤
+  if (params.keyword?.trim()) {
+    const keyword = params.keyword.toLowerCase().trim();
+    filteredData = filteredData.filter(
+      (item) =>
+        item.name.toLowerCase().includes(keyword) || (item.description?.toLowerCase().includes(keyword) ?? false),
+    );
   }
+
+  // 排序处理
+  filteredData.sort((a, b) => {
+    let valueA: string;
+    let valueB: string;
+
+    switch (params.sortBy) {
+      case 'name':
+        valueA = a.name;
+        valueB = b.name;
+        break;
+      case 'updateTime':
+        valueA = a.updated_at || '';
+        valueB = b.updated_at || '';
+        break;
+      case 'createTime':
+      default:
+        valueA = a.created_at || '';
+        valueB = b.created_at || '';
+        break;
+    }
+
+    const comparison = valueA.localeCompare(valueB);
+    return params.sortOrder === 'asc' ? comparison : -comparison;
+  });
+
+  // 计算分页
+  const total = filteredData.length;
+  const start = (params.page - 1) * params.pageSize;
+  const end = start + params.pageSize;
+  const paginatedData = filteredData.slice(start, end);
+
+  // 转换为前端格式
+  const processItems = paginatedData.map((item) => toProcessItem(item, mockCreatorNameMap));
+
+  // 构造模拟的LYRangeResponse
+  const mockRange: LYRangeResponse = {
+    offset: start,
+    size: params.pageSize,
+    total,
+  };
+
+  return {
+    data: processItems,
+    pagination: toPaginationInfo(mockRange, params.pageSize),
+  };
 };
+
+// ============= 状态配置 =============
+
+const statusConfig: Record<ProcessStatus, { color: 'grey' | 'green' | 'orange'; i18nKey: string }> = {
+  DEVELOPING: { color: 'grey', i18nKey: 'development.processDevelopment.status.developing' },
+  PUBLISHED: { color: 'green', i18nKey: 'development.processDevelopment.status.published' },
+  ARCHIVED: { color: 'orange', i18nKey: 'development.processDevelopment.status.archived' },
+};
+
+// ============= 组件 =============
 
 const ProcessDevelopment = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [queryParams, setQueryParams] = useState<QueryParams>({
     page: 1,
-    pageSize: 20, // 默认每页20条
+    pageSize: 20,
     keyword: '',
     sortBy: 'createTime',
-    sortOrder: 'desc', // 默认按创建时间降序
+    sortOrder: 'desc',
   });
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>({
     total: 0,
@@ -348,12 +342,12 @@ const ProcessDevelopment = () => {
     loadData();
   }, [loadData]);
 
-  // 搜索（支持防抖可在Input组件层实现）
+  // 搜索
   const handleSearch = (keyword: string) => {
     setQueryParams((prev) => ({ ...prev, page: 1, keyword }));
   };
 
-  // 打开流程详情抽屉或切换内容
+  // 打开流程详情抽屉
   const openProcessDetail = (record: ProcessItem) => {
     setSelectedProcess(record);
     if (!detailDrawerVisible) {
@@ -361,7 +355,7 @@ const ProcessDevelopment = () => {
     }
   };
 
-  // 操作处理函数
+  // 编辑操作
   const handleEdit = (record?: ProcessItem) => {
     const processRecord = record || selectedProcess;
 
@@ -401,28 +395,28 @@ const ProcessDevelopment = () => {
       onOk: async () => {
         try {
           // 模拟删除 API 调用
-          await new Promise((resolve, reject) => {
+          await new Promise((resolve) => {
             setTimeout(() => {
-              // 模拟成功（实际场景中根据API响应处理）
+              // 从mock数据中删除
+              mockProcessData = mockProcessData.filter((item) => item.id !== processToDelete.id);
               resolve(true);
             }, 500);
           });
-          
+
           console.log('删除流程:', processToDelete.id);
-          
+
           // 关闭抽屉
           setDetailDrawerVisible(false);
           setSelectedProcess(null);
-          
+
           // 重新加载数据
           loadData();
-          
+
           // 显示成功提示
           Toast.success(t('development.processDevelopment.deleteModal.success'));
         } catch (error) {
-          // 显示错误提示
           Toast.error(t('development.processDevelopment.deleteModal.error'));
-          throw error; // 抛出错误让 Modal 保持打开状态
+          throw error;
         }
       },
     });
@@ -541,9 +535,9 @@ const ProcessDevelopment = () => {
               <Dropdown.Item icon={<IconPlay />} onClick={handleRun}>
                 {t('common.run')}
               </Dropdown.Item>
-              <Dropdown.Item 
-                icon={<IconDeleteStroked />} 
-                type="danger" 
+              <Dropdown.Item
+                icon={<IconDeleteStroked />}
+                type="danger"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleDeleteClick(record);
@@ -639,6 +633,23 @@ const ProcessDevelopment = () => {
         visible={createModalVisible}
         onCancel={() => setCreateModalVisible(false)}
         onSuccess={(processData) => {
+          // 添加到mock数据
+          const newMockProcess: LYProcessResponse = {
+            id: processData.id,
+            name: processData.name,
+            description: processData.description,
+            language: 'Python',
+            process_type: 'RPA',
+            timeout: 60,
+            status: 'DEVELOPING',
+            current_version_id: null,
+            creator_id: 'user-001',
+            requirement_id: null,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          };
+          mockProcessData.unshift(newMockProcess);
+
           // 重新加载数据
           loadData();
 
@@ -651,6 +662,8 @@ const ProcessDevelopment = () => {
             creatorName: processData.creator,
             createTime: processData.createdAt,
             updateTime: processData.createdAt,
+            language: 'Python',
+            timeout: 60,
           };
           setSelectedProcess(newProcess);
           setDetailDrawerVisible(true);
@@ -663,6 +676,17 @@ const ProcessDevelopment = () => {
         onCancel={() => setEditModalVisible(false)}
         processData={editingProcess}
         onSuccess={(updatedData) => {
+          // 更新mock数据
+          const index = mockProcessData.findIndex((item) => item.id === updatedData.id);
+          if (index !== -1) {
+            mockProcessData[index] = {
+              ...mockProcessData[index],
+              name: updatedData.name,
+              description: updatedData.description,
+              updated_at: new Date().toISOString(),
+            };
+          }
+
           console.log('流程已更新:', updatedData);
           // 重新加载数据
           loadData();
@@ -679,7 +703,6 @@ const ProcessDevelopment = () => {
         onDelete={() => handleDeleteClick()}
         onOpen={() => selectedProcess && openProcess(selectedProcess)}
       />
-
 
       {/* 打开流程确认弹窗 */}
       <OpenProcessModal />
