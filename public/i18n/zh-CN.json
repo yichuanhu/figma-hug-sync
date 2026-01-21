@@ -158,6 +158,14 @@
         "dontRemindAgain": "以后不再提醒",
         "confirmMessage": "即将唤起客户端在本地打开流程「{{name}}」，是否继续？",
         "clientError": "无法唤起客户端，请确认已安装客户端程序"
+      },
+      "deleteModal": {
+        "title": "删除流程",
+        "confirmDelete": "确认删除",
+        "confirmMessage": "确定要删除流程「{{name}}」吗？",
+        "deleteWarning": "删除后将无法恢复，请谨慎操作。",
+        "success": "流程删除成功！",
+        "error": "删除失败，请重试"
       }
     },
     "workerManagement": {
