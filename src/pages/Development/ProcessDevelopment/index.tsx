@@ -15,7 +15,7 @@ import {
   Col,
   Space,
   Modal,
-  Toast,
+  Notification,
 } from '@douyinfe/semi-ui';
 import {
   IconSearch,
@@ -309,10 +309,10 @@ const ProcessDevelopment = () => {
           loadData();
           
           // 显示成功提示
-          Toast.success(t('development.processDevelopment.deleteModal.success'));
+          Notification.success({ content: t('development.processDevelopment.deleteModal.success'), duration: 3 });
         } catch (error) {
           // 显示错误提示
-          Toast.error(t('development.processDevelopment.deleteModal.error'));
+          Notification.error({ content: t('development.processDevelopment.deleteModal.error'), duration: 3 });
           throw error; // 抛出错误让 Modal 保持打开状态
         }
       },
