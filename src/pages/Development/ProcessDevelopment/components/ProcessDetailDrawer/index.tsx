@@ -27,9 +27,10 @@ const allRunData = [
   { key: 5, taskId: 'TASK-005', robot: 'RPA-机器人-02', creator: '李明', createdTime: '2024-01-11 08:30:00', status: '成功' },
 ];
 
-// 流程状态枚举
+// 流程状态枚举 - 与API LYProcessResponse.status对应
 type ProcessStatus = 'DEVELOPING' | 'PUBLISHED' | 'ARCHIVED';
 
+// 流程数据接口 - 与ProcessItem保持一致
 interface ProcessData {
   id: string;
   name: string;
@@ -38,6 +39,13 @@ interface ProcessData {
   creatorName: string;
   createTime: string;
   updateTime: string;
+  // 扩展字段（可选）
+  language?: string;
+  processType?: string;
+  timeout?: number;
+  currentVersionId?: string | null;
+  creatorId?: string;
+  requirementId?: string | null;
 }
 
 interface ProcessDetailDrawerProps {
