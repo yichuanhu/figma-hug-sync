@@ -441,7 +441,78 @@ const Component = () => {
 
 ---
 
-## 7. 其他约定
+## 7. API 类型定义规范
+
+### 7.1 文件位置与职责
+
+API 类型定义集中在 `src/api/index.ts` 文件中：
+
+- **仅包含 TypeScript 接口定义**，不包含任何可执行逻辑
+- 该文件会根据后端 API 规范持续更新
+- 所有组件必须直接从此文件导入类型定义
+
+```typescript
+// src/api/index.ts - 仅类型定义
+export interface LYProcessResponse {
+  id: string;
+  name: string;
+  description?: string | null;
+  status: string;
+  created_at: string;
+  updated_at: string;
+  // ...
+}
+
+export interface LYListResponse<T> {
+  range: LYRangeResponse;
+  list: T[];
+}
+
+export interface GetProcessesParams {
+  keyword?: string;
+  offset?: number;
+  size?: number;
+  sort_by?: string;
+}
+```
+
+### 7.2 Mock 数据实现规范
+
+**Mock 数据必须在各模块组件内部实现**，严格遵循 API 类型定义：
+
+```typescript
+// ✅ 正确 - 在页面组件中生成符合 API 类型的 mock 数据
+import type { LYProcessResponse, LYListResponseLYProcessResponse } from '@/api';
+
+const generateMockLYProcessResponse = (index: number): LYProcessResponse => ({
+  id: `process-${index}`,
+  name: `流程名称 ${index}`,
+  description: `流程描述 ${index}`,
+  status: 'DRAFT',
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString(),
+  creator_name: '张三',
+  // 确保所有字段符合接口定义
+});
+
+const fetchProcessList = async (params: GetProcessesParams): Promise<LYListResponseLYProcessResponse> => {
+  // 模拟 API 调用，返回符合类型定义的数据
+  return {
+    range: { offset: params.offset || 0, size: params.size || 20, total: mockData.length },
+    list: mockData.slice(offset, offset + size),
+  };
+};
+```
+
+### 7.3 字段命名规范
+
+- API 类型使用 **snake_case** 命名（如 `created_at`、`sync_status`）
+- 与后端 API 保持一致
+- 组件内部变量可使用 camelCase，但 API 交互必须使用原始字段名
+
+---
+
+## 8. 其他约定
 
 ### 7.1 路由配置
 
