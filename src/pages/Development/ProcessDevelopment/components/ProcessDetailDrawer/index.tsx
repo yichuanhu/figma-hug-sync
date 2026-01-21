@@ -16,6 +16,7 @@ import {
   Row,
   Col,
   Space,
+  Switch,
 } from '@douyinfe/semi-ui';
 import {
   IconEditStroked,
@@ -25,11 +26,15 @@ import {
   IconMaximize,
   IconMinimize,
   IconClose,
+  IconUpload,
+  IconHelpCircle,
+  IconSetting,
+  IconLink,
 } from '@douyinfe/semi-icons';
 import type { LYProcessResponse, LYProcessVersionResponse } from '@/api';
 import './index.less';
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 // ============= Mock数据生成 - 基于API类型 =============
 
@@ -69,26 +74,49 @@ const allRunData: RunRecord[] = [
   { key: 5, taskId: 'TASK-005', robot: 'RPA-机器人-02', creator: '李明', createdTime: '2024-01-11 08:30:00', status: '成功' },
 ];
 
-// 版本 Mock 数据 - 基于 LYProcessVersionResponse 类型
-const mockVersionData: (LYProcessVersionResponse & { key: number })[] = [
+// 版本 Mock 数据 - 基于 LYProcessVersionResponse 类型，扩展详情字段
+interface VersionDetailData extends LYProcessVersionResponse {
+  key: number;
+  file_name?: string;
+  usage_instructions_url?: string;
+  client_version?: string;
+  engine_version?: string;
+  is_active?: boolean;
+  inputs?: { name: string; type: string; description?: string }[];
+  outputs?: { name: string; type: string; description?: string }[];
+}
+
+const mockVersionData: VersionDetailData[] = [
   {
     key: 1,
-    id: 'VER-PROC-2024-001-1.2.0',
-    version: '1.2.0',
+    id: 'VER-PROC-2024-001-1.0.4',
+    version: '1.0.4',
     process_id: 'PROC-2024-001',
     status: 'PUBLISHED',
     source_code: '',
     package_file_id: 'pkg-001',
     package_size: 1024000,
     package_checksum: 'abc123',
-    version_note: '优化性能，提升处理速度',
+    version_note: '测试ADP服务调用3',
     creator_id: 'user-001',
-    created_at: '2026-01-08 10:00:00',
+    created_at: '2026-01-21 14:22:42',
+    file_name: 'ADP调用演示',
+    usage_instructions_url: 'https://docs.example.com/process/1.0.4',
+    client_version: '7.0.0',
+    engine_version: '3.5.0',
+    is_active: true,
+    inputs: [
+      { name: 'APP_KEY', type: '文本', description: '-' },
+      { name: 'APP_VALUE', type: '文本', description: '-' },
+    ],
+    outputs: [
+      { name: 'result', type: '文本', description: '处理结果' },
+    ],
   },
   {
     key: 2,
-    id: 'VER-PROC-2024-001-1.1.0',
-    version: '1.1.0',
+    id: 'VER-PROC-2024-001-1.0.3',
+    version: '1.0.3',
     process_id: 'PROC-2024-001',
     status: 'ARCHIVED',
     source_code: '',
@@ -97,49 +125,75 @@ const mockVersionData: (LYProcessVersionResponse & { key: number })[] = [
     package_checksum: 'def456',
     version_note: '修复bug，增加日志',
     creator_id: 'user-002',
-    created_at: '2026-01-05 14:30:00',
+    created_at: '2026-01-18 10:30:00',
+    file_name: 'ADP调用演示',
+    client_version: '7.0.0',
+    engine_version: '3.5.0',
+    is_active: false,
+    inputs: [
+      { name: 'APP_KEY', type: '文本', description: '-' },
+    ],
+    outputs: [],
   },
   {
     key: 3,
-    id: 'VER-PROC-2024-001-1.0.0',
-    version: '1.0.0',
+    id: 'VER-PROC-2024-001-1.0.2',
+    version: '1.0.2',
     process_id: 'PROC-2024-001',
     status: 'ARCHIVED',
     source_code: '',
     package_file_id: 'pkg-003',
     package_size: 900000,
     package_checksum: 'ghi789',
-    version_note: '初始版本',
+    version_note: '性能优化',
     creator_id: 'user-001',
-    created_at: '2026-01-01 09:00:00',
+    created_at: '2026-01-15 09:00:00',
+    file_name: 'ADP调用演示',
+    client_version: '6.5.0',
+    engine_version: '3.4.0',
+    is_active: false,
+    inputs: [],
+    outputs: [],
   },
   {
     key: 4,
-    id: 'VER-PROC-2024-001-1.3.0',
-    version: '1.3.0',
+    id: 'VER-PROC-2024-001-1.0.1',
+    version: '1.0.1',
     process_id: 'PROC-2024-001',
-    status: 'DEVELOPING',
+    status: 'ARCHIVED',
     source_code: '',
     package_file_id: 'pkg-004',
-    package_size: 1100000,
+    package_size: 850000,
     package_checksum: 'jkl012',
-    version_note: '新增审批功能',
+    version_note: '修复初始问题',
     creator_id: 'user-003',
-    created_at: '2026-01-15 11:00:00',
+    created_at: '2026-01-10 11:00:00',
+    file_name: 'ADP调用演示',
+    client_version: '6.5.0',
+    engine_version: '3.4.0',
+    is_active: false,
+    inputs: [],
+    outputs: [],
   },
   {
     key: 5,
-    id: 'VER-PROC-2024-001-1.2.1',
-    version: '1.2.1',
+    id: 'VER-PROC-2024-001-1.0.0',
+    version: '1.0.0',
     process_id: 'PROC-2024-001',
-    status: 'REVIEWING',
+    status: 'ARCHIVED',
     source_code: '',
     package_file_id: 'pkg-005',
-    package_size: 1050000,
+    package_size: 800000,
     package_checksum: 'mno345',
-    version_note: '修复紧急问题',
+    version_note: '初始版本',
     creator_id: 'user-001',
-    created_at: '2026-01-12 16:00:00',
+    created_at: '2026-01-05 09:00:00',
+    file_name: 'ADP调用演示',
+    client_version: '6.0.0',
+    engine_version: '3.3.0',
+    is_active: false,
+    inputs: [],
+    outputs: [],
   },
 ];
 
@@ -177,16 +231,6 @@ const statusConfig: Record<string, { color: 'grey' | 'green' | 'orange'; i18nKey
   ARCHIVED: { color: 'orange', i18nKey: 'development.processDevelopment.status.archived' },
 };
 
-// 版本状态配置
-const versionStatusConfig: Record<string, { color: 'grey' | 'green' | 'orange' | 'blue' | 'cyan' | 'red' | 'yellow'; i18nKey: string }> = {
-  DEVELOPING: { color: 'grey', i18nKey: 'development.processDevelopment.detail.versionStatus.developing' },
-  TESTING: { color: 'blue', i18nKey: 'development.processDevelopment.detail.versionStatus.testing' },
-  REVIEWING: { color: 'cyan', i18nKey: 'development.processDevelopment.detail.versionStatus.reviewing' },
-  PUBLISHED: { color: 'green', i18nKey: 'development.processDevelopment.detail.versionStatus.published' },
-  RUNNING: { color: 'blue', i18nKey: 'development.processDevelopment.detail.versionStatus.running' },
-  RETIRING: { color: 'yellow', i18nKey: 'development.processDevelopment.detail.versionStatus.retiring' },
-  ARCHIVED: { color: 'orange', i18nKey: 'development.processDevelopment.detail.versionStatus.archived' },
-};
 
 // ============= 组件 =============
 
@@ -205,7 +249,7 @@ const ProcessDetailDrawer = ({
   const [selectedChangers, setSelectedChangers] = useState<string[]>([]);
   const [runTimeRange, setRunTimeRange] = useState<[Date, Date] | null>(null);
   const [selectedRunStatuses, setSelectedRunStatuses] = useState<string[]>([]);
-  const [selectedVersionStatuses, setSelectedVersionStatuses] = useState<string[]>([]);
+  const [selectedVersionId, setSelectedVersionId] = useState<string | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [drawerWidth, setDrawerWidth] = useState(() => {
     const saved = localStorage.getItem('processDetailDrawerWidth');
@@ -219,17 +263,6 @@ const ProcessDetailDrawer = ({
     { value: t('development.processDevelopment.detail.runStatus.success'), label: t('development.processDevelopment.detail.runStatus.success') },
     { value: t('development.processDevelopment.detail.runStatus.failed'), label: t('development.processDevelopment.detail.runStatus.failed') },
     { value: t('development.processDevelopment.detail.runStatus.running'), label: t('development.processDevelopment.detail.runStatus.running') },
-  ];
-
-  // 版本状态筛选选项
-  const versionStatusOptions = [
-    { value: 'DEVELOPING', label: t('development.processDevelopment.detail.versionStatus.developing') },
-    { value: 'TESTING', label: t('development.processDevelopment.detail.versionStatus.testing') },
-    { value: 'REVIEWING', label: t('development.processDevelopment.detail.versionStatus.reviewing') },
-    { value: 'PUBLISHED', label: t('development.processDevelopment.detail.versionStatus.published') },
-    { value: 'RUNNING', label: t('development.processDevelopment.detail.versionStatus.running') },
-    { value: 'RETIRING', label: t('development.processDevelopment.detail.versionStatus.retiring') },
-    { value: 'ARCHIVED', label: t('development.processDevelopment.detail.versionStatus.archived') },
   ];
 
   const handleMouseDown = useCallback(
@@ -289,14 +322,9 @@ const ProcessDetailDrawer = ({
     });
   }, [runTimeRange, selectedRunStatuses]);
 
-  // 版本数据筛选（按状态）并按版本号降序排列
-  const filteredVersionData = useMemo(() => {
-    let data = [...mockVersionData];
-    
-    // 按状态筛选
-    if (selectedVersionStatuses.length > 0) {
-      data = data.filter((item) => selectedVersionStatuses.includes(item.status));
-    }
+  // 版本数据按版本号降序排列（最新版本在前）
+  const sortedVersionData = useMemo(() => {
+    const data = [...mockVersionData];
     
     // 按版本号降序排列（最新版本在前）
     data.sort((a, b) => {
@@ -311,7 +339,23 @@ const ProcessDetailDrawer = ({
     });
     
     return data;
-  }, [selectedVersionStatuses]);
+  }, []);
+
+  // 当前选中的版本详情
+  const selectedVersion = useMemo(() => {
+    if (selectedVersionId) {
+      return sortedVersionData.find((v) => v.id === selectedVersionId) || null;
+    }
+    // 默认选中第一个版本
+    return sortedVersionData.length > 0 ? sortedVersionData[0] : null;
+  }, [selectedVersionId, sortedVersionData]);
+
+  // 初始化选中第一个版本
+  useEffect(() => {
+    if (sortedVersionData.length > 0 && !selectedVersionId) {
+      setSelectedVersionId(sortedVersionData[0].id);
+    }
+  }, [sortedVersionData, selectedVersionId]);
 
   if (!processData) return null;
 
@@ -345,47 +389,50 @@ const ProcessDetailDrawer = ({
     },
   ];
 
-  // 版本列表列定义 - 根据需求：版本号、状态、创建者、创建时间、变更说明
-  const versionColumns = [
-    { 
-      title: t('development.processDevelopment.detail.versionTable.version'), 
-      dataIndex: 'version', 
-      key: 'version',
-      width: 100,
+  // 版本详情描述数据
+  const getVersionDescriptionData = (version: VersionDetailData) => [
+    { key: t('development.processDevelopment.detail.versionDetail.processVersion'), value: version.version },
+    { key: t('development.processDevelopment.detail.versionDetail.versionFileName'), value: version.file_name || '-' },
+    { key: t('development.processDevelopment.detail.versionDetail.uploader'), value: getCreatorName(version.creator_id) },
+    { key: t('development.processDevelopment.detail.versionDetail.uploadTime'), value: formatDateTime(version.created_at) },
+    { key: t('development.processDevelopment.detail.versionDetail.versionNote'), value: version.version_note || '-' },
+    {
+      key: t('development.processDevelopment.detail.versionDetail.usageInstructions'),
+      value: version.usage_instructions_url ? (
+        <a href={version.usage_instructions_url} target="_blank" rel="noopener noreferrer">
+          <IconLink style={{ marginRight: 4 }} />
+          {t('development.processDevelopment.detail.versionDetail.viewInstructions')}
+        </a>
+      ) : (
+        t('development.processDevelopment.detail.versionDetail.noDescription')
+      ),
     },
-    { 
-      title: t('common.status'), 
-      dataIndex: 'status', 
-      key: 'status',
-      width: 100,
-      render: (status: string) => {
-        const config = versionStatusConfig[status];
-        return (
-          <Tag color={config?.color || 'grey'} type="light">
-            {t(config?.i18nKey || 'development.processDevelopment.detail.versionStatus.developing')}
-          </Tag>
-        );
-      },
+    {
+      key: (
+        <Space>
+          {t('development.processDevelopment.detail.versionDetail.clientVersion')}
+          <Tooltip content={t('development.processDevelopment.detail.versionDetail.clientVersion')}>
+            <IconHelpCircle style={{ color: 'var(--semi-color-text-2)' }} />
+          </Tooltip>
+        </Space>
+      ),
+      value: version.client_version || '-',
     },
-    { 
-      title: t('common.creator'), 
-      dataIndex: 'creator_id', 
-      key: 'creator_id',
-      width: 100,
-      render: (creatorId: string) => getCreatorName(creatorId),
-    },
-    { 
-      title: t('common.createTime'), 
-      dataIndex: 'created_at', 
-      key: 'created_at',
-      width: 160,
-      render: (time: string | null) => formatDateTime(time),
-    },
-    { 
-      title: t('development.processDevelopment.detail.versionTable.versionNote'), 
-      dataIndex: 'version_note', 
-      key: 'version_note',
-      render: (note: string | null) => note || '-',
+    {
+      key: (
+        <Space>
+          {t('development.processDevelopment.detail.versionDetail.engineVersion')}
+          <Tooltip content={t('development.processDevelopment.detail.versionDetail.engineVersion')}>
+            <IconHelpCircle style={{ color: 'var(--semi-color-text-2)' }} />
+          </Tooltip>
+        </Space>
+      ),
+      value: (
+        <a href="#" onClick={(e) => e.preventDefault()}>
+          <IconSetting style={{ marginRight: 4 }} />
+          {t('development.processDevelopment.detail.versionDetail.settings')}
+        </a>
+      ),
     },
   ];
 
@@ -474,26 +521,124 @@ const ProcessDetailDrawer = ({
         </TabPane>
 
         <TabPane tab={t('development.processDevelopment.detail.tabs.versions')} itemKey="versions">
-          <div className="process-detail-drawer-tab-content">
-            <div className="process-detail-drawer-filters">
-              <Select
-                placeholder={t('development.processDevelopment.detail.versionFilter.statusPlaceholder')}
-                multiple
-                maxTagCount={1}
-                value={selectedVersionStatuses}
-                onChange={(value) => setSelectedVersionStatuses(value as string[])}
-                optionList={versionStatusOptions}
-                className="process-detail-drawer-filter-select process-detail-drawer-filter-select--wide"
-                showClear
-              />
+          <div className="process-detail-drawer-version-layout">
+            {/* 左侧版本列表 */}
+            <div className="process-detail-drawer-version-sidebar">
+              <div className="process-detail-drawer-version-sidebar-header">
+                <Text className="process-detail-drawer-version-sidebar-title">
+                  {t('development.processDevelopment.detail.versionList.title')}
+                </Text>
+                <Tooltip content={t('development.processDevelopment.detail.versionList.title')}>
+                  <IconHelpCircle style={{ color: 'var(--semi-color-text-2)', fontSize: 14 }} />
+                </Tooltip>
+              </div>
+              <Button
+                icon={<IconUpload />}
+                theme="solid"
+                className="process-detail-drawer-version-sidebar-upload-btn"
+              >
+                {t('development.processDevelopment.detail.versionList.uploadVersion')}
+              </Button>
+              <div className="process-detail-drawer-version-sidebar-list">
+                {sortedVersionData.map((version) => (
+                  <div
+                    key={version.id}
+                    className={`process-detail-drawer-version-sidebar-item ${
+                      selectedVersion?.id === version.id ? 'process-detail-drawer-version-sidebar-item--selected' : ''
+                    }`}
+                    onClick={() => setSelectedVersionId(version.id)}
+                  >
+                    <Text className="process-detail-drawer-version-sidebar-item-version">{version.version}</Text>
+                    <Switch
+                      checked={version.is_active}
+                      size="small"
+                      onChange={(checked, e) => {
+                        e.stopPropagation();
+                        // TODO: Handle version activation
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
-            <Table 
-              columns={versionColumns} 
-              dataSource={filteredVersionData} 
-              pagination={false} 
-              size="small"
-              rowKey="id"
-            />
+
+            {/* 右侧版本详情 */}
+            <div className="process-detail-drawer-version-detail">
+              {selectedVersion ? (
+                <>
+                  {/* 基本信息 */}
+                  <div className="process-detail-drawer-version-detail-section">
+                    <Text className="process-detail-drawer-version-detail-section-title">
+                      {t('development.processDevelopment.detail.versionDetail.basicInfo')}
+                    </Text>
+                    <Descriptions data={getVersionDescriptionData(selectedVersion)} align="left" />
+                    <Button
+                      icon={<IconDeleteStroked />}
+                      type="tertiary"
+                      className="process-detail-drawer-version-detail-delete-btn"
+                    >
+                      {t('development.processDevelopment.detail.versionList.deleteVersion')}
+                    </Button>
+                  </div>
+
+                  {/* 流程输入 */}
+                  <div className="process-detail-drawer-version-detail-section">
+                    <Text className="process-detail-drawer-version-detail-section-title">
+                      {t('development.processDevelopment.detail.versionDetail.processInput')}
+                    </Text>
+                    {selectedVersion.inputs && selectedVersion.inputs.length > 0 ? (
+                      selectedVersion.inputs.map((input, index) => (
+                        <div key={index} className="process-detail-drawer-version-detail-variable">
+                          <div className="process-detail-drawer-version-detail-variable-header">
+                            <Space>
+                              <span className="process-detail-drawer-version-detail-variable-type">{input.type}</span>
+                              <Text className="process-detail-drawer-version-detail-variable-name">{input.name}</Text>
+                            </Space>
+                            <IconExternalOpenStroked style={{ color: 'var(--semi-color-primary)' }} />
+                          </div>
+                          <Text className="process-detail-drawer-version-detail-variable-description">
+                            {t('common.description')}：{input.description || '-'}
+                          </Text>
+                          <div className="process-detail-drawer-version-detail-variable-value" />
+                        </div>
+                      ))
+                    ) : (
+                      <Text type="tertiary">{t('common.noData')}</Text>
+                    )}
+                  </div>
+
+                  {/* 流程输出 */}
+                  <div className="process-detail-drawer-version-detail-section">
+                    <Text className="process-detail-drawer-version-detail-section-title">
+                      {t('development.processDevelopment.detail.versionDetail.processOutput')}
+                    </Text>
+                    {selectedVersion.outputs && selectedVersion.outputs.length > 0 ? (
+                      selectedVersion.outputs.map((output, index) => (
+                        <div key={index} className="process-detail-drawer-version-detail-variable">
+                          <div className="process-detail-drawer-version-detail-variable-header">
+                            <Space>
+                              <span className="process-detail-drawer-version-detail-variable-type">{output.type}</span>
+                              <Text className="process-detail-drawer-version-detail-variable-name">{output.name}</Text>
+                            </Space>
+                            <IconExternalOpenStroked style={{ color: 'var(--semi-color-primary)' }} />
+                          </div>
+                          <Text className="process-detail-drawer-version-detail-variable-description">
+                            {t('common.description')}：{output.description || '-'}
+                          </Text>
+                          <div className="process-detail-drawer-version-detail-variable-value" />
+                        </div>
+                      ))
+                    ) : (
+                      <Text type="tertiary">{t('common.noData')}</Text>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <div className="process-detail-drawer-version-detail-empty">
+                  <Text type="tertiary">{t('development.processDevelopment.detail.empty.noVersions')}</Text>
+                </div>
+              )}
+            </div>
           </div>
         </TabPane>
 
