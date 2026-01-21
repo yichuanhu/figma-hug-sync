@@ -176,13 +176,25 @@ import './index.less';
 - 使用 `@douyinfe/semi-ui` 作为主要 UI 框架
 - 使用 `@semi-bot/semi-theme-laiye` 主题
 
-### 4.2 组件拆分原则
+### 4.2 Descriptions 组件规范
+
+**所有 Descriptions 组件必须使用 `align="left"` 属性，确保标签左对齐：**
+
+```tsx
+// ✅ 正确 - 添加 align="left"
+<Descriptions data={descriptionData} align="left" />
+
+// ❌ 错误 - 缺少 align 属性
+<Descriptions data={descriptionData} />
+```
+
+### 4.3 组件拆分原则
 
 - 保持组件小而专注
 - 复杂逻辑抽取到自定义 hooks
 - 模态框、抽屉等独立为单独组件
 
-### 4.3 命名规范
+### 4.4 命名规范
 
 - 组件使用 PascalCase：`CreateProcessModal`
 - hooks 使用 camelCase 并以 use 开头：`useOpenProcess`

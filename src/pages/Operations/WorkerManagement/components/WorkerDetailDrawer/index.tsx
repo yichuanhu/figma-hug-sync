@@ -194,25 +194,26 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onDelete }: 
               <Text strong className="worker-detail-drawer-info-title">
                 {t('worker.detail.basicInfo')}
               </Text>
-              <Descriptions data={basicInfoData} />
+              <Descriptions data={basicInfoData} align="left" />
             </div>
 
             <div className="worker-detail-drawer-info-section">
               <Text strong className="worker-detail-drawer-info-title">
                 {t('worker.detail.detailInfo')}
               </Text>
-              <Descriptions data={detailInfoData} />
+              <Descriptions data={detailInfoData} align="left" />
             </div>
 
             <div className="worker-detail-drawer-info-section">
               <Text strong className="worker-detail-drawer-info-title">
                 {t('worker.detail.hostInfo')}
               </Text>
-              <Descriptions data={hostInfoData} />
+              <Descriptions data={hostInfoData} align="left" />
             </div>
 
             <div>
               <Descriptions
+                align="left"
                 data={[
                   { key: t('worker.detail.fields.createdAt'), value: workerData.created_at },
                   { key: t('worker.detail.fields.creator'), value: workerData.creator_id },
