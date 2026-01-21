@@ -2,20 +2,15 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Typography, Button, Toast } from '@douyinfe/semi-ui';
 import { IconCopy } from '@douyinfe/semi-icons';
+import type { LYWorkerResponse } from '@/api';
 import './index.less';
 
 const { Text } = Typography;
 
-interface WorkerData {
-  id: string;
-  name: string;
-  deviceToken: string;
-}
-
 interface WorkerKeyModalProps {
   visible: boolean;
   onClose: () => void;
-  workerData: WorkerData | null;
+  workerData: LYWorkerResponse | null;
 }
 
 const WorkerKeyModal = ({ visible, onClose, workerData }: WorkerKeyModalProps) => {
@@ -27,7 +22,7 @@ const WorkerKeyModal = ({ visible, onClose, workerData }: WorkerKeyModalProps) =
   const handleCopy = async () => {
     try {
       setCopying(true);
-      await navigator.clipboard.writeText(workerData.deviceToken);
+      await navigator.clipboard.writeText(workerData.device_token);
       Toast.success(t('worker.keyModal.copySuccess'));
     } catch {
       Toast.error(t('worker.keyModal.copyError'));
@@ -43,7 +38,7 @@ const WorkerKeyModal = ({ visible, onClose, workerData }: WorkerKeyModalProps) =
           {t('worker.keyModal.description')}
         </Text>
 
-        <div className="worker-key-modal-token">{workerData.deviceToken}</div>
+        <div className="worker-key-modal-token">{workerData.device_token}</div>
 
         <div className="worker-key-modal-footer">
           <Button icon={<IconCopy />} theme="solid" type="primary" onClick={handleCopy} loading={copying}>
