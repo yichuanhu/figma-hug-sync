@@ -111,7 +111,11 @@ const UploadVersionModal = ({ visible, onCancel, processData, onSuccess }: Uploa
             type="warning"
             icon={<IconAlertCircle />}
             description={t('development.processDevelopment.detail.uploadVersion.nameMismatchWarning')}
-            closeIcon={t('development.processDevelopment.detail.uploadVersion.gotIt')}
+            closeIcon={
+              <span className="upload-version-modal-warning-close">
+                {t('development.processDevelopment.detail.uploadVersion.gotIt')}
+              </span>
+            }
             onClose={handleDismissWarning}
             className="upload-version-modal-warning"
           />
