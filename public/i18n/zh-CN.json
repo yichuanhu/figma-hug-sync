@@ -229,7 +229,9 @@
         "deleteWarning": "删除后将无法恢复，该机器人将不再参与任务调度。如果该设备没有其他机器人关联，设备也将被一并删除。",
         "hasPendingTasks": "当前流程机器人有未完成任务，请等待任务完成或取消相关任务后再执行删除操作。",
         "cannotDelete": "无法删除流程机器人",
-        "confirmDelete": "确认删除"
+        "confirmDelete": "确认删除",
+        "success": "流程机器人删除成功！",
+        "error": "删除失败，请重试"
       },
       "detail": {
         "title": "流程机器人详情",

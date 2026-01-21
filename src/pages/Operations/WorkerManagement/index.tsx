@@ -13,6 +13,8 @@ import {
   Row,
   Col,
   Space,
+  Modal,
+  Toast,
 } from '@douyinfe/semi-ui';
 import {
   IconSearch, 
@@ -28,7 +30,6 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import WorkerDetailDrawer from './components/WorkerDetailDrawer';
 import WorkerKeyModal from './components/WorkerKeyModal';
-import WorkerDeleteModal from './components/WorkerDeleteModal';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -318,8 +319,6 @@ const WorkerManagement = () => {
   const [selectedWorker, setSelectedWorker] = useState<WorkerData | null>(null);
   const [keyModalVisible, setKeyModalVisible] = useState(false);
   const [keyModalWorker, setKeyModalWorker] = useState<WorkerData | null>(null);
-  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
-  const [deleteModalWorker, setDeleteModalWorker] = useState<WorkerData | null>(null);
 
   // 状态配置
   const statusConfig: Record<WorkerStatus, { color: string; text: string }> = useMemo(() => ({
@@ -455,25 +454,56 @@ const WorkerManagement = () => {
     setKeyModalVisible(true);
   };
 
-  // 打开删除确认弹窗
-  const openDeleteModal = (worker: WorkerData, e?: React.MouseEvent) => {
+  // 删除确认
+  const handleDeleteClick = (worker: WorkerData, e?: React.MouseEvent) => {
     e?.stopPropagation();
-    setDeleteModalWorker(worker);
-    setDeleteModalVisible(true);
-  };
+    
+    // 检查是否有未完成任务
+    if (worker.status === 'BUSY') {
+      Modal.warning({
+        title: t('worker.deleteModal.cannotDelete'),
+        content: t('worker.deleteModal.hasPendingTasks'),
+        okText: t('common.confirm'),
+      });
+      return;
+    }
 
-  // 编辑机器人
-  const handleEdit = (worker: WorkerData, e?: React.MouseEvent) => {
-    e?.stopPropagation();
-    navigate(`/worker-management/edit/${worker.id}`);
-  };
-
-  // 确认删除
-  const handleDeleteConfirm = () => {
-    console.log('删除机器人:', deleteModalWorker?.id);
-    setDeleteModalVisible(false);
-    setDeleteModalWorker(null);
-    loadData();
+    Modal.confirm({
+      title: t('worker.deleteModal.title'),
+      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      content: (
+        <>
+          <div>{t('worker.deleteModal.confirmMessage', { name: worker.name })}</div>
+          <div style={{ color: 'var(--semi-color-text-2)', marginTop: 8 }}>
+            {t('worker.deleteModal.deleteWarning')}
+          </div>
+        </>
+      ),
+      okText: t('worker.deleteModal.confirmDelete'),
+      cancelText: t('common.cancel'),
+      okButtonProps: { type: 'danger' },
+      onOk: async () => {
+        try {
+          // 模拟删除 API 调用
+          await new Promise(resolve => setTimeout(resolve, 500));
+          console.log('删除机器人:', worker.id);
+          
+          // 关闭抽屉
+          setDetailDrawerVisible(false);
+          setSelectedWorker(null);
+          
+          // 重新加载数据
+          loadData();
+          
+          // 显示成功提示
+          Toast.success(t('worker.deleteModal.success'));
+        } catch (error) {
+          // 显示错误提示
+          Toast.error(t('worker.deleteModal.error'));
+          throw error;
+        }
+      },
+    });
   };
 
   // 从详情抽屉跳转到编辑
@@ -487,9 +517,14 @@ const WorkerManagement = () => {
   // 从详情抽屉删除
   const handleDeleteFromDrawer = () => {
     if (selectedWorker) {
-      setDetailDrawerVisible(false);
-      openDeleteModal(selectedWorker);
+      handleDeleteClick(selectedWorker);
     }
+  };
+
+  // 编辑机器人
+  const handleEdit = (worker: WorkerData, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    navigate(`/worker-management/edit/${worker.id}`);
   };
 
   const columns = [
@@ -626,7 +661,7 @@ const WorkerManagement = () => {
                 type="danger" 
                 onClick={(e) => {
                   e?.stopPropagation?.();
-                  openDeleteModal(record);
+                  handleDeleteClick(record);
                 }}
               >
                 {t('worker.actions.delete')}
@@ -743,13 +778,6 @@ const WorkerManagement = () => {
         workerData={keyModalWorker}
       />
 
-      {/* 删除确认弹窗 */}
-      <WorkerDeleteModal
-        visible={deleteModalVisible}
-        onClose={() => setDeleteModalVisible(false)}
-        workerData={deleteModalWorker}
-        onConfirm={handleDeleteConfirm}
-      />
     </div>
   );
 };
