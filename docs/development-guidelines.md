@@ -272,7 +272,57 @@ import { Row, Col, Space } from '@douyinfe/semi-ui';
 - 通过 `scroll` 属性控制表格滚动
 - 使用 `loading` 属性显示加载状态（不使用骨架屏）
 
-### 5.4 删除确认弹窗规范（重要）
+### 5.4 表格分页数据规范（重要）
+
+**所有表格的分页信息必须直接使用接口返回的响应数据，禁止新增独立的 state 值来维护分页信息：**
+
+```tsx
+// ✅ 正确 - 直接使用接口返回的 LYListResponse 类型
+import type { LYListResponseLYProcessResponse } from '@/api';
+
+const [listResponse, setListResponse] = useState<LYListResponseLYProcessResponse>({
+  range: { offset: 0, size: 20, total: 0 },
+  list: [],
+});
+
+// 从响应中直接获取分页信息
+const { range, list } = listResponse;
+const currentPage = Math.floor((range?.offset || 0) / (range?.size || 20)) + 1;
+const pageSize = range?.size || 20;
+const total = range?.total || 0;
+
+// 数据加载直接设置完整响应
+const loadData = async () => {
+  const response = await fetchData(queryParams);
+  setListResponse(response);
+};
+
+// Table 分页配置
+<Table
+  dataSource={list}
+  pagination={{
+    total,
+    pageSize,
+    currentPage,
+    onPageChange: (page) => {
+      setQueryParams((prev) => ({ ...prev, offset: (page - 1) * pageSize }));
+    },
+  }}
+/>
+
+// ❌ 错误 - 不单独维护分页 state
+const [data, setData] = useState<DataItem[]>([]);
+const [rangeInfo, setRangeInfo] = useState({ offset: 0, size: 20, total: 0 }); // 禁止
+const [pagination, setPagination] = useState({ page: 1, total: 0 }); // 禁止
+```
+
+**规范说明：**
+- 接口返回的 `LYListResponse` 类型包含 `range`（分页信息）和 `list`（数据列表）
+- 只需维护一个 state 存储完整的接口响应
+- 分页信息通过解构从响应中获取，无需额外 state
+- 这样可以确保数据与分页信息始终同步，避免状态不一致
+
+### 5.5 删除确认弹窗规范（重要）
 
 **所有删除操作必须使用 `Modal.confirm` + `Toast` 组合，禁止创建单独的删除弹窗组件：**
 
