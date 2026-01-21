@@ -5,17 +5,20 @@
     }
 
     .upload-version-modal-uploader {
-      .semi-upload-drag {
-        padding: 32px 16px;
-        border: 1px dashed var(--semi-color-border);
-        border-radius: 4px;
-        background-color: var(--semi-color-fill-0);
-      }
+      .semi-upload {
+        .semi-upload-drag {
+          padding: 32px 16px;
+          border: 1px dashed var(--semi-color-border) !important;
+          border-radius: 4px;
+          background-color: var(--semi-color-fill-0) !important;
+        }
 
-      .semi-upload-drag.semi-upload-drag-area-legal-main:hover,
-      .semi-upload-drag:hover {
-        border-color: var(--semi-color-text-2) !important;
-        background-color: var(--semi-color-fill-1) !important;
+        .semi-upload-drag:hover,
+        .semi-upload-drag.semi-upload-drag-area-legal,
+        .semi-upload-drag.semi-upload-drag-area-legal-main {
+          border-color: var(--semi-color-text-2) !important;
+          background-color: var(--semi-color-fill-1) !important;
+        }
       }
 
       .semi-upload-drag-area-main-text {
@@ -47,4 +50,16 @@
       }
     }
   }
+}
+
+// 全局覆盖 Semi UI Upload 拖拽区域的 hover 样式
+.upload-version-modal .semi-upload-drag:hover {
+  border-color: var(--semi-color-text-2) !important;
+  background-color: var(--semi-color-fill-1) !important;
+}
+
+.upload-version-modal .semi-upload-drag.semi-upload-drag-area-legal,
+.upload-version-modal .semi-upload-drag.semi-upload-drag-area-legal-main {
+  border-color: var(--semi-color-text-2) !important;
+  background-color: var(--semi-color-fill-1) !important;
 }
