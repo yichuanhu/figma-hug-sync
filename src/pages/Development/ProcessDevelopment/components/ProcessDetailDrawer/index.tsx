@@ -17,6 +17,7 @@ import {
   Col,
   Space,
   Switch,
+  Toast,
 } from '@douyinfe/semi-ui';
 import {
   IconEditStroked,
@@ -87,7 +88,7 @@ interface VersionDetailData extends LYProcessVersionResponse {
   outputs?: { name: string; type: string; description?: string }[];
 }
 
-const mockVersionData: VersionDetailData[] = [
+const initialMockVersionData: VersionDetailData[] = [
   {
     key: 1,
     id: 'VER-PROC-2024-001-1.0.4',
@@ -257,6 +258,7 @@ const ProcessDetailDrawer = ({
     const saved = localStorage.getItem('processDetailDrawerWidth');
     return saved ? Math.max(Number(saved), 576) : 576;
   });
+  const [versionData, setVersionData] = useState<VersionDetailData[]>(initialMockVersionData);
   const isResizing = useRef(false);
   const startX = useRef(0);
   const startWidth = useRef(drawerWidth);
@@ -326,7 +328,7 @@ const ProcessDetailDrawer = ({
 
   // 版本数据按版本号降序排列（最新版本在前）
   const sortedVersionData = useMemo(() => {
-    const data = [...mockVersionData];
+    const data = [...versionData];
     
     // 按版本号降序排列（最新版本在前）
     data.sort((a, b) => {
@@ -341,7 +343,25 @@ const ProcessDetailDrawer = ({
     });
     
     return data;
-  }, []);
+  }, [versionData]);
+
+  // 处理版本激活/停用
+  const handleVersionActiveChange = useCallback((versionId: string, checked: boolean) => {
+    setVersionData(prevData => 
+      prevData.map(v => 
+        v.id === versionId ? { ...v, is_active: checked } : v
+      )
+    );
+    
+    const version = versionData.find(v => v.id === versionId);
+    if (version) {
+      Toast.success(
+        checked 
+          ? t('development.processDevelopment.detail.versionList.activateSuccess', { version: version.version })
+          : t('development.processDevelopment.detail.versionList.deactivateSuccess', { version: version.version })
+      );
+    }
+  }, [versionData, t]);
 
   // 当前选中的版本详情
   const selectedVersion = useMemo(() => {
@@ -557,7 +577,7 @@ const ProcessDetailDrawer = ({
                       size="small"
                       onChange={(checked, e) => {
                         e.stopPropagation();
-                        // TODO: Handle version activation
+                        handleVersionActiveChange(version.id, checked);
                       }}
                     />
                   </div>
