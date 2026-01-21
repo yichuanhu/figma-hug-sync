@@ -31,40 +31,111 @@ import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
 import ProcessDetailDrawer from './components/ProcessDetailDrawer';
 import { useOpenProcess } from './hooks/useOpenProcess';
+import type { LYProcessResponse, GetProcessesParams, LYRangeResponse } from '@/api';
 import './index.less';
 
 const { Title, Text } = Typography;
 
-// 流程状态枚举
+// 流程状态枚举 - 与API LYProcessResponse.status对应
 type ProcessStatus = 'DEVELOPING' | 'PUBLISHED' | 'ARCHIVED';
 
-// 流程列表项接口 - 根据需求文档5.1.2定义
+// 前端流程列表项接口 - 扩展自LYProcessResponse，适配前端展示需要
 export interface ProcessItem {
-  id: string; // UUID
-  name: string; // 流程名称，1-100字符
-  description: string; // 流程描述，最大500字符
-  status: ProcessStatus; // 流程状态
-  creatorName: string; // 创建者名称
-  createTime: string; // 创建时间，格式：YYYY-MM-DD HH:mm:ss
-  updateTime: string; // 更新时间，格式：YYYY-MM-DD HH:mm:ss
+  id: string; // 对应 LYProcessResponse.id
+  name: string; // 对应 LYProcessResponse.name
+  description: string; // 对应 LYProcessResponse.description
+  status: ProcessStatus; // 对应 LYProcessResponse.status
+  creatorName: string; // 由 LYProcessResponse.creator_id 映射
+  createTime: string; // 对应 LYProcessResponse.created_at，格式化后
+  updateTime: string; // 对应 LYProcessResponse.updated_at，格式化后
+  // 以下为扩展字段，保留API原始数据
+  language?: string; // 对应 LYProcessResponse.language
+  processType?: string; // 对应 LYProcessResponse.process_type
+  timeout?: number; // 对应 LYProcessResponse.timeout
+  currentVersionId?: string | null; // 对应 LYProcessResponse.current_version_id
+  creatorId?: string; // 对应 LYProcessResponse.creator_id
+  requirementId?: string | null; // 对应 LYProcessResponse.requirement_id
 }
 
-// 查询参数接口 - 根据需求文档5.1.1定义
+// 查询参数接口 - 对应API GetProcessesParams
 interface QueryParams {
-  page: number; // 页码，>= 1，默认1
-  pageSize: number; // 每页数量，1-100，默认20
-  keyword: string; // 搜索关键词，1-100字符
-  sortBy: 'createTime' | 'updateTime' | 'name'; // 排序字段
-  sortOrder: 'asc' | 'desc'; // 排序方向
+  page: number; // 页码，>= 1，默认1 (转换为offset)
+  pageSize: number; // 每页数量，1-100，默认20 (对应size)
+  keyword: string; // 搜索关键词 (对应keyword)
+  sortBy: 'createTime' | 'updateTime' | 'name'; // 排序字段 (对应sort_by: created_at/updated_at/name)
+  sortOrder: 'asc' | 'desc'; // 排序方向 (对应sort_order)
 }
 
-// 分页信息接口 - 根据需求文档5.1.3定义
+// 分页信息接口 - 对应API LYRangeResponse
 interface PaginationInfo {
-  total: number; // 总记录数
+  total: number; // 总记录数 (对应LYRangeResponse.total)
   page: number; // 当前页码
-  pageSize: number; // 每页数量
+  pageSize: number; // 每页数量 (对应LYRangeResponse.size)
   totalPages: number; // 总页数
 }
+
+// 将前端QueryParams转换为API GetProcessesParams
+const toApiParams = (params: QueryParams): GetProcessesParams => {
+  // sortBy字段映射: 前端使用驼峰，API使用下划线
+  const sortByMap: Record<string, string> = {
+    createTime: 'created_at',
+    updateTime: 'updated_at',
+    name: 'name',
+  };
+  
+  return {
+    keyword: params.keyword || undefined,
+    sort_by: sortByMap[params.sortBy] || 'updated_at',
+    sort_order: params.sortOrder,
+    offset: (params.page - 1) * params.pageSize,
+    size: params.pageSize,
+  };
+};
+
+// 格式化日期时间
+const formatDateTime = (dateStr: string | null): string => {
+  if (!dateStr) return '-';
+  try {
+    const date = new Date(dateStr);
+    return date.toISOString().replace('T', ' ').substring(0, 19);
+  } catch {
+    return dateStr;
+  }
+};
+
+// 将API LYProcessResponse转换为前端ProcessItem
+const toProcessItem = (response: LYProcessResponse, creatorNameMap?: Record<string, string>): ProcessItem => {
+  return {
+    id: response.id,
+    name: response.name,
+    description: response.description || '',
+    status: (response.status as ProcessStatus) || 'DEVELOPING',
+    creatorName: creatorNameMap?.[response.creator_id] || response.creator_id,
+    createTime: formatDateTime(response.created_at),
+    updateTime: formatDateTime(response.updated_at),
+    language: response.language,
+    processType: response.process_type,
+    timeout: response.timeout,
+    currentVersionId: response.current_version_id,
+    creatorId: response.creator_id,
+    requirementId: response.requirement_id,
+  };
+};
+
+// 将API LYRangeResponse转换为前端PaginationInfo
+const toPaginationInfo = (range: LYRangeResponse | null | undefined, pageSize: number): PaginationInfo => {
+  const total = range?.total || 0;
+  const offset = range?.offset || 0;
+  const page = Math.floor(offset / pageSize) + 1;
+  const totalPages = Math.ceil(total / pageSize) || 1;
+  
+  return {
+    total,
+    page,
+    pageSize,
+    totalPages,
+  };
+};
 
 // 状态配置 - 使用 Semi UI 支持的 TagColor 类型
 const statusConfig: Record<ProcessStatus, { color: 'grey' | 'green' | 'orange'; i18nKey: string }> = {
@@ -132,65 +203,102 @@ const generateMockProcessList = (): ProcessItem[] => {
     });
 };
 
-// 模拟数据存储
+// 模拟数据存储 (用于API不可用时的备用)
 let mockProcessData = generateMockProcessList();
 
-// 模拟API请求 - 获取流程列表
+// 模拟创建者ID到名称的映射 (实际应用中应从用户服务获取)
+const mockCreatorNameMap: Record<string, string> = {
+  'user-001': '张三',
+  'user-002': '李四',
+  'user-003': '王五',
+  'user-004': '赵六',
+  'user-005': '钱七',
+};
+
+// 使用API获取流程列表
+import processApi from '@/api';
+
 const fetchProcessList = async (params: QueryParams): Promise<{ data: ProcessItem[]; pagination: PaginationInfo }> => {
-  // 模拟网络延迟
-  await new Promise((resolve) => setTimeout(resolve, 500));
+  try {
+    // 转换为API参数格式
+    const apiParams = toApiParams(params);
+    
+    // 调用API
+    const response = await processApi.getProcesses(apiParams);
+    
+    // 检查响应状态
+    if (response.code === 'success' && response.data) {
+      // 转换响应数据为前端格式
+      const processItems = response.data.list.map((item) => toProcessItem(item, mockCreatorNameMap));
+      const pagination = toPaginationInfo(response.data.range, params.pageSize);
+      
+      return {
+        data: processItems,
+        pagination,
+      };
+    }
+    
+    // API返回错误，抛出异常以触发备用逻辑
+    throw new Error(response.message || 'API request failed');
+  } catch (error) {
+    // API调用失败时，使用模拟数据作为备用
+    console.warn('API调用失败，使用模拟数据:', error);
+    
+    // 模拟网络延迟
+    await new Promise((resolve) => setTimeout(resolve, 300));
 
-  let filteredData = [...mockProcessData];
+    let filteredData = [...mockProcessData];
 
-  // 搜索过滤 - 同时匹配流程名称和描述（OR关系）
-  if (params.keyword?.trim()) {
-    const keyword = params.keyword.toLowerCase().trim();
-    filteredData = filteredData.filter(
-      (item) => item.name.toLowerCase().includes(keyword) || item.description.toLowerCase().includes(keyword),
-    );
-  }
-
-  // 排序处理
-  filteredData.sort((a, b) => {
-    let valueA: string;
-    let valueB: string;
-
-    switch (params.sortBy) {
-      case 'name':
-        valueA = a.name;
-        valueB = b.name;
-        break;
-      case 'updateTime':
-        valueA = a.updateTime;
-        valueB = b.updateTime;
-        break;
-      case 'createTime':
-      default:
-        valueA = a.createTime;
-        valueB = b.createTime;
-        break;
+    // 搜索过滤 - 同时匹配流程名称和描述（OR关系）
+    if (params.keyword?.trim()) {
+      const keyword = params.keyword.toLowerCase().trim();
+      filteredData = filteredData.filter(
+        (item) => item.name.toLowerCase().includes(keyword) || item.description.toLowerCase().includes(keyword),
+      );
     }
 
-    const comparison = valueA.localeCompare(valueB);
-    return params.sortOrder === 'asc' ? comparison : -comparison;
-  });
+    // 排序处理
+    filteredData.sort((a, b) => {
+      let valueA: string;
+      let valueB: string;
 
-  // 计算分页
-  const total = filteredData.length;
-  const totalPages = Math.ceil(total / params.pageSize) || 1;
-  const start = (params.page - 1) * params.pageSize;
-  const end = start + params.pageSize;
-  const paginatedData = filteredData.slice(start, end);
+      switch (params.sortBy) {
+        case 'name':
+          valueA = a.name;
+          valueB = b.name;
+          break;
+        case 'updateTime':
+          valueA = a.updateTime;
+          valueB = b.updateTime;
+          break;
+        case 'createTime':
+        default:
+          valueA = a.createTime;
+          valueB = b.createTime;
+          break;
+      }
 
-  return {
-    data: paginatedData,
-    pagination: {
-      total,
-      page: params.page,
-      pageSize: params.pageSize,
-      totalPages,
-    },
-  };
+      const comparison = valueA.localeCompare(valueB);
+      return params.sortOrder === 'asc' ? comparison : -comparison;
+    });
+
+    // 计算分页
+    const total = filteredData.length;
+    const totalPages = Math.ceil(total / params.pageSize) || 1;
+    const start = (params.page - 1) * params.pageSize;
+    const end = start + params.pageSize;
+    const paginatedData = filteredData.slice(start, end);
+
+    return {
+      data: paginatedData,
+      pagination: {
+        total,
+        page: params.page,
+        pageSize: params.pageSize,
+        totalPages,
+      },
+    };
+  }
 };
 
 const ProcessDevelopment = () => {
