@@ -4,42 +4,12 @@ import { Modal, Form, Toast, Button } from '@douyinfe/semi-ui';
 import type { LYUpdateProcessRequest, LYProcessResponse } from '@/api';
 import './index.less';
 
-// 编辑流程的数据结构 - 基于LYProcessResponse
-interface ProcessData {
-  id: string;
-  name: string;
-  description: string;
-}
-
 interface EditProcessModalProps {
   visible: boolean;
   onCancel: () => void;
-  processData: ProcessData | null;
-  onSuccess?: (updatedData: ProcessData) => void;
+  processData: LYProcessResponse | null;
+  onSuccess?: (updatedData: LYProcessResponse) => void;
 }
-
-// 生成Mock的更新响应
-const generateMockUpdateResponse = (
-  processId: string,
-  request: LYUpdateProcessRequest,
-  originalData: ProcessData,
-): LYProcessResponse => {
-  const now = new Date().toISOString();
-  return {
-    id: processId,
-    name: request.name || originalData.name,
-    description: request.description || originalData.description,
-    language: 'Python',
-    process_type: 'RPA',
-    timeout: request.timeout || 60,
-    status: 'DEVELOPING',
-    current_version_id: null,
-    creator_id: 'user-001',
-    requirement_id: null,
-    created_at: now,
-    updated_at: now,
-  };
-};
 
 const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditProcessModalProps) => {
   const { t } = useTranslation();
@@ -74,18 +44,16 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
       // 模拟API调用延迟
       await new Promise((resolve) => setTimeout(resolve, 300));
 
-      // 生成Mock响应
-      const mockResponse = generateMockUpdateResponse(processData.id, updateRequest, processData);
-
-      // 转换为返回数据格式
-      const updatedData: ProcessData = {
-        id: mockResponse.id,
-        name: mockResponse.name,
-        description: mockResponse.description || '',
+      // 生成Mock响应 - 直接返回LYProcessResponse
+      const updatedProcess: LYProcessResponse = {
+        ...processData,
+        name: updateRequest.name || processData.name,
+        description: updateRequest.description || processData.description,
+        updated_at: new Date().toISOString(),
       };
 
       Toast.success(t('development.processDevelopment.editModal.success'));
-      onSuccess?.(updatedData);
+      onSuccess?.(updatedProcess);
       onCancel();
     } catch (error) {
       console.error('更新流程失败:', error);

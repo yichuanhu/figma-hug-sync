@@ -4,20 +4,10 @@ import { Modal, Form, Toast, Button } from '@douyinfe/semi-ui';
 import type { LYCreateProcessRequest, LYProcessResponse } from '@/api';
 import './index.less';
 
-// 创建流程后返回的数据结构 - 基于LYProcessResponse
-interface CreatedProcessData {
-  id: string;
-  name: string;
-  description: string;
-  status: string;
-  creator: string;
-  createdAt: string;
-}
-
 interface CreateProcessModalProps {
   visible: boolean;
   onCancel: () => void;
-  onSuccess?: (processData: CreatedProcessData) => void;
+  onSuccess?: (processData: LYProcessResponse) => void;
 }
 
 // 生成UUID v4
@@ -77,28 +67,12 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
       // 模拟API调用延迟
       await new Promise((resolve) => setTimeout(resolve, 300));
 
-      // 生成Mock响应
+      // 生成Mock响应 - 直接返回LYProcessResponse
       const mockResponse = generateMockLYProcessResponse(createRequest);
-
-      // 转换为返回数据格式
-      const processData: CreatedProcessData = {
-        id: mockResponse.id,
-        name: mockResponse.name,
-        description: mockResponse.description || '',
-        status: mockResponse.status,
-        creator: '当前用户',
-        createdAt: new Date(mockResponse.created_at || '').toLocaleString('zh-CN', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit',
-        }),
-      };
 
       Toast.success(t('development.processDevelopment.createModal.success'));
       onCancel();
-      onSuccess?.(processData);
+      onSuccess?.(mockResponse);
     } catch (error) {
       console.error('创建流程失败:', error);
       Toast.error(t('development.processDevelopment.createModal.error'));

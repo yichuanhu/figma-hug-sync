@@ -36,41 +36,6 @@ import './index.less';
 
 const { Title, Text } = Typography;
 
-// ============= 类型定义 - 直接使用API类型 =============
-
-// 流程状态枚举 - 与API LYProcessResponse.status对应
-type ProcessStatus = 'DEVELOPING' | 'PUBLISHED' | 'ARCHIVED';
-
-// 前端流程列表项接口 - 扩展自LYProcessResponse
-export interface ProcessItem extends Pick<LYProcessResponse, 'id' | 'name' | 'language' | 'timeout'> {
-  description: string;
-  status: ProcessStatus;
-  creatorName: string;
-  createTime: string;
-  updateTime: string;
-  processType?: string;
-  currentVersionId?: string | null;
-  creatorId?: string;
-  requirementId?: string | null;
-}
-
-// 查询参数接口 - 映射自API GetProcessesParams
-interface QueryParams {
-  page: number;
-  pageSize: number;
-  keyword: string;
-  sortBy: 'createTime' | 'updateTime' | 'name';
-  sortOrder: 'asc' | 'desc';
-}
-
-// 分页信息接口 - 映射自API LYRangeResponse
-interface PaginationInfo {
-  total: number;
-  page: number;
-  pageSize: number;
-  totalPages: number;
-}
-
 // ============= 工具函数 =============
 
 // 生成UUID v4
@@ -80,68 +45,6 @@ const generateUUID = (): string => {
     const v = c === 'x' ? r : (r & 0x3) | 0x8;
     return v.toString(16);
   });
-};
-
-// 格式化日期时间
-const formatDateTime = (dateStr: string | null): string => {
-  if (!dateStr) return '-';
-  try {
-    const date = new Date(dateStr);
-    return date.toISOString().replace('T', ' ').substring(0, 19);
-  } catch {
-    return dateStr;
-  }
-};
-
-// 将前端QueryParams转换为API GetProcessesParams
-const toApiParams = (params: QueryParams): GetProcessesParams => {
-  const sortByMap: Record<string, string> = {
-    createTime: 'created_at',
-    updateTime: 'updated_at',
-    name: 'name',
-  };
-
-  return {
-    keyword: params.keyword || undefined,
-    sort_by: sortByMap[params.sortBy] || 'updated_at',
-    sort_order: params.sortOrder,
-    offset: (params.page - 1) * params.pageSize,
-    size: params.pageSize,
-  };
-};
-
-// 将API LYProcessResponse转换为前端ProcessItem
-const toProcessItem = (response: LYProcessResponse, creatorNameMap?: Record<string, string>): ProcessItem => {
-  return {
-    id: response.id,
-    name: response.name,
-    description: response.description || '',
-    status: (response.status as ProcessStatus) || 'DEVELOPING',
-    creatorName: creatorNameMap?.[response.creator_id] || response.creator_id,
-    createTime: formatDateTime(response.created_at),
-    updateTime: formatDateTime(response.updated_at),
-    language: response.language,
-    processType: response.process_type,
-    timeout: response.timeout,
-    currentVersionId: response.current_version_id,
-    creatorId: response.creator_id,
-    requirementId: response.requirement_id,
-  };
-};
-
-// 将API LYRangeResponse转换为前端PaginationInfo
-const toPaginationInfo = (range: LYRangeResponse | null | undefined, pageSize: number): PaginationInfo => {
-  const total = range?.total || 0;
-  const offset = range?.offset || 0;
-  const page = Math.floor(offset / pageSize) + 1;
-  const totalPages = Math.ceil(total / pageSize) || 1;
-
-  return {
-    total,
-    page,
-    pageSize,
-    totalPages,
-  };
 };
 
 // ============= Mock数据生成 - 基于API类型 =============
@@ -175,7 +78,7 @@ const generateMockLYProcessResponse = (index: number): LYProcessResponse => {
   ];
 
   const creatorIds = ['user-001', 'user-002', 'user-003', 'user-004', 'user-005'];
-  const statuses: ProcessStatus[] = ['DEVELOPING', 'PUBLISHED', 'ARCHIVED'];
+  const statuses = ['DEVELOPING', 'PUBLISHED', 'ARCHIVED'];
   const languages = ['Python', 'JavaScript', 'Java'];
   const processTypes = ['RPA', 'AI', 'Hybrid'];
 
@@ -219,13 +122,13 @@ const mockCreatorNameMap: Record<string, string> = {
 
 // ============= 数据获取 =============
 
-const fetchProcessList = async (params: QueryParams): Promise<{ data: ProcessItem[]; pagination: PaginationInfo }> => {
+const fetchProcessList = async (
+  params: GetProcessesParams,
+): Promise<{ data: LYProcessResponse[]; range: LYRangeResponse }> => {
   // 模拟网络延迟
   await new Promise((resolve) => setTimeout(resolve, 300));
 
-  // 转换为API参数格式（预留API调用）
-  const apiParams = toApiParams(params);
-  console.log('API参数:', apiParams);
+  console.log('API参数:', params);
 
   let filteredData = [...mockProcessData];
 
@@ -243,16 +146,16 @@ const fetchProcessList = async (params: QueryParams): Promise<{ data: ProcessIte
     let valueA: string;
     let valueB: string;
 
-    switch (params.sortBy) {
+    switch (params.sort_by) {
       case 'name':
         valueA = a.name;
         valueB = b.name;
         break;
-      case 'updateTime':
+      case 'updated_at':
         valueA = a.updated_at || '';
         valueB = b.updated_at || '';
         break;
-      case 'createTime':
+      case 'created_at':
       default:
         valueA = a.created_at || '';
         valueB = b.created_at || '';
@@ -260,34 +163,28 @@ const fetchProcessList = async (params: QueryParams): Promise<{ data: ProcessIte
     }
 
     const comparison = valueA.localeCompare(valueB);
-    return params.sortOrder === 'asc' ? comparison : -comparison;
+    return params.sort_order === 'asc' ? comparison : -comparison;
   });
 
   // 计算分页
   const total = filteredData.length;
-  const start = (params.page - 1) * params.pageSize;
-  const end = start + params.pageSize;
-  const paginatedData = filteredData.slice(start, end);
-
-  // 转换为前端格式
-  const processItems = paginatedData.map((item) => toProcessItem(item, mockCreatorNameMap));
-
-  // 构造模拟的LYRangeResponse
-  const mockRange: LYRangeResponse = {
-    offset: start,
-    size: params.pageSize,
-    total,
-  };
+  const offset = params.offset || 0;
+  const size = params.size || 20;
+  const paginatedData = filteredData.slice(offset, offset + size);
 
   return {
-    data: processItems,
-    pagination: toPaginationInfo(mockRange, params.pageSize),
+    data: paginatedData,
+    range: {
+      offset,
+      size,
+      total,
+    },
   };
 };
 
 // ============= 状态配置 =============
 
-const statusConfig: Record<ProcessStatus, { color: 'grey' | 'green' | 'orange'; i18nKey: string }> = {
+const statusConfig: Record<string, { color: 'grey' | 'green' | 'orange'; i18nKey: string }> = {
   DEVELOPING: { color: 'grey', i18nKey: 'development.processDevelopment.status.developing' },
   PUBLISHED: { color: 'green', i18nKey: 'development.processDevelopment.status.published' },
   ARCHIVED: { color: 'orange', i18nKey: 'development.processDevelopment.status.archived' },
@@ -298,30 +195,32 @@ const statusConfig: Record<ProcessStatus, { color: 'grey' | 'green' | 'orange'; 
 const ProcessDevelopment = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [queryParams, setQueryParams] = useState<QueryParams>({
-    page: 1,
-    pageSize: 20,
+
+  // 查询参数 - 直接使用API GetProcessesParams
+  const [queryParams, setQueryParams] = useState<GetProcessesParams>({
+    offset: 0,
+    size: 20,
     keyword: '',
-    sortBy: 'createTime',
-    sortOrder: 'desc',
+    sort_by: 'created_at',
+    sort_order: 'desc',
   });
-  const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>({
+
+  // 分页信息 - 直接使用API LYRangeResponse
+  const [rangeInfo, setRangeInfo] = useState<LYRangeResponse>({
+    offset: 0,
+    size: 20,
     total: 0,
-    page: 1,
-    pageSize: 20,
-    totalPages: 1,
   });
+
   const [loading, setLoading] = useState(true);
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
-  const [processListData, setProcessListData] = useState<ProcessItem[]>([]);
-  const [selectedProcess, setSelectedProcess] = useState<ProcessItem | null>(null);
-  const [editingProcess, setEditingProcess] = useState<{
-    id: string;
-    name: string;
-    description: string;
-  } | null>(null);
+
+  // 列表数据 - 直接使用API LYProcessResponse
+  const [processListData, setProcessListData] = useState<LYProcessResponse[]>([]);
+  const [selectedProcess, setSelectedProcess] = useState<LYProcessResponse | null>(null);
+  const [editingProcess, setEditingProcess] = useState<LYProcessResponse | null>(null);
 
   const { openProcess, OpenProcessModal } = useOpenProcess();
 
@@ -331,7 +230,7 @@ const ProcessDevelopment = () => {
     try {
       const result = await fetchProcessList(queryParams);
       setProcessListData(result.data);
-      setPaginationInfo(result.pagination);
+      setRangeInfo(result.range);
     } finally {
       setLoading(false);
     }
@@ -344,11 +243,11 @@ const ProcessDevelopment = () => {
 
   // 搜索
   const handleSearch = (keyword: string) => {
-    setQueryParams((prev) => ({ ...prev, page: 1, keyword }));
+    setQueryParams((prev) => ({ ...prev, offset: 0, keyword }));
   };
 
   // 打开流程详情抽屉
-  const openProcessDetail = (record: ProcessItem) => {
+  const openProcessDetail = (record: LYProcessResponse) => {
     setSelectedProcess(record);
     if (!detailDrawerVisible) {
       setDetailDrawerVisible(true);
@@ -356,15 +255,10 @@ const ProcessDevelopment = () => {
   };
 
   // 编辑操作
-  const handleEdit = (record?: ProcessItem) => {
+  const handleEdit = (record?: LYProcessResponse) => {
     const processRecord = record || selectedProcess;
-
     if (processRecord) {
-      setEditingProcess({
-        id: processRecord.id,
-        name: processRecord.name,
-        description: processRecord.description,
-      });
+      setEditingProcess(processRecord);
       setEditModalVisible(true);
     }
   };
@@ -374,7 +268,7 @@ const ProcessDevelopment = () => {
   };
 
   // 删除确认
-  const handleDeleteClick = (record?: ProcessItem) => {
+  const handleDeleteClick = (record?: LYProcessResponse) => {
     const processToDelete = record || selectedProcess;
     if (!processToDelete) return;
 
@@ -394,25 +288,17 @@ const ProcessDevelopment = () => {
       okButtonProps: { type: 'danger' },
       onOk: async () => {
         try {
-          // 模拟删除 API 调用
           await new Promise((resolve) => {
             setTimeout(() => {
-              // 从mock数据中删除
               mockProcessData = mockProcessData.filter((item) => item.id !== processToDelete.id);
               resolve(true);
             }, 500);
           });
 
           console.log('删除流程:', processToDelete.id);
-
-          // 关闭抽屉
           setDetailDrawerVisible(false);
           setSelectedProcess(null);
-
-          // 重新加载数据
           loadData();
-
-          // 显示成功提示
           Toast.success(t('development.processDevelopment.deleteModal.success'));
         } catch (error) {
           Toast.error(t('development.processDevelopment.deleteModal.error'));
@@ -423,14 +309,17 @@ const ProcessDevelopment = () => {
   };
 
   // 表格排序处理
-  const handleSort = (sortBy: 'createTime' | 'updateTime' | 'name') => {
+  const handleSort = (sortBy: string) => {
     setQueryParams((prev) => ({
       ...prev,
-      page: 1,
-      sortBy,
-      sortOrder: prev.sortBy === sortBy && prev.sortOrder === 'desc' ? 'asc' : 'desc',
+      offset: 0,
+      sort_by: sortBy,
+      sort_order: prev.sort_by === sortBy && prev.sort_order === 'desc' ? 'asc' : 'desc',
     }));
   };
+
+  // 计算当前页码
+  const currentPage = Math.floor((queryParams.offset || 0) / (queryParams.size || 20)) + 1;
 
   const columns = [
     {
@@ -448,9 +337,9 @@ const ProcessDevelopment = () => {
       dataIndex: 'description',
       key: 'description',
       width: 320,
-      render: (description: string) => (
-        <Tooltip content={description} position="top">
-          <div className="process-development-cell-ellipsis">{description}</div>
+      render: (description: string | null) => (
+        <Tooltip content={description || '-'} position="top">
+          <div className="process-development-cell-ellipsis">{description || '-'}</div>
         </Tooltip>
       ),
     },
@@ -459,7 +348,7 @@ const ProcessDevelopment = () => {
       dataIndex: 'status',
       key: 'status',
       width: 100,
-      render: (status: ProcessStatus) => (
+      render: (status: string) => (
         <Tag color={statusConfig[status]?.color || 'grey'} type="light">
           {t(statusConfig[status]?.i18nKey || 'development.processDevelopment.status.developing')}
         </Tag>
@@ -467,11 +356,11 @@ const ProcessDevelopment = () => {
     },
     {
       title: t('common.creator'),
-      dataIndex: 'creatorName',
-      key: 'creatorName',
+      dataIndex: 'creator_id',
+      key: 'creator_id',
       width: 120,
-      render: (creatorName: string) => {
-        if (!creatorName) return null;
+      render: (creatorId: string) => {
+        const creatorName = mockCreatorNameMap[creatorId] || creatorId;
         return (
           <div className="process-development-cell-creator">
             <Avatar size="small" className="avatar-creator">
@@ -484,30 +373,32 @@ const ProcessDevelopment = () => {
     },
     {
       title: t('common.createTime'),
-      dataIndex: 'createTime',
-      key: 'createTime',
+      dataIndex: 'created_at',
+      key: 'created_at',
       width: 160,
       sorter: true,
       onHeaderCell: () => ({
-        onClick: () => handleSort('createTime'),
+        onClick: () => handleSort('created_at'),
       }),
+      render: (value: string | null) => (value ? value.replace('T', ' ').substring(0, 19) : '-'),
     },
     {
       title: t('common.updateTime'),
-      dataIndex: 'updateTime',
-      key: 'updateTime',
+      dataIndex: 'updated_at',
+      key: 'updated_at',
       width: 160,
       sorter: true,
       onHeaderCell: () => ({
-        onClick: () => handleSort('updateTime'),
+        onClick: () => handleSort('updated_at'),
       }),
+      render: (value: string | null) => (value ? value.replace('T', ' ').substring(0, 19) : '-'),
     },
     {
       title: t('common.actions'),
       dataIndex: 'action',
       key: 'action',
       width: 60,
-      render: (_: unknown, record: ProcessItem) => (
+      render: (_: unknown, record: LYProcessResponse) => (
         <Dropdown
           trigger="click"
           position="bottomRight"
@@ -581,7 +472,7 @@ const ProcessDevelopment = () => {
               prefix={<IconSearch />}
               placeholder={t('development.processDevelopment.searchPlaceholder')}
               className="process-development-search-input"
-              value={queryParams.keyword}
+              value={queryParams.keyword || ''}
               onChange={handleSearch}
               showClear
               maxLength={100}
@@ -610,17 +501,20 @@ const ProcessDevelopment = () => {
           onRow={(record) => {
             const isSelected = selectedProcess?.id === record?.id && detailDrawerVisible;
             return {
-              onClick: () => record && openProcessDetail(record as ProcessItem),
+              onClick: () => record && openProcessDetail(record as LYProcessResponse),
               className: isSelected ? 'process-development-row-selected' : undefined,
               style: { cursor: 'pointer' },
             };
           }}
           pagination={{
-            total: paginationInfo.total,
-            pageSize: queryParams.pageSize,
-            currentPage: queryParams.page,
-            onPageChange: (page) => setQueryParams((prev) => ({ ...prev, page })),
-            onPageSizeChange: (pageSize) => setQueryParams((prev) => ({ ...prev, page: 1, pageSize })),
+            total: rangeInfo.total || 0,
+            pageSize: queryParams.size || 20,
+            currentPage,
+            onPageChange: (page) => {
+              const size = queryParams.size || 20;
+              setQueryParams((prev) => ({ ...prev, offset: (page - 1) * size }));
+            },
+            onPageSizeChange: (pageSize) => setQueryParams((prev) => ({ ...prev, offset: 0, size: pageSize })),
             showSizeChanger: true,
             showTotal: true,
           }}
@@ -632,39 +526,9 @@ const ProcessDevelopment = () => {
       <CreateProcessModal
         visible={createModalVisible}
         onCancel={() => setCreateModalVisible(false)}
-        onSuccess={(processData) => {
-          // 添加到mock数据
-          const newMockProcess: LYProcessResponse = {
-            id: processData.id,
-            name: processData.name,
-            description: processData.description,
-            language: 'Python',
-            process_type: 'RPA',
-            timeout: 60,
-            status: 'DEVELOPING',
-            current_version_id: null,
-            creator_id: 'user-001',
-            requirement_id: null,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          };
-          mockProcessData.unshift(newMockProcess);
-
-          // 重新加载数据
+        onSuccess={(newProcess: LYProcessResponse) => {
+          mockProcessData.unshift(newProcess);
           loadData();
-
-          // 创建新的ProcessItem并打开详情抽屉
-          const newProcess: ProcessItem = {
-            id: processData.id,
-            name: processData.name,
-            description: processData.description,
-            status: 'DEVELOPING',
-            creatorName: processData.creator,
-            createTime: processData.createdAt,
-            updateTime: processData.createdAt,
-            language: 'Python',
-            timeout: 60,
-          };
           setSelectedProcess(newProcess);
           setDetailDrawerVisible(true);
         }}
@@ -675,20 +539,12 @@ const ProcessDevelopment = () => {
         visible={editModalVisible}
         onCancel={() => setEditModalVisible(false)}
         processData={editingProcess}
-        onSuccess={(updatedData) => {
-          // 更新mock数据
-          const index = mockProcessData.findIndex((item) => item.id === updatedData.id);
+        onSuccess={(updatedProcess: LYProcessResponse) => {
+          const index = mockProcessData.findIndex((item) => item.id === updatedProcess.id);
           if (index !== -1) {
-            mockProcessData[index] = {
-              ...mockProcessData[index],
-              name: updatedData.name,
-              description: updatedData.description,
-              updated_at: new Date().toISOString(),
-            };
+            mockProcessData[index] = updatedProcess;
           }
-
-          console.log('流程已更新:', updatedData);
-          // 重新加载数据
+          console.log('流程已更新:', updatedProcess);
           loadData();
         }}
       />
