@@ -105,7 +105,11 @@
           "uploadVersion": "上传版本",
           "deleteVersion": "删除此版本",
           "activateSuccess": "版本 {{version}} 已激活",
-          "deactivateSuccess": "版本 {{version}} 已停用"
+          "deactivateSuccess": "版本 {{version}} 已停用",
+          "cannotDeleteActive": "已开启的版本不允许删除",
+          "deleteConfirmTitle": "删除版本",
+          "deleteConfirmContent": "确定要删除版本 {{version}} 吗？此操作不可撤销。",
+          "deleteSuccess": "版本 {{version}} 已删除"
         },
         "uploadVersion": {
           "title": "上传版本",
