@@ -31,7 +31,7 @@ import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
 import ProcessDetailDrawer from './components/ProcessDetailDrawer';
 import { useOpenProcess } from './hooks/useOpenProcess';
-import type { LYProcessResponse, GetProcessesParams, LYRangeResponse } from '@/api';
+import type { LYProcessResponse, GetProcessesParams, LYListResponseLYProcessResponse } from '@/api';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -120,11 +120,9 @@ const mockCreatorNameMap: Record<string, string> = {
   'user-005': '钱七',
 };
 
-// ============= 数据获取 =============
+// ============= 数据获取 - 返回LYListResponseLYProcessResponse =============
 
-const fetchProcessList = async (
-  params: GetProcessesParams,
-): Promise<{ data: LYProcessResponse[]; range: LYRangeResponse }> => {
+const fetchProcessList = async (params: GetProcessesParams): Promise<LYListResponseLYProcessResponse> => {
   // 模拟网络延迟
   await new Promise((resolve) => setTimeout(resolve, 300));
 
@@ -172,13 +170,14 @@ const fetchProcessList = async (
   const size = params.size || 20;
   const paginatedData = filteredData.slice(offset, offset + size);
 
+  // 返回LYListResponseLYProcessResponse格式
   return {
-    data: paginatedData,
     range: {
       offset,
       size,
       total,
     },
+    list: paginatedData,
   };
 };
 
@@ -205,20 +204,16 @@ const ProcessDevelopment = () => {
     sort_order: 'desc',
   });
 
-  // 分页信息 - 直接使用API LYRangeResponse
-  const [rangeInfo, setRangeInfo] = useState<LYRangeResponse>({
-    offset: 0,
-    size: 20,
-    total: 0,
-  });
-
   const [loading, setLoading] = useState(true);
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
 
-  // 列表数据 - 直接使用API LYProcessResponse
-  const [processListData, setProcessListData] = useState<LYProcessResponse[]>([]);
+  // 列表响应数据 - 直接使用API LYListResponseLYProcessResponse
+  const [listResponse, setListResponse] = useState<LYListResponseLYProcessResponse>({
+    range: { offset: 0, size: 20, total: 0 },
+    list: [],
+  });
   const [selectedProcess, setSelectedProcess] = useState<LYProcessResponse | null>(null);
   const [editingProcess, setEditingProcess] = useState<LYProcessResponse | null>(null);
 
@@ -228,9 +223,8 @@ const ProcessDevelopment = () => {
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const result = await fetchProcessList(queryParams);
-      setProcessListData(result.data);
-      setRangeInfo(result.range);
+      const response = await fetchProcessList(queryParams);
+      setListResponse(response);
     } finally {
       setLoading(false);
     }
@@ -318,8 +312,11 @@ const ProcessDevelopment = () => {
     }));
   };
 
-  // 计算当前页码
-  const currentPage = Math.floor((queryParams.offset || 0) / (queryParams.size || 20)) + 1;
+  // 从响应中获取分页信息
+  const { range, list } = listResponse;
+  const currentPage = Math.floor((range?.offset || 0) / (range?.size || 20)) + 1;
+  const pageSize = range?.size || 20;
+  const total = range?.total || 0;
 
   const columns = [
     {
@@ -495,7 +492,7 @@ const ProcessDevelopment = () => {
       <div className="process-development-table">
         <Table
           columns={columns}
-          dataSource={processListData}
+          dataSource={list}
           loading={loading}
           rowKey="id"
           onRow={(record) => {
@@ -507,14 +504,13 @@ const ProcessDevelopment = () => {
             };
           }}
           pagination={{
-            total: rangeInfo.total || 0,
-            pageSize: queryParams.size || 20,
+            total,
+            pageSize,
             currentPage,
             onPageChange: (page) => {
-              const size = queryParams.size || 20;
-              setQueryParams((prev) => ({ ...prev, offset: (page - 1) * size }));
+              setQueryParams((prev) => ({ ...prev, offset: (page - 1) * pageSize }));
             },
-            onPageSizeChange: (pageSize) => setQueryParams((prev) => ({ ...prev, offset: 0, size: pageSize })),
+            onPageSizeChange: (newPageSize) => setQueryParams((prev) => ({ ...prev, offset: 0, size: newPageSize })),
             showSizeChanger: true,
             showTotal: true,
           }}
