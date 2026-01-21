@@ -32,6 +32,7 @@ import {
   IconLink,
 } from '@douyinfe/semi-icons';
 import type { LYProcessResponse, LYProcessVersionResponse } from '@/api';
+import UploadVersionModal from '../UploadVersionModal';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -251,6 +252,7 @@ const ProcessDetailDrawer = ({
   const [selectedRunStatuses, setSelectedRunStatuses] = useState<string[]>([]);
   const [selectedVersionId, setSelectedVersionId] = useState<string | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [uploadVersionModalVisible, setUploadVersionModalVisible] = useState(false);
   const [drawerWidth, setDrawerWidth] = useState(() => {
     const saved = localStorage.getItem('processDetailDrawerWidth');
     return saved ? Math.max(Number(saved), 576) : 576;
@@ -536,6 +538,7 @@ const ProcessDetailDrawer = ({
                 icon={<IconUpload />}
                 theme="solid"
                 className="process-detail-drawer-version-sidebar-upload-btn"
+                onClick={() => setUploadVersionModalVisible(true)}
               >
                 {t('development.processDevelopment.detail.versionList.uploadVersion')}
               </Button>
@@ -693,6 +696,16 @@ const ProcessDetailDrawer = ({
           </div>
         </TabPane>
       </Tabs>
+
+      {/* 上传版本弹窗 */}
+      <UploadVersionModal
+        visible={uploadVersionModalVisible}
+        onCancel={() => setUploadVersionModalVisible(false)}
+        processData={processData}
+        onSuccess={() => {
+          // TODO: 刷新版本列表
+        }}
+      />
     </SideSheet>
   );
 };

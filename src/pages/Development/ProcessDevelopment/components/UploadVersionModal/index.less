@@ -1,0 +1,49 @@
+.upload-version-modal {
+  .upload-version-modal-content {
+    .upload-version-modal-warning {
+      margin-bottom: 16px;
+    }
+
+    .upload-version-modal-uploader {
+      .semi-upload-drag {
+        padding: 32px 16px;
+        border: 1px dashed var(--semi-color-border);
+        border-radius: 4px;
+        background-color: var(--semi-color-fill-0);
+
+        &:hover {
+          border-color: var(--semi-color-primary);
+          background-color: var(--semi-color-primary-light-default);
+        }
+      }
+
+      .semi-upload-drag-area-main-text {
+        color: var(--semi-color-primary);
+        font-weight: 500;
+      }
+
+      .semi-upload-drag-area-sub-text {
+        color: var(--semi-color-text-2);
+        margin-top: 4px;
+      }
+
+      .semi-upload-file-list {
+        display: none;
+      }
+    }
+
+    .upload-version-modal-file-info {
+      display: flex;
+      align-items: center;
+      margin-top: 12px;
+      padding: 8px 12px;
+      background-color: var(--semi-color-fill-0);
+      border-radius: 4px;
+
+      .upload-version-modal-file-name {
+        color: var(--semi-color-text-0);
+        font-size: 14px;
+      }
+    }
+  }
+}
