@@ -29,7 +29,7 @@ import {
 import type { LYProcessResponse, LYProcessVersionResponse } from '@/api';
 import './index.less';
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
 // ============= Mock数据生成 - 基于API类型 =============
 
@@ -52,15 +52,6 @@ interface RunRecord {
   status: string;
 }
 
-// 版本记录 - 基于LYProcessVersionResponse简化
-interface VersionRecord {
-  key: number;
-  version: string;
-  publishedAt: string;
-  publisher: string;
-  remark: string;
-}
-
 // Mock数据
 const allChangeData: ChangeRecord[] = [
   { key: 1, changeTime: '2024-01-15 10:30', changeType: '发布', changer: '姜鹏志', changeContent: '发布版本 1.2.0' },
@@ -78,10 +69,78 @@ const allRunData: RunRecord[] = [
   { key: 5, taskId: 'TASK-005', robot: 'RPA-机器人-02', creator: '李明', createdTime: '2024-01-11 08:30:00', status: '成功' },
 ];
 
-const versionData: VersionRecord[] = [
-  { key: 1, version: '1.2.0', publishedAt: '2024-01-15 10:30', publisher: '姜鹏志', remark: '修复审批逻辑' },
-  { key: 2, version: '1.1.0', publishedAt: '2024-01-10 14:20', publisher: '姜鹏志', remark: '新增通知功能' },
-  { key: 3, version: '1.0.0', publishedAt: '2024-01-05 09:00', publisher: '姜鹏志', remark: '初始版本' },
+// 版本 Mock 数据 - 基于 LYProcessVersionResponse 类型
+const mockVersionData: (LYProcessVersionResponse & { key: number })[] = [
+  {
+    key: 1,
+    id: 'VER-PROC-2024-001-1.2.0',
+    version: '1.2.0',
+    process_id: 'PROC-2024-001',
+    status: 'PUBLISHED',
+    source_code: '',
+    package_file_id: 'pkg-001',
+    package_size: 1024000,
+    package_checksum: 'abc123',
+    version_note: '优化性能，提升处理速度',
+    creator_id: 'user-001',
+    created_at: '2026-01-08 10:00:00',
+  },
+  {
+    key: 2,
+    id: 'VER-PROC-2024-001-1.1.0',
+    version: '1.1.0',
+    process_id: 'PROC-2024-001',
+    status: 'ARCHIVED',
+    source_code: '',
+    package_file_id: 'pkg-002',
+    package_size: 980000,
+    package_checksum: 'def456',
+    version_note: '修复bug，增加日志',
+    creator_id: 'user-002',
+    created_at: '2026-01-05 14:30:00',
+  },
+  {
+    key: 3,
+    id: 'VER-PROC-2024-001-1.0.0',
+    version: '1.0.0',
+    process_id: 'PROC-2024-001',
+    status: 'ARCHIVED',
+    source_code: '',
+    package_file_id: 'pkg-003',
+    package_size: 900000,
+    package_checksum: 'ghi789',
+    version_note: '初始版本',
+    creator_id: 'user-001',
+    created_at: '2026-01-01 09:00:00',
+  },
+  {
+    key: 4,
+    id: 'VER-PROC-2024-001-1.3.0',
+    version: '1.3.0',
+    process_id: 'PROC-2024-001',
+    status: 'DEVELOPING',
+    source_code: '',
+    package_file_id: 'pkg-004',
+    package_size: 1100000,
+    package_checksum: 'jkl012',
+    version_note: '新增审批功能',
+    creator_id: 'user-003',
+    created_at: '2026-01-15 11:00:00',
+  },
+  {
+    key: 5,
+    id: 'VER-PROC-2024-001-1.2.1',
+    version: '1.2.1',
+    process_id: 'PROC-2024-001',
+    status: 'REVIEWING',
+    source_code: '',
+    package_file_id: 'pkg-005',
+    package_size: 1050000,
+    package_checksum: 'mno345',
+    version_note: '修复紧急问题',
+    creator_id: 'user-001',
+    created_at: '2026-01-12 16:00:00',
+  },
 ];
 
 const changerOptions = [...new Set(allChangeData.map((item) => item.changer))].map((changer) => ({
@@ -118,6 +177,17 @@ const statusConfig: Record<string, { color: 'grey' | 'green' | 'orange'; i18nKey
   ARCHIVED: { color: 'orange', i18nKey: 'development.processDevelopment.status.archived' },
 };
 
+// 版本状态配置
+const versionStatusConfig: Record<string, { color: 'grey' | 'green' | 'orange' | 'blue' | 'cyan' | 'red' | 'yellow'; i18nKey: string }> = {
+  DEVELOPING: { color: 'grey', i18nKey: 'development.processDevelopment.detail.versionStatus.developing' },
+  TESTING: { color: 'blue', i18nKey: 'development.processDevelopment.detail.versionStatus.testing' },
+  REVIEWING: { color: 'cyan', i18nKey: 'development.processDevelopment.detail.versionStatus.reviewing' },
+  PUBLISHED: { color: 'green', i18nKey: 'development.processDevelopment.detail.versionStatus.published' },
+  RUNNING: { color: 'blue', i18nKey: 'development.processDevelopment.detail.versionStatus.running' },
+  RETIRING: { color: 'yellow', i18nKey: 'development.processDevelopment.detail.versionStatus.retiring' },
+  ARCHIVED: { color: 'orange', i18nKey: 'development.processDevelopment.detail.versionStatus.archived' },
+};
+
 // ============= 组件 =============
 
 const ProcessDetailDrawer = ({
@@ -135,6 +205,7 @@ const ProcessDetailDrawer = ({
   const [selectedChangers, setSelectedChangers] = useState<string[]>([]);
   const [runTimeRange, setRunTimeRange] = useState<[Date, Date] | null>(null);
   const [selectedRunStatuses, setSelectedRunStatuses] = useState<string[]>([]);
+  const [selectedVersionStatuses, setSelectedVersionStatuses] = useState<string[]>([]);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [drawerWidth, setDrawerWidth] = useState(() => {
     const saved = localStorage.getItem('processDetailDrawerWidth');
@@ -148,6 +219,17 @@ const ProcessDetailDrawer = ({
     { value: t('development.processDevelopment.detail.runStatus.success'), label: t('development.processDevelopment.detail.runStatus.success') },
     { value: t('development.processDevelopment.detail.runStatus.failed'), label: t('development.processDevelopment.detail.runStatus.failed') },
     { value: t('development.processDevelopment.detail.runStatus.running'), label: t('development.processDevelopment.detail.runStatus.running') },
+  ];
+
+  // 版本状态筛选选项
+  const versionStatusOptions = [
+    { value: 'DEVELOPING', label: t('development.processDevelopment.detail.versionStatus.developing') },
+    { value: 'TESTING', label: t('development.processDevelopment.detail.versionStatus.testing') },
+    { value: 'REVIEWING', label: t('development.processDevelopment.detail.versionStatus.reviewing') },
+    { value: 'PUBLISHED', label: t('development.processDevelopment.detail.versionStatus.published') },
+    { value: 'RUNNING', label: t('development.processDevelopment.detail.versionStatus.running') },
+    { value: 'RETIRING', label: t('development.processDevelopment.detail.versionStatus.retiring') },
+    { value: 'ARCHIVED', label: t('development.processDevelopment.detail.versionStatus.archived') },
   ];
 
   const handleMouseDown = useCallback(
@@ -207,6 +289,30 @@ const ProcessDetailDrawer = ({
     });
   }, [runTimeRange, selectedRunStatuses]);
 
+  // 版本数据筛选（按状态）并按版本号降序排列
+  const filteredVersionData = useMemo(() => {
+    let data = [...mockVersionData];
+    
+    // 按状态筛选
+    if (selectedVersionStatuses.length > 0) {
+      data = data.filter((item) => selectedVersionStatuses.includes(item.status));
+    }
+    
+    // 按版本号降序排列（最新版本在前）
+    data.sort((a, b) => {
+      const versionA = a.version.split('.').map(Number);
+      const versionB = b.version.split('.').map(Number);
+      for (let i = 0; i < Math.max(versionA.length, versionB.length); i++) {
+        const numA = versionA[i] || 0;
+        const numB = versionB[i] || 0;
+        if (numB !== numA) return numB - numA;
+      }
+      return 0;
+    });
+    
+    return data;
+  }, [selectedVersionStatuses]);
+
   if (!processData) return null;
 
   // 格式化日期时间
@@ -216,7 +322,11 @@ const ProcessDetailDrawer = ({
   };
 
   // 获取创建者名称
-  const creatorName = mockCreatorNameMap[processData.creator_id] || processData.creator_id;
+  const getCreatorName = (creatorId: string): string => {
+    return mockCreatorNameMap[creatorId] || creatorId;
+  };
+
+  const creatorName = getCreatorName(processData.creator_id);
 
   const descriptionData = [
     { key: t('development.processDevelopment.fields.processId'), value: processData.id },
@@ -235,11 +345,48 @@ const ProcessDetailDrawer = ({
     },
   ];
 
+  // 版本列表列定义 - 根据需求：版本号、状态、创建者、创建时间、变更说明
   const versionColumns = [
-    { title: t('development.processDevelopment.detail.versionTable.version'), dataIndex: 'version', key: 'version' },
-    { title: t('development.processDevelopment.detail.versionTable.publishedAt'), dataIndex: 'publishedAt', key: 'publishedAt' },
-    { title: t('development.processDevelopment.detail.versionTable.publisher'), dataIndex: 'publisher', key: 'publisher' },
-    { title: t('development.processDevelopment.detail.versionTable.remark'), dataIndex: 'remark', key: 'remark' },
+    { 
+      title: t('development.processDevelopment.detail.versionTable.version'), 
+      dataIndex: 'version', 
+      key: 'version',
+      width: 100,
+    },
+    { 
+      title: t('common.status'), 
+      dataIndex: 'status', 
+      key: 'status',
+      width: 100,
+      render: (status: string) => {
+        const config = versionStatusConfig[status];
+        return (
+          <Tag color={config?.color || 'grey'} type="light">
+            {t(config?.i18nKey || 'development.processDevelopment.detail.versionStatus.developing')}
+          </Tag>
+        );
+      },
+    },
+    { 
+      title: t('common.creator'), 
+      dataIndex: 'creator_id', 
+      key: 'creator_id',
+      width: 100,
+      render: (creatorId: string) => getCreatorName(creatorId),
+    },
+    { 
+      title: t('common.createTime'), 
+      dataIndex: 'created_at', 
+      key: 'created_at',
+      width: 160,
+      render: (time: string | null) => formatDateTime(time),
+    },
+    { 
+      title: t('development.processDevelopment.detail.versionTable.versionNote'), 
+      dataIndex: 'version_note', 
+      key: 'version_note',
+      render: (note: string | null) => note || '-',
+    },
   ];
 
   const runColumns = [
@@ -328,7 +475,25 @@ const ProcessDetailDrawer = ({
 
         <TabPane tab={t('development.processDevelopment.detail.tabs.versions')} itemKey="versions">
           <div className="process-detail-drawer-tab-content">
-            <Table columns={versionColumns} dataSource={versionData} pagination={false} size="small" />
+            <div className="process-detail-drawer-filters">
+              <Select
+                placeholder={t('development.processDevelopment.detail.versionFilter.statusPlaceholder')}
+                multiple
+                maxTagCount={1}
+                value={selectedVersionStatuses}
+                onChange={(value) => setSelectedVersionStatuses(value as string[])}
+                optionList={versionStatusOptions}
+                className="process-detail-drawer-filter-select process-detail-drawer-filter-select--wide"
+                showClear
+              />
+            </div>
+            <Table 
+              columns={versionColumns} 
+              dataSource={filteredVersionData} 
+              pagination={false} 
+              size="small"
+              rowKey="id"
+            />
           </div>
         </TabPane>
 
