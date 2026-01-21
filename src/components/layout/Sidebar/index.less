@@ -165,14 +165,16 @@
   // 右侧详细菜单面板
   .sidebar-detail-panel {
     width: 200px;
-    height: 100%;
+    height: calc(100% - 16px);
+    margin: 8px 0 8px 8px;
     display: flex;
     flex-direction: column;
     background-color: var(--semi-color-bg-0);
-    border-left: 1px solid var(--semi-color-border);
+    border-radius: 8px;
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.04);
 
     .sidebar-detail-header {
-      height: 56px;
+      height: 48px;
       display: flex;
       align-items: center;
       justify-content: space-between;
