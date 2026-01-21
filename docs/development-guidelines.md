@@ -265,12 +265,97 @@ import { Row, Col, Space } from '@douyinfe/semi-ui';
 - 默认间距：`<Space>` 用于普通按钮组
 - 自定义间距：`<Space spacing={4}>` 用于图标按钮组（如抽屉操作按钮）
 
-### 5.2 表格规范
+### 5.3 表格规范
 
 - 使用 Semi UI Table 组件内置分页功能
 - 不单独使用 Pagination 组件
 - 通过 `scroll` 属性控制表格滚动
 - 使用 `loading` 属性显示加载状态（不使用骨架屏）
+
+### 5.4 删除确认弹窗规范（重要）
+
+**所有删除操作必须使用 `Modal.confirm` + `Toast` 组合，禁止创建单独的删除弹窗组件：**
+
+```tsx
+import { Modal, Toast } from '@douyinfe/semi-ui';
+import { IconDeleteStroked } from '@douyinfe/semi-icons';
+
+// ✅ 正确 - 使用 Modal.confirm
+const handleDeleteClick = (item: ItemData) => {
+  Modal.confirm({
+    title: t('module.deleteModal.title'),
+    icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+    content: (
+      <>
+        <div>{t('module.deleteModal.confirmMessage', { name: item.name })}</div>
+        <div style={{ color: 'var(--semi-color-text-2)', marginTop: 8 }}>
+          {t('module.deleteModal.deleteWarning')}
+        </div>
+      </>
+    ),
+    okText: t('module.deleteModal.confirmDelete'),
+    cancelText: t('common.cancel'),
+    okButtonProps: { type: 'danger' },
+    onOk: async () => {
+      try {
+        // 执行删除 API 调用
+        await deleteItem(item.id);
+        
+        // 重新加载数据
+        loadData();
+        
+        // 显示成功提示
+        Toast.success(t('module.deleteModal.success'));
+      } catch (error) {
+        // 显示错误提示
+        Toast.error(t('module.deleteModal.error'));
+        throw error;
+      }
+    },
+  });
+};
+
+// ❌ 错误 - 不创建单独的删除弹窗组件
+// components/DeleteModal/index.tsx  ← 禁止
+```
+
+**删除前置校验（如有未完成任务等）：**
+
+```tsx
+const handleDeleteClick = (item: ItemData) => {
+  // 检查是否可删除
+  if (item.status === 'BUSY') {
+    Modal.warning({
+      title: t('module.deleteModal.cannotDelete'),
+      content: t('module.deleteModal.hasPendingTasks'),
+      okText: t('common.confirm'),
+    });
+    return;
+  }
+
+  // 正常删除流程
+  Modal.confirm({ ... });
+};
+```
+
+**i18n 词条结构：**
+
+```json
+{
+  "module": {
+    "deleteModal": {
+      "title": "删除确认",
+      "confirmMessage": "确定要删除「{{name}}」吗？",
+      "deleteWarning": "删除后将无法恢复。",
+      "cannotDelete": "无法删除",
+      "hasPendingTasks": "当前有未完成任务，请稍后再试。",
+      "confirmDelete": "确认删除",
+      "success": "删除成功！",
+      "error": "删除失败，请重试"
+    }
+  }
+}
+```
 
 ---
 
