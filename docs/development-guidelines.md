@@ -208,9 +208,18 @@ import './index.less';
     <div className="module-name-header-title">
       <Title />
     </div>
-    <div className="module-name-header-toolbar">
-      {/* 搜索和操作按钮 */}
-    </div>
+    {/* 操作栏使用 Semi UI 栅格布局 */}
+    <Row type="flex" justify="space-between" align="middle" className="module-name-header-toolbar">
+      <Col>
+        <Input prefix={<IconSearch />} />
+      </Col>
+      <Col>
+        <Space>
+          <Button>操作1</Button>
+          <Button>操作2</Button>
+        </Space>
+      </Col>
+    </Row>
   </div>
   
   <div className="module-name-table">
@@ -218,6 +227,43 @@ import './index.less';
   </div>
 </div>
 ```
+
+### 5.2 栅格布局规范（重要）
+
+**所有操作栏、工具栏布局必须使用 Semi UI 栅格组件（Row、Col、Space），禁止使用 CSS flex 布局**：
+
+```tsx
+// ✅ 正确 - 使用 Semi UI 栅格组件
+import { Row, Col, Space } from '@douyinfe/semi-ui';
+
+<Row type="flex" justify="space-between" align="middle">
+  <Col>
+    <Space>
+      <Input prefix={<IconSearch />} />
+      <Button icon={<IconFilter />}>筛选</Button>
+    </Space>
+  </Col>
+  <Col>
+    <Button icon={<IconPlus />} theme="solid" type="primary">新建</Button>
+  </Col>
+</Row>
+
+// ❌ 错误 - 不使用 CSS flex 布局
+<div className="toolbar">
+  <div className="search">...</div>
+  <div className="actions">...</div>
+</div>
+
+// Less 中也不应该有这样的样式：
+.toolbar {
+  display: flex;           // ❌ 错误
+  justify-content: space-between;  // ❌ 错误
+}
+```
+
+**Space 组件用法**：
+- 默认间距：`<Space>` 用于普通按钮组
+- 自定义间距：`<Space spacing={4}>` 用于图标按钮组（如抽屉操作按钮）
 
 ### 5.2 表格规范
 
