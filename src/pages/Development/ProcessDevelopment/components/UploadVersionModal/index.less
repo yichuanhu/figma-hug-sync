@@ -1,0 +1,130 @@
+// UploadVersionModal 上传版本模态框样式
+.upload-version-modal {
+  &-form {
+    &-section {
+      margin-bottom: 24px;
+
+      &-title {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--semi-color-text-0);
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+    }
+  }
+
+  &-upload-area {
+    width: 100%;
+  }
+
+  &-env-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+
+    &-item {
+      flex: 1;
+      min-width: 200px;
+
+      &-label {
+        font-size: 12px;
+        color: var(--semi-color-text-2);
+        margin-bottom: 4px;
+      }
+
+      &-value {
+        font-size: 14px;
+        color: var(--semi-color-text-0);
+      }
+    }
+  }
+
+  &-params {
+    &-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    &-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    &-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 12px;
+      background-color: var(--semi-color-fill-0);
+      border-radius: 4px;
+
+      &-fields {
+        flex: 1;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+
+      &-remove {
+        margin-top: 4px;
+      }
+    }
+
+    &-empty {
+      padding: 24px;
+      text-align: center;
+      color: var(--semi-color-text-2);
+      background-color: var(--semi-color-fill-0);
+      border-radius: 4px;
+    }
+  }
+
+  &-dependencies {
+    &-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    &-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    &-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 12px;
+      background-color: var(--semi-color-fill-0);
+      border-radius: 4px;
+
+      &-fields {
+        flex: 1;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+
+      &-remove {
+        margin-top: 4px;
+      }
+    }
+
+    &-empty {
+      padding: 24px;
+      text-align: center;
+      color: var(--semi-color-text-2);
+      background-color: var(--semi-color-fill-0);
+      border-radius: 4px;
+    }
+  }
+}
