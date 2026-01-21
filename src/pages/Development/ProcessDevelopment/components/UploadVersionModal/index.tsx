@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Upload, Button, Toast, Banner } from '@douyinfe/semi-ui';
-import { IconFile } from '@douyinfe/semi-icons';
+import { IconFile, IconInbox } from '@douyinfe/semi-icons';
 import type { FileItem } from '@douyinfe/semi-ui/lib/es/upload';
 import type { LYProcessResponse } from '@/api';
 import './index.less';
@@ -121,6 +121,7 @@ const UploadVersionModal = ({ visible, onCancel, processData, onSuccess }: Uploa
           accept=".bot"
           limit={1}
           draggable
+          dragIcon={<IconInbox size="extra-large" style={{ color: 'var(--semi-color-text-2)' }} />}
           dragMainText={t('development.processDevelopment.detail.uploadVersion.dragText')}
           dragSubText={t('development.processDevelopment.detail.uploadVersion.dragSubText')}
           onChange={handleFileChange}
