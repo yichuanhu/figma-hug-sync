@@ -100,6 +100,27 @@
           "runs": "运行记录",
           "changes": "变更历史"
         },
+        "versionList": {
+          "title": "版本列表",
+          "uploadVersion": "上传版本",
+          "deleteVersion": "删除此版本"
+        },
+        "versionDetail": {
+          "basicInfo": "基本信息",
+          "processVersion": "流程版本",
+          "versionFileName": "版本文件名称",
+          "uploader": "上传者",
+          "uploadTime": "上传时间",
+          "versionNote": "版本说明",
+          "usageInstructions": "使用说明",
+          "viewInstructions": "前往查看",
+          "clientVersion": "流程开发客户端版本",
+          "engineVersion": "流程引擎版本",
+          "settings": "设置",
+          "processInput": "流程输入",
+          "processOutput": "流程输出",
+          "noDescription": "-"
+        },
         "versionTable": {
           "version": "版本号",
           "versionNote": "变更说明"
