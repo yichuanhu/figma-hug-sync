@@ -128,3 +128,34 @@ body {
     border-radius: 0 !important;
   }
 }
+
+// 全局表格样式 - 去掉首尾行圆角
+.semi-table {
+  .semi-table-tbody {
+    .semi-table-row:first-child {
+      .semi-table-row-cell {
+        border-radius: 0 !important;
+      }
+    }
+
+    .semi-table-row:last-child {
+      .semi-table-row-cell {
+        border-radius: 0 !important;
+      }
+    }
+  }
+
+  .semi-table-thead {
+    .semi-table-row-head {
+      border-radius: 0 !important;
+
+      .semi-table-row-head-cell:first-child {
+        border-radius: 0 !important;
+      }
+
+      .semi-table-row-head-cell:last-child {
+        border-radius: 0 !important;
+      }
+    }
+  }
+}
