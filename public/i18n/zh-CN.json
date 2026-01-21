@@ -105,6 +105,19 @@
           "uploadVersion": "上传版本",
           "deleteVersion": "删除此版本"
         },
+        "uploadVersion": {
+          "title": "上传版本",
+          "upload": "上传",
+          "dragText": "点击或将文件拖拽到这里上传",
+          "dragSubText": "仅支持 .bot 格式",
+          "nameMismatchWarning": "上传的文件名称与流程名称不一致，请注意检查",
+          "gotIt": "我知道了",
+          "success": "版本上传成功！",
+          "error": "上传失败，请重试",
+          "validation": {
+            "fileRequired": "请选择要上传的文件"
+          }
+        },
         "versionDetail": {
           "basicInfo": "基本信息",
           "processVersion": "流程版本",
