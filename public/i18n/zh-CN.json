@@ -163,54 +163,6 @@
           "changerPlaceholder": "变更人"
         }
       },
-      "uploadVersion": {
-        "title": "上传版本",
-        "sections": {
-          "basicInfo": "基本信息",
-          "envInfo": "开发环境信息",
-          "envInfoTooltip": "系统自动采集的开发环境信息，将随版本一起保存",
-          "parameters": "入口参数定义",
-          "dependencies": "依赖资源定义"
-        },
-        "fields": {
-          "version": "版本号",
-          "versionPlaceholder": "请输入版本号，如 1.0.0",
-          "sourceCode": "源代码",
-          "sourceCodePlaceholder": "请输入或粘贴源代码",
-          "package": "流程包",
-          "uploadPackage": "选择文件",
-          "timeout": "超时时间",
-          "timeoutUnit": "分钟",
-          "versionNote": "变更说明",
-          "versionNotePlaceholder": "请输入版本变更说明（可选）",
-          "paramName": "参数名称",
-          "paramType": "参数类型",
-          "paramDescription": "参数描述",
-          "depName": "资源名称",
-          "depVersion": "资源版本"
-        },
-        "envInfo": {
-          "clientVersion": "客户端版本",
-          "os": "操作系统",
-          "architecture": "系统架构"
-        },
-        "actions": {
-          "addParameter": "添加参数",
-          "addDependency": "添加依赖"
-        },
-        "validation": {
-          "versionRequired": "请输入版本号",
-          "versionFormat": "版本号格式不正确，请使用 x.y.z 格式",
-          "sourceCodeRequired": "请输入源代码",
-          "packageRequired": "请上传流程包"
-        },
-        "empty": {
-          "noParameters": "暂无入口参数，点击上方按钮添加",
-          "noDependencies": "暂无依赖资源，点击上方按钮添加"
-        },
-        "success": "版本上传成功！",
-        "error": "版本上传失败，请重试"
-      },
       "createModal": {
         "title": "新建流程",
         "fields": {

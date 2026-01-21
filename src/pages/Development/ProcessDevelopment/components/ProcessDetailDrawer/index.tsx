@@ -31,8 +31,7 @@ import {
   IconSetting,
   IconLink,
 } from '@douyinfe/semi-icons';
-import type { LYProcessResponse, LYProcessVersionResponse, LYCreateVersionRequest } from '@/api';
-import UploadVersionModal from '../UploadVersionModal';
+import type { LYProcessResponse, LYProcessVersionResponse } from '@/api';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -251,7 +250,6 @@ const ProcessDetailDrawer = ({
   const [runTimeRange, setRunTimeRange] = useState<[Date, Date] | null>(null);
   const [selectedRunStatuses, setSelectedRunStatuses] = useState<string[]>([]);
   const [selectedVersionId, setSelectedVersionId] = useState<string | null>(null);
-  const [uploadVersionModalVisible, setUploadVersionModalVisible] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [drawerWidth, setDrawerWidth] = useState(() => {
     const saved = localStorage.getItem('processDetailDrawerWidth');
@@ -300,12 +298,6 @@ const ProcessDetailDrawer = ({
 
   const toggleFullscreen = useCallback(() => {
     setIsFullscreen((prev) => !prev);
-  }, []);
-
-  // 上传版本成功回调
-  const handleUploadVersionSuccess = useCallback((versionData: LYCreateVersionRequest) => {
-    console.log('New version created:', versionData);
-    // TODO: 刷新版本列表
   }, []);
 
   const filteredChangeData = useMemo(() => {
@@ -544,7 +536,6 @@ const ProcessDetailDrawer = ({
                 icon={<IconUpload />}
                 theme="solid"
                 className="process-detail-drawer-version-sidebar-upload-btn"
-                onClick={() => setUploadVersionModalVisible(true)}
               >
                 {t('development.processDevelopment.detail.versionList.uploadVersion')}
               </Button>
@@ -702,14 +693,6 @@ const ProcessDetailDrawer = ({
           </div>
         </TabPane>
       </Tabs>
-
-      {/* 上传版本模态框 */}
-      <UploadVersionModal
-        visible={uploadVersionModalVisible}
-        onClose={() => setUploadVersionModalVisible(false)}
-        processData={processData}
-        onSuccess={handleUploadVersionSuccess}
-      />
     </SideSheet>
   );
 };
