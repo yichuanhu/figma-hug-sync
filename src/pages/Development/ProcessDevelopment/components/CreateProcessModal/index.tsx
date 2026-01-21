@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Form, Toast, Button } from '@douyinfe/semi-ui';
-import type { LYCreateProcessRequest } from '@/api';
-import processApi from '@/api';
+import type { LYCreateProcessRequest, LYProcessResponse } from '@/api';
 import './index.less';
 
-// 创建流程后返回的数据结构
+// 创建流程后返回的数据结构 - 基于LYProcessResponse
 interface CreatedProcessData {
   id: string;
   name: string;
@@ -20,6 +19,34 @@ interface CreateProcessModalProps {
   onCancel: () => void;
   onSuccess?: (processData: CreatedProcessData) => void;
 }
+
+// 生成UUID v4
+const generateUUID = (): string => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+};
+
+// 生成Mock的LYProcessResponse
+const generateMockLYProcessResponse = (request: LYCreateProcessRequest): LYProcessResponse => {
+  const now = new Date().toISOString();
+  return {
+    id: generateUUID(),
+    name: request.name,
+    description: request.description || null,
+    language: request.language || 'Python',
+    process_type: 'RPA',
+    timeout: request.timeout || 60,
+    status: 'DEVELOPING',
+    current_version_id: null,
+    creator_id: 'user-001',
+    requirement_id: request.requirement_id || null,
+    created_at: now,
+    updated_at: now,
+  };
+};
 
 const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModalProps) => {
   const { t } = useTranslation();
@@ -39,76 +66,57 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
   const handleSubmit = async (values: Record<string, unknown>) => {
     setLoading(true);
     try {
-      // 构建API请求参数
+      // 构建API请求参数 - 使用LYCreateProcessRequest类型
       const createRequest: LYCreateProcessRequest = {
         name: values.name as string,
         description: (values.description as string) || undefined,
-        language: 'Python', // 默认语言
-        timeout: 60, // 默认超时时间
+        language: 'Python',
+        timeout: 60,
       };
 
-      // 调用API创建流程
-      const response = await processApi.addProcesses(createRequest);
-      
-      if (response.code === 'success' && response.data) {
-        const now = new Date().toLocaleString('zh-CN', {
+      // 模拟API调用延迟
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
+      // 生成Mock响应
+      const mockResponse = generateMockLYProcessResponse(createRequest);
+
+      // 转换为返回数据格式
+      const processData: CreatedProcessData = {
+        id: mockResponse.id,
+        name: mockResponse.name,
+        description: mockResponse.description || '',
+        status: mockResponse.status,
+        creator: '当前用户',
+        createdAt: new Date(mockResponse.created_at || '').toLocaleString('zh-CN', {
           year: 'numeric',
           month: '2-digit',
           day: '2-digit',
           hour: '2-digit',
           minute: '2-digit',
-        });
-        
-        const processData: CreatedProcessData = {
-          id: response.data.id,
-          name: response.data.name,
-          description: response.data.description || '',
-          status: response.data.status,
-          creator: '当前用户',
-          createdAt: response.data.created_at || now,
-        };
-        
-        Toast.success(t('development.processDevelopment.createModal.success'));
-        onCancel();
-        onSuccess?.(processData);
-      } else {
-        throw new Error(response.message || 'Create process failed');
-      }
-    } catch (error) {
-      console.warn('API调用失败，使用模拟创建:', error);
-      
-      // 备用：模拟创建
-      await new Promise((resolve) => setTimeout(resolve, 300));
-      const now = new Date().toLocaleString('zh-CN', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-      });
-      const year = new Date().getFullYear();
-      const randomNum = String(Math.floor(Math.random() * 1000)).padStart(3, '0');
-      const processId = `PROC-${year}-${randomNum}`;
-      
-      const processData: CreatedProcessData = {
-        id: processId,
-        name: values.name as string,
-        description: (values.description as string) || '',
-        status: 'DEVELOPING',
-        creator: '当前用户',
-        createdAt: now,
+        }),
       };
-      
+
       Toast.success(t('development.processDevelopment.createModal.success'));
       onCancel();
       onSuccess?.(processData);
+    } catch (error) {
+      console.error('创建流程失败:', error);
+      Toast.error(t('development.processDevelopment.createModal.error'));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Modal title={t('development.processDevelopment.createModal.title')} visible={visible} onCancel={onCancel} footer={null} width={520} closeOnEsc maskClosable={false}>
+    <Modal
+      title={t('development.processDevelopment.createModal.title')}
+      visible={visible}
+      onCancel={onCancel}
+      footer={null}
+      width={520}
+      closeOnEsc
+      maskClosable={false}
+    >
       <Form onSubmit={handleSubmit} labelPosition="top" className="create-process-modal-form">
         <Form.Input
           field="name"
