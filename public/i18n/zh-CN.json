@@ -103,7 +103,9 @@
         "versionList": {
           "title": "版本列表",
           "uploadVersion": "上传版本",
-          "deleteVersion": "删除此版本"
+          "deleteVersion": "删除此版本",
+          "activateSuccess": "版本 {{version}} 已激活",
+          "deactivateSuccess": "版本 {{version}} 已停用"
         },
         "uploadVersion": {
           "title": "上传版本",
