@@ -102,9 +102,19 @@
         },
         "versionTable": {
           "version": "版本号",
-          "publishedAt": "发布时间",
-          "publisher": "发布人",
-          "remark": "备注"
+          "versionNote": "变更说明"
+        },
+        "versionStatus": {
+          "developing": "开发中",
+          "testing": "测试中",
+          "reviewing": "审核中",
+          "published": "已发布",
+          "running": "运行中",
+          "retiring": "待下线",
+          "archived": "已归档"
+        },
+        "versionFilter": {
+          "statusPlaceholder": "版本状态"
         },
         "runTable": {
           "taskId": "任务编号",
