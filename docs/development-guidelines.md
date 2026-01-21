@@ -510,6 +510,43 @@ const fetchProcessList = async (params: GetProcessesParams): Promise<LYListRespo
 - 与后端 API 保持一致
 - 组件内部变量可使用 camelCase，但 API 交互必须使用原始字段名
 
+### 7.4 搜索输入框防抖规范（重要）
+
+**所有表格搜索输入框必须使用 lodash 的 debounce 进行防抖处理**，避免频繁触发 API 请求：
+
+```tsx
+import { useState, useMemo } from 'react';
+import { debounce } from 'lodash';
+
+// ✅ 正确 - 使用 useMemo + debounce
+const handleSearch = useMemo(
+  () =>
+    debounce((value: string) => {
+      setQueryParams((prev) => ({ ...prev, offset: 0, keyword: value }));
+    }, 500),
+  []
+);
+
+// 在 Input 组件中使用
+<Input
+  prefix={<IconSearch />}
+  placeholder={t('module.searchPlaceholder')}
+  onChange={handleSearch}
+  showClear
+/>
+
+// ❌ 错误 - 直接触发状态更新
+const handleSearch = (keyword: string) => {
+  setQueryParams((prev) => ({ ...prev, offset: 0, keyword }));
+};
+```
+
+**规范说明：**
+- 使用 `useMemo` 包装 `debounce` 确保函数引用稳定
+- 默认防抖延迟设置为 500ms
+- 适用于所有需要实时搜索的输入框场景
+- 需安装 lodash 依赖：`lodash` 和 `@types/lodash`
+
 ---
 
 ## 8. 其他约定
