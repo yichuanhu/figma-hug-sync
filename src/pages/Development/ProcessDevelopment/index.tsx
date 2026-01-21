@@ -15,6 +15,7 @@ import {
   Col,
   Space,
   Modal,
+  Toast,
 } from '@douyinfe/semi-ui';
 import {
   IconSearch,
@@ -299,6 +300,9 @@ const ProcessDevelopment = () => {
         
         // 重新加载数据
         loadData();
+        
+        // 显示成功提示
+        Toast.success(t('development.processDevelopment.deleteModal.success'));
       },
     });
   };
