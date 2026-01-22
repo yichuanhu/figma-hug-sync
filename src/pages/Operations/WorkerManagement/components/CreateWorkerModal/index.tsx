@@ -35,11 +35,24 @@ const existingWorkers = [
   { id: '3', name: '人力机器人-01' },
 ];
 
+// 已存在的机器人名称（用于唯一性校验）
+const existingWorkerNames = ['财务机器人-01', '财务机器人-02', '财务机器人-03', '人力机器人-01', '运维机器人-01', '测试机器人-01'];
+
 const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalProps) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [useSameDevice, setUseSameDevice] = useState(false);
   const [desktopType, setDesktopType] = useState<string>('Console');
+
+  // 名称唯一性校验
+  const validateWorkerNameUnique = (rule: unknown, value: string, callback: (error?: string) => void) => {
+    if (value && existingWorkerNames.includes(value.trim())) {
+      callback(t('worker.create.validation.nameExists'));
+      return false;
+    }
+    callback();
+    return true;
+  };
 
   const handleSubmit = async (values: Record<string, unknown>) => {
     setLoading(true);
@@ -119,6 +132,9 @@ const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalPr
             trigger="blur"
             rules={[
               { required: true, message: t('worker.create.validation.nameRequired') },
+              { min: 2, message: t('worker.create.validation.nameLengthError') },
+              { max: 50, message: t('worker.create.validation.nameLengthError') },
+              { validator: validateWorkerNameUnique },
             ]}
             showClear
           />
@@ -128,6 +144,9 @@ const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalPr
             placeholder={t('worker.create.fields.descriptionPlaceholder')}
             autosize={{ minRows: 2, maxRows: 4 }}
             maxCount={500}
+            rules={[
+              { max: 500, message: t('worker.create.validation.descriptionLengthError') },
+            ]}
           />
         </div>
 
@@ -173,6 +192,8 @@ const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalPr
             trigger="blur"
             rules={[
               { required: true, message: t('worker.create.validation.accountRequired') },
+              { min: 2, message: t('worker.create.validation.accountLengthError') },
+              { max: 100, message: t('worker.create.validation.accountLengthError') },
             ]}
             showClear
           />

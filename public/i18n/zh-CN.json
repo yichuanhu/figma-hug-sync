@@ -632,7 +632,11 @@
       },
       "validation": {
         "nameRequired": "流程机器人名称不能为空",
+        "nameLengthError": "流程机器人名称长度必须在2-50字符之间",
+        "nameExists": "流程机器人名称已存在，请使用其他名称",
         "accountRequired": "帐户不能为空",
+        "accountLengthError": "帐户长度必须在2-100字符之间",
+        "descriptionLengthError": "描述长度不能超过500字符",
         "requiredEmpty": "必填字段不能为空"
       },
       "success": "创建成功",
