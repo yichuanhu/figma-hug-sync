@@ -214,7 +214,6 @@ const ProcessDevelopment = () => {
 
   // 状态筛选
   const [statusFilter, setStatusFilter] = useState<string[]>([]);
-  const [tempStatusFilter, setTempStatusFilter] = useState<string[]>([]);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
 
   const [loading, setLoading] = useState(true);
@@ -505,53 +504,39 @@ const ProcessDevelopment = () => {
                 trigger="click"
                 position="bottomLeft"
                 content={
-                  <div className="process-development-filter-popover">
-                    <div className="process-development-filter-popover-title">
-                      {t('common.status')}
-                    </div>
-                    <CheckboxGroup
-                      value={tempStatusFilter}
-                      onChange={(values) => setTempStatusFilter(values as string[])}
-                      options={statusOptions}
-                      direction="vertical"
-                    />
-                    <div className="process-development-filter-popover-actions">
-                      <Button
-                        size="small"
-                        onClick={() => {
-                          setTempStatusFilter([]);
+                  <div className="filter-popover">
+                    <div className="filter-popover-section">
+                      <Text strong className="filter-popover-label">
+                        {t('common.status')}
+                      </Text>
+                      <CheckboxGroup
+                        value={statusFilter}
+                        onChange={(values) => {
+                          setStatusFilter(values as string[]);
+                          setQueryParams((prev) => ({ ...prev, offset: 0 }));
                         }}
-                      >
+                        options={statusOptions}
+                        direction="horizontal"
+                      />
+                    </div>
+                    <div className="filter-popover-footer">
+                      <Button theme="borderless" onClick={() => {
+                        setStatusFilter([]);
+                        setQueryParams((prev) => ({ ...prev, offset: 0 }));
+                      }} disabled={statusFilter.length === 0}>
                         {t('common.reset')}
                       </Button>
-                      <Button
-                        size="small"
-                        theme="solid"
-                        type="primary"
-                        onClick={() => {
-                          setStatusFilter(tempStatusFilter);
-                          setQueryParams((prev) => ({ ...prev, offset: 0 }));
-                          setFilterPopoverVisible(false);
-                        }}
-                      >
+                      <Button theme="solid" type="primary" onClick={() => setFilterPopoverVisible(false)}>
                         {t('common.confirm')}
                       </Button>
                     </div>
                   </div>
                 }
-                onClickOutSide={() => {
-                  setTempStatusFilter(statusFilter);
-                  setFilterPopoverVisible(false);
-                }}
               >
                 <Button
                   icon={<IconFilter />}
                   type={statusFilter.length > 0 ? 'primary' : 'tertiary'}
-                  theme={statusFilter.length > 0 ? 'light' : 'borderless'}
-                  onClick={() => {
-                    setTempStatusFilter(statusFilter);
-                    setFilterPopoverVisible(true);
-                  }}
+                  theme={statusFilter.length > 0 ? 'solid' : 'light'}
                 >
                   {t('common.filter')}{statusFilter.length > 0 ? ` (${statusFilter.length})` : ''}
                 </Button>
