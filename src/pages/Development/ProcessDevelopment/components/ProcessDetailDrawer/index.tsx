@@ -95,7 +95,7 @@ interface VersionDetailData extends LYProcessVersionResponse {
   file_name?: string;
   usage_instructions_url?: string;
   client_version?: string;
-  engine_version?: string;
+  development_environment?: string;
   is_active?: boolean;
   inputs?: ProcessVariable[];
   outputs?: ProcessVariable[];
@@ -118,7 +118,7 @@ const initialMockVersionData: VersionDetailData[] = [
     file_name: 'ADP调用演示',
     usage_instructions_url: 'https://docs.example.com/process/1.0.4',
     client_version: '7.0.0',
-    engine_version: '3.5.0',
+    development_environment: 'Win10 | X86',
     is_active: true,
     inputs: [
       { name: 'APP_KEY', type: '文本', value: 'sk-xxxxx', description: '应用密钥' },
@@ -146,7 +146,7 @@ const initialMockVersionData: VersionDetailData[] = [
     created_at: '2026-01-18 10:30:00',
     file_name: 'ADP调用演示',
     client_version: '7.0.0',
-    engine_version: '3.5.0',
+    development_environment: 'Win11 | X64',
     is_active: false,
     inputs: [
       { name: 'APP_KEY', type: '文本', value: 'sk-xxxxx', description: '应用密钥' },
@@ -170,7 +170,7 @@ const initialMockVersionData: VersionDetailData[] = [
     created_at: '2026-01-15 09:00:00',
     file_name: 'ADP调用演示',
     client_version: '6.5.0',
-    engine_version: '3.4.0',
+    development_environment: 'Win10 | X86',
     is_active: false,
     inputs: [],
     outputs: [],
@@ -190,7 +190,7 @@ const initialMockVersionData: VersionDetailData[] = [
     created_at: '2026-01-10 11:00:00',
     file_name: 'ADP调用演示',
     client_version: '6.5.0',
-    engine_version: '3.4.0',
+    development_environment: 'Win10 | X64',
     is_active: false,
     inputs: [],
     outputs: [],
@@ -210,7 +210,7 @@ const initialMockVersionData: VersionDetailData[] = [
     created_at: '2026-01-05 09:00:00',
     file_name: 'ADP调用演示',
     client_version: '6.0.0',
-    engine_version: '3.3.0',
+    development_environment: 'Win7 | X86',
     is_active: false,
     inputs: [],
     outputs: [],
@@ -637,31 +637,12 @@ const ProcessDetailDrawer = ({
       ),
     },
     {
-      key: (
-        <Space>
-          {t('development.processDevelopment.detail.versionDetail.clientVersion')}
-          <Tooltip content={t('development.processDevelopment.detail.versionDetail.clientVersion')}>
-            <IconHelpCircle style={{ color: 'var(--semi-color-text-2)' }} />
-          </Tooltip>
-        </Space>
-      ),
+      key: t('development.processDevelopment.detail.versionDetail.clientVersion'),
       value: version.client_version || '-',
     },
     {
-      key: (
-        <Space>
-          {t('development.processDevelopment.detail.versionDetail.developmentEnvironment')}
-          <Tooltip content={t('development.processDevelopment.detail.versionDetail.developmentEnvironment')}>
-            <IconHelpCircle style={{ color: 'var(--semi-color-text-2)' }} />
-          </Tooltip>
-        </Space>
-      ),
-      value: (
-        <a href="#" onClick={(e) => e.preventDefault()}>
-          <IconSetting style={{ marginRight: 4 }} />
-          {t('development.processDevelopment.detail.versionDetail.settings')}
-        </a>
-      ),
+      key: t('development.processDevelopment.detail.versionDetail.developmentEnvironment'),
+      value: version.development_environment || 'Win10 | X86',
     },
   ];
 
