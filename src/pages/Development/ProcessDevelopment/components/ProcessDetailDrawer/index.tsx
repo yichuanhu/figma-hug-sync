@@ -355,13 +355,19 @@ const VariableCard = ({ variable, index, onDescriptionChange }: VariableCardProp
             </div>
           ) : (
             <div className="process-detail-drawer-variable-card-desc-row">
-              <Text 
-                className="process-detail-drawer-variable-card-value" 
-                ellipsis={{ showTooltip: true }}
-                onDoubleClick={handleStartEdit}
+              <Tooltip 
+                content={variable.description || '-'}
+                position="topLeft"
+                style={{ maxWidth: 400, wordBreak: 'break-word' }}
               >
-                {variable.description || '-'}
-              </Text>
+                <Text 
+                  className="process-detail-drawer-variable-card-value" 
+                  ellipsis
+                  onDoubleClick={handleStartEdit}
+                >
+                  {variable.description || '-'}
+                </Text>
+              </Tooltip>
               <Tooltip content={t('development.processDevelopment.detail.variable.editDescTip')}>
                 <Button
                   icon={<IconEditStroked />}
