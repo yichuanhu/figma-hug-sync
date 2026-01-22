@@ -19,6 +19,7 @@ import {
   Switch,
   Toast,
   Modal,
+  Collapsible,
 } from '@douyinfe/semi-ui';
 import {
   IconEditStroked,
@@ -32,6 +33,8 @@ import {
   IconHelpCircle,
   IconSetting,
   IconLink,
+  IconChevronDown,
+  IconChevronUp,
 } from '@douyinfe/semi-icons';
 import type { LYProcessResponse, LYProcessVersionResponse } from '@/api';
 import UploadVersionModal from '../UploadVersionModal';
@@ -232,6 +235,45 @@ const statusConfig: Record<string, { color: 'grey' | 'green' | 'orange'; i18nKey
   DEVELOPING: { color: 'grey', i18nKey: 'development.processDevelopment.status.developing' },
   PUBLISHED: { color: 'green', i18nKey: 'development.processDevelopment.status.published' },
   ARCHIVED: { color: 'orange', i18nKey: 'development.processDevelopment.status.archived' },
+};
+
+// ============= 折叠变量组件 =============
+
+interface VariableCollapseItemProps {
+  name: string;
+  type: string;
+  description?: string;
+}
+
+const VariableCollapseItem = ({ name, type, description }: VariableCollapseItemProps) => {
+  const { t } = useTranslation();
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="process-detail-drawer-collapse-item">
+      <div 
+        className="process-detail-drawer-collapse-item-header"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <Space>
+          <span className="process-detail-drawer-collapse-item-type">{type}</span>
+          <Text className="process-detail-drawer-collapse-item-name">{name}</Text>
+        </Space>
+        {isOpen ? (
+          <IconChevronUp style={{ color: 'var(--semi-color-text-2)' }} />
+        ) : (
+          <IconChevronDown style={{ color: 'var(--semi-color-text-2)' }} />
+        )}
+      </div>
+      <Collapsible isOpen={isOpen}>
+        <div className="process-detail-drawer-collapse-item-content">
+          <Text type="tertiary" size="small">
+            {t('common.description')}：{description || '-'}
+          </Text>
+        </div>
+      </Collapsible>
+    </div>
+  );
 };
 
 
@@ -652,21 +694,16 @@ const ProcessDetailDrawer = ({
                       {t('development.processDevelopment.detail.versionDetail.processInput')}
                     </Text>
                     {selectedVersion.inputs && selectedVersion.inputs.length > 0 ? (
-                      selectedVersion.inputs.map((input, index) => (
-                        <div key={index} className="process-detail-drawer-version-detail-variable">
-                          <div className="process-detail-drawer-version-detail-variable-header">
-                            <Space>
-                              <span className="process-detail-drawer-version-detail-variable-type">{input.type}</span>
-                              <Text className="process-detail-drawer-version-detail-variable-name">{input.name}</Text>
-                            </Space>
-                            <IconExternalOpenStroked style={{ color: 'var(--semi-color-primary)' }} />
-                          </div>
-                          <Text className="process-detail-drawer-version-detail-variable-description">
-                            {t('common.description')}：{input.description || '-'}
-                          </Text>
-                          <div className="process-detail-drawer-version-detail-variable-value" />
-                        </div>
-                      ))
+                      <div className="process-detail-drawer-version-detail-collapse-list">
+                        {selectedVersion.inputs.map((input, index) => (
+                          <VariableCollapseItem
+                            key={index}
+                            name={input.name}
+                            type={input.type}
+                            description={input.description}
+                          />
+                        ))}
+                      </div>
                     ) : (
                       <Text type="tertiary">{t('common.noData')}</Text>
                     )}
@@ -678,21 +715,16 @@ const ProcessDetailDrawer = ({
                       {t('development.processDevelopment.detail.versionDetail.processOutput')}
                     </Text>
                     {selectedVersion.outputs && selectedVersion.outputs.length > 0 ? (
-                      selectedVersion.outputs.map((output, index) => (
-                        <div key={index} className="process-detail-drawer-version-detail-variable">
-                          <div className="process-detail-drawer-version-detail-variable-header">
-                            <Space>
-                              <span className="process-detail-drawer-version-detail-variable-type">{output.type}</span>
-                              <Text className="process-detail-drawer-version-detail-variable-name">{output.name}</Text>
-                            </Space>
-                            <IconExternalOpenStroked style={{ color: 'var(--semi-color-primary)' }} />
-                          </div>
-                          <Text className="process-detail-drawer-version-detail-variable-description">
-                            {t('common.description')}：{output.description || '-'}
-                          </Text>
-                          <div className="process-detail-drawer-version-detail-variable-value" />
-                        </div>
-                      ))
+                      <div className="process-detail-drawer-version-detail-collapse-list">
+                        {selectedVersion.outputs.map((output, index) => (
+                          <VariableCollapseItem
+                            key={index}
+                            name={output.name}
+                            type={output.type}
+                            description={output.description}
+                          />
+                        ))}
+                      </div>
                     ) : (
                       <Text type="tertiary">{t('common.noData')}</Text>
                     )}
