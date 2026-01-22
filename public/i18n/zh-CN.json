@@ -141,7 +141,10 @@
           "noDescription": "-"
         },
         "variable": {
-          "value": "参数值"
+          "type": "类型",
+          "name": "名称",
+          "value": "参数值",
+          "editSuccess": "描述修改成功"
         },
         "versionTable": {
           "version": "版本号",

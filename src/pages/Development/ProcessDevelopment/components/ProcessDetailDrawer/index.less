@@ -157,52 +157,23 @@
     }
   }
 
-  // 折叠变量列表
-  &-version-detail-collapse-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  // 折叠变量项
-  &-collapse-item {
-    border: 1px solid var(--semi-color-border);
-    border-radius: 4px;
-    overflow: hidden;
-
-    &-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 12px;
-      cursor: pointer;
-      background-color: var(--semi-color-fill-0);
-      transition: background-color 0.2s;
-
-      &:hover {
-        background-color: var(--semi-color-fill-1);
+  // 变量表格
+  &-variable-table {
+    .semi-table-thead {
+      .semi-table-row-head {
+        .semi-table-row-cell {
+          background-color: var(--semi-color-fill-0);
+          font-weight: 500;
+        }
       }
     }
 
-    &-type {
-      display: inline-block;
-      padding: 2px 8px;
-      font-size: 12px;
-      background-color: var(--semi-color-primary-light-default);
-      color: var(--semi-color-primary);
-      border-radius: 2px;
-    }
-
-    &-name {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--semi-color-text-0);
-    }
-
-    &-content {
-      padding: 12px;
-      background-color: var(--semi-color-bg-2);
-      border-top: 1px solid var(--semi-color-border);
+    .semi-table-tbody {
+      .semi-table-row {
+        .semi-table-row-cell {
+          padding: 8px 12px;
+        }
+      }
     }
   }
 }
