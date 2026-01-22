@@ -175,7 +175,7 @@ const CredentialDetailDrawer = ({
         key: context === 'development' 
           ? t('credential.detail.testValue') 
           : t('credential.detail.productionValue'),
-        value: <Text copyable>{getCredentialValueDisplay}</Text>,
+        value: <Text>{getCredentialValueDisplay}</Text>,
       },
       { key: t('common.description'), value: credential.description || '-' },
       ...(credential.credential_type === 'PERSONAL_REF' ? [
