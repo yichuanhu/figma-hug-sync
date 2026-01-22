@@ -17,7 +17,7 @@ import {
   Space,
   Tooltip,
 } from '@douyinfe/semi-ui';
-import { IconDownload, IconFilter } from '@douyinfe/semi-icons';
+import { IconDownload, IconFilter, IconArrowLeft } from '@douyinfe/semi-icons';
 import AppLayout from '@/components/layout/AppLayout';
 import type { LYRangeResponse } from '@/api/index';
 
@@ -351,14 +351,24 @@ const CredentialUsagePage = () => {
         {/* 标题区域 */}
         <div className="credential-usage-page-header">
           <div className="credential-usage-page-header-title">
-            <Title heading={3} className="title">
-              {t('credential.usage.title')}
-              {credentialName && (
-                <Text type="tertiary" className="credential-usage-page-header-subtitle">
-                  - {credentialName}
-                </Text>
-              )}
-            </Title>
+            <div className="credential-usage-page-header-title-row">
+              <Button
+                icon={<IconArrowLeft />}
+                theme="borderless"
+                type="tertiary"
+                onClick={() => navigate(context === 'development' 
+                  ? '/dev-center/business-assets/credentials' 
+                  : '/scheduling-center/business-assets/credentials')}
+              />
+              <Title heading={3} className="title">
+                {t('credential.usage.title')}
+                {credentialName && (
+                  <Text type="tertiary" className="credential-usage-page-header-subtitle">
+                    - {credentialName}
+                  </Text>
+                )}
+              </Title>
+            </div>
             <Text type="tertiary">{t('credential.usage.description')}</Text>
           </div>
 
