@@ -20,6 +20,7 @@ import {
   Toast,
   Modal,
   Input,
+  TextArea,
 } from '@douyinfe/semi-ui';
 import {
   IconEditStroked,
@@ -317,32 +318,37 @@ const VariableCard = ({ variable, index, onDescriptionChange }: VariableCardProp
           </Text>
           {isEditing ? (
             <div className="process-detail-drawer-variable-card-edit">
-              <Input
+              <TextArea
                 value={editValue}
                 onChange={(value) => setEditValue(value)}
-                size="small"
                 autoFocus
                 placeholder={t('development.processDevelopment.detail.variable.editPlaceholder')}
-                onKeyDown={handleKeyDown}
+                onKeyDown={(e) => {
+                  if (e.key === 'Escape') {
+                    e.preventDefault();
+                    handleCancelEdit();
+                  }
+                }}
                 maxLength={500}
                 showClear
-                suffix={
-                  <Space spacing={2} className="process-detail-drawer-variable-card-edit-actions">
-                    <span 
-                      className="process-detail-drawer-variable-card-edit-confirm"
-                      onClick={handleConfirmEdit}
-                    >
-                      <IconTick size="small" />
-                    </span>
-                    <span 
-                      className="process-detail-drawer-variable-card-edit-cancel"
-                      onClick={handleCancelEdit}
-                    >
-                      <IconClose size="small" />
-                    </span>
-                  </Space>
-                }
+                autosize={{ minRows: 2, maxRows: 6 }}
               />
+              <Space spacing={4} className="process-detail-drawer-variable-card-edit-actions">
+                <Button
+                  icon={<IconTick />}
+                  size="small"
+                  theme="solid"
+                  type="primary"
+                  onClick={handleConfirmEdit}
+                />
+                <Button
+                  icon={<IconClose />}
+                  size="small"
+                  theme="borderless"
+                  type="tertiary"
+                  onClick={handleCancelEdit}
+                />
+              </Space>
             </div>
           ) : (
             <div className="process-detail-drawer-variable-card-desc-row">
