@@ -114,6 +114,8 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onDelete }: 
     { key: t('worker.detail.fields.receiveTasks'), value: <Switch checked={workerData.receive_tasks} size="small" disabled /> },
   ];
 
+  const isRemoteDesktop = workerData.desktop_type === 'NotConsole';
+
   const detailInfoData = [
     {
       key: t('worker.detail.fields.desktopType'),
@@ -124,8 +126,10 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onDelete }: 
       key: t('worker.detail.fields.passwordSyncStatus'),
       value: workerData.sync_status === 'SYNCED' ? t('worker.detail.syncStatusText.synced') : t('worker.detail.syncStatusText.pending'),
     },
-    { key: t('worker.detail.fields.forceLogin'), value: workerData.force_login ? `☑ ${t('common.yes')}` : `☐ ${t('common.no')}` },
-    { key: t('worker.detail.fields.resolution'), value: workerData.display_size || '-' },
+    // 远程桌面时显示强制挤占登录
+    ...(isRemoteDesktop ? [{ key: t('worker.detail.fields.forceLogin'), value: workerData.force_login ? `☑ ${t('common.yes')}` : `☐ ${t('common.no')}` }] : []),
+    // 远程桌面时显示分辨率
+    ...(isRemoteDesktop ? [{ key: t('worker.detail.fields.resolution'), value: workerData.display_size || '-' }] : []),
     { key: t('worker.detail.fields.clientVersion'), value: workerData.client_version },
     { key: t('worker.detail.fields.lastHeartbeat'), value: workerData.last_heartbeat_time },
   ];
