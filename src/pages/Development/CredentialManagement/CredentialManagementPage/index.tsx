@@ -16,6 +16,7 @@ import {
   Typography,
   Popover,
   CheckboxGroup,
+  Tooltip,
 } from '@douyinfe/semi-ui';
 import {
   IconSearch,
@@ -300,9 +301,15 @@ const CredentialManagementPage = () => {
       key: 'description',
       width: 200,
       render: (text: string | null) => (
-        <span className="credential-management-page-table-desc" title={text || ''}>
-          {text || '-'}
-        </span>
+        text ? (
+          <Tooltip content={text} position="top">
+            <span className="credential-management-page-table-desc">
+              {text}
+            </span>
+          </Tooltip>
+        ) : (
+          <span>-</span>
+        )
       ),
     },
     {
