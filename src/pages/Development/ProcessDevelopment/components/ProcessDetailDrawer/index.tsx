@@ -293,78 +293,77 @@ const VariableCard = ({ variable, index, onDescriptionChange }: VariableCardProp
   return (
     <div className="process-detail-drawer-variable-card">
       <div className="process-detail-drawer-variable-card-header">
-        <Space>
+        <div className="process-detail-drawer-variable-card-header-left">
           <Tag color="blue" type="light" size="small">
             {variable.type}
           </Tag>
-          <Text strong>{variable.name}</Text>
-        </Space>
+          <Text strong className="process-detail-drawer-variable-card-name">
+            {variable.name}
+          </Text>
+        </div>
+        {!isEditing && (
+          <Tooltip content={t('development.processDevelopment.detail.variable.editTip')}>
+            <Button
+              icon={<IconEditStroked />}
+              theme="borderless"
+              size="small"
+              type="tertiary"
+              className="process-detail-drawer-variable-card-edit-btn"
+              onClick={handleStartEdit}
+            />
+          </Tooltip>
+        )}
       </div>
       <div className="process-detail-drawer-variable-card-body">
-        <Row gutter={16}>
-          <Col span={12}>
-            <div className="process-detail-drawer-variable-card-field">
-              <Text type="tertiary" size="small">
-                {t('development.processDevelopment.detail.variable.value')}
-              </Text>
-              <Text>{variable.value || '-'}</Text>
+        <div className="process-detail-drawer-variable-card-row">
+          <Text type="tertiary" size="small" className="process-detail-drawer-variable-card-label">
+            {t('development.processDevelopment.detail.variable.value')}
+          </Text>
+          <Text className="process-detail-drawer-variable-card-value" ellipsis={{ showTooltip: true }}>
+            {variable.value || '-'}
+          </Text>
+        </div>
+        <div className="process-detail-drawer-variable-card-row">
+          <Text type="tertiary" size="small" className="process-detail-drawer-variable-card-label">
+            {t('common.description')}
+          </Text>
+          {isEditing ? (
+            <div className="process-detail-drawer-variable-card-edit">
+              <Input
+                value={editValue}
+                onChange={(value) => setEditValue(value)}
+                size="small"
+                autoFocus
+                placeholder={t('development.processDevelopment.detail.variable.editPlaceholder')}
+                onKeyDown={handleKeyDown}
+                suffix={
+                  <Space spacing={2} className="process-detail-drawer-variable-card-edit-actions">
+                    <span 
+                      className="process-detail-drawer-variable-card-edit-confirm"
+                      onClick={handleConfirmEdit}
+                    >
+                      <IconTick size="small" />
+                    </span>
+                    <span 
+                      className="process-detail-drawer-variable-card-edit-cancel"
+                      onClick={handleCancelEdit}
+                    >
+                      <IconClose size="small" />
+                    </span>
+                  </Space>
+                }
+              />
             </div>
-          </Col>
-          <Col span={12}>
-            <div className="process-detail-drawer-variable-card-field">
-              <Text type="tertiary" size="small">
-                {t('common.description')}
-              </Text>
-              {isEditing ? (
-                <div className="process-detail-drawer-variable-card-edit">
-                  <Input
-                    value={editValue}
-                    onChange={(value) => setEditValue(value)}
-                    size="small"
-                    autoFocus
-                    placeholder={t('development.processDevelopment.detail.variable.editPlaceholder')}
-                    onKeyDown={handleKeyDown}
-                    suffix={
-                      <Space spacing={2} className="process-detail-drawer-variable-card-edit-actions">
-                        <span 
-                          className="process-detail-drawer-variable-card-edit-confirm"
-                          onClick={handleConfirmEdit}
-                        >
-                          <IconTick size="small" />
-                        </span>
-                        <span 
-                          className="process-detail-drawer-variable-card-edit-cancel"
-                          onClick={handleCancelEdit}
-                        >
-                          <IconClose size="small" />
-                        </span>
-                      </Space>
-                    }
-                  />
-                </div>
-              ) : (
-                <div 
-                  className="process-detail-drawer-variable-card-desc"
-                  onDoubleClick={handleStartEdit}
-                >
-                  <Text ellipsis={{ showTooltip: true }}>
-                    {variable.description || '-'}
-                  </Text>
-                  <Tooltip content={t('development.processDevelopment.detail.variable.editTip')}>
-                    <Button
-                      icon={<IconEditStroked />}
-                      theme="borderless"
-                      size="small"
-                      type="tertiary"
-                      className="process-detail-drawer-variable-card-edit-btn"
-                      onClick={handleStartEdit}
-                    />
-                  </Tooltip>
-                </div>
-              )}
-            </div>
-          </Col>
-        </Row>
+          ) : (
+            <Text 
+              className="process-detail-drawer-variable-card-value" 
+              ellipsis={{ showTooltip: true }}
+              onDoubleClick={handleStartEdit}
+            >
+              {variable.description || '-'}
+            </Text>
+          )}
+        </div>
       </div>
     </div>
   );
