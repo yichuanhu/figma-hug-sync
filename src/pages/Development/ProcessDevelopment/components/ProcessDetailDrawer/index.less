@@ -157,68 +157,71 @@
     }
   }
 
-  // 变量表格
-  &-variable-table {
-    .semi-table-thead {
-      .semi-table-row-head {
-        .semi-table-row-cell {
-          background-color: var(--semi-color-fill-0);
-          font-weight: 500;
-        }
-      }
-    }
-
-    .semi-table-tbody {
-      .semi-table-row {
-        .semi-table-row-cell {
-          padding: 8px 12px;
-        }
-      }
-    }
-  }
-
-  // 变量单元格 - hover显示编辑按钮
-  &-variable-cell {
+  // 变量卡片列表
+  &-variable-card-list {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    min-height: 24px;
+    flex-direction: column;
+    gap: 12px;
   }
 
-  &-variable-text {
-    flex: 1;
-    min-width: 0;
-    cursor: default;
-  }
+  // 变量卡片
+  &-variable-card {
+    border: 1px solid var(--semi-color-border);
+    border-radius: 6px;
+    background-color: var(--semi-color-bg-0);
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
 
-  &-variable-edit-btn {
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    flex-shrink: 0;
-  }
-
-  // 行 hover 时显示编辑按钮
-  .semi-table-row:hover &-variable-edit-btn {
-    opacity: 1;
-  }
-
-  // 编辑状态样式
-  &-variable-edit {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    .semi-input-wrapper {
-      flex: 1;
-      min-width: 120px;
-      background-color: var(--semi-color-bg-0);
-      border-color: var(--semi-color-primary);
-      box-shadow: 0 0 0 2px var(--semi-color-primary-light-default);
+    &:hover {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     }
 
-    &-actions {
+    &-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background-color: var(--semi-color-fill-0);
+      border-bottom: 1px solid var(--semi-color-border);
+    }
+
+    &-body {
+      padding: 12px 16px;
+    }
+
+    &-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    &-desc {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 22px;
+    }
+
+    &-edit-btn {
+      opacity: 0;
+      transition: opacity 0.2s ease;
       flex-shrink: 0;
+    }
+
+    &:hover &-edit-btn {
+      opacity: 1;
+    }
+
+    &-edit {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      .semi-input-wrapper {
+        background-color: var(--semi-color-bg-0);
+        border-color: var(--semi-color-primary);
+        box-shadow: 0 0 0 2px var(--semi-color-primary-light-default);
+      }
     }
   }
 }
