@@ -645,7 +645,8 @@
         "accountRequired": "帐户不能为空",
         "accountLengthError": "帐户长度必须在2-100字符之间",
         "descriptionLengthError": "描述长度不能超过500字符",
-        "requiredEmpty": "必填字段不能为空"
+        "requiredEmpty": "必填字段不能为空",
+        "localDesktopLimitTip": "所选机器人为本地桌面型，一台机器上只能启用一个本地桌面型会话，当前机器人只能选择远程桌面型"
       },
       "success": "创建成功",
       "cancelConfirm": {
