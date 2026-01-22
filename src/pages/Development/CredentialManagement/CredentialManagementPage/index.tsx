@@ -5,7 +5,6 @@ import {
   Breadcrumb,
   Button,
   Input,
-  Select,
   Table,
   Tag,
   Dropdown,
@@ -14,12 +13,16 @@ import {
   Modal,
   Row,
   Col,
+  Typography,
+  Popover,
+  CheckboxGroup,
 } from '@douyinfe/semi-ui';
 import {
   IconSearch,
   IconPlus,
   IconMore,
   IconDeleteStroked,
+  IconFilter,
 } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
 import AppLayout from '@/components/layout/AppLayout';
@@ -147,7 +150,8 @@ const CredentialManagementPage = () => {
   });
 
   // 类型筛选
-  const [typeFilter, setTypeFilter] = useState<CredentialType | null>(null);
+  const [typeFilter, setTypeFilter] = useState<CredentialType[]>([]);
+  const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
 
   // 列表数据
   const [listResponse, setListResponse] = useState<LYCredentialListResultResponse | null>(null);
@@ -171,7 +175,7 @@ const CredentialManagementPage = () => {
         context,
         offset: (queryParams.page - 1) * queryParams.pageSize,
         size: queryParams.pageSize,
-        typeFilter,
+        typeFilter: typeFilter.length > 0 ? typeFilter[0] : null,
       });
       setListResponse(response);
     } catch (error) {
@@ -199,11 +203,11 @@ const CredentialManagementPage = () => {
     debouncedSearch(value);
   };
 
-  // 类型筛选
-  const handleTypeFilter = (value: CredentialType | null) => {
-    setTypeFilter(value);
-    setQueryParams((prev) => ({ ...prev, page: 1 }));
-  };
+  // 类型筛选选项（用于Popover CheckboxGroup）
+  const typeFilterOptions = [
+    { value: 'FIXED_VALUE', label: t('credential.type.fixedValue') },
+    { value: 'PERSONAL_REF', label: t('credential.type.personalRef') },
+  ];
 
   // 点击行查看详情
   const handleRowClick = (record: LYCredentialResponse) => {
@@ -352,18 +356,11 @@ const CredentialManagementPage = () => {
         { name: t('sidebar.credentials') },
       ];
 
-  // 类型筛选选项
-  const typeOptions = [
-    { value: '', label: t('credential.filter.allTypes') },
-    { value: 'FIXED_VALUE', label: t('credential.type.fixedValue') },
-    { value: 'PERSONAL_REF', label: t('credential.type.personalRef') },
-  ];
-
   // 分页信息
   const range = listResponse?.range;
   const total = range?.total || 0;
-  const start = range ? range.offset + 1 : 0;
-  const end = range ? range.offset + (listResponse?.data?.length || 0) : 0;
+
+  const { Title, Text } = Typography;
 
   return (
     <AppLayout>
@@ -382,47 +379,77 @@ const CredentialManagementPage = () => {
           </Breadcrumb>
         </div>
 
-        {/* 标题工具栏 */}
+        {/* 标题区域 */}
         <div className="credential-management-page-header">
-          <Row type="flex" justify="space-between" align="middle">
+          <div className="credential-management-page-header-title">
+            <Title heading={3} className="title">
+              {t('credential.title')}
+            </Title>
+            <Text type="tertiary">{t('credential.description')}</Text>
+          </div>
+
+          {/* 操作栏 */}
+          <Row type="flex" justify="space-between" align="middle" className="credential-management-page-header-toolbar">
             <Col>
-              <h1 className="credential-management-page-header-title">
-                {t('credential.title')}
-              </h1>
+              <Space>
+                <Input
+                  prefix={<IconSearch />}
+                  placeholder={t('credential.searchPlaceholder')}
+                  className="credential-management-page-search-input"
+                  value={queryParams.keyword || ''}
+                  onChange={handleSearch}
+                  showClear
+                  maxLength={100}
+                />
+                <Popover
+                  visible={filterPopoverVisible}
+                  onVisibleChange={setFilterPopoverVisible}
+                  trigger="click"
+                  position="bottomLeft"
+                  content={
+                    <div className="credential-filter-popover">
+                      <div className="credential-filter-popover-section">
+                        <Text strong className="credential-filter-popover-label">
+                          {t('credential.filter.type')}
+                        </Text>
+                        <CheckboxGroup
+                          value={typeFilter}
+                          onChange={(values) => {
+                            setTypeFilter(values as CredentialType[]);
+                            setQueryParams((prev) => ({ ...prev, page: 1 }));
+                          }}
+                          options={typeFilterOptions}
+                          direction="horizontal"
+                        />
+                      </div>
+                      <div className="credential-filter-popover-footer">
+                        <Button theme="borderless" onClick={() => {
+                          setTypeFilter([]);
+                          setQueryParams((prev) => ({ ...prev, page: 1 }));
+                        }} disabled={typeFilter.length === 0}>
+                          {t('common.reset')}
+                        </Button>
+                        <Button theme="solid" type="primary" onClick={() => setFilterPopoverVisible(false)}>
+                          {t('common.confirm')}
+                        </Button>
+                      </div>
+                    </div>
+                  }
+                >
+                  <Button
+                    icon={<IconFilter />}
+                    type={typeFilter.length > 0 ? 'primary' : 'tertiary'}
+                    theme={typeFilter.length > 0 ? 'solid' : 'light'}
+                  >
+                    {t('common.filter')}{typeFilter.length > 0 ? ` (${typeFilter.length})` : ''}
+                  </Button>
+                </Popover>
+              </Space>
             </Col>
             <Col>
-              <Button
-                theme="solid"
-                type="primary"
-                icon={<IconPlus />}
-                onClick={() => setCreateModalVisible(true)}
-              >
+              <Button icon={<IconPlus />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
                 {t('credential.createCredential')}
               </Button>
-            </Col>
-          </Row>
-        </div>
-
-        {/* 筛选工具栏 */}
-        <div className="credential-management-page-toolbar">
-          <Row type="flex" gutter={12}>
-            <Col>
-              <Input
-                className="credential-management-page-toolbar-search"
-                prefix={<IconSearch />}
-                placeholder={t('credential.searchPlaceholder')}
-                onChange={handleSearch}
-                showClear
-              />
-            </Col>
-            <Col>
-              <Select
-                className="credential-management-page-toolbar-select"
-                placeholder={t('credential.filter.type')}
-                optionList={typeOptions}
-                value={typeFilter || ''}
-                onChange={(value) => handleTypeFilter(value as CredentialType | null || null)}
-              />
             </Col>
           </Row>
         </div>
@@ -453,12 +480,6 @@ const CredentialManagementPage = () => {
           />
         </div>
 
-        {/* 分页信息 */}
-        {total > 0 && (
-          <div className="credential-management-page-pagination-info">
-            {t('common.showingRecords', { start, end, total })}
-          </div>
-        )}
 
         {/* 新建凭据模态框 */}
         <CreateCredentialModal
