@@ -316,7 +316,7 @@ const VariableCard = ({ variable, index, onDescriptionChange }: VariableCardProp
       </div>
       <div className="process-detail-drawer-variable-card-body">
         <div className="process-detail-drawer-variable-card-row">
-          <Text type="tertiary" size="small" className="process-detail-drawer-variable-card-label">
+          <Text type="tertiary" className="process-detail-drawer-variable-card-label">
             {t('development.processDevelopment.detail.variable.value')}
           </Text>
           <Text className="process-detail-drawer-variable-card-value" ellipsis={{ showTooltip: true }}>
@@ -324,7 +324,7 @@ const VariableCard = ({ variable, index, onDescriptionChange }: VariableCardProp
           </Text>
         </div>
         <div className="process-detail-drawer-variable-card-row">
-          <Text type="tertiary" size="small" className="process-detail-drawer-variable-card-label">
+          <Text type="tertiary" className="process-detail-drawer-variable-card-label">
             {t('common.description')}
           </Text>
           {isEditing ? (
