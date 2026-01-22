@@ -5,7 +5,6 @@ import {
   Form, 
   Toast, 
   Button,
-  RadioGroup,
   Radio,
 } from '@douyinfe/semi-ui';
 import type { FormApi } from '@douyinfe/semi-ui/lib/es/form';
@@ -151,13 +150,15 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
 
         <div className="edit-worker-modal-section">
           <div className="edit-worker-modal-section-title">{t('worker.create.runtimeConfig')}</div>
-          <div className="edit-worker-modal-field">
-            <Form.Label>{t('worker.create.fields.desktopType')}</Form.Label>
-            <RadioGroup value={desktopType} onChange={(e) => setDesktopType(e.target.value)}>
-              <Radio value="Console">{t('worker.create.fields.localDesktop')}</Radio>
-              <Radio value="NotConsole">{t('worker.create.fields.remoteDesktop')}</Radio>
-            </RadioGroup>
-          </div>
+          <Form.RadioGroup
+            field="desktopType"
+            label={t('worker.create.fields.desktopType')}
+            initValue={workerData.desktop_type || 'Console'}
+            onChange={(e) => setDesktopType(e.target.value)}
+          >
+            <Radio value="Console">{t('worker.create.fields.localDesktop')}</Radio>
+            <Radio value="NotConsole">{t('worker.create.fields.remoteDesktop')}</Radio>
+          </Form.RadioGroup>
         </div>
 
         <div className="edit-worker-modal-section">

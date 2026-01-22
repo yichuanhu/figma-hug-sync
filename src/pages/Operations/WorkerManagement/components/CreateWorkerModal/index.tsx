@@ -6,7 +6,6 @@ import {
   Toast, 
   Button, 
   Checkbox,
-  RadioGroup,
   Radio,
   Select,
 } from '@douyinfe/semi-ui';
@@ -193,13 +192,15 @@ const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalPr
               ))}
             </Form.Select>
           )}
-          <div className="create-worker-modal-field">
-            <Form.Label>{t('worker.create.fields.desktopType')}</Form.Label>
-            <RadioGroup value={desktopType} onChange={(e) => setDesktopType(e.target.value)}>
-              <Radio value="Console">{t('worker.create.fields.localDesktop')}</Radio>
-              <Radio value="NotConsole">{t('worker.create.fields.remoteDesktop')}</Radio>
-            </RadioGroup>
-          </div>
+          <Form.RadioGroup
+            field="desktopType"
+            label={t('worker.create.fields.desktopType')}
+            initValue="Console"
+            onChange={(e) => setDesktopType(e.target.value)}
+          >
+            <Radio value="Console">{t('worker.create.fields.localDesktop')}</Radio>
+            <Radio value="NotConsole">{t('worker.create.fields.remoteDesktop')}</Radio>
+          </Form.RadioGroup>
         </div>
 
         <div className="create-worker-modal-section">
