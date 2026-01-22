@@ -3,92 +3,90 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow: hidden;
 
   // 面包屑区域
-  .credential-management-page-breadcrumb {
+  &-breadcrumb {
     padding: 12px 24px;
     flex-shrink: 0;
-
-    .semi-breadcrumb-item {
-      cursor: pointer;
-      color: var(--semi-color-text-2);
-
-      &:hover {
-        color: var(--semi-color-text-0);
-      }
-
-      &:last-child {
-        cursor: default;
-        color: var(--semi-color-text-2);
-
-        &:hover {
-          color: var(--semi-color-text-2);
-        }
-      }
-    }
   }
 
-  // 标题工具栏区域
-  .credential-management-page-header {
-    padding: 0 24px 16px;
+  // 标题区域
+  &-header {
+    padding: 20px 24px 0;
     flex-shrink: 0;
 
-    .credential-management-page-header-title {
-      font-size: 20px;
-      font-weight: 600;
-      margin: 0;
-    }
-  }
+    &-title {
+      margin-bottom: 24px;
 
-  // 筛选工具栏
-  .credential-management-page-toolbar {
-    padding: 0 24px 16px;
-    flex-shrink: 0;
-
-    .credential-management-page-toolbar-search {
-      width: 280px;
+      .title {
+        margin-bottom: 8px;
+      }
     }
 
-    .credential-management-page-toolbar-select {
-      width: 160px;
+    &-toolbar {
+      margin-bottom: 16px;
     }
   }
 
   // 表格区域
-  .credential-management-page-table {
+  &-table {
     flex: 1;
     overflow: hidden;
     padding: 0 24px;
-
-    .credential-management-page-table-name {
-      font-weight: 500;
-      color: var(--semi-color-text-0);
-    }
-
-    .credential-management-page-table-value {
-      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
-      font-size: 13px;
-      color: var(--semi-color-text-1);
-    }
-
-    .credential-management-page-table-desc {
-      max-width: 200px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .credential-management-page-table-linked {
-      color: var(--semi-color-text-2);
-    }
+    min-height: 0;
   }
 
-  // 分页信息
-  .credential-management-page-pagination-info {
-    padding: 12px 24px;
+  // 单元格样式
+  &-cell-name {
+    font-weight: 500;
+    color: var(--semi-color-text-0);
+  }
+
+  &-cell-value {
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    font-size: 13px;
+    color: var(--semi-color-text-1);
+  }
+
+  &-cell-desc {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &-cell-linked {
     color: var(--semi-color-text-2);
-    font-size: 14px;
-    flex-shrink: 0;
+  }
+
+  // 表格行选中状态
+  &-row-selected {
+    background-color: var(--semi-color-primary-light-default);
+  }
+
+  &-search-input {
+    width: 280px;
+  }
+}
+
+// 筛选弹窗内容
+.credential-filter-popover {
+  padding: 16px;
+  width: 280px;
+
+  &-section {
+    margin-bottom: 16px;
+  }
+
+  &-label {
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  &-footer {
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid var(--semi-color-border);
+    padding-top: 12px;
   }
 }

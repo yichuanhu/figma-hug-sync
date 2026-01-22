@@ -68,6 +68,7 @@
   },
   "credential": {
     "title": "凭据管理",
+    "description": "管理流程使用的各类凭据信息",
     "breadcrumb": {
       "developmentCenter": "开发中心",
       "schedulingCenter": "调度中心"
