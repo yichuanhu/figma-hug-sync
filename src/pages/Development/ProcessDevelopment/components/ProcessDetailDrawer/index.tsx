@@ -301,18 +301,6 @@ const VariableCard = ({ variable, index, onDescriptionChange }: VariableCardProp
             {variable.name}
           </Text>
         </div>
-        {!isEditing && (
-          <Tooltip content={t('development.processDevelopment.detail.variable.editTip')}>
-            <Button
-              icon={<IconEditStroked />}
-              theme="borderless"
-              size="small"
-              type="tertiary"
-              className="process-detail-drawer-variable-card-edit-btn"
-              onClick={handleStartEdit}
-            />
-          </Tooltip>
-        )}
       </div>
       <div className="process-detail-drawer-variable-card-body">
         <div className="process-detail-drawer-variable-card-row">
@@ -355,13 +343,25 @@ const VariableCard = ({ variable, index, onDescriptionChange }: VariableCardProp
               />
             </div>
           ) : (
-            <Text 
-              className="process-detail-drawer-variable-card-value" 
-              ellipsis={{ showTooltip: true }}
-              onDoubleClick={handleStartEdit}
-            >
-              {variable.description || '-'}
-            </Text>
+            <div className="process-detail-drawer-variable-card-desc-row">
+              <Text 
+                className="process-detail-drawer-variable-card-value" 
+                ellipsis={{ showTooltip: true }}
+                onDoubleClick={handleStartEdit}
+              >
+                {variable.description || '-'}
+              </Text>
+              <Tooltip content={t('development.processDevelopment.detail.variable.editDescTip')}>
+                <Button
+                  icon={<IconEditStroked />}
+                  theme="borderless"
+                  size="small"
+                  type="tertiary"
+                  className="process-detail-drawer-variable-card-edit-btn"
+                  onClick={handleStartEdit}
+                />
+              </Tooltip>
+            </div>
           )}
         </div>
       </div>
