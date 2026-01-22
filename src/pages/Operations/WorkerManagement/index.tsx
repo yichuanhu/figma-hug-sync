@@ -744,6 +744,12 @@ const WorkerManagement = () => {
         onClose={() => setDetailDrawerVisible(false)}
         workerData={selectedWorker}
         onEdit={handleEditFromDrawer}
+        onViewKey={() => {
+          if (selectedWorker) {
+            setKeyModalWorker(selectedWorker);
+            setKeyModalVisible(true);
+          }
+        }}
         onDelete={handleDeleteFromDrawer}
         onToggleReceiveTasks={handleToggleReceiveTasks}
       />
