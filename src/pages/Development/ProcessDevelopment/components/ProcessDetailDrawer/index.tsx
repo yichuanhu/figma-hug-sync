@@ -519,14 +519,26 @@ const ProcessDetailDrawer = ({
 
   // 处理版本激活/停用 - 只允许开启一个版本
   const handleVersionActiveChange = useCallback((versionId: string, checked: boolean) => {
+    const version = versionData.find(v => v.id === versionId);
+    
     if (checked) {
-      // 开启新版本时，关闭其他所有版本
-      setVersionData(prevData => 
-        prevData.map(v => ({
-          ...v,
-          is_active: v.id === versionId ? true : false
-        }))
-      );
+      // 开启新版本时，显示确认弹窗
+      Modal.confirm({
+        title: t('development.processDevelopment.detail.versionList.activateConfirmTitle'),
+        content: t('development.processDevelopment.detail.versionList.activateConfirmContent'),
+        onOk: () => {
+          // 开启新版本，关闭其他所有版本
+          setVersionData(prevData => 
+            prevData.map(v => ({
+              ...v,
+              is_active: v.id === versionId ? true : false
+            }))
+          );
+          if (version) {
+            Toast.success(t('development.processDevelopment.detail.versionList.activateSuccess', { version: version.version }));
+          }
+        },
+      });
     } else {
       // 关闭版本
       setVersionData(prevData => 
@@ -534,15 +546,9 @@ const ProcessDetailDrawer = ({
           v.id === versionId ? { ...v, is_active: false } : v
         )
       );
-    }
-    
-    const version = versionData.find(v => v.id === versionId);
-    if (version) {
-      Toast.success(
-        checked 
-          ? t('development.processDevelopment.detail.versionList.activateSuccess', { version: version.version })
-          : t('development.processDevelopment.detail.versionList.deactivateSuccess', { version: version.version })
-      );
+      if (version) {
+        Toast.success(t('development.processDevelopment.detail.versionList.deactivateSuccess', { version: version.version }));
+      }
     }
   }, [versionData, t]);
 
