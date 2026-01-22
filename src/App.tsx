@@ -27,9 +27,9 @@ const App = () => (
         <Route path="/" element={<Index />} />
         <Route path="/process-development" element={<Index />} />
         
-        <Route path="/worker-management" element={<WorkerManagementPage />} />
-        <Route path="/worker-management/create" element={<WorkerCreate />} />
-        <Route path="/worker-management/edit/:id" element={<WorkerEdit />} />
+        <Route path="/scheduling-center/resource-monitoring/worker-management" element={<WorkerManagementPage />} />
+        <Route path="/scheduling-center/resource-monitoring/worker-management/create" element={<WorkerCreate />} />
+        <Route path="/scheduling-center/resource-monitoring/worker-management/edit/:id" element={<WorkerEdit />} />
         <Route path="/development-workbench" element={<DevelopmentWorkbench />} />
         <Route path="/scheduling-workbench" element={<SchedulingWorkbench />} />
         <Route path="/operations-workbench" element={<OperationsWorkbench />} />

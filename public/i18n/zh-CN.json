@@ -59,6 +59,7 @@
     "knowledgeAssets": "知识资产",
     "connectionAssets": "连接资产",
     "workerManagement": "流程机器人管理",
+    "executionResourceMonitoring": "执行资源监控",
     "publishManagement": "发布管理",
     "publishList": "发布列表",
     "newPublish": "新建发布",
@@ -493,7 +494,8 @@
   },
   "worker": {
     "breadcrumb": {
-      "developmentCenter": "开发中心",
+      "schedulingCenter": "调度中心",
+      "executionResourceMonitoring": "执行资源监控",
       "workerManagement": "流程机器人管理"
     },
     "title": "流程机器人管理",

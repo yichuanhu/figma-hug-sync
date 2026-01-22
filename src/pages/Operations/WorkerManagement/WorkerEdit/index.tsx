@@ -55,7 +55,7 @@ const WorkerEdit = () => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
     setSubmitting(false);
     Toast.success(t('worker.edit.success'));
-    navigate('/worker-management');
+    navigate('/scheduling-center/resource-monitoring/worker-management');
   };
 
   if (loading) {
@@ -75,8 +75,9 @@ const WorkerEdit = () => {
           <Breadcrumb.Item onClick={() => navigate('/')} className="worker-edit-breadcrumb-clickable">
             {t('common.home')}
           </Breadcrumb.Item>
-          <Breadcrumb.Item>{t('worker.breadcrumb.developmentCenter')}</Breadcrumb.Item>
-          <Breadcrumb.Item onClick={() => navigate('/worker-management')} className="worker-edit-breadcrumb-clickable">
+          <Breadcrumb.Item>{t('worker.breadcrumb.schedulingCenter')}</Breadcrumb.Item>
+          <Breadcrumb.Item>{t('worker.breadcrumb.executionResourceMonitoring')}</Breadcrumb.Item>
+          <Breadcrumb.Item onClick={() => navigate('/scheduling-center/resource-monitoring/worker-management')} className="worker-edit-breadcrumb-clickable">
             {t('worker.breadcrumb.workerManagement')}
           </Breadcrumb.Item>
           <Breadcrumb.Item>{t('worker.edit.title')}</Breadcrumb.Item>
@@ -191,7 +192,7 @@ const WorkerEdit = () => {
           </Card>
 
           <div className="worker-edit-footer">
-            <Button onClick={() => navigate('/worker-management')}>{t('common.cancel')}</Button>
+            <Button onClick={() => navigate('/scheduling-center/resource-monitoring/worker-management')}>{t('common.cancel')}</Button>
             <Button theme="solid" type="primary" onClick={handleSubmit} loading={submitting}>
               {t('common.save')}
             </Button>

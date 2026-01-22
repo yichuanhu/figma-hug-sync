@@ -58,7 +58,7 @@ const WorkerCreate = () => {
     setSubmitting(false);
 
     Toast.success(t('worker.create.success'));
-    navigate('/worker-management');
+    navigate('/scheduling-center/resource-monitoring/worker-management');
   };
 
   const handleCancel = () => {
@@ -66,10 +66,10 @@ const WorkerCreate = () => {
       Modal.confirm({
         title: t('worker.create.cancelConfirm.title'),
         content: t('worker.create.cancelConfirm.content'),
-        onOk: () => navigate('/worker-management'),
+        onOk: () => navigate('/scheduling-center/resource-monitoring/worker-management'),
       });
     } else {
-      navigate('/worker-management');
+      navigate('/scheduling-center/resource-monitoring/worker-management');
     }
   };
 
@@ -80,8 +80,9 @@ const WorkerCreate = () => {
           <Breadcrumb.Item onClick={() => navigate('/')} className="worker-create-breadcrumb-clickable">
             {t('common.home')}
           </Breadcrumb.Item>
-          <Breadcrumb.Item>{t('worker.breadcrumb.developmentCenter')}</Breadcrumb.Item>
-          <Breadcrumb.Item onClick={() => navigate('/worker-management')} className="worker-create-breadcrumb-clickable">
+          <Breadcrumb.Item>{t('worker.breadcrumb.schedulingCenter')}</Breadcrumb.Item>
+          <Breadcrumb.Item>{t('worker.breadcrumb.executionResourceMonitoring')}</Breadcrumb.Item>
+          <Breadcrumb.Item onClick={() => navigate('/scheduling-center/resource-monitoring/worker-management')} className="worker-create-breadcrumb-clickable">
             {t('worker.breadcrumb.workerManagement')}
           </Breadcrumb.Item>
           <Breadcrumb.Item>{t('worker.create.title')}</Breadcrumb.Item>
