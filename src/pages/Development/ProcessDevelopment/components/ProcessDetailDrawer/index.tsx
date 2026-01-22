@@ -357,7 +357,7 @@ const VariableCard = ({ variable, index, onDescriptionChange }: VariableCardProp
             <div className="process-detail-drawer-variable-card-desc-row">
               <Tooltip 
                 content={variable.description || '-'}
-                position="topLeft"
+                position="top"
                 style={{ maxWidth: 400, wordBreak: 'break-word' }}
               >
                 <Text 
