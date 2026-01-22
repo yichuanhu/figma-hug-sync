@@ -250,144 +250,147 @@ const statusConfig: Record<string, { color: 'grey' | 'green' | 'orange'; i18nKey
   ARCHIVED: { color: 'orange', i18nKey: 'development.processDevelopment.status.archived' },
 };
 
-// ============= 变量列表表格组件 =============
+// ============= 变量卡片组件 =============
 
-interface VariableTableProps {
-  data: ProcessVariable[];
+interface VariableCardProps {
+  variable: ProcessVariable;
+  index: number;
   onDescriptionChange: (index: number, description: string) => void;
 }
 
-const VariableTable = ({ data, onDescriptionChange }: VariableTableProps) => {
+const VariableCard = ({ variable, index, onDescriptionChange }: VariableCardProps) => {
   const { t } = useTranslation();
-  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState('');
-  const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleStartEdit = useCallback((index: number, currentValue: string) => {
-    setEditingIndex(index);
-    setEditValue(currentValue || '');
-  }, []);
+  const handleStartEdit = useCallback(() => {
+    setIsEditing(true);
+    setEditValue(variable.description || '');
+  }, [variable.description]);
 
-  const handleConfirmEdit = useCallback((index: number) => {
+  const handleConfirmEdit = useCallback(() => {
     onDescriptionChange(index, editValue);
-    setEditingIndex(null);
+    setIsEditing(false);
     setEditValue('');
     Toast.success(t('development.processDevelopment.detail.variable.editSuccess'));
-  }, [editValue, onDescriptionChange, t]);
+  }, [editValue, index, onDescriptionChange, t]);
 
   const handleCancelEdit = useCallback(() => {
-    setEditingIndex(null);
+    setIsEditing(false);
     setEditValue('');
   }, []);
 
-  // ESC 键取消编辑
-  const handleKeyDown = useCallback((e: React.KeyboardEvent, index: number) => {
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Escape') {
       e.preventDefault();
       handleCancelEdit();
     } else if (e.key === 'Enter') {
       e.preventDefault();
-      handleConfirmEdit(index);
+      handleConfirmEdit();
     }
   }, [handleCancelEdit, handleConfirmEdit]);
 
-  const columns = [
-    {
-      title: t('development.processDevelopment.detail.variable.type'),
-      dataIndex: 'type',
-      key: 'type',
-      width: 80,
-      render: (type: string) => (
-        <Tag color="blue" type="light" size="small">
-          {type}
-        </Tag>
-      ),
-    },
-    {
-      title: t('development.processDevelopment.detail.variable.name'),
-      dataIndex: 'name',
-      key: 'name',
-      width: 140,
-    },
-    {
-      title: t('development.processDevelopment.detail.variable.value'),
-      dataIndex: 'value',
-      key: 'value',
-      width: 140,
-      render: (value: string) => <Text>{value || '-'}</Text>,
-    },
-    {
-      title: t('common.description'),
-      dataIndex: 'description',
-      key: 'description',
-      render: (description: string, _record: ProcessVariable, index: number) => {
-        if (editingIndex === index) {
-          return (
-            <div className="process-detail-drawer-variable-edit">
-              <Input
-                ref={inputRef}
-                value={editValue}
-                onChange={(value) => setEditValue(value)}
-                size="small"
-                autoFocus
-                placeholder={t('development.processDevelopment.detail.variable.editPlaceholder')}
-                onKeyDown={(e) => handleKeyDown(e, index)}
-              />
-              <Space spacing={4} className="process-detail-drawer-variable-edit-actions">
-                <Tooltip content={t('common.confirm')}>
-                  <Button
-                    icon={<IconTick />}
-                    theme="solid"
-                    size="small"
-                    type="primary"
-                    onClick={() => handleConfirmEdit(index)}
-                  />
-                </Tooltip>
-                <Tooltip content={t('common.cancel')}>
-                  <Button
-                    icon={<IconClear />}
-                    theme="light"
-                    size="small"
-                    type="tertiary"
-                    onClick={handleCancelEdit}
-                  />
-                </Tooltip>
-              </Space>
-            </div>
-          );
-        }
-        return (
-          <div 
-            className="process-detail-drawer-variable-cell"
-            onDoubleClick={() => handleStartEdit(index, description)}
-          >
-            <Text className="process-detail-drawer-variable-text" ellipsis={{ showTooltip: true }}>
-              {description || '-'}
-            </Text>
-            <Tooltip content={t('development.processDevelopment.detail.variable.editTip')}>
-              <Button
-                icon={<IconEditStroked />}
-                theme="borderless"
-                size="small"
-                type="tertiary"
-                className="process-detail-drawer-variable-edit-btn"
-                onClick={() => handleStartEdit(index, description)}
-              />
-            </Tooltip>
-          </div>
-        );
-      },
-    },
-  ];
-
   return (
-    <Table
-      columns={columns}
-      dataSource={data.map((item, index) => ({ ...item, key: index }))}
-      pagination={false}
-      size="small"
-      className="process-detail-drawer-variable-table"
-    />
+    <div className="process-detail-drawer-variable-card">
+      <div className="process-detail-drawer-variable-card-header">
+        <Space>
+          <Tag color="blue" type="light" size="small">
+            {variable.type}
+          </Tag>
+          <Text strong>{variable.name}</Text>
+        </Space>
+      </div>
+      <div className="process-detail-drawer-variable-card-body">
+        <Row gutter={16}>
+          <Col span={12}>
+            <div className="process-detail-drawer-variable-card-field">
+              <Text type="tertiary" size="small">
+                {t('development.processDevelopment.detail.variable.value')}
+              </Text>
+              <Text>{variable.value || '-'}</Text>
+            </div>
+          </Col>
+          <Col span={12}>
+            <div className="process-detail-drawer-variable-card-field">
+              <Text type="tertiary" size="small">
+                {t('common.description')}
+              </Text>
+              {isEditing ? (
+                <div className="process-detail-drawer-variable-card-edit">
+                  <Input
+                    value={editValue}
+                    onChange={(value) => setEditValue(value)}
+                    size="small"
+                    autoFocus
+                    placeholder={t('development.processDevelopment.detail.variable.editPlaceholder')}
+                    onKeyDown={handleKeyDown}
+                  />
+                  <Space spacing={4}>
+                    <Tooltip content={t('common.confirm')}>
+                      <Button
+                        icon={<IconTick />}
+                        theme="solid"
+                        size="small"
+                        type="primary"
+                        onClick={handleConfirmEdit}
+                      />
+                    </Tooltip>
+                    <Tooltip content={t('common.cancel')}>
+                      <Button
+                        icon={<IconClear />}
+                        theme="light"
+                        size="small"
+                        type="tertiary"
+                        onClick={handleCancelEdit}
+                      />
+                    </Tooltip>
+                  </Space>
+                </div>
+              ) : (
+                <div 
+                  className="process-detail-drawer-variable-card-desc"
+                  onDoubleClick={handleStartEdit}
+                >
+                  <Text ellipsis={{ showTooltip: true }}>
+                    {variable.description || '-'}
+                  </Text>
+                  <Tooltip content={t('development.processDevelopment.detail.variable.editTip')}>
+                    <Button
+                      icon={<IconEditStroked />}
+                      theme="borderless"
+                      size="small"
+                      type="tertiary"
+                      className="process-detail-drawer-variable-card-edit-btn"
+                      onClick={handleStartEdit}
+                    />
+                  </Tooltip>
+                </div>
+              )}
+            </div>
+          </Col>
+        </Row>
+      </div>
+    </div>
+  );
+};
+
+interface VariableCardListProps {
+  data: ProcessVariable[];
+  onDescriptionChange: (index: number, description: string) => void;
+}
+
+const VariableCardList = ({ data, onDescriptionChange }: VariableCardListProps) => {
+  return (
+    <div className="process-detail-drawer-variable-card-list">
+      {data.map((variable, index) => (
+        <VariableCard
+          key={index}
+          variable={variable}
+          index={index}
+          onDescriptionChange={onDescriptionChange}
+        />
+      ))}
+    </div>
   );
 };
 
@@ -809,7 +812,7 @@ const ProcessDetailDrawer = ({
                       {t('development.processDevelopment.detail.versionDetail.processInput')}
                     </Text>
                     {selectedVersion.inputs && selectedVersion.inputs.length > 0 ? (
-                      <VariableTable
+                      <VariableCardList
                         data={selectedVersion.inputs}
                         onDescriptionChange={(index, description) => {
                           setVersionData((prevData) =>
@@ -837,7 +840,7 @@ const ProcessDetailDrawer = ({
                       {t('development.processDevelopment.detail.versionDetail.processOutput')}
                     </Text>
                     {selectedVersion.outputs && selectedVersion.outputs.length > 0 ? (
-                      <VariableTable
+                      <VariableCardList
                         data={selectedVersion.outputs}
                         onDescriptionChange={(index, description) => {
                           setVersionData((prevData) =>
