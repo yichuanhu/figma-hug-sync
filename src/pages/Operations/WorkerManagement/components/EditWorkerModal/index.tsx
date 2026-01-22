@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { 
   Modal, 
@@ -7,7 +7,6 @@ import {
   Button,
   Radio,
 } from '@douyinfe/semi-ui';
-import type { FormApi } from '@douyinfe/semi-ui/lib/es/form';
 import type { LYWorkerResponse } from '@/api';
 import './index.less';
 
@@ -25,7 +24,6 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [desktopType, setDesktopType] = useState<string>('Console');
-  const formApiRef = useRef<FormApi>();
 
   useEffect(() => {
     if (workerData) {
@@ -47,13 +45,11 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
     return true;
   };
 
-  const handleSubmit = async () => {
-    if (!formApiRef.current || !workerData?.id) return;
+  const handleSubmit = async (values: Record<string, unknown>) => {
+    if (!workerData?.id) return;
 
+    setLoading(true);
     try {
-      const values = await formApiRef.current.validate();
-
-      setLoading(true);
       // 模拟API调用延迟
       await new Promise((resolve) => setTimeout(resolve, 300));
 
@@ -62,7 +58,6 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
         ...workerData,
         name: values.name as string,
         description: (values.description as string) || null,
-        receive_tasks: values.receiveTasks as boolean,
         desktop_type: desktopType as 'Console' | 'NotConsole',
         username: values.username as string,
         enable_auto_unlock: desktopType === 'Console' ? (values.enableAutoUnlock as boolean) : undefined,
@@ -80,10 +75,6 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
     }
   };
 
-  const handleFormMount = (formApi: FormApi) => {
-    formApiRef.current = formApi;
-  };
-
   if (!workerData) return null;
 
   return (
@@ -91,30 +82,19 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
       title={t('worker.edit.title')}
       visible={visible}
       onCancel={onCancel}
-      footer={
-        <div className="edit-worker-modal-footer">
-          <Button theme="light" onClick={onCancel}>
-            {t('common.cancel')}
-          </Button>
-          <Button theme="solid" type="primary" onClick={handleSubmit} loading={loading}>
-            {t('common.save')}
-          </Button>
-        </div>
-      }
+      footer={null}
       width={520}
       centered
       closeOnEsc
       maskClosable={false}
-      bodyStyle={{ maxHeight: 'calc(100vh - 240px)', overflowY: 'auto', padding: '12px 24px' }}
     >
       <Form 
-        getFormApi={handleFormMount}
+        onSubmit={handleSubmit}
         labelPosition="top" 
         className="edit-worker-modal-form"
         initValues={{
           name: workerData.name || '',
           description: workerData.description || '',
-          receiveTasks: workerData.receive_tasks ?? true,
           username: workerData.username || '',
           enableAutoUnlock: workerData.enable_auto_unlock ?? true,
           displaySize: workerData.display_size || '1920x1080',
@@ -193,6 +173,7 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
             <Form.Select
               field="displaySize"
               label={t('worker.detail.fields.resolution')}
+              className="edit-worker-modal-select-full"
               optionList={[
                 { value: '1024x768', label: '1024x768' },
                 { value: '1280x720', label: '1280x720 (HD)' },
@@ -215,6 +196,15 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
             <Radio value={true}>{t('common.yes')}</Radio>
             <Radio value={false}>{t('common.no')}</Radio>
           </Form.RadioGroup>
+        </div>
+
+        <div className="edit-worker-modal-footer">
+          <Button theme="light" onClick={onCancel}>
+            {t('common.cancel')}
+          </Button>
+          <Button htmlType="submit" theme="solid" type="primary" loading={loading}>
+            {t('common.save')}
+          </Button>
         </div>
       </Form>
     </Modal>

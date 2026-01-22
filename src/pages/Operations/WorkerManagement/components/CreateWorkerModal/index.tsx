@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { 
   Modal, 
@@ -9,7 +9,6 @@ import {
   Radio,
   Select,
 } from '@douyinfe/semi-ui';
-import type { FormApi } from '@douyinfe/semi-ui/lib/es/form';
 import type { LYWorkerResponse } from '@/api';
 import './index.less';
 
@@ -43,7 +42,6 @@ const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalPr
   const [loading, setLoading] = useState(false);
   const [useSameDevice, setUseSameDevice] = useState(false);
   const [desktopType, setDesktopType] = useState<string>('Console');
-  const formApiRef = useRef<FormApi>();
 
   // 名称唯一性校验
   const validateWorkerNameUnique = (rule: unknown, value: string, callback: (error?: string) => void) => {
@@ -55,13 +53,9 @@ const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalPr
     return true;
   };
 
-  const handleSubmit = async () => {
-    if (!formApiRef.current) return;
-    
+  const handleSubmit = async (values: Record<string, unknown>) => {
+    setLoading(true);
     try {
-      const values = await formApiRef.current.validate();
-      
-      setLoading(true);
       // 模拟API调用延迟
       await new Promise((resolve) => setTimeout(resolve, 300));
 
@@ -106,33 +100,19 @@ const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalPr
     }
   };
 
-  const handleFormMount = (formApi: FormApi) => {
-    formApiRef.current = formApi;
-  };
-
   return (
     <Modal
       title={t('worker.create.title')}
       visible={visible}
       onCancel={onCancel}
-      footer={
-        <div className="create-worker-modal-footer">
-          <Button theme="light" onClick={onCancel}>
-            {t('common.cancel')}
-          </Button>
-          <Button theme="solid" type="primary" onClick={handleSubmit} loading={loading}>
-            {t('common.create')}
-          </Button>
-        </div>
-      }
+      footer={null}
       width={520}
       centered
       closeOnEsc
       maskClosable={false}
-      bodyStyle={{ maxHeight: 'calc(100vh - 240px)', overflowY: 'auto', padding: '12px 24px' }}
     >
       <Form 
-        getFormApi={handleFormMount}
+        onSubmit={handleSubmit}
         labelPosition="top" 
         className="create-worker-modal-form"
         initValues={{
@@ -237,6 +217,7 @@ const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalPr
               field="displaySize"
               label={t('worker.detail.fields.resolution')}
               placeholder={t('worker.create.fields.resolutionPlaceholder')}
+              className="create-worker-modal-select-full"
               optionList={[
                 { value: '1024x768', label: '1024x768' },
                 { value: '1280x720', label: '1280x720 (HD)' },
@@ -259,6 +240,15 @@ const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalPr
             <Radio value={true}>{t('common.yes')}</Radio>
             <Radio value={false}>{t('common.no')}</Radio>
           </Form.RadioGroup>
+        </div>
+
+        <div className="create-worker-modal-footer">
+          <Button theme="light" onClick={onCancel}>
+            {t('common.cancel')}
+          </Button>
+          <Button htmlType="submit" theme="solid" type="primary" loading={loading}>
+            {t('common.create')}
+          </Button>
         </div>
       </Form>
     </Modal>
