@@ -616,7 +616,7 @@
       "description": "配置流程机器人的基本信息和运行环境参数",
       "basicInfo": "基本信息",
       "runtimeConfig": "运行环境配置",
-      "connectionParams": "连接参数",
+      "connectionParams": "连接配置",
       "fields": {
         "workerNamePlaceholder": "请输入流程机器人名称",
         "descriptionPlaceholder": "请输入描述（选填）",
