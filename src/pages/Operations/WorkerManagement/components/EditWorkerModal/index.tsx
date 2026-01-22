@@ -72,6 +72,7 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
       width={520}
       closeOnEsc
       maskClosable={false}
+      bodyStyle={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'auto' }}
     >
       <Form 
         onSubmit={handleSubmit} 
