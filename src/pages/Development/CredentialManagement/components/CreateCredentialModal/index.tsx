@@ -128,7 +128,7 @@ const CreateCredentialModal = ({
           field="description"
           label={t('common.description')}
           placeholder={t('credential.fields.descriptionPlaceholder')}
-          maxCount={500}
+          maxCount={2000}
           autosize={{ minRows: 3, maxRows: 6 }}
           trigger="blur"
         />

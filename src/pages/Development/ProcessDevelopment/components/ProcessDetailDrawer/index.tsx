@@ -290,9 +290,9 @@ const VariableCard = ({ variable, index, onDescriptionChange }: VariableCardProp
                     handleCancelEdit();
                   }
                 }}
-                maxLength={500}
+                maxLength={2000}
                 showClear
-                maxCount={500}
+                maxCount={2000}
                 autosize={{ minRows: 2, maxRows: 6 }}
               />
               <Space spacing={8} className="process-detail-drawer-variable-card-edit-actions">

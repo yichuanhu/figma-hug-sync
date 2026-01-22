@@ -100,9 +100,9 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
           label={t('common.description')}
           placeholder={t('development.processDevelopment.createModal.fields.descriptionPlaceholder')}
           autosize={{ minRows: 3, maxRows: 6 }}
-          maxCount={500}
+          maxCount={2000}
           rules={[
-            { max: 500, message: t('development.processDevelopment.createModal.validation.descriptionLengthError') },
+            { max: 2000, message: t('development.processDevelopment.createModal.validation.descriptionLengthError') },
           ]}
         />
 
