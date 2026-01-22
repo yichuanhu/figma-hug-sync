@@ -205,7 +205,6 @@ const mockWorkers: LYWorkerResponse[] = [
 interface FilterState {
   status: string[];
   sync_status: string[];
-  priority: string[];
 }
 
 // ============= 数据获取 - 返回LYListResponseLYWorkerResponse =============
@@ -235,10 +234,6 @@ const fetchWorkerList = async (params: GetWorkersParams & { filters?: FilterStat
     data = data.filter(item => params.filters!.sync_status.includes(item.sync_status));
   }
 
-  // 优先级筛选
-  if (params.filters?.priority && params.filters.priority.length > 0) {
-    data = data.filter(item => params.filters!.priority.includes(item.priority));
-  }
 
   const total = data.length;
   const offset = params.offset || 0;
@@ -270,7 +265,6 @@ const WorkerManagement = () => {
   const [filters, setFilters] = useState<FilterState>({
     status: [],
     sync_status: [],
-    priority: [],
   });
   const [filterVisible, setFilterVisible] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -289,7 +283,6 @@ const WorkerManagement = () => {
 
   // 状态配置
   type WorkerStatus = LYWorkerResponse['status'];
-  type Priority = LYWorkerResponse['priority'];
   
   const statusConfig: Record<WorkerStatus, { color: string; text: string }> = useMemo(() => ({
     OFFLINE: { color: 'grey', text: t('worker.status.offline') },
@@ -297,13 +290,6 @@ const WorkerManagement = () => {
     BUSY: { color: 'blue', text: t('worker.status.busy') },
     FAULT: { color: 'red', text: t('worker.status.fault') },
     MAINTENANCE: { color: 'orange', text: t('worker.status.maintenance') },
-  }), [t]);
-
-  // 优先级配置
-  const priorityConfig: Record<Priority, { text: string; color: string }> = useMemo(() => ({
-    HIGH: { text: t('worker.priority.high'), color: 'red' },
-    MEDIUM: { text: t('worker.priority.medium'), color: 'blue' },
-    LOW: { text: t('worker.priority.low'), color: 'grey' },
   }), [t]);
 
   // 筛选选项
@@ -318,11 +304,6 @@ const WorkerManagement = () => {
     sync_status: [
       { label: t('worker.syncStatus.synced'), value: 'SYNCED' },
       { label: t('worker.syncStatus.pending'), value: 'PENDING' },
-    ],
-    priority: [
-      { label: t('worker.priority.high'), value: 'HIGH' },
-      { label: t('worker.priority.medium'), value: 'MEDIUM' },
-      { label: t('worker.priority.low'), value: 'LOW' },
     ],
   }), [t]);
 
@@ -359,7 +340,6 @@ const WorkerManagement = () => {
     setFilters({
       status: [],
       sync_status: [],
-      priority: [],
     });
     setQueryParams(prev => ({ ...prev, offset: 0 }));
   };
@@ -403,15 +383,6 @@ const WorkerManagement = () => {
           value={filters.sync_status}
           onChange={(values) => handleFilterChange('sync_status', values as string[])}
           options={filterOptions.sync_status}
-          direction="horizontal"
-        />
-      </div>
-      <div className="filter-popover-section">
-        <Text strong className="filter-popover-label">{t('worker.filter.priority')}</Text>
-        <CheckboxGroup
-          value={filters.priority}
-          onChange={(values) => handleFilterChange('priority', values as string[])}
-          options={filterOptions.priority}
           direction="horizontal"
         />
       </div>
@@ -558,21 +529,6 @@ const WorkerManagement = () => {
       dataIndex: 'ip_address',
       key: 'ip_address',
       width: 120,
-    },
-    {
-      title: t('worker.table.priority'),
-      dataIndex: 'priority',
-      key: 'priority',
-      width: 120,
-      render: (priority: Priority | undefined) => {
-        if (!priority) return null;
-        const config = priorityConfig[priority];
-        return (
-          <Tag color={config.color as 'red' | 'blue' | 'grey'} type="light">
-            {config.text}
-          </Tag>
-        );
-      },
     },
     {
       title: t('worker.table.clientVersion'),
