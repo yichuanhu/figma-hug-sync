@@ -151,7 +151,17 @@
       "linkedPersonalCredential": "关联个人凭据"
     },
     "actions": {
-      "viewUsage": "查看使用记录"
+      "viewUsage": "查看使用记录",
+      "linkPersonal": "关联个人凭据"
+    },
+    "linkPersonal": {
+      "title": "关联个人凭据",
+      "description": "为此凭据选择关联的个人凭据，用于流程运行时使用个人身份进行认证。",
+      "selectLabel": "个人凭据",
+      "selectPlaceholder": "请选择个人凭据",
+      "selectRequired": "请选择要关联的个人凭据",
+      "success": "关联个人凭据成功",
+      "error": "关联失败，请重试"
     },
     "usage": {
       "title": "使用记录",
