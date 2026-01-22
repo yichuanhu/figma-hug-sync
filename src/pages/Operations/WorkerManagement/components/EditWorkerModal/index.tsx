@@ -190,10 +190,22 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
             </div>
           )}
           {desktopType === 'NotConsole' && (
-            <Form.Input
+            <Form.Select
               field="displaySize"
               label={t('worker.detail.fields.resolution')}
-              showClear
+              optionList={[
+                { value: '1024x768', label: '1024x768' },
+                { value: '1280x720', label: '1280x720 (HD)' },
+                { value: '1280x800', label: '1280x800' },
+                { value: '1366x768', label: '1366x768' },
+                { value: '1440x900', label: '1440x900' },
+                { value: '1600x900', label: '1600x900' },
+                { value: '1680x1050', label: '1680x1050' },
+                { value: '1920x1080', label: '1920x1080 (Full HD)' },
+                { value: '1920x1200', label: '1920x1200' },
+                { value: '2560x1440', label: '2560x1440 (2K)' },
+                { value: '3840x2160', label: '3840x2160 (4K)' },
+              ]}
             />
           )}
           <div className="edit-worker-modal-field">
