@@ -144,7 +144,9 @@
           "type": "类型",
           "name": "名称",
           "value": "参数值",
-          "editSuccess": "描述修改成功"
+          "editSuccess": "描述修改成功",
+          "editPlaceholder": "请输入描述",
+          "editTip": "点击编辑，或双击文字"
         },
         "versionTable": {
           "version": "版本号",
