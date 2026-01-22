@@ -738,7 +738,7 @@ const ProcessDetailDrawer = ({
                 <Text className="process-detail-drawer-version-sidebar-title">
                   {t('development.processDevelopment.detail.versionList.title')}
                 </Text>
-                <Tooltip content={t('development.processDevelopment.detail.versionList.title')}>
+                <Tooltip content={t('development.processDevelopment.detail.versionList.titleTooltip')}>
                   <IconHelpCircle style={{ color: 'var(--semi-color-text-2)', fontSize: 14 }} />
                 </Tooltip>
               </div>
