@@ -367,6 +367,25 @@ const WorkerManagement = () => {
   const hasActiveFilters = Object.values(filters).some(arr => arr.length > 0);
   const activeFilterCount = Object.values(filters).reduce((sum, arr) => sum + arr.length, 0);
 
+  // 切换接收任务状态
+  const handleToggleReceiveTasks = async (worker: LYWorkerResponse, checked: boolean) => {
+    // 更新本地数据
+    setListResponse(prev => ({
+      ...prev,
+      list: prev.list.map(item => 
+        item.id === worker.id ? { ...item, receive_tasks: checked } : item
+      ),
+    }));
+    
+    // 同时更新选中的worker（如果抽屉打开中）
+    if (selectedWorker?.id === worker.id) {
+      setSelectedWorker(prev => prev ? { ...prev, receive_tasks: checked } : null);
+    }
+    
+    // 模拟API调用
+    Toast.success(checked ? t('worker.receiveTasks.enabled') : t('worker.receiveTasks.disabled'));
+  };
+
   const filterContent = (
     <div className="filter-popover">
       <div className="filter-popover-section">
@@ -577,14 +596,14 @@ const WorkerManagement = () => {
         // 只有在线且非故障状态才允许操作
         const canOperate = record.status !== 'OFFLINE' && record.status !== 'FAULT';
         return (
-          <Switch 
-            checked={receiveTasks} 
-            size="small" 
-            disabled={!canOperate}
-            onChange={(checked) => {
-              console.log('切换接收任务状态:', record.id, checked);
-            }}
-          />
+          <div onClick={(e) => e.stopPropagation()}>
+            <Switch 
+              checked={receiveTasks} 
+              size="small" 
+              disabled={!canOperate}
+              onChange={(checked) => handleToggleReceiveTasks(record, checked)}
+            />
+          </div>
         );
       },
     },
