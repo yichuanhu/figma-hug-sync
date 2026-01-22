@@ -143,7 +143,7 @@
       "systemInfo": "系统信息",
       "name": "凭据名称",
       "type": "凭据类型",
-      "testValue": "凭据值（测试）",
+    "testValue": "凭据值（调试）",
       "productionValue": "凭据值（生产）",
       "linkedPersonalCredential": "关联个人凭据"
     },
