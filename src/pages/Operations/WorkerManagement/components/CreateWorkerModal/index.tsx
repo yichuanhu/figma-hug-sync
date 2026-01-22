@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { 
   Modal, 
@@ -8,6 +8,7 @@ import {
   Checkbox,
   Radio,
   Select,
+  Banner,
 } from '@douyinfe/semi-ui';
 import type { LYWorkerResponse } from '@/api';
 import './index.less';
@@ -27,11 +28,11 @@ const generateUUID = (): string => {
   });
 };
 
-// Mock已有机器人列表
-const existingWorkers = [
-  { id: '1', name: '财务机器人-01' },
-  { id: '2', name: '财务机器人-02' },
-  { id: '3', name: '人力机器人-01' },
+// Mock已有机器人列表（包含桌面类型信息）
+const existingWorkers: Array<{ id: string; name: string; desktop_type: 'Console' | 'NotConsole' }> = [
+  { id: '1', name: '财务机器人-01', desktop_type: 'Console' },
+  { id: '2', name: '财务机器人-02', desktop_type: 'NotConsole' },
+  { id: '3', name: '人力机器人-01', desktop_type: 'NotConsole' },
 ];
 
 // 已存在的机器人名称（用于唯一性校验）
@@ -41,7 +42,33 @@ const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalPr
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [useSameDevice, setUseSameDevice] = useState(false);
+  const [selectedWorkerId, setSelectedWorkerId] = useState<string | undefined>(undefined);
   const [desktopType, setDesktopType] = useState<string>('Console');
+  const [isLocalDesktopDisabled, setIsLocalDesktopDisabled] = useState(false);
+
+  // 当选择的已有机器人变化时，检查其桌面类型
+  useEffect(() => {
+    if (useSameDevice && selectedWorkerId) {
+      const selectedWorker = existingWorkers.find(w => w.id === selectedWorkerId);
+      if (selectedWorker?.desktop_type === 'Console') {
+        // 已有机器人是本地桌面型，当前只能选择远程桌面型
+        setIsLocalDesktopDisabled(true);
+        setDesktopType('NotConsole');
+      } else {
+        setIsLocalDesktopDisabled(false);
+      }
+    } else {
+      setIsLocalDesktopDisabled(false);
+    }
+  }, [useSameDevice, selectedWorkerId]);
+
+  // 当取消勾选"同一机器"时重置状态
+  useEffect(() => {
+    if (!useSameDevice) {
+      setSelectedWorkerId(undefined);
+      setIsLocalDesktopDisabled(false);
+    }
+  }, [useSameDevice]);
 
   // 名称唯一性校验
   const validateWorkerNameUnique = (rule: unknown, value: string, callback: (error?: string) => void) => {
@@ -165,6 +192,7 @@ const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalPr
                 label={t('worker.create.fields.selectWorker')}
                 placeholder={t('worker.create.fields.selectWorker')}
                 className="create-worker-modal-select-full"
+                onChange={(value) => setSelectedWorkerId(value as string)}
               >
                 {existingWorkers.map((w) => (
                   <Select.Option key={w.id} value={w.id}>
@@ -173,15 +201,29 @@ const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalPr
                 ))}
               </Form.Select>
             )}
-            <Form.RadioGroup
-              field="desktopType"
-              label={t('worker.create.fields.desktopType')}
-              initValue="Console"
-              onChange={(e) => setDesktopType(e.target.value)}
-            >
-              <Radio value="Console">{t('worker.create.fields.localDesktop')}</Radio>
-              <Radio value="NotConsole">{t('worker.create.fields.remoteDesktop')}</Radio>
-            </Form.RadioGroup>
+            {isLocalDesktopDisabled && (
+              <Banner
+                type="info"
+                description={t('worker.create.validation.localDesktopLimitTip')}
+                className="create-worker-modal-banner"
+              />
+            )}
+            <div className="create-worker-modal-field">
+              <div className="semi-form-field-label-text">{t('worker.create.fields.desktopType')}</div>
+              <Radio.Group
+                value={desktopType}
+                onChange={(e) => {
+                  if (!isLocalDesktopDisabled || e.target.value !== 'Console') {
+                    setDesktopType(e.target.value);
+                  }
+                }}
+              >
+                <Radio value="Console" disabled={isLocalDesktopDisabled}>
+                  {t('worker.create.fields.localDesktop')}
+                </Radio>
+                <Radio value="NotConsole">{t('worker.create.fields.remoteDesktop')}</Radio>
+              </Radio.Group>
+            </div>
           </div>
 
           <div className="create-worker-modal-section">
