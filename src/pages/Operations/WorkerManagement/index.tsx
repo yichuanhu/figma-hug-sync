@@ -490,7 +490,7 @@ const WorkerManagement = () => {
   // 编辑机器人
   const handleEdit = (worker: LYWorkerResponse, e?: React.MouseEvent) => {
     e?.stopPropagation();
-    navigate(`/worker-management/edit/${worker.id}`);
+    navigate(`/scheduling-center/resource-monitoring/worker-management/edit/${worker.id}`);
   };
 
   // 从响应中获取分页信息
@@ -702,7 +702,7 @@ const WorkerManagement = () => {
               icon={<IconPlus />} 
               theme="solid" 
               type="primary"
-              onClick={() => navigate('/worker-management/create')}
+              onClick={() => navigate('/scheduling-center/resource-monitoring/worker-management/create')}
             >
               {t('worker.createWorker')}
             </Button>

@@ -50,9 +50,9 @@ const getExpandedKeysByPath = (pathname: string): string[] => {
   if (pathname.startsWith('/dev-center/business-assets/') || pathname.startsWith('/scheduling-center/business-assets/')) {
     return ['businessAssetConfig', 'schedulingBusinessAssetConfig'];
   }
-  // 能力资产管理下的路由
-  if (pathname === '/worker-management' || pathname.startsWith('/worker-management/')) {
-    return ['capabilityAssetManagement'];
+  // 执行资源监控下的路由 (流程机器人管理)
+  if (pathname.startsWith('/scheduling-center/resource-monitoring/worker-management')) {
+    return ['executionResourceMonitoring'];
   }
   return [];
 };
@@ -90,8 +90,6 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
       pathname === '/development-workbench' ||
       pathname === '/process-development' ||
       pathname.startsWith('/process-detail/') ||
-      pathname === '/worker-management' ||
-      pathname.startsWith('/worker-management/') ||
       pathname.startsWith('/dev-center/')
     ) {
       return 'developmentCenter';
@@ -193,7 +191,6 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
         { key: 'processAssets', labelKey: 'sidebar.processAssets' },
         { key: 'knowledgeAssets', labelKey: 'sidebar.knowledgeAssets' },
         { key: 'connectionAssets', labelKey: 'sidebar.connectionAssets' },
-        { key: 'workerManagement', labelKey: 'sidebar.workerManagement', path: '/worker-management' },
       ],
     },
     {
@@ -228,11 +225,19 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
         { key: 'schedulingFiles', labelKey: 'sidebar.files' },
       ],
     },
+    {
+      key: 'executionResourceMonitoring',
+      labelKey: 'sidebar.executionResourceMonitoring',
+      icon: <IconFolder />,
+      children: [
+        { key: 'workerManagement', labelKey: 'sidebar.workerManagement', path: '/scheduling-center/resource-monitoring/worker-management' },
+      ],
+    },
   ];
 
   // 根据当前路由获取选中的菜单key
   const getSelectedKeyByPath = (pathname: string): string => {
-    if (pathname === '/worker-management' || pathname.startsWith('/worker-management/')) {
+    if (pathname.startsWith('/scheduling-center/resource-monitoring/worker-management')) {
       return 'workerManagement';
     }
     if (pathname === '/process-development' || pathname === '/') {
