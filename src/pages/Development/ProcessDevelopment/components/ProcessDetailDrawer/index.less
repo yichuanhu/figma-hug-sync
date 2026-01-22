@@ -253,8 +253,11 @@
     &-edit {
       flex: 1;
       min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
 
-      .semi-input-wrapper {
+      .semi-input-textarea-wrapper {
         width: 100%;
         background-color: var(--semi-color-bg-0);
         border-color: var(--semi-color-primary);
@@ -263,6 +266,7 @@
       &-actions {
         display: flex;
         align-items: center;
+        justify-content: flex-end;
       }
 
       &-confirm,
