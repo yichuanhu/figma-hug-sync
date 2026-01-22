@@ -31,6 +31,7 @@ import type {
 } from '@/api/index';
 import CreateCredentialModal from '../components/CreateCredentialModal';
 import EditCredentialModal from '../components/EditCredentialModal';
+import CredentialDetailDrawer from '../components/CredentialDetailDrawer';
 
 import './index.less';
 
@@ -152,12 +153,14 @@ const CredentialManagementPage = () => {
   const [listResponse, setListResponse] = useState<LYCredentialListResultResponse | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // 选中的凭据（用于编辑）
+  // 选中的凭据（用于编辑/详情）
   const [editingCredential, setEditingCredential] = useState<LYCredentialResponse | null>(null);
+  const [selectedCredential, setSelectedCredential] = useState<LYCredentialResponse | null>(null);
 
-  // 模态框状态
+  // 模态框/抽屉状态
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
+  const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
 
   // 加载数据
   const loadData = useCallback(async () => {
@@ -202,10 +205,17 @@ const CredentialManagementPage = () => {
     setQueryParams((prev) => ({ ...prev, page: 1 }));
   };
 
+  // 点击行查看详情
+  const handleRowClick = (record: LYCredentialResponse) => {
+    setSelectedCredential(record);
+    setDetailDrawerVisible(true);
+  };
+
   // 编辑凭据
   const handleEdit = (record: LYCredentialResponse) => {
     setEditingCredential(record);
     setEditModalVisible(true);
+    setDetailDrawerVisible(false);
   };
 
   // 删除凭据
@@ -431,6 +441,15 @@ const CredentialManagementPage = () => {
               onPageChange: handlePageChange,
             }}
             scroll={{ y: 'calc(100vh - 320px)' }}
+            onRow={(record) => ({
+              onClick: () => handleRowClick(record as LYCredentialResponse),
+              style: {
+                cursor: 'pointer',
+                backgroundColor: selectedCredential?.credential_id === (record as LYCredentialResponse).credential_id && detailDrawerVisible
+                  ? 'var(--semi-color-primary-light-default)'
+                  : undefined,
+              },
+            })}
           />
         </div>
 
@@ -466,6 +485,24 @@ const CredentialManagementPage = () => {
             setEditingCredential(null);
             loadData();
           }}
+        />
+
+        {/* 凭据详情抽屉 */}
+        <CredentialDetailDrawer
+          visible={detailDrawerVisible}
+          credential={selectedCredential}
+          context={context}
+          onClose={() => {
+            setDetailDrawerVisible(false);
+            setSelectedCredential(null);
+          }}
+          onEdit={handleEdit}
+          onDelete={() => {
+            setDetailDrawerVisible(false);
+            setSelectedCredential(null);
+            loadData();
+          }}
+          onRefresh={loadData}
         />
       </div>
     </AppLayout>
