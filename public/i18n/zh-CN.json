@@ -132,6 +132,33 @@
       "title": "删除凭据",
       "confirmMessage": "确定删除该凭据吗？关联此凭据的流程可能无法正常运行。",
       "success": "凭据删除成功"
+    },
+    "actions": {
+      "viewUsage": "查看使用记录"
+    },
+    "usage": {
+      "title": "使用记录",
+      "loadError": "加载使用记录失败",
+      "exporting": "正在导出...",
+      "exportSuccess": "导出成功",
+      "filter": {
+        "user": "使用者"
+      },
+      "table": {
+        "user": "使用者",
+        "usageTime": "使用时间",
+        "type": "类型",
+        "process": "流程",
+        "processVersion": "流程版本",
+        "worker": "流程机器人",
+        "taskId": "任务编号",
+        "screenshot": "使用截图"
+      },
+      "type": {
+        "debug": "调试",
+        "task": "任务"
+      },
+      "empty": "暂无使用记录"
     }
   },
   "development": {

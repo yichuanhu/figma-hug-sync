@@ -1,0 +1,107 @@
+// CredentialUsagePage 凭据使用记录页面样式
+.credential-usage-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+
+  // 面包屑区域
+  .credential-usage-page-breadcrumb {
+    padding: 12px 24px;
+    flex-shrink: 0;
+
+    .semi-breadcrumb-item {
+      cursor: pointer;
+      color: var(--semi-color-text-2);
+
+      &:hover {
+        color: var(--semi-color-text-0);
+      }
+
+      &:last-child {
+        cursor: default;
+        color: var(--semi-color-text-2);
+
+        &:hover {
+          color: var(--semi-color-text-2);
+        }
+      }
+    }
+  }
+
+  // 标题工具栏区域
+  .credential-usage-page-header {
+    padding: 0 24px 16px;
+    flex-shrink: 0;
+
+    .credential-usage-page-header-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .credential-usage-page-header-subtitle {
+      font-size: 14px;
+      color: var(--semi-color-text-2);
+      margin-left: 12px;
+    }
+  }
+
+  // 筛选工具栏
+  .credential-usage-page-toolbar {
+    padding: 0 24px 16px;
+    flex-shrink: 0;
+
+    .credential-usage-page-toolbar-select {
+      width: 160px;
+    }
+
+    .credential-usage-page-toolbar-date {
+      width: 280px;
+    }
+  }
+
+  // 表格区域
+  .credential-usage-page-table {
+    flex: 1;
+    overflow: hidden;
+    padding: 0 24px;
+
+    .credential-usage-page-table-user {
+      font-weight: 500;
+      color: var(--semi-color-text-0);
+    }
+
+    .credential-usage-page-table-process {
+      color: var(--semi-color-primary);
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    .credential-usage-page-table-task {
+      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+      font-size: 13px;
+      color: var(--semi-color-text-1);
+    }
+
+    .credential-usage-page-table-screenshot {
+      color: var(--semi-color-primary);
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  // 分页信息
+  .credential-usage-page-pagination-info {
+    padding: 12px 24px;
+    color: var(--semi-color-text-2);
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+}
