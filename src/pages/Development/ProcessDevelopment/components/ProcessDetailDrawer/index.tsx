@@ -45,41 +45,6 @@ const { Title, Text } = Typography;
 
 // ============= Mock数据生成 - 基于API类型 =============
 
-// 变更记录数据 (暂无对应API类型，使用本地定义)
-interface ChangeRecord {
-  key: number;
-  changeTime: string;
-  changeType: string;
-  changer: string;
-  changeContent: string;
-}
-
-// 运行记录数据 (暂无对应API类型，使用本地定义)
-interface RunRecord {
-  key: number;
-  taskId: string;
-  robot: string;
-  creator: string;
-  createdTime: string;
-  status: string;
-}
-
-// Mock数据
-const allChangeData: ChangeRecord[] = [
-  { key: 1, changeTime: '2024-01-15 10:30', changeType: '发布', changer: '姜鹏志', changeContent: '发布版本 1.2.0' },
-  { key: 2, changeTime: '2024-01-14 16:00', changeType: '编辑', changer: '李明', changeContent: '修改流程描述' },
-  { key: 3, changeTime: '2024-01-10 14:20', changeType: '发布', changer: '姜鹏志', changeContent: '发布版本 1.1.0' },
-  { key: 4, changeTime: '2024-01-05 09:00', changeType: '创建', changer: '王芳', changeContent: '创建流程' },
-  { key: 5, changeTime: '2023-12-28 14:30', changeType: '编辑', changer: '李明', changeContent: '修改流程配置' },
-];
-
-const allRunData: RunRecord[] = [
-  { key: 1, taskId: 'TASK-001', robot: 'RPA-机器人-01', creator: '姜鹏志', createdTime: '2024-01-15 10:30:00', status: '成功' },
-  { key: 2, taskId: 'TASK-002', robot: 'RPA-机器人-02', creator: '李明', createdTime: '2024-01-14 15:20:00', status: '失败' },
-  { key: 3, taskId: 'TASK-003', robot: 'RPA-机器人-01', creator: '王芳', createdTime: '2024-01-13 09:00:00', status: '成功' },
-  { key: 4, taskId: 'TASK-004', robot: 'RPA-机器人-03', creator: '姜鹏志', createdTime: '2024-01-12 14:00:00', status: '运行中' },
-  { key: 5, taskId: 'TASK-005', robot: 'RPA-机器人-02', creator: '李明', createdTime: '2024-01-11 08:30:00', status: '成功' },
-];
 
 // 版本 Mock 数据 - 基于 LYProcessVersionResponse 类型，扩展详情字段
 // 参数变量类型定义
@@ -217,10 +182,6 @@ const initialMockVersionData: VersionDetailData[] = [
   },
 ];
 
-const changerOptions = [...new Set(allChangeData.map((item) => item.changer))].map((changer) => ({
-  value: changer,
-  label: changer,
-}));
 
 // 模拟创建者ID到名称的映射
 const mockCreatorNameMap: Record<string, string> = {
@@ -419,10 +380,6 @@ const ProcessDetailDrawer = ({
 }: ProcessDetailDrawerProps) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('detail');
-  const [changeTimeRange, setChangeTimeRange] = useState<[Date, Date] | null>(null);
-  const [selectedChangers, setSelectedChangers] = useState<string[]>([]);
-  const [runTimeRange, setRunTimeRange] = useState<[Date, Date] | null>(null);
-  const [selectedRunStatuses, setSelectedRunStatuses] = useState<string[]>([]);
   const [selectedVersionId, setSelectedVersionId] = useState<string | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [uploadVersionModalVisible, setUploadVersionModalVisible] = useState(false);
@@ -435,11 +392,6 @@ const ProcessDetailDrawer = ({
   const startX = useRef(0);
   const startWidth = useRef(drawerWidth);
 
-  const runStatusOptions = [
-    { value: t('development.processDevelopment.detail.runStatus.success'), label: t('development.processDevelopment.detail.runStatus.success') },
-    { value: t('development.processDevelopment.detail.runStatus.failed'), label: t('development.processDevelopment.detail.runStatus.failed') },
-    { value: t('development.processDevelopment.detail.runStatus.running'), label: t('development.processDevelopment.detail.runStatus.running') },
-  ];
 
   const handleMouseDown = useCallback(
     (e: React.MouseEvent) => {
@@ -476,27 +428,6 @@ const ProcessDetailDrawer = ({
     setIsFullscreen((prev) => !prev);
   }, []);
 
-  const filteredChangeData = useMemo(() => {
-    return allChangeData.filter((item) => {
-      if (changeTimeRange && changeTimeRange[0] && changeTimeRange[1]) {
-        const itemDate = new Date(item.changeTime.replace(' ', 'T'));
-        if (itemDate < changeTimeRange[0] || itemDate > changeTimeRange[1]) return false;
-      }
-      if (selectedChangers.length > 0 && !selectedChangers.includes(item.changer)) return false;
-      return true;
-    });
-  }, [changeTimeRange, selectedChangers]);
-
-  const filteredRunData = useMemo(() => {
-    return allRunData.filter((item) => {
-      if (runTimeRange && runTimeRange[0] && runTimeRange[1]) {
-        const itemDate = new Date(item.createdTime.replace(' ', 'T'));
-        if (itemDate < runTimeRange[0] || itemDate > runTimeRange[1]) return false;
-      }
-      if (selectedRunStatuses.length > 0 && !selectedRunStatuses.includes(item.status)) return false;
-      return true;
-    });
-  }, [runTimeRange, selectedRunStatuses]);
 
   // 版本数据按版本号降序排列（最新版本在前）
   const sortedVersionData = useMemo(() => {
@@ -652,38 +583,6 @@ const ProcessDetailDrawer = ({
     },
   ];
 
-  const runColumns = [
-    { title: t('development.processDevelopment.detail.runTable.taskId'), dataIndex: 'taskId', key: 'taskId' },
-    { title: t('development.processDevelopment.detail.runTable.robot'), dataIndex: 'robot', key: 'robot' },
-    { title: t('common.creator'), dataIndex: 'creator', key: 'creator' },
-    { title: t('common.createTime'), dataIndex: 'createdTime', key: 'createdTime' },
-    {
-      title: t('development.processDevelopment.detail.runTable.taskStatus'),
-      dataIndex: 'status',
-      key: 'status',
-      render: (status: string) => (
-        <Tag
-          color={
-            status === t('development.processDevelopment.detail.runStatus.success')
-              ? 'green'
-              : status === t('development.processDevelopment.detail.runStatus.failed')
-                ? 'red'
-                : 'blue'
-          }
-          type="light"
-        >
-          {status}
-        </Tag>
-      ),
-    },
-  ];
-
-  const changeColumns = [
-    { title: t('development.processDevelopment.detail.changeTable.changeTime'), dataIndex: 'changeTime', key: 'changeTime' },
-    { title: t('development.processDevelopment.detail.changeTable.changeType'), dataIndex: 'changeType', key: 'changeType' },
-    { title: t('development.processDevelopment.detail.changeTable.changer'), dataIndex: 'changer', key: 'changer' },
-    { title: t('development.processDevelopment.detail.changeTable.changeContent'), dataIndex: 'changeContent', key: 'changeContent' },
-  ];
 
   return (
     <SideSheet
@@ -874,56 +773,6 @@ const ProcessDetailDrawer = ({
           </div>
         </TabPane>
 
-        <TabPane tab={t('development.processDevelopment.detail.tabs.runs')} itemKey="runs">
-          <div className="process-detail-drawer-tab-content">
-            <div className="process-detail-drawer-filters">
-              <Select
-                placeholder={t('development.processDevelopment.detail.filter.statusPlaceholder')}
-                multiple
-                maxTagCount={1}
-                value={selectedRunStatuses}
-                onChange={(value) => setSelectedRunStatuses(value as string[])}
-                optionList={runStatusOptions}
-                className="process-detail-drawer-filter-select"
-                showClear
-              />
-              <DatePicker
-                type="dateTimeRange"
-                value={runTimeRange as [Date, Date] | undefined}
-                onChange={(value) => setRunTimeRange(value as [Date, Date] | null)}
-                placeholder={[t('common.startTime'), t('common.endTime')]}
-                className="process-detail-drawer-filter-date"
-                showClear
-              />
-            </div>
-            <Table columns={runColumns} dataSource={filteredRunData} pagination={false} size="small" />
-          </div>
-        </TabPane>
-
-        <TabPane tab={t('development.processDevelopment.detail.tabs.changes')} itemKey="changes">
-          <div className="process-detail-drawer-tab-content">
-            <div className="process-detail-drawer-filters">
-              <Select
-                placeholder={t('development.processDevelopment.detail.filter.changerPlaceholder')}
-                multiple
-                value={selectedChangers}
-                onChange={(value) => setSelectedChangers(value as string[])}
-                optionList={changerOptions}
-                className="process-detail-drawer-filter-select process-detail-drawer-filter-select--wide"
-                showClear
-              />
-              <DatePicker
-                type="dateTimeRange"
-                value={changeTimeRange as [Date, Date] | undefined}
-                onChange={(value) => setChangeTimeRange(value as [Date, Date] | null)}
-                placeholder={[t('common.startTime'), t('common.endTime')]}
-                className="process-detail-drawer-filter-date"
-                showClear
-              />
-            </div>
-            <Table columns={changeColumns} dataSource={filteredChangeData} pagination={false} size="small" />
-          </div>
-        </TabPane>
       </Tabs>
 
       {/* 上传版本弹窗 */}
