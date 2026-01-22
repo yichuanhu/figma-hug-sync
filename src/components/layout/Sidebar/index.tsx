@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Avatar, Tooltip } from '@douyinfe/semi-ui';
@@ -40,13 +40,48 @@ interface SidebarProps {
   onToggleCollapse?: () => void;
 }
 
+// 根据路径获取需要展开的菜单组
+const getExpandedKeysByPath = (pathname: string): string[] => {
+  // 开发任务管理下的路由
+  if (pathname === '/process-development' || pathname.startsWith('/process-detail/')) {
+    return ['developmentTaskManagement'];
+  }
+  // 业务资产配置下的路由
+  if (pathname.startsWith('/dev-center/business-assets/') || pathname.startsWith('/scheduling-center/business-assets/')) {
+    return ['businessAssetConfig', 'schedulingBusinessAssetConfig'];
+  }
+  // 能力资产管理下的路由
+  if (pathname === '/worker-management' || pathname.startsWith('/worker-management/')) {
+    return ['capabilityAssetManagement'];
+  }
+  return [];
+};
+
 const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
-  const [expandedKeys, setExpandedKeys] = useState<string[]>(['developmentTaskManagement']);
+  
+  // 根据当前路由计算初始展开的菜单
+  const initialExpandedKeys = getExpandedKeysByPath(location.pathname);
+  const [expandedKeys, setExpandedKeys] = useState<string[]>(initialExpandedKeys);
   const [hoveredCenterKey, setHoveredCenterKey] = useState<string | null>(null);
-  const [floatingExpandedKeys, setFloatingExpandedKeys] = useState<string[]>(['developmentTaskManagement']);
+  const [floatingExpandedKeys, setFloatingExpandedKeys] = useState<string[]>(initialExpandedKeys);
+
+  // 当路由变化时，自动展开对应的菜单组
+  useEffect(() => {
+    const newExpandedKeys = getExpandedKeysByPath(location.pathname);
+    if (newExpandedKeys.length > 0) {
+      setExpandedKeys(prev => {
+        const merged = [...new Set([...prev, ...newExpandedKeys])];
+        return merged;
+      });
+      setFloatingExpandedKeys(prev => {
+        const merged = [...new Set([...prev, ...newExpandedKeys])];
+        return merged;
+      });
+    }
+  }, [location.pathname]);
 
   // 根据当前路由获取激活的中心
   const getActiveCenterByPath = (pathname: string): string => {
