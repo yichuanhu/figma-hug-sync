@@ -30,6 +30,8 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import WorkerDetailDrawer from './components/WorkerDetailDrawer';
 import WorkerKeyModal from './components/WorkerKeyModal';
+import CreateWorkerModal from './components/CreateWorkerModal';
+import EditWorkerModal from './components/EditWorkerModal';
 import type { LYWorkerResponse, LYListResponseLYWorkerResponse, GetWorkersParams } from '@/api';
 import './index.less';
 
@@ -280,6 +282,9 @@ const WorkerManagement = () => {
   const [selectedWorker, setSelectedWorker] = useState<LYWorkerResponse | null>(null);
   const [keyModalVisible, setKeyModalVisible] = useState(false);
   const [keyModalWorker, setKeyModalWorker] = useState<LYWorkerResponse | null>(null);
+  const [createModalVisible, setCreateModalVisible] = useState(false);
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [editingWorker, setEditingWorker] = useState<LYWorkerResponse | null>(null);
 
   // 状态配置
   type WorkerStatus = LYWorkerResponse['status'];
@@ -465,8 +470,8 @@ const WorkerManagement = () => {
   // 从详情抽屉跳转到编辑
   const handleEditFromDrawer = () => {
     if (selectedWorker) {
-      setDetailDrawerVisible(false);
-      navigate(`/worker-management/edit/${selectedWorker.id}`);
+      setEditingWorker(selectedWorker);
+      setEditModalVisible(true);
     }
   };
 
@@ -480,7 +485,28 @@ const WorkerManagement = () => {
   // 编辑机器人
   const handleEdit = (worker: LYWorkerResponse, e?: React.MouseEvent) => {
     e?.stopPropagation();
-    navigate(`/scheduling-center/resource-monitoring/worker-management/edit/${worker.id}`);
+    setEditingWorker(worker);
+    setEditModalVisible(true);
+  };
+
+  // 创建成功回调
+  const handleCreateSuccess = () => {
+    loadData();
+  };
+
+  // 编辑成功回调
+  const handleEditSuccess = (updatedWorker: LYWorkerResponse) => {
+    // 更新列表数据
+    setListResponse(prev => ({
+      ...prev,
+      list: prev.list.map(item => 
+        item.id === updatedWorker.id ? updatedWorker : item
+      ),
+    }));
+    // 同步更新选中的worker（如果抽屉打开中）
+    if (selectedWorker?.id === updatedWorker.id) {
+      setSelectedWorker(updatedWorker);
+    }
   };
 
   // 从响应中获取分页信息
@@ -678,7 +704,7 @@ const WorkerManagement = () => {
               icon={<IconPlus />} 
               theme="solid" 
               type="primary"
-              onClick={() => navigate('/scheduling-center/resource-monitoring/worker-management/create')}
+              onClick={() => setCreateModalVisible(true)}
             >
               {t('worker.createWorker')}
             </Button>
@@ -727,6 +753,21 @@ const WorkerManagement = () => {
         visible={keyModalVisible}
         onClose={() => setKeyModalVisible(false)}
         workerData={keyModalWorker}
+      />
+
+      {/* 创建弹窗 */}
+      <CreateWorkerModal
+        visible={createModalVisible}
+        onCancel={() => setCreateModalVisible(false)}
+        onSuccess={handleCreateSuccess}
+      />
+
+      {/* 编辑弹窗 */}
+      <EditWorkerModal
+        visible={editModalVisible}
+        onCancel={() => setEditModalVisible(false)}
+        workerData={editingWorker}
+        onSuccess={handleEditSuccess}
       />
 
     </div>
