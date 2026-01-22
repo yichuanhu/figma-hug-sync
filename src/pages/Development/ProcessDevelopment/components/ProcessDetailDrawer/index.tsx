@@ -324,6 +324,8 @@ const VariableCard = ({ variable, index, onDescriptionChange }: VariableCardProp
                 autoFocus
                 placeholder={t('development.processDevelopment.detail.variable.editPlaceholder')}
                 onKeyDown={handleKeyDown}
+                maxLength={500}
+                showClear
                 suffix={
                   <Space spacing={2} className="process-detail-drawer-variable-card-edit-actions">
                     <span 
