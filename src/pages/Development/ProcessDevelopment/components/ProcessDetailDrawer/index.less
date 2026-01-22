@@ -176,6 +176,51 @@
       }
     }
   }
+
+  // 变量单元格 - hover显示编辑按钮
+  &-variable-cell {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-height: 24px;
+  }
+
+  &-variable-text {
+    flex: 1;
+    min-width: 0;
+    cursor: default;
+  }
+
+  &-variable-edit-btn {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  // 行 hover 时显示编辑按钮
+  .semi-table-row:hover &-variable-edit-btn {
+    opacity: 1;
+  }
+
+  // 编辑状态样式
+  &-variable-edit {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .semi-input-wrapper {
+      flex: 1;
+      min-width: 120px;
+      background-color: var(--semi-color-bg-0);
+      border-color: var(--semi-color-primary);
+      box-shadow: 0 0 0 2px var(--semi-color-primary-light-default);
+    }
+
+    &-actions {
+      flex-shrink: 0;
+    }
+  }
 }
 
 // 全局覆盖 - SideSheet header 和 body 样式

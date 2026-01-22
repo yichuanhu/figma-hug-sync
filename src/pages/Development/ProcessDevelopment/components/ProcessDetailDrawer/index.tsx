@@ -261,23 +261,35 @@ const VariableTable = ({ data, onDescriptionChange }: VariableTableProps) => {
   const { t } = useTranslation();
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editValue, setEditValue] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleStartEdit = (index: number, currentValue: string) => {
+  const handleStartEdit = useCallback((index: number, currentValue: string) => {
     setEditingIndex(index);
     setEditValue(currentValue || '');
-  };
+  }, []);
 
-  const handleConfirmEdit = (index: number) => {
+  const handleConfirmEdit = useCallback((index: number) => {
     onDescriptionChange(index, editValue);
     setEditingIndex(null);
     setEditValue('');
     Toast.success(t('development.processDevelopment.detail.variable.editSuccess'));
-  };
+  }, [editValue, onDescriptionChange, t]);
 
-  const handleCancelEdit = () => {
+  const handleCancelEdit = useCallback(() => {
     setEditingIndex(null);
     setEditValue('');
-  };
+  }, []);
+
+  // ESC 键取消编辑
+  const handleKeyDown = useCallback((e: React.KeyboardEvent, index: number) => {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      handleCancelEdit();
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      handleConfirmEdit(index);
+    }
+  }, [handleCancelEdit, handleConfirmEdit]);
 
   const columns = [
     {
@@ -311,43 +323,58 @@ const VariableTable = ({ data, onDescriptionChange }: VariableTableProps) => {
       render: (description: string, _record: ProcessVariable, index: number) => {
         if (editingIndex === index) {
           return (
-            <Space>
+            <div className="process-detail-drawer-variable-edit">
               <Input
+                ref={inputRef}
                 value={editValue}
                 onChange={(value) => setEditValue(value)}
                 size="small"
                 autoFocus
-                style={{ width: 160 }}
-                onEnterPress={() => handleConfirmEdit(index)}
+                placeholder={t('development.processDevelopment.detail.variable.editPlaceholder')}
+                onKeyDown={(e) => handleKeyDown(e, index)}
               />
-              <Button
-                icon={<IconTick />}
-                theme="borderless"
-                size="small"
-                type="primary"
-                onClick={() => handleConfirmEdit(index)}
-              />
-              <Button
-                icon={<IconClear />}
-                theme="borderless"
-                size="small"
-                type="tertiary"
-                onClick={handleCancelEdit}
-              />
-            </Space>
+              <Space spacing={4} className="process-detail-drawer-variable-edit-actions">
+                <Tooltip content={t('common.confirm')}>
+                  <Button
+                    icon={<IconTick />}
+                    theme="solid"
+                    size="small"
+                    type="primary"
+                    onClick={() => handleConfirmEdit(index)}
+                  />
+                </Tooltip>
+                <Tooltip content={t('common.cancel')}>
+                  <Button
+                    icon={<IconClear />}
+                    theme="light"
+                    size="small"
+                    type="tertiary"
+                    onClick={handleCancelEdit}
+                  />
+                </Tooltip>
+              </Space>
+            </div>
           );
         }
         return (
-          <Space>
-            <Text>{description || '-'}</Text>
-            <Button
-              icon={<IconEditStroked />}
-              theme="borderless"
-              size="small"
-              type="tertiary"
-              onClick={() => handleStartEdit(index, description)}
-            />
-          </Space>
+          <div 
+            className="process-detail-drawer-variable-cell"
+            onDoubleClick={() => handleStartEdit(index, description)}
+          >
+            <Text className="process-detail-drawer-variable-text" ellipsis={{ showTooltip: true }}>
+              {description || '-'}
+            </Text>
+            <Tooltip content={t('development.processDevelopment.detail.variable.editTip')}>
+              <Button
+                icon={<IconEditStroked />}
+                theme="borderless"
+                size="small"
+                type="tertiary"
+                className="process-detail-drawer-variable-edit-btn"
+                onClick={() => handleStartEdit(index, description)}
+              />
+            </Tooltip>
+          </div>
         );
       },
     },
