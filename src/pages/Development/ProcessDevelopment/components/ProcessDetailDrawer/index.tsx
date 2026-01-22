@@ -333,21 +333,23 @@ const VariableCard = ({ variable, index, onDescriptionChange }: VariableCardProp
                 showClear
                 autosize={{ minRows: 2, maxRows: 6 }}
               />
-              <Space spacing={4} className="process-detail-drawer-variable-card-edit-actions">
+              <Space spacing={8} className="process-detail-drawer-variable-card-edit-actions">
                 <Button
-                  icon={<IconTick />}
                   size="small"
                   theme="solid"
                   type="primary"
                   onClick={handleConfirmEdit}
-                />
+                >
+                  {t('common.confirm')}
+                </Button>
                 <Button
-                  icon={<IconClose />}
                   size="small"
                   theme="borderless"
                   type="tertiary"
                   onClick={handleCancelEdit}
-                />
+                >
+                  {t('common.cancel')}
+                </Button>
               </Space>
             </div>
           ) : (
