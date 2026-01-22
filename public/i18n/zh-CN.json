@@ -79,7 +79,7 @@
     "searchPlaceholder": "搜索凭据名称",
     "table": {
       "name": "凭据名称",
-      "testValue": "凭据值（调试）",
+      "testValue": "凭据值（测试）",
       "productionValue": "凭据值（生产）",
       "type": "类型",
       "linkedPersonalCredential": "关联的个人凭据值"
@@ -98,7 +98,7 @@
       "nameHint": "凭据名称创建后不可修改",
       "type": "类型",
       "typePlaceholder": "请选择凭据类型",
-      "value": "凭据值（用户名）",
+      "value": "凭据值",
       "testValue": "凭据值（测试）",
       "productionValue": "凭据值（生产）",
       "username": "用户名",
