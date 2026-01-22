@@ -134,7 +134,7 @@
           "usageInstructions": "使用说明",
           "viewInstructions": "前往查看",
           "clientVersion": "流程开发客户端版本",
-          "engineVersion": "流程引擎版本",
+          "developmentEnvironment": "开发环境信息",
           "settings": "设置",
           "processInput": "流程输入",
           "processOutput": "流程输出",
