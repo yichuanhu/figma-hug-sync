@@ -1,25 +1,39 @@
-// CreateCredentialModal 新建凭据模态框样式
+// CreateCredentialModal 创建凭据弹窗样式
 .create-credential-modal {
-  .create-credential-modal-form {
-    .semi-form-field {
-      margin-bottom: 16px;
-    }
+  &-form {
+    padding-top: 4px;
+  }
 
-    .create-credential-modal-form-value-group {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+  &-select-full {
+    width: 100%;
+  }
 
-    .create-credential-modal-form-value-item {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
+  &-value-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
 
-      .create-credential-modal-form-value-label {
-        font-size: 14px;
-        color: var(--semi-color-text-2);
-      }
-    }
+  &-value-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &-value-label {
+    flex-shrink: 0;
+    width: 56px;
+    color: var(--semi-color-text-2);
+    font-size: 14px;
+  }
+
+  &-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 12px;
+    padding-top: 16px;
+    padding-bottom: 12px;
+    border-top: 1px solid var(--semi-color-border);
   }
 }

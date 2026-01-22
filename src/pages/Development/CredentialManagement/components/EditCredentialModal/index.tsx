@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Form, Button, Toast } from '@douyinfe/semi-ui';
-import type { LYCredentialResponse, CredentialType } from '@/api/index';
+import type { LYCredentialResponse } from '@/api/index';
 
 import './index.less';
 
@@ -87,7 +87,7 @@ const EditCredentialModal = ({
       footer={null}
       closeOnEsc
       maskClosable={false}
-      width={480}
+      width={520}
     >
       <Form
         className="edit-credential-modal-form"
@@ -100,6 +100,7 @@ const EditCredentialModal = ({
           password: currentValue.password,
           description: credential.description || '',
         }}
+        key={credential?.credential_id}
       >
         <Form.Input
           field="credential_name"
@@ -111,12 +112,13 @@ const EditCredentialModal = ({
           ]}
         />
 
-        <div className="edit-credential-modal-form-type-disabled">
+        <div className="edit-credential-modal-type-disabled">
           <Form.Select
             field="credential_type"
             label={t('credential.fields.type')}
             optionList={typeOptions}
             disabled
+            className="edit-credential-modal-select-full"
           />
         </div>
 
@@ -127,9 +129,9 @@ const EditCredentialModal = ({
               : t('credential.fields.productionValue')
           }
         >
-          <div className="edit-credential-modal-form-value-group">
-            <div className="edit-credential-modal-form-value-item">
-              <span className="edit-credential-modal-form-value-label">
+          <div className="edit-credential-modal-value-group">
+            <div className="edit-credential-modal-value-item">
+              <span className="edit-credential-modal-value-label">
                 {t('credential.fields.username')}
               </span>
               <Form.Input
@@ -139,8 +141,8 @@ const EditCredentialModal = ({
                 rules={[{ required: true, message: t('credential.validation.usernameRequired') }]}
               />
             </div>
-            <div className="edit-credential-modal-form-value-item">
-              <span className="edit-credential-modal-form-value-label">
+            <div className="edit-credential-modal-value-item">
+              <span className="edit-credential-modal-value-label">
                 {t('credential.fields.password')}
               </span>
               <Form.Input
@@ -158,12 +160,16 @@ const EditCredentialModal = ({
           label={t('common.description')}
           placeholder={t('credential.fields.descriptionPlaceholder')}
           maxCount={500}
-          autosize={{ minRows: 2, maxRows: 4 }}
+          autosize={{ minRows: 3, maxRows: 6 }}
         />
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12, marginTop: 24 }}>
-          <Button type="tertiary" onClick={onCancel}>{t('common.cancel')}</Button>
-          <Button theme="solid" type="primary" htmlType="submit" loading={loading}>{t('common.save')}</Button>
+        <div className="edit-credential-modal-footer">
+          <Button theme="light" onClick={onCancel}>
+            {t('common.cancel')}
+          </Button>
+          <Button htmlType="submit" theme="solid" type="primary" loading={loading}>
+            {t('common.save')}
+          </Button>
         </div>
       </Form>
     </Modal>
