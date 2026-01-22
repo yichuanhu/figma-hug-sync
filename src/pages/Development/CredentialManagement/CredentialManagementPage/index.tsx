@@ -254,11 +254,11 @@ const CredentialManagementPage = () => {
     setQueryParams((prev) => ({ ...prev, page }));
   };
 
-  // 获取凭据值显示
+  // 获取凭据值显示（只显示用户名，不显示密码）
   const getCredentialValueDisplay = (record: LYCredentialResponse) => {
     const value = context === 'development' ? record.test_value : record.production_value;
     if (!value) return '-';
-    return `${value.username}:${value.password}`;
+    return value.username;
   };
 
   // 表格列定义
