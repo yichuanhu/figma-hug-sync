@@ -322,15 +322,6 @@ const CredentialManagementPage = () => {
       ),
     },
     {
-      title: t('credential.table.linkedPersonalCredential'),
-      dataIndex: 'linked_personal_credential_value',
-      key: 'linked_personal_credential_value',
-      width: 160,
-      render: (text: string | null) => (
-        <span className="credential-management-page-table-linked">{text || '-'}</span>
-      ),
-    },
-    {
       title: t('common.actions'),
       key: 'actions',
       width: 80,
