@@ -19,7 +19,7 @@ import {
   Switch,
   Toast,
   Modal,
-  Collapsible,
+  Input,
 } from '@douyinfe/semi-ui';
 import {
   IconEditStroked,
@@ -31,10 +31,10 @@ import {
   IconClose,
   IconUpload,
   IconHelpCircle,
-  IconSetting,
+  IconTick,
+  IconClear,
   IconLink,
-  IconChevronDown,
-  IconChevronUp,
+  IconSetting,
 } from '@douyinfe/semi-icons';
 import type { LYProcessResponse, LYProcessVersionResponse } from '@/api';
 import UploadVersionModal from '../UploadVersionModal';
@@ -250,54 +250,117 @@ const statusConfig: Record<string, { color: 'grey' | 'green' | 'orange'; i18nKey
   ARCHIVED: { color: 'orange', i18nKey: 'development.processDevelopment.status.archived' },
 };
 
-// ============= 折叠变量组件 =============
+// ============= 变量列表表格组件 =============
 
-interface VariableCollapseItemProps {
-  name: string;
-  type: '文本' | '布尔' | '数值';
-  value?: string;
-  description?: string;
+interface VariableTableProps {
+  data: ProcessVariable[];
+  onDescriptionChange: (index: number, description: string) => void;
 }
 
-const VariableCollapseItem = ({ name, type, value, description }: VariableCollapseItemProps) => {
+const VariableTable = ({ data, onDescriptionChange }: VariableTableProps) => {
   const { t } = useTranslation();
-  const [isOpen, setIsOpen] = useState(false);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [editValue, setEditValue] = useState('');
+
+  const handleStartEdit = (index: number, currentValue: string) => {
+    setEditingIndex(index);
+    setEditValue(currentValue || '');
+  };
+
+  const handleConfirmEdit = (index: number) => {
+    onDescriptionChange(index, editValue);
+    setEditingIndex(null);
+    setEditValue('');
+    Toast.success(t('development.processDevelopment.detail.variable.editSuccess'));
+  };
+
+  const handleCancelEdit = () => {
+    setEditingIndex(null);
+    setEditValue('');
+  };
+
+  const columns = [
+    {
+      title: t('development.processDevelopment.detail.variable.type'),
+      dataIndex: 'type',
+      key: 'type',
+      width: 80,
+      render: (type: string) => (
+        <Tag color="blue" type="light" size="small">
+          {type}
+        </Tag>
+      ),
+    },
+    {
+      title: t('development.processDevelopment.detail.variable.name'),
+      dataIndex: 'name',
+      key: 'name',
+      width: 140,
+    },
+    {
+      title: t('development.processDevelopment.detail.variable.value'),
+      dataIndex: 'value',
+      key: 'value',
+      width: 140,
+      render: (value: string) => <Text>{value || '-'}</Text>,
+    },
+    {
+      title: t('common.description'),
+      dataIndex: 'description',
+      key: 'description',
+      render: (description: string, _record: ProcessVariable, index: number) => {
+        if (editingIndex === index) {
+          return (
+            <Space>
+              <Input
+                value={editValue}
+                onChange={(value) => setEditValue(value)}
+                size="small"
+                autoFocus
+                style={{ width: 160 }}
+                onEnterPress={() => handleConfirmEdit(index)}
+              />
+              <Button
+                icon={<IconTick />}
+                theme="borderless"
+                size="small"
+                type="primary"
+                onClick={() => handleConfirmEdit(index)}
+              />
+              <Button
+                icon={<IconClear />}
+                theme="borderless"
+                size="small"
+                type="tertiary"
+                onClick={handleCancelEdit}
+              />
+            </Space>
+          );
+        }
+        return (
+          <Space>
+            <Text>{description || '-'}</Text>
+            <Button
+              icon={<IconEditStroked />}
+              theme="borderless"
+              size="small"
+              type="tertiary"
+              onClick={() => handleStartEdit(index, description)}
+            />
+          </Space>
+        );
+      },
+    },
+  ];
 
   return (
-    <div className="process-detail-drawer-collapse-item">
-      <div 
-        className="process-detail-drawer-collapse-item-header"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <Space>
-          <span className="process-detail-drawer-collapse-item-type">{type}</span>
-          <Text className="process-detail-drawer-collapse-item-name">{name}</Text>
-        </Space>
-        {isOpen ? (
-          <IconChevronUp style={{ color: 'var(--semi-color-text-2)' }} />
-        ) : (
-          <IconChevronDown style={{ color: 'var(--semi-color-text-2)' }} />
-        )}
-      </div>
-      <Collapsible isOpen={isOpen}>
-        <div className="process-detail-drawer-collapse-item-content">
-          <Row>
-            <Col span={12}>
-              <Text type="tertiary" size="small">
-                {t('development.processDevelopment.detail.variable.value')}：
-              </Text>
-              <Text size="small">{value || '-'}</Text>
-            </Col>
-            <Col span={12}>
-              <Text type="tertiary" size="small">
-                {t('common.description')}：
-              </Text>
-              <Text size="small">{description || '-'}</Text>
-            </Col>
-          </Row>
-        </div>
-      </Collapsible>
-    </div>
+    <Table
+      columns={columns}
+      dataSource={data.map((item, index) => ({ ...item, key: index }))}
+      pagination={false}
+      size="small"
+      className="process-detail-drawer-variable-table"
+    />
   );
 };
 
@@ -719,17 +782,23 @@ const ProcessDetailDrawer = ({
                       {t('development.processDevelopment.detail.versionDetail.processInput')}
                     </Text>
                     {selectedVersion.inputs && selectedVersion.inputs.length > 0 ? (
-                      <div className="process-detail-drawer-version-detail-collapse-list">
-                        {selectedVersion.inputs.map((input, index) => (
-                          <VariableCollapseItem
-                            key={index}
-                            name={input.name}
-                            type={input.type}
-                            value={input.value}
-                            description={input.description}
-                          />
-                        ))}
-                      </div>
+                      <VariableTable
+                        data={selectedVersion.inputs}
+                        onDescriptionChange={(index, description) => {
+                          setVersionData((prevData) =>
+                            prevData.map((v) =>
+                              v.id === selectedVersion.id
+                                ? {
+                                    ...v,
+                                    inputs: v.inputs?.map((input, i) =>
+                                      i === index ? { ...input, description } : input
+                                    ),
+                                  }
+                                : v
+                            )
+                          );
+                        }}
+                      />
                     ) : (
                       <Text type="tertiary">{t('common.noData')}</Text>
                     )}
@@ -741,17 +810,23 @@ const ProcessDetailDrawer = ({
                       {t('development.processDevelopment.detail.versionDetail.processOutput')}
                     </Text>
                     {selectedVersion.outputs && selectedVersion.outputs.length > 0 ? (
-                      <div className="process-detail-drawer-version-detail-collapse-list">
-                        {selectedVersion.outputs.map((output, index) => (
-                          <VariableCollapseItem
-                            key={index}
-                            name={output.name}
-                            type={output.type}
-                            value={output.value}
-                            description={output.description}
-                          />
-                        ))}
-                      </div>
+                      <VariableTable
+                        data={selectedVersion.outputs}
+                        onDescriptionChange={(index, description) => {
+                          setVersionData((prevData) =>
+                            prevData.map((v) =>
+                              v.id === selectedVersion.id
+                                ? {
+                                    ...v,
+                                    outputs: v.outputs?.map((output, i) =>
+                                      i === index ? { ...output, description } : output
+                                    ),
+                                  }
+                                : v
+                            )
+                          );
+                        }}
+                      />
                     ) : (
                       <Text type="tertiary">{t('common.noData')}</Text>
                     )}
