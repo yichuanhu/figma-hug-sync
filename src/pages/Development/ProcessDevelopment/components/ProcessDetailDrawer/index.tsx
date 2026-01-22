@@ -799,11 +799,11 @@ const ProcessDetailDrawer = ({
                   </div>
 
                   {/* 流程输入 */}
-                  <div className="process-detail-drawer-version-detail-section">
-                    <Text className="process-detail-drawer-version-detail-section-title">
-                      {t('development.processDevelopment.detail.versionDetail.processInput')}
-                    </Text>
-                    {selectedVersion.inputs && selectedVersion.inputs.length > 0 ? (
+                  {selectedVersion.inputs && selectedVersion.inputs.length > 0 && (
+                    <div className="process-detail-drawer-version-detail-section">
+                      <Text className="process-detail-drawer-version-detail-section-title">
+                        {t('development.processDevelopment.detail.versionDetail.processInput')}
+                      </Text>
                       <VariableCardList
                         data={selectedVersion.inputs}
                         onDescriptionChange={(index, description) => {
@@ -821,17 +821,15 @@ const ProcessDetailDrawer = ({
                           );
                         }}
                       />
-                    ) : (
-                      <Text type="tertiary">{t('common.noData')}</Text>
-                    )}
-                  </div>
+                    </div>
+                  )}
 
                   {/* 流程输出 */}
-                  <div className="process-detail-drawer-version-detail-section">
-                    <Text className="process-detail-drawer-version-detail-section-title">
-                      {t('development.processDevelopment.detail.versionDetail.processOutput')}
-                    </Text>
-                    {selectedVersion.outputs && selectedVersion.outputs.length > 0 ? (
+                  {selectedVersion.outputs && selectedVersion.outputs.length > 0 && (
+                    <div className="process-detail-drawer-version-detail-section">
+                      <Text className="process-detail-drawer-version-detail-section-title">
+                        {t('development.processDevelopment.detail.versionDetail.processOutput')}
+                      </Text>
                       <VariableCardList
                         data={selectedVersion.outputs}
                         onDescriptionChange={(index, description) => {
@@ -849,10 +847,8 @@ const ProcessDetailDrawer = ({
                           );
                         }}
                       />
-                    ) : (
-                      <Text type="tertiary">{t('common.noData')}</Text>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </>
               ) : (
                 <div className="process-detail-drawer-version-detail-empty">
