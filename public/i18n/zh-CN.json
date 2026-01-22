@@ -33,7 +33,9 @@
     "description": "描述",
     "creator": "创建者",
     "createTime": "创建时间",
-    "updateTime": "更新时间"
+    "updateTime": "更新时间",
+    "expand": "展开",
+    "collapse": "收起"
   },
   "sidebar": {
     "home": "首页",

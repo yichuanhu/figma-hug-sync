@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SideSheet, Typography, Button, Tag, Descriptions, Switch, Tooltip, Divider, Row, Col, Space } from '@douyinfe/semi-ui';
-import { IconEditStroked, IconDeleteStroked, IconMaximize, IconMinimize, IconClose, IconKey } from '@douyinfe/semi-icons';
+import { IconEditStroked, IconDeleteStroked, IconMaximize, IconMinimize, IconClose, IconKey, IconChevronDown, IconChevronUp } from '@douyinfe/semi-icons';
 import type { LYWorkerResponse } from '@/api';
 import './index.less';
 
@@ -17,10 +17,13 @@ interface WorkerDetailDrawerProps {
   onToggleReceiveTasks?: (worker: LYWorkerResponse, checked: boolean) => void;
 }
 
+// 描述展开收起的阈值（字符数）
+const DESCRIPTION_COLLAPSE_THRESHOLD = 100;
 
 const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, onDelete, onToggleReceiveTasks }: WorkerDetailDrawerProps) => {
   const { t } = useTranslation();
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [drawerWidth, setDrawerWidth] = useState(() => {
     const saved = localStorage.getItem('workerDetailDrawerWidth');
     return saved ? Math.max(Number(saved), 576) : 656;
@@ -28,6 +31,11 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
   const isResizing = useRef(false);
   const startX = useRef(0);
   const startWidth = useRef(drawerWidth);
+
+  // 当workerData变化时，重置描述展开状态
+  useEffect(() => {
+    setIsDescriptionExpanded(false);
+  }, [workerData?.id]);
 
   const handleMouseDown = useCallback(
     (e: React.MouseEvent) => {
@@ -81,10 +89,39 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
   // 只有在线且非故障状态才允许操作接收任务开关
   const canOperateReceiveTasks = workerData.status !== 'OFFLINE' && workerData.status !== 'FAULT';
 
+  // 处理描述展示
+  const description = workerData.description || '-';
+  const isDescriptionLong = description.length > DESCRIPTION_COLLAPSE_THRESHOLD;
+  const displayDescription = isDescriptionLong && !isDescriptionExpanded 
+    ? description.slice(0, DESCRIPTION_COLLAPSE_THRESHOLD) + '...' 
+    : description;
+
+  const renderDescriptionValue = () => {
+    if (description === '-') return '-';
+    
+    return (
+      <div className="worker-detail-drawer-description">
+        <span className="worker-detail-drawer-description-text">{displayDescription}</span>
+        {isDescriptionLong && (
+          <Button
+            theme="borderless"
+            size="small"
+            type="tertiary"
+            className="worker-detail-drawer-description-toggle"
+            icon={isDescriptionExpanded ? <IconChevronUp /> : <IconChevronDown />}
+            onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
+          >
+            {isDescriptionExpanded ? t('common.collapse') : t('common.expand')}
+          </Button>
+        )}
+      </div>
+    );
+  };
+
   const basicInfoData = [
     { key: t('worker.detail.fields.workerName'), value: workerData.name },
     { key: t('worker.detail.fields.group'), value: '-' },
-    { key: t('worker.detail.fields.description'), value: workerData.description || '-' },
+    { key: t('worker.detail.fields.description'), value: renderDescriptionValue() },
     {
       key: t('worker.detail.fields.status'),
       value: (
