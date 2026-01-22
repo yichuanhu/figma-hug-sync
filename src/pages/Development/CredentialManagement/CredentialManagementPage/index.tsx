@@ -226,6 +226,14 @@ const CredentialManagementPage = () => {
     });
   };
 
+  // 查看使用记录
+  const handleViewUsage = (record: LYCredentialResponse) => {
+    const basePath = context === 'development'
+      ? '/dev-center/business-assets/credentials'
+      : '/scheduling-center/business-assets/credentials';
+    navigate(`${basePath}/${record.credential_id}/usage?name=${encodeURIComponent(record.credential_name)}`);
+  };
+
   // 分页变化
   const handlePageChange = (page: number) => {
     setQueryParams((prev) => ({ ...prev, page }));
@@ -300,18 +308,22 @@ const CredentialManagementPage = () => {
         <Dropdown
           trigger="click"
           position="bottomRight"
+          clickToHide
           render={
             <Dropdown.Menu>
-              <Dropdown.Item onClick={() => handleEdit(record)}>
+              <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>
                 {t('common.edit')}
               </Dropdown.Item>
-              <Dropdown.Item type="danger" onClick={() => handleDelete(record)}>
+              <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleViewUsage(record); }}>
+                {t('credential.actions.viewUsage')}
+              </Dropdown.Item>
+              <Dropdown.Item type="danger" onClick={(e) => { e.stopPropagation(); handleDelete(record); }}>
                 {t('common.delete')}
               </Dropdown.Item>
             </Dropdown.Menu>
           }
         >
-          <Button icon={<IconMore />} theme="borderless" type="tertiary" />
+          <Button icon={<IconMore />} theme="borderless" type="tertiary" onClick={(e) => e.stopPropagation()} />
         </Dropdown>
       ),
     },
