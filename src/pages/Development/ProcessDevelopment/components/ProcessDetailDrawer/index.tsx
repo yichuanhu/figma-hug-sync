@@ -362,7 +362,6 @@ const VariableCard = ({ variable, index, onDescriptionChange }: VariableCardProp
               >
                 <Text 
                   className="process-detail-drawer-variable-card-value" 
-                  ellipsis
                   onDoubleClick={handleStartEdit}
                 >
                   {variable.description || '-'}
