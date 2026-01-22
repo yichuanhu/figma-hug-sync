@@ -146,13 +146,6 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
               { max: 500, message: t('worker.create.validation.descriptionLengthError') },
             ]}
           />
-          <div className="edit-worker-modal-field">
-            <Form.Label>{t('worker.edit.fields.receiveTasks')}</Form.Label>
-            <Form.RadioGroup field="receiveTasks">
-              <Radio value={true}>{t('common.yes')}</Radio>
-              <Radio value={false}>{t('common.no')}</Radio>
-            </Form.RadioGroup>
-          </div>
         </div>
 
         <div className="edit-worker-modal-section">
