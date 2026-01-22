@@ -105,6 +105,8 @@
           "titleTooltip": "切换版本后，已经生成的任务仍使用切换前的版本运行，新生成的任务将采用切换后的版本运行",
           "uploadVersion": "上传版本",
           "deleteVersion": "删除此版本",
+          "activateConfirmTitle": "确定调整启用版本吗？",
+          "activateConfirmContent": "所有运行此流程的触发器都将运行新的版本，请谨慎执行。",
           "activateSuccess": "版本 {{version}} 已激活",
           "deactivateSuccess": "版本 {{version}} 已停用",
           "cannotDeleteActive": "已开启的版本不允许删除",
