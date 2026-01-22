@@ -95,6 +95,7 @@
     "fields": {
       "name": "凭据名称",
       "namePlaceholder": "请输入凭据名称",
+      "nameHint": "凭据名称创建后不可修改",
       "type": "类型",
       "typePlaceholder": "请选择凭据类型",
       "value": "凭据值",

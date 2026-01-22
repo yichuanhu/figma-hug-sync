@@ -83,6 +83,7 @@ const CreateCredentialModal = ({
             { max: 30, message: t('credential.validation.nameLengthError') },
           ]}
           showClear
+          extraText={t('credential.fields.nameHint')}
         />
 
         <Form.Select
