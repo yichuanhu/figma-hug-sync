@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -11,16 +11,23 @@ import {
   Typography,
   Toast,
   Modal,
+  Row,
+  Col,
+  Space,
 } from '@douyinfe/semi-ui';
 import {
   IconClose,
-  IconEdit,
+  IconEditStroked,
   IconHistogram,
   IconDeleteStroked,
+  IconMaximize,
+  IconMinimize,
 } from '@douyinfe/semi-icons';
 import type { LYCredentialResponse, CredentialType } from '@/api/index';
 
 import './index.less';
+
+const { Title, Text } = Typography;
 
 // 凭据类型配置
 const typeConfig: Record<CredentialType, { color: 'blue' | 'green'; i18nKey: string }> = {
@@ -48,6 +55,50 @@ const CredentialDetailDrawer = ({
 }: CredentialDetailDrawerProps) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [drawerWidth, setDrawerWidth] = useState(() => {
+    const saved = localStorage.getItem('credentialDetailDrawerWidth');
+    return saved ? Math.max(Number(saved), 576) : 576;
+  });
+  const isResizing = useRef(false);
+  const startX = useRef(0);
+  const startWidth = useRef(drawerWidth);
+
+  // 拖拽调整宽度
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      isResizing.current = true;
+      startX.current = e.clientX;
+      startWidth.current = drawerWidth;
+      document.body.style.cursor = 'ew-resize';
+      document.body.style.userSelect = 'none';
+      const handleMouseMove = (e: MouseEvent) => {
+        if (!isResizing.current) return;
+        const diff = startX.current - e.clientX;
+        setDrawerWidth(Math.min(Math.max(startWidth.current + diff, 576), window.innerWidth - 100));
+      };
+      const handleMouseUp = () => {
+        isResizing.current = false;
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    },
+    [drawerWidth],
+  );
+
+  useEffect(() => {
+    localStorage.setItem('credentialDetailDrawerWidth', String(drawerWidth));
+  }, [drawerWidth]);
+
+  const toggleFullscreen = useCallback(() => {
+    setIsFullscreen((prev) => !prev);
+  }, []);
 
   // 格式化时间
   const formatDateTime = (dateStr: string | undefined) => {
@@ -107,167 +158,80 @@ const CredentialDetailDrawer = ({
     });
   };
 
-  // 基本信息数据
-  const basicInfoData = useMemo(() => {
+  // 描述数据
+  const descriptionData = useMemo(() => {
     if (!credential) return [];
     return [
+      { key: t('credential.detail.name'), value: credential.credential_name },
       {
-        key: 'name',
-        label: t('credential.detail.name'),
-        value: credential.credential_name,
-      },
-      {
-        key: 'type',
-        label: t('credential.detail.type'),
+        key: t('credential.detail.type'),
         value: (
-          <Tag color={typeConfig[credential.credential_type].color}>
+          <Tag color={typeConfig[credential.credential_type].color} type="light">
             {t(typeConfig[credential.credential_type].i18nKey)}
           </Tag>
         ),
       },
       {
-        key: 'value',
-        label: context === 'development' 
+        key: context === 'development' 
           ? t('credential.detail.testValue') 
           : t('credential.detail.productionValue'),
-        value: <Typography.Text copyable>{getCredentialValueDisplay}</Typography.Text>,
+        value: <Text copyable>{getCredentialValueDisplay}</Text>,
       },
-      {
-        key: 'description',
-        label: t('common.description'),
-        value: credential.description || '-',
-      },
+      { key: t('common.description'), value: credential.description || '-' },
+      ...(credential.credential_type === 'PERSONAL_REF' ? [
+        { key: t('credential.detail.linkedPersonalCredential'), value: credential.linked_personal_credential_value || '-' },
+      ] : []),
+      { key: t('common.creator'), value: credential.created_by_name || '-' },
+      { key: t('common.createTime'), value: formatDateTime(credential.created_at) },
+      { key: t('common.updateTime'), value: formatDateTime(credential.updated_at) },
     ];
   }, [credential, context, getCredentialValueDisplay, t]);
 
-  // 关联信息数据
-  const linkedInfoData = useMemo(() => {
-    if (!credential) return [];
-    return [
-      {
-        key: 'linkedPersonalCredential',
-        label: t('credential.detail.linkedPersonalCredential'),
-        value: credential.linked_personal_credential_value || '-',
-      },
-    ];
-  }, [credential, t]);
-
-  // 系统信息数据
-  const systemInfoData = useMemo(() => {
-    if (!credential) return [];
-    return [
-      {
-        key: 'createdBy',
-        label: t('common.creator'),
-        value: credential.created_by_name || '-',
-      },
-      {
-        key: 'createdAt',
-        label: t('common.createTime'),
-        value: formatDateTime(credential.created_at),
-      },
-      {
-        key: 'updatedAt',
-        label: t('common.updateTime'),
-        value: formatDateTime(credential.updated_at),
-      },
-    ];
-  }, [credential, t]);
-
-  // 自定义头部
-  const renderHeader = () => (
-    <div className="credential-detail-drawer-header">
-      <div className="credential-detail-drawer-header-title">
-        <Typography.Title heading={5} ellipsis={{ showTooltip: true }} style={{ margin: 0 }}>
-          {credential?.credential_name || '-'}
-        </Typography.Title>
-      </div>
-      <div className="credential-detail-drawer-header-actions">
-        <Tooltip content={t('common.edit')}>
-          <Button
-            icon={<IconEdit />}
-            theme="borderless"
-            type="tertiary"
-            onClick={handleEdit}
-          />
-        </Tooltip>
-        <Tooltip content={t('credential.actions.viewUsage')}>
-          <Button
-            icon={<IconHistogram />}
-            theme="borderless"
-            type="tertiary"
-            onClick={handleViewUsage}
-          />
-        </Tooltip>
-        <Tooltip content={t('common.delete')}>
-          <Button
-            icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />}
-            theme="borderless"
-            type="tertiary"
-            onClick={handleDelete}
-          />
-        </Tooltip>
-        <Divider layout="vertical" style={{ margin: '0 8px 0 4px' }} />
-        <Button
-          icon={<IconClose />}
-          theme="borderless"
-          type="tertiary"
-          onClick={onClose}
-        />
-      </div>
-    </div>
-  );
+  if (!credential) return null;
 
   return (
     <SideSheet
+      title={
+        <Row type="flex" justify="space-between" align="middle" className="credential-detail-drawer-header">
+          <Col>
+            <Title heading={5} className="credential-detail-drawer-header-title">
+              {credential.credential_name}
+            </Title>
+          </Col>
+          <Col>
+            <Space spacing={4}>
+              <Tooltip content={t('common.edit')}>
+                <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={handleEdit} />
+              </Tooltip>
+              <Tooltip content={t('credential.actions.viewUsage')}>
+                <Button icon={<IconHistogram />} theme="borderless" size="small" onClick={handleViewUsage} />
+              </Tooltip>
+              <Tooltip content={t('common.delete')}>
+                <Button icon={<IconDeleteStroked className="credential-detail-drawer-header-delete-icon" />} theme="borderless" size="small" onClick={handleDelete} />
+              </Tooltip>
+              <Divider layout="vertical" className="credential-detail-drawer-header-divider" />
+              <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
+                <Button icon={isFullscreen ? <IconMinimize /> : <IconMaximize />} theme="borderless" size="small" onClick={toggleFullscreen} />
+              </Tooltip>
+              <Tooltip content={t('common.close')}>
+                <Button icon={<IconClose />} theme="borderless" size="small" onClick={onClose} className="credential-detail-drawer-header-close-btn" />
+              </Tooltip>
+            </Space>
+          </Col>
+        </Row>
+      }
       visible={visible}
+      onCancel={onClose}
       placement="right"
-      width={576}
+      width={isFullscreen ? '100%' : drawerWidth}
       mask={false}
+      footer={null}
       closable={false}
-      headerStyle={{ padding: 0 }}
-      bodyStyle={{ padding: 0 }}
-      className="credential-detail-drawer"
-      title={renderHeader()}
+      className={`card-sidesheet resizable-sidesheet credential-detail-drawer ${isFullscreen ? 'fullscreen-sidesheet' : ''}`}
     >
+      {!isFullscreen && <div className="credential-detail-drawer-resize-handle" onMouseDown={handleMouseDown} />}
       <div className="credential-detail-drawer-content">
-        {/* 基本信息 */}
-        <div className="credential-detail-drawer-section">
-          <Typography.Title heading={6} className="credential-detail-drawer-section-title">
-            {t('credential.detail.basicInfo')}
-          </Typography.Title>
-          <Descriptions
-            data={basicInfoData}
-            align="left"
-            row
-          />
-        </div>
-
-        {/* 关联信息 */}
-        {credential?.credential_type === 'PERSONAL_REF' && (
-          <div className="credential-detail-drawer-section">
-            <Typography.Title heading={6} className="credential-detail-drawer-section-title">
-              {t('credential.detail.linkedInfo')}
-            </Typography.Title>
-            <Descriptions
-              data={linkedInfoData}
-              align="left"
-              row
-            />
-          </div>
-        )}
-
-        {/* 系统信息 */}
-        <div className="credential-detail-drawer-section">
-          <Typography.Title heading={6} className="credential-detail-drawer-section-title">
-            {t('credential.detail.systemInfo')}
-          </Typography.Title>
-          <Descriptions
-            data={systemInfoData}
-            align="left"
-            row
-          />
-        </div>
+        <Descriptions data={descriptionData} align="left" />
       </div>
     </SideSheet>
   );

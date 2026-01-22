@@ -66,7 +66,7 @@ const CreateCredentialModal = ({
       footer={null}
       closeOnEsc
       maskClosable={false}
-      width={480}
+      width={520}
     >
       <Form
         className="create-credential-modal-form"
@@ -77,10 +77,12 @@ const CreateCredentialModal = ({
           field="credential_name"
           label={t('credential.fields.name')}
           placeholder={t('credential.fields.namePlaceholder')}
+          trigger="blur"
           rules={[
             { required: true, message: t('credential.validation.nameRequired') },
             { max: 30, message: t('credential.validation.nameLengthError') },
           ]}
+          showClear
         />
 
         <Form.Select
@@ -90,12 +92,13 @@ const CreateCredentialModal = ({
           optionList={typeOptions}
           rules={[{ required: true, message: t('credential.validation.typeRequired') }]}
           initValue="FIXED_VALUE"
+          className="create-credential-modal-select-full"
         />
 
         <Form.Slot label={t('credential.fields.value')}>
-          <div className="create-credential-modal-form-value-group">
-            <div className="create-credential-modal-form-value-item">
-              <span className="create-credential-modal-form-value-label">
+          <div className="create-credential-modal-value-group">
+            <div className="create-credential-modal-value-item">
+              <span className="create-credential-modal-value-label">
                 {t('credential.fields.username')}
               </span>
               <Form.Input
@@ -105,8 +108,8 @@ const CreateCredentialModal = ({
                 rules={[{ required: true, message: t('credential.validation.usernameRequired') }]}
               />
             </div>
-            <div className="create-credential-modal-form-value-item">
-              <span className="create-credential-modal-form-value-label">
+            <div className="create-credential-modal-value-item">
+              <span className="create-credential-modal-value-label">
                 {t('credential.fields.password')}
               </span>
               <Form.Input
@@ -125,12 +128,17 @@ const CreateCredentialModal = ({
           label={t('common.description')}
           placeholder={t('credential.fields.descriptionPlaceholder')}
           maxCount={500}
-          autosize={{ minRows: 2, maxRows: 4 }}
+          autosize={{ minRows: 3, maxRows: 6 }}
+          trigger="blur"
         />
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12, marginTop: 24 }}>
-          <Button type="tertiary" onClick={onCancel}>{t('common.cancel')}</Button>
-          <Button theme="solid" type="primary" htmlType="submit" loading={loading}>{t('common.confirm')}</Button>
+        <div className="create-credential-modal-footer">
+          <Button theme="light" onClick={onCancel}>
+            {t('common.cancel')}
+          </Button>
+          <Button htmlType="submit" theme="solid" type="primary" loading={loading}>
+            {t('common.create')}
+          </Button>
         </div>
       </Form>
     </Modal>
