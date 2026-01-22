@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SideSheet, Typography, Button, Tag, Descriptions, Switch, Tooltip, Divider, Row, Col, Space } from '@douyinfe/semi-ui';
-import { IconEditStroked, IconDeleteStroked, IconMaximize, IconMinimize, IconClose } from '@douyinfe/semi-icons';
+import { IconEditStroked, IconDeleteStroked, IconMaximize, IconMinimize, IconClose, IconKey } from '@douyinfe/semi-icons';
 import type { LYWorkerResponse } from '@/api';
 import './index.less';
 
@@ -12,12 +12,13 @@ interface WorkerDetailDrawerProps {
   onClose: () => void;
   workerData: LYWorkerResponse | null;
   onEdit?: () => void;
+  onViewKey?: () => void;
   onDelete?: () => void;
   onToggleReceiveTasks?: (worker: LYWorkerResponse, checked: boolean) => void;
 }
 
 
-const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onDelete, onToggleReceiveTasks }: WorkerDetailDrawerProps) => {
+const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, onDelete, onToggleReceiveTasks }: WorkerDetailDrawerProps) => {
   const { t } = useTranslation();
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [drawerWidth, setDrawerWidth] = useState(() => {
@@ -162,6 +163,9 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onDelete, on
             <Space spacing={4}>
               <Tooltip content={t('common.edit')}>
                 <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={onEdit} />
+              </Tooltip>
+              <Tooltip content={t('worker.actions.viewKey')}>
+                <Button icon={<IconKey />} theme="borderless" size="small" onClick={onViewKey} />
               </Tooltip>
               <Tooltip content={t('common.delete')}>
                 <Button icon={<IconDeleteStroked className="worker-detail-drawer-header-delete-icon" />} theme="borderless" size="small" onClick={onDelete} />
