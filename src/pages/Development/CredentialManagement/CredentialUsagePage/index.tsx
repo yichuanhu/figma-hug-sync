@@ -17,7 +17,8 @@ import {
   Space,
   Tooltip,
 } from '@douyinfe/semi-ui';
-import { IconDownload, IconFilter, IconArrowLeft } from '@douyinfe/semi-icons';
+import { IconFilter, IconArrowLeft } from '@douyinfe/semi-icons';
+import { Download } from 'lucide-react';
 import AppLayout from '@/components/layout/AppLayout';
 import type { LYRangeResponse } from '@/api/index';
 
@@ -432,7 +433,7 @@ const CredentialUsagePage = () => {
               </Space>
             </Col>
             <Col>
-              <Button icon={<IconDownload />} onClick={handleExport}>
+              <Button icon={<Download size={14} />} onClick={handleExport}>
                 {t('common.export')}
               </Button>
             </Col>
