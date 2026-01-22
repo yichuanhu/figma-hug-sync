@@ -81,6 +81,14 @@ const allRunData: RunRecord[] = [
 ];
 
 // 版本 Mock 数据 - 基于 LYProcessVersionResponse 类型，扩展详情字段
+// 参数变量类型定义
+interface ProcessVariable {
+  name: string;
+  type: '文本' | '布尔' | '数值';
+  value?: string;
+  description?: string;
+}
+
 interface VersionDetailData extends LYProcessVersionResponse {
   key: number;
   file_name?: string;
@@ -88,8 +96,8 @@ interface VersionDetailData extends LYProcessVersionResponse {
   client_version?: string;
   engine_version?: string;
   is_active?: boolean;
-  inputs?: { name: string; type: string; description?: string }[];
-  outputs?: { name: string; type: string; description?: string }[];
+  inputs?: ProcessVariable[];
+  outputs?: ProcessVariable[];
 }
 
 const initialMockVersionData: VersionDetailData[] = [
@@ -112,11 +120,14 @@ const initialMockVersionData: VersionDetailData[] = [
     engine_version: '3.5.0',
     is_active: true,
     inputs: [
-      { name: 'APP_KEY', type: '文本', description: '-' },
-      { name: 'APP_VALUE', type: '文本', description: '-' },
+      { name: 'APP_KEY', type: '文本', value: 'sk-xxxxx', description: '应用密钥' },
+      { name: 'APP_VALUE', type: '文本', value: 'default_value', description: '应用配置值' },
+      { name: 'RETRY_COUNT', type: '数值', value: '3', description: '重试次数' },
+      { name: 'IS_DEBUG', type: '布尔', value: 'true', description: '是否开启调试模式' },
     ],
     outputs: [
-      { name: 'result', type: '文本', description: '处理结果' },
+      { name: 'result', type: '文本', value: '', description: '处理结果' },
+      { name: 'success', type: '布尔', value: '', description: '是否成功' },
     ],
   },
   {
@@ -137,9 +148,11 @@ const initialMockVersionData: VersionDetailData[] = [
     engine_version: '3.5.0',
     is_active: false,
     inputs: [
-      { name: 'APP_KEY', type: '文本', description: '-' },
+      { name: 'APP_KEY', type: '文本', value: 'sk-xxxxx', description: '应用密钥' },
     ],
-    outputs: [],
+    outputs: [
+      { name: 'result', type: '文本', value: '', description: '处理结果' },
+    ],
   },
   {
     key: 3,
@@ -241,11 +254,12 @@ const statusConfig: Record<string, { color: 'grey' | 'green' | 'orange'; i18nKey
 
 interface VariableCollapseItemProps {
   name: string;
-  type: string;
+  type: '文本' | '布尔' | '数值';
+  value?: string;
   description?: string;
 }
 
-const VariableCollapseItem = ({ name, type, description }: VariableCollapseItemProps) => {
+const VariableCollapseItem = ({ name, type, value, description }: VariableCollapseItemProps) => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -267,9 +281,20 @@ const VariableCollapseItem = ({ name, type, description }: VariableCollapseItemP
       </div>
       <Collapsible isOpen={isOpen}>
         <div className="process-detail-drawer-collapse-item-content">
-          <Text type="tertiary" size="small">
-            {t('common.description')}：{description || '-'}
-          </Text>
+          <Row>
+            <Col span={12}>
+              <Text type="tertiary" size="small">
+                {t('development.processDevelopment.detail.variable.value')}：
+              </Text>
+              <Text size="small">{value || '-'}</Text>
+            </Col>
+            <Col span={12}>
+              <Text type="tertiary" size="small">
+                {t('common.description')}：
+              </Text>
+              <Text size="small">{description || '-'}</Text>
+            </Col>
+          </Row>
         </div>
       </Collapsible>
     </div>
@@ -700,6 +725,7 @@ const ProcessDetailDrawer = ({
                             key={index}
                             name={input.name}
                             type={input.type}
+                            value={input.value}
                             description={input.description}
                           />
                         ))}
@@ -721,6 +747,7 @@ const ProcessDetailDrawer = ({
                             key={index}
                             name={output.name}
                             type={output.type}
+                            value={output.value}
                             description={output.description}
                           />
                         ))}

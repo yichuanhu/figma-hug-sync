@@ -140,6 +140,9 @@
           "processOutput": "流程输出",
           "noDescription": "-"
         },
+        "variable": {
+          "value": "参数值"
+        },
         "versionTable": {
           "version": "版本号",
           "versionNote": "变更说明"
