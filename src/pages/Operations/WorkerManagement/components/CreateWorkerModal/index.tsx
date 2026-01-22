@@ -169,9 +169,9 @@ const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalPr
               label={t('common.description')}
               placeholder={t('worker.create.fields.descriptionPlaceholder')}
               autosize={{ minRows: 2, maxRows: 4 }}
-              maxCount={500}
+              maxCount={2000}
               rules={[
-                { max: 500, message: t('worker.create.validation.descriptionLengthError') },
+                { max: 2000, message: t('worker.create.validation.descriptionLengthError') },
               ]}
             />
           </div>

@@ -122,9 +122,9 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
               label={t('common.description')}
               placeholder={t('worker.create.fields.descriptionPlaceholder')}
               autosize={{ minRows: 2, maxRows: 4 }}
-              maxCount={500}
+              maxCount={2000}
               rules={[
-                { max: 500, message: t('worker.create.validation.descriptionLengthError') },
+                { max: 2000, message: t('worker.create.validation.descriptionLengthError') },
               ]}
             />
           </div>
@@ -164,7 +164,7 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
             {desktopType === 'Console' && (
               <Form.RadioGroup 
                 field="enableAutoUnlock"
-                label={t('worker.edit.fields.unlockScreen')}
+                label={t('worker.create.fields.unlockScreen')}
               >
                 <Radio value={true}>{t('common.yes')}</Radio>
                 <Radio value={false}>{t('common.no')}</Radio>
@@ -192,7 +192,7 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
             )}
             <Form.RadioGroup 
               field="forceLogin"
-              label={t('worker.detail.fields.forceLogin')}
+              label={t('worker.create.fields.forceLogin')}
             >
               <Radio value={true}>{t('common.yes')}</Radio>
               <Radio value={false}>{t('common.no')}</Radio>
