@@ -26,7 +26,6 @@ const WorkerEdit = () => {
   const [loading, setLoading] = useState(true);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [priority, setPriority] = useState<string>('MEDIUM');
   const [receiveTasks, setReceiveTasks] = useState(true);
   const [desktopType, setDesktopType] = useState<string>('Console');
   const [username, setUsername] = useState('');
@@ -40,7 +39,6 @@ const WorkerEdit = () => {
     setTimeout(() => {
       setName('财务机器人-01');
       setDescription('用于财务流程自动化的机器人');
-      setPriority('HIGH');
       setUsername('DOMAIN\\robot01');
       setLoading(false);
     }, 500);
@@ -104,16 +102,6 @@ const WorkerEdit = () => {
                   {t('common.description')}
                 </Text>
                 <TextArea value={description} onChange={setDescription} rows={3} maxCount={500} />
-              </div>
-              <div className="worker-edit-field">
-                <Text strong className="worker-edit-label">
-                  {t('worker.create.fields.priority')}
-                </Text>
-                <Select value={priority} onChange={(v) => setPriority(v as string)} className="worker-edit-select">
-                  <Select.Option value="HIGH">🔥 {t('worker.priority.high')}</Select.Option>
-                  <Select.Option value="MEDIUM">● {t('worker.priority.medium')}</Select.Option>
-                  <Select.Option value="LOW">○ {t('worker.priority.low')}</Select.Option>
-                </Select>
               </div>
               <div className="worker-edit-field">
                 <Text strong className="worker-edit-label">

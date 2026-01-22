@@ -32,7 +32,6 @@ const WorkerCreate = () => {
   const { t } = useTranslation();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [priority, setPriority] = useState<string>('MEDIUM');
   const [useSameDevice, setUseSameDevice] = useState(false);
   const [existingWorkerId, setExistingWorkerId] = useState<string>();
   const [desktopType, setDesktopType] = useState<string>('Console');
@@ -120,16 +119,6 @@ const WorkerCreate = () => {
                   rows={3}
                   maxCount={500}
                 />
-              </div>
-              <div className="worker-create-field">
-                <Text strong className="worker-create-label">
-                  {t('worker.create.fields.priority')}
-                </Text>
-                <Select value={priority} onChange={(v) => setPriority(v as string)} className="worker-create-select">
-                  <Select.Option value="HIGH">🔥 {t('worker.priority.high')}</Select.Option>
-                  <Select.Option value="MEDIUM">● {t('worker.priority.medium')}</Select.Option>
-                  <Select.Option value="LOW">○ {t('worker.priority.low')}</Select.Option>
-                </Select>
               </div>
             </div>
           </Card>
