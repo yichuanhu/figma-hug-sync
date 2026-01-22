@@ -16,6 +16,9 @@ import {
   Col,
   Modal,
   Toast,
+  Popover,
+  CheckboxGroup,
+  Space,
 } from '@douyinfe/semi-ui';
 import {
   IconSearch,
@@ -25,6 +28,7 @@ import {
   IconEditStroked,
   IconPlay,
   IconDeleteStroked,
+  IconFilter,
 } from '@douyinfe/semi-icons';
 import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
@@ -121,7 +125,7 @@ const mockCreatorNameMap: Record<string, string> = {
 
 // ============= 数据获取 - 返回LYListResponseLYProcessResponse =============
 
-const fetchProcessList = async (params: GetProcessesParams): Promise<LYListResponseLYProcessResponse> => {
+const fetchProcessList = async (params: GetProcessesParams & { statusFilter?: string[] }): Promise<LYListResponseLYProcessResponse> => {
   // 模拟网络延迟
   await new Promise((resolve) => setTimeout(resolve, 300));
 
@@ -136,6 +140,11 @@ const fetchProcessList = async (params: GetProcessesParams): Promise<LYListRespo
       (item) =>
         item.name.toLowerCase().includes(keyword) || (item.description?.toLowerCase().includes(keyword) ?? false),
     );
+  }
+
+  // 状态筛选
+  if (params.statusFilter && params.statusFilter.length > 0) {
+    filteredData = filteredData.filter((item) => params.statusFilter!.includes(item.status));
   }
 
   // 排序处理
@@ -203,6 +212,11 @@ const ProcessDevelopment = () => {
     sort_order: 'desc',
   });
 
+  // 状态筛选
+  const [statusFilter, setStatusFilter] = useState<string[]>([]);
+  const [tempStatusFilter, setTempStatusFilter] = useState<string[]>([]);
+  const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
+
   const [loading, setLoading] = useState(true);
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
@@ -218,16 +232,23 @@ const ProcessDevelopment = () => {
 
   const { openProcess, OpenProcessModal } = useOpenProcess();
 
+  // 状态选项
+  const statusOptions = useMemo(() => [
+    { value: 'DEVELOPING', label: t('development.processDevelopment.status.developing') },
+    { value: 'PUBLISHED', label: t('development.processDevelopment.status.published') },
+    { value: 'ARCHIVED', label: t('development.processDevelopment.status.archived') },
+  ], [t]);
+
   // 加载数据
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetchProcessList(queryParams);
+      const response = await fetchProcessList({ ...queryParams, statusFilter });
       setListResponse(response);
     } finally {
       setLoading(false);
     }
-  }, [queryParams]);
+  }, [queryParams, statusFilter]);
 
   // 初始化加载
   useEffect(() => {
@@ -468,15 +489,74 @@ const ProcessDevelopment = () => {
         {/* 操作栏 */}
         <Row type="flex" justify="space-between" align="middle" className="process-development-header-toolbar">
           <Col>
-            <Input
-              prefix={<IconSearch />}
-              placeholder={t('development.processDevelopment.searchPlaceholder')}
-              className="process-development-search-input"
-              value={queryParams.keyword || ''}
-              onChange={handleSearch}
-              showClear
-              maxLength={100}
-            />
+            <Space>
+              <Input
+                prefix={<IconSearch />}
+                placeholder={t('development.processDevelopment.searchPlaceholder')}
+                className="process-development-search-input"
+                value={queryParams.keyword || ''}
+                onChange={handleSearch}
+                showClear
+                maxLength={100}
+              />
+              <Popover
+                visible={filterPopoverVisible}
+                onVisibleChange={setFilterPopoverVisible}
+                trigger="click"
+                position="bottomLeft"
+                content={
+                  <div className="process-development-filter-popover">
+                    <div className="process-development-filter-popover-title">
+                      {t('common.status')}
+                    </div>
+                    <CheckboxGroup
+                      value={tempStatusFilter}
+                      onChange={(values) => setTempStatusFilter(values as string[])}
+                      options={statusOptions}
+                      direction="vertical"
+                    />
+                    <div className="process-development-filter-popover-actions">
+                      <Button
+                        size="small"
+                        onClick={() => {
+                          setTempStatusFilter([]);
+                        }}
+                      >
+                        {t('common.reset')}
+                      </Button>
+                      <Button
+                        size="small"
+                        theme="solid"
+                        type="primary"
+                        onClick={() => {
+                          setStatusFilter(tempStatusFilter);
+                          setQueryParams((prev) => ({ ...prev, offset: 0 }));
+                          setFilterPopoverVisible(false);
+                        }}
+                      >
+                        {t('common.confirm')}
+                      </Button>
+                    </div>
+                  </div>
+                }
+                onClickOutSide={() => {
+                  setTempStatusFilter(statusFilter);
+                  setFilterPopoverVisible(false);
+                }}
+              >
+                <Button
+                  icon={<IconFilter />}
+                  type={statusFilter.length > 0 ? 'primary' : 'tertiary'}
+                  theme={statusFilter.length > 0 ? 'light' : 'borderless'}
+                  onClick={() => {
+                    setTempStatusFilter(statusFilter);
+                    setFilterPopoverVisible(true);
+                  }}
+                >
+                  {t('common.filter')}{statusFilter.length > 0 ? ` (${statusFilter.length})` : ''}
+                </Button>
+              </Popover>
+            </Space>
           </Col>
           <Col>
             <Button icon={<IconPlus />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
