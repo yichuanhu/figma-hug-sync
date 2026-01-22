@@ -1,10 +1,9 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Breadcrumb,
   Button,
-  Select,
   Table,
   Tag,
   Toast,
@@ -12,12 +11,18 @@ import {
   Col,
   DatePicker,
   Image,
+  Typography,
+  Popover,
+  CheckboxGroup,
+  Space,
 } from '@douyinfe/semi-ui';
-import { IconDownload } from '@douyinfe/semi-icons';
+import { IconDownload, IconFilter } from '@douyinfe/semi-icons';
 import AppLayout from '@/components/layout/AppLayout';
 import type { LYRangeResponse } from '@/api/index';
 
 import './index.less';
+
+const { Title, Text } = Typography;
 
 // 使用记录类型
 type UsageType = 'debug' | 'task';
@@ -60,7 +65,7 @@ const generateMockUsageRecord = (index: number, context: 'development' | 'schedu
 
   return {
     id: generateUUID(),
-    user_id: generateUUID(),
+    user_id: `user-${(index % 5) + 1}`,
     user_name: users[index % users.length],
     usage_time: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
     usage_type: context === 'development' ? 'debug' : 'task',
@@ -83,7 +88,7 @@ const fetchUsageList = async (
   params: {
     credentialId: string;
     context: 'development' | 'scheduling';
-    userId?: string;
+    userFilter?: string[];
     startDate?: Date;
     endDate?: Date;
     offset?: number;
@@ -95,8 +100,8 @@ const fetchUsageList = async (
   let data = generateMockUsageList(params.context);
 
   // 使用者筛选
-  if (params.userId) {
-    data = data.filter((item) => item.user_id === params.userId);
+  if (params.userFilter && params.userFilter.length > 0) {
+    data = data.filter((item) => params.userFilter!.includes(item.user_id));
   }
 
   // 时间段筛选
@@ -120,18 +125,6 @@ const fetchUsageList = async (
       total,
     },
   };
-};
-
-// 获取所有使用者列表
-const fetchUserList = async (): Promise<{ value: string; label: string }[]> => {
-  await new Promise((resolve) => setTimeout(resolve, 200));
-  return [
-    { value: '', label: '全部使用者' },
-    { value: 'user-1', label: '张三' },
-    { value: 'user-2', label: '李四' },
-    { value: 'user-3', label: '王五' },
-    { value: 'user-4', label: '赵六' },
-  ];
 };
 
 interface QueryParams {
@@ -161,20 +154,22 @@ const CredentialUsagePage = () => {
   });
 
   // 筛选条件
-  const [selectedUser, setSelectedUser] = useState<string>('');
+  const [userFilter, setUserFilter] = useState<string[]>([]);
   const [dateRange, setDateRange] = useState<[Date, Date] | null>(null);
+  const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
 
   // 列表数据
   const [listResponse, setListResponse] = useState<CredentialUsageListResponse | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // 使用者列表
-  const [userOptions, setUserOptions] = useState<{ value: string; label: string }[]>([]);
-
-  // 加载使用者列表
-  useEffect(() => {
-    fetchUserList().then(setUserOptions);
-  }, []);
+  // 使用者筛选选项
+  const userFilterOptions = [
+    { value: 'user-1', label: '张三' },
+    { value: 'user-2', label: '李四' },
+    { value: 'user-3', label: '王五' },
+    { value: 'user-4', label: '赵六' },
+    { value: 'user-5', label: '钱七' },
+  ];
 
   // 加载数据
   const loadData = useCallback(async () => {
@@ -185,7 +180,7 @@ const CredentialUsagePage = () => {
       const response = await fetchUsageList({
         credentialId,
         context,
-        userId: selectedUser || undefined,
+        userFilter: userFilter.length > 0 ? userFilter : undefined,
         startDate: dateRange?.[0],
         endDate: dateRange?.[1],
         offset: (queryParams.page - 1) * queryParams.pageSize,
@@ -198,22 +193,11 @@ const CredentialUsagePage = () => {
     } finally {
       setLoading(false);
     }
-  }, [credentialId, context, selectedUser, dateRange, queryParams, t]);
+  }, [credentialId, context, userFilter, dateRange, queryParams, t]);
 
   useEffect(() => {
     loadData();
   }, [loadData]);
-
-  // 筛选变化
-  const handleUserFilter = (value: string) => {
-    setSelectedUser(value);
-    setQueryParams((prev) => ({ ...prev, page: 1 }));
-  };
-
-  const handleDateRangeChange = (dates: [Date, Date] | null) => {
-    setDateRange(dates);
-    setQueryParams((prev) => ({ ...prev, page: 1 }));
-  };
 
   // 分页变化
   const handlePageChange = (page: number) => {
@@ -225,14 +209,6 @@ const CredentialUsagePage = () => {
     Toast.info(t('credential.usage.exporting'));
     await new Promise((resolve) => setTimeout(resolve, 1000));
     Toast.success(t('credential.usage.exportSuccess'));
-  };
-
-  // 返回凭据列表
-  const handleBack = () => {
-    const basePath = context === 'development'
-      ? '/dev-center/business-assets/credentials'
-      : '/scheduling-center/business-assets/credentials';
-    navigate(basePath);
   };
 
   // 格式化时间
@@ -248,6 +224,9 @@ const CredentialUsagePage = () => {
     });
   };
 
+  // 计算筛选数量
+  const filterCount = userFilter.length + (dateRange ? 1 : 0);
+
   // 表格列定义
   const columns = [
     {
@@ -255,9 +234,6 @@ const CredentialUsagePage = () => {
       dataIndex: 'user_name',
       key: 'user_name',
       width: 120,
-      render: (text: string) => (
-        <span className="credential-usage-page-table-user">{text}</span>
-      ),
     },
     {
       title: t('credential.usage.table.usageTime'),
@@ -272,7 +248,7 @@ const CredentialUsagePage = () => {
       key: 'usage_type',
       width: 100,
       render: (type: UsageType) => (
-        <Tag color={type === 'debug' ? 'blue' : 'green'}>
+        <Tag color={type === 'debug' ? 'blue' : 'green'} type="light">
           {t(`credential.usage.type.${type}`)}
         </Tag>
       ),
@@ -282,9 +258,6 @@ const CredentialUsagePage = () => {
       dataIndex: 'process_name',
       key: 'process_name',
       width: 160,
-      render: (text: string) => (
-        <span className="credential-usage-page-table-process">{text}</span>
-      ),
     },
     {
       title: t('credential.usage.table.processVersion'),
@@ -304,7 +277,7 @@ const CredentialUsagePage = () => {
       key: 'task_id',
       width: 140,
       render: (text: string | null) => (
-        <span className="credential-usage-page-table-task">{text || '-'}</span>
+        <span className="credential-usage-page-cell-task">{text || '-'}</span>
       ),
     },
     {
@@ -345,8 +318,6 @@ const CredentialUsagePage = () => {
   // 分页信息
   const range = listResponse?.range;
   const total = range?.total || 0;
-  const start = range ? range.offset + 1 : 0;
-  const end = range ? range.offset + (listResponse?.data?.length || 0) : 0;
 
   return (
     <AppLayout>
@@ -365,49 +336,83 @@ const CredentialUsagePage = () => {
           </Breadcrumb>
         </div>
 
-        {/* 标题工具栏 */}
+        {/* 标题区域 */}
         <div className="credential-usage-page-header">
-          <Row type="flex" justify="space-between" align="middle">
+          <div className="credential-usage-page-header-title">
+            <Title heading={3} className="title">
+              {t('credential.usage.title')}
+              {credentialName && (
+                <Text type="tertiary" className="credential-usage-page-header-subtitle">
+                  - {credentialName}
+                </Text>
+              )}
+            </Title>
+            <Text type="tertiary">{t('credential.usage.description')}</Text>
+          </div>
+
+          {/* 操作栏 */}
+          <Row type="flex" justify="space-between" align="middle" className="credential-usage-page-header-toolbar">
             <Col>
-              <Row type="flex" align="middle">
-                <h1 className="credential-usage-page-header-title">
-                  {t('credential.usage.title')}
-                </h1>
-                {credentialName && (
-                  <span className="credential-usage-page-header-subtitle">
-                    - {credentialName}
-                  </span>
-                )}
-              </Row>
+              <Space>
+                <DatePicker
+                  type="dateRange"
+                  placeholder={[t('common.startDate'), t('common.endDate')]}
+                  value={dateRange || undefined}
+                  onChange={(dates) => {
+                    setDateRange(dates as [Date, Date] | null);
+                    setQueryParams((prev) => ({ ...prev, page: 1 }));
+                  }}
+                  className="credential-usage-page-date-picker"
+                />
+                <Popover
+                  visible={filterPopoverVisible}
+                  onVisibleChange={setFilterPopoverVisible}
+                  trigger="click"
+                  position="bottomLeft"
+                  content={
+                    <div className="credential-usage-filter-popover">
+                      <div className="credential-usage-filter-popover-section">
+                        <Text strong className="credential-usage-filter-popover-label">
+                          {t('credential.usage.filter.user')}
+                        </Text>
+                        <CheckboxGroup
+                          value={userFilter}
+                          onChange={(values) => {
+                            setUserFilter(values as string[]);
+                            setQueryParams((prev) => ({ ...prev, page: 1 }));
+                          }}
+                          options={userFilterOptions}
+                          direction="vertical"
+                        />
+                      </div>
+                      <div className="credential-usage-filter-popover-footer">
+                        <Button theme="borderless" onClick={() => {
+                          setUserFilter([]);
+                          setQueryParams((prev) => ({ ...prev, page: 1 }));
+                        }} disabled={userFilter.length === 0}>
+                          {t('common.reset')}
+                        </Button>
+                        <Button theme="solid" type="primary" onClick={() => setFilterPopoverVisible(false)}>
+                          {t('common.confirm')}
+                        </Button>
+                      </div>
+                    </div>
+                  }
+                >
+                  <Button
+                    icon={<IconFilter />}
+                    type={filterCount > 0 ? 'primary' : 'tertiary'}
+                    theme={filterCount > 0 ? 'solid' : 'light'}
+                  >
+                    {t('common.filter')}{filterCount > 0 ? ` (${filterCount})` : ''}
+                  </Button>
+                </Popover>
+              </Space>
             </Col>
             <Col>
               <Button icon={<IconDownload />} onClick={handleExport}>
                 {t('common.export')}
               </Button>
-            </Col>
-          </Row>
-        </div>
-
-        {/* 筛选工具栏 */}
-        <div className="credential-usage-page-toolbar">
-          <Row type="flex" gutter={12}>
-            <Col>
-              <Select
-                className="credential-usage-page-toolbar-select"
-                placeholder={t('credential.usage.filter.user')}
-                optionList={userOptions}
-                value={selectedUser}
-                onChange={handleUserFilter}
-              />
-            </Col>
-            <Col>
-              <DatePicker
-                className="credential-usage-page-toolbar-date"
-                type="dateRange"
-                placeholder={[t('common.startTime'), t('common.endTime')]}
-                value={dateRange || undefined}
-                onChange={(dates) => handleDateRangeChange(dates as [Date, Date] | null)}
-              />
             </Col>
           </Row>
         </div>
@@ -424,17 +429,12 @@ const CredentialUsagePage = () => {
               pageSize: queryParams.pageSize,
               total,
               onPageChange: handlePageChange,
+              showSizeChanger: true,
+              showTotal: true,
             }}
             scroll={{ y: 'calc(100vh - 320px)' }}
           />
         </div>
-
-        {/* 分页信息 */}
-        {total > 0 && (
-          <div className="credential-usage-page-pagination-info">
-            {t('common.showingRecords', { start, end, total })}
-          </div>
-        )}
       </div>
     </AppLayout>
   );

@@ -25,6 +25,8 @@
     "showingRecords": "显示第 {{start}} 条-第 {{end}} 条，共 {{total}} 条",
     "startTime": "开始时间",
     "endTime": "结束时间",
+    "startDate": "开始日期",
+    "endDate": "结束日期",
     "yes": "是",
     "no": "否",
     "copy": "复制",
@@ -149,6 +151,7 @@
     },
     "usage": {
       "title": "使用记录",
+      "description": "查看凭据被流程使用的详细记录",
       "loadError": "加载使用记录失败",
       "exporting": "正在导出...",
       "exportSuccess": "导出成功",
