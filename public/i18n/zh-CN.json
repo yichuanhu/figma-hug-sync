@@ -102,6 +102,7 @@
         },
         "versionList": {
           "title": "版本列表",
+          "titleTooltip": "切换版本后，已经生成的任务仍使用切换前的版本运行，新生成的任务将采用切换后的版本运行",
           "uploadVersion": "上传版本",
           "deleteVersion": "删除此版本",
           "activateSuccess": "版本 {{version}} 已激活",
