@@ -121,125 +121,127 @@ const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalPr
           displaySize: '1920x1080',
         }}
       >
-        <div className="create-worker-modal-section">
-          <div className="create-worker-modal-section-title">{t('worker.create.basicInfo')}</div>
-          <Form.Input
-            field="name"
-            label={t('worker.detail.fields.workerName')}
-            placeholder={t('worker.create.fields.workerNamePlaceholder')}
-            trigger="blur"
-            rules={[
-              { required: true, message: t('worker.create.validation.nameRequired') },
-              { min: 2, message: t('worker.create.validation.nameLengthError') },
-              { max: 50, message: t('worker.create.validation.nameLengthError') },
-              { validator: validateWorkerNameUnique },
-            ]}
-            showClear
-          />
-          <Form.TextArea
-            field="description"
-            label={t('common.description')}
-            placeholder={t('worker.create.fields.descriptionPlaceholder')}
-            autosize={{ minRows: 2, maxRows: 4 }}
-            maxCount={500}
-            rules={[
-              { max: 500, message: t('worker.create.validation.descriptionLengthError') },
-            ]}
-          />
-        </div>
-
-        <div className="create-worker-modal-section">
-          <div className="create-worker-modal-section-title">{t('worker.create.runtimeConfig')}</div>
-          <div className="create-worker-modal-field">
-            <Checkbox 
-              checked={useSameDevice} 
-              onChange={(e) => setUseSameDevice(e.target.checked)}
-            >
-              {t('worker.create.fields.useSameDevice')}
-            </Checkbox>
+        <div className="create-worker-modal-content">
+          <div className="create-worker-modal-section">
+            <div className="create-worker-modal-section-title">{t('worker.create.basicInfo')}</div>
+            <Form.Input
+              field="name"
+              label={t('worker.detail.fields.workerName')}
+              placeholder={t('worker.create.fields.workerNamePlaceholder')}
+              trigger="blur"
+              rules={[
+                { required: true, message: t('worker.create.validation.nameRequired') },
+                { min: 2, message: t('worker.create.validation.nameLengthError') },
+                { max: 50, message: t('worker.create.validation.nameLengthError') },
+                { validator: validateWorkerNameUnique },
+              ]}
+              showClear
+            />
+            <Form.TextArea
+              field="description"
+              label={t('common.description')}
+              placeholder={t('worker.create.fields.descriptionPlaceholder')}
+              autosize={{ minRows: 2, maxRows: 4 }}
+              maxCount={500}
+              rules={[
+                { max: 500, message: t('worker.create.validation.descriptionLengthError') },
+              ]}
+            />
           </div>
-          {useSameDevice && (
-            <Form.Select
-              field="existingWorkerId"
-              label={t('worker.create.fields.selectWorker')}
-              placeholder={t('worker.create.fields.selectWorker')}
-              className="create-worker-modal-select-full"
-            >
-              {existingWorkers.map((w) => (
-                <Select.Option key={w.id} value={w.id}>
-                  {w.name}
-                </Select.Option>
-              ))}
-            </Form.Select>
-          )}
-          <Form.RadioGroup
-            field="desktopType"
-            label={t('worker.create.fields.desktopType')}
-            initValue="Console"
-            onChange={(e) => setDesktopType(e.target.value)}
-          >
-            <Radio value="Console">{t('worker.create.fields.localDesktop')}</Radio>
-            <Radio value="NotConsole">{t('worker.create.fields.remoteDesktop')}</Radio>
-          </Form.RadioGroup>
-        </div>
 
-        <div className="create-worker-modal-section">
-          <div className="create-worker-modal-section-title">{t('worker.create.connectionParams')}</div>
-          <Form.Input
-            field="username"
-            label={t('worker.create.fields.account')}
-            placeholder={t('worker.create.fields.accountPlaceholder')}
-            trigger="blur"
-            rules={[
-              { required: true, message: t('worker.create.validation.accountRequired') },
-              { min: 2, message: t('worker.create.validation.accountLengthError') },
-              { max: 100, message: t('worker.create.validation.accountLengthError') },
-            ]}
-            showClear
-          />
-          <Form.Input
-            field="password"
-            label={t('worker.create.fields.password')}
-            placeholder={t('worker.create.fields.passwordPlaceholder')}
-            mode="password"
-          />
-          {desktopType === 'Console' && (
+          <div className="create-worker-modal-section">
+            <div className="create-worker-modal-section-title">{t('worker.create.runtimeConfig')}</div>
+            <div className="create-worker-modal-field">
+              <Checkbox 
+                checked={useSameDevice} 
+                onChange={(e) => setUseSameDevice(e.target.checked)}
+              >
+                {t('worker.create.fields.useSameDevice')}
+              </Checkbox>
+            </div>
+            {useSameDevice && (
+              <Form.Select
+                field="existingWorkerId"
+                label={t('worker.create.fields.selectWorker')}
+                placeholder={t('worker.create.fields.selectWorker')}
+                className="create-worker-modal-select-full"
+              >
+                {existingWorkers.map((w) => (
+                  <Select.Option key={w.id} value={w.id}>
+                    {w.name}
+                  </Select.Option>
+                ))}
+              </Form.Select>
+            )}
+            <Form.RadioGroup
+              field="desktopType"
+              label={t('worker.create.fields.desktopType')}
+              initValue="Console"
+              onChange={(e) => setDesktopType(e.target.value)}
+            >
+              <Radio value="Console">{t('worker.create.fields.localDesktop')}</Radio>
+              <Radio value="NotConsole">{t('worker.create.fields.remoteDesktop')}</Radio>
+            </Form.RadioGroup>
+          </div>
+
+          <div className="create-worker-modal-section">
+            <div className="create-worker-modal-section-title">{t('worker.create.connectionParams')}</div>
+            <Form.Input
+              field="username"
+              label={t('worker.create.fields.account')}
+              placeholder={t('worker.create.fields.accountPlaceholder')}
+              trigger="blur"
+              rules={[
+                { required: true, message: t('worker.create.validation.accountRequired') },
+                { min: 2, message: t('worker.create.validation.accountLengthError') },
+                { max: 100, message: t('worker.create.validation.accountLengthError') },
+              ]}
+              showClear
+            />
+            <Form.Input
+              field="password"
+              label={t('worker.create.fields.password')}
+              placeholder={t('worker.create.fields.passwordPlaceholder')}
+              mode="password"
+            />
+            {desktopType === 'Console' && (
+              <Form.RadioGroup 
+                field="enableAutoUnlock"
+                label={t('worker.create.fields.unlockScreen')}
+              >
+                <Radio value={true}>{t('common.yes')}</Radio>
+                <Radio value={false}>{t('common.no')}</Radio>
+              </Form.RadioGroup>
+            )}
+            {desktopType === 'NotConsole' && (
+              <Form.Select
+                field="displaySize"
+                label={t('worker.detail.fields.resolution')}
+                placeholder={t('worker.create.fields.resolutionPlaceholder')}
+                className="create-worker-modal-select-full"
+                optionList={[
+                  { value: '1024x768', label: '1024x768' },
+                  { value: '1280x720', label: '1280x720 (HD)' },
+                  { value: '1280x800', label: '1280x800' },
+                  { value: '1366x768', label: '1366x768' },
+                  { value: '1440x900', label: '1440x900' },
+                  { value: '1600x900', label: '1600x900' },
+                  { value: '1680x1050', label: '1680x1050' },
+                  { value: '1920x1080', label: '1920x1080 (Full HD)' },
+                  { value: '1920x1200', label: '1920x1200' },
+                  { value: '2560x1440', label: '2560x1440 (2K)' },
+                  { value: '3840x2160', label: '3840x2160 (4K)' },
+                ]}
+              />
+            )}
             <Form.RadioGroup 
-              field="enableAutoUnlock"
-              label={t('worker.create.fields.unlockScreen')}
+              field="forceLogin"
+              label={t('worker.create.fields.forceLogin')}
             >
               <Radio value={true}>{t('common.yes')}</Radio>
               <Radio value={false}>{t('common.no')}</Radio>
             </Form.RadioGroup>
-          )}
-          {desktopType === 'NotConsole' && (
-            <Form.Select
-              field="displaySize"
-              label={t('worker.detail.fields.resolution')}
-              placeholder={t('worker.create.fields.resolutionPlaceholder')}
-              className="create-worker-modal-select-full"
-              optionList={[
-                { value: '1024x768', label: '1024x768' },
-                { value: '1280x720', label: '1280x720 (HD)' },
-                { value: '1280x800', label: '1280x800' },
-                { value: '1366x768', label: '1366x768' },
-                { value: '1440x900', label: '1440x900' },
-                { value: '1600x900', label: '1600x900' },
-                { value: '1680x1050', label: '1680x1050' },
-                { value: '1920x1080', label: '1920x1080 (Full HD)' },
-                { value: '1920x1200', label: '1920x1200' },
-                { value: '2560x1440', label: '2560x1440 (2K)' },
-                { value: '3840x2160', label: '3840x2160 (4K)' },
-              ]}
-            />
-          )}
-          <Form.RadioGroup 
-            field="forceLogin"
-            label={t('worker.create.fields.forceLogin')}
-          >
-            <Radio value={true}>{t('common.yes')}</Radio>
-            <Radio value={false}>{t('common.no')}</Radio>
-          </Form.RadioGroup>
+          </div>
         </div>
 
         <div className="create-worker-modal-footer">
