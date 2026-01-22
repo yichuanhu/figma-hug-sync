@@ -789,19 +789,28 @@ const ProcessDetailDrawer = ({
                       {t('development.processDevelopment.detail.versionDetail.basicInfo')}
                     </Text>
                     <Descriptions data={getVersionDescriptionData(selectedVersion)} align="left" />
-                    <Tooltip 
-                      content={selectedVersion.is_active ? t('development.processDevelopment.detail.versionList.cannotDeleteActive') : undefined}
-                    >
+                    {selectedVersion.is_active ? (
+                      <Tooltip content={t('development.processDevelopment.detail.versionList.cannotDeleteActive')}>
+                        <Button
+                          icon={<IconDeleteStroked />}
+                          type="tertiary"
+                          className="process-detail-drawer-version-detail-delete-btn"
+                          disabled
+                          onClick={() => handleDeleteVersion(selectedVersion)}
+                        >
+                          {t('development.processDevelopment.detail.versionList.deleteVersion')}
+                        </Button>
+                      </Tooltip>
+                    ) : (
                       <Button
                         icon={<IconDeleteStroked />}
                         type="tertiary"
                         className="process-detail-drawer-version-detail-delete-btn"
-                        disabled={selectedVersion.is_active}
                         onClick={() => handleDeleteVersion(selectedVersion)}
                       >
                         {t('development.processDevelopment.detail.versionList.deleteVersion')}
                       </Button>
-                    </Tooltip>
+                    )}
                   </div>
 
                   {/* 流程输入 */}
