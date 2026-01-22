@@ -105,11 +105,7 @@ const EditCredentialModal = ({
         <Form.Input
           field="credential_name"
           label={t('credential.fields.name')}
-          placeholder={t('credential.fields.namePlaceholder')}
-          rules={[
-            { required: true, message: t('credential.validation.nameRequired') },
-            { max: 30, message: t('credential.validation.nameLengthError') },
-          ]}
+          disabled
         />
 
         <div className="edit-credential-modal-type-disabled">
