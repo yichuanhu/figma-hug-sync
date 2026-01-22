@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SideSheet, Typography, Button, Tag, Descriptions, Tabs, TabPane, Table, Switch, Tooltip, Divider, Row, Col, Space } from '@douyinfe/semi-ui';
+import { SideSheet, Typography, Button, Tag, Descriptions, Switch, Tooltip, Divider, Row, Col, Space } from '@douyinfe/semi-ui';
 import { IconEditStroked, IconDeleteStroked, IconMaximize, IconMinimize, IconClose } from '@douyinfe/semi-icons';
 import type { LYWorkerResponse } from '@/api';
 import './index.less';
@@ -16,16 +16,9 @@ interface WorkerDetailDrawerProps {
   onToggleReceiveTasks?: (worker: LYWorkerResponse, checked: boolean) => void;
 }
 
-const mockChangeHistory = [
-  { key: 1, time: '2025-01-08 10:20:15', type: '修改配置', operator: 'admin', detail: '修改优先级: 高→中' },
-  { key: 2, time: '2025-01-07 16:30:22', type: '修改密码', operator: 'admin', detail: '密码已更新,同步状态: 已同步' },
-  { key: 3, time: '2025-01-07 09:15:00', type: '状态变更', operator: 'SYSTEM', detail: '状态: 离线→空闲,客户端首次连接' },
-  { key: 4, time: '2025-01-05 14:30:00', type: '创建流程机器人', operator: 'admin', detail: '创建流程机器人,运行环境: 桌面型-本地桌面型,初始状态: 离线' },
-];
 
 const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onDelete, onToggleReceiveTasks }: WorkerDetailDrawerProps) => {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState('info');
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [drawerWidth, setDrawerWidth] = useState(() => {
     const saved = localStorage.getItem('workerDetailDrawerWidth');
@@ -74,12 +67,12 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onDelete, on
 
   type WorkerStatus = LYWorkerResponse['status'];
 
-  const statusConfig: Record<WorkerStatus, { color: string; text: string; dot: string }> = {
-    OFFLINE: { color: 'grey', text: t('worker.status.offline'), dot: '⚪' },
-    IDLE: { color: 'green', text: t('worker.status.idle'), dot: '🟢' },
-    BUSY: { color: 'blue', text: t('worker.status.busy'), dot: '🔵' },
-    FAULT: { color: 'red', text: t('worker.status.fault'), dot: '🔴' },
-    MAINTENANCE: { color: 'orange', text: t('worker.status.maintenance'), dot: '🟡' },
+  const statusConfig: Record<WorkerStatus, { color: string; text: string }> = {
+    OFFLINE: { color: 'grey', text: t('worker.status.offline') },
+    IDLE: { color: 'green', text: t('worker.status.idle') },
+    BUSY: { color: 'blue', text: t('worker.status.busy') },
+    FAULT: { color: 'red', text: t('worker.status.fault') },
+    MAINTENANCE: { color: 'orange', text: t('worker.status.maintenance') },
   };
 
   const statusCfg = statusConfig[workerData.status];
@@ -95,7 +88,7 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onDelete, on
       key: t('worker.detail.fields.status'),
       value: (
         <Tag color={statusCfg.color as 'grey' | 'green' | 'blue' | 'red' | 'orange'} type="light">
-          {statusCfg.dot} {statusCfg.text}
+          {statusCfg.text}
         </Tag>
       ),
     },
@@ -122,7 +115,11 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onDelete, on
     { key: t('worker.detail.fields.account'), value: workerData.username },
     {
       key: t('worker.detail.fields.passwordSyncStatus'),
-      value: workerData.sync_status === 'SYNCED' ? t('worker.detail.syncStatusText.synced') : t('worker.detail.syncStatusText.pending'),
+      value: (
+        <Tag color={workerData.sync_status === 'SYNCED' ? 'green' : 'orange'} type="light">
+          {workerData.sync_status === 'SYNCED' ? t('worker.syncStatus.synced') : t('worker.syncStatus.pending')}
+        </Tag>
+      ),
     },
     // 远程桌面时显示强制挤占登录
     ...(isRemoteDesktop ? [{ key: t('worker.detail.fields.forceLogin'), value: workerData.force_login ? `☑ ${t('common.yes')}` : `☐ ${t('common.no')}` }] : []),
@@ -144,12 +141,6 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onDelete, on
     { key: t('worker.detail.fields.robotCount'), value: `${workerData.robot_count}台` },
   ];
 
-  const changeColumns = [
-    { title: t('worker.detail.changeHistory.time'), dataIndex: 'time', key: 'time', width: 160 },
-    { title: t('worker.detail.changeHistory.type'), dataIndex: 'type', key: 'type', width: 120 },
-    { title: t('worker.detail.changeHistory.operator'), dataIndex: 'operator', key: 'operator', width: 80 },
-    { title: t('worker.detail.changeHistory.detail'), dataIndex: 'detail', key: 'detail' },
-  ];
 
   return (
     <SideSheet
@@ -189,48 +180,38 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onDelete, on
       className={`card-sidesheet resizable-sidesheet worker-detail-drawer ${isFullscreen ? 'fullscreen-sidesheet' : ''}`}
     >
       {!isFullscreen && <div className="worker-detail-drawer-resize-handle" onMouseDown={handleMouseDown} />}
-      <Tabs activeKey={activeTab} onChange={setActiveTab} className="worker-detail-drawer-tabs">
-        <TabPane tab={t('worker.detail.tabs.info')} itemKey="info">
-          <div className="worker-detail-drawer-tab-content">
-            <div className="worker-detail-drawer-info-section">
-              <Text strong className="worker-detail-drawer-info-title">
-                {t('worker.detail.basicInfo')}
-              </Text>
-              <Descriptions data={basicInfoData} align="left" />
-            </div>
+      <div className="worker-detail-drawer-tab-content">
+        <div className="worker-detail-drawer-info-section">
+          <Text strong className="worker-detail-drawer-info-title">
+            {t('worker.detail.basicInfo')}
+          </Text>
+          <Descriptions data={basicInfoData} align="left" />
+        </div>
 
-            <div className="worker-detail-drawer-info-section">
-              <Text strong className="worker-detail-drawer-info-title">
-                {t('worker.detail.detailInfo')}
-              </Text>
-              <Descriptions data={detailInfoData} align="left" />
-            </div>
+        <div className="worker-detail-drawer-info-section">
+          <Text strong className="worker-detail-drawer-info-title">
+            {t('worker.detail.detailInfo')}
+          </Text>
+          <Descriptions data={detailInfoData} align="left" />
+        </div>
 
-            <div className="worker-detail-drawer-info-section">
-              <Text strong className="worker-detail-drawer-info-title">
-                {t('worker.detail.hostInfo')}
-              </Text>
-              <Descriptions data={hostInfoData} align="left" />
-            </div>
+        <div className="worker-detail-drawer-info-section">
+          <Text strong className="worker-detail-drawer-info-title">
+            {t('worker.detail.hostInfo')}
+          </Text>
+          <Descriptions data={hostInfoData} align="left" />
+        </div>
 
-            <div>
-              <Descriptions
-                align="left"
-                data={[
-                  { key: t('worker.detail.fields.createdAt'), value: workerData.created_at },
-                  { key: t('worker.detail.fields.creator'), value: workerData.creator_id },
-                ]}
-              />
-            </div>
-          </div>
-        </TabPane>
-
-        <TabPane tab={t('worker.detail.tabs.history')} itemKey="history">
-          <div className="worker-detail-drawer-tab-content">
-            <Table columns={changeColumns} dataSource={mockChangeHistory} pagination={{ pageSize: 10, showTotal: true }} size="small" />
-          </div>
-        </TabPane>
-      </Tabs>
+        <div>
+          <Descriptions
+            align="left"
+            data={[
+              { key: t('worker.detail.fields.createdAt'), value: workerData.created_at },
+              { key: t('worker.detail.fields.creator'), value: workerData.creator_id },
+            ]}
+          />
+        </div>
+      </div>
     </SideSheet>
   );
 };
