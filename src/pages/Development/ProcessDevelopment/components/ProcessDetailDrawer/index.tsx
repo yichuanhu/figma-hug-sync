@@ -331,6 +331,7 @@ const VariableCard = ({ variable, index, onDescriptionChange }: VariableCardProp
                 }}
                 maxLength={500}
                 showClear
+                maxCount={500}
                 autosize={{ minRows: 2, maxRows: 6 }}
               />
               <Space spacing={8} className="process-detail-drawer-variable-card-edit-actions">
