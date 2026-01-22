@@ -9,8 +9,6 @@ import CredentialUsagePage from "@/pages/Development/CredentialManagement/Creden
 // Operations
 import OperationsWorkbench from "@/pages/Operations/OperationsWorkbench";
 import WorkerManagementPage from "@/pages/Operations/WorkerManagement/WorkerManagementPage";
-import WorkerCreate from "@/pages/Operations/WorkerManagement/WorkerCreate";
-import WorkerEdit from "@/pages/Operations/WorkerManagement/WorkerEdit";
 // Maintenance
 import MaintenanceWorkbench from "@/pages/Maintenance/MaintenanceWorkbench";
 // Requirements
@@ -28,8 +26,6 @@ const App = () => (
         <Route path="/process-development" element={<Index />} />
         
         <Route path="/scheduling-center/resource-monitoring/worker-management" element={<WorkerManagementPage />} />
-        <Route path="/scheduling-center/resource-monitoring/worker-management/create" element={<WorkerCreate />} />
-        <Route path="/scheduling-center/resource-monitoring/worker-management/edit/:id" element={<WorkerEdit />} />
         <Route path="/development-workbench" element={<DevelopmentWorkbench />} />
         <Route path="/scheduling-workbench" element={<SchedulingWorkbench />} />
         <Route path="/operations-workbench" element={<OperationsWorkbench />} />
