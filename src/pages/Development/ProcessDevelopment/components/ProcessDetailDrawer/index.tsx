@@ -336,7 +336,7 @@ const VariableCard = ({ variable, index, onDescriptionChange }: VariableCardProp
                           className="process-detail-drawer-variable-card-edit-cancel"
                           onClick={handleCancelEdit}
                         >
-                          <IconClear size="small" />
+                          <IconClose size="small" />
                         </span>
                       </Space>
                     }
