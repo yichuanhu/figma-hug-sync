@@ -521,6 +521,7 @@ const WorkerManagement = () => {
       dataIndex: 'name',
       key: 'name',
       width: 200,
+      sorter: true,
       render: (name: string, record: LYWorkerResponse) => (
         <div>
           <div className="worker-name-cell-header">
@@ -540,6 +541,7 @@ const WorkerManagement = () => {
       dataIndex: 'status',
       key: 'status',
       width: 100,
+      sorter: true,
       render: (status: WorkerStatus | undefined) => {
         if (!status) return null;
         const config = statusConfig[status];
