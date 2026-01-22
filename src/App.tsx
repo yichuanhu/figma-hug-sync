@@ -4,6 +4,7 @@ import Index from "@/pages/Index";
 import NotFound from "@/pages/NotFound";
 // Development
 import DevelopmentWorkbench from "@/pages/Development/DevelopmentWorkbench";
+import CredentialManagementPage from "@/pages/Development/CredentialManagement/CredentialManagementPage";
 // Operations
 import OperationsWorkbench from "@/pages/Operations/OperationsWorkbench";
 import WorkerManagementPage from "@/pages/Operations/WorkerManagement/WorkerManagementPage";
@@ -33,6 +34,12 @@ const App = () => (
         <Route path="/operations-workbench" element={<OperationsWorkbench />} />
         <Route path="/requirements-workbench" element={<RequirementsWorkbench />} />
         <Route path="/maintenance-workbench" element={<MaintenanceWorkbench />} />
+        
+        {/* 凭据管理 - 开发中心入口 */}
+        <Route path="/dev-center/business-assets/credentials" element={<CredentialManagementPage />} />
+        {/* 凭据管理 - 调度中心入口 */}
+        <Route path="/scheduling-center/business-assets/credentials" element={<CredentialManagementPage />} />
+        
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />
       </Routes>

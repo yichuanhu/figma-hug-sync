@@ -1,0 +1,94 @@
+// CredentialManagementPage 凭据管理页面样式
+.credential-management-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+
+  // 面包屑区域
+  .credential-management-page-breadcrumb {
+    padding: 12px 24px;
+    flex-shrink: 0;
+
+    .semi-breadcrumb-item {
+      cursor: pointer;
+      color: var(--semi-color-text-2);
+
+      &:hover {
+        color: var(--semi-color-text-0);
+      }
+
+      &:last-child {
+        cursor: default;
+        color: var(--semi-color-text-2);
+
+        &:hover {
+          color: var(--semi-color-text-2);
+        }
+      }
+    }
+  }
+
+  // 标题工具栏区域
+  .credential-management-page-header {
+    padding: 0 24px 16px;
+    flex-shrink: 0;
+
+    .credential-management-page-header-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin: 0;
+    }
+  }
+
+  // 筛选工具栏
+  .credential-management-page-toolbar {
+    padding: 0 24px 16px;
+    flex-shrink: 0;
+
+    .credential-management-page-toolbar-search {
+      width: 280px;
+    }
+
+    .credential-management-page-toolbar-select {
+      width: 160px;
+    }
+  }
+
+  // 表格区域
+  .credential-management-page-table {
+    flex: 1;
+    overflow: hidden;
+    padding: 0 24px;
+
+    .credential-management-page-table-name {
+      font-weight: 500;
+      color: var(--semi-color-text-0);
+    }
+
+    .credential-management-page-table-value {
+      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+      font-size: 13px;
+      color: var(--semi-color-text-1);
+    }
+
+    .credential-management-page-table-desc {
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .credential-management-page-table-linked {
+      color: var(--semi-color-text-2);
+    }
+  }
+
+  // 分页信息
+  .credential-management-page-pagination-info {
+    padding: 12px 24px;
+    color: var(--semi-color-text-2);
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+}
