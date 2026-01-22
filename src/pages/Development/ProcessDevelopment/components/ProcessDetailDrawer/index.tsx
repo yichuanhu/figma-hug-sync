@@ -650,8 +650,8 @@ const ProcessDetailDrawer = ({
     {
       key: (
         <Space>
-          {t('development.processDevelopment.detail.versionDetail.engineVersion')}
-          <Tooltip content={t('development.processDevelopment.detail.versionDetail.engineVersion')}>
+          {t('development.processDevelopment.detail.versionDetail.developmentEnvironment')}
+          <Tooltip content={t('development.processDevelopment.detail.versionDetail.developmentEnvironment')}>
             <IconHelpCircle style={{ color: 'var(--semi-color-text-2)' }} />
           </Tooltip>
         </Space>
