@@ -103,6 +103,7 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
         </div>
       }
       width={520}
+      centered
       closeOnEsc
       maskClosable={false}
       bodyStyle={{ maxHeight: 'calc(100vh - 240px)', overflowY: 'auto', padding: '12px 24px' }}
