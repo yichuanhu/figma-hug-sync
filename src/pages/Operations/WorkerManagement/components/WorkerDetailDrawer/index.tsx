@@ -122,7 +122,14 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onDelete, on
       ),
     },
     // 远程桌面时显示强制挤占登录
-    ...(isRemoteDesktop ? [{ key: t('worker.detail.fields.forceLogin'), value: workerData.force_login ? `☑ ${t('common.yes')}` : `☐ ${t('common.no')}` }] : []),
+    ...(isRemoteDesktop ? [{ 
+      key: t('worker.detail.fields.forceLogin'), 
+      value: (
+        <Tag color={workerData.force_login ? 'green' : 'grey'} type="light">
+          {workerData.force_login ? t('common.yes') : t('common.no')}
+        </Tag>
+      ) 
+    }] : []),
     // 远程桌面时显示分辨率
     ...(isRemoteDesktop ? [{ key: t('worker.detail.fields.resolution'), value: workerData.display_size || '-' }] : []),
     { key: t('worker.detail.fields.clientVersion'), value: workerData.client_version },
