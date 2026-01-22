@@ -213,14 +213,43 @@
     }
 
     &-edit {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-
       .semi-input-wrapper {
         background-color: var(--semi-color-bg-0);
         border-color: var(--semi-color-primary);
-        box-shadow: 0 0 0 2px var(--semi-color-primary-light-default);
+      }
+
+      &-actions {
+        display: flex;
+        align-items: center;
+      }
+
+      &-confirm,
+      &-cancel {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      &-confirm {
+        color: var(--semi-color-primary);
+
+        &:hover {
+          background-color: var(--semi-color-primary-light-default);
+        }
+      }
+
+      &-cancel {
+        color: var(--semi-color-text-2);
+
+        &:hover {
+          color: var(--semi-color-text-0);
+          background-color: var(--semi-color-fill-1);
+        }
       }
     }
   }

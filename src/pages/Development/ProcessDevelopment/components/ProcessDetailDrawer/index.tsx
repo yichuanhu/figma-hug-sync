@@ -324,27 +324,23 @@ const VariableCard = ({ variable, index, onDescriptionChange }: VariableCardProp
                     autoFocus
                     placeholder={t('development.processDevelopment.detail.variable.editPlaceholder')}
                     onKeyDown={handleKeyDown}
+                    suffix={
+                      <Space spacing={2} className="process-detail-drawer-variable-card-edit-actions">
+                        <span 
+                          className="process-detail-drawer-variable-card-edit-confirm"
+                          onClick={handleConfirmEdit}
+                        >
+                          <IconTick size="small" />
+                        </span>
+                        <span 
+                          className="process-detail-drawer-variable-card-edit-cancel"
+                          onClick={handleCancelEdit}
+                        >
+                          <IconClear size="small" />
+                        </span>
+                      </Space>
+                    }
                   />
-                  <Space spacing={4}>
-                    <Tooltip content={t('common.confirm')}>
-                      <Button
-                        icon={<IconTick />}
-                        theme="solid"
-                        size="small"
-                        type="primary"
-                        onClick={handleConfirmEdit}
-                      />
-                    </Tooltip>
-                    <Tooltip content={t('common.cancel')}>
-                      <Button
-                        icon={<IconClear />}
-                        theme="light"
-                        size="small"
-                        type="tertiary"
-                        onClick={handleCancelEdit}
-                      />
-                    </Tooltip>
-                  </Space>
                 </div>
               ) : (
                 <div 
