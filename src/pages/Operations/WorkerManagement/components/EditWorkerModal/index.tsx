@@ -181,13 +181,13 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
             mode="password"
           />
           {desktopType === 'Console' && (
-            <div className="edit-worker-modal-field">
-              <Form.Label>{t('worker.edit.fields.unlockScreen')}</Form.Label>
-              <Form.RadioGroup field="enableAutoUnlock">
-                <Radio value={true}>{t('common.yes')}</Radio>
-                <Radio value={false}>{t('common.no')}</Radio>
-              </Form.RadioGroup>
-            </div>
+            <Form.RadioGroup 
+              field="enableAutoUnlock"
+              label={t('worker.edit.fields.unlockScreen')}
+            >
+              <Radio value={true}>{t('common.yes')}</Radio>
+              <Radio value={false}>{t('common.no')}</Radio>
+            </Form.RadioGroup>
           )}
           {desktopType === 'NotConsole' && (
             <Form.Select
@@ -208,13 +208,13 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
               ]}
             />
           )}
-          <div className="edit-worker-modal-field">
-            <Form.Label>{t('worker.detail.fields.forceLogin')}</Form.Label>
-            <Form.RadioGroup field="forceLogin">
-              <Radio value={true}>{t('common.yes')}</Radio>
-              <Radio value={false}>{t('common.no')}</Radio>
-            </Form.RadioGroup>
-          </div>
+          <Form.RadioGroup 
+            field="forceLogin"
+            label={t('worker.detail.fields.forceLogin')}
+          >
+            <Radio value={true}>{t('common.yes')}</Radio>
+            <Radio value={false}>{t('common.no')}</Radio>
+          </Form.RadioGroup>
         </div>
       </Form>
     </Modal>

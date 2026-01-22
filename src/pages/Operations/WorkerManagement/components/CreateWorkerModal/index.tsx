@@ -224,13 +224,13 @@ const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalPr
             mode="password"
           />
           {desktopType === 'Console' && (
-            <div className="create-worker-modal-field">
-              <Form.Label>{t('worker.create.fields.unlockScreen')}</Form.Label>
-              <Form.RadioGroup field="enableAutoUnlock">
-                <Radio value={true}>{t('common.yes')}</Radio>
-                <Radio value={false}>{t('common.no')}</Radio>
-              </Form.RadioGroup>
-            </div>
+            <Form.RadioGroup 
+              field="enableAutoUnlock"
+              label={t('worker.create.fields.unlockScreen')}
+            >
+              <Radio value={true}>{t('common.yes')}</Radio>
+              <Radio value={false}>{t('common.no')}</Radio>
+            </Form.RadioGroup>
           )}
           {desktopType === 'NotConsole' && (
             <Form.Select
@@ -252,13 +252,13 @@ const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalPr
               ]}
             />
           )}
-          <div className="create-worker-modal-field">
-            <Form.Label>{t('worker.create.fields.forceLogin')}</Form.Label>
-            <Form.RadioGroup field="forceLogin">
-              <Radio value={true}>{t('common.yes')}</Radio>
-              <Radio value={false}>{t('common.no')}</Radio>
-            </Form.RadioGroup>
-          </div>
+          <Form.RadioGroup 
+            field="forceLogin"
+            label={t('worker.create.fields.forceLogin')}
+          >
+            <Radio value={true}>{t('common.yes')}</Radio>
+            <Radio value={false}>{t('common.no')}</Radio>
+          </Form.RadioGroup>
         </div>
       </Form>
     </Modal>
