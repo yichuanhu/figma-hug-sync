@@ -1,35 +1,39 @@
 // CreateWorkerModal 创建机器人弹窗样式
-.create-worker-modal-form {
-  .create-worker-modal-section {
-    margin-bottom: 16px;
-
-    .create-worker-modal-section-title {
-      font-weight: 600;
-      font-size: 14px;
-      color: var(--semi-color-text-0);
-      margin-bottom: 12px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--semi-color-border);
-    }
+.create-worker-modal {
+  &-form {
+    padding-top: 4px;
+    max-height: calc(100vh - 240px);
+    overflow-y: auto;
   }
 
-  .create-worker-modal-field {
+  &-section {
+    margin-bottom: 16px;
+  }
+
+  &-section-title {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--semi-color-text-0);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--semi-color-border);
+  }
+
+  &-field {
     margin-bottom: 12px;
   }
 
-  .create-worker-modal-select-full {
+  &-select-full {
     width: 100%;
   }
 
-  .semi-form-field {
-    .semi-select {
-      width: 100%;
-    }
+  &-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 12px;
+    padding-top: 16px;
+    padding-bottom: 12px;
+    border-top: 1px solid var(--semi-color-border);
   }
-}
-
-.create-worker-modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
 }
