@@ -133,6 +133,16 @@
       "confirmMessage": "确定删除该凭据吗？关联此凭据的流程可能无法正常运行。",
       "success": "凭据删除成功"
     },
+    "detail": {
+      "basicInfo": "基本信息",
+      "linkedInfo": "关联信息",
+      "systemInfo": "系统信息",
+      "name": "凭据名称",
+      "type": "凭据类型",
+      "testValue": "凭据值（测试）",
+      "productionValue": "凭据值（生产）",
+      "linkedPersonalCredential": "关联个人凭据"
+    },
     "actions": {
       "viewUsage": "查看使用记录"
     },
