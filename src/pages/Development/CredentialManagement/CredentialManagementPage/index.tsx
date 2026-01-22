@@ -36,6 +36,7 @@ import type {
 import CreateCredentialModal from '../components/CreateCredentialModal';
 import EditCredentialModal from '../components/EditCredentialModal';
 import CredentialDetailDrawer from '../components/CredentialDetailDrawer';
+import LinkPersonalCredentialModal from '../components/LinkPersonalCredentialModal';
 
 import './index.less';
 
@@ -166,6 +167,8 @@ const CredentialManagementPage = () => {
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
+  const [linkPersonalModalVisible, setLinkPersonalModalVisible] = useState(false);
+  const [linkingCredential, setLinkingCredential] = useState<LYCredentialResponse | null>(null);
 
   // 加载数据
   const loadData = useCallback(async () => {
@@ -247,6 +250,12 @@ const CredentialManagementPage = () => {
       ? '/dev-center/business-assets/credentials'
       : '/scheduling-center/business-assets/credentials';
     navigate(`${basePath}/${record.credential_id}/usage?name=${encodeURIComponent(record.credential_name)}`);
+  };
+
+  // 关联个人凭据
+  const handleLinkPersonal = (record: LYCredentialResponse) => {
+    setLinkingCredential(record);
+    setLinkPersonalModalVisible(true);
   };
 
   // 分页变化
@@ -335,6 +344,11 @@ const CredentialManagementPage = () => {
               <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>
                 {t('common.edit')}
               </Dropdown.Item>
+              {record.credential_type === 'PERSONAL_REF' && (
+                <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleLinkPersonal(record); }}>
+                  {t('credential.actions.linkPersonal')}
+                </Dropdown.Item>
+              )}
               <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleViewUsage(record); }}>
                 {t('credential.actions.viewUsage')}
               </Dropdown.Item>
@@ -531,6 +545,21 @@ const CredentialManagementPage = () => {
             loadData();
           }}
           onRefresh={loadData}
+        />
+
+        {/* 关联个人凭据模态框 */}
+        <LinkPersonalCredentialModal
+          visible={linkPersonalModalVisible}
+          credential={linkingCredential}
+          onCancel={() => {
+            setLinkPersonalModalVisible(false);
+            setLinkingCredential(null);
+          }}
+          onSuccess={() => {
+            setLinkPersonalModalVisible(false);
+            setLinkingCredential(null);
+            loadData();
+          }}
         />
       </div>
     </AppLayout>
