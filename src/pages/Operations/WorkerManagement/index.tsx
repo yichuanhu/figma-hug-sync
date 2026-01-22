@@ -718,6 +718,7 @@ const WorkerManagement = () => {
         workerData={selectedWorker}
         onEdit={handleEditFromDrawer}
         onDelete={handleDeleteFromDrawer}
+        onToggleReceiveTasks={handleToggleReceiveTasks}
       />
 
       {/* 密钥弹窗 */}

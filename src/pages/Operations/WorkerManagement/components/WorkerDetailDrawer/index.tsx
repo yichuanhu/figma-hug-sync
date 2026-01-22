@@ -13,6 +13,7 @@ interface WorkerDetailDrawerProps {
   workerData: LYWorkerResponse | null;
   onEdit?: () => void;
   onDelete?: () => void;
+  onToggleReceiveTasks?: (worker: LYWorkerResponse, checked: boolean) => void;
 }
 
 const mockChangeHistory = [
@@ -22,7 +23,7 @@ const mockChangeHistory = [
   { key: 4, time: '2025-01-05 14:30:00', type: '创建流程机器人', operator: 'admin', detail: '创建流程机器人,运行环境: 桌面型-本地桌面型,初始状态: 离线' },
 ];
 
-const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onDelete }: WorkerDetailDrawerProps) => {
+const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onDelete, onToggleReceiveTasks }: WorkerDetailDrawerProps) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('info');
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -72,7 +73,6 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onDelete }: 
   if (!workerData) return null;
 
   type WorkerStatus = LYWorkerResponse['status'];
-  type Priority = LYWorkerResponse['priority'];
 
   const statusConfig: Record<WorkerStatus, { color: string; text: string; dot: string }> = {
     OFFLINE: { color: 'grey', text: t('worker.status.offline'), dot: '⚪' },
@@ -82,14 +82,10 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onDelete }: 
     MAINTENANCE: { color: 'orange', text: t('worker.status.maintenance'), dot: '🟡' },
   };
 
-  const priorityConfig: Record<Priority, { icon: string; text: string; color: string }> = {
-    HIGH: { icon: '🔥', text: t('worker.priority.high'), color: 'red' },
-    MEDIUM: { icon: '●', text: t('worker.priority.medium'), color: 'blue' },
-    LOW: { icon: '○', text: t('worker.priority.low'), color: 'grey' },
-  };
-
   const statusCfg = statusConfig[workerData.status];
-  const priorityCfg = priorityConfig[workerData.priority];
+  
+  // 只有在线且非故障状态才允许操作接收任务开关
+  const canOperateReceiveTasks = workerData.status !== 'OFFLINE' && workerData.status !== 'FAULT';
 
   const basicInfoData = [
     { key: t('worker.detail.fields.workerName'), value: workerData.name },
@@ -103,15 +99,17 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onDelete }: 
         </Tag>
       ),
     },
-    {
-      key: t('worker.detail.fields.priority'),
+    { 
+      key: t('worker.detail.fields.receiveTasks'), 
       value: (
-        <span className={`worker-detail-drawer-priority worker-detail-drawer-priority--${priorityCfg.color}`}>
-          {priorityCfg.icon} {priorityCfg.text}
-        </span>
-      ),
+        <Switch 
+          checked={workerData.receive_tasks} 
+          size="small" 
+          disabled={!canOperateReceiveTasks}
+          onChange={(checked) => onToggleReceiveTasks?.(workerData, checked)}
+        />
+      ) 
     },
-    { key: t('worker.detail.fields.receiveTasks'), value: <Switch checked={workerData.receive_tasks} size="small" disabled /> },
   ];
 
   const isRemoteDesktop = workerData.desktop_type === 'NotConsole';
