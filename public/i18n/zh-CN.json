@@ -146,7 +146,8 @@
           "value": "参数值",
           "editSuccess": "描述修改成功",
           "editPlaceholder": "请输入描述",
-          "editTip": "点击编辑，或双击文字"
+          "editTip": "点击编辑，或双击文字",
+          "editDescTip": "编辑描述"
         },
         "versionTable": {
           "version": "版本号",
