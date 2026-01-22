@@ -209,9 +209,23 @@ interface FilterState {
   sync_status: string[];
 }
 
+interface SortState {
+  sortBy?: string;
+  sortOrder?: 'ascend' | 'descend';
+}
+
 // ============= 数据获取 - 返回LYListResponseLYWorkerResponse =============
 
-const fetchWorkerList = async (params: GetWorkersParams & { filters?: FilterState }): Promise<LYListResponseLYWorkerResponse> => {
+// 状态排序优先级
+const STATUS_ORDER: Record<string, number> = {
+  BUSY: 1,
+  IDLE: 2,
+  MAINTENANCE: 3,
+  FAULT: 4,
+  OFFLINE: 5,
+};
+
+const fetchWorkerList = async (params: GetWorkersParams & { filters?: FilterState; sort?: SortState }): Promise<LYListResponseLYWorkerResponse> => {
   // 模拟网络延迟
   await new Promise(resolve => setTimeout(resolve, 500));
   
@@ -236,6 +250,21 @@ const fetchWorkerList = async (params: GetWorkersParams & { filters?: FilterStat
     data = data.filter(item => params.filters!.sync_status.includes(item.sync_status));
   }
 
+  // 排序处理
+  if (params.sort?.sortBy && params.sort?.sortOrder) {
+    const { sortBy, sortOrder } = params.sort;
+    data.sort((a, b) => {
+      let comparison = 0;
+      
+      if (sortBy === 'name') {
+        comparison = a.name.localeCompare(b.name, 'zh-CN');
+      } else if (sortBy === 'status') {
+        comparison = (STATUS_ORDER[a.status] || 99) - (STATUS_ORDER[b.status] || 99);
+      }
+      
+      return sortOrder === 'descend' ? -comparison : comparison;
+    });
+  }
 
   const total = data.length;
   const offset = params.offset || 0;
@@ -268,6 +297,7 @@ const WorkerManagement = () => {
     status: [],
     sync_status: [],
   });
+  const [sortState, setSortState] = useState<SortState>({});
   const [filterVisible, setFilterVisible] = useState(false);
   const [loading, setLoading] = useState(true);
   
@@ -319,12 +349,13 @@ const WorkerManagement = () => {
       const response = await fetchWorkerList({
         ...queryParams,
         filters,
+        sort: sortState,
       });
       setListResponse(response);
     } finally {
       setLoading(false);
     }
-  }, [queryParams, filters]);
+  }, [queryParams, filters, sortState]);
 
   // 初始化加载
   useEffect(() => {
@@ -522,6 +553,7 @@ const WorkerManagement = () => {
       key: 'name',
       width: 200,
       sorter: true,
+      sortOrder: sortState.sortBy === 'name' ? sortState.sortOrder : undefined,
       render: (name: string, record: LYWorkerResponse) => (
         <div>
           <div className="worker-name-cell-header">
@@ -542,6 +574,7 @@ const WorkerManagement = () => {
       key: 'status',
       width: 100,
       sorter: true,
+      sortOrder: sortState.sortBy === 'status' ? sortState.sortOrder : undefined,
       render: (status: WorkerStatus | undefined) => {
         if (!status) return null;
         const config = statusConfig[status];
@@ -725,6 +758,15 @@ const WorkerManagement = () => {
             onClick: () => openDetail(record as LYWorkerResponse),
             style: { cursor: 'pointer' }
           })}
+          onChange={({ sorter }) => {
+            if (sorter) {
+              const { dataIndex, sortOrder } = sorter as { dataIndex?: string; sortOrder?: 'ascend' | 'descend' };
+              setSortState({
+                sortBy: sortOrder ? dataIndex : undefined,
+                sortOrder: sortOrder || undefined,
+              });
+            }
+          }}
           pagination={{
             total,
             pageSize,
