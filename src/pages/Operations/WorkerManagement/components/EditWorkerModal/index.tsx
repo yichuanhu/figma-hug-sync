@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { 
   Modal, 
@@ -8,6 +8,7 @@ import {
   RadioGroup,
   Radio,
 } from '@douyinfe/semi-ui';
+import type { FormApi } from '@douyinfe/semi-ui/lib/es/form';
 import type { LYWorkerResponse } from '@/api';
 import './index.less';
 
@@ -25,6 +26,7 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [desktopType, setDesktopType] = useState<string>('Console');
+  const formApiRef = useRef<FormApi>();
 
   useEffect(() => {
     if (workerData) {
@@ -46,11 +48,13 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
     return true;
   };
 
-  const handleSubmit = async (values: Record<string, unknown>) => {
-    if (!workerData?.id) return;
+  const handleSubmit = async () => {
+    if (!formApiRef.current || !workerData?.id) return;
 
-    setLoading(true);
     try {
+      const values = await formApiRef.current.validate();
+
+      setLoading(true);
       // 模拟API调用延迟
       await new Promise((resolve) => setTimeout(resolve, 300));
 
@@ -72,10 +76,13 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
       onCancel();
     } catch (error) {
       console.error('更新机器人失败:', error);
-      Toast.error(t('worker.deleteModal.error'));
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleFormMount = (formApi: FormApi) => {
+    formApiRef.current = formApi;
   };
 
   if (!workerData) return null;
@@ -85,14 +92,23 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
       title={t('worker.edit.title')}
       visible={visible}
       onCancel={onCancel}
-      footer={null}
+      footer={
+        <div className="edit-worker-modal-footer">
+          <Button theme="light" onClick={onCancel}>
+            {t('common.cancel')}
+          </Button>
+          <Button theme="solid" type="primary" onClick={handleSubmit} loading={loading}>
+            {t('common.save')}
+          </Button>
+        </div>
+      }
       width={520}
       closeOnEsc
       maskClosable={false}
-      bodyStyle={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'auto' }}
+      bodyStyle={{ maxHeight: 'calc(100vh - 240px)', overflowY: 'auto', padding: '12px 24px' }}
     >
       <Form 
-        onSubmit={handleSubmit} 
+        getFormApi={handleFormMount}
         labelPosition="top" 
         className="edit-worker-modal-form"
         initValues={{
@@ -192,15 +208,6 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
               <Radio value={false}>{t('common.no')}</Radio>
             </Form.RadioGroup>
           </div>
-        </div>
-
-        <div className="edit-worker-modal-footer">
-          <Button theme="light" onClick={onCancel}>
-            {t('common.cancel')}
-          </Button>
-          <Button htmlType="submit" theme="solid" type="primary" loading={loading}>
-            {t('common.save')}
-          </Button>
         </div>
       </Form>
     </Modal>
