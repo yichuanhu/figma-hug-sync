@@ -539,6 +539,10 @@
       "edit": "编辑",
       "delete": "删除"
     },
+    "receiveTasks": {
+      "enabled": "已开启接收任务",
+      "disabled": "已关闭接收任务"
+    },
     "deleteModal": {
       "title": "删除确认",
       "confirmMessage": "确定要删除流程机器人「{{name}}」吗？",
