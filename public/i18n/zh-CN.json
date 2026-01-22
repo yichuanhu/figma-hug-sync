@@ -41,6 +41,7 @@
     "requirementsCenter": "需求中心",
     "maintenanceCenter": "运维中心",
     "developmentWorkbench": "开发工作台",
+    "schedulingWorkbench": "调度工作台",
     "developmentTaskManagement": "开发任务管理",
     "automationProcess": "自动化流程",
     "documentProcessing": "文档处理应用",
@@ -64,6 +65,74 @@
     "userGuide": "用户指南",
     "resourceDownload": "资源下载",
     "expandSidebar": "展开侧边栏"
+  },
+  "credential": {
+    "title": "凭据管理",
+    "breadcrumb": {
+      "developmentCenter": "开发中心",
+      "schedulingCenter": "调度中心"
+    },
+    "createCredential": "新建凭据",
+    "searchPlaceholder": "搜索凭据名称",
+    "table": {
+      "name": "凭据名称",
+      "testValue": "凭据值（测试）",
+      "productionValue": "凭据值（生产）",
+      "type": "类型",
+      "linkedPersonalCredential": "关联的个人凭据值"
+    },
+    "type": {
+      "fixedValue": "固定值",
+      "personalRef": "关联个人凭据"
+    },
+    "filter": {
+      "type": "类型",
+      "allTypes": "全部类型"
+    },
+    "fields": {
+      "name": "凭据名称",
+      "namePlaceholder": "请输入凭据名称",
+      "type": "类型",
+      "typePlaceholder": "请选择凭据类型",
+      "value": "凭据值",
+      "testValue": "凭据值（测试）",
+      "productionValue": "凭据值（生产）",
+      "username": "用户名",
+      "usernamePlaceholder": "请输入用户名",
+      "password": "密码",
+      "passwordPlaceholder": "请输入密码",
+      "passwordEditPlaceholder": "留空则不修改密码",
+      "descriptionPlaceholder": "请输入描述（选填）"
+    },
+    "validation": {
+      "nameRequired": "请输入凭据名称",
+      "nameLengthError": "凭据名称长度必须在1-30字符之间",
+      "nameExists": "凭据名称已存在，请使用其他名称",
+      "typeRequired": "请选择凭据类型",
+      "usernameRequired": "请输入用户名",
+      "passwordRequired": "请输入密码"
+    },
+    "list": {
+      "loadError": "加载凭据列表失败"
+    },
+    "createModal": {
+      "title": "新建凭据",
+      "successDev": "凭据创建成功（测试值已设置）",
+      "successProd": "凭据创建成功（生产值已设置）",
+      "error": "创建失败，请重试"
+    },
+    "editModal": {
+      "title": "编辑凭据",
+      "confirmTitle": "确认修改",
+      "confirmMessage": "修改凭据名称和凭据值会影响已存在的流程，请确认是否仍然需要修改？",
+      "success": "凭据更新成功",
+      "error": "更新失败，请重试"
+    },
+    "deleteModal": {
+      "title": "删除凭据",
+      "confirmMessage": "确定删除该凭据吗？关联此凭据的流程可能无法正常运行。",
+      "success": "凭据删除成功"
+    }
   },
   "development": {
     "processDevelopment": {

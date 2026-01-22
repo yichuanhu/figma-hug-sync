@@ -56,12 +56,17 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
       pathname === '/process-development' ||
       pathname.startsWith('/process-detail/') ||
       pathname === '/worker-management' ||
-      pathname.startsWith('/worker-management/')
+      pathname.startsWith('/worker-management/') ||
+      pathname.startsWith('/dev-center/')
     ) {
       return 'developmentCenter';
     }
     // 调度中心相关路由
-    if (pathname === '/scheduling-workbench' || pathname.startsWith('/scheduling')) {
+    if (
+      pathname === '/scheduling-workbench' ||
+      pathname.startsWith('/scheduling') ||
+      pathname.startsWith('/scheduling-center/')
+    ) {
       return 'schedulingCenter';
     }
     // 运营中心相关路由
@@ -140,7 +145,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
       icon: <IconFolder />,
       children: [
         { key: 'queue', labelKey: 'sidebar.queue' },
-        { key: 'credentials', labelKey: 'sidebar.credentials' },
+        { key: 'devCredentials', labelKey: 'sidebar.credentials', path: '/dev-center/business-assets/credentials' },
         { key: 'parameters', labelKey: 'sidebar.parameters' },
         { key: 'files', labelKey: 'sidebar.files' },
       ],
@@ -174,6 +179,22 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     { key: 'resourceDownload', labelKey: 'sidebar.resourceDownload', icon: <IconCloud /> },
   ];
 
+  // 调度中心的详细菜单结构
+  const schedulingCenterMenu: MenuItem[] = [
+    { key: 'schedulingWorkbench', labelKey: 'sidebar.schedulingWorkbench', icon: <IconGridView /> },
+    {
+      key: 'schedulingBusinessAssetConfig',
+      labelKey: 'sidebar.businessAssetConfig',
+      icon: <IconFolder />,
+      children: [
+        { key: 'schedulingQueue', labelKey: 'sidebar.queue' },
+        { key: 'schedulingCredentials', labelKey: 'sidebar.credentials', path: '/scheduling-center/business-assets/credentials' },
+        { key: 'schedulingParameters', labelKey: 'sidebar.parameters' },
+        { key: 'schedulingFiles', labelKey: 'sidebar.files' },
+      ],
+    },
+  ];
+
   // 根据当前路由获取选中的菜单key
   const getSelectedKeyByPath = (pathname: string): string => {
     if (pathname === '/worker-management' || pathname.startsWith('/worker-management/')) {
@@ -181,6 +202,12 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     }
     if (pathname === '/process-development' || pathname === '/') {
       return 'automationProcess';
+    }
+    if (pathname === '/dev-center/business-assets/credentials') {
+      return 'devCredentials';
+    }
+    if (pathname === '/scheduling-center/business-assets/credentials') {
+      return 'schedulingCredentials';
     }
     return '';
   };
@@ -213,6 +240,9 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
   const getCenterMenu = (centerKey: string) => {
     if (centerKey === 'developmentCenter') {
       return developmentCenterMenu;
+    }
+    if (centerKey === 'schedulingCenter') {
+      return schedulingCenterMenu;
     }
     return [];
   };

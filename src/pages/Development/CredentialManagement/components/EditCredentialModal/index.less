@@ -1,0 +1,32 @@
+// EditCredentialModal 编辑凭据模态框样式
+.edit-credential-modal {
+  .edit-credential-modal-form {
+    .semi-form-field {
+      margin-bottom: 16px;
+    }
+
+    .edit-credential-modal-form-value-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .edit-credential-modal-form-value-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      .edit-credential-modal-form-value-label {
+        font-size: 14px;
+        color: var(--semi-color-text-2);
+      }
+    }
+
+    .edit-credential-modal-form-type-disabled {
+      .semi-select {
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
+    }
+  }
+}

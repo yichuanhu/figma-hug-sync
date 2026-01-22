@@ -887,3 +887,227 @@ export interface ProcessesApprovalsPendingParams {
 }
 
 export type ProcessesApprovalsPendingData = LYPendingApprovalListResultResponse;
+
+// ============= 凭据管理相关类型定义 =============
+
+/**
+ * 凭据类型枚举
+ */
+export type CredentialType = 'FIXED_VALUE' | 'PERSONAL_REF';
+
+/**
+ * 凭据值结构
+ */
+export interface LYCredentialValue {
+  /**
+   * Username
+   * 用户名
+   */
+  username: string;
+  /**
+   * Password
+   * 密码（加密显示为 ******）
+   */
+  password: string;
+}
+
+/**
+ * LYCredentialResponse
+ * 凭据响应
+ */
+export interface LYCredentialResponse {
+  /**
+   * Credential Id
+   * 凭据ID
+   */
+  credential_id: string;
+  /**
+   * Credential Name
+   * 凭据名称
+   * @minLength 1
+   * @maxLength 30
+   */
+  credential_name: string;
+  /**
+   * Credential Type
+   * 凭据类型 (FIXED_VALUE/PERSONAL_REF)
+   */
+  credential_type: CredentialType;
+  /**
+   * Test Value
+   * 测试值（开发中心使用）
+   */
+  test_value?: LYCredentialValue | null;
+  /**
+   * Production Value
+   * 生产值（调度中心使用）
+   */
+  production_value?: LYCredentialValue | null;
+  /**
+   * Description
+   * 凭据描述
+   * @maxLength 500
+   */
+  description?: string | null;
+  /**
+   * Linked Personal Credential Value
+   * 关联的个人凭据值（格式：用户名/****** 或 -）
+   */
+  linked_personal_credential_value?: string | null;
+  /**
+   * Created By
+   * 创建人ID
+   */
+  created_by: string;
+  /**
+   * Created By Name
+   * 创建人名称
+   */
+  created_by_name?: string | null;
+  /**
+   * Created At
+   * 创建时间
+   */
+  created_at: string;
+  /**
+   * Updated At
+   * 更新时间
+   */
+  updated_at?: string | null;
+}
+
+/**
+ * LYCredentialListResultResponse
+ * 凭据列表结果响应
+ */
+export interface LYCredentialListResultResponse {
+  /** Data */
+  data?: LYCredentialResponse[] | null;
+  /** Range */
+  range?: LYRangeResponse | null;
+}
+
+/**
+ * LYCredentialResultResponse
+ * 凭据单条结果响应
+ */
+export interface LYCredentialResultResponse {
+  /** Data */
+  data?: LYCredentialResponse | null;
+}
+
+/**
+ * LYCreateCredentialRequest
+ * 创建凭据请求
+ */
+export interface LYCreateCredentialRequest {
+  /**
+   * Credential Name
+   * 凭据名称
+   * @minLength 1
+   * @maxLength 30
+   */
+  credential_name: string;
+  /**
+   * Credential Type
+   * 凭据类型 (FIXED_VALUE/PERSONAL_REF)
+   */
+  credential_type: CredentialType;
+  /**
+   * Credential Value
+   * 凭据值（根据入口保存到 test_value 或 production_value）
+   */
+  credential_value: LYCredentialValue;
+  /**
+   * Description
+   * 凭据描述
+   * @maxLength 500
+   */
+  description?: string | null;
+}
+
+/**
+ * LYUpdateCredentialRequest
+ * 更新凭据请求
+ */
+export interface LYUpdateCredentialRequest {
+  /**
+   * Credential Name
+   * 凭据名称
+   * @minLength 1
+   * @maxLength 30
+   */
+  credential_name?: string | null;
+  /**
+   * Credential Value
+   * 凭据值（根据入口更新 test_value 或 production_value）
+   */
+  credential_value?: LYCredentialValue | null;
+  /**
+   * Description
+   * 凭据描述
+   * @maxLength 500
+   */
+  description?: string | null;
+}
+
+/**
+ * GetCredentialsParams
+ * 获取凭据列表参数
+ */
+export interface GetCredentialsParams {
+  /**
+   * Keyword
+   * 凭据名称关键词
+   */
+  keyword?: string | null;
+  /**
+   * Credential Type
+   * 凭据类型过滤
+   */
+  credential_type?: CredentialType | null;
+  /**
+   * Context
+   * 入口上下文 (development/scheduling)
+   */
+  context: 'development' | 'scheduling';
+  /**
+   * Offset
+   * 查询偏移量
+   * @min 0
+   * @default 0
+   */
+  offset?: number;
+  /**
+   * Size
+   * 查询数量
+   * @min 0
+   * @default 20
+   */
+  size?: number;
+}
+
+export type GetCredentialsData = LYCredentialListResultResponse;
+
+export type AddCredentialData = LYCredentialResultResponse;
+
+export interface GetCredentialByIdParams {
+  /** Credential Id */
+  credentialId: string;
+}
+
+export type GetCredentialByIdData = LYCredentialResultResponse;
+
+export interface UpdateCredentialParams {
+  /** Credential Id */
+  credentialId: string;
+}
+
+export type UpdateCredentialData = LYCredentialResultResponse;
+
+export interface DeleteCredentialParams {
+  /** Credential Id */
+  credentialId: string;
+}
+
+export type DeleteCredentialData = LYCredentialResultResponse;
