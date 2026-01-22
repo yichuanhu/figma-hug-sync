@@ -15,6 +15,7 @@ import {
   Popover,
   CheckboxGroup,
   Space,
+  Tooltip,
 } from '@douyinfe/semi-ui';
 import { IconDownload, IconFilter } from '@douyinfe/semi-icons';
 import AppLayout from '@/components/layout/AppLayout';
@@ -258,6 +259,17 @@ const CredentialUsagePage = () => {
       dataIndex: 'process_name',
       key: 'process_name',
       width: 160,
+      render: (text: string | null) => (
+        text ? (
+          <Tooltip content={text} position="top">
+            <span className="credential-usage-page-cell-ellipsis">
+              {text}
+            </span>
+          </Tooltip>
+        ) : (
+          <span>-</span>
+        )
+      ),
     },
     {
       title: t('credential.usage.table.processVersion'),
