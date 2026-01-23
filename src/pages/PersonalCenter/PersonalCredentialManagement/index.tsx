@@ -21,9 +21,8 @@ import {
 import { debounce } from 'lodash';
 import CreatePersonalCredentialModal from './components/CreatePersonalCredentialModal';
 import EditPersonalCredentialModal from './components/EditPersonalCredentialModal';
-import PersonalCredentialUsageDrawer from './components/PersonalCredentialUsageDrawer';
 import LinkCredentialModal from './components/LinkCredentialModal';
-import LinkedCredentialsDrawer from './components/LinkedCredentialsDrawer';
+import PersonalCredentialDetailDrawer from './components/PersonalCredentialDetailDrawer';
 
 import './index.less';
 
@@ -143,11 +142,9 @@ const PersonalCredentialManagement = () => {
   // 模态框/抽屉状态
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
-  const [usageDrawerVisible, setUsageDrawerVisible] = useState(false);
+  const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [linkModalVisible, setLinkModalVisible] = useState(false);
   const [linkingCredential, setLinkingCredential] = useState<PersonalCredential | null>(null);
-  const [linkedCredentialsDrawerVisible, setLinkedCredentialsDrawerVisible] = useState(false);
-  const [viewingLinkedCredential, setViewingLinkedCredential] = useState<PersonalCredential | null>(null);
 
   // 加载数据
   const loadData = useCallback(async () => {
@@ -208,22 +205,16 @@ const PersonalCredentialManagement = () => {
     });
   };
 
-  // 查看使用记录
-  const handleViewUsage = (record: PersonalCredential) => {
+  // 查看详情（点击行）
+  const handleRowClick = (record: PersonalCredential) => {
     setSelectedCredential(record);
-    setUsageDrawerVisible(true);
+    setDetailDrawerVisible(true);
   };
 
   // 关联凭据
   const handleLinkCredential = (record: PersonalCredential) => {
     setLinkingCredential(record);
     setLinkModalVisible(true);
-  };
-
-  // 查看关联的凭据
-  const handleViewLinkedCredentials = (record: PersonalCredential) => {
-    setViewingLinkedCredential(record);
-    setLinkedCredentialsDrawerVisible(true);
   };
 
   // 分页变化
@@ -278,12 +269,6 @@ const PersonalCredentialManagement = () => {
               </Dropdown.Item>
               <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleLinkCredential(record); }}>
                 {t('personalCredential.actions.linkCredential')}
-              </Dropdown.Item>
-              <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleViewLinkedCredentials(record); }}>
-                {t('personalCredential.actions.viewLinkedCredentials')}
-              </Dropdown.Item>
-              <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleViewUsage(record); }}>
-                {t('personalCredential.actions.viewUsage')}
               </Dropdown.Item>
               <Dropdown.Item type="danger" onClick={(e) => { e.stopPropagation(); handleDelete(record); }}>
                 {t('common.delete')}
@@ -344,6 +329,15 @@ const PersonalCredentialManagement = () => {
           dataSource={listResponse?.data || []}
           rowKey="credential_id"
           loading={loading}
+          onRow={(record) => ({
+            onClick: () => handleRowClick(record as PersonalCredential),
+            style: {
+              cursor: 'pointer',
+              backgroundColor: selectedCredential?.credential_id === (record as PersonalCredential).credential_id && detailDrawerVisible
+                ? 'var(--semi-color-primary-light-default)'
+                : undefined,
+            },
+          })}
           pagination={{
             currentPage: queryParams.page,
             pageSize: queryParams.pageSize,
@@ -379,16 +373,6 @@ const PersonalCredentialManagement = () => {
         }}
       />
 
-      {/* 使用记录抽屉 */}
-      <PersonalCredentialUsageDrawer
-        visible={usageDrawerVisible}
-        credential={selectedCredential}
-        onClose={() => {
-          setUsageDrawerVisible(false);
-          setSelectedCredential(null);
-        }}
-      />
-
       {/* 关联凭据模态框 */}
       <LinkCredentialModal
         visible={linkModalVisible}
@@ -404,17 +388,28 @@ const PersonalCredentialManagement = () => {
         }}
       />
 
-      {/* 查看关联凭据抽屉 */}
-      <LinkedCredentialsDrawer
-        visible={linkedCredentialsDrawerVisible}
-        credential={viewingLinkedCredential}
+      {/* 个人凭据详情抽屉 */}
+      <PersonalCredentialDetailDrawer
+        visible={detailDrawerVisible}
+        credential={selectedCredential}
         onClose={() => {
-          setLinkedCredentialsDrawerVisible(false);
-          setViewingLinkedCredential(null);
+          setDetailDrawerVisible(false);
+          setSelectedCredential(null);
         }}
-        onUnlinkSuccess={() => {
+        onEdit={(credential) => {
+          setEditingCredential(credential);
+          setEditModalVisible(true);
+        }}
+        onDelete={() => {
+          setDetailDrawerVisible(false);
+          setSelectedCredential(null);
           loadData();
         }}
+        onLinkCredential={(credential) => {
+          setLinkingCredential(credential);
+          setLinkModalVisible(true);
+        }}
+        onRefresh={loadData}
       />
     </div>
   );
