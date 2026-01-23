@@ -189,7 +189,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     { key: 'developmentWorkbench', labelKey: 'sidebar.developmentWorkbench', icon: <LayoutGrid size={20} strokeWidth={3} /> },
     // 开发任务管理 - 分组标题
     { key: 'developmentTaskManagement', labelKey: 'sidebar.developmentTaskManagement', isGroupLabel: true },
-    { key: 'automationProcess', labelKey: 'sidebar.automationProcess', icon: <IconSourceControl size="large" />, path: '/process-development' },
+    { key: 'automationProcess', labelKey: 'sidebar.automationProcess', icon: <Workflow size={20} strokeWidth={3} fill="currentColor" />, path: '/process-development' },
     // 业务资产配置 - 分组标题
     { key: 'businessAssetConfig', labelKey: 'sidebar.businessAssetConfig', isGroupLabel: true },
     { key: 'queue', labelKey: 'sidebar.queue', icon: <ListStart size={20} strokeWidth={3} /> },
