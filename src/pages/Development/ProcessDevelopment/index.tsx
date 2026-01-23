@@ -92,7 +92,7 @@ const generateMockLYProcessResponse = (index: number): LYProcessResponse => {
     id: generateUUID(),
     name: processNames[index % processNames.length],
     description: descriptions[index % descriptions.length],
-    language: languages[index % languages.length],
+    language: languages[index % languages.length] || null,
     process_type: processTypes[index % processTypes.length],
     timeout: 60 + (index % 5) * 30,
     status: statuses[index % 3],

@@ -26,9 +26,9 @@ const generateMockLYProcessResponse = (request: LYCreateProcessRequest): LYProce
     id: generateUUID(),
     name: request.name,
     description: request.description || null,
-    language: request.language || 'Python',
+    language: 'Python',
     process_type: 'RPA',
-    timeout: request.timeout || 60,
+    timeout: 60,
     status: 'DEVELOPING',
     current_version_id: null,
     creator_id: 'user-001',
@@ -60,8 +60,6 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
       const createRequest: LYCreateProcessRequest = {
         name: values.name as string,
         description: (values.description as string) || undefined,
-        language: 'Python',
-        timeout: 60,
       };
 
       // 模拟API调用延迟

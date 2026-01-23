@@ -61,7 +61,6 @@ interface VersionDetailData extends LYProcessVersionResponse {
   usage_instructions_url?: string;
   client_version?: string;
   development_environment?: string;
-  is_active?: boolean;
   inputs?: ProcessVariable[];
   outputs?: ProcessVariable[];
 }

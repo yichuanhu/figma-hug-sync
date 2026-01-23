@@ -4,6 +4,15 @@
  * 后续API调用逻辑在各模块中实现
  */
 
+/** Body_upload_process_package_web_apa__tenant_name__processes__process_id__versions_upload_post */
+export interface BodyUploadProcessPackageWebApaTenantNameProcessesProcessIdVersionsUploadPost {
+  /**
+   * Packagefile
+   * @format binary
+   */
+  packageFile?: File;
+}
+
 /** HTTPValidationError */
 export interface HTTPValidationError {
   /** Detail */
@@ -44,20 +53,6 @@ export interface LYCreateProcessRequest {
    * 流程描述
    */
   description?: string | null;
-  /**
-   * Language
-   * 开发语言
-   * @default "Python"
-   */
-  language?: string;
-  /**
-   * Timeout
-   * 超时时间（分钟）
-   * @min 1
-   * @max 1440
-   * @default 60
-   */
-  timeout?: number;
   /**
    * Requirement Id
    * 关联需求ID
@@ -329,7 +324,7 @@ export interface LYProcessResponse {
    * Language
    * 开发语言
    */
-  language: string;
+  language?: string | null;
   /**
    * Process Type
    * 流程类型
@@ -444,6 +439,11 @@ export interface LYProcessVersionResponse {
    * 流程ID
    */
   process_id: string;
+  /**
+   * Is Active
+   * 版本激活状态：true=已上线，false=未上线
+   */
+  is_active: boolean;
   /**
    * Status
    * 版本状态
@@ -561,11 +561,6 @@ export interface LYUpdateProcessRequest {
    * 流程描述
    */
   description?: string | null;
-  /**
-   * Timeout
-   * 超时时间（分钟）
-   */
-  timeout?: number | null;
 }
 
 /** ValidationError */
@@ -744,10 +739,6 @@ export interface GetWorkersParams {
   size?: number;
 }
 
-/**
- * GetProcessesParams
- * 流程列表查询参数
- */
 export interface GetProcessesParams {
   /** Keyword */
   keyword?: string | null;
@@ -784,6 +775,8 @@ export interface GetProcessesParams {
 }
 
 export type GetProcessesData = LYProcessListResultResponse;
+
+export interface AddProcessesParams {}
 
 export type AddProcessesData = LYProcessResultResponse;
 
@@ -847,6 +840,29 @@ export interface ProcessesVersionsByProcessIdAndVersionIdParams {
 
 export type ProcessesVersionsByProcessIdAndVersionIdData = LYProcessVersionResultResponse;
 
+export interface ProcessesVersionsUploadByProcessIdParams {
+  /** Version */
+  version?: string;
+  /** Language */
+  language?: string | null;
+  /** Version Note */
+  version_note?: string | null;
+  /** Usage Note */
+  usage_note?: string | null;
+  /** Source Code */
+  source_code?: string | null;
+  /** Environment Info */
+  environment_info?: string | null;
+  /** Parameters */
+  parameters?: string | null;
+  /** Dependencies */
+  dependencies?: string | null;
+  /** Process Id */
+  processId: string;
+}
+
+export type ProcessesVersionsUploadByProcessIdData = LYProcessVersionResultResponse;
+
 export interface ProcessesVersionsSubmitByProcessIdAndVersionIdParams {
   /** Process Id */
   processId: string;
@@ -855,6 +871,15 @@ export interface ProcessesVersionsSubmitByProcessIdAndVersionIdParams {
 }
 
 export type ProcessesVersionsSubmitByProcessIdAndVersionIdData = LYProcessVersionResultResponse;
+
+export interface ProcessesVersionsDownloadByProcessIdAndVersionIdParams {
+  /** Process Id */
+  processId: string;
+  /** Version Id */
+  versionId: string;
+}
+
+export type ProcessesVersionsDownloadByProcessIdAndVersionIdData = unknown;
 
 export interface ProcessesVersionsApproveByProcessIdAndVersionIdParams {
   /** Process Id */
