@@ -6,13 +6,20 @@ import {
   IconBell,
   IconBookStroked,
   IconCloud,
+  IconSourceControl,
   IconChevronDown,
   IconChevronUp,
   IconGridView,
-  IconFile,
   IconFolder,
-  IconSend,
 } from '@douyinfe/semi-icons';
+import {
+  LayoutGrid,
+  ListStart,
+  MonitorCheck,
+  Parentheses,
+  FolderCheck,
+  Forward,
+} from 'lucide-react';
 import layoutIcon from '@/assets/icons/layout.svg';
 import laiyeLogo from '@/assets/laiye-logo.png';
 
@@ -33,6 +40,7 @@ interface MenuItem {
   children?: MenuItem[];
   badge?: number;
   path?: string;
+  isGroupLabel?: boolean; // 是否为分组标题
 }
 
 interface SidebarProps {
@@ -158,51 +166,21 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     },
   ];
 
-  // 开发中心的详细菜单结构
+  // 开发中心的详细菜单结构 - 使用分组标题样式
   const developmentCenterMenu: MenuItem[] = [
-    { key: 'developmentWorkbench', labelKey: 'sidebar.developmentWorkbench', icon: <IconGridView /> },
-    {
-      key: 'developmentTaskManagement',
-      labelKey: 'sidebar.developmentTaskManagement',
-      icon: <IconFile />,
-      children: [
-        { key: 'automationProcess', labelKey: 'sidebar.automationProcess', path: '/process-development' },
-        { key: 'documentProcessing', labelKey: 'sidebar.documentProcessing' },
-        { key: 'agentApplication', labelKey: 'sidebar.agentApplication' },
-        { key: 'humanMachineProcess', labelKey: 'sidebar.humanMachineProcess' },
-      ],
-    },
-    {
-      key: 'businessAssetConfig',
-      labelKey: 'sidebar.businessAssetConfig',
-      icon: <IconFolder />,
-      children: [
-        { key: 'queue', labelKey: 'sidebar.queue' },
-        { key: 'devCredentials', labelKey: 'sidebar.credentials', path: '/dev-center/business-assets/credentials' },
-        { key: 'parameters', labelKey: 'sidebar.parameters' },
-        { key: 'files', labelKey: 'sidebar.files' },
-      ],
-    },
-    {
-      key: 'capabilityAssetManagement',
-      labelKey: 'sidebar.capabilityAssetManagement',
-      icon: <IconFolder />,
-      children: [
-        { key: 'processAssets', labelKey: 'sidebar.processAssets' },
-        { key: 'knowledgeAssets', labelKey: 'sidebar.knowledgeAssets' },
-        { key: 'connectionAssets', labelKey: 'sidebar.connectionAssets' },
-      ],
-    },
-    {
-      key: 'publishManagement',
-      labelKey: 'sidebar.publishManagement',
-      icon: <IconSend />,
-      children: [
-        { key: 'publishList', labelKey: 'sidebar.publishList' },
-        { key: 'newPublish', labelKey: 'sidebar.newPublish' },
-        { key: 'publishHistory', labelKey: 'sidebar.publishHistory' },
-      ],
-    },
+    { key: 'developmentWorkbench', labelKey: 'sidebar.developmentWorkbench', icon: <LayoutGrid size={18} /> },
+    // 开发任务管理 - 分组标题
+    { key: 'developmentTaskManagement', labelKey: 'sidebar.developmentTaskManagement', isGroupLabel: true },
+    { key: 'automationProcess', labelKey: 'sidebar.automationProcess', icon: <IconSourceControl size="large" />, path: '/process-development' },
+    // 业务资产配置 - 分组标题
+    { key: 'businessAssetConfig', labelKey: 'sidebar.businessAssetConfig', isGroupLabel: true },
+    { key: 'queue', labelKey: 'sidebar.queue', icon: <ListStart size={18} /> },
+    { key: 'devCredentials', labelKey: 'sidebar.credentials', icon: <MonitorCheck size={18} />, path: '/dev-center/business-assets/credentials' },
+    { key: 'parameters', labelKey: 'sidebar.parameters', icon: <Parentheses size={18} /> },
+    { key: 'files', labelKey: 'sidebar.files', icon: <FolderCheck size={18} /> },
+    // 发布管理 - 分组标题
+    { key: 'publishManagement', labelKey: 'sidebar.publishManagement', isGroupLabel: true },
+    { key: 'processPublish', labelKey: 'sidebar.processPublish', icon: <Forward size={18} /> },
   ];
 
   const bottomMenuItems: MenuItem[] = [
@@ -391,12 +369,21 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     );
   };
 
-  // 渲染详细菜单项
+  // 渲染详细菜单项 - 支持分组标题样式
   const renderDetailMenuItem = (item: MenuItem, isChild = false) => {
     const hasChildren = item.children && item.children.length > 0;
     const isExpanded = expandedKeys.includes(item.key);
     const isSelected = selectedKey === item.key;
     const label = t(item.labelKey);
+
+    // 分组标题样式
+    if (item.isGroupLabel) {
+      return (
+        <div key={item.key} className="sidebar-group-label">
+          {label}
+        </div>
+      );
+    }
 
     return (
       <div key={item.key} className="sidebar-menu-item">
@@ -411,8 +398,8 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
               }
             }}
           >
-            {/* 图标 - 只有一级菜单显示 */}
-            {!isChild && item.icon && <div className="sidebar-menu-icon detail-icon">{item.icon}</div>}
+            {/* 图标 */}
+            {item.icon && <div className="sidebar-menu-icon detail-icon">{item.icon}</div>}
 
             {/* 文字 */}
             <span className={`sidebar-menu-text ${hasChildren ? 'parent' : ''} ${isSelected ? 'selected' : ''}`}>
