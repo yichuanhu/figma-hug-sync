@@ -785,21 +785,35 @@
       "linkCredential": "关联凭据",
       "viewLinkedCredentials": "查看关联的凭据"
     },
+    "detail": {
+      "tabs": {
+        "linkedCredentials": "关联的凭据",
+        "usageRecords": "使用记录"
+      }
+    },
     "linkedCredentials": {
       "title": "关联的凭据",
       "description": "查看和管理此个人凭据关联的所有凭据",
       "empty": "暂无关联的凭据",
+      "credentialName": "凭据名称",
       "table": {
         "name": "凭据名称"
       },
       "unlink": "解除关联",
       "unlinkConfirmTitle": "解除关联",
+      "unlinkConfirmMessage": "确定要解除与此凭据的关联吗？",
       "unlinkConfirmContent": "确定要解除与凭据「{{name}}」的关联吗？",
       "unlinkSuccess": "解除关联成功"
     },
     "usage": {
       "title": "使用记录",
       "empty": "暂无使用记录",
+      "usageTime": "使用时间",
+      "usageType": "类型",
+      "processName": "流程名称",
+      "processVersion": "流程版本",
+      "typeDebug": "调试",
+      "typeTask": "任务",
       "table": {
         "usageTime": "使用时间",
         "type": "类型",
