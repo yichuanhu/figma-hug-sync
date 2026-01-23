@@ -114,8 +114,6 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
           maxCount={2000}
           trigger="blur"
           rules={[
-            { required: true, message: t('development.processDevelopment.createModal.validation.descriptionRequired') },
-            { min: 1, message: t('development.processDevelopment.createModal.validation.descriptionLengthError') },
             { max: 2000, message: t('development.processDevelopment.createModal.validation.descriptionLengthError') },
           ]}
         />
