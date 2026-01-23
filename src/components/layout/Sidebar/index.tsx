@@ -19,6 +19,24 @@ import {
   Parentheses,
   FolderCheck,
   Forward,
+  Workflow,
+  CalendarClock,
+  Play,
+  History,
+  Bot,
+  Settings,
+  FileText,
+  BarChart3,
+  TrendingUp,
+  Target,
+  ClipboardList,
+  CheckSquare,
+  Users,
+  Wrench,
+  AlertTriangle,
+  Activity,
+  Database,
+  Shield,
 } from 'lucide-react';
 import layoutIcon from '@/assets/icons/layout.svg';
 import laiyeLogo from '@/assets/laiye-logo.png';
@@ -189,28 +207,65 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     { key: 'resourceDownload', labelKey: 'sidebar.resourceDownload', icon: <IconCloud /> },
   ];
 
-  // 调度中心的详细菜单结构
+  // 调度中心的详细菜单结构 - 使用分组标题样式
   const schedulingCenterMenu: MenuItem[] = [
-    { key: 'schedulingWorkbench', labelKey: 'sidebar.schedulingWorkbench', icon: <IconGridView /> },
-    {
-      key: 'schedulingBusinessAssetConfig',
-      labelKey: 'sidebar.businessAssetConfig',
-      icon: <IconFolder />,
-      children: [
-        { key: 'schedulingQueue', labelKey: 'sidebar.queue' },
-        { key: 'schedulingCredentials', labelKey: 'sidebar.credentials', path: '/scheduling-center/business-assets/credentials' },
-        { key: 'schedulingParameters', labelKey: 'sidebar.parameters' },
-        { key: 'schedulingFiles', labelKey: 'sidebar.files' },
-      ],
-    },
-    {
-      key: 'executionResourceMonitoring',
-      labelKey: 'sidebar.executionResourceMonitoring',
-      icon: <IconFolder />,
-      children: [
-        { key: 'workerManagement', labelKey: 'sidebar.workerManagement', path: '/scheduling-center/resource-monitoring/worker-management' },
-      ],
-    },
+    { key: 'schedulingWorkbench', labelKey: 'sidebar.schedulingWorkbench', icon: <LayoutGrid size={20} strokeWidth={3} /> },
+    // 任务调度 - 分组标题
+    { key: 'taskScheduling', labelKey: 'sidebar.taskScheduling', isGroupLabel: true },
+    { key: 'scheduledTasks', labelKey: 'sidebar.scheduledTasks', icon: <CalendarClock size={20} strokeWidth={3} /> },
+    { key: 'executionQueue', labelKey: 'sidebar.executionQueue', icon: <Play size={20} strokeWidth={3} /> },
+    { key: 'executionHistory', labelKey: 'sidebar.executionHistory', icon: <History size={20} strokeWidth={3} /> },
+    // 执行资源监控 - 分组标题
+    { key: 'executionResourceMonitoring', labelKey: 'sidebar.executionResourceMonitoring', isGroupLabel: true },
+    { key: 'workerManagement', labelKey: 'sidebar.workerManagement', icon: <Bot size={20} strokeWidth={3} />, path: '/scheduling-center/resource-monitoring/worker-management' },
+    // 业务资产配置 - 分组标题
+    { key: 'schedulingBusinessAssetConfig', labelKey: 'sidebar.businessAssetConfig', isGroupLabel: true },
+    { key: 'schedulingQueue', labelKey: 'sidebar.queue', icon: <ListStart size={20} strokeWidth={3} /> },
+    { key: 'schedulingCredentials', labelKey: 'sidebar.credentials', icon: <MonitorCheck size={20} strokeWidth={3} />, path: '/scheduling-center/business-assets/credentials' },
+    { key: 'schedulingParameters', labelKey: 'sidebar.parameters', icon: <Parentheses size={20} strokeWidth={3} /> },
+    { key: 'schedulingFiles', labelKey: 'sidebar.files', icon: <FolderCheck size={20} strokeWidth={3} /> },
+  ];
+
+  // 运营中心的详细菜单结构 - 使用分组标题样式
+  const operationsCenterMenu: MenuItem[] = [
+    { key: 'operationsWorkbench', labelKey: 'sidebar.operationsWorkbench', icon: <LayoutGrid size={20} strokeWidth={3} /> },
+    // 数据分析 - 分组标题
+    { key: 'dataAnalysis', labelKey: 'sidebar.dataAnalysis', isGroupLabel: true },
+    { key: 'executionReport', labelKey: 'sidebar.executionReport', icon: <BarChart3 size={20} strokeWidth={3} /> },
+    { key: 'performanceAnalysis', labelKey: 'sidebar.performanceAnalysis', icon: <TrendingUp size={20} strokeWidth={3} /> },
+    // 运营管理 - 分组标题
+    { key: 'operationsManagement', labelKey: 'sidebar.operationsManagement', isGroupLabel: true },
+    { key: 'targetManagement', labelKey: 'sidebar.targetManagement', icon: <Target size={20} strokeWidth={3} /> },
+    { key: 'reportExport', labelKey: 'sidebar.reportExport', icon: <FileText size={20} strokeWidth={3} /> },
+  ];
+
+  // 需求中心的详细菜单结构 - 使用分组标题样式
+  const requirementsCenterMenu: MenuItem[] = [
+    { key: 'requirementsWorkbench', labelKey: 'sidebar.requirementsWorkbench', icon: <LayoutGrid size={20} strokeWidth={3} /> },
+    // 需求管理 - 分组标题
+    { key: 'requirementsManagement', labelKey: 'sidebar.requirementsManagement', isGroupLabel: true },
+    { key: 'requirementsList', labelKey: 'sidebar.requirementsList', icon: <ClipboardList size={20} strokeWidth={3} /> },
+    { key: 'requirementsReview', labelKey: 'sidebar.requirementsReview', icon: <CheckSquare size={20} strokeWidth={3} /> },
+    // 协作管理 - 分组标题
+    { key: 'collaborationManagement', labelKey: 'sidebar.collaborationManagement', isGroupLabel: true },
+    { key: 'teamMembers', labelKey: 'sidebar.teamMembers', icon: <Users size={20} strokeWidth={3} /> },
+  ];
+
+  // 运维中心的详细菜单结构 - 使用分组标题样式
+  const maintenanceCenterMenu: MenuItem[] = [
+    { key: 'maintenanceWorkbench', labelKey: 'sidebar.maintenanceWorkbench', icon: <LayoutGrid size={20} strokeWidth={3} /> },
+    // 系统运维 - 分组标题
+    { key: 'systemMaintenance', labelKey: 'sidebar.systemMaintenance', isGroupLabel: true },
+    { key: 'systemConfig', labelKey: 'sidebar.systemConfig', icon: <Settings size={20} strokeWidth={3} /> },
+    { key: 'troubleshooting', labelKey: 'sidebar.troubleshooting', icon: <Wrench size={20} strokeWidth={3} /> },
+    // 监控告警 - 分组标题
+    { key: 'monitoringAlerts', labelKey: 'sidebar.monitoringAlerts', isGroupLabel: true },
+    { key: 'alertManagement', labelKey: 'sidebar.alertManagement', icon: <AlertTriangle size={20} strokeWidth={3} /> },
+    { key: 'systemMonitoring', labelKey: 'sidebar.systemMonitoring', icon: <Activity size={20} strokeWidth={3} /> },
+    // 数据管理 - 分组标题
+    { key: 'dataManagement', labelKey: 'sidebar.dataManagement', isGroupLabel: true },
+    { key: 'databaseManagement', labelKey: 'sidebar.databaseManagement', icon: <Database size={20} strokeWidth={3} /> },
+    { key: 'securityManagement', labelKey: 'sidebar.securityManagement', icon: <Shield size={20} strokeWidth={3} /> },
   ];
 
   // 根据当前路由获取选中的菜单key
@@ -256,13 +311,20 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
 
   // 获取中心对应的详细菜单
   const getCenterMenu = (centerKey: string) => {
-    if (centerKey === 'developmentCenter') {
-      return developmentCenterMenu;
+    switch (centerKey) {
+      case 'developmentCenter':
+        return developmentCenterMenu;
+      case 'schedulingCenter':
+        return schedulingCenterMenu;
+      case 'operationsCenter':
+        return operationsCenterMenu;
+      case 'requirementsCenter':
+        return requirementsCenterMenu;
+      case 'maintenanceCenter':
+        return maintenanceCenterMenu;
+      default:
+        return [];
     }
-    if (centerKey === 'schedulingCenter') {
-      return schedulingCenterMenu;
-    }
-    return [];
   };
 
   // 渲染左侧图标栏的菜单项
