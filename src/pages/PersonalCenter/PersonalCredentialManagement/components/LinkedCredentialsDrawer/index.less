@@ -1,0 +1,46 @@
+.linked-credentials-drawer {
+  .semi-sidesheet-inner {
+    background: var(--semi-color-default);
+    margin: 8px;
+    border-radius: 8px;
+  }
+
+  .linked-credentials-drawer-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .linked-credentials-drawer-header {
+    flex-shrink: 0;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--semi-color-border);
+
+    .linked-credentials-drawer-description-text {
+      display: block;
+      margin-top: 8px;
+    }
+  }
+
+  .linked-credentials-drawer-table {
+    flex: 1;
+    overflow: hidden;
+    padding: 16px 20px;
+
+    .linked-credentials-drawer-link {
+      color: var(--semi-color-primary);
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    .linked-credentials-drawer-description {
+      max-width: 200px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}

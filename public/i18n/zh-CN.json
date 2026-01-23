@@ -783,7 +783,19 @@
     "actions": {
       "viewUsage": "查看使用记录",
       "linkCredential": "关联凭据",
-      "unlinkCredential": "解除关联"
+      "viewLinkedCredentials": "查看关联的凭据"
+    },
+    "linkedCredentials": {
+      "title": "关联的凭据",
+      "description": "查看和管理此个人凭据关联的所有凭据",
+      "empty": "暂无关联的凭据",
+      "table": {
+        "name": "凭据名称"
+      },
+      "unlink": "解除关联",
+      "unlinkConfirmTitle": "解除关联",
+      "unlinkConfirmContent": "确定要解除与凭据「{{name}}」的关联吗？",
+      "unlinkSuccess": "解除关联成功"
     },
     "usage": {
       "title": "使用记录",
