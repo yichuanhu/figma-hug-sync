@@ -258,6 +258,27 @@ const CredentialManagementPage = () => {
     setLinkPersonalModalVisible(true);
   };
 
+  // 解除关联个人凭据
+  const handleUnlinkPersonal = (record: LYCredentialResponse) => {
+    Modal.confirm({
+      title: t('credential.linkPersonal.unlinkConfirmTitle'),
+      content: t('credential.linkPersonal.unlinkConfirmContent'),
+      okText: t('common.confirm'),
+      cancelText: t('common.cancel'),
+      onOk: async () => {
+        // 模拟解除关联
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        Toast.success(t('credential.linkPersonal.unlinkSuccess'));
+        loadData();
+      },
+    });
+  };
+
+  // 判断是否已关联个人凭据
+  const hasLinkedPersonalCredential = (record: LYCredentialResponse) => {
+    return record.linked_personal_credential_value && record.linked_personal_credential_value !== '-';
+  };
+
   // 分页变化
   const handlePageChange = (page: number) => {
     setQueryParams((prev) => ({ ...prev, page }));
@@ -336,9 +357,15 @@ const CredentialManagementPage = () => {
                 {t('common.edit')}
               </Dropdown.Item>
               {record.credential_type === 'PERSONAL_REF' && (
-                <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleLinkPersonal(record); }}>
-                  {t('credential.actions.linkPersonal')}
-                </Dropdown.Item>
+                hasLinkedPersonalCredential(record) ? (
+                  <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleUnlinkPersonal(record); }}>
+                    {t('personalCredential.actions.unlinkCredential')}
+                  </Dropdown.Item>
+                ) : (
+                  <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleLinkPersonal(record); }}>
+                    {t('credential.actions.linkPersonal')}
+                  </Dropdown.Item>
+                )
               )}
               <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleViewUsage(record); }}>
                 {t('credential.actions.viewUsage')}

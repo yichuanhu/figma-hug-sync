@@ -190,7 +190,21 @@
       "selectPlaceholder": "请选择个人凭据",
       "selectRequired": "请选择要关联的个人凭据",
       "success": "关联个人凭据成功",
-      "error": "关联失败，请重试"
+      "error": "关联失败，请重试",
+      "unlinkSuccess": "解除关联成功",
+      "unlinkConfirmTitle": "解除关联",
+      "unlinkConfirmContent": "确定要解除与个人凭据的关联吗？"
+    },
+    "linkCredential": {
+      "title": "关联凭据",
+      "description": "选择要关联的凭据，关联后个人凭据将可用于该凭据的认证",
+      "selectLabel": "凭据",
+      "selectPlaceholder": "请选择凭据",
+      "success": "关联凭据成功",
+      "error": "关联失败，请重试",
+      "unlinkSuccess": "解除关联成功",
+      "unlinkConfirmTitle": "解除关联",
+      "unlinkConfirmContent": "确定要解除与凭据的关联吗？"
     },
     "usage": {
       "title": "使用记录",
@@ -709,7 +723,7 @@
   "personalCenter": {
     "title": "个人中心",
     "tabs": {
-      "personalCredentials": "个人凭据",
+      "personalCredentials": "个人凭据管理",
       "settings": "设置"
     },
     "settings": {
@@ -717,8 +731,8 @@
     }
   },
   "personalCredential": {
-    "title": "个人凭据",
-    "description": "管理您的个人凭据，用于流程运行时的个人身份验证",
+    "title": "个人凭据管理",
+    "description": "管理您的个人凭据，用于流程运行时使用个人凭据进行认证",
     "searchPlaceholder": "搜索个人凭据名称",
     "createCredential": "新建凭据",
     "table": {
@@ -735,7 +749,9 @@
       "passwordPlaceholder": "请输入密码",
       "passwordEditPlaceholder": "留空则不修改密码",
       "passwordEditHint": "如果不需要修改密码，请留空",
-      "descriptionPlaceholder": "请输入描述（选填）"
+      "descriptionPlaceholder": "请输入描述（选填）",
+      "linkedCredential": "关联凭据",
+      "linkedCredentialPlaceholder": "请选择关联的凭据（选填）"
     },
     "validation": {
       "nameRequired": "请输入个人凭据名称",
@@ -765,7 +781,9 @@
       "success": "个人凭据删除成功"
     },
     "actions": {
-      "viewUsage": "查看使用记录"
+      "viewUsage": "查看使用记录",
+      "linkCredential": "关联凭据",
+      "unlinkCredential": "解除关联"
     },
     "usage": {
       "title": "使用记录",

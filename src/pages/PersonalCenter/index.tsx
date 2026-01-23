@@ -60,18 +60,18 @@ const PersonalCenter = () => {
         <div className="personal-center-tabs">
           <Tabs activeKey={activeTab} onChange={handleTabChange}>
             <Tabs.TabPane
-              tab={t('personalCenter.tabs.personalCredentials')}
-              itemKey="personalCredentials"
-            >
-              <PersonalCredentialManagement />
-            </Tabs.TabPane>
-            <Tabs.TabPane
               tab={t('personalCenter.tabs.settings')}
               itemKey="settings"
             >
               <div className="personal-center-settings-placeholder">
                 {t('personalCenter.settings.comingSoon')}
               </div>
+            </Tabs.TabPane>
+            <Tabs.TabPane
+              tab={t('personalCenter.tabs.personalCredentials')}
+              itemKey="personalCredentials"
+            >
+              <PersonalCredentialManagement />
             </Tabs.TabPane>
           </Tabs>
         </div>
