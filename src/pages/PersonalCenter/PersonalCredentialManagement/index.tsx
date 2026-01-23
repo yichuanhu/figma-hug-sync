@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import {
   Button,
   Input,
@@ -22,6 +23,7 @@ import { debounce } from 'lodash';
 import CreatePersonalCredentialModal from './components/CreatePersonalCredentialModal';
 import EditPersonalCredentialModal from './components/EditPersonalCredentialModal';
 import PersonalCredentialUsageDrawer from './components/PersonalCredentialUsageDrawer';
+import LinkCredentialModal from './components/LinkCredentialModal';
 
 import './index.less';
 
@@ -137,6 +139,7 @@ interface QueryParams {
 
 const PersonalCredentialManagement = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   // 查询参数
   const [queryParams, setQueryParams] = useState<QueryParams>({
@@ -157,6 +160,8 @@ const PersonalCredentialManagement = () => {
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [usageDrawerVisible, setUsageDrawerVisible] = useState(false);
+  const [linkModalVisible, setLinkModalVisible] = useState(false);
+  const [linkingCredential, setLinkingCredential] = useState<PersonalCredential | null>(null);
 
   // 加载数据
   const loadData = useCallback(async () => {
@@ -223,6 +228,36 @@ const PersonalCredentialManagement = () => {
     setUsageDrawerVisible(true);
   };
 
+  // 关联凭据
+  const handleLinkCredential = (record: PersonalCredential) => {
+    setLinkingCredential(record);
+    setLinkModalVisible(true);
+  };
+
+  // 解除关联
+  const handleUnlinkCredential = (record: PersonalCredential) => {
+    Modal.confirm({
+      title: t('personalCredential.linkCredential.unlinkConfirmTitle'),
+      content: t('personalCredential.linkCredential.unlinkConfirmContent'),
+      okText: t('common.confirm'),
+      cancelText: t('common.cancel'),
+      onOk: async () => {
+        // 模拟解除关联
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        Toast.success(t('personalCredential.linkCredential.unlinkSuccess'));
+        loadData();
+      },
+    });
+  };
+
+  // 点击关联凭据名称跳转
+  const handleLinkedCredentialClick = (record: PersonalCredential) => {
+    if (record.linked_credential_id) {
+      // 跳转到凭据管理页面并打开该凭据的详情
+      navigate(`/dev-center/business-assets/credentials?detail=${record.linked_credential_id}`);
+    }
+  };
+
   // 分页变化
   const handlePageChange = (page: number) => {
     setQueryParams((prev) => ({ ...prev, page }));
@@ -250,7 +285,18 @@ const PersonalCredentialManagement = () => {
       dataIndex: 'linked_credential_name',
       key: 'linked_credential_name',
       width: 180,
-      render: (text: string | null) => text || '-',
+      render: (text: string | null, record: PersonalCredential) => 
+        text ? (
+          <span 
+            className="personal-credential-table-link" 
+            onClick={(e) => {
+              e.stopPropagation();
+              handleLinkedCredentialClick(record);
+            }}
+          >
+            {text}
+          </span>
+        ) : '-',
     },
     {
       title: t('common.description'),
@@ -280,6 +326,15 @@ const PersonalCredentialManagement = () => {
               <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>
                 {t('common.edit')}
               </Dropdown.Item>
+              {record.linked_credential_id ? (
+                <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleUnlinkCredential(record); }}>
+                  {t('personalCredential.actions.unlinkCredential')}
+                </Dropdown.Item>
+              ) : (
+                <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleLinkCredential(record); }}>
+                  {t('personalCredential.actions.linkCredential')}
+                </Dropdown.Item>
+              )}
               <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleViewUsage(record); }}>
                 {t('personalCredential.actions.viewUsage')}
               </Dropdown.Item>
@@ -384,6 +439,21 @@ const PersonalCredentialManagement = () => {
         onClose={() => {
           setUsageDrawerVisible(false);
           setSelectedCredential(null);
+        }}
+      />
+
+      {/* 关联凭据模态框 */}
+      <LinkCredentialModal
+        visible={linkModalVisible}
+        credential={linkingCredential}
+        onCancel={() => {
+          setLinkModalVisible(false);
+          setLinkingCredential(null);
+        }}
+        onSuccess={() => {
+          setLinkModalVisible(false);
+          setLinkingCredential(null);
+          loadData();
         }}
       />
     </div>

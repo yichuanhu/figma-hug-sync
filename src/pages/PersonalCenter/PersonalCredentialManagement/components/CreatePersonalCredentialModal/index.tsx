@@ -1,8 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Form, Toast } from '@douyinfe/semi-ui';
 
 import './index.less';
+
+// Mock凭据数据（类型为 PERSONAL_REF 的凭据）
+interface Credential {
+  id: string;
+  name: string;
+}
+
+const mockCredentials: Credential[] = [
+  { id: '1', name: '企业邮箱凭据' },
+  { id: '2', name: '数据库连接凭据' },
+  { id: '3', name: 'SSH服务器凭据' },
+  { id: '4', name: 'Git仓库凭据' },
+  { id: '5', name: 'ERP系统凭据' },
+];
 
 interface CreatePersonalCredentialModalProps {
   visible: boolean;
@@ -17,12 +31,21 @@ const CreatePersonalCredentialModal = ({
 }: CreatePersonalCredentialModalProps) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
+  const [credentials, setCredentials] = useState<Credential[]>([]);
+
+  useEffect(() => {
+    if (visible) {
+      // 模拟加载凭据列表
+      setCredentials(mockCredentials);
+    }
+  }, [visible]);
 
   const handleSubmit = async (values: {
     credential_name: string;
     username: string;
     password: string;
     description?: string;
+    linked_credential_id?: string;
   }) => {
     setLoading(true);
     try {
@@ -38,6 +61,11 @@ const CreatePersonalCredentialModal = ({
       setLoading(false);
     }
   };
+
+  const selectOptions = credentials.map((item) => ({
+    value: item.id,
+    label: item.name,
+  }));
 
   return (
     <Modal
@@ -84,6 +112,14 @@ const CreatePersonalCredentialModal = ({
             { max: 100, message: t('personalCredential.validation.passwordLengthError') },
           ]}
           maxLength={100}
+        />
+        <Form.Select
+          field="linked_credential_id"
+          label={t('personalCredential.fields.linkedCredential')}
+          placeholder={t('personalCredential.fields.linkedCredentialPlaceholder')}
+          optionList={selectOptions}
+          showClear
+          filter
         />
         <Form.TextArea
           field="description"
