@@ -15,6 +15,8 @@ import MaintenanceWorkbench from "@/pages/Maintenance/MaintenanceWorkbench";
 import RequirementsWorkbench from "@/pages/Requirements/RequirementsWorkbench";
 // Scheduling
 import SchedulingWorkbench from "@/pages/Scheduling/SchedulingWorkbench";
+// Personal Center
+import PersonalCenter from "@/pages/PersonalCenter";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +40,11 @@ const App = () => (
         {/* 凭据管理 - 调度中心入口 */}
         <Route path="/scheduling-center/business-assets/credentials" element={<CredentialManagementPage />} />
         <Route path="/scheduling-center/business-assets/credentials/:credentialId/usage" element={<CredentialUsagePage />} />
+        
+        {/* 个人中心 */}
+        <Route path="/personal-center" element={<PersonalCenter />} />
+        <Route path="/personal-center/personal-credentials" element={<PersonalCenter />} />
+        <Route path="/personal-center/settings" element={<PersonalCenter />} />
         
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />

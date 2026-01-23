@@ -1,0 +1,37 @@
+.personal-credential-management {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0;
+
+  .personal-credential-management-header {
+    flex-shrink: 0;
+    padding: 16px 24px;
+    background: var(--semi-color-bg-0);
+
+    .personal-credential-management-header-title {
+      margin-bottom: 16px;
+
+      .title {
+        margin-bottom: 4px;
+      }
+    }
+
+    .personal-credential-management-header-toolbar {
+      .personal-credential-management-search-input {
+        width: 280px;
+      }
+    }
+  }
+
+  .personal-credential-management-table {
+    flex: 1;
+    overflow: hidden;
+    padding: 0 24px 24px;
+
+    .personal-credential-table-name {
+      color: var(--semi-color-text-0);
+      font-weight: 500;
+    }
+  }
+}

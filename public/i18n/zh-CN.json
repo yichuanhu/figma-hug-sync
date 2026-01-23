@@ -107,6 +107,7 @@
       "schedulingCenter": "调度中心"
     },
     "createCredential": "新建凭据",
+    "personalCredentialManagement": "个人凭据管理",
     "searchPlaceholder": "搜索凭据名称",
     "table": {
       "name": "凭据名称",
@@ -703,6 +704,85 @@
         "unlockScreen": "解锁屏幕"
       },
       "success": "保存成功"
+    }
+  },
+  "personalCenter": {
+    "title": "个人中心",
+    "tabs": {
+      "personalCredentials": "个人凭据",
+      "settings": "设置"
+    },
+    "settings": {
+      "comingSoon": "设置功能即将推出"
+    }
+  },
+  "personalCredential": {
+    "title": "个人凭据",
+    "description": "管理您的个人凭据，用于流程运行时的个人身份验证",
+    "searchPlaceholder": "搜索个人凭据名称",
+    "createCredential": "新建凭据",
+    "table": {
+      "name": "个人凭据名称",
+      "username": "个人凭据值（用户名）",
+      "linkedCredential": "关联的凭据"
+    },
+    "fields": {
+      "name": "个人凭据名称",
+      "namePlaceholder": "请输入个人凭据名称",
+      "username": "用户名",
+      "usernamePlaceholder": "请输入用户名",
+      "password": "密码",
+      "passwordPlaceholder": "请输入密码",
+      "passwordEditPlaceholder": "留空则不修改密码",
+      "passwordEditHint": "如果不需要修改密码，请留空",
+      "descriptionPlaceholder": "请输入描述（选填）"
+    },
+    "validation": {
+      "nameRequired": "请输入个人凭据名称",
+      "nameLengthError": "个人凭据名称长度必须在1-30字符之间",
+      "nameExists": "个人凭据名称已存在，请使用其他名称",
+      "usernameRequired": "请输入用户名",
+      "usernameLengthError": "用户名长度不能超过100字符",
+      "passwordRequired": "请输入密码",
+      "passwordLengthError": "密码长度不能超过100字符"
+    },
+    "list": {
+      "loadError": "加载个人凭据列表失败"
+    },
+    "createModal": {
+      "title": "新建个人凭据",
+      "success": "个人凭据创建成功",
+      "error": "创建失败，请重试"
+    },
+    "editModal": {
+      "title": "编辑个人凭据",
+      "success": "个人凭据更新成功",
+      "error": "更新失败，请重试"
+    },
+    "deleteModal": {
+      "title": "删除个人凭据",
+      "confirmMessage": "确定删除该个人凭据吗？删除后关联的凭据将自动解除关联关系",
+      "success": "个人凭据删除成功"
+    },
+    "actions": {
+      "viewUsage": "查看使用记录"
+    },
+    "usage": {
+      "title": "使用记录",
+      "empty": "暂无使用记录",
+      "table": {
+        "usageTime": "使用时间",
+        "type": "类型",
+        "description": "说明",
+        "process": "流程名称",
+        "processVersion": "流程版本",
+        "worker": "流程机器人",
+        "taskId": "任务编号"
+      },
+      "type": {
+        "debug": "调试",
+        "task": "任务"
+      }
     }
   }
 }
