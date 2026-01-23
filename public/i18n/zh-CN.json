@@ -348,7 +348,7 @@
         "title": "删除流程",
         "confirmDelete": "确认删除",
         "confirmMessage": "确定要删除流程「{{name}}」吗？",
-        "deleteWarning": "流程及其所有版本将被永久删除，同时所有相关任务会立即停止，请谨慎操作。",
+        "deleteWarning": "删除后将无法恢复，请谨慎操作。",
         "success": "流程删除成功！",
         "error": "删除失败，请重试"
       }
