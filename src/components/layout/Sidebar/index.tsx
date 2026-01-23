@@ -168,19 +168,19 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
 
   // 开发中心的详细菜单结构 - 使用分组标题样式
   const developmentCenterMenu: MenuItem[] = [
-    { key: 'developmentWorkbench', labelKey: 'sidebar.developmentWorkbench', icon: <LayoutGrid size={18} /> },
+    { key: 'developmentWorkbench', labelKey: 'sidebar.developmentWorkbench', icon: <LayoutGrid size={20} strokeWidth={3} /> },
     // 开发任务管理 - 分组标题
     { key: 'developmentTaskManagement', labelKey: 'sidebar.developmentTaskManagement', isGroupLabel: true },
     { key: 'automationProcess', labelKey: 'sidebar.automationProcess', icon: <IconSourceControl size="large" />, path: '/process-development' },
     // 业务资产配置 - 分组标题
     { key: 'businessAssetConfig', labelKey: 'sidebar.businessAssetConfig', isGroupLabel: true },
-    { key: 'queue', labelKey: 'sidebar.queue', icon: <ListStart size={18} /> },
-    { key: 'devCredentials', labelKey: 'sidebar.credentials', icon: <MonitorCheck size={18} />, path: '/dev-center/business-assets/credentials' },
-    { key: 'parameters', labelKey: 'sidebar.parameters', icon: <Parentheses size={18} /> },
-    { key: 'files', labelKey: 'sidebar.files', icon: <FolderCheck size={18} /> },
+    { key: 'queue', labelKey: 'sidebar.queue', icon: <ListStart size={20} strokeWidth={3} /> },
+    { key: 'devCredentials', labelKey: 'sidebar.credentials', icon: <MonitorCheck size={20} strokeWidth={3} />, path: '/dev-center/business-assets/credentials' },
+    { key: 'parameters', labelKey: 'sidebar.parameters', icon: <Parentheses size={20} strokeWidth={3} /> },
+    { key: 'files', labelKey: 'sidebar.files', icon: <FolderCheck size={20} strokeWidth={3} /> },
     // 发布管理 - 分组标题
     { key: 'publishManagement', labelKey: 'sidebar.publishManagement', isGroupLabel: true },
-    { key: 'processPublish', labelKey: 'sidebar.processPublish', icon: <Forward size={18} /> },
+    { key: 'processPublish', labelKey: 'sidebar.processPublish', icon: <Forward size={20} strokeWidth={3} /> },
   ];
 
   const bottomMenuItems: MenuItem[] = [
