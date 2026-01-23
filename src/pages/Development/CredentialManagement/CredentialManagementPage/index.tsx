@@ -459,9 +459,18 @@ const CredentialManagementPage = () => {
               </Space>
             </Col>
             <Col>
-              <Button icon={<IconPlus />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
-                {t('credential.createCredential')}
-              </Button>
+              <Space>
+                <Button icon={<IconPlus />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
+                  {t('credential.createCredential')}
+                </Button>
+                <Button 
+                  theme="light" 
+                  type="tertiary" 
+                  onClick={() => navigate('/personal-center/personal-credentials')}
+                >
+                  {t('credential.personalCredentialManagement')}
+                </Button>
+              </Space>
             </Col>
           </Row>
         </div>
