@@ -539,7 +539,6 @@ const ProcessDetailDrawer = ({
   const creatorName = getCreatorName(processData.creator_id);
 
   const descriptionData = [
-    { key: t('development.processDevelopment.fields.processId'), value: processData.id },
     { key: t('development.processDevelopment.fields.processName'), value: processData.name },
     { key: t('common.description'), value: processData.description || '-' },
     { key: t('common.creator'), value: creatorName },
