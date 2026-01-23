@@ -63,6 +63,7 @@
     "workerManagement": "流程机器人管理",
     "executionResourceMonitoring": "执行资源监控",
     "publishManagement": "发布管理",
+    "processPublish": "流程发布",
     "publishList": "发布列表",
     "newPublish": "新建发布",
     "publishHistory": "发布历史",
