@@ -107,9 +107,10 @@ const fetchWorkerGroupList = async (params: GetWorkerGroupsParams): Promise<LYLi
 
 interface WorkerGroupManagementProps {
   isActive?: boolean;
+  onNavigateToWorkerDetail?: (workerId: string) => void;
 }
 
-const WorkerGroupManagement = ({ isActive = true }: WorkerGroupManagementProps) => {
+const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: WorkerGroupManagementProps) => {
   const { t } = useTranslation();
   
   // 查询参数
@@ -442,6 +443,7 @@ const WorkerGroupManagement = ({ isActive = true }: WorkerGroupManagementProps) 
           total,
         }}
         onPageChange={handleDrawerPageChange}
+        onNavigateToWorkerDetail={onNavigateToWorkerDetail}
       />
 
       {/* 创建弹窗 */}

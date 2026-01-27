@@ -327,9 +327,11 @@ const fetchWorkerList = async (params: GetWorkersParams & { filters?: FilterStat
 
 interface WorkerManagementProps {
   isActive?: boolean;
+  pendingWorkerId?: string | null;
+  onWorkerDetailOpened?: () => void;
 }
 
-const WorkerManagement = ({ isActive = true }: WorkerManagementProps) => {
+const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpened }: WorkerManagementProps) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   
@@ -440,6 +442,18 @@ const WorkerManagement = ({ isActive = true }: WorkerManagementProps) => {
   useEffect(() => {
     loadData();
   }, [loadData]);
+
+  // 处理从机器人组跳转过来的情况
+  useEffect(() => {
+    if (pendingWorkerId && listResponse.list.length > 0) {
+      const worker = listResponse.list.find(w => w.id === pendingWorkerId);
+      if (worker) {
+        setSelectedWorker(worker);
+        setDetailDrawerVisible(true);
+        onWorkerDetailOpened?.();
+      }
+    }
+  }, [pendingWorkerId, listResponse.list, onWorkerDetailOpened]);
 
   // 搜索
   const handleSearch = (value: string) => {
