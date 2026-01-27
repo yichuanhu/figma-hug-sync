@@ -23,6 +23,7 @@ import {
 } from '@douyinfe/semi-ui';
 import EmptyState from '@/components/EmptyState';
 import DetailSkeleton from '@/components/DetailSkeleton';
+import TableSkeleton from '@/components/TableSkeleton';
 import {
   IconClose,
   IconEditStroked,
@@ -200,6 +201,7 @@ const CredentialDetailDrawer = ({
   const [usageLoading, setUsageLoading] = useState(false);
   const [usageListResponse, setUsageListResponse] = useState<CredentialUsageListResponse | null>(null);
   const [usageQueryParams, setUsageQueryParams] = useState({ page: 1, pageSize: 20 });
+  const [isUsageInitialLoad, setIsUsageInitialLoad] = useState(true);
   
   // 使用筛选 Hook
   const {
@@ -246,6 +248,7 @@ const CredentialDetailDrawer = ({
       Toast.error(t('credential.usage.loadError'));
     } finally {
       setUsageLoading(false);
+      setIsUsageInitialLoad(false);
     }
   }, [credential, context, userFilter, dateRange, usageQueryParams, t]);
 
@@ -263,6 +266,7 @@ const CredentialDetailDrawer = ({
       setUsageQueryParams({ page: 1, pageSize: 20 });
       resetFilters();
       setUsageListResponse(null);
+      setIsUsageInitialLoad(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [credential?.credential_id]);
@@ -663,22 +667,26 @@ const CredentialDetailDrawer = ({
             </div>
 
             {/* 使用记录表格 */}
-            <Table
-              columns={usageColumns}
-              dataSource={usageListResponse?.data || []}
-              rowKey="id"
-              loading={usageLoading}
-              empty={<EmptyState description={t('credential.usage.empty')} />}
-              pagination={{
-                currentPage: usageQueryParams.page,
-                pageSize: usageQueryParams.pageSize,
-                total: usageTotal,
-                onPageChange: (page) => setUsageQueryParams((prev) => ({ ...prev, page })),
-                showSizeChanger: true,
-                showTotal: true,
-              }}
-              scroll={{ y: 'calc(100vh - 350px)' }}
-            />
+            {isUsageInitialLoad && usageLoading ? (
+              <TableSkeleton rows={8} columns={8} columnWidths={['10%', '15%', '8%', '14%', '8%', '10%', '12%', '8%']} />
+            ) : (
+              <Table
+                columns={usageColumns}
+                dataSource={usageListResponse?.data || []}
+                rowKey="id"
+                loading={usageLoading}
+                empty={<EmptyState description={t('credential.usage.empty')} />}
+                pagination={{
+                  currentPage: usageQueryParams.page,
+                  pageSize: usageQueryParams.pageSize,
+                  total: usageTotal,
+                  onPageChange: (page) => setUsageQueryParams((prev) => ({ ...prev, page })),
+                  showSizeChanger: true,
+                  showTotal: true,
+                }}
+                scroll={{ y: 'calc(100vh - 350px)' }}
+              />
+            )}
           </div>
         </TabPane>
       </Tabs>

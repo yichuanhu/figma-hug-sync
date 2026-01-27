@@ -15,6 +15,7 @@ import {
   Divider,
 } from '@douyinfe/semi-ui';
 import EmptyState from '@/components/EmptyState';
+import TableSkeleton from '@/components/TableSkeleton';
 import {
   IconClose,
   IconDeleteStroked,
@@ -76,6 +77,7 @@ const LinkedCredentialsDrawer = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [linkedCredentials, setLinkedCredentials] = useState<LinkedCredential[]>([]);
   
   // 抽屉状态
@@ -91,10 +93,12 @@ const LinkedCredentialsDrawer = ({
   useEffect(() => {
     if (visible && credential) {
       setLoading(true);
+      setIsInitialLoad(true);
       // 模拟API调用
       setTimeout(() => {
         setLinkedCredentials(generateMockLinkedCredentials(credential.credential_id));
         setLoading(false);
+        setIsInitialLoad(false);
       }, 300);
     }
   }, [visible, credential]);
@@ -247,15 +251,19 @@ const LinkedCredentialsDrawer = ({
         </Text>
 
         <div className="linked-credentials-drawer-table">
-          <Table
-            columns={columns}
-            dataSource={linkedCredentials}
-            rowKey="credential_id"
-            loading={loading}
-            pagination={false}
-            scroll={{ y: 'calc(100vh - 240px)' }}
-            empty={<EmptyState description={t('personalCredential.linkedCredentials.empty')} />}
-          />
+          {isInitialLoad && loading ? (
+            <TableSkeleton rows={6} columns={3} columnWidths={['35%', '45%', '20%']} />
+          ) : (
+            <Table
+              columns={columns}
+              dataSource={linkedCredentials}
+              rowKey="credential_id"
+              loading={loading}
+              pagination={false}
+              scroll={{ y: 'calc(100vh - 240px)' }}
+              empty={<EmptyState description={t('personalCredential.linkedCredentials.empty')} />}
+            />
+          )}
         </div>
       </div>
     </SideSheet>
