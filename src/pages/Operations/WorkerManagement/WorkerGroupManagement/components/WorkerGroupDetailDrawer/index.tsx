@@ -489,7 +489,7 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
                   handleRemoveMember(record);
                 }}
               >
-                {t('workerGroup.actions.remove')}
+                {t('workerGroup.actions.removeFromGroup')}
               </Dropdown.Item>
             </Dropdown.Menu>
           }

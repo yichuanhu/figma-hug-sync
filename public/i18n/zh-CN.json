@@ -882,7 +882,7 @@
       "viewDetail": "查看详情",
       "edit": "编辑",
       "delete": "删除",
-      "remove": "移除"
+      "removeFromGroup": "移出分组"
     },
     "createModal": {
       "title": "创建流程机器人组",
@@ -916,11 +916,11 @@
       }
     },
     "removeMember": {
-      "title": "移除确认",
-      "confirmMessage": "确定将流程机器人「{{name}}」从组中移除吗？",
-      "confirm": "确认移除",
-      "success": "移除成功",
-      "error": "移除失败，请重试"
+      "title": "移出分组确认",
+      "confirmMessage": "确定将流程机器人「{{name}}」从当前分组中移出吗？",
+      "confirm": "确认移出",
+      "success": "已从分组中移出",
+      "error": "移出失败，请重试"
     },
     "addMembers": {
       "title": "添加流程机器人到组",
