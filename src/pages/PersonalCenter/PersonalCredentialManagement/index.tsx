@@ -10,7 +10,6 @@ import {
   Modal,
   Row,
   Col,
-  Typography,
 } from '@douyinfe/semi-ui';
 import {
   IconSearch,
@@ -286,20 +285,12 @@ const PersonalCredentialManagement = () => {
   const range = listResponse?.range;
   const total = range?.total || 0;
 
-  const { Title, Text } = Typography;
+  
 
   return (
     <div className="personal-credential-management">
-      {/* 标题区域 */}
+      {/* 操作栏 */}
       <div className="personal-credential-management-header">
-        <div className="personal-credential-management-header-title">
-          <Title heading={4} className="title">
-            {t('personalCredential.title')}
-          </Title>
-          <Text type="tertiary">{t('personalCredential.description')}</Text>
-        </div>
-
-        {/* 操作栏 */}
         <Row type="flex" justify="space-between" align="middle" className="personal-credential-management-header-toolbar">
           <Col>
             <Space>
@@ -334,7 +325,7 @@ const PersonalCredentialManagement = () => {
             style: {
               cursor: 'pointer',
               backgroundColor: selectedCredential?.credential_id === (record as PersonalCredential).credential_id && detailDrawerVisible
-                ? 'var(--semi-color-primary-light-default)'
+                ? 'var(--semi-color-fill-1)'
                 : undefined,
             },
           })}
