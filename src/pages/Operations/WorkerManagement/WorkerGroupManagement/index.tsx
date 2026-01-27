@@ -386,10 +386,14 @@ const WorkerGroupManagement = () => {
           dataSource={list}
           loading={loading}
           rowKey="id"
-          onRow={(record) => ({
-            onClick: () => openDetail(record as LYWorkerGroupResponse),
-            style: { cursor: 'pointer' }
-          })}
+          onRow={(record) => {
+            const isSelected = selectedGroup?.id === record?.id && detailDrawerVisible;
+            return {
+              onClick: () => openDetail(record as LYWorkerGroupResponse),
+              className: isSelected ? 'worker-group-management-row-selected' : undefined,
+              style: { cursor: 'pointer' },
+            };
+          }}
           pagination={{
             total,
             pageSize,
@@ -413,6 +417,8 @@ const WorkerGroupManagement = () => {
         onEdit={handleEditFromDrawer}
         onDelete={handleDeleteFromDrawer}
         onRefresh={loadData}
+        dataList={list}
+        onNavigate={(group) => setSelectedGroup(group)}
       />
 
       {/* 创建弹窗 */}

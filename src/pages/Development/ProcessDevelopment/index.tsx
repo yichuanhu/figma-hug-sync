@@ -619,6 +619,8 @@ const ProcessDevelopment = () => {
         onRun={handleRun}
         onDelete={() => handleDeleteClick()}
         onOpen={() => selectedProcess && openProcess(selectedProcess)}
+        dataList={list}
+        onNavigate={(process) => setSelectedProcess(process)}
       />
 
       {/* 打开流程确认弹窗 */}

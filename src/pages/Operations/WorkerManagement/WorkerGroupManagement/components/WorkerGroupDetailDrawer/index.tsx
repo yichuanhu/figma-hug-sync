@@ -28,6 +28,8 @@ import {
   IconMinimize,
   IconChevronDown,
   IconChevronUp,
+  IconChevronLeft,
+  IconChevronRight,
 } from '@douyinfe/semi-icons';
 import { useTranslation } from 'react-i18next';
 import { debounce } from 'lodash';
@@ -49,6 +51,9 @@ interface WorkerGroupDetailDrawerProps {
   onEdit: () => void;
   onDelete: () => void;
   onRefresh: () => void;
+  // 导航相关
+  dataList?: LYWorkerGroupResponse[];
+  onNavigate?: (group: LYWorkerGroupResponse) => void;
 }
 
 // 描述展开收起的阈值（字符数）
@@ -152,6 +157,8 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
   onEdit,
   onDelete,
   onRefresh,
+  dataList = [],
+  onNavigate,
 }) => {
   const { t } = useTranslation();
   
@@ -221,6 +228,27 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
   const toggleFullscreen = useCallback(() => {
     setIsFullscreen((prev) => !prev);
   }, []);
+
+  // 导航逻辑
+  const currentIndex = useMemo(() => {
+    if (!groupData || dataList.length === 0) return -1;
+    return dataList.findIndex(item => item.id === groupData.id);
+  }, [groupData, dataList]);
+
+  const hasPrev = currentIndex > 0;
+  const hasNext = currentIndex >= 0 && currentIndex < dataList.length - 1;
+
+  const handlePrev = useCallback(() => {
+    if (hasPrev && onNavigate) {
+      onNavigate(dataList[currentIndex - 1]);
+    }
+  }, [hasPrev, onNavigate, dataList, currentIndex]);
+
+  const handleNext = useCallback(() => {
+    if (hasNext && onNavigate) {
+      onNavigate(dataList[currentIndex + 1]);
+    }
+  }, [hasNext, onNavigate, dataList, currentIndex]);
 
   // 状态配置
   type WorkerStatus = 'OFFLINE' | 'IDLE' | 'BUSY' | 'FAULT' | 'MAINTENANCE';
@@ -439,6 +467,17 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
           </Col>
           <Col>
             <Space spacing={4}>
+              {dataList.length > 1 && (
+                <>
+                  <Tooltip content={t('common.previous')}>
+                    <Button icon={<IconChevronLeft />} theme="borderless" size="small" disabled={!hasPrev} onClick={handlePrev} />
+                  </Tooltip>
+                  <Tooltip content={t('common.next')}>
+                    <Button icon={<IconChevronRight />} theme="borderless" size="small" disabled={!hasNext} onClick={handleNext} />
+                  </Tooltip>
+                  <Divider layout="vertical" className="worker-group-detail-drawer-header-divider" />
+                </>
+              )}
               <Tooltip content={t('common.edit')}>
                 <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={onEdit} />
               </Tooltip>
