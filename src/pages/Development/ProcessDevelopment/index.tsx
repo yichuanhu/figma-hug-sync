@@ -30,6 +30,7 @@ import {
   IconDeleteStroked,
   IconFilter,
 } from '@douyinfe/semi-icons';
+import AppLayout from '@/components/layout/AppLayout';
 import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
 import ProcessDetailDrawer from './components/ProcessDetailDrawer';
@@ -466,7 +467,8 @@ const ProcessDevelopment = () => {
   ];
 
   return (
-    <div className="process-development">
+    <AppLayout>
+      <div className="process-development">
       {/* 固定面包屑 */}
       <div className="process-development-breadcrumb">
         <Breadcrumb>
@@ -621,7 +623,8 @@ const ProcessDevelopment = () => {
 
       {/* 打开流程确认弹窗 */}
       <OpenProcessModal />
-    </div>
+      </div>
+    </AppLayout>
   );
 };
 
