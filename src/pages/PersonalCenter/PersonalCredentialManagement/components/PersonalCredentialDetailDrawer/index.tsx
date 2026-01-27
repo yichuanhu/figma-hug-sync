@@ -28,12 +28,17 @@ import {
   IconClose,
   IconLink,
   IconUnlink,
+  IconChevronDown,
+  IconChevronUp,
 } from '@douyinfe/semi-icons';
 import type { PersonalCredential } from '../../index';
 
 import './index.less';
 
 const { Title, Text } = Typography;
+
+// 描述展开收起的阈值（字符数）
+const DESCRIPTION_COLLAPSE_THRESHOLD = 100;
 
 // ============= 关联凭据类型 =============
 interface LinkedCredential {
@@ -107,6 +112,7 @@ const PersonalCredentialDetailDrawer = ({
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('linkedCredentials');
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [drawerWidth, setDrawerWidth] = useState(() => {
     const saved = localStorage.getItem('personalCredentialDetailDrawerWidth');
     return saved ? Math.max(Number(saved), 576) : 576;
@@ -163,6 +169,7 @@ const PersonalCredentialDetailDrawer = ({
       loadLinkedCredentials();
       loadUsageRecords();
       setActiveTab('linkedCredentials');
+      setIsDescriptionExpanded(false);
     }
   }, [visible, credential?.credential_id]);
 
@@ -324,6 +331,35 @@ const PersonalCredentialDetailDrawer = ({
     },
   ], [t]);
 
+  // 处理描述展示
+  const description = credential?.description || '-';
+  const isDescriptionLong = description.length > DESCRIPTION_COLLAPSE_THRESHOLD;
+  const displayDescription = isDescriptionLong && !isDescriptionExpanded 
+    ? description.slice(0, DESCRIPTION_COLLAPSE_THRESHOLD) + '...' 
+    : description;
+
+  const renderDescriptionValue = () => {
+    if (description === '-') return '-';
+    
+    return (
+      <div className="personal-credential-detail-drawer-description">
+        <span className="personal-credential-detail-drawer-description-text">{displayDescription}</span>
+        {isDescriptionLong && (
+          <Button
+            theme="borderless"
+            size="small"
+            type="tertiary"
+            className="personal-credential-detail-drawer-description-toggle"
+            icon={isDescriptionExpanded ? <IconChevronUp /> : <IconChevronDown />}
+            onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
+          >
+            {isDescriptionExpanded ? t('common.collapse') : t('common.expand')}
+          </Button>
+        )}
+      </div>
+    );
+  };
+
   // 基本信息描述数据
   const descriptionData = useMemo(() => {
     if (!credential) return [];
@@ -338,7 +374,7 @@ const PersonalCredentialDetailDrawer = ({
       },
       {
         key: t('common.description'),
-        value: credential.description || '-',
+        value: renderDescriptionValue(),
       },
       {
         key: t('common.createTime'),
@@ -349,7 +385,7 @@ const PersonalCredentialDetailDrawer = ({
         value: new Date(credential.updated_at).toLocaleString('zh-CN'),
       },
     ];
-  }, [credential, t]);
+  }, [credential, t, isDescriptionExpanded]);
 
   if (!credential) return null;
 
