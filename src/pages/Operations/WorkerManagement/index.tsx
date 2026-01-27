@@ -24,9 +24,9 @@ import {
   IconEyeOpenedStroked, 
   IconEditStroked, 
   IconDeleteStroked,
-  IconKey,
-  IconUserGroup,
-  IconMinusCircle,
+  IconKeyStroked,
+  IconUserListStroked,
+  IconMinusCircleStroked,
 } from '@douyinfe/semi-icons';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -811,7 +811,7 @@ const WorkerManagement = ({ isActive = true }: WorkerManagementProps) => {
                 {t('worker.actions.viewDetail')}
               </Dropdown.Item>
               <Dropdown.Item 
-                icon={<IconKey />} 
+                icon={<IconKeyStroked />}
                 onClick={(e) => {
                   e?.stopPropagation?.();
                   openKeyModal(record);
@@ -831,7 +831,7 @@ const WorkerManagement = ({ isActive = true }: WorkerManagementProps) => {
               {/* 未分组的机器人显示"添加至分组"操作 */}
               {!record.group_id && (
                 <Dropdown.Item 
-                  icon={<IconUserGroup />} 
+                  icon={<IconUserListStroked />}
                   onClick={(e) => {
                     e?.stopPropagation?.();
                     handleAddToGroup(record);
@@ -843,7 +843,7 @@ const WorkerManagement = ({ isActive = true }: WorkerManagementProps) => {
               {/* 已分组的机器人显示"移出分组"操作 */}
               {record.group_id && (
                 <Dropdown.Item 
-                  icon={<IconMinusCircle />} 
+                  icon={<IconMinusCircleStroked />}
                   onClick={(e) => {
                     e?.stopPropagation?.();
                     handleRemoveFromGroup(record);

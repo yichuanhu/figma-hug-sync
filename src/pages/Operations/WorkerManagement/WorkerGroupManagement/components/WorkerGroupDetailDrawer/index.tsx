@@ -23,13 +23,14 @@ import {
   IconPlus,
   IconMore,
   IconEyeOpenedStroked,
-  IconClose,
+  IconMinusCircleStroked,
   IconMaximize,
   IconMinimize,
   IconChevronDown,
   IconChevronUp,
   IconChevronLeft,
   IconChevronRight,
+  IconClose,
 } from '@douyinfe/semi-icons';
 import { useTranslation } from 'react-i18next';
 import { debounce } from 'lodash';
@@ -351,7 +352,7 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
     
     Modal.confirm({
       title: t('workerGroup.removeMember.title'),
-      icon: <IconClose style={{ color: 'var(--semi-color-warning)' }} />,
+      icon: <IconMinusCircleStroked style={{ color: 'var(--semi-color-warning)' }} />,
       content: t('workerGroup.removeMember.confirmMessage', { name: member.name }),
       okText: t('workerGroup.removeMember.confirm'),
       cancelText: t('common.cancel'),
@@ -482,7 +483,7 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
                 {t('workerGroup.actions.viewDetail')}
               </Dropdown.Item>
               <Dropdown.Item 
-                icon={<IconClose />} 
+                icon={<IconMinusCircleStroked />} 
                 type="warning"
                 onClick={(e) => {
                   e?.stopPropagation?.();

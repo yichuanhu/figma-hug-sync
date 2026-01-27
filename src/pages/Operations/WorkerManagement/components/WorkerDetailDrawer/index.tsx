@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SideSheet, Typography, Button, Tag, Descriptions, Switch, Tooltip, Divider, Row, Col, Space } from '@douyinfe/semi-ui';
-import { IconEditStroked, IconDeleteStroked, IconMaximize, IconMinimize, IconClose, IconKey, IconChevronDown, IconChevronUp, IconChevronLeft, IconChevronRight, IconUserGroup, IconMinusCircle } from '@douyinfe/semi-icons';
+import { IconEditStroked, IconDeleteStroked, IconMaximize, IconMinimize, IconClose, IconKeyStroked, IconChevronDown, IconChevronUp, IconChevronLeft, IconChevronRight, IconUserListStroked, IconMinusCircleStroked } from '@douyinfe/semi-icons';
 import type { LYWorkerResponse } from '@/api';
 import './index.less';
 
@@ -206,7 +206,7 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
           <Tag color="blue" type="light">{workerData.group_name}</Tag>
           <Tooltip content={t('worker.actions.removeFromGroup')}>
             <Button
-              icon={<IconMinusCircle />}
+              icon={<IconMinusCircleStroked />}
               theme="borderless"
               size="small"
               type="tertiary"
@@ -221,7 +221,7 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
         <Text type="tertiary">{t('worker.filter.ungrouped')}</Text>
         <Tooltip content={t('worker.actions.addToGroup')}>
           <Button
-            icon={<IconUserGroup />}
+            icon={<IconUserListStroked />}
             theme="borderless"
             size="small"
             type="tertiary"
@@ -327,7 +327,7 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
                 <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={onEdit} />
               </Tooltip>
               <Tooltip content={t('worker.actions.viewKey')}>
-                <Button icon={<IconKey />} theme="borderless" size="small" onClick={onViewKey} />
+                <Button icon={<IconKeyStroked />} theme="borderless" size="small" onClick={onViewKey} />
               </Tooltip>
               <Tooltip content={t('common.delete')}>
                 <Button icon={<IconDeleteStroked className="worker-detail-drawer-header-delete-icon" />} theme="borderless" size="small" onClick={onDelete} />
