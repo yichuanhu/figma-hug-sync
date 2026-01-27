@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { 
   SideSheet, 
   Typography, 
@@ -13,6 +13,8 @@ import {
   Modal,
   Toast,
   Dropdown,
+  Tooltip,
+  Divider,
 } from '@douyinfe/semi-ui';
 import { 
   IconEditStroked, 
@@ -22,6 +24,10 @@ import {
   IconMore,
   IconEyeOpenedStroked,
   IconClose,
+  IconMaximize,
+  IconMinimize,
+  IconChevronDown,
+  IconChevronUp,
 } from '@douyinfe/semi-icons';
 import { useTranslation } from 'react-i18next';
 import { debounce } from 'lodash';
@@ -44,6 +50,9 @@ interface WorkerGroupDetailDrawerProps {
   onDelete: () => void;
   onRefresh: () => void;
 }
+
+// 描述展开收起的阈值（字符数）
+const DESCRIPTION_COLLAPSE_THRESHOLD = 100;
 
 // Mock成员数据
 const mockMembers: LYWorkerGroupMemberResponse[] = [
@@ -146,6 +155,18 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
 }) => {
   const { t } = useTranslation();
   
+  // 抽屉状态
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  const [drawerWidth, setDrawerWidth] = useState(() => {
+    const saved = localStorage.getItem('workerGroupDetailDrawerWidth');
+    return saved ? Math.max(Number(saved), 576) : 800;
+  });
+  const isResizing = useRef(false);
+  const startX = useRef(0);
+  const startWidth = useRef(drawerWidth);
+  
+  // 成员列表状态
   const [membersLoading, setMembersLoading] = useState(false);
   const [membersResponse, setMembersResponse] = useState<LYListResponseLYWorkerGroupMemberResponse>({
     range: { offset: 0, size: 20, total: 0 },
@@ -158,6 +179,48 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
     keyword: undefined,
   });
   const [addMembersVisible, setAddMembersVisible] = useState(false);
+
+  // 当groupData变化时，重置描述展开状态
+  useEffect(() => {
+    setIsDescriptionExpanded(false);
+  }, [groupData?.id]);
+
+  // 拖拽调整宽度
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      isResizing.current = true;
+      startX.current = e.clientX;
+      startWidth.current = drawerWidth;
+      document.body.style.cursor = 'ew-resize';
+      document.body.style.userSelect = 'none';
+      const handleMouseMove = (e: MouseEvent) => {
+        if (!isResizing.current) return;
+        const diff = startX.current - e.clientX;
+        setDrawerWidth(Math.min(Math.max(startWidth.current + diff, 576), window.innerWidth - 100));
+      };
+      const handleMouseUp = () => {
+        isResizing.current = false;
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    },
+    [drawerWidth],
+  );
+
+  // 保存宽度到localStorage
+  useEffect(() => {
+    localStorage.setItem('workerGroupDetailDrawerWidth', String(drawerWidth));
+  }, [drawerWidth]);
+
+  const toggleFullscreen = useCallback(() => {
+    setIsFullscreen((prev) => !prev);
+  }, []);
 
   // 状态配置
   type WorkerStatus = 'OFFLINE' | 'IDLE' | 'BUSY' | 'FAULT' | 'MAINTENANCE';
@@ -237,10 +300,39 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
 
   if (!groupData) return null;
 
+  // 处理描述展示
+  const description = groupData.description || '-';
+  const isDescriptionLong = description.length > DESCRIPTION_COLLAPSE_THRESHOLD;
+  const displayDescription = isDescriptionLong && !isDescriptionExpanded 
+    ? description.slice(0, DESCRIPTION_COLLAPSE_THRESHOLD) + '...' 
+    : description;
+
+  const renderDescriptionValue = () => {
+    if (description === '-') return '-';
+    
+    return (
+      <div className="worker-group-detail-drawer-description">
+        <span className="worker-group-detail-drawer-description-text">{displayDescription}</span>
+        {isDescriptionLong && (
+          <Button
+            theme="borderless"
+            size="small"
+            type="tertiary"
+            className="worker-group-detail-drawer-description-toggle"
+            icon={isDescriptionExpanded ? <IconChevronUp /> : <IconChevronDown />}
+            onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
+          >
+            {isDescriptionExpanded ? t('common.collapse') : t('common.expand')}
+          </Button>
+        )}
+      </div>
+    );
+  };
+
   // 基本信息
   const basicInfoData = [
     { key: t('workerGroup.detail.fields.groupName'), value: groupData.name },
-    { key: t('common.description'), value: groupData.description || '-' },
+    { key: t('common.description'), value: renderDescriptionValue() },
     { key: t('workerGroup.table.memberCount'), value: `${groupData.member_count} ${t('workerGroup.table.memberUnit')}` },
     { key: t('common.creator'), value: groupData.creator_name || '-' },
     { key: t('common.createTime'), value: groupData.created_at },
@@ -338,49 +430,57 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
 
   return (
     <SideSheet
+      title={
+        <Row type="flex" justify="space-between" align="middle" className="worker-group-detail-drawer-header">
+          <Col>
+            <Title heading={5} className="worker-group-detail-drawer-header-title">
+              {t('workerGroup.detail.title')}
+            </Title>
+          </Col>
+          <Col>
+            <Space spacing={4}>
+              <Tooltip content={t('common.edit')}>
+                <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={onEdit} />
+              </Tooltip>
+              <Tooltip content={t('common.delete')}>
+                <Button icon={<IconDeleteStroked className="worker-group-detail-drawer-header-delete-icon" />} theme="borderless" size="small" onClick={onDelete} />
+              </Tooltip>
+              <Divider layout="vertical" className="worker-group-detail-drawer-header-divider" />
+              <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
+                <Button icon={isFullscreen ? <IconMinimize /> : <IconMaximize />} theme="borderless" size="small" onClick={toggleFullscreen} />
+              </Tooltip>
+              <Tooltip content={t('common.close')}>
+                <Button icon={<IconClose />} theme="borderless" size="small" onClick={onClose} className="worker-group-detail-drawer-header-close-btn" />
+              </Tooltip>
+            </Space>
+          </Col>
+        </Row>
+      }
       visible={visible}
       onCancel={onClose}
       placement="right"
-      width={900}
-      title={
-        <div className="worker-group-detail-drawer-header">
-          <span>{t('workerGroup.detail.title')}</span>
-        </div>
-      }
-      headerStyle={{ borderBottom: '1px solid var(--semi-color-border)' }}
-      bodyStyle={{ padding: 24 }}
-      className="worker-group-detail-drawer"
+      width={isFullscreen ? '100%' : drawerWidth}
+      mask={false}
+      footer={null}
+      closable={false}
+      className={`card-sidesheet resizable-sidesheet worker-group-detail-drawer ${isFullscreen ? 'fullscreen-sidesheet' : ''}`}
     >
+      {!isFullscreen && <div className="worker-group-detail-drawer-resize-handle" onMouseDown={handleMouseDown} />}
       <div className="worker-group-detail-drawer-content">
         {/* 基本信息 */}
-        <div className="worker-group-detail-drawer-info">
-          <Row type="flex" justify="space-between" align="middle" style={{ marginBottom: 16 }}>
-            <Col>
-              <Title heading={5}>{t('workerGroup.detail.basicInfo')}</Title>
-            </Col>
-            <Col>
-              <Space spacing={4}>
-                <Button 
-                  icon={<IconEditStroked />} 
-                  theme="borderless"
-                  onClick={onEdit}
-                />
-                <Button 
-                  icon={<IconDeleteStroked />} 
-                  theme="borderless"
-                  type="danger"
-                  onClick={onDelete}
-                />
-              </Space>
-            </Col>
-          </Row>
+        <div className="worker-group-detail-drawer-info-section">
+          <Text strong className="worker-group-detail-drawer-info-title">
+            {t('workerGroup.detail.basicInfo')}
+          </Text>
           <Descriptions data={basicInfoData} align="left" />
         </div>
 
         {/* 成员列表 */}
         <div className="worker-group-detail-drawer-members">
           <div className="worker-group-detail-drawer-members-header">
-            <Title heading={5}>{t('workerGroup.detail.memberList')}</Title>
+            <Text strong className="worker-group-detail-drawer-info-title">
+              {t('workerGroup.detail.memberList')}
+            </Text>
           </div>
           
           <Row type="flex" justify="space-between" align="middle" className="worker-group-detail-drawer-members-toolbar">
@@ -421,7 +521,7 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
                 showSizeChanger: true,
                 showTotal: true,
               }}
-              scroll={{ y: 'calc(100vh - 550px)' }}
+              scroll={{ y: 'calc(100vh - 480px)' }}
             />
           </div>
         </div>
