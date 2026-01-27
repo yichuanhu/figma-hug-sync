@@ -130,7 +130,7 @@ interface PersonalCredentialDetailDrawerProps {
   pagination?: PaginationInfo;
   onPageChange?: (page: number) => Promise<PersonalCredential[] | void>;
   // 初始显示的tab
-  initialTab?: 'basic' | 'usage';
+  initialTab?: 'basic' | 'linked' | 'usage';
 }
 
 const PersonalCredentialDetailDrawer = ({
@@ -149,7 +149,7 @@ const PersonalCredentialDetailDrawer = ({
 }: PersonalCredentialDetailDrawerProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState(initialTab);
+  const [activeTab, setActiveTab] = useState<'basic' | 'linked' | 'usage'>(initialTab);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [drawerWidth, setDrawerWidth] = useState(() => {
@@ -641,7 +641,7 @@ const PersonalCredentialDetailDrawer = ({
       ) : (
         <Tabs
           activeKey={activeTab}
-          onChange={(key) => setActiveTab(key as 'basic' | 'usage')}
+          onChange={(key) => setActiveTab(key as 'basic' | 'linked' | 'usage')}
           className="personal-credential-detail-drawer-tabs"
         >
           <TabPane
@@ -653,74 +653,62 @@ const PersonalCredentialDetailDrawer = ({
                 data={descriptionData}
                 align="left"
               />
-              
-              {/* 关联凭据列表 */}
-              <div className="personal-credential-detail-drawer-linked-section">
-                <div className="personal-credential-detail-drawer-linked-header">
-                  <Title heading={6} style={{ margin: 0 }}>
-                    {t('personalCredential.linkedCredentials.title')}
-                  </Title>
-                  <Text type="tertiary" size="small">
-                    {linkedCredentials.length > 0 
-                      ? `${linkedCredentials.length} ${t('personalCredential.linkedCredentials.countUnit')}`
-                      : ''
-                    }
-                  </Text>
-                </div>
-                {linkedCredentialsLoading ? (
-                  <TableSkeleton rows={3} columns={3} columnWidths={['40%', '40%', '20%']} />
-                ) : linkedCredentials.length > 0 ? (
-                  <Table
-                    columns={[
-                      {
-                        title: t('personalCredential.linkedCredentials.credentialName'),
-                        dataIndex: 'credential_name',
-                        key: 'credential_name',
-                        render: (text: string) => (
-                          <span className="personal-credential-detail-drawer-linked-name">{text}</span>
-                        ),
-                      },
-                      {
-                        title: t('common.description'),
-                        dataIndex: 'description',
-                        key: 'description',
-                        render: (text: string | null) => text || '-',
-                      },
-                      {
-                        title: t('common.createTime'),
-                        dataIndex: 'created_at',
-                        key: 'created_at',
-                        width: 160,
-                        render: (text: string) => formatDateTime(text),
-                      },
-                      {
-                        title: t('common.actions'),
-                        key: 'actions',
-                        width: 80,
-                        render: (_: unknown, record: LinkedCredential) => (
-                          <Button
-                            theme="borderless"
-                            type="danger"
-                            size="small"
-                            onClick={() => handleUnlinkCredential(record)}
-                          >
-                            {t('personalCredential.linkedCredentials.unlink')}
-                          </Button>
-                        ),
-                      },
-                    ]}
-                    dataSource={linkedCredentials}
-                    rowKey="credential_id"
-                    pagination={false}
-                    size="small"
-                    empty={<EmptyState description={t('personalCredential.linkedCredentials.empty')} />}
-                  />
-                ) : (
-                  <div className="personal-credential-detail-drawer-linked-empty">
-                    <Text type="tertiary">{t('personalCredential.linkedCredentials.empty')}</Text>
-                  </div>
-                )}
-              </div>
+            </div>
+          </TabPane>
+
+          <TabPane
+            tab={t('personalCredential.linkedCredentials.title')}
+            itemKey="linked"
+          >
+            <div className="personal-credential-detail-drawer-linked">
+              {linkedCredentialsLoading ? (
+                <TableSkeleton rows={5} columns={4} columnWidths={['30%', '35%', '20%', '15%']} />
+              ) : (
+                <Table
+                  columns={[
+                    {
+                      title: t('personalCredential.linkedCredentials.credentialName'),
+                      dataIndex: 'credential_name',
+                      key: 'credential_name',
+                      render: (text: string) => (
+                        <span className="personal-credential-detail-drawer-linked-name">{text}</span>
+                      ),
+                    },
+                    {
+                      title: t('common.description'),
+                      dataIndex: 'description',
+                      key: 'description',
+                      render: (text: string | null) => text || '-',
+                    },
+                    {
+                      title: t('common.createTime'),
+                      dataIndex: 'created_at',
+                      key: 'created_at',
+                      width: 160,
+                      render: (text: string) => formatDateTime(text),
+                    },
+                    {
+                      title: t('common.actions'),
+                      key: 'actions',
+                      width: 100,
+                      render: (_: unknown, record: LinkedCredential) => (
+                        <Button
+                          theme="borderless"
+                          type="danger"
+                          size="small"
+                          onClick={() => handleUnlinkCredential(record)}
+                        >
+                          {t('personalCredential.linkedCredentials.unlink')}
+                        </Button>
+                      ),
+                    },
+                  ]}
+                  dataSource={linkedCredentials}
+                  rowKey="credential_id"
+                  pagination={false}
+                  empty={<EmptyState description={t('personalCredential.linkedCredentials.empty')} />}
+                />
+              )}
             </div>
           </TabPane>
           

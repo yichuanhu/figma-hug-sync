@@ -148,7 +148,7 @@ const PersonalCredentialManagement = () => {
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [linkModalVisible, setLinkModalVisible] = useState(false);
   const [linkingCredential, setLinkingCredential] = useState<PersonalCredential | null>(null);
-  const [initialDetailTab, setInitialDetailTab] = useState<'basic' | 'usage'>('basic');
+  const [initialDetailTab, setInitialDetailTab] = useState<'basic' | 'linked' | 'usage'>('basic');
 
   // 加载数据
   const loadData = useCallback(async () => {
