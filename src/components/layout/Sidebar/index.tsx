@@ -41,21 +41,13 @@ import {
 import layoutIcon from '@/assets/icons/layout.svg';
 import laiyeLogo from '@/assets/laiye-logo.png';
 
-// 中心图标 - 默认状态
+// 中心图标
 import homeCenterIcon from '@/assets/icons/home-center.png';
 import developmentCenterIcon from '@/assets/icons/development-center.png';
 import requirementsCenterIcon from '@/assets/icons/requirements-center.png';
 import schedulingCenterIcon from '@/assets/icons/scheduling-center.png';
 import operationsCenterIcon from '@/assets/icons/operations-center.png';
 import maintenanceCenterIcon from '@/assets/icons/maintenance-center.png';
-
-// 中心图标 - 选中状态（带底座）
-import homeCenterActiveIcon from '@/assets/icons/home-center-active.png';
-import developmentCenterActiveIcon from '@/assets/icons/development-center-active.png';
-import requirementsCenterActiveIcon from '@/assets/icons/requirements-center-active.png';
-import schedulingCenterActiveIcon from '@/assets/icons/scheduling-center-active.png';
-import operationsCenterActiveIcon from '@/assets/icons/operations-center-active.png';
-import maintenanceCenterActiveIcon from '@/assets/icons/maintenance-center-active.png';
 
 import './index.less';
 
@@ -157,24 +149,39 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
 
   const activeCenterKey = getActiveCenterByPath(location.pathname);
 
-  // 中心图标映射 - 默认和选中状态
-  const centerIconMap: Record<string, { default: string; active: string }> = {
-    home: { default: homeCenterIcon, active: homeCenterActiveIcon },
-    developmentCenter: { default: developmentCenterIcon, active: developmentCenterActiveIcon },
-    schedulingCenter: { default: schedulingCenterIcon, active: schedulingCenterActiveIcon },
-    operationsCenter: { default: operationsCenterIcon, active: operationsCenterActiveIcon },
-    requirementsCenter: { default: requirementsCenterIcon, active: requirementsCenterActiveIcon },
-    maintenanceCenter: { default: maintenanceCenterIcon, active: maintenanceCenterActiveIcon },
-  };
-
   // 中心级别菜单（左侧图标栏）
   const centerMenuItems: MenuItem[] = [
-    { key: 'home', labelKey: 'sidebar.home', path: '/' },
-    { key: 'developmentCenter', labelKey: 'sidebar.developmentCenter', path: '/development-workbench' },
-    { key: 'schedulingCenter', labelKey: 'sidebar.schedulingCenter', path: '/scheduling-workbench' },
-    { key: 'operationsCenter', labelKey: 'sidebar.operationsCenter', path: '/operations-workbench' },
-    { key: 'requirementsCenter', labelKey: 'sidebar.requirementsCenter', path: '/requirements-workbench' },
-    { key: 'maintenanceCenter', labelKey: 'sidebar.maintenanceCenter', path: '/maintenance-workbench' },
+    { key: 'home', labelKey: 'sidebar.home', icon: <img src={homeCenterIcon} alt="home" className="sidebar-center-icon" />, path: '/' },
+    {
+      key: 'developmentCenter',
+      labelKey: 'sidebar.developmentCenter',
+      icon: <img src={developmentCenterIcon} alt="development" className="sidebar-center-icon" />,
+      path: '/development-workbench',
+    },
+    {
+      key: 'schedulingCenter',
+      labelKey: 'sidebar.schedulingCenter',
+      icon: <img src={schedulingCenterIcon} alt="scheduling" className="sidebar-center-icon" />,
+      path: '/scheduling-workbench',
+    },
+    {
+      key: 'operationsCenter',
+      labelKey: 'sidebar.operationsCenter',
+      icon: <img src={operationsCenterIcon} alt="operations" className="sidebar-center-icon" />,
+      path: '/operations-workbench',
+    },
+    {
+      key: 'requirementsCenter',
+      labelKey: 'sidebar.requirementsCenter',
+      icon: <img src={requirementsCenterIcon} alt="requirements" className="sidebar-center-icon" />,
+      path: '/requirements-workbench',
+    },
+    {
+      key: 'maintenanceCenter',
+      labelKey: 'sidebar.maintenanceCenter',
+      icon: <img src={maintenanceCenterIcon} alt="maintenance" className="sidebar-center-icon" />,
+      path: '/maintenance-workbench',
+    },
   ];
 
   // 开发中心的详细菜单结构 - 使用分组标题样式
@@ -326,15 +333,13 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     const hasSubMenu = getCenterMenu(item.key).length > 0;
     const isHovered = hoveredCenterKey === item.key;
     const label = t(item.labelKey);
-    const iconSrc = centerIconMap[item.key];
-    const currentIcon = isActive ? iconSrc?.active : iconSrc?.default;
 
     const iconButton = (
       <div
         className={`sidebar-icon-btn ${isActive ? 'active' : ''}`}
         onClick={() => handleCenterClick(item)}
       >
-        <img src={currentIcon} alt={item.key} className="sidebar-center-icon" />
+        {item.icon}
       </div>
     );
 

@@ -69,7 +69,6 @@
     width: 24px;
     height: 24px;
     object-fit: contain;
-    transition: transform 0.2s ease;
   }
 
   // 图标按钮
@@ -87,20 +86,11 @@
 
     &:hover {
       background-color: var(--semi-color-fill-1);
-
-      .sidebar-center-icon {
-        transform: scale(1.15);
-      }
     }
 
     &.active {
-      background-color: transparent;
+      background-color: var(--semi-color-primary-light-default);
       color: var(--semi-color-primary);
-
-      .sidebar-center-icon {
-        width: 32px;
-        height: 32px;
-      }
     }
   }
 
