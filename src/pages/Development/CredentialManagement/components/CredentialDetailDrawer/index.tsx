@@ -252,7 +252,8 @@ const CredentialDetailDrawer = ({
     if (visible && activeTab === 'usage' && credential) {
       loadUsageData();
     }
-  }, [visible, activeTab, credential, loadUsageData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible, activeTab, credential?.credential_id, userFilter, dateRange, usageQueryParams]);
 
   // 切换凭据时重置使用记录状态
   useEffect(() => {
@@ -261,7 +262,8 @@ const CredentialDetailDrawer = ({
       resetFilters();
       setUsageListResponse(null);
     }
-  }, [credential?.credential_id, resetFilters]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [credential?.credential_id]);
 
   // 拖拽调整宽度
   const handleMouseDown = useCallback(
