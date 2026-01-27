@@ -529,7 +529,7 @@ const ProcessDetailDrawer = ({
     {
       key: t('development.processDevelopment.detail.versionDetail.usageInstructions'),
       value: version.usage_instructions_url ? (
-        <a href={version.usage_instructions_url} target="_blank" rel="noopener noreferrer">
+        <a href={version.usage_instructions_url} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center' }}>
           <IconLink style={{ marginRight: 4 }} />
           {t('development.processDevelopment.detail.versionDetail.viewInstructions')}
         </a>
