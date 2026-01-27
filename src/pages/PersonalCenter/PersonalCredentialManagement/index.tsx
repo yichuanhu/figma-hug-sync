@@ -10,7 +10,7 @@ import {
   Modal,
   Row,
   Col,
-  Empty,
+  Tag,
 } from '@douyinfe/semi-ui';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
@@ -282,7 +282,11 @@ const PersonalCredentialManagement = () => {
       key: 'linked_credentials_count',
       width: 120,
       render: (count: number) => (
-        <span>{count > 0 ? `${count} 个凭据` : '-'}</span>
+        count > 0 ? (
+          <Tag color="blue" size="small">{count} {t('personalCredential.linkedCredentials.countUnit')}</Tag>
+        ) : (
+          <span>-</span>
+        )
       ),
     },
     {
