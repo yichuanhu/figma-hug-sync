@@ -223,6 +223,13 @@ const PersonalCredentialManagement = () => {
     setLinkModalVisible(true);
   };
 
+  // 查看使用记录
+  const handleViewUsage = (record: PersonalCredential) => {
+    setSelectedCredential(record);
+    setInitialDetailTab('usage');
+    setDetailDrawerVisible(true);
+  };
+
   // 分页变化
   const handlePageChange = (page: number) => {
     setQueryParams((prev) => ({ ...prev, page }));
@@ -234,7 +241,7 @@ const PersonalCredentialManagement = () => {
       title: t('personalCredential.table.name'),
       dataIndex: 'credential_name',
       key: 'credential_name',
-      width: 180,
+      width: 150,
       render: (text: string) => (
         <span className="personal-credential-table-name">{text}</span>
       ),
@@ -243,20 +250,29 @@ const PersonalCredentialManagement = () => {
       title: t('personalCredential.table.username'),
       dataIndex: 'username',
       key: 'username',
-      width: 200,
+      width: 180,
+    },
+    {
+      title: t('personalCredential.table.linkedCredentials'),
+      dataIndex: 'linked_credentials_count',
+      key: 'linked_credentials_count',
+      width: 120,
+      render: (count: number) => (
+        <span>{count > 0 ? `${count} 个凭据` : '-'}</span>
+      ),
     },
     {
       title: t('common.description'),
       dataIndex: 'description',
       key: 'description',
-      width: 200,
+      width: 180,
       render: (text: string | null) => text || '-',
     },
     {
       title: t('common.createTime'),
       dataIndex: 'created_at',
       key: 'created_at',
-      width: 180,
+      width: 160,
       render: (text: string) => new Date(text).toLocaleString('zh-CN'),
     },
     {
@@ -272,6 +288,9 @@ const PersonalCredentialManagement = () => {
             <Dropdown.Menu>
               <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>
                 {t('common.edit')}
+              </Dropdown.Item>
+              <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleViewUsage(record); }}>
+                {t('personalCredential.actions.viewUsage')}
               </Dropdown.Item>
               <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleLinkCredential(record); }}>
                 {t('personalCredential.actions.linkCredential')}
@@ -323,7 +342,7 @@ const PersonalCredentialManagement = () => {
       {/* 表格 */}
       <div className="personal-credential-management-table">
         {isInitialLoad && loading ? (
-          <TableSkeleton rows={10} columns={5} columnWidths={['20%', '25%', '25%', '20%', '10%']} />
+          <TableSkeleton rows={10} columns={6} columnWidths={['17%', '20%', '13%', '20%', '18%', '12%']} />
         ) : (
           <Table
             columns={columns}
