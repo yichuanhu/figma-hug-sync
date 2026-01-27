@@ -370,6 +370,27 @@ const PersonalCredentialDetailDrawer = ({
     });
   }, [credential, t, onDelete, onClose]);
 
+  // 解除关联凭据
+  const handleUnlinkCredential = useCallback((linkedCredential: LinkedCredential) => {
+    Modal.confirm({
+      title: t('personalCredential.linkedCredentials.unlinkModal.title'),
+      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      content: t('personalCredential.linkedCredentials.unlinkModal.content', { name: linkedCredential.credential_name }),
+      okText: t('common.confirm'),
+      cancelText: t('common.cancel'),
+      okButtonProps: { type: 'danger' },
+      onOk: async () => {
+        // 模拟解除关联
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        Toast.success(t('personalCredential.linkedCredentials.unlinkModal.success'));
+        // 从列表中移除
+        setLinkedCredentials((prev) => prev.filter((item) => item.credential_id !== linkedCredential.credential_id));
+        // 刷新主列表
+        onRefresh();
+      },
+    });
+  }, [t, onRefresh]);
+
   // 格式化时间
   const formatDateTime = (dateStr: string | undefined) => {
     if (!dateStr) return '-';
@@ -671,6 +692,21 @@ const PersonalCredentialDetailDrawer = ({
                         key: 'created_at',
                         width: 160,
                         render: (text: string) => formatDateTime(text),
+                      },
+                      {
+                        title: t('common.actions'),
+                        key: 'actions',
+                        width: 80,
+                        render: (_: unknown, record: LinkedCredential) => (
+                          <Button
+                            theme="borderless"
+                            type="danger"
+                            size="small"
+                            onClick={() => handleUnlinkCredential(record)}
+                          >
+                            {t('personalCredential.linkedCredentials.unlink')}
+                          </Button>
+                        ),
                       },
                     ]}
                     dataSource={linkedCredentials}
