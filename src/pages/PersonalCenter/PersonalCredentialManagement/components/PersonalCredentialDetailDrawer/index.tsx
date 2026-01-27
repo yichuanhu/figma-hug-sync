@@ -19,6 +19,9 @@ import {
   Modal,
   Tag,
   Empty,
+  Popover,
+  CheckboxGroup,
+  Image,
 } from '@douyinfe/semi-ui';
 import {
   IconEditStroked,
@@ -27,10 +30,13 @@ import {
   IconMinimize,
   IconClose,
   IconLink,
-  IconUnlink,
   IconChevronDown,
   IconChevronUp,
+  IconChevronLeft,
+  IconChevronRight,
+  IconFilter,
 } from '@douyinfe/semi-icons';
+import { Download } from 'lucide-react';
 import type { PersonalCredential } from '../../index';
 
 import './index.less';
@@ -40,55 +46,50 @@ const { Title, Text } = Typography;
 // 描述展开收起的阈值（字符数）
 const DESCRIPTION_COLLAPSE_THRESHOLD = 100;
 
-// ============= 关联凭据类型 =============
-interface LinkedCredential {
-  credential_id: string;
-  credential_name: string;
-  description: string | null;
-  linked_at: string;
-}
-
 // ============= 使用记录类型 =============
 interface UsageRecord {
   id: string;
+  user_id: string;
+  user_name: string;
   usage_time: string;
   usage_type: 'DEBUG' | 'TASK';
   description: string;
   process_name: string;
   process_version: string;
-  processRobot: string;
+  worker_name: string;
   task_number: string;
-  screenshot: string | null;
+  screenshot_url: string | null;
 }
 
 // ============= Mock数据生成 =============
-const generateMockLinkedCredentials = (): LinkedCredential[] => {
-  const names = ['ERP系统凭据', 'CRM系统凭据', 'OA系统凭据', '邮件服务凭据', 'API网关凭据'];
-  return Array.from({ length: Math.floor(Math.random() * 5) + 1 }, (_, i) => ({
-    credential_id: `cred-${Date.now()}-${i}`,
-    credential_name: names[i % names.length],
-    description: `这是${names[i % names.length]}的描述信息`,
-    linked_at: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
-  }));
-};
-
 const generateMockUsageRecords = (): UsageRecord[] => {
+  const users = ['张三', '李四', '王五', '赵六', '钱七'];
   const usageTypes: ('DEBUG' | 'TASK')[] = ['DEBUG', 'TASK'];
   const processes = ['订单处理流程', '数据同步流程', '报表生成流程', '邮件发送流程'];
-  return Array.from({ length: 15 }, (_, i) => ({
+  const workers = ['Worker-01', 'Worker-02', 'Worker-03', 'Worker-04'];
+  return Array.from({ length: 25 }, (_, i) => ({
     id: `usage-${i}`,
+    user_id: `user-${(i % 5) + 1}`,
+    user_name: users[i % users.length],
     usage_time: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
     usage_type: usageTypes[Math.floor(Math.random() * usageTypes.length)],
-    description: `第${i + 1}次使用记录`,
+    description: `凭据被成功获取`,
     process_name: processes[Math.floor(Math.random() * processes.length)],
     process_version: `1.0.${Math.floor(Math.random() * 10)}`,
-    processRobot: `Robot-${Math.floor(Math.random() * 100)}`,
-    task_number: `TASK-${Date.now()}-${i}`,
-    screenshot: null,
+    worker_name: workers[Math.floor(Math.random() * workers.length)],
+    task_number: `TASK-${String(i + 1).padStart(6, '0')}`,
+    screenshot_url: i % 3 === 0 ? 'https://via.placeholder.com/800x600' : null,
   }));
 };
 
 // ============= 组件Props =============
+interface PaginationInfo {
+  currentPage: number;
+  totalPages: number;
+  pageSize: number;
+  total: number;
+}
+
 interface PersonalCredentialDetailDrawerProps {
   visible: boolean;
   credential: PersonalCredential | null;
@@ -97,6 +98,12 @@ interface PersonalCredentialDetailDrawerProps {
   onDelete: (credential: PersonalCredential) => void;
   onLinkCredential: (credential: PersonalCredential) => void;
   onRefresh: () => void;
+  // 导航相关
+  dataList?: PersonalCredential[];
+  onNavigate?: (credential: PersonalCredential) => void;
+  // 分页相关 - 用于自动翻页
+  pagination?: PaginationInfo;
+  onPageChange?: (page: number) => Promise<PersonalCredential[] | void>;
 }
 
 const PersonalCredentialDetailDrawer = ({
@@ -107,10 +114,14 @@ const PersonalCredentialDetailDrawer = ({
   onDelete,
   onLinkCredential,
   onRefresh,
+  dataList = [],
+  onNavigate,
+  pagination,
+  onPageChange,
 }: PersonalCredentialDetailDrawerProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('linkedCredentials');
+  const [activeTab, setActiveTab] = useState('basic');
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [drawerWidth, setDrawerWidth] = useState(() => {
@@ -118,34 +129,27 @@ const PersonalCredentialDetailDrawer = ({
     return saved ? Math.max(Number(saved), 576) : 900;
   });
 
-  // 关联凭据数据
-  const [linkedCredentials, setLinkedCredentials] = useState<LinkedCredential[]>([]);
-  const [linkedCredentialsLoading, setLinkedCredentialsLoading] = useState(false);
-
   // 使用记录数据
   const [usageRecords, setUsageRecords] = useState<UsageRecord[]>([]);
   const [usageLoading, setUsageLoading] = useState(false);
-  const [usageDateRange, setUsageDateRange] = useState<[Date, Date] | null>(null);
-  const [usagePage, setUsagePage] = useState(1);
+  const [usageQueryParams, setUsageQueryParams] = useState({ page: 1, pageSize: 20 });
   const [usageTotal, setUsageTotal] = useState(0);
+  const [userFilter, setUserFilter] = useState<string[]>([]);
+  const [dateRange, setDateRange] = useState<[Date, Date] | null>(null);
+  const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
+
+  // 使用者筛选选项
+  const userFilterOptions = [
+    { value: 'user-1', label: '张三' },
+    { value: 'user-2', label: '李四' },
+    { value: 'user-3', label: '王五' },
+    { value: 'user-4', label: '赵六' },
+    { value: 'user-5', label: '钱七' },
+  ];
 
   const isResizing = useRef(false);
   const startX = useRef(0);
   const startWidth = useRef(drawerWidth);
-
-  // 加载关联凭据
-  const loadLinkedCredentials = useCallback(async () => {
-    if (!credential) return;
-    setLinkedCredentialsLoading(true);
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 300));
-      setLinkedCredentials(generateMockLinkedCredentials());
-    } catch (error) {
-      console.error('加载关联凭据失败:', error);
-    } finally {
-      setLinkedCredentialsLoading(false);
-    }
-  }, [credential]);
 
   // 加载使用记录
   const loadUsageRecords = useCallback(async () => {
@@ -153,25 +157,51 @@ const PersonalCredentialDetailDrawer = ({
     setUsageLoading(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 300));
-      const records = generateMockUsageRecords();
-      setUsageRecords(records);
+      let records = generateMockUsageRecords();
+      
+      // 使用者筛选
+      if (userFilter.length > 0) {
+        records = records.filter((item) => userFilter.includes(item.user_id));
+      }
+      
+      // 时间段筛选
+      if (dateRange?.[0]) {
+        records = records.filter((item) => new Date(item.usage_time) >= dateRange[0]);
+      }
+      if (dateRange?.[1]) {
+        records = records.filter((item) => new Date(item.usage_time) <= dateRange[1]);
+      }
+      
+      const offset = (usageQueryParams.page - 1) * usageQueryParams.pageSize;
+      const pagedRecords = records.slice(offset, offset + usageQueryParams.pageSize);
+      
+      setUsageRecords(pagedRecords);
       setUsageTotal(records.length);
     } catch (error) {
       console.error('加载使用记录失败:', error);
     } finally {
       setUsageLoading(false);
     }
-  }, [credential]);
+  }, [credential, userFilter, dateRange, usageQueryParams]);
 
-  // 当抽屉可见或凭据变化时加载数据
+  // 当切换到使用记录tab时加载数据
   useEffect(() => {
-    if (visible && credential) {
-      loadLinkedCredentials();
+    if (visible && activeTab === 'usage' && credential) {
       loadUsageRecords();
-      setActiveTab('linkedCredentials');
-      setIsDescriptionExpanded(false);
     }
-  }, [visible, credential?.credential_id]);
+  }, [visible, activeTab, credential, loadUsageRecords]);
+
+  // 切换凭据时重置状态
+  useEffect(() => {
+    if (credential) {
+      setActiveTab('basic');
+      setIsDescriptionExpanded(false);
+      setUsageQueryParams({ page: 1, pageSize: 20 });
+      setUserFilter([]);
+      setDateRange(null);
+      setUsageRecords([]);
+    }
+  }, [credential?.credential_id]);
 
   // 拖拽调整宽度
   const handleMouseDown = useCallback(
@@ -209,27 +239,61 @@ const PersonalCredentialDetailDrawer = ({
     setIsFullscreen((prev) => !prev);
   }, []);
 
-  // 解除关联
-  const handleUnlink = useCallback((linkedCredential: LinkedCredential) => {
-    Modal.confirm({
-      title: t('personalCredential.linkedCredentials.unlinkConfirmTitle'),
-      content: t('personalCredential.linkedCredentials.unlinkConfirmMessage'),
-      okText: t('common.confirm'),
-      cancelText: t('common.cancel'),
-      okButtonProps: { type: 'danger' },
-      onOk: async () => {
-        await new Promise((resolve) => setTimeout(resolve, 300));
-        setLinkedCredentials((prev) => prev.filter((c) => c.credential_id !== linkedCredential.credential_id));
-        Toast.success(t('personalCredential.linkedCredentials.unlinkSuccess'));
-        onRefresh();
-      },
-    });
-  }, [t, onRefresh]);
+  // 导航逻辑
+  const currentIndex = useMemo(() => {
+    if (!credential || dataList.length === 0) return -1;
+    return dataList.findIndex(item => item.credential_id === credential.credential_id);
+  }, [credential, dataList]);
 
-  // 跳转到凭据详情
-  const handleCredentialClick = useCallback((credentialId: string) => {
-    navigate(`/dev-center/business-assets/credentials?detail=${credentialId}`);
-  }, [navigate]);
+  const canGoPrev = useMemo(() => {
+    if (currentIndex > 0) return true;
+    if (pagination && pagination.currentPage > 1) return true;
+    return false;
+  }, [currentIndex, pagination]);
+
+  const canGoNext = useMemo(() => {
+    if (currentIndex >= 0 && currentIndex < dataList.length - 1) return true;
+    if (pagination && pagination.currentPage < pagination.totalPages) return true;
+    return false;
+  }, [currentIndex, dataList.length, pagination]);
+
+  const [isNavigating, setIsNavigating] = useState(false);
+
+  const handlePrev = useCallback(async () => {
+    if (isNavigating) return;
+    
+    if (currentIndex > 0 && onNavigate) {
+      onNavigate(dataList[currentIndex - 1]);
+    } else if (pagination && pagination.currentPage > 1 && onPageChange) {
+      setIsNavigating(true);
+      try {
+        const newList = await onPageChange(pagination.currentPage - 1);
+        if (newList && newList.length > 0 && onNavigate) {
+          onNavigate(newList[newList.length - 1]);
+        }
+      } finally {
+        setIsNavigating(false);
+      }
+    }
+  }, [currentIndex, dataList, onNavigate, pagination, onPageChange, isNavigating]);
+
+  const handleNext = useCallback(async () => {
+    if (isNavigating) return;
+    
+    if (currentIndex >= 0 && currentIndex < dataList.length - 1 && onNavigate) {
+      onNavigate(dataList[currentIndex + 1]);
+    } else if (pagination && pagination.currentPage < pagination.totalPages && onPageChange) {
+      setIsNavigating(true);
+      try {
+        const newList = await onPageChange(pagination.currentPage + 1);
+        if (newList && newList.length > 0 && onNavigate) {
+          onNavigate(newList[0]);
+        }
+      } finally {
+        setIsNavigating(false);
+      }
+    }
+  }, [currentIndex, dataList, onNavigate, pagination, onPageChange, isNavigating]);
 
   // 删除凭据
   const handleDelete = useCallback(() => {
@@ -250,86 +314,19 @@ const PersonalCredentialDetailDrawer = ({
     });
   }, [credential, t, onDelete, onClose]);
 
-  // 关联凭据表格列
-  const linkedCredentialsColumns = useMemo(() => [
-    {
-      title: t('personalCredential.linkedCredentials.credentialName'),
-      dataIndex: 'credential_name',
-      key: 'credential_name',
-      width: 200,
-      render: (text: string, record: LinkedCredential) => (
-        <Typography.Text
-          link
-          onClick={() => handleCredentialClick(record.credential_id)}
-          style={{ cursor: 'pointer' }}
-        >
-          {text}
-        </Typography.Text>
-      ),
-    },
-    {
-      title: t('common.description'),
-      dataIndex: 'description',
-      key: 'description',
-      render: (text: string | null) => (
-        <Tooltip content={text || '-'}>
-          <Text ellipsis={{ showTooltip: false }} style={{ maxWidth: 200 }}>
-            {text || '-'}
-          </Text>
-        </Tooltip>
-      ),
-    },
-    {
-      title: t('common.actions'),
-      key: 'actions',
-      width: 100,
-      render: (_: unknown, record: LinkedCredential) => (
-        <Button
-          icon={<IconUnlink />}
-          theme="borderless"
-          type="danger"
-          size="small"
-          onClick={() => handleUnlink(record)}
-        >
-          {t('personalCredential.linkedCredentials.unlink')}
-        </Button>
-      ),
-    },
-  ], [t, handleCredentialClick, handleUnlink]);
-
-  // 使用记录表格列
-  const usageColumns = useMemo(() => [
-    {
-      title: t('personalCredential.usage.usageTime'),
-      dataIndex: 'usage_time',
-      key: 'usage_time',
-      width: 180,
-      render: (text: string) => new Date(text).toLocaleString('zh-CN'),
-    },
-    {
-      title: t('personalCredential.usage.usageType'),
-      dataIndex: 'usage_type',
-      key: 'usage_type',
-      width: 100,
-      render: (type: string) => (
-        <Tag color={type === 'DEBUG' ? 'blue' : 'green'} type="light">
-          {type === 'DEBUG' ? t('personalCredential.usage.typeDebug') : t('personalCredential.usage.typeTask')}
-        </Tag>
-      ),
-    },
-    {
-      title: t('personalCredential.usage.processName'),
-      dataIndex: 'process_name',
-      key: 'process_name',
-      width: 150,
-    },
-    {
-      title: t('personalCredential.usage.processVersion'),
-      dataIndex: 'process_version',
-      key: 'process_version',
-      width: 100,
-    },
-  ], [t]);
+  // 格式化时间
+  const formatDateTime = (dateStr: string | undefined) => {
+    if (!dateStr) return '-';
+    const date = new Date(dateStr);
+    return date.toLocaleString('zh-CN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    });
+  };
 
   // 处理描述展示
   const description = credential?.description || '-';
@@ -378,14 +375,108 @@ const PersonalCredentialDetailDrawer = ({
       },
       {
         key: t('common.createTime'),
-        value: new Date(credential.created_at).toLocaleString('zh-CN'),
+        value: formatDateTime(credential.created_at),
       },
       {
         key: t('common.updateTime'),
-        value: new Date(credential.updated_at).toLocaleString('zh-CN'),
+        value: formatDateTime(credential.updated_at),
       },
     ];
   }, [credential, t, isDescriptionExpanded]);
+
+  // 导出使用记录
+  const handleExport = async () => {
+    Toast.info(t('credential.usage.exporting'));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    Toast.success(t('credential.usage.exportSuccess'));
+  };
+
+  // 计算筛选数量
+  const filterCount = userFilter.length + (dateRange ? 1 : 0);
+
+  // 使用记录表格列
+  const usageColumns = useMemo(() => [
+    {
+      title: t('credential.usage.table.user'),
+      dataIndex: 'user_name',
+      key: 'user_name',
+      width: 100,
+    },
+    {
+      title: t('credential.usage.table.usageTime'),
+      dataIndex: 'usage_time',
+      key: 'usage_time',
+      width: 160,
+      render: (text: string) => formatDateTime(text),
+    },
+    {
+      title: t('credential.usage.table.type'),
+      dataIndex: 'usage_type',
+      key: 'usage_type',
+      width: 80,
+      render: (type: 'DEBUG' | 'TASK') => (
+        <Tag color={type === 'DEBUG' ? 'blue' : 'green'} type="light">
+          {t(`credential.usage.type.${type.toLowerCase()}`)}
+        </Tag>
+      ),
+    },
+    {
+      title: t('credential.usage.table.process'),
+      dataIndex: 'process_name',
+      key: 'process_name',
+      width: 140,
+      render: (text: string | null) => (
+        text ? (
+          <Tooltip content={text} position="top">
+            <span className="personal-credential-detail-drawer-cell-ellipsis">
+              {text}
+            </span>
+          </Tooltip>
+        ) : (
+          <span>-</span>
+        )
+      ),
+    },
+    {
+      title: t('credential.usage.table.processVersion'),
+      dataIndex: 'process_version',
+      key: 'process_version',
+      width: 80,
+    },
+    {
+      title: t('credential.usage.table.worker'),
+      dataIndex: 'worker_name',
+      key: 'worker_name',
+      width: 100,
+    },
+    {
+      title: t('credential.usage.table.taskId'),
+      dataIndex: 'task_number',
+      key: 'task_number',
+      width: 120,
+      render: (text: string | null) => (
+        <span className="personal-credential-detail-drawer-cell-task">{text || '-'}</span>
+      ),
+    },
+    {
+      title: t('credential.usage.table.screenshot'),
+      dataIndex: 'screenshot_url',
+      key: 'screenshot_url',
+      width: 80,
+      render: (url: string | null) =>
+        url ? (
+          <Image
+            src={url}
+            width={50}
+            height={35}
+            preview
+            style={{ cursor: 'pointer', borderRadius: 4 }}
+          />
+        ) : (
+          '-'
+        ),
+    },
+  ], [t]);
 
   if (!credential) return null;
 
@@ -396,7 +487,7 @@ const PersonalCredentialDetailDrawer = ({
       closable={false}
       mask={false}
       width={isFullscreen ? '100%' : drawerWidth}
-      className="card-sidesheet personal-credential-detail-drawer"
+      className={`card-sidesheet personal-credential-detail-drawer ${isFullscreen ? 'fullscreen-sidesheet' : ''}`}
       headerStyle={{ padding: '12px 16px' }}
       bodyStyle={{ padding: 0 }}
       title={
@@ -408,6 +499,17 @@ const PersonalCredentialDetailDrawer = ({
           </div>
           <div className="personal-credential-detail-drawer-header-right">
             <Space spacing={8}>
+              {(dataList.length > 1 || (pagination && pagination.totalPages > 1)) && (
+                <>
+                  <Tooltip content={t('common.previous')}>
+                    <Button icon={<IconChevronLeft />} theme="borderless" size="small" disabled={!canGoPrev || isNavigating} onClick={handlePrev} loading={isNavigating} />
+                  </Tooltip>
+                  <Tooltip content={t('common.next')}>
+                    <Button icon={<IconChevronRight />} theme="borderless" size="small" disabled={!canGoNext || isNavigating} onClick={handleNext} loading={isNavigating} />
+                  </Tooltip>
+                  <Divider layout="vertical" style={{ margin: '0 8px 0 4px', height: 16 }} />
+                </>
+              )}
               <Tooltip content={t('common.edit')}>
                 <Button
                   icon={<IconEditStroked />}
@@ -432,25 +534,25 @@ const PersonalCredentialDetailDrawer = ({
                   onClick={handleDelete}
                 />
               </Tooltip>
+              <Divider layout="vertical" style={{ margin: '0 8px 0 4px', height: 16 }} />
+              <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
+                <Button
+                  icon={isFullscreen ? <IconMinimize /> : <IconMaximize />}
+                  theme="borderless"
+                  type="tertiary"
+                  onClick={toggleFullscreen}
+                />
+              </Tooltip>
+              <Tooltip content={t('common.close')}>
+                <Button
+                  icon={<IconClose />}
+                  theme="borderless"
+                  type="tertiary"
+                  style={{ marginLeft: 4 }}
+                  onClick={onClose}
+                />
+              </Tooltip>
             </Space>
-            <Divider layout="vertical" style={{ margin: '0 8px 0 4px', height: 16 }} />
-            <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
-              <Button
-                icon={isFullscreen ? <IconMinimize /> : <IconMaximize />}
-                theme="borderless"
-                type="tertiary"
-                onClick={toggleFullscreen}
-              />
-            </Tooltip>
-            <Tooltip content={t('common.close')}>
-              <Button
-                icon={<IconClose />}
-                theme="borderless"
-                type="tertiary"
-                style={{ marginLeft: 4 }}
-                onClick={onClose}
-              />
-            </Tooltip>
           </div>
         </div>
       }
@@ -460,79 +562,116 @@ const PersonalCredentialDetailDrawer = ({
         <div className="personal-credential-detail-drawer-resize-handle" onMouseDown={handleMouseDown} />
       )}
 
-      {/* 基本信息 */}
-      <div className="personal-credential-detail-drawer-content">
-        <Descriptions
-          data={descriptionData}
-          align="left"
-        />
-
-        {/* Tab内容 */}
-        <Tabs
-          activeKey={activeTab}
-          onChange={setActiveTab}
-          className="personal-credential-detail-drawer-tabs"
+      <Tabs
+        activeKey={activeTab}
+        onChange={setActiveTab}
+        className="personal-credential-detail-drawer-tabs"
+      >
+        <TabPane
+          tab={t('credential.detail.tabs.basicInfo')}
+          itemKey="basic"
         >
-          <TabPane
-            tab={t('personalCredential.detail.tabs.linkedCredentials')}
-            itemKey="linkedCredentials"
-          >
-            <div className="personal-credential-detail-drawer-tab-content">
-              <Row type="flex" justify="end" style={{ marginBottom: 12 }}>
-                <Button
-                  icon={<IconLink />}
-                  theme="light"
-                  type="primary"
-                  size="small"
-                  onClick={() => onLinkCredential(credential)}
-                >
-                  {t('personalCredential.actions.linkCredential')}
-                </Button>
+          <div className="personal-credential-detail-drawer-content">
+            <Descriptions
+              data={descriptionData}
+              align="left"
+            />
+          </div>
+        </TabPane>
+        
+        <TabPane
+          tab={t('credential.detail.tabs.usageRecords')}
+          itemKey="usage"
+        >
+          <div className="personal-credential-detail-drawer-usage">
+            {/* 筛选区域 */}
+            <div className="personal-credential-detail-drawer-usage-filter">
+              <Row type="flex" justify="space-between" align="middle">
+                <Col>
+                  <Space>
+                    <DatePicker
+                      type="dateRange"
+                      placeholder={[t('common.startDate'), t('common.endDate')]}
+                      value={dateRange || undefined}
+                      onChange={(dates) => {
+                        setDateRange(dates as [Date, Date] | null);
+                        setUsageQueryParams((prev) => ({ ...prev, page: 1 }));
+                      }}
+                      style={{ width: 280 }}
+                    />
+                    <Popover
+                      visible={filterPopoverVisible}
+                      onVisibleChange={setFilterPopoverVisible}
+                      trigger="click"
+                      position="bottomLeft"
+                      content={
+                        <div className="personal-credential-detail-drawer-filter-popover">
+                          <div className="personal-credential-detail-drawer-filter-popover-section">
+                            <Text strong className="personal-credential-detail-drawer-filter-popover-label">
+                              {t('credential.usage.filter.user')}
+                            </Text>
+                            <CheckboxGroup
+                              value={userFilter}
+                              onChange={(values) => {
+                                setUserFilter(values as string[]);
+                                setUsageQueryParams((prev) => ({ ...prev, page: 1 }));
+                              }}
+                              options={userFilterOptions}
+                              direction="vertical"
+                            />
+                          </div>
+                          <div className="personal-credential-detail-drawer-filter-popover-footer">
+                            <Button theme="borderless" onClick={() => {
+                              setUserFilter([]);
+                              setUsageQueryParams((prev) => ({ ...prev, page: 1 }));
+                            }} disabled={userFilter.length === 0}>
+                              {t('common.reset')}
+                            </Button>
+                            <Button theme="solid" type="primary" onClick={() => setFilterPopoverVisible(false)}>
+                              {t('common.confirm')}
+                            </Button>
+                          </div>
+                        </div>
+                      }
+                    >
+                      <Button
+                        icon={<IconFilter />}
+                        type={filterCount > 0 ? 'primary' : 'tertiary'}
+                        theme={filterCount > 0 ? 'solid' : 'light'}
+                      >
+                        {t('common.filter')}{filterCount > 0 ? ` (${filterCount})` : ''}
+                      </Button>
+                    </Popover>
+                  </Space>
+                </Col>
+                <Col>
+                  <Button icon={<Download size={14} />} onClick={handleExport}>
+                    {t('common.export')}
+                  </Button>
+                </Col>
               </Row>
-              <Table
-                columns={linkedCredentialsColumns}
-                dataSource={linkedCredentials}
-                rowKey="credential_id"
-                loading={linkedCredentialsLoading}
-                pagination={false}
-                empty={<Empty description={t('personalCredential.linkedCredentials.empty')} />}
-              />
             </div>
-          </TabPane>
-          <TabPane
-            tab={t('personalCredential.detail.tabs.usageRecords')}
-            itemKey="usageRecords"
-          >
-            <div className="personal-credential-detail-drawer-tab-content">
-              <Row type="flex" justify="start" style={{ marginBottom: 12 }}>
-                <DatePicker
-                  type="dateRange"
-                  placeholder={[t('common.startDate'), t('common.endDate')]}
-                  value={usageDateRange}
-                  onChange={(dates) => {
-                    setUsageDateRange(dates as [Date, Date] | null);
-                    setUsagePage(1);
-                  }}
-                  style={{ width: 260 }}
-                />
-              </Row>
-              <Table
-                columns={usageColumns}
-                dataSource={usageRecords}
-                rowKey="id"
-                loading={usageLoading}
-                pagination={{
-                  currentPage: usagePage,
-                  pageSize: 10,
-                  total: usageTotal,
-                  onPageChange: setUsagePage,
-                }}
-                empty={<Empty description={t('personalCredential.usage.empty')} />}
-              />
-            </div>
-          </TabPane>
-        </Tabs>
-      </div>
+
+            {/* 使用记录表格 */}
+            <Table
+              columns={usageColumns}
+              dataSource={usageRecords}
+              rowKey="id"
+              loading={usageLoading}
+              pagination={{
+                currentPage: usageQueryParams.page,
+                pageSize: usageQueryParams.pageSize,
+                total: usageTotal,
+                onPageChange: (page) => setUsageQueryParams((prev) => ({ ...prev, page })),
+                showSizeChanger: true,
+                showTotal: true,
+              }}
+              scroll={{ y: 'calc(100vh - 350px)' }}
+              empty={<Empty description={t('credential.usage.empty')} />}
+            />
+          </div>
+        </TabPane>
+      </Tabs>
     </SideSheet>
   );
 };
