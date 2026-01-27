@@ -20,6 +20,8 @@ import {
   TabPane,
 } from '@douyinfe/semi-ui';
 import EmptyState from '@/components/EmptyState';
+import DetailSkeleton from '@/components/DetailSkeleton';
+import TableSkeleton from '@/components/TableSkeleton';
 import { 
   IconEditStroked, 
   IconDeleteStroked, 
@@ -595,80 +597,84 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
       className={`card-sidesheet resizable-sidesheet worker-group-detail-drawer ${isFullscreen ? 'fullscreen-sidesheet' : ''}`}
     >
       {!isFullscreen && <div className="worker-group-detail-drawer-resize-handle" onMouseDown={handleMouseDown} />}
-      <Tabs type="line" className="worker-group-detail-drawer-tabs">
-        <TabPane tab={t('workerGroup.detail.basicInfo')} itemKey="basicInfo">
-          <div className="worker-group-detail-drawer-tab-content">
-            <div className="worker-group-detail-drawer-info-section">
-              <Descriptions data={basicInfoData} align="left" />
-            </div>
-          </div>
-        </TabPane>
-        <TabPane tab={t('workerGroup.detail.memberList')} itemKey="members">
-          <div className="worker-group-detail-drawer-tab-content">
-            <div className="worker-group-detail-drawer-members">
-              <Row type="flex" justify="space-between" align="middle" className="worker-group-detail-drawer-members-toolbar">
-                <Col>
-                  <Space>
-                    <Input 
-                      prefix={<IconSearch />}
-                      placeholder={t('workerGroup.detail.searchMemberPlaceholder')}
-                      className="worker-group-detail-drawer-members-search"
-                      onChange={handleSearch}
-                      showClear
-                    />
-                    <Select
-                      placeholder={t('workerGroup.addMembers.statusFilter')}
-                      multiple
-                      maxTagCount={1}
-                      value={statusFilter}
-                      onChange={handleStatusFilterChange}
-                      style={{ width: 160 }}
-                      showClear
-                    >
-                      {statusOptions.map(option => (
-                        <Select.Option key={option.value} value={option.value}>
-                          {option.label}
-                        </Select.Option>
-                      ))}
-                    </Select>
-                  </Space>
-                </Col>
-                <Col>
-                  <Button 
-                    icon={<IconPlus />} 
-                    theme="solid" 
-                    type="primary"
-                    onClick={() => setAddMembersVisible(true)}
-                  >
-                    {t('workerGroup.detail.addMember')}
-                  </Button>
-                </Col>
-              </Row>
-
-              <div className="worker-group-detail-drawer-members-table">
-                <Table 
-                  columns={memberColumns} 
-                  dataSource={list}
-                  loading={membersLoading}
-                  rowKey="id"
-                  empty={<EmptyState description={t('workerGroup.detail.noMembers')} />}
-                  pagination={{
-                    total,
-                    pageSize,
-                    currentPage,
-                    onPageChange: (page) => {
-                      setQueryParams(prev => ({ ...prev, offset: (page - 1) * pageSize }));
-                    },
-                    showSizeChanger: true,
-                    showTotal: true,
-                  }}
-                  scroll={{ y: 'calc(100vh - 400px)' }}
-                />
+      {isNavigating ? (
+        <DetailSkeleton rows={5} showTabs={true} sections={1} />
+      ) : (
+        <Tabs type="line" className="worker-group-detail-drawer-tabs">
+          <TabPane tab={t('workerGroup.detail.basicInfo')} itemKey="basicInfo">
+            <div className="worker-group-detail-drawer-tab-content">
+              <div className="worker-group-detail-drawer-info-section">
+                <Descriptions data={basicInfoData} align="left" />
               </div>
             </div>
-          </div>
-        </TabPane>
-      </Tabs>
+          </TabPane>
+          <TabPane tab={t('workerGroup.detail.memberList')} itemKey="members">
+            <div className="worker-group-detail-drawer-tab-content">
+              <div className="worker-group-detail-drawer-members">
+                <Row type="flex" justify="space-between" align="middle" className="worker-group-detail-drawer-members-toolbar">
+                  <Col>
+                    <Space>
+                      <Input 
+                        prefix={<IconSearch />}
+                        placeholder={t('workerGroup.detail.searchMemberPlaceholder')}
+                        className="worker-group-detail-drawer-members-search"
+                        onChange={handleSearch}
+                        showClear
+                      />
+                      <Select
+                        placeholder={t('workerGroup.addMembers.statusFilter')}
+                        multiple
+                        maxTagCount={1}
+                        value={statusFilter}
+                        onChange={handleStatusFilterChange}
+                        style={{ width: 160 }}
+                        showClear
+                      >
+                        {statusOptions.map(option => (
+                          <Select.Option key={option.value} value={option.value}>
+                            {option.label}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    </Space>
+                  </Col>
+                  <Col>
+                    <Button 
+                      icon={<IconPlus />} 
+                      theme="solid" 
+                      type="primary"
+                      onClick={() => setAddMembersVisible(true)}
+                    >
+                      {t('workerGroup.detail.addMember')}
+                    </Button>
+                  </Col>
+                </Row>
+
+                <div className="worker-group-detail-drawer-members-table">
+                  <Table 
+                    columns={memberColumns} 
+                    dataSource={list}
+                    loading={membersLoading}
+                    rowKey="id"
+                    empty={<EmptyState description={t('workerGroup.detail.noMembers')} />}
+                    pagination={{
+                      total,
+                      pageSize,
+                      currentPage,
+                      onPageChange: (page) => {
+                        setQueryParams(prev => ({ ...prev, offset: (page - 1) * pageSize }));
+                      },
+                      showSizeChanger: true,
+                      showTotal: true,
+                    }}
+                    scroll={{ y: 'calc(100vh - 400px)' }}
+                  />
+                </div>
+              </div>
+            </div>
+          </TabPane>
+        </Tabs>
+      )}
       {/* 添加成员弹窗 */}
       <AddMembersModal
         visible={addMembersVisible}

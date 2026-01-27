@@ -42,6 +42,7 @@ import {
 import type { LYProcessResponse, LYProcessVersionResponse } from '@/api';
 import UploadVersionModal from '../UploadVersionModal';
 import EmptyState from '@/components/EmptyState';
+import DetailSkeleton from '@/components/DetailSkeleton';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -567,6 +568,9 @@ const ProcessDetailDrawer = ({
       className={`card-sidesheet resizable-sidesheet process-detail-drawer ${isFullscreen ? 'fullscreen-sidesheet' : ''}`}
     >
       {!isFullscreen && <div className="process-detail-drawer-resize-handle" onMouseDown={handleMouseDown} />}
+      {isNavigating ? (
+        <DetailSkeleton rows={5} showTabs={true} sections={1} />
+      ) : (
       <Tabs activeKey={activeTab} onChange={setActiveTab} className="process-detail-drawer-tabs">
         <TabPane tab={t('development.processDevelopment.detail.tabs.detail')} itemKey="detail">
           <div className="process-detail-drawer-tab-content">
@@ -736,6 +740,7 @@ const ProcessDetailDrawer = ({
         </TabPane>
 
       </Tabs>
+      )}
 
       {/* 上传版本弹窗 */}
       <UploadVersionModal

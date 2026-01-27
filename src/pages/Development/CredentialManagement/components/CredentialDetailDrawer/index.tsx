@@ -22,6 +22,7 @@ import {
   Image,
 } from '@douyinfe/semi-ui';
 import EmptyState from '@/components/EmptyState';
+import DetailSkeleton from '@/components/DetailSkeleton';
 import {
   IconClose,
   IconEditStroked,
@@ -583,6 +584,9 @@ const CredentialDetailDrawer = ({
     >
       {!isFullscreen && <div className="credential-detail-drawer-resize-handle" onMouseDown={handleMouseDown} />}
       
+      {isNavigating ? (
+        <DetailSkeleton rows={5} showTabs={true} sections={1} />
+      ) : (
       <Tabs activeKey={activeTab} onChange={setActiveTab} className="credential-detail-drawer-tabs">
         <TabPane tab={t('credential.detail.tabs.basicInfo')} itemKey="basic">
           <div className="credential-detail-drawer-content">
@@ -678,6 +682,7 @@ const CredentialDetailDrawer = ({
           </div>
         </TabPane>
       </Tabs>
+      )}
     </SideSheet>
   );
 };

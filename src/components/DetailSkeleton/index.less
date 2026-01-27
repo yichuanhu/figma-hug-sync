@@ -1,0 +1,109 @@
+@keyframes detail-skeleton-shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+.detail-skeleton {
+  padding: 16px 0;
+
+  .detail-skeleton-tabs {
+    display: flex;
+    gap: 24px;
+    padding: 0 24px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--semi-color-border);
+    padding-bottom: 12px;
+
+    .detail-skeleton-tab {
+      width: 80px;
+
+      .detail-skeleton-shimmer {
+        height: 20px;
+        border-radius: 4px;
+        background: linear-gradient(
+          90deg,
+          var(--semi-color-fill-1) 0%,
+          var(--semi-color-fill-0) 50%,
+          var(--semi-color-fill-1) 100%
+        );
+        background-size: 200px 100%;
+        animation: detail-skeleton-shimmer 1.5s ease-in-out infinite;
+      }
+    }
+  }
+
+  .detail-skeleton-section {
+    padding: 0 24px;
+    margin-bottom: 24px;
+
+    .detail-skeleton-section-title {
+      margin-bottom: 16px;
+
+      .detail-skeleton-shimmer {
+        height: 18px;
+        width: 100px;
+        border-radius: 4px;
+        background: linear-gradient(
+          90deg,
+          var(--semi-color-fill-1) 0%,
+          var(--semi-color-fill-0) 50%,
+          var(--semi-color-fill-1) 100%
+        );
+        background-size: 200px 100%;
+        animation: detail-skeleton-shimmer 1.5s ease-in-out infinite;
+      }
+    }
+
+    .detail-skeleton-content {
+      .detail-skeleton-row {
+        display: flex;
+        margin-bottom: 16px;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        .detail-skeleton-label {
+          width: 100px;
+          flex-shrink: 0;
+
+          .detail-skeleton-shimmer {
+            height: 16px;
+            width: 80px;
+            border-radius: 4px;
+            background: linear-gradient(
+              90deg,
+              var(--semi-color-fill-1) 0%,
+              var(--semi-color-fill-0) 50%,
+              var(--semi-color-fill-1) 100%
+            );
+            background-size: 200px 100%;
+            animation: detail-skeleton-shimmer 1.5s ease-in-out infinite;
+          }
+        }
+
+        .detail-skeleton-value {
+          flex: 1;
+
+          .detail-skeleton-shimmer {
+            height: 16px;
+            width: 60%;
+            border-radius: 4px;
+            background: linear-gradient(
+              90deg,
+              var(--semi-color-fill-1) 0%,
+              var(--semi-color-fill-0) 50%,
+              var(--semi-color-fill-1) 100%
+            );
+            background-size: 200px 100%;
+            animation: detail-skeleton-shimmer 1.5s ease-in-out infinite;
+          }
+        }
+      }
+    }
+  }
+}
