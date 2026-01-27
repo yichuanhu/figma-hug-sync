@@ -43,7 +43,7 @@ const LinkCredentialModal = ({
     }
   }, [visible]);
 
-  const handleSubmit = async (values: { credential_id: string }) => {
+  const handleSubmit = async (values: { credential_ids: string[] }) => {
     setLoading(true);
     try {
       // 模拟API调用
@@ -51,7 +51,7 @@ const LinkCredentialModal = ({
 
       console.log('关联凭据:', {
         personal_credential_id: credential?.credential_id,
-        credential_id: values.credential_id,
+        credential_ids: values.credential_ids,
       });
 
       Toast.success(t('personalCredential.linkCredential.success'));
@@ -99,12 +99,14 @@ const LinkCredentialModal = ({
           labelPosition="top"
         >
           <Form.Select
-            field="credential_id"
+            field="credential_ids"
             label={t('personalCredential.linkCredential.selectLabel')}
             placeholder={t('personalCredential.linkCredential.selectPlaceholder')}
             optionList={selectOptions}
             rules={[{ required: true, message: t('credential.linkPersonal.selectRequired') }]}
             className="link-credential-modal-select"
+            multiple
+            maxTagCount={3}
             filter
           />
 
