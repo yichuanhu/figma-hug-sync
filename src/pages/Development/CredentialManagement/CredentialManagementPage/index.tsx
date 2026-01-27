@@ -172,6 +172,7 @@ const CredentialManagementPage = () => {
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [linkPersonalModalVisible, setLinkPersonalModalVisible] = useState(false);
   const [linkingCredential, setLinkingCredential] = useState<LYCredentialResponse | null>(null);
+  const [initialDetailTab, setInitialDetailTab] = useState<'basic' | 'usage'>('basic');
 
   // 加载数据
   const loadData = useCallback(async () => {
@@ -241,6 +242,7 @@ const CredentialManagementPage = () => {
   // 点击行查看详情
   const handleRowClick = (record: LYCredentialResponse) => {
     setSelectedCredential(record);
+    setInitialDetailTab('basic');
     setDetailDrawerVisible(true);
   };
 
@@ -269,12 +271,12 @@ const CredentialManagementPage = () => {
     });
   };
 
-  // 查看使用记录
+  // 查看使用记录 - 打开详情抽屉并切换到使用记录tab
   const handleViewUsage = (record: LYCredentialResponse) => {
-    const basePath = context === 'development'
-      ? '/dev-center/business-assets/credentials'
-      : '/scheduling-center/business-assets/credentials';
-    navigate(`${basePath}/${record.credential_id}/usage?name=${encodeURIComponent(record.credential_name)}`);
+    setSelectedCredential(record);
+    setDetailDrawerVisible(true);
+    // 通过 initialTab 属性让详情抽屉直接打开使用记录tab
+    setInitialDetailTab('usage');
   };
 
   // 关联个人凭据
@@ -594,11 +596,13 @@ const CredentialManagementPage = () => {
           onClose={() => {
             setDetailDrawerVisible(false);
             setSelectedCredential(null);
+            setInitialDetailTab('basic');
           }}
           onEdit={handleEdit}
           onDelete={() => {
             setDetailDrawerVisible(false);
             setSelectedCredential(null);
+            setInitialDetailTab('basic');
             loadData();
           }}
           onRefresh={loadData}
@@ -611,6 +615,7 @@ const CredentialManagementPage = () => {
             total: listResponse?.range?.total || 0,
           }}
           onPageChange={handleDrawerPageChange}
+          initialTab={initialDetailTab}
         />
 
         {/* 关联个人凭据模态框 */}
