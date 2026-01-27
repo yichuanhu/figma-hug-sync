@@ -77,7 +77,7 @@ const CredentialDetailDrawer = ({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [drawerWidth, setDrawerWidth] = useState(() => {
     const saved = localStorage.getItem('credentialDetailDrawerWidth');
-    return saved ? Math.max(Number(saved), 576) : 576;
+    return saved ? Math.max(Number(saved), 576) : 900;
   });
   const isResizing = useRef(false);
   const startX = useRef(0);
