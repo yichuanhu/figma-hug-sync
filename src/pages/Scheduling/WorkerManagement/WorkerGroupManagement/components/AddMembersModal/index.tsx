@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { Modal, Input, Table, Typography, Checkbox, Toast } from '@douyinfe/semi-ui';
+import { Modal, Input, Table, Typography, Checkbox, Toast, Select, Tag, Space } from '@douyinfe/semi-ui';
 import { IconSearch, IconClose } from '@douyinfe/semi-icons';
 import { useTranslation } from 'react-i18next';
 import { debounce } from 'lodash';
@@ -9,6 +9,9 @@ import type {
   GetAvailableWorkersForGroupParams,
 } from '@/api';
 import './index.less';
+
+// 状态类型定义
+type WorkerStatus = 'OFFLINE' | 'IDLE' | 'BUSY' | 'FAULT' | 'MAINTENANCE';
 
 const { Text, Title } = Typography;
 
@@ -106,7 +109,7 @@ const mockAvailableWorkers: LYWorkerResponse[] = [
 ];
 
 // 获取可添加的机器人列表
-const fetchAvailableWorkers = async (params: GetAvailableWorkersForGroupParams): Promise<LYListResponseLYWorkerResponse> => {
+const fetchAvailableWorkers = async (params: GetAvailableWorkersForGroupParams & { statusFilter?: WorkerStatus[] }): Promise<LYListResponseLYWorkerResponse> => {
   await new Promise(resolve => setTimeout(resolve, 300));
   
   let data = [...mockAvailableWorkers];
@@ -119,6 +122,11 @@ const fetchAvailableWorkers = async (params: GetAvailableWorkersForGroupParams):
     );
   }
 
+  // 状态筛选
+  if (params.statusFilter && params.statusFilter.length > 0) {
+    data = data.filter(item => params.statusFilter!.includes(item.status as WorkerStatus));
+  }
+
   const total = data.length;
   const offset = params.offset || 0;
   const size = params.size || 20;
@@ -128,6 +136,15 @@ const fetchAvailableWorkers = async (params: GetAvailableWorkersForGroupParams):
     range: { offset, size, total },
     list: paginatedData,
   };
+};
+
+// 状态配置
+const statusConfig: Record<WorkerStatus, { color: 'green' | 'blue' | 'orange' | 'red' | 'grey'; i18nKey: string }> = {
+  IDLE: { color: 'green', i18nKey: 'worker.status.idle' },
+  BUSY: { color: 'blue', i18nKey: 'worker.status.busy' },
+  MAINTENANCE: { color: 'orange', i18nKey: 'worker.status.maintenance' },
+  FAULT: { color: 'red', i18nKey: 'worker.status.fault' },
+  OFFLINE: { color: 'grey', i18nKey: 'worker.status.offline' },
 };
 
 const AddMembersModal: React.FC<AddMembersModalProps> = ({
@@ -149,25 +166,42 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
     size: 20,
     keyword: undefined,
   });
+  const [statusFilter, setStatusFilter] = useState<WorkerStatus[]>([]);
   const [selectedWorkers, setSelectedWorkers] = useState<LYWorkerResponse[]>([]);
+
+  // 状态筛选选项
+  const statusOptions = useMemo(() => [
+    { value: 'IDLE', label: t('worker.status.idle') },
+    { value: 'BUSY', label: t('worker.status.busy') },
+    { value: 'MAINTENANCE', label: t('worker.status.maintenance') },
+    { value: 'FAULT', label: t('worker.status.fault') },
+    { value: 'OFFLINE', label: t('worker.status.offline') },
+  ], [t]);
 
   // 加载可选机器人列表
   const loadWorkers = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetchAvailableWorkers(queryParams);
+      const response = await fetchAvailableWorkers({ ...queryParams, statusFilter });
       setWorkersResponse(response);
     } finally {
       setLoading(false);
     }
-  }, [queryParams]);
+  }, [queryParams, statusFilter]);
 
   useEffect(() => {
     if (visible) {
       setSelectedWorkers([]);
+      setStatusFilter([]);
       setQueryParams({ offset: 0, size: 20, keyword: undefined });
     }
   }, [visible]);
+
+  // 状态筛选变化时重置分页
+  const handleStatusFilterChange = (values: WorkerStatus[]) => {
+    setStatusFilter(values);
+    setQueryParams(prev => ({ ...prev, offset: 0 }));
+  };
 
   useEffect(() => {
     if (visible) {
@@ -246,13 +280,18 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
       title: t('worker.table.workerName'),
       dataIndex: 'name',
       key: 'name',
-      width: 150,
+      width: 140,
     },
     {
-      title: t('worker.table.clientVersion'),
-      dataIndex: 'client_version',
-      key: 'client_version',
-      width: 100,
+      title: t('worker.table.status'),
+      dataIndex: 'status',
+      key: 'status',
+      width: 80,
+      render: (status: WorkerStatus) => (
+        <Tag color={statusConfig[status]?.color || 'grey'} type="light">
+          {t(statusConfig[status]?.i18nKey || 'worker.status.offline')}
+        </Tag>
+      ),
     },
     {
       title: t('worker.table.ipAddress'),
@@ -285,13 +324,31 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
           <div className="add-members-modal-left-header">
             <Text strong>{t('workerGroup.addMembers.availableWorkers')}</Text>
           </div>
-          <div className="add-members-modal-left-search">
-            <Input 
-              prefix={<IconSearch />}
-              placeholder={t('workerGroup.addMembers.searchPlaceholder')}
-              onChange={handleSearch}
-              showClear
-            />
+          <div className="add-members-modal-left-filter">
+            <Space>
+              <Input 
+                prefix={<IconSearch />}
+                placeholder={t('workerGroup.addMembers.searchPlaceholder')}
+                onChange={handleSearch}
+                showClear
+                style={{ width: 200 }}
+              />
+              <Select
+                placeholder={t('workerGroup.addMembers.statusFilter')}
+                multiple
+                maxTagCount={1}
+                value={statusFilter}
+                onChange={handleStatusFilterChange}
+                style={{ width: 160 }}
+                showClear
+              >
+                {statusOptions.map(option => (
+                  <Select.Option key={option.value} value={option.value}>
+                    {option.label}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Space>
           </div>
           <div className="add-members-modal-left-table">
             <Table 
