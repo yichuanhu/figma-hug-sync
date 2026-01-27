@@ -932,6 +932,7 @@
       "add": "添加",
       "addCount": "添加 ({{count}})",
       "noSelection": "暂未选择机器人",
+      "noAvailableWorkers": "暂无可添加的流程机器人",
       "selectRequired": "请至少选择一个机器人",
       "success": "成功添加 {{count}} 个机器人到组",
       "error": "添加失败，请重试"
