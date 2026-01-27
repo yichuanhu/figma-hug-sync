@@ -896,7 +896,13 @@
     "createModal": {
       "title": "创建流程机器人组",
       "success": "流程机器人组创建成功",
-      "error": "创建失败，请重试"
+      "error": "创建失败，请重试",
+      "addMembersPrompt": {
+        "title": "添加成员",
+        "content": "机器人组已创建成功，是否立即添加流程机器人到该组？",
+        "addNow": "立即添加",
+        "later": "稍后添加"
+      }
     },
     "editModal": {
       "title": "编辑流程机器人组",
