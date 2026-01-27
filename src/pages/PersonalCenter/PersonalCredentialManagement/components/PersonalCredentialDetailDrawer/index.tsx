@@ -107,6 +107,8 @@ interface PersonalCredentialDetailDrawerProps {
   // 分页相关 - 用于自动翻页
   pagination?: PaginationInfo;
   onPageChange?: (page: number) => Promise<PersonalCredential[] | void>;
+  // 初始显示的tab
+  initialTab?: 'basic' | 'usage';
 }
 
 const PersonalCredentialDetailDrawer = ({
@@ -121,10 +123,11 @@ const PersonalCredentialDetailDrawer = ({
   onNavigate,
   pagination,
   onPageChange,
+  initialTab = 'basic',
 }: PersonalCredentialDetailDrawerProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('basic');
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [drawerWidth, setDrawerWidth] = useState(() => {
@@ -209,10 +212,10 @@ const PersonalCredentialDetailDrawer = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible, activeTab, credential?.credential_id, userFilter, dateRange, usageQueryParams]);
 
-  // 切换凭据时重置状态
+  // 切换凭据时重置状态，并应用初始tab
   useEffect(() => {
     if (credential) {
-      setActiveTab('basic');
+      setActiveTab(initialTab);
       setIsDescriptionExpanded(false);
       setUsageQueryParams({ page: 1, pageSize: 20 });
       resetFilters();
@@ -220,7 +223,7 @@ const PersonalCredentialDetailDrawer = ({
       setIsUsageInitialLoad(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [credential?.credential_id]);
+  }, [credential?.credential_id, initialTab]);
 
   // 拖拽调整宽度
   const handleMouseDown = useCallback(
@@ -583,7 +586,7 @@ const PersonalCredentialDetailDrawer = ({
       ) : (
         <Tabs
           activeKey={activeTab}
-          onChange={setActiveTab}
+          onChange={(key) => setActiveTab(key as 'basic' | 'usage')}
           className="personal-credential-detail-drawer-tabs"
         >
           <TabPane
