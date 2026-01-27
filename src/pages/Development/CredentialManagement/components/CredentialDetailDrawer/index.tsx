@@ -429,8 +429,8 @@ const CredentialDetailDrawer = ({
     Toast.success(t('credential.usage.exportSuccess'));
   };
 
-  // 计算筛选数量
-  const filterCount = userFilter.length + (dateRange ? 1 : 0);
+  // 计算筛选数量 - 需要检查 dateRange 是否有效（非空数组且有值）
+  const filterCount = userFilter.length + (dateRange && dateRange.length === 2 && dateRange[0] && dateRange[1] ? 1 : 0);
 
   // 使用记录表格列定义
   const usageColumns = [
@@ -590,7 +590,11 @@ const CredentialDetailDrawer = ({
                       placeholder={[t('common.startDate'), t('common.endDate')]}
                       value={dateRange || undefined}
                       onChange={(dates) => {
-                        setDateRange(dates as [Date, Date] | null);
+                        // 清空日期时 dates 可能是空数组，需要转换为 null
+                        const validDates = dates && Array.isArray(dates) && dates.length === 2 && dates[0] && dates[1]
+                          ? (dates as [Date, Date])
+                          : null;
+                        setDateRange(validDates);
                         setUsageQueryParams((prev) => ({ ...prev, page: 1 }));
                       }}
                       style={{ width: 280 }}
