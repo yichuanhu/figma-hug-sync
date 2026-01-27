@@ -667,7 +667,7 @@ const CredentialDetailDrawer = ({
             </div>
 
             {/* 使用记录表格 */}
-            {isUsageInitialLoad && usageLoading ? (
+            {isUsageInitialLoad ? (
               <TableSkeleton rows={8} columns={8} columnWidths={['10%', '15%', '8%', '14%', '8%', '10%', '12%', '8%']} />
             ) : (
               <Table
