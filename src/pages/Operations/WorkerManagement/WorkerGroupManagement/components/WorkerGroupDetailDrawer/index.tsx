@@ -1,0 +1,442 @@
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { 
+  SideSheet, 
+  Typography, 
+  Descriptions, 
+  Button, 
+  Table, 
+  Tag, 
+  Input,
+  Row,
+  Col,
+  Space,
+  Modal,
+  Toast,
+  Dropdown,
+} from '@douyinfe/semi-ui';
+import { 
+  IconEditStroked, 
+  IconDeleteStroked, 
+  IconSearch,
+  IconPlus,
+  IconMore,
+  IconEyeOpenedStroked,
+  IconClose,
+} from '@douyinfe/semi-icons';
+import { useTranslation } from 'react-i18next';
+import { debounce } from 'lodash';
+import AddMembersModal from '../AddMembersModal';
+import type { 
+  LYWorkerGroupResponse, 
+  LYWorkerGroupMemberResponse, 
+  LYListResponseLYWorkerGroupMemberResponse,
+  GetWorkerGroupMembersParams,
+} from '@/api';
+import './index.less';
+
+const { Title, Text } = Typography;
+
+interface WorkerGroupDetailDrawerProps {
+  visible: boolean;
+  onClose: () => void;
+  groupData: LYWorkerGroupResponse | null;
+  onEdit: () => void;
+  onDelete: () => void;
+  onRefresh: () => void;
+}
+
+// Mock成员数据
+const mockMembers: LYWorkerGroupMemberResponse[] = [
+  {
+    id: '550e8400-e29b-41d4-a716-446655440001',
+    name: '财务机器人-01',
+    description: '用于财务流程自动化的机器人',
+    status: 'IDLE',
+    sync_status: 'SYNCED',
+    ip_address: '10.0.1.100',
+    priority: 'HIGH',
+    client_version: 'v6.7.0',
+    last_heartbeat_time: '2025-01-08 10:25:33',
+    receive_tasks: true,
+    username: 'DOMAIN\\robot01',
+    desktop_type: 'Console',
+    enable_auto_unlock: true,
+    force_login: false,
+    device_token: 'abc123xyz789',
+    machine_code: 'F11FD4447A215F380A40',
+    host_name: 'WIN-SERVER-01',
+    os: 'Windows Server 2019',
+    arch: 'x64',
+    cpu_model: 'Intel Xeon',
+    cpu_cores: 8,
+    memory_capacity: '32 GB',
+    robot_count: 1,
+    created_at: '2025-01-05 14:30:00',
+    creator_id: 'admin',
+    group_id: 'group-001',
+    joined_at: '2025-01-06 10:00:00',
+  },
+  {
+    id: '550e8400-e29b-41d4-a716-446655440002',
+    name: '财务机器人-02',
+    description: '用于财务报表自动化的机器人',
+    status: 'BUSY',
+    sync_status: 'PENDING',
+    ip_address: '10.0.1.101',
+    priority: 'MEDIUM',
+    client_version: 'v6.7.0',
+    last_heartbeat_time: '2025-01-08 10:20:15',
+    receive_tasks: true,
+    username: 'DOMAIN\\robot02',
+    desktop_type: 'NotConsole',
+    display_size: '1920x1080',
+    force_login: true,
+    device_token: 'def456ghi012',
+    machine_code: 'A22GE5558B326G491B51',
+    host_name: 'WIN-SERVER-02',
+    os: 'Windows Server 2019',
+    arch: 'x64',
+    cpu_model: 'Intel Xeon',
+    cpu_cores: 8,
+    memory_capacity: '16 GB',
+    robot_count: 2,
+    created_at: '2025-01-06 09:15:00',
+    creator_id: 'admin',
+    group_id: 'group-001',
+    joined_at: '2025-01-06 11:00:00',
+  },
+];
+
+// 获取成员列表
+const fetchGroupMembers = async (params: GetWorkerGroupMembersParams): Promise<LYListResponseLYWorkerGroupMemberResponse> => {
+  await new Promise(resolve => setTimeout(resolve, 300));
+  
+  let data = mockMembers.filter(m => m.group_id === params.group_id);
+  
+  if (params.keyword?.trim()) {
+    const keyword = params.keyword.toLowerCase().trim();
+    data = data.filter(item => 
+      item.name.toLowerCase().includes(keyword) ||
+      item.ip_address.toLowerCase().includes(keyword)
+    );
+  }
+
+  if (params.status) {
+    data = data.filter(item => item.status === params.status);
+  }
+
+  const total = data.length;
+  const offset = params.offset || 0;
+  const size = params.size || 20;
+  const paginatedData = data.slice(offset, offset + size);
+
+  return {
+    range: { offset, size, total },
+    list: paginatedData,
+  };
+};
+
+const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
+  visible,
+  onClose,
+  groupData,
+  onEdit,
+  onDelete,
+  onRefresh,
+}) => {
+  const { t } = useTranslation();
+  
+  const [membersLoading, setMembersLoading] = useState(false);
+  const [membersResponse, setMembersResponse] = useState<LYListResponseLYWorkerGroupMemberResponse>({
+    range: { offset: 0, size: 20, total: 0 },
+    list: [],
+  });
+  const [queryParams, setQueryParams] = useState<GetWorkerGroupMembersParams>({
+    group_id: '',
+    offset: 0,
+    size: 20,
+    keyword: undefined,
+  });
+  const [addMembersVisible, setAddMembersVisible] = useState(false);
+
+  // 状态配置
+  type WorkerStatus = 'OFFLINE' | 'IDLE' | 'BUSY' | 'FAULT' | 'MAINTENANCE';
+  const statusConfig: Record<WorkerStatus, { color: string; text: string }> = useMemo(() => ({
+    OFFLINE: { color: 'grey', text: t('worker.status.offline') },
+    IDLE: { color: 'green', text: t('worker.status.idle') },
+    BUSY: { color: 'blue', text: t('worker.status.busy') },
+    FAULT: { color: 'red', text: t('worker.status.fault') },
+    MAINTENANCE: { color: 'orange', text: t('worker.status.maintenance') },
+  }), [t]);
+
+  // 加载成员数据
+  const loadMembers = useCallback(async () => {
+    if (!groupData?.id) return;
+    
+    setMembersLoading(true);
+    try {
+      const response = await fetchGroupMembers({
+        ...queryParams,
+        group_id: groupData.id,
+      });
+      setMembersResponse(response);
+    } finally {
+      setMembersLoading(false);
+    }
+  }, [groupData?.id, queryParams]);
+
+  useEffect(() => {
+    if (visible && groupData?.id) {
+      setQueryParams(prev => ({ ...prev, group_id: groupData.id, offset: 0 }));
+    }
+  }, [visible, groupData?.id]);
+
+  useEffect(() => {
+    if (visible && queryParams.group_id) {
+      loadMembers();
+    }
+  }, [visible, queryParams, loadMembers]);
+
+  // 搜索 - 防抖处理
+  const handleSearch = useMemo(
+    () =>
+      debounce((value: string) => {
+        setQueryParams(prev => ({ ...prev, keyword: value || undefined, offset: 0 }));
+      }, 500),
+    []
+  );
+
+  // 移除成员
+  const handleRemoveMember = (member: LYWorkerGroupMemberResponse, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    
+    Modal.confirm({
+      title: t('workerGroup.removeMember.title'),
+      icon: <IconClose style={{ color: 'var(--semi-color-warning)' }} />,
+      content: t('workerGroup.removeMember.confirmMessage', { name: member.name }),
+      okText: t('workerGroup.removeMember.confirm'),
+      cancelText: t('common.cancel'),
+      onOk: async () => {
+        try {
+          await new Promise(resolve => setTimeout(resolve, 300));
+          Toast.success(t('workerGroup.removeMember.success'));
+          loadMembers();
+          onRefresh();
+        } catch (error) {
+          Toast.error(t('workerGroup.removeMember.error'));
+        }
+      },
+    });
+  };
+
+  // 添加成员成功
+  const handleAddMembersSuccess = () => {
+    loadMembers();
+    onRefresh();
+  };
+
+  if (!groupData) return null;
+
+  // 基本信息
+  const basicInfoData = [
+    { key: t('workerGroup.detail.fields.groupName'), value: groupData.name },
+    { key: t('common.description'), value: groupData.description || '-' },
+    { key: t('workerGroup.table.memberCount'), value: `${groupData.member_count} ${t('workerGroup.table.memberUnit')}` },
+    { key: t('common.creator'), value: groupData.creator_name || '-' },
+    { key: t('common.createTime'), value: groupData.created_at },
+  ];
+
+  const { range, list } = membersResponse;
+  const currentPage = Math.floor((range?.offset || 0) / (range?.size || 20)) + 1;
+  const pageSize = range?.size || 20;
+  const total = range?.total || 0;
+
+  const memberColumns = [
+    {
+      title: t('worker.table.workerName'),
+      dataIndex: 'name',
+      key: 'name',
+      width: 180,
+      render: (name: string, record: LYWorkerGroupMemberResponse) => (
+        <div className="member-name-cell">
+          <div className="member-name-cell-name">{name}</div>
+          <div className="member-name-cell-username">{record.username || '-'}</div>
+        </div>
+      ),
+    },
+    {
+      title: t('worker.table.status'),
+      dataIndex: 'status',
+      key: 'status',
+      width: 90,
+      render: (status: WorkerStatus | undefined) => {
+        if (!status) return null;
+        const config = statusConfig[status];
+        return (
+          <Tag color={config.color as 'grey' | 'green' | 'blue' | 'red' | 'orange'} type="light">
+            {config.text}
+          </Tag>
+        );
+      },
+    },
+    {
+      title: t('worker.table.ipAddress'),
+      dataIndex: 'ip_address',
+      key: 'ip_address',
+      width: 120,
+    },
+    {
+      title: t('worker.table.clientVersion'),
+      dataIndex: 'client_version',
+      key: 'client_version',
+      width: 100,
+    },
+    {
+      title: t('worker.table.lastHeartbeat'),
+      dataIndex: 'last_heartbeat_time',
+      key: 'last_heartbeat_time',
+      width: 160,
+    },
+    {
+      title: t('common.actions'),
+      dataIndex: 'action',
+      key: 'action',
+      width: 60,
+      render: (_: unknown, record: LYWorkerGroupMemberResponse) => (
+        <Dropdown
+          trigger="click"
+          position="bottomRight"
+          stopPropagation={true}
+          clickToHide={true}
+          render={
+            <Dropdown.Menu>
+              <Dropdown.Item icon={<IconEyeOpenedStroked />}>
+                {t('workerGroup.actions.viewDetail')}
+              </Dropdown.Item>
+              <Dropdown.Item 
+                icon={<IconClose />} 
+                type="warning"
+                onClick={(e) => {
+                  e?.stopPropagation?.();
+                  handleRemoveMember(record);
+                }}
+              >
+                {t('workerGroup.actions.remove')}
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          }
+        >
+          <Button 
+            icon={<IconMore />} 
+            theme="borderless" 
+            onClick={(e) => e.stopPropagation()}
+          />
+        </Dropdown>
+      ),
+    },
+  ];
+
+  return (
+    <SideSheet
+      visible={visible}
+      onCancel={onClose}
+      placement="right"
+      width={900}
+      title={
+        <div className="worker-group-detail-drawer-header">
+          <span>{t('workerGroup.detail.title')}</span>
+        </div>
+      }
+      headerStyle={{ borderBottom: '1px solid var(--semi-color-border)' }}
+      bodyStyle={{ padding: 24 }}
+      className="worker-group-detail-drawer"
+    >
+      <div className="worker-group-detail-drawer-content">
+        {/* 基本信息 */}
+        <div className="worker-group-detail-drawer-info">
+          <Row type="flex" justify="space-between" align="middle" style={{ marginBottom: 16 }}>
+            <Col>
+              <Title heading={5}>{t('workerGroup.detail.basicInfo')}</Title>
+            </Col>
+            <Col>
+              <Space spacing={4}>
+                <Button 
+                  icon={<IconEditStroked />} 
+                  theme="borderless"
+                  onClick={onEdit}
+                />
+                <Button 
+                  icon={<IconDeleteStroked />} 
+                  theme="borderless"
+                  type="danger"
+                  onClick={onDelete}
+                />
+              </Space>
+            </Col>
+          </Row>
+          <Descriptions data={basicInfoData} align="left" />
+        </div>
+
+        {/* 成员列表 */}
+        <div className="worker-group-detail-drawer-members">
+          <div className="worker-group-detail-drawer-members-header">
+            <Title heading={5}>{t('workerGroup.detail.memberList')}</Title>
+          </div>
+          
+          <Row type="flex" justify="space-between" align="middle" className="worker-group-detail-drawer-members-toolbar">
+            <Col>
+              <Input 
+                prefix={<IconSearch />}
+                placeholder={t('workerGroup.detail.searchMemberPlaceholder')}
+                className="worker-group-detail-drawer-members-search"
+                onChange={handleSearch}
+                showClear
+              />
+            </Col>
+            <Col>
+              <Button 
+                icon={<IconPlus />} 
+                theme="solid" 
+                type="primary"
+                onClick={() => setAddMembersVisible(true)}
+              >
+                {t('workerGroup.detail.addMember')}
+              </Button>
+            </Col>
+          </Row>
+
+          <div className="worker-group-detail-drawer-members-table">
+            <Table 
+              columns={memberColumns} 
+              dataSource={list}
+              loading={membersLoading}
+              rowKey="id"
+              pagination={{
+                total,
+                pageSize,
+                currentPage,
+                onPageChange: (page) => {
+                  setQueryParams(prev => ({ ...prev, offset: (page - 1) * pageSize }));
+                },
+                showSizeChanger: true,
+                showTotal: true,
+              }}
+              scroll={{ y: 'calc(100vh - 550px)' }}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* 添加成员弹窗 */}
+      <AddMembersModal
+        visible={addMembersVisible}
+        onCancel={() => setAddMembersVisible(false)}
+        groupId={groupData.id}
+        groupName={groupData.name}
+        onSuccess={handleAddMembersSuccess}
+      />
+    </SideSheet>
+  );
+};
+
+export default WorkerGroupDetailDrawer;

@@ -1,15 +1,46 @@
-// WorkerManagement 页面样式
+// WorkerManagement 页面样式（带Tab）
+.worker-management-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  // 面包屑区域
+  .worker-management-breadcrumb {
+    flex-shrink: 0;
+  }
+
+  // Tab区域
+  .worker-management-tabs {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    margin-top: 16px;
+
+    .semi-tabs-content {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .semi-tabs-pane {
+      height: 100%;
+      overflow: hidden;
+    }
+  }
+}
+
 .worker-management {
   display: flex;
   flex-direction: column;
   height: 100%;
 
   // 标题区域
-  &-header {
+  .worker-management-header {
     padding-top: 20px;
     flex-shrink: 0;
 
-    &-title {
+    .worker-management-header-title {
       margin-bottom: 24px;
 
       .title {
@@ -17,17 +48,17 @@
       }
     }
 
-    &-toolbar {
+    .worker-management-header-toolbar {
       margin-bottom: 16px;
     }
   }
 
-  &-search-input {
+  .worker-management-search-input {
     width: 360px;
   }
 
   // 表格区域
-  &-table {
+  .worker-management-table {
     flex: 1;
     overflow: hidden;
     min-height: 0;
@@ -40,16 +71,16 @@
   padding: 16px;
   width: 280px;
 
-  &-section {
+  .filter-popover-section {
     margin-bottom: 16px;
   }
 
-  &-label {
+  .filter-popover-label {
     display: block;
     margin-bottom: 8px;
   }
 
-  &-footer {
+  .filter-popover-footer {
     display: flex;
     justify-content: space-between;
     border-top: 1px solid var(--semi-color-border);
@@ -59,17 +90,17 @@
 
 // 表格单元格样式
 .worker-name-cell {
-  &-header {
+  .worker-name-cell-header {
     display: flex;
     align-items: center;
     gap: 8px;
   }
 
-  &-name {
+  .worker-name-cell-name {
     font-weight: 500;
   }
 
-  &-username {
+  .worker-name-cell-username {
     color: var(--semi-color-text-2);
     font-size: 12px;
     margin-top: 2px;

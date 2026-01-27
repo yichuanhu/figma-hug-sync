@@ -1,0 +1,52 @@
+// WorkerGroupManagement 页面样式
+.worker-group-management {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  // 标题区域
+  .worker-group-management-header {
+    padding-top: 20px;
+    flex-shrink: 0;
+
+    .worker-group-management-header-title {
+      margin-bottom: 24px;
+
+      .title {
+        margin-bottom: 8px;
+      }
+    }
+
+    .worker-group-management-header-toolbar {
+      margin-bottom: 16px;
+    }
+  }
+
+  .worker-group-management-search-input {
+    width: 360px;
+  }
+
+  // 表格区域
+  .worker-group-management-table {
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
+  }
+}
+
+// 表格单元格样式
+.worker-group-name-cell {
+  .worker-group-name-cell-name {
+    font-weight: 500;
+  }
+
+  .worker-group-name-cell-desc {
+    color: var(--semi-color-text-2);
+    font-size: 12px;
+    margin-top: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 300px;
+  }
+}

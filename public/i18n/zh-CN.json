@@ -826,5 +826,87 @@
         "task": "任务"
       }
     }
+  },
+  "workerGroup": {
+    "tabs": {
+      "workerManagement": "流程机器人管理",
+      "workerGroupManagement": "流程机器人组管理"
+    },
+    "title": "流程机器人组管理",
+    "description": "创建和管理流程机器人组，实现分组调度和统一管理",
+    "searchPlaceholder": "搜索机器人组名称...",
+    "createGroup": "创建流程机器人组",
+    "table": {
+      "groupName": "机器人组名称",
+      "memberCount": "成员数量",
+      "memberUnit": "台"
+    },
+    "fields": {
+      "name": "机器人组名称",
+      "namePlaceholder": "请输入机器人组名称",
+      "descriptionPlaceholder": "请输入机器人组描述（选填）"
+    },
+    "validation": {
+      "nameRequired": "机器人组名称不能为空",
+      "nameLengthError": "机器人组名称长度必须在1-30字符之间",
+      "nameExists": "机器人组名称已存在，请使用其他名称",
+      "descriptionLengthError": "描述长度不能超过2000字符"
+    },
+    "actions": {
+      "viewDetail": "查看详情",
+      "edit": "编辑",
+      "delete": "删除",
+      "remove": "移除"
+    },
+    "createModal": {
+      "title": "创建流程机器人组",
+      "success": "流程机器人组创建成功",
+      "error": "创建失败，请重试"
+    },
+    "editModal": {
+      "title": "编辑流程机器人组",
+      "success": "流程机器人组更新成功",
+      "error": "更新失败，请重试"
+    },
+    "deleteModal": {
+      "title": "删除确认",
+      "confirmMessage": "确定要删除流程机器人组「{{name}}」吗？",
+      "deleteWarning": "删除会自动将组内机器人移到组外。",
+      "hasMembers": "当前分组存在已绑定的流程机器人，请先将流程机器人移除后再执行删除操作。",
+      "hasPendingTasks": "当前分组存在待运行或正在执行的任务，请等待任务完成或取消任务后再执行删除操作。",
+      "cannotDelete": "无法删除流程机器人组",
+      "confirmDelete": "确认删除",
+      "success": "流程机器人组删除成功",
+      "error": "删除失败，请重试"
+    },
+    "detail": {
+      "title": "流程机器人组详情",
+      "basicInfo": "基本信息",
+      "memberList": "成员列表",
+      "addMember": "添加流程机器人",
+      "searchMemberPlaceholder": "搜索机器人名称或IP...",
+      "fields": {
+        "groupName": "机器人组名称"
+      }
+    },
+    "removeMember": {
+      "title": "移除确认",
+      "confirmMessage": "确定将流程机器人「{{name}}」从组中移除吗？",
+      "confirm": "确认移除",
+      "success": "移除成功",
+      "error": "移除失败，请重试"
+    },
+    "addMembers": {
+      "title": "添加流程机器人到组",
+      "availableWorkers": "可选流程机器人",
+      "selectedWorkers": "已选流程机器人",
+      "searchPlaceholder": "按机器人名称或IP搜索",
+      "add": "添加",
+      "addCount": "添加 ({{count}})",
+      "noSelection": "暂未选择机器人",
+      "selectRequired": "请至少选择一个机器人",
+      "success": "成功添加 {{count}} 个机器人到组",
+      "error": "添加失败，请重试"
+    }
   }
 }

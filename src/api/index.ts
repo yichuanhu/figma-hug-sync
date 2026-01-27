@@ -1136,3 +1136,216 @@ export interface DeleteCredentialParams {
 }
 
 export type DeleteCredentialData = LYCredentialResultResponse;
+
+// ============= 流程机器人组 (Worker Group) =============
+
+/**
+ * LYWorkerGroupResponse
+ * 流程机器人组响应模型
+ */
+export interface LYWorkerGroupResponse {
+  /**
+   * Id
+   * 机器人组ID
+   */
+  id: string;
+  /**
+   * Name
+   * 机器人组名称
+   */
+  name: string;
+  /**
+   * Description
+   * 机器人组描述
+   */
+  description?: string | null;
+  /**
+   * Member Count
+   * 成员数量
+   */
+  member_count: number;
+  /**
+   * Creator Id
+   * 创建者ID
+   */
+  creator_id: string;
+  /**
+   * Creator Name
+   * 创建者名称
+   */
+  creator_name?: string | null;
+  /**
+   * Created At
+   * 创建时间
+   */
+  created_at: string;
+  /**
+   * Updated At
+   * 更新时间
+   */
+  updated_at: string;
+}
+
+/** LYListResponse[LYWorkerGroupResponse] */
+export interface LYListResponseLYWorkerGroupResponse {
+  /** 范围 */
+  range?: LYRangeResponse | null;
+  /**
+   * List
+   * 列表
+   */
+  list: LYWorkerGroupResponse[];
+}
+
+/**
+ * LYCreateWorkerGroupRequest
+ * 创建流程机器人组请求
+ */
+export interface LYCreateWorkerGroupRequest {
+  /**
+   * Name
+   * 机器人组名称
+   * @minLength 1
+   * @maxLength 30
+   */
+  name: string;
+  /**
+   * Description
+   * 机器人组描述
+   * @maxLength 2000
+   */
+  description?: string | null;
+}
+
+/**
+ * LYUpdateWorkerGroupRequest
+ * 更新流程机器人组请求
+ */
+export interface LYUpdateWorkerGroupRequest {
+  /**
+   * Name
+   * 机器人组名称
+   * @minLength 1
+   * @maxLength 30
+   */
+  name?: string | null;
+  /**
+   * Description
+   * 机器人组描述
+   * @maxLength 2000
+   */
+  description?: string | null;
+}
+
+/**
+ * LYAddWorkerGroupMembersRequest
+ * 添加流程机器人组成员请求
+ */
+export interface LYAddWorkerGroupMembersRequest {
+  /**
+   * Worker Ids
+   * 流程机器人ID列表
+   */
+  worker_ids: string[];
+}
+
+/**
+ * LYWorkerGroupMemberResponse
+ * 流程机器人组成员响应模型 - 与LYWorkerResponse相同但增加group相关字段
+ */
+export interface LYWorkerGroupMemberResponse extends LYWorkerResponse {
+  /**
+   * Group Id
+   * 所属组ID
+   */
+  group_id?: string | null;
+  /**
+   * Joined At
+   * 加入时间
+   */
+  joined_at?: string | null;
+}
+
+/** LYListResponse[LYWorkerGroupMemberResponse] */
+export interface LYListResponseLYWorkerGroupMemberResponse {
+  /** 范围 */
+  range?: LYRangeResponse | null;
+  /**
+   * List
+   * 列表
+   */
+  list: LYWorkerGroupMemberResponse[];
+}
+
+/**
+ * GetWorkerGroupsParams
+ * 机器人组列表查询参数
+ */
+export interface GetWorkerGroupsParams {
+  /** Keyword */
+  keyword?: string | null;
+  /**
+   * Offset
+   * 查询偏移量
+   * @min 0
+   * @default 0
+   */
+  offset?: number;
+  /**
+   * Size
+   * 查询数量
+   * @min 0
+   * @default 20
+   */
+  size?: number;
+}
+
+/**
+ * GetWorkerGroupMembersParams
+ * 机器人组成员列表查询参数
+ */
+export interface GetWorkerGroupMembersParams {
+  /** Group Id */
+  group_id: string;
+  /** Keyword */
+  keyword?: string | null;
+  /** Status */
+  status?: string | null;
+  /**
+   * Offset
+   * 查询偏移量
+   * @min 0
+   * @default 0
+   */
+  offset?: number;
+  /**
+   * Size
+   * 查询数量
+   * @min 0
+   * @default 20
+   */
+  size?: number;
+}
+
+/**
+ * GetAvailableWorkersForGroupParams
+ * 可添加到组的机器人列表查询参数
+ */
+export interface GetAvailableWorkersForGroupParams {
+  /** Keyword */
+  keyword?: string | null;
+  /**
+   * Offset
+   * 查询偏移量
+   * @min 0
+   * @default 0
+   */
+  offset?: number;
+  /**
+   * Size
+   * 查询数量
+   * @min 0
+   * @default 20
+   */
+  size?: number;
+}

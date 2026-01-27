@@ -689,16 +689,6 @@ const WorkerManagement = () => {
 
   return (
     <div className="worker-management">
-      {/* 固定面包屑 */}
-      <div className="worker-management-breadcrumb">
-        <Breadcrumb>
-          <Breadcrumb.Item onClick={() => navigate('/')}>{t('common.home')}</Breadcrumb.Item>
-          <Breadcrumb.Item>{t('worker.breadcrumb.schedulingCenter')}</Breadcrumb.Item>
-          <Breadcrumb.Item>{t('worker.breadcrumb.executionResourceMonitoring')}</Breadcrumb.Item>
-          <Breadcrumb.Item>{t('worker.breadcrumb.workerManagement')}</Breadcrumb.Item>
-        </Breadcrumb>
-      </div>
-
       {/* 标题区域 */}
       <div className="worker-management-header">
         <div className="worker-management-header-title">

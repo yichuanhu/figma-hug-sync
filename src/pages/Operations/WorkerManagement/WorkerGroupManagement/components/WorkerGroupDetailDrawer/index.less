@@ -1,0 +1,58 @@
+// WorkerGroupDetailDrawer 样式
+.worker-group-detail-drawer {
+  .worker-group-detail-drawer-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .worker-group-detail-drawer-content {
+    padding: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .worker-group-detail-drawer-info {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--semi-color-border);
+      margin-bottom: 16px;
+    }
+
+    .worker-group-detail-drawer-members {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+
+      .worker-group-detail-drawer-members-header {
+        margin-bottom: 16px;
+      }
+
+      .worker-group-detail-drawer-members-toolbar {
+        margin-bottom: 16px;
+      }
+
+      .worker-group-detail-drawer-members-search {
+        width: 280px;
+      }
+
+      .worker-group-detail-drawer-members-table {
+        flex: 1;
+        overflow: hidden;
+        min-height: 0;
+      }
+    }
+  }
+
+  .member-name-cell {
+    .member-name-cell-name {
+      font-weight: 500;
+    }
+
+    .member-name-cell-username {
+      color: var(--semi-color-text-2);
+      font-size: 12px;
+      margin-top: 2px;
+    }
+  }
+}
