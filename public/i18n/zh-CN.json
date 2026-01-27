@@ -111,6 +111,7 @@
     "createCredential": "新建凭据",
     "personalCredentialManagement": "个人凭据管理",
     "searchPlaceholder": "搜索凭据名称",
+    "noData": "暂无凭据",
     "table": {
       "name": "凭据名称",
       "testValue": "凭据值（测试）",
@@ -246,6 +247,7 @@
       },
       "title": "自动化流程",
       "description": "创建和管理自动化流程，配置流程资源和版本",
+      "noData": "暂无自动化流程",
       "searchPlaceholder": "搜索流程名称",
       "importProcess": "导入流程",
       "createProcess": "新建流程",
@@ -568,6 +570,7 @@
     "title": "流程机器人管理",
     "description": "管理无人值守流程机器人，配置机器人参数和连接信息",
     "searchPlaceholder": "搜索流程机器人名称、IP地址...",
+    "noData": "暂无流程机器人",
     "createWorker": "新建流程机器人",
     "table": {
       "workerName": "流程机器人名称",
@@ -762,6 +765,7 @@
     "title": "个人凭据管理",
     "description": "管理您的个人凭据，用于流程运行时使用个人凭据进行认证",
     "searchPlaceholder": "搜索个人凭据名称",
+    "noData": "暂无个人凭据",
     "createCredential": "新建凭据",
     "table": {
       "name": "个人凭据名称",

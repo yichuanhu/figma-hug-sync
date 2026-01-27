@@ -17,7 +17,9 @@ import {
   Popover,
   CheckboxGroup,
   Tooltip,
+  Empty,
 } from '@douyinfe/semi-ui';
+import { IllustrationNoContent, IllustrationNoContentDark } from '@douyinfe/semi-illustrations';
 import {
   IconSearch,
   IconPlus,
@@ -530,6 +532,13 @@ const CredentialManagementPage = () => {
             dataSource={listResponse?.data || []}
             rowKey="credential_id"
             loading={loading}
+            empty={
+              <Empty
+                image={<IllustrationNoContent className="illustration-yellow" style={{ width: 150, height: 150 }} />}
+                darkModeImage={<IllustrationNoContentDark className="illustration-yellow" style={{ width: 150, height: 150 }} />}
+                description={t('credential.noData')}
+              />
+            }
             pagination={{
               currentPage: queryParams.page,
               pageSize: queryParams.pageSize,

@@ -19,7 +19,9 @@ import {
   Popover,
   CheckboxGroup,
   Space,
+  Empty,
 } from '@douyinfe/semi-ui';
+import { IllustrationNoContent, IllustrationNoContentDark } from '@douyinfe/semi-illustrations';
 import {
   IconSearch,
   IconPlus,
@@ -576,6 +578,13 @@ const ProcessDevelopment = () => {
           dataSource={list}
           loading={loading}
           rowKey="id"
+          empty={
+            <Empty
+              image={<IllustrationNoContent className="illustration-yellow" style={{ width: 150, height: 150 }} />}
+              darkModeImage={<IllustrationNoContentDark className="illustration-yellow" style={{ width: 150, height: 150 }} />}
+              description={t('development.processDevelopment.noData')}
+            />
+          }
           onRow={(record) => {
             const isSelected = selectedProcess?.id === record?.id && detailDrawerVisible;
             return {

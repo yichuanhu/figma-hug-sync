@@ -10,7 +10,9 @@ import {
   Modal,
   Row,
   Col,
+  Empty,
 } from '@douyinfe/semi-ui';
+import { IllustrationNoContent, IllustrationNoContentDark } from '@douyinfe/semi-illustrations';
 import {
   IconSearch,
   IconPlus,
@@ -320,6 +322,13 @@ const PersonalCredentialManagement = () => {
           dataSource={listResponse?.data || []}
           rowKey="credential_id"
           loading={loading}
+          empty={
+            <Empty
+              image={<IllustrationNoContent className="illustration-yellow" style={{ width: 150, height: 150 }} />}
+              darkModeImage={<IllustrationNoContentDark className="illustration-yellow" style={{ width: 150, height: 150 }} />}
+              description={t('personalCredential.noData')}
+            />
+          }
           onRow={(record) => ({
             onClick: () => handleRowClick(record as PersonalCredential),
             style: {
