@@ -38,6 +38,7 @@ import {
   IconChevronRight,
   IconFilter,
   IconUnlink,
+  IconEyeOpened,
 } from '@douyinfe/semi-icons';
 import { Download } from 'lucide-react';
 import type { PersonalCredential } from '../../index';
@@ -652,13 +653,8 @@ const PersonalCredentialDetailDrawer = ({
                       title: t('personalCredential.linkedCredentials.credentialName'),
                       dataIndex: 'credential_name',
                       key: 'credential_name',
-                      render: (text: string, record: LinkedCredential) => (
-                        <span 
-                          className="personal-credential-detail-drawer-linked-name"
-                          onClick={() => handleNavigateToCredential(record)}
-                        >
-                          {text}
-                        </span>
+                      render: (text: string) => (
+                        <span>{text}</span>
                       ),
                     },
                     {
@@ -677,17 +673,28 @@ const PersonalCredentialDetailDrawer = ({
                     {
                       title: t('common.actions'),
                       key: 'actions',
-                      width: 60,
+                      width: 100,
                       render: (_: unknown, record: LinkedCredential) => (
-                        <Tooltip content={t('personalCredential.linkedCredentials.unlink')}>
-                          <Button
-                            icon={<IconUnlink />}
-                            theme="borderless"
-                            size="small"
-                            type="tertiary"
-                            onClick={() => handleUnlinkCredential(record)}
-                          />
-                        </Tooltip>
+                        <Space spacing={4}>
+                          <Tooltip content={t('common.viewDetail')}>
+                            <Button
+                              icon={<IconEyeOpened />}
+                              theme="borderless"
+                              size="small"
+                              type="tertiary"
+                              onClick={() => handleNavigateToCredential(record)}
+                            />
+                          </Tooltip>
+                          <Tooltip content={t('personalCredential.linkedCredentials.unlink')}>
+                            <Button
+                              icon={<IconUnlink />}
+                              theme="borderless"
+                              size="small"
+                              type="tertiary"
+                              onClick={() => handleUnlinkCredential(record)}
+                            />
+                          </Tooltip>
+                        </Space>
                       ),
                     },
                   ]}
