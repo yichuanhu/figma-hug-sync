@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Breadcrumb,
@@ -139,6 +139,7 @@ interface QueryParams {
 const CredentialManagementPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { t } = useTranslation();
 
   // 判断当前入口上下文
@@ -219,6 +220,24 @@ const CredentialManagementPage = () => {
   useEffect(() => {
     loadData();
   }, [loadData]);
+
+  // 处理URL参数 - 从个人凭据跳转过来时自动打开详情抽屉
+  useEffect(() => {
+    const credentialId = searchParams.get('credentialId');
+    if (credentialId && listResponse?.data) {
+      // 查找对应的凭据
+      const targetCredential = listResponse.data.find(
+        (item) => item.credential_id === credentialId
+      );
+      if (targetCredential) {
+        setSelectedCredential(targetCredential);
+        setInitialDetailTab('basic');
+        setDetailDrawerVisible(true);
+        // 清除URL参数
+        setSearchParams({});
+      }
+    }
+  }, [searchParams, listResponse?.data, setSearchParams]);
 
   // 搜索防抖
   const debouncedSearch = useMemo(
