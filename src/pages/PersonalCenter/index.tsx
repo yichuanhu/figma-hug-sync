@@ -51,10 +51,6 @@ const PersonalCenter = () => {
           </Breadcrumb>
         </div>
 
-        {/* 标题 */}
-        <div className="personal-center-header">
-          <Title heading={3}>{t('personalCenter.title')}</Title>
-        </div>
 
         {/* Tabs */}
         <div className="personal-center-tabs">
