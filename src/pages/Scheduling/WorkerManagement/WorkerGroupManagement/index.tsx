@@ -13,6 +13,7 @@ import {
   Tooltip,
 } from '@douyinfe/semi-ui';
 import EmptyState from '@/components/EmptyState';
+import TableSkeleton from '@/components/TableSkeleton';
 import {
   IconSearch, 
   IconPlus, 
@@ -124,6 +125,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
   });
   
   const [loading, setLoading] = useState(true);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   
   // 列表响应数据
   const [listResponse, setListResponse] = useState<LYListResponseLYWorkerGroupResponse>({
@@ -149,6 +151,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
       return response.list;
     } finally {
       setLoading(false);
+      setIsInitialLoad(false);
     }
   }, [queryParams]);
 
@@ -419,33 +422,37 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
 
       {/* 表格区域 */}
       <div className="worker-group-management-table">
-        <Table 
-          columns={columns} 
-          dataSource={list}
-          loading={loading}
-          rowKey="id"
-          empty={<EmptyState description={t('workerGroup.noData')} />}
-          onRow={(record) => {
-            const isSelected = selectedGroup?.id === record?.id && detailDrawerVisible;
-            return {
-              onClick: () => openDetail(record as LYWorkerGroupResponse),
-              className: isSelected ? 'worker-group-management-row-selected' : undefined,
-              style: { cursor: 'pointer' },
-            };
-          }}
-          pagination={{
-            total,
-            pageSize,
-            currentPage,
-            onPageChange: (page) => {
-              setQueryParams(prev => ({ ...prev, offset: (page - 1) * pageSize }));
-            },
-            onPageSizeChange: (newPageSize) => setQueryParams(prev => ({ ...prev, offset: 0, size: newPageSize })),
-            showSizeChanger: true,
-            showTotal: true,
-          }}
-          scroll={{ y: 'calc(100vh - 320px)' }}
-        />
+        {isInitialLoad ? (
+          <TableSkeleton rows={10} columns={4} columnWidths={['35%', '15%', '15%', '25%']} />
+        ) : (
+          <Table 
+            columns={columns} 
+            dataSource={list}
+            loading={loading}
+            rowKey="id"
+            empty={<EmptyState description={t('workerGroup.noData')} />}
+            onRow={(record) => {
+              const isSelected = selectedGroup?.id === record?.id && detailDrawerVisible;
+              return {
+                onClick: () => openDetail(record as LYWorkerGroupResponse),
+                className: isSelected ? 'worker-group-management-row-selected' : undefined,
+                style: { cursor: 'pointer' },
+              };
+            }}
+            pagination={{
+              total,
+              pageSize,
+              currentPage,
+              onPageChange: (page) => {
+                setQueryParams(prev => ({ ...prev, offset: (page - 1) * pageSize }));
+              },
+              onPageSizeChange: (newPageSize) => setQueryParams(prev => ({ ...prev, offset: 0, size: newPageSize })),
+              showSizeChanger: true,
+              showTotal: true,
+            }}
+            scroll={{ y: 'calc(100vh - 320px)' }}
+          />
+        )}
       </div>
 
       {/* 详情抽屉 */}

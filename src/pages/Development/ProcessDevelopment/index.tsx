@@ -21,6 +21,7 @@ import {
   Space,
 } from '@douyinfe/semi-ui';
 import EmptyState from '@/components/EmptyState';
+import TableSkeleton from '@/components/TableSkeleton';
 import {
   IconSearch,
   IconPlus,
@@ -219,6 +220,7 @@ const ProcessDevelopment = () => {
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
 
   const [loading, setLoading] = useState(true);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
@@ -249,6 +251,7 @@ const ProcessDevelopment = () => {
       return response.list;
     } finally {
       setLoading(false);
+      setIsInitialLoad(false);
     }
   }, [queryParams, statusFilter]);
 
@@ -572,33 +575,37 @@ const ProcessDevelopment = () => {
 
       {/* 表格区域 */}
       <div className="process-development-table">
-        <Table
-          columns={columns}
-          dataSource={list}
-          loading={loading}
-          rowKey="id"
-          empty={<EmptyState description={t('development.processDevelopment.noData')} />}
-          onRow={(record) => {
-            const isSelected = selectedProcess?.id === record?.id && detailDrawerVisible;
-            return {
-              onClick: () => record && openProcessDetail(record as LYProcessResponse),
-              className: isSelected ? 'process-development-row-selected' : undefined,
-              style: { cursor: 'pointer' },
-            };
-          }}
-          pagination={{
-            total,
-            pageSize,
-            currentPage,
-            onPageChange: (page) => {
-              setQueryParams((prev) => ({ ...prev, offset: (page - 1) * pageSize }));
-            },
-            onPageSizeChange: (newPageSize) => setQueryParams((prev) => ({ ...prev, offset: 0, size: newPageSize })),
-            showSizeChanger: true,
-            showTotal: true,
-          }}
-          scroll={{ y: 'calc(100vh - 320px)' }}
-        />
+        {isInitialLoad ? (
+          <TableSkeleton rows={10} columns={6} columnWidths={['15%', '30%', '10%', '12%', '15%', '18%']} />
+        ) : (
+          <Table
+            columns={columns}
+            dataSource={list}
+            loading={loading}
+            rowKey="id"
+            empty={<EmptyState description={t('development.processDevelopment.noData')} />}
+            onRow={(record) => {
+              const isSelected = selectedProcess?.id === record?.id && detailDrawerVisible;
+              return {
+                onClick: () => record && openProcessDetail(record as LYProcessResponse),
+                className: isSelected ? 'process-development-row-selected' : undefined,
+                style: { cursor: 'pointer' },
+              };
+            }}
+            pagination={{
+              total,
+              pageSize,
+              currentPage,
+              onPageChange: (page) => {
+                setQueryParams((prev) => ({ ...prev, offset: (page - 1) * pageSize }));
+              },
+              onPageSizeChange: (newPageSize) => setQueryParams((prev) => ({ ...prev, offset: 0, size: newPageSize })),
+              showSizeChanger: true,
+              showTotal: true,
+            }}
+            scroll={{ y: 'calc(100vh - 320px)' }}
+          />
+        )}
       </div>
 
       {/* 新建流程弹窗 */}

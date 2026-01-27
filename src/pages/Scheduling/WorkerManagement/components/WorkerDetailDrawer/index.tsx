@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { SideSheet, Typography, Button, Tag, Descriptions, Switch, Tooltip, Divider, Row, Col, Space } from '@douyinfe/semi-ui';
 import { IconEditStroked, IconDeleteStroked, IconMaximize, IconMinimize, IconClose, IconKeyStroked, IconChevronDown, IconChevronUp, IconChevronLeft, IconChevronRight, IconUserListStroked, IconMinusCircleStroked } from '@douyinfe/semi-icons';
 import type { LYWorkerResponse } from '@/api';
+import DetailSkeleton from '@/components/DetailSkeleton';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -353,38 +354,42 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
       className={`card-sidesheet resizable-sidesheet worker-detail-drawer ${isFullscreen ? 'fullscreen-sidesheet' : ''}`}
     >
       {!isFullscreen && <div className="worker-detail-drawer-resize-handle" onMouseDown={handleMouseDown} />}
-      <div className="worker-detail-drawer-tab-content">
-        <div className="worker-detail-drawer-info-section">
-          <Text strong className="worker-detail-drawer-info-title">
-            {t('worker.detail.basicInfo')}
-          </Text>
-          <Descriptions data={basicInfoData} align="left" />
-        </div>
+      {isNavigating ? (
+        <DetailSkeleton rows={5} showTabs={false} sections={3} />
+      ) : (
+        <div className="worker-detail-drawer-tab-content">
+          <div className="worker-detail-drawer-info-section">
+            <Text strong className="worker-detail-drawer-info-title">
+              {t('worker.detail.basicInfo')}
+            </Text>
+            <Descriptions data={basicInfoData} align="left" />
+          </div>
 
-        <div className="worker-detail-drawer-info-section">
-          <Text strong className="worker-detail-drawer-info-title">
-            {t('worker.detail.detailInfo')}
-          </Text>
-          <Descriptions data={detailInfoData} align="left" />
-        </div>
+          <div className="worker-detail-drawer-info-section">
+            <Text strong className="worker-detail-drawer-info-title">
+              {t('worker.detail.detailInfo')}
+            </Text>
+            <Descriptions data={detailInfoData} align="left" />
+          </div>
 
-        <div className="worker-detail-drawer-info-section">
-          <Text strong className="worker-detail-drawer-info-title">
-            {t('worker.detail.hostInfo')}
-          </Text>
-          <Descriptions data={hostInfoData} align="left" />
-        </div>
+          <div className="worker-detail-drawer-info-section">
+            <Text strong className="worker-detail-drawer-info-title">
+              {t('worker.detail.hostInfo')}
+            </Text>
+            <Descriptions data={hostInfoData} align="left" />
+          </div>
 
-        <div>
-          <Descriptions
-            align="left"
-            data={[
-              { key: t('worker.detail.fields.createdAt'), value: workerData.created_at },
-              { key: t('worker.detail.fields.creator'), value: workerData.creator_id },
-            ]}
-          />
+          <div>
+            <Descriptions
+              align="left"
+              data={[
+                { key: t('worker.detail.fields.createdAt'), value: workerData.created_at },
+                { key: t('worker.detail.fields.creator'), value: workerData.creator_id },
+              ]}
+            />
+          </div>
         </div>
-      </div>
+      )}
     </SideSheet>
   );
 };
