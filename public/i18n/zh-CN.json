@@ -37,7 +37,8 @@
     "expand": "展开",
     "previous": "上一个",
     "next": "下一个",
-    "collapse": "收起"
+    "collapse": "收起",
+    "viewDetail": "查看详情"
   },
   "sidebar": {
     "home": "首页",
