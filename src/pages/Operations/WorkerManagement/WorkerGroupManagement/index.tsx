@@ -351,13 +351,8 @@ const WorkerGroupManagement = () => {
 
   return (
     <div className="worker-group-management">
-      {/* 标题区域 */}
+      {/* 操作栏 */}
       <div className="worker-group-management-header">
-        <div className="worker-group-management-header-title">
-          <Title heading={3} className="title">{t('workerGroup.title')}</Title>
-          <Text type="tertiary">{t('workerGroup.description')}</Text>
-        </div>
-
         {/* 操作栏 */}
         <Row type="flex" justify="space-between" align="middle" className="worker-group-management-header-toolbar">
           <Col>
