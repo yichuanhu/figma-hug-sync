@@ -9,7 +9,8 @@ import CredentialManagementPage from "@/pages/Development/CredentialManagement/C
 import CredentialUsagePage from "@/pages/Development/CredentialManagement/CredentialUsagePage";
 // Operations
 import OperationsWorkbench from "@/pages/Operations/OperationsWorkbench";
-import WorkerManagementPage from "@/pages/Operations/WorkerManagement/WorkerManagementPage";
+// Scheduling - Worker Management
+import WorkerManagementPage from "@/pages/Scheduling/WorkerManagement/WorkerManagementPage";
 // Maintenance
 import MaintenanceWorkbench from "@/pages/Maintenance/MaintenanceWorkbench";
 // Requirements
