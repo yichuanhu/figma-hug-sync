@@ -973,6 +973,11 @@ const WorkerManagement = ({ isActive = true }: WorkerManagementProps) => {
         }}
         onDelete={handleDeleteFromDrawer}
         onToggleReceiveTasks={handleToggleReceiveTasks}
+        onAddToGroup={(worker) => {
+          setAddToGroupWorker(worker);
+          setAddToGroupModalVisible(true);
+        }}
+        onRemoveFromGroup={handleRemoveFromGroup}
         dataList={list}
         onNavigate={(worker) => setSelectedWorker(worker)}
         pagination={{
