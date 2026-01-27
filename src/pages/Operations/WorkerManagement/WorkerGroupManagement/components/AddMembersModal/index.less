@@ -1,0 +1,91 @@
+// AddMembersModal 样式
+.add-members-modal {
+  .add-members-modal-content {
+    display: flex;
+    gap: 16px;
+    height: 400px;
+
+    .add-members-modal-left {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--semi-color-border);
+      border-radius: 4px;
+      padding: 12px;
+
+      .add-members-modal-left-header {
+        margin-bottom: 12px;
+      }
+
+      .add-members-modal-left-search {
+        margin-bottom: 12px;
+      }
+
+      .add-members-modal-left-table {
+        flex: 1;
+        overflow: hidden;
+        min-height: 0;
+      }
+    }
+
+    .add-members-modal-right {
+      width: 240px;
+      border: 1px solid var(--semi-color-border);
+      border-radius: 4px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+
+      .add-members-modal-right-header {
+        margin-bottom: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--semi-color-border);
+      }
+
+      .add-members-modal-right-list {
+        flex: 1;
+        overflow-y: auto;
+
+        .add-members-modal-right-item {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 8px;
+          border-radius: 4px;
+          margin-bottom: 4px;
+          background-color: var(--semi-color-fill-0);
+
+          .add-members-modal-right-item-name {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+
+          .add-members-modal-right-item-remove {
+            flex-shrink: 0;
+            cursor: pointer;
+            color: var(--semi-color-text-2);
+
+            &:hover {
+              color: var(--semi-color-danger);
+            }
+          }
+        }
+      }
+
+      .add-members-modal-right-empty {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--semi-color-text-2);
+      }
+    }
+  }
+
+  .semi-modal-footer {
+    border-top: 1px solid var(--semi-color-border);
+    padding-top: 16px;
+  }
+}
