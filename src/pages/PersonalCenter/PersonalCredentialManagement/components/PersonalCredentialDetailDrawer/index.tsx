@@ -206,7 +206,8 @@ const PersonalCredentialDetailDrawer = ({
     if (visible && activeTab === 'usage' && credential) {
       loadUsageRecords();
     }
-  }, [visible, activeTab, credential, loadUsageRecords]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible, activeTab, credential?.credential_id, userFilter, dateRange, usageQueryParams]);
 
   // 切换凭据时重置状态
   useEffect(() => {
