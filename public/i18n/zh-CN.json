@@ -603,7 +603,17 @@
       "viewDetail": "查看详情",
       "viewKey": "查看密钥",
       "edit": "编辑",
-      "delete": "删除"
+      "delete": "删除",
+      "addToGroup": "添加至分组"
+    },
+    "addToGroup": {
+      "title": "添加至分组",
+      "workerLabel": "流程机器人",
+      "groupLabel": "选择分组",
+      "groupPlaceholder": "请选择要加入的机器人组",
+      "selectRequired": "请选择机器人组",
+      "success": "添加至分组成功",
+      "error": "添加失败，请重试"
     },
     "receiveTasks": {
       "enabled": "已开启接收任务",
