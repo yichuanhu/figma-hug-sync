@@ -38,6 +38,7 @@ import {
 } from '@douyinfe/semi-icons';
 import { Download } from 'lucide-react';
 import type { PersonalCredential } from '../../index';
+import { useUsageRecordFilter } from '@/hooks/useUsageRecordFilter';
 
 import './index.less';
 
@@ -134,9 +135,20 @@ const PersonalCredentialDetailDrawer = ({
   const [usageLoading, setUsageLoading] = useState(false);
   const [usageQueryParams, setUsageQueryParams] = useState({ page: 1, pageSize: 20 });
   const [usageTotal, setUsageTotal] = useState(0);
-  const [userFilter, setUserFilter] = useState<string[]>([]);
-  const [dateRange, setDateRange] = useState<[Date, Date] | null>(null);
-  const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
+  
+  // 使用筛选 Hook
+  const {
+    userFilter,
+    setUserFilter,
+    dateRange,
+    filterPopoverVisible,
+    setFilterPopoverVisible,
+    filterCount,
+    resetFilters,
+    handleDateRangeChange,
+  } = useUsageRecordFilter({
+    onFilterChange: () => setUsageQueryParams((prev) => ({ ...prev, page: 1 })),
+  });
 
   // 使用者筛选选项
   const userFilterOptions = [
@@ -197,11 +209,10 @@ const PersonalCredentialDetailDrawer = ({
       setActiveTab('basic');
       setIsDescriptionExpanded(false);
       setUsageQueryParams({ page: 1, pageSize: 20 });
-      setUserFilter([]);
-      setDateRange(null);
+      resetFilters();
       setUsageRecords([]);
     }
-  }, [credential?.credential_id]);
+  }, [credential?.credential_id, resetFilters]);
 
   // 拖拽调整宽度
   const handleMouseDown = useCallback(
@@ -390,9 +401,6 @@ const PersonalCredentialDetailDrawer = ({
     await new Promise((resolve) => setTimeout(resolve, 1000));
     Toast.success(t('credential.usage.exportSuccess'));
   };
-
-  // 计算筛选数量 - 日期筛选独立，不计入筛选按钮
-  const filterCount = userFilter.length;
 
   // 使用记录表格列
   const usageColumns = useMemo(() => [
@@ -593,14 +601,7 @@ const PersonalCredentialDetailDrawer = ({
                       type="dateRange"
                       placeholder={[t('common.startDate'), t('common.endDate')]}
                       value={dateRange || undefined}
-                      onChange={(dates) => {
-                        // 清空日期时 dates 可能是空数组，需要转换为 null
-                        const validDates = dates && Array.isArray(dates) && dates.length === 2 && dates[0] && dates[1]
-                          ? (dates as [Date, Date])
-                          : null;
-                        setDateRange(validDates);
-                        setUsageQueryParams((prev) => ({ ...prev, page: 1 }));
-                      }}
+                      onChange={(dates) => handleDateRangeChange(dates as Date[] | null | undefined)}
                       style={{ width: 280 }}
                     />
                     <Popover
