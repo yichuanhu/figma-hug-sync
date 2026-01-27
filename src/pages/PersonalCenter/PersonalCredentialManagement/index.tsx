@@ -247,6 +247,13 @@ const PersonalCredentialManagement = () => {
     setDetailDrawerVisible(true);
   };
 
+  // 查看关联的凭据
+  const handleViewLinkedCredentials = (record: PersonalCredential) => {
+    setSelectedCredential(record);
+    setInitialDetailTab('linked');
+    setDetailDrawerVisible(true);
+  };
+
   // 分页变化
   const handlePageChange = (page: number) => {
     setQueryParams((prev) => ({ ...prev, page }));
@@ -305,6 +312,9 @@ const PersonalCredentialManagement = () => {
             <Dropdown.Menu>
               <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>
                 {t('common.edit')}
+              </Dropdown.Item>
+              <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleViewLinkedCredentials(record); }}>
+                {t('personalCredential.actions.viewLinkedCredentials')}
               </Dropdown.Item>
               <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleViewUsage(record); }}>
                 {t('personalCredential.actions.viewUsage')}

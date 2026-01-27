@@ -37,6 +37,7 @@ import {
   IconChevronLeft,
   IconChevronRight,
   IconFilter,
+  IconUnlink,
 } from '@douyinfe/semi-icons';
 import { Download } from 'lucide-react';
 import type { PersonalCredential } from '../../index';
@@ -676,16 +677,17 @@ const PersonalCredentialDetailDrawer = ({
                     {
                       title: t('common.actions'),
                       key: 'actions',
-                      width: 100,
+                      width: 60,
                       render: (_: unknown, record: LinkedCredential) => (
-                        <Button
-                          theme="borderless"
-                          type="danger"
-                          size="small"
-                          onClick={() => handleUnlinkCredential(record)}
-                        >
-                          {t('personalCredential.linkedCredentials.unlink')}
-                        </Button>
+                        <Tooltip content={t('personalCredential.linkedCredentials.unlink')}>
+                          <Button
+                            icon={<IconUnlink />}
+                            theme="borderless"
+                            size="small"
+                            type="danger"
+                            onClick={() => handleUnlinkCredential(record)}
+                          />
+                        </Tooltip>
                       ),
                     },
                   ]}
