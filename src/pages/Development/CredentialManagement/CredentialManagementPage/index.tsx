@@ -182,13 +182,34 @@ const CredentialManagementPage = () => {
         typeFilter: typeFilter.length > 0 ? typeFilter[0] : null,
       });
       setListResponse(response);
+      return response.data;
     } catch (error) {
       console.error('加载凭据列表失败:', error);
       Toast.error(t('credential.list.loadError'));
+      return [];
     } finally {
       setLoading(false);
     }
   }, [queryParams, typeFilter, context, t]);
+
+  // 翻页并返回新数据（用于抽屉导航时自动翻页）
+  const handleDrawerPageChange = useCallback(async (page: number): Promise<LYCredentialResponse[]> => {
+    setQueryParams(prev => ({ ...prev, page }));
+    
+    try {
+      const response = await fetchCredentialList({
+        keyword: queryParams.keyword || undefined,
+        context,
+        offset: (page - 1) * queryParams.pageSize,
+        size: queryParams.pageSize,
+        typeFilter: typeFilter.length > 0 ? typeFilter[0] : null,
+      });
+      setListResponse(response);
+      return response.data;
+    } catch {
+      return [];
+    }
+  }, [queryParams, typeFilter, context]);
 
   useEffect(() => {
     loadData();
@@ -574,6 +595,13 @@ const CredentialManagementPage = () => {
           onRefresh={loadData}
           dataList={listResponse?.data || []}
           onNavigate={(credential) => setSelectedCredential(credential)}
+          pagination={{
+            currentPage: queryParams.page,
+            totalPages: Math.ceil((listResponse?.range?.total || 0) / queryParams.pageSize),
+            pageSize: queryParams.pageSize,
+            total: listResponse?.range?.total || 0,
+          }}
+          onPageChange={handleDrawerPageChange}
         />
 
         {/* 关联个人凭据模态框 */}

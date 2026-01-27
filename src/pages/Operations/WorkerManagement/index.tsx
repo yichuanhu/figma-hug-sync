@@ -356,10 +356,28 @@ const WorkerManagement = ({ isActive = true }: WorkerManagementProps) => {
         sort: sortState,
       });
       setListResponse(response);
+      return response.list;
     } finally {
       setLoading(false);
     }
   }, [queryParams, filters, sortState]);
+
+  // 翻页并返回新数据（用于抽屉导航时自动翻页）
+  const handleDrawerPageChange = useCallback(async (page: number): Promise<LYWorkerResponse[]> => {
+    const currentPageSize = listResponse.range?.size || 20;
+    const newOffset = (page - 1) * currentPageSize;
+    setQueryParams(prev => ({ ...prev, offset: newOffset }));
+    
+    // 直接获取数据而不是等待state更新
+    const response = await fetchWorkerList({
+      ...queryParams,
+      offset: newOffset,
+      filters,
+      sort: sortState,
+    });
+    setListResponse(response);
+    return response.list;
+  }, [queryParams, filters, sortState, listResponse.range?.size]);
 
   // 当Tab切换到非激活状态时，关闭抽屉
   useEffect(() => {
@@ -798,6 +816,13 @@ const WorkerManagement = ({ isActive = true }: WorkerManagementProps) => {
         onToggleReceiveTasks={handleToggleReceiveTasks}
         dataList={list}
         onNavigate={(worker) => setSelectedWorker(worker)}
+        pagination={{
+          currentPage,
+          totalPages: Math.ceil(total / pageSize),
+          pageSize,
+          total,
+        }}
+        onPageChange={handleDrawerPageChange}
       />
 
       {/* 密钥弹窗 */}
