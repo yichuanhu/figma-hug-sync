@@ -4,6 +4,7 @@ import Index from "@/pages/Index";
 import NotFound from "@/pages/NotFound";
 // Development
 import DevelopmentWorkbench from "@/pages/Development/DevelopmentWorkbench";
+import ProcessDevelopment from "@/pages/Development/ProcessDevelopment";
 import CredentialManagementPage from "@/pages/Development/CredentialManagement/CredentialManagementPage";
 import CredentialUsagePage from "@/pages/Development/CredentialManagement/CredentialUsagePage";
 // Operations
@@ -25,7 +26,7 @@ const App = () => (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Index />} />
-        <Route path="/process-development" element={<Index />} />
+        <Route path="/process-development" element={<ProcessDevelopment />} />
         
         <Route path="/scheduling-center/resource-monitoring/worker-management" element={<WorkerManagementPage />} />
         <Route path="/development-workbench" element={<DevelopmentWorkbench />} />
