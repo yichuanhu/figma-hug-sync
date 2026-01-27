@@ -19,12 +19,14 @@ import {
   IconEyeOpenedStroked, 
   IconEditStroked, 
   IconDeleteStroked,
+  IconUserAdd,
 } from '@douyinfe/semi-icons';
 import { useTranslation } from 'react-i18next';
 import { debounce } from 'lodash';
 import WorkerGroupDetailDrawer from './components/WorkerGroupDetailDrawer';
 import CreateWorkerGroupModal from './components/CreateWorkerGroupModal';
 import EditWorkerGroupModal from './components/EditWorkerGroupModal';
+import AddMembersModal from './components/AddMembersModal';
 import type { LYWorkerGroupResponse, LYListResponseLYWorkerGroupResponse, GetWorkerGroupsParams } from '@/api';
 import './index.less';
 
@@ -134,6 +136,8 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingGroup, setEditingGroup] = useState<LYWorkerGroupResponse | null>(null);
+  const [addMembersModalVisible, setAddMembersModalVisible] = useState(false);
+  const [addMembersTargetGroup, setAddMembersTargetGroup] = useState<LYWorkerGroupResponse | null>(null);
 
   // 加载数据
   const loadData = useCallback(async () => {
@@ -193,6 +197,13 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
     e?.stopPropagation();
     setEditingGroup(group);
     setEditModalVisible(true);
+  };
+
+  // 添加成员
+  const handleAddMembers = (group: LYWorkerGroupResponse, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setAddMembersTargetGroup(group);
+    setAddMembersModalVisible(true);
   };
 
   // 从详情抽屉跳转到编辑
@@ -335,6 +346,15 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
                 {t('workerGroup.actions.viewDetail')}
               </Dropdown.Item>
               <Dropdown.Item 
+                icon={<IconUserAdd />} 
+                onClick={(e) => {
+                  e?.stopPropagation?.();
+                  handleAddMembers(record);
+                }}
+              >
+                {t('workerGroup.detail.addMember')}
+              </Dropdown.Item>
+              <Dropdown.Item 
                 icon={<IconEditStroked />} 
                 onClick={(e) => {
                   e?.stopPropagation?.();
@@ -344,7 +364,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
                 {t('workerGroup.actions.edit')}
               </Dropdown.Item>
               <Dropdown.Item 
-                icon={<IconDeleteStroked />} 
+                icon={<IconDeleteStroked />}
                 type="danger" 
                 onClick={(e) => {
                   e?.stopPropagation?.();
@@ -459,6 +479,18 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
         onCancel={() => setEditModalVisible(false)}
         groupData={editingGroup}
         onSuccess={handleEditSuccess}
+      />
+
+      {/* 添加成员弹窗 */}
+      <AddMembersModal
+        visible={addMembersModalVisible}
+        onCancel={() => {
+          setAddMembersModalVisible(false);
+          setAddMembersTargetGroup(null);
+        }}
+        groupId={addMembersTargetGroup?.id || ''}
+        groupName={addMembersTargetGroup?.name || ''}
+        onSuccess={loadData}
       />
     </div>
   );
