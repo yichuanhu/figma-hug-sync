@@ -34,10 +34,10 @@ const WorkerManagementPage = () => {
           className="worker-management-tabs"
         >
           <TabPane tab={t('workerGroup.tabs.workerManagement')} itemKey="workers">
-            <WorkerManagement />
+            <WorkerManagement isActive={activeTab === 'workers'} />
           </TabPane>
           <TabPane tab={t('workerGroup.tabs.workerGroupManagement')} itemKey="groups">
-            <WorkerGroupManagement />
+            <WorkerGroupManagement isActive={activeTab === 'groups'} />
           </TabPane>
         </Tabs>
       </div>
