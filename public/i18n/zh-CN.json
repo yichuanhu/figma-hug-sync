@@ -911,6 +911,7 @@
       "memberList": "机器人成员",
       "addMember": "添加流程机器人",
       "searchMemberPlaceholder": "搜索机器人名称或IP...",
+      "noMembers": "暂无机器人成员",
       "fields": {
         "groupName": "机器人组名称"
       }
