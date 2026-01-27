@@ -20,7 +20,9 @@ import {
   Popover,
   CheckboxGroup,
   Image,
+  Empty,
 } from '@douyinfe/semi-ui';
+import { IllustrationNoContent, IllustrationNoContentDark } from '@douyinfe/semi-illustrations';
 import {
   IconClose,
   IconEditStroked,
@@ -663,6 +665,13 @@ const CredentialDetailDrawer = ({
               dataSource={usageListResponse?.data || []}
               rowKey="id"
               loading={usageLoading}
+              empty={
+                <Empty
+                  image={<IllustrationNoContent className="illustration-yellow" style={{ width: 150, height: 150 }} />}
+                  darkModeImage={<IllustrationNoContentDark className="illustration-yellow" style={{ width: 150, height: 150 }} />}
+                  description={t('credential.usage.empty')}
+                />
+              }
               pagination={{
                 currentPage: usageQueryParams.page,
                 pageSize: usageQueryParams.pageSize,
