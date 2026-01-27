@@ -429,8 +429,8 @@ const CredentialDetailDrawer = ({
     Toast.success(t('credential.usage.exportSuccess'));
   };
 
-  // 计算筛选数量 - 需要检查 dateRange 是否有效（非空数组且有值）
-  const filterCount = userFilter.length + (dateRange && dateRange.length === 2 && dateRange[0] && dateRange[1] ? 1 : 0);
+  // 计算筛选数量 - 日期筛选独立，不计入筛选按钮
+  const filterCount = userFilter.length;
 
   // 使用记录表格列定义
   const usageColumns = [
