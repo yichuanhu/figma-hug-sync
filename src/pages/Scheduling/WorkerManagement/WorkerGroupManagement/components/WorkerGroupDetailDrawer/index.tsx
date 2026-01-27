@@ -654,8 +654,8 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
                   rowKey="id"
                   empty={
                     <Empty
-                      image={<IllustrationNoContent style={{ width: 150, height: 150 }} />}
-                      darkModeImage={<IllustrationNoContentDark style={{ width: 150, height: 150 }} />}
+                      image={<IllustrationNoContent className="illustration-yellow" style={{ width: 150, height: 150 }} />}
+                      darkModeImage={<IllustrationNoContentDark className="illustration-yellow" style={{ width: 150, height: 150 }} />}
                       description={t('workerGroup.detail.noMembers')}
                     />
                   }
