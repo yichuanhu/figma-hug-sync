@@ -1,6 +1,5 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import { 
-  Breadcrumb, 
   Typography, 
   Input, 
   Button, 
@@ -15,8 +14,8 @@ import {
   Space,
   Modal,
   Toast,
-  Skeleton,
 } from '@douyinfe/semi-ui';
+import TableSkeleton from '@/components/Skeleton/TableSkeleton';
 import EmptyState from '@/components/EmptyState';
 import {
   IconSearch, 
@@ -941,7 +940,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       {/* 表格区域 */}
       <div className="worker-management-table">
         {isInitialLoad ? (
-          <Skeleton.Paragraph rows={10} style={{ padding: '16px' }} />
+          <TableSkeleton columns={[{ width: '15%' }, { width: '10%' }, { width: '15%' }, { width: '12%' }, { width: '10%' }, { width: '18%' }, { width: '10%' }, { width: '10%' }]} rows={10} />
         ) : (
           <Table 
             columns={columns} 

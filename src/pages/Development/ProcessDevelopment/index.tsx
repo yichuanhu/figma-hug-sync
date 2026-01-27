@@ -8,7 +8,6 @@ import {
   Input,
   Button,
   Table,
-  Skeleton,
   Tag,
   Avatar,
   Dropdown,
@@ -21,6 +20,7 @@ import {
   CheckboxGroup,
   Space,
 } from '@douyinfe/semi-ui';
+import TableSkeleton from '@/components/Skeleton/TableSkeleton';
 import EmptyState from '@/components/EmptyState';
 import {
   IconSearch,
@@ -576,7 +576,7 @@ const ProcessDevelopment = () => {
       {/* 表格区域 */}
       <div className="process-development-table">
         {isInitialLoad ? (
-          <Skeleton.Paragraph rows={10} style={{ padding: '16px' }} />
+          <TableSkeleton columns={[{ width: '15%' }, { width: '30%' }, { width: '10%' }, { width: '12%' }, { width: '15%' }, { width: '15%' }, { width: '8%' }]} rows={10} />
         ) : (
           <Table
             columns={columns}

@@ -18,8 +18,8 @@ import {
   Divider,
   Tabs,
   TabPane,
-  Skeleton,
 } from '@douyinfe/semi-ui';
+import TableSkeleton from '@/components/Skeleton/TableSkeleton';
 import EmptyState from '@/components/EmptyState';
 import { 
   IconEditStroked, 
@@ -651,7 +651,7 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
 
               <div className="worker-group-detail-drawer-members-table">
                 {isMembersInitialLoad ? (
-                  <Skeleton.Paragraph rows={6} style={{ padding: '16px' }} />
+                  <TableSkeleton columns={[{ width: '25%' }, { width: '15%' }, { width: '20%' }, { width: '15%' }, { width: '20%' }, { width: '5%' }]} rows={6} />
                 ) : (
                   <Table 
                     columns={memberColumns} 

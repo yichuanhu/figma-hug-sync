@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { Modal, Input, Table, Typography, Checkbox, Toast, Select, Tag, Space, Skeleton } from '@douyinfe/semi-ui';
+import { Modal, Input, Table, Typography, Checkbox, Toast, Select, Tag, Space } from '@douyinfe/semi-ui';
 import { IconSearch, IconClose } from '@douyinfe/semi-icons';
+import TableSkeleton from '@/components/Skeleton/TableSkeleton';
 import EmptyState from '@/components/EmptyState';
 import { useTranslation } from 'react-i18next';
 import { debounce } from 'lodash';
@@ -356,7 +357,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
           </div>
           <div className="add-members-modal-left-table">
             {isInitialLoad ? (
-              <Skeleton.Paragraph rows={5} style={{ padding: '12px' }} />
+              <TableSkeleton columns={[{ width: '10%' }, { width: '40%' }, { width: '20%' }, { width: '30%' }]} rows={5} />
             ) : (
               <Table 
                 columns={columns} 
