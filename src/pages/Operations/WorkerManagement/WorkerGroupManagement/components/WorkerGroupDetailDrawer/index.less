@@ -1,30 +1,30 @@
 // WorkerGroupDetailDrawer 机器人组详情抽屉样式
 .worker-group-detail-drawer {
   // 标题区域
-  &-header {
+  .worker-group-detail-drawer-header {
     width: 100%;
     padding-right: 0;
 
-    &-title {
+    .worker-group-detail-drawer-header-title {
       margin: 0;
     }
 
-    &-delete-icon {
+    .worker-group-detail-drawer-header-delete-icon {
       color: var(--semi-color-danger);
     }
 
-    &-divider {
+    .worker-group-detail-drawer-header-divider {
       height: 16px;
       margin: 0 8px 0 4px;
     }
 
-    &-close-btn {
+    .worker-group-detail-drawer-header-close-btn {
       margin-left: 4px;
     }
   }
 
   // 拖拽把手
-  &-resize-handle {
+  .worker-group-detail-drawer-resize-handle {
     position: absolute;
     left: 0;
     top: 0;
@@ -35,7 +35,7 @@
   }
 
   // 内容区域
-  &-content {
+  .worker-group-detail-drawer-content {
     padding: 16px 24px;
     height: 100%;
     display: flex;
@@ -43,29 +43,29 @@
   }
 
   // 信息区块
-  &-info-section {
+  .worker-group-detail-drawer-info-section {
     margin-bottom: 24px;
   }
 
-  &-info-title {
+  .worker-group-detail-drawer-info-title {
     display: block;
     margin-bottom: 12px;
     font-size: 14px;
   }
 
   // 描述展开收起
-  &-description {
+  .worker-group-detail-drawer-description {
     display: flex;
     flex-direction: column;
     gap: 4px;
 
-    &-text {
+    .worker-group-detail-drawer-description-text {
       word-break: break-word;
       white-space: pre-wrap;
       line-height: 1.6;
     }
 
-    &-toggle {
+    .worker-group-detail-drawer-description-toggle {
       align-self: flex-start;
       padding: 0 !important;
       height: auto !important;
@@ -80,25 +80,25 @@
   }
 
   // 成员列表区域
-  &-members {
+  .worker-group-detail-drawer-members {
     flex: 1;
     display: flex;
     flex-direction: column;
     min-height: 0;
 
-    &-header {
+    .worker-group-detail-drawer-members-header {
       margin-bottom: 12px;
     }
 
-    &-toolbar {
+    .worker-group-detail-drawer-members-toolbar {
       margin-bottom: 16px;
     }
 
-    &-search {
+    .worker-group-detail-drawer-members-search {
       width: 280px;
     }
 
-    &-table {
+    .worker-group-detail-drawer-members-table {
       flex: 1;
       overflow: hidden;
       min-height: 0;
