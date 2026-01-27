@@ -115,7 +115,7 @@ const PersonalCredentialDetailDrawer = ({
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [drawerWidth, setDrawerWidth] = useState(() => {
     const saved = localStorage.getItem('personalCredentialDetailDrawerWidth');
-    return saved ? Math.max(Number(saved), 576) : 576;
+    return saved ? Math.max(Number(saved), 576) : 900;
   });
 
   // 关联凭据数据

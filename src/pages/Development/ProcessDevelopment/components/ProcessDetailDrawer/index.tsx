@@ -403,7 +403,7 @@ const ProcessDetailDrawer = ({
   const [uploadVersionModalVisible, setUploadVersionModalVisible] = useState(false);
   const [drawerWidth, setDrawerWidth] = useState(() => {
     const saved = localStorage.getItem('processDetailDrawerWidth');
-    return saved ? Math.max(Number(saved), 576) : 576;
+    return saved ? Math.max(Number(saved), 576) : 900;
   });
   const [versionData, setVersionData] = useState<VersionDetailData[]>(initialMockVersionData);
   const isResizing = useRef(false);

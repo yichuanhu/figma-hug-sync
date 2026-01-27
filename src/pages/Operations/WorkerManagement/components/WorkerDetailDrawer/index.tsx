@@ -41,7 +41,7 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [drawerWidth, setDrawerWidth] = useState(() => {
     const saved = localStorage.getItem('workerDetailDrawerWidth');
-    return saved ? Math.max(Number(saved), 576) : 656;
+    return saved ? Math.max(Number(saved), 576) : 900;
   });
   const isResizing = useRef(false);
   const startX = useRef(0);
