@@ -209,6 +209,7 @@ const CredentialDetailDrawer = ({
     filterCount,
     resetFilters,
     handleDateRangeChange,
+    datePresets,
   } = useUsageRecordFilter({
     onFilterChange: () => setUsageQueryParams((prev) => ({ ...prev, page: 1 })),
   });
@@ -598,6 +599,7 @@ const CredentialDetailDrawer = ({
                       placeholder={[t('common.startDate'), t('common.endDate')]}
                       value={dateRange || undefined}
                       onChange={(dates) => handleDateRangeChange(dates as Date[] | null | undefined)}
+                      presets={datePresets}
                       style={{ width: 280 }}
                     />
                     <Popover
