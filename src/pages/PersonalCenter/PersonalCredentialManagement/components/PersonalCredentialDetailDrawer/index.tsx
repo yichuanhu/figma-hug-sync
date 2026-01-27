@@ -391,6 +391,13 @@ const PersonalCredentialDetailDrawer = ({
     });
   }, [t, onRefresh]);
 
+  // 跳转到凭据详情页面
+  const handleNavigateToCredential = useCallback((linkedCredential: LinkedCredential) => {
+    // 跳转到开发中心的凭据管理页面，并传递凭据ID作为查询参数
+    navigate(`/dev-center/credentials?credentialId=${linkedCredential.credential_id}`);
+    onClose();
+  }, [navigate, onClose]);
+
   // 格式化时间
   const formatDateTime = (dateStr: string | undefined) => {
     if (!dateStr) return '-';
@@ -670,8 +677,13 @@ const PersonalCredentialDetailDrawer = ({
                       title: t('personalCredential.linkedCredentials.credentialName'),
                       dataIndex: 'credential_name',
                       key: 'credential_name',
-                      render: (text: string) => (
-                        <span className="personal-credential-detail-drawer-linked-name">{text}</span>
+                      render: (text: string, record: LinkedCredential) => (
+                        <span 
+                          className="personal-credential-detail-drawer-linked-name"
+                          onClick={() => handleNavigateToCredential(record)}
+                        >
+                          {text}
+                        </span>
                       ),
                     },
                     {
