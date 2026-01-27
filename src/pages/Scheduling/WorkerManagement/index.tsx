@@ -15,6 +15,7 @@ import {
   Space,
   Modal,
   Toast,
+  Skeleton,
 } from '@douyinfe/semi-ui';
 import EmptyState from '@/components/EmptyState';
 import {
@@ -351,6 +352,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
   const [sortState, setSortState] = useState<SortState>({});
   const [filterVisible, setFilterVisible] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   
   // 列表响应数据 - 直接使用API LYListResponseLYWorkerResponse
   const [listResponse, setListResponse] = useState<LYListResponseLYWorkerResponse>({
@@ -412,6 +414,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       return response.list;
     } finally {
       setLoading(false);
+      setIsInitialLoad(false);
     }
   }, [queryParams, filters, sortState]);
 
@@ -937,42 +940,46 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
 
       {/* 表格区域 */}
       <div className="worker-management-table">
-        <Table 
-          columns={columns} 
-          dataSource={list}
-          loading={loading}
-          rowKey="id"
-          empty={<EmptyState description={t('worker.noData')} />}
-          onRow={(record) => {
-            const isSelected = selectedWorker?.id === record?.id && detailDrawerVisible;
-            return {
-              onClick: () => openDetail(record as LYWorkerResponse),
-              className: isSelected ? 'worker-management-row-selected' : undefined,
-              style: { cursor: 'pointer' },
-            };
-          }}
-          onChange={({ sorter }) => {
-            if (sorter) {
-              const { dataIndex, sortOrder } = sorter as { dataIndex?: string; sortOrder?: 'ascend' | 'descend' };
-              setSortState({
-                sortBy: sortOrder ? dataIndex : undefined,
-                sortOrder: sortOrder || undefined,
-              });
-            }
-          }}
-          pagination={{
-            total,
-            pageSize,
-            currentPage,
-            onPageChange: (page) => {
-              setQueryParams(prev => ({ ...prev, offset: (page - 1) * pageSize }));
-            },
-            onPageSizeChange: (newPageSize) => setQueryParams(prev => ({ ...prev, offset: 0, size: newPageSize })),
-            showSizeChanger: true,
-            showTotal: true,
-          }}
-          scroll={{ y: 'calc(100vh - 320px)' }}
-        />
+        {isInitialLoad ? (
+          <Skeleton.Paragraph rows={10} style={{ padding: '16px' }} />
+        ) : (
+          <Table 
+            columns={columns} 
+            dataSource={list}
+            loading={loading}
+            rowKey="id"
+            empty={<EmptyState description={t('worker.noData')} />}
+            onRow={(record) => {
+              const isSelected = selectedWorker?.id === record?.id && detailDrawerVisible;
+              return {
+                onClick: () => openDetail(record as LYWorkerResponse),
+                className: isSelected ? 'worker-management-row-selected' : undefined,
+                style: { cursor: 'pointer' },
+              };
+            }}
+            onChange={({ sorter }) => {
+              if (sorter) {
+                const { dataIndex, sortOrder } = sorter as { dataIndex?: string; sortOrder?: 'ascend' | 'descend' };
+                setSortState({
+                  sortBy: sortOrder ? dataIndex : undefined,
+                  sortOrder: sortOrder || undefined,
+                });
+              }
+            }}
+            pagination={{
+              total,
+              pageSize,
+              currentPage,
+              onPageChange: (page) => {
+                setQueryParams(prev => ({ ...prev, offset: (page - 1) * pageSize }));
+              },
+              onPageSizeChange: (newPageSize) => setQueryParams(prev => ({ ...prev, offset: 0, size: newPageSize })),
+              showSizeChanger: true,
+              showTotal: true,
+            }}
+            scroll={{ y: 'calc(100vh - 320px)' }}
+          />
+        )}
       </div>
 
       {/* 详情抽屉 */}

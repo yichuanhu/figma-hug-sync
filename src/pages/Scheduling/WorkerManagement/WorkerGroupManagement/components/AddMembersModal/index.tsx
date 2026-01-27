@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { Modal, Input, Table, Typography, Checkbox, Toast, Select, Tag, Space } from '@douyinfe/semi-ui';
+import { Modal, Input, Table, Typography, Checkbox, Toast, Select, Tag, Space, Skeleton } from '@douyinfe/semi-ui';
 import { IconSearch, IconClose } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import { useTranslation } from 'react-i18next';
@@ -157,6 +157,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
 }) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [workersResponse, setWorkersResponse] = useState<LYListResponseLYWorkerResponse>({
     range: { offset: 0, size: 20, total: 0 },
@@ -187,6 +188,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
       setWorkersResponse(response);
     } finally {
       setLoading(false);
+      setIsInitialLoad(false);
     }
   }, [queryParams, statusFilter]);
 
@@ -195,6 +197,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
       setSelectedWorkers([]);
       setStatusFilter([]);
       setQueryParams({ offset: 0, size: 20, keyword: undefined });
+      setIsInitialLoad(true);
     }
   }, [visible]);
 
@@ -352,24 +355,28 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
             </Space>
           </div>
           <div className="add-members-modal-left-table">
-            <Table 
-              columns={columns} 
-              dataSource={list}
-              loading={loading}
-              rowKey="id"
-              empty={<EmptyState description={t('workerGroup.addMembers.noAvailableWorkers')} size={120} />}
-              pagination={{
-                total,
-                pageSize,
-                currentPage,
-                onPageChange: (page) => {
-                  setQueryParams(prev => ({ ...prev, offset: (page - 1) * pageSize }));
-                },
-                showTotal: true,
-              }}
-              scroll={{ y: 260 }}
-              size="small"
-            />
+            {isInitialLoad ? (
+              <Skeleton.Paragraph rows={5} style={{ padding: '12px' }} />
+            ) : (
+              <Table 
+                columns={columns} 
+                dataSource={list}
+                loading={loading}
+                rowKey="id"
+                empty={<EmptyState description={t('workerGroup.addMembers.noAvailableWorkers')} size={120} />}
+                pagination={{
+                  total,
+                  pageSize,
+                  currentPage,
+                  onPageChange: (page) => {
+                    setQueryParams(prev => ({ ...prev, offset: (page - 1) * pageSize }));
+                  },
+                  showTotal: true,
+                }}
+                scroll={{ y: 260 }}
+                size="small"
+              />
+            )}
           </div>
         </div>
 
