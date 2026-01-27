@@ -567,18 +567,18 @@ const PersonalCredentialDetailDrawer = ({
       onCancel={onClose}
       closable={false}
       mask={false}
+      placement="right"
       width={isFullscreen ? '100%' : drawerWidth}
-      className={`card-sidesheet personal-credential-detail-drawer ${isFullscreen ? 'fullscreen-sidesheet' : ''}`}
-      headerStyle={{ padding: '12px 16px' }}
-      bodyStyle={{ padding: 0 }}
+      footer={null}
+      className={`card-sidesheet resizable-sidesheet personal-credential-detail-drawer ${isFullscreen ? 'fullscreen-sidesheet' : ''}`}
       title={
-        <div className="personal-credential-detail-drawer-header">
-          <div className="personal-credential-detail-drawer-header-left">
-            <Title heading={5} style={{ margin: 0 }}>
+        <Row type="flex" justify="space-between" align="middle" className="personal-credential-detail-drawer-header">
+          <Col>
+            <Title heading={5} className="personal-credential-detail-drawer-header-title">
               {credential.credential_name}
             </Title>
-          </div>
-          <div className="personal-credential-detail-drawer-header-right">
+          </Col>
+          <Col>
             <Space spacing={8}>
               {(dataList.length > 1 || (pagination && pagination.totalPages > 1)) && (
                 <>
@@ -588,54 +588,28 @@ const PersonalCredentialDetailDrawer = ({
                   <Tooltip content={t('common.next')}>
                     <Button icon={<IconChevronRight />} theme="borderless" size="small" disabled={!canGoNext || isNavigating} onClick={handleNext} loading={isNavigating} />
                   </Tooltip>
-                  <Divider layout="vertical" style={{ margin: '0 8px 0 4px', height: 16 }} />
+                  <Divider layout="vertical" className="personal-credential-detail-drawer-header-divider" />
                 </>
               )}
               <Tooltip content={t('common.edit')}>
-                <Button
-                  icon={<IconEditStroked />}
-                  theme="borderless"
-                  type="tertiary"
-                  onClick={() => onEdit(credential)}
-                />
+                <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={() => onEdit(credential)} />
               </Tooltip>
               <Tooltip content={t('personalCredential.actions.linkCredential')}>
-                <Button
-                  icon={<IconLink />}
-                  theme="borderless"
-                  type="tertiary"
-                  onClick={() => onLinkCredential(credential)}
-                />
+                <Button icon={<IconLink />} theme="borderless" size="small" onClick={() => onLinkCredential(credential)} />
               </Tooltip>
               <Tooltip content={t('common.delete')}>
-                <Button
-                  icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />}
-                  theme="borderless"
-                  type="tertiary"
-                  onClick={handleDelete}
-                />
+                <Button icon={<IconDeleteStroked className="personal-credential-detail-drawer-header-delete-icon" />} theme="borderless" size="small" onClick={handleDelete} />
               </Tooltip>
-              <Divider layout="vertical" style={{ margin: '0 8px 0 4px', height: 16 }} />
+              <Divider layout="vertical" className="personal-credential-detail-drawer-header-divider" />
               <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
-                <Button
-                  icon={isFullscreen ? <IconMinimize /> : <IconMaximize />}
-                  theme="borderless"
-                  type="tertiary"
-                  onClick={toggleFullscreen}
-                />
+                <Button icon={isFullscreen ? <IconMinimize /> : <IconMaximize />} theme="borderless" size="small" onClick={toggleFullscreen} />
               </Tooltip>
               <Tooltip content={t('common.close')}>
-                <Button
-                  icon={<IconClose />}
-                  theme="borderless"
-                  type="tertiary"
-                  style={{ marginLeft: 4 }}
-                  onClick={onClose}
-                />
+                <Button icon={<IconClose />} theme="borderless" size="small" onClick={onClose} className="personal-credential-detail-drawer-header-close-btn" />
               </Tooltip>
             </Space>
-          </div>
-        </div>
+          </Col>
+        </Row>
       }
     >
       {/* 拖拽调整宽度手柄 */}
