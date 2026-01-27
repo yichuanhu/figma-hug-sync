@@ -140,10 +140,25 @@ const WorkerGroupManagement = ({ isActive = true }: WorkerGroupManagementProps) 
     try {
       const response = await fetchWorkerGroupList(queryParams);
       setListResponse(response);
+      return response.list;
     } finally {
       setLoading(false);
     }
   }, [queryParams]);
+
+  // 翻页并返回新数据（用于抽屉导航时自动翻页）
+  const handleDrawerPageChange = useCallback(async (page: number): Promise<LYWorkerGroupResponse[]> => {
+    const currentPageSize = listResponse.range?.size || 20;
+    const newOffset = (page - 1) * currentPageSize;
+    setQueryParams(prev => ({ ...prev, offset: newOffset }));
+    
+    const response = await fetchWorkerGroupList({
+      ...queryParams,
+      offset: newOffset,
+    });
+    setListResponse(response);
+    return response.list;
+  }, [queryParams, listResponse.range?.size]);
 
   // 当Tab切换到非激活状态时，关闭抽屉
   useEffect(() => {
@@ -430,6 +445,13 @@ const WorkerGroupManagement = ({ isActive = true }: WorkerGroupManagementProps) 
         onRefresh={loadData}
         dataList={list}
         onNavigate={(group) => setSelectedGroup(group)}
+        pagination={{
+          currentPage,
+          totalPages: Math.ceil(total / pageSize),
+          pageSize,
+          total,
+        }}
+        onPageChange={handleDrawerPageChange}
       />
 
       {/* 创建弹窗 */}

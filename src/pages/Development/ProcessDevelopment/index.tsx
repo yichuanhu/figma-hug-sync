@@ -245,10 +245,26 @@ const ProcessDevelopment = () => {
     try {
       const response = await fetchProcessList({ ...queryParams, statusFilter });
       setListResponse(response);
+      return response.list;
     } finally {
       setLoading(false);
     }
   }, [queryParams, statusFilter]);
+
+  // 翻页并返回新数据（用于抽屉导航时自动翻页）
+  const handleDrawerPageChange = useCallback(async (page: number): Promise<LYProcessResponse[]> => {
+    const currentPageSize = listResponse.range?.size || 20;
+    const newOffset = (page - 1) * currentPageSize;
+    setQueryParams(prev => ({ ...prev, offset: newOffset }));
+    
+    const response = await fetchProcessList({
+      ...queryParams,
+      offset: newOffset,
+      statusFilter,
+    });
+    setListResponse(response);
+    return response.list;
+  }, [queryParams, statusFilter, listResponse.range?.size]);
 
   // 初始化加载
   useEffect(() => {
@@ -621,6 +637,13 @@ const ProcessDevelopment = () => {
         onOpen={() => selectedProcess && openProcess(selectedProcess)}
         dataList={list}
         onNavigate={(process) => setSelectedProcess(process)}
+        pagination={{
+          currentPage,
+          totalPages: Math.ceil(total / pageSize),
+          pageSize,
+          total,
+        }}
+        onPageChange={handleDrawerPageChange}
       />
 
       {/* 打开流程确认弹窗 */}

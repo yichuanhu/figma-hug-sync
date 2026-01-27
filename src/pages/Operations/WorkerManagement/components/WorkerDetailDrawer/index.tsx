@@ -7,6 +7,13 @@ import './index.less';
 
 const { Title, Text } = Typography;
 
+interface PaginationInfo {
+  currentPage: number;
+  totalPages: number;
+  pageSize: number;
+  total: number;
+}
+
 interface WorkerDetailDrawerProps {
   visible: boolean;
   onClose: () => void;
@@ -18,12 +25,15 @@ interface WorkerDetailDrawerProps {
   // 导航相关
   dataList?: LYWorkerResponse[];
   onNavigate?: (worker: LYWorkerResponse) => void;
+  // 分页相关 - 用于自动翻页
+  pagination?: PaginationInfo;
+  onPageChange?: (page: number) => Promise<LYWorkerResponse[] | void>;
 }
 
 // 描述展开收起的阈值（字符数）
 const DESCRIPTION_COLLAPSE_THRESHOLD = 100;
 
-const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, onDelete, onToggleReceiveTasks, dataList = [], onNavigate }: WorkerDetailDrawerProps) => {
+const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, onDelete, onToggleReceiveTasks, dataList = [], onNavigate, pagination, onPageChange }: WorkerDetailDrawerProps) => {
   const { t } = useTranslation();
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
@@ -81,20 +91,64 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
     return dataList.findIndex(item => item.id === workerData.id);
   }, [workerData, dataList]);
 
-  const hasPrev = currentIndex > 0;
-  const hasNext = currentIndex >= 0 && currentIndex < dataList.length - 1;
+  // 判断是否可以导航（考虑分页）
+  const canGoPrev = useMemo(() => {
+    if (currentIndex > 0) return true;
+    // 当前是第一条，但不是第一页，可以翻到上一页
+    if (pagination && pagination.currentPage > 1) return true;
+    return false;
+  }, [currentIndex, pagination]);
 
-  const handlePrev = useCallback(() => {
-    if (hasPrev && onNavigate) {
+  const canGoNext = useMemo(() => {
+    if (currentIndex >= 0 && currentIndex < dataList.length - 1) return true;
+    // 当前是最后一条，但还有下一页，可以翻到下一页
+    if (pagination && pagination.currentPage < pagination.totalPages) return true;
+    return false;
+  }, [currentIndex, dataList.length, pagination]);
+
+  const [isNavigating, setIsNavigating] = useState(false);
+
+  const handlePrev = useCallback(async () => {
+    if (isNavigating) return;
+    
+    if (currentIndex > 0 && onNavigate) {
+      // 当前页内导航
       onNavigate(dataList[currentIndex - 1]);
+    } else if (pagination && pagination.currentPage > 1 && onPageChange) {
+      // 需要翻到上一页
+      setIsNavigating(true);
+      try {
+        const newList = await onPageChange(pagination.currentPage - 1);
+        if (newList && newList.length > 0 && onNavigate) {
+          // 导航到上一页的最后一条
+          onNavigate(newList[newList.length - 1]);
+        }
+      } finally {
+        setIsNavigating(false);
+      }
     }
-  }, [hasPrev, onNavigate, dataList, currentIndex]);
+  }, [currentIndex, dataList, onNavigate, pagination, onPageChange, isNavigating]);
 
-  const handleNext = useCallback(() => {
-    if (hasNext && onNavigate) {
+  const handleNext = useCallback(async () => {
+    if (isNavigating) return;
+    
+    if (currentIndex >= 0 && currentIndex < dataList.length - 1 && onNavigate) {
+      // 当前页内导航
       onNavigate(dataList[currentIndex + 1]);
+    } else if (pagination && pagination.currentPage < pagination.totalPages && onPageChange) {
+      // 需要翻到下一页
+      setIsNavigating(true);
+      try {
+        const newList = await onPageChange(pagination.currentPage + 1);
+        if (newList && newList.length > 0 && onNavigate) {
+          // 导航到下一页的第一条
+          onNavigate(newList[0]);
+        }
+      } finally {
+        setIsNavigating(false);
+      }
     }
-  }, [hasNext, onNavigate, dataList, currentIndex]);
+  }, [currentIndex, dataList, onNavigate, pagination, onPageChange, isNavigating]);
 
   if (!workerData) return null;
 
@@ -222,13 +276,13 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
           </Col>
           <Col>
             <Space spacing={4}>
-              {dataList.length > 1 && (
+              {(dataList.length > 1 || (pagination && pagination.totalPages > 1)) && (
                 <>
                   <Tooltip content={t('common.previous')}>
-                    <Button icon={<IconChevronLeft />} theme="borderless" size="small" disabled={!hasPrev} onClick={handlePrev} />
+                    <Button icon={<IconChevronLeft />} theme="borderless" size="small" disabled={!canGoPrev || isNavigating} onClick={handlePrev} loading={isNavigating} />
                   </Tooltip>
                   <Tooltip content={t('common.next')}>
-                    <Button icon={<IconChevronRight />} theme="borderless" size="small" disabled={!hasNext} onClick={handleNext} />
+                    <Button icon={<IconChevronRight />} theme="borderless" size="small" disabled={!canGoNext || isNavigating} onClick={handleNext} loading={isNavigating} />
                   </Tooltip>
                   <Divider layout="vertical" className="worker-detail-drawer-header-divider" />
                 </>
