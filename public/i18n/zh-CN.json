@@ -411,12 +411,15 @@
         "priority": "任务调度优先级",
         "clientVersion": "客户端版本",
         "lastHeartbeat": "最近连接时间",
-        "receiveTasks": "接收任务"
+        "receiveTasks": "接收任务",
+        "workerGroup": "所属机器人组"
       },
       "filter": {
         "workerStatus": "机器人状态",
         "syncStatus": "同步状态",
-        "priority": "任务调度优先级"
+        "priority": "任务调度优先级",
+        "workerGroup": "所属机器人组",
+        "ungrouped": "未分组"
       },
       "status": {
         "offline": "离线",
@@ -565,6 +568,7 @@
     "table": {
       "workerName": "流程机器人名称",
       "status": "状态",
+      "workerGroup": "所属机器人组",
       "ipAddress": "IP地址",
       "priority": "任务调度优先级",
       "clientVersion": "客户端版本",
@@ -575,7 +579,9 @@
     "filter": {
       "workerStatus": "机器人状态",
       "syncStatus": "同步状态",
-      "priority": "任务调度优先级"
+      "priority": "任务调度优先级",
+      "workerGroup": "所属机器人组",
+      "ungrouped": "未分组"
     },
     "status": {
       "offline": "离线",

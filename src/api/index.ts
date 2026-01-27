@@ -699,6 +699,16 @@ export interface LYWorkerResponse {
    */
   robot_count: number;
   /**
+   * Group Id
+   * 所属机器人组ID
+   */
+  group_id?: string | null;
+  /**
+   * Group Name
+   * 所属机器人组名称
+   */
+  group_name?: string | null;
+  /**
    * Created At
    * 创建时间
    */

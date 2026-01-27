@@ -38,6 +38,13 @@ import './index.less';
 const { Title, Text } = Typography;
 const CheckboxGroup = Checkbox.Group;
 
+// Mock机器人组数据
+const mockWorkerGroups = [
+  { id: 'group-001', name: '财务流程机器人组' },
+  { id: 'group-002', name: '人事流程机器人组' },
+  { id: 'group-003', name: '运维巡检机器人组' },
+];
+
 // Mock数据 - 使用API类型
 const mockWorkers: LYWorkerResponse[] = [
   {
@@ -64,6 +71,8 @@ const mockWorkers: LYWorkerResponse[] = [
     cpu_cores: 8,
     memory_capacity: '32 GB',
     robot_count: 1,
+    group_id: 'group-001',
+    group_name: '财务流程机器人组',
     created_at: '2025-01-05 14:30:00',
     creator_id: 'admin',
   },
@@ -91,6 +100,8 @@ const mockWorkers: LYWorkerResponse[] = [
     cpu_cores: 8,
     memory_capacity: '16 GB',
     robot_count: 2,
+    group_id: 'group-001',
+    group_name: '财务流程机器人组',
     created_at: '2025-01-06 09:15:00',
     creator_id: 'admin',
   },
@@ -118,6 +129,8 @@ const mockWorkers: LYWorkerResponse[] = [
     cpu_cores: 6,
     memory_capacity: '16 GB',
     robot_count: 1,
+    group_id: null,
+    group_name: null,
     created_at: '2025-01-04 11:20:00',
     creator_id: 'admin',
   },
@@ -145,6 +158,8 @@ const mockWorkers: LYWorkerResponse[] = [
     cpu_cores: 6,
     memory_capacity: '8 GB',
     robot_count: 1,
+    group_id: 'group-002',
+    group_name: '人事流程机器人组',
     created_at: '2025-01-03 15:45:00',
     creator_id: 'hr_admin',
   },
@@ -172,6 +187,8 @@ const mockWorkers: LYWorkerResponse[] = [
     cpu_cores: 12,
     memory_capacity: '64 GB',
     robot_count: 1,
+    group_id: 'group-003',
+    group_name: '运维巡检机器人组',
     created_at: '2025-01-02 08:30:00',
     creator_id: 'ops_admin',
   },
@@ -199,14 +216,20 @@ const mockWorkers: LYWorkerResponse[] = [
     cpu_cores: 16,
     memory_capacity: '32 GB',
     robot_count: 1,
+    group_id: null,
+    group_name: null,
     created_at: '2025-01-01 10:00:00',
     creator_id: 'qa_admin',
   },
 ];
 
+// 特殊筛选值常量
+const UNGROUPED_FILTER_VALUE = '__UNGROUPED__';
+
 interface FilterState {
   status: string[];
   sync_status: string[];
+  group_id: string[];
 }
 
 interface SortState {
@@ -248,6 +271,23 @@ const fetchWorkerList = async (params: GetWorkersParams & { filters?: FilterStat
   // 同步状态筛选
   if (params.filters?.sync_status && params.filters.sync_status.length > 0) {
     data = data.filter(item => params.filters!.sync_status.includes(item.sync_status));
+  }
+
+  // 机器人组筛选
+  if (params.filters?.group_id && params.filters.group_id.length > 0) {
+    data = data.filter(item => {
+      const selectedGroups = params.filters!.group_id;
+      // 检查是否选择了"未分组"
+      if (selectedGroups.includes(UNGROUPED_FILTER_VALUE)) {
+        // 未分组的机器人
+        if (!item.group_id) return true;
+      }
+      // 检查是否属于选中的机器人组
+      if (item.group_id && selectedGroups.includes(item.group_id)) {
+        return true;
+      }
+      return false;
+    });
   }
 
   // 排序处理
@@ -300,6 +340,7 @@ const WorkerManagement = ({ isActive = true }: WorkerManagementProps) => {
   const [filters, setFilters] = useState<FilterState>({
     status: [],
     sync_status: [],
+    group_id: [],
   });
   const [sortState, setSortState] = useState<SortState>({});
   const [filterVisible, setFilterVisible] = useState(false);
@@ -343,6 +384,10 @@ const WorkerManagement = ({ isActive = true }: WorkerManagementProps) => {
     sync_status: [
       { label: t('worker.syncStatus.synced'), value: 'SYNCED' },
       { label: t('worker.syncStatus.pending'), value: 'PENDING' },
+    ],
+    group_id: [
+      { label: t('worker.filter.ungrouped'), value: UNGROUPED_FILTER_VALUE },
+      ...mockWorkerGroups.map(g => ({ label: g.name, value: g.id })),
     ],
   }), [t]);
 
@@ -405,6 +450,7 @@ const WorkerManagement = ({ isActive = true }: WorkerManagementProps) => {
     setFilters({
       status: [],
       sync_status: [],
+      group_id: [],
     });
     setQueryParams(prev => ({ ...prev, offset: 0 }));
   };
@@ -448,6 +494,15 @@ const WorkerManagement = ({ isActive = true }: WorkerManagementProps) => {
           value={filters.sync_status}
           onChange={(values) => handleFilterChange('sync_status', values as string[])}
           options={filterOptions.sync_status}
+          direction="horizontal"
+        />
+      </div>
+      <div className="filter-popover-section">
+        <Text strong className="filter-popover-label">{t('worker.filter.workerGroup')}</Text>
+        <CheckboxGroup
+          value={filters.group_id}
+          onChange={(values) => handleFilterChange('group_id', values as string[])}
+          options={filterOptions.group_id}
           direction="horizontal"
         />
       </div>
@@ -613,6 +668,13 @@ const WorkerManagement = ({ isActive = true }: WorkerManagementProps) => {
           </Tag>
         );
       },
+    },
+    {
+      title: t('worker.table.workerGroup'),
+      dataIndex: 'group_name',
+      key: 'group_name',
+      width: 150,
+      render: (groupName: string | null | undefined) => groupName || t('worker.filter.ungrouped'),
     },
     {
       title: t('worker.table.ipAddress'),
