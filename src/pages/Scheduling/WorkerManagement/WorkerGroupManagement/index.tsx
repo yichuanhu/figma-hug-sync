@@ -11,7 +11,9 @@ import {
   Modal,
   Toast,
   Tooltip,
+  Empty,
 } from '@douyinfe/semi-ui';
+import { IllustrationNoContent, IllustrationNoContentDark } from '@douyinfe/semi-illustrations';
 import {
   IconSearch, 
   IconPlus, 
@@ -423,6 +425,13 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
           dataSource={list}
           loading={loading}
           rowKey="id"
+          empty={
+            <Empty
+              image={<IllustrationNoContent style={{ width: 150, height: 150 }} />}
+              darkModeImage={<IllustrationNoContentDark style={{ width: 150, height: 150 }} />}
+              description={t('workerGroup.noData')}
+            />
+          }
           onRow={(record) => {
             const isSelected = selectedGroup?.id === record?.id && detailDrawerVisible;
             return {
