@@ -41,13 +41,13 @@ import {
 import layoutIcon from '@/assets/icons/layout.svg';
 import laiyeLogo from '@/assets/laiye-logo.png';
 
-// 自定义导航图标
-import HomeIcon from '@/components/icons/HomeIcon';
-import RequirementsIcon from '@/components/icons/RequirementsIcon';
-import DevelopmentIcon from '@/components/icons/DevelopmentIcon';
-import SchedulingIcon from '@/components/icons/SchedulingIcon';
-import OperationsIcon from '@/components/icons/OperationsIcon';
-import BusinessIcon from '@/components/icons/BusinessIcon';
+// 中心图标
+import homeCenterIcon from '@/assets/icons/home-center.png';
+import developmentCenterIcon from '@/assets/icons/development-center.png';
+import requirementsCenterIcon from '@/assets/icons/requirements-center.png';
+import schedulingCenterIcon from '@/assets/icons/scheduling-center.png';
+import operationsCenterIcon from '@/assets/icons/operations-center.png';
+import maintenanceCenterIcon from '@/assets/icons/maintenance-center.png';
 
 import './index.less';
 
@@ -151,35 +151,35 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
 
   // 中心级别菜单（左侧图标栏）
   const centerMenuItems: MenuItem[] = [
-    { key: 'home', labelKey: 'sidebar.home', icon: <HomeIcon size={20} />, path: '/' },
+    { key: 'home', labelKey: 'sidebar.home', icon: <img src={homeCenterIcon} alt="home" className="sidebar-center-icon" />, path: '/' },
     {
       key: 'developmentCenter',
       labelKey: 'sidebar.developmentCenter',
-      icon: <DevelopmentIcon size={20} />,
+      icon: <img src={developmentCenterIcon} alt="development" className="sidebar-center-icon" />,
       path: '/development-workbench',
     },
     {
       key: 'schedulingCenter',
       labelKey: 'sidebar.schedulingCenter',
-      icon: <SchedulingIcon size={20} />,
+      icon: <img src={schedulingCenterIcon} alt="scheduling" className="sidebar-center-icon" />,
       path: '/scheduling-workbench',
     },
     {
       key: 'operationsCenter',
       labelKey: 'sidebar.operationsCenter',
-      icon: <BusinessIcon size={20} />,
+      icon: <img src={operationsCenterIcon} alt="operations" className="sidebar-center-icon" />,
       path: '/operations-workbench',
     },
     {
       key: 'requirementsCenter',
       labelKey: 'sidebar.requirementsCenter',
-      icon: <RequirementsIcon size={20} />,
+      icon: <img src={requirementsCenterIcon} alt="requirements" className="sidebar-center-icon" />,
       path: '/requirements-workbench',
     },
     {
       key: 'maintenanceCenter',
       labelKey: 'sidebar.maintenanceCenter',
-      icon: <OperationsIcon size={20} />,
+      icon: <img src={maintenanceCenterIcon} alt="maintenance" className="sidebar-center-icon" />,
       path: '/maintenance-workbench',
     },
   ];
