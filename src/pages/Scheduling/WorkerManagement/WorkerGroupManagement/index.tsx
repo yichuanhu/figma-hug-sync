@@ -11,8 +11,8 @@ import {
   Modal,
   Toast,
   Tooltip,
-  Skeleton,
 } from '@douyinfe/semi-ui';
+import TableSkeleton from '@/components/Skeleton/TableSkeleton';
 import EmptyState from '@/components/EmptyState';
 import {
   IconSearch, 
@@ -423,7 +423,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
       {/* 表格区域 */}
       <div className="worker-group-management-table">
         {isInitialLoad ? (
-          <Skeleton.Paragraph rows={10} style={{ padding: '16px' }} />
+          <TableSkeleton columns={[{ width: '35%' }, { width: '15%' }, { width: '15%' }, { width: '25%' }, { width: '10%' }]} rows={10} />
         ) : (
           <Table 
             columns={columns} 

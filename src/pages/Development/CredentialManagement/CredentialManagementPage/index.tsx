@@ -17,8 +17,8 @@ import {
   Popover,
   CheckboxGroup,
   Tooltip,
-  Skeleton,
 } from '@douyinfe/semi-ui';
+import TableSkeleton from '@/components/Skeleton/TableSkeleton';
 import EmptyState from '@/components/EmptyState';
 import {
   IconSearch,
@@ -530,7 +530,7 @@ const CredentialManagementPage = () => {
         {/* 表格 */}
         <div className="credential-management-page-table">
           {isInitialLoad ? (
-            <Skeleton.Paragraph rows={10} style={{ padding: '16px' }} />
+            <TableSkeleton columns={[{ width: '20%' }, { width: '20%' }, { width: '15%' }, { width: '25%' }, { width: '10%' }]} rows={10} />
           ) : (
             <Table
               columns={columns}
