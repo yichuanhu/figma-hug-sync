@@ -105,7 +105,11 @@ const fetchWorkerGroupList = async (params: GetWorkerGroupsParams): Promise<LYLi
   };
 };
 
-const WorkerGroupManagement = () => {
+interface WorkerGroupManagementProps {
+  isActive?: boolean;
+}
+
+const WorkerGroupManagement = ({ isActive = true }: WorkerGroupManagementProps) => {
   const { t } = useTranslation();
   
   // 查询参数
@@ -140,6 +144,13 @@ const WorkerGroupManagement = () => {
       setLoading(false);
     }
   }, [queryParams]);
+
+  // 当Tab切换到非激活状态时，关闭抽屉
+  useEffect(() => {
+    if (!isActive) {
+      setDetailDrawerVisible(false);
+    }
+  }, [isActive]);
 
   // 初始化加载
   useEffect(() => {

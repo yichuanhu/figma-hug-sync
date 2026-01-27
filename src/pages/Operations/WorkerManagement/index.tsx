@@ -282,7 +282,11 @@ const fetchWorkerList = async (params: GetWorkersParams & { filters?: FilterStat
   };
 };
 
-const WorkerManagement = () => {
+interface WorkerManagementProps {
+  isActive?: boolean;
+}
+
+const WorkerManagement = ({ isActive = true }: WorkerManagementProps) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   
@@ -356,6 +360,13 @@ const WorkerManagement = () => {
       setLoading(false);
     }
   }, [queryParams, filters, sortState]);
+
+  // 当Tab切换到非激活状态时，关闭抽屉
+  useEffect(() => {
+    if (!isActive) {
+      setDetailDrawerVisible(false);
+    }
+  }, [isActive]);
 
   // 初始化加载
   useEffect(() => {
