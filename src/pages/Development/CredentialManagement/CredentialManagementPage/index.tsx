@@ -224,8 +224,8 @@ const CredentialManagementPage = () => {
   // 处理URL参数 - 从个人凭据跳转过来时自动打开详情抽屉
   useEffect(() => {
     const credentialId = searchParams.get('credentialId');
-    if (credentialId && listResponse?.data) {
-      // 查找对应的凭据
+    if (credentialId && listResponse?.data && !isInitialLoad) {
+      // 先在当前列表中查找
       const targetCredential = listResponse.data.find(
         (item) => item.credential_id === credentialId
       );
@@ -234,10 +234,29 @@ const CredentialManagementPage = () => {
         setInitialDetailTab('basic');
         setDetailDrawerVisible(true);
         // 清除URL参数
-        setSearchParams({});
+        setSearchParams({}, { replace: true });
+      } else {
+        // 如果当前列表中找不到，模拟通过ID获取凭据详情
+        const fetchCredentialById = async () => {
+          try {
+            // 模拟API调用获取单个凭据
+            await new Promise((resolve) => setTimeout(resolve, 300));
+            const mockCredential = generateMockCredential(0);
+            mockCredential.credential_id = credentialId;
+            setSelectedCredential(mockCredential);
+            setInitialDetailTab('basic');
+            setDetailDrawerVisible(true);
+            setSearchParams({}, { replace: true });
+          } catch (error) {
+            console.error('获取凭据详情失败:', error);
+            Toast.error(t('credential.detail.loadError'));
+            setSearchParams({}, { replace: true });
+          }
+        };
+        fetchCredentialById();
       }
     }
-  }, [searchParams, listResponse?.data, setSearchParams]);
+  }, [searchParams, listResponse?.data, isInitialLoad, setSearchParams, t]);
 
   // 搜索防抖
   const debouncedSearch = useMemo(
