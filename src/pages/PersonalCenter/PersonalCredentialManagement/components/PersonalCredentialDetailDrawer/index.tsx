@@ -684,7 +684,7 @@ const PersonalCredentialDetailDrawer = ({
                             icon={<IconUnlink />}
                             theme="borderless"
                             size="small"
-                            type="danger"
+                            type="tertiary"
                             onClick={() => handleUnlinkCredential(record)}
                           />
                         </Tooltip>
