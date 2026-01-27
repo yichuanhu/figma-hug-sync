@@ -24,7 +24,8 @@ import {
   IconEyeOpenedStroked, 
   IconEditStroked, 
   IconDeleteStroked,
-  IconKey
+  IconKey,
+  IconUserGroup,
 } from '@douyinfe/semi-icons';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -32,6 +33,7 @@ import WorkerDetailDrawer from './components/WorkerDetailDrawer';
 import WorkerKeyModal from './components/WorkerKeyModal';
 import CreateWorkerModal from './components/CreateWorkerModal';
 import EditWorkerModal from './components/EditWorkerModal';
+import AddToGroupModal from './components/AddToGroupModal';
 import type { LYWorkerResponse, LYListResponseLYWorkerResponse, GetWorkersParams } from '@/api';
 import './index.less';
 
@@ -360,6 +362,8 @@ const WorkerManagement = ({ isActive = true }: WorkerManagementProps) => {
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingWorker, setEditingWorker] = useState<LYWorkerResponse | null>(null);
+  const [addToGroupModalVisible, setAddToGroupModalVisible] = useState(false);
+  const [addToGroupWorker, setAddToGroupWorker] = useState<LYWorkerResponse | null>(null);
 
   // 状态配置
   type WorkerStatus = LYWorkerResponse['status'];
@@ -604,6 +608,13 @@ const WorkerManagement = ({ isActive = true }: WorkerManagementProps) => {
     setEditModalVisible(true);
   };
 
+  // 添加至分组
+  const handleAddToGroup = (worker: LYWorkerResponse, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setAddToGroupWorker(worker);
+    setAddToGroupModalVisible(true);
+  };
+
   // 创建成功回调
   const handleCreateSuccess = () => {
     loadData();
@@ -611,6 +622,21 @@ const WorkerManagement = ({ isActive = true }: WorkerManagementProps) => {
 
   // 编辑成功回调
   const handleEditSuccess = (updatedWorker: LYWorkerResponse) => {
+    // 更新列表数据
+    setListResponse(prev => ({
+      ...prev,
+      list: prev.list.map(item => 
+        item.id === updatedWorker.id ? updatedWorker : item
+      ),
+    }));
+    // 同步更新选中的worker（如果抽屉打开中）
+    if (selectedWorker?.id === updatedWorker.id) {
+      setSelectedWorker(updatedWorker);
+    }
+  };
+
+  // 添加至分组成功回调
+  const handleAddToGroupSuccess = (updatedWorker: LYWorkerResponse) => {
     // 更新列表数据
     setListResponse(prev => ({
       ...prev,
@@ -755,6 +781,18 @@ const WorkerManagement = ({ isActive = true }: WorkerManagementProps) => {
               >
                 {t('worker.actions.edit')}
               </Dropdown.Item>
+              {/* 未分组的机器人显示"添加至分组"操作 */}
+              {!record.group_id && (
+                <Dropdown.Item 
+                  icon={<IconUserGroup />} 
+                  onClick={(e) => {
+                    e?.stopPropagation?.();
+                    handleAddToGroup(record);
+                  }}
+                >
+                  {t('worker.actions.addToGroup')}
+                </Dropdown.Item>
+              )}
               <Dropdown.Item 
                 icon={<IconDeleteStroked />} 
                 type="danger" 
@@ -907,6 +945,14 @@ const WorkerManagement = ({ isActive = true }: WorkerManagementProps) => {
         onCancel={() => setEditModalVisible(false)}
         workerData={editingWorker}
         onSuccess={handleEditSuccess}
+      />
+
+      {/* 添加至分组弹窗 */}
+      <AddToGroupModal
+        visible={addToGroupModalVisible}
+        onCancel={() => setAddToGroupModalVisible(false)}
+        workerData={addToGroupWorker}
+        onSuccess={handleAddToGroupSuccess}
       />
 
     </div>
