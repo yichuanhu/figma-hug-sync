@@ -466,7 +466,7 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
       className={`card-sidesheet resizable-sidesheet worker-group-detail-drawer ${isFullscreen ? 'fullscreen-sidesheet' : ''}`}
     >
       {!isFullscreen && <div className="worker-group-detail-drawer-resize-handle" onMouseDown={handleMouseDown} />}
-      <div className="worker-group-detail-drawer-content">
+      <div className="worker-group-detail-drawer-tab-content">
         {/* 基本信息 */}
         <div className="worker-group-detail-drawer-info-section">
           <Text strong className="worker-group-detail-drawer-info-title">
@@ -477,11 +477,9 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
 
         {/* 成员列表 */}
         <div className="worker-group-detail-drawer-members">
-          <div className="worker-group-detail-drawer-members-header">
-            <Text strong className="worker-group-detail-drawer-info-title">
-              {t('workerGroup.detail.memberList')}
-            </Text>
-          </div>
+          <Text strong className="worker-group-detail-drawer-info-title">
+            {t('workerGroup.detail.memberList')}
+          </Text>
           
           <Row type="flex" justify="space-between" align="middle" className="worker-group-detail-drawer-members-toolbar">
             <Col>
@@ -526,7 +524,6 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
           </div>
         </div>
       </div>
-
       {/* 添加成员弹窗 */}
       <AddMembersModal
         visible={addMembersVisible}
