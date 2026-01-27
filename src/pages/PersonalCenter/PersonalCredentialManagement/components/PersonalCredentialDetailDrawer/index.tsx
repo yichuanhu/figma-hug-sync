@@ -64,6 +64,15 @@ interface UsageRecord {
   screenshot_url: string | null;
 }
 
+// ============= 关联凭据类型 =============
+interface LinkedCredential {
+  credential_id: string;
+  credential_name: string;
+  credential_type: string;
+  description: string | null;
+  created_at: string;
+}
+
 // ============= Mock数据生成 =============
 const generateMockUsageRecords = (): UsageRecord[] => {
   const users = ['张三', '李四', '王五', '赵六', '钱七'];
@@ -82,6 +91,19 @@ const generateMockUsageRecords = (): UsageRecord[] => {
     worker_name: workers[Math.floor(Math.random() * workers.length)],
     task_number: `TASK-${String(i + 1).padStart(6, '0')}`,
     screenshot_url: i % 3 === 0 ? 'https://via.placeholder.com/800x600' : null,
+  }));
+};
+
+// 生成关联凭据的Mock数据
+const generateMockLinkedCredentials = (count: number): LinkedCredential[] => {
+  const names = ['企业邮箱凭据', '数据库连接凭据', 'SSH服务器凭据', 'Git仓库凭据', 'ERP系统凭据'];
+  const types = ['PERSONAL_REF', 'PERSONAL_REF', 'PERSONAL_REF'];
+  return Array.from({ length: count }, (_, i) => ({
+    credential_id: `cred-${i + 1}`,
+    credential_name: names[i % names.length],
+    credential_type: types[i % types.length],
+    description: `${names[i % names.length]}的描述信息`,
+    created_at: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
   }));
 };
 
@@ -134,6 +156,10 @@ const PersonalCredentialDetailDrawer = ({
     const saved = localStorage.getItem('personalCredentialDetailDrawerWidth');
     return saved ? Math.max(Number(saved), 576) : 900;
   });
+
+  // 关联凭据数据
+  const [linkedCredentials, setLinkedCredentials] = useState<LinkedCredential[]>([]);
+  const [linkedCredentialsLoading, setLinkedCredentialsLoading] = useState(false);
 
   // 使用记录数据
   const [usageRecords, setUsageRecords] = useState<UsageRecord[]>([]);
@@ -212,7 +238,7 @@ const PersonalCredentialDetailDrawer = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible, activeTab, credential?.credential_id, userFilter, dateRange, usageQueryParams]);
 
-  // 切换凭据时重置状态，并应用初始tab
+  // 切换凭据时重置状态，并应用初始tab，加载关联凭据
   useEffect(() => {
     if (credential) {
       setActiveTab(initialTab);
@@ -221,6 +247,14 @@ const PersonalCredentialDetailDrawer = ({
       resetFilters();
       setUsageRecords([]);
       setIsUsageInitialLoad(true);
+      
+      // 加载关联凭据
+      setLinkedCredentialsLoading(true);
+      const count = credential.linked_credentials_count || 0;
+      setTimeout(() => {
+        setLinkedCredentials(generateMockLinkedCredentials(count));
+        setLinkedCredentialsLoading(false);
+      }, 300);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [credential?.credential_id, initialTab]);
@@ -598,6 +632,59 @@ const PersonalCredentialDetailDrawer = ({
                 data={descriptionData}
                 align="left"
               />
+              
+              {/* 关联凭据列表 */}
+              <div className="personal-credential-detail-drawer-linked-section">
+                <div className="personal-credential-detail-drawer-linked-header">
+                  <Title heading={6} style={{ margin: 0 }}>
+                    {t('personalCredential.linkedCredentials.title')}
+                  </Title>
+                  <Text type="tertiary" size="small">
+                    {linkedCredentials.length > 0 
+                      ? `${linkedCredentials.length} ${t('personalCredential.linkedCredentials.countUnit')}`
+                      : ''
+                    }
+                  </Text>
+                </div>
+                {linkedCredentialsLoading ? (
+                  <TableSkeleton rows={3} columns={3} columnWidths={['40%', '40%', '20%']} />
+                ) : linkedCredentials.length > 0 ? (
+                  <Table
+                    columns={[
+                      {
+                        title: t('personalCredential.linkedCredentials.credentialName'),
+                        dataIndex: 'credential_name',
+                        key: 'credential_name',
+                        render: (text: string) => (
+                          <span className="personal-credential-detail-drawer-linked-name">{text}</span>
+                        ),
+                      },
+                      {
+                        title: t('common.description'),
+                        dataIndex: 'description',
+                        key: 'description',
+                        render: (text: string | null) => text || '-',
+                      },
+                      {
+                        title: t('common.createTime'),
+                        dataIndex: 'created_at',
+                        key: 'created_at',
+                        width: 160,
+                        render: (text: string) => formatDateTime(text),
+                      },
+                    ]}
+                    dataSource={linkedCredentials}
+                    rowKey="credential_id"
+                    pagination={false}
+                    size="small"
+                    empty={<EmptyState description={t('personalCredential.linkedCredentials.empty')} />}
+                  />
+                ) : (
+                  <div className="personal-credential-detail-drawer-linked-empty">
+                    <Text type="tertiary">{t('personalCredential.linkedCredentials.empty')}</Text>
+                  </div>
+                )}
+              </div>
             </div>
           </TabPane>
           

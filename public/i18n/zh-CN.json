@@ -828,6 +828,7 @@
       "description": "查看和管理此个人凭据关联的所有凭据",
       "empty": "暂无关联的凭据",
       "credentialName": "凭据名称",
+      "countUnit": "个凭据",
       "table": {
         "name": "凭据名称"
       },

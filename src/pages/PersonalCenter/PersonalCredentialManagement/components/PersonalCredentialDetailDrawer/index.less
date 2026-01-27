@@ -67,6 +67,38 @@
   // 内容区域
   &-content {
     padding: 16px 24px;
+    height: 100%;
+    overflow-y: auto;
+  }
+
+  // 关联凭据区域
+  &-linked-section {
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--semi-color-border);
+  }
+
+  &-linked-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  &-linked-name {
+    color: var(--semi-color-primary);
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &-linked-empty {
+    padding: 24px;
+    text-align: center;
+    background: var(--semi-color-fill-0);
+    border-radius: 6px;
   }
 
   // 使用记录区域
