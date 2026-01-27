@@ -634,7 +634,7 @@ const ProcessDetailDrawer = ({
             </Title>
           </Col>
           <Col>
-            <Space spacing={4}>
+            <Space spacing={8}>
               {(dataList.length > 1 || (pagination && pagination.totalPages > 1)) && (
                 <>
                   <Tooltip content={t('common.previous')}>

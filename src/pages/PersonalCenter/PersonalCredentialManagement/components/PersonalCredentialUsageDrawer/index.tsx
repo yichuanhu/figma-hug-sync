@@ -207,7 +207,7 @@ const PersonalCredentialUsageDrawer = ({
             </div>
           </Col>
           <Col>
-            <Space spacing={4}>
+            <Space spacing={8}>
               <Divider layout="vertical" className="personal-credential-usage-drawer-header-divider" />
               <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
                 <Button icon={isFullscreen ? <IconMinimize /> : <IconMaximize />} theme="borderless" size="small" onClick={toggleFullscreen} />

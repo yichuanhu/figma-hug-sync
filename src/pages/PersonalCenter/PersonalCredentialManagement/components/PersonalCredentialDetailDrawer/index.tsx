@@ -407,7 +407,7 @@ const PersonalCredentialDetailDrawer = ({
             </Title>
           </div>
           <div className="personal-credential-detail-drawer-header-right">
-            <Space spacing={4}>
+            <Space spacing={8}>
               <Tooltip content={t('common.edit')}>
                 <Button
                   icon={<IconEditStroked />}
