@@ -1,7 +1,7 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SideSheet, Typography, Button, Tag, Descriptions, Switch, Tooltip, Divider, Row, Col, Space } from '@douyinfe/semi-ui';
-import { IconEditStroked, IconDeleteStroked, IconMaximize, IconMinimize, IconClose, IconKey, IconChevronDown, IconChevronUp } from '@douyinfe/semi-icons';
+import { IconEditStroked, IconDeleteStroked, IconMaximize, IconMinimize, IconClose, IconKey, IconChevronDown, IconChevronUp, IconChevronLeft, IconChevronRight } from '@douyinfe/semi-icons';
 import type { LYWorkerResponse } from '@/api';
 import './index.less';
 
@@ -15,12 +15,15 @@ interface WorkerDetailDrawerProps {
   onViewKey?: () => void;
   onDelete?: () => void;
   onToggleReceiveTasks?: (worker: LYWorkerResponse, checked: boolean) => void;
+  // 导航相关
+  dataList?: LYWorkerResponse[];
+  onNavigate?: (worker: LYWorkerResponse) => void;
 }
 
 // 描述展开收起的阈值（字符数）
 const DESCRIPTION_COLLAPSE_THRESHOLD = 100;
 
-const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, onDelete, onToggleReceiveTasks }: WorkerDetailDrawerProps) => {
+const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, onDelete, onToggleReceiveTasks, dataList = [], onNavigate }: WorkerDetailDrawerProps) => {
   const { t } = useTranslation();
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
@@ -71,6 +74,27 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
   const toggleFullscreen = useCallback(() => {
     setIsFullscreen((prev) => !prev);
   }, []);
+
+  // 导航逻辑
+  const currentIndex = useMemo(() => {
+    if (!workerData || dataList.length === 0) return -1;
+    return dataList.findIndex(item => item.id === workerData.id);
+  }, [workerData, dataList]);
+
+  const hasPrev = currentIndex > 0;
+  const hasNext = currentIndex >= 0 && currentIndex < dataList.length - 1;
+
+  const handlePrev = useCallback(() => {
+    if (hasPrev && onNavigate) {
+      onNavigate(dataList[currentIndex - 1]);
+    }
+  }, [hasPrev, onNavigate, dataList, currentIndex]);
+
+  const handleNext = useCallback(() => {
+    if (hasNext && onNavigate) {
+      onNavigate(dataList[currentIndex + 1]);
+    }
+  }, [hasNext, onNavigate, dataList, currentIndex]);
 
   if (!workerData) return null;
 
@@ -198,6 +222,17 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
           </Col>
           <Col>
             <Space spacing={4}>
+              {dataList.length > 1 && (
+                <>
+                  <Tooltip content={t('common.previous')}>
+                    <Button icon={<IconChevronLeft />} theme="borderless" size="small" disabled={!hasPrev} onClick={handlePrev} />
+                  </Tooltip>
+                  <Tooltip content={t('common.next')}>
+                    <Button icon={<IconChevronRight />} theme="borderless" size="small" disabled={!hasNext} onClick={handleNext} />
+                  </Tooltip>
+                  <Divider layout="vertical" className="worker-detail-drawer-header-divider" />
+                </>
+              )}
               <Tooltip content={t('common.edit')}>
                 <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={onEdit} />
               </Tooltip>

@@ -36,6 +36,8 @@ import {
   IconClear,
   IconLink,
   IconSetting,
+  IconChevronLeft,
+  IconChevronRight,
 } from '@douyinfe/semi-icons';
 import type { LYProcessResponse, LYProcessVersionResponse } from '@/api';
 import UploadVersionModal from '../UploadVersionModal';
@@ -201,6 +203,9 @@ interface ProcessDetailDrawerProps {
   onEdit?: () => void;
   onRun?: () => void;
   onDelete?: () => void;
+  // 导航相关
+  dataList?: LYProcessResponse[];
+  onNavigate?: (process: LYProcessResponse) => void;
 }
 
 // ============= 状态配置 =============
@@ -376,6 +381,8 @@ const ProcessDetailDrawer = ({
   onEdit,
   onRun,
   onDelete,
+  dataList = [],
+  onNavigate,
 }: ProcessDetailDrawerProps) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('detail');
@@ -426,6 +433,27 @@ const ProcessDetailDrawer = ({
   const toggleFullscreen = useCallback(() => {
     setIsFullscreen((prev) => !prev);
   }, []);
+
+  // 导航逻辑
+  const currentIndex = useMemo(() => {
+    if (!processData || dataList.length === 0) return -1;
+    return dataList.findIndex(item => item.id === processData.id);
+  }, [processData, dataList]);
+
+  const hasPrev = currentIndex > 0;
+  const hasNext = currentIndex >= 0 && currentIndex < dataList.length - 1;
+
+  const handlePrev = useCallback(() => {
+    if (hasPrev && onNavigate) {
+      onNavigate(dataList[currentIndex - 1]);
+    }
+  }, [hasPrev, onNavigate, dataList, currentIndex]);
+
+  const handleNext = useCallback(() => {
+    if (hasNext && onNavigate) {
+      onNavigate(dataList[currentIndex + 1]);
+    }
+  }, [hasNext, onNavigate, dataList, currentIndex]);
 
 
   // 版本数据按版本号降序排列（最新版本在前）
@@ -559,6 +587,17 @@ const ProcessDetailDrawer = ({
           </Col>
           <Col>
             <Space spacing={4}>
+              {dataList.length > 1 && (
+                <>
+                  <Tooltip content={t('common.previous')}>
+                    <Button icon={<IconChevronLeft />} theme="borderless" size="small" disabled={!hasPrev} onClick={handlePrev} />
+                  </Tooltip>
+                  <Tooltip content={t('common.next')}>
+                    <Button icon={<IconChevronRight />} theme="borderless" size="small" disabled={!hasNext} onClick={handleNext} />
+                  </Tooltip>
+                  <Divider layout="vertical" className="process-detail-drawer-header-divider" />
+                </>
+              )}
               <Tooltip content={t('development.processDevelopment.actions.openProcess')}>
                 <Button icon={<IconExternalOpenStroked />} theme="borderless" size="small" onClick={onOpen} />
               </Tooltip>

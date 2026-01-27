@@ -572,6 +572,8 @@ const CredentialManagementPage = () => {
             loadData();
           }}
           onRefresh={loadData}
+          dataList={listResponse?.data || []}
+          onNavigate={(credential) => setSelectedCredential(credential)}
         />
 
         {/* 关联个人凭据模态框 */}

@@ -739,10 +739,14 @@ const WorkerManagement = () => {
           dataSource={list}
           loading={loading}
           rowKey="id"
-          onRow={(record) => ({
-            onClick: () => openDetail(record as LYWorkerResponse),
-            style: { cursor: 'pointer' }
-          })}
+          onRow={(record) => {
+            const isSelected = selectedWorker?.id === record?.id && detailDrawerVisible;
+            return {
+              onClick: () => openDetail(record as LYWorkerResponse),
+              className: isSelected ? 'worker-management-row-selected' : undefined,
+              style: { cursor: 'pointer' },
+            };
+          }}
           onChange={({ sorter }) => {
             if (sorter) {
               const { dataIndex, sortOrder } = sorter as { dataIndex?: string; sortOrder?: 'ascend' | 'descend' };
@@ -781,6 +785,8 @@ const WorkerManagement = () => {
         }}
         onDelete={handleDeleteFromDrawer}
         onToggleReceiveTasks={handleToggleReceiveTasks}
+        dataList={list}
+        onNavigate={(worker) => setSelectedWorker(worker)}
       />
 
       {/* 密钥弹窗 */}
