@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -11,14 +11,20 @@ import {
   Space,
   Row,
   Col,
+  Tooltip,
+  Divider,
 } from '@douyinfe/semi-ui';
 import {
   IconClose,
   IconDeleteStroked,
+  IconMaximize,
+  IconMinimize,
 } from '@douyinfe/semi-icons';
 import type { PersonalCredential } from '../../index';
 
 import './index.less';
+
+const { Title, Text } = Typography;
 
 // 关联的凭据类型
 interface LinkedCredential {
@@ -70,6 +76,16 @@ const LinkedCredentialsDrawer = ({
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [linkedCredentials, setLinkedCredentials] = useState<LinkedCredential[]>([]);
+  
+  // 抽屉状态
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [drawerWidth, setDrawerWidth] = useState(() => {
+    const saved = localStorage.getItem('linkedCredentialsDrawerWidth');
+    return saved ? Math.max(Number(saved), 576) : 600;
+  });
+  const isResizing = useRef(false);
+  const startX = useRef(0);
+  const startWidth = useRef(drawerWidth);
 
   useEffect(() => {
     if (visible && credential) {
@@ -81,6 +97,42 @@ const LinkedCredentialsDrawer = ({
       }, 300);
     }
   }, [visible, credential]);
+
+  // 拖拽调整宽度
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      isResizing.current = true;
+      startX.current = e.clientX;
+      startWidth.current = drawerWidth;
+      document.body.style.cursor = 'ew-resize';
+      document.body.style.userSelect = 'none';
+      const handleMouseMove = (e: MouseEvent) => {
+        if (!isResizing.current) return;
+        const diff = startX.current - e.clientX;
+        setDrawerWidth(Math.min(Math.max(startWidth.current + diff, 576), window.innerWidth - 100));
+      };
+      const handleMouseUp = () => {
+        isResizing.current = false;
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    },
+    [drawerWidth],
+  );
+
+  useEffect(() => {
+    localStorage.setItem('linkedCredentialsDrawerWidth', String(drawerWidth));
+  }, [drawerWidth]);
+
+  const toggleFullscreen = useCallback(() => {
+    setIsFullscreen((prev) => !prev);
+  }, []);
 
   // 跳转到凭据详情
   const handleCredentialClick = (record: LinkedCredential) => {
@@ -107,8 +159,6 @@ const LinkedCredentialsDrawer = ({
       },
     });
   };
-
-  const { Text, Title } = Typography;
 
   const columns = [
     {
@@ -157,41 +207,43 @@ const LinkedCredentialsDrawer = ({
 
   return (
     <SideSheet
-      className="linked-credentials-drawer"
-      title={null}
+      title={
+        <Row type="flex" justify="space-between" align="middle" className="linked-credentials-drawer-header">
+          <Col>
+            <Space>
+              <Title heading={5} className="linked-credentials-drawer-header-title">
+                {t('personalCredential.linkedCredentials.title')}
+              </Title>
+              <Text type="tertiary">- {credential?.credential_name}</Text>
+            </Space>
+          </Col>
+          <Col>
+            <Space spacing={4}>
+              <Divider layout="vertical" className="linked-credentials-drawer-header-divider" />
+              <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
+                <Button icon={isFullscreen ? <IconMinimize /> : <IconMaximize />} theme="borderless" size="small" onClick={toggleFullscreen} />
+              </Tooltip>
+              <Tooltip content={t('common.close')}>
+                <Button icon={<IconClose />} theme="borderless" size="small" onClick={onClose} className="linked-credentials-drawer-header-close-btn" />
+              </Tooltip>
+            </Space>
+          </Col>
+        </Row>
+      }
       visible={visible}
       onCancel={onClose}
       placement="right"
-      width={600}
-      closable={false}
+      width={isFullscreen ? '100%' : drawerWidth}
       mask={false}
-      headerStyle={{ display: 'none' }}
-      bodyStyle={{ padding: 0 }}
+      footer={null}
+      closable={false}
+      className={`card-sidesheet resizable-sidesheet linked-credentials-drawer ${isFullscreen ? 'fullscreen-sidesheet' : ''}`}
     >
+      {!isFullscreen && <div className="linked-credentials-drawer-resize-handle" onMouseDown={handleMouseDown} />}
       <div className="linked-credentials-drawer-content">
-        <div className="linked-credentials-drawer-header">
-          <Row type="flex" justify="space-between" align="middle">
-            <Col>
-              <Space>
-                <Title heading={5} style={{ margin: 0 }}>
-                  {t('personalCredential.linkedCredentials.title')}
-                </Title>
-                <Text type="tertiary">- {credential?.credential_name}</Text>
-              </Space>
-            </Col>
-            <Col>
-              <Button
-                icon={<IconClose />}
-                theme="borderless"
-                type="tertiary"
-                onClick={onClose}
-              />
-            </Col>
-          </Row>
-          <Text type="tertiary" className="linked-credentials-drawer-description-text">
-            {t('personalCredential.linkedCredentials.description')}
-          </Text>
-        </div>
+        <Text type="tertiary" className="linked-credentials-drawer-desc">
+          {t('personalCredential.linkedCredentials.description')}
+        </Text>
 
         <div className="linked-credentials-drawer-table">
           <Table
@@ -200,7 +252,7 @@ const LinkedCredentialsDrawer = ({
             rowKey="credential_id"
             loading={loading}
             pagination={false}
-            scroll={{ y: 'calc(100vh - 200px)' }}
+            scroll={{ y: 'calc(100vh - 240px)' }}
             empty={t('personalCredential.linkedCredentials.empty')}
           />
         </div>
