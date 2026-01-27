@@ -1,31 +1,54 @@
+// LinkedCredentialsDrawer 关联凭据抽屉样式
 .linked-credentials-drawer {
-  .semi-sidesheet-inner {
-    background: var(--semi-color-default);
-    margin: 8px;
-    border-radius: 8px;
+  // 标题区域
+  &-header {
+    width: 100%;
+    padding-right: 0;
+
+    &-title {
+      margin: 0;
+    }
+
+    &-divider {
+      height: 16px;
+      margin: 0 8px 0 4px;
+    }
+
+    &-close-btn {
+      margin-left: 4px;
+    }
   }
 
-  .linked-credentials-drawer-content {
+  // 拖拽把手
+  &-resize-handle {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    cursor: ew-resize;
+    z-index: 100;
+  }
+
+  // 内容区域
+  &-content {
+    padding: 16px 24px;
     display: flex;
     flex-direction: column;
     height: 100%;
   }
 
-  .linked-credentials-drawer-header {
+  // 描述文字
+  &-desc {
+    display: block;
+    margin-bottom: 16px;
     flex-shrink: 0;
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--semi-color-border);
-
-    .linked-credentials-drawer-description-text {
-      display: block;
-      margin-top: 8px;
-    }
   }
 
-  .linked-credentials-drawer-table {
+  // 表格区域
+  &-table {
     flex: 1;
     overflow: hidden;
-    padding: 16px 20px;
 
     .linked-credentials-drawer-link {
       color: var(--semi-color-primary);
@@ -42,5 +65,17 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
+  }
+}
+
+// 全局覆盖 - SideSheet header 和 body 样式
+.card-sidesheet.linked-credentials-drawer {
+  .semi-sidesheet-header {
+    border-bottom: 1px solid var(--semi-color-border);
+  }
+
+  .semi-sidesheet-body {
+    padding: 0;
+    position: relative;
   }
 }

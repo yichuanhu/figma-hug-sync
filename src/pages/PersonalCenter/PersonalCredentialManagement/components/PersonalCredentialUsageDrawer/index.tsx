@@ -1,9 +1,29 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SideSheet, Table, DatePicker, Tag, Typography, Empty } from '@douyinfe/semi-ui';
+import { 
+  SideSheet, 
+  Table, 
+  DatePicker, 
+  Tag, 
+  Typography, 
+  Empty, 
+  Button, 
+  Tooltip, 
+  Divider, 
+  Row, 
+  Col, 
+  Space 
+} from '@douyinfe/semi-ui';
+import { 
+  IconClose, 
+  IconMaximize, 
+  IconMinimize 
+} from '@douyinfe/semi-icons';
 import type { PersonalCredential } from '../../index';
 
 import './index.less';
+
+const { Title, Text } = Typography;
 
 interface UsageRecord {
   id: string;
@@ -49,6 +69,16 @@ const PersonalCredentialUsageDrawer = ({
   const [dateRange, setDateRange] = useState<[Date, Date] | null>(null);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
+  
+  // 抽屉状态
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [drawerWidth, setDrawerWidth] = useState(() => {
+    const saved = localStorage.getItem('personalCredentialUsageDrawerWidth');
+    return saved ? Math.max(Number(saved), 576) : 800;
+  });
+  const isResizing = useRef(false);
+  const startX = useRef(0);
+  const startWidth = useRef(drawerWidth);
 
   const loadData = useCallback(async () => {
     if (!credential) return;
@@ -73,6 +103,42 @@ const PersonalCredentialUsageDrawer = ({
     }
   }, [visible, credential, loadData]);
 
+  // 拖拽调整宽度
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      isResizing.current = true;
+      startX.current = e.clientX;
+      startWidth.current = drawerWidth;
+      document.body.style.cursor = 'ew-resize';
+      document.body.style.userSelect = 'none';
+      const handleMouseMove = (e: MouseEvent) => {
+        if (!isResizing.current) return;
+        const diff = startX.current - e.clientX;
+        setDrawerWidth(Math.min(Math.max(startWidth.current + diff, 576), window.innerWidth - 100));
+      };
+      const handleMouseUp = () => {
+        isResizing.current = false;
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    },
+    [drawerWidth],
+  );
+
+  useEffect(() => {
+    localStorage.setItem('personalCredentialUsageDrawerWidth', String(drawerWidth));
+  }, [drawerWidth]);
+
+  const toggleFullscreen = useCallback(() => {
+    setIsFullscreen((prev) => !prev);
+  }, []);
+
   const columns = [
     {
       title: t('personalCredential.usage.table.usageTime'),
@@ -87,7 +153,7 @@ const PersonalCredentialUsageDrawer = ({
       key: 'usage_type',
       width: 80,
       render: (type: 'DEBUG' | 'TASK') => (
-        <Tag color={type === 'DEBUG' ? 'blue' : 'green'}>
+        <Tag color={type === 'DEBUG' ? 'blue' : 'green'} type="light">
           {t(`personalCredential.usage.type.${type.toLowerCase()}`)}
         </Tag>
       ),
@@ -124,28 +190,48 @@ const PersonalCredentialUsageDrawer = ({
     },
   ];
 
-  const { Title, Text } = Typography;
-
   return (
     <SideSheet
       title={
-        <div className="usage-drawer-title">
-          <Title heading={5}>{t('personalCredential.usage.title')}</Title>
-          {credential && (
-            <Text type="tertiary" size="small">
-              {credential.credential_name}
-            </Text>
-          )}
-        </div>
+        <Row type="flex" justify="space-between" align="middle" className="personal-credential-usage-drawer-header">
+          <Col>
+            <div className="personal-credential-usage-drawer-header-title-wrapper">
+              <Title heading={5} className="personal-credential-usage-drawer-header-title">
+                {t('personalCredential.usage.title')}
+              </Title>
+              {credential && (
+                <Text type="tertiary" size="small">
+                  {credential.credential_name}
+                </Text>
+              )}
+            </div>
+          </Col>
+          <Col>
+            <Space spacing={4}>
+              <Divider layout="vertical" className="personal-credential-usage-drawer-header-divider" />
+              <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
+                <Button icon={isFullscreen ? <IconMinimize /> : <IconMaximize />} theme="borderless" size="small" onClick={toggleFullscreen} />
+              </Tooltip>
+              <Tooltip content={t('common.close')}>
+                <Button icon={<IconClose />} theme="borderless" size="small" onClick={onClose} className="personal-credential-usage-drawer-header-close-btn" />
+              </Tooltip>
+            </Space>
+          </Col>
+        </Row>
       }
       visible={visible}
       onCancel={onClose}
-      width={900}
-      className="personal-credential-usage-drawer"
+      placement="right"
+      width={isFullscreen ? '100%' : drawerWidth}
+      mask={false}
+      footer={null}
+      closable={false}
+      className={`card-sidesheet resizable-sidesheet personal-credential-usage-drawer ${isFullscreen ? 'fullscreen-sidesheet' : ''}`}
     >
-      <div className="usage-drawer-content">
+      {!isFullscreen && <div className="personal-credential-usage-drawer-resize-handle" onMouseDown={handleMouseDown} />}
+      <div className="personal-credential-usage-drawer-content">
         {/* 筛选区域 */}
-        <div className="usage-drawer-filter">
+        <div className="personal-credential-usage-drawer-filter">
           <DatePicker
             type="dateTimeRange"
             placeholder={[t('common.startTime'), t('common.endTime')]}
