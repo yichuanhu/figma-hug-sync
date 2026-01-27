@@ -833,10 +833,11 @@
         "name": "凭据名称"
       },
       "unlink": "解除关联",
-      "unlinkConfirmTitle": "解除关联",
-      "unlinkConfirmMessage": "确定要解除与此凭据的关联吗？",
-      "unlinkConfirmContent": "确定要解除与凭据「{{name}}」的关联吗？",
-      "unlinkSuccess": "解除关联成功"
+      "unlinkModal": {
+        "title": "解除关联",
+        "content": "确定要解除与凭据「{{name}}」的关联吗？",
+        "success": "解除关联成功"
+      }
     },
     "usage": {
       "title": "使用记录",
