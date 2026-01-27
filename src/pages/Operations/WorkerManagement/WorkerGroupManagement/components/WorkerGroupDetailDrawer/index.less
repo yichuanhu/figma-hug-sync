@@ -1,30 +1,30 @@
 // WorkerGroupDetailDrawer 机器人组详情抽屉样式
 .worker-group-detail-drawer {
   // 标题区域
-  .worker-group-detail-drawer-header {
+  &-header {
     width: 100%;
     padding-right: 0;
 
-    .worker-group-detail-drawer-header-title {
+    &-title {
       margin: 0;
     }
 
-    .worker-group-detail-drawer-header-delete-icon {
+    &-delete-icon {
       color: var(--semi-color-danger);
     }
 
-    .worker-group-detail-drawer-header-divider {
+    &-divider {
       height: 16px;
       margin: 0 8px 0 4px;
     }
 
-    .worker-group-detail-drawer-header-close-btn {
+    &-close-btn {
       margin-left: 4px;
     }
   }
 
   // 拖拽把手
-  .worker-group-detail-drawer-resize-handle {
+  &-resize-handle {
     position: absolute;
     left: 0;
     top: 0;
@@ -34,38 +34,35 @@
     z-index: 100;
   }
 
-  // 内容区域
-  .worker-group-detail-drawer-content {
+  // Tab 内容 - 与 WorkerDetailDrawer 保持一致
+  &-tab-content {
     padding: 16px 24px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
   }
 
   // 信息区块
-  .worker-group-detail-drawer-info-section {
+  &-info-section {
     margin-bottom: 24px;
   }
 
-  .worker-group-detail-drawer-info-title {
+  &-info-title {
     display: block;
     margin-bottom: 12px;
     font-size: 14px;
   }
 
   // 描述展开收起
-  .worker-group-detail-drawer-description {
+  &-description {
     display: flex;
     flex-direction: column;
     gap: 4px;
 
-    .worker-group-detail-drawer-description-text {
+    &-text {
       word-break: break-word;
       white-space: pre-wrap;
       line-height: 1.6;
     }
 
-    .worker-group-detail-drawer-description-toggle {
+    &-toggle {
       align-self: flex-start;
       padding: 0 !important;
       height: auto !important;
@@ -80,28 +77,23 @@
   }
 
   // 成员列表区域
-  .worker-group-detail-drawer-members {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
+  &-members {
+    margin-top: 8px;
 
-    .worker-group-detail-drawer-members-header {
+    &-header {
       margin-bottom: 12px;
     }
 
-    .worker-group-detail-drawer-members-toolbar {
+    &-toolbar {
       margin-bottom: 16px;
     }
 
-    .worker-group-detail-drawer-members-search {
+    &-search {
       width: 280px;
     }
 
-    .worker-group-detail-drawer-members-table {
-      flex: 1;
-      overflow: hidden;
-      min-height: 0;
+    &-table {
+      // 表格样式
     }
   }
 
@@ -127,5 +119,9 @@
   .semi-sidesheet-body {
     padding: 0;
     position: relative;
+  }
+
+  .semi-tabs-bar {
+    padding: 0 24px;
   }
 }
