@@ -63,6 +63,21 @@
     flex: 1;
   }
 
+  // 版本列表空状态
+  &-version-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 180px);
+    min-height: 400px;
+    gap: 24px;
+
+    &-upload-btn {
+      margin-top: 8px;
+    }
+  }
+
   // 版本列表Tab - 左右分栏布局
   &-version-layout {
     display: flex;

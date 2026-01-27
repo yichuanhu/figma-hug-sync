@@ -41,6 +41,7 @@ import {
 } from '@douyinfe/semi-icons';
 import type { LYProcessResponse, LYProcessVersionResponse } from '@/api';
 import UploadVersionModal from '../UploadVersionModal';
+import EmptyState from '@/components/EmptyState';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -687,143 +688,164 @@ const ProcessDetailDrawer = ({
         </TabPane>
 
         <TabPane tab={t('development.processDevelopment.detail.tabs.versions')} itemKey="versions">
-          <div className="process-detail-drawer-version-layout">
-            {/* 左侧版本列表 */}
-            <div className="process-detail-drawer-version-sidebar">
-              <div className="process-detail-drawer-version-sidebar-header">
-                <Text className="process-detail-drawer-version-sidebar-title">
-                  {t('development.processDevelopment.detail.versionList.title')}
-                </Text>
-                <Tooltip content={t('development.processDevelopment.detail.versionList.titleTooltip')}>
-                  <IconHelpCircle style={{ color: 'var(--semi-color-text-2)', fontSize: 14 }} />
-                </Tooltip>
-              </div>
+          {sortedVersionData.length === 0 ? (
+            // 版本列表空状态
+            <div className="process-detail-drawer-version-empty">
+              <EmptyState 
+                description={t('development.processDevelopment.detail.empty.noVersions')} 
+                size={120}
+              />
               <Button
                 icon={<IconUpload />}
                 theme="solid"
-                className="process-detail-drawer-version-sidebar-upload-btn"
+                className="process-detail-drawer-version-empty-upload-btn"
                 onClick={() => setUploadVersionModalVisible(true)}
               >
                 {t('development.processDevelopment.detail.versionList.uploadVersion')}
               </Button>
-              <div className="process-detail-drawer-version-sidebar-list">
-                {sortedVersionData.map((version) => (
-                  <div
-                    key={version.id}
-                    className={`process-detail-drawer-version-sidebar-item ${
-                      selectedVersion?.id === version.id ? 'process-detail-drawer-version-sidebar-item--selected' : ''
-                    }`}
-                    onClick={() => setSelectedVersionId(version.id)}
-                  >
-                    <Text className="process-detail-drawer-version-sidebar-item-version">{version.version}</Text>
-                    <Tag 
-                      color={version.is_active ? 'green' : 'grey'} 
-                      type="light"
-                      size="small"
-                    >
-                      {version.is_active 
-                        ? t('development.processDevelopment.detail.versionList.published') 
-                        : t('development.processDevelopment.detail.versionList.unpublished')
-                      }
-                    </Tag>
-                  </div>
-                ))}
-              </div>
             </div>
+          ) : (
+            <div className="process-detail-drawer-version-layout">
+              {/* 左侧版本列表 */}
+              <div className="process-detail-drawer-version-sidebar">
+                <div className="process-detail-drawer-version-sidebar-header">
+                  <Text className="process-detail-drawer-version-sidebar-title">
+                    {t('development.processDevelopment.detail.versionList.title')}
+                  </Text>
+                  <Tooltip content={t('development.processDevelopment.detail.versionList.titleTooltip')}>
+                    <IconHelpCircle style={{ color: 'var(--semi-color-text-2)', fontSize: 14 }} />
+                  </Tooltip>
+                </div>
+                <Button
+                  icon={<IconUpload />}
+                  theme="solid"
+                  className="process-detail-drawer-version-sidebar-upload-btn"
+                  onClick={() => setUploadVersionModalVisible(true)}
+                >
+                  {t('development.processDevelopment.detail.versionList.uploadVersion')}
+                </Button>
+                <div className="process-detail-drawer-version-sidebar-list">
+                  {sortedVersionData.map((version) => (
+                    <div
+                      key={version.id}
+                      className={`process-detail-drawer-version-sidebar-item ${
+                        selectedVersion?.id === version.id ? 'process-detail-drawer-version-sidebar-item--selected' : ''
+                      }`}
+                      onClick={() => setSelectedVersionId(version.id)}
+                    >
+                      <Text className="process-detail-drawer-version-sidebar-item-version">{version.version}</Text>
+                      <Tag 
+                        color={version.is_active ? 'green' : 'grey'} 
+                        type="light"
+                        size="small"
+                      >
+                        {version.is_active 
+                          ? t('development.processDevelopment.detail.versionList.published') 
+                          : t('development.processDevelopment.detail.versionList.unpublished')
+                        }
+                      </Tag>
+                    </div>
+                  ))}
+                </div>
+              </div>
 
-            {/* 右侧版本详情 */}
-            <div className="process-detail-drawer-version-detail">
-              {selectedVersion ? (
-                <>
-                  {/* 基本信息 */}
-                  <div className="process-detail-drawer-version-detail-section">
-                    <Text className="process-detail-drawer-version-detail-section-title">
-                      {t('development.processDevelopment.detail.versionDetail.basicInfo')}
-                    </Text>
-                    <Descriptions data={getVersionDescriptionData(selectedVersion)} align="left" />
-                    {selectedVersion.is_active ? (
-                      <Tooltip content={t('development.processDevelopment.detail.versionList.cannotDeletePublished')}>
+              {/* 右侧版本详情 */}
+              <div className="process-detail-drawer-version-detail">
+                {selectedVersion ? (
+                  <>
+                    {/* 基本信息 */}
+                    <div className="process-detail-drawer-version-detail-section">
+                      <Text className="process-detail-drawer-version-detail-section-title">
+                        {t('development.processDevelopment.detail.versionDetail.basicInfo')}
+                      </Text>
+                      <Descriptions data={getVersionDescriptionData(selectedVersion)} align="left" />
+                      {selectedVersion.is_active ? (
+                        <Tooltip content={t('development.processDevelopment.detail.versionList.cannotDeletePublished')}>
+                          <Button
+                            icon={<IconDeleteStroked />}
+                            type="tertiary"
+                            className="process-detail-drawer-version-detail-delete-btn"
+                            disabled
+                            onClick={() => handleDeleteVersion(selectedVersion)}
+                          >
+                            {t('development.processDevelopment.detail.versionList.deleteVersion')}
+                          </Button>
+                        </Tooltip>
+                      ) : (
                         <Button
                           icon={<IconDeleteStroked />}
                           type="tertiary"
                           className="process-detail-drawer-version-detail-delete-btn"
-                          disabled
                           onClick={() => handleDeleteVersion(selectedVersion)}
                         >
                           {t('development.processDevelopment.detail.versionList.deleteVersion')}
                         </Button>
-                      </Tooltip>
-                    ) : (
-                      <Button
-                        icon={<IconDeleteStroked />}
-                        type="tertiary"
-                        className="process-detail-drawer-version-detail-delete-btn"
-                        onClick={() => handleDeleteVersion(selectedVersion)}
-                      >
-                        {t('development.processDevelopment.detail.versionList.deleteVersion')}
-                      </Button>
+                      )}
+                    </div>
+
+                    {/* 流程输入 */}
+                    {selectedVersion.inputs && selectedVersion.inputs.length > 0 && (
+                      <div className="process-detail-drawer-version-detail-section">
+                        <Text className="process-detail-drawer-version-detail-section-title">
+                          {t('development.processDevelopment.detail.versionDetail.processInput')}
+                        </Text>
+                        <VariableCardList
+                          data={selectedVersion.inputs}
+                          onDescriptionChange={(index, description) => {
+                            setVersionData((prevData) =>
+                              prevData.map((v) =>
+                                v.id === selectedVersion.id
+                                  ? {
+                                      ...v,
+                                      inputs: v.inputs?.map((input, i) =>
+                                        i === index ? { ...input, description } : input
+                                      ),
+                                    }
+                                  : v
+                              )
+                            );
+                          }}
+                        />
+                      </div>
                     )}
+
+                    {/* 流程输出 */}
+                    {selectedVersion.outputs && selectedVersion.outputs.length > 0 && (
+                      <div className="process-detail-drawer-version-detail-section">
+                        <Text className="process-detail-drawer-version-detail-section-title">
+                          {t('development.processDevelopment.detail.versionDetail.processOutput')}
+                        </Text>
+                        <VariableCardList
+                          data={selectedVersion.outputs}
+                          onDescriptionChange={(index, description) => {
+                            setVersionData((prevData) =>
+                              prevData.map((v) =>
+                                v.id === selectedVersion.id
+                                  ? {
+                                      ...v,
+                                      outputs: v.outputs?.map((output, i) =>
+                                        i === index ? { ...output, description } : output
+                                      ),
+                                    }
+                                  : v
+                              )
+                            );
+                          }}
+                        />
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="process-detail-drawer-version-detail-empty">
+                    <EmptyState 
+                      description={t('development.processDevelopment.detail.empty.noVersions')} 
+                      size={100}
+                    />
                   </div>
-
-                  {/* 流程输入 */}
-                  {selectedVersion.inputs && selectedVersion.inputs.length > 0 && (
-                    <div className="process-detail-drawer-version-detail-section">
-                      <Text className="process-detail-drawer-version-detail-section-title">
-                        {t('development.processDevelopment.detail.versionDetail.processInput')}
-                      </Text>
-                      <VariableCardList
-                        data={selectedVersion.inputs}
-                        onDescriptionChange={(index, description) => {
-                          setVersionData((prevData) =>
-                            prevData.map((v) =>
-                              v.id === selectedVersion.id
-                                ? {
-                                    ...v,
-                                    inputs: v.inputs?.map((input, i) =>
-                                      i === index ? { ...input, description } : input
-                                    ),
-                                  }
-                                : v
-                            )
-                          );
-                        }}
-                      />
-                    </div>
-                  )}
-
-                  {/* 流程输出 */}
-                  {selectedVersion.outputs && selectedVersion.outputs.length > 0 && (
-                    <div className="process-detail-drawer-version-detail-section">
-                      <Text className="process-detail-drawer-version-detail-section-title">
-                        {t('development.processDevelopment.detail.versionDetail.processOutput')}
-                      </Text>
-                      <VariableCardList
-                        data={selectedVersion.outputs}
-                        onDescriptionChange={(index, description) => {
-                          setVersionData((prevData) =>
-                            prevData.map((v) =>
-                              v.id === selectedVersion.id
-                                ? {
-                                    ...v,
-                                    outputs: v.outputs?.map((output, i) =>
-                                      i === index ? { ...output, description } : output
-                                    ),
-                                  }
-                                : v
-                            )
-                          );
-                        }}
-                      />
-                    </div>
-                  )}
-                </>
-              ) : (
-                <div className="process-detail-drawer-version-detail-empty">
-                  <Text type="tertiary">{t('development.processDevelopment.detail.empty.noVersions')}</Text>
-                </div>
-              )}
+                )}
+              </div>
             </div>
-          </div>
+          )}
         </TabPane>
 
       </Tabs>
