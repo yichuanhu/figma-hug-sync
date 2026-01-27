@@ -7,6 +7,7 @@ import {
   Table, 
   Tag, 
   Input,
+  Select,
   Row,
   Col,
   Space,
@@ -201,7 +202,17 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
     size: 20,
     keyword: undefined,
   });
+  const [statusFilter, setStatusFilter] = useState<WorkerStatus[]>([]);
   const [addMembersVisible, setAddMembersVisible] = useState(false);
+
+  // 状态筛选选项
+  const statusOptions = useMemo(() => [
+    { value: 'IDLE', label: t('worker.status.idle') },
+    { value: 'BUSY', label: t('worker.status.busy') },
+    { value: 'MAINTENANCE', label: t('worker.status.maintenance') },
+    { value: 'FAULT', label: t('worker.status.fault') },
+    { value: 'OFFLINE', label: t('worker.status.offline') },
+  ], [t]);
 
   // 当groupData变化时，重置描述展开状态
   useEffect(() => {
@@ -318,21 +329,36 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
     
     setMembersLoading(true);
     try {
+      // 将 statusFilter 添加到请求参数
+      const statusParam = statusFilter.length === 1 ? statusFilter[0] : undefined;
       const response = await fetchGroupMembers({
         ...queryParams,
         group_id: groupData.id,
+        status: statusParam,
       });
+      // 如果多选状态，在前端过滤
+      if (statusFilter.length > 1) {
+        response.list = response.list.filter(item => statusFilter.includes(item.status as WorkerStatus));
+        response.range.total = response.list.length;
+      }
       setMembersResponse(response);
     } finally {
       setMembersLoading(false);
     }
-  }, [groupData?.id, queryParams]);
+  }, [groupData?.id, queryParams, statusFilter]);
 
   useEffect(() => {
     if (visible && groupData?.id) {
       setQueryParams(prev => ({ ...prev, group_id: groupData.id, offset: 0 }));
+      setStatusFilter([]);
     }
   }, [visible, groupData?.id]);
+
+  // 状态筛选变化时重置分页
+  const handleStatusFilterChange = (values: WorkerStatus[]) => {
+    setStatusFilter(values);
+    setQueryParams(prev => ({ ...prev, offset: 0 }));
+  };
 
   useEffect(() => {
     if (visible && queryParams.group_id) {
@@ -583,13 +609,30 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
           
           <Row type="flex" justify="space-between" align="middle" className="worker-group-detail-drawer-members-toolbar">
             <Col>
-              <Input 
-                prefix={<IconSearch />}
-                placeholder={t('workerGroup.detail.searchMemberPlaceholder')}
-                className="worker-group-detail-drawer-members-search"
-                onChange={handleSearch}
-                showClear
-              />
+              <Space>
+                <Input 
+                  prefix={<IconSearch />}
+                  placeholder={t('workerGroup.detail.searchMemberPlaceholder')}
+                  className="worker-group-detail-drawer-members-search"
+                  onChange={handleSearch}
+                  showClear
+                />
+                <Select
+                  placeholder={t('workerGroup.addMembers.statusFilter')}
+                  multiple
+                  maxTagCount={1}
+                  value={statusFilter}
+                  onChange={handleStatusFilterChange}
+                  style={{ width: 160 }}
+                  showClear
+                >
+                  {statusOptions.map(option => (
+                    <Select.Option key={option.value} value={option.value}>
+                      {option.label}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Space>
             </Col>
             <Col>
               <Button 
