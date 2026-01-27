@@ -13,9 +13,8 @@ import {
   Col,
   Tooltip,
   Divider,
-  Empty,
 } from '@douyinfe/semi-ui';
-import { IllustrationNoContent, IllustrationNoContentDark } from '@douyinfe/semi-illustrations';
+import EmptyState from '@/components/EmptyState';
 import {
   IconClose,
   IconDeleteStroked,
@@ -255,13 +254,7 @@ const LinkedCredentialsDrawer = ({
             loading={loading}
             pagination={false}
             scroll={{ y: 'calc(100vh - 240px)' }}
-            empty={
-              <Empty
-                image={<IllustrationNoContent className="illustration-yellow" style={{ width: 150, height: 150 }} />}
-                darkModeImage={<IllustrationNoContentDark className="illustration-yellow" style={{ width: 150, height: 150 }} />}
-                description={t('personalCredential.linkedCredentials.empty')}
-              />
-            }
+            empty={<EmptyState description={t('personalCredential.linkedCredentials.empty')} />}
           />
         </div>
       </div>

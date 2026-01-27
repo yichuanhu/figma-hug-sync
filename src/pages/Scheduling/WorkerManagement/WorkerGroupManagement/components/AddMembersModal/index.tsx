@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { Modal, Input, Table, Typography, Checkbox, Toast, Select, Tag, Space, Empty } from '@douyinfe/semi-ui';
+import { Modal, Input, Table, Typography, Checkbox, Toast, Select, Tag, Space } from '@douyinfe/semi-ui';
 import { IconSearch, IconClose } from '@douyinfe/semi-icons';
-import { IllustrationNoContent, IllustrationNoContentDark } from '@douyinfe/semi-illustrations';
+import EmptyState from '@/components/EmptyState';
 import { useTranslation } from 'react-i18next';
 import { debounce } from 'lodash';
 import type { 
@@ -357,13 +357,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
               dataSource={list}
               loading={loading}
               rowKey="id"
-              empty={
-                <Empty
-                  image={<IllustrationNoContent className="illustration-yellow" style={{ width: 120, height: 120 }} />}
-                  darkModeImage={<IllustrationNoContentDark className="illustration-yellow" style={{ width: 120, height: 120 }} />}
-                  description={t('workerGroup.addMembers.noAvailableWorkers')}
-                />
-              }
+              empty={<EmptyState description={t('workerGroup.addMembers.noAvailableWorkers')} size={120} />}
               pagination={{
                 total,
                 pageSize,

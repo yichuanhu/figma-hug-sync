@@ -18,12 +18,11 @@ import {
   Toast,
   Modal,
   Tag,
-  Empty,
   Popover,
   CheckboxGroup,
   Image,
 } from '@douyinfe/semi-ui';
-import { IllustrationNoContent, IllustrationNoContentDark } from '@douyinfe/semi-illustrations';
+import EmptyState from '@/components/EmptyState';
 import {
   IconEditStroked,
   IconDeleteStroked,
@@ -675,13 +674,7 @@ const PersonalCredentialDetailDrawer = ({
                 showTotal: true,
               }}
               scroll={{ y: 'calc(100vh - 350px)' }}
-              empty={
-                <Empty
-                  image={<IllustrationNoContent className="illustration-yellow" style={{ width: 150, height: 150 }} />}
-                  darkModeImage={<IllustrationNoContentDark className="illustration-yellow" style={{ width: 150, height: 150 }} />}
-                  description={t('credential.usage.empty')}
-                />
-              }
+              empty={<EmptyState description={t('credential.usage.empty')} />}
             />
           </div>
         </TabPane>
