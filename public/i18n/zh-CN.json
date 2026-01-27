@@ -770,7 +770,7 @@
     "table": {
       "name": "个人凭据名称",
       "username": "个人凭据值（用户名）",
-      "linkedCredential": "关联的凭据"
+      "linkedCredentials": "关联的凭据"
     },
     "fields": {
       "name": "个人凭据名称",
