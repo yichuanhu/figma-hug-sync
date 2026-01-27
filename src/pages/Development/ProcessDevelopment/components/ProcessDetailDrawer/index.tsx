@@ -16,7 +16,7 @@ import {
   Row,
   Col,
   Space,
-  Switch,
+  
   Toast,
   Modal,
   Input,
@@ -447,46 +447,12 @@ const ProcessDetailDrawer = ({
     return data;
   }, [versionData]);
 
-  // 处理版本激活/停用 - 只允许开启一个版本
-  const handleVersionActiveChange = useCallback((versionId: string, checked: boolean) => {
-    const version = versionData.find(v => v.id === versionId);
-    
-    if (checked) {
-      // 开启新版本时，显示确认弹窗
-      Modal.confirm({
-        title: t('development.processDevelopment.detail.versionList.activateConfirmTitle'),
-        content: t('development.processDevelopment.detail.versionList.activateConfirmContent'),
-        onOk: () => {
-          // 开启新版本，关闭其他所有版本
-          setVersionData(prevData => 
-            prevData.map(v => ({
-              ...v,
-              is_active: v.id === versionId ? true : false
-            }))
-          );
-          if (version) {
-            Toast.success(t('development.processDevelopment.detail.versionList.activateSuccess', { version: version.version }));
-          }
-        },
-      });
-    } else {
-      // 关闭版本
-      setVersionData(prevData => 
-        prevData.map(v => 
-          v.id === versionId ? { ...v, is_active: false } : v
-        )
-      );
-      if (version) {
-        Toast.success(t('development.processDevelopment.detail.versionList.deactivateSuccess', { version: version.version }));
-      }
-    }
-  }, [versionData, t]);
 
   // 处理删除版本
   const handleDeleteVersion = useCallback((version: VersionDetailData) => {
-    // 开启的版本不允许删除
+    // 已发布的版本不允许删除
     if (version.is_active) {
-      Toast.warning(t('development.processDevelopment.detail.versionList.cannotDeleteActive'));
+      Toast.warning(t('development.processDevelopment.detail.versionList.cannotDeletePublished'));
       return;
     }
 
@@ -663,14 +629,16 @@ const ProcessDetailDrawer = ({
                     onClick={() => setSelectedVersionId(version.id)}
                   >
                     <Text className="process-detail-drawer-version-sidebar-item-version">{version.version}</Text>
-                    <Switch
-                      checked={version.is_active}
+                    <Tag 
+                      color={version.is_active ? 'green' : 'grey'} 
+                      type="light"
                       size="small"
-                      onChange={(checked, e) => {
-                        e.stopPropagation();
-                        handleVersionActiveChange(version.id, checked);
-                      }}
-                    />
+                    >
+                      {version.is_active 
+                        ? t('development.processDevelopment.detail.versionList.published') 
+                        : t('development.processDevelopment.detail.versionList.unpublished')
+                      }
+                    </Tag>
                   </div>
                 ))}
               </div>
@@ -687,7 +655,7 @@ const ProcessDetailDrawer = ({
                     </Text>
                     <Descriptions data={getVersionDescriptionData(selectedVersion)} align="left" />
                     {selectedVersion.is_active ? (
-                      <Tooltip content={t('development.processDevelopment.detail.versionList.cannotDeleteActive')}>
+                      <Tooltip content={t('development.processDevelopment.detail.versionList.cannotDeletePublished')}>
                         <Button
                           icon={<IconDeleteStroked />}
                           type="tertiary"
