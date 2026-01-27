@@ -205,16 +205,6 @@ const WorkerGroupManagement = ({ isActive = true }: WorkerGroupManagementProps) 
   // 删除确认
   const handleDeleteClick = (group: LYWorkerGroupResponse, e?: React.MouseEvent) => {
     e?.stopPropagation();
-    
-    // 检查是否有成员
-    if (group.member_count > 0) {
-      Modal.warning({
-        title: t('workerGroup.deleteModal.cannotDelete'),
-        content: t('workerGroup.deleteModal.hasMembers'),
-        okText: t('common.confirm'),
-      });
-      return;
-    }
 
     Modal.confirm({
       title: t('workerGroup.deleteModal.title'),
