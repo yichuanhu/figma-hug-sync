@@ -865,6 +865,7 @@
     "title": "流程机器人组管理",
     "description": "创建和管理流程机器人组，实现分组调度和统一管理",
     "searchPlaceholder": "搜索机器人组名称...",
+    "noData": "暂无流程机器人组",
     "createGroup": "创建流程机器人组",
     "table": {
       "groupName": "机器人组名称",
