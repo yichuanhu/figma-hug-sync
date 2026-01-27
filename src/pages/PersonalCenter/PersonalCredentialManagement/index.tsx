@@ -148,6 +148,7 @@ const PersonalCredentialManagement = () => {
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [linkModalVisible, setLinkModalVisible] = useState(false);
   const [linkingCredential, setLinkingCredential] = useState<PersonalCredential | null>(null);
+  const [initialDetailTab, setInitialDetailTab] = useState<'basic' | 'usage'>('basic');
 
   // 加载数据
   const loadData = useCallback(async () => {
@@ -212,6 +213,7 @@ const PersonalCredentialManagement = () => {
   // 查看详情（点击行）
   const handleRowClick = (record: PersonalCredential) => {
     setSelectedCredential(record);
+    setInitialDetailTab('basic');
     setDetailDrawerVisible(true);
   };
 
@@ -396,6 +398,7 @@ const PersonalCredentialManagement = () => {
         onClose={() => {
           setDetailDrawerVisible(false);
           setSelectedCredential(null);
+          setInitialDetailTab('basic');
         }}
         onEdit={(credential) => {
           setEditingCredential(credential);
@@ -404,6 +407,7 @@ const PersonalCredentialManagement = () => {
         onDelete={() => {
           setDetailDrawerVisible(false);
           setSelectedCredential(null);
+          setInitialDetailTab('basic');
           loadData();
         }}
         onLinkCredential={(credential) => {
@@ -411,6 +415,7 @@ const PersonalCredentialManagement = () => {
           setLinkModalVisible(true);
         }}
         onRefresh={loadData}
+        initialTab={initialDetailTab}
       />
     </div>
   );
