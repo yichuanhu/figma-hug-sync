@@ -148,24 +148,32 @@ const CreateWorkerGroupModal: React.FC<CreateWorkerGroupModalProps> = ({
       {/* 创建成功后的提示模态框 */}
       <Modal
         visible={promptVisible}
-        title={t('workerGroup.createModal.addMembersPrompt.title')}
+        title={null}
         onCancel={handleAddLater}
-        footer={
+        footer={null}
+        closable={false}
+        className="create-worker-group-modal-prompt"
+        centered
+        width={400}
+      >
+        <div className="create-worker-group-modal-prompt-body">
+          <div className="create-worker-group-modal-prompt-icon">
+            <IconUserGroup />
+          </div>
+          <div className="create-worker-group-modal-prompt-title">
+            {t('workerGroup.createModal.addMembersPrompt.title')}
+          </div>
+          <div className="create-worker-group-modal-prompt-content">
+            {t('workerGroup.createModal.addMembersPrompt.content')}
+          </div>
           <div className="create-worker-group-modal-prompt-footer">
-            <Button onClick={handleAddLater}>
+            <Button onClick={handleAddLater} size="large">
               {t('workerGroup.createModal.addMembersPrompt.later')}
             </Button>
-            <Button type="primary" theme="solid" icon={<IconUserGroup />} onClick={handleAddNow}>
+            <Button type="primary" theme="solid" icon={<IconUserGroup />} onClick={handleAddNow} size="large">
               {t('workerGroup.createModal.addMembersPrompt.addNow')}
             </Button>
           </div>
-        }
-        className="create-worker-group-modal-prompt"
-        centered
-        width={420}
-      >
-        <div className="create-worker-group-modal-prompt-content">
-          {t('workerGroup.createModal.addMembersPrompt.content')}
         </div>
       </Modal>
 
