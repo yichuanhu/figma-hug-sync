@@ -24,7 +24,7 @@ import {
 } from '@douyinfe/semi-ui';
 import {
   IconEditStroked,
-  IconPlay,
+  IconPlayCircle,
   IconDeleteStroked,
   IconExternalOpenStroked,
   IconMaximize,
@@ -653,7 +653,7 @@ const ProcessDetailDrawer = ({
                 <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={onEdit} />
               </Tooltip>
               <Tooltip content={t('common.run')}>
-                <Button icon={<IconPlay />} theme="borderless" size="small" onClick={onRun} />
+                <Button icon={<IconPlayCircle />} theme="borderless" size="small" onClick={onRun} />
               </Tooltip>
               <Tooltip content={t('common.delete')}>
                 <Button icon={<IconDeleteStroked className="process-detail-drawer-header-delete-icon" />} theme="borderless" size="small" onClick={onDelete} />
