@@ -6,7 +6,6 @@ import NotFound from "@/pages/NotFound";
 import DevelopmentWorkbench from "@/pages/Development/DevelopmentWorkbench";
 import ProcessDevelopment from "@/pages/Development/ProcessDevelopment";
 import CredentialManagementPage from "@/pages/Development/CredentialManagement/CredentialManagementPage";
-import CredentialUsagePage from "@/pages/Development/CredentialManagement/CredentialUsagePage";
 // Operations
 import OperationsWorkbench from "@/pages/Operations/OperationsWorkbench";
 // Scheduling - Worker Management
@@ -38,10 +37,8 @@ const App = () => (
         
         {/* 凭据管理 - 开发中心入口 */}
         <Route path="/dev-center/business-assets/credentials" element={<CredentialManagementPage />} />
-        <Route path="/dev-center/business-assets/credentials/:credentialId/usage" element={<CredentialUsagePage />} />
         {/* 凭据管理 - 调度中心入口 */}
         <Route path="/scheduling-center/business-assets/credentials" element={<CredentialManagementPage />} />
-        <Route path="/scheduling-center/business-assets/credentials/:credentialId/usage" element={<CredentialUsagePage />} />
         
         {/* 个人中心 */}
         <Route path="/personal-center" element={<PersonalCenter />} />
