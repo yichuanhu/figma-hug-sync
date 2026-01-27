@@ -927,6 +927,7 @@
       "availableWorkers": "可选流程机器人",
       "selectedWorkers": "已选流程机器人",
       "searchPlaceholder": "按机器人名称或IP搜索",
+      "statusFilter": "按状态筛选",
       "add": "添加",
       "addCount": "添加 ({{count}})",
       "noSelection": "暂未选择机器人",
