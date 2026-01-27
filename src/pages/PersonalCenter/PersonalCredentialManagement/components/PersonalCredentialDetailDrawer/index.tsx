@@ -158,6 +158,10 @@ const PersonalCredentialDetailDrawer = ({
     const saved = localStorage.getItem('personalCredentialDetailDrawerWidth');
     return saved ? Math.max(Number(saved), 576) : 900;
   });
+  
+  // 用于追踪是否是首次打开抽屉（通过外部操作打开）
+  const isInitialOpenRef = useRef(true);
+  const prevVisibleRef = useRef(visible);
 
   // 关联凭据数据
   const [linkedCredentials, setLinkedCredentials] = useState<LinkedCredential[]>([]);
@@ -240,10 +244,25 @@ const PersonalCredentialDetailDrawer = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible, activeTab, credential?.credential_id, userFilter, dateRange, usageQueryParams]);
 
-  // 切换凭据时重置状态，并应用初始tab，加载关联凭据
+  // 监听抽屉打开/关闭状态，用于判断是否是首次打开
+  useEffect(() => {
+    if (visible && !prevVisibleRef.current) {
+      // 抽屉从关闭变为打开，标记为首次打开
+      isInitialOpenRef.current = true;
+    }
+    prevVisibleRef.current = visible;
+  }, [visible]);
+
+  // 切换凭据时重置状态，加载关联凭据
+  // 只在首次打开时应用 initialTab，导航切换时保持当前tab
   useEffect(() => {
     if (credential) {
-      setActiveTab(initialTab);
+      // 只在首次打开时应用 initialTab
+      if (isInitialOpenRef.current) {
+        setActiveTab(initialTab);
+        isInitialOpenRef.current = false;
+      }
+      
       setIsDescriptionExpanded(false);
       setUsageQueryParams({ page: 1, pageSize: 20 });
       resetFilters();
