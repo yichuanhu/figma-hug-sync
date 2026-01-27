@@ -462,13 +462,10 @@ const PersonalCredentialDetailDrawer = ({
 
       {/* 基本信息 */}
       <div className="personal-credential-detail-drawer-content">
-        <div className="personal-credential-detail-drawer-info">
-          <Descriptions
-            data={descriptionData}
-            row
-            size="small"
-          />
-        </div>
+        <Descriptions
+          data={descriptionData}
+          align="left"
+        />
 
         {/* Tab内容 */}
         <Tabs
