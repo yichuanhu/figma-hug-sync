@@ -26,7 +26,7 @@ import {
   IconMore,
   IconExternalOpenStroked,
   IconEditStroked,
-  IconPlay,
+  IconPlayCircle,
   IconDeleteStroked,
   IconFilter,
 } from '@douyinfe/semi-icons';
@@ -460,7 +460,7 @@ const ProcessDevelopment = () => {
               >
                 {t('common.edit')}
               </Dropdown.Item>
-              <Dropdown.Item icon={<IconPlay />} onClick={handleRun}>
+              <Dropdown.Item icon={<IconPlayCircle />} onClick={handleRun}>
                 {t('common.run')}
               </Dropdown.Item>
               <Dropdown.Item
