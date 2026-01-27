@@ -17,6 +17,7 @@ import {
   Popover,
   CheckboxGroup,
   Tooltip,
+  Skeleton,
 } from '@douyinfe/semi-ui';
 import EmptyState from '@/components/EmptyState';
 import {
@@ -159,6 +160,7 @@ const CredentialManagementPage = () => {
   // 列表数据
   const [listResponse, setListResponse] = useState<LYCredentialListResultResponse | null>(null);
   const [loading, setLoading] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   // 选中的凭据（用于编辑/详情）
   const [editingCredential, setEditingCredential] = useState<LYCredentialResponse | null>(null);
@@ -190,6 +192,7 @@ const CredentialManagementPage = () => {
       return [];
     } finally {
       setLoading(false);
+      setIsInitialLoad(false);
     }
   }, [queryParams, typeFilter, context, t]);
 
@@ -526,29 +529,33 @@ const CredentialManagementPage = () => {
 
         {/* 表格 */}
         <div className="credential-management-page-table">
-          <Table
-            columns={columns}
-            dataSource={listResponse?.data || []}
-            rowKey="credential_id"
-            loading={loading}
-            empty={<EmptyState description={t('credential.noData')} />}
-            pagination={{
-              currentPage: queryParams.page,
-              pageSize: queryParams.pageSize,
-              total,
-              onPageChange: handlePageChange,
-            }}
-            scroll={{ y: 'calc(100vh - 320px)' }}
-            onRow={(record) => ({
-              onClick: () => handleRowClick(record as LYCredentialResponse),
-              style: {
-                cursor: 'pointer',
-                backgroundColor: selectedCredential?.credential_id === (record as LYCredentialResponse).credential_id && detailDrawerVisible
-                  ? 'var(--semi-color-primary-light-default)'
-                  : undefined,
-              },
-            })}
-          />
+          {isInitialLoad ? (
+            <Skeleton.Paragraph rows={10} style={{ padding: '16px' }} />
+          ) : (
+            <Table
+              columns={columns}
+              dataSource={listResponse?.data || []}
+              rowKey="credential_id"
+              loading={loading}
+              empty={<EmptyState description={t('credential.noData')} />}
+              pagination={{
+                currentPage: queryParams.page,
+                pageSize: queryParams.pageSize,
+                total,
+                onPageChange: handlePageChange,
+              }}
+              scroll={{ y: 'calc(100vh - 320px)' }}
+              onRow={(record) => ({
+                onClick: () => handleRowClick(record as LYCredentialResponse),
+                style: {
+                  cursor: 'pointer',
+                  backgroundColor: selectedCredential?.credential_id === (record as LYCredentialResponse).credential_id && detailDrawerVisible
+                    ? 'var(--semi-color-primary-light-default)'
+                    : undefined,
+                },
+              })}
+            />
+          )}
         </div>
 
 
