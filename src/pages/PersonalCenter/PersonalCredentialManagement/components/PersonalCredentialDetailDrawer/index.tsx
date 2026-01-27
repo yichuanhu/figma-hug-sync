@@ -396,7 +396,7 @@ const PersonalCredentialDetailDrawer = ({
   // 跳转到凭据详情页面
   const handleNavigateToCredential = useCallback((linkedCredential: LinkedCredential) => {
     // 跳转到开发中心的凭据管理页面，并传递凭据ID作为查询参数
-    navigate(`/dev-center/credentials?credentialId=${linkedCredential.credential_id}`);
+    navigate(`/dev-center/business-assets/credentials?credentialId=${linkedCredential.credential_id}`);
     onClose();
   }, [navigate, onClose]);
 
