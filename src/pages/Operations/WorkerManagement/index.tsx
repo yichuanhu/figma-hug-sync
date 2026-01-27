@@ -26,6 +26,7 @@ import {
   IconDeleteStroked,
   IconKey,
   IconUserGroup,
+  IconMinusCircle,
 } from '@douyinfe/semi-icons';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -650,6 +651,52 @@ const WorkerManagement = ({ isActive = true }: WorkerManagementProps) => {
     }
   };
 
+  // 移出分组
+  const handleRemoveFromGroup = (worker: LYWorkerResponse, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    
+    Modal.confirm({
+      title: t('worker.removeFromGroup.title'),
+      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-warning)' }} />,
+      content: t('worker.removeFromGroup.confirmMessage', { 
+        name: worker.name,
+        group: worker.group_name 
+      }),
+      okText: t('worker.removeFromGroup.confirm'),
+      cancelText: t('common.cancel'),
+      onOk: async () => {
+        try {
+          // 模拟API调用
+          await new Promise(resolve => setTimeout(resolve, 500));
+          
+          const updatedWorker: LYWorkerResponse = {
+            ...worker,
+            group_id: null,
+            group_name: null,
+          };
+          
+          // 更新列表数据
+          setListResponse(prev => ({
+            ...prev,
+            list: prev.list.map(item => 
+              item.id === updatedWorker.id ? updatedWorker : item
+            ),
+          }));
+          
+          // 同步更新选中的worker（如果抽屉打开中）
+          if (selectedWorker?.id === updatedWorker.id) {
+            setSelectedWorker(updatedWorker);
+          }
+          
+          Toast.success(t('worker.removeFromGroup.success'));
+        } catch (error) {
+          Toast.error(t('worker.removeFromGroup.error'));
+          throw error;
+        }
+      },
+    });
+  };
+
   // 从响应中获取分页信息
   const { range, list } = listResponse;
   const currentPage = Math.floor((range?.offset || 0) / (range?.size || 20)) + 1;
@@ -791,6 +838,18 @@ const WorkerManagement = ({ isActive = true }: WorkerManagementProps) => {
                   }}
                 >
                   {t('worker.actions.addToGroup')}
+                </Dropdown.Item>
+              )}
+              {/* 已分组的机器人显示"移出分组"操作 */}
+              {record.group_id && (
+                <Dropdown.Item 
+                  icon={<IconMinusCircle />} 
+                  onClick={(e) => {
+                    e?.stopPropagation?.();
+                    handleRemoveFromGroup(record);
+                  }}
+                >
+                  {t('worker.actions.removeFromGroup')}
                 </Dropdown.Item>
               )}
               <Dropdown.Item 
