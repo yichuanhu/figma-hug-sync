@@ -693,7 +693,6 @@ const WorkerManagement = () => {
       <div className="worker-management-header">
         <div className="worker-management-header-title">
           <Title heading={3} className="title">{t('worker.title')}</Title>
-          <Text type="tertiary">{t('worker.description')}</Text>
         </div>
 
         {/* 操作栏 */}
