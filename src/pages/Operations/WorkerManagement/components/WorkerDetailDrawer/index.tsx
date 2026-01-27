@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SideSheet, Typography, Button, Tag, Descriptions, Switch, Tooltip, Divider, Row, Col, Space } from '@douyinfe/semi-ui';
-import { IconEditStroked, IconDeleteStroked, IconMaximize, IconMinimize, IconClose, IconKey, IconChevronDown, IconChevronUp, IconChevronLeft, IconChevronRight } from '@douyinfe/semi-icons';
+import { IconEditStroked, IconDeleteStroked, IconMaximize, IconMinimize, IconClose, IconKey, IconChevronDown, IconChevronUp, IconChevronLeft, IconChevronRight, IconUserGroup, IconMinusCircle } from '@douyinfe/semi-icons';
 import type { LYWorkerResponse } from '@/api';
 import './index.less';
 
@@ -22,6 +22,8 @@ interface WorkerDetailDrawerProps {
   onViewKey?: () => void;
   onDelete?: () => void;
   onToggleReceiveTasks?: (worker: LYWorkerResponse, checked: boolean) => void;
+  onAddToGroup?: (worker: LYWorkerResponse) => void;
+  onRemoveFromGroup?: (worker: LYWorkerResponse) => void;
   // 导航相关
   dataList?: LYWorkerResponse[];
   onNavigate?: (worker: LYWorkerResponse) => void;
@@ -33,7 +35,7 @@ interface WorkerDetailDrawerProps {
 // 描述展开收起的阈值（字符数）
 const DESCRIPTION_COLLAPSE_THRESHOLD = 100;
 
-const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, onDelete, onToggleReceiveTasks, dataList = [], onNavigate, pagination, onPageChange }: WorkerDetailDrawerProps) => {
+const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, onDelete, onToggleReceiveTasks, onAddToGroup, onRemoveFromGroup, dataList = [], onNavigate, pagination, onPageChange }: WorkerDetailDrawerProps) => {
   const { t } = useTranslation();
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
@@ -196,9 +198,43 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
     );
   };
 
+  // 渲染分组信息和操作按钮
+  const renderGroupValue = () => {
+    if (workerData.group_id && workerData.group_name) {
+      return (
+        <Space spacing={8}>
+          <Tag color="blue" type="light">{workerData.group_name}</Tag>
+          <Tooltip content={t('worker.actions.removeFromGroup')}>
+            <Button
+              icon={<IconMinusCircle />}
+              theme="borderless"
+              size="small"
+              type="tertiary"
+              onClick={() => onRemoveFromGroup?.(workerData)}
+            />
+          </Tooltip>
+        </Space>
+      );
+    }
+    return (
+      <Space spacing={8}>
+        <Text type="tertiary">{t('worker.filter.ungrouped')}</Text>
+        <Tooltip content={t('worker.actions.addToGroup')}>
+          <Button
+            icon={<IconUserGroup />}
+            theme="borderless"
+            size="small"
+            type="tertiary"
+            onClick={() => onAddToGroup?.(workerData)}
+          />
+        </Tooltip>
+      </Space>
+    );
+  };
+
   const basicInfoData = [
     { key: t('worker.detail.fields.workerName'), value: workerData.name },
-    { key: t('worker.detail.fields.group'), value: '-' },
+    { key: t('worker.detail.fields.group'), value: renderGroupValue() },
     { key: t('worker.detail.fields.description'), value: renderDescriptionValue() },
     {
       key: t('worker.detail.fields.status'),
