@@ -23,6 +23,8 @@ import {
   Image,
 } from '@douyinfe/semi-ui';
 import EmptyState from '@/components/EmptyState';
+import DetailSkeleton from '@/components/DetailSkeleton';
+import TableSkeleton from '@/components/TableSkeleton';
 import {
   IconEditStroked,
   IconDeleteStroked,
@@ -135,6 +137,7 @@ const PersonalCredentialDetailDrawer = ({
   const [usageLoading, setUsageLoading] = useState(false);
   const [usageQueryParams, setUsageQueryParams] = useState({ page: 1, pageSize: 20 });
   const [usageTotal, setUsageTotal] = useState(0);
+  const [isUsageInitialLoad, setIsUsageInitialLoad] = useState(true);
   
   // 使用筛选 Hook
   const {
@@ -194,6 +197,7 @@ const PersonalCredentialDetailDrawer = ({
       console.error('加载使用记录失败:', error);
     } finally {
       setUsageLoading(false);
+      setIsUsageInitialLoad(false);
     }
   }, [credential, userFilter, dateRange, usageQueryParams]);
 
@@ -212,6 +216,7 @@ const PersonalCredentialDetailDrawer = ({
       setUsageQueryParams({ page: 1, pageSize: 20 });
       resetFilters();
       setUsageRecords([]);
+      setIsUsageInitialLoad(true);
     }
   }, [credential?.credential_id, resetFilters]);
 
@@ -571,114 +576,122 @@ const PersonalCredentialDetailDrawer = ({
         <div className="personal-credential-detail-drawer-resize-handle" onMouseDown={handleMouseDown} />
       )}
 
-      <Tabs
-        activeKey={activeTab}
-        onChange={setActiveTab}
-        className="personal-credential-detail-drawer-tabs"
-      >
-        <TabPane
-          tab={t('credential.detail.tabs.basicInfo')}
-          itemKey="basic"
+      {isNavigating ? (
+        <DetailSkeleton rows={5} showTabs={true} sections={1} />
+      ) : (
+        <Tabs
+          activeKey={activeTab}
+          onChange={setActiveTab}
+          className="personal-credential-detail-drawer-tabs"
         >
-          <div className="personal-credential-detail-drawer-content">
-            <Descriptions
-              data={descriptionData}
-              align="left"
-            />
-          </div>
-        </TabPane>
-        
-        <TabPane
-          tab={t('credential.detail.tabs.usageRecords')}
-          itemKey="usage"
-        >
-          <div className="personal-credential-detail-drawer-usage">
-            {/* 筛选区域 */}
-            <div className="personal-credential-detail-drawer-usage-filter">
-              <Row type="flex" justify="space-between" align="middle">
-                <Col>
-                  <Space>
-                    <DatePicker
-                      type="dateRange"
-                      placeholder={[t('common.startDate'), t('common.endDate')]}
-                      value={dateRange || undefined}
-                      onChange={(dates) => handleDateRangeChange(dates as Date[] | null | undefined)}
-                      presets={datePresets}
-                      style={{ width: 280 }}
-                    />
-                    <Popover
-                      visible={filterPopoverVisible}
-                      onVisibleChange={setFilterPopoverVisible}
-                      trigger="click"
-                      position="bottomLeft"
-                      content={
-                        <div className="personal-credential-detail-drawer-filter-popover">
-                          <div className="personal-credential-detail-drawer-filter-popover-section">
-                            <Text strong className="personal-credential-detail-drawer-filter-popover-label">
-                              {t('credential.usage.filter.user')}
-                            </Text>
-                            <CheckboxGroup
-                              value={userFilter}
-                              onChange={(values) => {
-                                setUserFilter(values as string[]);
-                                setUsageQueryParams((prev) => ({ ...prev, page: 1 }));
-                              }}
-                              options={userFilterOptions}
-                              direction="vertical"
-                            />
-                          </div>
-                          <div className="personal-credential-detail-drawer-filter-popover-footer">
-                            <Button theme="borderless" onClick={() => {
-                              setUserFilter([]);
-                              setUsageQueryParams((prev) => ({ ...prev, page: 1 }));
-                            }} disabled={userFilter.length === 0}>
-                              {t('common.reset')}
-                            </Button>
-                            <Button theme="solid" type="primary" onClick={() => setFilterPopoverVisible(false)}>
-                              {t('common.confirm')}
-                            </Button>
-                          </div>
-                        </div>
-                      }
-                    >
-                      <Button
-                        icon={<IconFilter />}
-                        type={filterCount > 0 ? 'primary' : 'tertiary'}
-                        theme={filterCount > 0 ? 'solid' : 'light'}
-                      >
-                        {t('common.filter')}{filterCount > 0 ? ` (${filterCount})` : ''}
-                      </Button>
-                    </Popover>
-                  </Space>
-                </Col>
-                <Col>
-                  <Button icon={<Download size={14} />} onClick={handleExport}>
-                    {t('common.export')}
-                  </Button>
-                </Col>
-              </Row>
+          <TabPane
+            tab={t('credential.detail.tabs.basicInfo')}
+            itemKey="basic"
+          >
+            <div className="personal-credential-detail-drawer-content">
+              <Descriptions
+                data={descriptionData}
+                align="left"
+              />
             </div>
+          </TabPane>
+          
+          <TabPane
+            tab={t('credential.detail.tabs.usageRecords')}
+            itemKey="usage"
+          >
+            <div className="personal-credential-detail-drawer-usage">
+              {/* 筛选区域 */}
+              <div className="personal-credential-detail-drawer-usage-filter">
+                <Row type="flex" justify="space-between" align="middle">
+                  <Col>
+                    <Space>
+                      <DatePicker
+                        type="dateRange"
+                        placeholder={[t('common.startDate'), t('common.endDate')]}
+                        value={dateRange || undefined}
+                        onChange={(dates) => handleDateRangeChange(dates as Date[] | null | undefined)}
+                        presets={datePresets}
+                        style={{ width: 280 }}
+                      />
+                      <Popover
+                        visible={filterPopoverVisible}
+                        onVisibleChange={setFilterPopoverVisible}
+                        trigger="click"
+                        position="bottomLeft"
+                        content={
+                          <div className="personal-credential-detail-drawer-filter-popover">
+                            <div className="personal-credential-detail-drawer-filter-popover-section">
+                              <Text strong className="personal-credential-detail-drawer-filter-popover-label">
+                                {t('credential.usage.filter.user')}
+                              </Text>
+                              <CheckboxGroup
+                                value={userFilter}
+                                onChange={(values) => {
+                                  setUserFilter(values as string[]);
+                                  setUsageQueryParams((prev) => ({ ...prev, page: 1 }));
+                                }}
+                                options={userFilterOptions}
+                                direction="vertical"
+                              />
+                            </div>
+                            <div className="personal-credential-detail-drawer-filter-popover-footer">
+                              <Button theme="borderless" onClick={() => {
+                                setUserFilter([]);
+                                setUsageQueryParams((prev) => ({ ...prev, page: 1 }));
+                              }} disabled={userFilter.length === 0}>
+                                {t('common.reset')}
+                              </Button>
+                              <Button theme="solid" type="primary" onClick={() => setFilterPopoverVisible(false)}>
+                                {t('common.confirm')}
+                              </Button>
+                            </div>
+                          </div>
+                        }
+                      >
+                        <Button
+                          icon={<IconFilter />}
+                          type={filterCount > 0 ? 'primary' : 'tertiary'}
+                          theme={filterCount > 0 ? 'solid' : 'light'}
+                        >
+                          {t('common.filter')}{filterCount > 0 ? ` (${filterCount})` : ''}
+                        </Button>
+                      </Popover>
+                    </Space>
+                  </Col>
+                  <Col>
+                    <Button icon={<Download size={14} />} onClick={handleExport}>
+                      {t('common.export')}
+                    </Button>
+                  </Col>
+                </Row>
+              </div>
 
-            {/* 使用记录表格 */}
-            <Table
-              columns={usageColumns}
-              dataSource={usageRecords}
-              rowKey="id"
-              loading={usageLoading}
-              pagination={{
-                currentPage: usageQueryParams.page,
-                pageSize: usageQueryParams.pageSize,
-                total: usageTotal,
-                onPageChange: (page) => setUsageQueryParams((prev) => ({ ...prev, page })),
-                showSizeChanger: true,
-                showTotal: true,
-              }}
-              scroll={{ y: 'calc(100vh - 350px)' }}
-              empty={<EmptyState description={t('credential.usage.empty')} />}
-            />
-          </div>
-        </TabPane>
-      </Tabs>
+              {/* 使用记录表格 */}
+              {isUsageInitialLoad && usageLoading ? (
+                <TableSkeleton rows={8} columns={8} columnWidths={['10%', '15%', '8%', '14%', '8%', '10%', '12%', '8%']} />
+              ) : (
+                <Table
+                  columns={usageColumns}
+                  dataSource={usageRecords}
+                  rowKey="id"
+                  loading={usageLoading}
+                  pagination={{
+                    currentPage: usageQueryParams.page,
+                    pageSize: usageQueryParams.pageSize,
+                    total: usageTotal,
+                    onPageChange: (page) => setUsageQueryParams((prev) => ({ ...prev, page })),
+                    showSizeChanger: true,
+                    showTotal: true,
+                  }}
+                  scroll={{ y: 'calc(100vh - 350px)' }}
+                  empty={<EmptyState description={t('credential.usage.empty')} />}
+                />
+              )}
+            </div>
+          </TabPane>
+        </Tabs>
+      )}
     </SideSheet>
   );
 };

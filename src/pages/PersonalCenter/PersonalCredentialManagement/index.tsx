@@ -13,6 +13,7 @@ import {
   Empty,
 } from '@douyinfe/semi-ui';
 import EmptyState from '@/components/EmptyState';
+import TableSkeleton from '@/components/TableSkeleton';
 import {
   IconSearch,
   IconPlus,
@@ -135,6 +136,7 @@ const PersonalCredentialManagement = () => {
   // 列表数据
   const [listResponse, setListResponse] = useState<PersonalCredentialListResponse | null>(null);
   const [loading, setLoading] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   // 选中的凭据
   const [editingCredential, setEditingCredential] = useState<PersonalCredential | null>(null);
@@ -162,6 +164,7 @@ const PersonalCredentialManagement = () => {
       Toast.error(t('personalCredential.list.loadError'));
     } finally {
       setLoading(false);
+      setIsInitialLoad(false);
     }
   }, [queryParams, t]);
 
@@ -317,29 +320,33 @@ const PersonalCredentialManagement = () => {
 
       {/* 表格 */}
       <div className="personal-credential-management-table">
-        <Table
-          columns={columns}
-          dataSource={listResponse?.data || []}
-          rowKey="credential_id"
-          loading={loading}
-          empty={<EmptyState description={t('personalCredential.noData')} />}
-          onRow={(record) => ({
-            onClick: () => handleRowClick(record as PersonalCredential),
-            style: {
-              cursor: 'pointer',
-              backgroundColor: selectedCredential?.credential_id === (record as PersonalCredential).credential_id && detailDrawerVisible
-                ? 'var(--semi-color-fill-1)'
-                : undefined,
-            },
-          })}
-          pagination={{
-            currentPage: queryParams.page,
-            pageSize: queryParams.pageSize,
-            total,
-            onPageChange: handlePageChange,
-          }}
-          scroll={{ y: 'calc(100vh - 380px)' }}
-        />
+        {isInitialLoad && loading ? (
+          <TableSkeleton rows={10} columns={5} columnWidths={['20%', '25%', '25%', '20%', '10%']} />
+        ) : (
+          <Table
+            columns={columns}
+            dataSource={listResponse?.data || []}
+            rowKey="credential_id"
+            loading={loading}
+            empty={<EmptyState description={t('personalCredential.noData')} />}
+            onRow={(record) => ({
+              onClick: () => handleRowClick(record as PersonalCredential),
+              style: {
+                cursor: 'pointer',
+                backgroundColor: selectedCredential?.credential_id === (record as PersonalCredential).credential_id && detailDrawerVisible
+                  ? 'var(--semi-color-fill-1)'
+                  : undefined,
+              },
+            })}
+            pagination={{
+              currentPage: queryParams.page,
+              pageSize: queryParams.pageSize,
+              total,
+              onPageChange: handlePageChange,
+            }}
+            scroll={{ y: 'calc(100vh - 380px)' }}
+          />
+        )}
       </div>
 
       {/* 新建凭据模态框 */}
