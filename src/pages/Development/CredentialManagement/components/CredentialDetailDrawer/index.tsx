@@ -172,6 +172,8 @@ interface CredentialDetailDrawerProps {
   // 分页相关 - 用于自动翻页
   pagination?: PaginationInfo;
   onPageChange?: (page: number) => Promise<LYCredentialResponse[] | void>;
+  // 初始显示的tab
+  initialTab?: 'basic' | 'usage';
 }
 
 const CredentialDetailDrawer = ({
@@ -185,9 +187,10 @@ const CredentialDetailDrawer = ({
   onNavigate,
   pagination,
   onPageChange,
+  initialTab = 'basic',
 }: CredentialDetailDrawerProps) => {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState('basic');
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [drawerWidth, setDrawerWidth] = useState(() => {
     const saved = localStorage.getItem('credentialDetailDrawerWidth');
@@ -260,16 +263,17 @@ const CredentialDetailDrawer = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible, activeTab, credential?.credential_id, userFilter, dateRange, usageQueryParams]);
 
-  // 切换凭据时重置使用记录状态
+  // 切换凭据时重置使用记录状态，并应用初始tab
   useEffect(() => {
     if (credential) {
+      setActiveTab(initialTab);
       setUsageQueryParams({ page: 1, pageSize: 20 });
       resetFilters();
       setUsageListResponse(null);
       setIsUsageInitialLoad(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [credential?.credential_id]);
+  }, [credential?.credential_id, initialTab]);
 
   // 拖拽调整宽度
   const handleMouseDown = useCallback(
@@ -591,7 +595,7 @@ const CredentialDetailDrawer = ({
       {isNavigating ? (
         <DetailSkeleton rows={5} showTabs={true} sections={1} />
       ) : (
-      <Tabs activeKey={activeTab} onChange={setActiveTab} className="credential-detail-drawer-tabs">
+      <Tabs activeKey={activeTab} onChange={(key) => setActiveTab(key as 'basic' | 'usage')} className="credential-detail-drawer-tabs">
         <TabPane tab={t('credential.detail.tabs.basicInfo')} itemKey="basic">
           <div className="credential-detail-drawer-content">
             <Descriptions data={descriptionData} align="left" />
