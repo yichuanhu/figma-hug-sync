@@ -861,6 +861,14 @@
         "debug": "调试",
         "task": "任务"
       }
+    },
+    "linkCredential": {
+      "title": "关联凭据",
+      "description": "选择要与此个人凭据建立关联的凭据",
+      "selectLabel": "选择凭据",
+      "selectPlaceholder": "请选择要关联的凭据",
+      "success": "关联凭据成功",
+      "error": "关联凭据失败，请重试"
     }
   },
   "workerGroup": {
