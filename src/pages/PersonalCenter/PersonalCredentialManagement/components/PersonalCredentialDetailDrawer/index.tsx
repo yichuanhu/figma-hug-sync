@@ -23,6 +23,7 @@ import {
   CheckboxGroup,
   Image,
 } from '@douyinfe/semi-ui';
+import { IllustrationNoContent, IllustrationNoContentDark } from '@douyinfe/semi-illustrations';
 import {
   IconEditStroked,
   IconDeleteStroked,
@@ -674,7 +675,13 @@ const PersonalCredentialDetailDrawer = ({
                 showTotal: true,
               }}
               scroll={{ y: 'calc(100vh - 350px)' }}
-              empty={<Empty description={t('credential.usage.empty')} />}
+              empty={
+                <Empty
+                  image={<IllustrationNoContent className="illustration-yellow" style={{ width: 150, height: 150 }} />}
+                  darkModeImage={<IllustrationNoContentDark className="illustration-yellow" style={{ width: 150, height: 150 }} />}
+                  description={t('credential.usage.empty')}
+                />
+              }
             />
           </div>
         </TabPane>
