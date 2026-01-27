@@ -359,8 +359,8 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
               rowKey="id"
               empty={
                 <Empty
-                  image={<IllustrationNoContent style={{ width: 120, height: 120 }} />}
-                  darkModeImage={<IllustrationNoContentDark style={{ width: 120, height: 120 }} />}
+                  image={<IllustrationNoContent className="illustration-yellow" style={{ width: 120, height: 120 }} />}
+                  darkModeImage={<IllustrationNoContentDark className="illustration-yellow" style={{ width: 120, height: 120 }} />}
                   description={t('workerGroup.addMembers.noAvailableWorkers')}
                 />
               }
