@@ -65,6 +65,8 @@ interface WorkerGroupDetailDrawerProps {
   // 分页相关 - 用于自动翻页
   pagination?: PaginationInfo;
   onPageChange?: (page: number) => Promise<LYWorkerGroupResponse[] | void>;
+  // 跳转到机器人详情
+  onNavigateToWorkerDetail?: (workerId: string) => void;
 }
 
 // 描述展开收起的阈值（字符数）
@@ -172,6 +174,7 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
   onNavigate,
   pagination,
   onPageChange,
+  onNavigateToWorkerDetail,
 }) => {
   const { t } = useTranslation();
   
@@ -479,7 +482,16 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
           clickToHide={true}
           render={
             <Dropdown.Menu>
-              <Dropdown.Item icon={<IconEyeOpenedStroked />}>
+              <Dropdown.Item 
+                icon={<IconEyeOpenedStroked />}
+                onClick={(e) => {
+                  e?.stopPropagation?.();
+                  if (onNavigateToWorkerDetail) {
+                    onClose();
+                    onNavigateToWorkerDetail(record.id);
+                  }
+                }}
+              >
                 {t('workerGroup.actions.viewDetail')}
               </Dropdown.Item>
               <Dropdown.Item 

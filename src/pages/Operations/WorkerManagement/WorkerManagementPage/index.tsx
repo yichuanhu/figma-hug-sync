@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Breadcrumb, Tabs } from '@douyinfe/semi-ui';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -13,6 +13,19 @@ const WorkerManagementPage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('workers');
+  // 用于跨Tab跳转时传递要打开的机器人ID
+  const [pendingWorkerId, setPendingWorkerId] = useState<string | null>(null);
+
+  // 从机器人组详情跳转到机器人详情
+  const handleNavigateToWorkerDetail = useCallback((workerId: string) => {
+    setPendingWorkerId(workerId);
+    setActiveTab('workers');
+  }, []);
+
+  // 机器人详情打开后清除pending状态
+  const handleWorkerDetailOpened = useCallback(() => {
+    setPendingWorkerId(null);
+  }, []);
 
   return (
     <AppLayout>
@@ -34,10 +47,17 @@ const WorkerManagementPage = () => {
           className="worker-management-tabs"
         >
           <TabPane tab={t('workerGroup.tabs.workerManagement')} itemKey="workers">
-            <WorkerManagement isActive={activeTab === 'workers'} />
+            <WorkerManagement 
+              isActive={activeTab === 'workers'} 
+              pendingWorkerId={pendingWorkerId}
+              onWorkerDetailOpened={handleWorkerDetailOpened}
+            />
           </TabPane>
           <TabPane tab={t('workerGroup.tabs.workerGroupManagement')} itemKey="groups">
-            <WorkerGroupManagement isActive={activeTab === 'groups'} />
+            <WorkerGroupManagement 
+              isActive={activeTab === 'groups'} 
+              onNavigateToWorkerDetail={handleNavigateToWorkerDetail}
+            />
           </TabPane>
         </Tabs>
       </div>
