@@ -511,7 +511,7 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
         <Row type="flex" justify="space-between" align="middle" className="worker-group-detail-drawer-header">
           <Col>
             <Title heading={5} className="worker-group-detail-drawer-header-title">
-              {t('workerGroup.detail.title')}
+              {groupData.name}
             </Title>
           </Col>
           <Col>
