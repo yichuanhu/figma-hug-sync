@@ -219,7 +219,8 @@ const PersonalCredentialDetailDrawer = ({
       setUsageRecords([]);
       setIsUsageInitialLoad(true);
     }
-  }, [credential?.credential_id, resetFilters]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [credential?.credential_id]);
 
   // 拖拽调整宽度
   const handleMouseDown = useCallback(
