@@ -604,7 +604,8 @@
       "viewKey": "查看密钥",
       "edit": "编辑",
       "delete": "删除",
-      "addToGroup": "添加至分组"
+      "addToGroup": "添加至分组",
+      "removeFromGroup": "移出分组"
     },
     "addToGroup": {
       "title": "添加至分组",
@@ -614,6 +615,13 @@
       "selectRequired": "请选择机器人组",
       "success": "添加至分组成功",
       "error": "添加失败，请重试"
+    },
+    "removeFromGroup": {
+      "title": "移出分组",
+      "confirmMessage": "确定将流程机器人「{{name}}」从「{{group}}」中移出吗？",
+      "confirm": "确认移出",
+      "success": "已从分组中移出",
+      "error": "移出失败，请重试"
     },
     "receiveTasks": {
       "enabled": "已开启接收任务",
