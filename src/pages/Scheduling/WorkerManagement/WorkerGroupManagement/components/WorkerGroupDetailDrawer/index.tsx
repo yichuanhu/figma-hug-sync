@@ -19,7 +19,6 @@ import {
   Tabs,
   TabPane,
 } from '@douyinfe/semi-ui';
-import TableSkeleton from '@/components/Skeleton/TableSkeleton';
 import EmptyState from '@/components/EmptyState';
 import { 
   IconEditStroked, 
@@ -196,7 +195,6 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
   
   // 成员列表状态
   const [membersLoading, setMembersLoading] = useState(false);
-  const [isMembersInitialLoad, setIsMembersInitialLoad] = useState(true);
   const [membersResponse, setMembersResponse] = useState<LYListResponseLYWorkerGroupMemberResponse>({
     range: { offset: 0, size: 20, total: 0 },
     list: [],
@@ -349,7 +347,6 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
       setMembersResponse(response);
     } finally {
       setMembersLoading(false);
-      setIsMembersInitialLoad(false);
     }
   }, [groupData?.id, queryParams, statusFilter]);
 
@@ -357,7 +354,6 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
     if (visible && groupData?.id) {
       setQueryParams(prev => ({ ...prev, group_id: groupData.id, offset: 0 }));
       setStatusFilter([]);
-      setIsMembersInitialLoad(true);
     }
   }, [visible, groupData?.id]);
 
@@ -650,28 +646,24 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
               </Row>
 
               <div className="worker-group-detail-drawer-members-table">
-                {isMembersInitialLoad ? (
-                  <TableSkeleton columns={[{ width: '25%' }, { width: '15%' }, { width: '20%' }, { width: '15%' }, { width: '20%' }, { width: '5%' }]} rows={6} />
-                ) : (
-                  <Table 
-                    columns={memberColumns} 
-                    dataSource={list}
-                    loading={membersLoading}
-                    rowKey="id"
-                    empty={<EmptyState description={t('workerGroup.detail.noMembers')} />}
-                    pagination={{
-                      total,
-                      pageSize,
-                      currentPage,
-                      onPageChange: (page) => {
-                        setQueryParams(prev => ({ ...prev, offset: (page - 1) * pageSize }));
-                      },
-                      showSizeChanger: true,
-                      showTotal: true,
-                    }}
-                    scroll={{ y: 'calc(100vh - 400px)' }}
-                  />
-                )}
+                <Table 
+                  columns={memberColumns} 
+                  dataSource={list}
+                  loading={membersLoading}
+                  rowKey="id"
+                  empty={<EmptyState description={t('workerGroup.detail.noMembers')} />}
+                  pagination={{
+                    total,
+                    pageSize,
+                    currentPage,
+                    onPageChange: (page) => {
+                      setQueryParams(prev => ({ ...prev, offset: (page - 1) * pageSize }));
+                    },
+                    showSizeChanger: true,
+                    showTotal: true,
+                  }}
+                  scroll={{ y: 'calc(100vh - 400px)' }}
+                />
               </div>
             </div>
           </div>
