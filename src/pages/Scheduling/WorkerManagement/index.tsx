@@ -15,7 +15,9 @@ import {
   Space,
   Modal,
   Toast,
+  Empty,
 } from '@douyinfe/semi-ui';
+import { IllustrationNoContent, IllustrationNoContentDark } from '@douyinfe/semi-illustrations';
 import {
   IconSearch, 
   IconFilter,
@@ -941,6 +943,13 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
           dataSource={list}
           loading={loading}
           rowKey="id"
+          empty={
+            <Empty
+              image={<IllustrationNoContent className="illustration-yellow" style={{ width: 150, height: 150 }} />}
+              darkModeImage={<IllustrationNoContentDark className="illustration-yellow" style={{ width: 150, height: 150 }} />}
+              description={t('worker.noData')}
+            />
+          }
           onRow={(record) => {
             const isSelected = selectedWorker?.id === record?.id && detailDrawerVisible;
             return {
