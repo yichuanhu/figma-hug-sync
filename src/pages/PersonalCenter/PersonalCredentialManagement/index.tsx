@@ -169,6 +169,23 @@ const PersonalCredentialManagement = () => {
     }
   }, [queryParams, t]);
 
+  // 翻页并返回新数据（用于抽屉导航时自动翻页）
+  const handleDrawerPageChange = useCallback(async (page: number): Promise<PersonalCredential[]> => {
+    setQueryParams(prev => ({ ...prev, page }));
+    
+    try {
+      const response = await fetchPersonalCredentialList({
+        keyword: queryParams.keyword || undefined,
+        offset: (page - 1) * queryParams.pageSize,
+        size: queryParams.pageSize,
+      });
+      setListResponse(response);
+      return response.data;
+    } catch {
+      return [];
+    }
+  }, [queryParams]);
+
   useEffect(() => {
     loadData();
   }, [loadData]);
@@ -435,6 +452,17 @@ const PersonalCredentialManagement = () => {
         }}
         onRefresh={loadData}
         initialTab={initialDetailTab}
+        dataList={listResponse?.data || []}
+        onNavigate={(credential) => {
+          setSelectedCredential(credential);
+        }}
+        pagination={{
+          currentPage: queryParams.page,
+          totalPages: Math.ceil(total / queryParams.pageSize),
+          pageSize: queryParams.pageSize,
+          total,
+        }}
+        onPageChange={handleDrawerPageChange}
       />
     </div>
   );
