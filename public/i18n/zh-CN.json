@@ -268,7 +268,7 @@
       },
       "detail": {
         "tabs": {
-          "detail": "流程详情",
+          "detail": "基本信息",
           "versions": "版本列表",
           "runs": "运行记录",
           "changes": "变更历史"
