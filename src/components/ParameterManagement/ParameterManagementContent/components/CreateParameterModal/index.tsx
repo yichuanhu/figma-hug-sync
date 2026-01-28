@@ -137,14 +137,13 @@ const CreateParameterModal = ({
         )}
 
         {parameterType === 3 && (
-          <Form.Slot label={t('parameter.fields.value')}>
-            <Form.InputNumber
-              field="numberValue"
-              placeholder={t('parameter.fields.numberValuePlaceholder')}
-              rules={[{ required: true, message: t('parameter.validation.valueRequired') }]}
-              style={{ width: '100%' }}
-            />
-          </Form.Slot>
+          <Form.InputNumber
+            field="numberValue"
+            label={t('parameter.fields.value')}
+            placeholder={t('parameter.fields.numberValuePlaceholder')}
+            rules={[{ required: true, message: t('parameter.validation.valueRequired') }]}
+            style={{ width: '100%' }}
+          />
         )}
 
         <Form.TextArea
