@@ -499,13 +499,104 @@ export interface LYProcessVersionResponse {
    * 发布者ID
    */
   publisher_id?: string | null;
+  /**
+   * Client Version
+   * 客户端版本
+   */
+  client_version?: string | null;
+  /**
+   * Os
+   * 操作系统
+   */
+  os?: string | null;
+  /**
+   * Architecture
+   * 系统架构
+   */
+  architecture?: string | null;
+  /**
+   * Min Client Version
+   * 最低客户端版本
+   */
+  min_client_version?: string | null;
+  /**
+   * Supported Os
+   * 支持的操作系统列表
+   */
+  supported_os?: string[] | null;
+  /**
+   * Required Components
+   * 必需的系统组件列表
+   */
+  required_components?: string[] | null;
+  /**
+   * Parameters
+   * 参数定义列表
+   */
+  parameters?: Record<string, unknown>[] | null;
+  /**
+   * Dependencies
+   * 依赖资源列表
+   */
+  dependencies?: Record<string, unknown>[] | null;
 }
 
 /**
- * LYProcessVersionResultResponse
- * 流程版本结果响应
+ * LYRangeResponse
+ * 列表范围响应模型
  */
-export interface LYProcessVersionResultResponse {
+export interface LYRangeResponse {
+  /**
+   * Offset
+   * 偏移量
+   */
+  offset: number;
+  /**
+   * Size
+   * 大小
+   */
+  size: number;
+  /**
+   * Total
+   * 总数
+   */
+  total: number;
+}
+
+/**
+ * LYUpdateProcessRequest
+ * 更新流程请求
+ */
+export interface LYUpdateProcessRequest {
+  /**
+   * Name
+   * 流程名称
+   * @minLength 1
+   * @maxLength 100
+   */
+  name?: string | null;
+  /**
+   * Description
+   * 流程描述
+   */
+  description?: string | null;
+  /**
+   * Requirement Id
+   * 关联需求ID
+   */
+  requirement_id?: string | null;
+  /**
+   * Status
+   * 流程状态
+   */
+  status?: string | null;
+}
+
+/**
+ * LYVersionApprovalResultResponse
+ * 版本审批结果响应
+ */
+export interface LYVersionApprovalResultResponse {
   /**
    * Message
    * 消息
@@ -527,40 +618,326 @@ export interface LYProcessVersionResultResponse {
   data?: LYProcessVersionResponse | null;
 }
 
-/** LYRangeResponse */
-export interface LYRangeResponse {
+/**
+ * LYWorkerResponse
+ * Worker响应模型
+ */
+export interface LYWorkerResponse {
   /**
-   * Offset
-   * 偏移量
+   * Id
+   * Worker ID
    */
-  offset: number;
+  id: string;
   /**
-   * Size
-   * 查询数量
+   * Name
+   * Worker名称
    */
-  size: number;
+  name: string;
   /**
-   * Total
-   * 总数量
+   * Description
+   * Worker描述
    */
-  total?: number | null;
+  description?: string | null;
+  /**
+   * Status
+   * Worker状态
+   */
+  status: string;
+  /**
+   * Ip Address
+   * IP地址
+   */
+  ip_address?: string | null;
+  /**
+   * Priority
+   * 任务调度优先级
+   */
+  priority?: string | null;
+  /**
+   * Client Version
+   * 客户端版本
+   */
+  client_version?: string | null;
+  /**
+   * Last Heartbeat
+   * 最近心跳时间
+   */
+  last_heartbeat?: string | null;
+  /**
+   * Receive Tasks
+   * 是否接收任务
+   */
+  receive_tasks?: boolean | null;
+  /**
+   * Sync Status
+   * 同步状态
+   */
+  sync_status?: string | null;
+  /**
+   * Worker Group Id
+   * 所属分组ID
+   */
+  worker_group_id?: string | null;
+  /**
+   * Worker Group Name
+   * 所属分组名称
+   */
+  worker_group_name?: string | null;
+  /**
+   * Device Token
+   * 设备Token
+   */
+  device_token?: string | null;
+  /**
+   * Desktop Type
+   * 桌面类型
+   */
+  desktop_type?: string | null;
+  /**
+   * Account
+   * 账户
+   */
+  account?: string | null;
+  /**
+   * Password Sync Status
+   * 密码同步状态
+   */
+  password_sync_status?: string | null;
+  /**
+   * Force Login
+   * 强制登录
+   */
+  force_login?: boolean | null;
+  /**
+   * Resolution
+   * 分辨率
+   */
+  resolution?: string | null;
+  /**
+   * Machine Code
+   * 机器码
+   */
+  machine_code?: string | null;
+  /**
+   * Host Name
+   * 主机名称
+   */
+  host_name?: string | null;
+  /**
+   * Host Ip
+   * 主机IP
+   */
+  host_ip?: string | null;
+  /**
+   * Os
+   * 操作系统
+   */
+  os?: string | null;
+  /**
+   * Arch
+   * 系统架构
+   */
+  arch?: string | null;
+  /**
+   * Cpu Model
+   * CPU型号
+   */
+  cpu_model?: string | null;
+  /**
+   * Cpu Cores
+   * CPU核心数
+   */
+  cpu_cores?: number | null;
+  /**
+   * Memory Capacity
+   * 内存容量
+   */
+  memory_capacity?: string | null;
+  /**
+   * Robot Count
+   * 机器人数量
+   */
+  robot_count?: number | null;
+  /**
+   * Creator Id
+   * 创建者ID
+   */
+  creator_id: string;
+  /**
+   * Created At
+   * 创建时间
+   */
+  created_at: string | null;
+  /**
+   * Updated At
+   * 更新时间
+   */
+  updated_at: string | null;
 }
 
 /**
- * LYUpdateProcessRequest
- * 更新流程请求
+ * LYWorkerListResultResponse
+ * Worker列表结果响应
  */
-export interface LYUpdateProcessRequest {
+export interface LYWorkerListResultResponse {
+  /**
+   * Message
+   * 消息
+   * @default ""
+   */
+  message?: string;
+  /**
+   * Tips
+   * 提示
+   */
+  tips?: string | null;
+  /**
+   * Code
+   * 结果代码
+   * @default "success"
+   */
+  code?: 'success' | 'failed' | 'invalid_params' | 'exists' | 'not_exists' | 'forbidden' | 'timeout' | 'expired';
+  /** 数据 */
+  data?: LYListResponseLYWorkerResponse | null;
+}
+
+/**
+ * LYWorkerResultResponse
+ * Worker结果响应
+ */
+export interface LYWorkerResultResponse {
+  /**
+   * Message
+   * 消息
+   * @default ""
+   */
+  message?: string;
+  /**
+   * Tips
+   * 提示
+   */
+  tips?: string | null;
+  /**
+   * Code
+   * 结果代码
+   * @default "success"
+   */
+  code?: 'success' | 'failed' | 'invalid_params' | 'exists' | 'not_exists' | 'forbidden' | 'timeout' | 'expired';
+  /** 数据 */
+  data?: LYWorkerResponse | null;
+}
+
+/**
+ * LYCreateWorkerRequest
+ * 创建Worker请求
+ */
+export interface LYCreateWorkerRequest {
   /**
    * Name
-   * 流程名称
+   * Worker名称
+   * @minLength 2
+   * @maxLength 50
+   */
+  name: string;
+  /**
+   * Description
+   * Worker描述
+   * @maxLength 2000
+   */
+  description?: string | null;
+  /**
+   * Desktop Type
+   * 桌面类型 (console/not_console)
+   */
+  desktop_type: string;
+  /**
+   * Account
+   * 账户
+   * @minLength 2
+   * @maxLength 100
+   */
+  account: string;
+  /**
+   * Password
+   * 密码
+   */
+  password?: string | null;
+  /**
+   * Force Login
+   * 强制登录
+   * @default false
+   */
+  force_login?: boolean;
+  /**
+   * Resolution
+   * 分辨率
+   */
+  resolution?: string | null;
+  /**
+   * Worker Group Id
+   * 分组ID
+   */
+  worker_group_id?: string | null;
+  /**
+   * Existing Worker Id
+   * 已存在的Worker ID（用于复用同一机器）
+   */
+  existing_worker_id?: string | null;
+}
+
+/**
+ * LYUpdateWorkerRequest
+ * 更新Worker请求
+ */
+export interface LYUpdateWorkerRequest {
+  /**
+   * Name
+   * Worker名称
+   * @minLength 2
+   * @maxLength 50
    */
   name?: string | null;
   /**
    * Description
-   * 流程描述
+   * Worker描述
+   * @maxLength 2000
    */
   description?: string | null;
+  /**
+   * Priority
+   * 任务调度优先级 (high/medium/low)
+   */
+  priority?: string | null;
+  /**
+   * Receive Tasks
+   * 是否接收任务
+   */
+  receive_tasks?: boolean | null;
+  /**
+   * Account
+   * 账户
+   */
+  account?: string | null;
+  /**
+   * Password
+   * 密码
+   */
+  password?: string | null;
+  /**
+   * Force Login
+   * 强制登录
+   */
+  force_login?: boolean | null;
+  /**
+   * Resolution
+   * 分辨率
+   */
+  resolution?: string | null;
+  /**
+   * Worker Group Id
+   * 分组ID
+   */
+  worker_group_id?: string | null;
 }
 
 /** ValidationError */
@@ -574,366 +951,106 @@ export interface ValidationError {
 }
 
 /**
- * LYWorkerResponse
- * 机器人响应模型
+ * GetProcessesParams
+ * 获取流程列表参数
  */
-export interface LYWorkerResponse {
-  /**
-   * Id
-   * 机器人ID
-   */
-  id: string;
-  /**
-   * Name
-   * 机器人名称
-   */
-  name: string;
-  /**
-   * Description
-   * 机器人描述
-   */
-  description?: string | null;
-  /**
-   * Status
-   * 机器人状态 (OFFLINE/IDLE/BUSY/FAULT/MAINTENANCE)
-   */
-  status: 'OFFLINE' | 'IDLE' | 'BUSY' | 'FAULT' | 'MAINTENANCE';
-  /**
-   * Sync Status
-   * 同步状态 (SYNCED/PENDING)
-   */
-  sync_status: 'SYNCED' | 'PENDING';
-  /**
-   * Ip Address
-   * IP地址
-   */
-  ip_address: string;
-  /**
-   * Priority
-   * 优先级 (HIGH/MEDIUM/LOW)
-   */
-  priority: 'HIGH' | 'MEDIUM' | 'LOW';
-  /**
-   * Client Version
-   * 客户端版本
-   */
-  client_version: string;
-  /**
-   * Last Heartbeat Time
-   * 最后心跳时间
-   */
-  last_heartbeat_time: string;
-  /**
-   * Receive Tasks
-   * 是否接收任务
-   */
-  receive_tasks: boolean;
-  /**
-   * Username
-   * 用户名
-   */
-  username: string;
-  /**
-   * Desktop Type
-   * 桌面类型 (Console/NotConsole)
-   */
-  desktop_type: 'Console' | 'NotConsole';
-  /**
-   * Display Size
-   * 显示尺寸
-   */
-  display_size?: string | null;
-  /**
-   * Enable Auto Unlock
-   * 是否启用自动解锁
-   */
-  enable_auto_unlock?: boolean | null;
-  /**
-   * Force Login
-   * 是否强制登录
-   */
-  force_login: boolean;
-  /**
-   * Device Token
-   * 设备令牌
-   */
-  device_token: string;
-  /**
-   * Machine Code
-   * 机器码
-   */
-  machine_code: string;
-  /**
-   * Host Name
-   * 主机名
-   */
-  host_name: string;
-  /**
-   * Os
-   * 操作系统
-   */
-  os: string;
-  /**
-   * Arch
-   * 系统架构
-   */
-  arch: string;
-  /**
-   * Cpu Model
-   * CPU型号
-   */
-  cpu_model: string;
-  /**
-   * Cpu Cores
-   * CPU核心数
-   */
-  cpu_cores: number;
-  /**
-   * Memory Capacity
-   * 内存容量
-   */
-  memory_capacity: string;
-  /**
-   * Robot Count
-   * 机器人数量
-   */
-  robot_count: number;
-  /**
-   * Group Id
-   * 所属机器人组ID
-   */
-  group_id?: string | null;
-  /**
-   * Group Name
-   * 所属机器人组名称
-   */
-  group_name?: string | null;
-  /**
-   * Created At
-   * 创建时间
-   */
-  created_at: string;
-  /**
-   * Creator Id
-   * 创建者ID
-   */
-  creator_id: string;
-}
-
-/**
- * GetWorkersParams
- * 机器人列表查询参数
- */
-export interface GetWorkersParams {
-  /** Keyword */
-  keyword?: string | null;
-  /** Status */
-  status?: string | null;
-  /** Sync Status */
-  sync_status?: string | null;
-  /** Priority */
-  priority?: string | null;
+export interface GetProcessesParams {
   /**
    * Offset
-   * 查询偏移量
-   * @min 0
+   * 偏移量
    * @default 0
    */
   offset?: number;
   /**
    * Size
-   * 查询数量
-   * @min 0
+   * 大小
    * @default 20
    */
   size?: number;
-}
-
-export interface GetProcessesParams {
-  /** Keyword */
-  keyword?: string | null;
-  /** Language */
-  language?: string | null;
-  /** Process Type */
-  process_type?: string | null;
-  /** Status */
-  status?: string | null;
+  /**
+   * Keyword
+   * 搜索关键词
+   */
+  keyword?: string;
+  /**
+   * Status
+   * 流程状态筛选
+   */
+  status?: string;
   /**
    * Sort By
-   * @default "updated_at"
+   * 排序字段
    */
   sort_by?: string;
   /**
    * Sort Order
-   * @default "desc"
+   * 排序方向
    */
-  sort_order?: string;
+  sort_order?: 'asc' | 'desc';
+}
+
+/**
+ * GetWorkersParams
+ * 获取Worker列表参数
+ */
+export interface GetWorkersParams {
   /**
    * Offset
-   * 查询偏移量
-   * @min 0
+   * 偏移量
    * @default 0
    */
   offset?: number;
   /**
    * Size
-   * 查询数量，最大值请参考web_api.max_count_per_query
-   * @min 0
+   * 大小
    * @default 20
    */
   size?: number;
-}
-
-export type GetProcessesData = LYProcessListResultResponse;
-
-export interface AddProcessesParams {}
-
-export type AddProcessesData = LYProcessResultResponse;
-
-export interface GetProcessesByProcessIdParams {
-  /** Process Id */
-  processId: string;
-}
-
-export type GetProcessesByProcessIdData = LYProcessResultResponse;
-
-export interface AddProcessesByProcessIdParams {
-  /** Process Id */
-  processId: string;
-}
-
-export type AddProcessesByProcessIdData = LYProcessResultResponse;
-
-export interface ProcessesRemoveByProcessIdParams {
-  /** Process Id */
-  processId: string;
-}
-
-export type ProcessesRemoveByProcessIdData = LYProcessResultResponse;
-
-export interface ProcessesVersionsByProcessIdParams {
-  /** Status */
-  status?: string | null;
   /**
-   * Offset
-   * 查询偏移量
-   * @min 0
-   * @default 0
+   * Keyword
+   * 搜索关键词
    */
-  offset?: number;
+  keyword?: string;
   /**
-   * Size
-   * 查询数量，最大值请参考web_api.max_count_per_query
-   * @min 0
-   * @default 20
+   * Status
+   * Worker状态筛选
    */
-  size?: number;
-  /** Process Id */
-  processId: string;
-}
-
-export type ProcessesVersionsByProcessIdData = LYProcessVersionListResultResponse;
-
-export interface ProcessesVersionsByProcessId2Params {
-  /** Process Id */
-  processId: string;
-}
-
-export type ProcessesVersionsByProcessId2Data = LYProcessVersionResultResponse;
-
-export interface ProcessesVersionsByProcessIdAndVersionIdParams {
-  /** Process Id */
-  processId: string;
-  /** Version Id */
-  versionId: string;
-}
-
-export type ProcessesVersionsByProcessIdAndVersionIdData = LYProcessVersionResultResponse;
-
-export interface ProcessesVersionsUploadByProcessIdParams {
-  /** Version */
-  version?: string;
-  /** Language */
-  language?: string | null;
-  /** Version Note */
-  version_note?: string | null;
-  /** Usage Note */
-  usage_note?: string | null;
-  /** Source Code */
-  source_code?: string | null;
-  /** Environment Info */
-  environment_info?: string | null;
-  /** Parameters */
-  parameters?: string | null;
-  /** Dependencies */
-  dependencies?: string | null;
-  /** Process Id */
-  processId: string;
-}
-
-export type ProcessesVersionsUploadByProcessIdData = LYProcessVersionResultResponse;
-
-export interface ProcessesVersionsSubmitByProcessIdAndVersionIdParams {
-  /** Process Id */
-  processId: string;
-  /** Version Id */
-  versionId: string;
-}
-
-export type ProcessesVersionsSubmitByProcessIdAndVersionIdData = LYProcessVersionResultResponse;
-
-export interface ProcessesVersionsDownloadByProcessIdAndVersionIdParams {
-  /** Process Id */
-  processId: string;
-  /** Version Id */
-  versionId: string;
-}
-
-export type ProcessesVersionsDownloadByProcessIdAndVersionIdData = unknown;
-
-export interface ProcessesVersionsApproveByProcessIdAndVersionIdParams {
-  /** Process Id */
-  processId: string;
-  /** Version Id */
-  versionId: string;
-}
-
-export type ProcessesVersionsApproveByProcessIdAndVersionIdData = LYProcessVersionResultResponse;
-
-export interface ProcessesApprovalsPendingParams {
-  /** Process Id */
-  process_id?: string | null;
-  /** Keyword */
-  keyword?: string | null;
+  status?: string;
   /**
-   * Offset
-   * 查询偏移量
-   * @min 0
-   * @default 0
+   * Priority
+   * 优先级筛选
    */
-  offset?: number;
+  priority?: string;
   /**
-   * Size
-   * 查询数量，最大值请参考web_api.max_count_per_query
-   * @min 0
-   * @default 20
+   * Worker Group Id
+   * 分组ID筛选
    */
-  size?: number;
+  worker_group_id?: string;
+  /**
+   * Sort By
+   * 排序字段
+   */
+  sort_by?: string;
+  /**
+   * Sort Order
+   * 排序方向
+   */
+  sort_order?: 'asc' | 'desc';
 }
 
-export type ProcessesApprovalsPendingData = LYPendingApprovalListResultResponse;
-
-// ============= 凭据管理相关类型定义 =============
+// ==================== 凭据管理相关类型 ====================
 
 /**
  * 凭据类型枚举
+ * FIXED_VALUE - 固定值凭据
+ * PERSONAL_REF - 关联个人凭据
  */
 export type CredentialType = 'FIXED_VALUE' | 'PERSONAL_REF';
 
 /**
  * 凭据值结构
  */
-export interface LYCredentialValue {
+export interface CredentialValue {
   /**
    * Username
    * 用户名
@@ -941,14 +1058,14 @@ export interface LYCredentialValue {
   username: string;
   /**
    * Password
-   * 密码（加密显示为 ******）
+   * 密码（显示为******）
    */
   password: string;
 }
 
 /**
  * LYCredentialResponse
- * 凭据响应
+ * 凭据响应模型
  */
 export interface LYCredentialResponse {
   /**
@@ -959,231 +1076,43 @@ export interface LYCredentialResponse {
   /**
    * Credential Name
    * 凭据名称
-   * @minLength 1
-   * @maxLength 30
    */
   credential_name: string;
   /**
    * Credential Type
-   * 凭据类型 (FIXED_VALUE/PERSONAL_REF)
+   * 凭据类型
    */
   credential_type: CredentialType;
   /**
    * Test Value
-   * 测试值（开发中心使用）
+   * 测试凭据值
    */
-  test_value?: LYCredentialValue | null;
+  test_value: CredentialValue;
   /**
    * Production Value
-   * 生产值（调度中心使用）
+   * 生产凭据值
    */
-  production_value?: LYCredentialValue | null;
+  production_value: CredentialValue;
   /**
    * Description
    * 凭据描述
-   * @maxLength 500
    */
   description?: string | null;
   /**
    * Linked Personal Credential Value
-   * 关联的个人凭据值（格式：用户名/****** 或 -）
+   * 关联的个人凭据值（格式：用户名/******）
    */
   linked_personal_credential_value?: string | null;
   /**
    * Created By
-   * 创建人ID
+   * 创建者ID
    */
   created_by: string;
   /**
    * Created By Name
-   * 创建人名称
-   */
-  created_by_name?: string | null;
-  /**
-   * Created At
-   * 创建时间
-   */
-  created_at: string;
-  /**
-   * Updated At
-   * 更新时间
-   */
-  updated_at?: string | null;
-}
-
-/**
- * LYCredentialListResultResponse
- * 凭据列表结果响应
- */
-export interface LYCredentialListResultResponse {
-  /** Data */
-  data?: LYCredentialResponse[] | null;
-  /** Range */
-  range?: LYRangeResponse | null;
-}
-
-/**
- * LYCredentialResultResponse
- * 凭据单条结果响应
- */
-export interface LYCredentialResultResponse {
-  /** Data */
-  data?: LYCredentialResponse | null;
-}
-
-/**
- * LYCreateCredentialRequest
- * 创建凭据请求
- */
-export interface LYCreateCredentialRequest {
-  /**
-   * Credential Name
-   * 凭据名称
-   * @minLength 1
-   * @maxLength 30
-   */
-  credential_name: string;
-  /**
-   * Credential Type
-   * 凭据类型 (FIXED_VALUE/PERSONAL_REF)
-   */
-  credential_type: CredentialType;
-  /**
-   * Credential Value
-   * 凭据值（根据入口保存到 test_value 或 production_value）
-   */
-  credential_value: LYCredentialValue;
-  /**
-   * Description
-   * 凭据描述
-   * @maxLength 500
-   */
-  description?: string | null;
-}
-
-/**
- * LYUpdateCredentialRequest
- * 更新凭据请求
- */
-export interface LYUpdateCredentialRequest {
-  /**
-   * Credential Name
-   * 凭据名称
-   * @minLength 1
-   * @maxLength 30
-   */
-  credential_name?: string | null;
-  /**
-   * Credential Value
-   * 凭据值（根据入口更新 test_value 或 production_value）
-   */
-  credential_value?: LYCredentialValue | null;
-  /**
-   * Description
-   * 凭据描述
-   * @maxLength 500
-   */
-  description?: string | null;
-}
-
-/**
- * GetCredentialsParams
- * 获取凭据列表参数
- */
-export interface GetCredentialsParams {
-  /**
-   * Keyword
-   * 凭据名称关键词
-   */
-  keyword?: string | null;
-  /**
-   * Credential Type
-   * 凭据类型过滤
-   */
-  credential_type?: CredentialType | null;
-  /**
-   * Context
-   * 入口上下文 (development/scheduling)
-   */
-  context: 'development' | 'scheduling';
-  /**
-   * Offset
-   * 查询偏移量
-   * @min 0
-   * @default 0
-   */
-  offset?: number;
-  /**
-   * Size
-   * 查询数量
-   * @min 0
-   * @default 20
-   */
-  size?: number;
-}
-
-export type GetCredentialsData = LYCredentialListResultResponse;
-
-export type AddCredentialData = LYCredentialResultResponse;
-
-export interface GetCredentialByIdParams {
-  /** Credential Id */
-  credentialId: string;
-}
-
-export type GetCredentialByIdData = LYCredentialResultResponse;
-
-export interface UpdateCredentialParams {
-  /** Credential Id */
-  credentialId: string;
-}
-
-export type UpdateCredentialData = LYCredentialResultResponse;
-
-export interface DeleteCredentialParams {
-  /** Credential Id */
-  credentialId: string;
-}
-
-export type DeleteCredentialData = LYCredentialResultResponse;
-
-// ============= 流程机器人组 (Worker Group) =============
-
-/**
- * LYWorkerGroupResponse
- * 流程机器人组响应模型
- */
-export interface LYWorkerGroupResponse {
-  /**
-   * Id
-   * 机器人组ID
-   */
-  id: string;
-  /**
-   * Name
-   * 机器人组名称
-   */
-  name: string;
-  /**
-   * Description
-   * 机器人组描述
-   */
-  description?: string | null;
-  /**
-   * Member Count
-   * 成员数量
-   */
-  member_count: number;
-  /**
-   * Creator Id
-   * 创建者ID
-   */
-  creator_id: string;
-  /**
-   * Creator Name
    * 创建者名称
    */
-  creator_name?: string | null;
+  created_by_name?: string | null;
   /**
    * Created At
    * 创建时间
@@ -1196,177 +1125,40 @@ export interface LYWorkerGroupResponse {
   updated_at: string;
 }
 
-/** LYListResponse[LYWorkerGroupResponse] */
-export interface LYListResponseLYWorkerGroupResponse {
-  /** 范围 */
-  range?: LYRangeResponse | null;
+/**
+ * LYCredentialListResultResponse
+ * 凭据列表结果响应
+ */
+export interface LYCredentialListResultResponse {
   /**
-   * List
-   * 列表
+   * Data
+   * 凭据列表
    */
-  list: LYWorkerGroupResponse[];
+  data: LYCredentialResponse[];
+  /**
+   * Range
+   * 分页信息
+   */
+  range: LYRangeResponse;
 }
 
 /**
- * LYCreateWorkerGroupRequest
- * 创建流程机器人组请求
+ * LYCreateCredentialRequest
+ * 创建凭据请求
  */
-export interface LYCreateWorkerGroupRequest {
+export interface LYCreateCredentialRequest {
   /**
    * Name
-   * 机器人组名称
+   * 凭据名称
    * @minLength 1
    * @maxLength 30
    */
   name: string;
   /**
-   * Description
-   * 机器人组描述
-   * @maxLength 2000
+   * Type
+   * 凭据类型
    */
-  description?: string | null;
-}
-
-/**
- * LYUpdateWorkerGroupRequest
- * 更新流程机器人组请求
- */
-export interface LYUpdateWorkerGroupRequest {
-  /**
-   * Name
-   * 机器人组名称
-   * @minLength 1
-   * @maxLength 30
-   */
-  name?: string | null;
-  /**
-   * Description
-   * 机器人组描述
-   * @maxLength 2000
-   */
-  description?: string | null;
-}
-
-/**
- * LYAddWorkerGroupMembersRequest
- * 添加流程机器人组成员请求
- */
-export interface LYAddWorkerGroupMembersRequest {
-  /**
-   * Worker Ids
-   * 流程机器人ID列表
-   */
-  worker_ids: string[];
-}
-
-/**
- * LYWorkerGroupMemberResponse
- * 流程机器人组成员响应模型 - 与LYWorkerResponse相同但增加group相关字段
- */
-export interface LYWorkerGroupMemberResponse extends LYWorkerResponse {
-  /**
-   * Group Id
-   * 所属组ID
-   */
-  group_id?: string | null;
-  /**
-   * Joined At
-   * 加入时间
-   */
-  joined_at?: string | null;
-}
-
-/** LYListResponse[LYWorkerGroupMemberResponse] */
-export interface LYListResponseLYWorkerGroupMemberResponse {
-  /** 范围 */
-  range?: LYRangeResponse | null;
-  /**
-   * List
-   * 列表
-   */
-  list: LYWorkerGroupMemberResponse[];
-}
-
-/**
- * GetWorkerGroupsParams
- * 机器人组列表查询参数
- */
-export interface GetWorkerGroupsParams {
-  /** Keyword */
-  keyword?: string | null;
-  /**
-   * Offset
-   * 查询偏移量
-   * @min 0
-   * @default 0
-   */
-  offset?: number;
-  /**
-   * Size
-   * 查询数量
-   * @min 0
-   * @default 20
-   */
-  size?: number;
-}
-
-/**
- * GetWorkerGroupMembersParams
- * 机器人组成员列表查询参数
- */
-export interface GetWorkerGroupMembersParams {
-  /** Group Id */
-  group_id: string;
-  /** Keyword */
-  keyword?: string | null;
-  /** Status */
-  status?: string | null;
-  /**
-   * Offset
-   * 查询偏移量
-   * @min 0
-   * @default 0
-   */
-  offset?: number;
-  /**
-   * Size
-   * 查询数量
-   * @min 0
-   * @default 20
-   */
-  size?: number;
-}
-
-/**
- * GetAvailableWorkersForGroupParams
- * 可添加到组的机器人列表查询参数
- */
-export interface GetAvailableWorkersForGroupParams {
-  /** Keyword */
-  keyword?: string | null;
-  /**
-   * Offset
-   * 查询偏移量
-   * @min 0
-   * @default 0
-   */
-  offset?: number;
-  /**
-   * Size
-   * 查询数量
-   * @min 0
-   * @default 20
-   */
-  size?: number;
-}
-
-// ============= 个人凭据管理相关类型定义 =============
-
-/**
- * LYPersonalCredentialValue
- * 个人凭据值结构
- */
-export interface LYPersonalCredentialValue {
+  type: CredentialType;
   /**
    * Username
    * 用户名
@@ -1374,33 +1166,9 @@ export interface LYPersonalCredentialValue {
   username: string;
   /**
    * Password
-   * 密码（加密显示为 ******）
+   * 密码
    */
   password: string;
-}
-
-/**
- * LYPersonalCredentialResponse
- * 个人凭据响应
- */
-export interface LYPersonalCredentialResponse {
-  /**
-   * Credential Id
-   * 凭据ID
-   */
-  credential_id: string;
-  /**
-   * Credential Name
-   * 凭据名称
-   * @minLength 1
-   * @maxLength 30
-   */
-  credential_name: string;
-  /**
-   * Credential Value
-   * 凭据值
-   */
-  credential_value: LYPersonalCredentialValue;
   /**
    * Description
    * 凭据描述
@@ -1408,20 +1176,136 @@ export interface LYPersonalCredentialResponse {
    */
   description?: string | null;
   /**
-   * Linked Credentials Count
-   * 关联的业务凭据数量
+   * Context
+   * 创建上下文（development/scheduling）
    */
-  linked_credentials_count: number;
+  context: 'development' | 'scheduling';
+}
+
+/**
+ * LYUpdateCredentialRequest
+ * 更新凭据请求
+ */
+export interface LYUpdateCredentialRequest {
   /**
-   * Owner Id
-   * 所有者ID
+   * Name
+   * 凭据名称
+   * @minLength 1
+   * @maxLength 30
    */
-  owner_id: string;
+  name?: string | null;
   /**
-   * Owner Name
-   * 所有者名称
+   * Username
+   * 用户名
    */
-  owner_name?: string | null;
+  username?: string | null;
+  /**
+   * Password
+   * 密码（留空则不修改）
+   */
+  password?: string | null;
+  /**
+   * Description
+   * 凭据描述
+   * @maxLength 2000
+   */
+  description?: string | null;
+  /**
+   * Context
+   * 更新上下文（development/scheduling）
+   */
+  context: 'development' | 'scheduling';
+}
+
+/**
+ * GetCredentialsParams
+ * 获取凭据列表参数
+ */
+export interface GetCredentialsParams {
+  /**
+   * Offset
+   * 偏移量
+   * @default 0
+   */
+  offset?: number;
+  /**
+   * Size
+   * 大小
+   * @default 20
+   */
+  size?: number;
+  /**
+   * Keyword
+   * 搜索关键词
+   */
+  keyword?: string;
+  /**
+   * Context
+   * 上下文（development/scheduling）
+   */
+  context?: 'development' | 'scheduling';
+}
+
+// ==================== 参数管理相关类型 ====================
+
+/**
+ * 参数类型枚举
+ * 1 - 文本
+ * 2 - 布尔
+ * 3 - 数值
+ */
+export type ParameterType = 1 | 2 | 3;
+
+/**
+ * LYParameterResponse
+ * 参数响应模型
+ */
+export interface LYParameterResponse {
+  /**
+   * Parameter Id
+   * 参数ID
+   */
+  parameter_id: string;
+  /**
+   * Parameter Name
+   * 参数名称
+   */
+  parameter_name: string;
+  /**
+   * Parameter Type
+   * 参数类型（1=文本，2=布尔，3=数值）
+   */
+  parameter_type: ParameterType;
+  /**
+   * Dev Value
+   * 调试值（开发中心使用）
+   */
+  dev_value: string | null;
+  /**
+   * Prod Value
+   * 生产值（调度中心使用）
+   */
+  prod_value: string | null;
+  /**
+   * Description
+   * 参数说明
+   */
+  description?: string | null;
+  /**
+   * Is Published
+   * 是否已发布
+   */
+  is_published: boolean;
+  /**
+   * Created By
+   * 创建者ID
+   */
+  created_by: string;
+  /**
+   * Created By Name
+   * 创建者名称
+   */
+  created_by_name?: string | null;
   /**
    * Created At
    * 创建时间
@@ -1431,7 +1315,149 @@ export interface LYPersonalCredentialResponse {
    * Updated At
    * 更新时间
    */
-  updated_at?: string | null;
+  updated_at: string;
+}
+
+/**
+ * LYParameterListResultResponse
+ * 参数列表结果响应
+ */
+export interface LYParameterListResultResponse {
+  /**
+   * Data
+   * 参数列表
+   */
+  data: LYParameterResponse[];
+  /**
+   * Range
+   * 分页信息
+   */
+  range: LYRangeResponse;
+}
+
+/**
+ * LYCreateParameterRequest
+ * 创建参数请求
+ */
+export interface LYCreateParameterRequest {
+  /**
+   * Name
+   * 参数名称
+   * @minLength 1
+   * @maxLength 30
+   */
+  name: string;
+  /**
+   * Type
+   * 参数类型（1=文本，2=布尔，3=数值）
+   */
+  type: ParameterType;
+  /**
+   * Value
+   * 参数值
+   */
+  value: string;
+  /**
+   * Description
+   * 参数说明
+   * @maxLength 2000
+   */
+  description?: string | null;
+  /**
+   * Context
+   * 创建上下文（development/scheduling）
+   * - development: 保存到dev_value
+   * - scheduling: 保存到prod_value
+   */
+  context: 'development' | 'scheduling';
+}
+
+/**
+ * LYUpdateParameterRequest
+ * 更新参数请求
+ */
+export interface LYUpdateParameterRequest {
+  /**
+   * Type
+   * 参数类型（1=文本，2=布尔，3=数值）
+   */
+  type?: ParameterType | null;
+  /**
+   * Value
+   * 参数值
+   */
+  value?: string | null;
+  /**
+   * Description
+   * 参数说明
+   * @maxLength 2000
+   */
+  description?: string | null;
+  /**
+   * Context
+   * 更新上下文（development/scheduling）
+   * - development: 更新dev_value
+   * - scheduling: 更新prod_value
+   */
+  context: 'development' | 'scheduling';
+}
+
+/**
+ * GetParametersParams
+ * 获取参数列表参数
+ */
+export interface GetParametersParams {
+  /**
+   * Offset
+   * 偏移量
+   * @default 0
+   */
+  offset?: number;
+  /**
+   * Size
+   * 大小
+   * @default 20
+   */
+  size?: number;
+  /**
+   * Keyword
+   * 搜索关键词（参数名称）
+   */
+  keyword?: string;
+  /**
+   * Type
+   * 参数类型筛选
+   */
+  type?: ParameterType | null;
+  /**
+   * Context
+   * 上下文（development/scheduling）
+   * - development: 返回所有参数，显示dev_value
+   * - scheduling: 仅返回isPublished=true的参数，显示prod_value
+   */
+  context?: 'development' | 'scheduling';
+}
+
+// ==================== 个人凭据管理相关类型 ====================
+
+/**
+ * LYPersonalCredentialResponse
+ * 个人凭据响应模型
+ */
+export interface LYPersonalCredentialResponse {
+  personal_credential_id: string;
+  personal_credential_name: string;
+  credential_id?: string;
+  credential_name?: string;
+  credential_value?: string;
+  username: string;
+  password?: string;
+  description?: string | null;
+  linked_credentials_count?: number;
+  created_by: string;
+  created_by_name?: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 /**
@@ -1439,19 +1465,8 @@ export interface LYPersonalCredentialResponse {
  * 个人凭据列表结果响应
  */
 export interface LYPersonalCredentialListResultResponse {
-  /** Data */
-  data?: LYPersonalCredentialResponse[] | null;
-  /** Range */
-  range?: LYRangeResponse | null;
-}
-
-/**
- * LYPersonalCredentialResultResponse
- * 个人凭据单条结果响应
- */
-export interface LYPersonalCredentialResultResponse {
-  /** Data */
-  data?: LYPersonalCredentialResponse | null;
+  data: LYPersonalCredentialResponse[];
+  range: LYRangeResponse;
 }
 
 /**
@@ -1459,23 +1474,10 @@ export interface LYPersonalCredentialResultResponse {
  * 创建个人凭据请求
  */
 export interface LYCreatePersonalCredentialRequest {
-  /**
-   * Credential Name
-   * 凭据名称
-   * @minLength 1
-   * @maxLength 30
-   */
-  credential_name: string;
-  /**
-   * Credential Value
-   * 凭据值
-   */
-  credential_value: LYPersonalCredentialValue;
-  /**
-   * Description
-   * 凭据描述
-   * @maxLength 2000
-   */
+  name: string;
+  credential_name?: string;
+  username: string;
+  password: string;
   description?: string | null;
 }
 
@@ -1484,74 +1486,11 @@ export interface LYCreatePersonalCredentialRequest {
  * 更新个人凭据请求
  */
 export interface LYUpdatePersonalCredentialRequest {
-  /**
-   * Credential Name
-   * 凭据名称（可选，不可变则不提交）
-   * @minLength 1
-   * @maxLength 30
-   */
+  name?: string | null;
   credential_name?: string | null;
-  /**
-   * Credential Value
-   * 凭据值
-   */
-  credential_value?: LYPersonalCredentialValue | null;
-  /**
-   * Description
-   * 凭据描述
-   * @maxLength 2000
-   */
+  username?: string | null;
+  password?: string | null;
   description?: string | null;
-}
-
-/**
- * LYLinkCredentialRequest
- * 关联业务凭据请求
- */
-export interface LYLinkCredentialRequest {
-  /**
-   * Credential Ids
-   * 业务凭据ID列表
-   */
-  credential_ids: string[];
-}
-
-/**
- * LYLinkedCredentialResponse
- * 关联的业务凭据响应
- */
-export interface LYLinkedCredentialResponse {
-  /**
-   * Credential Id
-   * 业务凭据ID
-   */
-  credential_id: string;
-  /**
-   * Credential Name
-   * 业务凭据名称
-   */
-  credential_name: string;
-  /**
-   * Credential Type
-   * 业务凭据类型
-   */
-  credential_type: CredentialType;
-  /**
-   * Linked At
-   * 关联时间
-   */
-  linked_at: string;
-}
-
-/** LYListResponse[LYLinkedCredentialResponse] */
-export interface LYListResponseLYLinkedCredentialResponse {
-  /** 范围 */
-  range?: LYRangeResponse | null;
-  /**
-   * List
-   * 列表
-   */
-  list: LYLinkedCredentialResponse[];
 }
 
 /**
@@ -1559,85 +1498,108 @@ export interface LYListResponseLYLinkedCredentialResponse {
  * 获取个人凭据列表参数
  */
 export interface GetPersonalCredentialsParams {
-  /**
-   * Keyword
-   * 凭据名称关键词
-   */
-  keyword?: string | null;
-  /**
-   * Offset
-   * 查询偏移量
-   * @min 0
-   * @default 0
-   */
   offset?: number;
-  /**
-   * Size
-   * 查询数量
-   * @min 0
-   * @default 10
-   */
   size?: number;
+  keyword?: string;
 }
 
-export type GetPersonalCredentialsData = LYPersonalCredentialListResultResponse;
-
-export type AddPersonalCredentialData = LYPersonalCredentialResultResponse;
-
-export interface GetPersonalCredentialByIdParams {
-  /** Personal Credential Id */
-  personalCredentialId: string;
+/**
+ * LYLinkCredentialRequest
+ * 关联凭据请求
+ */
+export interface LYLinkCredentialRequest {
+  personal_credential_id: string;
+  credential_id: string;
+  credential_ids?: string[];
 }
 
-export type GetPersonalCredentialByIdData = LYPersonalCredentialResultResponse;
+// ==================== 流程机器人组管理相关类型 ====================
 
-export interface UpdatePersonalCredentialParams {
-  /** Personal Credential Id */
-  personalCredentialId: string;
+/**
+ * LYWorkerGroupResponse
+ * 流程机器人组响应模型
+ */
+export interface LYWorkerGroupResponse {
+  id: string;
+  name: string;
+  description?: string | null;
+  member_count: number;
+  creator_id: string;
+  created_at: string | null;
+  updated_at: string | null;
 }
 
-export type UpdatePersonalCredentialData = LYPersonalCredentialResultResponse;
-
-export interface DeletePersonalCredentialParams {
-  /** Personal Credential Id */
-  personalCredentialId: string;
+/** LYListResponse[LYWorkerGroupResponse] */
+export interface LYListResponseLYWorkerGroupResponse {
+  range?: LYRangeResponse | null;
+  list: LYWorkerGroupResponse[];
 }
 
-export type DeletePersonalCredentialData = LYPersonalCredentialResultResponse;
+/**
+ * LYWorkerGroupMemberResponse
+ * 流程机器人组成员响应模型
+ */
+export interface LYWorkerGroupMemberResponse {
+  id: string;
+  name: string;
+  status: string;
+  ip_address?: string | null;
+  priority?: string | null;
+  last_heartbeat?: string | null;
+}
 
-export interface GetLinkedCredentialsParams {
-  /** Personal Credential Id */
-  personalCredentialId: string;
-  /**
-   * Offset
-   * 查询偏移量
-   * @min 0
-   * @default 0
-   */
+/** LYListResponse[LYWorkerGroupMemberResponse] */
+export interface LYListResponseLYWorkerGroupMemberResponse {
+  range?: LYRangeResponse | null;
+  list: LYWorkerGroupMemberResponse[];
+}
+
+/**
+ * LYCreateWorkerGroupRequest
+ * 创建流程机器人组请求
+ */
+export interface LYCreateWorkerGroupRequest {
+  name: string;
+  description?: string | null;
+}
+
+/**
+ * LYUpdateWorkerGroupRequest
+ * 更新流程机器人组请求
+ */
+export interface LYUpdateWorkerGroupRequest {
+  name?: string | null;
+  description?: string | null;
+}
+
+/**
+ * GetWorkerGroupsParams
+ * 获取流程机器人组列表参数
+ */
+export interface GetWorkerGroupsParams {
   offset?: number;
-  /**
-   * Size
-   * 查询数量
-   * @min 0
-   * @default 20
-   */
   size?: number;
+  keyword?: string;
 }
 
-export type GetLinkedCredentialsData = LYListResponseLYLinkedCredentialResponse;
-
-export interface LinkCredentialsParams {
-  /** Personal Credential Id */
-  personalCredentialId: string;
+/**
+ * GetWorkerGroupMembersParams
+ * 获取流程机器人组成员列表参数
+ */
+export interface GetWorkerGroupMembersParams {
+  group_id: string;
+  offset?: number;
+  size?: number;
+  keyword?: string;
 }
 
-export type LinkCredentialsData = LYPersonalCredentialResultResponse;
-
-export interface UnlinkCredentialParams {
-  /** Personal Credential Id */
-  personalCredentialId: string;
-  /** Credential Id */
-  credentialId: string;
+/**
+ * GetAvailableWorkersForGroupParams
+ * 获取可添加到组的流程机器人列表参数
+ */
+export interface GetAvailableWorkersForGroupParams {
+  group_id: string;
+  offset?: number;
+  size?: number;
+  keyword?: string;
 }
-
-export type UnlinkCredentialData = LYPersonalCredentialResultResponse;

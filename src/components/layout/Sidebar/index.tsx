@@ -194,7 +194,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     { key: 'businessAssetConfig', labelKey: 'sidebar.businessAssetConfig', isGroupLabel: true },
     { key: 'queue', labelKey: 'sidebar.queue', icon: <ListStart size={20} strokeWidth={3} /> },
     { key: 'devCredentials', labelKey: 'sidebar.credentials', icon: <MonitorCheck size={20} strokeWidth={3} />, path: '/dev-center/business-assets/credentials' },
-    { key: 'parameters', labelKey: 'sidebar.parameters', icon: <Parentheses size={20} strokeWidth={3} /> },
+    { key: 'devParameters', labelKey: 'sidebar.parameters', icon: <Parentheses size={20} strokeWidth={3} />, path: '/dev-center/business-assets/parameters' },
     { key: 'files', labelKey: 'sidebar.files', icon: <FolderCheck size={20} strokeWidth={3} /> },
     // 发布管理 - 分组标题
     { key: 'publishManagement', labelKey: 'sidebar.publishManagement', isGroupLabel: true },
@@ -221,7 +221,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     { key: 'workerManagement', labelKey: 'sidebar.processRobot', icon: <Bot size={20} strokeWidth={3} />, path: '/scheduling-center/resource-monitoring/worker-management' },
     // 3. 业务配置 - 分组标题
     { key: 'businessConfig', labelKey: 'sidebar.businessConfig', isGroupLabel: true },
-    { key: 'schedulingParameters', labelKey: 'sidebar.parameters', icon: <Parentheses size={20} strokeWidth={3} /> },
+    { key: 'schedulingParameters', labelKey: 'sidebar.parameters', icon: <Parentheses size={20} strokeWidth={3} />, path: '/scheduling-center/business-config/parameters' },
     { key: 'schedulingCredentials', labelKey: 'sidebar.credentials', icon: <MonitorCheck size={20} strokeWidth={3} />, path: '/scheduling-center/business-assets/credentials' },
     { key: 'schedulingFiles', labelKey: 'sidebar.files', icon: <FolderCheck size={20} strokeWidth={3} /> },
     { key: 'schedulingQueue', labelKey: 'sidebar.queue', icon: <ListStart size={20} strokeWidth={3} /> },
@@ -285,8 +285,17 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     if (pathname === '/dev-center/business-assets/credentials') {
       return 'devCredentials';
     }
+    if (pathname === '/dev-center/business-assets/parameters') {
+      return 'devParameters';
+    }
     if (pathname === '/scheduling-center/business-assets/credentials') {
       return 'schedulingCredentials';
+    }
+    if (pathname === '/scheduling-center/business-config/parameters') {
+      return 'schedulingParameters';
+    }
+    if (pathname === '/scheduling-center/execution-assets/automation-process') {
+      return 'schedulingAutomationProcess';
     }
     return '';
   };
