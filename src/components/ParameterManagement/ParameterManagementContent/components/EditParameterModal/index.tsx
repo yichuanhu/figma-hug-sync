@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Modal, Form, Button, Toast, Typography, Radio } from '@douyinfe/semi-ui';
+import { Modal, Form, Button, Toast, Radio } from '@douyinfe/semi-ui';
 import type { LYParameterResponse, ParameterType } from '@/api/index';
 
 import './index.less';
@@ -73,8 +73,6 @@ const EditParameterModal = ({
     setParameterType(value);
   };
 
-  const { Text } = Typography;
-
   const typeOptions = [
     { value: 1, label: t('parameter.type.text') },
     { value: 2, label: t('parameter.type.boolean') },
@@ -123,7 +121,7 @@ const EditParameterModal = ({
             label={t('parameter.fields.name')}
             initValue={parameter.parameter_name}
             disabled
-            extraText={<Text type="tertiary" size="small">{t('parameter.fields.nameReadonly')}</Text>}
+            extraText={t('parameter.fields.nameReadonly')}
           />
           <Form.Select
             field="type"
