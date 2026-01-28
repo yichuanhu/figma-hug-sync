@@ -201,9 +201,9 @@ const ParameterDetailDrawer = ({
             />
           </Tooltip>
           {onDelete && context === 'development' && (
-            <Tooltip content={t('common.delete')}>
+            <Tooltip content={parameter?.is_published ? t('parameter.detail.cannotDeletePublished') : t('common.delete')}>
               <Button
-                icon={<IconDeleteStroked className="parameter-detail-drawer-header-delete-icon" />}
+                icon={<IconDeleteStroked className={parameter?.is_published ? '' : 'parameter-detail-drawer-header-delete-icon'} />}
                 theme="borderless"
                 size="small"
                 disabled={parameter?.is_published}
