@@ -153,6 +153,9 @@ export interface ParameterManagementContentProps {
 const ParameterManagementContent = ({ context }: ParameterManagementContentProps) => {
   const { t } = useTranslation();
 
+  // 搜索框输入值（即时显示）
+  const [searchValue, setSearchValue] = useState('');
+
   // 查询参数
   const [queryParams, setQueryParams] = useState<QueryParams>({
     page: 1,
@@ -234,7 +237,8 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
   );
 
   const handleSearch = (value: string) => {
-    debouncedSearch(value);
+    setSearchValue(value);  // 立即更新输入框显示
+    debouncedSearch(value); // 防抖更新查询参数
   };
 
   // 类型筛选选项（用于Popover CheckboxGroup）
@@ -403,7 +407,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
                 prefix={<IconSearch />}
                 placeholder={t('parameter.searchPlaceholder')}
                 className="parameter-management-content-search-input"
-                value={queryParams.keyword || ''}
+                value={searchValue}
                 onChange={handleSearch}
                 showClear
                 maxLength={100}
