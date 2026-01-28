@@ -435,9 +435,11 @@ const CredentialManagementPage = () => {
               <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleViewUsage(record); }}>
                 {t('credential.actions.viewUsage')}
               </Dropdown.Item>
-              <Dropdown.Item type="danger" onClick={(e) => { e.stopPropagation(); handleDelete(record); }}>
-                {t('common.delete')}
-              </Dropdown.Item>
+              {context === 'development' && (
+                <Dropdown.Item type="danger" onClick={(e) => { e.stopPropagation(); handleDelete(record); }}>
+                  {t('common.delete')}
+                </Dropdown.Item>
+              )}
             </Dropdown.Menu>
           }
         >
@@ -559,9 +561,11 @@ const CredentialManagementPage = () => {
                 >
                   {t('credential.personalCredentialManagement')}
                 </Button>
-                <Button icon={<IconPlus />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
-                  {t('credential.createCredential')}
-                </Button>
+                {context === 'development' && (
+                  <Button icon={<IconPlus />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
+                    {t('credential.createCredential')}
+                  </Button>
+                )}
               </Space>
             </Col>
           </Row>

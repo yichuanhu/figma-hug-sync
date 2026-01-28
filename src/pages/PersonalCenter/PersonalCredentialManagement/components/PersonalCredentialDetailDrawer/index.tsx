@@ -507,12 +507,6 @@ const PersonalCredentialDetailDrawer = ({
   // 使用记录表格列
   const usageColumns = useMemo(() => [
     {
-      title: t('credential.usage.table.user'),
-      dataIndex: 'user_name',
-      key: 'user_name',
-      width: 100,
-    },
-    {
       title: t('credential.usage.table.usageTime'),
       dataIndex: 'usage_time',
       key: 'usage_time',
