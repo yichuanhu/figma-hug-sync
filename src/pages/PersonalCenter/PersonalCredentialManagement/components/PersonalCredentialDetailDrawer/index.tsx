@@ -81,6 +81,14 @@ const generateMockUsageRecords = (): UsageRecord[] => {
   const usageTypes: ('DEBUG' | 'TASK')[] = ['DEBUG', 'TASK'];
   const processes = ['订单处理流程', '数据同步流程', '报表生成流程', '邮件发送流程'];
   const workers = ['Worker-01', 'Worker-02', 'Worker-03', 'Worker-04'];
+  
+  // 使用 picsum.photos 提供真实可访问的图片
+  const screenshotUrls = [
+    'https://picsum.photos/seed/usage1/800/600',
+    'https://picsum.photos/seed/usage2/800/600',
+    'https://picsum.photos/seed/usage3/800/600',
+  ];
+
   return Array.from({ length: 25 }, (_, i) => ({
     id: `usage-${i}`,
     user_id: `user-${(i % 5) + 1}`,
@@ -92,7 +100,7 @@ const generateMockUsageRecords = (): UsageRecord[] => {
     process_version: `1.0.${Math.floor(Math.random() * 10)}`,
     worker_name: workers[Math.floor(Math.random() * workers.length)],
     task_number: `TASK-${String(i + 1).padStart(6, '0')}`,
-    screenshot_url: i % 3 === 0 ? 'https://via.placeholder.com/800x600' : null,
+    screenshot_url: i % 3 === 0 ? screenshotUrls[i % screenshotUrls.length] : null,
   }));
 };
 
@@ -571,8 +579,12 @@ const PersonalCredentialDetailDrawer = ({
             src={url}
             width={50}
             height={35}
-            preview
-            style={{ cursor: 'pointer', borderRadius: 4 }}
+            preview={{
+              src: url,
+            }}
+            onClick={(e) => e.stopPropagation()}
+            style={{ cursor: 'pointer', borderRadius: 4, objectFit: 'cover' }}
+            fallback={<div style={{ width: 50, height: 35, background: 'var(--semi-color-fill-1)', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: 'var(--semi-color-text-2)' }}>加载失败</div>}
           />
         ) : (
           '-'
