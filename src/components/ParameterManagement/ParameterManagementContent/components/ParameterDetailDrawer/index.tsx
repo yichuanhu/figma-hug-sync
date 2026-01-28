@@ -243,7 +243,6 @@ const ParameterDetailDrawer = ({
       placement="right"
       mask={false}
       closable={false}
-      headerStyle={{ padding: '12px 16px' }}
       title={renderHeader()}
     >
       {!isFullscreen && (
