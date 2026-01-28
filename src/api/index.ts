@@ -647,20 +647,25 @@ export interface LYWorkerResponse {
    * Ip Address
    * IP地址
    */
-  ip_address?: string | null;
+  ip_address: string;
   /**
    * Priority
    * 任务调度优先级
    */
-  priority?: string | null;
+  priority: string;
   /**
    * Client Version
    * 客户端版本
    */
   client_version?: string | null;
   /**
-   * Last Heartbeat
+   * Last Heartbeat Time
    * 最近心跳时间
+   */
+  last_heartbeat_time?: string | null;
+  /**
+   * Last Heartbeat
+   * 最近心跳时间（别名）
    */
   last_heartbeat?: string | null;
   /**
@@ -672,17 +677,37 @@ export interface LYWorkerResponse {
    * Sync Status
    * 同步状态
    */
-  sync_status?: string | null;
+  sync_status: string;
+  /**
+   * Group Id
+   * 所属分组ID
+   */
+  group_id?: string | null;
+  /**
+   * Group Name
+   * 所属分组名称
+   */
+  group_name?: string | null;
   /**
    * Worker Group Id
-   * 所属分组ID
+   * 所属分组ID（别名）
    */
   worker_group_id?: string | null;
   /**
    * Worker Group Name
-   * 所属分组名称
+   * 所属分组名称（别名）
    */
   worker_group_name?: string | null;
+  /**
+   * Username
+   * 用户名/账户
+   */
+  username?: string | null;
+  /**
+   * Account
+   * 账户
+   */
+  account?: string | null;
   /**
    * Device Token
    * 设备Token
@@ -694,10 +719,20 @@ export interface LYWorkerResponse {
    */
   desktop_type?: string | null;
   /**
-   * Account
-   * 账户
+   * Enable Auto Unlock
+   * 启用自动解锁
    */
-  account?: string | null;
+  enable_auto_unlock?: boolean | null;
+  /**
+   * Display Size
+   * 显示分辨率
+   */
+  display_size?: string | null;
+  /**
+   * Resolution
+   * 分辨率（别名）
+   */
+  resolution?: string | null;
   /**
    * Password Sync Status
    * 密码同步状态
@@ -708,11 +743,6 @@ export interface LYWorkerResponse {
    * 强制登录
    */
   force_login?: boolean | null;
-  /**
-   * Resolution
-   * 分辨率
-   */
-  resolution?: string | null;
   /**
    * Machine Code
    * 机器码
@@ -772,7 +802,7 @@ export interface LYWorkerResponse {
    * Updated At
    * 更新时间
    */
-  updated_at: string | null;
+  updated_at?: string | null;
 }
 
 /**
@@ -1441,21 +1471,26 @@ export interface GetParametersParams {
 // ==================== 个人凭据管理相关类型 ====================
 
 /**
+ * PersonalCredentialValue
+ * 个人凭据值结构
+ */
+export interface PersonalCredentialValue {
+  username: string;
+  password: string;
+}
+
+/**
  * LYPersonalCredentialResponse
  * 个人凭据响应模型
  */
 export interface LYPersonalCredentialResponse {
-  personal_credential_id: string;
-  personal_credential_name: string;
-  credential_id?: string;
-  credential_name?: string;
-  credential_value?: string;
-  username: string;
-  password?: string;
+  credential_id: string;
+  credential_name: string;
+  credential_value: PersonalCredentialValue;
   description?: string | null;
   linked_credentials_count?: number;
-  created_by: string;
-  created_by_name?: string | null;
+  owner_id: string;
+  owner_name?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -1474,10 +1509,8 @@ export interface LYPersonalCredentialListResultResponse {
  * 创建个人凭据请求
  */
 export interface LYCreatePersonalCredentialRequest {
-  name: string;
-  credential_name?: string;
-  username: string;
-  password: string;
+  credential_name: string;
+  credential_value: PersonalCredentialValue;
   description?: string | null;
 }
 
@@ -1486,10 +1519,8 @@ export interface LYCreatePersonalCredentialRequest {
  * 更新个人凭据请求
  */
 export interface LYUpdatePersonalCredentialRequest {
-  name?: string | null;
   credential_name?: string | null;
-  username?: string | null;
-  password?: string | null;
+  credential_value?: PersonalCredentialValue;
   description?: string | null;
 }
 
@@ -1525,6 +1556,7 @@ export interface LYWorkerGroupResponse {
   description?: string | null;
   member_count: number;
   creator_id: string;
+  creator_name?: string | null;
   created_at: string | null;
   updated_at: string | null;
 }
@@ -1542,10 +1574,33 @@ export interface LYListResponseLYWorkerGroupResponse {
 export interface LYWorkerGroupMemberResponse {
   id: string;
   name: string;
+  description?: string | null;
   status: string;
+  sync_status?: string | null;
   ip_address?: string | null;
   priority?: string | null;
+  client_version?: string | null;
+  last_heartbeat_time?: string | null;
   last_heartbeat?: string | null;
+  receive_tasks?: boolean | null;
+  username?: string | null;
+  desktop_type?: string | null;
+  enable_auto_unlock?: boolean | null;
+  display_size?: string | null;
+  force_login?: boolean | null;
+  device_token?: string | null;
+  machine_code?: string | null;
+  host_name?: string | null;
+  os?: string | null;
+  arch?: string | null;
+  cpu_model?: string | null;
+  cpu_cores?: number | null;
+  memory_capacity?: string | null;
+  robot_count?: number | null;
+  created_at?: string | null;
+  creator_id?: string | null;
+  group_id?: string | null;
+  joined_at?: string | null;
 }
 
 /** LYListResponse[LYWorkerGroupMemberResponse] */
@@ -1591,6 +1646,7 @@ export interface GetWorkerGroupMembersParams {
   offset?: number;
   size?: number;
   keyword?: string;
+  status?: string;
 }
 
 /**
