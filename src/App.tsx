@@ -20,6 +20,8 @@ import SchedulingProcessManagementPage from "@/pages/Scheduling/ProcessManagemen
 import SchedulingParameterManagementPage from "@/pages/Scheduling/ParameterManagement/ParameterManagementPage";
 // Scheduling - Queue Management
 import SchedulingQueueManagementPage from "@/pages/Scheduling/QueueManagement/QueueManagementPage";
+// Queue Messages
+import QueueMessagesPage from "@/pages/QueueMessages/QueueMessagesPage";
 // Maintenance
 import MaintenanceWorkbench from "@/pages/Maintenance/MaintenanceWorkbench";
 // Requirements
@@ -61,6 +63,11 @@ const App = () => (
         <Route path="/dev-center/business-assets/queues" element={<DevQueueManagementPage />} />
         {/* 队列管理 - 调度中心入口 */}
         <Route path="/scheduling-center/business-assets/queues" element={<SchedulingQueueManagementPage />} />
+        
+        {/* 队列消息管理 - 开发中心入口 */}
+        <Route path="/dev-center/business-assets/queues/:queueId/messages" element={<QueueMessagesPage />} />
+        {/* 队列消息管理 - 调度中心入口 */}
+        <Route path="/scheduling-center/business-assets/queues/:queueId/messages" element={<QueueMessagesPage />} />
         
         {/* 自动化流程 - 调度中心入口 */}
         <Route path="/scheduling-center/execution-assets/automation-process" element={<SchedulingProcessManagementPage />} />

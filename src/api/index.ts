@@ -1741,3 +1741,101 @@ export interface LYQueueListResultResponse {
     total: number;
   };
 }
+
+/**
+ * 消息状态
+ */
+export type MessageStatus = 'UNCONSUMED_NOT_ACTIVE' | 'UNCONSUMED_ACTIVE' | 'CONSUMED' | 'EXPIRED';
+
+/**
+ * 消息优先级
+ */
+export type MessagePriority = 'HIGH' | 'MEDIUM' | 'LOW';
+
+/**
+ * 消费端类型
+ */
+export type ConsumerType = 'MANUAL' | 'ROBOT';
+
+/**
+ * LYQueueMessageResponse
+ * 队列消息响应模型
+ */
+export interface LYQueueMessageResponse {
+  /** 消息ID */
+  message_id: string;
+  /** 队列ID */
+  queue_id: string;
+  /** 队列实例ID */
+  queue_instance_id: string;
+  /** 消息内容 */
+  content: string;
+  /** 消息内容摘要 */
+  content_summary: string;
+  /** 消息状态 */
+  status: MessageStatus;
+  /** 优先级 */
+  priority: MessagePriority;
+  /** 消息类型 (TEST/PRODUCTION) */
+  message_type: 'TEST' | 'PRODUCTION';
+  /** 入队时间 */
+  created_at: string;
+  /** 生效时间 */
+  effective_time: string;
+  /** 失效时间 */
+  expiry_time: string | null;
+  /** 消费时间 */
+  consumed_at: string | null;
+  /** 消费端类型 */
+  consumer_type: ConsumerType | null;
+  /** 消费者ID */
+  consumer_id: string | null;
+  /** 消费者姓名 */
+  consumer_name: string | null;
+  /** 消费任务ID */
+  consume_task_id: string | null;
+}
+
+/**
+ * LYQueueMessageListResultResponse
+ * 队列消息列表结果响应
+ */
+export interface LYQueueMessageListResultResponse {
+  data: LYQueueMessageResponse[];
+  range: {
+    offset: number;
+    size: number;
+    total: number;
+  };
+}
+
+/**
+ * GetQueueMessagesParams
+ * 获取队列消息列表参数
+ */
+export interface GetQueueMessagesParams {
+  queue_id: string;
+  offset?: number;
+  size?: number;
+  keyword?: string;
+  status?: MessageStatus | null;
+  consume_task_id?: string;
+  start_time?: string;
+  end_time?: string;
+  context?: 'development' | 'scheduling';
+}
+
+/**
+ * LYRequeueMessageRequest
+ * 重新入队消息请求
+ */
+export interface LYRequeueMessageRequest {
+  /** 消息内容 (必填, 最大4000字符) */
+  content: string;
+  /** 优先级 (必填) */
+  priority: MessagePriority;
+  /** 生效时间 (必填) */
+  effective_time: string;
+  /** 失效时间 (可选, 需大于生效时间) */
+  expiry_time?: string | null;
+}
