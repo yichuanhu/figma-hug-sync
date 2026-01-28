@@ -46,6 +46,11 @@
     "collapse": "收起",
     "viewDetail": "查看详情"
   },
+  "emptyState": {
+    "retry": "重试",
+    "goHome": "返回首页",
+    "goBack": "返回上一页"
+  },
   "sidebar": {
     "home": "首页",
     "developmentCenter": "开发中心",

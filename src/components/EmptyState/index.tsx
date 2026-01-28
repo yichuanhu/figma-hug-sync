@@ -1,4 +1,5 @@
-import { Empty } from '@douyinfe/semi-ui';
+import { Empty, Button } from '@douyinfe/semi-ui';
+import { IconRefresh, IconHome } from '@douyinfe/semi-icons';
 import {
   IllustrationNoContent,
   IllustrationNoContentDark,
@@ -13,6 +14,8 @@ import {
   IllustrationNotFound,
   IllustrationNotFoundDark,
 } from '@douyinfe/semi-illustrations';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 import './index.less';
 
@@ -27,6 +30,14 @@ import './index.less';
  */
 export type EmptyStateVariant = 'noData' | 'noResult' | 'error' | 'noAccess' | 'maintenance' | 'notFound';
 
+/**
+ * 预设操作类型
+ * - retry: 重试按钮
+ * - goHome: 返回首页按钮
+ * - goBack: 返回上一页按钮
+ */
+export type EmptyStateAction = 'retry' | 'goHome' | 'goBack';
+
 interface EmptyStateProps {
   /** 描述文字 */
   description: string;
@@ -36,8 +47,12 @@ interface EmptyStateProps {
   className?: string;
   /** 空状态变体类型 */
   variant?: EmptyStateVariant;
-  /** 底部操作区域 */
+  /** 底部操作区域（自定义内容） */
   footer?: React.ReactNode;
+  /** 预设操作按钮 */
+  actions?: EmptyStateAction[];
+  /** 重试回调函数 */
+  onRetry?: () => void;
 }
 
 /**
@@ -81,7 +96,7 @@ const getIllustrations = (variant: EmptyStateVariant) => {
 
 /**
  * 统一的空状态组件
- * 使用黄色系配色（背景色 #FFE600，图标黑灰色）
+ * 使用黄色系配色（背景色 #FFE600，图标灰色 #515151）
  * 
  * @example
  * // 默认无数据状态
@@ -90,17 +105,27 @@ const getIllustrations = (variant: EmptyStateVariant) => {
  * // 搜索无结果
  * <EmptyState variant="noResult" description="未找到相关结果" />
  * 
- * // 加载失败
- * <EmptyState variant="error" description="加载失败，请重试" />
+ * // 加载失败带重试按钮
+ * <EmptyState 
+ *   variant="error" 
+ *   description="加载失败，请重试" 
+ *   actions={['retry']} 
+ *   onRetry={() => refetch()} 
+ * />
  * 
- * // 无权限
- * <EmptyState variant="noAccess" description="暂无访问权限" />
+ * // 404页面带返回首页按钮
+ * <EmptyState 
+ *   variant="notFound" 
+ *   description="页面不存在" 
+ *   actions={['goHome', 'goBack']} 
+ * />
  * 
- * // 维护中
- * <EmptyState variant="maintenance" description="功能维护中" />
- * 
- * // 404未找到
- * <EmptyState variant="notFound" description="页面不存在" />
+ * // 自定义底部操作
+ * <EmptyState 
+ *   variant="noData" 
+ *   description="暂无数据" 
+ *   footer={<Button onClick={handleCreate}>创建第一条数据</Button>} 
+ * />
  */
 const EmptyState = ({ 
   description, 
@@ -108,8 +133,65 @@ const EmptyState = ({
   className, 
   variant = 'noData',
   footer,
+  actions,
+  onRetry,
 }: EmptyStateProps) => {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
   const { light: LightIllustration, dark: DarkIllustration } = getIllustrations(variant);
+
+  /**
+   * 渲染预设操作按钮
+   */
+  const renderActions = () => {
+    if (!actions || actions.length === 0) return null;
+
+    return (
+      <div className="empty-state-actions">
+        {actions.map((action) => {
+          switch (action) {
+            case 'retry':
+              return (
+                <Button
+                  key="retry"
+                  theme="solid"
+                  type="primary"
+                  icon={<IconRefresh />}
+                  onClick={onRetry}
+                >
+                  {t('emptyState.retry')}
+                </Button>
+              );
+            case 'goHome':
+              return (
+                <Button
+                  key="goHome"
+                  theme="light"
+                  type="primary"
+                  icon={<IconHome />}
+                  onClick={() => navigate('/')}
+                >
+                  {t('emptyState.goHome')}
+                </Button>
+              );
+            case 'goBack':
+              return (
+                <Button
+                  key="goBack"
+                  theme="borderless"
+                  type="tertiary"
+                  onClick={() => navigate(-1)}
+                >
+                  {t('emptyState.goBack')}
+                </Button>
+              );
+            default:
+              return null;
+          }
+        })}
+      </div>
+    );
+  };
 
   return (
     <Empty
@@ -128,7 +210,7 @@ const EmptyState = ({
       }
       description={description}
     >
-      {footer}
+      {footer || renderActions()}
     </Empty>
   );
 };
