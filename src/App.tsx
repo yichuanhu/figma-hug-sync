@@ -12,6 +12,8 @@ import OperationsWorkbench from "@/pages/Operations/OperationsWorkbench";
 import WorkerManagementPage from "@/pages/Scheduling/WorkerManagement/WorkerManagementPage";
 // Scheduling - Credential Management
 import SchedulingCredentialManagementPage from "@/pages/Scheduling/CredentialManagement/CredentialManagementPage";
+// Scheduling - Process Management
+import SchedulingProcessManagementPage from "@/pages/Scheduling/ProcessManagement/ProcessManagementPage";
 // Maintenance
 import MaintenanceWorkbench from "@/pages/Maintenance/MaintenanceWorkbench";
 // Requirements
@@ -43,6 +45,9 @@ const App = () => (
         <Route path="/dev-center/business-assets/credentials" element={<CredentialManagementPage />} />
         {/* 凭据管理 - 调度中心入口 */}
         <Route path="/scheduling-center/business-assets/credentials" element={<SchedulingCredentialManagementPage />} />
+        
+        {/* 自动化流程 - 调度中心入口 */}
+        <Route path="/scheduling-center/execution-assets/automation-process" element={<SchedulingProcessManagementPage />} />
         
         {/* 个人中心 */}
         <Route path="/personal-center" element={<PersonalCenter />} />

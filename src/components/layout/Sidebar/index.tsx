@@ -212,7 +212,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     { key: 'schedulingWorkbench', labelKey: 'sidebar.schedulingWorkbench', icon: <LayoutGrid size={20} strokeWidth={3} /> },
     // 1. 执行资产 - 分组标题
     { key: 'executionAssets', labelKey: 'sidebar.executionAssets', isGroupLabel: true },
-    { key: 'schedulingAutomationProcess', labelKey: 'sidebar.automationProcess', icon: <Workflow size={20} strokeWidth={3} /> },
+    { key: 'schedulingAutomationProcess', labelKey: 'sidebar.automationProcess', icon: <Workflow size={20} strokeWidth={3} />, path: '/scheduling-center/execution-assets/automation-process' },
     { key: 'documentProcessing', labelKey: 'sidebar.documentProcessing', icon: <FileText size={20} strokeWidth={3} /> },
     { key: 'agentApplication', labelKey: 'sidebar.agentApplication', icon: <Bot size={20} strokeWidth={3} /> },
     { key: 'humanMachineTask', labelKey: 'sidebar.humanMachineTask', icon: <Users size={20} strokeWidth={3} /> },

@@ -1,0 +1,346 @@
+// ProcessDetailDrawer 流程详情抽屉样式
+.process-detail-drawer {
+  // 标题区域
+  &-header {
+    width: 100%;
+    padding-right: 0;
+
+    &-title {
+      margin: 0;
+    }
+
+    &-delete-icon {
+      color: var(--semi-color-danger);
+    }
+
+    &-divider {
+      height: 16px;
+      margin: 0 8px 0 4px;
+    }
+
+    &-close-btn {
+      margin-left: 4px;
+    }
+  }
+
+  // 拖拽把手
+  &-resize-handle {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    cursor: ew-resize;
+    z-index: 100;
+  }
+
+  // Tab 容器
+  &-tabs {
+    height: 100%;
+  }
+
+  // Tab 内容
+  &-tab-content {
+    padding: 16px 24px;
+  }
+
+  // 筛选器区域
+  &-filters {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  &-filter-select {
+    width: 140px;
+
+    &--wide {
+      width: 160px;
+    }
+  }
+
+  &-filter-date {
+    flex: 1;
+  }
+
+  // 版本列表空状态
+  &-version-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 180px);
+    min-height: 400px;
+    gap: 24px;
+
+    &-upload-btn {
+      margin-top: 8px;
+    }
+  }
+
+  // 版本列表Tab - 左右分栏布局
+  &-version-layout {
+    display: flex;
+    height: calc(100vh - 180px);
+    min-height: 400px;
+  }
+
+  // 左侧版本列表面板
+  &-version-sidebar {
+    width: 200px;
+    min-width: 200px;
+    border-right: 1px solid var(--semi-color-border);
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+
+    &-header {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 12px;
+    }
+
+    &-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--semi-color-text-0);
+    }
+
+    &-upload-btn {
+      width: 100%;
+      margin-bottom: 16px;
+    }
+
+    &-list {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    &-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: background-color 0.2s;
+
+      &:hover {
+        background-color: var(--semi-color-fill-0);
+      }
+
+      &--selected {
+        background-color: var(--semi-color-fill-1);
+      }
+
+      &-version {
+        font-size: 14px;
+        color: var(--semi-color-text-0);
+      }
+    }
+  }
+
+  // 右侧版本详情面板
+  &-version-detail {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 24px;
+
+    &-section {
+      margin-bottom: 24px;
+
+      &-title {
+        display: block;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--semi-color-text-0);
+        margin-bottom: 8px;
+      }
+    }
+
+    &-delete-btn {
+      margin-top: 8px;
+    }
+
+    &-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: var(--semi-color-text-2);
+    }
+  }
+
+  // 变量卡片列表
+  &-variable-card-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  // 变量卡片
+  &-variable-card {
+    border: 1px solid var(--semi-color-border);
+    border-radius: 6px;
+    background-color: var(--semi-color-bg-0);
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+
+    &:hover {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+      .process-detail-drawer-variable-card-edit-btn {
+        opacity: 1;
+      }
+    }
+
+    &-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background-color: var(--semi-color-fill-0);
+      border-bottom: 1px solid var(--semi-color-border);
+
+      &-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+        flex: 1;
+      }
+    }
+
+    &-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    &-edit-btn {
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    &-desc-row {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 4px;
+
+      &:hover .process-detail-drawer-variable-card-edit-btn {
+        opacity: 1;
+      }
+    }
+
+    &-body {
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    &-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      min-height: 22px;
+    }
+
+    &-label {
+      flex-shrink: 0;
+      width: 56px;
+      line-height: 32px;
+      text-align: left;
+    }
+
+    &-value {
+      flex: 1;
+      min-width: 0;
+      line-height: 32px;
+      cursor: default;
+      word-break: break-all;
+      max-height: 64px;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    &-edit {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      .semi-input-textarea-wrapper {
+        width: 100%;
+        background-color: var(--semi-color-bg-0);
+        border-color: var(--semi-color-primary);
+      }
+
+      &-actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+      }
+
+      &-confirm,
+      &-cancel {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      &-confirm {
+        color: var(--semi-color-primary);
+
+        &:hover {
+          background-color: var(--semi-color-primary-light-default);
+        }
+      }
+
+      &-cancel {
+        color: var(--semi-color-text-2);
+
+        &:hover {
+          color: var(--semi-color-text-0);
+          background-color: var(--semi-color-fill-1);
+        }
+      }
+    }
+  }
+}
+
+// 全局覆盖 - SideSheet header 和 body 样式
+.card-sidesheet.process-detail-drawer {
+  .semi-sidesheet-header {
+    border-bottom: 1px solid var(--semi-color-border);
+  }
+
+  .semi-sidesheet-body {
+    padding: 0;
+    position: relative;
+  }
+
+  .semi-tabs-bar {
+    padding: 0 24px;
+  }
+
+  // Descriptions 标签左对齐
+  .semi-descriptions {
+    .semi-descriptions-item-key {
+      text-align: left;
+    }
+  }
+}

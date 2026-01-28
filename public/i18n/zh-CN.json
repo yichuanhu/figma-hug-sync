@@ -583,6 +583,14 @@
       }
     }
   },
+  "scheduling": {
+    "processDevelopment": {
+      "breadcrumb": {
+        "schedulingCenter": "调度中心"
+      },
+      "description": "查看和运行已发布的自动化流程"
+    }
+  },
   "worker": {
     "breadcrumb": {
       "schedulingCenter": "调度中心",
