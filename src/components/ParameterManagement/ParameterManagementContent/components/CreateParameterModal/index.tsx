@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Modal, Form, Button, Toast, Typography, Radio, InputNumber } from '@douyinfe/semi-ui';
+import { Modal, Form, Button, Toast, Radio } from '@douyinfe/semi-ui';
 import type { ParameterType } from '@/api/index';
 
 import './index.less';
@@ -65,8 +65,6 @@ const CreateParameterModal = ({
     setParameterType(value);
   };
 
-  const { Text } = Typography;
-
   const typeOptions = [
     { value: 1, label: t('parameter.type.text') },
     { value: 2, label: t('parameter.type.boolean') },
@@ -98,7 +96,7 @@ const CreateParameterModal = ({
             { required: true, message: t('parameter.validation.nameRequired') },
             { max: 30, message: t('parameter.validation.nameLengthError') },
           ]}
-          extraText={<Text type="tertiary" size="small">⚠️ {t('parameter.fields.nameHint')}</Text>}
+          extraText={t('parameter.fields.nameHint')}
           maxLength={30}
           showClear
         />
