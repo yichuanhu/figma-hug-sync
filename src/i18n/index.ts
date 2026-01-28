@@ -8,11 +8,16 @@ i18n
   .init({
     lng: 'zh-CN',
     fallbackLng: 'zh-CN',
+    supportedLngs: ['zh-CN'],
+    load: 'currentOnly',
     interpolation: {
       escapeValue: false,
     },
     backend: {
       loadPath: '/i18n/{{lng}}.json',
+    },
+    react: {
+      useSuspense: false,
     },
   });
 
