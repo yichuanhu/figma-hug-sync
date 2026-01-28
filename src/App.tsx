@@ -18,6 +18,8 @@ import RequirementsWorkbench from "@/pages/Requirements/RequirementsWorkbench";
 import SchedulingWorkbench from "@/pages/Scheduling/SchedulingWorkbench";
 // Personal Center
 import PersonalCenter from "@/pages/PersonalCenter";
+// Dev Preview
+import EmptyStatePreview from "@/pages/DevPreview/EmptyStatePreview";
 
 const queryClient = new QueryClient();
 
@@ -44,6 +46,9 @@ const App = () => (
         <Route path="/personal-center" element={<PersonalCenter />} />
         <Route path="/personal-center/personal-credentials" element={<PersonalCenter />} />
         <Route path="/personal-center/settings" element={<PersonalCenter />} />
+        
+        {/* 开发预览页面 */}
+        <Route path="/dev-preview/empty-state" element={<EmptyStatePreview />} />
         
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />

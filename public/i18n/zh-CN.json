@@ -970,5 +970,31 @@
       "success": "成功添加 {{count}} 个机器人到组",
       "error": "添加失败，请重试"
     }
+  },
+  "emptyStatePreview": {
+    "noData": {
+      "title": "无数据 (noData)",
+      "description": "列表为空，暂无数据记录"
+    },
+    "noResult": {
+      "title": "无结果 (noResult)",
+      "description": "搜索或筛选后未找到匹配结果"
+    },
+    "error": {
+      "title": "加载失败 (error)",
+      "description": "数据加载失败，请检查网络后重试"
+    },
+    "noAccess": {
+      "title": "无权限 (noAccess)",
+      "description": "您没有权限访问此内容"
+    },
+    "maintenance": {
+      "title": "维护中 (maintenance)",
+      "description": "功能正在维护中，请稍后再试"
+    },
+    "notFound": {
+      "title": "未找到 (notFound)",
+      "description": "请求的页面或资源不存在"
+    }
   }
 }
