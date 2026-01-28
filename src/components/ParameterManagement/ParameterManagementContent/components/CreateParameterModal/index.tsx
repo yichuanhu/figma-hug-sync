@@ -90,29 +90,25 @@ const CreateParameterModal = ({
         labelPosition="top"
         initValues={{ type: 1, boolValue: 'True' }}
       >
-        <div className="create-parameter-modal-row">
-          <Form.Input
-            field="name"
-            label={t('parameter.fields.name')}
-            placeholder={t('parameter.fields.namePlaceholder')}
-            rules={[
-              { required: true, message: t('parameter.validation.nameRequired') },
-              { max: 30, message: t('parameter.validation.nameLengthError') },
-            ]}
-            extraText={<Text type="tertiary" size="small">⚠️ {t('parameter.fields.nameHint')}</Text>}
-            maxLength={30}
-            showClear
-            className="create-parameter-modal-name-input"
-          />
-          <Form.Select
-            field="type"
-            label={t('parameter.fields.type')}
-            optionList={typeOptions}
-            rules={[{ required: true, message: t('parameter.validation.typeRequired') }]}
-            className="create-parameter-modal-type-select"
-            onChange={(value) => handleTypeChange(value as ParameterType)}
-          />
-        </div>
+        <Form.Input
+          field="name"
+          label={t('parameter.fields.name')}
+          placeholder={t('parameter.fields.namePlaceholder')}
+          rules={[
+            { required: true, message: t('parameter.validation.nameRequired') },
+            { max: 30, message: t('parameter.validation.nameLengthError') },
+          ]}
+          extraText={<Text type="tertiary" size="small">⚠️ {t('parameter.fields.nameHint')}</Text>}
+          maxLength={30}
+          showClear
+        />
+        <Form.Select
+          field="type"
+          label={t('parameter.fields.type')}
+          optionList={typeOptions}
+          rules={[{ required: true, message: t('parameter.validation.typeRequired') }]}
+          onChange={(value) => handleTypeChange(value as ParameterType)}
+        />
 
         {/* 根据类型显示不同的值输入控件 */}
         {parameterType === 1 && (
