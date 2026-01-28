@@ -163,6 +163,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
     list: [],
   });
   const [queryParams, setQueryParams] = useState<GetAvailableWorkersForGroupParams>({
+    group_id: groupId || '',
     offset: 0,
     size: 20,
     keyword: undefined,
@@ -194,9 +195,9 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
     if (visible) {
       setSelectedWorkers([]);
       setStatusFilter([]);
-      setQueryParams({ offset: 0, size: 20, keyword: undefined });
+      setQueryParams({ group_id: groupId || '', offset: 0, size: 20, keyword: undefined });
     }
-  }, [visible]);
+  }, [visible, groupId]);
 
   // 状态筛选变化时重置分页
   const handleStatusFilterChange = (values: WorkerStatus[]) => {

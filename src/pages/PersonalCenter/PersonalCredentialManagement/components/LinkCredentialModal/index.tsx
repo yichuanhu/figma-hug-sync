@@ -46,17 +46,16 @@ const LinkCredentialModal = ({
   const handleSubmit = async (values: { credential_ids: string[] }) => {
     setLoading(true);
     try {
-      // 构建API请求体
+      // 构建API请求体（仅关联第一个凭据，或者多次调用）
       const requestBody: LYLinkCredentialRequest = {
+        personal_credential_id: credential?.credential_id || '',
+        credential_id: values.credential_ids[0] || '',
         credential_ids: values.credential_ids,
       };
       // 模拟API调用
       await new Promise((resolve) => setTimeout(resolve, 500));
 
-      console.log('关联凭据:', {
-        personal_credential_id: credential?.credential_id,
-        ...requestBody,
-      });
+      console.log('关联凭据:', requestBody);
 
       Toast.success(t('personalCredential.linkCredential.success'));
       onSuccess();
