@@ -140,6 +140,15 @@ const EmptyState = ({
   const navigate = useNavigate();
   const { light: LightIllustration, dark: DarkIllustration } = getIllustrations(variant);
 
+  // 自定义颜色变量，用于覆盖 Semi UI 默认的蓝色
+  const illustrationStyle = {
+    width: size, 
+    height: size,
+    '--semi-color-primary': '#515151',
+    '--semi-color-primary-light-default': '#FFE600',
+    '--semi-color-primary-light-hover': '#FFE600',
+  } as React.CSSProperties;
+
   /**
    * 渲染预设操作按钮
    */
@@ -199,13 +208,13 @@ const EmptyState = ({
       image={
         <LightIllustration
           className="empty-state-illustration"
-          style={{ width: size, height: size }}
+          style={illustrationStyle}
         />
       }
       darkModeImage={
         <DarkIllustration
           className="empty-state-illustration"
-          style={{ width: size, height: size }}
+          style={illustrationStyle}
         />
       }
       description={description}

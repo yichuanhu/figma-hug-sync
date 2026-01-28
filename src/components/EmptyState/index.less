@@ -1,9 +1,24 @@
 // EmptyState 统一空状态组件样式
-// 自定义插图颜色配置
+// 自定义插图颜色配置 - 使用黄色系 (#FFE600) 替换默认蓝色系
+
+// Semi UI 插图颜色自定义
+// 注意：需要在足够高的作用域定义变量以覆盖 Semi UI 默认值
+.semi-empty {
+  // 主色 - 用于线条、加号等图标
+  --semi-color-primary: #515151;
+  // 辅助色 - 用于圆形背景等填充区域
+  --semi-color-primary-light-default: #FFE600;
+  // 悬浮色 - 用于 maintenance 等插图中的装饰元素（原蓝色）
+  --semi-color-primary-light-hover: #FFE600;
+}
 
 .empty-state-illustration {
-  --semi-color-primary: #515151;  // 主色 - 用于加号等图标
-  --semi-color-primary-light-default: #FFE600; // 辅助色 - 用于圆形背景（原浅蓝 #98CDFC）
+  // 主色 - 用于线条、加号等图标
+  --semi-color-primary: #515151;
+  // 辅助色 - 用于圆形背景等填充区域
+  --semi-color-primary-light-default: #FFE600;
+  // 悬浮色 - 用于 maintenance 等插图中的装饰元素（原蓝色）
+  --semi-color-primary-light-hover: #FFE600;
 }
 
 // 操作按钮区域样式
