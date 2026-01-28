@@ -1,0 +1,71 @@
+.queue-messages-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .queue-messages-content-header {
+    .queue-messages-content-header-title {
+      margin-bottom: 16px;
+
+      .title {
+        margin-bottom: 4px;
+      }
+    }
+
+    .queue-messages-content-header-toolbar {
+      margin-bottom: 16px;
+
+      .queue-messages-content-search-input {
+        width: 240px;
+      }
+
+      .queue-messages-content-taskid-input {
+        width: 180px;
+      }
+    }
+  }
+
+  .queue-messages-content-table {
+    flex: 1;
+    overflow: hidden;
+
+    .queue-messages-content-table-content {
+      display: block;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-family: monospace;
+      font-size: 12px;
+    }
+  }
+
+  // 表格行选中状态
+  .queue-messages-row-selected {
+    background-color: var(--semi-color-fill-1) !important;
+  }
+}
+
+// 筛选弹出框样式
+.queue-messages-filter-popover {
+  padding: 12px;
+  min-width: 280px;
+
+  .queue-messages-filter-popover-section {
+    margin-bottom: 12px;
+
+    .queue-messages-filter-popover-label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+  }
+
+  .queue-messages-filter-popover-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--semi-color-border);
+  }
+}
