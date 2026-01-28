@@ -210,20 +210,26 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
   // 调度中心的详细菜单结构 - 使用分组标题样式
   const schedulingCenterMenu: MenuItem[] = [
     { key: 'schedulingWorkbench', labelKey: 'sidebar.schedulingWorkbench', icon: <LayoutGrid size={20} strokeWidth={3} /> },
-    // 任务调度 - 分组标题
-    { key: 'taskScheduling', labelKey: 'sidebar.taskScheduling', isGroupLabel: true },
-    { key: 'scheduledTasks', labelKey: 'sidebar.scheduledTasks', icon: <CalendarClock size={20} strokeWidth={3} /> },
-    { key: 'executionQueue', labelKey: 'sidebar.executionQueue', icon: <Play size={20} strokeWidth={3} /> },
-    { key: 'executionHistory', labelKey: 'sidebar.executionHistory', icon: <History size={20} strokeWidth={3} /> },
-    // 执行资源监控 - 分组标题
+    // 1. 执行资产 - 分组标题
+    { key: 'executionAssets', labelKey: 'sidebar.executionAssets', isGroupLabel: true },
+    { key: 'schedulingAutomationProcess', labelKey: 'sidebar.automationProcess', icon: <Workflow size={20} strokeWidth={3} /> },
+    { key: 'documentProcessing', labelKey: 'sidebar.documentProcessing', icon: <FileText size={20} strokeWidth={3} /> },
+    { key: 'agentApplication', labelKey: 'sidebar.agentApplication', icon: <Bot size={20} strokeWidth={3} /> },
+    { key: 'humanMachineTask', labelKey: 'sidebar.humanMachineTask', icon: <Users size={20} strokeWidth={3} /> },
+    // 2. 执行资源监控 - 分组标题
     { key: 'executionResourceMonitoring', labelKey: 'sidebar.executionResourceMonitoring', isGroupLabel: true },
-    { key: 'workerManagement', labelKey: 'sidebar.workerManagement', icon: <Bot size={20} strokeWidth={3} />, path: '/scheduling-center/resource-monitoring/worker-management' },
-    // 业务资产配置 - 分组标题
-    { key: 'schedulingBusinessAssetConfig', labelKey: 'sidebar.businessAssetConfig', isGroupLabel: true },
-    { key: 'schedulingQueue', labelKey: 'sidebar.queue', icon: <ListStart size={20} strokeWidth={3} /> },
-    { key: 'schedulingCredentials', labelKey: 'sidebar.credentials', icon: <MonitorCheck size={20} strokeWidth={3} />, path: '/scheduling-center/business-assets/credentials' },
+    { key: 'workerManagement', labelKey: 'sidebar.processRobot', icon: <Bot size={20} strokeWidth={3} />, path: '/scheduling-center/resource-monitoring/worker-management' },
+    // 3. 业务配置 - 分组标题
+    { key: 'businessConfig', labelKey: 'sidebar.businessConfig', isGroupLabel: true },
     { key: 'schedulingParameters', labelKey: 'sidebar.parameters', icon: <Parentheses size={20} strokeWidth={3} /> },
+    { key: 'schedulingCredentials', labelKey: 'sidebar.credentials', icon: <MonitorCheck size={20} strokeWidth={3} />, path: '/scheduling-center/business-assets/credentials' },
     { key: 'schedulingFiles', labelKey: 'sidebar.files', icon: <FolderCheck size={20} strokeWidth={3} /> },
+    { key: 'schedulingQueue', labelKey: 'sidebar.queue', icon: <ListStart size={20} strokeWidth={3} /> },
+    // 4. 任务执行 - 分组标题
+    { key: 'taskExecution', labelKey: 'sidebar.taskExecution', isGroupLabel: true },
+    { key: 'autoExecutionPolicy', labelKey: 'sidebar.autoExecutionPolicy', icon: <CalendarClock size={20} strokeWidth={3} /> },
+    { key: 'executionTemplate', labelKey: 'sidebar.executionTemplate', icon: <Play size={20} strokeWidth={3} /> },
+    { key: 'taskList', labelKey: 'sidebar.taskList', icon: <ClipboardList size={20} strokeWidth={3} /> },
   ];
 
   // 运营中心的详细菜单结构 - 使用分组标题样式
