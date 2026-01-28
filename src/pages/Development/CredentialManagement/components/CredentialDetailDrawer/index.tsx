@@ -87,6 +87,13 @@ const generateMockUsageRecord = (index: number, context: 'development' | 'schedu
   const workers = ['Worker-01', 'Worker-02', 'Worker-03', 'Worker-04'];
   const versions = ['1.0.0', '1.0.1', '1.1.0', '2.0.0'];
 
+  // 使用 picsum.photos 提供真实可访问的图片
+  const screenshotUrls = [
+    'https://picsum.photos/seed/screen1/800/600',
+    'https://picsum.photos/seed/screen2/800/600',
+    'https://picsum.photos/seed/screen3/800/600',
+  ];
+
   return {
     id: generateUUID(),
     user_id: `user-${(index % 5) + 1}`,
@@ -99,7 +106,7 @@ const generateMockUsageRecord = (index: number, context: 'development' | 'schedu
     worker_id: generateUUID(),
     worker_name: workers[index % workers.length],
     task_id: context === 'scheduling' ? `TASK-${String(index + 1).padStart(6, '0')}` : null,
-    screenshot_url: index % 3 === 0 ? 'https://via.placeholder.com/800x600' : null,
+    screenshot_url: index % 3 === 0 ? screenshotUrls[index % screenshotUrls.length] : null,
   };
 };
 
@@ -528,8 +535,12 @@ const CredentialDetailDrawer = ({
             src={url}
             width={50}
             height={35}
-            preview
-            style={{ cursor: 'pointer', borderRadius: 4 }}
+            preview={{
+              src: url,
+            }}
+            onClick={(e) => e.stopPropagation()}
+            style={{ cursor: 'pointer', borderRadius: 4, objectFit: 'cover' }}
+            fallback={<div style={{ width: 50, height: 35, background: 'var(--semi-color-fill-1)', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: 'var(--semi-color-text-2)' }}>加载失败</div>}
           />
         ) : (
           '-'
