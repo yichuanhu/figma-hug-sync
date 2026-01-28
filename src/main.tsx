@@ -1,4 +1,5 @@
 import { createRoot } from "react-dom/client";
+import { Suspense } from "react";
 import App from "./App.tsx";
 // i18n 国际化配置
 import './i18n';
@@ -9,4 +10,8 @@ import './styles/index.less';
 // 项目样式
 import './styles/app.less';
 
-createRoot(document.getElementById("root")!).render(<App />);
+createRoot(document.getElementById("root")!).render(
+  <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>Loading...</div>}>
+    <App />
+  </Suspense>
+);

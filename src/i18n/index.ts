@@ -17,7 +17,7 @@ i18n
       loadPath: '/i18n/{{lng}}.json',
     },
     react: {
-      useSuspense: false,
+      useSuspense: true,
     },
   });
 
