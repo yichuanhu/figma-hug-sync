@@ -274,14 +274,7 @@ const ParameterDetailDrawer = ({
               : t('parameter.table.prodValue')
             }
           >
-            <Text 
-              copyable={{ 
-                icon: <IconCopyStroked className="parameter-detail-drawer-copy-icon" />,
-                onCopy: () => Toast.success(t('common.copySuccess')),
-              }}
-            >
-              {getParameterValueDisplay()}
-            </Text>
+            <Text>{getParameterValueDisplay()}</Text>
           </Descriptions.Item>
           <Descriptions.Item itemKey={t('parameter.detail.isPublished')}>
             {parameter?.is_published ? (
