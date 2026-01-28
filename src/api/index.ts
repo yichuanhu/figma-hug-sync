@@ -1359,3 +1359,285 @@ export interface GetAvailableWorkersForGroupParams {
    */
   size?: number;
 }
+
+// ============= 个人凭据管理相关类型定义 =============
+
+/**
+ * LYPersonalCredentialValue
+ * 个人凭据值结构
+ */
+export interface LYPersonalCredentialValue {
+  /**
+   * Username
+   * 用户名
+   */
+  username: string;
+  /**
+   * Password
+   * 密码（加密显示为 ******）
+   */
+  password: string;
+}
+
+/**
+ * LYPersonalCredentialResponse
+ * 个人凭据响应
+ */
+export interface LYPersonalCredentialResponse {
+  /**
+   * Credential Id
+   * 凭据ID
+   */
+  credential_id: string;
+  /**
+   * Credential Name
+   * 凭据名称
+   * @minLength 1
+   * @maxLength 30
+   */
+  credential_name: string;
+  /**
+   * Credential Value
+   * 凭据值
+   */
+  credential_value: LYPersonalCredentialValue;
+  /**
+   * Description
+   * 凭据描述
+   * @maxLength 2000
+   */
+  description?: string | null;
+  /**
+   * Linked Credentials Count
+   * 关联的业务凭据数量
+   */
+  linked_credentials_count: number;
+  /**
+   * Owner Id
+   * 所有者ID
+   */
+  owner_id: string;
+  /**
+   * Owner Name
+   * 所有者名称
+   */
+  owner_name?: string | null;
+  /**
+   * Created At
+   * 创建时间
+   */
+  created_at: string;
+  /**
+   * Updated At
+   * 更新时间
+   */
+  updated_at?: string | null;
+}
+
+/**
+ * LYPersonalCredentialListResultResponse
+ * 个人凭据列表结果响应
+ */
+export interface LYPersonalCredentialListResultResponse {
+  /** Data */
+  data?: LYPersonalCredentialResponse[] | null;
+  /** Range */
+  range?: LYRangeResponse | null;
+}
+
+/**
+ * LYPersonalCredentialResultResponse
+ * 个人凭据单条结果响应
+ */
+export interface LYPersonalCredentialResultResponse {
+  /** Data */
+  data?: LYPersonalCredentialResponse | null;
+}
+
+/**
+ * LYCreatePersonalCredentialRequest
+ * 创建个人凭据请求
+ */
+export interface LYCreatePersonalCredentialRequest {
+  /**
+   * Credential Name
+   * 凭据名称
+   * @minLength 1
+   * @maxLength 30
+   */
+  credential_name: string;
+  /**
+   * Credential Value
+   * 凭据值
+   */
+  credential_value: LYPersonalCredentialValue;
+  /**
+   * Description
+   * 凭据描述
+   * @maxLength 2000
+   */
+  description?: string | null;
+}
+
+/**
+ * LYUpdatePersonalCredentialRequest
+ * 更新个人凭据请求
+ */
+export interface LYUpdatePersonalCredentialRequest {
+  /**
+   * Credential Name
+   * 凭据名称（可选，不可变则不提交）
+   * @minLength 1
+   * @maxLength 30
+   */
+  credential_name?: string | null;
+  /**
+   * Credential Value
+   * 凭据值
+   */
+  credential_value?: LYPersonalCredentialValue | null;
+  /**
+   * Description
+   * 凭据描述
+   * @maxLength 2000
+   */
+  description?: string | null;
+}
+
+/**
+ * LYLinkCredentialRequest
+ * 关联业务凭据请求
+ */
+export interface LYLinkCredentialRequest {
+  /**
+   * Credential Ids
+   * 业务凭据ID列表
+   */
+  credential_ids: string[];
+}
+
+/**
+ * LYLinkedCredentialResponse
+ * 关联的业务凭据响应
+ */
+export interface LYLinkedCredentialResponse {
+  /**
+   * Credential Id
+   * 业务凭据ID
+   */
+  credential_id: string;
+  /**
+   * Credential Name
+   * 业务凭据名称
+   */
+  credential_name: string;
+  /**
+   * Credential Type
+   * 业务凭据类型
+   */
+  credential_type: CredentialType;
+  /**
+   * Linked At
+   * 关联时间
+   */
+  linked_at: string;
+}
+
+/** LYListResponse[LYLinkedCredentialResponse] */
+export interface LYListResponseLYLinkedCredentialResponse {
+  /** 范围 */
+  range?: LYRangeResponse | null;
+  /**
+   * List
+   * 列表
+   */
+  list: LYLinkedCredentialResponse[];
+}
+
+/**
+ * GetPersonalCredentialsParams
+ * 获取个人凭据列表参数
+ */
+export interface GetPersonalCredentialsParams {
+  /**
+   * Keyword
+   * 凭据名称关键词
+   */
+  keyword?: string | null;
+  /**
+   * Offset
+   * 查询偏移量
+   * @min 0
+   * @default 0
+   */
+  offset?: number;
+  /**
+   * Size
+   * 查询数量
+   * @min 0
+   * @default 10
+   */
+  size?: number;
+}
+
+export type GetPersonalCredentialsData = LYPersonalCredentialListResultResponse;
+
+export type AddPersonalCredentialData = LYPersonalCredentialResultResponse;
+
+export interface GetPersonalCredentialByIdParams {
+  /** Personal Credential Id */
+  personalCredentialId: string;
+}
+
+export type GetPersonalCredentialByIdData = LYPersonalCredentialResultResponse;
+
+export interface UpdatePersonalCredentialParams {
+  /** Personal Credential Id */
+  personalCredentialId: string;
+}
+
+export type UpdatePersonalCredentialData = LYPersonalCredentialResultResponse;
+
+export interface DeletePersonalCredentialParams {
+  /** Personal Credential Id */
+  personalCredentialId: string;
+}
+
+export type DeletePersonalCredentialData = LYPersonalCredentialResultResponse;
+
+export interface GetLinkedCredentialsParams {
+  /** Personal Credential Id */
+  personalCredentialId: string;
+  /**
+   * Offset
+   * 查询偏移量
+   * @min 0
+   * @default 0
+   */
+  offset?: number;
+  /**
+   * Size
+   * 查询数量
+   * @min 0
+   * @default 20
+   */
+  size?: number;
+}
+
+export type GetLinkedCredentialsData = LYListResponseLYLinkedCredentialResponse;
+
+export interface LinkCredentialsParams {
+  /** Personal Credential Id */
+  personalCredentialId: string;
+}
+
+export type LinkCredentialsData = LYPersonalCredentialResultResponse;
+
+export interface UnlinkCredentialParams {
+  /** Personal Credential Id */
+  personalCredentialId: string;
+  /** Credential Id */
+  credentialId: string;
+}
+
+export type UnlinkCredentialData = LYPersonalCredentialResultResponse;

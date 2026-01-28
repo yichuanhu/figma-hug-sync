@@ -21,6 +21,11 @@ import {
   IconDeleteStroked,
 } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
+import type {
+  LYPersonalCredentialResponse,
+  LYPersonalCredentialListResultResponse,
+  GetPersonalCredentialsParams,
+} from '@/api/index';
 import CreatePersonalCredentialModal from './components/CreatePersonalCredentialModal';
 import EditPersonalCredentialModal from './components/EditPersonalCredentialModal';
 import LinkCredentialModal from './components/LinkCredentialModal';
@@ -28,26 +33,8 @@ import PersonalCredentialDetailDrawer from './components/PersonalCredentialDetai
 
 import './index.less';
 
-// 个人凭据类型定义
-export interface PersonalCredential {
-  credential_id: string;
-  credential_name: string;
-  username: string;
-  password: string; // 显示为 ******
-  description: string | null;
-  linked_credentials_count: number; // 关联凭据数量
-  created_at: string;
-  updated_at: string;
-}
-
-export interface PersonalCredentialListResponse {
-  data: PersonalCredential[];
-  range: {
-    offset: number;
-    size: number;
-    total: number;
-  };
-}
+// 导出类型别名以保持组件兼容性
+export type PersonalCredential = LYPersonalCredentialResponse;
 
 // Mock数据生成
 const generateUUID = (): string => {
@@ -58,7 +45,7 @@ const generateUUID = (): string => {
   });
 };
 
-const generateMockPersonalCredential = (index: number): PersonalCredential => {
+const generateMockPersonalCredential = (index: number): LYPersonalCredentialResponse => {
   const names = [
     '个人邮箱',
     'SSH登录',
@@ -69,29 +56,32 @@ const generateMockPersonalCredential = (index: number): PersonalCredential => {
     'CRM系统',
     'OA系统',
   ];
+  const ownerNames = ['张三', '李四', '王五', '赵六'];
 
   return {
     credential_id: generateUUID(),
     credential_name: names[index % names.length],
-    username: `user_${index}@example.com`,
-    password: '******',
-    description: `这是${names[index % names.length]}的描述信息`,
-    linked_credentials_count: (index % 6), // 0-5个关联凭据
+    credential_value: {
+      username: `user_${index}@example.com`,
+      password: '******',
+    },
+    description: index % 3 === 0 ? `这是${names[index % names.length]}的描述信息，用于管理个人账户凭据，确保安全访问各类系统。` : null,
+    linked_credentials_count: index % 6, // 0-5个关联凭据
+    owner_id: generateUUID(),
+    owner_name: ownerNames[index % ownerNames.length],
     created_at: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
     updated_at: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
   };
 };
 
-const generateMockPersonalCredentialList = (): PersonalCredential[] => {
+const generateMockPersonalCredentialList = (): LYPersonalCredentialResponse[] => {
   return Array.from({ length: 25 }, (_, i) => generateMockPersonalCredential(i));
 };
 
 // 模拟API调用
-const fetchPersonalCredentialList = async (params: {
-  keyword?: string;
-  offset?: number;
-  size?: number;
-}): Promise<PersonalCredentialListResponse> => {
+const fetchPersonalCredentialList = async (
+  params: GetPersonalCredentialsParams
+): Promise<LYPersonalCredentialListResultResponse> => {
   await new Promise((resolve) => setTimeout(resolve, 500));
 
   let data = generateMockPersonalCredentialList();
@@ -134,20 +124,20 @@ const PersonalCredentialManagement = () => {
   });
 
   // 列表数据
-  const [listResponse, setListResponse] = useState<PersonalCredentialListResponse | null>(null);
+  const [listResponse, setListResponse] = useState<LYPersonalCredentialListResultResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   // 选中的凭据
-  const [editingCredential, setEditingCredential] = useState<PersonalCredential | null>(null);
-  const [selectedCredential, setSelectedCredential] = useState<PersonalCredential | null>(null);
+  const [editingCredential, setEditingCredential] = useState<LYPersonalCredentialResponse | null>(null);
+  const [selectedCredential, setSelectedCredential] = useState<LYPersonalCredentialResponse | null>(null);
 
   // 模态框/抽屉状态
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [linkModalVisible, setLinkModalVisible] = useState(false);
-  const [linkingCredential, setLinkingCredential] = useState<PersonalCredential | null>(null);
+  const [linkingCredential, setLinkingCredential] = useState<LYPersonalCredentialResponse | null>(null);
   const [initialDetailTab, setInitialDetailTab] = useState<'basic' | 'linked' | 'usage'>('basic');
 
   // 加载数据
@@ -170,7 +160,7 @@ const PersonalCredentialManagement = () => {
   }, [queryParams, t]);
 
   // 翻页并返回新数据（用于抽屉导航时自动翻页）
-  const handleDrawerPageChange = useCallback(async (page: number): Promise<PersonalCredential[]> => {
+  const handleDrawerPageChange = useCallback(async (page: number): Promise<LYPersonalCredentialResponse[]> => {
     setQueryParams(prev => ({ ...prev, page }));
     
     try {
@@ -204,13 +194,13 @@ const PersonalCredentialManagement = () => {
   };
 
   // 编辑凭据
-  const handleEdit = (record: PersonalCredential) => {
+  const handleEdit = (record: LYPersonalCredentialResponse) => {
     setEditingCredential(record);
     setEditModalVisible(true);
   };
 
   // 删除凭据
-  const handleDelete = (record: PersonalCredential) => {
+  const handleDelete = (record: LYPersonalCredentialResponse) => {
     Modal.confirm({
       title: t('personalCredential.deleteModal.title'),
       icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
@@ -228,27 +218,27 @@ const PersonalCredentialManagement = () => {
   };
 
   // 查看详情（点击行）
-  const handleRowClick = (record: PersonalCredential) => {
+  const handleRowClick = (record: LYPersonalCredentialResponse) => {
     setSelectedCredential(record);
     setInitialDetailTab('basic');
     setDetailDrawerVisible(true);
   };
 
   // 关联凭据
-  const handleLinkCredential = (record: PersonalCredential) => {
+  const handleLinkCredential = (record: LYPersonalCredentialResponse) => {
     setLinkingCredential(record);
     setLinkModalVisible(true);
   };
 
   // 查看使用记录
-  const handleViewUsage = (record: PersonalCredential) => {
+  const handleViewUsage = (record: LYPersonalCredentialResponse) => {
     setSelectedCredential(record);
     setInitialDetailTab('usage');
     setDetailDrawerVisible(true);
   };
 
   // 查看关联的凭据
-  const handleViewLinkedCredentials = (record: PersonalCredential) => {
+  const handleViewLinkedCredentials = (record: LYPersonalCredentialResponse) => {
     setSelectedCredential(record);
     setInitialDetailTab('linked');
     setDetailDrawerVisible(true);
@@ -272,9 +262,10 @@ const PersonalCredentialManagement = () => {
     },
     {
       title: t('personalCredential.table.username'),
-      dataIndex: 'username',
+      dataIndex: 'credential_value',
       key: 'username',
       width: 180,
+      render: (_: unknown, record: LYPersonalCredentialResponse) => record.credential_value?.username || '-',
     },
     {
       title: t('personalCredential.table.linkedCredentials'),
@@ -307,7 +298,7 @@ const PersonalCredentialManagement = () => {
       title: t('common.actions'),
       key: 'actions',
       width: 80,
-      render: (_: unknown, record: PersonalCredential) => (
+      render: (_: unknown, record: LYPersonalCredentialResponse) => (
         <Dropdown
           trigger="click"
           position="bottomRight"
@@ -387,10 +378,10 @@ const PersonalCredentialManagement = () => {
               />
             }
             onRow={(record) => ({
-              onClick: () => handleRowClick(record as PersonalCredential),
+              onClick: () => handleRowClick(record as LYPersonalCredentialResponse),
               style: {
                 cursor: 'pointer',
-                backgroundColor: selectedCredential?.credential_id === (record as PersonalCredential).credential_id && detailDrawerVisible
+                backgroundColor: selectedCredential?.credential_id === (record as LYPersonalCredentialResponse).credential_id && detailDrawerVisible
                   ? 'var(--semi-color-fill-1)'
                   : undefined,
               },

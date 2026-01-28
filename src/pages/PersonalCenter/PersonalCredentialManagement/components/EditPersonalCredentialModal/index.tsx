@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Form, Toast } from '@douyinfe/semi-ui';
-import type { PersonalCredential } from '../../index';
+import type { LYPersonalCredentialResponse, LYUpdatePersonalCredentialRequest } from '@/api/index';
 
 import './index.less';
 
 interface EditPersonalCredentialModalProps {
   visible: boolean;
-  credential: PersonalCredential | null;
+  credential: LYPersonalCredentialResponse | null;
   onCancel: () => void;
   onSuccess: () => void;
 }
@@ -26,7 +26,7 @@ const EditPersonalCredentialModal = ({
     if (visible && credential && formApi) {
       formApi.setValues({
         credential_name: credential.credential_name,
-        username: credential.username,
+        username: credential.credential_value?.username || '',
         password: '', // 密码不回显
         description: credential.description || '',
       });
@@ -41,9 +41,17 @@ const EditPersonalCredentialModal = ({
   }) => {
     setLoading(true);
     try {
+      // 构建API请求体
+      const requestBody: LYUpdatePersonalCredentialRequest = {
+        credential_name: values.credential_name,
+        credential_value: values.password 
+          ? { username: values.username, password: values.password }
+          : { username: values.username, password: '' }, // 空密码表示不修改
+        description: values.description || null,
+      };
       // 模拟API调用
       await new Promise((resolve) => setTimeout(resolve, 500));
-      console.log('编辑个人凭据:', values);
+      console.log('编辑个人凭据:', requestBody);
       Toast.success(t('personalCredential.editModal.success'));
       onSuccess();
     } catch (error) {
