@@ -569,19 +569,16 @@ const PersonalCredentialDetailDrawer = ({
       width: 80,
       render: (url: string | null) =>
         url ? (
-          <Image
-            src={url}
-            width={50}
-            height={35}
-            preview={{
-              src: url,
-              getPopupContainer: () => document.body,
-              zIndex: 1100,
-            }}
-            onClick={(e) => e.stopPropagation()}
-            style={{ cursor: 'pointer', borderRadius: 4, objectFit: 'cover' }}
-            fallback={<div style={{ width: 50, height: 35, background: 'var(--semi-color-fill-1)', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: 'var(--semi-color-text-2)' }}>加载失败</div>}
-          />
+          <div onClick={(e) => e.stopPropagation()} style={{ display: 'inline-block' }}>
+            <Image
+              src={url}
+              width={50}
+              height={35}
+              preview={true}
+              style={{ cursor: 'pointer', borderRadius: 4, objectFit: 'cover' }}
+              fallback={<div style={{ width: 50, height: 35, background: 'var(--semi-color-fill-1)', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: 'var(--semi-color-text-2)' }}>加载失败</div>}
+            />
+          </div>
         ) : (
           '-'
         ),
