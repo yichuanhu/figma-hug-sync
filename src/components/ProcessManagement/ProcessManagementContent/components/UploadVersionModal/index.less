@@ -1,0 +1,91 @@
+.upload-version-modal {
+  .upload-version-modal-content {
+    .upload-version-modal-warning {
+      margin-bottom: 16px;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .upload-version-modal-uploader {
+      .semi-upload {
+        .semi-upload-drag {
+          padding: 32px 16px;
+          border: 1px dashed var(--semi-color-border) !important;
+          border-radius: 4px;
+          background-color: var(--semi-color-fill-0) !important;
+        }
+
+        .semi-upload-drag:hover,
+        .semi-upload-drag.semi-upload-drag-area-legal,
+        .semi-upload-drag.semi-upload-drag-area-legal-main {
+          border-color: var(--semi-color-text-2) !important;
+          background-color: var(--semi-color-fill-1) !important;
+        }
+      }
+
+      .semi-upload-drag-area-main-text {
+        color: var(--semi-color-text-0);
+        font-weight: 500;
+      }
+
+      .semi-upload-drag-area-sub-text {
+        color: var(--semi-color-text-2);
+        margin-top: 4px;
+      }
+
+      .semi-upload-file-list {
+        display: none;
+      }
+    }
+
+    .upload-version-modal-file-info {
+      display: flex;
+      align-items: center;
+      margin-top: 12px;
+      padding: 8px 12px;
+      background-color: var(--semi-color-fill-0);
+      border-radius: 4px;
+
+      .upload-version-modal-file-name {
+        color: var(--semi-color-text-0);
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+// 全局覆盖 Semi UI Upload 拖拽区域的 hover 样式
+.upload-version-modal .semi-upload-drag:hover {
+  border-color: var(--semi-color-text-2) !important;
+  background-color: var(--semi-color-fill-1) !important;
+}
+
+.upload-version-modal .semi-upload-drag.semi-upload-drag-area-legal,
+.upload-version-modal .semi-upload-drag.semi-upload-drag-area-legal-main {
+  border-color: var(--semi-color-text-2) !important;
+  background-color: var(--semi-color-fill-1) !important;
+}
+
+// 拖拽文件进入时的视觉反馈效果
+.upload-version-modal .semi-upload-drag.semi-upload-drag-area-legal {
+  border-color: var(--semi-color-text-0) !important;
+  background-color: var(--semi-color-fill-2) !important;
+  transform: scale(1.01);
+  transition: all 0.2s ease-out;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+  .semi-upload-drag-area-icon {
+    transform: scale(1.1);
+    transition: transform 0.2s ease-out;
+  }
+
+  .semi-upload-drag-area-main-text {
+    color: var(--semi-color-text-0) !important;
+    font-weight: 600;
+  }
+}
+
+// 基础过渡动画
+.upload-version-modal .semi-upload-drag {
+  transition: all 0.2s ease-out;
+}
