@@ -1066,6 +1066,12 @@
   "queue": {
     "title": "队列管理",
     "description": "管理消息队列，实现业务消息的异步处理",
+    "breadcrumb": {
+      "developmentCenter": "开发中心",
+      "schedulingCenter": "调度中心",
+      "businessAssets": "业务资产配置",
+      "queueManagement": "队列管理"
+    },
     "createQueue": "新建队列",
     "searchPlaceholder": "搜索队列名称",
     "noData": "暂无队列",
