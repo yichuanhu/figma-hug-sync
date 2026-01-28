@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Form, Toast } from '@douyinfe/semi-ui';
+import type { LYCreatePersonalCredentialRequest } from '@/api/index';
 
 import './index.less';
 
@@ -26,9 +27,18 @@ const CreatePersonalCredentialModal = ({
   }) => {
     setLoading(true);
     try {
+      // 构建API请求体
+      const requestBody: LYCreatePersonalCredentialRequest = {
+        credential_name: values.credential_name,
+        credential_value: {
+          username: values.username,
+          password: values.password,
+        },
+        description: values.description || null,
+      };
       // 模拟API调用
       await new Promise((resolve) => setTimeout(resolve, 500));
-      console.log('创建个人凭据:', values);
+      console.log('创建个人凭据:', requestBody);
       Toast.success(t('personalCredential.createModal.success'));
       onSuccess();
     } catch (error) {

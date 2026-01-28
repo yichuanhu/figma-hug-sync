@@ -41,7 +41,7 @@ import {
   IconEyeOpened,
 } from '@douyinfe/semi-icons';
 import { Download } from 'lucide-react';
-import type { PersonalCredential } from '../../index';
+import type { LYPersonalCredentialResponse } from '@/api/index';
 import { useUsageRecordFilter } from '@/hooks/useUsageRecordFilter';
 
 import './index.less';
@@ -127,18 +127,18 @@ interface PaginationInfo {
 
 interface PersonalCredentialDetailDrawerProps {
   visible: boolean;
-  credential: PersonalCredential | null;
+  credential: LYPersonalCredentialResponse | null;
   onClose: () => void;
-  onEdit: (credential: PersonalCredential) => void;
-  onDelete: (credential: PersonalCredential) => void;
-  onLinkCredential: (credential: PersonalCredential) => void;
+  onEdit: (credential: LYPersonalCredentialResponse) => void;
+  onDelete: (credential: LYPersonalCredentialResponse) => void;
+  onLinkCredential: (credential: LYPersonalCredentialResponse) => void;
   onRefresh: () => void;
   // 导航相关
-  dataList?: PersonalCredential[];
-  onNavigate?: (credential: PersonalCredential) => void;
+  dataList?: LYPersonalCredentialResponse[];
+  onNavigate?: (credential: LYPersonalCredentialResponse) => void;
   // 分页相关 - 用于自动翻页
   pagination?: PaginationInfo;
-  onPageChange?: (page: number) => Promise<PersonalCredential[] | void>;
+  onPageChange?: (page: number) => Promise<LYPersonalCredentialResponse[] | void>;
   // 初始显示的tab
   initialTab?: 'basic' | 'linked' | 'usage';
 }
@@ -480,7 +480,7 @@ const PersonalCredentialDetailDrawer = ({
       },
       {
         key: t('personalCredential.table.username'),
-        value: credential.username,
+        value: credential.credential_value?.username || '-',
       },
       {
         key: t('common.description'),

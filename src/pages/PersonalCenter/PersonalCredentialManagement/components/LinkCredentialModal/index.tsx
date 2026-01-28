@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Form, Button, Toast, Typography } from '@douyinfe/semi-ui';
-import type { PersonalCredential } from '../../index';
+import type { LYPersonalCredentialResponse, LYLinkCredentialRequest } from '@/api/index';
 
 import './index.less';
 
@@ -21,7 +21,7 @@ const mockCredentials: Credential[] = [
 
 interface LinkCredentialModalProps {
   visible: boolean;
-  credential: PersonalCredential | null;
+  credential: LYPersonalCredentialResponse | null;
   onCancel: () => void;
   onSuccess: () => void;
 }
@@ -46,12 +46,16 @@ const LinkCredentialModal = ({
   const handleSubmit = async (values: { credential_ids: string[] }) => {
     setLoading(true);
     try {
+      // 构建API请求体
+      const requestBody: LYLinkCredentialRequest = {
+        credential_ids: values.credential_ids,
+      };
       // 模拟API调用
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       console.log('关联凭据:', {
         personal_credential_id: credential?.credential_id,
-        credential_ids: values.credential_ids,
+        ...requestBody,
       });
 
       Toast.success(t('personalCredential.linkCredential.success'));
