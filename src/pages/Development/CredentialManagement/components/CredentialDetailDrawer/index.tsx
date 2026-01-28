@@ -537,6 +537,8 @@ const CredentialDetailDrawer = ({
             height={35}
             preview={{
               src: url,
+              getPopupContainer: () => document.body,
+              zIndex: 1100,
             }}
             onClick={(e) => e.stopPropagation()}
             style={{ cursor: 'pointer', borderRadius: 4, objectFit: 'cover' }}
