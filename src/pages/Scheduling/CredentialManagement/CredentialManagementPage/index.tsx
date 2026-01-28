@@ -3,14 +3,14 @@ import CredentialManagementContent from '@/components/CredentialManagement/Crede
 
 import './index.less';
 
-const CredentialManagementPage = () => {
+const SchedulingCredentialManagementPage = () => {
   return (
     <AppLayout>
-      <div className="credential-management-page">
-        <CredentialManagementContent context="development" />
+      <div className="scheduling-credential-management-page">
+        <CredentialManagementContent context="scheduling" />
       </div>
     </AppLayout>
   );
 };
 
-export default CredentialManagementPage;
+export default SchedulingCredentialManagementPage;
