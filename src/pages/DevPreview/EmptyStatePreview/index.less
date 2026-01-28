@@ -1,0 +1,51 @@
+// EmptyStatePreview 缺省状态预览页样式
+.empty-state-preview {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  
+  &-breadcrumb {
+    padding: 12px 24px;
+    flex-shrink: 0;
+  }
+
+  &-header {
+    padding: 20px 24px 24px;
+    flex-shrink: 0;
+
+    &-title {
+      margin-bottom: 8px;
+    }
+  }
+
+  &-content {
+    flex: 1;
+    overflow: auto;
+    padding: 0 24px 24px;
+  }
+
+  &-card {
+    height: 100%;
+    
+    .semi-card-body {
+      padding: 0;
+    }
+
+    &-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
+    &-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 280px;
+      padding: 24px;
+      background-color: var(--semi-color-fill-0);
+      border-radius: 0 0 8px 8px;
+    }
+  }
+}
