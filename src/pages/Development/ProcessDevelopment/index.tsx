@@ -206,6 +206,9 @@ const ProcessDevelopment = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
+  // 搜索框输入值（即时显示）
+  const [searchValue, setSearchValue] = useState('');
+
   // 查询参数 - 直接使用API GetProcessesParams
   const [queryParams, setQueryParams] = useState<GetProcessesParams>({
     offset: 0,
@@ -275,14 +278,20 @@ const ProcessDevelopment = () => {
     loadData();
   }, [loadData]);
 
-  // 搜索 - 使用防抖处理
-  const handleSearch = useMemo(
+  // 搜索防抖
+  const debouncedSearch = useMemo(
     () =>
       debounce((value: string) => {
         setQueryParams((prev) => ({ ...prev, offset: 0, keyword: value }));
       }, 500),
     []
   );
+
+  // 搜索 - 使用防抖处理
+  const handleSearch = (value: string) => {
+    setSearchValue(value);  // 立即更新输入框显示
+    debouncedSearch(value); // 防抖更新查询参数
+  };
 
   // 打开流程详情抽屉
   const openProcessDetail = (record: LYProcessResponse) => {
@@ -515,7 +524,7 @@ const ProcessDevelopment = () => {
                 prefix={<IconSearch />}
                 placeholder={t('development.processDevelopment.searchPlaceholder')}
                 className="process-development-search-input"
-                value={queryParams.keyword || ''}
+                value={searchValue}
                 onChange={handleSearch}
                 showClear
                 maxLength={100}

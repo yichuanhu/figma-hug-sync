@@ -143,6 +143,9 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
   const [searchParams, setSearchParams] = useSearchParams();
   const { t } = useTranslation();
 
+  // 搜索框输入值（即时显示）
+  const [searchValue, setSearchValue] = useState('');
+
   // 查询参数
   const [queryParams, setQueryParams] = useState<QueryParams>({
     page: 1,
@@ -264,7 +267,8 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
   );
 
   const handleSearch = (value: string) => {
-    debouncedSearch(value);
+    setSearchValue(value);  // 立即更新输入框显示
+    debouncedSearch(value); // 防抖更新查询参数
   };
 
   // 类型筛选选项（用于Popover CheckboxGroup）
@@ -470,7 +474,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
                 prefix={<IconSearch />}
                 placeholder={t('credential.searchPlaceholder')}
                 className="credential-management-content-search-input"
-                value={queryParams.keyword || ''}
+                value={searchValue}
                 onChange={handleSearch}
                 showClear
                 maxLength={100}

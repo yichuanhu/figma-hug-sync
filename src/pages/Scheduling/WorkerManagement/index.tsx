@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
-import { 
+import { debounce } from 'lodash';
+import {
   Breadcrumb, 
   Typography, 
   Input, 
@@ -336,6 +337,9 @@ interface WorkerManagementProps {
 const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpened }: WorkerManagementProps) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+
+  // 搜索框输入值（即时显示）
+  const [searchValue, setSearchValue] = useState('');
   
   // 查询参数 - 使用API类型
   const [queryParams, setQueryParams] = useState<GetWorkersParams>({
@@ -459,9 +463,19 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     }
   }, [pendingWorkerId, listResponse.list, onWorkerDetailOpened]);
 
+  // 搜索防抖
+  const debouncedSearch = useMemo(
+    () =>
+      debounce((value: string) => {
+        setQueryParams(prev => ({ ...prev, keyword: value || undefined, offset: 0 }));
+      }, 500),
+    []
+  );
+
   // 搜索
   const handleSearch = (value: string) => {
-    setQueryParams(prev => ({ ...prev, keyword: value || undefined, offset: 0 }));
+    setSearchValue(value);  // 立即更新输入框显示
+    debouncedSearch(value); // 防抖更新查询参数
   };
 
   const handleFilterChange = (key: keyof FilterState, values: string[]) => {
@@ -905,7 +919,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
                 prefix={<IconSearch />}
                 placeholder={t('worker.searchPlaceholder')}
                 className="worker-management-search-input"
-                value={queryParams.keyword || ''}
+                value={searchValue}
                 onChange={handleSearch}
               />
               <Popover
