@@ -264,7 +264,7 @@
   },
   "parameter": {
     "title": "参数管理",
-    "description": "管理系统参数配置，满足不同业务场景的需求",
+    "description": "管理参数配置，满足不同业务场景的需求",
     "createParameter": "新建参数",
     "searchPlaceholder": "搜索参数名称",
     "noData": "暂无参数",
