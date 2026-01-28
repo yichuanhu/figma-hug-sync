@@ -313,6 +313,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
       dataIndex: 'parameter_type',
       key: 'parameter_type',
       width: 100,
+      sorter: (a: LYParameterResponse, b: LYParameterResponse) => a.parameter_type - b.parameter_type,
       render: (type: ParameterType) => {
         const config = typeConfig[type];
         return <Tag color={config.color}>{t(config.i18nKey)}</Tag>;
@@ -338,6 +339,11 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
       dataIndex: 'is_published',
       key: 'is_published',
       width: 100,
+      sorter: (a: LYParameterResponse, b: LYParameterResponse) => {
+        // 已发布排在前面
+        if (a.is_published === b.is_published) return 0;
+        return a.is_published ? -1 : 1;
+      },
       render: (isPublished: boolean) => (
         isPublished ? (
           <Tag color="green">{t('parameter.detail.published')}</Tag>
