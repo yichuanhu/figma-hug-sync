@@ -10,6 +10,9 @@ import {
   Divider,
   Tabs,
   TabPane,
+  Tooltip,
+  Row,
+  Col,
 } from '@douyinfe/semi-ui';
 import {
   IconClose,
@@ -17,6 +20,8 @@ import {
   IconDeleteStroked,
   IconChevronLeft,
   IconChevronRight,
+  IconMaximize,
+  IconMinimize,
 } from '@douyinfe/semi-icons';
 import type { LYParameterResponse, ParameterType } from '@/api/index';
 
@@ -68,7 +73,7 @@ const ParameterDetailDrawer = ({
     return saved ? Math.max(Number(saved), MIN_WIDTH) : DEFAULT_WIDTH;
   });
   const [isResizing, setIsResizing] = useState(false);
-
+  const [isFullscreen, setIsFullscreen] = useState(false);
   // 拖拽调整宽度
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
@@ -150,77 +155,104 @@ const ParameterDetailDrawer = ({
     return value;
   };
 
+  // 切换全屏
+  const toggleFullscreen = useCallback(() => {
+    setIsFullscreen((prev) => !prev);
+  }, []);
+
   // 自定义header
   const renderHeader = () => (
-    <div className="parameter-detail-drawer-header">
-      <Title heading={5} className="parameter-detail-drawer-header-title">
-        {parameter?.parameter_name || ''}
-      </Title>
-      <Space>
-        <Button
-          icon={<IconChevronLeft />}
-          theme="borderless"
-          type="tertiary"
-          disabled={!canGoPrev}
-          onClick={() => handleNavigate('prev')}
-        >
-          {t('common.previous')}
-        </Button>
-        <Button
-          icon={<IconChevronRight />}
-          iconPosition="right"
-          theme="borderless"
-          type="tertiary"
-          disabled={!canGoNext}
-          onClick={() => handleNavigate('next')}
-        >
-          {t('common.next')}
-        </Button>
-        <Divider layout="vertical" className="parameter-detail-drawer-header-divider" />
-        <Button
-          icon={<IconEditStroked />}
-          theme="borderless"
-          type="tertiary"
-          onClick={() => parameter && onEdit(parameter)}
-        />
-        {onDelete && context === 'development' && (
-          <Button
-            icon={<IconDeleteStroked />}
-            theme="borderless"
-            type="tertiary"
-            className="parameter-detail-drawer-header-delete-icon"
-            disabled={parameter?.is_published}
-            onClick={() => parameter && onDelete(parameter)}
-          />
-        )}
-        <Divider layout="vertical" className="parameter-detail-drawer-header-divider" />
-        <Button
-          icon={<IconClose />}
-          theme="borderless"
-          type="tertiary"
-          onClick={onClose}
-          className="parameter-detail-drawer-header-close-btn"
-        />
-      </Space>
-    </div>
+    <Row type="flex" justify="space-between" align="middle" className="parameter-detail-drawer-header">
+      <Col>
+        <Title heading={5} className="parameter-detail-drawer-header-title">
+          {parameter?.parameter_name || ''}
+        </Title>
+      </Col>
+      <Col>
+        <Space spacing={8}>
+          {(allParameters.length > 1 || total > pageSize) && (
+            <>
+              <Tooltip content={t('common.previous')}>
+                <Button
+                  icon={<IconChevronLeft />}
+                  theme="borderless"
+                  size="small"
+                  disabled={!canGoPrev}
+                  onClick={() => handleNavigate('prev')}
+                />
+              </Tooltip>
+              <Tooltip content={t('common.next')}>
+                <Button
+                  icon={<IconChevronRight />}
+                  theme="borderless"
+                  size="small"
+                  disabled={!canGoNext}
+                  onClick={() => handleNavigate('next')}
+                />
+              </Tooltip>
+              <Divider layout="vertical" className="parameter-detail-drawer-header-divider" />
+            </>
+          )}
+          <Tooltip content={t('common.edit')}>
+            <Button
+              icon={<IconEditStroked />}
+              theme="borderless"
+              size="small"
+              onClick={() => parameter && onEdit(parameter)}
+            />
+          </Tooltip>
+          {onDelete && context === 'development' && (
+            <Tooltip content={t('common.delete')}>
+              <Button
+                icon={<IconDeleteStroked className="parameter-detail-drawer-header-delete-icon" />}
+                theme="borderless"
+                size="small"
+                disabled={parameter?.is_published}
+                onClick={() => parameter && onDelete(parameter)}
+              />
+            </Tooltip>
+          )}
+          <Divider layout="vertical" className="parameter-detail-drawer-header-divider" />
+          <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
+            <Button
+              icon={isFullscreen ? <IconMinimize /> : <IconMaximize />}
+              theme="borderless"
+              size="small"
+              onClick={toggleFullscreen}
+            />
+          </Tooltip>
+          <Tooltip content={t('common.close')}>
+            <Button
+              icon={<IconClose />}
+              theme="borderless"
+              size="small"
+              onClick={onClose}
+              className="parameter-detail-drawer-header-close-btn"
+            />
+          </Tooltip>
+        </Space>
+      </Col>
+    </Row>
   );
 
   return (
     <SideSheet
-      className="card-sidesheet parameter-detail-drawer"
+      className={`card-sidesheet resizable-sidesheet parameter-detail-drawer ${isFullscreen ? 'fullscreen-sidesheet' : ''}`}
       visible={visible}
       onCancel={onClose}
-      width={width}
+      width={isFullscreen ? '100%' : width}
       placement="right"
       mask={false}
       closable={false}
       headerStyle={{ padding: '12px 16px' }}
       title={renderHeader()}
     >
-      <div
-        className="parameter-detail-drawer-resize-handle"
-        onMouseDown={handleMouseDown}
-      />
+      {!isFullscreen && (
+        <div
+          className="parameter-detail-drawer-resize-handle"
+          onMouseDown={handleMouseDown}
+        />
+      )}
 
       <Tabs className="parameter-detail-drawer-tabs">
         <TabPane tab={t('parameter.detail.tabs.basicInfo')} itemKey="basic">
