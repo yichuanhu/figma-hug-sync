@@ -254,6 +254,9 @@ const ParameterDetailDrawer = ({
       )}
 
       <div className="parameter-detail-drawer-content">
+        <Text strong className="parameter-detail-drawer-section-title">
+          {t('parameter.detail.tabs.basicInfo')}
+        </Text>
         <Descriptions align="left">
           <Descriptions.Item itemKey={t('parameter.fields.name')}>
             {parameter?.parameter_name || '-'}
