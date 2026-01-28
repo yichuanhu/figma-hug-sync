@@ -118,24 +118,20 @@ const EditParameterModal = ({
           initValues={getInitialValues()}
           key={parameter.parameter_id}
         >
-          <div className="edit-parameter-modal-row">
-            <Form.Input
-              field="name"
-              label={t('parameter.fields.name')}
-              initValue={parameter.parameter_name}
-              disabled
-              className="edit-parameter-modal-name-input"
-              extraText={<Text type="tertiary" size="small">{t('parameter.fields.nameReadonly')}</Text>}
-            />
-            <Form.Select
-              field="type"
-              label={t('parameter.fields.type')}
-              optionList={typeOptions}
-              rules={[{ required: true, message: t('parameter.validation.typeRequired') }]}
-              className="edit-parameter-modal-type-select"
-              onChange={(value) => handleTypeChange(value as ParameterType)}
-            />
-          </div>
+          <Form.Input
+            field="name"
+            label={t('parameter.fields.name')}
+            initValue={parameter.parameter_name}
+            disabled
+            extraText={<Text type="tertiary" size="small">{t('parameter.fields.nameReadonly')}</Text>}
+          />
+          <Form.Select
+            field="type"
+            label={t('parameter.fields.type')}
+            optionList={typeOptions}
+            rules={[{ required: true, message: t('parameter.validation.typeRequired') }]}
+            onChange={(value) => handleTypeChange(value as ParameterType)}
+          />
 
           {/* 根据类型显示不同的值输入控件 */}
           {parameterType === 1 && (
