@@ -219,12 +219,12 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     // 2. 执行资源监控 - 分组标题
     { key: 'executionResourceMonitoring', labelKey: 'sidebar.executionResourceMonitoring', isGroupLabel: true },
     { key: 'workerManagement', labelKey: 'sidebar.processRobot', icon: <Bot size={20} strokeWidth={3} />, path: '/scheduling-center/resource-monitoring/worker-management' },
-    // 3. 业务配置 - 分组标题
-    { key: 'businessConfig', labelKey: 'sidebar.businessConfig', isGroupLabel: true },
-    { key: 'schedulingParameters', labelKey: 'sidebar.parameters', icon: <Parentheses size={20} strokeWidth={3} />, path: '/scheduling-center/business-config/parameters' },
-    { key: 'schedulingCredentials', labelKey: 'sidebar.credentials', icon: <MonitorCheck size={20} strokeWidth={3} />, path: '/scheduling-center/business-assets/credentials' },
-    { key: 'schedulingFiles', labelKey: 'sidebar.files', icon: <FolderCheck size={20} strokeWidth={3} /> },
+    // 3. 业务资产配置 - 分组标题
+    { key: 'schedulingBusinessAssetConfig', labelKey: 'sidebar.businessAssetConfig', isGroupLabel: true },
     { key: 'schedulingQueue', labelKey: 'sidebar.queue', icon: <ListStart size={20} strokeWidth={3} /> },
+    { key: 'schedulingCredentials', labelKey: 'sidebar.credentials', icon: <MonitorCheck size={20} strokeWidth={3} />, path: '/scheduling-center/business-assets/credentials' },
+    { key: 'schedulingParameters', labelKey: 'sidebar.parameters', icon: <Parentheses size={20} strokeWidth={3} />, path: '/scheduling-center/business-assets/parameters' },
+    { key: 'schedulingFiles', labelKey: 'sidebar.files', icon: <FolderCheck size={20} strokeWidth={3} /> },
     // 4. 任务执行 - 分组标题
     { key: 'taskExecution', labelKey: 'sidebar.taskExecution', isGroupLabel: true },
     { key: 'autoExecutionPolicy', labelKey: 'sidebar.autoExecutionPolicy', icon: <CalendarClock size={20} strokeWidth={3} /> },
@@ -291,7 +291,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     if (pathname === '/scheduling-center/business-assets/credentials') {
       return 'schedulingCredentials';
     }
-    if (pathname === '/scheduling-center/business-config/parameters') {
+    if (pathname === '/scheduling-center/business-assets/parameters') {
       return 'schedulingParameters';
     }
     if (pathname === '/scheduling-center/execution-assets/automation-process') {
