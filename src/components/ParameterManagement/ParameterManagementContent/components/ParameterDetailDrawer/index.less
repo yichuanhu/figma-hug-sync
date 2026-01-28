@@ -1,0 +1,83 @@
+// ParameterDetailDrawer 参数详情抽屉样式
+.parameter-detail-drawer {
+  // 标题区域
+  &-header {
+    width: 100%;
+    padding-right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &-title {
+      margin: 0;
+    }
+
+    &-delete-icon {
+      color: var(--semi-color-danger);
+    }
+
+    &-divider {
+      height: 16px;
+      margin: 0 8px 0 4px;
+    }
+
+    &-close-btn {
+      margin-left: 4px;
+    }
+  }
+
+  // 拖拽把手
+  &-resize-handle {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    cursor: ew-resize;
+    z-index: 100;
+  }
+
+  // Tab 容器
+  &-tabs {
+    height: 100%;
+
+    .semi-tabs-content {
+      padding: 0;
+      height: calc(100% - 44px);
+      overflow: hidden;
+    }
+
+    .semi-tabs-pane {
+      height: 100%;
+      overflow: auto;
+    }
+  }
+
+  // 内容区域
+  &-content {
+    padding: 16px 24px;
+  }
+}
+
+// 全局覆盖 - SideSheet header 和 body 样式
+.card-sidesheet.parameter-detail-drawer {
+  .semi-sidesheet-header {
+    border-bottom: 1px solid var(--semi-color-border);
+  }
+
+  .semi-sidesheet-body {
+    padding: 0;
+    position: relative;
+  }
+
+  .semi-tabs-bar {
+    padding: 0 24px;
+  }
+
+  // Descriptions 标签左对齐
+  .semi-descriptions {
+    .semi-descriptions-item-key {
+      text-align: left;
+    }
+  }
+}

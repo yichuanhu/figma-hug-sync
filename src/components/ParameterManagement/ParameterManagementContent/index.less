@@ -1,0 +1,81 @@
+.parameter-management-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .parameter-management-content-header {
+    .parameter-management-content-header-title {
+      margin-bottom: 16px;
+
+      .title {
+        margin-bottom: 4px;
+      }
+    }
+
+    .parameter-management-content-header-toolbar {
+      margin-bottom: 16px;
+
+      .parameter-management-content-search-input {
+        width: 280px;
+      }
+    }
+  }
+
+  .parameter-management-content-table {
+    flex: 1;
+    overflow: hidden;
+
+    .parameter-management-content-table-name {
+      font-weight: 500;
+      color: var(--semi-color-text-0);
+    }
+
+    .parameter-management-content-table-value {
+      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+      font-size: 13px;
+      color: var(--semi-color-text-1);
+      display: block;
+      max-width: 160px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .parameter-management-content-table-desc {
+      display: block;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  // 表格行选中状态
+  .parameter-management-row-selected {
+    background-color: var(--semi-color-fill-1) !important;
+  }
+}
+
+// 筛选弹出框样式
+.parameter-filter-popover {
+  padding: 12px;
+  min-width: 200px;
+
+  .parameter-filter-popover-section {
+    margin-bottom: 12px;
+
+    .parameter-filter-popover-label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+  }
+
+  .parameter-filter-popover-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--semi-color-border);
+  }
+}

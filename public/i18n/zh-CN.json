@@ -261,6 +261,78 @@
       "empty": "暂无使用记录"
     }
   },
+  "parameter": {
+    "title": "参数管理",
+    "description": "管理系统参数配置，满足不同业务场景的需求",
+    "createParameter": "新建参数",
+    "searchPlaceholder": "搜索参数名称",
+    "noData": "暂无参数",
+    "table": {
+      "name": "参数名称",
+      "type": "类型",
+      "devValue": "参数值（调试值）",
+      "prodValue": "参数值"
+    },
+    "type": {
+      "text": "文本",
+      "boolean": "布尔",
+      "number": "数值"
+    },
+    "filter": {
+      "type": "类型"
+    },
+    "fields": {
+      "name": "参数名称",
+      "namePlaceholder": "请输入参数名称",
+      "nameHint": "创建后不可修改！",
+      "nameReadonly": "参数名称创建后不可修改",
+      "type": "类型",
+      "typePlaceholder": "请选择参数类型",
+      "value": "参数值",
+      "textValuePlaceholder": "请输入参数值（1-65535字符）",
+      "numberValuePlaceholder": "请输入数值",
+      "descriptionPlaceholder": "请输入参数说明（选填）"
+    },
+    "validation": {
+      "nameRequired": "请输入参数名称",
+      "nameLengthError": "参数名称长度必须在1-30字符之间",
+      "nameExists": "参数名称已存在，请使用其他名称",
+      "typeRequired": "请选择参数类型",
+      "valueRequired": "请输入参数值",
+      "textValueLengthError": "参数值长度不能超过65535字符"
+    },
+    "list": {
+      "loadError": "加载参数列表失败"
+    },
+    "createModal": {
+      "title": "新建参数",
+      "success": "参数创建成功",
+      "error": "创建失败，请重试"
+    },
+    "editModal": {
+      "title": "编辑参数",
+      "success": "参数更新成功",
+      "error": "更新失败，请重试"
+    },
+    "deleteModal": {
+      "title": "删除参数",
+      "confirmMessage": "确定要删除参数「{{name}}」吗？",
+      "publishedError": "已发布的参数不允许删除",
+      "success": "参数删除成功"
+    },
+    "detail": {
+      "tabs": {
+        "basicInfo": "基本信息"
+      },
+      "isPublished": "发布状态",
+      "published": "已发布",
+      "unpublished": "未发布"
+    },
+    "empty": {
+      "filterDescription": "没有找到匹配的参数，请尝试调整筛选条件",
+      "defaultDescription": "还没有创建任何参数，点击「新建参数」开始"
+    }
+  },
   "development": {
     "processDevelopment": {
       "breadcrumb": {
