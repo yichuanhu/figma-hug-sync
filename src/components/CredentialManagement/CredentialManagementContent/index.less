@@ -1,0 +1,71 @@
+.credential-management-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .credential-management-content-header {
+    .credential-management-content-header-title {
+      margin-bottom: 16px;
+
+      .title {
+        margin-bottom: 4px;
+      }
+    }
+
+    .credential-management-content-header-toolbar {
+      margin-bottom: 16px;
+
+      .credential-management-content-search-input {
+        width: 280px;
+      }
+    }
+  }
+
+  .credential-management-content-table {
+    flex: 1;
+    overflow: hidden;
+
+    .credential-management-content-table-name {
+      font-weight: 500;
+      color: var(--semi-color-text-0);
+    }
+
+    .credential-management-content-table-value {
+      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+      font-size: 13px;
+      color: var(--semi-color-text-1);
+    }
+
+    .credential-management-content-table-desc {
+      display: block;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+}
+
+// 筛选弹出框样式
+.credential-filter-popover {
+  padding: 12px;
+  min-width: 200px;
+
+  .credential-filter-popover-section {
+    margin-bottom: 12px;
+
+    .credential-filter-popover-label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+  }
+
+  .credential-filter-popover-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--semi-color-border);
+  }
+}
