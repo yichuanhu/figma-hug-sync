@@ -11,6 +11,7 @@ import {
   Tooltip,
   Row,
   Col,
+  Toast,
 } from '@douyinfe/semi-ui';
 import {
   IconClose,
@@ -276,7 +277,7 @@ const ParameterDetailDrawer = ({
             <Text 
               copyable={{ 
                 icon: <IconCopyStroked className="parameter-detail-drawer-copy-icon" />,
-                successTip: t('common.copySuccess'),
+                onCopy: () => Toast.success(t('common.copySuccess')),
               }}
             >
               {getParameterValueDisplay()}
