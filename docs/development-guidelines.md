@@ -616,20 +616,216 @@ import EmptyState from '@/components/EmptyState';
 
 ---
 
-## 9. 其他约定
+## 9. 详情抽屉（SideSheet）规范
 
-### 7.1 路由配置
+所有详情抽屉遵循统一的"浮动卡片"视觉风格，确保一致的用户体验。
+
+### 9.1 基础配置
+
+```tsx
+<SideSheet
+  className="card-sidesheet module-detail-drawer"
+  visible={visible}
+  placement="right"
+  mask={false}           // 无遮罩
+  closable={false}       // 自定义关闭按钮
+  title={renderHeader()}
+  // 注意：不设置 headerStyle，使用默认高度以保持一致性
+>
+```
+
+**样式规范（index.less）：**
+
+```less
+// 全局覆盖 - SideSheet header 和 body 样式
+.card-sidesheet.module-detail-drawer {
+  .semi-sidesheet-header {
+    border-bottom: 1px solid var(--semi-color-border);
+  }
+
+  .semi-sidesheet-body {
+    padding: 0;
+    position: relative;
+  }
+
+  .semi-tabs-bar {
+    padding: 0 24px;
+  }
+
+  // Descriptions 标签左对齐
+  .semi-descriptions {
+    .semi-descriptions-item-key {
+      text-align: left;
+    }
+  }
+}
+```
+
+### 9.2 Header 操作按钮规范
+
+Header 使用纯图标按钮，统一间距为 8px：
+
+```tsx
+const renderHeader = () => (
+  <Row type="flex" justify="space-between" align="middle" className="module-detail-drawer-header">
+    <Col>
+      <Title heading={5} className="module-detail-drawer-header-title">{item?.name}</Title>
+    </Col>
+    <Col>
+      <Space spacing={8}>
+        {/* 编辑按钮 */}
+        <Tooltip content={t('common.edit')}>
+          <Button
+            icon={<IconEditStroked />}
+            theme="borderless"
+            onClick={handleEdit}
+          />
+        </Tooltip>
+        
+        {/* 删除按钮 - 条件禁用 */}
+        <Tooltip content={item?.is_published ? t('module.detail.cannotDeletePublished') : t('common.delete')}>
+          <Button
+            icon={<IconDeleteStroked className={item?.is_published ? '' : 'module-detail-drawer-header-delete-icon'} />}
+            theme="borderless"
+            disabled={item?.is_published}
+            onClick={handleDelete}
+          />
+        </Tooltip>
+        
+        <Divider layout="vertical" className="module-detail-drawer-header-divider" />
+        
+        {/* 关闭按钮 */}
+        <Button
+          icon={<IconClose />}
+          theme="borderless"
+          className="module-detail-drawer-header-close-btn"
+          onClick={onClose}
+        />
+      </Space>
+    </Col>
+  </Row>
+);
+```
+
+### 9.3 操作按钮禁用状态规范
+
+**当某些操作不允许执行时（如已发布数据不允许删除），按钮需要：**
+
+1. **设置 `disabled={true}`** - 禁用点击
+2. **移除红色样式类** - 禁用时图标不显示红色，使用默认灰色
+3. **Tooltip 显示禁用原因** - 动态切换提示文案
+
+```tsx
+// ✅ 正确 - 禁用时移除红色图标样式
+<Tooltip content={item?.is_published ? t('module.detail.cannotDeletePublished') : t('common.delete')}>
+  <Button
+    icon={<IconDeleteStroked className={item?.is_published ? '' : 'module-detail-drawer-header-delete-icon'} />}
+    theme="borderless"
+    disabled={item?.is_published}
+    onClick={handleDelete}
+  />
+</Tooltip>
+
+// ❌ 错误 - 禁用时仍显示红色图标
+<Button
+  icon={<IconDeleteStroked className="module-detail-drawer-header-delete-icon" />}
+  disabled={item?.is_published}
+/>
+```
+
+**对应的 Less 样式：**
+
+```less
+.module-detail-drawer {
+  &-header {
+    &-delete-icon {
+      color: var(--semi-color-danger);  // 仅启用时显示红色
+    }
+  }
+}
+```
+
+### 9.4 Tab 与标题显示规范
+
+**有多个 Tab 时：**
+- 使用 Semi UI Tabs 组件进行切换
+- Tab 名称统一：基本信息 -> "基本信息"
+
+**移除 Tab 后：**
+- 需要在内容区域顶部显示区块标题，保持上下文清晰
+
+```tsx
+// 无 Tab 时，显示区块标题
+<div className="module-detail-drawer-content">
+  <Text strong className="module-detail-drawer-section-title">
+    {t('module.detail.tabs.basicInfo')}
+  </Text>
+  <Descriptions align="left" data={descriptionData} />
+</div>
+```
+
+```less
+.module-detail-drawer {
+  &-section-title {
+    display: block;
+    margin-bottom: 16px;
+    font-size: 14px;
+  }
+}
+```
+
+### 9.5 尺寸与拖拽规范
+
+| 属性 | 值 | 说明 |
+|------|-----|------|
+| 默认宽度 | 900px | 统一默认宽度 |
+| 最小宽度 | 576px | 拖拽时最小限制 |
+| 宽度持久化 | localStorage | 记住用户调整后的宽度 |
+| 边距 | 8px | 与屏幕边缘间距 |
+| 圆角 | 8px | 卡片圆角 |
+
+### 9.6 源表格行选中样式
+
+当抽屉打开时，源表格中对应的行需要高亮显示：
+
+```less
+// 表格行选中状态
+.module-row-selected {
+  background-color: var(--semi-color-fill-1) !important;
+}
+```
+
+### 9.7 上一条/下一条导航
+
+支持在抽屉内快速浏览列表数据，包含自动翻页功能：
+
+```tsx
+<Space>
+  <Button icon={<IconChevronUp />} disabled={!hasPrev} onClick={handlePrev}>
+    {t('common.previousItem')}
+  </Button>
+  <Button icon={<IconChevronDown />} disabled={!hasNext} onClick={handleNext}>
+    {t('common.nextItem')}
+  </Button>
+</Space>
+```
+
+---
+
+## 10. 其他约定
+
+### 10.1 路由配置
 
 - 路由集中在 `src/App.tsx` 中配置
 - 使用 `react-router-dom`
 
-### 7.2 状态管理
+### 10.2 状态管理
 
 - 使用 `@tanstack/react-query` 进行数据获取
 - 组件内状态使用 `useState`
 - 复杂状态逻辑抽取到自定义 hooks
 
-### 7.3 开发原则
+### 10.3 开发原则
 
 - 严格按照设计稿还原
 - 不添加设计稿中没有的功能或菜单
