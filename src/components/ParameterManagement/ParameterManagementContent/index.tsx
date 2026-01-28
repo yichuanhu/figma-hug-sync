@@ -96,7 +96,7 @@ const generateMockParameterList = (): LYParameterResponse[] => {
 
 // 模拟API调用
 const fetchParameterList = async (
-  params: GetParametersParams & { typeFilter?: ParameterType | null }
+  params: GetParametersParams & { typeFilter?: ParameterType | null; publishedFilter?: boolean | null }
 ): Promise<LYParameterListResultResponse> => {
   await new Promise((resolve) => setTimeout(resolve, 500));
 
@@ -116,6 +116,11 @@ const fetchParameterList = async (
   // 类型筛选
   if (params.typeFilter) {
     data = data.filter((item) => item.parameter_type === params.typeFilter);
+  }
+
+  // 发布状态筛选
+  if (params.publishedFilter !== null && params.publishedFilter !== undefined) {
+    data = data.filter((item) => item.is_published === params.publishedFilter);
   }
 
   const total = data.length;
@@ -165,6 +170,8 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
 
   // 类型筛选
   const [typeFilter, setTypeFilter] = useState<ParameterType[]>([]);
+  // 发布状态筛选（仅开发中心使用）
+  const [publishedFilter, setPublishedFilter] = useState<boolean | null>(null);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
 
   // 列表数据
@@ -191,6 +198,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
         offset: (queryParams.page - 1) * queryParams.pageSize,
         size: queryParams.pageSize,
         typeFilter: typeFilter.length > 0 ? typeFilter[0] : null,
+        publishedFilter: context === 'development' ? publishedFilter : null,
       });
       setListResponse(response);
       return response.data;
@@ -202,7 +210,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, typeFilter, context, t]);
+  }, [queryParams, typeFilter, publishedFilter, context, t]);
 
   // 翻页并返回新数据（用于抽屉导航时自动翻页）
   const handleDrawerPageChange = useCallback(async (page: number): Promise<LYParameterResponse[]> => {
@@ -215,13 +223,14 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
         offset: (page - 1) * queryParams.pageSize,
         size: queryParams.pageSize,
         typeFilter: typeFilter.length > 0 ? typeFilter[0] : null,
+        publishedFilter: context === 'development' ? publishedFilter : null,
       });
       setListResponse(response);
       return response.data;
     } catch {
       return [];
     }
-  }, [queryParams, typeFilter, context]);
+  }, [queryParams, typeFilter, publishedFilter, context]);
 
   useEffect(() => {
     loadData();
@@ -247,6 +256,15 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
     { value: 2, label: t('parameter.type.boolean') },
     { value: 3, label: t('parameter.type.number') },
   ];
+
+  // 发布状态筛选选项
+  const publishedFilterOptions = [
+    { value: true, label: t('parameter.detail.published') },
+    { value: false, label: t('parameter.detail.unpublished') },
+  ];
+
+  // 计算筛选数量
+  const filterCount = typeFilter.length + (publishedFilter !== null ? 1 : 0);
 
   // 点击行查看详情
   const handleRowClick = (record: LYParameterResponse) => {
@@ -452,9 +470,28 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
                         direction="horizontal"
                       />
                     </div>
+                    {context === 'development' && (
+                      <div className="parameter-filter-popover-section">
+                        <Text strong className="parameter-filter-popover-label">
+                          {t('parameter.detail.isPublished')}
+                        </Text>
+                        <CheckboxGroup
+                          value={publishedFilter !== null ? [publishedFilter] : []}
+                          onChange={(values) => {
+                            // 只允许单选
+                            const newValue = values.length > 0 ? values[values.length - 1] as boolean : null;
+                            setPublishedFilter(newValue);
+                            setQueryParams((prev) => ({ ...prev, page: 1 }));
+                          }}
+                          options={publishedFilterOptions}
+                          direction="horizontal"
+                        />
+                      </div>
+                    )}
                     <div className="parameter-filter-popover-footer">
                       <Button theme="borderless" onClick={() => {
                         setTypeFilter([]);
+                        setPublishedFilter(null);
                         setQueryParams((prev) => ({ ...prev, page: 1 }));
                       }}>
                         {t('common.reset')}
@@ -468,11 +505,11 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
               >
                 <Button
                   icon={<IconFilter />}
-                  type={typeFilter.length > 0 ? 'primary' : 'tertiary'}
-                  theme={typeFilter.length > 0 ? 'light' : 'borderless'}
+                  type={filterCount > 0 ? 'primary' : 'tertiary'}
+                  theme={filterCount > 0 ? 'light' : 'borderless'}
                 >
                   {t('common.filter')}
-                  {typeFilter.length > 0 && ` (${typeFilter.length})`}
+                  {filterCount > 0 && ` (${filterCount})`}
                 </Button>
               </Popover>
             </Space>
@@ -511,8 +548,8 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
             scroll={{ y: 'calc(100vh - 320px)' }}
             empty={
               <EmptyState
-                variant={queryParams.keyword || typeFilter.length > 0 ? 'noResult' : 'noData'}
-                description={queryParams.keyword || typeFilter.length > 0 
+                variant={queryParams.keyword || filterCount > 0 ? 'noResult' : 'noData'}
+                description={queryParams.keyword || filterCount > 0 
                   ? t('parameter.empty.filterDescription') 
                   : t('parameter.empty.defaultDescription')}
               />
