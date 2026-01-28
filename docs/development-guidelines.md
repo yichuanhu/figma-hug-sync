@@ -549,7 +549,351 @@ const handleSearch = (keyword: string) => {
 
 ---
 
-## 8. 空状态/缺省状态规范（重要）
+## 8. 表格（Table）组件规范
+
+所有数据表格遵循统一的实现模式，确保一致的用户体验和代码质量。
+
+### 8.1 基础结构
+
+```tsx
+import { Table, Input } from '@douyinfe/semi-ui';
+import { IconSearch } from '@douyinfe/semi-icons';
+import EmptyState from '@/components/EmptyState';
+import type { LYListResponseLYItemResponse } from '@/api';
+
+const [listResponse, setListResponse] = useState<LYListResponseLYItemResponse>({
+  range: { offset: 0, size: 20, total: 0 },
+  list: [],
+});
+const [loading, setLoading] = useState(false);
+const [queryParams, setQueryParams] = useState({ offset: 0, size: 20, keyword: '' });
+
+// 从响应中直接获取分页信息
+const { range, list } = listResponse;
+const currentPage = Math.floor((range?.offset || 0) / (range?.size || 20)) + 1;
+const pageSize = range?.size || 20;
+const total = range?.total || 0;
+
+<Table
+  dataSource={list}
+  rowKey="id"
+  loading={loading}
+  scroll={{ y: 'calc(100vh - 320px)' }}
+  empty={
+    <EmptyState 
+      variant={queryParams.keyword ? 'noResult' : 'noData'}
+      description={queryParams.keyword ? t('common.noResult') : t('module.noData')} 
+    />
+  }
+  pagination={{
+    total,
+    pageSize,
+    currentPage,
+    showSizeChanger: true,
+    pageSizeOpts: [10, 20, 50, 100],
+    onPageChange: (page) => {
+      setQueryParams((prev) => ({ ...prev, offset: (page - 1) * pageSize }));
+    },
+    onPageSizeChange: (size) => {
+      setQueryParams((prev) => ({ ...prev, offset: 0, size }));
+    },
+  }}
+  columns={columns}
+/>
+```
+
+### 8.2 列渲染规范
+
+**文本截断与 Tooltip：**
+
+```tsx
+const columns = [
+  {
+    title: t('module.fields.name'),
+    dataIndex: 'name',
+    width: 200,
+    render: (text: string) => (
+      <span className="module-table-name">{text}</span>
+    ),
+  },
+  {
+    title: t('common.description'),
+    dataIndex: 'description',
+    width: 200,
+    render: (text: string) => (
+      <Tooltip content={text} position="topLeft">
+        <span className="module-table-desc">{text || '-'}</span>
+      </Tooltip>
+    ),
+  },
+];
+```
+
+```less
+.module-table {
+  &-name {
+    font-weight: 500;
+    color: var(--semi-color-text-0);
+  }
+
+  &-desc {
+    display: block;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+```
+
+**Null/Undefined 检查：**
+
+```tsx
+// ✅ 正确 - 始终检查空值
+render: (text: string | null | undefined) => text || '-'
+
+// ✅ 正确 - 复杂渲染时检查
+render: (_, record) => {
+  if (!record.status) return '-';
+  return <Tag color={statusConfig[record.status].color}>{t(statusConfig[record.status].i18nKey)}</Tag>;
+}
+
+// ❌ 错误 - 直接使用可能为空的值
+render: (text) => text
+```
+
+### 8.3 加载状态规范
+
+**使用 Table 内置 loading 属性，不使用骨架屏：**
+
+```tsx
+const [loading, setLoading] = useState(false);
+
+const loadData = async () => {
+  setLoading(true);
+  try {
+    const response = await fetchData(queryParams);
+    setListResponse(response);
+  } finally {
+    setLoading(false);
+  }
+};
+
+<Table loading={loading} dataSource={list} />
+```
+
+### 8.4 空状态规范
+
+**根据搜索条件动态切换空状态类型：**
+
+```tsx
+<Table
+  empty={
+    <EmptyState 
+      variant={queryParams.keyword ? 'noResult' : 'noData'}
+      description={queryParams.keyword ? t('common.noResult') : t('module.noData')} 
+    />
+  }
+/>
+```
+
+| 条件 | 变体 | 描述 |
+|------|------|------|
+| 无搜索条件 + 无数据 | `noData` | "暂无数据" |
+| 有搜索条件 + 无结果 | `noResult` | "未找到相关结果" |
+
+### 8.5 分页规范
+
+**分页信息从 API 响应中派生，禁止单独维护分页状态：**
+
+```tsx
+// ✅ 正确 - 从响应派生
+const { range, list } = listResponse;
+const currentPage = Math.floor((range?.offset || 0) / (range?.size || 20)) + 1;
+
+// ❌ 错误 - 单独维护分页状态
+const [currentPage, setCurrentPage] = useState(1);
+const [total, setTotal] = useState(0);
+```
+
+**分页配置：**
+
+```tsx
+pagination={{
+  total,
+  pageSize,
+  currentPage,
+  showSizeChanger: true,
+  pageSizeOpts: [10, 20, 50, 100],
+  onPageChange: (page) => {
+    setQueryParams((prev) => ({ ...prev, offset: (page - 1) * pageSize }));
+  },
+  onPageSizeChange: (size) => {
+    setQueryParams((prev) => ({ ...prev, offset: 0, size }));
+  },
+}}
+```
+
+### 8.6 搜索防抖规范
+
+**所有搜索输入框使用 500ms 防抖：**
+
+```tsx
+import { debounce } from 'lodash';
+
+const handleSearch = useMemo(
+  () =>
+    debounce((value: string) => {
+      setQueryParams((prev) => ({ ...prev, offset: 0, keyword: value }));
+    }, 500),
+  []
+);
+
+<Input
+  prefix={<IconSearch />}
+  placeholder={t('module.searchPlaceholder')}
+  onChange={handleSearch}
+  showClear
+  className="module-search-input"  // 统一宽度 320px
+/>
+```
+
+### 8.7 筛选功能规范
+
+**使用 Popover + CheckboxGroup 实现多条件筛选：**
+
+```tsx
+const [filterVisible, setFilterVisible] = useState(false);
+const [tempFilters, setTempFilters] = useState({ status: [], type: [] });
+const [activeFilters, setActiveFilters] = useState({ status: [], type: [] });
+
+const filterCount = Object.values(activeFilters).flat().length;
+
+<Popover
+  visible={filterVisible}
+  onVisibleChange={setFilterVisible}
+  trigger="click"
+  position="bottomLeft"
+  content={
+    <div className="module-filter-popover">
+      <div className="module-filter-popover-section">
+        <Text className="module-filter-popover-label">{t('common.status')}</Text>
+        <CheckboxGroup
+          value={tempFilters.status}
+          onChange={(value) => setTempFilters((prev) => ({ ...prev, status: value }))}
+          options={statusOptions}
+        />
+      </div>
+      <div className="module-filter-popover-footer">
+        <Button onClick={handleReset}>{t('common.reset')}</Button>
+        <Button theme="solid" type="primary" onClick={handleConfirm}>{t('common.confirm')}</Button>
+      </div>
+    </div>
+  }
+>
+  <Button 
+    icon={<IconFilter />} 
+    theme={filterCount > 0 ? 'light' : 'borderless'}
+    type={filterCount > 0 ? 'primary' : 'tertiary'}
+  >
+    {t('common.filter')}{filterCount > 0 ? ` (${filterCount})` : ''}
+  </Button>
+</Popover>
+```
+
+### 8.8 行交互规范
+
+**行点击打开详情抽屉，操作按钮需阻止事件冒泡：**
+
+```tsx
+<Table
+  onRow={(record) => ({
+    onClick: () => handleRowClick(record),
+    className: selectedId === record.id ? 'module-row-selected' : '',
+  })}
+/>
+
+// 操作列中的下拉菜单
+<Dropdown
+  trigger="click"
+  clickToHide={true}  // 点击后自动关闭
+  render={
+    <Dropdown.Menu onClick={(e) => e.stopPropagation()}>
+      <Dropdown.Item onClick={() => handleEdit(record)}>{t('common.edit')}</Dropdown.Item>
+      <Dropdown.Item onClick={() => handleDelete(record)}>{t('common.delete')}</Dropdown.Item>
+    </Dropdown.Menu>
+  }
+>
+  <Button 
+    icon={<IconMore />} 
+    theme="borderless" 
+    onClick={(e) => e.stopPropagation()}
+  />
+</Dropdown>
+```
+
+**选中行高亮样式：**
+
+```less
+.module-row-selected {
+  background-color: var(--semi-color-fill-1) !important;
+}
+```
+
+### 8.9 排序规范
+
+**客户端排序使用 localeCompare 支持中文：**
+
+```tsx
+const columns = [
+  {
+    title: t('module.fields.name'),
+    dataIndex: 'name',
+    sorter: (a, b) => a.name.localeCompare(b.name, 'zh-CN'),
+  },
+  {
+    title: t('common.status'),
+    dataIndex: 'status',
+    sorter: (a, b) => statusPriority[a.status] - statusPriority[b.status],
+  },
+];
+
+// 状态排序优先级映射
+const statusPriority: Record<string, number> = {
+  BUSY: 1,
+  IDLE: 2,
+  MAINTENANCE: 3,
+  FAULT: 4,
+  OFFLINE: 5,
+};
+```
+
+### 8.10 表格滚动规范
+
+**使用 scroll 属性固定表头，内容区滚动：**
+
+```tsx
+<Table
+  scroll={{ y: 'calc(100vh - 320px)' }}  // 根据页面布局调整
+/>
+```
+
+### 8.11 表格样式规范
+
+**使用 Semi UI 默认样式，不自定义圆角：**
+
+```less
+// ❌ 错误 - 不要覆盖表格圆角
+.semi-table {
+  border-radius: 8px;  // 禁止
+}
+
+// ✅ 正确 - 使用默认方角样式
+```
+
+---
+
+## 9. 空状态/缺省状态规范（重要）
 
 **所有页面和组件都必须考虑空状态的展示**，确保用户在各种场景下都有良好的体验：
 
