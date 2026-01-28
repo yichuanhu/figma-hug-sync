@@ -380,7 +380,12 @@ const PersonalCredentialManagement = () => {
             dataSource={listResponse?.data || []}
             rowKey="credential_id"
             loading={loading}
-            empty={<EmptyState description={t('personalCredential.noData')} />}
+            empty={
+              <EmptyState 
+                variant={queryParams.keyword ? 'noResult' : 'noData'}
+                description={queryParams.keyword ? t('common.noResult') : t('personalCredential.noData')} 
+              />
+            }
             onRow={(record) => ({
               onClick: () => handleRowClick(record as PersonalCredential),
               style: {

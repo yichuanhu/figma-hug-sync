@@ -656,7 +656,12 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
                     dataSource={list}
                     loading={membersLoading}
                     rowKey="id"
-                    empty={<EmptyState description={t('workerGroup.detail.noMembers')} />}
+                    empty={
+                      <EmptyState 
+                        variant={queryParams.keyword ? 'noResult' : 'noData'}
+                        description={queryParams.keyword ? t('common.noResult') : t('workerGroup.detail.noMembers')} 
+                      />
+                    }
                     pagination={{
                       total,
                       pageSize,

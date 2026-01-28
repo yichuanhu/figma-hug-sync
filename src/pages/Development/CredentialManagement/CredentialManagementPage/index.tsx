@@ -581,7 +581,12 @@ const CredentialManagementPage = () => {
               dataSource={listResponse?.data || []}
               rowKey="credential_id"
               loading={loading}
-              empty={<EmptyState description={t('credential.noData')} />}
+              empty={
+                <EmptyState 
+                  variant={queryParams.keyword ? 'noResult' : 'noData'}
+                  description={queryParams.keyword ? t('common.noResult') : t('credential.noData')} 
+                />
+              }
               pagination={{
                 currentPage: queryParams.page,
                 pageSize: queryParams.pageSize,

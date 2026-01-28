@@ -583,7 +583,12 @@ const ProcessDevelopment = () => {
             dataSource={list}
             loading={loading}
             rowKey="id"
-            empty={<EmptyState description={t('development.processDevelopment.noData')} />}
+            empty={
+              <EmptyState 
+                variant={queryParams.keyword ? 'noResult' : 'noData'}
+                description={queryParams.keyword ? t('common.noResult') : t('development.processDevelopment.noData')} 
+              />
+            }
             onRow={(record) => {
               const isSelected = selectedProcess?.id === record?.id && detailDrawerVisible;
               return {

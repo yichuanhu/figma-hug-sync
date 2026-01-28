@@ -948,7 +948,12 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
             dataSource={list}
             loading={loading}
             rowKey="id"
-            empty={<EmptyState description={t('worker.noData')} />}
+            empty={
+              <EmptyState 
+                variant={queryParams.keyword ? 'noResult' : 'noData'}
+                description={queryParams.keyword ? t('common.noResult') : t('worker.noData')} 
+              />
+            }
             onRow={(record) => {
               const isSelected = selectedWorker?.id === record?.id && detailDrawerVisible;
               return {
