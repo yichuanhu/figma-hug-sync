@@ -192,7 +192,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     { key: 'automationProcess', labelKey: 'sidebar.automationProcess', icon: <Workflow size={20} strokeWidth={3} />, path: '/process-development' },
     // 业务资产配置 - 分组标题
     { key: 'businessAssetConfig', labelKey: 'sidebar.businessAssetConfig', isGroupLabel: true },
-    { key: 'queue', labelKey: 'sidebar.queue', icon: <ListStart size={20} strokeWidth={3} /> },
+    { key: 'devQueue', labelKey: 'sidebar.queue', icon: <ListStart size={20} strokeWidth={3} />, path: '/dev-center/business-assets/queues' },
     { key: 'devCredentials', labelKey: 'sidebar.credentials', icon: <MonitorCheck size={20} strokeWidth={3} />, path: '/dev-center/business-assets/credentials' },
     { key: 'devParameters', labelKey: 'sidebar.parameters', icon: <Parentheses size={20} strokeWidth={3} />, path: '/dev-center/business-assets/parameters' },
     { key: 'files', labelKey: 'sidebar.files', icon: <FolderCheck size={20} strokeWidth={3} /> },
@@ -221,7 +221,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     { key: 'workerManagement', labelKey: 'sidebar.processRobot', icon: <Bot size={20} strokeWidth={3} />, path: '/scheduling-center/resource-monitoring/worker-management' },
     // 3. 业务资产配置 - 分组标题
     { key: 'schedulingBusinessAssetConfig', labelKey: 'sidebar.businessAssetConfig', isGroupLabel: true },
-    { key: 'schedulingQueue', labelKey: 'sidebar.queue', icon: <ListStart size={20} strokeWidth={3} /> },
+    { key: 'schedulingQueue', labelKey: 'sidebar.queue', icon: <ListStart size={20} strokeWidth={3} />, path: '/scheduling-center/business-assets/queues' },
     { key: 'schedulingCredentials', labelKey: 'sidebar.credentials', icon: <MonitorCheck size={20} strokeWidth={3} />, path: '/scheduling-center/business-assets/credentials' },
     { key: 'schedulingParameters', labelKey: 'sidebar.parameters', icon: <Parentheses size={20} strokeWidth={3} />, path: '/scheduling-center/business-assets/parameters' },
     { key: 'schedulingFiles', labelKey: 'sidebar.files', icon: <FolderCheck size={20} strokeWidth={3} /> },
@@ -282,11 +282,17 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     if (pathname === '/process-development' || pathname === '/') {
       return 'automationProcess';
     }
+    if (pathname === '/dev-center/business-assets/queues') {
+      return 'devQueue';
+    }
     if (pathname === '/dev-center/business-assets/credentials') {
       return 'devCredentials';
     }
     if (pathname === '/dev-center/business-assets/parameters') {
       return 'devParameters';
+    }
+    if (pathname === '/scheduling-center/business-assets/queues') {
+      return 'schedulingQueue';
     }
     if (pathname === '/scheduling-center/business-assets/credentials') {
       return 'schedulingCredentials';
