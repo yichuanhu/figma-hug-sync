@@ -4,7 +4,7 @@ import ProcessManagementContent from '@/components/ProcessManagement/ProcessMana
 const SchedulingProcessManagementPage = () => {
   return (
     <AppLayout>
-      <ProcessManagementContent context="scheduling" />
+      <ProcessManagementContent context="development" />
     </AppLayout>
   );
 };
