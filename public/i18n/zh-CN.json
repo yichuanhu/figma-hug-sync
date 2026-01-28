@@ -36,6 +36,7 @@
     "yes": "是",
     "no": "否",
     "copy": "复制",
+    "copySuccess": "复制成功",
     "description": "描述",
     "creator": "创建者",
     "createTime": "创建时间",
