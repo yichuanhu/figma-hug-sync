@@ -1063,6 +1063,64 @@
       "error": "添加失败，请重试"
     }
   },
+  "queue": {
+    "title": "队列管理",
+    "description": "管理消息队列，实现业务消息的异步处理",
+    "createQueue": "新建队列",
+    "searchPlaceholder": "搜索队列名称",
+    "noData": "暂无队列",
+    "table": {
+      "name": "队列名称",
+      "unconsumedCount": "未消费消息数",
+      "consumedCount": "已消费消息数",
+      "failedCount": "失败消息数"
+    },
+    "fields": {
+      "name": "队列名称",
+      "namePlaceholder": "请输入队列名称（1-30字符）",
+      "nameReadonly": "队列名称创建后不可修改",
+      "descriptionPlaceholder": "请输入队列描述（选填）"
+    },
+    "validation": {
+      "nameRequired": "请输入队列名称",
+      "nameLengthError": "队列名称长度必须在1-30字符之间",
+      "nameExists": "队列名称已存在，请使用其他名称"
+    },
+    "list": {
+      "loadError": "加载队列列表失败"
+    },
+    "createModal": {
+      "title": "新建队列",
+      "success": "队列创建成功",
+      "error": "创建失败，请重试"
+    },
+    "editModal": {
+      "title": "编辑队列",
+      "success": "队列更新成功",
+      "error": "更新失败，请重试"
+    },
+    "deleteModal": {
+      "title": "删除队列",
+      "confirmMessage": "确定要删除队列「{{name}}」吗？删除后队列中的所有消息也将被删除。",
+      "publishedError": "已发布的队列不允许删除",
+      "success": "队列删除成功"
+    },
+    "detail": {
+      "tabs": {
+        "basicInfo": "基本信息"
+      },
+      "isPublished": "发布状态",
+      "published": "已发布",
+      "unpublished": "未发布",
+      "cannotDeletePublished": "已发布的队列不允许删除",
+      "messageStats": "消息统计",
+      "systemInfo": "系统信息"
+    },
+    "empty": {
+      "filterDescription": "没有找到匹配的队列，请尝试调整筛选条件",
+      "defaultDescription": "还没有创建任何队列，点击「新建队列」开始"
+    }
+  },
   "emptyStatePreview": {
     "noData": {
       "title": "无数据 (noData)",

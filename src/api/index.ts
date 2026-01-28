@@ -1659,3 +1659,85 @@ export interface GetAvailableWorkersForGroupParams {
   size?: number;
   keyword?: string;
 }
+
+// ============= Queue Management Types =============
+
+/**
+ * LYQueueResponse
+ * 队列响应模型
+ */
+export interface LYQueueResponse {
+  /** 队列ID */
+  queue_id: string;
+  /** 队列名称 */
+  queue_name: string;
+  /** 队列描述 */
+  description?: string | null;
+  /** 是否已发布 */
+  is_published: boolean;
+  /** 未消费消息数（测试） */
+  test_unconsumed_count: number;
+  /** 已消费消息数（测试） */
+  test_consumed_count: number;
+  /** 失败消息数（测试） */
+  test_failed_count: number;
+  /** 未消费消息数（生产） */
+  prod_unconsumed_count: number;
+  /** 已消费消息数（生产） */
+  prod_consumed_count: number;
+  /** 失败消息数（生产） */
+  prod_failed_count: number;
+  /** 创建者ID */
+  created_by: string;
+  /** 创建者名称 */
+  created_by_name?: string | null;
+  /** 创建时间 */
+  created_at: string;
+  /** 更新时间 */
+  updated_at: string;
+}
+
+/**
+ * LYCreateQueueRequest
+ * 创建队列请求
+ */
+export interface LYCreateQueueRequest {
+  /** 队列名称 (1-30字符) */
+  name: string;
+  /** 队列描述 (最多2000字符) */
+  description?: string | null;
+}
+
+/**
+ * LYUpdateQueueRequest
+ * 更新队列请求（只能修改描述）
+ */
+export interface LYUpdateQueueRequest {
+  /** 队列描述 (最多2000字符) */
+  description?: string | null;
+}
+
+/**
+ * GetQueuesParams
+ * 获取队列列表参数
+ */
+export interface GetQueuesParams {
+  offset?: number;
+  size?: number;
+  keyword?: string;
+  context?: 'development' | 'scheduling';
+  publishedFilter?: boolean | null;
+}
+
+/**
+ * LYQueueListResultResponse
+ * 队列列表结果响应
+ */
+export interface LYQueueListResultResponse {
+  data: LYQueueResponse[];
+  range: {
+    offset: number;
+    size: number;
+    total: number;
+  };
+}
