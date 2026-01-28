@@ -52,7 +52,7 @@ const App = () => (
         {/* 参数管理 - 开发中心入口 */}
         <Route path="/dev-center/business-assets/parameters" element={<ParameterManagementPage />} />
         {/* 参数管理 - 调度中心入口 */}
-        <Route path="/scheduling-center/business-config/parameters" element={<SchedulingParameterManagementPage />} />
+        <Route path="/scheduling-center/business-assets/parameters" element={<SchedulingParameterManagementPage />} />
         
         {/* 自动化流程 - 调度中心入口 */}
         <Route path="/scheduling-center/execution-assets/automation-process" element={<SchedulingProcessManagementPage />} />
