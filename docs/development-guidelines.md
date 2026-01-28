@@ -549,7 +549,74 @@ const handleSearch = (keyword: string) => {
 
 ---
 
-## 8. 其他约定
+## 8. 空状态/缺省状态规范（重要）
+
+**所有页面和组件都必须考虑空状态的展示**，确保用户在各种场景下都有良好的体验：
+
+### 8.1 必须处理的空状态场景
+
+| 场景 | 使用变体 | 示例 |
+|------|----------|------|
+| 列表无数据 | `noData` | 表格首次加载为空 |
+| 搜索/筛选无结果 | `noResult` | 搜索关键词无匹配 |
+| 加载失败 | `error` | API 请求失败、网络错误 |
+| 无权限访问 | `noAccess` | 用户权限不足 |
+| 功能维护中 | `maintenance` | 服务暂时不可用 |
+| 资源未找到 | `notFound` | 404 页面、资源不存在 |
+
+### 8.2 使用统一的 EmptyState 组件
+
+```tsx
+import EmptyState from '@/components/EmptyState';
+
+// 表格空状态 - 根据是否有搜索条件动态切换
+<Table
+  empty={
+    <EmptyState 
+      variant={queryParams.keyword ? 'noResult' : 'noData'}
+      description={queryParams.keyword ? t('common.noResult') : t('module.noData')} 
+    />
+  }
+/>
+
+// 加载失败 - 带重试按钮
+<EmptyState 
+  variant="error" 
+  description={t('common.loadError')} 
+  actions={['retry']} 
+  onRetry={() => refetch()} 
+/>
+
+// 404 页面 - 带导航按钮
+<EmptyState 
+  variant="notFound" 
+  description={t('common.notFound')} 
+  actions={['goHome', 'goBack']} 
+/>
+```
+
+### 8.3 EmptyState 组件支持的操作按钮
+
+| 操作类型 | 说明 | 使用场景 |
+|----------|------|----------|
+| `retry` | 重试按钮 | 加载失败、网络错误 |
+| `goHome` | 返回首页 | 404、无权限 |
+| `goBack` | 返回上一页 | 404、资源不存在 |
+
+### 8.4 开发检查清单
+
+在提交代码前，请确认以下场景都有对应的空状态处理：
+
+- [ ] 列表页面初始无数据
+- [ ] 搜索/筛选结果为空
+- [ ] 详情抽屉中的子表格为空
+- [ ] 弹窗中的列表为空
+- [ ] API 请求失败时的错误展示
+- [ ] 路由不存在时的 404 页面
+
+---
+
+## 9. 其他约定
 
 ### 7.1 路由配置
 
