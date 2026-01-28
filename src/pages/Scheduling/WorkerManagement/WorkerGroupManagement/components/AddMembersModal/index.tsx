@@ -357,7 +357,13 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
               dataSource={list}
               loading={loading}
               rowKey="id"
-              empty={<EmptyState description={t('workerGroup.addMembers.noAvailableWorkers')} size={120} />}
+              empty={
+                <EmptyState 
+                  variant={queryParams.keyword ? 'noResult' : 'noData'}
+                  description={queryParams.keyword ? t('common.noResult') : t('workerGroup.addMembers.noAvailableWorkers')} 
+                  size={120}
+                />
+              }
               pagination={{
                 total,
                 pageSize,

@@ -430,7 +430,12 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
             dataSource={list}
             loading={loading}
             rowKey="id"
-            empty={<EmptyState description={t('workerGroup.noData')} />}
+            empty={
+              <EmptyState 
+                variant={queryParams.keyword ? 'noResult' : 'noData'}
+                description={queryParams.keyword ? t('common.noResult') : t('workerGroup.noData')} 
+              />
+            }
             onRow={(record) => {
               const isSelected = selectedGroup?.id === record?.id && detailDrawerVisible;
               return {
