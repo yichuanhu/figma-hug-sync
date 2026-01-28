@@ -326,7 +326,8 @@
       },
       "isPublished": "发布状态",
       "published": "已发布",
-      "unpublished": "未发布"
+      "unpublished": "未发布",
+      "cannotDeletePublished": "已发布的参数不允许删除"
     },
     "empty": {
       "filterDescription": "没有找到匹配的参数，请尝试调整筛选条件",
