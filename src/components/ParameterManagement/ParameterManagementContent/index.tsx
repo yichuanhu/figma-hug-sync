@@ -334,6 +334,19 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
       ),
     },
     {
+      title: t('parameter.detail.isPublished'),
+      dataIndex: 'is_published',
+      key: 'is_published',
+      width: 100,
+      render: (isPublished: boolean) => (
+        isPublished ? (
+          <Tag color="green">{t('parameter.detail.published')}</Tag>
+        ) : (
+          <Tag color="grey">{t('parameter.detail.unpublished')}</Tag>
+        )
+      ),
+    },
+    {
       title: t('common.description'),
       dataIndex: 'description',
       key: 'description',
