@@ -7,6 +7,7 @@ import DevelopmentWorkbench from "@/pages/Development/DevelopmentWorkbench";
 import ProcessDevelopment from "@/pages/Development/ProcessDevelopment";
 import CredentialManagementPage from "@/pages/Development/CredentialManagement/CredentialManagementPage";
 import ParameterManagementPage from "@/pages/Development/ParameterManagement/ParameterManagementPage";
+import DevQueueManagementPage from "@/pages/Development/QueueManagement/QueueManagementPage";
 // Operations
 import OperationsWorkbench from "@/pages/Operations/OperationsWorkbench";
 // Scheduling - Worker Management
@@ -17,6 +18,8 @@ import SchedulingCredentialManagementPage from "@/pages/Scheduling/CredentialMan
 import SchedulingProcessManagementPage from "@/pages/Scheduling/ProcessManagement/ProcessManagementPage";
 // Scheduling - Parameter Management
 import SchedulingParameterManagementPage from "@/pages/Scheduling/ParameterManagement/ParameterManagementPage";
+// Scheduling - Queue Management
+import SchedulingQueueManagementPage from "@/pages/Scheduling/QueueManagement/QueueManagementPage";
 // Maintenance
 import MaintenanceWorkbench from "@/pages/Maintenance/MaintenanceWorkbench";
 // Requirements
@@ -53,6 +56,11 @@ const App = () => (
         <Route path="/dev-center/business-assets/parameters" element={<ParameterManagementPage />} />
         {/* 参数管理 - 调度中心入口 */}
         <Route path="/scheduling-center/business-assets/parameters" element={<SchedulingParameterManagementPage />} />
+        
+        {/* 队列管理 - 开发中心入口 */}
+        <Route path="/dev-center/business-assets/queues" element={<DevQueueManagementPage />} />
+        {/* 队列管理 - 调度中心入口 */}
+        <Route path="/scheduling-center/business-assets/queues" element={<SchedulingQueueManagementPage />} />
         
         {/* 自动化流程 - 调度中心入口 */}
         <Route path="/scheduling-center/execution-assets/automation-process" element={<SchedulingProcessManagementPage />} />

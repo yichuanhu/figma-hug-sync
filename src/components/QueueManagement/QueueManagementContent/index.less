@@ -1,0 +1,75 @@
+.queue-management-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .queue-management-content-header {
+    .queue-management-content-header-title {
+      margin-bottom: 16px;
+
+      .title {
+        margin-bottom: 4px;
+      }
+    }
+
+    .queue-management-content-header-toolbar {
+      margin-bottom: 16px;
+
+      .queue-management-content-search-input {
+        width: 280px;
+      }
+    }
+  }
+
+  .queue-management-content-table {
+    flex: 1;
+    overflow: hidden;
+
+    .queue-management-content-table-name {
+      font-weight: 500;
+      color: var(--semi-color-text-0);
+    }
+
+    .queue-management-content-table-failed {
+      color: var(--semi-color-danger);
+      font-weight: 500;
+    }
+
+    .queue-management-content-table-desc {
+      display: block;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  // 表格行选中状态
+  .queue-management-row-selected {
+    background-color: var(--semi-color-fill-1) !important;
+  }
+}
+
+// 筛选弹出框样式
+.queue-filter-popover {
+  padding: 12px;
+  min-width: 200px;
+
+  .queue-filter-popover-section {
+    margin-bottom: 12px;
+
+    .queue-filter-popover-label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+  }
+
+  .queue-filter-popover-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--semi-color-border);
+  }
+}
