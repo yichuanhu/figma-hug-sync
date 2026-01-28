@@ -812,20 +812,256 @@ const renderHeader = () => (
 
 ---
 
-## 10. 其他约定
+## 10. 弹窗（Modal）规范
 
-### 10.1 路由配置
+所有弹窗遵循统一的结构和视觉规范，确保一致的用户体验。
+
+### 10.1 基础结构
+
+**Modal 设置 `footer={null}`，将 footer 移入 Form 组件内部**，以支持 `htmlType="submit"`：
+
+```tsx
+<Modal
+  className="module-modal"
+  title={t('module.modal.title')}
+  visible={visible}
+  onCancel={onCancel}
+  footer={null}              // 关键：禁用默认 footer
+  closeOnEsc
+  maskClosable={false}
+  width={520}
+>
+  <Form onSubmit={handleSubmit} labelPosition="top">
+    {/* 表单内容 */}
+    <Form.Input field="name" label={t('module.fields.name')} />
+    
+    {/* Footer 在 Form 内部 */}
+    <div className="module-modal-footer">
+      <Button theme="light" onClick={onCancel}>
+        {t('common.cancel')}
+      </Button>
+      <Button htmlType="submit" theme="solid" type="primary" loading={loading}>
+        {t('common.confirm')}
+      </Button>
+    </div>
+  </Form>
+</Modal>
+```
+
+### 10.2 表单间距规范
+
+| 属性 | 值 | 说明 |
+|------|-----|------|
+| Form 顶部内边距 | 4px | `padding-top: 4px` |
+| 字段标签与输入框间距 | 4px | Semi UI 默认 |
+| 字段之间间距 | 使用 Form 默认 | 无需额外设置 |
+
+```less
+.module-modal {
+  .module-modal-form {
+    padding-top: 4px;
+
+    .semi-select {
+      width: 100%;  // Select 组件撑满宽度
+    }
+  }
+}
+```
+
+### 10.3 Footer 样式规范
+
+Footer 需要有顶部分隔线，按钮右对齐：
+
+```less
+.module-modal {
+  &-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 12px;
+    padding-top: 16px;
+    padding-bottom: 12px;
+    border-top: 1px solid var(--semi-color-border);
+  }
+}
+```
+
+### 10.4 内容滚动区域规范
+
+**当弹窗内容过多时，需要固定 footer，仅内容区域滚动**：
+
+```tsx
+<Modal footer={null} width={520}>
+  <Form onSubmit={handleSubmit} labelPosition="top">
+    {/* 可滚动内容区域 */}
+    <div className="module-modal-scroll-content">
+      <Form.Input field="name" label={t('module.fields.name')} />
+      <Form.TextArea field="description" label={t('module.fields.description')} />
+      {/* 更多字段... */}
+    </div>
+    
+    {/* 固定 Footer */}
+    <div className="module-modal-footer">
+      <Button theme="light" onClick={onCancel}>{t('common.cancel')}</Button>
+      <Button htmlType="submit" theme="solid" type="primary">{t('common.confirm')}</Button>
+    </div>
+  </Form>
+</Modal>
+```
+
+```less
+.module-modal {
+  &-scroll-content {
+    max-height: calc(100vh - 300px);  // 关键：限制最大高度
+    overflow-y: auto;
+  }
+
+  &-footer {
+    // footer 样式保持不变，不在滚动区域内
+  }
+}
+```
+
+### 10.5 Banner/Alert 样式规范
+
+弹窗内的信息提示（Banner、Alert）必须使用 8px 圆角：
+
+```tsx
+<Banner
+  type="warning"
+  description={t('module.modal.warningMessage')}
+  style={{ borderRadius: 8 }}
+/>
+```
+
+```less
+// 或在 Less 中统一设置
+.module-modal {
+  .semi-banner {
+    border-radius: 8px;
+  }
+}
+```
+
+### 10.6 表单元素宽度规范
+
+| 元素类型 | 宽度 | 说明 |
+|----------|------|------|
+| Select 下拉框 | 100% | 撑满表单宽度 |
+| 并排输入框 | flex: 1 | 等宽分配 |
+| 搜索输入框 | 320px | 列表页统一宽度 |
+| 日期选择器 | 320px | 与搜索输入框对齐 |
+
+```less
+.module-modal {
+  // Select 撑满
+  .semi-select {
+    width: 100%;
+  }
+
+  // 并排输入框等宽
+  &-inline-fields {
+    display: flex;
+    gap: 12px;
+
+    .semi-form-field {
+      flex: 1;
+    }
+  }
+}
+```
+
+### 10.7 RadioGroup 选择规范
+
+用于互斥选项（如桌面类型选择）：
+
+```tsx
+<Form.RadioGroup
+  field="desktop_type"
+  label={t('module.fields.desktopType')}
+  initValue="console"
+>
+  <Radio value="console">{t('module.desktopType.console')}</Radio>
+  <Radio value="remote">{t('module.desktopType.remote')}</Radio>
+</Form.RadioGroup>
+```
+
+### 10.8 删除确认弹窗规范
+
+**使用 `Modal.confirm` + `Toast` 组合，禁止创建单独的删除弹窗组件**：
+
+```tsx
+import { Modal, Toast } from '@douyinfe/semi-ui';
+import { IconDeleteStroked } from '@douyinfe/semi-icons';
+
+const handleDelete = (item: ItemData) => {
+  Modal.confirm({
+    title: t('module.deleteModal.title'),
+    icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+    content: (
+      <>
+        <div>{t('module.deleteModal.confirmMessage', { name: item.name })}</div>
+        <div style={{ color: 'var(--semi-color-text-2)', marginTop: 8 }}>
+          {t('module.deleteModal.deleteWarning')}
+        </div>
+      </>
+    ),
+    okText: t('module.deleteModal.confirmDelete'),
+    cancelText: t('common.cancel'),
+    okButtonProps: { type: 'danger' },
+    onOk: async () => {
+      try {
+        await deleteItem(item.id);
+        loadData();
+        Toast.success(t('module.deleteModal.success'));
+      } catch (error) {
+        Toast.error(t('module.deleteModal.error'));
+        throw error;
+      }
+    },
+  });
+};
+```
+
+### 10.9 特殊弹窗配置
+
+**Open Process 确认弹窗**（防抖动）：
+
+```tsx
+<Modal
+  motion={false}  // 禁用动画防止抖动
+  footer={
+    <Row type="flex" justify="space-between" align="middle">
+      <Col>
+        <Checkbox>{t('module.dontRemind')}</Checkbox>
+      </Col>
+      <Col>
+        <Space>
+          <Button onClick={onCancel}>{t('common.cancel')}</Button>
+          <Button theme="solid" type="primary" onClick={onConfirm}>{t('common.confirm')}</Button>
+        </Space>
+      </Col>
+    </Row>
+  }
+>
+```
+
+---
+
+## 11. 其他约定
+
+### 11.1 路由配置
 
 - 路由集中在 `src/App.tsx` 中配置
 - 使用 `react-router-dom`
 
-### 10.2 状态管理
+### 11.2 状态管理
 
 - 使用 `@tanstack/react-query` 进行数据获取
 - 组件内状态使用 `useState`
 - 复杂状态逻辑抽取到自定义 hooks
 
-### 10.3 开发原则
+### 11.3 开发原则
 
 - 严格按照设计稿还原
 - 不添加设计稿中没有的功能或菜单
