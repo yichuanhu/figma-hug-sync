@@ -750,12 +750,14 @@ const PersonalCredentialDetailDrawer = ({
                         <Button 
                           theme="solid" 
                           type="primary"
+                          icon={<IconLink />}
                           onClick={() => {
-                            navigate('/dev-center/business-assets/credentials');
-                            onClose();
+                            if (credential && onLinkCredential) {
+                              onLinkCredential(credential);
+                            }
                           }}
                         >
-                          {t('personalCredential.linkedCredentials.goToLink')}
+                          {t('personalCredential.linkedCredentials.linkCredential')}
                         </Button>
                       }
                     />
