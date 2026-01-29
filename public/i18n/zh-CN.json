@@ -1232,6 +1232,11 @@
       "title": "无数据 (noData)",
       "description": "列表为空，暂无数据记录"
     },
+    "noDataWithAction": {
+      "title": "无数据 + 操作按钮",
+      "description": "列表为空时，可添加引导按钮",
+      "action": "新建数据"
+    },
     "noResult": {
       "title": "无结果 (noResult)",
       "description": "搜索或筛选后未找到匹配结果"
