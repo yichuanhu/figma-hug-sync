@@ -3,12 +3,22 @@
   flex-direction: column;
   height: 100%;
 
+  // 标题区域
   .personal-credential-management-header {
-    flex-shrink: 0;
     padding-top: 20px;
-    padding-bottom: 16px;
+    flex-shrink: 0;
+
+    .personal-credential-management-header-title {
+      margin-bottom: 24px;
+
+      .title {
+        margin-bottom: 8px;
+      }
+    }
 
     .personal-credential-management-header-toolbar {
+      margin-bottom: 16px;
+
       .personal-credential-management-search-input {
         width: 320px;
       }
@@ -29,5 +39,10 @@
       max-width: 100%;
       white-space: nowrap;
     }
+  }
+
+  // 表格行选中状态
+  .personal-credential-management-row-selected {
+    background-color: var(--semi-color-fill-1) !important;
   }
 }
