@@ -19,6 +19,10 @@ import {
   IconPlus,
   IconMore,
   IconDeleteStroked,
+  IconEditStroked,
+  IconEyeOpenedStroked,
+  IconHistory,
+  IconLink,
 } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
 import type {
@@ -309,19 +313,19 @@ const PersonalCredentialManagement = () => {
           clickToHide
           render={
             <Dropdown.Menu>
-              <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>
+              <Dropdown.Item icon={<IconEditStroked />} onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>
                 {t('common.edit')}
               </Dropdown.Item>
-              <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleViewLinkedCredentials(record); }}>
+              <Dropdown.Item icon={<IconEyeOpenedStroked />} onClick={(e) => { e.stopPropagation(); handleViewLinkedCredentials(record); }}>
                 {t('personalCredential.actions.viewLinkedCredentials')}
               </Dropdown.Item>
-              <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleViewUsage(record); }}>
+              <Dropdown.Item icon={<IconHistory />} onClick={(e) => { e.stopPropagation(); handleViewUsage(record); }}>
                 {t('personalCredential.actions.viewUsage')}
               </Dropdown.Item>
-              <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleLinkCredential(record); }}>
+              <Dropdown.Item icon={<IconLink />} onClick={(e) => { e.stopPropagation(); handleLinkCredential(record); }}>
                 {t('personalCredential.actions.linkCredential')}
               </Dropdown.Item>
-              <Dropdown.Item type="danger" onClick={(e) => { e.stopPropagation(); handleDelete(record); }}>
+              <Dropdown.Item icon={<IconDeleteStroked />} type="danger" onClick={(e) => { e.stopPropagation(); handleDelete(record); }}>
                 {t('common.delete')}
               </Dropdown.Item>
             </Dropdown.Menu>

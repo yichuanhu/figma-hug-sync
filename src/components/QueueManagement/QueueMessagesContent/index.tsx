@@ -29,6 +29,7 @@ import {
   IconChevronLeft,
   IconPlayCircle,
   IconRefresh,
+  IconEyeOpenedStroked,
 } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
 import type {
@@ -412,20 +413,21 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
           clickToHide
           render={
             <Dropdown.Menu>
-              <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleRowClick(record); }}>
+              <Dropdown.Item icon={<IconEyeOpenedStroked />} onClick={(e) => { e.stopPropagation(); handleRowClick(record); }}>
                 {t('common.viewDetail')}
               </Dropdown.Item>
               {record.status === 'UNCONSUMED_ACTIVE' && (
-                <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleConsume(record); }}>
+                <Dropdown.Item icon={<IconPlayCircle />} onClick={(e) => { e.stopPropagation(); handleConsume(record); }}>
                   {t('queueMessage.actions.consume')}
                 </Dropdown.Item>
               )}
               {(record.status === 'CONSUMED' || record.status === 'EXPIRED') && (
-                <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleRequeue(record); }}>
+                <Dropdown.Item icon={<IconRefresh />} onClick={(e) => { e.stopPropagation(); handleRequeue(record); }}>
                   {t('queueMessage.actions.requeue')}
                 </Dropdown.Item>
               )}
               <Dropdown.Item 
+                icon={<IconDeleteStroked />}
                 type="danger" 
                 onClick={(e) => { e.stopPropagation(); handleDelete(record); }}
               >

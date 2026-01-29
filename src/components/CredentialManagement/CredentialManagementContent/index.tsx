@@ -25,6 +25,10 @@ import {
   IconMore,
   IconDeleteStroked,
   IconFilter,
+  IconEditStroked,
+  IconUnlink,
+  IconLink,
+  IconHistory,
 } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
 import type {
@@ -418,25 +422,25 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
           clickToHide
           render={
             <Dropdown.Menu>
-              <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>
+              <Dropdown.Item icon={<IconEditStroked />} onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>
                 {t('common.edit')}
               </Dropdown.Item>
               {record.credential_type === 'PERSONAL_REF' && (
                 hasLinkedPersonalCredential(record) ? (
-                  <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleUnlinkPersonal(record); }}>
+                  <Dropdown.Item icon={<IconUnlink />} onClick={(e) => { e.stopPropagation(); handleUnlinkPersonal(record); }}>
                     {t('personalCredential.actions.unlinkCredential')}
                   </Dropdown.Item>
                 ) : (
-                  <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleLinkPersonal(record); }}>
+                  <Dropdown.Item icon={<IconLink />} onClick={(e) => { e.stopPropagation(); handleLinkPersonal(record); }}>
                     {t('credential.actions.linkPersonal')}
                   </Dropdown.Item>
                 )
               )}
-              <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleViewUsage(record); }}>
+              <Dropdown.Item icon={<IconHistory />} onClick={(e) => { e.stopPropagation(); handleViewUsage(record); }}>
                 {t('credential.actions.viewUsage')}
               </Dropdown.Item>
               {context === 'development' && (
-                <Dropdown.Item type="danger" onClick={(e) => { e.stopPropagation(); handleDelete(record); }}>
+                <Dropdown.Item icon={<IconDeleteStroked />} type="danger" onClick={(e) => { e.stopPropagation(); handleDelete(record); }}>
                   {t('common.delete')}
                 </Dropdown.Item>
               )}
