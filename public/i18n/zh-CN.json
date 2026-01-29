@@ -1066,12 +1066,6 @@
   "queue": {
     "title": "队列管理",
     "description": "管理消息队列，实现业务消息的异步处理",
-    "breadcrumb": {
-      "developmentCenter": "开发中心",
-      "schedulingCenter": "调度中心",
-      "businessAssets": "业务资产配置",
-      "queueManagement": "队列管理"
-    },
     "createQueue": "新建队列",
     "searchPlaceholder": "搜索队列名称",
     "noData": "暂无队列",
@@ -1125,106 +1119,6 @@
     "empty": {
       "filterDescription": "没有找到匹配的队列，请尝试调整筛选条件",
       "defaultDescription": "还没有创建任何队列，点击「新建队列」开始"
-    },
-    "actions": {
-      "viewMessages": "查看消息"
-    }
-  },
-  "queueMessage": {
-    "title": "队列消息",
-    "description": "查看和管理队列中的消息，支持消费、重新入队、删除等操作",
-    "searchPlaceholder": "搜索消息内容",
-    "taskIdPlaceholder": "按任务ID筛选",
-    "noData": "暂无消息",
-    "table": {
-      "contentSummary": "消息内容",
-      "status": "状态",
-      "priority": "优先级",
-      "consumer": "消费者",
-      "consumeTask": "消费任务",
-      "createdAt": "入队时间",
-      "effectiveTime": "生效时间"
-    },
-    "status": {
-      "unconsumedNotActive": "未消费-未生效",
-      "unconsumedActive": "未消费-已生效",
-      "consumed": "已消费",
-      "expired": "已失效"
-    },
-    "priority": {
-      "high": "高",
-      "medium": "中",
-      "low": "低"
-    },
-    "consumerType": {
-      "manual": "人工消费",
-      "robot": "机器人消费"
-    },
-    "actions": {
-      "consume": "消费",
-      "requeue": "重新入队"
-    },
-    "filter": {
-      "timeRange": "时间范围"
-    },
-    "list": {
-      "loadError": "加载消息列表失败"
-    },
-    "detail": {
-      "title": "消息详情",
-      "messageInfo": "消息信息",
-      "content": "消息内容",
-      "timeInfo": "时间信息",
-      "expiryTime": "失效时间",
-      "consumerInfo": "消费信息",
-      "consumerType": "消费端类型",
-      "consumerName": "消费者",
-      "consumedAt": "消费时间",
-      "consumeTaskId": "消费任务"
-    },
-    "consumeModal": {
-      "title": "消费消息",
-      "confirmMessage": "确定要消费此消息吗？",
-      "tips": "消费后消息状态将变为已消费，消息保留在队列中可查看，不能再次被消费。",
-      "success": "消息消费成功",
-      "error": "消费失败，请重试"
-    },
-    "requeueModal": {
-      "title": "重新入队",
-      "batchTitle": "批量重新入队",
-      "contentPlaceholder": "请输入消息内容",
-      "contentRequired": "请输入消息内容",
-      "priorityRequired": "请选择优先级",
-      "effectiveTimeRequired": "请选择生效时间",
-      "expiryTimeError": "失效时间必须大于生效时间",
-      "batchTips": "即将对 {{count}} 条消息执行批量重新入队操作，批量操作不支持编辑消息内容。",
-      "success": "消息重新入队成功",
-      "batchSuccess": "成功重新入队 {{count}} 条消息",
-      "error": "重新入队失败，请重试"
-    },
-    "deleteModal": {
-      "title": "删除消息",
-      "confirmMessage": "确定要删除此消息吗？删除后消息将从队列中永久移除，不可恢复。",
-      "success": "消息删除成功"
-    },
-    "batch": {
-      "selected": "已选择 {{count}} 条",
-      "actions": "批量操作",
-      "consume": "批量消费",
-      "requeue": "批量重新入队",
-      "delete": "批量删除",
-      "consumeTitle": "批量消费消息",
-      "consumeConfirm": "确定要消费选中的 {{count}} 条消息吗？",
-      "consumeSuccess": "成功消费 {{count}} 条消息",
-      "deleteTitle": "批量删除消息",
-      "deleteConfirm": "确定要删除选中的 {{count}} 条消息吗？删除后消息将永久移除，不可恢复。",
-      "deleteSuccess": "成功删除 {{count}} 条消息",
-      "noValidConsumeMessages": "选中的消息中没有可消费的消息（只有"未消费-已生效"状态的消息可以消费）",
-      "noValidRequeueMessages": "选中的消息中没有可重新入队的消息（只有"已消费"或"已失效"状态的消息可以重新入队）"
-    },
-    "empty": {
-      "filterDescription": "没有找到匹配的消息，请尝试调整筛选条件",
-      "defaultDescription": "该队列暂无消息"
     }
   },
   "emptyStatePreview": {
