@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   SideSheet,
@@ -20,6 +20,8 @@ import {
   IconDeleteStroked,
   IconMaximize,
   IconMinimize,
+  IconChevronLeft,
+  IconChevronRight,
 } from '@douyinfe/semi-icons';
 import type { LYQueueMessageResponse, QueueMessageStatus, QueueMessagePriority } from '@/api/index';
 
@@ -28,11 +30,13 @@ import './index.less';
 interface MessageDetailDrawerProps {
   visible: boolean;
   message: LYQueueMessageResponse | null;
+  messages: LYQueueMessageResponse[];
   context: 'development' | 'scheduling';
   onClose: () => void;
   onConsume: (message: LYQueueMessageResponse) => void;
   onRequeue: (message: LYQueueMessageResponse) => void;
   onDelete: (message: LYQueueMessageResponse) => void;
+  onNavigate: (message: LYQueueMessageResponse) => void;
 }
 
 const DRAWER_WIDTH_KEY = 'queue-message-detail-drawer-width';
@@ -42,11 +46,13 @@ const MIN_WIDTH = 480;
 const MessageDetailDrawer = ({
   visible,
   message,
+  messages,
   context,
   onClose,
   onConsume,
   onRequeue,
   onDelete,
+  onNavigate,
 }: MessageDetailDrawerProps) => {
   const { t } = useTranslation();
   const [width, setWidth] = useState(() => {
@@ -123,6 +129,37 @@ const MessageDetailDrawer = ({
     setIsFullscreen((prev) => !prev);
   }, []);
 
+  // 计算当前索引和导航状态
+  const currentIndex = useMemo(() => {
+    if (!message) return -1;
+    return messages.findIndex((m) => m.message_id === message.message_id);
+  }, [message, messages]);
+
+  const hasPrevious = currentIndex > 0;
+  const hasNext = currentIndex >= 0 && currentIndex < messages.length - 1;
+
+  // 导航到上一条
+  const handlePrevious = useCallback(() => {
+    if (hasPrevious) {
+      const prevMessage = messages[currentIndex - 1];
+      onNavigate(prevMessage);
+      // 滚动到对应行
+      const row = document.getElementById(`queue-message-row-${prevMessage.message_id}`);
+      row?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }, [hasPrevious, messages, currentIndex, onNavigate]);
+
+  // 导航到下一条
+  const handleNext = useCallback(() => {
+    if (hasNext) {
+      const nextMessage = messages[currentIndex + 1];
+      onNavigate(nextMessage);
+      // 滚动到对应行
+      const row = document.getElementById(`queue-message-row-${nextMessage.message_id}`);
+      row?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }, [hasNext, messages, currentIndex, onNavigate]);
+
   // 自定义header
   const renderHeader = () => (
     <Row type="flex" justify="space-between" align="middle" className="message-detail-drawer-header">
@@ -160,6 +197,29 @@ const MessageDetailDrawer = ({
               size="small"
               onClick={() => message && onDelete(message)}
             />
+          </Tooltip>
+          <Divider layout="vertical" className="message-detail-drawer-header-divider" />
+          <Tooltip content={t('common.previous')}>
+            <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+              <Button
+                icon={<IconChevronLeft />}
+                theme="borderless"
+                size="small"
+                disabled={!hasPrevious}
+                onClick={handlePrevious}
+              />
+            </span>
+          </Tooltip>
+          <Tooltip content={t('common.next')}>
+            <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+              <Button
+                icon={<IconChevronRight />}
+                theme="borderless"
+                size="small"
+                disabled={!hasNext}
+                onClick={handleNext}
+              />
+            </span>
           </Tooltip>
           <Divider layout="vertical" className="message-detail-drawer-header-divider" />
           <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
