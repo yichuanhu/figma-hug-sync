@@ -107,6 +107,8 @@ interface ProcessDetailDrawerProps {
   onPageChange?: (page: number) => Promise<LYProcessResponse[] | void>;
   // 上下文 - development(开发中心) | scheduling(调度中心)
   context?: 'development' | 'scheduling';
+  // 滚动到行
+  onScrollToRow?: (id: string) => void;
 }
 
 // ============= 状态配置 =============
@@ -287,6 +289,7 @@ const ProcessDetailDrawer = ({
   pagination,
   onPageChange,
   context = 'development',
+  onScrollToRow,
 }: ProcessDetailDrawerProps) => {
   const isSchedulingContext = context === 'scheduling';
   const { t } = useTranslation();
@@ -364,37 +367,45 @@ const ProcessDetailDrawer = ({
     if (isNavigating) return;
     
     if (currentIndex > 0 && onNavigate) {
-      onNavigate(dataList[currentIndex - 1]);
+      const target = dataList[currentIndex - 1];
+      onNavigate(target);
+      onScrollToRow?.(target.id);
     } else if (pagination && pagination.currentPage > 1 && onPageChange) {
       setIsNavigating(true);
       try {
         const newList = await onPageChange(pagination.currentPage - 1);
         if (newList && newList.length > 0 && onNavigate) {
-          onNavigate(newList[newList.length - 1]);
+          const target = newList[newList.length - 1];
+          onNavigate(target);
+          onScrollToRow?.(target.id);
         }
       } finally {
         setIsNavigating(false);
       }
     }
-  }, [currentIndex, dataList, onNavigate, pagination, onPageChange, isNavigating]);
+  }, [currentIndex, dataList, onNavigate, pagination, onPageChange, isNavigating, onScrollToRow]);
 
   const handleNext = useCallback(async () => {
     if (isNavigating) return;
     
     if (currentIndex >= 0 && currentIndex < dataList.length - 1 && onNavigate) {
-      onNavigate(dataList[currentIndex + 1]);
+      const target = dataList[currentIndex + 1];
+      onNavigate(target);
+      onScrollToRow?.(target.id);
     } else if (pagination && pagination.currentPage < pagination.totalPages && onPageChange) {
       setIsNavigating(true);
       try {
         const newList = await onPageChange(pagination.currentPage + 1);
         if (newList && newList.length > 0 && onNavigate) {
-          onNavigate(newList[0]);
+          const target = newList[0];
+          onNavigate(target);
+          onScrollToRow?.(target.id);
         }
       } finally {
         setIsNavigating(false);
       }
     }
-  }, [currentIndex, dataList, onNavigate, pagination, onPageChange, isNavigating]);
+  }, [currentIndex, dataList, onNavigate, pagination, onPageChange, isNavigating, onScrollToRow]);
 
 
   // 版本数据按版本号降序排列（最新版本在前）

@@ -394,6 +394,7 @@ const PersonalCredentialManagement = () => {
               />
             }
             onRow={(record) => ({
+              id: `personal-credential-row-${(record as LYPersonalCredentialResponse).credential_id}`,
               onClick: () => handleRowClick(record as LYPersonalCredentialResponse),
               style: {
                 cursor: 'pointer',
@@ -489,6 +490,10 @@ const PersonalCredentialManagement = () => {
           total,
         }}
         onPageChange={handleDrawerPageChange}
+        onScrollToRow={(id) => {
+          const row = document.getElementById(`personal-credential-row-${id}`);
+          row?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }}
       />
     </div>
   );
