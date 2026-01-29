@@ -585,6 +585,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
               className: selectedMessage?.message_id === record?.message_id && detailDrawerVisible 
                 ? 'queue-messages-row-selected' 
                 : '',
+              id: `queue-message-row-${record?.message_id}`,
             })}
           />
         )}
@@ -624,6 +625,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
       <MessageDetailDrawer
         visible={detailDrawerVisible}
         message={selectedMessage}
+        messages={listResponse?.data || []}
         context={context}
         onClose={() => {
           setDetailDrawerVisible(false);
@@ -632,6 +634,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
         onConsume={handleConsume}
         onRequeue={handleRequeue}
         onDelete={handleDelete}
+        onNavigate={(msg) => setSelectedMessage(msg)}
       />
     </div>
   );
