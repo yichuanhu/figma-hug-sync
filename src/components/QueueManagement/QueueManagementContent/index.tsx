@@ -463,10 +463,10 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
                         <Button theme="borderless" onClick={() => {
                           setPublishedFilter(null);
                           setQueryParams((prev) => ({ ...prev, page: 1 }));
-                        }}>
+                        }} disabled={publishedFilter === null}>
                           {t('common.reset')}
                         </Button>
-                        <Button theme="solid" onClick={() => setFilterPopoverVisible(false)}>
+                        <Button theme="solid" type="primary" onClick={() => setFilterPopoverVisible(false)}>
                           {t('common.confirm')}
                         </Button>
                       </div>
@@ -476,10 +476,9 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
                   <Button
                     icon={<IconFilter />}
                     type={filterCount > 0 ? 'primary' : 'tertiary'}
-                    theme={filterCount > 0 ? 'light' : 'borderless'}
+                    theme={filterCount > 0 ? 'solid' : 'light'}
                   >
-                    {t('common.filter')}
-                    {filterCount > 0 && ` (${filterCount})`}
+                    {t('common.filter')}{filterCount > 0 ? ` (${filterCount})` : ''}
                   </Button>
                 </Popover>
               )}
