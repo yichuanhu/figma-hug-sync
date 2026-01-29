@@ -942,7 +942,7 @@
         "name": "凭据名称"
       },
       "unlink": "解除关联",
-      "goToLink": "前往关联",
+      "linkCredential": "关联凭据",
       "unlinkModal": {
         "title": "解除关联",
         "content": "确定要解除与凭据「{{name}}」的关联吗？",

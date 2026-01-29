@@ -22,6 +22,7 @@ import {
   IconMaximize,
   IconMinimize,
   IconUnlink,
+  IconLink,
 } from '@douyinfe/semi-icons';
 import type { PersonalCredential } from '../../index';
 
@@ -67,6 +68,7 @@ interface LinkedCredentialsDrawerProps {
   credential: PersonalCredential | null;
   onClose: () => void;
   onUnlinkSuccess: () => void;
+  onLinkCredential?: (credential: PersonalCredential) => void;
 }
 
 const LinkedCredentialsDrawer = ({
@@ -74,6 +76,7 @@ const LinkedCredentialsDrawer = ({
   credential,
   onClose,
   onUnlinkSuccess,
+  onLinkCredential,
 }: LinkedCredentialsDrawerProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -270,12 +273,14 @@ const LinkedCredentialsDrawer = ({
                     <Button 
                       theme="solid" 
                       type="primary"
+                      icon={<IconLink />}
                       onClick={() => {
-                        navigate('/dev-center/business-assets/credentials');
-                        onClose();
+                        if (credential && onLinkCredential) {
+                          onLinkCredential(credential);
+                        }
                       }}
                     >
-                      {t('personalCredential.linkedCredentials.goToLink')}
+                      {t('personalCredential.linkedCredentials.linkCredential')}
                     </Button>
                   }
                 />
