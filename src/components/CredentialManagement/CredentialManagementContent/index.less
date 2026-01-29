@@ -2,9 +2,11 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  overflow: hidden;
 
   &-breadcrumb {
     margin-bottom: 16px;
+    flex-shrink: 0;
   }
 
   &-header {
@@ -31,6 +33,7 @@
   .credential-management-content-table {
     flex: 1;
     overflow: hidden;
+    min-height: 0;
 
     .credential-management-content-table-name {
       font-weight: 500;
@@ -50,6 +53,11 @@
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+  }
+
+  // 表格行选中状态
+  .credential-management-row-selected {
+    background-color: var(--semi-color-fill-1) !important;
   }
 }
 
