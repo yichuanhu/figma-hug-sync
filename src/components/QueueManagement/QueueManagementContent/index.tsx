@@ -532,7 +532,6 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
               showTotal: true,
               showSizeChanger: false,
             }}
-            scroll={{ y: 'calc(100vh - 320px)' }}
             empty={
               <EmptyState
                 variant={queryParams.keyword || filterCount > 0 ? 'noResult' : 'noData'}
