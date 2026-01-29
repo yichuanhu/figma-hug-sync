@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import {
   SideSheet,
   Button,
@@ -20,6 +21,7 @@ import {
   IconChevronRight,
   IconMaximize,
   IconMinimize,
+  IconList,
 } from '@douyinfe/semi-icons';
 import type { LYQueueResponse } from '@/api/index';
 
@@ -59,6 +61,7 @@ const QueueDetailDrawer = ({
   onQueueChange,
 }: QueueDetailDrawerProps) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [width, setWidth] = useState(() => {
     const saved = localStorage.getItem(DRAWER_WIDTH_KEY);
     return saved ? Math.max(Number(saved), MIN_WIDTH) : DEFAULT_WIDTH;
@@ -144,6 +147,16 @@ const QueueDetailDrawer = ({
     setIsFullscreen((prev) => !prev);
   }, []);
 
+  // 跳转到消息列表
+  const handleViewMessages = () => {
+    if (!queue) return;
+    const basePath = context === 'development' 
+      ? '/dev-center/business-assets/queues'
+      : '/scheduling-center/business-assets/queues';
+    navigate(`${basePath}/${queue.queue_id}/messages`);
+    onClose();
+  };
+
   // 自定义header
   const renderHeader = () => (
     <Row type="flex" justify="space-between" align="middle" className="queue-detail-drawer-header">
@@ -177,6 +190,14 @@ const QueueDetailDrawer = ({
               <Divider layout="vertical" className="queue-detail-drawer-header-divider" />
             </>
           )}
+          <Tooltip content={t('queue.actions.viewMessages')}>
+            <Button
+              icon={<IconList />}
+              theme="borderless"
+              size="small"
+              onClick={handleViewMessages}
+            />
+          </Tooltip>
           <Tooltip content={t('common.edit')}>
             <Button
               icon={<IconEditStroked />}

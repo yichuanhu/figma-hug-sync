@@ -1741,3 +1741,111 @@ export interface LYQueueListResultResponse {
     total: number;
   };
 }
+
+// ============= Queue Message Types =============
+
+/**
+ * 消息状态枚举
+ */
+export type QueueMessageStatus = 
+  | 'UNCONSUMED_INACTIVE'  // 未消费-未生效
+  | 'UNCONSUMED_ACTIVE'    // 未消费-已生效
+  | 'CONSUMED'             // 已消费
+  | 'EXPIRED';             // 已失效
+
+/**
+ * 消息优先级枚举
+ */
+export type QueueMessagePriority = 'HIGH' | 'MEDIUM' | 'LOW';
+
+/**
+ * 消费端类型
+ */
+export type ConsumerType = 'HUMAN' | 'ROBOT';
+
+/**
+ * LYQueueMessageResponse
+ * 队列消息响应模型
+ */
+export interface LYQueueMessageResponse {
+  /** 消息ID */
+  message_id: string;
+  /** 队列ID */
+  queue_id: string;
+  /** 消息编号 */
+  message_number: string;
+  /** 消息内容 */
+  content: string;
+  /** 消息状态 */
+  status: QueueMessageStatus;
+  /** 优先级 */
+  priority: QueueMessagePriority;
+  /** 消息类型 TEST/PRODUCTION */
+  message_type: 'TEST' | 'PRODUCTION';
+  /** 入队时间 */
+  enqueue_time: string;
+  /** 生效时间 */
+  effective_time: string;
+  /** 失效时间 */
+  expiry_time?: string | null;
+  /** 消费者类型 */
+  consumer_type?: ConsumerType | null;
+  /** 消费者ID */
+  consumer_id?: string | null;
+  /** 消费者名称 */
+  consumer_name?: string | null;
+  /** 消费时间 */
+  consume_time?: string | null;
+  /** 消费任务ID */
+  consume_task_id?: string | null;
+  /** 消费任务名称 */
+  consume_task_name?: string | null;
+  /** 创建时间 */
+  created_at: string;
+  /** 更新时间 */
+  updated_at: string;
+}
+
+/**
+ * LYRequeueMessageRequest
+ * 重新入队请求
+ */
+export interface LYRequeueMessageRequest {
+  /** 消息内容（必填，最大4000字符） */
+  content: string;
+  /** 优先级（必填） */
+  priority: QueueMessagePriority;
+  /** 生效时间（必填） */
+  effective_time: string;
+  /** 失效时间（可选，必须大于生效时间） */
+  expiry_time?: string | null;
+}
+
+/**
+ * GetQueueMessagesParams
+ * 获取队列消息列表参数
+ */
+export interface GetQueueMessagesParams {
+  queue_id: string;
+  context: 'development' | 'scheduling';
+  offset?: number;
+  size?: number;
+  keyword?: string;
+  status?: QueueMessageStatus | null;
+  consume_task_id?: string | null;
+  start_time?: string | null;
+  end_time?: string | null;
+}
+
+/**
+ * LYQueueMessageListResultResponse
+ * 队列消息列表结果响应
+ */
+export interface LYQueueMessageListResultResponse {
+  data: LYQueueMessageResponse[];
+  range: {
+    offset: number;
+    size: number;
+    total: number;
+  };
+}

@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import {
   Button,
   Input,
@@ -131,6 +132,7 @@ export interface QueueManagementContentProps {
 
 const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   // 搜索框输入值（即时显示）
   const [searchValue, setSearchValue] = useState('');
@@ -233,6 +235,14 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
   const handleRowClick = (record: LYQueueResponse) => {
     setSelectedQueue(record);
     setDetailDrawerVisible(true);
+  };
+
+  // 查看消息列表
+  const handleViewMessages = (record: LYQueueResponse) => {
+    const basePath = context === 'development' 
+      ? '/dev-center/business-assets/queues'
+      : '/scheduling-center/business-assets/queues';
+    navigate(`${basePath}/${record.queue_id}/messages`);
   };
 
   // 编辑队列
@@ -369,6 +379,9 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
           clickToHide
           render={
             <Dropdown.Menu>
+              <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleViewMessages(record); }}>
+                {t('queue.actions.viewMessages')}
+              </Dropdown.Item>
               <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>
                 {t('common.edit')}
               </Dropdown.Item>
