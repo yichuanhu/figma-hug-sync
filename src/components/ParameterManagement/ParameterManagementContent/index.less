@@ -34,6 +34,39 @@
     flex: 1;
     overflow: hidden;
     min-height: 0;
+    display: flex;
+    flex-direction: column;
+
+    // 约束 Semi Table 内部 wrapper 高度
+    .semi-table {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .semi-table-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .semi-table-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .semi-table-body {
+      flex: 1;
+      min-height: 0;
+      overflow: auto !important;
+    }
 
     .parameter-management-content-table-name {
       font-weight: 500;
