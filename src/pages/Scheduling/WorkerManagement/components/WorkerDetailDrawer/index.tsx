@@ -31,12 +31,14 @@ interface WorkerDetailDrawerProps {
   // 分页相关 - 用于自动翻页
   pagination?: PaginationInfo;
   onPageChange?: (page: number) => Promise<LYWorkerResponse[] | void>;
+  // 滚动到行
+  onScrollToRow?: (id: string) => void;
 }
 
 // 描述展开收起的阈值（字符数）
 const DESCRIPTION_COLLAPSE_THRESHOLD = 100;
 
-const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, onDelete, onToggleReceiveTasks, onAddToGroup, onRemoveFromGroup, dataList = [], onNavigate, pagination, onPageChange }: WorkerDetailDrawerProps) => {
+const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, onDelete, onToggleReceiveTasks, onAddToGroup, onRemoveFromGroup, dataList = [], onNavigate, pagination, onPageChange, onScrollToRow }: WorkerDetailDrawerProps) => {
   const { t } = useTranslation();
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
@@ -115,43 +117,45 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
     if (isNavigating) return;
     
     if (currentIndex > 0 && onNavigate) {
-      // 当前页内导航
-      onNavigate(dataList[currentIndex - 1]);
+      const target = dataList[currentIndex - 1];
+      onNavigate(target);
+      onScrollToRow?.(target.id);
     } else if (pagination && pagination.currentPage > 1 && onPageChange) {
-      // 需要翻到上一页
       setIsNavigating(true);
       try {
         const newList = await onPageChange(pagination.currentPage - 1);
         if (newList && newList.length > 0 && onNavigate) {
-          // 导航到上一页的最后一条
-          onNavigate(newList[newList.length - 1]);
+          const target = newList[newList.length - 1];
+          onNavigate(target);
+          onScrollToRow?.(target.id);
         }
       } finally {
         setIsNavigating(false);
       }
     }
-  }, [currentIndex, dataList, onNavigate, pagination, onPageChange, isNavigating]);
+  }, [currentIndex, dataList, onNavigate, pagination, onPageChange, isNavigating, onScrollToRow]);
 
   const handleNext = useCallback(async () => {
     if (isNavigating) return;
     
     if (currentIndex >= 0 && currentIndex < dataList.length - 1 && onNavigate) {
-      // 当前页内导航
-      onNavigate(dataList[currentIndex + 1]);
+      const target = dataList[currentIndex + 1];
+      onNavigate(target);
+      onScrollToRow?.(target.id);
     } else if (pagination && pagination.currentPage < pagination.totalPages && onPageChange) {
-      // 需要翻到下一页
       setIsNavigating(true);
       try {
         const newList = await onPageChange(pagination.currentPage + 1);
         if (newList && newList.length > 0 && onNavigate) {
-          // 导航到下一页的第一条
-          onNavigate(newList[0]);
+          const target = newList[0];
+          onNavigate(target);
+          onScrollToRow?.(target.id);
         }
       } finally {
         setIsNavigating(false);
       }
     }
-  }, [currentIndex, dataList, onNavigate, pagination, onPageChange, isNavigating]);
+  }, [currentIndex, dataList, onNavigate, pagination, onPageChange, isNavigating, onScrollToRow]);
 
   if (!workerData) return null;
 

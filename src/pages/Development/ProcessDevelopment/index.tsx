@@ -601,6 +601,7 @@ const ProcessDevelopment = () => {
             onRow={(record) => {
               const isSelected = selectedProcess?.id === record?.id && detailDrawerVisible;
               return {
+                id: `process-row-${record?.id}`,
                 onClick: () => record && openProcessDetail(record as LYProcessResponse),
                 className: isSelected ? 'process-development-row-selected' : undefined,
                 style: { cursor: 'pointer' },
@@ -667,6 +668,10 @@ const ProcessDevelopment = () => {
           total,
         }}
         onPageChange={handleDrawerPageChange}
+        onScrollToRow={(id) => {
+          const row = document.getElementById(`process-row-${id}`);
+          row?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }}
       />
 
       {/* 打开流程确认弹窗 */}

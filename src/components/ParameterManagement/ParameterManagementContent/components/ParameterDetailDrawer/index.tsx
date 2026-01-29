@@ -47,6 +47,7 @@ interface ParameterDetailDrawerProps {
   total: number;
   onPageChange: (page: number) => Promise<LYParameterResponse[]>;
   onParameterChange: (parameter: LYParameterResponse) => void;
+  onScrollToRow?: (id: string) => void;
 }
 
 const DRAWER_WIDTH_KEY = 'parameter-detail-drawer-width';
@@ -66,6 +67,7 @@ const ParameterDetailDrawer = ({
   total,
   onPageChange,
   onParameterChange,
+  onScrollToRow,
 }: ParameterDetailDrawerProps) => {
   const { t } = useTranslation();
   const [width, setWidth] = useState(() => {
@@ -117,20 +119,28 @@ const ParameterDetailDrawer = ({
   const handleNavigate = async (direction: 'prev' | 'next') => {
     if (direction === 'prev') {
       if (currentIndex > 0) {
-        onParameterChange(allParameters[currentIndex - 1]);
+        const target = allParameters[currentIndex - 1];
+        onParameterChange(target);
+        onScrollToRow?.(target.parameter_id);
       } else if (currentPage > 1) {
         const newData = await onPageChange(currentPage - 1);
         if (newData.length > 0) {
-          onParameterChange(newData[newData.length - 1]);
+          const target = newData[newData.length - 1];
+          onParameterChange(target);
+          onScrollToRow?.(target.parameter_id);
         }
       }
     } else {
       if (currentIndex < allParameters.length - 1) {
-        onParameterChange(allParameters[currentIndex + 1]);
+        const target = allParameters[currentIndex + 1];
+        onParameterChange(target);
+        onScrollToRow?.(target.parameter_id);
       } else if (globalIndex < total - 1) {
         const newData = await onPageChange(currentPage + 1);
         if (newData.length > 0) {
-          onParameterChange(newData[0]);
+          const target = newData[0];
+          onParameterChange(target);
+          onScrollToRow?.(target.parameter_id);
         }
       }
     }

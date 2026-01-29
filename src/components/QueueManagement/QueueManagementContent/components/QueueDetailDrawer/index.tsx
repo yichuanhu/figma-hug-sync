@@ -40,6 +40,7 @@ interface QueueDetailDrawerProps {
   total: number;
   onPageChange: (page: number) => Promise<LYQueueResponse[]>;
   onQueueChange: (queue: LYQueueResponse) => void;
+  onScrollToRow?: (id: string) => void;
 }
 
 const DRAWER_WIDTH_KEY = 'queue-detail-drawer-width';
@@ -59,6 +60,7 @@ const QueueDetailDrawer = ({
   total,
   onPageChange,
   onQueueChange,
+  onScrollToRow,
 }: QueueDetailDrawerProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -112,20 +114,28 @@ const QueueDetailDrawer = ({
   const handleNavigate = async (direction: 'prev' | 'next') => {
     if (direction === 'prev') {
       if (currentIndex > 0) {
-        onQueueChange(allQueues[currentIndex - 1]);
+        const target = allQueues[currentIndex - 1];
+        onQueueChange(target);
+        onScrollToRow?.(target.queue_id);
       } else if (currentPage > 1) {
         const newData = await onPageChange(currentPage - 1);
         if (newData.length > 0) {
-          onQueueChange(newData[newData.length - 1]);
+          const target = newData[newData.length - 1];
+          onQueueChange(target);
+          onScrollToRow?.(target.queue_id);
         }
       }
     } else {
       if (currentIndex < allQueues.length - 1) {
-        onQueueChange(allQueues[currentIndex + 1]);
+        const target = allQueues[currentIndex + 1];
+        onQueueChange(target);
+        onScrollToRow?.(target.queue_id);
       } else if (globalIndex < total - 1) {
         const newData = await onPageChange(currentPage + 1);
         if (newData.length > 0) {
-          onQueueChange(newData[0]);
+          const target = newData[0];
+          onQueueChange(target);
+          onScrollToRow?.(target.queue_id);
         }
       }
     }

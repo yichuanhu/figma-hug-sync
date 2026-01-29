@@ -439,6 +439,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
             onRow={(record) => {
               const isSelected = selectedGroup?.id === record?.id && detailDrawerVisible;
               return {
+                id: `worker-group-row-${record?.id}`,
                 onClick: () => openDetail(record as LYWorkerGroupResponse),
                 className: isSelected ? 'worker-group-management-row-selected' : undefined,
                 style: { cursor: 'pointer' },
@@ -478,6 +479,10 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
         }}
         onPageChange={handleDrawerPageChange}
         onNavigateToWorkerDetail={onNavigateToWorkerDetail}
+        onScrollToRow={(id) => {
+          const row = document.getElementById(`worker-group-row-${id}`);
+          row?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }}
       />
 
       {/* 创建弹窗 */}

@@ -555,6 +555,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
               />
             }
             onRow={(record) => ({
+              id: `parameter-row-${(record as LYParameterResponse).parameter_id}`,
               onClick: () => handleRowClick(record as LYParameterResponse),
               className: selectedParameter?.parameter_id === record?.parameter_id && detailDrawerVisible 
                 ? 'parameter-management-row-selected' 
@@ -608,6 +609,10 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
         total={total}
         onPageChange={handleDrawerPageChange}
         onParameterChange={setSelectedParameter}
+        onScrollToRow={(id) => {
+          const row = document.getElementById(`parameter-row-${id}`);
+          row?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }}
       />
     </div>
   );
