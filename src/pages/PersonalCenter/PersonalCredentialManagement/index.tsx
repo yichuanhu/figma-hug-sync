@@ -11,6 +11,7 @@ import {
   Row,
   Col,
   Tag,
+  Typography,
 } from '@douyinfe/semi-ui';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
@@ -293,7 +294,14 @@ const PersonalCredentialManagement = () => {
       dataIndex: 'description',
       key: 'description',
       width: 180,
-      render: (text: string | null) => text || '-',
+      render: (text: string | null) => (
+        <Typography.Text
+          ellipsis={{ showTooltip: true }}
+          className="personal-credential-table-description"
+        >
+          {text || '-'}
+        </Typography.Text>
+      ),
     },
     {
       title: t('common.createTime'),
