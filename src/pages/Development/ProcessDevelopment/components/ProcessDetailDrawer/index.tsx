@@ -69,8 +69,60 @@ interface VersionDetailData extends LYProcessVersionResponse {
   outputs?: ProcessVariable[];
 }
 
-// 临时清空以展示空状态效果
-const initialMockVersionData: VersionDetailData[] = [];
+// 生成UUID
+const generateUUID = (): string => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+};
+
+// 版本Mock数据生成
+const generateMockVersionData = (): VersionDetailData[] => {
+  const versions = [
+    { version: '1.0.0', note: '初始版本，实现基础功能', isActive: false },
+    { version: '1.1.0', note: '优化性能，修复已知问题', isActive: false },
+    { version: '1.2.0', note: '新增批量处理功能', isActive: false },
+    { version: '2.0.0', note: '重构核心逻辑，提升稳定性', isActive: true },
+    { version: '2.1.0', note: '新增异常处理机制', isActive: false },
+  ];
+
+  return versions.map((v, index) => ({
+    key: index + 1,
+    id: generateUUID(),
+    version: v.version,
+    process_id: generateUUID(),
+    is_active: v.isActive,
+    status: v.isActive ? 'PUBLISHED' : 'UNPUBLISHED',
+    source_code: `process_v${v.version.replace(/\./g, '_')}`,
+    package_file_id: generateUUID(),
+    package_size: Math.floor(Math.random() * 5000000) + 500000,
+    package_checksum: `sha256:${generateUUID().replace(/-/g, '')}`,
+    version_note: v.note,
+    usage_note: `使用说明：版本${v.version}的操作指引`,
+    creator_id: ['user-001', 'user-002', 'user-003'][index % 3],
+    created_at: new Date(Date.now() - (versions.length - index) * 7 * 24 * 60 * 60 * 1000).toISOString(),
+    publish_time: v.isActive ? new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString() : null,
+    publisher_id: v.isActive ? 'user-001' : null,
+    client_version: '3.2.1',
+    os: 'Windows 10',
+    architecture: 'x86_64',
+    file_name: `process_package_v${v.version}.zip`,
+    usage_instructions_url: 'https://docs.example.com/usage',
+    development_environment: 'Win10 | X86',
+    inputs: [
+      { name: 'inputParam1', type: '文本' as const, value: '默认值', description: '输入参数1的描述' },
+      { name: 'inputParam2', type: '布尔' as const, value: 'true', description: '是否启用某功能' },
+    ],
+    outputs: [
+      { name: 'outputResult', type: '文本' as const, value: '', description: '输出结果' },
+      { name: 'outputStatus', type: '数值' as const, value: '0', description: '执行状态码' },
+    ],
+  }));
+};
+
+const initialMockVersionData: VersionDetailData[] = generateMockVersionData();
 
 
 // 模拟创建者ID到名称的映射
