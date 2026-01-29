@@ -263,7 +263,23 @@ const LinkedCredentialsDrawer = ({
               loading={loading}
               pagination={false}
               scroll={{ y: 'calc(100vh - 240px)' }}
-              empty={<EmptyState description={t('personalCredential.linkedCredentials.empty')} />}
+              empty={
+                <EmptyState 
+                  description={t('personalCredential.linkedCredentials.empty')} 
+                  footer={
+                    <Button 
+                      theme="solid" 
+                      type="primary"
+                      onClick={() => {
+                        navigate('/dev-center/business-assets/credentials');
+                        onClose();
+                      }}
+                    >
+                      {t('personalCredential.linkedCredentials.goToLink')}
+                    </Button>
+                  }
+                />
+              }
             />
           )}
         </div>
