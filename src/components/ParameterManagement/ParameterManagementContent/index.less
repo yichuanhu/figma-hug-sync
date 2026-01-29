@@ -2,9 +2,11 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  overflow: hidden;
 
   &-breadcrumb {
     margin-bottom: 16px;
+    flex-shrink: 0;
   }
 
   &-header {
@@ -31,6 +33,7 @@
   .parameter-management-content-table {
     flex: 1;
     overflow: hidden;
+    min-height: 0;
 
     .parameter-management-content-table-name {
       font-weight: 500;
