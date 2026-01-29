@@ -1177,7 +1177,7 @@
     },
     "requeueModal": {
       "title": "重新入队",
-      "description": "将消息重新入队后，消息状态将变为"未消费-已生效"，可以被重新消费。",
+      "description": "将消息重新入队后，消息状态将变为\"未消费-已生效\"，可以被重新消费。",
       "success": "消息重新入队成功",
       "error": "操作失败，请重试",
       "validation": {
@@ -1210,7 +1210,7 @@
       "deleteConfirm": "确定要删除选中的 {{count}} 条消息吗？删除后消息将永久移除，不可恢复。",
       "deleteSuccess": "成功删除 {{count}} 条消息",
       "requeueTitle": "批量重新入队",
-      "requeueConfirm": "确定要将选中的 {{count}} 条消息重新入队吗？重新入队后消息状态将变为"未消费-已生效"。",
+      "requeueConfirm": "确定要将选中的 {{count}} 条消息重新入队吗？重新入队后消息状态将变为\"未消费-已生效\"。",
       "requeueSuccess": "成功将 {{count}} 条消息重新入队"
     },
     "empty": {
