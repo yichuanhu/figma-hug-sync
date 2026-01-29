@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import {
   Button,
   Input,
@@ -15,6 +16,7 @@ import {
   Popover,
   CheckboxGroup,
   Tooltip,
+  Breadcrumb,
 } from '@douyinfe/semi-ui';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
@@ -25,6 +27,7 @@ import {
   IconDeleteStroked,
   IconFilter,
   IconEditStroked,
+  IconHome,
 } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
 import type {
@@ -158,6 +161,7 @@ export interface ParameterManagementContentProps {
 
 const ParameterManagementContent = ({ context }: ParameterManagementContentProps) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   // 搜索框输入值（即时显示）
   const [searchValue, setSearchValue] = useState('');
@@ -429,6 +433,18 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
 
   return (
     <div className="parameter-management-content">
+      {/* 面包屑 */}
+      <div className="parameter-management-content-breadcrumb">
+        <Breadcrumb>
+          <Breadcrumb.Item icon={<IconHome />} onClick={() => navigate('/')}>首页</Breadcrumb.Item>
+          <Breadcrumb.Item onClick={() => navigate(context === 'development' ? '/development-workbench' : '/scheduling-workbench')}>
+            {context === 'development' ? '开发中心' : '调度中心'}
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>业务资产配置</Breadcrumb.Item>
+          <Breadcrumb.Item>{t('parameter.title')}</Breadcrumb.Item>
+        </Breadcrumb>
+      </div>
+
       {/* 标题区域 */}
       <div className="parameter-management-content-header">
         <div className="parameter-management-content-header-title">

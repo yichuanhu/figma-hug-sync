@@ -16,6 +16,7 @@ import {
   Popover,
   CheckboxGroup,
   Tooltip,
+  Breadcrumb,
 } from '@douyinfe/semi-ui';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
@@ -29,6 +30,7 @@ import {
   IconUnlink,
   IconLink,
   IconHistory,
+  IconHome,
 } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
 import type {
@@ -461,6 +463,18 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
 
   return (
     <div className="credential-management-content">
+      {/* 面包屑 */}
+      <div className="credential-management-content-breadcrumb">
+        <Breadcrumb>
+          <Breadcrumb.Item icon={<IconHome />} onClick={() => navigate('/')}>首页</Breadcrumb.Item>
+          <Breadcrumb.Item onClick={() => navigate(context === 'development' ? '/development-workbench' : '/scheduling-workbench')}>
+            {context === 'development' ? '开发中心' : '调度中心'}
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>业务资产配置</Breadcrumb.Item>
+          <Breadcrumb.Item>{t('credential.title')}</Breadcrumb.Item>
+        </Breadcrumb>
+      </div>
+
       {/* 标题区域 */}
       <div className="credential-management-content-header">
         <div className="credential-management-content-header-title">
