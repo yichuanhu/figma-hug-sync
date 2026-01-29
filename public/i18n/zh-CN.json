@@ -129,7 +129,8 @@
     "description": "管理流程使用的各类凭据信息",
     "breadcrumb": {
       "developmentCenter": "开发中心",
-      "schedulingCenter": "调度中心"
+      "schedulingCenter": "调度中心",
+      "businessAssets": "业务资产配置"
     },
     "createCredential": "新建凭据",
     "personalCredentialManagement": "个人凭据管理",
@@ -265,6 +266,9 @@
   "parameter": {
     "title": "参数管理",
     "description": "管理参数配置，满足不同业务场景的需求",
+    "breadcrumb": {
+      "businessAssets": "业务资产配置"
+    },
     "createParameter": "新建参数",
     "searchPlaceholder": "搜索参数名称",
     "noData": "暂无参数",
@@ -1067,6 +1071,9 @@
   "queue": {
     "title": "队列管理",
     "description": "管理消息队列，实现业务消息的异步处理",
+    "breadcrumb": {
+      "businessAssets": "业务资产配置"
+    },
     "createQueue": "新建队列",
     "searchPlaceholder": "搜索队列名称",
     "noData": "暂无队列",

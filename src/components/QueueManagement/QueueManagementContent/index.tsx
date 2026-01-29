@@ -28,7 +28,6 @@ import {
   IconFilter,
   IconEyeOpenedStroked,
   IconEditStroked,
-  IconHome,
 } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
 import type {
@@ -419,11 +418,13 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
       {/* 面包屑 */}
       <div className="queue-management-content-breadcrumb">
         <Breadcrumb>
-          <Breadcrumb.Item icon={<IconHome />} onClick={() => navigate('/')}>首页</Breadcrumb.Item>
-          <Breadcrumb.Item onClick={() => navigate(context === 'development' ? '/development-workbench' : '/scheduling-workbench')}>
-            {context === 'development' ? '开发中心' : '调度中心'}
+          <Breadcrumb.Item onClick={() => navigate('/')}>
+            {t('common.home')}
           </Breadcrumb.Item>
-          <Breadcrumb.Item>业务资产配置</Breadcrumb.Item>
+          <Breadcrumb.Item onClick={() => navigate(context === 'development' ? '/development-workbench' : '/scheduling-workbench')}>
+            {context === 'development' ? t('development.processDevelopment.breadcrumb.developmentCenter') : t('scheduling.processDevelopment.breadcrumb.schedulingCenter')}
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>{t('queue.breadcrumb.businessAssets')}</Breadcrumb.Item>
           <Breadcrumb.Item>{t('queue.title')}</Breadcrumb.Item>
         </Breadcrumb>
       </div>
