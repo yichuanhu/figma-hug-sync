@@ -1,35 +1,34 @@
 // LinkPersonalCredentialModal 关联个人凭据弹窗样式
 .link-personal-credential-modal {
-  &-content {
-    padding-top: 4px;
-  }
+  .link-personal-credential-modal-content {
+    padding: 4px 0 0;
+    max-height: calc(100vh - 300px);
+    overflow-y: auto;
 
-  &-info {
-    margin-bottom: 16px;
-  }
+    .link-personal-credential-modal-info {
+      margin-bottom: 16px;
+    }
 
-  &-credential-name {
-    margin-bottom: 16px;
-    padding: 12px;
-    background-color: var(--semi-color-fill-0);
-    border-radius: 4px;
-  }
+    .link-personal-credential-modal-credential-name {
+      margin-bottom: 16px;
+      padding: 12px;
+      background-color: var(--semi-color-fill-0);
+      border-radius: 6px;
+    }
 
-  &-form {
-    margin-top: 8px;
-  }
+    .link-personal-credential-modal-form {
+      .link-personal-credential-modal-select {
+        width: 100%;
+      }
+    }
 
-  &-select {
-    width: 100%;
-  }
-
-  &-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    margin-top: 12px;
-    padding-top: 16px;
-    padding-bottom: 12px;
-    border-top: 1px solid var(--semi-color-border);
+    .link-personal-credential-modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid var(--semi-color-border);
+    }
   }
 }

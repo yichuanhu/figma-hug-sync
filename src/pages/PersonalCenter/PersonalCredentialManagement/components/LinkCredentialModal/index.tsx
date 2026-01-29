@@ -84,7 +84,8 @@ const LinkCredentialModal = ({
       footer={null}
       closeOnEsc
       maskClosable={false}
-      width={480}
+      width={520}
+      centered
     >
       <div className="link-credential-modal-content">
         <div className="link-credential-modal-info">
