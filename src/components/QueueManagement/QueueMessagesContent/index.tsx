@@ -29,7 +29,6 @@ import {
   IconChevronLeft,
   IconPlayCircle,
   IconRefresh,
-  IconEyeOpenedStroked,
 } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
 import type {
@@ -413,9 +412,6 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
           clickToHide
           render={
             <Dropdown.Menu>
-              <Dropdown.Item icon={<IconEyeOpenedStroked />} onClick={(e) => { e.stopPropagation(); handleRowClick(record); }}>
-                {t('common.viewDetail')}
-              </Dropdown.Item>
               {record.status === 'UNCONSUMED_ACTIVE' && (
                 <Dropdown.Item icon={<IconPlayCircle />} onClick={(e) => { e.stopPropagation(); handleConsume(record); }}>
                   {t('queueMessage.actions.consume')}
