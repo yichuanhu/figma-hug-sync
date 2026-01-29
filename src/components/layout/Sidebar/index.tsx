@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Avatar, Tooltip } from '@douyinfe/semi-ui';
-import i18n from '@/i18n';
 import {
   IconBell,
   IconBookStroked,
@@ -87,26 +86,7 @@ const getExpandedKeysByPath = (pathname: string): string[] => {
 const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { t, i18n: hookI18n } = useTranslation();
-
-  // 开发态：仅打印一次 i18n 关键状态，定位为何 t() 返回 key
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const w = window as any;
-  if (import.meta.env.DEV && !w.__i18n_sidebar_debug_logged__) {
-    w.__i18n_sidebar_debug_logged__ = true;
-    // eslint-disable-next-line no-console
-    console.info('[i18n][Sidebar] debug', {
-      sameInstance: hookI18n === i18n,
-      language: hookI18n.language,
-      resolvedLanguage: hookI18n.resolvedLanguage,
-      keySeparator: hookI18n.options?.keySeparator,
-      defaultNS: hookI18n.options?.defaultNS,
-      namespaces: hookI18n.options?.ns,
-      hasTranslationBundle: hookI18n.hasResourceBundle('zh-CN', 'translation'),
-      sample_sidebar_developmentCenter: hookI18n.t('sidebar.developmentCenter'),
-      sample_sidebar_home: hookI18n.t('sidebar.home'),
-    });
-  }
+  const { t } = useTranslation();
   
   // 根据当前路由计算初始展开的菜单
   const initialExpandedKeys = getExpandedKeysByPath(location.pathname);
