@@ -170,29 +170,25 @@ const ParameterDetailDrawer = ({
       </Col>
       <Col>
         <Space spacing={8}>
-          {(allParameters.length > 1 || total > pageSize) && (
-            <>
-              <Tooltip content={t('common.previous')}>
-                <Button
-                  icon={<IconChevronLeft />}
-                  theme="borderless"
-                  size="small"
-                  disabled={!canGoPrev}
-                  onClick={() => handleNavigate('prev')}
-                />
-              </Tooltip>
-              <Tooltip content={t('common.next')}>
-                <Button
-                  icon={<IconChevronRight />}
-                  theme="borderless"
-                  size="small"
-                  disabled={!canGoNext}
-                  onClick={() => handleNavigate('next')}
-                />
-              </Tooltip>
-              <Divider layout="vertical" className="parameter-detail-drawer-header-divider" />
-            </>
-          )}
+          <Tooltip content={t('common.previous')}>
+            <Button
+              icon={<IconChevronLeft />}
+              theme="borderless"
+              size="small"
+              disabled={!canGoPrev}
+              onClick={() => handleNavigate('prev')}
+            />
+          </Tooltip>
+          <Tooltip content={t('common.next')}>
+            <Button
+              icon={<IconChevronRight />}
+              theme="borderless"
+              size="small"
+              disabled={!canGoNext}
+              onClick={() => handleNavigate('next')}
+            />
+          </Tooltip>
+          <Divider layout="vertical" className="parameter-detail-drawer-header-divider" />
           <Tooltip content={t('common.edit')}>
             <Button
               icon={<IconEditStroked />}

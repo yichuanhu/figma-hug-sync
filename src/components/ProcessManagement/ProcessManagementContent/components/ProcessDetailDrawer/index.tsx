@@ -528,17 +528,13 @@ const ProcessDetailDrawer = ({
           </Col>
           <Col>
             <Space spacing={8}>
-              {(dataList.length > 1 || (pagination && pagination.totalPages > 1)) && (
-                <>
-                  <Tooltip content={t('common.previous')}>
-                    <Button icon={<IconChevronLeft />} theme="borderless" size="small" disabled={!canGoPrev || isNavigating} onClick={handlePrev} loading={isNavigating} />
-                  </Tooltip>
-                  <Tooltip content={t('common.next')}>
-                    <Button icon={<IconChevronRight />} theme="borderless" size="small" disabled={!canGoNext || isNavigating} onClick={handleNext} loading={isNavigating} />
-                  </Tooltip>
-                  <Divider layout="vertical" className="process-detail-drawer-header-divider" />
-                </>
-              )}
+              <Tooltip content={t('common.previous')}>
+                <Button icon={<IconChevronLeft />} theme="borderless" size="small" disabled={!canGoPrev || isNavigating} onClick={handlePrev} loading={isNavigating} />
+              </Tooltip>
+              <Tooltip content={t('common.next')}>
+                <Button icon={<IconChevronRight />} theme="borderless" size="small" disabled={!canGoNext || isNavigating} onClick={handleNext} loading={isNavigating} />
+              </Tooltip>
+              <Divider layout="vertical" className="process-detail-drawer-header-divider" />
               {/* 打开流程 - 仅开发中心 */}
               {!isSchedulingContext && onOpen && (
                 <Tooltip content={t('development.processDevelopment.actions.openProcess')}>

@@ -606,17 +606,13 @@ const PersonalCredentialDetailDrawer = ({
           </Col>
           <Col>
             <Space spacing={8}>
-              {(dataList.length > 1 || (pagination && pagination.totalPages > 1)) && (
-                <>
-                  <Tooltip content={t('common.previous')}>
-                    <Button icon={<IconChevronLeft />} theme="borderless" size="small" disabled={!canGoPrev || isNavigating} onClick={handlePrev} loading={isNavigating} />
-                  </Tooltip>
-                  <Tooltip content={t('common.next')}>
-                    <Button icon={<IconChevronRight />} theme="borderless" size="small" disabled={!canGoNext || isNavigating} onClick={handleNext} loading={isNavigating} />
-                  </Tooltip>
-                  <Divider layout="vertical" className="personal-credential-detail-drawer-header-divider" />
-                </>
-              )}
+              <Tooltip content={t('common.previous')}>
+                <Button icon={<IconChevronLeft />} theme="borderless" size="small" disabled={!canGoPrev || isNavigating} onClick={handlePrev} loading={isNavigating} />
+              </Tooltip>
+              <Tooltip content={t('common.next')}>
+                <Button icon={<IconChevronRight />} theme="borderless" size="small" disabled={!canGoNext || isNavigating} onClick={handleNext} loading={isNavigating} />
+              </Tooltip>
+              <Divider layout="vertical" className="personal-credential-detail-drawer-header-divider" />
               <Tooltip content={t('common.edit')}>
                 <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={() => onEdit(credential)} />
               </Tooltip>
