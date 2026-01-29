@@ -1,12 +1,10 @@
+// LinkCredentialModal 关联凭据弹窗样式
 .link-credential-modal {
-  .semi-modal-body {
-    padding-bottom: 0;
-  }
-
-  .link-credential-modal-content {
-    padding: 4px 0 0;
+  &-content {
+    padding-top: 4px;
     max-height: calc(100vh - 300px);
     overflow-y: auto;
+    padding-right: 4px;
 
     .link-credential-modal-info {
       margin-bottom: 16px;
@@ -23,15 +21,21 @@
       .link-credential-modal-select {
         width: 100%;
       }
-    }
 
-    .link-credential-modal-footer {
-      display: flex;
-      justify-content: flex-end;
-      gap: 12px;
-      margin: 24px -24px 0;
-      padding: 16px 24px;
-      border-top: 1px solid var(--semi-color-border);
+      // Form 字段统一间距
+      .semi-form-field {
+        margin-bottom: 16px;
+      }
     }
+  }
+
+  &-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 16px;
+    padding-top: 16px;
+    padding-bottom: 12px;
+    border-top: 1px solid var(--semi-color-border);
   }
 }

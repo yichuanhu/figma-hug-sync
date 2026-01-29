@@ -87,21 +87,21 @@ const LinkCredentialModal = ({
       width={520}
       centered
     >
-      <div className="link-credential-modal-content">
-        <div className="link-credential-modal-info">
-          <Text type="tertiary">{t('personalCredential.linkCredential.description')}</Text>
-        </div>
+      <Form
+        className="link-credential-modal-form"
+        onSubmit={handleSubmit}
+        labelPosition="top"
+      >
+        <div className="link-credential-modal-content">
+          <div className="link-credential-modal-info">
+            <Text type="tertiary">{t('personalCredential.linkCredential.description')}</Text>
+          </div>
 
-        <div className="link-credential-modal-credential-name">
-          <Text strong>{t('personalCredential.fields.name')}：</Text>
-          <Text>{credential?.credential_name}</Text>
-        </div>
+          <div className="link-credential-modal-credential-name">
+            <Text strong>{t('personalCredential.fields.name')}：</Text>
+            <Text>{credential?.credential_name}</Text>
+          </div>
 
-        <Form
-          className="link-credential-modal-form"
-          onSubmit={handleSubmit}
-          labelPosition="top"
-        >
           <Form.Select
             field="credential_ids"
             label={t('personalCredential.linkCredential.selectLabel')}
@@ -113,17 +113,17 @@ const LinkCredentialModal = ({
             maxTagCount={3}
             filter
           />
+        </div>
 
-          <div className="link-credential-modal-footer">
-            <Button theme="light" onClick={onCancel}>
-              {t('common.cancel')}
-            </Button>
-            <Button htmlType="submit" theme="solid" type="primary" loading={loading}>
-              {t('common.confirm')}
-            </Button>
-          </div>
-        </Form>
-      </div>
+        <div className="link-credential-modal-footer">
+          <Button theme="light" onClick={onCancel}>
+            {t('common.cancel')}
+          </Button>
+          <Button htmlType="submit" theme="solid" type="primary" loading={loading}>
+            {t('common.confirm')}
+          </Button>
+        </div>
+      </Form>
     </Modal>
   );
 };
