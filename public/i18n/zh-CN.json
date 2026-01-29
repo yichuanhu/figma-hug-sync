@@ -919,7 +919,8 @@
     "actions": {
       "viewUsage": "查看使用记录",
       "linkCredential": "关联凭据",
-      "viewLinkedCredentials": "查看关联的凭据"
+      "viewLinkedCredentials": "查看关联的凭据",
+      "unlinkCredential": "解除关联"
     },
     "detail": {
       "tabs": {
