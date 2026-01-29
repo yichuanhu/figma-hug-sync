@@ -156,3 +156,19 @@ body {
   }
 }
 
+// 下拉菜单图标颜色统一设置
+.semi-dropdown-menu {
+  .semi-dropdown-item {
+    .semi-icon {
+      color: var(--semi-color-text-3);
+    }
+
+    // 危险操作保持红色
+    &.semi-dropdown-item-danger {
+      .semi-icon {
+        color: var(--semi-color-danger);
+      }
+    }
+  }
+}
+
