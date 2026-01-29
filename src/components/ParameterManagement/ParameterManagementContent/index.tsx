@@ -24,6 +24,7 @@ import {
   IconMore,
   IconDeleteStroked,
   IconFilter,
+  IconEditStroked,
 } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
 import type {
@@ -398,11 +399,12 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
           clickToHide
           render={
             <Dropdown.Menu>
-              <Dropdown.Item onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>
+              <Dropdown.Item icon={<IconEditStroked />} onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>
                 {t('common.edit')}
               </Dropdown.Item>
               {context === 'development' && (
                 <Dropdown.Item 
+                  icon={<IconDeleteStroked />}
                   type="danger" 
                   disabled={record.is_published}
                   onClick={(e) => { e.stopPropagation(); handleDelete(record); }}
