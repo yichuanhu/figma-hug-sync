@@ -129,3 +129,30 @@ body {
   }
 }
 
+// 修复详情抽屉导航按钮在禁用状态下的布局抖动问题
+// Semi UI 的 Tooltip 在包裹 disabled Button 时会添加额外的 span 包装器
+.card-sidesheet {
+  .semi-sidesheet-header {
+    // 确保 Tooltip 包裹器在禁用状态下保持一致的布局
+    .semi-tooltip-wrapper {
+      display: inline-flex !important;
+      align-items: center;
+      vertical-align: middle;
+      
+      // 确保内部按钮尺寸一致
+      .semi-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+    
+    // 确保 Space 组件内的所有子元素垂直居中
+    .semi-space-item {
+      display: inline-flex;
+      align-items: center;
+      vertical-align: middle;
+    }
+  }
+}
+
