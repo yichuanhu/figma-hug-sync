@@ -163,10 +163,12 @@ body {
       color: var(--semi-color-text-3);
     }
 
-    // 危险操作保持红色
+    // 危险操作与其他操作保持一致
     &.semi-dropdown-item-danger {
+      color: var(--semi-color-text-0);
+      
       .semi-icon {
-        color: var(--semi-color-danger);
+        color: var(--semi-color-text-3);
       }
     }
   }
