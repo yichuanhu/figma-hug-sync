@@ -81,6 +81,21 @@
     padding: 16px 24px;
     height: 100%;
     overflow-y: auto;
+
+    // 空状态样式优化
+    .semi-table-body {
+      .semi-table-row-empty {
+        border-bottom: none;
+        
+        td {
+          border-bottom: none;
+        }
+      }
+      
+      .semi-empty {
+        margin-top: 42px;
+      }
+    }
   }
 
   // 使用记录区域
