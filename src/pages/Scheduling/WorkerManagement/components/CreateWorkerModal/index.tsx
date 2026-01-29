@@ -201,22 +201,21 @@ const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalPr
                 ))}
               </Form.Select>
             )}
-            <div className="create-worker-modal-field">
-              <div className="semi-form-field-label-text">{t('worker.create.fields.desktopType')}</div>
-              <Radio.Group
-                value={desktopType}
-                onChange={(e) => {
-                  if (!isLocalDesktopDisabled || e.target.value !== 'Console') {
-                    setDesktopType(e.target.value);
-                  }
-                }}
-              >
-                <Radio value="Console" disabled={isLocalDesktopDisabled}>
-                  {t('worker.create.fields.localDesktop')}
-                </Radio>
-                <Radio value="NotConsole">{t('worker.create.fields.remoteDesktop')}</Radio>
-              </Radio.Group>
-            </div>
+            <Form.RadioGroup
+              field="desktopType"
+              label={t('worker.create.fields.desktopType')}
+              initValue={desktopType}
+              onChange={(e) => {
+                if (!isLocalDesktopDisabled || e.target.value !== 'Console') {
+                  setDesktopType(e.target.value);
+                }
+              }}
+            >
+              <Radio value="Console" disabled={isLocalDesktopDisabled}>
+                {t('worker.create.fields.localDesktop')}
+              </Radio>
+              <Radio value="NotConsole">{t('worker.create.fields.remoteDesktop')}</Radio>
+            </Form.RadioGroup>
             {isLocalDesktopDisabled && (
               <Banner
                 type="info"
