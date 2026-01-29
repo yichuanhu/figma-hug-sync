@@ -477,12 +477,9 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
             onClick={handleBack}
             className="queue-messages-content-back-btn"
           />
-          <div>
-            <Title heading={3} className="title">
-              {queueName} - {t('queueMessage.title')}
-            </Title>
-            <Text type="tertiary">{t('queueMessage.description')}</Text>
-          </div>
+          <Title heading={3} className="title">
+            {queueName} - {t('queueMessage.title')}
+          </Title>
         </div>
 
         {/* 操作栏 */}
