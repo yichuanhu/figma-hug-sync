@@ -546,7 +546,9 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
               className: selectedQueue?.queue_id === record?.queue_id && detailDrawerVisible 
                 ? 'queue-management-row-selected' 
                 : '',
+              style: { cursor: 'pointer' },
             })}
+            scroll={{ y: 'calc(100vh - 320px)' }}
           />
         )}
       </div>
