@@ -201,6 +201,13 @@ const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalPr
                 ))}
               </Form.Select>
             )}
+            {isLocalDesktopDisabled && (
+              <Banner
+                type="info"
+                description={t('worker.create.validation.localDesktopLimitTip')}
+                className="create-worker-modal-banner"
+              />
+            )}
             <Form.RadioGroup
               field="desktopType"
               label={t('worker.create.fields.desktopType')}
@@ -216,13 +223,6 @@ const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalPr
               </Radio>
               <Radio value="NotConsole">{t('worker.create.fields.remoteDesktop')}</Radio>
             </Form.RadioGroup>
-            {isLocalDesktopDisabled && (
-              <Banner
-                type="info"
-                description={t('worker.create.validation.localDesktopLimitTip')}
-                className="create-worker-modal-banner"
-              />
-            )}
           </div>
 
           <div className="create-worker-modal-section">
