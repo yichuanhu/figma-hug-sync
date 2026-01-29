@@ -11,23 +11,55 @@
   }
 
   &-section {
-    margin-bottom: 16px;
+    margin-bottom: 20px;
+    padding: 16px;
+    background: var(--semi-color-fill-0);
+    border-radius: 8px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    // 移除 Form 字段的默认底部间距
+    .semi-form-field {
+      margin-bottom: 16px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
   }
 
   &-section-title {
     font-weight: 600;
     font-size: 14px;
     color: var(--semi-color-text-0);
-    margin-bottom: 12px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--semi-color-border);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    &::before {
+      content: '';
+      display: inline-block;
+      width: 3px;
+      height: 14px;
+      background: var(--semi-color-primary);
+      border-radius: 2px;
+    }
   }
 
   &-field {
-    margin-bottom: 12px;
+    margin-bottom: 16px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
 
     .semi-form-field-label-text {
-      margin-bottom: 4px;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--semi-color-text-0);
     }
   }
 
@@ -36,7 +68,7 @@
   }
 
   &-banner {
-    margin-bottom: 12px;
+    margin-bottom: 16px;
     border-radius: 8px;
   }
 
@@ -44,7 +76,7 @@
     display: flex;
     justify-content: flex-end;
     gap: 12px;
-    margin-top: 12px;
+    margin-top: 16px;
     padding-top: 16px;
     padding-bottom: 12px;
     border-top: 1px solid var(--semi-color-border);
