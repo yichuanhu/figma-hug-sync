@@ -525,6 +525,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
               />
             }
             onRow={(record) => ({
+              id: `queue-row-${(record as LYQueueResponse).queue_id}`,
               onClick: () => handleRowClick(record as LYQueueResponse),
               className: selectedQueue?.queue_id === record?.queue_id && detailDrawerVisible 
                 ? 'queue-management-row-selected' 
@@ -576,6 +577,10 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
         total={total}
         onPageChange={handleDrawerPageChange}
         onQueueChange={setSelectedQueue}
+        onScrollToRow={(id) => {
+          const row = document.getElementById(`queue-row-${id}`);
+          row?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }}
       />
     </div>
   );

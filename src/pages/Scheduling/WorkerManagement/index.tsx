@@ -971,6 +971,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
             onRow={(record) => {
               const isSelected = selectedWorker?.id === record?.id && detailDrawerVisible;
               return {
+                id: `worker-row-${record?.id}`,
                 onClick: () => openDetail(record as LYWorkerResponse),
                 className: isSelected ? 'worker-management-row-selected' : undefined,
                 style: { cursor: 'pointer' },
@@ -1029,6 +1030,10 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
           total,
         }}
         onPageChange={handleDrawerPageChange}
+        onScrollToRow={(id) => {
+          const row = document.getElementById(`worker-row-${id}`);
+          row?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }}
       />
 
       {/* 密钥弹窗 */}

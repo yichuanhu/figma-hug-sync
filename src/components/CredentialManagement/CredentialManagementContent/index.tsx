@@ -567,6 +567,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
             }}
             scroll={{ y: 'calc(100vh - 320px)' }}
             onRow={(record) => ({
+              id: `credential-row-${(record as LYCredentialResponse).credential_id}`,
               onClick: () => handleRowClick(record as LYCredentialResponse),
               style: {
                 cursor: 'pointer',
@@ -635,6 +636,10 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
         }}
         onPageChange={handleDrawerPageChange}
         initialTab={initialDetailTab}
+        onScrollToRow={(id) => {
+          const row = document.getElementById(`credential-row-${id}`);
+          row?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }}
       />
 
       {/* 关联个人凭据模态框 */}
