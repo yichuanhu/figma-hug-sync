@@ -21,6 +21,7 @@ import {
   IconDeleteStroked,
   IconMaximize,
   IconMinimize,
+  IconUnlink,
 } from '@douyinfe/semi-icons';
 import type { PersonalCredential } from '../../index';
 
@@ -202,6 +203,7 @@ const LinkedCredentialsDrawer = ({
           type="danger"
           theme="borderless"
           size="small"
+          icon={<IconUnlink />}
           onClick={() => handleUnlink(record)}
         >
           {t('personalCredential.linkedCredentials.unlink')}
