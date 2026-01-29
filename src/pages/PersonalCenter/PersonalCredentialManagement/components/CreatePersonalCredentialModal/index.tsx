@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Modal, Form, Toast } from '@douyinfe/semi-ui';
+import { Modal, Form, Toast, Button } from '@douyinfe/semi-ui';
 import type { LYCreatePersonalCredentialRequest } from '@/api/index';
 
 import './index.less';
@@ -56,63 +56,69 @@ const CreatePersonalCredentialModal = ({
       onCancel={onCancel}
       footer={null}
       className="create-personal-credential-modal"
-      width={480}
+      width={520}
+      centered
       closeOnEsc
       maskClosable={false}
     >
       <Form
         onSubmit={handleSubmit}
-        className="create-personal-credential-form"
+        labelPosition="top"
+        className="create-personal-credential-modal-form"
       >
-        <Form.Input
-          field="credential_name"
-          label={t('personalCredential.fields.name')}
-          placeholder={t('personalCredential.fields.namePlaceholder')}
-          rules={[
-            { required: true, message: t('personalCredential.validation.nameRequired') },
-            { max: 30, message: t('personalCredential.validation.nameLengthError') },
-          ]}
-          maxLength={30}
-        />
-        <Form.Input
-          field="username"
-          label={t('personalCredential.fields.username')}
-          placeholder={t('personalCredential.fields.usernamePlaceholder')}
-          rules={[
-            { required: true, message: t('personalCredential.validation.usernameRequired') },
-            { max: 100, message: t('personalCredential.validation.usernameLengthError') },
-          ]}
-          maxLength={100}
-        />
-        <Form.Input
-          field="password"
-          label={t('personalCredential.fields.password')}
-          placeholder={t('personalCredential.fields.passwordPlaceholder')}
-          mode="password"
-          rules={[
-            { required: true, message: t('personalCredential.validation.passwordRequired') },
-            { max: 100, message: t('personalCredential.validation.passwordLengthError') },
-          ]}
-          maxLength={100}
-        />
-        <Form.TextArea
-          field="description"
-          label={t('common.description')}
-          placeholder={t('personalCredential.fields.descriptionPlaceholder')}
-          maxCount={2000}
-          autosize={{ minRows: 3, maxRows: 6 }}
-        />
+        <div className="create-personal-credential-modal-content">
+          <Form.Input
+            field="credential_name"
+            label={t('personalCredential.fields.name')}
+            placeholder={t('personalCredential.fields.namePlaceholder')}
+            trigger="blur"
+            rules={[
+              { required: true, message: t('personalCredential.validation.nameRequired') },
+              { max: 30, message: t('personalCredential.validation.nameLengthError') },
+            ]}
+            showClear
+          />
+          <Form.Input
+            field="username"
+            label={t('personalCredential.fields.username')}
+            placeholder={t('personalCredential.fields.usernamePlaceholder')}
+            trigger="blur"
+            rules={[
+              { required: true, message: t('personalCredential.validation.usernameRequired') },
+              { max: 100, message: t('personalCredential.validation.usernameLengthError') },
+            ]}
+            showClear
+          />
+          <Form.Input
+            field="password"
+            label={t('personalCredential.fields.password')}
+            placeholder={t('personalCredential.fields.passwordPlaceholder')}
+            mode="password"
+            trigger="blur"
+            rules={[
+              { required: true, message: t('personalCredential.validation.passwordRequired') },
+              { max: 100, message: t('personalCredential.validation.passwordLengthError') },
+            ]}
+          />
+          <Form.TextArea
+            field="description"
+            label={t('common.description')}
+            placeholder={t('personalCredential.fields.descriptionPlaceholder')}
+            maxCount={2000}
+            autosize={{ minRows: 2, maxRows: 4 }}
+            rules={[
+              { max: 2000, message: t('personalCredential.validation.descriptionLengthError') },
+            ]}
+          />
+        </div>
+
         <div className="create-personal-credential-modal-footer">
-          <Form.Slot>
-            <div className="footer-buttons">
-              <button type="button" className="semi-button semi-button-tertiary" onClick={onCancel}>
-                {t('common.cancel')}
-              </button>
-              <button type="submit" className="semi-button semi-button-primary" disabled={loading}>
-                {t('common.confirm')}
-              </button>
-            </div>
-          </Form.Slot>
+          <Button theme="light" onClick={onCancel}>
+            {t('common.cancel')}
+          </Button>
+          <Button htmlType="submit" theme="solid" type="primary" loading={loading}>
+            {t('common.create')}
+          </Button>
         </div>
       </Form>
     </Modal>
