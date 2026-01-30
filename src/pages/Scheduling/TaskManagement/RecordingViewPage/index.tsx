@@ -97,8 +97,9 @@ const RecordingViewPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   
-  // 获取来源任务 ID
+  // 获取来源任务 ID 和 activeTab
   const taskIdFromUrl = searchParams.get('taskId');
+  const activeTabFromUrl = searchParams.get('activeTab');
   
   // 状态
   const [loading, setLoading] = useState(true);
@@ -219,12 +220,17 @@ const RecordingViewPage = () => {
   // 返回
   const handleBack = useCallback(() => {
     if (taskIdFromUrl) {
-      // 返回到任务列表并打开对应任务的详情抽屉
-      navigate(`/scheduling-center/task-execution/task-list?taskId=${taskIdFromUrl}`);
+      // 返回到任务列表并打开对应任务的详情抽屉，同时传递 activeTab 参数
+      const params = new URLSearchParams();
+      params.set('taskId', taskIdFromUrl);
+      if (activeTabFromUrl) {
+        params.set('activeTab', activeTabFromUrl);
+      }
+      navigate(`/scheduling-center/task-execution/task-list?${params.toString()}`);
     } else {
       navigate(-1);
     }
-  }, [navigate, taskIdFromUrl]);
+  }, [navigate, taskIdFromUrl, activeTabFromUrl]);
   
   return (
     <AppLayout>
