@@ -457,7 +457,9 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess }: CreateTaskModalProps)
               max={86400}
               style={{ width: '100%' }}
             />
-            <Text type="tertiary" size="small">{t('task.createModal.maxDurationHint')}</Text>
+            <Text type="tertiary" size="small" style={{ display: 'block', marginTop: 4 }}>
+              {t('task.createModal.maxDurationHint')}
+            </Text>
             
             <div className="semi-form-field-label" style={{ marginTop: 16 }}>
               <label>{t('task.createModal.validityDaysLabel')}</label>
@@ -469,7 +471,9 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess }: CreateTaskModalProps)
               max={30}
               style={{ width: '100%' }}
             />
-            <Text type="tertiary" size="small">{t('task.createModal.validityDaysHint')}</Text>
+            <Text type="tertiary" size="small" style={{ display: 'block', marginTop: 4 }}>
+              {t('task.createModal.validityDaysHint')}
+            </Text>
             
             <div className="create-task-modal-param-item" style={{ marginTop: 16 }}>
               <Text>{t('task.createModal.enableRecordingLabel')}</Text>
