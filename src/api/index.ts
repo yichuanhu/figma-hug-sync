@@ -2093,6 +2093,89 @@ export interface LYExecutionTemplateResponse {
   enable_recording: boolean;
   /** 预设参数值 */
   input_parameters?: Record<string, unknown>;
+  /** 创建时间 */
+  created_at?: string | null;
+  /** 更新时间 */
+  updated_at?: string | null;
+  /** 创建者ID */
+  created_by_id?: string | null;
+  /** 创建者名称 */
+  created_by_name?: string | null;
+}
+
+/** LYListResponse[LYExecutionTemplateResponse] */
+export interface LYListResponseLYExecutionTemplateResponse {
+  range?: LYRangeResponse | null;
+  list: LYExecutionTemplateResponse[];
+}
+
+/**
+ * GetExecutionTemplatesParams
+ * 获取执行模板列表参数
+ */
+export interface GetExecutionTemplatesParams {
+  /** 偏移量 */
+  offset?: number;
+  /** 每页数量 */
+  size?: number;
+  /** 搜索关键词 */
+  keyword?: string;
+  /** 流程ID筛选 */
+  process_id?: string;
+}
+
+/**
+ * LYCreateExecutionTemplateRequest
+ * 创建执行模板请求
+ */
+export interface LYCreateExecutionTemplateRequest {
+  /** 模板名称 */
+  template_name: string;
+  /** 模板描述 */
+  description?: string | null;
+  /** 流程ID */
+  process_id: string;
+  /** 执行目标类型 */
+  execution_target_type: ExecutionTargetType;
+  /** 执行目标ID */
+  execution_target_id: string;
+  /** 优先级 */
+  priority?: TaskPriority;
+  /** 最大执行时长 */
+  max_execution_duration?: number;
+  /** 有效期天数 */
+  validity_days?: number;
+  /** 是否启用录屏 */
+  enable_recording?: boolean;
+  /** 预设参数值 */
+  input_parameters?: Record<string, unknown>;
+}
+
+/**
+ * LYUpdateExecutionTemplateRequest
+ * 更新执行模板请求
+ */
+export interface LYUpdateExecutionTemplateRequest {
+  /** 模板名称 */
+  template_name?: string;
+  /** 模板描述 */
+  description?: string | null;
+  /** 流程ID */
+  process_id?: string;
+  /** 执行目标类型 */
+  execution_target_type?: ExecutionTargetType;
+  /** 执行目标ID */
+  execution_target_id?: string;
+  /** 优先级 */
+  priority?: TaskPriority;
+  /** 最大执行时长 */
+  max_execution_duration?: number;
+  /** 有效期天数 */
+  validity_days?: number;
+  /** 是否启用录屏 */
+  enable_recording?: boolean;
+  /** 预设参数值 */
+  input_parameters?: Record<string, unknown>;
 }
 
 // ==================== 日志管理相关类型 ====================

@@ -1562,5 +1562,96 @@
       "confirmMessage": "确定要删除选中的 {{count}} 张截图吗？此操作不可撤销。",
       "success": "已成功删除 {{count}} 张截图"
     }
+  },
+  "template": {
+    "pageTitle": "执行模板",
+    "searchPlaceholder": "搜索模板名称或描述",
+    "filterByProcess": "按流程筛选",
+    "noData": "暂无执行模板",
+    "table": {
+      "name": "模板名称",
+      "description": "描述",
+      "processName": "流程",
+      "creator": "创建人",
+      "createTime": "创建时间",
+      "actions": "操作"
+    },
+    "actions": {
+      "create": "新建模板",
+      "use": "使用模板",
+      "edit": "编辑",
+      "delete": "删除"
+    },
+    "createModal": {
+      "title": "新建执行模板",
+      "basicInfo": "基本信息",
+      "processSection": "流程选择",
+      "targetSection": "执行目标",
+      "settingsSection": "任务设置",
+      "parametersSection": "输入参数",
+      "noParameters": "该流程无需输入参数",
+      "versionInfo": "活跃版本",
+      "success": "模板创建成功！",
+      "error": "创建失败，请重试"
+    },
+    "editModal": {
+      "title": "编辑执行模板",
+      "success": "模板更新成功！",
+      "error": "更新失败，请重试"
+    },
+    "deleteModal": {
+      "title": "删除确认",
+      "confirmMessage": "确定要删除「{{name}}」吗？",
+      "deleteWarning": "删除后将无法恢复。",
+      "confirmDelete": "确认删除",
+      "success": "删除成功！",
+      "error": "删除失败，请重试"
+    },
+    "fields": {
+      "name": "模板名称",
+      "namePlaceholder": "请输入模板名称（最多255字符）",
+      "nameHint": "模板名称在组织内必须唯一",
+      "description": "描述",
+      "descriptionPlaceholder": "请输入模板描述（最多1000字符）",
+      "process": "流程",
+      "processPlaceholder": "请选择流程",
+      "targetType": "执行目标类型",
+      "targetTypePlaceholder": "请选择执行目标类型",
+      "target": "执行目标",
+      "targetPlaceholder": "请选择执行目标",
+      "priority": "优先级",
+      "maxDuration": "最大执行时间（秒）",
+      "maxDurationHint": "范围 60-86400 秒",
+      "validityDays": "有效期（天）",
+      "validityDaysHint": "范围 1-30 天",
+      "enableRecording": "启用录屏"
+    },
+    "validation": {
+      "nameRequired": "请输入模板名称",
+      "nameLengthError": "模板名称不能超过255个字符",
+      "nameExists": "模板名称已存在",
+      "processRequired": "请选择流程",
+      "targetTypeRequired": "请选择执行目标类型",
+      "targetRequired": "请选择执行目标",
+      "maxDurationRange": "执行时长必须在 60-86400 秒之间",
+      "validityDaysRange": "有效期必须在 1-30 天之间",
+      "parameterRequired": "请填写必填参数 {{name}}"
+    },
+    "targetType": {
+      "botGroup": "机器人组",
+      "botInGroup": "组内机器人",
+      "ungroupedBot": "未分组机器人"
+    },
+    "detail": {
+      "basicInfo": "基本信息",
+      "executionConfig": "执行配置",
+      "taskSettings": "任务设置",
+      "inputParameters": "输入参数",
+      "noParameters": "无输入参数",
+      "tabs": {
+        "basicInfo": "基本信息",
+        "usageHistory": "使用记录"
+      }
+    }
   }
 }
