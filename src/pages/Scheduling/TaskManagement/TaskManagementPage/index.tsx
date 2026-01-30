@@ -9,7 +9,6 @@ import {
   Button,
   Table,
   Tag,
-  Avatar,
   Dropdown,
   Tooltip,
   Row,
