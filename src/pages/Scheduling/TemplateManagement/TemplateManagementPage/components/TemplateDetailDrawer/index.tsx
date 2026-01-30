@@ -218,7 +218,7 @@ const TemplateDetailDrawer = ({
       ),
     },
     { key: t('template.fields.maxDuration'), value: `${template.max_execution_duration} ${t('task.detail.seconds')}` },
-    { key: t('template.fields.validityDays'), value: `${template.validity_days} ${t('common.day') || '天'}` },
+    { key: t('template.fields.validityDays'), value: `${template.validity_days} ${t('common.days')}` },
     { key: t('template.fields.enableRecording'), value: template.enable_recording ? t('task.detail.enabled') : t('task.detail.disabled') },
     { key: t('common.createTime'), value: (template as any).created_at?.replace('T', ' ').substring(0, 19) || '-' },
     { key: t('common.creator'), value: (template as any).created_by_name || '-' },

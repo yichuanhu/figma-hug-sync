@@ -422,6 +422,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
                   >
                     <Radio value="BOT_GROUP">{t('template.targetType.botGroup')}</Radio>
                     <Radio value="BOT_IN_GROUP">{t('template.targetType.botInGroup')}</Radio>
+                    <Radio value="UNGROUPED_BOT">{t('template.targetType.ungroupedBot')}</Radio>
                   </RadioGroup>
                 </div>
                 {targetType && (
