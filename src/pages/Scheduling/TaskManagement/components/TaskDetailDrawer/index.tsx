@@ -1,5 +1,6 @@
 import { useMemo, useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import {
   SideSheet,
   Button,
@@ -95,6 +96,7 @@ const TaskDetailDrawer = ({
   initialTab = 'basicInfo',
 }: TaskDetailDrawerProps) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [activeTab, setActiveTab] = useState('basicInfo');
   const [isNavigating, setIsNavigating] = useState(false);
@@ -471,7 +473,13 @@ const TaskDetailDrawer = ({
               {task.current_execution && (task.enable_recording || true) && (
                 <div className="task-detail-drawer-links">
                   {task.enable_recording && (
-                    <a href="#" onClick={(e) => e.preventDefault()}>
+                    <a 
+                      href="#" 
+                      onClick={(e) => {
+                        e.preventDefault();
+                        navigate(`/scheduling-center/task-execution/task-list/${task.current_execution?.execution_id}/recording`);
+                      }}
+                    >
                       {t('task.detail.viewRecording')}
                     </a>
                   )}
