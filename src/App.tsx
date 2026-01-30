@@ -30,8 +30,7 @@ import RequirementsWorkbench from "@/pages/Requirements/RequirementsWorkbench";
 import SchedulingWorkbench from "@/pages/Scheduling/SchedulingWorkbench";
 // Scheduling - Task Management
 import TaskManagementPage from "@/pages/Scheduling/TaskManagement/TaskManagementPage";
-// Scheduling - Execution History
-import ExecutionHistoryPage from "@/pages/Scheduling/TaskManagement/ExecutionHistoryPage";
+// Scheduling - Task Log
 // Scheduling - Task Log
 import TaskLogPage from "@/pages/Scheduling/TaskManagement/TaskLogPage";
 // Scheduling - Recording View
@@ -79,8 +78,6 @@ const App = () => (
         
         {/* 任务列表 - 调度中心入口 */}
         <Route path="/scheduling-center/task-execution/task-list" element={<TaskManagementPage />} />
-        {/* 执行历史 - 调度中心入口 */}
-        <Route path="/scheduling-center/task-execution/task-list/:taskId/executions" element={<ExecutionHistoryPage />} />
         {/* 任务日志 - 调度中心入口 */}
         <Route path="/scheduling-center/task-execution/task-list/:executionId/logs" element={<TaskLogPage />} />
         {/* 录屏查看 - 调度中心入口 */}

@@ -1,23 +1,20 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
-  Breadcrumb,
-  Typography,
   Button,
   Table,
   Tag,
   Dropdown,
   Tooltip,
+  Typography,
 } from '@douyinfe/semi-ui';
 import {
   IconRefresh,
   IconMore,
   IconFile,
   IconVideo,
-  IconArrowLeft,
 } from '@douyinfe/semi-icons';
-import AppLayout from '@/components/layout/AppLayout';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import type {
@@ -28,7 +25,12 @@ import type {
 } from '@/api';
 import './index.less';
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
+
+interface ExecutionHistoryTabProps {
+  taskId: string;
+  enableRecording: boolean;
+}
 
 // 执行状态配置
 const executionStatusConfig: Record<ExecutionStatus, { color: 'blue' | 'green' | 'red' | 'grey' | 'orange'; i18nKey: string }> = {
@@ -77,35 +79,11 @@ const fetchExecutionHistory = async (
 ): Promise<LYListResponseLYTaskExecutionResponse> => {
   await new Promise((resolve) => setTimeout(resolve, 300));
   
-  let mockData = Array(25).fill(null).map((_, index) => generateMockExecution(taskId, index));
-  
-  // 搜索过滤
-  if (params.keyword?.trim()) {
-    const keyword = params.keyword.toLowerCase().trim();
-    mockData = mockData.filter((item) =>
-      item.execution_id.toLowerCase().includes(keyword) ||
-      item.bot_name.toLowerCase().includes(keyword)
-    );
-  }
-  
-  // 状态筛选
-  if (params.status && params.status.length > 0) {
-    mockData = mockData.filter((item) => params.status!.includes(item.status));
-  }
-  
-  // 时间范围筛选
-  if (params.start_time) {
-    const startDate = new Date(params.start_time);
-    mockData = mockData.filter((item) => new Date(item.start_time) >= startDate);
-  }
-  if (params.end_time) {
-    const endDate = new Date(params.end_time);
-    mockData = mockData.filter((item) => new Date(item.start_time) <= endDate);
-  }
+  const mockData = Array(15).fill(null).map((_, index) => generateMockExecution(taskId, index));
   
   const total = mockData.length;
   const offset = params.offset || 0;
-  const size = params.size || 20;
+  const size = params.size || 10;
   const paginatedData = mockData.slice(offset, offset + size);
   
   return {
@@ -114,46 +92,25 @@ const fetchExecutionHistory = async (
   };
 };
 
-// 获取任务信息
-const fetchTaskInfo = async (taskId: string): Promise<{ task_id: string; process_name: string; enable_recording: boolean }> => {
-  await new Promise((resolve) => setTimeout(resolve, 100));
-  return {
-    task_id: taskId,
-    process_name: '订单自动处理',
-    enable_recording: true,
-  };
-};
-
-const ExecutionHistoryPage = () => {
-  const { taskId } = useParams<{ taskId: string }>();
+const ExecutionHistoryTab = ({ taskId, enableRecording }: ExecutionHistoryTabProps) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   
   const [queryParams, setQueryParams] = useState<GetExecutionHistoryParams>({
     offset: 0,
-    size: 20,
+    size: 10,
   });
   
   const [loading, setLoading] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
-  const [taskInfo, setTaskInfo] = useState<{ task_id: string; process_name: string; enable_recording: boolean } | null>(null);
   
   const [listResponse, setListResponse] = useState<LYListResponseLYTaskExecutionResponse>({
-    range: { offset: 0, size: 20, total: 0 },
+    range: { offset: 0, size: 10, total: 0 },
     list: [],
   });
   
-  // 加载任务信息
-  useEffect(() => {
-    if (taskId) {
-      fetchTaskInfo(taskId).then(setTaskInfo);
-    }
-  }, [taskId]);
-  
   // 加载数据
   const loadData = useCallback(async () => {
-    if (!taskId) return;
-    
     setLoading(true);
     try {
       const response = await fetchExecutionHistory(taskId, queryParams);
@@ -174,8 +131,8 @@ const ExecutionHistoryPage = () => {
   
   // 分页信息
   const { range, list } = listResponse;
-  const currentPage = Math.floor((range?.offset || 0) / (range?.size || 20)) + 1;
-  const pageSize = range?.size || 20;
+  const currentPage = Math.floor((range?.offset || 0) / (range?.size || 10)) + 1;
+  const pageSize = range?.size || 10;
   const total = range?.total || 0;
   
   // 表格列定义
@@ -184,11 +141,11 @@ const ExecutionHistoryPage = () => {
       title: t('executionHistory.fields.executionId'),
       dataIndex: 'execution_id',
       key: 'execution_id',
-      width: 180,
+      width: 140,
       render: (id: string) => (
         <Tooltip content={id}>
-          <Text copyable={{ content: id }} className="execution-history-page-id-cell">
-            {id.substring(0, 12)}...
+          <Text copyable={{ content: id }} className="execution-history-tab-id-cell">
+            {id.substring(0, 8)}...
           </Text>
         </Tooltip>
       ),
@@ -197,7 +154,7 @@ const ExecutionHistoryPage = () => {
       title: t('executionHistory.fields.status'),
       dataIndex: 'status',
       key: 'status',
-      width: 100,
+      width: 90,
       render: (status: ExecutionStatus) => (
         <Tag color={executionStatusConfig[status]?.color || 'grey'} type="light">
           {t(executionStatusConfig[status]?.i18nKey || '')}
@@ -208,45 +165,27 @@ const ExecutionHistoryPage = () => {
       title: t('executionHistory.fields.botName'),
       dataIndex: 'bot_name',
       key: 'bot_name',
-      width: 140,
+      width: 120,
     },
     {
       title: t('executionHistory.fields.startTime'),
       dataIndex: 'start_time',
       key: 'start_time',
-      width: 180,
+      width: 160,
       render: (value: string) => value?.replace('T', ' ').substring(0, 19) || '-',
-    },
-    {
-      title: t('executionHistory.fields.endTime'),
-      dataIndex: 'end_time',
-      key: 'end_time',
-      width: 180,
-      render: (value: string | null) => value?.replace('T', ' ').substring(0, 19) || '-',
     },
     {
       title: t('executionHistory.fields.duration'),
       dataIndex: 'duration',
       key: 'duration',
-      width: 100,
-      render: (value: number | null) => value ? `${value} ${t('task.detail.seconds')}` : '-',
-    },
-    {
-      title: t('executionHistory.fields.errorMessage'),
-      dataIndex: 'error_message',
-      key: 'error_message',
-      width: 200,
-      render: (value: string | null) => value ? (
-        <Tooltip content={value}>
-          <span className="execution-history-page-error-message">{value.substring(0, 20)}...</span>
-        </Tooltip>
-      ) : '-',
+      width: 80,
+      render: (value: number | null) => value ? `${value}s` : '-',
     },
     {
       title: t('common.operations'),
       dataIndex: 'operation',
       key: 'operation',
-      width: 80,
+      width: 60,
       fixed: 'right' as const,
       render: (_: unknown, record: LYTaskExecutionResponse) => (
         <Dropdown
@@ -264,7 +203,7 @@ const ExecutionHistoryPage = () => {
               >
                 {t('task.actions.viewLogs')}
               </Dropdown.Item>
-              {taskInfo?.enable_recording && (
+              {enableRecording && (
                 <Dropdown.Item
                   icon={<IconVideo />}
                   onClick={(e) => {
@@ -282,6 +221,7 @@ const ExecutionHistoryPage = () => {
             icon={<IconMore />}
             theme="borderless"
             type="tertiary"
+            size="small"
             onClick={(e) => e.stopPropagation()}
           />
         </Dropdown>
@@ -290,81 +230,48 @@ const ExecutionHistoryPage = () => {
   ];
   
   return (
-    <AppLayout>
-      <div className="execution-history-page">
-        <div className="execution-history-page-breadcrumb">
-          <Breadcrumb>
-            <Breadcrumb.Item onClick={() => navigate('/')}>{t('common.home')}</Breadcrumb.Item>
-            <Breadcrumb.Item>{t('task.breadcrumb.schedulingCenter')}</Breadcrumb.Item>
-            <Breadcrumb.Item>{t('task.breadcrumb.taskExecution')}</Breadcrumb.Item>
-            <Breadcrumb.Item onClick={() => navigate('/scheduling-center/task-execution/task-list')}>
-              {t('task.breadcrumb.taskList')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>{t('executionHistory.breadcrumb.executionHistory')}</Breadcrumb.Item>
-          </Breadcrumb>
-        </div>
-        
-        <div className="execution-history-page-header">
-          <div className="execution-history-page-header-title">
-            <Button
-              icon={<IconArrowLeft />}
-              theme="borderless"
-              type="tertiary"
-              onClick={() => navigate('/scheduling-center/task-execution/task-list')}
-              className="execution-history-page-back-btn"
-            />
-            <div className="execution-history-page-header-info">
-              <Title heading={4}>{t('executionHistory.title')}</Title>
-              {taskInfo && (
-                <Text type="tertiary" size="small">
-                  {t('executionHistory.taskInfo', { taskId: taskInfo.task_id, processName: taskInfo.process_name })}
-                </Text>
-              )}
-            </div>
-          </div>
-          <div className="execution-history-page-header-toolbar">
-            <Button icon={<IconRefresh />} onClick={handleRefresh}>
-              {t('common.refresh')}
-            </Button>
-          </div>
-        </div>
-        
-        <div className="execution-history-page-table">
-          {isInitialLoad ? (
-            <TableSkeleton rows={10} columns={8} />
-          ) : (
-            <Table
-              size="middle"
-              dataSource={list}
-              rowKey="execution_id"
-              loading={loading}
-              columns={columns}
-              scroll={{ x: 1200 }}
-              empty={
-                <EmptyState
-                  variant="noData"
-                  description={t('executionHistory.noData')}
-                />
-              }
-              pagination={{
-                total,
-                pageSize,
-                currentPage,
-                showSizeChanger: true,
-                pageSizeOpts: [10, 20, 50, 100],
-                onPageChange: (page) => {
-                  setQueryParams((prev) => ({ ...prev, offset: (page - 1) * pageSize }));
-                },
-                onPageSizeChange: (size) => {
-                  setQueryParams((prev) => ({ ...prev, offset: 0, size }));
-                },
-              }}
-            />
-          )}
-        </div>
+    <div className="execution-history-tab">
+      <div className="execution-history-tab-header">
+        <Button icon={<IconRefresh />} size="small" onClick={handleRefresh}>
+          {t('common.refresh')}
+        </Button>
       </div>
-    </AppLayout>
+      
+      <div className="execution-history-tab-table">
+        {isInitialLoad ? (
+          <TableSkeleton rows={5} columns={6} />
+        ) : (
+          <Table
+            size="small"
+            dataSource={list}
+            rowKey="execution_id"
+            loading={loading}
+            columns={columns}
+            scroll={{ x: 700 }}
+            empty={
+              <EmptyState
+                variant="noData"
+                description={t('executionHistory.noData')}
+              />
+            }
+            pagination={{
+              total,
+              pageSize,
+              currentPage,
+              showSizeChanger: true,
+              pageSizeOpts: [10, 20, 50],
+              onPageChange: (page) => {
+                setQueryParams((prev) => ({ ...prev, offset: (page - 1) * pageSize }));
+              },
+              onPageSizeChange: (size) => {
+                setQueryParams((prev) => ({ ...prev, offset: 0, size }));
+              },
+            }}
+          />
+        )}
+      </div>
+    </div>
   );
 };
 
-export default ExecutionHistoryPage;
+export default ExecutionHistoryTab;

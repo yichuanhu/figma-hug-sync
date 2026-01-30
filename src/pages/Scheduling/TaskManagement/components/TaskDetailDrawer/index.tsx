@@ -31,6 +31,7 @@ import type {
   TaskPriority,
 } from '@/api';
 import DetailSkeleton from '@/components/DetailSkeleton';
+import ExecutionHistoryTab from './ExecutionHistoryTab';
 import './index.less';
 
 const { Text, Title } = Typography;
@@ -420,6 +421,14 @@ const TaskDetailDrawer = ({
                   </a>
                 </div>
               )}
+            </div>
+          </TabPane>
+          <TabPane tab={t('task.detail.tabs.executionHistory')} itemKey="executionHistory">
+            <div className="task-detail-drawer-tab-content">
+              <ExecutionHistoryTab 
+                taskId={task.task_id} 
+                enableRecording={task.enable_recording} 
+              />
             </div>
           </TabPane>
         </Tabs>
