@@ -52,25 +52,30 @@
   }
 
   &-params {
-    background: var(--semi-color-fill-0);
-    border-radius: var(--semi-border-radius-small);
-    padding: 16px;
+    // 使用标准表单样式，无背景色
   }
 
   &-param-item {
-    margin-bottom: 16px;
+    margin-bottom: 20px;
 
     &:last-child {
       margin-bottom: 0;
+    }
+
+    .semi-form-field-label {
+      margin-bottom: 8px;
+
+      label {
+        font-size: 14px;
+        color: var(--semi-color-text-0);
+      }
     }
   }
 
   &-no-params {
     color: var(--semi-color-text-2);
-    padding: 24px 16px;
+    padding: 32px 16px;
     text-align: center;
-    background: var(--semi-color-fill-0);
-    border-radius: var(--semi-border-radius-small);
   }
 
   &-footer {
