@@ -4,6 +4,29 @@
     padding-top: 4px;
   }
 
+  &-body {
+    display: flex;
+    gap: 24px;
+
+    &-expanded {
+      .create-template-modal-left,
+      .create-template-modal-right {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .create-template-modal-right {
+        border-left: 1px solid var(--semi-color-border);
+        padding-left: 24px;
+      }
+    }
+  }
+
+  &-left,
+  &-right {
+    flex: 1;
+  }
+
   &-content {
     max-height: calc(100vh - 300px);
     overflow-y: auto;
@@ -46,21 +69,10 @@
     }
   }
 
-  &-field {
-    margin-bottom: 16px;
-
-    .semi-form-field-label-text {
-      margin-bottom: 8px;
-      font-weight: 500;
-      color: var(--semi-color-text-0);
-    }
-  }
-
-  &-select-full {
-    width: 100%;
-  }
-
   &-version-info {
+    padding: 8px 12px;
+    background: var(--semi-color-fill-0);
+    border-radius: var(--semi-border-radius-small);
     margin-top: 8px;
   }
 

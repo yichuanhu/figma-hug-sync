@@ -4,6 +4,29 @@
     padding-top: 4px;
   }
 
+  &-body {
+    display: flex;
+    gap: 24px;
+
+    &-expanded {
+      .create-task-modal-left,
+      .create-task-modal-right {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .create-task-modal-right {
+        border-left: 1px solid var(--semi-color-border);
+        padding-left: 24px;
+      }
+    }
+  }
+
+  &-left,
+  &-right {
+    flex: 1;
+  }
+
   &-content {
     max-height: calc(100vh - 300px);
     overflow-y: auto;
