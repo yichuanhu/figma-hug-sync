@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { debounce } from 'lodash';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Breadcrumb,
@@ -245,6 +245,7 @@ const priorityConfig: Record<TaskPriority, { color: 'red' | 'orange' | 'grey' | 
 
 const TaskManagementPage = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { t } = useTranslation();
 
   const [searchValue, setSearchValue] = useState('');
@@ -322,6 +323,20 @@ const TaskManagementPage = () => {
   useEffect(() => {
     loadData();
   }, [loadData]);
+
+  // 从 URL 参数中恢复抽屉状态（用于从录屏页面返回）
+  useEffect(() => {
+    const taskIdFromUrl = searchParams.get('taskId');
+    if (taskIdFromUrl && listResponse.list.length > 0) {
+      const task = listResponse.list.find((t) => t.task_id === taskIdFromUrl);
+      if (task) {
+        setSelectedTask(task);
+        setDetailDrawerVisible(true);
+        // 清除 URL 参数
+        setSearchParams({}, { replace: true });
+      }
+    }
+  }, [searchParams, listResponse.list, setSearchParams]);
 
   // 搜索防抖
   const debouncedSearch = useMemo(

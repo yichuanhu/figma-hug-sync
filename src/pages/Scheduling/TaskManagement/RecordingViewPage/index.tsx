@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Typography,
   Breadcrumb,
@@ -94,7 +94,11 @@ const generateMockErrorMarkers = (logs: LYExecutionLogResponse[], startTime: Dat
 const RecordingViewPage = () => {
   const { t } = useTranslation();
   const { executionId } = useParams<{ executionId: string }>();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  
+  // 获取来源任务 ID
+  const taskIdFromUrl = searchParams.get('taskId');
   
   // 状态
   const [loading, setLoading] = useState(true);
@@ -194,8 +198,13 @@ const RecordingViewPage = () => {
   
   // 返回
   const handleBack = useCallback(() => {
-    navigate(-1);
-  }, [navigate]);
+    if (taskIdFromUrl) {
+      // 返回到任务列表并打开对应任务的详情抽屉
+      navigate(`/scheduling-center/task-execution/task-list?taskId=${taskIdFromUrl}`);
+    } else {
+      navigate(-1);
+    }
+  }, [navigate, taskIdFromUrl]);
   
   return (
     <AppLayout>
