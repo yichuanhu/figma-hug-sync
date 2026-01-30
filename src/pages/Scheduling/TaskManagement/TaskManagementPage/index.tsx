@@ -37,6 +37,7 @@ import type {
   LYTaskResponse, 
   GetTasksParams, 
   LYListResponseLYTaskResponse,
+  LYExecutionTemplateResponse,
   TaskStatus,
   ExecutionStatus,
   TriggerSource,
@@ -267,6 +268,7 @@ const TaskManagementPage = () => {
   const [loading, setLoading] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [createModalVisible, setCreateModalVisible] = useState(false);
+  const [initialTemplate, setInitialTemplate] = useState<LYExecutionTemplateResponse | null>(null);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [initialTab, setInitialTab] = useState<'basicInfo' | 'executionHistory'>('basicInfo');
 
@@ -324,10 +326,33 @@ const TaskManagementPage = () => {
     loadData();
   }, [loadData]);
 
-  // 从 URL 参数中恢复抽屉状态（用于从录屏页面返回）
+  // 从 URL 参数中恢复抽屉状态（用于从录屏页面返回）或打开新建任务弹窗（从模板页面跳转）
   useEffect(() => {
     const taskIdFromUrl = searchParams.get('taskId');
     const activeTabFromUrl = searchParams.get('activeTab');
+    const templateIdFromUrl = searchParams.get('templateId');
+
+    // 处理模板ID - 从 localStorage 获取模板数据并打开新建任务弹窗
+    if (templateIdFromUrl) {
+      // 从 sessionStorage 获取传递的模板数据
+      const templateDataStr = sessionStorage.getItem(`template_${templateIdFromUrl}`);
+      if (templateDataStr) {
+        try {
+          const templateData = JSON.parse(templateDataStr) as LYExecutionTemplateResponse;
+          setInitialTemplate(templateData);
+          setCreateModalVisible(true);
+          // 清理 sessionStorage
+          sessionStorage.removeItem(`template_${templateIdFromUrl}`);
+        } catch (e) {
+          console.error('Failed to parse template data:', e);
+        }
+      }
+      // 清除 URL 参数
+      setSearchParams({}, { replace: true });
+      return;
+    }
+
+    // 处理任务ID - 打开详情抽屉
     if (taskIdFromUrl && listResponse.list.length > 0) {
       const task = listResponse.list.find((t) => t.task_id === taskIdFromUrl);
       if (task) {
@@ -780,11 +805,16 @@ const TaskManagementPage = () => {
 
         <CreateTaskModal
           visible={createModalVisible}
-          onCancel={() => setCreateModalVisible(false)}
+          onCancel={() => {
+            setCreateModalVisible(false);
+            setInitialTemplate(null);
+          }}
           onSuccess={() => {
             setCreateModalVisible(false);
+            setInitialTemplate(null);
             loadData();
           }}
+          initialTemplate={initialTemplate}
         />
 
         <TaskDetailDrawer
