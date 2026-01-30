@@ -40,35 +40,22 @@
     padding: 16px 24px;
   }
 
-  // 内容区块
+  // 信息区块
+  &-info-section {
+    margin-bottom: 24px;
+  }
+
+  &-info-title {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 14px;
+  }
+
+  // 内容区块 (用于 JSON 等特殊内容)
   &-section {
     margin-bottom: 24px;
-
-    &-title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 16px;
-      font-size: 14px;
-      font-weight: 600;
-
-      &::before {
-        content: '';
-        display: block;
-        width: 3px;
-        height: 14px;
-        background-color: var(--semi-color-primary);
-        border-radius: 2px;
-      }
-    }
   }
 
-  // Descriptions 样式
-  &-descriptions {
-    .semi-descriptions-item {
-      padding-bottom: 12px;
-    }
-  }
 
   // JSON 内容展示
   &-json-content {
