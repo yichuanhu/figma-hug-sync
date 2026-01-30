@@ -25,7 +25,7 @@ import {
   IconPlus,
   IconMore,
   IconDeleteStroked,
-  IconPlayCircle,
+  IconExternalOpenStroked,
   IconEditStroked,
 } from '@douyinfe/semi-icons';
 import type { 
@@ -364,7 +364,7 @@ const TemplateManagementPage = () => {
           render={
             <Dropdown.Menu>
               <Dropdown.Item
-                icon={<IconPlayCircle />}
+                icon={<IconExternalOpenStroked />}
                 onClick={(e) => {
                   e.stopPropagation();
                   handleUseTemplate(record);
