@@ -17,26 +17,38 @@
   &-right {
     flex: 1;
     min-width: 0;
+    border-left: 1px solid var(--semi-color-border);
+    padding-left: 32px;
   }
 
   &-content {
-    max-height: calc(100vh - 280px);
+    max-height: calc(100vh - 300px);
     overflow-y: auto;
     padding-right: 4px;
   }
 
-  &-field-group {
-    margin-bottom: 24px;
+  &-section {
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--semi-color-border);
 
     &:last-child {
+      padding-bottom: 0;
       margin-bottom: 0;
+      border-bottom: none;
+    }
+
+    // Form 字段统一间距
+    .semi-form-field {
+      margin-bottom: 16px;
     }
   }
 
-  &-field-title {
+  &-section-title {
+    font-weight: 600;
     font-size: 14px;
     color: var(--semi-color-text-0);
-    margin-bottom: 12px;
+    margin-bottom: 16px;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -46,17 +58,31 @@
       display: inline-block;
       width: 3px;
       height: 14px;
-      background: var(--semi-color-primary);
+      background: var(--semi-color-text-2);
       border-radius: 2px;
     }
   }
 
+  &-field {
+    margin-bottom: 16px;
+
+    .semi-form-field-label-text {
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--semi-color-text-0);
+    }
+  }
+
+  &-select-full {
+    width: 100%;
+  }
+
   &-params {
-    // 使用标准表单样式，无背景色
+    // 使用标准表单样式
   }
 
   &-param-item {
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 
     &:last-child {
       margin-bottom: 0;
@@ -82,8 +108,9 @@
     display: flex;
     justify-content: flex-end;
     gap: 12px;
-    margin-top: 24px;
+    margin-top: 16px;
     padding-top: 16px;
+    padding-bottom: 12px;
     border-top: 1px solid var(--semi-color-border);
   }
 }
