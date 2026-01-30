@@ -1,0 +1,109 @@
+// ExecutionLogTab 执行日志 Tab 样式
+.execution-log-tab {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+
+  .execution-log-tab-stats {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding: 12px 16px;
+    background-color: var(--semi-color-fill-0);
+    border-radius: var(--semi-border-radius-small);
+  }
+
+  .execution-log-tab-auto-refresh {
+    font-size: 12px;
+  }
+
+  .execution-log-tab-toolbar {
+    margin-bottom: 16px;
+    flex-shrink: 0;
+  }
+
+  .execution-log-tab-search-input {
+    width: 280px;
+  }
+
+  .execution-log-tab-table {
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
+
+    .semi-table-wrapper {
+      max-height: 100%;
+    }
+  }
+
+  // 消息单元格样式
+  .execution-log-tab-message-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    .execution-log-tab-message-text {
+      word-break: break-word;
+      white-space: pre-wrap;
+      line-height: 1.6;
+    }
+
+    .execution-log-tab-message-toggle {
+      align-self: flex-start;
+      padding: 0 !important;
+      height: auto !important;
+      min-width: auto !important;
+      font-size: 12px;
+    }
+  }
+
+  // 筛选弹窗
+  .execution-log-tab-filter-popover {
+    padding: 16px;
+    width: 280px;
+
+    .execution-log-tab-filter-popover-section {
+      margin-bottom: 16px;
+    }
+
+    .execution-log-tab-filter-popover-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .execution-log-tab-filter-popover-footer {
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid var(--semi-color-border);
+      padding-top: 12px;
+    }
+  }
+}
+
+// 完整消息弹窗
+.execution-log-tab-full-message {
+  .execution-log-tab-full-message-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .execution-log-tab-full-message-content {
+    margin: 0;
+    padding: 16px;
+    background-color: var(--semi-color-fill-0);
+    border-radius: var(--semi-border-radius-small);
+    font-size: 13px;
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+    white-space: pre-wrap;
+    word-break: break-all;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+}
