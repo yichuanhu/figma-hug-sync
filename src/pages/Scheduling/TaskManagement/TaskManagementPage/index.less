@@ -3,49 +3,47 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow: hidden;
 
-  .task-management-page-breadcrumb {
-    padding: 12px 24px;
+  // 面包屑区域
+  &-breadcrumb {
     flex-shrink: 0;
   }
 
-  .task-management-page-header {
-    padding: 0 24px;
+  // 标题区域
+  &-header {
+    padding-top: 20px;
     flex-shrink: 0;
 
-    .task-management-page-header-title {
-      margin-bottom: 16px;
+    &-title {
+      margin-bottom: 24px;
     }
 
-    .task-management-page-header-toolbar {
+    &-toolbar {
       margin-bottom: 16px;
     }
   }
 
-  .task-management-page-table {
+  // 表格区域
+  &-table {
     flex: 1;
     overflow: hidden;
-    padding: 0 24px 24px;
     min-height: 0;
-
-    .semi-table-wrapper {
-      max-height: 100%;
-    }
   }
 
-  .task-management-page-cell-ellipsis {
+  // 单元格样式
+  &-cell-ellipsis {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     max-width: 200px;
   }
 
-
-  // 任务编号样式已移除超链接样式
-
-  // 选中行高亮
+  // 表格行选中状态
   .semi-table-row.task-row-selected {
     background-color: var(--semi-color-fill-1);
+  }
+
+  &-search-input {
+    width: 320px;
   }
 }
