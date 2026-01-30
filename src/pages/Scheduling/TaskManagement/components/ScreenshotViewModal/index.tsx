@@ -224,11 +224,6 @@ const ScreenshotViewModal = ({
     });
   }, [screenshots, previewIndex, t]);
   
-  // 下载选中项
-  const handleDownload = useCallback(() => {
-    Toast.info(t('screenshot.batchOperation.downloading', { count: selectedIds.size }));
-    // Mock 下载逻辑
-  }, [selectedIds, t]);
   
   // 是否全选
   const isAllSelected = useMemo(() => {
@@ -301,7 +296,7 @@ const ScreenshotViewModal = ({
     {
       title: t('screenshot.table.thumbnail'),
       dataIndex: 'thumbnail_url',
-      width: 180,
+      width: 120,
       render: (_: string, record: LYTaskScreenshotResponse, index: number) => (
         <div 
           className="screenshot-table-thumbnail" 
@@ -313,8 +308,8 @@ const ScreenshotViewModal = ({
           <Image
             src={record.thumbnail_url || record.file_url}
             alt={record.name || `截图 ${record.sequence_number}`}
-            width={140}
-            height={78}
+            width={80}
+            height={45}
             style={{ objectFit: 'cover', borderRadius: 4, cursor: 'pointer' }}
             preview={false}
           />
@@ -444,7 +439,6 @@ const ScreenshotViewModal = ({
               onSelectAll={handleSelectAll}
               onClearSelection={handleClearSelection}
               onDelete={handleDelete}
-              onDownload={handleDownload}
               isAllSelected={isAllSelected}
             />
           )}
@@ -467,9 +461,9 @@ const ScreenshotViewModal = ({
                 columns={columns}
                 dataSource={screenshots}
                 rowKey="id"
-                size="middle"
+                size="small"
                 pagination={false}
-                scroll={{ y: 'calc(70vh - 180px)' }}
+                scroll={{ y: 'calc(70vh - 150px)' }}
               />
             )}
           </div>
