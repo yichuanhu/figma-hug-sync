@@ -33,8 +33,6 @@ import {
   IconClose,
   IconPlayCircle,
   IconDeleteStroked,
-  IconFile,
-  IconVideo,
 } from '@douyinfe/semi-icons';
 import type { 
   LYTaskResponse, 
@@ -270,7 +268,7 @@ const TaskManagementPage = () => {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
-  const [initialTab, setInitialTab] = useState<'basicInfo' | 'executionHistory' | 'executionLogs'>('basicInfo');
+  const [initialTab, setInitialTab] = useState<'basicInfo' | 'executionHistory'>('basicInfo');
 
   const [listResponse, setListResponse] = useState<LYListResponseLYTaskResponse>({
     range: { offset: 0, size: 20, total: 0 },
@@ -344,16 +342,12 @@ const TaskManagementPage = () => {
   };
 
   // 打开详情抽屉
-  const openTaskDetail = (record: LYTaskResponse, tab: 'basicInfo' | 'executionHistory' | 'executionLogs' = 'basicInfo') => {
+  const openTaskDetail = (record: LYTaskResponse, tab: 'basicInfo' | 'executionHistory' = 'basicInfo') => {
     setSelectedTask(record);
     setInitialTab(tab);
     setDetailDrawerVisible(true);
   };
 
-  // 打开日志 Tab
-  const openTaskLogs = (record: LYTaskResponse) => {
-    openTaskDetail(record, 'executionLogs');
-  };
 
   // 取消任务
   const handleCancelTask = (task: LYTaskResponse) => {
@@ -578,9 +572,7 @@ const TaskManagementPage = () => {
         const hasActions = 
           record.task_status === 'PENDING' ||
           record.execution_status === 'RUNNING' ||
-          record.task_status === 'FAILED' ||
-          record.current_execution ||
-          (record.enable_recording && record.current_execution);
+          record.task_status === 'FAILED';
 
         if (!hasActions) {
           return null;
@@ -624,28 +616,6 @@ const TaskManagementPage = () => {
                     }}
                   >
                     {t('task.actions.retry')}
-                  </Dropdown.Item>
-                )}
-                {record.current_execution && (
-                  <Dropdown.Item
-                    icon={<IconFile />}
-                    onClick={(e) => {
-                      e?.stopPropagation();
-                      openTaskLogs(record);
-                    }}
-                  >
-                    {t('task.actions.viewLogs')}
-                  </Dropdown.Item>
-                )}
-                {record.enable_recording && record.current_execution && (
-                  <Dropdown.Item
-                    icon={<IconVideo />}
-                    onClick={(e) => {
-                      e?.stopPropagation();
-                      navigate(`/scheduling-center/task-execution/task-list/${record.current_execution?.execution_id}/recording`);
-                    }}
-                  >
-                    {t('task.actions.viewRecording')}
                   </Dropdown.Item>
                 )}
               </Dropdown.Menu>

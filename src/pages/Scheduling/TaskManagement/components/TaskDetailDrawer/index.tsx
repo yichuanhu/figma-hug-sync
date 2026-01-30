@@ -15,6 +15,7 @@ import {
   Row,
   Col,
   Space,
+  Dropdown,
 } from '@douyinfe/semi-ui';
 import {
   IconChevronLeft,
@@ -25,16 +26,19 @@ import {
   IconMaximize,
   IconMinimize,
   IconInbox,
+  IconMore,
+  IconFile,
+  IconVideo,
 } from '@douyinfe/semi-icons';
 import type {
   LYTaskResponse,
+  LYTaskExecutionResponse,
   TaskStatus,
   ExecutionStatus,
   TaskPriority,
 } from '@/api';
 import DetailSkeleton from '@/components/DetailSkeleton';
 import EmptyState from '@/components/EmptyState';
-import ExecutionLogTab from './ExecutionLogTab';
 import './index.less';
 
 const { Text, Title } = Typography;
@@ -52,7 +56,7 @@ interface TaskDetailDrawerProps {
   totalPages: number;
   onPageChange: (page: number) => Promise<LYTaskResponse[]>;
   onScrollToRow?: (taskId: string) => void;
-  initialTab?: 'basicInfo' | 'executionHistory' | 'executionLogs';
+  initialTab?: 'basicInfo' | 'executionHistory';
 }
 
 // 状态配置
@@ -315,6 +319,50 @@ const TaskDetailDrawer = ({
         </Tooltip>
       ) : '-',
     },
+    {
+      title: t('common.operations'),
+      dataIndex: 'operation',
+      key: 'operation',
+      width: 80,
+      render: (_: unknown, record: LYTaskExecutionResponse) => (
+        <Dropdown
+          trigger="click"
+          position="bottomRight"
+          clickToHide
+          render={
+            <Dropdown.Menu>
+              <Dropdown.Item
+                icon={<IconFile />}
+                onClick={(e) => {
+                  e?.stopPropagation();
+                  navigate(`/scheduling-center/task-execution/task-list/${record.execution_id}/logs`);
+                }}
+              >
+                {t('task.actions.viewLogs')}
+              </Dropdown.Item>
+              {task.enable_recording && (
+                <Dropdown.Item
+                  icon={<IconVideo />}
+                  onClick={(e) => {
+                    e?.stopPropagation();
+                    navigate(`/scheduling-center/task-execution/task-list/${record.execution_id}/recording`);
+                  }}
+                >
+                  {t('task.actions.viewRecording')}
+                </Dropdown.Item>
+              )}
+            </Dropdown.Menu>
+          }
+        >
+          <Button
+            icon={<IconMore />}
+            theme="borderless"
+            type="tertiary"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </Dropdown>
+      ),
+    },
   ];
 
   return (
@@ -470,19 +518,8 @@ const TaskDetailDrawer = ({
               </div>
 
               {/* 快捷链接 */}
-              {task.current_execution && (task.enable_recording || true) && (
+              {task.current_execution && (
                 <div className="task-detail-drawer-links">
-                  {task.enable_recording && (
-                    <a 
-                      href="#" 
-                      onClick={(e) => {
-                        e.preventDefault();
-                        navigate(`/scheduling-center/task-execution/task-list/${task.current_execution?.execution_id}/recording`);
-                      }}
-                    >
-                      {t('task.detail.viewRecording')}
-                    </a>
-                  )}
                   <a href="#" onClick={(e) => e.preventDefault()}>
                     {t('task.detail.viewScreenshots')}
                   </a>
@@ -508,25 +545,6 @@ const TaskDetailDrawer = ({
                   <EmptyState
                     variant="noData"
                     description={t('task.detail.noExecutions')}
-                    size={120}
-                  />
-                </div>
-              )}
-            </div>
-          </TabPane>
-
-          <TabPane tab={t('task.detail.tabs.executionLogs')} itemKey="executionLogs">
-            <div className="task-detail-drawer-tab-content task-detail-drawer-log-tab">
-              {task.current_execution ? (
-                <ExecutionLogTab
-                  executionId={task.current_execution.execution_id}
-                  executionStatus={task.execution_status}
-                />
-              ) : (
-                <div className="task-detail-drawer-empty">
-                  <EmptyState
-                    variant="noData"
-                    description={t('taskLog.noLogs')}
                     size={120}
                   />
                 </div>
