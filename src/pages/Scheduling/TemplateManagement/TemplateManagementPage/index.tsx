@@ -280,6 +280,8 @@ const TemplateManagementPage = () => {
 
   // 使用模板
   const handleUseTemplate = (template: LYExecutionTemplateResponse) => {
+    // 将模板数据存入 sessionStorage，以便任务页面读取
+    sessionStorage.setItem(`template_${template.template_id}`, JSON.stringify(template));
     navigate(`/scheduling-center/task-execution/task-list?templateId=${template.template_id}`);
   };
 

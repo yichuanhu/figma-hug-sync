@@ -28,6 +28,7 @@ interface CreateTaskModalProps {
   visible: boolean;
   onCancel: () => void;
   onSuccess: () => void;
+  initialTemplate?: LYExecutionTemplateResponse | null;
 }
 
 // Mock 流程列表
@@ -103,9 +104,10 @@ const mockTemplates: LYExecutionTemplateResponse[] = [
   },
 ];
 
-const CreateTaskModal = ({ visible, onCancel, onSuccess }: CreateTaskModalProps) => {
+const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: CreateTaskModalProps) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   // 表单状态
   const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(null);
@@ -172,8 +174,33 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess }: CreateTaskModalProps)
       setValidityDays(7);
       setEnableRecording(false);
       setParameterValues({});
+      setIsInitialized(false);
     }
   }, [visible]);
+
+  // 初始化时根据 initialTemplate 预填表单
+  useEffect(() => {
+    if (visible && initialTemplate && !isInitialized) {
+      setSelectedTemplateId(initialTemplate.template_id);
+      // 选择流程
+      const process = mockProcesses.find((p) => p.process_id === initialTemplate.process_id);
+      if (process) {
+        setSelectedProcessId(process.process_id);
+        setSelectedProcess(process);
+      }
+      // 设置其他字段
+      setTargetType(initialTemplate.execution_target_type);
+      setSelectedTargetId(initialTemplate.execution_target_id);
+      setPriority(initialTemplate.priority);
+      setMaxDuration(initialTemplate.max_execution_duration);
+      setValidityDays(initialTemplate.validity_days);
+      setEnableRecording(initialTemplate.enable_recording);
+      if (initialTemplate.input_parameters) {
+        setParameterValues(initialTemplate.input_parameters);
+      }
+      setIsInitialized(true);
+    }
+  }, [visible, initialTemplate, isInitialized]);
 
   // 选择流程
   const handleProcessChange = (processId: string) => {
