@@ -22,36 +22,80 @@
     min-height: 300px;
   }
 
-  // 顶部tabs区域
+  // 顶部header区域
   &-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     flex-shrink: 0;
     padding: 16px 24px 0;
   }
 
-  &-timestamps {
-    .semi-tabs-bar {
-      overflow-x: auto;
+  // 标签包装器
+  &-tags-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    position: relative;
+    min-width: 0;
+  }
 
-      &::-webkit-scrollbar {
-        height: 4px;
-      }
+  // 滚动按钮
+  &-scroll-btn {
+    flex-shrink: 0;
+    z-index: 1;
 
-      &::-webkit-scrollbar-thumb {
-        background: var(--semi-color-fill-2);
-        border-radius: 2px;
-      }
+    &--left {
+      margin-right: 4px;
     }
 
-    .semi-tabs-content {
+    &--right {
+      margin-left: 4px;
+    }
+  }
+
+  // 标签容器
+  &-tags-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow-x: auto;
+    flex: 1;
+    min-width: 0;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
       display: none;
     }
   }
 
-  // 时间戳项
-  &-timestamp-item {
-    display: flex;
+  // 单个标签
+  &-tag {
+    flex-shrink: 0;
+    cursor: pointer;
+    display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
+    padding: 4px 10px;
+    transition: all 0.2s;
+
+    &:hover:not(&--selected) {
+      background: var(--semi-color-fill-1);
+    }
+
+    &--selected {
+      cursor: default;
+    }
+
+    &-time {
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    &-status {
+      margin-left: 2px;
+    }
   }
 
   // 内容区
