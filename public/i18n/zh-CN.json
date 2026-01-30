@@ -1643,6 +1643,7 @@
       "ungroupedBot": "未分组机器人"
     },
     "detail": {
+      "drawerTitle": "执行模板详情",
       "basicInfo": "基本信息",
       "executionConfig": "执行配置",
       "taskSettings": "任务设置",

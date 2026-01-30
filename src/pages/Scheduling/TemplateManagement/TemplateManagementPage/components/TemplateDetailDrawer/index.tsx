@@ -288,7 +288,7 @@ const TemplateDetailDrawer = ({
         <Row type="flex" justify="space-between" align="middle" className="template-detail-drawer-header">
           <Col>
             <Title heading={5} className="template-detail-drawer-header-title">
-              {template.template_name}
+              {t('template.detail.drawerTitle')}
             </Title>
           </Col>
           <Col>
