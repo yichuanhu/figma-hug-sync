@@ -44,6 +44,16 @@
     .semi-tabs-tab:first-child {
       margin-left: 0;
     }
+
+    // 当箭头按钮禁用时隐藏（不需要滚动时）
+    .semi-tabs-bar-arrow {
+      &.semi-tabs-bar-arrow-prev,
+      &.semi-tabs-bar-arrow-next {
+        &[aria-disabled='true'] {
+          display: none;
+        }
+      }
+    }
   }
 
   // 标签内容
