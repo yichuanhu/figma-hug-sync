@@ -201,12 +201,15 @@ const TaskDetailDrawer = ({
     }
   }, [currentIndex, currentPage, totalPages, dataSource, onPageChange, onSelectTask, isNavigating, onScrollToRow]);
 
-  // 重置标签页
+  // 只在抽屉首次打开时重置标签页，切换任务时保持当前 tab
+  const prevVisible = useRef(visible);
   useEffect(() => {
-    if (visible) {
+    // 仅当从关闭状态变为打开状态时重置 tab
+    if (visible && !prevVisible.current) {
       setActiveTab(initialTab);
     }
-  }, [visible, task?.task_id, initialTab]);
+    prevVisible.current = visible;
+  }, [visible, initialTab]);
 
   const toggleFullscreen = useCallback(() => {
     setIsFullscreen((prev) => !prev);
