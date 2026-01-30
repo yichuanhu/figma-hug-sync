@@ -592,10 +592,10 @@ const ProcessDetailDrawer = ({
           <Col>
             <Space spacing={8}>
               <Tooltip content={t('common.previous')}>
-                <Button icon={<IconChevronLeft />} theme="borderless" size="small" disabled={!canGoPrev || isNavigating} onClick={handlePrev} loading={isNavigating} />
+                <Button icon={<IconChevronLeft />} theme="borderless" size="small" className="navigate" disabled={!canGoPrev || isNavigating} onClick={handlePrev} loading={isNavigating} />
               </Tooltip>
               <Tooltip content={t('common.next')}>
-                <Button icon={<IconChevronRight />} theme="borderless" size="small" disabled={!canGoNext || isNavigating} onClick={handleNext} loading={isNavigating} />
+                <Button icon={<IconChevronRight />} theme="borderless" size="small" className="navigate" disabled={!canGoNext || isNavigating} onClick={handleNext} loading={isNavigating} />
               </Tooltip>
               <Divider layout="vertical" className="process-detail-drawer-header-divider" />
               {/* 打开流程 - 仅开发中心 */}
