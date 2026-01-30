@@ -45,6 +45,11 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
       { name: 'maxCount', type: 'NUMBER', required: false, default_value: 100, description: '最大处理数量' },
       { name: 'enableRetry', type: 'BOOLEAN', required: false, default_value: true, description: '是否启用重试' },
     ],
+    output_parameters: [
+      { name: 'processedCount', type: 'NUMBER', description: '已处理订单数量' },
+      { name: 'successRate', type: 'NUMBER', description: '处理成功率' },
+      { name: 'errorList', type: 'TEXT', description: '错误订单列表' },
+    ],
   },
   {
     process_id: 'proc-002',
@@ -55,6 +60,10 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
       { name: 'department', type: 'TEXT', required: true, description: '部门名称' },
       { name: 'approvalCredential', type: 'CREDENTIAL', required: true, description: '审批凭据' },
     ],
+    output_parameters: [
+      { name: 'approvalResult', type: 'BOOLEAN', description: '审批结果' },
+      { name: 'approvalNote', type: 'TEXT', description: '审批意见' },
+    ],
   },
   {
     process_id: 'proc-003',
@@ -62,6 +71,22 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     version_id: 'ver-003',
     version: 'v1.0.0',
     parameters: [],
+    output_parameters: [],
+  },
+  {
+    process_id: 'proc-004',
+    process_name: '数据采集流程',
+    version_id: 'ver-004',
+    version: 'v1.5.0',
+    parameters: [
+      { name: 'sourceUrl', type: 'TEXT', required: true, description: '数据源URL' },
+      { name: 'pageLimit', type: 'NUMBER', required: false, default_value: 10, description: '采集页数限制' },
+    ],
+    output_parameters: [
+      { name: 'collectedCount', type: 'NUMBER', description: '采集数据条数' },
+      { name: 'dataFilePath', type: 'TEXT', description: '数据文件路径' },
+      { name: 'isComplete', type: 'BOOLEAN', description: '是否采集完成' },
+    ],
   },
 ];
 
