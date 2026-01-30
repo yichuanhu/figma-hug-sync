@@ -31,6 +31,7 @@ import type {
   TaskPriority,
 } from '@/api';
 import DetailSkeleton from '@/components/DetailSkeleton';
+import EmptyState from '@/components/EmptyState';
 import './index.less';
 
 const { Text, Title } = Typography;
@@ -481,26 +482,25 @@ const TaskDetailDrawer = ({
 
           <TabPane tab={t('task.detail.tabs.executionHistory')} itemKey="executionHistory">
             <div className="task-detail-drawer-tab-content">
-              <div className="task-detail-drawer-section">
-                <Text strong className="task-detail-drawer-section-title">
-                  {t('task.detail.executionHistory')}
-                </Text>
-                {task.executions && task.executions.length > 0 ? (
-                  <div className="task-detail-drawer-execution-table">
-                    <Table
-                      columns={executionColumns}
-                      dataSource={task.executions}
-                      rowKey="execution_id"
-                      pagination={false}
-                      size="small"
-                    />
-                  </div>
-                ) : (
-                  <div className="task-detail-drawer-no-data">
-                    {t('task.detail.noExecutions')}
-                  </div>
-                )}
-              </div>
+              {task.executions && task.executions.length > 0 ? (
+                <div className="task-detail-drawer-execution-table">
+                  <Table
+                    columns={executionColumns}
+                    dataSource={task.executions}
+                    rowKey="execution_id"
+                    pagination={false}
+                    size="small"
+                  />
+                </div>
+              ) : (
+                <div className="task-detail-drawer-empty">
+                  <EmptyState
+                    variant="noData"
+                    description={t('task.detail.noExecutions')}
+                    size={120}
+                  />
+                </div>
+              )}
             </div>
           </TabPane>
         </Tabs>
