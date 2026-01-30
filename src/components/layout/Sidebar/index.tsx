@@ -229,7 +229,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     { key: 'taskExecution', labelKey: 'sidebar.taskExecution', isGroupLabel: true },
     { key: 'autoExecutionPolicy', labelKey: 'sidebar.autoExecutionPolicy', icon: <CalendarClock size={20} strokeWidth={3} /> },
     { key: 'executionTemplate', labelKey: 'sidebar.executionTemplate', icon: <Play size={20} strokeWidth={3} /> },
-    { key: 'taskList', labelKey: 'sidebar.taskList', icon: <ClipboardList size={20} strokeWidth={3} /> },
+    { key: 'taskList', labelKey: 'sidebar.taskList', icon: <ClipboardList size={20} strokeWidth={3} />, path: '/scheduling-center/task-execution/task-list' },
   ];
 
   // 运营中心的详细菜单结构 - 使用分组标题样式
@@ -302,6 +302,9 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     }
     if (pathname === '/scheduling-center/execution-assets/automation-process') {
       return 'schedulingAutomationProcess';
+    }
+    if (pathname === '/scheduling-center/task-execution/task-list') {
+      return 'taskList';
     }
     return '';
   };
