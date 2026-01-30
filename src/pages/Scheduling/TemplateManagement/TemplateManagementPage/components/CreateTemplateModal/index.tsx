@@ -458,19 +458,14 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
                 </div>
                 <div className="create-template-modal-field">
                   <div className="semi-form-field-label-text">{t('template.fields.maxDuration')}</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <Switch checked={maxDuration > 0} onChange={(v) => setMaxDuration(v ? 3600 : 0)} />
-                    {maxDuration > 0 && (
-                      <InputNumber
-                        value={maxDuration}
-                        onChange={(v) => setMaxDuration(v as number)}
-                        min={60}
-                        max={86400}
-                        suffix={t('common.seconds')}
-                        style={{ width: 150 }}
-                      />
-                    )}
-                  </div>
+                  <InputNumber
+                    value={maxDuration}
+                    onChange={(v) => setMaxDuration(v as number)}
+                    min={60}
+                    max={86400}
+                    suffix={t('common.seconds')}
+                    style={{ width: 150 }}
+                  />
                 </div>
                 <div className="create-template-modal-field">
                   <div className="semi-form-field-label-text">{t('template.fields.validityDays')}</div>

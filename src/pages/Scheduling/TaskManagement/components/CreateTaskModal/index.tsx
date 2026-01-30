@@ -482,19 +482,14 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
                 </div>
                 <div className="create-task-modal-field">
                   <div className="semi-form-field-label-text">{t('task.createModal.maxDurationLabel')}</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <Switch checked={maxDuration > 0} onChange={(v) => setMaxDuration(v ? 3600 : 0)} />
-                    {maxDuration > 0 && (
-                      <InputNumber
-                        value={maxDuration}
-                        onChange={(v) => setMaxDuration(v as number)}
-                        min={60}
-                        max={86400}
-                        suffix={t('common.seconds')}
-                        style={{ width: 150 }}
-                      />
-                    )}
-                  </div>
+                  <InputNumber
+                    value={maxDuration}
+                    onChange={(v) => setMaxDuration(v as number)}
+                    min={60}
+                    max={86400}
+                    suffix={t('common.seconds')}
+                    style={{ width: 150 }}
+                  />
                 </div>
                 <div className="create-task-modal-field">
                   <div className="semi-form-field-label-text">{t('task.createModal.validityDaysLabel')}</div>
