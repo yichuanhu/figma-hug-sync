@@ -354,7 +354,6 @@ const TemplateManagementPage = () => {
       title: t('common.actions'),
       dataIndex: 'actions',
       width: 120,
-      fixed: 'right' as const,
       render: (_: unknown, record: LYExecutionTemplateResponse) => (
         <Dropdown
           trigger="click"
