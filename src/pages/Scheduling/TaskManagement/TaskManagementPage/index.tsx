@@ -29,7 +29,7 @@ import {
   IconPlus,
   IconMore,
   IconRefresh,
-  IconStop,
+  IconMinusCircleStroked,
   IconClose,
   IconPlayCircle,
   IconDeleteStroked,
@@ -391,7 +391,7 @@ const TaskManagementPage = () => {
 
     Modal.confirm({
       title: t('task.stopModal.title'),
-      icon: <IconStop style={{ color: 'var(--semi-color-danger)' }} />,
+      icon: <IconMinusCircleStroked style={{ color: 'var(--semi-color-danger)' }} />,
       content: (
         <>
           <div>{t('task.stopModal.confirmMessage', { taskId: task.task_id })}</div>
@@ -584,7 +584,7 @@ const TaskManagementPage = () => {
               )}
               {record.execution_status === 'RUNNING' && (
                 <Dropdown.Item
-                  icon={<IconStop />}
+                  icon={<IconMinusCircleStroked />}
                   onClick={(e) => {
                     e?.stopPropagation();
                     handleStopTask(record);

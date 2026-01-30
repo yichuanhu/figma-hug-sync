@@ -19,7 +19,7 @@ import {
   IconChevronLeft,
   IconChevronRight,
   IconClose,
-  IconStop,
+  IconMinusCircleStroked,
   IconPlayCircle,
   IconMaximize,
   IconMinimize,
@@ -357,7 +357,7 @@ const TaskDetailDrawer = ({
               {canStop && (
                 <Tooltip content={t('task.actions.stop')}>
                   <Button
-                    icon={<IconStop />}
+                    icon={<IconMinusCircleStroked />}
                     theme="borderless"
                     size="small"
                     onClick={() => onStop(task)}
