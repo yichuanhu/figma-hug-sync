@@ -12,7 +12,9 @@ import {
   Switch,
   RadioGroup,
   Radio,
+  Tooltip,
 } from '@douyinfe/semi-ui';
+import { IconHelpCircle } from '@douyinfe/semi-icons';
 import type {
   LYProcessActiveVersionResponse,
   LYExecutionTemplateResponse,
@@ -248,15 +250,26 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
   const renderParameterInput = (param: LYProcessParameterDefinition) => {
     const value = parameterValues[param.name];
 
+    const renderLabel = () => (
+      <div className="create-task-modal-param-label">
+        <span>{param.name}{param.required ? ' *' : ''}</span>
+        {param.description && (
+          <Tooltip content={param.description}>
+            <IconHelpCircle size="small" style={{ color: 'var(--semi-color-text-2)', marginLeft: 4, cursor: 'help' }} />
+          </Tooltip>
+        )}
+      </div>
+    );
+
     switch (param.type) {
       case 'TEXT':
         return (
           <div className="create-task-modal-param-item" key={param.name}>
             <div className="semi-form-field-label">
-              <label>{param.name}{param.required ? ' *' : ''}</label>
+              {renderLabel()}
             </div>
             <Input
-              placeholder={param.description || `请输入 ${param.name}`}
+              placeholder={`请输入 ${param.name}`}
               value={value as string || ''}
               onChange={(v) => handleParameterChange(param.name, v)}
             />
@@ -266,10 +279,10 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
         return (
           <div className="create-task-modal-param-item" key={param.name}>
             <div className="semi-form-field-label">
-              <label>{param.name}{param.required ? ' *' : ''}</label>
+              {renderLabel()}
             </div>
             <InputNumber
-              placeholder={param.description || `请输入 ${param.name}`}
+              placeholder={`请输入 ${param.name}`}
               value={value as number}
               onChange={(v) => handleParameterChange(param.name, v)}
               style={{ width: '100%' }}
@@ -279,25 +292,20 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
       case 'BOOLEAN':
         return (
           <div className="create-task-modal-param-item" key={param.name}>
-            <Text>{param.name}{param.required ? ' *' : ''}</Text>
-            <div style={{ marginTop: 8 }}>
-              <Switch
-                checked={value as boolean || false}
-                onChange={(v) => handleParameterChange(param.name, v)}
-              />
-              {param.description && (
-                <Text type="tertiary" size="small" style={{ marginLeft: 8 }}>
-                  {param.description}
-                </Text>
-              )}
+            <div className="semi-form-field-label">
+              {renderLabel()}
             </div>
+            <Switch
+              checked={value as boolean || false}
+              onChange={(v) => handleParameterChange(param.name, v)}
+            />
           </div>
         );
       case 'CREDENTIAL':
         return (
           <div className="create-task-modal-param-item" key={param.name}>
             <div className="semi-form-field-label">
-              <label>{param.name}{param.required ? ' *' : ''}</label>
+              {renderLabel()}
             </div>
             <Select
               placeholder={t('task.createModal.credentialPlaceholder')}
@@ -385,7 +393,7 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
       footer={null}
       closeOnEsc
       maskClosable={false}
-      width={900}
+      width={hasParameters ? 900 : 520}
       centered
     >
       <div className="create-task-modal-form">
