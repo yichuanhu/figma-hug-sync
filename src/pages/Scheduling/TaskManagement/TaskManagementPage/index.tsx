@@ -479,14 +479,8 @@ const TaskManagementPage = () => {
       dataIndex: 'task_id',
       key: 'task_id',
       width: 140,
-      render: (taskId: string, record: LYTaskResponse) => (
-        <span
-          className="task-management-page-cell-taskid"
-          onClick={(e) => {
-            e.stopPropagation();
-            openTaskDetail(record);
-          }}
-        >
+      render: (taskId: string) => (
+        <span className="task-management-page-cell-ellipsis">
           {taskId}
         </span>
       ),
