@@ -23,6 +23,7 @@ import {
   IconPlayCircle,
   IconMaximize,
   IconMinimize,
+  IconInfoCircle,
 } from '@douyinfe/semi-icons';
 import type {
   LYTaskResponse,
@@ -440,6 +441,7 @@ const TaskDetailDrawer = ({
                   </div>
                 ) : (
                   <div className="task-detail-drawer-no-data">
+                    <IconInfoCircle style={{ marginRight: 6 }} />
                     {t('task.detail.noParameters')}
                   </div>
                 )}
@@ -456,6 +458,7 @@ const TaskDetailDrawer = ({
                   </div>
                 ) : (
                   <div className="task-detail-drawer-no-data">
+                    <IconInfoCircle style={{ marginRight: 6 }} />
                     {t('task.detail.noOutput')}
                   </div>
                 )}
