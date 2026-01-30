@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -6,6 +6,8 @@ import {
   Tag,
   Typography,
   Descriptions,
+  Tabs,
+  TabPane,
   Space,
   Spin,
 } from '@douyinfe/semi-ui';
@@ -13,8 +15,6 @@ import {
   IconRefresh,
   IconVideo,
   IconImage,
-  IconChevronLeft,
-  IconChevronRight,
 } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import ExecutionLogTab from '../ExecutionLogTab';
@@ -112,31 +112,6 @@ const ExecutionHistoryTab = ({ taskId, enableRecording }: ExecutionHistoryTabPro
   const [loading, setLoading] = useState(true);
   const [executions, setExecutions] = useState<LYTaskExecutionResponse[]>([]);
   const [selectedExecutionId, setSelectedExecutionId] = useState<string | null>(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(false);
-  
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  
-  // 检查滚动状态
-  const checkScrollState = useCallback(() => {
-    const container = scrollContainerRef.current;
-    if (container) {
-      setCanScrollLeft(container.scrollLeft > 0);
-      setCanScrollRight(container.scrollLeft < container.scrollWidth - container.clientWidth - 1);
-    }
-  }, []);
-  
-  // 滚动处理
-  const handleScroll = useCallback((direction: 'left' | 'right') => {
-    const container = scrollContainerRef.current;
-    if (container) {
-      const scrollAmount = 200;
-      container.scrollBy({
-        left: direction === 'left' ? -scrollAmount : scrollAmount,
-        behavior: 'smooth',
-      });
-    }
-  }, []);
   
   // 加载数据
   const loadData = useCallback(async () => {
@@ -144,23 +119,17 @@ const ExecutionHistoryTab = ({ taskId, enableRecording }: ExecutionHistoryTabPro
     try {
       const response = await fetchExecutionHistory(taskId, { offset: 0, size: 50 });
       setExecutions(response.list);
-      if (response.list.length > 0 && !selectedExecutionId) {
+      if (response.list.length > 0) {
         setSelectedExecutionId(response.list[0].execution_id);
       }
     } finally {
       setLoading(false);
     }
-  }, [taskId, selectedExecutionId]);
+  }, [taskId]);
   
   useEffect(() => {
     loadData();
   }, [taskId]);
-  
-  useEffect(() => {
-    checkScrollState();
-    window.addEventListener('resize', checkScrollState);
-    return () => window.removeEventListener('resize', checkScrollState);
-  }, [checkScrollState, executions]);
   
   const handleRefresh = () => {
     loadData();
@@ -231,67 +200,47 @@ const ExecutionHistoryTab = ({ taskId, enableRecording }: ExecutionHistoryTabPro
   
   return (
     <div className="execution-history-tab">
-      {/* 顶部执行时间戳标签栏 */}
+      {/* 顶部执行时间戳Tabs - 使用Semi原生滚动箭头 */}
       <div className="execution-history-tab-header">
-        <div className="execution-history-tab-tags-wrapper">
-          {canScrollLeft && (
+        <Tabs
+          type="line"
+          activeKey={selectedExecutionId || ''}
+          onChange={(key) => setSelectedExecutionId(key)}
+          className="execution-history-tab-tabs"
+          collapsible
+          tabBarExtraContent={
             <Button
-              icon={<IconChevronLeft />}
+              icon={<IconRefresh />}
               size="small"
               theme="borderless"
-              className="execution-history-tab-scroll-btn execution-history-tab-scroll-btn--left"
-              onClick={() => handleScroll('left')}
+              onClick={handleRefresh}
+              loading={loading}
             />
-          )}
-          <div
-            ref={scrollContainerRef}
-            className="execution-history-tab-tags-container"
-            onScroll={checkScrollState}
-          >
-            {executions.map((execution) => {
-              const isSelected = execution.execution_id === selectedExecutionId;
-              const statusConfig = executionStatusConfig[execution.status];
-              return (
-                <Tag
-                  key={execution.execution_id}
-                  color={isSelected ? statusConfig?.color || 'grey' : 'white'}
-                  type={isSelected ? 'solid' : 'ghost'}
-                  size="large"
-                  className={`execution-history-tab-tag ${isSelected ? 'execution-history-tab-tag--selected' : ''}`}
-                  onClick={() => setSelectedExecutionId(execution.execution_id)}
-                >
-                  <span className="execution-history-tab-tag-time">
+          }
+        >
+          {executions.map((execution) => {
+            const statusConfig = executionStatusConfig[execution.status];
+            return (
+              <TabPane
+                key={execution.execution_id}
+                itemKey={execution.execution_id}
+                tab={
+                  <span className="execution-history-tab-label">
                     {formatExecutionTime(execution.start_time)}
+                    <Tag
+                      color={statusConfig?.color || 'grey'}
+                      type="light"
+                      size="small"
+                      className="execution-history-tab-label-status"
+                    >
+                      {t(statusConfig?.i18nKey || '')}
+                    </Tag>
                   </span>
-                  <Tag
-                    color={statusConfig?.color || 'grey'}
-                    type="light"
-                    size="small"
-                    className="execution-history-tab-tag-status"
-                  >
-                    {t(statusConfig?.i18nKey || '')}
-                  </Tag>
-                </Tag>
-              );
-            })}
-          </div>
-          {canScrollRight && (
-            <Button
-              icon={<IconChevronRight />}
-              size="small"
-              theme="borderless"
-              className="execution-history-tab-scroll-btn execution-history-tab-scroll-btn--right"
-              onClick={() => handleScroll('right')}
-            />
-          )}
-        </div>
-        <Button
-          icon={<IconRefresh />}
-          size="small"
-          theme="borderless"
-          onClick={handleRefresh}
-          loading={loading}
-        />
+                }
+              />
+            );
+          })}
+        </Tabs>
       </div>
 
       {/* 执行详情内容 */}

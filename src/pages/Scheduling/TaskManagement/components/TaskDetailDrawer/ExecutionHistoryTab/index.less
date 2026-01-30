@@ -24,78 +24,35 @@
 
   // 顶部header区域
   &-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
     flex-shrink: 0;
     padding: 16px 24px 0;
+    border-bottom: 1px solid var(--semi-color-border);
   }
 
-  // 标签包装器
-  &-tags-wrapper {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    position: relative;
-    min-width: 0;
-  }
-
-  // 滚动按钮
-  &-scroll-btn {
-    flex-shrink: 0;
-    z-index: 1;
-
-    &--left {
-      margin-right: 4px;
+  // Tabs样式
+  &-tabs {
+    .semi-tabs-bar {
+      margin-bottom: 0;
     }
 
-    &--right {
-      margin-left: 4px;
-    }
-  }
-
-  // 标签容器
-  &-tags-container {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    overflow-x: auto;
-    flex: 1;
-    min-width: 0;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-
-    &::-webkit-scrollbar {
+    .semi-tabs-content {
       display: none;
     }
+
+    .semi-tabs-tab {
+      height: 36px;
+      line-height: 36px;
+    }
   }
 
-  // 单个标签
-  &-tag {
-    flex-shrink: 0;
-    cursor: pointer;
+  // 标签内容
+  &-label {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
-    height: 36px;
-    transition: all 0.2s;
-
-    &:hover:not(&--selected) {
-      background: var(--semi-color-fill-1);
-    }
-
-    &--selected {
-      cursor: default;
-    }
-
-    &-time {
-      font-size: 13px;
-      white-space: nowrap;
-    }
+    gap: 8px;
 
     &-status {
-      margin-left: 2px;
+      margin-left: 4px;
     }
   }
 
