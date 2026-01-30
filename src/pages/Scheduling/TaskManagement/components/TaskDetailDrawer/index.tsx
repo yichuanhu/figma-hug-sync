@@ -1,6 +1,5 @@
 import { useMemo, useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
 import {
   SideSheet,
   Button,
@@ -34,6 +33,7 @@ import type {
 } from '@/api';
 import DetailSkeleton from '@/components/DetailSkeleton';
 import EmptyState from '@/components/EmptyState';
+import ExecutionLogTab from './ExecutionLogTab';
 import './index.less';
 
 const { Text, Title } = Typography;
@@ -93,7 +93,6 @@ const TaskDetailDrawer = ({
   onScrollToRow,
 }: TaskDetailDrawerProps) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [activeTab, setActiveTab] = useState('basicInfo');
   const [isNavigating, setIsNavigating] = useState(false);
@@ -473,7 +472,7 @@ const TaskDetailDrawer = ({
                     href="#"
                     onClick={(e) => {
                       e.preventDefault();
-                      navigate(`/scheduling-center/task-execution/task-list/${task.current_execution?.execution_id}/logs`);
+                      setActiveTab('executionLogs');
                     }}
                   >
                     {t('task.detail.viewLogs')}
@@ -508,6 +507,25 @@ const TaskDetailDrawer = ({
                   <EmptyState
                     variant="noData"
                     description={t('task.detail.noExecutions')}
+                    size={120}
+                  />
+                </div>
+              )}
+            </div>
+          </TabPane>
+
+          <TabPane tab={t('task.detail.tabs.executionLogs')} itemKey="executionLogs">
+            <div className="task-detail-drawer-tab-content task-detail-drawer-log-tab">
+              {task.current_execution ? (
+                <ExecutionLogTab
+                  executionId={task.current_execution.execution_id}
+                  executionStatus={task.execution_status}
+                />
+              ) : (
+                <div className="task-detail-drawer-empty">
+                  <EmptyState
+                    variant="noData"
+                    description={t('taskLog.noLogs')}
                     size={120}
                   />
                 </div>
