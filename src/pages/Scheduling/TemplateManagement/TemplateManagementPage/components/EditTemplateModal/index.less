@@ -1,0 +1,61 @@
+// EditTemplateModal 样式
+.edit-template-modal {
+  .edit-template-modal-form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .edit-template-modal-content {
+    max-height: calc(70vh - 120px);
+    overflow-y: auto;
+    padding-right: 8px;
+  }
+
+  .edit-template-modal-section {
+    margin-bottom: 24px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .edit-template-modal-section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .edit-template-modal-section-line {
+    width: 3px;
+    height: 14px;
+    background-color: var(--semi-color-text-2);
+    border-radius: 2px;
+  }
+
+  .edit-template-modal-section-title {
+    color: var(--semi-color-text-0);
+    font-size: 14px;
+  }
+
+  .edit-template-modal-version-info {
+    margin-top: 8px;
+  }
+
+  .edit-template-modal-param-item {
+    margin-bottom: 16px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .edit-template-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding-top: 16px;
+    border-top: 1px solid var(--semi-color-border);
+    margin-top: 16px;
+  }
+}
