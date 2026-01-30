@@ -413,32 +413,24 @@ const TaskDetailDrawer = ({
           <TabPane tab={t('task.detail.tabs.basicInfo')} itemKey="basicInfo">
             <div className="task-detail-drawer-tab-content">
               {/* 基本信息 */}
-              <div className="task-detail-drawer-section">
-                <Text strong className="task-detail-drawer-section-title">
+              <div className="task-detail-drawer-info-section">
+                <Text strong className="task-detail-drawer-info-title">
                   {t('task.detail.basicInfo')}
                 </Text>
-                <Descriptions
-                  data={basicInfoData}
-                  align="left"
-                  className="task-detail-drawer-descriptions"
-                />
+                <Descriptions data={basicInfoData} align="left" />
               </div>
 
               {/* 执行信息 */}
-              <div className="task-detail-drawer-section">
-                <Text strong className="task-detail-drawer-section-title">
+              <div className="task-detail-drawer-info-section">
+                <Text strong className="task-detail-drawer-info-title">
                   {t('task.detail.executionInfo')}
                 </Text>
-                <Descriptions
-                  data={executionInfoData}
-                  align="left"
-                  className="task-detail-drawer-descriptions"
-                />
+                <Descriptions data={executionInfoData} align="left" />
               </div>
 
               {/* 输入参数 */}
-              <div className="task-detail-drawer-section">
-                <Text strong className="task-detail-drawer-section-title">
+              <div className="task-detail-drawer-info-section">
+                <Text strong className="task-detail-drawer-info-title">
                   {t('task.detail.inputParameters')}
                 </Text>
                 {task.input_parameters && Object.keys(task.input_parameters).length > 0 ? (
@@ -453,8 +445,8 @@ const TaskDetailDrawer = ({
               </div>
 
               {/* 输出结果 */}
-              <div className="task-detail-drawer-section">
-                <Text strong className="task-detail-drawer-section-title">
+              <div className="task-detail-drawer-info-section">
+                <Text strong className="task-detail-drawer-info-title">
                   {t('task.detail.outputResult')}
                 </Text>
                 {task.output_result && Object.keys(task.output_result).length > 0 ? (
