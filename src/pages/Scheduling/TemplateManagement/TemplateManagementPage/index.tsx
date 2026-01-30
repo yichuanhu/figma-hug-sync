@@ -24,6 +24,8 @@ import {
   IconPlus,
   IconMore,
   IconDeleteStroked,
+  IconPlayCircle,
+  IconEditStroked,
 } from '@douyinfe/semi-icons';
 import type { 
   LYExecutionTemplateResponse,
@@ -366,13 +368,20 @@ const TemplateManagementPage = () => {
           clickToHide
           render={
             <Dropdown.Menu>
-              <Dropdown.Item onClick={() => handleUseTemplate(record)}>
+              <Dropdown.Item
+                icon={<IconPlayCircle />}
+                onClick={() => handleUseTemplate(record)}
+              >
                 {t('template.actions.use')}
               </Dropdown.Item>
-              <Dropdown.Item onClick={() => handleEditTemplate(record)}>
+              <Dropdown.Item
+                icon={<IconEditStroked />}
+                onClick={() => handleEditTemplate(record)}
+              >
                 {t('template.actions.edit')}
               </Dropdown.Item>
               <Dropdown.Item
+                icon={<IconDeleteStroked />}
                 type="danger"
                 onClick={() => handleDeleteTemplate(record)}
               >
