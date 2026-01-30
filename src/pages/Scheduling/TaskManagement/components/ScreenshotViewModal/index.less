@@ -1,0 +1,59 @@
+// ScreenshotViewModal 截图查看弹窗样式
+.screenshot-view-modal {
+  // 弹窗内容
+  &-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  // 工具栏
+  &-toolbar {
+    flex-shrink: 0;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--semi-color-border);
+    margin-bottom: 16px;
+  }
+
+  // 内容区域
+  &-body {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+  }
+
+  // 加载状态
+  &-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+
+  // 空状态
+  &-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+
+  // 截图网格
+  &-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+    padding-bottom: 16px;
+  }
+}
+
+// 响应式布局
+@media (max-width: 768px) {
+  .screenshot-view-modal {
+    &-grid {
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+    }
+  }
+}
