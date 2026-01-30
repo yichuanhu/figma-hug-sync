@@ -11,16 +11,14 @@ import {
   Row,
   Col,
   Space,
-  Popover,
-  CheckboxGroup,
 } from '@douyinfe/semi-ui';
 import {
   IconSearch,
   IconDownloadStroked,
   IconRefresh,
-  IconFilter,
 } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
+import FilterPopover from '@/components/FilterPopover';
 import EmptyState from '@/components/EmptyState';
 import type {
   LYExecutionLogResponse,
@@ -328,37 +326,22 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING' }: Execution
     },
   ];
   
-  // 筛选弹窗内容
-  const filterContent = (
-    <div className="execution-log-tab-filter-popover">
-      <div className="execution-log-tab-filter-popover-section">
-        <Text className="execution-log-tab-filter-popover-label">{t('taskLog.filter.logLevel')}</Text>
-        <CheckboxGroup
-          direction="vertical"
-          value={tempLevelFilter}
-          onChange={(values) => setTempLevelFilter(values as LogLevel[])}
-          options={[
-            { label: 'DEBUG', value: 'DEBUG' },
-            { label: 'INFO', value: 'INFO' },
-            { label: 'WARN', value: 'WARN' },
-            { label: 'ERROR', value: 'ERROR' },
-          ]}
-        />
-      </div>
-      <div className="execution-log-tab-filter-popover-footer">
-        <Button
-          type="tertiary"
-          onClick={handleResetFilter}
-          disabled={tempLevelFilter.length === 0}
-        >
-          {t('common.reset')}
-        </Button>
-        <Button type="primary" onClick={handleConfirmFilter}>
-          {t('common.confirm')}
-        </Button>
-      </div>
-    </div>
-  );
+  // 筛选配置
+  const filterSections = useMemo(() => [
+    {
+      key: 'logLevel',
+      label: t('taskLog.filter.logLevel'),
+      type: 'checkbox' as const,
+      options: [
+        { label: 'DEBUG', value: 'DEBUG' },
+        { label: 'INFO', value: 'INFO' },
+        { label: 'WARN', value: 'WARN' },
+        { label: 'ERROR', value: 'ERROR' },
+      ],
+      value: tempLevelFilter,
+      onChange: (values: unknown) => setTempLevelFilter(values as LogLevel[]),
+    },
+  ], [t, tempLevelFilter]);
 
   return (
     <div className="execution-log-tab">
@@ -399,22 +382,13 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING' }: Execution
               showClear
               className="execution-log-tab-search-input"
             />
-            <Popover
+            <FilterPopover
               visible={filterVisible}
               onVisibleChange={setFilterVisible}
-              trigger="click"
-              position="bottomLeft"
-              content={filterContent}
-            >
-              <Button
-                icon={<IconFilter />}
-                type={hasActiveFilter ? 'primary' : 'tertiary'}
-                theme={hasActiveFilter ? 'solid' : 'light'}
-              >
-                {t('common.filter')}
-                {filterCount > 0 && ` (${filterCount})`}
-              </Button>
-            </Popover>
+              sections={filterSections}
+              onReset={handleResetFilter}
+              onConfirm={handleConfirmFilter}
+            />
           </Space>
         </Col>
         <Col>
