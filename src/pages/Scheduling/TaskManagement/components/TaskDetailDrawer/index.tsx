@@ -424,7 +424,7 @@ const TaskDetailDrawer = ({
             </div>
           </TabPane>
           <TabPane tab={t('task.detail.tabs.executionHistory')} itemKey="executionHistory">
-            <div className="task-detail-drawer-tab-content">
+            <div className="task-detail-drawer-tab-content task-detail-drawer-tab-content--full-height">
               <ExecutionHistoryTab 
                 taskId={task.task_id} 
                 enableRecording={task.enable_recording} 

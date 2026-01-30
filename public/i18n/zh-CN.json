@@ -49,6 +49,22 @@
     "operations": "操作",
     "refresh": "刷新"
   },
+  "executionHistory": {
+    "title": "执行记录",
+    "noData": "暂无执行记录",
+    "executionInfo": "执行信息",
+    "executionLogs": "执行日志",
+    "fields": {
+      "executionId": "执行ID",
+      "status": "执行状态",
+      "botName": "执行机器人",
+      "startTime": "开始时间",
+      "endTime": "结束时间",
+      "duration": "执行时长",
+      "logCount": "日志数量",
+      "errorMessage": "错误信息"
+    }
+  },
   "emptyState": {
     "retry": "重试",
     "goHome": "返回首页",
