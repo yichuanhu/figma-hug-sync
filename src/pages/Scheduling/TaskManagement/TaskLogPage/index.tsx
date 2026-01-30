@@ -477,6 +477,7 @@ const TaskLogPage = () => {
         {/* 表格 */}
         <div className="task-log-page-table">
           <Table
+            size="middle"
             dataSource={list}
             rowKey="log_id"
             loading={loading}

@@ -428,6 +428,7 @@ const ExecutionHistoryPage = () => {
             <TableSkeleton rows={10} columns={8} />
           ) : (
             <Table
+              size="middle"
               dataSource={list}
               rowKey="execution_id"
               loading={loading}

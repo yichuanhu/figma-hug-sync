@@ -958,6 +958,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
           <TableSkeleton rows={10} columns={7} columnWidths={['18%', '10%', '15%', '12%', '10%', '15%', '10%']} />
         ) : (
           <Table 
+            size="middle"
             columns={columns} 
             dataSource={list}
             loading={loading}

@@ -568,6 +568,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
           <TableSkeleton rows={10} columns={5} columnWidths={['20%', '20%', '15%', '30%', '15%']} />
         ) : (
           <Table
+            size="middle"
             columns={columns}
             dataSource={listResponse?.data || []}
             rowKey="credential_id"

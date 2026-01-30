@@ -260,6 +260,7 @@ const LinkedCredentialsDrawer = ({
             <TableSkeleton rows={6} columns={3} columnWidths={['35%', '45%', '20%']} />
           ) : (
             <Table
+              size="middle"
               columns={columns}
               dataSource={linkedCredentials}
               rowKey="credential_id"

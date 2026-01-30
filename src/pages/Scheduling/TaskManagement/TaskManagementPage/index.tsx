@@ -747,6 +747,7 @@ const TaskManagementPage = () => {
             />
           ) : (
             <Table
+              size="middle"
               columns={columns}
               dataSource={list}
               rowKey="task_id"

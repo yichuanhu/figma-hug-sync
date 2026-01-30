@@ -629,6 +629,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
           <TableSkeleton rows={10} columns={6} columnWidths={['15%', '30%', '10%', '12%', '15%', '18%']} />
         ) : (
           <Table
+            size="middle"
             columns={columns}
             dataSource={list}
             loading={loading}

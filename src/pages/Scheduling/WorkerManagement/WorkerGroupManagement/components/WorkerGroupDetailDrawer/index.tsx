@@ -659,6 +659,7 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
 
                 <div className="worker-group-detail-drawer-members-table">
                   <Table 
+                    size="middle"
                     columns={memberColumns} 
                     dataSource={list}
                     loading={membersLoading}
