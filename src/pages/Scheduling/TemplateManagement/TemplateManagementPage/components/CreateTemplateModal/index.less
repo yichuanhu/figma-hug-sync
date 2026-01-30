@@ -1,48 +1,70 @@
-// CreateTemplateModal 样式
+// CreateTemplateModal 创建执行模板弹窗样式
 .create-template-modal {
-  .create-template-modal-form {
-    display: flex;
-    flex-direction: column;
+  &-form {
+    padding-top: 4px;
   }
 
-  .create-template-modal-content {
+  &-content {
     max-height: calc(100vh - 300px);
     overflow-y: auto;
-    padding: 0 4px;
+    padding-right: 4px;
   }
 
-  .create-template-modal-section {
-    margin-bottom: 24px;
+  &-section {
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--semi-color-border);
 
     &:last-child {
+      padding-bottom: 0;
       margin-bottom: 0;
+      border-bottom: none;
+    }
+
+    // Form 字段统一间距
+    .semi-form-field {
+      margin-bottom: 16px;
     }
   }
 
-  .create-template-modal-section-header {
+  &-section-title {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--semi-color-text-0);
+    margin-bottom: 16px;
     display: flex;
     align-items: center;
     gap: 8px;
+
+    &::before {
+      content: '';
+      display: inline-block;
+      width: 3px;
+      height: 14px;
+      background: var(--semi-color-text-2);
+      border-radius: 2px;
+    }
+  }
+
+  &-field {
     margin-bottom: 16px;
+
+    .semi-form-field-label-text {
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--semi-color-text-0);
+    }
   }
 
-  .create-template-modal-section-line {
-    width: 3px;
-    height: 14px;
-    background-color: var(--semi-color-text-2);
-    border-radius: 2px;
+  &-select-full {
+    width: 100%;
   }
 
-  .create-template-modal-section-title {
-    color: var(--semi-color-text-0);
-    font-size: 14px;
-  }
-
-  .create-template-modal-version-info {
+  &-version-info {
     margin-top: 8px;
   }
 
-  .create-template-modal-param-item {
+  &-param-item {
     margin-bottom: 16px;
 
     &:last-child {
@@ -50,21 +72,13 @@
     }
   }
 
-  .create-template-modal-footer {
+  &-footer {
     display: flex;
     justify-content: flex-end;
     gap: 12px;
-    padding-top: 20px;
-    margin-top: 20px;
+    margin-top: 16px;
+    padding-top: 16px;
+    padding-bottom: 12px;
     border-top: 1px solid var(--semi-color-border);
-  }
-
-  // 表单字段间距
-  .semi-form-field {
-    margin-bottom: 16px;
-
-    &:last-child {
-      margin-bottom: 0;
-    }
   }
 }

@@ -363,18 +363,15 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
       footer={null}
       closeOnEsc
       maskClosable={false}
-      width={560}
+      width={520}
       centered
     >
       <div className="edit-template-modal-form">
         <div className="edit-template-modal-content">
           {/* 基本信息 */}
           <div className="edit-template-modal-section">
-            <div className="edit-template-modal-section-header">
-              <span className="edit-template-modal-section-line" />
-              <Text strong className="edit-template-modal-section-title">
-                {t('template.createModal.basicInfo')}
-              </Text>
+            <div className="edit-template-modal-section-title">
+              {t('template.createModal.basicInfo')}
             </div>
             <div className="semi-form-field-label">
               <label>{t('template.fields.name')} *</label>
@@ -400,11 +397,8 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
 
           {/* 流程选择 */}
           <div className="edit-template-modal-section">
-            <div className="edit-template-modal-section-header">
-              <span className="edit-template-modal-section-line" />
-              <Text strong className="edit-template-modal-section-title">
-                {t('template.createModal.processSection')}
-              </Text>
+            <div className="edit-template-modal-section-title">
+              {t('template.createModal.processSection')}
             </div>
             <div className="semi-form-field-label">
               <label>{t('template.fields.process')} *</label>
@@ -428,11 +422,8 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
 
           {/* 执行目标 */}
           <div className="edit-template-modal-section">
-            <div className="edit-template-modal-section-header">
-              <span className="edit-template-modal-section-line" />
-              <Text strong className="edit-template-modal-section-title">
-                {t('template.createModal.targetSection')}
-              </Text>
+            <div className="edit-template-modal-section-title">
+              {t('template.createModal.targetSection')}
             </div>
             <div className="semi-form-field-label">
               <label>{t('template.fields.targetType')} *</label>
@@ -465,11 +456,8 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
 
           {/* 任务设置 */}
           <div className="edit-template-modal-section">
-            <div className="edit-template-modal-section-header">
-              <span className="edit-template-modal-section-line" />
-              <Text strong className="edit-template-modal-section-title">
-                {t('template.createModal.settingsSection')}
-              </Text>
+            <div className="edit-template-modal-section-title">
+              {t('template.createModal.settingsSection')}
             </div>
             <div className="semi-form-field-label">
               <label>{t('template.fields.priority')}</label>
@@ -516,11 +504,8 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
           {/* 输入参数 */}
           {selectedProcess && selectedProcess.parameters.length > 0 && (
             <div className="edit-template-modal-section">
-              <div className="edit-template-modal-section-header">
-                <span className="edit-template-modal-section-line" />
-                <Text strong className="edit-template-modal-section-title">
-                  {t('template.createModal.parametersSection')}
-                </Text>
+              <div className="edit-template-modal-section-title">
+                {t('template.createModal.parametersSection')}
               </div>
               {selectedProcess.parameters.map((param) => renderParameterInput(param))}
             </div>
@@ -528,11 +513,8 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
 
           {selectedProcess && selectedProcess.parameters.length === 0 && (
             <div className="edit-template-modal-section">
-              <div className="edit-template-modal-section-header">
-                <span className="edit-template-modal-section-line" />
-                <Text strong className="edit-template-modal-section-title">
-                  {t('template.createModal.parametersSection')}
-                </Text>
+              <div className="edit-template-modal-section-title">
+                {t('template.createModal.parametersSection')}
               </div>
               <Text type="tertiary">{t('template.createModal.noParameters')}</Text>
             </div>
