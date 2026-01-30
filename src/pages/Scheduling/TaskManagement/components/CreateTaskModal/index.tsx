@@ -428,6 +428,7 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
                   >
                     <Radio value="BOT_GROUP">{t('task.createModal.targetType.botGroup')}</Radio>
                     <Radio value="BOT_IN_GROUP">{t('task.createModal.targetType.botInGroup')}</Radio>
+                    <Radio value="UNGROUPED_BOT">{t('task.createModal.targetType.ungroupedBot')}</Radio>
                   </RadioGroup>
                 </div>
                 {targetType && (
