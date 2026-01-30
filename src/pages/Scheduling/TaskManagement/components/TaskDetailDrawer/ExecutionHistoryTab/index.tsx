@@ -203,7 +203,7 @@ const ExecutionHistoryTab = ({ taskId, enableRecording }: ExecutionHistoryTabPro
       {/* 顶部执行时间戳Tabs - 使用Semi原生滚动箭头 */}
       <div className="execution-history-tab-header">
         <Tabs
-          type="line"
+          type="button"
           activeKey={selectedExecutionId || ''}
           onChange={(key) => setSelectedExecutionId(key)}
           className="execution-history-tab-tabs"
