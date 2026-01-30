@@ -39,7 +39,7 @@ const mockWorkerGroups: LYWorkerGroupResponse[] = [
   {
     id: 'group-001',
     name: '财务流程机器人组',
-    description: '用于执行财务相关流程的机器人组，包括发票处理、报表生成等任务',
+    description: '这是企业核心财务自动化机器人组，包含多台高性能机器人，专门用于执行财务相关的自动化流程任务。该组负责处理发票识别与录入、费用报销审批、财务报表自动生成与分发、银企对账、税务数据准备等关键业务流程。支持任务负载均衡和故障自动转移，确保业务连续性。',
     member_count: 5,
     creator_id: 'admin',
     creator_name: '管理员',
