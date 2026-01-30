@@ -18,6 +18,7 @@ import {
   IconChevronLeft,
   IconChevronRight,
   IconClose,
+  IconCrossCircleStroked,
   IconMinusCircleStroked,
   IconPlayCircle,
   IconMaximize,
@@ -301,7 +302,7 @@ const TaskDetailDrawer = ({
               {canCancel && (
                 <Tooltip content={t('task.actions.cancel')}>
                   <Button
-                    icon={<IconClose />}
+                    icon={<IconCrossCircleStroked />}
                     theme="borderless"
                     size="small"
                     onClick={() => onCancel(task)}
