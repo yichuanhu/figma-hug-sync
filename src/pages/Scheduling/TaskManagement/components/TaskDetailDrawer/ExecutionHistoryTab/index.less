@@ -22,17 +22,17 @@
     min-height: 300px;
   }
 
-  // 顶部header区域
+  // 顶部header区域 - 无内边距，由tabs自身控制对齐
   &-header {
     flex-shrink: 0;
-    padding: 16px 24px 0;
+    padding: 16px 0 0 0;
   }
 
   // Tabs样式
   &-tabs {
     .semi-tabs-bar {
       margin-bottom: 0;
-      padding-left: 0;
+      padding: 0 24px;
       justify-content: flex-start;
     }
 
@@ -40,7 +40,7 @@
       display: none;
     }
 
-    // 移除第一个tab的左边距，使其与内容左对齐
+    // 移除第一个tab的左边距
     .semi-tabs-tab:first-child {
       margin-left: 0;
     }
