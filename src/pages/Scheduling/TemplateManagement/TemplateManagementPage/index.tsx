@@ -19,6 +19,7 @@ import {
 } from '@douyinfe/semi-ui';
 import AppLayout from '@/components/layout/AppLayout';
 import EmptyState from '@/components/EmptyState';
+import TableSkeleton from '@/components/TableSkeleton';
 import {
   IconSearch,
   IconPlus,
@@ -117,6 +118,7 @@ const TemplateManagementPage = () => {
   const navigate = useNavigate();
 
   // 列表数据状态
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [listResponse, setListResponse] = useState<LYListResponseLYExecutionTemplateResponse>({
     range: { offset: 0, size: 20, total: 0 },
     list: [],
@@ -183,6 +185,7 @@ const TemplateManagementPage = () => {
       Toast.error(t('common.loadError'));
     } finally {
       setLoading(false);
+      setIsInitialLoad(false);
     }
   }, [t]);
 
@@ -457,41 +460,40 @@ const TemplateManagementPage = () => {
 
         {/* 表格区域 */}
         <div className="template-management-table">
-          <Table
-            dataSource={list}
-            rowKey="template_id"
-            loading={loading}
-            columns={columns}
-            scroll={{ y: 'calc(100vh - 320px)' }}
-            onRow={(record) => ({
-              onClick: () => handleOpenDrawer(record as LYExecutionTemplateResponse),
-              style: {
-                cursor: 'pointer',
-                background: selectedTemplate?.template_id === (record as LYExecutionTemplateResponse).template_id && drawerVisible
-                  ? 'var(--semi-color-fill-1)'
-                  : undefined,
-              },
-            })}
-            empty={
-              <EmptyState
-                variant={hasFilters ? 'noResult' : 'noData'}
-                description={hasFilters ? t('common.noResult') : t('template.noData')}
-              />
-            }
-            pagination={{
-              total,
-              pageSize,
-              currentPage,
-              showSizeChanger: true,
-              pageSizeOpts: [10, 20, 50, 100],
-              onPageChange: (page) => {
-                setQueryParams((prev) => ({ ...prev, offset: (page - 1) * pageSize }));
-              },
-              onPageSizeChange: (size) => {
-                setQueryParams((prev) => ({ ...prev, offset: 0, size }));
-              },
-            }}
-          />
+          {isInitialLoad ? (
+            <TableSkeleton />
+          ) : list.length === 0 ? (
+            <EmptyState
+              variant={hasFilters ? 'noResult' : 'noData'}
+              description={hasFilters ? t('common.noResult') : t('template.noData')}
+            />
+          ) : (
+            <Table
+              size="middle"
+              dataSource={list}
+              rowKey="template_id"
+              loading={loading && !isInitialLoad}
+              columns={columns}
+              onRow={(record) => ({
+                onClick: () => handleOpenDrawer(record as LYExecutionTemplateResponse),
+                style: { cursor: 'pointer' },
+                className: selectedTemplate?.template_id === (record as LYExecutionTemplateResponse).template_id && drawerVisible ? 'template-row-selected' : '',
+              })}
+              pagination={{
+                total,
+                pageSize,
+                currentPage,
+                showSizeChanger: true,
+                pageSizeOpts: [10, 20, 50, 100],
+                onPageChange: (page) => {
+                  setQueryParams((prev) => ({ ...prev, offset: (page - 1) * pageSize }));
+                },
+                onPageSizeChange: (size) => {
+                  setQueryParams((prev) => ({ ...prev, offset: 0, size }));
+                },
+              }}
+            />
+          )}
         </div>
 
         {/* 创建模板弹窗 */}

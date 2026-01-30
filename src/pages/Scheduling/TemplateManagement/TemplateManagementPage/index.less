@@ -32,10 +32,19 @@
     flex: 1;
     overflow: hidden;
     min-height: 0;
+  }
 
-    .semi-table-wrapper {
-      max-height: 100%;
-    }
+  // 单元格样式
+  &-cell-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 200px;
+  }
+
+  // 表格行选中状态
+  .semi-table-row.template-row-selected {
+    background-color: var(--semi-color-fill-1);
   }
 
   // 搜索输入框
