@@ -1653,6 +1653,12 @@
         "basicInfo": "基本信息",
         "usageHistory": "使用记录"
       }
+    },
+    "usageHistory": {
+      "taskName": "任务名称",
+      "status": "执行状态",
+      "statusSuccess": "成功",
+      "statusFailed": "失败"
     }
   }
 }
