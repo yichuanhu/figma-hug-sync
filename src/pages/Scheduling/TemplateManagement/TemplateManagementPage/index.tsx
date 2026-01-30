@@ -33,6 +33,7 @@ import type {
 } from '@/api';
 import CreateTemplateModal from './components/CreateTemplateModal';
 import EditTemplateModal from './components/EditTemplateModal';
+import TemplateDetailDrawer from './components/TemplateDetailDrawer';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -126,8 +127,9 @@ const TemplateManagementPage = () => {
     process_id: undefined,
   });
 
-  // 选中状态
+  // 选中状态（抽屉）
   const [selectedTemplate, setSelectedTemplate] = useState<LYExecutionTemplateResponse | null>(null);
+  const [drawerVisible, setDrawerVisible] = useState(false);
 
   // 弹窗状态
   const [createModalVisible, setCreateModalVisible] = useState(false);
@@ -139,6 +141,9 @@ const TemplateManagementPage = () => {
   const currentPage = Math.floor((range?.offset || 0) / (range?.size || 20)) + 1;
   const pageSize = range?.size || 20;
   const total = range?.total || 0;
+
+  // 计算分页
+  const totalPages = Math.ceil(total / pageSize);
 
   // 模拟加载数据
   const loadData = useCallback(async (params: GetTemplatesParams) => {
@@ -213,7 +218,59 @@ const TemplateManagementPage = () => {
   const handleEditSuccess = () => {
     setEditModalVisible(false);
     setEditingTemplate(null);
+    setDrawerVisible(false);
+    setSelectedTemplate(null);
     loadData(queryParams);
+  };
+
+  // 打开详情抽屉
+  const handleOpenDrawer = (template: LYExecutionTemplateResponse) => {
+    setSelectedTemplate(template);
+    setDrawerVisible(true);
+  };
+
+  // 关闭详情抽屉
+  const handleCloseDrawer = () => {
+    setDrawerVisible(false);
+    setSelectedTemplate(null);
+  };
+
+  // 从抽屉编辑
+  const handleEditFromDrawer = (template: LYExecutionTemplateResponse) => {
+    setEditingTemplate(template);
+    setEditModalVisible(true);
+  };
+
+  // 从抽屉删除
+  const handleDeleteFromDrawer = (template: LYExecutionTemplateResponse) => {
+    handleDeleteTemplate(template);
+    setDrawerVisible(false);
+    setSelectedTemplate(null);
+  };
+
+  // 翻页加载
+  const handlePageChangeForDrawer = async (page: number): Promise<LYExecutionTemplateResponse[]> => {
+    const newOffset = (page - 1) * pageSize;
+    setQueryParams((prev) => ({ ...prev, offset: newOffset }));
+    
+    // 模拟获取新页数据
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    
+    let filtered = [...allMockTemplates];
+    if (queryParams.keyword) {
+      const kw = queryParams.keyword.toLowerCase();
+      filtered = filtered.filter(
+        (tpl) =>
+          tpl.template_name.toLowerCase().includes(kw) ||
+          (tpl.description && tpl.description.toLowerCase().includes(kw))
+      );
+    }
+    if (queryParams.process_id) {
+      filtered = filtered.filter((tpl) => tpl.process_id === queryParams.process_id);
+    }
+    
+    const paged = filtered.slice(newOffset, newOffset + pageSize);
+    return paged;
   };
 
   // 使用模板
@@ -260,7 +317,10 @@ const TemplateManagementPage = () => {
         <Text
           link
           className="template-management-table-name"
-          onClick={() => setSelectedTemplate(record)}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleOpenDrawer(record);
+          }}
         >
           {text}
         </Text>
@@ -303,6 +363,7 @@ const TemplateManagementPage = () => {
         <Dropdown
           trigger="click"
           position="bottomRight"
+          clickToHide
           render={
             <Dropdown.Menu>
               <Dropdown.Item onClick={() => handleUseTemplate(record)}>
@@ -320,7 +381,12 @@ const TemplateManagementPage = () => {
             </Dropdown.Menu>
           }
         >
-          <Button icon={<IconMore />} theme="borderless" type="tertiary" />
+          <Button 
+            icon={<IconMore />} 
+            theme="borderless" 
+            type="tertiary"
+            onClick={(e) => e.stopPropagation()}
+          />
         </Dropdown>
       ),
     },
@@ -397,6 +463,15 @@ const TemplateManagementPage = () => {
             loading={loading}
             columns={columns}
             scroll={{ y: 'calc(100vh - 320px)' }}
+            onRow={(record) => ({
+              onClick: () => handleOpenDrawer(record as LYExecutionTemplateResponse),
+              style: {
+                cursor: 'pointer',
+                background: selectedTemplate?.template_id === (record as LYExecutionTemplateResponse).template_id && drawerVisible
+                  ? 'var(--semi-color-fill-1)'
+                  : undefined,
+              },
+            })}
             empty={
               <EmptyState
                 variant={hasFilters ? 'noResult' : 'noData'}
@@ -435,6 +510,20 @@ const TemplateManagementPage = () => {
             setEditingTemplate(null);
           }}
           onSuccess={handleEditSuccess}
+        />
+
+        {/* 模板详情抽屉 */}
+        <TemplateDetailDrawer
+          visible={drawerVisible}
+          template={selectedTemplate}
+          onClose={handleCloseDrawer}
+          onEdit={handleEditFromDrawer}
+          onDelete={handleDeleteFromDrawer}
+          dataSource={list}
+          onSelectTemplate={setSelectedTemplate}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChangeForDrawer}
         />
       </div>
     </AppLayout>

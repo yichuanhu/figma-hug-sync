@@ -1,0 +1,136 @@
+// TemplateDetailDrawer 模板详情抽屉样式
+.template-detail-drawer {
+  // 标题区域
+  &-header {
+    width: 100%;
+    padding-right: 0;
+
+    &-title {
+      margin: 0;
+    }
+
+    &-divider {
+      height: 16px;
+      margin: 0 8px 0 4px;
+    }
+
+    &-close-btn {
+      margin-left: 4px;
+    }
+  }
+
+  // 拖拽把手
+  &-resize-handle {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    cursor: ew-resize;
+    z-index: 100;
+  }
+
+  // Tab 容器 - 固定 tab 栏，内容滚动
+  &-tabs {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .semi-tabs-bar {
+      flex-shrink: 0;
+    }
+
+    .semi-tabs-content {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .semi-tabs-pane {
+      height: 100%;
+      overflow-y: auto;
+    }
+  }
+
+  // Tab 内容
+  &-tab-content {
+    padding: 16px 24px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  // 信息区块
+  &-info-section {
+    margin-bottom: 24px;
+  }
+
+  &-info-title {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 14px;
+  }
+
+  // 内容区块
+  &-section {
+    margin-bottom: 24px;
+  }
+
+  // JSON 内容展示
+  &-json-content {
+    background: var(--semi-color-fill-0);
+    border-radius: var(--semi-border-radius-small);
+    padding: 12px;
+    max-height: 200px;
+    overflow-y: auto;
+
+    pre {
+      margin: 0;
+      font-size: 12px;
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+  }
+
+  // 空状态容器
+  &-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 120px;
+    padding: 24px;
+    background: var(--semi-color-fill-0);
+    border-radius: var(--semi-border-radius-small);
+  }
+
+  // 导航按钮禁用状态修复
+  .semi-button.semi-button-disabled.navigate {
+    padding-top: 0;
+  }
+}
+
+// 全局覆盖 - SideSheet header 和 body 样式
+.card-sidesheet.template-detail-drawer {
+  .semi-sidesheet-header {
+    border-bottom: 1px solid var(--semi-color-border);
+  }
+
+  .semi-sidesheet-body {
+    padding: 0;
+    position: relative;
+  }
+
+  .semi-tabs-bar {
+    padding: 0 24px;
+  }
+
+  // Descriptions 标签左对齐
+  .semi-descriptions {
+    .semi-descriptions-item-key {
+      text-align: left;
+    }
+  }
+}
