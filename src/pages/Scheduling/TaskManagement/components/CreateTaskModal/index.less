@@ -117,6 +117,35 @@
     text-align: center;
   }
 
+  &-output-params {
+    // 输出参数只读展示
+  }
+
+  &-output-param-item {
+    padding: 12px;
+    background: var(--semi-color-fill-0);
+    border-radius: 6px;
+    margin-bottom: 8px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &-output-param-name {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--semi-color-text-0);
+  }
+
+  &-output-param-desc {
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--semi-color-text-2);
+  }
+
   &-footer {
     display: flex;
     justify-content: flex-end;
