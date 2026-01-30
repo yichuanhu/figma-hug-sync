@@ -279,6 +279,9 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
     const renderLabel = () => (
       <div className="create-task-modal-param-label">
         <span>{param.name}{param.required ? ' *' : ''}</span>
+        <Tag size="small" color="grey" style={{ marginLeft: 8 }}>
+          {param.type}
+        </Tag>
         {param.description && (
           <Tooltip content={param.description}>
             <IconHelpCircle size="small" style={{ color: 'var(--semi-color-text-2)', marginLeft: 4, cursor: 'help' }} />
