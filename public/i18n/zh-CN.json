@@ -48,7 +48,8 @@
     "collapse": "收起",
     "viewDetail": "查看详情",
     "operations": "操作",
-    "refresh": "刷新"
+    "refresh": "刷新",
+    "seconds": "秒"
   },
   "emptyState": {
     "retry": "重试",
@@ -1353,8 +1354,9 @@
       "validityDaysLabel": "有效期",
       "validityDaysHint": "单位：天，范围 1-30",
       "enableRecordingLabel": "启用录屏",
-      "parametersSection": "输入参数",
+      "parametersSection": "流程输入",
       "noParameters": "该流程无需输入参数",
+      "selectProcessFirst": "请先选择流程",
       "credentialPlaceholder": "请选择凭据",
       "success": "任务创建成功",
       "error": "创建失败，请重试"
@@ -1588,8 +1590,9 @@
       "processSection": "流程选择",
       "targetSection": "执行目标",
       "settingsSection": "任务设置",
-      "parametersSection": "输入参数",
+      "parametersSection": "流程输入",
       "noParameters": "该流程无需输入参数",
+      "selectProcessFirst": "请先选择流程",
       "versionInfo": "活跃版本",
       "success": "模板创建成功！",
       "error": "创建失败，请重试"

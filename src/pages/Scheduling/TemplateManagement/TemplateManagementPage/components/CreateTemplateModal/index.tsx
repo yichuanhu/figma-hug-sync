@@ -10,6 +10,8 @@ import {
   Input,
   InputNumber,
   Switch,
+  RadioGroup,
+  Radio,
 } from '@douyinfe/semi-ui';
 import type {
   LYProcessActiveVersionResponse,
@@ -338,33 +340,27 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
     }
   };
 
-  // 判断是否有参数需要填写
-  const hasParameters = selectedProcess && selectedProcess.parameters.length > 0;
-
   return (
     <Modal
-      className={`create-template-modal ${hasParameters ? 'create-template-modal-expanded' : ''}`}
+      className="create-template-modal"
       title={t('template.createModal.title')}
       visible={visible}
       onCancel={onCancel}
       footer={null}
       closeOnEsc
       maskClosable={false}
-      width={hasParameters ? 900 : 520}
+      width={900}
       centered
     >
       <div className="create-template-modal-form">
-        <div className={`create-template-modal-body ${hasParameters ? 'create-template-modal-body-expanded' : ''}`}>
+        <div className="create-template-modal-body">
           {/* 左侧：基本配置 */}
           <div className="create-template-modal-left">
             <div className="create-template-modal-content">
-              {/* 基本信息 */}
-              <div className="create-template-modal-section">
-                <div className="create-template-modal-section-title">
-                  {t('template.createModal.basicInfo')}
-                </div>
-                <div className="semi-form-field-label">
-                  <label>{t('template.fields.name')} *</label>
+              {/* 模板名称 */}
+              <div className="create-template-modal-field-group">
+                <div className="create-template-modal-field-title">
+                  {t('template.fields.name')}
                 </div>
                 <Input
                   placeholder={t('template.fields.namePlaceholder')}
@@ -373,28 +369,12 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
                   maxLength={255}
                   showClear
                 />
-                <Text type="tertiary" size="small" style={{ marginTop: 4, display: 'block' }}>
-                  {t('template.fields.nameHint')}
-                </Text>
-
-                <div className="semi-form-field-label" style={{ marginTop: 16 }}>
-                  <label>{t('template.fields.description')}</label>
-                </div>
-                <Input
-                  placeholder={t('template.fields.descriptionPlaceholder')}
-                  value={description}
-                  onChange={setDescription}
-                  maxLength={1000}
-                />
               </div>
 
-              {/* 流程选择 */}
-              <div className="create-template-modal-section">
-                <div className="create-template-modal-section-title">
-                  {t('template.createModal.processSection')}
-                </div>
-                <div className="semi-form-field-label">
-                  <label>{t('template.fields.process')} *</label>
+              {/* 选择流程 */}
+              <div className="create-template-modal-field-group">
+                <div className="create-template-modal-field-title">
+                  {t('template.fields.process')}
                 </div>
                 <Select
                   placeholder={t('template.fields.processPlaceholder')}
@@ -404,139 +384,99 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
                   filter
                   style={{ width: '100%' }}
                 />
-                {selectedProcess && (
-                  <div className="create-template-modal-version-info">
-                    <Text type="tertiary" size="small">
-                      {t('template.createModal.versionInfo')}: {selectedProcess.version}
-                    </Text>
-                  </div>
-                )}
               </div>
 
-              {/* 执行目标 */}
-              <div className="create-template-modal-section">
-                <div className="create-template-modal-section-title">
-                  {t('template.createModal.targetSection')}
+              {/* 选择执行目标类型 */}
+              <div className="create-template-modal-field-group">
+                <div className="create-template-modal-field-title">
+                  {t('template.fields.targetType')}
                 </div>
-                <div className="semi-form-field-label">
-                  <label>{t('template.fields.targetType')} *</label>
-                </div>
-                <Select
-                  placeholder={t('template.fields.targetTypePlaceholder')}
+                <RadioGroup
                   value={targetType}
-                  onChange={(v) => {
-                    setTargetType(v as ExecutionTargetType);
+                  onChange={(e) => {
+                    setTargetType(e.target.value as ExecutionTargetType);
                     setSelectedTargetId(null);
                   }}
-                  optionList={targetTypeOptions}
-                  style={{ width: '100%' }}
-                />
+                  direction="horizontal"
+                >
+                  <Radio value="BOT_GROUP">{t('template.targetType.botGroup')}</Radio>
+                  <Radio value="BOT_IN_GROUP">{t('template.targetType.botInGroup')}</Radio>
+                </RadioGroup>
                 {targetType && (
-                  <>
-                    <div className="semi-form-field-label" style={{ marginTop: 16 }}>
-                      <label>{t('template.fields.target')} *</label>
-                    </div>
-                    <Select
-                      placeholder={t('template.fields.targetPlaceholder')}
-                      value={selectedTargetId}
-                      onChange={(v) => setSelectedTargetId(v as string)}
-                      optionList={targetOptions}
-                      style={{ width: '100%' }}
-                    />
-                  </>
+                  <Select
+                    placeholder={t('template.fields.targetPlaceholder')}
+                    value={selectedTargetId}
+                    onChange={(v) => setSelectedTargetId(v as string)}
+                    optionList={targetOptions}
+                    style={{ width: '100%', marginTop: 12 }}
+                  />
                 )}
               </div>
 
-              {/* 任务设置 */}
-              <div className="create-template-modal-section">
-                <div className="create-template-modal-section-title">
-                  {t('template.createModal.settingsSection')}
+              {/* 任务优先级 */}
+              <div className="create-template-modal-field-group">
+                <div className="create-template-modal-field-title">
+                  {t('template.fields.priority')}
                 </div>
-                <div className="semi-form-field-label">
-                  <label>{t('template.fields.priority')}</label>
-                </div>
-                <Select
+                <RadioGroup
                   value={priority}
-                  onChange={(v) => setPriority(v as TaskPriority)}
-                  optionList={priorityOptions}
-                  style={{ width: '100%' }}
-                />
-                
-                <div className="semi-form-field-label" style={{ marginTop: 16 }}>
-                  <label>{t('template.fields.maxDuration')}</label>
-                </div>
-                <InputNumber
-                  value={maxDuration}
-                  onChange={(v) => setMaxDuration(v as number)}
-                  min={60}
-                  max={86400}
-                  style={{ width: '100%' }}
-                />
-                <Text type="tertiary" size="small" style={{ display: 'block', marginTop: 4 }}>
-                  {t('template.fields.maxDurationHint')}
-                </Text>
-                
-                <div className="semi-form-field-label" style={{ marginTop: 16 }}>
-                  <label>{t('template.fields.validityDays')}</label>
-                </div>
-                <InputNumber
-                  value={validityDays}
-                  onChange={(v) => setValidityDays(v as number)}
-                  min={1}
-                  max={30}
-                  style={{ width: '100%' }}
-                />
-                <Text type="tertiary" size="small" style={{ display: 'block', marginTop: 4 }}>
-                  {t('template.fields.validityDaysHint')}
-                </Text>
-                
-                <div className="create-template-modal-param-item" style={{ marginTop: 16 }}>
-                  <Text>{t('template.fields.enableRecording')}</Text>
-                  <div style={{ marginTop: 8 }}>
-                    <Switch checked={enableRecording} onChange={setEnableRecording} />
-                  </div>
-                </div>
+                  onChange={(e) => setPriority(e.target.value as TaskPriority)}
+                  direction="horizontal"
+                >
+                  <Radio value="HIGH">{t('task.priority.high')}</Radio>
+                  <Radio value="MEDIUM">{t('task.priority.medium')}</Radio>
+                  <Radio value="LOW">{t('task.priority.low')}</Radio>
+                </RadioGroup>
               </div>
 
-              {/* 无参数时显示在左侧 */}
-              {selectedProcess && selectedProcess.parameters.length === 0 && (
-                <div className="create-template-modal-section">
-                  <div className="create-template-modal-section-title">
-                    {t('template.createModal.parametersSection')}
-                  </div>
-                  <Text type="tertiary">{t('template.createModal.noParameters')}</Text>
+              {/* 最大运行时长 */}
+              <div className="create-template-modal-field-group">
+                <div className="create-template-modal-field-title">
+                  {t('template.fields.maxDuration')}
                 </div>
-              )}
+                <Switch checked={maxDuration > 0} onChange={(v) => setMaxDuration(v ? 3600 : 0)} />
+                {maxDuration > 0 && (
+                  <InputNumber
+                    value={maxDuration}
+                    onChange={(v) => setMaxDuration(v as number)}
+                    min={60}
+                    max={86400}
+                    suffix={t('common.seconds')}
+                    style={{ width: 150, marginLeft: 12 }}
+                  />
+                )}
+              </div>
             </div>
           </div>
 
-          {/* 右侧：输入参数 */}
-          {hasParameters && (
-            <div className="create-template-modal-right">
-              <div className="create-template-modal-content">
-                <div className="create-template-modal-section">
-                  <div className="create-template-modal-section-title">
-                    {t('template.createModal.parametersSection')}
-                  </div>
-                  {selectedProcess.parameters.map((param) => renderParameterInput(param))}
+          {/* 右侧：流程输入 */}
+          <div className="create-template-modal-right">
+            <div className="create-template-modal-content">
+              {/* 流程输入 */}
+              <div className="create-template-modal-field-group">
+                <div className="create-template-modal-field-title">
+                  {t('template.createModal.parametersSection')}
                 </div>
+                {selectedProcess && selectedProcess.parameters.length > 0 ? (
+                  <div className="create-template-modal-params">
+                    {selectedProcess.parameters.map((param) => renderParameterInput(param))}
+                  </div>
+                ) : (
+                  <div className="create-template-modal-no-params">
+                    {selectedProcess ? t('template.createModal.noParameters') : t('template.createModal.selectProcessFirst')}
+                  </div>
+                )}
               </div>
             </div>
-          )}
+          </div>
         </div>
 
-        {/* 底部按钮 */}
         <div className="create-template-modal-footer">
+          <Button theme="solid" type="primary" loading={loading} onClick={handleSubmit}>
+            {t('common.confirm')}
+          </Button>
           <Button theme="light" onClick={onCancel}>
             {t('common.cancel')}
-          </Button>
-          <Button
-            theme="solid"
-            type="primary"
-            loading={loading}
-            onClick={handleSubmit}
-          >
-            {t('common.confirm')}
           </Button>
         </div>
       </div>
