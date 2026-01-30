@@ -9,9 +9,12 @@ import {
   Col,
   Space,
   Toast,
+  Table,
+  Checkbox,
+  Image,
 } from '@douyinfe/semi-ui';
+import type { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
 import EmptyState from '@/components/EmptyState';
-import ScreenshotCard from './components/ScreenshotCard';
 import BatchOperationBar from './components/BatchOperationBar';
 import type {
   LYTaskScreenshotResponse,
@@ -88,6 +91,24 @@ const fetchScreenshots = async (
     range: { offset: 0, size: sorted.length, total: sorted.length },
     list: sorted,
   };
+};
+
+// 格式化时间
+const formatTime = (isoTime: string): string => {
+  const date = new Date(isoTime);
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+  return `${month}-${day} ${hours}:${minutes}:${seconds}`;
+};
+
+// 格式化文件大小
+const formatFileSize = (bytes: number): string => {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 };
 
 const ScreenshotViewModal = ({
@@ -178,6 +199,82 @@ const ScreenshotViewModal = ({
   const modalTitle = taskName
     ? t('screenshot.modalTitle', { taskName })
     : t('screenshot.title');
+
+  // 表格列定义
+  const columns: ColumnProps<LYTaskScreenshotResponse>[] = useMemo(() => [
+    {
+      title: (
+        <Checkbox
+          checked={isAllSelected}
+          indeterminate={selectedIds.size > 0 && selectedIds.size < screenshots.length}
+          onChange={(e) => {
+            if (e.target.checked) {
+              handleSelectAll();
+            } else {
+              handleClearSelection();
+            }
+          }}
+        />
+      ),
+      dataIndex: 'id',
+      width: 48,
+      render: (_: string, record: LYTaskScreenshotResponse) => (
+        <div onClick={(e) => e.stopPropagation()}>
+          <Checkbox
+            checked={selectedIds.has(record.id)}
+            onChange={(e) => handleSelect(record.id, e.target.checked ?? false)}
+          />
+        </div>
+      ),
+    },
+    {
+      title: t('screenshot.table.sequence'),
+      dataIndex: 'sequence_number',
+      width: 80,
+      render: (value: number) => `#${value}`,
+    },
+    {
+      title: t('screenshot.table.thumbnail'),
+      dataIndex: 'thumbnail_url',
+      width: 180,
+      render: (_: string, record: LYTaskScreenshotResponse) => (
+        <div className="screenshot-table-thumbnail" onClick={(e) => e.stopPropagation()}>
+          <Image
+            src={record.thumbnail_url || record.file_url}
+            alt={record.name || `截图 ${record.sequence_number}`}
+            width={140}
+            height={78}
+            style={{ objectFit: 'cover', borderRadius: 4 }}
+            preview={{
+              src: record.file_url,
+            }}
+          />
+        </div>
+      ),
+    },
+    {
+      title: t('screenshot.table.name'),
+      dataIndex: 'name',
+      ellipsis: true,
+      render: (value: string | null, record: LYTaskScreenshotResponse) => (
+        <Text ellipsis={{ showTooltip: true }}>
+          {value || `${t('screenshot.defaultName')} ${record.sequence_number}`}
+        </Text>
+      ),
+    },
+    {
+      title: t('screenshot.table.capturedAt'),
+      dataIndex: 'captured_at',
+      width: 160,
+      render: (value: string) => formatTime(value),
+    },
+    {
+      title: t('screenshot.table.fileSize'),
+      dataIndex: 'file_size',
+      width: 100,
+      render: (value: number) => formatFileSize(value),
+    },
+  ], [t, isAllSelected, selectedIds, screenshots.length, handleSelectAll, handleClearSelection, handleSelect]);
   
   return (
     <Modal
@@ -187,7 +284,7 @@ const ScreenshotViewModal = ({
       footer={null}
       className="screenshot-view-modal"
       width="80vw"
-      style={{ maxWidth: 1400 }}
+      style={{ maxWidth: 1200 }}
       bodyStyle={{ height: '70vh', overflow: 'hidden' }}
       centered
     >
@@ -228,8 +325,8 @@ const ScreenshotViewModal = ({
           />
         )}
         
-        {/* 内容区域 */}
-        <div className="screenshot-view-modal-body">
+        {/* 表格区域 */}
+        <div className="screenshot-view-modal-table">
           {loading ? (
             <div className="screenshot-view-modal-loading">
               <Spin size="large" />
@@ -242,16 +339,14 @@ const ScreenshotViewModal = ({
               />
             </div>
           ) : (
-            <div className="screenshot-view-modal-list">
-              {screenshots.map((screenshot) => (
-                <ScreenshotCard
-                  key={screenshot.id}
-                  screenshot={screenshot}
-                  selected={selectedIds.has(screenshot.id)}
-                  onSelect={handleSelect}
-                />
-              ))}
-            </div>
+            <Table
+              columns={columns}
+              dataSource={screenshots}
+              rowKey="id"
+              size="middle"
+              pagination={false}
+              scroll={{ y: 'calc(70vh - 180px)' }}
+            />
           )}
         </div>
       </div>
