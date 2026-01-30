@@ -104,6 +104,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING' }: Execution
   });
   const [filterVisible, setFilterVisible] = useState(false);
   const [tempLevelFilter, setTempLevelFilter] = useState<LogLevel[]>([]);
+  const [tempDateRange, setTempDateRange] = useState<[Date, Date] | null>(null);
   const [exporting, setExporting] = useState(false);
   
   // 自动刷新定时器
@@ -194,13 +195,16 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING' }: Execution
       ...prev,
       page: 1,
       log_level: tempLevelFilter.length === 1 ? tempLevelFilter[0] : undefined,
+      start_time: tempDateRange?.[0]?.toISOString(),
+      end_time: tempDateRange?.[1]?.toISOString(),
     }));
     setFilterVisible(false);
-  }, [tempLevelFilter]);
+  }, [tempLevelFilter, tempDateRange]);
   
   // 重置筛选
   const handleResetFilter = useCallback(() => {
     setTempLevelFilter([]);
+    setTempDateRange(null);
   }, []);
   
   // 导出日志
@@ -326,8 +330,39 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING' }: Execution
     },
   ];
   
+  // 日期快捷选项
+  const datePresets = useMemo(() => {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    return [
+      {
+        text: t('taskLog.filter.datePresets.today'),
+        start: today,
+        end: new Date(today.getTime() + 24 * 60 * 60 * 1000 - 1),
+      },
+      {
+        text: t('taskLog.filter.datePresets.lastHour'),
+        start: new Date(now.getTime() - 60 * 60 * 1000),
+        end: now,
+      },
+      {
+        text: t('taskLog.filter.datePresets.last24Hours'),
+        start: new Date(now.getTime() - 24 * 60 * 60 * 1000),
+        end: now,
+      },
+    ];
+  }, [t]);
+
   // 筛选配置
   const filterSections = useMemo(() => [
+    {
+      key: 'dateRange',
+      label: t('taskLog.filter.dateRange'),
+      type: 'dateRange' as const,
+      value: tempDateRange,
+      onChange: (value: unknown) => setTempDateRange(value as [Date, Date] | null),
+      datePresets,
+    },
     {
       key: 'logLevel',
       label: t('taskLog.filter.logLevel'),
@@ -341,7 +376,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING' }: Execution
       value: tempLevelFilter,
       onChange: (values: unknown) => setTempLevelFilter(values as LogLevel[]),
     },
-  ], [t, tempLevelFilter]);
+  ], [t, tempLevelFilter, tempDateRange, datePresets]);
 
   return (
     <div className="execution-log-tab">
