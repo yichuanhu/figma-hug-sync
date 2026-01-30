@@ -12,6 +12,11 @@
   &-left {
     flex: 1;
     min-width: 0;
+
+    // 当只有左侧时，占满整个宽度
+    &:only-child {
+      max-width: 100%;
+    }
   }
 
   &-right {

@@ -481,25 +481,21 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
             </div>
           </div>
 
-          {/* 右侧：流程输入 */}
-          <div className="create-task-modal-right">
-            <div className="create-task-modal-content">
-              <div className="create-task-modal-section">
-                <div className="create-task-modal-section-title">
-                  {t('task.createModal.parametersSection')}
-                </div>
-                {selectedProcess && selectedProcess.parameters.length > 0 ? (
+          {/* 右侧：流程输入（仅当有参数时显示） */}
+          {hasParameters && (
+            <div className="create-task-modal-right">
+              <div className="create-task-modal-content">
+                <div className="create-task-modal-section">
+                  <div className="create-task-modal-section-title">
+                    {t('task.createModal.parametersSection')}
+                  </div>
                   <div className="create-task-modal-params">
                     {selectedProcess.parameters.map((param) => renderParameterInput(param))}
                   </div>
-                ) : (
-                  <div className="create-task-modal-no-params">
-                    {selectedProcess ? t('task.createModal.noParameters') : t('task.createModal.selectProcessFirst')}
-                  </div>
-                )}
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
 
         <div className="create-task-modal-footer">

@@ -266,6 +266,9 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
     }
   };
 
+  // 判断是否有参数需要填写
+  const hasParameters = selectedProcess && selectedProcess.parameters.length > 0;
+
   // 提交
   const handleSubmit = async () => {
     // 验证必填项
@@ -462,25 +465,21 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
             </div>
           </div>
 
-          {/* 右侧：流程输入 */}
-          <div className="create-template-modal-right">
-            <div className="create-template-modal-content">
-              <div className="create-template-modal-section">
-                <div className="create-template-modal-section-title">
-                  {t('template.createModal.parametersSection')}
-                </div>
-                {selectedProcess && selectedProcess.parameters.length > 0 ? (
+          {/* 右侧：流程输入（仅当有参数时显示） */}
+          {hasParameters && (
+            <div className="create-template-modal-right">
+              <div className="create-template-modal-content">
+                <div className="create-template-modal-section">
+                  <div className="create-template-modal-section-title">
+                    {t('template.createModal.parametersSection')}
+                  </div>
                   <div className="create-template-modal-params">
                     {selectedProcess.parameters.map((param) => renderParameterInput(param))}
                   </div>
-                ) : (
-                  <div className="create-template-modal-no-params">
-                    {selectedProcess ? t('template.createModal.noParameters') : t('template.createModal.selectProcessFirst')}
-                  </div>
-                )}
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
 
         <div className="create-template-modal-footer">
