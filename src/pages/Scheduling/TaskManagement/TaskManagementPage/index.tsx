@@ -572,68 +572,81 @@ const TaskManagementPage = () => {
       dataIndex: 'action',
       key: 'action',
       width: 60,
-      render: (_: unknown, record: LYTaskResponse) => (
-        <Dropdown
-          trigger="click"
-          position="bottomRight"
-          clickToHide
-          render={
-            <Dropdown.Menu>
-              {record.task_status === 'PENDING' && (
-                <Dropdown.Item
-                  icon={<IconClose />}
-                  onClick={(e) => {
-                    e?.stopPropagation();
-                    handleCancelTask(record);
-                  }}
-                >
-                  {t('task.actions.cancel')}
-                </Dropdown.Item>
-              )}
-              {record.execution_status === 'RUNNING' && (
-                <Dropdown.Item
-                  icon={<IconMinusCircleStroked />}
-                  onClick={(e) => {
-                    e?.stopPropagation();
-                    handleStopTask(record);
-                  }}
-                >
-                  {t('task.actions.stop')}
-                </Dropdown.Item>
-              )}
-              {record.task_status === 'FAILED' && (
-                <Dropdown.Item
-                  icon={<IconPlayCircle />}
-                  onClick={(e) => {
-                    e?.stopPropagation();
-                    handleRetryTask(record);
-                  }}
-                >
-                  {t('task.actions.retry')}
-                </Dropdown.Item>
-              )}
-              {record.current_execution && (
-                <Dropdown.Item
-                  icon={<IconFile />}
-                  onClick={(e) => {
-                    e?.stopPropagation();
-                    openTaskLogs(record);
-                  }}
-                >
-                  {t('task.actions.viewLogs')}
-                </Dropdown.Item>
-              )}
-            </Dropdown.Menu>
-          }
-        >
-          <Button
-            icon={<IconMore />}
-            theme="borderless"
-            type="tertiary"
-            onClick={(e) => e.stopPropagation()}
-          />
-        </Dropdown>
-      ),
+      render: (_: unknown, record: LYTaskResponse) => {
+        // 判断是否有可用操作
+        const hasActions = 
+          record.task_status === 'PENDING' ||
+          record.execution_status === 'RUNNING' ||
+          record.task_status === 'FAILED' ||
+          record.current_execution;
+
+        if (!hasActions) {
+          return null;
+        }
+
+        return (
+          <Dropdown
+            trigger="click"
+            position="bottomRight"
+            clickToHide
+            render={
+              <Dropdown.Menu>
+                {record.task_status === 'PENDING' && (
+                  <Dropdown.Item
+                    icon={<IconClose />}
+                    onClick={(e) => {
+                      e?.stopPropagation();
+                      handleCancelTask(record);
+                    }}
+                  >
+                    {t('task.actions.cancel')}
+                  </Dropdown.Item>
+                )}
+                {record.execution_status === 'RUNNING' && (
+                  <Dropdown.Item
+                    icon={<IconMinusCircleStroked />}
+                    onClick={(e) => {
+                      e?.stopPropagation();
+                      handleStopTask(record);
+                    }}
+                  >
+                    {t('task.actions.stop')}
+                  </Dropdown.Item>
+                )}
+                {record.task_status === 'FAILED' && (
+                  <Dropdown.Item
+                    icon={<IconPlayCircle />}
+                    onClick={(e) => {
+                      e?.stopPropagation();
+                      handleRetryTask(record);
+                    }}
+                  >
+                    {t('task.actions.retry')}
+                  </Dropdown.Item>
+                )}
+                {record.current_execution && (
+                  <Dropdown.Item
+                    icon={<IconFile />}
+                    onClick={(e) => {
+                      e?.stopPropagation();
+                      openTaskLogs(record);
+                    }}
+                  >
+                    {t('task.actions.viewLogs')}
+                  </Dropdown.Item>
+                )}
+              </Dropdown.Menu>
+            }
+          >
+            <Button
+              icon={<IconMore />}
+              theme="borderless"
+              type="tertiary"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </Dropdown>
+        );
+      },
     },
   ];
 
