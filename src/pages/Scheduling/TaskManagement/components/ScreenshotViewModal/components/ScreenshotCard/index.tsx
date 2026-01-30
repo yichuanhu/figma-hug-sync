@@ -56,12 +56,12 @@ const ScreenshotCard = ({ screenshot, selected, onSelect }: ScreenshotCardProps)
         />
       </div>
 
-      {/* 序号标签 */}
+      {/* 序号 */}
       <div className="screenshot-card-sequence">
         #{screenshot.sequence_number}
       </div>
 
-      {/* 图片容器 - 16:9 比例 */}
+      {/* 图片容器 */}
       <div className="screenshot-card-image-container">
         <Image
           src={screenshot.thumbnail_url || screenshot.file_url}

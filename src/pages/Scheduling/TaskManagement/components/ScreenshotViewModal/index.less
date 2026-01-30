@@ -39,21 +39,11 @@
     height: 100%;
   }
 
-  // 截图网格
-  &-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 16px;
+  // 截图列表
+  &-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
     padding-bottom: 16px;
-  }
-}
-
-// 响应式布局
-@media (max-width: 768px) {
-  .screenshot-view-modal {
-    &-grid {
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 12px;
-    }
   }
 }

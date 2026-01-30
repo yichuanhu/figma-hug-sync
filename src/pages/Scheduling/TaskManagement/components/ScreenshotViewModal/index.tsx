@@ -242,7 +242,7 @@ const ScreenshotViewModal = ({
               />
             </div>
           ) : (
-            <div className="screenshot-view-modal-grid">
+            <div className="screenshot-view-modal-list">
               {screenshots.map((screenshot) => (
                 <ScreenshotCard
                   key={screenshot.id}
