@@ -43,6 +43,11 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
       { name: 'maxCount', type: 'NUMBER', required: false, default_value: 100, description: '最大处理数量' },
       { name: 'enableRetry', type: 'BOOLEAN', required: false, default_value: true, description: '是否启用重试' },
     ],
+    output_parameters: [
+      { name: 'processedCount', type: 'NUMBER', description: '已处理订单数量' },
+      { name: 'successRate', type: 'NUMBER', description: '处理成功率' },
+      { name: 'errorList', type: 'TEXT', description: '错误订单列表' },
+    ],
   },
   {
     process_id: 'proc-002',
@@ -53,6 +58,10 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
       { name: 'department', type: 'TEXT', required: true, description: '部门名称' },
       { name: 'approvalCredential', type: 'CREDENTIAL', required: true, description: '审批凭据' },
     ],
+    output_parameters: [
+      { name: 'approvalResult', type: 'BOOLEAN', description: '审批结果' },
+      { name: 'approvalNote', type: 'TEXT', description: '审批意见' },
+    ],
   },
   {
     process_id: 'proc-003',
@@ -60,6 +69,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     version_id: 'ver-003',
     version: 'v1.0.0',
     parameters: [],
+    output_parameters: [],
   },
   {
     process_id: 'proc-004',
@@ -69,6 +79,10 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     parameters: [
       { name: 'supplier', type: 'TEXT', required: true, description: '供应商名称' },
     ],
+    output_parameters: [
+      { name: 'purchaseOrderId', type: 'TEXT', description: '采购单号' },
+      { name: 'estimatedDelivery', type: 'TEXT', description: '预计交付时间' },
+    ],
   },
   {
     process_id: 'proc-005',
@@ -76,6 +90,10 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     version_id: 'ver-005',
     version: 'v2.1.0',
     parameters: [],
+    output_parameters: [
+      { name: 'contractStatus', type: 'TEXT', description: '合同状态' },
+      { name: 'signedDate', type: 'TEXT', description: '签署日期' },
+    ],
   },
 ];
 

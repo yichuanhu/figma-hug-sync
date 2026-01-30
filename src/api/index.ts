@@ -2046,6 +2046,18 @@ export interface LYListResponseLYTaskResponse {
 }
 
 /**
+ * 流程输出参数定义
+ */
+export interface LYProcessOutputParameterDefinition {
+  /** 参数名称 */
+  name: string;
+  /** 参数类型 */
+  type: ProcessParameterType;
+  /** 参数描述 */
+  description?: string | null;
+}
+
+/**
  * LYProcessActiveVersionResponse
  * 流程活跃版本响应（用于任务创建）
  */
@@ -2060,6 +2072,8 @@ export interface LYProcessActiveVersionResponse {
   version: string;
   /** 入口参数定义 */
   parameters: LYProcessParameterDefinition[];
+  /** 输出参数定义 */
+  output_parameters?: LYProcessOutputParameterDefinition[];
 }
 
 /**
