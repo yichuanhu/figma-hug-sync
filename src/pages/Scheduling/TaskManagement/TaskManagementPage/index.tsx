@@ -33,6 +33,7 @@ import {
   IconClose,
   IconPlayCircle,
   IconDeleteStroked,
+  IconFile,
 } from '@douyinfe/semi-icons';
 import type { 
   LYTaskResponse, 
@@ -268,6 +269,7 @@ const TaskManagementPage = () => {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
+  const [initialTab, setInitialTab] = useState<'basicInfo' | 'executionHistory' | 'executionLogs'>('basicInfo');
 
   const [listResponse, setListResponse] = useState<LYListResponseLYTaskResponse>({
     range: { offset: 0, size: 20, total: 0 },
@@ -341,9 +343,15 @@ const TaskManagementPage = () => {
   };
 
   // 打开详情抽屉
-  const openTaskDetail = (record: LYTaskResponse) => {
+  const openTaskDetail = (record: LYTaskResponse, tab: 'basicInfo' | 'executionHistory' | 'executionLogs' = 'basicInfo') => {
     setSelectedTask(record);
+    setInitialTab(tab);
     setDetailDrawerVisible(true);
+  };
+
+  // 打开日志 Tab
+  const openTaskLogs = (record: LYTaskResponse) => {
+    openTaskDetail(record, 'executionLogs');
   };
 
   // 取消任务
@@ -604,6 +612,17 @@ const TaskManagementPage = () => {
                   {t('task.actions.retry')}
                 </Dropdown.Item>
               )}
+              {record.current_execution && (
+                <Dropdown.Item
+                  icon={<IconFile />}
+                  onClick={(e) => {
+                    e?.stopPropagation();
+                    openTaskLogs(record);
+                  }}
+                >
+                  {t('task.actions.viewLogs')}
+                </Dropdown.Item>
+              )}
             </Dropdown.Menu>
           }
         >
@@ -766,6 +785,7 @@ const TaskManagementPage = () => {
           onSelectTask={setSelectedTask}
           currentPage={currentPage}
           totalPages={Math.ceil(total / pageSize)}
+          initialTab={initialTab}
           onPageChange={async (page) => {
             setQueryParams((prev) => ({ ...prev, offset: (page - 1) * pageSize }));
             const response = await fetchTaskList({

@@ -1319,7 +1319,8 @@
     "actions": {
       "cancel": "取消任务",
       "stop": "停止任务",
-      "retry": "重新执行"
+      "retry": "重新执行",
+      "viewLogs": "查看日志"
     },
     "createModal": {
       "title": "新建任务",
