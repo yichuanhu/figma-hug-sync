@@ -6,55 +6,37 @@
 
   &-body {
     display: flex;
-    gap: 24px;
-
-    &-expanded {
-      .create-task-modal-left,
-      .create-task-modal-right {
-        flex: 1;
-        min-width: 0;
-      }
-
-      .create-task-modal-right {
-        border-left: 1px solid var(--semi-color-border);
-        padding-left: 24px;
-      }
-    }
+    gap: 32px;
   }
 
-  &-left,
+  &-left {
+    flex: 1;
+    min-width: 0;
+  }
+
   &-right {
     flex: 1;
+    min-width: 0;
   }
 
   &-content {
-    max-height: calc(100vh - 300px);
+    max-height: calc(100vh - 280px);
     overflow-y: auto;
     padding-right: 4px;
   }
 
-  &-section {
-    padding-bottom: 20px;
-    margin-bottom: 20px;
-    border-bottom: 1px solid var(--semi-color-border);
+  &-field-group {
+    margin-bottom: 24px;
 
     &:last-child {
-      padding-bottom: 0;
       margin-bottom: 0;
-      border-bottom: none;
-    }
-
-    // Form 字段统一间距
-    .semi-form-field {
-      margin-bottom: 16px;
     }
   }
 
-  &-section-title {
-    font-weight: 600;
+  &-field-title {
     font-size: 14px;
     color: var(--semi-color-text-0);
-    margin-bottom: 16px;
+    margin-bottom: 12px;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -64,20 +46,15 @@
       display: inline-block;
       width: 3px;
       height: 14px;
-      background: var(--semi-color-text-2);
+      background: var(--semi-color-primary);
       border-radius: 2px;
     }
   }
 
-  &-template-row {
-    margin-bottom: 16px;
-  }
-
-  &-version-info {
-    padding: 8px 12px;
+  &-params {
     background: var(--semi-color-fill-0);
     border-radius: var(--semi-border-radius-small);
-    margin-top: 8px;
+    padding: 16px;
   }
 
   &-param-item {
@@ -90,7 +67,7 @@
 
   &-no-params {
     color: var(--semi-color-text-2);
-    padding: 16px;
+    padding: 24px 16px;
     text-align: center;
     background: var(--semi-color-fill-0);
     border-radius: var(--semi-border-radius-small);
@@ -100,9 +77,8 @@
     display: flex;
     justify-content: flex-end;
     gap: 12px;
-    margin-top: 16px;
+    margin-top: 24px;
     padding-top: 16px;
-    padding-bottom: 12px;
     border-top: 1px solid var(--semi-color-border);
   }
 }
