@@ -252,7 +252,7 @@ const ExecutionHistoryTab = ({ taskId, enableRecording }: ExecutionHistoryTabPro
                       theme="borderless"
                       onClick={handleViewRecording}
                     >
-                      {t('task.actions.viewRecording')}
+                      {t('task.detail.viewRecording')}
                     </Button>
                   )}
                   {showScreenshotButton && (
@@ -262,7 +262,7 @@ const ExecutionHistoryTab = ({ taskId, enableRecording }: ExecutionHistoryTabPro
                       theme="borderless"
                       onClick={handleViewScreenshots}
                     >
-                      {t('task.actions.viewScreenshots')}
+                      {t('task.detail.viewScreenshots')}
                     </Button>
                   )}
                 </Space>
