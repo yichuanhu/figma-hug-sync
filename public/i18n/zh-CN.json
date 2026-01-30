@@ -1431,5 +1431,33 @@
       "filterDescription": "没有找到匹配的任务，请尝试调整筛选条件",
       "defaultDescription": "当前暂无任务，点击「新建任务」开始"
     }
+  },
+  "taskLog": {
+    "title": "执行日志",
+    "description": "查看任务执行的详细日志",
+    "searchPlaceholder": "搜索日志消息",
+    "refresh": "刷新",
+    "export": "导出日志",
+    "autoRefresh": "自动刷新中",
+    "viewFull": "查看完整",
+    "fullMessage": "完整日志",
+    "noLogs": "此执行没有可用日志",
+    "noLogsMatch": "未找到包含\"{{keyword}}\"的日志",
+    "noLogsToExport": "没有可导出的日志",
+    "loadError": "加载日志失败",
+    "exportSuccess": "日志导出成功",
+    "exportError": "导出失败，请重试",
+    "fields": {
+      "logTime": "时间",
+      "logLevel": "级别",
+      "logMessage": "日志消息",
+      "source": "来源"
+    },
+    "filter": {
+      "logLevel": "日志级别"
+    },
+    "stats": {
+      "total": "总计"
+    }
   }
 }

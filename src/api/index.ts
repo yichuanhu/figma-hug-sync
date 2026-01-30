@@ -2094,3 +2094,74 @@ export interface LYExecutionTemplateResponse {
   /** 预设参数值 */
   input_parameters?: Record<string, unknown>;
 }
+
+// ==================== 日志管理相关类型 ====================
+
+/**
+ * LogLevel
+ * 日志级别
+ */
+export type LogLevel = 'DEBUG' | 'INFO' | 'WARN' | 'ERROR';
+
+/**
+ * LogSource
+ * 日志来源
+ */
+export type LogSource = 'CLIENT' | 'SERVER';
+
+/**
+ * LYExecutionLogResponse
+ * 执行日志响应
+ */
+export interface LYExecutionLogResponse {
+  /** 日志ID */
+  log_id: string;
+  /** 日志时间 (ISO 8601) */
+  log_time: string;
+  /** 日志级别 */
+  log_level: LogLevel;
+  /** 日志消息 */
+  log_message: string;
+  /** 日志来源 */
+  source: LogSource;
+}
+
+/**
+ * LYLogSummaryResponse
+ * 日志统计响应
+ */
+export interface LYLogSummaryResponse {
+  /** 总日志数 */
+  total: number;
+  /** DEBUG 级别数量 */
+  debug_count: number;
+  /** INFO 级别数量 */
+  info_count: number;
+  /** WARN 级别数量 */
+  warn_count: number;
+  /** ERROR 级别数量 */
+  error_count: number;
+}
+
+/**
+ * GetExecutionLogsParams
+ * 获取执行日志参数
+ */
+export interface GetExecutionLogsParams {
+  /** 页码 */
+  page?: number;
+  /** 每页数量 (10-200, 默认50) */
+  page_size?: number;
+  /** 日志级别筛选 */
+  log_level?: LogLevel;
+  /** 关键字筛选 (不区分大小写) */
+  keyword?: string;
+}
+
+/** LYListResponse[LYExecutionLogResponse] */
+export interface LYListResponseLYExecutionLogResponse {
+  /** 范围 */
+  range?: LYRangeResponse | null;
+  /** 列表 */
+  list: LYExecutionLogResponse[];
+}
