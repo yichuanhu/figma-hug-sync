@@ -208,15 +208,6 @@ const ExecutionHistoryTab = ({ taskId, enableRecording }: ExecutionHistoryTabPro
           onChange={(key) => setSelectedExecutionId(key)}
           className="execution-history-tab-tabs"
           collapsible
-          tabBarExtraContent={
-            <Button
-              icon={<IconRefresh />}
-              size="small"
-              theme="borderless"
-              onClick={handleRefresh}
-              loading={loading}
-            />
-          }
         >
           {executions.map((execution) => {
             const statusConfig = executionStatusConfig[execution.status];
