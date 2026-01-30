@@ -1,22 +1,16 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { debounce } from 'lodash';
 import {
   Breadcrumb,
   Typography,
-  Input,
   Button,
   Table,
   Tag,
   Dropdown,
   Tooltip,
-  Row,
-  Col,
-  Space,
 } from '@douyinfe/semi-ui';
 import {
-  IconSearch,
   IconRefresh,
   IconMore,
   IconFile,
@@ -26,7 +20,6 @@ import {
 import AppLayout from '@/components/layout/AppLayout';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
-import FilterPopover from '@/components/FilterPopover';
 import type {
   LYTaskExecutionResponse,
   LYListResponseLYTaskExecutionResponse,
@@ -136,17 +129,10 @@ const ExecutionHistoryPage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   
-  const [searchValue, setSearchValue] = useState('');
   const [queryParams, setQueryParams] = useState<GetExecutionHistoryParams>({
     offset: 0,
     size: 20,
-    keyword: '',
   });
-  
-  // 筛选状态
-  const [statusFilter, setStatusFilter] = useState<string[]>([]);
-  const [dateRange, setDateRange] = useState<[Date, Date] | null>(null);
-  const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
   
   const [loading, setLoading] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
@@ -164,65 +150,26 @@ const ExecutionHistoryPage = () => {
     }
   }, [taskId]);
   
-  // 执行状态选项
-  const statusOptions = useMemo(() => [
-    { value: 'RUNNING', label: t('task.executionStatus.running') },
-    { value: 'SUCCESS', label: t('task.executionStatus.success') },
-    { value: 'FAILED', label: t('task.executionStatus.failed') },
-    { value: 'STOPPED', label: t('task.executionStatus.stopped') },
-    { value: 'TIMEOUT', label: t('task.executionStatus.timeout') },
-  ], [t]);
-  
   // 加载数据
   const loadData = useCallback(async () => {
     if (!taskId) return;
     
     setLoading(true);
     try {
-      const response = await fetchExecutionHistory(taskId, {
-        ...queryParams,
-        status: statusFilter.length > 0 ? statusFilter as ExecutionStatus[] : undefined,
-        start_time: dateRange?.[0]?.toISOString(),
-        end_time: dateRange?.[1]?.toISOString(),
-      });
+      const response = await fetchExecutionHistory(taskId, queryParams);
       setListResponse(response);
     } finally {
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [taskId, queryParams, statusFilter, dateRange]);
+  }, [taskId, queryParams]);
   
   useEffect(() => {
     loadData();
   }, [loadData]);
   
-  // 搜索防抖
-  const debouncedSearch = useMemo(
-    () => debounce((value: string) => {
-      setQueryParams((prev) => ({ ...prev, offset: 0, keyword: value }));
-    }, 500),
-    []
-  );
-  
-  const handleSearch = (value: string) => {
-    setSearchValue(value);
-    debouncedSearch(value);
-  };
-  
   const handleRefresh = () => {
     loadData();
-  };
-  
-  // 重置筛选
-  const handleResetFilter = () => {
-    setStatusFilter([]);
-    setDateRange(null);
-  };
-  
-  // 确认筛选
-  const handleConfirmFilter = () => {
-    setQueryParams((prev) => ({ ...prev, offset: 0 }));
-    setFilterPopoverVisible(false);
   };
   
   // 分页信息
@@ -230,10 +177,6 @@ const ExecutionHistoryPage = () => {
   const currentPage = Math.floor((range?.offset || 0) / (range?.size || 20)) + 1;
   const pageSize = range?.size || 20;
   const total = range?.total || 0;
-  
-  // 筛选激活状态
-  const hasActiveFilter = statusFilter.length > 0 || dateRange !== null;
-  const filterCount = statusFilter.length + (dateRange ? 1 : 0);
   
   // 表格列定义
   const columns = [
@@ -379,48 +322,11 @@ const ExecutionHistoryPage = () => {
               )}
             </div>
           </div>
-          <Row type="flex" justify="space-between" align="middle" className="execution-history-page-header-toolbar">
-            <Col>
-              <Space>
-                <Input
-                  prefix={<IconSearch />}
-                  placeholder={t('executionHistory.searchPlaceholder')}
-                  style={{ width: 320 }}
-                  value={searchValue}
-                  onChange={handleSearch}
-                  showClear
-                />
-                <FilterPopover
-                  visible={filterPopoverVisible}
-                  onVisibleChange={setFilterPopoverVisible}
-                  sections={[
-                    {
-                      key: 'status',
-                      label: t('executionHistory.filter.status'),
-                      type: 'checkbox',
-                      options: statusOptions,
-                      value: statusFilter,
-                      onChange: (value) => setStatusFilter(value as string[]),
-                    },
-                    {
-                      key: 'dateRange',
-                      label: t('executionHistory.filter.dateRange'),
-                      type: 'dateRange',
-                      value: dateRange,
-                      onChange: (value) => setDateRange(value as [Date, Date] | null),
-                    },
-                  ]}
-                  onReset={handleResetFilter}
-                  onConfirm={handleConfirmFilter}
-                />
-              </Space>
-            </Col>
-            <Col>
-              <Button icon={<IconRefresh />} onClick={handleRefresh}>
-                {t('common.refresh')}
-              </Button>
-            </Col>
-          </Row>
+          <div className="execution-history-page-header-toolbar">
+            <Button icon={<IconRefresh />} onClick={handleRefresh}>
+              {t('common.refresh')}
+            </Button>
+          </div>
         </div>
         
         <div className="execution-history-page-table">
@@ -436,12 +342,8 @@ const ExecutionHistoryPage = () => {
               scroll={{ x: 1200 }}
               empty={
                 <EmptyState
-                  variant={queryParams.keyword ? 'noResult' : 'noData'}
-                  description={
-                    queryParams.keyword
-                      ? t('executionHistory.noMatch', { keyword: queryParams.keyword })
-                      : t('executionHistory.noData')
-                  }
+                  variant="noData"
+                  description={t('executionHistory.noData')}
                 />
               }
               pagination={{
