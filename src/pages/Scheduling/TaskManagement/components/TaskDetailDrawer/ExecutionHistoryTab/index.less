@@ -32,10 +32,16 @@
   &-tabs {
     .semi-tabs-bar {
       margin-bottom: 0;
+      padding-left: 0;
     }
 
     .semi-tabs-content {
       display: none;
+    }
+
+    // 移除第一个tab的左边距，使其与内容左对齐
+    .semi-tabs-bar-first .semi-tabs-tab:first-child {
+      margin-left: 0;
     }
   }
 
