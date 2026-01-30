@@ -28,6 +28,8 @@ import MaintenanceWorkbench from "@/pages/Maintenance/MaintenanceWorkbench";
 import RequirementsWorkbench from "@/pages/Requirements/RequirementsWorkbench";
 // Scheduling
 import SchedulingWorkbench from "@/pages/Scheduling/SchedulingWorkbench";
+// Scheduling - Task Management
+import TaskManagementPage from "@/pages/Scheduling/TaskManagement/TaskManagementPage";
 // Personal Center
 import PersonalCenter from "@/pages/PersonalCenter";
 // Dev Preview
@@ -68,6 +70,9 @@ const App = () => (
         
         {/* 自动化流程 - 调度中心入口 */}
         <Route path="/scheduling-center/execution-assets/automation-process" element={<SchedulingProcessManagementPage />} />
+        
+        {/* 任务列表 - 调度中心入口 */}
+        <Route path="/scheduling-center/task-execution/task-list" element={<TaskManagementPage />} />
         
         {/* 个人中心 */}
         <Route path="/personal-center" element={<PersonalCenter />} />

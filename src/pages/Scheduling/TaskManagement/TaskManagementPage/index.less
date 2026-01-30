@@ -1,0 +1,62 @@
+// TaskManagementPage 任务列表页面样式
+.task-management-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+
+  .task-management-page-breadcrumb {
+    padding: 12px 24px;
+    flex-shrink: 0;
+  }
+
+  .task-management-page-header {
+    padding: 0 24px;
+    flex-shrink: 0;
+
+    .task-management-page-header-title {
+      margin-bottom: 16px;
+    }
+
+    .task-management-page-header-toolbar {
+      margin-bottom: 16px;
+    }
+  }
+
+  .task-management-page-table {
+    flex: 1;
+    overflow: hidden;
+    padding: 0 24px 24px;
+    min-height: 0;
+
+    .semi-table-wrapper {
+      max-height: 100%;
+    }
+  }
+
+  .task-management-page-cell-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 200px;
+  }
+
+  .task-management-page-cell-creator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .avatar-creator {
+      flex-shrink: 0;
+    }
+  }
+
+  .task-management-page-cell-taskid {
+    color: var(--semi-color-primary);
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

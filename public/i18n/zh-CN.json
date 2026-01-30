@@ -1257,5 +1257,179 @@
       "title": "未找到 (notFound)",
       "description": "请求的页面或资源不存在"
     }
+  },
+  "task": {
+    "title": "任务列表",
+    "description": "查看和管理任务执行，监控任务状态",
+    "breadcrumb": {
+      "schedulingCenter": "调度中心",
+      "taskExecution": "任务执行",
+      "taskList": "任务列表"
+    },
+    "createTask": "新建任务",
+    "searchPlaceholder": "搜索任务ID",
+    "refresh": "刷新",
+    "noData": "暂无任务",
+    "table": {
+      "taskId": "任务编号",
+      "processName": "流程名称",
+      "executionTarget": "执行目标",
+      "taskStatus": "任务状态",
+      "executionStatus": "执行状态",
+      "priority": "优先级",
+      "triggerSource": "触发来源",
+      "createTime": "创建时间",
+      "expireTime": "过期时间",
+      "duration": "执行时长",
+      "executionCount": "执行次数"
+    },
+    "status": {
+      "pending": "待执行",
+      "assigned": "已分配",
+      "waiting": "等待中",
+      "completed": "已完成",
+      "failed": "执行失败",
+      "cancelled": "已取消"
+    },
+    "executionStatus": {
+      "running": "运行中",
+      "success": "成功",
+      "failed": "失败",
+      "stopped": "已停止",
+      "timeout": "超时"
+    },
+    "priority": {
+      "high": "高",
+      "medium": "中",
+      "low": "低",
+      "manualQueueBreaker": "插队"
+    },
+    "triggerSource": {
+      "manual": "手动创建",
+      "scheduled": "计划任务",
+      "queue": "队列触发",
+      "template": "模板创建"
+    },
+    "filter": {
+      "taskStatus": "任务状态",
+      "executionStatus": "执行状态",
+      "triggerSource": "触发来源",
+      "dateRange": "时间范围"
+    },
+    "actions": {
+      "cancel": "取消任务",
+      "stop": "停止任务",
+      "retry": "重新执行"
+    },
+    "createModal": {
+      "title": "新建任务",
+      "selectTemplate": "选择模板",
+      "templatePlaceholder": "选择执行模板（可选）",
+      "processSection": "流程选择",
+      "processLabel": "流程",
+      "processPlaceholder": "搜索并选择流程",
+      "processHint": "系统将自动使用该流程的活跃版本",
+      "versionInfo": "活跃版本",
+      "targetSection": "执行目标",
+      "targetTypeLabel": "目标类型",
+      "targetTypePlaceholder": "请选择执行目标类型",
+      "targetLabel": "执行目标",
+      "targetPlaceholder": "请选择执行目标",
+      "targetType": {
+        "botGroup": "机器人组",
+        "botInGroup": "组中的机器人",
+        "ungroupedBot": "未分组机器人"
+      },
+      "settingsSection": "任务设置",
+      "priorityLabel": "优先级",
+      "maxDurationLabel": "最大执行时长",
+      "maxDurationHint": "单位：秒，范围 60-86400",
+      "validityDaysLabel": "有效期",
+      "validityDaysHint": "单位：天，范围 1-30",
+      "enableRecordingLabel": "启用录屏",
+      "parametersSection": "输入参数",
+      "noParameters": "该流程无需输入参数",
+      "credentialPlaceholder": "请选择凭据",
+      "success": "任务创建成功",
+      "error": "创建失败，请重试"
+    },
+    "validation": {
+      "processRequired": "请选择流程",
+      "targetTypeRequired": "请选择执行目标类型",
+      "targetRequired": "请选择执行目标",
+      "maxDurationRequired": "请输入最大执行时长",
+      "maxDurationRange": "执行时长必须在 60-86400 秒之间",
+      "validityDaysRange": "有效期必须在 1-30 天之间",
+      "parameterRequired": "请填写必填参数 {{name}}",
+      "numberInvalid": "请输入有效的数值"
+    },
+    "cancelModal": {
+      "title": "取消任务",
+      "confirmMessage": "确定要取消任务「{{taskId}}」吗？",
+      "warning": "取消后任务将从队列中移除，无法恢复。",
+      "success": "任务已取消",
+      "error": "取消失败：{{message}}"
+    },
+    "stopModal": {
+      "title": "停止任务",
+      "confirmMessage": "确定要停止任务「{{taskId}}」的执行吗？",
+      "warning": "停止后将向机器人发送停止指令，执行状态将变为"已停止"。",
+      "success": "停止指令已发送",
+      "error": "停止失败：{{message}}"
+    },
+    "retryModal": {
+      "title": "重新执行",
+      "confirmMessage": "确定要重新执行任务「{{taskId}}」吗？",
+      "hint": "将创建新的执行记录，任务状态将变为"待执行"并重新加入队列。",
+      "success": "任务已重新执行",
+      "error": "重新执行失败：{{message}}"
+    },
+    "detail": {
+      "tabs": {
+        "basicInfo": "基本信息",
+        "executionHistory": "执行历史"
+      },
+      "basicInfo": "基本信息",
+      "taskId": "任务编号",
+      "processName": "流程名称",
+      "processVersion": "流程版本",
+      "executionTarget": "执行目标",
+      "triggerSource": "触发来源",
+      "executionInfo": "执行信息",
+      "taskStatus": "任务状态",
+      "executionStatus": "执行状态",
+      "priority": "优先级",
+      "createTime": "创建时间",
+      "expireTime": "过期时间",
+      "maxDuration": "最大执行时长",
+      "enableRecording": "启用录屏",
+      "enabled": "已启用",
+      "disabled": "未启用",
+      "inputParameters": "输入参数",
+      "outputResult": "输出结果",
+      "noParameters": "无输入参数",
+      "noOutput": "无输出结果",
+      "executionStats": "执行统计",
+      "totalExecutions": "总执行次数",
+      "currentDuration": "当前执行时长",
+      "executionHistory": "执行历史",
+      "executionId": "执行编号",
+      "botName": "执行机器人",
+      "startTime": "开始时间",
+      "endTime": "结束时间",
+      "duration": "执行时长",
+      "errorMessage": "错误信息",
+      "viewLogs": "查看日志",
+      "viewRecording": "查看录屏",
+      "viewScreenshots": "查看截图",
+      "noExecutions": "暂无执行记录",
+      "seconds": "秒",
+      "times": "次",
+      "creator": "创建者"
+    },
+    "empty": {
+      "filterDescription": "没有找到匹配的任务，请尝试调整筛选条件",
+      "defaultDescription": "当前暂无任务，点击「新建任务」开始"
+    }
   }
 }
