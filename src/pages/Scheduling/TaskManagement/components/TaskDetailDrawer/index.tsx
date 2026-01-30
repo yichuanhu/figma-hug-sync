@@ -51,6 +51,7 @@ interface TaskDetailDrawerProps {
   totalPages: number;
   onPageChange: (page: number) => Promise<LYTaskResponse[]>;
   onScrollToRow?: (taskId: string) => void;
+  initialTab?: 'basicInfo' | 'executionHistory' | 'executionLogs';
 }
 
 // 状态配置
@@ -91,6 +92,7 @@ const TaskDetailDrawer = ({
   totalPages,
   onPageChange,
   onScrollToRow,
+  initialTab = 'basicInfo',
 }: TaskDetailDrawerProps) => {
   const { t } = useTranslation();
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -204,9 +206,9 @@ const TaskDetailDrawer = ({
   // 重置标签页
   useEffect(() => {
     if (visible) {
-      setActiveTab('basicInfo');
+      setActiveTab(initialTab);
     }
-  }, [visible, task?.task_id]);
+  }, [visible, task?.task_id, initialTab]);
 
   const toggleFullscreen = useCallback(() => {
     setIsFullscreen((prev) => !prev);
