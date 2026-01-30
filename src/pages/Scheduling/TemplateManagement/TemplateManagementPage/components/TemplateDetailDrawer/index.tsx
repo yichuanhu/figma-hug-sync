@@ -320,16 +320,16 @@ const TemplateDetailDrawer = ({
         <TabPane tab={t('template.detail.tabs.basicInfo')} itemKey="basicInfo">
           <div className="template-detail-drawer-tab-content">
             {/* 基本信息 */}
-            <div className="template-detail-drawer-info-section">
-              <Text strong className="template-detail-drawer-info-title">
+            <div className="template-detail-drawer-section">
+              <Text className="template-detail-drawer-section-title">
                 {t('template.detail.basicInfo')}
               </Text>
-              <Descriptions data={basicInfoData} row size="small" />
+              <Descriptions data={basicInfoData} align="left" />
             </div>
 
             {/* 输入参数 */}
             <div className="template-detail-drawer-section">
-              <Text strong className="template-detail-drawer-info-title">
+              <Text className="template-detail-drawer-section-title">
                 {t('template.detail.inputParameters')}
               </Text>
               {hasParameters ? (
