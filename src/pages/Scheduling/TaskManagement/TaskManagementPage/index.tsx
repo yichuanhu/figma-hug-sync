@@ -29,7 +29,7 @@ import {
   IconMore,
   IconRefresh,
   IconMinusCircleStroked,
-  IconClose,
+  IconCrossCircleStroked,
   IconPlayCircle,
   IconDeleteStroked,
 } from '@douyinfe/semi-icons';
@@ -356,7 +356,7 @@ const TaskManagementPage = () => {
 
     Modal.confirm({
       title: t('task.cancelModal.title'),
-      icon: <IconClose style={{ color: 'var(--semi-color-warning)' }} />,
+      icon: <IconCrossCircleStroked style={{ color: 'var(--semi-color-warning)' }} />,
       content: (
         <>
           <div>{t('task.cancelModal.confirmMessage', { taskId: task.task_id })}</div>
@@ -584,7 +584,7 @@ const TaskManagementPage = () => {
               <Dropdown.Menu>
                 {record.task_status === 'PENDING' && (
                   <Dropdown.Item
-                    icon={<IconClose />}
+                    icon={<IconCrossCircleStroked />}
                     onClick={(e) => {
                       e?.stopPropagation();
                       handleCancelTask(record);
