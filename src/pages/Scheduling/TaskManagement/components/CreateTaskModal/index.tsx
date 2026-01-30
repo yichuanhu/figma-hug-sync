@@ -477,6 +477,24 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
                     )}
                   </div>
                 </div>
+                <div className="create-task-modal-field">
+                  <div className="semi-form-field-label-text">{t('task.createModal.validityDaysLabel')}</div>
+                  <InputNumber
+                    value={validityDays}
+                    onChange={(v) => setValidityDays(v as number)}
+                    min={1}
+                    max={30}
+                    suffix={t('common.days')}
+                    style={{ width: 150 }}
+                  />
+                </div>
+                <div className="create-task-modal-field">
+                  <div className="semi-form-field-label-text">{t('task.createModal.enableRecordingLabel')}</div>
+                  <Switch
+                    checked={enableRecording}
+                    onChange={(v) => setEnableRecording(v)}
+                  />
+                </div>
               </div>
             </div>
           </div>

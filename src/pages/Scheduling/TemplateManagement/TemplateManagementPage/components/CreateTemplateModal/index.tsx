@@ -375,6 +375,16 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
                     showClear
                   />
                 </div>
+                <div className="create-template-modal-field">
+                  <div className="semi-form-field-label-text">{t('template.fields.description')}</div>
+                  <Input
+                    placeholder={t('template.fields.descriptionPlaceholder')}
+                    value={description}
+                    onChange={setDescription}
+                    maxLength={1000}
+                    showClear
+                  />
+                </div>
               </div>
 
               {/* 流程配置 */}
@@ -460,6 +470,24 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
                       />
                     )}
                   </div>
+                </div>
+                <div className="create-template-modal-field">
+                  <div className="semi-form-field-label-text">{t('template.fields.validityDays')}</div>
+                  <InputNumber
+                    value={validityDays}
+                    onChange={(v) => setValidityDays(v as number)}
+                    min={1}
+                    max={30}
+                    suffix={t('common.days')}
+                    style={{ width: 150 }}
+                  />
+                </div>
+                <div className="create-template-modal-field">
+                  <div className="semi-form-field-label-text">{t('template.fields.enableRecording')}</div>
+                  <Switch
+                    checked={enableRecording}
+                    onChange={(v) => setEnableRecording(v)}
+                  />
                 </div>
               </div>
             </div>
