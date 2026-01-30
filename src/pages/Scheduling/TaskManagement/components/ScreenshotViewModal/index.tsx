@@ -10,12 +10,13 @@ import {
   Space,
   Toast,
   Table,
+  Checkbox,
   Button,
   Image,
   ImagePreview,
 } from '@douyinfe/semi-ui';
 import {
-  IconDelete,
+  IconDeleteStroked,
   IconChevronLeft,
   IconChevronRight,
 } from '@douyinfe/semi-icons';
@@ -280,6 +281,31 @@ const ScreenshotViewModal = ({
   // 表格列定义
   const columns: ColumnProps<LYTaskScreenshotResponse>[] = useMemo(() => [
     {
+      title: (
+        <Checkbox
+          checked={isAllSelected}
+          indeterminate={selectedIds.size > 0 && selectedIds.size < screenshots.length}
+          onChange={(e) => {
+            if (e.target.checked) {
+              handleSelectAll();
+            } else {
+              handleClearSelection();
+            }
+          }}
+        />
+      ),
+      dataIndex: 'id',
+      width: 48,
+      render: (_: string, record: LYTaskScreenshotResponse) => (
+        <div onClick={(e) => e.stopPropagation()}>
+          <Checkbox
+            checked={selectedIds.has(record.id)}
+            onChange={(e) => handleSelect(record.id, e.target.checked ?? false)}
+          />
+        </div>
+      ),
+    },
+    {
       title: t('screenshot.table.thumbnail'),
       dataIndex: 'thumbnail_url',
       width: 180,
@@ -330,15 +356,14 @@ const ScreenshotViewModal = ({
       width: 80,
       render: (_: unknown, record: LYTaskScreenshotResponse) => (
         <Button
-          icon={<IconDelete />}
-          type="danger"
+          icon={<IconDeleteStroked />}
           theme="borderless"
           size="small"
           onClick={(e) => handleDeleteSingle(record.id, e)}
         />
       ),
     },
-  ], [t, handleOpenPreview, handleDeleteSingle]);
+  ], [t, isAllSelected, selectedIds, screenshots.length, handleSelectAll, handleClearSelection, handleSelect, handleOpenPreview, handleDeleteSingle]);
   
   // 自定义灯箱渲染
   const renderPreviewFooter = () => {
@@ -384,8 +409,7 @@ const ScreenshotViewModal = ({
             disabled={screenshots.length <= 1}
           />
           <Button
-            icon={<IconDelete />}
-            type="danger"
+            icon={<IconDeleteStroked />}
             theme="borderless"
             onClick={handleDeleteInPreview}
           >
