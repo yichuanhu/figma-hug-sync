@@ -2263,3 +2263,55 @@ export interface GetExecutionHistoryParams {
   /** 结束时间 */
   end_time?: string;
 }
+
+// ==================== 截图管理相关类型 ====================
+
+/**
+ * LYTaskScreenshotResponse
+ * 任务截图响应模型
+ */
+export interface LYTaskScreenshotResponse {
+  /** 截图ID */
+  id: string;
+  /** 执行ID */
+  execution_id: string;
+  /** 文件ID */
+  file_id: string;
+  /** 文件URL */
+  file_url: string;
+  /** 缩略图URL */
+  thumbnail_url: string | null;
+  /** 截图名称 */
+  name: string | null;
+  /** 截图描述 */
+  description: string | null;
+  /** 序号 */
+  sequence_number: number;
+  /** 捕获时间 */
+  captured_at: string;
+  /** 文件大小（字节） */
+  file_size: number;
+  /** 创建时间 */
+  created_at: string;
+}
+
+/** LYListResponse[LYTaskScreenshotResponse] */
+export interface LYListResponseLYTaskScreenshotResponse {
+  /** 范围 */
+  range?: LYRangeResponse | null;
+  /** 列表 */
+  list: LYTaskScreenshotResponse[];
+}
+
+/**
+ * GetScreenshotsParams
+ * 获取截图列表参数
+ */
+export interface GetScreenshotsParams {
+  /** 偏移量 */
+  offset?: number;
+  /** 每页数量 */
+  size?: number;
+  /** 排序方式 */
+  sort_order?: 'asc' | 'desc';
+}

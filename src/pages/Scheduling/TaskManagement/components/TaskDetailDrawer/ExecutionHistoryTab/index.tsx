@@ -20,6 +20,7 @@ import {
 } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import ExecutionLogTab from '../ExecutionLogTab';
+import ScreenshotViewModal from '../../ScreenshotViewModal';
 import type {
   LYTaskExecutionResponse,
   LYListResponseLYTaskExecutionResponse,
@@ -32,6 +33,7 @@ const { Text } = Typography;
 
 interface ExecutionHistoryTabProps {
   taskId: string;
+  taskName?: string;
   enableRecording: boolean;
 }
 
@@ -108,7 +110,7 @@ const formatExecutionTime = (isoTime: string): string => {
   return `${month}-${day} ${hours}:${minutes}`;
 };
 
-const ExecutionHistoryTab = ({ taskId, enableRecording }: ExecutionHistoryTabProps) => {
+const ExecutionHistoryTab = ({ taskId, taskName, enableRecording }: ExecutionHistoryTabProps) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   
@@ -116,6 +118,7 @@ const ExecutionHistoryTab = ({ taskId, enableRecording }: ExecutionHistoryTabPro
   const [executions, setExecutions] = useState<LYTaskExecutionResponse[]>([]);
   const [selectedExecutionId, setSelectedExecutionId] = useState<string | null>(null);
   const [infoCollapsed, setInfoCollapsed] = useState(false);
+  const [screenshotModalVisible, setScreenshotModalVisible] = useState(false);
   
   // 加载数据
   const loadData = useCallback(async () => {
@@ -153,8 +156,13 @@ const ExecutionHistoryTab = ({ taskId, enableRecording }: ExecutionHistoryTabPro
   
   // 查看截图
   const handleViewScreenshots = useCallback(() => {
-    console.log('View screenshots for execution:', selectedExecution?.execution_id);
-  }, [selectedExecution]);
+    setScreenshotModalVisible(true);
+  }, []);
+  
+  // 关闭截图弹窗
+  const handleCloseScreenshotModal = useCallback(() => {
+    setScreenshotModalVisible(false);
+  }, []);
   
   // 执行信息描述数据
   const executionInfoData = useMemo(() => {
@@ -308,6 +316,16 @@ const ExecutionHistoryTab = ({ taskId, enableRecording }: ExecutionHistoryTabPro
           </>
         )}
       </div>
+      
+      {/* 截图查看弹窗 */}
+      {selectedExecution && (
+        <ScreenshotViewModal
+          visible={screenshotModalVisible}
+          executionId={selectedExecution.execution_id}
+          taskName={taskName}
+          onClose={handleCloseScreenshotModal}
+        />
+      )}
     </div>
   );
 };

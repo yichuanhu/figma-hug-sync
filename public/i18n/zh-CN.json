@@ -1522,5 +1522,32 @@
       "status": "执行状态",
       "dateRange": "时间范围"
     }
+  },
+  "screenshot": {
+    "title": "截图列表",
+    "modalTitle": "截图列表 - {{taskName}}",
+    "defaultName": "截图",
+    "totalCount": "共 {{count}} 张截图",
+    "noData": "暂无截图",
+    "loadFailed": "加载失败",
+    "select": "选择此截图",
+    "sortBy": "排序",
+    "sort": {
+      "asc": "按序号升序",
+      "desc": "按序号降序"
+    },
+    "batchOperation": {
+      "selected": "已选中 {{count}} 项",
+      "selectAll": "全选（共 {{count}} 项）",
+      "clearSelection": "取消选择",
+      "download": "下载",
+      "delete": "删除",
+      "downloading": "正在下载 {{count}} 张截图..."
+    },
+    "deleteModal": {
+      "title": "删除截图",
+      "confirmMessage": "确定要删除选中的 {{count}} 张截图吗？此操作不可撤销。",
+      "success": "已成功删除 {{count}} 张截图"
+    }
   }
 }
