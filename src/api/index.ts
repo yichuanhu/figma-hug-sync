@@ -1849,3 +1849,248 @@ export interface LYQueueMessageListResultResponse {
     total: number;
   };
 }
+
+// ============= 任务管理类型定义 =============
+
+/**
+ * 任务状态枚举
+ */
+export type TaskStatus = 
+  | 'PENDING'     // 待执行
+  | 'ASSIGNED'    // 已分配
+  | 'WAITING'     // 等待中
+  | 'COMPLETED'   // 已完成
+  | 'FAILED'      // 执行失败
+  | 'CANCELLED';  // 已取消
+
+/**
+ * 执行状态枚举
+ */
+export type ExecutionStatus = 
+  | 'RUNNING'   // 运行中
+  | 'SUCCESS'   // 成功
+  | 'FAILED'    // 失败
+  | 'STOPPED'   // 已停止
+  | 'TIMEOUT';  // 超时
+
+/**
+ * 任务优先级枚举
+ */
+export type TaskPriority = 'HIGH' | 'MEDIUM' | 'LOW' | 'MANUAL_QUEUE_BREAKER';
+
+/**
+ * 触发来源枚举
+ */
+export type TriggerSource = 'MANUAL' | 'SCHEDULED' | 'QUEUE' | 'TEMPLATE';
+
+/**
+ * 执行目标类型枚举
+ */
+export type ExecutionTargetType = 'BOT_GROUP' | 'BOT_IN_GROUP' | 'UNGROUPED_BOT';
+
+/**
+ * 流程输入参数类型
+ */
+export type ProcessParameterType = 'TEXT' | 'BOOLEAN' | 'NUMBER' | 'CREDENTIAL';
+
+/**
+ * 流程入口参数定义
+ */
+export interface LYProcessParameterDefinition {
+  /** 参数名称 */
+  name: string;
+  /** 参数类型 */
+  type: ProcessParameterType;
+  /** 是否必填 */
+  required: boolean;
+  /** 默认值 */
+  default_value?: string | boolean | number | null;
+  /** 参数描述 */
+  description?: string | null;
+}
+
+/**
+ * 任务执行记录
+ */
+export interface LYTaskExecutionResponse {
+  /** 执行ID */
+  execution_id: string;
+  /** 任务ID */
+  task_id: string;
+  /** 执行状态 */
+  status: ExecutionStatus;
+  /** 开始时间 */
+  start_time: string;
+  /** 结束时间 */
+  end_time?: string | null;
+  /** 执行时长（秒） */
+  duration?: number | null;
+  /** 机器人ID */
+  bot_id: string;
+  /** 机器人名称 */
+  bot_name: string;
+  /** 错误消息 */
+  error_message?: string | null;
+  /** 日志数量 */
+  log_count?: number;
+  /** 截图数量 */
+  screenshot_count?: number;
+}
+
+/**
+ * LYTaskResponse
+ * 任务响应模型
+ */
+export interface LYTaskResponse {
+  /** 任务ID */
+  task_id: string;
+  /** 流程ID */
+  process_id: string;
+  /** 流程名称 */
+  process_name: string;
+  /** 流程版本ID */
+  process_version_id: string;
+  /** 流程版本号 */
+  process_version: string;
+  /** 执行目标类型 */
+  execution_target_type: ExecutionTargetType;
+  /** 执行目标ID */
+  execution_target_id: string;
+  /** 执行目标名称 */
+  execution_target_name: string;
+  /** 任务状态 */
+  task_status: TaskStatus;
+  /** 执行状态 */
+  execution_status?: ExecutionStatus | null;
+  /** 优先级 */
+  priority: TaskPriority;
+  /** 触发来源 */
+  trigger_source: TriggerSource;
+  /** 创建时间 */
+  create_time: string;
+  /** 过期时间 */
+  expire_time: string;
+  /** 最大执行时长（秒） */
+  max_execution_duration: number;
+  /** 是否启用录屏 */
+  enable_recording: boolean;
+  /** 输入参数 */
+  input_parameters?: Record<string, unknown> | null;
+  /** 输出结果 */
+  output_result?: Record<string, unknown> | null;
+  /** 总执行次数 */
+  total_execution_count: number;
+  /** 当前执行ID */
+  current_execution_id?: string | null;
+  /** 已完成执行ID */
+  completed_execution_id?: string | null;
+  /** 当前执行记录 */
+  current_execution?: LYTaskExecutionResponse | null;
+  /** 所有执行记录 */
+  executions?: LYTaskExecutionResponse[];
+  /** 创建者ID */
+  creator_id: string;
+  /** 创建者名称 */
+  creator_name?: string | null;
+}
+
+/**
+ * LYCreateTaskRequest
+ * 创建任务请求
+ */
+export interface LYCreateTaskRequest {
+  /** 流程ID（系统自动使用活跃版本） */
+  process_id: string;
+  /** 执行目标类型 */
+  execution_target_type: ExecutionTargetType;
+  /** 执行目标ID */
+  execution_target_id: string;
+  /** 优先级 */
+  priority?: TaskPriority;
+  /** 最大执行时长（秒），60-86400 */
+  max_execution_duration: number;
+  /** 有效期（天），1-30 */
+  validity_days?: number;
+  /** 是否启用录屏 */
+  enable_recording?: boolean;
+  /** 输入参数 */
+  input_parameters?: Record<string, unknown>;
+  /** 执行模板ID（可选） */
+  template_id?: string | null;
+}
+
+/**
+ * GetTasksParams
+ * 获取任务列表参数
+ */
+export interface GetTasksParams {
+  offset?: number;
+  size?: number;
+  keyword?: string;
+  task_status?: TaskStatus[];
+  execution_status?: ExecutionStatus[];
+  trigger_source?: TriggerSource[];
+  process_id?: string;
+  start_time?: string;
+  end_time?: string;
+  sort_by?: 'create_time' | 'priority';
+  sort_order?: 'asc' | 'desc';
+}
+
+/** LYListResponse[LYTaskResponse] */
+export interface LYListResponseLYTaskResponse {
+  /** 范围 */
+  range?: LYRangeResponse | null;
+  /** 列表 */
+  list: LYTaskResponse[];
+}
+
+/**
+ * LYProcessActiveVersionResponse
+ * 流程活跃版本响应（用于任务创建）
+ */
+export interface LYProcessActiveVersionResponse {
+  /** 流程ID */
+  process_id: string;
+  /** 流程名称 */
+  process_name: string;
+  /** 活跃版本ID */
+  version_id: string;
+  /** 版本号 */
+  version: string;
+  /** 入口参数定义 */
+  parameters: LYProcessParameterDefinition[];
+}
+
+/**
+ * LYExecutionTemplateResponse
+ * 执行模板响应
+ */
+export interface LYExecutionTemplateResponse {
+  /** 模板ID */
+  template_id: string;
+  /** 模板名称 */
+  template_name: string;
+  /** 模板描述 */
+  description?: string | null;
+  /** 流程ID */
+  process_id: string;
+  /** 流程名称 */
+  process_name: string;
+  /** 执行目标类型 */
+  execution_target_type: ExecutionTargetType;
+  /** 执行目标ID */
+  execution_target_id: string;
+  /** 执行目标名称 */
+  execution_target_name: string;
+  /** 优先级 */
+  priority: TaskPriority;
+  /** 最大执行时长 */
+  max_execution_duration: number;
+  /** 有效期天数 */
+  validity_days: number;
+  /** 是否启用录屏 */
+  enable_recording: boolean;
+  /** 预设参数值 */
+  input_parameters?: Record<string, unknown>;
+}

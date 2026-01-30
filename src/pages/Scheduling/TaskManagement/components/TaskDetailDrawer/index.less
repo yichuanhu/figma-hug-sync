@@ -1,0 +1,109 @@
+// TaskDetailDrawer 任务详情抽屉样式
+.task-detail-drawer {
+  &.semi-sidesheet {
+    border-radius: 8px;
+  }
+
+  .task-detail-drawer-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .task-detail-drawer-header-nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .task-detail-drawer-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+    }
+  }
+
+  .task-detail-drawer-body {
+    padding: 0;
+  }
+
+  .task-detail-drawer-section {
+    margin-bottom: 24px;
+
+    .task-detail-drawer-section-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      font-size: 14px;
+      font-weight: 600;
+
+      &::before {
+        content: '';
+        display: block;
+        width: 3px;
+        height: 14px;
+        background-color: var(--semi-color-primary);
+        border-radius: 2px;
+      }
+    }
+  }
+
+  .task-detail-drawer-descriptions {
+    .semi-descriptions-item {
+      padding-bottom: 12px;
+    }
+  }
+
+  .task-detail-drawer-json-content {
+    background: var(--semi-color-fill-0);
+    border-radius: var(--semi-border-radius-small);
+    padding: 12px;
+    max-height: 200px;
+    overflow-y: auto;
+
+    pre {
+      margin: 0;
+      font-size: 12px;
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+  }
+
+  .task-detail-drawer-no-data {
+    color: var(--semi-color-text-2);
+    padding: 16px;
+    text-align: center;
+    background: var(--semi-color-fill-0);
+    border-radius: var(--semi-border-radius-small);
+  }
+
+  .task-detail-drawer-execution-table {
+    .semi-table {
+      .semi-table-row {
+        cursor: default;
+      }
+    }
+  }
+
+  .task-detail-drawer-error-message {
+    color: var(--semi-color-danger);
+    font-size: 12px;
+  }
+
+  .task-detail-drawer-links {
+    display: flex;
+    gap: 16px;
+    margin-top: 16px;
+
+    a {
+      color: var(--semi-color-primary);
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}

@@ -1,0 +1,75 @@
+// CreateTaskModal 新建任务弹窗样式
+.create-task-modal {
+  .create-task-modal-form {
+    .create-task-modal-content {
+      max-height: calc(100vh - 300px);
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .create-task-modal-section {
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--semi-color-border);
+
+      &:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+      }
+    }
+
+    .create-task-modal-section-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      font-size: 14px;
+
+      &::before {
+        content: '';
+        display: block;
+        width: 3px;
+        height: 14px;
+        background-color: var(--semi-color-text-2);
+        border-radius: 2px;
+      }
+    }
+
+    .create-task-modal-template-row {
+      margin-bottom: 16px;
+    }
+
+    .create-task-modal-version-info {
+      padding: 8px 12px;
+      background: var(--semi-color-fill-0);
+      border-radius: var(--semi-border-radius-small);
+      margin-top: 8px;
+    }
+
+    .create-task-modal-param-item {
+      margin-bottom: 16px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    .create-task-modal-no-params {
+      color: var(--semi-color-text-2);
+      padding: 16px;
+      text-align: center;
+      background: var(--semi-color-fill-0);
+      border-radius: var(--semi-border-radius-small);
+    }
+
+    .create-task-modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      padding-top: 16px;
+      border-top: 1px solid var(--semi-color-border);
+      margin-top: 16px;
+    }
+  }
+}
