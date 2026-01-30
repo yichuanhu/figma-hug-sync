@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Button, Typography, Space, Modal, Toast } from '@douyinfe/semi-ui';
-import { IconDeleteStroked, IconDownloadStroked } from '@douyinfe/semi-icons';
+import { IconDeleteStroked } from '@douyinfe/semi-icons';
 import './index.less';
 
 const { Text } = Typography;
@@ -11,7 +11,6 @@ interface BatchOperationBarProps {
   onSelectAll: () => void;
   onClearSelection: () => void;
   onDelete: () => void;
-  onDownload: () => void;
   isAllSelected: boolean;
 }
 
@@ -21,7 +20,6 @@ const BatchOperationBar = ({
   onSelectAll,
   onClearSelection,
   onDelete,
-  onDownload,
   isAllSelected,
 }: BatchOperationBarProps) => {
   const { t } = useTranslation();
@@ -59,14 +57,6 @@ const BatchOperationBar = ({
         </Button>
       </Space>
       <Space>
-        <Button
-          icon={<IconDownloadStroked />}
-          theme="light"
-          size="small"
-          onClick={onDownload}
-        >
-          {t('screenshot.batchOperation.download')}
-        </Button>
         <Button
           icon={<IconDeleteStroked />}
           theme="light"
