@@ -13,6 +13,7 @@ import {
   RadioGroup,
   Radio,
   Tooltip,
+  Tag,
 } from '@douyinfe/semi-ui';
 import { IconHelpCircle } from '@douyinfe/semi-icons';
 import type {
@@ -294,6 +295,10 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
 
   // 判断是否有参数需要填写
   const hasParameters = selectedProcess && selectedProcess.parameters.length > 0;
+  // 判断是否有输出参数
+  const hasOutputParameters = selectedProcess && selectedProcess.output_parameters && selectedProcess.output_parameters.length > 0;
+  // 右侧是否需要显示
+  const showRightPanel = hasParameters || hasOutputParameters;
 
   // 提交
   const handleSubmit = async () => {
@@ -378,7 +383,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
       footer={null}
       closeOnEsc
       maskClosable={false}
-      width={hasParameters ? 900 : 520}
+      width={showRightPanel ? 900 : 520}
       centered
     >
       <div className="create-template-modal-form">
@@ -515,18 +520,47 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
             </div>
           </div>
 
-          {/* 右侧：流程输入（仅当有参数时显示） */}
-          {hasParameters && (
+          {/* 右侧：流程输入和流程输出 */}
+          {showRightPanel && (
             <div className="create-template-modal-right">
               <div className="create-template-modal-content">
-                <div className="create-template-modal-section">
-                  <div className="create-template-modal-section-title">
-                    {t('template.createModal.parametersSection')}
+                {/* 流程输入 */}
+                {hasParameters && (
+                  <div className="create-template-modal-section">
+                    <div className="create-template-modal-section-title">
+                      {t('template.createModal.parametersSection')}
+                    </div>
+                    <div className="create-template-modal-params">
+                      {selectedProcess.parameters.map((param) => renderParameterInput(param))}
+                    </div>
                   </div>
-                  <div className="create-template-modal-params">
-                    {selectedProcess.parameters.map((param) => renderParameterInput(param))}
+                )}
+
+                {/* 流程输出（只读） */}
+                {hasOutputParameters && (
+                  <div className="create-template-modal-section">
+                    <div className="create-template-modal-section-title">
+                      {t('template.createModal.outputParametersSection')}
+                    </div>
+                    <div className="create-template-modal-output-params">
+                      {selectedProcess.output_parameters!.map((param) => (
+                        <div className="create-template-modal-output-param-item" key={param.name}>
+                          <div className="create-template-modal-output-param-name">
+                            {param.name}
+                            <Tag size="small" color="grey" style={{ marginLeft: 8 }}>
+                              {param.type}
+                            </Tag>
+                          </div>
+                          {param.description && (
+                            <div className="create-template-modal-output-param-desc">
+                              {param.description}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           )}
