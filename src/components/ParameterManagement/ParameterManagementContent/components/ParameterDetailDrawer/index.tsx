@@ -24,6 +24,7 @@ import {
   IconCopyStroked,
 } from '@douyinfe/semi-icons';
 import type { LYParameterResponse, ParameterType } from '@/api/index';
+import ExpandableText from '@/components/ExpandableText';
 
 import './index.less';
 
@@ -290,7 +291,7 @@ const ParameterDetailDrawer = ({
             )}
           </Descriptions.Item>
           <Descriptions.Item itemKey={t('common.description')}>
-            {parameter?.description || '-'}
+            <ExpandableText text={parameter?.description} maxLines={3} />
           </Descriptions.Item>
           <Descriptions.Item itemKey={t('common.creator')}>
             {parameter?.created_by_name || '-'}

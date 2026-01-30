@@ -24,6 +24,7 @@ import {
   IconList,
 } from '@douyinfe/semi-icons';
 import type { LYQueueResponse } from '@/api/index';
+import ExpandableText from '@/components/ExpandableText';
 
 import './index.less';
 
@@ -282,7 +283,7 @@ const QueueDetailDrawer = ({
             </Descriptions.Item>
           )}
           <Descriptions.Item itemKey={t('common.description')}>
-            {queue?.description || '-'}
+            <ExpandableText text={queue?.description} maxLines={3} />
           </Descriptions.Item>
         </Descriptions>
 

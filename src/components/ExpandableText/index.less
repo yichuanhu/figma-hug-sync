@@ -1,0 +1,22 @@
+// ExpandableText 可展开文本组件样式
+.expandable-text {
+  &-content {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: break-word;
+    line-height: 20px;
+
+    &.expanded {
+      display: block;
+      overflow: visible;
+    }
+  }
+
+  &-toggle {
+    display: inline-block;
+    margin-top: 4px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+}
