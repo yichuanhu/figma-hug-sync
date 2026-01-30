@@ -30,6 +30,8 @@ import RequirementsWorkbench from "@/pages/Requirements/RequirementsWorkbench";
 import SchedulingWorkbench from "@/pages/Scheduling/SchedulingWorkbench";
 // Scheduling - Task Management
 import TaskManagementPage from "@/pages/Scheduling/TaskManagement/TaskManagementPage";
+// Scheduling - Task Log
+import TaskLogPage from "@/pages/Scheduling/TaskManagement/TaskLogPage";
 // Personal Center
 import PersonalCenter from "@/pages/PersonalCenter";
 // Dev Preview
@@ -73,6 +75,8 @@ const App = () => (
         
         {/* 任务列表 - 调度中心入口 */}
         <Route path="/scheduling-center/task-execution/task-list" element={<TaskManagementPage />} />
+        {/* 任务日志 - 调度中心入口 */}
+        <Route path="/scheduling-center/task-execution/task-list/:executionId/logs" element={<TaskLogPage />} />
         
         {/* 个人中心 */}
         <Route path="/personal-center" element={<PersonalCenter />} />
