@@ -681,6 +681,7 @@ const PersonalCredentialDetailDrawer = ({
                 <TableSkeleton rows={5} columns={4} columnWidths={['30%', '35%', '20%', '15%']} />
               ) : (
                 <Table
+                  size="middle"
                   columns={[
                     {
                       title: t('personalCredential.linkedCredentials.credentialName'),
@@ -843,6 +844,7 @@ const PersonalCredentialDetailDrawer = ({
                 <TableSkeleton rows={8} columns={8} columnWidths={['10%', '15%', '8%', '14%', '8%', '10%', '12%', '8%']} />
               ) : (
                 <Table
+                  size="middle"
                   columns={usageColumns}
                   dataSource={usageRecords}
                   rowKey="id"

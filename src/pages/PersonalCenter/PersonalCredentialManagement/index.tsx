@@ -383,6 +383,7 @@ const PersonalCredentialManagement = () => {
           <TableSkeleton rows={10} columns={6} columnWidths={['17%', '20%', '13%', '20%', '18%', '12%']} />
         ) : (
           <Table
+            size="middle"
             columns={columns}
             dataSource={listResponse?.data || []}
             rowKey="credential_id"

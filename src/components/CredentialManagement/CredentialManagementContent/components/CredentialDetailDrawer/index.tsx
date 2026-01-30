@@ -692,6 +692,7 @@ const CredentialDetailDrawer = ({
               <TableSkeleton rows={8} columns={8} columnWidths={['10%', '15%', '8%', '14%', '8%', '10%', '12%', '8%']} />
             ) : (
               <Table
+                size="middle"
                 columns={usageColumns}
                 dataSource={usageListResponse?.data || []}
                 rowKey="id"
