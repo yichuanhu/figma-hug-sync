@@ -2234,3 +2234,32 @@ export interface LYRecordingExportResponse {
   /** URL过期时间 */
   expires_at: string;
 }
+
+// ==================== 执行历史相关类型 ====================
+
+/** LYListResponse[LYTaskExecutionResponse] */
+export interface LYListResponseLYTaskExecutionResponse {
+  /** 范围 */
+  range?: LYRangeResponse | null;
+  /** 列表 */
+  list: LYTaskExecutionResponse[];
+}
+
+/**
+ * GetExecutionHistoryParams
+ * 获取执行历史参数
+ */
+export interface GetExecutionHistoryParams {
+  /** 偏移量 */
+  offset?: number;
+  /** 每页数量 */
+  size?: number;
+  /** 关键字搜索 */
+  keyword?: string;
+  /** 状态筛选 */
+  status?: ExecutionStatus[];
+  /** 开始时间 */
+  start_time?: string;
+  /** 结束时间 */
+  end_time?: string;
+}

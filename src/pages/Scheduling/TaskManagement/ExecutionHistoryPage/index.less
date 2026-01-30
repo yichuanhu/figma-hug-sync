@@ -1,0 +1,61 @@
+.execution-history-page {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  &-breadcrumb {
+    flex-shrink: 0;
+    margin-bottom: 16px;
+  }
+
+  &-header {
+    flex-shrink: 0;
+    margin-bottom: 16px;
+
+    &-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    &-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      h4 {
+        margin: 0;
+      }
+    }
+
+    &-toolbar {
+      width: 100%;
+    }
+  }
+
+  &-back-btn {
+    margin-right: 8px;
+  }
+
+  &-table {
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
+
+    .semi-table-wrapper {
+      max-height: 100%;
+    }
+  }
+
+  &-id-cell {
+    font-family: var(--semi-font-family-code);
+    font-size: 13px;
+  }
+
+  &-error-message {
+    color: var(--semi-color-danger);
+    cursor: pointer;
+  }
+}
