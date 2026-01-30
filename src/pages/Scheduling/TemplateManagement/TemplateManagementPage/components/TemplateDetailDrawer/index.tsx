@@ -13,6 +13,7 @@ import {
   Row,
   Col,
   Space,
+  Table,
 } from '@douyinfe/semi-ui';
 import {
   IconChevronLeft,
@@ -227,6 +228,60 @@ const TemplateDetailDrawer = ({
   const inputParameters = template.input_parameters;
   const hasParameters = inputParameters && Object.keys(inputParameters).length > 0;
 
+  // Mock 使用记录数据
+  const mockUsageRecords = [
+    {
+      id: '1',
+      task_name: `${template.template_name}-任务-001`,
+      created_by_name: '张三',
+      created_at: '2026-01-28 14:30:25',
+      status: 'SUCCESS',
+    },
+    {
+      id: '2',
+      task_name: `${template.template_name}-任务-002`,
+      created_by_name: '李四',
+      created_at: '2026-01-27 10:15:42',
+      status: 'FAILED',
+    },
+    {
+      id: '3',
+      task_name: `${template.template_name}-任务-003`,
+      created_by_name: '王五',
+      created_at: '2026-01-25 09:08:33',
+      status: 'SUCCESS',
+    },
+  ];
+
+  // 使用记录表格列定义
+  const usageHistoryColumns = [
+    {
+      title: t('template.usageHistory.taskName'),
+      dataIndex: 'task_name',
+      width: 200,
+    },
+    {
+      title: t('common.creator'),
+      dataIndex: 'created_by_name',
+      width: 100,
+    },
+    {
+      title: t('common.createTime'),
+      dataIndex: 'created_at',
+      width: 160,
+    },
+    {
+      title: t('template.usageHistory.status'),
+      dataIndex: 'status',
+      width: 100,
+      render: (status: string) => (
+        <Tag color={status === 'SUCCESS' ? 'green' : 'red'} type="light">
+          {status === 'SUCCESS' ? t('template.usageHistory.statusSuccess') : t('template.usageHistory.statusFailed')}
+        </Tag>
+      ),
+    },
+  ];
+
   return (
     <SideSheet
       title={
@@ -348,10 +403,19 @@ const TemplateDetailDrawer = ({
         </TabPane>
 
         <TabPane tab={t('template.detail.tabs.usageHistory')} itemKey="usageHistory">
-          <div className="template-detail-drawer-tab-content template-detail-drawer-tab-content--centered">
-            <EmptyState
-              variant="noData"
-              description={t('template.detail.noUsageHistory')}
+          <div className="template-detail-drawer-tab-content">
+            <Table
+              dataSource={mockUsageRecords}
+              rowKey="id"
+              size="middle"
+              pagination={false}
+              columns={usageHistoryColumns}
+              empty={
+                <EmptyState
+                  variant="noData"
+                  description={t('template.detail.noUsageHistory')}
+                />
+              }
             />
           </div>
         </TabPane>
