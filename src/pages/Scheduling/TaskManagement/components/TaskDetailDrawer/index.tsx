@@ -348,7 +348,9 @@ const TaskDetailDrawer = ({
                   className="navigate"
                 />
               </Tooltip>
-              <Divider layout="vertical" className="task-detail-drawer-header-divider" />
+              {(canCancel || canStop || canRetry) && (
+                <Divider layout="vertical" className="task-detail-drawer-header-divider" />
+              )}
               {canCancel && (
                 <Tooltip content={t('task.actions.cancel')}>
                   <Button
@@ -379,7 +381,6 @@ const TaskDetailDrawer = ({
                   />
                 </Tooltip>
               )}
-              <Divider layout="vertical" className="task-detail-drawer-header-divider" />
               <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
                 <Button
                   icon={isFullscreen ? <IconMinimize /> : <IconMaximize />}
