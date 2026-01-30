@@ -272,8 +272,17 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING' }: Execution
       title: t('taskLog.fields.logTime'),
       dataIndex: 'log_time',
       key: 'log_time',
-      width: 180,
-      render: (value: string) => value.replace('T', ' ').substring(0, 19),
+      width: 120,
+      render: (value: string) => {
+        const dateTime = value.replace('T', ' ').substring(0, 19);
+        const [date, time] = dateTime.split(' ');
+        return (
+          <div className="execution-log-tab-time-cell">
+            <Text type="secondary" size="small">{date}</Text>
+            <Text>{time}</Text>
+          </div>
+        );
+      },
     },
     {
       title: t('taskLog.fields.logLevel'),
