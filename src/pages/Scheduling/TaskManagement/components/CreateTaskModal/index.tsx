@@ -353,7 +353,7 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess }: CreateTaskModalProps)
       footer={null}
       closeOnEsc
       maskClosable={false}
-      width={560}
+      width={520}
       centered
     >
       <div className="create-task-modal-form">
@@ -375,9 +375,9 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess }: CreateTaskModalProps)
 
           {/* 流程选择 */}
           <div className="create-task-modal-section">
-            <Text strong className="create-task-modal-section-title">
+            <div className="create-task-modal-section-title">
               {t('task.createModal.processSection')}
-            </Text>
+            </div>
             <div className="semi-form-field-label">
               <label>{t('task.createModal.processLabel')} *</label>
             </div>
@@ -400,9 +400,9 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess }: CreateTaskModalProps)
 
           {/* 执行目标 */}
           <div className="create-task-modal-section">
-            <Text strong className="create-task-modal-section-title">
+            <div className="create-task-modal-section-title">
               {t('task.createModal.targetSection')}
-            </Text>
+            </div>
             <div className="semi-form-field-label">
               <label>{t('task.createModal.targetTypeLabel')} *</label>
             </div>
@@ -434,9 +434,9 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess }: CreateTaskModalProps)
 
           {/* 任务设置 */}
           <div className="create-task-modal-section">
-            <Text strong className="create-task-modal-section-title">
+            <div className="create-task-modal-section-title">
               {t('task.createModal.settingsSection')}
-            </Text>
+            </div>
             <div className="semi-form-field-label">
               <label>{t('task.createModal.priorityLabel')}</label>
             </div>
@@ -482,9 +482,9 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess }: CreateTaskModalProps)
           {/* 输入参数 */}
           {selectedProcess && selectedProcess.parameters.length > 0 && (
             <div className="create-task-modal-section">
-              <Text strong className="create-task-modal-section-title">
+              <div className="create-task-modal-section-title">
                 {t('task.createModal.parametersSection')}
-              </Text>
+              </div>
               {selectedProcess.parameters.map((param) => renderParameterInput(param))}
             </div>
           )}

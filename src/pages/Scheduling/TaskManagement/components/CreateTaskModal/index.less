@@ -1,75 +1,85 @@
 // CreateTaskModal 新建任务弹窗样式
 .create-task-modal {
-  .create-task-modal-form {
-    .create-task-modal-content {
-      max-height: calc(100vh - 300px);
-      overflow-y: auto;
-      padding-right: 4px;
+  &-form {
+    padding-top: 4px;
+  }
+
+  &-content {
+    max-height: calc(100vh - 300px);
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+
+  &-section {
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--semi-color-border);
+
+    &:last-child {
+      padding-bottom: 0;
+      margin-bottom: 0;
+      border-bottom: none;
     }
 
-    .create-task-modal-section {
-      padding-bottom: 16px;
-      margin-bottom: 16px;
-      border-bottom: 1px solid var(--semi-color-border);
-
-      &:last-child {
-        border-bottom: none;
-        margin-bottom: 0;
-        padding-bottom: 0;
-      }
-    }
-
-    .create-task-modal-section-title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 16px;
-      font-size: 14px;
-
-      &::before {
-        content: '';
-        display: block;
-        width: 3px;
-        height: 14px;
-        background-color: var(--semi-color-text-2);
-        border-radius: 2px;
-      }
-    }
-
-    .create-task-modal-template-row {
+    // Form 字段统一间距
+    .semi-form-field {
       margin-bottom: 16px;
     }
+  }
 
-    .create-task-modal-version-info {
-      padding: 8px 12px;
-      background: var(--semi-color-fill-0);
-      border-radius: var(--semi-border-radius-small);
-      margin-top: 8px;
+  &-section-title {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--semi-color-text-0);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    &::before {
+      content: '';
+      display: inline-block;
+      width: 3px;
+      height: 14px;
+      background: var(--semi-color-text-2);
+      border-radius: 2px;
     }
+  }
 
-    .create-task-modal-param-item {
-      margin-bottom: 16px;
+  &-template-row {
+    margin-bottom: 16px;
+  }
 
-      &:last-child {
-        margin-bottom: 0;
-      }
+  &-version-info {
+    padding: 8px 12px;
+    background: var(--semi-color-fill-0);
+    border-radius: var(--semi-border-radius-small);
+    margin-top: 8px;
+  }
+
+  &-param-item {
+    margin-bottom: 16px;
+
+    &:last-child {
+      margin-bottom: 0;
     }
+  }
 
-    .create-task-modal-no-params {
-      color: var(--semi-color-text-2);
-      padding: 16px;
-      text-align: center;
-      background: var(--semi-color-fill-0);
-      border-radius: var(--semi-border-radius-small);
-    }
+  &-no-params {
+    color: var(--semi-color-text-2);
+    padding: 16px;
+    text-align: center;
+    background: var(--semi-color-fill-0);
+    border-radius: var(--semi-border-radius-small);
+  }
 
-    .create-task-modal-footer {
-      display: flex;
-      justify-content: flex-end;
-      gap: 12px;
-      padding-top: 16px;
-      border-top: 1px solid var(--semi-color-border);
-      margin-top: 16px;
-    }
+  &-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 16px;
+    padding-top: 16px;
+    padding-bottom: 12px;
+    border-top: 1px solid var(--semi-color-border);
   }
 }
