@@ -317,15 +317,6 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING' }: Execution
         );
       },
     },
-    {
-      title: t('taskLog.fields.source'),
-      dataIndex: 'source',
-      key: 'source',
-      width: 100,
-      render: (source: string) => (
-        <Tag type="ghost">{source}</Tag>
-      ),
-    },
   ];
   
   // 筛选弹窗内容
@@ -385,11 +376,6 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING' }: Execution
               <Text style={{ marginLeft: 4 }}>{summary.error_count.toLocaleString()}</Text>
             </Text>
           </Space>
-          {executionStatus === 'RUNNING' && (
-            <Tag color="blue" type="light" size="small" className="execution-log-tab-auto-refresh">
-              {t('taskLog.autoRefresh')}
-            </Tag>
-          )}
         </div>
       )}
 
