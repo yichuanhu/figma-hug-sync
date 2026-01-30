@@ -1,36 +1,50 @@
 // TaskDetailDrawer 任务详情抽屉样式
 .task-detail-drawer {
-  &.semi-sidesheet {
-    border-radius: 8px;
-  }
+  // 标题区域
+  &-header {
+    width: 100%;
+    padding-right: 0;
 
-  .task-detail-drawer-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    .task-detail-drawer-header-nav {
-      display: flex;
-      align-items: center;
-      gap: 8px;
+    &-title {
+      margin: 0;
     }
 
-    .task-detail-drawer-header-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-left: auto;
+    &-divider {
+      height: 16px;
+      margin: 0 8px 0 4px;
+    }
+
+    &-close-btn {
+      margin-left: 4px;
     }
   }
 
-  .task-detail-drawer-body {
-    padding: 0;
+  // 拖拽把手
+  &-resize-handle {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    cursor: ew-resize;
+    z-index: 100;
   }
 
-  .task-detail-drawer-section {
+  // Tab 容器
+  &-tabs {
+    height: 100%;
+  }
+
+  // Tab 内容
+  &-tab-content {
+    padding: 16px 24px;
+  }
+
+  // 内容区块
+  &-section {
     margin-bottom: 24px;
 
-    .task-detail-drawer-section-title {
+    &-title {
       display: flex;
       align-items: center;
       gap: 8px;
@@ -49,13 +63,15 @@
     }
   }
 
-  .task-detail-drawer-descriptions {
+  // Descriptions 样式
+  &-descriptions {
     .semi-descriptions-item {
       padding-bottom: 12px;
     }
   }
 
-  .task-detail-drawer-json-content {
+  // JSON 内容展示
+  &-json-content {
     background: var(--semi-color-fill-0);
     border-radius: var(--semi-border-radius-small);
     padding: 12px;
@@ -71,7 +87,8 @@
     }
   }
 
-  .task-detail-drawer-no-data {
+  // 无数据状态
+  &-no-data {
     color: var(--semi-color-text-2);
     padding: 16px;
     text-align: center;
@@ -79,7 +96,8 @@
     border-radius: var(--semi-border-radius-small);
   }
 
-  .task-detail-drawer-execution-table {
+  // 执行历史表格
+  &-execution-table {
     .semi-table {
       .semi-table-row {
         cursor: default;
@@ -87,12 +105,14 @@
     }
   }
 
-  .task-detail-drawer-error-message {
+  // 错误信息
+  &-error-message {
     color: var(--semi-color-danger);
     font-size: 12px;
   }
 
-  .task-detail-drawer-links {
+  // 快捷链接
+  &-links {
     display: flex;
     gap: 16px;
     margin-top: 16px;
@@ -104,6 +124,34 @@
       &:hover {
         text-decoration: underline;
       }
+    }
+  }
+
+  // 导航按钮禁用状态修复
+  .semi-button.semi-button-disabled.navigate {
+    padding-top: 0;
+  }
+}
+
+// 全局覆盖 - SideSheet header 和 body 样式
+.card-sidesheet.task-detail-drawer {
+  .semi-sidesheet-header {
+    border-bottom: 1px solid var(--semi-color-border);
+  }
+
+  .semi-sidesheet-body {
+    padding: 0;
+    position: relative;
+  }
+
+  .semi-tabs-bar {
+    padding: 0 24px;
+  }
+
+  // Descriptions 标签左对齐
+  .semi-descriptions {
+    .semi-descriptions-item-key {
+      text-align: left;
     }
   }
 }

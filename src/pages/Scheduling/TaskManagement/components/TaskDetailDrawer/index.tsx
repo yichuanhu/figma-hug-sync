@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect, useCallback } from 'react';
+import { useMemo, useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   SideSheet,
@@ -10,6 +10,10 @@ import {
   Table,
   Tabs,
   TabPane,
+  Divider,
+  Row,
+  Col,
+  Space,
 } from '@douyinfe/semi-ui';
 import {
   IconChevronLeft,
@@ -22,11 +26,11 @@ import {
 } from '@douyinfe/semi-icons';
 import type {
   LYTaskResponse,
-  LYTaskExecutionResponse,
   TaskStatus,
   ExecutionStatus,
   TaskPriority,
 } from '@/api';
+import DetailSkeleton from '@/components/DetailSkeleton';
 import './index.less';
 
 const { Text, Title } = Typography;
@@ -43,6 +47,7 @@ interface TaskDetailDrawerProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => Promise<LYTaskResponse[]>;
+  onScrollToRow?: (taskId: string) => void;
 }
 
 // 状态配置
@@ -82,10 +87,51 @@ const TaskDetailDrawer = ({
   currentPage,
   totalPages,
   onPageChange,
+  onScrollToRow,
 }: TaskDetailDrawerProps) => {
   const { t } = useTranslation();
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [activeTab, setActiveTab] = useState('basicInfo');
+  const [isNavigating, setIsNavigating] = useState(false);
+  const [drawerWidth, setDrawerWidth] = useState(() => {
+    const saved = localStorage.getItem('taskDetailDrawerWidth');
+    return saved ? Math.max(Number(saved), 576) : 900;
+  });
+  const isResizing = useRef(false);
+  const startX = useRef(0);
+  const startWidth = useRef(drawerWidth);
+
+  // 拖拽调整宽度
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      isResizing.current = true;
+      startX.current = e.clientX;
+      startWidth.current = drawerWidth;
+      document.body.style.cursor = 'ew-resize';
+      document.body.style.userSelect = 'none';
+      const handleMouseMove = (e: MouseEvent) => {
+        if (!isResizing.current) return;
+        const diff = startX.current - e.clientX;
+        setDrawerWidth(Math.min(Math.max(startWidth.current + diff, 576), window.innerWidth - 100));
+      };
+      const handleMouseUp = () => {
+        isResizing.current = false;
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    },
+    [drawerWidth],
+  );
+
+  useEffect(() => {
+    localStorage.setItem('taskDetailDrawerWidth', String(drawerWidth));
+  }, [drawerWidth]);
 
   // 当前任务在列表中的索引
   const currentIndex = useMemo(() => {
@@ -93,28 +139,64 @@ const TaskDetailDrawer = ({
     return dataSource.findIndex((item) => item.task_id === task.task_id);
   }, [task, dataSource]);
 
-  // 导航到上一个/下一个
-  const handlePrevious = useCallback(async () => {
-    if (currentIndex > 0) {
-      onSelectTask(dataSource[currentIndex - 1]);
-    } else if (currentPage > 1) {
-      const newData = await onPageChange(currentPage - 1);
-      if (newData.length > 0) {
-        onSelectTask(newData[newData.length - 1]);
-      }
-    }
-  }, [currentIndex, currentPage, dataSource, onPageChange, onSelectTask]);
+  // 判断是否可以导航（考虑分页）
+  const canGoPrev = useMemo(() => {
+    if (currentIndex > 0) return true;
+    if (currentPage > 1) return true;
+    return false;
+  }, [currentIndex, currentPage]);
 
-  const handleNext = useCallback(async () => {
-    if (currentIndex < dataSource.length - 1) {
-      onSelectTask(dataSource[currentIndex + 1]);
-    } else if (currentPage < totalPages) {
-      const newData = await onPageChange(currentPage + 1);
-      if (newData.length > 0) {
-        onSelectTask(newData[0]);
+  const canGoNext = useMemo(() => {
+    if (currentIndex >= 0 && currentIndex < dataSource.length - 1) return true;
+    if (currentPage < totalPages) return true;
+    return false;
+  }, [currentIndex, dataSource.length, currentPage, totalPages]);
+
+  // 导航到上一个
+  const handlePrev = useCallback(async () => {
+    if (isNavigating) return;
+
+    if (currentIndex > 0) {
+      const target = dataSource[currentIndex - 1];
+      onSelectTask(target);
+      onScrollToRow?.(target.task_id);
+    } else if (currentPage > 1) {
+      setIsNavigating(true);
+      try {
+        const newData = await onPageChange(currentPage - 1);
+        if (newData.length > 0) {
+          const target = newData[newData.length - 1];
+          onSelectTask(target);
+          onScrollToRow?.(target.task_id);
+        }
+      } finally {
+        setIsNavigating(false);
       }
     }
-  }, [currentIndex, currentPage, totalPages, dataSource, onPageChange, onSelectTask]);
+  }, [currentIndex, currentPage, dataSource, onPageChange, onSelectTask, isNavigating, onScrollToRow]);
+
+  // 导航到下一个
+  const handleNext = useCallback(async () => {
+    if (isNavigating) return;
+
+    if (currentIndex >= 0 && currentIndex < dataSource.length - 1) {
+      const target = dataSource[currentIndex + 1];
+      onSelectTask(target);
+      onScrollToRow?.(target.task_id);
+    } else if (currentPage < totalPages) {
+      setIsNavigating(true);
+      try {
+        const newData = await onPageChange(currentPage + 1);
+        if (newData.length > 0) {
+          const target = newData[0];
+          onSelectTask(target);
+          onScrollToRow?.(target.task_id);
+        }
+      } finally {
+        setIsNavigating(false);
+      }
+    }
+  }, [currentIndex, currentPage, totalPages, dataSource, onPageChange, onSelectTask, isNavigating, onScrollToRow]);
 
   // 重置标签页
   useEffect(() => {
@@ -122,6 +204,10 @@ const TaskDetailDrawer = ({
       setActiveTab('basicInfo');
     }
   }, [visible, task?.task_id]);
+
+  const toggleFullscreen = useCallback(() => {
+    setIsFullscreen((prev) => !prev);
+  }, []);
 
   if (!task) return null;
 
@@ -226,186 +312,207 @@ const TaskDetailDrawer = ({
 
   return (
     <SideSheet
-      className="task-detail-drawer"
-      visible={visible}
-      onCancel={onClose}
-      placement="right"
-      width={isFullscreen ? '100%' : 900}
-      mask={false}
-      closable={false}
-      bodyStyle={{ padding: 24 }}
-      headerStyle={{ padding: '16px 24px' }}
       title={
-        <div className="task-detail-drawer-header">
-          <div className="task-detail-drawer-header-nav">
-            <Button
-              icon={<IconChevronLeft />}
-              theme="borderless"
-              type="tertiary"
-              onClick={handlePrevious}
-              disabled={currentIndex === 0 && currentPage === 1}
-            />
-            <Button
-              icon={<IconChevronRight />}
-              theme="borderless"
-              type="tertiary"
-              onClick={handleNext}
-              disabled={currentIndex === dataSource.length - 1 && currentPage === totalPages}
-            />
-          </div>
-          <Title heading={5} style={{ margin: 0 }}>{task.task_id}</Title>
-          <div className="task-detail-drawer-header-actions">
-            {canCancel && (
-              <Tooltip content={t('task.actions.cancel')}>
+        <Row type="flex" justify="space-between" align="middle" className="task-detail-drawer-header">
+          <Col>
+            <Title heading={5} className="task-detail-drawer-header-title">
+              {task.task_id}
+            </Title>
+          </Col>
+          <Col>
+            <Space spacing={8}>
+              <Tooltip content={t('common.previous')}>
+                <Button
+                  icon={<IconChevronLeft />}
+                  theme="borderless"
+                  size="small"
+                  disabled={!canGoPrev || isNavigating}
+                  onClick={handlePrev}
+                  loading={isNavigating}
+                  className="navigate"
+                />
+              </Tooltip>
+              <Tooltip content={t('common.next')}>
+                <Button
+                  icon={<IconChevronRight />}
+                  theme="borderless"
+                  size="small"
+                  disabled={!canGoNext || isNavigating}
+                  onClick={handleNext}
+                  loading={isNavigating}
+                  className="navigate"
+                />
+              </Tooltip>
+              <Divider layout="vertical" className="task-detail-drawer-header-divider" />
+              {canCancel && (
+                <Tooltip content={t('task.actions.cancel')}>
+                  <Button
+                    icon={<IconClose />}
+                    theme="borderless"
+                    size="small"
+                    onClick={() => onCancel(task)}
+                  />
+                </Tooltip>
+              )}
+              {canStop && (
+                <Tooltip content={t('task.actions.stop')}>
+                  <Button
+                    icon={<IconStop />}
+                    theme="borderless"
+                    size="small"
+                    onClick={() => onStop(task)}
+                  />
+                </Tooltip>
+              )}
+              {canRetry && (
+                <Tooltip content={t('task.actions.retry')}>
+                  <Button
+                    icon={<IconPlayCircle />}
+                    theme="borderless"
+                    size="small"
+                    onClick={() => onRetry(task)}
+                  />
+                </Tooltip>
+              )}
+              <Divider layout="vertical" className="task-detail-drawer-header-divider" />
+              <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
+                <Button
+                  icon={isFullscreen ? <IconMinimize /> : <IconMaximize />}
+                  theme="borderless"
+                  size="small"
+                  onClick={toggleFullscreen}
+                />
+              </Tooltip>
+              <Tooltip content={t('common.close')}>
                 <Button
                   icon={<IconClose />}
                   theme="borderless"
-                  type="tertiary"
-                  onClick={() => onCancel(task)}
+                  size="small"
+                  onClick={onClose}
+                  className="task-detail-drawer-header-close-btn"
                 />
               </Tooltip>
-            )}
-            {canStop && (
-              <Tooltip content={t('task.actions.stop')}>
-                <Button
-                  icon={<IconStop />}
-                  theme="borderless"
-                  type="tertiary"
-                  onClick={() => onStop(task)}
-                />
-              </Tooltip>
-            )}
-            {canRetry && (
-              <Tooltip content={t('task.actions.retry')}>
-                <Button
-                  icon={<IconPlayCircle />}
-                  theme="borderless"
-                  type="tertiary"
-                  onClick={() => onRetry(task)}
-                />
-              </Tooltip>
-            )}
-            <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
-              <Button
-                icon={isFullscreen ? <IconMinimize /> : <IconMaximize />}
-                theme="borderless"
-                type="tertiary"
-                onClick={() => setIsFullscreen(!isFullscreen)}
-              />
-            </Tooltip>
-            <Tooltip content={t('common.close')}>
-              <Button
-                icon={<IconClose />}
-                theme="borderless"
-                type="tertiary"
-                onClick={onClose}
-              />
-            </Tooltip>
-          </div>
-        </div>
+            </Space>
+          </Col>
+        </Row>
       }
+      visible={visible}
+      onCancel={onClose}
+      placement="right"
+      width={isFullscreen ? '100%' : drawerWidth}
+      mask={false}
+      footer={null}
+      closable={false}
+      className={`card-sidesheet resizable-sidesheet task-detail-drawer ${isFullscreen ? 'fullscreen-sidesheet' : ''}`}
     >
-      <div className="task-detail-drawer-body">
-        <Tabs activeKey={activeTab} onChange={setActiveTab}>
+      {!isFullscreen && <div className="task-detail-drawer-resize-handle" onMouseDown={handleMouseDown} />}
+      {isNavigating ? (
+        <DetailSkeleton rows={5} showTabs={true} sections={2} />
+      ) : (
+        <Tabs activeKey={activeTab} onChange={setActiveTab} className="task-detail-drawer-tabs">
           <TabPane tab={t('task.detail.tabs.basicInfo')} itemKey="basicInfo">
-            {/* 基本信息 */}
-            <div className="task-detail-drawer-section">
-              <Text strong className="task-detail-drawer-section-title">
-                {t('task.detail.basicInfo')}
-              </Text>
-              <Descriptions
-                data={basicInfoData}
-                align="left"
-                className="task-detail-drawer-descriptions"
-              />
-            </div>
-
-            {/* 执行信息 */}
-            <div className="task-detail-drawer-section">
-              <Text strong className="task-detail-drawer-section-title">
-                {t('task.detail.executionInfo')}
-              </Text>
-              <Descriptions
-                data={executionInfoData}
-                align="left"
-                className="task-detail-drawer-descriptions"
-              />
-            </div>
-
-            {/* 输入参数 */}
-            <div className="task-detail-drawer-section">
-              <Text strong className="task-detail-drawer-section-title">
-                {t('task.detail.inputParameters')}
-              </Text>
-              {task.input_parameters && Object.keys(task.input_parameters).length > 0 ? (
-                <div className="task-detail-drawer-json-content">
-                  <pre>{JSON.stringify(task.input_parameters, null, 2)}</pre>
-                </div>
-              ) : (
-                <div className="task-detail-drawer-no-data">
-                  {t('task.detail.noParameters')}
-                </div>
-              )}
-            </div>
-
-            {/* 输出结果 */}
-            <div className="task-detail-drawer-section">
-              <Text strong className="task-detail-drawer-section-title">
-                {t('task.detail.outputResult')}
-              </Text>
-              {task.output_result && Object.keys(task.output_result).length > 0 ? (
-                <div className="task-detail-drawer-json-content">
-                  <pre>{JSON.stringify(task.output_result, null, 2)}</pre>
-                </div>
-              ) : (
-                <div className="task-detail-drawer-no-data">
-                  {t('task.detail.noOutput')}
-                </div>
-              )}
-            </div>
-
-            {/* 快捷链接 */}
-            {task.current_execution && (
-              <div className="task-detail-drawer-links">
-                <a href="#" onClick={(e) => e.preventDefault()}>
-                  {t('task.detail.viewLogs')}
-                </a>
-                {task.enable_recording && (
-                  <a href="#" onClick={(e) => e.preventDefault()}>
-                    {t('task.detail.viewRecording')}
-                  </a>
-                )}
-                <a href="#" onClick={(e) => e.preventDefault()}>
-                  {t('task.detail.viewScreenshots')}
-                </a>
+            <div className="task-detail-drawer-tab-content">
+              {/* 基本信息 */}
+              <div className="task-detail-drawer-section">
+                <Text strong className="task-detail-drawer-section-title">
+                  {t('task.detail.basicInfo')}
+                </Text>
+                <Descriptions
+                  data={basicInfoData}
+                  align="left"
+                  className="task-detail-drawer-descriptions"
+                />
               </div>
-            )}
+
+              {/* 执行信息 */}
+              <div className="task-detail-drawer-section">
+                <Text strong className="task-detail-drawer-section-title">
+                  {t('task.detail.executionInfo')}
+                </Text>
+                <Descriptions
+                  data={executionInfoData}
+                  align="left"
+                  className="task-detail-drawer-descriptions"
+                />
+              </div>
+
+              {/* 输入参数 */}
+              <div className="task-detail-drawer-section">
+                <Text strong className="task-detail-drawer-section-title">
+                  {t('task.detail.inputParameters')}
+                </Text>
+                {task.input_parameters && Object.keys(task.input_parameters).length > 0 ? (
+                  <div className="task-detail-drawer-json-content">
+                    <pre>{JSON.stringify(task.input_parameters, null, 2)}</pre>
+                  </div>
+                ) : (
+                  <div className="task-detail-drawer-no-data">
+                    {t('task.detail.noParameters')}
+                  </div>
+                )}
+              </div>
+
+              {/* 输出结果 */}
+              <div className="task-detail-drawer-section">
+                <Text strong className="task-detail-drawer-section-title">
+                  {t('task.detail.outputResult')}
+                </Text>
+                {task.output_result && Object.keys(task.output_result).length > 0 ? (
+                  <div className="task-detail-drawer-json-content">
+                    <pre>{JSON.stringify(task.output_result, null, 2)}</pre>
+                  </div>
+                ) : (
+                  <div className="task-detail-drawer-no-data">
+                    {t('task.detail.noOutput')}
+                  </div>
+                )}
+              </div>
+
+              {/* 快捷链接 */}
+              {task.current_execution && (
+                <div className="task-detail-drawer-links">
+                  <a href="#" onClick={(e) => e.preventDefault()}>
+                    {t('task.detail.viewLogs')}
+                  </a>
+                  {task.enable_recording && (
+                    <a href="#" onClick={(e) => e.preventDefault()}>
+                      {t('task.detail.viewRecording')}
+                    </a>
+                  )}
+                  <a href="#" onClick={(e) => e.preventDefault()}>
+                    {t('task.detail.viewScreenshots')}
+                  </a>
+                </div>
+              )}
+            </div>
           </TabPane>
 
           <TabPane tab={t('task.detail.tabs.executionHistory')} itemKey="executionHistory">
-            <div className="task-detail-drawer-section">
-              <Text strong className="task-detail-drawer-section-title">
-                {t('task.detail.executionHistory')}
-              </Text>
-              {task.executions && task.executions.length > 0 ? (
-                <div className="task-detail-drawer-execution-table">
-                  <Table
-                    columns={executionColumns}
-                    dataSource={task.executions}
-                    rowKey="execution_id"
-                    pagination={false}
-                    size="small"
-                  />
-                </div>
-              ) : (
-                <div className="task-detail-drawer-no-data">
-                  {t('task.detail.noExecutions')}
-                </div>
-              )}
+            <div className="task-detail-drawer-tab-content">
+              <div className="task-detail-drawer-section">
+                <Text strong className="task-detail-drawer-section-title">
+                  {t('task.detail.executionHistory')}
+                </Text>
+                {task.executions && task.executions.length > 0 ? (
+                  <div className="task-detail-drawer-execution-table">
+                    <Table
+                      columns={executionColumns}
+                      dataSource={task.executions}
+                      rowKey="execution_id"
+                      pagination={false}
+                      size="small"
+                    />
+                  </div>
+                ) : (
+                  <div className="task-detail-drawer-no-data">
+                    {t('task.detail.noExecutions')}
+                  </div>
+                )}
+              </div>
             </div>
           </TabPane>
         </Tabs>
-      </div>
+      )}
     </SideSheet>
   );
 };
