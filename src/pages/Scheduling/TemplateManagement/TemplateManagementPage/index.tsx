@@ -315,17 +315,8 @@ const TemplateManagementPage = () => {
       title: t('template.table.name'),
       dataIndex: 'template_name',
       width: 200,
-      render: (text: string, record: LYExecutionTemplateResponse) => (
-        <Text
-          link
-          className="template-management-table-name"
-          onClick={(e) => {
-            e.stopPropagation();
-            handleOpenDrawer(record);
-          }}
-        >
-          {text}
-        </Text>
+      render: (text: string) => (
+        <span className="template-management-table-name">{text}</span>
       ),
     },
     {
