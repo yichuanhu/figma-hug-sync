@@ -393,6 +393,24 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
           {/* 左侧：基本配置 */}
           <div className="create-task-modal-left">
             <div className="create-task-modal-content">
+              {/* 模板选择 */}
+              <div className="create-task-modal-section">
+                <div className="create-task-modal-section-title">
+                  {t('task.createModal.selectTemplate')}
+                </div>
+                <div className="create-task-modal-field">
+                  <Select
+                    placeholder={t('task.createModal.templatePlaceholder')}
+                    value={selectedTemplateId}
+                    onChange={(v) => handleTemplateChange(v as string | null)}
+                    optionList={mockTemplates.map((tpl) => ({ value: tpl.template_id, label: tpl.template_name }))}
+                    showClear
+                    filter
+                    className="create-task-modal-select-full"
+                  />
+                </div>
+              </div>
+
               {/* 流程配置 */}
               <div className="create-task-modal-section">
                 <div className="create-task-modal-section-title">
