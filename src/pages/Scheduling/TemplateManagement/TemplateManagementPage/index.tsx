@@ -365,20 +365,29 @@ const TemplateManagementPage = () => {
             <Dropdown.Menu>
               <Dropdown.Item
                 icon={<IconPlayCircle />}
-                onClick={() => handleUseTemplate(record)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleUseTemplate(record);
+                }}
               >
                 {t('template.actions.use')}
               </Dropdown.Item>
               <Dropdown.Item
                 icon={<IconEditStroked />}
-                onClick={() => handleEditTemplate(record)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleEditTemplate(record);
+                }}
               >
                 {t('template.actions.edit')}
               </Dropdown.Item>
               <Dropdown.Item
                 icon={<IconDeleteStroked />}
                 type="danger"
-                onClick={() => handleDeleteTemplate(record)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteTemplate(record);
+                }}
               >
                 {t('template.actions.delete')}
               </Dropdown.Item>
