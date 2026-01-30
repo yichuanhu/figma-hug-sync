@@ -1532,6 +1532,11 @@
     "loadFailed": "加载失败",
     "select": "选择此截图",
     "sortBy": "排序",
+    "deleteSuccess": "删除成功",
+    "deleteConfirm": {
+      "title": "删除截图",
+      "content": "确定要删除此截图吗？此操作不可撤销。"
+    },
     "sort": {
       "asc": "按序号升序",
       "desc": "按序号降序"
@@ -1541,7 +1546,8 @@
       "thumbnail": "缩略图",
       "name": "名称",
       "capturedAt": "截图时间",
-      "fileSize": "文件大小"
+      "fileSize": "文件大小",
+      "operation": "操作"
     },
     "batchOperation": {
       "selected": "已选中 {{count}} 项",
