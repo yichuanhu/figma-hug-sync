@@ -1,7 +1,7 @@
 .execution-history-tab {
   display: flex;
+  flex-direction: column;
   height: 100%;
-  gap: 16px;
   overflow: hidden;
 
   // 加载状态
@@ -22,82 +22,65 @@
     min-height: 300px;
   }
 
-  // 左侧时间戳tabs
-  &-timestamps {
-    width: 180px;
+  // 顶部tabs区域
+  &-header {
     flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    border: 1px solid var(--semi-color-border);
-    border-radius: var(--semi-border-radius-medium);
-    background: var(--semi-color-bg-1);
-    overflow: hidden;
+    padding: 16px 24px 0;
+  }
 
-    &-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px;
-      border-bottom: 1px solid var(--semi-color-border);
-      flex-shrink: 0;
+  &-timestamps {
+    .semi-tabs-bar {
+      overflow-x: auto;
+
+      &::-webkit-scrollbar {
+        height: 4px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: var(--semi-color-fill-2);
+        border-radius: 2px;
+      }
     }
 
-    &-tabs {
-      flex: 1;
-      overflow: hidden;
-
-      .semi-tabs-bar {
-        width: 100%;
-        overflow-y: auto;
-        max-height: 100%;
-        border-right: none;
-      }
-
-      .semi-tabs-tab {
-        padding: 8px 12px;
-        justify-content: flex-start;
-        width: 100%;
-      }
-
-      .semi-tabs-content {
-        display: none;
-      }
+    .semi-tabs-content {
+      display: none;
     }
   }
 
   // 时间戳项
   &-timestamp-item {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-    width: 100%;
+    align-items: center;
+    gap: 8px;
   }
 
-  // 右侧内容区
+  // 内容区
   &-content {
     flex: 1;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    min-width: 0;
+    min-height: 0;
+    padding: 16px 24px;
+  }
+
+  // 区块标题
+  &-section-title {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 14px;
   }
 
   // 执行信息区域
   &-info-section {
     flex-shrink: 0;
-    padding: 16px;
-    background: var(--semi-color-bg-1);
-    border: 1px solid var(--semi-color-border);
-    border-radius: var(--semi-border-radius-medium);
-    margin-bottom: 16px;
+    margin-bottom: 24px;
   }
 
   &-info-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 12px;
   }
 
   &-error {
@@ -116,47 +99,9 @@
     min-height: 0;
   }
 
-  &-logs-title {
-    margin-bottom: 12px;
-    flex-shrink: 0;
-  }
-
   &-logs-content {
     flex: 1;
     overflow: hidden;
-    border: 1px solid var(--semi-color-border);
-    border-radius: var(--semi-border-radius-medium);
-    padding: 12px;
     min-height: 0;
-  }
-}
-
-// 响应式布局
-@media (max-width: 768px) {
-  .execution-history-tab {
-    flex-direction: column;
-
-    &-timestamps {
-      width: 100%;
-      max-height: 200px;
-
-      &-tabs {
-        .semi-tabs-bar {
-          flex-direction: row;
-          flex-wrap: nowrap;
-          overflow-x: auto;
-          overflow-y: hidden;
-        }
-
-        .semi-tabs-tab {
-          width: auto;
-          white-space: nowrap;
-        }
-      }
-    }
-
-    &-content {
-      flex: 1;
-    }
   }
 }
