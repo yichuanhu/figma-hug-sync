@@ -268,7 +268,7 @@ const TaskManagementPage = () => {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
-  const [initialTab] = useState<'basicInfo'>('basicInfo');
+  const [initialTab, setInitialTab] = useState<'basicInfo' | 'executionHistory'>('basicInfo');
 
   const [listResponse, setListResponse] = useState<LYListResponseLYTaskResponse>({
     range: { offset: 0, size: 20, total: 0 },
@@ -327,10 +327,17 @@ const TaskManagementPage = () => {
   // 从 URL 参数中恢复抽屉状态（用于从录屏页面返回）
   useEffect(() => {
     const taskIdFromUrl = searchParams.get('taskId');
+    const activeTabFromUrl = searchParams.get('activeTab');
     if (taskIdFromUrl && listResponse.list.length > 0) {
       const task = listResponse.list.find((t) => t.task_id === taskIdFromUrl);
       if (task) {
         setSelectedTask(task);
+        // 设置初始 tab
+        if (activeTabFromUrl === 'executionHistory') {
+          setInitialTab('executionHistory');
+        } else {
+          setInitialTab('basicInfo');
+        }
         setDetailDrawerVisible(true);
         // 清除 URL 参数
         setSearchParams({}, { replace: true });

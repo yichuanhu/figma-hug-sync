@@ -150,8 +150,8 @@ const ExecutionHistoryTab = ({ taskId, taskName, enableRecording }: ExecutionHis
   // 查看录屏
   const handleViewRecording = useCallback(() => {
     if (selectedExecution) {
-      // 传递 taskId 以便返回时重新打开抽屉
-      navigate(`/scheduling-center/task-execution/task-list/${selectedExecution.execution_id}/recording?taskId=${taskId}`);
+      // 传递 taskId 和 activeTab 以便返回时重新打开抽屉并定位到执行历史tab
+      navigate(`/scheduling-center/task-execution/task-list/${selectedExecution.execution_id}/recording?taskId=${taskId}&activeTab=executionHistory`);
     }
   }, [navigate, selectedExecution, taskId]);
   

@@ -50,7 +50,7 @@ interface TaskDetailDrawerProps {
   totalPages: number;
   onPageChange: (page: number) => Promise<LYTaskResponse[]>;
   onScrollToRow?: (taskId: string) => void;
-  initialTab?: 'basicInfo';
+  initialTab?: 'basicInfo' | 'executionHistory';
 }
 
 // 状态配置
