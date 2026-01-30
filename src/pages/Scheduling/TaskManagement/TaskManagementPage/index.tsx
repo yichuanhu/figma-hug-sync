@@ -113,7 +113,7 @@ const generateMockTaskResponse = (index: number): LYTaskResponse => {
     create_time: createDate.toISOString(),
     expire_time: expireDate.toISOString(),
     max_execution_duration: 3600,
-    enable_recording: index % 2 === 0,
+    enable_recording: index < 10 || index % 2 === 0,
     input_parameters: { targetUrl: 'https://example.com', maxCount: 100 },
     output_result: taskStatus === 'COMPLETED' ? { status: 'success', count: 50 } : null,
     total_execution_count: hasExecution ? (index % 3) + 1 : 0,
