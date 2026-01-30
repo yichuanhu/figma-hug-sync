@@ -186,8 +186,11 @@ const ScreenshotViewModal = ({
     e?.stopPropagation();
     Modal.confirm({
       title: t('screenshot.deleteConfirm.title'),
+      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
       content: t('screenshot.deleteConfirm.content'),
-      okType: 'danger',
+      okText: t('common.confirm'),
+      cancelText: t('common.cancel'),
+      okButtonProps: { type: 'danger' },
       onOk: () => {
         setScreenshots((prev) => prev.filter((s) => s.id !== id));
         Toast.success(t('screenshot.deleteSuccess'));
@@ -202,8 +205,11 @@ const ScreenshotViewModal = ({
     
     Modal.confirm({
       title: t('screenshot.deleteConfirm.title'),
+      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
       content: t('screenshot.deleteConfirm.content'),
-      okType: 'danger',
+      okText: t('common.confirm'),
+      cancelText: t('common.cancel'),
+      okButtonProps: { type: 'danger' },
       onOk: () => {
         setScreenshots((prev) => prev.filter((s) => s.id !== currentScreenshot.id));
         Toast.success(t('screenshot.deleteSuccess'));
