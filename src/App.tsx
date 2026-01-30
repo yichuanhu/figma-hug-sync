@@ -31,10 +31,11 @@ import SchedulingWorkbench from "@/pages/Scheduling/SchedulingWorkbench";
 // Scheduling - Task Management
 import TaskManagementPage from "@/pages/Scheduling/TaskManagement/TaskManagementPage";
 // Scheduling - Task Log
-// Scheduling - Task Log
 import TaskLogPage from "@/pages/Scheduling/TaskManagement/TaskLogPage";
 // Scheduling - Recording View
 import RecordingViewPage from "@/pages/Scheduling/TaskManagement/RecordingViewPage";
+// Scheduling - Template Management
+import TemplateManagementPage from "@/pages/Scheduling/TemplateManagement/TemplateManagementPage";
 // Personal Center
 import PersonalCenter from "@/pages/PersonalCenter";
 // Dev Preview
@@ -76,6 +77,8 @@ const App = () => (
         {/* 自动化流程 - 调度中心入口 */}
         <Route path="/scheduling-center/execution-assets/automation-process" element={<SchedulingProcessManagementPage />} />
         
+        {/* 执行模板 - 调度中心入口 */}
+        <Route path="/scheduling-center/task-execution/templates" element={<TemplateManagementPage />} />
         {/* 任务列表 - 调度中心入口 */}
         <Route path="/scheduling-center/task-execution/task-list" element={<TaskManagementPage />} />
         {/* 任务日志 - 调度中心入口 */}

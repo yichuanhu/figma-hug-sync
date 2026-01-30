@@ -1,0 +1,65 @@
+// TemplateManagement 页面样式
+.template-management {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  // 面包屑区域
+  &-breadcrumb {
+    flex-shrink: 0;
+  }
+
+  // 标题区域
+  &-header {
+    padding-top: 20px;
+    flex-shrink: 0;
+
+    &-title {
+      margin-bottom: 24px;
+
+      .title {
+        margin-bottom: 8px;
+      }
+    }
+
+    &-toolbar {
+      margin-bottom: 16px;
+    }
+  }
+
+  // 表格区域
+  &-table {
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
+
+    .semi-table-wrapper {
+      max-height: 100%;
+    }
+  }
+
+  // 搜索输入框
+  &-search-input {
+    width: 320px;
+  }
+
+  // 表格名称列样式
+  &-table-name {
+    font-weight: 500;
+    color: var(--semi-color-text-0);
+    cursor: pointer;
+
+    &:hover {
+      color: var(--semi-color-primary);
+    }
+  }
+
+  // 表格描述列样式
+  &-table-desc {
+    display: block;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
