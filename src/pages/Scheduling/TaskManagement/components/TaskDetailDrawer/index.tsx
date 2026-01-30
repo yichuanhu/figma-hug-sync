@@ -468,17 +468,8 @@ const TaskDetailDrawer = ({
               </div>
 
               {/* 快捷链接 */}
-              {task.current_execution && (
+              {task.current_execution && (task.enable_recording || true) && (
                 <div className="task-detail-drawer-links">
-                  <a
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setActiveTab('executionLogs');
-                    }}
-                  >
-                    {t('task.detail.viewLogs')}
-                  </a>
                   {task.enable_recording && (
                     <a href="#" onClick={(e) => e.preventDefault()}>
                       {t('task.detail.viewRecording')}
