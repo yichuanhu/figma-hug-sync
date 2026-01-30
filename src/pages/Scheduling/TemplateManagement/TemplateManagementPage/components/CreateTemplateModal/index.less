@@ -6,9 +6,9 @@
   }
 
   .create-template-modal-content {
-    max-height: calc(70vh - 120px);
+    max-height: calc(100vh - 300px);
     overflow-y: auto;
-    padding-right: 8px;
+    padding: 0 4px;
   }
 
   .create-template-modal-section {
@@ -53,9 +53,18 @@
   .create-template-modal-footer {
     display: flex;
     justify-content: flex-end;
-    gap: 8px;
-    padding-top: 16px;
+    gap: 12px;
+    padding-top: 20px;
+    margin-top: 20px;
     border-top: 1px solid var(--semi-color-border);
-    margin-top: 16px;
+  }
+
+  // 表单字段间距
+  .semi-form-field {
+    margin-bottom: 16px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
   }
 }
