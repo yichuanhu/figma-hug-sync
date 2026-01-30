@@ -35,6 +35,7 @@ const { Text } = Typography;
 interface ExecutionLogTabProps {
   executionId: string;
   executionStatus?: ExecutionStatus;
+  title?: string;
 }
 
 // 日志级别颜色配置
@@ -88,7 +89,7 @@ const generateMockSummary = (): LYLogSummaryResponse => ({
   error_count: 34,
 });
 
-const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING' }: ExecutionLogTabProps) => {
+const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: ExecutionLogTabProps) => {
   const { t } = useTranslation();
   
   // 状态
@@ -380,31 +381,38 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING' }: Execution
 
   return (
     <div className="execution-log-tab">
-      {/* 统计信息 */}
-      {summary && (
-        <div className="execution-log-tab-stats">
-          <Space spacing={16}>
-            <Text>{t('taskLog.stats.total')}: <Text strong>{summary.total.toLocaleString()}</Text></Text>
-            <Text type="tertiary">|</Text>
-            <Text>
-              <Tag color="grey" type="ghost" size="small">DEBUG</Tag>
-              <Text style={{ marginLeft: 4 }}>{summary.debug_count.toLocaleString()}</Text>
-            </Text>
-            <Text>
-              <Tag color="blue" type="ghost" size="small">INFO</Tag>
-              <Text style={{ marginLeft: 4 }}>{summary.info_count.toLocaleString()}</Text>
-            </Text>
-            <Text>
-              <Tag color="orange" type="ghost" size="small">WARN</Tag>
-              <Text style={{ marginLeft: 4 }}>{summary.warn_count.toLocaleString()}</Text>
-            </Text>
-            <Text>
-              <Tag color="red" type="ghost" size="small">ERROR</Tag>
-              <Text style={{ marginLeft: 4 }}>{summary.error_count.toLocaleString()}</Text>
-            </Text>
-          </Space>
-        </div>
-      )}
+      {/* 标题和统计信息 */}
+      <div className="execution-log-tab-header">
+        {title && (
+          <Text strong className="execution-log-tab-title">
+            {title}
+          </Text>
+        )}
+        {summary && (
+          <div className="execution-log-tab-stats-content">
+            <Space spacing={16}>
+              <Text>{t('taskLog.stats.total')}: <Text strong>{summary.total.toLocaleString()}</Text></Text>
+              <Text type="tertiary">|</Text>
+              <Text>
+                <Tag color="grey" type="ghost" size="small">DEBUG</Tag>
+                <Text style={{ marginLeft: 4 }}>{summary.debug_count.toLocaleString()}</Text>
+              </Text>
+              <Text>
+                <Tag color="blue" type="ghost" size="small">INFO</Tag>
+                <Text style={{ marginLeft: 4 }}>{summary.info_count.toLocaleString()}</Text>
+              </Text>
+              <Text>
+                <Tag color="orange" type="ghost" size="small">WARN</Tag>
+                <Text style={{ marginLeft: 4 }}>{summary.warn_count.toLocaleString()}</Text>
+              </Text>
+              <Text>
+                <Tag color="red" type="ghost" size="small">ERROR</Tag>
+                <Text style={{ marginLeft: 4 }}>{summary.error_count.toLocaleString()}</Text>
+              </Text>
+            </Space>
+          </div>
+        )}
+      </div>
 
       {/* 工具栏 */}
       <Row type="flex" justify="space-between" align="middle" className="execution-log-tab-toolbar">
