@@ -297,13 +297,11 @@ const ExecutionHistoryTab = ({ taskId, enableRecording }: ExecutionHistoryTabPro
 
             {/* 执行日志 */}
             <div className="execution-history-tab-logs-section">
-              <Text strong className="execution-history-tab-section-title">
-                {t('executionHistory.executionLogs')}
-              </Text>
               <div className="execution-history-tab-logs-content">
                 <ExecutionLogTab
                   executionId={selectedExecution.execution_id}
                   executionStatus={selectedExecution.status}
+                  title={t('executionHistory.executionLogs')}
                 />
               </div>
             </div>
