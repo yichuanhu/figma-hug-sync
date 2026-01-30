@@ -102,6 +102,7 @@ const RecordingViewPage = () => {
   
   // 状态
   const [loading, setLoading] = useState(true);
+  const [logsLoading, setLogsLoading] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [recording, setRecording] = useState<LYRecordingInfoResponse | null>(null);
   const [logs, setLogs] = useState<LYExecutionLogResponse[]>([]);
@@ -146,6 +147,25 @@ const RecordingViewPage = () => {
   useEffect(() => {
     loadData();
   }, [loadData]);
+
+  // 仅刷新日志数据
+  const loadLogsOnly = useCallback(async () => {
+    if (!executionId) return;
+    
+    setLogsLoading(true);
+    try {
+      // Mock API 调用 - 仅加载日志
+      await new Promise((resolve) => setTimeout(resolve, 400));
+      const mockLogs = generateMockLogs();
+      const startTime = new Date(mockLogs[0].log_time);
+      const mockMarkers = generateMockErrorMarkers(mockLogs, startTime);
+      
+      setLogs(mockLogs);
+      setErrorMarkers(mockMarkers);
+    } finally {
+      setLogsLoading(false);
+    }
+  }, [executionId]);
   
   // 视频时间更新
   const handleTimeUpdate = useCallback((time: number) => {
@@ -297,7 +317,8 @@ const RecordingViewPage = () => {
                   currentTime={currentTime}
                   highlightedLogId={highlightedLogId}
                   onLogClick={handleLogClick}
-                  onRefresh={loadData}
+                  onRefresh={loadLogsOnly}
+                  loading={logsLoading}
                 />
               </div>
             </div>
