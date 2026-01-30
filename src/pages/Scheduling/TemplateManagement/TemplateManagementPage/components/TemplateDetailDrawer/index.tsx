@@ -356,12 +356,12 @@ const TemplateDetailDrawer = ({
       }
       visible={visible}
       onCancel={onClose}
-      mask={false}
-      closable={false}
+      placement="right"
       width={isFullscreen ? '100%' : drawerWidth}
-      className={`card-sidesheet template-detail-drawer ${isFullscreen ? 'fullscreen' : ''}`}
-      bodyStyle={{ padding: 0, overflow: 'hidden' }}
-      headerStyle={{ padding: '12px 24px' }}
+      mask={false}
+      footer={null}
+      closable={false}
+      className={`card-sidesheet template-detail-drawer ${isFullscreen ? 'fullscreen-sidesheet' : ''}`}
     >
       {/* 拖拽把手 */}
       {!isFullscreen && (
