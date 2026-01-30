@@ -32,7 +32,6 @@ import {
   IconClose,
   IconPlayCircle,
   IconDeleteStroked,
-  IconHistory,
 } from '@douyinfe/semi-icons';
 import type { 
   LYTaskResponse, 
@@ -620,17 +619,6 @@ const TaskManagementPage = () => {
                     }}
                   >
                     {t('task.actions.retry')}
-                  </Dropdown.Item>
-                )}
-                {hasExecutions && (
-                  <Dropdown.Item
-                    icon={<IconHistory />}
-                    onClick={(e) => {
-                      e?.stopPropagation();
-                      navigate(`/scheduling-center/task-execution/task-list/${record.task_id}/executions`);
-                    }}
-                  >
-                    {t('task.actions.viewExecutionHistory')}
                   </Dropdown.Item>
                 )}
               </Dropdown.Menu>
