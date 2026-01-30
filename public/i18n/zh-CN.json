@@ -1150,7 +1150,7 @@
       "unconsumedInactive": "未消费-未生效",
       "unconsumedActive": "未消费-已生效",
       "consumed": "已消费",
-      "expired": "已失效"
+      "expired": "\"已失效\""
     },
     "priority": {
       "high": "高",
@@ -1373,14 +1373,14 @@
     "stopModal": {
       "title": "停止任务",
       "confirmMessage": "确定要停止任务「{{taskId}}」的执行吗？",
-      "warning": "停止后将向机器人发送停止指令，执行状态将变为"已停止"。",
+      "warning": "停止后将向机器人发送停止指令，执行状态将变为\"已停止\"。",
       "success": "停止指令已发送",
       "error": "停止失败：{{message}}"
     },
     "retryModal": {
       "title": "重新执行",
       "confirmMessage": "确定要重新执行任务「{{taskId}}」吗？",
-      "hint": "将创建新的执行记录，任务状态将变为"待执行"并重新加入队列。",
+      "hint": "将创建新的执行记录，任务状态将变为\"待执行\"并重新加入队列。",
       "success": "任务已重新执行",
       "error": "重新执行失败：{{message}}"
     },
