@@ -10,11 +10,13 @@ import {
   TabPane,
   Space,
   Spin,
+  Collapsible,
 } from '@douyinfe/semi-ui';
 import {
-  IconRefresh,
   IconVideo,
   IconImage,
+  IconChevronDown,
+  IconChevronUp,
 } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import ExecutionLogTab from '../ExecutionLogTab';
@@ -113,6 +115,7 @@ const ExecutionHistoryTab = ({ taskId, enableRecording }: ExecutionHistoryTabPro
   const [loading, setLoading] = useState(true);
   const [executions, setExecutions] = useState<LYTaskExecutionResponse[]>([]);
   const [selectedExecutionId, setSelectedExecutionId] = useState<string | null>(null);
+  const [infoCollapsed, setInfoCollapsed] = useState(false);
   
   // 加载数据
   const loadData = useCallback(async () => {
@@ -239,45 +242,57 @@ const ExecutionHistoryTab = ({ taskId, enableRecording }: ExecutionHistoryTabPro
       <div className="execution-history-tab-content">
         {selectedExecution && (
           <>
-            {/* 执行信息 */}
+            {/* 执行信息 - 可折叠 */}
             <div className="execution-history-tab-info-section">
-              <div className="execution-history-tab-info-header">
-                <Text strong className="execution-history-tab-section-title">
-                  {t('executionHistory.executionInfo')}
-                </Text>
+              <div 
+                className="execution-history-tab-info-header execution-history-tab-info-header--clickable"
+                onClick={() => setInfoCollapsed(!infoCollapsed)}
+              >
                 <Space>
-                  {showRecordingButton && (
-                    <Button
-                      icon={<IconVideo />}
-                      size="small"
-                      theme="borderless"
-                      onClick={handleViewRecording}
-                    >
-                      {t('task.detail.viewRecording')}
-                    </Button>
-                  )}
-                  {showScreenshotButton && (
-                    <Button
-                      icon={<IconImage />}
-                      size="small"
-                      theme="borderless"
-                      onClick={handleViewScreenshots}
-                    >
-                      {t('task.detail.viewScreenshots')}
-                    </Button>
-                  )}
-                </Space>
-              </div>
-              <Descriptions data={executionInfoData} align="left" />
-              
-              {/* 错误信息 */}
-              {selectedExecution.error_message && (
-                <div className="execution-history-tab-error">
-                  <Text type="danger" size="small">
-                    {t('executionHistory.fields.errorMessage')}: {selectedExecution.error_message}
+                  {infoCollapsed ? <IconChevronDown size="small" /> : <IconChevronUp size="small" />}
+                  <Text strong className="execution-history-tab-section-title">
+                    {t('executionHistory.executionInfo')}
                   </Text>
+                </Space>
+                <div onClick={(e) => e.stopPropagation()}>
+                  <Space>
+                    {showRecordingButton && (
+                      <Button
+                        icon={<IconVideo />}
+                        size="small"
+                        theme="borderless"
+                        onClick={handleViewRecording}
+                      >
+                        {t('task.detail.viewRecording')}
+                      </Button>
+                    )}
+                    {showScreenshotButton && (
+                      <Button
+                        icon={<IconImage />}
+                        size="small"
+                        theme="borderless"
+                        onClick={handleViewScreenshots}
+                      >
+                        {t('task.detail.viewScreenshots')}
+                      </Button>
+                    )}
+                  </Space>
                 </div>
-              )}
+              </div>
+              <Collapsible isOpen={!infoCollapsed}>
+                <div className="execution-history-tab-info-content">
+                  <Descriptions data={executionInfoData} align="left" />
+                  
+                  {/* 错误信息 */}
+                  {selectedExecution.error_message && (
+                    <div className="execution-history-tab-error">
+                      <Text type="danger" size="small">
+                        {t('executionHistory.fields.errorMessage')}: {selectedExecution.error_message}
+                      </Text>
+                    </div>
+                  )}
+                </div>
+              </Collapsible>
             </div>
 
             {/* 执行日志 */}
