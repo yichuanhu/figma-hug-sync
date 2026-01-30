@@ -4,10 +4,6 @@ import {
   Modal,
   Spin,
   Typography,
-  Select,
-  Row,
-  Col,
-  Space,
   Toast,
   Table,
   Checkbox,
@@ -39,8 +35,6 @@ interface ScreenshotViewModalProps {
   onClose: () => void;
 }
 
-// 排序选项
-type SortOrder = 'asc' | 'desc';
 
 // 生成 UUID
 const generateUUID = (): string => {
@@ -129,7 +123,7 @@ const ScreenshotViewModal = ({
   const [loading, setLoading] = useState(true);
   const [screenshots, setScreenshots] = useState<LYTaskScreenshotResponse[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
+  
   
   // 灯箱预览状态
   const [previewVisible, setPreviewVisible] = useState(false);
@@ -141,14 +135,12 @@ const ScreenshotViewModal = ({
     
     setLoading(true);
     try {
-      const response = await fetchScreenshots(executionId, {
-        sort_order: sortOrder,
-      });
+      const response = await fetchScreenshots(executionId, {});
       setScreenshots(response.list);
     } finally {
       setLoading(false);
     }
-  }, [executionId, sortOrder]);
+  }, [executionId]);
   
   // 当弹窗打开或排序变化时加载数据
   useEffect(() => {
@@ -261,11 +253,6 @@ const ScreenshotViewModal = ({
   // 当前预览的截图
   const currentPreviewScreenshot = screenshots[previewIndex];
   
-  // 排序选项
-  const sortOptions = [
-    { value: 'asc', label: t('screenshot.sort.asc') },
-    { value: 'desc', label: t('screenshot.sort.desc') },
-  ];
   
   // 标题
   const modalTitle = taskName
@@ -341,7 +328,9 @@ const ScreenshotViewModal = ({
     {
       title: t('screenshot.table.sequence'),
       dataIndex: 'sequence_number',
-      width: 80,
+      width: 100,
+      sorter: (a: LYTaskScreenshotResponse, b: LYTaskScreenshotResponse) => a.sequence_number - b.sequence_number,
+      defaultSortOrder: 'ascend',
       render: (value: number) => `#${value}`,
     },
     {
@@ -436,25 +425,9 @@ const ScreenshotViewModal = ({
         <div className="screenshot-view-modal-content">
           {/* 工具栏 */}
           <div className="screenshot-view-modal-toolbar">
-            <Row justify="space-between" align="middle">
-              <Col>
-                <Text type="secondary">
-                  {t('screenshot.totalCount', { count: screenshots.length })}
-                </Text>
-              </Col>
-              <Col>
-                <Space>
-                  <Text type="tertiary">{t('screenshot.sortBy')}</Text>
-                  <Select
-                    value={sortOrder}
-                    onChange={(value) => setSortOrder(value as SortOrder)}
-                    optionList={sortOptions}
-                    style={{ width: 140 }}
-                    size="small"
-                  />
-                </Space>
-              </Col>
-            </Row>
+            <Text type="secondary">
+              {t('screenshot.totalCount', { count: screenshots.length })}
+            </Text>
           </div>
           
           {/* 批量操作栏 */}
