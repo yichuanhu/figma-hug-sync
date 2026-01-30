@@ -34,6 +34,7 @@ import {
   IconPlayCircle,
   IconDeleteStroked,
   IconFile,
+  IconVideo,
 } from '@douyinfe/semi-icons';
 import type { 
   LYTaskResponse, 
@@ -578,7 +579,8 @@ const TaskManagementPage = () => {
           record.task_status === 'PENDING' ||
           record.execution_status === 'RUNNING' ||
           record.task_status === 'FAILED' ||
-          record.current_execution;
+          record.current_execution ||
+          (record.enable_recording && record.current_execution);
 
         if (!hasActions) {
           return null;
@@ -633,6 +635,17 @@ const TaskManagementPage = () => {
                     }}
                   >
                     {t('task.actions.viewLogs')}
+                  </Dropdown.Item>
+                )}
+                {record.enable_recording && record.current_execution && (
+                  <Dropdown.Item
+                    icon={<IconVideo />}
+                    onClick={(e) => {
+                      e?.stopPropagation();
+                      navigate(`/scheduling-center/task-execution/task-list/${record.current_execution?.execution_id}/recording`);
+                    }}
+                  >
+                    {t('task.actions.viewRecording')}
                   </Dropdown.Item>
                 )}
               </Dropdown.Menu>

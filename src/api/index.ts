@@ -2165,3 +2165,72 @@ export interface LYListResponseLYExecutionLogResponse {
   /** 列表 */
   list: LYExecutionLogResponse[];
 }
+
+// ==================== 录屏管理相关类型 ====================
+
+/**
+ * 录屏状态
+ */
+export type RecordingStatus = 'UPLOADING' | 'MERGING' | 'READY' | 'FAILED';
+
+/**
+ * LYRecordingInfoResponse
+ * 录屏信息响应
+ */
+export interface LYRecordingInfoResponse {
+  /** 执行ID */
+  execution_id: string;
+  /** 录屏文件ID */
+  file_id: string;
+  /** 录屏文件名 */
+  file_name: string;
+  /** 录屏时长（秒） */
+  duration: number;
+  /** 文件大小（字节） */
+  file_size: number;
+  /** 录屏状态 */
+  status: RecordingStatus;
+  /** 创建时间 */
+  created_at: string;
+  /** 临时访问URL（1小时有效） */
+  file_url?: string | null;
+}
+
+/**
+ * LYRecordingErrorMarker
+ * 录屏进度条错误标记
+ */
+export interface LYRecordingErrorMarker {
+  /** 日志ID */
+  log_id: string;
+  /** 时间戳 (ISO 8601) */
+  timestamp: string;
+  /** 相对于录屏开始的偏移秒数 */
+  position: number;
+  /** 日志消息 */
+  message: string;
+}
+
+/**
+ * LYRecordingWithMarkersResponse
+ * 录屏信息及错误标记响应
+ */
+export interface LYRecordingWithMarkersResponse {
+  /** 录屏信息 */
+  recording: LYRecordingInfoResponse;
+  /** 错误日志标记列表 */
+  error_markers: LYRecordingErrorMarker[];
+}
+
+/**
+ * LYRecordingExportResponse
+ * 录屏导出响应
+ */
+export interface LYRecordingExportResponse {
+  /** 导出任务ID */
+  export_task_id: string;
+  /** 下载URL（可直接下载） */
+  download_url: string;
+  /** URL过期时间 */
+  expires_at: string;
+}

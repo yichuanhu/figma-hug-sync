@@ -1320,7 +1320,8 @@
       "cancel": "取消任务",
       "stop": "停止任务",
       "retry": "重新执行",
-      "viewLogs": "查看日志"
+      "viewLogs": "查看日志",
+      "viewRecording": "查看录屏"
     },
     "createModal": {
       "title": "新建任务",
@@ -1460,6 +1461,30 @@
     },
     "stats": {
       "total": "总计"
+    }
+  },
+  "recording": {
+    "title": "录屏回放",
+    "description": "查看任务执行的视频录屏，支持与日志同步",
+    "executionId": "执行ID",
+    "loading": "正在加载录屏...",
+    "loadError": "加载录屏失败",
+    "export": "导出录屏",
+    "exportSuccess": "录屏导出成功",
+    "exportError": "导出失败，请重试",
+    "player": {
+      "loading": "正在加载视频...",
+      "loadError": "视频加载失败，链接可能已过期",
+      "noRecording": "此任务执行没有可用的录屏",
+      "refresh": "刷新",
+      "fileInfo": "文件大小: {{size}} MB | 时长: {{duration}}"
+    },
+    "logPanel": {
+      "title": "执行日志",
+      "searchPlaceholder": "搜索日志内容",
+      "noLogs": "暂无日志",
+      "noMatch": "未找到匹配的日志",
+      "total": "共 {{count}} 条日志"
     }
   }
 }
