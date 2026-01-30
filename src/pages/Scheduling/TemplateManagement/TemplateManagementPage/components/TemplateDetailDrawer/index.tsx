@@ -30,6 +30,7 @@ import type {
   ExecutionTargetType,
 } from '@/api';
 import DetailSkeleton from '@/components/DetailSkeleton';
+import EmptyState from '@/components/EmptyState';
 import './index.less';
 
 const { Text, Title } = Typography;
@@ -347,11 +348,11 @@ const TemplateDetailDrawer = ({
         </TabPane>
 
         <TabPane tab={t('template.detail.tabs.usageHistory')} itemKey="usageHistory">
-          <div className="template-detail-drawer-tab-content">
-            <div className="template-detail-drawer-empty">
-              <IconInbox size="extra-large" style={{ color: 'var(--semi-color-text-2)', marginBottom: 8 }} />
-              <Text type="tertiary">暂无使用记录</Text>
-            </div>
+          <div className="template-detail-drawer-tab-content template-detail-drawer-tab-content--centered">
+            <EmptyState
+              variant="noData"
+              description={t('template.detail.noUsageHistory')}
+            />
           </div>
         </TabPane>
       </Tabs>

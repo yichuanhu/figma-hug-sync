@@ -1648,6 +1648,7 @@
       "taskSettings": "任务设置",
       "inputParameters": "输入参数",
       "noParameters": "无输入参数",
+      "noUsageHistory": "暂无使用记录",
       "tabs": {
         "basicInfo": "基本信息",
         "usageHistory": "使用记录"
