@@ -1321,7 +1321,8 @@
       "stop": "停止任务",
       "retry": "重新执行",
       "viewLogs": "查看日志",
-      "viewRecording": "查看录屏"
+      "viewRecording": "查看录屏",
+      "viewExecutionHistory": "查看执行历史"
     },
     "createModal": {
       "title": "新建任务",
@@ -1485,6 +1486,29 @@
       "noLogs": "暂无日志",
       "noMatch": "未找到匹配的日志",
       "total": "共 {{count}} 条日志"
+    }
+  },
+  "executionHistory": {
+    "title": "执行历史",
+    "breadcrumb": {
+      "executionHistory": "执行历史"
+    },
+    "taskInfo": "任务 {{taskId}} - {{processName}}",
+    "searchPlaceholder": "搜索执行ID或机器人名称",
+    "noData": "暂无执行记录",
+    "noMatch": "未找到匹配「{{keyword}}」的执行记录",
+    "fields": {
+      "executionId": "执行ID",
+      "status": "执行状态",
+      "botName": "执行机器人",
+      "startTime": "开始时间",
+      "endTime": "结束时间",
+      "duration": "执行时长",
+      "errorMessage": "错误信息"
+    },
+    "filter": {
+      "status": "执行状态",
+      "dateRange": "时间范围"
     }
   }
 }

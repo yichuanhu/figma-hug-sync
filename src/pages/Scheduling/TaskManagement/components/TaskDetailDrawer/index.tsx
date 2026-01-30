@@ -1,6 +1,5 @@
 import { useMemo, useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
 import {
   SideSheet,
   Button,
@@ -8,14 +7,12 @@ import {
   Typography,
   Descriptions,
   Tag,
-  Table,
   Tabs,
   TabPane,
   Divider,
   Row,
   Col,
   Space,
-  Dropdown,
 } from '@douyinfe/semi-ui';
 import {
   IconChevronLeft,
@@ -26,19 +23,14 @@ import {
   IconMaximize,
   IconMinimize,
   IconInbox,
-  IconMore,
-  IconFile,
-  IconVideo,
 } from '@douyinfe/semi-icons';
 import type {
   LYTaskResponse,
-  LYTaskExecutionResponse,
   TaskStatus,
   ExecutionStatus,
   TaskPriority,
 } from '@/api';
 import DetailSkeleton from '@/components/DetailSkeleton';
-import EmptyState from '@/components/EmptyState';
 import './index.less';
 
 const { Text, Title } = Typography;
@@ -56,7 +48,7 @@ interface TaskDetailDrawerProps {
   totalPages: number;
   onPageChange: (page: number) => Promise<LYTaskResponse[]>;
   onScrollToRow?: (taskId: string) => void;
-  initialTab?: 'basicInfo' | 'executionHistory';
+  initialTab?: 'basicInfo';
 }
 
 // 状态配置
@@ -100,7 +92,6 @@ const TaskDetailDrawer = ({
   initialTab = 'basicInfo',
 }: TaskDetailDrawerProps) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [activeTab, setActiveTab] = useState('basicInfo');
   const [isNavigating, setIsNavigating] = useState(false);
@@ -268,102 +259,6 @@ const TaskDetailDrawer = ({
     { key: t('task.detail.totalExecutions'), value: `${task.total_execution_count} ${t('task.detail.times')}` },
   ];
 
-  // 执行历史表格列
-  const executionColumns = [
-    {
-      title: t('task.detail.executionId'),
-      dataIndex: 'execution_id',
-      key: 'execution_id',
-      width: 140,
-      render: (id: string) => id.substring(0, 8) + '...',
-    },
-    {
-      title: t('common.status'),
-      dataIndex: 'status',
-      key: 'status',
-      width: 100,
-      render: (status: ExecutionStatus) => (
-        <Tag color={executionStatusConfig[status]?.color || 'grey'} type="light">
-          {t(executionStatusConfig[status]?.i18nKey || '')}
-        </Tag>
-      ),
-    },
-    {
-      title: t('task.detail.botName'),
-      dataIndex: 'bot_name',
-      key: 'bot_name',
-      width: 120,
-    },
-    {
-      title: t('task.detail.startTime'),
-      dataIndex: 'start_time',
-      key: 'start_time',
-      width: 160,
-      render: (value: string) => value?.replace('T', ' ').substring(0, 19) || '-',
-    },
-    {
-      title: t('task.detail.duration'),
-      dataIndex: 'duration',
-      key: 'duration',
-      width: 100,
-      render: (value: number | null) => value ? `${value} ${t('task.detail.seconds')}` : '-',
-    },
-    {
-      title: t('task.detail.errorMessage'),
-      dataIndex: 'error_message',
-      key: 'error_message',
-      width: 200,
-      render: (value: string | null) => value ? (
-        <Tooltip content={value}>
-          <span className="task-detail-drawer-error-message">{value.substring(0, 30)}...</span>
-        </Tooltip>
-      ) : '-',
-    },
-    {
-      title: t('common.operations'),
-      dataIndex: 'operation',
-      key: 'operation',
-      width: 80,
-      render: (_: unknown, record: LYTaskExecutionResponse) => (
-        <Dropdown
-          trigger="click"
-          position="bottomRight"
-          clickToHide
-          render={
-            <Dropdown.Menu>
-              <Dropdown.Item
-                icon={<IconFile />}
-                onClick={(e) => {
-                  e?.stopPropagation();
-                  navigate(`/scheduling-center/task-execution/task-list/${record.execution_id}/logs`);
-                }}
-              >
-                {t('task.actions.viewLogs')}
-              </Dropdown.Item>
-              {task.enable_recording && (
-                <Dropdown.Item
-                  icon={<IconVideo />}
-                  onClick={(e) => {
-                    e?.stopPropagation();
-                    navigate(`/scheduling-center/task-execution/task-list/${record.execution_id}/recording`);
-                  }}
-                >
-                  {t('task.actions.viewRecording')}
-                </Dropdown.Item>
-              )}
-            </Dropdown.Menu>
-          }
-        >
-          <Button
-            icon={<IconMore />}
-            theme="borderless"
-            type="tertiary"
-            onClick={(e) => e.stopPropagation()}
-          />
-        </Dropdown>
-      ),
-    },
-  ];
 
   return (
     <SideSheet
@@ -523,30 +418,6 @@ const TaskDetailDrawer = ({
                   <a href="#" onClick={(e) => e.preventDefault()}>
                     {t('task.detail.viewScreenshots')}
                   </a>
-                </div>
-              )}
-            </div>
-          </TabPane>
-
-          <TabPane tab={t('task.detail.tabs.executionHistory')} itemKey="executionHistory">
-            <div className="task-detail-drawer-tab-content">
-              {task.executions && task.executions.length > 0 ? (
-                <div className="task-detail-drawer-execution-table">
-                  <Table
-                    columns={executionColumns}
-                    dataSource={task.executions}
-                    rowKey="execution_id"
-                    pagination={false}
-                    size="small"
-                  />
-                </div>
-              ) : (
-                <div className="task-detail-drawer-empty">
-                  <EmptyState
-                    variant="noData"
-                    description={t('task.detail.noExecutions')}
-                    size={120}
-                  />
                 </div>
               )}
             </div>

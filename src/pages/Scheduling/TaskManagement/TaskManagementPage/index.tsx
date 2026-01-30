@@ -33,6 +33,7 @@ import {
   IconClose,
   IconPlayCircle,
   IconDeleteStroked,
+  IconHistory,
 } from '@douyinfe/semi-icons';
 import type { 
   LYTaskResponse, 
@@ -268,7 +269,7 @@ const TaskManagementPage = () => {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
-  const [initialTab, setInitialTab] = useState<'basicInfo' | 'executionHistory'>('basicInfo');
+  const [initialTab] = useState<'basicInfo'>('basicInfo');
 
   const [listResponse, setListResponse] = useState<LYListResponseLYTaskResponse>({
     range: { offset: 0, size: 20, total: 0 },
@@ -342,9 +343,8 @@ const TaskManagementPage = () => {
   };
 
   // 打开详情抽屉
-  const openTaskDetail = (record: LYTaskResponse, tab: 'basicInfo' | 'executionHistory' = 'basicInfo') => {
+  const openTaskDetail = (record: LYTaskResponse) => {
     setSelectedTask(record);
-    setInitialTab(tab);
     setDetailDrawerVisible(true);
   };
 
@@ -569,10 +569,15 @@ const TaskManagementPage = () => {
       width: 60,
       render: (_: unknown, record: LYTaskResponse) => {
         // 判断是否有可用操作
-        const hasActions = 
+        const hasStatusActions = 
           record.task_status === 'PENDING' ||
           record.execution_status === 'RUNNING' ||
           record.task_status === 'FAILED';
+        
+        // 执行历史入口：只要有过执行记录就显示
+        const hasExecutions = record.total_execution_count > 0;
+        
+        const hasActions = hasStatusActions || hasExecutions;
 
         if (!hasActions) {
           return null;
@@ -616,6 +621,17 @@ const TaskManagementPage = () => {
                     }}
                   >
                     {t('task.actions.retry')}
+                  </Dropdown.Item>
+                )}
+                {hasExecutions && (
+                  <Dropdown.Item
+                    icon={<IconHistory />}
+                    onClick={(e) => {
+                      e?.stopPropagation();
+                      navigate(`/scheduling-center/task-execution/task-list/${record.task_id}/executions`);
+                    }}
+                  >
+                    {t('task.actions.viewExecutionHistory')}
                   </Dropdown.Item>
                 )}
               </Dropdown.Menu>
