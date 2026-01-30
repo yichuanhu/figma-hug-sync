@@ -1,9 +1,10 @@
 import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SideSheet, Typography, Button, Tag, Descriptions, Switch, Tooltip, Divider, Row, Col, Space } from '@douyinfe/semi-ui';
-import { IconEditStroked, IconDeleteStroked, IconMaximize, IconMinimize, IconClose, IconKeyStroked, IconChevronDown, IconChevronUp, IconChevronLeft, IconChevronRight, IconUserListStroked, IconMinusCircleStroked } from '@douyinfe/semi-icons';
+import { IconEditStroked, IconDeleteStroked, IconMaximize, IconMinimize, IconClose, IconKeyStroked, IconChevronLeft, IconChevronRight, IconUserListStroked, IconMinusCircleStroked } from '@douyinfe/semi-icons';
 import type { LYWorkerResponse } from '@/api';
 import DetailSkeleton from '@/components/DetailSkeleton';
+import ExpandableText from '@/components/ExpandableText';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -35,13 +36,9 @@ interface WorkerDetailDrawerProps {
   onScrollToRow?: (id: string) => void;
 }
 
-// 描述展开收起的阈值（字符数）
-const DESCRIPTION_COLLAPSE_THRESHOLD = 100;
-
 const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, onDelete, onToggleReceiveTasks, onAddToGroup, onRemoveFromGroup, dataList = [], onNavigate, pagination, onPageChange, onScrollToRow }: WorkerDetailDrawerProps) => {
   const { t } = useTranslation();
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [drawerWidth, setDrawerWidth] = useState(() => {
     const saved = localStorage.getItem('workerDetailDrawerWidth');
     return saved ? Math.max(Number(saved), 576) : 900;
@@ -50,10 +47,6 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
   const startX = useRef(0);
   const startWidth = useRef(drawerWidth);
 
-  // 当workerData变化时，重置描述展开状态
-  useEffect(() => {
-    setIsDescriptionExpanded(false);
-  }, [workerData?.id]);
 
   const handleMouseDown = useCallback(
     (e: React.MouseEvent) => {
@@ -174,34 +167,6 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
   // 只有在线且非故障状态才允许操作接收任务开关
   const canOperateReceiveTasks = workerData.status !== 'OFFLINE' && workerData.status !== 'FAULT';
 
-  // 处理描述展示
-  const description = workerData.description || '-';
-  const isDescriptionLong = description.length > DESCRIPTION_COLLAPSE_THRESHOLD;
-  const displayDescription = isDescriptionLong && !isDescriptionExpanded 
-    ? description.slice(0, DESCRIPTION_COLLAPSE_THRESHOLD) + '...' 
-    : description;
-
-  const renderDescriptionValue = () => {
-    if (description === '-') return '-';
-    
-    return (
-      <div className="worker-detail-drawer-description">
-        <span className="worker-detail-drawer-description-text">{displayDescription}</span>
-        {isDescriptionLong && (
-          <Button
-            theme="borderless"
-            size="small"
-            type="tertiary"
-            className="worker-detail-drawer-description-toggle"
-            icon={isDescriptionExpanded ? <IconChevronUp /> : <IconChevronDown />}
-            onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
-          >
-            {isDescriptionExpanded ? t('common.collapse') : t('common.expand')}
-          </Button>
-        )}
-      </div>
-    );
-  };
 
   // 渲染分组信息和操作按钮
   const renderGroupValue = () => {
@@ -240,7 +205,7 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
   const basicInfoData = [
     { key: t('worker.detail.fields.workerName'), value: workerData.name },
     { key: t('worker.detail.fields.group'), value: renderGroupValue() },
-    { key: t('worker.detail.fields.description'), value: renderDescriptionValue() },
+    { key: t('worker.detail.fields.description'), value: <ExpandableText text={workerData.description} maxLines={3} /> },
     {
       key: t('worker.detail.fields.status'),
       value: (

@@ -24,6 +24,7 @@ import {
 import EmptyState from '@/components/EmptyState';
 import DetailSkeleton from '@/components/DetailSkeleton';
 import TableSkeleton from '@/components/TableSkeleton';
+import ExpandableText from '@/components/ExpandableText';
 import {
   IconClose,
   IconEditStroked,
@@ -454,7 +455,7 @@ const CredentialDetailDrawer = ({
           : t('credential.detail.productionValue'),
         value: <Text>{getCredentialValueDisplay}</Text>,
       },
-      { key: t('common.description'), value: credential.description || '-' },
+      { key: t('common.description'), value: <ExpandableText text={credential.description} maxLines={3} /> },
       ...(credential.credential_type === 'PERSONAL_REF' ? [
         { key: t('credential.detail.linkedPersonalCredential'), value: credential.linked_personal_credential_value || '-' },
       ] : []),

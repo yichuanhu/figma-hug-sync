@@ -22,6 +22,7 @@ import {
 import EmptyState from '@/components/EmptyState';
 import DetailSkeleton from '@/components/DetailSkeleton';
 import TableSkeleton from '@/components/TableSkeleton';
+import ExpandableText from '@/components/ExpandableText';
 import { 
   IconEditStroked, 
   IconDeleteStroked, 
@@ -32,8 +33,6 @@ import {
   IconMinusCircleStroked,
   IconMaximize,
   IconMinimize,
-  IconChevronDown,
-  IconChevronUp,
   IconChevronLeft,
   IconChevronRight,
   IconClose,
@@ -77,8 +76,6 @@ interface WorkerGroupDetailDrawerProps {
   onScrollToRow?: (id: string) => void;
 }
 
-// 描述展开收起的阈值（字符数）
-const DESCRIPTION_COLLAPSE_THRESHOLD = 100;
 
 // Mock成员数据
 const mockMembers: LYWorkerGroupMemberResponse[] = [
@@ -189,7 +186,6 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
   
   // 抽屉状态
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [drawerWidth, setDrawerWidth] = useState(() => {
     const saved = localStorage.getItem('workerGroupDetailDrawerWidth');
     return saved ? Math.max(Number(saved), 576) : 900;
@@ -222,10 +218,6 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
     { value: 'OFFLINE', label: t('worker.status.offline') },
   ], [t]);
 
-  // 当groupData变化时，重置描述展开状态
-  useEffect(() => {
-    setIsDescriptionExpanded(false);
-  }, [groupData?.id]);
 
   // 拖拽调整宽度
   const handleMouseDown = useCallback(
@@ -422,39 +414,10 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
 
   if (!groupData) return null;
 
-  // 处理描述展示
-  const description = groupData.description || '-';
-  const isDescriptionLong = description.length > DESCRIPTION_COLLAPSE_THRESHOLD;
-  const displayDescription = isDescriptionLong && !isDescriptionExpanded 
-    ? description.slice(0, DESCRIPTION_COLLAPSE_THRESHOLD) + '...' 
-    : description;
-
-  const renderDescriptionValue = () => {
-    if (description === '-') return '-';
-    
-    return (
-      <div className="worker-group-detail-drawer-description">
-        <span className="worker-group-detail-drawer-description-text">{displayDescription}</span>
-        {isDescriptionLong && (
-          <Button
-            theme="borderless"
-            size="small"
-            type="tertiary"
-            className="worker-group-detail-drawer-description-toggle"
-            icon={isDescriptionExpanded ? <IconChevronUp /> : <IconChevronDown />}
-            onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
-          >
-            {isDescriptionExpanded ? t('common.collapse') : t('common.expand')}
-          </Button>
-        )}
-      </div>
-    );
-  };
-
   // 基本信息
   const basicInfoData = [
     { key: t('workerGroup.detail.fields.groupName'), value: groupData.name },
-    { key: t('common.description'), value: renderDescriptionValue() },
+    { key: t('common.description'), value: <ExpandableText text={groupData.description} maxLines={3} /> },
     { key: t('workerGroup.table.memberCount'), value: `${groupData.member_count} ${t('workerGroup.table.memberUnit')}` },
     { key: t('common.creator'), value: groupData.creator_name || '-' },
     { key: t('common.createTime'), value: groupData.created_at },

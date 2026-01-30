@@ -32,6 +32,7 @@ import type {
 } from '@/api';
 import DetailSkeleton from '@/components/DetailSkeleton';
 import EmptyState from '@/components/EmptyState';
+import ExpandableText from '@/components/ExpandableText';
 import './index.less';
 
 const { Text, Title } = Typography;
@@ -202,7 +203,7 @@ const TemplateDetailDrawer = ({
   // 基本信息数据
   const basicInfoData = [
     { key: t('template.fields.name'), value: template.template_name },
-    { key: t('common.description'), value: template.description || '-' },
+    { key: t('common.description'), value: <ExpandableText text={template.description} maxLines={3} /> },
     { key: t('template.fields.process'), value: template.process_name || '-' },
     {
       key: t('template.fields.targetType'),
