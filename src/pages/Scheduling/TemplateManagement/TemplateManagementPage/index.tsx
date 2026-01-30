@@ -31,6 +31,8 @@ import type {
   TaskPriority,
   ExecutionTargetType,
 } from '@/api';
+import CreateTemplateModal from './components/CreateTemplateModal';
+import EditTemplateModal from './components/EditTemplateModal';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -127,6 +129,11 @@ const TemplateManagementPage = () => {
   // 选中状态
   const [selectedTemplate, setSelectedTemplate] = useState<LYExecutionTemplateResponse | null>(null);
 
+  // 弹窗状态
+  const [createModalVisible, setCreateModalVisible] = useState(false);
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [editingTemplate, setEditingTemplate] = useState<LYExecutionTemplateResponse | null>(null);
+
   // 从响应中直接获取分页信息
   const { range, list } = listResponse;
   const currentPage = Math.floor((range?.offset || 0) / (range?.size || 20)) + 1;
@@ -188,6 +195,25 @@ const TemplateManagementPage = () => {
   // 流程筛选
   const handleProcessFilter = (processId: string | undefined) => {
     setQueryParams((prev) => ({ ...prev, offset: 0, process_id: processId }));
+  };
+
+  // 创建模板成功
+  const handleCreateSuccess = () => {
+    setCreateModalVisible(false);
+    loadData(queryParams);
+  };
+
+  // 编辑模板
+  const handleEditTemplate = (template: LYExecutionTemplateResponse) => {
+    setEditingTemplate(template);
+    setEditModalVisible(true);
+  };
+
+  // 编辑模板成功
+  const handleEditSuccess = () => {
+    setEditModalVisible(false);
+    setEditingTemplate(null);
+    loadData(queryParams);
   };
 
   // 使用模板
@@ -282,7 +308,7 @@ const TemplateManagementPage = () => {
               <Dropdown.Item onClick={() => handleUseTemplate(record)}>
                 {t('template.actions.use')}
               </Dropdown.Item>
-              <Dropdown.Item onClick={() => console.log('编辑', record)}>
+              <Dropdown.Item onClick={() => handleEditTemplate(record)}>
                 {t('template.actions.edit')}
               </Dropdown.Item>
               <Dropdown.Item
@@ -355,7 +381,7 @@ const TemplateManagementPage = () => {
                 icon={<IconPlus />}
                 theme="solid"
                 type="primary"
-                onClick={() => console.log('新建模板')}
+                onClick={() => setCreateModalVisible(true)}
               >
                 {t('template.actions.create')}
               </Button>
@@ -392,6 +418,24 @@ const TemplateManagementPage = () => {
             }}
           />
         </div>
+
+        {/* 创建模板弹窗 */}
+        <CreateTemplateModal
+          visible={createModalVisible}
+          onCancel={() => setCreateModalVisible(false)}
+          onSuccess={handleCreateSuccess}
+        />
+
+        {/* 编辑模板弹窗 */}
+        <EditTemplateModal
+          visible={editModalVisible}
+          template={editingTemplate}
+          onCancel={() => {
+            setEditModalVisible(false);
+            setEditingTemplate(null);
+          }}
+          onSuccess={handleEditSuccess}
+        />
       </div>
     </AppLayout>
   );

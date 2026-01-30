@@ -1,0 +1,61 @@
+// CreateTemplateModal 样式
+.create-template-modal {
+  .create-template-modal-form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .create-template-modal-content {
+    max-height: calc(70vh - 120px);
+    overflow-y: auto;
+    padding-right: 8px;
+  }
+
+  .create-template-modal-section {
+    margin-bottom: 24px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .create-template-modal-section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .create-template-modal-section-line {
+    width: 3px;
+    height: 14px;
+    background-color: var(--semi-color-text-2);
+    border-radius: 2px;
+  }
+
+  .create-template-modal-section-title {
+    color: var(--semi-color-text-0);
+    font-size: 14px;
+  }
+
+  .create-template-modal-version-info {
+    margin-top: 8px;
+  }
+
+  .create-template-modal-param-item {
+    margin-bottom: 16px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .create-template-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding-top: 16px;
+    border-top: 1px solid var(--semi-color-border);
+    margin-top: 16px;
+  }
+}
