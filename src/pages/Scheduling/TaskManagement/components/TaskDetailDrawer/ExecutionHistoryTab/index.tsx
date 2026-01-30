@@ -53,9 +53,10 @@ const generateUUID = (): string => {
 
 // Mock数据生成
 const generateMockExecution = (taskId: string, index: number): LYTaskExecutionResponse => {
-  const statuses: ExecutionStatus[] = ['RUNNING', 'SUCCESS', 'FAILED'];
-  const botNames = ['RPA-BOT-001', 'RPA-BOT-002', 'RPA-BOT-003'];
-  const createDate = new Date(2026, 0, 28 - index, 10 + (index % 12), (index * 7) % 60);
+  const statuses: ExecutionStatus[] = ['RUNNING', 'SUCCESS', 'FAILED', 'SUCCESS', 'TIMEOUT', 'STOPPED'];
+  const botNames = ['RPA-BOT-001', 'RPA-BOT-002', 'RPA-BOT-003', 'RPA-BOT-004', 'RPA-BOT-005', 'RPA-BOT-006'];
+  // 最新的时间在前面，index越小时间越新
+  const createDate = new Date(2026, 0, 30, 14 - index, 30 - (index * 5));
   const status = statuses[index % statuses.length];
   
   return {
@@ -67,7 +68,7 @@ const generateMockExecution = (taskId: string, index: number): LYTaskExecutionRe
     duration: status !== 'RUNNING' ? 300 + (index * 10) : null,
     bot_id: generateUUID(),
     bot_name: botNames[index % botNames.length],
-    error_message: status === 'FAILED' ? '执行失败：目标元素未找到' : null,
+    error_message: status === 'FAILED' ? '执行失败：目标元素未找到' : status === 'TIMEOUT' ? '执行超时' : null,
     log_count: 50 + (index % 50),
     screenshot_count: index % 2 === 0 ? 5 + (index % 10) : 0,
   };
@@ -80,8 +81,8 @@ const fetchExecutionHistory = async (
 ): Promise<LYListResponseLYTaskExecutionResponse> => {
   await new Promise((resolve) => setTimeout(resolve, 300));
   
-  // 只生成3条mock数据
-  const mockData = Array(3).fill(null).map((_, index) => generateMockExecution(taskId, index));
+  // 生成6条mock数据，按时间倒序排列（最新的在前面）
+  const mockData = Array(6).fill(null).map((_, index) => generateMockExecution(taskId, index));
   
   const total = mockData.length;
   const offset = params.offset || 0;
