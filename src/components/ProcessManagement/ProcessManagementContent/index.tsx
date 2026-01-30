@@ -9,7 +9,6 @@ import {
   Button,
   Table,
   Tag,
-  Avatar,
   Dropdown,
   Tooltip,
   Row,
@@ -436,14 +435,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       width: 120,
       render: (creatorId: string) => {
         const creatorName = mockCreatorNameMap[creatorId] || creatorId;
-        return (
-          <div className="process-management-cell-creator">
-            <Avatar size="small" className="avatar-creator">
-              {creatorName.charAt(0)}
-            </Avatar>
-            <span>{creatorName}</span>
-          </div>
-        );
+        return <span>{creatorName}</span>;
       },
     },
     {
