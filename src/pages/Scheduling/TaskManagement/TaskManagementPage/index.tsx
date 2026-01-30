@@ -737,6 +737,7 @@ const TaskManagementPage = () => {
               onRow={(record) => ({
                 onClick: () => openTaskDetail(record as LYTaskResponse),
                 style: { cursor: 'pointer' },
+                className: selectedTask?.task_id === (record as LYTaskResponse).task_id && detailDrawerVisible ? 'task-row-selected' : '',
               })}
             />
           )}
