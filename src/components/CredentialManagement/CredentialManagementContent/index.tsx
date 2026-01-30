@@ -80,7 +80,9 @@ const generateMockCredential = (index: number): LYCredentialResponse => {
       username: `prod_user_${index}`,
       password: '******',
     },
-    description: `这是${names[index % names.length]}的描述信息，用于第三方系统的访问认证。`,
+    description: index === 0
+      ? '这是企业核心业务系统的统一认证凭据，用于自动化流程访问多个关联系统。该凭据支持SSO单点登录、OAuth2.0授权、LDAP目录服务集成等多种认证方式。使用时需确保网络环境安全，并定期更新密码以符合企业安全合规要求。凭据的使用记录将被完整审计和追踪。'
+      : `这是${names[index % names.length]}的描述信息，用于第三方系统的访问认证。`,
     linked_personal_credential_value: type === 'PERSONAL_REF' && index % 3 === 0 ? 'user/******' : '-',
     created_by: generateUUID(),
     created_by_name: ['张三', '李四', '王五', '赵六'][index % 4],

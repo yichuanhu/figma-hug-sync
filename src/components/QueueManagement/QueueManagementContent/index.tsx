@@ -65,7 +65,9 @@ const generateMockQueue = (index: number): LYQueueResponse => {
   return {
     queue_id: generateUUID(),
     queue_name: names[index % names.length],
-    description: `这是${names[index % names.length]}的描述信息，用于处理相关业务消息。`,
+    description: index === 0
+      ? '这是一个高优先级的订单处理消息队列，用于接收和分发来自电商平台、ERP系统和客户服务系统的订单数据。支持消息持久化、优先级排序、死信队列和延迟消费等高级特性。队列配置了自动扩缩容策略，可根据消息积压情况动态调整消费者数量，确保业务高峰期的处理能力。'
+      : `这是${names[index % names.length]}的描述信息，用于处理相关业务消息。`,
     is_published: index % 3 !== 0,
     test_unconsumed_count: Math.floor(Math.random() * 100),
     test_consumed_count: Math.floor(Math.random() * 500),
