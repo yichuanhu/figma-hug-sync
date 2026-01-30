@@ -1536,6 +1536,13 @@
       "asc": "按序号升序",
       "desc": "按序号降序"
     },
+    "table": {
+      "sequence": "序号",
+      "thumbnail": "缩略图",
+      "name": "名称",
+      "capturedAt": "截图时间",
+      "fileSize": "文件大小"
+    },
     "batchOperation": {
       "selected": "已选中 {{count}} 项",
       "selectAll": "全选（共 {{count}} 项）",

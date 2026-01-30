@@ -16,11 +16,15 @@
     margin-bottom: 16px;
   }
 
-  // 内容区域
-  &-body {
+  // 表格区域
+  &-table {
     flex: 1;
-    overflow-y: auto;
+    overflow: hidden;
     min-height: 0;
+
+    .semi-table-wrapper {
+      max-height: 100%;
+    }
   }
 
   // 加载状态
@@ -38,12 +42,16 @@
     justify-content: center;
     height: 100%;
   }
+}
 
-  // 截图列表
-  &-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding-bottom: 16px;
+// 缩略图样式
+.screenshot-table-thumbnail {
+  display: flex;
+  align-items: center;
+  padding: 4px 0;
+
+  .semi-image {
+    border-radius: var(--semi-border-radius-small);
+    overflow: hidden;
   }
 }
