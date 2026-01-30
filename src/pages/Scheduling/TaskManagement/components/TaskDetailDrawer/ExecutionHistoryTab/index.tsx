@@ -69,7 +69,7 @@ const generateMockExecution = (taskId: string, index: number): LYTaskExecutionRe
     bot_name: botNames[index % botNames.length],
     error_message: status === 'FAILED' ? '执行失败：目标元素未找到' : status === 'TIMEOUT' ? '执行超时：超过最大执行时间' : null,
     log_count: 50 + (index % 50),
-    screenshot_count: index % 3 === 0 ? 5 + (index % 10) : 0, // 部分有截图
+    screenshot_count: index % 3 === 0 ? 5 + (index % 10) : 0,
   };
 };
 
@@ -117,7 +117,6 @@ const ExecutionHistoryTab = ({ taskId, enableRecording }: ExecutionHistoryTabPro
     try {
       const response = await fetchExecutionHistory(taskId, { offset: 0, size: 50 });
       setExecutions(response.list);
-      // 默认选择第一个
       if (response.list.length > 0 && !selectedExecutionId) {
         setSelectedExecutionId(response.list[0].execution_id);
       }
@@ -128,7 +127,7 @@ const ExecutionHistoryTab = ({ taskId, enableRecording }: ExecutionHistoryTabPro
   
   useEffect(() => {
     loadData();
-  }, [taskId]); // 只在taskId变化时加载
+  }, [taskId]);
   
   const handleRefresh = () => {
     loadData();
@@ -146,9 +145,8 @@ const ExecutionHistoryTab = ({ taskId, enableRecording }: ExecutionHistoryTabPro
     }
   }, [navigate, selectedExecution]);
   
-  // 查看截图 - 入口，暂未实现具体功能
+  // 查看截图
   const handleViewScreenshots = useCallback(() => {
-    // TODO: 实现查看截图功能
     console.log('View screenshots for execution:', selectedExecution?.execution_id);
   }, [selectedExecution]);
   
@@ -200,24 +198,22 @@ const ExecutionHistoryTab = ({ taskId, enableRecording }: ExecutionHistoryTabPro
   
   return (
     <div className="execution-history-tab">
-      {/* 执行时间戳tabs */}
-      <div className="execution-history-tab-timestamps">
-        <div className="execution-history-tab-timestamps-header">
-          <Text strong>{t('executionHistory.title')}</Text>
-          <Button
-            icon={<IconRefresh />}
-            size="small"
-            theme="borderless"
-            onClick={handleRefresh}
-            loading={loading}
-          />
-        </div>
+      {/* 顶部执行时间戳tabs */}
+      <div className="execution-history-tab-header">
         <Tabs
           type="card"
           activeKey={selectedExecutionId || ''}
           onChange={(key) => setSelectedExecutionId(key)}
-          className="execution-history-tab-timestamps-tabs"
-          tabPosition="left"
+          className="execution-history-tab-timestamps"
+          tabBarExtraContent={
+            <Button
+              icon={<IconRefresh />}
+              size="small"
+              theme="borderless"
+              onClick={handleRefresh}
+              loading={loading}
+            />
+          }
         >
           {executions.map((execution) => (
             <TabPane
@@ -247,12 +243,15 @@ const ExecutionHistoryTab = ({ taskId, enableRecording }: ExecutionHistoryTabPro
             {/* 执行信息 */}
             <div className="execution-history-tab-info-section">
               <div className="execution-history-tab-info-header">
-                <Text strong>{t('executionHistory.executionInfo')}</Text>
+                <Text strong className="execution-history-tab-section-title">
+                  {t('executionHistory.executionInfo')}
+                </Text>
                 <Space>
                   {showRecordingButton && (
                     <Button
                       icon={<IconVideo />}
                       size="small"
+                      theme="borderless"
                       onClick={handleViewRecording}
                     >
                       {t('task.actions.viewRecording')}
@@ -262,6 +261,7 @@ const ExecutionHistoryTab = ({ taskId, enableRecording }: ExecutionHistoryTabPro
                     <Button
                       icon={<IconImage />}
                       size="small"
+                      theme="borderless"
                       onClick={handleViewScreenshots}
                     >
                       {t('task.actions.viewScreenshots')}
@@ -283,7 +283,7 @@ const ExecutionHistoryTab = ({ taskId, enableRecording }: ExecutionHistoryTabPro
 
             {/* 执行日志 */}
             <div className="execution-history-tab-logs-section">
-              <Text strong className="execution-history-tab-logs-title">
+              <Text strong className="execution-history-tab-section-title">
                 {t('executionHistory.executionLogs')}
               </Text>
               <div className="execution-history-tab-logs-content">
