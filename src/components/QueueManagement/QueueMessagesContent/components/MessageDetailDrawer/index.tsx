@@ -205,7 +205,6 @@ const MessageDetailDrawer = ({
                 icon={<IconChevronLeft />}
                 theme="borderless"
                 size="small"
-                className="navigate"
                 disabled={!hasPrevious}
                 onClick={handlePrevious}
               />
@@ -217,7 +216,6 @@ const MessageDetailDrawer = ({
                 icon={<IconChevronRight />}
                 theme="borderless"
                 size="small"
-                className="navigate"
                 disabled={!hasNext}
                 onClick={handleNext}
               />

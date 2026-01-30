@@ -185,7 +185,6 @@ const ParameterDetailDrawer = ({
               icon={<IconChevronLeft />}
               theme="borderless"
               size="small"
-              className="navigate"
               disabled={!canGoPrev}
               onClick={() => handleNavigate('prev')}
             />
@@ -195,7 +194,6 @@ const ParameterDetailDrawer = ({
               icon={<IconChevronRight />}
               theme="borderless"
               size="small"
-              className="navigate"
               disabled={!canGoNext}
               onClick={() => handleNavigate('next')}
             />
