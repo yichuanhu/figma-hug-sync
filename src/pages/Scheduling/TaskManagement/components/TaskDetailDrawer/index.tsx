@@ -416,15 +416,6 @@ const TaskDetailDrawer = ({
                   </div>
                 )}
               </div>
-
-              {/* 快捷链接 */}
-              {task.current_execution && (
-                <div className="task-detail-drawer-links">
-                  <a href="#" onClick={(e) => e.preventDefault()}>
-                    {t('task.detail.viewScreenshots')}
-                  </a>
-                </div>
-              )}
             </div>
           </TabPane>
           <TabPane tab={t('task.detail.tabs.executionHistory')} itemKey="executionHistory">
