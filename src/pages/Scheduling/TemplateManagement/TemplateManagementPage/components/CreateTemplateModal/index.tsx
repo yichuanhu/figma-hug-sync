@@ -466,7 +466,9 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
               max={86400}
               style={{ width: '100%' }}
             />
-            <Text type="tertiary" size="small">{t('template.fields.maxDurationHint')}</Text>
+            <Text type="tertiary" size="small" style={{ display: 'block', marginTop: 4 }}>
+              {t('template.fields.maxDurationHint')}
+            </Text>
             
             <div className="semi-form-field-label" style={{ marginTop: 16 }}>
               <label>{t('template.fields.validityDays')}</label>
@@ -478,7 +480,9 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
               max={30}
               style={{ width: '100%' }}
             />
-            <Text type="tertiary" size="small">{t('template.fields.validityDaysHint')}</Text>
+            <Text type="tertiary" size="small" style={{ display: 'block', marginTop: 4 }}>
+              {t('template.fields.validityDaysHint')}
+            </Text>
             
             <div className="create-template-modal-param-item" style={{ marginTop: 16 }}>
               <Text>{t('template.fields.enableRecording')}</Text>
