@@ -94,7 +94,7 @@ const generateMockTaskResponse = (index: number): LYTaskResponse => {
   const createDate = new Date(2026, 0, 1 + (index % 28), 10 + (index % 12), (index * 7) % 60);
   const expireDate = new Date(createDate.getTime() + 7 * 24 * 60 * 60 * 1000);
   const taskStatus = taskStatuses[index % taskStatuses.length];
-  const hasExecution = ['ASSIGNED', 'WAITING', 'COMPLETED', 'FAILED'].includes(taskStatus);
+  const hasExecution = ['ASSIGNED', 'WAITING', 'COMPLETED', 'FAILED', 'CANCELLED'].includes(taskStatus);
   const creatorId = creatorIds[index % creatorIds.length];
 
   return {
