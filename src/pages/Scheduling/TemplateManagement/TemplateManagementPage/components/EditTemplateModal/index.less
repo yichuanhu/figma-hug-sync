@@ -4,6 +4,28 @@
     padding-top: 4px;
   }
 
+  &-body {
+    display: flex;
+    gap: 32px;
+  }
+
+  &-left {
+    flex: 1;
+    min-width: 0;
+
+    // 当只有左侧时，占满整个宽度
+    &:only-child {
+      max-width: 100%;
+    }
+  }
+
+  &-right {
+    flex: 1;
+    min-width: 0;
+    border-left: 1px solid var(--semi-color-border);
+    padding-left: 32px;
+  }
+
   &-content {
     max-height: calc(100vh - 300px);
     overflow-y: auto;
@@ -64,12 +86,68 @@
     margin-top: 8px;
   }
 
+  &-params {
+    // 使用标准表单样式
+  }
+
   &-param-item {
     margin-bottom: 16px;
 
     &:last-child {
       margin-bottom: 0;
     }
+
+    .semi-form-field-label {
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .semi-switch {
+      display: block;
+    }
+  }
+
+  &-param-label {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--semi-color-text-0);
+  }
+
+  &-no-params {
+    color: var(--semi-color-text-2);
+    padding: 32px 16px;
+    text-align: center;
+  }
+
+  &-output-params {
+    // 输出参数只读展示
+  }
+
+  &-output-param-item {
+    padding: 12px;
+    background: var(--semi-color-fill-0);
+    border-radius: 6px;
+    margin-bottom: 8px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &-output-param-name {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--semi-color-text-0);
+  }
+
+  &-output-param-desc {
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--semi-color-text-2);
   }
 
   &-footer {
