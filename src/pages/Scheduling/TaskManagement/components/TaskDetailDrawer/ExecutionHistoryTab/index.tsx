@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -6,8 +6,6 @@ import {
   Tag,
   Typography,
   Descriptions,
-  Tabs,
-  TabPane,
   Space,
   Spin,
 } from '@douyinfe/semi-ui';
@@ -15,6 +13,8 @@ import {
   IconRefresh,
   IconVideo,
   IconImage,
+  IconChevronLeft,
+  IconChevronRight,
 } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import ExecutionLogTab from '../ExecutionLogTab';
@@ -53,8 +53,8 @@ const generateUUID = (): string => {
 
 // Mock数据生成
 const generateMockExecution = (taskId: string, index: number): LYTaskExecutionResponse => {
-  const statuses: ExecutionStatus[] = ['RUNNING', 'SUCCESS', 'FAILED', 'STOPPED', 'TIMEOUT'];
-  const botNames = ['RPA-BOT-001', 'RPA-BOT-002', 'RPA-BOT-003', 'RPA-BOT-004', 'RPA-BOT-005'];
+  const statuses: ExecutionStatus[] = ['RUNNING', 'SUCCESS', 'FAILED'];
+  const botNames = ['RPA-BOT-001', 'RPA-BOT-002', 'RPA-BOT-003'];
   const createDate = new Date(2026, 0, 28 - index, 10 + (index % 12), (index * 7) % 60);
   const status = statuses[index % statuses.length];
   
@@ -67,9 +67,9 @@ const generateMockExecution = (taskId: string, index: number): LYTaskExecutionRe
     duration: status !== 'RUNNING' ? 300 + (index * 10) : null,
     bot_id: generateUUID(),
     bot_name: botNames[index % botNames.length],
-    error_message: status === 'FAILED' ? '执行失败：目标元素未找到' : status === 'TIMEOUT' ? '执行超时：超过最大执行时间' : null,
+    error_message: status === 'FAILED' ? '执行失败：目标元素未找到' : null,
     log_count: 50 + (index % 50),
-    screenshot_count: index % 3 === 0 ? 5 + (index % 10) : 0,
+    screenshot_count: index % 2 === 0 ? 5 + (index % 10) : 0,
   };
 };
 
@@ -80,7 +80,8 @@ const fetchExecutionHistory = async (
 ): Promise<LYListResponseLYTaskExecutionResponse> => {
   await new Promise((resolve) => setTimeout(resolve, 300));
   
-  const mockData = Array(8).fill(null).map((_, index) => generateMockExecution(taskId, index));
+  // 只生成3条mock数据
+  const mockData = Array(3).fill(null).map((_, index) => generateMockExecution(taskId, index));
   
   const total = mockData.length;
   const offset = params.offset || 0;
@@ -110,6 +111,31 @@ const ExecutionHistoryTab = ({ taskId, enableRecording }: ExecutionHistoryTabPro
   const [loading, setLoading] = useState(true);
   const [executions, setExecutions] = useState<LYTaskExecutionResponse[]>([]);
   const [selectedExecutionId, setSelectedExecutionId] = useState<string | null>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+  
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  
+  // 检查滚动状态
+  const checkScrollState = useCallback(() => {
+    const container = scrollContainerRef.current;
+    if (container) {
+      setCanScrollLeft(container.scrollLeft > 0);
+      setCanScrollRight(container.scrollLeft < container.scrollWidth - container.clientWidth - 1);
+    }
+  }, []);
+  
+  // 滚动处理
+  const handleScroll = useCallback((direction: 'left' | 'right') => {
+    const container = scrollContainerRef.current;
+    if (container) {
+      const scrollAmount = 200;
+      container.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth',
+      });
+    }
+  }, []);
   
   // 加载数据
   const loadData = useCallback(async () => {
@@ -128,6 +154,12 @@ const ExecutionHistoryTab = ({ taskId, enableRecording }: ExecutionHistoryTabPro
   useEffect(() => {
     loadData();
   }, [taskId]);
+  
+  useEffect(() => {
+    checkScrollState();
+    window.addEventListener('resize', checkScrollState);
+    return () => window.removeEventListener('resize', checkScrollState);
+  }, [checkScrollState, executions]);
   
   const handleRefresh = () => {
     loadData();
@@ -198,42 +230,67 @@ const ExecutionHistoryTab = ({ taskId, enableRecording }: ExecutionHistoryTabPro
   
   return (
     <div className="execution-history-tab">
-      {/* 顶部执行时间戳tabs */}
+      {/* 顶部执行时间戳标签栏 */}
       <div className="execution-history-tab-header">
-        <Tabs
-          type="card"
-          activeKey={selectedExecutionId || ''}
-          onChange={(key) => setSelectedExecutionId(key)}
-          className="execution-history-tab-timestamps"
-          tabBarExtraContent={
+        <div className="execution-history-tab-tags-wrapper">
+          {canScrollLeft && (
             <Button
-              icon={<IconRefresh />}
+              icon={<IconChevronLeft />}
               size="small"
               theme="borderless"
-              onClick={handleRefresh}
-              loading={loading}
+              className="execution-history-tab-scroll-btn execution-history-tab-scroll-btn--left"
+              onClick={() => handleScroll('left')}
             />
-          }
-        >
-          {executions.map((execution) => (
-            <TabPane
-              key={execution.execution_id}
-              itemKey={execution.execution_id}
-              tab={
-                <div className="execution-history-tab-timestamp-item">
-                  <Text size="small">{formatExecutionTime(execution.start_time)}</Text>
+          )}
+          <div
+            ref={scrollContainerRef}
+            className="execution-history-tab-tags-container"
+            onScroll={checkScrollState}
+          >
+            {executions.map((execution) => {
+              const isSelected = execution.execution_id === selectedExecutionId;
+              const statusConfig = executionStatusConfig[execution.status];
+              return (
+                <Tag
+                  key={execution.execution_id}
+                  color={isSelected ? statusConfig?.color || 'grey' : 'white'}
+                  type={isSelected ? 'solid' : 'ghost'}
+                  size="large"
+                  className={`execution-history-tab-tag ${isSelected ? 'execution-history-tab-tag--selected' : ''}`}
+                  onClick={() => setSelectedExecutionId(execution.execution_id)}
+                >
+                  <span className="execution-history-tab-tag-time">
+                    {formatExecutionTime(execution.start_time)}
+                  </span>
                   <Tag
-                    color={executionStatusConfig[execution.status]?.color || 'grey'}
-                    type="ghost"
+                    color={statusConfig?.color || 'grey'}
+                    type="light"
                     size="small"
+                    className="execution-history-tab-tag-status"
                   >
-                    {t(executionStatusConfig[execution.status]?.i18nKey || '')}
+                    {t(statusConfig?.i18nKey || '')}
                   </Tag>
-                </div>
-              }
+                </Tag>
+              );
+            })}
+          </div>
+          {canScrollRight && (
+            <Button
+              icon={<IconChevronRight />}
+              size="small"
+              theme="borderless"
+              className="execution-history-tab-scroll-btn execution-history-tab-scroll-btn--right"
+              onClick={() => handleScroll('right')}
             />
-          ))}
-        </Tabs>
+          )}
+        </div>
+        <Button
+          icon={<IconRefresh />}
+          size="small"
+          theme="borderless"
+          onClick={handleRefresh}
+          loading={loading}
+        />
       </div>
 
       {/* 执行详情内容 */}
