@@ -1322,7 +1322,7 @@
       "retry": "重新执行",
       "viewLogs": "查看日志",
       "viewRecording": "查看录屏",
-      "viewExecutionHistory": "查看执行历史"
+      "viewExecutionHistory": "执行历史"
     },
     "createModal": {
       "title": "新建任务",
