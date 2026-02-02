@@ -1,0 +1,223 @@
+import React, { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import {
+  Modal,
+  Tabs,
+  TabPane,
+  Table,
+  Input,
+  Empty as SemiEmpty,
+  Tag,
+  Typography,
+} from '@douyinfe/semi-ui';
+import { IconSearch } from '@douyinfe/semi-icons';
+import type { ResourceType } from '@/api';
+import type { ResourceConfig } from '../../index';
+
+import './index.less';
+
+const { Text } = Typography;
+
+interface AvailableResource {
+  id: string;
+  name: string;
+  type: ResourceType;
+  test_value?: string;
+  is_published?: boolean;
+}
+
+interface AddResourceModalProps {
+  visible: boolean;
+  onClose: () => void;
+  onConfirm: (resources: ResourceConfig[]) => void;
+  existingResourceIds: string[];
+}
+
+const AddResourceModal: React.FC<AddResourceModalProps> = ({
+  visible,
+  onClose,
+  onConfirm,
+  existingResourceIds,
+}) => {
+  const { t } = useTranslation();
+  const [activeTab, setActiveTab] = useState<ResourceType>('PARAMETER');
+  const [searchText, setSearchText] = useState('');
+  const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
+
+  // Mock 可用资源数据
+  const mockAvailableResources: AvailableResource[] = useMemo(() => [
+    // 参数
+    { id: 'param-1', name: 'API_ENDPOINT', type: 'PARAMETER', test_value: 'https://api.test.com', is_published: true },
+    { id: 'param-2', name: 'MAX_RETRIES', type: 'PARAMETER', test_value: '3', is_published: false },
+    { id: 'param-3', name: 'TIMEOUT_SECONDS', type: 'PARAMETER', test_value: '30', is_published: false },
+    { id: 'param-4', name: 'DEBUG_MODE', type: 'PARAMETER', test_value: 'true', is_published: true },
+    { id: 'param-5', name: 'LOG_LEVEL', type: 'PARAMETER', test_value: 'INFO', is_published: false },
+    // 凭据
+    { id: 'cred-1', name: 'Database Credential', type: 'CREDENTIAL', test_value: '******', is_published: true },
+    { id: 'cred-2', name: 'API Token', type: 'CREDENTIAL', test_value: '******', is_published: false },
+    { id: 'cred-3', name: 'OAuth Client', type: 'CREDENTIAL', test_value: '******', is_published: false },
+    { id: 'cred-4', name: 'SFTP Credential', type: 'CREDENTIAL', test_value: '******', is_published: true },
+    // 队列
+    { id: 'queue-1', name: 'Task Queue', type: 'QUEUE', is_published: true },
+    { id: 'queue-2', name: 'Email Queue', type: 'QUEUE', is_published: false },
+    { id: 'queue-3', name: 'Notification Queue', type: 'QUEUE', is_published: false },
+  ], []);
+
+  // 过滤已添加的资源和按类型分组
+  const filteredResources = useMemo(() => {
+    return mockAvailableResources
+      .filter((r) => r.type === activeTab)
+      .filter((r) => !existingResourceIds.includes(r.id))
+      .filter((r) =>
+        searchText
+          ? r.name.toLowerCase().includes(searchText.toLowerCase())
+          : true
+      );
+  }, [mockAvailableResources, activeTab, existingResourceIds, searchText]);
+
+  const handleTabChange = (key: string) => {
+    setActiveTab(key as ResourceType);
+    setSelectedRowKeys([]);
+  };
+
+  const handleConfirm = () => {
+    const selectedResources = mockAvailableResources
+      .filter((r) => selectedRowKeys.includes(r.id))
+      .map((r): ResourceConfig => ({
+        resource_id: r.id,
+        resource_name: r.name,
+        resource_type: r.type,
+        test_value: r.test_value,
+        production_value: '',
+        is_previously_published: r.is_published || false,
+        use_test_as_production: false,
+        used_by_processes: [],
+        is_manual: true,
+      }));
+
+    onConfirm(selectedResources);
+    handleClose();
+  };
+
+  const handleClose = () => {
+    setSelectedRowKeys([]);
+    setSearchText('');
+    setActiveTab('PARAMETER');
+    onClose();
+  };
+
+  const columns = [
+    {
+      title: t('release.create.addResource.resourceName'),
+      dataIndex: 'name',
+      key: 'name',
+      render: (name: string, record: AvailableResource) => (
+        <div className="add-resource-modal-name-cell">
+          <Text strong>{name}</Text>
+          {record.is_published && (
+            <Tag color="green" size="small">
+              {t('release.create.alreadyPublished')}
+            </Tag>
+          )}
+        </div>
+      ),
+    },
+    {
+      title: t('release.create.testValue'),
+      dataIndex: 'test_value',
+      key: 'test_value',
+      render: (value: string) => value || '-',
+    },
+  ];
+
+  const queueColumns = [
+    {
+      title: t('release.create.addResource.resourceName'),
+      dataIndex: 'name',
+      key: 'name',
+      render: (name: string, record: AvailableResource) => (
+        <div className="add-resource-modal-name-cell">
+          <Text strong>{name}</Text>
+          {record.is_published && (
+            <Tag color="green" size="small">
+              {t('release.create.alreadyPublished')}
+            </Tag>
+          )}
+        </div>
+      ),
+    },
+  ];
+
+  const tabLabels: Record<ResourceType, string> = {
+    PARAMETER: t('release.create.resourceTypes.parameter'),
+    CREDENTIAL: t('release.create.resourceTypes.credential'),
+    QUEUE: t('release.create.resourceTypes.queue'),
+  };
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: (keys: (string | number)[]) => {
+      setSelectedRowKeys(keys as string[]);
+    },
+  };
+
+  return (
+    <Modal
+      title={t('release.create.addResource.title')}
+      visible={visible}
+      onCancel={handleClose}
+      onOk={handleConfirm}
+      okText={t('common.confirm')}
+      cancelText={t('common.cancel')}
+      okButtonProps={{ disabled: selectedRowKeys.length === 0 }}
+      width={700}
+      className="add-resource-modal"
+    >
+      <div className="add-resource-modal-content">
+        <div className="add-resource-modal-search">
+          <Input
+            prefix={<IconSearch />}
+            placeholder={t('release.create.addResource.searchPlaceholder')}
+            value={searchText}
+            onChange={setSearchText}
+            showClear
+          />
+        </div>
+
+        <Tabs activeKey={activeTab} onChange={handleTabChange}>
+          {(['PARAMETER', 'CREDENTIAL', 'QUEUE'] as ResourceType[]).map((type) => (
+            <TabPane
+              tab={tabLabels[type]}
+              itemKey={type}
+              key={type}
+            >
+              <Table
+                columns={type === 'QUEUE' ? queueColumns : columns}
+                dataSource={filteredResources}
+                rowKey="id"
+                rowSelection={rowSelection}
+                pagination={false}
+                size="small"
+                empty={
+                  <SemiEmpty
+                    description={t('release.create.addResource.noResources')}
+                  />
+                }
+              />
+            </TabPane>
+          ))}
+        </Tabs>
+
+        {selectedRowKeys.length > 0 && (
+          <div className="add-resource-modal-selected-count">
+            <Text type="tertiary">
+              {t('release.create.addResource.selectedCount', { count: selectedRowKeys.length })}
+            </Text>
+          </div>
+        )}
+      </div>
+    </Modal>
+  );
+};
+
+export default AddResourceModal;

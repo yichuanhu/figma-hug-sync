@@ -1764,6 +1764,14 @@
         "descriptionRequired": "请输入发布描述",
         "missingProductionValues": "请为未发布的资源填写生产值"
       },
+      "addResource": {
+        "button": "添加资源",
+        "title": "添加依赖资源",
+        "searchPlaceholder": "搜索资源名称",
+        "resourceName": "资源名称",
+        "noResources": "暂无可添加的资源",
+        "selectedCount": "已选中 {{count}} 项"
+      },
       "success": "发布创建成功！",
       "error": "发布创建失败，请重试"
     },

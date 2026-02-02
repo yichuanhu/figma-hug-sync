@@ -74,17 +74,27 @@
     }
 
     .release-config-step-resource-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
       margin-bottom: 12px;
 
       .release-config-step-resource-card-title {
         display: flex;
         align-items: center;
         gap: 8px;
-        margin-bottom: 4px;
+        flex-wrap: wrap;
 
         .release-config-step-published-tag {
           margin-left: 4px;
         }
+      }
+
+      .release-config-step-resource-card-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-shrink: 0;
       }
     }
 

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Typography,
@@ -11,7 +11,6 @@ import {
   Banner,
   Input,
   Checkbox,
-  Tooltip,
   Row,
   Col,
   Space,
@@ -19,9 +18,12 @@ import {
 import {
   IconClose,
   IconInfoCircle,
+  IconPlus,
+  IconDelete,
 } from '@douyinfe/semi-icons';
 import type { ReleaseType, ResourceType } from '@/api';
 import type { SelectedProcess, ResourceConfig } from '../../index';
+import AddResourceModal from '../AddResourceModal';
 
 import './index.less';
 
@@ -49,6 +51,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
   onResourcesChange,
 }) => {
   const { t } = useTranslation();
+  const [addResourceModalVisible, setAddResourceModalVisible] = useState(false);
 
   // 发布类型选项
   const releaseTypeOptions = [
@@ -83,6 +86,19 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
     );
   };
 
+  // 删除手动添加的资源
+  const removeManualResource = (resourceId: string) => {
+    onResourcesChange(resources.filter((r) => r.resource_id !== resourceId));
+  };
+
+  // 添加手动资源
+  const handleAddResources = (newResources: ResourceConfig[]) => {
+    onResourcesChange([...resources, ...newResources]);
+  };
+
+  // 已添加资源的 ID 列表
+  const existingResourceIds = useMemo(() => resources.map((r) => r.resource_id), [resources]);
+
   // 资源类型标签
   const resourceTypeLabels: Record<ResourceType, string> = {
     PARAMETER: t('release.create.resourceTypes.parameter'),
@@ -111,9 +127,22 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
               </Tag>
             )}
           </div>
-          <Text type="tertiary" size="small">
-            {t('release.create.usedBy')}: {resource.used_by_processes.join(', ')}
-          </Text>
+          <div className="release-config-step-resource-card-actions">
+            {resource.used_by_processes.length > 0 && (
+              <Text type="tertiary" size="small">
+                {t('release.create.usedBy')}: {resource.used_by_processes.join(', ')}
+              </Text>
+            )}
+            {resource.is_manual && (
+              <Button
+                icon={<IconDelete />}
+                theme="borderless"
+                type="danger"
+                size="small"
+                onClick={() => removeManualResource(resource.resource_id)}
+              />
+            )}
+          </div>
         </div>
 
         {!isQueue && (
@@ -277,6 +306,16 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
             <Tag size="small">{totalResourceCount}</Tag>
           </Space>
         }
+        headerExtraContent={
+          <Button
+            icon={<IconPlus />}
+            theme="light"
+            size="small"
+            onClick={() => setAddResourceModalVisible(true)}
+          >
+            {t('release.create.addResource.button')}
+          </Button>
+        }
       >
         <Banner
           type="info"
@@ -297,6 +336,14 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
           )}
         </div>
       </Card>
+
+      {/* 添加资源模态框 */}
+      <AddResourceModal
+        visible={addResourceModalVisible}
+        onClose={() => setAddResourceModalVisible(false)}
+        onConfirm={handleAddResources}
+        existingResourceIds={existingResourceIds}
+      />
     </div>
   );
 };
