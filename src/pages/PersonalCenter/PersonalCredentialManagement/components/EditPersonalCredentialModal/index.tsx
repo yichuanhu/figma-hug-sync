@@ -69,50 +69,57 @@ const EditPersonalCredentialModal = ({
       onCancel={onCancel}
       footer={null}
       className="edit-personal-credential-modal"
-      width={480}
+      width={520}
+      centered
       closeOnEsc
       maskClosable={false}
     >
       <Form
         onSubmit={handleSubmit}
         getFormApi={setFormApi}
-        className="edit-personal-credential-form"
+        labelPosition="top"
+        className="edit-personal-credential-modal-form"
       >
-        <Form.Input
-          field="credential_name"
-          label={t('personalCredential.fields.name')}
-          placeholder={t('personalCredential.fields.namePlaceholder')}
-          rules={[
-            { required: true, message: t('personalCredential.validation.nameRequired') },
-            { max: 30, message: t('personalCredential.validation.nameLengthError') },
-          ]}
-          maxLength={30}
-        />
-        <Form.Input
-          field="username"
-          label={t('personalCredential.fields.username')}
-          placeholder={t('personalCredential.fields.usernamePlaceholder')}
-          rules={[
-            { required: true, message: t('personalCredential.validation.usernameRequired') },
-            { max: 100, message: t('personalCredential.validation.usernameLengthError') },
-          ]}
-          maxLength={100}
-        />
-        <Form.Input
-          field="password"
-          label={t('personalCredential.fields.password')}
-          placeholder={t('personalCredential.fields.passwordEditPlaceholder')}
-          mode="password"
-          extraText={t('personalCredential.fields.passwordEditHint')}
-          maxLength={100}
-        />
-        <Form.TextArea
-          field="description"
-          label={t('common.description')}
-          placeholder={t('personalCredential.fields.descriptionPlaceholder')}
-          maxCount={2000}
-          autosize={{ minRows: 3, maxRows: 6 }}
-        />
+        <div className="edit-personal-credential-modal-content">
+          <Form.Input
+            field="credential_name"
+            label={t('personalCredential.fields.name')}
+            placeholder={t('personalCredential.fields.namePlaceholder')}
+            trigger="blur"
+            disabled
+            extraText={t('personalCredential.fields.nameEditHint')}
+          />
+          <Form.Input
+            field="username"
+            label={t('personalCredential.fields.username')}
+            placeholder={t('personalCredential.fields.usernamePlaceholder')}
+            trigger="blur"
+            rules={[
+              { required: true, message: t('personalCredential.validation.usernameRequired') },
+              { max: 100, message: t('personalCredential.validation.usernameLengthError') },
+            ]}
+            showClear
+          />
+          <Form.Input
+            field="password"
+            label={t('personalCredential.fields.password')}
+            placeholder={t('personalCredential.fields.passwordEditPlaceholder')}
+            mode="password"
+            trigger="blur"
+            extraText={t('personalCredential.fields.passwordEditHint')}
+          />
+          <Form.TextArea
+            field="description"
+            label={t('common.description')}
+            placeholder={t('personalCredential.fields.descriptionPlaceholder')}
+            maxCount={2000}
+            autosize={{ minRows: 2, maxRows: 4 }}
+            rules={[
+              { max: 2000, message: t('personalCredential.validation.descriptionLengthError') },
+            ]}
+          />
+        </div>
+
         <div className="edit-personal-credential-modal-footer">
           <Button theme="light" onClick={onCancel}>
             {t('common.cancel')}
