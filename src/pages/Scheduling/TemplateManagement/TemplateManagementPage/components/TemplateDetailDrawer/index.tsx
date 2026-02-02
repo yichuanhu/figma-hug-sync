@@ -19,6 +19,7 @@ import {
   IconChevronLeft,
   IconChevronRight,
   IconClose,
+  IconExternalOpenStroked,
   IconEditStroked,
   IconDeleteStroked,
   IconMaximize,
@@ -41,6 +42,7 @@ interface TemplateDetailDrawerProps {
   visible: boolean;
   template: LYExecutionTemplateResponse | null;
   onClose: () => void;
+  onUse: (template: LYExecutionTemplateResponse) => void;
   onEdit: (template: LYExecutionTemplateResponse) => void;
   onDelete: (template: LYExecutionTemplateResponse) => void;
   dataSource: LYExecutionTemplateResponse[];
@@ -70,6 +72,7 @@ const TemplateDetailDrawer = ({
   visible,
   template,
   onClose,
+  onUse,
   onEdit,
   onDelete,
   dataSource,
@@ -317,6 +320,14 @@ const TemplateDetailDrawer = ({
                 />
               </Tooltip>
               <Divider layout="vertical" className="template-detail-drawer-header-divider" />
+              <Tooltip content={t('template.actions.use')}>
+                <Button
+                  icon={<IconExternalOpenStroked />}
+                  theme="borderless"
+                  size="small"
+                  onClick={() => onUse(template)}
+                />
+              </Tooltip>
               <Tooltip content={t('common.edit')}>
                 <Button
                   icon={<IconEditStroked />}

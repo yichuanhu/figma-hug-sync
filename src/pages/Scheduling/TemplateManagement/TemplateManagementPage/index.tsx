@@ -531,6 +531,7 @@ const TemplateManagementPage = () => {
           visible={drawerVisible}
           template={selectedTemplate}
           onClose={handleCloseDrawer}
+          onUse={handleUseTemplate}
           onEdit={handleEditFromDrawer}
           onDelete={handleDeleteFromDrawer}
           dataSource={list}
