@@ -1,0 +1,127 @@
+// ReleaseDetailDrawer 发布详情抽屉样式
+.release-detail-drawer {
+  // 标题区域
+  .release-detail-drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding-right: 0;
+
+    .release-detail-drawer-header-title {
+      margin: 0;
+    }
+
+    .release-detail-drawer-header-divider {
+      height: 16px;
+      margin: 0 8px 0 4px;
+    }
+
+    .release-detail-drawer-header-close-btn {
+      margin-left: 4px;
+    }
+  }
+
+  // 内容区域
+  .release-detail-drawer-content {
+    padding: 24px;
+  }
+
+  // 分组区域
+  .release-detail-drawer-section {
+    margin-bottom: 16px;
+
+    .release-detail-drawer-section-title {
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      &::before {
+        content: '';
+        display: inline-block;
+        width: 3px;
+        height: 14px;
+        background: var(--semi-color-text-2);
+        border-radius: 2px;
+      }
+    }
+  }
+
+  // 错误信息区域
+  .release-detail-drawer-error {
+    .release-detail-drawer-error-content {
+      padding: 12px 16px;
+      background: var(--semi-color-danger-light-default);
+      border-radius: 8px;
+      border: 1px solid var(--semi-color-danger-light-hover);
+    }
+  }
+
+  // 流程卡片列表
+  .release-detail-drawer-process-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .release-detail-drawer-process-card {
+    padding: 12px 16px;
+    background: var(--semi-color-fill-0);
+    border-radius: 8px;
+    border: 1px solid var(--semi-color-border);
+
+    .release-detail-drawer-process-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+  }
+
+  // 资源卡片列表
+  .release-detail-drawer-resource-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .release-detail-drawer-resource-card {
+    padding: 12px 16px;
+    background: var(--semi-color-fill-0);
+    border-radius: 8px;
+    border: 1px solid var(--semi-color-border);
+
+    .release-detail-drawer-resource-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .release-detail-drawer-resource-card-body {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+  }
+}
+
+// 全局覆盖 - SideSheet header 和 body 样式
+.card-sidesheet.release-detail-drawer {
+  .semi-sidesheet-header {
+    border-bottom: 1px solid var(--semi-color-border);
+  }
+
+  .semi-sidesheet-body {
+    padding: 0;
+    overflow-y: auto;
+  }
+
+  // Descriptions 标签左对齐
+  .semi-descriptions {
+    .semi-descriptions-item-key {
+      text-align: left;
+    }
+  }
+}

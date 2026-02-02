@@ -1,0 +1,77 @@
+// ReleaseListPage 发布列表页面样式
+.release-list-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  // 面包屑区域
+  .release-list-page-breadcrumb {
+    flex-shrink: 0;
+  }
+
+  // 标题区域
+  .release-list-page-header {
+    padding-top: 20px;
+    flex-shrink: 0;
+
+    .release-list-page-header-title {
+      margin-bottom: 24px;
+
+      .title {
+        margin-bottom: 8px;
+      }
+    }
+
+    .release-list-page-header-toolbar {
+      margin-bottom: 16px;
+    }
+  }
+
+  // 搜索框
+  .release-list-page-search-input {
+    width: 320px;
+  }
+
+  // 表格区域
+  .release-list-page-table {
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
+
+    .semi-table-wrapper {
+      max-height: 100%;
+    }
+  }
+
+  // 表格单元格样式
+  .release-list-id {
+    font-weight: 500;
+    color: var(--semi-color-primary);
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .release-list-processes {
+    display: block;
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .release-list-description {
+    display: block;
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  // 选中行
+  .release-list-page-row-selected {
+    background-color: var(--semi-color-fill-1) !important;
+  }
+}

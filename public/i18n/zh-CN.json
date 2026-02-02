@@ -1678,5 +1678,84 @@
       "statusSuccess": "成功",
       "statusFailed": "失败"
     }
+  },
+  "release": {
+    "breadcrumb": {
+      "developmentCenter": "开发中心"
+    },
+    "list": {
+      "title": "发布列表",
+      "description": "管理流程发布记录，查看发布历史和状态",
+      "newRelease": "新建发布",
+      "noData": "暂无发布记录",
+      "searchPlaceholder": "搜索发布ID或描述",
+      "columns": {
+        "releaseId": "发布ID",
+        "releaseType": "发布类型",
+        "status": "状态",
+        "processes": "流程",
+        "description": "描述",
+        "publisher": "发布者",
+        "publishTime": "发布时间"
+      }
+    },
+    "detail": {
+      "title": "发布详情",
+      "releaseId": "发布ID",
+      "releaseType": "发布类型",
+      "status": "状态",
+      "publisher": "发布者",
+      "publishTime": "发布时间",
+      "basicInfo": "基本信息",
+      "publishedProcesses": "已发布的流程",
+      "errorDetails": "错误详情",
+      "rollbackFrom": "从 {{from}} 回退到 {{to}}"
+    },
+    "create": {
+      "published": "已发布",
+      "manuallyAdded": "手动",
+      "usedBy": "来自",
+      "testValue": "测试值",
+      "productionValue": "生产值",
+      "useTestAsProduction": "使用测试值"
+    },
+    "actions": {
+      "rollback": "回退"
+    },
+    "rollback": {
+      "title": "确认回退",
+      "warning": "您即将将 {{processName}} 回退到 {{version}}",
+      "currentVersion": "当前版本",
+      "targetVersion": "目标版本",
+      "active": "活动",
+      "inactive": "不活动",
+      "willBecomeActive": "回退后将变为: 活动",
+      "willBecomeInactive": "回退后将变为: 不活动",
+      "impacts": "影响",
+      "impactNewTasks": "新任务将执行 {{version}} 而不是 {{currentVersion}}",
+      "impactRunningTasks": "当前运行的任务将完成 {{currentVersion}}",
+      "impactAuditTrail": "将创建回退发布记录以供审计",
+      "impactDependencies": "资源依赖项将自动更新",
+      "confirmRollback": "确认回退",
+      "success": "回退成功"
+    },
+    "releaseTypes": {
+      "FIRST_RELEASE": "首次发布",
+      "REQUIREMENT_CHANGE": "需求变更",
+      "BUG_FIX": "问题修复",
+      "CONFIG_UPDATE": "配置更新",
+      "VERSION_ROLLBACK": "版本回退",
+      "OPTIMIZATION": "效果优化"
+    },
+    "publishStatus": {
+      "PUBLISHING": "发布中",
+      "SUCCESS": "成功",
+      "FAILED": "失败"
+    },
+    "resourceTypes": {
+      "parameter": "参数",
+      "credential": "凭据",
+      "queue": "队列"
+    }
   }
 }

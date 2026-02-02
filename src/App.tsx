@@ -9,6 +9,8 @@ import CredentialManagementPage from "@/pages/Development/CredentialManagement/C
 import ParameterManagementPage from "@/pages/Development/ParameterManagement/ParameterManagementPage";
 import DevQueueManagementPage from "@/pages/Development/QueueManagement/QueueManagementPage";
 import DevQueueMessagesPage from "@/pages/Development/QueueManagement/QueueMessagesPage";
+// Release Management
+import ReleaseListPage from "@/pages/Development/ReleaseManagement/ReleaseListPage";
 // Operations
 import OperationsWorkbench from "@/pages/Operations/OperationsWorkbench";
 // Scheduling - Worker Management
@@ -70,6 +72,10 @@ const App = () => (
         {/* 队列管理 - 开发中心入口 */}
         <Route path="/dev-center/business-assets/queues" element={<DevQueueManagementPage />} />
         <Route path="/dev-center/business-assets/queues/:queueId/messages" element={<DevQueueMessagesPage />} />
+        
+        {/* 发布管理 - 开发中心入口 */}
+        <Route path="/dev-center/release-management" element={<ReleaseListPage />} />
+        
         {/* 队列管理 - 调度中心入口 */}
         <Route path="/scheduling-center/business-assets/queues" element={<SchedulingQueueManagementPage />} />
         <Route path="/scheduling-center/business-assets/queues/:queueId/messages" element={<SchedulingQueueMessagesPage />} />

@@ -200,7 +200,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     { key: 'files', labelKey: 'sidebar.files', icon: <FolderCheck size={20} strokeWidth={3} /> },
     // 发布管理 - 分组标题
     { key: 'publishManagement', labelKey: 'sidebar.publishManagement', isGroupLabel: true },
-    { key: 'processPublish', labelKey: 'sidebar.processPublish', icon: <Forward size={20} strokeWidth={3} /> },
+    { key: 'processPublish', labelKey: 'sidebar.processPublish', icon: <Forward size={20} strokeWidth={3} />, path: '/dev-center/release-management' },
   ];
 
   const bottomMenuItems: MenuItem[] = [
@@ -310,6 +310,9 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     }
     if (pathname === '/scheduling-center/task-execution/templates') {
       return 'executionTemplate';
+    }
+    if (pathname === '/dev-center/release-management') {
+      return 'processPublish';
     }
     return '';
   };
