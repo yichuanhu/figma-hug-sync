@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Button,
   Input,
@@ -138,6 +138,7 @@ export interface QueueManagementContentProps {
 const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   // 搜索框输入值（即时显示）
   const [searchValue, setSearchValue] = useState('');
@@ -212,6 +213,21 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
   useEffect(() => {
     loadData();
   }, [loadData]);
+
+  // 从 URL 参数中恢复抽屉状态（用于从消息列表页面返回）
+  useEffect(() => {
+    const queueIdFromUrl = searchParams.get('queueId');
+    
+    if (queueIdFromUrl && listResponse && listResponse.data.length > 0) {
+      const queue = listResponse.data.find((q) => q.queue_id === queueIdFromUrl);
+      if (queue) {
+        setSelectedQueue(queue);
+        setDetailDrawerVisible(true);
+        // 清除 URL 参数
+        setSearchParams({}, { replace: true });
+      }
+    }
+  }, [searchParams, listResponse, setSearchParams]);
 
   // 搜索防抖
   const debouncedSearch = useMemo(

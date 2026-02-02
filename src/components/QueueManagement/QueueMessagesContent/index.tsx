@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag';
 import {
   Button,
@@ -310,12 +310,12 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
     setQueryParams((prev) => ({ ...prev, page }));
   };
 
-  // 返回队列列表
+  // 返回队列列表（携带 queueId 参数以自动打开详情抽屉）
   const handleBack = () => {
     const basePath = context === 'development' 
       ? '/dev-center/business-assets/queues'
       : '/scheduling-center/business-assets/queues';
-    navigate(basePath);
+    navigate(`${basePath}?queueId=${queueId}`);
   };
 
   // 获取状态标签
