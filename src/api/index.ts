@@ -2412,3 +2412,234 @@ export interface GetScreenshotsParams {
   /** 排序方式 */
   sort_order?: 'asc' | 'desc';
 }
+
+// ==================== 发布管理相关类型 ====================
+
+/** 发布类型枚举 */
+export type ReleaseType = 
+  | 'FIRST_RELEASE'      // 首次发布
+  | 'REQUIREMENT_CHANGE' // 需求变更
+  | 'BUG_FIX'            // 问题修复
+  | 'CONFIG_UPDATE'      // 配置更新
+  | 'VERSION_ROLLBACK'   // 版本回退
+  | 'OPTIMIZATION';      // 效果优化
+
+/** 发布状态枚举 */
+export type ReleaseStatus = 
+  | 'PUBLISHING' // 发布中
+  | 'SUCCESS'    // 成功
+  | 'FAILED';    // 失败
+
+/** 资源类型枚举 */
+export type ResourceType = 'PARAMETER' | 'CREDENTIAL' | 'QUEUE';
+
+/**
+ * LYReleaseResponse
+ * 发布记录响应模型
+ */
+export interface LYReleaseResponse {
+  /** 发布ID: RLS-YYYYMMDD-NNN */
+  release_id: string;
+  /** 发布类型 */
+  release_type: ReleaseType;
+  /** 发布描述 */
+  description: string;
+  /** 发布者ID */
+  publisher_id: string;
+  /** 发布者名称 */
+  publisher_name: string;
+  /** 发布时间 (ISO 8601) */
+  publish_time: string;
+  /** 发布状态 */
+  publish_status: ReleaseStatus;
+  /** 流程数量 */
+  process_count: number;
+  /** 资源数量 */
+  resource_count: number;
+  /** 错误信息（失败时） */
+  error_message?: string | null;
+  /** 流程内容 */
+  contents: LYReleaseContentResponse[];
+  /** 资源配置 */
+  resources: LYReleaseResourceResponse[];
+}
+
+/**
+ * LYReleaseContentResponse
+ * 发布内容（流程）
+ */
+export interface LYReleaseContentResponse {
+  /** 流程ID */
+  process_id: string;
+  /** 流程名称 */
+  process_name: string;
+  /** 版本ID */
+  version_id: string;
+  /** 版本号 */
+  version_number: string;
+  /** 流程描述 */
+  process_description?: string | null;
+  /** 回退时的原版本ID */
+  previous_version_id?: string | null;
+  /** 回退时的原版本号 */
+  previous_version_number?: string | null;
+}
+
+/**
+ * LYReleaseResourceResponse
+ * 发布资源
+ */
+export interface LYReleaseResourceResponse {
+  /** 资源ID */
+  resource_id: string;
+  /** 资源名称 */
+  resource_name: string;
+  /** 资源类型 */
+  resource_type: ResourceType;
+  /** 是否手动添加 */
+  is_manual: boolean;
+  /** 是否先前已发布 */
+  is_previously_published: boolean;
+  /** 使用此资源的流程名称 */
+  used_by_processes: string[];
+  /** 测试值（凭据显示为*） */
+  test_value?: string | null;
+  /** 生产值（凭据显示为*） */
+  production_value?: string | null;
+  /** 使用测试值作为生产值 */
+  use_test_as_production: boolean;
+}
+
+/** LYListResponse[LYReleaseResponse] */
+export interface LYListResponseLYReleaseResponse {
+  /** 范围 */
+  range?: LYRangeResponse | null;
+  /** 列表 */
+  list: LYReleaseResponse[];
+}
+
+/**
+ * CreateReleaseRequest
+ * 创建发布请求
+ */
+export interface CreateReleaseRequest {
+  /** 发布类型 */
+  release_type: ReleaseType;
+  /** 发布描述 */
+  description: string;
+  /** 流程版本列表 */
+  process_versions: Array<{
+    process_id: string;
+    version_id: string;
+  }>;
+  /** 资源配置列表 */
+  resources: Array<{
+    resource_id: string;
+    resource_type: ResourceType;
+    is_manual: boolean;
+    use_test_as_production: boolean;
+    production_value?: string;
+  }>;
+}
+
+/**
+ * LYDependencyDetectionResponse
+ * 依赖检测响应
+ */
+export interface LYDependencyDetectionResponse {
+  /** 检测到的参数 */
+  parameters: LYDetectedResource[];
+  /** 检测到的凭据 */
+  credentials: LYDetectedResource[];
+  /** 检测到的队列 */
+  queues: LYDetectedResource[];
+}
+
+/**
+ * LYDetectedResource
+ * 检测到的资源
+ */
+export interface LYDetectedResource {
+  /** 资源ID */
+  resource_id: string;
+  /** 资源名称 */
+  resource_name: string;
+  /** 是否先前已发布 */
+  is_previously_published: boolean;
+  /** 测试值 */
+  test_value?: string | null;
+  /** 使用此资源的流程 */
+  used_by_processes: Array<{
+    process_id: string;
+    process_name: string;
+  }>;
+}
+
+/**
+ * RollbackVersionRequest
+ * 回退版本请求
+ */
+export interface RollbackVersionRequest {
+  /** 流程ID */
+  process_id: string;
+  /** 目标版本ID */
+  target_version_id: string;
+}
+
+/**
+ * GetReleasesParams
+ * 发布列表查询参数
+ */
+export interface GetReleasesParams {
+  /** 关键字搜索 */
+  keyword?: string;
+  /** 发布类型筛选 */
+  release_type?: ReleaseType;
+  /** 发布状态筛选 */
+  publish_status?: ReleaseStatus;
+  /** 发布者ID */
+  publisher_id?: string;
+  /** 开始日期 */
+  start_date?: string;
+  /** 结束日期 */
+  end_date?: string;
+  /** 偏移量 */
+  offset?: number;
+  /** 每页数量 */
+  size?: number;
+  /** 排序字段 */
+  sort_by?: string;
+  /** 排序方向 */
+  sort_order?: 'asc' | 'desc';
+}
+
+/**
+ * LYPublishableProcessResponse
+ * 可发布的流程响应
+ */
+export interface LYPublishableProcessResponse {
+  /** 流程ID */
+  id: string;
+  /** 流程名称 */
+  name: string;
+  /** 流程描述 */
+  description?: string | null;
+  /** 流程状态 */
+  status: string;
+  /** 最新版本ID */
+  latest_version_id: string;
+  /** 最新版本号 */
+  latest_version: string;
+  /** 是否已发布 */
+  is_published: boolean;
+  /** 更新时间 */
+  updated_at: string;
+}
+
+/** LYListResponse[LYPublishableProcessResponse] */
+export interface LYListResponseLYPublishableProcessResponse {
+  /** 范围 */
+  range?: LYRangeResponse | null;
+  /** 列表 */
+  list: LYPublishableProcessResponse[];
+}
