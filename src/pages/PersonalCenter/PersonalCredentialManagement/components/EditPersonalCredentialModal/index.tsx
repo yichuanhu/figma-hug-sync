@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Modal, Form, Toast } from '@douyinfe/semi-ui';
+import { Modal, Form, Toast, Button } from '@douyinfe/semi-ui';
 import type { LYPersonalCredentialResponse, LYUpdatePersonalCredentialRequest } from '@/api/index';
 
 import './index.less';
@@ -114,16 +114,12 @@ const EditPersonalCredentialModal = ({
           autosize={{ minRows: 3, maxRows: 6 }}
         />
         <div className="edit-personal-credential-modal-footer">
-          <Form.Slot>
-            <div className="footer-buttons">
-              <button type="button" className="semi-button semi-button-tertiary" onClick={onCancel}>
-                {t('common.cancel')}
-              </button>
-              <button type="submit" className="semi-button semi-button-primary" disabled={loading}>
-                {t('common.save')}
-              </button>
-            </div>
-          </Form.Slot>
+          <Button theme="light" onClick={onCancel}>
+            {t('common.cancel')}
+          </Button>
+          <Button htmlType="submit" theme="solid" type="primary" loading={loading}>
+            {t('common.save')}
+          </Button>
         </div>
       </Form>
     </Modal>
