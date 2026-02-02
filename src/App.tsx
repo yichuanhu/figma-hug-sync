@@ -11,6 +11,7 @@ import DevQueueManagementPage from "@/pages/Development/QueueManagement/QueueMan
 import DevQueueMessagesPage from "@/pages/Development/QueueManagement/QueueMessagesPage";
 // Release Management
 import ReleaseListPage from "@/pages/Development/ReleaseManagement/ReleaseListPage";
+import CreateReleasePage from "@/pages/Development/ReleaseManagement/CreateReleasePage";
 // Operations
 import OperationsWorkbench from "@/pages/Operations/OperationsWorkbench";
 // Scheduling - Worker Management
@@ -75,6 +76,7 @@ const App = () => (
         
         {/* 发布管理 - 开发中心入口 */}
         <Route path="/dev-center/release-management" element={<ReleaseListPage />} />
+        <Route path="/dev-center/release-management/create" element={<CreateReleasePage />} />
         
         {/* 队列管理 - 调度中心入口 */}
         <Route path="/scheduling-center/business-assets/queues" element={<SchedulingQueueManagementPage />} />

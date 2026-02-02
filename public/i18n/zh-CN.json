@@ -1712,12 +1712,60 @@
       "rollbackFrom": "从 {{from}} 回退到 {{to}}"
     },
     "create": {
-      "published": "已发布",
-      "manuallyAdded": "手动",
+      "title": "新建发布",
+      "steps": {
+        "selectProcess": "选择流程",
+        "selectProcessDesc": "选择要发布的流程版本",
+        "configRelease": "配置发布",
+        "configReleaseDesc": "配置发布信息和资源"
+      },
+      "nextStep": "下一步",
+      "prevStep": "上一步",
+      "confirmPublish": "确认发布",
+      "selectedCount": "已选择 {{count}} 个流程",
+      "detectingDependencies": "正在检测依赖资源...",
+      "searchProcessPlaceholder": "搜索流程名称",
+      "noProcessData": "暂无可发布的流程",
+      "processTable": {
+        "name": "流程名称",
+        "version": "版本",
+        "status": "状态",
+        "description": "描述",
+        "updateTime": "更新时间"
+      },
+      "processStatus": {
+        "published": "已发布",
+        "unpublished": "未发布"
+      },
+      "basicInfo": "基本信息",
+      "releaseType": "发布类型",
+      "description": "发布描述",
+      "descriptionPlaceholder": "请描述本次发布的变更内容...",
+      "descriptionHint": "清晰描述本次发布的主要变更，便于追溯",
+      "selectedProcesses": "已选择的流程",
+      "dependencyResources": "依赖资源",
+      "dependencyHint": "以下资源由系统自动检测，部分动态引用的资源可能无法检测，请手动添加。",
+      "noDependencies": "未检测到依赖资源",
+      "resourceTypes": {
+        "parameter": "参数",
+        "credential": "凭据",
+        "queue": "队列"
+      },
+      "alreadyPublished": "已发布",
+      "manuallyAdded": "手动添加",
       "usedBy": "来自",
       "testValue": "测试值",
       "productionValue": "生产值",
-      "useTestAsProduction": "使用测试值"
+      "keepExistingValue": "留空保留现有值",
+      "enterProductionValue": "请输入生产值",
+      "useTestAsProduction": "使用测试值作为生产值",
+      "validation": {
+        "noProcessSelected": "请至少选择一个流程",
+        "descriptionRequired": "请输入发布描述",
+        "missingProductionValues": "请为未发布的资源填写生产值"
+      },
+      "success": "发布创建成功！",
+      "error": "发布创建失败，请重试"
     },
     "actions": {
       "rollback": "回退"

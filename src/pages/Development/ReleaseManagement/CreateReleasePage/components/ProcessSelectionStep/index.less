@@ -1,0 +1,25 @@
+.process-selection-step {
+  .process-selection-step-toolbar {
+    margin-bottom: 16px;
+  }
+
+  .process-selection-step-table {
+    :global {
+      .semi-table-tbody > .semi-table-row {
+        cursor: pointer;
+
+        &:hover {
+          background-color: var(--semi-color-fill-0);
+        }
+      }
+
+      .process-selection-step-row-selected {
+        background-color: var(--semi-color-primary-light-default);
+
+        &:hover {
+          background-color: var(--semi-color-primary-light-hover);
+        }
+      }
+    }
+  }
+}
