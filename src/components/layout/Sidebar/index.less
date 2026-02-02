@@ -62,17 +62,19 @@
   // 用户下拉菜单
   .sidebar-user-dropdown {
     min-width: 220px;
-    padding: 12px 0;
+    padding: 16px 0 8px 0;
     
     .sidebar-user-info {
       display: flex;
-      align-items: center;
-      padding: 0 16px 12px 16px;
+      align-items: flex-start;
+      padding: 0 16px 8px 16px;
       
       .sidebar-avatar-user {
         background-color: rgba(var(--semi-yellow-5), 1);
         color: var(--semi-color-text-0);
         flex-shrink: 0;
+        width: 32px;
+        height: 32px;
       }
       
       .sidebar-user-details {
@@ -84,7 +86,7 @@
           font-size: 14px;
           font-weight: 600;
           color: var(--semi-color-text-0);
-          line-height: 20px;
+          line-height: 22px;
         }
         
         .sidebar-user-account {
@@ -99,7 +101,6 @@
       display: flex;
       align-items: center;
       padding: 0 16px;
-      margin-bottom: 4px;
       
       .sidebar-user-org-icon {
         font-size: 14px;
@@ -116,12 +117,30 @@
         white-space: nowrap;
       }
     }
+
+    .semi-divider {
+      margin: 12px 0 !important;
+    }
     
     .semi-dropdown-menu {
       padding: 0;
+      border: none;
+      box-shadow: none;
       
       .semi-dropdown-item {
         padding: 10px 16px;
+        display: flex;
+        align-items: center;
+        
+        .semi-dropdown-item-icon {
+          color: var(--semi-color-text-2);
+        }
+
+        .sidebar-menu-item-content {
+          display: flex;
+          align-items: center;
+          flex: 1;
+        }
         
         .sidebar-menu-external-icon {
           margin-left: 4px;

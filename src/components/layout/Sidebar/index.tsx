@@ -575,19 +575,20 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
                   {/* 组织信息 */}
                   <div className="sidebar-user-org">
                     <IconDesktop className="sidebar-user-org-icon" />
-                    <span className="sidebar-user-org-text">{t('sidebar.userMenu.organization', { name: '来也科技股份有限公司有限...' })}</span>
+                    <span className="sidebar-user-org-text">来也科技股份有限公司有限...</span>
                   </div>
                   
-                  <Divider margin="8px" />
+                  <Divider margin="12px 0" />
                   
                   {/* 菜单项 */}
                   <Dropdown.Menu>
                     <Dropdown.Item 
                       icon={<IconDesktop />}
-                      disabled
                     >
-                      {t('sidebar.userMenu.adminConsole')}
-                      <span className="sidebar-menu-external-icon">↗</span>
+                      <span className="sidebar-menu-item-content">
+                        {t('sidebar.userMenu.adminConsole')}
+                        <span className="sidebar-menu-external-icon">↗</span>
+                      </span>
                     </Dropdown.Item>
                     <Dropdown.Item 
                       icon={<User size={16} />}
