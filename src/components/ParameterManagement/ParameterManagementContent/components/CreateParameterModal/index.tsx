@@ -157,7 +157,7 @@ const CreateParameterModal = ({
             {t('common.cancel')}
           </Button>
           <Button htmlType="submit" theme="solid" type="primary" loading={loading}>
-            {t('common.confirm')}
+            {t('common.create')}
           </Button>
         </div>
       </Form>

@@ -601,11 +601,11 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
         </div>
 
         <div className="create-task-modal-footer">
-          <Button theme="solid" type="primary" loading={loading} onClick={handleSubmit}>
-            {t('common.confirm')}
-          </Button>
           <Button theme="light" onClick={onCancel}>
             {t('common.cancel')}
+          </Button>
+          <Button theme="solid" type="primary" loading={loading} onClick={handleSubmit}>
+            {t('common.create')}
           </Button>
         </div>
       </div>
