@@ -127,7 +127,13 @@
     "systemMonitoring": "系统监控",
     "dataManagement": "数据管理",
     "databaseManagement": "数据库管理",
-    "securityManagement": "安全管理"
+    "securityManagement": "安全管理",
+    "userMenu": {
+      "organization": "{{name}}",
+      "adminConsole": "管理后台",
+      "personalCenter": "个人中心",
+      "logout": "退出登录"
+    }
   },
   "credential": {
     "title": "凭据管理",

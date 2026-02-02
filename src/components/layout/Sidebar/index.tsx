@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Avatar, Tooltip } from '@douyinfe/semi-ui';
+import { Avatar, Dropdown, Divider, Tooltip } from '@douyinfe/semi-ui';
+import { IconDesktop, IconExit } from '@douyinfe/semi-icons';
+import { User } from 'lucide-react';
 import {
   IconBell,
   IconBookStroked,
@@ -551,13 +553,61 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
         <div className="sidebar-bottom-icons">
           {bottomMenuItems.map(renderBottomMenuItem)}
 
-          {/* 用户头像 */}
+          {/* 用户头像 - 带下拉菜单 */}
           <div className="sidebar-avatar">
-            <Tooltip content="admin" position="right">
+            <Dropdown
+              trigger="hover"
+              position="rightBottom"
+              showTick={false}
+              render={
+                <div className="sidebar-user-dropdown">
+                  {/* 用户信息区域 */}
+                  <div className="sidebar-user-info">
+                    <Avatar size="small" className="sidebar-avatar-user">
+                      L
+                    </Avatar>
+                    <div className="sidebar-user-details">
+                      <div className="sidebar-user-name">Ling hui</div>
+                      <div className="sidebar-user-account">alim huang</div>
+                    </div>
+                  </div>
+                  
+                  {/* 组织信息 */}
+                  <div className="sidebar-user-org">
+                    <IconDesktop className="sidebar-user-org-icon" />
+                    <span className="sidebar-user-org-text">{t('sidebar.userMenu.organization', { name: '来也科技股份有限公司有限...' })}</span>
+                  </div>
+                  
+                  <Divider margin="8px" />
+                  
+                  {/* 菜单项 */}
+                  <Dropdown.Menu>
+                    <Dropdown.Item 
+                      icon={<IconDesktop />}
+                      disabled
+                    >
+                      {t('sidebar.userMenu.adminConsole')}
+                      <span className="sidebar-menu-external-icon">↗</span>
+                    </Dropdown.Item>
+                    <Dropdown.Item 
+                      icon={<User size={16} />}
+                      onClick={() => navigate('/personal-center/personal-credentials')}
+                    >
+                      {t('sidebar.userMenu.personalCenter')}
+                    </Dropdown.Item>
+                    <Dropdown.Item 
+                      icon={<IconExit />}
+                    >
+                      {t('sidebar.userMenu.logout')}
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </div>
+              }
+            >
               <Avatar size="small" className="sidebar-avatar-user">
-                A
+                L
               </Avatar>
-            </Tooltip>
+            </Dropdown>
           </div>
         </div>
       </div>
