@@ -34,30 +34,13 @@
   .release-detail-drawer-content {
     padding: 0;
     height: 100%;
+  }
 
-    :global {
-      .semi-tabs {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-      }
-
-      .semi-tabs-bar {
-        flex-shrink: 0;
-        margin: 0 24px;
-        padding: 0;
-        border-bottom: 1px solid var(--semi-color-border);
-      }
-
-      .semi-tabs-content {
-        flex: 1;
-        overflow-y: auto;
-      }
-
-      .semi-tabs-pane {
-        padding: 0;
-      }
-    }
+  // Tab 容器 - 固定 tab 栏，内容滚动
+  &-tabs {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
   }
 
   // Tab 内容区域
@@ -74,9 +57,9 @@
     }
   }
 
-  // 区块标题 - 统一样式，与卡片间距 12px
+  // 区块标题 - 统一样式，与卡片间距 8px
   .release-detail-drawer-section-title {
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -163,6 +146,21 @@
   .semi-sidesheet-body {
     padding: 0;
     position: relative;
+  }
+
+  .semi-tabs-bar {
+    padding: 0 24px;
+  }
+
+  .semi-tabs-content {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .semi-tabs-pane {
+    height: 100%;
+    overflow-y: auto;
   }
 
   // Descriptions 标签左对齐
