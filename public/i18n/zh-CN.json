@@ -1827,7 +1827,8 @@
       },
       "processStatus": {
         "published": "已发布",
-        "unpublished": "未发布"
+        "unpublished": "未发布",
+        "hasNewVersion": "有新版本可发布"
       },
       "basicInfo": "基本信息",
       "releaseType": "发布类型",
