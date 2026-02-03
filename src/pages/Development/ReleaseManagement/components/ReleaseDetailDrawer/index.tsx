@@ -266,7 +266,7 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
   }];
 
   // 基本信息 Tab 内容
-  const renderBasicInfoTab = () => <div className="release-detail-drawer-tab-content px-[3px] mx-[3px]">
+  const renderBasicInfoTab = () => <div className="release-detail-drawer-tab-content px-0 mx-0">
       <Descriptions data={descData} align="left" />
 
       {/* 失败信息 */}
