@@ -14,6 +14,7 @@ import {
   Radio,
   Tooltip,
   Tag,
+  TextArea,
 } from '@douyinfe/semi-ui';
 import { IconHelpCircle } from '@douyinfe/semi-icons';
 import type {
@@ -411,13 +412,17 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
                 </div>
                 <div className="create-template-modal-field">
                   <div className="semi-form-field-label-text">{t('template.fields.description')}</div>
-                  <Input
+                  <TextArea
                     placeholder={t('template.fields.descriptionPlaceholder')}
                     value={description}
                     onChange={setDescription}
-                    maxLength={1000}
+                    maxLength={2000}
                     showClear
+                    rows={3}
                   />
+                  <div style={{ fontSize: 12, color: 'var(--semi-color-text-2)', marginTop: 4 }}>
+                    {description.length}/2000
+                  </div>
                 </div>
               </div>
 

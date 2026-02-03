@@ -11,7 +11,6 @@ import {
   Modal,
   Toast,
   Space,
-  Tag,
   Select,
   Switch,
   Tooltip,
@@ -36,6 +35,7 @@ import type {
   BasicFrequencyType,
 } from '@/api';
 import CreateTimeTriggerModal from '../CreateTimeTriggerModal';
+import EditTimeTriggerModal from '../EditTimeTriggerModal';
 import TimeTriggerDetailDrawer from '../TimeTriggerDetailDrawer';
 import './index.less';
 
@@ -156,6 +156,8 @@ const TimeTriggerList = () => {
 
   // 弹窗状态
   const [createModalVisible, setCreateModalVisible] = useState(false);
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [editingTrigger, setEditingTrigger] = useState<LYTimeTriggerResponse | null>(null);
 
   // 从响应中直接获取分页信息
   const { range, list } = listResponse;
@@ -237,6 +239,19 @@ const TimeTriggerList = () => {
     loadData(queryParams);
   };
 
+  // 编辑触发器成功
+  const handleEditSuccess = () => {
+    setEditModalVisible(false);
+    setEditingTrigger(null);
+    loadData(queryParams);
+  };
+
+  // 打开编辑弹窗
+  const handleOpenEditModal = (trigger: LYTimeTriggerResponse) => {
+    setEditingTrigger(trigger);
+    setEditModalVisible(true);
+  };
+
   // 打开详情抽屉
   const handleOpenDrawer = (trigger: LYTimeTriggerResponse) => {
     setSelectedTrigger(trigger);
@@ -265,6 +280,15 @@ const TimeTriggerList = () => {
       await new Promise((resolve) => setTimeout(resolve, 300));
       Toast.success(checked ? t('timeTrigger.enableModal.success') : t('timeTrigger.disableModal.success'));
       loadData(queryParams);
+      
+      // 如果抽屉打开且是当前触发器，更新抽屉中的数据
+      if (selectedTrigger?.trigger_id === trigger.trigger_id) {
+        setSelectedTrigger({
+          ...trigger,
+          status: checked ? 'ENABLED' : 'DISABLED',
+          next_trigger_time: checked ? new Date(Date.now() + 86400000).toISOString() : null,
+        });
+      }
     } catch (error) {
       Toast.error(checked ? t('timeTrigger.enableModal.error') : t('timeTrigger.disableModal.error'));
     }
@@ -365,16 +389,18 @@ const TimeTriggerList = () => {
       dataIndex: 'status',
       width: 100,
       render: (status: TriggerStatus, record: LYTimeTriggerResponse) => (
-        <Tooltip content={status === 'ENABLED' ? t('timeTrigger.actions.disable') : t('timeTrigger.actions.enable')}>
-          <Switch
-            checked={status === 'ENABLED'}
-            onChange={(checked, e) => {
-              e.stopPropagation();
-              handleToggleStatus(record, checked);
-            }}
-            size="small"
-          />
-        </Tooltip>
+        <div
+          onClick={(e) => e.stopPropagation()}
+          onKeyDown={(e) => e.stopPropagation()}
+        >
+          <Tooltip content={status === 'ENABLED' ? t('timeTrigger.actions.disable') : t('timeTrigger.actions.enable')}>
+            <Switch
+              checked={status === 'ENABLED'}
+              onChange={(checked) => handleToggleStatus(record, checked)}
+              size="small"
+            />
+          </Tooltip>
+        </div>
       ),
     },
     {
@@ -400,21 +426,14 @@ const TimeTriggerList = () => {
             <Dropdown.Menu>
               <Dropdown.Item
                 icon={<IconEditStroked />}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  // TODO: 编辑触发器
-                  Toast.info('编辑功能开发中');
-                }}
+                onClick={() => handleOpenEditModal(record)}
               >
                 {t('timeTrigger.actions.edit')}
               </Dropdown.Item>
               <Dropdown.Item
                 icon={<IconDeleteStroked />}
                 type="danger"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDeleteTrigger(record);
-                }}
+                onClick={() => handleDeleteTrigger(record)}
               >
                 {t('timeTrigger.actions.delete')}
               </Dropdown.Item>
@@ -542,6 +561,17 @@ const TimeTriggerList = () => {
         onSuccess={handleCreateSuccess}
       />
 
+      {/* 编辑触发器弹窗 */}
+      <EditTimeTriggerModal
+        visible={editModalVisible}
+        trigger={editingTrigger}
+        onCancel={() => {
+          setEditModalVisible(false);
+          setEditingTrigger(null);
+        }}
+        onSuccess={handleEditSuccess}
+      />
+
       {/* 详情抽屉 */}
       <TimeTriggerDetailDrawer
         visible={drawerVisible}
@@ -550,9 +580,9 @@ const TimeTriggerList = () => {
         totalCount={list.length}
         onClose={handleCloseDrawer}
         onNavigate={handleNavigate}
-        onEdit={() => Toast.info('编辑功能开发中')}
+        onEdit={handleOpenEditModal}
         onDelete={handleDeleteTrigger}
-        onToggleStatus={(trigger, checked) => handleToggleStatus(trigger, checked)}
+        onToggleStatus={handleToggleStatus}
         onRefresh={() => loadData(queryParams)}
       />
     </div>
