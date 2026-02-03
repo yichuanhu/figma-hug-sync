@@ -292,9 +292,7 @@ const ReleaseListPage: React.FC = () => {
       title: t('release.list.columns.releaseId'),
       dataIndex: 'release_id',
       width: 180,
-      render: (text: string) => (
-        <Text className="release-list-id">{text}</Text>
-      ),
+      render: (text: string) => text || '-',
     },
     {
       title: t('release.list.columns.releaseType'),
