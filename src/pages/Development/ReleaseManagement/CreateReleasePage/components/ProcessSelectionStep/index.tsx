@@ -35,13 +35,31 @@ interface ProcessSelectionStepProps {
 }
 
 // Mock 版本数据生成器
-const generateMockVersions = (processIndex: number): ProcessVersion[] => {
+const generateMockVersions = (processIndex: number, isProcessPublished: boolean): ProcessVersion[] => {
   const versionCount = Math.floor(Math.random() * 3) + 2;
+  
+  // 对于已发布流程，随机决定是否有新版本可发布
+  const hasNewVersionAvailable = isProcessPublished && Math.random() > 0.5;
+  
   return Array.from({ length: versionCount }, (_, i) => ({
     id: `ver-${processIndex + 1}-${i + 1}`,
     version: `v${versionCount - i}.${Math.floor(Math.random() * 10)}.0`,
-    is_published: i === 0,
+    // 如果有新版本可发布，只有最后一个版本是已发布的（不是最新的）
+    // 否则，第一个版本（最新）是已发布的
+    is_published: hasNewVersionAvailable ? i === versionCount - 1 : i === 0,
   }));
+};
+
+// 检查流程是否有新版本可发布
+const hasNewVersionToPublish = (process: ProcessWithVersions): boolean => {
+  if (!process.is_published) return false;
+  
+  // 找到最新版本（第一个）
+  const latestVersion = process.versions[0];
+  if (!latestVersion) return false;
+  
+  // 如果最新版本未发布，说明有新版本可发布
+  return !latestVersion.is_published;
 };
 
 // Mock 数据生成器
@@ -59,7 +77,8 @@ const generateMockProcess = (index: number): ProcessWithVersions => {
     '日志分析',
   ];
 
-  const versions = generateMockVersions(index);
+  const isPublished = index % 3 !== 0;
+  const versions = generateMockVersions(index, isPublished);
 
   return {
     id: `process-${index + 1}`,
@@ -68,7 +87,7 @@ const generateMockProcess = (index: number): ProcessWithVersions => {
     status: index % 3 === 0 ? 'developing' : 'published',
     latest_version_id: versions[0].id,
     latest_version: versions[0].version,
-    is_published: index % 3 !== 0,
+    is_published: isPublished,
     updated_at: new Date(Date.now() - index * 24 * 60 * 60 * 1000).toISOString(),
     versions,
   };
@@ -96,6 +115,29 @@ const generateMockListResponse = (
       return false;
     });
   }
+
+  // 排序规则：
+  // 1. 完全未发布的流程放在最前面
+  // 2. 已发布但有新版本可发布的流程排在第二
+  // 3. 已发布且没有新版本的流程排在最后面
+  allData.sort((a, b) => {
+    const aIsUnpublished = !a.is_published;
+    const bIsUnpublished = !b.is_published;
+    const aHasNewVersion = hasNewVersionToPublish(a);
+    const bHasNewVersion = hasNewVersionToPublish(b);
+    
+    // 未发布的排最前
+    if (aIsUnpublished && !bIsUnpublished) return -1;
+    if (!aIsUnpublished && bIsUnpublished) return 1;
+    
+    // 都是已发布的情况下，有新版本的排前面
+    if (!aIsUnpublished && !bIsUnpublished) {
+      if (aHasNewVersion && !bHasNewVersion) return -1;
+      if (!aHasNewVersion && bHasNewVersion) return 1;
+    }
+    
+    return 0;
+  });
 
   return {
     range: { offset: 0, size: allData.length, total: allData.length },
@@ -262,8 +304,25 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
             <Spin spinning={loading}>
               {processList.length > 0 ? (
                 <div className="process-list">
-                  {processList.map((process) => {
+                {processList.map((process) => {
                     const isSelected = selectedIds.has(process.id);
+                    const hasNewVersion = hasNewVersionToPublish(process);
+                    
+                    // 确定标签类型和文字
+                    let tagColor: 'green' | 'blue' | 'grey' = 'grey';
+                    let tagText = t('release.create.processStatus.unpublished');
+                    
+                    if (!process.is_published) {
+                      tagColor = 'grey';
+                      tagText = t('release.create.processStatus.unpublished');
+                    } else if (hasNewVersion) {
+                      tagColor = 'blue';
+                      tagText = t('release.create.processStatus.hasNewVersion');
+                    } else {
+                      tagColor = 'green';
+                      tagText = t('release.create.processStatus.published');
+                    }
+                    
                     return (
                       <div
                         key={process.id}
@@ -279,10 +338,8 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
                         />
                         <div className="process-item-content">
                           <Text className="process-name">{process.name}</Text>
-                          <Tag size="small" color={process.is_published ? 'green' : 'grey'}>
-                            {process.is_published
-                              ? t('release.create.processStatus.published')
-                              : t('release.create.processStatus.unpublished')}
+                          <Tag size="small" color={tagColor}>
+                            {tagText}
                           </Tag>
                         </div>
                         <Text type="tertiary" size="small">
