@@ -10,11 +10,12 @@
 
     .release-detail-drawer-header-title {
       margin: 0;
+      flex: 1;
     }
 
     .release-detail-drawer-header-divider {
       height: 16px;
-      margin: 0 8px 0 4px;
+      margin: 0 8px;
     }
 
     .release-detail-drawer-header-close-btn {
@@ -24,6 +25,35 @@
 
   // 内容区域
   .release-detail-drawer-content {
+    padding: 0;
+    height: 100%;
+
+    :global {
+      .semi-tabs {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .semi-tabs-bar {
+        flex-shrink: 0;
+        padding: 0 24px;
+        border-bottom: 1px solid var(--semi-color-border);
+      }
+
+      .semi-tabs-content {
+        flex: 1;
+        overflow-y: auto;
+      }
+
+      .semi-tabs-pane {
+        padding: 0;
+      }
+    }
+  }
+
+  // Tab 内容区域
+  .release-detail-drawer-tab-content {
     padding: 24px;
   }
 
@@ -50,6 +80,8 @@
 
   // 错误信息区域
   .release-detail-drawer-error {
+    margin-top: 24px;
+    
     .release-detail-drawer-error-content {
       padding: 12px 16px;
       background: var(--semi-color-danger-light-default);
@@ -104,6 +136,17 @@
       flex-direction: column;
       gap: 4px;
     }
+  }
+
+  // 无资源提示
+  .release-detail-drawer-no-resources {
+    padding: 24px;
+    text-align: center;
+  }
+
+  // 导航按钮禁用状态修复
+  .semi-button.semi-button-disabled.navigate {
+    padding-top: 0;
   }
 }
 

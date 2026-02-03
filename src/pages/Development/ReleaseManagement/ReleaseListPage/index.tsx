@@ -27,7 +27,6 @@ import AppLayout from '@/components/layout/AppLayout';
 import EmptyState from '@/components/EmptyState';
 import FilterPopover from '@/components/FilterPopover';
 import ReleaseDetailDrawer from '../components/ReleaseDetailDrawer';
-import RollbackConfirmModal from '../components/RollbackConfirmModal';
 import type {
   LYReleaseResponse,
   LYListResponseLYReleaseResponse,
@@ -168,11 +167,6 @@ const ReleaseListPage: React.FC = () => {
   const [selectedRelease, setSelectedRelease] =
     useState<LYReleaseResponse | null>(null);
 
-  // 回退弹窗
-  const [rollbackModalVisible, setRollbackModalVisible] = useState(false);
-  const [rollbackRelease, setRollbackRelease] =
-    useState<LYReleaseResponse | null>(null);
-
   const { range, list } = listResponse;
   const currentPage =
     Math.floor((range?.offset || 0) / (range?.size || 20)) + 1;
@@ -248,21 +242,6 @@ const ReleaseListPage: React.FC = () => {
     setDetailDrawerVisible(true);
   };
 
-  // 回退操作
-  const handleRollback = (record: LYReleaseResponse) => {
-    setRollbackRelease(record);
-    setRollbackModalVisible(true);
-  };
-
-  const handleRollbackConfirm = async () => {
-    // Mock API 调用
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    Toast.success(t('release.rollback.success'));
-    setRollbackModalVisible(false);
-    setRollbackRelease(null);
-    loadData();
-  };
-
   // 发布类型配置
   const releaseTypeConfig: Record<
     ReleaseType,
@@ -327,18 +306,35 @@ const ReleaseListPage: React.FC = () => {
         if (!contents || contents.length === 0) return '-';
         const displayNames = contents.slice(0, 2).map((c) => c.process_name);
         const remaining = contents.length - 2;
+        
+        const handleProcessClick = (e: React.MouseEvent, processId: string) => {
+          e.stopPropagation();
+          navigate(`/dev-center/automation-process?processId=${processId}`);
+        };
+        
         return (
           <Tooltip
             content={
               <div style={{ textAlign: 'center' }}>
                 {contents.map((c) => (
-                  <div key={c.process_id}>{c.process_name} ({c.version_number})</div>
+                  <div 
+                    key={c.process_id}
+                    onClick={(e) => handleProcessClick(e, c.process_id)}
+                    style={{ cursor: 'pointer' }}
+                    className="release-list-process-link"
+                  >
+                    {c.process_name} ({c.version_number})
+                  </div>
                 ))}
               </div>
             }
             position="top"
           >
-            <span className="release-list-processes">
+            <span 
+              className="release-list-processes"
+              onClick={(e) => handleProcessClick(e, contents[0].process_id)}
+              style={{ cursor: 'pointer', color: 'var(--semi-color-link)' }}
+            >
               {displayNames.join(', ')}
               {remaining > 0 && ` +${remaining}`}
             </span>
@@ -393,15 +389,6 @@ const ReleaseListPage: React.FC = () => {
               }}>
                 {t('common.viewDetail')}
               </Dropdown.Item>
-              {record.publish_status === 'SUCCESS' &&
-                record.release_type !== 'VERSION_ROLLBACK' && (
-                  <Dropdown.Item onClick={(e) => {
-                    e.stopPropagation();
-                    handleRollback(record);
-                  }}>
-                    {t('release.actions.rollback')}
-                  </Dropdown.Item>
-                )}
             </Dropdown.Menu>
           }
         >
@@ -569,22 +556,14 @@ const ReleaseListPage: React.FC = () => {
         <ReleaseDetailDrawer
           visible={detailDrawerVisible}
           release={selectedRelease}
+          releaseList={list}
           onClose={() => {
             setDetailDrawerVisible(false);
             setSelectedRelease(null);
           }}
-          onRollback={handleRollback}
-        />
-
-        {/* 回退确认弹窗 */}
-        <RollbackConfirmModal
-          visible={rollbackModalVisible}
-          release={rollbackRelease}
-          onCancel={() => {
-            setRollbackModalVisible(false);
-            setRollbackRelease(null);
+          onNavigate={(release) => {
+            setSelectedRelease(release);
           }}
-          onConfirm={handleRollbackConfirm}
         />
       </div>
     </AppLayout>
