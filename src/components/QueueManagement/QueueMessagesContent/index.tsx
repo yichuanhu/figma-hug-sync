@@ -582,41 +582,30 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
         {/* 操作栏 */}
         <Row type="flex" justify="space-between" align="middle" className="queue-messages-content-header-toolbar">
           <Col>
-            <Space>
-              <Input
-                prefix={<IconSearch />}
-                placeholder={t('queueMessage.searchPlaceholder')}
-                className="queue-messages-content-search-input"
-                value={searchValue}
-                onChange={handleSearch}
-                showClear
-                maxLength={100}
-              />
-              <FilterPopover
-                visible={filterPopoverVisible}
-                onVisibleChange={handleFilterVisibleChange}
-                onReset={handleFilterReset}
-                onConfirm={handleFilterConfirm}
-                sections={[
-                  {
-                    key: 'status',
-                    label: t('queueMessage.filter.status'),
-                    type: 'checkbox',
-                    options: statusFilterOptions,
-                    value: tempStatusFilter,
-                    onChange: (value) => setTempStatusFilter(value as QueueMessageStatus[]),
-                  },
-                  {
-                    key: 'dateRange',
-                    label: t('queueMessage.filter.dateRange'),
-                    type: 'dateRange',
-                    value: tempDateRangeFilter,
-                    onChange: (value) => setTempDateRangeFilter(value as [Date, Date] | null),
-                    datePresets,
-                  },
-                ]}
-              />
-            </Space>
+            <FilterPopover
+              visible={filterPopoverVisible}
+              onVisibleChange={handleFilterVisibleChange}
+              onReset={handleFilterReset}
+              onConfirm={handleFilterConfirm}
+              sections={[
+                {
+                  key: 'status',
+                  label: t('queueMessage.filter.status'),
+                  type: 'checkbox',
+                  options: statusFilterOptions,
+                  value: tempStatusFilter,
+                  onChange: (value) => setTempStatusFilter(value as QueueMessageStatus[]),
+                },
+                {
+                  key: 'dateRange',
+                  label: t('queueMessage.filter.dateRange'),
+                  type: 'dateRange',
+                  value: tempDateRangeFilter,
+                  onChange: (value) => setTempDateRangeFilter(value as [Date, Date] | null),
+                  datePresets,
+                },
+              ]}
+            />
           </Col>
         </Row>
       </div>
