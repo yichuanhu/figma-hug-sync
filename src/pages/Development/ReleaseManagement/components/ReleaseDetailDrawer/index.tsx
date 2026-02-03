@@ -349,18 +349,6 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
                 >
                   <div className="release-detail-drawer-resource-card-header">
                     <Text strong>{resource.resource_name}</Text>
-                    <Space spacing={4}>
-                      {resource.is_previously_published && (
-                        <Tag size="small" color="green">
-                          {t('release.create.alreadyPublished')}
-                        </Tag>
-                      )}
-                      {resource.is_manual && (
-                        <Tag size="small" color="grey">
-                          {t('release.create.manuallyAdded')}
-                        </Tag>
-                      )}
-                    </Space>
                   </div>
                   <div className="release-detail-drawer-resource-card-body">
                     <Text type="tertiary" size="small">
