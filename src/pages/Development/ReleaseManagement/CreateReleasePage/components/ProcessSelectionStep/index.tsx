@@ -2,18 +2,17 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Typography,
-  Table,
   Input,
   Tag,
-  Checkbox,
   Row,
   Col,
   Space,
-  Select,
+  Tree,
+  Spin,
 } from '@douyinfe/semi-ui';
 import { IconSearch } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
-import type { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
+import type { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
 import EmptyState from '@/components/EmptyState';
 import FilterPopover from '@/components/FilterPopover';
 import type { LYPublishableProcessResponse, LYListResponseLYPublishableProcessResponse } from '@/api';
@@ -80,11 +79,9 @@ const generateMockProcess = (index: number): ProcessWithVersions => {
 
 const generateMockListResponse = (
   keyword?: string,
-  status?: string[],
-  offset = 0,
-  size = 20
+  status?: string[]
 ): LYListResponseLYPublishableProcessResponse & { list: ProcessWithVersions[] } => {
-  let allData = Array.from({ length: 25 }, (_, i) => generateMockProcess(i));
+  let allData = Array.from({ length: 15 }, (_, i) => generateMockProcess(i));
 
   if (keyword) {
     const kw = keyword.toLowerCase();
@@ -104,8 +101,8 @@ const generateMockListResponse = (
   }
 
   return {
-    range: { offset, size, total: allData.length },
-    list: allData.slice(offset, offset + size),
+    range: { offset: 0, size: allData.length, total: allData.length },
+    list: allData,
   };
 };
 
@@ -115,36 +112,28 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const [listResponse, setListResponse] =
-    useState<LYListResponseLYPublishableProcessResponse & { list: ProcessWithVersions[] }>({
-      range: { offset: 0, size: 20, total: 0 },
-      list: [],
-    });
+  const [processList, setProcessList] = useState<ProcessWithVersions[]>([]);
   const [loading, setLoading] = useState(false);
   const [keyword, setKeyword] = useState('');
+  const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
 
   // 筛选状态
   const [filterVisible, setFilterVisible] = useState(false);
   const [tempFilters, setTempFilters] = useState<{ status: string[] }>({ status: [] });
   const [activeFilters, setActiveFilters] = useState<{ status: string[] }>({ status: [] });
 
-  const { range, list } = listResponse;
-  const currentPage = Math.floor((range?.offset || 0) / (range?.size || 20)) + 1;
-  const pageSize = range?.size || 20;
-  const total = range?.total || 0;
-
   // 加载数据
-  const loadData = async (searchKeyword = keyword, offset = 0) => {
+  const loadData = async (searchKeyword = keyword) => {
     setLoading(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 300));
-      const response = generateMockListResponse(
-        searchKeyword,
-        activeFilters.status,
-        offset,
-        pageSize
-      );
-      setListResponse(response);
+      const response = generateMockListResponse(searchKeyword, activeFilters.status);
+      setProcessList(response.list);
+      
+      // 搜索时自动展开匹配的流程
+      if (searchKeyword) {
+        setExpandedKeys(response.list.map((p) => p.id));
+      }
     } finally {
       setLoading(false);
     }
@@ -159,7 +148,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
     () =>
       debounce((value: string) => {
         setKeyword(value);
-        loadData(value, 0);
+        loadData(value);
       }, 500),
     [activeFilters]
   );
@@ -174,143 +163,112 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
     setTempFilters({ status: [] });
   };
 
-  // 选择操作
-  const getSelectedProcess = (processId: string) =>
-    selectedProcesses.find((sp) => sp.process.id === processId);
+  // 获取已选中的版本key列表
+  const selectedVersionKeys = useMemo(() => {
+    return selectedProcesses.map((sp) => sp.version_id);
+  }, [selectedProcesses]);
 
-  const isSelected = (processId: string) => !!getSelectedProcess(processId);
+  // 处理选择变化
+  const handleSelect = (
+    selectedKey: string,
+    selected: boolean,
+    selectedNode: TreeNodeData
+  ) => {
+    const nodeKey = selectedNode.key as string;
+    
+    // 判断是流程节点还是版本节点
+    const isVersionNode = nodeKey.startsWith('ver-');
+    
+    if (isVersionNode) {
+      // 版本节点处理
+      const processId = (selectedNode as TreeNodeData & { processId?: string }).processId;
+      const process = processList.find((p) => p.id === processId);
+      if (!process) return;
 
-  const handleSelectProcess = (process: ProcessWithVersions, checked: boolean) => {
-    if (checked) {
-      const newSelected: SelectedProcess = {
-        process,
-        version_id: process.latest_version_id,
-        version_number: process.latest_version,
-      };
-      onSelectionChange([...selectedProcesses, newSelected]);
+      const version = process.versions.find((v) => v.id === nodeKey);
+      if (!version) return;
+
+      if (selected) {
+        // 选中版本：移除该流程的其他版本，添加新版本
+        const filtered = selectedProcesses.filter((sp) => sp.process.id !== processId);
+        onSelectionChange([
+          ...filtered,
+          {
+            process,
+            version_id: version.id,
+            version_number: version.version,
+          },
+        ]);
+      } else {
+        // 取消选中：移除该流程
+        onSelectionChange(selectedProcesses.filter((sp) => sp.process.id !== processId));
+      }
     } else {
-      onSelectionChange(selectedProcesses.filter((sp) => sp.process.id !== process.id));
+      // 流程节点处理
+      const process = processList.find((p) => p.id === nodeKey);
+      if (!process) return;
+
+      const isCurrentlySelected = selectedProcesses.some((sp) => sp.process.id === nodeKey);
+
+      if (!isCurrentlySelected) {
+        // 选中流程：默认选中最新版本并展开
+        onSelectionChange([
+          ...selectedProcesses,
+          {
+            process,
+            version_id: process.latest_version_id,
+            version_number: process.latest_version,
+          },
+        ]);
+        if (!expandedKeys.includes(nodeKey)) {
+          setExpandedKeys([...expandedKeys, nodeKey]);
+        }
+      } else {
+        // 取消选中流程
+        onSelectionChange(selectedProcesses.filter((sp) => sp.process.id !== nodeKey));
+      }
     }
   };
 
-  const handleVersionChange = (process: ProcessWithVersions, versionId: string) => {
-    const version = process.versions.find((v) => v.id === versionId);
-    if (!version) return;
-
-    const existingIndex = selectedProcesses.findIndex((sp) => sp.process.id === process.id);
-    if (existingIndex >= 0) {
-      // 更新已选择的流程版本
-      const updated = [...selectedProcesses];
-      updated[existingIndex] = {
-        ...updated[existingIndex],
-        version_id: version.id,
-        version_number: version.version,
-      };
-      onSelectionChange(updated);
-    } else {
-      // 选择版本时自动选中流程
-      const newSelected: SelectedProcess = {
-        process,
-        version_id: version.id,
-        version_number: version.version,
-      };
-      onSelectionChange([...selectedProcesses, newSelected]);
-    }
-  };
-
-  const handleSelectAll = (checked: boolean) => {
-    if (checked) {
-      const newSelections = list
-        .filter((p) => !isSelected(p.id))
-        .map((p) => ({
-          process: p,
-          version_id: p.latest_version_id,
-          version_number: p.latest_version,
-        }));
-      onSelectionChange([...selectedProcesses, ...newSelections]);
-    } else {
-      const currentPageIds = new Set(list.map((p) => p.id));
-      onSelectionChange(selectedProcesses.filter((sp) => !currentPageIds.has(sp.process.id)));
-    }
-  };
-
-  const allCurrentPageSelected = list.length > 0 && list.every((p) => isSelected(p.id));
-  const someCurrentPageSelected = list.some((p) => isSelected(p.id));
-
-  const columns: ColumnProps<ProcessWithVersions>[] = [
-    {
-      title: (
-        <Checkbox
-          checked={allCurrentPageSelected}
-          indeterminate={someCurrentPageSelected && !allCurrentPageSelected}
-          onChange={(e) => handleSelectAll(e.target.checked as boolean)}
-        />
-      ),
-      dataIndex: 'selection',
-      width: 50,
-      render: (_: unknown, record: ProcessWithVersions) => (
-        <Checkbox
-          checked={isSelected(record.id)}
-          onChange={(e) => {
-            e.stopPropagation();
-            handleSelectProcess(record, e.target.checked as boolean);
-          }}
-        />
-      ),
-    },
-    {
-      title: t('release.create.processTable.name'),
-      dataIndex: 'name',
-      width: 240,
-      render: (text: string) => <Text strong>{text}</Text>,
-    },
-    {
-      title: t('release.create.processTable.version'),
-      dataIndex: 'versions',
-      width: 180,
-      render: (_: unknown, record: ProcessWithVersions) => {
-        const selected = getSelectedProcess(record.id);
-        const currentVersionId = selected?.version_id || record.latest_version_id;
-
-        return (
-          <div onClick={(e) => e.stopPropagation()}>
-            <Select
-              value={currentVersionId}
-              onChange={(value) => {
-                handleVersionChange(record, value as string);
-              }}
-              style={{ width: 140 }}
-              optionList={record.versions.map((v) => ({
-                value: v.id,
-                label: (
-                  <Space>
-                    <span>{v.version}</span>
-                    {v.is_published && (
-                      <Tag size="small" color="green">
-                        {t('release.create.processStatus.published')}
-                      </Tag>
-                    )}
-                  </Space>
-                ),
-              }))}
-            />
+  // 构建树形数据
+  const treeData: TreeNodeData[] = useMemo(() => {
+    return processList.map((process) => {
+      const selectedProcess = selectedProcesses.find((sp) => sp.process.id === process.id);
+      
+      return {
+        key: process.id,
+        label: (
+          <div className="process-tree-node">
+            <Text strong className="process-tree-node-name">{process.name}</Text>
+            <Tag size="small" color={process.is_published ? 'green' : 'grey'}>
+              {process.is_published
+                ? t('release.create.processStatus.published')
+                : t('release.create.processStatus.unpublished')}
+            </Tag>
           </div>
-        );
-      },
-    },
-    {
-      title: t('release.create.processTable.status'),
-      dataIndex: 'is_published',
-      width: 100,
-      render: (isPublished: boolean) => (
-        <Tag color={isPublished ? 'green' : 'grey'}>
-          {isPublished
-            ? t('release.create.processStatus.published')
-            : t('release.create.processStatus.unpublished')}
-        </Tag>
-      ),
-    },
-  ];
+        ),
+        children: process.versions.map((version) => ({
+          key: version.id,
+          processId: process.id,
+          label: (
+            <div className="version-tree-node">
+              <Text className="version-tree-node-text">{version.version}</Text>
+              {version.is_published && (
+                <Tag size="small" color="green">
+                  {t('release.create.processStatus.published')}
+                </Tag>
+              )}
+              {selectedProcess?.version_id === version.id && (
+                <Tag size="small" color="blue">
+                  {t('release.create.selected')}
+                </Tag>
+              )}
+            </div>
+          ),
+        })),
+      };
+    });
+  }, [processList, selectedProcesses, t]);
 
   const statusOptions = [
     { value: 'published', label: t('release.create.processStatus.published') },
@@ -363,15 +321,18 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
         )}
       </Row>
 
-      {/* 表格 */}
-      <div className="process-selection-step-table">
-        <Table
-          dataSource={list}
-          columns={columns}
-          rowKey="id"
-          loading={loading}
-          scroll={{ y: 'calc(100vh - 480px)' }}
-          empty={
+      {/* 树形选择区域 */}
+      <div className="process-selection-step-tree">
+        <Spin spinning={loading}>
+          {processList.length > 0 ? (
+            <Tree
+              treeData={treeData}
+              expandedKeys={expandedKeys}
+              onExpand={(keys) => setExpandedKeys(keys as string[])}
+              onSelect={handleSelect}
+              className="process-tree"
+            />
+          ) : (
             <EmptyState
               variant={keyword || activeFilters.status.length > 0 ? 'noResult' : 'noData'}
               description={
@@ -380,32 +341,8 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
                   : t('release.create.noProcessData')
               }
             />
-          }
-          pagination={{
-            total,
-            pageSize,
-            currentPage,
-            showSizeChanger: true,
-            pageSizeOpts: [10, 20, 50],
-            onPageChange: (page) => {
-              loadData(keyword, (page - 1) * pageSize);
-            },
-            onPageSizeChange: (size) => {
-              setListResponse((prev) => ({
-                ...prev,
-                range: { ...prev.range!, size },
-              }));
-              loadData(keyword, 0);
-            },
-          }}
-          onRow={(record) => ({
-            onClick: () =>
-              handleSelectProcess(record, !isSelected(record.id)),
-            className: isSelected(record?.id)
-              ? 'process-selection-step-row-selected'
-              : '',
-          })}
-        />
+          )}
+        </Spin>
       </div>
     </div>
   );
