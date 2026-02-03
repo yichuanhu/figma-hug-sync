@@ -51,11 +51,23 @@
   .sidebar-avatar {
     margin-top: 8px;
 
+    .sidebar-avatar-wrapper {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
     .sidebar-avatar-user {
       background-color: rgba(var(--semi-yellow-5), 1);
       color: var(--semi-color-text-0);
       cursor: pointer;
       flex-shrink: 0;
+      transition: transform 0.2s ease;
+
+      &:hover {
+        transform: scale(1.05);
+      }
     }
   }
 
