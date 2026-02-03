@@ -1928,5 +1928,259 @@
       "credential": "凭据",
       "queue": "队列"
     }
+  },
+  "autoExecutionPolicy": {
+    "pageTitle": "自动执行策略",
+    "description": "配置和管理自动化任务的执行策略",
+    "breadcrumb": {
+      "schedulingCenter": "调度中心",
+      "taskExecution": "任务执行"
+    },
+    "tabs": {
+      "timeTrigger": "时间触发器",
+      "queueTrigger": "队列触发器"
+    }
+  },
+  "timeTrigger": {
+    "pageTitle": "时间触发器",
+    "description": "基于时间规则自动触发任务创建",
+    "createTrigger": "新建触发器",
+    "searchPlaceholder": "搜索触发器名称或描述",
+    "noData": "暂无时间触发器",
+    "table": {
+      "name": "触发器名称",
+      "processName": "流程名称",
+      "triggerRule": "触发规则",
+      "status": "状态",
+      "nextTriggerTime": "下次触发时间"
+    },
+    "status": {
+      "enabled": "启用",
+      "disabled": "禁用"
+    },
+    "filter": {
+      "process": "流程",
+      "status": "状态",
+      "allProcesses": "全部流程",
+      "allStatus": "全部状态"
+    },
+    "ruleType": {
+      "basic": "基本类型",
+      "cron": "Cron表达式"
+    },
+    "frequency": {
+      "minutely": "每分钟",
+      "hourly": "每小时",
+      "daily": "每天",
+      "weekly": "每周",
+      "monthly": "每月"
+    },
+    "frequencyDisplay": {
+      "everyMinute": "每{{value}}分钟",
+      "everyHour": "每{{value}}小时",
+      "everyDayAt": "每天 {{time}}",
+      "everyWeekAt": "每周{{day}} {{time}}",
+      "everyMonthAt": "每月{{day}}日 {{time}}"
+    },
+    "weekdays": {
+      "monday": "一",
+      "tuesday": "二",
+      "wednesday": "三",
+      "thursday": "四",
+      "friday": "五",
+      "saturday": "六",
+      "sunday": "日"
+    },
+    "actions": {
+      "edit": "编辑",
+      "delete": "删除",
+      "enable": "启用",
+      "disable": "禁用"
+    },
+    "createModal": {
+      "title": "新建时间触发器",
+      "steps": {
+        "basicInfo": "基本信息",
+        "taskConfig": "任务配置",
+        "triggerRule": "触发规则与预览"
+      },
+      "basicSection": "基本信息",
+      "processSection": "流程配置",
+      "targetSection": "执行目标",
+      "executionSection": "执行设置",
+      "parameterSection": "输入参数",
+      "ruleSection": "时间规则",
+      "calendarSection": "工作日历",
+      "previewSection": "触发预览",
+      "selectTarget": "选择执行目标",
+      "loadingPreview": "正在计算触发时间...",
+      "previewTitle": "未来10次触发时间",
+      "noPreview": "请先配置触发规则",
+      "endTimeNever": "永不结束",
+      "endTimeCustom": "自定义结束时间",
+      "success": "时间触发器创建成功",
+      "error": "创建失败，请重试"
+    },
+    "editModal": {
+      "title": "编辑时间触发器",
+      "success": "时间触发器更新成功",
+      "error": "更新失败，请重试"
+    },
+    "deleteModal": {
+      "title": "删除确认",
+      "confirmMessage": "确定要删除时间触发器「{{name}}」吗？",
+      "deleteWarning": "删除后将不再自动创建任务，已创建的任务不受影响。",
+      "confirmDelete": "确认删除",
+      "success": "时间触发器删除成功",
+      "error": "删除失败，请重试"
+    },
+    "enableModal": {
+      "title": "启用触发器",
+      "confirmMessage": "确定要启用时间触发器「{{name}}」吗？",
+      "enableHint": "启用后将按照配置的规则自动创建任务。",
+      "success": "触发器已启用",
+      "error": "启用失败，请重试"
+    },
+    "disableModal": {
+      "title": "禁用触发器",
+      "confirmMessage": "确定要禁用时间触发器「{{name}}」吗？",
+      "disableHint": "禁用后将暂停自动创建任务，已创建的任务不受影响。",
+      "success": "触发器已禁用",
+      "error": "禁用失败，请重试"
+    },
+    "fields": {
+      "name": "触发器名称",
+      "namePlaceholder": "请输入触发器名称",
+      "description": "描述",
+      "descriptionPlaceholder": "请输入触发器描述（选填）",
+      "process": "流程",
+      "processPlaceholder": "请选择流程",
+      "targetType": "执行目标类型",
+      "targetPlaceholder": "请选择执行目标",
+      "priority": "优先级",
+      "maxDuration": "最大执行时长",
+      "maxDurationUnit": "秒",
+      "maxDurationHint": "范围：60-86400秒（1分钟-24小时）",
+      "validityDays": "任务有效期",
+      "validityDaysUnit": "天",
+      "validityDaysHint": "范围：1-30天",
+      "enableRecording": "启用录屏",
+      "taskCountPerTrigger": "每次创建任务数",
+      "taskCountPerTriggerHint": "每次触发时创建的任务数量",
+      "allowDuplicateTasks": "允许重复任务",
+      "allowDuplicateTasksHint": "当有未完成任务时是否允许创建新任务",
+      "ruleType": "规则类型",
+      "frequencyType": "运行频率",
+      "frequencyValue": "间隔时间",
+      "cronExpression": "Cron表达式",
+      "cronExpressionPlaceholder": "请输入5段Cron表达式，如：0 9 * * *",
+      "cronExpressionHint": "格式：分 时 日 月 周（如：0 9 * * * 表示每天9点）",
+      "timeZone": "时区",
+      "timeZonePlaceholder": "请选择时区",
+      "startDateTime": "开始时间",
+      "startDateTimePlaceholder": "请选择开始时间",
+      "endDateTime": "结束时间",
+      "endDateTimePlaceholder": "请选择结束时间",
+      "enableWorkCalendar": "启用工作日历",
+      "workCalendar": "工作日历",
+      "workCalendarPlaceholder": "请选择工作日历",
+      "executionType": "执行类型",
+      "executionTypeWorkday": "工作日执行",
+      "executionTypeNonWorkday": "非工作日执行",
+      "triggerTime": "触发时间",
+      "weekday": "星期",
+      "monthDay": "日期"
+    },
+    "validation": {
+      "nameRequired": "请输入触发器名称",
+      "nameLengthError": "触发器名称不能超过255字符",
+      "nameExists": "触发器名称已存在，请使用其他名称",
+      "descriptionLengthError": "描述不能超过1000字符",
+      "processRequired": "请选择流程",
+      "targetTypeRequired": "请选择执行目标类型",
+      "targetRequired": "请选择执行目标",
+      "maxDurationRange": "最大执行时长必须在60-86400秒之间",
+      "validityDaysRange": "任务有效期必须在1-30天之间",
+      "taskCountRange": "每次创建任务数必须大于0",
+      "cronExpressionRequired": "请输入Cron表达式",
+      "cronExpressionInvalid": "Cron表达式格式错误",
+      "frequencyTypeRequired": "请选择运行频率",
+      "frequencyValueRequired": "请输入间隔时间",
+      "timeZoneRequired": "请选择时区",
+      "startDateTimeRequired": "请选择开始时间",
+      "startDateTimeInvalid": "开始时间不能早于当前时间",
+      "endDateTimeInvalid": "结束时间必须晚于开始时间",
+      "workCalendarRequired": "启用工作日历时必须选择日历",
+      "parameterRequired": "请填写必填参数「{{name}}」"
+    },
+    "detail": {
+      "tabs": {
+        "basicInfo": "基本信息",
+        "executionLogs": "执行记录"
+      },
+      "basicInfo": "基本信息",
+      "triggerRule": "触发规则",
+      "taskConfig": "任务配置",
+      "inputParameters": "输入参数",
+      "systemInfo": "系统信息",
+      "fields": {
+        "name": "触发器名称",
+        "description": "描述",
+        "status": "状态",
+        "process": "流程",
+        "executionTarget": "执行目标",
+        "priority": "优先级",
+        "maxDuration": "最大执行时长",
+        "validityDays": "任务有效期",
+        "enableRecording": "启用录屏",
+        "taskCountPerTrigger": "每次创建数",
+        "allowDuplicateTasks": "允许重复",
+        "ruleType": "规则类型",
+        "triggerRule": "触发规则",
+        "timeZone": "时区",
+        "startDateTime": "开始时间",
+        "endDateTime": "结束时间",
+        "workCalendar": "工作日历",
+        "nextTriggerTime": "下次触发",
+        "lastTriggerTime": "最后触发",
+        "creator": "创建者",
+        "createTime": "创建时间",
+        "updateTime": "更新时间"
+      },
+      "noParameters": "无输入参数",
+      "neverEnd": "永不结束",
+      "notTriggeredYet": "尚未触发",
+      "notScheduled": "未安排"
+    },
+    "executionLog": {
+      "title": "执行记录",
+      "noLogs": "暂无执行记录",
+      "table": {
+        "triggerTime": "触发时间",
+        "status": "执行状态",
+        "taskCount": "创建任务数",
+        "errorMessage": "错误信息"
+      },
+      "status": {
+        "success": "成功",
+        "failed": "失败",
+        "skipped": "跳过"
+      }
+    },
+    "targetType": {
+      "botGroup": "机器人组",
+      "botInGroup": "组内机器人",
+      "ungroupedBot": "未分组机器人"
+    },
+    "empty": {
+      "filterDescription": "没有找到匹配的触发器，请尝试调整筛选条件",
+      "defaultDescription": "还没有创建任何时间触发器，点击「新建触发器」开始"
+    }
+  },
+  "queueTrigger": {
+    "pageTitle": "队列触发器",
+    "description": "基于队列消息自动触发任务创建",
+    "noData": "暂无队列触发器",
+    "comingSoon": "队列触发器功能即将上线，敬请期待"
   }
 }
