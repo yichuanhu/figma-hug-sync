@@ -1163,7 +1163,7 @@
       "unconsumedInactive": "未消费-未生效",
       "unconsumedActive": "未消费-已生效",
       "consumed": "已消费",
-      "expired": "\"已失效\""
+      "expired": "已失效"
     },
     "priority": {
       "high": "高",
