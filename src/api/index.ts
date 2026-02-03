@@ -2643,3 +2643,127 @@ export interface LYListResponseLYPublishableProcessResponse {
   /** 列表 */
   list: LYPublishableProcessResponse[];
 }
+
+// ==================== 文件管理相关类型 ====================
+
+/** 文件来源枚举 */
+export type FileSource = 'MANUAL' | 'AUTOMATION_PROCESS';
+
+/** 文件环境类型 */
+export type FileEnvironment = 'DEV' | 'PRD' | 'DEV,PRD';
+
+/**
+ * LYDependentProcessVersion
+ * 依赖的流程版本
+ */
+export interface LYDependentProcessVersion {
+  /** 流程ID */
+  process_id: string;
+  /** 流程名称 */
+  process_name: string;
+  /** 版本ID */
+  version_id: string;
+  /** 版本号 */
+  version: string;
+}
+
+/**
+ * LYFileResponse
+ * 文件响应模型
+ */
+export interface LYFileResponse {
+  /** 文件ID */
+  id: string;
+  /** 文件名称 */
+  name: string;
+  /** 存储ID */
+  storage_id: string;
+  /** 文件大小(字节) */
+  file_size: number;
+  /** 环境可见性 */
+  environment: FileEnvironment;
+  /** 是否被流程依赖 */
+  is_depended_by_process: boolean;
+  /** 文件来源 */
+  source: FileSource;
+  /** 描述 */
+  description?: string | null;
+  /** 依赖此文件的流程版本列表 */
+  dependent_process_versions?: LYDependentProcessVersion[];
+  /** 变更原因 */
+  change_reason?: string | null;
+  /** 创建者ID */
+  created_by: string;
+  /** 创建者名称 */
+  created_by_name: string;
+  /** 创建时间 */
+  created_at: string;
+  /** 更新者ID */
+  updated_by?: string | null;
+  /** 更新者名称 */
+  updated_by_name?: string | null;
+  /** 更新时间 */
+  updated_at: string;
+}
+
+/** LYListResponse[LYFileResponse] */
+export interface LYListResponseLYFileResponse {
+  /** 范围 */
+  range?: LYRangeResponse | null;
+  /** 列表 */
+  list: LYFileResponse[];
+}
+
+/**
+ * LYFileListResultResponse
+ * 文件列表结果响应
+ */
+export interface LYFileListResultResponse {
+  /** 数据 */
+  data: LYFileResponse[];
+  /** 分页信息 */
+  range: {
+    offset: number;
+    size: number;
+    total: number;
+  };
+}
+
+/**
+ * GetFilesParams
+ * 获取文件列表参数
+ */
+export interface GetFilesParams {
+  /** 上下文环境 */
+  context: 'development' | 'scheduling';
+  /** 关键字搜索 */
+  keyword?: string;
+  /** 来源筛选 */
+  source?: FileSource;
+  /** 偏移量 */
+  offset?: number;
+  /** 每页数量 */
+  size?: number;
+}
+
+/**
+ * UploadFileRequest
+ * 上传文件请求
+ */
+export interface UploadFileRequest {
+  /** 文件对象 */
+  file: File;
+  /** 描述 */
+  description?: string;
+}
+
+/**
+ * ReuploadFileRequest
+ * 重新上传文件请求
+ */
+export interface ReuploadFileRequest {
+  /** 文件对象 */
+  file: File;
+  /** 变更原因 */
+  change_reason: string;
+}

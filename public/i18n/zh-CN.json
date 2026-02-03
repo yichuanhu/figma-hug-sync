@@ -351,6 +351,87 @@
       "defaultDescription": "还没有创建任何参数，点击「新建参数」开始"
     }
   },
+  "file": {
+    "title": "文件管理",
+    "description": "管理业务流程使用的文件资源",
+    "breadcrumb": {
+      "businessAssets": "业务资产配置"
+    },
+    "searchPlaceholder": "搜索文件名称",
+    "noData": "暂无文件",
+    "table": {
+      "name": "文件名称",
+      "size": "文件大小",
+      "source": "来源"
+    },
+    "source": {
+      "manual": "手动上传",
+      "automationProcess": "自动化流程"
+    },
+    "filter": {
+      "source": "来源"
+    },
+    "fields": {
+      "descriptionPlaceholder": "请输入文件描述（选填）",
+      "changeReason": "变更原因",
+      "changeReasonPlaceholder": "请输入变更原因"
+    },
+    "validation": {
+      "fileRequired": "请选择要上传的文件",
+      "fileTooLarge": "文件大小不能超过100MB",
+      "nameExists": "已存在同名文件，请修改文件名后重新上传",
+      "changeReasonRequired": "请输入变更原因"
+    },
+    "list": {
+      "loadError": "加载文件列表失败"
+    },
+    "upload": {
+      "button": "上传文件",
+      "title": "上传文件",
+      "dragText": "点击或将文件拖拽到这里上传",
+      "dragSubText": "文件大小不超过100MB",
+      "confirm": "上传",
+      "success": "文件上传成功",
+      "error": "上传失败，请重试"
+    },
+    "reupload": {
+      "title": "重新上传",
+      "currentFile": "当前文件",
+      "confirm": "确认上传",
+      "success": "文件重新上传成功",
+      "error": "重新上传失败，请重试"
+    },
+    "deleteModal": {
+      "title": "删除文件",
+      "confirmMessage": "确定要删除文件「{{name}}」吗？",
+      "cannotDeleteTitle": "无法删除",
+      "hasDependencies": "该文件被以下流程版本使用，无法删除：",
+      "cannotDeleteTooltip": "该文件被流程使用，无法删除",
+      "success": "文件删除成功"
+    },
+    "actions": {
+      "reupload": "重新上传",
+      "download": "下载",
+      "downloading": "正在下载...",
+      "downloadSuccess": "下载成功"
+    },
+    "detail": {
+      "basicInfo": "基本信息",
+      "systemInfo": "系统信息",
+      "environment": "可见环境",
+      "updater": "更新者",
+      "tabs": {
+        "basicInfo": "基本信息",
+        "dependencies": "依赖关系"
+      },
+      "dependentProcesses": "依赖此文件的流程",
+      "noDependencies": "暂无依赖此文件的流程"
+    },
+    "empty": {
+      "filterDescription": "没有找到匹配的文件，请尝试调整筛选条件",
+      "defaultDescription": "还没有上传任何文件，点击「上传文件」开始"
+    }
+  },
   "development": {
     "processDevelopment": {
       "breadcrumb": {
