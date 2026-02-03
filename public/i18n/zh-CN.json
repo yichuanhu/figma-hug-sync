@@ -1176,7 +1176,8 @@
     },
     "filter": {
       "status": "消息状态",
-      "dateRange": "入队时间",
+      "enqueueTime": "入队时间",
+      "effectiveTime": "生效时间",
       "datePresets": {
         "today": "今天",
         "last7Days": "最近7天",
