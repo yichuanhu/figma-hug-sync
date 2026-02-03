@@ -64,23 +64,14 @@
   }
 }
 
+// 全局覆盖 - SideSheet header 和 body 样式
 .card-sidesheet.message-detail-drawer {
-  margin: 8px;
-  border-radius: 8px;
-  height: calc(100% - 16px);
-
-  .semi-sidesheet-inner {
-    border-radius: 8px;
-    background: var(--semi-color-bg-0);
+  .semi-sidesheet-header {
+    border-bottom: 1px solid var(--semi-color-border);
   }
-}
 
-.fullscreen-sidesheet.message-detail-drawer {
-  margin: 0;
-  border-radius: 0;
-  height: 100%;
-
-  .semi-sidesheet-inner {
-    border-radius: 0;
+  .semi-sidesheet-body {
+    padding: 0;
+    position: relative;
   }
 }
