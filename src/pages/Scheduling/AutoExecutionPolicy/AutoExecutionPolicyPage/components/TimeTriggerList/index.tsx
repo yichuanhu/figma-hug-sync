@@ -13,6 +13,8 @@ import {
   Space,
   Tag,
   Select,
+  Switch,
+  Tooltip,
 } from '@douyinfe/semi-ui';
 import {
   IconSearch,
@@ -20,8 +22,6 @@ import {
   IconMore,
   IconDeleteStroked,
   IconEditStroked,
-  IconPlayCircle,
-  IconStop,
   IconClock,
 } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
@@ -259,38 +259,15 @@ const TimeTriggerList = () => {
     }
   };
 
-  // 启用/禁用触发器
-  const handleToggleStatus = (trigger: LYTimeTriggerResponse) => {
-    const isEnabling = trigger.status === 'DISABLED';
-    Modal.confirm({
-      title: isEnabling ? t('timeTrigger.enableModal.title') : t('timeTrigger.disableModal.title'),
-      content: (
-        <>
-          <div>
-            {isEnabling
-              ? t('timeTrigger.enableModal.confirmMessage', { name: trigger.name })
-              : t('timeTrigger.disableModal.confirmMessage', { name: trigger.name })}
-          </div>
-          <div style={{ color: 'var(--semi-color-text-2)', marginTop: 8 }}>
-            {isEnabling
-              ? t('timeTrigger.enableModal.enableHint')
-              : t('timeTrigger.disableModal.disableHint')}
-          </div>
-        </>
-      ),
-      okText: t('common.confirm'),
-      cancelText: t('common.cancel'),
-      onOk: async () => {
-        try {
-          await new Promise((resolve) => setTimeout(resolve, 300));
-          Toast.success(isEnabling ? t('timeTrigger.enableModal.success') : t('timeTrigger.disableModal.success'));
-          loadData(queryParams);
-        } catch (error) {
-          Toast.error(isEnabling ? t('timeTrigger.enableModal.error') : t('timeTrigger.disableModal.error'));
-          throw error;
-        }
-      },
-    });
+  // 启用/禁用触发器（直接切换，不弹窗确认）
+  const handleToggleStatus = async (trigger: LYTimeTriggerResponse, checked: boolean) => {
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      Toast.success(checked ? t('timeTrigger.enableModal.success') : t('timeTrigger.disableModal.success'));
+      loadData(queryParams);
+    } catch (error) {
+      Toast.error(checked ? t('timeTrigger.enableModal.error') : t('timeTrigger.disableModal.error'));
+    }
   };
 
   // 删除触发器
@@ -387,10 +364,17 @@ const TimeTriggerList = () => {
       title: t('timeTrigger.table.status'),
       dataIndex: 'status',
       width: 100,
-      render: (status: TriggerStatus) => (
-        <Tag color={status === 'ENABLED' ? 'green' : 'grey'}>
-          {t(`timeTrigger.status.${status.toLowerCase()}`)}
-        </Tag>
+      render: (status: TriggerStatus, record: LYTimeTriggerResponse) => (
+        <Tooltip content={status === 'ENABLED' ? t('timeTrigger.actions.disable') : t('timeTrigger.actions.enable')}>
+          <Switch
+            checked={status === 'ENABLED'}
+            onChange={(checked, e) => {
+              e.stopPropagation();
+              handleToggleStatus(record, checked);
+            }}
+            size="small"
+          />
+        </Tooltip>
       ),
     },
     {
@@ -423,15 +407,6 @@ const TimeTriggerList = () => {
                 }}
               >
                 {t('timeTrigger.actions.edit')}
-              </Dropdown.Item>
-              <Dropdown.Item
-                icon={record.status === 'ENABLED' ? <IconStop /> : <IconPlayCircle />}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleToggleStatus(record);
-                }}
-              >
-                {record.status === 'ENABLED' ? t('timeTrigger.actions.disable') : t('timeTrigger.actions.enable')}
               </Dropdown.Item>
               <Dropdown.Item
                 icon={<IconDeleteStroked />}
@@ -577,7 +552,8 @@ const TimeTriggerList = () => {
         onNavigate={handleNavigate}
         onEdit={() => Toast.info('编辑功能开发中')}
         onDelete={handleDeleteTrigger}
-        onToggleStatus={handleToggleStatus}
+        onToggleStatus={(trigger, checked) => handleToggleStatus(trigger, checked)}
+        onRefresh={() => loadData(queryParams)}
       />
     </div>
   );

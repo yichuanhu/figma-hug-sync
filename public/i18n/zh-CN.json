@@ -2019,7 +2019,9 @@
       "endTimeNever": "永不结束",
       "endTimeCustom": "自定义结束时间",
       "success": "时间触发器创建成功",
-      "error": "创建失败，请重试"
+      "error": "创建失败，请重试",
+      "prevStep": "上一步",
+      "nextStep": "下一步"
     },
     "editModal": {
       "title": "编辑时间触发器",
