@@ -332,8 +332,14 @@ const ReleaseListPage: React.FC = () => {
         const remaining = contents.length - 2;
         return (
           <Tooltip
-            content={contents.map((c) => `${c.process_name} (${c.version_number})`).join(', ')}
-            position="topLeft"
+            content={
+              <div style={{ textAlign: 'center' }}>
+                {contents.map((c) => (
+                  <div key={c.process_id}>{c.process_name} ({c.version_number})</div>
+                ))}
+              </div>
+            }
+            position="top"
           >
             <span className="release-list-processes">
               {displayNames.join(', ')}
