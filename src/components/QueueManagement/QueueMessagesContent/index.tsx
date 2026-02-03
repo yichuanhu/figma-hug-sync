@@ -14,18 +14,16 @@ import {
   Row,
   Col,
   Typography,
-  Popover,
-  CheckboxGroup,
   Tooltip,
   Breadcrumb,
 } from '@douyinfe/semi-ui';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
+import FilterPopover from '@/components/FilterPopover';
 import {
   IconSearch,
   IconMore,
   IconDeleteStroked,
-  IconFilter,
   IconChevronLeft,
   IconPlayCircle,
   IconRefresh,
@@ -89,7 +87,12 @@ const generateMockMessageList = (queueId: string, messageType: 'TEST' | 'PRODUCT
 
 // 模拟API调用
 const fetchMessageList = async (
-  params: GetQueueMessagesParams
+  params: GetQueueMessagesParams & { 
+    statusFilter?: QueueMessageStatus[];
+    dateRange?: [Date, Date] | null;
+    sortBy?: 'created_at' | 'priority';
+    sortOrder?: 'asc' | 'desc';
+  }
 ): Promise<LYQueueMessageListResultResponse> => {
   await new Promise((resolve) => setTimeout(resolve, 500));
 
@@ -97,8 +100,18 @@ const fetchMessageList = async (
   let data = generateMockMessageList(params.queue_id, messageType);
 
   // 状态筛选
-  if (params.status) {
-    data = data.filter((item) => item.status === params.status);
+  if (params.statusFilter && params.statusFilter.length > 0) {
+    data = data.filter((item) => params.statusFilter!.includes(item.status));
+  }
+
+  // 时间范围筛选
+  if (params.dateRange && params.dateRange[0] && params.dateRange[1]) {
+    const startTime = params.dateRange[0].getTime();
+    const endTime = params.dateRange[1].getTime() + 24 * 60 * 60 * 1000 - 1; // 包含结束日期整天
+    data = data.filter((item) => {
+      const itemTime = new Date(item.created_at).getTime();
+      return itemTime >= startTime && itemTime <= endTime;
+    });
   }
 
   // 关键词搜索
@@ -110,6 +123,20 @@ const fetchMessageList = async (
   // 任务ID筛选
   if (params.consume_task_id) {
     data = data.filter((item) => item.consume_task_id === params.consume_task_id);
+  }
+
+  // 排序
+  if (params.sortBy) {
+    const priorityOrder: Record<QueueMessagePriority, number> = { HIGH: 3, MEDIUM: 2, LOW: 1 };
+    data.sort((a, b) => {
+      let comparison = 0;
+      if (params.sortBy === 'created_at') {
+        comparison = new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+      } else if (params.sortBy === 'priority') {
+        comparison = priorityOrder[a.priority] - priorityOrder[b.priority];
+      }
+      return params.sortOrder === 'asc' ? comparison : -comparison;
+    });
   }
 
   const total = data.length;
@@ -131,6 +158,8 @@ interface QueryParams {
   page: number;
   pageSize: number;
   keyword: string;
+  sortBy: 'created_at' | 'priority';
+  sortOrder: 'asc' | 'desc';
 }
 
 export interface QueueMessagesContentProps {
@@ -150,11 +179,18 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
     page: 1,
     pageSize: 20,
     keyword: '',
+    sortBy: 'created_at',
+    sortOrder: 'desc',
   });
 
-  // 状态筛选
-  const [statusFilter, setStatusFilter] = useState<QueueMessageStatus | null>(null);
+  // 筛选状态
+  const [statusFilter, setStatusFilter] = useState<QueueMessageStatus[]>([]);
+  const [dateRangeFilter, setDateRangeFilter] = useState<[Date, Date] | null>(null);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
+  
+  // 临时筛选状态（用于弹窗内编辑）
+  const [tempStatusFilter, setTempStatusFilter] = useState<QueueMessageStatus[]>([]);
+  const [tempDateRangeFilter, setTempDateRangeFilter] = useState<[Date, Date] | null>(null);
 
   // 列表数据
   const [listResponse, setListResponse] = useState<LYQueueMessageListResultResponse | null>(null);
@@ -184,7 +220,10 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
         keyword: queryParams.keyword || undefined,
         offset: (queryParams.page - 1) * queryParams.pageSize,
         size: queryParams.pageSize,
-        status: statusFilter,
+        statusFilter: statusFilter.length > 0 ? statusFilter : undefined,
+        dateRange: dateRangeFilter,
+        sortBy: queryParams.sortBy,
+        sortOrder: queryParams.sortOrder,
       });
       setListResponse(response);
     } catch (error) {
@@ -194,7 +233,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, statusFilter, context, queueId, t]);
+  }, [queryParams, statusFilter, dateRangeFilter, context, queueId, t]);
 
   useEffect(() => {
     loadData();
@@ -215,15 +254,67 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
   };
 
   // 状态筛选选项
-  const statusFilterOptions = [
+  const statusFilterOptions = useMemo(() => [
     { value: 'UNCONSUMED_INACTIVE', label: t('queueMessage.status.unconsumedInactive') },
     { value: 'UNCONSUMED_ACTIVE', label: t('queueMessage.status.unconsumedActive') },
     { value: 'CONSUMED', label: t('queueMessage.status.consumed') },
     { value: 'EXPIRED', label: t('queueMessage.status.expired') },
-  ];
+  ], [t]);
 
-  // 计算筛选数量
-  const filterCount = statusFilter !== null ? 1 : 0;
+  // 日期快捷选项
+  const datePresets = useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const endOfToday = new Date(today);
+    endOfToday.setHours(23, 59, 59, 999);
+    
+    const last7Days = new Date(today);
+    last7Days.setDate(last7Days.getDate() - 6);
+    
+    const last30Days = new Date(today);
+    last30Days.setDate(last30Days.getDate() - 29);
+    
+    return [
+      { text: t('queueMessage.filter.datePresets.today'), start: today, end: endOfToday },
+      { text: t('queueMessage.filter.datePresets.last7Days'), start: last7Days, end: endOfToday },
+      { text: t('queueMessage.filter.datePresets.last30Days'), start: last30Days, end: endOfToday },
+    ];
+  }, [t]);
+
+  // 计算筛选数量（不包括日期范围）
+  const filterCount = statusFilter.length;
+
+  // 筛选弹窗打开时同步临时状态
+  const handleFilterVisibleChange = (visible: boolean) => {
+    if (visible) {
+      setTempStatusFilter([...statusFilter]);
+      setTempDateRangeFilter(dateRangeFilter);
+    }
+    setFilterPopoverVisible(visible);
+  };
+
+  // 筛选确认
+  const handleFilterConfirm = () => {
+    setStatusFilter(tempStatusFilter);
+    setDateRangeFilter(tempDateRangeFilter);
+    setQueryParams((prev) => ({ ...prev, page: 1 }));
+  };
+
+  // 筛选重置
+  const handleFilterReset = () => {
+    setTempStatusFilter([]);
+    setTempDateRangeFilter(null);
+  };
+
+  // 表格排序处理
+  const handleSort = (sortBy: 'created_at' | 'priority') => {
+    setQueryParams((prev) => ({
+      ...prev,
+      page: 1,
+      sortBy,
+      sortOrder: prev.sortBy === sortBy && prev.sortOrder === 'desc' ? 'asc' : 'desc',
+    }));
+  };
 
   // 点击行查看详情
   const handleRowClick = (record: LYQueueMessageResponse) => {
@@ -377,7 +468,11 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
       title: t('queueMessage.table.priority'),
       dataIndex: 'priority',
       key: 'priority',
-      width: 80,
+      width: 100,
+      sorter: true,
+      onHeaderCell: () => ({
+        onClick: () => handleSort('priority'),
+      }),
       render: (priority: QueueMessagePriority) => getPriorityTag(priority),
     },
     {
@@ -395,10 +490,14 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
       render: (taskId: string | null) => taskId || '-',
     },
     {
-      title: t('queueMessage.table.enqueueTime'),
-      dataIndex: 'enqueue_time',
-      key: 'enqueue_time',
+      title: t('common.createTime'),
+      dataIndex: 'created_at',
+      key: 'created_at',
       width: 160,
+      sorter: true,
+      onHeaderCell: () => ({
+        onClick: () => handleSort('created_at'),
+      }),
       render: (time: string) => formatDate(time),
     },
     {
@@ -493,50 +592,30 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
                 showClear
                 maxLength={100}
               />
-              <Popover
+              <FilterPopover
                 visible={filterPopoverVisible}
-                onVisibleChange={setFilterPopoverVisible}
-                trigger="click"
-                position="bottomLeft"
-                content={
-                  <div className="queue-filter-popover">
-                    <div className="queue-filter-popover-section">
-                      <Text strong className="queue-filter-popover-label">
-                        {t('queueMessage.filter.status')}
-                      </Text>
-                      <CheckboxGroup
-                        value={statusFilter !== null ? [statusFilter] : []}
-                        onChange={(values) => {
-                          const newValue = values.length > 0 ? values[values.length - 1] as QueueMessageStatus : null;
-                          setStatusFilter(newValue);
-                          setQueryParams((prev) => ({ ...prev, page: 1 }));
-                        }}
-                        options={statusFilterOptions}
-                        direction="vertical"
-                      />
-                    </div>
-                    <div className="queue-filter-popover-footer">
-                      <Button theme="borderless" onClick={() => {
-                        setStatusFilter(null);
-                        setQueryParams((prev) => ({ ...prev, page: 1 }));
-                      }} disabled={statusFilter === null}>
-                        {t('common.reset')}
-                      </Button>
-                      <Button theme="solid" type="primary" onClick={() => setFilterPopoverVisible(false)}>
-                        {t('common.confirm')}
-                      </Button>
-                    </div>
-                  </div>
-                }
-              >
-                <Button
-                  icon={<IconFilter />}
-                  type={filterCount > 0 ? 'primary' : 'tertiary'}
-                  theme={filterCount > 0 ? 'solid' : 'light'}
-                >
-                  {t('common.filter')}{filterCount > 0 ? ` (${filterCount})` : ''}
-                </Button>
-              </Popover>
+                onVisibleChange={handleFilterVisibleChange}
+                onReset={handleFilterReset}
+                onConfirm={handleFilterConfirm}
+                sections={[
+                  {
+                    key: 'status',
+                    label: t('queueMessage.filter.status'),
+                    type: 'checkbox',
+                    options: statusFilterOptions,
+                    value: tempStatusFilter,
+                    onChange: (value) => setTempStatusFilter(value as QueueMessageStatus[]),
+                  },
+                  {
+                    key: 'dateRange',
+                    label: t('queueMessage.filter.dateRange'),
+                    type: 'dateRange',
+                    value: tempDateRangeFilter,
+                    onChange: (value) => setTempDateRangeFilter(value as [Date, Date] | null),
+                    datePresets,
+                  },
+                ]}
+              />
             </Space>
           </Col>
         </Row>
