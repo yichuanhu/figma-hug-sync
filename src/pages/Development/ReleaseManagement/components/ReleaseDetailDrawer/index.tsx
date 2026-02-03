@@ -281,7 +281,7 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
     </div>;
 
   // 已发布流程 Tab 内容
-  const renderProcessesTab = () => <div className="release-detail-drawer-tab-content my-0 py-0">
+  const renderProcessesTab = () => <div className="release-detail-drawer-tab-content my-0 mx-0 px-0 py-[16px]">
       {/* 流程标题 */}
       <Title heading={6} className="release-detail-drawer-section-title">
         {t('release.detail.processes')} ({release.contents?.length || 0})
