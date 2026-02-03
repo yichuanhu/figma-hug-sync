@@ -170,6 +170,25 @@ const MessageDetailDrawer = ({
       </Col>
       <Col>
         <Space spacing={8}>
+          <Tooltip content={t('common.previous')}>
+            <Button
+              icon={<IconChevronLeft />}
+              theme="borderless"
+              size="small"
+              disabled={!hasPrevious}
+              onClick={handlePrevious}
+            />
+          </Tooltip>
+          <Tooltip content={t('common.next')}>
+            <Button
+              icon={<IconChevronRight />}
+              theme="borderless"
+              size="small"
+              disabled={!hasNext}
+              onClick={handleNext}
+            />
+          </Tooltip>
+          <Divider layout="vertical" className="message-detail-drawer-header-divider" />
           {message?.status === 'UNCONSUMED_ACTIVE' && (
             <Tooltip content={t('queueMessage.actions.consume')}>
               <Button
@@ -197,29 +216,6 @@ const MessageDetailDrawer = ({
               size="small"
               onClick={() => message && onDelete(message)}
             />
-          </Tooltip>
-          <Divider layout="vertical" className="message-detail-drawer-header-divider" />
-          <Tooltip content={t('common.previous')}>
-            <span style={{ display: 'inline-flex', alignItems: 'center' }}>
-              <Button
-                icon={<IconChevronLeft />}
-                theme="borderless"
-                size="small"
-                disabled={!hasPrevious}
-                onClick={handlePrevious}
-              />
-            </span>
-          </Tooltip>
-          <Tooltip content={t('common.next')}>
-            <span style={{ display: 'inline-flex', alignItems: 'center' }}>
-              <Button
-                icon={<IconChevronRight />}
-                theme="borderless"
-                size="small"
-                disabled={!hasNext}
-                onClick={handleNext}
-              />
-            </span>
           </Tooltip>
           <Divider layout="vertical" className="message-detail-drawer-header-divider" />
           <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
