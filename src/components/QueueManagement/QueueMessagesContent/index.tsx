@@ -90,7 +90,7 @@ const fetchMessageList = async (
   params: GetQueueMessagesParams & { 
     statusFilter?: QueueMessageStatus[];
     dateRange?: [Date, Date] | null;
-    sortBy?: 'created_at' | 'priority';
+    sortBy?: 'enqueue_time' | 'priority';
     sortOrder?: 'asc' | 'desc';
   }
 ): Promise<LYQueueMessageListResultResponse> => {
@@ -104,12 +104,12 @@ const fetchMessageList = async (
     data = data.filter((item) => params.statusFilter!.includes(item.status));
   }
 
-  // 时间范围筛选
+  // 时间范围筛选（按入队时间）
   if (params.dateRange && params.dateRange[0] && params.dateRange[1]) {
     const startTime = params.dateRange[0].getTime();
     const endTime = params.dateRange[1].getTime() + 24 * 60 * 60 * 1000 - 1; // 包含结束日期整天
     data = data.filter((item) => {
-      const itemTime = new Date(item.created_at).getTime();
+      const itemTime = new Date(item.enqueue_time).getTime();
       return itemTime >= startTime && itemTime <= endTime;
     });
   }
@@ -130,8 +130,8 @@ const fetchMessageList = async (
     const priorityOrder: Record<QueueMessagePriority, number> = { HIGH: 3, MEDIUM: 2, LOW: 1 };
     data.sort((a, b) => {
       let comparison = 0;
-      if (params.sortBy === 'created_at') {
-        comparison = new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+      if (params.sortBy === 'enqueue_time') {
+        comparison = new Date(a.enqueue_time).getTime() - new Date(b.enqueue_time).getTime();
       } else if (params.sortBy === 'priority') {
         comparison = priorityOrder[a.priority] - priorityOrder[b.priority];
       }
@@ -158,7 +158,7 @@ interface QueryParams {
   page: number;
   pageSize: number;
   keyword: string;
-  sortBy: 'created_at' | 'priority';
+  sortBy: 'enqueue_time' | 'priority';
   sortOrder: 'asc' | 'desc';
 }
 
@@ -179,7 +179,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
     page: 1,
     pageSize: 20,
     keyword: '',
-    sortBy: 'created_at',
+    sortBy: 'enqueue_time',
     sortOrder: 'desc',
   });
 
@@ -307,7 +307,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
   };
 
   // 表格排序处理
-  const handleSort = (sortBy: 'created_at' | 'priority') => {
+  const handleSort = (sortBy: 'enqueue_time' | 'priority') => {
     setQueryParams((prev) => ({
       ...prev,
       page: 1,
@@ -490,15 +490,29 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
       render: (taskId: string | null) => taskId || '-',
     },
     {
-      title: t('common.createTime'),
-      dataIndex: 'created_at',
-      key: 'created_at',
+      title: t('queueMessage.table.enqueueTime'),
+      dataIndex: 'enqueue_time',
+      key: 'enqueue_time',
       width: 160,
       sorter: true,
       onHeaderCell: () => ({
-        onClick: () => handleSort('created_at'),
+        onClick: () => handleSort('enqueue_time'),
       }),
       render: (time: string) => formatDate(time),
+    },
+    {
+      title: t('queueMessage.table.effectiveTime'),
+      dataIndex: 'effective_time',
+      key: 'effective_time',
+      width: 160,
+      render: (time: string) => formatDate(time),
+    },
+    {
+      title: t('queueMessage.table.expiryTime'),
+      dataIndex: 'expiry_time',
+      key: 'expiry_time',
+      width: 160,
+      render: (time: string | null) => formatDate(time),
     },
     {
       title: t('common.actions'),
