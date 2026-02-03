@@ -1773,7 +1773,13 @@
         "selectedCount": "已选中 {{count}} 项"
       },
       "success": "发布创建成功！",
-      "error": "发布创建失败，请重试"
+      "error": "发布创建失败，请重试",
+      "exitConfirm": {
+        "title": "确认退出",
+        "content": "您有未保存的内容，确定要退出新建发布吗？",
+        "confirm": "确定退出",
+        "cancel": "继续编辑"
+      }
     },
     "actions": {
       "rollback": "回退"
