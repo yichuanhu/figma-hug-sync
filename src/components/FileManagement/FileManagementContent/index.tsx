@@ -65,7 +65,8 @@ const generateMockFile = (index: number, context: 'development' | 'scheduling'):
     'workflow-config.yaml',
   ];
 
-  const hasDependency = index % 3 === 0;
+  // index === 1 生成无依赖数据
+  const hasDependency = index !== 1 && index % 3 === 0;
   
   return {
     id: generateUUID(),
@@ -93,7 +94,7 @@ const generateMockFile = (index: number, context: 'development' | 'scheduling'):
             version: '2.1.0',
           },
         ]
-      : undefined,
+      : [],
     change_reason: index % 4 === 0 ? '修复配置错误' : undefined,
     created_by: generateUUID(),
     created_by_name: ['张三', '李四', '王五', '赵六'][index % 4],
@@ -342,7 +343,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
       title: t('file.table.name'),
       dataIndex: 'name',
       key: 'name',
-      width: 220,
+      width: 200,
       render: (text: string) => (
         <span className="file-management-content-table-name">{text}</span>
       ),
@@ -351,7 +352,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
       title: t('file.table.size'),
       dataIndex: 'file_size',
       key: 'file_size',
-      width: 120,
+      width: 100,
       render: (size: number) => (
         <span className="file-management-content-table-size">{formatFileSize(size)}</span>
       ),
@@ -360,17 +361,44 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
       title: t('file.table.source'),
       dataIndex: 'source',
       key: 'source',
-      width: 140,
+      width: 120,
       render: (source: FileSource) => {
         const config = sourceConfig[source];
         return <Tag color={config.color}>{t(config.i18nKey)}</Tag>;
       },
     },
     {
+      title: t('file.table.dependency'),
+      dataIndex: 'is_depended_by_process',
+      key: 'is_depended_by_process',
+      width: 100,
+      render: (isDependedByProcess: boolean) => (
+        <Tag color={isDependedByProcess ? 'green' : 'grey'}>
+          {isDependedByProcess ? t('file.table.hasDependency') : t('file.table.noDependency')}
+        </Tag>
+      ),
+    },
+    {
+      title: t('file.table.environment'),
+      dataIndex: 'environment',
+      key: 'environment',
+      width: 100,
+      render: (env: string) => {
+        if (env === 'DEV,PRD' || env === 'PRD,DEV') {
+          return <Tag color="blue">{t('file.environment.all')}</Tag>;
+        }
+        return (
+          <Tag color={env === 'DEV' ? 'light-blue' : 'green'}>
+            {env === 'DEV' ? t('file.environment.dev') : t('file.environment.prd')}
+          </Tag>
+        );
+      },
+    },
+    {
       title: t('common.description'),
       dataIndex: 'description',
       key: 'description',
-      width: 200,
+      width: 180,
       render: (text: string | null) => (
         <span className="file-management-content-table-desc">{text || '-'}</span>
       ),
@@ -379,7 +407,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
       title: t('common.updateTime'),
       dataIndex: 'updated_at',
       key: 'updated_at',
-      width: 180,
+      width: 160,
       render: (time: string) => new Date(time).toLocaleString('zh-CN'),
     },
     {
@@ -564,7 +592,8 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
             {context === 'development' && (
               <Button
                 icon={<IconUpload />}
-                type="primary"
+                theme="solid"
+                style={{ backgroundColor: 'var(--semi-color-text-0)', borderColor: 'var(--semi-color-text-0)' }}
                 onClick={() => setUploadModalVisible(true)}
               >
                 {t('file.upload.button')}
