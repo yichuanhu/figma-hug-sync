@@ -259,7 +259,7 @@ const UploadFileModal = ({
             field="description"
             label={t('common.description')}
             placeholder={t('file.fields.descriptionPlaceholder')}
-            maxLength={500}
+            maxLength={2000}
             rows={3}
           />
         </Form>
