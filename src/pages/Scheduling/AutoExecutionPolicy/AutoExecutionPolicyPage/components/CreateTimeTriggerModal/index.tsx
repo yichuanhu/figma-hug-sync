@@ -638,13 +638,10 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
                 placeholder={t('timeTrigger.fields.descriptionPlaceholder')}
                 value={description}
                 onChange={setDescription}
-                maxLength={2000}
+                maxCount={2000}
                 showClear
                 rows={3}
               />
-              <div className="create-time-trigger-modal-field-hint">
-                {description.length}/2000
-              </div>
             </div>
           </div>
         );

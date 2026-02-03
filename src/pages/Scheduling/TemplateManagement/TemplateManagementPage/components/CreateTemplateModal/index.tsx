@@ -416,13 +416,10 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
                     placeholder={t('template.fields.descriptionPlaceholder')}
                     value={description}
                     onChange={setDescription}
-                    maxLength={2000}
+                    maxCount={2000}
                     showClear
                     rows={3}
                   />
-                  <div style={{ fontSize: 12, color: 'var(--semi-color-text-2)', marginTop: 4 }}>
-                    {description.length}/2000
-                  </div>
                 </div>
               </div>
 
