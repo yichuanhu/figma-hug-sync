@@ -240,7 +240,12 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
   // 已发布流程 Tab 内容
   const renderProcessesTab = () => (
     <div className="release-detail-drawer-tab-content">
-      {/* 流程列表 - 去掉标题 */}
+      {/* 流程标题 */}
+      <Title heading={6} className="release-detail-drawer-process-section-title">
+        {t('release.detail.processes')} ({release.contents?.length || 0})
+      </Title>
+
+      {/* 流程列表 */}
       <div className="release-detail-drawer-process-list">
         {release.contents?.map((content) => (
           <div
@@ -268,8 +273,6 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
           </div>
         ))}
       </div>
-
-      <Divider margin="24px 0" />
 
       {/* 资源列表 */}
       {Object.entries(groupedResources).map(([type, resources]) => {
