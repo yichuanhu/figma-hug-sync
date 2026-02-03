@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
+  Breadcrumb,
   Typography,
   Button,
   Table,
@@ -425,16 +426,23 @@ const ReleaseListPage: React.FC = () => {
       <div className="release-list-page">
         {/* 面包屑 */}
         <div className="release-list-page-breadcrumb">
-          <Text type="tertiary">
-            {t('release.breadcrumb.developmentCenter')} /{' '}
-            {t('sidebar.publishManagement')} / {t('release.list.title')}
-          </Text>
+          <Breadcrumb>
+            <Breadcrumb.Item onClick={() => navigate('/')}>
+              {t('common.home')}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              {t('release.breadcrumb.developmentCenter')}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              {t('release.list.title')}
+            </Breadcrumb.Item>
+          </Breadcrumb>
         </div>
 
         {/* 标题区域 */}
         <div className="release-list-page-header">
           <div className="release-list-page-header-title">
-            <Title heading={4} className="title">
+            <Title heading={3} className="title">
               {t('release.list.title')}
             </Title>
             <Text type="tertiary">{t('release.list.description')}</Text>
@@ -514,6 +522,7 @@ const ReleaseListPage: React.FC = () => {
         {/* 表格 */}
         <div className="release-list-page-table">
           <Table
+            size="middle"
             dataSource={list}
             columns={columns}
             rowKey="release_id"
@@ -534,6 +543,7 @@ const ReleaseListPage: React.FC = () => {
               pageSize,
               currentPage,
               showSizeChanger: true,
+              showTotal: true,
               pageSizeOpts: [10, 20, 50, 100],
               onPageChange: (page) => {
                 setQueryParams((prev) => ({
@@ -547,6 +557,7 @@ const ReleaseListPage: React.FC = () => {
             }}
             onRow={(record) => ({
               onClick: () => handleRowClick(record),
+              style: { cursor: 'pointer' },
               className:
                 selectedRelease?.release_id === record?.release_id
                   ? 'release-list-page-row-selected'
