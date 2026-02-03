@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useState, useMemo, useRef, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -19,6 +19,8 @@ import {
   IconClose,
   IconChevronLeft,
   IconChevronRight,
+  IconMaximize,
+  IconMinimize,
 } from '@douyinfe/semi-icons';
 import type { LYReleaseResponse, ReleaseType, ReleaseStatus, ResourceType } from '@/api';
 
@@ -43,6 +45,61 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  // 全屏状态
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  
+  // 抽屉宽度 - 默认 900px，最小 576px
+  const [drawerWidth, setDrawerWidth] = useState(() => {
+    const saved = localStorage.getItem('releaseDetailDrawerWidth');
+    return saved ? Math.max(Number(saved), 576) : 900;
+  });
+
+  // 拖动相关
+  const isResizing = useRef(false);
+  const startX = useRef(0);
+  const startWidth = useRef(drawerWidth);
+
+  // 拖动调整宽度
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      isResizing.current = true;
+      startX.current = e.clientX;
+      startWidth.current = drawerWidth;
+      document.body.style.cursor = 'ew-resize';
+      document.body.style.userSelect = 'none';
+
+      const handleMouseMove = (e: MouseEvent) => {
+        if (!isResizing.current) return;
+        const diff = startX.current - e.clientX;
+        setDrawerWidth(Math.min(Math.max(startWidth.current + diff, 576), window.innerWidth - 100));
+      };
+
+      const handleMouseUp = () => {
+        isResizing.current = false;
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    },
+    [drawerWidth],
+  );
+
+  // 保存宽度到 localStorage
+  useEffect(() => {
+    localStorage.setItem('releaseDetailDrawerWidth', String(drawerWidth));
+  }, [drawerWidth]);
+
+  // 切换全屏
+  const toggleFullscreen = useCallback(() => {
+    setIsFullscreen((prev) => !prev);
+  }, []);
 
   // 计算上一个/下一个索引
   const currentIndex = useMemo(() => {
@@ -241,7 +298,7 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
   const renderProcessesTab = () => (
     <div className="release-detail-drawer-tab-content">
       {/* 流程标题 */}
-      <Title heading={6} className="release-detail-drawer-process-section-title">
+      <Title heading={6} className="release-detail-drawer-section-title">
         {t('release.detail.processes')} ({release.contents?.length || 0})
       </Title>
 
@@ -341,7 +398,7 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
 
   return (
     <SideSheet
-      className="card-sidesheet release-detail-drawer"
+      className={`card-sidesheet resizable-sidesheet release-detail-drawer ${isFullscreen ? 'fullscreen-sidesheet' : ''}`}
       title={
         <Row type="flex" justify="space-between" align="middle" className="release-detail-drawer-header">
           <Col>
@@ -372,6 +429,14 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
                 />
               </Tooltip>
               <Divider layout="vertical" className="release-detail-drawer-header-divider" />
+              <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
+                <Button
+                  icon={isFullscreen ? <IconMinimize /> : <IconMaximize />}
+                  theme="borderless"
+                  size="small"
+                  onClick={toggleFullscreen}
+                />
+              </Tooltip>
               <Tooltip content={t('common.close')}>
                 <Button
                   icon={<IconClose />}
@@ -388,10 +453,19 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
       visible={visible}
       onCancel={onClose}
       placement="right"
-      width={560}
+      width={isFullscreen ? '100%' : drawerWidth}
+      mask={false}
       closable={false}
       maskClosable
     >
+      {/* 拖动调整宽度的把手 */}
+      {!isFullscreen && (
+        <div
+          className="release-detail-drawer-resize-handle"
+          onMouseDown={handleMouseDown}
+        />
+      )}
+
       <div className="release-detail-drawer-content">
         <Tabs type="line">
           <TabPane

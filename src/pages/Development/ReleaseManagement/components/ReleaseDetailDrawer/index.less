@@ -19,6 +19,17 @@
     }
   }
 
+  // 拖拽把手
+  .release-detail-drawer-resize-handle {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    cursor: ew-resize;
+    z-index: 100;
+  }
+
   // 内容区域
   .release-detail-drawer-content {
     padding: 0;
@@ -54,26 +65,21 @@
     padding: 16px 24px;
   }
 
-  // 分组区域
+  // 分组区域 - 统一间距为 24px
   .release-detail-drawer-section {
     margin-top: 24px;
-    margin-bottom: 16px;
 
     &:first-child {
       margin-top: 0;
     }
-
-    .release-detail-drawer-section-title {
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
   }
 
-  // 流程分组标题
-  .release-detail-drawer-process-section-title {
+  // 区块标题 - 统一样式，与卡片间距 12px
+  .release-detail-drawer-section-title {
     margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
 
   // 错误信息区域
@@ -95,6 +101,7 @@
     gap: 12px;
   }
 
+  // 流程卡片 - 去掉边框线，与资源卡片样式统一
   .release-detail-drawer-process-card {
     padding: 12px 16px;
     background: var(--semi-color-fill-0);
@@ -115,11 +122,11 @@
     gap: 12px;
   }
 
+  // 资源卡片 - 去掉边框线，与流程卡片样式统一
   .release-detail-drawer-resource-card {
     padding: 12px 16px;
     background: var(--semi-color-fill-0);
     border-radius: 8px;
-    border: 1px solid var(--semi-color-border);
 
     .release-detail-drawer-resource-card-header {
       display: flex;
@@ -155,7 +162,7 @@
 
   .semi-sidesheet-body {
     padding: 0;
-    overflow-y: auto;
+    position: relative;
   }
 
   // Descriptions 标签左对齐
