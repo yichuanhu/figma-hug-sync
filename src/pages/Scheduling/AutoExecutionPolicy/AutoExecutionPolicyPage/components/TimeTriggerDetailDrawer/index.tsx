@@ -280,7 +280,7 @@ const TimeTriggerDetailDrawer = ({
       >
         <TabPane tab={t('timeTrigger.detail.tabs.basicInfo')} itemKey="basic">
           <div className="time-trigger-detail-drawer-tab-content">
-            {/* 基本信息 */}
+            {/* 基本信息：名称、描述、状态、创建者、创建时间、最后触发时间 */}
             <div className="time-trigger-detail-drawer-section">
               <Text className="time-trigger-detail-drawer-section-title">
                 {t('timeTrigger.detail.basicInfo')}
@@ -304,10 +304,19 @@ const TimeTriggerDetailDrawer = ({
                     </Text>
                   </Space>
                 </Descriptions.Item>
+                <Descriptions.Item itemKey={t('timeTrigger.detail.fields.creator')}>
+                  {trigger.created_by_name}
+                </Descriptions.Item>
+                <Descriptions.Item itemKey={t('timeTrigger.detail.fields.createTime')}>
+                  {formatTime(trigger.created_at)}
+                </Descriptions.Item>
+                <Descriptions.Item itemKey={t('timeTrigger.detail.fields.lastTriggerTime')}>
+                  {trigger.last_trigger_time ? formatTime(trigger.last_trigger_time) : t('timeTrigger.detail.notTriggeredYet')}
+                </Descriptions.Item>
               </Descriptions>
             </div>
 
-            {/* 触发规则 */}
+            {/* 触发规则：规则类型、运行频率、时区、开始时间、结束时间、工作日历 */}
             <div className="time-trigger-detail-drawer-section">
               <Text className="time-trigger-detail-drawer-section-title">
                 {t('timeTrigger.detail.triggerRule')}
@@ -330,16 +339,10 @@ const TimeTriggerDetailDrawer = ({
                 <Descriptions.Item itemKey={t('timeTrigger.detail.fields.endDateTime')}>
                   {trigger.end_date_time ? formatTime(trigger.end_date_time) : t('timeTrigger.detail.neverEnd')}
                 </Descriptions.Item>
-                {trigger.enable_work_calendar && (
-                  <Descriptions.Item itemKey={t('timeTrigger.detail.fields.workCalendar')}>
-                    {trigger.work_calendar_name} ({t(`timeTrigger.fields.executionType${trigger.work_calendar_execution_type === 'WORKDAY' ? 'Workday' : 'NonWorkday'}`)})
-                  </Descriptions.Item>
-                )}
-                <Descriptions.Item itemKey={t('timeTrigger.detail.fields.nextTriggerTime')}>
-                  {trigger.next_trigger_time ? formatTime(trigger.next_trigger_time) : t('timeTrigger.detail.notScheduled')}
-                </Descriptions.Item>
-                <Descriptions.Item itemKey={t('timeTrigger.detail.fields.lastTriggerTime')}>
-                  {trigger.last_trigger_time ? formatTime(trigger.last_trigger_time) : t('timeTrigger.detail.notTriggeredYet')}
+                <Descriptions.Item itemKey={t('timeTrigger.detail.fields.workCalendar')}>
+                  {trigger.enable_work_calendar
+                    ? `${trigger.work_calendar_name} (${t(`timeTrigger.fields.executionType${trigger.work_calendar_execution_type === 'WORKDAY' ? 'Workday' : 'NonWorkday'}`)})`
+                    : '-'}
                 </Descriptions.Item>
               </Descriptions>
             </div>
@@ -376,6 +379,9 @@ const TimeTriggerDetailDrawer = ({
                 <Descriptions.Item itemKey={t('timeTrigger.detail.fields.allowDuplicateTasks')}>
                   {trigger.allow_duplicate_tasks ? t('common.yes') : t('common.no')}
                 </Descriptions.Item>
+                <Descriptions.Item itemKey={t('timeTrigger.detail.fields.nextTriggerTime')}>
+                  {trigger.next_trigger_time ? formatTime(trigger.next_trigger_time) : t('timeTrigger.detail.notScheduled')}
+                </Descriptions.Item>
               </Descriptions>
             </div>
 
@@ -394,24 +400,6 @@ const TimeTriggerDetailDrawer = ({
                   {t('timeTrigger.detail.noInputParameters')}
                 </div>
               )}
-            </div>
-
-            {/* 系统信息 */}
-            <div className="time-trigger-detail-drawer-section">
-              <Text className="time-trigger-detail-drawer-section-title">
-                {t('timeTrigger.detail.systemInfo')}
-              </Text>
-              <Descriptions align="left">
-                <Descriptions.Item itemKey={t('timeTrigger.detail.fields.creator')}>
-                  {trigger.created_by_name}
-                </Descriptions.Item>
-                <Descriptions.Item itemKey={t('timeTrigger.detail.fields.createTime')}>
-                  {formatTime(trigger.created_at)}
-                </Descriptions.Item>
-                <Descriptions.Item itemKey={t('timeTrigger.detail.fields.updateTime')}>
-                  {formatTime(trigger.updated_at)}
-                </Descriptions.Item>
-              </Descriptions>
             </div>
           </div>
         </TabPane>

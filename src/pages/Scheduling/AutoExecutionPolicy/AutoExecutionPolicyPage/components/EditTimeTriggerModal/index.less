@@ -1,44 +1,43 @@
-// CreateTimeTriggerModal 创建时间触发器弹窗样式
-// 样式与创建执行模版弹窗保持一致
-.create-time-trigger-modal {
-  .create-time-trigger-modal-form {
+// EditTimeTriggerModal 编辑时间触发器弹窗样式
+// 样式与创建时间触发器弹窗保持一致
+.edit-time-trigger-modal {
+  .edit-time-trigger-modal-form {
     padding-top: 4px;
   }
 
-  .create-time-trigger-modal-steps {
+  .edit-time-trigger-modal-steps {
     margin-bottom: 24px;
     padding: 0 24px;
   }
 
-  .create-time-trigger-modal-body {
+  .edit-time-trigger-modal-body {
     display: flex;
     gap: 32px;
   }
 
-  .create-time-trigger-modal-left {
+  .edit-time-trigger-modal-left {
     flex: 1;
     min-width: 0;
 
-    // 当只有左侧时，占满整个宽度
     &:only-child {
       max-width: 100%;
     }
   }
 
-  .create-time-trigger-modal-right {
+  .edit-time-trigger-modal-right {
     flex: 1;
     min-width: 0;
     border-left: 1px solid var(--semi-color-border);
     padding-left: 32px;
   }
 
-  .create-time-trigger-modal-content {
+  .edit-time-trigger-modal-content {
     max-height: calc(100vh - 300px);
     overflow-y: auto;
     padding-right: 4px;
   }
 
-  .create-time-trigger-modal-section {
+  .edit-time-trigger-modal-section {
     padding-bottom: 20px;
     margin-bottom: 20px;
     border-bottom: 1px solid var(--semi-color-border);
@@ -49,13 +48,12 @@
       border-bottom: none;
     }
 
-    // Form 字段统一间距
     .semi-form-field {
       margin-bottom: 16px;
     }
   }
 
-  .create-time-trigger-modal-section-title {
+  .edit-time-trigger-modal-section-title {
     font-weight: 600;
     font-size: 14px;
     color: var(--semi-color-text-0);
@@ -74,33 +72,31 @@
     }
   }
 
-  .create-time-trigger-modal-field {
+  .edit-time-trigger-modal-field {
     margin-bottom: 16px;
   }
 
-  .create-time-trigger-modal-field-label {
+  .edit-time-trigger-modal-field-label {
     display: block;
     margin-bottom: 8px;
     font-weight: 500;
     color: var(--semi-color-text-0);
   }
 
-  .create-time-trigger-modal-field-hint {
+  .edit-time-trigger-modal-field-hint {
     font-size: 12px;
     color: var(--semi-color-text-2);
     margin-top: 4px;
   }
 
-  .create-time-trigger-modal-select-full {
+  .edit-time-trigger-modal-select-full {
     width: 100%;
   }
 
-  // 参数样式
-  .create-time-trigger-modal-params {
-    // 使用标准表单样式
+  .edit-time-trigger-modal-params {
   }
 
-  .create-time-trigger-modal-param-item {
+  .edit-time-trigger-modal-param-item {
     margin-bottom: 16px;
 
     &:last-child {
@@ -117,7 +113,7 @@
     }
   }
 
-  .create-time-trigger-modal-param-label {
+  .edit-time-trigger-modal-param-label {
     display: flex;
     align-items: center;
     font-weight: 600;
@@ -126,18 +122,16 @@
     margin-bottom: 8px;
   }
 
-  .create-time-trigger-modal-no-params {
+  .edit-time-trigger-modal-no-params {
     color: var(--semi-color-text-2);
     padding: 32px 16px;
     text-align: center;
   }
 
-  // 输出参数样式
-  .create-time-trigger-modal-output-params {
-    // 输出参数只读展示
+  .edit-time-trigger-modal-output-params {
   }
 
-  .create-time-trigger-modal-output-param-item {
+  .edit-time-trigger-modal-output-param-item {
     padding: 12px;
     background: var(--semi-color-fill-0);
     border-radius: 6px;
@@ -148,7 +142,7 @@
     }
   }
 
-  .create-time-trigger-modal-output-param-name {
+  .edit-time-trigger-modal-output-param-name {
     display: flex;
     align-items: center;
     font-weight: 500;
@@ -156,25 +150,24 @@
     color: var(--semi-color-text-0);
   }
 
-  .create-time-trigger-modal-output-param-desc {
+  .edit-time-trigger-modal-output-param-desc {
     margin-top: 4px;
     font-size: 12px;
     color: var(--semi-color-text-2);
   }
 
-  // 预览列表
-  .create-time-trigger-modal-preview {
+  .edit-time-trigger-modal-preview {
     background: var(--semi-color-fill-0);
     border-radius: 8px;
     padding: 16px;
 
-    .create-time-trigger-modal-preview-title {
+    .edit-time-trigger-modal-preview-title {
       font-weight: 500;
       color: var(--semi-color-text-0);
       margin-bottom: 12px;
     }
 
-    .create-time-trigger-modal-preview-list {
+    .edit-time-trigger-modal-preview-list {
       list-style: none;
       padding: 0;
       margin: 0;
@@ -197,15 +190,14 @@
       }
     }
 
-    .create-time-trigger-modal-preview-empty {
+    .edit-time-trigger-modal-preview-empty {
       color: var(--semi-color-text-2);
       text-align: center;
       padding: 24px 0;
     }
   }
 
-  // 底部按钮区 - 按钮放右侧一起
-  .create-time-trigger-modal-footer {
+  .edit-time-trigger-modal-footer {
     display: flex;
     justify-content: flex-end;
     gap: 12px;
@@ -216,8 +208,7 @@
   }
 }
 
-// 覆盖Modal样式
-.create-time-trigger-modal.semi-modal {
+.edit-time-trigger-modal.semi-modal {
   .semi-modal-body {
     padding: 16px 24px;
   }
