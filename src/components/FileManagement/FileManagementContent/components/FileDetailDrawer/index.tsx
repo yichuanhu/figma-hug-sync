@@ -23,9 +23,9 @@ import {
   IconUpload,
   IconDownload,
   IconDeleteStroked,
-  IconFile,
   IconLink,
 } from '@douyinfe/semi-icons';
+import { IllustrationNoContent, IllustrationNoContentDark } from '@douyinfe/semi-illustrations';
 import type { LYFileResponse, FileSource } from '@/api/index';
 
 import './index.less';
@@ -344,7 +344,7 @@ const FileDetailDrawer = ({
                 ))
               ) : (
                 <div className="file-detail-drawer-empty">
-                  <IconLink className="file-detail-drawer-empty-icon" />
+                  <IllustrationNoContent className="file-detail-drawer-empty-illustration" />
                   <Text type="tertiary">{t('file.detail.noDependencies')}</Text>
                 </div>
               )}
