@@ -12,6 +12,7 @@ import {
   Space,
   Divider,
   Table,
+  Switch,
 } from '@douyinfe/semi-ui';
 import {
   IconChevronLeft,
@@ -21,8 +22,7 @@ import {
   IconMinimize,
   IconEditStroked,
   IconDeleteStroked,
-  IconPlayCircle,
-  IconStop,
+  IconInbox,
 } from '@douyinfe/semi-icons';
 import type { LYTimeTriggerResponse, LYTriggerExecutionLogResponse } from '@/api';
 import './index.less';
@@ -38,7 +38,8 @@ interface TimeTriggerDetailDrawerProps {
   onNavigate: (direction: 'prev' | 'next') => void;
   onEdit: (trigger: LYTimeTriggerResponse) => void;
   onDelete: (trigger: LYTimeTriggerResponse) => void;
-  onToggleStatus: (trigger: LYTimeTriggerResponse) => void;
+  onToggleStatus: (trigger: LYTimeTriggerResponse, checked: boolean) => void;
+  onRefresh?: () => void;
 }
 
 // Mock 执行记录
@@ -204,9 +205,6 @@ const TimeTriggerDetailDrawer = ({
         <div className="time-trigger-detail-drawer-header">
           <div className="time-trigger-detail-drawer-header-title">
             <Title heading={5}>{trigger.name}</Title>
-            <Tag color={trigger.status === 'ENABLED' ? 'green' : 'grey'}>
-              {t(`timeTrigger.status.${trigger.status.toLowerCase()}`)}
-            </Tag>
           </div>
           <Space spacing={8}>
             <Tooltip content={t('common.previous')}>
@@ -234,14 +232,6 @@ const TimeTriggerDetailDrawer = ({
                 theme="borderless"
                 size="small"
                 onClick={() => onEdit(trigger)}
-              />
-            </Tooltip>
-            <Tooltip content={trigger.status === 'ENABLED' ? t('timeTrigger.actions.disable') : t('timeTrigger.actions.enable')}>
-              <Button
-                icon={trigger.status === 'ENABLED' ? <IconStop /> : <IconPlayCircle />}
-                theme="borderless"
-                size="small"
-                onClick={() => onToggleStatus(trigger)}
               />
             </Tooltip>
             <Tooltip content={t('common.delete')}>
@@ -303,9 +293,16 @@ const TimeTriggerDetailDrawer = ({
                   {trigger.description || '-'}
                 </Descriptions.Item>
                 <Descriptions.Item itemKey={t('timeTrigger.detail.fields.status')}>
-                  <Tag color={trigger.status === 'ENABLED' ? 'green' : 'grey'}>
-                    {t(`timeTrigger.status.${trigger.status.toLowerCase()}`)}
-                  </Tag>
+                  <Space spacing={8}>
+                    <Switch
+                      checked={trigger.status === 'ENABLED'}
+                      onChange={(checked) => onToggleStatus(trigger, checked)}
+                      size="small"
+                    />
+                    <Text type={trigger.status === 'ENABLED' ? 'success' : 'tertiary'}>
+                      {t(`timeTrigger.status.${trigger.status.toLowerCase()}`)}
+                    </Text>
+                  </Space>
                 </Descriptions.Item>
               </Descriptions>
             </div>
@@ -382,22 +379,22 @@ const TimeTriggerDetailDrawer = ({
               </Descriptions>
             </div>
 
-            {/* 输入参数 */}
-            {trigger.input_parameters && Object.keys(trigger.input_parameters).length > 0 && (
-              <div className="time-trigger-detail-drawer-section">
-                <Text className="time-trigger-detail-drawer-section-title">
-                  {t('timeTrigger.detail.inputParameters')}
-                </Text>
-                <div className="time-trigger-detail-drawer-params">
-                  {Object.entries(trigger.input_parameters).map(([key, value]) => (
-                    <div key={key} className="time-trigger-detail-drawer-param-item">
-                      <span className="param-name">{key}</span>
-                      <span className="param-value">{String(value)}</span>
-                    </div>
-                  ))}
+            {/* 输入参数 - 使用与任务详情一致的 JSON 展示样式 */}
+            <div className="time-trigger-detail-drawer-section">
+              <Text className="time-trigger-detail-drawer-section-title">
+                {t('timeTrigger.detail.inputParameters')}
+              </Text>
+              {trigger.input_parameters && Object.keys(trigger.input_parameters).length > 0 ? (
+                <div className="time-trigger-detail-drawer-json-content">
+                  <pre>{JSON.stringify(trigger.input_parameters, null, 2)}</pre>
                 </div>
-              </div>
-            )}
+              ) : (
+                <div className="time-trigger-detail-drawer-no-data">
+                  <IconInbox style={{ marginRight: 6 }} />
+                  {t('timeTrigger.detail.noInputParameters')}
+                </div>
+              )}
+            </div>
 
             {/* 系统信息 */}
             <div className="time-trigger-detail-drawer-section">

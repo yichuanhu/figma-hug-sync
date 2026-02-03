@@ -400,11 +400,9 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
       case 0:
         return (
           <div className="create-time-trigger-modal-section">
-            <div className="create-time-trigger-modal-section-title">
-              {t('timeTrigger.createModal.basicSection')}
-            </div>
+            <div className="create-time-trigger-modal-section-title">{t('timeTrigger.createModal.basicSection')}</div>
             <div className="create-time-trigger-modal-field">
-              <div className="semi-form-field-label-text">{t('timeTrigger.fields.name')} *</div>
+              <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.fields.name')} *</Text>
               <Input
                 placeholder={t('timeTrigger.fields.namePlaceholder')}
                 value={triggerName}
@@ -414,7 +412,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
               />
             </div>
             <div className="create-time-trigger-modal-field">
-              <div className="semi-form-field-label-text">{t('timeTrigger.fields.description')}</div>
+              <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.fields.description')}</Text>
               <Input
                 placeholder={t('timeTrigger.fields.descriptionPlaceholder')}
                 value={description}
@@ -431,11 +429,9 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
           <>
             {/* 流程配置 */}
             <div className="create-time-trigger-modal-section">
-              <div className="create-time-trigger-modal-section-title">
-                {t('timeTrigger.createModal.processSection')}
-              </div>
+              <div className="create-time-trigger-modal-section-title">{t('timeTrigger.createModal.processSection')}</div>
               <div className="create-time-trigger-modal-field">
-                <div className="semi-form-field-label-text">{t('timeTrigger.fields.process')} *</div>
+                <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.fields.process')} *</Text>
                 <Select
                   placeholder={t('timeTrigger.fields.processPlaceholder')}
                   value={selectedProcessId}
@@ -449,11 +445,9 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
 
             {/* 执行目标 */}
             <div className="create-time-trigger-modal-section">
-              <div className="create-time-trigger-modal-section-title">
-                {t('timeTrigger.createModal.targetSection')}
-              </div>
+              <div className="create-time-trigger-modal-section-title">{t('timeTrigger.createModal.targetSection')}</div>
               <div className="create-time-trigger-modal-field">
-                <div className="semi-form-field-label-text">{t('timeTrigger.fields.targetType')} *</div>
+                <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.fields.targetType')} *</Text>
                 <RadioGroup
                   value={targetType}
                   onChange={(e) => {
@@ -469,7 +463,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
               </div>
               {targetType && (
                 <div className="create-time-trigger-modal-field">
-                  <div className="semi-form-field-label-text">{t('timeTrigger.createModal.selectTarget')} *</div>
+                  <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.createModal.selectTarget')} *</Text>
                   <Select
                     placeholder={t('timeTrigger.fields.targetPlaceholder')}
                     value={selectedTargetId}
@@ -483,79 +477,61 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
 
             {/* 执行设置 */}
             <div className="create-time-trigger-modal-section">
-              <div className="create-time-trigger-modal-section-title">
-                {t('timeTrigger.createModal.executionSection')}
-              </div>
-              <div className="create-time-trigger-modal-row">
-                <div className="create-time-trigger-modal-col">
-                  <div className="create-time-trigger-modal-field">
-                    <div className="semi-form-field-label-text">{t('timeTrigger.fields.priority')}</div>
-                    <RadioGroup
-                      value={priority}
-                      onChange={(e) => setPriority(e.target.value as TaskPriority)}
-                      direction="horizontal"
-                    >
-                      <Radio value="HIGH">{t('task.priority.high')}</Radio>
-                      <Radio value="MEDIUM">{t('task.priority.medium')}</Radio>
-                      <Radio value="LOW">{t('task.priority.low')}</Radio>
-                    </RadioGroup>
-                  </div>
-                </div>
-              </div>
-              <div className="create-time-trigger-modal-row">
-                <div className="create-time-trigger-modal-col">
-                  <div className="create-time-trigger-modal-field">
-                    <div className="semi-form-field-label-text">{t('timeTrigger.fields.maxDuration')}</div>
-                    <InputNumber
-                      value={maxDuration}
-                      onChange={(v) => setMaxDuration(v as number)}
-                      min={60}
-                      max={86400}
-                      suffix={t('timeTrigger.fields.maxDurationUnit')}
-                      style={{ width: '100%' }}
-                    />
-                    <div className="field-hint">{t('timeTrigger.fields.maxDurationHint')}</div>
-                  </div>
-                </div>
-                <div className="create-time-trigger-modal-col">
-                  <div className="create-time-trigger-modal-field">
-                    <div className="semi-form-field-label-text">{t('timeTrigger.fields.validityDays')}</div>
-                    <InputNumber
-                      value={validityDays}
-                      onChange={(v) => setValidityDays(v as number)}
-                      min={1}
-                      max={30}
-                      suffix={t('timeTrigger.fields.validityDaysUnit')}
-                      style={{ width: '100%' }}
-                    />
-                    <div className="field-hint">{t('timeTrigger.fields.validityDaysHint')}</div>
-                  </div>
-                </div>
-              </div>
-              <div className="create-time-trigger-modal-row">
-                <div className="create-time-trigger-modal-col">
-                  <div className="create-time-trigger-modal-field">
-                    <div className="semi-form-field-label-text">{t('timeTrigger.fields.taskCountPerTrigger')}</div>
-                    <InputNumber
-                      value={taskCountPerTrigger}
-                      onChange={(v) => setTaskCountPerTrigger(v as number)}
-                      min={1}
-                      max={100}
-                      style={{ width: '100%' }}
-                    />
-                  </div>
-                </div>
-                <div className="create-time-trigger-modal-col">
-                  <div className="create-time-trigger-modal-field">
-                    <div className="semi-form-field-label-text">{t('timeTrigger.fields.enableRecording')}</div>
-                    <Switch checked={enableRecording} onChange={setEnableRecording} />
-                  </div>
-                </div>
+              <div className="create-time-trigger-modal-section-title">{t('timeTrigger.createModal.executionSection')}</div>
+              <div className="create-time-trigger-modal-field">
+                <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.fields.priority')}</Text>
+                <RadioGroup
+                  value={priority}
+                  onChange={(e) => setPriority(e.target.value as TaskPriority)}
+                  direction="horizontal"
+                >
+                  <Radio value="HIGH">{t('task.priority.high')}</Radio>
+                  <Radio value="MEDIUM">{t('task.priority.medium')}</Radio>
+                  <Radio value="LOW">{t('task.priority.low')}</Radio>
+                </RadioGroup>
               </div>
               <div className="create-time-trigger-modal-field">
-                <div className="semi-form-field-label-text">{t('timeTrigger.fields.allowDuplicateTasks')}</div>
+                <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.fields.maxDuration')} *</Text>
+                <InputNumber
+                  value={maxDuration}
+                  onChange={(v) => setMaxDuration(v as number)}
+                  min={60}
+                  max={86400}
+                  suffix={t('timeTrigger.fields.maxDurationUnit')}
+                  style={{ width: '100%' }}
+                />
+                <div className="create-time-trigger-modal-field-hint">{t('timeTrigger.fields.maxDurationHint')}</div>
+              </div>
+              <div className="create-time-trigger-modal-field">
+                <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.fields.validityDays')}</Text>
+                <InputNumber
+                  value={validityDays}
+                  onChange={(v) => setValidityDays(v as number)}
+                  min={1}
+                  max={30}
+                  suffix={t('timeTrigger.fields.validityDaysUnit')}
+                  style={{ width: '100%' }}
+                />
+                <div className="create-time-trigger-modal-field-hint">{t('timeTrigger.fields.validityDaysHint')}</div>
+              </div>
+              <div className="create-time-trigger-modal-field">
+                <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.fields.taskCountPerTrigger')}</Text>
+                <InputNumber
+                  value={taskCountPerTrigger}
+                  onChange={(v) => setTaskCountPerTrigger(v as number)}
+                  min={1}
+                  max={100}
+                  style={{ width: '100%' }}
+                />
+              </div>
+              <div className="create-time-trigger-modal-field">
+                <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.fields.enableRecording')}</Text>
+                <Switch checked={enableRecording} onChange={setEnableRecording} />
+              </div>
+              <div className="create-time-trigger-modal-field">
+                <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.fields.allowDuplicateTasks')}</Text>
                 <Switch checked={allowDuplicateTasks} onChange={setAllowDuplicateTasks} />
-                <div className="field-hint">{t('timeTrigger.fields.allowDuplicateTasksHint')}</div>
+                <div className="create-time-trigger-modal-field-hint">{t('timeTrigger.fields.allowDuplicateTasksHint')}</div>
               </div>
             </div>
 
@@ -576,11 +552,9 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
           <>
             {/* 时间规则 */}
             <div className="create-time-trigger-modal-section">
-              <div className="create-time-trigger-modal-section-title">
-                {t('timeTrigger.createModal.ruleSection')}
-              </div>
+              <div className="create-time-trigger-modal-section-title">{t('timeTrigger.createModal.ruleSection')}</div>
               <div className="create-time-trigger-modal-field">
-                <div className="semi-form-field-label-text">{t('timeTrigger.fields.ruleType')} *</div>
+                <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.fields.ruleType')} *</Text>
                 <RadioGroup
                   value={ruleType}
                   onChange={(e) => setRuleType(e.target.value as TriggerRuleType)}
@@ -592,105 +566,89 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
               </div>
 
               {ruleType === 'BASIC' ? (
-                <div className="create-time-trigger-modal-row">
-                  <div className="create-time-trigger-modal-col">
-                    <div className="create-time-trigger-modal-field">
-                      <div className="semi-form-field-label-text">{t('timeTrigger.fields.frequencyType')} *</div>
-                      <Select
-                        value={frequencyType}
-                        onChange={(v) => setFrequencyType(v as BasicFrequencyType)}
-                        optionList={[
-                          { value: 'MINUTELY', label: t('timeTrigger.frequency.minutely') },
-                          { value: 'HOURLY', label: t('timeTrigger.frequency.hourly') },
-                          { value: 'DAILY', label: t('timeTrigger.frequency.daily') },
-                          { value: 'WEEKLY', label: t('timeTrigger.frequency.weekly') },
-                          { value: 'MONTHLY', label: t('timeTrigger.frequency.monthly') },
-                        ]}
-                        className="create-time-trigger-modal-select-full"
-                      />
-                    </div>
+                <>
+                  <div className="create-time-trigger-modal-field">
+                    <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.fields.frequencyType')} *</Text>
+                    <Select
+                      value={frequencyType}
+                      onChange={(v) => setFrequencyType(v as BasicFrequencyType)}
+                      optionList={[
+                        { value: 'MINUTELY', label: t('timeTrigger.frequency.minutely') },
+                        { value: 'HOURLY', label: t('timeTrigger.frequency.hourly') },
+                        { value: 'DAILY', label: t('timeTrigger.frequency.daily') },
+                        { value: 'WEEKLY', label: t('timeTrigger.frequency.weekly') },
+                        { value: 'MONTHLY', label: t('timeTrigger.frequency.monthly') },
+                      ]}
+                      className="create-time-trigger-modal-select-full"
+                    />
                   </div>
                   {(frequencyType === 'MINUTELY' || frequencyType === 'HOURLY') && (
-                    <div className="create-time-trigger-modal-col">
-                      <div className="create-time-trigger-modal-field">
-                        <div className="semi-form-field-label-text">{t('timeTrigger.fields.frequencyValue')}</div>
-                        <InputNumber
-                          value={frequencyValue}
-                          onChange={(v) => setFrequencyValue(v as number)}
-                          min={1}
-                          max={frequencyType === 'MINUTELY' ? 59 : 23}
-                          style={{ width: '100%' }}
-                        />
-                      </div>
+                    <div className="create-time-trigger-modal-field">
+                      <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.fields.frequencyValue')}</Text>
+                      <InputNumber
+                        value={frequencyValue}
+                        onChange={(v) => setFrequencyValue(v as number)}
+                        min={1}
+                        max={frequencyType === 'MINUTELY' ? 59 : 23}
+                        style={{ width: '100%' }}
+                      />
                     </div>
                   )}
-                </div>
+                </>
               ) : (
                 <div className="create-time-trigger-modal-field">
-                  <div className="semi-form-field-label-text">{t('timeTrigger.fields.cronExpression')} *</div>
+                  <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.fields.cronExpression')} *</Text>
                   <Input
                     placeholder={t('timeTrigger.fields.cronExpressionPlaceholder')}
                     value={cronExpression}
                     onChange={setCronExpression}
                   />
-                  <div className="field-hint">{t('timeTrigger.fields.cronExpressionHint')}</div>
+                  <div className="create-time-trigger-modal-field-hint">{t('timeTrigger.fields.cronExpressionHint')}</div>
                 </div>
               )}
 
-              <div className="create-time-trigger-modal-row">
-                <div className="create-time-trigger-modal-col">
-                  <div className="create-time-trigger-modal-field">
-                    <div className="semi-form-field-label-text">{t('timeTrigger.fields.timeZone')} *</div>
-                    <Select
-                      value={timeZone}
-                      onChange={(v) => setTimeZone(v as string)}
-                      optionList={timeZones}
-                      className="create-time-trigger-modal-select-full"
-                    />
-                  </div>
-                </div>
+              <div className="create-time-trigger-modal-field">
+                <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.fields.timeZone')} *</Text>
+                <Select
+                  value={timeZone}
+                  onChange={(v) => setTimeZone(v as string)}
+                  optionList={timeZones}
+                  className="create-time-trigger-modal-select-full"
+                />
               </div>
 
-              <div className="create-time-trigger-modal-row">
-                <div className="create-time-trigger-modal-col">
-                  <div className="create-time-trigger-modal-field">
-                    <div className="semi-form-field-label-text">{t('timeTrigger.fields.startDateTime')} *</div>
-                    <DatePicker
-                      type="dateTime"
-                      value={startDateTime}
-                      onChange={(v) => setStartDateTime(v as Date)}
-                      style={{ width: '100%' }}
-                    />
-                  </div>
-                </div>
-                <div className="create-time-trigger-modal-col">
-                  <div className="create-time-trigger-modal-field">
-                    <div className="semi-form-field-label-text">{t('timeTrigger.fields.endDateTime')}</div>
-                    <DatePicker
-                      type="dateTime"
-                      value={endDateTime}
-                      onChange={(v) => setEndDateTime(v as Date | null)}
-                      placeholder={t('timeTrigger.createModal.endTimeNever')}
-                      style={{ width: '100%' }}
-                    />
-                  </div>
-                </div>
+              <div className="create-time-trigger-modal-field">
+                <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.fields.startDateTime')} *</Text>
+                <DatePicker
+                  type="dateTime"
+                  value={startDateTime}
+                  onChange={(v) => setStartDateTime(v as Date)}
+                  style={{ width: '100%' }}
+                />
+              </div>
+              <div className="create-time-trigger-modal-field">
+                <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.fields.endDateTime')}</Text>
+                <DatePicker
+                  type="dateTime"
+                  value={endDateTime}
+                  onChange={(v) => setEndDateTime(v as Date | null)}
+                  placeholder={t('timeTrigger.createModal.endTimeNever')}
+                  style={{ width: '100%' }}
+                />
               </div>
             </div>
 
             {/* 工作日历 */}
             <div className="create-time-trigger-modal-section">
-              <div className="create-time-trigger-modal-section-title">
-                {t('timeTrigger.createModal.calendarSection')}
-              </div>
+              <div className="create-time-trigger-modal-section-title">{t('timeTrigger.createModal.calendarSection')}</div>
               <div className="create-time-trigger-modal-field">
-                <div className="semi-form-field-label-text">{t('timeTrigger.fields.enableWorkCalendar')}</div>
+                <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.fields.enableWorkCalendar')}</Text>
                 <Switch checked={enableWorkCalendar} onChange={setEnableWorkCalendar} />
               </div>
               {enableWorkCalendar && (
                 <>
                   <div className="create-time-trigger-modal-field">
-                    <div className="semi-form-field-label-text">{t('timeTrigger.fields.workCalendar')} *</div>
+                    <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.fields.workCalendar')} *</Text>
                     <Select
                       placeholder={t('timeTrigger.fields.workCalendarPlaceholder')}
                       value={workCalendarId}
@@ -700,7 +658,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
                     />
                   </div>
                   <div className="create-time-trigger-modal-field">
-                    <div className="semi-form-field-label-text">{t('timeTrigger.fields.executionType')}</div>
+                    <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.fields.executionType')}</Text>
                     <RadioGroup
                       value={workCalendarExecutionType}
                       onChange={(e) => setWorkCalendarExecutionType(e.target.value as 'WORKDAY' | 'NON_WORKDAY')}
@@ -716,9 +674,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
 
             {/* 触发预览 */}
             <div className="create-time-trigger-modal-section">
-              <div className="create-time-trigger-modal-section-title">
-                {t('timeTrigger.createModal.previewSection')}
-              </div>
+              <div className="create-time-trigger-modal-section-title">{t('timeTrigger.createModal.previewSection')}</div>
               <div className="create-time-trigger-modal-preview">
                 <div className="create-time-trigger-modal-preview-title">
                   {t('timeTrigger.createModal.previewTitle')}
@@ -756,13 +712,13 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
       footer={null}
       closeOnEsc
       maskClosable={false}
-      width={700}
+      width={520}
       centered
     >
       <div className="create-time-trigger-modal-form">
-        {/* 步骤条 */}
+        {/* 步骤条 - 与新建发布保持一致 */}
         <div className="create-time-trigger-modal-steps">
-          <Steps current={currentStep} size="small">
+          <Steps current={currentStep} type="basic">
             <Steps.Step title={t('timeTrigger.createModal.steps.basicInfo')} />
             <Steps.Step title={t('timeTrigger.createModal.steps.taskConfig')} />
             <Steps.Step title={t('timeTrigger.createModal.steps.triggerRule')} />
@@ -770,31 +726,29 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
         </div>
 
         {/* 内容区域 */}
-        <div className="create-time-trigger-modal-body">
+        <div className="create-time-trigger-modal-content">
           {renderStepContent()}
         </div>
 
-        {/* 底部按钮 */}
+        {/* 底部按钮 - 三个按钮放一起 */}
         <div className="create-time-trigger-modal-footer">
-          <div className="create-time-trigger-modal-footer-left">
-            <Button onClick={onCancel}>{t('common.cancel')}</Button>
-          </div>
-          <div className="create-time-trigger-modal-footer-right">
-            {currentStep > 0 && (
-              <Button onClick={handlePrev}>
-                {t('common.previous')}
-              </Button>
-            )}
-            {currentStep < 2 ? (
-              <Button theme="solid" type="primary" onClick={handleNext}>
-                {t('common.next')}
-              </Button>
-            ) : (
-              <Button theme="solid" type="primary" onClick={handleSubmit} loading={loading}>
-                {t('common.save')}
-              </Button>
-            )}
-          </div>
+          <Button theme="light" onClick={onCancel}>
+            {t('common.cancel')}
+          </Button>
+          {currentStep > 0 && (
+            <Button onClick={handlePrev}>
+              {t('timeTrigger.createModal.prevStep')}
+            </Button>
+          )}
+          {currentStep < 2 ? (
+            <Button theme="solid" type="primary" onClick={handleNext}>
+              {t('timeTrigger.createModal.nextStep')}
+            </Button>
+          ) : (
+            <Button theme="solid" type="primary" onClick={handleSubmit} loading={loading}>
+              {t('common.create')}
+            </Button>
+          )}
         </div>
       </div>
     </Modal>

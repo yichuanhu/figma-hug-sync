@@ -60,31 +60,33 @@
     }
   }
 
-  // 参数列表
-  .time-trigger-detail-drawer-params {
+  // JSON 内容展示 - 与任务详情一致
+  .time-trigger-detail-drawer-json-content {
     background: var(--semi-color-fill-0);
-    border-radius: 8px;
-    padding: 12px 16px;
+    border-radius: var(--semi-border-radius-small);
+    padding: 12px;
+    max-height: 200px;
+    overflow-y: auto;
 
-    .time-trigger-detail-drawer-param-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 8px 0;
-      border-bottom: 1px solid var(--semi-color-border);
-
-      &:last-child {
-        border-bottom: none;
-      }
-
-      .param-name {
-        color: var(--semi-color-text-1);
-        font-weight: 500;
-      }
-
-      .param-value {
-        color: var(--semi-color-text-0);
-      }
+    pre {
+      margin: 0;
+      font-size: 12px;
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+      white-space: pre-wrap;
+      word-break: break-all;
     }
+  }
+
+  // 无数据状态 - 与任务详情一致
+  .time-trigger-detail-drawer-no-data {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--semi-color-text-2);
+    padding: 16px;
+    text-align: center;
+    background: var(--semi-color-fill-0);
+    border-radius: var(--semi-border-radius-small);
   }
 
   // 空状态
