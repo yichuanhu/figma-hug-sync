@@ -2650,7 +2650,7 @@ export interface LYListResponseLYPublishableProcessResponse {
 export type FileSource = 'MANUAL' | 'AUTOMATION_PROCESS';
 
 /** 文件环境类型 */
-export type FileEnvironment = 'DEV' | 'PRD' | 'DEV,PRD';
+export type FileEnvironment = 'DEV' | 'PRD' | 'DEV,PRD' | 'PRD,DEV';
 
 /**
  * LYDependentProcessVersion

@@ -1,93 +1,63 @@
+// FileDetailDrawer 文件详情抽屉样式
 .file-detail-drawer {
+  // 标题区域
   &-header {
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 24px;
-    height: 52px;
-    border-bottom: 1px solid var(--semi-color-border);
+    padding-right: 0;
 
     &-title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      min-width: 0;
-      flex: 1;
-
-      .title-text {
-        font-size: 16px;
-        font-weight: 600;
-        color: var(--semi-color-text-0);
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
+      margin: 0;
     }
 
-    &-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-shrink: 0;
+    &-delete-icon {
+      color: var(--semi-color-danger);
     }
 
     &-divider {
-      width: 1px;
       height: 16px;
-      background: var(--semi-color-border);
+      margin: 0 8px 0 4px;
+    }
+
+    &-close-btn {
+      margin-left: 4px;
     }
   }
 
-  &-content {
-    padding: 0;
-    height: 100%;
+  // 拖拽把手
+  &-resize-handle {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    cursor: ew-resize;
+    z-index: 100;
   }
 
+  // Tab 容器
   &-tabs {
     height: 100%;
-    display: flex;
-    flex-direction: column;
   }
 
-  .semi-tabs-bar {
-    padding: 0 24px;
-  }
-
-  .semi-tabs-content {
-    flex: 1;
-    min-height: 0;
-    overflow: hidden;
-  }
-
-  .semi-tabs-pane {
-    height: 100%;
-    overflow-y: auto;
-  }
-
-  // Tab 面板内容
+  // Tab 内容
   &-tab-content {
-    padding: 24px;
+    padding: 16px 24px;
   }
 
-  // 基本信息区块
+  // 内容区块
   &-section {
     margin-bottom: 24px;
 
     &-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--semi-color-text-0);
-      margin-bottom: 16px;
       display: flex;
       align-items: center;
-      gap: 8px;
-    }
-  }
-
-  // Descriptions 标签左对齐
-  .semi-descriptions {
-    .semi-descriptions-item-key {
-      text-align: left;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--semi-color-text-0);
+      margin-bottom: 12px;
     }
   }
 
@@ -135,6 +105,29 @@
       font-size: 48px;
       margin-bottom: 16px;
       opacity: 0.5;
+    }
+  }
+}
+
+// 全局覆盖 - SideSheet header 和 body 样式
+.card-sidesheet.file-detail-drawer {
+  .semi-sidesheet-header {
+    border-bottom: 1px solid var(--semi-color-border);
+  }
+
+  .semi-sidesheet-body {
+    padding: 0;
+    position: relative;
+  }
+
+  .semi-tabs-bar {
+    padding: 0 24px;
+  }
+
+  // Descriptions 标签左对齐
+  .semi-descriptions {
+    .semi-descriptions-item-key {
+      text-align: left;
     }
   }
 }

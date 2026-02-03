@@ -7,11 +7,14 @@ import {
   Button,
   Toast,
   Typography,
+  Banner,
+  Progress,
 } from '@douyinfe/semi-ui';
 import {
-  IconUpload,
+  IconInbox,
   IconFile,
   IconClose,
+  IconAlertCircle,
 } from '@douyinfe/semi-icons';
 import type { FileItem } from '@douyinfe/semi-ui/lib/es/upload';
 
@@ -21,6 +24,22 @@ const { Text } = Typography;
 
 // 最大文件大小 100MB
 const MAX_FILE_SIZE = 100 * 1024 * 1024;
+
+// 文件后缀白名单
+const ALLOWED_EXTENSIONS = [
+  '.json', '.xml', '.yaml', '.yml', '.txt', '.csv',
+  '.xlsx', '.xls', '.docx', '.doc', '.pdf',
+  '.zip', '.rar', '.7z',
+  '.py', '.js', '.ts', '.sh', '.bat',
+  '.enc', '.key', '.pem',
+  '.png', '.jpg', '.jpeg', '.gif', '.svg',
+];
+
+// 文件后缀黑名单（优先级高于白名单）
+const BLOCKED_EXTENSIONS = [
+  '.exe', '.dll', '.bat', '.cmd', '.com', '.msi',
+  '.vbs', '.vbe', '.js', '.jse', '.wsf', '.wsh',
+];
 
 interface UploadFileModalProps {
   visible: boolean;
@@ -39,6 +58,8 @@ const UploadFileModal = ({
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [description, setDescription] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [showWarning, setShowWarning] = useState<string | null>(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   const formatFileSize = (bytes: number): string => {
     if (bytes === 0) return '0 B';
@@ -46,6 +67,32 @@ const UploadFileModal = ({
     const sizes = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
+  // 获取文件扩展名
+  const getFileExtension = (filename: string): string => {
+    const lastDot = filename.lastIndexOf('.');
+    if (lastDot === -1) return '';
+    return filename.slice(lastDot).toLowerCase();
+  };
+
+  // 验证文件扩展名
+  const validateFileExtension = (filename: string): { valid: boolean; message?: string } => {
+    const ext = getFileExtension(filename);
+    
+    if (!ext) {
+      return { valid: false, message: t('file.validation.noExtension') };
+    }
+
+    if (BLOCKED_EXTENSIONS.includes(ext)) {
+      return { valid: false, message: t('file.validation.blockedExtension', { ext }) };
+    }
+
+    if (!ALLOWED_EXTENSIONS.includes(ext)) {
+      return { valid: false, message: t('file.validation.notAllowedExtension', { ext }) };
+    }
+
+    return { valid: true };
   };
 
   const handleFileChange = useCallback((info: { fileList: FileItem[] }) => {
@@ -56,17 +103,30 @@ const UploadFileModal = ({
         Toast.error(t('file.validation.fileTooLarge'));
         return;
       }
-      // 检查文件名是否重复
-      if (existingFileNames.includes(file.name)) {
-        Toast.error(t('file.validation.nameExists'));
+
+      // 检查文件扩展名
+      const extValidation = validateFileExtension(file.name);
+      if (!extValidation.valid) {
+        Toast.error(extValidation.message);
         return;
       }
+
+      // 检查文件名是否重复
+      if (existingFileNames.includes(file.name)) {
+        setShowWarning(t('file.validation.nameExistsWarning'));
+      } else {
+        setShowWarning(null);
+      }
+
       setSelectedFile(file);
+      setUploadProgress(0);
     }
   }, [existingFileNames, t]);
 
   const handleRemoveFile = useCallback(() => {
     setSelectedFile(null);
+    setShowWarning(null);
+    setUploadProgress(0);
   }, []);
 
   const handleSubmit = async () => {
@@ -76,9 +136,26 @@ const UploadFileModal = ({
     }
 
     setSubmitting(true);
+    setUploadProgress(0);
+
     try {
+      // 模拟上传进度
+      const progressInterval = setInterval(() => {
+        setUploadProgress((prev) => {
+          if (prev >= 90) {
+            clearInterval(progressInterval);
+            return 90;
+          }
+          return prev + Math.random() * 20;
+        });
+      }, 200);
+
       // 模拟上传
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      clearInterval(progressInterval);
+      setUploadProgress(100);
+
+      await new Promise((resolve) => setTimeout(resolve, 300));
       Toast.success(t('file.upload.success'));
       onSuccess();
       handleClose();
@@ -92,75 +169,100 @@ const UploadFileModal = ({
   const handleClose = () => {
     setSelectedFile(null);
     setDescription('');
+    setShowWarning(null);
+    setUploadProgress(0);
     onClose();
   };
+
+  const handleDismissWarning = useCallback(() => {
+    setShowWarning(null);
+  }, []);
+
+  // 自定义上传，阻止自动上传
+  const customRequest = useCallback(() => {
+    return { abort: () => {} };
+  }, []);
 
   return (
     <Modal
       title={t('file.upload.title')}
       visible={visible}
       onCancel={handleClose}
-      footer={null}
+      footer={
+        <>
+          <Button
+            theme="solid"
+            type="primary"
+            onClick={handleSubmit}
+            loading={submitting}
+            disabled={!selectedFile}
+          >
+            {t('file.upload.confirm')}
+          </Button>
+          <Button onClick={handleClose}>{t('common.cancel')}</Button>
+        </>
+      }
       width={520}
       closeOnEsc
       centered
       maskClosable={false}
       className="upload-file-modal"
     >
-      {!selectedFile ? (
-        <div className="upload-file-modal-upload-area">
-          <Upload
-            draggable
-            action=""
-            accept="*/*"
-            limit={1}
-            showUploadList={false}
-            beforeUpload={() => false}
-            onChange={handleFileChange}
-          >
-            <div className="upload-drag-content">
-              <IconUpload size="extra-large" />
-              <Text>{t('file.upload.dragText')}</Text>
-              <Text type="tertiary" size="small">
-                {t('file.upload.dragSubText')}
-              </Text>
-            </div>
-          </Upload>
-        </div>
-      ) : (
-        <div className="upload-file-modal-file-info">
-          <IconFile className="upload-file-modal-file-info-icon" />
-          <div className="upload-file-modal-file-info-detail">
-            <div className="file-name">{selectedFile.name}</div>
-            <div className="file-size">{formatFileSize(selectedFile.size)}</div>
-          </div>
-          <IconClose
-            className="upload-file-modal-file-info-remove"
-            onClick={handleRemoveFile}
+      <div className="upload-file-modal-content">
+        {showWarning && (
+          <Banner
+            type="warning"
+            icon={<IconAlertCircle />}
+            description={showWarning}
+            onClose={handleDismissWarning}
+            className="upload-file-modal-warning"
           />
-        </div>
-      )}
+        )}
 
-      <Form className="upload-file-modal-form" initValues={{ description: '' }}>
-        <Form.TextArea
-          field="description"
-          label={t('common.description')}
-          placeholder={t('file.fields.descriptionPlaceholder')}
-          maxLength={500}
-          rows={3}
-        />
-      </Form>
+        {!selectedFile ? (
+          <Upload
+            action=""
+            customRequest={customRequest}
+            accept={ALLOWED_EXTENSIONS.join(',')}
+            limit={1}
+            draggable
+            dragIcon={<IconInbox size="extra-large" style={{ color: 'var(--semi-color-text-2)' }} />}
+            dragMainText={t('file.upload.dragText')}
+            dragSubText={t('file.upload.dragSubText')}
+            onChange={handleFileChange}
+            className="upload-file-modal-uploader"
+          />
+        ) : (
+          <div className="upload-file-modal-file-info">
+            <IconFile style={{ color: 'var(--semi-color-text-2)', marginRight: 8, fontSize: 20 }} />
+            <div className="upload-file-modal-file-detail">
+              <Text className="upload-file-modal-file-name">{selectedFile.name}</Text>
+              <Text type="tertiary" size="small">{formatFileSize(selectedFile.size)}</Text>
+            </div>
+            {!submitting && (
+              <IconClose
+                className="upload-file-modal-file-remove"
+                onClick={handleRemoveFile}
+              />
+            )}
+          </div>
+        )}
 
-      <div className="upload-file-modal-footer">
-        <Button onClick={handleClose}>{t('common.cancel')}</Button>
-        <Button
-          type="primary"
-          loading={submitting}
-          disabled={!selectedFile}
-          onClick={handleSubmit}
-        >
-          {t('file.upload.confirm')}
-        </Button>
+        {submitting && uploadProgress > 0 && (
+          <div className="upload-file-modal-progress">
+            <Progress percent={Math.min(uploadProgress, 100)} showInfo />
+          </div>
+        )}
+
+        <Form className="upload-file-modal-form" initValues={{ description: '' }}>
+          <Form.TextArea
+            field="description"
+            label={t('common.description')}
+            placeholder={t('file.fields.descriptionPlaceholder')}
+            maxLength={500}
+            rows={3}
+          />
+        </Form>
       </div>
     </Modal>
   );
