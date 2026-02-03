@@ -387,9 +387,7 @@ const ProcessDevelopment = () => {
       key: 'description',
       width: 320,
       render: (description: string | null) => (
-        <Tooltip content={description || '-'} position="top">
-          <div className="process-development-cell-ellipsis">{description || '-'}</div>
-        </Tooltip>
+        <div className="process-development-cell-ellipsis">{description || '-'}</div>
       ),
     },
     {

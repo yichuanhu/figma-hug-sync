@@ -347,9 +347,7 @@ const ReleaseListPage: React.FC = () => {
       dataIndex: 'description',
       width: 200,
       render: (text: string) => (
-        <Tooltip content={text} position="topLeft">
-          <span className="release-list-description">{text || '-'}</span>
-        </Tooltip>
+        <span className="release-list-description">{text || '-'}</span>
       ),
     },
     {

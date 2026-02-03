@@ -10,7 +10,6 @@ import {
   Space,
   Modal,
   Toast,
-  Tooltip,
 } from '@douyinfe/semi-ui';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
@@ -300,9 +299,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
         <div className="worker-group-name-cell">
           <div className="worker-group-name-cell-name">{name}</div>
           {record.description && (
-            <Tooltip content={record.description}>
-              <div className="worker-group-name-cell-desc">{record.description}</div>
-            </Tooltip>
+            <div className="worker-group-name-cell-desc">{record.description}</div>
           )}
         </div>
       ),

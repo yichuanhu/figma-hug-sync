@@ -403,15 +403,9 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
       key: 'description',
       width: 200,
       render: (text: string | null) => (
-        text ? (
-          <Tooltip content={text} position="top">
-            <span className="credential-management-content-table-desc">
-              {text}
-            </span>
-          </Tooltip>
-        ) : (
-          <span>-</span>
-        )
+        <span className="credential-management-content-table-desc">
+          {text || '-'}
+        </span>
       ),
     },
     {

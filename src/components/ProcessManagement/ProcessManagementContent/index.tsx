@@ -411,9 +411,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       key: 'description',
       width: 320,
       render: (description: string | null) => (
-        <Tooltip content={description || '-'} position="top">
-          <div className="process-management-cell-ellipsis">{description || '-'}</div>
-        </Tooltip>
+        <div className="process-management-cell-ellipsis">{description || '-'}</div>
       ),
     },
     // 调度中心不显示状态列（因为都是已发布）

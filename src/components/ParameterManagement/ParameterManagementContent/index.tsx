@@ -382,15 +382,9 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
       key: 'description',
       width: 200,
       render: (text: string | null) => (
-        text ? (
-          <Tooltip content={text} position="top">
-            <span className="parameter-management-content-table-desc">
-              {text}
-            </span>
-          </Tooltip>
-        ) : (
-          <span>-</span>
-        )
+        <span className="parameter-management-content-table-desc">
+          {text || '-'}
+        </span>
       ),
     },
     {
