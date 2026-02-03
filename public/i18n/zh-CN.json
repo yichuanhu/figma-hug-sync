@@ -1718,6 +1718,7 @@
       "publishTime": "发布时间",
       "basicInfo": "基本信息",
       "publishedProcesses": "已发布的流程",
+      "processes": "流程",
       "errorDetails": "错误详情",
       "rollbackFrom": "从 {{from}} 回退到 {{to}}"
     },

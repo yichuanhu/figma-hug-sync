@@ -38,6 +38,11 @@
     align-items: center;
     padding: 8px 12px;
     background-color: var(--semi-color-bg-2);
+
+    // 统一全选文案字号
+    :global(.semi-checkbox-addon) {
+      font-size: 14px;
+    }
   }
 
   .transfer-panel-body {
@@ -125,5 +130,10 @@
   // 空状态样式
   .semi-empty {
     padding: 40px 20px;
+
+    // 统一空状态文案字号
+    .semi-empty-description {
+      font-size: 14px;
+    }
   }
 }
