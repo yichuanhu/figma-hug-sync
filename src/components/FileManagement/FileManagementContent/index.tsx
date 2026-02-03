@@ -408,6 +408,8 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
       dataIndex: 'updated_at',
       key: 'updated_at',
       width: 160,
+      sorter: (a: LYFileResponse, b: LYFileResponse) => 
+        new Date(a.updated_at).getTime() - new Date(b.updated_at).getTime(),
       render: (time: string) => new Date(time).toLocaleString('zh-CN'),
     },
     {
