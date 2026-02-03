@@ -20,7 +20,6 @@ import {
   IconFilter,
   IconPlus,
   IconMore,
-  IconRefresh,
 } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
 import type { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
@@ -507,22 +506,14 @@ const ReleaseListPage: React.FC = () => {
               </Space>
             </Col>
             <Col>
-              <Space>
-                <Button
-                  icon={<IconRefresh />}
-                  theme="borderless"
-                  type="tertiary"
-                  onClick={loadData}
-                />
-                <Button
-                  icon={<IconPlus />}
-                  theme="solid"
-                  type="primary"
-                  onClick={() => navigate('/dev-center/release-management/create')}
-                >
-                  {t('release.list.newRelease')}
-                </Button>
-              </Space>
+              <Button
+                icon={<IconPlus />}
+                theme="solid"
+                type="primary"
+                onClick={() => navigate('/dev-center/release-management/create')}
+              >
+                {t('release.list.newRelease')}
+              </Button>
             </Col>
           </Row>
         </div>
