@@ -7,8 +7,9 @@ import {
   Steps,
   Toast,
   Spin,
+  Modal,
 } from '@douyinfe/semi-ui';
-import { IconArrowLeft } from '@douyinfe/semi-icons';
+import { IconArrowLeft, IconInfoCircle } from '@douyinfe/semi-icons';
 import AppLayout from '@/components/layout/AppLayout';
 import ProcessSelectionStep from './components/ProcessSelectionStep';
 import ReleaseConfigStep from './components/ReleaseConfigStep';
@@ -238,9 +239,33 @@ const CreateReleasePage: React.FC = () => {
     }
   };
 
-  // 处理取消
+  // 检查是否有填写内容
+  const hasContent = useMemo(() => {
+    // 检查是否选择了流程
+    if (selectedProcesses.length > 0) return true;
+    // 检查是否填写了描述
+    if (description.trim()) return true;
+    // 检查是否修改了资源配置
+    if (resources.some((r) => r.production_value || r.use_test_as_production)) return true;
+    return false;
+  }, [selectedProcesses, description, resources]);
+
+  // 处理取消/返回
   const handleCancel = () => {
-    navigate('/dev-center/release-management');
+    if (hasContent) {
+      Modal.confirm({
+        title: t('release.create.exitConfirm.title'),
+        icon: <IconInfoCircle style={{ color: 'var(--semi-color-warning)' }} />,
+        content: t('release.create.exitConfirm.content'),
+        okText: t('release.create.exitConfirm.confirm'),
+        cancelText: t('release.create.exitConfirm.cancel'),
+        onOk: () => {
+          navigate('/dev-center/release-management');
+        },
+      });
+    } else {
+      navigate('/dev-center/release-management');
+    }
   };
 
   return (
