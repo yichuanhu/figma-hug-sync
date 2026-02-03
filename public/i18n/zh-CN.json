@@ -1173,7 +1173,13 @@
       "robot": "机器人消费"
     },
     "filter": {
-      "status": "消息状态"
+      "status": "消息状态",
+      "dateRange": "创建时间",
+      "datePresets": {
+        "today": "今天",
+        "last7Days": "最近7天",
+        "last30Days": "最近30天"
+      }
     },
     "fields": {
       "content": "消息内容",
