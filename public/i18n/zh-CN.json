@@ -2184,5 +2184,69 @@
     "description": "基于队列消息自动触发任务创建",
     "noData": "暂无队列触发器",
     "comingSoon": "队列触发器功能即将上线，敬请期待"
+  },
+  "triggerRule": {
+    "fields": {
+      "ruleType": "规则类型",
+      "frequencyType": "运行频率",
+      "cronExpression": "Cron表达式",
+      "cronPlaceholder": "请输入5段Cron表达式，如：0 9 * * *",
+      "cronHint": "格式：分钟 小时 日期 月份 星期（如：0 9 * * * 表示每天9点）",
+      "generatedCron": "生成的Cron表达式",
+      "timeZone": "时区",
+      "startDateTime": "开始时间",
+      "endDateTime": "结束时间",
+      "endTimeNever": "永不结束",
+      "endTimeCustom": "指定结束时间",
+      "endDateTimePlaceholder": "请选择结束时间"
+    },
+    "ruleType": {
+      "basic": "基本类型",
+      "cron": "Cron表达式"
+    },
+    "frequency": {
+      "minutely": "每N分钟",
+      "hourly": "每M小时的第N分钟",
+      "daily": "每日",
+      "weekly": "每周",
+      "monthly": "每月"
+    },
+    "basic": {
+      "every": "每",
+      "minuteExecute": "分钟执行一次",
+      "hourAt": "小时的第",
+      "triggerTime": "触发时间",
+      "selectWeekdays": "选择星期",
+      "selectMonthDay": "选择日期"
+    },
+    "validation": {
+      "cronRequired": "请输入Cron表达式",
+      "cronFormatError": "Cron表达式格式错误，请检查",
+      "cronValid": "Cron表达式格式正确",
+      "cronValidateError": "验证失败，请重试"
+    },
+    "cronValidate": {
+      "button": "验证"
+    },
+    "cronHelp": {
+      "title": "Cron表达式使用说明",
+      "buttonText": "使用说明",
+      "minute": "分钟",
+      "hour": "小时",
+      "day": "日期",
+      "month": "月份",
+      "weekday": "星期",
+      "symbolsTitle": "特殊字符说明",
+      "symbolAny": "任意值（每分钟/小时/日/月/周）",
+      "symbolList": "枚举值（如：1,3,5 表示第1、3、5）",
+      "symbolRange": "范围（如：1-5 表示1到5）",
+      "symbolStep": "间隔（如：*/5 表示每5）",
+      "symbolLast": "最后（如：在日期字段表示每月最后一天）",
+      "symbolAnyDay": "不指定（仅用于星期字段）"
+    },
+    "cronExamples": {
+      "title": "常用示例",
+      "buttonText": "查看示例"
+    }
   }
 }

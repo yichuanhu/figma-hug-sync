@@ -14,10 +14,10 @@ import {
   Tooltip,
   Tag,
   Steps,
-  DatePicker,
   TextArea,
 } from '@douyinfe/semi-ui';
 import { IconHelpCircle, IconInbox } from '@douyinfe/semi-icons';
+import TriggerRuleConfig from '@/components/TriggerRuleConfig';
 import type {
   LYProcessActiveVersionResponse,
   LYProcessParameterDefinition,
@@ -86,14 +86,6 @@ const mockBots = [
   { id: 'bot-002', name: 'RPA-BOT-002', groupId: null, status: 'ONLINE' },
 ];
 
-// Mock 时区
-const timeZones = [
-  { value: 'Asia/Shanghai', label: 'Asia/Shanghai (UTC+8)' },
-  { value: 'Asia/Tokyo', label: 'Asia/Tokyo (UTC+9)' },
-  { value: 'America/New_York', label: 'America/New_York (UTC-5)' },
-  { value: 'Europe/London', label: 'Europe/London (UTC+0)' },
-];
-
 // Mock 工作日历
 const mockWorkCalendars = [
   { id: 'cal-001', name: '公司工作日历' },
@@ -134,11 +126,22 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
   // 第三步：触发规则
   const [ruleType, setRuleType] = useState<TriggerRuleType>('BASIC');
   const [frequencyType, setFrequencyType] = useState<BasicFrequencyType>('DAILY');
-  const [frequencyValue, setFrequencyValue] = useState<number>(1);
+  // 基本类型配置
+  const [minuteInterval, setMinuteInterval] = useState<number>(5);
+  const [hourInterval, setHourInterval] = useState<number>(2);
+  const [minuteOfHour, setMinuteOfHour] = useState<number>(0);
+  const [triggerHour, setTriggerHour] = useState<number>(9);
+  const [triggerMinute, setTriggerMinute] = useState<number>(0);
+  const [selectedWeekdays, setSelectedWeekdays] = useState<number[]>([1]); // 默认周一
+  const [selectedMonthDay, setSelectedMonthDay] = useState<number | 'L'>(1);
+  // Cron 表达式
   const [cronExpression, setCronExpression] = useState('');
+  // 时区和时间范围
   const [timeZone, setTimeZone] = useState('Asia/Shanghai');
   const [startDateTime, setStartDateTime] = useState<Date | null>(new Date());
   const [endDateTime, setEndDateTime] = useState<Date | null>(null);
+  const [endTimeType, setEndTimeType] = useState<'never' | 'custom'>('never');
+  // 工作日历
   const [enableWorkCalendar, setEnableWorkCalendar] = useState(false);
   const [workCalendarId, setWorkCalendarId] = useState<string | null>(null);
   const [workCalendarExecutionType, setWorkCalendarExecutionType] = useState<'WORKDAY' | 'NON_WORKDAY'>('WORKDAY');
@@ -169,10 +172,30 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
 
   // 判断是否有参数需要填写
   const hasParameters = selectedProcess && selectedProcess.parameters.length > 0;
-  // 判断是否有输出参数
   const hasOutputParameters = selectedProcess && selectedProcess.output_parameters && selectedProcess.output_parameters.length > 0;
-  // 右侧是否需要显示
   const showRightPanel = (hasParameters || hasOutputParameters) && currentStep === 1;
+
+  // 生成 Cron 表达式
+  const generatedCronExpression = useMemo(() => {
+    if (ruleType !== 'BASIC') return cronExpression;
+
+    switch (frequencyType) {
+      case 'MINUTELY':
+        return `*/${minuteInterval} * * * *`;
+      case 'HOURLY':
+        return `${minuteOfHour} */${hourInterval} * * *`;
+      case 'DAILY':
+        return `${triggerMinute} ${triggerHour} * * *`;
+      case 'WEEKLY':
+        const weekdayStr = selectedWeekdays.length > 0 ? selectedWeekdays.sort().join(',') : '*';
+        return `${triggerMinute} ${triggerHour} * * ${weekdayStr}`;
+      case 'MONTHLY':
+        const dayStr = selectedMonthDay === 'L' ? 'L' : selectedMonthDay;
+        return `${triggerMinute} ${triggerHour} ${dayStr} * *`;
+      default:
+        return '';
+    }
+  }, [ruleType, frequencyType, minuteInterval, hourInterval, minuteOfHour, triggerHour, triggerMinute, selectedWeekdays, selectedMonthDay, cronExpression]);
 
   // 预览触发时间
   const previewTimes = useMemo(() => {
@@ -185,19 +208,22 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
       if (ruleType === 'BASIC') {
         switch (frequencyType) {
           case 'MINUTELY':
-            triggerTime.setMinutes(triggerTime.getMinutes() + i * (frequencyValue || 1));
+            triggerTime.setMinutes(triggerTime.getMinutes() + i * minuteInterval);
             break;
           case 'HOURLY':
-            triggerTime.setHours(triggerTime.getHours() + i * (frequencyValue || 1));
+            triggerTime.setHours(triggerTime.getHours() + i * hourInterval);
             break;
           case 'DAILY':
             triggerTime.setDate(triggerTime.getDate() + i);
+            triggerTime.setHours(triggerHour, triggerMinute, 0, 0);
             break;
           case 'WEEKLY':
             triggerTime.setDate(triggerTime.getDate() + i * 7);
+            triggerTime.setHours(triggerHour, triggerMinute, 0, 0);
             break;
           case 'MONTHLY':
             triggerTime.setMonth(triggerTime.getMonth() + i);
+            triggerTime.setHours(triggerHour, triggerMinute, 0, 0);
             break;
         }
       } else {
@@ -206,7 +232,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
       times.push(triggerTime.toLocaleString('zh-CN'));
     }
     return times;
-  }, [startDateTime, ruleType, frequencyType, frequencyValue]);
+  }, [startDateTime, ruleType, frequencyType, minuteInterval, hourInterval, triggerHour, triggerMinute]);
 
   // 重置表单
   useEffect(() => {
@@ -227,11 +253,18 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
       setParameterValues({});
       setRuleType('BASIC');
       setFrequencyType('DAILY');
-      setFrequencyValue(1);
+      setMinuteInterval(5);
+      setHourInterval(2);
+      setMinuteOfHour(0);
+      setTriggerHour(9);
+      setTriggerMinute(0);
+      setSelectedWeekdays([1]);
+      setSelectedMonthDay(1);
       setCronExpression('');
       setTimeZone('Asia/Shanghai');
       setStartDateTime(new Date());
       setEndDateTime(null);
+      setEndTimeType('never');
       setEnableWorkCalendar(false);
       setWorkCalendarId(null);
       setWorkCalendarExecutionType('WORKDAY');
@@ -416,6 +449,8 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
     try {
       await new Promise((resolve) => setTimeout(resolve, 500));
       
+      const finalCronExpression = ruleType === 'CRON' ? cronExpression : generatedCronExpression;
+      
       console.log('创建时间触发器:', {
         name: triggerName.trim(),
         description: description.trim() || null,
@@ -430,9 +465,8 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
         allow_duplicate_tasks: allowDuplicateTasks,
         input_parameters: parameterValues,
         rule_type: ruleType,
-        cron_expression: ruleType === 'CRON' ? cronExpression : null,
+        cron_expression: finalCronExpression,
         basic_frequency_type: ruleType === 'BASIC' ? frequencyType : null,
-        basic_frequency_value: ruleType === 'BASIC' ? frequencyValue : null,
         time_zone: timeZone,
         start_date_time: startDateTime?.toISOString(),
         end_date_time: endDateTime?.toISOString() || null,
@@ -512,13 +546,13 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
             onChange={(e) => setPriority(e.target.value as TaskPriority)}
             direction="horizontal"
           >
-            <Radio value="HIGH">{t('task.priority.high')}</Radio>
-            <Radio value="MEDIUM">{t('task.priority.medium')}</Radio>
-            <Radio value="LOW">{t('task.priority.low')}</Radio>
+            <Radio value="LOW">低</Radio>
+            <Radio value="MEDIUM">中</Radio>
+            <Radio value="HIGH">高</Radio>
           </RadioGroup>
         </div>
         <div className="create-time-trigger-modal-field">
-          <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.fields.maxDuration')} *</Text>
+          <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.fields.maxDuration')}</Text>
           <InputNumber
             value={maxDuration}
             onChange={(v) => setMaxDuration(v as number)}
@@ -542,49 +576,30 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
           <div className="create-time-trigger-modal-field-hint">{t('timeTrigger.fields.validityDaysHint')}</div>
         </div>
         <div className="create-time-trigger-modal-field">
-          <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.fields.taskCountPerTrigger')}</Text>
-          <InputNumber
-            value={taskCountPerTrigger}
-            onChange={(v) => setTaskCountPerTrigger(v as number)}
-            min={1}
-            max={100}
-            style={{ width: '100%' }}
-          />
-        </div>
-        <div className="create-time-trigger-modal-field">
           <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.fields.enableRecording')}</Text>
           <Switch checked={enableRecording} onChange={setEnableRecording} />
-        </div>
-        <div className="create-time-trigger-modal-field">
-          <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.fields.allowDuplicateTasks')}</Text>
-          <Switch checked={allowDuplicateTasks} onChange={setAllowDuplicateTasks} />
-          <div className="create-time-trigger-modal-field-hint">{t('timeTrigger.fields.allowDuplicateTasksHint')}</div>
         </div>
       </div>
     </>
   );
 
-  // 渲染步骤1的右侧内容（参数）
+  // 渲染步骤1的右侧内容（参数配置）
   const renderStep1RightContent = () => (
     <>
       {/* 输入参数 */}
       {hasParameters && (
         <div className="create-time-trigger-modal-section">
-          <div className="create-time-trigger-modal-section-title">
-            {t('timeTrigger.createModal.parameterSection')}
-          </div>
+          <div className="create-time-trigger-modal-section-title">{t('timeTrigger.createModal.parameterSection')}</div>
           <div className="create-time-trigger-modal-params">
-            {selectedProcess?.parameters.map(renderParameterInput)}
+            {selectedProcess?.parameters.map((param) => renderParameterInput(param))}
           </div>
         </div>
       )}
 
-      {/* 输出参数 */}
+      {/* 输出参数展示 */}
       {hasOutputParameters && (
         <div className="create-time-trigger-modal-section">
-          <div className="create-time-trigger-modal-section-title">
-            {t('timeTrigger.createModal.outputParameterSection')}
-          </div>
+          <div className="create-time-trigger-modal-section-title">输出参数</div>
           <div className="create-time-trigger-modal-output-params">
             {selectedProcess?.output_parameters?.map((param) => (
               <div className="create-time-trigger-modal-output-param-item" key={param.name}>
@@ -595,9 +610,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
                   </Tag>
                 </div>
                 {param.description && (
-                  <div className="create-time-trigger-modal-output-param-desc">
-                    {param.description}
-                  </div>
+                  <div className="create-time-trigger-modal-output-param-desc">{param.description}</div>
                 )}
               </div>
             ))}
@@ -605,11 +618,11 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
         </div>
       )}
 
-      {/* 无参数时的空状态 */}
+      {/* 如果没有任何参数 */}
       {!hasParameters && !hasOutputParameters && (
         <div className="create-time-trigger-modal-no-params">
-          <IconInbox style={{ fontSize: 32, marginBottom: 8 }} />
-          <div>{t('timeTrigger.createModal.noParameters')}</div>
+          <IconInbox size="extra-large" style={{ color: 'var(--semi-color-text-2)', marginBottom: 8 }} />
+          <div>该流程没有配置参数</div>
         </div>
       )}
     </>
@@ -620,30 +633,32 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
     switch (currentStep) {
       case 0:
         return (
-          <div className="create-time-trigger-modal-section">
-            <div className="create-time-trigger-modal-section-title">{t('timeTrigger.createModal.basicSection')}</div>
-            <div className="create-time-trigger-modal-field">
-              <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.fields.name')} *</Text>
-              <Input
-                placeholder={t('timeTrigger.fields.namePlaceholder')}
-                value={triggerName}
-                onChange={setTriggerName}
-                maxLength={255}
-                showClear
-              />
+          <>
+            <div className="create-time-trigger-modal-section">
+              <div className="create-time-trigger-modal-section-title">{t('timeTrigger.createModal.basicSection')}</div>
+              <div className="create-time-trigger-modal-field">
+                <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.fields.name')} *</Text>
+                <Input
+                  placeholder={t('timeTrigger.fields.namePlaceholder')}
+                  value={triggerName}
+                  onChange={setTriggerName}
+                  maxLength={255}
+                  showClear
+                />
+              </div>
+              <div className="create-time-trigger-modal-field">
+                <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.fields.description')}</Text>
+                <TextArea
+                  placeholder={t('timeTrigger.fields.descriptionPlaceholder')}
+                  value={description}
+                  onChange={setDescription}
+                  maxCount={2000}
+                  showClear
+                  rows={3}
+                />
+              </div>
             </div>
-            <div className="create-time-trigger-modal-field">
-              <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.fields.description')}</Text>
-              <TextArea
-                placeholder={t('timeTrigger.fields.descriptionPlaceholder')}
-                value={description}
-                onChange={setDescription}
-                maxCount={2000}
-                showClear
-                rows={3}
-              />
-            </div>
-          </div>
+          </>
         );
 
       case 1:
@@ -653,92 +668,40 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
       case 2:
         return (
           <>
-            {/* 时间规则 */}
+            {/* 时间规则 - 使用 TriggerRuleConfig 组件 */}
             <div className="create-time-trigger-modal-section">
               <div className="create-time-trigger-modal-section-title">{t('timeTrigger.createModal.ruleSection')}</div>
-              <div className="create-time-trigger-modal-field">
-                <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.fields.ruleType')} *</Text>
-                <RadioGroup
-                  value={ruleType}
-                  onChange={(e) => setRuleType(e.target.value as TriggerRuleType)}
-                  direction="horizontal"
-                >
-                  <Radio value="BASIC">{t('timeTrigger.ruleType.basic')}</Radio>
-                  <Radio value="CRON">{t('timeTrigger.ruleType.cron')}</Radio>
-                </RadioGroup>
-              </div>
-
-              {ruleType === 'BASIC' ? (
-                <>
-                  <div className="create-time-trigger-modal-field">
-                    <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.fields.frequencyType')} *</Text>
-                    <Select
-                      value={frequencyType}
-                      onChange={(v) => setFrequencyType(v as BasicFrequencyType)}
-                      optionList={[
-                        { value: 'MINUTELY', label: t('timeTrigger.frequency.minutely') },
-                        { value: 'HOURLY', label: t('timeTrigger.frequency.hourly') },
-                        { value: 'DAILY', label: t('timeTrigger.frequency.daily') },
-                        { value: 'WEEKLY', label: t('timeTrigger.frequency.weekly') },
-                        { value: 'MONTHLY', label: t('timeTrigger.frequency.monthly') },
-                      ]}
-                      className="create-time-trigger-modal-select-full"
-                    />
-                  </div>
-                  {(frequencyType === 'MINUTELY' || frequencyType === 'HOURLY') && (
-                    <div className="create-time-trigger-modal-field">
-                      <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.fields.frequencyValue')}</Text>
-                      <InputNumber
-                        value={frequencyValue}
-                        onChange={(v) => setFrequencyValue(v as number)}
-                        min={1}
-                        max={frequencyType === 'MINUTELY' ? 59 : 23}
-                        style={{ width: '100%' }}
-                      />
-                    </div>
-                  )}
-                </>
-              ) : (
-                <div className="create-time-trigger-modal-field">
-                  <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.fields.cronExpression')} *</Text>
-                  <Input
-                    placeholder={t('timeTrigger.fields.cronExpressionPlaceholder')}
-                    value={cronExpression}
-                    onChange={setCronExpression}
-                  />
-                  <div className="create-time-trigger-modal-field-hint">{t('timeTrigger.fields.cronExpressionHint')}</div>
-                </div>
-              )}
-
-              <div className="create-time-trigger-modal-field">
-                <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.fields.timeZone')} *</Text>
-                <Select
-                  value={timeZone}
-                  onChange={(v) => setTimeZone(v as string)}
-                  optionList={timeZones}
-                  className="create-time-trigger-modal-select-full"
-                />
-              </div>
-
-              <div className="create-time-trigger-modal-field">
-                <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.fields.startDateTime')} *</Text>
-                <DatePicker
-                  type="dateTime"
-                  value={startDateTime}
-                  onChange={(v) => setStartDateTime(v as Date)}
-                  style={{ width: '100%' }}
-                />
-              </div>
-              <div className="create-time-trigger-modal-field">
-                <Text className="create-time-trigger-modal-field-label">{t('timeTrigger.fields.endDateTime')}</Text>
-                <DatePicker
-                  type="dateTime"
-                  value={endDateTime}
-                  onChange={(v) => setEndDateTime(v as Date | null)}
-                  placeholder={t('timeTrigger.createModal.endTimeNever')}
-                  style={{ width: '100%' }}
-                />
-              </div>
+              <TriggerRuleConfig
+                ruleType={ruleType}
+                onRuleTypeChange={setRuleType}
+                frequencyType={frequencyType}
+                onFrequencyTypeChange={setFrequencyType}
+                minuteInterval={minuteInterval}
+                onMinuteIntervalChange={setMinuteInterval}
+                hourInterval={hourInterval}
+                onHourIntervalChange={setHourInterval}
+                minuteOfHour={minuteOfHour}
+                onMinuteOfHourChange={setMinuteOfHour}
+                triggerHour={triggerHour}
+                onTriggerHourChange={setTriggerHour}
+                triggerMinute={triggerMinute}
+                onTriggerMinuteChange={setTriggerMinute}
+                selectedWeekdays={selectedWeekdays}
+                onSelectedWeekdaysChange={setSelectedWeekdays}
+                selectedMonthDay={selectedMonthDay}
+                onSelectedMonthDayChange={setSelectedMonthDay}
+                cronExpression={cronExpression}
+                onCronExpressionChange={setCronExpression}
+                timeZone={timeZone}
+                onTimeZoneChange={setTimeZone}
+                startDateTime={startDateTime}
+                onStartDateTimeChange={setStartDateTime}
+                endDateTime={endDateTime}
+                onEndDateTimeChange={setEndDateTime}
+                endTimeType={endTimeType}
+                onEndTimeTypeChange={setEndTimeType}
+                classPrefix="create-time-trigger-modal-rule"
+              />
             </div>
 
             {/* 工作日历 */}
