@@ -6,13 +6,12 @@ import {
   Tag,
   Space,
   Select,
-  Button,
   Spin,
   Checkbox,
+  Empty,
 } from '@douyinfe/semi-ui';
-import { IconSearch, IconChevronRight, IconDelete } from '@douyinfe/semi-icons';
+import { IconSearch, IconDelete, IconBox } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
-import EmptyState from '@/components/EmptyState';
 import type { LYPublishableProcessResponse, LYListResponseLYPublishableProcessResponse } from '@/api';
 import type { SelectedProcess } from '../../index';
 
@@ -113,7 +112,6 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
   const [processList, setProcessList] = useState<ProcessWithVersions[]>([]);
   const [loading, setLoading] = useState(false);
   const [keyword, setKeyword] = useState('');
-  const [leftCheckedKeys, setLeftCheckedKeys] = useState<string[]>([]);
   const [statusFilter, setStatusFilter] = useState<string | undefined>(undefined);
 
   // 加载数据
@@ -142,40 +140,43 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
     [statusFilter]
   );
 
-  // 左侧可选流程（排除已选的）
-  const availableProcesses = useMemo(() => {
-    const selectedIds = selectedProcesses.map((sp) => sp.process.id);
-    return processList.filter((p) => !selectedIds.includes(p.id));
-  }, [processList, selectedProcesses]);
+  // 已选流程ID集合（用于左侧显示勾选状态）
+  const selectedIds = useMemo(() => {
+    return new Set(selectedProcesses.map((sp) => sp.process.id));
+  }, [selectedProcesses]);
 
-  // 左侧勾选处理
-  const handleLeftCheck = (processId: string, checked: boolean) => {
+  // 左侧勾选处理 - 同步到右侧
+  const handleLeftCheck = (process: ProcessWithVersions, checked: boolean) => {
     if (checked) {
-      setLeftCheckedKeys([...leftCheckedKeys, processId]);
+      // 添加到已选列表
+      const newSelection: SelectedProcess = {
+        process,
+        version_id: process.latest_version_id,
+        version_number: process.latest_version,
+      };
+      onSelectionChange([...selectedProcesses, newSelection]);
     } else {
-      setLeftCheckedKeys(leftCheckedKeys.filter((k) => k !== processId));
+      // 从已选列表移除
+      onSelectionChange(selectedProcesses.filter((sp) => sp.process.id !== process.id));
     }
   };
 
   // 全选左侧
   const handleLeftCheckAll = (checked: boolean) => {
     if (checked) {
-      setLeftCheckedKeys(availableProcesses.map((p) => p.id));
+      // 添加所有未选的流程
+      const unselectedProcesses = processList.filter((p) => !selectedIds.has(p.id));
+      const newSelections: SelectedProcess[] = unselectedProcesses.map((process) => ({
+        process,
+        version_id: process.latest_version_id,
+        version_number: process.latest_version,
+      }));
+      onSelectionChange([...selectedProcesses, ...newSelections]);
     } else {
-      setLeftCheckedKeys([]);
+      // 移除当前列表中所有已选的流程
+      const currentListIds = new Set(processList.map((p) => p.id));
+      onSelectionChange(selectedProcesses.filter((sp) => !currentListIds.has(sp.process.id)));
     }
-  };
-
-  // 穿梭到右侧
-  const handleTransferToRight = () => {
-    const processesToAdd = processList.filter((p) => leftCheckedKeys.includes(p.id));
-    const newSelections: SelectedProcess[] = processesToAdd.map((process) => ({
-      process,
-      version_id: process.latest_version_id,
-      version_number: process.latest_version,
-    }));
-    onSelectionChange([...selectedProcesses, ...newSelections]);
-    setLeftCheckedKeys([]);
   };
 
   // 从右侧移除
@@ -205,10 +206,10 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
     { value: 'unpublished', label: t('release.create.processStatus.unpublished') },
   ];
 
-  const isLeftAllChecked =
-    availableProcesses.length > 0 && leftCheckedKeys.length === availableProcesses.length;
-  const isLeftIndeterminate =
-    leftCheckedKeys.length > 0 && leftCheckedKeys.length < availableProcesses.length;
+  // 当前列表中被选中的数量
+  const currentListSelectedCount = processList.filter((p) => selectedIds.has(p.id)).length;
+  const isLeftAllChecked = processList.length > 0 && currentListSelectedCount === processList.length;
+  const isLeftIndeterminate = currentListSelectedCount > 0 && currentListSelectedCount < processList.length;
 
   return (
     <div className="process-selection-step">
@@ -218,7 +219,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
           <div className="transfer-panel-header">
             <Text strong>{t('release.create.availableProcesses')}</Text>
             <Text type="tertiary" size="small">
-              {availableProcesses.length} {t('release.create.items')}
+              {processList.length} {t('release.create.items')}
             </Text>
           </div>
 
@@ -244,40 +245,56 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
             </Space>
           </div>
 
+          <div className="transfer-panel-select-all">
+            <Checkbox
+              checked={isLeftAllChecked}
+              indeterminate={isLeftIndeterminate}
+              onChange={(e) => handleLeftCheckAll(e.target.checked)}
+            >
+              <Text size="small">{t('common.selectAll')}</Text>
+            </Checkbox>
+            <Text type="tertiary" size="small">
+              {currentListSelectedCount}/{processList.length}
+            </Text>
+          </div>
+
           <div className="transfer-panel-body">
             <Spin spinning={loading}>
-              {availableProcesses.length > 0 ? (
+              {processList.length > 0 ? (
                 <div className="process-list">
-                  {availableProcesses.map((process) => (
-                    <div
-                      key={process.id}
-                      className={`process-item ${leftCheckedKeys.includes(process.id) ? 'checked' : ''}`}
-                      onClick={() => handleLeftCheck(process.id, !leftCheckedKeys.includes(process.id))}
-                    >
-                      <Checkbox
-                        checked={leftCheckedKeys.includes(process.id)}
-                        onChange={(e) => {
-                          e.stopPropagation();
-                          handleLeftCheck(process.id, e.target.checked);
-                        }}
-                      />
-                      <div className="process-item-content">
-                        <Text className="process-name">{process.name}</Text>
-                        <Tag size="small" color={process.is_published ? 'green' : 'grey'}>
-                          {process.is_published
-                            ? t('release.create.processStatus.published')
-                            : t('release.create.processStatus.unpublished')}
-                        </Tag>
+                  {processList.map((process) => {
+                    const isSelected = selectedIds.has(process.id);
+                    return (
+                      <div
+                        key={process.id}
+                        className={`process-item ${isSelected ? 'checked' : ''}`}
+                        onClick={() => handleLeftCheck(process, !isSelected)}
+                      >
+                        <Checkbox
+                          checked={isSelected}
+                          onChange={(e) => {
+                            e.stopPropagation();
+                            handleLeftCheck(process, e.target.checked);
+                          }}
+                        />
+                        <div className="process-item-content">
+                          <Text className="process-name">{process.name}</Text>
+                          <Tag size="small" color={process.is_published ? 'green' : 'grey'}>
+                            {process.is_published
+                              ? t('release.create.processStatus.published')
+                              : t('release.create.processStatus.unpublished')}
+                          </Tag>
+                        </div>
+                        <Text type="tertiary" size="small">
+                          {process.latest_version}
+                        </Text>
                       </div>
-                      <Text type="tertiary" size="small">
-                        {process.latest_version}
-                      </Text>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               ) : (
-                <EmptyState
-                  variant={keyword || statusFilter ? 'noResult' : 'noData'}
+                <Empty
+                  image={<IconBox size="extra-large" style={{ color: 'var(--semi-color-text-2)' }} />}
                   description={
                     keyword || statusFilter
                       ? t('common.noResult')
@@ -287,28 +304,6 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
               )}
             </Spin>
           </div>
-
-          <div className="transfer-panel-footer">
-            <Checkbox
-              checked={isLeftAllChecked}
-              indeterminate={isLeftIndeterminate}
-              onChange={(e) => handleLeftCheckAll(e.target.checked)}
-            >
-              <Text size="small">{t('common.selectAll')}</Text>
-            </Checkbox>
-            <Text type="tertiary" size="small">
-              {leftCheckedKeys.length}/{availableProcesses.length}
-            </Text>
-          </div>
-        </div>
-
-        {/* 中间：穿梭按钮 */}
-        <div className="transfer-actions">
-          <Button
-            icon={<IconChevronRight />}
-            disabled={leftCheckedKeys.length === 0}
-            onClick={handleTransferToRight}
-          />
         </div>
 
         {/* 右侧：已选流程 */}
@@ -352,20 +347,20 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
                             ),
                           }))}
                         />
-                        <Button
-                          icon={<IconDelete />}
-                          type="tertiary"
-                          size="small"
+                        <span
+                          className="delete-icon"
                           onClick={() => handleRemoveFromRight(process.id)}
-                        />
+                        >
+                          <IconDelete style={{ color: 'var(--semi-color-text-2)' }} />
+                        </span>
                       </div>
                     </div>
                   );
                 })}
               </div>
             ) : (
-              <EmptyState
-                variant="noData"
+              <Empty
+                image={<IconBox size="extra-large" style={{ color: 'var(--semi-color-text-2)' }} />}
                 description={t('release.create.noSelectedProcess')}
               />
             )}
