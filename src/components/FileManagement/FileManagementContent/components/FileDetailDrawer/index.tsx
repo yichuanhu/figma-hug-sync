@@ -24,7 +24,7 @@ import {
   IconDownload,
   IconDeleteStroked,
   IconLink,
-  IconGridView,
+  IconInbox,
 } from '@douyinfe/semi-icons';
 import type { LYFileResponse, FileSource } from '@/api/index';
 
@@ -344,7 +344,7 @@ const FileDetailDrawer = ({
                 ))
               ) : (
                 <div className="file-detail-drawer-empty">
-                  <IconGridView className="file-detail-drawer-empty-icon" />
+                  <IconInbox className="file-detail-drawer-empty-icon" />
                   <Text type="tertiary">{t('file.detail.noDependencies')}</Text>
                 </div>
               )}
