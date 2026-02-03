@@ -60,6 +60,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
     { value: 'BUG_FIX', label: t('release.releaseTypes.BUG_FIX') },
     { value: 'CONFIG_UPDATE', label: t('release.releaseTypes.CONFIG_UPDATE') },
     { value: 'OPTIMIZATION', label: t('release.releaseTypes.OPTIMIZATION') },
+    { value: 'VERSION_ROLLBACK', label: t('release.releaseTypes.VERSION_ROLLBACK') },
   ];
 
   // 按类型分组资源
