@@ -10,7 +10,7 @@ import {
   Checkbox,
   Empty,
 } from '@douyinfe/semi-ui';
-import { IconSearch, IconDelete, IconBox } from '@douyinfe/semi-icons';
+import { IconSearch, IconClose, IconInbox } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
 import type { LYPublishableProcessResponse, LYListResponseLYPublishableProcessResponse } from '@/api';
 import type { SelectedProcess } from '../../index';
@@ -267,7 +267,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
                     return (
                       <div
                         key={process.id}
-                        className={`process-item ${isSelected ? 'checked' : ''}`}
+                        className="process-item"
                         onClick={() => handleLeftCheck(process, !isSelected)}
                       >
                         <Checkbox
@@ -294,7 +294,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
                 </div>
               ) : (
                 <Empty
-                  image={<IconBox size="extra-large" style={{ color: 'var(--semi-color-text-2)' }} />}
+                  image={<IconInbox size="extra-large" style={{ color: 'var(--semi-color-text-2)' }} />}
                   description={
                     keyword || statusFilter
                       ? t('common.noResult')
@@ -351,7 +351,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
                           className="delete-icon"
                           onClick={() => handleRemoveFromRight(process.id)}
                         >
-                          <IconDelete style={{ color: 'var(--semi-color-text-2)' }} />
+                          <IconClose style={{ color: 'var(--semi-color-text-2)' }} />
                         </span>
                       </div>
                     </div>
@@ -360,7 +360,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
               </div>
             ) : (
               <Empty
-                image={<IconBox size="extra-large" style={{ color: 'var(--semi-color-text-2)' }} />}
+                image={<IconInbox size="extra-large" style={{ color: 'var(--semi-color-text-2)' }} />}
                 description={t('release.create.noSelectedProcess')}
               />
             )}
