@@ -629,13 +629,10 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
                 placeholder={t('timeTrigger.fields.descriptionPlaceholder')}
                 value={description}
                 onChange={setDescription}
-                maxLength={2000}
+                maxCount={2000}
                 showClear
                 rows={3}
               />
-              <div className="edit-time-trigger-modal-field-hint">
-                {description.length}/2000
-              </div>
             </div>
           </div>
         );

@@ -277,18 +277,39 @@ const TimeTriggerList = () => {
   // 启用/禁用触发器（直接切换，不弹窗确认）
   const handleToggleStatus = async (trigger: LYTimeTriggerResponse, checked: boolean) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 300));
-      Toast.success(checked ? t('timeTrigger.enableModal.success') : t('timeTrigger.disableModal.success'));
-      loadData(queryParams);
+      const newStatus: TriggerStatus = checked ? 'ENABLED' : 'DISABLED';
+      const newNextTriggerTime = checked ? new Date(Date.now() + 86400000).toISOString() : null;
+      
+      // 立即更新本地列表状态
+      setListResponse((prev) => ({
+        ...prev,
+        list: prev.list.map((t) =>
+          t.trigger_id === trigger.trigger_id
+            ? { ...t, status: newStatus, next_trigger_time: newNextTriggerTime }
+            : t
+        ),
+      }));
+      
+      // 同步更新 mock 数据
+      const mockIndex = allMockTriggers.findIndex((t) => t.trigger_id === trigger.trigger_id);
+      if (mockIndex !== -1) {
+        allMockTriggers[mockIndex] = { 
+          ...allMockTriggers[mockIndex], 
+          status: newStatus, 
+          next_trigger_time: newNextTriggerTime 
+        };
+      }
       
       // 如果抽屉打开且是当前触发器，更新抽屉中的数据
       if (selectedTrigger?.trigger_id === trigger.trigger_id) {
         setSelectedTrigger({
           ...trigger,
-          status: checked ? 'ENABLED' : 'DISABLED',
-          next_trigger_time: checked ? new Date(Date.now() + 86400000).toISOString() : null,
+          status: newStatus,
+          next_trigger_time: newNextTriggerTime,
         });
       }
+      
+      Toast.success(checked ? t('timeTrigger.enableModal.success') : t('timeTrigger.disableModal.success'));
     } catch (error) {
       Toast.error(checked ? t('timeTrigger.enableModal.error') : t('timeTrigger.disableModal.error'));
     }
@@ -426,14 +447,20 @@ const TimeTriggerList = () => {
             <Dropdown.Menu>
               <Dropdown.Item
                 icon={<IconEditStroked />}
-                onClick={() => handleOpenEditModal(record)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleOpenEditModal(record);
+                }}
               >
                 {t('timeTrigger.actions.edit')}
               </Dropdown.Item>
               <Dropdown.Item
                 icon={<IconDeleteStroked />}
                 type="danger"
-                onClick={() => handleDeleteTrigger(record)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteTrigger(record);
+                }}
               >
                 {t('timeTrigger.actions.delete')}
               </Dropdown.Item>
