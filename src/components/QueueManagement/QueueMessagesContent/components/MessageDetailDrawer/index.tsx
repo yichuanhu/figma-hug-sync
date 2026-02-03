@@ -40,8 +40,8 @@ interface MessageDetailDrawerProps {
 }
 
 const DRAWER_WIDTH_KEY = 'queue-message-detail-drawer-width';
-const DEFAULT_WIDTH = 640;
-const MIN_WIDTH = 480;
+const DEFAULT_WIDTH = 900;
+const MIN_WIDTH = 576;
 
 const MessageDetailDrawer = ({
   visible,
