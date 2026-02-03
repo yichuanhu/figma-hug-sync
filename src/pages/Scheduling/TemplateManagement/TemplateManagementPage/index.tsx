@@ -9,7 +9,6 @@ import {
   Button,
   Table,
   Dropdown,
-  Tooltip,
   Row,
   Col,
   Modal,
@@ -331,9 +330,7 @@ const TemplateManagementPage = () => {
       dataIndex: 'description',
       width: 200,
       render: (text: string | null) => (
-        <Tooltip content={text} position="topLeft">
-          <span className="template-management-table-desc">{text || '-'}</span>
-        </Tooltip>
+        <span className="template-management-table-desc">{text || '-'}</span>
       ),
     },
     {

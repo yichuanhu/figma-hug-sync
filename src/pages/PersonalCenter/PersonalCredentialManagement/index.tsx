@@ -295,12 +295,9 @@ const PersonalCredentialManagement = () => {
       key: 'description',
       width: 180,
       render: (text: string | null) => (
-        <Typography.Text
-          ellipsis={{ showTooltip: true }}
-          className="personal-credential-table-description"
-        >
+        <span className="personal-credential-table-description">
           {text || '-'}
-        </Typography.Text>
+        </span>
       ),
     },
     {

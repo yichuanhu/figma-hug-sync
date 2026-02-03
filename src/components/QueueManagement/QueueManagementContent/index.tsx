@@ -378,15 +378,9 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
       key: 'description',
       width: 200,
       render: (text: string | null) => (
-        text ? (
-          <Tooltip content={text} position="top">
-            <span className="queue-management-content-table-desc">
-              {text}
-            </span>
-          </Tooltip>
-        ) : (
-          <span>-</span>
-        )
+        <span className="queue-management-content-table-desc">
+          {text || '-'}
+        </span>
       ),
     },
     {
