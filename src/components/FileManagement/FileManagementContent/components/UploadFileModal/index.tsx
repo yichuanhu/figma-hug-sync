@@ -190,6 +190,7 @@ const UploadFileModal = ({
       onCancel={handleClose}
       footer={
         <>
+          <Button onClick={handleClose}>{t('common.cancel')}</Button>
           <Button
             theme="solid"
             type="primary"
@@ -199,7 +200,6 @@ const UploadFileModal = ({
           >
             {t('file.upload.confirm')}
           </Button>
-          <Button onClick={handleClose}>{t('common.cancel')}</Button>
         </>
       }
       width={520}
@@ -219,20 +219,20 @@ const UploadFileModal = ({
           />
         )}
 
-        {!selectedFile ? (
-          <Upload
-            action=""
-            customRequest={customRequest}
-            accept={ALLOWED_EXTENSIONS.join(',')}
-            limit={1}
-            draggable
-            dragIcon={<IconInbox size="extra-large" style={{ color: 'var(--semi-color-text-2)' }} />}
-            dragMainText={t('file.upload.dragText')}
-            dragSubText={t('file.upload.dragSubText')}
-            onChange={handleFileChange}
-            className="upload-file-modal-uploader"
-          />
-        ) : (
+        <Upload
+          action=""
+          customRequest={customRequest}
+          accept={ALLOWED_EXTENSIONS.join(',')}
+          limit={1}
+          draggable
+          dragIcon={<IconInbox size="extra-large" style={{ color: 'var(--semi-color-text-2)' }} />}
+          dragMainText={t('file.upload.dragText')}
+          dragSubText={t('file.upload.dragSubText')}
+          onChange={handleFileChange}
+          className="upload-file-modal-uploader"
+        />
+
+        {selectedFile && (
           <div className="upload-file-modal-file-info">
             <IconFile style={{ color: 'var(--semi-color-text-2)', marginRight: 8, fontSize: 20 }} />
             <div className="upload-file-modal-file-detail">

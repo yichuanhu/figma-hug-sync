@@ -90,6 +90,7 @@ const UploadVersionModal = ({ visible, onCancel, processData, onSuccess }: Uploa
       onCancel={handleClose}
       footer={
         <>
+          <Button onClick={handleClose}>{t('common.cancel')}</Button>
           <Button
             theme="solid"
             type="primary"
@@ -99,7 +100,6 @@ const UploadVersionModal = ({ visible, onCancel, processData, onSuccess }: Uploa
           >
             {t('development.processDevelopment.detail.uploadVersion.upload')}
           </Button>
-          <Button onClick={handleClose}>{t('common.cancel')}</Button>
         </>
       }
       className="upload-version-modal"
@@ -128,6 +128,7 @@ const UploadVersionModal = ({ visible, onCancel, processData, onSuccess }: Uploa
           onRemove={handleRemove}
           className="upload-version-modal-uploader"
         />
+
         {fileList.length > 0 && fileList[0].fileInstance && (
           <div className="upload-version-modal-file-info">
             <IconFile style={{ color: 'var(--semi-color-text-2)', marginRight: 8 }} />
