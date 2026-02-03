@@ -9,6 +9,7 @@ import {
   Row,
   Col,
   Space,
+  Select,
 } from '@douyinfe/semi-ui';
 import { IconSearch } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
@@ -22,13 +23,33 @@ import './index.less';
 
 const { Text } = Typography;
 
+interface ProcessVersion {
+  id: string;
+  version: string;
+  is_published: boolean;
+}
+
+interface ProcessWithVersions extends LYPublishableProcessResponse {
+  versions: ProcessVersion[];
+}
+
 interface ProcessSelectionStepProps {
   selectedProcesses: SelectedProcess[];
   onSelectionChange: (processes: SelectedProcess[]) => void;
 }
 
+// Mock 版本数据生成器
+const generateMockVersions = (processIndex: number): ProcessVersion[] => {
+  const versionCount = Math.floor(Math.random() * 3) + 2; // 2-4 个版本
+  return Array.from({ length: versionCount }, (_, i) => ({
+    id: `ver-${processIndex + 1}-${i + 1}`,
+    version: `v${versionCount - i}.${Math.floor(Math.random() * 10)}.0`,
+    is_published: i === 0, // 第一个版本为已发布
+  }));
+};
+
 // Mock 数据生成器
-const generateMockProcess = (index: number): LYPublishableProcessResponse => {
+const generateMockProcess = (index: number): ProcessWithVersions => {
   const names = [
     '客户信息同步',
     '订单处理',
@@ -42,15 +63,18 @@ const generateMockProcess = (index: number): LYPublishableProcessResponse => {
     '日志分析',
   ];
 
+  const versions = generateMockVersions(index);
+
   return {
     id: `process-${index + 1}`,
     name: names[index % names.length],
     description: `${names[index % names.length]}流程的详细描述`,
     status: index % 3 === 0 ? 'developing' : 'published',
-    latest_version_id: `ver-${index + 1}-latest`,
-    latest_version: `v${Math.floor(index / 3) + 1}.${(index % 3)}.0`,
+    latest_version_id: versions[0].id,
+    latest_version: versions[0].version,
     is_published: index % 3 !== 0,
     updated_at: new Date(Date.now() - index * 24 * 60 * 60 * 1000).toISOString(),
+    versions,
   };
 };
 
@@ -59,7 +83,7 @@ const generateMockListResponse = (
   status?: string[],
   offset = 0,
   size = 20
-): LYListResponseLYPublishableProcessResponse => {
+): LYListResponseLYPublishableProcessResponse & { list: ProcessWithVersions[] } => {
   let allData = Array.from({ length: 25 }, (_, i) => generateMockProcess(i));
 
   if (keyword) {
@@ -92,7 +116,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
   const { t } = useTranslation();
 
   const [listResponse, setListResponse] =
-    useState<LYListResponseLYPublishableProcessResponse>({
+    useState<LYListResponseLYPublishableProcessResponse & { list: ProcessWithVersions[] }>({
       range: { offset: 0, size: 20, total: 0 },
       list: [],
     });
@@ -151,10 +175,12 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
   };
 
   // 选择操作
-  const isSelected = (processId: string) =>
-    selectedProcesses.some((sp) => sp.process.id === processId);
+  const getSelectedProcess = (processId: string) =>
+    selectedProcesses.find((sp) => sp.process.id === processId);
 
-  const handleSelectProcess = (process: LYPublishableProcessResponse, checked: boolean) => {
+  const isSelected = (processId: string) => !!getSelectedProcess(processId);
+
+  const handleSelectProcess = (process: ProcessWithVersions, checked: boolean) => {
     if (checked) {
       const newSelected: SelectedProcess = {
         process,
@@ -164,6 +190,31 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
       onSelectionChange([...selectedProcesses, newSelected]);
     } else {
       onSelectionChange(selectedProcesses.filter((sp) => sp.process.id !== process.id));
+    }
+  };
+
+  const handleVersionChange = (process: ProcessWithVersions, versionId: string) => {
+    const version = process.versions.find((v) => v.id === versionId);
+    if (!version) return;
+
+    const existingIndex = selectedProcesses.findIndex((sp) => sp.process.id === process.id);
+    if (existingIndex >= 0) {
+      // 更新已选择的流程版本
+      const updated = [...selectedProcesses];
+      updated[existingIndex] = {
+        ...updated[existingIndex],
+        version_id: version.id,
+        version_number: version.version,
+      };
+      onSelectionChange(updated);
+    } else {
+      // 选择版本时自动选中流程
+      const newSelected: SelectedProcess = {
+        process,
+        version_id: version.id,
+        version_number: version.version,
+      };
+      onSelectionChange([...selectedProcesses, newSelected]);
     }
   };
 
@@ -186,7 +237,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
   const allCurrentPageSelected = list.length > 0 && list.every((p) => isSelected(p.id));
   const someCurrentPageSelected = list.some((p) => isSelected(p.id));
 
-  const columns: ColumnProps<LYPublishableProcessResponse>[] = [
+  const columns: ColumnProps<ProcessWithVersions>[] = [
     {
       title: (
         <Checkbox
@@ -197,23 +248,55 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
       ),
       dataIndex: 'selection',
       width: 50,
-      render: (_: unknown, record: LYPublishableProcessResponse) => (
+      render: (_: unknown, record: ProcessWithVersions) => (
         <Checkbox
           checked={isSelected(record.id)}
-          onChange={(e) => handleSelectProcess(record, e.target.checked as boolean)}
+          onChange={(e) => {
+            e.stopPropagation();
+            handleSelectProcess(record, e.target.checked as boolean);
+          }}
         />
       ),
     },
     {
       title: t('release.create.processTable.name'),
       dataIndex: 'name',
-      width: 200,
+      width: 240,
       render: (text: string) => <Text strong>{text}</Text>,
     },
     {
       title: t('release.create.processTable.version'),
-      dataIndex: 'latest_version',
-      width: 120,
+      dataIndex: 'versions',
+      width: 180,
+      render: (_: unknown, record: ProcessWithVersions) => {
+        const selected = getSelectedProcess(record.id);
+        const currentVersionId = selected?.version_id || record.latest_version_id;
+
+        return (
+          <div onClick={(e) => e.stopPropagation()}>
+            <Select
+              value={currentVersionId}
+              onChange={(value) => {
+                handleVersionChange(record, value as string);
+              }}
+              style={{ width: 140 }}
+              optionList={record.versions.map((v) => ({
+                value: v.id,
+                label: (
+                  <Space>
+                    <span>{v.version}</span>
+                    {v.is_published && (
+                      <Tag size="small" color="green">
+                        {t('release.create.processStatus.published')}
+                      </Tag>
+                    )}
+                  </Space>
+                ),
+              }))}
+            />
+          </div>
+        );
+      },
     },
     {
       title: t('release.create.processTable.status'),
@@ -226,30 +309,6 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
             : t('release.create.processStatus.unpublished')}
         </Tag>
       ),
-    },
-    {
-      title: t('release.create.processTable.description'),
-      dataIndex: 'description',
-      render: (text: string) => (
-        <Text type="tertiary" ellipsis={{ showTooltip: true }} style={{ maxWidth: 300 }}>
-          {text || '-'}
-        </Text>
-      ),
-    },
-    {
-      title: t('release.create.processTable.updateTime'),
-      dataIndex: 'updated_at',
-      width: 160,
-      render: (time: string) => {
-        if (!time) return '-';
-        return new Date(time).toLocaleString('zh-CN', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit',
-        });
-      },
     },
   ];
 
@@ -295,6 +354,13 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
             />
           </Space>
         </Col>
+        {selectedProcesses.length > 0 && (
+          <Col>
+            <Text type="tertiary">
+              {t('release.create.selectedCount', { count: selectedProcesses.length })}
+            </Text>
+          </Col>
+        )}
       </Row>
 
       {/* 表格 */}
