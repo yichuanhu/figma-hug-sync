@@ -9,6 +9,7 @@ import CredentialManagementPage from "@/pages/Development/CredentialManagement/C
 import ParameterManagementPage from "@/pages/Development/ParameterManagement/ParameterManagementPage";
 import DevQueueManagementPage from "@/pages/Development/QueueManagement/QueueManagementPage";
 import DevQueueMessagesPage from "@/pages/Development/QueueManagement/QueueMessagesPage";
+import DevFileManagementPage from "@/pages/Development/FileManagement/FileManagementPage";
 // Release Management
 import ReleaseListPage from "@/pages/Development/ReleaseManagement/ReleaseListPage";
 import CreateReleasePage from "@/pages/Development/ReleaseManagement/CreateReleasePage";
@@ -25,6 +26,8 @@ import SchedulingParameterManagementPage from "@/pages/Scheduling/ParameterManag
 // Scheduling - Queue Management
 import SchedulingQueueManagementPage from "@/pages/Scheduling/QueueManagement/QueueManagementPage";
 import SchedulingQueueMessagesPage from "@/pages/Scheduling/QueueManagement/QueueMessagesPage";
+// Scheduling - File Management
+import SchedulingFileManagementPage from "@/pages/Scheduling/FileManagement/FileManagementPage";
 // Maintenance
 import MaintenanceWorkbench from "@/pages/Maintenance/MaintenanceWorkbench";
 // Requirements
@@ -74,6 +77,9 @@ const App = () => (
         <Route path="/dev-center/business-assets/queues" element={<DevQueueManagementPage />} />
         <Route path="/dev-center/business-assets/queues/:queueId/messages" element={<DevQueueMessagesPage />} />
         
+        {/* 文件管理 - 开发中心入口 */}
+        <Route path="/dev-center/business-assets/files" element={<DevFileManagementPage />} />
+        
         {/* 发布管理 - 开发中心入口 */}
         <Route path="/dev-center/release-management" element={<ReleaseListPage />} />
         <Route path="/dev-center/release-management/create" element={<CreateReleasePage />} />
@@ -81,6 +87,9 @@ const App = () => (
         {/* 队列管理 - 调度中心入口 */}
         <Route path="/scheduling-center/business-assets/queues" element={<SchedulingQueueManagementPage />} />
         <Route path="/scheduling-center/business-assets/queues/:queueId/messages" element={<SchedulingQueueMessagesPage />} />
+        
+        {/* 文件管理 - 调度中心入口 */}
+        <Route path="/scheduling-center/business-assets/files" element={<SchedulingFileManagementPage />} />
         
         {/* 自动化流程 - 调度中心入口 */}
         <Route path="/scheduling-center/execution-assets/automation-process" element={<SchedulingProcessManagementPage />} />

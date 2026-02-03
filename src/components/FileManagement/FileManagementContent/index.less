@@ -1,0 +1,87 @@
+.file-management-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+
+  &-breadcrumb {
+    flex-shrink: 0;
+  }
+
+  &-header {
+    padding-top: 20px;
+    flex-shrink: 0;
+
+    &-title {
+      margin-bottom: 24px;
+
+      .title {
+        margin-bottom: 8px;
+      }
+    }
+
+    &-toolbar {
+      margin-bottom: 16px;
+
+      .file-management-content-search-input {
+        width: 320px;
+      }
+    }
+  }
+
+  .file-management-content-table {
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
+
+    // 约束 Semi Table wrapper 高度，不超出父容器
+    .semi-table-wrapper {
+      max-height: 100%;
+    }
+
+    .file-management-content-table-name {
+      color: var(--semi-color-text-0);
+    }
+
+    .file-management-content-table-size {
+      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+      font-size: 13px;
+      color: var(--semi-color-text-1);
+    }
+
+    .file-management-content-table-desc {
+      display: block;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  // 表格行选中状态
+  .file-management-row-selected {
+    background-color: var(--semi-color-fill-1) !important;
+  }
+}
+
+// 筛选弹出框样式
+.file-filter-popover {
+  padding: 16px;
+  width: 280px;
+
+  .file-filter-popover-section {
+    margin-bottom: 16px;
+
+    .file-filter-popover-label {
+      display: block;
+      margin-bottom: 8px;
+    }
+  }
+
+  .file-filter-popover-footer {
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid var(--semi-color-border);
+    padding-top: 12px;
+  }
+}
