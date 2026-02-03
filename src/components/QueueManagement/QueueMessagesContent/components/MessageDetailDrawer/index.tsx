@@ -321,18 +321,6 @@ const MessageDetailDrawer = ({
             </Descriptions>
           </>
         )}
-
-        <Text strong className="message-detail-drawer-section-title">
-          {t('queueMessage.detail.systemInfo')}
-        </Text>
-        <Descriptions align="left">
-          <Descriptions.Item itemKey={t('common.createTime')}>
-            {formatDate(message?.created_at)}
-          </Descriptions.Item>
-          <Descriptions.Item itemKey={t('common.updateTime')}>
-            {formatDate(message?.updated_at)}
-          </Descriptions.Item>
-        </Descriptions>
       </div>
     </SideSheet>
   );
