@@ -41,7 +41,11 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
 }) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<ResourceType>('PARAMETER');
-  const [searchText, setSearchText] = useState('');
+  const [searchTexts, setSearchTexts] = useState<Record<ResourceType, string>>({
+    PARAMETER: '',
+    CREDENTIAL: '',
+    QUEUE: '',
+  });
   const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
 
   // Mock 可用资源数据
@@ -64,16 +68,21 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
   ], []);
 
   // 过滤已添加的资源和按类型分组
-  const filteredResources = useMemo(() => {
+  const getFilteredResources = (type: ResourceType) => {
+    const searchText = searchTexts[type];
     return mockAvailableResources
-      .filter((r) => r.type === activeTab)
+      .filter((r) => r.type === type)
       .filter((r) => !existingResourceIds.includes(r.id))
       .filter((r) =>
         searchText
           ? r.name.toLowerCase().includes(searchText.toLowerCase())
           : true
       );
-  }, [mockAvailableResources, activeTab, existingResourceIds, searchText]);
+  };
+
+  const handleSearchChange = (type: ResourceType, value: string) => {
+    setSearchTexts((prev) => ({ ...prev, [type]: value }));
+  };
 
   const handleTabChange = (key: string) => {
     setActiveTab(key as ResourceType);
@@ -101,7 +110,11 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
 
   const handleClose = () => {
     setSelectedRowKeys([]);
-    setSearchText('');
+    setSearchTexts({
+      PARAMETER: '',
+      CREDENTIAL: '',
+      QUEUE: '',
+    });
     setActiveTab('PARAMETER');
     onClose();
   };
@@ -174,16 +187,6 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
       className="add-resource-modal"
     >
       <div className="add-resource-modal-content">
-        <div className="add-resource-modal-search">
-          <Input
-            prefix={<IconSearch />}
-            placeholder={t('release.create.addResource.searchPlaceholder')}
-            value={searchText}
-            onChange={setSearchText}
-            showClear
-          />
-        </div>
-
         <Tabs activeKey={activeTab} onChange={handleTabChange}>
           {(['PARAMETER', 'CREDENTIAL', 'QUEUE'] as ResourceType[]).map((type) => (
             <TabPane
@@ -191,9 +194,19 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
               itemKey={type}
               key={type}
             >
+              <div className="add-resource-modal-tab-search">
+                <Input
+                  prefix={<IconSearch />}
+                  placeholder={t('release.create.addResource.searchPlaceholder')}
+                  value={searchTexts[type]}
+                  onChange={(value) => handleSearchChange(type, value)}
+                  showClear
+                  style={{ width: 320 }}
+                />
+              </div>
               <Table
                 columns={type === 'QUEUE' ? queueColumns : columns}
-                dataSource={filteredResources}
+                dataSource={getFilteredResources(type)}
                 rowKey="id"
                 rowSelection={rowSelection}
                 pagination={false}
