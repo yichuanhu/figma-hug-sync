@@ -13,7 +13,6 @@ import {
 import { IconSearch, IconChevronRight, IconDelete } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
 import EmptyState from '@/components/EmptyState';
-import FilterPopover from '@/components/FilterPopover';
 import type { LYPublishableProcessResponse, LYListResponseLYPublishableProcessResponse } from '@/api';
 import type { SelectedProcess } from '../../index';
 
@@ -78,7 +77,7 @@ const generateMockProcess = (index: number): ProcessWithVersions => {
 
 const generateMockListResponse = (
   keyword?: string,
-  status?: string[]
+  status?: string
 ): LYListResponseLYPublishableProcessResponse & { list: ProcessWithVersions[] } => {
   let allData = Array.from({ length: 15 }, (_, i) => generateMockProcess(i));
 
@@ -91,10 +90,10 @@ const generateMockListResponse = (
     );
   }
 
-  if (status && status.length > 0) {
+  if (status) {
     allData = allData.filter((item) => {
-      if (status.includes('published') && item.is_published) return true;
-      if (status.includes('unpublished') && !item.is_published) return true;
+      if (status === 'published' && item.is_published) return true;
+      if (status === 'unpublished' && !item.is_published) return true;
       return false;
     });
   }
@@ -115,18 +114,14 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
   const [loading, setLoading] = useState(false);
   const [keyword, setKeyword] = useState('');
   const [leftCheckedKeys, setLeftCheckedKeys] = useState<string[]>([]);
-
-  // 筛选状态
-  const [filterVisible, setFilterVisible] = useState(false);
-  const [tempFilters, setTempFilters] = useState<{ status: string[] }>({ status: [] });
-  const [activeFilters, setActiveFilters] = useState<{ status: string[] }>({ status: [] });
+  const [statusFilter, setStatusFilter] = useState<string | undefined>(undefined);
 
   // 加载数据
   const loadData = async (searchKeyword = keyword) => {
     setLoading(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 300));
-      const response = generateMockListResponse(searchKeyword, activeFilters.status);
+      const response = generateMockListResponse(searchKeyword, statusFilter);
       setProcessList(response.list);
     } finally {
       setLoading(false);
@@ -135,7 +130,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
 
   useEffect(() => {
     loadData();
-  }, [activeFilters]);
+  }, [statusFilter]);
 
   // 搜索防抖
   const handleSearch = useMemo(
@@ -144,18 +139,8 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
         setKeyword(value);
         loadData(value);
       }, 500),
-    [activeFilters]
+    [statusFilter]
   );
-
-  // 筛选操作
-  const handleFilterConfirm = () => {
-    setActiveFilters(tempFilters);
-    setFilterVisible(false);
-  };
-
-  const handleFilterReset = () => {
-    setTempFilters({ status: [] });
-  };
 
   // 左侧可选流程（排除已选的）
   const availableProcesses = useMemo(() => {
@@ -231,13 +216,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
         {/* 左侧：可选流程 */}
         <div className="transfer-panel transfer-panel-left">
           <div className="transfer-panel-header">
-            <Checkbox
-              checked={isLeftAllChecked}
-              indeterminate={isLeftIndeterminate}
-              onChange={(e) => handleLeftCheckAll(e.target.checked)}
-            >
-              <Text strong>{t('release.create.availableProcesses')}</Text>
-            </Checkbox>
+            <Text strong>{t('release.create.availableProcesses')}</Text>
             <Text type="tertiary" size="small">
               {availableProcesses.length} {t('release.create.items')}
             </Text>
@@ -251,24 +230,16 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
                 onChange={(value) => handleSearch(value)}
                 showClear
                 size="small"
-                style={{ width: 180 }}
+                style={{ width: 160 }}
               />
-              <FilterPopover
-                visible={filterVisible}
-                onVisibleChange={setFilterVisible}
-                onConfirm={handleFilterConfirm}
-                onReset={handleFilterReset}
-                sections={[
-                  {
-                    key: 'status',
-                    label: t('release.create.processTable.status'),
-                    type: 'checkbox',
-                    value: tempFilters.status,
-                    onChange: (value) =>
-                      setTempFilters((prev) => ({ ...prev, status: value as string[] })),
-                    options: statusOptions,
-                  },
-                ]}
+              <Select
+                placeholder={t('release.create.processTable.status')}
+                value={statusFilter}
+                onChange={(value) => setStatusFilter(value as string | undefined)}
+                optionList={statusOptions}
+                showClear
+                size="small"
+                style={{ width: 100 }}
               />
             </Space>
           </div>
@@ -281,10 +252,14 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
                     <div
                       key={process.id}
                       className={`process-item ${leftCheckedKeys.includes(process.id) ? 'checked' : ''}`}
+                      onClick={() => handleLeftCheck(process.id, !leftCheckedKeys.includes(process.id))}
                     >
                       <Checkbox
                         checked={leftCheckedKeys.includes(process.id)}
-                        onChange={(e) => handleLeftCheck(process.id, e.target.checked)}
+                        onChange={(e) => {
+                          e.stopPropagation();
+                          handleLeftCheck(process.id, e.target.checked);
+                        }}
                       />
                       <div className="process-item-content">
                         <Text className="process-name">{process.name}</Text>
@@ -302,15 +277,28 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
                 </div>
               ) : (
                 <EmptyState
-                  variant={keyword || activeFilters.status.length > 0 ? 'noResult' : 'noData'}
+                  variant={keyword || statusFilter ? 'noResult' : 'noData'}
                   description={
-                    keyword || activeFilters.status.length > 0
+                    keyword || statusFilter
                       ? t('common.noResult')
                       : t('release.create.noProcessData')
                   }
                 />
               )}
             </Spin>
+          </div>
+
+          <div className="transfer-panel-footer">
+            <Checkbox
+              checked={isLeftAllChecked}
+              indeterminate={isLeftIndeterminate}
+              onChange={(e) => handleLeftCheckAll(e.target.checked)}
+            >
+              <Text size="small">{t('common.selectAll')}</Text>
+            </Checkbox>
+            <Text type="tertiary" size="small">
+              {leftCheckedKeys.length}/{availableProcesses.length}
+            </Text>
           </div>
         </div>
 
@@ -337,28 +325,25 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
               <div className="selected-list">
                 {selectedProcesses.map((sp) => {
                   const process = sp.process as ProcessWithVersions;
+                  const isProcessPublished = process.is_published;
+                  
                   return (
                     <div key={process.id} className="selected-item">
                       <div className="selected-item-info">
                         <Text className="process-name">{process.name}</Text>
-                        <Tag size="small" color={process.is_published ? 'green' : 'grey'}>
-                          {process.is_published
-                            ? t('release.create.processStatus.published')
-                            : t('release.create.processStatus.unpublished')}
-                        </Tag>
                       </div>
                       <div className="selected-item-actions">
                         <Select
                           size="small"
                           value={sp.version_id}
                           onChange={(value) => handleVersionChange(process.id, value as string)}
-                          style={{ width: 120 }}
+                          style={{ width: 140 }}
                           optionList={process.versions.map((v) => ({
                             value: v.id,
                             label: (
                               <Space>
                                 <span>{v.version}</span>
-                                {v.is_published && (
+                                {isProcessPublished && v.is_published && (
                                   <Tag size="small" color="green">
                                     {t('release.create.processStatus.published')}
                                   </Tag>
