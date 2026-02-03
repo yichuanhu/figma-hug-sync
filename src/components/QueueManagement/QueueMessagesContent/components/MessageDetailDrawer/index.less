@@ -1,6 +1,7 @@
 .message-detail-drawer {
   &-header {
     width: 100%;
+    padding-right: 0;
 
     &-title {
       margin: 0;
@@ -8,7 +9,7 @@
 
     &-divider {
       height: 16px;
-      margin: 0 4px;
+      margin: 0 8px 0 4px;
     }
 
     &-delete-icon {
@@ -25,14 +26,9 @@
     left: 0;
     top: 0;
     bottom: 0;
-    width: 4px;
+    width: 6px;
     cursor: ew-resize;
-    background: transparent;
-    z-index: 10;
-
-    &:hover {
-      background: var(--semi-color-primary-light-default);
-    }
+    z-index: 100;
   }
 
   &-content {
