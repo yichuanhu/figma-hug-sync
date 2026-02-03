@@ -89,7 +89,8 @@ const generateMockMessageList = (queueId: string, messageType: 'TEST' | 'PRODUCT
 const fetchMessageList = async (
   params: GetQueueMessagesParams & { 
     statusFilter?: QueueMessageStatus[];
-    dateRange?: [Date, Date] | null;
+    enqueueTimeRange?: [Date, Date] | null;
+    effectiveTimeRange?: [Date, Date] | null;
     sortBy?: 'message_number' | 'enqueue_time' | 'priority';
     sortOrder?: 'asc' | 'desc';
   }
@@ -104,12 +105,22 @@ const fetchMessageList = async (
     data = data.filter((item) => params.statusFilter!.includes(item.status));
   }
 
-  // 时间范围筛选（按入队时间）
-  if (params.dateRange && params.dateRange[0] && params.dateRange[1]) {
-    const startTime = params.dateRange[0].getTime();
-    const endTime = params.dateRange[1].getTime() + 24 * 60 * 60 * 1000 - 1; // 包含结束日期整天
+  // 入队时间范围筛选
+  if (params.enqueueTimeRange && params.enqueueTimeRange[0] && params.enqueueTimeRange[1]) {
+    const startTime = params.enqueueTimeRange[0].getTime();
+    const endTime = params.enqueueTimeRange[1].getTime() + 24 * 60 * 60 * 1000 - 1;
     data = data.filter((item) => {
       const itemTime = new Date(item.enqueue_time).getTime();
+      return itemTime >= startTime && itemTime <= endTime;
+    });
+  }
+
+  // 生效时间范围筛选
+  if (params.effectiveTimeRange && params.effectiveTimeRange[0] && params.effectiveTimeRange[1]) {
+    const startTime = params.effectiveTimeRange[0].getTime();
+    const endTime = params.effectiveTimeRange[1].getTime() + 24 * 60 * 60 * 1000 - 1;
+    data = data.filter((item) => {
+      const itemTime = new Date(item.effective_time).getTime();
       return itemTime >= startTime && itemTime <= endTime;
     });
   }
@@ -187,12 +198,14 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
 
   // 筛选状态
   const [statusFilter, setStatusFilter] = useState<QueueMessageStatus[]>([]);
-  const [dateRangeFilter, setDateRangeFilter] = useState<[Date, Date] | null>(null);
+  const [enqueueTimeFilter, setEnqueueTimeFilter] = useState<[Date, Date] | null>(null);
+  const [effectiveTimeFilter, setEffectiveTimeFilter] = useState<[Date, Date] | null>(null);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
   
   // 临时筛选状态（用于弹窗内编辑）
   const [tempStatusFilter, setTempStatusFilter] = useState<QueueMessageStatus[]>([]);
-  const [tempDateRangeFilter, setTempDateRangeFilter] = useState<[Date, Date] | null>(null);
+  const [tempEnqueueTimeFilter, setTempEnqueueTimeFilter] = useState<[Date, Date] | null>(null);
+  const [tempEffectiveTimeFilter, setTempEffectiveTimeFilter] = useState<[Date, Date] | null>(null);
 
   // 列表数据
   const [listResponse, setListResponse] = useState<LYQueueMessageListResultResponse | null>(null);
@@ -223,7 +236,8 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
         offset: (queryParams.page - 1) * queryParams.pageSize,
         size: queryParams.pageSize,
         statusFilter: statusFilter.length > 0 ? statusFilter : undefined,
-        dateRange: dateRangeFilter,
+        enqueueTimeRange: enqueueTimeFilter,
+        effectiveTimeRange: effectiveTimeFilter,
         sortBy: queryParams.sortBy,
         sortOrder: queryParams.sortOrder,
       });
@@ -235,7 +249,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, statusFilter, dateRangeFilter, context, queueId, t]);
+  }, [queryParams, statusFilter, enqueueTimeFilter, effectiveTimeFilter, context, queueId, t]);
 
   useEffect(() => {
     loadData();
@@ -290,7 +304,8 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
   const handleFilterVisibleChange = (visible: boolean) => {
     if (visible) {
       setTempStatusFilter([...statusFilter]);
-      setTempDateRangeFilter(dateRangeFilter);
+      setTempEnqueueTimeFilter(enqueueTimeFilter);
+      setTempEffectiveTimeFilter(effectiveTimeFilter);
     }
     setFilterPopoverVisible(visible);
   };
@@ -298,14 +313,16 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
   // 筛选确认
   const handleFilterConfirm = () => {
     setStatusFilter(tempStatusFilter);
-    setDateRangeFilter(tempDateRangeFilter);
+    setEnqueueTimeFilter(tempEnqueueTimeFilter);
+    setEffectiveTimeFilter(tempEffectiveTimeFilter);
     setQueryParams((prev) => ({ ...prev, page: 1 }));
   };
 
   // 筛选重置
   const handleFilterReset = () => {
     setTempStatusFilter([]);
-    setTempDateRangeFilter(null);
+    setTempEnqueueTimeFilter(null);
+    setTempEffectiveTimeFilter(null);
   };
 
   // 表格排序处理
@@ -617,11 +634,19 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
                   onChange: (value) => setTempStatusFilter(value as QueueMessageStatus[]),
                 },
                 {
-                  key: 'dateRange',
-                  label: t('queueMessage.filter.dateRange'),
+                  key: 'enqueueTime',
+                  label: t('queueMessage.filter.enqueueTime'),
                   type: 'dateRange',
-                  value: tempDateRangeFilter,
-                  onChange: (value) => setTempDateRangeFilter(value as [Date, Date] | null),
+                  value: tempEnqueueTimeFilter,
+                  onChange: (value) => setTempEnqueueTimeFilter(value as [Date, Date] | null),
+                  datePresets,
+                },
+                {
+                  key: 'effectiveTime',
+                  label: t('queueMessage.filter.effectiveTime'),
+                  type: 'dateRange',
+                  value: tempEffectiveTimeFilter,
+                  onChange: (value) => setTempEffectiveTimeFilter(value as [Date, Date] | null),
                   datePresets,
                 },
               ]}
