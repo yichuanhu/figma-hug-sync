@@ -90,7 +90,7 @@ const fetchMessageList = async (
   params: GetQueueMessagesParams & { 
     statusFilter?: QueueMessageStatus[];
     dateRange?: [Date, Date] | null;
-    sortBy?: 'enqueue_time' | 'priority';
+    sortBy?: 'message_number' | 'enqueue_time' | 'priority';
     sortOrder?: 'asc' | 'desc';
   }
 ): Promise<LYQueueMessageListResultResponse> => {
@@ -130,7 +130,9 @@ const fetchMessageList = async (
     const priorityOrder: Record<QueueMessagePriority, number> = { HIGH: 3, MEDIUM: 2, LOW: 1 };
     data.sort((a, b) => {
       let comparison = 0;
-      if (params.sortBy === 'enqueue_time') {
+      if (params.sortBy === 'message_number') {
+        comparison = a.message_number.localeCompare(b.message_number);
+      } else if (params.sortBy === 'enqueue_time') {
         comparison = new Date(a.enqueue_time).getTime() - new Date(b.enqueue_time).getTime();
       } else if (params.sortBy === 'priority') {
         comparison = priorityOrder[a.priority] - priorityOrder[b.priority];
@@ -158,7 +160,7 @@ interface QueryParams {
   page: number;
   pageSize: number;
   keyword: string;
-  sortBy: 'enqueue_time' | 'priority';
+  sortBy: 'message_number' | 'enqueue_time' | 'priority';
   sortOrder: 'asc' | 'desc';
 }
 
@@ -307,7 +309,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
   };
 
   // 表格排序处理
-  const handleSort = (sortBy: 'enqueue_time' | 'priority') => {
+  const handleSort = (sortBy: 'message_number' | 'enqueue_time' | 'priority') => {
     setQueryParams((prev) => ({
       ...prev,
       page: 1,
@@ -445,6 +447,10 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
       dataIndex: 'message_number',
       key: 'message_number',
       width: 140,
+      sorter: true,
+      onHeaderCell: () => ({
+        onClick: () => handleSort('message_number'),
+      }),
     },
     {
       title: t('queueMessage.table.content'),
