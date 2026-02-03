@@ -19,7 +19,7 @@ import {
   IconClose,
   IconInfoCircle,
   IconPlus,
-  IconDelete,
+  IconDeleteStroked,
 } from '@douyinfe/semi-icons';
 import type { ReleaseType, ResourceType } from '@/api';
 import type { SelectedProcess, ResourceConfig } from '../../index';
@@ -135,7 +135,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
             )}
             {resource.is_manual && (
               <Button
-                icon={<IconDelete />}
+                icon={<IconDeleteStroked />}
                 theme="borderless"
                 type="danger"
                 size="small"
