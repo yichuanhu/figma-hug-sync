@@ -50,7 +50,8 @@
     "operations": "操作",
     "refresh": "刷新",
     "seconds": "秒",
-    "days": "天"
+    "days": "天",
+    "selectAll": "全选"
   },
   "emptyState": {
     "retry": "重试",
