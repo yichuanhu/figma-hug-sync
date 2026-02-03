@@ -43,7 +43,13 @@
     }
   }
 
-  // 表格单元格样式
+  // 单元格样式
+  &-cell-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 260px;
+  }
 
   .release-list-processes {
     display: block;
@@ -53,21 +59,8 @@
     white-space: nowrap;
   }
 
-  .release-list-description {
-    display: block;
-    max-width: 180px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  // 选中行
-  .release-list-page-row-selected {
-    background-color: var(--semi-color-fill-1) !important;
-  }
-
-  // 移除固定列左侧竖线
-  .semi-table-row-cell-fixed-right-last::before {
-    display: none !important;
+  // 表格行选中状态
+  &-row-selected {
+    background-color: var(--semi-color-fill-1);
   }
 }

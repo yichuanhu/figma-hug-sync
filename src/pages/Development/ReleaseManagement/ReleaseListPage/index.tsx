@@ -352,7 +352,7 @@ const ReleaseListPage: React.FC = () => {
       dataIndex: 'description',
       width: 200,
       render: (text: string) => (
-        <span className="release-list-description">{text || '-'}</span>
+        <div className="release-list-page-cell-ellipsis">{text || '-'}</div>
       ),
     },
     {
@@ -380,8 +380,7 @@ const ReleaseListPage: React.FC = () => {
     {
       title: t('common.actions'),
       dataIndex: 'actions',
-      width: 80,
-      fixed: 'right',
+      width: 60,
       render: (_: unknown, record: LYReleaseResponse) => (
         <Dropdown
           trigger="click"
@@ -389,12 +388,18 @@ const ReleaseListPage: React.FC = () => {
           position="bottomRight"
           render={
             <Dropdown.Menu>
-              <Dropdown.Item onClick={() => handleRowClick(record)}>
+              <Dropdown.Item onClick={(e) => {
+                e.stopPropagation();
+                handleRowClick(record);
+              }}>
                 {t('common.viewDetail')}
               </Dropdown.Item>
               {record.publish_status === 'SUCCESS' &&
                 record.release_type !== 'VERSION_ROLLBACK' && (
-                  <Dropdown.Item onClick={() => handleRollback(record)}>
+                  <Dropdown.Item onClick={(e) => {
+                    e.stopPropagation();
+                    handleRollback(record);
+                  }}>
                     {t('release.actions.rollback')}
                   </Dropdown.Item>
                 )}
@@ -404,7 +409,6 @@ const ReleaseListPage: React.FC = () => {
           <Button
             icon={<IconMore />}
             theme="borderless"
-            type="tertiary"
             onClick={(e) => e.stopPropagation()}
           />
         </Dropdown>
