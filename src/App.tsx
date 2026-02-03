@@ -42,6 +42,8 @@ import TaskLogPage from "@/pages/Scheduling/TaskManagement/TaskLogPage";
 import RecordingViewPage from "@/pages/Scheduling/TaskManagement/RecordingViewPage";
 // Scheduling - Template Management
 import TemplateManagementPage from "@/pages/Scheduling/TemplateManagement/TemplateManagementPage";
+// Scheduling - Auto Execution Policy
+import AutoExecutionPolicyPage from "@/pages/Scheduling/AutoExecutionPolicy/AutoExecutionPolicyPage";
 // Personal Center
 import PersonalCenter from "@/pages/PersonalCenter";
 // Dev Preview
@@ -96,6 +98,8 @@ const App = () => (
         
         {/* 执行模板 - 调度中心入口 */}
         <Route path="/scheduling-center/task-execution/templates" element={<TemplateManagementPage />} />
+        {/* 自动执行策略 - 调度中心入口 */}
+        <Route path="/scheduling-center/task-execution/auto-execution-policy" element={<AutoExecutionPolicyPage />} />
         {/* 任务列表 - 调度中心入口 */}
         <Route path="/scheduling-center/task-execution/task-list" element={<TaskManagementPage />} />
         {/* 任务日志 - 调度中心入口 */}

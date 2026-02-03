@@ -1,0 +1,66 @@
+// TimeTriggerList 时间触发器列表样式
+.time-trigger-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  // 工具栏
+  .time-trigger-list-toolbar {
+    margin-bottom: 16px;
+  }
+
+  // 搜索输入框
+  .time-trigger-list-search-input {
+    width: 320px;
+  }
+
+  // 表格容器
+  .time-trigger-list-table {
+    flex: 1;
+    overflow: hidden;
+  }
+
+  // 表格名称列
+  .time-trigger-list-table-name {
+    color: var(--semi-color-text-0);
+  }
+
+  // 表格描述列
+  .time-trigger-list-table-desc {
+    display: block;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--semi-color-text-2);
+  }
+
+  // 触发规则显示
+  .time-trigger-list-rule {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--semi-color-text-1);
+    font-size: 13px;
+
+    .time-trigger-list-rule-icon {
+      color: var(--semi-color-text-2);
+    }
+  }
+
+  // 下次触发时间
+  .time-trigger-list-next-time {
+    color: var(--semi-color-text-1);
+    font-size: 13px;
+
+    &.disabled {
+      color: var(--semi-color-text-3);
+    }
+  }
+
+  // 选中行
+  .time-trigger-row-selected {
+    background-color: var(--semi-color-fill-1) !important;
+  }
+}

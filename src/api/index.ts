@@ -2767,3 +2767,260 @@ export interface ReuploadFileRequest {
   /** 变更原因 */
   change_reason: string;
 }
+
+// ============= 时间触发器相关类型 =============
+
+/**
+ * 触发器状态
+ */
+export type TriggerStatus = 'ENABLED' | 'DISABLED';
+
+/**
+ * 触发规则类型
+ */
+export type TriggerRuleType = 'BASIC' | 'CRON';
+
+/**
+ * 基本频率类型
+ */
+export type BasicFrequencyType = 'MINUTELY' | 'HOURLY' | 'DAILY' | 'WEEKLY' | 'MONTHLY';
+
+/**
+ * 工作日历执行类型
+ */
+export type WorkCalendarExecutionType = 'WORKDAY' | 'NON_WORKDAY';
+
+/**
+ * LYTimeTriggerResponse
+ * 时间触发器响应模型
+ */
+export interface LYTimeTriggerResponse {
+  /** 触发器ID */
+  trigger_id: string;
+  /** 触发器名称 */
+  name: string;
+  /** 触发器描述 */
+  description?: string | null;
+  /** 状态 */
+  status: TriggerStatus;
+  /** 流程ID */
+  process_id: string;
+  /** 流程名称 */
+  process_name: string;
+  /** 部门ID */
+  department_id: string;
+  /** 执行目标类型 */
+  execution_target_type: ExecutionTargetType;
+  /** 执行目标ID */
+  execution_target_id: string;
+  /** 执行目标名称 */
+  execution_target_name: string;
+  /** 优先级 */
+  priority: TaskPriority;
+  /** 最大执行时长（秒） */
+  max_execution_duration: number;
+  /** 任务有效期（天） */
+  validity_days: number;
+  /** 是否启用录屏 */
+  enable_recording: boolean;
+  /** 每次创建任务数 */
+  task_count_per_trigger: number;
+  /** 是否允许重复任务 */
+  allow_duplicate_tasks: boolean;
+  /** 输入参数值 */
+  input_parameters?: Record<string, unknown> | null;
+  /** 触发规则类型 */
+  rule_type: TriggerRuleType;
+  /** Cron表达式 */
+  cron_expression?: string | null;
+  /** 基本频率类型 */
+  basic_frequency_type?: BasicFrequencyType | null;
+  /** 基本频率值（用于minutely, hourly等） */
+  basic_frequency_value?: number | null;
+  /** 时区 */
+  time_zone: string;
+  /** 开始时间 */
+  start_date_time: string;
+  /** 结束时间 */
+  end_date_time?: string | null;
+  /** 是否启用工作日历 */
+  enable_work_calendar: boolean;
+  /** 工作日历ID */
+  work_calendar_id?: string | null;
+  /** 工作日历名称 */
+  work_calendar_name?: string | null;
+  /** 工作日历执行类型 */
+  work_calendar_execution_type?: WorkCalendarExecutionType | null;
+  /** 下次触发时间 */
+  next_trigger_time?: string | null;
+  /** 最后触发时间 */
+  last_trigger_time?: string | null;
+  /** 创建者ID */
+  created_by_id: string;
+  /** 创建者名称 */
+  created_by_name: string;
+  /** 创建时间 */
+  created_at: string;
+  /** 更新时间 */
+  updated_at: string;
+}
+
+/** LYListResponse[LYTimeTriggerResponse] */
+export interface LYListResponseLYTimeTriggerResponse {
+  /** 范围 */
+  range?: LYRangeResponse | null;
+  /** 列表 */
+  list: LYTimeTriggerResponse[];
+}
+
+/**
+ * GetTimeTriggersParams
+ * 获取时间触发器列表参数
+ */
+export interface GetTimeTriggersParams {
+  /** 关键字搜索 */
+  keyword?: string;
+  /** 流程ID */
+  process_id?: string;
+  /** 状态 */
+  status?: TriggerStatus;
+  /** 偏移量 */
+  offset?: number;
+  /** 每页数量 */
+  size?: number;
+}
+
+/**
+ * CreateTimeTriggerRequest
+ * 创建时间触发器请求
+ */
+export interface CreateTimeTriggerRequest {
+  /** 触发器名称 */
+  name: string;
+  /** 描述 */
+  description?: string | null;
+  /** 流程ID */
+  process_id: string;
+  /** 执行目标类型 */
+  execution_target_type: ExecutionTargetType;
+  /** 执行目标ID */
+  execution_target_id: string;
+  /** 优先级 */
+  priority: TaskPriority;
+  /** 最大执行时长（秒） */
+  max_execution_duration: number;
+  /** 任务有效期（天） */
+  validity_days: number;
+  /** 是否启用录屏 */
+  enable_recording: boolean;
+  /** 每次创建任务数 */
+  task_count_per_trigger: number;
+  /** 是否允许重复任务 */
+  allow_duplicate_tasks: boolean;
+  /** 输入参数值 */
+  input_parameters?: Record<string, unknown> | null;
+  /** 触发规则类型 */
+  rule_type: TriggerRuleType;
+  /** Cron表达式 */
+  cron_expression?: string | null;
+  /** 基本频率类型 */
+  basic_frequency_type?: BasicFrequencyType | null;
+  /** 基本频率值 */
+  basic_frequency_value?: number | null;
+  /** 时区 */
+  time_zone: string;
+  /** 开始时间 */
+  start_date_time: string;
+  /** 结束时间 */
+  end_date_time?: string | null;
+  /** 是否启用工作日历 */
+  enable_work_calendar: boolean;
+  /** 工作日历ID */
+  work_calendar_id?: string | null;
+  /** 工作日历执行类型 */
+  work_calendar_execution_type?: WorkCalendarExecutionType | null;
+}
+
+/**
+ * UpdateTimeTriggerRequest
+ * 更新时间触发器请求
+ */
+export interface UpdateTimeTriggerRequest extends Partial<CreateTimeTriggerRequest> {}
+
+/**
+ * TimeTriggerPreviewRequest
+ * 触发时间预览请求
+ */
+export interface TimeTriggerPreviewRequest {
+  /** 触发规则类型 */
+  rule_type: TriggerRuleType;
+  /** Cron表达式 */
+  cron_expression?: string | null;
+  /** 基本频率类型 */
+  basic_frequency_type?: BasicFrequencyType | null;
+  /** 基本频率值 */
+  basic_frequency_value?: number | null;
+  /** 时区 */
+  time_zone: string;
+  /** 开始时间 */
+  start_date_time: string;
+  /** 结束时间 */
+  end_date_time?: string | null;
+  /** 是否启用工作日历 */
+  enable_work_calendar: boolean;
+  /** 工作日历ID */
+  work_calendar_id?: string | null;
+  /** 工作日历执行类型 */
+  work_calendar_execution_type?: WorkCalendarExecutionType | null;
+}
+
+/**
+ * TimeTriggerPreviewResponse
+ * 触发时间预览响应
+ */
+export interface TimeTriggerPreviewResponse {
+  /** 预览的触发时间列表 */
+  trigger_times: string[];
+}
+
+/**
+ * LYTriggerExecutionLogResponse
+ * 触发执行记录响应
+ */
+export interface LYTriggerExecutionLogResponse {
+  /** 记录ID */
+  log_id: string;
+  /** 触发器ID */
+  trigger_id: string;
+  /** 触发时间 */
+  trigger_time: string;
+  /** 执行状态 */
+  status: 'SUCCESS' | 'FAILED' | 'SKIPPED';
+  /** 创建的任务数 */
+  created_task_count: number;
+  /** 错误信息 */
+  error_message?: string | null;
+  /** 创建时间 */
+  created_at: string;
+}
+
+/** LYListResponse[LYTriggerExecutionLogResponse] */
+export interface LYListResponseLYTriggerExecutionLogResponse {
+  /** 范围 */
+  range?: LYRangeResponse | null;
+  /** 列表 */
+  list: LYTriggerExecutionLogResponse[];
+}
+
+/**
+ * LYWorkCalendarResponse
+ * 工作日历响应
+ */
+export interface LYWorkCalendarResponse {
+  /** 日历ID */
+  calendar_id: string;
+  /** 日历名称 */
+  name: string;
+  /** 描述 */
+  description?: string | null;
+}

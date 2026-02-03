@@ -1,0 +1,128 @@
+// TimeTriggerDetailDrawer 时间触发器详情抽屉样式
+.time-trigger-detail-drawer {
+  // 标题区域
+  .time-trigger-detail-drawer-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-right: 0;
+
+    .time-trigger-detail-drawer-header-title {
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .time-trigger-detail-drawer-header-divider {
+      height: 16px;
+      margin: 0 8px 0 4px;
+    }
+
+    .time-trigger-detail-drawer-header-close-btn {
+      margin-left: 4px;
+    }
+  }
+
+  // 拖拽把手
+  .time-trigger-detail-drawer-resize-handle {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    cursor: ew-resize;
+    z-index: 100;
+  }
+
+  // Tab 容器
+  .time-trigger-detail-drawer-tabs {
+    height: 100%;
+  }
+
+  // Tab 内容
+  .time-trigger-detail-drawer-tab-content {
+    padding: 16px 24px;
+  }
+
+  // 内容区块
+  .time-trigger-detail-drawer-section {
+    margin-bottom: 24px;
+
+    .time-trigger-detail-drawer-section-title {
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--semi-color-text-0);
+      margin-bottom: 12px;
+    }
+  }
+
+  // 参数列表
+  .time-trigger-detail-drawer-params {
+    background: var(--semi-color-fill-0);
+    border-radius: 8px;
+    padding: 12px 16px;
+
+    .time-trigger-detail-drawer-param-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--semi-color-border);
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .param-name {
+        color: var(--semi-color-text-1);
+        font-weight: 500;
+      }
+
+      .param-value {
+        color: var(--semi-color-text-0);
+      }
+    }
+  }
+
+  // 空状态
+  .time-trigger-detail-drawer-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+    color: var(--semi-color-text-2);
+
+    .time-trigger-detail-drawer-empty-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+  }
+}
+
+// 全局覆盖 - SideSheet header 和 body 样式
+.card-sidesheet.time-trigger-detail-drawer {
+  .semi-sidesheet-header {
+    border-bottom: 1px solid var(--semi-color-border);
+  }
+
+  .semi-sidesheet-body {
+    padding: 0;
+    position: relative;
+  }
+
+  .semi-tabs-bar {
+    padding: 0 24px;
+  }
+
+  // Descriptions 标签左对齐
+  .semi-descriptions {
+    .semi-descriptions-item-key {
+      text-align: left;
+    }
+  }
+}
