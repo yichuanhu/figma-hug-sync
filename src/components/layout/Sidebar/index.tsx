@@ -197,7 +197,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     { key: 'devQueue', labelKey: 'sidebar.queue', icon: <ListStart size={20} strokeWidth={2} />, path: '/dev-center/business-assets/queues' },
     { key: 'devCredentials', labelKey: 'sidebar.credentials', icon: <MonitorCheck size={20} strokeWidth={2} />, path: '/dev-center/business-assets/credentials' },
     { key: 'devParameters', labelKey: 'sidebar.parameters', icon: <Parentheses size={20} strokeWidth={2} />, path: '/dev-center/business-assets/parameters' },
-    { key: 'files', labelKey: 'sidebar.files', icon: <FolderCheck size={20} strokeWidth={2} /> },
+    { key: 'files', labelKey: 'sidebar.files', icon: <FolderCheck size={20} strokeWidth={2} />, path: '/dev-center/business-assets/files' },
     // 发布管理 - 分组标题
     { key: 'publishManagement', labelKey: 'sidebar.publishManagement', isGroupLabel: true },
     { key: 'processPublish', labelKey: 'sidebar.processPublish', icon: <Forward size={20} strokeWidth={2} />, path: '/dev-center/release-management' },
@@ -226,7 +226,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     { key: 'schedulingQueue', labelKey: 'sidebar.queue', icon: <ListStart size={20} strokeWidth={2} />, path: '/scheduling-center/business-assets/queues' },
     { key: 'schedulingCredentials', labelKey: 'sidebar.credentials', icon: <MonitorCheck size={20} strokeWidth={2} />, path: '/scheduling-center/business-assets/credentials' },
     { key: 'schedulingParameters', labelKey: 'sidebar.parameters', icon: <Parentheses size={20} strokeWidth={2} />, path: '/scheduling-center/business-assets/parameters' },
-    { key: 'schedulingFiles', labelKey: 'sidebar.files', icon: <FolderCheck size={20} strokeWidth={2} /> },
+    { key: 'schedulingFiles', labelKey: 'sidebar.files', icon: <FolderCheck size={20} strokeWidth={2} />, path: '/scheduling-center/business-assets/files' },
     // 4. 任务执行 - 分组标题
     { key: 'taskExecution', labelKey: 'sidebar.taskExecution', isGroupLabel: true },
     { key: 'autoExecutionPolicy', labelKey: 'sidebar.autoExecutionPolicy', icon: <CalendarClock size={20} strokeWidth={2} /> },
@@ -293,6 +293,9 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     if (pathname === '/dev-center/business-assets/parameters') {
       return 'devParameters';
     }
+    if (pathname === '/dev-center/business-assets/files') {
+      return 'files';
+    }
     if (pathname === '/scheduling-center/business-assets/queues') {
       return 'schedulingQueue';
     }
@@ -301,6 +304,9 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     }
     if (pathname === '/scheduling-center/business-assets/parameters') {
       return 'schedulingParameters';
+    }
+    if (pathname === '/scheduling-center/business-assets/files') {
+      return 'schedulingFiles';
     }
     if (pathname === '/scheduling-center/execution-assets/automation-process') {
       return 'schedulingAutomationProcess';
