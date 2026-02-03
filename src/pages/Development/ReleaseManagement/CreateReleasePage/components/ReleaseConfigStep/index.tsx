@@ -254,7 +254,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
               value={description}
               onChange={(value) => onDescriptionChange(value)}
               placeholder={t('release.create.descriptionPlaceholder')}
-              maxCount={500}
+              maxCount={2000}
               showClear
               autosize={{ minRows: 3, maxRows: 6 }}
               style={{ width: '100%' }}
