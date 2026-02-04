@@ -520,7 +520,7 @@ const TimeTriggerList = () => {
               value={queryParams.status}
               onChange={(v) => handleStatusFilter(v as TriggerStatus | undefined)}
               showClear
-              style={{ width: 80 }}
+              style={{ width: 100 }}
               optionList={[
                 { value: 'ENABLED', label: t('timeTrigger.status.enabled') },
                 { value: 'DISABLED', label: t('timeTrigger.status.disabled') },
