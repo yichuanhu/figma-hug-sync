@@ -2516,6 +2516,7 @@
       "creator": "创建者",
       "createTime": "创建时间",
       "calendarPreview": "日历预览",
+      "legendNonWorkday": "蓝色圆圈表示非工作日",
       "workday": "工作日",
       "nonWorkday": "非工作日"
     },
@@ -2527,7 +2528,8 @@
       "period": "周期",
       "periodPlaceholder": "请选择周期",
       "calendarEdit": "日历编辑",
-      "clickToToggle": "点击日期切换工作日/非工作日状态",
+      "legendNonWorkday": "蓝色圆圈表示非工作日",
+      "clickToToggle": "点击日期可切换工作日/非工作日状态",
       "cancel": "取消",
       "save": "保存",
       "saveSuccess": "日历保存成功",

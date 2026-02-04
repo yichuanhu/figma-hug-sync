@@ -86,12 +86,8 @@ const CalendarViewer: React.FC<CalendarViewerProps> = ({ calendar, onEdit }) => 
           </Text>
           <div className="calendar-viewer-legend">
             <div className="calendar-viewer-legend-item">
-              <span className="calendar-viewer-legend-dot calendar-viewer-legend-dot-workday" />
-              <Text type="tertiary" size="small">{t('workCalendar.viewer.workday')}</Text>
-            </div>
-            <div className="calendar-viewer-legend-item">
               <span className="calendar-viewer-legend-dot calendar-viewer-legend-dot-nonworkday" />
-              <Text type="tertiary" size="small">{t('workCalendar.viewer.nonWorkday')}</Text>
+              <Text type="tertiary" size="small">{t('workCalendar.viewer.legendNonWorkday')}</Text>
             </div>
           </div>
           <YearCalendarGrid
