@@ -1,7 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Typography, Button, Form, DatePicker, Toast } from '@douyinfe/semi-ui';
-import { IconUpload } from '@douyinfe/semi-icons';
 import YearCalendarGrid from '../YearCalendarGrid';
 import type { LYWorkCalendarResponse, LYSpecialDate } from '@/api/index';
 import './index.less';
@@ -96,10 +95,6 @@ const CalendarEditor: React.FC<CalendarEditorProps> = ({
     }
   }, [name, dateRange, specialDates, onSave, t]);
 
-  // Handle import (placeholder)
-  const handleImport = useCallback(() => {
-    Toast.info('导入功能开发中...');
-  }, []);
 
   const startDate = useMemo(() => formatDate(dateRange[0]), [dateRange]);
   const endDate = useMemo(() => formatDate(dateRange[1]), [dateRange]);
@@ -111,12 +106,6 @@ const CalendarEditor: React.FC<CalendarEditorProps> = ({
         <Title heading={5} className="calendar-editor-header-title">
           {t('workCalendar.editor.title')}
         </Title>
-        <Button
-          icon={<IconUpload />}
-          onClick={handleImport}
-        >
-          {t('workCalendar.editor.importCalendar')}
-        </Button>
       </div>
 
       {/* 内容区 */}
