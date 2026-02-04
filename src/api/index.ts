@@ -36,6 +36,7 @@ export interface LYApprovalRequest {
   comment?: string | null;
 }
 
+
 /**
  * LYCreateProcessRequest
  * 创建流程请求
@@ -2678,7 +2679,7 @@ export interface LYDependentProcessVersion {
  */
 export interface LYFileResponse {
   /** 文件ID */
-  id: string;
+  file_id: string;
   /** 用户填写的文件名称 */
   display_name: string;
   /** 源文件名 */
@@ -2695,6 +2696,10 @@ export interface LYFileResponse {
   description?: string | null;
   /** 变更原因 */
   change_reason?: string | null;
+  /** 归属部门 */
+  department?: string | null;
+  /** 是否旧版文件 */
+  legacy_mode: boolean;
   /** 创建者ID */
   created_by: string;
   /** 创建者名称 */
