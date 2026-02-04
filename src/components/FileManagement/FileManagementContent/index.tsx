@@ -375,7 +375,8 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
         return <Tag color={config.color}>{t(config.i18nKey)}</Tag>;
       },
     },
-    {
+    // 发布状态列 - 仅开发中心显示
+    ...(context === 'development' ? [{
       title: t('file.detail.publishStatus'),
       dataIndex: 'is_published',
       key: 'is_published',
@@ -385,7 +386,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
           {isPublished ? t('file.detail.published') : t('file.detail.unpublished')}
         </Tag>
       ),
-    },
+    }] : []),
     {
       title: t('common.description'),
       dataIndex: 'description',

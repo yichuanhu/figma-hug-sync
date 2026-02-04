@@ -268,11 +268,14 @@ const FileDetailDrawer = ({
               {t(sourceConfig[file.source].i18nKey)}
             </Tag>
           </Descriptions.Item>
-          <Descriptions.Item itemKey={t('file.detail.publishStatus')}>
-            <Tag color={file.is_published ? 'green' : 'grey'}>
-              {file.is_published ? t('file.detail.published') : t('file.detail.unpublished')}
-            </Tag>
-          </Descriptions.Item>
+          {/* 发布状态 - 仅开发中心显示 */}
+          {context === 'development' && (
+            <Descriptions.Item itemKey={t('file.detail.publishStatus')}>
+              <Tag color={file.is_published ? 'green' : 'grey'}>
+                {file.is_published ? t('file.detail.published') : t('file.detail.unpublished')}
+              </Tag>
+            </Descriptions.Item>
+          )}
           <Descriptions.Item itemKey={t('common.description')}>
             {file.description || '-'}
           </Descriptions.Item>

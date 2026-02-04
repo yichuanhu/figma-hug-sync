@@ -387,34 +387,42 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
       title: t('common.actions'),
       key: 'actions',
       width: 80,
-      render: (_: unknown, record: LYQueueResponse) => (
-        <Dropdown
-          trigger="click"
-          position="bottomRight"
-          clickToHide
-          render={
-            <Dropdown.Menu>
-              <Dropdown.Item icon={<IconEyeOpenedStroked />} onClick={(e) => { e.stopPropagation(); handleViewMessages(record); }}>
-                {t('queue.actions.viewMessages')}
-              </Dropdown.Item>
-              <Dropdown.Item icon={<IconEditStroked />} onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>
-                {t('common.edit')}
-              </Dropdown.Item>
-              {context === 'development' && !record.is_published && (
-                <Dropdown.Item 
-                  icon={<IconDeleteStroked />}
-                  type="danger" 
-                  onClick={(e) => { e.stopPropagation(); handleDelete(record); }}
-                >
-                  {t('common.delete')}
+      render: (_: unknown, record: LYQueueResponse) => {
+        // 已发布的队列不允许编辑和删除
+        const canEdit = !record.is_published;
+        const canDelete = context === 'development' && !record.is_published;
+
+        return (
+          <Dropdown
+            trigger="click"
+            position="bottomRight"
+            clickToHide
+            render={
+              <Dropdown.Menu>
+                <Dropdown.Item icon={<IconEyeOpenedStroked />} onClick={(e) => { e.stopPropagation(); handleViewMessages(record); }}>
+                  {t('queue.actions.viewMessages')}
                 </Dropdown.Item>
-              )}
-            </Dropdown.Menu>
-          }
-        >
-          <Button icon={<IconMore />} theme="borderless" type="tertiary" onClick={(e) => e.stopPropagation()} />
-        </Dropdown>
-      ),
+                {canEdit && (
+                  <Dropdown.Item icon={<IconEditStroked />} onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>
+                    {t('common.edit')}
+                  </Dropdown.Item>
+                )}
+                {canDelete && (
+                  <Dropdown.Item 
+                    icon={<IconDeleteStroked />}
+                    type="danger" 
+                    onClick={(e) => { e.stopPropagation(); handleDelete(record); }}
+                  >
+                    {t('common.delete')}
+                  </Dropdown.Item>
+                )}
+              </Dropdown.Menu>
+            }
+          >
+            <Button icon={<IconMore />} theme="borderless" type="tertiary" onClick={(e) => e.stopPropagation()} />
+          </Dropdown>
+        );
+      },
     },
   ];
 

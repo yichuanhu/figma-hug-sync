@@ -205,14 +205,18 @@ const QueueDetailDrawer = ({
               onClick={handleViewMessages}
             />
           </Tooltip>
-          <Tooltip content={t('common.edit')}>
-            <Button
-              icon={<IconEditStroked />}
-              theme="borderless"
-              size="small"
-              onClick={() => queue && onEdit(queue)}
-            />
-          </Tooltip>
+          {/* 已发布的队列不允许编辑 */}
+          {!queue?.is_published && (
+            <Tooltip content={t('common.edit')}>
+              <Button
+                icon={<IconEditStroked />}
+                theme="borderless"
+                size="small"
+                onClick={() => queue && onEdit(queue)}
+              />
+            </Tooltip>
+          )}
+          {/* 已发布的队列不允许删除 - 仅开发中心未发布时显示 */}
           {onDelete && context === 'development' && !queue?.is_published && (
             <Tooltip content={t('common.delete')}>
               <Button
@@ -272,6 +276,7 @@ const QueueDetailDrawer = ({
           <Descriptions.Item itemKey={t('queue.fields.name')}>
             {queue?.queue_name || '-'}
           </Descriptions.Item>
+          {/* 发布状态 - 仅开发中心显示 */}
           {context === 'development' && (
             <Descriptions.Item itemKey={t('queue.detail.isPublished')}>
               {queue?.is_published ? (

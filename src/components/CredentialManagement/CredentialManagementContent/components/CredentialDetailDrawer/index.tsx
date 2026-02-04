@@ -455,14 +455,15 @@ const CredentialDetailDrawer = ({
           : t('credential.detail.productionValue'),
         value: <Text>{getCredentialValueDisplay}</Text>,
       },
-      {
+      // 发布状态 - 仅开发中心显示
+      ...(context === 'development' ? [{
         key: t('credential.detail.publishStatus'),
         value: (
           <Tag color={credential.is_published ? 'green' : 'grey'}>
             {credential.is_published ? t('credential.detail.published') : t('credential.detail.unpublished')}
           </Tag>
         ),
-      },
+      }] : []),
       { key: t('common.description'), value: <ExpandableText text={credential.description} maxLines={3} /> },
       ...(credential.credential_type === 'PERSONAL_REF' ? [
         { key: t('credential.detail.linkedPersonalCredential'), value: credential.linked_personal_credential_value || '-' },
@@ -590,10 +591,14 @@ const CredentialDetailDrawer = ({
                 <Button icon={<IconChevronRight />} theme="borderless" size="small" disabled={!canGoNext || isNavigating} onClick={handleNext} loading={isNavigating} />
               </Tooltip>
               <Divider layout="vertical" className="credential-detail-drawer-header-divider" />
-              <Tooltip content={t('common.edit')}>
-                <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={handleEdit} />
-              </Tooltip>
+              {/* 已发布的凭据不允许编辑 */}
               {!credential.is_published && (
+                <Tooltip content={t('common.edit')}>
+                  <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={handleEdit} />
+                </Tooltip>
+              )}
+              {/* 已发布的凭据不允许删除 */}
+              {context === 'development' && !credential.is_published && (
                 <Tooltip content={t('common.delete')}>
                   <Button icon={<IconDeleteStroked className="credential-detail-drawer-header-delete-icon" />} theme="borderless" size="small" onClick={handleDelete} />
                 </Tooltip>

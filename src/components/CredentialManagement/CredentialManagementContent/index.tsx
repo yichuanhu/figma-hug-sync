@@ -401,7 +401,8 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
         return <Tag color={config.color}>{t(config.i18nKey)}</Tag>;
       },
     },
-    {
+    // 发布状态列 - 仅开发中心显示
+    ...(context === 'development' ? [{
       title: t('credential.detail.publishStatus'),
       dataIndex: 'is_published',
       key: 'is_published',
@@ -411,7 +412,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
           {isPublished ? t('credential.detail.published') : t('credential.detail.unpublished')}
         </Tag>
       ),
-    },
+    }] : []),
     {
       title: t('common.description'),
       dataIndex: 'description',
@@ -427,41 +428,49 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
       title: t('common.actions'),
       key: 'actions',
       width: 80,
-      render: (_: unknown, record: LYCredentialResponse) => (
-        <Dropdown
-          trigger="click"
-          position="bottomRight"
-          clickToHide
-          render={
-            <Dropdown.Menu>
-              <Dropdown.Item icon={<IconEditStroked />} onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>
-                {t('common.edit')}
-              </Dropdown.Item>
-              {record.credential_type === 'PERSONAL_REF' && (
-                hasLinkedPersonalCredential(record) ? (
-                  <Dropdown.Item icon={<IconUnlink />} onClick={(e) => { e.stopPropagation(); handleUnlinkPersonal(record); }}>
-                    {t('personalCredential.actions.unlinkCredential')}
+      render: (_: unknown, record: LYCredentialResponse) => {
+        // 已发布的凭据不允许编辑和删除
+        const canEdit = !record.is_published;
+        const canDelete = context === 'development' && !record.is_published;
+
+        return (
+          <Dropdown
+            trigger="click"
+            position="bottomRight"
+            clickToHide
+            render={
+              <Dropdown.Menu>
+                {canEdit && (
+                  <Dropdown.Item icon={<IconEditStroked />} onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>
+                    {t('common.edit')}
                   </Dropdown.Item>
-                ) : (
-                  <Dropdown.Item icon={<IconLink />} onClick={(e) => { e.stopPropagation(); handleLinkPersonal(record); }}>
-                    {t('credential.actions.linkPersonal')}
-                  </Dropdown.Item>
-                )
-              )}
-              <Dropdown.Item icon={<IconHistory />} onClick={(e) => { e.stopPropagation(); handleViewUsage(record); }}>
-                {t('credential.actions.viewUsage')}
-              </Dropdown.Item>
-              {context === 'development' && !record.is_published && (
-                <Dropdown.Item icon={<IconDeleteStroked />} type="danger" onClick={(e) => { e.stopPropagation(); handleDelete(record); }}>
-                  {t('common.delete')}
+                )}
+                {record.credential_type === 'PERSONAL_REF' && (
+                  hasLinkedPersonalCredential(record) ? (
+                    <Dropdown.Item icon={<IconUnlink />} onClick={(e) => { e.stopPropagation(); handleUnlinkPersonal(record); }}>
+                      {t('personalCredential.actions.unlinkCredential')}
+                    </Dropdown.Item>
+                  ) : (
+                    <Dropdown.Item icon={<IconLink />} onClick={(e) => { e.stopPropagation(); handleLinkPersonal(record); }}>
+                      {t('credential.actions.linkPersonal')}
+                    </Dropdown.Item>
+                  )
+                )}
+                <Dropdown.Item icon={<IconHistory />} onClick={(e) => { e.stopPropagation(); handleViewUsage(record); }}>
+                  {t('credential.actions.viewUsage')}
                 </Dropdown.Item>
-              )}
-            </Dropdown.Menu>
-          }
-        >
-          <Button icon={<IconMore />} theme="borderless" type="tertiary" onClick={(e) => e.stopPropagation()} />
-        </Dropdown>
-      ),
+                {canDelete && (
+                  <Dropdown.Item icon={<IconDeleteStroked />} type="danger" onClick={(e) => { e.stopPropagation(); handleDelete(record); }}>
+                    {t('common.delete')}
+                  </Dropdown.Item>
+                )}
+              </Dropdown.Menu>
+            }
+          >
+            <Button icon={<IconMore />} theme="borderless" type="tertiary" onClick={(e) => e.stopPropagation()} />
+          </Dropdown>
+        );
+      },
     },
   ];
 
