@@ -18,6 +18,7 @@ import {
 } from '@douyinfe/semi-ui';
 import { IconHelpCircle, IconInbox } from '@douyinfe/semi-icons';
 import TriggerRuleConfig from '@/components/TriggerRuleConfig';
+import BotTargetSelector from '@/components/BotTargetSelector';
 import type {
   LYTimeTriggerResponse,
   LYProcessActiveVersionResponse,
@@ -556,12 +557,11 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
         {targetType && (
           <div className="edit-time-trigger-modal-field">
             <Text className="edit-time-trigger-modal-field-label">{t('timeTrigger.createModal.selectTarget')} *</Text>
-            <Select
-              placeholder={t('timeTrigger.fields.targetPlaceholder')}
+            <BotTargetSelector
+              targetType={targetType}
               value={selectedTargetId}
-              onChange={(v) => setSelectedTargetId(v as string)}
-              optionList={targetOptions}
-              className="edit-time-trigger-modal-select-full"
+              onChange={(v) => setSelectedTargetId(v)}
+              placeholder={t('timeTrigger.fields.targetPlaceholder')}
             />
           </div>
         )}

@@ -10,6 +10,7 @@ import {
   Tag,
 } from '@douyinfe/semi-ui';
 import { IconHelpCircle } from '@douyinfe/semi-icons';
+import BotTargetSelector from '@/components/BotTargetSelector';
 import type {
   LYProcessActiveVersionResponse,
   LYProcessParameterDefinition,
@@ -401,16 +402,23 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
                   <Form.Radio value="UNGROUPED_BOT">{t('template.targetType.ungroupedBot')}</Form.Radio>
                 </Form.RadioGroup>
                 {targetType && (
-                  <Form.Select
-                    field="targetId"
-                    label={t('template.createModal.selectTarget')}
-                    placeholder={t('template.fields.targetPlaceholder')}
-                    optionList={targetOptions}
-                    className="create-template-modal-select-full"
-                    rules={[
-                      { required: true, message: t('template.validation.targetRequired') },
-                    ]}
-                  />
+                  <div className="create-template-modal-field">
+                    <div className="semi-form-field-label-text">{t('template.createModal.selectTarget')}</div>
+                    <BotTargetSelector
+                      targetType={targetType}
+                      value={formApi?.getValue('targetId')}
+                      onChange={(v) => formApi?.setValue('targetId', v)}
+                      placeholder={t('template.fields.targetPlaceholder')}
+                    />
+                    <Form.Input
+                      field="targetId"
+                      noLabel
+                      style={{ display: 'none' }}
+                      rules={[
+                        { required: true, message: t('template.validation.targetRequired') },
+                      ]}
+                    />
+                  </div>
                 )}
               </div>
 

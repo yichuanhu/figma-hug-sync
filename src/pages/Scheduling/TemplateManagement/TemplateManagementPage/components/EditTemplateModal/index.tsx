@@ -10,6 +10,7 @@ import {
   Tag,
 } from '@douyinfe/semi-ui';
 import { IconHelpCircle } from '@douyinfe/semi-icons';
+import BotTargetSelector from '@/components/BotTargetSelector';
 import type {
   LYExecutionTemplateResponse,
   LYProcessActiveVersionResponse,
@@ -414,16 +415,23 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
                   }}
                 />
                 {targetType && (
-                  <Form.Select
-                    field="targetId"
-                    label={t('template.fields.target')}
-                    placeholder={t('template.fields.targetPlaceholder')}
-                    optionList={targetOptions}
-                    style={{ width: '100%' }}
-                    rules={[
-                      { required: true, message: t('template.validation.targetRequired') },
-                    ]}
-                  />
+                  <div className="edit-template-modal-field">
+                    <div className="semi-form-field-label-text">{t('template.fields.target')}</div>
+                    <BotTargetSelector
+                      targetType={targetType}
+                      value={formApi?.getValue('targetId')}
+                      onChange={(v) => formApi?.setValue('targetId', v)}
+                      placeholder={t('template.fields.targetPlaceholder')}
+                    />
+                    <Form.Input
+                      field="targetId"
+                      noLabel
+                      style={{ display: 'none' }}
+                      rules={[
+                        { required: true, message: t('template.validation.targetRequired') },
+                      ]}
+                    />
+                  </div>
                 )}
               </div>
 

@@ -1,6 +1,12 @@
 // BotTargetSelector 机器人选择器组件样式
 .bot-target-selector {
   width: 100%;
+  margin-top: 0;
+
+  // 确保下拉菜单没有额外外边距
+  .semi-select {
+    margin: 0;
+  }
 
   &-option {
     display: flex;
@@ -8,6 +14,7 @@
     justify-content: space-between;
     width: 100%;
     gap: 8px;
+    padding: 0;
 
     &-name {
       flex: 1;
@@ -41,12 +48,20 @@
   }
 }
 
-// 分组标题样式
+// 分组标题样式 - 用于 BOT_IN_GROUP 场景
 .semi-select-option-group-title {
   font-weight: 600;
   color: var(--semi-color-text-0);
   padding: 8px 12px 4px;
   font-size: 12px;
-  text-transform: uppercase;
   letter-spacing: 0.5px;
+}
+
+// 覆盖 Form.Slot 内的样式
+.semi-form-field .bot-target-selector {
+  margin-top: 0;
+  
+  .semi-select-selection {
+    margin: 0;
+  }
 }
