@@ -1,0 +1,88 @@
+// WorkCalendarManagement 工作日历管理页面样式
+.work-calendar-management {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0 24px;
+  overflow: hidden;
+
+  // 面包屑
+  &-breadcrumb {
+    padding: 16px 0;
+    flex-shrink: 0;
+  }
+
+  // 头部区域
+  &-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+    flex-shrink: 0;
+
+    &-back {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--semi-color-text-2);
+      cursor: pointer;
+      font-size: 14px;
+      transition: color 0.2s;
+
+      &:hover {
+        color: var(--semi-color-primary);
+      }
+    }
+
+    &-title {
+      margin: 0 !important;
+    }
+  }
+
+  // 主体内容
+  &-content {
+    flex: 1;
+    display: flex;
+    gap: 16px;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  // 右侧主区域
+  &-main {
+    flex: 1;
+    min-width: 0;
+    background: var(--semi-color-bg-0);
+    border-radius: 8px;
+    border: 1px solid var(--semi-color-border);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  // 空状态
+  &-empty {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: var(--semi-color-text-2);
+
+    &-icon {
+      font-size: 48px;
+      opacity: 0.5;
+    }
+
+    &-title {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--semi-color-text-1);
+    }
+
+    &-description {
+      font-size: 14px;
+    }
+  }
+}

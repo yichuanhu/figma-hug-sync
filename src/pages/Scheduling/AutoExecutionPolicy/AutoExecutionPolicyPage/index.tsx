@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Breadcrumb, Typography, Tabs, TabPane } from '@douyinfe/semi-ui';
+import { useNavigate } from 'react-router-dom';
+import { Breadcrumb, Typography, Tabs, TabPane, Button } from '@douyinfe/semi-ui';
+import { IconCalendar } from '@douyinfe/semi-icons';
 import AppLayout from '@/components/layout/AppLayout';
 import TimeTriggerList from './components/TimeTriggerList';
 import QueueTriggerPlaceholder from './components/QueueTriggerPlaceholder';
@@ -10,7 +12,12 @@ const { Title } = Typography;
 
 const AutoExecutionPolicyPage = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('timeTrigger');
+
+  const handleWorkCalendarClick = () => {
+    navigate('/scheduling-center/task-execution/work-calendar');
+  };
 
   return (
     <AppLayout>
@@ -29,6 +36,12 @@ const AutoExecutionPolicyPage = () => {
               {t('autoExecutionPolicy.pageTitle')}
             </Title>
           </div>
+          <Button
+            icon={<IconCalendar />}
+            onClick={handleWorkCalendarClick}
+          >
+            {t('workCalendar.entryButton')}
+          </Button>
         </div>
 
         {/* Tab切换 */}

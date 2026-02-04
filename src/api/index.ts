@@ -3018,14 +3018,91 @@ export interface LYListResponseLYTriggerExecutionLogResponse {
 }
 
 /**
+ * WorkCalendarTemplate
+ * 工作日历模板类型
+ */
+export type WorkCalendarTemplate = 'WEEKEND_DOUBLE' | 'WEEKEND_SINGLE' | 'BLANK';
+
+/**
+ * LYSpecialDate
+ * 特殊日期定义
+ */
+export interface LYSpecialDate {
+  /** 日期 YYYY-MM-DD */
+  date: string;
+  /** 类型: HOLIDAY=非工作日, WORKDAY=工作日（调休） */
+  type: 'HOLIDAY' | 'WORKDAY';
+  /** 备注名称 */
+  name?: string | null;
+}
+
+/**
  * LYWorkCalendarResponse
  * 工作日历响应
  */
 export interface LYWorkCalendarResponse {
   /** 日历ID */
-  calendar_id: string;
+  id: string;
   /** 日历名称 */
   name: string;
-  /** 描述 */
-  description?: string | null;
+  /** 模板类型 */
+  template: WorkCalendarTemplate;
+  /** 周期开始日期 YYYY-MM-DD */
+  start_date: string;
+  /** 周期结束日期 YYYY-MM-DD */
+  end_date: string;
+  /** 周末非工作日 0-6 (0=周日, 6=周六) */
+  weekend_days: number[];
+  /** 特殊日期列表 */
+  special_dates: LYSpecialDate[];
+  /** 被触发器引用的数量 */
+  reference_count: number;
+  /** 创建者ID */
+  creator_id: string;
+  /** 创建者名称 */
+  creator_name?: string | null;
+  /** 创建时间 */
+  created_at: string;
+  /** 更新时间 */
+  updated_at: string;
+}
+
+/** LYListResponse[LYWorkCalendarResponse] */
+export interface LYListResponseLYWorkCalendarResponse {
+  /** 范围 */
+  range?: LYRangeResponse | null;
+  /** 列表 */
+  list: LYWorkCalendarResponse[];
+}
+
+/**
+ * CreateWorkCalendarRequest
+ * 创建工作日历请求
+ */
+export interface CreateWorkCalendarRequest {
+  /** 日历名称 */
+  name: string;
+  /** 模板类型 */
+  template: WorkCalendarTemplate;
+  /** 周期开始日期 YYYY-MM-DD */
+  start_date: string;
+  /** 周期结束日期 YYYY-MM-DD */
+  end_date: string;
+}
+
+/**
+ * UpdateWorkCalendarRequest
+ * 更新工作日历请求
+ */
+export interface UpdateWorkCalendarRequest {
+  /** 日历名称 */
+  name?: string;
+  /** 周期开始日期 YYYY-MM-DD */
+  start_date?: string;
+  /** 周期结束日期 YYYY-MM-DD */
+  end_date?: string;
+  /** 周末非工作日 0-6 (0=周日, 6=周六) */
+  weekend_days?: number[];
+  /** 特殊日期列表 */
+  special_dates?: LYSpecialDate[];
 }

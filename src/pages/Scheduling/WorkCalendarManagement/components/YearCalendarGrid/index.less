@@ -1,0 +1,107 @@
+// YearCalendarGrid 年度日历网格样式
+.year-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  
+  @media (max-width: 1400px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  @media (max-width: 1000px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+// 单个月份
+.year-calendar-month {
+  background: var(--semi-color-bg-1);
+  border-radius: 8px;
+  padding: 12px;
+  
+  &-title {
+    display: block;
+    text-align: center;
+    margin-bottom: 8px;
+    font-size: 13px;
+  }
+  
+  &-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    margin-bottom: 4px;
+  }
+  
+  &-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+  }
+}
+
+// 星期标题
+.year-calendar-weekday {
+  text-align: center;
+  font-size: 11px;
+  color: var(--semi-color-text-2);
+  padding: 4px 0;
+  
+  &-weekend {
+    color: var(--semi-color-danger);
+  }
+}
+
+// 日期单元格
+.year-calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  border-radius: 50%;
+  position: relative;
+  
+  &-number {
+    position: relative;
+    z-index: 1;
+  }
+  
+  // 空白单元格
+  &-empty {
+    background: transparent;
+  }
+  
+  // 周期外的日期
+  &-outside {
+    color: var(--semi-color-text-3);
+    opacity: 0.5;
+  }
+  
+  // 非工作日 - 显示圆圈
+  &-nonworkday {
+    .year-calendar-day-number {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border: 1.5px solid var(--semi-color-danger);
+      border-radius: 50%;
+      color: var(--semi-color-danger);
+    }
+  }
+  
+  // 可编辑状态
+  &-editable {
+    cursor: pointer;
+    transition: background-color 0.2s;
+    
+    &:hover {
+      background: var(--semi-color-fill-1);
+    }
+    
+    &:active {
+      background: var(--semi-color-fill-2);
+    }
+  }
+}

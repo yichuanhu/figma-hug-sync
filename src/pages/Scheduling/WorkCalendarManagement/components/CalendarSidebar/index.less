@@ -1,0 +1,96 @@
+// CalendarSidebar 日历侧边栏样式
+.calendar-sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--semi-color-bg-0);
+  border-radius: 8px;
+  border: 1px solid var(--semi-color-border);
+  overflow: hidden;
+
+  // 头部新建按钮
+  &-header {
+    padding: 16px;
+    border-bottom: 1px solid var(--semi-color-border);
+  }
+
+  // 日历列表
+  &-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+  }
+
+  // 日历项
+  &-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background: var(--semi-color-fill-0);
+
+      .calendar-sidebar-item-more {
+        opacity: 1;
+      }
+    }
+
+    &-selected {
+      background: var(--semi-color-primary-light-default);
+
+      &:hover {
+        background: var(--semi-color-primary-light-hover);
+      }
+
+      .calendar-sidebar-item-name {
+        color: var(--semi-color-primary);
+        font-weight: 500;
+      }
+    }
+
+    &-content {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    &-name {
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    &-period {
+      font-size: 12px;
+    }
+
+    &-more {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      opacity: 0;
+      transition: opacity 0.2s, background-color 0.2s;
+      color: var(--semi-color-text-2);
+
+      &:hover {
+        background: var(--semi-color-fill-1);
+        color: var(--semi-color-text-0);
+      }
+    }
+  }
+
+  // 空状态
+  &-empty {
+    padding: 24px 16px;
+    text-align: center;
+  }
+}

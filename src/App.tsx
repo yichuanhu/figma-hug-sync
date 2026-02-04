@@ -44,6 +44,8 @@ import RecordingViewPage from "@/pages/Scheduling/TaskManagement/RecordingViewPa
 import TemplateManagementPage from "@/pages/Scheduling/TemplateManagement/TemplateManagementPage";
 // Scheduling - Auto Execution Policy
 import AutoExecutionPolicyPage from "@/pages/Scheduling/AutoExecutionPolicy/AutoExecutionPolicyPage";
+// Scheduling - Work Calendar Management
+import WorkCalendarManagement from "@/pages/Scheduling/WorkCalendarManagement";
 // Personal Center
 import PersonalCenter from "@/pages/PersonalCenter";
 // Dev Preview
@@ -100,6 +102,8 @@ const App = () => (
         <Route path="/scheduling-center/task-execution/templates" element={<TemplateManagementPage />} />
         {/* 自动执行策略 - 调度中心入口 */}
         <Route path="/scheduling-center/task-execution/auto-execution-policy" element={<AutoExecutionPolicyPage />} />
+        {/* 工作日历管理 - 调度中心入口 */}
+        <Route path="/scheduling-center/task-execution/work-calendar" element={<WorkCalendarManagement />} />
         {/* 任务列表 - 调度中心入口 */}
         <Route path="/scheduling-center/task-execution/task-list" element={<TaskManagementPage />} />
         {/* 任务日志 - 调度中心入口 */}
