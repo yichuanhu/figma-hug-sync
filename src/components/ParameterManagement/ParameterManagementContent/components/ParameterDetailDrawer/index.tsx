@@ -200,21 +200,24 @@ const ParameterDetailDrawer = ({
             />
           </Tooltip>
           <Divider layout="vertical" className="parameter-detail-drawer-header-divider" />
-          <Tooltip content={t('common.edit')}>
-            <Button
-              icon={<IconEditStroked />}
-              theme="borderless"
-              size="small"
-              onClick={() => parameter && onEdit(parameter)}
-            />
-          </Tooltip>
-          {onDelete && context === 'development' && (
-            <Tooltip content={parameter?.is_published ? t('parameter.detail.cannotDeletePublished') : t('common.delete')}>
+          {/* 已发布的参数不允许编辑 */}
+          {!parameter?.is_published && (
+            <Tooltip content={t('common.edit')}>
               <Button
-                icon={<IconDeleteStroked className={parameter?.is_published ? '' : 'parameter-detail-drawer-header-delete-icon'} />}
+                icon={<IconEditStroked />}
                 theme="borderless"
                 size="small"
-                disabled={parameter?.is_published}
+                onClick={() => parameter && onEdit(parameter)}
+              />
+            </Tooltip>
+          )}
+          {/* 已发布的参数不允许删除 - 仅开发中心显示删除按钮 */}
+          {onDelete && context === 'development' && !parameter?.is_published && (
+            <Tooltip content={t('common.delete')}>
+              <Button
+                icon={<IconDeleteStroked className="parameter-detail-drawer-header-delete-icon" />}
+                theme="borderless"
+                size="small"
                 onClick={() => parameter && onDelete(parameter)}
               />
             </Tooltip>
@@ -283,13 +286,16 @@ const ParameterDetailDrawer = ({
           >
             <Text>{getParameterValueDisplay()}</Text>
           </Descriptions.Item>
-          <Descriptions.Item itemKey={t('parameter.detail.isPublished')}>
-            {parameter?.is_published ? (
-              <Tag color="green">{t('parameter.detail.published')}</Tag>
-            ) : (
-              <Tag color="grey">{t('parameter.detail.unpublished')}</Tag>
-            )}
-          </Descriptions.Item>
+          {/* 发布状态 - 仅开发中心显示 */}
+          {context === 'development' && (
+            <Descriptions.Item itemKey={t('parameter.detail.isPublished')}>
+              {parameter?.is_published ? (
+                <Tag color="green">{t('parameter.detail.published')}</Tag>
+              ) : (
+                <Tag color="grey">{t('parameter.detail.unpublished')}</Tag>
+              )}
+            </Descriptions.Item>
+          )}
           <Descriptions.Item itemKey={t('common.description')}>
             <ExpandableText text={parameter?.description} maxLines={3} />
           </Descriptions.Item>
