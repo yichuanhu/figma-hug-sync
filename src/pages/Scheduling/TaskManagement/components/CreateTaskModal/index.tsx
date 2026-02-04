@@ -435,7 +435,8 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
                   <Form.Radio value="UNGROUPED_BOT">{t('task.createModal.targetType.ungroupedBot')}</Form.Radio>
                 </Form.RadioGroup>
                 {targetType && (
-                  <Form.Slot label={t('task.createModal.selectTarget')}>
+                  <div className="create-task-modal-field">
+                    <div className="semi-form-field-label-text">{t('task.createModal.selectTarget')}</div>
                     <BotTargetSelector
                       targetType={targetType}
                       value={formApi?.getValue('targetId')}
@@ -450,7 +451,7 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
                         { required: true, message: t('task.validation.targetRequired') },
                       ]}
                     />
-                  </Form.Slot>
+                  </div>
                 )}
               </div>
 

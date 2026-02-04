@@ -303,24 +303,32 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
   const validateStep = async (step: number): Promise<boolean> => {
     if (step === 0) {
       if (formApi) {
-        const errors = await formApi.validate(['triggerName']);
-        return Object.keys(errors || {}).length === 0;
+        try {
+          await formApi.validate(['triggerName']);
+          return true;
+        } catch (errors) {
+          return false;
+        }
       }
       return false;
     }
     
     if (step === 1) {
       if (formApi) {
-        const fieldsToValidate = ['processId', 'targetType', 'targetId', 'maxDuration', 'validityDays'];
-        if (selectedProcess) {
-          selectedProcess.parameters.forEach((param) => {
-            if (param.required) {
-              fieldsToValidate.push(`param_${param.name}`);
-            }
-          });
+        try {
+          const fieldsToValidate = ['processId', 'targetType', 'targetId', 'maxDuration', 'validityDays'];
+          if (selectedProcess) {
+            selectedProcess.parameters.forEach((param) => {
+              if (param.required) {
+                fieldsToValidate.push(`param_${param.name}`);
+              }
+            });
+          }
+          await formApi.validate(fieldsToValidate);
+          return true;
+        } catch (errors) {
+          return false;
         }
-        const errors = await formApi.validate(fieldsToValidate);
-        return Object.keys(errors || {}).length === 0;
       }
       return false;
     }
@@ -477,7 +485,8 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
           <Form.Radio value="UNGROUPED_BOT">{t('timeTrigger.targetType.ungroupedBot')}</Form.Radio>
         </Form.RadioGroup>
         {targetType && (
-          <Form.Slot label={t('task.createModal.selectTarget')}>
+          <div className="create-time-trigger-modal-field">
+            <div className="create-time-trigger-modal-field-label">{t('task.createModal.selectTarget')}</div>
             <BotTargetSelector
               targetType={targetType}
               value={formApi?.getValue('targetId')}
@@ -492,7 +501,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
                 { required: true, message: t('timeTrigger.validation.targetRequired') },
               ]}
             />
-          </Form.Slot>
+          </div>
         )}
       </div>
 
