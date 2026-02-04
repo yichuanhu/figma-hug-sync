@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Modal,
@@ -6,12 +6,6 @@ import {
   Button,
   Toast,
   Typography,
-  Select,
-  Input,
-  InputNumber,
-  Switch,
-  RadioGroup,
-  Radio,
   Tooltip,
   Tag,
 } from '@douyinfe/semi-ui';
@@ -135,34 +129,10 @@ const mockTemplates: LYExecutionTemplateResponse[] = [
 const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: CreateTaskModalProps) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
-  const [isInitialized, setIsInitialized] = useState(false);
-
-  // 表单状态
-  const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(null);
-  const [selectedProcessId, setSelectedProcessId] = useState<string | null>(null);
+  const [formApi, setFormApi] = useState<any>(null);
   const [selectedProcess, setSelectedProcess] = useState<LYProcessActiveVersionResponse | null>(null);
   const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);
-  const [selectedTargetId, setSelectedTargetId] = useState<string | null>(null);
-  const [priority, setPriority] = useState<TaskPriority>('MEDIUM');
-  const [maxDuration, setMaxDuration] = useState<number>(3600);
-  const [validityDays, setValidityDays] = useState<number>(7);
-  const [enableRecording, setEnableRecording] = useState<boolean>(false);
-  const [parameterValues, setParameterValues] = useState<Record<string, unknown>>({});
-
-  // 目标类型选项
-  const targetTypeOptions = useMemo(() => [
-    { value: 'BOT_GROUP', label: t('task.createModal.targetType.botGroup') },
-    { value: 'BOT_IN_GROUP', label: t('task.createModal.targetType.botInGroup') },
-    { value: 'UNGROUPED_BOT', label: t('task.createModal.targetType.ungroupedBot') },
-  ], [t]);
-
-  // 优先级选项
-  const priorityOptions = useMemo(() => [
-    { value: 'HIGH', label: t('task.priority.high') },
-    { value: 'MEDIUM', label: t('task.priority.medium') },
-    { value: 'LOW', label: t('task.priority.low') },
-    { value: 'MANUAL_QUEUE_BREAKER', label: t('task.priority.manualQueueBreaker') },
-  ], [t]);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   // 执行目标选项
   const targetOptions = useMemo(() => {
@@ -192,93 +162,83 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
   // 重置表单
   useEffect(() => {
     if (!visible) {
-      setSelectedTemplateId(null);
-      setSelectedProcessId(null);
+      formApi?.reset();
       setSelectedProcess(null);
       setTargetType(null);
-      setSelectedTargetId(null);
-      setPriority('MEDIUM');
-      setMaxDuration(3600);
-      setValidityDays(7);
-      setEnableRecording(false);
-      setParameterValues({});
       setIsInitialized(false);
     }
-  }, [visible]);
+  }, [visible, formApi]);
 
   // 初始化时根据 initialTemplate 预填表单
   useEffect(() => {
-    if (visible && initialTemplate && !isInitialized) {
-      setSelectedTemplateId(initialTemplate.template_id);
+    if (visible && initialTemplate && formApi && !isInitialized) {
       // 选择流程
       const process = mockProcesses.find((p) => p.process_id === initialTemplate.process_id);
       if (process) {
-        setSelectedProcessId(process.process_id);
         setSelectedProcess(process);
       }
-      // 设置其他字段
       setTargetType(initialTemplate.execution_target_type);
-      setSelectedTargetId(initialTemplate.execution_target_id);
-      setPriority(initialTemplate.priority);
-      setMaxDuration(initialTemplate.max_execution_duration);
-      setValidityDays(initialTemplate.validity_days);
-      setEnableRecording(initialTemplate.enable_recording);
-      if (initialTemplate.input_parameters) {
-        setParameterValues(initialTemplate.input_parameters);
-      }
+      
+      // 设置表单值
+      formApi.setValues({
+        templateId: initialTemplate.template_id,
+        processId: initialTemplate.process_id,
+        targetType: initialTemplate.execution_target_type,
+        targetId: initialTemplate.execution_target_id,
+        priority: initialTemplate.priority,
+        maxDuration: initialTemplate.max_execution_duration,
+        validityDays: initialTemplate.validity_days,
+        enableRecording: initialTemplate.enable_recording,
+        ...Object.fromEntries(
+          Object.entries(initialTemplate.input_parameters || {}).map(([k, v]) => [`param_${k}`, v])
+        ),
+      });
       setIsInitialized(true);
     }
-  }, [visible, initialTemplate, isInitialized]);
+  }, [visible, initialTemplate, formApi, isInitialized]);
 
   // 选择流程
-  const handleProcessChange = (processId: string) => {
-    setSelectedProcessId(processId);
+  const handleProcessChange = useCallback((processId: string) => {
     const process = mockProcesses.find((p) => p.process_id === processId);
     setSelectedProcess(process || null);
     // 初始化参数默认值
-    if (process) {
-      const defaults: Record<string, unknown> = {};
+    if (process && formApi) {
       process.parameters.forEach((param) => {
         if (param.default_value !== undefined && param.default_value !== null) {
-          defaults[param.name] = param.default_value;
+          formApi.setValue(`param_${param.name}`, param.default_value);
         }
       });
-      setParameterValues(defaults);
     }
-  };
+  }, [formApi]);
 
   // 选择模板
-  const handleTemplateChange = (templateId: string | null) => {
-    setSelectedTemplateId(templateId);
-    if (templateId) {
+  const handleTemplateChange = useCallback((templateId: string | null) => {
+    if (templateId && formApi) {
       const template = mockTemplates.find((t) => t.template_id === templateId);
       if (template) {
         handleProcessChange(template.process_id);
         setTargetType(template.execution_target_type);
-        setSelectedTargetId(template.execution_target_id);
-        setPriority(template.priority);
-        setMaxDuration(template.max_execution_duration);
-        setValidityDays(template.validity_days);
-        setEnableRecording(template.enable_recording);
-        if (template.input_parameters) {
-          setParameterValues(template.input_parameters);
-        }
+        formApi.setValues({
+          processId: template.process_id,
+          targetType: template.execution_target_type,
+          targetId: template.execution_target_id,
+          priority: template.priority,
+          maxDuration: template.max_execution_duration,
+          validityDays: template.validity_days,
+          enableRecording: template.enable_recording,
+          ...Object.fromEntries(
+            Object.entries(template.input_parameters || {}).map(([k, v]) => [`param_${k}`, v])
+          ),
+        });
       }
     }
-  };
-
-  // 更新参数值
-  const handleParameterChange = (name: string, value: unknown) => {
-    setParameterValues((prev) => ({ ...prev, [name]: value }));
-  };
+  }, [formApi, handleProcessChange]);
 
   // 渲染参数输入
   const renderParameterInput = (param: LYProcessParameterDefinition) => {
-    const value = parameterValues[param.name];
-
     const renderLabel = () => (
       <div className="create-task-modal-param-label">
-        <span>{param.name}{param.required ? ' *' : ''}</span>
+        <span>{param.name}{param.required ? '' : ''}</span>
         <Tag size="small" color="grey" style={{ marginLeft: 8 }}>
           {param.type}
         </Tag>
@@ -290,33 +250,31 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
       </div>
     );
 
+    const rules = param.required 
+      ? [{ required: true, message: t('task.validation.parameterRequired', { name: param.name }) }]
+      : [];
+
     switch (param.type) {
       case 'TEXT':
         return (
-          <div className="create-task-modal-param-item" key={param.name}>
-            <div className="semi-form-field-label">
-              {renderLabel()}
-            </div>
-            <Input
-              placeholder={`请输入 ${param.name}`}
-              value={value as string || ''}
-              onChange={(v) => handleParameterChange(param.name, v)}
-            />
-          </div>
+          <Form.Input
+            key={param.name}
+            field={`param_${param.name}`}
+            label={renderLabel()}
+            placeholder={`请输入 ${param.name}`}
+            rules={rules}
+          />
         );
       case 'NUMBER':
         return (
-          <div className="create-task-modal-param-item" key={param.name}>
-            <div className="semi-form-field-label">
-              {renderLabel()}
-            </div>
-            <InputNumber
-              placeholder={`请输入 ${param.name}`}
-              value={value as number}
-              onChange={(v) => handleParameterChange(param.name, v)}
-              style={{ width: '100%' }}
-            />
-          </div>
+          <Form.InputNumber
+            key={param.name}
+            field={`param_${param.name}`}
+            label={renderLabel()}
+            placeholder={`请输入 ${param.name}`}
+            style={{ width: '100%' }}
+            rules={rules}
+          />
         );
       case 'BOOLEAN':
         return (
@@ -324,26 +282,23 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
             <div className="semi-form-field-label">
               {renderLabel()}
             </div>
-            <Switch
-              checked={value as boolean || false}
-              onChange={(v) => handleParameterChange(param.name, v)}
+            <Form.Switch
+              field={`param_${param.name}`}
+              noLabel
             />
           </div>
         );
       case 'CREDENTIAL':
         return (
-          <div className="create-task-modal-param-item" key={param.name}>
-            <div className="semi-form-field-label">
-              {renderLabel()}
-            </div>
-            <Select
-              placeholder={t('task.createModal.credentialPlaceholder')}
-              value={value as string}
-              onChange={(v) => handleParameterChange(param.name, v)}
-              optionList={mockCredentials.map((c) => ({ value: c.id, label: c.name }))}
-              style={{ width: '100%' }}
-            />
-          </div>
+          <Form.Select
+            key={param.name}
+            field={`param_${param.name}`}
+            label={renderLabel()}
+            placeholder={t('task.createModal.credentialPlaceholder')}
+            optionList={mockCredentials.map((c) => ({ value: c.id, label: c.name }))}
+            style={{ width: '100%' }}
+            rules={rules}
+          />
         );
       default:
         return null;
@@ -351,52 +306,28 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
   };
 
   // 提交
-  const handleSubmit = async () => {
-    // 验证必填项
-    if (!selectedProcessId) {
-      Toast.warning(t('task.validation.processRequired'));
-      return;
-    }
-    if (!targetType) {
-      Toast.warning(t('task.validation.targetTypeRequired'));
-      return;
-    }
-    if (!selectedTargetId) {
-      Toast.warning(t('task.validation.targetRequired'));
-      return;
-    }
-    if (maxDuration < 60 || maxDuration > 86400) {
-      Toast.warning(t('task.validation.maxDurationRange'));
-      return;
-    }
-    if (validityDays < 1 || validityDays > 30) {
-      Toast.warning(t('task.validation.validityDaysRange'));
-      return;
-    }
-
-    // 验证必填参数
-    if (selectedProcess) {
-      for (const param of selectedProcess.parameters) {
-        if (param.required && (parameterValues[param.name] === undefined || parameterValues[param.name] === '')) {
-          Toast.warning(t('task.validation.parameterRequired', { name: param.name }));
-          return;
-        }
-      }
-    }
-
+  const handleSubmit = async (values: Record<string, unknown>) => {
     setLoading(true);
     try {
+      // 提取参数值
+      const parameterValues: Record<string, unknown> = {};
+      if (selectedProcess) {
+        selectedProcess.parameters.forEach((param) => {
+          parameterValues[param.name] = values[`param_${param.name}`];
+        });
+      }
+
       // 模拟API调用
       await new Promise((resolve) => setTimeout(resolve, 500));
       
       console.log('创建任务:', {
-        process_id: selectedProcessId,
-        execution_target_type: targetType,
-        execution_target_id: selectedTargetId,
-        priority,
-        max_execution_duration: maxDuration,
-        validity_days: validityDays,
-        enable_recording: enableRecording,
+        process_id: values.processId,
+        execution_target_type: values.targetType,
+        execution_target_id: values.targetId,
+        priority: values.priority,
+        max_execution_duration: values.maxDuration,
+        validity_days: values.validityDays,
+        enable_recording: values.enableRecording,
         input_parameters: parameterValues,
       });
 
@@ -429,7 +360,18 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
       width={showRightPanel ? 900 : 520}
       centered
     >
-      <div className="create-task-modal-form">
+      <Form
+        className="create-task-modal-form"
+        labelPosition="top"
+        getFormApi={setFormApi}
+        onSubmit={handleSubmit}
+        initValues={{
+          priority: 'MEDIUM',
+          maxDuration: 3600,
+          validityDays: 7,
+          enableRecording: false,
+        }}
+      >
         <div className="create-task-modal-body">
           {/* 左侧：基本配置 */}
           <div className="create-task-modal-left">
@@ -439,17 +381,16 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
                 <div className="create-task-modal-section-title">
                   {t('task.createModal.selectTemplate')}
                 </div>
-                <div className="create-task-modal-field">
-                  <Select
-                    placeholder={t('task.createModal.templatePlaceholder')}
-                    value={selectedTemplateId}
-                    onChange={(v) => handleTemplateChange(v as string | null)}
-                    optionList={mockTemplates.map((tpl) => ({ value: tpl.template_id, label: tpl.template_name }))}
-                    showClear
-                    filter
-                    className="create-task-modal-select-full"
-                  />
-                </div>
+                <Form.Select
+                  field="templateId"
+                  noLabel
+                  placeholder={t('task.createModal.templatePlaceholder')}
+                  optionList={mockTemplates.map((tpl) => ({ value: tpl.template_id, label: tpl.template_name }))}
+                  showClear
+                  filter
+                  className="create-task-modal-select-full"
+                  onChange={(v) => handleTemplateChange(v as string | null)}
+                />
               </div>
 
               {/* 流程配置 */}
@@ -457,17 +398,18 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
                 <div className="create-task-modal-section-title">
                   {t('task.createModal.processSection')}
                 </div>
-                <div className="create-task-modal-field">
-                  <div className="semi-form-field-label-text">{t('task.createModal.processLabel')}</div>
-                  <Select
-                    placeholder={t('task.createModal.processPlaceholder')}
-                    value={selectedProcessId}
-                    onChange={(v) => handleProcessChange(v as string)}
-                    optionList={mockProcesses.map((p) => ({ value: p.process_id, label: p.process_name }))}
-                    filter
-                    className="create-task-modal-select-full"
-                  />
-                </div>
+                <Form.Select
+                  field="processId"
+                  label={t('task.createModal.processLabel')}
+                  placeholder={t('task.createModal.processPlaceholder')}
+                  optionList={mockProcesses.map((p) => ({ value: p.process_id, label: p.process_name }))}
+                  filter
+                  className="create-task-modal-select-full"
+                  rules={[
+                    { required: true, message: t('task.validation.processRequired') },
+                  ]}
+                  onChange={(v) => handleProcessChange(v as string)}
+                />
               </div>
 
               {/* 执行目标 */}
@@ -475,32 +417,33 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
                 <div className="create-task-modal-section-title">
                   {t('task.createModal.targetSection')}
                 </div>
-                <div className="create-task-modal-field">
-                  <div className="semi-form-field-label-text">{t('task.createModal.targetTypeLabel')}</div>
-                  <RadioGroup
-                    value={targetType}
-                    onChange={(e) => {
-                      setTargetType(e.target.value as ExecutionTargetType);
-                      setSelectedTargetId(null);
-                    }}
-                    direction="horizontal"
-                  >
-                    <Radio value="BOT_GROUP">{t('task.createModal.targetType.botGroup')}</Radio>
-                    <Radio value="BOT_IN_GROUP">{t('task.createModal.targetType.botInGroup')}</Radio>
-                    <Radio value="UNGROUPED_BOT">{t('task.createModal.targetType.ungroupedBot')}</Radio>
-                  </RadioGroup>
-                </div>
+                <Form.RadioGroup
+                  field="targetType"
+                  label={t('task.createModal.targetTypeLabel')}
+                  direction="horizontal"
+                  rules={[
+                    { required: true, message: t('task.validation.targetTypeRequired') },
+                  ]}
+                  onChange={(e) => {
+                    setTargetType(e.target.value as ExecutionTargetType);
+                    formApi?.setValue('targetId', undefined);
+                  }}
+                >
+                  <Form.Radio value="BOT_GROUP">{t('task.createModal.targetType.botGroup')}</Form.Radio>
+                  <Form.Radio value="BOT_IN_GROUP">{t('task.createModal.targetType.botInGroup')}</Form.Radio>
+                  <Form.Radio value="UNGROUPED_BOT">{t('task.createModal.targetType.ungroupedBot')}</Form.Radio>
+                </Form.RadioGroup>
                 {targetType && (
-                  <div className="create-task-modal-field">
-                    <div className="semi-form-field-label-text">{t('task.createModal.selectTarget')}</div>
-                    <Select
-                      placeholder={t('task.createModal.targetPlaceholder')}
-                      value={selectedTargetId}
-                      onChange={(v) => setSelectedTargetId(v as string)}
-                      optionList={targetOptions}
-                      className="create-task-modal-select-full"
-                    />
-                  </div>
+                  <Form.Select
+                    field="targetId"
+                    label={t('task.createModal.selectTarget')}
+                    placeholder={t('task.createModal.targetPlaceholder')}
+                    optionList={targetOptions}
+                    className="create-task-modal-select-full"
+                    rules={[
+                      { required: true, message: t('task.validation.targetRequired') },
+                    ]}
+                  />
                 )}
               </div>
 
@@ -509,45 +452,58 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
                 <div className="create-task-modal-section-title">
                   {t('task.createModal.executionSection')}
                 </div>
-                <div className="create-task-modal-field">
-                  <div className="semi-form-field-label-text">{t('task.createModal.priorityLabel')}</div>
-                  <RadioGroup
-                    value={priority}
-                    onChange={(e) => setPriority(e.target.value as TaskPriority)}
-                    direction="horizontal"
-                  >
-                    <Radio value="HIGH">{t('task.priority.high')}</Radio>
-                    <Radio value="MEDIUM">{t('task.priority.medium')}</Radio>
-                    <Radio value="LOW">{t('task.priority.low')}</Radio>
-                  </RadioGroup>
-                </div>
-                <div className="create-task-modal-field">
-                  <div className="semi-form-field-label-text">{t('task.createModal.maxDurationLabel')}</div>
-                  <InputNumber
-                    value={maxDuration}
-                    onChange={(v) => setMaxDuration(v as number)}
-                    min={60}
-                    max={86400}
-                    suffix={t('common.seconds')}
-                    style={{ width: 150 }}
-                  />
-                </div>
-                <div className="create-task-modal-field">
-                  <div className="semi-form-field-label-text">{t('task.createModal.validityDaysLabel')}</div>
-                  <InputNumber
-                    value={validityDays}
-                    onChange={(v) => setValidityDays(v as number)}
-                    min={1}
-                    max={30}
-                    suffix={t('common.days')}
-                    style={{ width: 150 }}
-                  />
-                </div>
+                <Form.RadioGroup
+                  field="priority"
+                  label={t('task.createModal.priorityLabel')}
+                  direction="horizontal"
+                >
+                  <Form.Radio value="HIGH">{t('task.priority.high')}</Form.Radio>
+                  <Form.Radio value="MEDIUM">{t('task.priority.medium')}</Form.Radio>
+                  <Form.Radio value="LOW">{t('task.priority.low')}</Form.Radio>
+                </Form.RadioGroup>
+                <Form.InputNumber
+                  field="maxDuration"
+                  label={t('task.createModal.maxDurationLabel')}
+                  min={60}
+                  max={86400}
+                  suffix={t('common.seconds')}
+                  style={{ width: 150 }}
+                  rules={[
+                    { required: true, message: t('task.validation.maxDurationRequired') },
+                    { validator: (rule, value, callback) => {
+                      if (value < 60 || value > 86400) {
+                        callback(t('task.validation.maxDurationRange'));
+                        return false;
+                      }
+                      callback();
+                      return true;
+                    }},
+                  ]}
+                />
+                <Form.InputNumber
+                  field="validityDays"
+                  label={t('task.createModal.validityDaysLabel')}
+                  min={1}
+                  max={30}
+                  suffix={t('common.days')}
+                  style={{ width: 150 }}
+                  rules={[
+                    { required: true, message: t('task.validation.validityDaysRequired') },
+                    { validator: (rule, value, callback) => {
+                      if (value < 1 || value > 30) {
+                        callback(t('task.validation.validityDaysRange'));
+                        return false;
+                      }
+                      callback();
+                      return true;
+                    }},
+                  ]}
+                />
                 <div className="create-task-modal-field">
                   <div className="semi-form-field-label-text">{t('task.createModal.enableRecordingLabel')}</div>
-                  <Switch
-                    checked={enableRecording}
-                    onChange={(v) => setEnableRecording(v)}
+                  <Form.Switch
+                    field="enableRecording"
+                    noLabel
                   />
                 </div>
               </div>
@@ -604,11 +560,11 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
           <Button theme="light" onClick={onCancel}>
             {t('common.cancel')}
           </Button>
-          <Button theme="solid" type="primary" loading={loading} onClick={handleSubmit}>
+          <Button htmlType="submit" theme="solid" type="primary" loading={loading}>
             {t('common.create')}
           </Button>
         </div>
-      </div>
+      </Form>
     </Modal>
   );
 };

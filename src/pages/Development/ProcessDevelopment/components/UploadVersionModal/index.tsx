@@ -46,10 +46,7 @@ const UploadVersionModal = ({ visible, onCancel, processData, onSuccess }: Uploa
   }, []);
 
   const handleUpload = useCallback(async () => {
-    if (fileList.length === 0) {
-      Toast.warning(t('development.processDevelopment.detail.uploadVersion.validation.fileRequired'));
-      return;
-    }
+    // 文件上传验证通过 disabled 按钮处理，无需 Toast
 
     setUploading(true);
     try {

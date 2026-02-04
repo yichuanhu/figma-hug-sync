@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Modal,
@@ -6,10 +6,6 @@ import {
   Button,
   Toast,
   Typography,
-  Select,
-  Input,
-  InputNumber,
-  Switch,
   Tooltip,
   Tag,
 } from '@douyinfe/semi-ui';
@@ -121,33 +117,9 @@ const mockCredentials = [
 const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTemplateModalProps) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
-
-  // 表单状态
-  const [templateName, setTemplateName] = useState('');
-  const [description, setDescription] = useState('');
-  const [selectedProcessId, setSelectedProcessId] = useState<string | null>(null);
+  const [formApi, setFormApi] = useState<any>(null);
   const [selectedProcess, setSelectedProcess] = useState<LYProcessActiveVersionResponse | null>(null);
   const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);
-  const [selectedTargetId, setSelectedTargetId] = useState<string | null>(null);
-  const [priority, setPriority] = useState<TaskPriority>('MEDIUM');
-  const [maxDuration, setMaxDuration] = useState<number>(3600);
-  const [validityDays, setValidityDays] = useState<number>(7);
-  const [enableRecording, setEnableRecording] = useState<boolean>(false);
-  const [parameterValues, setParameterValues] = useState<Record<string, unknown>>({});
-
-  // 目标类型选项
-  const targetTypeOptions = useMemo(() => [
-    { value: 'BOT_GROUP', label: t('template.targetType.botGroup') },
-    { value: 'BOT_IN_GROUP', label: t('template.targetType.botInGroup') },
-    { value: 'UNGROUPED_BOT', label: t('template.targetType.ungroupedBot') },
-  ], [t]);
-
-  // 优先级选项
-  const priorityOptions = useMemo(() => [
-    { value: 'HIGH', label: t('task.priority.high') },
-    { value: 'MEDIUM', label: t('task.priority.medium') },
-    { value: 'LOW', label: t('task.priority.low') },
-  ], [t]);
 
   // 执行目标选项
   const targetOptions = useMemo(() => {
@@ -174,77 +146,60 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
       }));
   }, [targetType]);
 
-  // 判断是否有参数
-  const hasParameters = selectedProcess && selectedProcess.parameters.length > 0;
-  const hasOutputParameters = selectedProcess && selectedProcess.output_parameters && selectedProcess.output_parameters.length > 0;
-  const showRightPanel = hasParameters || hasOutputParameters;
-
   // 初始化表单
   useEffect(() => {
-    if (visible && template) {
-      setTemplateName(template.template_name || '');
-      setDescription(template.description || '');
-      setSelectedProcessId(template.process_id);
-      setTargetType(template.execution_target_type);
-      setSelectedTargetId(template.execution_target_id);
-      setPriority(template.priority);
-      setMaxDuration(template.max_execution_duration);
-      setValidityDays(template.validity_days);
-      setEnableRecording(template.enable_recording);
-      setParameterValues(template.input_parameters || {});
-
-      // 设置选中的流程
+    if (visible && template && formApi) {
       const process = mockProcesses.find((p) => p.process_id === template.process_id);
       setSelectedProcess(process || null);
+      setTargetType(template.execution_target_type);
+      
+      // 设置表单值
+      formApi.setValues({
+        templateName: template.template_name || '',
+        description: template.description || '',
+        processId: template.process_id,
+        targetType: template.execution_target_type,
+        targetId: template.execution_target_id,
+        priority: template.priority,
+        maxDuration: template.max_execution_duration,
+        validityDays: template.validity_days,
+        enableRecording: template.enable_recording,
+        ...Object.fromEntries(
+          Object.entries(template.input_parameters || {}).map(([k, v]) => [`param_${k}`, v])
+        ),
+      });
     }
-  }, [visible, template]);
+  }, [visible, template, formApi]);
 
   // 重置表单
   useEffect(() => {
     if (!visible) {
-      setTemplateName('');
-      setDescription('');
-      setSelectedProcessId(null);
+      formApi?.reset();
       setSelectedProcess(null);
       setTargetType(null);
-      setSelectedTargetId(null);
-      setPriority('MEDIUM');
-      setMaxDuration(3600);
-      setValidityDays(7);
-      setEnableRecording(false);
-      setParameterValues({});
     }
-  }, [visible]);
+  }, [visible, formApi]);
 
   // 选择流程
-  const handleProcessChange = (processId: string) => {
-    setSelectedProcessId(processId);
+  const handleProcessChange = useCallback((processId: string) => {
     const process = mockProcesses.find((p) => p.process_id === processId);
     setSelectedProcess(process || null);
+    
     // 初始化参数默认值
-    if (process) {
-      const defaults: Record<string, unknown> = {};
+    if (process && formApi) {
       process.parameters.forEach((param) => {
         if (param.default_value !== undefined && param.default_value !== null) {
-          defaults[param.name] = param.default_value;
+          formApi.setValue(`param_${param.name}`, param.default_value);
         }
       });
-      setParameterValues(defaults);
     }
-  };
-
-  // 更新参数值
-  const handleParameterChange = (name: string, value: unknown) => {
-    setParameterValues((prev) => ({ ...prev, [name]: value }));
-  };
+  }, [formApi]);
 
   // 渲染参数输入
   const renderParameterInput = (param: LYProcessParameterDefinition) => {
-    const value = parameterValues[param.name];
-
     const renderLabel = () => (
       <div className="edit-template-modal-param-label">
-        <span>{param.name}{param.required ? ' *' : ''}</span>
+        <span>{param.name}{param.required ? '' : ''}</span>
         <Tag size="small" color="grey" style={{ marginLeft: 8 }}>
           {param.type}
         </Tag>
@@ -256,124 +211,92 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
       </div>
     );
 
+    const rules = param.required 
+      ? [{ required: true, message: t('template.validation.parameterRequired', { name: param.name }) }]
+      : [];
+
     switch (param.type) {
       case 'TEXT':
         return (
-          <div className="edit-template-modal-param-item" key={param.name}>
-            <div className="semi-form-field-label">
-              {renderLabel()}
-            </div>
-            <Input
-              placeholder={param.description || `请输入 ${param.name}`}
-              value={value as string || ''}
-              onChange={(v) => handleParameterChange(param.name, v)}
-            />
-          </div>
+          <Form.Input
+            key={param.name}
+            field={`param_${param.name}`}
+            label={renderLabel()}
+            placeholder={param.description || `请输入 ${param.name}`}
+            rules={rules}
+          />
         );
       case 'NUMBER':
         return (
-          <div className="edit-template-modal-param-item" key={param.name}>
-            <div className="semi-form-field-label">
-              {renderLabel()}
-            </div>
-            <InputNumber
-              placeholder={param.description || `请输入 ${param.name}`}
-              value={value as number}
-              onChange={(v) => handleParameterChange(param.name, v)}
-              style={{ width: '100%' }}
-            />
-          </div>
+          <Form.InputNumber
+            key={param.name}
+            field={`param_${param.name}`}
+            label={renderLabel()}
+            placeholder={param.description || `请输入 ${param.name}`}
+            style={{ width: '100%' }}
+            rules={rules}
+          />
         );
       case 'BOOLEAN':
         return (
           <div className="edit-template-modal-param-item" key={param.name}>
             {renderLabel()}
             <div style={{ marginTop: 8 }}>
-              <Switch
-                checked={value as boolean || false}
-                onChange={(v) => handleParameterChange(param.name, v)}
+              <Form.Switch
+                field={`param_${param.name}`}
+                noLabel
               />
             </div>
           </div>
         );
       case 'CREDENTIAL':
         return (
-          <div className="edit-template-modal-param-item" key={param.name}>
-            <div className="semi-form-field-label">
-              {renderLabel()}
-            </div>
-            <Select
-              placeholder="请选择凭据"
-              value={value as string}
-              onChange={(v) => handleParameterChange(param.name, v)}
-              optionList={mockCredentials.map((c) => ({ value: c.id, label: c.name }))}
-              style={{ width: '100%' }}
-            />
-          </div>
+          <Form.Select
+            key={param.name}
+            field={`param_${param.name}`}
+            label={renderLabel()}
+            placeholder="请选择凭据"
+            optionList={mockCredentials.map((c) => ({ value: c.id, label: c.name }))}
+            style={{ width: '100%' }}
+            rules={rules}
+          />
         );
       default:
         return null;
     }
   };
 
+  // 判断是否有参数
+  const hasParameters = selectedProcess && selectedProcess.parameters.length > 0;
+  const hasOutputParameters = selectedProcess && selectedProcess.output_parameters && selectedProcess.output_parameters.length > 0;
+  const showRightPanel = hasParameters || hasOutputParameters;
+
   // 提交
-  const handleSubmit = async () => {
-    // 验证必填项
-    if (!templateName.trim()) {
-      Toast.warning(t('template.validation.nameRequired'));
-      return;
-    }
-    if (templateName.length > 255) {
-      Toast.warning(t('template.validation.nameLengthError'));
-      return;
-    }
-    if (!selectedProcessId) {
-      Toast.warning(t('template.validation.processRequired'));
-      return;
-    }
-    if (!targetType) {
-      Toast.warning(t('template.validation.targetTypeRequired'));
-      return;
-    }
-    if (!selectedTargetId) {
-      Toast.warning(t('template.validation.targetRequired'));
-      return;
-    }
-    if (maxDuration < 60 || maxDuration > 86400) {
-      Toast.warning(t('template.validation.maxDurationRange'));
-      return;
-    }
-    if (validityDays < 1 || validityDays > 30) {
-      Toast.warning(t('template.validation.validityDaysRange'));
-      return;
-    }
-
-    // 验证必填参数
-    if (selectedProcess) {
-      for (const param of selectedProcess.parameters) {
-        if (param.required && (parameterValues[param.name] === undefined || parameterValues[param.name] === '')) {
-          Toast.warning(t('template.validation.parameterRequired', { name: param.name }));
-          return;
-        }
-      }
-    }
-
+  const handleSubmit = async (values: Record<string, unknown>) => {
     setLoading(true);
     try {
+      // 提取参数值
+      const parameterValues: Record<string, unknown> = {};
+      if (selectedProcess) {
+        selectedProcess.parameters.forEach((param) => {
+          parameterValues[param.name] = values[`param_${param.name}`];
+        });
+      }
+
       // 模拟API调用
       await new Promise((resolve) => setTimeout(resolve, 500));
       
       console.log('更新执行模板:', {
         template_id: template?.template_id,
-        template_name: templateName.trim(),
-        description: description.trim() || null,
-        process_id: selectedProcessId,
-        execution_target_type: targetType,
-        execution_target_id: selectedTargetId,
-        priority,
-        max_execution_duration: maxDuration,
-        validity_days: validityDays,
-        enable_recording: enableRecording,
+        template_name: (values.templateName as string).trim(),
+        description: (values.description as string)?.trim() || null,
+        process_id: values.processId,
+        execution_target_type: values.targetType,
+        execution_target_id: values.targetId,
+        priority: values.priority,
+        max_execution_duration: values.maxDuration,
+        validity_days: values.validityDays,
+        enable_recording: values.enableRecording,
         input_parameters: parameterValues,
       });
 
@@ -399,7 +322,18 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
       width={showRightPanel ? 900 : 520}
       centered
     >
-      <div className="edit-template-modal-form">
+      <Form
+        className="edit-template-modal-form"
+        labelPosition="top"
+        getFormApi={setFormApi}
+        onSubmit={handleSubmit}
+        initValues={{
+          priority: 'MEDIUM',
+          maxDuration: 3600,
+          validityDays: 7,
+          enableRecording: false,
+        }}
+      >
         <div className="edit-template-modal-body">
           {/* 左侧：基本配置 */}
           <div className="edit-template-modal-left">
@@ -409,25 +343,24 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
                 <div className="edit-template-modal-section-title">
                   {t('template.createModal.basicInfo')}
                 </div>
-                <div className="semi-form-field-label">
-                  <label>{t('template.fields.name')} *</label>
-                </div>
-                <Input
+                <Form.Input
+                  field="templateName"
+                  label={t('template.fields.name')}
                   placeholder={t('template.fields.namePlaceholder')}
-                  value={templateName}
-                  onChange={setTemplateName}
                   maxLength={255}
                   showClear
+                  rules={[
+                    { required: true, message: t('template.validation.nameRequired') },
+                    { max: 255, message: t('template.validation.nameLengthError') },
+                  ]}
                 />
-
-                <div className="semi-form-field-label" style={{ marginTop: 16 }}>
-                  <label>{t('template.fields.description')}</label>
-                </div>
-                <Input
+                <Form.TextArea
+                  field="description"
+                  label={t('template.fields.description')}
                   placeholder={t('template.fields.descriptionPlaceholder')}
-                  value={description}
-                  onChange={setDescription}
-                  maxLength={1000}
+                  maxCount={2000}
+                  showClear
+                  rows={3}
                 />
               </div>
 
@@ -436,16 +369,17 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
                 <div className="edit-template-modal-section-title">
                   {t('template.createModal.processSection')}
                 </div>
-                <div className="semi-form-field-label">
-                  <label>{t('template.fields.process')} *</label>
-                </div>
-                <Select
+                <Form.Select
+                  field="processId"
+                  label={t('template.fields.process')}
                   placeholder={t('template.fields.processPlaceholder')}
-                  value={selectedProcessId}
-                  onChange={(v) => handleProcessChange(v as string)}
                   optionList={mockProcesses.map((p) => ({ value: p.process_id, label: p.process_name }))}
                   filter
                   style={{ width: '100%' }}
+                  rules={[
+                    { required: true, message: t('template.validation.processRequired') },
+                  ]}
+                  onChange={(v) => handleProcessChange(v as string)}
                 />
                 {selectedProcess && (
                   <div className="edit-template-modal-version-info">
@@ -461,32 +395,35 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
                 <div className="edit-template-modal-section-title">
                   {t('template.createModal.targetSection')}
                 </div>
-                <div className="semi-form-field-label">
-                  <label>{t('template.fields.targetType')} *</label>
-                </div>
-                <Select
+                <Form.Select
+                  field="targetType"
+                  label={t('template.fields.targetType')}
                   placeholder={t('template.fields.targetTypePlaceholder')}
-                  value={targetType}
+                  optionList={[
+                    { value: 'BOT_GROUP', label: t('template.targetType.botGroup') },
+                    { value: 'BOT_IN_GROUP', label: t('template.targetType.botInGroup') },
+                    { value: 'UNGROUPED_BOT', label: t('template.targetType.ungroupedBot') },
+                  ]}
+                  style={{ width: '100%' }}
+                  rules={[
+                    { required: true, message: t('template.validation.targetTypeRequired') },
+                  ]}
                   onChange={(v) => {
                     setTargetType(v as ExecutionTargetType);
-                    setSelectedTargetId(null);
+                    formApi?.setValue('targetId', undefined);
                   }}
-                  optionList={targetTypeOptions}
-                  style={{ width: '100%' }}
                 />
                 {targetType && (
-                  <>
-                    <div className="semi-form-field-label" style={{ marginTop: 16 }}>
-                      <label>{t('template.fields.target')} *</label>
-                    </div>
-                    <Select
-                      placeholder={t('template.fields.targetPlaceholder')}
-                      value={selectedTargetId}
-                      onChange={(v) => setSelectedTargetId(v as string)}
-                      optionList={targetOptions}
-                      style={{ width: '100%' }}
-                    />
-                  </>
+                  <Form.Select
+                    field="targetId"
+                    label={t('template.fields.target')}
+                    placeholder={t('template.fields.targetPlaceholder')}
+                    optionList={targetOptions}
+                    style={{ width: '100%' }}
+                    rules={[
+                      { required: true, message: t('template.validation.targetRequired') },
+                    ]}
+                  />
                 )}
               </div>
 
@@ -495,44 +432,58 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
                 <div className="edit-template-modal-section-title">
                   {t('template.createModal.settingsSection')}
                 </div>
-                <div className="semi-form-field-label">
-                  <label>{t('template.fields.priority')}</label>
-                </div>
-                <Select
-                  value={priority}
-                  onChange={(v) => setPriority(v as TaskPriority)}
-                  optionList={priorityOptions}
+                <Form.Select
+                  field="priority"
+                  label={t('template.fields.priority')}
+                  optionList={[
+                    { value: 'HIGH', label: t('task.priority.high') },
+                    { value: 'MEDIUM', label: t('task.priority.medium') },
+                    { value: 'LOW', label: t('task.priority.low') },
+                  ]}
                   style={{ width: '100%' }}
                 />
-                
-                <div className="semi-form-field-label" style={{ marginTop: 16 }}>
-                  <label>{t('template.fields.maxDuration')}</label>
-                </div>
-                <InputNumber
-                  value={maxDuration}
-                  onChange={(v) => setMaxDuration(v as number)}
+                <Form.InputNumber
+                  field="maxDuration"
+                  label={t('template.fields.maxDuration')}
                   min={60}
                   max={86400}
                   style={{ width: '100%' }}
+                  extraText={t('template.fields.maxDurationHint')}
+                  rules={[
+                    { required: true, message: t('template.validation.maxDurationRequired') },
+                    { validator: (rule, value, callback) => {
+                      if (value < 60 || value > 86400) {
+                        callback(t('template.validation.maxDurationRange'));
+                        return false;
+                      }
+                      callback();
+                      return true;
+                    }},
+                  ]}
                 />
-                <Text type="tertiary" size="small">{t('template.fields.maxDurationHint')}</Text>
-                
-                <div className="semi-form-field-label" style={{ marginTop: 16 }}>
-                  <label>{t('template.fields.validityDays')}</label>
-                </div>
-                <InputNumber
-                  value={validityDays}
-                  onChange={(v) => setValidityDays(v as number)}
+                <Form.InputNumber
+                  field="validityDays"
+                  label={t('template.fields.validityDays')}
                   min={1}
                   max={30}
                   style={{ width: '100%' }}
+                  extraText={t('template.fields.validityDaysHint')}
+                  rules={[
+                    { required: true, message: t('template.validation.validityDaysRequired') },
+                    { validator: (rule, value, callback) => {
+                      if (value < 1 || value > 30) {
+                        callback(t('template.validation.validityDaysRange'));
+                        return false;
+                      }
+                      callback();
+                      return true;
+                    }},
+                  ]}
                 />
-                <Text type="tertiary" size="small">{t('template.fields.validityDaysHint')}</Text>
-                
                 <div className="edit-template-modal-param-item" style={{ marginTop: 16 }}>
                   <Text>{t('template.fields.enableRecording')}</Text>
                   <div style={{ marginTop: 8 }}>
-                    <Switch checked={enableRecording} onChange={setEnableRecording} />
+                    <Form.Switch field="enableRecording" noLabel />
                   </div>
                 </div>
               </div>
@@ -590,16 +541,11 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
           <Button theme="light" onClick={onCancel}>
             {t('common.cancel')}
           </Button>
-          <Button
-            theme="solid"
-            type="primary"
-            loading={loading}
-            onClick={handleSubmit}
-          >
+          <Button htmlType="submit" theme="solid" type="primary" loading={loading}>
             {t('common.save')}
           </Button>
         </div>
-      </div>
+      </Form>
     </Modal>
   );
 };
