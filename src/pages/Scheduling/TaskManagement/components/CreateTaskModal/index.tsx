@@ -10,6 +10,7 @@ import {
   Tag,
 } from '@douyinfe/semi-ui';
 import { IconHelpCircle } from '@douyinfe/semi-icons';
+import BotTargetSelector from '@/components/BotTargetSelector';
 import type {
   LYProcessActiveVersionResponse,
   LYExecutionTemplateResponse,
@@ -434,16 +435,22 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
                   <Form.Radio value="UNGROUPED_BOT">{t('task.createModal.targetType.ungroupedBot')}</Form.Radio>
                 </Form.RadioGroup>
                 {targetType && (
-                  <Form.Select
-                    field="targetId"
-                    label={t('task.createModal.selectTarget')}
-                    placeholder={t('task.createModal.targetPlaceholder')}
-                    optionList={targetOptions}
-                    className="create-task-modal-select-full"
-                    rules={[
-                      { required: true, message: t('task.validation.targetRequired') },
-                    ]}
-                  />
+                  <Form.Slot label={t('task.createModal.selectTarget')}>
+                    <BotTargetSelector
+                      targetType={targetType}
+                      value={formApi?.getValue('targetId')}
+                      onChange={(v) => formApi?.setValue('targetId', v)}
+                      placeholder={t('task.createModal.targetPlaceholder')}
+                    />
+                    <Form.Input
+                      field="targetId"
+                      noLabel
+                      style={{ display: 'none' }}
+                      rules={[
+                        { required: true, message: t('task.validation.targetRequired') },
+                      ]}
+                    />
+                  </Form.Slot>
                 )}
               </div>
 

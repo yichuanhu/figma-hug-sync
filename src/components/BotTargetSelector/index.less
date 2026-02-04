@@ -1,0 +1,52 @@
+// BotTargetSelector 机器人选择器组件样式
+.bot-target-selector {
+  width: 100%;
+
+  &-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 8px;
+
+    &-name {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    &-status {
+      flex-shrink: 0;
+    }
+  }
+
+  &-selected {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    overflow: hidden;
+
+    .semi-typography {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .semi-tag {
+      flex-shrink: 0;
+    }
+  }
+}
+
+// 分组标题样式
+.semi-select-option-group-title {
+  font-weight: 600;
+  color: var(--semi-color-text-0);
+  padding: 8px 12px 4px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}

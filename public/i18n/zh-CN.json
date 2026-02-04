@@ -2187,22 +2187,28 @@
   },
   "triggerRule": {
     "fields": {
-      "ruleType": "规则类型",
+      "ruleType": "触发规则",
       "frequencyType": "运行频率",
       "cronExpression": "Cron表达式",
       "cronPlaceholder": "请输入5段Cron表达式，如：0 9 * * *",
       "cronHint": "格式：分钟 小时 日期 月份 星期（如：0 9 * * * 表示每天9点）",
       "generatedCron": "生成的Cron表达式",
-      "timeZone": "时区",
+      "timeZone": "触发器时区",
       "startDateTime": "开始时间",
       "endDateTime": "结束时间",
       "endTimeNever": "永不结束",
       "endTimeCustom": "指定结束时间",
-      "endDateTimePlaceholder": "请选择结束时间"
+      "endDateTimePlaceholder": "请选择结束时间",
+      "workCalendar": "工作日历",
+      "workCalendarPlaceholder": "请选择工作日历",
+      "enableWorkCalendar": "启用工作日历",
+      "executionType": "执行类型",
+      "executionTypeWorkday": "工作日执行",
+      "executionTypeNonWorkday": "非工作日执行"
     },
     "ruleType": {
-      "basic": "基本类型",
-      "cron": "Cron表达式"
+      "basic": "基本规则",
+      "cron": "自定义规则"
     },
     "frequency": {
       "minutely": "每N分钟",
@@ -2248,5 +2254,11 @@
       "title": "常用示例",
       "buttonText": "查看示例"
     }
+  },
+  "botSelector": {
+    "placeholder": "请选择执行目标",
+    "online": "在线",
+    "statusOnline": "在线",
+    "statusOffline": "离线"
   }
 }

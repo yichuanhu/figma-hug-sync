@@ -1,5 +1,13 @@
 // TriggerRuleConfig 触发规则配置组件样式
 .trigger-rule-config {
+  &-section {
+    margin-bottom: 16px;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
   &-field {
     margin-bottom: 16px;
   }
@@ -14,13 +22,7 @@
   &-field-label-row {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     margin-bottom: 8px;
-  }
-
-  &-field-actions {
-    display: flex;
-    gap: 4px;
   }
 
   &-field-hint {
@@ -87,10 +89,18 @@
     border-radius: 6px;
   }
 
-  &-cron-help {
-    max-width: 360px;
-    padding: 8px 0;
+  &-cron-divider {
+    height: 1px;
+    background: var(--semi-color-border);
+    margin: 12px 0;
+  }
 
+  &-cron-help-combined {
+    max-width: 400px;
+    padding: 12px;
+  }
+
+  &-cron-help {
     &-title {
       font-weight: 600;
       font-size: 14px;
@@ -160,9 +170,6 @@
   }
 
   &-cron-examples {
-    max-width: 320px;
-    padding: 8px 0;
-
     &-title {
       font-weight: 600;
       font-size: 14px;
