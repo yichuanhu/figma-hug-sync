@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Breadcrumb, Typography, Tabs, TabPane, Button } from '@douyinfe/semi-ui';
+import { Breadcrumb, Typography, Tabs, Button } from '@douyinfe/semi-ui';
 import { IconCalendar } from '@douyinfe/semi-icons';
 import AppLayout from '@/components/layout/AppLayout';
 import TimeTriggerList from './components/TimeTriggerList';
@@ -9,6 +9,7 @@ import QueueTriggerList from './components/QueueTriggerList';
 import './index.less';
 
 const { Title } = Typography;
+const TabPane = Tabs.TabPane;
 
 const AutoExecutionPolicyPage = () => {
   const { t } = useTranslation();
@@ -47,8 +48,9 @@ const AutoExecutionPolicyPage = () => {
         {/* Tab切换 */}
         <Tabs
           activeKey={activeTab}
-          onChange={setActiveTab}
+          onChange={(key) => setActiveTab(key)}
           className="auto-execution-policy-tabs"
+          keepDOM={false}
         >
           <TabPane
             tab={t('autoExecutionPolicy.tabs.timeTrigger')}
