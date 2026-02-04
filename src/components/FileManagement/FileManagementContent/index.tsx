@@ -415,22 +415,16 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
           clickToHide
           render={
             <Dropdown.Menu>
-              {context === 'development' && (
-                <Tooltip
-                  content={record.is_published ? t('file.detail.cannotReuploadPublished') : undefined}
-                  disabled={!record.is_published}
+              {context === 'development' && !record.is_published && (
+                <Dropdown.Item
+                  icon={<IconRefresh />}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleReupload(record);
+                  }}
                 >
-                  <Dropdown.Item
-                    icon={<IconRefresh />}
-                    disabled={record.is_published}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleReupload(record);
-                    }}
-                  >
-                    {t('file.actions.reupload')}
-                  </Dropdown.Item>
-                </Tooltip>
+                  {t('file.actions.reupload')}
+                </Dropdown.Item>
               )}
               <Dropdown.Item
                 icon={<IconDownload />}
@@ -441,27 +435,17 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
               >
                 {t('file.actions.download')}
               </Dropdown.Item>
-              {context === 'development' && (
-                <Tooltip
-                  content={
-                    record.is_published
-                      ? t('file.detail.cannotDeletePublished')
-                      : undefined
-                  }
-                  disabled={!record.is_published}
+              {context === 'development' && !record.is_published && (
+                <Dropdown.Item
+                  icon={<IconDeleteStroked />}
+                  type="danger"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(record);
+                  }}
                 >
-                  <Dropdown.Item
-                    icon={<IconDeleteStroked />}
-                    type="danger"
-                    disabled={record.is_published}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDelete(record);
-                    }}
-                  >
-                    {t('common.delete')}
-                  </Dropdown.Item>
-                </Tooltip>
+                  {t('common.delete')}
+                </Dropdown.Item>
               )}
             </Dropdown.Menu>
           }

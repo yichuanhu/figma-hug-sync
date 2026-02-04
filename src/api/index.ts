@@ -1134,6 +1134,11 @@ export interface LYCredentialResponse {
    */
   linked_personal_credential_value?: string | null;
   /**
+   * Is Published
+   * 是否已发布
+   */
+  is_published: boolean;
+  /**
    * Created By
    * 创建者ID
    */
