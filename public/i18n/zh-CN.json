@@ -2186,6 +2186,10 @@
     "comingSoon": "队列触发器功能即将上线，敬请期待"
   },
   "triggerRule": {
+    "category": {
+      "triggerCycle": "触发周期",
+      "triggerRule": "触发规则"
+    },
     "fields": {
       "ruleType": "触发规则",
       "frequencyType": "运行频率",
@@ -2216,6 +2220,26 @@
       "daily": "每日",
       "weekly": "每周",
       "monthly": "每月"
+    },
+    "executionRule": {
+      "title": "运行规则",
+      "fixedTime": "指定时间",
+      "repeat": "重复执行",
+      "at": "在",
+      "hourSuffix": "点",
+      "minuteSuffix": "分执行",
+      "every": "每",
+      "minute": "分钟",
+      "hour": "小时",
+      "executeOnce": "执行一次"
+    },
+    "monthDayType": {
+      "byDay": "按日",
+      "lastDay": "当月最后一日"
+    },
+    "daySelection": {
+      "prefix": "当月第",
+      "placeholder": "输入日期，如1、15"
     },
     "basic": {
       "every": "每",

@@ -10,11 +10,11 @@ import {
   Checkbox,
   CheckboxGroup,
   Button,
-  Tooltip,
   Popover,
   DatePicker,
   Switch,
   Tag,
+  TagInput,
   Banner,
 } from '@douyinfe/semi-ui';
 import { IconHelpCircle, IconTick, IconClose } from '@douyinfe/semi-icons';
@@ -22,6 +22,12 @@ import type { TriggerRuleType, BasicFrequencyType } from '@/api';
 import './index.less';
 
 const { Text } = Typography;
+
+// 运行规则类型：指定时间 或 重复执行
+type ExecutionRuleType = 'FIXED_TIME' | 'REPEAT';
+
+// 月度日期类型：按日 或 当月最后一日
+type MonthDayType = 'BY_DAY' | 'LAST_DAY';
 
 export interface TriggerRuleConfigProps {
   ruleType: TriggerRuleType;
@@ -100,10 +106,20 @@ const weekdayOptions = [
   { value: 0, label: '周日' },
 ];
 
-// 日期选项 (1-31 + 最后一天)
-const monthDayOptions = [
-  ...Array.from({ length: 31 }, (_, i) => ({ value: i + 1, label: `${i + 1}日` })),
-  { value: 'L' as const, label: '最后一天' },
+// 月份选项
+const monthOptions = [
+  { value: 1, label: '1月' },
+  { value: 2, label: '2月' },
+  { value: 3, label: '3月' },
+  { value: 4, label: '4月' },
+  { value: 5, label: '5月' },
+  { value: 6, label: '6月' },
+  { value: 7, label: '7月' },
+  { value: 8, label: '8月' },
+  { value: 9, label: '9月' },
+  { value: 10, label: '10月' },
+  { value: 11, label: '11月' },
+  { value: 12, label: '12月' },
 ];
 
 // Cron 示例
@@ -158,28 +174,50 @@ const TriggerRuleConfig = ({
   const { t } = useTranslation();
   const [cronValidating, setCronValidating] = useState(false);
   const [cronValidResult, setCronValidResult] = useState<{ valid: boolean; message: string } | null>(null);
+  
+  // 新增状态：运行规则类型
+  const [executionRuleType, setExecutionRuleType] = useState<ExecutionRuleType>('FIXED_TIME');
+  // 重复执行的间隔
+  const [repeatInterval, setRepeatInterval] = useState<number>(1);
+  const [repeatUnit, setRepeatUnit] = useState<'MINUTE' | 'HOUR'>('MINUTE');
+  // 月份选择（每月触发时）
+  const [selectedMonths, setSelectedMonths] = useState<number[]>([1]);
+  // 月度日期类型
+  const [monthDayType, setMonthDayType] = useState<MonthDayType>('BY_DAY');
+  // 按日选择的日期（多选）
+  const [selectedMonthDays, setSelectedMonthDays] = useState<string[]>(['1']);
 
   // 根据基本类型配置自动生成 Cron 表达式
   const generatedCronExpression = useMemo(() => {
     if (ruleType !== 'BASIC') return '';
 
+    if (executionRuleType === 'REPEAT') {
+      // 重复执行模式
+      if (repeatUnit === 'MINUTE') {
+        return `*/${repeatInterval} * * * *`;
+      } else {
+        return `0 */${repeatInterval} * * *`;
+      }
+    }
+
+    // 指定时间模式
     switch (frequencyType) {
-      case 'MINUTELY':
-        return `*/${minuteInterval} * * * *`;
-      case 'HOURLY':
-        return `${minuteOfHour} */${hourInterval} * * *`;
       case 'DAILY':
         return `${triggerMinute} ${triggerHour} * * *`;
       case 'WEEKLY':
         const weekdayStr = selectedWeekdays.length > 0 ? selectedWeekdays.sort().join(',') : '*';
         return `${triggerMinute} ${triggerHour} * * ${weekdayStr}`;
       case 'MONTHLY':
-        const dayStr = selectedMonthDay === 'L' ? 'L' : selectedMonthDay;
-        return `${triggerMinute} ${triggerHour} ${dayStr} * *`;
+        const monthStr = selectedMonths.length > 0 ? selectedMonths.sort((a, b) => a - b).join(',') : '*';
+        if (monthDayType === 'LAST_DAY') {
+          return `${triggerMinute} ${triggerHour} L ${monthStr} *`;
+        }
+        const dayStr = selectedMonthDays.length > 0 ? selectedMonthDays.join(',') : '1';
+        return `${triggerMinute} ${triggerHour} ${dayStr} ${monthStr} *`;
       default:
         return '';
     }
-  }, [ruleType, frequencyType, minuteInterval, hourInterval, minuteOfHour, triggerHour, triggerMinute, selectedWeekdays, selectedMonthDay]);
+  }, [ruleType, executionRuleType, frequencyType, triggerHour, triggerMinute, selectedWeekdays, selectedMonths, monthDayType, selectedMonthDays, repeatInterval, repeatUnit]);
 
   // 验证 Cron 表达式（模拟）
   const handleValidateCron = useCallback(async () => {
@@ -270,78 +308,61 @@ const TriggerRuleConfig = ({
     </div>
   );
 
-  // 渲染基本类型的频率配置
-  const renderBasicFrequencyConfig = () => {
-    switch (frequencyType) {
-      case 'MINUTELY':
-        return (
-          <div className={`${classPrefix}-inline-field`}>
-            <span>{t('triggerRule.basic.every')}</span>
-            <InputNumber
-              value={minuteInterval}
-              onChange={(v) => onMinuteIntervalChange(v as number)}
-              min={1}
-              max={59}
-              style={{ width: 80 }}
-            />
-            <span>{t('triggerRule.basic.minuteExecute')}</span>
-          </div>
-        );
+  // 处理星期全选
+  const handleWeekdaySelectAll = (checked: boolean) => {
+    if (checked) {
+      onSelectedWeekdaysChange([1, 2, 3, 4, 5, 6, 0]);
+    } else {
+      onSelectedWeekdaysChange([]);
+    }
+  };
 
-      case 'HOURLY':
-        return (
-          <div className={`${classPrefix}-inline-field`}>
-            <span>{t('triggerRule.basic.every')}</span>
-            <InputNumber
-              value={hourInterval}
-              onChange={(v) => onHourIntervalChange(v as number)}
-              min={1}
-              max={23}
-              style={{ width: 80 }}
-            />
-            <span>{t('triggerRule.basic.hourAt')}</span>
-            <InputNumber
-              value={minuteOfHour}
-              onChange={(v) => onMinuteOfHourChange(v as number)}
-              min={0}
-              max={59}
-              style={{ width: 80 }}
-            />
-            <span>{t('triggerRule.basic.minuteExecute')}</span>
-          </div>
-        );
+  // 处理月份全选
+  const handleMonthSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedMonths([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
+    } else {
+      setSelectedMonths([]);
+    }
+  };
 
-      case 'DAILY':
-        return (
-          <div className={`${classPrefix}-time-picker`}>
-            <Text className={`${classPrefix}-field-label`}>{t('triggerRule.basic.triggerTime')}</Text>
-            <div className={`${classPrefix}-time-picker-inputs`}>
-              <InputNumber
-                value={triggerHour}
-                onChange={(v) => onTriggerHourChange(v as number)}
-                min={0}
-                max={23}
-                style={{ width: 80 }}
-                formatter={(v) => String(v).padStart(2, '0')}
-              />
-              <span className={`${classPrefix}-time-separator`}>:</span>
-              <InputNumber
-                value={triggerMinute}
-                onChange={(v) => onTriggerMinuteChange(v as number)}
-                min={0}
-                max={59}
-                style={{ width: 80 }}
-                formatter={(v) => String(v).padStart(2, '0')}
-              />
-            </div>
-          </div>
-        );
+  // 渲染基本规则配置
+  const renderBasicRuleConfig = () => {
+    return (
+      <div className={`${classPrefix}-basic-rule`}>
+        {/* 运行频率 - RadioGroup 样式 */}
+        <div className={`${classPrefix}-field`}>
+          <Text className={`${classPrefix}-section-title`}>{t('triggerRule.fields.frequencyType')}</Text>
+          <RadioGroup
+            value={frequencyType}
+            onChange={(e) => {
+              onFrequencyTypeChange(e.target.value as BasicFrequencyType);
+              // 重置执行规则类型
+              setExecutionRuleType('FIXED_TIME');
+            }}
+            direction="horizontal"
+            className={`${classPrefix}-frequency-radio`}
+          >
+            <Radio value="DAILY">{t('triggerRule.frequency.daily')}</Radio>
+            <Radio value="WEEKLY">{t('triggerRule.frequency.weekly')}</Radio>
+            <Radio value="MONTHLY">{t('triggerRule.frequency.monthly')}</Radio>
+          </RadioGroup>
+        </div>
 
-      case 'WEEKLY':
-        return (
-          <>
-            <div className={`${classPrefix}-field`}>
-              <Text className={`${classPrefix}-field-label`}>{t('triggerRule.basic.selectWeekdays')}</Text>
+        {/* 运行规则 */}
+        <div className={`${classPrefix}-rule-box`}>
+          <Text className={`${classPrefix}-section-title`}>{t('triggerRule.executionRule.title')}</Text>
+          
+          {/* 每周 - 星期选择 */}
+          {frequencyType === 'WEEKLY' && (
+            <div className={`${classPrefix}-weekday-selection`}>
+              <Checkbox
+                checked={selectedWeekdays.length === 7}
+                indeterminate={selectedWeekdays.length > 0 && selectedWeekdays.length < 7}
+                onChange={(e) => handleWeekdaySelectAll(e.target.checked)}
+              >
+                {t('common.selectAll')}
+              </Checkbox>
               <CheckboxGroup
                 value={selectedWeekdays}
                 onChange={(values) => onSelectedWeekdaysChange(values as number[])}
@@ -354,138 +375,183 @@ const TriggerRuleConfig = ({
                 ))}
               </CheckboxGroup>
             </div>
-            <div className={`${classPrefix}-time-picker`}>
-              <Text className={`${classPrefix}-field-label`}>{t('triggerRule.basic.triggerTime')}</Text>
-              <div className={`${classPrefix}-time-picker-inputs`}>
-                <InputNumber
-                  value={triggerHour}
-                  onChange={(v) => onTriggerHourChange(v as number)}
-                  min={0}
-                  max={23}
-                  style={{ width: 80 }}
-                  formatter={(v) => String(v).padStart(2, '0')}
-                />
-                <span className={`${classPrefix}-time-separator`}>:</span>
-                <InputNumber
-                  value={triggerMinute}
-                  onChange={(v) => onTriggerMinuteChange(v as number)}
-                  min={0}
-                  max={59}
-                  style={{ width: 80 }}
-                  formatter={(v) => String(v).padStart(2, '0')}
-                />
-              </div>
-            </div>
-          </>
-        );
+          )}
 
-      case 'MONTHLY':
-        return (
-          <>
-            <div className={`${classPrefix}-field`}>
-              <Text className={`${classPrefix}-field-label`}>{t('triggerRule.basic.selectMonthDay')}</Text>
+          {/* 每月 - 月份选择 */}
+          {frequencyType === 'MONTHLY' && (
+            <>
+              <div className={`${classPrefix}-month-selection`}>
+                <Checkbox
+                  checked={selectedMonths.length === 12}
+                  indeterminate={selectedMonths.length > 0 && selectedMonths.length < 12}
+                  onChange={(e) => handleMonthSelectAll(e.target.checked)}
+                >
+                  {t('common.selectAll')}
+                </Checkbox>
+                <CheckboxGroup
+                  value={selectedMonths}
+                  onChange={(values) => setSelectedMonths(values as number[])}
+                  direction="horizontal"
+                  className={`${classPrefix}-month-checkbox-group`}
+                >
+                  {monthOptions.map((option) => (
+                    <Checkbox key={option.value} value={option.value}>
+                      {option.label}
+                    </Checkbox>
+                  ))}
+                </CheckboxGroup>
+              </div>
+
+              {/* 日期类型选择 */}
+              <div className={`${classPrefix}-month-day-type`}>
+                <RadioGroup
+                  value={monthDayType}
+                  onChange={(e) => setMonthDayType(e.target.value as MonthDayType)}
+                  direction="horizontal"
+                >
+                  <Radio value="BY_DAY">{t('triggerRule.monthDayType.byDay')}</Radio>
+                  <Radio value="LAST_DAY">{t('triggerRule.monthDayType.lastDay')}</Radio>
+                </RadioGroup>
+              </div>
+
+              {/* 按日选择 */}
+              {monthDayType === 'BY_DAY' && (
+                <div className={`${classPrefix}-day-selection`}>
+                  <span>{t('triggerRule.daySelection.prefix')}</span>
+                  <TagInput
+                    value={selectedMonthDays}
+                    onChange={(values) => setSelectedMonthDays(values as string[])}
+                    placeholder={t('triggerRule.daySelection.placeholder')}
+                    style={{ width: 200 }}
+                  />
+                </div>
+              )}
+            </>
+          )}
+
+          {/* 执行规则类型：指定时间 或 重复执行 */}
+          <div className={`${classPrefix}-execution-rule-type`}>
+            <RadioGroup
+              value={executionRuleType}
+              onChange={(e) => setExecutionRuleType(e.target.value as ExecutionRuleType)}
+              direction="horizontal"
+            >
+              <Radio value="FIXED_TIME">{t('triggerRule.executionRule.fixedTime')}</Radio>
+              <Radio value="REPEAT">{t('triggerRule.executionRule.repeat')}</Radio>
+            </RadioGroup>
+          </div>
+
+          {/* 执行时间/间隔配置 */}
+          {executionRuleType === 'FIXED_TIME' ? (
+            <div className={`${classPrefix}-fixed-time`}>
+              <span>{t('triggerRule.executionRule.at')}</span>
               <Select
-                value={selectedMonthDay}
-                onChange={(v) => onSelectedMonthDayChange(v as number | 'L')}
-                optionList={monthDayOptions}
-                style={{ width: '100%' }}
+                value={triggerHour}
+                onChange={(v) => onTriggerHourChange(v as number)}
+                style={{ width: 80 }}
+                optionList={Array.from({ length: 24 }, (_, i) => ({ value: i, label: String(i) }))}
               />
+              <span>{t('triggerRule.executionRule.hourSuffix')}</span>
+              <Select
+                value={triggerMinute}
+                onChange={(v) => onTriggerMinuteChange(v as number)}
+                style={{ width: 80 }}
+                optionList={Array.from({ length: 60 }, (_, i) => ({ value: i, label: String(i) }))}
+              />
+              <span>{t('triggerRule.executionRule.minuteSuffix')}</span>
             </div>
-            <div className={`${classPrefix}-time-picker`}>
-              <Text className={`${classPrefix}-field-label`}>{t('triggerRule.basic.triggerTime')}</Text>
-              <div className={`${classPrefix}-time-picker-inputs`}>
-                <InputNumber
-                  value={triggerHour}
-                  onChange={(v) => onTriggerHourChange(v as number)}
-                  min={0}
-                  max={23}
-                  style={{ width: 80 }}
-                  formatter={(v) => String(v).padStart(2, '0')}
-                />
-                <span className={`${classPrefix}-time-separator`}>:</span>
-                <InputNumber
-                  value={triggerMinute}
-                  onChange={(v) => onTriggerMinuteChange(v as number)}
-                  min={0}
-                  max={59}
-                  style={{ width: 80 }}
-                  formatter={(v) => String(v).padStart(2, '0')}
-                />
-              </div>
+          ) : (
+            <div className={`${classPrefix}-repeat-time`}>
+              <span>{t('triggerRule.executionRule.every')}</span>
+              <Select
+                value={repeatInterval}
+                onChange={(v) => setRepeatInterval(v as number)}
+                style={{ width: 80 }}
+                optionList={Array.from({ length: 60 }, (_, i) => ({ value: i + 1, label: String(i + 1) }))}
+              />
+              <Select
+                value={repeatUnit}
+                onChange={(v) => setRepeatUnit(v as 'MINUTE' | 'HOUR')}
+                style={{ width: 100 }}
+                optionList={[
+                  { value: 'MINUTE', label: t('triggerRule.executionRule.minute') },
+                  { value: 'HOUR', label: t('triggerRule.executionRule.hour') },
+                ]}
+              />
+              <span>{t('triggerRule.executionRule.executeOnce')}</span>
             </div>
-          </>
-        );
+          )}
+        </div>
 
-      default:
-        return null;
-    }
+        {/* 生成的 Cron 表达式（只读展示） */}
+        {generatedCronExpression && (
+          <div className={`${classPrefix}-generated-cron`}>
+            <Text className={`${classPrefix}-field-label`}>{t('triggerRule.fields.generatedCron')}</Text>
+            <div className={`${classPrefix}-generated-cron-value`}>
+              <code>{generatedCronExpression}</code>
+            </div>
+          </div>
+        )}
+      </div>
+    );
   };
 
   return (
     <div className={classPrefix}>
-      {/* 工作日历配置（放最前面） */}
-      {showWorkCalendar && (
-        <div className={`${classPrefix}-section`}>
-          <div className={`${classPrefix}-field`}>
-            <Text className={`${classPrefix}-field-label`}>{t('triggerRule.fields.enableWorkCalendar')}</Text>
-            <Switch 
-              checked={enableWorkCalendar} 
-              onChange={(v) => onEnableWorkCalendarChange?.(v)} 
-            />
-          </div>
-          {enableWorkCalendar && (
-            <>
-              <div className={`${classPrefix}-field`}>
-                <Text className={`${classPrefix}-field-label`}>{t('triggerRule.fields.workCalendar')} *</Text>
-                <Select
-                  placeholder={t('triggerRule.fields.workCalendarPlaceholder')}
-                  value={workCalendarId}
-                  onChange={(v) => onWorkCalendarIdChange?.(v as string)}
-                  optionList={workCalendarOptions}
-                  style={{ width: '100%' }}
-                />
-              </div>
-              <div className={`${classPrefix}-field`}>
-                <Text className={`${classPrefix}-field-label`}>{t('triggerRule.fields.executionType')}</Text>
-                <RadioGroup
-                  value={workCalendarExecutionType}
-                  onChange={(e) => onWorkCalendarExecutionTypeChange?.(e.target.value as 'WORKDAY' | 'NON_WORKDAY')}
-                  direction="horizontal"
-                >
-                  <Radio value="WORKDAY">{t('triggerRule.fields.executionTypeWorkday')}</Radio>
-                  <Radio value="NON_WORKDAY">{t('triggerRule.fields.executionTypeNonWorkday')}</Radio>
-                </RadioGroup>
-              </div>
-              {/* 时区放在工作日历下面 */}
-              <div className={`${classPrefix}-field`}>
-                <Text className={`${classPrefix}-field-label`}>{t('triggerRule.fields.timeZone')} *</Text>
-                <Select
-                  value={timeZone}
-                  onChange={(v) => onTimeZoneChange(v as string)}
-                  optionList={timeZones}
-                  filter
-                  style={{ width: '100%' }}
-                />
-              </div>
-            </>
-          )}
-          {!enableWorkCalendar && (
-            <div className={`${classPrefix}-field`}>
-              <Text className={`${classPrefix}-field-label`}>{t('triggerRule.fields.timeZone')} *</Text>
-              <Select
-                value={timeZone}
-                onChange={(v) => onTimeZoneChange(v as string)}
-                optionList={timeZones}
-                filter
-                style={{ width: '100%' }}
+      {/* 分类一：触发周期 */}
+      <div className={`${classPrefix}-category`}>
+        <div className={`${classPrefix}-category-title`}>{t('triggerRule.category.triggerCycle')}</div>
+        
+        {/* 触发器时区 */}
+        <div className={`${classPrefix}-field`}>
+          <Text className={`${classPrefix}-field-label`}>{t('triggerRule.fields.timeZone')} *</Text>
+          <Select
+            value={timeZone}
+            onChange={(v) => onTimeZoneChange(v as string)}
+            optionList={timeZones}
+            filter
+            style={{ width: '100%' }}
+          />
+        </div>
+
+        {/* 启用工作日历 */}
+        {showWorkCalendar && (
+          <>
+            <div className={`${classPrefix}-field ${classPrefix}-field-inline`}>
+              <Text className={`${classPrefix}-field-label`}>{t('triggerRule.fields.enableWorkCalendar')}</Text>
+              <Switch 
+                checked={enableWorkCalendar} 
+                onChange={(v) => onEnableWorkCalendarChange?.(v)} 
               />
             </div>
-          )}
-        </div>
-      )}
+            {enableWorkCalendar && (
+              <>
+                <div className={`${classPrefix}-field`}>
+                  <Text className={`${classPrefix}-field-label`}>{t('triggerRule.fields.workCalendar')} *</Text>
+                  <Select
+                    placeholder={t('triggerRule.fields.workCalendarPlaceholder')}
+                    value={workCalendarId}
+                    onChange={(v) => onWorkCalendarIdChange?.(v as string)}
+                    optionList={workCalendarOptions}
+                    style={{ width: '100%' }}
+                  />
+                </div>
+                <div className={`${classPrefix}-field`}>
+                  <Text className={`${classPrefix}-field-label`}>{t('triggerRule.fields.executionType')}</Text>
+                  <RadioGroup
+                    value={workCalendarExecutionType}
+                    onChange={(e) => onWorkCalendarExecutionTypeChange?.(e.target.value as 'WORKDAY' | 'NON_WORKDAY')}
+                    direction="horizontal"
+                  >
+                    <Radio value="WORKDAY">{t('triggerRule.fields.executionTypeWorkday')}</Radio>
+                    <Radio value="NON_WORKDAY">{t('triggerRule.fields.executionTypeNonWorkday')}</Radio>
+                  </RadioGroup>
+                </div>
+              </>
+            )}
+          </>
+        )}
 
-      {/* 时间规则 */}
-      <div className={`${classPrefix}-section`}>
         {/* 开始时间 */}
         <div className={`${classPrefix}-field`}>
           <Text className={`${classPrefix}-field-label`}>{t('triggerRule.fields.startDateTime')} *</Text>
@@ -526,10 +592,14 @@ const TriggerRuleConfig = ({
             />
           )}
         </div>
+      </div>
 
-        {/* 触发规则（放最后） */}
+      {/* 分类二：触发规则 */}
+      <div className={`${classPrefix}-category`}>
+        <div className={`${classPrefix}-category-title`}>{t('triggerRule.fields.ruleType')}</div>
+        
+        {/* 触发规则类型选择 */}
         <div className={`${classPrefix}-field`}>
-          <Text className={`${classPrefix}-field-label`}>{t('triggerRule.fields.ruleType')} *</Text>
           <RadioGroup
             value={ruleType}
             onChange={(e) => {
@@ -544,37 +614,7 @@ const TriggerRuleConfig = ({
         </div>
 
         {ruleType === 'BASIC' ? (
-          <>
-            {/* 运行频率 */}
-            <div className={`${classPrefix}-field`}>
-              <Text className={`${classPrefix}-field-label`}>{t('triggerRule.fields.frequencyType')} *</Text>
-              <Select
-                value={frequencyType}
-                onChange={(v) => onFrequencyTypeChange(v as BasicFrequencyType)}
-                optionList={[
-                  { value: 'MINUTELY', label: t('triggerRule.frequency.minutely') },
-                  { value: 'HOURLY', label: t('triggerRule.frequency.hourly') },
-                  { value: 'DAILY', label: t('triggerRule.frequency.daily') },
-                  { value: 'WEEKLY', label: t('triggerRule.frequency.weekly') },
-                  { value: 'MONTHLY', label: t('triggerRule.frequency.monthly') },
-                ]}
-                style={{ width: '100%' }}
-              />
-            </div>
-
-            {/* 频率详细配置 */}
-            {renderBasicFrequencyConfig()}
-
-            {/* 生成的 Cron 表达式（只读展示） */}
-            {generatedCronExpression && (
-              <div className={`${classPrefix}-generated-cron`}>
-                <Text className={`${classPrefix}-field-label`}>{t('triggerRule.fields.generatedCron')}</Text>
-                <div className={`${classPrefix}-generated-cron-value`}>
-                  <code>{generatedCronExpression}</code>
-                </div>
-              </div>
-            )}
-          </>
+          renderBasicRuleConfig()
         ) : (
           <>
             {/* Cron 表达式输入 */}

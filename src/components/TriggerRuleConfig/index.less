@@ -1,15 +1,61 @@
 // TriggerRuleConfig 触发规则配置组件样式
 .trigger-rule-config {
-  &-section {
+  // 分类区块
+  &-category {
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--semi-color-border);
+
+    &:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+  }
+
+  &-category-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--semi-color-text-0);
     margin-bottom: 16px;
-    
+
+    &::before {
+      content: '';
+      display: inline-block;
+      width: 3px;
+      height: 14px;
+      background: var(--semi-color-text-2);
+      border-radius: 2px;
+    }
+  }
+
+  &-section-title {
+    display: block;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--semi-color-text-0);
+    margin-bottom: 12px;
+  }
+
+  &-field {
+    margin-bottom: 16px;
+
     &:last-child {
       margin-bottom: 0;
     }
   }
 
-  &-field {
-    margin-bottom: 16px;
+  &-field-inline {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .trigger-rule-config-field-label {
+      margin-bottom: 0;
+    }
   }
 
   &-field-label {
@@ -31,38 +77,108 @@
     margin-top: 4px;
   }
 
-  &-inline-field {
+  // 运行频率单选组
+  &-frequency-radio {
+    margin-bottom: 0;
+  }
+
+  // 运行规则框
+  &-rule-box {
+    background: var(--semi-color-fill-0);
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 16px;
+  }
+
+  // 星期选择
+  &-weekday-selection {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+
+    > .semi-checkbox {
+      margin-right: 8px;
+    }
+
+    .semi-checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+  }
+
+  // 月份选择
+  &-month-selection {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+
+    > .semi-checkbox {
+      margin-right: 8px;
+    }
+  }
+
+  &-month-checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  // 月度日期类型
+  &-month-day-type {
+    margin-bottom: 16px;
+  }
+
+  // 日期选择
+  &-day-selection {
     display: flex;
     align-items: center;
     gap: 8px;
-    flex-wrap: wrap;
     margin-bottom: 16px;
-    
+
     > span {
       color: var(--semi-color-text-1);
       white-space: nowrap;
     }
   }
 
-  &-time-picker {
+  // 执行规则类型
+  &-execution-rule-type {
     margin-bottom: 16px;
+  }
 
-    &-inputs {
-      display: flex;
-      align-items: center;
-      gap: 4px;
+  // 指定时间
+  &-fixed-time {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    > span {
+      color: var(--semi-color-text-1);
+      white-space: nowrap;
     }
   }
 
-  &-time-separator {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--semi-color-text-1);
-    padding: 0 4px;
+  // 重复执行
+  &-repeat-time {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    > span {
+      color: var(--semi-color-text-1);
+      white-space: nowrap;
+    }
+  }
+
+  &-end-time-type {
+    margin-bottom: 0;
   }
 
   &-generated-cron {
-    margin-bottom: 16px;
+    margin-top: 16px;
     padding: 12px;
     background: var(--semi-color-fill-0);
     border-radius: 6px;
@@ -213,7 +329,8 @@
     }
   }
 
-  &-end-time-type {
-    margin-bottom: 8px;
+  // 基本规则区块
+  &-basic-rule {
+    margin-top: 8px;
   }
 }
