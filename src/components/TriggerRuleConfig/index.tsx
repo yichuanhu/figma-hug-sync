@@ -171,7 +171,7 @@ const TriggerRuleConfig = ({
   // 验证 Cron 表达式（模拟）
   const handleValidateCron = useCallback(async () => {
     if (!cronExpression.trim()) {
-      Toast.warning(t('triggerRule.validation.cronRequired'));
+      setCronValidResult({ valid: false, message: t('triggerRule.validation.cronRequired') });
       return;
     }
 

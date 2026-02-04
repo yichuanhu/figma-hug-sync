@@ -3,11 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { 
   Modal, 
   Form, 
-  TextArea, 
-  Select, 
-  DatePicker, 
   Toast,
   Typography,
+  Button,
 } from '@douyinfe/semi-ui';
 import type { LYQueueMessageResponse, QueueMessagePriority } from '@/api/index';
 
@@ -29,47 +27,29 @@ const RequeueMessageModal = ({
   const { t } = useTranslation();
   const { Text } = Typography;
   const [loading, setLoading] = useState(false);
-  const [formValues, setFormValues] = useState({
-    content: '',
-    priority: 'MEDIUM' as QueueMessagePriority,
-    effectiveTime: new Date(),
-    expiryTime: null as Date | null,
-  });
+  const [formApi, setFormApi] = useState<any>(null);
 
   // 初始化表单值
   useEffect(() => {
-    if (visible && message) {
-      setFormValues({
+    if (visible && message && formApi) {
+      formApi.setValues({
         content: message.content,
         priority: message.priority,
         effectiveTime: new Date(),
         expiryTime: message.expiry_time ? new Date(message.expiry_time) : null,
       });
     }
-  }, [visible, message]);
+  }, [visible, message, formApi]);
 
-  const handleSubmit = async () => {
-    // 验证
-    if (!formValues.content.trim()) {
-      Toast.error(t('queueMessage.requeueModal.validation.contentRequired'));
-      return;
+  // 自定义失效时间验证
+  const validateExpiryTime = (value: Date | null, values: Record<string, unknown>) => {
+    if (value && values.effectiveTime && value <= (values.effectiveTime as Date)) {
+      return t('queueMessage.requeueModal.validation.expiryTimeInvalid');
     }
+    return '';
+  };
 
-    if (formValues.content.length > 4000) {
-      Toast.error(t('queueMessage.requeueModal.validation.contentTooLong'));
-      return;
-    }
-
-    if (!formValues.effectiveTime) {
-      Toast.error(t('queueMessage.requeueModal.validation.effectiveTimeRequired'));
-      return;
-    }
-
-    if (formValues.expiryTime && formValues.expiryTime <= formValues.effectiveTime) {
-      Toast.error(t('queueMessage.requeueModal.validation.expiryTimeInvalid'));
-      return;
-    }
-
+  const handleSubmit = async (values: Record<string, unknown>) => {
     setLoading(true);
     try {
       // 模拟API调用
@@ -94,10 +74,7 @@ const RequeueMessageModal = ({
       title={t('queueMessage.requeueModal.title')}
       visible={visible}
       onCancel={onCancel}
-      onOk={handleSubmit}
-      okText={t('common.confirm')}
-      cancelText={t('common.cancel')}
-      confirmLoading={loading}
+      footer={null}
       className="requeue-message-modal"
       width={560}
     >
@@ -106,45 +83,64 @@ const RequeueMessageModal = ({
           {t('queueMessage.requeueModal.description')}
         </Text>
         
-        <Form labelPosition="top" className="requeue-message-modal-form">
-          <Form.Slot label={<span>{t('queueMessage.fields.content')} <span style={{ color: 'var(--semi-color-danger)' }}>*</span></span>}>
-            <TextArea
-              value={formValues.content}
-              onChange={(value) => setFormValues({ ...formValues, content: value })}
-              placeholder={t('queueMessage.fields.contentPlaceholder')}
-              maxCount={4000}
-              showClear
-              autosize={{ minRows: 4, maxRows: 8 }}
-            />
-          </Form.Slot>
+        <Form 
+          labelPosition="top" 
+          className="requeue-message-modal-form"
+          getFormApi={setFormApi}
+          onSubmit={handleSubmit}
+        >
+          <Form.TextArea
+            field="content"
+            label={t('queueMessage.fields.content')}
+            placeholder={t('queueMessage.fields.contentPlaceholder')}
+            maxCount={4000}
+            showClear
+            autosize={{ minRows: 4, maxRows: 8 }}
+            rules={[
+              { required: true, message: t('queueMessage.requeueModal.validation.contentRequired') },
+              { max: 4000, message: t('queueMessage.requeueModal.validation.contentTooLong') },
+            ]}
+          />
 
-          <Form.Slot label={<span>{t('queueMessage.fields.priority')} <span style={{ color: 'var(--semi-color-danger)' }}>*</span></span>}>
-            <Select
-              value={formValues.priority}
-              onChange={(value) => setFormValues({ ...formValues, priority: value as QueueMessagePriority })}
-              optionList={priorityOptions}
-              style={{ width: '100%' }}
-            />
-          </Form.Slot>
+          <Form.Select
+            field="priority"
+            label={t('queueMessage.fields.priority')}
+            optionList={priorityOptions}
+            style={{ width: '100%' }}
+            rules={[
+              { required: true, message: t('queueMessage.validation.priorityRequired') },
+            ]}
+            initValue="MEDIUM"
+          />
 
-          <Form.Slot label={<span>{t('queueMessage.fields.effectiveTime')} <span style={{ color: 'var(--semi-color-danger)' }}>*</span></span>}>
-            <DatePicker
-              type="dateTime"
-              value={formValues.effectiveTime}
-              onChange={(date) => setFormValues({ ...formValues, effectiveTime: date as Date })}
-              style={{ width: '100%' }}
-            />
-          </Form.Slot>
+          <Form.DatePicker
+            field="effectiveTime"
+            label={t('queueMessage.fields.effectiveTime')}
+            type="dateTime"
+            style={{ width: '100%' }}
+            rules={[
+              { required: true, message: t('queueMessage.requeueModal.validation.effectiveTimeRequired') },
+            ]}
+            initValue={new Date()}
+          />
 
-          <Form.Slot label={t('queueMessage.fields.expiryTime')}>
-            <DatePicker
-              type="dateTime"
-              value={formValues.expiryTime}
-              onChange={(date) => setFormValues({ ...formValues, expiryTime: date as Date | null })}
-              style={{ width: '100%' }}
-              placeholder={t('queueMessage.fields.expiryTimePlaceholder')}
-            />
-          </Form.Slot>
+          <Form.DatePicker
+            field="expiryTime"
+            label={t('queueMessage.fields.expiryTime')}
+            type="dateTime"
+            style={{ width: '100%' }}
+            placeholder={t('queueMessage.fields.expiryTimePlaceholder')}
+            validate={validateExpiryTime}
+          />
+
+          <div className="requeue-message-modal-footer">
+            <Button theme="light" onClick={onCancel}>
+              {t('common.cancel')}
+            </Button>
+            <Button htmlType="submit" theme="solid" type="primary" loading={loading}>
+              {t('common.confirm')}
+            </Button>
+          </div>
         </Form>
       </div>
     </Modal>

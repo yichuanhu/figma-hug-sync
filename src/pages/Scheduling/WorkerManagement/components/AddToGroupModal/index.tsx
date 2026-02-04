@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Modal, Select, Toast } from '@douyinfe/semi-ui';
+import { Modal, Form, Toast, Button } from '@douyinfe/semi-ui';
 import { useTranslation } from 'react-i18next';
 import type { LYWorkerResponse } from '@/api';
 import './index.less';
@@ -21,30 +21,27 @@ interface AddToGroupModalProps {
 const AddToGroupModal = ({ visible, onCancel, workerData, onSuccess }: AddToGroupModalProps) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
-  const [selectedGroupId, setSelectedGroupId] = useState<string | undefined>(undefined);
+  const [formApi, setFormApi] = useState<any>(null);
 
   // 重置表单
   useEffect(() => {
-    if (visible) {
-      setSelectedGroupId(undefined);
+    if (visible && formApi) {
+      formApi.reset();
     }
-  }, [visible]);
+  }, [visible, formApi]);
 
-  const handleSubmit = async () => {
-    if (!selectedGroupId || !workerData) {
-      Toast.warning(t('worker.addToGroup.selectRequired'));
-      return;
-    }
+  const handleSubmit = async (values: { groupId: string }) => {
+    if (!workerData) return;
 
     setLoading(true);
     try {
       // 模拟API调用
       await new Promise(resolve => setTimeout(resolve, 500));
       
-      const selectedGroup = mockWorkerGroups.find(g => g.id === selectedGroupId);
+      const selectedGroup = mockWorkerGroups.find(g => g.id === values.groupId);
       const updatedWorker: LYWorkerResponse = {
         ...workerData,
-        group_id: selectedGroupId,
+        group_id: values.groupId,
         group_name: selectedGroup?.name || null,
       };
       
@@ -63,31 +60,45 @@ const AddToGroupModal = ({ visible, onCancel, workerData, onSuccess }: AddToGrou
       title={t('worker.addToGroup.title')}
       visible={visible}
       onCancel={onCancel}
-      onOk={handleSubmit}
-      okText={t('common.confirm')}
-      cancelText={t('common.cancel')}
-      confirmLoading={loading}
+      footer={null}
       className="add-to-group-modal"
       width={480}
     >
-      <div className="add-to-group-modal-content">
-        <div className="add-to-group-modal-worker-info">
-          {t('worker.addToGroup.workerLabel')}: <strong>{workerData?.name}</strong>
-        </div>
-        <div className="add-to-group-modal-field">
-          <label className="add-to-group-modal-label">{t('worker.addToGroup.groupLabel')}</label>
-          <Select
+      <Form
+        className="add-to-group-modal-form"
+        labelPosition="top"
+        getFormApi={setFormApi}
+        onSubmit={handleSubmit}
+      >
+        <div className="add-to-group-modal-content">
+          <div className="add-to-group-modal-worker-info">
+            {t('worker.addToGroup.workerLabel')}: <strong>{workerData?.name}</strong>
+          </div>
+          
+          <Form.Select
+            field="groupId"
+            label={t('worker.addToGroup.groupLabel')}
             placeholder={t('worker.addToGroup.groupPlaceholder')}
-            value={selectedGroupId}
-            onChange={(value) => setSelectedGroupId(value as string)}
             style={{ width: '100%' }}
             optionList={mockWorkerGroups.map(g => ({
               label: g.name,
               value: g.id,
             }))}
+            rules={[
+              { required: true, message: t('worker.addToGroup.selectRequired') },
+            ]}
           />
         </div>
-      </div>
+
+        <div className="add-to-group-modal-footer">
+          <Button theme="light" onClick={onCancel}>
+            {t('common.cancel')}
+          </Button>
+          <Button htmlType="submit" theme="solid" type="primary" loading={loading}>
+            {t('common.confirm')}
+          </Button>
+        </div>
+      </Form>
     </Modal>
   );
 };
