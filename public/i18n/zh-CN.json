@@ -2295,5 +2295,81 @@
     "online": "在线",
     "statusOnline": "在线",
     "statusOffline": "离线"
+  },
+  "workCalendar": {
+    "pageTitle": "自定义工作日历",
+    "description": "管理工作日历，配置节假日和调休日期",
+    "breadcrumb": {
+      "schedulingCenter": "调度中心",
+      "taskExecution": "任务执行",
+      "autoExecutionPolicy": "自动执行策略"
+    },
+    "back": "返回",
+    "sidebar": {
+      "title": "日历列表",
+      "newCalendar": "新建日历",
+      "noCalendars": "暂无日历",
+      "deleteConfirmTitle": "删除日历",
+      "deleteConfirmMessage": "确定要删除日历「{{name}}」吗？",
+      "deleteSuccess": "日历删除成功",
+      "cannotDelete": "该日历正在被触发器使用，无法删除"
+    },
+    "viewer": {
+      "edit": "编辑",
+      "basicInfo": "基本信息",
+      "name": "日历名称",
+      "template": "模板类型",
+      "period": "周期",
+      "creator": "创建者",
+      "createTime": "创建时间",
+      "calendarPreview": "日历预览",
+      "workday": "工作日",
+      "nonWorkday": "非工作日"
+    },
+    "editor": {
+      "title": "编辑日历",
+      "importCalendar": "导入日历文件",
+      "name": "日历名称",
+      "namePlaceholder": "请输入日历名称",
+      "period": "周期",
+      "periodPlaceholder": "请选择周期",
+      "calendarEdit": "日历编辑",
+      "clickToToggle": "点击日期切换工作日/非工作日状态",
+      "cancel": "取消",
+      "save": "保存",
+      "saveSuccess": "日历保存成功",
+      "saveError": "保存失败，请重试"
+    },
+    "createModal": {
+      "title": "新建",
+      "name": "名称",
+      "namePlaceholder": "请输入日历名称",
+      "template": "选择模板",
+      "templatePlaceholder": "请选择日历模板",
+      "period": "周期",
+      "periodStartPlaceholder": "开始日期",
+      "periodEndPlaceholder": "结束日期",
+      "success": "日历创建成功",
+      "error": "创建失败，请重试"
+    },
+    "template": {
+      "weekendDouble": "周末双休日历",
+      "weekendSingle": "周末单休日历（每周日为非工作日）",
+      "blank": "空白日历"
+    },
+    "validation": {
+      "nameRequired": "请输入日历名称",
+      "nameLengthError": "日历名称不能超过50个字符",
+      "templateRequired": "请选择日历模板",
+      "periodRequired": "请选择周期",
+      "startDateRequired": "请选择开始日期",
+      "endDateRequired": "请选择结束日期",
+      "endDateInvalid": "结束日期必须晚于开始日期"
+    },
+    "empty": {
+      "title": "暂无日历",
+      "description": "点击「新建日历」创建第一个工作日历"
+    },
+    "entryButton": "自定义工作日历"
   }
 }
