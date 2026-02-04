@@ -489,10 +489,8 @@ const TriggerRuleConfig = ({
 
   return (
     <div className={classPrefix}>
-      {/* 分类一：触发周期 */}
+      {/* 分类一：触发周期（无标题） */}
       <div className={`${classPrefix}-category`}>
-        <div className={`${classPrefix}-category-title`}>{t('triggerRule.category.triggerCycle')}</div>
-        
         {/* 触发器时区 */}
         <div className={`${classPrefix}-field`}>
           <Text className={`${classPrefix}-field-label`}>{t('triggerRule.fields.timeZone')} *</Text>
