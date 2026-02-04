@@ -185,7 +185,7 @@ const FileDetailDrawer = ({
       title={
         <div className="file-detail-drawer-header">
           <Title heading={5} className="file-detail-drawer-header-title">
-            {file.name}
+            {file.display_name}
           </Title>
           <Space spacing={8}>
             <Tooltip content={t('common.previous')}>
@@ -283,7 +283,10 @@ const FileDetailDrawer = ({
             {/* 基本信息 */}
             <Descriptions align="left">
               <Descriptions.Item itemKey={t('file.table.name')}>
-                {file.name}
+                {file.display_name}
+              </Descriptions.Item>
+              <Descriptions.Item itemKey={t('file.detail.originalName')}>
+                {file.original_name}
               </Descriptions.Item>
               <Descriptions.Item itemKey={t('file.table.size')}>
                 {formatFileSize(file.file_size)}

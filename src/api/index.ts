@@ -2674,8 +2674,10 @@ export interface LYDependentProcessVersion {
 export interface LYFileResponse {
   /** 文件ID */
   id: string;
-  /** 文件名称 */
-  name: string;
+  /** 用户填写的文件名称 */
+  display_name: string;
+  /** 源文件名 */
+  original_name: string;
   /** 存储ID */
   storage_id: string;
   /** 文件大小(字节) */

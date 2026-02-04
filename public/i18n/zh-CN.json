@@ -361,6 +361,7 @@
     "noData": "暂无文件",
     "table": {
       "name": "文件名称",
+      "originalName": "源文件名",
       "size": "文件大小",
       "source": "来源",
       "dependency": "依赖状态",
@@ -381,6 +382,8 @@
       "source": "来源"
     },
     "fields": {
+      "displayName": "文件名称",
+      "displayNamePlaceholder": "请输入文件名称",
       "descriptionPlaceholder": "请输入文件描述（选填）",
       "changeReason": "变更原因",
       "changeReasonPlaceholder": "请输入变更原因"
@@ -390,6 +393,10 @@
       "fileTooLarge": "文件大小不能超过100MB",
       "nameExists": "已存在同名文件，请修改文件名后重新上传",
       "nameExistsWarning": "已存在同名文件，继续上传将覆盖原文件",
+      "displayNameRequired": "请输入文件名称",
+      "displayNameTooLong": "文件名称不能超过100个字符",
+      "displayNameExists": "该文件名称已存在，请使用其他名称",
+      "displayNameExistsWarning": "该文件名称已存在，继续上传将覆盖原文件",
       "changeReasonRequired": "请输入变更原因",
       "noExtension": "文件必须包含扩展名",
       "blockedExtension": "不支持上传 {{ext}} 类型的文件",
@@ -434,6 +441,7 @@
       "systemInfo": "系统信息",
       "environment": "可见环境",
       "updater": "更新者",
+      "originalName": "源文件名",
       "tabs": {
         "basicInfo": "基本信息",
         "dependencies": "依赖关系"
