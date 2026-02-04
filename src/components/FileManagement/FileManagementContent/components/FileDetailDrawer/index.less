@@ -55,58 +55,9 @@
     }
   }
 
-  // 文件内容卡片
-  &-file-card {
-    display: flex;
-    align-items: flex-start;
-    gap: 16px;
-    padding: 16px;
-    background: var(--semi-color-fill-0);
-    border-radius: 8px;
-
-    &-icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 48px;
-      height: 48px;
-      background: var(--semi-color-primary-light-default);
-      border-radius: 8px;
-      color: var(--semi-color-primary);
-      flex-shrink: 0;
-    }
-
-    &-info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    &-row {
-      display: flex;
-      align-items: flex-start;
-      margin-bottom: 8px;
-
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
-
-    &-label {
-      flex-shrink: 0;
-      width: 80px;
-      font-size: 13px;
-    }
-
-    &-value {
-      flex: 1;
-      min-width: 0;
-      font-size: 13px;
-      word-break: break-all;
-    }
-
-    &-mono {
-      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
-    }
+  // 等宽字体
+  &-mono {
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
   }
 }
 

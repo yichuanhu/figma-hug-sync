@@ -21,7 +21,6 @@ import {
   IconUpload,
   IconDownload,
   IconDeleteStroked,
-  IconFile,
 } from '@douyinfe/semi-icons';
 import type { LYFileResponse, FileSource } from '@/api/index';
 
@@ -299,25 +298,17 @@ const FileDetailDrawer = ({
         {/* 文件内容区块 */}
         <div className="file-detail-drawer-section">
           <Text className="file-detail-drawer-section-title">{t('file.detail.fileContent')}</Text>
-          <div className="file-detail-drawer-file-card">
-            <div className="file-detail-drawer-file-card-icon">
-              <IconFile size="large" />
-            </div>
-            <div className="file-detail-drawer-file-card-info">
-              <div className="file-detail-drawer-file-card-row">
-                <Text type="tertiary" className="file-detail-drawer-file-card-label">{t('file.detail.originalName')}</Text>
-                <Text className="file-detail-drawer-file-card-value">{file.original_name}</Text>
-              </div>
-              <div className="file-detail-drawer-file-card-row">
-                <Text type="tertiary" className="file-detail-drawer-file-card-label">{t('file.table.size')}</Text>
-                <Text className="file-detail-drawer-file-card-value file-detail-drawer-file-card-mono">{formatFileSize(file.file_size)}</Text>
-              </div>
-              <div className="file-detail-drawer-file-card-row">
-                <Text type="tertiary" className="file-detail-drawer-file-card-label">{t('file.detail.mimeType')}</Text>
-                <Text className="file-detail-drawer-file-card-value" copyable>{file.mime_type || '-'}</Text>
-              </div>
-            </div>
-          </div>
+          <Descriptions align="left">
+            <Descriptions.Item itemKey={t('file.detail.originalName')}>
+              {file.original_name}
+            </Descriptions.Item>
+            <Descriptions.Item itemKey={t('file.table.size')}>
+              <span className="file-detail-drawer-mono">{formatFileSize(file.file_size)}</span>
+            </Descriptions.Item>
+            <Descriptions.Item itemKey={t('file.detail.mimeType')}>
+              {file.mime_type || '-'}
+            </Descriptions.Item>
+          </Descriptions>
         </div>
       </div>
     </SideSheet>
