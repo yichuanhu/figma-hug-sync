@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Typography, Button, Descriptions } from '@douyinfe/semi-ui';
-import { IconEdit } from '@douyinfe/semi-icons';
+import { IconEditStroked } from '@douyinfe/semi-icons';
 import { format } from 'date-fns';
 import YearCalendarGrid from '../YearCalendarGrid';
 import type { LYWorkCalendarResponse } from '@/api/index';
@@ -46,7 +46,7 @@ const CalendarViewer: React.FC<CalendarViewerProps> = ({ calendar, onEdit }) => 
           {calendar.name}
         </Title>
         <Button
-          icon={<IconEdit />}
+          icon={<IconEditStroked />}
           onClick={onEdit}
         >
           {t('workCalendar.viewer.edit')}
