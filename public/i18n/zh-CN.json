@@ -2193,8 +2193,201 @@
   "queueTrigger": {
     "pageTitle": "队列触发器",
     "description": "基于队列消息自动触发任务创建",
+    "createTrigger": "新建触发器",
+    "searchPlaceholder": "搜索触发器名称或描述",
     "noData": "暂无队列触发器",
-    "comingSoon": "队列触发器功能即将上线，敬请期待"
+    "table": {
+      "name": "触发器名称",
+      "queueName": "监控队列",
+      "processName": "流程名称",
+      "messageCount": "当前消息数",
+      "status": "状态",
+      "lastTriggerTime": "最后触发时间"
+    },
+    "status": {
+      "enabled": "启用",
+      "disabled": "禁用"
+    },
+    "filter": {
+      "process": "流程",
+      "queue": "队列",
+      "status": "状态",
+      "allProcesses": "全部流程",
+      "allQueues": "全部队列",
+      "allStatus": "全部状态"
+    },
+    "actions": {
+      "edit": "编辑",
+      "delete": "删除",
+      "enable": "启用",
+      "disable": "禁用"
+    },
+    "createModal": {
+      "title": "新建队列触发器",
+      "steps": {
+        "basicInfo": "基本信息",
+        "taskConfig": "任务配置",
+        "queueConfig": "队列触发配置"
+      },
+      "basicSection": "基本信息",
+      "processSection": "流程配置",
+      "targetSection": "执行目标",
+      "executionSection": "执行设置",
+      "parameterSection": "输入参数",
+      "queueSection": "队列触发配置",
+      "selectTarget": "选择执行目标",
+      "success": "队列触发器创建成功",
+      "error": "创建失败，请重试",
+      "prevStep": "上一步",
+      "nextStep": "下一步"
+    },
+    "editModal": {
+      "title": "编辑队列触发器",
+      "success": "队列触发器更新成功",
+      "error": "更新失败，请重试"
+    },
+    "deleteModal": {
+      "title": "删除确认",
+      "confirmMessage": "确定要删除队列触发器「{{name}}」吗？",
+      "deleteWarning": "删除后将不再基于队列消息自动创建任务，已创建的任务不受影响。",
+      "confirmDelete": "确认删除",
+      "success": "队列触发器删除成功",
+      "error": "删除失败，请重试"
+    },
+    "enableModal": {
+      "title": "启用触发器",
+      "confirmMessage": "确定要启用队列触发器「{{name}}」吗？",
+      "enableHint": "启用后将按照配置的规则自动创建任务。",
+      "success": "触发器已启用",
+      "error": "启用失败，请重试"
+    },
+    "disableModal": {
+      "title": "禁用触发器",
+      "confirmMessage": "确定要禁用队列触发器「{{name}}」吗？",
+      "disableHint": "禁用后将暂停自动创建任务，已创建的任务不受影响。",
+      "success": "触发器已禁用",
+      "error": "禁用失败，请重试"
+    },
+    "fields": {
+      "name": "触发器名称",
+      "namePlaceholder": "请输入触发器名称",
+      "description": "描述",
+      "descriptionPlaceholder": "请输入触发器描述（选填）",
+      "process": "流程",
+      "processPlaceholder": "请选择流程",
+      "targetType": "执行目标类型",
+      "targetPlaceholder": "请选择执行目标",
+      "priority": "优先级",
+      "maxDuration": "最大执行时长",
+      "maxDurationUnit": "秒",
+      "maxDurationHint": "范围：60-86400秒（1分钟-24小时）",
+      "validityDays": "任务有效期",
+      "validityDaysUnit": "天",
+      "validityDaysHint": "范围：1-30天",
+      "enableRecording": "启用录屏",
+      "timeZone": "触发器时区",
+      "timeZonePlaceholder": "请选择时区",
+      "enableWorkCalendar": "启用工作日历",
+      "workCalendar": "工作日历",
+      "workCalendarPlaceholder": "请选择工作日历",
+      "executionType": "执行类型",
+      "executionTypeWorkday": "工作日执行",
+      "executionTypeNonWorkday": "非工作日执行",
+      "monitoredQueue": "监控队列",
+      "monitoredQueuePlaceholder": "请选择监控队列",
+      "monitoredQueueHint": "每个队列只能被一个触发器监控",
+      "minEffectiveMessages": "触发最少有效消息数",
+      "minEffectiveMessagesHint": "当队列中有效消息数达到此值时触发任务创建",
+      "messagesPerTrigger": "平均每若干条消息触发一次",
+      "messagesPerTriggerHint": "用于计算触发频率",
+      "enablePeriodicCheck": "启用定时检查",
+      "enablePeriodicCheckHint": "当有效消息数不足时，每隔指定时间仍触发任务",
+      "periodicCheckInterval": "检查时间间隔",
+      "periodicCheckIntervalUnit": "分钟"
+    },
+    "validation": {
+      "nameRequired": "请输入触发器名称",
+      "nameLengthError": "触发器名称不能超过255字符",
+      "nameExists": "触发器名称已存在，请使用其他名称",
+      "descriptionLengthError": "描述不能超过2000字符",
+      "processRequired": "请选择流程",
+      "targetTypeRequired": "请选择执行目标类型",
+      "targetRequired": "请选择执行目标",
+      "maxDurationRange": "最大执行时长必须在60-86400秒之间",
+      "validityDaysRange": "任务有效期必须在1-30天之间",
+      "timeZoneRequired": "请选择时区",
+      "queueRequired": "请选择监控队列",
+      "queueAlreadyMonitored": "该队列已被其他触发器监控",
+      "minEffectiveMessagesRange": "触发最少有效消息数必须在1-9999之间",
+      "messagesPerTriggerRange": "每若干条消息触发一次必须大于0",
+      "periodicCheckIntervalRange": "检查时间间隔必须大于0",
+      "workCalendarRequired": "启用工作日历时必须选择日历",
+      "parameterRequired": "请填写必填参数「{{name}}」"
+    },
+    "detail": {
+      "tabs": {
+        "basicInfo": "基本信息",
+        "executionLogs": "执行记录"
+      },
+      "basicInfo": "基本信息",
+      "queueConfig": "队列触发配置",
+      "taskConfig": "任务配置",
+      "inputParameters": "输入参数",
+      "statusMonitor": "状态监控",
+      "fields": {
+        "name": "触发器名称",
+        "description": "描述",
+        "status": "状态",
+        "process": "流程",
+        "executionTarget": "执行目标",
+        "priority": "优先级",
+        "maxDuration": "最大执行时长",
+        "validityDays": "任务有效期",
+        "enableRecording": "启用录屏",
+        "timeZone": "时区",
+        "workCalendar": "工作日历",
+        "monitoredQueue": "监控队列",
+        "minEffectiveMessages": "触发最少有效消息数",
+        "messagesPerTrigger": "每N条消息触发一次",
+        "enablePeriodicCheck": "定时检查",
+        "periodicCheckInterval": "检查间隔",
+        "currentMessageCount": "当前消息数",
+        "pendingTaskCount": "待运行任务数",
+        "runningTaskCount": "运行中任务数",
+        "lastTriggerTime": "最后触发",
+        "creator": "创建者",
+        "createTime": "创建时间"
+      },
+      "noParameters": "无输入参数",
+      "notTriggeredYet": "尚未触发",
+      "periodicCheckEnabled": "已启用，每 {{interval}} 分钟检查一次",
+      "periodicCheckDisabled": "未启用"
+    },
+    "executionLog": {
+      "title": "执行记录",
+      "noLogs": "暂无执行记录",
+      "table": {
+        "triggerTime": "触发时间",
+        "status": "执行状态",
+        "taskCount": "创建任务数",
+        "messageCount": "触发时消息数",
+        "errorMessage": "错误信息"
+      },
+      "status": {
+        "success": "成功",
+        "failed": "失败",
+        "skipped": "跳过"
+      }
+    },
+    "targetType": {
+      "botGroup": "机器人组",
+      "botInGroup": "组内机器人",
+      "ungroupedBot": "未分组机器人"
+    },
+    "empty": {
+      "filterDescription": "没有找到匹配的触发器，请尝试调整筛选条件",
+      "defaultDescription": "还没有创建任何队列触发器，点击「新建触发器」开始"
+    }
   },
   "triggerRule": {
     "category": {

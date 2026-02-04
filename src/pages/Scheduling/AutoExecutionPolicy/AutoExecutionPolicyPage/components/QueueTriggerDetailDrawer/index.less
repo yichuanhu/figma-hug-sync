@@ -1,0 +1,158 @@
+// QueueTriggerDetailDrawer 队列触发器详情抽屉样式
+.queue-trigger-detail-drawer {
+  // 标题区域
+  .queue-trigger-detail-drawer-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-right: 0;
+
+    .queue-trigger-detail-drawer-header-title {
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .queue-trigger-detail-drawer-header-divider {
+      height: 16px;
+      margin: 0 8px 0 4px;
+    }
+
+    .queue-trigger-detail-drawer-header-close-btn {
+      margin-left: 4px;
+    }
+  }
+
+  // 拖拽把手
+  .queue-trigger-detail-drawer-resize-handle {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    cursor: ew-resize;
+    z-index: 100;
+  }
+
+  // Tab 容器
+  .queue-trigger-detail-drawer-tabs {
+    height: 100%;
+  }
+
+  // Tab 内容
+  .queue-trigger-detail-drawer-tab-content {
+    padding: 16px 24px;
+  }
+
+  // 内容区块
+  .queue-trigger-detail-drawer-section {
+    margin-bottom: 24px;
+
+    .queue-trigger-detail-drawer-section-title {
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--semi-color-text-0);
+      margin-bottom: 12px;
+    }
+  }
+
+  // 状态监控卡片
+  .queue-trigger-detail-drawer-status-cards {
+    display: flex;
+    gap: 16px;
+  }
+
+  .queue-trigger-detail-drawer-status-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px;
+    background: var(--semi-color-fill-0);
+    border-radius: var(--semi-border-radius-medium);
+
+    .queue-trigger-detail-drawer-status-card-value {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--semi-color-text-0);
+      margin-bottom: 4px;
+    }
+
+    .queue-trigger-detail-drawer-status-card-label {
+      font-size: 12px;
+      color: var(--semi-color-text-2);
+    }
+  }
+
+  // JSON 内容展示 - 与任务详情一致
+  .queue-trigger-detail-drawer-json-content {
+    background: var(--semi-color-fill-0);
+    border-radius: var(--semi-border-radius-small);
+    padding: 12px;
+    max-height: 200px;
+    overflow-y: auto;
+
+    pre {
+      margin: 0;
+      font-size: 12px;
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+  }
+
+  // 无数据状态 - 与任务详情一致
+  .queue-trigger-detail-drawer-no-data {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--semi-color-text-2);
+    padding: 16px;
+    text-align: center;
+    background: var(--semi-color-fill-0);
+    border-radius: var(--semi-border-radius-small);
+  }
+
+  // 空状态
+  .queue-trigger-detail-drawer-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+    color: var(--semi-color-text-2);
+
+    .queue-trigger-detail-drawer-empty-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+  }
+}
+
+// 全局覆盖 - SideSheet header 和 body 样式
+.card-sidesheet.queue-trigger-detail-drawer {
+  .semi-sidesheet-header {
+    border-bottom: 1px solid var(--semi-color-border);
+  }
+
+  .semi-sidesheet-body {
+    padding: 0;
+    position: relative;
+  }
+
+  .semi-tabs-bar {
+    padding: 0 24px;
+  }
+
+  // Descriptions 标签左对齐
+  .semi-descriptions {
+    .semi-descriptions-item-key {
+      text-align: left;
+    }
+  }
+}
