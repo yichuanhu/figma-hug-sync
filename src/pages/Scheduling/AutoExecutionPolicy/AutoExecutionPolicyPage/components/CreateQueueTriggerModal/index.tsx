@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Modal,
@@ -10,8 +10,6 @@ import {
   Tag,
   Steps,
   Select,
-  Switch,
-  InputNumber,
   Banner,
 } from '@douyinfe/semi-ui';
 import { IconHelpCircle, IconInbox } from '@douyinfe/semi-icons';
@@ -88,6 +86,40 @@ const mockCredentials = [
   { id: 'cred-002', name: 'API访问凭据' },
 ];
 
+// Mock 执行模板
+const mockTemplates = [
+  {
+    template_id: 'tpl-001',
+    template_name: '订单处理默认模板',
+    description: '使用默认配置处理订单',
+    process_id: 'proc-001',
+    process_name: '订单自动处理',
+    execution_target_type: 'BOT_GROUP' as ExecutionTargetType,
+    execution_target_id: 'group-001',
+    execution_target_name: '订单处理组',
+    priority: 'MEDIUM' as TaskPriority,
+    max_execution_duration: 3600,
+    validity_days: 7,
+    enable_recording: true,
+    input_parameters: { targetUrl: 'https://orders.example.com', maxCount: 50 },
+  },
+  {
+    template_id: 'tpl-002',
+    template_name: '财务审批快速模板',
+    description: '财务报销审批快速执行配置',
+    process_id: 'proc-002',
+    process_name: '财务报销审批',
+    execution_target_type: 'BOT_GROUP' as ExecutionTargetType,
+    execution_target_id: 'group-002',
+    execution_target_name: '财务审批组',
+    priority: 'HIGH' as TaskPriority,
+    max_execution_duration: 1800,
+    validity_days: 3,
+    enable_recording: false,
+    input_parameters: { department: '财务部' },
+  },
+];
+
 // 时区列表
 const timeZoneOptions = [
   { value: 'Asia/Shanghai', label: 'Asia/Shanghai (UTC+8)' },
@@ -142,6 +174,29 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
           formApi.setValue(`param_${param.name}`, param.default_value);
         }
       });
+    }
+  };
+
+  // 选择模板
+  const handleTemplateChange = (templateId: string | null) => {
+    if (templateId && formApi) {
+      const template = mockTemplates.find((t) => t.template_id === templateId);
+      if (template) {
+        handleProcessChange(template.process_id);
+        setTargetType(template.execution_target_type);
+        formApi.setValues({
+          processId: template.process_id,
+          targetType: template.execution_target_type,
+          targetId: template.execution_target_id,
+          priority: template.priority,
+          maxDuration: template.max_execution_duration,
+          validityDays: template.validity_days,
+          enableRecording: template.enable_recording,
+          ...Object.fromEntries(
+            Object.entries(template.input_parameters || {}).map(([k, v]) => [`param_${k}`, v])
+          ),
+        });
+      }
     }
   };
 
@@ -377,9 +432,25 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
     </div>
   );
 
-  // 渲染步骤1：任务配置
-  const renderStep1Content = () => (
+  // 渲染步骤1左侧：任务配置
+  const renderStep1LeftContent = () => (
     <>
+      {/* 模板选择 */}
+      <div className="create-queue-trigger-modal-section">
+        <div className="create-queue-trigger-modal-section-title">{t('task.createModal.selectTemplate')}</div>
+        <Form.Select
+          field="templateId"
+          noLabel
+          placeholder={t('task.createModal.templatePlaceholder')}
+          optionList={mockTemplates.map((tpl) => ({ value: tpl.template_id, label: tpl.template_name }))}
+          showClear
+          filter
+          className="create-queue-trigger-modal-select-full"
+          onChange={(v) => handleTemplateChange(v as string | null)}
+        />
+      </div>
+
+      {/* 流程配置 */}
       <div className="create-queue-trigger-modal-section">
         <div className="create-queue-trigger-modal-section-title">{t('queueTrigger.createModal.processSection')}</div>
         <Form.Select
@@ -387,45 +458,61 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
           label={t('queueTrigger.fields.process')}
           placeholder={t('queueTrigger.fields.processPlaceholder')}
           optionList={mockProcesses.map((p) => ({ value: p.process_id, label: p.process_name }))}
-          onChange={(value) => handleProcessChange(value as string)}
-          rules={[{ required: true, message: t('queueTrigger.validation.processRequired') }]}
-          style={{ width: '100%' }}
+          filter
+          className="create-queue-trigger-modal-select-full"
+          rules={[
+            { required: true, message: t('queueTrigger.validation.processRequired') },
+          ]}
+          onChange={(v) => handleProcessChange(v as string)}
         />
       </div>
 
+      {/* 执行目标 */}
       <div className="create-queue-trigger-modal-section">
         <div className="create-queue-trigger-modal-section-title">{t('queueTrigger.createModal.targetSection')}</div>
-        <Form.Select
+        <Form.RadioGroup
           field="targetType"
           label={t('queueTrigger.fields.targetType')}
-          placeholder={t('queueTrigger.fields.targetPlaceholder')}
-          optionList={[
-            { value: 'BOT_GROUP', label: t('queueTrigger.targetType.botGroup') },
-            { value: 'BOT_IN_GROUP', label: t('queueTrigger.targetType.botInGroup') },
-            { value: 'UNGROUPED_BOT', label: t('queueTrigger.targetType.ungroupedBot') },
+          direction="horizontal"
+          rules={[
+            { required: true, message: t('queueTrigger.validation.targetTypeRequired') },
           ]}
-          onChange={(value) => setTargetType(value as ExecutionTargetType)}
-          rules={[{ required: true, message: t('queueTrigger.validation.targetTypeRequired') }]}
-          style={{ width: '100%' }}
-        />
+          onChange={(e) => {
+            setTargetType(e.target.value as ExecutionTargetType);
+            formApi?.setValue('targetId', undefined);
+          }}
+        >
+          <Form.Radio value="BOT_GROUP">{t('queueTrigger.targetType.botGroup')}</Form.Radio>
+          <Form.Radio value="BOT_IN_GROUP">{t('queueTrigger.targetType.botInGroup')}</Form.Radio>
+          <Form.Radio value="UNGROUPED_BOT">{t('queueTrigger.targetType.ungroupedBot')}</Form.Radio>
+        </Form.RadioGroup>
         {targetType && (
-          <Form.Slot label={t('queueTrigger.createModal.selectTarget')}>
+          <div className="create-queue-trigger-modal-field">
+            <div className="create-queue-trigger-modal-field-label">{t('task.createModal.selectTarget')}</div>
             <BotTargetSelector
               targetType={targetType}
               value={formApi?.getValue('targetId')}
-              onChange={(value) => formApi?.setValue('targetId', value)}
+              onChange={(v) => formApi?.setValue('targetId', v)}
+              placeholder={t('queueTrigger.fields.targetPlaceholder')}
             />
-          </Form.Slot>
+            <Form.Input
+              field="targetId"
+              noLabel
+              style={{ display: 'none' }}
+              rules={[
+                { required: true, message: t('queueTrigger.validation.targetRequired') },
+              ]}
+            />
+          </div>
         )}
-        <Form.Input field="targetId" noLabel style={{ display: 'none' }} />
       </div>
 
+      {/* 执行设置 */}
       <div className="create-queue-trigger-modal-section">
         <div className="create-queue-trigger-modal-section-title">{t('queueTrigger.createModal.executionSection')}</div>
         <Form.RadioGroup
           field="priority"
           label={t('queueTrigger.fields.priority')}
-          initValue="MEDIUM"
           direction="horizontal"
         >
           <Form.Radio value="HIGH">{t('task.priority.high')}</Form.Radio>
@@ -435,264 +522,323 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
         <Form.InputNumber
           field="maxDuration"
           label={t('queueTrigger.fields.maxDuration')}
-          initValue={3600}
           min={60}
           max={86400}
-          suffix={t('queueTrigger.fields.maxDurationUnit')}
-          extraText={t('queueTrigger.fields.maxDurationHint')}
+          suffix={t('common.seconds')}
+          style={{ width: 150 }}
           rules={[
-            { required: true, message: t('queueTrigger.validation.maxDurationRange') },
-            { type: 'number', min: 60, max: 86400, message: t('queueTrigger.validation.maxDurationRange') },
+            { required: true, message: t('task.validation.maxDurationRequired') },
+            { validator: (rule, value, callback) => {
+              if (value < 60 || value > 86400) {
+                callback(t('task.validation.maxDurationRange'));
+                return false;
+              }
+              callback();
+              return true;
+            }},
           ]}
-          style={{ width: '100%' }}
         />
         <Form.InputNumber
           field="validityDays"
           label={t('queueTrigger.fields.validityDays')}
-          initValue={7}
           min={1}
           max={30}
-          suffix={t('queueTrigger.fields.validityDaysUnit')}
-          extraText={t('queueTrigger.fields.validityDaysHint')}
+          suffix={t('common.days')}
+          style={{ width: 150 }}
           rules={[
-            { required: true, message: t('queueTrigger.validation.validityDaysRange') },
-            { type: 'number', min: 1, max: 30, message: t('queueTrigger.validation.validityDaysRange') },
+            { required: true, message: t('task.validation.validityDaysRequired') },
+            { validator: (rule, value, callback) => {
+              if (value < 1 || value > 30) {
+                callback(t('task.validation.validityDaysRange'));
+                return false;
+              }
+              callback();
+              return true;
+            }},
           ]}
-          style={{ width: '100%' }}
         />
-        <Form.Switch
-          field="enableRecording"
-          label={t('queueTrigger.fields.enableRecording')}
-          initValue={false}
-        />
+        <div className="create-queue-trigger-modal-field">
+          <div className="semi-form-field-label-text">{t('queueTrigger.fields.enableRecording')}</div>
+          <Form.Switch
+            field="enableRecording"
+            noLabel
+          />
+        </div>
       </div>
+    </>
+  );
+
+  // 渲染步骤1右侧：参数配置
+  const renderStep1RightContent = () => (
+    <>
+      {/* 输入参数 */}
+      {hasParameters && (
+        <div className="create-queue-trigger-modal-section">
+          <div className="create-queue-trigger-modal-section-title">{t('queueTrigger.createModal.parameterSection')}</div>
+          <div className="create-queue-trigger-modal-params">
+            {selectedProcess?.parameters.map((param) => renderParameterInput(param))}
+          </div>
+        </div>
+      )}
+
+      {/* 输出参数展示 */}
+      {hasOutputParameters && (
+        <div className="create-queue-trigger-modal-section">
+          <div className="create-queue-trigger-modal-section-title">{t('template.createModal.outputParametersSection')}</div>
+          <div className="create-queue-trigger-modal-output-params">
+            {selectedProcess?.output_parameters?.map((param) => (
+              <div className="create-queue-trigger-modal-output-param-item" key={param.name}>
+                <div className="create-queue-trigger-modal-output-param-name">
+                  <span>{param.name}</span>
+                  <Tag size="small" color="grey" style={{ marginLeft: 8 }}>
+                    {param.type}
+                  </Tag>
+                </div>
+                {param.description && (
+                  <div className="create-queue-trigger-modal-output-param-desc">{param.description}</div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 如果没有任何参数 */}
+      {!hasParameters && !hasOutputParameters && (
+        <div className="create-queue-trigger-modal-no-params">
+          <IconInbox size="extra-large" style={{ color: 'var(--semi-color-text-2)', marginBottom: 8 }} />
+          <div>{t('template.createModal.noParameters')}</div>
+        </div>
+      )}
     </>
   );
 
   // 渲染步骤2：队列触发配置
   const renderStep2Content = () => (
-    <>
-      <div className="create-queue-trigger-modal-section">
-        <div className="create-queue-trigger-modal-section-title">{t('queueTrigger.createModal.queueSection')}</div>
-        
-        {/* 触发器时区 */}
-        <Form.Select
-          field="timeZone"
-          label={t('queueTrigger.fields.timeZone')}
-          placeholder={t('queueTrigger.fields.timeZonePlaceholder')}
-          initValue="Asia/Shanghai"
-          optionList={timeZoneOptions}
-          rules={[{ required: true, message: t('queueTrigger.validation.timeZoneRequired') }]}
-          style={{ width: '100%' }}
-        />
+    <div className="create-queue-trigger-modal-section">
+      <div className="create-queue-trigger-modal-section-title">{t('queueTrigger.createModal.queueSection')}</div>
+      
+      {/* 触发器时区 */}
+      <Form.Select
+        field="timeZone"
+        label={t('queueTrigger.fields.timeZone')}
+        placeholder={t('queueTrigger.fields.timeZonePlaceholder')}
+        initValue="Asia/Shanghai"
+        optionList={timeZoneOptions}
+        rules={[{ required: true, message: t('queueTrigger.validation.timeZoneRequired') }]}
+        style={{ width: '100%' }}
+      />
 
-        {/* 启用工作日历 */}
-        <div className="create-queue-trigger-modal-field-inline">
-          <Form.Switch
-            field="enableWorkCalendarSwitch"
-            label={t('queueTrigger.fields.enableWorkCalendar')}
-            onChange={(value) => setEnableWorkCalendar(value)}
+      {/* 启用工作日历 */}
+      <div className="create-queue-trigger-modal-field">
+        <div className="semi-form-field-label-text">{t('queueTrigger.fields.enableWorkCalendar')}</div>
+        <Form.Switch
+          field="enableWorkCalendarSwitch"
+          noLabel
+          onChange={(value) => setEnableWorkCalendar(value)}
+        />
+      </div>
+      {enableWorkCalendar && (
+        <>
+          <Form.Select
+            field="workCalendarId"
+            label={t('queueTrigger.fields.workCalendar')}
+            placeholder={t('queueTrigger.fields.workCalendarPlaceholder')}
+            optionList={mockWorkCalendars}
+            rules={[{ required: true, message: t('queueTrigger.validation.workCalendarRequired') }]}
+            style={{ width: '100%' }}
           />
-        </div>
-        {enableWorkCalendar && (
-          <>
-            <Form.Select
-              field="workCalendarId"
-              label={t('queueTrigger.fields.workCalendar')}
-              placeholder={t('queueTrigger.fields.workCalendarPlaceholder')}
-              optionList={mockWorkCalendars}
-              rules={[{ required: true, message: t('queueTrigger.validation.workCalendarRequired') }]}
+          <Form.RadioGroup
+            field="executionType"
+            label={t('queueTrigger.fields.executionType')}
+            initValue="WORKDAY"
+            direction="horizontal"
+          >
+            <Form.Radio value="WORKDAY">{t('queueTrigger.fields.executionTypeWorkday')}</Form.Radio>
+            <Form.Radio value="NON_WORKDAY">{t('queueTrigger.fields.executionTypeNonWorkday')}</Form.Radio>
+          </Form.RadioGroup>
+        </>
+      )}
+
+      {/* 监控队列 */}
+      <Form.Select
+        field="queueId"
+        label={t('queueTrigger.fields.monitoredQueue')}
+        placeholder={t('queueTrigger.fields.monitoredQueuePlaceholder')}
+        optionList={mockQueues.map((q) => ({
+          value: q.queue_id,
+          label: q.queue_name,
+          disabled: q.monitored,
+        }))}
+        extraText={t('queueTrigger.fields.monitoredQueueHint')}
+        rules={[{ required: true, message: t('queueTrigger.validation.queueRequired') }]}
+        style={{ width: '100%' }}
+        renderOptionItem={(renderProps) => {
+          const { disabled, selected, label, value, ...rest } = renderProps;
+          return (
+            <Select.Option {...rest} value={value} disabled={disabled} selected={selected}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                <span>{label}</span>
+                {disabled && <Tag size="small" color="orange">已被监控</Tag>}
+              </div>
+            </Select.Option>
+          );
+        }}
+      />
+
+      {/* 触发最少有效消息数 */}
+      <Form.InputNumber
+        field="minEffectiveMessages"
+        label={t('queueTrigger.fields.minEffectiveMessages')}
+        initValue={1}
+        min={1}
+        max={9999}
+        extraText={t('queueTrigger.fields.minEffectiveMessagesHint')}
+        onChange={(value) => setMinEffectiveMessages(value as number)}
+        rules={[
+          { required: true, message: t('queueTrigger.validation.minEffectiveMessagesRange') },
+          { type: 'number', min: 1, max: 9999, message: t('queueTrigger.validation.minEffectiveMessagesRange') },
+        ]}
+        style={{ width: '100%' }}
+      />
+
+      {/* 启用定时检查 - 仅当 minEffectiveMessages > 1 时显示 */}
+      {minEffectiveMessages > 1 && (
+        <>
+          <div className="create-queue-trigger-modal-field">
+            <div className="semi-form-field-label-text">{t('queueTrigger.fields.enablePeriodicCheck')}</div>
+            <Form.Switch
+              field="enablePeriodicCheckSwitch"
+              noLabel
+              onChange={(value) => setEnablePeriodicCheck(value)}
+            />
+          </div>
+          {enablePeriodicCheck && (
+            <Banner
+              type="info"
+              description={t('queueTrigger.fields.enablePeriodicCheckHint')}
+              className="create-queue-trigger-modal-banner"
+            />
+          )}
+          {enablePeriodicCheck && (
+            <Form.InputNumber
+              field="periodicCheckInterval"
+              label={t('queueTrigger.fields.periodicCheckInterval')}
+              initValue={30}
+              min={1}
+              suffix={t('queueTrigger.fields.periodicCheckIntervalUnit')}
+              rules={[
+                { required: true, message: t('queueTrigger.validation.periodicCheckIntervalRange') },
+                { type: 'number', min: 1, message: t('queueTrigger.validation.periodicCheckIntervalRange') },
+              ]}
               style={{ width: '100%' }}
             />
-            <Form.RadioGroup
-              field="executionType"
-              label={t('queueTrigger.fields.executionType')}
-              initValue="WORKDAY"
-              direction="horizontal"
-            >
-              <Form.Radio value="WORKDAY">{t('queueTrigger.fields.executionTypeWorkday')}</Form.Radio>
-              <Form.Radio value="NON_WORKDAY">{t('queueTrigger.fields.executionTypeNonWorkday')}</Form.Radio>
-            </Form.RadioGroup>
-          </>
-        )}
+          )}
+        </>
+      )}
 
-        {/* 监控队列 */}
-        <Form.Select
-          field="queueId"
-          label={t('queueTrigger.fields.monitoredQueue')}
-          placeholder={t('queueTrigger.fields.monitoredQueuePlaceholder')}
-          optionList={mockQueues.map((q) => ({
-            value: q.queue_id,
-            label: q.queue_name,
-            disabled: q.monitored,
-          }))}
-          extraText={t('queueTrigger.fields.monitoredQueueHint')}
-          rules={[{ required: true, message: t('queueTrigger.validation.queueRequired') }]}
-          style={{ width: '100%' }}
-          renderOptionItem={(renderProps) => {
-            const { disabled, selected, label, ...rest } = renderProps;
-            return (
-              <Select.Option {...rest} disabled={disabled} selected={selected}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-                  <span>{label}</span>
-                  {disabled && <Tag size="small" color="orange">已被监控</Tag>}
-                </div>
-              </Select.Option>
-            );
-          }}
-        />
-
-        {/* 触发最少有效消息数 */}
-        <Form.InputNumber
-          field="minEffectiveMessages"
-          label={t('queueTrigger.fields.minEffectiveMessages')}
-          initValue={1}
-          min={1}
-          max={9999}
-          extraText={t('queueTrigger.fields.minEffectiveMessagesHint')}
-          onChange={(value) => setMinEffectiveMessages(value as number)}
-          rules={[
-            { required: true, message: t('queueTrigger.validation.minEffectiveMessagesRange') },
-            { type: 'number', min: 1, max: 9999, message: t('queueTrigger.validation.minEffectiveMessagesRange') },
-          ]}
-          style={{ width: '100%' }}
-        />
-
-        {/* 启用定时检查 - 仅当 minEffectiveMessages > 1 时显示 */}
-        {minEffectiveMessages > 1 && (
-          <>
-            <div className="create-queue-trigger-modal-field-inline">
-              <Form.Switch
-                field="enablePeriodicCheckSwitch"
-                label={t('queueTrigger.fields.enablePeriodicCheck')}
-                onChange={(value) => setEnablePeriodicCheck(value)}
-              />
-            </div>
-            {enablePeriodicCheck && (
-              <Banner
-                type="info"
-                description={t('queueTrigger.fields.enablePeriodicCheckHint')}
-                className="create-queue-trigger-modal-banner"
-              />
-            )}
-            {enablePeriodicCheck && (
-              <Form.InputNumber
-                field="periodicCheckInterval"
-                label={t('queueTrigger.fields.periodicCheckInterval')}
-                initValue={30}
-                min={1}
-                suffix={t('queueTrigger.fields.periodicCheckIntervalUnit')}
-                rules={[
-                  { required: true, message: t('queueTrigger.validation.periodicCheckIntervalRange') },
-                  { type: 'number', min: 1, message: t('queueTrigger.validation.periodicCheckIntervalRange') },
-                ]}
-                style={{ width: '100%' }}
-              />
-            )}
-          </>
-        )}
-
-        {/* 平均每若干条消息触发一次 */}
-        <Form.InputNumber
-          field="messagesPerTrigger"
-          label={t('queueTrigger.fields.messagesPerTrigger')}
-          initValue={10}
-          min={1}
-          extraText={t('queueTrigger.fields.messagesPerTriggerHint')}
-          rules={[
-            { required: true, message: t('queueTrigger.validation.messagesPerTriggerRange') },
-            { type: 'number', min: 1, message: t('queueTrigger.validation.messagesPerTriggerRange') },
-          ]}
-          style={{ width: '100%' }}
-        />
-      </div>
-    </>
+      {/* 平均每若干条消息触发一次 */}
+      <Form.InputNumber
+        field="messagesPerTrigger"
+        label={t('queueTrigger.fields.messagesPerTrigger')}
+        initValue={10}
+        min={1}
+        extraText={t('queueTrigger.fields.messagesPerTriggerHint')}
+        rules={[
+          { required: true, message: t('queueTrigger.validation.messagesPerTriggerRange') },
+          { type: 'number', min: 1, message: t('queueTrigger.validation.messagesPerTriggerRange') },
+        ]}
+        style={{ width: '100%' }}
+      />
+    </div>
   );
-
-  // 渲染右侧参数面板
-  const renderRightPanel = () => {
-    if (!showRightPanel) return null;
-
-    return (
-      <div className="create-queue-trigger-modal-right-panel">
-        {hasParameters && (
-          <div className="create-queue-trigger-modal-section">
-            <div className="create-queue-trigger-modal-section-title">{t('queueTrigger.createModal.parameterSection')}</div>
-            {selectedProcess?.parameters.map(renderParameterInput)}
-          </div>
-        )}
-        {hasOutputParameters && (
-          <div className="create-queue-trigger-modal-section">
-            <div className="create-queue-trigger-modal-section-title">输出参数</div>
-            <div className="create-queue-trigger-modal-output-params">
-              {selectedProcess?.output_parameters?.map((param) => (
-                <div key={param.name} className="create-queue-trigger-modal-output-param">
-                  <span className="create-queue-trigger-modal-output-param-name">{param.name}</span>
-                  <Tag size="small" color="grey">{param.type}</Tag>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  };
 
   // 计算弹窗宽度
   const modalWidth = showRightPanel ? 900 : 520;
 
   return (
     <Modal
+      className="create-queue-trigger-modal"
       title={t('queueTrigger.createModal.title')}
       visible={visible}
       onCancel={onCancel}
       footer={null}
-      width={modalWidth}
-      className="create-queue-trigger-modal"
-      closeOnEsc={false}
+      closeOnEsc
       maskClosable={false}
+      width={modalWidth}
+      centered
     >
-      {/* 步骤条 */}
-      <Steps current={currentStep} size="small" className="create-queue-trigger-modal-steps">
-        <Steps.Step title={t('queueTrigger.createModal.steps.basicInfo')} />
-        <Steps.Step title={t('queueTrigger.createModal.steps.taskConfig')} />
-        <Steps.Step title={t('queueTrigger.createModal.steps.queueConfig')} />
-      </Steps>
+      <Form
+        className="create-queue-trigger-modal-form"
+        labelPosition="top"
+        getFormApi={setFormApi}
+        initValues={{
+          priority: 'MEDIUM',
+          maxDuration: 3600,
+          validityDays: 7,
+          enableRecording: false,
+        }}
+      >
+        {/* 步骤条 */}
+        <div className="create-queue-trigger-modal-steps">
+          <Steps current={currentStep} type="basic" size="small">
+            <Steps.Step title={t('queueTrigger.createModal.steps.basicInfo')} />
+            <Steps.Step title={t('queueTrigger.createModal.steps.taskConfig')} />
+            <Steps.Step title={t('queueTrigger.createModal.steps.queueConfig')} />
+          </Steps>
+        </div>
 
-      {/* 表单区域 */}
-      <div className={`create-queue-trigger-modal-content ${showRightPanel ? 'has-right-panel' : ''}`}>
-        <Form
-          getFormApi={(api) => setFormApi(api)}
-          labelPosition="top"
-          className="create-queue-trigger-modal-form"
-        >
-          <div className="create-queue-trigger-modal-left-panel">
-            {currentStep === 0 && renderStep0Content()}
-            {currentStep === 1 && renderStep1Content()}
-            {currentStep === 2 && renderStep2Content()}
+        {/* 内容区域 */}
+        {currentStep === 0 && (
+          <div className="create-queue-trigger-modal-content">
+            {renderStep0Content()}
           </div>
-          {renderRightPanel()}
-        </Form>
-      </div>
+        )}
 
-      {/* 底部按钮 */}
-      <div className="create-queue-trigger-modal-footer">
-        <Button onClick={onCancel}>{t('common.cancel')}</Button>
-        <div className="create-queue-trigger-modal-footer-right">
+        {currentStep === 1 && (
+          <div className="create-queue-trigger-modal-body">
+            <div className="create-queue-trigger-modal-left">
+              <div className="create-queue-trigger-modal-content">
+                {renderStep1LeftContent()}
+              </div>
+            </div>
+            {showRightPanel && (
+              <div className="create-queue-trigger-modal-right">
+                <div className="create-queue-trigger-modal-content">
+                  {renderStep1RightContent()}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {currentStep === 2 && (
+          <div className="create-queue-trigger-modal-content">
+            {renderStep2Content()}
+          </div>
+        )}
+
+        {/* 底部按钮 */}
+        <div className="create-queue-trigger-modal-footer">
+          <Button theme="light" onClick={onCancel}>
+            {t('common.cancel')}
+          </Button>
           {currentStep > 0 && (
-            <Button onClick={handlePrev}>{t('queueTrigger.createModal.prevStep')}</Button>
+            <Button onClick={handlePrev}>
+              {t('queueTrigger.createModal.prevStep')}
+            </Button>
           )}
           {currentStep < 2 ? (
-            <Button theme="solid" onClick={handleNext}>
+            <Button theme="solid" type="primary" onClick={handleNext}>
               {t('queueTrigger.createModal.nextStep')}
             </Button>
           ) : (
-            <Button theme="solid" loading={loading} onClick={handleSubmit}>
+            <Button theme="solid" type="primary" onClick={handleSubmit} loading={loading}>
               {t('common.create')}
             </Button>
           )}
         </div>
-      </div>
+      </Form>
     </Modal>
   );
 };
