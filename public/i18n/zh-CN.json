@@ -426,8 +426,7 @@
       "title": "删除文件",
       "confirmMessage": "确定要删除文件「{{name}}」吗？",
       "cannotDeleteTitle": "无法删除",
-      "hasDependencies": "该文件被以下流程版本使用，无法删除：",
-      "cannotDeleteTooltip": "该文件被流程使用，无法删除",
+      "publishedError": "已发布的文件不允许删除",
       "success": "文件删除成功"
     },
     "actions": {
@@ -439,15 +438,13 @@
     "detail": {
       "basicInfo": "基本信息",
       "systemInfo": "系统信息",
-      "environment": "可见环境",
       "updater": "更新者",
       "originalName": "源文件名",
-      "tabs": {
-        "basicInfo": "基本信息",
-        "dependencies": "依赖关系"
-      },
-      "dependentProcesses": "依赖此文件的流程",
-      "noDependencies": "暂无依赖此文件的流程"
+      "publishStatus": "发布状态",
+      "published": "已发布",
+      "unpublished": "未发布",
+      "cannotReuploadPublished": "已发布的文件不允许重新上传",
+      "cannotDeletePublished": "已发布的文件不允许删除"
     },
     "empty": {
       "filterDescription": "没有找到匹配的文件，请尝试调整筛选条件",

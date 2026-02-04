@@ -51,7 +51,7 @@ const generateUUID = (): string => {
   });
 };
 
-const generateMockFile = (index: number, context: 'development' | 'scheduling'): LYFileResponse => {
+const generateMockFile = (index: number): LYFileResponse => {
   const sources: FileSource[] = ['MANUAL', 'AUTOMATION_PROCESS'];
   const source = sources[index % 2];
   const originalNames = [
@@ -75,10 +75,10 @@ const generateMockFile = (index: number, context: 'development' | 'scheduling'):
     '工作流配置',
   ];
 
-  // index === 1 生成无依赖数据
-  const hasDependency = index !== 1 && index % 3 === 0;
   const originalName = originalNames[index % originalNames.length];
   const displayName = displayNames[index % displayNames.length];
+  // 部分文件已发布
+  const isPublished = index % 3 === 0;
   
   return {
     id: generateUUID(),
@@ -86,28 +86,11 @@ const generateMockFile = (index: number, context: 'development' | 'scheduling'):
     original_name: originalName,
     storage_id: generateUUID(),
     file_size: Math.floor(Math.random() * 10 * 1024 * 1024) + 1024, // 1KB - 10MB
-    environment: context === 'development' ? 'DEV' : (index % 2 === 0 ? 'DEV,PRD' : 'PRD'),
-    is_depended_by_process: hasDependency,
+    is_published: isPublished,
     source,
     description: index === 0
       ? '这是一个核心配置文件，包含了多个关键系统的连接参数和认证信息。请勿随意修改。'
       : `这是${displayName}的描述信息。`,
-    dependent_process_versions: hasDependency
-      ? [
-          {
-            process_id: generateUUID(),
-            process_name: '订单处理流程',
-            version_id: generateUUID(),
-            version: '1.0.0',
-          },
-          {
-            process_id: generateUUID(),
-            process_name: '数据同步流程',
-            version_id: generateUUID(),
-            version: '2.1.0',
-          },
-        ]
-      : [],
     change_reason: index % 4 === 0 ? '修复配置错误' : undefined,
     created_by: generateUUID(),
     created_by_name: ['张三', '李四', '王五', '赵六'][index % 4],
@@ -118,8 +101,8 @@ const generateMockFile = (index: number, context: 'development' | 'scheduling'):
   };
 };
 
-const generateMockFileList = (context: 'development' | 'scheduling'): LYFileResponse[] => {
-  return Array.from({ length: 15 }, (_, i) => generateMockFile(i, context));
+const generateMockFileList = (): LYFileResponse[] => {
+  return Array.from({ length: 15 }, (_, i) => generateMockFile(i));
 };
 
 // 模拟API调用
@@ -128,7 +111,7 @@ const fetchFileList = async (
 ): Promise<LYFileListResultResponse> => {
   await new Promise((resolve) => setTimeout(resolve, 500));
 
-  let data = generateMockFileList(params.context);
+  let data = generateMockFileList();
 
   // 关键词筛选
   if (params.keyword) {
@@ -262,6 +245,11 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
 
   // 重新上传
   const handleReupload = (record: LYFileResponse) => {
+    // 已发布的文件不允许重新上传
+    if (record.is_published) {
+      Toast.warning(t('file.detail.cannotReuploadPublished'));
+      return;
+    }
     setReuploadingFile(record);
     setReuploadModalVisible(true);
     setDetailDrawerVisible(false);
@@ -278,22 +266,11 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
 
   // 删除文件
   const handleDelete = (record: LYFileResponse) => {
-    // 检查依赖
-    if (record.is_depended_by_process && record.dependent_process_versions?.length) {
+    // 已发布的文件不允许删除
+    if (record.is_published) {
       Modal.warning({
         title: t('file.deleteModal.cannotDeleteTitle'),
-        content: (
-          <div>
-            <Typography.Text>{t('file.deleteModal.hasDependencies')}</Typography.Text>
-            <ul style={{ marginTop: 8, paddingLeft: 20 }}>
-              {record.dependent_process_versions.map((dep) => (
-                <li key={dep.version_id}>
-                  {dep.process_name} ({dep.version})
-                </li>
-              ))}
-            </ul>
-          </div>
-        ),
+        content: t('file.deleteModal.publishedError'),
         okText: t('common.confirm'),
       });
       return;
@@ -353,21 +330,6 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
     return listResponse?.data?.map((f) => f.display_name) || [];
   }, [listResponse?.data]);
 
-  // 隐藏的文件选择器引用
-  const fileInputRef = useCallback((node: HTMLInputElement | null) => {
-    if (node) {
-      node.onchange = (e) => {
-        const file = (e.target as HTMLInputElement).files?.[0];
-        if (file) {
-          setPreSelectedFile(file);
-          setUploadModalVisible(true);
-          // 重置 input 以便再次选择同一文件
-          node.value = '';
-        }
-      };
-    }
-  }, []);
-
   // 处理上传按钮点击
   const handleUploadClick = useCallback(() => {
     const input = document.createElement('input');
@@ -414,31 +376,15 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
       },
     },
     {
-      title: t('file.table.dependency'),
-      dataIndex: 'is_depended_by_process',
-      key: 'is_depended_by_process',
+      title: t('file.detail.publishStatus'),
+      dataIndex: 'is_published',
+      key: 'is_published',
       width: 100,
-      render: (isDependedByProcess: boolean) => (
-        <Tag color={isDependedByProcess ? 'green' : 'grey'}>
-          {isDependedByProcess ? t('file.table.hasDependency') : t('file.table.noDependency')}
+      render: (isPublished: boolean) => (
+        <Tag color={isPublished ? 'green' : 'grey'}>
+          {isPublished ? t('file.detail.published') : t('file.detail.unpublished')}
         </Tag>
       ),
-    },
-    {
-      title: t('file.table.environment'),
-      dataIndex: 'environment',
-      key: 'environment',
-      width: 100,
-      render: (env: string) => {
-        if (env === 'DEV,PRD' || env === 'PRD,DEV') {
-          return <Tag color="blue">{t('file.environment.all')}</Tag>;
-        }
-        return (
-          <Tag color={env === 'DEV' ? 'light-blue' : 'green'}>
-            {env === 'DEV' ? t('file.environment.dev') : t('file.environment.prd')}
-          </Tag>
-        );
-      },
     },
     {
       title: t('common.description'),
@@ -470,15 +416,21 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
           render={
             <Dropdown.Menu>
               {context === 'development' && (
-                <Dropdown.Item
-                  icon={<IconRefresh />}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleReupload(record);
-                  }}
+                <Tooltip
+                  content={record.is_published ? t('file.detail.cannotReuploadPublished') : undefined}
+                  disabled={!record.is_published}
                 >
-                  {t('file.actions.reupload')}
-                </Dropdown.Item>
+                  <Dropdown.Item
+                    icon={<IconRefresh />}
+                    disabled={record.is_published}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleReupload(record);
+                    }}
+                  >
+                    {t('file.actions.reupload')}
+                  </Dropdown.Item>
+                </Tooltip>
               )}
               <Dropdown.Item
                 icon={<IconDownload />}
@@ -492,16 +444,16 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
               {context === 'development' && (
                 <Tooltip
                   content={
-                    record.is_depended_by_process
-                      ? t('file.deleteModal.cannotDeleteTooltip')
+                    record.is_published
+                      ? t('file.detail.cannotDeletePublished')
                       : undefined
                   }
-                  disabled={!record.is_depended_by_process}
+                  disabled={!record.is_published}
                 >
                   <Dropdown.Item
                     icon={<IconDeleteStroked />}
                     type="danger"
-                    disabled={record.is_depended_by_process}
+                    disabled={record.is_published}
                     onClick={(e) => {
                       e.stopPropagation();
                       handleDelete(record);
@@ -709,6 +661,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
           setReuploadingFile(null);
         }}
         onSuccess={loadData}
+        existingFileNames={existingFileNames}
       />
 
       {/* 详情抽屉 */}

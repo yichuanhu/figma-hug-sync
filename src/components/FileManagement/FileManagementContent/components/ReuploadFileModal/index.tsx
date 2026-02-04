@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Modal,
@@ -9,6 +9,7 @@ import {
   Typography,
   Banner,
   Progress,
+  Input,
 } from '@douyinfe/semi-ui';
 import {
   IconInbox,
@@ -47,6 +48,7 @@ interface ReuploadFileModalProps {
   file: LYFileResponse | null;
   onClose: () => void;
   onSuccess: () => void;
+  existingFileNames: string[];
 }
 
 const ReuploadFileModal = ({
@@ -54,13 +56,25 @@ const ReuploadFileModal = ({
   file,
   onClose,
   onSuccess,
+  existingFileNames,
 }: ReuploadFileModalProps) => {
   const { t } = useTranslation();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [displayName, setDisplayName] = useState('');
   const [changeReason, setChangeReason] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [showWarning, setShowWarning] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [displayNameError, setDisplayNameError] = useState<string | null>(null);
+
+  // 弹窗打开时初始化显示名称
+  useEffect(() => {
+    if (visible && file) {
+      setDisplayName(file.display_name);
+      setDisplayNameError(null);
+      setShowWarning(null);
+    }
+  }, [visible, file]);
 
   const formatFileSize = (bytes: number): string => {
     if (bytes === 0) return '0 B';
@@ -95,6 +109,39 @@ const ReuploadFileModal = ({
 
     return { valid: true };
   };
+
+  // 验证显示名称
+  const validateDisplayName = useCallback((name: string): boolean => {
+    if (!name.trim()) {
+      setDisplayNameError(t('file.validation.displayNameRequired'));
+      return false;
+    }
+    if (name.length > 100) {
+      setDisplayNameError(t('file.validation.displayNameTooLong'));
+      return false;
+    }
+    // 检查名称是否与其他文件重复（排除当前文件）
+    const otherFileNames = existingFileNames.filter(n => n !== file?.display_name);
+    if (otherFileNames.includes(name.trim())) {
+      setDisplayNameError(t('file.validation.displayNameExists'));
+      return false;
+    }
+    setDisplayNameError(null);
+    return true;
+  }, [existingFileNames, file?.display_name, t]);
+
+  // 处理显示名称变化
+  const handleDisplayNameChange = useCallback((value: string) => {
+    setDisplayName(value);
+    if (value.trim()) {
+      const otherFileNames = existingFileNames.filter(n => n !== file?.display_name);
+      if (otherFileNames.includes(value.trim())) {
+        setDisplayNameError(t('file.validation.displayNameExists'));
+      } else {
+        setDisplayNameError(null);
+      }
+    }
+  }, [existingFileNames, file?.display_name, t]);
 
   const handleFileChange = useCallback((info: { fileList: FileItem[] }) => {
     const newFile = info.fileList[0]?.fileInstance;
@@ -135,6 +182,9 @@ const ReuploadFileModal = ({
       Toast.error(t('file.validation.fileRequired'));
       return;
     }
+    if (!validateDisplayName(displayName)) {
+      return;
+    }
     if (!changeReason.trim()) {
       Toast.error(t('file.validation.changeReasonRequired'));
       return;
@@ -173,9 +223,11 @@ const ReuploadFileModal = ({
 
   const handleClose = () => {
     setSelectedFile(null);
+    setDisplayName('');
     setChangeReason('');
     setShowWarning(null);
     setUploadProgress(0);
+    setDisplayNameError(null);
     onClose();
   };
 
@@ -201,7 +253,7 @@ const ReuploadFileModal = ({
             type="primary"
             onClick={handleSubmit}
             loading={submitting}
-            disabled={!selectedFile || !changeReason.trim()}
+            disabled={!selectedFile || !displayName.trim() || !changeReason.trim()}
           >
             {t('file.reupload.confirm')}
           </Button>
@@ -271,6 +323,27 @@ const ReuploadFileModal = ({
             <Progress percent={Math.min(uploadProgress, 100)} showInfo />
           </div>
         )}
+
+        {/* 文件名称输入框 */}
+        <div className="reupload-file-modal-display-name">
+          <div className="reupload-file-modal-display-name-label">
+            <Text>{t('file.fields.displayName')}</Text>
+            <Text type="danger"> *</Text>
+          </div>
+          <Input
+            value={displayName}
+            onChange={handleDisplayNameChange}
+            placeholder={t('file.fields.displayNamePlaceholder')}
+            maxLength={100}
+            showClear
+            validateStatus={displayNameError ? 'error' : undefined}
+          />
+          {displayNameError && (
+            <Text type="danger" size="small" className="reupload-file-modal-error">
+              {displayNameError}
+            </Text>
+          )}
+        </div>
 
         <Form 
           className="reupload-file-modal-form" 

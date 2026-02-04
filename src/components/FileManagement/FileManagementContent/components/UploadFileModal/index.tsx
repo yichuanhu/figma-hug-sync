@@ -299,21 +299,19 @@ const UploadFileModal = ({
           />
         )}
 
-        {/* 如果没有预选文件，显示上传区域 */}
-        {!preSelectedFile && !selectedFile && (
-          <Upload
-            action=""
-            customRequest={customRequest}
-            accept={ALLOWED_EXTENSIONS.join(',')}
-            limit={1}
-            draggable
-            dragIcon={<IconInbox size="extra-large" style={{ color: 'var(--semi-color-text-2)' }} />}
-            dragMainText={t('file.upload.dragText')}
-            dragSubText={t('file.upload.dragSubText')}
-            onChange={handleFileChange}
-            className="upload-file-modal-uploader"
-          />
-        )}
+        {/* 始终显示上传区域，允许重新选择文件 */}
+        <Upload
+          action=""
+          customRequest={customRequest}
+          accept={ALLOWED_EXTENSIONS.join(',')}
+          limit={1}
+          draggable
+          dragIcon={<IconInbox size="extra-large" style={{ color: 'var(--semi-color-text-2)' }} />}
+          dragMainText={t('file.upload.dragText')}
+          dragSubText={t('file.upload.dragSubText')}
+          onChange={handleFileChange}
+          className="upload-file-modal-uploader"
+        />
 
         {selectedFile && (
           <div className="upload-file-modal-file-info">

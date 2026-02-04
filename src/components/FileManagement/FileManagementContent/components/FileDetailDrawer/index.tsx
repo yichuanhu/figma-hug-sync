@@ -7,8 +7,6 @@ import {
   Descriptions,
   Tag,
   Tooltip,
-  Tabs,
-  TabPane,
   Toast,
   Modal,
   Space,
@@ -23,8 +21,6 @@ import {
   IconUpload,
   IconDownload,
   IconDeleteStroked,
-  IconLink,
-  IconInbox,
 } from '@douyinfe/semi-icons';
 import type { LYFileResponse, FileSource } from '@/api/index';
 
@@ -63,7 +59,6 @@ const FileDetailDrawer = ({
 }: FileDetailDrawerProps) => {
   const { t } = useTranslation();
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [activeTab, setActiveTab] = useState('basic');
   const [drawerWidth, setDrawerWidth] = useState(() => {
     const saved = localStorage.getItem('file-detail-drawer-width');
     return saved ? Math.max(Number(saved), 576) : 900;
@@ -142,22 +137,11 @@ const FileDetailDrawer = ({
   const handleDelete = useCallback(() => {
     if (!file) return;
 
-    // 如果有依赖，阻止删除
-    if (file.is_depended_by_process && file.dependent_process_versions?.length) {
+    // 已发布的文件不允许删除
+    if (file.is_published) {
       Modal.warning({
         title: t('file.deleteModal.cannotDeleteTitle'),
-        content: (
-          <div>
-            <Text>{t('file.deleteModal.hasDependencies')}</Text>
-            <ul style={{ marginTop: 8, paddingLeft: 20 }}>
-              {file.dependent_process_versions.map((dep) => (
-                <li key={dep.version_id}>
-                  {dep.process_name} ({dep.version})
-                </li>
-              ))}
-            </ul>
-          </div>
-        ),
+        content: t('file.deleteModal.publishedError'),
         okText: t('common.confirm'),
       });
       return;
@@ -168,7 +152,6 @@ const FileDetailDrawer = ({
 
   // 抽屉关闭时重置状态
   const handleClose = useCallback(() => {
-    setActiveTab('basic');
     onClose();
   }, [onClose]);
 
@@ -178,7 +161,9 @@ const FileDetailDrawer = ({
 
   if (!file) return null;
 
-  const canDelete = context === 'development' && !file.is_depended_by_process;
+  // 已发布的文件不允许重新上传和删除
+  const canReupload = context === 'development' && !file.is_published;
+  const canDelete = context === 'development' && !file.is_published;
 
   return (
     <SideSheet
@@ -208,11 +193,12 @@ const FileDetailDrawer = ({
             </Tooltip>
             <Divider layout="vertical" className="file-detail-drawer-header-divider" />
             {context === 'development' && (
-              <Tooltip content={t('file.actions.reupload')}>
+              <Tooltip content={canReupload ? t('file.actions.reupload') : t('file.detail.cannotReuploadPublished')}>
                 <Button
                   icon={<IconUpload />}
                   theme="borderless"
                   size="small"
+                  disabled={!canReupload}
                   onClick={() => onReupload(file)}
                 />
               </Tooltip>
@@ -230,7 +216,7 @@ const FileDetailDrawer = ({
                 content={
                   canDelete
                     ? t('common.delete')
-                    : t('file.deleteModal.cannotDeleteTooltip')
+                    : t('file.detail.cannotDeletePublished')
                 }
               >
                 <Button
@@ -273,88 +259,50 @@ const FileDetailDrawer = ({
       className={`card-sidesheet resizable-sidesheet file-detail-drawer ${isFullscreen ? 'fullscreen-sidesheet' : ''}`}
     >
       {!isFullscreen && <div className="file-detail-drawer-resize-handle" onMouseDown={handleMouseDown} />}
-      <Tabs
-        activeKey={activeTab}
-        onChange={setActiveTab}
-        className="file-detail-drawer-tabs"
-      >
-        <TabPane tab={t('file.detail.tabs.basicInfo')} itemKey="basic">
-          <div className="file-detail-drawer-tab-content">
-            {/* 基本信息 */}
-            <Descriptions align="left">
-              <Descriptions.Item itemKey={t('file.table.name')}>
-                {file.display_name}
-              </Descriptions.Item>
-              <Descriptions.Item itemKey={t('file.detail.originalName')}>
-                {file.original_name}
-              </Descriptions.Item>
-              <Descriptions.Item itemKey={t('file.table.size')}>
-                {formatFileSize(file.file_size)}
-              </Descriptions.Item>
-              <Descriptions.Item itemKey={t('file.table.source')}>
-                <Tag color={sourceConfig[file.source].color}>
-                  {t(sourceConfig[file.source].i18nKey)}
-                </Tag>
-              </Descriptions.Item>
-              <Descriptions.Item itemKey={t('file.detail.environment')}>
-                {file.environment === 'DEV,PRD' || file.environment === 'PRD,DEV' ? (
-                  <Tag color="blue">{t('file.environment.all')}</Tag>
-                ) : (
-                  <Tag color={file.environment === 'DEV' ? 'light-blue' : 'green'}>
-                    {file.environment === 'DEV' ? t('file.environment.dev') : t('file.environment.prd')}
-                  </Tag>
-                )}
-              </Descriptions.Item>
-              <Descriptions.Item itemKey={t('common.description')}>
-                {file.description || '-'}
-              </Descriptions.Item>
-              <Descriptions.Item itemKey={t('common.creator')}>
-                {file.created_by_name}
-              </Descriptions.Item>
-              <Descriptions.Item itemKey={t('common.createTime')}>
-                {formatTime(file.created_at)}
-              </Descriptions.Item>
-              <Descriptions.Item itemKey={t('file.detail.updater')}>
-                {file.updated_by_name || '-'}
-              </Descriptions.Item>
-              <Descriptions.Item itemKey={t('common.updateTime')}>
-                {formatTime(file.updated_at)}
-              </Descriptions.Item>
-              {file.change_reason && (
-                <Descriptions.Item itemKey={t('file.fields.changeReason')}>
-                  {file.change_reason}
-                </Descriptions.Item>
-              )}
-            </Descriptions>
-          </div>
-        </TabPane>
-
-        <TabPane tab={t('file.detail.tabs.dependencies')} itemKey="dependencies">
-          <div className="file-detail-drawer-tab-content">
-            <div className="file-detail-drawer-section">
-              <Text className="file-detail-drawer-section-title">
-                <IconLink style={{ marginRight: 8 }} />
-                {t('file.detail.dependentProcesses')}
-              </Text>
-              {file.dependent_process_versions && file.dependent_process_versions.length > 0 ? (
-                file.dependent_process_versions.map((dep) => (
-                  <div key={dep.version_id} className="file-detail-drawer-dependency-card">
-                    <div className="file-detail-drawer-dependency-card-info">
-                      <Text className="process-name">{dep.process_name}</Text>
-                      <Text className="version">v{dep.version}</Text>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="file-detail-drawer-empty">
-                  <IconInbox className="file-detail-drawer-empty-icon" />
-                  <Text type="tertiary">{t('file.detail.noDependencies')}</Text>
-                </div>
-              )}
-            </div>
-          </div>
-        </TabPane>
-      </Tabs>
+      <div className="file-detail-drawer-content">
+        {/* 基本信息 */}
+        <Descriptions align="left">
+          <Descriptions.Item itemKey={t('file.table.name')}>
+            {file.display_name}
+          </Descriptions.Item>
+          <Descriptions.Item itemKey={t('file.detail.originalName')}>
+            {file.original_name}
+          </Descriptions.Item>
+          <Descriptions.Item itemKey={t('file.table.size')}>
+            {formatFileSize(file.file_size)}
+          </Descriptions.Item>
+          <Descriptions.Item itemKey={t('file.table.source')}>
+            <Tag color={sourceConfig[file.source].color}>
+              {t(sourceConfig[file.source].i18nKey)}
+            </Tag>
+          </Descriptions.Item>
+          <Descriptions.Item itemKey={t('file.detail.publishStatus')}>
+            <Tag color={file.is_published ? 'green' : 'grey'}>
+              {file.is_published ? t('file.detail.published') : t('file.detail.unpublished')}
+            </Tag>
+          </Descriptions.Item>
+          <Descriptions.Item itemKey={t('common.description')}>
+            {file.description || '-'}
+          </Descriptions.Item>
+          <Descriptions.Item itemKey={t('common.creator')}>
+            {file.created_by_name}
+          </Descriptions.Item>
+          <Descriptions.Item itemKey={t('common.createTime')}>
+            {formatTime(file.created_at)}
+          </Descriptions.Item>
+          <Descriptions.Item itemKey={t('file.detail.updater')}>
+            {file.updated_by_name || '-'}
+          </Descriptions.Item>
+          <Descriptions.Item itemKey={t('common.updateTime')}>
+            {formatTime(file.updated_at)}
+          </Descriptions.Item>
+          {file.change_reason && (
+            <Descriptions.Item itemKey={t('file.fields.changeReason')}>
+              {file.change_reason}
+            </Descriptions.Item>
+          )}
+        </Descriptions>
+      </div>
     </SideSheet>
   );
 };
