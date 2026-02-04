@@ -23,6 +23,7 @@ import {
   IconDeleteStroked,
 } from '@douyinfe/semi-icons';
 import type { LYFileResponse, FileSource } from '@/api/index';
+import { IconFile } from '@douyinfe/semi-icons';
 
 import './index.less';
 
@@ -32,6 +33,31 @@ const { Title, Text } = Typography;
 const sourceConfig: Record<FileSource, { color: 'blue' | 'green'; i18nKey: string }> = {
   MANUAL: { color: 'blue', i18nKey: 'file.source.manual' },
   AUTOMATION_PROCESS: { color: 'green', i18nKey: 'file.source.automationProcess' },
+};
+
+// 获取文件MIME类型
+const getMimeType = (fileName: string): string => {
+  const ext = fileName.split('.').pop()?.toLowerCase() || '';
+  const mimeTypes: Record<string, string> = {
+    'pem': 'application/x-pem-file',
+    'key': 'application/x-pem-file',
+    'txt': 'text/plain',
+    'json': 'application/json',
+    'xml': 'application/xml',
+    'csv': 'text/csv',
+    'pdf': 'application/pdf',
+    'doc': 'application/msword',
+    'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'xls': 'application/vnd.ms-excel',
+    'xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'png': 'image/png',
+    'jpg': 'image/jpeg',
+    'jpeg': 'image/jpeg',
+    'gif': 'image/gif',
+    'zip': 'application/zip',
+    'rar': 'application/x-rar-compressed',
+  };
+  return mimeTypes[ext] || 'application/octet-stream';
 };
 
 interface FileDetailDrawerProps {
@@ -253,50 +279,75 @@ const FileDetailDrawer = ({
       {!isFullscreen && <div className="file-detail-drawer-resize-handle" onMouseDown={handleMouseDown} />}
       <div className="file-detail-drawer-content">
         {/* 基本信息 */}
-        <Descriptions align="left">
-          <Descriptions.Item itemKey={t('file.table.name')}>
-            {file.display_name}
-          </Descriptions.Item>
-          <Descriptions.Item itemKey={t('file.detail.originalName')}>
-            {file.original_name}
-          </Descriptions.Item>
-          <Descriptions.Item itemKey={t('file.table.size')}>
-            {formatFileSize(file.file_size)}
-          </Descriptions.Item>
-          <Descriptions.Item itemKey={t('file.table.source')}>
-            <Tag color={sourceConfig[file.source].color}>
-              {t(sourceConfig[file.source].i18nKey)}
-            </Tag>
-          </Descriptions.Item>
-          {/* 发布状态 - 仅开发中心显示 */}
-          {context === 'development' && (
-            <Descriptions.Item itemKey={t('file.detail.publishStatus')}>
-              <Tag color={file.is_published ? 'green' : 'grey'}>
-                {file.is_published ? t('file.detail.published') : t('file.detail.unpublished')}
+        <div className="file-detail-drawer-section">
+          <div className="file-detail-drawer-section-title">{t('file.detail.basicInfo')}</div>
+          <Descriptions align="left">
+            <Descriptions.Item itemKey={t('file.table.name')}>
+              {file.display_name}
+            </Descriptions.Item>
+            <Descriptions.Item itemKey={t('file.detail.fileType')}>
+              {file.legacy_mode ? t('file.detail.legacyFile') : t('file.detail.newVersionFile')}
+            </Descriptions.Item>
+            <Descriptions.Item itemKey={t('file.detail.department')}>
+              {file.department || '-'}
+            </Descriptions.Item>
+            <Descriptions.Item itemKey={t('file.table.source')}>
+              <Tag color={sourceConfig[file.source].color}>
+                {t(sourceConfig[file.source].i18nKey)}
               </Tag>
             </Descriptions.Item>
-          )}
-          <Descriptions.Item itemKey={t('common.description')}>
-            {file.description || '-'}
-          </Descriptions.Item>
-          <Descriptions.Item itemKey={t('common.creator')}>
-            {file.created_by_name}
-          </Descriptions.Item>
-          <Descriptions.Item itemKey={t('common.createTime')}>
-            {formatTime(file.created_at)}
-          </Descriptions.Item>
-          <Descriptions.Item itemKey={t('file.detail.updater')}>
-            {file.updated_by_name || '-'}
-          </Descriptions.Item>
-          <Descriptions.Item itemKey={t('common.updateTime')}>
-            {formatTime(file.updated_at)}
-          </Descriptions.Item>
-          {file.change_reason && (
-            <Descriptions.Item itemKey={t('file.fields.changeReason')}>
-              {file.change_reason}
+            {/* 发布状态 - 仅开发中心显示 */}
+            {context === 'development' && (
+              <Descriptions.Item itemKey={t('file.detail.publishStatus')}>
+                <Tag color={file.is_published ? 'green' : 'grey'}>
+                  {file.is_published ? t('file.detail.published') : t('file.detail.unpublished')}
+                </Tag>
+              </Descriptions.Item>
+            )}
+            <Descriptions.Item itemKey={t('common.description')}>
+              {file.description || '-'}
             </Descriptions.Item>
-          )}
-        </Descriptions>
+            <Descriptions.Item itemKey={t('common.creator')}>
+              {file.created_by_name}
+            </Descriptions.Item>
+            <Descriptions.Item itemKey={t('common.createTime')}>
+              {formatTime(file.created_at)}
+            </Descriptions.Item>
+            <Descriptions.Item itemKey={t('file.detail.lastModified')}>
+              {formatTime(file.updated_at)}
+            </Descriptions.Item>
+          </Descriptions>
+        </div>
+
+        <Divider className="file-detail-drawer-divider" />
+
+        {/* 文件内容 */}
+        <div className="file-detail-drawer-section">
+          <div className="file-detail-drawer-section-title">{t('file.detail.fileContent')}</div>
+          <div className="file-detail-drawer-file-card">
+            <div className="file-detail-drawer-file-card-header">
+              <IconFile size="large" className="file-detail-drawer-file-card-icon" />
+              <span className="file-detail-drawer-file-card-title">{t('file.detail.currentFile')}</span>
+            </div>
+            <Descriptions align="left" className="file-detail-drawer-file-card-desc">
+              <Descriptions.Item itemKey={t('file.detail.originalName')}>
+                {file.original_name}
+              </Descriptions.Item>
+              <Descriptions.Item itemKey={t('file.detail.fileSize')}>
+                {formatFileSize(file.file_size)}
+              </Descriptions.Item>
+              <Descriptions.Item itemKey={t('file.detail.mimeType')}>
+                {getMimeType(file.original_name)}
+              </Descriptions.Item>
+              <Descriptions.Item itemKey={t('file.detail.lastModified')}>
+                {formatTime(file.updated_at)}
+              </Descriptions.Item>
+              <Descriptions.Item itemKey={t('file.detail.modifier')}>
+                {file.updated_by_name || file.created_by_name}
+              </Descriptions.Item>
+            </Descriptions>
+          </div>
+        </div>
       </div>
     </SideSheet>
   );

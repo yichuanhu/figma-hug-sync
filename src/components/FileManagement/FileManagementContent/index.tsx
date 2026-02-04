@@ -81,7 +81,7 @@ const generateMockFile = (index: number): LYFileResponse => {
   const isPublished = index % 3 === 0;
   
   return {
-    id: generateUUID(),
+    file_id: generateUUID(),
     display_name: displayName,
     original_name: originalName,
     storage_id: generateUUID(),
@@ -92,6 +92,8 @@ const generateMockFile = (index: number): LYFileResponse => {
       ? '这是一个核心配置文件，包含了多个关键系统的连接参数和认证信息。请勿随意修改。'
       : `这是${displayName}的描述信息。`,
     change_reason: index % 4 === 0 ? '修复配置错误' : undefined,
+    department: ['财务部', '研发部', '运营部', '人事部'][index % 4],
+    legacy_mode: index % 5 === 0,
     created_by: generateUUID(),
     created_by_name: ['张三', '李四', '王五', '赵六'][index % 4],
     created_at: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
@@ -261,7 +263,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
     setTimeout(() => {
       Toast.success(t('file.actions.downloadSuccess'));
     }, 500);
-    console.log('Download file:', record.id);
+    console.log('Download file:', record.file_id);
   };
 
   // 删除文件
@@ -310,7 +312,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
   const handleDrawerNavigate = useCallback(
     (direction: 'prev' | 'next') => {
       if (!listResponse?.data || !selectedFile) return;
-      const currentIndex = listResponse.data.findIndex((f) => f.id === selectedFile.id);
+      const currentIndex = listResponse.data.findIndex((f) => f.file_id === selectedFile.file_id);
       const newIndex = direction === 'prev' ? currentIndex - 1 : currentIndex + 1;
       if (newIndex >= 0 && newIndex < listResponse.data.length) {
         setSelectedFile(listResponse.data[newIndex]);
@@ -322,7 +324,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
   // 获取当前索引
   const currentFileIndex = useMemo(() => {
     if (!listResponse?.data || !selectedFile) return -1;
-    return listResponse.data.findIndex((f) => f.id === selectedFile.id);
+    return listResponse.data.findIndex((f) => f.file_id === selectedFile.file_id);
   }, [listResponse?.data, selectedFile]);
 
   // 获取已有文件名列表（用于上传时校验）
@@ -617,7 +619,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
             onRow={(record) => ({
               onClick: () => handleRowClick(record as LYFileResponse),
               className:
-                selectedFile?.id === (record as LYFileResponse).id && detailDrawerVisible
+                selectedFile?.file_id === (record as LYFileResponse).file_id && detailDrawerVisible
                   ? 'file-management-row-selected'
                   : '',
             })}
