@@ -2281,16 +2281,8 @@
   },
   "botSelector": {
     "placeholder": "请选择执行目标",
-    "placeholderSpecified": "请选择指定流程机器人",
     "online": "在线",
     "statusOnline": "在线",
-    "statusOffline": "离线",
-    "ungrouped": "未分组"
-  },
-  "template": {
-    "targetType": {
-      "processBotGroup": "流程机器人组",
-      "specifiedProcessBot": "指定流程机器人"
-    }
+    "statusOffline": "离线"
   }
 }

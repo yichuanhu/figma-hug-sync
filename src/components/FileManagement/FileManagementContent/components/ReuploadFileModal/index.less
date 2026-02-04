@@ -1,124 +1,104 @@
 .reupload-file-modal {
-  .reupload-file-modal-content {
-    .reupload-file-modal-info-banner {
-      margin-bottom: 16px;
-      border-radius: 8px;
-      overflow: hidden;
+  .semi-modal-body {
+    padding: 24px;
+  }
+
+  &-info-banner {
+    margin-bottom: 16px;
+    padding: 12px 16px;
+    background: var(--semi-color-warning-light-default);
+    border-radius: 8px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+
+    &-icon {
+      color: var(--semi-color-warning);
+      flex-shrink: 0;
+      margin-top: 2px;
     }
 
-    .reupload-file-modal-uploader {
-      .semi-upload {
-        .semi-upload-drag {
-          padding: 32px 16px;
-          border: 1px dashed var(--semi-color-border) !important;
-          border-radius: 4px;
-          background-color: var(--semi-color-fill-0) !important;
-        }
+    &-content {
+      flex: 1;
 
-        .semi-upload-drag:hover,
-        .semi-upload-drag.semi-upload-drag-area-legal,
-        .semi-upload-drag.semi-upload-drag-area-legal-main {
-          border-color: var(--semi-color-text-2) !important;
-          background-color: var(--semi-color-fill-1) !important;
-        }
-      }
-
-      .semi-upload-drag-area-main-text {
-        color: var(--semi-color-text-0);
+      .file-name {
         font-weight: 500;
-      }
-
-      .semi-upload-drag-area-sub-text {
-        color: var(--semi-color-text-2);
-        margin-top: 4px;
-      }
-
-      .semi-upload-file-list {
-        display: none;
+        color: var(--semi-color-text-0);
       }
     }
+  }
 
-    .reupload-file-modal-file-info {
-      margin-top: 16px;
-      display: flex;
-      align-items: center;
-      margin-bottom: 16px;
-      padding: 12px 16px;
-      background-color: var(--semi-color-fill-0);
-      border-radius: 4px;
+  &-upload-area {
+    margin-bottom: 24px;
 
-      .reupload-file-modal-file-detail {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-        min-width: 0;
+    .semi-upload-drag-area {
+      padding: 32px 24px;
+      border: 1px dashed var(--semi-color-border);
+      border-radius: 8px;
+      background: var(--semi-color-fill-0);
+      transition: all 0.2s;
+
+      &:hover {
+        border-color: var(--semi-color-primary);
+        background: var(--semi-color-primary-light-hover);
       }
+    }
+  }
 
-      .reupload-file-modal-file-name {
+  &-file-info {
+    margin-bottom: 24px;
+    padding: 12px 16px;
+    background: var(--semi-color-fill-0);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    &-icon {
+      font-size: 24px;
+      color: var(--semi-color-primary);
+    }
+
+    &-detail {
+      flex: 1;
+      min-width: 0;
+
+      .file-name {
+        font-weight: 500;
         color: var(--semi-color-text-0);
-        font-size: 14px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
       }
 
-      .reupload-file-modal-file-remove {
+      .file-size {
+        font-size: 12px;
         color: var(--semi-color-text-2);
-        cursor: pointer;
-        flex-shrink: 0;
-
-        &:hover {
-          color: var(--semi-color-danger);
-        }
+        margin-top: 2px;
       }
     }
 
-    .reupload-file-modal-progress {
-      margin-top: 16px;
-    }
+    &-remove {
+      color: var(--semi-color-text-2);
+      cursor: pointer;
 
-    .reupload-file-modal-form {
-      margin-top: 16px;
-      .semi-form-field {
-        margin-bottom: 0;
+      &:hover {
+        color: var(--semi-color-danger);
       }
     }
   }
-}
 
-// 全局覆盖 Semi UI Upload 拖拽区域的 hover 样式
-.reupload-file-modal .semi-upload-drag:hover {
-  border-color: var(--semi-color-text-2) !important;
-  background-color: var(--semi-color-fill-1) !important;
-}
-
-.reupload-file-modal .semi-upload-drag.semi-upload-drag-area-legal,
-.reupload-file-modal .semi-upload-drag.semi-upload-drag-area-legal-main {
-  border-color: var(--semi-color-text-2) !important;
-  background-color: var(--semi-color-fill-1) !important;
-}
-
-// 拖拽文件进入时的视觉反馈效果
-.reupload-file-modal .semi-upload-drag.semi-upload-drag-area-legal {
-  border-color: var(--semi-color-text-0) !important;
-  background-color: var(--semi-color-fill-2) !important;
-  transform: scale(1.01);
-  transition: all 0.2s ease-out;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-
-  .semi-upload-drag-area-icon {
-    transform: scale(1.1);
-    transition: transform 0.2s ease-out;
+  &-form {
+    .semi-form-field {
+      margin-bottom: 16px;
+    }
   }
 
-  .semi-upload-drag-area-main-text {
-    color: var(--semi-color-text-0) !important;
-    font-weight: 600;
+  &-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding-top: 16px;
+    border-top: 1px solid var(--semi-color-border);
   }
-}
-
-// 基础过渡动画
-.reupload-file-modal .semi-upload-drag {
-  transition: all 0.2s ease-out;
 }

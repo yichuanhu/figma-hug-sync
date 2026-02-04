@@ -7,11 +7,9 @@ import {
   Button,
   Toast,
   Typography,
-  Banner,
-  Progress,
 } from '@douyinfe/semi-ui';
 import {
-  IconInbox,
+  IconUpload,
   IconFile,
   IconClose,
   IconInfoCircle,
@@ -43,7 +41,6 @@ const ReuploadFileModal = ({
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [changeReason, setChangeReason] = useState('');
   const [submitting, setSubmitting] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
 
   const formatFileSize = (bytes: number): string => {
     if (bytes === 0) return '0 B';
@@ -62,18 +59,11 @@ const ReuploadFileModal = ({
         return;
       }
       setSelectedFile(newFile);
-      setUploadProgress(0);
     }
   }, [t]);
 
   const handleRemoveFile = useCallback(() => {
     setSelectedFile(null);
-    setUploadProgress(0);
-  }, []);
-
-  // 自定义上传，阻止自动上传
-  const customRequest = useCallback(() => {
-    return { abort: () => {} };
   }, []);
 
   const handleSubmit = async () => {
@@ -87,26 +77,9 @@ const ReuploadFileModal = ({
     }
 
     setSubmitting(true);
-    setUploadProgress(0);
-
     try {
-      // 模拟上传进度
-      const progressInterval = setInterval(() => {
-        setUploadProgress((prev) => {
-          if (prev >= 90) {
-            clearInterval(progressInterval);
-            return 90;
-          }
-          return prev + Math.random() * 20;
-        });
-      }, 200);
-
       // 模拟重新上传
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      clearInterval(progressInterval);
-      setUploadProgress(100);
-
-      await new Promise((resolve) => setTimeout(resolve, 300));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       Toast.success(t('file.reupload.success'));
       onSuccess();
       handleClose();
@@ -120,7 +93,6 @@ const ReuploadFileModal = ({
   const handleClose = () => {
     setSelectedFile(null);
     setChangeReason('');
-    setUploadProgress(0);
     onClose();
   };
 
@@ -129,89 +101,83 @@ const ReuploadFileModal = ({
       title={t('file.reupload.title')}
       visible={visible}
       onCancel={handleClose}
-      footer={
-        <>
-          <Button onClick={handleClose}>{t('common.cancel')}</Button>
-          <Button
-            theme="solid"
-            type="primary"
-            onClick={handleSubmit}
-            loading={submitting}
-            disabled={!selectedFile || !changeReason.trim()}
-          >
-            {t('file.reupload.confirm')}
-          </Button>
-        </>
-      }
+      footer={null}
       width={520}
       closeOnEsc
       centered
       maskClosable={false}
       className="reupload-file-modal"
     >
-      <div className="reupload-file-modal-content">
-        {/* 当前文件信息提示 */}
-        <Banner
-          type="info"
-          icon={<IconInfoCircle />}
-          description={
-            <span>
-              {t('file.reupload.currentFile')}:
-              <Text strong style={{ marginLeft: 4 }}>{file?.name}</Text>
-            </span>
-          }
-          className="reupload-file-modal-info-banner"
-        />
+      {/* 当前文件信息提示 */}
+      <div className="reupload-file-modal-info-banner">
+        <IconInfoCircle className="reupload-file-modal-info-banner-icon" />
+        <div className="reupload-file-modal-info-banner-content">
+          <Text type="secondary">
+            {t('file.reupload.currentFile')}:
+          </Text>
+          <Text className="file-name"> {file?.name}</Text>
+        </div>
+      </div>
 
-        <Upload
-          action=""
-          customRequest={customRequest}
-          accept="*/*"
-          limit={1}
-          draggable
-          dragIcon={<IconInbox size="extra-large" style={{ color: 'var(--semi-color-text-2)' }} />}
-          dragMainText={t('file.upload.dragText')}
-          dragSubText={t('file.upload.dragSubText')}
-          onChange={handleFileChange}
-          className="reupload-file-modal-uploader"
-        />
-
-        {selectedFile && (
-          <div className="reupload-file-modal-file-info">
-            <IconFile style={{ color: 'var(--semi-color-text-2)', marginRight: 8, fontSize: 20 }} />
-            <div className="reupload-file-modal-file-detail">
-              <Text className="reupload-file-modal-file-name">{selectedFile.name}</Text>
-              <Text type="tertiary" size="small">{formatFileSize(selectedFile.size)}</Text>
+      {!selectedFile ? (
+        <div className="reupload-file-modal-upload-area">
+          <Upload
+            draggable
+            action=""
+            accept="*/*"
+            limit={1}
+            showUploadList={false}
+            beforeUpload={() => false}
+            onChange={handleFileChange}
+          >
+            <div className="upload-drag-content">
+              <IconUpload size="extra-large" />
+              <Text>{t('file.upload.dragText')}</Text>
+              <Text type="tertiary" size="small">
+                {t('file.upload.dragSubText')}
+              </Text>
             </div>
-            {!submitting && (
-              <IconClose
-                className="reupload-file-modal-file-remove"
-                onClick={handleRemoveFile}
-              />
-            )}
+          </Upload>
+        </div>
+      ) : (
+        <div className="reupload-file-modal-file-info">
+          <IconFile className="reupload-file-modal-file-info-icon" />
+          <div className="reupload-file-modal-file-info-detail">
+            <div className="file-name">{selectedFile.name}</div>
+            <div className="file-size">{formatFileSize(selectedFile.size)}</div>
           </div>
-        )}
-
-        {submitting && uploadProgress > 0 && (
-          <div className="reupload-file-modal-progress">
-            <Progress percent={Math.min(uploadProgress, 100)} showInfo />
-          </div>
-        )}
-
-        <Form 
-          className="reupload-file-modal-form" 
-          initValues={{ changeReason: '' }}
-          onValueChange={(values) => setChangeReason(values.changeReason || '')}
-        >
-          <Form.TextArea
-            field="changeReason"
-            label={t('file.fields.changeReason')}
-            placeholder={t('file.fields.changeReasonPlaceholder')}
-            maxLength={500}
-            rows={3}
-            rules={[{ required: true, message: t('file.validation.changeReasonRequired') }]}
+          <IconClose
+            className="reupload-file-modal-file-info-remove"
+            onClick={handleRemoveFile}
           />
-        </Form>
+        </div>
+      )}
+
+      <Form 
+        className="reupload-file-modal-form" 
+        initValues={{ changeReason: '' }}
+        onValueChange={(values) => setChangeReason(values.changeReason || '')}
+      >
+        <Form.TextArea
+          field="changeReason"
+          label={t('file.fields.changeReason')}
+          placeholder={t('file.fields.changeReasonPlaceholder')}
+          maxLength={500}
+          rows={3}
+          rules={[{ required: true, message: t('file.validation.changeReasonRequired') }]}
+        />
+      </Form>
+
+      <div className="reupload-file-modal-footer">
+        <Button onClick={handleClose}>{t('common.cancel')}</Button>
+        <Button
+          type="primary"
+          loading={submitting}
+          disabled={!selectedFile || !changeReason.trim()}
+          onClick={handleSubmit}
+        >
+          {t('file.reupload.confirm')}
+        </Button>
       </div>
     </Modal>
   );

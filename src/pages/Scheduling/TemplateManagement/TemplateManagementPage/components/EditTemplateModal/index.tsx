@@ -10,11 +10,12 @@ import {
   Tag,
 } from '@douyinfe/semi-ui';
 import { IconHelpCircle } from '@douyinfe/semi-icons';
-import BotTargetSelector, { type NewExecutionTargetType } from '@/components/BotTargetSelector';
+import BotTargetSelector from '@/components/BotTargetSelector';
 import type {
   LYExecutionTemplateResponse,
   LYProcessActiveVersionResponse,
   LYProcessParameterDefinition,
+  ExecutionTargetType,
   TaskPriority,
 } from '@/api';
 import './index.less';
@@ -119,18 +120,31 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
   const [loading, setLoading] = useState(false);
   const [formApi, setFormApi] = useState<any>(null);
   const [selectedProcess, setSelectedProcess] = useState<LYProcessActiveVersionResponse | null>(null);
-  const [targetType, setTargetType] = useState<NewExecutionTargetType | null>(null);
+  const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);
 
-  // 执行目标选项（保留以兼容可能的其他使用场景）
+  // 执行目标选项
   const targetOptions = useMemo(() => {
-    if (targetType === 'PROCESS_BOT_GROUP') {
+    if (targetType === 'BOT_GROUP') {
       return mockBotGroups.map((g) => ({
         value: g.id,
         label: `${g.name} (${g.onlineCount}/${g.totalCount} 在线)`,
       }));
     }
-    // SPECIFIED_PROCESS_BOT - 使用级联选择，此处返回空
-    return [];
+    if (targetType === 'UNGROUPED_BOT') {
+      return mockBots
+        .filter((b) => !b.groupId)
+        .map((b) => ({
+          value: b.id,
+          label: `${b.name} (${b.status === 'ONLINE' ? '在线' : '离线'})`,
+        }));
+    }
+    // BOT_IN_GROUP
+    return mockBots
+      .filter((b) => b.groupId)
+      .map((b) => ({
+        value: b.id,
+        label: `${b.name} (${b.status === 'ONLINE' ? '在线' : '离线'})`,
+      }));
   }, [targetType]);
 
   // 初始化表单
@@ -138,18 +152,14 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
     if (visible && template && formApi) {
       const process = mockProcesses.find((p) => p.process_id === template.process_id);
       setSelectedProcess(process || null);
-      // 转换旧的执行目标类型到新类型
-      const oldTargetType = template.execution_target_type;
-      const newTargetType: NewExecutionTargetType = 
-        oldTargetType === 'BOT_GROUP' ? 'PROCESS_BOT_GROUP' : 'SPECIFIED_PROCESS_BOT';
-      setTargetType(newTargetType);
+      setTargetType(template.execution_target_type);
       
       // 设置表单值
       formApi.setValues({
         templateName: template.template_name || '',
         description: template.description || '',
         processId: template.process_id,
-        targetType: template.execution_target_type === 'BOT_GROUP' ? 'PROCESS_BOT_GROUP' : 'SPECIFIED_PROCESS_BOT',
+        targetType: template.execution_target_type,
         targetId: template.execution_target_id,
         priority: template.priority,
         maxDuration: template.max_execution_duration,
@@ -386,24 +396,27 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
                 <div className="edit-template-modal-section-title">
                   {t('template.createModal.targetSection')}
                 </div>
-                <Form.RadioGroup
+                <Form.Select
                   field="targetType"
                   label={t('template.fields.targetType')}
-                  direction="horizontal"
+                  placeholder={t('template.fields.targetTypePlaceholder')}
+                  optionList={[
+                    { value: 'BOT_GROUP', label: t('template.targetType.botGroup') },
+                    { value: 'BOT_IN_GROUP', label: t('template.targetType.botInGroup') },
+                    { value: 'UNGROUPED_BOT', label: t('template.targetType.ungroupedBot') },
+                  ]}
+                  style={{ width: '100%' }}
                   rules={[
                     { required: true, message: t('template.validation.targetTypeRequired') },
                   ]}
-                  onChange={(e) => {
-                    setTargetType(e.target.value as NewExecutionTargetType);
+                  onChange={(v) => {
+                    setTargetType(v as ExecutionTargetType);
                     formApi?.setValue('targetId', undefined);
                   }}
-                >
-                  <Form.Radio value="PROCESS_BOT_GROUP">{t('template.targetType.processBotGroup')}</Form.Radio>
-                  <Form.Radio value="SPECIFIED_PROCESS_BOT">{t('template.targetType.specifiedProcessBot')}</Form.Radio>
-                </Form.RadioGroup>
+                />
                 {targetType && (
                   <div className="edit-template-modal-field">
-                    <div className="semi-form-field-label-text">{t('template.createModal.selectTarget')}</div>
+                    <div className="semi-form-field-label-text">{t('template.fields.target')}</div>
                     <BotTargetSelector
                       targetType={targetType}
                       value={formApi?.getValue('targetId')}

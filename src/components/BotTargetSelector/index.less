@@ -46,54 +46,6 @@
       flex-shrink: 0;
     }
   }
-
-  // 级联选择器样式
-  &-cascader {
-    &.semi-cascader {
-      width: 100%;
-    }
-
-    .semi-cascader-selection {
-      width: 100%;
-    }
-  }
-
-  &-cascader-group {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-
-  &-cascader-option {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    gap: 8px;
-
-    &-name {
-      flex: 1;
-      min-width: 0;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    &-status {
-      flex-shrink: 0;
-    }
-  }
-
-  &-cascader-list {
-    display: flex;
-    width: 100%;
-  }
-
-  &-cascader-column {
-    flex: 1;
-    min-width: 180px;
-    max-width: 280px;
-  }
 }
 
 // 分组标题样式 - 用于 BOT_IN_GROUP 场景
@@ -118,39 +70,7 @@
     margin: 0;
   }
 
-  &.semi-cascader {
-    margin: 0;
-  }
-
   .semi-select-selection {
     margin: 0;
-  }
-
-  .semi-cascader-selection {
-    margin: 0;
-  }
-}
-
-// 级联选择器下拉面板样式优化
-.semi-cascader-option-list {
-  .bot-target-selector-cascader-option {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    gap: 8px;
-    padding-right: 8px;
-
-    &-name {
-      flex: 1;
-      min-width: 0;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    &-status {
-      flex-shrink: 0;
-    }
   }
 }
