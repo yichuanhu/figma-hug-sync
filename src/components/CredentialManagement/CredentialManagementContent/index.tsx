@@ -68,6 +68,9 @@ const generateMockCredential = (index: number): LYCredentialResponse => {
     'OA系统凭据',
   ];
 
+  // 部分凭据已发布
+  const isPublished = index % 3 === 0;
+
   return {
     credential_id: generateUUID(),
     credential_name: names[index % names.length],
@@ -84,6 +87,7 @@ const generateMockCredential = (index: number): LYCredentialResponse => {
       ? '这是企业核心业务系统的统一认证凭据，用于自动化流程访问多个关联系统。该凭据支持SSO单点登录、OAuth2.0授权、LDAP目录服务集成等多种认证方式。使用时需确保网络环境安全，并定期更新密码以符合企业安全合规要求。凭据的使用记录将被完整审计和追踪。'
       : `这是${names[index % names.length]}的描述信息，用于第三方系统的访问认证。`,
     linked_personal_credential_value: type === 'PERSONAL_REF' && index % 3 === 0 ? 'user/******' : '-',
+    is_published: isPublished,
     created_by: generateUUID(),
     created_by_name: ['张三', '李四', '王五', '赵六'][index % 4],
     created_at: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
@@ -398,6 +402,17 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
       },
     },
     {
+      title: t('credential.detail.publishStatus'),
+      dataIndex: 'is_published',
+      key: 'is_published',
+      width: 100,
+      render: (isPublished: boolean) => (
+        <Tag color={isPublished ? 'green' : 'grey'}>
+          {isPublished ? t('credential.detail.published') : t('credential.detail.unpublished')}
+        </Tag>
+      ),
+    },
+    {
       title: t('common.description'),
       dataIndex: 'description',
       key: 'description',
@@ -436,7 +451,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
               <Dropdown.Item icon={<IconHistory />} onClick={(e) => { e.stopPropagation(); handleViewUsage(record); }}>
                 {t('credential.actions.viewUsage')}
               </Dropdown.Item>
-              {context === 'development' && (
+              {context === 'development' && !record.is_published && (
                 <Dropdown.Item icon={<IconDeleteStroked />} type="danger" onClick={(e) => { e.stopPropagation(); handleDelete(record); }}>
                   {t('common.delete')}
                 </Dropdown.Item>

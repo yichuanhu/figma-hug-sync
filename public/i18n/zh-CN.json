@@ -217,6 +217,9 @@
       "testValue": "凭据值（调试）",
       "productionValue": "凭据值（生产）",
       "linkedPersonalCredential": "关联个人凭据",
+      "publishStatus": "发布状态",
+      "published": "已发布",
+      "unpublished": "未发布",
       "tabs": {
         "basicInfo": "基本信息",
         "usageRecords": "使用记录"

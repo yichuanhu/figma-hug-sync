@@ -213,13 +213,12 @@ const QueueDetailDrawer = ({
               onClick={() => queue && onEdit(queue)}
             />
           </Tooltip>
-          {onDelete && context === 'development' && (
-            <Tooltip content={queue?.is_published ? t('queue.detail.cannotDeletePublished') : t('common.delete')}>
+          {onDelete && context === 'development' && !queue?.is_published && (
+            <Tooltip content={t('common.delete')}>
               <Button
-                icon={<IconDeleteStroked className={queue?.is_published ? '' : 'queue-detail-drawer-header-delete-icon'} />}
+                icon={<IconDeleteStroked className="queue-detail-drawer-header-delete-icon" />}
                 theme="borderless"
                 size="small"
-                disabled={queue?.is_published}
                 onClick={() => queue && onDelete(queue)}
               />
             </Tooltip>

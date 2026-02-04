@@ -192,13 +192,12 @@ const FileDetailDrawer = ({
               />
             </Tooltip>
             <Divider layout="vertical" className="file-detail-drawer-header-divider" />
-            {context === 'development' && (
-              <Tooltip content={canReupload ? t('file.actions.reupload') : t('file.detail.cannotReuploadPublished')}>
+            {context === 'development' && canReupload && (
+              <Tooltip content={t('file.actions.reupload')}>
                 <Button
                   icon={<IconUpload />}
                   theme="borderless"
                   size="small"
-                  disabled={!canReupload}
                   onClick={() => onReupload(file)}
                 />
               </Tooltip>
@@ -211,19 +210,12 @@ const FileDetailDrawer = ({
                 onClick={handleDownload}
               />
             </Tooltip>
-            {context === 'development' && (
-              <Tooltip
-                content={
-                  canDelete
-                    ? t('common.delete')
-                    : t('file.detail.cannotDeletePublished')
-                }
-              >
+            {context === 'development' && canDelete && (
+              <Tooltip content={t('common.delete')}>
                 <Button
-                  icon={<IconDeleteStroked className={canDelete ? 'file-detail-drawer-header-delete-icon' : ''} />}
+                  icon={<IconDeleteStroked className="file-detail-drawer-header-delete-icon" />}
                   theme="borderless"
                   size="small"
-                  disabled={!canDelete}
                   onClick={handleDelete}
                 />
               </Tooltip>

@@ -400,11 +400,10 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
               <Dropdown.Item icon={<IconEditStroked />} onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>
                 {t('common.edit')}
               </Dropdown.Item>
-              {context === 'development' && (
+              {context === 'development' && !record.is_published && (
                 <Dropdown.Item 
                   icon={<IconDeleteStroked />}
                   type="danger" 
-                  disabled={record.is_published}
                   onClick={(e) => { e.stopPropagation(); handleDelete(record); }}
                 >
                   {t('common.delete')}
