@@ -483,15 +483,6 @@ const TriggerRuleConfig = ({
           )}
         </div>
 
-        {/* 生成的 Cron 表达式（只读展示） */}
-        {generatedCronExpression && (
-          <div className={`${classPrefix}-generated-cron`}>
-            <Text className={`${classPrefix}-field-label`}>{t('triggerRule.fields.generatedCron')}</Text>
-            <div className={`${classPrefix}-generated-cron-value`}>
-              <code>{generatedCronExpression}</code>
-            </div>
-          </div>
-        )}
       </div>
     );
   };
@@ -594,10 +585,8 @@ const TriggerRuleConfig = ({
         </div>
       </div>
 
-      {/* 分类二：触发规则 */}
+      {/* 分类二：触发规则（无标题） */}
       <div className={`${classPrefix}-category`}>
-        <div className={`${classPrefix}-category-title`}>{t('triggerRule.fields.ruleType')}</div>
-        
         {/* 触发规则类型选择 */}
         <div className={`${classPrefix}-field`}>
           <RadioGroup
@@ -623,13 +612,13 @@ const TriggerRuleConfig = ({
                 <Text className={`${classPrefix}-field-label`}>{t('triggerRule.fields.cronExpression')} *</Text>
                 <Popover 
                   content={cronHelpAndExamplesContent} 
-                  position="bottomLeft" 
+                  position="right" 
                   trigger="hover"
                   showArrow
                 >
                   <IconHelpCircle 
                     size="small" 
-                    style={{ color: 'var(--semi-color-text-2)', cursor: 'help', marginLeft: 4 }} 
+                    className={`${classPrefix}-cron-help-icon`}
                   />
                 </Popover>
               </div>
