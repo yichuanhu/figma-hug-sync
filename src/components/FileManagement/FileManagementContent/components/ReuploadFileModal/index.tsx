@@ -113,7 +113,7 @@ const ReuploadFileModal = ({
       }
 
       // 检查文件名是否与原文件一致
-      if (file && newFile.name !== file.name) {
+      if (file && newFile.name !== file.original_name) {
         setShowWarning(t('file.reupload.fileNameMismatchWarning'));
       } else {
         setShowWarning(null);
@@ -220,7 +220,8 @@ const ReuploadFileModal = ({
           icon={<IconAlertCircle />}
           description={
             <span>
-              {t('file.reupload.currentFile')}: <strong>{file?.name}</strong>
+              {t('file.reupload.currentFile')}: <strong>{file?.display_name}</strong>
+              <span style={{ color: 'var(--semi-color-text-2)', marginLeft: 8 }}>({file?.original_name})</span>
             </span>
           }
           className="reupload-file-modal-info-banner"

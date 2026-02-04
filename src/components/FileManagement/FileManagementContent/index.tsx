@@ -54,7 +54,7 @@ const generateUUID = (): string => {
 const generateMockFile = (index: number, context: 'development' | 'scheduling'): LYFileResponse => {
   const sources: FileSource[] = ['MANUAL', 'AUTOMATION_PROCESS'];
   const source = sources[index % 2];
-  const names = [
+  const originalNames = [
     'config.json',
     'data-template.xlsx',
     'input-mapping.xml',
@@ -64,13 +64,26 @@ const generateMockFile = (index: number, context: 'development' | 'scheduling'):
     'credentials.enc',
     'workflow-config.yaml',
   ];
+  const displayNames = [
+    '系统配置文件',
+    '数据模板',
+    '输入映射配置',
+    '流程资产包',
+    '报告模板',
+    '脚本辅助工具',
+    '加密凭据',
+    '工作流配置',
+  ];
 
   // index === 1 生成无依赖数据
   const hasDependency = index !== 1 && index % 3 === 0;
+  const originalName = originalNames[index % originalNames.length];
+  const displayName = displayNames[index % displayNames.length];
   
   return {
     id: generateUUID(),
-    name: names[index % names.length],
+    display_name: displayName,
+    original_name: originalName,
     storage_id: generateUUID(),
     file_size: Math.floor(Math.random() * 10 * 1024 * 1024) + 1024, // 1KB - 10MB
     environment: context === 'development' ? 'DEV' : (index % 2 === 0 ? 'DEV,PRD' : 'PRD'),
@@ -78,7 +91,7 @@ const generateMockFile = (index: number, context: 'development' | 'scheduling'):
     source,
     description: index === 0
       ? '这是一个核心配置文件，包含了多个关键系统的连接参数和认证信息。请勿随意修改。'
-      : `这是${names[index % names.length]}的描述信息。`,
+      : `这是${displayName}的描述信息。`,
     dependent_process_versions: hasDependency
       ? [
           {
@@ -120,7 +133,7 @@ const fetchFileList = async (
   // 关键词筛选
   if (params.keyword) {
     const keyword = params.keyword.toLowerCase();
-    data = data.filter((item) => item.name.toLowerCase().includes(keyword));
+    data = data.filter((item) => item.display_name.toLowerCase().includes(keyword));
   }
 
   // 来源筛选
@@ -185,6 +198,9 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
   // 选中的文件（用于详情）
   const [selectedFile, setSelectedFile] = useState<LYFileResponse | null>(null);
   const [reuploadingFile, setReuploadingFile] = useState<LYFileResponse | null>(null);
+
+  // 预选文件（用于先选择文件再弹窗）
+  const [preSelectedFile, setPreSelectedFile] = useState<File | null>(null);
 
   // 模态框/抽屉状态
   const [uploadModalVisible, setUploadModalVisible] = useState(false);
@@ -286,7 +302,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
     Modal.confirm({
       title: t('file.deleteModal.title'),
       icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
-      content: t('file.deleteModal.confirmMessage', { name: record.name }),
+      content: t('file.deleteModal.confirmMessage', { name: record.display_name }),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
       okButtonProps: { type: 'danger' },
@@ -334,15 +350,45 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
 
   // 获取已有文件名列表（用于上传时校验）
   const existingFileNames = useMemo(() => {
-    return listResponse?.data?.map((f) => f.name) || [];
+    return listResponse?.data?.map((f) => f.display_name) || [];
   }, [listResponse?.data]);
+
+  // 隐藏的文件选择器引用
+  const fileInputRef = useCallback((node: HTMLInputElement | null) => {
+    if (node) {
+      node.onchange = (e) => {
+        const file = (e.target as HTMLInputElement).files?.[0];
+        if (file) {
+          setPreSelectedFile(file);
+          setUploadModalVisible(true);
+          // 重置 input 以便再次选择同一文件
+          node.value = '';
+        }
+      };
+    }
+  }, []);
+
+  // 处理上传按钮点击
+  const handleUploadClick = useCallback(() => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json,.xml,.yaml,.yml,.txt,.csv,.xlsx,.xls,.docx,.doc,.pdf,.zip,.rar,.7z,.py,.js,.ts,.sh,.bat,.enc,.key,.pem,.png,.jpg,.jpeg,.gif,.svg';
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        setPreSelectedFile(file);
+        setUploadModalVisible(true);
+      }
+    };
+    input.click();
+  }, []);
 
   // 表格列定义
   const columns = [
     {
       title: t('file.table.name'),
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'display_name',
+      key: 'display_name',
       width: 200,
       render: (text: string) => (
         <span className="file-management-content-table-name">{text}</span>
@@ -596,7 +642,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
                 icon={<IconUpload />}
                 theme="solid"
                 style={{ backgroundColor: 'var(--semi-color-text-0)', borderColor: 'var(--semi-color-text-0)' }}
-                onClick={() => setUploadModalVisible(true)}
+                onClick={handleUploadClick}
               >
                 {t('file.upload.button')}
               </Button>
@@ -645,9 +691,13 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
       {/* 上传文件弹窗 */}
       <UploadFileModal
         visible={uploadModalVisible}
-        onClose={() => setUploadModalVisible(false)}
+        onClose={() => {
+          setUploadModalVisible(false);
+          setPreSelectedFile(null);
+        }}
         onSuccess={loadData}
         existingFileNames={existingFileNames}
+        preSelectedFile={preSelectedFile}
       />
 
       {/* 重新上传弹窗 */}
