@@ -2682,16 +2682,12 @@ export interface LYFileResponse {
   storage_id: string;
   /** 文件大小(字节) */
   file_size: number;
-  /** 环境可见性 */
-  environment: FileEnvironment;
-  /** 是否被流程依赖 */
-  is_depended_by_process: boolean;
   /** 文件来源 */
   source: FileSource;
+  /** 发布状态 */
+  is_published: boolean;
   /** 描述 */
   description?: string | null;
-  /** 依赖此文件的流程版本列表 */
-  dependent_process_versions?: LYDependentProcessVersion[];
   /** 变更原因 */
   change_reason?: string | null;
   /** 创建者ID */
