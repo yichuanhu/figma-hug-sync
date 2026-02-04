@@ -3106,3 +3106,189 @@ export interface UpdateWorkCalendarRequest {
   /** 特殊日期列表 */
   special_dates?: LYSpecialDate[];
 }
+
+// ============= 队列触发器类型定义 =============
+
+/**
+ * LYQueueTriggerResponse
+ * 队列触发器响应模型
+ */
+export interface LYQueueTriggerResponse {
+  /** 触发器ID */
+  trigger_id: string;
+  /** 触发器名称 */
+  name: string;
+  /** 触发器描述 */
+  description?: string | null;
+  /** 状态 */
+  status: TriggerStatus;
+  /** 流程ID */
+  process_id: string;
+  /** 流程名称 */
+  process_name: string;
+  /** 部门ID */
+  department_id: string;
+  /** 执行目标类型 */
+  execution_target_type: ExecutionTargetType;
+  /** 执行目标ID */
+  execution_target_id: string;
+  /** 执行目标名称 */
+  execution_target_name: string;
+  /** 优先级 */
+  priority: TaskPriority;
+  /** 最大执行时长（秒） */
+  max_execution_duration: number;
+  /** 任务有效期（天） */
+  validity_days: number;
+  /** 是否启用录屏 */
+  enable_recording: boolean;
+  /** 输入参数值 */
+  input_parameters?: Record<string, unknown> | null;
+  /** 监控队列ID */
+  queue_id: string;
+  /** 监控队列名称 */
+  queue_name: string;
+  /** 触发器时区 */
+  time_zone: string;
+  /** 是否启用工作日历 */
+  enable_work_calendar: boolean;
+  /** 工作日历ID */
+  work_calendar_id?: string | null;
+  /** 工作日历名称 */
+  work_calendar_name?: string | null;
+  /** 工作日历执行类型 */
+  work_calendar_execution_type?: WorkCalendarExecutionType | null;
+  /** 触发最少有效消息数 */
+  min_effective_messages: number;
+  /** 平均每若干条消息触发一次 */
+  messages_per_trigger: number;
+  /** 是否启用定时检查 */
+  enable_periodic_check: boolean;
+  /** 定时检查间隔（分钟） */
+  periodic_check_interval?: number | null;
+  /** 当前队列消息数 */
+  current_message_count?: number | null;
+  /** 待运行任务数 */
+  pending_task_count?: number | null;
+  /** 运行中任务数 */
+  running_task_count?: number | null;
+  /** 最后触发时间 */
+  last_trigger_time?: string | null;
+  /** 创建者ID */
+  created_by_id: string;
+  /** 创建者名称 */
+  created_by_name: string;
+  /** 创建时间 */
+  created_at: string;
+  /** 更新时间 */
+  updated_at: string;
+}
+
+/** LYListResponse[LYQueueTriggerResponse] */
+export interface LYListResponseLYQueueTriggerResponse {
+  /** 范围 */
+  range?: LYRangeResponse | null;
+  /** 列表 */
+  list: LYQueueTriggerResponse[];
+}
+
+/**
+ * GetQueueTriggersParams
+ * 获取队列触发器列表参数
+ */
+export interface GetQueueTriggersParams {
+  /** 关键字搜索 */
+  keyword?: string;
+  /** 流程ID */
+  process_id?: string;
+  /** 队列ID */
+  queue_id?: string;
+  /** 状态 */
+  status?: TriggerStatus;
+  /** 偏移量 */
+  offset?: number;
+  /** 每页数量 */
+  size?: number;
+}
+
+/**
+ * CreateQueueTriggerRequest
+ * 创建队列触发器请求
+ */
+export interface CreateQueueTriggerRequest {
+  /** 触发器名称 */
+  name: string;
+  /** 描述 */
+  description?: string | null;
+  /** 流程ID */
+  process_id: string;
+  /** 执行目标类型 */
+  execution_target_type: ExecutionTargetType;
+  /** 执行目标ID */
+  execution_target_id: string;
+  /** 优先级 */
+  priority: TaskPriority;
+  /** 最大执行时长（秒） */
+  max_execution_duration: number;
+  /** 任务有效期（天） */
+  validity_days: number;
+  /** 是否启用录屏 */
+  enable_recording: boolean;
+  /** 输入参数值 */
+  input_parameters?: Record<string, unknown> | null;
+  /** 监控队列ID */
+  queue_id: string;
+  /** 触发器时区 */
+  time_zone: string;
+  /** 是否启用工作日历 */
+  enable_work_calendar: boolean;
+  /** 工作日历ID */
+  work_calendar_id?: string | null;
+  /** 工作日历执行类型 */
+  work_calendar_execution_type?: WorkCalendarExecutionType | null;
+  /** 触发最少有效消息数 */
+  min_effective_messages: number;
+  /** 平均每若干条消息触发一次 */
+  messages_per_trigger: number;
+  /** 是否启用定时检查 */
+  enable_periodic_check: boolean;
+  /** 定时检查间隔（分钟） */
+  periodic_check_interval?: number | null;
+}
+
+/**
+ * UpdateQueueTriggerRequest
+ * 更新队列触发器请求
+ */
+export interface UpdateQueueTriggerRequest extends Partial<CreateQueueTriggerRequest> {}
+
+/**
+ * LYQueueTriggerExecutionLogResponse
+ * 队列触发器执行记录响应
+ */
+export interface LYQueueTriggerExecutionLogResponse {
+  /** 记录ID */
+  log_id: string;
+  /** 触发器ID */
+  trigger_id: string;
+  /** 触发时间 */
+  trigger_time: string;
+  /** 执行状态 */
+  status: 'SUCCESS' | 'FAILED' | 'SKIPPED';
+  /** 创建的任务数 */
+  created_task_count: number;
+  /** 触发时的消息数 */
+  message_count_at_trigger: number;
+  /** 错误信息 */
+  error_message?: string | null;
+  /** 创建时间 */
+  created_at: string;
+}
+
+/** LYListResponse[LYQueueTriggerExecutionLogResponse] */
+export interface LYListResponseLYQueueTriggerExecutionLogResponse {
+  /** 范围 */
+  range?: LYRangeResponse | null;
+  /** 列表 */
+  list: LYQueueTriggerExecutionLogResponse[];
+}

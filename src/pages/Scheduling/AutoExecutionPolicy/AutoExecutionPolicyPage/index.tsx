@@ -5,7 +5,7 @@ import { Breadcrumb, Typography, Tabs, TabPane, Button } from '@douyinfe/semi-ui
 import { IconCalendar } from '@douyinfe/semi-icons';
 import AppLayout from '@/components/layout/AppLayout';
 import TimeTriggerList from './components/TimeTriggerList';
-import QueueTriggerPlaceholder from './components/QueueTriggerPlaceholder';
+import QueueTriggerList from './components/QueueTriggerList';
 import './index.less';
 
 const { Title } = Typography;
@@ -63,7 +63,7 @@ const AutoExecutionPolicyPage = () => {
             itemKey="queueTrigger"
           >
             <div className="auto-execution-policy-tab-content">
-              <QueueTriggerPlaceholder />
+              <QueueTriggerList />
             </div>
           </TabPane>
         </Tabs>
