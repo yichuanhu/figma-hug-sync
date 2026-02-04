@@ -4,7 +4,7 @@
   margin-top: 0;
 
   // 确保下拉菜单没有额外外边距
-  .semi-select {
+  &.semi-select {
     margin: 0;
   }
 
@@ -57,10 +57,19 @@
   letter-spacing: 0.5px;
 }
 
-// 覆盖 Form.Slot 内的样式
-.semi-form-field .bot-target-selector {
+// 覆盖 Form.Slot 内的样式及其他表单容器
+.semi-form-field .bot-target-selector,
+.create-task-modal-field .bot-target-selector,
+.create-template-modal-field .bot-target-selector,
+.edit-template-modal-field .bot-target-selector,
+.create-time-trigger-modal-field .bot-target-selector,
+.edit-time-trigger-modal-field .bot-target-selector {
   margin-top: 0;
   
+  &.semi-select {
+    margin: 0;
+  }
+
   .semi-select-selection {
     margin: 0;
   }

@@ -62,30 +62,6 @@ const BotTargetSelector = ({
 }: BotTargetSelectorProps) => {
   const { t } = useTranslation();
 
-  // 扁平化的选项列表（用于非分组场景）
-  const flatOptionList = useMemo(() => {
-    if (targetType === 'BOT_GROUP') {
-      return botGroups.map((group) => ({
-        value: group.id,
-        label: group.name,
-        onlineCount: group.onlineCount,
-        totalCount: group.totalCount,
-      }));
-    }
-
-    if (targetType === 'UNGROUPED_BOT') {
-      return bots
-        .filter((b) => !b.groupId)
-        .map((bot) => ({
-          value: bot.id,
-          label: bot.name,
-          status: bot.status,
-        }));
-    }
-
-    return [];
-  }, [targetType, botGroups, bots]);
-
   // 分组选项（用于 BOT_IN_GROUP）
   const groupedOptions = useMemo(() => {
     if (targetType !== 'BOT_IN_GROUP') return [];
@@ -112,58 +88,12 @@ const BotTargetSelector = ({
     return result;
   }, [targetType, botGroups, bots]);
 
-  // 渲染机器人组选项
-  const renderGroupOption = (group: BotGroup) => (
-    <div className="bot-target-selector-option">
-      <Text className="bot-target-selector-option-name">{group.name}</Text>
-      <Tag 
-        size="small" 
-        color={group.onlineCount > 0 ? 'green' : 'grey'}
-        className="bot-target-selector-option-status"
-      >
-        {group.onlineCount}/{group.totalCount} {t('botSelector.online')}
-      </Tag>
-    </div>
-  );
-
-  // 渲染机器人选项
-  const renderBotOption = (bot: Bot) => (
-    <div className="bot-target-selector-option">
-      <Text className="bot-target-selector-option-name">{bot.name}</Text>
-      <Tag 
-        size="small" 
-        color={bot.status === 'ONLINE' ? 'green' : 'grey'}
-        className="bot-target-selector-option-status"
-      >
-        {bot.status === 'ONLINE' ? t('botSelector.statusOnline') : t('botSelector.statusOffline')}
-      </Tag>
-    </div>
-  );
-
-  // 渲染选项
-  const renderOptionItem = (option: any) => {
-    if (targetType === 'BOT_GROUP') {
-      return renderGroupOption({
-        id: option.value,
-        name: option.label,
-        onlineCount: option.onlineCount,
-        totalCount: option.totalCount,
-      });
-    }
-
-    // UNGROUPED_BOT
-    return renderBotOption({
-      id: option.value,
-      name: option.label,
-      groupId: null,
-      status: option.status,
-    });
-  };
-
   // 渲染已选中值的标签
-  const renderSelectedItem = (option: any) => {
+  const renderSelectedItem = (optionNode: Record<string, any>) => {
+    if (!optionNode) return null;
+
     if (targetType === 'BOT_GROUP') {
-      const group = botGroups.find((g) => g.id === option?.value);
+      const group = botGroups.find((g) => g.id === optionNode.value);
       if (group) {
         return (
           <div className="bot-target-selector-selected">
@@ -180,7 +110,7 @@ const BotTargetSelector = ({
     }
 
     if (targetType === 'BOT_IN_GROUP' || targetType === 'UNGROUPED_BOT') {
-      const bot = bots.find((b) => b.id === option?.value);
+      const bot = bots.find((b) => b.id === optionNode.value);
       if (bot) {
         return (
           <div className="bot-target-selector-selected">
@@ -196,13 +126,14 @@ const BotTargetSelector = ({
       }
     }
 
-    return option?.label || '';
+    return optionNode.label || '';
   };
 
   if (!targetType) {
     return null;
   }
 
+  // BOT_IN_GROUP - 分组显示
   if (targetType === 'BOT_IN_GROUP') {
     return (
       <Select
@@ -213,18 +144,22 @@ const BotTargetSelector = ({
         disabled={disabled}
         filter
         style={{ width: '100%' }}
-        renderSelectedItem={renderSelectedItem as any}
+        renderSelectedItem={renderSelectedItem}
       >
         {groupedOptions.map((group) => (
           <Select.OptGroup key={group.label} label={group.label}>
             {group.children.map((bot) => (
               <Select.Option key={bot.value} value={bot.value}>
-                {renderBotOption({
-                  id: bot.value,
-                  name: bot.label,
-                  groupId: null,
-                  status: bot.status as 'ONLINE' | 'OFFLINE',
-                })}
+                <div className="bot-target-selector-option">
+                  <Text className="bot-target-selector-option-name">{bot.label}</Text>
+                  <Tag 
+                    size="small" 
+                    color={bot.status === 'ONLINE' ? 'green' : 'grey'}
+                    className="bot-target-selector-option-status"
+                  >
+                    {bot.status === 'ONLINE' ? t('botSelector.statusOnline') : t('botSelector.statusOffline')}
+                  </Tag>
+                </div>
               </Select.Option>
             ))}
           </Select.OptGroup>
@@ -233,20 +168,70 @@ const BotTargetSelector = ({
     );
   }
 
-  return (
-    <Select
-      className={`bot-target-selector ${className || ''}`}
-      value={value}
-      onChange={(v) => onChange?.(v as string)}
-      placeholder={placeholder || t('botSelector.placeholder')}
-      disabled={disabled}
-      optionList={flatOptionList}
-      filter
-      style={{ width: '100%' }}
-      renderSelectedItem={renderSelectedItem as any}
-      renderOptionItem={renderOptionItem}
-    />
-  );
+  // BOT_GROUP - 机器人组选择
+  if (targetType === 'BOT_GROUP') {
+    return (
+      <Select
+        className={`bot-target-selector ${className || ''}`}
+        value={value}
+        onChange={(v) => onChange?.(v as string)}
+        placeholder={placeholder || t('botSelector.placeholder')}
+        disabled={disabled}
+        filter
+        style={{ width: '100%' }}
+        renderSelectedItem={renderSelectedItem}
+      >
+        {botGroups.map((group) => (
+          <Select.Option key={group.id} value={group.id}>
+            <div className="bot-target-selector-option">
+              <Text className="bot-target-selector-option-name">{group.name}</Text>
+              <Tag 
+                size="small" 
+                color={group.onlineCount > 0 ? 'green' : 'grey'}
+                className="bot-target-selector-option-status"
+              >
+                {group.onlineCount}/{group.totalCount} {t('botSelector.online')}
+              </Tag>
+            </div>
+          </Select.Option>
+        ))}
+      </Select>
+    );
+  }
+
+  // UNGROUPED_BOT - 未分组机器人选择
+  if (targetType === 'UNGROUPED_BOT') {
+    const ungroupedBots = bots.filter((b) => !b.groupId);
+    return (
+      <Select
+        className={`bot-target-selector ${className || ''}`}
+        value={value}
+        onChange={(v) => onChange?.(v as string)}
+        placeholder={placeholder || t('botSelector.placeholder')}
+        disabled={disabled}
+        filter
+        style={{ width: '100%' }}
+        renderSelectedItem={renderSelectedItem}
+      >
+        {ungroupedBots.map((bot) => (
+          <Select.Option key={bot.id} value={bot.id}>
+            <div className="bot-target-selector-option">
+              <Text className="bot-target-selector-option-name">{bot.name}</Text>
+              <Tag 
+                size="small" 
+                color={bot.status === 'ONLINE' ? 'green' : 'grey'}
+                className="bot-target-selector-option-status"
+              >
+                {bot.status === 'ONLINE' ? t('botSelector.statusOnline') : t('botSelector.statusOffline')}
+              </Tag>
+            </div>
+          </Select.Option>
+        ))}
+      </Select>
+    );
+  }
+
+  return null;
 };
 
 export default BotTargetSelector;
