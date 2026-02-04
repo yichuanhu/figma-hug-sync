@@ -1,110 +1,165 @@
 // CreateQueueTriggerModal 创建队列触发器弹窗样式
+// 样式与创建时间触发器弹窗保持一致
 .create-queue-trigger-modal {
-  .semi-modal-body {
-    padding: 0 24px;
+  .create-queue-trigger-modal-form {
+    padding-top: 4px;
   }
 
-  // 步骤条
   .create-queue-trigger-modal-steps {
     margin-bottom: 24px;
     padding: 0 24px;
   }
 
-  // 内容区域
-  .create-queue-trigger-modal-content {
+  .create-queue-trigger-modal-body {
     display: flex;
-    gap: 24px;
-    min-height: 400px;
-    max-height: 60vh;
-    overflow-y: auto;
+    gap: 32px;
+  }
 
-    &.has-right-panel {
-      .create-queue-trigger-modal-left-panel {
-        flex: 1;
-        border-right: 1px solid var(--semi-color-border);
-        padding-right: 24px;
-      }
+  .create-queue-trigger-modal-left {
+    flex: 1;
+    min-width: 0;
 
-      .create-queue-trigger-modal-right-panel {
-        width: 320px;
-        flex-shrink: 0;
-      }
+    // 当只有左侧时，占满整个宽度
+    &:only-child {
+      max-width: 100%;
     }
   }
 
-  .create-queue-trigger-modal-form {
-    width: 100%;
-    display: flex;
-    gap: 24px;
-  }
-
-  .create-queue-trigger-modal-left-panel {
+  .create-queue-trigger-modal-right {
     flex: 1;
+    min-width: 0;
+    border-left: 1px solid var(--semi-color-border);
+    padding-left: 32px;
   }
 
-  // 区块样式
+  .create-queue-trigger-modal-content {
+    max-height: calc(100vh - 300px);
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+
   .create-queue-trigger-modal-section {
-    margin-bottom: 24px;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--semi-color-border);
 
     &:last-child {
+      padding-bottom: 0;
       margin-bottom: 0;
+      border-bottom: none;
+    }
+
+    // Form 字段统一间距
+    .semi-form-field {
+      margin-bottom: 16px;
     }
   }
 
   .create-queue-trigger-modal-section-title {
-    display: flex;
-    align-items: center;
-    gap: 8px;
     font-weight: 600;
     font-size: 14px;
     color: var(--semi-color-text-0);
     margin-bottom: 16px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--semi-color-border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
 
     &::before {
       content: '';
       display: inline-block;
       width: 3px;
       height: 14px;
-      background: var(--semi-color-primary);
+      background: var(--semi-color-text-2);
       border-radius: 2px;
     }
   }
 
-  // 参数标签
-  .create-queue-trigger-modal-param-label {
-    display: flex;
-    align-items: center;
+  .create-queue-trigger-modal-field {
+    margin-bottom: 16px;
+  }
+
+  .create-queue-trigger-modal-field-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--semi-color-text-0);
+  }
+
+  .create-queue-trigger-modal-field-hint {
+    font-size: 12px;
+    color: var(--semi-color-text-2);
+    margin-top: 4px;
+  }
+
+  .create-queue-trigger-modal-select-full {
+    width: 100%;
+  }
+
+  // 参数样式
+  .create-queue-trigger-modal-params {
+    // 使用标准表单样式
   }
 
   .create-queue-trigger-modal-param-item {
     margin-bottom: 16px;
-  }
 
-  // 输出参数
-  .create-queue-trigger-modal-output-params {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
+    &:last-child {
+      margin-bottom: 0;
+    }
 
-  .create-queue-trigger-modal-output-param {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-    background: var(--semi-color-fill-0);
-    border-radius: 4px;
+    .semi-form-field-label {
+      margin-bottom: 8px;
+      display: block;
+    }
 
-    .create-queue-trigger-modal-output-param-name {
-      color: var(--semi-color-text-0);
+    .semi-switch {
+      display: block;
     }
   }
 
-  // 内联字段
-  .create-queue-trigger-modal-field-inline {
-    margin-bottom: 16px;
+  .create-queue-trigger-modal-param-label {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--semi-color-text-0);
+    margin-bottom: 8px;
+  }
+
+  .create-queue-trigger-modal-no-params {
+    color: var(--semi-color-text-2);
+    padding: 32px 16px;
+    text-align: center;
+  }
+
+  // 输出参数样式
+  .create-queue-trigger-modal-output-params {
+    // 输出参数只读展示
+  }
+
+  .create-queue-trigger-modal-output-param-item {
+    padding: 12px;
+    background: var(--semi-color-fill-0);
+    border-radius: 6px;
+    margin-bottom: 8px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .create-queue-trigger-modal-output-param-name {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--semi-color-text-0);
+  }
+
+  .create-queue-trigger-modal-output-param-desc {
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--semi-color-text-2);
   }
 
   // Banner
@@ -112,18 +167,21 @@
     margin-bottom: 16px;
   }
 
-  // 底部按钮
+  // 底部按钮区 - 按钮放右侧一起
   .create-queue-trigger-modal-footer {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 0;
-    border-top: 1px solid var(--semi-color-border);
+    justify-content: flex-end;
+    gap: 12px;
     margin-top: 16px;
+    padding-top: 16px;
+    padding-bottom: 12px;
+    border-top: 1px solid var(--semi-color-border);
+  }
+}
 
-    .create-queue-trigger-modal-footer-right {
-      display: flex;
-      gap: 8px;
-    }
+// 覆盖Modal样式
+.create-queue-trigger-modal.semi-modal {
+  .semi-modal-body {
+    padding: 16px 24px;
   }
 }

@@ -515,13 +515,13 @@ const QueueTriggerList = () => {
             <Select
               placeholder={t('queueTrigger.filter.allStatus')}
               optionList={[
-                { value: '', label: t('queueTrigger.filter.allStatus') },
                 { value: 'ENABLED', label: t('queueTrigger.status.enabled') },
                 { value: 'DISABLED', label: t('queueTrigger.status.disabled') },
               ]}
-              value={queryParams.status || ''}
-              onChange={(value) => handleStatusFilter(value as TriggerStatus || undefined)}
-              style={{ width: 120 }}
+              value={queryParams.status}
+              onChange={(v) => handleStatusFilter(v as TriggerStatus | undefined)}
+              showClear
+              style={{ width: 80 }}
             />
           </Space>
         </Col>
