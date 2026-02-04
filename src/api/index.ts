@@ -2687,6 +2687,8 @@ export interface LYFileResponse {
   storage_id: string;
   /** 文件大小(字节) */
   file_size: number;
+  /** MIME类型 */
+  mime_type?: string | null;
   /** 文件来源 */
   source: FileSource;
   /** 发布状态 */

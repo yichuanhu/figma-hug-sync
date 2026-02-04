@@ -440,9 +440,11 @@
     },
     "detail": {
       "basicInfo": "基本信息",
+      "fileContent": "文件内容",
       "systemInfo": "系统信息",
       "updater": "更新者",
       "originalName": "源文件名",
+      "mimeType": "类型",
       "publishStatus": "发布状态",
       "published": "已发布",
       "unpublished": "未发布",
