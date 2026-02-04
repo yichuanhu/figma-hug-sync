@@ -145,6 +145,12 @@ const CalendarEditor: React.FC<CalendarEditorProps> = ({
           <Text className="calendar-editor-section-title">
             {t('workCalendar.editor.calendarEdit')}
           </Text>
+          <div className="calendar-editor-legend">
+            <div className="calendar-editor-legend-item">
+              <span className="calendar-editor-legend-dot calendar-editor-legend-dot-nonworkday" />
+              <Text type="tertiary" size="small">{t('workCalendar.editor.legendNonWorkday')}</Text>
+            </div>
+          </div>
           <Text type="tertiary" size="small" className="calendar-editor-hint">
             {t('workCalendar.editor.clickToToggle')}
           </Text>

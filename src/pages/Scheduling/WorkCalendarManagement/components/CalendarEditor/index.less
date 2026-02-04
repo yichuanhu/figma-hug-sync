@@ -45,6 +45,30 @@
     color: var(--semi-color-text-0);
   }
 
+  // 图例
+  &-legend {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 8px;
+
+    &-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    &-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+
+      &-nonworkday {
+        background: var(--semi-color-primary);
+      }
+    }
+  }
+
   // 提示文字
   &-hint {
     display: block;
