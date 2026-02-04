@@ -412,7 +412,8 @@
       "currentFile": "当前文件",
       "confirm": "确认上传",
       "success": "文件重新上传成功",
-      "error": "重新上传失败，请重试"
+      "error": "重新上传失败，请重试",
+      "fileNameMismatchWarning": "上传的文件名与原文件名不一致，确认要替换吗？"
     },
     "deleteModal": {
       "title": "删除文件",
