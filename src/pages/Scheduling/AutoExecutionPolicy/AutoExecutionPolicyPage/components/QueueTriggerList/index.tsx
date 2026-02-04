@@ -521,7 +521,7 @@ const QueueTriggerList = () => {
               value={queryParams.status}
               onChange={(v) => handleStatusFilter(v as TriggerStatus | undefined)}
               showClear
-              style={{ width: 100 }}
+              style={{ width: 120 }}
             />
           </Space>
         </Col>
