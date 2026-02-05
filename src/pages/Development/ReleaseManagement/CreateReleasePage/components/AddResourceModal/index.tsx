@@ -68,9 +68,9 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
     { id: 'queue-2', name: 'Email Queue', type: 'QUEUE', is_published: false },
     { id: 'queue-3', name: 'Notification Queue', type: 'QUEUE', is_published: false },
     // 文件
-    { id: 'file-1', name: '订单模板', original_name: '订单模板.xlsx', type: 'FILE', is_published: true },
-    { id: 'file-2', name: '报表配置', original_name: '报表配置.json', type: 'FILE', is_published: false },
-    { id: 'file-3', name: '数据映射', original_name: '数据映射.xml', type: 'FILE', is_published: false },
+    { id: 'file-1', name: '订单模板.xlsx', type: 'FILE', is_published: true },
+    { id: 'file-2', name: '报表配置.json', type: 'FILE', is_published: false },
+    { id: 'file-3', name: '数据映射.xml', type: 'FILE', is_published: false },
   ], []);
 
   // 过滤已添加的资源和按类型分组
