@@ -19,6 +19,7 @@ import type {
   LYProcessActiveVersionResponse,
   LYProcessParameterDefinition,
   ExecutionTargetType,
+  TaskPriority,
 } from '@/api';
 import './index.less';
 
@@ -30,6 +31,40 @@ interface EditQueueTriggerModalProps {
   onCancel: () => void;
   onSuccess: () => void;
 }
+
+// Mock 执行模板
+const mockTemplates = [
+  {
+    template_id: 'tpl-001',
+    template_name: '订单处理默认模板',
+    description: '使用默认配置处理订单',
+    process_id: 'proc-001',
+    process_name: '订单自动处理',
+    execution_target_type: 'BOT_GROUP' as ExecutionTargetType,
+    execution_target_id: 'group-001',
+    execution_target_name: '订单处理组',
+    priority: 'MEDIUM' as TaskPriority,
+    max_execution_duration: 3600,
+    validity_days: 7,
+    enable_recording: true,
+    input_parameters: { targetUrl: 'https://orders.example.com', maxCount: 50, enableRetry: true },
+  },
+  {
+    template_id: 'tpl-002',
+    template_name: '财务审批快速模板',
+    description: '财务报销审批快速执行配置',
+    process_id: 'proc-002',
+    process_name: '财务报销审批',
+    execution_target_type: 'BOT_GROUP' as ExecutionTargetType,
+    execution_target_id: 'group-002',
+    execution_target_name: '财务审批组',
+    priority: 'HIGH' as TaskPriority,
+    max_execution_duration: 1800,
+    validity_days: 3,
+    enable_recording: false,
+    input_parameters: { department: '财务部' },
+  },
+];
 
 // Mock 流程列表
 const mockProcesses: LYProcessActiveVersionResponse[] = [
@@ -179,6 +214,29 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
           formApi.setValue(`param_${param.name}`, param.default_value);
         }
       });
+    }
+  };
+
+  // 选择模板
+  const handleTemplateChange = (templateId: string | null) => {
+    if (templateId && formApi) {
+      const template = mockTemplates.find((t) => t.template_id === templateId);
+      if (template) {
+        handleProcessChange(template.process_id);
+        setTargetType(template.execution_target_type);
+        formApi.setValues({
+          processId: template.process_id,
+          targetType: template.execution_target_type,
+          targetId: template.execution_target_id,
+          priority: template.priority,
+          maxDuration: template.max_execution_duration,
+          validityDays: template.validity_days,
+          enableRecording: template.enable_recording,
+          ...Object.fromEntries(
+            Object.entries(template.input_parameters || {}).map(([k, v]) => [`param_${k}`, v])
+          ),
+        });
+      }
     }
   };
 
@@ -402,6 +460,21 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
   // 渲染步骤1左侧：任务配置
   const renderStep1LeftContent = () => (
     <>
+      {/* 模板选择 */}
+      <div className="edit-queue-trigger-modal-section">
+        <div className="edit-queue-trigger-modal-section-title">{t('task.createModal.selectTemplate')}</div>
+        <Form.Select
+          field="templateId"
+          noLabel
+          placeholder={t('task.createModal.templatePlaceholder')}
+          optionList={mockTemplates.map((tpl) => ({ value: tpl.template_id, label: tpl.template_name }))}
+          showClear
+          filter
+          className="edit-queue-trigger-modal-select-full"
+          onChange={(v) => handleTemplateChange(v as string | null)}
+        />
+      </div>
+
       {/* 流程配置 */}
       <div className="edit-queue-trigger-modal-section">
         <div className="edit-queue-trigger-modal-section-title">{t('queueTrigger.createModal.processSection')}</div>

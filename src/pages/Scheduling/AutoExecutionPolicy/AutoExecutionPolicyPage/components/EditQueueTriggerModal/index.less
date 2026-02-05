@@ -97,7 +97,13 @@
 
   // 参数样式
   .edit-queue-trigger-modal-params {
-    // 使用标准表单样式
+    .semi-form-field {
+      margin-bottom: 16px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
   }
 
   .edit-queue-trigger-modal-param-item {
@@ -120,10 +126,9 @@
   .edit-queue-trigger-modal-param-label {
     display: flex;
     align-items: center;
-    font-weight: 600;
+    font-weight: 500;
     font-size: 14px;
     color: var(--semi-color-text-0);
-    margin-bottom: 8px;
   }
 
   .edit-queue-trigger-modal-no-params {
