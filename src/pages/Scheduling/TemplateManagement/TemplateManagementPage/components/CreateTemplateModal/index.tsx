@@ -233,6 +233,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
             <Form.Switch
               field={`param_${param.name}`}
               noLabel
+              size="small"
             />
           </div>
         );
@@ -479,6 +480,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
                   <Form.Switch
                     field="enableRecording"
                     noLabel
+                    size="small"
                   />
                 </div>
               </div>

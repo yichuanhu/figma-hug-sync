@@ -510,7 +510,8 @@ const TriggerRuleConfig = ({
               <Text className={`${classPrefix}-field-label`}>{t('triggerRule.fields.enableWorkCalendar')}</Text>
               <Switch 
                 checked={enableWorkCalendar} 
-                onChange={(v) => onEnableWorkCalendarChange?.(v)} 
+                onChange={(v) => onEnableWorkCalendarChange?.(v)}
+                size="small"
               />
             </div>
             {enableWorkCalendar && (
@@ -585,6 +586,9 @@ const TriggerRuleConfig = ({
 
       {/* 分类二：触发规则（无标题） */}
       <div className={`${classPrefix}-category`}>
+        {/* 触发规则分类标题 */}
+        <Text className={`${classPrefix}-section-title`}>{t('triggerRule.category.triggerRule')}</Text>
+
         {/* 触发规则类型选择 */}
         <div className={`${classPrefix}-field`}>
           <RadioGroup

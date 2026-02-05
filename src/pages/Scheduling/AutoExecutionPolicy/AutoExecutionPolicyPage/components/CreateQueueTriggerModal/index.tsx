@@ -259,6 +259,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
             <Form.Switch
               field={`param_${param.name}`}
               noLabel
+              size="small"
             />
           </div>
         );
@@ -562,6 +563,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
           <Form.Switch
             field="enableRecording"
             noLabel
+            size="small"
           />
         </div>
       </div>
@@ -635,6 +637,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
         <Form.Switch
           field="enableWorkCalendarSwitch"
           noLabel
+          size="small"
           onChange={(value) => setEnableWorkCalendar(value)}
         />
       </div>
@@ -710,6 +713,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
             <Form.Switch
               field="enablePeriodicCheckSwitch"
               noLabel
+              size="small"
               onChange={(value) => setEnablePeriodicCheck(value)}
             />
           </div>

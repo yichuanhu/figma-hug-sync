@@ -286,6 +286,7 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
             <Form.Switch
               field={`param_${param.name}`}
               noLabel
+              size="small"
             />
           </div>
         );
@@ -512,6 +513,7 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
                   <Form.Switch
                     field="enableRecording"
                     noLabel
+                    size="small"
                   />
                 </div>
               </div>
