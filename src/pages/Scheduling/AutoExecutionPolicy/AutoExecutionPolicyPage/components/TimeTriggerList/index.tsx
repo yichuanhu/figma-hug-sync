@@ -55,8 +55,7 @@ const mockProcesses = [
   { process_id: 'proc-001', process_name: '订单自动处理' },
   { process_id: 'proc-002', process_name: '财务报销审批' },
   { process_id: 'proc-003', process_name: '人事入职流程' },
-  { process_id: 'proc-004', process_name: '采购申请流程' },
-  { process_id: 'proc-005', process_name: '合同审批流程' },
+  { process_id: 'proc-004', process_name: '数据采集流程' },
 ];
 
 const mockCreatorNames = ['张三', '李四', '王五', '赵六', '钱七'];
