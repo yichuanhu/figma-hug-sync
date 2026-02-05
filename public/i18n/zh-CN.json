@@ -1894,7 +1894,9 @@
         "searchPlaceholder": "搜索资源名称",
         "resourceName": "资源名称",
         "noResources": "暂无可添加的资源",
-        "selectedCount": "已选中 {{count}} 项"
+      "selectedCount": "已选中 {{count}} 项",
+      "fileName": "文件名称",
+      "originalFileName": "源文件名"
       },
       "success": "发布创建成功！",
       "error": "发布创建失败，请重试",

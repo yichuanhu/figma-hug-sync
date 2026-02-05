@@ -41,6 +41,7 @@ export interface ResourceConfig {
   production_value?: string;
   use_test_as_production: boolean;
   used_by_processes: string[];
+  original_name?: string;
 }
 
 const CreateReleasePage: React.FC = () => {
@@ -118,7 +119,21 @@ const CreateReleasePage: React.FC = () => {
         ]
       : [];
 
-    return { parameters, credentials, queues };
+    const files = [
+      {
+        resource_id: 'FILE-001',
+        resource_name: '订单模板',
+        original_name: '订单模板_v2.xlsx',
+        is_previously_published: true,
+        test_value: null,
+        used_by_processes: processes.slice(0, 1).map((p) => ({
+          process_id: p.process.id,
+          process_name: p.process.name,
+        })),
+      },
+    ];
+
+    return { parameters, credentials, queues, files };
   }, []);
 
   // 当进入步骤2时，检测依赖
@@ -160,6 +175,18 @@ const CreateReleasePage: React.FC = () => {
               production_value: '',
               use_test_as_production: false,
               used_by_processes: r.used_by_processes.map((p) => p.process_name),
+            })),
+            ...(result.files || []).map((r) => ({
+              resource_id: r.resource_id,
+              resource_name: r.resource_name,
+              resource_type: 'FILE' as ResourceType,
+              is_manual: false,
+              is_previously_published: r.is_previously_published,
+              test_value: r.test_value,
+              production_value: '',
+              use_test_as_production: false,
+              used_by_processes: r.used_by_processes.map((p) => p.process_name),
+              original_name: (r as any).original_name,
             })),
           ];
           setResources(allResources);
