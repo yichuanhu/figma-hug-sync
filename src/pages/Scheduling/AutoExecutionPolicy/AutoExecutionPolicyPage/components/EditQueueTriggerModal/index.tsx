@@ -14,6 +14,7 @@ import {
 } from '@douyinfe/semi-ui';
 import { IconHelpCircle, IconInbox } from '@douyinfe/semi-icons';
 import BotTargetSelector from '@/components/BotTargetSelector';
+import { getWorkCalendarOptions } from '@/mocks/workCalendar';
 import type {
   LYQueueTriggerResponse,
   LYProcessActiveVersionResponse,
@@ -113,12 +114,6 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
       { name: 'collectedCount', type: 'NUMBER', description: '采集数据条数' },
     ],
   },
-];
-
-// Mock 工作日历
-const mockWorkCalendars = [
-  { value: 'cal-001', label: '公司工作日历' },
-  { value: 'cal-002', label: '银行工作日历' },
 ];
 
 // Mock 队列列表
@@ -683,7 +678,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
             field="workCalendarId"
             label={t('queueTrigger.fields.workCalendar')}
             placeholder={t('queueTrigger.fields.workCalendarPlaceholder')}
-            optionList={mockWorkCalendars}
+            optionList={getWorkCalendarOptions()}
             rules={[{ required: true, message: t('queueTrigger.validation.workCalendarRequired') }]}
             style={{ width: '100%' }}
           />
