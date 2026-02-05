@@ -24,6 +24,7 @@ interface AvailableResource {
   type: ResourceType;
   test_value?: string;
   is_published?: boolean;
+  original_name?: string;
 }
 
 interface AddResourceModalProps {
@@ -67,9 +68,9 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
     { id: 'queue-2', name: 'Email Queue', type: 'QUEUE', is_published: false },
     { id: 'queue-3', name: 'Notification Queue', type: 'QUEUE', is_published: false },
     // 文件
-    { id: 'file-1', name: '订单模板.xlsx', type: 'FILE', is_published: true },
-    { id: 'file-2', name: '报表配置.json', type: 'FILE', is_published: false },
-    { id: 'file-3', name: '数据映射.xml', type: 'FILE', is_published: false },
+    { id: 'file-1', name: '订单模板', original_name: '订单模板.xlsx', type: 'FILE', is_published: true },
+    { id: 'file-2', name: '报表配置', original_name: '报表配置.json', type: 'FILE', is_published: false },
+    { id: 'file-3', name: '数据映射', original_name: '数据映射.xml', type: 'FILE', is_published: false },
   ], []);
 
   // 过滤已添加的资源和按类型分组
@@ -107,6 +108,7 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
         use_test_as_production: false,
         used_by_processes: [],
         is_manual: true,
+        original_name: r.original_name,
       }));
 
     onConfirm(selectedResources);
@@ -145,6 +147,30 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
       title: t('release.create.testValue'),
       dataIndex: 'test_value',
       key: 'test_value',
+      render: (value: string) => value || '-',
+    },
+  ];
+
+  const fileColumns = [
+    {
+      title: t('release.create.addResource.fileName'),
+      dataIndex: 'name',
+      key: 'name',
+      render: (name: string, record: AvailableResource) => (
+        <div className="add-resource-modal-name-cell">
+          <Text strong>{name}</Text>
+          {record.is_published && (
+            <Tag color="green" size="small">
+              {t('release.create.alreadyPublished')}
+            </Tag>
+          )}
+        </div>
+      ),
+    },
+    {
+      title: t('release.create.addResource.originalFileName'),
+      dataIndex: 'original_name',
+      key: 'original_name',
       render: (value: string) => value || '-',
     },
   ];
@@ -212,7 +238,7 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
                 />
               </div>
               <Table
-                columns={type === 'QUEUE' ? queueColumns : columns}
+                columns={type === 'QUEUE' ? queueColumns : type === 'FILE' ? fileColumns : columns}
                 dataSource={getFilteredResources(type)}
                 rowKey="id"
                 rowSelection={rowSelection}

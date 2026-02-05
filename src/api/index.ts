@@ -2560,6 +2560,30 @@ export interface LYDependencyDetectionResponse {
   credentials: LYDetectedResource[];
   /** 检测到的队列 */
   queues: LYDetectedResource[];
+  /** 检测到的文件 */
+  files?: LYDetectedFileResource[];
+}
+
+/**
+ * LYDetectedFileResource
+ * 检测到的文件资源
+ */
+export interface LYDetectedFileResource {
+  /** 资源ID */
+  resource_id: string;
+  /** 资源名称（用户定义的文件名称） */
+  resource_name: string;
+  /** 源文件名 */
+  original_name?: string;
+  /** 是否先前已发布 */
+  is_previously_published: boolean;
+  /** 测试值 */
+  test_value?: string | null;
+  /** 使用此资源的流程 */
+  used_by_processes: Array<{
+    process_id: string;
+    process_name: string;
+  }>;
 }
 
 /**
