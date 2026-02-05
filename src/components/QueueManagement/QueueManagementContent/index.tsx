@@ -25,7 +25,7 @@ import {
   IconPlus,
   IconMore,
   IconDeleteStroked,
-  IconFilter,
+   IconFilterStroked,
   IconEyeOpenedStroked,
   IconEditStroked,
 } from '@douyinfe/semi-icons';
@@ -508,7 +508,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
                   }
                 >
                   <Button
-                    icon={<IconFilter />}
+                     icon={<IconFilterStroked />}
                     type={filterCount > 0 ? 'primary' : 'tertiary'}
                     theme={filterCount > 0 ? 'solid' : 'light'}
                   >

@@ -37,7 +37,7 @@ import {
   IconChevronUp,
   IconChevronLeft,
   IconChevronRight,
-  IconFilter,
+   IconFilterStroked,
   IconUnlink,
   IconEyeOpenedStroked,
   IconMore,
@@ -822,7 +822,7 @@ const PersonalCredentialDetailDrawer = ({
                         }
                       >
                         <Button
-                          icon={<IconFilter />}
+                           icon={<IconFilterStroked />}
                           type={filterCount > 0 ? 'primary' : 'tertiary'}
                           theme={filterCount > 0 ? 'solid' : 'light'}
                         >

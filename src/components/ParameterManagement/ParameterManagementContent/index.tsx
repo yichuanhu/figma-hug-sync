@@ -25,7 +25,7 @@ import {
   IconPlus,
   IconMore,
   IconDeleteStroked,
-  IconFilter,
+   IconFilterStroked,
   IconEditStroked,
 } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
@@ -527,7 +527,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
                 }
               >
                 <Button
-                  icon={<IconFilter />}
+                   icon={<IconFilterStroked />}
                   type={filterCount > 0 ? 'primary' : 'tertiary'}
                   theme={filterCount > 0 ? 'solid' : 'light'}
                 >

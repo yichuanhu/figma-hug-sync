@@ -21,7 +21,7 @@ import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import {
   IconSearch, 
-  IconFilter,
+   IconFilterStroked,
   IconPlus, 
   IconMore, 
   IconEyeOpenedStroked, 
@@ -930,7 +930,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
                 content={filterContent}
               >
                 <Button 
-                  icon={<IconFilter />} 
+                   icon={<IconFilterStroked />} 
                   theme={hasActiveFilters ? 'solid' : 'light'}
                   type={hasActiveFilters ? 'primary' : 'tertiary'}
                 >

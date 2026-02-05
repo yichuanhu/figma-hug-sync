@@ -29,7 +29,7 @@ import {
   IconEditStroked,
   IconPlayCircle,
   IconDeleteStroked,
-  IconFilter,
+   IconFilterStroked,
 } from '@douyinfe/semi-icons';
 import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
@@ -600,7 +600,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
                   }
                 >
                   <Button
-                    icon={<IconFilter />}
+                     icon={<IconFilterStroked />}
                     type={statusFilter.length > 0 ? 'primary' : 'tertiary'}
                     theme={statusFilter.length > 0 ? 'solid' : 'light'}
                   >
