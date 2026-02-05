@@ -45,6 +45,7 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
     PARAMETER: '',
     CREDENTIAL: '',
     QUEUE: '',
+    FILE: '',
   });
   const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
 
@@ -65,6 +66,10 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
     { id: 'queue-1', name: 'Task Queue', type: 'QUEUE', is_published: true },
     { id: 'queue-2', name: 'Email Queue', type: 'QUEUE', is_published: false },
     { id: 'queue-3', name: 'Notification Queue', type: 'QUEUE', is_published: false },
+    // 文件
+    { id: 'file-1', name: '订单模板.xlsx', type: 'FILE', is_published: true },
+    { id: 'file-2', name: '报表配置.json', type: 'FILE', is_published: false },
+    { id: 'file-3', name: '数据映射.xml', type: 'FILE', is_published: false },
   ], []);
 
   // 过滤已添加的资源和按类型分组
@@ -114,6 +119,7 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
       PARAMETER: '',
       CREDENTIAL: '',
       QUEUE: '',
+        FILE: '',
     });
     setActiveTab('PARAMETER');
     onClose();
@@ -165,6 +171,7 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
     PARAMETER: t('release.create.resourceTypes.parameter'),
     CREDENTIAL: t('release.create.resourceTypes.credential'),
     QUEUE: t('release.create.resourceTypes.queue'),
+    FILE: t('release.create.resourceTypes.file'),
   };
 
   const rowSelection = {
@@ -188,7 +195,7 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
     >
       <div className="add-resource-modal-content">
         <Tabs activeKey={activeTab} onChange={handleTabChange}>
-          {(['PARAMETER', 'CREDENTIAL', 'QUEUE'] as ResourceType[]).map((type) => (
+          {(['PARAMETER', 'CREDENTIAL', 'QUEUE', 'FILE'] as ResourceType[]).map((type) => (
             <TabPane
               tab={tabLabels[type]}
               itemKey={type}

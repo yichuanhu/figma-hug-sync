@@ -61,6 +61,44 @@
     gap: 8px;
   }
 
+  // 流程列表与标题的间距
+  .release-detail-drawer-process-list {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  // 资源列表与标题的间距
+  .release-detail-drawer-resource-list {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  // 资源名称可点击样式
+  .release-detail-drawer-resource-name {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: color 0.2s;
+
+    &:hover {
+      color: var(--semi-color-primary);
+    }
+
+    .release-detail-drawer-resource-link-icon {
+      font-size: 12px;
+      color: var(--semi-color-tertiary);
+    }
+
+    &:hover .release-detail-drawer-resource-link-icon {
+      color: var(--semi-color-primary);
+    }
+  }
+
   // 错误信息区域
   .release-detail-drawer-error {
     margin-top: 24px;
@@ -71,13 +109,6 @@
       border-radius: 8px;
       border: 1px solid var(--semi-color-danger-light-hover);
     }
-  }
-
-  // 流程卡片列表
-  .release-detail-drawer-process-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
   }
 
   // 流程卡片 - 去掉边框线，与资源卡片样式统一
@@ -92,13 +123,6 @@
       justify-content: space-between;
       margin-bottom: 4px;
     }
-  }
-
-  // 资源卡片列表
-  .release-detail-drawer-resource-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
   }
 
   // 资源卡片 - 去掉边框线，与流程卡片样式统一

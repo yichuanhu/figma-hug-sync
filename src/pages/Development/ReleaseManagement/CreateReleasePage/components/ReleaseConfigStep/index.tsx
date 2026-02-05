@@ -69,6 +69,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
       PARAMETER: [],
       CREDENTIAL: [],
       QUEUE: [],
+      FILE: [],
     };
     resources.forEach((r) => {
       if (groups[r.resource_type]) {
@@ -105,12 +106,14 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
     PARAMETER: t('release.create.resourceTypes.parameter'),
     CREDENTIAL: t('release.create.resourceTypes.credential'),
     QUEUE: t('release.create.resourceTypes.queue'),
+    FILE: t('release.create.resourceTypes.file'),
   };
 
   // 渲染资源卡片
   const renderResourceCard = (resource: ResourceConfig) => {
     const isCredential = resource.resource_type === 'CREDENTIAL';
     const isQueue = resource.resource_type === 'QUEUE';
+    const isFile = resource.resource_type === 'FILE';
 
     return (
       <div key={resource.resource_id} className="release-config-step-resource-card">
@@ -146,7 +149,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
           </div>
         </div>
 
-        {!isQueue && (
+        {!isQueue && !isFile && (
           <div className="release-config-step-resource-card-body">
             <Row gutter={16}>
               <Col span={12}>
@@ -329,6 +332,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
           {renderResourceGroup('PARAMETER', groupedResources.PARAMETER)}
           {renderResourceGroup('CREDENTIAL', groupedResources.CREDENTIAL)}
           {renderResourceGroup('QUEUE', groupedResources.QUEUE)}
+          {renderResourceGroup('FILE', groupedResources.FILE)}
 
           {totalResourceCount === 0 && (
             <div className="release-config-step-no-resources">

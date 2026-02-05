@@ -2436,7 +2436,7 @@ export type ReleaseStatus =
   | 'FAILED';    // 失败
 
 /** 资源类型枚举 */
-export type ResourceType = 'PARAMETER' | 'CREDENTIAL' | 'QUEUE';
+export type ResourceType = 'PARAMETER' | 'CREDENTIAL' | 'QUEUE' | 'FILE';
 
 /**
  * LYReleaseResponse

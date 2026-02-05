@@ -22,6 +22,7 @@ import {
   IconMaximize,
   IconMinimize,
 } from '@douyinfe/semi-icons';
+import { IconLink } from '@douyinfe/semi-icons';
 import type { LYReleaseResponse, ReleaseType, ReleaseStatus, ResourceType } from '@/api';
 
 import './index.less';
@@ -109,7 +110,7 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
 
   // 按类型分组资源 - 使用mock数据填充
   const groupedResources = useMemo(() => {
-    if (!release) return { PARAMETER: [], CREDENTIAL: [], QUEUE: [] };
+    if (!release) return { PARAMETER: [], CREDENTIAL: [], QUEUE: [], FILE: [] };
     
     // Mock 依赖资源数据
     const mockResources = [
@@ -168,6 +169,28 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
         is_manual: false,
         used_by_processes: ['订单处理流程'],
       },
+      {
+        resource_id: 'file-001',
+        resource_type: 'FILE' as ResourceType,
+        resource_name: '订单模板.xlsx',
+        test_value: '',
+        production_value: '',
+        use_test_as_production: false,
+        is_previously_published: true,
+        is_manual: false,
+        used_by_processes: ['订单处理流程'],
+      },
+      {
+        resource_id: 'file-002',
+        resource_type: 'FILE' as ResourceType,
+        resource_name: '报表配置.json',
+        test_value: '',
+        production_value: '',
+        use_test_as_production: false,
+        is_previously_published: false,
+        is_manual: true,
+        used_by_processes: ['数据导出流程'],
+      },
     ];
 
     const resources = release.resources?.length ? release.resources : mockResources;
@@ -176,6 +199,7 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
       PARAMETER: resources.filter((r) => r.resource_type === 'PARAMETER'),
       CREDENTIAL: resources.filter((r) => r.resource_type === 'CREDENTIAL'),
       QUEUE: resources.filter((r) => r.resource_type === 'QUEUE'),
+      FILE: resources.filter((r) => r.resource_type === 'FILE'),
     };
   }, [release]);
 
@@ -205,6 +229,8 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
       navigate(`/dev-center/credential?credentialId=${resourceId}`);
     } else if (resourceType === 'QUEUE') {
       navigate(`/scheduling-center/queue-management?queueId=${resourceId}`);
+    } else if (resourceType === 'FILE') {
+      navigate(`/dev-center/file-management?fileId=${resourceId}`);
     }
   };
 
@@ -232,6 +258,7 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
     PARAMETER: { i18nKey: 'release.resourceTypes.parameter' },
     CREDENTIAL: { i18nKey: 'release.resourceTypes.credential' },
     QUEUE: { i18nKey: 'release.resourceTypes.queue' },
+    FILE: { i18nKey: 'release.resourceTypes.file' },
   };
 
   const formatTime = (time: string) => {
@@ -361,11 +388,11 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
                     <Space>
                       <Text
                         strong
-                        link
                         onClick={() => handleResourceClick(type as ResourceType, resource.resource_id)}
-                        style={{ cursor: 'pointer' }}
+                        className="release-detail-drawer-resource-name"
                       >
                         {resource.resource_name}
+                        <IconLink className="release-detail-drawer-resource-link-icon" />
                       </Text>
                       {resource.is_manual && (
                         <Tag size="small" color="grey">
@@ -381,7 +408,7 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
                     <Text type="tertiary" size="small">
                       {t('release.detail.previouslyPublished')}: {resource.is_previously_published ? t('common.yes') : t('common.no')}
                     </Text>
-                    {type !== 'QUEUE' && (
+                    {type !== 'QUEUE' && type !== 'FILE' && (
                       <>
                         <Text type="tertiary" size="small">
                           {t('release.create.testValue')}: {resource.test_value || '-'}
