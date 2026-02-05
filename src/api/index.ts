@@ -2513,6 +2513,8 @@ export interface LYReleaseResourceResponse {
   production_value?: string | null;
   /** 使用测试值作为生产值 */
   use_test_as_production: boolean;
+  /** 源文件名（仅文件类型） */
+  original_name?: string | null;
 }
 
 /** LYListResponse[LYReleaseResponse] */

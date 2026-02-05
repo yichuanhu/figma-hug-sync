@@ -22,7 +22,7 @@ import {
   IconMaximize,
   IconMinimize,
 } from '@douyinfe/semi-icons';
-import { IconLink } from '@douyinfe/semi-icons';
+import { IconExternalOpenStroked } from '@douyinfe/semi-icons';
 import type { LYReleaseResponse, ReleaseType, ReleaseStatus, ResourceType } from '@/api';
 
 import './index.less';
@@ -172,7 +172,8 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
       {
         resource_id: 'file-001',
         resource_type: 'FILE' as ResourceType,
-        resource_name: '订单模板.xlsx',
+        resource_name: '订单模板',
+        original_name: '订单模板.xlsx',
         test_value: '',
         production_value: '',
         use_test_as_production: false,
@@ -183,7 +184,8 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
       {
         resource_id: 'file-002',
         resource_type: 'FILE' as ResourceType,
-        resource_name: '报表配置.json',
+        resource_name: '报表配置',
+        original_name: '报表配置.json',
         test_value: '',
         production_value: '',
         use_test_as_production: false,
@@ -347,14 +349,13 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
             className="release-detail-drawer-process-card"
           >
             <div className="release-detail-drawer-process-card-header">
-              <Text 
-                strong 
-                link
+              <span 
                 onClick={() => handleProcessClick(content.process_id)}
-                style={{ cursor: 'pointer' }}
+                className="release-detail-drawer-process-name"
               >
-                {content.process_name}
-              </Text>
+                <Text strong>{content.process_name}</Text>
+                <IconExternalOpenStroked className="release-detail-drawer-link-icon" />
+              </span>
               <Tag size="small" color="blue">
                 {content.version_number}
               </Tag>
@@ -385,21 +386,18 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
                   className="release-detail-drawer-resource-card"
                 >
                   <div className="release-detail-drawer-resource-card-header">
-                    <Space>
-                      <Text
-                        strong
-                        onClick={() => handleResourceClick(type as ResourceType, resource.resource_id)}
-                        className="release-detail-drawer-resource-name"
-                      >
-                        {resource.resource_name}
-                        <IconLink className="release-detail-drawer-resource-link-icon" />
-                      </Text>
-                      {resource.is_manual && (
-                        <Tag size="small" color="grey">
-                          {t('release.create.manuallyAdded')}
-                        </Tag>
-                      )}
-                    </Space>
+                    <span
+                      onClick={() => handleResourceClick(type as ResourceType, resource.resource_id)}
+                      className="release-detail-drawer-resource-name"
+                    >
+                      <Text strong>{resource.resource_name}</Text>
+                      <IconExternalOpenStroked className="release-detail-drawer-link-icon" />
+                    </span>
+                    {resource.is_manual && (
+                      <Tag size="small" color="grey">
+                        {t('release.create.manuallyAdded')}
+                      </Tag>
+                    )}
                   </div>
                   <div className="release-detail-drawer-resource-card-body">
                     <Text type="tertiary" size="small">
@@ -408,6 +406,11 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
                     <Text type="tertiary" size="small">
                       {t('release.detail.previouslyPublished')}: {resource.is_previously_published ? t('common.yes') : t('common.no')}
                     </Text>
+                    {type === 'FILE' && (
+                      <Text type="tertiary" size="small">
+                        {t('release.detail.originalFileName')}: {resource.original_name || '-'}
+                      </Text>
+                    )}
                     {type !== 'QUEUE' && type !== 'FILE' && (
                       <>
                         <Text type="tertiary" size="small">
