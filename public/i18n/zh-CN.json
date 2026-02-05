@@ -1823,9 +1823,11 @@
       "publishTime": "发布时间",
       "basicInfo": "基本信息",
       "publishedProcesses": "已发布的流程",
+      "publishedProcessesAndResources": "已发布的流程和资源",
       "processes": "流程",
       "errorDetails": "错误详情",
-      "rollbackFrom": "从 {{from}} 回退到 {{to}}"
+      "rollbackFrom": "从 {{from}} 回退到 {{to}}",
+      "previouslyPublished": "先前已发布"
     },
     "create": {
       "title": "新建发布",
