@@ -97,7 +97,13 @@
 
   // 参数样式
   .create-time-trigger-modal-params {
-    // 使用标准表单样式
+    .semi-form-field {
+      margin-bottom: 16px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
   }
 
   .create-time-trigger-modal-param-item {
@@ -120,10 +126,9 @@
   .create-time-trigger-modal-param-label {
     display: flex;
     align-items: center;
-    font-weight: 600;
+    font-weight: 500;
     font-size: 14px;
     color: var(--semi-color-text-0);
-    margin-bottom: 8px;
   }
 
   .create-time-trigger-modal-no-params {
