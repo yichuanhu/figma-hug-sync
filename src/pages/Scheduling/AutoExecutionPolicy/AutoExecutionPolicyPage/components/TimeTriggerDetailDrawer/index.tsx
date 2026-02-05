@@ -384,15 +384,17 @@ const TimeTriggerDetailDrawer = ({
 
               {/* 触发预览（可折叠） */}
               <div className="time-trigger-detail-drawer-section">
-                <div 
-                  className="time-trigger-detail-drawer-collapsible-header"
-                  onClick={() => setPreviewExpanded(!previewExpanded)}
-                >
-                  <Text className="time-trigger-detail-drawer-section-title">
+                <Space spacing={4} align="center" className="time-trigger-detail-drawer-section-title">
+                  <Text style={{ fontWeight: 500 }}>
                     {t('timeTrigger.detail.triggerPreview')}
                   </Text>
-                  {previewExpanded ? <IconChevronUp /> : <IconChevronDown />}
-                </div>
+                  <Button
+                    theme="borderless"
+                    size="small"
+                    icon={previewExpanded ? <IconChevronUp size="small" /> : <IconChevronDown size="small" />}
+                    onClick={() => setPreviewExpanded(!previewExpanded)}
+                  />
+                </Space>
                 <Collapsible isOpen={previewExpanded}>
                   <div className="time-trigger-detail-drawer-preview">
                     {previewTimes.length > 0 ? (
