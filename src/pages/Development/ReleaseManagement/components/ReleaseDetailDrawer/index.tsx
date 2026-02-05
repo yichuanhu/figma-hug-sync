@@ -198,6 +198,16 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
     navigate(`/dev-center/automation-process?processId=${processId}`);
   };
 
+  const handleResourceClick = (resourceType: ResourceType, resourceId: string) => {
+    if (resourceType === 'PARAMETER') {
+      navigate(`/dev-center/parameter?parameterId=${resourceId}`);
+    } else if (resourceType === 'CREDENTIAL') {
+      navigate(`/dev-center/credential?credentialId=${resourceId}`);
+    } else if (resourceType === 'QUEUE') {
+      navigate(`/scheduling-center/queue-management?queueId=${resourceId}`);
+    }
+  };
+
   if (!release) return null;
 
   // 发布类型配置
@@ -348,11 +358,28 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
                   className="release-detail-drawer-resource-card"
                 >
                   <div className="release-detail-drawer-resource-card-header">
-                    <Text strong>{resource.resource_name}</Text>
+                    <Space>
+                      <Text
+                        strong
+                        link
+                        onClick={() => handleResourceClick(type as ResourceType, resource.resource_id)}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        {resource.resource_name}
+                      </Text>
+                      {resource.is_manual && (
+                        <Tag size="small" color="grey">
+                          {t('release.create.manuallyAdded')}
+                        </Tag>
+                      )}
+                    </Space>
                   </div>
                   <div className="release-detail-drawer-resource-card-body">
                     <Text type="tertiary" size="small">
                       {t('release.create.usedBy')}: {resource.used_by_processes?.join(', ') || '-'}
+                    </Text>
+                    <Text type="tertiary" size="small">
+                      {t('release.detail.previouslyPublished')}: {resource.is_previously_published ? t('common.yes') : t('common.no')}
                     </Text>
                     {type !== 'QUEUE' && (
                       <>
@@ -463,7 +490,7 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
             {renderBasicInfoTab()}
           </TabPane>
           <TabPane
-            tab={`${t('release.detail.publishedProcesses')} (${release.contents?.length || 0})`}
+            tab={t('release.detail.publishedProcessesAndResources')}
             itemKey="processes"
           >
             {renderProcessesTab()}
