@@ -27,7 +27,7 @@ const CalendarEditor: React.FC<CalendarEditorProps> = ({
   
   // Local state for editing
   const [name, setName] = useState(calendar.name);
-  const [dateRange, setDateRange] = useState<[Date, Date]>([
+   const [dateRange, setDateRange] = useState<[Date | undefined, Date | undefined]>([
     new Date(calendar.start_date),
     new Date(calendar.end_date),
   ]);
@@ -35,7 +35,8 @@ const CalendarEditor: React.FC<CalendarEditorProps> = ({
   const [saving, setSaving] = useState(false);
 
   // Format date to YYYY-MM-DD
-  const formatDate = (date: Date): string => {
+   const formatDate = (date: Date | undefined): string => {
+     if (!date) return '';
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
@@ -96,8 +97,8 @@ const CalendarEditor: React.FC<CalendarEditorProps> = ({
   }, [name, dateRange, specialDates, onSave, t]);
 
 
-  const startDate = useMemo(() => formatDate(dateRange[0]), [dateRange]);
-  const endDate = useMemo(() => formatDate(dateRange[1]), [dateRange]);
+   const startDate = useMemo(() => dateRange[0] ? formatDate(dateRange[0]) : '', [dateRange]);
+   const endDate = useMemo(() => dateRange[1] ? formatDate(dateRange[1]) : '', [dateRange]);
 
   return (
     <div className="calendar-editor">
@@ -133,7 +134,16 @@ const CalendarEditor: React.FC<CalendarEditorProps> = ({
               <DatePicker
                 type="dateRange"
                 value={dateRange}
-                onChange={(value) => setDateRange(value as [Date, Date])}
+                 onChange={(value) => {
+                   if (Array.isArray(value) && value.length === 2) {
+                      setDateRange([
+                        value[0] instanceof Date ? value[0] : value[0] ? new Date(value[0]) : undefined,
+                        value[1] instanceof Date ? value[1] : value[1] ? new Date(value[1]) : undefined,
+                      ]);
+                   } else {
+                     setDateRange([undefined, undefined]);
+                   }
+                 }}
                 style={{ width: '100%' }}
               />
             </Form.Slot>
