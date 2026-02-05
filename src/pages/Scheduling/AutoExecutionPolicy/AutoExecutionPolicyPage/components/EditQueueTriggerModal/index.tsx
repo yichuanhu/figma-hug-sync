@@ -100,6 +100,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [formApi, setFormApi] = useState<any>(null);
+  const [initialized, setInitialized] = useState(false);
 
   // 第二步：任务配置
   const [selectedProcess, setSelectedProcess] = useState<LYProcessActiveVersionResponse | null>(null);
@@ -117,7 +118,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
 
   // 初始化表单数据
   useEffect(() => {
-    if (visible && trigger && formApi) {
+    if (visible && trigger && formApi && !initialized) {
       // 查找对应的流程
       const process = mockProcesses.find((p) => p.process_id === trigger.process_id);
       setSelectedProcess(process || null);
@@ -151,8 +152,9 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
           Object.entries(trigger.input_parameters || {}).map(([k, v]) => [`param_${k}`, v])
         ),
       });
+      setInitialized(true);
     }
-  }, [visible, trigger, formApi]);
+  }, [visible, trigger, formApi, initialized]);
 
   // 重置表单
   useEffect(() => {
@@ -163,6 +165,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
       setEnableWorkCalendar(false);
       setMinEffectiveMessages(1);
       setEnablePeriodicCheck(false);
+      setInitialized(false);
     }
   }, [visible]);
 
