@@ -116,6 +116,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [formApi, setFormApi] = useState<any>(null);
+  const [initialized, setInitialized] = useState(false);
 
   // 第二步：任务配置 - 仅保留需要的状态
   const [selectedProcess, setSelectedProcess] = useState<LYProcessActiveVersionResponse | null>(null);
@@ -146,7 +147,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
 
   // 初始化表单数据
   useEffect(() => {
-    if (visible && trigger && formApi) {
+    if (visible && trigger && formApi && !initialized) {
       setCurrentStep(0);
       const process = mockProcesses.find((p) => p.process_id === trigger.process_id);
       setSelectedProcess(process || null);
@@ -175,6 +176,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
       }
       
       formApi.setValues(formValues);
+      setInitialized(true);
       
       setRuleType(trigger.rule_type);
       setFrequencyType(trigger.basic_frequency_type || 'DAILY');
@@ -226,7 +228,34 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
         }
       }
     }
-  }, [visible, trigger, formApi]);
+  }, [visible, trigger, formApi, initialized]);
+
+  // 重置初始化标记
+  useEffect(() => {
+    if (!visible) {
+      setInitialized(false);
+      setCurrentStep(0);
+      setSelectedProcess(null);
+      setTargetType(null);
+      setRuleType('BASIC');
+      setFrequencyType('DAILY');
+      setMinuteInterval(5);
+      setHourInterval(2);
+      setMinuteOfHour(0);
+      setTriggerHour(9);
+      setTriggerMinute(0);
+      setSelectedWeekdays([1]);
+      setSelectedMonthDay(1);
+      setCronExpression('');
+      setTimeZone('Asia/Shanghai');
+      setStartDateTime(new Date());
+      setEndDateTime(null);
+      setEndTimeType('never');
+      setEnableWorkCalendar(false);
+      setWorkCalendarId(null);
+      setWorkCalendarExecutionType('WORKDAY');
+    }
+  }, [visible]);
 
   // 判断是否有参数需要填写
   const hasParameters = selectedProcess && selectedProcess.parameters.length > 0;
