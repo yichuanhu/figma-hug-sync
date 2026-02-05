@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Typography, Dropdown, Modal } from '@douyinfe/semi-ui';
-import { IconPlus, IconMore, IconDelete } from '@douyinfe/semi-icons';
+import { IconPlus, IconMore, IconDeleteStroked } from '@douyinfe/semi-icons';
 import type { LYWorkCalendarResponse } from '@/api/index';
 import './index.less';
 
@@ -76,7 +76,7 @@ const CalendarSidebar: React.FC<CalendarSidebarProps> = ({
           render={
             <Dropdown.Menu>
               <Dropdown.Item
-                icon={<IconDelete />}
+                icon={<IconDeleteStroked />}
                 type={canDelete ? 'danger' : 'tertiary'}
                 disabled={!canDelete}
                 onClick={(e) => handleDelete(calendar, e as unknown as React.MouseEvent)}
