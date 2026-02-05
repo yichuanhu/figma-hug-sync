@@ -112,19 +112,16 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
   },
   {
     process_id: 'proc-004',
-    process_name: '采购申请流程',
+    process_name: '数据采集流程',
     version_id: 'ver-004',
-    version: 'v1.1.0',
-    parameters: [],
-    output_parameters: [],
-  },
-  {
-    process_id: 'proc-005',
-    process_name: '合同审批流程',
-    version_id: 'ver-005',
-    version: 'v2.1.0',
-    parameters: [],
-    output_parameters: [],
+    version: 'v1.5.0',
+    parameters: [
+      { name: 'sourceUrl', type: 'TEXT', required: true, description: '数据源URL' },
+      { name: 'pageLimit', type: 'NUMBER', required: false, default_value: 10, description: '采集页数限制' },
+    ],
+    output_parameters: [
+      { name: 'collectedCount', type: 'NUMBER', description: '采集数据条数' },
+    ],
   },
 ];
 
