@@ -2129,7 +2129,7 @@
     "detail": {
       "tabs": {
         "basicInfo": "基本信息",
-        "executionLogs": "执行记录"
+        "executionLogs": "触发记录"
       },
       "basicInfo": "基本信息",
       "triggerRule": "触发规则",
@@ -2163,21 +2163,27 @@
       "noParameters": "无输入参数",
       "neverEnd": "永不结束",
       "notTriggeredYet": "尚未触发",
-      "notScheduled": "未安排"
+      "notScheduled": "未安排",
+      "triggerPreview": "触发预览"
     },
     "executionLog": {
-      "title": "执行记录",
-      "noLogs": "暂无执行记录",
+      "title": "触发记录",
+      "noLogs": "暂无触发记录",
       "table": {
         "triggerTime": "触发时间",
         "status": "执行状态",
         "taskCount": "创建任务数",
-        "errorMessage": "错误信息"
+        "errorMessage": "错误信息",
+        "triggerType": "触发类型"
       },
       "status": {
         "success": "成功",
         "failed": "失败",
         "skipped": "跳过"
+      },
+      "triggerType": {
+        "condition": "达到触发条件",
+        "periodic": "定时检查触发"
       }
     },
     "targetType": {
@@ -2327,7 +2333,7 @@
     "detail": {
       "tabs": {
         "basicInfo": "基本信息",
-        "executionLogs": "执行记录"
+        "executionLogs": "触发记录"
       },
       "basicInfo": "基本信息",
       "queueConfig": "队列触发配置",
@@ -2364,19 +2370,24 @@
       "periodicCheckDisabled": "未启用"
     },
     "executionLog": {
-      "title": "执行记录",
-      "noLogs": "暂无执行记录",
+      "title": "触发记录",
+      "noLogs": "暂无触发记录",
       "table": {
         "triggerTime": "触发时间",
         "status": "执行状态",
         "taskCount": "创建任务数",
         "messageCount": "触发时消息数",
-        "errorMessage": "错误信息"
+        "errorMessage": "错误信息",
+        "triggerType": "触发类型"
       },
       "status": {
         "success": "成功",
         "failed": "失败",
         "skipped": "跳过"
+      },
+      "triggerType": {
+        "condition": "达到触发条件",
+        "periodic": "定时检查触发"
       }
     },
     "targetType": {

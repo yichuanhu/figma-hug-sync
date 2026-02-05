@@ -3005,6 +3005,8 @@ export interface LYTriggerExecutionLogResponse {
   created_task_count: number;
   /** 错误信息 */
   error_message?: string | null;
+  /** 触发类型: CONDITION=达到触发条件, PERIODIC=定时检查触发 */
+  trigger_type?: 'CONDITION' | 'PERIODIC';
   /** 创建时间 */
   created_at: string;
 }
@@ -3281,6 +3283,8 @@ export interface LYQueueTriggerExecutionLogResponse {
   message_count_at_trigger: number;
   /** 错误信息 */
   error_message?: string | null;
+  /** 触发类型: CONDITION=达到触发条件, PERIODIC=定时检查触发 */
+  trigger_type?: 'CONDITION' | 'PERIODIC';
   /** 创建时间 */
   created_at: string;
 }

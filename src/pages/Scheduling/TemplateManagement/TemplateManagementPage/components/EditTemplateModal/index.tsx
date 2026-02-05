@@ -246,6 +246,7 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
               <Form.Switch
                 field={`param_${param.name}`}
                 noLabel
+                size="small"
               />
             </div>
           </div>
@@ -491,7 +492,7 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
                 <div className="edit-template-modal-param-item" style={{ marginTop: 16 }}>
                   <Text>{t('template.fields.enableRecording')}</Text>
                   <div style={{ marginTop: 8 }}>
-                    <Form.Switch field="enableRecording" noLabel />
+                    <Form.Switch field="enableRecording" noLabel size="small" />
                   </div>
                 </div>
               </div>

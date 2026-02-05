@@ -89,6 +89,60 @@
     border-radius: var(--semi-border-radius-small);
   }
 
+  // 可折叠标题
+  .time-trigger-detail-drawer-collapsible-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    padding: 8px 12px;
+    background: var(--semi-color-fill-0);
+    border-radius: var(--semi-border-radius-small);
+    margin-bottom: 8px;
+    transition: background 0.2s;
+
+    &:hover {
+      background: var(--semi-color-fill-1);
+    }
+
+    .time-trigger-detail-drawer-section-title {
+      margin-bottom: 0;
+    }
+  }
+
+  // 触发预览
+  .time-trigger-detail-drawer-preview {
+    background: var(--semi-color-fill-0);
+    border-radius: var(--semi-border-radius-small);
+    padding: 12px;
+
+    .time-trigger-detail-drawer-preview-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+
+      li {
+        padding: 4px 0;
+        font-size: 13px;
+        color: var(--semi-color-text-1);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .preview-index {
+          color: var(--semi-color-text-2);
+          min-width: 24px;
+        }
+      }
+    }
+
+    .time-trigger-detail-drawer-preview-empty {
+      color: var(--semi-color-text-2);
+      text-align: center;
+      padding: 16px;
+    }
+  }
+
   // 空状态
   .time-trigger-detail-drawer-empty {
     display: flex;

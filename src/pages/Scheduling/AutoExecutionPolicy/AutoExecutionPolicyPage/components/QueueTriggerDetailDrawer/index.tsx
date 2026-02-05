@@ -52,6 +52,7 @@ const generateMockExecutionLogs = (triggerId: string): LYQueueTriggerExecutionLo
     created_task_count: i === 2 ? 0 : 1 + (i % 3),
     message_count_at_trigger: 10 + i * 5,
     error_message: i === 2 ? '执行目标不可用' : null,
+    trigger_type: i % 2 === 0 ? 'CONDITION' : 'PERIODIC' as const,
     created_at: new Date(2026, 1, 3 - i, 9, 0).toISOString(),
   }));
 };
@@ -151,6 +152,16 @@ const QueueTriggerDetailDrawer = ({
       dataIndex: 'trigger_time',
       width: 180,
       render: (time: string) => formatTime(time),
+    },
+    {
+      title: t('queueTrigger.executionLog.table.triggerType'),
+      dataIndex: 'trigger_type',
+      width: 120,
+      render: (type: string) => (
+        <Tag color={type === 'CONDITION' ? 'blue' : 'cyan'}>
+          {t(`queueTrigger.executionLog.triggerType.${type === 'PERIODIC' ? 'periodic' : 'condition'}`)}
+        </Tag>
+      ),
     },
     {
       title: t('queueTrigger.executionLog.table.status'),

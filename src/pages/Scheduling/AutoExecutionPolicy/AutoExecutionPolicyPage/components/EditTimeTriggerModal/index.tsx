@@ -385,6 +385,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
             <Form.Switch
               field={`param_${param.name}`}
               noLabel
+              size="small"
             />
           </div>
         );
@@ -655,6 +656,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
           <Form.Switch
             field="enableRecording"
             noLabel
+            size="small"
           />
         </div>
       </div>

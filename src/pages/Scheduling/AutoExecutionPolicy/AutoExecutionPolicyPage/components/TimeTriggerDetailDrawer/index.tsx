@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   SideSheet,
@@ -23,7 +23,10 @@ import {
   IconEditStroked,
   IconDeleteStroked,
   IconInbox,
+  IconChevronDown,
+  IconChevronUp,
 } from '@douyinfe/semi-icons';
+import { Collapsible } from '@douyinfe/semi-ui';
 import type { LYTimeTriggerResponse, LYTriggerExecutionLogResponse } from '@/api';
 import './index.less';
 
@@ -74,9 +77,41 @@ const TimeTriggerDetailDrawer = ({
     return saved ? Math.max(Number(saved), 576) : 900;
   });
   const [executionLogs, setExecutionLogs] = useState<LYTriggerExecutionLogResponse[]>([]);
+  const [previewExpanded, setPreviewExpanded] = useState(true);
   const isResizing = useRef(false);
   const startX = useRef(0);
   const startWidth = useRef(drawerWidth);
+  // 预览触发时间（基于触发器的配置计算）
+  const previewTimes = useMemo(() => {
+    if (!trigger) return [];
+    const times: string[] = [];
+    const baseTime = trigger.start_date_time ? new Date(trigger.start_date_time) : new Date();
+    
+    for (let i = 0; i < 10; i++) {
+      const triggerTime = new Date(baseTime);
+      switch (trigger.basic_frequency_type) {
+        case 'MINUTELY':
+          triggerTime.setMinutes(triggerTime.getMinutes() + i * (trigger.basic_frequency_value || 5));
+          break;
+        case 'HOURLY':
+          triggerTime.setHours(triggerTime.getHours() + i * (trigger.basic_frequency_value || 2));
+          break;
+        case 'DAILY':
+          triggerTime.setDate(triggerTime.getDate() + i);
+          break;
+        case 'WEEKLY':
+          triggerTime.setDate(triggerTime.getDate() + i * 7);
+          break;
+        case 'MONTHLY':
+          triggerTime.setMonth(triggerTime.getMonth() + i);
+          break;
+        default:
+          triggerTime.setDate(triggerTime.getDate() + i);
+      }
+      times.push(triggerTime.toLocaleString('zh-CN'));
+    }
+    return times;
+  }, [trigger]);
 
   // 加载执行记录
   useEffect(() => {
@@ -346,6 +381,37 @@ const TimeTriggerDetailDrawer = ({
                 </Descriptions.Item>
               </Descriptions>
             </div>
+
+              {/* 触发预览（可折叠） */}
+              <div className="time-trigger-detail-drawer-section">
+                <div 
+                  className="time-trigger-detail-drawer-collapsible-header"
+                  onClick={() => setPreviewExpanded(!previewExpanded)}
+                >
+                  <Text className="time-trigger-detail-drawer-section-title">
+                    {t('timeTrigger.detail.triggerPreview')}
+                  </Text>
+                  {previewExpanded ? <IconChevronUp /> : <IconChevronDown />}
+                </div>
+                <Collapsible isOpen={previewExpanded}>
+                  <div className="time-trigger-detail-drawer-preview">
+                    {previewTimes.length > 0 ? (
+                      <ul className="time-trigger-detail-drawer-preview-list">
+                        {previewTimes.map((time, index) => (
+                          <li key={index}>
+                            <span className="preview-index">{index + 1}.</span>
+                            {time}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <div className="time-trigger-detail-drawer-preview-empty">
+                        {t('timeTrigger.createModal.noPreview')}
+                      </div>
+                    )}
+                  </div>
+                </Collapsible>
+              </div>
 
             {/* 任务配置 */}
             <div className="time-trigger-detail-drawer-section">

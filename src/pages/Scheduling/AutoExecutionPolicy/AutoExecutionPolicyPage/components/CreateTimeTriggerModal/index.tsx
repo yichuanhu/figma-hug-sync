@@ -336,6 +336,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
             <Form.Switch
               field={`param_${param.name}`}
               noLabel
+              size="small"
             />
           </div>
         );
@@ -632,6 +633,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
           <Form.Switch
             field="enableRecording"
             noLabel
+            size="small"
           />
         </div>
       </div>
