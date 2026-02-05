@@ -1871,7 +1871,8 @@
       "resourceTypes": {
         "parameter": "参数",
         "credential": "凭据",
-        "queue": "队列"
+        "queue": "队列",
+        "file": "文件"
       },
       "alreadyPublished": "已发布",
       "manuallyAdded": "手动添加",
