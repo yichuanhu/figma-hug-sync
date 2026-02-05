@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Breadcrumb, Typography, Tabs, Button } from '@douyinfe/semi-ui';
-import { IconCalendar } from '@douyinfe/semi-icons';
+ import { IconCalendarStroked } from '@douyinfe/semi-icons';
 import AppLayout from '@/components/layout/AppLayout';
 import TimeTriggerList from './components/TimeTriggerList';
 import QueueTriggerList from './components/QueueTriggerList';
@@ -38,7 +38,7 @@ const AutoExecutionPolicyPage = () => {
             </Title>
           </div>
           <Button
-            icon={<IconCalendar />}
+             icon={<IconCalendarStroked />}
             onClick={handleWorkCalendarClick}
           >
             {t('workCalendar.entryButton')}

@@ -14,7 +14,7 @@ import {
 } from '@douyinfe/semi-ui';
 import {
   IconSearch,
-  IconDownloadStroked,
+   IconDownload,
   IconRefresh,
 } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
@@ -444,7 +444,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
               {t('taskLog.refresh')}
             </Button>
             <Button
-              icon={<IconDownloadStroked />}
+               icon={<IconDownload />}
               onClick={handleExport}
               loading={exporting}
               disabled={total === 0}

@@ -25,7 +25,7 @@ import {
   IconPlus,
   IconMore,
   IconDeleteStroked,
-  IconFilter,
+   IconFilterStroked,
   IconEditStroked,
   IconUnlink,
   IconLink,
@@ -554,7 +554,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
                 }
               >
                 <Button
-                  icon={<IconFilter />}
+                   icon={<IconFilterStroked />}
                   type={typeFilter.length > 0 ? 'primary' : 'tertiary'}
                   theme={typeFilter.length > 0 ? 'solid' : 'light'}
                 >

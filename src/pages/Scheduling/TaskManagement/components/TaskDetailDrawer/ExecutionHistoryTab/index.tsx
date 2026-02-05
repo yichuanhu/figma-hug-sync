@@ -13,8 +13,8 @@ import {
   Collapsible,
 } from '@douyinfe/semi-ui';
 import {
-  IconVideo,
-  IconImage,
+   IconVideoStroked,
+   IconImageStroked,
   IconChevronDown,
   IconChevronUp,
 } from '@douyinfe/semi-icons';
@@ -267,7 +267,7 @@ const ExecutionHistoryTab = ({ taskId, taskName, enableRecording }: ExecutionHis
                   <Space>
                     {showRecordingButton && (
                       <Button
-                        icon={<IconVideo />}
+                         icon={<IconVideoStroked />}
                         size="small"
                         theme="borderless"
                         onClick={handleViewRecording}
@@ -277,7 +277,7 @@ const ExecutionHistoryTab = ({ taskId, taskName, enableRecording }: ExecutionHis
                     )}
                     {showScreenshotButton && (
                       <Button
-                        icon={<IconImage />}
+                         icon={<IconImageStroked />}
                         size="small"
                         theme="borderless"
                         onClick={handleViewScreenshots}

@@ -19,11 +19,11 @@ import {
 } from '@douyinfe/semi-ui';
 import {
   IconSearch,
-  IconDownloadStroked,
+   IconDownload,
   IconRefresh,
   IconChevronDown,
   IconChevronUp,
-  IconFilter,
+   IconFilterStroked,
 } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
 import AppLayout from '@/components/layout/AppLayout';
@@ -442,7 +442,7 @@ const TaskLogPage = () => {
                   content={filterContent}
                 >
                   <Button
-                    icon={<IconFilter />}
+                     icon={<IconFilterStroked />}
                     type={hasActiveFilter ? 'primary' : 'tertiary'}
                     theme={hasActiveFilter ? 'solid' : 'light'}
                   >
@@ -462,7 +462,7 @@ const TaskLogPage = () => {
                   {t('taskLog.refresh')}
                 </Button>
                 <Button
-                  icon={<IconDownloadStroked />}
+                   icon={<IconDownload />}
                   onClick={handleExport}
                   loading={exporting}
                   disabled={total === 0}

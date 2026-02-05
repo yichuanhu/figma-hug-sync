@@ -33,7 +33,7 @@ import {
   IconMinimize,
   IconChevronLeft,
   IconChevronRight,
-  IconFilter,
+   IconFilterStroked,
 } from '@douyinfe/semi-icons';
 import { Download } from 'lucide-react';
 import type { LYCredentialResponse, CredentialType, LYRangeResponse } from '@/api/index';
@@ -686,7 +686,7 @@ const CredentialDetailDrawer = ({
                       }
                     >
                       <Button
-                        icon={<IconFilter />}
+                         icon={<IconFilterStroked />}
                         type={filterCount > 0 ? 'primary' : 'tertiary'}
                         theme={filterCount > 0 ? 'solid' : 'light'}
                       >

@@ -25,8 +25,8 @@ import {
   IconUpload,
   IconMore,
   IconDeleteStroked,
-  IconFilter,
-  IconDownload,
+   IconFilterStroked,
+   IconDownloadStroked,
   IconRefresh,
 } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
@@ -428,7 +428,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
                 </Dropdown.Item>
               )}
               <Dropdown.Item
-                icon={<IconDownload />}
+                 icon={<IconDownloadStroked />}
                 onClick={(e) => {
                   e.stopPropagation();
                   handleDownload(record);
@@ -563,7 +563,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
                 }
               >
                 <Button
-                  icon={<IconFilter />}
+                   icon={<IconFilterStroked />}
                   type={sourceFilter.length > 0 ? 'primary' : 'tertiary'}
                   theme={sourceFilter.length > 0 ? 'solid' : 'light'}
                 >

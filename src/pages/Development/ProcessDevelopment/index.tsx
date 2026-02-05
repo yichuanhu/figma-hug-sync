@@ -29,7 +29,7 @@ import {
   IconEditStroked,
   IconPlayCircle,
   IconDeleteStroked,
-  IconFilter,
+   IconFilterStroked,
 } from '@douyinfe/semi-icons';
 import AppLayout from '@/components/layout/AppLayout';
 import CreateProcessModal from './components/CreateProcessModal';
@@ -555,7 +555,7 @@ const ProcessDevelopment = () => {
                 }
               >
                 <Button
-                  icon={<IconFilter />}
+                   icon={<IconFilterStroked />}
                   type={statusFilter.length > 0 ? 'primary' : 'tertiary'}
                   theme={statusFilter.length > 0 ? 'solid' : 'light'}
                 >

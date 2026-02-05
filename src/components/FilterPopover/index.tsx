@@ -7,7 +7,7 @@ import {
   DatePicker,
   Typography,
 } from '@douyinfe/semi-ui';
-import { IconFilter } from '@douyinfe/semi-icons';
+ import { IconFilterStroked } from '@douyinfe/semi-icons';
 import './index.less';
 
 const { Text } = Typography;
@@ -198,7 +198,7 @@ const FilterPopover = ({
   // 默认触发按钮
   const defaultTrigger = (
     <Button
-      icon={<IconFilter />}
+       icon={<IconFilterStroked />}
       type={filterCount > 0 ? 'primary' : 'tertiary'}
       theme={filterCount > 0 ? 'solid' : 'light'}
     >
