@@ -13,6 +13,7 @@ import {
 import { IconHelpCircle, IconInbox } from '@douyinfe/semi-icons';
 import TriggerRuleConfig from '@/components/TriggerRuleConfig';
 import BotTargetSelector from '@/components/BotTargetSelector';
+import { getWorkCalendarOptions } from '@/mocks/workCalendar';
 import type {
   LYTimeTriggerResponse,
   LYProcessActiveVersionResponse,
@@ -25,12 +26,6 @@ import type {
 import './index.less';
 
 const { Text } = Typography;
-
-// Mock 工作日历
-const mockWorkCalendars = [
-  { value: 'cal-001', label: '公司工作日历' },
-  { value: 'cal-002', label: '银行工作日历' },
-];
 
 interface EditTimeTriggerModalProps {
   visible: boolean;
@@ -815,7 +810,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
           onWorkCalendarIdChange={setWorkCalendarId}
           workCalendarExecutionType={workCalendarExecutionType}
           onWorkCalendarExecutionTypeChange={setWorkCalendarExecutionType}
-          workCalendarOptions={mockWorkCalendars}
+          workCalendarOptions={getWorkCalendarOptions()}
           showWorkCalendar={true}
         />
       </div>

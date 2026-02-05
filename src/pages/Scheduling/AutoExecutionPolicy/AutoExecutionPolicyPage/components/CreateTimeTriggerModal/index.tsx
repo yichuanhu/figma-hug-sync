@@ -13,6 +13,7 @@ import {
 import { IconHelpCircle, IconInbox } from '@douyinfe/semi-icons';
 import TriggerRuleConfig from '@/components/TriggerRuleConfig';
 import BotTargetSelector from '@/components/BotTargetSelector';
+import { getWorkCalendarOptions } from '@/mocks/workCalendar';
 import type {
   LYProcessActiveVersionResponse,
   LYProcessParameterDefinition,
@@ -81,12 +82,6 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
       { name: 'collectedCount', type: 'NUMBER', description: '采集数据条数' },
     ],
   },
-];
-
-// Mock 工作日历
-const mockWorkCalendars = [
-  { value: 'cal-001', label: '公司工作日历' },
-  { value: 'cal-002', label: '银行工作日历' },
 ];
 
 // Mock 个人凭据
@@ -739,7 +734,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
           onWorkCalendarIdChange={setWorkCalendarId}
           workCalendarExecutionType={workCalendarExecutionType}
           onWorkCalendarExecutionTypeChange={setWorkCalendarExecutionType}
-          workCalendarOptions={mockWorkCalendars}
+          workCalendarOptions={getWorkCalendarOptions()}
           showWorkCalendar={true}
         />
       </div>

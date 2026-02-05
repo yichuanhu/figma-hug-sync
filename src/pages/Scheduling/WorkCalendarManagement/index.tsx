@@ -9,79 +9,18 @@ import CalendarViewer from './components/CalendarViewer';
 import CalendarEditor from './components/CalendarEditor';
 import CreateCalendarModal from './components/CreateCalendarModal';
 import type { LYWorkCalendarResponse, LYSpecialDate } from '@/api/index';
+import { mockWorkCalendarData } from '@/mocks/workCalendar';
 import './index.less';
 
 const { Title } = Typography;
-
-// Mock data generator
-const generateMockCalendars = (): LYWorkCalendarResponse[] => {
-  const now = new Date();
-  const year = now.getFullYear();
-  
-  return [
-    {
-      id: 'cal-001',
-      name: '2025年工作日历',
-      template: 'WEEKEND_DOUBLE',
-      start_date: `${year}-01-01`,
-      end_date: `${year}-12-31`,
-      weekend_days: [0, 6],
-      special_dates: [
-        { date: `${year}-01-01`, type: 'HOLIDAY', name: '元旦' },
-        { date: `${year}-01-28`, type: 'HOLIDAY', name: '春节' },
-        { date: `${year}-01-29`, type: 'HOLIDAY', name: '春节' },
-        { date: `${year}-01-30`, type: 'HOLIDAY', name: '春节' },
-        { date: `${year}-01-31`, type: 'HOLIDAY', name: '春节' },
-        { date: `${year}-02-01`, type: 'HOLIDAY', name: '春节' },
-        { date: `${year}-02-02`, type: 'HOLIDAY', name: '春节' },
-        { date: `${year}-02-03`, type: 'HOLIDAY', name: '春节' },
-        { date: `${year}-01-26`, type: 'WORKDAY', name: '春节调休' },
-        { date: `${year}-02-08`, type: 'WORKDAY', name: '春节调休' },
-        { date: `${year}-04-04`, type: 'HOLIDAY', name: '清明节' },
-        { date: `${year}-05-01`, type: 'HOLIDAY', name: '劳动节' },
-        { date: `${year}-05-02`, type: 'HOLIDAY', name: '劳动节' },
-        { date: `${year}-05-03`, type: 'HOLIDAY', name: '劳动节' },
-        { date: `${year}-06-01`, type: 'HOLIDAY', name: '端午节' },
-        { date: `${year}-10-01`, type: 'HOLIDAY', name: '国庆节' },
-        { date: `${year}-10-02`, type: 'HOLIDAY', name: '国庆节' },
-        { date: `${year}-10-03`, type: 'HOLIDAY', name: '国庆节' },
-        { date: `${year}-10-04`, type: 'HOLIDAY', name: '国庆节' },
-        { date: `${year}-10-05`, type: 'HOLIDAY', name: '国庆节' },
-        { date: `${year}-10-06`, type: 'HOLIDAY', name: '国庆节' },
-        { date: `${year}-10-07`, type: 'HOLIDAY', name: '国庆节' },
-      ],
-      reference_count: 2,
-      creator_id: 'user-001',
-      creator_name: '张三',
-      created_at: '2024-12-01T10:00:00Z',
-      updated_at: '2024-12-15T14:30:00Z',
-    },
-    {
-      id: 'cal-002',
-      name: '研发团队日历',
-      template: 'WEEKEND_SINGLE',
-      start_date: `${year}-01-01`,
-      end_date: `${year}-06-30`,
-      weekend_days: [0],
-      special_dates: [
-        { date: `${year}-01-01`, type: 'HOLIDAY', name: '元旦' },
-      ],
-      reference_count: 0,
-      creator_id: 'user-002',
-      creator_name: '李四',
-      created_at: '2025-01-05T09:00:00Z',
-      updated_at: '2025-01-05T09:00:00Z',
-    },
-  ];
-};
 
 const WorkCalendarManagement = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   
   // State
-  const [calendars, setCalendars] = useState<LYWorkCalendarResponse[]>(generateMockCalendars());
-  const [selectedCalendarId, setSelectedCalendarId] = useState<string | null>(calendars[0]?.id || null);
+  const [calendars, setCalendars] = useState<LYWorkCalendarResponse[]>([...mockWorkCalendarData]);
+  const [selectedCalendarId, setSelectedCalendarId] = useState<string | null>(mockWorkCalendarData[0]?.id || null);
   const [isEditing, setIsEditing] = useState(false);
   const [createModalVisible, setCreateModalVisible] = useState(false);
   
