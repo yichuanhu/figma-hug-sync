@@ -77,6 +77,19 @@
     gap: 12px;
   }
 
+  // 流程名称可点击样式
+  .release-detail-drawer-process-name {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: color 0.2s;
+
+    &:hover {
+      color: var(--semi-color-primary);
+    }
+  }
+
   // 资源名称可点击样式
   .release-detail-drawer-resource-name {
     cursor: pointer;
@@ -88,15 +101,19 @@
     &:hover {
       color: var(--semi-color-primary);
     }
+  }
 
-    .release-detail-drawer-resource-link-icon {
-      font-size: 12px;
-      color: var(--semi-color-tertiary);
-    }
+  // 跳转链接图标
+  .release-detail-drawer-link-icon {
+    font-size: 12px;
+    margin-left: 4px;
+    color: var(--semi-color-tertiary);
+    transition: color 0.2s;
+  }
 
-    &:hover .release-detail-drawer-resource-link-icon {
-      color: var(--semi-color-primary);
-    }
+  .release-detail-drawer-process-name:hover .release-detail-drawer-link-icon,
+  .release-detail-drawer-resource-name:hover .release-detail-drawer-link-icon {
+    color: var(--semi-color-primary);
   }
 
   // 错误信息区域

@@ -1827,7 +1827,8 @@
       "processes": "流程",
       "errorDetails": "错误详情",
       "rollbackFrom": "从 {{from}} 回退到 {{to}}",
-      "previouslyPublished": "先前已发布"
+      "previouslyPublished": "先前已发布",
+      "originalFileName": "源文件名"
     },
     "create": {
       "title": "新建发布",
