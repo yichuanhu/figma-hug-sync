@@ -3,26 +3,22 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 0 24px;
 
   // 面包屑
   .auto-execution-policy-breadcrumb {
-    padding: 16px 0;
+    flex-shrink: 0;
   }
 
   // 标题区域
   .auto-execution-policy-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
+    padding-top: 20px;
+    flex-shrink: 0;
 
     .auto-execution-policy-header-title {
-      display: flex;
-      align-items: center;
+      margin-bottom: 24px;
 
       .title {
-        margin: 0;
+        margin-bottom: 8px;
       }
     }
   }
@@ -33,6 +29,7 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    margin-bottom: 16px;
   }
 
   // Tab内容区
