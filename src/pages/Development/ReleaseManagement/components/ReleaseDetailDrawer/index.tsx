@@ -406,11 +406,6 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
                     <Text type="tertiary" size="small">
                       {t('release.detail.previouslyPublished')}: {resource.is_previously_published ? t('common.yes') : t('common.no')}
                     </Text>
-                    {type === 'FILE' && (
-                      <Text type="tertiary" size="small">
-                        {t('release.detail.originalFileName')}: {resource.original_name || '-'}
-                      </Text>
-                    )}
                     {type !== 'QUEUE' && type !== 'FILE' && (
                       <>
                         <Text type="tertiary" size="small">

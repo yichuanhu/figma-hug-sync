@@ -149,16 +149,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
           </div>
         </div>
 
-        {isFile ? (
-          <div className="release-config-step-resource-card-body">
-            <div className="release-config-step-field">
-              <Text type="tertiary" size="small">
-                {t('release.detail.originalFileName')}
-              </Text>
-              <Text>{resource.original_name || '-'}</Text>
-            </div>
-          </div>
-        ) : !isQueue && (
+        {isFile ? null : !isQueue && (
           <div className="release-config-step-resource-card-body">
             <Row gutter={16}>
               <Col span={12}>
