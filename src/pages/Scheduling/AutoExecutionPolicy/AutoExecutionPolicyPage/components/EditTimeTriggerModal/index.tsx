@@ -1,20 +1,14 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Modal,
+  Form,
   Button,
   Toast,
   Typography,
-  Select,
-  Input,
-  InputNumber,
-  Switch,
-  RadioGroup,
-  Radio,
   Tooltip,
   Tag,
   Steps,
-  TextArea,
 } from '@douyinfe/semi-ui';
 import { IconHelpCircle, IconInbox } from '@douyinfe/semi-icons';
 import TriggerRuleConfig from '@/components/TriggerRuleConfig';
@@ -31,6 +25,12 @@ import type {
 import './index.less';
 
 const { Text } = Typography;
+
+// Mock 工作日历
+const mockWorkCalendars = [
+  { value: 'cal-001', label: '公司工作日历' },
+  { value: 'cal-002', label: '银行工作日历' },
+];
 
 interface EditTimeTriggerModalProps {
   visible: boolean;
@@ -105,12 +105,6 @@ const mockBots = [
   { id: 'bot-002', name: 'RPA-BOT-002', groupId: null, status: 'ONLINE' },
 ];
 
-// Mock 工作日历
-const mockWorkCalendars = [
-  { id: 'cal-001', name: '公司工作日历' },
-  { id: 'cal-002', name: '银行工作日历' },
-];
-
 // Mock 凭据
 const mockCredentials = [
   { id: 'cred-001', name: '系统管理员凭据' },
@@ -121,23 +115,11 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
+  const [formApi, setFormApi] = useState<any>(null);
 
-  // 第一步：基本信息
-  const [triggerName, setTriggerName] = useState('');
-  const [description, setDescription] = useState('');
-
-  // 第二步：任务配置
-  const [selectedProcessId, setSelectedProcessId] = useState<string | null>(null);
+  // 第二步：任务配置 - 仅保留需要的状态
   const [selectedProcess, setSelectedProcess] = useState<LYProcessActiveVersionResponse | null>(null);
   const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);
-  const [selectedTargetId, setSelectedTargetId] = useState<string | null>(null);
-  const [priority, setPriority] = useState<TaskPriority>('MEDIUM');
-  const [maxDuration, setMaxDuration] = useState<number>(3600);
-  const [validityDays, setValidityDays] = useState<number>(7);
-  const [enableRecording, setEnableRecording] = useState<boolean>(false);
-  const [taskCountPerTrigger, setTaskCountPerTrigger] = useState<number>(1);
-  const [allowDuplicateTasks, setAllowDuplicateTasks] = useState<boolean>(true);
-  const [parameterValues, setParameterValues] = useState<Record<string, unknown>>({});
 
   // 第三步：触发规则
   const [ruleType, setRuleType] = useState<TriggerRuleType>('BASIC');
@@ -164,22 +146,36 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
 
   // 初始化表单数据
   useEffect(() => {
-    if (visible && trigger) {
+    if (visible && trigger && formApi) {
       setCurrentStep(0);
-      setTriggerName(trigger.name);
-      setDescription(trigger.description || '');
-      setSelectedProcessId(trigger.process_id);
       const process = mockProcesses.find((p) => p.process_id === trigger.process_id);
       setSelectedProcess(process || null);
       setTargetType(trigger.execution_target_type);
-      setSelectedTargetId(trigger.execution_target_id);
-      setPriority(trigger.priority);
-      setMaxDuration(trigger.max_execution_duration);
-      setValidityDays(trigger.validity_days);
-      setEnableRecording(trigger.enable_recording);
-      setTaskCountPerTrigger(trigger.task_count_per_trigger);
-      setAllowDuplicateTasks(trigger.allow_duplicate_tasks);
-      setParameterValues(trigger.input_parameters || {});
+      
+      // 设置表单值
+      const formValues: Record<string, any> = {
+        triggerName: trigger.name,
+        description: trigger.description || '',
+        processId: trigger.process_id,
+        targetType: trigger.execution_target_type,
+        targetId: trigger.execution_target_id,
+        priority: trigger.priority,
+        maxDuration: trigger.max_execution_duration,
+        validityDays: trigger.validity_days,
+        enableRecording: trigger.enable_recording,
+      };
+      
+      // 设置参数值
+      if (trigger.input_parameters && process) {
+        process.parameters.forEach((param) => {
+          if (trigger.input_parameters?.[param.name] !== undefined) {
+            formValues[`param_${param.name}`] = trigger.input_parameters[param.name];
+          }
+        });
+      }
+      
+      formApi.setValues(formValues);
+      
       setRuleType(trigger.rule_type);
       setFrequencyType(trigger.basic_frequency_type || 'DAILY');
       setCronExpression(trigger.cron_expression || '');
@@ -230,31 +226,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
         }
       }
     }
-  }, [visible, trigger]);
-
-  // 执行目标选项
-  const targetOptions = useMemo(() => {
-    if (targetType === 'BOT_GROUP') {
-      return mockBotGroups.map((g) => ({
-        value: g.id,
-        label: `${g.name} (${g.onlineCount}/${g.totalCount} 在线)`,
-      }));
-    }
-    if (targetType === 'UNGROUPED_BOT') {
-      return mockBots
-        .filter((b) => !b.groupId)
-        .map((b) => ({
-          value: b.id,
-          label: `${b.name} (${b.status === 'ONLINE' ? '在线' : '离线'})`,
-        }));
-    }
-    return mockBots
-      .filter((b) => b.groupId)
-      .map((b) => ({
-        value: b.id,
-        label: `${b.name} (${b.status === 'ONLINE' ? '在线' : '离线'})`,
-      }));
-  }, [targetType]);
+  }, [visible, trigger, formApi]);
 
   // 判断是否有参数需要填写
   const hasParameters = selectedProcess && selectedProcess.parameters.length > 0;
@@ -321,33 +293,23 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
   }, [startDateTime, ruleType, frequencyType, minuteInterval, hourInterval, triggerHour, triggerMinute]);
 
   // 选择流程
-  const handleProcessChange = (processId: string) => {
-    setSelectedProcessId(processId);
+  const handleProcessChange = useCallback((processId: string) => {
     const process = mockProcesses.find((p) => p.process_id === processId);
     setSelectedProcess(process || null);
-    if (process) {
-      const defaults: Record<string, unknown> = {};
+    if (process && formApi) {
       process.parameters.forEach((param) => {
         if (param.default_value !== undefined && param.default_value !== null) {
-          defaults[param.name] = param.default_value;
+          formApi.setValue(`param_${param.name}`, param.default_value);
         }
       });
-      setParameterValues(defaults);
     }
-  };
-
-  // 更新参数值
-  const handleParameterChange = (name: string, value: unknown) => {
-    setParameterValues((prev) => ({ ...prev, [name]: value }));
-  };
+  }, [formApi]);
 
   // 渲染参数输入
   const renderParameterInput = (param: LYProcessParameterDefinition) => {
-    const value = parameterValues[param.name];
-
     const renderLabel = () => (
       <div className="edit-time-trigger-modal-param-label">
-        <span>{param.name}{param.required ? ' *' : ''}</span>
+        <span>{param.name}</span>
         <Tag size="small" color="grey" style={{ marginLeft: 8 }}>
           {param.type}
         </Tag>
@@ -359,52 +321,55 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
       </div>
     );
 
+    const rules = param.required 
+      ? [{ required: true, message: t('timeTrigger.validation.parameterRequired', { name: param.name }) }]
+      : [];
+
     switch (param.type) {
       case 'TEXT':
         return (
-          <div className="edit-time-trigger-modal-param-item" key={param.name}>
-            <div className="semi-form-field-label">{renderLabel()}</div>
-            <Input
-              placeholder={`请输入 ${param.name}`}
-              value={value as string || ''}
-              onChange={(v) => handleParameterChange(param.name, v)}
-            />
-          </div>
+          <Form.Input
+            key={param.name}
+            field={`param_${param.name}`}
+            label={renderLabel()}
+            placeholder={`请输入 ${param.name}`}
+            rules={rules}
+          />
         );
       case 'NUMBER':
         return (
-          <div className="edit-time-trigger-modal-param-item" key={param.name}>
-            <div className="semi-form-field-label">{renderLabel()}</div>
-            <InputNumber
-              placeholder={`请输入 ${param.name}`}
-              value={value as number}
-              onChange={(v) => handleParameterChange(param.name, v)}
-              style={{ width: '100%' }}
-            />
-          </div>
+          <Form.InputNumber
+            key={param.name}
+            field={`param_${param.name}`}
+            label={renderLabel()}
+            placeholder={`请输入 ${param.name}`}
+            style={{ width: '100%' }}
+            rules={rules}
+          />
         );
       case 'BOOLEAN':
         return (
           <div className="edit-time-trigger-modal-param-item" key={param.name}>
-            <div className="semi-form-field-label">{renderLabel()}</div>
-            <Switch
-              checked={value as boolean || false}
-              onChange={(v) => handleParameterChange(param.name, v)}
+            <div className="semi-form-field-label">
+              {renderLabel()}
+            </div>
+            <Form.Switch
+              field={`param_${param.name}`}
+              noLabel
             />
           </div>
         );
       case 'CREDENTIAL':
         return (
-          <div className="edit-time-trigger-modal-param-item" key={param.name}>
-            <div className="semi-form-field-label">{renderLabel()}</div>
-            <Select
-              placeholder="请选择凭据"
-              value={value as string}
-              onChange={(v) => handleParameterChange(param.name, v)}
-              optionList={mockCredentials.map((c) => ({ value: c.id, label: c.name }))}
-              style={{ width: '100%' }}
-            />
-          </div>
+          <Form.Select
+            key={param.name}
+            field={`param_${param.name}`}
+            label={renderLabel()}
+            placeholder="请选择凭据"
+            optionList={mockCredentials.map((c) => ({ value: c.id, label: c.name }))}
+            style={{ width: '100%' }}
+            rules={rules}
+          />
         );
       default:
         return null;
@@ -412,48 +377,45 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
   };
 
   // 验证步骤
-  const validateStep = (step: number): boolean => {
+  const validateStep = async (step: number): Promise<boolean> => {
     if (step === 0) {
-      if (!triggerName.trim()) {
-        Toast.warning(t('timeTrigger.validation.nameRequired'));
-        return false;
+      if (formApi) {
+        try {
+          await formApi.validate(['triggerName']);
+          return true;
+        } catch (errors) {
+          return false;
+        }
       }
-      if (triggerName.length > 255) {
-        Toast.warning(t('timeTrigger.validation.nameLengthError'));
-        return false;
-      }
-      return true;
+      return false;
     }
     
     if (step === 1) {
-      if (!selectedProcessId) {
-        Toast.warning(t('timeTrigger.validation.processRequired'));
-        return false;
-      }
-      if (!targetType) {
-        Toast.warning(t('timeTrigger.validation.targetTypeRequired'));
-        return false;
-      }
-      if (!selectedTargetId) {
-        Toast.warning(t('timeTrigger.validation.targetRequired'));
-        return false;
-      }
-      if (selectedProcess) {
-        for (const param of selectedProcess.parameters) {
-          if (param.required && (parameterValues[param.name] === undefined || parameterValues[param.name] === '')) {
-            Toast.warning(t('timeTrigger.validation.parameterRequired', { name: param.name }));
-            return false;
+      if (formApi) {
+        try {
+          const fieldsToValidate = ['processId', 'targetType', 'targetId', 'maxDuration', 'validityDays'];
+          if (selectedProcess) {
+            selectedProcess.parameters.forEach((param) => {
+              if (param.required) {
+                fieldsToValidate.push(`param_${param.name}`);
+              }
+            });
           }
+          await formApi.validate(fieldsToValidate);
+          return true;
+        } catch (errors) {
+          return false;
         }
       }
-      return true;
+      return false;
     }
     
     return true;
   };
 
-  const handleNext = () => {
-    if (validateStep(currentStep)) {
+  const handleNext = async () => {
+    const isValid = await validateStep(currentStep);
+    if (isValid) {
       setCurrentStep((prev) => prev + 1);
     }
   };
@@ -463,8 +425,6 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
   };
 
   const handleSubmit = async () => {
-    if (!validateStep(2)) return;
-
     if (ruleType === 'CRON' && !cronExpression.trim()) {
       Toast.warning(t('timeTrigger.validation.cronExpressionRequired'));
       return;
@@ -482,21 +442,27 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
     try {
       await new Promise((resolve) => setTimeout(resolve, 500));
       
+      const formValues = formApi?.getValues();
+      const parameterValues: Record<string, unknown> = {};
+      if (selectedProcess) {
+        selectedProcess.parameters.forEach((param) => {
+          parameterValues[param.name] = formValues?.[`param_${param.name}`];
+        });
+      }
+
       const finalCronExpression = ruleType === 'CRON' ? cronExpression : generatedCronExpression;
       
       console.log('编辑时间触发器:', {
         trigger_id: trigger?.trigger_id,
-        name: triggerName.trim(),
-        description: description.trim() || null,
-        process_id: selectedProcessId,
-        execution_target_type: targetType,
-        execution_target_id: selectedTargetId,
-        priority,
-        max_execution_duration: maxDuration,
-        validity_days: validityDays,
-        enable_recording: enableRecording,
-        task_count_per_trigger: taskCountPerTrigger,
-        allow_duplicate_tasks: allowDuplicateTasks,
+        name: formValues?.triggerName?.trim(),
+        description: formValues?.description?.trim() || null,
+        process_id: formValues?.processId,
+        execution_target_type: formValues?.targetType,
+        execution_target_id: formValues?.targetId,
+        priority: formValues?.priority,
+        max_execution_duration: formValues?.maxDuration,
+        validity_days: formValues?.validityDays,
+        enable_recording: formValues?.enableRecording,
         input_parameters: parameterValues,
         rule_type: ruleType,
         cron_expression: finalCronExpression,
@@ -519,95 +485,148 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
     }
   };
 
+  // 渲染步骤0：基本信息
+  const renderStep0Content = () => (
+    <div className="edit-time-trigger-modal-section">
+      <div className="edit-time-trigger-modal-section-title">{t('timeTrigger.createModal.basicSection')}</div>
+      <Form.Input
+        field="triggerName"
+        label={t('timeTrigger.fields.name')}
+        placeholder={t('timeTrigger.fields.namePlaceholder')}
+        maxLength={255}
+        showClear
+        rules={[
+          { required: true, message: t('timeTrigger.validation.nameRequired') },
+          { max: 255, message: t('timeTrigger.validation.nameLengthError') },
+        ]}
+      />
+      <Form.TextArea
+        field="description"
+        label={t('timeTrigger.fields.description')}
+        placeholder={t('timeTrigger.fields.descriptionPlaceholder')}
+        maxCount={2000}
+        showClear
+        rows={3}
+      />
+    </div>
+  );
+
   // 渲染步骤1的左侧内容
   const renderStep1LeftContent = () => (
     <>
+      {/* 流程配置 */}
       <div className="edit-time-trigger-modal-section">
         <div className="edit-time-trigger-modal-section-title">{t('timeTrigger.createModal.processSection')}</div>
-        <div className="edit-time-trigger-modal-field">
-          <Text className="edit-time-trigger-modal-field-label">{t('timeTrigger.fields.process')} *</Text>
-          <Select
-            placeholder={t('timeTrigger.fields.processPlaceholder')}
-            value={selectedProcessId}
-            onChange={(v) => handleProcessChange(v as string)}
-            optionList={mockProcesses.map((p) => ({ value: p.process_id, label: p.process_name }))}
-            filter
-            className="edit-time-trigger-modal-select-full"
-          />
-        </div>
+        <Form.Select
+          field="processId"
+          label={t('timeTrigger.fields.process')}
+          placeholder={t('timeTrigger.fields.processPlaceholder')}
+          optionList={mockProcesses.map((p) => ({ value: p.process_id, label: p.process_name }))}
+          filter
+          className="edit-time-trigger-modal-select-full"
+          rules={[
+            { required: true, message: t('timeTrigger.validation.processRequired') },
+          ]}
+          onChange={(v) => handleProcessChange(v as string)}
+        />
       </div>
 
+      {/* 执行目标 */}
       <div className="edit-time-trigger-modal-section">
         <div className="edit-time-trigger-modal-section-title">{t('timeTrigger.createModal.targetSection')}</div>
-        <div className="edit-time-trigger-modal-field">
-          <Text className="edit-time-trigger-modal-field-label">{t('timeTrigger.fields.targetType')} *</Text>
-          <RadioGroup
-            value={targetType}
-            onChange={(e) => {
-              setTargetType(e.target.value as ExecutionTargetType);
-              setSelectedTargetId(null);
-            }}
-            direction="horizontal"
-          >
-            <Radio value="BOT_GROUP">{t('timeTrigger.targetType.botGroup')}</Radio>
-            <Radio value="BOT_IN_GROUP">{t('timeTrigger.targetType.botInGroup')}</Radio>
-            <Radio value="UNGROUPED_BOT">{t('timeTrigger.targetType.ungroupedBot')}</Radio>
-          </RadioGroup>
-        </div>
+        <Form.RadioGroup
+          field="targetType"
+          label={t('timeTrigger.fields.targetType')}
+          direction="horizontal"
+          rules={[
+            { required: true, message: t('timeTrigger.validation.targetTypeRequired') },
+          ]}
+          onChange={(e) => {
+            setTargetType(e.target.value as ExecutionTargetType);
+            formApi?.setValue('targetId', undefined);
+          }}
+        >
+          <Form.Radio value="BOT_GROUP">{t('timeTrigger.targetType.botGroup')}</Form.Radio>
+          <Form.Radio value="BOT_IN_GROUP">{t('timeTrigger.targetType.botInGroup')}</Form.Radio>
+          <Form.Radio value="UNGROUPED_BOT">{t('timeTrigger.targetType.ungroupedBot')}</Form.Radio>
+        </Form.RadioGroup>
         {targetType && (
           <div className="edit-time-trigger-modal-field">
-            <Text className="edit-time-trigger-modal-field-label">{t('timeTrigger.createModal.selectTarget')} *</Text>
+            <div className="edit-time-trigger-modal-field-label">{t('task.createModal.selectTarget')}</div>
             <BotTargetSelector
               targetType={targetType}
-              value={selectedTargetId}
-              onChange={(v) => setSelectedTargetId(v)}
+              value={formApi?.getValue('targetId')}
+              onChange={(v) => formApi?.setValue('targetId', v)}
               placeholder={t('timeTrigger.fields.targetPlaceholder')}
+            />
+            <Form.Input
+              field="targetId"
+              noLabel
+              style={{ display: 'none' }}
+              rules={[
+                { required: true, message: t('timeTrigger.validation.targetRequired') },
+              ]}
             />
           </div>
         )}
       </div>
 
+      {/* 执行设置 */}
       <div className="edit-time-trigger-modal-section">
         <div className="edit-time-trigger-modal-section-title">{t('timeTrigger.createModal.executionSection')}</div>
+        <Form.RadioGroup
+          field="priority"
+          label={t('timeTrigger.fields.priority')}
+          direction="horizontal"
+        >
+          <Form.Radio value="HIGH">{t('task.priority.high')}</Form.Radio>
+          <Form.Radio value="MEDIUM">{t('task.priority.medium')}</Form.Radio>
+          <Form.Radio value="LOW">{t('task.priority.low')}</Form.Radio>
+        </Form.RadioGroup>
+        <Form.InputNumber
+          field="maxDuration"
+          label={t('timeTrigger.fields.maxDuration')}
+          min={60}
+          max={86400}
+          suffix={t('common.seconds')}
+          style={{ width: 150 }}
+          rules={[
+            { required: true, message: t('task.validation.maxDurationRequired') },
+            { validator: (rule, value, callback) => {
+              if (value < 60 || value > 86400) {
+                callback(t('task.validation.maxDurationRange'));
+                return false;
+              }
+              callback();
+              return true;
+            }},
+          ]}
+        />
+        <Form.InputNumber
+          field="validityDays"
+          label={t('timeTrigger.fields.validityDays')}
+          min={1}
+          max={30}
+          suffix={t('common.days')}
+          style={{ width: 150 }}
+          rules={[
+            { required: true, message: t('task.validation.validityDaysRequired') },
+            { validator: (rule, value, callback) => {
+              if (value < 1 || value > 30) {
+                callback(t('task.validation.validityDaysRange'));
+                return false;
+              }
+              callback();
+              return true;
+            }},
+          ]}
+        />
         <div className="edit-time-trigger-modal-field">
-          <Text className="edit-time-trigger-modal-field-label">{t('timeTrigger.fields.priority')}</Text>
-          <RadioGroup
-            value={priority}
-            onChange={(e) => setPriority(e.target.value as TaskPriority)}
-            direction="horizontal"
-          >
-            <Radio value="LOW">低</Radio>
-            <Radio value="MEDIUM">中</Radio>
-            <Radio value="HIGH">高</Radio>
-          </RadioGroup>
-        </div>
-        <div className="edit-time-trigger-modal-field">
-          <Text className="edit-time-trigger-modal-field-label">{t('timeTrigger.fields.maxDuration')}</Text>
-          <InputNumber
-            value={maxDuration}
-            onChange={(v) => setMaxDuration(v as number)}
-            min={60}
-            max={86400}
-            suffix={t('timeTrigger.fields.maxDurationUnit')}
-            style={{ width: '100%' }}
+          <div className="semi-form-field-label-text">{t('timeTrigger.fields.enableRecording')}</div>
+          <Form.Switch
+            field="enableRecording"
+            noLabel
           />
-          <div className="edit-time-trigger-modal-field-hint">{t('timeTrigger.fields.maxDurationHint')}</div>
-        </div>
-        <div className="edit-time-trigger-modal-field">
-          <Text className="edit-time-trigger-modal-field-label">{t('timeTrigger.fields.validityDays')}</Text>
-          <InputNumber
-            value={validityDays}
-            onChange={(v) => setValidityDays(v as number)}
-            min={1}
-            max={30}
-            suffix={t('timeTrigger.fields.validityDaysUnit')}
-            style={{ width: '100%' }}
-          />
-          <div className="edit-time-trigger-modal-field-hint">{t('timeTrigger.fields.validityDaysHint')}</div>
-        </div>
-        <div className="edit-time-trigger-modal-field">
-          <Text className="edit-time-trigger-modal-field-label">{t('timeTrigger.fields.enableRecording')}</Text>
-          <Switch checked={enableRecording} onChange={setEnableRecording} />
         </div>
       </div>
     </>
@@ -627,7 +646,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
 
       {hasOutputParameters && (
         <div className="edit-time-trigger-modal-section">
-          <div className="edit-time-trigger-modal-section-title">输出参数</div>
+          <div className="edit-time-trigger-modal-section-title">{t('template.createModal.outputParametersSection')}</div>
           <div className="edit-time-trigger-modal-output-params">
             {selectedProcess?.output_parameters?.map((param) => (
               <div className="edit-time-trigger-modal-output-param-item" key={param.name}>
@@ -649,151 +668,83 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
       {!hasParameters && !hasOutputParameters && (
         <div className="edit-time-trigger-modal-no-params">
           <IconInbox size="extra-large" style={{ color: 'var(--semi-color-text-2)', marginBottom: 8 }} />
-          <div>该流程没有配置参数</div>
+          <div>{t('template.createModal.noParameters')}</div>
         </div>
       )}
     </>
   );
 
-  // 渲染步骤内容
-  const renderStepContent = () => {
-    switch (currentStep) {
-      case 0:
-        return (
-          <>
-            <div className="edit-time-trigger-modal-section">
-              <div className="edit-time-trigger-modal-section-title">{t('timeTrigger.createModal.basicSection')}</div>
-              <div className="edit-time-trigger-modal-field">
-                <Text className="edit-time-trigger-modal-field-label">{t('timeTrigger.fields.name')} *</Text>
-                <Input
-                  placeholder={t('timeTrigger.fields.namePlaceholder')}
-                  value={triggerName}
-                  onChange={setTriggerName}
-                  maxLength={255}
-                  showClear
-                />
-              </div>
-              <div className="edit-time-trigger-modal-field">
-                <Text className="edit-time-trigger-modal-field-label">{t('timeTrigger.fields.description')}</Text>
-                <TextArea
-                  placeholder={t('timeTrigger.fields.descriptionPlaceholder')}
-                  value={description}
-                  onChange={setDescription}
-                  maxCount={2000}
-                  showClear
-                  rows={3}
-                />
-              </div>
+  // 渲染步骤2：触发规则与预览
+  const renderStep2Content = () => (
+    <>
+      {/* 时间规则 - 使用 TriggerRuleConfig 组件 */}
+      <div className="edit-time-trigger-modal-section">
+        <div className="edit-time-trigger-modal-section-title">{t('timeTrigger.createModal.ruleSection')}</div>
+        <TriggerRuleConfig
+          ruleType={ruleType}
+          onRuleTypeChange={setRuleType}
+          frequencyType={frequencyType}
+          onFrequencyTypeChange={setFrequencyType}
+          minuteInterval={minuteInterval}
+          onMinuteIntervalChange={setMinuteInterval}
+          hourInterval={hourInterval}
+          onHourIntervalChange={setHourInterval}
+          minuteOfHour={minuteOfHour}
+          onMinuteOfHourChange={setMinuteOfHour}
+          triggerHour={triggerHour}
+          onTriggerHourChange={setTriggerHour}
+          triggerMinute={triggerMinute}
+          onTriggerMinuteChange={setTriggerMinute}
+          selectedWeekdays={selectedWeekdays}
+          onSelectedWeekdaysChange={setSelectedWeekdays}
+          selectedMonthDay={selectedMonthDay}
+          onSelectedMonthDayChange={setSelectedMonthDay}
+          cronExpression={cronExpression}
+          onCronExpressionChange={setCronExpression}
+          timeZone={timeZone}
+          onTimeZoneChange={setTimeZone}
+          startDateTime={startDateTime}
+          onStartDateTimeChange={setStartDateTime}
+          endDateTime={endDateTime}
+          onEndDateTimeChange={setEndDateTime}
+          endTimeType={endTimeType}
+          onEndTimeTypeChange={setEndTimeType}
+          enableWorkCalendar={enableWorkCalendar}
+          onEnableWorkCalendarChange={setEnableWorkCalendar}
+          workCalendarId={workCalendarId}
+          onWorkCalendarIdChange={setWorkCalendarId}
+          workCalendarExecutionType={workCalendarExecutionType}
+          onWorkCalendarExecutionTypeChange={setWorkCalendarExecutionType}
+          workCalendarOptions={mockWorkCalendars}
+          showWorkCalendar={true}
+        />
+      </div>
+
+      {/* 触发预览 */}
+      <div className="edit-time-trigger-modal-section">
+        <div className="edit-time-trigger-modal-section-title">{t('timeTrigger.createModal.previewSection')}</div>
+        <div className="edit-time-trigger-modal-preview">
+          <div className="edit-time-trigger-modal-preview-title">
+            {t('timeTrigger.createModal.previewTitle')}
+          </div>
+          {previewTimes.length > 0 ? (
+            <ul className="edit-time-trigger-modal-preview-list">
+              {previewTimes.map((time, index) => (
+                <li key={index}>
+                  <span className="preview-index">{index + 1}.</span>
+                  {time}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="edit-time-trigger-modal-preview-empty">
+              {t('timeTrigger.createModal.noPreview')}
             </div>
-          </>
-        );
-
-      case 1:
-        return null;
-
-      case 2:
-        return (
-          <>
-            {/* 时间规则 - 使用 TriggerRuleConfig 组件 */}
-            <div className="edit-time-trigger-modal-section">
-              <div className="edit-time-trigger-modal-section-title">{t('timeTrigger.createModal.ruleSection')}</div>
-              <TriggerRuleConfig
-                ruleType={ruleType}
-                onRuleTypeChange={setRuleType}
-                frequencyType={frequencyType}
-                onFrequencyTypeChange={setFrequencyType}
-                minuteInterval={minuteInterval}
-                onMinuteIntervalChange={setMinuteInterval}
-                hourInterval={hourInterval}
-                onHourIntervalChange={setHourInterval}
-                minuteOfHour={minuteOfHour}
-                onMinuteOfHourChange={setMinuteOfHour}
-                triggerHour={triggerHour}
-                onTriggerHourChange={setTriggerHour}
-                triggerMinute={triggerMinute}
-                onTriggerMinuteChange={setTriggerMinute}
-                selectedWeekdays={selectedWeekdays}
-                onSelectedWeekdaysChange={setSelectedWeekdays}
-                selectedMonthDay={selectedMonthDay}
-                onSelectedMonthDayChange={setSelectedMonthDay}
-                cronExpression={cronExpression}
-                onCronExpressionChange={setCronExpression}
-                timeZone={timeZone}
-                onTimeZoneChange={setTimeZone}
-                startDateTime={startDateTime}
-                onStartDateTimeChange={setStartDateTime}
-                endDateTime={endDateTime}
-                onEndDateTimeChange={setEndDateTime}
-                endTimeType={endTimeType}
-                onEndTimeTypeChange={setEndTimeType}
-                classPrefix="edit-time-trigger-modal-rule"
-              />
-            </div>
-
-            {/* 工作日历 */}
-            <div className="edit-time-trigger-modal-section">
-              <div className="edit-time-trigger-modal-section-title">{t('timeTrigger.createModal.calendarSection')}</div>
-              <div className="edit-time-trigger-modal-field">
-                <Text className="edit-time-trigger-modal-field-label">{t('timeTrigger.fields.enableWorkCalendar')}</Text>
-                <Switch checked={enableWorkCalendar} onChange={setEnableWorkCalendar} />
-              </div>
-              {enableWorkCalendar && (
-                <>
-                  <div className="edit-time-trigger-modal-field">
-                    <Text className="edit-time-trigger-modal-field-label">{t('timeTrigger.fields.workCalendar')} *</Text>
-                    <Select
-                      placeholder={t('timeTrigger.fields.workCalendarPlaceholder')}
-                      value={workCalendarId}
-                      onChange={(v) => setWorkCalendarId(v as string)}
-                      optionList={mockWorkCalendars.map((c) => ({ value: c.id, label: c.name }))}
-                      className="edit-time-trigger-modal-select-full"
-                    />
-                  </div>
-                  <div className="edit-time-trigger-modal-field">
-                    <Text className="edit-time-trigger-modal-field-label">{t('timeTrigger.fields.executionType')}</Text>
-                    <RadioGroup
-                      value={workCalendarExecutionType}
-                      onChange={(e) => setWorkCalendarExecutionType(e.target.value as 'WORKDAY' | 'NON_WORKDAY')}
-                      direction="horizontal"
-                    >
-                      <Radio value="WORKDAY">{t('timeTrigger.fields.executionTypeWorkday')}</Radio>
-                      <Radio value="NON_WORKDAY">{t('timeTrigger.fields.executionTypeNonWorkday')}</Radio>
-                    </RadioGroup>
-                  </div>
-                </>
-              )}
-            </div>
-
-            {/* 触发预览 */}
-            <div className="edit-time-trigger-modal-section">
-              <div className="edit-time-trigger-modal-section-title">{t('timeTrigger.createModal.previewSection')}</div>
-              <div className="edit-time-trigger-modal-preview">
-                <div className="edit-time-trigger-modal-preview-title">
-                  {t('timeTrigger.createModal.previewTitle')}
-                </div>
-                {previewTimes.length > 0 ? (
-                  <ul className="edit-time-trigger-modal-preview-list">
-                    {previewTimes.map((time, index) => (
-                      <li key={index}>
-                        <span className="preview-index">{index + 1}.</span>
-                        {time}
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <div className="edit-time-trigger-modal-preview-empty">
-                    {t('timeTrigger.createModal.noPreview')}
-                  </div>
-                )}
-              </div>
-            </div>
-          </>
-        );
-
-      default:
-        return null;
-    }
-  };
+          )}
+        </div>
+      </div>
+    </>
+  );
 
   const modalWidth = showRightPanel ? 900 : 520;
 
@@ -809,7 +760,18 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
       width={modalWidth}
       centered
     >
-      <div className="edit-time-trigger-modal-form">
+      <Form
+        className="edit-time-trigger-modal-form"
+        labelPosition="top"
+        getFormApi={setFormApi}
+        initValues={{
+          priority: 'MEDIUM',
+          maxDuration: 3600,
+          validityDays: 7,
+          enableRecording: false,
+        }}
+      >
+        {/* 步骤条 */}
         <div className="edit-time-trigger-modal-steps">
           <Steps current={currentStep} type="basic" size="small">
             <Steps.Step title={t('timeTrigger.createModal.steps.basicInfo')} />
@@ -818,7 +780,14 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
           </Steps>
         </div>
 
-        {currentStep === 1 ? (
+        {/* 内容区域 */}
+        {currentStep === 0 && (
+          <div className="edit-time-trigger-modal-content">
+            {renderStep0Content()}
+          </div>
+        )}
+
+        {currentStep === 1 && (
           <div className="edit-time-trigger-modal-body">
             <div className="edit-time-trigger-modal-left">
               <div className="edit-time-trigger-modal-content">
@@ -833,12 +802,15 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
               </div>
             )}
           </div>
-        ) : (
+        )}
+
+        {currentStep === 2 && (
           <div className="edit-time-trigger-modal-content">
-            {renderStepContent()}
+            {renderStep2Content()}
           </div>
         )}
 
+        {/* 底部按钮 */}
         <div className="edit-time-trigger-modal-footer">
           <Button theme="light" onClick={onCancel}>
             {t('common.cancel')}
@@ -858,7 +830,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
             </Button>
           )}
         </div>
-      </div>
+      </Form>
     </Modal>
   );
 };
