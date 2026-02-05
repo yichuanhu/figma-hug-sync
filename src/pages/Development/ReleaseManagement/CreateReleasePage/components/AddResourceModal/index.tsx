@@ -153,7 +153,7 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
 
   const fileColumns = [
     {
-      title: t('release.create.addResource.fileName'),
+      title: t('release.create.addResource.resourceName'),
       dataIndex: 'name',
       key: 'name',
       render: (name: string, record: AvailableResource) => (
@@ -166,12 +166,6 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
           )}
         </div>
       ),
-    },
-    {
-      title: t('release.create.addResource.originalFileName'),
-      dataIndex: 'original_name',
-      key: 'original_name',
-      render: (value: string) => value || '-',
     },
   ];
 
