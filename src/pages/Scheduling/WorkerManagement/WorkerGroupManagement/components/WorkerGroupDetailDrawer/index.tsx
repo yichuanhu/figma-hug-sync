@@ -26,9 +26,9 @@ import ExpandableText from '@/components/ExpandableText';
 import { 
   IconEditStroked, 
   IconDeleteStroked, 
-  IconSearch,
-  IconPlus,
-  IconMore,
+  IconSearchStroked,
+  IconPlusStroked,
+  IconMoreStroked,
   IconEyeOpenedStroked,
   IconMinusCircleStroked,
   IconMaximize,
@@ -513,7 +513,7 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
           }
         >
           <Button 
-            icon={<IconMore />} 
+            icon={<IconMoreStroked />} 
             theme="borderless" 
             onClick={(e) => e.stopPropagation()}
           />
@@ -585,7 +585,7 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
                   <Col>
                     <Space>
                       <Input 
-                        prefix={<IconSearch />}
+                        prefix={<IconSearchStroked />}
                         placeholder={t('workerGroup.detail.searchMemberPlaceholder')}
                         className="worker-group-detail-drawer-members-search"
                         onChange={handleSearch}
@@ -610,7 +610,7 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
                   </Col>
                   <Col>
                     <Button 
-                      icon={<IconPlus />} 
+                      icon={<IconPlusStroked />} 
                       theme="solid" 
                       type="primary"
                       onClick={() => setAddMembersVisible(true)}

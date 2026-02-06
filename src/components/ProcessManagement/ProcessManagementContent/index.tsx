@@ -22,9 +22,9 @@ import {
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import {
-  IconSearch,
-  IconPlus,
-  IconMore,
+  IconSearchStroked,
+  IconPlusStroked,
+  IconMoreStroked,
   IconExternalOpenStroked,
   IconEditStroked,
   IconPlayCircle,
@@ -513,7 +513,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
             </Dropdown.Menu>
           }
         >
-          <Button icon={<IconMore />} theme="borderless" onClick={(e) => e.stopPropagation()} />
+          <Button icon={<IconMoreStroked />} theme="borderless" onClick={(e) => e.stopPropagation()} />
         </Dropdown>
       ),
     },
@@ -554,7 +554,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
           <Col>
             <Space>
               <Input
-                prefix={<IconSearch />}
+                prefix={<IconSearchStroked />}
                 placeholder={t('development.processDevelopment.searchPlaceholder')}
                 className="process-management-search-input"
                 value={searchValue}
@@ -613,7 +613,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
           <Col>
             {/* 调度中心不显示新建按钮 */}
             {!isSchedulingContext && (
-              <Button icon={<IconPlus />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
+              <Button icon={<IconPlusStroked />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
                 {t('development.processDevelopment.createProcess')}
               </Button>
             )}

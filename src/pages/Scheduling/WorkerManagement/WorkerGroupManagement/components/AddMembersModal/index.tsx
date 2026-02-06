@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Modal, Input, Table, Typography, Checkbox, Toast, Select, Tag, Space } from '@douyinfe/semi-ui';
-import { IconSearch, IconClose } from '@douyinfe/semi-icons';
+import { IconSearchStroked, IconClose } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import { useTranslation } from 'react-i18next';
 import { debounce } from 'lodash';
@@ -329,7 +329,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
           <div className="add-members-modal-left-filter">
             <Space>
               <Input 
-                prefix={<IconSearch />}
+                prefix={<IconSearchStroked />}
                 placeholder={t('workerGroup.addMembers.searchPlaceholder')}
                 onChange={handleSearch}
                 showClear

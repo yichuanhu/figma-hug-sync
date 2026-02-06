@@ -14,9 +14,9 @@ import {
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import {
-  IconSearch, 
-  IconPlus, 
-  IconMore, 
+  IconSearchStroked, 
+  IconPlusStroked, 
+  IconMoreStroked, 
   IconEyeOpenedStroked, 
   IconEditStroked, 
   IconDeleteStroked,
@@ -378,7 +378,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
           }
         >
           <Button 
-            icon={<IconMore />} 
+            icon={<IconMoreStroked />} 
             theme="borderless" 
             onClick={(e) => e.stopPropagation()}
           />
@@ -396,7 +396,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
           <Col>
             <Space>
               <Input 
-                prefix={<IconSearch />}
+                prefix={<IconSearchStroked />}
                 placeholder={t('workerGroup.searchPlaceholder')}
                 className="worker-group-management-search-input"
                 onChange={handleSearch}
@@ -406,7 +406,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
           </Col>
           <Col>
             <Button 
-              icon={<IconPlus />} 
+              icon={<IconPlusStroked />} 
               theme="solid" 
               type="primary"
               onClick={() => setCreateModalVisible(true)}

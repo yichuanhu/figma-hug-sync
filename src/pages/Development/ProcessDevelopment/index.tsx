@@ -22,9 +22,9 @@ import {
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import {
-  IconSearch,
-  IconPlus,
-  IconMore,
+  IconSearchStroked,
+  IconPlusStroked,
+  IconMoreStroked,
   IconExternalOpenStroked,
   IconEditStroked,
   IconPlayCircle,
@@ -479,7 +479,7 @@ const ProcessDevelopment = () => {
             </Dropdown.Menu>
           }
         >
-          <Button icon={<IconMore />} theme="borderless" onClick={(e) => e.stopPropagation()} />
+          <Button icon={<IconMoreStroked />} theme="borderless" onClick={(e) => e.stopPropagation()} />
         </Dropdown>
       ),
     },
@@ -511,7 +511,7 @@ const ProcessDevelopment = () => {
           <Col>
             <Space>
               <Input
-                prefix={<IconSearch />}
+                prefix={<IconSearchStroked />}
                 placeholder={t('development.processDevelopment.searchPlaceholder')}
                 className="process-development-search-input"
                 value={searchValue}
@@ -565,7 +565,7 @@ const ProcessDevelopment = () => {
             </Space>
           </Col>
           <Col>
-            <Button icon={<IconPlus />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
+            <Button icon={<IconPlusStroked />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
               {t('development.processDevelopment.createProcess')}
             </Button>
           </Col>

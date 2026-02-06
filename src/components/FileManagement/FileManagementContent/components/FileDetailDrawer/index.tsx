@@ -19,7 +19,7 @@ import {
   IconMaximize,
   IconMinimize,
   IconUpload,
-  IconDownload,
+  IconDownloadStroked,
   IconDeleteStroked,
 } from '@douyinfe/semi-icons';
 import type { LYFileResponse, FileSource } from '@/api/index';
@@ -204,7 +204,7 @@ const FileDetailDrawer = ({
             )}
             <Tooltip content={t('file.actions.download')}>
               <Button
-                icon={<IconDownload />}
+                icon={<IconDownloadStroked />}
                 theme="borderless"
                 size="small"
                 onClick={handleDownload}

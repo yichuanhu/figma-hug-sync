@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Typography, Dropdown, Modal } from '@douyinfe/semi-ui';
-import { IconPlus, IconMore, IconDeleteStroked } from '@douyinfe/semi-icons';
+import { IconPlusStroked, IconMoreStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
 import type { LYWorkCalendarResponse } from '@/api/index';
 import './index.less';
 
@@ -90,7 +90,7 @@ const CalendarSidebar: React.FC<CalendarSidebarProps> = ({
             className="calendar-sidebar-item-more"
             onClick={(e) => e.stopPropagation()}
           >
-            <IconMore />
+            <IconMoreStroked />
           </div>
         </Dropdown>
       </div>
@@ -102,7 +102,7 @@ const CalendarSidebar: React.FC<CalendarSidebarProps> = ({
       {/* 新建按钮 */}
       <div className="calendar-sidebar-header">
         <Button
-          icon={<IconPlus />}
+          icon={<IconPlusStroked />}
           theme="solid"
           block
           onClick={onCreate}

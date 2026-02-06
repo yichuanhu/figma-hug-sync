@@ -40,7 +40,7 @@ import {
    IconFilterStroked,
   IconUnlink,
   IconEyeOpenedStroked,
-  IconMore,
+  IconMoreStroked,
 } from '@douyinfe/semi-icons';
 import { Download } from 'lucide-react';
 import type { LYPersonalCredentialResponse } from '@/api/index';
@@ -732,7 +732,7 @@ const PersonalCredentialDetailDrawer = ({
                           }
                         >
                           <Button
-                            icon={<IconMore />}
+                            icon={<IconMoreStroked />}
                             theme="borderless"
                             type="tertiary"
                             onClick={(e) => e.stopPropagation()}

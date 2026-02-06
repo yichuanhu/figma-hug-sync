@@ -21,8 +21,8 @@ import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
 import {
-  IconSearch,
-  IconMore,
+  IconSearchStroked,
+  IconMoreStroked,
   IconDeleteStroked,
   IconChevronLeft,
   IconPlayCircle,
@@ -568,7 +568,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
             </Dropdown.Menu>
           }
         >
-          <Button icon={<IconMore />} theme="borderless" type="tertiary" onClick={(e) => e.stopPropagation()} />
+          <Button icon={<IconMoreStroked />} theme="borderless" type="tertiary" onClick={(e) => e.stopPropagation()} />
         </Dropdown>
       ),
     },

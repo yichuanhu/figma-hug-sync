@@ -13,8 +13,8 @@ import {
   Space,
 } from '@douyinfe/semi-ui';
 import {
-  IconSearch,
-   IconDownload,
+  IconSearchStroked,
+   IconDownloadStroked,
   IconRefresh,
 } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
@@ -419,7 +419,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
         <Col>
           <Space>
             <Input
-              prefix={<IconSearch />}
+              prefix={<IconSearchStroked />}
               placeholder={t('taskLog.searchPlaceholder')}
               onChange={handleSearch}
               showClear
@@ -444,7 +444,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
               {t('taskLog.refresh')}
             </Button>
             <Button
-               icon={<IconDownload />}
+               icon={<IconDownloadStroked />}
               onClick={handleExport}
               loading={exporting}
               disabled={total === 0}

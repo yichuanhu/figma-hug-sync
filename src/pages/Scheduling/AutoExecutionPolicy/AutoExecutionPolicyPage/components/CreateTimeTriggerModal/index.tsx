@@ -10,7 +10,7 @@ import {
   Tag,
   Steps,
 } from '@douyinfe/semi-ui';
-import { IconHelpCircle, IconInbox } from '@douyinfe/semi-icons';
+import { IconHelpCircleStroked, IconInbox } from '@douyinfe/semi-icons';
 import TriggerRuleConfig from '@/components/TriggerRuleConfig';
 import BotTargetSelector from '@/components/BotTargetSelector';
 import { getWorkCalendarOptions } from '@/mocks/workCalendar';
@@ -303,7 +303,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
         </Tag>
         {param.description && (
           <Tooltip content={param.description}>
-            <IconHelpCircle size="small" style={{ color: 'var(--semi-color-text-2)', marginLeft: 4, cursor: 'help' }} />
+            <IconHelpCircleStroked size="small" style={{ color: 'var(--semi-color-text-2)', marginLeft: 4, cursor: 'help' }} />
           </Tooltip>
         )}
       </div>

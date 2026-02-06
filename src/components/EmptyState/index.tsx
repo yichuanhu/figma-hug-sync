@@ -1,5 +1,5 @@
 import { Empty, Button } from '@douyinfe/semi-ui';
-import { IconRefresh, IconHome } from '@douyinfe/semi-icons';
+import { IconRefresh, IconHomeStroked } from '@douyinfe/semi-icons';
 import {
   IllustrationNoContent,
   IllustrationNoContentDark,
@@ -177,7 +177,7 @@ const EmptyState = ({
                   key="goHome"
                   theme="light"
                   type="primary"
-                  icon={<IconHome />}
+                  icon={<IconHomeStroked />}
                   onClick={() => navigate('/')}
                 >
                   {t('emptyState.goHome')}

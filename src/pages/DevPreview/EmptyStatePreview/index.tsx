@@ -1,6 +1,6 @@
 import AppLayout from '@/components/layout/AppLayout';
 import { Breadcrumb, Typography, Card, Row, Col, Button } from '@douyinfe/semi-ui';
-import { IconHome, IconPlus } from '@douyinfe/semi-icons';
+import { IconHomeStroked, IconPlusStroked } from '@douyinfe/semi-icons';
 import EmptyState, { EmptyStateVariant } from '@/components/EmptyState';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -74,7 +74,7 @@ const EmptyStatePreview = () => {
         <Button
           theme="solid"
           type="primary"
-          icon={<IconPlus />}
+          icon={<IconPlusStroked />}
           onClick={() => navigate('/')}
         >
           {t(item.footerLabel)}
@@ -89,7 +89,7 @@ const EmptyStatePreview = () => {
       <div className="empty-state-preview">
         <div className="empty-state-preview-breadcrumb">
           <Breadcrumb>
-            <Breadcrumb.Item icon={<IconHome />} href="/">首页</Breadcrumb.Item>
+            <Breadcrumb.Item icon={<IconHomeStroked />} href="/">首页</Breadcrumb.Item>
             <Breadcrumb.Item>开发预览</Breadcrumb.Item>
             <Breadcrumb.Item>缺省状态预览</Breadcrumb.Item>
           </Breadcrumb>

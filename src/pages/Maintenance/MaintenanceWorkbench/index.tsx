@@ -1,6 +1,6 @@
 import AppLayout from '@/components/layout/AppLayout';
 import { Breadcrumb } from '@douyinfe/semi-ui';
-import { IconHome } from '@douyinfe/semi-icons';
+import { IconHomeStroked } from '@douyinfe/semi-icons';
 import './index.less';
 
 const MaintenanceWorkbench = () => {
@@ -9,7 +9,7 @@ const MaintenanceWorkbench = () => {
       <div className="maintenance-workbench">
         <div className="maintenance-workbench breadcrumb">
           <Breadcrumb>
-            <Breadcrumb.Item icon={<IconHome />} href="/">首页</Breadcrumb.Item>
+            <Breadcrumb.Item icon={<IconHomeStroked />} href="/">首页</Breadcrumb.Item>
             <Breadcrumb.Item>运维中心</Breadcrumb.Item>
             <Breadcrumb.Item>运维工作台</Breadcrumb.Item>
           </Breadcrumb>
