@@ -20,11 +20,11 @@ import {
 import {
   IconSearchStroked,
    IconDownloadStroked,
-  IconRefresh,
   IconChevronDown,
   IconChevronUp,
    IconFilterStroked,
 } from '@douyinfe/semi-icons';
+import { RefreshCw } from 'lucide-react';
 import { debounce } from 'lodash';
 import AppLayout from '@/components/layout/AppLayout';
 import EmptyState from '@/components/EmptyState';
