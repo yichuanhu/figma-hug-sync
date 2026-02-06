@@ -166,7 +166,7 @@ const EmptyState = ({
                   key="retry"
                   theme="solid"
                   type="primary"
-                  icon={<IconRefresh />}
+                  icon={<RefreshCw size={16} strokeWidth={2} />}
                   onClick={onRetry}
                 >
                   {t('emptyState.retry')}

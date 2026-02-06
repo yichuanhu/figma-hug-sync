@@ -36,7 +36,7 @@ const BatchOperationBar = ({
       </Space>
       <Space>
         <Button
-          icon={<IconRefresh />}
+          icon={<RefreshCw size={16} strokeWidth={2} />}
           onClick={onBatchRequeue}
         >
           {t('queueMessage.batch.requeue')}

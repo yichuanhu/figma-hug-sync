@@ -418,7 +418,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
             <Dropdown.Menu>
               {context === 'development' && !record.is_published && (
                 <Dropdown.Item
-                  icon={<IconRefresh />}
+                  icon={<RefreshCw size={16} strokeWidth={2} />}
                   onClick={(e) => {
                     e.stopPropagation();
                     handleReupload(record);

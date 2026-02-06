@@ -454,7 +454,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
                     </Dropdown.Item>
                   )
                 )}
-                <Dropdown.Item icon={<IconHistory />} onClick={(e) => { e.stopPropagation(); handleViewUsage(record); }}>
+                <Dropdown.Item icon={<History size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleViewUsage(record); }}>
                   {t('credential.actions.viewUsage')}
                 </Dropdown.Item>
                 {canDelete && (

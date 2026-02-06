@@ -608,7 +608,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
                       {t('sidebar.userMenu.personalCenter')}
                     </Dropdown.Item>
                     <Dropdown.Item 
-                      icon={<IconExit />}
+                      icon={<LogOut size={16} strokeWidth={2} />}
                     >
                       {t('sidebar.userMenu.logout')}
                     </Dropdown.Item>

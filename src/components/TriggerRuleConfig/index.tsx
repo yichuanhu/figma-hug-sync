@@ -647,7 +647,7 @@ const TriggerRuleConfig = ({
                 <Banner
                   type={cronValidResult.valid ? 'success' : 'danger'}
                   description={cronValidResult.message}
-                  icon={cronValidResult.valid ? <IconTick /> : <IconClose />}
+                  icon={cronValidResult.valid ? <Check size={16} strokeWidth={2} /> : <X size={16} strokeWidth={2} />}
                   closeIcon={null}
                   className={`${classPrefix}-cron-result`}
                 />

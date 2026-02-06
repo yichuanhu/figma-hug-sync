@@ -553,7 +553,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
                 </Dropdown.Item>
               )}
               {(record.status === 'CONSUMED' || record.status === 'EXPIRED') && (
-                <Dropdown.Item icon={<IconRefresh />} onClick={(e) => { e.stopPropagation(); handleRequeue(record); }}>
+                <Dropdown.Item icon={<RefreshCw size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleRequeue(record); }}>
                   {t('queueMessage.actions.requeue')}
                 </Dropdown.Item>
               )}
