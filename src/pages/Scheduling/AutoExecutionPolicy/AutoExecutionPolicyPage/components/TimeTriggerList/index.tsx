@@ -16,12 +16,12 @@ import {
   Tooltip,
 } from '@douyinfe/semi-ui';
 import {
-  IconSearch,
-  IconPlus,
-  IconMore,
+  IconSearchStroked,
+  IconPlusStroked,
+  IconMoreStroked,
   IconDeleteStroked,
   IconEditStroked,
-  IconClock,
+  IconClockStroked,
 } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
@@ -399,7 +399,7 @@ const TimeTriggerList = () => {
       width: 180,
       render: (_: unknown, record: LYTimeTriggerResponse) => (
         <div className="time-trigger-list-rule">
-          <IconClock size="small" className="time-trigger-list-rule-icon" />
+          <IconClockStroked size="small" className="time-trigger-list-rule-icon" />
           <span>{formatTriggerRule(record)}</span>
         </div>
       ),
@@ -467,7 +467,7 @@ const TimeTriggerList = () => {
           }
         >
           <Button
-            icon={<IconMore />}
+            icon={<IconMoreStroked />}
             theme="borderless"
             type="tertiary"
             onClick={(e) => e.stopPropagation()}
@@ -497,7 +497,7 @@ const TimeTriggerList = () => {
         <Col>
           <Space>
             <Input
-              prefix={<IconSearch />}
+              prefix={<IconSearchStroked />}
               placeholder={t('timeTrigger.searchPlaceholder')}
               onChange={handleSearch}
               showClear
@@ -529,7 +529,7 @@ const TimeTriggerList = () => {
         </Col>
         <Col>
           <Button
-            icon={<IconPlus />}
+            icon={<IconPlusStroked />}
             theme="solid"
             type="primary"
             onClick={() => setCreateModalVisible(true)}

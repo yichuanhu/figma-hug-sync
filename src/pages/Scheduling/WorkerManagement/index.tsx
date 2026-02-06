@@ -20,10 +20,10 @@ import {
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import {
-  IconSearch, 
+  IconSearchStroked, 
    IconFilterStroked,
-  IconPlus, 
-  IconMore, 
+  IconPlusStroked, 
+  IconMoreStroked, 
   IconEyeOpenedStroked, 
   IconEditStroked, 
   IconDeleteStroked,
@@ -898,7 +898,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
           }
         >
           <Button 
-            icon={<IconMore />} 
+            icon={<IconMoreStroked />} 
             theme="borderless" 
             onClick={(e) => e.stopPropagation()}
           />
@@ -916,7 +916,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
           <Col>
             <Space>
               <Input 
-                prefix={<IconSearch />}
+                prefix={<IconSearchStroked />}
                 placeholder={t('worker.searchPlaceholder')}
                 className="worker-management-search-input"
                 value={searchValue}
@@ -941,7 +941,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
           </Col>
           <Col>
             <Button 
-              icon={<IconPlus />} 
+              icon={<IconPlusStroked />} 
               theme="solid" 
               type="primary"
               onClick={() => setCreateModalVisible(true)}

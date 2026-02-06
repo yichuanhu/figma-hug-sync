@@ -31,7 +31,7 @@ import {
   IconMinimize,
   IconClose,
   IconUpload,
-  IconHelpCircle,
+  IconHelpCircleStroked,
   IconTick,
   IconClear,
   IconLink,
@@ -677,7 +677,7 @@ const ProcessDetailDrawer = ({
                     {t('development.processDevelopment.detail.versionList.title')}
                   </Text>
                   <Tooltip content={t('development.processDevelopment.detail.versionList.titleTooltip')}>
-                    <IconHelpCircle style={{ color: 'var(--semi-color-text-2)', fontSize: 14 }} />
+                    <IconHelpCircleStroked style={{ color: 'var(--semi-color-text-2)', fontSize: 14 }} />
                   </Tooltip>
                 </div>
                 <Button

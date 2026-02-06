@@ -21,9 +21,9 @@ import {
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import {
-  IconSearch,
-  IconPlus,
-  IconMore,
+  IconSearchStroked,
+  IconPlusStroked,
+  IconMoreStroked,
   IconDeleteStroked,
    IconFilterStroked,
   IconEyeOpenedStroked,
@@ -419,7 +419,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
               </Dropdown.Menu>
             }
           >
-            <Button icon={<IconMore />} theme="borderless" type="tertiary" onClick={(e) => e.stopPropagation()} />
+            <Button icon={<IconMoreStroked />} theme="borderless" type="tertiary" onClick={(e) => e.stopPropagation()} />
           </Dropdown>
         );
       },
@@ -462,7 +462,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
           <Col>
             <Space>
               <Input
-                prefix={<IconSearch />}
+                prefix={<IconSearchStroked />}
                 placeholder={t('queue.searchPlaceholder')}
                 className="queue-management-content-search-input"
                 value={searchValue}
@@ -521,7 +521,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
           {context === 'development' && (
             <Col>
               <Button
-                icon={<IconPlus />}
+                icon={<IconPlusStroked />}
                 theme="solid"
                 type="primary"
                 onClick={() => setCreateModalVisible(true)}

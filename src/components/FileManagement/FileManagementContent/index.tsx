@@ -21,9 +21,9 @@ import {
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import {
-  IconSearch,
+  IconSearchStroked,
   IconUpload,
-  IconMore,
+  IconMoreStroked,
   IconDeleteStroked,
    IconFilterStroked,
    IconDownloadStroked,
@@ -452,7 +452,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
           }
         >
           <Button
-            icon={<IconMore />}
+            icon={<IconMoreStroked />}
             theme="borderless"
             type="tertiary"
             onClick={(e) => e.stopPropagation()}
@@ -513,7 +513,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
           <Col>
             <Space>
               <Input
-                prefix={<IconSearch />}
+                prefix={<IconSearchStroked />}
                 placeholder={t('file.searchPlaceholder')}
                 className="file-management-content-search-input"
                 value={searchValue}

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Typography, Button, Toast } from '@douyinfe/semi-ui';
-import { IconCopy } from '@douyinfe/semi-icons';
+import { IconCopyStroked } from '@douyinfe/semi-icons';
 import type { LYWorkerResponse } from '@/api';
 import './index.less';
 
@@ -41,7 +41,7 @@ const WorkerKeyModal = ({ visible, onClose, workerData }: WorkerKeyModalProps) =
         <div className="worker-key-modal-token">{workerData.device_token}</div>
 
         <div className="worker-key-modal-footer">
-          <Button icon={<IconCopy />} theme="solid" type="primary" onClick={handleCopy} loading={copying}>
+          <Button icon={<IconCopyStroked />} theme="solid" type="primary" onClick={handleCopy} loading={copying}>
             {t('common.copy')}
           </Button>
         </div>

@@ -12,8 +12,8 @@ import {
   IconPause,
   IconMaximize,
   IconMinimize,
-  IconVolume1,
-  IconVolume2,
+  IconVolume1Stroked,
+  IconVolume2Stroked,
   IconRefresh,
 } from '@douyinfe/semi-icons';
 import type { LYRecordingInfoResponse, LYRecordingErrorMarker } from '@/api';
@@ -321,7 +321,7 @@ const SyncRecordingPlayer = ({
         
         {/* 静音按钮 */}
         <Button
-          icon={isMuted ? <IconVolume1 /> : <IconVolume2 />}
+          icon={isMuted ? <IconVolume1Stroked /> : <IconVolume2Stroked />}
           theme="borderless"
           size="small"
           onClick={toggleMute}

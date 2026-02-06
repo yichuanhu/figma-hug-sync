@@ -9,7 +9,7 @@ import {
   Tooltip,
   Tag,
 } from '@douyinfe/semi-ui';
-import { IconHelpCircle } from '@douyinfe/semi-icons';
+import { IconHelpCircleStroked } from '@douyinfe/semi-icons';
 import BotTargetSelector from '@/components/BotTargetSelector';
 import type {
   LYProcessActiveVersionResponse,
@@ -245,7 +245,7 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
         </Tag>
         {param.description && (
           <Tooltip content={param.description}>
-            <IconHelpCircle size="small" style={{ color: 'var(--semi-color-text-2)', marginLeft: 4, cursor: 'help' }} />
+            <IconHelpCircleStroked size="small" style={{ color: 'var(--semi-color-text-2)', marginLeft: 4, cursor: 'help' }} />
           </Tooltip>
         )}
       </div>

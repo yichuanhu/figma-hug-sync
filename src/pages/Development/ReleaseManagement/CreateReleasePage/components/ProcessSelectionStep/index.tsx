@@ -10,7 +10,7 @@ import {
   Checkbox,
   Empty,
 } from '@douyinfe/semi-ui';
-import { IconSearch, IconClose, IconInbox } from '@douyinfe/semi-icons';
+import { IconSearchStroked, IconClose, IconInbox } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
 import type { LYPublishableProcessResponse, LYListResponseLYPublishableProcessResponse } from '@/api';
 import type { SelectedProcess } from '../../index';
@@ -268,7 +268,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
           <div className="transfer-panel-toolbar">
             <Space>
               <Input
-                prefix={<IconSearch />}
+                prefix={<IconSearchStroked />}
                 placeholder={t('release.create.searchProcessPlaceholder')}
                 onChange={(value) => handleSearch(value)}
                 showClear

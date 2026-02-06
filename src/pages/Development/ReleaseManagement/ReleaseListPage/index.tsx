@@ -16,10 +16,10 @@ import {
   Toast,
 } from '@douyinfe/semi-ui';
 import {
-  IconSearch,
-  IconFilter,
-  IconPlus,
-  IconMore,
+  IconSearchStroked,
+  IconFilterStroked,
+  IconPlusStroked,
+  IconMoreStroked,
 } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
 import type { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
@@ -393,7 +393,7 @@ const ReleaseListPage: React.FC = () => {
           }
         >
           <Button
-            icon={<IconMore />}
+            icon={<IconMoreStroked />}
             theme="borderless"
             onClick={(e) => e.stopPropagation()}
           />
@@ -452,7 +452,7 @@ const ReleaseListPage: React.FC = () => {
             <Col>
               <Space>
                 <Input
-                  prefix={<IconSearch />}
+                  prefix={<IconSearchStroked />}
                   placeholder={t('release.list.searchPlaceholder')}
                   onChange={handleSearch}
                   showClear
@@ -494,7 +494,7 @@ const ReleaseListPage: React.FC = () => {
             </Col>
             <Col>
               <Button
-                icon={<IconPlus />}
+                icon={<IconPlusStroked />}
                 theme="solid"
                 type="primary"
                 onClick={() => navigate('/dev-center/release-management/create')}

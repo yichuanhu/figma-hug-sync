@@ -10,7 +10,7 @@ import {
   Tag,
   Typography,
 } from '@douyinfe/semi-ui';
-import { IconSearch } from '@douyinfe/semi-icons';
+import { IconSearchStroked } from '@douyinfe/semi-icons';
 import type { ResourceType } from '@/api';
 import type { ResourceConfig } from '../../index';
 
@@ -223,7 +223,7 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
             >
               <div className="add-resource-modal-tab-search">
                 <Input
-                  prefix={<IconSearch />}
+                  prefix={<IconSearchStroked />}
                   placeholder={t('release.create.addResource.searchPlaceholder')}
                   value={searchTexts[type]}
                   onChange={(value) => handleSearchChange(type, value)}

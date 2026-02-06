@@ -17,7 +17,7 @@ import {
   TagInput,
   Banner,
 } from '@douyinfe/semi-ui';
-import { IconHelpCircle, IconTick, IconClose } from '@douyinfe/semi-icons';
+import { IconHelpCircleStroked, IconTick, IconClose } from '@douyinfe/semi-icons';
 import type { TriggerRuleType, BasicFrequencyType } from '@/api';
 import './index.less';
 
@@ -619,7 +619,7 @@ const TriggerRuleConfig = ({
                   trigger="hover"
                   showArrow
                 >
-                  <IconHelpCircle 
+                  <IconHelpCircleStroked 
                     size="small" 
                     className={`${classPrefix}-cron-help-icon`}
                   />

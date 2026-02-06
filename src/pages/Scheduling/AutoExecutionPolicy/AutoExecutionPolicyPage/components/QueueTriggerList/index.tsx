@@ -16,9 +16,9 @@ import {
   Tooltip,
 } from '@douyinfe/semi-ui';
 import {
-  IconSearch,
-  IconPlus,
-  IconMore,
+  IconSearchStroked,
+  IconPlusStroked,
+  IconMoreStroked,
   IconDeleteStroked,
   IconEditStroked,
 } from '@douyinfe/semi-icons';
@@ -455,7 +455,7 @@ const QueueTriggerList = () => {
           }
         >
           <Button
-            icon={<IconMore />}
+            icon={<IconMoreStroked />}
             theme="borderless"
             type="tertiary"
             onClick={(e) => e.stopPropagation()}
@@ -485,7 +485,7 @@ const QueueTriggerList = () => {
         <Col>
           <Space>
             <Input
-              prefix={<IconSearch />}
+              prefix={<IconSearchStroked />}
               placeholder={t('queueTrigger.searchPlaceholder')}
               onChange={(value) => handleSearch(value)}
               showClear
@@ -526,7 +526,7 @@ const QueueTriggerList = () => {
         </Col>
         <Col>
           <Button
-            icon={<IconPlus />}
+            icon={<IconPlusStroked />}
             theme="solid"
             onClick={() => setCreateModalVisible(true)}
           >

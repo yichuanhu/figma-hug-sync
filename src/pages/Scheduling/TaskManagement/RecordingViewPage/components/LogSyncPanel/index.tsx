@@ -9,7 +9,7 @@ import {
   Spin,
 } from '@douyinfe/semi-ui';
 import {
-  IconSearch,
+  IconSearchStroked,
   IconRefresh,
 } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
@@ -141,7 +141,7 @@ const LogSyncPanel = ({
       {/* 工具栏 */}
       <div className="log-sync-panel-toolbar">
         <Input
-          prefix={<IconSearch />}
+          prefix={<IconSearchStroked />}
           placeholder={t('recording.logPanel.searchPlaceholder')}
           value={searchKeyword}
           onChange={setSearchKeyword}

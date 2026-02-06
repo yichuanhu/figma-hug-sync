@@ -20,9 +20,9 @@ import AppLayout from '@/components/layout/AppLayout';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import {
-  IconSearch,
-  IconPlus,
-  IconMore,
+  IconSearchStroked,
+  IconPlusStroked,
+  IconMoreStroked,
   IconDeleteStroked,
   IconExternalOpenStroked,
   IconEditStroked,
@@ -393,7 +393,7 @@ const TemplateManagementPage = () => {
           }
         >
           <Button 
-            icon={<IconMore />} 
+            icon={<IconMoreStroked />} 
             theme="borderless" 
             type="tertiary"
             onClick={(e) => e.stopPropagation()}
@@ -434,7 +434,7 @@ const TemplateManagementPage = () => {
             <Col>
               <Space>
                 <Input
-                  prefix={<IconSearch />}
+                  prefix={<IconSearchStroked />}
                   placeholder={t('template.searchPlaceholder')}
                   onChange={handleSearch}
                   showClear
@@ -455,7 +455,7 @@ const TemplateManagementPage = () => {
             </Col>
             <Col>
               <Button
-                icon={<IconPlus />}
+                icon={<IconPlusStroked />}
                 theme="solid"
                 type="primary"
                 onClick={() => setCreateModalVisible(true)}

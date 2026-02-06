@@ -24,9 +24,9 @@ import FilterPopover from '@/components/FilterPopover';
 import CreateTaskModal from '../components/CreateTaskModal';
 import TaskDetailDrawer from '../components/TaskDetailDrawer';
 import {
-  IconSearch,
-  IconPlus,
-  IconMore,
+  IconSearchStroked,
+  IconPlusStroked,
+  IconMoreStroked,
   IconRefresh,
   IconMinusCircleStroked,
   IconCrossCircleStroked,
@@ -666,7 +666,7 @@ const TaskManagementPage = () => {
             }
           >
             <Button
-              icon={<IconMore />}
+              icon={<IconMoreStroked />}
               theme="borderless"
               type="tertiary"
               onClick={(e) => e.stopPropagation()}
@@ -697,7 +697,7 @@ const TaskManagementPage = () => {
             <Col>
               <Space>
                 <Input
-                  prefix={<IconSearch />}
+                  prefix={<IconSearchStroked />}
                   placeholder={t('task.searchPlaceholder')}
                   style={{ width: 320 }}
                   value={searchValue}
@@ -750,7 +750,7 @@ const TaskManagementPage = () => {
                   {t('task.refresh')}
                 </Button>
                 <Button
-                  icon={<IconPlus />}
+                  icon={<IconPlusStroked />}
                   theme="solid"
                   type="primary"
                   onClick={() => setCreateModalVisible(true)}

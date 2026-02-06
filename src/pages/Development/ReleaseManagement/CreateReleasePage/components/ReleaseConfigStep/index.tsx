@@ -18,7 +18,7 @@ import {
 import {
   IconClose,
   IconInfoCircle,
-  IconPlus,
+  IconPlusStroked,
   IconDeleteStroked,
 } from '@douyinfe/semi-icons';
 import type { ReleaseType, ResourceType } from '@/api';
@@ -312,7 +312,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
         }
         headerExtraContent={
           <Button
-            icon={<IconPlus />}
+            icon={<IconPlusStroked />}
             theme="light"
             size="small"
             onClick={() => setAddResourceModalVisible(true)}

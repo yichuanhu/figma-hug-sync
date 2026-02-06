@@ -18,8 +18,8 @@ import {
   CheckboxGroup,
 } from '@douyinfe/semi-ui';
 import {
-  IconSearch,
-   IconDownload,
+  IconSearchStroked,
+   IconDownloadStroked,
   IconRefresh,
   IconChevronDown,
   IconChevronUp,
@@ -428,7 +428,7 @@ const TaskLogPage = () => {
             <Col>
               <Space>
                 <Input
-                  prefix={<IconSearch />}
+                  prefix={<IconSearchStroked />}
                   placeholder={t('taskLog.searchPlaceholder')}
                   onChange={handleSearch}
                   showClear
@@ -462,7 +462,7 @@ const TaskLogPage = () => {
                   {t('taskLog.refresh')}
                 </Button>
                 <Button
-                   icon={<IconDownload />}
+                   icon={<IconDownloadStroked />}
                   onClick={handleExport}
                   loading={exporting}
                   disabled={total === 0}

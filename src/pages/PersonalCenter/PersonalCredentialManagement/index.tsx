@@ -16,9 +16,9 @@ import {
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import {
-  IconSearch,
-  IconPlus,
-  IconMore,
+  IconSearchStroked,
+  IconPlusStroked,
+  IconMoreStroked,
   IconDeleteStroked,
   IconEditStroked,
   IconEyeOpenedStroked,
@@ -336,7 +336,7 @@ const PersonalCredentialManagement = () => {
             </Dropdown.Menu>
           }
         >
-          <Button icon={<IconMore />} theme="borderless" type="tertiary" onClick={(e) => e.stopPropagation()} />
+          <Button icon={<IconMoreStroked />} theme="borderless" type="tertiary" onClick={(e) => e.stopPropagation()} />
         </Dropdown>
       ),
     },
@@ -356,7 +356,7 @@ const PersonalCredentialManagement = () => {
           <Col>
             <Space>
               <Input
-                prefix={<IconSearch />}
+                prefix={<IconSearchStroked />}
                 placeholder={t('personalCredential.searchPlaceholder')}
                 className="personal-credential-management-search-input"
                 value={searchValue}
@@ -367,7 +367,7 @@ const PersonalCredentialManagement = () => {
             </Space>
           </Col>
           <Col>
-            <Button icon={<IconPlus />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
+            <Button icon={<IconPlusStroked />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
               {t('personalCredential.createCredential')}
             </Button>
           </Col>

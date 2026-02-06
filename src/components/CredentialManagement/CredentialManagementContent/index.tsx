@@ -21,9 +21,9 @@ import {
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import {
-  IconSearch,
-  IconPlus,
-  IconMore,
+  IconSearchStroked,
+  IconPlusStroked,
+  IconMoreStroked,
   IconDeleteStroked,
    IconFilterStroked,
   IconEditStroked,
@@ -467,7 +467,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
               </Dropdown.Menu>
             }
           >
-            <Button icon={<IconMore />} theme="borderless" type="tertiary" onClick={(e) => e.stopPropagation()} />
+            <Button icon={<IconMoreStroked />} theme="borderless" type="tertiary" onClick={(e) => e.stopPropagation()} />
           </Dropdown>
         );
       },
@@ -510,7 +510,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
           <Col>
             <Space>
               <Input
-                prefix={<IconSearch />}
+                prefix={<IconSearchStroked />}
                 placeholder={t('credential.searchPlaceholder')}
                 className="credential-management-content-search-input"
                 value={searchValue}
@@ -573,7 +573,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
                 {t('credential.personalCredentialManagement')}
               </Button>
               {context === 'development' && (
-                <Button icon={<IconPlus />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
+                <Button icon={<IconPlusStroked />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
                   {t('credential.createCredential')}
                 </Button>
               )}
