@@ -594,7 +594,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
                   {/* 菜单项 */}
                   <Dropdown.Menu>
                     <Dropdown.Item 
-                      icon={<IconDesktop />}
+                      icon={<Monitor size={16} strokeWidth={2} />}
                     >
                       <span className="sidebar-menu-item-content">
                         {t('sidebar.userMenu.adminConsole')}
