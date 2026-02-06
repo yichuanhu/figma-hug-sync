@@ -736,8 +736,8 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
         showWorkCalendar={true}
       />
 
-      {/* 触发预览 */}
-      <div className="create-time-trigger-modal-section">
+      {/* 触发预览 - 与触发规则之间用横线分隔 */}
+      <div className="create-time-trigger-modal-section" style={{ borderTop: '1px solid var(--semi-color-border)', paddingTop: 20 }}>
         <div className="create-time-trigger-modal-section-title">{t('timeTrigger.createModal.previewSection')}</div>
         <div className="create-time-trigger-modal-preview">
           <div className="create-time-trigger-modal-preview-title">

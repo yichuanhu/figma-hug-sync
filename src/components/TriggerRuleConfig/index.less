@@ -37,25 +37,19 @@
     }
   }
 
-  &-section-title {
+  // 参数标题（运行频率、运行规则）- 无左侧竖线
+  &-param-title {
     display: block;
     font-weight: 600;
     font-size: 14px;
     color: var(--semi-color-text-0);
-    margin-bottom: 16px;
+    margin-bottom: 12px;
+  }
 
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    &::before {
-      content: '';
-      display: inline-block;
-      width: 3px;
-      height: 14px;
-      background: var(--semi-color-text-2);
-      border-radius: 2px;
-    }
+  // 必填标识 - 与 Semi Form 红色星号对齐
+  &-required {
+    color: var(--semi-color-danger);
+    font-weight: normal;
   }
 
   &-field {

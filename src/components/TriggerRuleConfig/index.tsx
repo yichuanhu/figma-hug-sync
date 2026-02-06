@@ -330,9 +330,9 @@ const TriggerRuleConfig = ({
   const renderBasicRuleConfig = () => {
     return (
       <div className={`${classPrefix}-basic-rule`}>
-        {/* 运行频率 - RadioGroup 样式 */}
+        {/* 运行频率 */}
         <div className={`${classPrefix}-field`}>
-          <Text className={`${classPrefix}-section-title`}>{t('triggerRule.fields.frequencyType')}</Text>
+          <Text className={`${classPrefix}-param-title`}>{t('triggerRule.fields.frequencyType')}</Text>
           <RadioGroup
             value={frequencyType}
             onChange={(e) => {
@@ -351,7 +351,7 @@ const TriggerRuleConfig = ({
 
         {/* 运行规则 */}
         <div className={`${classPrefix}-rule-box`}>
-          <Text className={`${classPrefix}-section-title`}>{t('triggerRule.executionRule.title')}</Text>
+          <Text className={`${classPrefix}-param-title`}>{t('triggerRule.executionRule.title')}</Text>
           
           {/* 每周 - 星期选择 */}
           {frequencyType === 'WEEKLY' && (
@@ -489,11 +489,12 @@ const TriggerRuleConfig = ({
 
   return (
     <div className={classPrefix}>
-      {/* 分类一：触发周期（无标题） */}
+      {/* 分类一：触发周期 */}
       <div className={`${classPrefix}-category`}>
+        <Text className={`${classPrefix}-category-title`}>{t('triggerRule.category.triggerCycle')}</Text>
         {/* 触发器时区 */}
         <div className={`${classPrefix}-field`}>
-          <Text className={`${classPrefix}-field-label`}>{t('triggerRule.fields.timeZone')} *</Text>
+          <Text className={`${classPrefix}-field-label`}>{t('triggerRule.fields.timeZone')} <span className={`${classPrefix}-required`}>*</span></Text>
           <Select
             value={timeZone}
             onChange={(v) => onTimeZoneChange(v as string)}
@@ -516,8 +517,8 @@ const TriggerRuleConfig = ({
             </div>
             {enableWorkCalendar && (
               <>
-                <div className={`${classPrefix}-field`}>
-                  <Text className={`${classPrefix}-field-label`}>{t('triggerRule.fields.workCalendar')} *</Text>
+        <div className={`${classPrefix}-field`}>
+          <Text className={`${classPrefix}-field-label`}>{t('triggerRule.fields.workCalendar')} <span className={`${classPrefix}-required`}>*</span></Text>
                   <Select
                     placeholder={t('triggerRule.fields.workCalendarPlaceholder')}
                     value={workCalendarId}
@@ -544,7 +545,7 @@ const TriggerRuleConfig = ({
 
         {/* 开始时间 */}
         <div className={`${classPrefix}-field`}>
-          <Text className={`${classPrefix}-field-label`}>{t('triggerRule.fields.startDateTime')} *</Text>
+          <Text className={`${classPrefix}-field-label`}>{t('triggerRule.fields.startDateTime')} <span className={`${classPrefix}-required`}>*</span></Text>
           <DatePicker
             type="dateTime"
             value={startDateTime}
@@ -584,10 +585,10 @@ const TriggerRuleConfig = ({
         </div>
       </div>
 
-      {/* 分类二：触发规则（无标题） */}
+      {/* 分类二：触发规则 */}
       <div className={`${classPrefix}-category`}>
         {/* 触发规则分类标题 */}
-        <Text className={`${classPrefix}-section-title`}>{t('triggerRule.category.triggerRule')}</Text>
+        <Text className={`${classPrefix}-category-title`}>{t('triggerRule.category.triggerRule')}</Text>
 
         {/* 触发规则类型选择 */}
         <div className={`${classPrefix}-field`}>
@@ -611,7 +612,7 @@ const TriggerRuleConfig = ({
             {/* Cron 表达式输入 */}
             <div className={`${classPrefix}-field`}>
               <div className={`${classPrefix}-field-label-row`}>
-                <Text className={`${classPrefix}-field-label`}>{t('triggerRule.fields.cronExpression')} *</Text>
+                <Text className={`${classPrefix}-field-label`}>{t('triggerRule.fields.cronExpression')} <span className={`${classPrefix}-required`}>*</span></Text>
                 <Popover 
                   content={cronHelpAndExamplesContent} 
                   position="right" 
