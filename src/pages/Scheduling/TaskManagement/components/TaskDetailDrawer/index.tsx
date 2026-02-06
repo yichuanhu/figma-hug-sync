@@ -390,7 +390,7 @@ const TaskDetailDrawer = ({
                   </div>
                 ) : (
                   <div className="task-detail-drawer-no-data">
-                    <IconInbox style={{ marginRight: 6 }} />
+                    <Inbox size={16} strokeWidth={2} style={{ marginRight: 6 }} />
                     {t('task.detail.noParameters')}
                   </div>
                 )}
