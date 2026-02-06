@@ -241,7 +241,7 @@ const QueueTriggerDetailDrawer = ({
             </Tooltip>
             <Tooltip content={t('common.close')}>
               <Button
-                icon={<IconClose />}
+                icon={<X size={16} strokeWidth={2} />}
                 theme="borderless"
                 size="small"
                 onClick={handleClose}
