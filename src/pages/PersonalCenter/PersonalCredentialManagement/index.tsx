@@ -323,7 +323,7 @@ const PersonalCredentialManagement = () => {
               <Dropdown.Item icon={<IconEyeOpenedStroked />} onClick={(e) => { e.stopPropagation(); handleViewLinkedCredentials(record); }}>
                 {t('personalCredential.actions.viewLinkedCredentials')}
               </Dropdown.Item>
-              <Dropdown.Item icon={<IconHistory />} onClick={(e) => { e.stopPropagation(); handleViewUsage(record); }}>
+              <Dropdown.Item icon={<History size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleViewUsage(record); }}>
                 {t('personalCredential.actions.viewUsage')}
               </Dropdown.Item>
               <Dropdown.Item icon={<IconLink />} onClick={(e) => { e.stopPropagation(); handleLinkCredential(record); }}>
