@@ -449,7 +449,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
                       {t('personalCredential.actions.unlinkCredential')}
                     </Dropdown.Item>
                   ) : (
-                    <Dropdown.Item icon={<IconLink />} onClick={(e) => { e.stopPropagation(); handleLinkPersonal(record); }}>
+                    <Dropdown.Item icon={<Link size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleLinkPersonal(record); }}>
                       {t('credential.actions.linkPersonal')}
                     </Dropdown.Item>
                   )
