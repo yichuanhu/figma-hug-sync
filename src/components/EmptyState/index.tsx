@@ -1,5 +1,6 @@
 import { Empty, Button } from '@douyinfe/semi-ui';
-import { IconRefresh, IconHomeStroked } from '@douyinfe/semi-icons';
+import { IconHomeStroked } from '@douyinfe/semi-icons';
+import { RefreshCw } from 'lucide-react';
 import {
   IllustrationNoContent,
   IllustrationNoContentDark,
