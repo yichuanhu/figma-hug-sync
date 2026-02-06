@@ -27,12 +27,11 @@ import {
   IconSearchStroked,
   IconPlusStroked,
   IconMoreStroked,
-  IconRefresh,
   IconMinusCircleStroked,
   IconCrossCircleStroked,
-  IconPlayCircle,
   IconDeleteStroked,
 } from '@douyinfe/semi-icons';
+import { RefreshCw, PlayCircle } from 'lucide-react';
 import type { 
   LYTaskResponse, 
   GetTasksParams, 
