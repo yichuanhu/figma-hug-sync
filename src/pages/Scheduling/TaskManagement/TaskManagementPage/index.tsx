@@ -474,7 +474,7 @@ const TaskManagementPage = () => {
 
     Modal.confirm({
       title: t('task.retryModal.title'),
-      icon: <IconPlayCircle style={{ color: 'var(--semi-color-primary)' }} />,
+      icon: <PlayCircle size={16} strokeWidth={2} style={{ color: 'var(--semi-color-primary)' }} />,
       content: (
         <>
           <div>{t('task.retryModal.confirmMessage', { taskId: task.task_id })}</div>
