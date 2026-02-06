@@ -124,12 +124,6 @@ const UploadVersionModal = ({ visible, onCancel, processData, onSuccess }: Uploa
           onRemove={handleRemove}
           className="upload-version-modal-uploader"
         />
-        {fileList.length > 0 && fileList[0].fileInstance && (
-          <div className="upload-version-modal-file-info">
-            <IconFile style={{ color: 'var(--semi-color-text-2)', marginRight: 8 }} />
-            <span className="upload-version-modal-file-name">{fileList[0].fileInstance.name}</span>
-          </div>
-        )}
       </div>
     </Modal>
   );

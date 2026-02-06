@@ -292,28 +292,12 @@ const ReuploadFileModal = ({
           accept={ALLOWED_EXTENSIONS.join(',')}
           limit={1}
           draggable
-          dragIcon={<IconInbox size="extra-large" style={{ color: 'var(--semi-color-text-2)' }} />}
           dragMainText={t('file.upload.dragText')}
           dragSubText={t('file.upload.dragSubText')}
           onChange={handleFileChange}
+          onRemove={() => { handleRemoveFile(); return true; }}
           className="reupload-file-modal-uploader"
         />
-
-        {selectedFile && (
-          <div className="reupload-file-modal-file-info">
-            <IconFile style={{ color: 'var(--semi-color-text-2)', marginRight: 8, fontSize: 20 }} />
-            <div className="reupload-file-modal-file-detail">
-              <Text className="reupload-file-modal-file-name">{selectedFile.name}</Text>
-              <Text type="tertiary" size="small">{formatFileSize(selectedFile.size)}</Text>
-            </div>
-            {!submitting && (
-              <IconClose
-                className="reupload-file-modal-file-remove"
-                onClick={handleRemoveFile}
-              />
-            )}
-          </div>
-        )}
 
         {submitting && uploadProgress > 0 && (
           <div className="reupload-file-modal-progress">
