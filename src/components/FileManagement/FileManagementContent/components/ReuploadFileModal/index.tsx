@@ -14,6 +14,7 @@ import {
 import {
   IconAlertCircle,
 } from '@douyinfe/semi-icons';
+import { Inbox, File as FileIcon, X } from 'lucide-react';
 import type { FileItem } from '@douyinfe/semi-ui/lib/es/upload';
 import type { LYFileResponse } from '@/api/index';
 
