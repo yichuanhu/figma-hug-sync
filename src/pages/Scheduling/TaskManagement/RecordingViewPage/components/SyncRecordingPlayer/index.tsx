@@ -250,7 +250,7 @@ const SyncRecordingPlayer = ({
       <div className="sync-recording-player-controls">
         {/* 播放/暂停按钮 */}
         <Button
-          icon={isPlaying ? <IconPause /> : <IconPlay />}
+          icon={isPlaying ? <Pause size={16} strokeWidth={2} /> : <Play size={16} strokeWidth={2} />}
           theme="borderless"
           size="small"
           disabled={!videoReady}
