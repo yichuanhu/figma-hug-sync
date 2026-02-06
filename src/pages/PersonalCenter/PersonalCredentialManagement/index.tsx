@@ -22,9 +22,8 @@ import {
   IconDeleteStroked,
   IconEditStroked,
   IconEyeOpenedStroked,
-  IconHistory,
-  IconLink,
 } from '@douyinfe/semi-icons';
+import { History, Link } from 'lucide-react';
 import { debounce } from 'lodash';
 import type {
   LYPersonalCredentialResponse,
@@ -324,10 +323,10 @@ const PersonalCredentialManagement = () => {
               <Dropdown.Item icon={<IconEyeOpenedStroked />} onClick={(e) => { e.stopPropagation(); handleViewLinkedCredentials(record); }}>
                 {t('personalCredential.actions.viewLinkedCredentials')}
               </Dropdown.Item>
-              <Dropdown.Item icon={<IconHistory />} onClick={(e) => { e.stopPropagation(); handleViewUsage(record); }}>
+              <Dropdown.Item icon={<History size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleViewUsage(record); }}>
                 {t('personalCredential.actions.viewUsage')}
               </Dropdown.Item>
-              <Dropdown.Item icon={<IconLink />} onClick={(e) => { e.stopPropagation(); handleLinkCredential(record); }}>
+              <Dropdown.Item icon={<Link size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleLinkCredential(record); }}>
                 {t('personalCredential.actions.linkCredential')}
               </Dropdown.Item>
               <Dropdown.Item icon={<IconDeleteStroked />} type="danger" onClick={(e) => { e.stopPropagation(); handleDelete(record); }}>

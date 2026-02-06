@@ -17,13 +17,10 @@ import {
 import {
   IconChevronLeft,
   IconChevronRight,
-  IconClose,
-  IconMaximize,
-  IconMinimize,
   IconEditStroked,
   IconDeleteStroked,
-  IconInbox,
 } from '@douyinfe/semi-icons';
+import { X, Maximize2, Minimize2, Inbox } from 'lucide-react';
 import type { LYQueueTriggerResponse, LYQueueTriggerExecutionLogResponse } from '@/api';
 import './index.less';
 
@@ -236,7 +233,7 @@ const QueueTriggerDetailDrawer = ({
             <Divider layout="vertical" className="queue-trigger-detail-drawer-header-divider" />
             <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
               <Button
-                icon={isFullscreen ? <IconMinimize /> : <IconMaximize />}
+                icon={isFullscreen ? <Minimize2 size={16} strokeWidth={2} /> : <Maximize2 size={16} strokeWidth={2} />}
                 theme="borderless"
                 size="small"
                 onClick={toggleFullscreen}
@@ -244,7 +241,7 @@ const QueueTriggerDetailDrawer = ({
             </Tooltip>
             <Tooltip content={t('common.close')}>
               <Button
-                icon={<IconClose />}
+                icon={<X size={16} strokeWidth={2} />}
                 theme="borderless"
                 size="small"
                 onClick={handleClose}
@@ -411,7 +408,7 @@ const QueueTriggerDetailDrawer = ({
                 </div>
               ) : (
                 <div className="queue-trigger-detail-drawer-no-data">
-                  <IconInbox style={{ marginRight: 6 }} />
+                  <Inbox size={16} strokeWidth={2} style={{ marginRight: 6 }} />
                   {t('queueTrigger.detail.noParameters')}
                 </div>
               )}

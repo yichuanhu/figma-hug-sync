@@ -14,15 +14,13 @@ import {
   Col,
 } from '@douyinfe/semi-ui';
 import {
-  IconClose,
   IconEditStroked,
   IconDeleteStroked,
   IconChevronLeft,
   IconChevronRight,
-  IconMaximize,
-  IconMinimize,
   IconList,
 } from '@douyinfe/semi-icons';
+import { X, Maximize2, Minimize2 } from 'lucide-react';
 import type { LYQueueResponse } from '@/api/index';
 import ExpandableText from '@/components/ExpandableText';
 
@@ -230,7 +228,7 @@ const QueueDetailDrawer = ({
           <Divider layout="vertical" className="queue-detail-drawer-header-divider" />
           <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
             <Button
-              icon={isFullscreen ? <IconMinimize /> : <IconMaximize />}
+              icon={isFullscreen ? <Minimize2 size={16} strokeWidth={2} /> : <Maximize2 size={16} strokeWidth={2} />}
               theme="borderless"
               size="small"
               onClick={toggleFullscreen}
@@ -238,7 +236,7 @@ const QueueDetailDrawer = ({
           </Tooltip>
           <Tooltip content={t('common.close')}>
             <Button
-              icon={<IconClose />}
+              icon={<X size={16} strokeWidth={2} />}
               theme="borderless"
               size="small"
               onClick={onClose}

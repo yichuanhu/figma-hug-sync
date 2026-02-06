@@ -29,20 +29,15 @@ import TableSkeleton from '@/components/TableSkeleton';
 import {
   IconEditStroked,
   IconDeleteStroked,
-  IconMaximize,
-  IconMinimize,
-  IconClose,
-  IconLink,
   IconChevronDown,
   IconChevronUp,
   IconChevronLeft,
   IconChevronRight,
    IconFilterStroked,
-  IconUnlink,
   IconEyeOpenedStroked,
   IconMoreStroked,
 } from '@douyinfe/semi-icons';
-import { Download } from 'lucide-react';
+import { Download, X, Maximize2, Minimize2, Link, Unlink } from 'lucide-react';
 import type { LYPersonalCredentialResponse } from '@/api/index';
 import { useUsageRecordFilter } from '@/hooks/useUsageRecordFilter';
 
@@ -630,17 +625,17 @@ const PersonalCredentialDetailDrawer = ({
                 <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={() => onEdit(credential)} />
               </Tooltip>
               <Tooltip content={t('personalCredential.actions.linkCredential')}>
-                <Button icon={<IconLink />} theme="borderless" size="small" onClick={() => onLinkCredential(credential)} />
+                <Button icon={<Link size={16} strokeWidth={2} />} theme="borderless" size="small" onClick={() => onLinkCredential(credential)} />
               </Tooltip>
               <Tooltip content={t('common.delete')}>
                 <Button icon={<IconDeleteStroked className="personal-credential-detail-drawer-header-delete-icon" />} theme="borderless" size="small" onClick={handleDelete} />
               </Tooltip>
               <Divider layout="vertical" className="personal-credential-detail-drawer-header-divider" />
               <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
-                <Button icon={isFullscreen ? <IconMinimize /> : <IconMaximize />} theme="borderless" size="small" onClick={toggleFullscreen} />
+                <Button icon={isFullscreen ? <Minimize2 size={16} strokeWidth={2} /> : <Maximize2 size={16} strokeWidth={2} />} theme="borderless" size="small" onClick={toggleFullscreen} />
               </Tooltip>
               <Tooltip content={t('common.close')}>
-                <Button icon={<IconClose />} theme="borderless" size="small" onClick={onClose} className="personal-credential-detail-drawer-header-close-btn" />
+                <Button icon={<X size={16} strokeWidth={2} />} theme="borderless" size="small" onClick={onClose} className="personal-credential-detail-drawer-header-close-btn" />
               </Tooltip>
             </Space>
           </Col>
@@ -722,7 +717,7 @@ const PersonalCredentialDetailDrawer = ({
                                 {t('common.viewDetail')}
                               </Dropdown.Item>
                               <Dropdown.Item
-                                icon={<IconUnlink />}
+                                icon={<Unlink size={16} strokeWidth={2} />}
                                 type="danger"
                                 onClick={(e) => { e.stopPropagation(); handleUnlinkCredential(record); }}
                               >
@@ -751,7 +746,7 @@ const PersonalCredentialDetailDrawer = ({
                         <Button 
                           theme="solid" 
                           type="primary"
-                          icon={<IconLink />}
+                          icon={<Link size={16} strokeWidth={2} />}
                           onClick={() => {
                             if (credential && onLinkCredential) {
                               onLinkCredential(credential);

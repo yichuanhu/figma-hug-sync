@@ -17,14 +17,10 @@ import {
 import {
   IconChevronLeft,
   IconChevronRight,
-  IconClose,
   IconCrossCircleStroked,
   IconMinusCircleStroked,
-  IconPlayCircle,
-  IconMaximize,
-  IconMinimize,
-  IconInbox,
 } from '@douyinfe/semi-icons';
+import { X, PlayCircle, Maximize2, Minimize2, Inbox } from 'lucide-react';
 import type {
   LYTaskResponse,
   TaskStatus,
@@ -322,7 +318,7 @@ const TaskDetailDrawer = ({
               {canRetry && (
                 <Tooltip content={t('task.actions.retry')}>
                   <Button
-                    icon={<IconPlayCircle />}
+                    icon={<PlayCircle size={16} strokeWidth={2} />}
                     theme="borderless"
                     size="small"
                     onClick={() => onRetry(task)}
@@ -332,7 +328,7 @@ const TaskDetailDrawer = ({
               <Divider layout="vertical" className="task-detail-drawer-header-divider" />
               <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
                 <Button
-                  icon={isFullscreen ? <IconMinimize /> : <IconMaximize />}
+                  icon={isFullscreen ? <Minimize2 size={16} strokeWidth={2} /> : <Maximize2 size={16} strokeWidth={2} />}
                   theme="borderless"
                   size="small"
                   onClick={toggleFullscreen}
@@ -340,7 +336,7 @@ const TaskDetailDrawer = ({
               </Tooltip>
               <Tooltip content={t('common.close')}>
                 <Button
-                  icon={<IconClose />}
+                  icon={<X size={16} strokeWidth={2} />}
                   theme="borderless"
                   size="small"
                   onClick={onClose}
@@ -394,7 +390,7 @@ const TaskDetailDrawer = ({
                   </div>
                 ) : (
                   <div className="task-detail-drawer-no-data">
-                    <IconInbox style={{ marginRight: 6 }} />
+                    <Inbox size={16} strokeWidth={2} style={{ marginRight: 6 }} />
                     {t('task.detail.noParameters')}
                   </div>
                 )}
@@ -411,7 +407,7 @@ const TaskDetailDrawer = ({
                   </div>
                 ) : (
                   <div className="task-detail-drawer-no-data">
-                    <IconInbox style={{ marginRight: 6 }} />
+                    <Inbox size={16} strokeWidth={2} style={{ marginRight: 6 }} />
                     {t('task.detail.noOutput')}
                   </div>
                 )}

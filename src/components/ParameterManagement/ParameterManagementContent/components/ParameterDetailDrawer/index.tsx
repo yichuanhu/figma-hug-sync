@@ -14,15 +14,13 @@ import {
   Toast,
 } from '@douyinfe/semi-ui';
 import {
-  IconClose,
   IconEditStroked,
   IconDeleteStroked,
   IconChevronLeft,
   IconChevronRight,
-  IconMaximize,
-  IconMinimize,
   IconCopyStroked,
 } from '@douyinfe/semi-icons';
+import { X, Maximize2, Minimize2 } from 'lucide-react';
 import type { LYParameterResponse, ParameterType } from '@/api/index';
 import ExpandableText from '@/components/ExpandableText';
 
@@ -225,7 +223,7 @@ const ParameterDetailDrawer = ({
           <Divider layout="vertical" className="parameter-detail-drawer-header-divider" />
           <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
             <Button
-              icon={isFullscreen ? <IconMinimize /> : <IconMaximize />}
+              icon={isFullscreen ? <Minimize2 size={16} strokeWidth={2} /> : <Maximize2 size={16} strokeWidth={2} />}
               theme="borderless"
               size="small"
               onClick={toggleFullscreen}
@@ -233,7 +231,7 @@ const ParameterDetailDrawer = ({
           </Tooltip>
           <Tooltip content={t('common.close')}>
             <Button
-              icon={<IconClose />}
+              icon={<X size={16} strokeWidth={2} />}
               theme="borderless"
               size="small"
               onClick={onClose}

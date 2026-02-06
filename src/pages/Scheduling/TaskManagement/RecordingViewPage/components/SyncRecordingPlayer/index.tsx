@@ -8,14 +8,10 @@ import {
   Spin,
 } from '@douyinfe/semi-ui';
 import {
-  IconPlay,
-  IconPause,
-  IconMaximize,
-  IconMinimize,
   IconVolume1Stroked,
   IconVolume2Stroked,
-  IconRefresh,
 } from '@douyinfe/semi-icons';
+import { Play, Pause, Maximize2, Minimize2, RefreshCw } from 'lucide-react';
 import type { LYRecordingInfoResponse, LYRecordingErrorMarker } from '@/api';
 import './index.less';
 
@@ -189,7 +185,7 @@ const SyncRecordingPlayer = ({
           <Text type="danger">{error || t('recording.player.noRecording')}</Text>
           {onRefresh && (
             <Button
-              icon={<IconRefresh />}
+              icon={<RefreshCw size={16} strokeWidth={2} />}
               onClick={onRefresh}
               style={{ marginTop: 16 }}
             >
@@ -226,7 +222,7 @@ const SyncRecordingPlayer = ({
             <Text type="danger">{videoError}</Text>
             {onRefresh && (
               <Button
-                icon={<IconRefresh />}
+                icon={<RefreshCw size={14} strokeWidth={2} />}
                 size="small"
                 onClick={onRefresh}
                 style={{ marginTop: 8 }}
@@ -244,7 +240,7 @@ const SyncRecordingPlayer = ({
             onClick={togglePlay}
           >
             <div className="sync-recording-player-play-button">
-              <IconPlay size="extra-large" />
+              <Play size={36} strokeWidth={2} />
             </div>
           </div>
         )}
@@ -254,7 +250,7 @@ const SyncRecordingPlayer = ({
       <div className="sync-recording-player-controls">
         {/* 播放/暂停按钮 */}
         <Button
-          icon={isPlaying ? <IconPause /> : <IconPlay />}
+          icon={isPlaying ? <Pause size={16} strokeWidth={2} /> : <Play size={16} strokeWidth={2} />}
           theme="borderless"
           size="small"
           disabled={!videoReady}
@@ -330,7 +326,7 @@ const SyncRecordingPlayer = ({
         {/* 全屏按钮 */}
         <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
           <Button
-            icon={isFullscreen ? <IconMinimize /> : <IconMaximize />}
+            icon={isFullscreen ? <Minimize2 size={16} strokeWidth={2} /> : <Maximize2 size={16} strokeWidth={2} />}
             theme="borderless"
             size="small"
             onClick={toggleFullscreen}

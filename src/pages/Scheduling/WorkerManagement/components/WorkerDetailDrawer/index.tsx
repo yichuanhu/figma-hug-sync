@@ -1,7 +1,8 @@
 import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SideSheet, Typography, Button, Tag, Descriptions, Switch, Tooltip, Divider, Row, Col, Space } from '@douyinfe/semi-ui';
-import { IconEditStroked, IconDeleteStroked, IconMaximize, IconMinimize, IconClose, IconKeyStroked, IconChevronLeft, IconChevronRight, IconUserListStroked, IconMinusCircleStroked } from '@douyinfe/semi-icons';
+import { IconEditStroked, IconDeleteStroked, IconKeyStroked, IconChevronLeft, IconChevronRight, IconUserListStroked, IconMinusCircleStroked } from '@douyinfe/semi-icons';
+import { Maximize2, Minimize2, X } from 'lucide-react';
 import type { LYWorkerResponse } from '@/api';
 import DetailSkeleton from '@/components/DetailSkeleton';
 import ExpandableText from '@/components/ExpandableText';
@@ -300,10 +301,10 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
               </Tooltip>
               <Divider layout="vertical" className="worker-detail-drawer-header-divider" />
               <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
-                <Button icon={isFullscreen ? <IconMinimize /> : <IconMaximize />} theme="borderless" size="small" onClick={toggleFullscreen} />
+                <Button icon={isFullscreen ? <Minimize2 size={16} strokeWidth={2} /> : <Maximize2 size={16} strokeWidth={2} />} theme="borderless" size="small" onClick={toggleFullscreen} />
               </Tooltip>
               <Tooltip content={t('common.close')}>
-                <Button icon={<IconClose />} theme="borderless" size="small" onClick={onClose} className="worker-detail-drawer-header-close-btn" />
+                <Button icon={<X size={16} strokeWidth={2} />} theme="borderless" size="small" onClick={onClose} className="worker-detail-drawer-header-close-btn" />
               </Tooltip>
             </Space>
           </Col>

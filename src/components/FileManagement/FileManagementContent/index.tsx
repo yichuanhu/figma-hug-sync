@@ -27,8 +27,8 @@ import {
   IconDeleteStroked,
    IconFilterStroked,
    IconDownloadStroked,
-  IconRefresh,
 } from '@douyinfe/semi-icons';
+import { RefreshCw } from 'lucide-react';
 import { debounce } from 'lodash';
 import type {
   LYFileResponse,
@@ -418,7 +418,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
             <Dropdown.Menu>
               {context === 'development' && !record.is_published && (
                 <Dropdown.Item
-                  icon={<IconRefresh />}
+                  icon={<RefreshCw size={16} strokeWidth={2} />}
                   onClick={(e) => {
                     e.stopPropagation();
                     handleReupload(record);

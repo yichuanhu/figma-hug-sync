@@ -14,15 +14,11 @@ import {
 } from '@douyinfe/semi-ui';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag';
 import {
-  IconClose,
-  IconPlayCircle,
-  IconRefresh,
   IconDeleteStroked,
-  IconMaximize,
-  IconMinimize,
   IconChevronLeft,
   IconChevronRight,
 } from '@douyinfe/semi-icons';
+import { X, PlayCircle, RefreshCw, Maximize2, Minimize2 } from 'lucide-react';
 import type { LYQueueMessageResponse, QueueMessageStatus, QueueMessagePriority } from '@/api/index';
 
 import './index.less';
@@ -192,7 +188,7 @@ const MessageDetailDrawer = ({
           {message?.status === 'UNCONSUMED_ACTIVE' && (
             <Tooltip content={t('queueMessage.actions.consume')}>
               <Button
-                icon={<IconPlayCircle />}
+                icon={<PlayCircle size={16} strokeWidth={2} />}
                 theme="borderless"
                 size="small"
                 onClick={() => message && onConsume(message)}
@@ -202,7 +198,7 @@ const MessageDetailDrawer = ({
           {(message?.status === 'CONSUMED' || message?.status === 'EXPIRED') && (
             <Tooltip content={t('queueMessage.actions.requeue')}>
               <Button
-                icon={<IconRefresh />}
+                icon={<RefreshCw size={16} strokeWidth={2} />}
                 theme="borderless"
                 size="small"
                 onClick={() => message && onRequeue(message)}
@@ -220,7 +216,7 @@ const MessageDetailDrawer = ({
           <Divider layout="vertical" className="message-detail-drawer-header-divider" />
           <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
             <Button
-              icon={isFullscreen ? <IconMinimize /> : <IconMaximize />}
+              icon={isFullscreen ? <Minimize2 size={16} strokeWidth={2} /> : <Maximize2 size={16} strokeWidth={2} />}
               theme="borderless"
               size="small"
               onClick={toggleFullscreen}
@@ -228,7 +224,7 @@ const MessageDetailDrawer = ({
           </Tooltip>
           <Tooltip content={t('common.close')}>
             <Button
-              icon={<IconClose />}
+              icon={<X size={16} strokeWidth={2} />}
               theme="borderless"
               size="small"
               onClick={onClose}

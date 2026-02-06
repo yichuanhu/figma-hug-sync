@@ -18,14 +18,11 @@ import {
 import {
   IconChevronLeft,
   IconChevronRight,
-  IconClose,
   IconExternalOpenStroked,
   IconEditStroked,
   IconDeleteStroked,
-  IconMaximize,
-  IconMinimize,
-  IconInbox,
 } from '@douyinfe/semi-icons';
+import { X, Maximize2, Minimize2, Inbox } from 'lucide-react';
 import type {
   LYExecutionTemplateResponse,
   TaskPriority,
@@ -347,7 +344,7 @@ const TemplateDetailDrawer = ({
               <Divider layout="vertical" className="template-detail-drawer-header-divider" />
               <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
                 <Button
-                  icon={isFullscreen ? <IconMinimize /> : <IconMaximize />}
+                  icon={isFullscreen ? <Minimize2 size={16} strokeWidth={2} /> : <Maximize2 size={16} strokeWidth={2} />}
                   theme="borderless"
                   size="small"
                   onClick={toggleFullscreen}
@@ -355,7 +352,7 @@ const TemplateDetailDrawer = ({
               </Tooltip>
               <Tooltip content={t('common.close')}>
                 <Button
-                  icon={<IconClose />}
+                  icon={<X size={16} strokeWidth={2} />}
                   theme="borderless"
                   size="small"
                   onClick={onClose}
@@ -406,7 +403,7 @@ const TemplateDetailDrawer = ({
                 </div>
               ) : (
                 <div className="template-detail-drawer-empty">
-                  <IconInbox size="extra-large" style={{ color: 'var(--semi-color-text-2)', marginBottom: 8 }} />
+                  <Inbox size={36} strokeWidth={2} style={{ color: 'var(--semi-color-text-2)', marginBottom: 8 }} />
                   <Text type="tertiary">{t('template.detail.noParameters')}</Text>
                 </div>
               )}

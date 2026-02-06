@@ -1,5 +1,6 @@
 import { Empty, Button } from '@douyinfe/semi-ui';
-import { IconRefresh, IconHomeStroked } from '@douyinfe/semi-icons';
+import { IconHomeStroked } from '@douyinfe/semi-icons';
+import { RefreshCw } from 'lucide-react';
 import {
   IllustrationNoContent,
   IllustrationNoContentDark,
@@ -165,7 +166,7 @@ const EmptyState = ({
                   key="retry"
                   theme="solid"
                   type="primary"
-                  icon={<IconRefresh />}
+                  icon={<RefreshCw size={16} strokeWidth={2} />}
                   onClick={onRetry}
                 >
                   {t('emptyState.retry')}

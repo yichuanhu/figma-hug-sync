@@ -17,13 +17,9 @@ import {
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import {
-  IconClose,
   IconDeleteStroked,
-  IconMaximize,
-  IconMinimize,
-  IconUnlink,
-  IconLink,
 } from '@douyinfe/semi-icons';
+import { X, Maximize2, Minimize2, Unlink, Link } from 'lucide-react';
 import type { PersonalCredential } from '../../index';
 
 import './index.less';
@@ -206,7 +202,7 @@ const LinkedCredentialsDrawer = ({
           type="danger"
           theme="borderless"
           size="small"
-          icon={<IconUnlink />}
+          icon={<Unlink size={14} strokeWidth={2} />}
           onClick={() => handleUnlink(record)}
         >
           {t('personalCredential.linkedCredentials.unlink')}
@@ -231,10 +227,10 @@ const LinkedCredentialsDrawer = ({
             <Space spacing={8}>
               <Divider layout="vertical" className="linked-credentials-drawer-header-divider" />
               <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
-                <Button icon={isFullscreen ? <IconMinimize /> : <IconMaximize />} theme="borderless" size="small" onClick={toggleFullscreen} />
+                <Button icon={isFullscreen ? <Minimize2 size={16} strokeWidth={2} /> : <Maximize2 size={16} strokeWidth={2} />} theme="borderless" size="small" onClick={toggleFullscreen} />
               </Tooltip>
               <Tooltip content={t('common.close')}>
-                <Button icon={<IconClose />} theme="borderless" size="small" onClick={onClose} className="linked-credentials-drawer-header-close-btn" />
+                <Button icon={<X size={16} strokeWidth={2} />} theme="borderless" size="small" onClick={onClose} className="linked-credentials-drawer-header-close-btn" />
               </Tooltip>
             </Space>
           </Col>
@@ -274,7 +270,7 @@ const LinkedCredentialsDrawer = ({
                     <Button 
                       theme="solid" 
                       type="primary"
-                      icon={<IconLink />}
+                      icon={<Link size={16} strokeWidth={2} />}
                       onClick={() => {
                         if (credential && onLinkCredential) {
                           onLinkCredential(credential);

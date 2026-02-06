@@ -13,9 +13,9 @@ import {
 } from '@douyinfe/semi-ui';
 import {
   IconDownloadStroked,
-  IconRefresh,
   IconArrowLeft,
 } from '@douyinfe/semi-icons';
+import { RefreshCw } from 'lucide-react';
 import AppLayout from '@/components/layout/AppLayout';
 import SyncRecordingPlayer from './components/SyncRecordingPlayer';
 import LogSyncPanel from './components/LogSyncPanel';
@@ -268,7 +268,7 @@ const RecordingViewPage = () => {
             <Col>
               <Space>
                 <Button
-                  icon={<IconRefresh />}
+                  icon={<RefreshCw size={16} strokeWidth={2} />}
                   onClick={loadData}
                   loading={loading}
                 >

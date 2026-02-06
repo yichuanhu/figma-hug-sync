@@ -10,8 +10,8 @@ import {
 } from '@douyinfe/semi-ui';
 import {
   IconSearchStroked,
-  IconRefresh,
 } from '@douyinfe/semi-icons';
+import { RefreshCw } from 'lucide-react';
 import { debounce } from 'lodash';
 import type { LYExecutionLogResponse, LogLevel } from '@/api';
 import './index.less';
@@ -150,7 +150,7 @@ const LogSyncPanel = ({
         />
         {onRefresh && (
           <Button
-            icon={<IconRefresh />}
+            icon={<RefreshCw size={14} strokeWidth={2} />}
             theme="borderless"
             size="small"
             onClick={onRefresh}

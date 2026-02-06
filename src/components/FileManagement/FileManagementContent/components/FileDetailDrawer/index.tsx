@@ -15,13 +15,11 @@ import {
 import {
   IconChevronLeft,
   IconChevronRight,
-  IconClose,
-  IconMaximize,
-  IconMinimize,
   IconUpload,
   IconDownloadStroked,
   IconDeleteStroked,
 } from '@douyinfe/semi-icons';
+import { X, Maximize2, Minimize2 } from 'lucide-react';
 import type { LYFileResponse, FileSource } from '@/api/index';
 
 import './index.less';
@@ -223,7 +221,7 @@ const FileDetailDrawer = ({
             <Divider layout="vertical" className="file-detail-drawer-header-divider" />
             <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
               <Button
-                icon={isFullscreen ? <IconMinimize /> : <IconMaximize />}
+                icon={isFullscreen ? <Minimize2 size={16} strokeWidth={2} /> : <Maximize2 size={16} strokeWidth={2} />}
                 theme="borderless"
                 size="small"
                 onClick={toggleFullscreen}
@@ -231,7 +229,7 @@ const FileDetailDrawer = ({
             </Tooltip>
             <Tooltip content={t('common.close')}>
               <Button
-                icon={<IconClose />}
+                icon={<X size={16} strokeWidth={2} />}
                 theme="borderless"
                 size="small"
                 onClick={handleClose}

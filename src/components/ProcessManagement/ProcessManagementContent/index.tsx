@@ -27,10 +27,10 @@ import {
   IconMoreStroked,
   IconExternalOpenStroked,
   IconEditStroked,
-  IconPlayCircle,
   IconDeleteStroked,
    IconFilterStroked,
 } from '@douyinfe/semi-icons';
+import { PlayCircle } from 'lucide-react';
 import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
 import ProcessDetailDrawer from './components/ProcessDetailDrawer';
@@ -471,7 +471,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
           render={
             <Dropdown.Menu>
               {/* 调度中心显示运行操作 */}
-              <Dropdown.Item icon={<IconPlayCircle />} onClick={(e) => {
+              <Dropdown.Item icon={<PlayCircle size={16} strokeWidth={2} />} onClick={(e) => {
                 e.stopPropagation();
                 handleRun();
               }}>

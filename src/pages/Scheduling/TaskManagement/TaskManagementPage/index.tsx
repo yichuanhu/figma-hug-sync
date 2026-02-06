@@ -27,12 +27,11 @@ import {
   IconSearchStroked,
   IconPlusStroked,
   IconMoreStroked,
-  IconRefresh,
   IconMinusCircleStroked,
   IconCrossCircleStroked,
-  IconPlayCircle,
   IconDeleteStroked,
 } from '@douyinfe/semi-icons';
+import { RefreshCw, PlayCircle } from 'lucide-react';
 import type { 
   LYTaskResponse, 
   GetTasksParams, 
@@ -475,7 +474,7 @@ const TaskManagementPage = () => {
 
     Modal.confirm({
       title: t('task.retryModal.title'),
-      icon: <IconPlayCircle style={{ color: 'var(--semi-color-primary)' }} />,
+      icon: <PlayCircle size={16} strokeWidth={2} style={{ color: 'var(--semi-color-primary)' }} />,
       content: (
         <>
           <div>{t('task.retryModal.confirmMessage', { taskId: task.task_id })}</div>
@@ -653,7 +652,7 @@ const TaskManagementPage = () => {
                 )}
                 {record.task_status === 'FAILED' && (
                   <Dropdown.Item
-                    icon={<IconPlayCircle />}
+                    icon={<PlayCircle size={16} strokeWidth={2} />}
                     onClick={(e) => {
                       e?.stopPropagation();
                       handleRetryTask(record);
@@ -746,7 +745,7 @@ const TaskManagementPage = () => {
             </Col>
             <Col>
               <Space>
-                <Button icon={<IconRefresh />} onClick={handleRefresh}>
+                <Button icon={<RefreshCw size={16} strokeWidth={2} />} onClick={handleRefresh}>
                   {t('task.refresh')}
                 </Button>
                 <Button

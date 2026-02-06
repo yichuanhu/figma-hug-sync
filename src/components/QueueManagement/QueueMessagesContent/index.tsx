@@ -25,9 +25,8 @@ import {
   IconMoreStroked,
   IconDeleteStroked,
   IconChevronLeft,
-  IconPlayCircle,
-  IconRefresh,
 } from '@douyinfe/semi-icons';
+import { PlayCircle, RefreshCw } from 'lucide-react';
 import { debounce } from 'lodash';
 import type {
   LYQueueMessageResponse,
@@ -402,7 +401,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
 
     Modal.confirm({
       title: t('queueMessage.batch.requeueTitle'),
-      icon: <IconRefresh style={{ color: 'var(--semi-color-primary)' }} />,
+      icon: <RefreshCw size={16} strokeWidth={2} style={{ color: 'var(--semi-color-primary)' }} />,
       content: t('queueMessage.batch.requeueConfirm', { count: selectedRowKeys.length }),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
@@ -549,12 +548,12 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
           render={
             <Dropdown.Menu>
               {record.status === 'UNCONSUMED_ACTIVE' && (
-                <Dropdown.Item icon={<IconPlayCircle />} onClick={(e) => { e.stopPropagation(); handleConsume(record); }}>
+                <Dropdown.Item icon={<PlayCircle size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleConsume(record); }}>
                   {t('queueMessage.actions.consume')}
                 </Dropdown.Item>
               )}
               {(record.status === 'CONSUMED' || record.status === 'EXPIRED') && (
-                <Dropdown.Item icon={<IconRefresh />} onClick={(e) => { e.stopPropagation(); handleRequeue(record); }}>
+                <Dropdown.Item icon={<RefreshCw size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleRequeue(record); }}>
                   {t('queueMessage.actions.requeue')}
                 </Dropdown.Item>
               )}

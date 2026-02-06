@@ -27,10 +27,8 @@ import {
   IconDeleteStroked,
    IconFilterStroked,
   IconEditStroked,
-  IconUnlink,
-  IconLink,
-  IconHistory,
 } from '@douyinfe/semi-icons';
+import { Unlink, Link, History } from 'lucide-react';
 import { debounce } from 'lodash';
 import type {
   LYCredentialResponse,
@@ -447,16 +445,16 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
                 )}
                 {record.credential_type === 'PERSONAL_REF' && (
                   hasLinkedPersonalCredential(record) ? (
-                    <Dropdown.Item icon={<IconUnlink />} onClick={(e) => { e.stopPropagation(); handleUnlinkPersonal(record); }}>
+                    <Dropdown.Item icon={<Unlink size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleUnlinkPersonal(record); }}>
                       {t('personalCredential.actions.unlinkCredential')}
                     </Dropdown.Item>
                   ) : (
-                    <Dropdown.Item icon={<IconLink />} onClick={(e) => { e.stopPropagation(); handleLinkPersonal(record); }}>
+                    <Dropdown.Item icon={<Link size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleLinkPersonal(record); }}>
                       {t('credential.actions.linkPersonal')}
                     </Dropdown.Item>
                   )
                 )}
-                <Dropdown.Item icon={<IconHistory />} onClick={(e) => { e.stopPropagation(); handleViewUsage(record); }}>
+                <Dropdown.Item icon={<History size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleViewUsage(record); }}>
                   {t('credential.actions.viewUsage')}
                 </Dropdown.Item>
                 {canDelete && (

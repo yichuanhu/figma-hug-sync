@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Avatar, Dropdown, Divider, Tooltip } from '@douyinfe/semi-ui';
-import { IconDesktop, IconExit } from '@douyinfe/semi-icons';
-import { User } from 'lucide-react';
+import { User, Monitor, LogOut } from 'lucide-react';
 import {
   IconBellStroked,
   IconBookStroked,
@@ -586,7 +585,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
                   
                   {/* 组织信息 */}
                   <div className="sidebar-user-org">
-                    <IconDesktop className="sidebar-user-org-icon" />
+                    <Monitor size={14} strokeWidth={2} className="sidebar-user-org-icon" />
                     <span className="sidebar-user-org-text">来也科技股份有限公司有限...</span>
                   </div>
                   
@@ -595,7 +594,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
                   {/* 菜单项 */}
                   <Dropdown.Menu>
                     <Dropdown.Item 
-                      icon={<IconDesktop />}
+                      icon={<Monitor size={16} strokeWidth={2} />}
                     >
                       <span className="sidebar-menu-item-content">
                         {t('sidebar.userMenu.adminConsole')}
@@ -609,7 +608,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
                       {t('sidebar.userMenu.personalCenter')}
                     </Dropdown.Item>
                     <Dropdown.Item 
-                      icon={<IconExit />}
+                      icon={<LogOut size={16} strokeWidth={2} />}
                     >
                       {t('sidebar.userMenu.logout')}
                     </Dropdown.Item>

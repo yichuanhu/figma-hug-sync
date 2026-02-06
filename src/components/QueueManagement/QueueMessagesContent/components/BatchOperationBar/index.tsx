@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Button, Space, Typography } from '@douyinfe/semi-ui';
-import { IconDeleteStroked, IconRefresh, IconClose } from '@douyinfe/semi-icons';
+import { IconDeleteStroked } from '@douyinfe/semi-icons';
+import { RefreshCw, X } from 'lucide-react';
 
 import './index.less';
 
@@ -25,7 +26,7 @@ const BatchOperationBar = ({
       <Space>
         <Text>{t('queueMessage.batch.selected', { count: selectedCount })}</Text>
         <Button
-          icon={<IconClose size="small" />}
+          icon={<X size={14} strokeWidth={2} />}
           size="small"
           theme="borderless"
           onClick={onClearSelection}
@@ -35,7 +36,7 @@ const BatchOperationBar = ({
       </Space>
       <Space>
         <Button
-          icon={<IconRefresh />}
+          icon={<RefreshCw size={16} strokeWidth={2} />}
           onClick={onBatchRequeue}
         >
           {t('queueMessage.batch.requeue')}

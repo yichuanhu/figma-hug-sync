@@ -15,8 +15,8 @@ import {
 import {
   IconSearchStroked,
    IconDownloadStroked,
-  IconRefresh,
 } from '@douyinfe/semi-icons';
+import { RefreshCw } from 'lucide-react';
 import { debounce } from 'lodash';
 import FilterPopover from '@/components/FilterPopover';
 import EmptyState from '@/components/EmptyState';
@@ -437,7 +437,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
         <Col>
           <Space>
             <Button
-              icon={<IconRefresh />}
+              icon={<RefreshCw size={16} strokeWidth={2} />}
               onClick={loadData}
               loading={loading}
             >

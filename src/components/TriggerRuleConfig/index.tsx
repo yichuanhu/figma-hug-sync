@@ -17,7 +17,8 @@ import {
   TagInput,
   Banner,
 } from '@douyinfe/semi-ui';
-import { IconHelpCircleStroked, IconTick, IconClose } from '@douyinfe/semi-icons';
+import { IconHelpCircleStroked } from '@douyinfe/semi-icons';
+import { Check, X } from 'lucide-react';
 import type { TriggerRuleType, BasicFrequencyType } from '@/api';
 import './index.less';
 
@@ -646,7 +647,7 @@ const TriggerRuleConfig = ({
                 <Banner
                   type={cronValidResult.valid ? 'success' : 'danger'}
                   description={cronValidResult.message}
-                  icon={cronValidResult.valid ? <IconTick /> : <IconClose />}
+                  icon={cronValidResult.valid ? <Check size={16} strokeWidth={2} /> : <X size={16} strokeWidth={2} />}
                   closeIcon={null}
                   className={`${classPrefix}-cron-result`}
                 />
