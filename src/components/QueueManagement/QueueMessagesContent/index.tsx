@@ -401,7 +401,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
 
     Modal.confirm({
       title: t('queueMessage.batch.requeueTitle'),
-      icon: <IconRefresh style={{ color: 'var(--semi-color-primary)' }} />,
+      icon: <RefreshCw size={16} strokeWidth={2} style={{ color: 'var(--semi-color-primary)' }} />,
       content: t('queueMessage.batch.requeueConfirm', { count: selectedRowKeys.length }),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
