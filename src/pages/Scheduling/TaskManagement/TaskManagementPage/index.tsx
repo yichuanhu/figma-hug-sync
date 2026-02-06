@@ -652,7 +652,7 @@ const TaskManagementPage = () => {
                 )}
                 {record.task_status === 'FAILED' && (
                   <Dropdown.Item
-                    icon={<IconPlayCircle />}
+                    icon={<PlayCircle size={16} strokeWidth={2} />}
                     onClick={(e) => {
                       e?.stopPropagation();
                       handleRetryTask(record);
