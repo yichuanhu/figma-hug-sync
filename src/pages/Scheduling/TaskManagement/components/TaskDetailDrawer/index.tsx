@@ -328,7 +328,7 @@ const TaskDetailDrawer = ({
               <Divider layout="vertical" className="task-detail-drawer-header-divider" />
               <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
                 <Button
-                  icon={isFullscreen ? <IconMinimize /> : <IconMaximize />}
+                  icon={isFullscreen ? <Minimize2 size={16} strokeWidth={2} /> : <Maximize2 size={16} strokeWidth={2} />}
                   theme="borderless"
                   size="small"
                   onClick={toggleFullscreen}
