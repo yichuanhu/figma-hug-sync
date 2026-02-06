@@ -150,7 +150,7 @@ const LogSyncPanel = ({
         />
         {onRefresh && (
           <Button
-            icon={<IconRefresh />}
+            icon={<RefreshCw size={14} strokeWidth={2} />}
             theme="borderless"
             size="small"
             onClick={onRefresh}

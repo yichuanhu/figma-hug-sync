@@ -455,7 +455,7 @@ const TaskLogPage = () => {
             <Col>
               <Space>
                 <Button
-                  icon={<IconRefresh />}
+                  icon={<RefreshCw size={16} strokeWidth={2} />}
                   onClick={loadData}
                   loading={loading}
                 >

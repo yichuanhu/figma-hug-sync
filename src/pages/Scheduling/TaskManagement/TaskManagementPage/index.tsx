@@ -745,7 +745,7 @@ const TaskManagementPage = () => {
             </Col>
             <Col>
               <Space>
-                <Button icon={<IconRefresh />} onClick={handleRefresh}>
+                <Button icon={<RefreshCw size={16} strokeWidth={2} />} onClick={handleRefresh}>
                   {t('task.refresh')}
                 </Button>
                 <Button
