@@ -17,13 +17,9 @@ import {
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import {
-  IconClose,
   IconDeleteStroked,
-  IconMaximize,
-  IconMinimize,
-  IconUnlink,
-  IconLink,
 } from '@douyinfe/semi-icons';
+import { X, Maximize2, Minimize2, Unlink, Link } from 'lucide-react';
 import type { PersonalCredential } from '../../index';
 
 import './index.less';
