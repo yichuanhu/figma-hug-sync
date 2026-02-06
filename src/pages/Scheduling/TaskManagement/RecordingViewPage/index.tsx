@@ -13,9 +13,9 @@ import {
 } from '@douyinfe/semi-ui';
 import {
   IconDownloadStroked,
-  IconRefresh,
   IconArrowLeft,
 } from '@douyinfe/semi-icons';
+import { RefreshCw } from 'lucide-react';
 import AppLayout from '@/components/layout/AppLayout';
 import SyncRecordingPlayer from './components/SyncRecordingPlayer';
 import LogSyncPanel from './components/LogSyncPanel';
