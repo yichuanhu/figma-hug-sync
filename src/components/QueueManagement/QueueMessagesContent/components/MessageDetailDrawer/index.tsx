@@ -198,7 +198,7 @@ const MessageDetailDrawer = ({
           {(message?.status === 'CONSUMED' || message?.status === 'EXPIRED') && (
             <Tooltip content={t('queueMessage.actions.requeue')}>
               <Button
-                icon={<IconRefresh />}
+                icon={<RefreshCw size={16} strokeWidth={2} />}
                 theme="borderless"
                 size="small"
                 onClick={() => message && onRequeue(message)}
