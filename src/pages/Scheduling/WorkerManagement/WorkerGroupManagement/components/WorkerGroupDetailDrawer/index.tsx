@@ -31,12 +31,10 @@ import {
   IconMoreStroked,
   IconEyeOpenedStroked,
   IconMinusCircleStroked,
-  IconMaximize,
-  IconMinimize,
   IconChevronLeft,
   IconChevronRight,
-  IconClose,
 } from '@douyinfe/semi-icons';
+import { Maximize2, Minimize2, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { debounce } from 'lodash';
 import AddMembersModal from '../AddMembersModal';
