@@ -17,14 +17,10 @@ import {
 import {
   IconChevronLeft,
   IconChevronRight,
-  IconClose,
   IconCrossCircleStroked,
   IconMinusCircleStroked,
-  IconPlayCircle,
-  IconMaximize,
-  IconMinimize,
-  IconInbox,
 } from '@douyinfe/semi-icons';
+import { X, PlayCircle, Maximize2, Minimize2, Inbox } from 'lucide-react';
 import type {
   LYTaskResponse,
   TaskStatus,
