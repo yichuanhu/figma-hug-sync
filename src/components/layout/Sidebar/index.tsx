@@ -585,7 +585,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
                   
                   {/* 组织信息 */}
                   <div className="sidebar-user-org">
-                    <IconDesktop className="sidebar-user-org-icon" />
+                    <Monitor size={14} strokeWidth={2} className="sidebar-user-org-icon" />
                     <span className="sidebar-user-org-text">来也科技股份有限公司有限...</span>
                   </div>
                   
