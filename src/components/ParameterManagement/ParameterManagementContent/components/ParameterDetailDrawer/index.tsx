@@ -14,15 +14,13 @@ import {
   Toast,
 } from '@douyinfe/semi-ui';
 import {
-  IconClose,
   IconEditStroked,
   IconDeleteStroked,
   IconChevronLeft,
   IconChevronRight,
-  IconMaximize,
-  IconMinimize,
   IconCopyStroked,
 } from '@douyinfe/semi-icons';
+import { X, Maximize2, Minimize2 } from 'lucide-react';
 import type { LYParameterResponse, ParameterType } from '@/api/index';
 import ExpandableText from '@/components/ExpandableText';
 
