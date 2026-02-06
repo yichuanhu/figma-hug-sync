@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Button, Space, Typography } from '@douyinfe/semi-ui';
-import { IconDeleteStroked, IconRefresh, IconClose } from '@douyinfe/semi-icons';
+import { IconDeleteStroked } from '@douyinfe/semi-icons';
+import { RefreshCw, X } from 'lucide-react';
 
 import './index.less';
 
