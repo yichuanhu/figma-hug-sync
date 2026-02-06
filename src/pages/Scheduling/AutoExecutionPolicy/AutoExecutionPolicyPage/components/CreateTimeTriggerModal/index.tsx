@@ -697,47 +697,44 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
   const renderStep2Content = () => (
     <>
       {/* 时间规则 - 使用 TriggerRuleConfig 组件 */}
-      <div className="create-time-trigger-modal-section">
-        <div className="create-time-trigger-modal-section-title">{t('timeTrigger.createModal.ruleSection')}</div>
-        <TriggerRuleConfig
-          ruleType={ruleType}
-          onRuleTypeChange={setRuleType}
-          frequencyType={frequencyType}
-          onFrequencyTypeChange={setFrequencyType}
-          minuteInterval={minuteInterval}
-          onMinuteIntervalChange={setMinuteInterval}
-          hourInterval={hourInterval}
-          onHourIntervalChange={setHourInterval}
-          minuteOfHour={minuteOfHour}
-          onMinuteOfHourChange={setMinuteOfHour}
-          triggerHour={triggerHour}
-          onTriggerHourChange={setTriggerHour}
-          triggerMinute={triggerMinute}
-          onTriggerMinuteChange={setTriggerMinute}
-          selectedWeekdays={selectedWeekdays}
-          onSelectedWeekdaysChange={setSelectedWeekdays}
-          selectedMonthDay={selectedMonthDay}
-          onSelectedMonthDayChange={setSelectedMonthDay}
-          cronExpression={cronExpression}
-          onCronExpressionChange={setCronExpression}
-          timeZone={timeZone}
-          onTimeZoneChange={setTimeZone}
-          startDateTime={startDateTime}
-          onStartDateTimeChange={setStartDateTime}
-          endDateTime={endDateTime}
-          onEndDateTimeChange={setEndDateTime}
-          endTimeType={endTimeType}
-          onEndTimeTypeChange={setEndTimeType}
-          enableWorkCalendar={enableWorkCalendar}
-          onEnableWorkCalendarChange={setEnableWorkCalendar}
-          workCalendarId={workCalendarId}
-          onWorkCalendarIdChange={setWorkCalendarId}
-          workCalendarExecutionType={workCalendarExecutionType}
-          onWorkCalendarExecutionTypeChange={setWorkCalendarExecutionType}
-          workCalendarOptions={getWorkCalendarOptions()}
-          showWorkCalendar={true}
-        />
-      </div>
+      <TriggerRuleConfig
+        ruleType={ruleType}
+        onRuleTypeChange={setRuleType}
+        frequencyType={frequencyType}
+        onFrequencyTypeChange={setFrequencyType}
+        minuteInterval={minuteInterval}
+        onMinuteIntervalChange={setMinuteInterval}
+        hourInterval={hourInterval}
+        onHourIntervalChange={setHourInterval}
+        minuteOfHour={minuteOfHour}
+        onMinuteOfHourChange={setMinuteOfHour}
+        triggerHour={triggerHour}
+        onTriggerHourChange={setTriggerHour}
+        triggerMinute={triggerMinute}
+        onTriggerMinuteChange={setTriggerMinute}
+        selectedWeekdays={selectedWeekdays}
+        onSelectedWeekdaysChange={setSelectedWeekdays}
+        selectedMonthDay={selectedMonthDay}
+        onSelectedMonthDayChange={setSelectedMonthDay}
+        cronExpression={cronExpression}
+        onCronExpressionChange={setCronExpression}
+        timeZone={timeZone}
+        onTimeZoneChange={setTimeZone}
+        startDateTime={startDateTime}
+        onStartDateTimeChange={setStartDateTime}
+        endDateTime={endDateTime}
+        onEndDateTimeChange={setEndDateTime}
+        endTimeType={endTimeType}
+        onEndTimeTypeChange={setEndTimeType}
+        enableWorkCalendar={enableWorkCalendar}
+        onEnableWorkCalendarChange={setEnableWorkCalendar}
+        workCalendarId={workCalendarId}
+        onWorkCalendarIdChange={setWorkCalendarId}
+        workCalendarExecutionType={workCalendarExecutionType}
+        onWorkCalendarExecutionTypeChange={setWorkCalendarExecutionType}
+        workCalendarOptions={getWorkCalendarOptions()}
+        showWorkCalendar={true}
+      />
 
       {/* 触发预览 */}
       <div className="create-time-trigger-modal-section">
