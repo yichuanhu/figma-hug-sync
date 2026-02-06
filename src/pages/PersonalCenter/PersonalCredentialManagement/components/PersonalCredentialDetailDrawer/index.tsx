@@ -625,7 +625,7 @@ const PersonalCredentialDetailDrawer = ({
                 <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={() => onEdit(credential)} />
               </Tooltip>
               <Tooltip content={t('personalCredential.actions.linkCredential')}>
-                <Button icon={<IconLink />} theme="borderless" size="small" onClick={() => onLinkCredential(credential)} />
+                <Button icon={<Link size={16} strokeWidth={2} />} theme="borderless" size="small" onClick={() => onLinkCredential(credential)} />
               </Tooltip>
               <Tooltip content={t('common.delete')}>
                 <Button icon={<IconDeleteStroked className="personal-credential-detail-drawer-header-delete-icon" />} theme="borderless" size="small" onClick={handleDelete} />
