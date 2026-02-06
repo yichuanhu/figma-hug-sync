@@ -445,7 +445,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
                 )}
                 {record.credential_type === 'PERSONAL_REF' && (
                   hasLinkedPersonalCredential(record) ? (
-                    <Dropdown.Item icon={<IconUnlink />} onClick={(e) => { e.stopPropagation(); handleUnlinkPersonal(record); }}>
+                    <Dropdown.Item icon={<Unlink size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleUnlinkPersonal(record); }}>
                       {t('personalCredential.actions.unlinkCredential')}
                     </Dropdown.Item>
                   ) : (
