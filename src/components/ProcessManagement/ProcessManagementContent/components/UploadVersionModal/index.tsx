@@ -118,7 +118,6 @@ const UploadVersionModal = ({ visible, onCancel, processData, onSuccess }: Uploa
           accept=".bot"
           limit={1}
           draggable
-          dragIcon={<IconInbox size="extra-large" style={{ color: 'var(--semi-color-text-2)' }} />}
           dragMainText={t('development.processDevelopment.detail.uploadVersion.dragText')}
           dragSubText={t('development.processDevelopment.detail.uploadVersion.dragSubText')}
           onChange={handleFileChange}
