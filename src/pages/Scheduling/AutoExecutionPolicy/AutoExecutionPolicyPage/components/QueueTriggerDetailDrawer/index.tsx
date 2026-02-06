@@ -17,13 +17,10 @@ import {
 import {
   IconChevronLeft,
   IconChevronRight,
-  IconClose,
-  IconMaximize,
-  IconMinimize,
   IconEditStroked,
   IconDeleteStroked,
-  IconInbox,
 } from '@douyinfe/semi-icons';
+import { X, Maximize2, Minimize2, Inbox } from 'lucide-react';
 import type { LYQueueTriggerResponse, LYQueueTriggerExecutionLogResponse } from '@/api';
 import './index.less';
 
