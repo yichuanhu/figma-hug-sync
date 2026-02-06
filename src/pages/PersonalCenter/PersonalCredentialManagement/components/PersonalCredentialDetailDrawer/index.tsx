@@ -717,7 +717,7 @@ const PersonalCredentialDetailDrawer = ({
                                 {t('common.viewDetail')}
                               </Dropdown.Item>
                               <Dropdown.Item
-                                icon={<IconUnlink />}
+                                icon={<Unlink size={16} strokeWidth={2} />}
                                 type="danger"
                                 onClick={(e) => { e.stopPropagation(); handleUnlinkCredential(record); }}
                               >
