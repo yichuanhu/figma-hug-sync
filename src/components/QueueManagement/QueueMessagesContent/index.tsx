@@ -25,9 +25,8 @@ import {
   IconMoreStroked,
   IconDeleteStroked,
   IconChevronLeft,
-  IconPlayCircle,
-  IconRefresh,
 } from '@douyinfe/semi-icons';
+import { PlayCircle, RefreshCw } from 'lucide-react';
 import { debounce } from 'lodash';
 import type {
   LYQueueMessageResponse,
