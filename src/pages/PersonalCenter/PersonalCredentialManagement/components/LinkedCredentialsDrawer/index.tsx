@@ -270,7 +270,7 @@ const LinkedCredentialsDrawer = ({
                     <Button 
                       theme="solid" 
                       type="primary"
-                      icon={<IconLink />}
+                      icon={<Link size={16} strokeWidth={2} />}
                       onClick={() => {
                         if (credential && onLinkCredential) {
                           onLinkCredential(credential);
