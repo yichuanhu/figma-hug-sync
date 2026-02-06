@@ -18,14 +18,11 @@ import {
 import {
   IconChevronLeft,
   IconChevronRight,
-  IconClose,
   IconExternalOpenStroked,
   IconEditStroked,
   IconDeleteStroked,
-  IconMaximize,
-  IconMinimize,
-  IconInbox,
 } from '@douyinfe/semi-icons';
+import { X, Maximize2, Minimize2, Inbox } from 'lucide-react';
 import type {
   LYExecutionTemplateResponse,
   TaskPriority,
