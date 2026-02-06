@@ -17,7 +17,8 @@ import {
   TagInput,
   Banner,
 } from '@douyinfe/semi-ui';
-import { IconHelpCircleStroked, IconTick, IconClose } from '@douyinfe/semi-icons';
+import { IconHelpCircleStroked } from '@douyinfe/semi-icons';
+import { Check, X } from 'lucide-react';
 import type { TriggerRuleType, BasicFrequencyType } from '@/api';
 import './index.less';
 
