@@ -26,16 +26,13 @@ import DetailSkeleton from '@/components/DetailSkeleton';
 import TableSkeleton from '@/components/TableSkeleton';
 import ExpandableText from '@/components/ExpandableText';
 import {
-  IconClose,
   IconEditStroked,
   IconDeleteStroked,
-  IconMaximize,
-  IconMinimize,
   IconChevronLeft,
   IconChevronRight,
    IconFilterStroked,
 } from '@douyinfe/semi-icons';
-import { Download } from 'lucide-react';
+import { Download, X, Maximize2, Minimize2 } from 'lucide-react';
 import type { LYCredentialResponse, CredentialType, LYRangeResponse } from '@/api/index';
 import { useUsageRecordFilter } from '@/hooks/useUsageRecordFilter';
 
