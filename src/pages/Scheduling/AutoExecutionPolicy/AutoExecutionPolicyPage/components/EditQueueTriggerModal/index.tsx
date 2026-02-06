@@ -641,7 +641,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
       {/* 如果没有任何参数 */}
       {!hasParameters && !hasOutputParameters && (
         <div className="edit-queue-trigger-modal-no-params">
-          <IconInbox size="extra-large" style={{ color: 'var(--semi-color-text-2)', marginBottom: 8 }} />
+          <Inbox size={36} strokeWidth={2} style={{ color: 'var(--semi-color-text-2)', marginBottom: 8 }} />
           <div>{t('template.createModal.noParameters')}</div>
         </div>
       )}

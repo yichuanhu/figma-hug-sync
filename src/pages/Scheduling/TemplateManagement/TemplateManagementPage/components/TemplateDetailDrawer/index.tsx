@@ -403,7 +403,7 @@ const TemplateDetailDrawer = ({
                 </div>
               ) : (
                 <div className="template-detail-drawer-empty">
-                  <IconInbox size="extra-large" style={{ color: 'var(--semi-color-text-2)', marginBottom: 8 }} />
+                  <Inbox size={36} strokeWidth={2} style={{ color: 'var(--semi-color-text-2)', marginBottom: 8 }} />
                   <Text type="tertiary">{t('template.detail.noParameters')}</Text>
                 </div>
               )}

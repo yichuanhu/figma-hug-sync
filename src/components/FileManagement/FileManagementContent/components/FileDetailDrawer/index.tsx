@@ -15,13 +15,11 @@ import {
 import {
   IconChevronLeft,
   IconChevronRight,
-  IconClose,
-  IconMaximize,
-  IconMinimize,
   IconUpload,
   IconDownloadStroked,
   IconDeleteStroked,
 } from '@douyinfe/semi-icons';
+import { X, Maximize2, Minimize2 } from 'lucide-react';
 import type { LYFileResponse, FileSource } from '@/api/index';
 
 import './index.less';

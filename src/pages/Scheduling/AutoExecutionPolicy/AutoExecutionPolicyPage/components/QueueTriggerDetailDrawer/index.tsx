@@ -408,7 +408,7 @@ const QueueTriggerDetailDrawer = ({
                 </div>
               ) : (
                 <div className="queue-trigger-detail-drawer-no-data">
-                  <IconInbox style={{ marginRight: 6 }} />
+                  <Inbox size={16} strokeWidth={2} style={{ marginRight: 6 }} />
                   {t('queueTrigger.detail.noParameters')}
                 </div>
               )}
