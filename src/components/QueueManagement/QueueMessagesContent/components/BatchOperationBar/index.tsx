@@ -26,7 +26,7 @@ const BatchOperationBar = ({
       <Space>
         <Text>{t('queueMessage.batch.selected', { count: selectedCount })}</Text>
         <Button
-          icon={<IconClose size="small" />}
+          icon={<X size={14} strokeWidth={2} />}
           size="small"
           theme="borderless"
           onClick={onClearSelection}
