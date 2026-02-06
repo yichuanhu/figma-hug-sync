@@ -12,7 +12,8 @@ import {
   Select,
   Banner,
 } from '@douyinfe/semi-ui';
-import { IconHelpCircleStroked, IconInbox } from '@douyinfe/semi-icons';
+import { IconHelpCircleStroked } from '@douyinfe/semi-icons';
+import { Inbox } from 'lucide-react';
 import BotTargetSelector from '@/components/BotTargetSelector';
 import { getWorkCalendarOptions } from '@/mocks/workCalendar';
 import type {
