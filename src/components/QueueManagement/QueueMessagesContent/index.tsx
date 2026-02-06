@@ -548,7 +548,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
           render={
             <Dropdown.Menu>
               {record.status === 'UNCONSUMED_ACTIVE' && (
-                <Dropdown.Item icon={<IconPlayCircle />} onClick={(e) => { e.stopPropagation(); handleConsume(record); }}>
+                <Dropdown.Item icon={<PlayCircle size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleConsume(record); }}>
                   {t('queueMessage.actions.consume')}
                 </Dropdown.Item>
               )}
