@@ -1,7 +1,8 @@
 import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SideSheet, Typography, Button, Tag, Descriptions, Switch, Tooltip, Divider, Row, Col, Space } from '@douyinfe/semi-ui';
-import { IconEditStroked, IconDeleteStroked, IconMaximize, IconMinimize, IconClose, IconKeyStroked, IconChevronLeft, IconChevronRight, IconUserListStroked, IconMinusCircleStroked } from '@douyinfe/semi-icons';
+import { IconEditStroked, IconDeleteStroked, IconKeyStroked, IconChevronLeft, IconChevronRight, IconUserListStroked, IconMinusCircleStroked } from '@douyinfe/semi-icons';
+import { Maximize2, Minimize2, X } from 'lucide-react';
 import type { LYWorkerResponse } from '@/api';
 import DetailSkeleton from '@/components/DetailSkeleton';
 import ExpandableText from '@/components/ExpandableText';
