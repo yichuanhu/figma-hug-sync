@@ -240,7 +240,7 @@ const SyncRecordingPlayer = ({
             onClick={togglePlay}
           >
             <div className="sync-recording-player-play-button">
-              <IconPlay size="extra-large" />
+              <Play size={36} strokeWidth={2} />
             </div>
           </div>
         )}
