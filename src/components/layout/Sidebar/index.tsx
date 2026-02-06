@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Avatar, Dropdown, Divider, Tooltip } from '@douyinfe/semi-ui';
-import { IconDesktop, IconExit } from '@douyinfe/semi-icons';
-import { User } from 'lucide-react';
+import { User, Monitor, LogOut } from 'lucide-react';
 import {
   IconBellStroked,
   IconBookStroked,
