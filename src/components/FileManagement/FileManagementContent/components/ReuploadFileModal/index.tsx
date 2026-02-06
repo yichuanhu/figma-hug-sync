@@ -12,9 +12,6 @@ import {
   Input,
 } from '@douyinfe/semi-ui';
 import {
-  IconInbox,
-  IconFile,
-  IconClose,
   IconAlertCircle,
 } from '@douyinfe/semi-icons';
 import type { FileItem } from '@douyinfe/semi-ui/lib/es/upload';
