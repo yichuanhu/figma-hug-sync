@@ -14,15 +14,11 @@ import {
 } from '@douyinfe/semi-ui';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag';
 import {
-  IconClose,
-  IconPlayCircle,
-  IconRefresh,
   IconDeleteStroked,
-  IconMaximize,
-  IconMinimize,
   IconChevronLeft,
   IconChevronRight,
 } from '@douyinfe/semi-icons';
+import { X, PlayCircle, RefreshCw, Maximize2, Minimize2 } from 'lucide-react';
 import type { LYQueueMessageResponse, QueueMessageStatus, QueueMessagePriority } from '@/api/index';
 
 import './index.less';
