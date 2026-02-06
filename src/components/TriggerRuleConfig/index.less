@@ -1,15 +1,20 @@
 // TriggerRuleConfig 触发规则配置组件样式
 .trigger-rule-config {
-  // 分类区块
+  // 分类区块 - 与 CreateWorkerModal section 样式对齐
   &-category {
-    margin-bottom: 24px;
-    padding-bottom: 16px;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
     border-bottom: 1px solid var(--semi-color-border);
 
     &:last-child {
-      margin-bottom: 0;
       padding-bottom: 0;
+      margin-bottom: 0;
       border-bottom: none;
+    }
+
+    // Form 字段统一间距
+    .semi-form-field {
+      margin-bottom: 16px;
     }
   }
 
@@ -37,7 +42,20 @@
     font-weight: 600;
     font-size: 14px;
     color: var(--semi-color-text-0);
-    margin-bottom: 12px;
+    margin-bottom: 16px;
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    &::before {
+      content: '';
+      display: inline-block;
+      width: 3px;
+      height: 14px;
+      background: var(--semi-color-text-2);
+      border-radius: 2px;
+    }
   }
 
   &-field {
