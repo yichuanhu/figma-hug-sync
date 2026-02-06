@@ -202,7 +202,7 @@ const LinkedCredentialsDrawer = ({
           type="danger"
           theme="borderless"
           size="small"
-          icon={<IconUnlink />}
+          icon={<Unlink size={14} strokeWidth={2} />}
           onClick={() => handleUnlink(record)}
         >
           {t('personalCredential.linkedCredentials.unlink')}
