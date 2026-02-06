@@ -27,8 +27,8 @@ import {
   IconDeleteStroked,
    IconFilterStroked,
    IconDownloadStroked,
-  IconRefresh,
 } from '@douyinfe/semi-icons';
+import { RefreshCw } from 'lucide-react';
 import { debounce } from 'lodash';
 import type {
   LYFileResponse,
