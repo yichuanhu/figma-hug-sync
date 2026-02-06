@@ -15,8 +15,8 @@ import {
 import {
   IconSearchStroked,
    IconDownloadStroked,
-  IconRefresh,
 } from '@douyinfe/semi-icons';
+import { RefreshCw } from 'lucide-react';
 import { debounce } from 'lodash';
 import FilterPopover from '@/components/FilterPopover';
 import EmptyState from '@/components/EmptyState';
