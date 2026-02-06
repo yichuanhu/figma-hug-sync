@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Upload, Button, Toast, Banner } from '@douyinfe/semi-ui';
 import { IconAlertCircle } from '@douyinfe/semi-icons';
+import { Inbox, File as FileIcon, X } from 'lucide-react';
 import type { FileItem } from '@douyinfe/semi-ui/lib/es/upload';
 import type { LYProcessResponse } from '@/api';
 import './index.less';
@@ -118,12 +119,28 @@ const UploadVersionModal = ({ visible, onCancel, processData, onSuccess }: Uploa
           accept=".bot"
           limit={1}
           draggable
+          dragIcon={<Inbox size={36} strokeWidth={2} />}
           dragMainText={t('development.processDevelopment.detail.uploadVersion.dragText')}
           dragSubText={t('development.processDevelopment.detail.uploadVersion.dragSubText')}
           onChange={handleFileChange}
           onRemove={handleRemove}
           className="upload-version-modal-uploader"
         />
+        {fileList.length > 0 && fileList[0].fileInstance && (
+          <div className="upload-version-modal-file-info">
+            <div className="file-info-left">
+              <FileIcon size={16} strokeWidth={2} />
+              <span className="file-name">{fileList[0].fileInstance.name}</span>
+            </div>
+            <Button
+              icon={<X size={14} strokeWidth={2} />}
+              type="tertiary"
+              theme="borderless"
+              size="small"
+              onClick={() => { setFileList([]); setShowNameMismatchWarning(false); }}
+            />
+          </div>
+        )}
       </div>
     </Modal>
   );
