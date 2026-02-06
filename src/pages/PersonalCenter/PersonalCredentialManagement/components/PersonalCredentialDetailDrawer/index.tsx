@@ -29,20 +29,15 @@ import TableSkeleton from '@/components/TableSkeleton';
 import {
   IconEditStroked,
   IconDeleteStroked,
-  IconMaximize,
-  IconMinimize,
-  IconClose,
-  IconLink,
   IconChevronDown,
   IconChevronUp,
   IconChevronLeft,
   IconChevronRight,
    IconFilterStroked,
-  IconUnlink,
   IconEyeOpenedStroked,
   IconMoreStroked,
 } from '@douyinfe/semi-icons';
-import { Download } from 'lucide-react';
+import { Download, X, Maximize2, Minimize2, Link, Unlink } from 'lucide-react';
 import type { LYPersonalCredentialResponse } from '@/api/index';
 import { useUsageRecordFilter } from '@/hooks/useUsageRecordFilter';
 
