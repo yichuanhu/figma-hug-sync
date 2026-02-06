@@ -14,15 +14,13 @@ import {
   Col,
 } from '@douyinfe/semi-ui';
 import {
-  IconClose,
   IconEditStroked,
   IconDeleteStroked,
   IconChevronLeft,
   IconChevronRight,
-  IconMaximize,
-  IconMinimize,
   IconList,
 } from '@douyinfe/semi-icons';
+import { X, Maximize2, Minimize2 } from 'lucide-react';
 import type { LYQueueResponse } from '@/api/index';
 import ExpandableText from '@/components/ExpandableText';
 
