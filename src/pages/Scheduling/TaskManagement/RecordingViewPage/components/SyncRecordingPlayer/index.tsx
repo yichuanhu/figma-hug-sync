@@ -222,7 +222,7 @@ const SyncRecordingPlayer = ({
             <Text type="danger">{videoError}</Text>
             {onRefresh && (
               <Button
-                icon={<IconRefresh />}
+                icon={<RefreshCw size={14} strokeWidth={2} />}
                 size="small"
                 onClick={onRefresh}
                 style={{ marginTop: 8 }}
