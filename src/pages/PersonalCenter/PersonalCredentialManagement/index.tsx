@@ -22,9 +22,8 @@ import {
   IconDeleteStroked,
   IconEditStroked,
   IconEyeOpenedStroked,
-  IconHistory,
-  IconLink,
 } from '@douyinfe/semi-icons';
+import { History, Link } from 'lucide-react';
 import { debounce } from 'lodash';
 import type {
   LYPersonalCredentialResponse,
