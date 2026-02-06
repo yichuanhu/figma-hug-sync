@@ -27,10 +27,8 @@ import {
   IconDeleteStroked,
    IconFilterStroked,
   IconEditStroked,
-  IconUnlink,
-  IconLink,
-  IconHistory,
 } from '@douyinfe/semi-icons';
+import { Unlink, Link, History } from 'lucide-react';
 import { debounce } from 'lodash';
 import type {
   LYCredentialResponse,
