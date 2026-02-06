@@ -185,7 +185,7 @@ const SyncRecordingPlayer = ({
           <Text type="danger">{error || t('recording.player.noRecording')}</Text>
           {onRefresh && (
             <Button
-              icon={<IconRefresh />}
+              icon={<RefreshCw size={16} strokeWidth={2} />}
               onClick={onRefresh}
               style={{ marginTop: 16 }}
             >
