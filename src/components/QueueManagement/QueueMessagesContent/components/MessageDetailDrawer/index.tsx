@@ -188,7 +188,7 @@ const MessageDetailDrawer = ({
           {message?.status === 'UNCONSUMED_ACTIVE' && (
             <Tooltip content={t('queueMessage.actions.consume')}>
               <Button
-                icon={<IconPlayCircle />}
+                icon={<PlayCircle size={16} strokeWidth={2} />}
                 theme="borderless"
                 size="small"
                 onClick={() => message && onConsume(message)}
