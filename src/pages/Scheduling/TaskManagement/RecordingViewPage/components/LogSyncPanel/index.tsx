@@ -10,8 +10,8 @@ import {
 } from '@douyinfe/semi-ui';
 import {
   IconSearchStroked,
-  IconRefresh,
 } from '@douyinfe/semi-icons';
+import { RefreshCw } from 'lucide-react';
 import { debounce } from 'lodash';
 import type { LYExecutionLogResponse, LogLevel } from '@/api';
 import './index.less';
