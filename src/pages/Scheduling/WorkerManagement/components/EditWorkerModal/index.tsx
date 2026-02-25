@@ -43,11 +43,11 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
   };
 
   useEffect(() => {
-    if (workerData) {
+    if (visible && workerData) {
       setDesktopType(workerData.desktop_type || 'Console');
       setConfigChanged(false);
     }
-  }, [workerData]);
+  }, [visible, workerData]);
 
   // 名称唯一性校验（排除当前编辑的机器人）
   const validateWorkerNameUnique = (rule: unknown, value: string, callback: (error?: string) => void) => {
