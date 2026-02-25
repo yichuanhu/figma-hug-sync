@@ -973,7 +973,8 @@
         "passwordPlaceholder": "留空则不修改",
         "unlockScreen": "解锁屏幕"
       },
-      "success": "保存成功"
+      "success": "保存成功",
+      "configChangeWarning": "请注意，编辑后的更改不会立即生效。为确保任务正常运行，流程机器人将在空闲状态下进行属性修改。你可以在流程机器人列表中查看待同步修改标记，以了解同步状态。"
     }
   },
   "personalCenter": {
