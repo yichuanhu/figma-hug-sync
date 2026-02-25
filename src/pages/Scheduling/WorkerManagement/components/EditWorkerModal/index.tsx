@@ -63,6 +63,22 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
     return true;
   };
 
+  // 检测连接信息是否发生变更
+  const isConnectionChanged = (values: Record<string, unknown>): boolean => {
+    const password = values.password as string;
+    if (password && password.trim() !== '') return true;
+    if ((values.username as string) !== (workerData?.username || '')) return true;
+    if (desktopType !== (workerData?.desktop_type || 'Console')) return true;
+    if (desktopType === 'Console') {
+      if ((values.enableAutoUnlock as boolean) !== (workerData?.enable_auto_unlock ?? true)) return true;
+    }
+    if (desktopType === 'NotConsole') {
+      if ((values.displaySize as string) !== (workerData?.display_size || '1920x1080')) return true;
+    }
+    if ((values.forceLogin as boolean) !== (workerData?.force_login ?? false)) return true;
+    return false;
+  };
+
   const handleSubmit = async (values: Record<string, unknown>) => {
     if (!workerData?.id) return;
 
@@ -70,6 +86,8 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
     try {
       // 模拟API调用延迟
       await new Promise((resolve) => setTimeout(resolve, 300));
+
+      const connectionChanged = isConnectionChanged(values);
 
       // 生成Mock响应
       const updatedWorker: LYWorkerResponse = {
@@ -81,6 +99,10 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
         enable_auto_unlock: desktopType === 'Console' ? (values.enableAutoUnlock as boolean) : undefined,
         display_size: desktopType === 'NotConsole' ? (values.displaySize as string) : undefined,
         force_login: values.forceLogin as boolean,
+        // 连接信息变更时，将密码同步状态设置为"待同步"
+        password_sync_status: connectionChanged ? 'PENDING' : workerData.password_sync_status,
+        // 连接信息变更时，将同步状态设置为"待同步"
+        sync_status: connectionChanged ? 'PENDING' : workerData.sync_status,
       };
 
       Toast.success(t('worker.edit.success'));
