@@ -639,7 +639,7 @@
       },
       "filter": {
         "workerStatus": "机器人状态",
-        "syncStatus": "同步状态",
+        "syncStatus": "属性同步状态",
         "priority": "任务调度优先级",
         "workerGroup": "所属分组",
         "ungrouped": "未分组"
@@ -700,7 +700,7 @@
           "group": "所属分组",
           "desktopType": "桌面类型",
           "account": "帐户",
-          "passwordSyncStatus": "密码同步状态",
+          "passwordSyncStatus": "属性同步状态",
           "forceLogin": "强制挤占登录",
           "resolution": "分辨率",
           "machineCode": "机器码",
@@ -810,7 +810,7 @@
     },
     "filter": {
       "workerStatus": "机器人状态",
-      "syncStatus": "同步状态",
+      "syncStatus": "属性同步状态",
       "priority": "任务调度优先级",
       "workerGroup": "所属分组",
       "ungrouped": "未分组"
@@ -893,7 +893,7 @@
       "group": "所属分组",
       "desktopType": "桌面类型",
       "account": "帐户",
-      "passwordSyncStatus": "密码同步状态",
+      "passwordSyncStatus": "属性同步状态",
       "forceLogin": "强制挤占登录",
       "resolution": "分辨率",
       "priority": "任务调度优先级",
