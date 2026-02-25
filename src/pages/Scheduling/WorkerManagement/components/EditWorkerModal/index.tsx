@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { 
   Modal, 
@@ -6,6 +6,7 @@ import {
   Toast, 
   Button,
   Radio,
+  Banner,
 } from '@douyinfe/semi-ui';
 import type { LYWorkerResponse } from '@/api';
 import './index.less';
@@ -24,10 +25,27 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [desktopType, setDesktopType] = useState<string>('Console');
+  const [configChanged, setConfigChanged] = useState(false);
+
+  const originalConfig = useMemo(() => ({
+    desktopType: workerData?.desktop_type || 'Console',
+    username: workerData?.username || '',
+    enableAutoUnlock: workerData?.enable_auto_unlock ?? true,
+    displaySize: workerData?.display_size || '1920x1080',
+    forceLogin: workerData?.force_login ?? false,
+  }), [workerData]);
+
+  const checkConfigChanged = (field: string, value: unknown) => {
+    const key = field as keyof typeof originalConfig;
+    if (key in originalConfig && originalConfig[key] !== value) {
+      setConfigChanged(true);
+    }
+  };
 
   useEffect(() => {
     if (workerData) {
       setDesktopType(workerData.desktop_type || 'Console');
+      setConfigChanged(false);
     }
   }, [workerData]);
 
@@ -135,7 +153,10 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
               field="desktopType"
               label={t('worker.create.fields.desktopType')}
               initValue={workerData.desktop_type || 'Console'}
-              onChange={(e) => setDesktopType(e.target.value)}
+              onChange={(e) => {
+                setDesktopType(e.target.value);
+                checkConfigChanged('desktopType', e.target.value);
+              }}
             >
               <Radio value="Console">{t('worker.create.fields.localDesktop')}</Radio>
               <Radio value="NotConsole">{t('worker.create.fields.remoteDesktop')}</Radio>
@@ -154,6 +175,7 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
                 { max: 100, message: t('worker.create.validation.accountLengthError') },
               ]}
               showClear
+              onChange={(value) => checkConfigChanged('username', value)}
             />
             <Form.Input
               field="password"
@@ -165,6 +187,7 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
               <Form.RadioGroup 
                 field="enableAutoUnlock"
                 label={t('worker.create.fields.unlockScreen')}
+                onChange={(e) => checkConfigChanged('enableAutoUnlock', e.target.value)}
               >
                 <Radio value={true}>{t('common.yes')}</Radio>
                 <Radio value={false}>{t('common.no')}</Radio>
@@ -175,6 +198,7 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
                 field="displaySize"
                 label={t('worker.detail.fields.resolution')}
                 className="edit-worker-modal-select-full"
+                onChange={(value) => checkConfigChanged('displaySize', value)}
                 optionList={[
                   { value: '1024x768', label: '1024x768' },
                   { value: '1280x720', label: '1280x720 (HD)' },
@@ -193,12 +217,21 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
             <Form.RadioGroup 
               field="forceLogin"
               label={t('worker.create.fields.forceLogin')}
+              onChange={(e) => checkConfigChanged('forceLogin', e.target.value)}
             >
               <Radio value={true}>{t('common.yes')}</Radio>
               <Radio value={false}>{t('common.no')}</Radio>
             </Form.RadioGroup>
           </div>
         </div>
+
+        {configChanged && (
+          <Banner
+            type="warning"
+            description={t('worker.edit.configChangeWarning')}
+            className="edit-worker-modal-banner"
+          />
+        )}
 
         <div className="edit-worker-modal-footer">
           <Button theme="light" onClick={onCancel}>
