@@ -206,7 +206,7 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
   const basicInfoData = [
     { key: t('worker.detail.fields.workerName'), value: workerData.name },
     { key: t('worker.detail.fields.group'), value: renderGroupValue() },
-    { key: t('worker.detail.fields.description'), value: <ExpandableText text={workerData.description} maxLines={3} /> },
+    { key: t('worker.detail.fields.description'), value: <ExpandableText text={workerData.description} maxLines={3} maxExpandedHeight={300} /> },
     {
       key: t('worker.detail.fields.status'),
       value: (
