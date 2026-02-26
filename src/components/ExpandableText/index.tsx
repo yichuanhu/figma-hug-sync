@@ -8,6 +8,7 @@ const { Text } = Typography;
 interface ExpandableTextProps {
   text: string | null | undefined;
   maxLines?: number;
+  maxExpandedHeight?: number;
   className?: string;
 }
 
@@ -15,7 +16,7 @@ interface ExpandableTextProps {
  * 可展开/收起的文本组件
  * 当文本超过指定行数时，显示展开/收起按钮
  */
-const ExpandableText = ({ text, maxLines = 3, className = '' }: ExpandableTextProps) => {
+const ExpandableText = ({ text, maxLines = 3, maxExpandedHeight, className = '' }: ExpandableTextProps) => {
   const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
   const [isOverflow, setIsOverflow] = useState(false);
@@ -41,6 +42,7 @@ const ExpandableText = ({ text, maxLines = 3, className = '' }: ExpandableTextPr
         className={`expandable-text-content ${expanded ? 'expanded' : ''}`}
         style={{
           WebkitLineClamp: expanded ? 'unset' : maxLines,
+          ...(expanded && maxExpandedHeight ? { maxHeight: maxExpandedHeight, overflowY: 'auto' as const } : {}),
         }}
       >
         {text}
