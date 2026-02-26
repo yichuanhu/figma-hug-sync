@@ -265,10 +265,12 @@ const TaskDetailDrawer = ({
     <SideSheet
       title={
         <Row type="flex" justify="space-between" align="middle" className="task-detail-drawer-header">
-          <Col>
-            <Title heading={5} className="task-detail-drawer-header-title">
-              {task.task_id}
-            </Title>
+          <Col style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
+            <Tooltip content={task.task_id}>
+              <Title heading={5} className="task-detail-drawer-header-title">
+                {task.task_id}
+              </Title>
+            </Tooltip>
           </Col>
           <Col>
             <Space spacing={8}>

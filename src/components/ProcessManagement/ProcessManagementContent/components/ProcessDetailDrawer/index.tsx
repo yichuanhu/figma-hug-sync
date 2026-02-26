@@ -584,10 +584,12 @@ const ProcessDetailDrawer = ({
     <SideSheet
       title={
         <Row type="flex" justify="space-between" align="middle" className="process-detail-drawer-header">
-          <Col>
-            <Title heading={5} className="process-detail-drawer-header-title">
-              {processData.name}
-            </Title>
+          <Col style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
+            <Tooltip content={processData.name}>
+              <Title heading={5} className="process-detail-drawer-header-title">
+                {processData.name}
+              </Title>
+            </Tooltip>
           </Col>
           <Col>
             <Space spacing={8}>

@@ -169,10 +169,12 @@ const QueueDetailDrawer = ({
   // 自定义header
   const renderHeader = () => (
     <Row type="flex" justify="space-between" align="middle" className="queue-detail-drawer-header">
-      <Col>
-        <Title heading={5} className="queue-detail-drawer-header-title">
-          {queue?.queue_name || ''}
-        </Title>
+      <Col style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
+        <Tooltip content={queue?.queue_name || ''}>
+          <Title heading={5} className="queue-detail-drawer-header-title">
+            {queue?.queue_name || ''}
+          </Title>
+        </Tooltip>
       </Col>
       <Col>
         <Space spacing={8}>

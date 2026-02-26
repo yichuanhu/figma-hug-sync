@@ -276,10 +276,12 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
     <SideSheet
       title={
         <Row type="flex" justify="space-between" align="middle" className="worker-detail-drawer-header">
-          <Col>
-            <Title heading={5} className="worker-detail-drawer-header-title">
-              {t('worker.detail.title')}
-            </Title>
+          <Col style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
+            <Tooltip content={t('worker.detail.title')}>
+              <Title heading={5} className="worker-detail-drawer-header-title">
+                {t('worker.detail.title')}
+              </Title>
+            </Tooltip>
           </Col>
           <Col>
             <Space spacing={8}>

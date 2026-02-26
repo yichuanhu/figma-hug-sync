@@ -574,10 +574,12 @@ const CredentialDetailDrawer = ({
     <SideSheet
       title={
         <Row type="flex" justify="space-between" align="middle" className="credential-detail-drawer-header">
-          <Col>
-            <Title heading={5} className="credential-detail-drawer-header-title">
-              {credential.credential_name}
-            </Title>
+          <Col style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
+            <Tooltip content={credential.credential_name}>
+              <Title heading={5} className="credential-detail-drawer-header-title">
+                {credential.credential_name}
+              </Title>
+            </Tooltip>
           </Col>
           <Col>
             <Space spacing={8}>

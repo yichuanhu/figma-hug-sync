@@ -192,7 +192,9 @@ const QueueTriggerDetailDrawer = ({
       title={
         <div className="queue-trigger-detail-drawer-header">
           <div className="queue-trigger-detail-drawer-header-title">
-            <Title heading={5}>{trigger.name}</Title>
+            <Tooltip content={trigger.name}>
+              <Title heading={5}>{trigger.name}</Title>
+            </Tooltip>
           </div>
           <Space spacing={8}>
             <Tooltip content={t('common.previous')}>

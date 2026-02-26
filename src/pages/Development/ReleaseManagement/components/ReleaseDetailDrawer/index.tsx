@@ -441,10 +441,12 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
       className={`card-sidesheet resizable-sidesheet release-detail-drawer ${isFullscreen ? 'fullscreen-sidesheet' : ''}`}
       title={
         <Row type="flex" justify="space-between" align="middle" className="release-detail-drawer-header">
-          <Col>
-            <Title heading={5} className="release-detail-drawer-header-title">
-              {t('release.detail.title')}
-            </Title>
+          <Col style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
+            <Tooltip content={t('release.detail.title')}>
+              <Title heading={5} className="release-detail-drawer-header-title">
+                {t('release.detail.title')}
+              </Title>
+            </Tooltip>
           </Col>
           <Col>
             <Space spacing={8}>
