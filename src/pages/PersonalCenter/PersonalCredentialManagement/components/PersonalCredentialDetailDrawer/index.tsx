@@ -614,7 +614,7 @@ const PersonalCredentialDetailDrawer = ({
               </Title>
             </Tooltip>
           </Col>
-          <Col>
+          <Col style={{ flexShrink: 0 }}>
             <Space spacing={8}>
               <Tooltip content={t('common.previous')}>
                 <Button icon={<IconChevronLeft />} theme="borderless" size="small" disabled={!canGoPrev || isNavigating} onClick={handlePrev} loading={isNavigating} />

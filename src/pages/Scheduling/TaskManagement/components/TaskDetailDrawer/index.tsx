@@ -272,7 +272,7 @@ const TaskDetailDrawer = ({
               </Title>
             </Tooltip>
           </Col>
-          <Col>
+          <Col style={{ flexShrink: 0 }}>
             <Space spacing={8}>
               <Tooltip content={t('common.previous')}>
                 <Button
