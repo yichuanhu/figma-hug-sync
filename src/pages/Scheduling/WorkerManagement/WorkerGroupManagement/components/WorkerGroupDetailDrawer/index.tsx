@@ -523,15 +523,15 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
   return (
     <SideSheet
       title={
-        <Row type="flex" justify="space-between" align="middle" className="worker-group-detail-drawer-header">
-          <Col style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
+        <div className="worker-group-detail-drawer-header">
+          <div className="worker-group-detail-drawer-header-title-wrapper">
             <Tooltip content={groupData.name}>
               <Title heading={5} className="worker-group-detail-drawer-header-title">
                 {groupData.name}
               </Title>
             </Tooltip>
-          </Col>
-          <Col style={{ flexShrink: 0 }}>
+          </div>
+          <div className="worker-group-detail-drawer-header-actions">
             <Space spacing={8}>
               <Tooltip content={t('common.previous')}>
                 <Button icon={<IconChevronLeft />} theme="borderless" size="small" disabled={!canGoPrev || isNavigating} onClick={handlePrev} loading={isNavigating} />
@@ -554,8 +554,8 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
                 <Button icon={<X size={16} strokeWidth={2} />} theme="borderless" size="small" onClick={onClose} className="worker-group-detail-drawer-header-close-btn" />
               </Tooltip>
             </Space>
-          </Col>
-        </Row>
+          </div>
+        </div>
       }
       visible={visible}
       onCancel={onClose}

@@ -3,7 +3,21 @@
   // 标题区域
   &-header {
     width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
     padding-right: 0;
+
+    &-title-wrapper {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    &-actions {
+      flex-shrink: 0;
+    }
 
     &-title {
       margin: 0;

@@ -158,15 +158,15 @@ const MessageDetailDrawer = ({
 
   // 自定义header
   const renderHeader = () => (
-    <Row type="flex" justify="space-between" align="middle" className="message-detail-drawer-header">
-      <Col style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
+    <div className="message-detail-drawer-header">
+      <div className="message-detail-drawer-header-title-wrapper">
         <Tooltip content={message?.message_number || ''}>
           <Title heading={5} className="message-detail-drawer-header-title">
             {message?.message_number || ''}
           </Title>
         </Tooltip>
-      </Col>
-      <Col style={{ flexShrink: 0 }}>
+      </div>
+      <div className="message-detail-drawer-header-actions">
         <Space spacing={8}>
           <Tooltip content={t('common.previous')}>
             <Button
@@ -234,8 +234,8 @@ const MessageDetailDrawer = ({
             />
           </Tooltip>
         </Space>
-      </Col>
-    </Row>
+      </div>
+    </div>
   );
 
   return (

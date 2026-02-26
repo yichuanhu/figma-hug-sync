@@ -573,15 +573,15 @@ const CredentialDetailDrawer = ({
   return (
     <SideSheet
       title={
-        <Row type="flex" justify="space-between" align="middle" className="credential-detail-drawer-header">
-          <Col style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
+        <div className="credential-detail-drawer-header">
+          <div className="credential-detail-drawer-header-title-wrapper">
             <Tooltip content={credential.credential_name}>
               <Title heading={5} className="credential-detail-drawer-header-title">
                 {credential.credential_name}
               </Title>
             </Tooltip>
-          </Col>
-          <Col style={{ flexShrink: 0 }}>
+          </div>
+          <div className="credential-detail-drawer-header-actions">
             <Space spacing={8}>
               <Tooltip content={t('common.previous')}>
                 <Button icon={<IconChevronLeft />} theme="borderless" size="small" disabled={!canGoPrev || isNavigating} onClick={handlePrev} loading={isNavigating} />
@@ -610,8 +610,8 @@ const CredentialDetailDrawer = ({
                 <Button icon={<X size={16} strokeWidth={2} />} theme="borderless" size="small" onClick={onClose} className="credential-detail-drawer-header-close-btn" />
               </Tooltip>
             </Space>
-          </Col>
-        </Row>
+          </div>
+        </div>
       }
       visible={visible}
       onCancel={onClose}

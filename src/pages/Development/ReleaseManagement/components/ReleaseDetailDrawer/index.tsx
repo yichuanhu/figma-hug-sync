@@ -440,15 +440,15 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
     <SideSheet
       className={`card-sidesheet resizable-sidesheet release-detail-drawer ${isFullscreen ? 'fullscreen-sidesheet' : ''}`}
       title={
-        <Row type="flex" justify="space-between" align="middle" className="release-detail-drawer-header">
-          <Col style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
+        <div className="release-detail-drawer-header">
+          <div className="release-detail-drawer-header-title-wrapper">
             <Tooltip content={t('release.detail.title')}>
               <Title heading={5} className="release-detail-drawer-header-title">
                 {t('release.detail.title')}
               </Title>
             </Tooltip>
-          </Col>
-          <Col style={{ flexShrink: 0 }}>
+          </div>
+          <div className="release-detail-drawer-header-actions">
             <Space spacing={8}>
               <Tooltip content={t('common.previous')}>
                 <Button
@@ -489,8 +489,8 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
                 />
               </Tooltip>
             </Space>
-          </Col>
-        </Row>
+          </div>
+        </div>
       }
       visible={visible}
       onCancel={onClose}

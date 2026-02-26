@@ -264,15 +264,15 @@ const TaskDetailDrawer = ({
   return (
     <SideSheet
       title={
-        <Row type="flex" justify="space-between" align="middle" className="task-detail-drawer-header">
-          <Col style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
+        <div className="task-detail-drawer-header">
+          <div className="task-detail-drawer-header-title-wrapper">
             <Tooltip content={task.task_id}>
               <Title heading={5} className="task-detail-drawer-header-title">
                 {task.task_id}
               </Title>
             </Tooltip>
-          </Col>
-          <Col style={{ flexShrink: 0 }}>
+          </div>
+          <div className="task-detail-drawer-header-actions">
             <Space spacing={8}>
               <Tooltip content={t('common.previous')}>
                 <Button
@@ -346,8 +346,8 @@ const TaskDetailDrawer = ({
                 />
               </Tooltip>
             </Space>
-          </Col>
-        </Row>
+          </div>
+        </div>
       }
       visible={visible}
       onCancel={onClose}

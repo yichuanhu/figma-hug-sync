@@ -583,15 +583,15 @@ const ProcessDetailDrawer = ({
   return (
     <SideSheet
       title={
-        <Row type="flex" justify="space-between" align="middle" className="process-detail-drawer-header">
-          <Col style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
+        <div className="process-detail-drawer-header">
+          <div className="process-detail-drawer-header-title-wrapper">
             <Tooltip content={processData.name}>
               <Title heading={5} className="process-detail-drawer-header-title">
                 {processData.name}
               </Title>
             </Tooltip>
-          </Col>
-          <Col style={{ flexShrink: 0 }}>
+          </div>
+          <div className="process-detail-drawer-header-actions">
             <Space spacing={8}>
               <Tooltip content={t('common.previous')}>
                 <Button icon={<IconChevronLeft />} theme="borderless" size="small" disabled={!canGoPrev || isNavigating} onClick={handlePrev} loading={isNavigating} />
@@ -630,8 +630,8 @@ const ProcessDetailDrawer = ({
                 <Button icon={<IconClose />} theme="borderless" size="small" onClick={onClose} className="process-detail-drawer-header-close-btn" />
               </Tooltip>
             </Space>
-          </Col>
-        </Row>
+          </div>
+        </div>
       }
       visible={visible}
       onCancel={onClose}
