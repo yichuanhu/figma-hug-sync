@@ -168,15 +168,15 @@ const QueueDetailDrawer = ({
 
   // 自定义header
   const renderHeader = () => (
-    <Row type="flex" justify="space-between" align="middle" className="queue-detail-drawer-header">
-      <Col style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
+    <div className="queue-detail-drawer-header">
+      <div className="queue-detail-drawer-header-title-wrapper">
         <Tooltip content={queue?.queue_name || ''}>
           <Title heading={5} className="queue-detail-drawer-header-title">
             {queue?.queue_name || ''}
           </Title>
         </Tooltip>
-      </Col>
-      <Col style={{ flexShrink: 0 }}>
+      </div>
+      <div className="queue-detail-drawer-header-actions">
         <Space spacing={8}>
           <Tooltip content={t('common.previous')}>
             <Button
@@ -246,8 +246,8 @@ const QueueDetailDrawer = ({
             />
           </Tooltip>
         </Space>
-      </Col>
-    </Row>
+      </div>
+    </div>
   );
 
   return (

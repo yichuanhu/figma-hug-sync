@@ -286,15 +286,15 @@ const TemplateDetailDrawer = ({
   return (
     <SideSheet
       title={
-        <Row type="flex" justify="space-between" align="middle" className="template-detail-drawer-header">
-          <Col style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
+        <div className="template-detail-drawer-header">
+          <div className="template-detail-drawer-header-title-wrapper">
             <Tooltip content={t('template.detail.drawerTitle')}>
               <Title heading={5} className="template-detail-drawer-header-title">
                 {t('template.detail.drawerTitle')}
               </Title>
             </Tooltip>
-          </Col>
-          <Col style={{ flexShrink: 0 }}>
+          </div>
+          <div className="template-detail-drawer-header-actions">
             <Space spacing={8}>
               <Tooltip content={t('common.previous')}>
                 <Button
@@ -362,8 +362,8 @@ const TemplateDetailDrawer = ({
                 />
               </Tooltip>
             </Space>
-          </Col>
-        </Row>
+          </div>
+        </div>
       }
       visible={visible}
       onCancel={onClose}

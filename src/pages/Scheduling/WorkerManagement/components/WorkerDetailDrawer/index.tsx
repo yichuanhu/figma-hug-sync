@@ -275,15 +275,15 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
   return (
     <SideSheet
       title={
-        <Row type="flex" justify="space-between" align="middle" className="worker-detail-drawer-header">
-          <Col style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
+        <div className="worker-detail-drawer-header">
+          <div className="worker-detail-drawer-header-title-wrapper">
             <Tooltip content={t('worker.detail.title')}>
               <Title heading={5} className="worker-detail-drawer-header-title">
                 {t('worker.detail.title')}
               </Title>
             </Tooltip>
-          </Col>
-          <Col style={{ flexShrink: 0 }}>
+          </div>
+          <div className="worker-detail-drawer-header-actions">
             <Space spacing={8}>
               <Tooltip content={t('common.previous')}>
                 <Button icon={<IconChevronLeft />} theme="borderless" size="small" disabled={!canGoPrev || isNavigating} onClick={handlePrev} loading={isNavigating} />
@@ -309,8 +309,8 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
                 <Button icon={<X size={16} strokeWidth={2} />} theme="borderless" size="small" onClick={onClose} className="worker-detail-drawer-header-close-btn" />
               </Tooltip>
             </Space>
-          </Col>
-        </Row>
+          </div>
+        </div>
       }
       visible={visible}
       onCancel={onClose}
