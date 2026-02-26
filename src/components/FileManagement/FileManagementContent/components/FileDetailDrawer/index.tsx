@@ -172,7 +172,7 @@ const FileDetailDrawer = ({
               {file.display_name}
             </Title>
           </Tooltip>
-          <Space spacing={8}>
+          <Space spacing={8} style={{ flexShrink: 0 }}>
             <Tooltip content={t('common.previous')}>
               <Button
                 icon={<IconChevronLeft />}

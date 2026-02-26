@@ -196,7 +196,7 @@ const QueueTriggerDetailDrawer = ({
               <Title heading={5}>{trigger.name}</Title>
             </Tooltip>
           </div>
-          <Space spacing={8}>
+          <Space spacing={8} style={{ flexShrink: 0 }}>
             <Tooltip content={t('common.previous')}>
               <Button
                 icon={<IconChevronLeft />}
