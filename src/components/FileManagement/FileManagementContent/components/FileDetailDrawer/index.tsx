@@ -167,9 +167,11 @@ const FileDetailDrawer = ({
     <SideSheet
       title={
         <div className="file-detail-drawer-header">
-          <Title heading={5} className="file-detail-drawer-header-title">
-            {file.display_name}
-          </Title>
+          <Tooltip content={file.display_name}>
+            <Title heading={5} className="file-detail-drawer-header-title">
+              {file.display_name}
+            </Title>
+          </Tooltip>
           <Space spacing={8}>
             <Tooltip content={t('common.previous')}>
               <Button

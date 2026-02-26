@@ -287,10 +287,12 @@ const TemplateDetailDrawer = ({
     <SideSheet
       title={
         <Row type="flex" justify="space-between" align="middle" className="template-detail-drawer-header">
-          <Col>
-            <Title heading={5} className="template-detail-drawer-header-title">
-              {t('template.detail.drawerTitle')}
-            </Title>
+          <Col style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
+            <Tooltip content={t('template.detail.drawerTitle')}>
+              <Title heading={5} className="template-detail-drawer-header-title">
+                {t('template.detail.drawerTitle')}
+              </Title>
+            </Tooltip>
           </Col>
           <Col>
             <Space spacing={8}>

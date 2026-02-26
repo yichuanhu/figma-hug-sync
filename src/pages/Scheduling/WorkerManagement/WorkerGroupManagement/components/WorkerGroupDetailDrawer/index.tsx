@@ -524,10 +524,12 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
     <SideSheet
       title={
         <Row type="flex" justify="space-between" align="middle" className="worker-group-detail-drawer-header">
-          <Col>
-            <Title heading={5} className="worker-group-detail-drawer-header-title">
-              {groupData.name}
-            </Title>
+          <Col style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
+            <Tooltip content={groupData.name}>
+              <Title heading={5} className="worker-group-detail-drawer-header-title">
+                {groupData.name}
+              </Title>
+            </Tooltip>
           </Col>
           <Col>
             <Space spacing={8}>

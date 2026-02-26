@@ -172,10 +172,12 @@ const ParameterDetailDrawer = ({
   // 自定义header
   const renderHeader = () => (
     <Row type="flex" justify="space-between" align="middle" className="parameter-detail-drawer-header">
-      <Col>
-        <Title heading={5} className="parameter-detail-drawer-header-title">
-          {parameter?.parameter_name || ''}
-        </Title>
+      <Col style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
+        <Tooltip content={parameter?.parameter_name || ''}>
+          <Title heading={5} className="parameter-detail-drawer-header-title">
+            {parameter?.parameter_name || ''}
+          </Title>
+        </Tooltip>
       </Col>
       <Col>
         <Space spacing={8}>
