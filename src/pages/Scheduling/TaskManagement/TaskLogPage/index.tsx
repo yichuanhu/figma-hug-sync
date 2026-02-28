@@ -105,7 +105,7 @@ const TaskLogPage = () => {
     page_size: 50,
   });
   const [filterVisible, setFilterVisible] = useState(false);
-  const [tempLevelFilter, setTempLevelFilter] = useState<LogLevel[]>([]);
+  const [levelFilter, setLevelFilter] = useState<LogLevel[]>([]);
   const [expandedLogId, setExpandedLogId] = useState<string | null>(null);
   const [exporting, setExporting] = useState(false);
   
