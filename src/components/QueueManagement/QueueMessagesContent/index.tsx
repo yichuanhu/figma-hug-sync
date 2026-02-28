@@ -296,29 +296,12 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
   // 计算筛选数量（不包括日期范围）
   const filterCount = statusFilter.length;
 
-  // 筛选弹窗打开时同步临时状态
-  const handleFilterVisibleChange = (visible: boolean) => {
-    if (visible) {
-      setTempStatusFilter([...statusFilter]);
-      setTempEnqueueTimeFilter(enqueueTimeFilter);
-      setTempEffectiveTimeFilter(effectiveTimeFilter);
-    }
-    setFilterPopoverVisible(visible);
-  };
-
   // 筛选确认
-  const handleFilterConfirm = () => {
-    setStatusFilter(tempStatusFilter);
-    setEnqueueTimeFilter(tempEnqueueTimeFilter);
-    setEffectiveTimeFilter(tempEffectiveTimeFilter);
+  const handleFilterConfirm = (values: Record<string, unknown>) => {
+    setStatusFilter((values.status as QueueMessageStatus[]) || []);
+    setEnqueueTimeFilter((values.enqueueTime as [Date, Date] | null) || null);
+    setEffectiveTimeFilter((values.effectiveTime as [Date, Date] | null) || null);
     setQueryParams((prev) => ({ ...prev, page: 1 }));
-  };
-
-  // 筛选重置
-  const handleFilterReset = () => {
-    setTempStatusFilter([]);
-    setTempEnqueueTimeFilter(null);
-    setTempEffectiveTimeFilter(null);
   };
 
   // 表格排序处理
