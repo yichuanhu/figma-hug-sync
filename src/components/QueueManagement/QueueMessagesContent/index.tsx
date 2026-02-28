@@ -201,10 +201,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
   const [effectiveTimeFilter, setEffectiveTimeFilter] = useState<[Date, Date] | null>(null);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
   
-  // 临时筛选状态（用于弹窗内编辑）
-  const [tempStatusFilter, setTempStatusFilter] = useState<QueueMessageStatus[]>([]);
-  const [tempEnqueueTimeFilter, setTempEnqueueTimeFilter] = useState<[Date, Date] | null>(null);
-  const [tempEffectiveTimeFilter, setTempEffectiveTimeFilter] = useState<[Date, Date] | null>(null);
+  // 临时筛选状态已由 FilterPopover 内部管理
 
   // 列表数据
   const [listResponse, setListResponse] = useState<LYQueueMessageListResultResponse | null>(null);
