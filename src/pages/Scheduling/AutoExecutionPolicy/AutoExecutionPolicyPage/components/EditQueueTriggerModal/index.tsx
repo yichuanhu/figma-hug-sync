@@ -131,7 +131,7 @@ const mockCredentials = [
   { id: 'cred-002', name: 'API访问凭据' },
 ];
 
-import { TIMEZONE_OPTIONS } from '@/constants/timezones';
+import { TIMEZONE_GROUPS } from '@/constants/timezones';
 
 const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQueueTriggerModalProps) => {
   const { t } = useTranslation();
@@ -652,10 +652,19 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
         field="timeZone"
         label={t('queueTrigger.fields.timeZone')}
         placeholder={t('queueTrigger.fields.timeZonePlaceholder')}
-        optionList={TIMEZONE_OPTIONS}
         rules={[{ required: true, message: t('queueTrigger.validation.timeZoneRequired') }]}
         style={{ width: '100%' }}
-      />
+      >
+        {TIMEZONE_GROUPS.map((group) => (
+          <Form.Select.OptGroup key={group.groupLabel} label={group.groupLabel}>
+            {group.options.map((tz) => (
+              <Form.Select.Option key={tz.value} value={tz.value}>
+                {tz.label}
+              </Form.Select.Option>
+            ))}
+          </Form.Select.OptGroup>
+        ))}
+      </Form.Select>
 
       {/* 启用工作日历 */}
       <div className="edit-queue-trigger-modal-field">

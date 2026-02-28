@@ -128,7 +128,7 @@ const mockTemplates = [
   },
 ];
 
-import { TIMEZONE_OPTIONS } from '@/constants/timezones';
+import { TIMEZONE_GROUPS } from '@/constants/timezones';
 
 // 已存在的触发器名称 (模拟)
 const existingTriggerNames = ['订单队列触发器', '审批队列触发器'];
@@ -628,10 +628,19 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
         label={t('queueTrigger.fields.timeZone')}
         placeholder={t('queueTrigger.fields.timeZonePlaceholder')}
         initValue="Asia/Shanghai"
-        optionList={TIMEZONE_OPTIONS}
         rules={[{ required: true, message: t('queueTrigger.validation.timeZoneRequired') }]}
         style={{ width: '100%' }}
-      />
+      >
+        {TIMEZONE_GROUPS.map((group) => (
+          <Form.Select.OptGroup key={group.groupLabel} label={group.groupLabel}>
+            {group.options.map((tz) => (
+              <Form.Select.Option key={tz.value} value={tz.value}>
+                {tz.label}
+              </Form.Select.Option>
+            ))}
+          </Form.Select.OptGroup>
+        ))}
+      </Form.Select>
 
       {/* 启用工作日历 */}
       <div className="create-queue-trigger-modal-field">
