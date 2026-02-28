@@ -24,7 +24,6 @@ import {
   IconPlusStroked,
   IconMoreStroked,
   IconDeleteStroked,
-   IconFilterStroked,
   IconEditStroked,
 } from '@douyinfe/semi-icons';
 import { Unlink, Link, History } from 'lucide-react';
