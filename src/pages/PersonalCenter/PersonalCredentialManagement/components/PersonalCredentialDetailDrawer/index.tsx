@@ -31,6 +31,7 @@ import {
 } from '@douyinfe/semi-icons';
 import { Download, Link, Unlink } from 'lucide-react';
 import type { LYPersonalCredentialResponse } from '@/api/index';
+import ExpandableText from '@/components/ExpandableText';
 import { useUsageRecordFilter } from '@/hooks/useUsageRecordFilter';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
