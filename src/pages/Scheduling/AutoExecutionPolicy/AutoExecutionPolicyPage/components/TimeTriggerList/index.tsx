@@ -264,13 +264,8 @@ const TimeTriggerList = () => {
   };
 
   // 抽屉中导航
-  const handleNavigate = (direction: 'prev' | 'next') => {
-    if (!selectedTrigger) return;
-    const currentIndex = list.findIndex((t) => t.trigger_id === selectedTrigger.trigger_id);
-    const newIndex = direction === 'prev' ? currentIndex - 1 : currentIndex + 1;
-    if (newIndex >= 0 && newIndex < list.length) {
-      setSelectedTrigger(list[newIndex]);
-    }
+  const handleNavigate = (trigger: LYTimeTriggerResponse) => {
+    setSelectedTrigger(trigger);
   };
 
   // 启用/禁用触发器（直接切换，不弹窗确认）
@@ -480,10 +475,7 @@ const TimeTriggerList = () => {
   // 判断是否有筛选条件
   const hasFilters = queryParams.keyword || queryParams.process_id || queryParams.status;
 
-  // 计算当前选中项在列表中的索引
-  const currentIndex = selectedTrigger
-    ? list.findIndex((t) => t.trigger_id === selectedTrigger.trigger_id)
-    : -1;
+  // currentIndex no longer needed - navigation handled by DetailDrawerWrapper
 
   return (
     <div className="time-trigger-list">
@@ -602,8 +594,7 @@ const TimeTriggerList = () => {
       <TimeTriggerDetailDrawer
         visible={drawerVisible}
         trigger={selectedTrigger}
-        currentIndex={currentIndex}
-        totalCount={list.length}
+        triggerList={list}
         onClose={handleCloseDrawer}
         onNavigate={handleNavigate}
         onEdit={handleOpenEditModal}
