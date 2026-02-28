@@ -222,14 +222,12 @@ const ReleaseListPage: React.FC = () => {
   );
 
   // 筛选操作
-  const handleFilterConfirm = () => {
-    setActiveFilters(tempFilters);
-    setFilterVisible(false);
+  const handleFilterConfirm = (values: Record<string, unknown>) => {
+    setActiveFilters({
+      release_type: (values.release_type as ReleaseType[]) || [],
+      publish_status: (values.publish_status as ReleaseStatus[]) || [],
+    });
     setQueryParams((prev) => ({ ...prev, offset: 0 }));
-  };
-
-  const handleFilterReset = () => {
-    setTempFilters({ release_type: [], publish_status: [] });
   };
 
   // 行点击
