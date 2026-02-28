@@ -315,20 +315,23 @@ const PersonalCredentialDetailDrawer = ({
                 <Col>
                   <Space>
                     <DatePicker type="dateRange" placeholder={[t('common.startDate'), t('common.endDate')]} value={dateRange || undefined} onChange={(dates) => handleDateRangeChange(dates as Date[] | null | undefined)} presets={datePresets} style={{ width: 280 }} />
-                    <Popover visible={filterPopoverVisible} onVisibleChange={setFilterPopoverVisible} trigger="click" position="bottomLeft" content={
-                      <div className="personal-credential-detail-drawer-filter-popover">
-                        <div className="personal-credential-detail-drawer-filter-popover-section">
-                          <Text strong className="personal-credential-detail-drawer-filter-popover-label">{t('credential.usage.filter.user')}</Text>
-                          <CheckboxGroup value={userFilter} onChange={(values) => { setUserFilter(values as string[]); setUsageQueryParams((prev) => ({ ...prev, page: 1 })); }} options={userFilterOptions} direction="vertical" />
-                        </div>
-                        <div className="personal-credential-detail-drawer-filter-popover-footer">
-                          <Button theme="borderless" onClick={() => { setUserFilter([]); setUsageQueryParams((prev) => ({ ...prev, page: 1 })); }} disabled={userFilter.length === 0}>{t('common.reset')}</Button>
-                          <Button theme="solid" type="primary" onClick={() => setFilterPopoverVisible(false)}>{t('common.confirm')}</Button>
-                        </div>
-                      </div>
-                    }>
-                      <Button icon={<IconFilterStroked />} type={filterCount > 0 ? 'primary' : 'tertiary'} theme={filterCount > 0 ? 'solid' : 'light'}>{t('common.filter')}{filterCount > 0 ? ` (${filterCount})` : ''}</Button>
-                    </Popover>
+                    <FilterPopover
+                      visible={filterPopoverVisible}
+                      onVisibleChange={setFilterPopoverVisible}
+                      onConfirm={(values) => {
+                        setUserFilter((values.user as string[]) || []);
+                        setUsageQueryParams((prev) => ({ ...prev, page: 1 }));
+                      }}
+                      sections={[
+                        {
+                          key: 'user',
+                          label: t('credential.usage.filter.user'),
+                          type: 'checkbox',
+                          options: userFilterOptions,
+                          value: userFilter,
+                        },
+                      ]}
+                    />
                   </Space>
                 </Col>
                 <Col>
