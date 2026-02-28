@@ -21,6 +21,7 @@ import {
 } from '@douyinfe/semi-icons';
 import { X, Maximize2, Minimize2 } from 'lucide-react';
 import type { LYFileResponse, FileSource } from '@/api/index';
+import ExpandableText from '@/components/ExpandableText';
 
 import './index.less';
 
