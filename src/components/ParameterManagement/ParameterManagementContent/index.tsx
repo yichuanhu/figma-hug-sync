@@ -13,19 +13,17 @@ import {
   Row,
   Col,
   Typography,
-  Popover,
-  CheckboxGroup,
   Tooltip,
   Breadcrumb,
 } from '@douyinfe/semi-ui';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
+import FilterPopover from '@/components/FilterPopover';
 import {
   IconSearchStroked,
   IconPlusStroked,
   IconMoreStroked,
   IconDeleteStroked,
-   IconFilterStroked,
   IconEditStroked,
 } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
@@ -472,68 +470,39 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
                 showClear
                 maxLength={100}
               />
-              <Popover
+              <FilterPopover
                 visible={filterPopoverVisible}
                 onVisibleChange={setFilterPopoverVisible}
-                trigger="click"
-                position="bottomLeft"
-                content={
-                  <div className="parameter-filter-popover">
-                    <div className="parameter-filter-popover-section">
-                      <Text strong className="parameter-filter-popover-label">
-                        {t('parameter.filter.type')}
-                      </Text>
-                      <CheckboxGroup
-                        value={typeFilter}
-                        onChange={(values) => {
-                          setTypeFilter(values as ParameterType[]);
-                          setQueryParams((prev) => ({ ...prev, page: 1 }));
-                        }}
-                        options={typeFilterOptions}
-                        direction="horizontal"
-                      />
-                    </div>
-                    {context === 'development' && (
-                      <div className="parameter-filter-popover-section">
-                        <Text strong className="parameter-filter-popover-label">
-                          {t('parameter.detail.isPublished')}
-                        </Text>
-                        <CheckboxGroup
-                          value={publishedFilter !== null ? [publishedFilter] : []}
-                          onChange={(values) => {
-                            // 只允许单选
-                            const newValue = values.length > 0 ? values[values.length - 1] as boolean : null;
-                            setPublishedFilter(newValue);
-                            setQueryParams((prev) => ({ ...prev, page: 1 }));
-                          }}
-                          options={publishedFilterOptions}
-                          direction="horizontal"
-                        />
-                      </div>
-                    )}
-                    <div className="parameter-filter-popover-footer">
-                      <Button theme="borderless" onClick={() => {
-                        setTypeFilter([]);
-                        setPublishedFilter(null);
-                        setQueryParams((prev) => ({ ...prev, page: 1 }));
-                      }} disabled={typeFilter.length === 0 && publishedFilter === null}>
-                        {t('common.reset')}
-                      </Button>
-                      <Button theme="solid" type="primary" onClick={() => setFilterPopoverVisible(false)}>
-                        {t('common.confirm')}
-                      </Button>
-                    </div>
-                  </div>
-                }
-              >
-                <Button
-                   icon={<IconFilterStroked />}
-                  type={filterCount > 0 ? 'primary' : 'tertiary'}
-                  theme={filterCount > 0 ? 'solid' : 'light'}
-                >
-                  {t('common.filter')}{filterCount > 0 ? ` (${filterCount})` : ''}
-                </Button>
-              </Popover>
+                onConfirm={(values) => {
+                  setTypeFilter((values.type as ParameterType[]) || []);
+                  setPublishedFilter(
+                    values.published !== null && values.published !== undefined
+                      ? (values.published as boolean)
+                      : null
+                  );
+                  setQueryParams((prev) => ({ ...prev, page: 1 }));
+                }}
+                sections={[
+                  {
+                    key: 'type',
+                    label: t('parameter.filter.type'),
+                    type: 'checkbox',
+                    options: typeFilterOptions,
+                    value: typeFilter,
+                  },
+                  ...(context === 'development'
+                    ? [
+                        {
+                          key: 'published',
+                          label: t('parameter.detail.isPublished'),
+                          type: 'radio' as const,
+                          options: publishedFilterOptions,
+                          value: publishedFilter,
+                        },
+                      ]
+                    : []),
+                ]}
+              />
             </Space>
           </Col>
           <Col>
