@@ -514,7 +514,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
           <TableSkeleton columns={6} rows={10} />
         ) : (
           <Table
-            size="middle"
+            size="small"
             dataSource={listResponse?.data || []}
             columns={columns}
             rowKey="queue_id"

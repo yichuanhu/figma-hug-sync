@@ -541,6 +541,7 @@ const QueueTriggerList = () => {
         />
       ) : (
         <Table
+          size="small"
           dataSource={list}
           columns={columns}
           rowKey="trigger_id"

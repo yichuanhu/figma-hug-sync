@@ -477,7 +477,7 @@ const TemplateManagementPage = () => {
             />
           ) : (
             <Table
-              size="middle"
+              size="small"
               dataSource={list}
               rowKey="template_id"
               loading={loading && !isInitialLoad}

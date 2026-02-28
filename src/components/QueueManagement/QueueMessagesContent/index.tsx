@@ -646,7 +646,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
           <TableSkeleton columns={8} rows={10} />
         ) : (
           <Table
-            size="middle"
+            size="small"
             dataSource={listResponse?.data || []}
             columns={columns}
             rowKey="message_id"

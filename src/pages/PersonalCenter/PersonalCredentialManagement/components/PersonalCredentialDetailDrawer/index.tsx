@@ -267,7 +267,7 @@ const PersonalCredentialDetailDrawer = ({
             {linkedCredentialsLoading ? (
               <TableSkeleton rows={5} columns={4} columnWidths={['30%', '35%', '20%', '15%']} />
             ) : (
-              <Table size="middle" columns={[
+              <Table size="small" columns={[
                 { title: t('personalCredential.linkedCredentials.credentialName'), dataIndex: 'credential_name', key: 'credential_name', render: (text: string) => <span>{text}</span> },
                 { title: t('common.description'), dataIndex: 'description', key: 'description', render: (text: string | null) => text || '-' },
                 { title: t('common.createTime'), dataIndex: 'created_at', key: 'created_at', width: 160, render: (text: string) => formatDateTime(text) },
@@ -322,7 +322,7 @@ const PersonalCredentialDetailDrawer = ({
             {isUsageInitialLoad ? (
               <TableSkeleton rows={8} columns={8} columnWidths={['10%', '15%', '8%', '14%', '8%', '10%', '12%', '8%']} />
             ) : (
-              <Table size="middle" columns={usageColumns} dataSource={usageRecords} rowKey="id" loading={usageLoading} pagination={{ currentPage: usageQueryParams.page, pageSize: usageQueryParams.pageSize, total: usageTotal, onPageChange: (page) => setUsageQueryParams((prev) => ({ ...prev, page })), showSizeChanger: true, showTotal: true }} scroll={{ y: 'calc(100vh - 350px)' }} empty={<EmptyState description={t('credential.usage.empty')} />} />
+              <Table size="small" columns={usageColumns} dataSource={usageRecords} rowKey="id" loading={usageLoading} pagination={{ currentPage: usageQueryParams.page, pageSize: usageQueryParams.pageSize, total: usageTotal, onPageChange: (page) => setUsageQueryParams((prev) => ({ ...prev, page })), showSizeChanger: true, showTotal: true }} scroll={{ y: 'calc(100vh - 350px)' }} empty={<EmptyState description={t('credential.usage.empty')} />} />
             )}
           </div>
         </TabPane>

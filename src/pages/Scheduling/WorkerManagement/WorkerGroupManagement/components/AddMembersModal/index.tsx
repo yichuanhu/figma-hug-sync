@@ -354,6 +354,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
           </div>
           <div className="add-members-modal-left-table">
             <Table 
+              size="small"
               columns={columns} 
               dataSource={list}
               loading={loading}
@@ -375,7 +376,6 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
                 showTotal: true,
               }}
               scroll={{ y: 260 }}
-              size="small"
             />
           </div>
         </div>
