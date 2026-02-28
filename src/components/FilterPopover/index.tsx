@@ -175,7 +175,7 @@ const FilterPopover = ({
   position = 'bottomLeft',
   className,
 }: FilterPopoverProps) => {
-  const { t } = useI18n();
+  const { t } = useTranslation();
 
   // 内部编辑状态（仅在弹窗打开时同步外部值）
   const [internalValues, setInternalValues] = useState<Record<string, unknown>>({});
