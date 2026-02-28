@@ -1,0 +1,91 @@
+// DetailDrawerWrapper 通用详情抽屉样式
+.detail-drawer-wrapper {
+  .semi-sidesheet-title {
+    width: 100%;
+  }
+
+  // 标题区域
+  &-header {
+    width: 100%;
+    padding-right: 0;
+    overflow: hidden;
+
+    &-title {
+      margin: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      display: block;
+      max-width: 100%;
+    }
+
+    &-divider {
+      height: 16px;
+      margin: 0 8px 0 4px;
+    }
+
+    &-close-btn {
+      margin-left: 4px;
+    }
+  }
+
+  // 拖拽把手
+  &-resize-handle {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    cursor: ew-resize;
+    z-index: 100;
+  }
+
+  // 内容区域
+  &-content {
+    height: 100%;
+    overflow: auto;
+  }
+}
+
+// 全局覆盖 - SideSheet 样式
+.card-sidesheet.detail-drawer-wrapper {
+  .semi-sidesheet-header {
+    border-bottom: 1px solid var(--semi-color-border);
+  }
+
+  .semi-sidesheet-header-title {
+    width: 100%;
+  }
+
+  .semi-sidesheet-body {
+    padding: 0;
+    position: relative;
+
+    .semi-table-thead .semi-table-row-head,
+    .semi-table-tbody > .semi-table-row {
+      background-color: var(--semi-color-default);
+    }
+  }
+
+  // 左侧标题容器 - 自适应收缩以支持省略号
+  .detail-drawer-wrapper-header {
+    .semi-col:first-child {
+      min-width: 0;
+      flex: 1;
+      margin-right: 24px;
+    }
+
+    .semi-col:last-child {
+      flex-shrink: 0;
+    }
+  }
+
+  .semi-sidesheet-inner {
+    margin: 8px 8px 8px 0 !important;
+    height: calc(100% - 16px) !important;
+    border-radius: 8px !important;
+    overflow: hidden;
+    box-shadow: 0 8px 24px #00000026;
+    background-color: var(--semi-color-default) !important;
+  }
+}
