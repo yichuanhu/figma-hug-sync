@@ -128,7 +128,7 @@ const mockTemplates = [
   },
 ];
 
-import { TIMEZONE_OPTIONS } from '@/constants/timezones';
+import { TIMEZONE_GROUPS } from '@/constants/timezones';
 
 // 已存在的触发器名称 (模拟)
 const existingTriggerNames = ['订单队列触发器', '审批队列触发器'];
