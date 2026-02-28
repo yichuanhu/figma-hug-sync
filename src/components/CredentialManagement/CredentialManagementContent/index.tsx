@@ -514,49 +514,23 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
                 showClear
                 maxLength={100}
               />
-              <Popover
+              <FilterPopover
                 visible={filterPopoverVisible}
                 onVisibleChange={setFilterPopoverVisible}
-                trigger="click"
-                position="bottomLeft"
-                content={
-                  <div className="credential-filter-popover">
-                    <div className="credential-filter-popover-section">
-                      <Text strong className="credential-filter-popover-label">
-                        {t('credential.filter.type')}
-                      </Text>
-                      <CheckboxGroup
-                        value={typeFilter}
-                        onChange={(values) => {
-                          setTypeFilter(values as CredentialType[]);
-                          setQueryParams((prev) => ({ ...prev, page: 1 }));
-                        }}
-                        options={typeFilterOptions}
-                        direction="horizontal"
-                      />
-                    </div>
-                    <div className="credential-filter-popover-footer">
-                      <Button theme="borderless" onClick={() => {
-                        setTypeFilter([]);
-                        setQueryParams((prev) => ({ ...prev, page: 1 }));
-                      }} disabled={typeFilter.length === 0}>
-                        {t('common.reset')}
-                      </Button>
-                      <Button theme="solid" type="primary" onClick={() => setFilterPopoverVisible(false)}>
-                        {t('common.confirm')}
-                      </Button>
-                    </div>
-                  </div>
-                }
-              >
-                <Button
-                   icon={<IconFilterStroked />}
-                  type={typeFilter.length > 0 ? 'primary' : 'tertiary'}
-                  theme={typeFilter.length > 0 ? 'solid' : 'light'}
-                >
-                  {t('common.filter')}{typeFilter.length > 0 ? ` (${typeFilter.length})` : ''}
-                </Button>
-              </Popover>
+                onConfirm={(values) => {
+                  setTypeFilter((values.type as CredentialType[]) || []);
+                  setQueryParams((prev) => ({ ...prev, page: 1 }));
+                }}
+                sections={[
+                  {
+                    key: 'type',
+                    label: t('credential.filter.type'),
+                    type: 'checkbox',
+                    options: typeFilterOptions,
+                    value: typeFilter,
+                  },
+                ]}
+              />
             </Space>
           </Col>
           <Col>

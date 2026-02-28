@@ -195,18 +195,14 @@ const TaskLogPage = () => {
   const total = range?.total || 0;
   
   // 确认筛选
-  const handleConfirmFilter = useCallback(() => {
+  const handleConfirmFilter = useCallback((values: Record<string, unknown>) => {
+    const newLevelFilter = (values.logLevel as LogLevel[]) || [];
+    setLevelFilter(newLevelFilter);
     setQueryParams((prev) => ({
       ...prev,
       page: 1,
-      log_level: tempLevelFilter.length === 1 ? tempLevelFilter[0] : undefined,
+      log_level: newLevelFilter.length === 1 ? newLevelFilter[0] : undefined,
     }));
-    setFilterVisible(false);
-  }, [tempLevelFilter]);
-  
-  // 重置筛选
-  const handleResetFilter = useCallback(() => {
-    setTempLevelFilter([]);
   }, []);
   
   // 导出日志
