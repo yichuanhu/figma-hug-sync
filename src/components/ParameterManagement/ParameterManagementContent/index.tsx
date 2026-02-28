@@ -627,11 +627,14 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
         onEdit={handleEdit}
         onDelete={context === 'development' ? handleDelete : undefined}
         allParameters={listResponse?.data || []}
-        currentPage={queryParams.page}
-        pageSize={queryParams.pageSize}
-        total={total}
-        onPageChange={handleDrawerPageChange}
         onParameterChange={setSelectedParameter}
+        pagination={{
+          currentPage: queryParams.page,
+          pageSize: queryParams.pageSize,
+          total,
+          totalPages: Math.ceil(total / queryParams.pageSize),
+        }}
+        onPageChange={handleDrawerPageChange}
         onScrollToRow={(id) => {
           const row = document.getElementById(`parameter-row-${id}`);
           row?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });

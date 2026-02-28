@@ -532,8 +532,12 @@ const TemplateManagementPage = () => {
           onDelete={handleDeleteFromDrawer}
           dataSource={list}
           onSelectTemplate={setSelectedTemplate}
-          currentPage={currentPage}
-          totalPages={totalPages}
+          pagination={{
+            currentPage,
+            pageSize,
+            total,
+            totalPages,
+          }}
           onPageChange={handlePageChangeForDrawer}
         />
       </div>
