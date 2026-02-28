@@ -24,6 +24,7 @@ import {
 import { RefreshCw } from 'lucide-react';
 import { debounce } from 'lodash';
 import AppLayout from '@/components/layout/AppLayout';
+import FilterPopover from '@/components/FilterPopover';
 import EmptyState from '@/components/EmptyState';
 import type {
   LYExecutionLogResponse,
