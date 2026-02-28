@@ -28,7 +28,6 @@ import {
   IconDeleteStroked,
   IconChevronDown,
   IconChevronUp,
-  IconFilterStroked,
   IconEyeOpenedStroked,
   IconMoreStroked,
 } from '@douyinfe/semi-icons';
