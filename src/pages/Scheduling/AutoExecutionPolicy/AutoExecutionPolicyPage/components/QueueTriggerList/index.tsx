@@ -597,8 +597,7 @@ const QueueTriggerList = () => {
       <QueueTriggerDetailDrawer
         visible={drawerVisible}
         trigger={selectedTrigger}
-        currentIndex={currentIndex}
-        totalCount={list.length}
+        triggerList={list}
         onClose={handleCloseDrawer}
         onNavigate={handleNavigate}
         onEdit={handleOpenEditModal}
