@@ -91,7 +91,7 @@ function DetailDrawerWrapper<T>({
   storageKey = 'detailDrawerWidth',
   className,
 }: DetailDrawerWrapperProps<T>) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [drawerWidth, setDrawerWidth] = useState(() => {
     if (storageKey) {
