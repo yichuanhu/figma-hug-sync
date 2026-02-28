@@ -568,6 +568,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
           />
         ) : (
           <Table
+            size="small"
             columns={columns}
             dataSource={listResponse?.data || []}
             rowKey="id"

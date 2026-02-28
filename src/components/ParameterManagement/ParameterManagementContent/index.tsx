@@ -524,7 +524,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
           <TableSkeleton columns={5} rows={10} />
         ) : (
           <Table
-            size="middle"
+            size="small"
             dataSource={listResponse?.data || []}
             columns={columns}
             rowKey="parameter_id"

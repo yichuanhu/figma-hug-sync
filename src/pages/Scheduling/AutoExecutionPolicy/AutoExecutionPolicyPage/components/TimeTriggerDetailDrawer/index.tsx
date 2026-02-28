@@ -384,6 +384,7 @@ const TimeTriggerDetailDrawer = ({
         <TabPane tab={t('timeTrigger.detail.tabs.executionLogs')} itemKey="logs">
           <div className="time-trigger-detail-drawer-tab-content">
             <Table
+              size="small"
               dataSource={executionLogs}
               rowKey="log_id"
               columns={logColumns}

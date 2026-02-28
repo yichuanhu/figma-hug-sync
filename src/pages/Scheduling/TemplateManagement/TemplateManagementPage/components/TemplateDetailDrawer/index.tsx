@@ -167,7 +167,7 @@ const TemplateDetailDrawer = ({
         </TabPane>
         <TabPane tab={t('template.detail.tabs.usageHistory')} itemKey="usageHistory">
           <div className="template-detail-drawer-tab-content">
-            <Table dataSource={mockUsageRecords} rowKey="id" size="middle" pagination={false} columns={usageHistoryColumns} empty={<EmptyState variant="noData" description={t('template.detail.noUsageHistory')} />} />
+            <Table dataSource={mockUsageRecords} rowKey="id" size="small" pagination={false} columns={usageHistoryColumns} empty={<EmptyState variant="noData" description={t('template.detail.noUsageHistory')} />} />
           </div>
         </TabPane>
       </Tabs>

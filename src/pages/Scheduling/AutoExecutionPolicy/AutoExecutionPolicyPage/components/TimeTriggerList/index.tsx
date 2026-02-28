@@ -542,7 +542,7 @@ const TimeTriggerList = () => {
           />
         ) : (
           <Table
-            size="middle"
+            size="small"
             dataSource={list}
             rowKey="trigger_id"
             loading={loading && !isInitialLoad}

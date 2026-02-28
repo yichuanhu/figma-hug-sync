@@ -322,7 +322,7 @@ const PersonalCredentialDetailDrawer = ({
             {isUsageInitialLoad ? (
               <TableSkeleton rows={8} columns={8} columnWidths={['10%', '15%', '8%', '14%', '8%', '10%', '12%', '8%']} />
             ) : (
-              <Table size="middle" columns={usageColumns} dataSource={usageRecords} rowKey="id" loading={usageLoading} pagination={{ currentPage: usageQueryParams.page, pageSize: usageQueryParams.pageSize, total: usageTotal, onPageChange: (page) => setUsageQueryParams((prev) => ({ ...prev, page })), showSizeChanger: true, showTotal: true }} scroll={{ y: 'calc(100vh - 350px)' }} empty={<EmptyState description={t('credential.usage.empty')} />} />
+              <Table size="small" columns={usageColumns} dataSource={usageRecords} rowKey="id" loading={usageLoading} pagination={{ currentPage: usageQueryParams.page, pageSize: usageQueryParams.pageSize, total: usageTotal, onPageChange: (page) => setUsageQueryParams((prev) => ({ ...prev, page })), showSizeChanger: true, showTotal: true }} scroll={{ y: 'calc(100vh - 350px)' }} empty={<EmptyState description={t('credential.usage.empty')} />} />
             )}
           </div>
         </TabPane>

@@ -452,7 +452,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
       {/* 表格 */}
       <div className="execution-log-tab-table">
         <Table
-          size="middle"
+          size="small"
           dataSource={list}
           rowKey="log_id"
           loading={loading}

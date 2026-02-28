@@ -423,7 +423,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
           <TableSkeleton rows={10} columns={4} columnWidths={['35%', '15%', '15%', '25%']} />
         ) : (
           <Table 
-            size="middle"
+            size="small"
             columns={columns} 
             dataSource={list}
             loading={loading}

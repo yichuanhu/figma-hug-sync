@@ -259,7 +259,7 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
                 </Col>
               </Row>
               <div className="worker-group-detail-drawer-members-table">
-                <Table size="middle" columns={memberColumns} dataSource={list} loading={membersLoading} rowKey="id" empty={<EmptyState variant={queryParams.keyword ? 'noResult' : 'noData'} description={queryParams.keyword ? t('common.noResult') : t('workerGroup.detail.noMembers')} />} pagination={{ total, pageSize, currentPage, onPageChange: (page) => setQueryParams(prev => ({ ...prev, offset: (page - 1) * pageSize })), showSizeChanger: true, showTotal: true }} scroll={{ y: 'calc(100vh - 400px)' }} />
+                <Table size="small" columns={memberColumns} dataSource={list} loading={membersLoading} rowKey="id" empty={<EmptyState variant={queryParams.keyword ? 'noResult' : 'noData'} description={queryParams.keyword ? t('common.noResult') : t('workerGroup.detail.noMembers')} />} pagination={{ total, pageSize, currentPage, onPageChange: (page) => setQueryParams(prev => ({ ...prev, offset: (page - 1) * pageSize })), showSizeChanger: true, showTotal: true }} scroll={{ y: 'calc(100vh - 400px)' }} />
               </div>
             </div>
           </div>

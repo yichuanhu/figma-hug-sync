@@ -354,6 +354,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
           </div>
           <div className="add-members-modal-left-table">
             <Table 
+              size="small"
               columns={columns} 
               dataSource={list}
               loading={loading}
