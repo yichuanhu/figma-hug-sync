@@ -101,7 +101,7 @@ const PersonalCredentialDetailDrawer = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'basic' | 'linked' | 'usage'>(initialTab);
-  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  
 
   const isInitialOpenRef = useRef(true);
   const prevVisibleRef = useRef(visible);
