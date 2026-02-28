@@ -189,7 +189,7 @@ const QueueTriggerDetailDrawer = ({
                   {trigger.name}
                 </Descriptions.Item>
                 <Descriptions.Item itemKey={t('queueTrigger.detail.fields.description')}>
-                  {trigger.description || '-'}
+                  <ExpandableText text={trigger.description} maxLines={3} />
                 </Descriptions.Item>
                 <Descriptions.Item itemKey={t('queueTrigger.detail.fields.status')}>
                   <Space spacing={8}>
