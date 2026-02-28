@@ -1,7 +1,6 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  SideSheet,
   Button,
   Typography,
   Descriptions,
@@ -15,28 +14,27 @@ import {
   Switch,
 } from '@douyinfe/semi-ui';
 import {
-  IconChevronLeft,
-  IconChevronRight,
   IconEditStroked,
   IconDeleteStroked,
 } from '@douyinfe/semi-icons';
-import { X, Maximize2, Minimize2, Inbox } from 'lucide-react';
+import { Inbox } from 'lucide-react';
 import type { LYQueueTriggerResponse, LYQueueTriggerExecutionLogResponse } from '@/api';
+import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import './index.less';
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 interface QueueTriggerDetailDrawerProps {
   visible: boolean;
   trigger: LYQueueTriggerResponse | null;
-  currentIndex: number;
-  totalCount: number;
+  triggerList: LYQueueTriggerResponse[];
   onClose: () => void;
-  onNavigate: (direction: 'prev' | 'next') => void;
+  onNavigate: (trigger: LYQueueTriggerResponse) => void;
   onEdit: (trigger: LYQueueTriggerResponse) => void;
   onDelete: (trigger: LYQueueTriggerResponse) => void;
   onToggleStatus: (trigger: LYQueueTriggerResponse, checked: boolean) => void;
   onRefresh?: () => void;
+  onScrollToRow?: (id: string) => void;
 }
 
 // Mock 执行记录
@@ -57,25 +55,17 @@ const generateMockExecutionLogs = (triggerId: string): LYQueueTriggerExecutionLo
 const QueueTriggerDetailDrawer = ({
   visible,
   trigger,
-  currentIndex,
-  totalCount,
+  triggerList,
   onClose,
   onNavigate,
   onEdit,
   onDelete,
   onToggleStatus,
+  onScrollToRow,
 }: QueueTriggerDetailDrawerProps) => {
   const { t } = useTranslation();
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const [activeTab, setActiveTab] = useState('basic');
-  const [drawerWidth, setDrawerWidth] = useState(() => {
-    const saved = localStorage.getItem('queue-trigger-detail-drawer-width');
-    return saved ? Math.max(Number(saved), 576) : 900;
-  });
   const [executionLogs, setExecutionLogs] = useState<LYQueueTriggerExecutionLogResponse[]>([]);
-  const isResizing = useRef(false);
-  const startX = useRef(0);
-  const startWidth = useRef(drawerWidth);
 
   // 加载执行记录
   useEffect(() => {
@@ -84,61 +74,17 @@ const QueueTriggerDetailDrawer = ({
     }
   }, [visible, trigger]);
 
-  // 保存宽度到 localStorage
-  useEffect(() => {
-    if (!isFullscreen) {
-      localStorage.setItem('queue-trigger-detail-drawer-width', drawerWidth.toString());
-    }
-  }, [drawerWidth, isFullscreen]);
-
-  // 拖拽调整宽度
-  const handleMouseDown = useCallback(
-    (e: React.MouseEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      isResizing.current = true;
-      startX.current = e.clientX;
-      startWidth.current = drawerWidth;
-      document.body.style.cursor = 'ew-resize';
-      document.body.style.userSelect = 'none';
-      const handleMouseMove = (e: MouseEvent) => {
-        if (!isResizing.current) return;
-        const diff = startX.current - e.clientX;
-        setDrawerWidth(Math.min(Math.max(startWidth.current + diff, 576), window.innerWidth - 100));
-      };
-      const handleMouseUp = () => {
-        isResizing.current = false;
-        document.body.style.cursor = '';
-        document.body.style.userSelect = '';
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
-      };
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-    },
-    [drawerWidth],
-  );
-
   // 格式化时间
   const formatTime = (time: string | null | undefined): string => {
     if (!time) return '-';
     return new Date(time).toLocaleString('zh-CN');
   };
 
-  // 切换全屏
-  const toggleFullscreen = useCallback(() => {
-    setIsFullscreen((prev) => !prev);
-  }, []);
-
   // 抽屉关闭时重置状态
-  const handleClose = useCallback(() => {
+  const handleClose = () => {
     setActiveTab('basic');
     onClose();
-  }, [onClose]);
-
-  // 导航
-  const canGoPrev = currentIndex > 0;
-  const canGoNext = currentIndex < totalCount - 1;
+  };
 
   if (!trigger) return null;
 
@@ -187,82 +133,44 @@ const QueueTriggerDetailDrawer = ({
     },
   ];
 
+  // 额外操作按钮
+  const extraActions = (
+    <>
+      <Tooltip content={t('common.edit')}>
+        <Button
+          icon={<IconEditStroked />}
+          theme="borderless"
+          size="small"
+          onClick={() => onEdit(trigger)}
+        />
+      </Tooltip>
+      <Tooltip content={t('common.delete')}>
+        <Button
+          icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />}
+          theme="borderless"
+          size="small"
+          onClick={() => onDelete(trigger)}
+        />
+      </Tooltip>
+    </>
+  );
+
   return (
-    <SideSheet
-      title={
-        <div className="queue-trigger-detail-drawer-header">
-          <div className="queue-trigger-detail-drawer-header-title">
-            <Tooltip content={trigger.name}>
-              <Title heading={5}>{trigger.name}</Title>
-            </Tooltip>
-          </div>
-          <Space spacing={8} style={{ flexShrink: 0 }}>
-            <Tooltip content={t('common.previous')}>
-              <Button
-                icon={<IconChevronLeft />}
-                theme="borderless"
-                size="small"
-                disabled={!canGoPrev}
-                onClick={() => onNavigate('prev')}
-              />
-            </Tooltip>
-            <Tooltip content={t('common.next')}>
-              <Button
-                icon={<IconChevronRight />}
-                theme="borderless"
-                size="small"
-                disabled={!canGoNext}
-                onClick={() => onNavigate('next')}
-              />
-            </Tooltip>
-            <Divider layout="vertical" className="queue-trigger-detail-drawer-header-divider" />
-            <Tooltip content={t('common.edit')}>
-              <Button
-                icon={<IconEditStroked />}
-                theme="borderless"
-                size="small"
-                onClick={() => onEdit(trigger)}
-              />
-            </Tooltip>
-            <Tooltip content={t('common.delete')}>
-              <Button
-                icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />}
-                theme="borderless"
-                size="small"
-                onClick={() => onDelete(trigger)}
-              />
-            </Tooltip>
-            <Divider layout="vertical" className="queue-trigger-detail-drawer-header-divider" />
-            <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
-              <Button
-                icon={isFullscreen ? <Minimize2 size={16} strokeWidth={2} /> : <Maximize2 size={16} strokeWidth={2} />}
-                theme="borderless"
-                size="small"
-                onClick={toggleFullscreen}
-              />
-            </Tooltip>
-            <Tooltip content={t('common.close')}>
-              <Button
-                icon={<X size={16} strokeWidth={2} />}
-                theme="borderless"
-                size="small"
-                onClick={handleClose}
-                className="queue-trigger-detail-drawer-header-close-btn"
-              />
-            </Tooltip>
-          </Space>
-        </div>
-      }
+    <DetailDrawerWrapper
       visible={visible}
-      onCancel={handleClose}
-      placement="right"
-      width={isFullscreen ? '100%' : drawerWidth}
-      mask={false}
-      footer={null}
-      closable={false}
-      className={`card-sidesheet resizable-sidesheet queue-trigger-detail-drawer ${isFullscreen ? 'fullscreen-sidesheet' : ''}`}
+      onClose={handleClose}
+      title={trigger.name}
+      dataList={triggerList}
+      currentId={trigger.trigger_id}
+      getId={(item) => item.trigger_id}
+      onNavigate={onNavigate}
+      onScrollToRow={onScrollToRow}
+      extraActions={extraActions}
+      defaultWidth={900}
+      minWidth={576}
+      storageKey="queue-trigger-detail-drawer-width"
+      className="queue-trigger-detail-drawer"
     >
-      {!isFullscreen && <div className="queue-trigger-detail-drawer-resize-handle" onMouseDown={handleMouseDown} />}
       <Tabs
         activeKey={activeTab}
         onChange={setActiveTab}
@@ -430,7 +338,7 @@ const QueueTriggerDetailDrawer = ({
           </div>
         </TabPane>
       </Tabs>
-    </SideSheet>
+    </DetailDrawerWrapper>
   );
 };
 

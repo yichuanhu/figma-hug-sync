@@ -1,7 +1,6 @@
-import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  SideSheet,
   Button,
   Typography,
   Descriptions,
@@ -15,11 +14,6 @@ import {
   Switch,
 } from '@douyinfe/semi-ui';
 import {
-  IconChevronLeft,
-  IconChevronRight,
-  IconClose,
-  IconMaximize,
-  IconMinimize,
   IconEditStroked,
   IconDeleteStroked,
   IconInbox,
@@ -28,21 +22,22 @@ import {
 } from '@douyinfe/semi-icons';
 import { Collapsible } from '@douyinfe/semi-ui';
 import type { LYTimeTriggerResponse, LYTriggerExecutionLogResponse } from '@/api';
+import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import './index.less';
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 interface TimeTriggerDetailDrawerProps {
   visible: boolean;
   trigger: LYTimeTriggerResponse | null;
-  currentIndex: number;
-  totalCount: number;
+  triggerList: LYTimeTriggerResponse[];
   onClose: () => void;
-  onNavigate: (direction: 'prev' | 'next') => void;
+  onNavigate: (trigger: LYTimeTriggerResponse) => void;
   onEdit: (trigger: LYTimeTriggerResponse) => void;
   onDelete: (trigger: LYTimeTriggerResponse) => void;
   onToggleStatus: (trigger: LYTimeTriggerResponse, checked: boolean) => void;
   onRefresh?: () => void;
+  onScrollToRow?: (id: string) => void;
 }
 
 // Mock 执行记录
@@ -61,27 +56,20 @@ const generateMockExecutionLogs = (triggerId: string): LYTriggerExecutionLogResp
 const TimeTriggerDetailDrawer = ({
   visible,
   trigger,
-  currentIndex,
-  totalCount,
+  triggerList,
   onClose,
   onNavigate,
   onEdit,
   onDelete,
   onToggleStatus,
+  onScrollToRow,
 }: TimeTriggerDetailDrawerProps) => {
   const { t } = useTranslation();
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const [activeTab, setActiveTab] = useState('basic');
-  const [drawerWidth, setDrawerWidth] = useState(() => {
-    const saved = localStorage.getItem('time-trigger-detail-drawer-width');
-    return saved ? Math.max(Number(saved), 576) : 900;
-  });
   const [executionLogs, setExecutionLogs] = useState<LYTriggerExecutionLogResponse[]>([]);
   const [previewExpanded, setPreviewExpanded] = useState(true);
-  const isResizing = useRef(false);
-  const startX = useRef(0);
-  const startWidth = useRef(drawerWidth);
-  // 预览触发时间（基于触发器的配置计算）
+
+  // 预览触发时间
   const previewTimes = useMemo(() => {
     if (!trigger) return [];
     const times: string[] = [];
@@ -120,40 +108,11 @@ const TimeTriggerDetailDrawer = ({
     }
   }, [visible, trigger]);
 
-  // 保存宽度到 localStorage
-  useEffect(() => {
-    if (!isFullscreen) {
-      localStorage.setItem('time-trigger-detail-drawer-width', drawerWidth.toString());
-    }
-  }, [drawerWidth, isFullscreen]);
-
-  // 拖拽调整宽度
-  const handleMouseDown = useCallback(
-    (e: React.MouseEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      isResizing.current = true;
-      startX.current = e.clientX;
-      startWidth.current = drawerWidth;
-      document.body.style.cursor = 'ew-resize';
-      document.body.style.userSelect = 'none';
-      const handleMouseMove = (e: MouseEvent) => {
-        if (!isResizing.current) return;
-        const diff = startX.current - e.clientX;
-        setDrawerWidth(Math.min(Math.max(startWidth.current + diff, 576), window.innerWidth - 100));
-      };
-      const handleMouseUp = () => {
-        isResizing.current = false;
-        document.body.style.cursor = '';
-        document.body.style.userSelect = '';
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
-      };
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-    },
-    [drawerWidth],
-  );
+  // 抽屉关闭时重置状态
+  const handleClose = () => {
+    setActiveTab('basic');
+    onClose();
+  };
 
   // 格式化时间
   const formatTime = (time: string | null | undefined): string => {
@@ -187,21 +146,6 @@ const TimeTriggerDetailDrawer = ({
     }
   };
 
-  // 切换全屏
-  const toggleFullscreen = useCallback(() => {
-    setIsFullscreen((prev) => !prev);
-  }, []);
-
-  // 抽屉关闭时重置状态
-  const handleClose = useCallback(() => {
-    setActiveTab('basic');
-    onClose();
-  }, [onClose]);
-
-  // 导航
-  const canGoPrev = currentIndex > 0;
-  const canGoNext = currentIndex < totalCount - 1;
-
   if (!trigger) return null;
 
   // 执行记录表格列
@@ -234,82 +178,44 @@ const TimeTriggerDetailDrawer = ({
     },
   ];
 
+  // 额外操作按钮
+  const extraActions = (
+    <>
+      <Tooltip content={t('common.edit')}>
+        <Button
+          icon={<IconEditStroked />}
+          theme="borderless"
+          size="small"
+          onClick={() => onEdit(trigger)}
+        />
+      </Tooltip>
+      <Tooltip content={t('common.delete')}>
+        <Button
+          icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />}
+          theme="borderless"
+          size="small"
+          onClick={() => onDelete(trigger)}
+        />
+      </Tooltip>
+    </>
+  );
+
   return (
-    <SideSheet
-      title={
-        <div className="time-trigger-detail-drawer-header">
-          <div className="time-trigger-detail-drawer-header-title">
-            <Tooltip content={trigger.name}>
-              <Title heading={5}>{trigger.name}</Title>
-            </Tooltip>
-          </div>
-          <Space spacing={8} style={{ flexShrink: 0 }}>
-            <Tooltip content={t('common.previous')}>
-              <Button
-                icon={<IconChevronLeft />}
-                theme="borderless"
-                size="small"
-                disabled={!canGoPrev}
-                onClick={() => onNavigate('prev')}
-              />
-            </Tooltip>
-            <Tooltip content={t('common.next')}>
-              <Button
-                icon={<IconChevronRight />}
-                theme="borderless"
-                size="small"
-                disabled={!canGoNext}
-                onClick={() => onNavigate('next')}
-              />
-            </Tooltip>
-            <Divider layout="vertical" className="time-trigger-detail-drawer-header-divider" />
-            <Tooltip content={t('common.edit')}>
-              <Button
-                icon={<IconEditStroked />}
-                theme="borderless"
-                size="small"
-                onClick={() => onEdit(trigger)}
-              />
-            </Tooltip>
-            <Tooltip content={t('common.delete')}>
-              <Button
-                icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />}
-                theme="borderless"
-                size="small"
-                onClick={() => onDelete(trigger)}
-              />
-            </Tooltip>
-            <Divider layout="vertical" className="time-trigger-detail-drawer-header-divider" />
-            <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
-              <Button
-                icon={isFullscreen ? <IconMinimize /> : <IconMaximize />}
-                theme="borderless"
-                size="small"
-                onClick={toggleFullscreen}
-              />
-            </Tooltip>
-            <Tooltip content={t('common.close')}>
-              <Button
-                icon={<IconClose />}
-                theme="borderless"
-                size="small"
-                onClick={handleClose}
-                className="time-trigger-detail-drawer-header-close-btn"
-              />
-            </Tooltip>
-          </Space>
-        </div>
-      }
+    <DetailDrawerWrapper
       visible={visible}
-      onCancel={handleClose}
-      placement="right"
-      width={isFullscreen ? '100%' : drawerWidth}
-      mask={false}
-      footer={null}
-      closable={false}
-      className={`card-sidesheet resizable-sidesheet time-trigger-detail-drawer ${isFullscreen ? 'fullscreen-sidesheet' : ''}`}
+      onClose={handleClose}
+      title={trigger.name}
+      dataList={triggerList}
+      currentId={trigger.trigger_id}
+      getId={(item) => item.trigger_id}
+      onNavigate={onNavigate}
+      onScrollToRow={onScrollToRow}
+      extraActions={extraActions}
+      defaultWidth={900}
+      minWidth={576}
+      storageKey="time-trigger-detail-drawer-width"
+      className="time-trigger-detail-drawer"
     >
-      {!isFullscreen && <div className="time-trigger-detail-drawer-resize-handle" onMouseDown={handleMouseDown} />}
       <Tabs
         activeKey={activeTab}
         onChange={setActiveTab}
@@ -317,7 +223,7 @@ const TimeTriggerDetailDrawer = ({
       >
         <TabPane tab={t('timeTrigger.detail.tabs.basicInfo')} itemKey="basic">
           <div className="time-trigger-detail-drawer-tab-content">
-            {/* 基本信息：名称、描述、状态、创建者、创建时间、最后触发时间 */}
+            {/* 基本信息 */}
             <div className="time-trigger-detail-drawer-section">
               <Text className="time-trigger-detail-drawer-section-title">
                 {t('timeTrigger.detail.basicInfo')}
@@ -353,7 +259,7 @@ const TimeTriggerDetailDrawer = ({
               </Descriptions>
             </div>
 
-            {/* 触发规则：规则类型、运行频率、时区、开始时间、结束时间、工作日历 */}
+            {/* 触发规则 */}
             <div className="time-trigger-detail-drawer-section">
               <Text className="time-trigger-detail-drawer-section-title">
                 {t('timeTrigger.detail.triggerRule')}
@@ -384,38 +290,38 @@ const TimeTriggerDetailDrawer = ({
               </Descriptions>
             </div>
 
-              {/* 触发预览（可折叠） */}
-              <div className="time-trigger-detail-drawer-section">
-                <Space spacing={4} align="center" className="time-trigger-detail-drawer-section-title">
-                  <Text style={{ fontWeight: 500 }}>
-                    {t('timeTrigger.detail.triggerPreview')}
-                  </Text>
-                  <Button
-                    theme="borderless"
-                    size="small"
-                    icon={previewExpanded ? <IconChevronUp size="small" /> : <IconChevronDown size="small" />}
-                    onClick={() => setPreviewExpanded(!previewExpanded)}
-                  />
-                </Space>
-                <Collapsible isOpen={previewExpanded}>
-                  <div className="time-trigger-detail-drawer-preview">
-                    {previewTimes.length > 0 ? (
-                      <ul className="time-trigger-detail-drawer-preview-list">
-                        {previewTimes.map((time, index) => (
-                          <li key={index}>
-                            <span className="preview-index">{index + 1}.</span>
-                            {time}
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <div className="time-trigger-detail-drawer-preview-empty">
-                        {t('timeTrigger.createModal.noPreview')}
-                      </div>
-                    )}
-                  </div>
-                </Collapsible>
-              </div>
+            {/* 触发预览（可折叠） */}
+            <div className="time-trigger-detail-drawer-section">
+              <Space spacing={4} align="center" className="time-trigger-detail-drawer-section-title">
+                <Text style={{ fontWeight: 500 }}>
+                  {t('timeTrigger.detail.triggerPreview')}
+                </Text>
+                <Button
+                  theme="borderless"
+                  size="small"
+                  icon={previewExpanded ? <IconChevronUp size="small" /> : <IconChevronDown size="small" />}
+                  onClick={() => setPreviewExpanded(!previewExpanded)}
+                />
+              </Space>
+              <Collapsible isOpen={previewExpanded}>
+                <div className="time-trigger-detail-drawer-preview">
+                  {previewTimes.length > 0 ? (
+                    <ul className="time-trigger-detail-drawer-preview-list">
+                      {previewTimes.map((time, index) => (
+                        <li key={index}>
+                          <span className="preview-index">{index + 1}.</span>
+                          {time}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <div className="time-trigger-detail-drawer-preview-empty">
+                      {t('timeTrigger.createModal.noPreview')}
+                    </div>
+                  )}
+                </div>
+              </Collapsible>
+            </div>
 
             {/* 任务配置 */}
             <div className="time-trigger-detail-drawer-section">
@@ -455,7 +361,7 @@ const TimeTriggerDetailDrawer = ({
               </Descriptions>
             </div>
 
-            {/* 输入参数 - 使用与任务详情一致的 JSON 展示样式 */}
+            {/* 输入参数 */}
             <div className="time-trigger-detail-drawer-section">
               <Text className="time-trigger-detail-drawer-section-title">
                 {t('timeTrigger.detail.inputParameters')}
@@ -486,7 +392,7 @@ const TimeTriggerDetailDrawer = ({
           </div>
         </TabPane>
       </Tabs>
-    </SideSheet>
+    </DetailDrawerWrapper>
   );
 };
 
