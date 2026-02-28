@@ -878,21 +878,34 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
                 value={searchValue}
                 onChange={handleSearch}
               />
-              <Popover
+              <FilterPopover
                 visible={filterVisible}
                 onVisibleChange={setFilterVisible}
-                trigger="click"
-                position="bottomLeft"
-                content={filterContent}
-              >
-                <Button 
-                   icon={<IconFilterStroked />} 
-                  theme={hasActiveFilters ? 'solid' : 'light'}
-                  type={hasActiveFilters ? 'primary' : 'tertiary'}
-                >
-                  {t('common.filter')}{activeFilterCount > 0 ? ` (${activeFilterCount})` : ''}
-                </Button>
-              </Popover>
+                onConfirm={handleFilterConfirm}
+                sections={[
+                  {
+                    key: 'status',
+                    label: t('worker.filter.workerStatus'),
+                    type: 'checkbox',
+                    options: filterOptions.status,
+                    value: filters.status,
+                  },
+                  {
+                    key: 'sync_status',
+                    label: t('worker.filter.syncStatus'),
+                    type: 'checkbox',
+                    options: filterOptions.sync_status,
+                    value: filters.sync_status,
+                  },
+                  {
+                    key: 'group_id',
+                    label: t('worker.filter.workerGroup'),
+                    type: 'checkbox',
+                    options: filterOptions.group_id,
+                    value: filters.group_id,
+                  },
+                ]}
+              />
             </Space>
           </Col>
           <Col>
