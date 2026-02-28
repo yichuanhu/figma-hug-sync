@@ -469,50 +469,27 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
                 maxLength={100}
               />
               {context === 'development' && (
-                <Popover
+                <FilterPopover
                   visible={filterPopoverVisible}
                   onVisibleChange={setFilterPopoverVisible}
-                  trigger="click"
-                  position="bottomLeft"
-                  content={
-                    <div className="queue-filter-popover">
-                      <div className="queue-filter-popover-section">
-                        <Text strong className="queue-filter-popover-label">
-                          {t('queue.detail.isPublished')}
-                        </Text>
-                        <CheckboxGroup
-                          value={publishedFilter !== null ? [publishedFilter] : []}
-                          onChange={(values) => {
-                            const newValue = values.length > 0 ? values[values.length - 1] as boolean : null;
-                            setPublishedFilter(newValue);
-                            setQueryParams((prev) => ({ ...prev, page: 1 }));
-                          }}
-                          options={publishedFilterOptions}
-                          direction="horizontal"
-                        />
-                      </div>
-                      <div className="queue-filter-popover-footer">
-                        <Button theme="borderless" onClick={() => {
-                          setPublishedFilter(null);
-                          setQueryParams((prev) => ({ ...prev, page: 1 }));
-                        }} disabled={publishedFilter === null}>
-                          {t('common.reset')}
-                        </Button>
-                        <Button theme="solid" type="primary" onClick={() => setFilterPopoverVisible(false)}>
-                          {t('common.confirm')}
-                        </Button>
-                      </div>
-                    </div>
-                  }
-                >
-                  <Button
-                     icon={<IconFilterStroked />}
-                    type={filterCount > 0 ? 'primary' : 'tertiary'}
-                    theme={filterCount > 0 ? 'solid' : 'light'}
-                  >
-                    {t('common.filter')}{filterCount > 0 ? ` (${filterCount})` : ''}
-                  </Button>
-                </Popover>
+                  onConfirm={(values) => {
+                    setPublishedFilter(
+                      values.published !== null && values.published !== undefined
+                        ? (values.published as boolean)
+                        : null
+                    );
+                    setQueryParams((prev) => ({ ...prev, page: 1 }));
+                  }}
+                  sections={[
+                    {
+                      key: 'published',
+                      label: t('queue.detail.isPublished'),
+                      type: 'radio',
+                      options: publishedFilterOptions,
+                      value: publishedFilter,
+                    },
+                  ]}
+                />
               )}
             </Space>
           </Col>
