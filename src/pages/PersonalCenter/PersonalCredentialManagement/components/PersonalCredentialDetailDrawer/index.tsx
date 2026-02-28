@@ -40,7 +40,7 @@ import './index.less';
 
 const { Text } = Typography;
 
-const DESCRIPTION_COLLAPSE_THRESHOLD = 100;
+
 
 // ============= 使用记录类型 =============
 interface UsageRecord {
