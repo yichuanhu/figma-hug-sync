@@ -14,15 +14,12 @@ import {
   Row,
   Col,
   Space,
-  Popover,
-  CheckboxGroup,
 } from '@douyinfe/semi-ui';
 import {
   IconSearchStroked,
-   IconDownloadStroked,
+  IconDownloadStroked,
   IconChevronDown,
   IconChevronUp,
-   IconFilterStroked,
 } from '@douyinfe/semi-icons';
 import { RefreshCw } from 'lucide-react';
 import { debounce } from 'lodash';
