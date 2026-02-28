@@ -149,7 +149,7 @@ const PersonalCredentialDetailDrawer = ({
   useEffect(() => {
     if (credential) {
       if (isInitialOpenRef.current) { setActiveTab(initialTab); isInitialOpenRef.current = false; }
-      setIsDescriptionExpanded(false);
+      
       setUsageQueryParams({ page: 1, pageSize: 20 });
       resetFilters();
       setUsageRecords([]);
