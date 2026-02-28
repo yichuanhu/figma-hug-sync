@@ -1,5 +1,5 @@
 import { useMemo, ReactNode, memo, useState, useEffect } from 'react';
-import { useI18n } from '@monorepo/uci-react';
+import { useTranslation } from 'react-i18next';
 import {
   Button,
   Popover,
