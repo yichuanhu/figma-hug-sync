@@ -491,7 +491,7 @@ const ReleaseListPage: React.FC = () => {
         {/* 表格 */}
         <div className="release-list-page-table">
           <Table
-            size="middle"
+            size="small"
             dataSource={list}
             columns={columns}
             rowKey="release_id"
