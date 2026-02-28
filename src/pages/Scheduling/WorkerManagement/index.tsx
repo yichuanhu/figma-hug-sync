@@ -477,16 +477,11 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     debouncedSearch(value); // 防抖更新查询参数
   };
 
-  const handleFilterChange = (key: keyof FilterState, values: string[]) => {
-    setFilters(prev => ({ ...prev, [key]: values }));
-    setQueryParams(prev => ({ ...prev, offset: 0 }));
-  };
-
-  const clearFilters = () => {
+  const handleFilterConfirm = (values: Record<string, unknown>) => {
     setFilters({
-      status: [],
-      sync_status: [],
-      group_id: [],
+      status: (values.status as string[]) || [],
+      sync_status: (values.sync_status as string[]) || [],
+      group_id: (values.group_id as string[]) || [],
     });
     setQueryParams(prev => ({ ...prev, offset: 0 }));
   };
