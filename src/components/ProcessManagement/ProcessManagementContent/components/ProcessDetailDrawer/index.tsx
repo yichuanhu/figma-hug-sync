@@ -1,25 +1,17 @@
-import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  SideSheet,
   Typography,
   Button,
   Tag,
   Descriptions,
   Tabs,
   TabPane,
-  Table,
   Divider,
   Tooltip,
-  DatePicker,
-  Select,
-  Row,
-  Col,
   Space,
-  
   Toast,
   Modal,
-  Input,
   TextArea,
 } from '@douyinfe/semi-ui';
 import {
@@ -27,30 +19,22 @@ import {
   IconPlayCircle,
   IconDeleteStroked,
   IconExternalOpenStroked,
-  IconMaximize,
-  IconMinimize,
-  IconClose,
   IconUpload,
   IconHelpCircleStroked,
-  IconTick,
-  IconClear,
   IconLink,
-  IconSetting,
-  IconChevronLeft,
-  IconChevronRight,
 } from '@douyinfe/semi-icons';
 import type { LYProcessResponse, LYProcessVersionResponse } from '@/api';
 import UploadVersionModal from '../UploadVersionModal';
 import EmptyState from '@/components/EmptyState';
 import DetailSkeleton from '@/components/DetailSkeleton';
+import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
+import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import './index.less';
 
 const { Title, Text } = Typography;
 
 // ============= Mock数据生成 - 基于API类型 =============
 
-
-// 版本 Mock 数据 - 基于 LYProcessVersionResponse 类型，扩展详情字段
 // 参数变量类型定义
 interface ProcessVariable {
   name: string;
@@ -124,7 +108,6 @@ const generateMockVersionData = (): VersionDetailData[] => {
 
 const initialMockVersionData: VersionDetailData[] = generateMockVersionData();
 
-
 // 模拟创建者ID到名称的映射
 const mockCreatorNameMap: Record<string, string> = {
   'user-001': '张三',
@@ -135,13 +118,6 @@ const mockCreatorNameMap: Record<string, string> = {
 };
 
 // ============= 组件Props =============
-
-interface PaginationInfo {
-  currentPage: number;
-  totalPages: number;
-  pageSize: number;
-  total: number;
-}
 
 interface ProcessDetailDrawerProps {
   visible: boolean;
@@ -154,10 +130,10 @@ interface ProcessDetailDrawerProps {
   // 导航相关
   dataList?: LYProcessResponse[];
   onNavigate?: (process: LYProcessResponse) => void;
-  // 分页相关 - 用于自动翻页
+  // 分页相关
   pagination?: PaginationInfo;
-  onPageChange?: (page: number) => Promise<LYProcessResponse[] | void>;
-  // 上下文 - development(开发中心) | scheduling(调度中心)
+  onPageChange?: (page: number, direction: 'prev' | 'next') => void;
+  // 上下文
   context?: 'development' | 'scheduling';
   // 滚动到行
   onScrollToRow?: (id: string) => void;
@@ -200,16 +176,6 @@ const VariableCard = ({ variable, index, onDescriptionChange }: VariableCardProp
     setIsEditing(false);
     setEditValue('');
   }, []);
-
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === 'Escape') {
-      e.preventDefault();
-      handleCancelEdit();
-    } else if (e.key === 'Enter') {
-      e.preventDefault();
-      handleConfirmEdit();
-    }
-  }, [handleCancelEdit, handleConfirmEdit]);
 
   return (
     <div className="process-detail-drawer-variable-card">
@@ -255,47 +221,23 @@ const VariableCard = ({ variable, index, onDescriptionChange }: VariableCardProp
                 autosize={{ minRows: 2, maxRows: 6 }}
               />
               <Space spacing={8} className="process-detail-drawer-variable-card-edit-actions">
-                <Button
-                  size="small"
-                  theme="solid"
-                  type="primary"
-                  onClick={handleConfirmEdit}
-                >
+                <Button size="small" theme="solid" type="primary" onClick={handleConfirmEdit}>
                   {t('common.confirm')}
                 </Button>
-                <Button
-                  size="small"
-                  theme="borderless"
-                  type="tertiary"
-                  onClick={handleCancelEdit}
-                >
+                <Button size="small" theme="borderless" type="tertiary" onClick={handleCancelEdit}>
                   {t('common.cancel')}
                 </Button>
               </Space>
             </div>
           ) : (
             <div className="process-detail-drawer-variable-card-desc-row">
-              <Tooltip 
-                content={variable.description || '-'}
-                position="top"
-                style={{ maxWidth: 400, wordBreak: 'break-word' }}
-              >
-                <Text 
-                  className="process-detail-drawer-variable-card-value" 
-                  onDoubleClick={handleStartEdit}
-                >
+              <Tooltip content={variable.description || '-'} position="top" style={{ maxWidth: 400, wordBreak: 'break-word' }}>
+                <Text className="process-detail-drawer-variable-card-value" onDoubleClick={handleStartEdit}>
                   {variable.description || '-'}
                 </Text>
               </Tooltip>
               <Tooltip content={t('development.processDevelopment.detail.variable.editDescTip')}>
-                <Button
-                  icon={<IconEditStroked />}
-                  theme="borderless"
-                  size="small"
-                  type="tertiary"
-                  className="process-detail-drawer-variable-card-edit-btn"
-                  onClick={handleStartEdit}
-                />
+                <Button icon={<IconEditStroked />} theme="borderless" size="small" type="tertiary" className="process-detail-drawer-variable-card-edit-btn" onClick={handleStartEdit} />
               </Tooltip>
             </div>
           )}
@@ -314,17 +256,11 @@ const VariableCardList = ({ data, onDescriptionChange }: VariableCardListProps) 
   return (
     <div className="process-detail-drawer-variable-card-list">
       {data.map((variable, index) => (
-        <VariableCard
-          key={index}
-          variable={variable}
-          index={index}
-          onDescriptionChange={onDescriptionChange}
-        />
+        <VariableCard key={index} variable={variable} index={index} onDescriptionChange={onDescriptionChange} />
       ))}
     </div>
   );
 };
-
 
 // ============= 组件 =============
 
@@ -347,124 +283,12 @@ const ProcessDetailDrawer = ({
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('detail');
   const [selectedVersionId, setSelectedVersionId] = useState<string | null>(null);
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const [uploadVersionModalVisible, setUploadVersionModalVisible] = useState(false);
-  const [drawerWidth, setDrawerWidth] = useState(() => {
-    const saved = localStorage.getItem('processDetailDrawerWidth');
-    return saved ? Math.max(Number(saved), 576) : 900;
-  });
   const [versionData, setVersionData] = useState<VersionDetailData[]>(initialMockVersionData);
-  const isResizing = useRef(false);
-  const startX = useRef(0);
-  const startWidth = useRef(drawerWidth);
 
-
-  const handleMouseDown = useCallback(
-    (e: React.MouseEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      isResizing.current = true;
-      startX.current = e.clientX;
-      startWidth.current = drawerWidth;
-      document.body.style.cursor = 'ew-resize';
-      document.body.style.userSelect = 'none';
-      const handleMouseMove = (e: MouseEvent) => {
-        if (!isResizing.current) return;
-        const diff = startX.current - e.clientX;
-        setDrawerWidth(Math.min(Math.max(startWidth.current + diff, 576), window.innerWidth - 100));
-      };
-      const handleMouseUp = () => {
-        isResizing.current = false;
-        document.body.style.cursor = '';
-        document.body.style.userSelect = '';
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
-      };
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-    },
-    [drawerWidth],
-  );
-
-  useEffect(() => {
-    localStorage.setItem('processDetailDrawerWidth', String(drawerWidth));
-  }, [drawerWidth]);
-
-  const toggleFullscreen = useCallback(() => {
-    setIsFullscreen((prev) => !prev);
-  }, []);
-
-  // 导航逻辑
-  const currentIndex = useMemo(() => {
-    if (!processData || dataList.length === 0) return -1;
-    return dataList.findIndex(item => item.id === processData.id);
-  }, [processData, dataList]);
-
-  // 判断是否可以导航（考虑分页）
-  const canGoPrev = useMemo(() => {
-    if (currentIndex > 0) return true;
-    if (pagination && pagination.currentPage > 1) return true;
-    return false;
-  }, [currentIndex, pagination]);
-
-  const canGoNext = useMemo(() => {
-    if (currentIndex >= 0 && currentIndex < dataList.length - 1) return true;
-    if (pagination && pagination.currentPage < pagination.totalPages) return true;
-    return false;
-  }, [currentIndex, dataList.length, pagination]);
-
-  const [isNavigating, setIsNavigating] = useState(false);
-
-  const handlePrev = useCallback(async () => {
-    if (isNavigating) return;
-    
-    if (currentIndex > 0 && onNavigate) {
-      const target = dataList[currentIndex - 1];
-      onNavigate(target);
-      onScrollToRow?.(target.id);
-    } else if (pagination && pagination.currentPage > 1 && onPageChange) {
-      setIsNavigating(true);
-      try {
-        const newList = await onPageChange(pagination.currentPage - 1);
-        if (newList && newList.length > 0 && onNavigate) {
-          const target = newList[newList.length - 1];
-          onNavigate(target);
-          onScrollToRow?.(target.id);
-        }
-      } finally {
-        setIsNavigating(false);
-      }
-    }
-  }, [currentIndex, dataList, onNavigate, pagination, onPageChange, isNavigating, onScrollToRow]);
-
-  const handleNext = useCallback(async () => {
-    if (isNavigating) return;
-    
-    if (currentIndex >= 0 && currentIndex < dataList.length - 1 && onNavigate) {
-      const target = dataList[currentIndex + 1];
-      onNavigate(target);
-      onScrollToRow?.(target.id);
-    } else if (pagination && pagination.currentPage < pagination.totalPages && onPageChange) {
-      setIsNavigating(true);
-      try {
-        const newList = await onPageChange(pagination.currentPage + 1);
-        if (newList && newList.length > 0 && onNavigate) {
-          const target = newList[0];
-          onNavigate(target);
-          onScrollToRow?.(target.id);
-        }
-      } finally {
-        setIsNavigating(false);
-      }
-    }
-  }, [currentIndex, dataList, onNavigate, pagination, onPageChange, isNavigating, onScrollToRow]);
-
-
-  // 版本数据按版本号降序排列（最新版本在前）
+  // 版本数据按版本号降序排列
   const sortedVersionData = useMemo(() => {
     const data = [...versionData];
-    
-    // 按版本号降序排列（最新版本在前）
     data.sort((a, b) => {
       const versionA = a.version.split('.').map(Number);
       const versionB = b.version.split('.').map(Number);
@@ -475,19 +299,15 @@ const ProcessDetailDrawer = ({
       }
       return 0;
     });
-    
     return data;
   }, [versionData]);
 
-
   // 处理删除版本
   const handleDeleteVersion = useCallback((version: VersionDetailData) => {
-    // 已发布的版本不允许删除
     if (version.is_active) {
       Toast.warning(t('development.processDevelopment.detail.versionList.cannotDeletePublished'));
       return;
     }
-
     Modal.confirm({
       title: t('development.processDevelopment.detail.versionList.deleteConfirmTitle'),
       content: t('development.processDevelopment.detail.versionList.deleteConfirmContent', { version: version.version }),
@@ -495,7 +315,6 @@ const ProcessDetailDrawer = ({
       okType: 'danger',
       onOk: () => {
         setVersionData(prevData => prevData.filter(v => v.id !== version.id));
-        // 如果删除的是当前选中的版本，清除选中状态
         if (selectedVersionId === version.id) {
           setSelectedVersionId(null);
         }
@@ -509,26 +328,28 @@ const ProcessDetailDrawer = ({
     if (selectedVersionId) {
       return sortedVersionData.find((v) => v.id === selectedVersionId) || null;
     }
-    // 默认选中第一个版本
     return sortedVersionData.length > 0 ? sortedVersionData[0] : null;
   }, [selectedVersionId, sortedVersionData]);
 
-  // 初始化选中第一个版本
   useEffect(() => {
     if (sortedVersionData.length > 0 && !selectedVersionId) {
       setSelectedVersionId(sortedVersionData[0].id);
     }
   }, [sortedVersionData, selectedVersionId]);
 
+  // 关闭时重置
+  const handleClose = () => {
+    setActiveTab('detail');
+    onClose();
+  };
+
   if (!processData) return null;
 
-  // 格式化日期时间
   const formatDateTime = (dateStr: string | null): string => {
     if (!dateStr) return '-';
     return dateStr.replace('T', ' ').substring(0, 19);
   };
 
-  // 获取创建者名称
   const getCreatorName = (creatorId: string): string => {
     return mockCreatorNameMap[creatorId] || creatorId;
   };
@@ -551,7 +372,6 @@ const ProcessDetailDrawer = ({
     },
   ];
 
-  // 版本详情描述数据
   const getVersionDescriptionData = (version: VersionDetailData) => [
     { key: t('development.processDevelopment.detail.versionDetail.processVersion'), value: version.version },
     { key: t('development.processDevelopment.detail.versionDetail.versionFileName'), value: version.file_name || '-' },
@@ -569,83 +389,52 @@ const ProcessDetailDrawer = ({
         t('development.processDevelopment.detail.versionDetail.noDescription')
       ),
     },
-    {
-      key: t('development.processDevelopment.detail.versionDetail.clientVersion'),
-      value: version.client_version || '-',
-    },
-    {
-      key: t('development.processDevelopment.detail.versionDetail.developmentEnvironment'),
-      value: version.development_environment || 'Win10 | X86',
-    },
+    { key: t('development.processDevelopment.detail.versionDetail.clientVersion'), value: version.client_version || '-' },
+    { key: t('development.processDevelopment.detail.versionDetail.developmentEnvironment'), value: version.development_environment || 'Win10 | X86' },
   ];
 
+  // 额外操作按钮
+  const extraActions = (
+    <>
+      {!isSchedulingContext && onOpen && (
+        <Tooltip content={t('development.processDevelopment.actions.openProcess')}>
+          <Button icon={<IconExternalOpenStroked />} theme="borderless" size="small" onClick={onOpen} />
+        </Tooltip>
+      )}
+      {!isSchedulingContext && onEdit && (
+        <Tooltip content={t('common.edit')}>
+          <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={onEdit} />
+        </Tooltip>
+      )}
+      <Tooltip content={t('common.run')}>
+        <Button icon={<IconPlayCircle />} theme="borderless" size="small" onClick={onRun} />
+      </Tooltip>
+      {!isSchedulingContext && onDelete && (
+        <Tooltip content={t('common.delete')}>
+          <Button icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />} theme="borderless" size="small" onClick={onDelete} />
+        </Tooltip>
+      )}
+    </>
+  );
 
   return (
-    <SideSheet
-      title={
-        <div className="process-detail-drawer-header">
-          <div className="process-detail-drawer-header-title-wrapper">
-            <Tooltip content={processData.name}>
-              <Title heading={5} className="process-detail-drawer-header-title">
-                {processData.name}
-              </Title>
-            </Tooltip>
-          </div>
-          <div className="process-detail-drawer-header-actions">
-            <Space spacing={8}>
-              <Tooltip content={t('common.previous')}>
-                <Button icon={<IconChevronLeft />} theme="borderless" size="small" disabled={!canGoPrev || isNavigating} onClick={handlePrev} loading={isNavigating} />
-              </Tooltip>
-              <Tooltip content={t('common.next')}>
-                <Button icon={<IconChevronRight />} theme="borderless" size="small" disabled={!canGoNext || isNavigating} onClick={handleNext} loading={isNavigating} />
-              </Tooltip>
-              <Divider layout="vertical" className="process-detail-drawer-header-divider" />
-              {/* 打开流程 - 仅开发中心 */}
-              {!isSchedulingContext && onOpen && (
-                <Tooltip content={t('development.processDevelopment.actions.openProcess')}>
-                  <Button icon={<IconExternalOpenStroked />} theme="borderless" size="small" onClick={onOpen} />
-                </Tooltip>
-              )}
-              {/* 编辑 - 仅开发中心 */}
-              {!isSchedulingContext && onEdit && (
-                <Tooltip content={t('common.edit')}>
-                  <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={onEdit} />
-                </Tooltip>
-              )}
-              {/* 运行 */}
-              <Tooltip content={t('common.run')}>
-                <Button icon={<IconPlayCircle />} theme="borderless" size="small" onClick={onRun} />
-              </Tooltip>
-              {/* 删除 - 仅开发中心 */}
-              {!isSchedulingContext && onDelete && (
-                <Tooltip content={t('common.delete')}>
-                  <Button icon={<IconDeleteStroked className="process-detail-drawer-header-delete-icon" />} theme="borderless" size="small" onClick={onDelete} />
-                </Tooltip>
-              )}
-              <Divider layout="vertical" className="process-detail-drawer-header-divider" />
-              <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
-                <Button icon={isFullscreen ? <IconMinimize /> : <IconMaximize />} theme="borderless" size="small" onClick={toggleFullscreen} />
-              </Tooltip>
-              <Tooltip content={t('common.close')}>
-                <Button icon={<IconClose />} theme="borderless" size="small" onClick={onClose} className="process-detail-drawer-header-close-btn" />
-              </Tooltip>
-            </Space>
-          </div>
-        </div>
-      }
+    <DetailDrawerWrapper
       visible={visible}
-      onCancel={onClose}
-      placement="right"
-      width={isFullscreen ? '100%' : drawerWidth}
-      mask={false}
-      footer={null}
-      closable={false}
-      className={`card-sidesheet resizable-sidesheet process-detail-drawer ${isFullscreen ? 'fullscreen-sidesheet' : ''}`}
+      onClose={handleClose}
+      title={processData.name}
+      dataList={dataList}
+      currentId={processData.id}
+      getId={(item) => item.id}
+      onNavigate={(item) => onNavigate?.(item)}
+      pagination={pagination}
+      onPageChange={onPageChange}
+      onScrollToRow={onScrollToRow}
+      extraActions={extraActions}
+      defaultWidth={900}
+      minWidth={576}
+      storageKey="processDetailDrawerWidth"
+      className="process-detail-drawer"
     >
-      {!isFullscreen && <div className="process-detail-drawer-resize-handle" onMouseDown={handleMouseDown} />}
-      {isNavigating ? (
-        <DetailSkeleton rows={5} showTabs={true} sections={1} />
-      ) : (
       <Tabs activeKey={activeTab} onChange={setActiveTab} className="process-detail-drawer-tabs">
         <TabPane tab={t('development.processDevelopment.detail.tabs.detail')} itemKey="detail">
           <div className="process-detail-drawer-tab-content">
@@ -655,24 +444,14 @@ const ProcessDetailDrawer = ({
 
         <TabPane tab={t('development.processDevelopment.detail.tabs.versions')} itemKey="versions">
           {sortedVersionData.length === 0 ? (
-            // 版本列表空状态
             <div className="process-detail-drawer-version-empty">
-              <EmptyState 
-                description={t('development.processDevelopment.detail.empty.noVersions')} 
-                size={120}
-              />
-              <Button
-                icon={<IconUpload />}
-                theme="solid"
-                className="process-detail-drawer-version-empty-upload-btn"
-                onClick={() => setUploadVersionModalVisible(true)}
-              >
+              <EmptyState description={t('development.processDevelopment.detail.empty.noVersions')} size={120} />
+              <Button icon={<IconUpload />} theme="solid" className="process-detail-drawer-version-empty-upload-btn" onClick={() => setUploadVersionModalVisible(true)}>
                 {t('development.processDevelopment.detail.versionList.uploadVersion')}
               </Button>
             </div>
           ) : (
             <div className="process-detail-drawer-version-layout">
-              {/* 左侧版本列表 */}
               <div className="process-detail-drawer-version-sidebar">
                 <div className="process-detail-drawer-version-sidebar-header">
                   <Text className="process-detail-drawer-version-sidebar-title">
@@ -682,44 +461,28 @@ const ProcessDetailDrawer = ({
                     <IconHelpCircleStroked style={{ color: 'var(--semi-color-text-2)', fontSize: 14 }} />
                   </Tooltip>
                 </div>
-                <Button
-                  icon={<IconUpload />}
-                  theme="solid"
-                  className="process-detail-drawer-version-sidebar-upload-btn"
-                  onClick={() => setUploadVersionModalVisible(true)}
-                >
+                <Button icon={<IconUpload />} theme="solid" className="process-detail-drawer-version-sidebar-upload-btn" onClick={() => setUploadVersionModalVisible(true)}>
                   {t('development.processDevelopment.detail.versionList.uploadVersion')}
                 </Button>
                 <div className="process-detail-drawer-version-sidebar-list">
                   {sortedVersionData.map((version) => (
                     <div
                       key={version.id}
-                      className={`process-detail-drawer-version-sidebar-item ${
-                        selectedVersion?.id === version.id ? 'process-detail-drawer-version-sidebar-item--selected' : ''
-                      }`}
+                      className={`process-detail-drawer-version-sidebar-item ${selectedVersion?.id === version.id ? 'process-detail-drawer-version-sidebar-item--selected' : ''}`}
                       onClick={() => setSelectedVersionId(version.id)}
                     >
                       <Text className="process-detail-drawer-version-sidebar-item-version">{version.version}</Text>
-                      <Tag 
-                        color={version.is_active ? 'green' : 'grey'} 
-                        type="light"
-                        size="small"
-                      >
-                        {version.is_active 
-                          ? t('development.processDevelopment.detail.versionList.published') 
-                          : t('development.processDevelopment.detail.versionList.unpublished')
-                        }
+                      <Tag color={version.is_active ? 'green' : 'grey'} type="light" size="small">
+                        {version.is_active ? t('development.processDevelopment.detail.versionList.published') : t('development.processDevelopment.detail.versionList.unpublished')}
                       </Tag>
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* 右侧版本详情 */}
               <div className="process-detail-drawer-version-detail">
                 {selectedVersion ? (
                   <>
-                    {/* 基本信息 */}
                     <div className="process-detail-drawer-version-detail-section">
                       <Text className="process-detail-drawer-version-detail-section-title">
                         {t('development.processDevelopment.detail.versionDetail.basicInfo')}
@@ -727,29 +490,17 @@ const ProcessDetailDrawer = ({
                       <Descriptions data={getVersionDescriptionData(selectedVersion)} align="left" />
                       {selectedVersion.is_active ? (
                         <Tooltip content={t('development.processDevelopment.detail.versionList.cannotDeletePublished')}>
-                          <Button
-                            icon={<IconDeleteStroked />}
-                            type="tertiary"
-                            className="process-detail-drawer-version-detail-delete-btn"
-                            disabled
-                            onClick={() => handleDeleteVersion(selectedVersion)}
-                          >
+                          <Button icon={<IconDeleteStroked />} type="tertiary" className="process-detail-drawer-version-detail-delete-btn" disabled onClick={() => handleDeleteVersion(selectedVersion)}>
                             {t('development.processDevelopment.detail.versionList.deleteVersion')}
                           </Button>
                         </Tooltip>
                       ) : (
-                        <Button
-                          icon={<IconDeleteStroked />}
-                          type="tertiary"
-                          className="process-detail-drawer-version-detail-delete-btn"
-                          onClick={() => handleDeleteVersion(selectedVersion)}
-                        >
+                        <Button icon={<IconDeleteStroked />} type="tertiary" className="process-detail-drawer-version-detail-delete-btn" onClick={() => handleDeleteVersion(selectedVersion)}>
                           {t('development.processDevelopment.detail.versionList.deleteVersion')}
                         </Button>
                       )}
                     </div>
 
-                    {/* 流程输入 */}
                     {selectedVersion.inputs && selectedVersion.inputs.length > 0 && (
                       <div className="process-detail-drawer-version-detail-section">
                         <Text className="process-detail-drawer-version-detail-section-title">
@@ -761,12 +512,7 @@ const ProcessDetailDrawer = ({
                             setVersionData((prevData) =>
                               prevData.map((v) =>
                                 v.id === selectedVersion.id
-                                  ? {
-                                      ...v,
-                                      inputs: v.inputs?.map((input, i) =>
-                                        i === index ? { ...input, description } : input
-                                      ),
-                                    }
+                                  ? { ...v, inputs: v.inputs?.map((input, i) => (i === index ? { ...input, description } : input)) }
                                   : v
                               )
                             );
@@ -775,7 +521,6 @@ const ProcessDetailDrawer = ({
                       </div>
                     )}
 
-                    {/* 流程输出 */}
                     {selectedVersion.outputs && selectedVersion.outputs.length > 0 && (
                       <div className="process-detail-drawer-version-detail-section">
                         <Text className="process-detail-drawer-version-detail-section-title">
@@ -787,12 +532,7 @@ const ProcessDetailDrawer = ({
                             setVersionData((prevData) =>
                               prevData.map((v) =>
                                 v.id === selectedVersion.id
-                                  ? {
-                                      ...v,
-                                      outputs: v.outputs?.map((output, i) =>
-                                        i === index ? { ...output, description } : output
-                                      ),
-                                    }
+                                  ? { ...v, outputs: v.outputs?.map((output, i) => (i === index ? { ...output, description } : output)) }
                                   : v
                               )
                             );
@@ -803,30 +543,22 @@ const ProcessDetailDrawer = ({
                   </>
                 ) : (
                   <div className="process-detail-drawer-version-detail-empty">
-                    <EmptyState 
-                      description={t('development.processDevelopment.detail.empty.noVersions')} 
-                      size={100}
-                    />
+                    <EmptyState description={t('development.processDevelopment.detail.empty.noVersions')} size={100} />
                   </div>
                 )}
               </div>
             </div>
           )}
         </TabPane>
-
       </Tabs>
-      )}
 
-      {/* 上传版本弹窗 */}
       <UploadVersionModal
         visible={uploadVersionModalVisible}
         onCancel={() => setUploadVersionModalVisible(false)}
         processData={processData}
-        onSuccess={() => {
-          // TODO: 刷新版本列表
-        }}
+        onSuccess={() => {}}
       />
-    </SideSheet>
+    </DetailDrawerWrapper>
   );
 };
 

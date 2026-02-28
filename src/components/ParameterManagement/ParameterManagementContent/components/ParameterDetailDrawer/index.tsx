@@ -1,28 +1,20 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  SideSheet,
   Button,
   Typography,
   Descriptions,
   Tag,
-  Space,
-  Divider,
   Tooltip,
-  Row,
-  Col,
-  Toast,
 } from '@douyinfe/semi-ui';
 import {
   IconEditStroked,
   IconDeleteStroked,
-  IconChevronLeft,
-  IconChevronRight,
-  IconCopyStroked,
 } from '@douyinfe/semi-icons';
-import { X, Maximize2, Minimize2 } from 'lucide-react';
 import type { LYParameterResponse, ParameterType } from '@/api/index';
 import ExpandableText from '@/components/ExpandableText';
+import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
+import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 
 import './index.less';
 
@@ -41,17 +33,11 @@ interface ParameterDetailDrawerProps {
   onEdit: (parameter: LYParameterResponse) => void;
   onDelete?: (parameter: LYParameterResponse) => void;
   allParameters: LYParameterResponse[];
-  currentPage: number;
-  pageSize: number;
-  total: number;
-  onPageChange: (page: number) => Promise<LYParameterResponse[]>;
   onParameterChange: (parameter: LYParameterResponse) => void;
+  pagination?: PaginationInfo;
+  onPageChange?: (page: number, direction: 'prev' | 'next') => void;
   onScrollToRow?: (id: string) => void;
 }
-
-const DRAWER_WIDTH_KEY = 'parameter-detail-drawer-width';
-const DEFAULT_WIDTH = 900;
-const MIN_WIDTH = 576;
 
 const ParameterDetailDrawer = ({
   visible,
@@ -61,94 +47,13 @@ const ParameterDetailDrawer = ({
   onEdit,
   onDelete,
   allParameters,
-  currentPage,
-  pageSize,
-  total,
-  onPageChange,
   onParameterChange,
+  pagination,
+  onPageChange,
   onScrollToRow,
 }: ParameterDetailDrawerProps) => {
   const { t } = useTranslation();
-  const [width, setWidth] = useState(() => {
-    const saved = localStorage.getItem(DRAWER_WIDTH_KEY);
-    return saved ? Math.max(Number(saved), MIN_WIDTH) : DEFAULT_WIDTH;
-  });
-  const [isResizing, setIsResizing] = useState(false);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  // 拖拽调整宽度
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    setIsResizing(true);
-  }, []);
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!isResizing) return;
-      const newWidth = Math.max(MIN_WIDTH, window.innerWidth - e.clientX);
-      setWidth(newWidth);
-    };
-
-    const handleMouseUp = () => {
-      if (isResizing) {
-        setIsResizing(false);
-        localStorage.setItem(DRAWER_WIDTH_KEY, String(width));
-      }
-    };
-
-    if (isResizing) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-    }
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isResizing, width]);
-
-  // 计算当前参数在列表中的索引
-  const currentIndex = allParameters.findIndex(
-    (p) => p.parameter_id === parameter?.parameter_id
-  );
-
-  // 计算全局索引
-  const globalIndex = (currentPage - 1) * pageSize + currentIndex;
-
-  // 导航到上一个/下一个
-  const handleNavigate = async (direction: 'prev' | 'next') => {
-    if (direction === 'prev') {
-      if (currentIndex > 0) {
-        const target = allParameters[currentIndex - 1];
-        onParameterChange(target);
-        onScrollToRow?.(target.parameter_id);
-      } else if (currentPage > 1) {
-        const newData = await onPageChange(currentPage - 1);
-        if (newData.length > 0) {
-          const target = newData[newData.length - 1];
-          onParameterChange(target);
-          onScrollToRow?.(target.parameter_id);
-        }
-      }
-    } else {
-      if (currentIndex < allParameters.length - 1) {
-        const target = allParameters[currentIndex + 1];
-        onParameterChange(target);
-        onScrollToRow?.(target.parameter_id);
-      } else if (globalIndex < total - 1) {
-        const newData = await onPageChange(currentPage + 1);
-        if (newData.length > 0) {
-          const target = newData[0];
-          onParameterChange(target);
-          onScrollToRow?.(target.parameter_id);
-        }
-      }
-    }
-  };
-
-  const canGoPrev = globalIndex > 0;
-  const canGoNext = globalIndex < total - 1;
-
-  const { Title, Text } = Typography;
+  const { Text } = Typography;
 
   // 格式化日期
   const formatDate = (dateString: string | null) => {
@@ -164,132 +69,78 @@ const ParameterDetailDrawer = ({
     return value;
   };
 
-  // 切换全屏
-  const toggleFullscreen = useCallback(() => {
-    setIsFullscreen((prev) => !prev);
-  }, []);
+  if (!parameter) return null;
 
-  // 自定义header
-  const renderHeader = () => (
-    <div className="parameter-detail-drawer-header">
-      <div className="parameter-detail-drawer-header-title-wrapper">
-        <Tooltip content={parameter?.parameter_name || ''}>
-          <Title heading={5} className="parameter-detail-drawer-header-title">
-            {parameter?.parameter_name || ''}
-          </Title>
+  // 额外操作按钮
+  const extraActions = (
+    <>
+      {!parameter.is_published && (
+        <Tooltip content={t('common.edit')}>
+          <Button
+            icon={<IconEditStroked />}
+            theme="borderless"
+            size="small"
+            onClick={() => onEdit(parameter)}
+          />
         </Tooltip>
-      </div>
-      <div className="parameter-detail-drawer-header-actions">
-        <Space spacing={8}>
-          <Tooltip content={t('common.previous')}>
-            <Button
-              icon={<IconChevronLeft />}
-              theme="borderless"
-              size="small"
-              disabled={!canGoPrev}
-              onClick={() => handleNavigate('prev')}
-            />
-          </Tooltip>
-          <Tooltip content={t('common.next')}>
-            <Button
-              icon={<IconChevronRight />}
-              theme="borderless"
-              size="small"
-              disabled={!canGoNext}
-              onClick={() => handleNavigate('next')}
-            />
-          </Tooltip>
-          <Divider layout="vertical" className="parameter-detail-drawer-header-divider" />
-          {/* 已发布的参数不允许编辑 */}
-          {!parameter?.is_published && (
-            <Tooltip content={t('common.edit')}>
-              <Button
-                icon={<IconEditStroked />}
-                theme="borderless"
-                size="small"
-                onClick={() => parameter && onEdit(parameter)}
-              />
-            </Tooltip>
-          )}
-          {/* 已发布的参数不允许删除 - 仅开发中心显示删除按钮 */}
-          {onDelete && context === 'development' && !parameter?.is_published && (
-            <Tooltip content={t('common.delete')}>
-              <Button
-                icon={<IconDeleteStroked className="parameter-detail-drawer-header-delete-icon" />}
-                theme="borderless"
-                size="small"
-                onClick={() => parameter && onDelete(parameter)}
-              />
-            </Tooltip>
-          )}
-          <Divider layout="vertical" className="parameter-detail-drawer-header-divider" />
-          <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
-            <Button
-              icon={isFullscreen ? <Minimize2 size={16} strokeWidth={2} /> : <Maximize2 size={16} strokeWidth={2} />}
-              theme="borderless"
-              size="small"
-              onClick={toggleFullscreen}
-            />
-          </Tooltip>
-          <Tooltip content={t('common.close')}>
-            <Button
-              icon={<X size={16} strokeWidth={2} />}
-              theme="borderless"
-              size="small"
-              onClick={onClose}
-              className="parameter-detail-drawer-header-close-btn"
-            />
-          </Tooltip>
-        </Space>
-      </div>
-    </div>
+      )}
+      {onDelete && context === 'development' && !parameter.is_published && (
+        <Tooltip content={t('common.delete')}>
+          <Button
+            icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />}
+            theme="borderless"
+            size="small"
+            onClick={() => onDelete(parameter)}
+          />
+        </Tooltip>
+      )}
+    </>
   );
 
   return (
-    <SideSheet
-      className={`card-sidesheet resizable-sidesheet parameter-detail-drawer ${isFullscreen ? 'fullscreen-sidesheet' : ''}`}
+    <DetailDrawerWrapper
       visible={visible}
-      onCancel={onClose}
-      width={isFullscreen ? '100%' : width}
-      placement="right"
-      mask={false}
-      closable={false}
-      title={renderHeader()}
+      onClose={onClose}
+      title={parameter.parameter_name}
+      dataList={allParameters}
+      currentId={parameter.parameter_id}
+      getId={(item) => item.parameter_id}
+      onNavigate={onParameterChange}
+      pagination={pagination}
+      onPageChange={onPageChange}
+      onScrollToRow={onScrollToRow}
+      extraActions={extraActions}
+      defaultWidth={900}
+      minWidth={576}
+      storageKey="parameter-detail-drawer-width"
+      className="parameter-detail-drawer"
     >
-      {!isFullscreen && (
-        <div
-          className="parameter-detail-drawer-resize-handle"
-          onMouseDown={handleMouseDown}
-        />
-      )}
-
       <div className="parameter-detail-drawer-content">
         <Text strong className="parameter-detail-drawer-section-title">
           {t('parameter.detail.tabs.basicInfo')}
         </Text>
         <Descriptions align="left">
           <Descriptions.Item itemKey={t('parameter.fields.name')}>
-            {parameter?.parameter_name || '-'}
+            {parameter.parameter_name || '-'}
           </Descriptions.Item>
           <Descriptions.Item itemKey={t('parameter.fields.type')}>
-            {parameter?.parameter_type && (
+            {parameter.parameter_type && (
               <Tag color={typeConfig[parameter.parameter_type].color}>
                 {t(typeConfig[parameter.parameter_type].i18nKey)}
               </Tag>
             )}
           </Descriptions.Item>
-          <Descriptions.Item 
-            itemKey={context === 'development' 
-              ? t('parameter.table.devValue') 
+          <Descriptions.Item
+            itemKey={context === 'development'
+              ? t('parameter.table.devValue')
               : t('parameter.table.prodValue')
             }
           >
             <Text>{getParameterValueDisplay()}</Text>
           </Descriptions.Item>
-          {/* 发布状态 - 仅开发中心显示 */}
           {context === 'development' && (
             <Descriptions.Item itemKey={t('parameter.detail.isPublished')}>
-              {parameter?.is_published ? (
+              {parameter.is_published ? (
                 <Tag color="green">{t('parameter.detail.published')}</Tag>
               ) : (
                 <Tag color="grey">{t('parameter.detail.unpublished')}</Tag>
@@ -297,20 +148,20 @@ const ParameterDetailDrawer = ({
             </Descriptions.Item>
           )}
           <Descriptions.Item itemKey={t('common.description')}>
-            <ExpandableText text={parameter?.description} maxLines={3} />
+            <ExpandableText text={parameter.description} maxLines={3} />
           </Descriptions.Item>
           <Descriptions.Item itemKey={t('common.creator')}>
-            {parameter?.created_by_name || '-'}
+            {parameter.created_by_name || '-'}
           </Descriptions.Item>
           <Descriptions.Item itemKey={t('common.createTime')}>
-            {formatDate(parameter?.created_at || null)}
+            {formatDate(parameter.created_at || null)}
           </Descriptions.Item>
           <Descriptions.Item itemKey={t('common.updateTime')}>
-            {formatDate(parameter?.updated_at || null)}
+            {formatDate(parameter.updated_at || null)}
           </Descriptions.Item>
         </Descriptions>
       </div>
-    </SideSheet>
+    </DetailDrawerWrapper>
   );
 };
 
