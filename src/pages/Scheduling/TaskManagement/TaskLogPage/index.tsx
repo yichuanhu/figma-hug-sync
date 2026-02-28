@@ -398,22 +398,25 @@ const TaskLogPage = () => {
                   showClear
                   className="task-log-page-search-input"
                 />
-                <Popover
+                <FilterPopover
                   visible={filterVisible}
                   onVisibleChange={setFilterVisible}
-                  trigger="click"
-                  position="bottomLeft"
-                  content={filterContent}
-                >
-                  <Button
-                     icon={<IconFilterStroked />}
-                    type={hasActiveFilter ? 'primary' : 'tertiary'}
-                    theme={hasActiveFilter ? 'solid' : 'light'}
-                  >
-                    {t('common.filter')}
-                    {filterCount > 0 && ` (${filterCount})`}
-                  </Button>
-                </Popover>
+                  onConfirm={handleConfirmFilter}
+                  sections={[
+                    {
+                      key: 'logLevel',
+                      label: t('taskLog.filter.logLevel'),
+                      type: 'checkbox',
+                      options: [
+                        { label: 'DEBUG', value: 'DEBUG' },
+                        { label: 'INFO', value: 'INFO' },
+                        { label: 'WARN', value: 'WARN' },
+                        { label: 'ERROR', value: 'ERROR' },
+                      ],
+                      value: levelFilter,
+                    },
+                  ]}
+                />
               </Space>
             </Col>
             <Col>
