@@ -199,11 +199,11 @@ const PersonalCredentialDetailDrawer = ({
     return [
       { key: t('personalCredential.table.name'), value: credential.credential_name },
       { key: t('personalCredential.table.username'), value: credential.credential_value?.username || '-' },
-      { key: t('common.description'), value: renderDescriptionValue() },
+      { key: t('common.description'), value: <ExpandableText text={credential.description} maxLines={3} /> },
       { key: t('common.createTime'), value: formatDateTime(credential.created_at) },
       { key: t('common.updateTime'), value: formatDateTime(credential.updated_at) },
     ];
-  }, [credential, t, isDescriptionExpanded]);
+  }, [credential, t]);
 
   const handleExport = async () => {
     Toast.info(t('credential.usage.exporting'));
