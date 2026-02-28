@@ -201,10 +201,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
   const [effectiveTimeFilter, setEffectiveTimeFilter] = useState<[Date, Date] | null>(null);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
   
-  // 临时筛选状态（用于弹窗内编辑）
-  const [tempStatusFilter, setTempStatusFilter] = useState<QueueMessageStatus[]>([]);
-  const [tempEnqueueTimeFilter, setTempEnqueueTimeFilter] = useState<[Date, Date] | null>(null);
-  const [tempEffectiveTimeFilter, setTempEffectiveTimeFilter] = useState<[Date, Date] | null>(null);
+  // 临时筛选状态已由 FilterPopover 内部管理
 
   // 列表数据
   const [listResponse, setListResponse] = useState<LYQueueMessageListResultResponse | null>(null);
@@ -299,29 +296,12 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
   // 计算筛选数量（不包括日期范围）
   const filterCount = statusFilter.length;
 
-  // 筛选弹窗打开时同步临时状态
-  const handleFilterVisibleChange = (visible: boolean) => {
-    if (visible) {
-      setTempStatusFilter([...statusFilter]);
-      setTempEnqueueTimeFilter(enqueueTimeFilter);
-      setTempEffectiveTimeFilter(effectiveTimeFilter);
-    }
-    setFilterPopoverVisible(visible);
-  };
-
   // 筛选确认
-  const handleFilterConfirm = () => {
-    setStatusFilter(tempStatusFilter);
-    setEnqueueTimeFilter(tempEnqueueTimeFilter);
-    setEffectiveTimeFilter(tempEffectiveTimeFilter);
+  const handleFilterConfirm = (values: Record<string, unknown>) => {
+    setStatusFilter((values.status as QueueMessageStatus[]) || []);
+    setEnqueueTimeFilter((values.enqueueTime as [Date, Date] | null) || null);
+    setEffectiveTimeFilter((values.effectiveTime as [Date, Date] | null) || null);
     setQueryParams((prev) => ({ ...prev, page: 1 }));
-  };
-
-  // 筛选重置
-  const handleFilterReset = () => {
-    setTempStatusFilter([]);
-    setTempEnqueueTimeFilter(null);
-    setTempEffectiveTimeFilter(null);
   };
 
   // 表格排序处理
@@ -620,8 +600,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
           <Col>
             <FilterPopover
               visible={filterPopoverVisible}
-              onVisibleChange={handleFilterVisibleChange}
-              onReset={handleFilterReset}
+              onVisibleChange={setFilterPopoverVisible}
               onConfirm={handleFilterConfirm}
               sections={[
                 {
@@ -629,23 +608,20 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
                   label: t('queueMessage.filter.status'),
                   type: 'checkbox',
                   options: statusFilterOptions,
-                  value: tempStatusFilter,
-                  onChange: (value) => setTempStatusFilter(value as QueueMessageStatus[]),
+                  value: statusFilter,
                 },
                 {
                   key: 'enqueueTime',
                   label: t('queueMessage.filter.enqueueTime'),
                   type: 'dateRange',
-                  value: tempEnqueueTimeFilter,
-                  onChange: (value) => setTempEnqueueTimeFilter(value as [Date, Date] | null),
+                  value: enqueueTimeFilter,
                   datePresets,
                 },
                 {
                   key: 'effectiveTime',
                   label: t('queueMessage.filter.effectiveTime'),
                   type: 'dateRange',
-                  value: tempEffectiveTimeFilter,
-                  onChange: (value) => setTempEffectiveTimeFilter(value as [Date, Date] | null),
+                  value: effectiveTimeFilter,
                   datePresets,
                 },
               ]}

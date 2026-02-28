@@ -104,8 +104,8 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
     page_size: 50,
   });
   const [filterVisible, setFilterVisible] = useState(false);
-  const [tempLevelFilter, setTempLevelFilter] = useState<LogLevel[]>([]);
-  const [tempDateRange, setTempDateRange] = useState<[Date, Date] | null>(null);
+  const [levelFilter, setLevelFilter] = useState<LogLevel[]>([]);
+  const [dateRangeFilter, setDateRangeFilter] = useState<[Date, Date] | null>(null);
   const [exporting, setExporting] = useState(false);
   
   // 自动刷新定时器
@@ -191,21 +191,18 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
   const total = range?.total || 0;
   
   // 确认筛选
-  const handleConfirmFilter = useCallback(() => {
+  const handleConfirmFilter = useCallback((values: Record<string, unknown>) => {
+    const newLevelFilter = (values.logLevel as LogLevel[]) || [];
+    const newDateRange = (values.dateRange as [Date, Date] | null) || null;
+    setLevelFilter(newLevelFilter);
+    setDateRangeFilter(newDateRange);
     setQueryParams((prev) => ({
       ...prev,
       page: 1,
-      log_level: tempLevelFilter.length === 1 ? tempLevelFilter[0] : undefined,
-      start_time: tempDateRange?.[0]?.toISOString(),
-      end_time: tempDateRange?.[1]?.toISOString(),
+      log_level: newLevelFilter.length === 1 ? newLevelFilter[0] : undefined,
+      start_time: newDateRange?.[0]?.toISOString(),
+      end_time: newDateRange?.[1]?.toISOString(),
     }));
-    setFilterVisible(false);
-  }, [tempLevelFilter, tempDateRange]);
-  
-  // 重置筛选
-  const handleResetFilter = useCallback(() => {
-    setTempLevelFilter([]);
-    setTempDateRange(null);
   }, []);
   
   // 导出日志
@@ -360,8 +357,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
       key: 'dateRange',
       label: t('taskLog.filter.dateRange'),
       type: 'dateRange' as const,
-      value: tempDateRange,
-      onChange: (value: unknown) => setTempDateRange(value as [Date, Date] | null),
+      value: dateRangeFilter,
       datePresets,
     },
     {
@@ -374,10 +370,9 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
         { label: 'WARN', value: 'WARN' },
         { label: 'ERROR', value: 'ERROR' },
       ],
-      value: tempLevelFilter,
-      onChange: (values: unknown) => setTempLevelFilter(values as LogLevel[]),
+      value: levelFilter,
     },
-  ], [t, tempLevelFilter, tempDateRange, datePresets]);
+  ], [t, levelFilter, dateRangeFilter, datePresets]);
 
   return (
     <div className="execution-log-tab">
@@ -429,7 +424,6 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
               visible={filterVisible}
               onVisibleChange={setFilterVisible}
               sections={filterSections}
-              onReset={handleResetFilter}
               onConfirm={handleConfirmFilter}
             />
           </Space>
