@@ -24,8 +24,7 @@ import {
   IconUpload,
   IconMoreStroked,
   IconDeleteStroked,
-   IconFilterStroked,
-   IconDownloadStroked,
+  IconDownloadStroked,
 } from '@douyinfe/semi-icons';
 import { RefreshCw } from 'lucide-react';
 import { debounce } from 'lodash';
