@@ -357,8 +357,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
       key: 'dateRange',
       label: t('taskLog.filter.dateRange'),
       type: 'dateRange' as const,
-      value: tempDateRange,
-      onChange: (value: unknown) => setTempDateRange(value as [Date, Date] | null),
+      value: dateRangeFilter,
       datePresets,
     },
     {
@@ -371,10 +370,9 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
         { label: 'WARN', value: 'WARN' },
         { label: 'ERROR', value: 'ERROR' },
       ],
-      value: tempLevelFilter,
-      onChange: (values: unknown) => setTempLevelFilter(values as LogLevel[]),
+      value: levelFilter,
     },
-  ], [t, tempLevelFilter, tempDateRange, datePresets]);
+  ], [t, levelFilter, dateRangeFilter, datePresets]);
 
   return (
     <div className="execution-log-tab">
