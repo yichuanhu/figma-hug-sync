@@ -153,10 +153,6 @@ const ReleaseListPage: React.FC = () => {
 
   // 筛选状态
   const [filterVisible, setFilterVisible] = useState(false);
-  const [tempFilters, setTempFilters] = useState<{
-    release_type: ReleaseType[];
-    publish_status: ReleaseStatus[];
-  }>({ release_type: [], publish_status: [] });
   const [activeFilters, setActiveFilters] = useState<{
     release_type: ReleaseType[];
     publish_status: ReleaseStatus[];
