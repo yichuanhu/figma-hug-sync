@@ -128,13 +128,7 @@ const mockTemplates = [
   },
 ];
 
-// 时区列表
-const timeZoneOptions = [
-  { value: 'Asia/Shanghai', label: 'Asia/Shanghai (UTC+8)' },
-  { value: 'Asia/Tokyo', label: 'Asia/Tokyo (UTC+9)' },
-  { value: 'America/New_York', label: 'America/New_York (UTC-5)' },
-  { value: 'Europe/London', label: 'Europe/London (UTC+0)' },
-];
+import { TIMEZONE_OPTIONS } from '@/constants/timezones';
 
 // 已存在的触发器名称 (模拟)
 const existingTriggerNames = ['订单队列触发器', '审批队列触发器'];
@@ -634,7 +628,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
         label={t('queueTrigger.fields.timeZone')}
         placeholder={t('queueTrigger.fields.timeZonePlaceholder')}
         initValue="Asia/Shanghai"
-        optionList={timeZoneOptions}
+        optionList={TIMEZONE_OPTIONS}
         rules={[{ required: true, message: t('queueTrigger.validation.timeZoneRequired') }]}
         style={{ width: '100%' }}
       />

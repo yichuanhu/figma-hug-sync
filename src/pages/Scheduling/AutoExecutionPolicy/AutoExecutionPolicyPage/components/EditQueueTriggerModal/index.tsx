@@ -131,13 +131,7 @@ const mockCredentials = [
   { id: 'cred-002', name: 'API访问凭据' },
 ];
 
-// 时区列表
-const timeZoneOptions = [
-  { value: 'Asia/Shanghai', label: 'Asia/Shanghai (UTC+8)' },
-  { value: 'Asia/Tokyo', label: 'Asia/Tokyo (UTC+9)' },
-  { value: 'America/New_York', label: 'America/New_York (UTC-5)' },
-  { value: 'Europe/London', label: 'Europe/London (UTC+0)' },
-];
+import { TIMEZONE_OPTIONS } from '@/constants/timezones';
 
 const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQueueTriggerModalProps) => {
   const { t } = useTranslation();
@@ -658,7 +652,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
         field="timeZone"
         label={t('queueTrigger.fields.timeZone')}
         placeholder={t('queueTrigger.fields.timeZonePlaceholder')}
-        optionList={timeZoneOptions}
+        optionList={TIMEZONE_OPTIONS}
         rules={[{ required: true, message: t('queueTrigger.validation.timeZoneRequired') }]}
         style={{ width: '100%' }}
       />
