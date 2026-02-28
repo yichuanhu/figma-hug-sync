@@ -376,7 +376,6 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
                 showTotal: true,
               }}
               scroll={{ y: 260 }}
-              size="small"
             />
           </div>
         </div>
