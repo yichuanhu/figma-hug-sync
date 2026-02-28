@@ -24,7 +24,6 @@ import {
   IconPlusStroked,
   IconMoreStroked,
   IconDeleteStroked,
-   IconFilterStroked,
   IconEyeOpenedStroked,
   IconEditStroked,
 } from '@douyinfe/semi-icons';
