@@ -23,6 +23,7 @@ import {
 import { Collapsible } from '@douyinfe/semi-ui';
 import type { LYTimeTriggerResponse, LYTriggerExecutionLogResponse } from '@/api';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
+import ExpandableText from '@/components/ExpandableText';
 import './index.less';
 
 const { Text } = Typography;
