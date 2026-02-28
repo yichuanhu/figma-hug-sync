@@ -1,28 +1,22 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import {
-  SideSheet,
   Button,
   Typography,
   Descriptions,
   Tag,
-  Space,
-  Divider,
   Tooltip,
-  Row,
-  Col,
 } from '@douyinfe/semi-ui';
 import {
   IconEditStroked,
   IconDeleteStroked,
-  IconChevronLeft,
-  IconChevronRight,
   IconList,
 } from '@douyinfe/semi-icons';
-import { X, Maximize2, Minimize2 } from 'lucide-react';
 import type { LYQueueResponse } from '@/api/index';
 import ExpandableText from '@/components/ExpandableText';
+import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
+import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 
 import './index.less';
 
@@ -34,17 +28,11 @@ interface QueueDetailDrawerProps {
   onEdit: (queue: LYQueueResponse) => void;
   onDelete?: (queue: LYQueueResponse) => void;
   allQueues: LYQueueResponse[];
-  currentPage: number;
-  pageSize: number;
-  total: number;
-  onPageChange: (page: number) => Promise<LYQueueResponse[]>;
   onQueueChange: (queue: LYQueueResponse) => void;
+  pagination?: PaginationInfo;
+  onPageChange?: (page: number, direction: 'prev' | 'next') => void;
   onScrollToRow?: (id: string) => void;
 }
-
-const DRAWER_WIDTH_KEY = 'queue-detail-drawer-width';
-const DEFAULT_WIDTH = 900;
-const MIN_WIDTH = 576;
 
 const QueueDetailDrawer = ({
   visible,
@@ -54,232 +42,78 @@ const QueueDetailDrawer = ({
   onEdit,
   onDelete,
   allQueues,
-  currentPage,
-  pageSize,
-  total,
-  onPageChange,
   onQueueChange,
+  pagination,
+  onPageChange,
   onScrollToRow,
 }: QueueDetailDrawerProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [width, setWidth] = useState(() => {
-    const saved = localStorage.getItem(DRAWER_WIDTH_KEY);
-    return saved ? Math.max(Number(saved), MIN_WIDTH) : DEFAULT_WIDTH;
-  });
-  const [isResizing, setIsResizing] = useState(false);
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const { Text } = Typography;
 
-  // 拖拽调整宽度
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    setIsResizing(true);
-  }, []);
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!isResizing) return;
-      const newWidth = Math.max(MIN_WIDTH, window.innerWidth - e.clientX);
-      setWidth(newWidth);
-    };
-
-    const handleMouseUp = () => {
-      if (isResizing) {
-        setIsResizing(false);
-        localStorage.setItem(DRAWER_WIDTH_KEY, String(width));
-      }
-    };
-
-    if (isResizing) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-    }
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isResizing, width]);
-
-  // 计算当前队列在列表中的索引
-  const currentIndex = allQueues.findIndex(
-    (q) => q.queue_id === queue?.queue_id
-  );
-
-  // 计算全局索引
-  const globalIndex = (currentPage - 1) * pageSize + currentIndex;
-
-  // 导航到上一个/下一个
-  const handleNavigate = async (direction: 'prev' | 'next') => {
-    if (direction === 'prev') {
-      if (currentIndex > 0) {
-        const target = allQueues[currentIndex - 1];
-        onQueueChange(target);
-        onScrollToRow?.(target.queue_id);
-      } else if (currentPage > 1) {
-        const newData = await onPageChange(currentPage - 1);
-        if (newData.length > 0) {
-          const target = newData[newData.length - 1];
-          onQueueChange(target);
-          onScrollToRow?.(target.queue_id);
-        }
-      }
-    } else {
-      if (currentIndex < allQueues.length - 1) {
-        const target = allQueues[currentIndex + 1];
-        onQueueChange(target);
-        onScrollToRow?.(target.queue_id);
-      } else if (globalIndex < total - 1) {
-        const newData = await onPageChange(currentPage + 1);
-        if (newData.length > 0) {
-          const target = newData[0];
-          onQueueChange(target);
-          onScrollToRow?.(target.queue_id);
-        }
-      }
-    }
-  };
-
-  const canGoPrev = globalIndex > 0;
-  const canGoNext = globalIndex < total - 1;
-
-  const { Title, Text } = Typography;
-
-  // 格式化日期
   const formatDate = (dateString: string | null) => {
     if (!dateString) return '-';
     return new Date(dateString).toLocaleString('zh-CN');
   };
 
-  // 切换全屏
-  const toggleFullscreen = useCallback(() => {
-    setIsFullscreen((prev) => !prev);
-  }, []);
-
-  // 跳转到消息列表
-  const handleViewMessages = () => {
+  const handleViewMessages = useCallback(() => {
     if (!queue) return;
-    const basePath = context === 'development' 
+    const basePath = context === 'development'
       ? '/dev-center/business-assets/queues'
       : '/scheduling-center/business-assets/queues';
     navigate(`${basePath}/${queue.queue_id}/messages`);
     onClose();
-  };
+  }, [queue, context, navigate, onClose]);
 
-  // 自定义header
-  const renderHeader = () => (
-    <div className="queue-detail-drawer-header">
-      <div className="queue-detail-drawer-header-title-wrapper">
-        <Tooltip content={queue?.queue_name || ''}>
-          <Title heading={5} className="queue-detail-drawer-header-title">
-            {queue?.queue_name || ''}
-          </Title>
+  if (!queue) return null;
+
+  const extraActions = (
+    <>
+      <Tooltip content={t('queue.actions.viewMessages')}>
+        <Button icon={<IconList />} theme="borderless" size="small" onClick={handleViewMessages} />
+      </Tooltip>
+      {!queue.is_published && (
+        <Tooltip content={t('common.edit')}>
+          <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={() => onEdit(queue)} />
         </Tooltip>
-      </div>
-      <div className="queue-detail-drawer-header-actions">
-        <Space spacing={8}>
-          <Tooltip content={t('common.previous')}>
-            <Button
-              icon={<IconChevronLeft />}
-              theme="borderless"
-              size="small"
-              disabled={!canGoPrev}
-              onClick={() => handleNavigate('prev')}
-            />
-          </Tooltip>
-          <Tooltip content={t('common.next')}>
-            <Button
-              icon={<IconChevronRight />}
-              theme="borderless"
-              size="small"
-              disabled={!canGoNext}
-              onClick={() => handleNavigate('next')}
-            />
-          </Tooltip>
-          <Divider layout="vertical" className="queue-detail-drawer-header-divider" />
-          <Tooltip content={t('queue.actions.viewMessages')}>
-            <Button
-              icon={<IconList />}
-              theme="borderless"
-              size="small"
-              onClick={handleViewMessages}
-            />
-          </Tooltip>
-          {/* 已发布的队列不允许编辑 */}
-          {!queue?.is_published && (
-            <Tooltip content={t('common.edit')}>
-              <Button
-                icon={<IconEditStroked />}
-                theme="borderless"
-                size="small"
-                onClick={() => queue && onEdit(queue)}
-              />
-            </Tooltip>
-          )}
-          {/* 已发布的队列不允许删除 - 仅开发中心未发布时显示 */}
-          {onDelete && context === 'development' && !queue?.is_published && (
-            <Tooltip content={t('common.delete')}>
-              <Button
-                icon={<IconDeleteStroked className="queue-detail-drawer-header-delete-icon" />}
-                theme="borderless"
-                size="small"
-                onClick={() => queue && onDelete(queue)}
-              />
-            </Tooltip>
-          )}
-          <Divider layout="vertical" className="queue-detail-drawer-header-divider" />
-          <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
-            <Button
-              icon={isFullscreen ? <Minimize2 size={16} strokeWidth={2} /> : <Maximize2 size={16} strokeWidth={2} />}
-              theme="borderless"
-              size="small"
-              onClick={toggleFullscreen}
-            />
-          </Tooltip>
-          <Tooltip content={t('common.close')}>
-            <Button
-              icon={<X size={16} strokeWidth={2} />}
-              theme="borderless"
-              size="small"
-              onClick={onClose}
-              className="queue-detail-drawer-header-close-btn"
-            />
-          </Tooltip>
-        </Space>
-      </div>
-    </div>
+      )}
+      {onDelete && context === 'development' && !queue.is_published && (
+        <Tooltip content={t('common.delete')}>
+          <Button icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />} theme="borderless" size="small" onClick={() => onDelete(queue)} />
+        </Tooltip>
+      )}
+    </>
   );
 
   return (
-    <SideSheet
-      className={`card-sidesheet resizable-sidesheet queue-detail-drawer ${isFullscreen ? 'fullscreen-sidesheet' : ''}`}
+    <DetailDrawerWrapper
       visible={visible}
-      onCancel={onClose}
-      width={isFullscreen ? '100%' : width}
-      placement="right"
-      mask={false}
-      closable={false}
-      title={renderHeader()}
+      onClose={onClose}
+      title={queue.queue_name}
+      dataList={allQueues}
+      currentId={queue.queue_id}
+      getId={(item) => item.queue_id}
+      onNavigate={onQueueChange}
+      pagination={pagination}
+      onPageChange={onPageChange}
+      onScrollToRow={onScrollToRow}
+      extraActions={extraActions}
+      defaultWidth={900}
+      minWidth={576}
+      storageKey="queue-detail-drawer-width"
+      className="queue-detail-drawer"
     >
-      {!isFullscreen && (
-        <div
-          className="queue-detail-drawer-resize-handle"
-          onMouseDown={handleMouseDown}
-        />
-      )}
-
       <div className="queue-detail-drawer-content">
         <Text strong className="queue-detail-drawer-section-title">
           {t('queue.detail.tabs.basicInfo')}
         </Text>
         <Descriptions align="left">
           <Descriptions.Item itemKey={t('queue.fields.name')}>
-            {queue?.queue_name || '-'}
+            {queue.queue_name || '-'}
           </Descriptions.Item>
-          {/* 发布状态 - 仅开发中心显示 */}
           {context === 'development' && (
             <Descriptions.Item itemKey={t('queue.detail.isPublished')}>
-              {queue?.is_published ? (
+              {queue.is_published ? (
                 <Tag color="green">{t('queue.detail.published')}</Tag>
               ) : (
                 <Tag color="grey">{t('queue.detail.unpublished')}</Tag>
@@ -287,7 +121,7 @@ const QueueDetailDrawer = ({
             </Descriptions.Item>
           )}
           <Descriptions.Item itemKey={t('common.description')}>
-            <ExpandableText text={queue?.description} maxLines={3} />
+            <ExpandableText text={queue.description} maxLines={3} />
           </Descriptions.Item>
         </Descriptions>
 
@@ -296,20 +130,14 @@ const QueueDetailDrawer = ({
         </Text>
         <Descriptions align="left">
           <Descriptions.Item itemKey={t('queue.table.unconsumedCount')}>
-            {context === 'development' 
-              ? queue?.test_unconsumed_count 
-              : queue?.prod_unconsumed_count}
+            {context === 'development' ? queue.test_unconsumed_count : queue.prod_unconsumed_count}
           </Descriptions.Item>
           <Descriptions.Item itemKey={t('queue.table.consumedCount')}>
-            {context === 'development' 
-              ? queue?.test_consumed_count 
-              : queue?.prod_consumed_count}
+            {context === 'development' ? queue.test_consumed_count : queue.prod_consumed_count}
           </Descriptions.Item>
           <Descriptions.Item itemKey={t('queue.table.failedCount')}>
-            <Text type={((context === 'development' ? queue?.test_failed_count : queue?.prod_failed_count) || 0) > 0 ? 'danger' : undefined}>
-              {context === 'development' 
-                ? queue?.test_failed_count 
-                : queue?.prod_failed_count}
+            <Text type={((context === 'development' ? queue.test_failed_count : queue.prod_failed_count) || 0) > 0 ? 'danger' : undefined}>
+              {context === 'development' ? queue.test_failed_count : queue.prod_failed_count}
             </Text>
           </Descriptions.Item>
         </Descriptions>
@@ -319,17 +147,17 @@ const QueueDetailDrawer = ({
         </Text>
         <Descriptions align="left">
           <Descriptions.Item itemKey={t('common.creator')}>
-            {queue?.created_by_name || '-'}
+            {queue.created_by_name || '-'}
           </Descriptions.Item>
           <Descriptions.Item itemKey={t('common.createTime')}>
-            {formatDate(queue?.created_at || null)}
+            {formatDate(queue.created_at || null)}
           </Descriptions.Item>
           <Descriptions.Item itemKey={t('common.updateTime')}>
-            {formatDate(queue?.updated_at || null)}
+            {formatDate(queue.updated_at || null)}
           </Descriptions.Item>
         </Descriptions>
       </div>
-    </SideSheet>
+    </DetailDrawerWrapper>
   );
 };
 

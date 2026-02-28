@@ -1,7 +1,6 @@
-import { useMemo, useState, useEffect, useCallback, useRef } from 'react';
+import { useMemo, useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  SideSheet,
   Button,
   Tooltip,
   Typography,
@@ -9,29 +8,24 @@ import {
   Tag,
   Tabs,
   TabPane,
-  Divider,
-  Row,
-  Col,
-  Space,
 } from '@douyinfe/semi-ui';
 import {
-  IconChevronLeft,
-  IconChevronRight,
   IconCrossCircleStroked,
   IconMinusCircleStroked,
 } from '@douyinfe/semi-icons';
-import { X, PlayCircle, Maximize2, Minimize2, Inbox } from 'lucide-react';
+import { PlayCircle, Inbox } from 'lucide-react';
 import type {
   LYTaskResponse,
   TaskStatus,
   ExecutionStatus,
   TaskPriority,
 } from '@/api';
-import DetailSkeleton from '@/components/DetailSkeleton';
 import ExecutionHistoryTab from './ExecutionHistoryTab';
+import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
+import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import './index.less';
 
-const { Text, Title } = Typography;
+const { Text } = Typography;
 
 interface TaskDetailDrawerProps {
   visible: boolean;
@@ -42,14 +36,12 @@ interface TaskDetailDrawerProps {
   onRetry: (task: LYTaskResponse) => void;
   dataSource: LYTaskResponse[];
   onSelectTask: (task: LYTaskResponse) => void;
-  currentPage: number;
-  totalPages: number;
-  onPageChange: (page: number) => Promise<LYTaskResponse[]>;
+  pagination?: PaginationInfo;
+  onPageChange?: (page: number, direction: 'prev' | 'next') => void;
   onScrollToRow?: (taskId: string) => void;
   initialTab?: 'basicInfo' | 'executionHistory';
 }
 
-// 状态配置
 const taskStatusConfig: Record<TaskStatus, { color: 'grey' | 'blue' | 'orange' | 'green' | 'red'; i18nKey: string }> = {
   PENDING: { color: 'grey', i18nKey: 'task.status.pending' },
   ASSIGNED: { color: 'blue', i18nKey: 'task.status.assigned' },
@@ -83,134 +75,27 @@ const TaskDetailDrawer = ({
   onRetry,
   dataSource,
   onSelectTask,
-  currentPage,
-  totalPages,
+  pagination,
   onPageChange,
   onScrollToRow,
   initialTab = 'basicInfo',
 }: TaskDetailDrawerProps) => {
   const { t } = useTranslation();
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const [activeTab, setActiveTab] = useState('basicInfo');
-  const [isNavigating, setIsNavigating] = useState(false);
-  const [drawerWidth, setDrawerWidth] = useState(() => {
-    const saved = localStorage.getItem('taskDetailDrawerWidth');
-    return saved ? Math.max(Number(saved), 576) : 900;
-  });
-  const isResizing = useRef(false);
-  const startX = useRef(0);
-  const startWidth = useRef(drawerWidth);
 
-  // 拖拽调整宽度
-  const handleMouseDown = useCallback(
-    (e: React.MouseEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      isResizing.current = true;
-      startX.current = e.clientX;
-      startWidth.current = drawerWidth;
-      document.body.style.cursor = 'ew-resize';
-      document.body.style.userSelect = 'none';
-      const handleMouseMove = (e: MouseEvent) => {
-        if (!isResizing.current) return;
-        const diff = startX.current - e.clientX;
-        setDrawerWidth(Math.min(Math.max(startWidth.current + diff, 576), window.innerWidth - 100));
-      };
-      const handleMouseUp = () => {
-        isResizing.current = false;
-        document.body.style.cursor = '';
-        document.body.style.userSelect = '';
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
-      };
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-    },
-    [drawerWidth],
-  );
-
-  useEffect(() => {
-    localStorage.setItem('taskDetailDrawerWidth', String(drawerWidth));
-  }, [drawerWidth]);
-
-  // 当前任务在列表中的索引
-  const currentIndex = useMemo(() => {
-    if (!task) return -1;
-    return dataSource.findIndex((item) => item.task_id === task.task_id);
-  }, [task, dataSource]);
-
-  // 判断是否可以导航（考虑分页）
-  const canGoPrev = useMemo(() => {
-    if (currentIndex > 0) return true;
-    if (currentPage > 1) return true;
-    return false;
-  }, [currentIndex, currentPage]);
-
-  const canGoNext = useMemo(() => {
-    if (currentIndex >= 0 && currentIndex < dataSource.length - 1) return true;
-    if (currentPage < totalPages) return true;
-    return false;
-  }, [currentIndex, dataSource.length, currentPage, totalPages]);
-
-  // 导航到上一个
-  const handlePrev = useCallback(async () => {
-    if (isNavigating) return;
-
-    if (currentIndex > 0) {
-      const target = dataSource[currentIndex - 1];
-      onSelectTask(target);
-      onScrollToRow?.(target.task_id);
-    } else if (currentPage > 1) {
-      setIsNavigating(true);
-      try {
-        const newData = await onPageChange(currentPage - 1);
-        if (newData.length > 0) {
-          const target = newData[newData.length - 1];
-          onSelectTask(target);
-          onScrollToRow?.(target.task_id);
-        }
-      } finally {
-        setIsNavigating(false);
-      }
-    }
-  }, [currentIndex, currentPage, dataSource, onPageChange, onSelectTask, isNavigating, onScrollToRow]);
-
-  // 导航到下一个
-  const handleNext = useCallback(async () => {
-    if (isNavigating) return;
-
-    if (currentIndex >= 0 && currentIndex < dataSource.length - 1) {
-      const target = dataSource[currentIndex + 1];
-      onSelectTask(target);
-      onScrollToRow?.(target.task_id);
-    } else if (currentPage < totalPages) {
-      setIsNavigating(true);
-      try {
-        const newData = await onPageChange(currentPage + 1);
-        if (newData.length > 0) {
-          const target = newData[0];
-          onSelectTask(target);
-          onScrollToRow?.(target.task_id);
-        }
-      } finally {
-        setIsNavigating(false);
-      }
-    }
-  }, [currentIndex, currentPage, totalPages, dataSource, onPageChange, onSelectTask, isNavigating, onScrollToRow]);
-
-  // 只在抽屉首次打开时重置标签页，切换任务时保持当前 tab
+  // 只在抽屉首次打开时重置标签页
   const prevVisible = useRef(visible);
   useEffect(() => {
-    // 仅当从关闭状态变为打开状态时重置 tab
     if (visible && !prevVisible.current) {
       setActiveTab(initialTab);
     }
     prevVisible.current = visible;
   }, [visible, initialTab]);
 
-  const toggleFullscreen = useCallback(() => {
-    setIsFullscreen((prev) => !prev);
-  }, []);
+  const handleClose = () => {
+    setActiveTab('basicInfo');
+    onClose();
+  };
 
   if (!task) return null;
 
@@ -218,7 +103,6 @@ const TaskDetailDrawer = ({
   const canStop = task.execution_status === 'RUNNING';
   const canRetry = task.task_status === 'FAILED';
 
-  // 基本信息描述数据
   const basicInfoData = [
     { key: t('task.detail.taskId'), value: task.task_id },
     { key: t('task.detail.processName'), value: task.process_name },
@@ -229,30 +113,9 @@ const TaskDetailDrawer = ({
   ];
 
   const executionInfoData = [
-    {
-      key: t('task.detail.taskStatus'),
-      value: (
-        <Tag color={taskStatusConfig[task.task_status]?.color || 'grey'} type="light">
-          {t(taskStatusConfig[task.task_status]?.i18nKey || 'task.status.pending')}
-        </Tag>
-      ),
-    },
-    {
-      key: t('task.detail.executionStatus'),
-      value: task.execution_status ? (
-        <Tag color={executionStatusConfig[task.execution_status]?.color || 'grey'} type="light">
-          {t(executionStatusConfig[task.execution_status]?.i18nKey || '')}
-        </Tag>
-      ) : '-',
-    },
-    {
-      key: t('task.detail.priority'),
-      value: (
-        <Tag color={priorityConfig[task.priority]?.color || 'grey'} type="light">
-          {t(priorityConfig[task.priority]?.i18nKey || 'task.priority.medium')}
-        </Tag>
-      ),
-    },
+    { key: t('task.detail.taskStatus'), value: <Tag color={taskStatusConfig[task.task_status]?.color || 'grey'} type="light">{t(taskStatusConfig[task.task_status]?.i18nKey || 'task.status.pending')}</Tag> },
+    { key: t('task.detail.executionStatus'), value: task.execution_status ? <Tag color={executionStatusConfig[task.execution_status]?.color || 'grey'} type="light">{t(executionStatusConfig[task.execution_status]?.i18nKey || '')}</Tag> : '-' },
+    { key: t('task.detail.priority'), value: <Tag color={priorityConfig[task.priority]?.color || 'grey'} type="light">{t(priorityConfig[task.priority]?.i18nKey || 'task.priority.medium')}</Tag> },
     { key: t('task.detail.createTime'), value: task.create_time?.replace('T', ' ').substring(0, 19) || '-' },
     { key: t('task.detail.expireTime'), value: task.expire_time?.replace('T', ' ').substring(0, 19) || '-' },
     { key: t('task.detail.maxDuration'), value: `${task.max_execution_duration} ${t('task.detail.seconds')}` },
@@ -260,174 +123,90 @@ const TaskDetailDrawer = ({
     { key: t('task.detail.totalExecutions'), value: `${task.total_execution_count} ${t('task.detail.times')}` },
   ];
 
+  const extraActions = (
+    <>
+      {canCancel && (
+        <Tooltip content={t('task.actions.cancel')}>
+          <Button icon={<IconCrossCircleStroked />} theme="borderless" size="small" onClick={() => onCancel(task)} />
+        </Tooltip>
+      )}
+      {canStop && (
+        <Tooltip content={t('task.actions.stop')}>
+          <Button icon={<IconMinusCircleStroked />} theme="borderless" size="small" onClick={() => onStop(task)} />
+        </Tooltip>
+      )}
+      {canRetry && (
+        <Tooltip content={t('task.actions.retry')}>
+          <Button icon={<PlayCircle size={16} strokeWidth={2} />} theme="borderless" size="small" onClick={() => onRetry(task)} />
+        </Tooltip>
+      )}
+    </>
+  );
 
   return (
-    <SideSheet
-      title={
-        <div className="task-detail-drawer-header">
-          <div className="task-detail-drawer-header-title-wrapper">
-            <Tooltip content={task.task_id}>
-              <Title heading={5} className="task-detail-drawer-header-title">
-                {task.task_id}
-              </Title>
-            </Tooltip>
-          </div>
-          <div className="task-detail-drawer-header-actions">
-            <Space spacing={8}>
-              <Tooltip content={t('common.previous')}>
-                <Button
-                  icon={<IconChevronLeft />}
-                  theme="borderless"
-                  size="small"
-                  disabled={!canGoPrev || isNavigating}
-                  onClick={handlePrev}
-                  loading={isNavigating}
-                  className="navigate"
-                />
-              </Tooltip>
-              <Tooltip content={t('common.next')}>
-                <Button
-                  icon={<IconChevronRight />}
-                  theme="borderless"
-                  size="small"
-                  disabled={!canGoNext || isNavigating}
-                  onClick={handleNext}
-                  loading={isNavigating}
-                  className="navigate"
-                />
-              </Tooltip>
-              <Divider layout="vertical" className="task-detail-drawer-header-divider" />
-              {canCancel && (
-                <Tooltip content={t('task.actions.cancel')}>
-                  <Button
-                    icon={<IconCrossCircleStroked />}
-                    theme="borderless"
-                    size="small"
-                    onClick={() => onCancel(task)}
-                  />
-                </Tooltip>
-              )}
-              {canStop && (
-                <Tooltip content={t('task.actions.stop')}>
-                  <Button
-                    icon={<IconMinusCircleStroked />}
-                    theme="borderless"
-                    size="small"
-                    onClick={() => onStop(task)}
-                  />
-                </Tooltip>
-              )}
-              {canRetry && (
-                <Tooltip content={t('task.actions.retry')}>
-                  <Button
-                    icon={<PlayCircle size={16} strokeWidth={2} />}
-                    theme="borderless"
-                    size="small"
-                    onClick={() => onRetry(task)}
-                  />
-                </Tooltip>
-              )}
-              <Divider layout="vertical" className="task-detail-drawer-header-divider" />
-              <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
-                <Button
-                  icon={isFullscreen ? <Minimize2 size={16} strokeWidth={2} /> : <Maximize2 size={16} strokeWidth={2} />}
-                  theme="borderless"
-                  size="small"
-                  onClick={toggleFullscreen}
-                />
-              </Tooltip>
-              <Tooltip content={t('common.close')}>
-                <Button
-                  icon={<X size={16} strokeWidth={2} />}
-                  theme="borderless"
-                  size="small"
-                  onClick={onClose}
-                  className="task-detail-drawer-header-close-btn"
-                />
-              </Tooltip>
-            </Space>
-          </div>
-        </div>
-      }
+    <DetailDrawerWrapper
       visible={visible}
-      onCancel={onClose}
-      placement="right"
-      width={isFullscreen ? '100%' : drawerWidth}
-      mask={false}
-      footer={null}
-      closable={false}
-      className={`card-sidesheet resizable-sidesheet task-detail-drawer ${isFullscreen ? 'fullscreen-sidesheet' : ''}`}
+      onClose={handleClose}
+      title={task.task_id}
+      dataList={dataSource}
+      currentId={task.task_id}
+      getId={(item) => item.task_id}
+      onNavigate={onSelectTask}
+      pagination={pagination}
+      onPageChange={onPageChange}
+      onScrollToRow={onScrollToRow}
+      extraActions={extraActions}
+      defaultWidth={900}
+      minWidth={576}
+      storageKey="taskDetailDrawerWidth"
+      className="task-detail-drawer"
     >
-      {!isFullscreen && <div className="task-detail-drawer-resize-handle" onMouseDown={handleMouseDown} />}
-      {isNavigating ? (
-        <DetailSkeleton rows={5} showTabs={true} sections={2} />
-      ) : (
-        <Tabs activeKey={activeTab} onChange={setActiveTab} className="task-detail-drawer-tabs">
-          <TabPane tab={t('task.detail.tabs.basicInfo')} itemKey="basicInfo">
-            <div className="task-detail-drawer-tab-content">
-              {/* 基本信息 */}
-              <div className="task-detail-drawer-info-section">
-                <Text strong className="task-detail-drawer-info-title">
-                  {t('task.detail.basicInfo')}
-                </Text>
-                <Descriptions data={basicInfoData} align="left" />
-              </div>
-
-              {/* 执行信息 */}
-              <div className="task-detail-drawer-info-section">
-                <Text strong className="task-detail-drawer-info-title">
-                  {t('task.detail.executionInfo')}
-                </Text>
-                <Descriptions data={executionInfoData} align="left" />
-              </div>
-
-              {/* 输入参数 */}
-              <div className="task-detail-drawer-info-section">
-                <Text strong className="task-detail-drawer-info-title">
-                  {t('task.detail.inputParameters')}
-                </Text>
-                {task.input_parameters && Object.keys(task.input_parameters).length > 0 ? (
-                  <div className="task-detail-drawer-json-content">
-                    <pre>{JSON.stringify(task.input_parameters, null, 2)}</pre>
-                  </div>
-                ) : (
-                  <div className="task-detail-drawer-no-data">
-                    <Inbox size={16} strokeWidth={2} style={{ marginRight: 6 }} />
-                    {t('task.detail.noParameters')}
-                  </div>
-                )}
-              </div>
-
-              {/* 输出结果 */}
-              <div className="task-detail-drawer-info-section">
-                <Text strong className="task-detail-drawer-info-title">
-                  {t('task.detail.outputResult')}
-                </Text>
-                {task.output_result && Object.keys(task.output_result).length > 0 ? (
-                  <div className="task-detail-drawer-json-content">
-                    <pre>{JSON.stringify(task.output_result, null, 2)}</pre>
-                  </div>
-                ) : (
-                  <div className="task-detail-drawer-no-data">
-                    <Inbox size={16} strokeWidth={2} style={{ marginRight: 6 }} />
-                    {t('task.detail.noOutput')}
-                  </div>
-                )}
-              </div>
+      <Tabs activeKey={activeTab} onChange={setActiveTab} className="task-detail-drawer-tabs">
+        <TabPane tab={t('task.detail.tabs.basicInfo')} itemKey="basicInfo">
+          <div className="task-detail-drawer-tab-content">
+            <div className="task-detail-drawer-info-section">
+              <Text strong className="task-detail-drawer-info-title">{t('task.detail.basicInfo')}</Text>
+              <Descriptions data={basicInfoData} align="left" />
             </div>
-          </TabPane>
-          <TabPane tab={t('task.detail.tabs.executionHistory')} itemKey="executionHistory">
-            <div className="task-detail-drawer-tab-content task-detail-drawer-tab-content--full-height">
-              <ExecutionHistoryTab 
-                taskId={task.task_id}
-                taskName={task.process_name}
-                enableRecording={task.enable_recording} 
-              />
+            <div className="task-detail-drawer-info-section">
+              <Text strong className="task-detail-drawer-info-title">{t('task.detail.executionInfo')}</Text>
+              <Descriptions data={executionInfoData} align="left" />
             </div>
-          </TabPane>
-        </Tabs>
-      )}
-    </SideSheet>
+            <div className="task-detail-drawer-info-section">
+              <Text strong className="task-detail-drawer-info-title">{t('task.detail.inputParameters')}</Text>
+              {task.input_parameters && Object.keys(task.input_parameters).length > 0 ? (
+                <div className="task-detail-drawer-json-content">
+                  <pre>{JSON.stringify(task.input_parameters, null, 2)}</pre>
+                </div>
+              ) : (
+                <div className="task-detail-drawer-no-data">
+                  <Inbox size={16} strokeWidth={2} style={{ marginRight: 6 }} />
+                  {t('task.detail.noParameters')}
+                </div>
+              )}
+            </div>
+            <div className="task-detail-drawer-info-section">
+              <Text strong className="task-detail-drawer-info-title">{t('task.detail.outputResult')}</Text>
+              {task.output_result && Object.keys(task.output_result).length > 0 ? (
+                <div className="task-detail-drawer-json-content">
+                  <pre>{JSON.stringify(task.output_result, null, 2)}</pre>
+                </div>
+              ) : (
+                <div className="task-detail-drawer-no-data">
+                  <Inbox size={16} strokeWidth={2} style={{ marginRight: 6 }} />
+                  {t('task.detail.noOutput')}
+                </div>
+              )}
+            </div>
+          </div>
+        </TabPane>
+        <TabPane tab={t('task.detail.tabs.executionHistory')} itemKey="executionHistory">
+          <div className="task-detail-drawer-tab-content task-detail-drawer-tab-content--full-height">
+            <ExecutionHistoryTab taskId={task.task_id} taskName={task.process_name} enableRecording={task.enable_recording} />
+          </div>
+        </TabPane>
+      </Tabs>
+    </DetailDrawerWrapper>
   );
 };
 
