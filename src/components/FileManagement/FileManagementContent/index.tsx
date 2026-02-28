@@ -13,13 +13,12 @@ import {
   Row,
   Col,
   Typography,
-  Popover,
-  CheckboxGroup,
   Tooltip,
   Breadcrumb,
 } from '@douyinfe/semi-ui';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
+import FilterPopover from '@/components/FilterPopover';
 import {
   IconSearchStroked,
   IconUpload,
