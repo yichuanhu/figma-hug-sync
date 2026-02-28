@@ -83,7 +83,7 @@ export interface TriggerRuleConfigProps {
   showWorkCalendar?: boolean;
 }
 
-import { TIMEZONE_OPTIONS } from '@/constants/timezones';
+import { TIMEZONE_GROUPS } from '@/constants/timezones';
 
 // 星期选项
 const weekdayOptions = [
