@@ -9,7 +9,6 @@ import {
   Tag, 
   Dropdown,
   Switch,
-  Popover,
   Checkbox,
   Row,
   Col,
@@ -19,6 +18,7 @@ import {
 } from '@douyinfe/semi-ui';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
+import FilterPopover from '@/components/FilterPopover';
 import {
   IconSearchStroked, 
    IconFilterStroked,
