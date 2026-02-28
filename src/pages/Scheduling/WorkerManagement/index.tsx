@@ -21,7 +21,6 @@ import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
 import {
   IconSearchStroked, 
-   IconFilterStroked,
   IconPlusStroked, 
   IconMoreStroked, 
   IconEyeOpenedStroked, 
