@@ -21,6 +21,7 @@ import {
 } from '@douyinfe/semi-icons';
 import { X, Maximize2, Minimize2 } from 'lucide-react';
 import type { LYFileResponse, FileSource } from '@/api/index';
+import ExpandableText from '@/components/ExpandableText';
 
 import './index.less';
 
@@ -273,7 +274,7 @@ const FileDetailDrawer = ({
               </Descriptions.Item>
             )}
             <Descriptions.Item itemKey={t('common.description')}>
-              {file.description || '-'}
+              <ExpandableText text={file.description} maxLines={3} />
             </Descriptions.Item>
             <Descriptions.Item itemKey={t('common.creator')}>
               {file.created_by_name}

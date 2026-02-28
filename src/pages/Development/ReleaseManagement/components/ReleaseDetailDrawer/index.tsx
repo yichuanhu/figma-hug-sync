@@ -13,6 +13,7 @@ import {
 } from '@douyinfe/semi-icons';
 import type { LYReleaseResponse, ReleaseType, ReleaseStatus, ResourceType } from '@/api';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
+import ExpandableText from '@/components/ExpandableText';
 
 import './index.less';
 
@@ -109,7 +110,7 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
     { key: t('release.detail.status'), value: statusCfg ? <Tag color={statusCfg.color}>{t(statusCfg.i18nKey)}</Tag> : '-' },
     { key: t('release.detail.publisher'), value: release.publisher_name || '-' },
     { key: t('release.detail.publishTime'), value: formatTime(release.publish_time) },
-    { key: t('common.description'), value: release.description || '-' },
+    { key: t('common.description'), value: <ExpandableText text={release.description} maxLines={3} /> },
   ];
 
   const renderBasicInfoTab = () => (

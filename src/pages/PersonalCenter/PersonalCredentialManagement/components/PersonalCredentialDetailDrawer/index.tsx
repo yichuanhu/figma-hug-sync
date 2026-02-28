@@ -26,13 +26,12 @@ import FilterPopover from '@/components/FilterPopover';
 import {
   IconEditStroked,
   IconDeleteStroked,
-  IconChevronDown,
-  IconChevronUp,
   IconEyeOpenedStroked,
   IconMoreStroked,
 } from '@douyinfe/semi-icons';
 import { Download, Link, Unlink } from 'lucide-react';
 import type { LYPersonalCredentialResponse } from '@/api/index';
+import ExpandableText from '@/components/ExpandableText';
 import { useUsageRecordFilter } from '@/hooks/useUsageRecordFilter';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
@@ -41,7 +40,7 @@ import './index.less';
 
 const { Text } = Typography;
 
-const DESCRIPTION_COLLAPSE_THRESHOLD = 100;
+
 
 // ============= 使用记录类型 =============
 interface UsageRecord {
@@ -102,7 +101,7 @@ const PersonalCredentialDetailDrawer = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'basic' | 'linked' | 'usage'>(initialTab);
-  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  
 
   const isInitialOpenRef = useRef(true);
   const prevVisibleRef = useRef(visible);
@@ -150,7 +149,7 @@ const PersonalCredentialDetailDrawer = ({
   useEffect(() => {
     if (credential) {
       if (isInitialOpenRef.current) { setActiveTab(initialTab); isInitialOpenRef.current = false; }
-      setIsDescriptionExpanded(false);
+      
       setUsageQueryParams({ page: 1, pageSize: 20 });
       resetFilters();
       setUsageRecords([]);
@@ -194,35 +193,17 @@ const PersonalCredentialDetailDrawer = ({
     return new Date(dateStr).toLocaleString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' });
   };
 
-  const description = credential?.description || '-';
-  const isDescriptionLong = description.length > DESCRIPTION_COLLAPSE_THRESHOLD;
-  const displayDescription = isDescriptionLong && !isDescriptionExpanded ? description.slice(0, DESCRIPTION_COLLAPSE_THRESHOLD) + '...' : description;
-
-  const renderDescriptionValue = () => {
-    if (description === '-') return '-';
-    return (
-      <div className="personal-credential-detail-drawer-description">
-        <span className="personal-credential-detail-drawer-description-text">{displayDescription}</span>
-        {isDescriptionLong && (
-          <Button theme="borderless" size="small" type="tertiary" className="personal-credential-detail-drawer-description-toggle"
-            icon={isDescriptionExpanded ? <IconChevronUp /> : <IconChevronDown />} onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}>
-            {isDescriptionExpanded ? t('common.collapse') : t('common.expand')}
-          </Button>
-        )}
-      </div>
-    );
-  };
 
   const descriptionData = useMemo(() => {
     if (!credential) return [];
     return [
       { key: t('personalCredential.table.name'), value: credential.credential_name },
       { key: t('personalCredential.table.username'), value: credential.credential_value?.username || '-' },
-      { key: t('common.description'), value: renderDescriptionValue() },
+      { key: t('common.description'), value: <ExpandableText text={credential.description} maxLines={3} /> },
       { key: t('common.createTime'), value: formatDateTime(credential.created_at) },
       { key: t('common.updateTime'), value: formatDateTime(credential.updated_at) },
     ];
-  }, [credential, t, isDescriptionExpanded]);
+  }, [credential, t]);
 
   const handleExport = async () => {
     Toast.info(t('credential.usage.exporting'));

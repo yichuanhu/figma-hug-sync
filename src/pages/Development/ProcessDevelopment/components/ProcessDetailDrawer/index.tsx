@@ -28,6 +28,7 @@ import UploadVersionModal from '../UploadVersionModal';
 import EmptyState from '@/components/EmptyState';
 import DetailSkeleton from '@/components/DetailSkeleton';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
+import ExpandableText from '@/components/ExpandableText';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import './index.less';
 
@@ -313,7 +314,7 @@ const ProcessDetailDrawer = ({
 
   const descriptionData = [
     { key: t('development.processDevelopment.fields.processName'), value: processData.name },
-    { key: t('common.description'), value: processData.description || '-' },
+    { key: t('common.description'), value: <ExpandableText text={processData.description} maxLines={3} /> },
     { key: t('common.creator'), value: creatorName },
     { key: t('common.createTime'), value: formatDateTime(processData.created_at) },
     { key: t('common.updateTime'), value: formatDateTime(processData.updated_at) },
