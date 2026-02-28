@@ -335,37 +335,7 @@ const TaskLogPage = () => {
     },
   ];
   
-  // 筛选弹窗内容
-  const filterContent = (
-    <div className="task-log-page-filter-popover">
-      <div className="task-log-page-filter-popover-section">
-        <Text className="task-log-page-filter-popover-label">{t('taskLog.filter.logLevel')}</Text>
-        <CheckboxGroup
-          direction="vertical"
-          value={tempLevelFilter}
-          onChange={(values) => setTempLevelFilter(values as LogLevel[])}
-          options={[
-            { label: 'DEBUG', value: 'DEBUG' },
-            { label: 'INFO', value: 'INFO' },
-            { label: 'WARN', value: 'WARN' },
-            { label: 'ERROR', value: 'ERROR' },
-          ]}
-        />
-      </div>
-      <div className="task-log-page-filter-popover-footer">
-        <Button
-          type="tertiary"
-          onClick={handleResetFilter}
-          disabled={tempLevelFilter.length === 0}
-        >
-          {t('common.reset')}
-        </Button>
-        <Button type="primary" onClick={handleConfirmFilter}>
-          {t('common.confirm')}
-        </Button>
-      </div>
-    </div>
-  );
+  // filterContent removed - using FilterPopover directly
 
   return (
     <AppLayout>
