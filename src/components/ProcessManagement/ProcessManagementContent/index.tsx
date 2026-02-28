@@ -27,7 +27,6 @@ import {
   IconExternalOpenStroked,
   IconEditStroked,
   IconDeleteStroked,
-   IconFilterStroked,
 } from '@douyinfe/semi-icons';
 import { PlayCircle } from 'lucide-react';
 import CreateProcessModal from './components/CreateProcessModal';
