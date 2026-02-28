@@ -79,7 +79,7 @@ const generateMockTimeTriggerResponse = (index: number): LYTimeTriggerResponse =
   return {
     trigger_id: `trigger-${generateUUID().substring(0, 8)}`,
     name: `${process.process_name}触发器${index + 1}`,
-    description: index % 3 === 0 ? null : `这是${process.process_name}的定时触发器，用于定期自动创建任务`,
+    description: index % 5 === 0 ? null : index % 5 === 1 ? `这是${process.process_name}的定时触发器，用于定期自动创建任务。该触发器会按照预设的时间规则自动触发，创建对应的自动化任务并分配到指定的执行目标上运行。支持多种触发频率配置，包括每天、每周、每月等周期性触发，以及基于Cron表达式的高级配置。触发器还支持工作日历过滤，可以跳过非工作日执行，确保任务在合适的时间点触发。当触发器关联的流程版本更新时，新创建的任务将自动使用最新版本。` : `这是${process.process_name}的定时触发器，用于定期自动创建任务`,
     status,
     process_id: process.process_id,
     process_name: process.process_name,
