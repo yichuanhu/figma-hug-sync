@@ -267,7 +267,7 @@ const PersonalCredentialDetailDrawer = ({
             {linkedCredentialsLoading ? (
               <TableSkeleton rows={5} columns={4} columnWidths={['30%', '35%', '20%', '15%']} />
             ) : (
-              <Table size="middle" columns={[
+              <Table size="small" columns={[
                 { title: t('personalCredential.linkedCredentials.credentialName'), dataIndex: 'credential_name', key: 'credential_name', render: (text: string) => <span>{text}</span> },
                 { title: t('common.description'), dataIndex: 'description', key: 'description', render: (text: string | null) => text || '-' },
                 { title: t('common.createTime'), dataIndex: 'created_at', key: 'created_at', width: 160, render: (text: string) => formatDateTime(text) },
