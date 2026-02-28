@@ -505,12 +505,12 @@ const TaskManagementPage = () => {
     });
   };
 
-  // 重置筛选
-  const handleResetFilter = () => {
-    setTaskStatusFilter([]);
-    setExecutionStatusFilter([]);
-    setTriggerSourceFilter([]);
-    setDateRange(null);
+  // 筛选确认
+  const handleFilterConfirm = (values: Record<string, unknown>) => {
+    setTaskStatusFilter((values.taskStatus as string[]) || []);
+    setExecutionStatusFilter((values.executionStatus as string[]) || []);
+    setTriggerSourceFilter((values.triggerSource as string[]) || []);
+    setDateRange((values.dateRange as [Date, Date] | null) || null);
   };
 
   // 分页信息
