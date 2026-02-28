@@ -16,14 +16,13 @@ import {
   Col,
   Space,
   DatePicker,
-  Popover,
-  CheckboxGroup,
   Image,
   Dropdown,
 } from '@douyinfe/semi-ui';
 import EmptyState from '@/components/EmptyState';
 import DetailSkeleton from '@/components/DetailSkeleton';
 import TableSkeleton from '@/components/TableSkeleton';
+import FilterPopover from '@/components/FilterPopover';
 import {
   IconEditStroked,
   IconDeleteStroked,
