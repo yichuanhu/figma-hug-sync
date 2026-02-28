@@ -131,7 +131,7 @@ const mockCredentials = [
   { id: 'cred-002', name: 'API访问凭据' },
 ];
 
-import { TIMEZONE_OPTIONS } from '@/constants/timezones';
+import { TIMEZONE_GROUPS } from '@/constants/timezones';
 
 const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQueueTriggerModalProps) => {
   const { t } = useTranslation();
