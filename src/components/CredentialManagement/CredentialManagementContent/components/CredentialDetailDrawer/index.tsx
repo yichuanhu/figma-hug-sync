@@ -25,7 +25,6 @@ import FilterPopover from '@/components/FilterPopover';
 import {
   IconEditStroked,
   IconDeleteStroked,
-  IconFilterStroked,
 } from '@douyinfe/semi-icons';
 import { Download } from 'lucide-react';
 import type { LYCredentialResponse, CredentialType, LYRangeResponse } from '@/api/index';
