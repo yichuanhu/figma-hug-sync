@@ -78,7 +78,7 @@ const generateMockQueueTriggerResponse = (index: number): LYQueueTriggerResponse
   return {
     trigger_id: `qt-${generateUUID().substring(0, 8)}`,
     name: `${queue.queue_name}触发器${index + 1}`,
-    description: index % 3 === 0 ? null : `监控${queue.queue_name}，自动创建${process.process_name}任务`,
+    description: index % 5 === 0 ? null : index % 5 === 1 ? `监控${queue.queue_name}，自动创建${process.process_name}任务。该队列触发器会实时监控指定队列中的消息数量，当有效消息数达到预设阈值时自动触发任务创建。支持配置每次触发消费的消息数量，以及定时检查机制，确保即使消息到达速度较慢也能及时处理。触发器创建的任务会自动携带队列消息作为输入参数，实现端到端的自动化处理流程。适用于订单处理、工单分配、数据同步等需要基于消息驱动的自动化场景。` : `监控${queue.queue_name}，自动创建${process.process_name}任务`,
     status,
     process_id: process.process_id,
     process_name: process.process_name,
