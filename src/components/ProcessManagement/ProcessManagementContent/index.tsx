@@ -563,49 +563,23 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
               />
               {/* 调度中心不显示筛选 */}
               {!isSchedulingContext && (
-                <Popover
+                <FilterPopover
                   visible={filterPopoverVisible}
                   onVisibleChange={setFilterPopoverVisible}
-                  trigger="click"
-                  position="bottomLeft"
-                  content={
-                    <div className="filter-popover">
-                      <div className="filter-popover-section">
-                        <Text strong className="filter-popover-label">
-                          {t('common.status')}
-                        </Text>
-                        <CheckboxGroup
-                          value={statusFilter}
-                          onChange={(values) => {
-                            setStatusFilter(values as string[]);
-                            setQueryParams((prev) => ({ ...prev, offset: 0 }));
-                          }}
-                          options={statusOptions}
-                          direction="horizontal"
-                        />
-                      </div>
-                      <div className="filter-popover-footer">
-                        <Button theme="borderless" onClick={() => {
-                          setStatusFilter([]);
-                          setQueryParams((prev) => ({ ...prev, offset: 0 }));
-                        }} disabled={statusFilter.length === 0}>
-                          {t('common.reset')}
-                        </Button>
-                        <Button theme="solid" type="primary" onClick={() => setFilterPopoverVisible(false)}>
-                          {t('common.confirm')}
-                        </Button>
-                      </div>
-                    </div>
-                  }
-                >
-                  <Button
-                     icon={<IconFilterStroked />}
-                    type={statusFilter.length > 0 ? 'primary' : 'tertiary'}
-                    theme={statusFilter.length > 0 ? 'solid' : 'light'}
-                  >
-                    {t('common.filter')}{statusFilter.length > 0 ? ` (${statusFilter.length})` : ''}
-                  </Button>
-                </Popover>
+                  onConfirm={(values) => {
+                    setStatusFilter((values.status as string[]) || []);
+                    setQueryParams((prev) => ({ ...prev, offset: 0 }));
+                  }}
+                  sections={[
+                    {
+                      key: 'status',
+                      label: t('common.status'),
+                      type: 'checkbox',
+                      options: statusOptions,
+                      value: statusFilter,
+                    },
+                  ]}
+                />
               )}
             </Space>
           </Col>
