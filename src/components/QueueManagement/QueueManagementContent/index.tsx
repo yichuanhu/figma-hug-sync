@@ -610,11 +610,14 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
         onEdit={handleEdit}
         onDelete={context === 'development' ? handleDelete : undefined}
         allQueues={listResponse?.data || []}
-        currentPage={queryParams.page}
-        pageSize={queryParams.pageSize}
-        total={total}
-        onPageChange={handleDrawerPageChange}
         onQueueChange={setSelectedQueue}
+        pagination={{
+          currentPage: queryParams.page,
+          pageSize: queryParams.pageSize,
+          total,
+          totalPages: Math.ceil(total / queryParams.pageSize),
+        }}
+        onPageChange={handleDrawerPageChange}
         onScrollToRow={(id) => {
           const row = document.getElementById(`queue-row-${id}`);
           row?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });

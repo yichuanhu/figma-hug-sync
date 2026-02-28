@@ -828,10 +828,14 @@ const TaskManagementPage = () => {
           onRetry={handleRetryTask}
           dataSource={list}
           onSelectTask={setSelectedTask}
-          currentPage={currentPage}
-          totalPages={Math.ceil(total / pageSize)}
           initialTab={initialTab}
-          onPageChange={async (page) => {
+          pagination={{
+            currentPage,
+            pageSize,
+            total,
+            totalPages: Math.ceil(total / pageSize),
+          }}
+          onPageChange={async (page, direction) => {
             setQueryParams((prev) => ({ ...prev, offset: (page - 1) * pageSize }));
             const response = await fetchTaskList({
               ...queryParams,
@@ -841,7 +845,6 @@ const TaskManagementPage = () => {
               trigger_source: triggerSourceFilter.length > 0 ? triggerSourceFilter as TriggerSource[] : undefined,
             });
             setListResponse(response);
-            return response.list;
           }}
         />
       </div>
