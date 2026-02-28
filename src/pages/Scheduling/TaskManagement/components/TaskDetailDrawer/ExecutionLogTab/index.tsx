@@ -191,21 +191,18 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
   const total = range?.total || 0;
   
   // 确认筛选
-  const handleConfirmFilter = useCallback(() => {
+  const handleConfirmFilter = useCallback((values: Record<string, unknown>) => {
+    const newLevelFilter = (values.logLevel as LogLevel[]) || [];
+    const newDateRange = (values.dateRange as [Date, Date] | null) || null;
+    setLevelFilter(newLevelFilter);
+    setDateRangeFilter(newDateRange);
     setQueryParams((prev) => ({
       ...prev,
       page: 1,
-      log_level: tempLevelFilter.length === 1 ? tempLevelFilter[0] : undefined,
-      start_time: tempDateRange?.[0]?.toISOString(),
-      end_time: tempDateRange?.[1]?.toISOString(),
+      log_level: newLevelFilter.length === 1 ? newLevelFilter[0] : undefined,
+      start_time: newDateRange?.[0]?.toISOString(),
+      end_time: newDateRange?.[1]?.toISOString(),
     }));
-    setFilterVisible(false);
-  }, [tempLevelFilter, tempDateRange]);
-  
-  // 重置筛选
-  const handleResetFilter = useCallback(() => {
-    setTempLevelFilter([]);
-    setTempDateRange(null);
   }, []);
   
   // 导出日志
