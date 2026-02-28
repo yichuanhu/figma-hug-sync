@@ -83,18 +83,7 @@ export interface TriggerRuleConfigProps {
   showWorkCalendar?: boolean;
 }
 
-// 常用时区列表
-const timeZones = [
-  { value: 'Asia/Shanghai', label: 'Asia/Shanghai (UTC+8)', offset: '+08:00' },
-  { value: 'Asia/Tokyo', label: 'Asia/Tokyo (UTC+9)', offset: '+09:00' },
-  { value: 'Asia/Hong_Kong', label: 'Asia/Hong_Kong (UTC+8)', offset: '+08:00' },
-  { value: 'Asia/Singapore', label: 'Asia/Singapore (UTC+8)', offset: '+08:00' },
-  { value: 'UTC', label: 'UTC (UTC+0)', offset: '+00:00' },
-  { value: 'Europe/London', label: 'Europe/London (UTC+0)', offset: '+00:00' },
-  { value: 'Europe/Paris', label: 'Europe/Paris (UTC+1)', offset: '+01:00' },
-  { value: 'America/New_York', label: 'America/New_York (UTC-5)', offset: '-05:00' },
-  { value: 'America/Los_Angeles', label: 'America/Los_Angeles (UTC-8)', offset: '-08:00' },
-];
+import { TIMEZONE_OPTIONS } from '@/constants/timezones';
 
 // 星期选项
 const weekdayOptions = [
