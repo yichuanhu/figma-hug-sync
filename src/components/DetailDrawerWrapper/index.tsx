@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect, ReactNode, useMemo } from 'react';
-import { useI18n } from '@monorepo/uci-react';
+import { useTranslation } from 'react-i18next';
 import { SideSheet, Typography, Button, Divider, Tooltip, Row, Col, Space } from '@douyinfe/semi-ui';
 import {
   IconMaximize,
