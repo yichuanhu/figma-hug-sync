@@ -20,6 +20,7 @@ import {
 import { Inbox } from 'lucide-react';
 import type { LYQueueTriggerResponse, LYQueueTriggerExecutionLogResponse } from '@/api';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
+import ExpandableText from '@/components/ExpandableText';
 import './index.less';
 
 const { Text } = Typography;
