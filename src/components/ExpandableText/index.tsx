@@ -8,15 +8,17 @@ const { Text } = Typography;
 interface ExpandableTextProps {
   text: string | null | undefined;
   maxLines?: number;
-  maxExpandedHeight?: number;
+  /** 展开后的固定高度，默认300px */
+  expandedHeight?: number;
   className?: string;
 }
 
 /**
  * 可展开/收起的文本组件
  * 当文本超过指定行数时，显示展开/收起按钮
+ * 展开后固定高度可滚动
  */
-const ExpandableText = ({ text, maxLines = 3, maxExpandedHeight, className = '' }: ExpandableTextProps) => {
+const ExpandableText = ({ text, maxLines = 3, expandedHeight = 300, className = '' }: ExpandableTextProps) => {
   const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
   const [isOverflow, setIsOverflow] = useState(false);
@@ -40,10 +42,7 @@ const ExpandableText = ({ text, maxLines = 3, maxExpandedHeight, className = '' 
       <div
         ref={textRef}
         className={`expandable-text-content ${expanded ? 'expanded' : ''}`}
-        style={{
-          WebkitLineClamp: expanded ? 'unset' : maxLines,
-          ...(expanded && maxExpandedHeight ? { maxHeight: maxExpandedHeight, overflowY: 'auto' as const } : {}),
-        }}
+        style={expanded ? { maxHeight: expandedHeight } : { WebkitLineClamp: maxLines }}
       >
         {text}
       </div>

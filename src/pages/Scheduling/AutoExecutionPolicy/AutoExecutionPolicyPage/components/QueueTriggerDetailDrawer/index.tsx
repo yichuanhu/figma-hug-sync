@@ -20,6 +20,7 @@ import {
 import { Inbox } from 'lucide-react';
 import type { LYQueueTriggerResponse, LYQueueTriggerExecutionLogResponse } from '@/api';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
+import ExpandableText from '@/components/ExpandableText';
 import './index.less';
 
 const { Text } = Typography;
@@ -188,7 +189,7 @@ const QueueTriggerDetailDrawer = ({
                   {trigger.name}
                 </Descriptions.Item>
                 <Descriptions.Item itemKey={t('queueTrigger.detail.fields.description')}>
-                  {trigger.description || '-'}
+                  <ExpandableText text={trigger.description} maxLines={3} />
                 </Descriptions.Item>
                 <Descriptions.Item itemKey={t('queueTrigger.detail.fields.status')}>
                   <Space spacing={8}>
