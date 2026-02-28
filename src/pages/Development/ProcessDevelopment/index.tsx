@@ -28,7 +28,6 @@ import {
   IconEditStroked,
   IconPlayCircle,
   IconDeleteStroked,
-   IconFilterStroked,
 } from '@douyinfe/semi-icons';
 import AppLayout from '@/components/layout/AppLayout';
 import CreateProcessModal from './components/CreateProcessModal';
