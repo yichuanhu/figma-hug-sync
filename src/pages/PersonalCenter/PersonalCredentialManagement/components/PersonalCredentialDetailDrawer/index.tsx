@@ -193,24 +193,6 @@ const PersonalCredentialDetailDrawer = ({
     return new Date(dateStr).toLocaleString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' });
   };
 
-  const description = credential?.description || '-';
-  const isDescriptionLong = description.length > DESCRIPTION_COLLAPSE_THRESHOLD;
-  const displayDescription = isDescriptionLong && !isDescriptionExpanded ? description.slice(0, DESCRIPTION_COLLAPSE_THRESHOLD) + '...' : description;
-
-  const renderDescriptionValue = () => {
-    if (description === '-') return '-';
-    return (
-      <div className="personal-credential-detail-drawer-description">
-        <span className="personal-credential-detail-drawer-description-text">{displayDescription}</span>
-        {isDescriptionLong && (
-          <Button theme="borderless" size="small" type="tertiary" className="personal-credential-detail-drawer-description-toggle"
-            icon={isDescriptionExpanded ? <IconChevronUp /> : <IconChevronDown />} onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}>
-            {isDescriptionExpanded ? t('common.collapse') : t('common.expand')}
-          </Button>
-        )}
-      </div>
-    );
-  };
 
   const descriptionData = useMemo(() => {
     if (!credential) return [];
