@@ -26,8 +26,6 @@ import FilterPopover from '@/components/FilterPopover';
 import {
   IconEditStroked,
   IconDeleteStroked,
-  IconChevronDown,
-  IconChevronUp,
   IconEyeOpenedStroked,
   IconMoreStroked,
 } from '@douyinfe/semi-icons';
