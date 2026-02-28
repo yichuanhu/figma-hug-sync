@@ -275,13 +275,8 @@ const QueueTriggerList = () => {
   };
 
   // 抽屉中导航
-  const handleNavigate = (direction: 'prev' | 'next') => {
-    if (!selectedTrigger) return;
-    const currentIndex = list.findIndex((t) => t.trigger_id === selectedTrigger.trigger_id);
-    const newIndex = direction === 'prev' ? currentIndex - 1 : currentIndex + 1;
-    if (newIndex >= 0 && newIndex < list.length) {
-      setSelectedTrigger(list[newIndex]);
-    }
+  const handleNavigate = (trigger: LYQueueTriggerResponse) => {
+    setSelectedTrigger(trigger);
   };
 
   // 启用/禁用触发器（直接切换，不弹窗确认）
