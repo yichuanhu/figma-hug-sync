@@ -706,6 +706,7 @@ const TaskManagementPage = () => {
                 <FilterPopover
                   visible={filterPopoverVisible}
                   onVisibleChange={setFilterPopoverVisible}
+                  onConfirm={handleFilterConfirm}
                   sections={[
                     {
                       key: 'taskStatus',
@@ -713,7 +714,6 @@ const TaskManagementPage = () => {
                       type: 'checkbox',
                       options: taskStatusOptions,
                       value: taskStatusFilter,
-                      onChange: (value) => setTaskStatusFilter(value as string[]),
                     },
                     {
                       key: 'executionStatus',
@@ -721,7 +721,6 @@ const TaskManagementPage = () => {
                       type: 'checkbox',
                       options: executionStatusOptions,
                       value: executionStatusFilter,
-                      onChange: (value) => setExecutionStatusFilter(value as string[]),
                     },
                     {
                       key: 'triggerSource',
@@ -729,17 +728,14 @@ const TaskManagementPage = () => {
                       type: 'checkbox',
                       options: triggerSourceOptions,
                       value: triggerSourceFilter,
-                      onChange: (value) => setTriggerSourceFilter(value as string[]),
                     },
                     {
                       key: 'dateRange',
                       label: t('task.filter.dateRange'),
                       type: 'dateRange',
                       value: dateRange,
-                      onChange: (value) => setDateRange(value as [Date, Date] | null),
                     },
                   ]}
-                  onReset={handleResetFilter}
                 />
               </Space>
             </Col>

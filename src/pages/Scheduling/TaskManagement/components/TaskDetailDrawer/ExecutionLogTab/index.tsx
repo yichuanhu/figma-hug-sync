@@ -424,7 +424,6 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
               visible={filterVisible}
               onVisibleChange={setFilterVisible}
               sections={filterSections}
-              onReset={handleResetFilter}
               onConfirm={handleConfirmFilter}
             />
           </Space>

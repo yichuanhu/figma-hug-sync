@@ -600,8 +600,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
           <Col>
             <FilterPopover
               visible={filterPopoverVisible}
-              onVisibleChange={handleFilterVisibleChange}
-              onReset={handleFilterReset}
+              onVisibleChange={setFilterPopoverVisible}
               onConfirm={handleFilterConfirm}
               sections={[
                 {
@@ -609,23 +608,20 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
                   label: t('queueMessage.filter.status'),
                   type: 'checkbox',
                   options: statusFilterOptions,
-                  value: tempStatusFilter,
-                  onChange: (value) => setTempStatusFilter(value as QueueMessageStatus[]),
+                  value: statusFilter,
                 },
                 {
                   key: 'enqueueTime',
                   label: t('queueMessage.filter.enqueueTime'),
                   type: 'dateRange',
-                  value: tempEnqueueTimeFilter,
-                  onChange: (value) => setTempEnqueueTimeFilter(value as [Date, Date] | null),
+                  value: enqueueTimeFilter,
                   datePresets,
                 },
                 {
                   key: 'effectiveTime',
                   label: t('queueMessage.filter.effectiveTime'),
                   type: 'dateRange',
-                  value: tempEffectiveTimeFilter,
-                  onChange: (value) => setTempEffectiveTimeFilter(value as [Date, Date] | null),
+                  value: effectiveTimeFilter,
                   datePresets,
                 },
               ]}

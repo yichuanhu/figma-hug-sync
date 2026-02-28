@@ -456,30 +456,19 @@ const ReleaseListPage: React.FC = () => {
                   visible={filterVisible}
                   onVisibleChange={setFilterVisible}
                   onConfirm={handleFilterConfirm}
-                  onReset={handleFilterReset}
                   sections={[
                     {
                       key: 'release_type',
                       label: t('release.list.columns.releaseType'),
                       type: 'checkbox',
-                      value: tempFilters.release_type,
-                      onChange: (value) =>
-                        setTempFilters((prev) => ({
-                          ...prev,
-                          release_type: value as ReleaseType[],
-                        })),
+                      value: activeFilters.release_type,
                       options: releaseTypeOptions,
                     },
                     {
                       key: 'publish_status',
                       label: t('release.list.columns.status'),
                       type: 'checkbox',
-                      value: tempFilters.publish_status,
-                      onChange: (value) =>
-                        setTempFilters((prev) => ({
-                          ...prev,
-                          publish_status: value as ReleaseStatus[],
-                        })),
+                      value: activeFilters.publish_status,
                       options: statusOptions,
                     },
                   ]}
