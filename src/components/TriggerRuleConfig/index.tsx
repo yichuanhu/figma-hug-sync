@@ -488,10 +488,19 @@ const TriggerRuleConfig = ({
           <Select
             value={timeZone}
             onChange={(v) => onTimeZoneChange(v as string)}
-            optionList={TIMEZONE_OPTIONS}
             filter
             style={{ width: '100%' }}
-          />
+          >
+            {TIMEZONE_GROUPS.map((group) => (
+              <Select.OptGroup key={group.groupLabel} label={group.groupLabel}>
+                {group.options.map((tz) => (
+                  <Select.Option key={tz.value} value={tz.value}>
+                    {tz.label}
+                  </Select.Option>
+                ))}
+              </Select.OptGroup>
+            ))}
+          </Select>
         </div>
 
         {/* 启用工作日历 */}
