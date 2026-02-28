@@ -463,10 +463,7 @@ const QueueTriggerList = () => {
   // 判断是否有筛选条件
   const hasFilters = queryParams.keyword || queryParams.process_id || queryParams.queue_id || queryParams.status;
 
-  // 计算当前选中项在列表中的索引
-  const currentIndex = selectedTrigger
-    ? list.findIndex((t) => t.trigger_id === selectedTrigger.trigger_id)
-    : -1;
+  // currentIndex no longer needed - navigation handled by DetailDrawerWrapper
 
   return (
     <div className="queue-trigger-list">
