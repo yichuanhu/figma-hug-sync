@@ -13,20 +13,18 @@ import {
   Row,
   Col,
   Typography,
-  Popover,
-  CheckboxGroup,
   Tooltip,
   Breadcrumb,
 } from '@douyinfe/semi-ui';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
+import FilterPopover from '@/components/FilterPopover';
 import {
   IconSearchStroked,
   IconUpload,
   IconMoreStroked,
   IconDeleteStroked,
-   IconFilterStroked,
-   IconDownloadStroked,
+  IconDownloadStroked,
 } from '@douyinfe/semi-icons';
 import { RefreshCw } from 'lucide-react';
 import { debounce } from 'lodash';
@@ -521,56 +519,23 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
                 showClear
                 maxLength={100}
               />
-              <Popover
+              <FilterPopover
                 visible={filterPopoverVisible}
                 onVisibleChange={setFilterPopoverVisible}
-                trigger="click"
-                position="bottomLeft"
-                content={
-                  <div className="file-filter-popover">
-                    <div className="file-filter-popover-section">
-                      <Text className="file-filter-popover-label">
-                        {t('file.filter.source')}
-                      </Text>
-                      <CheckboxGroup
-                        options={sourceFilterOptions}
-                        value={sourceFilter}
-                        onChange={(val) => setSourceFilter(val as FileSource[])}
-                        direction="vertical"
-                      />
-                    </div>
-                    <div className="file-filter-popover-footer">
-                      <Button
-                        type="tertiary"
-                        disabled={sourceFilter.length === 0}
-                        onClick={() => {
-                          setSourceFilter([]);
-                        }}
-                      >
-                        {t('common.reset')}
-                      </Button>
-                      <Button
-                        type="primary"
-                        onClick={() => {
-                          setFilterPopoverVisible(false);
-                          setQueryParams((prev) => ({ ...prev, page: 1 }));
-                        }}
-                      >
-                        {t('common.confirm')}
-                      </Button>
-                    </div>
-                  </div>
-                }
-              >
-                <Button
-                   icon={<IconFilterStroked />}
-                  type={sourceFilter.length > 0 ? 'primary' : 'tertiary'}
-                  theme={sourceFilter.length > 0 ? 'solid' : 'light'}
-                >
-                  {t('common.filter')}
-                  {sourceFilter.length > 0 && ` (${sourceFilter.length})`}
-                </Button>
-              </Popover>
+                onConfirm={(values) => {
+                  setSourceFilter((values.source as FileSource[]) || []);
+                  setQueryParams((prev) => ({ ...prev, page: 1 }));
+                }}
+                sections={[
+                  {
+                    key: 'source',
+                    label: t('file.filter.source'),
+                    type: 'checkbox',
+                    options: sourceFilterOptions,
+                    value: sourceFilter,
+                  },
+                ]}
+              />
             </Space>
           </Col>
           <Col>

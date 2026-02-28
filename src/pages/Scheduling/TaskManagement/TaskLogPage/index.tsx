@@ -14,19 +14,17 @@ import {
   Row,
   Col,
   Space,
-  Popover,
-  CheckboxGroup,
 } from '@douyinfe/semi-ui';
 import {
   IconSearchStroked,
-   IconDownloadStroked,
+  IconDownloadStroked,
   IconChevronDown,
   IconChevronUp,
-   IconFilterStroked,
 } from '@douyinfe/semi-icons';
 import { RefreshCw } from 'lucide-react';
 import { debounce } from 'lodash';
 import AppLayout from '@/components/layout/AppLayout';
+import FilterPopover from '@/components/FilterPopover';
 import EmptyState from '@/components/EmptyState';
 import type {
   LYExecutionLogResponse,
@@ -108,7 +106,7 @@ const TaskLogPage = () => {
     page_size: 50,
   });
   const [filterVisible, setFilterVisible] = useState(false);
-  const [tempLevelFilter, setTempLevelFilter] = useState<LogLevel[]>([]);
+  const [levelFilter, setLevelFilter] = useState<LogLevel[]>([]);
   const [expandedLogId, setExpandedLogId] = useState<string | null>(null);
   const [exporting, setExporting] = useState(false);
   
@@ -198,18 +196,14 @@ const TaskLogPage = () => {
   const total = range?.total || 0;
   
   // 确认筛选
-  const handleConfirmFilter = useCallback(() => {
+  const handleConfirmFilter = useCallback((values: Record<string, unknown>) => {
+    const newLevelFilter = (values.logLevel as LogLevel[]) || [];
+    setLevelFilter(newLevelFilter);
     setQueryParams((prev) => ({
       ...prev,
       page: 1,
-      log_level: tempLevelFilter.length === 1 ? tempLevelFilter[0] : undefined,
+      log_level: newLevelFilter.length === 1 ? newLevelFilter[0] : undefined,
     }));
-    setFilterVisible(false);
-  }, [tempLevelFilter]);
-  
-  // 重置筛选
-  const handleResetFilter = useCallback(() => {
-    setTempLevelFilter([]);
   }, []);
   
   // 导出日志
@@ -341,37 +335,7 @@ const TaskLogPage = () => {
     },
   ];
   
-  // 筛选弹窗内容
-  const filterContent = (
-    <div className="task-log-page-filter-popover">
-      <div className="task-log-page-filter-popover-section">
-        <Text className="task-log-page-filter-popover-label">{t('taskLog.filter.logLevel')}</Text>
-        <CheckboxGroup
-          direction="vertical"
-          value={tempLevelFilter}
-          onChange={(values) => setTempLevelFilter(values as LogLevel[])}
-          options={[
-            { label: 'DEBUG', value: 'DEBUG' },
-            { label: 'INFO', value: 'INFO' },
-            { label: 'WARN', value: 'WARN' },
-            { label: 'ERROR', value: 'ERROR' },
-          ]}
-        />
-      </div>
-      <div className="task-log-page-filter-popover-footer">
-        <Button
-          type="tertiary"
-          onClick={handleResetFilter}
-          disabled={tempLevelFilter.length === 0}
-        >
-          {t('common.reset')}
-        </Button>
-        <Button type="primary" onClick={handleConfirmFilter}>
-          {t('common.confirm')}
-        </Button>
-      </div>
-    </div>
-  );
+  // filterContent removed - using FilterPopover directly
 
   return (
     <AppLayout>
@@ -434,22 +398,25 @@ const TaskLogPage = () => {
                   showClear
                   className="task-log-page-search-input"
                 />
-                <Popover
+                <FilterPopover
                   visible={filterVisible}
                   onVisibleChange={setFilterVisible}
-                  trigger="click"
-                  position="bottomLeft"
-                  content={filterContent}
-                >
-                  <Button
-                     icon={<IconFilterStroked />}
-                    type={hasActiveFilter ? 'primary' : 'tertiary'}
-                    theme={hasActiveFilter ? 'solid' : 'light'}
-                  >
-                    {t('common.filter')}
-                    {filterCount > 0 && ` (${filterCount})`}
-                  </Button>
-                </Popover>
+                  onConfirm={handleConfirmFilter}
+                  sections={[
+                    {
+                      key: 'logLevel',
+                      label: t('taskLog.filter.logLevel'),
+                      type: 'checkbox',
+                      options: [
+                        { label: 'DEBUG', value: 'DEBUG' },
+                        { label: 'INFO', value: 'INFO' },
+                        { label: 'WARN', value: 'WARN' },
+                        { label: 'ERROR', value: 'ERROR' },
+                      ],
+                      value: levelFilter,
+                    },
+                  ]}
+                />
               </Space>
             </Col>
             <Col>

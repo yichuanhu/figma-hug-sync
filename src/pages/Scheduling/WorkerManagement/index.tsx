@@ -9,7 +9,6 @@ import {
   Tag, 
   Dropdown,
   Switch,
-  Popover,
   Checkbox,
   Row,
   Col,
@@ -19,9 +18,9 @@ import {
 } from '@douyinfe/semi-ui';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
+import FilterPopover from '@/components/FilterPopover';
 import {
   IconSearchStroked, 
-   IconFilterStroked,
   IconPlusStroked, 
   IconMoreStroked, 
   IconEyeOpenedStroked, 
@@ -478,16 +477,11 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     debouncedSearch(value); // 防抖更新查询参数
   };
 
-  const handleFilterChange = (key: keyof FilterState, values: string[]) => {
-    setFilters(prev => ({ ...prev, [key]: values }));
-    setQueryParams(prev => ({ ...prev, offset: 0 }));
-  };
-
-  const clearFilters = () => {
+  const handleFilterConfirm = (values: Record<string, unknown>) => {
     setFilters({
-      status: [],
-      sync_status: [],
-      group_id: [],
+      status: (values.status as string[]) || [],
+      sync_status: (values.sync_status as string[]) || [],
+      group_id: (values.group_id as string[]) || [],
     });
     setQueryParams(prev => ({ ...prev, offset: 0 }));
   };
@@ -514,45 +508,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     Toast.success(checked ? t('worker.receiveTasks.enabled') : t('worker.receiveTasks.disabled'));
   };
 
-  const filterContent = (
-    <div className="filter-popover">
-      <div className="filter-popover-section">
-        <Text strong className="filter-popover-label">{t('worker.filter.workerStatus')}</Text>
-        <CheckboxGroup
-          value={filters.status}
-          onChange={(values) => handleFilterChange('status', values as string[])}
-          options={filterOptions.status}
-          direction="horizontal"
-        />
-      </div>
-      <div className="filter-popover-section">
-        <Text strong className="filter-popover-label">{t('worker.filter.syncStatus')}</Text>
-        <CheckboxGroup
-          value={filters.sync_status}
-          onChange={(values) => handleFilterChange('sync_status', values as string[])}
-          options={filterOptions.sync_status}
-          direction="horizontal"
-        />
-      </div>
-      <div className="filter-popover-section">
-        <Text strong className="filter-popover-label">{t('worker.filter.workerGroup')}</Text>
-        <CheckboxGroup
-          value={filters.group_id}
-          onChange={(values) => handleFilterChange('group_id', values as string[])}
-          options={filterOptions.group_id}
-          direction="horizontal"
-        />
-      </div>
-      <div className="filter-popover-footer">
-        <Button theme="borderless" onClick={clearFilters} disabled={!hasActiveFilters}>
-          {t('common.reset')}
-        </Button>
-        <Button theme="solid" type="primary" onClick={() => setFilterVisible(false)}>
-          {t('common.confirm')}
-        </Button>
-      </div>
-    </div>
-  );
+  // filterContent removed - using FilterPopover directly
 
   // 打开详情抽屉
   const openDetail = (worker: LYWorkerResponse) => {
@@ -922,21 +878,34 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
                 value={searchValue}
                 onChange={handleSearch}
               />
-              <Popover
+              <FilterPopover
                 visible={filterVisible}
                 onVisibleChange={setFilterVisible}
-                trigger="click"
-                position="bottomLeft"
-                content={filterContent}
-              >
-                <Button 
-                   icon={<IconFilterStroked />} 
-                  theme={hasActiveFilters ? 'solid' : 'light'}
-                  type={hasActiveFilters ? 'primary' : 'tertiary'}
-                >
-                  {t('common.filter')}{activeFilterCount > 0 ? ` (${activeFilterCount})` : ''}
-                </Button>
-              </Popover>
+                onConfirm={handleFilterConfirm}
+                sections={[
+                  {
+                    key: 'status',
+                    label: t('worker.filter.workerStatus'),
+                    type: 'checkbox',
+                    options: filterOptions.status,
+                    value: filters.status,
+                  },
+                  {
+                    key: 'sync_status',
+                    label: t('worker.filter.syncStatus'),
+                    type: 'checkbox',
+                    options: filterOptions.sync_status,
+                    value: filters.sync_status,
+                  },
+                  {
+                    key: 'group_id',
+                    label: t('worker.filter.workerGroup'),
+                    type: 'checkbox',
+                    options: filterOptions.group_id,
+                    value: filters.group_id,
+                  },
+                ]}
+              />
             </Space>
           </Col>
           <Col>
