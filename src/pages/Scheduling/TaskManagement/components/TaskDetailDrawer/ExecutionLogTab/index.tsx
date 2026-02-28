@@ -104,8 +104,8 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
     page_size: 50,
   });
   const [filterVisible, setFilterVisible] = useState(false);
-  const [tempLevelFilter, setTempLevelFilter] = useState<LogLevel[]>([]);
-  const [tempDateRange, setTempDateRange] = useState<[Date, Date] | null>(null);
+  const [levelFilter, setLevelFilter] = useState<LogLevel[]>([]);
+  const [dateRangeFilter, setDateRangeFilter] = useState<[Date, Date] | null>(null);
   const [exporting, setExporting] = useState(false);
   
   // 自动刷新定时器
