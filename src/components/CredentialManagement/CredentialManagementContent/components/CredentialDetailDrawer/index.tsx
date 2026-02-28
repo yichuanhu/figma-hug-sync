@@ -15,14 +15,13 @@ import {
   TabPane,
   Table,
   DatePicker,
-  Popover,
-  CheckboxGroup,
   Image,
 } from '@douyinfe/semi-ui';
 import EmptyState from '@/components/EmptyState';
 import DetailSkeleton from '@/components/DetailSkeleton';
 import TableSkeleton from '@/components/TableSkeleton';
 import ExpandableText from '@/components/ExpandableText';
+import FilterPopover from '@/components/FilterPopover';
 import {
   IconEditStroked,
   IconDeleteStroked,
