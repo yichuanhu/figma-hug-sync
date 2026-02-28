@@ -628,7 +628,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
         label={t('queueTrigger.fields.timeZone')}
         placeholder={t('queueTrigger.fields.timeZonePlaceholder')}
         initValue="Asia/Shanghai"
-        optionList={timeZoneOptions}
+        optionList={TIMEZONE_OPTIONS}
         rules={[{ required: true, message: t('queueTrigger.validation.timeZoneRequired') }]}
         style={{ width: '100%' }}
       />

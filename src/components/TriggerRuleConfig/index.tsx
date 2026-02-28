@@ -488,7 +488,7 @@ const TriggerRuleConfig = ({
           <Select
             value={timeZone}
             onChange={(v) => onTimeZoneChange(v as string)}
-            optionList={timeZones}
+            optionList={TIMEZONE_OPTIONS}
             filter
             style={{ width: '100%' }}
           />
