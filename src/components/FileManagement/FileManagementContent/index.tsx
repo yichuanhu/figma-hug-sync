@@ -350,9 +350,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
       dataIndex: 'display_name',
       key: 'display_name',
       width: 200,
-      render: (text: string) => (
-        <span>{text}</span>
-      ),
+      ellipsis: true,
     },
     {
       title: t('file.table.size'),
@@ -390,9 +388,8 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
       dataIndex: 'description',
       key: 'description',
       width: 180,
-      render: (text: string | null) => (
-        <span>{text || '-'}</span>
-      ),
+      ellipsis: true,
+      render: (text: string | null) => text || '-',
     },
     {
       title: t('common.updateTime'),

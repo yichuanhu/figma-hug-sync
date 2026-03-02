@@ -453,11 +453,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
       dataIndex: 'content',
       key: 'content',
       width: 250,
-      render: (text: string) => (
-        <Tooltip content={text} position="top">
-          <span>{text}</span>
-        </Tooltip>
-      ),
+      ellipsis: true,
     },
     {
       title: t('queueMessage.table.status'),
@@ -482,6 +478,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
       dataIndex: 'consumer_name',
       key: 'consumer_name',
       width: 100,
+      ellipsis: true,
       render: (name: string | null) => name || '-',
     },
     {
@@ -489,6 +486,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
       dataIndex: 'consume_task_id',
       key: 'consume_task_id',
       width: 140,
+      ellipsis: true,
       render: (taskId: string | null) => taskId || '-',
     },
     {

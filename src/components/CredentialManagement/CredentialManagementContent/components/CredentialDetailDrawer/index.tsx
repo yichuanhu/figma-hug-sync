@@ -229,10 +229,10 @@ const CredentialDetailDrawer = ({
     { title: t('credential.usage.table.user'), dataIndex: 'user_name', key: 'user_name', width: 100 },
     { title: t('credential.usage.table.usageTime'), dataIndex: 'usage_time', key: 'usage_time', width: 160, render: (text: string) => formatDateTime(text) },
     { title: t('credential.usage.table.type'), dataIndex: 'usage_type', key: 'usage_type', width: 80, render: (type: UsageType) => <Tag color={type === 'debug' ? 'blue' : 'green'} type="light">{t(`credential.usage.type.${type}`)}</Tag> },
-    { title: t('credential.usage.table.process'), dataIndex: 'process_name', key: 'process_name', width: 140, render: (text: string | null) => text ? <Tooltip content={text} position="top"><span>{text}</span></Tooltip> : <span>-</span> },
+    { title: t('credential.usage.table.process'), dataIndex: 'process_name', key: 'process_name', width: 140, ellipsis: true, render: (text: string | null) => text || '-' },
     { title: t('credential.usage.table.processVersion'), dataIndex: 'process_version', key: 'process_version', width: 80 },
-    { title: t('credential.usage.table.worker'), dataIndex: 'worker_name', key: 'worker_name', width: 100 },
-    { title: t('credential.usage.table.taskId'), dataIndex: 'task_id', key: 'task_id', width: 120, render: (text: string | null) => <span>{text || '-'}</span> },
+    { title: t('credential.usage.table.worker'), dataIndex: 'worker_name', key: 'worker_name', width: 100, ellipsis: true },
+    { title: t('credential.usage.table.taskId'), dataIndex: 'task_id', key: 'task_id', width: 120, ellipsis: true, render: (text: string | null) => text || '-' },
     { title: t('credential.usage.table.screenshot'), dataIndex: 'screenshot_url', key: 'screenshot_url', width: 80, render: (url: string | null) => url ? <div onClick={(e) => e.stopPropagation()} style={{ display: 'inline-block' }}><Image src={url} width={50} height={35} preview={true} style={{ cursor: 'pointer', borderRadius: 4, objectFit: 'cover' }} fallback={<div style={{ width: 50, height: 35, background: 'var(--semi-color-fill-1)', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: 'var(--semi-color-text-2)' }}>加载失败</div>} /></div> : '-' },
   ];
 

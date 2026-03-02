@@ -326,9 +326,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
       dataIndex: 'parameter_name',
       key: 'parameter_name',
       width: 180,
-      render: (text: string) => (
-        <span>{text}</span>
-      ),
+      ellipsis: true,
     },
     {
       title: t('parameter.table.type'),
@@ -348,13 +346,8 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
       dataIndex: 'parameter_value',
       key: 'parameter_value',
       width: 180,
-      render: (_: unknown, record: LYParameterResponse) => (
-        <Tooltip content={getParameterValueDisplay(record)} position="top">
-          <span>
-            {getParameterValueDisplay(record)}
-          </span>
-        </Tooltip>
-      ),
+      ellipsis: true,
+      render: (_: unknown, record: LYParameterResponse) => getParameterValueDisplay(record),
     },
     // 发布状态列 - 仅开发中心显示
     ...(context === 'development' ? [{
@@ -380,11 +373,8 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
       dataIndex: 'description',
       key: 'description',
       width: 200,
-      render: (text: string | null) => (
-        <span>
-          {text || '-'}
-        </span>
-      ),
+      ellipsis: true,
+      render: (text: string | null) => text || '-',
     },
     {
       title: t('common.actions'),

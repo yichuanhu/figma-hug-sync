@@ -283,6 +283,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
       dataIndex: 'name',
       key: 'name',
       width: 140,
+      ellipsis: true,
     },
     {
       title: t('worker.table.status'),

@@ -374,6 +374,7 @@ const ProcessDevelopment = () => {
       dataIndex: 'name',
       key: 'name',
       width: 160,
+      ellipsis: true,
       sorter: true,
       onHeaderCell: () => ({
         onClick: () => handleSort('name'),
@@ -384,9 +385,8 @@ const ProcessDevelopment = () => {
       dataIndex: 'description',
       key: 'description',
       width: 320,
-      render: (description: string | null) => (
-        <div>{description || '-'}</div>
-      ),
+      ellipsis: true,
+      render: (description: string | null) => description || '-',
     },
     {
       title: t('common.status'),
@@ -404,10 +404,8 @@ const ProcessDevelopment = () => {
       dataIndex: 'creator_id',
       key: 'creator_id',
       width: 120,
-      render: (creatorId: string) => {
-        const creatorName = mockCreatorNameMap[creatorId] || creatorId;
-        return <span>{creatorName}</span>;
-      },
+      ellipsis: true,
+      render: (creatorId: string) => mockCreatorNameMap[creatorId] || creatorId,
     },
     {
       title: t('common.createTime'),

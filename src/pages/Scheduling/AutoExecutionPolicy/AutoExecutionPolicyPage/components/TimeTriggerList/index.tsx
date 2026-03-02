@@ -378,14 +378,13 @@ const TimeTriggerList = () => {
       title: t('timeTrigger.table.name'),
       dataIndex: 'name',
       width: 200,
-      render: (text: string) => (
-        <span>{text}</span>
-      ),
+      ellipsis: true,
     },
     {
       title: t('timeTrigger.table.processName'),
       dataIndex: 'process_name',
       width: 160,
+      ellipsis: true,
       render: (text: string) => text || '-',
     },
     {

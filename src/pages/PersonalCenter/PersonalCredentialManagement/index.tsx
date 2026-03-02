@@ -264,9 +264,7 @@ const PersonalCredentialManagement = () => {
       dataIndex: 'credential_name',
       key: 'credential_name',
       width: 150,
-      render: (text: string) => (
-        <span>{text}</span>
-      ),
+      ellipsis: true,
     },
     {
       title: t('personalCredential.table.username'),
@@ -293,11 +291,8 @@ const PersonalCredentialManagement = () => {
       dataIndex: 'description',
       key: 'description',
       width: 180,
-      render: (text: string | null) => (
-        <span>
-          {text || '-'}
-        </span>
-      ),
+      ellipsis: true,
+      render: (text: string | null) => text || '-',
     },
     {
       title: t('common.createTime'),

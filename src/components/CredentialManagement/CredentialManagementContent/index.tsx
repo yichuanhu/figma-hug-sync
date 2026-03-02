@@ -370,9 +370,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
       dataIndex: 'credential_name',
       key: 'credential_name',
       width: 180,
-      render: (text: string) => (
-        <span>{text}</span>
-      ),
+      ellipsis: true,
     },
     {
       title: context === 'development' 
@@ -381,11 +379,8 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
       dataIndex: 'credential_value',
       key: 'credential_value',
       width: 180,
-      render: (_: unknown, record: LYCredentialResponse) => (
-        <span>
-          {getCredentialValueDisplay(record)}
-        </span>
-      ),
+      ellipsis: true,
+      render: (_: unknown, record: LYCredentialResponse) => getCredentialValueDisplay(record),
     },
     {
       title: t('credential.table.type'),
@@ -414,11 +409,8 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
       dataIndex: 'description',
       key: 'description',
       width: 200,
-      render: (text: string | null) => (
-        <span>
-          {text || '-'}
-        </span>
-      ),
+      ellipsis: true,
+      render: (text: string | null) => text || '-',
     },
     {
       title: t('common.actions'),
