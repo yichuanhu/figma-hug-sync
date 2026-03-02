@@ -308,7 +308,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
       key: 'queue_name',
       width: 180,
       render: (text: string) => (
-        <span className="queue-management-content-table-name">{text}</span>
+        <span>{text}</span>
       ),
     },
     {
