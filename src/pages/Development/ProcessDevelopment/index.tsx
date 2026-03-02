@@ -385,7 +385,7 @@ const ProcessDevelopment = () => {
       key: 'description',
       width: 320,
       render: (description: string | null) => (
-        <div className="process-development-cell-ellipsis">{description || '-'}</div>
+        <div>{description || '-'}</div>
       ),
     },
     {

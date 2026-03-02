@@ -455,7 +455,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
       width: 250,
       render: (text: string) => (
         <Tooltip content={text} position="top">
-          <span className="queue-messages-content-table-content">{text}</span>
+          <span>{text}</span>
         </Tooltip>
       ),
     },

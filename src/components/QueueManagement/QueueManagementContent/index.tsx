@@ -376,7 +376,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
       key: 'description',
       width: 200,
       render: (text: string | null) => (
-        <span className="queue-management-content-table-desc">
+        <span>
           {text || '-'}
         </span>
       ),

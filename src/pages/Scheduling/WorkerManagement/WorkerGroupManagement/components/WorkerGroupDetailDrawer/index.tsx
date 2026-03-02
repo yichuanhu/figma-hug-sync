@@ -190,7 +190,7 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
   const total = range?.total || 0;
 
   const memberColumns = [
-    { title: t('worker.table.workerName'), dataIndex: 'name', key: 'name', width: 180, render: (name: string, record: LYWorkerGroupMemberResponse) => (<div className="member-name-cell"><div className="member-name-cell-name">{name}</div><div className="member-name-cell-username">{record.username || '-'}</div></div>) },
+    { title: t('worker.table.workerName'), dataIndex: 'name', key: 'name', width: 180, render: (name: string, record: LYWorkerGroupMemberResponse) => (<div><div>{name}</div><div>{record.username || '-'}</div></div>) },
     { title: t('worker.table.status'), dataIndex: 'status', key: 'status', width: 90, render: (status: WorkerStatus | undefined) => { if (!status) return null; const config = statusConfig[status]; return <Tag color={config.color as any} type="light">{config.text}</Tag>; } },
     { title: t('worker.table.ipAddress'), dataIndex: 'ip_address', key: 'ip_address', width: 120 },
     { title: t('worker.table.clientVersion'), dataIndex: 'client_version', key: 'client_version', width: 100 },

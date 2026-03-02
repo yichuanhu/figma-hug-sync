@@ -381,7 +381,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
       key: 'description',
       width: 200,
       render: (text: string | null) => (
-        <span className="parameter-management-content-table-desc">
+        <span>
           {text || '-'}
         </span>
       ),

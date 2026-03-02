@@ -423,7 +423,7 @@ const TimeTriggerList = () => {
       dataIndex: 'next_trigger_time',
       width: 180,
       render: (time: string | null, record: LYTimeTriggerResponse) => (
-        <span className={`time-trigger-list-next-time ${record.status === 'DISABLED' ? 'disabled' : ''}`}>
+        <span>
           {record.status === 'DISABLED' ? t('timeTrigger.detail.notScheduled') : formatTime(time)}
         </span>
       ),

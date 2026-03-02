@@ -415,7 +415,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
       key: 'description',
       width: 200,
       render: (text: string | null) => (
-        <span className="credential-management-content-table-desc">
+        <span>
           {text || '-'}
         </span>
       ),

@@ -391,7 +391,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
       key: 'description',
       width: 180,
       render: (text: string | null) => (
-        <span className="file-management-content-table-desc">{text || '-'}</span>
+        <span>{text || '-'}</span>
       ),
     },
     {

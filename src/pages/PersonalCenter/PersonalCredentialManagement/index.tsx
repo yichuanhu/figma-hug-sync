@@ -294,7 +294,7 @@ const PersonalCredentialManagement = () => {
       key: 'description',
       width: 180,
       render: (text: string | null) => (
-        <span className="personal-credential-table-description">
+        <span>
           {text || '-'}
         </span>
       ),
