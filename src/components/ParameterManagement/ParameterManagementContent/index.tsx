@@ -327,7 +327,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
       key: 'parameter_name',
       width: 180,
       render: (text: string) => (
-        <span className="parameter-management-content-table-name">{text}</span>
+        <span>{text}</span>
       ),
     },
     {
