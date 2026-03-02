@@ -453,11 +453,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
       dataIndex: 'content',
       key: 'content',
       width: 250,
-      render: (text: string) => (
-        <Tooltip content={text} position="top">
-          <span>{text}</span>
-        </Tooltip>
-      ),
+      ellipsis: true,
     },
     {
       title: t('queueMessage.table.status'),
