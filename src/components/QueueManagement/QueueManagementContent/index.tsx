@@ -307,9 +307,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
       dataIndex: 'queue_name',
       key: 'queue_name',
       width: 180,
-      render: (text: string) => (
-        <span>{text}</span>
-      ),
+      ellipsis: true,
     },
     {
       title: t('queue.table.unconsumedCount'),
