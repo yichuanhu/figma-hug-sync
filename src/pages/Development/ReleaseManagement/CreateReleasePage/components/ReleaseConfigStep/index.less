@@ -18,13 +18,17 @@
       .semi-card-body {
         padding: 16px 20px;
       }
-
-      // 表单标签不加粗
-      .semi-form-field-label {
-        font-weight: 400;
-      }
     }
   }
+}
+
+// 表单标签不加粗（全局选择器，避免 :global 嵌套问题）
+.release-config-step .release-config-step-section .semi-form-field-label {
+  font-weight: 400;
+}
+
+// 重新打开嵌套以保持后续样式
+.release-config-step {
 
   .release-config-step-banner {
     margin-bottom: 16px;
