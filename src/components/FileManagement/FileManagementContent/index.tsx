@@ -351,7 +351,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
       key: 'display_name',
       width: 200,
       render: (text: string) => (
-        <span className="file-management-content-table-name">{text}</span>
+        <span>{text}</span>
       ),
     },
     {
