@@ -509,7 +509,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
             </Dropdown.Menu>
           }
         >
-          <Button icon={<IconMoreStroked />} theme="borderless" onClick={(e) => e.stopPropagation()} />
+          <Button icon={<IconMoreStroked />} theme="borderless" size="small" onClick={(e) => e.stopPropagation()} />
         </Dropdown>
       ),
     },
