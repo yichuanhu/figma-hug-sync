@@ -184,14 +184,8 @@ const LinkedCredentialsDrawer = ({
       title: t('common.description'),
       dataIndex: 'description',
       key: 'description',
-      render: (text: string | null) => (
-        <Text
-          ellipsis={{ showTooltip: true }}
-          className="linked-credentials-drawer-description"
-        >
-          {text || '-'}
-        </Text>
-      ),
+      ellipsis: true,
+      render: (text: string | null) => text || '-',
     },
     {
       title: t('common.actions'),
