@@ -350,9 +350,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
       dataIndex: 'display_name',
       key: 'display_name',
       width: 200,
-      render: (text: string) => (
-        <span>{text}</span>
-      ),
+      ellipsis: true,
     },
     {
       title: t('file.table.size'),
