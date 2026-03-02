@@ -264,9 +264,7 @@ const PersonalCredentialManagement = () => {
       dataIndex: 'credential_name',
       key: 'credential_name',
       width: 150,
-      render: (text: string) => (
-        <span>{text}</span>
-      ),
+      ellipsis: true,
     },
     {
       title: t('personalCredential.table.username'),
