@@ -320,28 +320,27 @@ const TemplateManagementPage = () => {
       title: t('template.table.name'),
       dataIndex: 'template_name',
       width: 200,
-      render: (text: string) => (
-        <span>{text}</span>
-      ),
+      ellipsis: true,
     },
     {
       title: t('common.description'),
       dataIndex: 'description',
       width: 200,
-      render: (text: string | null) => (
-        <span>{text || '-'}</span>
-      ),
+      ellipsis: true,
+      render: (text: string | null) => text || '-',
     },
     {
       title: t('template.table.processName'),
       dataIndex: 'process_name',
       width: 160,
+      ellipsis: true,
       render: (text: string) => text || '-',
     },
     {
       title: t('template.table.creator'),
       dataIndex: 'created_by_name',
       width: 120,
+      ellipsis: true,
       render: (text: string) => text || '-',
     },
     {

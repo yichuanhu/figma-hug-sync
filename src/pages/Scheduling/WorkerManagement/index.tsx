@@ -735,6 +735,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       dataIndex: 'group_name',
       key: 'group_name',
       width: 150,
+      ellipsis: true,
       render: (groupName: string | null | undefined) => groupName || t('worker.filter.ungrouped'),
     },
     {

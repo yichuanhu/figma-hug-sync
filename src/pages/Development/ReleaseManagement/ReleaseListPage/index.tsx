@@ -348,6 +348,7 @@ const ReleaseListPage: React.FC = () => {
       title: t('release.list.columns.publisher'),
       dataIndex: 'publisher_name',
       width: 100,
+      ellipsis: true,
       render: (text: string) => text || '-',
     },
     {

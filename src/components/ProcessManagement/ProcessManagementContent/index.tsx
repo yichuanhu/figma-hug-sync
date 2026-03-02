@@ -429,10 +429,8 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       dataIndex: 'creator_id',
       key: 'creator_id',
       width: 120,
-      render: (creatorId: string) => {
-        const creatorName = mockCreatorNameMap[creatorId] || creatorId;
-        return <span>{creatorName}</span>;
-      },
+      ellipsis: true,
+      render: (creatorId: string) => mockCreatorNameMap[creatorId] || creatorId,
     },
     {
       title: t('common.createTime'),

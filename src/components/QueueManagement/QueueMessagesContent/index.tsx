@@ -486,6 +486,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
       dataIndex: 'consume_task_id',
       key: 'consume_task_id',
       width: 140,
+      ellipsis: true,
       render: (taskId: string | null) => taskId || '-',
     },
     {

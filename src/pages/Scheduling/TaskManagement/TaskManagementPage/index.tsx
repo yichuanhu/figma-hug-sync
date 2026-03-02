@@ -525,33 +525,21 @@ const TaskManagementPage = () => {
       dataIndex: 'task_id',
       key: 'task_id',
       width: 140,
-      render: (taskId: string) => (
-        <span>
-          {taskId}
-        </span>
-      ),
+      ellipsis: true,
     },
     {
       title: t('task.table.processName'),
       dataIndex: 'process_name',
       key: 'process_name',
       width: 160,
-      render: (name: string) => (
-        <Tooltip content={name} position="top">
-          <div>{name}</div>
-        </Tooltip>
-      ),
+      ellipsis: true,
     },
     {
       title: t('task.table.executionTarget'),
       dataIndex: 'execution_target_name',
       key: 'execution_target_name',
       width: 140,
-      render: (name: string) => (
-        <Tooltip content={name} position="top">
-          <div>{name}</div>
-        </Tooltip>
-      ),
+      ellipsis: true,
     },
     {
       title: t('task.table.taskStatus'),

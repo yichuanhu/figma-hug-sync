@@ -295,6 +295,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
       dataIndex: 'name',
       key: 'name',
       width: 300,
+      ellipsis: true,
       render: (name: string, record: LYWorkerGroupResponse) => (
         <div>
           <div>{name}</div>

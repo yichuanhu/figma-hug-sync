@@ -388,9 +388,8 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
       dataIndex: 'description',
       key: 'description',
       width: 180,
-      render: (text: string | null) => (
-        <span>{text || '-'}</span>
-      ),
+      ellipsis: true,
+      render: (text: string | null) => text || '-',
     },
     {
       title: t('common.updateTime'),

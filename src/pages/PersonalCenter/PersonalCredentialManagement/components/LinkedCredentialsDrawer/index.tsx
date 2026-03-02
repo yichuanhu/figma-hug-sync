@@ -171,6 +171,7 @@ const LinkedCredentialsDrawer = ({
       dataIndex: 'credential_name',
       key: 'credential_name',
       width: 180,
+      ellipsis: true,
       render: (text: string, record: LinkedCredential) => (
         <span
           className="linked-credentials-drawer-link"

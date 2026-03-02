@@ -102,8 +102,8 @@ const TemplateDetailDrawer = ({
   ];
 
   const usageHistoryColumns = [
-    { title: t('template.usageHistory.taskName'), dataIndex: 'task_name', width: 200 },
-    { title: t('common.creator'), dataIndex: 'created_by_name', width: 100 },
+    { title: t('template.usageHistory.taskName'), dataIndex: 'task_name', width: 200, ellipsis: true },
+    { title: t('common.creator'), dataIndex: 'created_by_name', width: 100, ellipsis: true },
     { title: t('common.createTime'), dataIndex: 'created_at', width: 160 },
     {
       title: t('template.usageHistory.status'), dataIndex: 'status', width: 100,

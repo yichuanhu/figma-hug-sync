@@ -175,6 +175,7 @@ const TimeTriggerDetailDrawer = ({
     {
       title: t('timeTrigger.executionLog.table.errorMessage'),
       dataIndex: 'error_message',
+      ellipsis: true,
       render: (text: string | null) => text || '-',
     },
   ];

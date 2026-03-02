@@ -320,11 +320,8 @@ const ScreenshotViewModal = ({
       title: t('screenshot.table.name'),
       dataIndex: 'name',
       ellipsis: true,
-      render: (value: string | null, record: LYTaskScreenshotResponse) => (
-        <Text ellipsis={{ showTooltip: true }}>
-          {value || `${t('screenshot.defaultName')} ${record.sequence_number}`}
-        </Text>
-      ),
+      render: (value: string | null, record: LYTaskScreenshotResponse) => 
+        value || `${t('screenshot.defaultName')} ${record.sequence_number}`,
     },
     {
       title: t('screenshot.table.sequence'),

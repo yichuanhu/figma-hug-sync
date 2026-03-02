@@ -361,20 +361,20 @@ const QueueTriggerList = () => {
       title: t('queueTrigger.table.name'),
       dataIndex: 'name',
       width: 200,
-      render: (text: string) => (
-        <span>{text}</span>
-      ),
+      ellipsis: true,
     },
     {
       title: t('queueTrigger.table.queueName'),
       dataIndex: 'queue_name',
       width: 160,
+      ellipsis: true,
       render: (text: string) => text || '-',
     },
     {
       title: t('queueTrigger.table.processName'),
       dataIndex: 'process_name',
       width: 160,
+      ellipsis: true,
       render: (text: string) => text || '-',
     },
     {
