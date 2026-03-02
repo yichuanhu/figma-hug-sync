@@ -526,7 +526,7 @@ const TaskManagementPage = () => {
       key: 'task_id',
       width: 140,
       render: (taskId: string) => (
-        <span className="task-management-page-cell-ellipsis">
+        <span>
           {taskId}
         </span>
       ),
