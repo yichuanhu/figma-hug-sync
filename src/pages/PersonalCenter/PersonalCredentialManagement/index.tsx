@@ -265,7 +265,7 @@ const PersonalCredentialManagement = () => {
       key: 'credential_name',
       width: 150,
       render: (text: string) => (
-        <span className="personal-credential-table-name">{text}</span>
+        <span>{text}</span>
       ),
     },
     {
