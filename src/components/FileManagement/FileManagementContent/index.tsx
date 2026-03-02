@@ -360,7 +360,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
       key: 'file_size',
       width: 100,
       render: (size: number) => (
-        <span className="file-management-content-table-size">{formatFileSize(size)}</span>
+        <span>{formatFileSize(size)}</span>
       ),
     },
     {
