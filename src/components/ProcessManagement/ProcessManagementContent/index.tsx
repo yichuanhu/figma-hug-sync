@@ -398,6 +398,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       dataIndex: 'name',
       key: 'name',
       width: 160,
+      ellipsis: true,
       sorter: true,
       onHeaderCell: () => ({
         onClick: () => handleSort('name'),
@@ -408,9 +409,8 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       dataIndex: 'description',
       key: 'description',
       width: 320,
-      render: (description: string | null) => (
-        <div>{description || '-'}</div>
-      ),
+      ellipsis: true,
+      render: (description: string | null) => description || '-',
     },
     // 调度中心不显示状态列（因为都是已发布）
     ...(isSchedulingContext ? [] : [{
