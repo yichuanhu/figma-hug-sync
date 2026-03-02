@@ -264,6 +264,7 @@ const ReleaseListPage: React.FC = () => {
       title: t('release.list.columns.releaseId'),
       dataIndex: 'release_id',
       width: 180,
+      ellipsis: true,
       render: (text: string) => text || '-',
     },
     {
