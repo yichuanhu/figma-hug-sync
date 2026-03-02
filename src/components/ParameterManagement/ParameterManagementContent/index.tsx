@@ -350,7 +350,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
       width: 180,
       render: (_: unknown, record: LYParameterResponse) => (
         <Tooltip content={getParameterValueDisplay(record)} position="top">
-          <span className="parameter-management-content-table-value">
+          <span>
             {getParameterValueDisplay(record)}
           </span>
         </Tooltip>
