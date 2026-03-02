@@ -229,7 +229,7 @@ const CredentialDetailDrawer = ({
     { title: t('credential.usage.table.user'), dataIndex: 'user_name', key: 'user_name', width: 100 },
     { title: t('credential.usage.table.usageTime'), dataIndex: 'usage_time', key: 'usage_time', width: 160, render: (text: string) => formatDateTime(text) },
     { title: t('credential.usage.table.type'), dataIndex: 'usage_type', key: 'usage_type', width: 80, render: (type: UsageType) => <Tag color={type === 'debug' ? 'blue' : 'green'} type="light">{t(`credential.usage.type.${type}`)}</Tag> },
-    { title: t('credential.usage.table.process'), dataIndex: 'process_name', key: 'process_name', width: 140, render: (text: string | null) => text ? <Tooltip content={text} position="top"><span className="credential-detail-drawer-cell-ellipsis">{text}</span></Tooltip> : <span>-</span> },
+    { title: t('credential.usage.table.process'), dataIndex: 'process_name', key: 'process_name', width: 140, render: (text: string | null) => text ? <Tooltip content={text} position="top"><span>{text}</span></Tooltip> : <span>-</span> },
     { title: t('credential.usage.table.processVersion'), dataIndex: 'process_version', key: 'process_version', width: 80 },
     { title: t('credential.usage.table.worker'), dataIndex: 'worker_name', key: 'worker_name', width: 100 },
     { title: t('credential.usage.table.taskId'), dataIndex: 'task_id', key: 'task_id', width: 120, render: (text: string | null) => <span className="credential-detail-drawer-cell-task">{text || '-'}</span> },
