@@ -327,7 +327,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
       key: 'parameter_name',
       width: 180,
       render: (text: string) => (
-        <span className="parameter-management-content-table-name">{text}</span>
+        <span>{text}</span>
       ),
     },
     {
@@ -350,7 +350,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
       width: 180,
       render: (_: unknown, record: LYParameterResponse) => (
         <Tooltip content={getParameterValueDisplay(record)} position="top">
-          <span className="parameter-management-content-table-value">
+          <span>
             {getParameterValueDisplay(record)}
           </span>
         </Tooltip>
@@ -381,7 +381,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
       key: 'description',
       width: 200,
       render: (text: string | null) => (
-        <span className="parameter-management-content-table-desc">
+        <span>
           {text || '-'}
         </span>
       ),

@@ -379,7 +379,7 @@ const TimeTriggerList = () => {
       dataIndex: 'name',
       width: 200,
       render: (text: string) => (
-        <span className="time-trigger-list-table-name">{text}</span>
+        <span>{text}</span>
       ),
     },
     {
@@ -393,8 +393,8 @@ const TimeTriggerList = () => {
       dataIndex: 'rule_type',
       width: 180,
       render: (_: unknown, record: LYTimeTriggerResponse) => (
-        <div className="time-trigger-list-rule">
-          <IconClockStroked size="small" className="time-trigger-list-rule-icon" />
+        <div>
+          <IconClockStroked size="small" />
           <span>{formatTriggerRule(record)}</span>
         </div>
       ),
@@ -423,7 +423,7 @@ const TimeTriggerList = () => {
       dataIndex: 'next_trigger_time',
       width: 180,
       render: (time: string | null, record: LYTimeTriggerResponse) => (
-        <span className={`time-trigger-list-next-time ${record.status === 'DISABLED' ? 'disabled' : ''}`}>
+        <span>
           {record.status === 'DISABLED' ? t('timeTrigger.detail.notScheduled') : formatTime(time)}
         </span>
       ),

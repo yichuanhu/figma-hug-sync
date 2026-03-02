@@ -701,13 +701,13 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       sortOrder: sortState.sortBy === 'name' ? sortState.sortOrder : undefined,
       render: (name: string, record: LYWorkerResponse) => (
         <div>
-          <div className="worker-name-cell-header">
-            <span className="worker-name-cell-name">{name}</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span>{name}</span>
             {record.sync_status === 'PENDING' && (
               <Tag color="orange" size="small" type="light">{t('worker.syncStatus.pending')}</Tag>
             )}
           </div>
-          <div className="worker-name-cell-username">
+          <div>
             {record.username || '-'}
           </div>
         </div>

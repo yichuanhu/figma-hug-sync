@@ -341,7 +341,7 @@ const ReleaseListPage: React.FC = () => {
       dataIndex: 'description',
       width: 200,
       render: (text: string) => (
-        <div className="release-list-page-cell-ellipsis">{text || '-'}</div>
+        <div>{text || '-'}</div>
       ),
     },
     {

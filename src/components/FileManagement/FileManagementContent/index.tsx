@@ -351,7 +351,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
       key: 'display_name',
       width: 200,
       render: (text: string) => (
-        <span className="file-management-content-table-name">{text}</span>
+        <span>{text}</span>
       ),
     },
     {
@@ -360,7 +360,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
       key: 'file_size',
       width: 100,
       render: (size: number) => (
-        <span className="file-management-content-table-size">{formatFileSize(size)}</span>
+        <span>{formatFileSize(size)}</span>
       ),
     },
     {
@@ -391,7 +391,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
       key: 'description',
       width: 180,
       render: (text: string | null) => (
-        <span className="file-management-content-table-desc">{text || '-'}</span>
+        <span>{text || '-'}</span>
       ),
     },
     {

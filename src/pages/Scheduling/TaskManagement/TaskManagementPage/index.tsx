@@ -526,7 +526,7 @@ const TaskManagementPage = () => {
       key: 'task_id',
       width: 140,
       render: (taskId: string) => (
-        <span className="task-management-page-cell-ellipsis">
+        <span>
           {taskId}
         </span>
       ),
@@ -538,7 +538,7 @@ const TaskManagementPage = () => {
       width: 160,
       render: (name: string) => (
         <Tooltip content={name} position="top">
-          <div className="task-management-page-cell-ellipsis">{name}</div>
+          <div>{name}</div>
         </Tooltip>
       ),
     },
@@ -549,7 +549,7 @@ const TaskManagementPage = () => {
       width: 140,
       render: (name: string) => (
         <Tooltip content={name} position="top">
-          <div className="task-management-page-cell-ellipsis">{name}</div>
+          <div>{name}</div>
         </Tooltip>
       ),
     },

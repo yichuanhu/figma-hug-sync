@@ -296,10 +296,10 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
       key: 'name',
       width: 300,
       render: (name: string, record: LYWorkerGroupResponse) => (
-        <div className="worker-group-name-cell">
-          <div className="worker-group-name-cell-name">{name}</div>
+        <div>
+          <div>{name}</div>
           {record.description && (
-            <div className="worker-group-name-cell-desc">{record.description}</div>
+            <div>{record.description}</div>
           )}
         </div>
       ),

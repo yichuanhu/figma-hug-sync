@@ -308,7 +308,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
       key: 'queue_name',
       width: 180,
       render: (text: string) => (
-        <span className="queue-management-content-table-name">{text}</span>
+        <span>{text}</span>
       ),
     },
     {
@@ -347,7 +347,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
           ? record.test_failed_count 
           : record.prod_failed_count;
         return (
-          <span className={count > 0 ? 'queue-management-content-table-failed' : ''}>
+          <span>
             {count}
           </span>
         );
@@ -376,7 +376,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
       key: 'description',
       width: 200,
       render: (text: string | null) => (
-        <span className="queue-management-content-table-desc">
+        <span>
           {text || '-'}
         </span>
       ),

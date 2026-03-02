@@ -362,7 +362,7 @@ const QueueTriggerList = () => {
       dataIndex: 'name',
       width: 200,
       render: (text: string) => (
-        <span className="queue-trigger-list-table-name">{text}</span>
+        <span>{text}</span>
       ),
     },
     {
@@ -382,7 +382,7 @@ const QueueTriggerList = () => {
       dataIndex: 'current_message_count',
       width: 120,
       render: (count: number | null) => (
-        <span className="queue-trigger-list-message-count">
+        <span>
           {count ?? 0}
         </span>
       ),
@@ -411,7 +411,7 @@ const QueueTriggerList = () => {
       dataIndex: 'last_trigger_time',
       width: 180,
       render: (time: string | null) => (
-        <span className="queue-trigger-list-last-time">
+        <span>
           {time ? formatTime(time) : t('queueTrigger.detail.notTriggeredYet')}
         </span>
       ),

@@ -371,7 +371,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
       key: 'credential_name',
       width: 180,
       render: (text: string) => (
-        <span className="credential-management-content-table-name">{text}</span>
+        <span>{text}</span>
       ),
     },
     {
@@ -382,7 +382,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
       key: 'credential_value',
       width: 180,
       render: (_: unknown, record: LYCredentialResponse) => (
-        <span className="credential-management-content-table-value">
+        <span>
           {getCredentialValueDisplay(record)}
         </span>
       ),
@@ -415,7 +415,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
       key: 'description',
       width: 200,
       render: (text: string | null) => (
-        <span className="credential-management-content-table-desc">
+        <span>
           {text || '-'}
         </span>
       ),
