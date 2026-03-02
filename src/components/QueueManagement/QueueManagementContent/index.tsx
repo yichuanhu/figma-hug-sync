@@ -347,7 +347,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
           ? record.test_failed_count 
           : record.prod_failed_count;
         return (
-          <span className={count > 0 ? 'queue-management-content-table-failed' : ''}>
+          <span>
             {count}
           </span>
         );
