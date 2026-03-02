@@ -478,6 +478,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
       dataIndex: 'consumer_name',
       key: 'consumer_name',
       width: 100,
+      ellipsis: true,
       render: (name: string | null) => name || '-',
     },
     {
