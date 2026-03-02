@@ -382,7 +382,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
       key: 'credential_value',
       width: 180,
       render: (_: unknown, record: LYCredentialResponse) => (
-        <span className="credential-management-content-table-value">
+        <span>
           {getCredentialValueDisplay(record)}
         </span>
       ),
