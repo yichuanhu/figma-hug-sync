@@ -346,13 +346,8 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
       dataIndex: 'parameter_value',
       key: 'parameter_value',
       width: 180,
-      render: (_: unknown, record: LYParameterResponse) => (
-        <Tooltip content={getParameterValueDisplay(record)} position="top">
-          <span>
-            {getParameterValueDisplay(record)}
-          </span>
-        </Tooltip>
-      ),
+      ellipsis: true,
+      render: (_: unknown, record: LYParameterResponse) => getParameterValueDisplay(record),
     },
     // 发布状态列 - 仅开发中心显示
     ...(context === 'development' ? [{
