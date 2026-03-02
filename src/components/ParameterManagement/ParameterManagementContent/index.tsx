@@ -326,9 +326,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
       dataIndex: 'parameter_name',
       key: 'parameter_name',
       width: 180,
-      render: (text: string) => (
-        <span>{text}</span>
-      ),
+      ellipsis: true,
     },
     {
       title: t('parameter.table.type'),
