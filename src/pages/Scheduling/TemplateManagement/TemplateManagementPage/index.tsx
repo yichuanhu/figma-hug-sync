@@ -321,7 +321,7 @@ const TemplateManagementPage = () => {
       dataIndex: 'template_name',
       width: 200,
       render: (text: string) => (
-        <span className="template-management-table-name">{text}</span>
+        <span>{text}</span>
       ),
     },
     {
