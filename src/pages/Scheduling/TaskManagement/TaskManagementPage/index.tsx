@@ -538,7 +538,7 @@ const TaskManagementPage = () => {
       width: 160,
       render: (name: string) => (
         <Tooltip content={name} position="top">
-          <div className="task-management-page-cell-ellipsis">{name}</div>
+          <div>{name}</div>
         </Tooltip>
       ),
     },
