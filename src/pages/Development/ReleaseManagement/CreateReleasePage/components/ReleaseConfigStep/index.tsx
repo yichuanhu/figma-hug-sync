@@ -244,7 +244,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
     <div className="release-config-step">
       {/* 基本信息 */}
       <Card className="release-config-step-section" title={t('release.create.basicInfo')}>
-        <Form labelPosition="left" labelWidth={100}>
+        <Form labelPosition="left" labelWidth={100} style={{ '--semi-form-label-fontWeight': '400' } as React.CSSProperties}>
           <Form.Slot label={t('release.create.releaseType')}>
             <Select
               value={releaseType}
