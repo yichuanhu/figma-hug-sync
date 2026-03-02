@@ -362,7 +362,7 @@ const QueueTriggerList = () => {
       dataIndex: 'name',
       width: 200,
       render: (text: string) => (
-        <span className="queue-trigger-list-table-name">{text}</span>
+        <span>{text}</span>
       ),
     },
     {
