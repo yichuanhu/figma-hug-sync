@@ -390,7 +390,6 @@ const ReleaseListPage: React.FC = () => {
           <Button
             icon={<IconMoreStroked />}
             theme="borderless"
-            size="small"
             onClick={(e) => e.stopPropagation()}
           />
         </Dropdown>

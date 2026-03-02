@@ -201,7 +201,7 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
           <Dropdown.Item icon={<IconEyeOpenedStroked />} onClick={(e) => { e?.stopPropagation?.(); if (onNavigateToWorkerDetail) { onClose(); onNavigateToWorkerDetail(record.id); } }}>{t('workerGroup.actions.viewDetail')}</Dropdown.Item>
           <Dropdown.Item icon={<IconMinusCircleStroked />} type="warning" onClick={(e) => { e?.stopPropagation?.(); handleRemoveMember(record); }}>{t('workerGroup.actions.removeFromGroup')}</Dropdown.Item>
         </Dropdown.Menu>
-      }><Button icon={<IconMoreStroked />} theme="borderless" size="small" onClick={(e) => e.stopPropagation()} /></Dropdown>
+      }><Button icon={<IconMoreStroked />} theme="borderless" onClick={(e) => e.stopPropagation()} /></Dropdown>
     ) },
   ];
 
