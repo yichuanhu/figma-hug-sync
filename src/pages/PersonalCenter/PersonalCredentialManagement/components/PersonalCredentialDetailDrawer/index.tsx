@@ -277,7 +277,7 @@ const PersonalCredentialDetailDrawer = ({
                       <Dropdown.Item icon={<IconEyeOpenedStroked />} onClick={(e) => { e.stopPropagation(); handleNavigateToCredential(record); }}>{t('common.viewDetail')}</Dropdown.Item>
                       <Dropdown.Item icon={<Unlink size={16} strokeWidth={2} />} type="danger" onClick={(e) => { e.stopPropagation(); handleUnlinkCredential(record); }}>{t('personalCredential.linkedCredentials.unlink')}</Dropdown.Item>
                     </Dropdown.Menu>
-                  }><Button icon={<IconMoreStroked />} theme="borderless" type="tertiary" onClick={(e) => e.stopPropagation()} /></Dropdown>
+                  }><Button icon={<IconMoreStroked />} theme="borderless" type="tertiary" size="small" onClick={(e) => e.stopPropagation()} /></Dropdown>
                 ) },
               ]} dataSource={linkedCredentials} rowKey="credential_id" pagination={false} empty={
                 <EmptyState description={t('personalCredential.linkedCredentials.empty')} footer={

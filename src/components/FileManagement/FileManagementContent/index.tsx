@@ -450,6 +450,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
             icon={<IconMoreStroked />}
             theme="borderless"
             type="tertiary"
+            size="small"
             onClick={(e) => e.stopPropagation()}
           />
         </Dropdown>

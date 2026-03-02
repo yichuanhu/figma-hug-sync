@@ -395,6 +395,7 @@ const TemplateManagementPage = () => {
             icon={<IconMoreStroked />} 
             theme="borderless" 
             type="tertiary"
+            size="small"
             onClick={(e) => e.stopPropagation()}
           />
         </Dropdown>

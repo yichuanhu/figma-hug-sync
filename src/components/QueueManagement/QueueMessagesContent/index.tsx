@@ -545,7 +545,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
             </Dropdown.Menu>
           }
         >
-          <Button icon={<IconMoreStroked />} theme="borderless" type="tertiary" onClick={(e) => e.stopPropagation()} />
+          <Button icon={<IconMoreStroked />} theme="borderless" type="tertiary" size="small" onClick={(e) => e.stopPropagation()} />
         </Dropdown>
       ),
     },
