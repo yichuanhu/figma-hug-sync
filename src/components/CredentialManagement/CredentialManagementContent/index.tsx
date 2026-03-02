@@ -411,7 +411,6 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
       width: 200,
       ellipsis: true,
       render: (text: string | null) => text || '-',
-      ),
     },
     {
       title: t('common.actions'),

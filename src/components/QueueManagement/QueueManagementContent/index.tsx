@@ -375,7 +375,6 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
       width: 200,
       ellipsis: true,
       render: (text: string | null) => text || '-',
-      ),
     },
     {
       title: t('common.actions'),
