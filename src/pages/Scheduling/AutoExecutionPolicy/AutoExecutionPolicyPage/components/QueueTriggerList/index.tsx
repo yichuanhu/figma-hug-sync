@@ -382,7 +382,7 @@ const QueueTriggerList = () => {
       dataIndex: 'current_message_count',
       width: 120,
       render: (count: number | null) => (
-        <span className="queue-trigger-list-message-count">
+        <span>
           {count ?? 0}
         </span>
       ),
