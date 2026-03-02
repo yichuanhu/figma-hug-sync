@@ -379,7 +379,7 @@ const TimeTriggerList = () => {
       dataIndex: 'name',
       width: 200,
       render: (text: string) => (
-        <span className="time-trigger-list-table-name">{text}</span>
+        <span>{text}</span>
       ),
     },
     {
