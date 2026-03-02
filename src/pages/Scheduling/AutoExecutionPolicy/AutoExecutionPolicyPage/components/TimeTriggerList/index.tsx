@@ -393,8 +393,8 @@ const TimeTriggerList = () => {
       dataIndex: 'rule_type',
       width: 180,
       render: (_: unknown, record: LYTimeTriggerResponse) => (
-        <div className="time-trigger-list-rule">
-          <IconClockStroked size="small" className="time-trigger-list-rule-icon" />
+        <div>
+          <IconClockStroked size="small" />
           <span>{formatTriggerRule(record)}</span>
         </div>
       ),
