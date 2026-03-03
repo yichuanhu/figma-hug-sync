@@ -26,6 +26,7 @@ import {
   IconDeleteStroked,
   IconExternalOpenStroked,
   IconEditStroked,
+  IconChevronLeft,
 } from '@douyinfe/semi-icons';
 import type { 
   LYExecutionTemplateResponse,
@@ -416,10 +417,16 @@ const TemplateManagementPage = () => {
           <Breadcrumb.Item>{t('template.pageTitle')}</Breadcrumb.Item>
         </Breadcrumb>
 
-        {/* 标题区域 */}
+        {/* 返回按钮和标题 */}
         <div className="template-management-header">
           <div className="template-management-header-title">
-            <Title heading={4} className="title">
+            <Button
+              icon={<IconChevronLeft />}
+              theme="borderless"
+              onClick={() => navigate('/scheduling-center/task-execution/task-list')}
+              className="template-management-back-btn"
+            />
+            <Title heading={3} className="title">
               {t('template.pageTitle')}
             </Title>
           </div>
