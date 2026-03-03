@@ -31,7 +31,7 @@ import {
   IconCrossCircleStroked,
   IconDeleteStroked,
 } from '@douyinfe/semi-icons';
-import { RefreshCw, PlayCircle } from 'lucide-react';
+import { RefreshCw, PlayCircle, Play } from 'lucide-react';
 import type { 
   LYTaskResponse, 
   GetTasksParams, 
