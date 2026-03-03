@@ -1693,6 +1693,7 @@
   },
   "template": {
     "pageTitle": "执行模板",
+    "entryButton": "执行模板",
     "searchPlaceholder": "搜索模板名称或描述",
     "filterByProcess": "按流程筛选",
     "noData": "暂无执行模板",

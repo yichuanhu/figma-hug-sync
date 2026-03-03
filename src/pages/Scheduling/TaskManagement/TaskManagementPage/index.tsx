@@ -679,6 +679,12 @@ const TaskManagementPage = () => {
         <div className="task-management-page-header">
           <div className="task-management-page-header-title">
             <Title heading={4}>{t('task.title')}</Title>
+            <Button
+              icon={<Play size={16} strokeWidth={2} />}
+              onClick={() => navigate('/scheduling-center/task-execution/templates')}
+            >
+              {t('template.entryButton')}
+            </Button>
           </div>
           <Row type="flex" justify="space-between" align="middle" className="task-management-page-header-toolbar">
             <Col>
