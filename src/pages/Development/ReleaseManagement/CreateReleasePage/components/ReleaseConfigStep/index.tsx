@@ -306,7 +306,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
         className="release-config-step-section"
         title={
           <Space>
-            <Text strong>{t('release.create.dependencyResources')}</Text>
+            <span>{t('release.create.dependencyResources')}</span>
             <Tag size="small">{totalResourceCount}</Tag>
           </Space>
         }
