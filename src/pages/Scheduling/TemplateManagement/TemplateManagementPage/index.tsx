@@ -412,6 +412,7 @@ const TemplateManagementPage = () => {
         <Breadcrumb className="template-management-breadcrumb">
           <Breadcrumb.Item>{t('sidebar.schedulingCenter')}</Breadcrumb.Item>
           <Breadcrumb.Item>{t('sidebar.taskExecution')}</Breadcrumb.Item>
+          <Breadcrumb.Item onClick={() => navigate('/scheduling-center/task-execution/task-list')}>{t('task.breadcrumb.taskList')}</Breadcrumb.Item>
           <Breadcrumb.Item>{t('template.pageTitle')}</Breadcrumb.Item>
         </Breadcrumb>
 

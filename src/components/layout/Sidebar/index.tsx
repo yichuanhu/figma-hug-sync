@@ -229,7 +229,6 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     // 4. 任务执行 - 分组标题
     { key: 'taskExecution', labelKey: 'sidebar.taskExecution', isGroupLabel: true },
     { key: 'autoExecutionPolicy', labelKey: 'sidebar.autoExecutionPolicy', icon: <CalendarClock size={20} strokeWidth={2} />, path: '/scheduling-center/task-execution/auto-execution-policy' },
-    { key: 'executionTemplate', labelKey: 'sidebar.executionTemplate', icon: <Play size={20} strokeWidth={2} />, path: '/scheduling-center/task-execution/templates' },
     { key: 'taskList', labelKey: 'sidebar.taskList', icon: <ClipboardList size={20} strokeWidth={2} />, path: '/scheduling-center/task-execution/task-list' },
   ];
 
