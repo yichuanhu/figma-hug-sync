@@ -224,7 +224,7 @@ function DetailDrawerWrapper<T>({
       // 点击在表格内部（行点击切换内容），不关闭
       if (target.closest('.semi-table')) return;
       // 点击在模态框/弹出层内，不关闭
-      if (target.closest('.semi-modal') || target.closest('.semi-modal-mask') || target.closest('.semi-popover') || target.closest('.semi-dropdown') || target.closest('.semi-tooltip') || target.closest('.semi-overlay')) return;
+      if (target.closest('.semi-modal, .semi-modal-wrapper, .semi-modal-mask, .semi-portal, .semi-popover, .semi-dropdown, .semi-tooltip, .semi-overlay')) return;
       // 其他区域点击，关闭抽屉
       onClose();
     };
