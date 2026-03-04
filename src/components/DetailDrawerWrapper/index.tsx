@@ -213,6 +213,33 @@ function DetailDrawerWrapper<T>({
     }
   }, [drawerWidth, storageKey]);
 
+  // 点击表格以外的内容区域关闭抽屉
+  useEffect(() => {
+    if (!visible) return;
+
+    const handleDocumentClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      // 点击在抽屉内部，不关闭
+      if (target.closest('.detail-drawer-wrapper')) return;
+      // 点击在表格内部（行点击切换内容），不关闭
+      if (target.closest('.semi-table')) return;
+      // 点击在模态框/弹出层内，不关闭
+      if (target.closest('.semi-modal') || target.closest('.semi-popover') || target.closest('.semi-dropdown') || target.closest('.semi-tooltip')) return;
+      // 其他区域点击，关闭抽屉
+      onClose();
+    };
+
+    // 使用 setTimeout 避免打开抽屉时的点击立即触发关闭
+    const timer = setTimeout(() => {
+      document.addEventListener('mousedown', handleDocumentClick);
+    }, 0);
+
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener('mousedown', handleDocumentClick);
+    };
+  }, [visible, onClose]);
+
   return (
     <SideSheet
       title={
