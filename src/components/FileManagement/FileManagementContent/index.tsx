@@ -160,6 +160,26 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
+  // 表格容器ref和高度计算
+  const tableContainerRef = useRef<HTMLDivElement>(null);
+  const [tableScrollY, setTableScrollY] = useState<number | undefined>(undefined);
+
+  useEffect(() => {
+    const calcHeight = () => {
+      if (tableContainerRef.current) {
+        // 减去分页组件的预估高度(约56px)
+        const availableHeight = tableContainerRef.current.clientHeight - 56;
+        setTableScrollY(availableHeight > 100 ? availableHeight : undefined);
+      }
+    };
+    calcHeight();
+    const observer = new ResizeObserver(calcHeight);
+    if (tableContainerRef.current) {
+      observer.observe(tableContainerRef.current);
+    }
+    return () => observer.disconnect();
+  }, []);
+
   // 搜索框输入值
   const [searchValue, setSearchValue] = useState('');
 
