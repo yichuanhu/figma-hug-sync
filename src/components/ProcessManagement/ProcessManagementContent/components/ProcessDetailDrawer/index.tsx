@@ -110,13 +110,13 @@ const generateMockVersionData = (): VersionDetailData[] => {
 
 const initialMockVersionData: VersionDetailData[] = generateMockVersionData();
 
-// 模拟创建者ID到名称的映射
-const mockCreatorNameMap: Record<string, string> = {
-  'user-001': '张三',
-  'user-002': '李四',
-  'user-003': '王五',
-  'user-004': '赵六',
-  'user-005': '钱七',
+// 模拟创建者ID到详细信息的映射
+const mockCreatorInfoMap: Record<string, { name: string; department?: string; role?: string; email?: string }> = {
+  'user-001': { name: '张三', department: '研发部', role: '高级工程师', email: 'zhangsan@example.com' },
+  'user-002': { name: '李四', department: '产品部', role: '产品经理', email: 'lisi@example.com' },
+  'user-003': { name: '王五', department: '运维部', role: '运维工程师', email: 'wangwu@example.com' },
+  'user-004': { name: '赵六', department: '测试部', role: '测试工程师', email: 'zhaoliu@example.com' },
+  'user-005': { name: '钱七', department: '研发部', role: '架构师', email: 'qianqi@example.com' },
 };
 
 // ============= 组件Props =============
@@ -360,16 +360,16 @@ const ProcessDetailDrawer = ({
     return dateStr.replace('T', ' ').substring(0, 19);
   };
 
-  const getCreatorName = (creatorId: string): string => {
-    return mockCreatorNameMap[creatorId] || creatorId;
+  const getCreatorInfo = (creatorId: string) => {
+    return mockCreatorInfoMap[creatorId] || null;
   };
 
-  const creatorName = getCreatorName(processData.creator_id);
+  const creatorInfo = getCreatorInfo(processData.creator_id);
 
   const descriptionData = [
     { key: t('development.processDevelopment.fields.processName'), value: processData.name },
     { key: t('common.description'), value: <ExpandableText text={processData.description} maxLines={3} /> },
-    { key: t('common.creator'), value: creatorName ? <UserNameWithCard name={creatorName} userId={processData.creator_id} /> : '-' },
+    { key: t('common.creator'), value: creatorInfo ? <UserNameWithCard name={creatorInfo.name} userId={processData.creator_id} department={creatorInfo.department} role={creatorInfo.role} email={creatorInfo.email} /> : '-' },
     { key: t('common.createTime'), value: formatDateTime(processData.created_at) },
     { key: t('common.updateTime'), value: formatDateTime(processData.updated_at) },
     {
@@ -385,7 +385,7 @@ const ProcessDetailDrawer = ({
   const getVersionDescriptionData = (version: VersionDetailData) => [
     { key: t('development.processDevelopment.detail.versionDetail.processVersion'), value: version.version },
     { key: t('development.processDevelopment.detail.versionDetail.versionFileName'), value: version.file_name || '-' },
-    { key: t('development.processDevelopment.detail.versionDetail.uploader'), value: (() => { const n = getCreatorName(version.creator_id); return n ? <UserNameWithCard name={n} userId={version.creator_id} /> : '-'; })() },
+    { key: t('development.processDevelopment.detail.versionDetail.uploader'), value: (() => { const info = getCreatorInfo(version.creator_id); return info ? <UserNameWithCard name={info.name} userId={version.creator_id} department={info.department} role={info.role} email={info.email} /> : '-'; })() },
     { key: t('development.processDevelopment.detail.versionDetail.uploadTime'), value: formatDateTime(version.created_at) },
     { key: t('development.processDevelopment.detail.versionDetail.versionNote'), value: version.version_note || '-' },
     {
