@@ -214,7 +214,7 @@ const CredentialDetailDrawer = ({
       ...(context === 'development' ? [{ key: t('credential.detail.publishStatus'), value: <Tag color={credential.is_published ? 'green' : 'grey'}>{credential.is_published ? t('credential.detail.published') : t('credential.detail.unpublished')}</Tag> }] : []),
       { key: t('common.description'), value: <ExpandableText text={credential.description} maxLines={3} /> },
       ...(credential.credential_type === 'PERSONAL_REF' ? [{ key: t('credential.detail.linkedPersonalCredential'), value: credential.linked_personal_credential_value || '-' }] : []),
-      { key: t('common.creator'), value: credential.created_by_name || '-' },
+      { key: t('common.creator'), value: credential.created_by_name ? <UserNameWithCard name={credential.created_by_name} userId={credential.created_by} /> : '-' },
       { key: t('common.createTime'), value: formatDateTime(credential.created_at) },
       { key: t('common.updateTime'), value: formatDateTime(credential.updated_at) },
     ];
