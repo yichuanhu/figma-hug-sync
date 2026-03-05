@@ -18,7 +18,6 @@ import {
 } from '@douyinfe/semi-ui';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
-import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import FilterPopover from '@/components/FilterPopover';
 import {
   IconSearchStroked,
