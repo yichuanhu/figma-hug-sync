@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Breadcrumb, Typography, Toast, Button } from '@douyinfe/semi-ui';
+import { Typography, Toast, Button } from '@douyinfe/semi-ui';
 import { IconChevronLeft } from '@douyinfe/semi-icons';
 import AppLayout from '@/components/layout/AppLayout';
 import CalendarSidebar from './components/CalendarSidebar';
