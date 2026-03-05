@@ -23,14 +23,6 @@ export const routeConfigs: RouteConfig[] = [
 
   // ==================== 开发中心 ====================
   {
-    path: '/development-workbench',
-    breadcrumb: [
-      { labelKey: 'sidebar.home', path: '/' },
-      { labelKey: 'sidebar.developmentCenter' },
-      { labelKey: 'sidebar.developmentWorkbench' },
-    ],
-  },
-  {
     path: '/process-development',
     breadcrumb: [
       { labelKey: 'sidebar.home', path: '/' },
@@ -103,14 +95,6 @@ export const routeConfigs: RouteConfig[] = [
   },
 
   // ==================== 调度中心 ====================
-  {
-    path: '/scheduling-workbench',
-    breadcrumb: [
-      { labelKey: 'sidebar.home', path: '/' },
-      { labelKey: 'sidebar.schedulingCenter' },
-      { labelKey: 'sidebar.schedulingWorkbench' },
-    ],
-  },
   {
     path: '/scheduling-center/resource-monitoring/worker-management',
     breadcrumb: [
@@ -226,34 +210,10 @@ export const routeConfigs: RouteConfig[] = [
   },
 
   // ==================== 运营中心 ====================
-  {
-    path: '/operations-workbench',
-    breadcrumb: [
-      { labelKey: 'sidebar.home', path: '/' },
-      { labelKey: 'sidebar.operationsCenter' },
-      { labelKey: 'sidebar.operationsWorkbench' },
-    ],
-  },
 
   // ==================== 需求中心 ====================
-  {
-    path: '/requirements-workbench',
-    breadcrumb: [
-      { labelKey: 'sidebar.home', path: '/' },
-      { labelKey: 'sidebar.requirementsCenter' },
-      { labelKey: 'sidebar.requirementsWorkbench' },
-    ],
-  },
 
   // ==================== 运维中心 ====================
-  {
-    path: '/maintenance-workbench',
-    breadcrumb: [
-      { labelKey: 'sidebar.home', path: '/' },
-      { labelKey: 'sidebar.maintenanceCenter' },
-      { labelKey: 'sidebar.maintenanceWorkbench' },
-    ],
-  },
 
   // ==================== 个人中心 ====================
   {

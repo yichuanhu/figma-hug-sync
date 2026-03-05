@@ -4,7 +4,6 @@ import AppLayout from "@/components/layout/AppLayout";
 import Index from "@/pages/Index";
 import NotFound from "@/pages/NotFound";
 // Development
-import DevelopmentWorkbench from "@/pages/Development/DevelopmentWorkbench";
 import ProcessDevelopment from "@/pages/Development/ProcessDevelopment";
 import CredentialManagementPage from "@/pages/Development/CredentialManagement/CredentialManagementPage";
 import ParameterManagementPage from "@/pages/Development/ParameterManagement/ParameterManagementPage";
@@ -14,8 +13,6 @@ import DevFileManagementPage from "@/pages/Development/FileManagement/FileManage
 // Release Management
 import ReleaseListPage from "@/pages/Development/ReleaseManagement/ReleaseListPage";
 import CreateReleasePage from "@/pages/Development/ReleaseManagement/CreateReleasePage";
-// Operations
-import OperationsWorkbench from "@/pages/Operations/OperationsWorkbench";
 // Scheduling - Worker Management
 import WorkerManagementPage from "@/pages/Scheduling/WorkerManagement/WorkerManagementPage";
 // Scheduling - Credential Management
@@ -29,12 +26,6 @@ import SchedulingQueueManagementPage from "@/pages/Scheduling/QueueManagement/Qu
 import SchedulingQueueMessagesPage from "@/pages/Scheduling/QueueManagement/QueueMessagesPage";
 // Scheduling - File Management
 import SchedulingFileManagementPage from "@/pages/Scheduling/FileManagement/FileManagementPage";
-// Maintenance
-import MaintenanceWorkbench from "@/pages/Maintenance/MaintenanceWorkbench";
-// Requirements
-import RequirementsWorkbench from "@/pages/Requirements/RequirementsWorkbench";
-// Scheduling
-import SchedulingWorkbench from "@/pages/Scheduling/SchedulingWorkbench";
 // Scheduling - Task Management
 import TaskManagementPage from "@/pages/Scheduling/TaskManagement/TaskManagementPage";
 // Scheduling - Task Log
@@ -64,11 +55,7 @@ const App = () => (
           <Route path="/process-development" element={<ProcessDevelopment />} />
           
           <Route path="/scheduling-center/resource-monitoring/worker-management" element={<WorkerManagementPage />} />
-          <Route path="/development-workbench" element={<DevelopmentWorkbench />} />
-          <Route path="/scheduling-workbench" element={<SchedulingWorkbench />} />
-          <Route path="/operations-workbench" element={<OperationsWorkbench />} />
-          <Route path="/requirements-workbench" element={<RequirementsWorkbench />} />
-          <Route path="/maintenance-workbench" element={<MaintenanceWorkbench />} />
+          
           
           {/* 凭据管理 */}
           <Route path="/dev-center/business-assets/credentials" element={<CredentialManagementPage />} />

@@ -14,7 +14,6 @@ import {
   IconFolderStroked,
 } from '@douyinfe/semi-icons';
 import {
-  LayoutGrid,
   ListStart,
   MonitorCheck,
   Parentheses,
@@ -112,36 +111,28 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
 
   // 根据当前路由获取激活的中心
   const getActiveCenterByPath = (pathname: string): string => {
-    // 开发中心相关路由
     if (
-      pathname === '/development-workbench' ||
       pathname === '/process-development' ||
       pathname.startsWith('/process-detail/') ||
       pathname.startsWith('/dev-center/')
     ) {
       return 'developmentCenter';
     }
-    // 调度中心相关路由
     if (
-      pathname === '/scheduling-workbench' ||
       pathname.startsWith('/scheduling') ||
       pathname.startsWith('/scheduling-center/')
     ) {
       return 'schedulingCenter';
     }
-    // 运营中心相关路由
-    if (pathname === '/operations-workbench' || pathname.startsWith('/operations')) {
+    if (pathname.startsWith('/operations')) {
       return 'operationsCenter';
     }
-    // 需求中心相关路由
-    if (pathname === '/requirements-workbench' || pathname.startsWith('/requirements')) {
+    if (pathname.startsWith('/requirements')) {
       return 'requirementsCenter';
     }
-    // 运维中心相关路由
-    if (pathname === '/maintenance-workbench' || pathname.startsWith('/maintenance')) {
+    if (pathname.startsWith('/maintenance')) {
       return 'maintenanceCenter';
     }
-    // 首页
     if (pathname === '/') {
       return 'home';
     }
@@ -150,6 +141,20 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
 
   const activeCenterKey = getActiveCenterByPath(location.pathname);
 
+  // 获取中心菜单中第一个有 path 的菜单项
+  const getFirstPathInMenu = (menu: MenuItem[]): string | undefined => {
+    for (const item of menu) {
+      if (item.isGroupLabel) continue;
+      if (item.path) return item.path;
+      if (item.children) {
+        for (const child of item.children) {
+          if (child.path) return child.path;
+        }
+      }
+    }
+    return undefined;
+  };
+
   // 中心级别菜单（左侧图标栏）
   const centerMenuItems: MenuItem[] = [
     { key: 'home', labelKey: 'sidebar.home', icon: <img src={homeCenterIcon} alt="home" className="sidebar-center-icon" />, path: '/' },
@@ -157,37 +162,31 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
       key: 'developmentCenter',
       labelKey: 'sidebar.developmentCenter',
       icon: <img src={developmentCenterIcon} alt="development" className="sidebar-center-icon" />,
-      path: '/development-workbench',
     },
     {
       key: 'schedulingCenter',
       labelKey: 'sidebar.schedulingCenter',
       icon: <img src={schedulingCenterIcon} alt="scheduling" className="sidebar-center-icon" />,
-      path: '/scheduling-workbench',
     },
     {
       key: 'operationsCenter',
       labelKey: 'sidebar.operationsCenter',
       icon: <img src={operationsCenterIcon} alt="operations" className="sidebar-center-icon" />,
-      path: '/operations-workbench',
     },
     {
       key: 'requirementsCenter',
       labelKey: 'sidebar.requirementsCenter',
       icon: <img src={requirementsCenterIcon} alt="requirements" className="sidebar-center-icon" />,
-      path: '/requirements-workbench',
     },
     {
       key: 'maintenanceCenter',
       labelKey: 'sidebar.maintenanceCenter',
       icon: <img src={maintenanceCenterIcon} alt="maintenance" className="sidebar-center-icon" />,
-      path: '/maintenance-workbench',
     },
   ];
 
   // 开发中心的详细菜单结构 - 使用分组标题样式
   const developmentCenterMenu: MenuItem[] = [
-    { key: 'developmentWorkbench', labelKey: 'sidebar.developmentWorkbench', icon: <LayoutGrid size={20} strokeWidth={2} /> },
     // 开发任务管理 - 分组标题
     { key: 'developmentTaskManagement', labelKey: 'sidebar.developmentTaskManagement', isGroupLabel: true },
     { key: 'automationProcess', labelKey: 'sidebar.automationProcess', icon: <Workflow size={20} strokeWidth={2} />, path: '/process-development' },
@@ -210,7 +209,6 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
 
   // 调度中心的详细菜单结构 - 使用分组标题样式
   const schedulingCenterMenu: MenuItem[] = [
-    { key: 'schedulingWorkbench', labelKey: 'sidebar.schedulingWorkbench', icon: <LayoutGrid size={20} strokeWidth={2} /> },
     // 1. 执行资产 - 分组标题
     { key: 'executionAssets', labelKey: 'sidebar.executionAssets', isGroupLabel: true },
     { key: 'schedulingAutomationProcess', labelKey: 'sidebar.automationProcess', icon: <Workflow size={20} strokeWidth={2} />, path: '/scheduling-center/execution-assets/automation-process' },
@@ -234,7 +232,6 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
 
   // 运营中心的详细菜单结构 - 使用分组标题样式
   const operationsCenterMenu: MenuItem[] = [
-    { key: 'operationsWorkbench', labelKey: 'sidebar.operationsWorkbench', icon: <LayoutGrid size={20} strokeWidth={2} /> },
     // 数据分析 - 分组标题
     { key: 'dataAnalysis', labelKey: 'sidebar.dataAnalysis', isGroupLabel: true },
     { key: 'executionReport', labelKey: 'sidebar.executionReport', icon: <BarChart3 size={20} strokeWidth={2} /> },
@@ -247,7 +244,6 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
 
   // 需求中心的详细菜单结构 - 使用分组标题样式
   const requirementsCenterMenu: MenuItem[] = [
-    { key: 'requirementsWorkbench', labelKey: 'sidebar.requirementsWorkbench', icon: <LayoutGrid size={20} strokeWidth={2} /> },
     // 需求管理 - 分组标题
     { key: 'requirementsManagement', labelKey: 'sidebar.requirementsManagement', isGroupLabel: true },
     { key: 'requirementsList', labelKey: 'sidebar.requirementsList', icon: <ClipboardList size={20} strokeWidth={2} /> },
@@ -259,7 +255,6 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
 
   // 运维中心的详细菜单结构 - 使用分组标题样式
   const maintenanceCenterMenu: MenuItem[] = [
-    { key: 'maintenanceWorkbench', labelKey: 'sidebar.maintenanceWorkbench', icon: <LayoutGrid size={20} strokeWidth={2} /> },
     // 系统运维 - 分组标题
     { key: 'systemMaintenance', labelKey: 'sidebar.systemMaintenance', isGroupLabel: true },
     { key: 'systemConfig', labelKey: 'sidebar.systemConfig', icon: <Settings size={20} strokeWidth={2} /> },
@@ -342,12 +337,12 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
   };
 
   const handleCenterClick = (item: MenuItem) => {
-    if (item.path) {
-      navigate(item.path);
+    const centerMenu = getCenterMenu(item.key);
+    const targetPath = item.path || getFirstPathInMenu(centerMenu);
+    if (targetPath) {
+      navigate(targetPath);
       setHoveredCenterKey(null);
-      // 如果该中心有子菜单，自动展开侧边栏
-      const hasSubMenu = getCenterMenu(item.key).length > 0;
-      if (hasSubMenu && collapsed) {
+      if (centerMenu.length > 0 && collapsed) {
         onToggleCollapse?.();
       }
     }
