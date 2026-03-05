@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { debounce } from 'lodash';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import {
   Typography,
   Input,
