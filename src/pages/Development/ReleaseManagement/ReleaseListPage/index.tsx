@@ -422,6 +422,23 @@ const ReleaseListPage: React.FC = () => {
     label: t(config.i18nKey),
   }));
 
+  // 发布者选项（从mock数据中提取）
+  const publisherOptions = useMemo(() => {
+    const publishers = ['张三', '李四', '王五'];
+    return publishers.map((name) => ({ value: name, label: name }));
+  }, []);
+
+  // 日期快捷选项
+  const datePresets = useMemo(() => {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    return [
+      { text: t('common.today'), start: today, end: now },
+      { text: t('common.last7Days'), start: new Date(today.getTime() - 6 * 86400000), end: now },
+      { text: t('common.thisMonth'), start: new Date(now.getFullYear(), now.getMonth(), 1), end: now },
+    ];
+  }, [t]);
+
   return (
       <div className="release-list-page">
 
@@ -468,6 +485,21 @@ const ReleaseListPage: React.FC = () => {
                       type: 'checkbox',
                       value: activeFilters.publish_status,
                       options: statusOptions,
+                    },
+                    {
+                      key: 'publisher',
+                      label: t('release.list.columns.publisher'),
+                      type: 'checkbox',
+                      value: activeFilters.publisher,
+                      options: publisherOptions,
+                    },
+                    {
+                      key: 'publish_date',
+                      label: t('release.list.columns.publishTime'),
+                      type: 'dateRange',
+                      value: activeFilters.publish_date,
+                      datePresets,
+                    },
                     },
                   ]}
                 />
