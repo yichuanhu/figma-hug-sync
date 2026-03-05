@@ -66,11 +66,11 @@ export const UserInfoDropdown: React.FC<UserInfoDropdownProps> = ({
     switch (key) {
       case 'admin':
       case 'dashboard':
-        return <IconDesktop size="small" />;
+        return <IconDesktop style={{ fontSize: 14 }} />;
       case 'settings':
-        return <IconSetting size="small" />;
+        return <IconSetting style={{ fontSize: 14 }} />;
       case 'logout':
-        return <IconExit size="small" />;
+        return <IconExit style={{ fontSize: 14 }} />;
       default:
         return null;
     }
