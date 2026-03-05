@@ -123,7 +123,7 @@ export const UserInfoDropdown: React.FC<UserInfoDropdownProps> = ({
             key={action.key}
             icon={action.icon || getIcon(action.key)}
             label={action.label}
-            endIcon={needsExternalIcon(action.key) ? <ExternalLink size={14} strokeWidth={2} /> : undefined}
+            endIcon={needsExternalIcon(action.key) ? <ExternalLink size={20} strokeWidth={2} /> : undefined}
             onClick={action.onClick}
           />
         ))}
