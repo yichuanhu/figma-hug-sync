@@ -360,8 +360,8 @@ const ProcessDetailDrawer = ({
     return dateStr.replace('T', ' ').substring(0, 19);
   };
 
-  const getCreatorName = (creatorId: string): string => {
-    return mockCreatorNameMap[creatorId] || creatorId;
+  const getCreatorInfo = (creatorId: string) => {
+    return mockCreatorInfoMap[creatorId] || null;
   };
 
   const creatorName = getCreatorName(processData.creator_id);
