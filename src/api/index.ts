@@ -2471,6 +2471,12 @@ export interface LYReleaseResponse {
   publisher_id: string;
   /** 发布者名称 */
   publisher_name: string;
+  /** 发布者部门 */
+  publisher_department?: string | null;
+  /** 发布者角色 */
+  publisher_role?: string | null;
+  /** 发布者邮箱 */
+  publisher_email?: string | null;
   /** 发布时间 (ISO 8601) */
   publish_time: string;
   /** 发布状态 */
