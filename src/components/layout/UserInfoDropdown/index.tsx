@@ -108,7 +108,7 @@ export const UserInfoDropdown: React.FC<UserInfoDropdownProps> = ({
           {/* 公司信息 */}
           {companyName && (
             <div className="layout-user-dropdown__company">
-              <IconApartment size="small" />
+              <IconApartment style={{ fontSize: 14, color: 'var(--semi-color-text-3)' }} />
               <div className="layout-user-dropdown__company-name">{companyName}</div>
             </div>
           )}
