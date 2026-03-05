@@ -34,6 +34,7 @@ import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
 import ProcessDetailDrawer from './components/ProcessDetailDrawer';
 import { useOpenProcess } from './hooks/useOpenProcess';
+import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import type { LYProcessResponse, GetProcessesParams, LYListResponseLYProcessResponse } from '@/api';
 import './index.less';
 
