@@ -4,7 +4,6 @@ import AppLayout from "@/components/layout/AppLayout";
 import Index from "@/pages/Index";
 import NotFound from "@/pages/NotFound";
 // Development
-import DevelopmentWorkbench from "@/pages/Development/DevelopmentWorkbench";
 import ProcessDevelopment from "@/pages/Development/ProcessDevelopment";
 import CredentialManagementPage from "@/pages/Development/CredentialManagement/CredentialManagementPage";
 import ParameterManagementPage from "@/pages/Development/ParameterManagement/ParameterManagementPage";
