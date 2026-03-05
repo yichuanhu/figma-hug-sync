@@ -10,7 +10,7 @@ import {
   Modal,
 } from '@douyinfe/semi-ui';
 import { IconArrowLeft, IconInfoCircle } from '@douyinfe/semi-icons';
-import AppLayout from '@/components/layout/AppLayout';
+// AppLayout removed - now handled at route level
 import ProcessSelectionStep from './components/ProcessSelectionStep';
 import ReleaseConfigStep from './components/ReleaseConfigStep';
 import type {
