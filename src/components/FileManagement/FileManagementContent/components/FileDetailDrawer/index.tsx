@@ -278,7 +278,7 @@ const FileDetailDrawer = ({
               <ExpandableText text={file.description} maxLines={3} />
             </Descriptions.Item>
             <Descriptions.Item itemKey={t('common.creator')}>
-              {file.created_by_name}
+              {file.created_by_name ? <UserNameWithCard name={file.created_by_name} userId={file.created_by} /> : '-'}
             </Descriptions.Item>
             <Descriptions.Item itemKey={t('common.createTime')}>
               {formatTime(file.created_at)}

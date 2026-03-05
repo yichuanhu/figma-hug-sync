@@ -152,7 +152,7 @@ const ParameterDetailDrawer = ({
             <ExpandableText text={parameter.description} maxLines={3} />
           </Descriptions.Item>
           <Descriptions.Item itemKey={t('common.creator')}>
-            {parameter.created_by_name || '-'}
+            {parameter.created_by_name ? <UserNameWithCard name={parameter.created_by_name} userId={parameter.created_by} /> : '-'}
           </Descriptions.Item>
           <Descriptions.Item itemKey={t('common.createTime')}>
             {formatDate(parameter.created_at || null)}
