@@ -150,6 +150,20 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
 
   const activeCenterKey = getActiveCenterByPath(location.pathname);
 
+  // 获取中心菜单中第一个有 path 的菜单项
+  const getFirstPathInMenu = (menu: MenuItem[]): string | undefined => {
+    for (const item of menu) {
+      if (item.isGroupLabel) continue;
+      if (item.path) return item.path;
+      if (item.children) {
+        for (const child of item.children) {
+          if (child.path) return child.path;
+        }
+      }
+    }
+    return undefined;
+  };
+
   // 中心级别菜单（左侧图标栏）
   const centerMenuItems: MenuItem[] = [
     { key: 'home', labelKey: 'sidebar.home', icon: <img src={homeCenterIcon} alt="home" className="sidebar-center-icon" />, path: '/' },
@@ -157,31 +171,26 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
       key: 'developmentCenter',
       labelKey: 'sidebar.developmentCenter',
       icon: <img src={developmentCenterIcon} alt="development" className="sidebar-center-icon" />,
-      path: '/development-workbench',
     },
     {
       key: 'schedulingCenter',
       labelKey: 'sidebar.schedulingCenter',
       icon: <img src={schedulingCenterIcon} alt="scheduling" className="sidebar-center-icon" />,
-      path: '/scheduling-workbench',
     },
     {
       key: 'operationsCenter',
       labelKey: 'sidebar.operationsCenter',
       icon: <img src={operationsCenterIcon} alt="operations" className="sidebar-center-icon" />,
-      path: '/operations-workbench',
     },
     {
       key: 'requirementsCenter',
       labelKey: 'sidebar.requirementsCenter',
       icon: <img src={requirementsCenterIcon} alt="requirements" className="sidebar-center-icon" />,
-      path: '/requirements-workbench',
     },
     {
       key: 'maintenanceCenter',
       labelKey: 'sidebar.maintenanceCenter',
       icon: <img src={maintenanceCenterIcon} alt="maintenance" className="sidebar-center-icon" />,
-      path: '/maintenance-workbench',
     },
   ];
 
