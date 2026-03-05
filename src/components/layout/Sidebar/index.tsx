@@ -112,36 +112,28 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
 
   // 根据当前路由获取激活的中心
   const getActiveCenterByPath = (pathname: string): string => {
-    // 开发中心相关路由
     if (
-      pathname === '/development-workbench' ||
       pathname === '/process-development' ||
       pathname.startsWith('/process-detail/') ||
       pathname.startsWith('/dev-center/')
     ) {
       return 'developmentCenter';
     }
-    // 调度中心相关路由
     if (
-      pathname === '/scheduling-workbench' ||
       pathname.startsWith('/scheduling') ||
       pathname.startsWith('/scheduling-center/')
     ) {
       return 'schedulingCenter';
     }
-    // 运营中心相关路由
-    if (pathname === '/operations-workbench' || pathname.startsWith('/operations')) {
+    if (pathname.startsWith('/operations')) {
       return 'operationsCenter';
     }
-    // 需求中心相关路由
-    if (pathname === '/requirements-workbench' || pathname.startsWith('/requirements')) {
+    if (pathname.startsWith('/requirements')) {
       return 'requirementsCenter';
     }
-    // 运维中心相关路由
-    if (pathname === '/maintenance-workbench' || pathname.startsWith('/maintenance')) {
+    if (pathname.startsWith('/maintenance')) {
       return 'maintenanceCenter';
     }
-    // 首页
     if (pathname === '/') {
       return 'home';
     }
