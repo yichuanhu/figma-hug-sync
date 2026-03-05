@@ -142,7 +142,6 @@
       cursor: pointer;
       border-radius: 8px;
       transition: background-color 0.2s;
-      position: relative;
 
       &:hover {
         background-color: var(--semi-color-fill-0);
@@ -152,14 +151,19 @@
         background-color: var(--semi-color-fill-1);
       }
 
-      &--active {
-        border-left: 3px solid var(--semi-color-primary);
-        padding-left: 9px;
-      }
-
       &-version {
         font-size: 14px;
         color: var(--semi-color-text-0);
+      }
+
+      &-active-dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: var(--semi-color-success);
+        flex-shrink: 0;
+        cursor: pointer;
       }
     }
   }
