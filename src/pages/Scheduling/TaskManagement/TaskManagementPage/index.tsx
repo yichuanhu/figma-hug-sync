@@ -3,8 +3,7 @@ import { debounce } from 'lodash';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
-  Breadcrumb,
-  Typography,
+  // Breadcrumb removed
   Input,
   Button,
   Table,
