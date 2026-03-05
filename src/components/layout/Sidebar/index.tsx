@@ -241,7 +241,6 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
 
   // 运营中心的详细菜单结构 - 使用分组标题样式
   const operationsCenterMenu: MenuItem[] = [
-    { key: 'operationsWorkbench', labelKey: 'sidebar.operationsWorkbench', icon: <LayoutGrid size={20} strokeWidth={2} /> },
     // 数据分析 - 分组标题
     { key: 'dataAnalysis', labelKey: 'sidebar.dataAnalysis', isGroupLabel: true },
     { key: 'executionReport', labelKey: 'sidebar.executionReport', icon: <BarChart3 size={20} strokeWidth={2} /> },
