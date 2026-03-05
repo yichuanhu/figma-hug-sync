@@ -220,6 +220,12 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
 
   // 队列名称（模拟）
   const queueName = '订单处理队列';
+  
+  // 设置面包屑动态参数
+  const { setParam } = useBreadcrumbParams();
+  useEffect(() => {
+    setParam('queueName', queueName);
+  }, [queueName, setParam]);
 
   // 加载数据
   const loadData = useCallback(async () => {
