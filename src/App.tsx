@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import AppLayout from "@/components/layout/AppLayout";
 import Index from "@/pages/Index";
 import NotFound from "@/pages/NotFound";
 // Development
@@ -57,69 +58,61 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="/process-development" element={<ProcessDevelopment />} />
-        
-        <Route path="/scheduling-center/resource-monitoring/worker-management" element={<WorkerManagementPage />} />
-        <Route path="/development-workbench" element={<DevelopmentWorkbench />} />
-        <Route path="/scheduling-workbench" element={<SchedulingWorkbench />} />
-        <Route path="/operations-workbench" element={<OperationsWorkbench />} />
-        <Route path="/requirements-workbench" element={<RequirementsWorkbench />} />
-        <Route path="/maintenance-workbench" element={<MaintenanceWorkbench />} />
-        
-        {/* 凭据管理 - 开发中心入口 */}
-        <Route path="/dev-center/business-assets/credentials" element={<CredentialManagementPage />} />
-        {/* 凭据管理 - 调度中心入口 */}
-        <Route path="/scheduling-center/business-assets/credentials" element={<SchedulingCredentialManagementPage />} />
-        
-        {/* 参数管理 - 开发中心入口 */}
-        <Route path="/dev-center/business-assets/parameters" element={<ParameterManagementPage />} />
-        {/* 参数管理 - 调度中心入口 */}
-        <Route path="/scheduling-center/business-assets/parameters" element={<SchedulingParameterManagementPage />} />
-        
-        {/* 队列管理 - 开发中心入口 */}
-        <Route path="/dev-center/business-assets/queues" element={<DevQueueManagementPage />} />
-        <Route path="/dev-center/business-assets/queues/:queueId/messages" element={<DevQueueMessagesPage />} />
-        
-        {/* 文件管理 - 开发中心入口 */}
-        <Route path="/dev-center/business-assets/files" element={<DevFileManagementPage />} />
-        
-        {/* 发布管理 - 开发中心入口 */}
-        <Route path="/dev-center/release-management" element={<ReleaseListPage />} />
-        <Route path="/dev-center/release-management/create" element={<CreateReleasePage />} />
-        
-        {/* 队列管理 - 调度中心入口 */}
-        <Route path="/scheduling-center/business-assets/queues" element={<SchedulingQueueManagementPage />} />
-        <Route path="/scheduling-center/business-assets/queues/:queueId/messages" element={<SchedulingQueueMessagesPage />} />
-        
-        {/* 文件管理 - 调度中心入口 */}
-        <Route path="/scheduling-center/business-assets/files" element={<SchedulingFileManagementPage />} />
-        
-        {/* 自动化流程 - 调度中心入口 */}
-        <Route path="/scheduling-center/execution-assets/automation-process" element={<SchedulingProcessManagementPage />} />
-        
-        {/* 执行模板 - 调度中心入口 */}
-        <Route path="/scheduling-center/task-execution/templates" element={<TemplateManagementPage />} />
-        {/* 自动执行策略 - 调度中心入口 */}
-        <Route path="/scheduling-center/task-execution/auto-execution-policy" element={<AutoExecutionPolicyPage />} />
-        {/* 工作日历管理 - 调度中心入口 */}
-        <Route path="/scheduling-center/task-execution/work-calendar" element={<WorkCalendarManagement />} />
-        {/* 任务列表 - 调度中心入口 */}
-        <Route path="/scheduling-center/task-execution/task-list" element={<TaskManagementPage />} />
-        {/* 任务日志 - 调度中心入口 */}
-        <Route path="/scheduling-center/task-execution/task-list/:executionId/logs" element={<TaskLogPage />} />
-        {/* 录屏查看 - 调度中心入口 */}
-        <Route path="/scheduling-center/task-execution/task-list/:executionId/recording" element={<RecordingViewPage />} />
-        
-        {/* 个人中心 */}
-        <Route path="/personal-center" element={<PersonalCenter />} />
-        <Route path="/personal-center/personal-credentials" element={<PersonalCenter />} />
-        <Route path="/personal-center/settings" element={<PersonalCenter />} />
-        
-        {/* 开发预览页面 */}
-        <Route path="/dev-preview/empty-state" element={<EmptyStatePreview />} />
-        
-        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+        {/* 所有带侧边栏布局的页面 */}
+        <Route element={<AppLayout />}>
+          <Route path="/" element={<Index />} />
+          <Route path="/process-development" element={<ProcessDevelopment />} />
+          
+          <Route path="/scheduling-center/resource-monitoring/worker-management" element={<WorkerManagementPage />} />
+          <Route path="/development-workbench" element={<DevelopmentWorkbench />} />
+          <Route path="/scheduling-workbench" element={<SchedulingWorkbench />} />
+          <Route path="/operations-workbench" element={<OperationsWorkbench />} />
+          <Route path="/requirements-workbench" element={<RequirementsWorkbench />} />
+          <Route path="/maintenance-workbench" element={<MaintenanceWorkbench />} />
+          
+          {/* 凭据管理 */}
+          <Route path="/dev-center/business-assets/credentials" element={<CredentialManagementPage />} />
+          <Route path="/scheduling-center/business-assets/credentials" element={<SchedulingCredentialManagementPage />} />
+          
+          {/* 参数管理 */}
+          <Route path="/dev-center/business-assets/parameters" element={<ParameterManagementPage />} />
+          <Route path="/scheduling-center/business-assets/parameters" element={<SchedulingParameterManagementPage />} />
+          
+          {/* 队列管理 */}
+          <Route path="/dev-center/business-assets/queues" element={<DevQueueManagementPage />} />
+          <Route path="/dev-center/business-assets/queues/:queueId/messages" element={<DevQueueMessagesPage />} />
+          <Route path="/scheduling-center/business-assets/queues" element={<SchedulingQueueManagementPage />} />
+          <Route path="/scheduling-center/business-assets/queues/:queueId/messages" element={<SchedulingQueueMessagesPage />} />
+          
+          {/* 文件管理 */}
+          <Route path="/dev-center/business-assets/files" element={<DevFileManagementPage />} />
+          <Route path="/scheduling-center/business-assets/files" element={<SchedulingFileManagementPage />} />
+          
+          {/* 发布管理 */}
+          <Route path="/dev-center/release-management" element={<ReleaseListPage />} />
+          <Route path="/dev-center/release-management/create" element={<CreateReleasePage />} />
+          
+          {/* 自动化流程 - 调度中心 */}
+          <Route path="/scheduling-center/execution-assets/automation-process" element={<SchedulingProcessManagementPage />} />
+          
+          {/* 任务执行 */}
+          <Route path="/scheduling-center/task-execution/templates" element={<TemplateManagementPage />} />
+          <Route path="/scheduling-center/task-execution/auto-execution-policy" element={<AutoExecutionPolicyPage />} />
+          <Route path="/scheduling-center/task-execution/work-calendar" element={<WorkCalendarManagement />} />
+          <Route path="/scheduling-center/task-execution/task-list" element={<TaskManagementPage />} />
+          <Route path="/scheduling-center/task-execution/task-list/:executionId/logs" element={<TaskLogPage />} />
+          <Route path="/scheduling-center/task-execution/task-list/:executionId/recording" element={<RecordingViewPage />} />
+          
+          {/* 个人中心 */}
+          <Route path="/personal-center" element={<PersonalCenter />} />
+          <Route path="/personal-center/personal-credentials" element={<PersonalCenter />} />
+          <Route path="/personal-center/settings" element={<PersonalCenter />} />
+          
+          {/* 开发预览 */}
+          <Route path="/dev-preview/empty-state" element={<EmptyStatePreview />} />
+        </Route>
+
+        {/* 无布局页面 */}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
