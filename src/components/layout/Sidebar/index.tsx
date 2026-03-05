@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Avatar, Dropdown, Divider, Tooltip } from '@douyinfe/semi-ui';
-import { User, Monitor, LogOut } from 'lucide-react';
+import { Avatar, Popover, Tooltip } from '@douyinfe/semi-ui';
+import { UserInfoDropdown } from '../UserInfoDropdown';
 import {
   IconBellStroked,
   IconBookStroked,
