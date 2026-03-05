@@ -23,14 +23,6 @@ export const routeConfigs: RouteConfig[] = [
 
   // ==================== 开发中心 ====================
   {
-    path: '/development-workbench',
-    breadcrumb: [
-      { labelKey: 'sidebar.home', path: '/' },
-      { labelKey: 'sidebar.developmentCenter' },
-      { labelKey: 'sidebar.developmentWorkbench' },
-    ],
-  },
-  {
     path: '/process-development',
     breadcrumb: [
       { labelKey: 'sidebar.home', path: '/' },
