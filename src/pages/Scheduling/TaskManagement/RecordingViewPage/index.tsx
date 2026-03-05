@@ -232,17 +232,7 @@ const RecordingViewPage = () => {
   }, [navigate, taskIdFromUrl, activeTabFromUrl]);
   
   return (
-    <AppLayout>
       <div className="recording-view-page">
-        {/* 面包屑 */}
-        <div className="recording-view-page-breadcrumb">
-          <Breadcrumb>
-            <Breadcrumb.Item href="/scheduling-center/task-execution/task-list">
-              {t('sidebar.taskList')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>{t('recording.title')}</Breadcrumb.Item>
-          </Breadcrumb>
-        </div>
 
         {/* 头部 */}
         <div className="recording-view-page-header">
