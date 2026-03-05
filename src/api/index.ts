@@ -1347,6 +1347,12 @@ export interface LYParameterResponse {
    * 创建者名称
    */
   created_by_name?: string | null;
+  /** 创建者部门 */
+  created_by_department?: string | null;
+  /** 创建者角色 */
+  created_by_role?: string | null;
+  /** 创建者邮箱 */
+  created_by_email?: string | null;
   /**
    * Created At
    * 创建时间
