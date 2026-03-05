@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import { useTranslation } from 'react-i18next';
 import {
   Button,
@@ -89,7 +90,7 @@ const TemplateDetailDrawer = ({
     { key: t('template.fields.validityDays'), value: `${template.validity_days} ${t('common.days')}` },
     { key: t('template.fields.enableRecording'), value: template.enable_recording ? t('task.detail.enabled') : t('task.detail.disabled') },
     { key: t('common.createTime'), value: (template as any).created_at?.replace('T', ' ').substring(0, 19) || '-' },
-    { key: t('common.creator'), value: (template as any).created_by_name || '-' },
+    { key: t('common.creator'), value: (template as any).created_by_name ? <UserNameWithCard name={(template as any).created_by_name} userId={(template as any).created_by_id} /> : '-' },
   ];
 
   const inputParameters = template.input_parameters;
@@ -103,7 +104,7 @@ const TemplateDetailDrawer = ({
 
   const usageHistoryColumns = [
     { title: t('template.usageHistory.taskName'), dataIndex: 'task_name', width: 200, ellipsis: true },
-    { title: t('common.creator'), dataIndex: 'created_by_name', width: 100, ellipsis: true },
+    { title: t('common.creator'), dataIndex: 'created_by_name', width: 100, ellipsis: true, render: (text: string) => text ? <UserNameWithCard name={text} /> : '-' },
     { title: t('common.createTime'), dataIndex: 'created_at', width: 160 },
     {
       title: t('template.usageHistory.status'), dataIndex: 'status', width: 100,

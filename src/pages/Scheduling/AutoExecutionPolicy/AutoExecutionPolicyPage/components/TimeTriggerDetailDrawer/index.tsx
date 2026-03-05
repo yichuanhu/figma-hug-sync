@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import { useTranslation } from 'react-i18next';
 import {
   Button,
@@ -250,7 +251,7 @@ const TimeTriggerDetailDrawer = ({
                   </Space>
                 </Descriptions.Item>
                 <Descriptions.Item itemKey={t('timeTrigger.detail.fields.creator')}>
-                  {trigger.created_by_name}
+                  {trigger.created_by_name ? <UserNameWithCard name={trigger.created_by_name} userId={trigger.created_by_id} /> : '-'}
                 </Descriptions.Item>
                 <Descriptions.Item itemKey={t('timeTrigger.detail.fields.createTime')}>
                   {formatTime(trigger.created_at)}

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import { useTranslation } from 'react-i18next';
 import {
   Button,
@@ -205,7 +206,7 @@ const QueueTriggerDetailDrawer = ({
                   </Space>
                 </Descriptions.Item>
                 <Descriptions.Item itemKey={t('queueTrigger.detail.fields.creator')}>
-                  {trigger.created_by_name}
+                  {trigger.created_by_name ? <UserNameWithCard name={trigger.created_by_name} userId={trigger.created_by_id} /> : '-'}
                 </Descriptions.Item>
                 <Descriptions.Item itemKey={t('queueTrigger.detail.fields.createTime')}>
                   {formatTime(trigger.created_at)}

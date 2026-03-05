@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { debounce } from 'lodash';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import {
   Typography,
   Input,
@@ -341,7 +342,7 @@ const TemplateManagementPage = () => {
       dataIndex: 'created_by_name',
       width: 120,
       ellipsis: true,
-      render: (text: string) => text || '-',
+      render: (text: string, record: any) => text ? <UserNameWithCard name={text} userId={record.created_by_id} /> : '-',
     },
     {
       title: t('template.table.createTime'),

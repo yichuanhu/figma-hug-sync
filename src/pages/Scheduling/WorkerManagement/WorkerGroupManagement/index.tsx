@@ -13,6 +13,7 @@ import {
 } from '@douyinfe/semi-ui';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
+import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import {
   IconSearchStroked, 
   IconPlusStroked, 
@@ -317,7 +318,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
       dataIndex: 'creator_name',
       key: 'creator_name',
       width: 120,
-      render: (name: string | null | undefined) => name || '-',
+      render: (name: string | null | undefined, record: any) => name ? <UserNameWithCard name={name} userId={record.creator_id} /> : '-',
     },
     {
       title: t('common.createTime'),

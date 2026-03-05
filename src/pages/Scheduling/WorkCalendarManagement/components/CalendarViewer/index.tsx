@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Typography, Button, Descriptions } from '@douyinfe/semi-ui';
 import { IconEditStroked } from '@douyinfe/semi-icons';
+import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import { format } from 'date-fns';
 import YearCalendarGrid from '../YearCalendarGrid';
 import type { LYWorkCalendarResponse } from '@/api/index';
@@ -71,7 +72,7 @@ const CalendarViewer: React.FC<CalendarViewerProps> = ({ calendar, onEdit }) => 
               {calendar.start_date} ~ {calendar.end_date}
             </Descriptions.Item>
             <Descriptions.Item itemKey={t('workCalendar.viewer.creator')}>
-              {calendar.creator_name || calendar.creator_id}
+              {calendar.creator_name ? <UserNameWithCard name={calendar.creator_name} userId={calendar.creator_id} /> : (calendar.creator_id || '-')}
             </Descriptions.Item>
             <Descriptions.Item itemKey={t('workCalendar.viewer.createTime')}>
               {formatDateTime(calendar.created_at)}
