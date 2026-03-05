@@ -421,18 +421,18 @@ const ProcessDetailDrawer = ({
                   {sortedVersionData.map((version) => {
                     const isLatestActive = version.id === latestActiveVersionId;
                     return (
-                    <div key={version.id} className={`process-detail-drawer-version-sidebar-item ${selectedVersion?.id === version.id ? 'process-detail-drawer-version-sidebar-item--selected' : ''} ${isLatestActive ? 'process-detail-drawer-version-sidebar-item--active' : ''}`} onClick={() => setSelectedVersionId(version.id)}>
-                      <Text className="process-detail-drawer-version-sidebar-item-version">{version.version}</Text>
-                      <Space spacing={4} align="center">
-                        <Tag color={version.is_active ? 'green' : 'grey'} type="light" size="small">
-                          {version.is_active ? t('development.processDevelopment.detail.versionList.published') : t('development.processDevelopment.detail.versionList.unpublished')}
-                        </Tag>
+                    <div key={version.id} className={`process-detail-drawer-version-sidebar-item ${selectedVersion?.id === version.id ? 'process-detail-drawer-version-sidebar-item--selected' : ''}`} onClick={() => setSelectedVersionId(version.id)}>
+                      <Space spacing={6} align="center">
+                        <Text className="process-detail-drawer-version-sidebar-item-version">{version.version}</Text>
                         {isLatestActive && (
                           <Tooltip content={t('development.processDevelopment.detail.versionList.activeVersion')}>
-                            <Zap size={14} strokeWidth={2} style={{ color: 'var(--semi-color-warning)' }} />
+                            <span className="process-detail-drawer-version-sidebar-item-active-dot" />
                           </Tooltip>
                         )}
                       </Space>
+                      <Tag color={version.is_active ? 'green' : 'grey'} type="light" size="small">
+                        {version.is_active ? t('development.processDevelopment.detail.versionList.published') : t('development.processDevelopment.detail.versionList.unpublished')}
+                      </Tag>
                     </div>
                     );
                   })}
