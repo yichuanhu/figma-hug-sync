@@ -5,11 +5,7 @@
 
 import React from 'react';
 import { Avatar } from '@douyinfe/semi-ui';
-import { ApartmentIcon } from '../Svgs/ApartmentIcon';
-import { MonitorIcon } from '../Svgs/MonitorIcon';
-import { ExternalOpenIcon } from '../Svgs/ExternalOpenIcon';
-import { SettingIcon } from '../Svgs/SettingIcon';
-import { LogoutIcon } from '../Svgs/LogoutIcon';
+import { IconDesktop, IconSetting, IconExit, IconApartment, IconExternalOpenStroked } from '@douyinfe/semi-icons';
 import './index.less';
 
 export interface UserInfoConfig {
