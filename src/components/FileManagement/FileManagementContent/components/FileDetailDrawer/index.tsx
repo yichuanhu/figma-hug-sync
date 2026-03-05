@@ -284,7 +284,7 @@ const FileDetailDrawer = ({
               {formatTime(file.created_at)}
             </Descriptions.Item>
             <Descriptions.Item itemKey={t('file.detail.updater')}>
-              {file.updated_by_name || '-'}
+              {file.updated_by_name ? <UserNameWithCard name={file.updated_by_name} userId={file.updated_by} /> : '-'}
             </Descriptions.Item>
             <Descriptions.Item itemKey={t('common.updateTime')}>
               {formatTime(file.updated_at)}
