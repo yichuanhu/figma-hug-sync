@@ -196,7 +196,6 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
 
   // 开发中心的详细菜单结构 - 使用分组标题样式
   const developmentCenterMenu: MenuItem[] = [
-    { key: 'developmentWorkbench', labelKey: 'sidebar.developmentWorkbench', icon: <LayoutGrid size={20} strokeWidth={2} /> },
     // 开发任务管理 - 分组标题
     { key: 'developmentTaskManagement', labelKey: 'sidebar.developmentTaskManagement', isGroupLabel: true },
     { key: 'automationProcess', labelKey: 'sidebar.automationProcess', icon: <Workflow size={20} strokeWidth={2} />, path: '/process-development' },
