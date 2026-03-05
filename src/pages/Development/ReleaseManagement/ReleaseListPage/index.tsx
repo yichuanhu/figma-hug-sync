@@ -229,9 +229,12 @@ const ReleaseListPage: React.FC = () => {
 
   // 筛选操作
   const handleFilterConfirm = (values: Record<string, unknown>) => {
+    const dateValue = values.publish_date as [Date, Date] | undefined;
     setActiveFilters({
       release_type: (values.release_type as ReleaseType[]) || [],
       publish_status: (values.publish_status as ReleaseStatus[]) || [],
+      publisher: (values.publisher as string[]) || [],
+      publish_date: dateValue && dateValue.length === 2 ? dateValue : null,
     });
     setQueryParams((prev) => ({ ...prev, offset: 0 }));
   };
