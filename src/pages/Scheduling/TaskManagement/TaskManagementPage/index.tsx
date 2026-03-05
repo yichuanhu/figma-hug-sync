@@ -829,7 +829,7 @@ const TaskManagementPage = () => {
           }}
         />
       </div>
-    </AppLayout>
+    </div>
   );
 };
 

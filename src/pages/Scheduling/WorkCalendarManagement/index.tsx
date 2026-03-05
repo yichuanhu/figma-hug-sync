@@ -191,7 +191,7 @@ const WorkCalendarManagement = () => {
           onSubmit={handleCreateSubmit}
         />
       </div>
-    </AppLayout>
+    </div>
   );
 };
 

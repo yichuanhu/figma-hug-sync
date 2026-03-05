@@ -393,7 +393,6 @@ const CreateReleasePage: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
   );
 };
 

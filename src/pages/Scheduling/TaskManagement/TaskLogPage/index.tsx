@@ -465,7 +465,7 @@ const TaskLogPage = () => {
           />
         </div>
       </div>
-    </AppLayout>
+    </div>
   );
 };
 

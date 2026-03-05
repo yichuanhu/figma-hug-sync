@@ -320,7 +320,7 @@ const RecordingViewPage = () => {
           )}
         </div>
       </div>
-    </AppLayout>
+    </div>
   );
 };
 

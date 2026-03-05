@@ -535,7 +535,6 @@ const ReleaseListPage: React.FC = () => {
           }}
         />
       </div>
-    </div>
   );
 };
 
