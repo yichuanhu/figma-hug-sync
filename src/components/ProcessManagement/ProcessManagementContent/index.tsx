@@ -417,7 +417,10 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       key: 'creator_id',
       width: 120,
       ellipsis: true,
-      render: (creatorId: string) => mockCreatorNameMap[creatorId] || creatorId,
+      render: (creatorId: string) => {
+        const name = mockCreatorNameMap[creatorId];
+        return name ? <UserNameWithCard name={name} userId={creatorId} /> : (creatorId || '-');
+      },
     },
     {
       title: t('common.createTime'),
