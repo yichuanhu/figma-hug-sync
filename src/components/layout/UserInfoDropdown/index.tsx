@@ -67,11 +67,11 @@ export const UserInfoDropdown: React.FC<UserInfoDropdownProps> = ({
     switch (key) {
       case 'admin':
       case 'dashboard':
-        return <Monitor size={14} strokeWidth={2} />;
+        return <Monitor size={20} strokeWidth={2} />;
       case 'settings':
-        return <User size={14} strokeWidth={2} />;
+        return <User size={20} strokeWidth={2} />;
       case 'logout':
-        return <LogOut size={14} strokeWidth={2} />;
+        return <LogOut size={20} strokeWidth={2} />;
       default:
         return null;
     }
@@ -123,7 +123,7 @@ export const UserInfoDropdown: React.FC<UserInfoDropdownProps> = ({
             key={action.key}
             icon={action.icon || getIcon(action.key)}
             label={action.label}
-            endIcon={needsExternalIcon(action.key) ? <ExternalLink size={14} strokeWidth={2} /> : undefined}
+            endIcon={needsExternalIcon(action.key) ? <ExternalLink size={20} strokeWidth={2} /> : undefined}
             onClick={action.onClick}
           />
         ))}
