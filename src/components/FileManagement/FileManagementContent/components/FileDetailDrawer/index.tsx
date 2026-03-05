@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import { useTranslation } from 'react-i18next';
 import {
   SideSheet,
@@ -277,13 +278,13 @@ const FileDetailDrawer = ({
               <ExpandableText text={file.description} maxLines={3} />
             </Descriptions.Item>
             <Descriptions.Item itemKey={t('common.creator')}>
-              {file.created_by_name}
+              {file.created_by_name ? <UserNameWithCard name={file.created_by_name} userId={file.created_by} /> : '-'}
             </Descriptions.Item>
             <Descriptions.Item itemKey={t('common.createTime')}>
               {formatTime(file.created_at)}
             </Descriptions.Item>
             <Descriptions.Item itemKey={t('file.detail.updater')}>
-              {file.updated_by_name || '-'}
+              {file.updated_by_name ? <UserNameWithCard name={file.updated_by_name} userId={file.updated_by} /> : '-'}
             </Descriptions.Item>
             <Descriptions.Item itemKey={t('common.updateTime')}>
               {formatTime(file.updated_at)}
