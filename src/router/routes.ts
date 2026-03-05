@@ -210,34 +210,10 @@ export const routeConfigs: RouteConfig[] = [
   },
 
   // ==================== 运营中心 ====================
-  {
-    path: '/operations-workbench',
-    breadcrumb: [
-      { labelKey: 'sidebar.home', path: '/' },
-      { labelKey: 'sidebar.operationsCenter' },
-      { labelKey: 'sidebar.operationsWorkbench' },
-    ],
-  },
 
   // ==================== 需求中心 ====================
-  {
-    path: '/requirements-workbench',
-    breadcrumb: [
-      { labelKey: 'sidebar.home', path: '/' },
-      { labelKey: 'sidebar.requirementsCenter' },
-      { labelKey: 'sidebar.requirementsWorkbench' },
-    ],
-  },
 
   // ==================== 运维中心 ====================
-  {
-    path: '/maintenance-workbench',
-    breadcrumb: [
-      { labelKey: 'sidebar.home', path: '/' },
-      { labelKey: 'sidebar.maintenanceCenter' },
-      { labelKey: 'sidebar.maintenanceWorkbench' },
-    ],
-  },
 
   // ==================== 个人中心 ====================
   {
