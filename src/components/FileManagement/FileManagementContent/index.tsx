@@ -572,6 +572,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
             dataSource={listResponse?.data || []}
             rowKey="id"
             loading={loading && !isInitialLoad}
+            scroll={tableScrollY ? { y: tableScrollY } : undefined}
             pagination={{
               currentPage: queryParams.page,
               pageSize: queryParams.pageSize,
