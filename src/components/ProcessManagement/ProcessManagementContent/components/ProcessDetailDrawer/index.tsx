@@ -23,6 +23,7 @@ import {
   IconHelpCircleStroked,
   IconLink,
 } from '@douyinfe/semi-icons';
+import { Zap } from 'lucide-react';
 import type { LYProcessResponse, LYProcessVersionResponse } from '@/api';
 import UploadVersionModal from '../UploadVersionModal';
 import EmptyState from '@/components/EmptyState';
@@ -67,8 +68,8 @@ const generateUUID = (): string => {
 const generateMockVersionData = (): VersionDetailData[] => {
   const versions = [
     { version: '1.0.0', note: '初始版本，实现基础功能', isActive: false },
-    { version: '1.1.0', note: '优化性能，修复已知问题', isActive: false },
-    { version: '1.2.0', note: '新增批量处理功能', isActive: false },
+    { version: '1.1.0', note: '优化性能，修复已知问题', isActive: true },
+    { version: '1.2.0', note: '新增批量处理功能', isActive: true },
     { version: '2.0.0', note: '重构核心逻辑，提升稳定性', isActive: true },
     { version: '2.1.0', note: '新增异常处理机制', isActive: false },
   ];
@@ -88,7 +89,7 @@ const generateMockVersionData = (): VersionDetailData[] => {
     usage_note: `使用说明：版本${v.version}的操作指引`,
     creator_id: ['user-001', 'user-002', 'user-003'][index % 3],
     created_at: new Date(Date.now() - (versions.length - index) * 7 * 24 * 60 * 60 * 1000).toISOString(),
-    publish_time: v.isActive ? new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString() : null,
+    publish_time: v.isActive ? new Date(Date.now() - (versions.length - index) * 2 * 24 * 60 * 60 * 1000).toISOString() : null,
     publisher_id: v.isActive ? 'user-001' : null,
     client_version: '3.2.1',
     os: 'Windows 10',
@@ -303,6 +304,14 @@ const ProcessDetailDrawer = ({
     return data;
   }, [versionData]);
 
+  // 计算最新激活版本（已发布版本中 publish_time 最新的）
+  const latestActiveVersionId = useMemo(() => {
+    const activeVersions = sortedVersionData.filter(v => v.is_active && v.publish_time);
+    if (activeVersions.length === 0) return null;
+    activeVersions.sort((a, b) => new Date(b.publish_time!).getTime() - new Date(a.publish_time!).getTime());
+    return activeVersions[0].id;
+  }, [sortedVersionData]);
+
   // 处理删除版本
   const handleDeleteVersion = useCallback((version: VersionDetailData) => {
     if (version.is_active) {
@@ -466,18 +475,28 @@ const ProcessDetailDrawer = ({
                   {t('development.processDevelopment.detail.versionList.uploadVersion')}
                 </Button>
                 <div className="process-detail-drawer-version-sidebar-list">
-                  {sortedVersionData.map((version) => (
+                  {sortedVersionData.map((version) => {
+                    const isLatestActive = version.id === latestActiveVersionId;
+                    return (
                     <div
                       key={version.id}
-                      className={`process-detail-drawer-version-sidebar-item ${selectedVersion?.id === version.id ? 'process-detail-drawer-version-sidebar-item--selected' : ''}`}
+                      className={`process-detail-drawer-version-sidebar-item ${selectedVersion?.id === version.id ? 'process-detail-drawer-version-sidebar-item--selected' : ''} ${isLatestActive ? 'process-detail-drawer-version-sidebar-item--active' : ''}`}
                       onClick={() => setSelectedVersionId(version.id)}
                     >
                       <Text className="process-detail-drawer-version-sidebar-item-version">{version.version}</Text>
-                      <Tag color={version.is_active ? 'green' : 'grey'} type="light" size="small">
-                        {version.is_active ? t('development.processDevelopment.detail.versionList.published') : t('development.processDevelopment.detail.versionList.unpublished')}
-                      </Tag>
+                      <Space spacing={4} align="center">
+                        <Tag color={version.is_active ? 'green' : 'grey'} type="light" size="small">
+                          {version.is_active ? t('development.processDevelopment.detail.versionList.published') : t('development.processDevelopment.detail.versionList.unpublished')}
+                        </Tag>
+                        {isLatestActive && (
+                          <Tooltip content={t('development.processDevelopment.detail.versionList.activeVersion')}>
+                            <Zap size={14} strokeWidth={2} style={{ color: 'var(--semi-color-warning)' }} />
+                          </Tooltip>
+                        )}
+                      </Space>
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
 

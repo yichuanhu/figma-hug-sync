@@ -142,6 +142,7 @@
       cursor: pointer;
       border-radius: 8px;
       transition: background-color 0.2s;
+      position: relative;
 
       &:hover {
         background-color: var(--semi-color-fill-0);
@@ -149,6 +150,11 @@
 
       &--selected {
         background-color: var(--semi-color-fill-1);
+      }
+
+      &--active {
+        border-left: 3px solid var(--semi-color-primary);
+        padding-left: 9px;
       }
 
       &-version {

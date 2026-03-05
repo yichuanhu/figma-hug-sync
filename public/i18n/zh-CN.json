@@ -502,7 +502,8 @@
           "cannotDeletePublished": "已发布的版本不允许删除",
           "deleteConfirmTitle": "删除版本",
           "deleteConfirmContent": "确定要删除版本 {{version}} 吗？此操作不可撤销。",
-          "deleteSuccess": "版本 {{version}} 已删除"
+          "deleteSuccess": "版本 {{version}} 已删除",
+          "activeVersion": "激活版本"
         },
         "uploadVersion": {
           "title": "上传版本",
