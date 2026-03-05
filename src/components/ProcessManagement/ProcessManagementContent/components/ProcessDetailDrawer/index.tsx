@@ -89,7 +89,7 @@ const generateMockVersionData = (): VersionDetailData[] => {
     usage_note: `使用说明：版本${v.version}的操作指引`,
     creator_id: ['user-001', 'user-002', 'user-003'][index % 3],
     created_at: new Date(Date.now() - (versions.length - index) * 7 * 24 * 60 * 60 * 1000).toISOString(),
-    publish_time: v.isActive ? new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString() : null,
+    publish_time: v.isActive ? new Date(Date.now() - (versions.length - index) * 2 * 24 * 60 * 60 * 1000).toISOString() : null,
     publisher_id: v.isActive ? 'user-001' : null,
     client_version: '3.2.1',
     os: 'Windows 10',
