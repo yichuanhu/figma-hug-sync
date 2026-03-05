@@ -96,14 +96,6 @@ export const routeConfigs: RouteConfig[] = [
 
   // ==================== 调度中心 ====================
   {
-    path: '/scheduling-workbench',
-    breadcrumb: [
-      { labelKey: 'sidebar.home', path: '/' },
-      { labelKey: 'sidebar.schedulingCenter' },
-      { labelKey: 'sidebar.schedulingWorkbench' },
-    ],
-  },
-  {
     path: '/scheduling-center/resource-monitoring/worker-management',
     breadcrumb: [
       { labelKey: 'sidebar.home', path: '/' },
