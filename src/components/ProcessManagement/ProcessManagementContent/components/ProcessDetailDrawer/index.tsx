@@ -475,18 +475,28 @@ const ProcessDetailDrawer = ({
                   {t('development.processDevelopment.detail.versionList.uploadVersion')}
                 </Button>
                 <div className="process-detail-drawer-version-sidebar-list">
-                  {sortedVersionData.map((version) => (
+                  {sortedVersionData.map((version) => {
+                    const isLatestActive = version.id === latestActiveVersionId;
+                    return (
                     <div
                       key={version.id}
-                      className={`process-detail-drawer-version-sidebar-item ${selectedVersion?.id === version.id ? 'process-detail-drawer-version-sidebar-item--selected' : ''}`}
+                      className={`process-detail-drawer-version-sidebar-item ${selectedVersion?.id === version.id ? 'process-detail-drawer-version-sidebar-item--selected' : ''} ${isLatestActive ? 'process-detail-drawer-version-sidebar-item--active' : ''}`}
                       onClick={() => setSelectedVersionId(version.id)}
                     >
                       <Text className="process-detail-drawer-version-sidebar-item-version">{version.version}</Text>
-                      <Tag color={version.is_active ? 'green' : 'grey'} type="light" size="small">
-                        {version.is_active ? t('development.processDevelopment.detail.versionList.published') : t('development.processDevelopment.detail.versionList.unpublished')}
-                      </Tag>
+                      <Space spacing={4} align="center">
+                        <Tag color={version.is_active ? 'green' : 'grey'} type="light" size="small">
+                          {version.is_active ? t('development.processDevelopment.detail.versionList.published') : t('development.processDevelopment.detail.versionList.unpublished')}
+                        </Tag>
+                        {isLatestActive && (
+                          <Tooltip content={t('development.processDevelopment.detail.versionList.activeVersion')}>
+                            <Zap size={14} strokeWidth={2} style={{ color: 'var(--semi-color-warning)' }} />
+                          </Tooltip>
+                        )}
+                      </Space>
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
 
