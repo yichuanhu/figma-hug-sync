@@ -337,17 +337,7 @@ const TaskLogPage = () => {
   // filterContent removed - using FilterPopover directly
 
   return (
-    <AppLayout>
       <div className="task-log-page">
-        {/* 面包屑 */}
-        <div className="task-log-page-breadcrumb">
-          <Breadcrumb>
-            <Breadcrumb.Item href="/scheduling-center/task-execution/task-list">
-              {t('sidebar.taskList')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>{t('taskLog.title')}</Breadcrumb.Item>
-          </Breadcrumb>
-        </div>
 
         {/* 头部 */}
         <div className="task-log-page-header">
