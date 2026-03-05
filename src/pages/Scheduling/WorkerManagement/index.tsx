@@ -866,8 +866,14 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
 
   return (
     <div className="worker-management">
-      {/* 操作栏 */}
+      {/* 标题区域 */}
       <div className="worker-management-header">
+        <div className="worker-management-header-title">
+          <Title heading={3} className="title">
+            {t('worker.title')}
+          </Title>
+          <Text type="tertiary">{t('worker.description')}</Text>
+        </div>
         {/* 操作栏 */}
         <Row type="flex" justify="space-between" align="middle" className="worker-management-header-toolbar">
           <Col>
