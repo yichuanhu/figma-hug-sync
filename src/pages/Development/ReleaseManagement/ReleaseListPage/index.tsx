@@ -160,7 +160,9 @@ const ReleaseListPage: React.FC = () => {
   const [activeFilters, setActiveFilters] = useState<{
     release_type: ReleaseType[];
     publish_status: ReleaseStatus[];
-  }>({ release_type: [], publish_status: [] });
+    publisher: string[];
+    publish_date: [Date, Date] | null;
+  }>({ release_type: [], publish_status: [], publisher: [], publish_date: null });
 
   // 详情抽屉
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
@@ -174,7 +176,7 @@ const ReleaseListPage: React.FC = () => {
   const total = range?.total || 0;
 
   const filterCount =
-    activeFilters.release_type.length + activeFilters.publish_status.length;
+    activeFilters.release_type.length + activeFilters.publish_status.length + activeFilters.publisher.length;
 
   // 加载数据
   const loadData = async () => {
