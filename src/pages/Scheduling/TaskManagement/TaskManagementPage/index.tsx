@@ -665,16 +665,7 @@ const TaskManagementPage = () => {
   ];
 
   return (
-    <AppLayout>
       <div className="task-management-page">
-        <div className="task-management-page-breadcrumb">
-          <Breadcrumb>
-            <Breadcrumb.Item onClick={() => navigate('/')}>{t('common.home')}</Breadcrumb.Item>
-            <Breadcrumb.Item>{t('task.breadcrumb.schedulingCenter')}</Breadcrumb.Item>
-            <Breadcrumb.Item>{t('task.breadcrumb.taskExecution')}</Breadcrumb.Item>
-            <Breadcrumb.Item>{t('task.breadcrumb.taskList')}</Breadcrumb.Item>
-          </Breadcrumb>
-        </div>
 
         <div className="task-management-page-header">
           <div className="task-management-page-header-title">
