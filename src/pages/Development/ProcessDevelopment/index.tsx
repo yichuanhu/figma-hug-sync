@@ -482,16 +482,7 @@ const ProcessDevelopment = () => {
   ];
 
   return (
-    <AppLayout>
       <div className="process-development">
-      {/* 固定面包屑 */}
-      <div className="process-development-breadcrumb">
-        <Breadcrumb>
-          <Breadcrumb.Item onClick={() => navigate('/')}>{t('common.home')}</Breadcrumb.Item>
-          <Breadcrumb.Item>{t('development.processDevelopment.breadcrumb.developmentCenter')}</Breadcrumb.Item>
-          <Breadcrumb.Item>{t('development.processDevelopment.breadcrumb.automationProcess')}</Breadcrumb.Item>
-        </Breadcrumb>
-      </div>
 
       {/* 标题区域 */}
       <div className="process-development-header">
