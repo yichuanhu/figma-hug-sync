@@ -2586,5 +2586,9 @@
       "description": "点击「新建日历」创建第一个工作日历"
     },
     "entryButton": "自定义工作日历"
+  },
+  "breadcrumb": {
+    "devPreview": "开发预览",
+    "emptyStatePreview": "缺省状态预览"
   }
 }
