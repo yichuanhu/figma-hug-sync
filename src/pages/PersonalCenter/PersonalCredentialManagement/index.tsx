@@ -400,6 +400,9 @@ const PersonalCredentialManagement = () => {
               pageSize: queryParams.pageSize,
               total,
               onPageChange: handlePageChange,
+              onPageSizeChange: (newPageSize) => setQueryParams((prev) => ({ ...prev, page: 1, pageSize: newPageSize })),
+              showSizeChanger: true,
+              showTotal: true,
             }}
             scroll={{ y: 'calc(100vh - 380px)' }}
           />
