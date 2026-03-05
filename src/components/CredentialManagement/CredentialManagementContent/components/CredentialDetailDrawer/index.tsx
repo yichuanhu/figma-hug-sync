@@ -49,6 +49,9 @@ interface CredentialUsageRecord {
   id: string;
   user_id: string;
   user_name: string;
+  user_department?: string;
+  user_role?: string;
+  user_email?: string;
   usage_time: string;
   usage_type: UsageType;
   process_id: string;
@@ -77,6 +80,9 @@ const generateMockUsageRecord = (index: number, context: 'development' | 'schedu
 
   return {
     id: generateUUID(), user_id: `user-${(index % 5) + 1}`, user_name: users[index % users.length],
+    user_department: ['研发部', '产品部', '测试部', '运维部', '市场部'][index % 5],
+    user_role: ['高级工程师', '产品经理', '测试工程师', '运维工程师', '市场专员'][index % 5],
+    user_email: ['zhangsan@example.com', 'lisi@example.com', 'wangwu@example.com', 'zhaoliu@example.com', 'qianqi@example.com'][index % 5],
     usage_time: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
     usage_type: context === 'development' ? 'debug' : 'task',
     process_id: generateUUID(), process_name: processes[index % processes.length], process_version: versions[index % versions.length],
@@ -214,7 +220,7 @@ const CredentialDetailDrawer = ({
       ...(context === 'development' ? [{ key: t('credential.detail.publishStatus'), value: <Tag color={credential.is_published ? 'green' : 'grey'}>{credential.is_published ? t('credential.detail.published') : t('credential.detail.unpublished')}</Tag> }] : []),
       { key: t('common.description'), value: <ExpandableText text={credential.description} maxLines={3} /> },
       ...(credential.credential_type === 'PERSONAL_REF' ? [{ key: t('credential.detail.linkedPersonalCredential'), value: credential.linked_personal_credential_value || '-' }] : []),
-      { key: t('common.creator'), value: credential.created_by_name ? <UserNameWithCard name={credential.created_by_name} userId={credential.created_by} /> : '-' },
+      { key: t('common.creator'), value: credential.created_by_name ? <UserNameWithCard name={credential.created_by_name} userId={credential.created_by} department={credential.created_by_department || undefined} role={credential.created_by_role || undefined} email={credential.created_by_email || undefined} /> : '-' },
       { key: t('common.createTime'), value: formatDateTime(credential.created_at) },
       { key: t('common.updateTime'), value: formatDateTime(credential.updated_at) },
     ];
@@ -227,7 +233,7 @@ const CredentialDetailDrawer = ({
   };
 
   const usageColumns = [
-    { title: t('credential.usage.table.user'), dataIndex: 'user_name', key: 'user_name', width: 100, render: (text: string, record: any) => text ? <UserNameWithCard name={text} userId={record.user_id} /> : '-' },
+    { title: t('credential.usage.table.user'), dataIndex: 'user_name', key: 'user_name', width: 100, render: (text: string, record: any) => text ? <UserNameWithCard name={text} userId={record.user_id} department={record.user_department} role={record.user_role} email={record.user_email} /> : '-' },
     { title: t('credential.usage.table.usageTime'), dataIndex: 'usage_time', key: 'usage_time', width: 160, render: (text: string) => formatDateTime(text) },
     { title: t('credential.usage.table.type'), dataIndex: 'usage_type', key: 'usage_type', width: 80, render: (type: UsageType) => <Tag color={type === 'debug' ? 'blue' : 'green'} type="light">{t(`credential.usage.type.${type}`)}</Tag> },
     { title: t('credential.usage.table.process'), dataIndex: 'process_name', key: 'process_name', width: 140, ellipsis: true, render: (text: string | null) => text || '-' },

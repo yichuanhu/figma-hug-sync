@@ -84,8 +84,11 @@ const generateMockCredential = (index: number): LYCredentialResponse => {
       : `这是${names[index % names.length]}的描述信息，用于第三方系统的访问认证。`,
     linked_personal_credential_value: type === 'PERSONAL_REF' && index % 3 === 0 ? 'user/******' : '-',
     is_published: isPublished,
-    created_by: generateUUID(),
+    created_by: `user-00${(index % 4) + 1}`,
     created_by_name: ['张三', '李四', '王五', '赵六'][index % 4],
+    created_by_department: ['研发部', '产品部', '测试部', '运维部'][index % 4],
+    created_by_role: ['高级工程师', '产品经理', '测试工程师', '运维工程师'][index % 4],
+    created_by_email: ['zhangsan@example.com', 'lisi@example.com', 'wangwu@example.com', 'zhaoliu@example.com'][index % 4],
     created_at: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
     updated_at: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
   };
