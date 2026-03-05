@@ -18,6 +18,7 @@ import {
 } from '@douyinfe/semi-ui';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
+import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import FilterPopover from '@/components/FilterPopover';
 import {
   IconSearchStroked,
@@ -407,6 +408,14 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
         </Tag>
       ),
     }] : []),
+    {
+      title: t('common.creator'),
+      dataIndex: 'created_by_name',
+      key: 'created_by_name',
+      width: 100,
+      ellipsis: true,
+      render: (text: string, record: LYCredentialResponse) => text ? <UserNameWithCard name={text} userId={record.created_by} department={record.created_by_department || undefined} role={record.created_by_role || undefined} email={record.created_by_email || undefined} /> : '-',
+    },
     {
       title: t('common.description'),
       dataIndex: 'description',
