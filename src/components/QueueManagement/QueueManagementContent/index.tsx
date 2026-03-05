@@ -73,8 +73,11 @@ const generateMockQueue = (index: number): LYQueueResponse => {
     prod_unconsumed_count: Math.floor(Math.random() * 200),
     prod_consumed_count: Math.floor(Math.random() * 1000),
     prod_failed_count: Math.floor(Math.random() * 20),
-    created_by: generateUUID(),
+    created_by: `user-00${(index % 4) + 1}`,
     created_by_name: ['张三', '李四', '王五', '赵六'][index % 4],
+    created_by_department: ['研发部', '产品部', '测试部', '运维部'][index % 4],
+    created_by_role: ['高级工程师', '产品经理', '测试工程师', '运维工程师'][index % 4],
+    created_by_email: ['zhangsan@example.com', 'lisi@example.com', 'wangwu@example.com', 'zhaoliu@example.com'][index % 4],
     created_at: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
     updated_at: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
   };

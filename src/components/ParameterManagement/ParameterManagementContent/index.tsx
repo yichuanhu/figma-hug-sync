@@ -86,8 +86,11 @@ const generateMockParameter = (index: number): LYParameterResponse => {
       ? '这是系统核心配置参数，用于控制机器人与服务器之间的心跳检测频率。该参数直接影响系统对机器人在线状态的感知灵敏度和服务器资源消耗。建议在生产环境中根据网络状况和机器人规模进行调优，过短的间隔可能导致服务器负载过高，过长的间隔可能导致状态同步延迟。'
       : `这是${names[index % names.length]}的描述信息，用于系统配置。`,
     is_published: index % 3 !== 0,
-    created_by: generateUUID(),
+    created_by: `user-00${(index % 4) + 1}`,
     created_by_name: ['张三', '李四', '王五', '赵六'][index % 4],
+    created_by_department: ['研发部', '产品部', '测试部', '运维部'][index % 4],
+    created_by_role: ['高级工程师', '产品经理', '测试工程师', '运维工程师'][index % 4],
+    created_by_email: ['zhangsan@example.com', 'lisi@example.com', 'wangwu@example.com', 'zhaoliu@example.com'][index % 4],
     created_at: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
     updated_at: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
   };
