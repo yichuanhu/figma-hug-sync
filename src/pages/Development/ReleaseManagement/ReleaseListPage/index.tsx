@@ -411,22 +411,7 @@ const ReleaseListPage: React.FC = () => {
   }));
 
   return (
-    <AppLayout>
       <div className="release-list-page">
-        {/* 面包屑 */}
-        <div className="release-list-page-breadcrumb">
-          <Breadcrumb>
-            <Breadcrumb.Item onClick={() => navigate('/')}>
-              {t('common.home')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {t('release.breadcrumb.developmentCenter')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {t('release.list.title')}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-        </div>
 
         {/* 标题区域 */}
         <div className="release-list-page-header">
