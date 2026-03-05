@@ -1,6 +1,5 @@
-import AppLayout from '@/components/layout/AppLayout';
-import { Breadcrumb, Typography, Card, Row, Col, Button } from '@douyinfe/semi-ui';
-import { IconHomeStroked, IconPlusStroked } from '@douyinfe/semi-icons';
+import { Typography, Card, Row, Col, Button } from '@douyinfe/semi-ui';
+import { IconPlusStroked } from '@douyinfe/semi-icons';
 import EmptyState, { EmptyStateVariant } from '@/components/EmptyState';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -85,59 +84,49 @@ const EmptyStatePreview = () => {
   };
 
   return (
-    <AppLayout>
-      <div className="empty-state-preview">
-        <div className="empty-state-preview-breadcrumb">
-          <Breadcrumb>
-            <Breadcrumb.Item icon={<IconHomeStroked />} href="/">首页</Breadcrumb.Item>
-            <Breadcrumb.Item>开发预览</Breadcrumb.Item>
-            <Breadcrumb.Item>缺省状态预览</Breadcrumb.Item>
-          </Breadcrumb>
-        </div>
-
-        <div className="empty-state-preview-header">
-          <Title heading={4} className="empty-state-preview-header-title">
-            缺省状态预览
-          </Title>
-          <Text type="tertiary">
-            展示所有 EmptyState 组件变体，用于设计走查和开发参考
-          </Text>
-        </div>
-
-        <div className="empty-state-preview-content">
-          <Row gutter={[24, 24]}>
-            {variants.map((item, index) => (
-              <Col key={`${item.variant}-${index}`} span={8}>
-                <Card
-                  className="empty-state-preview-card"
-                  title={
-                    <div className="empty-state-preview-card-header">
-                      <Text strong>{t(item.titleKey)}</Text>
-                      <Text type="tertiary" size="small">
-                        variant="{item.variant}"
-                        {item.customFooter && ' + footer'}
-                        {item.actions && ` + actions`}
-                      </Text>
-                    </div>
-                  }
-                >
-                  <div className="empty-state-preview-card-content">
-                    <EmptyState
-                      variant={item.variant}
-                      description={t(item.descKey)}
-                      size={120}
-                      actions={item.actions}
-                      onRetry={handleRetry}
-                      footer={renderFooter(item)}
-                    />
-                  </div>
-                </Card>
-              </Col>
-            ))}
-          </Row>
-        </div>
+    <div className="empty-state-preview">
+      <div className="empty-state-preview-header">
+        <Title heading={4} className="empty-state-preview-header-title">
+          缺省状态预览
+        </Title>
+        <Text type="tertiary">
+          展示所有 EmptyState 组件变体，用于设计走查和开发参考
+        </Text>
       </div>
-    </AppLayout>
+
+      <div className="empty-state-preview-content">
+        <Row gutter={[24, 24]}>
+          {variants.map((item, index) => (
+            <Col key={`${item.variant}-${index}`} span={8}>
+              <Card
+                className="empty-state-preview-card"
+                title={
+                  <div className="empty-state-preview-card-header">
+                    <Text strong>{t(item.titleKey)}</Text>
+                    <Text type="tertiary" size="small">
+                      variant="{item.variant}"
+                      {item.customFooter && ' + footer'}
+                      {item.actions && ` + actions`}
+                    </Text>
+                  </div>
+                }
+              >
+                <div className="empty-state-preview-card-content">
+                  <EmptyState
+                    variant={item.variant}
+                    description={t(item.descKey)}
+                    size={120}
+                    actions={item.actions}
+                    onRetry={handleRetry}
+                    footer={renderFooter(item)}
+                  />
+                </div>
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      </div>
+    </div>
   );
 };
 

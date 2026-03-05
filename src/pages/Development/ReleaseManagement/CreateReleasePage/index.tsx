@@ -10,7 +10,7 @@ import {
   Modal,
 } from '@douyinfe/semi-ui';
 import { IconArrowLeft, IconInfoCircle } from '@douyinfe/semi-icons';
-import AppLayout from '@/components/layout/AppLayout';
+// AppLayout removed - now handled at route level
 import ProcessSelectionStep from './components/ProcessSelectionStep';
 import ReleaseConfigStep from './components/ReleaseConfigStep';
 import type {
@@ -296,15 +296,7 @@ const CreateReleasePage: React.FC = () => {
   };
 
   return (
-    <AppLayout>
       <div className="create-release-page">
-        {/* 面包屑 */}
-        <div className="create-release-page-breadcrumb">
-          <Text type="tertiary">
-            {t('release.breadcrumb.developmentCenter')} /{' '}
-            {t('sidebar.publishManagement')} / {t('release.create.title')}
-          </Text>
-        </div>
 
         {/* 头部 */}
         <div className="create-release-page-header">
@@ -401,7 +393,6 @@ const CreateReleasePage: React.FC = () => {
           </div>
         </div>
       </div>
-    </AppLayout>
   );
 };
 

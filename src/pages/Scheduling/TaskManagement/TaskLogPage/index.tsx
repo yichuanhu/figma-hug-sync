@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   Typography,
-  Breadcrumb,
   Input,
   Button,
   Table,
@@ -23,7 +22,7 @@ import {
 } from '@douyinfe/semi-icons';
 import { RefreshCw } from 'lucide-react';
 import { debounce } from 'lodash';
-import AppLayout from '@/components/layout/AppLayout';
+// AppLayout removed
 import FilterPopover from '@/components/FilterPopover';
 import EmptyState from '@/components/EmptyState';
 import type {
@@ -338,17 +337,7 @@ const TaskLogPage = () => {
   // filterContent removed - using FilterPopover directly
 
   return (
-    <AppLayout>
       <div className="task-log-page">
-        {/* 面包屑 */}
-        <div className="task-log-page-breadcrumb">
-          <Breadcrumb>
-            <Breadcrumb.Item href="/scheduling-center/task-execution/task-list">
-              {t('sidebar.taskList')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>{t('taskLog.title')}</Breadcrumb.Item>
-          </Breadcrumb>
-        </div>
 
         {/* 头部 */}
         <div className="task-log-page-header">
@@ -476,7 +465,6 @@ const TaskLogPage = () => {
           />
         </div>
       </div>
-    </AppLayout>
   );
 };
 

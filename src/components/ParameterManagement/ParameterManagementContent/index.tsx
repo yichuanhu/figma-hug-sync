@@ -424,19 +424,8 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
 
   return (
     <div className="parameter-management-content">
-      {/* 面包屑 */}
-      <div className="parameter-management-content-breadcrumb">
-        <Breadcrumb>
-          <Breadcrumb.Item onClick={() => navigate('/')}>
-            {t('common.home')}
-          </Breadcrumb.Item>
-          <Breadcrumb.Item onClick={() => navigate(context === 'development' ? '/development-workbench' : '/scheduling-workbench')}>
-            {context === 'development' ? t('development.processDevelopment.breadcrumb.developmentCenter') : t('scheduling.processDevelopment.breadcrumb.schedulingCenter')}
-          </Breadcrumb.Item>
-          <Breadcrumb.Item>{t('parameter.breadcrumb.businessAssets')}</Breadcrumb.Item>
-          <Breadcrumb.Item>{t('parameter.title')}</Breadcrumb.Item>
-        </Breadcrumb>
-      </div>
+
+
 
       {/* 标题区域 */}
       <div className="parameter-management-content-header">

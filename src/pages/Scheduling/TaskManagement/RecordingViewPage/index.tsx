@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Typography,
-  Breadcrumb,
   Button,
   Toast,
   Row,
@@ -16,7 +15,7 @@ import {
   IconArrowLeft,
 } from '@douyinfe/semi-icons';
 import { RefreshCw } from 'lucide-react';
-import AppLayout from '@/components/layout/AppLayout';
+// AppLayout removed
 import SyncRecordingPlayer from './components/SyncRecordingPlayer';
 import LogSyncPanel from './components/LogSyncPanel';
 import type {
@@ -233,17 +232,7 @@ const RecordingViewPage = () => {
   }, [navigate, taskIdFromUrl, activeTabFromUrl]);
   
   return (
-    <AppLayout>
       <div className="recording-view-page">
-        {/* 面包屑 */}
-        <div className="recording-view-page-breadcrumb">
-          <Breadcrumb>
-            <Breadcrumb.Item href="/scheduling-center/task-execution/task-list">
-              {t('sidebar.taskList')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>{t('recording.title')}</Breadcrumb.Item>
-          </Breadcrumb>
-        </div>
 
         {/* 头部 */}
         <div className="recording-view-page-header">
@@ -331,7 +320,6 @@ const RecordingViewPage = () => {
           )}
         </div>
       </div>
-    </AppLayout>
   );
 };
 

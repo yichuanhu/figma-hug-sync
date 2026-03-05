@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
-  Breadcrumb,
+  // Breadcrumb removed
   Typography,
   Button,
   Table,
@@ -23,7 +23,7 @@ import {
 } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
 import type { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
-import AppLayout from '@/components/layout/AppLayout';
+// AppLayout removed
 import EmptyState from '@/components/EmptyState';
 import FilterPopover from '@/components/FilterPopover';
 import ReleaseDetailDrawer from '../components/ReleaseDetailDrawer';
@@ -411,22 +411,7 @@ const ReleaseListPage: React.FC = () => {
   }));
 
   return (
-    <AppLayout>
       <div className="release-list-page">
-        {/* 面包屑 */}
-        <div className="release-list-page-breadcrumb">
-          <Breadcrumb>
-            <Breadcrumb.Item onClick={() => navigate('/')}>
-              {t('common.home')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {t('release.breadcrumb.developmentCenter')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {t('release.list.title')}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-        </div>
 
         {/* 标题区域 */}
         <div className="release-list-page-header">
@@ -550,7 +535,6 @@ const ReleaseListPage: React.FC = () => {
           }}
         />
       </div>
-    </AppLayout>
   );
 };
 

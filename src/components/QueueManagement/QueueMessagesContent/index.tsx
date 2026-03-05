@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useBreadcrumbParams } from '@/router/BreadcrumbContext';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag';
@@ -219,6 +220,12 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
 
   // 队列名称（模拟）
   const queueName = '订单处理队列';
+  
+  // 设置面包屑动态参数
+  const { setParam } = useBreadcrumbParams();
+  useEffect(() => {
+    setParam('queueName', queueName);
+  }, [queueName, setParam]);
 
   // 加载数据
   const loadData = useCallback(async () => {
@@ -570,14 +577,8 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
 
   return (
     <div className="queue-messages-content">
-      {/* 面包屑 */}
-      <Breadcrumb className="queue-messages-content-breadcrumb">
-        <Breadcrumb.Item onClick={handleBack} className="queue-messages-content-breadcrumb-link">
-          {t('queue.title')}
-        </Breadcrumb.Item>
-        <Breadcrumb.Item>{queueName}</Breadcrumb.Item>
-        <Breadcrumb.Item>{t('queueMessage.title')}</Breadcrumb.Item>
-      </Breadcrumb>
+
+
 
       {/* 标题区域 */}
       <div className="queue-messages-content-header">

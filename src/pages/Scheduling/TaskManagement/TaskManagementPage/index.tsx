@@ -3,7 +3,6 @@ import { debounce } from 'lodash';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
-  Breadcrumb,
   Typography,
   Input,
   Button,
@@ -17,7 +16,7 @@ import {
   Toast,
   Space,
 } from '@douyinfe/semi-ui';
-import AppLayout from '@/components/layout/AppLayout';
+// AppLayout removed
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
@@ -666,16 +665,7 @@ const TaskManagementPage = () => {
   ];
 
   return (
-    <AppLayout>
       <div className="task-management-page">
-        <div className="task-management-page-breadcrumb">
-          <Breadcrumb>
-            <Breadcrumb.Item onClick={() => navigate('/')}>{t('common.home')}</Breadcrumb.Item>
-            <Breadcrumb.Item>{t('task.breadcrumb.schedulingCenter')}</Breadcrumb.Item>
-            <Breadcrumb.Item>{t('task.breadcrumb.taskExecution')}</Breadcrumb.Item>
-            <Breadcrumb.Item>{t('task.breadcrumb.taskList')}</Breadcrumb.Item>
-          </Breadcrumb>
-        </div>
 
         <div className="task-management-page-header">
           <div className="task-management-page-header-title">
@@ -839,7 +829,6 @@ const TaskManagementPage = () => {
           }}
         />
       </div>
-    </AppLayout>
   );
 };
 

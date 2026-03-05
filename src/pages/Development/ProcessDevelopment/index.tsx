@@ -3,7 +3,7 @@ import { debounce } from 'lodash';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
-  Breadcrumb,
+  // Breadcrumb removed - now handled by RouteBreadcrumb
   Typography,
   Input,
   Button,
@@ -29,7 +29,7 @@ import {
   IconPlayCircle,
   IconDeleteStroked,
 } from '@douyinfe/semi-icons';
-import AppLayout from '@/components/layout/AppLayout';
+// AppLayout removed - now handled at route level
 import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
 import ProcessDetailDrawer from './components/ProcessDetailDrawer';
@@ -482,16 +482,7 @@ const ProcessDevelopment = () => {
   ];
 
   return (
-    <AppLayout>
       <div className="process-development">
-      {/* 固定面包屑 */}
-      <div className="process-development-breadcrumb">
-        <Breadcrumb>
-          <Breadcrumb.Item onClick={() => navigate('/')}>{t('common.home')}</Breadcrumb.Item>
-          <Breadcrumb.Item>{t('development.processDevelopment.breadcrumb.developmentCenter')}</Breadcrumb.Item>
-          <Breadcrumb.Item>{t('development.processDevelopment.breadcrumb.automationProcess')}</Breadcrumb.Item>
-        </Breadcrumb>
-      </div>
 
       {/* 标题区域 */}
       <div className="process-development-header">
@@ -638,7 +629,6 @@ const ProcessDevelopment = () => {
       {/* 打开流程确认弹窗 */}
       <OpenProcessModal />
       </div>
-    </AppLayout>
   );
 };
 

@@ -3,7 +3,6 @@ import { debounce } from 'lodash';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
-  Breadcrumb,
   Typography,
   Input,
   Button,
@@ -16,7 +15,7 @@ import {
   Space,
   Select,
 } from '@douyinfe/semi-ui';
-import AppLayout from '@/components/layout/AppLayout';
+// AppLayout removed
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import {
@@ -407,15 +406,7 @@ const TemplateManagementPage = () => {
   const hasFilters = queryParams.keyword || queryParams.process_id;
 
   return (
-    <AppLayout>
       <div className="template-management">
-        {/* 面包屑 */}
-        <Breadcrumb className="template-management-breadcrumb">
-          <Breadcrumb.Item>{t('sidebar.schedulingCenter')}</Breadcrumb.Item>
-          <Breadcrumb.Item>{t('sidebar.taskExecution')}</Breadcrumb.Item>
-          <Breadcrumb.Item onClick={() => navigate('/scheduling-center/task-execution/task-list')}>{t('task.breadcrumb.taskList')}</Breadcrumb.Item>
-          <Breadcrumb.Item>{t('template.pageTitle')}</Breadcrumb.Item>
-        </Breadcrumb>
 
         {/* 返回按钮和标题 */}
         <div className="template-management-header">
@@ -548,7 +539,6 @@ const TemplateManagementPage = () => {
           onPageChange={handlePageChangeForDrawer}
         />
       </div>
-    </AppLayout>
   );
 };
 
