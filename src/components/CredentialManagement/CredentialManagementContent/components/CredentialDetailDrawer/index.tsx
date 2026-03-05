@@ -80,6 +80,9 @@ const generateMockUsageRecord = (index: number, context: 'development' | 'schedu
 
   return {
     id: generateUUID(), user_id: `user-${(index % 5) + 1}`, user_name: users[index % users.length],
+    user_department: ['研发部', '产品部', '测试部', '运维部', '市场部'][index % 5],
+    user_role: ['高级工程师', '产品经理', '测试工程师', '运维工程师', '市场专员'][index % 5],
+    user_email: ['zhangsan@example.com', 'lisi@example.com', 'wangwu@example.com', 'zhaoliu@example.com', 'qianqi@example.com'][index % 5],
     usage_time: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
     usage_type: context === 'development' ? 'debug' : 'task',
     process_id: generateUUID(), process_name: processes[index % processes.length], process_version: versions[index % versions.length],
