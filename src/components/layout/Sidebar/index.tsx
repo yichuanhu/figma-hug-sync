@@ -14,7 +14,6 @@ import {
   IconFolderStroked,
 } from '@douyinfe/semi-icons';
 import {
-  LayoutGrid,
   ListStart,
   MonitorCheck,
   Parentheses,
