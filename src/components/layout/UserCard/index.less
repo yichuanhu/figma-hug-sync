@@ -162,10 +162,11 @@
 }
 
 // 覆盖 Semi Popover 容器样式，去掉边框，匹配抽屉风格
-.user-card-popover {
-  .semi-popover-wrapper {
-    box-shadow: 0px 4px 14px 0px rgba(0, 0, 0, 0.1) !important;
-    border-radius: 8px;
-    overflow: hidden;
-  }
+.user-card-popover .semi-popover-wrapper,
+.semi-tooltip-wrapper.user-card-popover .semi-popover-wrapper,
+.user-card-popover.semi-popover-wrapper {
+  box-shadow: 0px 4px 14px 0px rgba(0, 0, 0, 0.1) !important;
+  border-radius: 8px !important;
+  overflow: hidden;
+  border: none !important;
 }
