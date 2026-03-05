@@ -318,13 +318,13 @@ const ProcessDetailDrawer = ({
     return dateStr.replace('T', ' ').substring(0, 19);
   };
 
-  const getCreatorName = (creatorId: string) => mockCreatorNameMap[creatorId] || creatorId;
-  const creatorName = getCreatorName(processData.creator_id);
+  const getCreatorInfo = (creatorId: string) => mockCreatorNameMap[creatorId] || { name: creatorId };
+  const creatorInfo = getCreatorInfo(processData.creator_id);
 
   const descriptionData = [
     { key: t('development.processDevelopment.fields.processName'), value: processData.name },
     { key: t('common.description'), value: <ExpandableText text={processData.description} maxLines={3} /> },
-    { key: t('common.creator'), value: creatorName },
+    { key: t('common.creator'), value: <UserNameWithCard name={creatorInfo.name} userId={processData.creator_id} department={creatorInfo.department} role={creatorInfo.role} email={creatorInfo.email} /> },
     { key: t('common.createTime'), value: formatDateTime(processData.created_at) },
     { key: t('common.updateTime'), value: formatDateTime(processData.updated_at) },
     { key: t('common.status'), value: <Tag color={statusConfig[processData.status]?.color || 'grey'} type="light">{t(statusConfig[processData.status]?.i18nKey || 'development.processDevelopment.status.developing')}</Tag> },
