@@ -148,7 +148,7 @@ const QueueDetailDrawer = ({
         </Text>
         <Descriptions align="left">
           <Descriptions.Item itemKey={t('common.creator')}>
-            {queue.created_by_name ? <UserNameWithCard name={queue.created_by_name} userId={queue.created_by} /> : '-'}
+            {queue.created_by_name ? <UserNameWithCard name={queue.created_by_name} userId={queue.created_by} department={queue.created_by_department || undefined} role={queue.created_by_role || undefined} email={queue.created_by_email || undefined} /> : '-'}
           </Descriptions.Item>
           <Descriptions.Item itemKey={t('common.createTime')}>
             {formatDate(queue.created_at || null)}
