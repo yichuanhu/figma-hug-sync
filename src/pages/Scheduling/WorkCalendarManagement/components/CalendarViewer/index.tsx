@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Typography, Button, Descriptions } from '@douyinfe/semi-ui';
 import { IconEditStroked } from '@douyinfe/semi-icons';
+import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import { format } from 'date-fns';
 import YearCalendarGrid from '../YearCalendarGrid';
 import type { LYWorkCalendarResponse } from '@/api/index';
