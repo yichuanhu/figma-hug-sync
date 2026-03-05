@@ -5,7 +5,8 @@
 
 import React from 'react';
 import { Avatar } from '@douyinfe/semi-ui';
-import { IconDesktop, IconSetting, IconExit, IconApartment, IconExternalOpenStroked } from '@douyinfe/semi-icons';
+import { IconApartment } from '@douyinfe/semi-icons';
+import { Monitor, User, LogOut, ExternalLink } from 'lucide-react';
 import './index.less';
 
 export interface UserInfoConfig {
