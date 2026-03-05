@@ -253,7 +253,6 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
 
   // 需求中心的详细菜单结构 - 使用分组标题样式
   const requirementsCenterMenu: MenuItem[] = [
-    { key: 'requirementsWorkbench', labelKey: 'sidebar.requirementsWorkbench', icon: <LayoutGrid size={20} strokeWidth={2} /> },
     // 需求管理 - 分组标题
     { key: 'requirementsManagement', labelKey: 'sidebar.requirementsManagement', isGroupLabel: true },
     { key: 'requirementsList', labelKey: 'sidebar.requirementsList', icon: <ClipboardList size={20} strokeWidth={2} /> },
