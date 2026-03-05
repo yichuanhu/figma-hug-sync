@@ -304,6 +304,14 @@ const ProcessDetailDrawer = ({
     return data;
   }, [versionData]);
 
+  // 计算最新激活版本（已发布版本中 publish_time 最新的）
+  const latestActiveVersionId = useMemo(() => {
+    const activeVersions = sortedVersionData.filter(v => v.is_active && v.publish_time);
+    if (activeVersions.length === 0) return null;
+    activeVersions.sort((a, b) => new Date(b.publish_time!).getTime() - new Date(a.publish_time!).getTime());
+    return activeVersions[0].id;
+  }, [sortedVersionData]);
+
   // 处理删除版本
   const handleDeleteVersion = useCallback((version: VersionDetailData) => {
     if (version.is_active) {
