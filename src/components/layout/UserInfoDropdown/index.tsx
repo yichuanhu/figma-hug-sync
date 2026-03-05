@@ -66,11 +66,11 @@ export const UserInfoDropdown: React.FC<UserInfoDropdownProps> = ({
     switch (key) {
       case 'admin':
       case 'dashboard':
-        return <IconDesktop size="small" />;
+        return <IconDesktop style={{ fontSize: 14 }} />;
       case 'settings':
-        return <IconSetting size="small" />;
+        return <IconSetting style={{ fontSize: 14 }} />;
       case 'logout':
-        return <IconExit size="small" />;
+        return <IconExit style={{ fontSize: 14 }} />;
       default:
         return null;
     }
@@ -108,7 +108,7 @@ export const UserInfoDropdown: React.FC<UserInfoDropdownProps> = ({
           {/* 公司信息 */}
           {companyName && (
             <div className="layout-user-dropdown__company">
-              <IconApartment size="small" />
+              <IconApartment style={{ fontSize: 14, color: 'var(--semi-color-text-3)' }} />
               <div className="layout-user-dropdown__company-name">{companyName}</div>
             </div>
           )}
@@ -122,7 +122,7 @@ export const UserInfoDropdown: React.FC<UserInfoDropdownProps> = ({
             key={action.key}
             icon={action.icon || getIcon(action.key)}
             label={action.label}
-            endIcon={needsExternalIcon(action.key) ? <IconExternalOpenStroked size="small" /> : undefined}
+            endIcon={needsExternalIcon(action.key) ? <IconExternalOpenStroked style={{ fontSize: 14 }} /> : undefined}
             onClick={action.onClick}
           />
         ))}
