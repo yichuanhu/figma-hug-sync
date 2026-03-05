@@ -351,9 +351,12 @@ const ReleaseListPage: React.FC = () => {
     {
       title: t('release.list.columns.publisher'),
       dataIndex: 'publisher_name',
-      width: 100,
+      width: 120,
       ellipsis: true,
-      render: (text: string) => text || '-',
+      render: (_text: string, record: LYReleaseResponse) => {
+        if (!record.publisher_name) return '-';
+        return <UserNameWithCard name={record.publisher_name} userId={record.publisher_id} department={(record as any).publisher_department} role={(record as any).publisher_role} email={(record as any).publisher_email} />;
+      },
     },
     {
       title: t('release.list.columns.publishTime'),

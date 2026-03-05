@@ -406,7 +406,11 @@ const ProcessDevelopment = () => {
       key: 'creator_id',
       width: 120,
       ellipsis: true,
-      render: (creatorId: string) => mockCreatorNameMap[creatorId] || creatorId,
+      render: (creatorId: string) => {
+        const creator = mockCreatorNameMap[creatorId];
+        if (!creator) return creatorId;
+        return <UserNameWithCard name={creator.name} userId={creatorId} department={creator.department} role={creator.role} email={creator.email} />;
+      },
     },
     {
       title: t('common.createTime'),
