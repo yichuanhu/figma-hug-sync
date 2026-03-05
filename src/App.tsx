@@ -62,11 +62,7 @@ const App = () => (
           <Route path="/process-development" element={<ProcessDevelopment />} />
           
           <Route path="/scheduling-center/resource-monitoring/worker-management" element={<WorkerManagementPage />} />
-          <Route path="/development-workbench" element={<DevelopmentWorkbench />} />
-          <Route path="/scheduling-workbench" element={<SchedulingWorkbench />} />
-          <Route path="/operations-workbench" element={<OperationsWorkbench />} />
-          <Route path="/requirements-workbench" element={<RequirementsWorkbench />} />
-          <Route path="/maintenance-workbench" element={<MaintenanceWorkbench />} />
+          
           
           {/* 凭据管理 */}
           <Route path="/dev-center/business-assets/credentials" element={<CredentialManagementPage />} />
