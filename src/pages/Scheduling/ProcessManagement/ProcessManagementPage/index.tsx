@@ -1,12 +1,7 @@
-import AppLayout from '@/components/layout/AppLayout';
 import ProcessManagementContent from '@/components/ProcessManagement/ProcessManagementContent';
 
 const SchedulingProcessManagementPage = () => {
-  return (
-    <AppLayout>
-      <ProcessManagementContent context="development" />
-    </AppLayout>
-  );
+  return <ProcessManagementContent context="development" />;
 };
 
 export default SchedulingProcessManagementPage;

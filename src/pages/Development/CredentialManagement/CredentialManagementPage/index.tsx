@@ -1,15 +1,12 @@
-import AppLayout from '@/components/layout/AppLayout';
 import CredentialManagementContent from '@/components/CredentialManagement/CredentialManagementContent';
 
 import './index.less';
 
 const CredentialManagementPage = () => {
   return (
-    <AppLayout>
-      <div className="credential-management-page">
-        <CredentialManagementContent context="development" />
-      </div>
-    </AppLayout>
+    <div className="credential-management-page">
+      <CredentialManagementContent context="development" />
+    </div>
   );
 };
 
