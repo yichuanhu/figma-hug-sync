@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -159,6 +159,26 @@ export interface FileManagementContentProps {
 const FileManagementContent = ({ context }: FileManagementContentProps) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+
+  // 表格容器ref和高度计算
+  const tableContainerRef = useRef<HTMLDivElement>(null);
+  const [tableScrollY, setTableScrollY] = useState<number | undefined>(undefined);
+
+  useEffect(() => {
+    const calcHeight = () => {
+      if (tableContainerRef.current) {
+        // 减去表头(约40px)和分页组件(约56px)的高度
+        const availableHeight = tableContainerRef.current.clientHeight - 40 - 56;
+        setTableScrollY(availableHeight > 100 ? availableHeight : undefined);
+      }
+    };
+    calcHeight();
+    const observer = new ResizeObserver(calcHeight);
+    if (tableContainerRef.current) {
+      observer.observe(tableContainerRef.current);
+    }
+    return () => observer.disconnect();
+  }, []);
 
   // 搜索框输入值
   const [searchValue, setSearchValue] = useState('');
@@ -533,7 +553,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
       </div>
 
       {/* 表格 */}
-      <div className="file-management-content-table">
+      <div className="file-management-content-table" ref={tableContainerRef}>
         {isInitialLoad ? (
           <TableSkeleton />
         ) : listResponse?.data?.length === 0 ? (
@@ -552,6 +572,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
             dataSource={listResponse?.data || []}
             rowKey="id"
             loading={loading && !isInitialLoad}
+            scroll={tableScrollY ? { y: tableScrollY } : undefined}
             pagination={{
               currentPage: queryParams.page,
               pageSize: queryParams.pageSize,
