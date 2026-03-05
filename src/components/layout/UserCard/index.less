@@ -1,0 +1,125 @@
+.layout-user-card {
+  display: flex;
+  flex-direction: column;
+  width: 288px;
+  background-color: var(--semi-color-bg-0);
+  border-radius: 8px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1), 0 0 1px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+
+  // 头部区域
+  &__header {
+    position: relative;
+    padding: 16px;
+    background-color: var(--semi-color-bg-0);
+    overflow: hidden;
+  }
+
+  // 渐变背景光晕
+  &__glow {
+    position: absolute;
+    top: -97px;
+    left: 97px;
+    width: 193px;
+    height: 193px;
+    filter: blur(32.9px);
+    background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 193 193" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><rect x="0" y="0" height="100%" width="100%" fill="url(%23grad)" opacity="1"/><defs><radialGradient id="grad" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="10" gradientTransform="matrix(0 -13.647 -13.647 0 96.5 96.5)"><stop stop-color="rgba(255,230,0,0.12)" offset="0"/><stop stop-color="rgba(255,230,0,0.06)" offset="0.4"/><stop stop-color="rgba(255,255,255,0)" offset="0.7"/></radialGradient></defs></svg>');
+    pointer-events: none;
+  }
+
+  // 用户信息容器
+  &__user {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  // 头像
+  &__avatar {
+    background-color: rgba(var(--semi-yellow-5), 1);
+    color: var(--semi-color-text-0);
+    font-size: 12px;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+
+  // 用户信息
+  &__info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+    min-width: 0;
+  }
+
+  // 姓名
+  &__name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--semi-color-text-0);
+    line-height: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  // 用户名
+  &__username {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--semi-color-text-2);
+    line-height: 16px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  // 详细信息区域
+  &__details {
+    padding: 0 16px 16px 16px;
+    background-color: var(--semi-color-bg-0);
+  }
+
+  // 详细信息内容
+  &__details-content {
+    display: flex;
+    gap: 24px;
+  }
+
+  // 标签列
+  &__labels {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 48px;
+    flex-shrink: 0;
+  }
+
+  // 标签文本
+  &__label {
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--semi-color-text-2);
+    white-space: nowrap;
+  }
+
+  // 值列
+  &__values {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  // 值文本
+  &__value {
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--semi-color-text-0);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

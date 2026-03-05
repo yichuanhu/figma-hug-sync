@@ -1,0 +1,149 @@
+.layout-user-dropdown {
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0px 4px 14px 0px rgba(0, 0, 0, 0.1), 0px 0px 1px 0px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  min-width: 280px;
+  border-radius: 8px;
+  overflow: hidden;
+
+  // 顶部区域
+  &__header {
+    background-color: var(--semi-color-bg-0);
+    position: relative;
+    overflow: clip;
+    border-bottom: 1px solid var(--semi-color-border);
+  }
+
+  // 顶部内容
+  &__header-content {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+  }
+
+  // 光晕
+  &__glow {
+    position: absolute;
+    width: 214px;
+    height: 214px;
+    left: 156px;
+    top: -88px;
+    filter: blur(32.9px);
+    background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 214 214" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><rect x="0" y="0" height="100%" width="100%" fill="url(%23grad)" opacity="1"/><defs><radialGradient id="grad" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="10" gradientTransform="matrix(0 -15.132 -15.132 0 107 107)"><stop stop-color="rgba(255,230,0,0.12)" offset="0"/><stop stop-color="rgba(255,230,0,0.06)" offset="0.4"/><stop stop-color="rgba(255,255,255,0)" offset="0.7"/></radialGradient></defs></svg>');
+  }
+
+  // 用户信息
+  &__user {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: relative;
+    z-index: 1;
+  }
+
+  // 头像
+  &__avatar {
+    background-color: rgba(var(--semi-yellow-5), 1);
+    color: var(--semi-color-text-0);
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+  }
+
+  // 用户信息容器
+  &__user-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  // 姓名
+  &__name {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 600;
+    color: var(--semi-color-text-0);
+  }
+
+  // 用户名
+  &__username {
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--semi-color-text-2);
+  }
+
+  // 公司信息
+  &__company {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    position: relative;
+    z-index: 1;
+  }
+
+  // 公司名称
+  &__company-name {
+    flex: 1;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--semi-color-text-2);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  // 菜单区域
+  &__menu {
+    background-color: var(--semi-color-bg-0);
+    padding: 4px 0;
+  }
+
+  // 菜单项
+  &__menu-item {
+    padding: 0 4px;
+    cursor: pointer;
+
+    &:hover {
+      .layout-user-dropdown__menu-content {
+        background-color: var(--semi-color-fill-0);
+      }
+    }
+  }
+
+  // 菜单项内容
+  &__menu-content {
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: 4px;
+    transition: background-color 0.15s;
+  }
+
+  // 菜单图标
+  &__menu-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 8px;
+    flex-shrink: 0;
+  }
+
+  // 菜单文字
+  &__menu-label {
+    flex: 1;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--semi-color-text-0);
+  }
+
+  // 尾部图标
+  &__menu-end-icon {
+    display: flex;
+    align-items: center;
+    margin-left: 4px;
+    flex-shrink: 0;
+  }
+}
