@@ -134,13 +134,8 @@ export const UserCardTrigger: React.FC<UserCardTriggerProps> = ({
       mouseEnterDelay={mouseEnterDelay}
       mouseLeaveDelay={mouseLeaveDelay}
       spacing={8}
-      className={`user-card-popover ${className || ''}`}
-      style={{
-        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15)',
-        borderRadius: 8,
-        overflow: 'hidden',
-        ...style,
-      }}
+      className={className}
+      style={style}
       showArrow={false}
     >
       <span className="layout-user-card__trigger">
