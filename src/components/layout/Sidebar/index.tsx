@@ -345,6 +345,11 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     if (item.path) {
       navigate(item.path);
       setHoveredCenterKey(null);
+      // 如果该中心有子菜单，自动展开侧边栏
+      const hasSubMenu = getCenterMenu(item.key).length > 0;
+      if (hasSubMenu && collapsed) {
+        onToggleCollapse?.();
+      }
     }
   };
 
