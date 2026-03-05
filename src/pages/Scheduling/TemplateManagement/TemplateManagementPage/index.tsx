@@ -539,7 +539,6 @@ const TemplateManagementPage = () => {
           onPageChange={handlePageChangeForDrawer}
         />
       </div>
-    </div>
   );
 };
 

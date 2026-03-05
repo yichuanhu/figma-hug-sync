@@ -829,7 +829,6 @@ const TaskManagementPage = () => {
           }}
         />
       </div>
-    </div>
   );
 };
 
