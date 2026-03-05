@@ -110,13 +110,13 @@ const generateMockVersionData = (): VersionDetailData[] => {
 
 const initialMockVersionData: VersionDetailData[] = generateMockVersionData();
 
-// 模拟创建者ID到名称的映射
-const mockCreatorNameMap: Record<string, string> = {
-  'user-001': '张三',
-  'user-002': '李四',
-  'user-003': '王五',
-  'user-004': '赵六',
-  'user-005': '钱七',
+// 模拟创建者ID到详细信息的映射
+const mockCreatorInfoMap: Record<string, { name: string; department?: string; role?: string; email?: string }> = {
+  'user-001': { name: '张三', department: '研发部', role: '高级工程师', email: 'zhangsan@example.com' },
+  'user-002': { name: '李四', department: '产品部', role: '产品经理', email: 'lisi@example.com' },
+  'user-003': { name: '王五', department: '运维部', role: '运维工程师', email: 'wangwu@example.com' },
+  'user-004': { name: '赵六', department: '测试部', role: '测试工程师', email: 'zhaoliu@example.com' },
+  'user-005': { name: '钱七', department: '研发部', role: '架构师', email: 'qianqi@example.com' },
 };
 
 // ============= 组件Props =============
