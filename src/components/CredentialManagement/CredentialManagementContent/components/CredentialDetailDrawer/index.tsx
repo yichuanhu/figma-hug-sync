@@ -233,7 +233,7 @@ const CredentialDetailDrawer = ({
   };
 
   const usageColumns = [
-    { title: t('credential.usage.table.user'), dataIndex: 'user_name', key: 'user_name', width: 100, render: (text: string, record: any) => text ? <UserNameWithCard name={text} userId={record.user_id} /> : '-' },
+    { title: t('credential.usage.table.user'), dataIndex: 'user_name', key: 'user_name', width: 100, render: (text: string, record: any) => text ? <UserNameWithCard name={text} userId={record.user_id} department={record.user_department} role={record.user_role} email={record.user_email} /> : '-' },
     { title: t('credential.usage.table.usageTime'), dataIndex: 'usage_time', key: 'usage_time', width: 160, render: (text: string) => formatDateTime(text) },
     { title: t('credential.usage.table.type'), dataIndex: 'usage_type', key: 'usage_type', width: 80, render: (type: UsageType) => <Tag color={type === 'debug' ? 'blue' : 'green'} type="light">{t(`credential.usage.type.${type}`)}</Tag> },
     { title: t('credential.usage.table.process'), dataIndex: 'process_name', key: 'process_name', width: 140, ellipsis: true, render: (text: string | null) => text || '-' },
