@@ -23,7 +23,7 @@ import {
 } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
 import type { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
-import AppLayout from '@/components/layout/AppLayout';
+// AppLayout removed
 import EmptyState from '@/components/EmptyState';
 import FilterPopover from '@/components/FilterPopover';
 import ReleaseDetailDrawer from '../components/ReleaseDetailDrawer';
