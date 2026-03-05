@@ -406,15 +406,7 @@ const TemplateManagementPage = () => {
   const hasFilters = queryParams.keyword || queryParams.process_id;
 
   return (
-    <AppLayout>
       <div className="template-management">
-        {/* 面包屑 */}
-        <Breadcrumb className="template-management-breadcrumb">
-          <Breadcrumb.Item>{t('sidebar.schedulingCenter')}</Breadcrumb.Item>
-          <Breadcrumb.Item>{t('sidebar.taskExecution')}</Breadcrumb.Item>
-          <Breadcrumb.Item onClick={() => navigate('/scheduling-center/task-execution/task-list')}>{t('task.breadcrumb.taskList')}</Breadcrumb.Item>
-          <Breadcrumb.Item>{t('template.pageTitle')}</Breadcrumb.Item>
-        </Breadcrumb>
 
         {/* 返回按钮和标题 */}
         <div className="template-management-header">
