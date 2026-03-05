@@ -65,8 +65,8 @@ const generateUUID = (): string => {
 const generateMockVersionData = (): VersionDetailData[] => {
   const versions = [
     { version: '1.0.0', note: '初始版本，实现基础功能', isActive: false },
-    { version: '1.1.0', note: '优化性能，修复已知问题', isActive: false },
-    { version: '1.2.0', note: '新增批量处理功能', isActive: false },
+    { version: '1.1.0', note: '优化性能，修复已知问题', isActive: true },
+    { version: '1.2.0', note: '新增批量处理功能', isActive: true },
     { version: '2.0.0', note: '重构核心逻辑，提升稳定性', isActive: true },
     { version: '2.1.0', note: '新增异常处理机制', isActive: false },
   ];
