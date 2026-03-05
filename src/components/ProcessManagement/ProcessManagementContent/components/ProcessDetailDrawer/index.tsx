@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
+import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import { useTranslation } from 'react-i18next';
 import {
   Typography,
@@ -368,7 +369,7 @@ const ProcessDetailDrawer = ({
   const descriptionData = [
     { key: t('development.processDevelopment.fields.processName'), value: processData.name },
     { key: t('common.description'), value: <ExpandableText text={processData.description} maxLines={3} /> },
-    { key: t('common.creator'), value: creatorName },
+    { key: t('common.creator'), value: creatorName ? <UserNameWithCard name={creatorName} userId={processData.creator_id} /> : '-' },
     { key: t('common.createTime'), value: formatDateTime(processData.created_at) },
     { key: t('common.updateTime'), value: formatDateTime(processData.updated_at) },
     {
@@ -384,7 +385,7 @@ const ProcessDetailDrawer = ({
   const getVersionDescriptionData = (version: VersionDetailData) => [
     { key: t('development.processDevelopment.detail.versionDetail.processVersion'), value: version.version },
     { key: t('development.processDevelopment.detail.versionDetail.versionFileName'), value: version.file_name || '-' },
-    { key: t('development.processDevelopment.detail.versionDetail.uploader'), value: getCreatorName(version.creator_id) },
+    { key: t('development.processDevelopment.detail.versionDetail.uploader'), value: (() => { const n = getCreatorName(version.creator_id); return n ? <UserNameWithCard name={n} userId={version.creator_id} /> : '-'; })() },
     { key: t('development.processDevelopment.detail.versionDetail.uploadTime'), value: formatDateTime(version.created_at) },
     { key: t('development.processDevelopment.detail.versionDetail.versionNote'), value: version.version_note || '-' },
     {

@@ -18,6 +18,7 @@ import {
   Space,
 } from '@douyinfe/semi-ui';
 import EmptyState from '@/components/EmptyState';
+import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
 import {
@@ -416,7 +417,10 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       key: 'creator_id',
       width: 120,
       ellipsis: true,
-      render: (creatorId: string) => mockCreatorNameMap[creatorId] || creatorId,
+      render: (creatorId: string) => {
+        const name = mockCreatorNameMap[creatorId];
+        return name ? <UserNameWithCard name={name} userId={creatorId} /> : (creatorId || '-');
+      },
     },
     {
       title: t('common.createTime'),
