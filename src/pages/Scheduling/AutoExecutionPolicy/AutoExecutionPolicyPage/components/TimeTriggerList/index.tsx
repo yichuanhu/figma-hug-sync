@@ -559,6 +559,7 @@ const TimeTriggerList = () => {
               pageSize,
               currentPage,
               showSizeChanger: true,
+              showTotal: true,
               pageSizeOpts: [10, 20, 50, 100],
               onPageChange: (page) => {
                 setQueryParams((prev) => ({ ...prev, offset: (page - 1) * pageSize }));
