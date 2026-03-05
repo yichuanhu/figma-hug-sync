@@ -385,7 +385,7 @@ const ProcessDetailDrawer = ({
   const getVersionDescriptionData = (version: VersionDetailData) => [
     { key: t('development.processDevelopment.detail.versionDetail.processVersion'), value: version.version },
     { key: t('development.processDevelopment.detail.versionDetail.versionFileName'), value: version.file_name || '-' },
-    { key: t('development.processDevelopment.detail.versionDetail.uploader'), value: (() => { const n = getCreatorName(version.creator_id); return n ? <UserNameWithCard name={n} userId={version.creator_id} /> : '-'; })() },
+    { key: t('development.processDevelopment.detail.versionDetail.uploader'), value: (() => { const info = getCreatorInfo(version.creator_id); return info ? <UserNameWithCard name={info.name} userId={version.creator_id} department={info.department} role={info.role} email={info.email} /> : '-'; })() },
     { key: t('development.processDevelopment.detail.versionDetail.uploadTime'), value: formatDateTime(version.created_at) },
     { key: t('development.processDevelopment.detail.versionDetail.versionNote'), value: version.version_note || '-' },
     {

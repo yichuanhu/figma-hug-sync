@@ -418,8 +418,8 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       width: 120,
       ellipsis: true,
       render: (creatorId: string) => {
-        const name = mockCreatorNameMap[creatorId];
-        return name ? <UserNameWithCard name={name} userId={creatorId} /> : (creatorId || '-');
+        const info = mockCreatorInfoMap[creatorId];
+        return info ? <UserNameWithCard name={info.name} userId={creatorId} department={info.department} role={info.role} email={info.email} /> : (creatorId || '-');
       },
     },
     {
