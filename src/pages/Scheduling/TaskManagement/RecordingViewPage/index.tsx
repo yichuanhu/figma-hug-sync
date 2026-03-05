@@ -15,7 +15,7 @@ import {
   IconArrowLeft,
 } from '@douyinfe/semi-icons';
 import { RefreshCw } from 'lucide-react';
-import AppLayout from '@/components/layout/AppLayout';
+// AppLayout removed
 import SyncRecordingPlayer from './components/SyncRecordingPlayer';
 import LogSyncPanel from './components/LogSyncPanel';
 import type {
