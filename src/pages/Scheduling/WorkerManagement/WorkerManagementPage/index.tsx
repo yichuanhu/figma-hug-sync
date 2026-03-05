@@ -1,11 +1,12 @@
 import { useState, useCallback } from 'react';
-import { Tabs } from '@douyinfe/semi-ui';
+import { Tabs, Typography } from '@douyinfe/semi-ui';
 import { useTranslation } from 'react-i18next';
 import WorkerManagement from '../index';
 import WorkerGroupManagement from '../WorkerGroupManagement';
 import '../index.less';
 
 const { TabPane } = Tabs;
+const { Title, Text } = Typography;
 
 const WorkerManagementPage = () => {
   const { t } = useTranslation();
@@ -23,6 +24,10 @@ const WorkerManagementPage = () => {
 
   return (
     <div className="worker-management-container">
+      <div className="worker-management-container-header">
+        <Title heading={3} className="title">{t('worker.title')}</Title>
+        <Text type="tertiary">{t('worker.description')}</Text>
+      </div>
       <Tabs
         activeKey={activeTab}
         onChange={(key) => setActiveTab(key)}
