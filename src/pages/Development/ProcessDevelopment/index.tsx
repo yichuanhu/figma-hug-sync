@@ -29,7 +29,7 @@ import {
   IconPlayCircle,
   IconDeleteStroked,
 } from '@douyinfe/semi-icons';
-import AppLayout from '@/components/layout/AppLayout';
+// AppLayout removed - now handled at route level
 import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
 import ProcessDetailDrawer from './components/ProcessDetailDrawer';
