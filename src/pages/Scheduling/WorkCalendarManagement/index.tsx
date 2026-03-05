@@ -129,15 +129,7 @@ const WorkCalendarManagement = () => {
   }, [selectedCalendarId, t]);
   
   return (
-    <AppLayout>
       <div className="work-calendar-management">
-        {/* 面包屑 */}
-        <Breadcrumb className="work-calendar-management-breadcrumb">
-          <Breadcrumb.Item>{t('workCalendar.breadcrumb.schedulingCenter')}</Breadcrumb.Item>
-          <Breadcrumb.Item>{t('workCalendar.breadcrumb.taskExecution')}</Breadcrumb.Item>
-          <Breadcrumb.Item>{t('workCalendar.breadcrumb.autoExecutionPolicy')}</Breadcrumb.Item>
-          <Breadcrumb.Item>{t('workCalendar.pageTitle')}</Breadcrumb.Item>
-        </Breadcrumb>
 
         {/* 返回按钮和标题 */}
         <div className="work-calendar-management-header">
