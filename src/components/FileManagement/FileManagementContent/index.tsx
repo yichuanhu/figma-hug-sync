@@ -167,8 +167,8 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
   useEffect(() => {
     const calcHeight = () => {
       if (tableContainerRef.current) {
-        // 减去分页组件的预估高度(约56px)
-        const availableHeight = tableContainerRef.current.clientHeight - 56;
+        // 减去表头(约40px)和分页组件(约56px)的高度
+        const availableHeight = tableContainerRef.current.clientHeight - 40 - 56;
         setTableScrollY(availableHeight > 100 ? availableHeight : undefined);
       }
     };
