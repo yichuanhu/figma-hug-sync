@@ -27,6 +27,7 @@ import type { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
 import EmptyState from '@/components/EmptyState';
 import FilterPopover from '@/components/FilterPopover';
 import ReleaseDetailDrawer from '../components/ReleaseDetailDrawer';
+import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import type {
   LYReleaseResponse,
   LYListResponseLYReleaseResponse,
