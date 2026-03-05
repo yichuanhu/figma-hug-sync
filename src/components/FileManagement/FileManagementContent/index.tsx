@@ -553,7 +553,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
       </div>
 
       {/* 表格 */}
-      <div className="file-management-content-table">
+      <div className="file-management-content-table" ref={tableContainerRef}>
         {isInitialLoad ? (
           <TableSkeleton />
         ) : listResponse?.data?.length === 0 ? (
