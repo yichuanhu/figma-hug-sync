@@ -296,15 +296,7 @@ const CreateReleasePage: React.FC = () => {
   };
 
   return (
-    <AppLayout>
       <div className="create-release-page">
-        {/* 面包屑 */}
-        <div className="create-release-page-breadcrumb">
-          <Text type="tertiary">
-            {t('release.breadcrumb.developmentCenter')} /{' '}
-            {t('sidebar.publishManagement')} / {t('release.create.title')}
-          </Text>
-        </div>
 
         {/* 头部 */}
         <div className="create-release-page-header">
