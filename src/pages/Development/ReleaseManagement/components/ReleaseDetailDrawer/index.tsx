@@ -14,6 +14,7 @@ import {
 import type { LYReleaseResponse, ReleaseType, ReleaseStatus, ResourceType } from '@/api';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import ExpandableText from '@/components/ExpandableText';
+import UserNameWithCard from '@/components/layout/UserNameWithCard';
 
 import './index.less';
 
