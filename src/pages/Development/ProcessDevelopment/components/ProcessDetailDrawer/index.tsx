@@ -23,6 +23,7 @@ import {
   IconHelpCircleStroked,
   IconLink,
 } from '@douyinfe/semi-icons';
+import { Zap } from 'lucide-react';
 import type { LYProcessResponse, LYProcessVersionResponse } from '@/api';
 import UploadVersionModal from '../UploadVersionModal';
 import EmptyState from '@/components/EmptyState';
