@@ -570,14 +570,8 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
 
   return (
     <div className="queue-messages-content">
-      {/* 面包屑 */}
-      <Breadcrumb className="queue-messages-content-breadcrumb">
-        <Breadcrumb.Item onClick={handleBack} className="queue-messages-content-breadcrumb-link">
-          {t('queue.title')}
-        </Breadcrumb.Item>
-        <Breadcrumb.Item>{queueName}</Breadcrumb.Item>
-        <Breadcrumb.Item>{t('queueMessage.title')}</Breadcrumb.Item>
-      </Breadcrumb>
+
+
 
       {/* 标题区域 */}
       <div className="queue-messages-content-header">

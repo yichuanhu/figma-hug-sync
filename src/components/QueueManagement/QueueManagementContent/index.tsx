@@ -427,19 +427,8 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
 
   return (
     <div className="queue-management-content">
-      {/* 面包屑 */}
-      <div className="queue-management-content-breadcrumb">
-        <Breadcrumb>
-          <Breadcrumb.Item onClick={() => navigate('/')}>
-            {t('common.home')}
-          </Breadcrumb.Item>
-          <Breadcrumb.Item onClick={() => navigate(context === 'development' ? '/development-workbench' : '/scheduling-workbench')}>
-            {context === 'development' ? t('development.processDevelopment.breadcrumb.developmentCenter') : t('scheduling.processDevelopment.breadcrumb.schedulingCenter')}
-          </Breadcrumb.Item>
-          <Breadcrumb.Item>{t('queue.breadcrumb.businessAssets')}</Breadcrumb.Item>
-          <Breadcrumb.Item>{t('queue.title')}</Breadcrumb.Item>
-        </Breadcrumb>
-      </div>
+
+
 
       {/* 标题区域 */}
       <div className="queue-management-content-header">

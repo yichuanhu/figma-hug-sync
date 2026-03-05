@@ -503,19 +503,8 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
 
   return (
     <div className="process-management">
-      {/* 固定面包屑 */}
-      <div className="process-management-breadcrumb">
-        <Breadcrumb>
-          {breadcrumbItems.map((item, index) => (
-            <Breadcrumb.Item 
-              key={item.key}
-              onClick={item.onClick}
-            >
-              {item.label}
-            </Breadcrumb.Item>
-          ))}
-        </Breadcrumb>
-      </div>
+
+
 
       {/* 标题区域 */}
       <div className="process-management-header">

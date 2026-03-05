@@ -465,29 +465,8 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
 
   return (
     <div className="file-management-content">
-      {/* 面包屑 */}
-      <div className="file-management-content-breadcrumb">
-        <Breadcrumb>
-          <Breadcrumb.Item onClick={() => navigate('/')}>
-            {t('common.home')}
-          </Breadcrumb.Item>
-          <Breadcrumb.Item
-            onClick={() =>
-              navigate(
-                context === 'development'
-                  ? '/development-workbench'
-                  : '/scheduling-workbench'
-              )
-            }
-          >
-            {context === 'development'
-              ? t('development.processDevelopment.breadcrumb.developmentCenter')
-              : t('scheduling.processDevelopment.breadcrumb.schedulingCenter')}
-          </Breadcrumb.Item>
-          <Breadcrumb.Item>{t('file.breadcrumb.businessAssets')}</Breadcrumb.Item>
-          <Breadcrumb.Item>{t('file.title')}</Breadcrumb.Item>
-        </Breadcrumb>
-      </div>
+
+
 
       {/* 标题区域 */}
       <div className="file-management-content-header">
