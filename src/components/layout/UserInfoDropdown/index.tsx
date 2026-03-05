@@ -5,7 +5,8 @@
 
 import React from 'react';
 import { Avatar } from '@douyinfe/semi-ui';
-import { IconDesktop, IconSetting, IconExit, IconApartment, IconExternalOpenStroked } from '@douyinfe/semi-icons';
+import { IconApartment } from '@douyinfe/semi-icons';
+import { Monitor, User, LogOut, ExternalLink } from 'lucide-react';
 import './index.less';
 
 export interface UserInfoConfig {
@@ -66,11 +67,11 @@ export const UserInfoDropdown: React.FC<UserInfoDropdownProps> = ({
     switch (key) {
       case 'admin':
       case 'dashboard':
-        return <IconDesktop style={{ fontSize: 14 }} />;
+        return <Monitor size={14} strokeWidth={2} />;
       case 'settings':
-        return <IconSetting style={{ fontSize: 14 }} />;
+        return <User size={14} strokeWidth={2} />;
       case 'logout':
-        return <IconExit style={{ fontSize: 14 }} />;
+        return <LogOut size={14} strokeWidth={2} />;
       default:
         return null;
     }
@@ -122,7 +123,7 @@ export const UserInfoDropdown: React.FC<UserInfoDropdownProps> = ({
             key={action.key}
             icon={action.icon || getIcon(action.key)}
             label={action.label}
-            endIcon={needsExternalIcon(action.key) ? <IconExternalOpenStroked style={{ fontSize: 14 }} /> : undefined}
+            endIcon={needsExternalIcon(action.key) ? <ExternalLink size={14} strokeWidth={2} /> : undefined}
             onClick={action.onClick}
           />
         ))}
