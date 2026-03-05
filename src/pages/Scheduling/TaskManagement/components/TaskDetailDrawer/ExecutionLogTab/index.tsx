@@ -473,6 +473,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
             pageSize,
             currentPage,
             showSizeChanger: true,
+            showTotal: true,
             pageSizeOpts: [20, 50, 100, 200],
             onPageChange: (page) => {
               setQueryParams((prev) => ({ ...prev, page }));
