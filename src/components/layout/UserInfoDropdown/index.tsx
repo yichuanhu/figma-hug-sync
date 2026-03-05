@@ -5,11 +5,7 @@
 
 import React from 'react';
 import { Avatar } from '@douyinfe/semi-ui';
-import { ApartmentIcon } from '../Svgs/ApartmentIcon';
-import { MonitorIcon } from '../Svgs/MonitorIcon';
-import { ExternalOpenIcon } from '../Svgs/ExternalOpenIcon';
-import { SettingIcon } from '../Svgs/SettingIcon';
-import { LogoutIcon } from '../Svgs/LogoutIcon';
+import { IconDesktop, IconSetting, IconExit, IconApartment, IconExternalOpenStroked } from '@douyinfe/semi-icons';
 import './index.less';
 
 export interface UserInfoConfig {
@@ -70,11 +66,11 @@ export const UserInfoDropdown: React.FC<UserInfoDropdownProps> = ({
     switch (key) {
       case 'admin':
       case 'dashboard':
-        return <MonitorIcon />;
+        return <IconDesktop size="small" />;
       case 'settings':
-        return <SettingIcon />;
+        return <IconSetting size="small" />;
       case 'logout':
-        return <LogoutIcon />;
+        return <IconExit size="small" />;
       default:
         return null;
     }
@@ -112,7 +108,7 @@ export const UserInfoDropdown: React.FC<UserInfoDropdownProps> = ({
           {/* 公司信息 */}
           {companyName && (
             <div className="layout-user-dropdown__company">
-              <ApartmentIcon />
+              <IconApartment size="small" />
               <div className="layout-user-dropdown__company-name">{companyName}</div>
             </div>
           )}
@@ -126,7 +122,7 @@ export const UserInfoDropdown: React.FC<UserInfoDropdownProps> = ({
             key={action.key}
             icon={action.icon || getIcon(action.key)}
             label={action.label}
-            endIcon={needsExternalIcon(action.key) ? <ExternalOpenIcon /> : undefined}
+            endIcon={needsExternalIcon(action.key) ? <IconExternalOpenStroked size="small" /> : undefined}
             onClick={action.onClick}
           />
         ))}
