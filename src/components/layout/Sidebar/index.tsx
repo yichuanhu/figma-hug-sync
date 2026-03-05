@@ -264,7 +264,6 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
 
   // 运维中心的详细菜单结构 - 使用分组标题样式
   const maintenanceCenterMenu: MenuItem[] = [
-    { key: 'maintenanceWorkbench', labelKey: 'sidebar.maintenanceWorkbench', icon: <LayoutGrid size={20} strokeWidth={2} /> },
     // 系统运维 - 分组标题
     { key: 'systemMaintenance', labelKey: 'sidebar.systemMaintenance', isGroupLabel: true },
     { key: 'systemConfig', labelKey: 'sidebar.systemConfig', icon: <Settings size={20} strokeWidth={2} /> },
