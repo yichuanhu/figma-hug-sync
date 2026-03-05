@@ -376,21 +376,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
   const pageSize = range?.size || 20;
   const total = range?.total || 0;
 
-  // 面包屑导航
-  const breadcrumbItems = useMemo(() => {
-    if (isSchedulingContext) {
-      return [
-        { key: 'home', label: t('common.home'), onClick: () => navigate('/') },
-        { key: 'scheduling', label: t('scheduling.processDevelopment.breadcrumb.schedulingCenter') },
-        { key: 'automation', label: t('development.processDevelopment.breadcrumb.automationProcess') },
-      ];
-    }
-    return [
-      { key: 'home', label: t('common.home'), onClick: () => navigate('/') },
-      { key: 'development', label: t('development.processDevelopment.breadcrumb.developmentCenter') },
-      { key: 'automation', label: t('development.processDevelopment.breadcrumb.automationProcess') },
-    ];
-  }, [isSchedulingContext, t, navigate]);
+
 
   const columns = [
     {
