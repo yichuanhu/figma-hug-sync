@@ -318,7 +318,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
       dataIndex: 'creator_name',
       key: 'creator_name',
       width: 120,
-      render: (name: string | null | undefined) => name || '-',
+      render: (name: string | null | undefined, record: any) => name ? <UserNameWithCard name={name} userId={record.creator_id} /> : '-',
     },
     {
       title: t('common.createTime'),

@@ -72,7 +72,7 @@ const CalendarViewer: React.FC<CalendarViewerProps> = ({ calendar, onEdit }) => 
               {calendar.start_date} ~ {calendar.end_date}
             </Descriptions.Item>
             <Descriptions.Item itemKey={t('workCalendar.viewer.creator')}>
-              {calendar.creator_name || calendar.creator_id}
+              {calendar.creator_name ? <UserNameWithCard name={calendar.creator_name} userId={calendar.creator_id} /> : (calendar.creator_id || '-')}
             </Descriptions.Item>
             <Descriptions.Item itemKey={t('workCalendar.viewer.createTime')}>
               {formatDateTime(calendar.created_at)}

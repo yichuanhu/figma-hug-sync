@@ -342,7 +342,7 @@ const TemplateManagementPage = () => {
       dataIndex: 'created_by_name',
       width: 120,
       ellipsis: true,
-      render: (text: string) => text || '-',
+      render: (text: string, record: any) => text ? <UserNameWithCard name={text} userId={record.created_by_id} /> : '-',
     },
     {
       title: t('template.table.createTime'),

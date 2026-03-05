@@ -109,7 +109,7 @@ const TaskDetailDrawer = ({
     { key: t('task.detail.processVersion'), value: task.process_version },
     { key: t('task.detail.executionTarget'), value: task.execution_target_name },
     { key: t('task.detail.triggerSource'), value: t(`task.triggerSource.${task.trigger_source.toLowerCase()}`) },
-    { key: t('task.detail.creator'), value: task.creator_name || '-' },
+    { key: t('task.detail.creator'), value: task.creator_name ? <UserNameWithCard name={task.creator_name} userId={task.creator_id} /> : '-' },
   ];
 
   const executionInfoData = [

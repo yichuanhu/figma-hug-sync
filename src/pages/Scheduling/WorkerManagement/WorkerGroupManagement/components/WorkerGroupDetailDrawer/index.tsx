@@ -180,7 +180,7 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
     { key: t('workerGroup.detail.fields.groupName'), value: groupData.name },
     { key: t('common.description'), value: <ExpandableText text={groupData.description} maxLines={3} /> },
     { key: t('workerGroup.table.memberCount'), value: `${groupData.member_count} ${t('workerGroup.table.memberUnit')}` },
-    { key: t('common.creator'), value: groupData.creator_name || '-' },
+    { key: t('common.creator'), value: groupData.creator_name ? <UserNameWithCard name={groupData.creator_name} userId={groupData.creator_id} /> : '-' },
     { key: t('common.createTime'), value: groupData.created_at },
   ];
 
