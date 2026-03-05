@@ -346,12 +346,12 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
   };
 
   const handleCenterClick = (item: MenuItem) => {
-    if (item.path) {
-      navigate(item.path);
+    const centerMenu = getCenterMenu(item.key);
+    const targetPath = item.path || getFirstPathInMenu(centerMenu);
+    if (targetPath) {
+      navigate(targetPath);
       setHoveredCenterKey(null);
-      // 如果该中心有子菜单，自动展开侧边栏
-      const hasSubMenu = getCenterMenu(item.key).length > 0;
-      if (hasSubMenu && collapsed) {
+      if (centerMenu.length > 0 && collapsed) {
         onToggleCollapse?.();
       }
     }
