@@ -651,8 +651,9 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
               pageSize: queryParams.pageSize,
               total,
               onPageChange: handlePageChange,
+              onPageSizeChange: (newPageSize) => setQueryParams((prev) => ({ ...prev, page: 1, pageSize: newPageSize })),
               showTotal: true,
-              showSizeChanger: false,
+              showSizeChanger: true,
             }}
             scroll={{ y: 'calc(100vh - 380px)' }}
             empty={
