@@ -218,7 +218,6 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
 
   // 调度中心的详细菜单结构 - 使用分组标题样式
   const schedulingCenterMenu: MenuItem[] = [
-    { key: 'schedulingWorkbench', labelKey: 'sidebar.schedulingWorkbench', icon: <LayoutGrid size={20} strokeWidth={2} /> },
     // 1. 执行资产 - 分组标题
     { key: 'executionAssets', labelKey: 'sidebar.executionAssets', isGroupLabel: true },
     { key: 'schedulingAutomationProcess', labelKey: 'sidebar.automationProcess', icon: <Workflow size={20} strokeWidth={2} />, path: '/scheduling-center/execution-assets/automation-process' },
