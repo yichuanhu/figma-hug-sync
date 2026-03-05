@@ -511,8 +511,9 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
               pageSize: queryParams.pageSize,
               total,
               onPageChange: handlePageChange,
+              onPageSizeChange: (newPageSize) => setQueryParams((prev) => ({ ...prev, page: 1, pageSize: newPageSize })),
               showTotal: true,
-              showSizeChanger: false,
+              showSizeChanger: true,
             }}
             empty={
               <EmptyState

@@ -375,6 +375,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
                   setQueryParams(prev => ({ ...prev, offset: (page - 1) * pageSize }));
                 },
                 showTotal: true,
+                showSizeChanger: true,
               }}
               scroll={{ y: 260 }}
             />

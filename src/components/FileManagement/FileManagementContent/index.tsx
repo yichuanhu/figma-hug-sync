@@ -578,7 +578,9 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
               pageSize: queryParams.pageSize,
               total,
               onPageChange: handlePageChange,
-              showSizeChanger: false,
+              onPageSizeChange: (newPageSize) => setQueryParams((prev) => ({ ...prev, page: 1, pageSize: newPageSize })),
+              showSizeChanger: true,
+              showTotal: true,
             }}
             onRow={(record) => ({
               onClick: () => handleRowClick(record as LYFileResponse),
