@@ -500,7 +500,6 @@ const ReleaseListPage: React.FC = () => {
                       value: activeFilters.publish_date,
                       datePresets,
                     },
-                    },
                   ]}
                 />
               </Space>
