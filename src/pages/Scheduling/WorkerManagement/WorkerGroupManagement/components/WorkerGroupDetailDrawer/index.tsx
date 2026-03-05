@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import {
   Typography,
   Descriptions,
