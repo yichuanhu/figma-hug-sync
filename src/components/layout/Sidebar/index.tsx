@@ -569,6 +569,11 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
               trigger="hover"
               position="rightBottom"
               showArrow={false}
+              style={{
+                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15)',
+                borderRadius: 8,
+                overflow: 'hidden',
+              }}
               content={
                 <UserInfoDropdown
                   name="Ling hui"
