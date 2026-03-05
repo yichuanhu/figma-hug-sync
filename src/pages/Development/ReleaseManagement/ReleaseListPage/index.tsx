@@ -160,7 +160,9 @@ const ReleaseListPage: React.FC = () => {
   const [activeFilters, setActiveFilters] = useState<{
     release_type: ReleaseType[];
     publish_status: ReleaseStatus[];
-  }>({ release_type: [], publish_status: [] });
+    publisher: string[];
+    publish_date: [Date, Date] | null;
+  }>({ release_type: [], publish_status: [], publisher: [], publish_date: null });
 
   // 详情抽屉
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
@@ -174,7 +176,7 @@ const ReleaseListPage: React.FC = () => {
   const total = range?.total || 0;
 
   const filterCount =
-    activeFilters.release_type.length + activeFilters.publish_status.length;
+    activeFilters.release_type.length + activeFilters.publish_status.length + activeFilters.publisher.length;
 
   // 加载数据
   const loadData = async () => {
@@ -227,9 +229,12 @@ const ReleaseListPage: React.FC = () => {
 
   // 筛选操作
   const handleFilterConfirm = (values: Record<string, unknown>) => {
+    const dateValue = values.publish_date as [Date, Date] | undefined;
     setActiveFilters({
       release_type: (values.release_type as ReleaseType[]) || [],
       publish_status: (values.publish_status as ReleaseStatus[]) || [],
+      publisher: (values.publisher as string[]) || [],
+      publish_date: dateValue && dateValue.length === 2 ? dateValue : null,
     });
     setQueryParams((prev) => ({ ...prev, offset: 0 }));
   };
@@ -417,6 +422,23 @@ const ReleaseListPage: React.FC = () => {
     label: t(config.i18nKey),
   }));
 
+  // 发布者选项（从mock数据中提取）
+  const publisherOptions = useMemo(() => {
+    const publishers = ['张三', '李四', '王五'];
+    return publishers.map((name) => ({ value: name, label: name }));
+  }, []);
+
+  // 日期快捷选项
+  const datePresets = useMemo(() => {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    return [
+      { text: '今天', start: today, end: now },
+      { text: '最近7天', start: new Date(today.getTime() - 6 * 86400000), end: now },
+      { text: '本月', start: new Date(now.getFullYear(), now.getMonth(), 1), end: now },
+    ];
+  }, []);
+
   return (
       <div className="release-list-page">
 
@@ -463,6 +485,20 @@ const ReleaseListPage: React.FC = () => {
                       type: 'checkbox',
                       value: activeFilters.publish_status,
                       options: statusOptions,
+                    },
+                    {
+                      key: 'publisher',
+                      label: t('release.list.columns.publisher'),
+                      type: 'checkbox',
+                      value: activeFilters.publisher,
+                      options: publisherOptions,
+                    },
+                    {
+                      key: 'publish_date',
+                      label: t('release.list.columns.publishTime'),
+                      type: 'dateRange',
+                      value: activeFilters.publish_date,
+                      datePresets,
                     },
                   ]}
                 />
