@@ -49,6 +49,9 @@ interface CredentialUsageRecord {
   id: string;
   user_id: string;
   user_name: string;
+  user_department?: string;
+  user_role?: string;
+  user_email?: string;
   usage_time: string;
   usage_type: UsageType;
   process_id: string;
