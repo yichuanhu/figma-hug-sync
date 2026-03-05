@@ -173,3 +173,12 @@ body {
     }
   }
 }
+
+// UserCard 和 UserInfoDropdown 的 Popover 容器样式
+// 去掉 --semi-shadow-elevated 中的 1px 边框效果，改用与抽屉一致的阴影
+.semi-popover-wrapper.user-card-popover,
+.semi-popover-wrapper.user-dropdown-popover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
+  border-radius: 8px !important;
+  overflow: hidden;
+}
