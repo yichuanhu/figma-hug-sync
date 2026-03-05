@@ -558,6 +558,9 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
               pageSize: queryParams.pageSize,
               total,
               onPageChange: handlePageChange,
+              onPageSizeChange: (newPageSize) => setQueryParams((prev) => ({ ...prev, page: 1, pageSize: newPageSize })),
+              showSizeChanger: true,
+              showTotal: true,
             }}
             scroll={{ y: 'calc(100vh - 320px)' }}
             onRow={(record) => ({
