@@ -82,6 +82,8 @@
     gap: 4px;
     position: relative;
     z-index: 1;
+    // 与头像左侧对齐：头像32px + gap16px = 48px偏移
+    margin-left: 48px;
   }
 
   // 公司名称
@@ -98,12 +100,12 @@
   // 菜单区域
   &__menu {
     background-color: var(--semi-color-bg-0);
-    padding: 4px 0;
+    padding: 8px 0;
   }
 
   // 菜单项
   &__menu-item {
-    padding: 0 4px;
+    padding: 0 8px;
     cursor: pointer;
 
     &:hover {
@@ -117,7 +119,7 @@
   &__menu-content {
     display: flex;
     align-items: center;
-    padding: 10px 12px;
+    padding: 10px 16px;
     border-radius: 8px;
     transition: background-color 0.15s;
   }
