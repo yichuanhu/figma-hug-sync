@@ -629,7 +629,6 @@ const ProcessDevelopment = () => {
       {/* 打开流程确认弹窗 */}
       <OpenProcessModal />
       </div>
-    </div>
   );
 };
 
