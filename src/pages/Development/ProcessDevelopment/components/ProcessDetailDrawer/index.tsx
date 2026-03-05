@@ -28,6 +28,7 @@ import UploadVersionModal from '../UploadVersionModal';
 import EmptyState from '@/components/EmptyState';
 import DetailSkeleton from '@/components/DetailSkeleton';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
+import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import ExpandableText from '@/components/ExpandableText';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import './index.less';
@@ -106,12 +107,12 @@ const generateMockVersionData = (): VersionDetailData[] => {
 
 const initialMockVersionData: VersionDetailData[] = generateMockVersionData();
 
-const mockCreatorNameMap: Record<string, string> = {
-  'user-001': '张三',
-  'user-002': '李四',
-  'user-003': '王五',
-  'user-004': '赵六',
-  'user-005': '钱七',
+const mockCreatorNameMap: Record<string, { name: string; department?: string; role?: string; email?: string }> = {
+  'user-001': { name: '张三', department: '技术部', role: '高级工程师', email: 'zhangsan@example.com' },
+  'user-002': { name: '李四', department: '产品部', role: '产品经理', email: 'lisi@example.com' },
+  'user-003': { name: '王五', department: '运维部', role: '运维工程师', email: 'wangwu@example.com' },
+  'user-004': { name: '赵六', department: '测试部', role: '测试工程师', email: 'zhaoliu@example.com' },
+  'user-005': { name: '钱七', department: '技术部', role: '架构师', email: 'qianqi@example.com' },
 };
 
 // ============= 组件Props =============
@@ -317,13 +318,13 @@ const ProcessDetailDrawer = ({
     return dateStr.replace('T', ' ').substring(0, 19);
   };
 
-  const getCreatorName = (creatorId: string) => mockCreatorNameMap[creatorId] || creatorId;
-  const creatorName = getCreatorName(processData.creator_id);
+  const getCreatorInfo = (creatorId: string) => mockCreatorNameMap[creatorId] || { name: creatorId };
+  const creatorInfo = getCreatorInfo(processData.creator_id);
 
   const descriptionData = [
     { key: t('development.processDevelopment.fields.processName'), value: processData.name },
     { key: t('common.description'), value: <ExpandableText text={processData.description} maxLines={3} /> },
-    { key: t('common.creator'), value: creatorName },
+    { key: t('common.creator'), value: <UserNameWithCard name={creatorInfo.name} userId={processData.creator_id} department={creatorInfo.department} role={creatorInfo.role} email={creatorInfo.email} /> },
     { key: t('common.createTime'), value: formatDateTime(processData.created_at) },
     { key: t('common.updateTime'), value: formatDateTime(processData.updated_at) },
     { key: t('common.status'), value: <Tag color={statusConfig[processData.status]?.color || 'grey'} type="light">{t(statusConfig[processData.status]?.i18nKey || 'development.processDevelopment.status.developing')}</Tag> },
@@ -332,7 +333,7 @@ const ProcessDetailDrawer = ({
   const getVersionDescriptionData = (version: VersionDetailData) => [
     { key: t('development.processDevelopment.detail.versionDetail.processVersion'), value: version.version },
     { key: t('development.processDevelopment.detail.versionDetail.versionFileName'), value: version.file_name || '-' },
-    { key: t('development.processDevelopment.detail.versionDetail.uploader'), value: getCreatorName(version.creator_id) },
+    { key: t('development.processDevelopment.detail.versionDetail.uploader'), value: (() => { const info = getCreatorInfo(version.creator_id); return <UserNameWithCard name={info.name} userId={version.creator_id} department={info.department} role={info.role} email={info.email} />; })() },
     { key: t('development.processDevelopment.detail.versionDetail.uploadTime'), value: formatDateTime(version.created_at) },
     { key: t('development.processDevelopment.detail.versionDetail.versionNote'), value: version.version_note || '-' },
     {

@@ -27,6 +27,7 @@ import type { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
 import EmptyState from '@/components/EmptyState';
 import FilterPopover from '@/components/FilterPopover';
 import ReleaseDetailDrawer from '../components/ReleaseDetailDrawer';
+import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import type {
   LYReleaseResponse,
   LYListResponseLYReleaseResponse,
@@ -65,6 +66,9 @@ const generateMockReleaseResponse = (index: number): LYReleaseResponse => {
       : `发布描述 ${index + 1}：包含多个流程的更新和配置变更`,
     publisher_id: `user-${(index % 3) + 1}`,
     publisher_name: ['张三', '李四', '王五'][index % 3],
+    publisher_department: ['技术部', '产品部', '运维部'][index % 3],
+    publisher_role: ['高级工程师', '产品经理', '运维工程师'][index % 3],
+    publisher_email: ['zhangsan@example.com', 'lisi@example.com', 'wangwu@example.com'][index % 3],
     publish_time: date.toISOString(),
     publish_status: status,
     process_count: (index % 3) + 1,
@@ -347,9 +351,12 @@ const ReleaseListPage: React.FC = () => {
     {
       title: t('release.list.columns.publisher'),
       dataIndex: 'publisher_name',
-      width: 100,
+      width: 120,
       ellipsis: true,
-      render: (text: string) => text || '-',
+      render: (_text: string, record: LYReleaseResponse) => {
+        if (!record.publisher_name) return '-';
+        return <UserNameWithCard name={record.publisher_name} userId={record.publisher_id} department={(record as any).publisher_department} role={(record as any).publisher_role} email={(record as any).publisher_email} />;
+      },
     },
     {
       title: t('release.list.columns.publishTime'),

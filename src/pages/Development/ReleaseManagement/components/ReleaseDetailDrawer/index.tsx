@@ -14,6 +14,7 @@ import {
 import type { LYReleaseResponse, ReleaseType, ReleaseStatus, ResourceType } from '@/api';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import ExpandableText from '@/components/ExpandableText';
+import UserNameWithCard from '@/components/layout/UserNameWithCard';
 
 import './index.less';
 
@@ -108,7 +109,7 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
     { key: t('release.detail.releaseId'), value: release.release_id },
     { key: t('release.detail.releaseType'), value: typeConfig ? <Tag color={typeConfig.color}>{t(typeConfig.i18nKey)}</Tag> : '-' },
     { key: t('release.detail.status'), value: statusCfg ? <Tag color={statusCfg.color}>{t(statusCfg.i18nKey)}</Tag> : '-' },
-    { key: t('release.detail.publisher'), value: release.publisher_name || '-' },
+    { key: t('release.detail.publisher'), value: release.publisher_name ? <UserNameWithCard name={release.publisher_name} userId={release.publisher_id} department={(release as any).publisher_department} role={(release as any).publisher_role} email={(release as any).publisher_email} /> : '-' },
     { key: t('release.detail.publishTime'), value: formatTime(release.publish_time) },
     { key: t('common.description'), value: <ExpandableText text={release.description} maxLines={3} /> },
   ];
