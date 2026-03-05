@@ -173,3 +173,9 @@ body {
     }
   }
 }
+
+// 全局覆盖 Semi Popover 容器阴影
+// 去掉主题中 0px 0px 1px 的边框效果，改用与抽屉 SideSheet 一致的柔和阴影
+body .semi-popover-wrapper {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
+}
