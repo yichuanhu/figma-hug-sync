@@ -33,17 +33,27 @@
     flex: 1;
     overflow: hidden;
     min-height: 0;
-    display: flex;
-    flex-direction: column;
 
+    // 让 Semi Table 整体撑满并内部滚动
     .semi-table {
-      flex: 1;
+      height: 100%;
       display: flex;
       flex-direction: column;
-      min-height: 0;
     }
 
-    .semi-table-wrapper {
+    .semi-table-container {
+      flex: 1;
+      overflow: hidden;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .semi-table-header {
+      flex-shrink: 0;
+    }
+
+    .semi-table-body {
       flex: 1;
       overflow: auto;
       min-height: 0;
