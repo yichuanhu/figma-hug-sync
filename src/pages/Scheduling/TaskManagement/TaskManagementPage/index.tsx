@@ -772,6 +772,7 @@ const TaskManagementPage = () => {
                   setQueryParams((prev) => ({ ...prev, offset: 0, size }));
                 },
                 showSizeChanger: true,
+                showTotal: true,
                 pageSizeOpts: [10, 20, 50, 100],
               }}
               onRow={(record) => ({
