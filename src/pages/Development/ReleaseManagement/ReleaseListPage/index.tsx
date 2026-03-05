@@ -433,11 +433,11 @@ const ReleaseListPage: React.FC = () => {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     return [
-      { text: t('common.today'), start: today, end: now },
-      { text: t('common.last7Days'), start: new Date(today.getTime() - 6 * 86400000), end: now },
-      { text: t('common.thisMonth'), start: new Date(now.getFullYear(), now.getMonth(), 1), end: now },
+      { text: '今天', start: today, end: now },
+      { text: '最近7天', start: new Date(today.getTime() - 6 * 86400000), end: now },
+      { text: '本月', start: new Date(now.getFullYear(), now.getMonth(), 1), end: now },
     ];
-  }, [t]);
+  }, []);
 
   return (
       <div className="release-list-page">
