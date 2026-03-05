@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Typography, Toast, Button } from '@douyinfe/semi-ui';
 import { IconChevronLeft } from '@douyinfe/semi-icons';
-import AppLayout from '@/components/layout/AppLayout';
+// AppLayout removed
 import CalendarSidebar from './components/CalendarSidebar';
 import CalendarViewer from './components/CalendarViewer';
 import CalendarEditor from './components/CalendarEditor';
