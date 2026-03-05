@@ -516,8 +516,9 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
               pageSize: queryParams.pageSize,
               total,
               onPageChange: handlePageChange,
+              onPageSizeChange: (newPageSize) => setQueryParams((prev) => ({ ...prev, page: 1, pageSize: newPageSize })),
               showTotal: true,
-              showSizeChanger: false,
+              showSizeChanger: true,
             }}
             scroll={{ y: 'calc(100vh - 320px)' }}
             empty={
