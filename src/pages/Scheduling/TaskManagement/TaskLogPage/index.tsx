@@ -22,7 +22,7 @@ import {
 } from '@douyinfe/semi-icons';
 import { RefreshCw } from 'lucide-react';
 import { debounce } from 'lodash';
-import AppLayout from '@/components/layout/AppLayout';
+// AppLayout removed
 import FilterPopover from '@/components/FilterPopover';
 import EmptyState from '@/components/EmptyState';
 import type {
