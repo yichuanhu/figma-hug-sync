@@ -109,7 +109,7 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
           field="name"
           label={t('development.processDevelopment.fields.processName')}
           placeholder={t('development.processDevelopment.createModal.fields.namePlaceholder')}
-          trigger="blur"
+          trigger={['blur', 'change']}
           rules={[
             { required: true, message: t('development.processDevelopment.createModal.validation.nameRequired') },
             { max: 100, message: t('development.processDevelopment.createModal.validation.nameLengthError') },
