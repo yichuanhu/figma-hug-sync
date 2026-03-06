@@ -103,8 +103,8 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
           placeholder={t('development.processDevelopment.createModal.fields.namePlaceholder')}
           rules={[
             { required: true, message: t('development.processDevelopment.createModal.validation.nameRequired') },
-            { min: 1, message: t('development.processDevelopment.createModal.validation.nameLengthError') },
             { max: 100, message: t('development.processDevelopment.createModal.validation.nameLengthError') },
+            { validator: validateProcessNameFormat },
             { validator: validateProcessNameUnique },
           ]}
         />
