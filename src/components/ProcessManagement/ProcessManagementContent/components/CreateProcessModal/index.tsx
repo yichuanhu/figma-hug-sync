@@ -125,7 +125,7 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
           placeholder={t('development.processDevelopment.createModal.fields.descriptionPlaceholder')}
           autosize={{ minRows: 3, maxRows: 6 }}
           maxCount={2000}
-          trigger="blur"
+          trigger={['blur', 'change']}
           rules={[
             { max: 2000, message: t('development.processDevelopment.createModal.validation.descriptionLengthError') },
           ]}

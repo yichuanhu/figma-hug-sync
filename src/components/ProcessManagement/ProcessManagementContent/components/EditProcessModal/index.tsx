@@ -103,6 +103,7 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
           placeholder={t('development.processDevelopment.createModal.fields.descriptionPlaceholder')}
           autosize={{ minRows: 3, maxRows: 6 }}
           maxCount={2000}
+          trigger={['blur', 'change']}
           rules={[
             { max: 2000, message: t('development.processDevelopment.createModal.validation.descriptionLengthError') },
           ]}
