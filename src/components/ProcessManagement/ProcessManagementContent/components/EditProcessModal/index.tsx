@@ -17,6 +17,20 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
 
   const existingProcessNames = ['订单自动处理流程', '财务报销审批流程', '人事入职流程'];
 
+  const validateProcessNameFormat = (rule: unknown, value: string, callback: (error?: string) => void) => {
+    if (!value) {
+      callback();
+      return true;
+    }
+    const namePattern = /^[^\d][a-zA-Z0-9\u4e00-\u9fa5_]*$/;
+    if (!namePattern.test(value.trim())) {
+      callback(t('development.processDevelopment.createModal.validation.nameFormatError'));
+      return false;
+    }
+    callback();
+    return true;
+  };
+
   const validateProcessNameUnique = (rule: unknown, value: string, callback: (error?: string) => void) => {
     if (value === processData?.name) {
       callback();
@@ -87,9 +101,11 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
           field="name"
           label={t('development.processDevelopment.fields.processName')}
           placeholder={t('development.processDevelopment.createModal.fields.namePlaceholder')}
+          trigger={['blur', 'change']}
           rules={[
             { required: true, message: t('development.processDevelopment.createModal.validation.nameRequired') },
-            { min: 1, message: t('development.processDevelopment.createModal.validation.nameLengthError') },
+            { max: 100, message: t('development.processDevelopment.createModal.validation.nameLengthError') },
+            { validator: validateProcessNameFormat },
             { max: 100, message: t('development.processDevelopment.createModal.validation.nameLengthError') },
             { validator: validateProcessNameUnique },
           ]}
@@ -101,6 +117,7 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
           placeholder={t('development.processDevelopment.createModal.fields.descriptionPlaceholder')}
           autosize={{ minRows: 3, maxRows: 6 }}
           maxCount={2000}
+          trigger={['blur', 'change']}
           rules={[
             { max: 2000, message: t('development.processDevelopment.createModal.validation.descriptionLengthError') },
           ]}
