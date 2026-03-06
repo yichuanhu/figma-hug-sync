@@ -32,6 +32,7 @@ const WorkerManagementPage = () => {
         activeKey={activeTab}
         onChange={(key) => setActiveTab(key)}
         className="worker-management-tabs"
+        keepDOM={false}
       >
         <TabPane tab={t('workerGroup.tabs.workerManagement')} itemKey="workers">
           <WorkerManagement 
