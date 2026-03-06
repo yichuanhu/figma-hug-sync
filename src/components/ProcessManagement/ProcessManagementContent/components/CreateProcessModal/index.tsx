@@ -44,6 +44,21 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
 
   const existingProcessNames = ['订单自动处理流程', '财务报销审批流程', '人事入职流程'];
 
+  const validateProcessNameFormat = (rule: unknown, value: string, callback: (error?: string) => void) => {
+    if (!value) {
+      callback();
+      return true;
+    }
+    // 不能以数字开头，不能包含特殊符号(下划线除外)和空格
+    const namePattern = /^[^\d][a-zA-Z0-9\u4e00-\u9fa5_]*$/;
+    if (!namePattern.test(value.trim())) {
+      callback(t('development.processDevelopment.createModal.validation.nameFormatError'));
+      return false;
+    }
+    callback();
+    return true;
+  };
+
   const validateProcessNameUnique = (rule: unknown, value: string, callback: (error?: string) => void) => {
     if (value && existingProcessNames.includes(value.trim())) {
       callback(t('development.processDevelopment.createModal.validation.nameExists'));
