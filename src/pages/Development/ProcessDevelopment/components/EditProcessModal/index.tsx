@@ -17,6 +17,20 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
 
   const existingProcessNames = ['订单自动处理流程', '财务报销审批流程', '人事入职流程'];
 
+  const validateProcessNameFormat = (rule: unknown, value: string, callback: (error?: string) => void) => {
+    if (!value) {
+      callback();
+      return true;
+    }
+    const namePattern = /^[^\d][a-zA-Z0-9\u4e00-\u9fa5_]*$/;
+    if (!namePattern.test(value.trim())) {
+      callback(t('development.processDevelopment.createModal.validation.nameFormatError'));
+      return false;
+    }
+    callback();
+    return true;
+  };
+
   const validateProcessNameUnique = (rule: unknown, value: string, callback: (error?: string) => void) => {
     if (value === processData?.name) {
       callback();
