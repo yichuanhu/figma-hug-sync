@@ -592,8 +592,9 @@
         },
         "validation": {
           "nameRequired": "请输入流程名称",
-          "nameLengthError": "流程名称长度必须在1-100字符之间",
-          "nameExists": "流程名称已存在，请使用其他名称",
+          "nameLengthError": "流程名称不能超过100个字符",
+          "nameFormatError": "名称中不能包含特殊符号(下划线除外)和空格,且不能以数字开头",
+          "nameExists": "流程名称已存在,请使用其他名称",
           "descriptionRequired": "请输入流程描述",
           "descriptionLengthError": "流程描述长度必须在1-500字符之间"
         },

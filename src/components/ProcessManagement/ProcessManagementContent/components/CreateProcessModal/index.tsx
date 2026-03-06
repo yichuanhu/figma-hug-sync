@@ -112,8 +112,8 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
           trigger="blur"
           rules={[
             { required: true, message: t('development.processDevelopment.createModal.validation.nameRequired') },
-            { min: 1, message: t('development.processDevelopment.createModal.validation.nameLengthError') },
             { max: 100, message: t('development.processDevelopment.createModal.validation.nameLengthError') },
+            { validator: validateProcessNameFormat },
             { validator: validateProcessNameUnique },
           ]}
           showClear
