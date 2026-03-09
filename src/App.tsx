@@ -98,6 +98,7 @@ const App = () => (
           
           {/* 开发预览 */}
           <Route path="/dev-preview/empty-state" element={<EmptyStatePreview />} />
+          <Route path="/dev-preview/empty-state-options" element={<EmptyStateOptionsPreview />} />
         </Route>
 
         {/* 无布局页面 */}
