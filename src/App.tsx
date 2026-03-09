@@ -42,6 +42,7 @@ import WorkCalendarManagement from "@/pages/Scheduling/WorkCalendarManagement";
 import PersonalCenter from "@/pages/PersonalCenter";
 // Dev Preview
 import EmptyStatePreview from "@/pages/DevPreview/EmptyStatePreview";
+import EmptyStateOptionsPreview from "@/pages/DevPreview/EmptyStateOptionsPreview";
 
 const queryClient = new QueryClient();
 
@@ -97,6 +98,7 @@ const App = () => (
           
           {/* 开发预览 */}
           <Route path="/dev-preview/empty-state" element={<EmptyStatePreview />} />
+          <Route path="/dev-preview/empty-state-options" element={<EmptyStateOptionsPreview />} />
         </Route>
 
         {/* 无布局页面 */}
