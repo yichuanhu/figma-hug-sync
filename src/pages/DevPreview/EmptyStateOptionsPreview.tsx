@@ -8,9 +8,9 @@ const EmptyStateOptionsPreview = () => {
       <h1 style={{ fontSize: 24, fontWeight: 600, color: '#1C1F23' }}>缺省图方案预览</h1>
       <div style={{ display: 'flex', gap: 48, flexWrap: 'wrap', justifyContent: 'center' }}>
         {[
-          { label: '方案 A — 空文档', src: optionA, desc: '折角文档 + 黄色圆点装饰' },
-          { label: '方案 B — 空窗口', src: optionB, desc: '矩形窗口 + 黄色六边形' },
-          { label: '方案 C — 抽象几何', src: optionC, desc: '圆形与方形交叠 + 黄色弧线' },
+          { label: '方案 A — 文档搜索', src: optionA, desc: '折角文档 + 放大镜 + 黄色圆点装饰' },
+          { label: '方案 B — 空箱子', src: optionB, desc: '打开的盒子 + 黄色星星圆点浮动' },
+          { label: '方案 C — 清单板', src: optionC, desc: '待办清单剪贴板 + 黄色铅笔' },
         ].map((item) => (
           <div key={item.label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
             <div style={{ width: 280, height: 280, border: '1px solid #E5E5E5', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#FAFAFA' }}>
