@@ -4,9 +4,10 @@
  */
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Avatar } from '@douyinfe/semi-ui';
 import { IconApartment } from '@douyinfe/semi-icons';
-import { Monitor, User, LogOut, ExternalLink } from 'lucide-react';
+import { Monitor, User, LogOut, ExternalLink, Globe } from 'lucide-react';
 import './index.less';
 
 export interface UserInfoConfig {
@@ -48,6 +49,41 @@ const MenuItemComponent: React.FC<{
         {icon && <div className="layout-user-dropdown__menu-icon">{icon}</div>}
         <div className="layout-user-dropdown__menu-label">{label}</div>
         {endIcon && <div className="layout-user-dropdown__menu-end-icon">{endIcon}</div>}
+      </div>
+    </div>
+  );
+};
+
+// 语言切换组件
+const LanguageSwitcher: React.FC = () => {
+  const { t, i18n } = useTranslation();
+  const currentLang = i18n.language;
+
+  const handleSwitch = (lang: string) => {
+    if (lang !== currentLang) {
+      i18n.changeLanguage(lang);
+    }
+  };
+
+  return (
+    <div className="layout-user-dropdown__lang">
+      <div className="layout-user-dropdown__lang-header">
+        <Globe size={20} strokeWidth={2} />
+        <span>{t('sidebar.userMenu.language')}</span>
+      </div>
+      <div className="layout-user-dropdown__lang-options">
+        <div
+          className={`layout-user-dropdown__lang-option ${currentLang === 'zh-CN' ? 'layout-user-dropdown__lang-option--active' : ''}`}
+          onClick={() => handleSwitch('zh-CN')}
+        >
+          {t('sidebar.userMenu.languageZh')}
+        </div>
+        <div
+          className={`layout-user-dropdown__lang-option ${currentLang === 'en' ? 'layout-user-dropdown__lang-option--active' : ''}`}
+          onClick={() => handleSwitch('en')}
+        >
+          {t('sidebar.userMenu.languageEn')}
+        </div>
       </div>
     </div>
   );
@@ -128,6 +164,9 @@ export const UserInfoDropdown: React.FC<UserInfoDropdownProps> = ({
           />
         ))}
       </div>
+
+      {/* 语言切换区域 */}
+      <LanguageSwitcher />
     </div>
   );
 };
