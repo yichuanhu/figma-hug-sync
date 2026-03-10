@@ -5,9 +5,9 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Avatar } from '@douyinfe/semi-ui';
+import { Avatar, Popover } from '@douyinfe/semi-ui';
 import { IconApartment } from '@douyinfe/semi-icons';
-import { Monitor, User, LogOut, ExternalLink, Globe } from 'lucide-react';
+import { Monitor, User, LogOut, ExternalLink, Globe, ChevronRight } from 'lucide-react';
 import './index.less';
 
 export interface UserInfoConfig {
@@ -54,25 +54,28 @@ const MenuItemComponent: React.FC<{
   );
 };
 
-// 语言 Toggle 组件 - 分段控件样式
-const LangToggle: React.FC = () => {
+// 语言列表配置
+const LANGUAGES = [
+  { key: 'zh-CN', label: '简体中文' },
+  { key: 'en', label: 'English' },
+];
+
+// 语言子菜单组件
+const LangSubMenu: React.FC = () => {
   const { i18n } = useTranslation();
   const currentLang = i18n.language;
 
   return (
-    <div className="layout-user-dropdown__lang-toggle">
-      <span
-        className={`layout-user-dropdown__lang-toggle-item ${currentLang === 'zh-CN' ? 'layout-user-dropdown__lang-toggle-item--active' : ''}`}
-        onClick={(e) => { e.stopPropagation(); i18n.changeLanguage('zh-CN'); }}
-      >
-        中文
-      </span>
-      <span
-        className={`layout-user-dropdown__lang-toggle-item ${currentLang === 'en' ? 'layout-user-dropdown__lang-toggle-item--active' : ''}`}
-        onClick={(e) => { e.stopPropagation(); i18n.changeLanguage('en'); }}
-      >
-        EN
-      </span>
+    <div className="layout-user-dropdown__lang-submenu">
+      {LANGUAGES.map((lang) => (
+        <div
+          key={lang.key}
+          className={`layout-user-dropdown__lang-option ${currentLang === lang.key ? 'layout-user-dropdown__lang-option--active' : ''}`}
+          onClick={() => i18n.changeLanguage(lang.key)}
+        >
+          {lang.label}
+        </div>
+      ))}
     </div>
   );
 };
@@ -86,7 +89,7 @@ export const UserInfoDropdown: React.FC<UserInfoDropdownProps> = ({
   className,
   style,
 }) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   // 映射默认图标
   const getIcon = (key: string) => {
     switch (key) {
@@ -153,21 +156,26 @@ export const UserInfoDropdown: React.FC<UserInfoDropdownProps> = ({
             onClick={action.onClick}
           />
         ))}
-        {/* 语言切换菜单项 */}
-        <div
-          className="layout-user-dropdown__menu-item"
-          onClick={() => i18n.changeLanguage(i18n.language === 'zh-CN' ? 'en' : 'zh-CN')}
+        {/* 语言切换 - 悬停展开子菜单 */}
+        <Popover
+          content={<LangSubMenu />}
+          position="right"
+          trigger="hover"
+          showArrow={false}
+          spacing={4}
         >
-          <div className="layout-user-dropdown__menu-content">
-            <div className="layout-user-dropdown__menu-icon">
-              <Globe size={20} strokeWidth={2} />
-            </div>
-            <div className="layout-user-dropdown__menu-label">{t('sidebar.userMenu.language')}</div>
-            <div className="layout-user-dropdown__menu-end-icon">
-              <LangToggle />
+          <div className="layout-user-dropdown__menu-item">
+            <div className="layout-user-dropdown__menu-content">
+              <div className="layout-user-dropdown__menu-icon">
+                <Globe size={20} strokeWidth={2} />
+              </div>
+              <div className="layout-user-dropdown__menu-label">{t('sidebar.userMenu.language')}</div>
+              <div className="layout-user-dropdown__menu-end-icon">
+                <ChevronRight size={16} strokeWidth={2} />
+              </div>
             </div>
           </div>
-        </div>
+        </Popover>
         {/* 退出登录放在最下面 */}
         {actions.filter(a => a.key === 'logout').map((action) => (
           <MenuItemComponent
