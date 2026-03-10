@@ -569,6 +569,9 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
               trigger="hover"
               position="rightBottom"
               showArrow={false}
+              spacing={4}
+              mouseLeaveDelay={100}
+              mouseEnterDelay={0}
               content={
                 <UserInfoDropdown
                   name="Ling hui"
