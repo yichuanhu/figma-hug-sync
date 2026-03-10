@@ -143,7 +143,8 @@ export const UserInfoDropdown: React.FC<UserInfoDropdownProps> = ({
 
       {/* 菜单区域 */}
       <div className="layout-user-dropdown__menu">
-        {actions.map((action) => (
+        {/* 非 logout 的菜单项 */}
+        {actions.filter(a => a.key !== 'logout').map((action) => (
           <MenuItemComponent
             key={action.key}
             icon={action.icon || getIcon(action.key)}
@@ -167,6 +168,15 @@ export const UserInfoDropdown: React.FC<UserInfoDropdownProps> = ({
             </div>
           </div>
         </div>
+        {/* 退出登录放在最下面 */}
+        {actions.filter(a => a.key === 'logout').map((action) => (
+          <MenuItemComponent
+            key={action.key}
+            icon={action.icon || getIcon(action.key)}
+            label={action.label}
+            onClick={action.onClick}
+          />
+        ))}
       </div>
     </div>
   );
