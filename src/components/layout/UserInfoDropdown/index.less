@@ -162,7 +162,7 @@
     line-height: 20px;
     color: var(--semi-color-text-0);
     cursor: pointer;
-    transition: background-color 0.15s;
+    transition: background-color 0.15s, color 0.15s;
     border-radius: 4px;
     margin: 0 4px;
 
@@ -171,8 +171,13 @@
     }
 
     &--active {
+      background-color: var(--semi-color-primary-light-default);
       color: var(--semi-color-primary);
       font-weight: 600;
+
+      &:hover {
+        background-color: var(--semi-color-primary-light-hover);
+      }
     }
   }
 }

@@ -167,7 +167,7 @@ export const UserInfoDropdown: React.FC<UserInfoDropdownProps> = ({
           <div className="layout-user-dropdown__menu-item">
             <div className="layout-user-dropdown__menu-content">
               <div className="layout-user-dropdown__menu-icon">
-                <Globe size={20} strokeWidth={2} />
+                <Languages size={20} strokeWidth={2} />
               </div>
               <div className="layout-user-dropdown__menu-label">{t('sidebar.userMenu.language')}</div>
               <div className="layout-user-dropdown__menu-end-icon">
