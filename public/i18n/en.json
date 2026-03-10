@@ -1,0 +1,2588 @@
+{
+  "_version": "2026-01-30-v2",
+  "common": {
+    "title": "APA",
+    "home": "Home",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "reset": "Reset",
+    "search": "Search",
+    "filter": "Filter",
+    "import": "Import",
+    "export": "Export",
+    "run": "Run",
+    "open": "Open",
+    "close": "Close",
+    "fullscreen": "Fullscreen",
+    "exitFullscreen": "Exit Fullscreen",
+    "noData": "No Data",
+    "noRecords": "No Records",
+    "noResult": "No Results Found",
+    "loadError": "Load failed, please retry",
+    "networkError": "Network error, please check connection",
+    "noAccess": "No Access",
+    "maintenance": "Under Maintenance",
+    "notFound": "Resource Not Found",
+    "status": "Status",
+    "actions": "Actions",
+    "showingRecords": "Showing {{start}}-{{end}} of {{total}}",
+    "startTime": "Start Time",
+    "endTime": "End Time",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "yes": "Yes",
+    "no": "No",
+    "copy": "Copy",
+    "copySuccess": "Copied",
+    "description": "Description",
+    "creator": "Creator",
+    "createTime": "Created At",
+    "updateTime": "Updated At",
+    "expand": "Expand",
+    "previous": "Previous",
+    "next": "Next",
+    "collapse": "Collapse",
+    "viewDetail": "View Details",
+    "operations": "Operations",
+    "refresh": "Refresh",
+    "seconds": "seconds",
+    "days": "days",
+    "selectAll": "Select All"
+  },
+  "emptyState": {
+    "retry": "Retry",
+    "goHome": "Go Home",
+    "goBack": "Go Back"
+  },
+  "sidebar": {
+    "home": "Home",
+    "developmentCenter": "Development Center",
+    "schedulingCenter": "Scheduling Center",
+    "operationsCenter": "Operations Center",
+    "requirementsCenter": "Requirements Center",
+    "maintenanceCenter": "Maintenance Center",
+    "developmentWorkbench": "Development Workbench",
+    "schedulingWorkbench": "Scheduling Workbench",
+    "operationsWorkbench": "Operations Workbench",
+    "requirementsWorkbench": "Requirements Workbench",
+    "maintenanceWorkbench": "Maintenance Workbench",
+    "developmentTaskManagement": "Dev Task Management",
+    "automationProcess": "Automation Process",
+    "documentProcessing": "Document Processing",
+    "agentApplication": "Agent Application",
+    "humanMachineProcess": "Human-Machine Process",
+    "businessAssetConfig": "Business Asset Config",
+    "queue": "Queue",
+    "credentials": "Credentials",
+    "parameters": "Parameters",
+    "files": "Files",
+    "capabilityAssetManagement": "Capability Asset Management",
+    "processAssets": "Process Assets",
+    "knowledgeAssets": "Knowledge Assets",
+    "connectionAssets": "Connection Assets",
+    "workerManagement": "Worker Management",
+    "processRobot": "Process Robot",
+    "executionResourceMonitoring": "Execution Resource Monitoring",
+    "executionAssets": "Execution Assets",
+    "humanMachineTask": "Human-Machine Task",
+    "businessConfig": "Business Config",
+    "taskExecution": "Task Execution",
+    "autoExecutionPolicy": "Auto Execution Policy",
+    "executionTemplate": "Execution Template",
+    "taskList": "Task List",
+    "publishManagement": "Release Management",
+    "processPublish": "Process Release",
+    "publishList": "Release List",
+    "newPublish": "New Release",
+    "publishHistory": "Release History",
+    "messageCenter": "Message Center",
+    "userGuide": "User Guide",
+    "resourceDownload": "Resource Download",
+    "expandSidebar": "Expand Sidebar",
+    "taskScheduling": "Task Scheduling",
+    "scheduledTasks": "Scheduled Tasks",
+    "executionQueue": "Execution Queue",
+    "executionHistory": "Execution History",
+    "dataAnalysis": "Data Analysis",
+    "executionReport": "Execution Report",
+    "performanceAnalysis": "Performance Analysis",
+    "operationsManagement": "Operations Management",
+    "targetManagement": "Target Management",
+    "reportExport": "Report Export",
+    "requirementsManagement": "Requirements Management",
+    "requirementsList": "Requirements List",
+    "requirementsReview": "Requirements Review",
+    "collaborationManagement": "Collaboration Management",
+    "teamMembers": "Team Members",
+    "systemMaintenance": "System Maintenance",
+    "systemConfig": "System Config",
+    "troubleshooting": "Troubleshooting",
+    "monitoringAlerts": "Monitoring & Alerts",
+    "alertManagement": "Alert Management",
+    "systemMonitoring": "System Monitoring",
+    "dataManagement": "Data Management",
+    "databaseManagement": "Database Management",
+    "securityManagement": "Security Management",
+    "userMenu": {
+      "organization": "{{name}}",
+      "adminConsole": "Admin Console",
+      "personalCenter": "Personal Center",
+      "logout": "Log Out",
+      "language": "Language",
+      "languageZh": "中文",
+      "languageEn": "English"
+    }
+  },
+  "credential": {
+    "title": "Credential Management",
+    "description": "Manage credentials used by processes",
+    "breadcrumb": {
+      "developmentCenter": "Development Center",
+      "schedulingCenter": "Scheduling Center",
+      "businessAssets": "Business Asset Config"
+    },
+    "createCredential": "New Credential",
+    "personalCredentialManagement": "Personal Credential Management",
+    "searchPlaceholder": "Search credential name",
+    "noData": "No Credentials",
+    "table": {
+      "name": "Credential Name",
+      "testValue": "Value (Test)",
+      "productionValue": "Value (Production)",
+      "type": "Type",
+      "linkedPersonalCredential": "Linked Personal Credential"
+    },
+    "type": {
+      "fixedValue": "Fixed Value",
+      "personalRef": "Personal Credential Ref"
+    },
+    "filter": {
+      "type": "Type",
+      "allTypes": "All Types"
+    },
+    "fields": {
+      "name": "Credential Name",
+      "namePlaceholder": "Enter credential name",
+      "nameHint": "Cannot be changed after creation",
+      "type": "Type",
+      "typePlaceholder": "Select credential type",
+      "value": "Credential Value",
+      "testValue": "Value (Test)",
+      "productionValue": "Value (Production)",
+      "username": "Username",
+      "usernamePlaceholder": "Enter username",
+      "password": "Password",
+      "passwordPlaceholder": "Enter password",
+      "passwordEditPlaceholder": "Leave empty to keep current",
+      "descriptionPlaceholder": "Enter description (optional)"
+    },
+    "validation": {
+      "nameRequired": "Please enter credential name",
+      "nameLengthError": "Name must be 1-30 characters",
+      "nameExists": "Name already exists",
+      "typeRequired": "Please select type",
+      "usernameRequired": "Please enter username",
+      "passwordRequired": "Please enter password"
+    },
+    "list": {
+      "loadError": "Failed to load credentials"
+    },
+    "createModal": {
+      "title": "New Credential",
+      "successDev": "Credential created (test value set)",
+      "successProd": "Credential created (production value set)",
+      "error": "Creation failed, please retry"
+    },
+    "editModal": {
+      "title": "Edit Credential",
+      "confirmTitle": "Confirm Changes",
+      "confirmMessage": "Changing credential name and value may affect existing processes. Continue?",
+      "success": "Credential updated",
+      "error": "Update failed, please retry"
+    },
+    "deleteModal": {
+      "title": "Delete Credential",
+      "confirmMessage": "Delete this credential? Linked processes may not work properly.",
+      "success": "Credential deleted"
+    },
+    "detail": {
+      "basicInfo": "Basic Info",
+      "linkedInfo": "Linked Info",
+      "systemInfo": "System Info",
+      "name": "Credential Name",
+      "type": "Credential Type",
+      "testValue": "Value (Debug)",
+      "productionValue": "Value (Production)",
+      "linkedPersonalCredential": "Linked Personal Credential",
+      "publishStatus": "Publish Status",
+      "published": "Published",
+      "unpublished": "Unpublished",
+      "tabs": {
+        "basicInfo": "Basic Info",
+        "usageRecords": "Usage Records"
+      }
+    },
+    "actions": {
+      "viewUsage": "View Usage",
+      "linkPersonal": "Link Personal Credential"
+    },
+    "linkPersonal": {
+      "title": "Link Personal Credential",
+      "description": "Select a personal credential for authentication during process execution.",
+      "selectLabel": "Personal Credential",
+      "selectPlaceholder": "Select personal credential",
+      "selectRequired": "Please select a personal credential",
+      "success": "Linked successfully",
+      "error": "Link failed, please retry",
+      "unlinkSuccess": "Unlinked successfully",
+      "unlinkConfirmTitle": "Unlink",
+      "unlinkConfirmContent": "Unlink this personal credential?"
+    },
+    "linkCredential": {
+      "title": "Link Credential",
+      "description": "Select a credential to link",
+      "selectLabel": "Credential",
+      "selectPlaceholder": "Select credential",
+      "success": "Linked successfully",
+      "error": "Link failed, please retry",
+      "unlinkSuccess": "Unlinked successfully",
+      "unlinkConfirmTitle": "Unlink",
+      "unlinkConfirmContent": "Unlink this credential?"
+    },
+    "usage": {
+      "title": "Usage Records",
+      "description": "View credential usage details",
+      "loadError": "Failed to load usage records",
+      "exporting": "Exporting...",
+      "exportSuccess": "Export successful",
+      "filter": {
+        "user": "User"
+      },
+      "table": {
+        "user": "User",
+        "usageTime": "Usage Time",
+        "type": "Type",
+        "process": "Process",
+        "processVersion": "Process Version",
+        "worker": "Worker",
+        "taskId": "Task ID",
+        "screenshot": "Screenshot"
+      },
+      "type": {
+        "debug": "Debug",
+        "task": "Task"
+      },
+      "empty": "No usage records"
+    }
+  },
+  "parameter": {
+    "title": "Parameter Management",
+    "description": "Manage parameter configurations for different business scenarios",
+    "breadcrumb": {
+      "businessAssets": "Business Asset Config"
+    },
+    "createParameter": "New Parameter",
+    "searchPlaceholder": "Search parameter name",
+    "noData": "No Parameters",
+    "table": {
+      "name": "Parameter Name",
+      "type": "Type",
+      "devValue": "Value (Debug)",
+      "prodValue": "Value"
+    },
+    "type": {
+      "text": "Text",
+      "boolean": "Boolean",
+      "number": "Number"
+    },
+    "filter": {
+      "type": "Type"
+    },
+    "fields": {
+      "name": "Parameter Name",
+      "namePlaceholder": "Enter parameter name",
+      "nameHint": "Cannot be changed after creation!",
+      "nameReadonly": "Cannot be changed after creation",
+      "type": "Type",
+      "typePlaceholder": "Select parameter type",
+      "value": "Value",
+      "textValuePlaceholder": "Enter value (1-65535 chars)",
+      "numberValuePlaceholder": "Enter number",
+      "descriptionPlaceholder": "Enter description (optional)"
+    },
+    "validation": {
+      "nameRequired": "Please enter parameter name",
+      "nameLengthError": "Name must be 1-30 characters",
+      "nameExists": "Name already exists",
+      "typeRequired": "Please select type",
+      "valueRequired": "Please enter value",
+      "textValueLengthError": "Value cannot exceed 65535 characters"
+    },
+    "list": {
+      "loadError": "Failed to load parameters"
+    },
+    "createModal": {
+      "title": "New Parameter",
+      "success": "Parameter created",
+      "error": "Creation failed, please retry"
+    },
+    "editModal": {
+      "title": "Edit Parameter",
+      "success": "Parameter updated",
+      "error": "Update failed, please retry"
+    },
+    "deleteModal": {
+      "title": "Delete Parameter",
+      "confirmMessage": "Delete parameter \"{{name}}\"?",
+      "publishedError": "Published parameters cannot be deleted",
+      "success": "Parameter deleted"
+    },
+    "detail": {
+      "tabs": {
+        "basicInfo": "Basic Info"
+      },
+      "isPublished": "Publish Status",
+      "published": "Published",
+      "unpublished": "Unpublished",
+      "cannotDeletePublished": "Published parameters cannot be deleted"
+    },
+    "empty": {
+      "filterDescription": "No matching parameters found, try adjusting filters",
+      "defaultDescription": "No parameters yet, click \"New Parameter\" to start"
+    }
+  },
+  "file": {
+    "title": "File Management",
+    "description": "Manage file resources used by business processes",
+    "breadcrumb": {
+      "businessAssets": "Business Asset Config"
+    },
+    "searchPlaceholder": "Search file name",
+    "noData": "No Files",
+    "table": {
+      "name": "File Name",
+      "originalName": "Original Name",
+      "size": "File Size",
+      "source": "Source",
+      "dependency": "Dependency",
+      "hasDependency": "Has Dependency",
+      "noDependency": "No Dependency",
+      "environment": "Environment"
+    },
+    "environment": {
+      "dev": "Development",
+      "prd": "Production",
+      "all": "All"
+    },
+    "source": {
+      "manual": "Manual Upload",
+      "automationProcess": "Automation Process"
+    },
+    "filter": {
+      "source": "Source"
+    },
+    "fields": {
+      "displayName": "File Name",
+      "displayNamePlaceholder": "Enter file name",
+      "descriptionPlaceholder": "Enter description (optional)",
+      "changeReason": "Change Reason",
+      "changeReasonPlaceholder": "Enter change reason"
+    },
+    "validation": {
+      "fileRequired": "Please select a file",
+      "fileTooLarge": "File size cannot exceed 100MB",
+      "nameExists": "File name already exists",
+      "nameExistsWarning": "File name already exists, uploading will overwrite",
+      "displayNameRequired": "Please enter file name",
+      "displayNameTooLong": "File name cannot exceed 100 characters",
+      "displayNameExists": "File name already exists",
+      "displayNameExistsWarning": "File name already exists, uploading will overwrite",
+      "changeReasonRequired": "Please enter change reason",
+      "noExtension": "File must have an extension",
+      "blockedExtension": "{{ext}} file type is not supported",
+      "notAllowedExtension": "{{ext}} file type is not supported"
+    },
+    "list": {
+      "loadError": "Failed to load files"
+    },
+    "upload": {
+      "button": "Upload File",
+      "title": "Upload File",
+      "dragText": "Click or drag file here to upload",
+      "dragSubText": "Max file size: 100MB",
+      "confirm": "Upload",
+      "success": "File uploaded",
+      "error": "Upload failed, please retry"
+    },
+    "reupload": {
+      "title": "Re-upload",
+      "currentFile": "Current File",
+      "confirm": "Confirm Upload",
+      "success": "File re-uploaded",
+      "error": "Re-upload failed, please retry",
+      "fileNameMismatchWarning": "Uploaded file name differs from original. Continue?"
+    },
+    "deleteModal": {
+      "title": "Delete File",
+      "confirmMessage": "Delete file \"{{name}}\"?",
+      "cannotDeleteTitle": "Cannot Delete",
+      "publishedError": "Published files cannot be deleted",
+      "success": "File deleted"
+    },
+    "actions": {
+      "reupload": "Re-upload",
+      "download": "Download",
+      "downloading": "Downloading...",
+      "downloadSuccess": "Download successful"
+    },
+    "detail": {
+      "basicInfo": "Basic Info",
+      "fileContent": "File Content",
+      "systemInfo": "System Info",
+      "updater": "Updater",
+      "originalName": "Original Name",
+      "mimeType": "Type",
+      "publishStatus": "Publish Status",
+      "published": "Published",
+      "unpublished": "Unpublished",
+      "cannotReuploadPublished": "Published files cannot be re-uploaded",
+      "cannotDeletePublished": "Published files cannot be deleted"
+    },
+    "empty": {
+      "filterDescription": "No matching files found, try adjusting filters",
+      "defaultDescription": "No files yet, click \"Upload File\" to start"
+    }
+  },
+  "development": {
+    "processDevelopment": {
+      "breadcrumb": {
+        "developmentCenter": "Development Center",
+        "automationProcess": "Automation Process"
+      },
+      "title": "Automation Process",
+      "description": "Create and manage automation processes",
+      "noData": "No Processes",
+      "searchPlaceholder": "Search process name",
+      "importProcess": "Import Process",
+      "createProcess": "New Process",
+      "fields": {
+        "processId": "Process ID",
+        "processName": "Process Name"
+      },
+      "status": {
+        "developing": "In Development",
+        "published": "Published",
+        "archived": "Archived"
+      },
+      "actions": {
+        "openProcess": "Open Process"
+      },
+      "empty": {
+        "title": "No Data",
+        "filterDescription": "No matching processes found, try adjusting filters",
+        "defaultDescription": "No processes yet, click \"New Process\" to start"
+      },
+      "detail": {
+        "tabs": {
+          "detail": "Basic Info",
+          "versions": "Versions",
+          "runs": "Run History",
+          "changes": "Change History"
+        },
+        "versionList": {
+          "title": "Versions",
+          "titleTooltip": "After switching versions, existing tasks will use the previous version, new tasks will use the new version",
+          "uploadVersion": "Upload Version",
+          "deleteVersion": "Delete Version",
+          "published": "Published",
+          "unpublished": "Unpublished",
+          "cannotDeletePublished": "Published versions cannot be deleted",
+          "deleteConfirmTitle": "Delete Version",
+          "deleteConfirmContent": "Delete version {{version}}? This cannot be undone.",
+          "deleteSuccess": "Version {{version}} deleted",
+          "activeVersion": "Active Version"
+        },
+        "uploadVersion": {
+          "title": "Upload Version",
+          "upload": "Upload",
+          "dragText": "Click or drag file here to upload",
+          "dragSubText": "Only .bot format supported",
+          "nameMismatchWarning": "Uploaded file name differs from process name",
+          "gotIt": "Got it",
+          "success": "Version uploaded!",
+          "error": "Upload failed, please retry",
+          "validation": {
+            "fileRequired": "Please select a file"
+          }
+        },
+        "versionDetail": {
+          "basicInfo": "Basic Info",
+          "processVersion": "Process Version",
+          "versionFileName": "Version File Name",
+          "uploader": "Uploader",
+          "uploadTime": "Upload Time",
+          "versionNote": "Version Note",
+          "usageInstructions": "Usage Instructions",
+          "viewInstructions": "View Instructions",
+          "clientVersion": "Client Version",
+          "developmentEnvironment": "Development Environment",
+          "processInput": "Process Input",
+          "processOutput": "Process Output",
+          "noDescription": "-"
+        },
+        "variable": {
+          "type": "Type",
+          "name": "Name",
+          "value": "Value",
+          "editSuccess": "Description updated",
+          "editPlaceholder": "Enter description",
+          "editTip": "Click to edit, or double-click text",
+          "editDescTip": "Edit Description"
+        },
+        "versionTable": {
+          "version": "Version",
+          "versionNote": "Change Note"
+        },
+        "versionStatus": {
+          "developing": "In Development",
+          "testing": "Testing",
+          "reviewing": "Under Review",
+          "published": "Published",
+          "running": "Running",
+          "retiring": "Retiring",
+          "archived": "Archived"
+        },
+        "versionFilter": {
+          "statusPlaceholder": "Version Status"
+        },
+        "runTable": {
+          "taskId": "Task ID",
+          "robot": "Worker",
+          "taskStatus": "Task Status"
+        },
+        "changeTable": {
+          "changeTime": "Change Time",
+          "changeType": "Change Type",
+          "changer": "Changed By",
+          "changeContent": "Change Content"
+        },
+        "runStatus": {
+          "success": "Success",
+          "failed": "Failed",
+          "running": "Running"
+        },
+        "empty": {
+          "noVersions": "No version records",
+          "noRuns": "No run records",
+          "noChanges": "No change history"
+        },
+        "filter": {
+          "statusPlaceholder": "Status",
+          "changerPlaceholder": "Changed By"
+        }
+      },
+      "createModal": {
+        "title": "New Process",
+        "fields": {
+          "namePlaceholder": "Enter process name",
+          "descriptionPlaceholder": "Enter process description"
+        },
+        "validation": {
+          "nameRequired": "Please enter process name",
+          "nameLengthError": "Name cannot exceed 100 characters",
+          "nameFormatError": "No special characters (except underscore) or spaces, cannot start with number",
+          "nameExists": "Process name already exists",
+          "descriptionRequired": "Please enter description",
+          "descriptionLengthError": "Description must be 1-500 characters"
+        },
+        "success": "Process created!",
+        "error": "Creation failed, please retry"
+      },
+      "editModal": {
+        "title": "Edit Process",
+        "success": "Process updated!",
+        "error": "Update failed, please retry"
+      },
+      "openProcess": {
+        "title": "Open Process",
+        "dontRemindAgain": "Don't remind me again",
+        "confirmMessage": "Opening process \"{{name}}\" in the client. Continue?",
+        "clientError": "Cannot launch client, please verify installation"
+      },
+      "deleteModal": {
+        "title": "Delete Process",
+        "confirmDelete": "Confirm Delete",
+        "confirmMessage": "Delete process \"{{name}}\"?",
+        "deleteWarning": "This cannot be undone.",
+        "success": "Process deleted!",
+        "error": "Deletion failed, please retry"
+      }
+    },
+    "workerManagement": {
+      "breadcrumb": {
+        "developmentCenter": "Development Center",
+        "workerManagement": "Worker Management"
+      },
+      "title": "Worker Management",
+      "description": "Manage unattended process workers",
+      "searchPlaceholder": "Search worker name, IP...",
+      "createWorker": "New Worker",
+      "fields": {
+        "workerName": "Worker Name",
+        "ipAddress": "IP Address",
+        "priority": "Priority",
+        "clientVersion": "Client Version",
+        "lastHeartbeat": "Last Connected",
+        "receiveTasks": "Receive Tasks",
+        "workerGroup": "Group"
+      },
+      "filter": {
+        "workerStatus": "Worker Status",
+        "syncStatus": "Sync Status",
+        "priority": "Priority",
+        "workerGroup": "Group",
+        "ungrouped": "Ungrouped"
+      },
+      "status": {
+        "offline": "Offline",
+        "idle": "Idle",
+        "busy": "Busy",
+        "fault": "Fault",
+        "maintenance": "Maintenance"
+      },
+      "syncStatus": {
+        "synced": "Synced",
+        "pending": "Pending"
+      },
+      "priority": {
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+      },
+      "actions": {
+        "viewDetail": "View Details",
+        "viewKey": "View Key"
+      },
+      "empty": {
+        "title": "No Data",
+        "filterDescription": "No matching workers found, try adjusting filters",
+        "defaultDescription": "No workers yet, click \"New Worker\" to start"
+      },
+      "keyModal": {
+        "title": "Worker Key - {{name}}",
+        "workerName": "Worker Name",
+        "deviceToken": "Device Token",
+        "copySuccess": "Key copied to clipboard",
+        "copyError": "Copy failed, please copy manually",
+        "description": "Keep this key safe. It is used for worker client authentication."
+      },
+      "deleteModal": {
+        "title": "Delete Confirmation",
+        "confirmMessage": "Delete worker \"{{name}}\"?",
+        "deleteWarning": "This cannot be undone. The worker will no longer participate in task scheduling.",
+        "hasPendingTasks": "Worker has pending tasks. Please wait or cancel tasks first.",
+        "cannotDelete": "Cannot delete worker",
+        "confirmDelete": "Confirm Delete",
+        "success": "Worker deleted!",
+        "error": "Deletion failed, please retry"
+      },
+      "detail": {
+        "title": "Worker Details",
+        "tabs": {
+          "info": "Worker Info",
+          "history": "Change History"
+        },
+        "basicInfo": "Basic Info",
+        "detailInfo": "Detail Info",
+        "hostInfo": "Host Info",
+        "fields": {
+          "group": "Group",
+          "desktopType": "Desktop Type",
+          "account": "Account",
+          "passwordSyncStatus": "Sync Status",
+          "forceLogin": "Force Login",
+          "resolution": "Resolution",
+          "machineCode": "Machine Code",
+          "hostName": "Host Name",
+          "hostIp": "Host IP",
+          "os": "OS",
+          "arch": "Architecture",
+          "cpuModel": "CPU Model",
+          "cpuCores": "CPU Cores",
+          "memoryCapacity": "Memory",
+          "robotCount": "Worker Count"
+        },
+        "desktopTypes": {
+          "console": "Local Desktop",
+          "notConsole": "Remote Desktop"
+        },
+        "syncStatusText": {
+          "synced": "✓ Synced",
+          "pending": "⚠️ Pending"
+        },
+        "changeHistory": {
+          "time": "Time",
+          "type": "Type",
+          "operator": "Operator",
+          "detail": "Details"
+        }
+      },
+      "create": {
+        "title": "New Worker",
+        "description": "Configure worker basic info and runtime parameters",
+        "basicInfo": "Basic Info",
+        "runtimeConfig": "Runtime Config",
+        "connectionParams": "Connection Parameters",
+        "fields": {
+          "workerNamePlaceholder": "Enter worker name",
+          "descriptionPlaceholder": "Enter description (optional)",
+          "useSameDevice": "Run on same device as existing worker",
+          "selectWorker": "Select worker",
+          "desktopType": "Desktop Type",
+          "localDesktop": "Local Desktop",
+          "remoteDesktop": "Remote Desktop",
+          "account": "Account",
+          "accountPlaceholder": "Enter account, e.g. DOMAIN\\robot01",
+          "password": "Password",
+          "passwordPlaceholder": "Enter password (optional)",
+          "unlockScreen": "Unlock screen on creation",
+          "resolutionPlaceholder": "e.g. 1920x1080",
+          "forceLogin": "Force login if account already logged in"
+        },
+        "validation": {
+          "nameRequired": "Worker name is required",
+          "nameLengthError": "Name must be 2-50 characters",
+          "nameExists": "Worker name already exists",
+          "accountRequired": "Account is required",
+          "accountLengthError": "Account must be 2-100 characters",
+          "descriptionLengthError": "Description cannot exceed 2000 characters",
+          "requiredEmpty": "Required fields cannot be empty",
+          "localDesktopLimitTip": "Only one local desktop session per device"
+        },
+        "success": "Created successfully",
+        "cancelConfirm": {
+          "title": "Confirm Cancel",
+          "content": "Cancel creating worker? Unsaved data will be lost."
+        }
+      },
+      "edit": {
+        "title": "Edit Worker",
+        "description": "Edit worker configuration",
+        "fields": {
+          "receiveTasks": "Receive Tasks",
+          "passwordPlaceholder": "Leave empty to keep current",
+          "unlockScreen": "Unlock Screen"
+        },
+        "success": "Saved successfully"
+      }
+    }
+  },
+  "scheduling": {
+    "processDevelopment": {
+      "breadcrumb": {
+        "schedulingCenter": "Scheduling Center"
+      },
+      "description": "View and run published automation processes"
+    }
+  },
+  "worker": {
+    "breadcrumb": {
+      "schedulingCenter": "Scheduling Center",
+      "executionResourceMonitoring": "Execution Resource Monitoring",
+      "workerManagement": "Worker Management"
+    },
+    "title": "Worker Management",
+    "description": "Manage unattended process workers",
+    "searchPlaceholder": "Search worker name, IP...",
+    "noData": "No Workers",
+    "createWorker": "New Worker",
+    "table": {
+      "workerName": "Worker Name",
+      "status": "Status",
+      "workerGroup": "Group",
+      "ipAddress": "IP Address",
+      "priority": "Priority",
+      "clientVersion": "Client Version",
+      "lastHeartbeat": "Last Connected",
+      "receiveTasks": "Receive Tasks",
+      "actions": "Actions"
+    },
+    "filter": {
+      "workerStatus": "Worker Status",
+      "syncStatus": "Sync Status",
+      "priority": "Priority",
+      "workerGroup": "Group",
+      "ungrouped": "Ungrouped"
+    },
+    "status": {
+      "offline": "Offline",
+      "idle": "Idle",
+      "busy": "Busy",
+      "fault": "Fault",
+      "maintenance": "Maintenance"
+    },
+    "syncStatus": {
+      "synced": "Synced",
+      "pending": "Pending"
+    },
+    "priority": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
+    "actions": {
+      "viewDetail": "View Details",
+      "viewKey": "View Key",
+      "edit": "Edit",
+      "delete": "Delete",
+      "addToGroup": "Add to Group",
+      "removeFromGroup": "Remove from Group"
+    },
+    "addToGroup": {
+      "title": "Add to Group",
+      "workerLabel": "Worker",
+      "groupLabel": "Select Group",
+      "groupPlaceholder": "Select worker group",
+      "selectRequired": "Please select a group",
+      "success": "Added to group",
+      "error": "Failed, please retry"
+    },
+    "removeFromGroup": {
+      "title": "Remove from Group",
+      "confirmMessage": "Remove worker \"{{name}}\" from \"{{group}}\"?",
+      "confirm": "Confirm Remove",
+      "success": "Removed from group",
+      "error": "Failed, please retry"
+    },
+    "receiveTasks": {
+      "enabled": "Receiving tasks enabled",
+      "disabled": "Receiving tasks disabled"
+    },
+    "deleteModal": {
+      "title": "Delete Confirmation",
+      "confirmMessage": "Delete worker \"{{name}}\"?",
+      "deleteWarning": "This cannot be undone.",
+      "hasPendingTasks": "Worker has pending tasks.",
+      "cannotDelete": "Cannot delete worker",
+      "confirmDelete": "Confirm Delete",
+      "success": "Worker deleted!",
+      "error": "Deletion failed, please retry"
+    },
+    "keyModal": {
+      "title": "Worker Key - {{name}}",
+      "workerName": "Worker Name",
+      "deviceToken": "Device Token",
+      "copySuccess": "Key copied",
+      "copyError": "Copy failed",
+      "description": "Keep this key safe for authentication."
+    },
+    "detail": {
+      "title": "Worker Details",
+      "tabs": {
+        "info": "Worker Info",
+        "history": "Change History"
+      },
+      "basicInfo": "Basic Info",
+      "detailInfo": "Detail Info",
+      "hostInfo": "Host Info",
+      "fields": {
+        "workerName": "Worker Name",
+        "status": "Status",
+        "description": "Description",
+        "group": "Group",
+        "desktopType": "Desktop Type",
+        "account": "Account",
+        "passwordSyncStatus": "Sync Status",
+        "forceLogin": "Force Login",
+        "resolution": "Resolution",
+        "priority": "Priority",
+        "receiveTasks": "Receive Tasks",
+        "machineCode": "Machine Code",
+        "hostName": "Host Name",
+        "hostIp": "Host IP",
+        "os": "OS",
+        "arch": "Architecture",
+        "cpuModel": "CPU Model",
+        "cpuCores": "CPU Cores",
+        "memoryCapacity": "Memory",
+        "robotCount": "Worker Count",
+        "clientVersion": "Client Version",
+        "lastHeartbeat": "Last Connected",
+        "createdAt": "Created At",
+        "creator": "Creator"
+      },
+      "desktopTypes": {
+        "console": "Local Desktop",
+        "notConsole": "Remote Desktop"
+      },
+      "syncStatusText": {
+        "synced": "✓ Synced",
+        "pending": "⚠️ Pending"
+      },
+      "changeHistory": {
+        "time": "Time",
+        "type": "Type",
+        "operator": "Operator",
+        "detail": "Details"
+      }
+    },
+    "create": {
+      "title": "New Worker",
+      "description": "Configure worker basic info and runtime parameters",
+      "basicInfo": "Basic Info",
+      "runtimeConfig": "Runtime Config",
+      "connectionParams": "Connection Config",
+      "fields": {
+        "workerNamePlaceholder": "Enter worker name",
+        "descriptionPlaceholder": "Enter description (optional)",
+        "useSameDevice": "Run on same device as existing worker",
+        "selectWorker": "Select worker",
+        "desktopType": "Desktop Type",
+        "localDesktop": "Local Desktop",
+        "remoteDesktop": "Remote Desktop",
+        "account": "Account",
+        "accountPlaceholder": "Enter account, e.g. DOMAIN\\robot01",
+        "password": "Password",
+        "passwordPlaceholder": "Enter password (optional)",
+        "unlockScreen": "Unlock screen on creation",
+        "resolutionPlaceholder": "e.g. 1920x1080",
+        "forceLogin": "Force login if already logged in"
+      },
+      "validation": {
+        "nameRequired": "Worker name is required",
+        "nameLengthError": "Name must be 2-50 characters",
+        "nameExists": "Name already exists",
+        "accountRequired": "Account is required",
+        "accountLengthError": "Account must be 2-100 characters",
+        "descriptionLengthError": "Description cannot exceed 2000 characters",
+        "requiredEmpty": "Required fields cannot be empty",
+        "localDesktopLimitTip": "Only one local desktop session per device"
+      },
+      "success": "Created successfully",
+      "cancelConfirm": {
+        "title": "Confirm Cancel",
+        "content": "Cancel creating? Unsaved data will be lost."
+      }
+    },
+    "edit": {
+      "title": "Edit Worker",
+      "description": "Edit worker configuration",
+      "fields": {
+        "receiveTasks": "Receive Tasks",
+        "passwordPlaceholder": "Leave empty to keep current",
+        "unlockScreen": "Unlock Screen"
+      },
+      "success": "Saved successfully"
+    }
+  },
+  "personalCenter": {
+    "tabs": {
+      "settings": "Settings",
+      "personalCredentials": "Personal Credentials"
+    },
+    "settings": {
+      "comingSoon": "Coming Soon"
+    }
+  },
+  "personalCredential": {
+    "title": "Personal Credential Management",
+    "description": "Manage personal credentials for authentication",
+    "searchPlaceholder": "Search personal credential name",
+    "noData": "No Personal Credentials",
+    "createCredential": "New Credential",
+    "table": {
+      "name": "Personal Credential Name",
+      "username": "Username",
+      "linkedCredentials": "Linked Credentials"
+    },
+    "fields": {
+      "name": "Personal Credential Name",
+      "namePlaceholder": "Enter name",
+      "username": "Username",
+      "usernamePlaceholder": "Enter username",
+      "password": "Password",
+      "passwordPlaceholder": "Enter password",
+      "passwordEditPlaceholder": "Leave empty to keep current",
+      "passwordEditHint": "Leave empty if no change needed",
+      "descriptionPlaceholder": "Enter description (optional)",
+      "linkedCredential": "Linked Credential",
+      "linkedCredentialPlaceholder": "Select linked credential (optional)"
+    },
+    "validation": {
+      "nameRequired": "Please enter name",
+      "nameLengthError": "Name must be 1-30 characters",
+      "nameExists": "Name already exists",
+      "usernameRequired": "Please enter username",
+      "usernameLengthError": "Username cannot exceed 100 characters",
+      "passwordRequired": "Please enter password",
+      "passwordLengthError": "Password cannot exceed 100 characters"
+    },
+    "list": {
+      "loadError": "Failed to load personal credentials"
+    },
+    "createModal": {
+      "title": "New Personal Credential",
+      "success": "Personal credential created",
+      "error": "Creation failed, please retry"
+    },
+    "editModal": {
+      "title": "Edit Personal Credential",
+      "success": "Personal credential updated",
+      "error": "Update failed, please retry"
+    },
+    "deleteModal": {
+      "title": "Delete Personal Credential",
+      "confirmMessage": "Delete this personal credential? Linked credentials will be automatically unlinked.",
+      "success": "Personal credential deleted"
+    },
+    "actions": {
+      "viewUsage": "View Usage",
+      "linkCredential": "Link Credential",
+      "viewLinkedCredentials": "View Linked Credentials",
+      "unlinkCredential": "Unlink"
+    },
+    "detail": {
+      "tabs": {
+        "linkedCredentials": "Linked Credentials",
+        "usageRecords": "Usage Records"
+      }
+    },
+    "linkedCredentials": {
+      "title": "Linked Credentials",
+      "description": "View and manage linked credentials",
+      "empty": "No linked credentials",
+      "credentialName": "Credential Name",
+      "countUnit": "credentials",
+      "table": {
+        "name": "Credential Name"
+      },
+      "unlink": "Unlink",
+      "linkCredential": "Link Credential",
+      "unlinkModal": {
+        "title": "Unlink",
+        "content": "Unlink credential \"{{name}}\"?",
+        "success": "Unlinked successfully"
+      }
+    },
+    "usage": {
+      "title": "Usage Records",
+      "empty": "No usage records",
+      "usageTime": "Usage Time",
+      "usageType": "Type",
+      "processName": "Process Name",
+      "processVersion": "Process Version",
+      "typeDebug": "Debug",
+      "typeTask": "Task",
+      "table": {
+        "usageTime": "Usage Time",
+        "type": "Type",
+        "description": "Description",
+        "process": "Process Name",
+        "processVersion": "Process Version",
+        "worker": "Worker",
+        "taskId": "Task ID"
+      },
+      "type": {
+        "debug": "Debug",
+        "task": "Task"
+      }
+    },
+    "linkCredential": {
+      "title": "Link Credential",
+      "description": "Select a credential to link",
+      "selectLabel": "Select Credential",
+      "selectPlaceholder": "Select credential to link",
+      "success": "Linked successfully",
+      "error": "Link failed, please retry"
+    }
+  },
+  "workerGroup": {
+    "tabs": {
+      "workerManagement": "Worker Management",
+      "workerGroupManagement": "Worker Group Management"
+    },
+    "title": "Worker Group Management",
+    "description": "Create and manage worker groups",
+    "searchPlaceholder": "Search group name...",
+    "noData": "No Worker Groups",
+    "createGroup": "Create Worker Group",
+    "table": {
+      "groupName": "Group Name",
+      "memberCount": "Members",
+      "memberUnit": ""
+    },
+    "fields": {
+      "name": "Group Name",
+      "namePlaceholder": "Enter group name",
+      "descriptionPlaceholder": "Enter description (optional)"
+    },
+    "validation": {
+      "nameRequired": "Group name is required",
+      "nameLengthError": "Name must be 1-30 characters",
+      "nameExists": "Name already exists",
+      "descriptionLengthError": "Description cannot exceed 2000 characters"
+    },
+    "actions": {
+      "viewDetail": "View Details",
+      "edit": "Edit",
+      "delete": "Delete",
+      "removeFromGroup": "Remove from Group"
+    },
+    "createModal": {
+      "title": "Create Worker Group",
+      "success": "Worker group created",
+      "error": "Creation failed, please retry",
+      "addMembersPrompt": {
+        "title": "Add Members",
+        "content": "Group created. Add workers to this group now?",
+        "addNow": "Add Now",
+        "later": "Later"
+      }
+    },
+    "editModal": {
+      "title": "Edit Worker Group",
+      "success": "Worker group updated",
+      "error": "Update failed, please retry"
+    },
+    "deleteModal": {
+      "title": "Delete Confirmation",
+      "confirmMessage": "Delete worker group \"{{name}}\"?",
+      "deleteWarning": "Workers in this group will become ungrouped.",
+      "confirmDelete": "Confirm Delete",
+      "success": "Worker group deleted",
+      "error": "Deletion failed, please retry"
+    },
+    "detail": {
+      "basicInfo": "Basic Info",
+      "memberList": "Members",
+      "addMember": "Add Worker",
+      "searchMemberPlaceholder": "Search worker name or IP...",
+      "noMembers": "No members",
+      "fields": {
+        "groupName": "Group Name"
+      }
+    },
+    "removeMember": {
+      "title": "Remove Confirmation",
+      "confirmMessage": "Remove worker \"{{name}}\" from this group?",
+      "confirm": "Confirm Remove",
+      "success": "Removed from group",
+      "error": "Failed, please retry"
+    },
+    "addMembers": {
+      "title": "Add Workers to Group",
+      "availableWorkers": "Available Workers",
+      "selectedWorkers": "Selected Workers",
+      "searchPlaceholder": "Search by name or IP",
+      "statusFilter": "Filter by status",
+      "add": "Add",
+      "addCount": "Add ({{count}})",
+      "noSelection": "No workers selected",
+      "noAvailableWorkers": "No available workers",
+      "selectRequired": "Select at least one worker",
+      "success": "{{count}} workers added to group",
+      "error": "Failed, please retry"
+    }
+  },
+  "queue": {
+    "title": "Queue Management",
+    "description": "Manage message queues for async processing",
+    "breadcrumb": {
+      "businessAssets": "Business Asset Config"
+    },
+    "createQueue": "New Queue",
+    "searchPlaceholder": "Search queue name",
+    "noData": "No Queues",
+    "table": {
+      "name": "Queue Name",
+      "unconsumedCount": "Unconsumed",
+      "consumedCount": "Consumed",
+      "failedCount": "Failed"
+    },
+    "fields": {
+      "name": "Queue Name",
+      "namePlaceholder": "Enter queue name (1-30 chars)",
+      "nameReadonly": "Cannot be changed after creation",
+      "descriptionPlaceholder": "Enter description (optional)"
+    },
+    "validation": {
+      "nameRequired": "Please enter queue name",
+      "nameLengthError": "Name must be 1-30 characters",
+      "nameExists": "Name already exists"
+    },
+    "list": {
+      "loadError": "Failed to load queues"
+    },
+    "createModal": {
+      "title": "New Queue",
+      "success": "Queue created",
+      "error": "Creation failed, please retry"
+    },
+    "editModal": {
+      "title": "Edit Queue",
+      "success": "Queue updated",
+      "error": "Update failed, please retry"
+    },
+    "deleteModal": {
+      "title": "Delete Queue",
+      "confirmMessage": "Delete queue \"{{name}}\"? All messages will also be deleted.",
+      "publishedError": "Published queues cannot be deleted",
+      "success": "Queue deleted"
+    },
+    "detail": {
+      "tabs": {
+        "basicInfo": "Basic Info"
+      },
+      "isPublished": "Publish Status",
+      "published": "Published",
+      "unpublished": "Unpublished",
+      "cannotDeletePublished": "Published queues cannot be deleted",
+      "messageStats": "Message Stats",
+      "systemInfo": "System Info"
+    },
+    "empty": {
+      "filterDescription": "No matching queues found, try adjusting filters",
+      "defaultDescription": "No queues yet, click \"New Queue\" to start"
+    },
+    "actions": {
+      "viewMessages": "View Messages"
+    }
+  },
+  "queueMessage": {
+    "title": "Messages",
+    "description": "View and manage queue messages",
+    "searchPlaceholder": "Search message content",
+    "table": {
+      "messageNumber": "Message ID",
+      "content": "Content",
+      "status": "Status",
+      "priority": "Priority",
+      "consumer": "Consumer",
+      "consumeTask": "Consume Task",
+      "enqueueTime": "Enqueue Time",
+      "effectiveTime": "Effective Time",
+      "expiryTime": "Expiry Time"
+    },
+    "status": {
+      "unconsumedInactive": "Unconsumed - Inactive",
+      "unconsumedActive": "Unconsumed - Active",
+      "consumed": "Consumed",
+      "expired": "Expired"
+    },
+    "priority": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
+    "consumerType": {
+      "human": "Manual",
+      "robot": "Robot"
+    },
+    "filter": {
+      "status": "Status",
+      "enqueueTime": "Enqueue Time",
+      "effectiveTime": "Effective Time",
+      "datePresets": {
+        "today": "Today",
+        "last7Days": "Last 7 Days",
+        "last30Days": "Last 30 Days"
+      }
+    },
+    "fields": {
+      "content": "Content",
+      "contentPlaceholder": "Enter content (max 4000 chars)",
+      "priority": "Priority",
+      "enqueueTime": "Enqueue Time",
+      "effectiveTime": "Effective Time",
+      "expiryTime": "Expiry Time",
+      "expiryTimePlaceholder": "Optional, no expiry if empty"
+    },
+    "actions": {
+      "consume": "Consume",
+      "requeue": "Requeue"
+    },
+    "list": {
+      "loadError": "Failed to load messages"
+    },
+    "consumeModal": {
+      "title": "Consume Message",
+      "confirmMessage": "Consume this message? It will be marked as consumed."
+    },
+    "requeueModal": {
+      "title": "Requeue",
+      "description": "Message will be requeued as unconsumed-active.",
+      "success": "Message requeued",
+      "error": "Failed, please retry",
+      "validation": {
+        "contentRequired": "Please enter content",
+        "contentTooLong": "Content cannot exceed 4000 characters",
+        "effectiveTimeRequired": "Please select effective time",
+        "expiryTimeInvalid": "Expiry time must be after effective time"
+      }
+    },
+    "deleteModal": {
+      "title": "Delete Message",
+      "confirmMessage": "Delete this message permanently?",
+      "success": "Message deleted"
+    },
+    "detail": {
+      "messageContent": "Content",
+      "basicInfo": "Basic Info",
+      "consumerInfo": "Consumer Info",
+      "consumerType": "Consumer Type",
+      "consumeTime": "Consume Time",
+      "systemInfo": "System Info"
+    },
+    "batch": {
+      "selected": "{{count}} messages selected",
+      "clearSelection": "Clear Selection",
+      "requeue": "Batch Requeue",
+      "delete": "Batch Delete",
+      "selectRequired": "Select at least one message",
+      "deleteTitle": "Batch Delete",
+      "deleteConfirm": "Delete {{count}} selected messages?",
+      "deleteSuccess": "{{count}} messages deleted",
+      "requeueTitle": "Batch Requeue",
+      "requeueConfirm": "Requeue {{count}} selected messages?",
+      "requeueSuccess": "{{count}} messages requeued"
+    },
+    "empty": {
+      "filterDescription": "No matching messages found, try adjusting filters",
+      "defaultDescription": "No messages in this queue"
+    }
+  },
+  "emptyStatePreview": {
+    "noData": {
+      "title": "No Data",
+      "description": "List is empty, no records"
+    },
+    "noDataWithAction": {
+      "title": "No Data + Action",
+      "description": "Add a guide button when list is empty",
+      "action": "Create New"
+    },
+    "noResult": {
+      "title": "No Results",
+      "description": "No matching results found"
+    },
+    "error": {
+      "title": "Load Failed",
+      "description": "Data load failed, please check network and retry"
+    },
+    "noAccess": {
+      "title": "No Access",
+      "description": "You don't have permission to access this content"
+    },
+    "maintenance": {
+      "title": "Under Maintenance",
+      "description": "Feature is under maintenance, please try later"
+    },
+    "notFound": {
+      "title": "Not Found",
+      "description": "The requested page or resource does not exist"
+    }
+  },
+  "task": {
+    "title": "Task List",
+    "description": "View and manage task execution",
+    "breadcrumb": {
+      "schedulingCenter": "Scheduling Center",
+      "taskExecution": "Task Execution",
+      "taskList": "Task List"
+    },
+    "createTask": "New Task",
+    "searchPlaceholder": "Search task ID",
+    "refresh": "Refresh",
+    "noData": "No Tasks",
+    "table": {
+      "taskId": "Task ID",
+      "processName": "Process Name",
+      "executionTarget": "Execution Target",
+      "taskStatus": "Task Status",
+      "executionStatus": "Execution Status",
+      "priority": "Priority",
+      "triggerSource": "Trigger Source",
+      "createTime": "Created At",
+      "expireTime": "Expire Time",
+      "duration": "Duration",
+      "executionCount": "Executions"
+    },
+    "status": {
+      "pending": "Pending",
+      "assigned": "Assigned",
+      "waiting": "Waiting",
+      "completed": "Completed",
+      "failed": "Failed",
+      "cancelled": "Cancelled"
+    },
+    "executionStatus": {
+      "running": "Running",
+      "success": "Success",
+      "failed": "Failed",
+      "stopped": "Stopped",
+      "timeout": "Timeout"
+    },
+    "priority": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low",
+      "manualQueueBreaker": "Queue Jump"
+    },
+    "triggerSource": {
+      "manual": "Manual",
+      "scheduled": "Scheduled",
+      "queue": "Queue Trigger",
+      "template": "Template"
+    },
+    "filter": {
+      "taskStatus": "Task Status",
+      "executionStatus": "Execution Status",
+      "triggerSource": "Trigger Source",
+      "dateRange": "Date Range"
+    },
+    "actions": {
+      "cancel": "Cancel Task",
+      "stop": "Stop Task",
+      "retry": "Retry",
+      "viewLogs": "View Logs",
+      "viewRecording": "View Recording",
+      "viewExecutionHistory": "Execution History"
+    },
+    "createModal": {
+      "title": "New Task",
+      "selectTemplate": "Select Template",
+      "templatePlaceholder": "Select template (optional)",
+      "processSection": "Process Config",
+      "processLabel": "Process",
+      "processPlaceholder": "Search and select process",
+      "processHint": "Active version will be used automatically",
+      "versionInfo": "Active Version",
+      "targetSection": "Execution Target",
+      "targetTypeLabel": "Target Type",
+      "targetTypePlaceholder": "Select target type",
+      "targetLabel": "Target",
+      "targetPlaceholder": "Select target",
+      "selectTarget": "Select Target",
+      "targetType": {
+        "botGroup": "Worker Group",
+        "botInGroup": "Worker in Group",
+        "ungroupedBot": "Ungrouped Worker"
+      },
+      "executionSection": "Execution Settings",
+      "settingsSection": "Task Settings",
+      "priorityLabel": "Priority",
+      "maxDurationLabel": "Max Duration",
+      "maxDurationHint": "Seconds, range 60-86400",
+      "validityDaysLabel": "Validity Period",
+      "validityDaysHint": "Days, range 1-30",
+      "enableRecordingLabel": "Enable Recording",
+      "parametersSection": "Process Input",
+      "outputParametersSection": "Process Output",
+      "noParameters": "No input parameters needed",
+      "selectProcessFirst": "Please select a process first",
+      "success": "Task created!",
+      "error": "Creation failed, please retry"
+    },
+    "validation": {
+      "processRequired": "Please select a process",
+      "targetTypeRequired": "Please select target type",
+      "targetRequired": "Please select target",
+      "maxDurationRange": "Duration must be 60-86400 seconds",
+      "validityDaysRange": "Validity must be 1-30 days",
+      "parameterRequired": "Please fill in required parameter {{name}}",
+      "numberInvalid": "Please enter a valid number"
+    },
+    "cancelModal": {
+      "title": "Cancel Task",
+      "confirmMessage": "Cancel task \"{{taskId}}\"?",
+      "warning": "Task will be removed from queue.",
+      "success": "Task cancelled",
+      "error": "Cancel failed: {{message}}"
+    },
+    "stopModal": {
+      "title": "Stop Task",
+      "confirmMessage": "Stop task \"{{taskId}}\"?",
+      "warning": "Stop signal will be sent to worker.",
+      "success": "Stop signal sent",
+      "error": "Stop failed: {{message}}"
+    },
+    "retryModal": {
+      "title": "Retry",
+      "confirmMessage": "Retry task \"{{taskId}}\"?",
+      "hint": "A new execution record will be created.",
+      "success": "Task retried",
+      "error": "Retry failed: {{message}}"
+    },
+    "detail": {
+      "tabs": {
+        "basicInfo": "Basic Info",
+        "executionHistory": "Execution History",
+        "executionLogs": "Execution Logs"
+      },
+      "basicInfo": "Basic Info",
+      "taskId": "Task ID",
+      "processName": "Process Name",
+      "processVersion": "Process Version",
+      "executionTarget": "Execution Target",
+      "triggerSource": "Trigger Source",
+      "executionInfo": "Execution Info",
+      "taskStatus": "Task Status",
+      "executionStatus": "Execution Status",
+      "priority": "Priority",
+      "createTime": "Created At",
+      "expireTime": "Expire Time",
+      "maxDuration": "Max Duration",
+      "enableRecording": "Recording",
+      "enabled": "Enabled",
+      "disabled": "Disabled",
+      "inputParameters": "Input Parameters",
+      "outputResult": "Output Result",
+      "noParameters": "No input parameters",
+      "noOutput": "No output",
+      "executionStats": "Execution Stats",
+      "totalExecutions": "Total Executions",
+      "currentDuration": "Current Duration",
+      "executionHistory": "Execution History",
+      "executionId": "Execution ID",
+      "botName": "Worker",
+      "startTime": "Start Time",
+      "endTime": "End Time",
+      "duration": "Duration",
+      "errorMessage": "Error Message",
+      "viewLogs": "View Logs",
+      "viewRecording": "View Recording",
+      "viewScreenshots": "View Screenshots",
+      "noExecutions": "No execution records",
+      "seconds": "seconds",
+      "times": "times",
+      "creator": "Creator"
+    },
+    "empty": {
+      "filterDescription": "No matching tasks found, try adjusting filters",
+      "defaultDescription": "No tasks yet, click \"New Task\" to start"
+    }
+  },
+  "taskLog": {
+    "title": "Execution Logs",
+    "description": "View detailed execution logs",
+    "searchPlaceholder": "Search log message",
+    "refresh": "Refresh",
+    "export": "Export Logs",
+    "autoRefresh": "Auto refreshing",
+    "viewFull": "View Full",
+    "fullMessage": "Full Log",
+    "noLogs": "No logs available",
+    "noLogsMatch": "No logs matching \"{{keyword}}\"",
+    "noLogsToExport": "No logs to export",
+    "loadError": "Failed to load logs",
+    "exportSuccess": "Logs exported",
+    "exportError": "Export failed, please retry",
+    "fields": {
+      "logTime": "Time",
+      "logLevel": "Level",
+      "logMessage": "Message",
+      "source": "Source"
+    },
+    "filter": {
+      "logLevel": "Log Level",
+      "dateRange": "Date Range",
+      "datePresets": {
+        "today": "Today",
+        "lastHour": "Last Hour",
+        "last24Hours": "Last 24 Hours"
+      }
+    },
+    "stats": {
+      "total": "Total"
+    }
+  },
+  "recording": {
+    "title": "Recording Playback",
+    "description": "View task execution recordings",
+    "executionId": "Execution ID",
+    "loading": "Loading recording...",
+    "loadError": "Failed to load recording",
+    "export": "Export Recording",
+    "exportSuccess": "Recording exported",
+    "exportError": "Export failed, please retry",
+    "player": {
+      "loading": "Loading video...",
+      "loadError": "Video load failed, link may be expired",
+      "noRecording": "No recording available",
+      "refresh": "Refresh",
+      "fileInfo": "Size: {{size}} MB | Duration: {{duration}}"
+    },
+    "logPanel": {
+      "title": "Execution Logs",
+      "searchPlaceholder": "Search log content",
+      "noLogs": "No logs",
+      "noMatch": "No matching logs",
+      "total": "{{count}} logs total"
+    }
+  },
+  "executionHistory": {
+    "title": "Execution History",
+    "breadcrumb": {
+      "executionHistory": "Execution History"
+    },
+    "taskInfo": "Task {{taskId}} - {{processName}}",
+    "searchPlaceholder": "Search execution ID or worker name",
+    "noData": "No execution records",
+    "noMatch": "No records matching \"{{keyword}}\"",
+    "executionInfo": "Execution Info",
+    "executionLogs": "Execution Logs",
+    "fields": {
+      "executionId": "Execution ID",
+      "status": "Status",
+      "botName": "Worker",
+      "startTime": "Start Time",
+      "endTime": "End Time",
+      "duration": "Duration",
+      "logCount": "Log Count",
+      "errorMessage": "Error Message"
+    },
+    "filter": {
+      "status": "Status",
+      "dateRange": "Date Range"
+    }
+  },
+  "screenshot": {
+    "title": "Screenshots",
+    "modalTitle": "Screenshots - {{taskName}}",
+    "defaultName": "Screenshot",
+    "totalCount": "{{count}} screenshots",
+    "noData": "No screenshots",
+    "loadFailed": "Load failed",
+    "select": "Select",
+    "sortBy": "Sort",
+    "deleteSuccess": "Deleted",
+    "deleteConfirm": {
+      "title": "Delete Screenshot",
+      "content": "Delete this screenshot? This cannot be undone."
+    },
+    "sort": {
+      "asc": "Ascending",
+      "desc": "Descending"
+    },
+    "table": {
+      "sequence": "#",
+      "thumbnail": "Thumbnail",
+      "name": "Name",
+      "capturedAt": "Captured At",
+      "fileSize": "File Size",
+      "operation": "Actions"
+    },
+    "batchOperation": {
+      "selected": "{{count}} selected",
+      "selectAll": "Select all ({{count}})",
+      "clearSelection": "Clear Selection",
+      "download": "Download",
+      "delete": "Delete",
+      "downloading": "Downloading {{count}} screenshots..."
+    },
+    "deleteModal": {
+      "title": "Delete Screenshots",
+      "confirmMessage": "Delete {{count}} selected screenshots? This cannot be undone.",
+      "success": "{{count}} screenshots deleted"
+    }
+  },
+  "template": {
+    "pageTitle": "Execution Templates",
+    "entryButton": "Execution Templates",
+    "searchPlaceholder": "Search template name or description",
+    "filterByProcess": "Filter by Process",
+    "noData": "No Templates",
+    "table": {
+      "name": "Template Name",
+      "description": "Description",
+      "processName": "Process",
+      "creator": "Creator",
+      "createTime": "Created At",
+      "actions": "Actions"
+    },
+    "actions": {
+      "create": "New Template",
+      "use": "Use Template",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "createModal": {
+      "title": "New Execution Template",
+      "basicSection": "Basic Info",
+      "basicInfo": "Basic Info",
+      "processSection": "Process Config",
+      "targetSection": "Execution Target",
+      "selectTarget": "Select Target",
+      "executionSection": "Execution Settings",
+      "settingsSection": "Task Settings",
+      "parametersSection": "Process Input",
+      "outputParametersSection": "Process Output",
+      "noParameters": "No input parameters needed",
+      "selectProcessFirst": "Please select a process first",
+      "versionInfo": "Active Version",
+      "success": "Template created!",
+      "error": "Creation failed, please retry"
+    },
+    "editModal": {
+      "title": "Edit Execution Template",
+      "success": "Template updated!",
+      "error": "Update failed, please retry"
+    },
+    "deleteModal": {
+      "title": "Delete Confirmation",
+      "confirmMessage": "Delete \"{{name}}\"?",
+      "deleteWarning": "This cannot be undone.",
+      "confirmDelete": "Confirm Delete",
+      "success": "Deleted!",
+      "error": "Deletion failed, please retry"
+    },
+    "fields": {
+      "name": "Template Name",
+      "namePlaceholder": "Enter template name (max 255 chars)",
+      "nameHint": "Template name must be unique",
+      "description": "Description",
+      "descriptionPlaceholder": "Enter description (max 1000 chars)",
+      "process": "Process",
+      "processPlaceholder": "Select process",
+      "targetType": "Target Type",
+      "targetTypePlaceholder": "Select target type",
+      "target": "Target",
+      "targetPlaceholder": "Select target",
+      "priority": "Priority",
+      "maxDuration": "Max Duration (seconds)",
+      "maxDurationHint": "Range: 60-86400 seconds",
+      "validityDays": "Validity (days)",
+      "validityDaysHint": "Range: 1-30 days",
+      "enableRecording": "Enable Recording"
+    },
+    "validation": {
+      "nameRequired": "Please enter template name",
+      "nameLengthError": "Name cannot exceed 255 characters",
+      "nameExists": "Name already exists",
+      "processRequired": "Please select process",
+      "targetTypeRequired": "Please select target type",
+      "targetRequired": "Please select target",
+      "maxDurationRange": "Duration must be 60-86400 seconds",
+      "validityDaysRange": "Validity must be 1-30 days",
+      "parameterRequired": "Please fill in required parameter {{name}}"
+    },
+    "targetType": {
+      "botGroup": "Worker Group",
+      "botInGroup": "Worker in Group",
+      "ungroupedBot": "Ungrouped Worker"
+    },
+    "detail": {
+      "drawerTitle": "Template Details",
+      "basicInfo": "Basic Info",
+      "executionConfig": "Execution Config",
+      "taskSettings": "Task Settings",
+      "inputParameters": "Input Parameters",
+      "noParameters": "No input parameters",
+      "noUsageHistory": "No usage history",
+      "tabs": {
+        "basicInfo": "Basic Info",
+        "usageHistory": "Usage History"
+      }
+    },
+    "usageHistory": {
+      "taskName": "Task Name",
+      "status": "Status",
+      "statusSuccess": "Success",
+      "statusFailed": "Failed"
+    }
+  },
+  "release": {
+    "breadcrumb": {
+      "developmentCenter": "Development Center"
+    },
+    "list": {
+      "title": "Release List",
+      "description": "Manage release records",
+      "newRelease": "New Release",
+      "noData": "No Releases",
+      "searchPlaceholder": "Search release ID or description",
+      "columns": {
+        "releaseId": "Release ID",
+        "releaseType": "Release Type",
+        "status": "Status",
+        "processes": "Processes",
+        "description": "Description",
+        "publisher": "Publisher",
+        "publishTime": "Publish Time"
+      }
+    },
+    "detail": {
+      "title": "Release Details",
+      "releaseId": "Release ID",
+      "releaseType": "Release Type",
+      "status": "Status",
+      "publisher": "Publisher",
+      "publishTime": "Publish Time",
+      "basicInfo": "Basic Info",
+      "publishedProcesses": "Published Processes",
+      "publishedProcessesAndResources": "Published Processes & Resources",
+      "processes": "Processes",
+      "errorDetails": "Error Details",
+      "rollbackFrom": "Rolled back from {{from}} to {{to}}",
+      "previouslyPublished": "Previously Published",
+      "originalFileName": "Original File Name"
+    },
+    "create": {
+      "title": "New Release",
+      "steps": {
+        "selectProcess": "Select Process",
+        "selectProcessDesc": "Select process versions to release",
+        "configRelease": "Configure Release",
+        "configReleaseDesc": "Configure release info and resources"
+      },
+      "nextStep": "Next",
+      "prevStep": "Previous",
+      "confirmPublish": "Confirm Release",
+      "selectedCount": "{{count}} processes selected",
+      "detectingDependencies": "Detecting dependencies...",
+      "searchProcessPlaceholder": "Search process name",
+      "noProcessData": "No processes available",
+      "processTable": {
+        "name": "Process Name",
+        "version": "Version",
+        "status": "Status",
+        "description": "Description",
+        "updateTime": "Updated At"
+      },
+      "processStatus": {
+        "published": "Published",
+        "unpublished": "Unpublished",
+        "hasNewVersion": "New version available"
+      },
+      "basicInfo": "Basic Info",
+      "releaseType": "Release Type",
+      "description": "Description",
+      "descriptionPlaceholder": "Describe the changes in this release...",
+      "descriptionHint": "Clear description for traceability",
+      "availableProcesses": "Available Processes",
+      "selectedProcesses": "Selected Processes",
+      "items": "items",
+      "noSelectedProcess": "No processes selected",
+      "dependencyResources": "Dependencies",
+      "dependencyHint": "Auto-detected dependencies. Some dynamic references may not be detected.",
+      "noDependencies": "No dependencies detected",
+      "resourceTypes": {
+        "parameter": "Parameter",
+        "credential": "Credential",
+        "queue": "Queue",
+        "file": "File"
+      },
+      "alreadyPublished": "Published",
+      "manuallyAdded": "Manually Added",
+      "usedBy": "From",
+      "testValue": "Test Value",
+      "productionValue": "Production Value",
+      "keepExistingValue": "Leave empty to keep existing",
+      "enterProductionValue": "Enter production value",
+      "useTestAsProduction": "Use test value as production",
+      "validation": {
+        "noProcessSelected": "Select at least one process",
+        "descriptionRequired": "Please enter description",
+        "missingProductionValues": "Please fill production values for unpublished resources"
+      },
+      "addResource": {
+        "button": "Add Resource",
+        "title": "Add Dependency",
+        "searchPlaceholder": "Search resource name",
+        "resourceName": "Resource Name",
+        "noResources": "No resources available",
+        "selectedCount": "{{count}} selected",
+        "fileName": "File Name",
+        "originalFileName": "Original File Name"
+      },
+      "success": "Release created!",
+      "error": "Release failed, please retry",
+      "exitConfirm": {
+        "title": "Confirm Exit",
+        "content": "You have unsaved changes. Exit?",
+        "confirm": "Exit",
+        "cancel": "Continue Editing"
+      }
+    },
+    "actions": {
+      "rollback": "Rollback"
+    },
+    "rollback": {
+      "title": "Confirm Rollback",
+      "warning": "Rolling back {{processName}} to {{version}}",
+      "currentVersion": "Current Version",
+      "targetVersion": "Target Version",
+      "active": "Active",
+      "inactive": "Inactive",
+      "willBecomeActive": "Will become: Active",
+      "willBecomeInactive": "Will become: Inactive",
+      "impacts": "Impacts",
+      "impactNewTasks": "New tasks will execute {{version}} instead of {{currentVersion}}",
+      "impactRunningTasks": "Running tasks will complete {{currentVersion}}",
+      "impactAuditTrail": "Rollback release record will be created",
+      "impactDependencies": "Resource dependencies will be updated",
+      "confirmRollback": "Confirm Rollback",
+      "success": "Rollback successful"
+    },
+    "releaseTypes": {
+      "FIRST_RELEASE": "First Release",
+      "REQUIREMENT_CHANGE": "Requirement Change",
+      "BUG_FIX": "Bug Fix",
+      "CONFIG_UPDATE": "Config Update",
+      "VERSION_ROLLBACK": "Version Rollback",
+      "OPTIMIZATION": "Optimization"
+    },
+    "publishStatus": {
+      "PUBLISHING": "Publishing",
+      "SUCCESS": "Success",
+      "FAILED": "Failed"
+    },
+    "resourceTypes": {
+      "parameter": "Parameter",
+      "credential": "Credential",
+      "queue": "Queue"
+    }
+  },
+  "autoExecutionPolicy": {
+    "pageTitle": "Auto Execution Policy",
+    "description": "Configure automatic task execution policies",
+    "breadcrumb": {
+      "schedulingCenter": "Scheduling Center",
+      "taskExecution": "Task Execution"
+    },
+    "tabs": {
+      "timeTrigger": "Time Trigger",
+      "queueTrigger": "Queue Trigger"
+    }
+  },
+  "timeTrigger": {
+    "pageTitle": "Time Trigger",
+    "description": "Automatically trigger task creation based on time rules",
+    "createTrigger": "New Trigger",
+    "searchPlaceholder": "Search trigger name or description",
+    "noData": "No Time Triggers",
+    "table": {
+      "name": "Trigger Name",
+      "processName": "Process",
+      "triggerRule": "Trigger Rule",
+      "status": "Status",
+      "nextTriggerTime": "Next Trigger"
+    },
+    "status": {
+      "enabled": "Enabled",
+      "disabled": "Disabled"
+    },
+    "filter": {
+      "process": "Process",
+      "status": "Status",
+      "allProcesses": "All Processes",
+      "allStatus": "All Status"
+    },
+    "frequency": {
+      "minutely": "Every N Minutes",
+      "hourly": "Every M Hours",
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "monthly": "Monthly"
+    },
+    "frequencyDisplay": {
+      "everyMinute": "Every {{value}} minutes",
+      "everyHour": "Every {{value}} hours",
+      "everyDayAt": "Daily at {{time}}",
+      "everyWeekAt": "Weekly {{day}} at {{time}}",
+      "everyMonthAt": "Monthly on {{day}} at {{time}}"
+    },
+    "weekdays": {
+      "monday": "Mon",
+      "tuesday": "Tue",
+      "wednesday": "Wed",
+      "thursday": "Thu",
+      "friday": "Fri",
+      "saturday": "Sat",
+      "sunday": "Sun"
+    },
+    "actions": {
+      "edit": "Edit",
+      "delete": "Delete",
+      "enable": "Enable",
+      "disable": "Disable"
+    },
+    "createModal": {
+      "title": "New Time Trigger",
+      "steps": {
+        "basicInfo": "Basic Info",
+        "taskConfig": "Task Config",
+        "triggerRule": "Trigger Rule & Preview"
+      },
+      "basicSection": "Basic Info",
+      "processSection": "Process Config",
+      "targetSection": "Execution Target",
+      "executionSection": "Execution Settings",
+      "parameterSection": "Input Parameters",
+      "ruleSection": "Time Rule",
+      "calendarSection": "Work Calendar",
+      "previewSection": "Trigger Preview",
+      "selectTarget": "Select Target",
+      "loadingPreview": "Calculating trigger times...",
+      "previewTitle": "Next 10 Trigger Times",
+      "noPreview": "Configure trigger rule first",
+      "endTimeNever": "Never End",
+      "endTimeCustom": "Custom End Time",
+      "success": "Time trigger created",
+      "error": "Creation failed, please retry",
+      "prevStep": "Previous",
+      "nextStep": "Next"
+    },
+    "editModal": {
+      "title": "Edit Time Trigger",
+      "success": "Time trigger updated",
+      "error": "Update failed, please retry"
+    },
+    "deleteModal": {
+      "title": "Delete Confirmation",
+      "confirmMessage": "Delete time trigger \"{{name}}\"?",
+      "deleteWarning": "Tasks will no longer be auto-created. Existing tasks are unaffected.",
+      "confirmDelete": "Confirm Delete",
+      "success": "Time trigger deleted",
+      "error": "Deletion failed, please retry"
+    },
+    "enableModal": {
+      "title": "Enable Trigger",
+      "confirmMessage": "Enable time trigger \"{{name}}\"?",
+      "enableHint": "Tasks will be auto-created based on the configured rule.",
+      "success": "Trigger enabled",
+      "error": "Enable failed, please retry"
+    },
+    "disableModal": {
+      "title": "Disable Trigger",
+      "confirmMessage": "Disable time trigger \"{{name}}\"?",
+      "disableHint": "Auto task creation will be paused. Existing tasks are unaffected.",
+      "success": "Trigger disabled",
+      "error": "Disable failed, please retry"
+    },
+    "fields": {
+      "name": "Trigger Name",
+      "namePlaceholder": "Enter trigger name",
+      "description": "Description",
+      "descriptionPlaceholder": "Enter description (optional)",
+      "process": "Process",
+      "processPlaceholder": "Select process",
+      "targetType": "Target Type",
+      "targetPlaceholder": "Select target",
+      "priority": "Priority",
+      "maxDuration": "Max Duration",
+      "maxDurationUnit": "seconds",
+      "maxDurationHint": "Range: 60-86400s",
+      "validityDays": "Validity Period",
+      "validityDaysUnit": "days",
+      "validityDaysHint": "Range: 1-30 days",
+      "enableRecording": "Enable Recording",
+      "taskCountPerTrigger": "Tasks per Trigger",
+      "taskCountPerTriggerHint": "Tasks created per trigger",
+      "allowDuplicateTasks": "Allow Duplicate Tasks",
+      "allowDuplicateTasksHint": "Create new tasks when pending tasks exist",
+      "ruleType": "Rule Type",
+      "frequencyType": "Frequency",
+      "frequencyValue": "Interval",
+      "cronExpression": "Cron Expression",
+      "cronExpressionPlaceholder": "Enter 5-part cron, e.g.: 0 9 * * *",
+      "cronExpressionHint": "Format: min hour day month weekday",
+      "timeZone": "Timezone",
+      "timeZonePlaceholder": "Select timezone",
+      "startDateTime": "Start Time",
+      "startDateTimePlaceholder": "Select start time",
+      "endDateTime": "End Time",
+      "endDateTimePlaceholder": "Select end time",
+      "enableWorkCalendar": "Enable Work Calendar",
+      "workCalendar": "Work Calendar",
+      "workCalendarPlaceholder": "Select calendar",
+      "executionType": "Execution Type",
+      "executionTypeWorkday": "Workdays Only",
+      "executionTypeNonWorkday": "Non-workdays Only",
+      "triggerTime": "Trigger Time",
+      "weekday": "Weekday",
+      "monthDay": "Day of Month"
+    },
+    "validation": {
+      "nameRequired": "Please enter trigger name",
+      "nameLengthError": "Name cannot exceed 255 characters",
+      "nameExists": "Name already exists",
+      "descriptionLengthError": "Description cannot exceed 1000 characters",
+      "processRequired": "Please select process",
+      "targetTypeRequired": "Please select target type",
+      "targetRequired": "Please select target",
+      "maxDurationRange": "Duration must be 60-86400 seconds",
+      "validityDaysRange": "Validity must be 1-30 days",
+      "taskCountRange": "Must be greater than 0",
+      "cronExpressionRequired": "Please enter cron expression",
+      "cronExpressionInvalid": "Invalid cron expression",
+      "frequencyTypeRequired": "Please select frequency",
+      "frequencyValueRequired": "Please enter interval",
+      "timeZoneRequired": "Please select timezone",
+      "startDateTimeRequired": "Please select start time",
+      "startDateTimeInvalid": "Start time cannot be in the past",
+      "endDateTimeInvalid": "End time must be after start time",
+      "workCalendarRequired": "Calendar required when enabled",
+      "parameterRequired": "Please fill in required parameter \"{{name}}\""
+    },
+    "detail": {
+      "tabs": {
+        "basicInfo": "Basic Info",
+        "executionLogs": "Trigger Logs"
+      },
+      "basicInfo": "Basic Info",
+      "triggerRule": "Trigger Rule",
+      "taskConfig": "Task Config",
+      "inputParameters": "Input Parameters",
+      "systemInfo": "System Info",
+      "fields": {
+        "name": "Trigger Name",
+        "description": "Description",
+        "status": "Status",
+        "process": "Process",
+        "executionTarget": "Target",
+        "priority": "Priority",
+        "maxDuration": "Max Duration",
+        "validityDays": "Validity",
+        "enableRecording": "Recording",
+        "taskCountPerTrigger": "Tasks per Trigger",
+        "allowDuplicateTasks": "Allow Duplicates",
+        "ruleType": "Rule Type",
+        "triggerRule": "Trigger Rule",
+        "timeZone": "Timezone",
+        "startDateTime": "Start Time",
+        "endDateTime": "End Time",
+        "workCalendar": "Work Calendar",
+        "nextTriggerTime": "Next Trigger",
+        "lastTriggerTime": "Last Trigger",
+        "creator": "Creator",
+        "createTime": "Created At",
+        "updateTime": "Updated At"
+      },
+      "noParameters": "No input parameters",
+      "neverEnd": "Never End",
+      "notTriggeredYet": "Not triggered yet",
+      "notScheduled": "Not scheduled",
+      "triggerPreview": "Trigger Preview"
+    },
+    "executionLog": {
+      "title": "Trigger Logs",
+      "noLogs": "No trigger logs",
+      "table": {
+        "triggerTime": "Trigger Time",
+        "status": "Status",
+        "taskCount": "Tasks Created",
+        "errorMessage": "Error",
+        "triggerType": "Trigger Type"
+      },
+      "status": {
+        "success": "Success",
+        "failed": "Failed",
+        "skipped": "Skipped"
+      },
+      "triggerType": {
+        "condition": "Condition Met",
+        "periodic": "Periodic Check"
+      }
+    },
+    "targetType": {
+      "botGroup": "Worker Group",
+      "botInGroup": "Worker in Group",
+      "ungroupedBot": "Ungrouped Worker"
+    },
+    "empty": {
+      "filterDescription": "No matching triggers found, try adjusting filters",
+      "defaultDescription": "No time triggers yet, click \"New Trigger\" to start"
+    }
+  },
+  "queueTrigger": {
+    "pageTitle": "Queue Trigger",
+    "description": "Automatically trigger task creation based on queue messages",
+    "createTrigger": "New Trigger",
+    "searchPlaceholder": "Search trigger name or description",
+    "noData": "No Queue Triggers",
+    "table": {
+      "name": "Trigger Name",
+      "queueName": "Monitored Queue",
+      "processName": "Process",
+      "messageCount": "Messages",
+      "status": "Status",
+      "lastTriggerTime": "Last Trigger"
+    },
+    "status": {
+      "enabled": "Enabled",
+      "disabled": "Disabled"
+    },
+    "filter": {
+      "process": "Process",
+      "queue": "Queue",
+      "status": "Status",
+      "allProcesses": "All Processes",
+      "allQueues": "All Queues",
+      "allStatus": "All Status"
+    },
+    "actions": {
+      "edit": "Edit",
+      "delete": "Delete",
+      "enable": "Enable",
+      "disable": "Disable"
+    },
+    "createModal": {
+      "title": "New Queue Trigger",
+      "steps": {
+        "basicInfo": "Basic Info",
+        "taskConfig": "Task Config",
+        "queueConfig": "Queue Trigger Config"
+      },
+      "basicSection": "Basic Info",
+      "processSection": "Process Config",
+      "targetSection": "Execution Target",
+      "executionSection": "Execution Settings",
+      "parameterSection": "Input Parameters",
+      "queueSection": "Queue Trigger Config",
+      "selectTarget": "Select Target",
+      "success": "Queue trigger created",
+      "error": "Creation failed, please retry",
+      "prevStep": "Previous",
+      "nextStep": "Next"
+    },
+    "editModal": {
+      "title": "Edit Queue Trigger",
+      "success": "Queue trigger updated",
+      "error": "Update failed, please retry"
+    },
+    "deleteModal": {
+      "title": "Delete Confirmation",
+      "confirmMessage": "Delete queue trigger \"{{name}}\"?",
+      "deleteWarning": "Auto task creation will stop. Existing tasks are unaffected.",
+      "confirmDelete": "Confirm Delete",
+      "success": "Queue trigger deleted",
+      "error": "Deletion failed, please retry"
+    },
+    "enableModal": {
+      "title": "Enable Trigger",
+      "confirmMessage": "Enable queue trigger \"{{name}}\"?",
+      "enableHint": "Tasks will be auto-created based on queue messages.",
+      "success": "Trigger enabled",
+      "error": "Enable failed, please retry"
+    },
+    "disableModal": {
+      "title": "Disable Trigger",
+      "confirmMessage": "Disable queue trigger \"{{name}}\"?",
+      "disableHint": "Auto task creation will be paused.",
+      "success": "Trigger disabled",
+      "error": "Disable failed, please retry"
+    },
+    "fields": {
+      "name": "Trigger Name",
+      "namePlaceholder": "Enter trigger name",
+      "description": "Description",
+      "descriptionPlaceholder": "Enter description (optional)",
+      "process": "Process",
+      "processPlaceholder": "Select process",
+      "targetType": "Target Type",
+      "targetPlaceholder": "Select target",
+      "priority": "Priority",
+      "maxDuration": "Max Duration",
+      "maxDurationUnit": "seconds",
+      "maxDurationHint": "Range: 60-86400s",
+      "validityDays": "Validity Period",
+      "validityDaysUnit": "days",
+      "validityDaysHint": "Range: 1-30 days",
+      "enableRecording": "Enable Recording",
+      "timeZone": "Timezone",
+      "timeZonePlaceholder": "Select timezone",
+      "enableWorkCalendar": "Enable Work Calendar",
+      "workCalendar": "Work Calendar",
+      "workCalendarPlaceholder": "Select calendar",
+      "executionType": "Execution Type",
+      "executionTypeWorkday": "Workdays Only",
+      "executionTypeNonWorkday": "Non-workdays Only",
+      "monitoredQueue": "Monitored Queue",
+      "monitoredQueuePlaceholder": "Select queue",
+      "monitoredQueueHint": "Each queue can only be monitored by one trigger",
+      "minEffectiveMessages": "Min Effective Messages",
+      "minEffectiveMessagesHint": "Trigger when message count reaches this value",
+      "messagesPerTrigger": "Messages per Trigger",
+      "messagesPerTriggerHint": "Used to calculate trigger frequency",
+      "enablePeriodicCheck": "Enable Periodic Check",
+      "enablePeriodicCheckHint": "Trigger periodically even with insufficient messages",
+      "periodicCheckInterval": "Check Interval",
+      "periodicCheckIntervalUnit": "minutes"
+    },
+    "validation": {
+      "nameRequired": "Please enter trigger name",
+      "nameLengthError": "Name cannot exceed 255 characters",
+      "nameExists": "Name already exists",
+      "descriptionLengthError": "Description cannot exceed 2000 characters",
+      "processRequired": "Please select process",
+      "targetTypeRequired": "Please select target type",
+      "targetRequired": "Please select target",
+      "maxDurationRange": "Duration must be 60-86400 seconds",
+      "validityDaysRange": "Validity must be 1-30 days",
+      "timeZoneRequired": "Please select timezone",
+      "queueRequired": "Please select queue",
+      "queueAlreadyMonitored": "Queue already monitored by another trigger",
+      "minEffectiveMessagesRange": "Must be 1-9999",
+      "messagesPerTriggerRange": "Must be greater than 0",
+      "periodicCheckIntervalRange": "Must be greater than 0",
+      "workCalendarRequired": "Calendar required when enabled",
+      "parameterRequired": "Please fill in required parameter \"{{name}}\""
+    },
+    "detail": {
+      "tabs": {
+        "basicInfo": "Basic Info",
+        "executionLogs": "Trigger Logs"
+      },
+      "basicInfo": "Basic Info",
+      "queueConfig": "Queue Trigger Config",
+      "taskConfig": "Task Config",
+      "inputParameters": "Input Parameters",
+      "statusMonitor": "Status Monitor",
+      "fields": {
+        "name": "Trigger Name",
+        "description": "Description",
+        "status": "Status",
+        "process": "Process",
+        "executionTarget": "Target",
+        "priority": "Priority",
+        "maxDuration": "Max Duration",
+        "validityDays": "Validity",
+        "enableRecording": "Recording",
+        "timeZone": "Timezone",
+        "workCalendar": "Work Calendar",
+        "monitoredQueue": "Monitored Queue",
+        "minEffectiveMessages": "Min Messages",
+        "messagesPerTrigger": "Messages per Trigger",
+        "enablePeriodicCheck": "Periodic Check",
+        "periodicCheckInterval": "Check Interval",
+        "currentMessageCount": "Current Messages",
+        "pendingTaskCount": "Pending Tasks",
+        "runningTaskCount": "Running Tasks",
+        "lastTriggerTime": "Last Trigger",
+        "creator": "Creator",
+        "createTime": "Created At"
+      },
+      "noParameters": "No input parameters",
+      "notTriggeredYet": "Not triggered yet",
+      "periodicCheckEnabled": "Enabled, checking every {{interval}} minutes",
+      "periodicCheckDisabled": "Disabled"
+    },
+    "executionLog": {
+      "title": "Trigger Logs",
+      "noLogs": "No trigger logs",
+      "table": {
+        "triggerTime": "Trigger Time",
+        "status": "Status",
+        "taskCount": "Tasks Created",
+        "messageCount": "Messages at Trigger",
+        "errorMessage": "Error",
+        "triggerType": "Trigger Type"
+      },
+      "status": {
+        "success": "Success",
+        "failed": "Failed",
+        "skipped": "Skipped"
+      },
+      "triggerType": {
+        "condition": "Condition Met",
+        "periodic": "Periodic Check"
+      }
+    },
+    "targetType": {
+      "botGroup": "Worker Group",
+      "botInGroup": "Worker in Group",
+      "ungroupedBot": "Ungrouped Worker"
+    },
+    "empty": {
+      "filterDescription": "No matching triggers found, try adjusting filters",
+      "defaultDescription": "No queue triggers yet, click \"New Trigger\" to start"
+    }
+  },
+  "triggerRule": {
+    "category": {
+      "triggerCycle": "Trigger Cycle",
+      "triggerRule": "Trigger Rule"
+    },
+    "fields": {
+      "ruleType": "Rule Type",
+      "frequencyType": "Frequency",
+      "cronExpression": "Cron Expression",
+      "cronPlaceholder": "Enter 5-part cron, e.g.: 0 9 * * *",
+      "cronHint": "Format: min hour day month weekday",
+      "generatedCron": "Generated Cron",
+      "timeZone": "Timezone",
+      "startDateTime": "Start Time",
+      "endDateTime": "End Time",
+      "endTimeNever": "Never End",
+      "endTimeCustom": "Custom End Time",
+      "endDateTimePlaceholder": "Select end time",
+      "workCalendar": "Work Calendar",
+      "workCalendarPlaceholder": "Select calendar",
+      "enableWorkCalendar": "Enable Work Calendar",
+      "executionType": "Execution Type",
+      "executionTypeWorkday": "Workdays Only",
+      "executionTypeNonWorkday": "Non-workdays Only"
+    },
+    "ruleType": {
+      "basic": "Basic Rule",
+      "cron": "Custom Rule"
+    },
+    "frequency": {
+      "minutely": "Every N Minutes",
+      "hourly": "Every M Hours at Minute N",
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "monthly": "Monthly"
+    },
+    "executionRule": {
+      "title": "Execution Rule",
+      "fixedTime": "Fixed Time",
+      "repeat": "Repeat",
+      "at": "at",
+      "hourSuffix": ":",
+      "minuteSuffix": "",
+      "every": "Every",
+      "minute": "minutes",
+      "hour": "hours",
+      "executeOnce": "Execute Once"
+    },
+    "monthDayType": {
+      "byDay": "By Day",
+      "lastDay": "Last Day of Month"
+    },
+    "daySelection": {
+      "prefix": "Day",
+      "placeholder": "Enter day, e.g. 1, 15"
+    },
+    "basic": {
+      "every": "Every",
+      "minuteExecute": "minutes",
+      "hourAt": "hours at minute",
+      "triggerTime": "Trigger Time",
+      "selectWeekdays": "Select Weekdays",
+      "selectMonthDay": "Select Day"
+    },
+    "validation": {
+      "cronRequired": "Please enter cron expression",
+      "cronFormatError": "Invalid cron expression format",
+      "cronValid": "Cron expression is valid",
+      "cronValidateError": "Validation failed, please retry"
+    },
+    "cronValidate": {
+      "button": "Validate"
+    },
+    "cronHelp": {
+      "title": "Cron Expression Guide",
+      "buttonText": "Guide",
+      "minute": "Minute",
+      "hour": "Hour",
+      "day": "Day",
+      "month": "Month",
+      "weekday": "Weekday",
+      "symbolsTitle": "Special Characters",
+      "symbolAny": "Any value",
+      "symbolList": "List (e.g.: 1,3,5)",
+      "symbolRange": "Range (e.g.: 1-5)",
+      "symbolStep": "Step (e.g.: */5 = every 5)",
+      "symbolLast": "Last (e.g.: last day of month)",
+      "symbolAnyDay": "Any (weekday field only)"
+    },
+    "cronExamples": {
+      "title": "Examples",
+      "buttonText": "View Examples"
+    }
+  },
+  "botSelector": {
+    "placeholder": "Select execution target",
+    "online": "Online",
+    "statusOnline": "Online",
+    "statusOffline": "Offline"
+  },
+  "workCalendar": {
+    "pageTitle": "Custom Work Calendar",
+    "description": "Manage work calendars, configure holidays and adjustments",
+    "breadcrumb": {
+      "schedulingCenter": "Scheduling Center",
+      "taskExecution": "Task Execution",
+      "autoExecutionPolicy": "Auto Execution Policy"
+    },
+    "back": "Back",
+    "sidebar": {
+      "title": "Calendar List",
+      "newCalendar": "New Calendar",
+      "noCalendars": "No Calendars",
+      "deleteConfirmTitle": "Delete Calendar",
+      "deleteConfirmMessage": "Delete calendar \"{{name}}\"?",
+      "deleteSuccess": "Calendar deleted",
+      "cannotDelete": "Calendar is in use by triggers"
+    },
+    "viewer": {
+      "edit": "Edit",
+      "basicInfo": "Basic Info",
+      "name": "Calendar Name",
+      "template": "Template",
+      "period": "Period",
+      "creator": "Creator",
+      "createTime": "Created At",
+      "calendarPreview": "Calendar Preview",
+      "legendNonWorkday": "Blue circles indicate non-workdays",
+      "workday": "Workday",
+      "nonWorkday": "Non-workday"
+    },
+    "editor": {
+      "title": "Edit Calendar",
+      "importCalendar": "Import Calendar File",
+      "name": "Calendar Name",
+      "namePlaceholder": "Enter calendar name",
+      "period": "Period",
+      "periodPlaceholder": "Select period",
+      "calendarEdit": "Calendar Edit",
+      "legendNonWorkday": "Blue circles indicate non-workdays",
+      "clickToToggle": "Click dates to toggle workday/non-workday",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saveSuccess": "Calendar saved",
+      "saveError": "Save failed, please retry"
+    },
+    "createModal": {
+      "title": "New Calendar",
+      "name": "Name",
+      "namePlaceholder": "Enter calendar name",
+      "template": "Template",
+      "templatePlaceholder": "Select template",
+      "period": "Period",
+      "periodStartPlaceholder": "Start date",
+      "periodEndPlaceholder": "End date",
+      "success": "Calendar created",
+      "error": "Creation failed, please retry"
+    },
+    "template": {
+      "weekendDouble": "Weekend (Sat & Sun off)",
+      "weekendSingle": "Weekend (Sun off only)",
+      "blank": "Blank Calendar"
+    },
+    "validation": {
+      "nameRequired": "Please enter calendar name",
+      "nameLengthError": "Name cannot exceed 50 characters",
+      "templateRequired": "Please select template",
+      "periodRequired": "Please select period",
+      "startDateRequired": "Please select start date",
+      "endDateRequired": "Please select end date",
+      "endDateInvalid": "End date must be after start date"
+    },
+    "empty": {
+      "title": "No Calendars",
+      "description": "Click \"New Calendar\" to create your first work calendar"
+    },
+    "entryButton": "Custom Work Calendar"
+  },
+  "breadcrumb": {
+    "devPreview": "Dev Preview",
+    "emptyStatePreview": "Empty State Preview"
+  }
+}
