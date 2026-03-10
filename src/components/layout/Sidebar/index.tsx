@@ -435,6 +435,15 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     const isSelected = selectedKey === item.key;
     const label = t(item.labelKey);
 
+    // 分组标题 - 与展开时保持一致的样式，不可选中
+    if (item.isGroupLabel) {
+      return (
+        <div key={item.key} className="sidebar-group-label">
+          {label}
+        </div>
+      );
+    }
+
     return (
       <div key={item.key} className="sidebar-menu-item">
         <div className="sidebar-menu-item-wrapper">
