@@ -54,7 +54,7 @@ const MenuItemComponent: React.FC<{
   );
 };
 
-// 语言 Toggle 组件
+// 语言 Toggle 组件 - 分段控件样式
 const LangToggle: React.FC = () => {
   const { i18n } = useTranslation();
   const currentLang = i18n.language;
@@ -65,9 +65,8 @@ const LangToggle: React.FC = () => {
         className={`layout-user-dropdown__lang-toggle-item ${currentLang === 'zh-CN' ? 'layout-user-dropdown__lang-toggle-item--active' : ''}`}
         onClick={(e) => { e.stopPropagation(); i18n.changeLanguage('zh-CN'); }}
       >
-        中
+        中文
       </span>
-      <span className="layout-user-dropdown__lang-toggle-sep">/</span>
       <span
         className={`layout-user-dropdown__lang-toggle-item ${currentLang === 'en' ? 'layout-user-dropdown__lang-toggle-item--active' : ''}`}
         onClick={(e) => { e.stopPropagation(); i18n.changeLanguage('en'); }}
@@ -144,7 +143,8 @@ export const UserInfoDropdown: React.FC<UserInfoDropdownProps> = ({
 
       {/* 菜单区域 */}
       <div className="layout-user-dropdown__menu">
-        {actions.map((action) => (
+        {/* 非 logout 的菜单项 */}
+        {actions.filter(a => a.key !== 'logout').map((action) => (
           <MenuItemComponent
             key={action.key}
             icon={action.icon || getIcon(action.key)}
@@ -168,6 +168,15 @@ export const UserInfoDropdown: React.FC<UserInfoDropdownProps> = ({
             </div>
           </div>
         </div>
+        {/* 退出登录放在最下面 */}
+        {actions.filter(a => a.key === 'logout').map((action) => (
+          <MenuItemComponent
+            key={action.key}
+            icon={action.icon || getIcon(action.key)}
+            label={action.label}
+            onClick={action.onClick}
+          />
+        ))}
       </div>
     </div>
   );

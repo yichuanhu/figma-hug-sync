@@ -148,29 +148,31 @@
     color: var(--semi-color-tertiary);
   }
 
-  // 语言 Toggle
+  // 语言 Toggle - 分段控件样式
   &__lang-toggle {
     display: flex;
     align-items: center;
-    gap: 4px;
+    background-color: var(--semi-color-fill-0);
+    border-radius: 100px;
+    padding: 2px;
+    gap: 0;
   }
 
   &__lang-toggle-item {
     font-size: 13px;
     line-height: 18px;
+    padding: 2px 12px;
+    border-radius: 100px;
     color: var(--semi-color-text-2);
     cursor: pointer;
-    transition: color 0.15s;
+    transition: all 0.2s;
+    user-select: none;
 
     &--active {
-      color: var(--semi-color-primary);
+      background-color: var(--semi-color-bg-0);
+      color: var(--semi-color-text-0);
       font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
     }
-  }
-
-  &__lang-toggle-sep {
-    font-size: 13px;
-    line-height: 18px;
-    color: var(--semi-color-text-3);
   }
 }
