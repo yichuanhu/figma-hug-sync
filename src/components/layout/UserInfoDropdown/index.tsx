@@ -7,7 +7,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Avatar, Popover } from '@douyinfe/semi-ui';
 import { IconApartment } from '@douyinfe/semi-icons';
-import { Monitor, User, LogOut, ExternalLink, Globe, ChevronRight } from 'lucide-react';
+import { Monitor, User, LogOut, ExternalLink, Languages, ChevronRight } from 'lucide-react';
 import './index.less';
 
 export interface UserInfoConfig {
@@ -167,7 +167,7 @@ export const UserInfoDropdown: React.FC<UserInfoDropdownProps> = ({
           <div className="layout-user-dropdown__menu-item">
             <div className="layout-user-dropdown__menu-content">
               <div className="layout-user-dropdown__menu-icon">
-                <Globe size={20} strokeWidth={2} />
+                <Languages size={20} strokeWidth={2} />
               </div>
               <div className="layout-user-dropdown__menu-label">{t('sidebar.userMenu.language')}</div>
               <div className="layout-user-dropdown__menu-end-icon">
