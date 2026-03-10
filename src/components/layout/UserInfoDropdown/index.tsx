@@ -7,7 +7,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Avatar, Popover } from '@douyinfe/semi-ui';
 import { IconApartment } from '@douyinfe/semi-icons';
-import { Monitor, User, LogOut, ExternalLink, Globe, ChevronRight } from 'lucide-react';
+import { Monitor, User, LogOut, ExternalLink, Languages, ChevronRight } from 'lucide-react';
 import './index.less';
 
 export interface UserInfoConfig {
