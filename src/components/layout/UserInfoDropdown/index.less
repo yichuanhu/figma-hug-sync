@@ -148,36 +148,4 @@
     color: var(--semi-color-tertiary);
   }
 
-  // 语言子菜单
-  &__lang-submenu {
-    display: flex;
-    flex-direction: column;
-    min-width: 140px;
-    padding: 4px 0;
-  }
-
-  &__lang-option {
-    padding: 8px 16px;
-    font-size: 14px;
-    line-height: 20px;
-    color: var(--semi-color-text-0);
-    cursor: pointer;
-    transition: background-color 0.15s, color 0.15s;
-    border-radius: 4px;
-    margin: 0 4px;
-
-    &:hover {
-      background-color: var(--semi-color-fill-0);
-    }
-
-    &--active {
-      background-color: var(--semi-color-primary-light-default);
-      color: var(--semi-color-primary);
-      font-weight: 600;
-
-      &:hover {
-        background-color: var(--semi-color-primary-light-hover);
-      }
-    }
-  }
 }
