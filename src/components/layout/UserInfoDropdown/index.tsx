@@ -87,6 +87,7 @@ export const UserInfoDropdown: React.FC<UserInfoDropdownProps> = ({
   className,
   style,
 }) => {
+  const { t, i18n } = useTranslation();
   // 映射默认图标
   const getIcon = (key: string) => {
     switch (key) {
