@@ -54,37 +54,26 @@ const MenuItemComponent: React.FC<{
   );
 };
 
-// 语言切换组件
-const LanguageSwitcher: React.FC = () => {
-  const { t, i18n } = useTranslation();
+// 语言 Toggle 组件
+const LangToggle: React.FC = () => {
+  const { i18n } = useTranslation();
   const currentLang = i18n.language;
 
-  const handleSwitch = (lang: string) => {
-    if (lang !== currentLang) {
-      i18n.changeLanguage(lang);
-    }
-  };
-
   return (
-    <div className="layout-user-dropdown__lang">
-      <div className="layout-user-dropdown__lang-header">
-        <Globe size={20} strokeWidth={2} />
-        <span>{t('sidebar.userMenu.language')}</span>
-      </div>
-      <div className="layout-user-dropdown__lang-options">
-        <div
-          className={`layout-user-dropdown__lang-option ${currentLang === 'zh-CN' ? 'layout-user-dropdown__lang-option--active' : ''}`}
-          onClick={() => handleSwitch('zh-CN')}
-        >
-          {t('sidebar.userMenu.languageZh')}
-        </div>
-        <div
-          className={`layout-user-dropdown__lang-option ${currentLang === 'en' ? 'layout-user-dropdown__lang-option--active' : ''}`}
-          onClick={() => handleSwitch('en')}
-        >
-          {t('sidebar.userMenu.languageEn')}
-        </div>
-      </div>
+    <div className="layout-user-dropdown__lang-toggle">
+      <span
+        className={`layout-user-dropdown__lang-toggle-item ${currentLang === 'zh-CN' ? 'layout-user-dropdown__lang-toggle-item--active' : ''}`}
+        onClick={(e) => { e.stopPropagation(); i18n.changeLanguage('zh-CN'); }}
+      >
+        中
+      </span>
+      <span className="layout-user-dropdown__lang-toggle-sep">/</span>
+      <span
+        className={`layout-user-dropdown__lang-toggle-item ${currentLang === 'en' ? 'layout-user-dropdown__lang-toggle-item--active' : ''}`}
+        onClick={(e) => { e.stopPropagation(); i18n.changeLanguage('en'); }}
+      >
+        EN
+      </span>
     </div>
   );
 };
@@ -98,6 +87,7 @@ export const UserInfoDropdown: React.FC<UserInfoDropdownProps> = ({
   className,
   style,
 }) => {
+  const { t, i18n } = useTranslation();
   // 映射默认图标
   const getIcon = (key: string) => {
     switch (key) {
@@ -163,10 +153,22 @@ export const UserInfoDropdown: React.FC<UserInfoDropdownProps> = ({
             onClick={action.onClick}
           />
         ))}
+        {/* 语言切换菜单项 */}
+        <div
+          className="layout-user-dropdown__menu-item"
+          onClick={() => i18n.changeLanguage(i18n.language === 'zh-CN' ? 'en' : 'zh-CN')}
+        >
+          <div className="layout-user-dropdown__menu-content">
+            <div className="layout-user-dropdown__menu-icon">
+              <Globe size={20} strokeWidth={2} />
+            </div>
+            <div className="layout-user-dropdown__menu-label">{t('sidebar.userMenu.language')}</div>
+            <div className="layout-user-dropdown__menu-end-icon">
+              <LangToggle />
+            </div>
+          </div>
+        </div>
       </div>
-
-      {/* 语言切换区域 */}
-      <LanguageSwitcher />
     </div>
   );
 };
