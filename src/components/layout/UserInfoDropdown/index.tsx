@@ -54,7 +54,7 @@ const MenuItemComponent: React.FC<{
   );
 };
 
-// 语言 Toggle 组件
+// 语言 Toggle 组件 - 分段控件样式
 const LangToggle: React.FC = () => {
   const { i18n } = useTranslation();
   const currentLang = i18n.language;
@@ -65,9 +65,8 @@ const LangToggle: React.FC = () => {
         className={`layout-user-dropdown__lang-toggle-item ${currentLang === 'zh-CN' ? 'layout-user-dropdown__lang-toggle-item--active' : ''}`}
         onClick={(e) => { e.stopPropagation(); i18n.changeLanguage('zh-CN'); }}
       >
-        中
+        中文
       </span>
-      <span className="layout-user-dropdown__lang-toggle-sep">/</span>
       <span
         className={`layout-user-dropdown__lang-toggle-item ${currentLang === 'en' ? 'layout-user-dropdown__lang-toggle-item--active' : ''}`}
         onClick={(e) => { e.stopPropagation(); i18n.changeLanguage('en'); }}
