@@ -153,10 +153,22 @@ export const UserInfoDropdown: React.FC<UserInfoDropdownProps> = ({
             onClick={action.onClick}
           />
         ))}
+        {/* 语言切换菜单项 */}
+        <div
+          className="layout-user-dropdown__menu-item"
+          onClick={() => i18n.changeLanguage(i18n.language === 'zh-CN' ? 'en' : 'zh-CN')}
+        >
+          <div className="layout-user-dropdown__menu-content">
+            <div className="layout-user-dropdown__menu-icon">
+              <Globe size={20} strokeWidth={2} />
+            </div>
+            <div className="layout-user-dropdown__menu-label">{t('sidebar.userMenu.language')}</div>
+            <div className="layout-user-dropdown__menu-end-icon">
+              <LangToggle />
+            </div>
+          </div>
+        </div>
       </div>
-
-      {/* 语言切换区域 */}
-      <LanguageSwitcher />
     </div>
   );
 };
