@@ -66,17 +66,17 @@ const LangSubMenu: React.FC = () => {
   const currentLang = i18n.language;
 
   return (
-    <div className="layout-user-dropdown__lang-submenu">
+    <Dropdown.Menu>
       {LANGUAGES.map((lang) => (
-        <div
+        <Dropdown.Item
           key={lang.key}
-          className={`layout-user-dropdown__lang-option ${currentLang === lang.key ? 'layout-user-dropdown__lang-option--active' : ''}`}
+          active={currentLang === lang.key}
           onClick={() => i18n.changeLanguage(lang.key)}
         >
           {lang.label}
-        </div>
+        </Dropdown.Item>
       ))}
-    </div>
+    </Dropdown.Menu>
   );
 };
 
