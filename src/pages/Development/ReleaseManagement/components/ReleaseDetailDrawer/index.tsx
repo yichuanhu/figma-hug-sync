@@ -167,7 +167,13 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
                   <div className="release-detail-drawer-resource-card-body">
                     <Text type="tertiary" size="small">{t('release.create.usedBy')}: {resource.used_by_processes?.join(', ') || '-'}</Text>
                     <Text type="tertiary" size="small">{t('release.detail.previouslyPublished')}: {resource.is_previously_published ? t('common.yes') : t('common.no')}</Text>
-                    {type !== 'QUEUE' && type !== 'FILE' && (
+                    {type === 'CREDENTIAL' && (
+                      <>
+                        <Text type="tertiary" size="small">{t('release.create.credentialUsername', '账号')}: {resource.production_username || '-'}</Text>
+                        <Text type="tertiary" size="small">{t('release.create.credentialPassword', '密码')}: ******</Text>
+                      </>
+                    )}
+                    {type !== 'QUEUE' && type !== 'FILE' && type !== 'CREDENTIAL' && (
                       <>
                         <Text type="tertiary" size="small">{t('release.create.testValue')}: {resource.test_value || '-'}</Text>
                         <Text type="tertiary" size="small">{t('release.create.productionValue')}: {resource.use_test_as_production ? `${resource.test_value} (${t('release.create.useTestAsProduction')})` : resource.production_value || '-'}</Text>
