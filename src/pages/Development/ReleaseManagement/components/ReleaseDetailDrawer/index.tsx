@@ -169,8 +169,10 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
                     <Text type="tertiary" size="small">{t('release.detail.previouslyPublished')}: {resource.is_previously_published ? t('common.yes') : t('common.no')}</Text>
                     {type === 'CREDENTIAL' && (
                       <>
-                        <Text type="tertiary" size="small">{t('release.create.credentialUsername', '账号')}: {resource.production_username || '-'}</Text>
-                        <Text type="tertiary" size="small">{t('release.create.credentialPassword', '密码')}: ******</Text>
+                        <Text type="tertiary" size="small">{t('release.create.testValue')} - {t('release.create.credentialUsername', '账号')}: {(resource as any).test_username || '-'}</Text>
+                        <Text type="tertiary" size="small">{t('release.create.testValue')} - {t('release.create.credentialPassword', '密码')}: ******</Text>
+                        <Text type="tertiary" size="small">{t('release.create.productionValue')} - {t('release.create.credentialUsername', '账号')}: {resource.production_username || '-'}</Text>
+                        <Text type="tertiary" size="small">{t('release.create.productionValue')} - {t('release.create.credentialPassword', '密码')}: ******</Text>
                       </>
                     )}
                     {type !== 'QUEUE' && type !== 'FILE' && type !== 'CREDENTIAL' && (
