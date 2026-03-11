@@ -109,7 +109,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
   const [exporting, setExporting] = useState(false);
   
   // 自动刷新定时器
-  const refreshTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const refreshTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   
   // 加载日志数据
   const loadData = useCallback(async () => {
