@@ -165,6 +165,8 @@ const CreateReleasePage: React.FC = () => {
               is_manual: false,
               is_previously_published: r.is_previously_published,
               test_value: r.test_value,
+              test_username: (r as any).test_username || 'test_admin',
+              test_password: (r as any).test_password || '********',
               production_value: '',
               use_test_as_production: false,
               used_by_processes: r.used_by_processes.map((p) => p.process_name),
