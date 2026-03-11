@@ -169,16 +169,32 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
                     <Text type="tertiary" size="small">{t('release.detail.previouslyPublished')}: {resource.is_previously_published ? t('common.yes') : t('common.no')}</Text>
                     {type === 'CREDENTIAL' && (
                       <>
-                        <Text type="tertiary" size="small">{t('release.create.testValue')} - {t('release.create.credentialUsername', '账号')}: {(resource as any).test_username || '-'}</Text>
-                        <Text type="tertiary" size="small">{t('release.create.testValue')} - {t('release.create.credentialPassword', '密码')}: ******</Text>
-                        <Text type="tertiary" size="small">{t('release.create.productionValue')} - {t('release.create.credentialUsername', '账号')}: {resource.production_username || '-'}</Text>
-                        <Text type="tertiary" size="small">{t('release.create.productionValue')} - {t('release.create.credentialPassword', '密码')}: ******</Text>
+                        <div className="release-detail-drawer-value-group">
+                          <Text type="tertiary" size="small" strong>{t('release.create.testValue')}</Text>
+                          <div className="release-detail-drawer-value-row">
+                            <Text type="tertiary" size="small">{t('release.create.credentialUsername', '账号')}: {(resource as any).test_username || '-'}</Text>
+                            <Text type="tertiary" size="small">{t('release.create.credentialPassword', '密码')}: ******</Text>
+                          </div>
+                        </div>
+                        <div className="release-detail-drawer-value-group">
+                          <Text type="tertiary" size="small" strong>{t('release.create.productionValue')}</Text>
+                          <div className="release-detail-drawer-value-row">
+                            <Text type="tertiary" size="small">{t('release.create.credentialUsername', '账号')}: {resource.production_username || '-'}</Text>
+                            <Text type="tertiary" size="small">{t('release.create.credentialPassword', '密码')}: ******</Text>
+                          </div>
+                        </div>
                       </>
                     )}
                     {type !== 'QUEUE' && type !== 'FILE' && type !== 'CREDENTIAL' && (
                       <>
-                        <Text type="tertiary" size="small">{t('release.create.testValue')}: {resource.test_value || '-'}</Text>
-                        <Text type="tertiary" size="small">{t('release.create.productionValue')}: {resource.use_test_as_production ? `${resource.test_value} (${t('release.create.useTestAsProduction')})` : resource.production_value || '-'}</Text>
+                        <div className="release-detail-drawer-value-group">
+                          <Text type="tertiary" size="small" strong>{t('release.create.testValue')}</Text>
+                          <Text type="tertiary" size="small">{resource.test_value || '-'}</Text>
+                        </div>
+                        <div className="release-detail-drawer-value-group">
+                          <Text type="tertiary" size="small" strong>{t('release.create.productionValue')}</Text>
+                          <Text type="tertiary" size="small">{resource.use_test_as_production ? `${resource.test_value} (${t('release.create.useTestAsProduction')})` : resource.production_value || '-'}</Text>
+                        </div>
                       </>
                     )}
                   </div>
