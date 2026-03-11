@@ -38,6 +38,8 @@ export interface ResourceConfig {
   is_manual: boolean;
   is_previously_published: boolean;
   test_value?: string | null;
+  test_username?: string;
+  test_password?: string;
   production_value?: string;
   production_username?: string;
   production_password?: string;
