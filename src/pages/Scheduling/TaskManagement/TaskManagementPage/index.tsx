@@ -546,9 +546,9 @@ const TaskManagementPage = () => {
         return (
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, maxWidth: '100%' }}>
             {isGroup ? (
-              <IconGridStroked style={{ flexShrink: 0, fontSize: 14 }} />
+              <Group size={14} strokeWidth={2} style={{ flexShrink: 0 }} />
             ) : (
-              <Monitor size={14} strokeWidth={2} style={{ flexShrink: 0 }} />
+              <Bot size={14} strokeWidth={2} style={{ flexShrink: 0 }} />
             )}
             <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{text || '-'}</span>
           </span>
