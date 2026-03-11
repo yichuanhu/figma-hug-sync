@@ -45,8 +45,8 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
     const mockResources = [
       { resource_id: 'param-001', resource_type: 'PARAMETER' as ResourceType, resource_name: '系统超时时间', test_value: '30000', production_value: '60000', use_test_as_production: false, is_previously_published: true, is_manual: false, used_by_processes: ['订单处理流程', '库存检查流程'] },
       { resource_id: 'param-002', resource_type: 'PARAMETER' as ResourceType, resource_name: '最大重试次数', test_value: '3', production_value: '5', use_test_as_production: false, is_previously_published: false, is_manual: true, used_by_processes: ['订单处理流程'] },
-      { resource_id: 'cred-001', resource_type: 'CREDENTIAL' as ResourceType, resource_name: 'ERP系统凭据', test_value: '********', production_value: '********', production_username: 'admin', production_password: '********', use_test_as_production: false, is_previously_published: true, is_manual: false, used_by_processes: ['订单处理流程', '数据同步流程'] },
-      { resource_id: 'cred-002', resource_type: 'CREDENTIAL' as ResourceType, resource_name: '邮件服务凭据', test_value: '********', production_value: '********', production_username: 'mail_user', production_password: '********', use_test_as_production: true, is_previously_published: false, is_manual: false, used_by_processes: ['通知发送流程'] },
+      { resource_id: 'cred-001', resource_type: 'CREDENTIAL' as ResourceType, resource_name: 'ERP系统凭据', test_value: '********', test_username: 'test_admin', test_password: '********', production_value: '********', production_username: 'admin', production_password: '********', use_test_as_production: false, is_previously_published: true, is_manual: false, used_by_processes: ['订单处理流程', '数据同步流程'] },
+      { resource_id: 'cred-002', resource_type: 'CREDENTIAL' as ResourceType, resource_name: '邮件服务凭据', test_value: '********', test_username: 'mail_test', test_password: '********', production_value: '********', production_username: 'mail_user', production_password: '********', use_test_as_production: true, is_previously_published: false, is_manual: false, used_by_processes: ['通知发送流程'] },
       { resource_id: 'queue-001', resource_type: 'QUEUE' as ResourceType, resource_name: '订单处理队列', test_value: '', production_value: '', use_test_as_production: false, is_previously_published: true, is_manual: false, used_by_processes: ['订单处理流程'] },
       { resource_id: 'file-001', resource_type: 'FILE' as ResourceType, resource_name: '订单模板', test_value: '', production_value: '', use_test_as_production: false, is_previously_published: true, is_manual: false, used_by_processes: ['订单处理流程'] },
       { resource_id: 'file-002', resource_type: 'FILE' as ResourceType, resource_name: '报表配置', test_value: '', production_value: '', use_test_as_production: false, is_previously_published: false, is_manual: true, used_by_processes: ['数据导出流程'] },
@@ -169,8 +169,10 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
                     <Text type="tertiary" size="small">{t('release.detail.previouslyPublished')}: {resource.is_previously_published ? t('common.yes') : t('common.no')}</Text>
                     {type === 'CREDENTIAL' && (
                       <>
-                        <Text type="tertiary" size="small">{t('release.create.credentialUsername', '账号')}: {resource.production_username || '-'}</Text>
-                        <Text type="tertiary" size="small">{t('release.create.credentialPassword', '密码')}: ******</Text>
+                        <Text type="tertiary" size="small">{t('release.create.testValue')} - {t('release.create.credentialUsername', '账号')}: {(resource as any).test_username || '-'}</Text>
+                        <Text type="tertiary" size="small">{t('release.create.testValue')} - {t('release.create.credentialPassword', '密码')}: ******</Text>
+                        <Text type="tertiary" size="small">{t('release.create.productionValue')} - {t('release.create.credentialUsername', '账号')}: {resource.production_username || '-'}</Text>
+                        <Text type="tertiary" size="small">{t('release.create.productionValue')} - {t('release.create.credentialPassword', '密码')}: ******</Text>
                       </>
                     )}
                     {type !== 'QUEUE' && type !== 'FILE' && type !== 'CREDENTIAL' && (
