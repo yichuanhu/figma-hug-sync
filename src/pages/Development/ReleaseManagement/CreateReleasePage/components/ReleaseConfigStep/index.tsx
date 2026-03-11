@@ -157,9 +157,26 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
                   <Text type="tertiary" size="small">
                     {t('release.create.testValue')}
                   </Text>
-                  <Text ellipsis={{ showTooltip: true }}>
-                    {resource.test_value || '-'}
-                  </Text>
+                  {isCredential ? (
+                    <div className="release-config-step-credential-group">
+                      <div className="release-config-step-credential-item">
+                        <Text className="release-config-step-credential-label" size="small">
+                          {t('release.create.credentialUsername', '账号')}
+                        </Text>
+                        <Text>{resource.test_username || '-'}</Text>
+                      </div>
+                      <div className="release-config-step-credential-item">
+                        <Text className="release-config-step-credential-label" size="small">
+                          {t('release.create.credentialPassword', '密码')}
+                        </Text>
+                        <Text>******</Text>
+                      </div>
+                    </div>
+                  ) : (
+                    <Text ellipsis={{ showTooltip: true }}>
+                      {resource.test_value || '-'}
+                    </Text>
+                  )}
                 </div>
               </Col>
               <Col span={12}>
