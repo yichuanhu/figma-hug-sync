@@ -29,9 +29,9 @@ import {
   IconMinusCircleStroked,
   IconCrossCircleStroked,
   IconDeleteStroked,
-  IconGridStroked,
+  
 } from '@douyinfe/semi-icons';
-import { RefreshCw, PlayCircle, Monitor } from 'lucide-react';
+import { RefreshCw, PlayCircle, Monitor, Bot, Group } from 'lucide-react';
 import { IconComponentPlaceholderStroked } from '@douyinfe/semi-icons';
 import type { 
   LYTaskResponse, 
@@ -546,9 +546,9 @@ const TaskManagementPage = () => {
         return (
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, maxWidth: '100%' }}>
             {isGroup ? (
-              <IconGridStroked style={{ flexShrink: 0, fontSize: 14 }} />
+              <Group size={14} strokeWidth={2} style={{ flexShrink: 0 }} />
             ) : (
-              <Monitor size={14} strokeWidth={2} style={{ flexShrink: 0 }} />
+              <Bot size={14} strokeWidth={2} style={{ flexShrink: 0 }} />
             )}
             <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{text || '-'}</span>
           </span>
