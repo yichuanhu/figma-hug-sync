@@ -170,14 +170,14 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
                     {type === 'CREDENTIAL' && (
                       <>
                         <div className="release-detail-drawer-value-group">
-                          <Text type="tertiary" size="small" strong>{t('release.create.testValue')}</Text>
+                          <Text type="tertiary" size="small">{t('release.create.testValue')}</Text>
                           <div className="release-detail-drawer-value-row">
                             <Text type="tertiary" size="small">{t('release.create.credentialUsername', '账号')}: {(resource as any).test_username || '-'}</Text>
                             <Text type="tertiary" size="small">{t('release.create.credentialPassword', '密码')}: ******</Text>
                           </div>
                         </div>
                         <div className="release-detail-drawer-value-group">
-                          <Text type="tertiary" size="small" strong>{t('release.create.productionValue')}</Text>
+                          <Text type="tertiary" size="small">{t('release.create.productionValue')}</Text>
                           <div className="release-detail-drawer-value-row">
                             <Text type="tertiary" size="small">{t('release.create.credentialUsername', '账号')}: {resource.production_username || '-'}</Text>
                             <Text type="tertiary" size="small">{t('release.create.credentialPassword', '密码')}: ******</Text>
