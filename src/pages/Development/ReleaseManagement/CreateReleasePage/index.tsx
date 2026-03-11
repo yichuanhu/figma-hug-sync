@@ -39,6 +39,8 @@ export interface ResourceConfig {
   is_previously_published: boolean;
   test_value?: string | null;
   production_value?: string;
+  production_username?: string;
+  production_password?: string;
   use_test_as_production: boolean;
   used_by_processes: string[];
   original_name?: string;
@@ -222,13 +224,14 @@ const CreateReleasePage: React.FC = () => {
     }
 
     // 检查未发布资源的生产值
-    const missingProductionValues = resources.filter(
-      (r) =>
-        !r.is_previously_published &&
-        !r.use_test_as_production &&
-        !r.production_value &&
-        r.resource_type !== 'QUEUE'
-    );
+    const missingProductionValues = resources.filter((r) => {
+      if (r.is_previously_published || r.use_test_as_production) return false;
+      if (r.resource_type === 'QUEUE' || r.resource_type === 'FILE') return false;
+      if (r.resource_type === 'CREDENTIAL') {
+        return !r.production_username || !r.production_password;
+      }
+      return !r.production_value;
+    });
 
     if (missingProductionValues.length > 0) {
       Toast.warning(t('release.create.validation.missingProductionValues'));
