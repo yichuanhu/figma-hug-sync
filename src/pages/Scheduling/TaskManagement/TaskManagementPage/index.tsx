@@ -29,8 +29,9 @@ import {
   IconMinusCircleStroked,
   IconCrossCircleStroked,
   IconDeleteStroked,
+  IconGridSquareStroked,
 } from '@douyinfe/semi-icons';
-import { RefreshCw, PlayCircle } from 'lucide-react';
+import { RefreshCw, PlayCircle, Monitor } from 'lucide-react';
 import { IconComponentPlaceholderStroked } from '@douyinfe/semi-icons';
 import type { 
   LYTaskResponse, 
