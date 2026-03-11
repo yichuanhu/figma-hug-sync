@@ -546,7 +546,7 @@ const TaskManagementPage = () => {
         return (
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, maxWidth: '100%' }}>
             {isGroup ? (
-              <IconGridSquareStroked style={{ flexShrink: 0, fontSize: 14 }} />
+              <IconGridStroked style={{ flexShrink: 0, fontSize: 14 }} />
             ) : (
               <Monitor size={14} strokeWidth={2} style={{ flexShrink: 0 }} />
             )}
