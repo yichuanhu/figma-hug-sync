@@ -29,7 +29,7 @@ import {
   IconMinusCircleStroked,
   IconCrossCircleStroked,
   IconDeleteStroked,
-  IconGridStroked,
+  
 } from '@douyinfe/semi-icons';
 import { RefreshCw, PlayCircle, Monitor, Bot, Group } from 'lucide-react';
 import { IconComponentPlaceholderStroked } from '@douyinfe/semi-icons';
