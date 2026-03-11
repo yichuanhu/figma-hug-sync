@@ -39,6 +39,8 @@ export interface ResourceConfig {
   is_previously_published: boolean;
   test_value?: string | null;
   production_value?: string;
+  production_username?: string;
+  production_password?: string;
   use_test_as_production: boolean;
   used_by_processes: string[];
   original_name?: string;
