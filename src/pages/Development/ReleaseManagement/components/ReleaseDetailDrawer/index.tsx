@@ -187,14 +187,8 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
                     )}
                     {type !== 'QUEUE' && type !== 'FILE' && type !== 'CREDENTIAL' && (
                       <>
-                        <div className="release-detail-drawer-value-group">
-                          <Text type="tertiary" size="small" strong>{t('release.create.testValue')}</Text>
-                          <Text type="tertiary" size="small">{resource.test_value || '-'}</Text>
-                        </div>
-                        <div className="release-detail-drawer-value-group">
-                          <Text type="tertiary" size="small" strong>{t('release.create.productionValue')}</Text>
-                          <Text type="tertiary" size="small">{resource.use_test_as_production ? `${resource.test_value} (${t('release.create.useTestAsProduction')})` : resource.production_value || '-'}</Text>
-                        </div>
+                        <Text type="tertiary" size="small">{t('release.create.testValue')}: {resource.test_value || '-'}</Text>
+                        <Text type="tertiary" size="small">{t('release.create.productionValue')}: {resource.use_test_as_production ? `${resource.test_value} (${t('release.create.useTestAsProduction')})` : resource.production_value || '-'}</Text>
                       </>
                     )}
                   </div>
