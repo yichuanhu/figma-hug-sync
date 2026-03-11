@@ -170,7 +170,39 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
                       <Text type="danger"> *</Text>
                     )}
                   </Text>
-                  {resource.is_previously_published ? (
+                  {isCredential ? (
+                    <div className="release-config-step-credential-group">
+                      <div className="release-config-step-credential-item">
+                        <Text className="release-config-step-credential-label" size="small">
+                          {t('release.create.credentialUsername', '账号')}
+                        </Text>
+                        <Input
+                          placeholder={resource.is_previously_published
+                            ? t('release.create.keepExistingValue')
+                            : t('release.create.enterCredentialUsername', '请输入账号')}
+                          value={resource.production_username}
+                          onChange={(value) =>
+                            updateResource(resource.resource_id, { production_username: value })
+                          }
+                        />
+                      </div>
+                      <div className="release-config-step-credential-item">
+                        <Text className="release-config-step-credential-label" size="small">
+                          {t('release.create.credentialPassword', '密码')}
+                        </Text>
+                        <Input
+                          placeholder={resource.is_previously_published
+                            ? t('release.create.keepExistingValue')
+                            : t('release.create.enterCredentialPassword', '请输入密码')}
+                          value={resource.production_password}
+                          onChange={(value) =>
+                            updateResource(resource.resource_id, { production_password: value })
+                          }
+                          type="password"
+                        />
+                      </div>
+                    </div>
+                  ) : resource.is_previously_published ? (
                     <div className="release-config-step-production-input">
                       <Input
                         placeholder={t('release.create.keepExistingValue')}
@@ -179,7 +211,6 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
                           updateResource(resource.resource_id, { production_value: value })
                         }
                         disabled={resource.use_test_as_production}
-                        type={isCredential ? 'password' : 'text'}
                       />
                     </div>
                   ) : (
@@ -195,7 +226,6 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
                           updateResource(resource.resource_id, { production_value: value })
                         }
                         disabled={resource.use_test_as_production}
-                        type={isCredential ? 'password' : 'text'}
                       />
                       <Checkbox
                         checked={resource.use_test_as_production}
