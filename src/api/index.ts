@@ -2535,6 +2535,10 @@ export interface LYReleaseResourceResponse {
   test_value?: string | null;
   /** 生产值（凭据显示为*） */
   production_value?: string | null;
+  /** 生产账号（仅凭据类型） */
+  production_username?: string | null;
+  /** 生产密码（仅凭据类型） */
+  production_password?: string | null;
   /** 使用测试值作为生产值 */
   use_test_as_production: boolean;
   /** 源文件名（仅文件类型） */
