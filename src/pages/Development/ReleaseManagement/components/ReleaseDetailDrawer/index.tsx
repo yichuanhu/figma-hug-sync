@@ -169,20 +169,8 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
                     <Text type="tertiary" size="small">{t('release.detail.previouslyPublished')}: {resource.is_previously_published ? t('common.yes') : t('common.no')}</Text>
                     {type === 'CREDENTIAL' && (
                       <>
-                        <div className="release-detail-drawer-value-group">
-                          <Text type="tertiary" size="small">{t('release.create.testValue')}</Text>
-                          <div className="release-detail-drawer-value-row">
-                            <Text type="tertiary" size="small">{t('release.create.credentialUsername', '账号')}: {(resource as any).test_username || '-'}</Text>
-                            <Text type="tertiary" size="small">{t('release.create.credentialPassword', '密码')}: ******</Text>
-                          </div>
-                        </div>
-                        <div className="release-detail-drawer-value-group">
-                          <Text type="tertiary" size="small">{t('release.create.productionValue')}</Text>
-                          <div className="release-detail-drawer-value-row">
-                            <Text type="tertiary" size="small">{t('release.create.credentialUsername', '账号')}: {resource.production_username || '-'}</Text>
-                            <Text type="tertiary" size="small">{t('release.create.credentialPassword', '密码')}: ******</Text>
-                          </div>
-                        </div>
+                        <Text type="tertiary" size="small">{t('release.create.testValue')}: {(resource as any).test_username ? `${(resource as any).test_username}:******` : '-'}</Text>
+                        <Text type="tertiary" size="small">{t('release.create.productionValue')}: {resource.production_username ? `${resource.production_username}:******` : '-'}</Text>
                       </>
                     )}
                     {type !== 'QUEUE' && type !== 'FILE' && type !== 'CREDENTIAL' && (
