@@ -538,8 +538,21 @@ const TaskManagementPage = () => {
       title: t('task.table.executionTarget'),
       dataIndex: 'execution_target_name',
       key: 'execution_target_name',
-      width: 140,
+      width: 160,
       ellipsis: true,
+      render: (text: string, record: any) => {
+        const isGroup = record.execution_target_type === 'BOT_GROUP';
+        return (
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, maxWidth: '100%' }}>
+            {isGroup ? (
+              <IconGridSquareStroked style={{ flexShrink: 0, fontSize: 14 }} />
+            ) : (
+              <Monitor size={14} strokeWidth={2} style={{ flexShrink: 0 }} />
+            )}
+            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{text || '-'}</span>
+          </span>
+        );
+      },
     },
     {
       title: t('task.table.taskStatus'),
