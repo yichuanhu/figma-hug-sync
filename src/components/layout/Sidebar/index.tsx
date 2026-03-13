@@ -422,7 +422,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
                 }}
                 title={t('sidebar.expandSidebar')}
               >
-                <img src={layoutIcon} alt="expand" className="sidebar-layout-icon" />
+                <LayoutIcon />
               </div>
             </div>
             {/* 菜单列表 - 可滚动 */}
