@@ -1,11 +1,11 @@
 .metrics-section {
   .metrics-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    display: flex;
+    align-items: stretch;
+    background: var(--semi-color-bg-0);
     border: 1px solid var(--semi-color-border);
     border-radius: 10px;
     overflow: hidden;
-    background: var(--semi-color-bg-0);
   }
 
   .metric-card {
@@ -13,20 +13,13 @@
     align-items: center;
     gap: 16px;
     padding: 20px 24px;
+    flex: 1;
     min-width: 0;
-    position: relative;
     transition: background 0.2s ease;
-    border-bottom: 1px solid var(--semi-color-border);
 
-    // Right border for non-last-in-row
-    &:nth-child(3n+1),
-    &:nth-child(3n+2) {
-      border-right: 1px solid var(--semi-color-border);
-    }
-
-    // Remove bottom border on last row
-    &:nth-last-child(-n+3) {
-      border-bottom: none;
+    // Vertical divider between cards
+    & + .metric-card {
+      border-left: 1px solid var(--semi-color-border);
     }
 
     &:hover {
