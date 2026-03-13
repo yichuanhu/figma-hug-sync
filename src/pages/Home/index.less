@@ -6,9 +6,24 @@
 }
 
 .home-page {
+  position: relative;
   height: 100%;
   overflow-y: auto;
   padding: 0;
+
+  // 黄色渐变晕影背景
+  &::before {
+    content: '';
+    position: fixed;
+    top: -200px;
+    right: -100px;
+    width: 600px;
+    height: 600px;
+    filter: blur(80px);
+    background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><rect x="0" y="0" height="100%" width="100%" fill="url(%23grad)" opacity="1"/><defs><radialGradient id="grad" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="10" gradientTransform="matrix(0 -42.426 -42.426 0 300 300)"><stop stop-color="rgba(255,230,0,0.10)" offset="0"/><stop stop-color="rgba(255,230,0,0.05)" offset="0.4"/><stop stop-color="rgba(255,255,255,0)" offset="0.8"/></radialGradient></defs></svg>');
+    pointer-events: none;
+    z-index: 0;
+  }
 
   .home-welcome {
     margin-bottom: 24px;
