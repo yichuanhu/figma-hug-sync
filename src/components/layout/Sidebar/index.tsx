@@ -626,7 +626,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
           <div className="sidebar-detail-header">
             <span className="sidebar-detail-title">{currentCenterLabel ? t(currentCenterLabel) : ''}</span>
             <div className="sidebar-icon-btn-small" onClick={onToggleCollapse} title={t('sidebar.expandSidebar')}>
-              <img src={layoutIcon} alt="collapse" className="sidebar-layout-icon" />
+              <LayoutIcon />
             </div>
           </div>
 
