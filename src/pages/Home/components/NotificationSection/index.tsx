@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Badge } from '@douyinfe/semi-ui';
-import { ChevronUp, ChevronDown, ExternalLink } from 'lucide-react';
+import { ChevronUp, ChevronDown, ChevronRight } from 'lucide-react';
 import { notifications } from '../../mockData';
 import './index.less';
 
