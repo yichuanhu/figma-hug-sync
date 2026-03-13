@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Badge } from '@douyinfe/semi-ui';
-import { ChevronUp, ChevronDown, ExternalLink } from 'lucide-react';
+import { ChevronUp, ChevronDown, ChevronRight } from 'lucide-react';
 import { notifications } from '../../mockData';
 import './index.less';
 
@@ -18,13 +18,13 @@ const NotificationSection = () => {
           <button
             className="notification-collapse-btn"
             onClick={() => setCollapsed(!collapsed)}
-            title={collapsed ? t('homepage.notifications.expand') : t('homepage.notifications.collapse')}
           >
-            {collapsed ? <ChevronDown size={16} strokeWidth={2} /> : <ChevronUp size={16} strokeWidth={2} />}
+            <span>{collapsed ? t('homepage.notifications.expand') : t('homepage.notifications.collapse')}</span>
+            {collapsed ? <ChevronDown size={14} strokeWidth={2} /> : <ChevronUp size={14} strokeWidth={2} />}
           </button>
           <button className="notification-more-btn">
             <span>{t('homepage.notifications.more')}</span>
-            <ExternalLink size={12} strokeWidth={2} />
+            <ChevronRight size={14} strokeWidth={2} />
           </button>
           {unreadCount > 0 && <Badge count={unreadCount} />}
         </div>
