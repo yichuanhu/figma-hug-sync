@@ -5,6 +5,7 @@ export interface ShortcutItem {
   icon: string; // lucide icon name
   color: string; // CSS color variable
   bgColor: string; // CSS background color
+  borderColor?: string; // CSS border color
   path?: string;
 }
 
