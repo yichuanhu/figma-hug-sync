@@ -14,7 +14,10 @@ const WelcomeSection = () => {
   return (
     <div className="home-welcome">
       <h1 className="home-welcome-title">
-        {t('homepage.welcome', { name: '张三' })}
+        {t('homepage.welcomePrefix', 'Hi ')}
+        <span className="home-welcome-name">张三</span>
+        {t('homepage.welcomeSuffix', '，欢迎回来')}
+        <span className="home-welcome-wave"> 👋</span>
       </h1>
       <div className="home-welcome-date">{dateStr}</div>
     </div>

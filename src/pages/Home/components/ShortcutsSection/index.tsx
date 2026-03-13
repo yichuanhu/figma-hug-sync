@@ -98,7 +98,7 @@ const ShortcutsSection = () => {
             <div
               key={item.key}
               className="shortcut-card"
-              style={{ backgroundColor: item.bgColor, borderColor: item.bgColor }}
+              style={{ backgroundColor: item.bgColor, borderColor: item.borderColor || item.bgColor }}
               onClick={() => item.path && navigate(item.path)}
             >
               <div className="shortcut-card-info">
