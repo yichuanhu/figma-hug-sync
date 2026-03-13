@@ -87,9 +87,9 @@ const ShortcutsSection = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="shortcuts-section">
-      <div className="shortcuts-section-header">
-        <span className="shortcuts-section-title">{t('homepage.shortcuts.title')}</span>
+    <div className="home-card shortcuts-section">
+      <div className="home-card-header">
+        <span className="home-card-title">{t('homepage.shortcuts.title')}</span>
       </div>
       <div className="shortcuts-grid">
         {shortcuts.map((item) => {

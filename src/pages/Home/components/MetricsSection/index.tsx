@@ -79,9 +79,9 @@ const MetricsSection = () => {
   const [scope, setScope] = useState<string>('department');
 
   return (
-    <div className="metrics-section">
-      <div className="metrics-section-header">
-        <span className="metrics-section-title">{t('homepage.metrics.title')}</span>
+    <div className="home-card metrics-section">
+      <div className="home-card-header">
+        <span className="home-card-title">{t('homepage.metrics.title')}</span>
         <RadioGroup
           type="button"
           value={scope}

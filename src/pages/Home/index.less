@@ -1,3 +1,10 @@
+// 首页去掉外层大卡片的背景和阴影
+.app-layout-content-card:has(.home-page) {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
 .home-page {
   height: 100%;
   overflow-y: auto;
