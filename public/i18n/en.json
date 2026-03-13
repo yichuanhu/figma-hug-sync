@@ -2614,10 +2614,14 @@
       "title": "Recent Activity"
     },
     "notifications": {
-      "title": "Notifications"
+      "title": "Notifications",
+      "more": "More",
+      "collapse": "Collapse",
+      "expand": "Expand"
     },
     "announcements": {
-      "title": "Announcements"
+      "title": "Product Updates",
+      "viewAll": "All"
     },
     "resources": {
       "title": "Resources"

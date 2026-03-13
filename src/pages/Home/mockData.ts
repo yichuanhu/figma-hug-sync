@@ -1,4 +1,4 @@
-import type { ShortcutItem, MetricItem, NotificationItem, AnnouncementItem, ResourceItem, ActivityItem } from './types';
+import type { ShortcutItem, MetricItem, NotificationItem, AnnouncementItem, BannerItem, ResourceItem, ActivityItem } from './types';
 
 export const shortcuts: ShortcutItem[] = [
   {
@@ -40,13 +40,12 @@ export const shortcuts: ShortcutItem[] = [
 ];
 
 export const metrics: MetricItem[] = [
-  { key: 'robots', labelKey: 'homepage.metrics.robots', value: 25, trend: 'up', trendValue: '+3' },
-  { key: 'processes', labelKey: 'homepage.metrics.processes', value: 120, trend: 'up', trendValue: '+8' },
-  { key: 'todayTasks', labelKey: 'homepage.metrics.todayTasks', value: 345, trend: 'up', trendValue: '+12%' },
-  { key: 'successRate', labelKey: 'homepage.metrics.successRate', value: '98.5', unit: '%', trend: 'up', trendValue: '+0.3%' },
-  { key: 'savedHours', labelKey: 'homepage.metrics.savedHours', value: 156, unit: 'h', trend: 'up', trendValue: '+24h' },
-  { key: 'savedCost', labelKey: 'homepage.metrics.savedCost', value: '23', unit: '万', trend: 'up', trendValue: '+2.1万' },
-  { key: 'weeklyNew', labelKey: 'homepage.metrics.weeklyNew', value: 12, trend: 'down', trendValue: '-3' },
+  { key: 'robots', labelKey: 'homepage.metrics.robots', value: 25, trend: 'up', trendValue: '+3', icon: 'Bot', iconColor: '#3370FF', iconBgColor: '#EEF3FF' },
+  { key: 'processes', labelKey: 'homepage.metrics.processes', value: 120, trend: 'up', trendValue: '+8', icon: 'Workflow', iconColor: '#7C3AED', iconBgColor: '#F3EEFF' },
+  { key: 'todayTasks', labelKey: 'homepage.metrics.todayTasks', value: 345, trend: 'up', trendValue: '+12%', icon: 'Play', iconColor: '#FF7D00', iconBgColor: '#FFF3E8' },
+  { key: 'successRate', labelKey: 'homepage.metrics.successRate', value: '98.5', unit: '%', trend: 'up', trendValue: '+0.3%', icon: 'CheckCircle', iconColor: '#00B365', iconBgColor: '#E8F8F0' },
+  { key: 'savedHours', labelKey: 'homepage.metrics.savedHours', value: 156, unit: 'h', trend: 'up', trendValue: '+24h', icon: 'Clock', iconColor: '#0FC6C2', iconBgColor: '#E8FFFE' },
+  { key: 'savedCost', labelKey: 'homepage.metrics.savedCost', value: '23', unit: '万', trend: 'up', trendValue: '+2.1万', icon: 'TrendingUp', iconColor: '#F54A45', iconBgColor: '#FFF0F0' },
 ];
 
 export const notifications: NotificationItem[] = [
@@ -58,17 +57,36 @@ export const notifications: NotificationItem[] = [
   { id: '6', titleKey: '', title: '队列「订单处理」消息积压告警', time: '4小时前', read: true, type: 'warning' },
 ];
 
+export const banners: BannerItem[] = [
+  {
+    id: '1',
+    title: 'APA Creator 最新发布',
+    subtitle: '全新流程设计器，更强大的自动化编排能力',
+    version: 'v3.2.0',
+    gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    icon: 'Palette',
+  },
+  {
+    id: '2',
+    title: 'APA Worker 最新发布',
+    subtitle: '性能优化升级，支持更多自动化场景',
+    version: 'v2.8.0',
+    gradient: 'linear-gradient(135deg, #2BC0E4 0%, #5B86E5 100%)',
+    icon: 'Cpu',
+  },
+];
+
 export const announcements: AnnouncementItem[] = [
-  { id: '1', title: '系统维护通知：3月15日 02:00-06:00', time: '2026-03-12', priority: 'urgent' },
-  { id: '2', title: '2026 开发者大赛报名开启', time: '2026-03-10', priority: 'important' },
-  { id: '3', title: 'WEP 平台 v4.5 版本更新说明', time: '2026-03-08', priority: 'normal' },
-  { id: '4', title: '安全策略更新：密码复杂度要求调整', time: '2026-03-05', priority: 'important' },
+  { id: '1', title: '系统维护通知：3月15日 02:00-06:00', subtitle: '届时平台将暂停服务，请提前做好准备', time: '2026-03-12', priority: 'urgent' },
+  { id: '2', title: '2026 开发者大赛报名开启', subtitle: '参与赢取丰厚奖品，展示你的自动化方案', time: '2026-03-10', priority: 'important' },
+  { id: '3', title: 'WEP 平台 v4.5 版本更新说明', subtitle: '新增多项功能优化和问题修复', time: '2026-03-08', priority: 'normal' },
+  { id: '4', title: '安全策略更新：密码复杂度要求调整', subtitle: '请及时更新密码以符合新规范', time: '2026-03-05', priority: 'important' },
 ];
 
 export const resources: ResourceItem[] = [
-  { id: '1', titleKey: '', title: 'Creator 下载', descKey: '', desc: '流程设计器客户端', icon: 'Download', url: '#' },
-  { id: '2', titleKey: '', title: '用户手册', descKey: '', desc: '平台使用指南', icon: 'BookOpen', url: '#' },
-  { id: '3', titleKey: '', title: 'API 文档', descKey: '', desc: '开发者接口参考', icon: 'FileCode', url: '#' },
+  { id: '1', titleKey: '', title: 'Creator 下载', descKey: '', desc: '流程设计器客户端', icon: 'Telescope', iconColor: '#3370FF', iconBgColor: '#EEF3FF', url: '#' },
+  { id: '2', titleKey: '', title: '用户手册', descKey: '', desc: '平台使用指南', icon: 'BookOpen', iconColor: '#7C3AED', iconBgColor: '#F3EEFF', url: '#' },
+  { id: '3', titleKey: '', title: 'API 文档', descKey: '', desc: '开发者接口参考', icon: 'FileCode', iconColor: '#0FC6C2', iconBgColor: '#E8FFFE', url: '#' },
 ];
 
 export const recentActivities: ActivityItem[] = [

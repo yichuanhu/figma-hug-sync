@@ -3,12 +3,12 @@ import { Workflow, Play, Upload, Trash2, PenLine } from 'lucide-react';
 import { recentActivities } from '../../mockData';
 import './index.less';
 
-const typeIconMap: Record<string, React.ComponentType<any>> = {
-  create: Workflow,
-  execute: Play,
-  publish: Upload,
-  delete: Trash2,
-  update: PenLine,
+const typeConfig: Record<string, { icon: React.ComponentType<any>; color: string; bgColor: string }> = {
+  create: { icon: Workflow, color: '#3370FF', bgColor: '#EEF3FF' },
+  execute: { icon: Play, color: '#00B365', bgColor: '#E8F8F0' },
+  publish: { icon: Upload, color: '#7C3AED', bgColor: '#F3EEFF' },
+  delete: { icon: Trash2, color: '#F53F3F', bgColor: '#FFF0F0' },
+  update: { icon: PenLine, color: '#FF7D00', bgColor: '#FFF3E8' },
 };
 
 const RecentActivitySection = () => {
@@ -21,10 +21,14 @@ const RecentActivitySection = () => {
       </div>
       <div className="activity-list">
         {recentActivities.map((item) => {
-          const IconComp = typeIconMap[item.type] || Workflow;
+          const config = typeConfig[item.type] || typeConfig.create;
+          const IconComp = config.icon;
           return (
             <div key={item.id} className="activity-item">
-              <div className="activity-item-icon">
+              <div
+                className="activity-item-icon"
+                style={{ backgroundColor: config.bgColor, color: config.color }}
+              >
                 <IconComp size={14} strokeWidth={2} />
               </div>
               <div className="activity-item-content">

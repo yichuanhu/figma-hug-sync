@@ -2624,10 +2624,14 @@
       "title": "最近活动"
     },
     "notifications": {
-      "title": "个人通知"
+      "title": "个人通知",
+      "more": "更多",
+      "collapse": "收起",
+      "expand": "展开"
     },
     "announcements": {
-      "title": "平台公告"
+      "title": "产品动态",
+      "viewAll": "全部"
     },
     "resources": {
       "title": "资源获取"

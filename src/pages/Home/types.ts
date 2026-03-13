@@ -15,6 +15,9 @@ export interface MetricItem {
   unit?: string;
   trend?: 'up' | 'down' | 'flat';
   trendValue?: string;
+  icon: string;
+  iconColor: string;
+  iconBgColor: string;
 }
 
 export interface NotificationItem {
@@ -29,8 +32,18 @@ export interface NotificationItem {
 export interface AnnouncementItem {
   id: string;
   title: string;
+  subtitle: string;
   time: string;
   priority: 'urgent' | 'important' | 'normal';
+}
+
+export interface BannerItem {
+  id: string;
+  title: string;
+  subtitle: string;
+  version: string;
+  gradient: string;
+  icon: string;
 }
 
 export interface ResourceItem {
@@ -40,6 +53,8 @@ export interface ResourceItem {
   descKey: string;
   desc: string;
   icon: string;
+  iconColor: string;
+  iconBgColor: string;
   url?: string;
 }
 
