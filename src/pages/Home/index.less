@@ -1,8 +1,24 @@
-// 首页外层大卡片使用更浅的灰色背景
+// 首页外层大卡片使用 --semi-color-default 背景色
 .app-layout-content-card:has(.home-page) {
-  background-color: rgba(240, 242, 245, 0.6) !important;
+  background-color: var(--semi-color-default) !important;
   box-shadow: none !important;
   border: none !important;
+  position: relative;
+  overflow: hidden;
+
+  // 蓝色大晕影 - 使用伪元素
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 120%;
+    height: 120%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(152, 205, 253, 0.1) 0%, transparent 10%);
+    pointer-events: none;
+    z-index: 0;
+  }
 }
 
 .home-page {
@@ -11,21 +27,7 @@
   overflow-y: auto;
   padding: 0;
 
-  // 黄色暖光晕影 - 右上角
-  &::before {
-    content: '';
-    position: absolute;
-    top: -100px;
-    right: -40px;
-    width: 480px;
-    height: 480px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(255, 210, 0, 0.13) 0%, rgba(255, 235, 80, 0.06) 40%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  // 蓝紫冷光晕影 - 左下角
+  // 蓝紫冷光晕影 - 左下角（保留原有的）
   &::after {
     content: '';
     position: absolute;
