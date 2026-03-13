@@ -1,4 +1,18 @@
 .metrics-section {
+  &-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  &-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--semi-color-text-0);
+    line-height: 22px;
+  }
+
   .metrics-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -12,7 +26,6 @@
     padding: 14px 16px;
     border-radius: 10px;
     border: 1px solid var(--semi-color-border);
-    background-color: var(--semi-color-bg-0);
     transition: all 0.2s ease;
 
     &:hover {
@@ -38,7 +51,8 @@
 
     &-label {
       font-size: 13px;
-      color: var(--semi-color-text-2);
+      font-weight: 600;
+      color: var(--semi-color-text-0);
       line-height: 20px;
       white-space: nowrap;
     }

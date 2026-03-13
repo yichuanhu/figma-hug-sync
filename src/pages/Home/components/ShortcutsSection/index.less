@@ -1,4 +1,18 @@
 .shortcuts-section {
+  &-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  &-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--semi-color-text-0);
+    line-height: 22px;
+  }
+
   .shortcuts-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -11,7 +25,7 @@
     justify-content: space-between;
     padding: 18px 20px;
     border-radius: 12px;
-    border: 1px solid transparent;
+    border: 1px solid var(--semi-color-border);
     cursor: pointer;
     transition: all 0.2s ease;
     position: relative;

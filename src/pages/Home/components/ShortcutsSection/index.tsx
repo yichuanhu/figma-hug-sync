@@ -87,9 +87,9 @@ const ShortcutsSection = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="home-card shortcuts-section">
-      <div className="home-card-header">
-        <span className="home-card-title">{t('homepage.shortcuts.title')}</span>
+    <div className="shortcuts-section">
+      <div className="shortcuts-section-header">
+        <span className="shortcuts-section-title">{t('homepage.shortcuts.title')}</span>
       </div>
       <div className="shortcuts-grid">
         {shortcuts.map((item) => {
@@ -98,7 +98,7 @@ const ShortcutsSection = () => {
             <div
               key={item.key}
               className="shortcut-card"
-              style={{ backgroundColor: item.bgColor, borderColor: item.bgColor }}
+              style={{ backgroundColor: item.bgColor, borderColor: item.borderColor || item.bgColor }}
               onClick={() => item.path && navigate(item.path)}
             >
               <div className="shortcut-card-info">
