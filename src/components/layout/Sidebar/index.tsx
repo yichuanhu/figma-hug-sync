@@ -38,7 +38,11 @@ import {
   Database,
   Shield,
 } from 'lucide-react';
-import layoutIcon from '@/assets/icons/layout.svg';
+const LayoutIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path fillRule="evenodd" clipRule="evenodd" d="M3 15.75C2.17157 15.75 1.5 15.0784 1.5 14.25L1.5 3.75C1.5 2.92157 2.17157 2.25 3 2.25L15 2.25C15.8284 2.25 16.5 2.92157 16.5 3.75L16.5 14.25C16.5 15.0784 15.8284 15.75 15 15.75L3 15.75ZM3 3.75L3 14.25L6.375 14.25L6.375 3.75L3 3.75ZM7.875 3.75L7.875 14.25L15 14.25L15 3.75L7.875 3.75Z" fill="currentColor"/>
+  </svg>
+);
 import laiyeLogo from '@/assets/laiye-logo.png';
 
 // 中心图标
@@ -418,7 +422,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
                 }}
                 title={t('sidebar.expandSidebar')}
               >
-                <img src={layoutIcon} alt="expand" className="sidebar-layout-icon" />
+                <LayoutIcon />
               </div>
             </div>
             {/* 菜单列表 - 可滚动 */}
@@ -622,7 +626,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
           <div className="sidebar-detail-header">
             <span className="sidebar-detail-title">{currentCenterLabel ? t(currentCenterLabel) : ''}</span>
             <div className="sidebar-icon-btn-small" onClick={onToggleCollapse} title={t('sidebar.expandSidebar')}>
-              <img src={layoutIcon} alt="collapse" className="sidebar-layout-icon" />
+              <LayoutIcon />
             </div>
           </div>
 
