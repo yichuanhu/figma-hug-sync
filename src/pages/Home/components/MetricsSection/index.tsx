@@ -12,6 +12,7 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   CheckCircle,
   Clock,
   TrendingUp,
+  FolderPlus,
 };
 
 const MetricsSection = () => {
