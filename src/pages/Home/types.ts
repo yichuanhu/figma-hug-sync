@@ -19,6 +19,7 @@ export interface MetricItem {
   icon: string;
   iconColor: string;
   iconBgColor: string;
+  borderColor?: string;
 }
 
 export interface NotificationItem {
