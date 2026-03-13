@@ -1,27 +1,22 @@
 .metrics-section {
-  .metrics-list {
+  .metrics-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
+    gap: 10px;
   }
 
   .metric-card {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 14px 18px;
-    border-radius: 12px;
+    padding: 14px 16px;
+    border-radius: 10px;
     border: 1px solid var(--semi-color-border);
     background-color: var(--semi-color-bg-0);
-    cursor: pointer;
     transition: all 0.2s ease;
 
-    &:hover:not(.metric-card-active) {
-      background-color: var(--semi-color-fill-0);
-    }
-
-    &-active {
-      border-width: 1.5px;
+    &:hover {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
 
     &-left {
@@ -32,8 +27,9 @@
     }
 
     &-icon {
-      width: 32px;
-      height: 32px;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -41,18 +37,51 @@
     }
 
     &-label {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--semi-color-text-0);
-      line-height: 22px;
+      font-size: 13px;
+      color: var(--semi-color-text-2);
+      line-height: 20px;
+      white-space: nowrap;
+    }
+
+    &-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    &-value-row {
+      display: flex;
+      align-items: baseline;
+      gap: 2px;
     }
 
     &-value {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 700;
       color: var(--semi-color-text-0);
-      line-height: 32px;
-      flex-shrink: 0;
+      line-height: 28px;
+    }
+
+    &-unit {
+      font-size: 13px;
+      color: var(--semi-color-text-2);
+    }
+
+    &-trend {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      margin-top: 2px;
+      font-size: 11px;
+      line-height: 16px;
+
+      &.up {
+        color: var(--semi-color-success);
+      }
+
+      &.down {
+        color: var(--semi-color-danger);
+      }
     }
   }
 }
