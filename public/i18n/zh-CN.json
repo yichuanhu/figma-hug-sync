@@ -2594,5 +2594,43 @@
   "breadcrumb": {
     "devPreview": "开发预览",
     "emptyStatePreview": "缺省状态预览"
+  },
+  "homepage": {
+    "welcome": "Hi {{name}}，欢迎来到 WEP 平台",
+    "shortcuts": {
+      "title": "快捷操作",
+      "newProcess": "新建流程",
+      "newProcessDesc": "从空白开始创建",
+      "newRobot": "新建机器人",
+      "newRobotDesc": "自动化机器人创建",
+      "createTask": "创建任务",
+      "createTaskDesc": "快速创建即时任务",
+      "queueManagement": "队列管理",
+      "queueManagementDesc": "消息队列轻松管理"
+    },
+    "metrics": {
+      "title": "核心指标",
+      "department": "我的部门",
+      "platform": "全平台",
+      "robots": "机器人数量",
+      "processes": "流程数量",
+      "todayTasks": "今日任务数",
+      "successRate": "成功率",
+      "savedHours": "本月节省工时",
+      "savedCost": "累计节约成本",
+      "weeklyNew": "本周新增流程"
+    },
+    "activity": {
+      "title": "最近活动"
+    },
+    "notifications": {
+      "title": "个人通知"
+    },
+    "announcements": {
+      "title": "平台公告"
+    },
+    "resources": {
+      "title": "资源获取"
+    }
   }
 }
