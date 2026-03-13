@@ -98,4 +98,6 @@ export const recentActivities: ActivityItem[] = [
   { id: '6', type: 'execute', description: '执行任务', target: '邮件通知-批量发送', time: '昨天 14:10' },
   { id: '7', type: 'delete', description: '删除队列', target: '测试队列-临时', time: '昨天 11:30' },
   { id: '8', type: 'update', description: '更新参数', target: '超时配置-全局', time: '3月11日 09:00' },
+  { id: '9', type: 'publish', description: '发布流程', target: '订单自动审核 v1.3', time: '3月10日 15:40' },
+  { id: '10', type: 'execute', description: '执行任务', target: '库存盘点-周报', time: '3月10日 10:00' },
 ];
