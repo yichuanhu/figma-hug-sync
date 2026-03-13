@@ -98,7 +98,6 @@ const MetricsSection = () => {
             <div
               key={item.key}
               className="metric-card"
-              style={{ backgroundColor: item.iconBgColor }}
             >
               <div className="metric-card-left">
                 <div
