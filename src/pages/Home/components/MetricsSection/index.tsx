@@ -78,6 +78,12 @@ const MetricsSection = () => {
   const { t } = useTranslation();
   const [scope, setScope] = useState<string>('department');
 
+  // Chunk metrics into rows of 3
+  const rows: typeof metrics[] = [];
+  for (let i = 0; i < metrics.length; i += 3) {
+    rows.push(metrics.slice(i, i + 3));
+  }
+
   return (
     <div className="home-card metrics-section">
       <div className="home-card-header">
@@ -91,32 +97,36 @@ const MetricsSection = () => {
           <Radio value="platform">{t('homepage.metrics.platform')}</Radio>
         </RadioGroup>
       </div>
-      <div className="metrics-grid">
-        {metrics.map((item) => {
-          const IconComp = iconMap[item.icon] || BotFilledIcon;
-          return (
-            <div key={item.key} className="metric-card">
-              <div
-                className="metric-card-icon"
-                style={{ backgroundColor: item.iconBgColor, color: item.iconColor }}
-              >
-                <IconComp />
-              </div>
-              <div className="metric-card-info">
-                <div className="metric-card-label">{t(item.labelKey)}</div>
-                <div className="metric-card-value-row">
-                  <span className="metric-card-value">{item.value}</span>
-                  {item.unit && <span className="metric-card-unit">{item.unit}</span>}
-                  {item.trend && (
-                    <span className={`metric-card-trend ${item.trend}`}>
-                      {item.trendValue}
-                    </span>
-                  )}
+      <div className="metrics-rows">
+        {rows.map((row, rowIdx) => (
+          <div key={rowIdx} className="metrics-grid">
+            {row.map((item) => {
+              const IconComp = iconMap[item.icon] || BotFilledIcon;
+              return (
+                <div key={item.key} className="metric-card">
+                  <div
+                    className="metric-card-icon"
+                    style={{ backgroundColor: item.iconBgColor, color: item.iconColor }}
+                  >
+                    <IconComp />
+                  </div>
+                  <div className="metric-card-info">
+                    <div className="metric-card-label">{t(item.labelKey)}</div>
+                    <div className="metric-card-value-row">
+                      <span className="metric-card-value">{item.value}</span>
+                      {item.unit && <span className="metric-card-unit">{item.unit}</span>}
+                      {item.trend && (
+                        <span className={`metric-card-trend ${item.trend}`}>
+                          {item.trendValue}
+                        </span>
+                      )}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          );
-        })}
+              );
+            })}
+          </div>
+        ))}
       </div>
     </div>
   );
