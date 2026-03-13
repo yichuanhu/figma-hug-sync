@@ -1,6 +1,6 @@
-// 首页去掉外层大卡片的背景和阴影
+// 首页外层大卡片使用更浅的背景色
 .app-layout-content-card:has(.home-page) {
-  background-color: transparent !important;
+  background-color: rgba(255, 255, 255, 0.6) !important;
   box-shadow: none !important;
   border: none !important;
 }
@@ -115,7 +115,7 @@
 
   // Card wrapper only for right column items that need it
   .home-card {
-    background-color: rgba(255, 255, 255, 0.85);
+    background-color: var(--semi-color-bg-0);
     border-radius: 10px;
     border: 1px solid var(--semi-color-border);
     padding: 20px;
