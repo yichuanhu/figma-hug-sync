@@ -34,13 +34,13 @@ export const shortcuts: ShortcutItem[] = [
 ];
 
 export const metrics: MetricItem[] = [
-  { key: 'robots', labelKey: 'homepage.metrics.robots', value: 25, trend: 'up', trendValue: '+3', icon: 'Bot', iconColor: '#3370FF', iconBgColor: '#EEF3FF' },
-  { key: 'processes', labelKey: 'homepage.metrics.processes', value: 120, trend: 'up', trendValue: '+8', icon: 'Workflow', iconColor: '#7C3AED', iconBgColor: '#F3EEFF' },
-  { key: 'todayTasks', labelKey: 'homepage.metrics.todayTasks', value: 345, trend: 'up', trendValue: '+12%', icon: 'Play', iconColor: '#FF7D00', iconBgColor: '#FFF3E8' },
-  { key: 'successRate', labelKey: 'homepage.metrics.successRate', value: '98.5', unit: '%', trend: 'up', trendValue: '+0.3%', icon: 'CheckCircle', iconColor: '#00B365', iconBgColor: '#E8F8F0' },
-  { key: 'savedHours', labelKey: 'homepage.metrics.savedHours', value: 156, unit: 'h', trend: 'up', trendValue: '+24h', icon: 'Clock', iconColor: '#0FC6C2', iconBgColor: '#E8FFFE' },
-  { key: 'savedCost', labelKey: 'homepage.metrics.savedCost', value: '23', unit: '万', trend: 'up', trendValue: '+2.1万', icon: 'TrendingUp', iconColor: '#F54A45', iconBgColor: '#FFF0F0' },
-  { key: 'weeklyNew', labelKey: 'homepage.metrics.weeklyNew', value: 12, trend: 'down', trendValue: '-3', icon: 'FolderPlus', iconColor: '#3370FF', iconBgColor: '#EEF3FF' },
+  { key: 'robots', labelKey: 'homepage.metrics.robots', value: 25, trend: 'up', trendValue: '+3', icon: 'Bot', iconColor: '#3370FF', iconBgColor: '#EEF3FF', borderColor: '#D0DFFE' },
+  { key: 'processes', labelKey: 'homepage.metrics.processes', value: 120, trend: 'up', trendValue: '+8', icon: 'Workflow', iconColor: '#7C3AED', iconBgColor: '#F3EEFF', borderColor: '#DDD0FA' },
+  { key: 'todayTasks', labelKey: 'homepage.metrics.todayTasks', value: 345, trend: 'up', trendValue: '+12%', icon: 'Play', iconColor: '#FF7D00', iconBgColor: '#FFF3E8', borderColor: '#FAE0C8' },
+  { key: 'successRate', labelKey: 'homepage.metrics.successRate', value: '98.5', unit: '%', trend: 'up', trendValue: '+0.3%', icon: 'CheckCircle', iconColor: '#00B365', iconBgColor: '#E8F8F0', borderColor: '#C5EDDA' },
+  { key: 'savedHours', labelKey: 'homepage.metrics.savedHours', value: 156, unit: 'h', trend: 'up', trendValue: '+24h', icon: 'Clock', iconColor: '#0FC6C2', iconBgColor: '#E8FFFE', borderColor: '#C0F0EE' },
+  { key: 'savedCost', labelKey: 'homepage.metrics.savedCost', value: '23', unit: '万', trend: 'up', trendValue: '+2.1万', icon: 'TrendingUp', iconColor: '#F54A45', iconBgColor: '#FFF0F0', borderColor: '#FAD0D0' },
+  { key: 'weeklyNew', labelKey: 'homepage.metrics.weeklyNew', value: 12, trend: 'down', trendValue: '-3', icon: 'FolderPlus', iconColor: '#3370FF', iconBgColor: '#EEF3FF', borderColor: '#D0DFFE' },
 ];
 
 export const notifications: NotificationItem[] = [
