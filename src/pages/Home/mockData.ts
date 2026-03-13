@@ -31,16 +31,6 @@ export const shortcuts: ShortcutItem[] = [
     borderColor: '#FAE0C8',
     path: '/scheduling-center/task-execution/task-list',
   },
-  {
-    key: 'queueManagement',
-    titleKey: 'homepage.shortcuts.queueManagement',
-    descKey: 'homepage.shortcuts.queueManagementDesc',
-    icon: 'ListStart',
-    color: '#3CB77E',
-    bgColor: '#F2FBF6',
-    borderColor: '#C8EDDA',
-    path: '/dev-center/business-assets/queues',
-  },
 ];
 
 export const metrics: MetricItem[] = [
