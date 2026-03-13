@@ -6,8 +6,8 @@ export const shortcuts: ShortcutItem[] = [
     titleKey: 'homepage.shortcuts.newProcess',
     descKey: 'homepage.shortcuts.newProcessDesc',
     icon: 'Workflow',
-    color: 'var(--semi-color-primary)',
-    bgColor: 'rgba(var(--semi-blue-0), 1)',
+    color: '#7B8FE8',
+    bgColor: '#EEF1FD',
     path: '/process-development',
   },
   {
@@ -15,8 +15,8 @@ export const shortcuts: ShortcutItem[] = [
     titleKey: 'homepage.shortcuts.newRobot',
     descKey: 'homepage.shortcuts.newRobotDesc',
     icon: 'Bot',
-    color: 'rgba(var(--semi-purple-5), 1)',
-    bgColor: 'rgba(var(--semi-purple-0), 1)',
+    color: '#E8739A',
+    bgColor: '#FDF0F4',
     path: '/scheduling-center/resource-monitoring/worker-management',
   },
   {
@@ -24,8 +24,8 @@ export const shortcuts: ShortcutItem[] = [
     titleKey: 'homepage.shortcuts.createTask',
     descKey: 'homepage.shortcuts.createTaskDesc',
     icon: 'Play',
-    color: 'rgba(var(--semi-orange-5), 1)',
-    bgColor: 'rgba(var(--semi-orange-0), 1)',
+    color: '#F5A25D',
+    bgColor: '#FFF5EC',
     path: '/scheduling-center/task-execution/task-list',
   },
   {
@@ -33,8 +33,8 @@ export const shortcuts: ShortcutItem[] = [
     titleKey: 'homepage.shortcuts.queueManagement',
     descKey: 'homepage.shortcuts.queueManagementDesc',
     icon: 'ListStart',
-    color: 'rgba(var(--semi-teal-5), 1)',
-    bgColor: 'rgba(var(--semi-teal-0), 1)',
+    color: '#3CB77E',
+    bgColor: '#EDF8F2',
     path: '/dev-center/business-assets/queues',
   },
 ];
