@@ -23,9 +23,15 @@
     min-width: 0;
     transition: background 0.2s ease;
 
-    // Vertical divider between cards
-    & + .metric-card {
-      border-left: 1px solid var(--semi-color-border);
+    & + .metric-card::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 40px;
+      width: 1px;
+      background: var(--semi-color-border);
     }
 
     &:hover {
