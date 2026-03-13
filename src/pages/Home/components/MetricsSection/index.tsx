@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RadioGroup, Radio } from '@douyinfe/semi-ui';
-import { TrendingUp, TrendingDown } from 'lucide-react';
+
 import { metrics } from '../../mockData';
 import './index.less';
 
