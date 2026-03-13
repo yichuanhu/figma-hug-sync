@@ -2,22 +2,29 @@
   .shortcuts-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    gap: 10px;
   }
 
   .shortcut-card {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px;
+    padding: 14px 16px;
     border-radius: 8px;
     border: 1px solid var(--semi-color-border);
+    background-color: var(--semi-color-bg-0);
     cursor: pointer;
     transition: all 0.2s ease;
 
     &:hover {
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      border-color: transparent;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+      border-color: var(--semi-color-primary-light-active);
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
     }
 
     &-info {
@@ -29,12 +36,14 @@
       font-size: 14px;
       font-weight: 600;
       color: var(--semi-color-text-0);
-      margin-bottom: 4px;
+      margin-bottom: 2px;
+      line-height: 22px;
     }
 
     &-desc {
       font-size: 12px;
       color: var(--semi-color-text-2);
+      line-height: 18px;
     }
 
     &-icon {
@@ -45,7 +54,7 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      margin-left: 12px;
+      margin-left: 16px;
     }
   }
 }
