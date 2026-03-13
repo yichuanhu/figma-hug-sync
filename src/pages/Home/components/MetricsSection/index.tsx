@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RadioGroup, Radio } from '@douyinfe/semi-ui';
-import { TrendingUp, TrendingDown, Bot, Workflow, Play, CheckCircle, Clock } from 'lucide-react';
+import { TrendingUp, TrendingDown, Bot, Workflow, Play, CheckCircle, Clock, FolderPlus } from 'lucide-react';
 import { metrics } from '../../mockData';
 import './index.less';
 
@@ -12,6 +12,7 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   CheckCircle,
   Clock,
   TrendingUp,
+  FolderPlus,
 };
 
 const MetricsSection = () => {
