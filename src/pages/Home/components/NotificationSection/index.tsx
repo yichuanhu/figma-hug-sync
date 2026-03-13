@@ -11,7 +11,7 @@ const NotificationSection = () => {
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   return (
-    <div className="home-card notification-section">
+    <div className={`home-card notification-section ${collapsed ? 'is-collapsed' : ''}`}>
       <div className="home-card-header">
         <span className="home-card-title">{t('homepage.notifications.title')}</span>
         <div className="notification-actions">
