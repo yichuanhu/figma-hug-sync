@@ -8,15 +8,19 @@
     display: flex;
     align-items: flex-start;
     gap: 10px;
-    padding: 10px 0;
+    padding: 9px 0;
     border-bottom: 1px solid var(--semi-color-border);
     cursor: pointer;
-
-    &:last-child {
-      border-bottom: none;
-    }
+    transition: background-color 0.15s ease;
+    margin: 0 -8px;
+    padding-left: 8px;
+    padding-right: 8px;
+    border-radius: 6px;
+    border-bottom: none;
 
     &:hover {
+      background-color: var(--semi-color-fill-0);
+
       .notification-item-title {
         color: var(--semi-color-primary);
       }
@@ -50,12 +54,14 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      transition: color 0.15s ease;
     }
 
     &-time {
       font-size: 12px;
       color: var(--semi-color-text-3);
       margin-top: 2px;
+      line-height: 16px;
     }
   }
 }
