@@ -52,7 +52,7 @@ const App = () => (
       <Routes>
         {/* 所有带侧边栏布局的页面 */}
         <Route element={<AppLayout />}>
-          <Route path="/" element={<Index />} />
+          <Route path="/" element={<Home />} />
           <Route path="/process-development" element={<ProcessDevelopment />} />
           
           <Route path="/scheduling-center/resource-monitoring/worker-management" element={<WorkerManagementPage />} />

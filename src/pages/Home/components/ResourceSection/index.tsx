@@ -3,7 +3,7 @@ import { Download, BookOpen, FileCode, ExternalLink } from 'lucide-react';
 import { resources } from '../../mockData';
 import './index.less';
 
-const iconMap: Record<string, React.ComponentType<{ size?: number; strokeWidth?: number }>> = {
+const iconMap: Record<string, React.ComponentType<any>> = {
   Download,
   BookOpen,
   FileCode,

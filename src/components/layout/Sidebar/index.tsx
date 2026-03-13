@@ -274,8 +274,11 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     if (pathname.startsWith('/scheduling-center/resource-monitoring/worker-management')) {
       return 'workerManagement';
     }
-    if (pathname === '/process-development' || pathname === '/') {
+    if (pathname === '/process-development') {
       return 'automationProcess';
+    }
+    if (pathname === '/') {
+      return 'home';
     }
     if (pathname === '/dev-center/business-assets/queues') {
       return 'devQueue';

@@ -15,7 +15,6 @@ const MetricsSection = () => {
         <span className="home-card-title">{t('homepage.metrics.title')}</span>
         <RadioGroup
           type="button"
-          size="small"
           value={scope}
           onChange={(e) => setScope(e.target.value as string)}
         >

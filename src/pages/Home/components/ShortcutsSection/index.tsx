@@ -4,7 +4,7 @@ import { Workflow, Bot, Play, ListStart } from 'lucide-react';
 import { shortcuts } from '../../mockData';
 import './index.less';
 
-const iconMap: Record<string, React.ComponentType<{ size?: number; strokeWidth?: number }>> = {
+const iconMap: Record<string, React.ComponentType<any>> = {
   Workflow,
   Bot,
   Play,

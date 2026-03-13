@@ -3,7 +3,7 @@ import { Workflow, Play, Upload, Trash2, PenLine } from 'lucide-react';
 import { recentActivities } from '../../mockData';
 import './index.less';
 
-const typeIconMap: Record<string, React.ComponentType<{ size?: number; strokeWidth?: number }>> = {
+const typeIconMap: Record<string, React.ComponentType<any>> = {
   create: Workflow,
   execute: Play,
   publish: Upload,
