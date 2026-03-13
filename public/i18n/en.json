@@ -2584,5 +2584,43 @@
   "breadcrumb": {
     "devPreview": "Dev Preview",
     "emptyStatePreview": "Empty State Preview"
+  },
+  "homepage": {
+    "welcome": "Hi {{name}}, Welcome to WEP Platform",
+    "shortcuts": {
+      "title": "Quick Actions",
+      "newProcess": "New Process",
+      "newProcessDesc": "Create from scratch",
+      "newRobot": "New Robot",
+      "newRobotDesc": "Create automation robot",
+      "createTask": "Create Task",
+      "createTaskDesc": "Quickly create instant task",
+      "queueManagement": "Queue Management",
+      "queueManagementDesc": "Manage message queues easily"
+    },
+    "metrics": {
+      "title": "Key Metrics",
+      "department": "My Department",
+      "platform": "Platform",
+      "robots": "Robots",
+      "processes": "Processes",
+      "todayTasks": "Today's Tasks",
+      "successRate": "Success Rate",
+      "savedHours": "Hours Saved (Month)",
+      "savedCost": "Cost Saved (Total)",
+      "weeklyNew": "New Processes (Week)"
+    },
+    "activity": {
+      "title": "Recent Activity"
+    },
+    "notifications": {
+      "title": "Notifications"
+    },
+    "announcements": {
+      "title": "Announcements"
+    },
+    "resources": {
+      "title": "Resources"
+    }
   }
 }

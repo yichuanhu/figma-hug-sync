@@ -1,0 +1,52 @@
+export interface ShortcutItem {
+  key: string;
+  titleKey: string;
+  descKey: string;
+  icon: string; // lucide icon name
+  color: string; // CSS color variable
+  bgColor: string; // CSS background color
+  path?: string;
+}
+
+export interface MetricItem {
+  key: string;
+  labelKey: string;
+  value: number | string;
+  unit?: string;
+  trend?: 'up' | 'down' | 'flat';
+  trendValue?: string;
+}
+
+export interface NotificationItem {
+  id: string;
+  titleKey: string;
+  title: string;
+  time: string;
+  read: boolean;
+  type: 'error' | 'warning' | 'info' | 'success';
+}
+
+export interface AnnouncementItem {
+  id: string;
+  title: string;
+  time: string;
+  priority: 'urgent' | 'important' | 'normal';
+}
+
+export interface ResourceItem {
+  id: string;
+  titleKey: string;
+  title: string;
+  descKey: string;
+  desc: string;
+  icon: string;
+  url?: string;
+}
+
+export interface ActivityItem {
+  id: string;
+  type: 'create' | 'execute' | 'update' | 'delete' | 'publish';
+  description: string;
+  target: string;
+  time: string;
+}

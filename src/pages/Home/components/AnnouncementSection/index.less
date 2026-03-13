@@ -1,0 +1,45 @@
+.announcement-section {
+  .announcement-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .announcement-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--semi-color-border);
+    cursor: pointer;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      .announcement-item-title {
+        color: var(--semi-color-primary);
+      }
+    }
+
+    &-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    &-title {
+      font-size: 13px;
+      color: var(--semi-color-text-0);
+      line-height: 20px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    &-time {
+      font-size: 12px;
+      color: var(--semi-color-text-3);
+      margin-top: 2px;
+    }
+  }
+}

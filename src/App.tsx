@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AppLayout from "@/components/layout/AppLayout";
-import Index from "@/pages/Index";
+import Home from "@/pages/Home";
 import NotFound from "@/pages/NotFound";
 // Development
 import ProcessDevelopment from "@/pages/Development/ProcessDevelopment";
@@ -52,7 +52,7 @@ const App = () => (
       <Routes>
         {/* 所有带侧边栏布局的页面 */}
         <Route element={<AppLayout />}>
-          <Route path="/" element={<Index />} />
+          <Route path="/" element={<Home />} />
           <Route path="/process-development" element={<ProcessDevelopment />} />
           
           <Route path="/scheduling-center/resource-monitoring/worker-management" element={<WorkerManagementPage />} />
