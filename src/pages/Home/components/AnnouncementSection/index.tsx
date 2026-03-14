@@ -64,16 +64,22 @@ const AnnouncementSection = () => {
               <div
                 key={banner.id}
                 className="banner-slide"
-                style={{ background: banner.gradient }}
+                style={banner.image && bannerImageMap[banner.image] ? undefined : { background: banner.gradient }}
               >
-                <div className="banner-slide-content">
-                  <div className="banner-slide-title">{banner.title}</div>
-                  <div className="banner-slide-subtitle">{banner.subtitle}</div>
-                  <div className="banner-slide-version">{banner.version}</div>
-                </div>
-                <div className="banner-slide-icon">
-                  {IconComp && <IconComp size={48} strokeWidth={1.5} />}
-                </div>
+                {banner.image && bannerImageMap[banner.image] ? (
+                  <img src={bannerImageMap[banner.image]} alt={banner.title} className="banner-slide-image" />
+                ) : (
+                  <>
+                    <div className="banner-slide-content">
+                      <div className="banner-slide-title">{banner.title}</div>
+                      <div className="banner-slide-subtitle">{banner.subtitle}</div>
+                      <div className="banner-slide-version">{banner.version}</div>
+                    </div>
+                    <div className="banner-slide-icon">
+                      {IconComp && <IconComp size={48} strokeWidth={1.5} />}
+                    </div>
+                  </>
+                )}
               </div>
             );
           })}
