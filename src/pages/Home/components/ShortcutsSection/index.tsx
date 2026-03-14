@@ -100,19 +100,19 @@ const RobotIcon = () => (
 );
 
 const TaskIcon = () => (
-  <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g filter="url(#filter0_i_task)">
-      <rect x="17" y="5" width="32" height="32" rx="8" fill="url(#paint0_task)" fillOpacity="0.8"/>
+      <rect x="12.75" y="3.75" width="24" height="24" rx="6" fill="url(#paint0_task)" fillOpacity="0.8"/>
     </g>
-    <foreignObject x="-2" y="5" width="51" height="52.2979">
+    <foreignObject x="-1.5" y="3.75" width="38.25" height="39.2234">
       <div style={{backdropFilter:'blur(4px)',WebkitBackdropFilter:'blur(4px)',clipPath:'url(#bgblur_task_clip)',height:'100%',width:'100%',backgroundColor:'rgba(255,255,255,0.16)',border:'1px solid rgba(255,255,255,0.28)',boxShadow:'inset 0 1px 0 rgba(255,255,255,0.36)'}}></div>
     </foreignObject>
     <g filter="url(#filter1_i_task)">
-      <path d="M6 25.8C6 21.3196 6 19.0794 6.87195 17.3681C7.63893 15.8628 8.86278 14.6389 10.3681 13.8719C12.0794 13 14.3196 13 18.8 13H28.2C32.6804 13 34.9206 13 36.6319 13.8719C38.1372 14.6389 39.3611 15.8628 40.1281 17.3681C41 19.0794 41 21.3196 41 25.8V37.4366C41 42.5886 41 45.1646 39.9149 46.7143C38.9675 48.0674 37.5041 48.9701 35.8697 49.2095C33.998 49.4837 31.6959 48.3277 27.0918 46.0156L26.4558 45.6962C25.4086 45.1704 24.885 44.9074 24.3355 44.8032C23.8488 44.7108 23.3492 44.7097 22.862 44.7998C22.312 44.9016 21.7873 45.1621 20.7377 45.6832L19.8689 46.1145C15.2748 48.3953 12.9777 49.5358 11.1113 49.2562C9.48144 49.0121 8.02375 48.1084 7.08034 46.7571C6 45.2097 6 42.6451 6 37.5159V25.8Z" fill="#F5AC7B" fillOpacity="0.42"/>
+      <path d="M4.5 19.35C4.5 15.9897 4.5 14.3095 5.15396 13.0261C5.7292 11.8971 6.64709 10.9792 7.77611 10.4039C9.05954 9.75 10.7397 9.75 14.1 9.75H21.15C24.5103 9.75 26.1905 9.75 27.4739 10.4039C28.6029 10.9792 29.5208 11.8971 30.0961 13.0261C30.75 14.3095 30.75 15.9897 30.75 19.35V28.0775C30.75 31.9414 30.75 33.8735 29.9362 35.0357C29.2256 36.0505 28.1281 36.7276 26.9023 36.9071C25.4985 37.1128 23.7719 36.2458 20.3189 34.5117L19.8419 34.2722C19.0565 33.8778 18.6638 33.6806 18.2516 33.6024C17.8866 33.5331 17.5119 33.5323 17.1465 33.5998C16.734 33.6762 16.3405 33.8716 15.5533 34.2624L14.9017 34.5859C11.4561 36.2965 9.7333 37.1518 8.33348 36.9421C7.11108 36.7591 6.01781 36.0813 5.31026 35.0678C4.5 33.9073 4.5 31.9838 4.5 28.1369V19.35Z" fill="#F5AC7B" fillOpacity="0.42"/>
     </g>
-    <path d="M23 23C23.8991 23 24.6279 23.7289 24.6279 24.6279V28.3721H28.3721C29.2711 28.3721 29.9999 29.101 30 30C30 30.8991 29.2711 31.6279 28.3721 31.6279H24.6279V35.3721C24.6279 36.2711 23.8991 37 23 37C22.101 37 21.3721 36.2711 21.3721 35.3721V31.6279H17.6279C16.7289 31.6279 16 30.8991 16 30C16.0001 29.101 16.7289 28.3721 17.6279 28.3721H21.3721V24.6279C21.3721 23.7289 22.101 23 23 23Z" fill="url(#paint1_task)"/>
+    <path d="M17.25 17.25C17.9243 17.25 18.4709 17.7967 18.4709 18.4709V21.2791H21.2791C21.9533 21.2791 22.4999 21.8257 22.5 22.5C22.5 23.1743 21.9533 23.7209 21.2791 23.7209H18.4709V26.5291C18.4709 27.2033 17.9243 27.75 17.25 27.75C16.5757 27.75 16.0291 27.2033 16.0291 26.5291V23.7209H13.2209C12.5467 23.7209 12 23.1743 12 22.5C12.0001 21.8257 12.5467 21.2791 13.2209 21.2791H16.0291V18.4709C16.0291 17.7967 16.5757 17.25 17.25 17.25Z" fill="url(#paint1_task)"/>
     <defs>
-      <filter id="filter0_i_task" x="17" y="5" width="32" height="33" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+      <filter id="filter0_i_task" x="12.75" y="3.75" width="24" height="24.75" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
         <feFlood floodOpacity="0" result="BackgroundImageFix"/>
         <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
         <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
@@ -122,7 +122,7 @@ const TaskIcon = () => (
         <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0"/>
         <feBlend mode="normal" in2="shape" result="effect1_innerShadow"/>
       </filter>
-      <filter id="filter1_i_task" x="-2" y="5" width="51" height="52.2979" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+      <filter id="filter1_i_task" x="-1.5" y="3.75" width="38.25" height="39.2234" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
         <feFlood floodOpacity="0" result="BackgroundImageFix"/>
         <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
         <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
@@ -132,14 +132,14 @@ const TaskIcon = () => (
         <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0"/>
         <feBlend mode="normal" in2="shape" result="effect1_innerShadow"/>
       </filter>
-      <clipPath id="bgblur_task_clip" transform="translate(2 -5)">
-        <path d="M6 25.8C6 21.3196 6 19.0794 6.87195 17.3681C7.63893 15.8628 8.86278 14.6389 10.3681 13.8719C12.0794 13 14.3196 13 18.8 13H28.2C32.6804 13 34.9206 13 36.6319 13.8719C38.1372 14.6389 39.3611 15.8628 40.1281 17.3681C41 19.0794 41 21.3196 41 25.8V37.4366C41 42.5886 41 45.1646 39.9149 46.7143C38.9675 48.0674 37.5041 48.9701 35.8697 49.2095C33.998 49.4837 31.6959 48.3277 27.0918 46.0156L26.4558 45.6962C25.4086 45.1704 24.885 44.9074 24.3355 44.8032C23.8488 44.7108 23.3492 44.7097 22.862 44.7998C22.312 44.9016 21.7873 45.1621 20.7377 45.6832L19.8689 46.1145C15.2748 48.3953 12.9777 49.5358 11.1113 49.2562C9.48144 49.0121 8.02375 48.1084 7.08034 46.7571C6 45.2097 6 42.6451 6 37.5159V25.8Z"/>
+      <clipPath id="bgblur_task_clip" transform="translate(1.5 -3.75)">
+        <path d="M4.5 19.35C4.5 15.9897 4.5 14.3095 5.15396 13.0261C5.7292 11.8971 6.64709 10.9792 7.77611 10.4039C9.05954 9.75 10.7397 9.75 14.1 9.75H21.15C24.5103 9.75 26.1905 9.75 27.4739 10.4039C28.6029 10.9792 29.5208 11.8971 30.0961 13.0261C30.75 14.3095 30.75 15.9897 30.75 19.35V28.0775C30.75 31.9414 30.75 33.8735 29.9362 35.0357C29.2256 36.0505 28.1281 36.7276 26.9023 36.9071C25.4985 37.1128 23.7719 36.2458 20.3189 34.5117L19.8419 34.2722C19.0565 33.8778 18.6638 33.6806 18.2516 33.6024C17.8866 33.5331 17.5119 33.5323 17.1465 33.5998C16.734 33.6762 16.3405 33.8716 15.5533 34.2624L14.9017 34.5859C11.4561 36.2965 9.7333 37.1518 8.33348 36.9421C7.11108 36.7591 6.01781 36.0813 5.31026 35.0678C4.5 33.9073 4.5 31.9838 4.5 28.1369V19.35Z"/>
       </clipPath>
-      <linearGradient id="paint0_task" x1="46.8247" y1="6.96129" x2="36.8879" y2="40.2373" gradientUnits="userSpaceOnUse">
+      <linearGradient id="paint0_task" x1="35.1185" y1="5.22097" x2="27.666" y2="30.178" gradientUnits="userSpaceOnUse">
         <stop stopColor="#F7AC6E"/>
         <stop offset="1" stopColor="#EE5316"/>
       </linearGradient>
-      <linearGradient id="paint1_task" x1="21.5" y1="22.5" x2="22.5" y2="38" gradientUnits="userSpaceOnUse">
+      <linearGradient id="paint1_task" x1="16.125" y1="16.875" x2="16.875" y2="28.5" gradientUnits="userSpaceOnUse">
         <stop stopColor="white"/>
         <stop offset="1" stopColor="white" stopOpacity="0.3"/>
       </linearGradient>
