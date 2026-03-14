@@ -105,7 +105,7 @@ const TaskIcon = () => (
       <rect x="17" y="5" width="32" height="32" rx="8" fill="url(#paint0_task)" fillOpacity="0.8"/>
     </g>
     <foreignObject x="-2" y="5" width="51" height="52.2979">
-      <div style={{backdropFilter:'blur(4px)',clipPath:'url(#bgblur_task_clip)',height:'100%',width:'100%'}}></div>
+      <div style={{backdropFilter:'blur(4px)',WebkitBackdropFilter:'blur(4px)',clipPath:'url(#bgblur_task_clip)',height:'100%',width:'100%',backgroundColor:'rgba(255,255,255,0.16)',border:'1px solid rgba(255,255,255,0.28)',boxShadow:'inset 0 1px 0 rgba(255,255,255,0.36)'}}></div>
     </foreignObject>
     <g filter="url(#filter1_i_task)">
       <path d="M6 25.8C6 21.3196 6 19.0794 6.87195 17.3681C7.63893 15.8628 8.86278 14.6389 10.3681 13.8719C12.0794 13 14.3196 13 18.8 13H28.2C32.6804 13 34.9206 13 36.6319 13.8719C38.1372 14.6389 39.3611 15.8628 40.1281 17.3681C41 19.0794 41 21.3196 41 25.8V37.4366C41 42.5886 41 45.1646 39.9149 46.7143C38.9675 48.0674 37.5041 48.9701 35.8697 49.2095C33.998 49.4837 31.6959 48.3277 27.0918 46.0156L26.4558 45.6962C25.4086 45.1704 24.885 44.9074 24.3355 44.8032C23.8488 44.7108 23.3492 44.7097 22.862 44.7998C22.312 44.9016 21.7873 45.1621 20.7377 45.6832L19.8689 46.1145C15.2748 48.3953 12.9777 49.5358 11.1113 49.2562C9.48144 49.0121 8.02375 48.1084 7.08034 46.7571C6 45.2097 6 42.6451 6 37.5159V25.8Z" fill="#F5AC7B" fillOpacity="0.42"/>
