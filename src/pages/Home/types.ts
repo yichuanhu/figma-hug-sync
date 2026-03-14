@@ -46,6 +46,7 @@ export interface BannerItem {
   version: string;
   gradient: string;
   icon: string;
+  image?: string;
 }
 
 export interface ResourceItem {
