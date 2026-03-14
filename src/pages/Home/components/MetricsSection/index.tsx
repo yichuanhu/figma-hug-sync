@@ -95,31 +95,25 @@ const MetricsSection = () => {
         {metrics.map((item) => {
           const IconComp = iconMap[item.icon] || BotFilledIcon;
           return (
-            <div
-              key={item.key}
-              className="metric-card"
-              style={{ backgroundColor: item.iconBgColor, borderColor: item.borderColor || item.iconBgColor }}
-            >
-              <div className="metric-card-left">
-                <div
-                  className="metric-card-icon"
-                  style={{ backgroundColor: item.iconBgColor, color: item.iconColor }}
-                >
-                  <IconComp />
-                </div>
-                <div className="metric-card-label">{t(item.labelKey)}</div>
+            <div key={item.key} className="metric-card">
+              <div
+                className="metric-card-icon"
+                style={{ backgroundColor: item.iconBgColor, color: item.iconColor }}
+              >
+                <IconComp />
               </div>
-              <div className="metric-card-right">
+              <div className="metric-card-info">
+                <div className="metric-card-label">{t(item.labelKey)}</div>
                 <div className="metric-card-value-row">
                   <span className="metric-card-value">{item.value}</span>
                   {item.unit && <span className="metric-card-unit">{item.unit}</span>}
+                  {item.trend && (
+                    <div className={`metric-card-trend ${item.trend}`}>
+                      {item.trend === 'up' ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+                      <span>{item.trendValue}</span>
+                    </div>
+                  )}
                 </div>
-                {item.trend && (
-                  <div className={`metric-card-trend ${item.trend}`}>
-                    {item.trend === 'up' ? <TrendingUp size={11} /> : <TrendingDown size={11} />}
-                    <span>{item.trendValue}</span>
-                  </div>
-                )}
               </div>
             </div>
           );
