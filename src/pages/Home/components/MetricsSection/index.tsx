@@ -3,23 +3,23 @@ import { useTranslation } from 'react-i18next';
 import { RadioGroup, Radio } from '@douyinfe/semi-ui';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import { metrics } from '../../mockData';
-import robotsIcon from '@/assets/metrics/robots.svg';
-import processesIcon from '@/assets/metrics/processes.svg';
-import todayTasksIcon from '@/assets/metrics/today-tasks.svg';
-import successRateIcon from '@/assets/metrics/success-rate.svg';
-import savedHoursIcon from '@/assets/metrics/saved-hours.svg';
-import savedCostIcon from '@/assets/metrics/saved-cost.svg';
-import weeklyNewIcon from '@/assets/metrics/weekly-new.svg';
+import robotsIconRaw from '@/assets/metrics/robots.svg?raw';
+import processesIconRaw from '@/assets/metrics/processes.svg?raw';
+import todayTasksIconRaw from '@/assets/metrics/today-tasks.svg?raw';
+import successRateIconRaw from '@/assets/metrics/success-rate.svg?raw';
+import savedHoursIconRaw from '@/assets/metrics/saved-hours.svg?raw';
+import savedCostIconRaw from '@/assets/metrics/saved-cost.svg?raw';
+import weeklyNewIconRaw from '@/assets/metrics/weekly-new.svg?raw';
 import './index.less';
 
 const iconMap: Record<string, string> = {
-  Bot: robotsIcon,
-  Workflow: processesIcon,
-  Play: todayTasksIcon,
-  CheckCircle: successRateIcon,
-  Clock: savedHoursIcon,
-  TrendingUp: savedCostIcon,
-  FolderPlus: weeklyNewIcon,
+  Bot: robotsIconRaw,
+  Workflow: processesIconRaw,
+  Play: todayTasksIconRaw,
+  CheckCircle: successRateIconRaw,
+  Clock: savedHoursIconRaw,
+  TrendingUp: savedCostIconRaw,
+  FolderPlus: weeklyNewIconRaw,
 };
 
 const MetricsSection = () => {
