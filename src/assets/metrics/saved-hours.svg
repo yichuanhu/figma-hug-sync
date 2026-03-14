@@ -20,10 +20,7 @@
     <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0"/>
     <feBlend mode="normal" in2="shape" result="effect1"/>
   </filter>
-  <filter id="bgBlur_h" x="-50%" y="-50%" width="200%" height="200%">
-    <feGaussianBlur in="SourceGraphic" stdDeviation="2"/>
-  </filter>
-  <clipPath id="fgClip_h">
+  <clipPath id="bgblur_h_clip" transform="translate(3 1)">
     <path d="M21 13C21 18.5228 16.5228 23 11 23C5.47715 23 1 18.5228 1 13C1 7.47715 5.47715 3 11 3C16.5228 3 21 7.47715 21 13Z"/>
   </clipPath>
   <linearGradient id="g0_h" x1="15.9091" y1="1.09" x2="15.9091" y2="15.09" gradientUnits="userSpaceOnUse">
@@ -36,9 +33,11 @@
   </linearGradient>
 </defs>
 <g filter="url(#f0i_h)">
-  <path id="bg_h" d="M15.9091 1.09082C19.7751 1.09082 22.9091 4.22483 22.9091 8.09082C22.9091 11.9568 19.7751 15.0908 15.9091 15.0908C12.0431 15.0908 8.90912 11.9568 8.90912 8.09082C8.90912 4.22483 12.0431 1.09082 15.9091 1.09082Z" fill="url(#g0_h)"/>
+  <path d="M15.9091 1.09082C19.7751 1.09082 22.9091 4.22483 22.9091 8.09082C22.9091 11.9568 19.7751 15.0908 15.9091 15.0908C12.0431 15.0908 8.90912 11.9568 8.90912 8.09082C8.90912 4.22483 12.0431 1.09082 15.9091 1.09082Z" fill="url(#g0_h)"/>
 </g>
-<use href="#bg_h" filter="url(#bgBlur_h)" clip-path="url(#fgClip_h)"/>
+<foreignObject x="-3" y="-1" width="28" height="28">
+  <div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);clip-path:url(#bgblur_h_clip);height:100%;width:100%;background-color:rgba(255,255,255,0.16);border:1px solid rgba(255,255,255,0.28);box-shadow:inset 0 1px 0 rgba(255,255,255,0.36)"></div>
+</foreignObject>
 <g filter="url(#f1i_h)">
   <path d="M21 13C21 18.5228 16.5228 23 11 23C5.47715 23 1 18.5228 1 13C1 7.47715 5.47715 3 11 3C16.5228 3 21 7.47715 21 13Z" fill="#12C6C2" fill-opacity="0.45"/>
 </g>
