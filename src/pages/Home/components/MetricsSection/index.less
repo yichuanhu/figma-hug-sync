@@ -3,6 +3,22 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 0;
+
+    @media (max-width: 960px) {
+      grid-template-columns: repeat(2, 1fr);
+
+      .metric-card:nth-child(2n)::after {
+        display: none;
+      }
+    }
+
+    @media (max-width: 480px) {
+      grid-template-columns: 1fr;
+
+      .metric-card::after {
+        display: none !important;
+      }
+    }
   }
 
   .metrics-row {
