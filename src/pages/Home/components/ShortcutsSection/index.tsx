@@ -52,19 +52,19 @@ const ProcessIcon = () => (
 );
 
 const RobotIcon = () => (
-  <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g filter="url(#filter0_i_robot)">
-      <rect x="21" y="7" width="31" height="31" rx="8" fill="url(#paint0_robot)"/>
+      <rect x="15.75" y="5.25" width="23.25" height="23.25" rx="6" fill="url(#paint0_robot)"/>
     </g>
-    <foreignObject x="-3" y="1" width="50" height="56">
+    <foreignObject x="-2.25" y="0.75" width="37.5" height="42">
       <div style={{backdropFilter:'blur(4px)',WebkitBackdropFilter:'blur(4px)',clipPath:'url(#bgblur_robot_clip)',height:'100%',width:'100%',backgroundColor:'rgba(255,255,255,0.16)',border:'1px solid rgba(255,255,255,0.28)',boxShadow:'inset 0 1px 0 rgba(255,255,255,0.36)'}}></div>
     </foreignObject>
     <g filter="url(#filter1_i_robot)">
-      <path d="M22 9C23.6569 9 25 10.3431 25 12C25 13.3057 24.1645 14.413 23 14.8252V19H31C35.4183 19 39 22.5817 39 27V41C39 45.4183 35.4183 49 31 49H13C8.58172 49 5 45.4183 5 41V27C5 22.5817 8.58172 19 13 19H21V14.8252C19.8355 14.413 19 13.3057 19 12C19 10.3431 20.3431 9 22 9Z" fill="#EC82A5" fillOpacity="0.45"/>
+      <path d="M16.5 6.75C17.7426 6.75 18.75 7.75736 18.75 9C18.75 9.97926 18.1226 10.8098 17.25 11.1189V14.25H23.25C26.5637 14.25 29.25 16.9363 29.25 20.25V30.75C29.25 34.0637 26.5637 36.75 23.25 36.75H9.75C6.43629 36.75 3.75 34.0637 3.75 30.75V20.25C3.75 16.9363 6.43629 14.25 9.75 14.25H15.75V11.1189C14.8774 10.8098 14.25 9.97926 14.25 9C14.25 7.75736 15.2574 6.75 16.5 6.75Z" fill="#EC82A5" fillOpacity="0.45"/>
     </g>
-    <path d="M29 40C29.5523 40 30 40.4477 30 41C30 41.5523 29.5523 42 29 42H15C14.4477 42 14 41.5523 14 41C14 40.4477 14.4477 40 15 40H29ZM16 30C17.6569 30 19 31.3431 19 33C19 34.6569 17.6569 36 16 36C14.3431 36 13 34.6569 13 33C13 31.3431 14.3431 30 16 30ZM28 30C29.6569 30 31 31.3431 31 33C31 34.6569 29.6569 36 28 36C26.3431 36 25 34.6569 25 33C25 31.3431 26.3431 30 28 30Z" fill="url(#paint1_robot)"/>
+    <path d="M21.75 30C21.75 30.4142 21.4142 30.75 21 30.75H11.25C10.8358 30.75 10.5 30.4142 10.5 30C10.5 29.5858 10.8358 29.25 11.25 29.25H21C21.4142 29.25 21.75 29.5858 21.75 30ZM12 22.5C13.2426 22.5 14.25 23.5074 14.25 24.75C14.25 25.9926 13.2426 27 12 27C10.7574 27 9.75 25.9926 9.75 24.75C9.75 23.5074 10.7574 22.5 12 22.5ZM21 22.5C22.2426 22.5 23.25 23.5074 23.25 24.75C23.25 25.9926 22.2426 27 21 27C19.7574 27 18.75 25.9926 18.75 24.75C18.75 23.5074 19.7574 22.5 21 22.5Z" fill="url(#paint1_robot)"/>
     <defs>
-      <filter id="filter0_i_robot" x="21" y="7" width="31" height="32" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+      <filter id="filter0_i_robot" x="15.75" y="5.25" width="23.25" height="24" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
         <feFlood floodOpacity="0" result="BackgroundImageFix"/>
         <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
         <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
@@ -74,7 +74,7 @@ const RobotIcon = () => (
         <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0"/>
         <feBlend mode="normal" in2="shape" result="effect1_innerShadow"/>
       </filter>
-      <filter id="filter1_i_robot" x="-3" y="1" width="50" height="56" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+      <filter id="filter1_i_robot" x="-2.25" y="0.75" width="37.5" height="42" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
         <feFlood floodOpacity="0" result="BackgroundImageFix"/>
         <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
         <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
@@ -84,14 +84,14 @@ const RobotIcon = () => (
         <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0"/>
         <feBlend mode="normal" in2="shape" result="effect1_innerShadow"/>
       </filter>
-      <clipPath id="bgblur_robot_clip" transform="translate(3 -1)">
-        <path d="M22 9C23.6569 9 25 10.3431 25 12C25 13.3057 24.1645 14.413 23 14.8252V19H31C35.4183 19 39 22.5817 39 27V41C39 45.4183 35.4183 49 31 49H13C8.58172 49 5 45.4183 5 41V27C5 22.5817 8.58172 19 13 19H21V14.8252C19.8355 14.413 19 13.3057 19 12C19 10.3431 20.3431 9 22 9Z"/>
+      <clipPath id="bgblur_robot_clip" transform="translate(2.25 -0.75)">
+        <path d="M16.5 6.75C17.2426 6.75 18.75 7.75736 18.75 9C18.75 9.97926 18.1226 10.8098 17.25 11.1189V14.25H23.25C26.5637 14.25 29.25 16.9363 29.25 20.25V30.75C29.25 34.0637 26.5637 36.75 23.25 36.75H9.75C6.43629 36.75 3.75 34.0637 3.75 30.75V20.25C3.75 16.9363 6.43629 14.25 9.75 14.25H15.75V11.1189C14.8774 10.8098 14.25 9.97926 14.25 9C14.25 7.75736 15.2574 6.75 16.5 6.75Z"/>
       </clipPath>
-      <linearGradient id="paint0_robot" x1="36.5" y1="7" x2="36.5" y2="38" gradientUnits="userSpaceOnUse">
+      <linearGradient id="paint0_robot" x1="27.375" y1="5.25" x2="27.375" y2="28.5" gradientUnits="userSpaceOnUse">
         <stop stopColor="#EE93B1"/>
         <stop offset="1" stopColor="#CF225B"/>
       </linearGradient>
-      <linearGradient id="paint1_robot" x1="22" y1="30" x2="22" y2="42" gradientUnits="userSpaceOnUse">
+      <linearGradient id="paint1_robot" x1="16.5" y1="22.5" x2="16.5" y2="30.75" gradientUnits="userSpaceOnUse">
         <stop stopColor="white"/>
         <stop offset="1" stopColor="white" stopOpacity="0.3"/>
       </linearGradient>
