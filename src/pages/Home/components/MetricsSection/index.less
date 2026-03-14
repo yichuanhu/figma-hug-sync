@@ -14,10 +14,21 @@
     align-items: flex-start;
     gap: 12px;
     padding: 16px 20px;
-    border-right: 1px solid var(--semi-color-border);
+    position: relative;
 
-    &:nth-child(4n) {
-      border-right: none;
+    &::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1px;
+      height: 24px;
+      background-color: var(--semi-color-border);
+    }
+
+    &:nth-child(4n)::after {
+      display: none;
     }
 
     &-icon {
