@@ -20,10 +20,7 @@
     <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0"/>
     <feBlend mode="normal" in2="shape" result="effect1"/>
   </filter>
-  <filter id="bgBlur_p" x="-50%" y="-50%" width="200%" height="200%">
-    <feGaussianBlur in="SourceGraphic" stdDeviation="2"/>
-  </filter>
-  <clipPath id="fgClip_p">
+  <clipPath id="bgblur_p_clip" transform="translate(-2.83 -1.82)">
     <path d="M19.4133 5.82373H11.4197C8.52027 5.82373 6.83209 7.44142 6.83209 10.2133V19.6014C6.83209 22.4187 8.52027 24 11.4197 24H19.4133C22.3595 24 24 22.4187 24 19.6014V10.2133C24 7.44142 22.3595 5.82373 19.4133 5.82373Z"/>
   </clipPath>
   <clipPath id="clip0_p">
@@ -40,9 +37,11 @@
 </defs>
 <g clip-path="url(#clip0_p)">
   <g filter="url(#f0i_p)">
-    <path id="bg_p" d="M12.1525 1.13111L4.43133 3.10248C1.63065 3.81755 0.439401 5.79646 1.19231 8.4739L3.74231 17.5421C4.50756 20.2634 6.56774 21.3745 9.36841 20.6595L17.0896 18.6881C19.9354 17.9615 21.0905 16.0295 20.3252 13.3081L17.7752 4.23996C17.0223 1.56252 14.9983 0.404523 12.1525 1.13111Z" fill="url(#g0_p)"/>
+    <path d="M12.1525 1.13111L4.43133 3.10248C1.63065 3.81755 0.439401 5.79646 1.19231 8.4739L3.74231 17.5421C4.50756 20.2634 6.56774 21.3745 9.36841 20.6595L17.0896 18.6881C19.9354 17.9615 21.0905 16.0295 20.3252 13.3081L17.7752 4.23996C17.0223 1.56252 14.9983 0.404523 12.1525 1.13111Z" fill="url(#g0_p)"/>
   </g>
-  <use href="#bg_p" filter="url(#bgBlur_p)" clip-path="url(#fgClip_p)"/>
+  <foreignObject x="2.83" y="1.82" width="25.17" height="26.18">
+    <div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);clip-path:url(#bgblur_p_clip);height:100%;width:100%;background-color:rgba(255,255,255,0.16);border:1px solid rgba(255,255,255,0.28);box-shadow:inset 0 1px 0 rgba(255,255,255,0.36)"></div>
+  </foreignObject>
   <g filter="url(#f1i_p)">
     <path d="M19.4133 5.82373H11.4197C8.52027 5.82373 6.83209 7.44142 6.83209 10.2133V19.6014C6.83209 22.4187 8.52027 24 11.4197 24H19.4133C22.3595 24 24 22.4187 24 19.6014V10.2133C24 7.44142 22.3595 5.82373 19.4133 5.82373Z" fill="#CFB5F9" fill-opacity="0.45"/>
   </g>
