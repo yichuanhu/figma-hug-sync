@@ -36,7 +36,7 @@ const ShortcutsSection = () => {
                 <div className="shortcut-card-desc">{t(item.descKey)}</div>
               </div>
               <div className="shortcut-card-icon">
-                {IconComp && <IconComp />}
+                {iconMap[item.icon] && <img src={iconMap[item.icon]} alt="" width={56} height={56} />}
               </div>
             </div>
           );
