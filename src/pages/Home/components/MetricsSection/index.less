@@ -2,21 +2,22 @@
   .metrics-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
+    gap: 0;
+  }
+
+  .metrics-row {
+    display: contents;
   }
 
   .metric-card {
     display: flex;
     align-items: flex-start;
     gap: 12px;
-    padding: 16px 18px;
-    border-radius: 12px;
-    border: 1px solid var(--semi-color-border);
-    transition: all 0.2s ease;
+    padding: 16px 20px;
+    border-right: 1px solid var(--semi-color-border);
 
-    &:hover {
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-      border-color: color-mix(in srgb, var(--semi-color-text-2) 40%, transparent);
+    &:nth-child(4n) {
+      border-right: none;
     }
 
     &-icon {
