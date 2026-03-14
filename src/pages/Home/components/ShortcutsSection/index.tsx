@@ -4,19 +4,19 @@ import { shortcuts } from '../../mockData';
 import './index.less';
 
 const ProcessIcon = () => (
-  <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g filter="url(#filter0_i_process)">
-      <path d="M24.2669 5.57015L10.7548 9.02005C5.85364 10.2714 3.76895 13.7345 5.08654 18.42L9.54905 34.2893C10.8882 39.0517 14.4936 40.9961 19.3947 39.7448L32.9068 36.2949C37.887 35.0233 39.9083 31.6423 38.5692 26.8799L34.1066 11.0106C32.7891 6.3251 29.2471 4.29861 24.2669 5.57015Z" fill="url(#paint0_process)"/>
+      <path d="M18.2002 4.17761L8.0661 6.76504C4.38973 7.70355 3.02671 9.30089 3.81491 12.815L7.16179 24.717C7.96615 28.2888 10.3702 29.7471 14.046 28.8086L24.6801 26.2212C28.4152 25.2675 29.6812 22.7317 28.8769 19.1599L25.53 7.25795C24.7418 3.74384 21.9353 2.22396 18.2002 4.17761Z" fill="url(#paint0_process)"/>
     </g>
-    <foreignObject x="8" y="7" width="50" height="50">
+    <foreignObject x="6" y="5.25" width="37.5" height="37.5">
       <div style={{backdropFilter:'blur(4px)',WebkitBackdropFilter:'blur(4px)',clipPath:'url(#bgblur_process_clip)',height:'100%',width:'100%',backgroundColor:'rgba(255,255,255,0.16)',border:'1px solid rgba(255,255,255,0.28)',boxShadow:'inset 0 1px 0 rgba(255,255,255,0.36)'}}></div>
     </foreignObject>
     <g filter="url(#filter1_i_process)">
-      <path d="M40.9163 15H25.0856C19.3433 15 16 18.026 16 23.211V40.772C16 46.042 19.3433 49 25.0856 49H40.9163C46.7511 49 50 46.042 50 40.772V23.211C50 18.026 46.7511 15 40.9163 15Z" fill="#9DAAFA" fillOpacity="0.45"/>
+      <path d="M30.6872 11.25H18.8142C14.5075 11.25 12 13.5195 12 17.4083V30.579C12 34.5315 14.5075 36.75 18.8142 36.75H30.6872C35.0633 36.75 37.5 34.5315 37.5 30.579V17.4083C37.5 13.5195 35.0633 11.25 30.6872 11.25Z" fill="#9DAAFA" fillOpacity="0.45"/>
     </g>
-    <path d="M30 34C30 35.6569 31.3431 37 33 37H37V36C37 34.8954 37.8954 34 39 34H43C44.1046 34 45 34.8954 45 36V40C45 41.1046 44.1046 42 43 42H39C37.8954 42 37 41.1046 37 40V39H33C30.2386 39 28 36.7614 28 34V30H27C25.8954 30 25 29.1046 25 28V24C25 22.8954 25.8954 22 27 22H31C32.1046 22 33 22.8954 33 24V28C33 29.1046 32.1046 30 31 30H30V34Z" fill="url(#paint1_process)"/>
+    <path d="M22.5 25.5C22.5 26.7426 23.5074 27.75 24.75 27.75H27.75V27C27.75 26.1716 28.4216 25.5 29.25 25.5H32.25C33.0784 25.5 33.75 26.1716 33.75 27V30C33.75 30.8284 33.0784 31.5 32.25 31.5H29.25C28.4216 31.5 27.75 30.8284 27.75 30V29.25H24.75C22.6789 29.25 21 27.5711 21 25.5V22.5H20.25C19.4216 22.5 18.75 21.8284 18.75 21V18C18.75 17.1716 19.4216 16.5 20.25 16.5H23.25C24.0784 16.5 24.75 17.1716 24.75 18V21C24.75 21.8284 24.0784 22.5 23.25 22.5H22.5V25.5Z" fill="url(#paint1_process)"/>
     <defs>
-      <filter id="filter0_i_process" x="4.69949" y="5.19775" width="34.2732" height="35.9175" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+      <filter id="filter0_i_process" x="3.52462" y="3.89831" width="25.7049" height="26.9381" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
         <feFlood floodOpacity="0" result="BackgroundImageFix"/>
         <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
         <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
@@ -26,7 +26,7 @@ const ProcessIcon = () => (
         <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0"/>
         <feBlend mode="normal" in2="shape" result="effect1_innerShadow"/>
       </filter>
-      <filter id="filter1_i_process" x="8" y="7" width="50" height="50" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+      <filter id="filter1_i_process" x="6" y="5.25" width="37.5" height="37.5" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
         <feFlood floodOpacity="0" result="BackgroundImageFix"/>
         <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
         <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
@@ -36,14 +36,14 @@ const ProcessIcon = () => (
         <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0"/>
         <feBlend mode="normal" in2="shape" result="effect1_innerShadow"/>
       </filter>
-      <clipPath id="bgblur_process_clip" transform="translate(-8 -7)">
-        <path d="M40.9163 15H25.0856C19.3433 15 16 18.026 16 23.211V40.772C16 46.042 19.3433 49 25.0856 49H40.9163C46.7511 49 50 46.042 50 40.772V23.211C50 18.026 46.7511 15 40.9163 15Z"/>
+      <clipPath id="bgblur_process_clip" transform="translate(-6 -5.25)">
+        <path d="M30.6872 11.25H18.8142C14.5075 11.25 12 13.5195 12 17.4083V30.579C12 34.5315 14.5075 36.75 18.8142 36.75H30.6872C35.0633 36.75 37.5 34.5315 37.5 30.579V17.4083C37.5 13.5195 35.0633 11.25 30.6872 11.25Z"/>
       </clipPath>
-      <linearGradient id="paint0_process" x1="17.5101" y1="7.2953" x2="25.4033" y2="38.2106" gradientUnits="userSpaceOnUse">
+      <linearGradient id="paint0_process" x1="13.1326" y1="5.47147" x2="19.0525" y2="28.6579" gradientUnits="userSpaceOnUse">
         <stop stopColor="#91A4FA"/>
         <stop offset="1" stopColor="#2A32CF"/>
       </linearGradient>
-      <linearGradient id="paint1_process" x1="35" y1="26" x2="38" y2="43.5" gradientUnits="userSpaceOnUse">
+      <linearGradient id="paint1_process" x1="26.25" y1="19.5" x2="28.5" y2="32.625" gradientUnits="userSpaceOnUse">
         <stop stopColor="white"/>
         <stop offset="1" stopColor="white" stopOpacity="0.3"/>
       </linearGradient>
