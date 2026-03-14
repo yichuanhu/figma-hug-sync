@@ -1,15 +1,15 @@
 .metrics-section {
   .metrics-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 10px;
   }
 
   .metric-card {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 18px 20px;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px 18px;
     border-radius: 12px;
     border: 1px solid var(--semi-color-border);
     transition: all 0.2s ease;
@@ -19,66 +19,60 @@
       border-color: color-mix(in srgb, var(--semi-color-text-2) 40%, transparent);
     }
 
-    &-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      min-width: 0;
-    }
-
     &-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
 
       svg {
-        width: 24px;
-        height: 24px;
+        width: 22px;
+        height: 22px;
       }
+    }
+
+    &-info {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
     }
 
     &-label {
       font-size: 13px;
-      font-weight: 600;
-      color: var(--semi-color-text-0);
+      font-weight: 500;
+      color: var(--semi-color-text-2);
       line-height: 20px;
       white-space: nowrap;
-    }
-
-    &-right {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
     }
 
     &-value-row {
       display: flex;
       align-items: baseline;
-      gap: 2px;
+      gap: 6px;
+      margin-top: 4px;
     }
 
     &-value {
-      font-size: 22px;
+      font-size: 24px;
       font-weight: 700;
       color: var(--semi-color-text-0);
-      line-height: 28px;
+      line-height: 32px;
     }
 
     &-unit {
-      font-size: 13px;
-      color: var(--semi-color-text-2);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--semi-color-text-0);
     }
 
     &-trend {
       display: flex;
       align-items: center;
       gap: 2px;
-      margin-top: 2px;
-      font-size: 11px;
+      font-size: 12px;
       line-height: 16px;
 
       &.up {
