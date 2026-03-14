@@ -9,7 +9,7 @@ const ProcessIcon = () => (
       <path d="M24.2669 5.57015L10.7548 9.02005C5.85364 10.2714 3.76895 13.7345 5.08654 18.42L9.54905 34.2893C10.8882 39.0517 14.4936 40.9961 19.3947 39.7448L32.9068 36.2949C37.887 35.0233 39.9083 31.6423 38.5692 26.8799L34.1066 11.0106C32.7891 6.3251 29.2471 4.29861 24.2669 5.57015Z" fill="url(#paint0_process)"/>
     </g>
     <foreignObject x="8" y="7" width="50" height="50">
-      <div style={{backdropFilter:'blur(4px)',clipPath:'url(#bgblur_process_clip)',height:'100%',width:'100%'}}></div>
+      <div style={{backdropFilter:'blur(4px)',WebkitBackdropFilter:'blur(4px)',clipPath:'url(#bgblur_process_clip)',height:'100%',width:'100%',backgroundColor:'rgba(255,255,255,0.16)',border:'1px solid rgba(255,255,255,0.28)',boxShadow:'inset 0 1px 0 rgba(255,255,255,0.36)'}}></div>
     </foreignObject>
     <g filter="url(#filter1_i_process)">
       <path d="M40.9163 15H25.0856C19.3433 15 16 18.026 16 23.211V40.772C16 46.042 19.3433 49 25.0856 49H40.9163C46.7511 49 50 46.042 50 40.772V23.211C50 18.026 46.7511 15 40.9163 15Z" fill="#9DAAFA" fillOpacity="0.45"/>
