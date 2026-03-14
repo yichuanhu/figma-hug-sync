@@ -5,10 +5,12 @@ import useEmblaCarousel from 'embla-carousel-react';
 import { Palette, Cpu, ChevronRight } from 'lucide-react';
 import { announcements, banners } from '../../mockData';
 import apaCreatorBanner from '@/assets/banners/apa-creator-release.png';
+import apaWorkerBanner from '@/assets/banners/apa-worker-release.png';
 import './index.less';
 
 const bannerImageMap: Record<string, string> = {
   'apa-creator-release': apaCreatorBanner,
+  'apa-worker-release': apaWorkerBanner,
 };
 
 const bannerIconMap: Record<string, React.ComponentType<any>> = {
