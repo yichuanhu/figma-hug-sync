@@ -69,6 +69,7 @@ export const banners: BannerItem[] = [
     version: 'v2.8.0',
     gradient: 'linear-gradient(135deg, #2BC0E4 0%, #5B86E5 100%)',
     icon: 'Cpu',
+    image: 'apa-worker-release',
   },
 ];
 
