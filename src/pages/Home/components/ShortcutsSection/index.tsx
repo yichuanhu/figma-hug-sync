@@ -57,7 +57,7 @@ const RobotIcon = () => (
       <rect x="21" y="7" width="31" height="31" rx="8" fill="url(#paint0_robot)"/>
     </g>
     <foreignObject x="-3" y="1" width="50" height="56">
-      <div style={{backdropFilter:'blur(4px)',clipPath:'url(#bgblur_robot_clip)',height:'100%',width:'100%'}}></div>
+      <div style={{backdropFilter:'blur(4px)',WebkitBackdropFilter:'blur(4px)',clipPath:'url(#bgblur_robot_clip)',height:'100%',width:'100%',backgroundColor:'rgba(255,255,255,0.16)',border:'1px solid rgba(255,255,255,0.28)',boxShadow:'inset 0 1px 0 rgba(255,255,255,0.36)'}}></div>
     </foreignObject>
     <g filter="url(#filter1_i_robot)">
       <path d="M22 9C23.6569 9 25 10.3431 25 12C25 13.3057 24.1645 14.413 23 14.8252V19H31C35.4183 19 39 22.5817 39 27V41C39 45.4183 35.4183 49 31 49H13C8.58172 49 5 45.4183 5 41V27C5 22.5817 8.58172 19 13 19H21V14.8252C19.8355 14.413 19 13.3057 19 12C19 10.3431 20.3431 9 22 9Z" fill="#EC82A5" fillOpacity="0.45"/>
