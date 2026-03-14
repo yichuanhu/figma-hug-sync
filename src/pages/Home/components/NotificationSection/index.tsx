@@ -13,7 +13,10 @@ const NotificationSection = () => {
   return (
     <div className={`home-card notification-section ${collapsed ? 'is-collapsed' : ''}`}>
       <div className="home-card-header">
-        <span className="home-card-title">{t('homepage.notifications.title')}</span>
+        <div className="notification-title-group">
+          <span className="home-card-title">{t('homepage.notifications.title')}</span>
+          {unreadCount > 0 && <Badge count={unreadCount} />}
+        </div>
         <div className="notification-actions">
           <button
             className="notification-collapse-btn"
@@ -26,7 +29,6 @@ const NotificationSection = () => {
             <span>{t('homepage.notifications.more')}</span>
             <ChevronRight size={14} strokeWidth={2} />
           </button>
-          {unreadCount > 0 && <Badge count={unreadCount} />}
         </div>
       </div>
       {!collapsed && (
