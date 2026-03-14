@@ -4,7 +4,12 @@ import { Tag } from '@douyinfe/semi-ui';
 import useEmblaCarousel from 'embla-carousel-react';
 import { Palette, Cpu, ChevronRight } from 'lucide-react';
 import { announcements, banners } from '../../mockData';
+import apaCreatorBanner from '@/assets/banners/apa-creator-release.png';
 import './index.less';
+
+const bannerImageMap: Record<string, string> = {
+  'apa-creator-release': apaCreatorBanner,
+};
 
 const bannerIconMap: Record<string, React.ComponentType<any>> = {
   Palette,

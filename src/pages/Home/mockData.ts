@@ -60,6 +60,7 @@ export const banners: BannerItem[] = [
     version: 'v3.2.0',
     gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
     icon: 'Palette',
+    image: 'apa-creator-release',
   },
   {
     id: '2',
