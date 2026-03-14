@@ -41,12 +41,10 @@ const MetricsSection = () => {
       </div>
       <div className="metrics-grid">
         {metrics.map((item) => {
-          const iconSrc = iconMap[item.icon];
+          const iconSvg = iconMap[item.icon] || '';
           return (
             <div key={item.key} className="metric-card">
-              <div className="metric-card-icon">
-                <img src={iconSrc} alt="" width={28} height={28} />
-              </div>
+              <div className="metric-card-icon" aria-hidden="true" dangerouslySetInnerHTML={{ __html: iconSvg }} />
               <div className="metric-card-info">
                 <div className="metric-card-label">{t(item.labelKey)}</div>
                 <div className="metric-card-value-row">
