@@ -63,7 +63,7 @@ const AnnouncementSection = () => {
             return (
               <div
                 key={banner.id}
-                className="banner-slide"
+                className={`banner-slide${banner.image && bannerImageMap[banner.image] ? ' has-image' : ''}`}
                 style={banner.image && bannerImageMap[banner.image] ? undefined : { background: banner.gradient }}
               >
                 {banner.image && bannerImageMap[banner.image] ? (
