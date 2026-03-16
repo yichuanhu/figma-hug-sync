@@ -11,12 +11,19 @@
     }
   }
 
+  // Body: side by side layout
+  .announcement-body {
+    display: flex;
+    gap: 16px;
+  }
+
   // Banner Carousel
   .banner-carousel {
     overflow: hidden;
     border-radius: 10px;
-    margin-bottom: 16px;
     position: relative;
+    flex: 1;
+    min-width: 0;
   }
 
   .banner-carousel-container {
@@ -128,6 +135,8 @@
   .announcement-list {
     display: flex;
     flex-direction: column;
+    flex: 1;
+    min-width: 0;
   }
 
   .announcement-item {
