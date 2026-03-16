@@ -2,6 +2,7 @@
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 12px;
+  margin-bottom: 24px;
 
   @media (max-width: 960px) {
     grid-template-columns: repeat(3, 1fr);
@@ -16,13 +17,12 @@
     align-items: center;
     gap: 12px;
     padding: 16px;
-    background-color: var(--semi-color-bg-0);
     border-radius: 10px;
     cursor: pointer;
-    transition: box-shadow 0.2s ease;
+    transition: box-shadow 0.2s ease, background 0.2s ease;
 
     &:hover {
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     }
   }
 
