@@ -14,8 +14,7 @@ interface CenterEntry {
   descKey: string;
   icon: string;
   path: string;
-  gradient: string;
-  hoverGradient: string;
+  accentColor: string;
   iconFilter?: string;
 }
 
