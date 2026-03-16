@@ -69,7 +69,6 @@ const centerEntries: CenterEntry[] = [
 const CenterEntrySection = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [hoveredKey, setHoveredKey] = useState<string | null>(null);
 
   return (
     <div className="center-entry-section">
@@ -78,11 +77,9 @@ const CenterEntrySection = () => {
           key={entry.key}
           className="center-entry-card"
           style={{
-            background: hoveredKey === entry.key ? entry.hoverGradient : entry.gradient,
+            background: `linear-gradient(90deg, rgba(255, 255, 255, 0.00) 37.98%, rgba(${entry.accentColor}, 0.15) 100%), #FFF`,
           }}
           onClick={() => navigate(entry.path)}
-          onMouseEnter={() => setHoveredKey(entry.key)}
-          onMouseLeave={() => setHoveredKey(null)}
         >
           <div className="center-entry-icon-wrapper">
             <img src={entry.icon} alt={entry.key} className="center-entry-icon" style={{ filter: entry.iconFilter }} />

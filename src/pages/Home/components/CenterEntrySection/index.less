@@ -1,32 +1,23 @@
 .center-entry-section {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 12px;
   margin-bottom: 24px;
 
-  @media (min-width: 1280px) {
-    grid-template-columns: repeat(5, 1fr);
-  }
-
-  @media (min-width: 960px) and (max-width: 1279px) {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  @media (max-width: 640px) {
-    grid-template-columns: 1fr;
-  }
-
   .center-entry-card {
     display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 16px 18px;
-    border-radius: 12px;
+    width: 342px;
+    padding: 20px;
+    flex-direction: column;
+    align-items: flex-end;
+    border-radius: 14px;
     cursor: pointer;
-    transition: background 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 10px 0 rgba(28, 33, 36, 0.04);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 
     &:hover {
-      transform: translateY(-1px);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px 0 rgba(28, 33, 36, 0.08);
     }
   }
 
@@ -37,6 +28,7 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    margin-bottom: 12px;
   }
 
   .center-entry-icon {
@@ -45,8 +37,7 @@
   }
 
   .center-entry-info {
-    min-width: 0;
-    flex: 1;
+    text-align: right;
   }
 
   .center-entry-title {
