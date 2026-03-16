@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import requirementsCenterIcon from '@/assets/icons/requirements-center.svg';
-import developmentCenterIcon from '@/assets/icons/development-center.svg';
-import schedulingCenterIcon from '@/assets/icons/scheduling-center.svg';
-import operationsCenterIcon from '@/assets/icons/operations-center.svg';
-import maintenanceCenterIcon from '@/assets/icons/maintenance-center.svg';
+import requirementsCenterIcon from '@/assets/icons/requirements-center.svg?raw';
+import developmentCenterIcon from '@/assets/icons/development-center.svg?raw';
+import schedulingCenterIcon from '@/assets/icons/scheduling-center.svg?raw';
+import operationsCenterIcon from '@/assets/icons/operations-center.svg?raw';
+import maintenanceCenterIcon from '@/assets/icons/maintenance-center.svg?raw';
 import './index.less';
 
 interface CenterEntry {
@@ -74,9 +74,10 @@ const CenterEntrySection = () => {
           }}
           onClick={() => navigate(entry.path)}
         >
-          <div className="center-entry-icon-wrapper">
-            <img src={entry.icon} alt={entry.key} className="center-entry-icon" />
-          </div>
+          <div
+            className="center-entry-icon-wrapper"
+            dangerouslySetInnerHTML={{ __html: entry.icon }}
+          />
           <div className="center-entry-info">
             <div className="center-entry-title">{t(entry.titleKey)}</div>
             <div className="center-entry-desc">{t(entry.descKey)}</div>
