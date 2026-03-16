@@ -45,13 +45,15 @@ const LayoutIcon = () => (
 );
 import laiyeLogo from '@/assets/laiye-logo.png';
 
-// 中心图标
+// 中心图标 - 使用首页同款 SVG 图标
 import homeCenterIcon from '@/assets/icons/home-center.png';
-import developmentCenterIcon from '@/assets/icons/development-center.png';
-import requirementsCenterIcon from '@/assets/icons/requirements-center.png';
-import schedulingCenterIcon from '@/assets/icons/scheduling-center.png';
-import operationsCenterIcon from '@/assets/icons/operations-center.png';
-import maintenanceCenterIcon from '@/assets/icons/maintenance-center.png';
+import {
+  RequirementsCenterIcon,
+  DevelopmentCenterIcon,
+  SchedulingCenterIcon,
+  OperationsCenterIcon,
+  MaintenanceCenterIcon,
+} from '@/pages/Home/components/CenterEntrySection/CenterIcons';
 
 import './index.less';
 
