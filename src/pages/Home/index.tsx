@@ -12,16 +12,16 @@ const Home = () => {
   return (
     <div className="home-page">
       <WelcomeSection />
+      <CenterEntrySection />
       <div className="home-content">
         <div className="home-left-column">
-          <CenterEntrySection />
           <ShortcutsSection />
           <MetricsSection />
-          <RecentActivitySection />
+          <AnnouncementSection />
         </div>
         <div className="home-right-column">
           <NotificationSection />
-          <AnnouncementSection />
+          <RecentActivitySection />
           <ResourceSection />
         </div>
       </div>
