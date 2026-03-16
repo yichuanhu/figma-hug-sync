@@ -31,7 +31,7 @@ const centerEntries: CenterEntry[] = [
     descKey: 'homepage.centers.developmentDesc',
     icon: developmentCenterIcon,
     path: '/process-development',
-    accentColor: '60, 180, 120',
+    accentColor: '79, 190, 49',
   },
   {
     key: 'scheduling',
