@@ -25,7 +25,6 @@ const centerEntries: CenterEntry[] = [
     icon: requirementsCenterIcon,
     path: '/requirements',
     accentColor: '83, 123, 255',
-    iconFilter: 'invert(47%) sepia(85%) saturate(4452%) hue-rotate(207deg) brightness(99%) contrast(98%)',
   },
   {
     key: 'development',
@@ -34,7 +33,6 @@ const centerEntries: CenterEntry[] = [
     icon: developmentCenterIcon,
     path: '/process-development',
     accentColor: '60, 180, 120',
-    iconFilter: 'invert(56%) sepia(59%) saturate(638%) hue-rotate(89deg) brightness(94%) contrast(91%)',
   },
   {
     key: 'scheduling',
@@ -43,7 +41,6 @@ const centerEntries: CenterEntry[] = [
     icon: schedulingCenterIcon,
     path: '/scheduling-center/execution-assets/automation-process',
     accentColor: '255, 160, 80',
-    iconFilter: 'invert(64%) sepia(95%) saturate(2120%) hue-rotate(4deg) brightness(105%) contrast(96%)',
   },
   {
     key: 'operations',
@@ -52,7 +49,6 @@ const centerEntries: CenterEntry[] = [
     icon: operationsCenterIcon,
     path: '/operations',
     accentColor: '150, 100, 255',
-    iconFilter: 'invert(44%) sepia(85%) saturate(3753%) hue-rotate(242deg) brightness(99%) contrast(95%)',
   },
   {
     key: 'maintenance',
@@ -61,7 +57,6 @@ const centerEntries: CenterEntry[] = [
     icon: maintenanceCenterIcon,
     path: '/maintenance',
     accentColor: '255, 100, 100',
-    iconFilter: 'invert(46%) sepia(74%) saturate(5211%) hue-rotate(341deg) brightness(96%) contrast(98%)',
   },
 ];
 
