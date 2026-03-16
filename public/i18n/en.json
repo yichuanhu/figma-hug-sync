@@ -2587,8 +2587,20 @@
   },
   "homepage": {
     "welcome": "Hi {{name}}, Welcome to WEP Platform",
+    "centers": {
+      "requirements": "Requirements",
+      "requirementsDesc": "Discover, evaluate and track automation needs",
+      "development": "Development",
+      "developmentDesc": "Process design, component dev and test deploy",
+      "scheduling": "Scheduling",
+      "schedulingDesc": "Process orchestration, task scheduling and monitoring",
+      "operations": "Operations",
+      "operationsDesc": "Strategic decisions, governance and value measurement",
+      "maintenance": "Maintenance",
+      "maintenanceDesc": "System monitoring, alert management and resource ops"
+    },
     "shortcuts": {
-      "title": "Quick Actions",
+      "title": "Quick Start",
       "newProcess": "New Process",
       "newProcessDesc": "Create from scratch",
       "newRobot": "New Robot",
@@ -2611,7 +2623,9 @@
       "weeklyNew": "New Processes (Week)"
     },
     "activity": {
-      "title": "Recent Activity"
+      "title": "Recent Activity",
+      "collapse": "Collapse",
+      "expand": "Expand"
     },
     "notifications": {
       "title": "Notifications",
