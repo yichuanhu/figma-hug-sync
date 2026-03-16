@@ -50,6 +50,8 @@ const WorkerManagementPage = () => {
             isActive={activeTab === 'workers'} 
             pendingWorkerId={pendingWorkerId}
             onWorkerDetailOpened={handleWorkerDetailOpened}
+            openCreateFromHome={openCreateWorker}
+            onCreateFromHomeHandled={() => setOpenCreateWorker(false)}
           />
         </TabPane>
         <TabPane tab={t('workerGroup.tabs.workerGroupManagement')} itemKey="groups">
