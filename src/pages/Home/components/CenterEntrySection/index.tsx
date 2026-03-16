@@ -25,8 +25,7 @@ const centerEntries: CenterEntry[] = [
     descKey: 'homepage.centers.requirementsDesc',
     icon: requirementsCenterIcon,
     path: '/requirements',
-    gradient: 'linear-gradient(135deg, #FFFFFF 0%, #F0F3F8 60%, #E8EDF5 100%)',
-    hoverGradient: 'linear-gradient(135deg, #FFFFFF 0%, #E8EDF5 60%, #DEE5F2 100%)',
+    accentColor: '83, 123, 255',
     iconFilter: 'invert(47%) sepia(85%) saturate(4452%) hue-rotate(207deg) brightness(99%) contrast(98%)',
   },
   {
@@ -35,8 +34,7 @@ const centerEntries: CenterEntry[] = [
     descKey: 'homepage.centers.developmentDesc',
     icon: developmentCenterIcon,
     path: '/process-development',
-    gradient: 'linear-gradient(135deg, #FFFFFF 0%, #EDF3F0 60%, #E3EDE8 100%)',
-    hoverGradient: 'linear-gradient(135deg, #FFFFFF 0%, #E3EDE8 60%, #D9EAE1 100%)',
+    accentColor: '60, 180, 120',
     iconFilter: 'invert(56%) sepia(59%) saturate(638%) hue-rotate(89deg) brightness(94%) contrast(91%)',
   },
   {
@@ -45,8 +43,7 @@ const centerEntries: CenterEntry[] = [
     descKey: 'homepage.centers.schedulingDesc',
     icon: schedulingCenterIcon,
     path: '/scheduling-center/execution-assets/automation-process',
-    gradient: 'linear-gradient(135deg, #FFFFFF 0%, #F5F0EA 60%, #F2EBE2 100%)',
-    hoverGradient: 'linear-gradient(135deg, #FFFFFF 0%, #F2EBE2 60%, #EDE5DA 100%)',
+    accentColor: '255, 160, 80',
     iconFilter: 'invert(64%) sepia(95%) saturate(2120%) hue-rotate(4deg) brightness(105%) contrast(96%)',
   },
   {
@@ -55,8 +52,7 @@ const centerEntries: CenterEntry[] = [
     descKey: 'homepage.centers.operationsDesc',
     icon: operationsCenterIcon,
     path: '/operations',
-    gradient: 'linear-gradient(135deg, #FFFFFF 0%, #F0EDF5 60%, #EBE5F2 100%)',
-    hoverGradient: 'linear-gradient(135deg, #FFFFFF 0%, #EBE5F2 60%, #E2DCEC 100%)',
+    accentColor: '150, 100, 255',
     iconFilter: 'invert(44%) sepia(85%) saturate(3753%) hue-rotate(242deg) brightness(99%) contrast(95%)',
   },
   {
@@ -65,8 +61,7 @@ const centerEntries: CenterEntry[] = [
     descKey: 'homepage.centers.maintenanceDesc',
     icon: maintenanceCenterIcon,
     path: '/maintenance',
-    gradient: 'linear-gradient(135deg, #FFFFFF 0%, #F5EDEC 60%, #F2E5E5 100%)',
-    hoverGradient: 'linear-gradient(135deg, #FFFFFF 0%, #F2E5E5 60%, #ECDCDC 100%)',
+    accentColor: '255, 100, 100',
     iconFilter: 'invert(46%) sepia(74%) saturate(5211%) hue-rotate(341deg) brightness(96%) contrast(98%)',
   },
 ];
