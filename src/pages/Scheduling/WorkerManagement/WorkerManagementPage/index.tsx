@@ -1,4 +1,5 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Tabs, Typography } from '@douyinfe/semi-ui';
 import { useTranslation } from 'react-i18next';
 import WorkerManagement from '../index';
@@ -10,8 +11,18 @@ const { Title, Text } = Typography;
 
 const WorkerManagementPage = () => {
   const { t } = useTranslation();
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState('workers');
   const [pendingWorkerId, setPendingWorkerId] = useState<string | null>(null);
+  const [openCreateWorker, setOpenCreateWorker] = useState(false);
+
+  // 从首页快捷入口跳转时自动打开新建弹窗
+  useEffect(() => {
+    if ((location.state as any)?.openCreate) {
+      setOpenCreateWorker(true);
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   const handleNavigateToWorkerDetail = useCallback((workerId: string) => {
     setPendingWorkerId(workerId);
