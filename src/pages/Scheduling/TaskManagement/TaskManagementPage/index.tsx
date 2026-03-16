@@ -246,6 +246,7 @@ const priorityConfig: Record<TaskPriority, { color: 'red' | 'orange' | 'grey' | 
 
 const TaskManagementPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const { t } = useTranslation();
 
