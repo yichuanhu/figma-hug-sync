@@ -38,12 +38,6 @@ const MetricsSection = () => {
                 <div className="metric-card-value-row">
                   <span className="metric-card-value">{item.value}</span>
                   {item.unit && <span className="metric-card-unit">{item.unit}</span>}
-                  {item.trend && (
-                    <div className={`metric-card-trend ${item.trend}`}>
-                      {item.trend === 'up' ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
-                      <span>{item.trendValue}</span>
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
