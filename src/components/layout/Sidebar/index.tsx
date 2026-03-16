@@ -176,16 +176,19 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
       key: 'operationsCenter',
       labelKey: 'sidebar.operationsCenter',
       icon: <img src={operationsCenterIcon} alt="operations" className="sidebar-center-icon" />,
+      path: '/operations',
     },
     {
       key: 'requirementsCenter',
       labelKey: 'sidebar.requirementsCenter',
       icon: <img src={requirementsCenterIcon} alt="requirements" className="sidebar-center-icon" />,
+      path: '/requirements',
     },
     {
       key: 'maintenanceCenter',
       labelKey: 'sidebar.maintenanceCenter',
       icon: <img src={maintenanceCenterIcon} alt="maintenance" className="sidebar-center-icon" />,
+      path: '/maintenance',
     },
   ];
 
