@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next';
-import { TrendingUp, TrendingDown } from 'lucide-react';
 import { metrics } from '../../mockData';
 import robotsIconRaw from '@/assets/metrics/robots.svg?raw';
 import processesIconRaw from '@/assets/metrics/processes.svg?raw';
