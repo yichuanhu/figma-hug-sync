@@ -19,6 +19,10 @@
 
     @media (max-width: 960px) {
       flex-direction: column;
+
+      .banner-carousel {
+        width: 100%;
+      }
     }
   }
 
@@ -27,8 +31,8 @@
     overflow: hidden;
     border-radius: 10px;
     position: relative;
-    flex: 4;
-    min-width: 0;
+    width: 400px;
+    flex-shrink: 0;
   }
 
   .banner-carousel-container {
@@ -142,7 +146,7 @@
   .announcement-list {
     display: flex;
     flex-direction: column;
-    flex: 6;
+    flex: 1;
     min-width: 0;
     justify-content: space-between;
   }
