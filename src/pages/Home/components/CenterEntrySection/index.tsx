@@ -17,6 +17,7 @@ interface CenterEntry {
   gradient: string;
   hoverGradient: string;
   iconBg: string;
+  iconFilter?: string;
 }
 
 const centerEntries: CenterEntry[] = [
