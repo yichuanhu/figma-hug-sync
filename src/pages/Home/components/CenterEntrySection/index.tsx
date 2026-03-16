@@ -47,7 +47,7 @@ const centerEntries: CenterEntry[] = [
     descKey: 'homepage.centers.operationsDesc',
     icon: operationsCenterIcon,
     path: '/operations',
-    accentColor: '150, 100, 255',
+    accentColor: '202, 109, 255',
   },
   {
     key: 'maintenance',
