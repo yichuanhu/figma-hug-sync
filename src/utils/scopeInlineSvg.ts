@@ -22,11 +22,6 @@ export const scopeInlineSvg = (svg: string, scope: string) => {
       .replace(new RegExp(`(["'])#${escapedId}(["'])`, 'g'), `$1#${scopedId}$2`);
   });
 
-  scopedSvg = scopedSvg.replace(/<foreignObject([\s\S]*?)<div([^>]*?)style="([^"]*)"([^>]*)><\/div><\/foreignObject>/g, (_, foreignObjectAttrs: string, beforeStyle: string, style: string, afterStyle: string) => {
-    const normalizedStyle = normalizeForeignObjectStyle(style);
-    return `<foreignObject${foreignObjectAttrs}<div${beforeStyle}style="${normalizedStyle}"${afterStyle}></div></foreignObject>`;
-  });
-
   return scopedSvg.replace(
     /<svg\b/,
     '<svg class="center-entry-inline-svg" aria-hidden="true" focusable="false"'
