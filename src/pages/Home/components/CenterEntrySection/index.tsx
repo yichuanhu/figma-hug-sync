@@ -23,7 +23,7 @@ const centerEntries: CenterEntry[] = [
     descKey: 'homepage.centers.requirementsDesc',
     icon: requirementsCenterIcon,
     path: '/requirements',
-    accentColor: '83, 123, 255',
+    accentColor: '22, 93, 255',
   },
   {
     key: 'development',
@@ -31,7 +31,7 @@ const centerEntries: CenterEntry[] = [
     descKey: 'homepage.centers.developmentDesc',
     icon: developmentCenterIcon,
     path: '/process-development',
-    accentColor: '60, 180, 120',
+    accentColor: '79, 190, 49',
   },
   {
     key: 'scheduling',
@@ -39,7 +39,7 @@ const centerEntries: CenterEntry[] = [
     descKey: 'homepage.centers.schedulingDesc',
     icon: schedulingCenterIcon,
     path: '/scheduling-center/execution-assets/automation-process',
-    accentColor: '255, 160, 80',
+    accentColor: '79, 193, 206',
   },
   {
     key: 'operations',
@@ -47,7 +47,7 @@ const centerEntries: CenterEntry[] = [
     descKey: 'homepage.centers.operationsDesc',
     icon: operationsCenterIcon,
     path: '/operations',
-    accentColor: '150, 100, 255',
+    accentColor: '202, 109, 255',
   },
   {
     key: 'maintenance',
@@ -55,7 +55,7 @@ const centerEntries: CenterEntry[] = [
     descKey: 'homepage.centers.maintenanceDesc',
     icon: maintenanceCenterIcon,
     path: '/maintenance',
-    accentColor: '255, 100, 100',
+    accentColor: '177, 160, 15',
   },
 ];
 
