@@ -624,7 +624,7 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
 
       {/* 右侧详细菜单 - 仅在展开时显示 */}
       {!collapsed && currentCenterMenu.length > 0 && (
-        <div className={`sidebar-detail-panel center-${activeCenterKey}`}>
+        <div className="sidebar-detail-panel">
           {/* 中心标题 */}
           <div className="sidebar-detail-header">
             <span className="sidebar-detail-title">{currentCenterLabel ? t(currentCenterLabel) : ''}</span>
