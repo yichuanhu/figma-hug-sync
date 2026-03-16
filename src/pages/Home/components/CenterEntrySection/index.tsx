@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import requirementsCenterIcon from '@/assets/icons/requirements-center.svg?raw';
@@ -5,6 +6,7 @@ import developmentCenterIcon from '@/assets/icons/development-center.svg?raw';
 import schedulingCenterIcon from '@/assets/icons/scheduling-center.svg?raw';
 import operationsCenterIcon from '@/assets/icons/operations-center.svg?raw';
 import maintenanceCenterIcon from '@/assets/icons/maintenance-center.svg?raw';
+import { scopeInlineSvg } from '@/utils/scopeInlineSvg';
 import './index.less';
 
 interface CenterEntry {
@@ -62,10 +64,14 @@ const centerEntries: CenterEntry[] = [
 const CenterEntrySection = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const renderedEntries = useMemo(
+    () => centerEntries.map((entry) => ({ ...entry, iconMarkup: scopeInlineSvg(entry.icon, `center-${entry.key}`) })),
+    []
+  );
 
   return (
     <div className="center-entry-section">
-      {centerEntries.map((entry) => (
+      {renderedEntries.map((entry) => (
         <div
           key={entry.key}
           className="center-entry-card"
@@ -76,7 +82,8 @@ const CenterEntrySection = () => {
         >
           <div
             className="center-entry-icon-wrapper"
-            dangerouslySetInnerHTML={{ __html: entry.icon }}
+            aria-hidden="true"
+            dangerouslySetInnerHTML={{ __html: entry.iconMarkup }}
           />
           <div className="center-entry-info">
             <div className="center-entry-title">{t(entry.titleKey)}</div>
