@@ -1,15 +1,14 @@
 .center-entry-section {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(342px, 1fr));
   gap: 12px;
   margin-bottom: 24px;
 
   .center-entry-card {
     display: flex;
-    width: 342px;
+    flex-direction: row;
+    align-items: flex-start;
     padding: 20px;
-    flex-direction: column;
-    align-items: flex-end;
     border-radius: 14px;
     cursor: pointer;
     box-shadow: 0 4px 10px 0 rgba(28, 33, 36, 0.04);
@@ -28,7 +27,7 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    margin-bottom: 12px;
+    margin-right: 12px;
   }
 
   .center-entry-icon {
@@ -37,7 +36,8 @@
   }
 
   .center-entry-info {
-    text-align: right;
+    flex: 1;
+    min-width: 0;
   }
 
   .center-entry-title {
