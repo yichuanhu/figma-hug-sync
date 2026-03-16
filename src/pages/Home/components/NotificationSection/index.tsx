@@ -39,7 +39,7 @@ const NotificationSection = () => {
       </div>
       {!collapsed && (
         <div className="notification-list">
-          {notifications.map((item) => {
+          {notifications.slice(0, 5).map((item) => {
             const pConfig = priorityConfig[item.priority] || priorityConfig.NORMAL;
             return (
               <div key={item.id} className="notification-item">
