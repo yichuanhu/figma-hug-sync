@@ -22,20 +22,11 @@ const iconMap: Record<string, string> = {
 
 const MetricsSection = () => {
   const { t } = useTranslation();
-  const [scope, setScope] = useState<string>('department');
 
   return (
     <div className="home-card metrics-section">
       <div className="home-card-header">
         <span className="home-card-title">{t('homepage.metrics.title')}</span>
-        <RadioGroup
-          type="button"
-          value={scope}
-          onChange={(e) => setScope(e.target.value as string)}
-        >
-          <Radio value="department">{t('homepage.metrics.department')}</Radio>
-          <Radio value="platform">{t('homepage.metrics.platform')}</Radio>
-        </RadioGroup>
       </div>
       <div className="metrics-grid">
         {metrics.map((item) => {

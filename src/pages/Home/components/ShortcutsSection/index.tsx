@@ -170,7 +170,7 @@ const ShortcutsSection = () => {
               key={item.key}
               className="shortcut-card"
               style={{ backgroundColor: item.bgColor, borderColor: item.borderColor || item.bgColor }}
-              onClick={() => item.path && navigate(item.path)}
+              onClick={() => item.path && navigate(item.path, { state: { openCreate: true } })}
             >
               <div className="shortcut-card-info">
                 <div className="shortcut-card-title">{t(item.titleKey)}</div>
