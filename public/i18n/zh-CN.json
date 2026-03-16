@@ -2597,8 +2597,20 @@
   },
   "homepage": {
     "welcome": "Hi {{name}}，欢迎来到 WEP 平台",
+    "centers": {
+      "requirements": "需求中心",
+      "requirementsDesc": "发现、评估和跟踪自动化需求",
+      "development": "开发中心",
+      "developmentDesc": "流程设计、组件开发和测试部署",
+      "scheduling": "调度中心",
+      "schedulingDesc": "流程编排、任务调度和执行监控",
+      "operations": "运营中心",
+      "operationsDesc": "战略决策、治理监督和价值度量",
+      "maintenance": "运维中心",
+      "maintenanceDesc": "系统监控、告警管理和资源运维"
+    },
     "shortcuts": {
-      "title": "快捷操作",
+      "title": "快速开始",
       "newProcess": "新建流程",
       "newProcessDesc": "从空白开始创建",
       "newRobot": "新建机器人",
@@ -2621,7 +2633,9 @@
       "weeklyNew": "本周新增流程"
     },
     "activity": {
-      "title": "最近活动"
+      "title": "最近活动",
+      "collapse": "收起",
+      "expand": "展开"
     },
     "notifications": {
       "title": "个人通知",
