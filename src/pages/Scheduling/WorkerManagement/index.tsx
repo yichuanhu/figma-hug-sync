@@ -371,6 +371,14 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
   const [keyModalVisible, setKeyModalVisible] = useState(false);
   const [keyModalWorker, setKeyModalWorker] = useState<LYWorkerResponse | null>(null);
   const [createModalVisible, setCreateModalVisible] = useState(false);
+
+  // 从首页快捷入口跳转时自动打开新建弹窗
+  useEffect(() => {
+    if (openCreateFromHome) {
+      setCreateModalVisible(true);
+      onCreateFromHomeHandled?.();
+    }
+  }, [openCreateFromHome, onCreateFromHomeHandled]);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingWorker, setEditingWorker] = useState<LYWorkerResponse | null>(null);
   const [addToGroupModalVisible, setAddToGroupModalVisible] = useState(false);
