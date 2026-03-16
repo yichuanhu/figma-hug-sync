@@ -202,6 +202,7 @@ const statusConfig: Record<string, { color: 'grey' | 'green' | 'orange'; i18nKey
 
 const ProcessDevelopment = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useTranslation();
 
   // 搜索框输入值（即时显示）
