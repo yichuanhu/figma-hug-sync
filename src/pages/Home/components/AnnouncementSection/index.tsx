@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tag } from '@douyinfe/semi-ui';
 import useEmblaCarousel from 'embla-carousel-react';
-import { Palette, Cpu, ChevronRight } from 'lucide-react';
+import { Palette, Cpu } from 'lucide-react';
 import { announcements, banners } from '../../mockData';
 import apaCreatorBanner from '@/assets/banners/apa-creator-release.png';
 import apaWorkerBanner from '@/assets/banners/apa-worker-release.png';
@@ -54,7 +54,6 @@ const AnnouncementSection = () => {
     <div className="home-card announcement-section">
       <div className="home-card-header">
         <span className="home-card-title">{t('homepage.announcements.title')}</span>
-        <span className="announcement-more">{t('homepage.announcements.viewAll')} <ChevronRight size={14} strokeWidth={2} /></span>
       </div>
 
       {/* Banner Carousel */}

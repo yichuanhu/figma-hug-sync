@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { debounce } from 'lodash';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Typography,
@@ -246,6 +246,7 @@ const priorityConfig: Record<TaskPriority, { color: 'red' | 'orange' | 'grey' | 
 
 const TaskManagementPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const { t } = useTranslation();
 
@@ -268,6 +269,14 @@ const TaskManagementPage = () => {
   const [loading, setLoading] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [createModalVisible, setCreateModalVisible] = useState(false);
+
+  // 从首页快捷入口跳转时自动打开新建弹窗
+  useEffect(() => {
+    if ((location.state as any)?.openCreate) {
+      setCreateModalVisible(true);
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
   const [initialTemplate, setInitialTemplate] = useState<LYExecutionTemplateResponse | null>(null);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [initialTab, setInitialTab] = useState<'basicInfo' | 'executionHistory'>('basicInfo');

@@ -1,8 +1,12 @@
 .metrics-section {
   .metrics-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0;
+    display: flex;
+    flex-wrap: wrap;
+
+    .metric-card {
+      flex: 1 1 0;
+      min-width: 140px;
+    }
 
     @media (max-width: 960px) {
       grid-template-columns: repeat(2, 1fr);

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { debounce } from 'lodash';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   // Breadcrumb removed - now handled by RouteBreadcrumb
@@ -202,6 +202,7 @@ const statusConfig: Record<string, { color: 'grey' | 'green' | 'orange'; i18nKey
 
 const ProcessDevelopment = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useTranslation();
 
   // 搜索框输入值（即时显示）
@@ -223,6 +224,15 @@ const ProcessDevelopment = () => {
   const [loading, setLoading] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [createModalVisible, setCreateModalVisible] = useState(false);
+
+  // 从首页快捷入口跳转时自动打开新建弹窗
+  useEffect(() => {
+    if ((location.state as any)?.openCreate) {
+      setCreateModalVisible(true);
+      // 清除 state 避免刷新重复打开
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
 
