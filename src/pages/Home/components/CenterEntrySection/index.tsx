@@ -1,19 +1,19 @@
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import requirementsCenterIcon from '@/assets/icons/requirements-center.svg?raw';
-import developmentCenterIcon from '@/assets/icons/development-center.svg?raw';
-import schedulingCenterIcon from '@/assets/icons/scheduling-center.svg?raw';
-import operationsCenterIcon from '@/assets/icons/operations-center.svg?raw';
-import maintenanceCenterIcon from '@/assets/icons/maintenance-center.svg?raw';
-import { scopeInlineSvg } from '@/utils/scopeInlineSvg';
+import {
+  RequirementsCenterIcon,
+  DevelopmentCenterIcon,
+  SchedulingCenterIcon,
+  OperationsCenterIcon,
+  MaintenanceCenterIcon,
+} from './CenterIcons';
 import './index.less';
 
 interface CenterEntry {
   key: string;
   titleKey: string;
   descKey: string;
-  icon: string;
+  Icon: React.FC;
   path: string;
   accentColor: string;
 }
@@ -23,7 +23,7 @@ const centerEntries: CenterEntry[] = [
     key: 'requirements',
     titleKey: 'homepage.centers.requirements',
     descKey: 'homepage.centers.requirementsDesc',
-    icon: requirementsCenterIcon,
+    Icon: RequirementsCenterIcon,
     path: '/requirements',
     accentColor: '22, 93, 255',
   },
@@ -31,7 +31,7 @@ const centerEntries: CenterEntry[] = [
     key: 'development',
     titleKey: 'homepage.centers.development',
     descKey: 'homepage.centers.developmentDesc',
-    icon: developmentCenterIcon,
+    Icon: DevelopmentCenterIcon,
     path: '/process-development',
     accentColor: '79, 190, 49',
   },
@@ -39,7 +39,7 @@ const centerEntries: CenterEntry[] = [
     key: 'scheduling',
     titleKey: 'homepage.centers.scheduling',
     descKey: 'homepage.centers.schedulingDesc',
-    icon: schedulingCenterIcon,
+    Icon: SchedulingCenterIcon,
     path: '/scheduling-center/execution-assets/automation-process',
     accentColor: '79, 193, 206',
   },
@@ -47,7 +47,7 @@ const centerEntries: CenterEntry[] = [
     key: 'operations',
     titleKey: 'homepage.centers.operations',
     descKey: 'homepage.centers.operationsDesc',
-    icon: operationsCenterIcon,
+    Icon: OperationsCenterIcon,
     path: '/operations',
     accentColor: '202, 109, 255',
   },
@@ -55,7 +55,7 @@ const centerEntries: CenterEntry[] = [
     key: 'maintenance',
     titleKey: 'homepage.centers.maintenance',
     descKey: 'homepage.centers.maintenanceDesc',
-    icon: maintenanceCenterIcon,
+    Icon: MaintenanceCenterIcon,
     path: '/maintenance',
     accentColor: '177, 160, 15',
   },
@@ -64,14 +64,10 @@ const centerEntries: CenterEntry[] = [
 const CenterEntrySection = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const renderedEntries = useMemo(
-    () => centerEntries.map((entry) => ({ ...entry, iconMarkup: scopeInlineSvg(entry.icon, `center-${entry.key}`) })),
-    []
-  );
 
   return (
     <div className="center-entry-section">
-      {renderedEntries.map((entry) => (
+      {centerEntries.map((entry) => (
         <div
           key={entry.key}
           className="center-entry-card"
@@ -80,11 +76,9 @@ const CenterEntrySection = () => {
           }}
           onClick={() => navigate(entry.path)}
         >
-          <div
-            className="center-entry-icon-wrapper"
-            aria-hidden="true"
-            dangerouslySetInnerHTML={{ __html: entry.iconMarkup }}
-          />
+          <div className="center-entry-icon-wrapper" aria-hidden="true">
+            <entry.Icon />
+          </div>
           <div className="center-entry-info">
             <div className="center-entry-title">{t(entry.titleKey)}</div>
             <div className="center-entry-desc">{t(entry.descKey)}</div>
