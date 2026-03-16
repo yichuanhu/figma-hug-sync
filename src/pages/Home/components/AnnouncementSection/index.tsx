@@ -56,7 +56,7 @@ const AnnouncementSection = () => {
         <span className="home-card-title">{t('homepage.announcements.title')}</span>
       </div>
 
-      {/* Announcement Body - Vertical Layout */}
+      {/* Announcement Body - Side by Side */}
       <div className="announcement-body">
         {/* Banner Carousel */}
         <div className="banner-carousel" ref={emblaRef}>
@@ -100,7 +100,7 @@ const AnnouncementSection = () => {
 
         {/* Announcement List */}
         <div className="announcement-list">
-          {announcements.slice(0, 3).map((item) => {
+          {announcements.map((item) => {
             const config = priorityConfig[item.priority];
             return (
               <div key={item.id} className="announcement-item">
