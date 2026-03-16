@@ -16,7 +16,6 @@ interface CenterEntry {
   path: string;
   gradient: string;
   hoverGradient: string;
-  iconBg: string;
   iconFilter?: string;
 }
 
