@@ -269,6 +269,14 @@ const TaskManagementPage = () => {
   const [loading, setLoading] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [createModalVisible, setCreateModalVisible] = useState(false);
+
+  // 从首页快捷入口跳转时自动打开新建弹窗
+  useEffect(() => {
+    if ((location.state as any)?.openCreate) {
+      setCreateModalVisible(true);
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
   const [initialTemplate, setInitialTemplate] = useState<LYExecutionTemplateResponse | null>(null);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [initialTab, setInitialTab] = useState<'basicInfo' | 'executionHistory'>('basicInfo');
