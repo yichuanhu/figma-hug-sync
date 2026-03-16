@@ -1,23 +1,11 @@
 .metrics-section {
   .metrics-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 
-    @media (max-width: 960px) {
-      grid-template-columns: repeat(2, 1fr);
-
-      .metric-card:nth-child(2n)::after {
-        display: none;
-      }
-    }
-
-    @media (max-width: 480px) {
-      grid-template-columns: 1fr;
-
-      .metric-card::after {
-        display: none !important;
-      }
-    }
+    // Hide dividers for last item in each row dynamically
+    // We handle divider visibility via JS-free approach:
+    // Every card gets a divider, last-child never gets one
   }
 
   .metric-card {
@@ -38,7 +26,6 @@
       background-color: var(--semi-color-border);
     }
 
-    &:nth-child(4n)::after,
     &:last-child::after {
       display: none;
     }
