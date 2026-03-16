@@ -30,7 +30,7 @@ const RecentActivitySection = () => {
       </div>
       {!collapsed && (
         <div className="activity-list">
-          {recentActivities.slice(0, 5).map((item) => {
+          {recentActivities.slice(0, 3).map((item) => {
             const config = typeConfig[item.type] || typeConfig.create;
             const IconComp = config.icon;
             return (
