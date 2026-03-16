@@ -100,7 +100,7 @@ const AnnouncementSection = () => {
 
         {/* Announcement List */}
         <div className="announcement-list">
-          {announcements.map((item) => {
+          {announcements.slice(0, 3).map((item) => {
             const config = priorityConfig[item.priority];
             return (
               <div key={item.id} className="announcement-item">
