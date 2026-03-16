@@ -1,5 +1,5 @@
 import enterpriseImg from '@/assets/empty-state/enterprise-exclusive.png';
-import './index.less';
+import '@/pages/Requirements/index.less';
 
 const Operations = () => {
   return (
