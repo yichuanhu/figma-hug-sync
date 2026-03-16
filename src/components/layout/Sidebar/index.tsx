@@ -45,13 +45,15 @@ const LayoutIcon = () => (
 );
 import laiyeLogo from '@/assets/laiye-logo.png';
 
-// 中心图标
+// 中心图标 - 使用首页同款 SVG 图标
 import homeCenterIcon from '@/assets/icons/home-center.png';
-import developmentCenterIcon from '@/assets/icons/development-center.png';
-import requirementsCenterIcon from '@/assets/icons/requirements-center.png';
-import schedulingCenterIcon from '@/assets/icons/scheduling-center.png';
-import operationsCenterIcon from '@/assets/icons/operations-center.png';
-import maintenanceCenterIcon from '@/assets/icons/maintenance-center.png';
+import {
+  RequirementsCenterIcon,
+  DevelopmentCenterIcon,
+  SchedulingCenterIcon,
+  OperationsCenterIcon,
+  MaintenanceCenterIcon,
+} from '@/pages/Home/components/CenterEntrySection/CenterIcons';
 
 import './index.less';
 
@@ -165,29 +167,29 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
     {
       key: 'developmentCenter',
       labelKey: 'sidebar.developmentCenter',
-      icon: <img src={developmentCenterIcon} alt="development" className="sidebar-center-icon" />,
+      icon: <span className="sidebar-center-icon"><DevelopmentCenterIcon /></span>,
     },
     {
       key: 'schedulingCenter',
       labelKey: 'sidebar.schedulingCenter',
-      icon: <img src={schedulingCenterIcon} alt="scheduling" className="sidebar-center-icon" />,
+      icon: <span className="sidebar-center-icon"><SchedulingCenterIcon /></span>,
     },
     {
       key: 'operationsCenter',
       labelKey: 'sidebar.operationsCenter',
-      icon: <img src={operationsCenterIcon} alt="operations" className="sidebar-center-icon" />,
+      icon: <span className="sidebar-center-icon"><OperationsCenterIcon /></span>,
       path: '/operations',
     },
     {
       key: 'requirementsCenter',
       labelKey: 'sidebar.requirementsCenter',
-      icon: <img src={requirementsCenterIcon} alt="requirements" className="sidebar-center-icon" />,
+      icon: <span className="sidebar-center-icon"><RequirementsCenterIcon /></span>,
       path: '/requirements',
     },
     {
       key: 'maintenanceCenter',
       labelKey: 'sidebar.maintenanceCenter',
-      icon: <img src={maintenanceCenterIcon} alt="maintenance" className="sidebar-center-icon" />,
+      icon: <span className="sidebar-center-icon"><MaintenanceCenterIcon /></span>,
       path: '/maintenance',
     },
   ];
