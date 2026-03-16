@@ -77,7 +77,7 @@ const CenterEntrySection = () => {
           key={entry.key}
           className="center-entry-card"
           style={{
-            background: `linear-gradient(90deg, rgba(255, 255, 255, 0.00) 37.98%, rgba(${entry.accentColor}, 0.15) 100%), #FFF`,
+            background: `linear-gradient(90deg, rgba(255, 255, 255, 0.00) 65%, rgba(${entry.accentColor}, 0.12) 100%), #FFF`,
           }}
           onClick={() => navigate(entry.path)}
         >
