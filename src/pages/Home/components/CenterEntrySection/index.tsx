@@ -39,7 +39,7 @@ const centerEntries: CenterEntry[] = [
     descKey: 'homepage.centers.schedulingDesc',
     icon: schedulingCenterIcon,
     path: '/scheduling-center/execution-assets/automation-process',
-    accentColor: '255, 160, 80',
+    accentColor: '79, 193, 206',
   },
   {
     key: 'operations',
