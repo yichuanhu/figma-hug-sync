@@ -17,6 +17,7 @@ interface CenterEntry {
   gradient: string;
   hoverGradient: string;
   iconBg: string;
+  iconFilter?: string;
 }
 
 const centerEntries: CenterEntry[] = [
@@ -26,9 +27,10 @@ const centerEntries: CenterEntry[] = [
     descKey: 'homepage.centers.requirementsDesc',
     icon: requirementsCenterIcon,
     path: '/requirements',
-    gradient: 'linear-gradient(to right, #E0EAFF, #F5F8FF, #FFFFFF)',
-    hoverGradient: 'linear-gradient(to right, #D0DEFF, #EDF2FF, #FAFCFF)',
-    iconBg: 'rgba(59, 130, 246, 0.12)',
+    gradient: 'linear-gradient(135deg, #EBF2FF 0%, #F8FBFF 50%, #FFFFFF 100%)',
+    hoverGradient: 'linear-gradient(135deg, #D6E4FF 0%, #F0F6FF 50%, #FAFDFF 100%)',
+    iconBg: 'rgba(59, 130, 246, 0.15)',
+    iconFilter: 'invert(47%) sepia(85%) saturate(4452%) hue-rotate(207deg) brightness(99%) contrast(98%)',
   },
   {
     key: 'development',
@@ -36,9 +38,10 @@ const centerEntries: CenterEntry[] = [
     descKey: 'homepage.centers.developmentDesc',
     icon: developmentCenterIcon,
     path: '/process-development',
-    gradient: 'linear-gradient(to right, #DCF5E7, #F0FAF4, #FFFFFF)',
-    hoverGradient: 'linear-gradient(to right, #C8EED8, #E5F7EC, #FAFCFB)',
-    iconBg: 'rgba(34, 197, 94, 0.12)',
+    gradient: 'linear-gradient(135deg, #E8F6EF 0%, #F5FCF8 50%, #FFFFFF 100%)',
+    hoverGradient: 'linear-gradient(135deg, #D1EDE0 0%, #EBF9F1 50%, #FAFEFC 100%)',
+    iconBg: 'rgba(34, 197, 94, 0.15)',
+    iconFilter: 'invert(56%) sepia(59%) saturate(638%) hue-rotate(89deg) brightness(94%) contrast(91%)',
   },
   {
     key: 'scheduling',
@@ -46,9 +49,10 @@ const centerEntries: CenterEntry[] = [
     descKey: 'homepage.centers.schedulingDesc',
     icon: schedulingCenterIcon,
     path: '/scheduling-center/execution-assets/automation-process',
-    gradient: 'linear-gradient(to right, #FFF0D4, #FFF8EC, #FFFFFF)',
-    hoverGradient: 'linear-gradient(to right, #FFE6BC, #FFF3E0, #FFFCF8)',
-    iconBg: 'rgba(245, 158, 11, 0.12)',
+    gradient: 'linear-gradient(135deg, #FFF4E6 0%, #FFFCF7 50%, #FFFFFF 100%)',
+    hoverGradient: 'linear-gradient(135deg, #FFE8CC 0%, #FFF8EC 50%, #FFFEFB 100%)',
+    iconBg: 'rgba(245, 158, 11, 0.15)',
+    iconFilter: 'invert(64%) sepia(95%) saturate(2120%) hue-rotate(4deg) brightness(105%) contrast(96%)',
   },
   {
     key: 'operations',
@@ -56,9 +60,10 @@ const centerEntries: CenterEntry[] = [
     descKey: 'homepage.centers.operationsDesc',
     icon: operationsCenterIcon,
     path: '/operations',
-    gradient: 'linear-gradient(to right, #EDE5FB, #F6F2FD, #FFFFFF)',
-    hoverGradient: 'linear-gradient(to right, #E0D4F8, #F0EAFC, #FDFCFF)',
-    iconBg: 'rgba(139, 92, 246, 0.12)',
+    gradient: 'linear-gradient(135deg, #F3E8FF 0%, #FAF6FF 50%, #FFFFFF 100%)',
+    hoverGradient: 'linear-gradient(135deg, #EAD5FF 0%, #F5EDFF 50%, #FDFBFF 100%)',
+    iconBg: 'rgba(139, 92, 246, 0.15)',
+    iconFilter: 'invert(44%) sepia(85%) saturate(3753%) hue-rotate(242deg) brightness(99%) contrast(95%)',
   },
   {
     key: 'maintenance',
@@ -66,9 +71,10 @@ const centerEntries: CenterEntry[] = [
     descKey: 'homepage.centers.maintenanceDesc',
     icon: maintenanceCenterIcon,
     path: '/maintenance',
-    gradient: 'linear-gradient(to right, #FCE4E4, #FEF2F2, #FFFFFF)',
-    hoverGradient: 'linear-gradient(to right, #FAD2D2, #FDEBEB, #FFFAFA)',
-    iconBg: 'rgba(239, 68, 68, 0.12)',
+    gradient: 'linear-gradient(135deg, #FFEAEA 0%, #FFF5F5 50%, #FFFFFF 100%)',
+    hoverGradient: 'linear-gradient(135deg, #FFD4D4 0%, #FFEBEB 50%, #FFFAFA 100%)',
+    iconBg: 'rgba(239, 68, 68, 0.15)',
+    iconFilter: 'invert(46%) sepia(74%) saturate(5211%) hue-rotate(341deg) brightness(96%) contrast(98%)',
   },
 ];
 
@@ -91,7 +97,7 @@ const CenterEntrySection = () => {
           onMouseLeave={() => setHoveredKey(null)}
         >
           <div className="center-entry-icon-wrapper" style={{ backgroundColor: entry.iconBg }}>
-            <img src={entry.icon} alt={entry.key} className="center-entry-icon" />
+            <img src={entry.icon} alt={entry.key} className="center-entry-icon" style={{ filter: entry.iconFilter }} />
           </div>
           <div className="center-entry-info">
             <div className="center-entry-title">{t(entry.titleKey)}</div>
