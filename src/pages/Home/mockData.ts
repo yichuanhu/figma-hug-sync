@@ -44,12 +44,12 @@ export const metrics: MetricItem[] = [
 ];
 
 export const notifications: NotificationItem[] = [
-  { id: '1', titleKey: '', title: '流程「财务月报生成」执行失败', time: '10分钟前', read: false, type: 'error' },
-  { id: '2', titleKey: '', title: '审批请求待处理：发布流程「数据同步」', time: '30分钟前', read: false, type: 'warning' },
-  { id: '3', titleKey: '', title: '机器人「RPA-Worker-03」已离线', time: '1小时前', read: false, type: 'error' },
-  { id: '4', titleKey: '', title: '流程「客户数据清洗」发布成功', time: '2小时前', read: true, type: 'success' },
-  { id: '5', titleKey: '', title: '新版本 Creator v3.2.0 已发布', time: '3小时前', read: false, type: 'info' },
-  { id: '6', titleKey: '', title: '队列「订单处理」消息积压告警', time: '4小时前', read: true, type: 'warning' },
+  { id: '1', titleKey: '', title: '流程「财务月报生成」执行失败', time: '10分钟前', read: false, type: 'error', priority: 'URGENT' },
+  { id: '2', titleKey: '', title: '审批请求待处理：发布流程「数据同步」', time: '30分钟前', read: false, type: 'warning', priority: 'IMPORTANT' },
+  { id: '3', titleKey: '', title: '机器人「RPA-Worker-03」已离线', time: '1小时前', read: false, type: 'error', priority: 'URGENT' },
+  { id: '4', titleKey: '', title: '流程「客户数据清洗」发布成功', time: '2小时前', read: true, type: 'success', priority: 'NORMAL' },
+  { id: '5', titleKey: '', title: '新版本 Creator v3.2.0 已发布', time: '3小时前', read: false, type: 'info', priority: 'NORMAL' },
+  { id: '6', titleKey: '', title: '队列「订单处理」消息积压告警', time: '4小时前', read: true, type: 'warning', priority: 'IMPORTANT' },
 ];
 
 export const banners: BannerItem[] = [

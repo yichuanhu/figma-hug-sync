@@ -29,6 +29,7 @@ export interface NotificationItem {
   time: string;
   read: boolean;
   type: 'error' | 'warning' | 'info' | 'success';
+  priority: 'URGENT' | 'IMPORTANT' | 'NORMAL';
 }
 
 export interface AnnouncementItem {

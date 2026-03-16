@@ -1,9 +1,15 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Badge } from '@douyinfe/semi-ui';
+import { Badge, Tag } from '@douyinfe/semi-ui';
 import { ChevronUp, ChevronDown, ChevronRight } from 'lucide-react';
 import { notifications } from '../../mockData';
 import './index.less';
+
+const priorityConfig: Record<string, { color: string; label: string }> = {
+  URGENT: { color: 'red', label: '紧急' },
+  IMPORTANT: { color: 'orange', label: '重要' },
+  NORMAL: { color: 'grey', label: '普通' },
+};
 
 const NotificationSection = () => {
   const { t } = useTranslation();
@@ -33,15 +39,21 @@ const NotificationSection = () => {
       </div>
       {!collapsed && (
         <div className="notification-list">
-          {notifications.map((item) => (
-            <div key={item.id} className="notification-item">
-              <div className={`notification-item-dot ${item.read ? 'read' : 'unread'}`} />
-              <div className="notification-item-content">
-                <div className="notification-item-title">{item.title}</div>
-                <div className="notification-item-time">{item.time}</div>
+          {notifications.map((item) => {
+            const pConfig = priorityConfig[item.priority] || priorityConfig.NORMAL;
+            return (
+              <div key={item.id} className="notification-item">
+                <div className={`notification-item-dot ${item.read ? 'read' : 'unread'}`} />
+                <div className="notification-item-content">
+                  <div className="notification-item-title-row">
+                    <Tag size="small" color={pConfig.color as any}>{pConfig.label}</Tag>
+                    <span className="notification-item-title">{item.title}</span>
+                  </div>
+                  <div className="notification-item-time">{item.time}</div>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

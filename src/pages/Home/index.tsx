@@ -1,4 +1,5 @@
 import WelcomeSection from './components/WelcomeSection';
+import CenterEntrySection from './components/CenterEntrySection';
 import ShortcutsSection from './components/ShortcutsSection';
 import MetricsSection from './components/MetricsSection';
 import RecentActivitySection from './components/RecentActivitySection';
@@ -13,6 +14,7 @@ const Home = () => {
       <WelcomeSection />
       <div className="home-content">
         <div className="home-left-column">
+          <CenterEntrySection />
           <ShortcutsSection />
           <MetricsSection />
           <RecentActivitySection />
