@@ -45,6 +45,27 @@
       display: flex;
       flex-direction: column;
       padding: 24px;
+      position: relative;
+
+      // 全局淡蓝色渐变晕影背景
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        width: 80%;
+        height: 60%;
+        transform: translateX(-50%);
+        background: radial-gradient(ellipse at center top, rgba(152, 205, 253, 0.08) 0%, rgba(152, 205, 253, 0.04) 30%, transparent 70%);
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      // 内容层级高于晕影
+      > * {
+        position: relative;
+        z-index: 1;
+      }
 
       .app-layout-breadcrumb {
         flex-shrink: 0;
