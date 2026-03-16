@@ -1,11 +1,10 @@
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import requirementsCenterIcon from '@/assets/icons/requirements-center.png';
-import developmentCenterIcon from '@/assets/icons/development-center.png';
-import schedulingCenterIcon from '@/assets/icons/scheduling-center.png';
-import operationsCenterIcon from '@/assets/icons/operations-center.png';
-import maintenanceCenterIcon from '@/assets/icons/maintenance-center.png';
+import requirementsCenterIcon from '@/assets/icons/requirements-center.svg';
+import developmentCenterIcon from '@/assets/icons/development-center.svg';
+import schedulingCenterIcon from '@/assets/icons/scheduling-center.svg';
+import operationsCenterIcon from '@/assets/icons/operations-center.svg';
+import maintenanceCenterIcon from '@/assets/icons/maintenance-center.svg';
 import './index.less';
 
 interface CenterEntry {
