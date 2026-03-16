@@ -23,7 +23,7 @@ const centerEntries: CenterEntry[] = [
     descKey: 'homepage.centers.requirementsDesc',
     icon: requirementsCenterIcon,
     path: '/requirements',
-    accentColor: '83, 123, 255',
+    accentColor: '22, 93, 255',
   },
   {
     key: 'development',
