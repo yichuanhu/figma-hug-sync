@@ -17,11 +17,11 @@ const Home = () => {
         <div className="home-left-column">
           <ShortcutsSection />
           <MetricsSection />
-          <AnnouncementSection />
+          <RecentActivitySection />
         </div>
         <div className="home-right-column">
           <NotificationSection />
-          <RecentActivitySection />
+          <AnnouncementSection />
           <ResourceSection />
         </div>
       </div>
