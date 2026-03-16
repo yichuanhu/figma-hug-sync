@@ -331,9 +331,11 @@ interface WorkerManagementProps {
   isActive?: boolean;
   pendingWorkerId?: string | null;
   onWorkerDetailOpened?: () => void;
+  openCreateFromHome?: boolean;
+  onCreateFromHomeHandled?: () => void;
 }
 
-const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpened }: WorkerManagementProps) => {
+const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpened, openCreateFromHome, onCreateFromHomeHandled }: WorkerManagementProps) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
