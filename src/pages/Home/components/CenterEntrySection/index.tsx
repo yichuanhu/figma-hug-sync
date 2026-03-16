@@ -97,7 +97,7 @@ const CenterEntrySection = () => {
           onMouseLeave={() => setHoveredKey(null)}
         >
           <div className="center-entry-icon-wrapper" style={{ backgroundColor: entry.iconBg }}>
-            <img src={entry.icon} alt={entry.key} className="center-entry-icon" />
+            <img src={entry.icon} alt={entry.key} className="center-entry-icon" style={{ filter: entry.iconFilter }} />
           </div>
           <div className="center-entry-info">
             <div className="center-entry-title">{t(entry.titleKey)}</div>
