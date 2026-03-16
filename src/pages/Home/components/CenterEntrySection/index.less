@@ -40,11 +40,17 @@
     justify-content: center;
     flex-shrink: 0;
     margin-right: 12px;
-  }
+    line-height: 0;
+    overflow: visible;
 
-  .center-entry-icon {
-    width: 28px;
-    height: 28px;
+    :global(.center-entry-inline-svg) {
+      width: 28px;
+      height: 28px;
+      display: block;
+      overflow: visible;
+      flex-shrink: 0;
+      isolation: isolate;
+    }
   }
 
   .center-entry-info {
