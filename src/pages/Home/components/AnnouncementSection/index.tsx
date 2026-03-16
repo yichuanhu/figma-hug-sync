@@ -56,7 +56,7 @@ const AnnouncementSection = () => {
         <span className="home-card-title">{t('homepage.announcements.title')}</span>
       </div>
 
-      {/* Announcement Body - Side by Side */}
+      {/* Announcement Body - Vertical Layout */}
       <div className="announcement-body">
         {/* Banner Carousel */}
         <div className="banner-carousel" ref={emblaRef}>
