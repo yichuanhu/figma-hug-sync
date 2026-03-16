@@ -102,6 +102,10 @@ const App = () => (
           {/* 开发预览 */}
           <Route path="/dev-preview/empty-state" element={<EmptyStatePreview />} />
           <Route path="/dev-preview/empty-state-options" element={<EmptyStateOptionsPreview />} />
+          
+          {/* 需求中心 & 运营中心 */}
+          <Route path="/requirements" element={<Requirements />} />
+          <Route path="/operations" element={<Operations />} />
         </Route>
 
         {/* 无布局页面 */}
