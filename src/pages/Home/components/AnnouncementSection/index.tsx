@@ -54,7 +54,6 @@ const AnnouncementSection = () => {
     <div className="home-card announcement-section">
       <div className="home-card-header">
         <span className="home-card-title">{t('homepage.announcements.title')}</span>
-        <span className="announcement-more">{t('homepage.announcements.viewAll')} <ChevronRight size={14} strokeWidth={2} /></span>
       </div>
 
       {/* Banner Carousel */}
