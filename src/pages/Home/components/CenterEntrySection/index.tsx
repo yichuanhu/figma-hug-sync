@@ -16,6 +16,7 @@ interface CenterEntry {
   path: string;
   gradient: string;
   hoverGradient: string;
+  iconBg: string;
 }
 
 const centerEntries: CenterEntry[] = [
@@ -25,8 +26,9 @@ const centerEntries: CenterEntry[] = [
     descKey: 'homepage.centers.requirementsDesc',
     icon: requirementsCenterIcon,
     path: '/requirements',
-    gradient: 'linear-gradient(135deg, #E8F0FE, #D0E2FF)',
-    hoverGradient: 'linear-gradient(135deg, #D0E2FF, #B8D4FF)',
+    gradient: 'linear-gradient(to right, #E0EAFF, #F5F8FF, #FFFFFF)',
+    hoverGradient: 'linear-gradient(to right, #D0DEFF, #EDF2FF, #FAFCFF)',
+    iconBg: 'rgba(59, 130, 246, 0.12)',
   },
   {
     key: 'development',
@@ -34,8 +36,9 @@ const centerEntries: CenterEntry[] = [
     descKey: 'homepage.centers.developmentDesc',
     icon: developmentCenterIcon,
     path: '/process-development',
-    gradient: 'linear-gradient(135deg, #E6F7ED, #C6EFCE)',
-    hoverGradient: 'linear-gradient(135deg, #C6EFCE, #A6E7B0)',
+    gradient: 'linear-gradient(to right, #DCF5E7, #F0FAF4, #FFFFFF)',
+    hoverGradient: 'linear-gradient(to right, #C8EED8, #E5F7EC, #FAFCFB)',
+    iconBg: 'rgba(34, 197, 94, 0.12)',
   },
   {
     key: 'scheduling',
@@ -43,8 +46,9 @@ const centerEntries: CenterEntry[] = [
     descKey: 'homepage.centers.schedulingDesc',
     icon: schedulingCenterIcon,
     path: '/scheduling-center/execution-assets/automation-process',
-    gradient: 'linear-gradient(135deg, #FFF3E0, #FFE0B2)',
-    hoverGradient: 'linear-gradient(135deg, #FFE0B2, #FFCC80)',
+    gradient: 'linear-gradient(to right, #FFF0D4, #FFF8EC, #FFFFFF)',
+    hoverGradient: 'linear-gradient(to right, #FFE6BC, #FFF3E0, #FFFCF8)',
+    iconBg: 'rgba(245, 158, 11, 0.12)',
   },
   {
     key: 'operations',
@@ -52,8 +56,9 @@ const centerEntries: CenterEntry[] = [
     descKey: 'homepage.centers.operationsDesc',
     icon: operationsCenterIcon,
     path: '/operations',
-    gradient: 'linear-gradient(135deg, #F3E8FD, #E1D5FA)',
-    hoverGradient: 'linear-gradient(135deg, #E1D5FA, #D0C0F5)',
+    gradient: 'linear-gradient(to right, #EDE5FB, #F6F2FD, #FFFFFF)',
+    hoverGradient: 'linear-gradient(to right, #E0D4F8, #F0EAFC, #FDFCFF)',
+    iconBg: 'rgba(139, 92, 246, 0.12)',
   },
   {
     key: 'maintenance',
@@ -61,8 +66,9 @@ const centerEntries: CenterEntry[] = [
     descKey: 'homepage.centers.maintenanceDesc',
     icon: maintenanceCenterIcon,
     path: '/maintenance',
-    gradient: 'linear-gradient(135deg, #FDE8E8, #FCCFCF)',
-    hoverGradient: 'linear-gradient(135deg, #FCCFCF, #FAB6B6)',
+    gradient: 'linear-gradient(to right, #FCE4E4, #FEF2F2, #FFFFFF)',
+    hoverGradient: 'linear-gradient(to right, #FAD2D2, #FDEBEB, #FFFAFA)',
+    iconBg: 'rgba(239, 68, 68, 0.12)',
   },
 ];
 
@@ -84,7 +90,9 @@ const CenterEntrySection = () => {
           onMouseEnter={() => setHoveredKey(entry.key)}
           onMouseLeave={() => setHoveredKey(null)}
         >
-          <img src={entry.icon} alt={entry.key} className="center-entry-icon" />
+          <div className="center-entry-icon-wrapper" style={{ backgroundColor: entry.iconBg }}>
+            <img src={entry.icon} alt={entry.key} className="center-entry-icon" />
+          </div>
           <div className="center-entry-info">
             <div className="center-entry-title">{t(entry.titleKey)}</div>
             <div className="center-entry-desc">{t(entry.descKey)}</div>
