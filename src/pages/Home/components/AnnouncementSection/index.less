@@ -22,7 +22,7 @@
     overflow: hidden;
     border-radius: 10px;
     position: relative;
-    flex: 1;
+    flex: 4;
     min-width: 0;
   }
 
@@ -94,7 +94,8 @@
 
     &-image {
       width: 100%;
-      height: auto;
+      height: 100%;
+      object-fit: cover;
       display: block;
       border-radius: 10px;
     }
@@ -135,8 +136,9 @@
   .announcement-list {
     display: flex;
     flex-direction: column;
-    flex: 1;
+    flex: 6;
     min-width: 0;
+    justify-content: space-between;
   }
 
   .announcement-item {
