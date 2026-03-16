@@ -14,7 +14,6 @@ interface CenterEntry {
   icon: string;
   path: string;
   accentColor: string;
-  iconFilter?: string;
 }
 
 const centerEntries: CenterEntry[] = [
