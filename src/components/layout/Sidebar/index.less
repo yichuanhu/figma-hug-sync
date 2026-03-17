@@ -240,16 +240,17 @@
     max-height: calc(100vh - 120px);
     overflow: hidden;
 
-    // 蓝色晕影
+    // 蓝色晕影（与 UserCard 统一）
     &::before {
       content: '';
       position: absolute;
-      top: -20px;
-      right: -20px;
-      width: 140px;
-      height: 140px;
+      top: -60px;
+      right: -40px;
+      width: 193px;
+      height: 193px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(22, 93, 255, 0.1) 0%, rgba(22, 93, 255, 0.04) 40%, transparent 70%);
+      filter: blur(32.9px);
+      background: radial-gradient(circle, rgba(22, 93, 255, 0.12) 0%, rgba(22, 93, 255, 0.06) 40%, transparent 70%);
       pointer-events: none;
       z-index: 0;
     }
