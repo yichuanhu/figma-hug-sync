@@ -141,6 +141,9 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
     if (pathname === '/') {
       return 'home';
     }
+    if (pathname.startsWith('/personal-center')) {
+      return 'personalCenter';
+    }
     return 'developmentCenter';
   };
 
