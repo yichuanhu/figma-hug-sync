@@ -30,6 +30,7 @@ const MetricsSection = () => {
       <div className="metrics-grid">
         {metrics.map((item) => {
           const iconSvg = iconMap[item.icon] || '';
+          console.log('ICON DEBUG:', item.key, item.icon, 'svg length:', iconSvg.length, 'first 100:', iconSvg.substring(0, 100));
           return (
             <div key={item.key} className="metric-card">
               <div className="metric-card-icon" aria-hidden="true" dangerouslySetInnerHTML={{ __html: iconSvg }} />
