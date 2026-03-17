@@ -2,12 +2,12 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import './index.less';
 
-// 使用 ?raw 导入，保留 SVG 内部所有毛玻璃效果
-import requirementsIconRaw from '@/assets/icons/requirements.svg?raw';
-import developmentIconRaw from '@/assets/icons/development.svg?raw';
-import schedulingIconRaw from '@/assets/icons/scheduling.svg?raw';
-import operationsIconRaw from '@/assets/icons/operations.svg?raw';
-import maintenanceIconRaw from '@/assets/icons/maintenance.svg?raw';
+// 使用 ?raw 导入，保留 SVG 内部所有毛玻璃效果（首页专用 v6 图标）
+import requirementsIconRaw from '@/assets/icons/home-requirements.svg?raw';
+import developmentIconRaw from '@/assets/icons/home-development.svg?raw';
+import schedulingIconRaw from '@/assets/icons/home-scheduling.svg?raw';
+import operationsIconRaw from '@/assets/icons/home-operations.svg?raw';
+import maintenanceIconRaw from '@/assets/icons/home-maintenance.svg?raw';
 
 interface CenterEntry {
   key: string;
