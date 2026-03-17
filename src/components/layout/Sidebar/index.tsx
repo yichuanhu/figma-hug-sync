@@ -88,7 +88,7 @@ const getExpandedKeysByPath = (pathname: string): string[] => {
   return [];
 };
 
-const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
+const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
