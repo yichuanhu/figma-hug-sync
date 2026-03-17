@@ -980,6 +980,7 @@
     }
   },
   "personalCenter": {
+    "title": "Personal Center",
     "tabs": {
       "settings": "Settings",
       "personalCredentials": "Personal Credentials"
