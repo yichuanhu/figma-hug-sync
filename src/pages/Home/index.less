@@ -3,25 +3,16 @@
   padding: 8px 8px 8px 0 !important;
 }
 
-.app-layout-content-card:has(.home-page) {
+.app-layout .app-layout-content .app-layout-content-card:has(.home-page) {
   background-color: var(--semi-color-default) !important;
   box-shadow: none !important;
   border: none !important;
   position: relative;
   overflow: hidden;
 
-  // 蓝色晕影 - 顶部居中
+  // 关闭全局左上角晕影，避免覆盖首页专属居中晕影
   &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 50%;
-    width: 90%;
-    height: 65%;
-    transform: translateX(-50%);
-    background: radial-gradient(ellipse at center top, rgba(22, 93, 255, 0.08) 0%, rgba(22, 93, 255, 0.04) 35%, rgba(22, 93, 255, 0.015) 60%, transparent 85%);
-    pointer-events: none;
-    z-index: 0;
+    display: none;
   }
 }
 
