@@ -240,17 +240,15 @@
     max-height: calc(100vh - 120px);
     overflow: hidden;
 
-    // 蓝色晕影（与 UserCard 统一）
+    // 蓝色晕影（与页面卡片统一，位于右上角）
     &::before {
       content: '';
       position: absolute;
-      top: -60px;
-      right: -40px;
-      width: 193px;
-      height: 193px;
-      border-radius: 50%;
-      filter: blur(32.9px);
-      background: radial-gradient(circle, rgba(22, 93, 255, 0.12) 0%, rgba(22, 93, 255, 0.06) 40%, transparent 70%);
+      top: 0;
+      right: 0;
+      width: 50%;
+      height: 40%;
+      background: radial-gradient(ellipse at right top, rgba(22, 93, 255, 0.08) 0%, rgba(22, 93, 255, 0.04) 30%, rgba(22, 93, 255, 0.015) 55%, transparent 80%);
       pointer-events: none;
       z-index: 0;
     }
@@ -296,17 +294,15 @@
     overflow: hidden;
     position: relative;
 
-    // 蓝色晕影（与 UserCard 统一）
+    // 蓝色晕影（与页面卡片统一，位于右上角）
     &::before {
       content: '';
       position: absolute;
-      top: -60px;
-      right: -40px;
-      width: 193px;
-      height: 193px;
-      border-radius: 50%;
-      filter: blur(32.9px);
-      background: radial-gradient(circle, rgba(22, 93, 255, 0.12) 0%, rgba(22, 93, 255, 0.06) 40%, transparent 70%);
+      top: 0;
+      right: 0;
+      width: 50%;
+      height: 40%;
+      background: radial-gradient(ellipse at right top, rgba(22, 93, 255, 0.08) 0%, rgba(22, 93, 255, 0.04) 30%, rgba(22, 93, 255, 0.015) 55%, transparent 80%);
       pointer-events: none;
       z-index: 0;
     }
