@@ -16,12 +16,12 @@
   // 渐变背景光晕
   &__glow {
     position: absolute;
-    top: -97px;
-    left: 97px;
+    top: -60px;
+    right: -40px;
     width: 193px;
     height: 193px;
     filter: blur(32.9px);
-    background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 193 193" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><rect x="0" y="0" height="100%" width="100%" fill="url(%23grad)" opacity="1"/><defs><radialGradient id="grad" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="10" gradientTransform="matrix(0 -13.647 -13.647 0 96.5 96.5)"><stop stop-color="rgba(22,93,255,0.12)" offset="0"/><stop stop-color="rgba(22,93,255,0.06)" offset="0.4"/><stop stop-color="rgba(255,255,255,0)" offset="0.7"/></radialGradient></defs></svg>');
+    background: radial-gradient(circle, rgba(22,93,255,0.12) 0%, rgba(22,93,255,0.06) 40%, transparent 70%);
     pointer-events: none;
   }
 
