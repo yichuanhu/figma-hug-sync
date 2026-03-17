@@ -10,9 +10,18 @@
   position: relative;
   overflow: hidden;
 
-  // 关闭全局左上角晕影，避免覆盖首页专属居中晕影
+  // 首页专属蓝色晕影直接挂到外层卡片，避免被 .home-page 的滚动容器裁切
   &::before {
-    display: none;
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 92%;
+    height: 68%;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse at center top, rgba(22, 93, 255, 0.08) 0%, rgba(22, 93, 255, 0.04) 38%, rgba(22, 93, 255, 0.015) 62%, transparent 86%);
+    pointer-events: none;
+    z-index: 0;
   }
 }
 
@@ -21,20 +30,6 @@
   height: 100%;
   overflow-y: auto;
   padding: 0;
-
-  // 首页专属蓝色晕影 - 对齐到外层卡片顶部
-  &::before {
-    content: '';
-    position: absolute;
-    top: -24px;
-    left: 50%;
-    width: calc(92% + 48px);
-    height: calc(68% + 24px);
-    transform: translateX(-50%);
-    background: radial-gradient(ellipse at center top, rgba(22, 93, 255, 0.08) 0%, rgba(22, 93, 255, 0.04) 38%, rgba(22, 93, 255, 0.015) 62%, transparent 86%);
-    pointer-events: none;
-    z-index: 0;
-  }
 
   // 蓝紫冷光晕影 - 左下角（保留原有的）
   &::after {
