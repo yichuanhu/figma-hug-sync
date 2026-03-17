@@ -9,7 +9,7 @@ const ProcessIcon = () => (
       <path d="M18.2002 4.17761L8.0661 6.76504C4.38973 7.70355 3.02671 9.30089 3.81491 12.815L7.16179 24.717C7.96615 28.2888 10.3702 29.7471 14.046 28.8086L24.6801 26.2212C28.4152 25.2675 29.6812 22.7317 28.8769 19.1599L25.53 7.25795C24.7418 3.74384 21.9353 2.22396 18.2002 4.17761Z" fill="url(#paint0_process)"/>
     </g>
     <foreignObject x="6" y="5.25" width="37.5" height="37.5">
-      <div style={{backdropFilter:'blur(4px)',WebkitBackdropFilter:'blur(4px)',clipPath:'url(#bgblur_process_clip)',height:'100%',width:'100%',backgroundColor:'rgba(255,255,255,0.16)',border:'1px solid rgba(255,255,255,0.28)',boxShadow:'inset 0 1px 0 rgba(255,255,255,0.36)'}}></div>
+      <div style={{backdropFilter:'blur(1px)',WebkitBackdropFilter:'blur(1px)',clipPath:'url(#bgblur_process_clip)',height:'100%',width:'100%',backgroundColor:'rgba(255,255,255,0.16)',border:'1px solid rgba(255,255,255,0.28)',boxShadow:'inset 0 1px 0 rgba(255,255,255,0.36)'}}></div>
     </foreignObject>
     <g filter="url(#filter1_i_process)">
       <path d="M30.6872 11.25H18.8142C14.5075 11.25 12 13.5195 12 17.4083V30.579C12 34.5315 14.5075 36.75 18.8142 36.75H30.6872C35.0633 36.75 37.5 34.5315 37.5 30.579V17.4083C37.5 13.5195 35.0633 11.25 30.6872 11.25Z" fill="#9DAAFA" fillOpacity="0.45"/>
