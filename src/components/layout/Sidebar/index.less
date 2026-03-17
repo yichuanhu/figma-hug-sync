@@ -238,6 +238,27 @@
     flex-direction: column;
     height: 480px;
     max-height: calc(100vh - 120px);
+    overflow: hidden;
+    position: relative;
+
+    // 蓝色晕影
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 80%;
+      height: 40%;
+      transform: translateX(-50%);
+      background: radial-gradient(ellipse at center top, rgba(22, 93, 255, 0.08) 0%, rgba(22, 93, 255, 0.04) 30%, rgba(22, 93, 255, 0.015) 55%, transparent 80%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    > * {
+      position: relative;
+      z-index: 1;
+    }
 
     .sidebar-floating-menu-header {
       display: flex;
