@@ -210,8 +210,6 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
 
   const bottomMenuItems: MenuItem[] = [
     { key: 'messageCenter', labelKey: 'sidebar.messageCenter', icon: <IconBellStroked />, badge: 999 },
-    { key: 'userGuide', labelKey: 'sidebar.userGuide', icon: <IconBookStroked /> },
-    { key: 'resourceDownload', labelKey: 'sidebar.resourceDownload', icon: <IconCloudStroked /> },
   ];
 
   // 调度中心的详细菜单结构 - 使用分组标题样式
