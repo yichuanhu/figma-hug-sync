@@ -1,19 +1,19 @@
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import {
-  RequirementsCenterIcon,
-  DevelopmentCenterIcon,
-  SchedulingCenterIcon,
-  OperationsCenterIcon,
-  MaintenanceCenterIcon,
-} from './CenterIcons';
 import './index.less';
+
+// 使用 ?raw 导入，保留 SVG 内部所有毛玻璃效果
+import requirementsIconRaw from '@/assets/icons/requirements.svg?raw';
+import developmentIconRaw from '@/assets/icons/development.svg?raw';
+import schedulingIconRaw from '@/assets/icons/scheduling.svg?raw';
+import operationsIconRaw from '@/assets/icons/operations.svg?raw';
+import maintenanceIconRaw from '@/assets/icons/maintenance.svg?raw';
 
 interface CenterEntry {
   key: string;
   titleKey: string;
   descKey: string;
-  Icon: React.FC;
+  iconRaw: string;
   path: string;
   accentColor: string;
 }
@@ -23,7 +23,7 @@ const centerEntries: CenterEntry[] = [
     key: 'requirements',
     titleKey: 'homepage.centers.requirements',
     descKey: 'homepage.centers.requirementsDesc',
-    Icon: RequirementsCenterIcon,
+    iconRaw: requirementsIconRaw,
     path: '/requirements',
     accentColor: '22, 93, 255',
   },
@@ -31,7 +31,7 @@ const centerEntries: CenterEntry[] = [
     key: 'development',
     titleKey: 'homepage.centers.development',
     descKey: 'homepage.centers.developmentDesc',
-    Icon: DevelopmentCenterIcon,
+    iconRaw: developmentIconRaw,
     path: '/process-development',
     accentColor: '79, 190, 49',
   },
@@ -39,7 +39,7 @@ const centerEntries: CenterEntry[] = [
     key: 'scheduling',
     titleKey: 'homepage.centers.scheduling',
     descKey: 'homepage.centers.schedulingDesc',
-    Icon: SchedulingCenterIcon,
+    iconRaw: schedulingIconRaw,
     path: '/scheduling-center/execution-assets/automation-process',
     accentColor: '79, 193, 206',
   },
@@ -47,7 +47,7 @@ const centerEntries: CenterEntry[] = [
     key: 'operations',
     titleKey: 'homepage.centers.operations',
     descKey: 'homepage.centers.operationsDesc',
-    Icon: OperationsCenterIcon,
+    iconRaw: operationsIconRaw,
     path: '/operations',
     accentColor: '202, 109, 255',
   },
@@ -55,7 +55,7 @@ const centerEntries: CenterEntry[] = [
     key: 'maintenance',
     titleKey: 'homepage.centers.maintenance',
     descKey: 'homepage.centers.maintenanceDesc',
-    Icon: MaintenanceCenterIcon,
+    iconRaw: maintenanceIconRaw,
     path: '/maintenance',
     accentColor: '177, 160, 15',
   },
@@ -76,9 +76,11 @@ const CenterEntrySection = () => {
           }}
           onClick={() => navigate(entry.path)}
         >
-          <div className="center-entry-icon-wrapper" aria-hidden="true">
-            <entry.Icon />
-          </div>
+          <div
+            className="center-entry-icon-wrapper"
+            aria-hidden="true"
+            dangerouslySetInnerHTML={{ __html: entry.iconRaw }}
+          />
           <div className="center-entry-info">
             <div className="center-entry-title">{t(entry.titleKey)}</div>
             <div className="center-entry-desc">{t(entry.descKey)}</div>
