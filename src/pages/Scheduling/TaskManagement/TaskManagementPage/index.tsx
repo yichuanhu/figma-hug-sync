@@ -31,7 +31,7 @@ import {
   IconDeleteStroked,
   
 } from '@douyinfe/semi-icons';
-import { RefreshCw, PlayCircle, Monitor, Bot, FolderCog } from 'lucide-react';
+import { RefreshCw, PlayCircle, Monitor, Bot, Component } from 'lucide-react';
 import { IconComponentPlaceholderStroked } from '@douyinfe/semi-icons';
 import type { 
   LYTaskResponse, 
