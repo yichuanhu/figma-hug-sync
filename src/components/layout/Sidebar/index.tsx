@@ -396,12 +396,12 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
         key={item.key}
         className="sidebar-icon-btn-wrapper"
         onMouseEnter={() => {
-          if (collapsed && hasSubMenu) {
+          if (collapsed && hasSubMenu && !disableHover) {
             setHoveredCenterKey(item.key);
           }
         }}
         onMouseLeave={() => {
-          if (collapsed && hasSubMenu) {
+          if (collapsed && hasSubMenu && !disableHover) {
             setHoveredCenterKey(null);
           }
         }}
