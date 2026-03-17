@@ -6,6 +6,8 @@ import PersonalCredentialManagement from './PersonalCredentialManagement';
 
 import './index.less';
 
+const { Title } = Typography;
+
 const PersonalCenter = () => {
   const { t } = useTranslation();
   const location = useLocation();
@@ -34,6 +36,7 @@ const PersonalCenter = () => {
 
   return (
     <div className="personal-center-page">
+      <Title heading={4} className="personal-center-title">{t('personalCenter.title')}</Title>
       {/* Tabs */}
       <div className="personal-center-tabs">
         <Tabs activeKey={activeTab} onChange={handleTabChange}>

@@ -61,6 +61,13 @@
         z-index: 0;
       }
 
+      // 个人中心 - 晕影居中
+      &.vignette-center::before {
+        left: 50%;
+        transform: translateX(-50%);
+        background: radial-gradient(ellipse at center top, rgba(22, 93, 255, 0.08) 0%, rgba(22, 93, 255, 0.04) 30%, rgba(22, 93, 255, 0.015) 55%, transparent 80%);
+      }
+
       // 内容层级高于晕影
       > * {
         position: relative;

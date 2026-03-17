@@ -17,6 +17,9 @@ const AppLayout = () => {
 
   const effectiveCollapsed = disableExpand || collapsed;
 
+  const isPersonalCenter = location.pathname.startsWith('/personal-center');
+  const contentCardClass = `app-layout-content-card${isPersonalCenter ? ' vignette-center' : ''}`;
+
   return (
     <div className="app-layout">
       {/* 侧边栏 */}
@@ -30,7 +33,7 @@ const AppLayout = () => {
 
       {/* 内容区域 */}
       <div className="app-layout-content">
-        <div className="app-layout-content-card">
+        <div className={contentCardClass}>
           <div className="app-layout-content-main">
             <Outlet />
           </div>
