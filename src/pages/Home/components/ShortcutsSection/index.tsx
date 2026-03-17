@@ -4,7 +4,7 @@ import { shortcuts } from '../../mockData';
 import './index.less';
 
 const ProcessIcon = () => (
-  <svg width="28" height="28" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g filter="url(#filter0_i_process)">
       <path d="M18.2002 4.17761L8.0661 6.76504C4.38973 7.70355 3.02671 9.30089 3.81491 12.815L7.16179 24.717C7.96615 28.2888 10.3702 29.7471 14.046 28.8086L24.6801 26.2212C28.4152 25.2675 29.6812 22.7317 28.8769 19.1599L25.53 7.25795C24.7418 3.74384 21.9353 2.22396 18.2002 4.17761Z" fill="url(#paint0_process)"/>
     </g>
@@ -52,7 +52,7 @@ const ProcessIcon = () => (
 );
 
 const RobotIcon = () => (
-  <svg width="28" height="28" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g filter="url(#filter0_i_robot)">
       <rect x="15.75" y="5.25" width="23.25" height="23.25" rx="6" fill="url(#paint0_robot)"/>
     </g>
@@ -100,7 +100,7 @@ const RobotIcon = () => (
 );
 
 const TaskIcon = () => (
-  <svg width="28" height="28" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g filter="url(#filter0_i_task)">
       <rect x="12.75" y="3.75" width="24" height="24" rx="6" fill="url(#paint0_task)" fillOpacity="0.8"/>
     </g>
