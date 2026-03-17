@@ -51,7 +51,7 @@ import developmentCenterIconRaw from '@/assets/icons/development.svg?raw';
 import requirementsCenterIconRaw from '@/assets/icons/requirements.svg?raw';
 import schedulingCenterIconRaw from '@/assets/icons/scheduling.svg?raw';
 import operationsCenterIconRaw from '@/assets/icons/operations.svg?raw';
-import maintenanceCenterIconRaw from '@/assets/icons/business.svg?raw';
+import maintenanceCenterIconRaw from '@/assets/icons/maintenance.svg?raw';
 
 import './index.less';
 
