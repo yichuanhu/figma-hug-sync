@@ -555,9 +555,9 @@ const TaskManagementPage = () => {
         return (
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, maxWidth: '100%' }}>
             {isGroup ? (
-              <Network size={14} strokeWidth={2} style={{ flexShrink: 0, color: 'var(--semi-color-primary)' }} />
+              <Container size={14} strokeWidth={2} style={{ flexShrink: 0, color: '#3b82f6' }} />
             ) : (
-              <Bot size={14} strokeWidth={2} style={{ flexShrink: 0, color: 'var(--semi-color-success)' }} />
+              <Bot size={14} strokeWidth={2} style={{ flexShrink: 0, color: '#f97316' }} />
             )}
             <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{text || '-'}</span>
           </span>
