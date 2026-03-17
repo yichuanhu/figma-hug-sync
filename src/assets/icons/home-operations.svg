@@ -7,7 +7,7 @@
 <path d="M2.54541 7.63632C2.54541 4.82469 4.82469 2.54541 7.63632 2.54541H20.3636C23.1752 2.54541 25.4545 4.82469 25.4545 7.63632V17.1818C25.4545 19.9934 23.1752 22.2727 20.3636 22.2727H7.63632C4.82469 22.2727 2.54541 19.9934 2.54541 17.1818V7.63632Z"/>
 </clipPath>
 <filter id="glassBlur_660_7799" x="-50%" y="-50%" width="200%" height="200%">
-<feGaussianBlur in="SourceGraphic" stdDeviation="2"/>
+<feGaussianBlur in="SourceGraphic" stdDeviation="4"/>
 </filter>
 </defs>
 <g clip-path="url(#glassClip_660_7799)">
