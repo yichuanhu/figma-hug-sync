@@ -31,7 +31,7 @@ import {
   IconDeleteStroked,
   
 } from '@douyinfe/semi-icons';
-import { RefreshCw, PlayCircle, Monitor, Bot, FolderCog } from 'lucide-react';
+import { RefreshCw, PlayCircle, Monitor, Bot, Component } from 'lucide-react';
 import { IconComponentPlaceholderStroked } from '@douyinfe/semi-icons';
 import type { 
   LYTaskResponse, 
@@ -555,7 +555,7 @@ const TaskManagementPage = () => {
         return (
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, maxWidth: '100%' }}>
             {isGroup ? (
-              <FolderCog size={14} strokeWidth={2} style={{ flexShrink: 0, color: '#3b82f6' }} />
+              <Component size={14} strokeWidth={2} style={{ flexShrink: 0, color: '#3b82f6' }} />
             ) : (
               <Bot size={14} strokeWidth={2} style={{ flexShrink: 0, color: '#f97316' }} />
             )}
