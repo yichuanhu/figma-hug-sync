@@ -1,28 +1,32 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Sidebar from '../Sidebar';
 import './index.less';
 
-// 这些路由进入时完全隐藏侧边栏
-const hideSidebarRoutes = ['/requirements', '/operations'];
+// 这些路由下侧边栏强制收起且禁用hover浮动菜单
+const noExpandRoutes = ['/requirements', '/operations'];
 
 const AppLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
 
-  const sidebarHidden = useMemo(
-    () => hideSidebarRoutes.some(route => location.pathname === route || location.pathname.startsWith(route + '/')),
+  const disableExpand = useMemo(
+    () => noExpandRoutes.some(route => location.pathname === route || location.pathname.startsWith(route + '/')),
     [location.pathname]
   );
+
+  const effectiveCollapsed = disableExpand || collapsed;
 
   return (
     <div className="app-layout">
       {/* 侧边栏 */}
-      {!sidebarHidden && (
-        <div className={`app-layout-sidebar ${collapsed ? 'collapsed' : 'expanded'}`}>
-          <Sidebar collapsed={collapsed} onToggleCollapse={() => setCollapsed(!collapsed)} />
-        </div>
-      )}
+      <div className={`app-layout-sidebar ${effectiveCollapsed ? 'collapsed' : 'expanded'}`}>
+        <Sidebar
+          collapsed={effectiveCollapsed}
+          onToggleCollapse={disableExpand ? undefined : () => setCollapsed(!collapsed)}
+          disableHover={disableExpand}
+        />
+      </div>
 
       {/* 内容区域 */}
       <div className="app-layout-content">

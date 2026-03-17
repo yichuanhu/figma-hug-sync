@@ -68,6 +68,7 @@ interface MenuItem {
 interface SidebarProps {
   collapsed: boolean;
   onToggleCollapse?: () => void;
+  disableHover?: boolean;
 }
 
 // 根据路径获取需要展开的菜单组
@@ -87,7 +88,7 @@ const getExpandedKeysByPath = (pathname: string): string[] => {
   return [];
 };
 
-const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
+const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
@@ -395,12 +396,12 @@ const Sidebar = ({ collapsed, onToggleCollapse }: SidebarProps) => {
         key={item.key}
         className="sidebar-icon-btn-wrapper"
         onMouseEnter={() => {
-          if (collapsed && hasSubMenu) {
+          if (collapsed && hasSubMenu && !disableHover) {
             setHoveredCenterKey(item.key);
           }
         }}
         onMouseLeave={() => {
-          if (collapsed && hasSubMenu) {
+          if (collapsed && hasSubMenu && !disableHover) {
             setHoveredCenterKey(null);
           }
         }}
