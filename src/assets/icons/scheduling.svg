@@ -1,5 +1,5 @@
 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M22.9091 7.09091C22.9091 10.4046 20.2228 13.0909 16.9091 13.0909C13.5954 13.0909 10.9091 10.4046 10.9091 7.09091C10.9091 3.7772 13.5954 1.09091 16.9091 1.09091C20.2228 1.09091 22.9091 3.7772 22.9091 7.09091Z" fill="url(#paint0_linear_685_7373)"/>
+<path d="M22.9091 8.09091C22.9091 11.9569 19.7751 15.0909 15.9091 15.0909C12.0431 15.0909 8.90912 11.9569 8.90912 8.09091C8.90912 4.22492 12.0431 1.09091 15.9091 1.09091C19.7751 1.09091 22.9091 4.22492 22.9091 8.09091Z" fill="url(#paint0_linear_685_7373)"/>
 <foreignObject x="-3" y="-1" width="28" height="28"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(2px);clip-path:url(#bgblur_0_685_7373_clip_path);height:100%;width:100%"></div></foreignObject><g filter="url(#filter0_i_685_7373)" data-figma-bg-blur-radius="4">
 <path d="M21 13C21 18.5228 16.5228 23 11 23C5.47715 23 1 18.5228 1 13C1 7.47715 5.47715 3 11 3C16.5228 3 21 7.47715 21 13Z" fill="#547DFF" fill-opacity="0.25"/>
 </g>
@@ -16,7 +16,7 @@
 <feBlend mode="normal" in2="shape" result="effect1_innerShadow_685_7373"/>
 </filter>
 <clipPath id="bgblur_0_685_7373_clip_path" transform="translate(3 1)"><path d="M21 13C21 18.5228 16.5228 23 11 23C5.47715 23 1 18.5228 1 13C1 7.47715 5.47715 3 11 3C16.5228 3 21 7.47715 21 13Z"/>
-</clipPath><linearGradient id="paint0_linear_685_7373" x1="16.9091" y1="1.09091" x2="16.9091" y2="13.0909" gradientUnits="userSpaceOnUse">
+</clipPath><linearGradient id="paint0_linear_685_7373" x1="15.9091" y1="1.09091" x2="15.9091" y2="15.0909" gradientUnits="userSpaceOnUse">
 <stop stop-color="#194BEC"/>
 <stop offset="1" stop-color="#0D34B3"/>
 </linearGradient>
