@@ -57,7 +57,7 @@ const RobotIcon = () => (
       <rect x="15.75" y="5.25" width="23.25" height="23.25" rx="6" fill="url(#paint0_robot)"/>
     </g>
     <foreignObject x="-2.25" y="0.75" width="37.5" height="42">
-      <div style={{backdropFilter:'blur(1px)',WebkitBackdropFilter:'blur(1px)',clipPath:'url(#bgblur_robot_clip)',height:'100%',width:'100%',backgroundColor:'rgba(255,255,255,0.16)',border:'1px solid rgba(255,255,255,0.28)',boxShadow:'inset 0 1px 0 rgba(255,255,255,0.36)'}}></div>
+      <div style={{backdropFilter:'blur(2px)',WebkitBackdropFilter:'blur(2px)',clipPath:'url(#bgblur_robot_clip)',height:'100%',width:'100%',backgroundColor:'rgba(255,255,255,0.16)',border:'1px solid rgba(255,255,255,0.28)',boxShadow:'inset 0 1px 0 rgba(255,255,255,0.36)'}}></div>
     </foreignObject>
     <g filter="url(#filter1_i_robot)">
       <path d="M16.5 6.75C17.7426 6.75 18.75 7.75736 18.75 9C18.75 9.97926 18.1226 10.8098 17.25 11.1189V14.25H23.25C26.5637 14.25 29.25 16.9363 29.25 20.25V30.75C29.25 34.0637 26.5637 36.75 23.25 36.75H9.75C6.43629 36.75 3.75 34.0637 3.75 30.75V20.25C3.75 16.9363 6.43629 14.25 9.75 14.25H15.75V11.1189C14.8774 10.8098 14.25 9.97926 14.25 9C14.25 7.75736 15.2574 6.75 16.5 6.75Z" fill="#EC82A5" fillOpacity="0.45"/>
