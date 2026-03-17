@@ -68,6 +68,7 @@ interface MenuItem {
 interface SidebarProps {
   collapsed: boolean;
   onToggleCollapse?: () => void;
+  disableHover?: boolean;
 }
 
 // 根据路径获取需要展开的菜单组
