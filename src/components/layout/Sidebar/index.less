@@ -157,11 +157,18 @@
     position: relative;
   }
 
-  // 中心图标图片样式
+  // 中心图标样式（内联SVG容器）
   .sidebar-center-icon {
     width: 24px;
     height: 24px;
-    object-fit: contain;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
   }
 
   // 图标按钮

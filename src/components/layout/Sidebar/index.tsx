@@ -45,13 +45,13 @@ const LayoutIcon = () => (
 );
 import laiyeLogo from '@/assets/laiye-logo.png';
 
-// 中心图标
-import homeCenterIcon from '@/assets/icons/home-center.png';
-import developmentCenterIcon from '@/assets/icons/development-center.png';
-import requirementsCenterIcon from '@/assets/icons/requirements-center.png';
-import schedulingCenterIcon from '@/assets/icons/scheduling-center.png';
-import operationsCenterIcon from '@/assets/icons/operations-center.png';
-import maintenanceCenterIcon from '@/assets/icons/maintenance-center.png';
+// 中心图标 - 使用 ?raw 导入保留 SVG 内部的毛玻璃效果
+import homeCenterIconRaw from '@/assets/icons/home.svg?raw';
+import developmentCenterIconRaw from '@/assets/icons/development.svg?raw';
+import requirementsCenterIconRaw from '@/assets/icons/requirements.svg?raw';
+import schedulingCenterIconRaw from '@/assets/icons/scheduling.svg?raw';
+import operationsCenterIconRaw from '@/assets/icons/operations.svg?raw';
+import maintenanceCenterIconRaw from '@/assets/icons/business.svg?raw';
 
 import './index.less';
 
@@ -162,33 +162,33 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
 
   // 中心级别菜单（左侧图标栏）
   const centerMenuItems: MenuItem[] = [
-    { key: 'home', labelKey: 'sidebar.home', icon: <img src={homeCenterIcon} alt="home" className="sidebar-center-icon" />, path: '/' },
+    { key: 'home', labelKey: 'sidebar.home', icon: <div className="sidebar-center-icon" dangerouslySetInnerHTML={{ __html: homeCenterIconRaw }} />, path: '/' },
     {
       key: 'developmentCenter',
       labelKey: 'sidebar.developmentCenter',
-      icon: <img src={developmentCenterIcon} alt="development" className="sidebar-center-icon" />,
+      icon: <div className="sidebar-center-icon" dangerouslySetInnerHTML={{ __html: developmentCenterIconRaw }} />,
     },
     {
       key: 'schedulingCenter',
       labelKey: 'sidebar.schedulingCenter',
-      icon: <img src={schedulingCenterIcon} alt="scheduling" className="sidebar-center-icon" />,
+      icon: <div className="sidebar-center-icon" dangerouslySetInnerHTML={{ __html: schedulingCenterIconRaw }} />,
     },
     {
       key: 'operationsCenter',
       labelKey: 'sidebar.operationsCenter',
-      icon: <img src={operationsCenterIcon} alt="operations" className="sidebar-center-icon" />,
+      icon: <div className="sidebar-center-icon" dangerouslySetInnerHTML={{ __html: operationsCenterIconRaw }} />,
       path: '/operations',
     },
     {
       key: 'requirementsCenter',
       labelKey: 'sidebar.requirementsCenter',
-      icon: <img src={requirementsCenterIcon} alt="requirements" className="sidebar-center-icon" />,
+      icon: <div className="sidebar-center-icon" dangerouslySetInnerHTML={{ __html: requirementsCenterIconRaw }} />,
       path: '/requirements',
     },
     {
       key: 'maintenanceCenter',
       labelKey: 'sidebar.maintenanceCenter',
-      icon: <img src={maintenanceCenterIcon} alt="maintenance" className="sidebar-center-icon" />,
+      icon: <div className="sidebar-center-icon" dangerouslySetInnerHTML={{ __html: maintenanceCenterIconRaw }} />,
       path: '/maintenance',
     },
   ];
