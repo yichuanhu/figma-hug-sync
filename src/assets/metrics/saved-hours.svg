@@ -2,7 +2,7 @@
 <g filter="url(#filter0_i_628_7354)">
 <path d="M15.9091 1.09082C19.7751 1.09082 22.9091 4.22483 22.9091 8.09082C22.9091 11.9568 19.7751 15.0908 15.9091 15.0908C12.0431 15.0908 8.90912 11.9568 8.90912 8.09082C8.90912 4.22483 12.0431 1.09082 15.9091 1.09082Z" fill="url(#paint0_linear_628_7354)"/>
 </g>
-<foreignObject x="-3" y="-1" width="28" height="28"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(1px);-webkit-backdrop-filter:blur(1px);clip-path:url(#bgblur_0_628_7354_clip_path);height:100%;width:100%"></div></foreignObject><g filter="url(#filter1_i_628_7354)" data-figma-bg-blur-radius="2">
+<foreignObject x="-3" y="-1" width="28" height="28"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(1px);-webkit-backdrop-filter:blur(1px);clip-path:url(#bgblur_0_628_7354_clip_path);height:100%;width:100%;background-color:rgba(255,255,255,0.16);border:1px solid rgba(255,255,255,0.28);box-shadow:inset 0 1px 0 rgba(255,255,255,0.36)"></div></foreignObject><g filter="url(#filter1_i_628_7354)" data-figma-bg-blur-radius="2">
 <path d="M21 13C21 18.5228 16.5228 23 11 23C5.47715 23 1 18.5228 1 13C1 7.47715 5.47715 3 11 3C16.5228 3 21 7.47715 21 13Z" fill="#12C6C2" fill-opacity="0.45"/>
 </g>
 <path d="M9 10C9 9.44772 9.44772 9 10 9C10.5523 9 11 9.44772 11 10V14H15C15.5523 14 16 14.4477 16 15C16 15.5523 15.5523 16 15 16H10.2002C9.53745 16 9 15.4625 9 14.7998V10Z" fill="url(#paint1_linear_628_7354)"/>
