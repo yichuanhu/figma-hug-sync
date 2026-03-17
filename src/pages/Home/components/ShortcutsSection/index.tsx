@@ -100,7 +100,7 @@ const RobotIcon = () => (
 );
 
 const TaskIcon = () => (
-  <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg width="28" height="28" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g filter="url(#filter0_i_task)">
       <rect x="12.75" y="3.75" width="24" height="24" rx="6" fill="url(#paint0_task)" fillOpacity="0.8"/>
     </g>
