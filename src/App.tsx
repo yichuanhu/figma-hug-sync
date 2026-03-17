@@ -46,6 +46,9 @@ import EmptyStateOptionsPreview from "@/pages/DevPreview/EmptyStateOptionsPrevie
 // Requirements & Operations
 import Requirements from "@/pages/Requirements";
 import Operations from "@/pages/Operations";
+// 预加载企业版专属插图，避免切换页面时延迟
+import enterpriseExclusiveImg from '@/assets/empty-state/enterprise-exclusive.png';
+new Image().src = enterpriseExclusiveImg;
 
 const queryClient = new QueryClient();
 
