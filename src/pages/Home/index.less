@@ -10,16 +10,16 @@
   position: relative;
   overflow: hidden;
 
-  // 蓝色大晕影 - 固定在顶部中间
+  // 蓝色晕影 - 顶部居中
   &::before {
     content: '';
     position: absolute;
     top: 0;
     left: 50%;
-    width: 80%;
-    height: 60%;
+    width: 90%;
+    height: 65%;
     transform: translateX(-50%);
-    background: radial-gradient(ellipse at center top, rgba(22, 93, 255, 0.15) 0%, rgba(22, 93, 255, 0.08) 30%, rgba(22, 93, 255, 0.03) 55%, transparent 80%);
+    background: radial-gradient(ellipse at center top, rgba(22, 93, 255, 0.08) 0%, rgba(22, 93, 255, 0.04) 35%, rgba(22, 93, 255, 0.015) 60%, transparent 85%);
     pointer-events: none;
     z-index: 0;
   }
