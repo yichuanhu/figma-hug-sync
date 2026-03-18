@@ -93,9 +93,10 @@
     }
 
     .release-config-step-resource-card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
+      display: grid;
+      grid-template-columns: minmax(0, calc(50% - 8px)) minmax(0, 1fr);
+      column-gap: 16px;
+      align-items: start;
       margin-bottom: 12px;
 
       .release-config-step-resource-card-title {
@@ -103,13 +104,12 @@
         align-items: center;
         gap: 4px;
         min-width: 0;
-        flex: 1;
+        width: 100%;
         overflow: hidden;
 
         .semi-typography {
           min-width: 0;
-          max-width: calc(50% - 8px);
-          flex-shrink: 1;
+          flex: 1;
         }
 
         .release-config-step-published-tag {
@@ -120,8 +120,9 @@
       .release-config-step-resource-card-actions {
         display: flex;
         align-items: center;
+        justify-content: flex-end;
         gap: 8px;
-        flex-shrink: 0;
+        min-width: 0;
       }
     }
 
