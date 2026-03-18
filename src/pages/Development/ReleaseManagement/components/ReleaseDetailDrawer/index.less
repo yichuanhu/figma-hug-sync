@@ -101,7 +101,7 @@
     align-items: center;
     gap: 4px;
     min-width: 0;
-    flex: 1;
+    max-width: 70%;
     overflow: hidden;
     transition: color 0.2s;
 
@@ -117,13 +117,18 @@
     align-items: center;
     gap: 4px;
     min-width: 0;
-    flex: 1;
+    max-width: 70%;
     overflow: hidden;
     transition: color 0.2s;
 
     &:hover {
       color: var(--semi-color-primary);
     }
+  }
+
+  // 资源标签紧跟名称
+  .release-detail-drawer-resource-tag {
+    flex-shrink: 0;
   }
 
   // 跳转链接图标
