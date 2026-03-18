@@ -113,6 +113,50 @@ const CreateReleasePage: React.FC = () => {
           process_name: p.process.name,
         })),
       },
+      {
+        resource_id: 'PARAM-005',
+        resource_name: '启用自动重试',
+        is_previously_published: false,
+        test_value: 'true',
+        param_type: 'BOOLEAN',
+        used_by_processes: processes.slice(0, 1).map((p) => ({
+          process_id: p.process.id,
+          process_name: p.process.name,
+        })),
+      },
+      {
+        resource_id: 'PARAM-006',
+        resource_name: '最大并发连接数',
+        is_previously_published: true,
+        test_value: '256',
+        param_type: 'NUMBER',
+        used_by_processes: processes.map((p) => ({
+          process_id: p.process.id,
+          process_name: p.process.name,
+        })),
+      },
+      {
+        resource_id: 'PARAM-007',
+        resource_name: '启用调试模式',
+        is_previously_published: true,
+        test_value: 'false',
+        param_type: 'BOOLEAN',
+        used_by_processes: processes.slice(0, 2).map((p) => ({
+          process_id: p.process.id,
+          process_name: p.process.name,
+        })),
+      },
+      {
+        resource_id: 'PARAM-008',
+        resource_name: '超时时间阈值（毫秒）',
+        is_previously_published: false,
+        test_value: '30000',
+        param_type: 'NUMBER',
+        used_by_processes: processes.slice(0, 1).map((p) => ({
+          process_id: p.process.id,
+          process_name: p.process.name,
+        })),
+      },
     ];
 
     const credentials = [
