@@ -108,6 +108,7 @@ const App = () => (
           {/* 需求中心 & 运营中心 */}
           <Route path="/requirements" element={<Requirements />} />
           <Route path="/operations" element={<Operations />} />
+          <Route path="/maintenance" element={<MaintenanceWorkbench />} />
         </Route>
 
         {/* 无布局页面 */}
