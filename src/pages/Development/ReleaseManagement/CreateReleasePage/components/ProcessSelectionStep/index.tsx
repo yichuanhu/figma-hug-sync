@@ -75,6 +75,25 @@ const generateMockProcess = (index: number): ProcessWithVersions => {
     '数据清洗',
     '任务调度',
     '日志分析',
+    '这是一个超级超级长的自动化流程名称用来测试当流程名称特别长的时候UI是否能正确截断显示不会撑破布局导致样式错乱的边界情况',
+    '企业级跨部门多系统数据同步与清洗流程_包含异常处理与重试机制_支持并发执行与优先级调度_版本迭代持续优化中',
+    '全球化多语言订单处理与物流调度自动化流程',
+  ];
+
+  const descriptions = [
+    '客户信息同步流程的详细描述',
+    '订单处理流程的详细描述',
+    '库存检查流程的详细描述',
+    '报表生成器流程的详细描述',
+    '数据导入流程的详细描述',
+    '邮件发送流程的详细描述',
+    '文件处理流程的详细描述',
+    '数据清洗流程的详细描述',
+    '任务调度流程的详细描述',
+    '日志分析流程的详细描述',
+    '这是一段非常非常长的流程描述文本，用来测试当描述信息超出正常长度时，UI展示是否正确处理了文本截断或换行逻辑。该流程涵盖了客户数据采集、数据清洗、格式转换、目标系统写入、异常日志记录、重试机制触发、邮件通知发送等多个步骤，每一步都包含详细的参数配置和校验规则，确保数据一致性和完整性。',
+    '企业级跨部门多系统数据同步与清洗流程的描述，这个描述也非常长，包含了流程设计理念、技术架构、性能指标、安全策略、合规要求、运维规范等多方面内容。',
+    '全球化多语言订单处理与物流调度自动化流程的完整描述信息',
   ];
 
   const isPublished = index % 3 !== 0;
@@ -83,7 +102,7 @@ const generateMockProcess = (index: number): ProcessWithVersions => {
   return {
     id: `process-${index + 1}`,
     name: names[index % names.length],
-    description: `${names[index % names.length]}流程的详细描述`,
+    description: descriptions[index % descriptions.length],
     status: index % 3 === 0 ? 'developing' : 'published',
     latest_version_id: versions[0].id,
     latest_version: versions[0].version,
