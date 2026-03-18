@@ -410,9 +410,6 @@ const ProcessDetailDrawer = ({
               <div className="process-detail-drawer-version-sidebar">
                 <div className="process-detail-drawer-version-sidebar-header">
                   <Text className="process-detail-drawer-version-sidebar-title">{t('development.processDevelopment.detail.versionList.title')}</Text>
-                  <Tooltip content={t('development.processDevelopment.detail.versionList.titleTooltip')}>
-                    <IconHelpCircleStroked style={{ color: 'var(--semi-color-text-2)', fontSize: 14 }} />
-                  </Tooltip>
                 </div>
                 <Button icon={<IconUpload />} theme="solid" className="process-detail-drawer-version-sidebar-upload-btn" onClick={() => setUploadVersionModalVisible(true)}>
                   {t('development.processDevelopment.detail.versionList.uploadVersion')}
