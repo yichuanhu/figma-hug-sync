@@ -43,13 +43,14 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
     if (!release) return { PARAMETER: [], CREDENTIAL: [], QUEUE: [], FILE: [] };
 
     const mockResources = [
-      { resource_id: 'param-001', resource_type: 'PARAMETER' as ResourceType, resource_name: '系统超时时间', test_value: '30000', production_value: '60000', use_test_as_production: false, is_previously_published: true, is_manual: false, used_by_processes: ['订单处理流程', '库存检查流程'] },
-      { resource_id: 'param-002', resource_type: 'PARAMETER' as ResourceType, resource_name: '最大重试次数', test_value: '3', production_value: '5', use_test_as_production: false, is_previously_published: false, is_manual: true, used_by_processes: ['订单处理流程'] },
-      { resource_id: 'cred-001', resource_type: 'CREDENTIAL' as ResourceType, resource_name: 'ERP系统凭据', test_value: '********', test_username: 'test_admin', test_password: '********', production_value: '********', production_username: 'admin', production_password: '********', use_test_as_production: false, is_previously_published: true, is_manual: false, used_by_processes: ['订单处理流程', '数据同步流程'] },
+      { resource_id: 'param-001', resource_type: 'PARAMETER' as ResourceType, resource_name: 'Global_System_Timeout_Configuration_For_All_Enterprise_Services_And_Microservices_V2', test_value: '{"timeout_ms":30000,"retry_enabled":true,"retry_count":3,"retry_delay_ms":1000,"circuit_breaker":{"enabled":true,"threshold":5,"reset_timeout_ms":60000},"fallback":{"enabled":true,"default_value":"N/A"},"monitoring":{"log_level":"INFO","alert_threshold_ms":25000}}', production_value: '{"timeout_ms":60000,"retry_enabled":true,"retry_count":5,"retry_delay_ms":2000,"circuit_breaker":{"enabled":true,"threshold":10,"reset_timeout_ms":120000},"fallback":{"enabled":true,"default_value":"SERVICE_UNAVAILABLE"},"monitoring":{"log_level":"WARN","alert_threshold_ms":50000}}', use_test_as_production: false, is_previously_published: true, is_manual: false, used_by_processes: ['SAP_ERP_Order_Processing_And_Fulfillment_Workflow_V3', '库存检查流程'] },
+      { resource_id: 'param-002', resource_type: 'PARAMETER' as ResourceType, resource_name: '最大重试次数', test_value: '3', production_value: '5', use_test_as_production: false, is_previously_published: false, is_manual: true, used_by_processes: ['SAP_ERP_Order_Processing_And_Fulfillment_Workflow_V3'] },
+      { resource_id: 'param-003', resource_type: 'PARAMETER' as ResourceType, resource_name: 'Enterprise_Database_Connection_String_With_Failover_And_LoadBalancing_Parameters', test_value: 'Server=test-db-cluster.internal.company.com,1433;Database=TestDB_Enterprise_v5;User Id=svc_test_account;Password=********;MultipleActiveResultSets=True;Connection Timeout=30;Encrypt=True;TrustServerCertificate=False;Application Name=RPA_Platform_Test;Max Pool Size=100;Min Pool Size=10;Load Balance Timeout=30;Failover Partner=test-db-failover.internal.company.com', production_value: '', use_test_as_production: true, is_previously_published: true, is_manual: false, used_by_processes: ['SAP_ERP_Order_Processing_And_Fulfillment_Workflow_V3', '数据同步流程', 'Monthly_Financial_Report_Generation_And_Distribution_Workflow'] },
+      { resource_id: 'cred-001', resource_type: 'CREDENTIAL' as ResourceType, resource_name: 'SAP_ERP_Production_System_Service_Account_Credentials_With_MFA', test_value: '********', test_username: 'svc_test_sap_erp_integration_account', test_password: '********', production_value: '********', production_username: 'svc_prod_sap_erp_admin_integration', production_password: '********', use_test_as_production: false, is_previously_published: true, is_manual: false, used_by_processes: ['SAP_ERP_Order_Processing_And_Fulfillment_Workflow_V3', '数据同步流程'] },
       { resource_id: 'cred-002', resource_type: 'CREDENTIAL' as ResourceType, resource_name: '邮件服务凭据', test_value: '********', test_username: 'mail_test', test_password: '********', production_value: '********', production_username: 'mail_user', production_password: '********', use_test_as_production: true, is_previously_published: false, is_manual: false, used_by_processes: ['通知发送流程'] },
-      { resource_id: 'queue-001', resource_type: 'QUEUE' as ResourceType, resource_name: '订单处理队列', test_value: '', production_value: '', use_test_as_production: false, is_previously_published: true, is_manual: false, used_by_processes: ['订单处理流程'] },
-      { resource_id: 'file-001', resource_type: 'FILE' as ResourceType, resource_name: '订单模板', test_value: '', production_value: '', use_test_as_production: false, is_previously_published: true, is_manual: false, used_by_processes: ['订单处理流程'] },
-      { resource_id: 'file-002', resource_type: 'FILE' as ResourceType, resource_name: '报表配置', test_value: '', production_value: '', use_test_as_production: false, is_previously_published: false, is_manual: true, used_by_processes: ['数据导出流程'] },
+      { resource_id: 'queue-001', resource_type: 'QUEUE' as ResourceType, resource_name: 'High_Priority_Order_Processing_Queue_For_Enterprise_Customers_Region_APAC', test_value: '', production_value: '', use_test_as_production: false, is_previously_published: true, is_manual: false, used_by_processes: ['SAP_ERP_Order_Processing_And_Fulfillment_Workflow_V3'] },
+      { resource_id: 'file-001', resource_type: 'FILE' as ResourceType, resource_name: 'Enterprise_Order_Invoice_Template_With_MultiLanguage_Support_2024_v3.xlsx', test_value: '', production_value: '', use_test_as_production: false, is_previously_published: true, is_manual: false, used_by_processes: ['SAP_ERP_Order_Processing_And_Fulfillment_Workflow_V3'] },
+      { resource_id: 'file-002', resource_type: 'FILE' as ResourceType, resource_name: '报表配置', test_value: '', production_value: '', use_test_as_production: false, is_previously_published: false, is_manual: true, used_by_processes: ['Monthly_Financial_Report_Generation_And_Distribution_Workflow'] },
     ];
 
     const resources = release.resources?.length ? release.resources : mockResources;
@@ -60,6 +61,16 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
       QUEUE: resources.filter((r) => r.resource_type === 'QUEUE'),
       FILE: resources.filter((r) => r.resource_type === 'FILE'),
     };
+  }, [release]);
+
+  // Mock 流程内容（含超长名称和描述）
+  const mockContents = useMemo(() => {
+    if (release?.contents?.length) return release.contents;
+    return [
+      { process_id: 'proc-001', process_name: 'SAP_ERP_Order_Processing_And_Fulfillment_Workflow_V3', version_number: 'v3.2.1', process_description: '该流程用于处理来自SAP ERP系统的所有客户订单，包括订单验证、库存检查、价格计算、折扣应用、税费计算、物流分配、发票生成以及客户通知等完整的端到端业务流程。支持多币种、多仓库、多物流商的复杂场景处理，并集成了异常处理和自动重试机制以确保流程的高可靠性和数据一致性。' },
+      { process_id: 'proc-002', process_name: '库存检查流程', version_number: 'v1.0.0', process_description: '定时检查库存' },
+      { process_id: 'proc-003', process_name: 'Monthly_Financial_Report_Generation_And_Distribution_Workflow', version_number: 'v2.1.0', process_description: '每月自动生成财务报表并分发给相关部门负责人，支持PDF和Excel双格式输出。' },
+    ];
   }, [release]);
 
   if (!release) return null;
@@ -128,22 +139,25 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
     </div>
   );
 
+
   const renderProcessesTab = () => (
     <div className="release-detail-drawer-tab-content">
       <Title heading={6} className="release-detail-drawer-section-title">
-        {t('release.detail.processes')} ({release.contents?.length || 0})
+        {t('release.detail.processes')} ({mockContents.length})
       </Title>
       <div className="release-detail-drawer-process-list">
-        {release.contents?.map((content) => (
+        {mockContents.map((content) => (
           <div key={content.process_id} className="release-detail-drawer-process-card">
             <div className="release-detail-drawer-process-card-header">
               <span onClick={() => handleProcessClick(content.process_id)} className="release-detail-drawer-process-name">
-                <Text strong>{content.process_name}</Text>
+                <Text strong ellipsis={{ showTooltip: true }}>{content.process_name}</Text>
                 <IconExternalOpenStroked className="release-detail-drawer-link-icon" />
               </span>
               <Tag size="small" color="blue">{content.version_number}</Tag>
             </div>
-            {content.process_description && <Text type="tertiary" size="small">{content.process_description}</Text>}
+            {content.process_description && (
+              <ExpandableText text={content.process_description} maxLines={2} />
+            )}
           </div>
         ))}
       </div>
@@ -159,24 +173,34 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
                 <div key={resource.resource_id} className="release-detail-drawer-resource-card">
                   <div className="release-detail-drawer-resource-card-header">
                     <span onClick={() => handleResourceClick(type as ResourceType, resource.resource_id)} className="release-detail-drawer-resource-name">
-                      <Text strong>{resource.resource_name}</Text>
+                      <Text strong ellipsis={{ showTooltip: true }}>{resource.resource_name}</Text>
                       <IconExternalOpenStroked className="release-detail-drawer-link-icon" />
                     </span>
                     {resource.is_manual && <Tag size="small" color="grey">{t('release.create.manuallyAdded')}</Tag>}
                   </div>
                   <div className="release-detail-drawer-resource-card-body">
-                    <Text type="tertiary" size="small">{t('release.create.usedBy')}: {resource.used_by_processes?.join(', ') || '-'}</Text>
+                    <Text type="tertiary" size="small" ellipsis={{ showTooltip: true }}>{t('release.create.usedBy')}: {resource.used_by_processes?.join(', ') || '-'}</Text>
                     <Text type="tertiary" size="small">{t('release.detail.previouslyPublished')}: {resource.is_previously_published ? t('common.yes') : t('common.no')}</Text>
                     {type === 'CREDENTIAL' && (
                       <>
-                        <Text type="tertiary" size="small">{t('release.create.testValue')}: {(resource as any).test_username ? `${(resource as any).test_username}:******` : '-'}</Text>
-                        <Text type="tertiary" size="small">{t('release.create.productionValue')}: {resource.production_username ? `${resource.production_username}:******` : '-'}</Text>
+                        <Text type="tertiary" size="small" ellipsis={{ showTooltip: true }}>{t('release.create.testValue')}: {(resource as any).test_username ? `${(resource as any).test_username}:******` : '-'}</Text>
+                        <Text type="tertiary" size="small" ellipsis={{ showTooltip: true }}>{t('release.create.productionValue')}: {resource.production_username ? `${resource.production_username}:******` : '-'}</Text>
                       </>
                     )}
                     {type !== 'QUEUE' && type !== 'FILE' && type !== 'CREDENTIAL' && (
                       <>
-                        <Text type="tertiary" size="small">{t('release.create.testValue')}: {resource.test_value || '-'}</Text>
-                        <Text type="tertiary" size="small">{t('release.create.productionValue')}: {resource.use_test_as_production ? `${resource.test_value} (${t('release.create.useTestAsProduction')})` : resource.production_value || '-'}</Text>
+                        <div className="release-detail-drawer-value-field">
+                          <Text type="tertiary" size="small">{t('release.create.testValue')}:</Text>
+                          <div className="release-detail-drawer-value-scroll">
+                            <Text size="small">{resource.test_value || '-'}</Text>
+                          </div>
+                        </div>
+                        <div className="release-detail-drawer-value-field">
+                          <Text type="tertiary" size="small">{t('release.create.productionValue')}:</Text>
+                          <div className="release-detail-drawer-value-scroll">
+                            <Text size="small">{resource.use_test_as_production ? `${resource.test_value} (${t('release.create.useTestAsProduction')})` : resource.production_value || '-'}</Text>
+                          </div>
+                        </div>
                       </>
                     )}
                   </div>
