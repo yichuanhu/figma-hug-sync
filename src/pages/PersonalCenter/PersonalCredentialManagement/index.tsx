@@ -388,12 +388,10 @@ const PersonalCredentialManagement = () => {
             onRow={(record) => ({
               id: `personal-credential-row-${(record as LYPersonalCredentialResponse).credential_id}`,
               onClick: () => handleRowClick(record as LYPersonalCredentialResponse),
-              style: {
-                cursor: 'pointer',
-                backgroundColor: selectedCredential?.credential_id === (record as LYPersonalCredentialResponse).credential_id && detailDrawerVisible
-                  ? 'var(--semi-color-fill-1)'
-                  : undefined,
-              },
+              className: selectedCredential?.credential_id === (record as LYPersonalCredentialResponse).credential_id && detailDrawerVisible
+                ? 'personal-credential-management-row-selected'
+                : undefined,
+              style: { cursor: 'pointer' },
             })}
             pagination={{
               currentPage: queryParams.page,
