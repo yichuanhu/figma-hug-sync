@@ -2586,6 +2586,13 @@
     "devPreview": "Dev Preview",
     "emptyStatePreview": "Empty State Preview"
   },
+  "exclusivePage": {
+    "enterpriseTitle": "Enterprise Exclusive Service, Please Contact Sales",
+    "comingSoonTitle": "Under Development, Stay Tuned",
+    "requirementsDesc": "Requirements Center integrates requirement discovery, submission, evaluation, and tracking to provide a complete requirement management process for business leaders and CoE managers.",
+    "operationsDesc": "Operations Center is the platform's command center, providing enterprise-grade automation asset operations, governance, and value measurement views to ensure automation investments are manageable, measurable, and sustainably valuable.",
+    "maintenanceDesc": "Maintenance Center integrates system monitoring, alert management, and resource operations to provide technical support for IT infrastructure teams and system administrators. Ensuring high availability, scalability, and security."
+  },
   "homepage": {
     "welcome": "Hi {{name}}, Welcome to WEP Platform",
     "centers": {

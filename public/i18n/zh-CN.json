@@ -2595,6 +2595,13 @@
     "devPreview": "开发预览",
     "emptyStatePreview": "缺省状态预览"
   },
+  "exclusivePage": {
+    "enterpriseTitle": "企业版专属服务，请联系销售代表咨询购买",
+    "comingSoonTitle": "正在开发中，敬请期待",
+    "requirementsDesc": "需求中心整合需求发现、提报、评估、跟踪等功能，为业务部门负责人、CoE负责人提供完整的需求管理流程。",
+    "operationsDesc": "运营中心是平台的\"指挥中心\"，为管理者提供企业级自动化资产的运营、治理和价值度量视图，确保自动化投资可管理、可衡量、可持续创造价值。",
+    "maintenanceDesc": "运维中心整合系统监控、告警管理和资源运维等功能，为IT基础设施部门、系统管理员提供平台稳定运行的技术保障。确保平台高可用、可扩展、安全可控。"
+  },
   "homepage": {
     "welcome": "Hi {{name}}，欢迎来到 WEP 平台",
     "centers": {
