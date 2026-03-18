@@ -235,7 +235,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
                           })
                         }
                       >
-                        <Text size="small">{t('release.create.useTestAsProduction')}</Text>
+                        {t('release.create.useTestAsProduction')}
                       </Checkbox>
                     );
 
