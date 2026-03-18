@@ -221,18 +221,19 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
                     </div>
                   ) : resource.is_previously_published ? (
                     <div className="release-config-step-production-input">
-                      <Input
+                      <TextArea
                         placeholder={t('release.create.keepExistingValue')}
                         value={resource.production_value}
                         onChange={(value) =>
                           updateResource(resource.resource_id, { production_value: value })
                         }
                         disabled={resource.use_test_as_production}
+                        autosize={{ minRows: 2, maxRows: 6 }}
                       />
                     </div>
                   ) : (
                     <div className="release-config-step-production-input">
-                      <Input
+                      <TextArea
                         placeholder={
                           resource.use_test_as_production
                             ? resource.test_value || ''
@@ -243,6 +244,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
                           updateResource(resource.resource_id, { production_value: value })
                         }
                         disabled={resource.use_test_as_production}
+                        autosize={{ minRows: 2, maxRows: 6 }}
                       />
                       <Checkbox
                         checked={resource.use_test_as_production}
