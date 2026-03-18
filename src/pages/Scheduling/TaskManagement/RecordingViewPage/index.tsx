@@ -9,10 +9,11 @@ import {
   Col,
   Space,
   Spin,
+  Tooltip,
 } from '@douyinfe/semi-ui';
 import {
   IconDownloadStroked,
-  IconArrowLeft,
+  IconChevronLeft,
 } from '@douyinfe/semi-icons';
 import { RefreshCw } from 'lucide-react';
 // AppLayout removed
@@ -238,13 +239,15 @@ const RecordingViewPage = () => {
         <div className="recording-view-page-header">
           <Row type="flex" justify="space-between" align="middle">
             <Col>
-              <Space>
-                <Button
-                  icon={<IconArrowLeft />}
-                  theme="borderless"
-                  onClick={handleBack}
-                />
-                <Title heading={4} className="recording-view-page-title">
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Tooltip content={t('common.back')} position="bottom">
+                  <Button
+                    icon={<IconChevronLeft />}
+                    theme="borderless"
+                    onClick={handleBack}
+                  />
+                </Tooltip>
+                <Title heading={3} className="recording-view-page-title">
                   {t('recording.title')}
                 </Title>
                 {executionId && (
@@ -252,7 +255,7 @@ const RecordingViewPage = () => {
                     {t('recording.executionId')}: {executionId.substring(0, 8)}...
                   </Text>
                 )}
-              </Space>
+              </div>
             </Col>
             <Col>
               <Space>

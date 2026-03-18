@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Typography, Toast, Button } from '@douyinfe/semi-ui';
+import { Typography, Toast, Button, Tooltip } from '@douyinfe/semi-ui';
 import { IconChevronLeft } from '@douyinfe/semi-icons';
 // AppLayout removed
 import CalendarSidebar from './components/CalendarSidebar';
@@ -133,12 +133,14 @@ const WorkCalendarManagement = () => {
 
         {/* 返回按钮和标题 */}
         <div className="work-calendar-management-header">
-          <Button 
-            icon={<IconChevronLeft />} 
-            theme="borderless" 
-            onClick={handleBack}
-            className="work-calendar-management-back-btn"
-          />
+          <Tooltip content={t('common.back')} position="bottom">
+            <Button 
+              icon={<IconChevronLeft />} 
+              theme="borderless" 
+              onClick={handleBack}
+              className="work-calendar-management-back-btn"
+            />
+          </Tooltip>
           <Title heading={3} className="work-calendar-management-header-title">
             {t('workCalendar.pageTitle')}
           </Title>

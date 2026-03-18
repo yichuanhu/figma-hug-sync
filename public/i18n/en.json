@@ -17,6 +17,7 @@
     "run": "Run",
     "open": "Open",
     "close": "Close",
+    "back": "Back",
     "fullscreen": "Fullscreen",
     "exitFullscreen": "Exit Fullscreen",
     "noData": "No Data",
