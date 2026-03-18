@@ -319,45 +319,10 @@ const ReleaseListPage: React.FC = () => {
     {
       title: t('release.list.columns.processes'),
       dataIndex: 'contents',
-      width: 240,
+      width: 100,
       render: (contents: LYReleaseResponse['contents']) => {
         if (!contents || contents.length === 0) return '-';
-        const displayNames = contents.slice(0, 2).map((c) => c.process_name);
-        const remaining = contents.length - 2;
-        
-        const handleProcessClick = (e: React.MouseEvent, processId: string) => {
-          e.stopPropagation();
-          navigate(`/dev-center/automation-process?processId=${processId}`);
-        };
-        
-        return (
-          <Tooltip
-            content={
-              <div style={{ textAlign: 'center' }}>
-                {contents.map((c) => (
-                  <div 
-                    key={c.process_id}
-                    onClick={(e) => handleProcessClick(e, c.process_id)}
-                    style={{ cursor: 'pointer' }}
-                    className="release-list-process-link"
-                  >
-                    {c.process_name} ({c.version_number})
-                  </div>
-                ))}
-              </div>
-            }
-            position="top"
-          >
-            <span 
-              className="release-list-processes"
-              onClick={(e) => handleProcessClick(e, contents[0].process_id)}
-              style={{ cursor: 'pointer', color: 'var(--semi-color-link)' }}
-            >
-              {displayNames.join(', ')}
-              {remaining > 0 && ` +${remaining}`}
-            </span>
-          </Tooltip>
-        );
+        return <Text>{contents.length}</Text>;
       },
     },
     {
