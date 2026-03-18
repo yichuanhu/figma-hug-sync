@@ -139,15 +139,6 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
     </div>
   );
 
-  // Mock 流程内容（含超长名称和描述）
-  const mockContents = useMemo(() => {
-    if (release?.contents?.length) return release.contents;
-    return [
-      { process_id: 'proc-001', process_name: 'SAP_ERP_Order_Processing_And_Fulfillment_Workflow_V3', version_number: 'v3.2.1', process_description: '该流程用于处理来自SAP ERP系统的所有客户订单，包括订单验证、库存检查、价格计算、折扣应用、税费计算、物流分配、发票生成以及客户通知等完整的端到端业务流程。支持多币种、多仓库、多物流商的复杂场景处理，并集成了异常处理和自动重试机制以确保流程的高可靠性和数据一致性。' },
-      { process_id: 'proc-002', process_name: '库存检查流程', version_number: 'v1.0.0', process_description: '定时检查库存' },
-      { process_id: 'proc-003', process_name: 'Monthly_Financial_Report_Generation_And_Distribution_Workflow', version_number: 'v2.1.0', process_description: '每月自动生成财务报表并分发给相关部门负责人，支持PDF和Excel双格式输出。' },
-    ];
-  }, [release]);
 
   const renderProcessesTab = () => (
     <div className="release-detail-drawer-tab-content">
