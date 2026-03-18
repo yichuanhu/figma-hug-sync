@@ -9,6 +9,7 @@ import {
   Col,
   Space,
   Spin,
+  Tooltip,
 } from '@douyinfe/semi-ui';
 import {
   IconDownloadStroked,
