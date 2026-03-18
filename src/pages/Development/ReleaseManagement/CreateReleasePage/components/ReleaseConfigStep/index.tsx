@@ -136,7 +136,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
               </Tag>
             )}
             {resource.used_by_processes.length > 0 && (
-              <Text type="tertiary" size="small">
+              <Text type="tertiary" size="small" ellipsis={{ showTooltip: true }} style={{ maxWidth: 200 }}>
                 {t('release.create.usedBy')}: {resource.used_by_processes.join(', ')}
               </Text>
             )}
