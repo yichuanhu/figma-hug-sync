@@ -181,12 +181,13 @@ const LogSyncPanel = ({
             const isCurrent = index === currentLogIndex && !highlightedLogId;
             const logSeconds = parseLogTimeToSeconds(log.log_time, startTime);
             const isPast = logSeconds <= currentTime;
+            const currentLevelClass = isCurrent ? `current-${log.log_level.toLowerCase()}` : '';
             
             return (
               <div
                 key={log.log_id}
                 data-log-id={log.log_id}
-                className={`log-sync-panel-item ${isHighlighted ? 'highlighted' : ''} ${isCurrent ? 'current' : ''} ${isPast ? 'past' : 'future'}`}
+                className={`log-sync-panel-item ${isHighlighted ? 'highlighted' : ''} ${isCurrent ? `current ${currentLevelClass}` : ''} ${isPast ? 'past' : 'future'}`}
                 onClick={() => handleLogItemClick(log)}
               >
                 <div className="log-sync-panel-item-header">
