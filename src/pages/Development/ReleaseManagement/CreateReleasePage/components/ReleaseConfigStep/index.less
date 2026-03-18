@@ -101,14 +101,15 @@
       .release-config-step-resource-card-title {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 4px;
         min-width: 0;
         flex: 1;
         overflow: hidden;
 
         .semi-typography {
           min-width: 0;
-          flex: 1;
+          max-width: calc(50% - 20px);
+          flex-shrink: 1;
         }
 
         .release-config-step-published-tag {
