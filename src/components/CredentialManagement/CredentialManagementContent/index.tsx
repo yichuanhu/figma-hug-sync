@@ -566,12 +566,10 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
             onRow={(record) => ({
               id: `credential-row-${(record as LYCredentialResponse).credential_id}`,
               onClick: () => handleRowClick(record as LYCredentialResponse),
-              style: {
-                cursor: 'pointer',
-                backgroundColor: selectedCredential?.credential_id === (record as LYCredentialResponse).credential_id && detailDrawerVisible
-                  ? 'var(--semi-color-primary-light-default)'
-                  : undefined,
-              },
+              className: selectedCredential?.credential_id === (record as LYCredentialResponse).credential_id && detailDrawerVisible
+                ? 'credential-management-row-selected'
+                : undefined,
+              style: { cursor: 'pointer' },
             })}
           />
         )}
