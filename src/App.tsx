@@ -46,6 +46,8 @@ import EmptyStateOptionsPreview from "@/pages/DevPreview/EmptyStateOptionsPrevie
 // Requirements & Operations
 import Requirements from "@/pages/Requirements";
 import Operations from "@/pages/Operations";
+// Maintenance
+import MaintenanceWorkbench from "@/pages/Maintenance/MaintenanceWorkbench";
 
 const queryClient = new QueryClient();
 
@@ -106,6 +108,7 @@ const App = () => (
           {/* 需求中心 & 运营中心 */}
           <Route path="/requirements" element={<Requirements />} />
           <Route path="/operations" element={<Operations />} />
+          <Route path="/maintenance" element={<MaintenanceWorkbench />} />
         </Route>
 
         {/* 无布局页面 */}
