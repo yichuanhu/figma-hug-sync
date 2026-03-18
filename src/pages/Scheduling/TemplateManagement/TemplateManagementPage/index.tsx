@@ -413,12 +413,14 @@ const TemplateManagementPage = () => {
         {/* 返回按钮和标题 */}
         <div className="template-management-header">
           <div className="template-management-header-title">
-            <Button
-              icon={<IconChevronLeft />}
-              theme="borderless"
-              onClick={() => navigate('/scheduling-center/task-execution/task-list')}
-              className="template-management-back-btn"
-            />
+            <Tooltip content={t('common.back')} position="bottom">
+              <Button
+                icon={<IconChevronLeft />}
+                theme="borderless"
+                onClick={() => navigate('/scheduling-center/task-execution/task-list')}
+                className="template-management-back-btn"
+              />
+            </Tooltip>
             <Title heading={3} className="title">
               {t('template.pageTitle')}
             </Title>
