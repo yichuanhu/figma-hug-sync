@@ -4,7 +4,7 @@ import Sidebar from '../Sidebar';
 import './index.less';
 
 // 这些路由下侧边栏强制收起且禁用hover浮动菜单
-const noExpandRoutes = ['/requirements', '/operations', '/personal-center'];
+const noExpandRoutes = ['/requirements', '/operations', '/maintenance', '/personal-center'];
 
 const AppLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
