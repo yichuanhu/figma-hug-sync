@@ -85,6 +85,7 @@
   }
 
   .release-config-step-resource-card {
+    container-type: inline-size;
     padding: 16px;
     border-bottom: 1px solid var(--semi-color-border);
 
@@ -93,10 +94,9 @@
     }
 
     .release-config-step-resource-card-header {
-      display: grid;
-      grid-template-columns: minmax(0, calc(50% - 8px)) minmax(0, 1fr);
-      column-gap: 16px;
-      align-items: start;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
       margin-bottom: 12px;
 
       .release-config-step-resource-card-title {
@@ -104,12 +104,12 @@
         align-items: center;
         gap: 4px;
         min-width: 0;
-        width: 100%;
-        overflow: hidden;
+        flex-shrink: 1;
 
         .semi-typography {
           min-width: 0;
-          flex: 1;
+          max-width: calc(50cqw - 24px);
+          flex-shrink: 1;
         }
 
         .release-config-step-published-tag {
@@ -120,9 +120,8 @@
       .release-config-step-resource-card-actions {
         display: flex;
         align-items: center;
-        justify-content: flex-end;
         gap: 8px;
-        min-width: 0;
+        flex-shrink: 0;
       }
     }
 
