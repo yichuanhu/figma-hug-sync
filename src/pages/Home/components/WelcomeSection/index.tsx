@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import waveHandIcon from '@/assets/wave-hand.svg';
 
 const WelcomeSection = () => {
   const { t } = useTranslation();
@@ -17,7 +18,7 @@ const WelcomeSection = () => {
         {t('homepage.welcomePrefix', 'Hi ')}
         <span className="home-welcome-name">张三</span>
         {t('homepage.welcomeSuffix', '，欢迎回来')}
-        <span className="home-welcome-wave"> 👋</span>
+        <img src={waveHandIcon} alt="wave" className="home-welcome-wave-icon" />
       </h1>
       <div className="home-welcome-date">{dateStr}</div>
     </div>
