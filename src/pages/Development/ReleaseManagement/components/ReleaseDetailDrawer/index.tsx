@@ -190,15 +190,15 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
                     {type !== 'QUEUE' && type !== 'FILE' && type !== 'CREDENTIAL' && (
                       <>
                         <div className="release-detail-drawer-value-field">
-                          <Text type="tertiary" size="small">{t('release.create.testValue')}:</Text>
+                          <Text type="tertiary">{t('release.create.testValue')}:</Text>
                           <div className="release-detail-drawer-value-scroll">
-                            <Text size="small">{resource.test_value || '-'}</Text>
+                            <Text>{resource.test_value || '-'}</Text>
                           </div>
                         </div>
                         <div className="release-detail-drawer-value-field">
-                          <Text type="tertiary" size="small">{t('release.create.productionValue')}:</Text>
+                          <Text type="tertiary">{t('release.create.productionValue')}:</Text>
                           <div className="release-detail-drawer-value-scroll">
-                            <Text size="small">{resource.use_test_as_production ? `${resource.test_value} (${t('release.create.useTestAsProduction')})` : resource.production_value || '-'}</Text>
+                            <Text>{resource.use_test_as_production ? `${resource.test_value} (${t('release.create.useTestAsProduction')})` : resource.production_value || '-'}</Text>
                           </div>
                         </div>
                       </>
