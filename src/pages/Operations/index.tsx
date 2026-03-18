@@ -1,13 +1,13 @@
+import { useTranslation } from 'react-i18next';
 import '@/pages/Requirements/index.less';
 
 const Operations = () => {
+  const { t } = useTranslation();
   return (
     <div className="enterprise-exclusive-page">
-      <img src="/images/enterprise-exclusive.png" alt="企业版专属" className="enterprise-exclusive-img" />
-      <p className="enterprise-exclusive-title">企业版专属服务，请联系销售代表咨询购买</p>
-      <p className="enterprise-exclusive-hint">
-        运营中心是平台的"指挥中心"，为管理者提供企业级自动化资产的运营、治理和价值度量视图，确保自动化投资可管理、可衡量、可持续创造价值。
-      </p>
+      <img src="/images/enterprise-exclusive.png" alt={t('exclusivePage.enterpriseTitle')} className="enterprise-exclusive-img" />
+      <p className="enterprise-exclusive-title">{t('exclusivePage.enterpriseTitle')}</p>
+      <p className="enterprise-exclusive-hint">{t('exclusivePage.operationsDesc')}</p>
     </div>
   );
 };
