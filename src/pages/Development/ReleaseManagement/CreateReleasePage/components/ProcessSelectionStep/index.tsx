@@ -356,7 +356,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
                           }}
                         />
                         <div className="process-item-content">
-                          <Text className="process-name">{process.name}</Text>
+                          <Text className="process-name" ellipsis={{ showTooltip: true }}>{process.name}</Text>
                           <Tag size="small" color={tagColor}>
                             {tagText}
                           </Tag>
