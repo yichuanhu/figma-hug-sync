@@ -48,15 +48,16 @@
       padding: 24px;
       position: relative;
 
-      // 全局淡蓝色渐变晕影背景（左上角）
+      // 全局淡蓝色渐变晕影背景（顶部居中）
       &::before {
         content: '';
         position: absolute;
         top: 0;
-        left: 0;
-        width: 50%;
-        height: 40%;
-        background: radial-gradient(ellipse at left top, rgba(22, 93, 255, 0.08) 0%, rgba(22, 93, 255, 0.04) 30%, rgba(22, 93, 255, 0.015) 55%, transparent 80%);
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40%;
+        height: 30%;
+        background: radial-gradient(ellipse at center top, rgba(22, 93, 255, 0.05) 0%, rgba(22, 93, 255, 0.025) 30%, rgba(22, 93, 255, 0.01) 55%, transparent 80%);
         pointer-events: none;
         z-index: 0;
       }
