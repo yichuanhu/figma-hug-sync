@@ -156,7 +156,7 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
               <Tag size="small" color="blue">{content.version_number}</Tag>
             </div>
             {content.process_description && (
-              <ExpandableText text={content.process_description} maxLines={2} />
+              <Text type="tertiary" ellipsis={{ showTooltip: false }}>{content.process_description}</Text>
             )}
           </div>
         ))}
