@@ -63,52 +63,32 @@
       opacity: 0.6;
     }
     
-    &.current {
-      border-left: 3px solid var(--semi-color-primary);
-      padding-left: 13px;
-      background: var(--semi-color-primary-light-default);
-    }
-
-    &.current-debug {
+    // 选中态：根据日志级别显示不同颜色
+    &.active-debug {
       border-left: 3px solid var(--semi-color-text-3);
       padding-left: 13px;
       background: var(--semi-color-fill-0);
     }
 
-    &.current-info {
+    &.active-info {
       border-left: 3px solid var(--semi-color-primary);
       padding-left: 13px;
       background: var(--semi-color-primary-light-default);
     }
 
-    &.current-warn {
+    &.active-warn {
       border-left: 3px solid var(--semi-color-warning);
       padding-left: 13px;
       background: var(--semi-color-warning-light-default);
     }
 
-    &.current-error {
+    &.active-error {
       border-left: 3px solid var(--semi-color-danger);
       padding-left: 13px;
       background: var(--semi-color-danger-light-default);
     }
-    
-    &.highlighted {
-      background: var(--semi-color-warning-light-default);
-      border-left: 3px solid var(--semi-color-warning);
-      padding-left: 13px;
-      animation: highlight-pulse 0.5s ease-out;
-    }
   }
   
-  @keyframes highlight-pulse {
-    0% {
-      background: var(--semi-color-warning-light-active);
-    }
-    100% {
-      background: var(--semi-color-warning-light-default);
-    }
-  }
   
   .log-sync-panel-item-header {
     display: flex;
