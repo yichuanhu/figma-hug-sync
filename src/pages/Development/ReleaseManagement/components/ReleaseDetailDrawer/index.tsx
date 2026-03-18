@@ -176,7 +176,7 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
                       <Text strong ellipsis={{ showTooltip: true }}>{resource.resource_name}</Text>
                       <IconExternalOpenStroked className="release-detail-drawer-link-icon" />
                     </span>
-                    {resource.is_manual && <Tag size="small" color="grey">{t('release.create.manuallyAdded')}</Tag>}
+                    {resource.is_manual && <Tag size="small" color="grey" className="release-detail-drawer-resource-tag">{t('release.create.manuallyAdded')}</Tag>}
                   </div>
                   <div className="release-detail-drawer-resource-card-body">
                     <Text type="tertiary" size="small" ellipsis={{ showTooltip: true }}>{t('release.create.usedBy')}: {resource.used_by_processes?.join(', ') || '-'}</Text>
