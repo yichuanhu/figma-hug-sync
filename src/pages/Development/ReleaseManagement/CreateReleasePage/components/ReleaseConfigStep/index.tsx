@@ -369,7 +369,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
           {selectedProcesses.map((sp) => (
             <div key={sp.process.id} className="release-config-step-process-item">
               <div className="release-config-step-process-info">
-                <Text strong>{sp.process.name}</Text>
+                <Text strong ellipsis={{ showTooltip: true }} style={{ maxWidth: 300 }}>{sp.process.name}</Text>
                 <Text type="tertiary" size="small">
                   ({sp.version_number})
                 </Text>
