@@ -179,12 +179,12 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
                     {resource.is_manual && <Tag size="small" color="grey" className="release-detail-drawer-resource-tag">{t('release.create.manuallyAdded')}</Tag>}
                   </div>
                   <div className="release-detail-drawer-resource-card-body">
-                    <Text type="tertiary" size="small" ellipsis={{ showTooltip: true }}>{t('release.create.usedBy')}: {resource.used_by_processes?.join(', ') || '-'}</Text>
-                    <Text type="tertiary" size="small">{t('release.detail.previouslyPublished')}: {resource.is_previously_published ? t('common.yes') : t('common.no')}</Text>
+                    <Text type="tertiary" ellipsis={{ showTooltip: true }}>{t('release.create.usedBy')}: {resource.used_by_processes?.join(', ') || '-'}</Text>
+                    <Text type="tertiary">{t('release.detail.previouslyPublished')}: {resource.is_previously_published ? t('common.yes') : t('common.no')}</Text>
                     {type === 'CREDENTIAL' && (
                       <>
-                        <Text type="tertiary" size="small" ellipsis={{ showTooltip: true }}>{t('release.create.testValue')}: {(resource as any).test_username ? `${(resource as any).test_username}:******` : '-'}</Text>
-                        <Text type="tertiary" size="small" ellipsis={{ showTooltip: true }}>{t('release.create.productionValue')}: {resource.production_username ? `${resource.production_username}:******` : '-'}</Text>
+                        <Text type="tertiary" ellipsis={{ showTooltip: true }}>{t('release.create.testValue')}: {(resource as any).test_username || '-'}</Text>
+                        <Text type="tertiary" ellipsis={{ showTooltip: true }}>{t('release.create.productionValue')}: {resource.use_test_as_production ? `${(resource as any).test_username || '-'} (${t('release.create.useTestAsProduction')})` : resource.production_username || '-'}</Text>
                       </>
                     )}
                     {type !== 'QUEUE' && type !== 'FILE' && type !== 'CREDENTIAL' && (
