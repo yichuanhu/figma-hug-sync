@@ -156,7 +156,7 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
               <Tag size="small" color="blue">{content.version_number}</Tag>
             </div>
             {content.process_description && (
-              <ExpandableText text={content.process_description} maxLines={2} />
+              <Text type="tertiary" ellipsis={{ showTooltip: false }}>{content.process_description}</Text>
             )}
           </div>
         ))}
@@ -176,29 +176,29 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
                       <Text strong ellipsis={{ showTooltip: true }}>{resource.resource_name}</Text>
                       <IconExternalOpenStroked className="release-detail-drawer-link-icon" />
                     </span>
-                    {resource.is_manual && <Tag size="small" color="grey">{t('release.create.manuallyAdded')}</Tag>}
+                    {resource.is_manual && <Tag size="small" color="grey" className="release-detail-drawer-resource-tag">{t('release.create.manuallyAdded')}</Tag>}
                   </div>
                   <div className="release-detail-drawer-resource-card-body">
-                    <Text type="tertiary" size="small" ellipsis={{ showTooltip: true }}>{t('release.create.usedBy')}: {resource.used_by_processes?.join(', ') || '-'}</Text>
-                    <Text type="tertiary" size="small">{t('release.detail.previouslyPublished')}: {resource.is_previously_published ? t('common.yes') : t('common.no')}</Text>
+                    <Text type="tertiary" ellipsis={{ showTooltip: true }}>{t('release.create.usedBy')}: {resource.used_by_processes?.join(', ') || '-'}</Text>
+                    <Text type="tertiary">{t('release.detail.previouslyPublished')}: {resource.is_previously_published ? t('common.yes') : t('common.no')}</Text>
                     {type === 'CREDENTIAL' && (
                       <>
-                        <Text type="tertiary" size="small" ellipsis={{ showTooltip: true }}>{t('release.create.testValue')}: {(resource as any).test_username ? `${(resource as any).test_username}:******` : '-'}</Text>
-                        <Text type="tertiary" size="small" ellipsis={{ showTooltip: true }}>{t('release.create.productionValue')}: {resource.production_username ? `${resource.production_username}:******` : '-'}</Text>
+                        <Text type="tertiary" ellipsis={{ showTooltip: true }}>{t('release.create.testValue')}: {(resource as any).test_username || '-'}</Text>
+                        <Text type="tertiary" ellipsis={{ showTooltip: true }}>{t('release.create.productionValue')}: {resource.use_test_as_production ? `${(resource as any).test_username || '-'} (${t('release.create.useTestAsProduction')})` : resource.production_username || '-'}</Text>
                       </>
                     )}
                     {type !== 'QUEUE' && type !== 'FILE' && type !== 'CREDENTIAL' && (
                       <>
                         <div className="release-detail-drawer-value-field">
-                          <Text type="tertiary" size="small">{t('release.create.testValue')}:</Text>
+                          <Text type="tertiary">{t('release.create.testValue')}:</Text>
                           <div className="release-detail-drawer-value-scroll">
-                            <Text size="small">{resource.test_value || '-'}</Text>
+                            <Text>{resource.test_value || '-'}</Text>
                           </div>
                         </div>
                         <div className="release-detail-drawer-value-field">
-                          <Text type="tertiary" size="small">{t('release.create.productionValue')}:</Text>
+                          <Text type="tertiary">{t('release.create.productionValue')}:</Text>
                           <div className="release-detail-drawer-value-scroll">
-                            <Text size="small">{resource.use_test_as_production ? `${resource.test_value} (${t('release.create.useTestAsProduction')})` : resource.production_value || '-'}</Text>
+                            <Text>{resource.use_test_as_production ? `${resource.test_value} (${t('release.create.useTestAsProduction')})` : resource.production_value || '-'}</Text>
                           </div>
                         </div>
                       </>

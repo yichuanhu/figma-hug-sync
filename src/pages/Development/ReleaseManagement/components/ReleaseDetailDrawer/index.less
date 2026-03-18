@@ -101,7 +101,7 @@
     align-items: center;
     gap: 4px;
     min-width: 0;
-    flex: 1;
+    max-width: 70%;
     overflow: hidden;
     transition: color 0.2s;
 
@@ -117,13 +117,18 @@
     align-items: center;
     gap: 4px;
     min-width: 0;
-    flex: 1;
+    max-width: 70%;
     overflow: hidden;
     transition: color 0.2s;
 
     &:hover {
       color: var(--semi-color-primary);
     }
+  }
+
+  // 资源标签紧跟名称
+  .release-detail-drawer-resource-tag {
+    flex-shrink: 0;
   }
 
   // 跳转链接图标
@@ -160,7 +165,7 @@
     .release-detail-drawer-process-card-header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      gap: 8px;
       margin-bottom: 4px;
     }
   }
@@ -174,7 +179,7 @@
     .release-detail-drawer-resource-card-header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      gap: 8px;
       margin-bottom: 8px;
     }
 
@@ -211,6 +216,7 @@
     overflow-y: auto;
     word-break: break-all;
     line-height: 20px;
+    font-size: 14px;
   }
 
   // 无资源提示
