@@ -12,7 +12,7 @@ import {
 } from '@douyinfe/semi-ui';
 import {
   IconDownloadStroked,
-  IconArrowLeft,
+  IconChevronLeft,
 } from '@douyinfe/semi-icons';
 import { RefreshCw } from 'lucide-react';
 // AppLayout removed
