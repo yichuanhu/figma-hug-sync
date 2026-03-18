@@ -122,7 +122,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
       <div key={resource.resource_id} className="release-config-step-resource-card">
         <div className="release-config-step-resource-card-header">
           <div className="release-config-step-resource-card-title">
-            <Text strong ellipsis={{ showTooltip: true }} style={{ maxWidth: '100%' }}>{resource.resource_name}</Text>
+            <Text strong ellipsis={{ showTooltip: true }}>{resource.resource_name}</Text>
             {resource.is_previously_published && (
               <Tag color="green" size="small" className="release-config-step-published-tag">
                 {t('release.create.alreadyPublished')}
