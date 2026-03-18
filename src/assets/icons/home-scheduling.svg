@@ -11,7 +11,7 @@
 <feBlend mode="normal" in2="shape" result="effect1_innerShadow_688_7439"/>
 </filter>
 <filter id="glassBlur_688_7439" x="-50%" y="-50%" width="200%" height="200%">
-<feGaussianBlur in="SourceGraphic" stdDeviation="4"/>
+<feGaussianBlur in="SourceGraphic" stdDeviation="2"/>
 </filter>
 <clipPath id="glassClip_688_7439">
 <path d="M24.5001 15.1667C24.5001 21.61 19.2767 26.8333 12.8334 26.8333C6.39009 26.8333 1.16675 21.61 1.16675 15.1667C1.16675 8.72334 6.39009 3.5 12.8334 3.5C19.2767 3.5 24.5001 8.72334 24.5001 15.1667Z"/>
