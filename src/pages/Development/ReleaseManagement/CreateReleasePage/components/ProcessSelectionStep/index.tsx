@@ -401,7 +401,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
                   return (
                     <div key={process.id} className="selected-item">
                       <div className="selected-item-info">
-                        <Text className="process-name">{process.name}</Text>
+                        <Text className="process-name" ellipsis={{ showTooltip: true }}>{process.name}</Text>
                       </div>
                       <div className="selected-item-actions">
                         <Select
