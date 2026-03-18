@@ -173,9 +173,9 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
                       </div>
                     </div>
                   ) : (
-                    <Text ellipsis={{ showTooltip: true }}>
+                    <div className="release-config-step-test-value-scroll">
                       {resource.test_value || '-'}
-                    </Text>
+                    </div>
                   )}
                 </div>
               </Col>
