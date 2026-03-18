@@ -133,12 +133,14 @@ const WorkCalendarManagement = () => {
 
         {/* 返回按钮和标题 */}
         <div className="work-calendar-management-header">
-          <Button 
-            icon={<IconChevronLeft />} 
-            theme="borderless" 
-            onClick={handleBack}
-            className="work-calendar-management-back-btn"
-          />
+          <Tooltip content={t('common.back')} position="bottom">
+            <Button 
+              icon={<IconChevronLeft />} 
+              theme="borderless" 
+              onClick={handleBack}
+              className="work-calendar-management-back-btn"
+            />
+          </Tooltip>
           <Title heading={3} className="work-calendar-management-header-title">
             {t('workCalendar.pageTitle')}
           </Title>
