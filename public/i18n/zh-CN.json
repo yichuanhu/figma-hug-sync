@@ -17,6 +17,7 @@
     "run": "运行",
     "open": "打开",
     "close": "关闭",
+    "back": "返回",
     "fullscreen": "全屏",
     "exitFullscreen": "退出全屏",
     "noData": "暂无数据",
