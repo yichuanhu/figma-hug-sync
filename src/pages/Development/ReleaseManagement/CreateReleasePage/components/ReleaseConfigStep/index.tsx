@@ -10,7 +10,10 @@ import {
   Button,
   Banner,
   Input,
+  InputNumber,
   Checkbox,
+  RadioGroup,
+  Radio,
   Row,
   Col,
   Space,
@@ -219,33 +222,10 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
                         />
                       </div>
                     </div>
-                  ) : resource.is_previously_published ? (
-                    <div className="release-config-step-production-input">
-                      <TextArea
-                        placeholder={t('release.create.keepExistingValue')}
-                        value={resource.production_value}
-                        onChange={(value) =>
-                          updateResource(resource.resource_id, { production_value: value })
-                        }
-                        disabled={resource.use_test_as_production}
-                        autosize={{ minRows: 2, maxRows: 6 }}
-                      />
-                    </div>
-                  ) : (
-                    <div className="release-config-step-production-input">
-                      <TextArea
-                        placeholder={
-                          resource.use_test_as_production
-                            ? resource.test_value || ''
-                            : t('release.create.enterProductionValue')
-                        }
-                        value={resource.production_value}
-                        onChange={(value) =>
-                          updateResource(resource.resource_id, { production_value: value })
-                        }
-                        disabled={resource.use_test_as_production}
-                        autosize={{ minRows: 2, maxRows: 6 }}
-                      />
+                  ) : (() => {
+                    const paramType = resource.param_type || 'TEXT';
+                    const isPublished = resource.is_previously_published;
+                    const useTestCheckbox = !isPublished && (
                       <Checkbox
                         checked={resource.use_test_as_production}
                         onChange={(e) =>
@@ -257,8 +237,64 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
                       >
                         <Text size="small">{t('release.create.useTestAsProduction')}</Text>
                       </Checkbox>
-                    </div>
-                  )}
+                    );
+
+                    if (paramType === 'BOOLEAN') {
+                      return (
+                        <div className="release-config-step-production-input">
+                          <RadioGroup
+                            value={resource.production_value || undefined}
+                            onChange={(e) =>
+                              updateResource(resource.resource_id, { production_value: e.target.value })
+                            }
+                            disabled={resource.use_test_as_production}
+                          >
+                            <Radio value="true">True</Radio>
+                            <Radio value="false">False</Radio>
+                          </RadioGroup>
+                          {useTestCheckbox}
+                        </div>
+                      );
+                    }
+
+                    if (paramType === 'NUMBER') {
+                      return (
+                        <div className="release-config-step-production-input">
+                          <InputNumber
+                            placeholder={isPublished ? t('release.create.keepExistingValue') : t('release.create.enterProductionValue')}
+                            value={resource.production_value ? Number(resource.production_value) : undefined}
+                            onChange={(value) =>
+                              updateResource(resource.resource_id, { production_value: String(value ?? '') })
+                            }
+                            disabled={resource.use_test_as_production}
+                            style={{ width: '100%' }}
+                          />
+                          {useTestCheckbox}
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <div className="release-config-step-production-input">
+                        <TextArea
+                          placeholder={
+                            resource.use_test_as_production
+                              ? resource.test_value || ''
+                              : isPublished
+                                ? t('release.create.keepExistingValue')
+                                : t('release.create.enterProductionValue')
+                          }
+                          value={resource.production_value}
+                          onChange={(value) =>
+                            updateResource(resource.resource_id, { production_value: value })
+                          }
+                          disabled={resource.use_test_as_production}
+                          autosize={{ minRows: 2, maxRows: 6 }}
+                        />
+                        {useTestCheckbox}
+                      </div>
+                    );
+                  })()}
                 </div>
               </Col>
             </Row>

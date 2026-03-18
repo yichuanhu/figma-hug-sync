@@ -46,6 +46,7 @@ export interface ResourceConfig {
   use_test_as_production: boolean;
   used_by_processes: string[];
   original_name?: string;
+  param_type?: 'TEXT' | 'BOOLEAN' | 'NUMBER';
 }
 
 const CreateReleasePage: React.FC = () => {
@@ -211,7 +212,7 @@ const CreateReleasePage: React.FC = () => {
       detectDependencies(selectedProcesses)
         .then((result) => {
           const allResources: ResourceConfig[] = [
-            ...result.parameters.map((r) => ({
+            ...result.parameters.map((r: any) => ({
               resource_id: r.resource_id,
               resource_name: r.resource_name,
               resource_type: 'PARAMETER' as ResourceType,
@@ -220,7 +221,8 @@ const CreateReleasePage: React.FC = () => {
               test_value: r.test_value,
               production_value: '',
               use_test_as_production: false,
-              used_by_processes: r.used_by_processes.map((p) => p.process_name),
+              used_by_processes: r.used_by_processes.map((p: any) => p.process_name),
+              param_type: r.param_type || 'TEXT',
             })),
             ...result.credentials.map((r) => ({
               resource_id: r.resource_id,
