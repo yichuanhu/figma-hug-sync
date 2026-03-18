@@ -46,6 +46,7 @@ export interface ResourceConfig {
   use_test_as_production: boolean;
   used_by_processes: string[];
   original_name?: string;
+  param_type?: 'TEXT' | 'BOOLEAN' | 'NUMBER';
 }
 
 const CreateReleasePage: React.FC = () => {
