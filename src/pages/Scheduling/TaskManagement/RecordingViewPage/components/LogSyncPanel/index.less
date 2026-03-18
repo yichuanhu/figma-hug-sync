@@ -64,9 +64,33 @@
     }
     
     &.current {
-      background: var(--semi-color-primary-light-default);
       border-left: 3px solid var(--semi-color-primary);
       padding-left: 13px;
+      background: var(--semi-color-primary-light-default);
+    }
+
+    &.current-debug {
+      border-left: 3px solid var(--semi-color-text-3);
+      padding-left: 13px;
+      background: var(--semi-color-fill-0);
+    }
+
+    &.current-info {
+      border-left: 3px solid var(--semi-color-primary);
+      padding-left: 13px;
+      background: var(--semi-color-primary-light-default);
+    }
+
+    &.current-warn {
+      border-left: 3px solid var(--semi-color-warning);
+      padding-left: 13px;
+      background: var(--semi-color-warning-light-default);
+    }
+
+    &.current-error {
+      border-left: 3px solid var(--semi-color-danger);
+      padding-left: 13px;
+      background: var(--semi-color-danger-light-default);
     }
     
     &.highlighted {
