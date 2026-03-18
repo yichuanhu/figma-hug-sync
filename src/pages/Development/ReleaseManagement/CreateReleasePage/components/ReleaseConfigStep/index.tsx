@@ -294,7 +294,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
                         {useTestCheckbox}
                       </div>
                     );
-                  })()
+                  })()}
                 </div>
               </Col>
             </Row>
