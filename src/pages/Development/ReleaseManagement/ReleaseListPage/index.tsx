@@ -322,7 +322,7 @@ const ReleaseListPage: React.FC = () => {
       width: 100,
       render: (contents: LYReleaseResponse['contents']) => {
         if (!contents || contents.length === 0) return '-';
-        return <Text>{contents.length}</Text>;
+        return <Text>{contents.length}个流程</Text>;
       },
     },
     {
