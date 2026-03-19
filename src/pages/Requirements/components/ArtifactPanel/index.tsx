@@ -61,7 +61,7 @@ const ArtifactPanel: React.FC<ArtifactPanelProps> = ({ requirementId }) => {
   const artifacts = useMemo(() => generateMockArtifacts(requirementId), [requirementId]);
 
   const typeConfig: Record<string, { icon: React.ReactNode; color: string; i18nKey: string }> = {
-    process: { icon: <IconFlow />, color: 'blue', i18nKey: 'requirement.artifact.typeProcess' },
+    process: { icon: <IconSetting />, color: 'blue', i18nKey: 'requirement.artifact.typeProcess' },
     worker: { icon: <IconServer />, color: 'cyan', i18nKey: 'requirement.artifact.typeWorker' },
     credential: { icon: <IconKey />, color: 'orange', i18nKey: 'requirement.artifact.typeCredential' },
     integration: { icon: <IconLink />, color: 'green', i18nKey: 'requirement.artifact.typeIntegration' },
