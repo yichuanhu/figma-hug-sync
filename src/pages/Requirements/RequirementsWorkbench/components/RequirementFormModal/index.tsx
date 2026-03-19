@@ -1,9 +1,10 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { DatePicker } from '@douyinfe/semi-ui';
 import FormModal from '@/components/FormModal';
 import type { FieldConfig } from '@/components/FormModal';
-import type { RequirementItem } from '../types';
-import { departmentOptions } from '../mockData';
+import type { RequirementItem } from '../../types';
+import { departmentOptions } from '../../mockData';
 
 interface RequirementFormModalProps {
   visible: boolean;
