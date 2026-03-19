@@ -485,6 +485,30 @@ const RequirementsWorkbench = () => {
           setEditingRecord(null);
         }}
       />
+
+      {/* 需求详情抽屉 */}
+      <RequirementDetailDrawer
+        visible={detailDrawerVisible}
+        onClose={() => setDetailDrawerVisible(false)}
+        data={selectedRecord}
+        dataList={list}
+        onNavigate={(item) => setSelectedRecord(item)}
+        onEdit={(record) => {
+          setEditingRecord(record);
+          setEditModalVisible(true);
+        }}
+        onDelete={(record) => handleDelete(record)}
+        pagination={{
+          currentPage,
+          totalPages: Math.ceil(total / pageSize),
+          pageSize,
+          total,
+        }}
+        onScrollToRow={(id) => {
+          const row = document.getElementById(`requirement-row-${id}`);
+          row?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }}
+      />
     </div>
   );
 };
