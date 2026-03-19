@@ -259,6 +259,28 @@ const RequirementDetailDrawer = ({
       extraActions={
         <>
           {canEdit && (
+            <Tooltip content={t('requirements.detail.submitForApproval')}>
+              <Button
+                icon={<IconSend />}
+                theme="borderless"
+                size="small"
+                type="primary"
+                onClick={() => {
+                  Modal.confirm({
+                    title: t('requirements.detail.submitConfirmTitle'),
+                    content: t('requirements.detail.submitConfirmContent'),
+                    okText: t('requirements.detail.submitForApproval'),
+                    cancelText: t('common.cancel'),
+                    onOk: async () => {
+                      await onStatusChange(data.id, 'PENDING', 'Submitted for approval.');
+                      Toast.success(t('requirements.detail.submitSuccess'));
+                    },
+                  });
+                }}
+              />
+            </Tooltip>
+          )}
+          {canEdit && (
             <Tooltip content={t('common.edit')}>
               <Button
                 icon={<IconEditStroked />}
