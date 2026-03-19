@@ -203,6 +203,7 @@ const RequirementDetailDrawer = ({
   onNavigate,
   onEdit,
   onDelete,
+  onStatusChange,
   pagination,
   onPageChange,
   onScrollToRow,
