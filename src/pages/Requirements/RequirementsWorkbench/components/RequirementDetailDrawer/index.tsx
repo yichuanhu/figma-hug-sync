@@ -15,6 +15,7 @@ import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import type { RequirementItem, ActivityRecord } from '../../types';
 import { statusConfig, priorityConfig, fetchActivities } from '../../mockData';
 import ApprovalSection from './ApprovalSection';
+import ArtifactSection from './ArtifactSection';
 import TechnicalAssessmentSection from './TechnicalAssessmentSection';
 import './index.less';
 
