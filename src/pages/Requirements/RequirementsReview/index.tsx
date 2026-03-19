@@ -300,7 +300,7 @@ const RequirementsReview = () => {
             render={
               <Dropdown.Menu>
                 <Dropdown.Item
-                  icon={<IconEyeOpened />}
+                  icon={<IconEyeOpenedStroked />}
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedRecord(record);
@@ -312,7 +312,7 @@ const RequirementsReview = () => {
                 {record.status === 'PENDING' && (
                   <>
                     <Dropdown.Item
-                      icon={<IconTickCircle />}
+                      icon={<IconCheckCircleStroked />}
                       onClick={(e) => {
                         e.stopPropagation();
                         openApprovalModal(record, 'approve');
@@ -334,7 +334,7 @@ const RequirementsReview = () => {
                 )}
                 {record.status === 'ASSESSING' && (
                   <Dropdown.Item
-                    icon={<IconEyeOpened />}
+                    icon={<IconEyeOpenedStroked />}
                     onClick={(e) => {
                       e.stopPropagation();
                       setSelectedRecord(record);
