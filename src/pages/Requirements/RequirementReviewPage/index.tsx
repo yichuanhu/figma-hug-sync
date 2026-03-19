@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Typography,
@@ -11,10 +11,7 @@ import {
   Space,
   Tabs,
   TabPane,
-  Radio,
-  RadioGroup,
   Toast,
-  Banner,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
@@ -27,7 +24,7 @@ import type {
   LYRequirementResponse,
   LYListResponseLYRequirementResponse,
   ApprovalStatus,
-  ApprovalRole,
+  ApprovalPermissions,
   RequirementPriority,
 } from '@/api';
 
@@ -35,11 +32,12 @@ import './index.less';
 
 const { Title, Text } = Typography;
 
-// Mock current user role - in real app this would come from auth context
-const MOCK_ROLES: { value: ApprovalRole; label: string; i18nKey: string }[] = [
-  { value: 'business_admin', label: 'Business Admin', i18nKey: 'requirement.review.roleBusinessAdmin' },
-  { value: 'dev_admin', label: 'Dev Admin', i18nKey: 'requirement.review.roleDevAdmin' },
-];
+// Mock current user permissions - in real app this would come from auth context
+// This user has both business and tech approval permissions
+const MOCK_PERMISSIONS: ApprovalPermissions = {
+  canBusinessApprove: true,
+  canTechApprove: true,
+};
 
 // ==================== Mock Data Generator ====================
 
@@ -166,7 +164,7 @@ type ReviewTab = 'pending' | 'approved' | 'all';
 const RequirementReviewPage: React.FC = () => {
   const { t } = useTranslation();
 
-  const [currentRole, setCurrentRole] = useState<ApprovalRole>('business_admin');
+  const [approvalPermissions] = useState<ApprovalPermissions>(MOCK_PERMISSIONS);
   const [activeTab, setActiveTab] = useState<ReviewTab>('pending');
   const [loading, setLoading] = useState(false);
   const [keyword, setKeyword] = useState('');
@@ -177,7 +175,7 @@ const RequirementReviewPage: React.FC = () => {
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const selectedRequirementId = selectedRequirement?.id || null;
 
-  // Filter data based on tab and role
+  // Filter data based on tab and permissions (merged list)
   const filteredData = useMemo(() => {
     let data = allData;
 
@@ -190,25 +188,23 @@ const RequirementReviewPage: React.FC = () => {
     }
 
     if (activeTab === 'pending') {
-      if (currentRole === 'business_admin') {
-        data = data.filter((item) => item.approval_status === 'BUSINESS_PENDING');
-      } else {
-        data = data.filter((item) => item.approval_status === 'TECH_PENDING');
-      }
+      // Merge both business and tech pending based on user's permissions
+      data = data.filter((item) => {
+        if (approvalPermissions.canBusinessApprove && item.approval_status === 'BUSINESS_PENDING') return true;
+        if (approvalPermissions.canTechApprove && item.approval_status === 'TECH_PENDING') return true;
+        return false;
+      });
     } else if (activeTab === 'approved') {
-      if (currentRole === 'business_admin') {
-        data = data.filter((item) =>
-          ['BUSINESS_APPROVED', 'BUSINESS_REJECTED', 'TECH_PENDING', 'TECH_APPROVED', 'TECH_REJECTED'].includes(item.approval_status)
-        );
-      } else {
-        data = data.filter((item) =>
-          ['TECH_APPROVED', 'TECH_REJECTED'].includes(item.approval_status)
-        );
-      }
+      // Show all items this user has reviewed (both business and tech)
+      data = data.filter((item) => {
+        if (approvalPermissions.canBusinessApprove && ['BUSINESS_APPROVED', 'BUSINESS_REJECTED', 'TECH_PENDING', 'TECH_APPROVED', 'TECH_REJECTED'].includes(item.approval_status)) return true;
+        if (approvalPermissions.canTechApprove && ['TECH_APPROVED', 'TECH_REJECTED'].includes(item.approval_status)) return true;
+        return false;
+      });
     }
 
     return data;
-  }, [allData, activeTab, currentRole, keyword]);
+  }, [allData, activeTab, approvalPermissions, keyword]);
 
   const handleSearch = useMemo(
     () => debounce((value: string) => setKeyword(value), 500),
@@ -312,11 +308,15 @@ const RequirementReviewPage: React.FC = () => {
   ];
 
   const pendingCount = useMemo(() => {
-    if (currentRole === 'business_admin') {
-      return allData.filter(r => r.approval_status === 'BUSINESS_PENDING').length;
+    let count = 0;
+    if (approvalPermissions.canBusinessApprove) {
+      count += allData.filter(r => r.approval_status === 'BUSINESS_PENDING').length;
     }
-    return allData.filter(r => r.approval_status === 'TECH_PENDING').length;
-  }, [allData, currentRole]);
+    if (approvalPermissions.canTechApprove) {
+      count += allData.filter(r => r.approval_status === 'TECH_PENDING').length;
+    }
+    return count;
+  }, [allData, approvalPermissions]);
 
   return (
     <div className="requirement-review-page">
@@ -324,28 +324,6 @@ const RequirementReviewPage: React.FC = () => {
         <div className="requirement-review-page-header-title">
           <Title heading={3} className="title">{t('requirement.review.title')}</Title>
           <Text type="tertiary">{t('requirement.review.description')}</Text>
-        </div>
-
-        {/* Role Switcher (for demo) */}
-        <div className="requirement-review-page-role-switcher">
-          <Banner
-            type="info"
-            description={
-              <Space>
-                <Text size="small">{t('requirement.review.currentRoleLabel')}:</Text>
-                <RadioGroup
-                  type="button"
-                  buttonSize="small"
-                  value={currentRole}
-                  onChange={(e) => setCurrentRole(e.target.value as ApprovalRole)}
-                >
-                  {MOCK_ROLES.map((role) => (
-                    <Radio key={role.value} value={role.value}>{t(role.i18nKey)}</Radio>
-                  ))}
-                </RadioGroup>
-              </Space>
-            }
-          />
         </div>
 
         {/* Search Bar */}
@@ -420,7 +398,7 @@ const RequirementReviewPage: React.FC = () => {
           setSelectedRequirement(null);
         }}
         onNavigate={(item) => setSelectedRequirement(item)}
-        currentUserRole={currentRole}
+        approvalPermissions={approvalPermissions}
       />
     </div>
   );

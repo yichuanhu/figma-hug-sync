@@ -9,7 +9,7 @@ import {
   Space,
   Tooltip,
 } from '@douyinfe/semi-ui';
-import type { LYRequirementResponse, ApprovalRole } from '@/api';
+import type { LYRequirementResponse, ApprovalPermissions } from '@/api';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import ExpandableText from '@/components/ExpandableText';
@@ -33,7 +33,7 @@ interface RequirementDetailDrawerProps {
   onClose: () => void;
   onNavigate: (requirement: LYRequirementResponse) => void;
   onDataChange?: () => void;
-  currentUserRole?: ApprovalRole;
+  approvalPermissions?: ApprovalPermissions;
 }
 
 const approvalStatusConfig: Record<string, { color: 'grey' | 'orange' | 'green' | 'red' | 'blue'; i18nKey: string }> = {
@@ -66,6 +66,8 @@ const priorityConfig: Record<string, { color: 'red' | 'orange' | 'grey'; i18nKey
   LOW: { color: 'grey', i18nKey: 'requirement.priority.LOW' },
 };
 
+const DEFAULT_PERMISSIONS: ApprovalPermissions = { canBusinessApprove: false, canTechApprove: false };
+
 const RequirementDetailDrawer: React.FC<RequirementDetailDrawerProps> = ({
   visible,
   requirement,
@@ -73,7 +75,7 @@ const RequirementDetailDrawer: React.FC<RequirementDetailDrawerProps> = ({
   onClose,
   onNavigate,
   onDataChange,
-  currentUserRole = 'submitter',
+  approvalPermissions = DEFAULT_PERMISSIONS,
 }) => {
   const { t } = useTranslation();
 
@@ -222,7 +224,7 @@ const RequirementDetailDrawer: React.FC<RequirementDetailDrawerProps> = ({
       <div className="requirement-detail-drawer-actions">
         <ApprovalActions
           requirement={requirement}
-          currentUserRole={currentUserRole}
+          approvalPermissions={approvalPermissions}
           onStatusChange={() => onDataChange?.()}
         />
       </div>
