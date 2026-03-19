@@ -223,6 +223,9 @@ const RequirementListPage: React.FC<RequirementListPageProps> = ({ defaultApprov
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const selectedRequirementId = selectedRequirement?.id || null;
 
+  // Batch import modal
+  const [batchImportVisible, setBatchImportVisible] = useState(false);
+
   const { range, list } = listResponse;
   const currentPage = Math.floor((range?.offset || 0) / (range?.size || 20)) + 1;
   const pageSize = range?.size || 20;
