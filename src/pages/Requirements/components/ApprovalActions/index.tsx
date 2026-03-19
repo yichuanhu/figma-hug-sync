@@ -2,22 +2,29 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Space, Modal, Toast, Form, Tag, Banner, Rating } from '@douyinfe/semi-ui';
 import { IconTickCircle, IconClose } from '@douyinfe/semi-icons';
-import type { LYRequirementResponse, ApprovalRole, ApprovalStatus } from '@/api';
+import type { LYRequirementResponse, ApprovalPermissions, ApprovalStatus } from '@/api';
 import './index.less';
 
 interface ApprovalActionsProps {
   requirement: LYRequirementResponse;
-  currentUserRole: ApprovalRole;
+  approvalPermissions: ApprovalPermissions;
   onStatusChange: () => void;
 }
 
-const ApprovalActions = ({ requirement, currentUserRole, onStatusChange }: ApprovalActionsProps) => {
+const ApprovalActions = ({ requirement, approvalPermissions, onStatusChange }: ApprovalActionsProps) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [rejectModalVisible, setRejectModalVisible] = useState(false);
   const [techApproveModalVisible, setTechApproveModalVisible] = useState(false);
 
   const { approval_status } = requirement;
+
+  // Determine if current user can act on this requirement's current stage
+  const canActOnCurrentStage = () => {
+    if (approval_status === 'BUSINESS_PENDING' && approvalPermissions.canBusinessApprove) return true;
+    if (approval_status === 'TECH_PENDING' && approvalPermissions.canTechApprove) return true;
+    return false;
+  };
 
   // Submit for approval (DRAFT -> BUSINESS_PENDING)
   const handleSubmitForApproval = async () => {
@@ -88,8 +95,8 @@ const ApprovalActions = ({ requirement, currentUserRole, onStatusChange }: Appro
 
   // Determine what the current user sees
   const renderActions = () => {
-    // Submitter actions
-    if (currentUserRole === 'submitter') {
+    // If user has no approval permissions, treat as submitter
+    if (!approvalPermissions.canBusinessApprove && !approvalPermissions.canTechApprove) {
       if (approval_status === 'DRAFT') {
         return (
           <Button theme="solid" type="primary" loading={loading} onClick={handleSubmitForApproval}>
@@ -116,38 +123,32 @@ const ApprovalActions = ({ requirement, currentUserRole, onStatusChange }: Appro
       return null;
     }
 
-    // Business admin actions
-    if (currentUserRole === 'business_admin') {
-      if (approval_status === 'BUSINESS_PENDING') {
-        return (
-          <>
-            <Button theme="solid" type="primary" onClick={handleBusinessApprove}>
-              {t('requirement.approval.approve')}
-            </Button>
-            <Button theme="solid" type="danger" onClick={() => setRejectModalVisible(true)}>
-              {t('requirement.approval.reject')}
-            </Button>
-          </>
-        );
-      }
-      return null;
+    // Business approval stage - user has business approve permission
+    if (approval_status === 'BUSINESS_PENDING' && approvalPermissions.canBusinessApprove) {
+      return (
+        <>
+          <Button theme="solid" type="primary" onClick={handleBusinessApprove}>
+            {t('requirement.approval.approve')}
+          </Button>
+          <Button theme="solid" type="danger" onClick={() => setRejectModalVisible(true)}>
+            {t('requirement.approval.reject')}
+          </Button>
+        </>
+      );
     }
 
-    // Dev admin actions
-    if (currentUserRole === 'dev_admin') {
-      if (approval_status === 'TECH_PENDING') {
-        return (
-          <>
-            <Button theme="solid" type="primary" onClick={() => setTechApproveModalVisible(true)}>
-              {t('requirement.approval.techApproveBtn')}
-            </Button>
-            <Button theme="solid" type="danger" onClick={() => setRejectModalVisible(true)}>
-              {t('requirement.approval.reject')}
-            </Button>
-          </>
-        );
-      }
-      return null;
+    // Tech approval stage - user has tech approve permission
+    if (approval_status === 'TECH_PENDING' && approvalPermissions.canTechApprove) {
+      return (
+        <>
+          <Button theme="solid" type="primary" onClick={() => setTechApproveModalVisible(true)}>
+            {t('requirement.approval.techApproveBtn')}
+          </Button>
+          <Button theme="solid" type="danger" onClick={() => setRejectModalVisible(true)}>
+            {t('requirement.approval.reject')}
+          </Button>
+        </>
+      );
     }
 
     return null;

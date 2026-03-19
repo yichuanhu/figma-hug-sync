@@ -3381,6 +3381,12 @@ export type ApprovalAction = 'APPROVE' | 'REJECT';
 /** 用户审批角色 */
 export type ApprovalRole = 'submitter' | 'business_admin' | 'dev_admin';
 
+/** 用户审批权限 */
+export interface ApprovalPermissions {
+  canBusinessApprove: boolean;
+  canTechApprove: boolean;
+}
+
 /**
  * LYApprovalRecord
  * 审批记录
