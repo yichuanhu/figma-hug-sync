@@ -12,9 +12,12 @@ interface RequirementStatusTagProps {
 const statusColorMap: Record<string, Record<string, { color: string; i18nKey: string }>> = {
   approval: {
     DRAFT: { color: 'grey', i18nKey: 'requirement.approvalStatus.DRAFT' },
-    PENDING: { color: 'orange', i18nKey: 'requirement.approvalStatus.PENDING' },
-    APPROVED: { color: 'green', i18nKey: 'requirement.approvalStatus.APPROVED' },
-    REJECTED: { color: 'red', i18nKey: 'requirement.approvalStatus.REJECTED' },
+    BUSINESS_PENDING: { color: 'orange', i18nKey: 'requirement.approvalStatus.BUSINESS_PENDING' },
+    BUSINESS_APPROVED: { color: 'blue', i18nKey: 'requirement.approvalStatus.BUSINESS_APPROVED' },
+    BUSINESS_REJECTED: { color: 'red', i18nKey: 'requirement.approvalStatus.BUSINESS_REJECTED' },
+    TECH_PENDING: { color: 'orange', i18nKey: 'requirement.approvalStatus.TECH_PENDING' },
+    TECH_APPROVED: { color: 'green', i18nKey: 'requirement.approvalStatus.TECH_APPROVED' },
+    TECH_REJECTED: { color: 'red', i18nKey: 'requirement.approvalStatus.TECH_REJECTED' },
   },
   development: {
     NOT_STARTED: { color: 'grey', i18nKey: 'requirement.devStatus.NOT_STARTED' },

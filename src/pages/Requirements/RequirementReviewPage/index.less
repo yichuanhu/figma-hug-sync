@@ -1,0 +1,44 @@
+.requirement-review-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .requirement-review-page-header {
+    padding-top: 0;
+    flex-shrink: 0;
+
+    .requirement-review-page-header-title {
+      margin-bottom: 16px;
+
+      .title {
+        margin-bottom: 8px;
+      }
+    }
+
+    .requirement-review-page-role-switcher {
+      margin-bottom: 16px;
+    }
+
+    .requirement-review-page-toolbar {
+      margin-bottom: 16px;
+    }
+  }
+
+  .requirement-review-page-tabs {
+    flex-shrink: 0;
+  }
+
+  .requirement-review-page-table {
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
+
+    .semi-table-wrapper {
+      max-height: 100%;
+    }
+  }
+
+  .semi-table-row[class*="-row-selected"] {
+    background-color: var(--semi-color-primary-light-default) !important;
+  }
+}

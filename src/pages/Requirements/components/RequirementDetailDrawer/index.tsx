@@ -9,11 +9,12 @@ import {
   Space,
   Tooltip,
 } from '@douyinfe/semi-ui';
-import type { LYRequirementResponse } from '@/api';
+import type { LYRequirementResponse, ApprovalRole } from '@/api';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import ExpandableText from '@/components/ExpandableText';
 import ApprovalActions from '../ApprovalActions';
+import ApprovalTimeline from '../ApprovalTimeline';
 import AssessmentPanel from '../AssessmentPanel';
 import ROIPanel from '../ROIPanel';
 import ClassificationPanel from '../ClassificationPanel';
@@ -32,7 +33,38 @@ interface RequirementDetailDrawerProps {
   onClose: () => void;
   onNavigate: (requirement: LYRequirementResponse) => void;
   onDataChange?: () => void;
+  currentUserRole?: ApprovalRole;
 }
+
+const approvalStatusConfig: Record<string, { color: 'grey' | 'orange' | 'green' | 'red' | 'blue'; i18nKey: string }> = {
+  DRAFT: { color: 'grey', i18nKey: 'requirement.approvalStatus.DRAFT' },
+  BUSINESS_PENDING: { color: 'orange', i18nKey: 'requirement.approvalStatus.BUSINESS_PENDING' },
+  BUSINESS_APPROVED: { color: 'blue', i18nKey: 'requirement.approvalStatus.BUSINESS_APPROVED' },
+  BUSINESS_REJECTED: { color: 'red', i18nKey: 'requirement.approvalStatus.BUSINESS_REJECTED' },
+  TECH_PENDING: { color: 'orange', i18nKey: 'requirement.approvalStatus.TECH_PENDING' },
+  TECH_APPROVED: { color: 'green', i18nKey: 'requirement.approvalStatus.TECH_APPROVED' },
+  TECH_REJECTED: { color: 'red', i18nKey: 'requirement.approvalStatus.TECH_REJECTED' },
+};
+
+const devStatusConfig: Record<string, { color: 'grey' | 'blue' | 'cyan' | 'green'; i18nKey: string }> = {
+  NOT_STARTED: { color: 'grey', i18nKey: 'requirement.devStatus.NOT_STARTED' },
+  ASSESSING: { color: 'blue', i18nKey: 'requirement.devStatus.ASSESSING' },
+  IN_DEVELOPMENT: { color: 'cyan', i18nKey: 'requirement.devStatus.IN_DEVELOPMENT' },
+  DEVELOPED: { color: 'green', i18nKey: 'requirement.devStatus.DEVELOPED' },
+};
+
+const opStatusConfig: Record<string, { color: 'grey' | 'green' | 'orange'; i18nKey: string }> = {
+  NOT_LIVE: { color: 'grey', i18nKey: 'requirement.opStatus.NOT_LIVE' },
+  RUNNING: { color: 'green', i18nKey: 'requirement.opStatus.RUNNING' },
+  SUSPENDED: { color: 'orange', i18nKey: 'requirement.opStatus.SUSPENDED' },
+  ARCHIVED: { color: 'grey', i18nKey: 'requirement.opStatus.ARCHIVED' },
+};
+
+const priorityConfig: Record<string, { color: 'red' | 'orange' | 'grey'; i18nKey: string }> = {
+  HIGH: { color: 'red', i18nKey: 'requirement.priority.HIGH' },
+  MEDIUM: { color: 'orange', i18nKey: 'requirement.priority.MEDIUM' },
+  LOW: { color: 'grey', i18nKey: 'requirement.priority.LOW' },
+};
 
 const RequirementDetailDrawer: React.FC<RequirementDetailDrawerProps> = ({
   visible,
@@ -41,6 +73,7 @@ const RequirementDetailDrawer: React.FC<RequirementDetailDrawerProps> = ({
   onClose,
   onNavigate,
   onDataChange,
+  currentUserRole = 'submitter',
 }) => {
   const { t } = useTranslation();
 
@@ -55,34 +88,6 @@ const RequirementDetailDrawer: React.FC<RequirementDetailDrawerProps> = ({
       hour: '2-digit',
       minute: '2-digit',
     });
-  };
-
-  // Priority config
-  const priorityConfig: Record<string, { color: 'red' | 'orange' | 'grey'; i18nKey: string }> = {
-    HIGH: { color: 'red', i18nKey: 'requirement.priority.HIGH' },
-    MEDIUM: { color: 'orange', i18nKey: 'requirement.priority.MEDIUM' },
-    LOW: { color: 'grey', i18nKey: 'requirement.priority.LOW' },
-  };
-
-  const approvalStatusConfig: Record<string, { color: 'grey' | 'orange' | 'green' | 'red'; i18nKey: string }> = {
-    DRAFT: { color: 'grey', i18nKey: 'requirement.approvalStatus.DRAFT' },
-    PENDING: { color: 'orange', i18nKey: 'requirement.approvalStatus.PENDING' },
-    APPROVED: { color: 'green', i18nKey: 'requirement.approvalStatus.APPROVED' },
-    REJECTED: { color: 'red', i18nKey: 'requirement.approvalStatus.REJECTED' },
-  };
-
-  const devStatusConfig: Record<string, { color: 'grey' | 'blue' | 'cyan' | 'green'; i18nKey: string }> = {
-    NOT_STARTED: { color: 'grey', i18nKey: 'requirement.devStatus.NOT_STARTED' },
-    ASSESSING: { color: 'blue', i18nKey: 'requirement.devStatus.ASSESSING' },
-    IN_DEVELOPMENT: { color: 'cyan', i18nKey: 'requirement.devStatus.IN_DEVELOPMENT' },
-    DEVELOPED: { color: 'green', i18nKey: 'requirement.devStatus.DEVELOPED' },
-  };
-
-  const opStatusConfig: Record<string, { color: 'grey' | 'green' | 'orange'; i18nKey: string }> = {
-    NOT_LIVE: { color: 'grey', i18nKey: 'requirement.opStatus.NOT_LIVE' },
-    RUNNING: { color: 'green', i18nKey: 'requirement.opStatus.RUNNING' },
-    SUSPENDED: { color: 'orange', i18nKey: 'requirement.opStatus.SUSPENDED' },
-    ARCHIVED: { color: 'grey', i18nKey: 'requirement.opStatus.ARCHIVED' },
   };
 
   const renderStatusTags = () => {
@@ -199,10 +204,25 @@ const RequirementDetailDrawer: React.FC<RequirementDetailDrawerProps> = ({
         </div>
       )}
 
+      {/* Approval Flow Timeline */}
+      <div className="requirement-detail-drawer-section">
+        <Title heading={6} className="requirement-detail-drawer-section-title">
+          <span className="requirement-detail-drawer-section-indicator" />
+          {t('requirement.approvalFlow.title')}
+        </Title>
+        <div className="requirement-detail-drawer-section-body">
+          <ApprovalTimeline
+            approvalStatus={requirement.approval_status}
+            records={requirement.approval_records || []}
+          />
+        </div>
+      </div>
+
       {/* Approval Actions */}
       <div className="requirement-detail-drawer-actions">
         <ApprovalActions
           requirement={requirement}
+          currentUserRole={currentUserRole}
           onStatusChange={() => onDataChange?.()}
         />
       </div>
