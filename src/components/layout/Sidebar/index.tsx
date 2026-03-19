@@ -186,7 +186,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
       key: 'requirementsCenter',
       labelKey: 'sidebar.requirementsCenter',
       icon: <div className="sidebar-center-icon" dangerouslySetInnerHTML={{ __html: requirementsCenterIconRaw }} />,
-      path: '/requirements',
+      path: '/requirements/list',
     },
     {
       key: 'maintenanceCenter',
