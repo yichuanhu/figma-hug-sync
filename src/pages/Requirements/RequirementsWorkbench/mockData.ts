@@ -1,5 +1,5 @@
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
-import type { RequirementItem, RequirementStatus, RequirementPriority, RequirementQueryParams, RequirementListResponse, ActivityRecord } from './types';
+import type { RequirementItem, RequirementStatus, RequirementPriority, RequirementQueryParams, RequirementListResponse, ActivityRecord, TechnicalAssessment, RequirementArtifact } from './types';
 
 // ============= 状态/优先级配置 =============
 
