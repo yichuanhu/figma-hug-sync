@@ -3362,8 +3362,51 @@ export interface LYListResponseLYQueueTriggerExecutionLogResponse {
 /** 需求优先级 */
 export type RequirementPriority = 'HIGH' | 'MEDIUM' | 'LOW';
 
-/** 审批状态 */
-export type ApprovalStatus = 'DRAFT' | 'PENDING' | 'APPROVED' | 'REJECTED';
+/** 审批状态（两级审批流） */
+export type ApprovalStatus =
+  | 'DRAFT'
+  | 'BUSINESS_PENDING'
+  | 'BUSINESS_APPROVED'
+  | 'BUSINESS_REJECTED'
+  | 'TECH_PENDING'
+  | 'TECH_APPROVED'
+  | 'TECH_REJECTED';
+
+/** 审批阶段 */
+export type ApprovalStage = 'BUSINESS' | 'TECH';
+
+/** 审批操作 */
+export type ApprovalAction = 'APPROVE' | 'REJECT';
+
+/** 用户审批角色 */
+export type ApprovalRole = 'submitter' | 'business_admin' | 'dev_admin';
+
+/**
+ * LYApprovalRecord
+ * 审批记录
+ */
+export interface LYApprovalRecord {
+  /** 记录ID */
+  id: string;
+  /** 审批阶段 */
+  stage: ApprovalStage;
+  /** 审批操作 */
+  action: ApprovalAction | 'SUBMIT' | 'RESUBMIT';
+  /** 审批人ID */
+  operator_id: string;
+  /** 审批人名称 */
+  operator_name: string;
+  /** 审批人部门 */
+  operator_department?: string | null;
+  /** 审批人角色 */
+  operator_role?: string | null;
+  /** 审批人邮箱 */
+  operator_email?: string | null;
+  /** 审批意见 */
+  comment?: string | null;
+  /** 操作时间 */
+  operated_at: string;
+}
 
 /** 开发状态 */
 export type DevelopmentStatus = 'NOT_STARTED' | 'ASSESSING' | 'IN_DEVELOPMENT' | 'DEVELOPED';
