@@ -92,11 +92,6 @@ const RequirementFormModal = ({
         key={editData?.id || 'create'}
       >
         <div className="requirement-form-modal-content">
-          {/* 基本信息 */}
-          <div className="requirement-form-modal-section">
-            <div className="requirement-form-modal-section-title">
-              {t('requirements.form.sectionBasicInfo')}
-            </div>
             <Form.Input
               field="title"
               label={t('requirements.form.titleLabel')}
@@ -119,13 +114,6 @@ const RequirementFormModal = ({
                 { max: 2000, message: t('requirements.form.descriptionMaxLength') },
               ]}
             />
-          </div>
-
-          {/* 分类与优先级 */}
-          <div className="requirement-form-modal-section">
-            <div className="requirement-form-modal-section-title">
-              {t('requirements.form.sectionClassification')}
-            </div>
             <Form.Select
               field="department"
               label={t('requirements.fields.department')}
@@ -143,13 +131,6 @@ const RequirementFormModal = ({
               optionList={priorityOptions}
               className="requirement-form-modal-select-full"
             />
-          </div>
-
-          {/* 补充信息 */}
-          <div className="requirement-form-modal-section">
-            <div className="requirement-form-modal-section-title">
-              {t('requirements.form.sectionAdditional')}
-            </div>
             <Form.Input
               field="contactInfo"
               label={t('requirements.form.contactLabel')}
@@ -164,7 +145,6 @@ const RequirementFormModal = ({
                 placeholder={t('requirements.form.expectedLaunchDatePlaceholder')}
               />
             </Form.Slot>
-          </div>
         </div>
 
         <div className="requirement-form-modal-footer">
