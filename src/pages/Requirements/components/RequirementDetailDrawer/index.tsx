@@ -14,6 +14,9 @@ import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import ExpandableText from '@/components/ExpandableText';
 import ApprovalActions from '../ApprovalActions';
+import AssessmentPanel from '../AssessmentPanel';
+import ROIPanel from '../ROIPanel';
+import ClassificationPanel from '../ClassificationPanel';
 
 import './index.less';
 
