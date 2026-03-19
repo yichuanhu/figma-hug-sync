@@ -18,6 +18,7 @@ import {
   IconSearchStroked,
   IconPlusStroked,
   IconMoreStroked,
+  IconDeleteStroked,
 } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
 import type { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
