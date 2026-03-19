@@ -21,9 +21,9 @@ import {
   IconEyeOpenedStroked,
   IconEditStroked,
   IconDeleteStroked,
-  IconUploadStroked,
   IconSendStroked,
 } from '@douyinfe/semi-icons';
+import { Upload } from 'lucide-react';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
