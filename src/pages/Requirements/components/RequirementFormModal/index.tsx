@@ -81,6 +81,8 @@ const RequirementFormModal = ({ visible, onCancel, requirementData, onSuccess }:
       width={520}
       closeOnEsc
       maskClosable={false}
+      centered
+      className="requirement-form-modal"
     >
       <Form
         onSubmit={handleSubmit}
@@ -116,6 +118,7 @@ const RequirementFormModal = ({ visible, onCancel, requirementData, onSuccess }:
           placeholder={t('requirement.form.fields.descriptionPlaceholder')}
           autosize={{ minRows: 3, maxRows: 6 }}
           maxCount={2000}
+          showClear
           rules={[
             { required: true, message: t('requirement.form.validation.descriptionRequired') },
           ]}
@@ -127,6 +130,7 @@ const RequirementFormModal = ({ visible, onCancel, requirementData, onSuccess }:
           placeholder={t('requirement.form.fields.businessBackgroundPlaceholder')}
           autosize={{ minRows: 2, maxRows: 4 }}
           maxCount={2000}
+          showClear
         />
 
         <Row gutter={16}>
@@ -187,7 +191,7 @@ const RequirementFormModal = ({ visible, onCancel, requirementData, onSuccess }:
             {t('common.cancel')}
           </Button>
           <Button htmlType="submit" theme="solid" type="primary" loading={loading}>
-            {isEdit ? t('common.save') : t('requirement.form.saveDraft')}
+            {isEdit ? t('common.save') : t('common.create')}
           </Button>
         </div>
       </Form>

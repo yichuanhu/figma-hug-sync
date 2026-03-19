@@ -4,11 +4,10 @@ import {
   Typography,
   Table,
   Tag,
-  Empty,
-  Steps,
 } from '@douyinfe/semi-ui';
 import { IconTickCircle, IconClock, IconClose } from '@douyinfe/semi-icons';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
+import EmptyState from '@/components/EmptyState';
 
 import './index.less';
 
@@ -86,8 +85,8 @@ const AcceptancePanel: React.FC<AcceptancePanelProps> = ({ requirementId }) => {
   if (records.length === 0) {
     return (
       <div className="acceptance-panel-empty">
-        <Empty
-          title={t('requirement.acceptance.noRecord')}
+        <EmptyState
+          variant="noData"
           description={t('requirement.acceptance.noRecordDesc')}
         />
       </div>

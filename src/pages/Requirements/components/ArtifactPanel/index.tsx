@@ -5,11 +5,10 @@ import {
   Table,
   Tag,
   Empty,
-  Avatar,
-  AvatarGroup,
-  Tooltip,
+  Button,
 } from '@douyinfe/semi-ui';
 import { IconLink, IconServer, IconKey, IconSetting } from '@douyinfe/semi-icons';
+import EmptyState from '@/components/EmptyState';
 
 import './index.less';
 
@@ -76,8 +75,8 @@ const ArtifactPanel: React.FC<ArtifactPanelProps> = ({ requirementId }) => {
   if (artifacts.length === 0) {
     return (
       <div className="artifact-panel-empty">
-        <Empty
-          title={t('requirement.artifact.noArtifact')}
+        <EmptyState
+          variant="noData"
           description={t('requirement.artifact.noArtifactDesc')}
         />
       </div>

@@ -64,8 +64,12 @@ const ClassificationSelector: React.FC<ClassificationSelectorProps> = ({
       onOk={handleOk}
       onCancel={handleClose}
       okButtonProps={{ disabled: !selectedCategory || !selectedValue }}
+      cancelText={t('common.cancel')}
+      okText={t('common.confirm')}
       width={520}
       closeOnEsc
+      maskClosable={false}
+      centered
       className="classification-selector-modal"
     >
       <div className="classification-selector">

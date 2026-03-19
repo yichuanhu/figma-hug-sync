@@ -3,15 +3,13 @@ import { useTranslation } from 'react-i18next';
 import {
   Typography,
   Tag,
-  TagGroup,
-  Empty,
   Button,
   Table,
-  Tooltip,
   Toast,
 } from '@douyinfe/semi-ui';
 import { IconPlus, IconDelete } from '@douyinfe/semi-icons';
 import type { LYClassificationAssignment } from '@/api';
+import EmptyState from '@/components/EmptyState';
 import ClassificationSelector from '../ClassificationSelector';
 
 import './index.less';
@@ -89,12 +87,12 @@ const ClassificationPanel: React.FC<ClassificationPanelProps> = ({
     {
       title: t('requirement.classification.assignedAt'),
       dataIndex: 'assigned_at',
-      width: 180,
+      width: 160,
       render: (time: string) => new Date(time).toLocaleString('zh-CN'),
     },
     {
       title: t('common.actions'),
-      width: 80,
+      width: 60,
       render: (_: unknown, record: LYClassificationAssignment) => (
         <Button
           icon={<IconDelete />}
@@ -160,8 +158,8 @@ const ClassificationPanel: React.FC<ClassificationPanelProps> = ({
             rowKey={(record) => `${record.classification_key}-${record.classification_value}`}
           />
         ) : (
-          <Empty
-            title={t('requirement.classification.noClassification')}
+          <EmptyState
+            variant="noData"
             description={t('requirement.classification.noClassificationDesc')}
           />
         )}

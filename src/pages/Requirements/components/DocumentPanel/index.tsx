@@ -4,10 +4,10 @@ import {
   Typography,
   Table,
   Tag,
-  Empty,
   Button,
 } from '@douyinfe/semi-ui';
 import { IconFile, IconDownload } from '@douyinfe/semi-icons';
+import EmptyState from '@/components/EmptyState';
 
 import './index.less';
 
@@ -62,8 +62,8 @@ const DocumentPanel: React.FC<DocumentPanelProps> = ({ requirementId }) => {
   if (documents.length === 0) {
     return (
       <div className="document-panel-empty">
-        <Empty
-          title={t('requirement.document.noDocument')}
+        <EmptyState
+          variant="noData"
           description={t('requirement.document.noDocumentDesc')}
         />
       </div>
