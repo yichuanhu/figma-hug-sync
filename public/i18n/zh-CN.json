@@ -2658,5 +2658,79 @@
     "resources": {
       "title": "资源获取"
     }
+  },
+  "requirement": {
+    "list": {
+      "title": "需求列表",
+      "description": "管理和跟踪所有业务自动化需求",
+      "searchPlaceholder": "搜索需求标题、ID...",
+      "newRequirement": "新建需求",
+      "noData": "暂无需求数据",
+      "deleteConfirmTitle": "确认删除",
+      "deleteConfirmContent": "确定要删除需求「{{title}}」吗？此操作不可恢复。",
+      "deleteSuccess": "需求已删除",
+      "columns": {
+        "title": "需求标题",
+        "department": "所属部门",
+        "classifications": "业务分类",
+        "approvalStatus": "审批状态",
+        "devStatus": "开发状态",
+        "priority": "优先级"
+      }
+    },
+    "priority": {
+      "HIGH": "高",
+      "MEDIUM": "中",
+      "LOW": "低"
+    },
+    "approvalStatus": {
+      "DRAFT": "草稿",
+      "PENDING": "待审批",
+      "APPROVED": "已通过",
+      "REJECTED": "已驳回"
+    },
+    "devStatus": {
+      "NOT_STARTED": "未开始",
+      "ASSESSING": "评估中",
+      "IN_DEVELOPMENT": "开发中",
+      "DEVELOPED": "已完成"
+    },
+    "opStatus": {
+      "NOT_LIVE": "未上线",
+      "RUNNING": "运行中",
+      "SUSPENDED": "已暂停",
+      "ARCHIVED": "已归档"
+    },
+    "form": {
+      "createTitle": "新建需求",
+      "editTitle": "编辑需求",
+      "createSuccess": "需求创建成功",
+      "editSuccess": "需求更新成功",
+      "createError": "需求创建失败",
+      "editError": "需求更新失败",
+      "saveDraft": "保存草稿",
+      "fields": {
+        "title": "需求标题",
+        "titlePlaceholder": "请输入需求标题",
+        "descriptionPlaceholder": "请输入需求描述",
+        "businessBackground": "业务背景",
+        "businessBackgroundPlaceholder": "请描述业务背景和痛点",
+        "department": "所属部门",
+        "departmentPlaceholder": "请选择所属部门",
+        "contactName": "联系人",
+        "contactNamePlaceholder": "请输入联系人姓名",
+        "contactEmail": "联系邮箱",
+        "contactEmailPlaceholder": "请输入联系邮箱",
+        "expectedOnlineDate": "期望上线日期"
+      },
+      "validation": {
+        "titleRequired": "请输入需求标题",
+        "titleMaxLength": "标题不能超过100个字符",
+        "descriptionRequired": "请输入需求描述",
+        "departmentRequired": "请选择所属部门",
+        "contactRequired": "请输入联系人",
+        "expectedDateRequired": "请选择期望上线日期"
+      }
+    }
   }
 }

@@ -2649,5 +2649,79 @@
     "resources": {
       "title": "Resources"
     }
+  },
+  "requirement": {
+    "list": {
+      "title": "Requirement List",
+      "description": "Manage and track all business automation requirements",
+      "searchPlaceholder": "Search by title, ID...",
+      "newRequirement": "New Requirement",
+      "noData": "No requirements found",
+      "deleteConfirmTitle": "Confirm Deletion",
+      "deleteConfirmContent": "Are you sure you want to delete requirement \"{{title}}\"? This action cannot be undone.",
+      "deleteSuccess": "Requirement deleted",
+      "columns": {
+        "title": "Title",
+        "department": "Department",
+        "classifications": "Classifications",
+        "approvalStatus": "Approval",
+        "devStatus": "Dev Status",
+        "priority": "Priority"
+      }
+    },
+    "priority": {
+      "HIGH": "High",
+      "MEDIUM": "Medium",
+      "LOW": "Low"
+    },
+    "approvalStatus": {
+      "DRAFT": "Draft",
+      "PENDING": "Pending",
+      "APPROVED": "Approved",
+      "REJECTED": "Rejected"
+    },
+    "devStatus": {
+      "NOT_STARTED": "Not Started",
+      "ASSESSING": "Assessing",
+      "IN_DEVELOPMENT": "In Dev",
+      "DEVELOPED": "Developed"
+    },
+    "opStatus": {
+      "NOT_LIVE": "Not Live",
+      "RUNNING": "Running",
+      "SUSPENDED": "Suspended",
+      "ARCHIVED": "Archived"
+    },
+    "form": {
+      "createTitle": "New Requirement",
+      "editTitle": "Edit Requirement",
+      "createSuccess": "Requirement created",
+      "editSuccess": "Requirement updated",
+      "createError": "Failed to create requirement",
+      "editError": "Failed to update requirement",
+      "saveDraft": "Save Draft",
+      "fields": {
+        "title": "Title",
+        "titlePlaceholder": "Enter requirement title",
+        "descriptionPlaceholder": "Enter requirement description",
+        "businessBackground": "Business Background",
+        "businessBackgroundPlaceholder": "Describe business background and pain points",
+        "department": "Department",
+        "departmentPlaceholder": "Select department",
+        "contactName": "Contact",
+        "contactNamePlaceholder": "Enter contact name",
+        "contactEmail": "Contact Email",
+        "contactEmailPlaceholder": "Enter contact email",
+        "expectedOnlineDate": "Expected Go-Live Date"
+      },
+      "validation": {
+        "titleRequired": "Title is required",
+        "titleMaxLength": "Title cannot exceed 100 characters",
+        "descriptionRequired": "Description is required",
+        "departmentRequired": "Department is required",
+        "contactRequired": "Contact is required",
+        "expectedDateRequired": "Expected date is required"
+      }
+    }
   }
 }
