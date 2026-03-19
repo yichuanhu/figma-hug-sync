@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Timeline, Typography, Tag, Space } from '@douyinfe/semi-ui';
-import { IconTickCircle, IconCloseCircle, IconClock } from '@douyinfe/semi-icons';
+import { IconTickCircle, IconClose, IconClock } from '@douyinfe/semi-icons';
 import type { LYApprovalRecord, ApprovalStatus } from '@/api';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 
