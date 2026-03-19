@@ -2761,6 +2761,62 @@
       "confirmReject": "确认驳回",
       "rejectSuccess": "已驳回",
       "rejectError": "驳回操作失败"
+    },
+    "assessment": {
+      "noAssessment": "暂无评估",
+      "noAssessmentDesc": "该需求尚未进行技术评估",
+      "totalScore": "综合评分",
+      "assessor": "评估人",
+      "assessedAt": "评估时间",
+      "businessDimension": "业务维度",
+      "technicalDimension": "技术维度",
+      "businessValue": "业务价值",
+      "technicalComplexity": "技术复杂度",
+      "riskLevel": "风险等级",
+      "resourceRequired": "资源需求",
+      "uiStability": "UI 稳定性",
+      "automationFeasibility": "自动化可行性",
+      "apiAvailability": "API 可用性",
+      "dataQuality": "数据质量",
+      "notes": "评估备注",
+      "conclusion": {
+        "RECOMMENDED": "推荐实施",
+        "CONDITIONAL": "有条件推荐",
+        "NOT_RECOMMENDED": "不推荐"
+      }
+    },
+    "roi": {
+      "noROI": "暂无 ROI 分析",
+      "noROIDesc": "该需求尚未进行 ROI 分析",
+      "estimatedTitle": "预估数据",
+      "actualTitle": "实际数据",
+      "annualSaving": "年度成本节约",
+      "implementationCost": "实施成本",
+      "paybackMonths": "回收周期",
+      "months": "个月",
+      "roiRatio": "ROI 倍率",
+      "actualSaving": "实际节约",
+      "actualCost": "实际成本",
+      "actualROIRatio": "实际 ROI",
+      "savingsAchievement": "节约达成率",
+      "healthExcellent": "优秀",
+      "healthGood": "良好",
+      "healthFair": "一般"
+    },
+    "classification": {
+      "allClassifications": "全部分类",
+      "addClassification": "添加分类",
+      "noClassification": "暂无分类",
+      "noClassificationDesc": "点击添加分类按钮为需求添加业务分类",
+      "category": "分类类别",
+      "value": "分类值",
+      "assignedAt": "分配时间",
+      "selectCategory": "请选择分类类别",
+      "selectValue": "请选择分类值",
+      "alreadyExists": "该分类已存在",
+      "addSuccess": "分类添加成功",
+      "removeSuccess": "分类已移除",
+      "allAssigned": "该类别下所有分类已分配"
     }
   }
 }
