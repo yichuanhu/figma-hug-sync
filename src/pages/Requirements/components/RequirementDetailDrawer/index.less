@@ -13,7 +13,7 @@
 
   // Section 区块
   .requirement-detail-drawer-section {
-    margin-top: 24px;
+    margin-top: 20px;
   }
 
   // Section 标题 - 左侧蓝色竖线装饰
@@ -47,7 +47,7 @@
 
   // 操作按钮区
   .requirement-detail-drawer-actions {
-    margin-top: 32px;
+    margin-top: 24px;
     padding-top: 16px;
     border-top: 1px solid var(--semi-color-border);
   }
@@ -64,8 +64,10 @@
     position: relative;
   }
 
+  // Tab bar 下方 16px 间距标准
   .semi-tabs-bar {
     padding: 0 24px;
+    margin-bottom: 0;
   }
 
   .semi-tabs-content {
@@ -84,5 +86,11 @@
     .semi-descriptions-item-key {
       text-align: left;
     }
+  }
+
+  // 空行底边框移除
+  .semi-table-row-empty,
+  .semi-table-row-empty td {
+    border-bottom: none !important;
   }
 }
