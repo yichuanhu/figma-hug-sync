@@ -125,48 +125,10 @@ const PropertyPanel = ({
       </div>
 
       {/* 审批区域 - 仅 PENDING 状态显示 */}
-      {data.status === 'PENDING' && (
-        <>
-          <div className="requirement-detail-property-divider" />
-          <div className="requirement-detail-property-group">
-            <Text strong size="small" style={{ marginBottom: 8, display: 'block' }}>
-              {t('requirements.detail.approval')}
-            </Text>
-            <div className="requirement-detail-property-approval-actions">
-              <Button theme="solid" type="primary" size="small" style={{ flex: 1 }}>
-                {t('requirements.detail.approve')}
-              </Button>
-              <Button theme="solid" type="danger" size="small" style={{ flex: 1 }}>
-                {t('requirements.detail.reject')}
-              </Button>
-            </div>
-          </div>
-        </>
-      )}
+      <ApprovalSection data={data} onStatusChange={onStatusChange} />
 
-      {/* 技术评估摘要 - ASSESSING 之后显示 */}
-      {['ASSESSING', 'DEVELOPING', 'DEVELOPED', 'RUNNING'].includes(data.status) && (
-        <>
-          <div className="requirement-detail-property-divider" />
-          <div className="requirement-detail-property-group">
-            <Text strong size="small" style={{ marginBottom: 8, display: 'block' }}>
-              {t('requirements.detail.technicalAssessment')}
-            </Text>
-            <div className="requirement-detail-property-item">
-              <Text type="tertiary" size="small" className="requirement-detail-property-label">
-                {t('requirements.detail.score')}
-              </Text>
-              <Text>{data.status === 'ASSESSING' ? '--' : '85/100'}</Text>
-            </div>
-            <div className="requirement-detail-property-item">
-              <Text type="tertiary" size="small" className="requirement-detail-property-label">
-                {t('requirements.detail.conclusion')}
-              </Text>
-              <Text>{data.status === 'ASSESSING' ? '--' : t('requirements.detail.recommendImplement')}</Text>
-            </div>
-          </div>
-        </>
-      )}
+      {/* 技术评估 */}
+      <TechnicalAssessmentSection data={data} onStatusChange={onStatusChange} />
     </div>
   );
 };
