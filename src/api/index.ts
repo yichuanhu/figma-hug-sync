@@ -3356,3 +3356,233 @@ export interface LYListResponseLYQueueTriggerExecutionLogResponse {
   /** 列表 */
   list: LYQueueTriggerExecutionLogResponse[];
 }
+
+// ==================== 需求中心相关类型 ====================
+
+/** 需求优先级 */
+export type RequirementPriority = 'HIGH' | 'MEDIUM' | 'LOW';
+
+/** 审批状态 */
+export type ApprovalStatus = 'DRAFT' | 'PENDING' | 'APPROVED' | 'REJECTED';
+
+/** 开发状态 */
+export type DevelopmentStatus = 'NOT_STARTED' | 'ASSESSING' | 'IN_DEVELOPMENT' | 'DEVELOPED';
+
+/** 运营状态 */
+export type OperationStatus = 'NOT_LIVE' | 'RUNNING' | 'SUSPENDED' | 'ARCHIVED';
+
+/** 评估结论 */
+export type AssessmentConclusion = 'RECOMMENDED' | 'CONDITIONAL' | 'NOT_RECOMMENDED';
+
+/** 验收状态 */
+export type AcceptanceStatus = 'PENDING' | 'PASSED' | 'FAILED' | 'CONDITIONAL_PASS';
+
+/** 关联资源类型 */
+export type ArtifactType = 'PROCESS' | 'CREDENTIAL' | 'PARAMETER' | 'FILE' | 'QUEUE';
+
+/**
+ * LYClassificationAssignment
+ * 分类分配
+ */
+export interface LYClassificationAssignment {
+  /** 分类键 */
+  classification_key: string;
+  /** 分类值 */
+  classification_value: string;
+  /** 分配时间 */
+  assigned_at: string;
+}
+
+/**
+ * LYRequirementResponse
+ * 需求响应模型
+ */
+export interface LYRequirementResponse {
+  /** 需求ID */
+  id: string;
+  /** 需求标题 */
+  title: string;
+  /** 需求描述 */
+  description: string;
+  /** 业务背景 */
+  business_background?: string | null;
+  /** 所属部门ID */
+  department_id: string;
+  /** 所属部门名称 */
+  department_name: string;
+  /** 联系人姓名 */
+  contact_name: string;
+  /** 联系人邮箱 */
+  contact_email?: string | null;
+  /** 期望上线日期 */
+  expected_online_date: string;
+  /** 优先级 */
+  priority: RequirementPriority;
+  /** 审批状态 */
+  approval_status: ApprovalStatus;
+  /** 开发状态 */
+  development_status: DevelopmentStatus;
+  /** 运营状态 */
+  operation_status: OperationStatus;
+  /** 分类列表 */
+  classifications: LYClassificationAssignment[];
+  /** 创建者ID */
+  creator_id: string;
+  /** 创建者名称 */
+  creator_name: string;
+  /** 创建者部门 */
+  creator_department?: string | null;
+  /** 创建者角色 */
+  creator_role?: string | null;
+  /** 创建者邮箱 */
+  creator_email?: string | null;
+  /** 附件列表 */
+  attachments?: string[] | null;
+  /** 创建时间 */
+  created_at: string;
+  /** 更新时间 */
+  updated_at: string;
+}
+
+/** LYListResponse[LYRequirementResponse] */
+export interface LYListResponseLYRequirementResponse {
+  /** 范围 */
+  range?: LYRangeResponse | null;
+  /** 列表 */
+  list: LYRequirementResponse[];
+}
+
+/**
+ * LYCreateRequirementRequest
+ * 创建需求请求
+ */
+export interface LYCreateRequirementRequest {
+  /** 需求标题 */
+  title: string;
+  /** 需求描述 */
+  description: string;
+  /** 业务背景 */
+  business_background?: string | null;
+  /** 所属部门ID */
+  department_id: string;
+  /** 联系人姓名 */
+  contact_name: string;
+  /** 联系人邮箱 */
+  contact_email?: string | null;
+  /** 期望上线日期 */
+  expected_online_date: string;
+  /** 优先级 */
+  priority: RequirementPriority;
+}
+
+/**
+ * LYUpdateRequirementRequest
+ * 更新需求请求
+ */
+export interface LYUpdateRequirementRequest {
+  /** 需求标题 */
+  title?: string | null;
+  /** 需求描述 */
+  description?: string | null;
+  /** 业务背景 */
+  business_background?: string | null;
+  /** 所属部门ID */
+  department_id?: string | null;
+  /** 联系人姓名 */
+  contact_name?: string | null;
+  /** 联系人邮箱 */
+  contact_email?: string | null;
+  /** 期望上线日期 */
+  expected_online_date?: string | null;
+  /** 优先级 */
+  priority?: RequirementPriority | null;
+}
+
+/**
+ * GetRequirementsParams
+ * 获取需求列表参数
+ */
+export interface GetRequirementsParams {
+  /** 偏移量 */
+  offset?: number;
+  /** 每页数量 */
+  size?: number;
+  /** 搜索关键词 */
+  keyword?: string;
+  /** 审批状态筛选 */
+  approval_status?: ApprovalStatus;
+  /** 开发状态筛选 */
+  development_status?: DevelopmentStatus;
+  /** 运营状态筛选 */
+  operation_status?: OperationStatus;
+  /** 优先级筛选 */
+  priority?: RequirementPriority;
+  /** 部门ID筛选 */
+  department_id?: string;
+}
+
+/**
+ * LYRequirementAssessment
+ * 需求技术评估
+ */
+export interface LYRequirementAssessment {
+  /** 评估ID */
+  id: string;
+  /** 需求ID */
+  requirement_id: string;
+  /** 业务价值评分 (1-5) */
+  business_value: number;
+  /** 技术复杂度评分 (1-5) */
+  technical_complexity: number;
+  /** 风险等级评分 (1-5) */
+  risk_level: number;
+  /** 资源需求评分 (1-5) */
+  resource_required: number;
+  /** UI稳定性评分 (1-5) */
+  ui_stability?: number | null;
+  /** 自动化可行性评分 (1-5) */
+  automation_feasibility?: number | null;
+  /** API可用性评分 (1-5) */
+  api_availability?: number | null;
+  /** 数据质量评分 (1-5) */
+  data_quality?: number | null;
+  /** 总分 */
+  total_score: number;
+  /** 评估结论 */
+  conclusion: AssessmentConclusion;
+  /** 评估备注 */
+  notes?: string | null;
+  /** 评估者ID */
+  assessor_id: string;
+  /** 评估者名称 */
+  assessor_name: string;
+  /** 评估时间 */
+  assessed_at: string;
+}
+
+/**
+ * LYRequirementROI
+ * 需求ROI分析
+ */
+export interface LYRequirementROI {
+  /** ROI ID */
+  id: string;
+  /** 需求ID */
+  requirement_id: string;
+  /** 预估年度成本节约 */
+  estimated_annual_saving: number;
+  /** 预估实施成本 */
+  estimated_implementation_cost: number;
+  /** 预估回收周期（月） */
+  estimated_payback_months: number;
+  /** 预估ROI比率 */
+  estimated_roi_ratio: number;
+  /** 实际节约金额 */
+  actual_saving?: number | null;
+  /** 实际实施成本 */
+  actual_cost?: number | null;
+  /** 实际ROI比率 */
+  actual_roi_ratio?: number | null;
+  /** 更新时间 */
+  updated_at: string;
+}
