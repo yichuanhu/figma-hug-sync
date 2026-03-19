@@ -1,0 +1,40 @@
+.requirement-list-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .requirement-list-page-header {
+    padding-top: 0;
+    flex-shrink: 0;
+
+    .requirement-list-page-header-title {
+      margin-bottom: 24px;
+
+      .title {
+        margin-bottom: 8px;
+      }
+    }
+
+    .requirement-list-page-header-toolbar {
+      margin-bottom: 16px;
+    }
+  }
+
+  .requirement-list-page-search-input {
+    width: 320px;
+  }
+
+  .requirement-list-page-table {
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
+
+    .semi-table-wrapper {
+      max-height: 100%;
+    }
+  }
+
+  .semi-table-row.requirement-list-page-row-selected {
+    background-color: var(--semi-color-fill-1);
+  }
+}
