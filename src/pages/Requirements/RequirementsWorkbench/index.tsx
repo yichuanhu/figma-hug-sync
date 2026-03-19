@@ -428,10 +428,20 @@ const RequirementsWorkbench = () => {
                 }
               />
             }
-            onRow={(record) => ({
-              style: { cursor: 'pointer' },
-              onClick: () => console.log('Open detail:', record?.id),
-            })}
+            onRow={(record) => {
+              const isSelected = selectedRecord?.id === record?.id && detailDrawerVisible;
+              return {
+                id: `requirement-row-${record?.id}`,
+                style: { cursor: 'pointer' },
+                className: isSelected ? 'requirements-workbench-row-selected' : undefined,
+                onClick: () => {
+                  if (record) {
+                    setSelectedRecord(record as RequirementItem);
+                    if (!detailDrawerVisible) setDetailDrawerVisible(true);
+                  }
+                },
+              };
+            }}
             pagination={{
               total,
               pageSize,
