@@ -524,6 +524,12 @@ const RequirementListPage: React.FC<RequirementListPageProps> = ({ defaultApprov
           <Col>
             <Space>
               <Button
+                theme="light"
+                onClick={() => setBatchImportVisible(true)}
+              >
+                {t('common.import')}
+              </Button>
+              <Button
                 icon={<IconPlusStroked />}
                 theme="solid"
                 type="primary"
