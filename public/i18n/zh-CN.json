@@ -533,10 +533,26 @@
       "approval": "审批",
       "approve": "通过",
       "reject": "拒绝",
+      "approvalReasonPlaceholder": "请输入审批意见...",
+      "rejectReasonRequired": "拒绝时必须填写理由",
+      "approveSuccess": "审批通过成功",
+      "rejectSuccess": "已拒绝该需求",
+      "actionFailed": "操作失败，请重试",
       "technicalAssessment": "技术评估",
       "score": "评分",
+      "totalScore": "综合评分",
       "conclusion": "结论",
-      "recommendImplement": "推荐实施"
+      "recommendImplement": "推荐实施",
+      "conclusionRecommend": "推荐实施",
+      "conclusionConditional": "有条件实施",
+      "conclusionNotRecommend": "不推荐实施",
+      "feasibility": "可行性",
+      "complexity": "复杂度",
+      "riskControl": "风险控制",
+      "maintainability": "可维护性",
+      "assessmentComment": "评估备注（可选）",
+      "submitAssessment": "提交评估",
+      "assessmentSubmitted": "技术评估已提交"
     }
   },
   "development": {

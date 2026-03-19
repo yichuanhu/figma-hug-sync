@@ -322,3 +322,20 @@ export const fetchActivities = async (requirementId: string): Promise<ActivityRe
     timestamp: new Date(baseDate.getTime() + i * 2 * 24 * 60 * 60 * 1000).toISOString(),
   }));
 };
+
+// 更新需求状态（审批/评估）
+export const updateRequirementStatus = async (
+  id: string,
+  newStatus: string,
+  comment?: string,
+): Promise<RequirementItem | null> => {
+  await new Promise((resolve) => setTimeout(resolve, 300));
+  const index = mockRequirementData.findIndex((item) => item.id === id);
+  if (index === -1) return null;
+  mockRequirementData[index] = {
+    ...mockRequirementData[index],
+    status: newStatus as RequirementStatus,
+    updatedAt: new Date().toISOString(),
+  };
+  return mockRequirementData[index];
+};

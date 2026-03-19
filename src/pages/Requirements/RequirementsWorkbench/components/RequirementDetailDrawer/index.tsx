@@ -13,6 +13,8 @@ import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import type { RequirementItem, ActivityRecord } from '../../types';
 import { statusConfig, priorityConfig, fetchActivities } from '../../mockData';
+import ApprovalSection from './ApprovalSection';
+import TechnicalAssessmentSection from './TechnicalAssessmentSection';
 import './index.less';
 
 const { Text, Title, Paragraph } = Typography;
@@ -32,9 +34,11 @@ const activityTypeConfig: Record<string, { color: string; label: string }> = {
 const PropertyPanel = ({
   data,
   t,
+  onStatusChange,
 }: {
   data: RequirementItem;
   t: (key: string, options?: Record<string, unknown>) => string;
+  onStatusChange: (id: string, newStatus: string, comment?: string) => Promise<void>;
 }) => {
   const sCfg = statusConfig[data.status];
   const pCfg = priorityConfig[data.priority];
@@ -121,48 +125,10 @@ const PropertyPanel = ({
       </div>
 
       {/* 审批区域 - 仅 PENDING 状态显示 */}
-      {data.status === 'PENDING' && (
-        <>
-          <div className="requirement-detail-property-divider" />
-          <div className="requirement-detail-property-group">
-            <Text strong size="small" style={{ marginBottom: 8, display: 'block' }}>
-              {t('requirements.detail.approval')}
-            </Text>
-            <div className="requirement-detail-property-approval-actions">
-              <Button theme="solid" type="primary" size="small" style={{ flex: 1 }}>
-                {t('requirements.detail.approve')}
-              </Button>
-              <Button theme="solid" type="danger" size="small" style={{ flex: 1 }}>
-                {t('requirements.detail.reject')}
-              </Button>
-            </div>
-          </div>
-        </>
-      )}
+      <ApprovalSection data={data} onStatusChange={onStatusChange} />
 
-      {/* 技术评估摘要 - ASSESSING 之后显示 */}
-      {['ASSESSING', 'DEVELOPING', 'DEVELOPED', 'RUNNING'].includes(data.status) && (
-        <>
-          <div className="requirement-detail-property-divider" />
-          <div className="requirement-detail-property-group">
-            <Text strong size="small" style={{ marginBottom: 8, display: 'block' }}>
-              {t('requirements.detail.technicalAssessment')}
-            </Text>
-            <div className="requirement-detail-property-item">
-              <Text type="tertiary" size="small" className="requirement-detail-property-label">
-                {t('requirements.detail.score')}
-              </Text>
-              <Text>{data.status === 'ASSESSING' ? '--' : '85/100'}</Text>
-            </div>
-            <div className="requirement-detail-property-item">
-              <Text type="tertiary" size="small" className="requirement-detail-property-label">
-                {t('requirements.detail.conclusion')}
-              </Text>
-              <Text>{data.status === 'ASSESSING' ? '--' : t('requirements.detail.recommendImplement')}</Text>
-            </div>
-          </div>
-        </>
-      )}
+      {/* 技术评估 */}
+      <TechnicalAssessmentSection data={data} onStatusChange={onStatusChange} />
     </div>
   );
 };
@@ -223,6 +189,7 @@ interface RequirementDetailDrawerProps {
   onNavigate: (item: RequirementItem) => void;
   onEdit: (record: RequirementItem) => void;
   onDelete: (record: RequirementItem) => void;
+  onStatusChange: (id: string, newStatus: string, comment?: string) => Promise<void>;
   pagination: PaginationInfo;
   onPageChange?: (page: number, direction: 'prev' | 'next') => void;
   onScrollToRow?: (id: string) => void;
@@ -236,6 +203,7 @@ const RequirementDetailDrawer = ({
   onNavigate,
   onEdit,
   onDelete,
+  onStatusChange,
   pagination,
   onPageChange,
   onScrollToRow,
@@ -368,7 +336,7 @@ const RequirementDetailDrawer = ({
 
         {/* 右侧属性面板 (40%) */}
         <div className="requirement-detail-right">
-          <PropertyPanel data={data} t={t} />
+          <PropertyPanel data={data} t={t} onStatusChange={onStatusChange} />
         </div>
       </div>
     </DetailDrawerWrapper>
