@@ -391,7 +391,7 @@ const RequirementsWorkbench = () => {
               <Button icon={<IconUpload />} theme="light" type="tertiary">
                 {t('requirements.workbench.batchImport')}
               </Button>
-              <Button icon={<IconPlusStroked />} theme="solid" type="primary">
+              <Button icon={<IconPlusStroked />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
                 {t('requirements.workbench.newRequirement')}
               </Button>
             </Space>
