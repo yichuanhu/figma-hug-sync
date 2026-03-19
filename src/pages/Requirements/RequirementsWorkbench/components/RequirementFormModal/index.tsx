@@ -204,7 +204,7 @@ const RequirementFormModal = ({
               onExceed={() => Toast.warning(t('requirements.form.attachmentExceed'))}
               onSizeError={() => Toast.warning(t('requirements.form.attachmentSizeError'))}
             >
-              <Button icon={<IconUploadStroked />} theme="light" type="tertiary">
+              <Button icon={<UploadIcon size={14} strokeWidth={2} />} theme="light" type="tertiary">
                 {t('requirements.form.attachmentUpload')}
               </Button>
             </Upload>
