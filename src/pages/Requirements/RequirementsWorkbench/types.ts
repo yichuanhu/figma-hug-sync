@@ -42,6 +42,27 @@ export interface RequirementItem {
 }
 
 /**
+ * 活动记录类型
+ */
+export type ActivityType = 'status_change' | 'approval' | 'assessment' | 'comment' | 'created';
+
+/**
+ * 活动记录
+ */
+export interface ActivityRecord {
+  id: string;
+  type: ActivityType;
+  actorId: string;
+  actorName: string;
+  content: string;
+  /** 旧状态（status_change 类型） */
+  fromStatus?: RequirementStatus;
+  /** 新状态（status_change 类型） */
+  toStatus?: RequirementStatus;
+  timestamp: string;
+}
+
+/**
  * 需求列表查询参数
  */
 export interface RequirementQueryParams {

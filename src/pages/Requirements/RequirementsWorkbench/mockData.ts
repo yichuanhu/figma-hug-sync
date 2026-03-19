@@ -1,5 +1,5 @@
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
-import type { RequirementItem, RequirementStatus, RequirementPriority, RequirementQueryParams, RequirementListResponse } from './types';
+import type { RequirementItem, RequirementStatus, RequirementPriority, RequirementQueryParams, RequirementListResponse, ActivityRecord } from './types';
 
 // ============= 状态/优先级配置 =============
 
@@ -251,4 +251,74 @@ export const updateRequirement = async (id: string, values: Record<string, unkno
     updatedAt: new Date().toISOString(),
   };
   return mockRequirementData[index];
+};
+
+// ============= Mock 活动记录 =============
+
+const activityTemplates: Record<RequirementStatus, ActivityRecord[]> = {
+  DRAFT: [
+    { id: 'act-1', type: 'created', actorId: 'user-001', actorName: 'John Smith', content: 'Created this requirement as a draft.', timestamp: '' },
+  ],
+  PENDING: [
+    { id: 'act-1', type: 'created', actorId: 'user-001', actorName: 'John Smith', content: 'Created this requirement as a draft.', timestamp: '' },
+    { id: 'act-2', type: 'status_change', actorId: 'user-001', actorName: 'John Smith', content: 'Submitted for approval.', fromStatus: 'DRAFT', toStatus: 'PENDING', timestamp: '' },
+  ],
+  APPROVED: [
+    { id: 'act-1', type: 'created', actorId: 'user-002', actorName: 'Emily Chen', content: 'Created this requirement as a draft.', timestamp: '' },
+    { id: 'act-2', type: 'status_change', actorId: 'user-002', actorName: 'Emily Chen', content: 'Submitted for approval.', fromStatus: 'DRAFT', toStatus: 'PENDING', timestamp: '' },
+    { id: 'act-3', type: 'approval', actorId: 'user-007', actorName: 'Robert Xu', content: 'Approved. The business case is solid and aligns with Q2 objectives.', timestamp: '' },
+  ],
+  REJECTED: [
+    { id: 'act-1', type: 'created', actorId: 'user-002', actorName: 'Emily Chen', content: 'Created this requirement as a draft.', timestamp: '' },
+    { id: 'act-2', type: 'status_change', actorId: 'user-002', actorName: 'Emily Chen', content: 'Submitted for approval.', fromStatus: 'DRAFT', toStatus: 'PENDING', timestamp: '' },
+    { id: 'act-3', type: 'approval', actorId: 'user-007', actorName: 'Robert Xu', content: 'Rejected. Insufficient ROI justification. Please provide more detailed cost-benefit analysis.', timestamp: '' },
+  ],
+  ASSESSING: [
+    { id: 'act-1', type: 'created', actorId: 'user-004', actorName: 'Sarah Li', content: 'Created this requirement as a draft.', timestamp: '' },
+    { id: 'act-2', type: 'status_change', actorId: 'user-004', actorName: 'Sarah Li', content: 'Submitted for approval.', fromStatus: 'DRAFT', toStatus: 'PENDING', timestamp: '' },
+    { id: 'act-3', type: 'approval', actorId: 'user-007', actorName: 'Robert Xu', content: 'Approved. Proceed with technical assessment.', timestamp: '' },
+    { id: 'act-4', type: 'comment', actorId: 'user-003', actorName: 'Michael Wang', content: 'Starting technical feasibility assessment. Will evaluate integration complexity with existing systems.', timestamp: '' },
+  ],
+  DEVELOPING: [
+    { id: 'act-1', type: 'created', actorId: 'user-002', actorName: 'Emily Chen', content: 'Created this requirement as a draft.', timestamp: '' },
+    { id: 'act-2', type: 'status_change', actorId: 'user-002', actorName: 'Emily Chen', content: 'Submitted for approval.', fromStatus: 'DRAFT', toStatus: 'PENDING', timestamp: '' },
+    { id: 'act-3', type: 'approval', actorId: 'user-007', actorName: 'Robert Xu', content: 'Approved.', timestamp: '' },
+    { id: 'act-4', type: 'assessment', actorId: 'user-008', actorName: 'Angela Wu', content: 'Technical assessment completed. Score: 82/100. Recommendation: Proceed with development.', timestamp: '' },
+    { id: 'act-5', type: 'status_change', actorId: 'user-003', actorName: 'Michael Wang', content: 'Development started.', fromStatus: 'ASSESSING', toStatus: 'DEVELOPING', timestamp: '' },
+  ],
+  DEVELOPED: [
+    { id: 'act-1', type: 'created', actorId: 'user-003', actorName: 'Michael Wang', content: 'Created this requirement.', timestamp: '' },
+    { id: 'act-2', type: 'approval', actorId: 'user-007', actorName: 'Robert Xu', content: 'Approved.', timestamp: '' },
+    { id: 'act-3', type: 'assessment', actorId: 'user-008', actorName: 'Angela Wu', content: 'Technical assessment completed. Score: 90/100.', timestamp: '' },
+    { id: 'act-4', type: 'status_change', actorId: 'user-003', actorName: 'Michael Wang', content: 'Development completed. Ready for acceptance testing.', fromStatus: 'DEVELOPING', toStatus: 'DEVELOPED', timestamp: '' },
+  ],
+  RUNNING: [
+    { id: 'act-1', type: 'created', actorId: 'user-001', actorName: 'John Smith', content: 'Created this requirement.', timestamp: '' },
+    { id: 'act-2', type: 'approval', actorId: 'user-007', actorName: 'Robert Xu', content: 'Approved.', timestamp: '' },
+    { id: 'act-3', type: 'assessment', actorId: 'user-008', actorName: 'Angela Wu', content: 'Technical assessment passed. Score: 88/100.', timestamp: '' },
+    { id: 'act-4', type: 'status_change', actorId: 'user-003', actorName: 'Michael Wang', content: 'Development completed.', fromStatus: 'DEVELOPING', toStatus: 'DEVELOPED', timestamp: '' },
+    { id: 'act-5', type: 'comment', actorId: 'user-001', actorName: 'John Smith', content: 'Acceptance testing passed. All criteria met.', timestamp: '' },
+    { id: 'act-6', type: 'status_change', actorId: 'user-001', actorName: 'John Smith', content: 'Deployed to production. Now running.', fromStatus: 'DEVELOPED', toStatus: 'RUNNING', timestamp: '' },
+  ],
+  STOPPED: [
+    { id: 'act-1', type: 'created', actorId: 'user-005', actorName: 'David Zhang', content: 'Created this requirement.', timestamp: '' },
+    { id: 'act-2', type: 'status_change', actorId: 'user-005', actorName: 'David Zhang', content: 'Requirement stopped due to business priority change.', fromStatus: 'RUNNING', toStatus: 'STOPPED', timestamp: '' },
+  ],
+  ARCHIVED: [
+    { id: 'act-1', type: 'created', actorId: 'user-006', actorName: 'Jessica Liu', content: 'Created this requirement.', timestamp: '' },
+    { id: 'act-2', type: 'status_change', actorId: 'user-006', actorName: 'Jessica Liu', content: 'Requirement archived.', fromStatus: 'RUNNING', toStatus: 'ARCHIVED', timestamp: '' },
+  ],
+};
+
+export const fetchActivities = async (requirementId: string): Promise<ActivityRecord[]> => {
+  await new Promise((resolve) => setTimeout(resolve, 200));
+  const req = mockRequirementData.find((r) => r.id === requirementId);
+  if (!req) return [];
+  const templates = activityTemplates[req.status] || activityTemplates.DRAFT;
+  const baseDate = new Date(req.createdAt);
+  return templates.map((tpl, i) => ({
+    ...tpl,
+    id: `${requirementId}-act-${i}`,
+    timestamp: new Date(baseDate.getTime() + i * 2 * 24 * 60 * 60 * 1000).toISOString(),
+  }));
 };

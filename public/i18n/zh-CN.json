@@ -522,6 +522,21 @@
       "sectionClassification": "分类与优先级",
       "sectionAdditional": "补充信息",
       "descriptionMaxLength": "描述不能超过2000个字符"
+    },
+    "detail": {
+      "activityStream": "活动记录",
+      "attachments": "附件",
+      "files": "个文件",
+      "addComment": "添加评论...",
+      "send": "发送",
+      "commentAdded": "评论已添加",
+      "approval": "审批",
+      "approve": "通过",
+      "reject": "拒绝",
+      "technicalAssessment": "技术评估",
+      "score": "评分",
+      "conclusion": "结论",
+      "recommendImplement": "推荐实施"
     }
   },
   "development": {

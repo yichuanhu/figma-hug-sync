@@ -39,6 +39,7 @@ import {
   updateRequirement,
 } from './mockData';
 import RequirementFormModal from './components/RequirementFormModal';
+import RequirementDetailDrawer from './components/RequirementDetailDrawer';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -70,6 +71,8 @@ const RequirementsWorkbench = () => {
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingRecord, setEditingRecord] = useState<RequirementItem | null>(null);
+  const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState<RequirementItem | null>(null);
 
   // 列表数据
   const [listResponse, setListResponse] = useState<{
@@ -425,10 +428,20 @@ const RequirementsWorkbench = () => {
                 }
               />
             }
-            onRow={(record) => ({
-              style: { cursor: 'pointer' },
-              onClick: () => console.log('Open detail:', record?.id),
-            })}
+            onRow={(record) => {
+              const isSelected = selectedRecord?.id === record?.id && detailDrawerVisible;
+              return {
+                id: `requirement-row-${record?.id}`,
+                style: { cursor: 'pointer' },
+                className: isSelected ? 'requirements-workbench-row-selected' : undefined,
+                onClick: () => {
+                  if (record) {
+                    setSelectedRecord(record as RequirementItem);
+                    if (!detailDrawerVisible) setDetailDrawerVisible(true);
+                  }
+                },
+              };
+            }}
             pagination={{
               total,
               pageSize,
@@ -470,6 +483,30 @@ const RequirementsWorkbench = () => {
             loadData();
           }
           setEditingRecord(null);
+        }}
+      />
+
+      {/* 需求详情抽屉 */}
+      <RequirementDetailDrawer
+        visible={detailDrawerVisible}
+        onClose={() => setDetailDrawerVisible(false)}
+        data={selectedRecord}
+        dataList={list}
+        onNavigate={(item) => setSelectedRecord(item)}
+        onEdit={(record) => {
+          setEditingRecord(record);
+          setEditModalVisible(true);
+        }}
+        onDelete={(record) => handleDelete(record)}
+        pagination={{
+          currentPage,
+          totalPages: Math.ceil(total / pageSize),
+          pageSize,
+          total,
+        }}
+        onScrollToRow={(id) => {
+          const row = document.getElementById(`requirement-row-${id}`);
+          row?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }}
       />
     </div>
