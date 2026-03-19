@@ -290,7 +290,8 @@ const RequirementsReview = () => {
         key: 'action',
         width: 180,
         ellipsis: false,
-        render: ((_: unknown, record: RequirementItem): React.ReactNode => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        render: ((_: any, record: any) => {
           if (record.status === 'PENDING') {
             return (
               <Space spacing={4}>
@@ -299,7 +300,7 @@ const RequirementsReview = () => {
                   theme="borderless"
                   size="small"
                   type="primary"
-                  onClick={(e) => {
+                  onClick={(e: React.MouseEvent) => {
                     e.stopPropagation();
                     openApprovalModal(record, 'approve');
                   }}
@@ -311,7 +312,7 @@ const RequirementsReview = () => {
                   theme="borderless"
                   size="small"
                   type="danger"
-                  onClick={(e) => {
+                  onClick={(e: React.MouseEvent) => {
                     e.stopPropagation();
                     openApprovalModal(record, 'reject');
                   }}
@@ -327,7 +328,7 @@ const RequirementsReview = () => {
                 icon={<IconEyeOpened />}
                 theme="borderless"
                 size="small"
-                onClick={(e) => {
+                onClick={(e: React.MouseEvent) => {
                   e.stopPropagation();
                   setSelectedRecord(record);
                   setDetailDrawerVisible(true);
@@ -342,7 +343,7 @@ const RequirementsReview = () => {
               icon={<IconEyeOpened />}
               theme="borderless"
               size="small"
-              onClick={(e) => {
+              onClick={(e: React.MouseEvent) => {
                 e.stopPropagation();
                 setSelectedRecord(record);
                 setDetailDrawerVisible(true);
@@ -351,7 +352,7 @@ const RequirementsReview = () => {
               {t('common.viewDetail')}
             </Button>
           );
-        }) as unknown as (value: string | null) => React.ReactNode,
+        }),
       });
     }
 
