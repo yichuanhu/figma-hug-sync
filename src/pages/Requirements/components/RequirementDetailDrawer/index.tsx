@@ -229,20 +229,18 @@ const RequirementDetailDrawer: React.FC<RequirementDetailDrawerProps> = ({
           <TabPane tab={t('requirement.detail.basicInfo')} itemKey="basicInfo">
             {renderBasicInfoTab()}
           </TabPane>
-          <TabPane tab={t('requirement.detail.classification')} itemKey="classification" disabled>
-            <div className="requirement-detail-drawer-tab-content">
-              <Text type="tertiary">{t('common.maintenance')}</Text>
-            </div>
+          <TabPane tab={t('requirement.detail.classification')} itemKey="classification">
+            <ClassificationPanel
+              requirementId={requirement.id}
+              classifications={requirement.classifications || []}
+              onDataChange={onDataChange}
+            />
           </TabPane>
-          <TabPane tab={t('requirement.detail.assessment')} itemKey="assessment" disabled>
-            <div className="requirement-detail-drawer-tab-content">
-              <Text type="tertiary">{t('common.maintenance')}</Text>
-            </div>
+          <TabPane tab={t('requirement.detail.assessment')} itemKey="assessment">
+            <AssessmentPanel requirementId={requirement.id} />
           </TabPane>
-          <TabPane tab={t('requirement.detail.roi')} itemKey="roi" disabled>
-            <div className="requirement-detail-drawer-tab-content">
-              <Text type="tertiary">{t('common.maintenance')}</Text>
-            </div>
+          <TabPane tab={t('requirement.detail.roi')} itemKey="roi">
+            <ROIPanel requirementId={requirement.id} />
           </TabPane>
           <TabPane tab={t('requirement.detail.artifacts')} itemKey="artifacts" disabled>
             <div className="requirement-detail-drawer-tab-content">
