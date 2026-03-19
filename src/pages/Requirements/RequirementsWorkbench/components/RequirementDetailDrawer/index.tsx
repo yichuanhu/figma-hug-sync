@@ -125,6 +125,36 @@ const PropertyPanel = ({
         </div>
       </div>
 
+      {/* 提交审批 - 仅 DRAFT 状态 */}
+      {data.status === 'DRAFT' && (
+        <>
+          <div className="requirement-detail-property-divider" />
+          <div className="requirement-detail-property-group">
+            <Button
+              theme="solid"
+              type="primary"
+              size="small"
+              icon={<IconSend />}
+              block
+              onClick={() => {
+                Modal.confirm({
+                  title: t('requirements.detail.submitConfirmTitle'),
+                  content: t('requirements.detail.submitConfirmContent'),
+                  okText: t('requirements.detail.submitForApproval'),
+                  cancelText: t('common.cancel'),
+                  onOk: async () => {
+                    await onStatusChange(data.id, 'PENDING', 'Submitted for approval.');
+                    Toast.success(t('requirements.detail.submitSuccess'));
+                  },
+                });
+              }}
+            >
+              {t('requirements.detail.submitForApproval')}
+            </Button>
+          </div>
+        </>
+      )}
+
       {/* 审批区域 - 仅 PENDING 状态显示 */}
       <ApprovalSection data={data} onStatusChange={onStatusChange} />
 
