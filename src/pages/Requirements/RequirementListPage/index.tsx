@@ -268,7 +268,10 @@ const RequirementListPage: React.FC = () => {
     priority: RequirementPriority[];
     department: string[];
   }>({
-    approval_status: defaultApprovalFilter ? [defaultApprovalFilter] : [],
+    approval_status: [],
+    priority: [],
+    department: [],
+  });
     priority: [],
     department: [],
   });
