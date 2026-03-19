@@ -13,6 +13,8 @@ import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import type { RequirementItem, ActivityRecord } from '../../types';
 import { statusConfig, priorityConfig, fetchActivities } from '../../mockData';
+import ApprovalSection from './ApprovalSection';
+import TechnicalAssessmentSection from './TechnicalAssessmentSection';
 import './index.less';
 
 const { Text, Title, Paragraph } = Typography;
