@@ -46,9 +46,7 @@ const ApprovalSection = ({ data, onStatusChange }: ApprovalSectionProps) => {
         <Text strong size="small" style={{ marginBottom: 8, display: 'block' }}>
           {t('requirements.detail.approval')}
         </Text>
-        <Input
-          // @ts-expect-error Semi TextArea usage
-          componentType="textarea"
+        <TextArea
           placeholder={t('requirements.detail.approvalReasonPlaceholder')}
           value={reason}
           onChange={(v: string) => setReason(v)}
