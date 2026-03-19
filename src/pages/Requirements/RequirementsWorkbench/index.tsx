@@ -67,6 +67,9 @@ const RequirementsWorkbench = () => {
   // 状态
   const [loading, setLoading] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [createModalVisible, setCreateModalVisible] = useState(false);
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [editingRecord, setEditingRecord] = useState<RequirementItem | null>(null);
 
   // 列表数据
   const [listResponse, setListResponse] = useState<{
