@@ -217,8 +217,10 @@ const RequirementListPage: React.FC<RequirementListPageProps> = ({ defaultApprov
   const [formModalVisible, setFormModalVisible] = useState(false);
   const [editingRequirement, setEditingRequirement] = useState<LYRequirementResponse | null>(null);
 
-  // Selected row
-  const [selectedRequirementId, setSelectedRequirementId] = useState<string | null>(null);
+  // Selected row & detail drawer
+  const [selectedRequirement, setSelectedRequirement] = useState<LYRequirementResponse | null>(null);
+  const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
+  const selectedRequirementId = selectedRequirement?.id || null;
 
   const { range, list } = listResponse;
   const currentPage = Math.floor((range?.offset || 0) / (range?.size || 20)) + 1;
