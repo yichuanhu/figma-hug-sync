@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Tag, Typography, Collapsible, Button, Input, Toast, Tooltip } from '@douyinfe/semi-ui';
+import { Tag, Typography, Collapsible, Button, Input, Toast, Tooltip, Modal } from '@douyinfe/semi-ui';
 import {
   IconChevronDown,
   IconChevronRight,
   IconEditStroked,
   IconDeleteStroked,
+  IconSend,
 } from '@douyinfe/semi-icons';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
@@ -123,6 +124,36 @@ const PropertyPanel = ({
           <Text size="small">{data.updatedAt.replace('T', ' ').substring(0, 19)}</Text>
         </div>
       </div>
+
+      {/* 提交审批 - 仅 DRAFT 状态 */}
+      {data.status === 'DRAFT' && (
+        <>
+          <div className="requirement-detail-property-divider" />
+          <div className="requirement-detail-property-group">
+            <Button
+              theme="solid"
+              type="primary"
+              size="small"
+              icon={<IconSend />}
+              block
+              onClick={() => {
+                Modal.confirm({
+                  title: t('requirements.detail.submitConfirmTitle'),
+                  content: t('requirements.detail.submitConfirmContent'),
+                  okText: t('requirements.detail.submitForApproval'),
+                  cancelText: t('common.cancel'),
+                  onOk: async () => {
+                    await onStatusChange(data.id, 'PENDING', 'Submitted for approval.');
+                    Toast.success(t('requirements.detail.submitSuccess'));
+                  },
+                });
+              }}
+            >
+              {t('requirements.detail.submitForApproval')}
+            </Button>
+          </div>
+        </>
+      )}
 
       {/* 审批区域 - 仅 PENDING 状态显示 */}
       <ApprovalSection data={data} onStatusChange={onStatusChange} />
@@ -257,6 +288,28 @@ const RequirementDetailDrawer = ({
       className="requirement-detail-drawer"
       extraActions={
         <>
+          {canEdit && (
+            <Tooltip content={t('requirements.detail.submitForApproval')}>
+              <Button
+                icon={<IconSend />}
+                theme="borderless"
+                size="small"
+                type="primary"
+                onClick={() => {
+                  Modal.confirm({
+                    title: t('requirements.detail.submitConfirmTitle'),
+                    content: t('requirements.detail.submitConfirmContent'),
+                    okText: t('requirements.detail.submitForApproval'),
+                    cancelText: t('common.cancel'),
+                    onOk: async () => {
+                      await onStatusChange(data.id, 'PENDING', 'Submitted for approval.');
+                      Toast.success(t('requirements.detail.submitSuccess'));
+                    },
+                  });
+                }}
+              />
+            </Tooltip>
+          )}
           {canEdit && (
             <Tooltip content={t('common.edit')}>
               <Button

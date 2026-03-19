@@ -552,7 +552,11 @@
       "maintainability": "可维护性",
       "assessmentComment": "评估备注（可选）",
       "submitAssessment": "提交评估",
-      "assessmentSubmitted": "技术评估已提交"
+      "assessmentSubmitted": "技术评估已提交",
+      "submitForApproval": "提交审批",
+      "submitConfirmTitle": "提交审批确认",
+      "submitConfirmContent": "提交后需求将进入审批流程，确定要提交吗？",
+      "submitSuccess": "需求已提交审批"
     }
   },
   "development": {

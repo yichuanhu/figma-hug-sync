@@ -22,6 +22,7 @@ import {
   IconEditStroked,
   IconDeleteStroked,
   IconUpload,
+  IconSend,
 } from '@douyinfe/semi-icons';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import EmptyState from '@/components/EmptyState';
@@ -304,6 +305,27 @@ const RequirementsWorkbench = () => {
                   }}
                 >
                   {t('common.edit')}
+                </Dropdown.Item>
+              )}
+              {canEdit(record.status) && (
+                <Dropdown.Item
+                  icon={<IconSend />}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    Modal.confirm({
+                      title: t('requirements.detail.submitConfirmTitle'),
+                      content: t('requirements.detail.submitConfirmContent'),
+                      okText: t('requirements.detail.submitForApproval'),
+                      cancelText: t('common.cancel'),
+                      onOk: async () => {
+                        await updateRequirementStatus(record.id, 'PENDING', 'Submitted for approval.');
+                        loadData();
+                        Toast.success(t('requirements.detail.submitSuccess'));
+                      },
+                    });
+                  }}
+                >
+                  {t('requirements.detail.submitForApproval')}
                 </Dropdown.Item>
               )}
               {canDelete(record.status) && (
