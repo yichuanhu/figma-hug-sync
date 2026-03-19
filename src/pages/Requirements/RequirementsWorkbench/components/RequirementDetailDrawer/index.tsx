@@ -351,10 +351,20 @@ const RequirementDetailDrawer = ({
               <Paragraph className="requirement-detail-description">
                 {data.description || '-'}
               </Paragraph>
+              {data.businessBackground && (
+                <div style={{ marginTop: 12 }}>
+                  <Text type="tertiary" size="small" style={{ display: 'block', marginBottom: 4 }}>
+                    {t('requirements.form.businessBackgroundLabel')}
+                  </Text>
+                  <Paragraph className="requirement-detail-description">
+                    {data.businessBackground}
+                  </Paragraph>
+                </div>
+              )}
             </Collapsible>
           </div>
 
-          {/* 附件区（placeholder） */}
+          {/* 附件区 */}
           {data.attachments && data.attachments.length > 0 && (
             <div className="requirement-detail-section">
               <Text strong>{t('requirements.detail.attachments')}</Text>
@@ -363,6 +373,9 @@ const RequirementDetailDrawer = ({
               </Text>
             </div>
           )}
+
+          {/* 关联管理 */}
+          <ArtifactSection data={data} />
 
           {/* 活动流 */}
           <ActivityStream activities={activities} t={t} />
