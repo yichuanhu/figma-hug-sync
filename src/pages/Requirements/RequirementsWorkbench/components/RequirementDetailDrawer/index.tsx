@@ -189,6 +189,7 @@ interface RequirementDetailDrawerProps {
   onNavigate: (item: RequirementItem) => void;
   onEdit: (record: RequirementItem) => void;
   onDelete: (record: RequirementItem) => void;
+  onStatusChange: (id: string, newStatus: string, comment?: string) => Promise<void>;
   pagination: PaginationInfo;
   onPageChange?: (page: number, direction: 'prev' | 'next') => void;
   onScrollToRow?: (id: string) => void;
