@@ -290,7 +290,7 @@ const RequirementsReview = () => {
         key: 'action',
         width: 180,
         ellipsis: false,
-        render: ((_: unknown, record: RequirementItem) => {
+        render: ((_: unknown, record: RequirementItem): React.ReactNode => {
           if (record.status === 'PENDING') {
             return (
               <Space spacing={4}>
