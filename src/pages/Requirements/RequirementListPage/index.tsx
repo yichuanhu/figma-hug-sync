@@ -272,9 +272,6 @@ const RequirementListPage: React.FC = () => {
     priority: [],
     department: [],
   });
-    priority: [],
-    department: [],
-  });
 
   // Form modal
   const [formModalVisible, setFormModalVisible] = useState(false);
