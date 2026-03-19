@@ -462,7 +462,7 @@
   },
   "requirements": {
     "workbench": {
-      "title": "需求工作台",
+      "title": "需求列表",
       "description": "管理和跟踪自动化需求的全生命周期",
       "searchPlaceholder": "搜索需求标题",
       "newRequirement": "新建需求",
