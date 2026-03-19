@@ -74,7 +74,7 @@ const ApprovalTimeline: React.FC<ApprovalTimelineProps> = ({ approvalStatus, rec
       case 'active':
         return <IconClock style={{ color: 'var(--semi-color-warning)' }} />;
       case 'error':
-        return <IconCloseCircle style={{ color: 'var(--semi-color-danger)' }} />;
+        return <IconClose style={{ color: 'var(--semi-color-danger)', fontSize: 14, background: 'var(--semi-color-danger-light-default)', borderRadius: '50%', padding: 2 }} />;
       case 'waiting':
         return <div className="approval-timeline-waiting-dot" />;
     }
