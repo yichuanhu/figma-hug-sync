@@ -327,6 +327,12 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
     if (pathname === '/dev-center/release-management') {
       return 'processPublish';
     }
+    if (pathname === '/requirements/list') {
+      return 'requirementsList';
+    }
+    if (pathname === '/requirements/review') {
+      return 'requirementsReview';
+    }
     return '';
   };
 
