@@ -245,20 +245,14 @@ const RequirementDetailDrawer: React.FC<RequirementDetailDrawerProps> = ({
           <TabPane tab={t('requirement.detail.roi')} itemKey="roi">
             <ROIPanel requirementId={requirement.id} />
           </TabPane>
-          <TabPane tab={t('requirement.detail.artifacts')} itemKey="artifacts" disabled>
-            <div className="requirement-detail-drawer-tab-content">
-              <Text type="tertiary">{t('common.maintenance')}</Text>
-            </div>
+          <TabPane tab={t('requirement.detail.artifacts')} itemKey="artifacts">
+            <ArtifactPanel requirementId={requirement.id} />
           </TabPane>
-          <TabPane tab={t('requirement.detail.documents')} itemKey="documents" disabled>
-            <div className="requirement-detail-drawer-tab-content">
-              <Text type="tertiary">{t('common.maintenance')}</Text>
-            </div>
+          <TabPane tab={t('requirement.detail.documents')} itemKey="documents">
+            <DocumentPanel requirementId={requirement.id} />
           </TabPane>
-          <TabPane tab={t('requirement.detail.acceptance')} itemKey="acceptance" disabled>
-            <div className="requirement-detail-drawer-tab-content">
-              <Text type="tertiary">{t('common.maintenance')}</Text>
-            </div>
+          <TabPane tab={t('requirement.detail.acceptance')} itemKey="acceptance">
+            <AcceptancePanel requirementId={requirement.id} />
           </TabPane>
         </Tabs>
       </div>
