@@ -203,3 +203,52 @@ export const deleteRequirement = async (id: string): Promise<void> => {
   await new Promise((resolve) => setTimeout(resolve, 500));
   mockRequirementData = mockRequirementData.filter((item) => item.id !== id);
 };
+
+// 创建 mock 需求
+export const createRequirement = async (values: Record<string, unknown>): Promise<RequirementItem> => {
+  await new Promise((resolve) => setTimeout(resolve, 300));
+  const now = new Date().toISOString();
+  const creator = mockCreators['user-001'];
+  const newItem: RequirementItem = {
+    id: generateUUID(),
+    title: values.title as string,
+    description: (values.description as string) || '',
+    department: values.department as string,
+    departmentId: 'dept-new',
+    creatorId: 'user-001',
+    creatorName: creator.name,
+    creatorDepartment: creator.department,
+    creatorRole: creator.role,
+    creatorEmail: creator.email,
+    contactInfo: (values.contactInfo as string) || '',
+    priority: (values.priority as RequirementPriority) || 'MEDIUM',
+    status: 'DRAFT',
+    expectedLaunchDate: values.expectedLaunchDate
+      ? (values.expectedLaunchDate as Date).toISOString()
+      : undefined,
+    createdAt: now,
+    updatedAt: now,
+  };
+  mockRequirementData.unshift(newItem);
+  return newItem;
+};
+
+// 更新 mock 需求
+export const updateRequirement = async (id: string, values: Record<string, unknown>): Promise<RequirementItem | null> => {
+  await new Promise((resolve) => setTimeout(resolve, 300));
+  const index = mockRequirementData.findIndex((item) => item.id === id);
+  if (index === -1) return null;
+  mockRequirementData[index] = {
+    ...mockRequirementData[index],
+    title: values.title as string,
+    description: (values.description as string) || mockRequirementData[index].description,
+    department: (values.department as string) || mockRequirementData[index].department,
+    priority: (values.priority as RequirementPriority) || mockRequirementData[index].priority,
+    contactInfo: (values.contactInfo as string) || '',
+    expectedLaunchDate: values.expectedLaunchDate
+      ? (values.expectedLaunchDate as Date).toISOString()
+      : mockRequirementData[index].expectedLaunchDate,
+    updatedAt: new Date().toISOString(),
+  };
+  return mockRequirementData[index];
+};
