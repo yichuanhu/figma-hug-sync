@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tag, Typography, Collapsible, Button, Input, Toast, Tooltip, Modal } from '@douyinfe/semi-ui';
 import {
-  IconChevronDown,
-  IconChevronRight,
+  IconChevronDownStroked,
+  IconChevronRightStroked,
   IconEditStroked,
   IconDeleteStroked,
-  IconSend,
+  IconSendStroked,
 } from '@douyinfe/semi-icons';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
