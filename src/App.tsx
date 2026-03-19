@@ -43,8 +43,9 @@ import PersonalCenter from "@/pages/PersonalCenter";
 // Dev Preview
 import EmptyStatePreview from "@/pages/DevPreview/EmptyStatePreview";
 import EmptyStateOptionsPreview from "@/pages/DevPreview/EmptyStateOptionsPreview";
-// Requirements & Operations
-import Requirements from "@/pages/Requirements";
+// Requirements
+import RequirementListPage from "@/pages/Requirements/RequirementListPage";
+// Requirements & Operations (legacy)
 import Operations from "@/pages/Operations";
 // Maintenance
 import MaintenanceWorkbench from "@/pages/Maintenance/MaintenanceWorkbench";
