@@ -145,7 +145,6 @@ const TechnicalAssessmentSection = ({ data, onStatusChange }: TechnicalAssessmen
       </Text>
       <RadioGroup
         type="button"
-        size="small"
         value={dim.score}
         onChange={(e) => setFn(dim.key, e.target.value as number)}
         style={{ marginBottom: 4 }}

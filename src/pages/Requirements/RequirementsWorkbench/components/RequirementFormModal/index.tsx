@@ -9,7 +9,7 @@ import {
   Upload,
   Typography,
 } from '@douyinfe/semi-ui';
-import { IconUploadStroked } from '@douyinfe/semi-icons';
+import { Upload as UploadIcon } from 'lucide-react';
 import type { RequirementItem } from '../../types';
 import { departmentOptions } from '../../mockData';
 import './index.less';
