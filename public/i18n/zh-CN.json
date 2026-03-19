@@ -2667,7 +2667,8 @@
       "newRequirement": "新建需求",
       "noData": "暂无需求数据",
       "deleteConfirmTitle": "确认删除",
-      "deleteConfirmContent": "确定要删除需求「{{title}}」吗？此操作不可恢复。",
+      "deleteConfirmContent": "确定要删除需求「{{title}}」吗？",
+      "deleteWarning": "删除后将无法恢复，请谨慎操作。",
       "deleteSuccess": "需求已删除",
       "columns": {
         "title": "需求标题",

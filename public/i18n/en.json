@@ -2658,7 +2658,8 @@
       "newRequirement": "New Requirement",
       "noData": "No requirements found",
       "deleteConfirmTitle": "Confirm Deletion",
-      "deleteConfirmContent": "Are you sure you want to delete requirement \"{{title}}\"? This action cannot be undone.",
+      "deleteConfirmContent": "Are you sure you want to delete requirement \"{{title}}\"?",
+      "deleteWarning": "This action cannot be undone. Please proceed with caution.",
       "deleteSuccess": "Requirement deleted",
       "columns": {
         "title": "Title",
