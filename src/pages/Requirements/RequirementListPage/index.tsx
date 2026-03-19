@@ -613,6 +613,16 @@ const RequirementListPage: React.FC<RequirementListPageProps> = ({ defaultApprov
         onNavigate={(item) => setSelectedRequirement(item)}
         onDataChange={loadData}
       />
+
+      {/* Batch Import Modal */}
+      <RequirementBatchImportModal
+        visible={batchImportVisible}
+        onCancel={() => setBatchImportVisible(false)}
+        onSuccess={() => {
+          setBatchImportVisible(false);
+          loadData();
+        }}
+      />
     </div>
   );
 };
