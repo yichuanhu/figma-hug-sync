@@ -92,7 +92,7 @@ const generateMockRequirement = (index: number): LYRequirementResponse => {
   ];
 
   const priorities: RequirementPriority[] = ['HIGH', 'MEDIUM', 'LOW'];
-  const approvalStatuses: ApprovalStatus[] = ['DRAFT', 'PENDING', 'APPROVED', 'REJECTED'];
+  const approvalStatuses: ApprovalStatus[] = ['DRAFT', 'BUSINESS_PENDING', 'BUSINESS_APPROVED', 'BUSINESS_REJECTED', 'TECH_PENDING', 'TECH_APPROVED', 'TECH_REJECTED'];
   const devStatuses: DevelopmentStatus[] = ['NOT_STARTED', 'ASSESSING', 'IN_DEVELOPMENT', 'DEVELOPED'];
   const opStatuses: OperationStatus[] = ['NOT_LIVE', 'RUNNING', 'SUSPENDED', 'ARCHIVED'];
 
