@@ -1,0 +1,88 @@
+// RequirementDetailDrawer 需求详情抽屉样式
+.requirement-detail-drawer {
+  // 内容区域
+  .requirement-detail-drawer-content {
+    padding: 0;
+    height: 100%;
+  }
+
+  // Tab 内容区域
+  .requirement-detail-drawer-tab-content {
+    padding: 16px 24px 24px;
+  }
+
+  // Section 区块
+  .requirement-detail-drawer-section {
+    margin-top: 24px;
+  }
+
+  // Section 标题 - 左侧蓝色竖线装饰
+  .requirement-detail-drawer-section-title {
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .requirement-detail-drawer-section-indicator {
+    display: inline-block;
+    width: 3px;
+    height: 14px;
+    border-radius: 2px;
+    background-color: var(--semi-color-primary);
+    flex-shrink: 0;
+  }
+
+  .requirement-detail-drawer-section-body {
+    padding: 0 0 0 11px;
+  }
+
+  // 分类标签区
+  .requirement-detail-drawer-classifications {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-left: 11px;
+  }
+
+  // 操作按钮区
+  .requirement-detail-drawer-actions {
+    margin-top: 32px;
+    padding-top: 16px;
+    border-top: 1px solid var(--semi-color-border);
+  }
+}
+
+// 全局覆盖 - SideSheet header 和 body 样式
+.card-sidesheet.requirement-detail-drawer {
+  .semi-sidesheet-header {
+    border-bottom: 1px solid var(--semi-color-border);
+  }
+
+  .semi-sidesheet-body {
+    padding: 0;
+    position: relative;
+  }
+
+  .semi-tabs-bar {
+    padding: 0 24px;
+  }
+
+  .semi-tabs-content {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .semi-tabs-pane {
+    height: 100%;
+    overflow-y: auto;
+  }
+
+  // Descriptions 标签左对齐
+  .semi-descriptions {
+    .semi-descriptions-item-key {
+      text-align: left;
+    }
+  }
+}
