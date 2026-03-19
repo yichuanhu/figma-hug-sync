@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Typography, Button, Input, Toast } from '@douyinfe/semi-ui';
+import { Typography, Button, Input, Toast, TextArea } from '@douyinfe/semi-ui';
 import type { RequirementItem } from '../../types';
 
-const { Text, TextArea } = Typography;
+const { Text } = Typography;
 
 interface ApprovalSectionProps {
   data: RequirementItem;
