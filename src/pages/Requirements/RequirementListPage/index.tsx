@@ -27,6 +27,7 @@ import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import RequirementFormModal from '../components/RequirementFormModal';
 import RequirementDetailDrawer from '../components/RequirementDetailDrawer';
 import RequirementStatusTag from '../components/RequirementStatusTag';
+import RequirementBatchImportModal from '../components/RequirementBatchImportModal';
 import type {
   LYRequirementResponse,
   LYListResponseLYRequirementResponse,
