@@ -590,6 +590,19 @@ const RequirementListPage: React.FC<RequirementListPageProps> = ({ defaultApprov
           loadData();
         }}
       />
+
+      {/* Detail Drawer */}
+      <RequirementDetailDrawer
+        visible={detailDrawerVisible}
+        requirement={selectedRequirement}
+        requirementList={list}
+        onClose={() => {
+          setDetailDrawerVisible(false);
+          setSelectedRequirement(null);
+        }}
+        onNavigate={(item) => setSelectedRequirement(item)}
+        onDataChange={loadData}
+      />
     </div>
   );
 };
