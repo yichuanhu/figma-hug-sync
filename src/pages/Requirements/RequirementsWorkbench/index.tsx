@@ -35,7 +35,10 @@ import {
   departmentOptions,
   fetchRequirementList,
   deleteRequirement,
+  createRequirement,
+  updateRequirement,
 } from './mockData';
+import RequirementFormModal from './components/RequirementFormModal';
 import './index.less';
 
 const { Title, Text } = Typography;
