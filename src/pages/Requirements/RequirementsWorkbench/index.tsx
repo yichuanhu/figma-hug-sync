@@ -39,6 +39,7 @@ import {
   updateRequirement,
 } from './mockData';
 import RequirementFormModal from './components/RequirementFormModal';
+import RequirementDetailDrawer from './components/RequirementDetailDrawer';
 import './index.less';
 
 const { Title, Text } = Typography;
