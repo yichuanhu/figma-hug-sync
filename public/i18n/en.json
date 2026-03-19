@@ -2808,6 +2808,64 @@
       "addSuccess": "Classification added",
       "removeSuccess": "Classification removed",
       "allAssigned": "All values in this category are assigned"
+    },
+    "artifact": {
+      "noArtifact": "No Linked Assets",
+      "noArtifactDesc": "No automation assets linked to this requirement",
+      "allArtifacts": "All Linked Assets",
+      "artifactType": "Asset Type",
+      "artifactName": "Asset Name",
+      "linkedBy": "Linked By",
+      "linkedAt": "Linked At",
+      "typeProcess": "Process",
+      "typeWorker": "Worker",
+      "typeCredential": "Credential",
+      "typeIntegration": "Integration",
+      "statusActive": "Active",
+      "statusInactive": "Inactive",
+      "statusDraft": "Draft"
+    },
+    "document": {
+      "noDocument": "No Documents",
+      "noDocumentDesc": "No implementation documents uploaded yet",
+      "allDocuments": "All Documents",
+      "docName": "Document Name",
+      "docType": "Type",
+      "version": "Version",
+      "fileSize": "Size",
+      "uploadedBy": "Uploaded By",
+      "uploadedAt": "Uploaded At",
+      "typePRD": "PRD",
+      "typeSDD": "Design Doc",
+      "typeTestPlan": "Test Plan",
+      "typeUserGuide": "User Guide",
+      "typeChangeLog": "Change Log"
+    },
+    "acceptance": {
+      "noRecord": "No Acceptance Records",
+      "noRecordDesc": "No acceptance review conducted yet",
+      "allRecords": "All Acceptance Records",
+      "stage": "Stage",
+      "result": "Result",
+      "score": "Score",
+      "reviewer": "Reviewer",
+      "comment": "Comment",
+      "reviewedAt": "Reviewed At",
+      "resultPassed": "Passed",
+      "resultFailed": "Failed",
+      "resultPending": "Pending",
+      "stagesPassed": "Stages Passed"
+    },
+    "batchImport": {
+      "title": "Batch Import Requirements",
+      "dragText": "Click or drag file here to upload",
+      "dragSubText": "Supports .xlsx, .xls, .csv format",
+      "importBtn": "Import {{count}} valid records",
+      "importSuccess": "Successfully imported {{count}} requirements",
+      "summary": "Total {{total}} records, {{valid}} valid, {{invalid}} invalid",
+      "invalidWarning": "{{count}} records have issues and will be skipped",
+      "valid": "Valid",
+      "invalid": "Invalid"
     }
   }
 }

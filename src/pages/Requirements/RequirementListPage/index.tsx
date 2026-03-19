@@ -27,6 +27,7 @@ import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import RequirementFormModal from '../components/RequirementFormModal';
 import RequirementDetailDrawer from '../components/RequirementDetailDrawer';
 import RequirementStatusTag from '../components/RequirementStatusTag';
+import RequirementBatchImportModal from '../components/RequirementBatchImportModal';
 import type {
   LYRequirementResponse,
   LYListResponseLYRequirementResponse,
@@ -221,6 +222,9 @@ const RequirementListPage: React.FC<RequirementListPageProps> = ({ defaultApprov
   const [selectedRequirement, setSelectedRequirement] = useState<LYRequirementResponse | null>(null);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const selectedRequirementId = selectedRequirement?.id || null;
+
+  // Batch import modal
+  const [batchImportVisible, setBatchImportVisible] = useState(false);
 
   const { range, list } = listResponse;
   const currentPage = Math.floor((range?.offset || 0) / (range?.size || 20)) + 1;
@@ -520,6 +524,12 @@ const RequirementListPage: React.FC<RequirementListPageProps> = ({ defaultApprov
           <Col>
             <Space>
               <Button
+                theme="light"
+                onClick={() => setBatchImportVisible(true)}
+              >
+                {t('common.import')}
+              </Button>
+              <Button
                 icon={<IconPlusStroked />}
                 theme="solid"
                 type="primary"
@@ -602,6 +612,16 @@ const RequirementListPage: React.FC<RequirementListPageProps> = ({ defaultApprov
         }}
         onNavigate={(item) => setSelectedRequirement(item)}
         onDataChange={loadData}
+      />
+
+      {/* Batch Import Modal */}
+      <RequirementBatchImportModal
+        visible={batchImportVisible}
+        onCancel={() => setBatchImportVisible(false)}
+        onSuccess={() => {
+          setBatchImportVisible(false);
+          loadData();
+        }}
       />
     </div>
   );

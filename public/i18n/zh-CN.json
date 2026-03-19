@@ -2817,6 +2817,64 @@
       "addSuccess": "分类添加成功",
       "removeSuccess": "分类已移除",
       "allAssigned": "该类别下所有分类已分配"
+    },
+    "artifact": {
+      "noArtifact": "暂无关联资产",
+      "noArtifactDesc": "该需求尚未关联任何自动化资产",
+      "allArtifacts": "全部关联资产",
+      "artifactType": "资产类型",
+      "artifactName": "资产名称",
+      "linkedBy": "关联人",
+      "linkedAt": "关联时间",
+      "typeProcess": "流程",
+      "typeWorker": "机器人",
+      "typeCredential": "凭据",
+      "typeIntegration": "集成",
+      "statusActive": "运行中",
+      "statusInactive": "未激活",
+      "statusDraft": "草稿"
+    },
+    "document": {
+      "noDocument": "暂无文档",
+      "noDocumentDesc": "该需求尚未上传任何实施文档",
+      "allDocuments": "全部文档",
+      "docName": "文档名称",
+      "docType": "文档类型",
+      "version": "版本",
+      "fileSize": "大小",
+      "uploadedBy": "上传者",
+      "uploadedAt": "上传时间",
+      "typePRD": "PRD",
+      "typeSDD": "设计文档",
+      "typeTestPlan": "测试计划",
+      "typeUserGuide": "用户指南",
+      "typeChangeLog": "变更日志"
+    },
+    "acceptance": {
+      "noRecord": "暂无验收记录",
+      "noRecordDesc": "该需求尚未进行任何验收",
+      "allRecords": "全部验收记录",
+      "stage": "验收阶段",
+      "result": "验收结果",
+      "score": "评分",
+      "reviewer": "评审人",
+      "comment": "评审意见",
+      "reviewedAt": "评审时间",
+      "resultPassed": "通过",
+      "resultFailed": "未通过",
+      "resultPending": "待评审",
+      "stagesPassed": "阶段已通过"
+    },
+    "batchImport": {
+      "title": "批量导入需求",
+      "dragText": "点击或拖拽文件到此区域上传",
+      "dragSubText": "支持 .xlsx, .xls, .csv 格式",
+      "importBtn": "导入 {{count}} 条有效数据",
+      "importSuccess": "成功导入 {{count}} 条需求",
+      "summary": "共 {{total}} 条数据，有效 {{valid}} 条，无效 {{invalid}} 条",
+      "invalidWarning": "有 {{count}} 条数据存在问题，导入时将被跳过",
+      "valid": "有效",
+      "invalid": "无效"
     }
   }
 }
