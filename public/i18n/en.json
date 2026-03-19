@@ -2752,6 +2752,62 @@
       "confirmReject": "Confirm Reject",
       "rejectSuccess": "Rejected",
       "rejectError": "Rejection failed"
+    },
+    "assessment": {
+      "noAssessment": "No Assessment",
+      "noAssessmentDesc": "This requirement has not been assessed yet",
+      "totalScore": "Total Score",
+      "assessor": "Assessor",
+      "assessedAt": "Assessed At",
+      "businessDimension": "Business Dimension",
+      "technicalDimension": "Technical Dimension",
+      "businessValue": "Business Value",
+      "technicalComplexity": "Technical Complexity",
+      "riskLevel": "Risk Level",
+      "resourceRequired": "Resource Required",
+      "uiStability": "UI Stability",
+      "automationFeasibility": "Automation Feasibility",
+      "apiAvailability": "API Availability",
+      "dataQuality": "Data Quality",
+      "notes": "Assessment Notes",
+      "conclusion": {
+        "RECOMMENDED": "Recommended",
+        "CONDITIONAL": "Conditional",
+        "NOT_RECOMMENDED": "Not Recommended"
+      }
+    },
+    "roi": {
+      "noROI": "No ROI Analysis",
+      "noROIDesc": "This requirement has no ROI analysis yet",
+      "estimatedTitle": "Estimated Data",
+      "actualTitle": "Actual Data",
+      "annualSaving": "Annual Saving",
+      "implementationCost": "Implementation Cost",
+      "paybackMonths": "Payback Period",
+      "months": "months",
+      "roiRatio": "ROI Ratio",
+      "actualSaving": "Actual Saving",
+      "actualCost": "Actual Cost",
+      "actualROIRatio": "Actual ROI",
+      "savingsAchievement": "Savings Achievement",
+      "healthExcellent": "Excellent",
+      "healthGood": "Good",
+      "healthFair": "Fair"
+    },
+    "classification": {
+      "allClassifications": "All Classifications",
+      "addClassification": "Add Classification",
+      "noClassification": "No Classification",
+      "noClassificationDesc": "Click Add Classification to assign business categories",
+      "category": "Category",
+      "value": "Value",
+      "assignedAt": "Assigned At",
+      "selectCategory": "Select category",
+      "selectValue": "Select value",
+      "alreadyExists": "Classification already exists",
+      "addSuccess": "Classification added",
+      "removeSuccess": "Classification removed",
+      "allAssigned": "All values in this category are assigned"
     }
   }
 }
