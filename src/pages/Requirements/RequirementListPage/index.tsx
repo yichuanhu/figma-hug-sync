@@ -247,11 +247,7 @@ const generateMockListResponse = (
 
 // ==================== Component ====================
 
-interface RequirementListPageProps {
-  defaultApprovalFilter?: ApprovalStatus;
-}
-
-const RequirementListPage: React.FC<RequirementListPageProps> = ({ defaultApprovalFilter }) => {
+const RequirementListPage: React.FC = () => {
   const { t } = useTranslation();
 
   const [listResponse, setListResponse] = useState<LYListResponseLYRequirementResponse>({
