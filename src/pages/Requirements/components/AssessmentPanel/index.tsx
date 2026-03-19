@@ -4,13 +4,13 @@ import {
   Typography,
   Descriptions,
   Tag,
-  Button,
   Empty,
   Rating,
   Progress,
 } from '@douyinfe/semi-ui';
 import type { LYRequirementAssessment } from '@/api';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
+import EmptyState from '@/components/EmptyState';
 
 import './index.less';
 
@@ -23,7 +23,7 @@ interface AssessmentPanelProps {
 // Mock assessment data
 const generateMockAssessment = (requirementId: string): LYRequirementAssessment | null => {
   const seed = requirementId.charCodeAt(requirementId.length - 1) % 10;
-  if (seed < 3) return null; // 30% no assessment
+  if (seed < 3) return null;
 
   const business_value = (seed % 5) + 1;
   const technical_complexity = ((seed + 2) % 5) + 1;
@@ -75,8 +75,8 @@ const AssessmentPanel: React.FC<AssessmentPanelProps> = ({ requirementId }) => {
   if (!assessment) {
     return (
       <div className="assessment-panel-empty">
-        <Empty
-          title={t('requirement.assessment.noAssessment')}
+        <EmptyState
+          variant="noData"
           description={t('requirement.assessment.noAssessmentDesc')}
         />
       </div>
@@ -84,10 +84,10 @@ const AssessmentPanel: React.FC<AssessmentPanelProps> = ({ requirementId }) => {
   }
 
   const scoreItems = [
-    { label: t('requirement.assessment.businessValue'), value: assessment.business_value, type: 'positive' },
-    { label: t('requirement.assessment.technicalComplexity'), value: assessment.technical_complexity, type: 'negative' },
-    { label: t('requirement.assessment.riskLevel'), value: assessment.risk_level, type: 'negative' },
-    { label: t('requirement.assessment.resourceRequired'), value: assessment.resource_required, type: 'negative' },
+    { label: t('requirement.assessment.businessValue'), value: assessment.business_value },
+    { label: t('requirement.assessment.technicalComplexity'), value: assessment.technical_complexity },
+    { label: t('requirement.assessment.riskLevel'), value: assessment.risk_level },
+    { label: t('requirement.assessment.resourceRequired'), value: assessment.resource_required },
   ];
 
   const technicalItems = [

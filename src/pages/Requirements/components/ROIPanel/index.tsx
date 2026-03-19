@@ -4,10 +4,10 @@ import {
   Typography,
   Descriptions,
   Tag,
-  Empty,
   Progress,
 } from '@douyinfe/semi-ui';
 import type { LYRequirementROI } from '@/api';
+import EmptyState from '@/components/EmptyState';
 
 import './index.less';
 
@@ -56,8 +56,8 @@ const ROIPanel: React.FC<ROIPanelProps> = ({ requirementId }) => {
   if (!roi) {
     return (
       <div className="roi-panel-empty">
-        <Empty
-          title={t('requirement.roi.noROI')}
+        <EmptyState
+          variant="noData"
           description={t('requirement.roi.noROIDesc')}
         />
       </div>
@@ -112,7 +112,6 @@ const ROIPanel: React.FC<ROIPanelProps> = ({ requirementId }) => {
     },
   ] : [];
 
-  // Savings achievement percentage
   const savingsPercent = hasActualData
     ? Math.min(Math.round((roi.actual_saving! / roi.estimated_annual_saving) * 100), 150)
     : 0;
