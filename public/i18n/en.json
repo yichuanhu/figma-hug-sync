@@ -531,10 +531,26 @@
       "approval": "Approval",
       "approve": "Approve",
       "reject": "Reject",
+      "approvalReasonPlaceholder": "Enter approval comments...",
+      "rejectReasonRequired": "Rejection reason is required",
+      "approveSuccess": "Approved successfully",
+      "rejectSuccess": "Requirement rejected",
+      "actionFailed": "Action failed, please retry",
       "technicalAssessment": "Technical Assessment",
       "score": "Score",
+      "totalScore": "Total Score",
       "conclusion": "Conclusion",
-      "recommendImplement": "Recommend Implementation"
+      "recommendImplement": "Recommend Implementation",
+      "conclusionRecommend": "Recommend Implementation",
+      "conclusionConditional": "Conditional Implementation",
+      "conclusionNotRecommend": "Not Recommended",
+      "feasibility": "Feasibility",
+      "complexity": "Complexity",
+      "riskControl": "Risk Control",
+      "maintainability": "Maintainability",
+      "assessmentComment": "Assessment notes (optional)",
+      "submitAssessment": "Submit Assessment",
+      "assessmentSubmitted": "Assessment submitted"
     }
   },
   "development": {
