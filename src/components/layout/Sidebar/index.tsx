@@ -186,6 +186,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
       key: 'requirementsCenter',
       labelKey: 'sidebar.requirementsCenter',
       icon: <div className="sidebar-center-icon" dangerouslySetInnerHTML={{ __html: requirementsCenterIconRaw }} />,
+      path: '/requirements',
     },
     {
       key: 'maintenanceCenter',
@@ -254,8 +255,8 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
   const requirementsCenterMenu: MenuItem[] = [
     // 需求管理 - 分组标题
     { key: 'requirementsManagement', labelKey: 'sidebar.requirementsManagement', isGroupLabel: true },
-    { key: 'requirementsList', labelKey: 'sidebar.requirementsList', icon: <ClipboardList size={20} strokeWidth={2} />, path: '/requirements/list' },
-    { key: 'requirementsReview', labelKey: 'sidebar.requirementsReview', icon: <CheckSquare size={20} strokeWidth={2} />, path: '/requirements/review' },
+    { key: 'requirementsList', labelKey: 'sidebar.requirementsList', icon: <ClipboardList size={20} strokeWidth={2} /> },
+    { key: 'requirementsReview', labelKey: 'sidebar.requirementsReview', icon: <CheckSquare size={20} strokeWidth={2} /> },
     // 协作管理 - 分组标题
     { key: 'collaborationManagement', labelKey: 'sidebar.collaborationManagement', isGroupLabel: true },
     { key: 'teamMembers', labelKey: 'sidebar.teamMembers', icon: <Users size={20} strokeWidth={2} /> },
@@ -326,12 +327,6 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
     }
     if (pathname === '/dev-center/release-management') {
       return 'processPublish';
-    }
-    if (pathname === '/requirements/list') {
-      return 'requirementsList';
-    }
-    if (pathname === '/requirements/review') {
-      return 'requirementsReview';
     }
     return '';
   };
