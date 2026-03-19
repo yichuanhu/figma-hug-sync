@@ -2792,9 +2792,11 @@
       "currentStage": "Current Stage",
       "waitingTime": "Waiting Time",
       "noPending": "No pending requirements",
-      "currentRoleLabel": "Current Role",
-      "roleBusinessAdmin": "Business Admin",
-      "roleDevAdmin": "Dev Admin"
+      "quickAction": "Quick Action",
+      "overtime": "Overtime",
+      "statPending": "Pending Me",
+      "statApprovedWeek": "Approved This Week",
+      "statAvgWait": "Avg. Wait Time"
     },
     "assessment": {
       "noAssessment": "No Assessment",

@@ -2801,9 +2801,11 @@
       "currentStage": "当前阶段",
       "waitingTime": "等待时长",
       "noPending": "暂无待审批需求",
-      "currentRoleLabel": "当前角色",
-      "roleBusinessAdmin": "业务管理员",
-      "roleDevAdmin": "开发管理员"
+      "quickAction": "快捷操作",
+      "overtime": "超时",
+      "statPending": "待我审批",
+      "statApprovedWeek": "本周已审批",
+      "statAvgWait": "平均等待时长"
     },
     "assessment": {
       "noAssessment": "暂无评估",
