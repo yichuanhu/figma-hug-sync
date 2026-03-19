@@ -25,6 +25,7 @@ import EmptyState from '@/components/EmptyState';
 import FilterPopover from '@/components/FilterPopover';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import RequirementFormModal from '../components/RequirementFormModal';
+import RequirementDetailDrawer from '../components/RequirementDetailDrawer';
 import RequirementStatusTag from '../components/RequirementStatusTag';
 import type {
   LYRequirementResponse,
