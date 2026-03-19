@@ -293,9 +293,10 @@ const RequirementsWorkbench = () => {
               {canEdit(record.status) && (
                 <Dropdown.Item
                   icon={<IconEditStroked />}
-                  onClick={(e) => {
+                  onClick={(e: React.MouseEvent) => {
                     e.stopPropagation();
-                    console.log('Edit requirement:', record.id);
+                    setEditingRecord(record);
+                    setEditModalVisible(true);
                   }}
                 >
                   {t('common.edit')}
