@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Typography,
@@ -12,8 +12,11 @@ import {
   Tabs,
   TabPane,
   Toast,
+  Modal,
+  Form,
+  Banner,
 } from '@douyinfe/semi-ui';
-import { IconSearchStroked } from '@douyinfe/semi-icons';
+import { IconSearchStroked, IconTickCircle, IconClose } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
 import type { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
 import EmptyState from '@/components/EmptyState';
@@ -22,7 +25,6 @@ import RequirementDetailDrawer from '../components/RequirementDetailDrawer';
 import RequirementStatusTag from '../components/RequirementStatusTag';
 import type {
   LYRequirementResponse,
-  LYListResponseLYRequirementResponse,
   ApprovalStatus,
   ApprovalPermissions,
   RequirementPriority,
@@ -33,7 +35,6 @@ import './index.less';
 const { Title, Text } = Typography;
 
 // Mock current user permissions - in real app this would come from auth context
-// This user has both business and tech approval permissions
 const MOCK_PERMISSIONS: ApprovalPermissions = {
   canBusinessApprove: true,
   canTechApprove: true,
@@ -65,7 +66,6 @@ const generateMockRequirement = (index: number): LYRequirementResponse => {
   ];
 
   const priorities: RequirementPriority[] = ['HIGH', 'MEDIUM', 'LOW'];
-  // For review page, only show pending statuses predominantly
   const approvalStatuses: ApprovalStatus[] = [
     'BUSINESS_PENDING', 'BUSINESS_PENDING', 'TECH_PENDING', 'TECH_PENDING',
     'BUSINESS_APPROVED', 'TECH_APPROVED', 'BUSINESS_REJECTED', 'TECH_REJECTED',
@@ -168,18 +168,100 @@ const RequirementReviewPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<ReviewTab>('pending');
   const [loading, setLoading] = useState(false);
   const [keyword, setKeyword] = useState('');
-  const [allData] = useState(() => Array.from({ length: 30 }, (_, i) => generateMockRequirement(i)));
+  const [allData, setAllData] = useState(() => Array.from({ length: 30 }, (_, i) => generateMockRequirement(i)));
 
   // Detail drawer
   const [selectedRequirement, setSelectedRequirement] = useState<LYRequirementResponse | null>(null);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const selectedRequirementId = selectedRequirement?.id || null;
 
-  // Filter data based on tab and permissions (merged list)
+  // Inline reject modal
+  const [inlineRejectTarget, setInlineRejectTarget] = useState<LYRequirementResponse | null>(null);
+  // Inline tech approve modal
+  const [inlineTechApproveTarget, setInlineTechApproveTarget] = useState<LYRequirementResponse | null>(null);
+
+  // ==================== Statistics ====================
+  const stats = useMemo(() => {
+    let pendingCount = 0;
+    let approvedThisWeek = 0;
+    let totalWaitHours = 0;
+    let pendingItems = 0;
+
+    const now = Date.now();
+    const weekAgo = now - 7 * 86400000;
+
+    allData.forEach((item) => {
+      // Pending count
+      if (approvalPermissions.canBusinessApprove && item.approval_status === 'BUSINESS_PENDING') pendingCount++;
+      if (approvalPermissions.canTechApprove && item.approval_status === 'TECH_PENDING') pendingCount++;
+
+      // Approved this week
+      const lastRecord = item.approval_records?.[item.approval_records.length - 1];
+      if (lastRecord && (lastRecord.action === 'APPROVE' || lastRecord.action === 'REJECT')) {
+        const opTime = new Date(lastRecord.operated_at).getTime();
+        if (opTime >= weekAgo) approvedThisWeek++;
+      }
+
+      // Average wait time for pending items
+      if (item.approval_status === 'BUSINESS_PENDING' || item.approval_status === 'TECH_PENDING') {
+        if (lastRecord) {
+          totalWaitHours += (now - new Date(lastRecord.operated_at).getTime()) / 3600000;
+          pendingItems++;
+        }
+      }
+    });
+
+    const avgWaitHours = pendingItems > 0 ? Math.round(totalWaitHours / pendingItems) : 0;
+    const avgWaitDisplay = avgWaitHours < 24 ? `${avgWaitHours}h` : `${Math.round(avgWaitHours / 24)}d`;
+
+    return { pendingCount, approvedThisWeek, avgWaitDisplay };
+  }, [allData, approvalPermissions]);
+
+  // ==================== Inline Quick Actions ====================
+  const handleInlineBusinessApprove = useCallback((record: LYRequirementResponse, e: React.MouseEvent) => {
+    e.stopPropagation();
+    Modal.confirm({
+      title: t('requirement.approval.businessApproveTitle'),
+      icon: <IconTickCircle style={{ color: 'var(--semi-color-success)' }} />,
+      content: t('requirement.approval.businessApproveContent', { title: record.title }),
+      okText: t('requirement.approval.approve'),
+      cancelText: t('common.cancel'),
+      centered: true,
+      maskClosable: false,
+      onOk: async () => {
+        await new Promise((resolve) => setTimeout(resolve, 400));
+        Toast.success(t('requirement.approval.businessApproveSuccess'));
+      },
+    });
+  }, [t]);
+
+  const handleInlineTechApproveOpen = useCallback((record: LYRequirementResponse, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setInlineTechApproveTarget(record);
+  }, []);
+
+  const handleInlineTechApproveSubmit = useCallback(async (values: Record<string, unknown>) => {
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    Toast.success(t('requirement.approval.techApproveSuccess'));
+    setInlineTechApproveTarget(null);
+  }, [t]);
+
+  const handleInlineRejectOpen = useCallback((record: LYRequirementResponse, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setInlineRejectTarget(record);
+  }, []);
+
+  const handleInlineRejectSubmit = useCallback(async (values: { comment: string }) => {
+    const stage = inlineRejectTarget?.approval_status === 'BUSINESS_PENDING' ? 'business' : 'tech';
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    Toast.success(t(`requirement.approval.${stage}RejectSuccess`));
+    setInlineRejectTarget(null);
+  }, [t, inlineRejectTarget]);
+
+  // ==================== Filters ====================
   const filteredData = useMemo(() => {
     let data = allData;
 
-    // Apply keyword filter
     if (keyword) {
       const kw = keyword.toLowerCase();
       data = data.filter(
@@ -188,14 +270,12 @@ const RequirementReviewPage: React.FC = () => {
     }
 
     if (activeTab === 'pending') {
-      // Merge both business and tech pending based on user's permissions
       data = data.filter((item) => {
         if (approvalPermissions.canBusinessApprove && item.approval_status === 'BUSINESS_PENDING') return true;
         if (approvalPermissions.canTechApprove && item.approval_status === 'TECH_PENDING') return true;
         return false;
       });
     } else if (activeTab === 'approved') {
-      // Show all items this user has reviewed (both business and tech)
       data = data.filter((item) => {
         if (approvalPermissions.canBusinessApprove && ['BUSINESS_APPROVED', 'BUSINESS_REJECTED', 'TECH_PENDING', 'TECH_APPROVED', 'TECH_REJECTED'].includes(item.approval_status)) return true;
         if (approvalPermissions.canTechApprove && ['TECH_APPROVED', 'TECH_REJECTED'].includes(item.approval_status)) return true;
@@ -216,7 +296,6 @@ const RequirementReviewPage: React.FC = () => {
     setDetailDrawerVisible(true);
   };
 
-  // Calculate waiting time
   const getWaitingTime = (record: LYRequirementResponse): string => {
     const lastRecord = record.approval_records?.[record.approval_records.length - 1];
     if (!lastRecord) return '-';
@@ -225,6 +304,13 @@ const RequirementReviewPage: React.FC = () => {
     if (diffHours < 24) return `${diffHours}h`;
     const diffDays = Math.floor(diffHours / 24);
     return `${diffDays}d`;
+  };
+
+  const isOvertime = (record: LYRequirementResponse): boolean => {
+    if (record.approval_status !== 'BUSINESS_PENDING' && record.approval_status !== 'TECH_PENDING') return false;
+    const lastRecord = record.approval_records?.[record.approval_records.length - 1];
+    if (!lastRecord) return false;
+    return (Date.now() - new Date(lastRecord.operated_at).getTime()) > 48 * 3600000;
   };
 
   const approvalStatusConfig: Record<string, { color: string; i18nKey: string }> = {
@@ -237,86 +323,163 @@ const RequirementReviewPage: React.FC = () => {
     TECH_REJECTED: { color: 'red', i18nKey: 'requirement.approvalStatus.TECH_REJECTED' },
   };
 
-  const columns: ColumnProps<LYRequirementResponse>[] = [
-    {
-      title: t('requirement.list.columns.title'),
-      dataIndex: 'title',
-      width: 260,
-      ellipsis: true,
-    },
-    {
-      title: t('requirement.list.columns.department'),
-      dataIndex: 'department_name',
-      width: 120,
-    },
-    {
-      title: t('requirement.list.columns.priority'),
-      dataIndex: 'priority',
-      width: 80,
-      render: (priority: RequirementPriority) => <RequirementStatusTag type="priority" value={priority} />,
-    },
-    {
-      title: t('requirement.list.columns.approvalStatus'),
-      dataIndex: 'approval_status',
-      width: 120,
-      render: (status: ApprovalStatus) => {
-        const cfg = approvalStatusConfig[status];
-        return cfg ? <Tag color={cfg.color as any}>{t(cfg.i18nKey)}</Tag> : '-';
+  const columns: ColumnProps<LYRequirementResponse>[] = useMemo(() => {
+    const cols: ColumnProps<LYRequirementResponse>[] = [
+      {
+        title: t('requirement.list.columns.title'),
+        dataIndex: 'title',
+        width: 220,
+        ellipsis: true,
       },
-    },
-    {
-      title: t('requirement.review.currentStage'),
-      dataIndex: 'approval_status',
-      width: 120,
-      render: (status: ApprovalStatus) => {
-        if (status === 'BUSINESS_PENDING') return <Tag color="orange">{t('requirement.approvalFlow.businessApproval')}</Tag>;
-        if (status === 'TECH_PENDING') return <Tag color="orange">{t('requirement.approvalFlow.techApproval')}</Tag>;
-        return '-';
+      {
+        title: t('requirement.list.columns.department'),
+        dataIndex: 'department_name',
+        width: 100,
       },
-    },
-    {
-      title: t('requirement.review.waitingTime'),
-      dataIndex: 'id',
-      width: 100,
-      render: (_: unknown, record: LYRequirementResponse) => getWaitingTime(record),
-    },
-    {
-      title: t('common.creator'),
-      dataIndex: 'creator_name',
-      width: 140,
-      render: (_text: string, record: LYRequirementResponse) => (
-        <UserNameWithCard
-          name={record.creator_name}
-          userId={record.creator_id}
-          department={record.creator_department}
-          role={record.creator_role}
-          email={record.creator_email}
-        />
-      ),
-    },
-    {
-      title: t('common.updateTime'),
-      dataIndex: 'updated_at',
-      width: 160,
-      render: (time: string) => {
-        if (!time) return '-';
-        return new Date(time).toLocaleString('zh-CN', {
-          year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit',
-        });
+      {
+        title: t('requirement.list.columns.priority'),
+        dataIndex: 'priority',
+        width: 80,
+        render: (priority: RequirementPriority) => <RequirementStatusTag type="priority" value={priority} />,
       },
-    },
-  ];
+      {
+        title: t('requirement.list.columns.approvalStatus'),
+        dataIndex: 'approval_status',
+        width: 120,
+        render: (status: ApprovalStatus) => {
+          const cfg = approvalStatusConfig[status];
+          return cfg ? <Tag color={cfg.color as any}>{t(cfg.i18nKey)}</Tag> : '-';
+        },
+      },
+      {
+        title: t('requirement.review.currentStage'),
+        dataIndex: 'approval_status',
+        width: 120,
+        render: (status: ApprovalStatus, record: LYRequirementResponse) => {
+          const overtime = isOvertime(record);
+          if (status === 'BUSINESS_PENDING') return (
+            <Space spacing={4}>
+              <Tag color="orange">{t('requirement.approvalFlow.businessApproval')}</Tag>
+              {overtime && <Tag color="red" size="small">{t('requirement.review.overtime')}</Tag>}
+            </Space>
+          );
+          if (status === 'TECH_PENDING') return (
+            <Space spacing={4}>
+              <Tag color="orange">{t('requirement.approvalFlow.techApproval')}</Tag>
+              {overtime && <Tag color="red" size="small">{t('requirement.review.overtime')}</Tag>}
+            </Space>
+          );
+          return '-';
+        },
+      },
+      {
+        title: t('requirement.review.waitingTime'),
+        dataIndex: 'id',
+        width: 80,
+        render: (_: unknown, record: LYRequirementResponse) => {
+          const wt = getWaitingTime(record);
+          const overtime = isOvertime(record);
+          return <Text type={overtime ? 'danger' : undefined}>{wt}</Text>;
+        },
+      },
+      {
+        title: t('common.creator'),
+        dataIndex: 'creator_name',
+        width: 130,
+        render: (_text: string, record: LYRequirementResponse) => (
+          <UserNameWithCard
+            name={record.creator_name}
+            userId={record.creator_id}
+            department={record.creator_department}
+            role={record.creator_role}
+            email={record.creator_email}
+          />
+        ),
+      },
+      {
+        title: t('common.updateTime'),
+        dataIndex: 'updated_at',
+        width: 150,
+        ellipsis: true,
+        render: (time: string) => {
+          if (!time) return '-';
+          return new Date(time).toLocaleString('zh-CN', {
+            year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit',
+          });
+        },
+      },
+    ];
 
-  const pendingCount = useMemo(() => {
-    let count = 0;
-    if (approvalPermissions.canBusinessApprove) {
-      count += allData.filter(r => r.approval_status === 'BUSINESS_PENDING').length;
+    // Add quick actions column only for "pending" tab
+    if (activeTab === 'pending') {
+      cols.push({
+        title: t('requirement.review.quickAction'),
+        dataIndex: 'id',
+        width: 160,
+        fixed: 'right',
+        render: (_: unknown, record: LYRequirementResponse) => {
+          const isBusiness = record.approval_status === 'BUSINESS_PENDING';
+          const isTech = record.approval_status === 'TECH_PENDING';
+
+          if (isBusiness && approvalPermissions.canBusinessApprove) {
+            return (
+              <Space spacing={4}>
+                <Button
+                  size="small"
+                  theme="solid"
+                  type="primary"
+                  onClick={(e) => handleInlineBusinessApprove(record, e)}
+                >
+                  {t('requirement.approval.approve')}
+                </Button>
+                <Button
+                  size="small"
+                  theme="solid"
+                  type="danger"
+                  onClick={(e) => handleInlineRejectOpen(record, e)}
+                >
+                  {t('requirement.approval.reject')}
+                </Button>
+              </Space>
+            );
+          }
+
+          if (isTech && approvalPermissions.canTechApprove) {
+            return (
+              <Space spacing={4}>
+                <Button
+                  size="small"
+                  theme="solid"
+                  type="primary"
+                  onClick={(e) => handleInlineTechApproveOpen(record, e)}
+                >
+                  {t('requirement.approval.approve')}
+                </Button>
+                <Button
+                  size="small"
+                  theme="solid"
+                  type="danger"
+                  onClick={(e) => handleInlineRejectOpen(record, e)}
+                >
+                  {t('requirement.approval.reject')}
+                </Button>
+              </Space>
+            );
+          }
+
+          return '-';
+        },
+      });
     }
-    if (approvalPermissions.canTechApprove) {
-      count += allData.filter(r => r.approval_status === 'TECH_PENDING').length;
-    }
-    return count;
-  }, [allData, approvalPermissions]);
+
+    return cols;
+  }, [t, activeTab, approvalPermissions, handleInlineBusinessApprove, handleInlineTechApproveOpen, handleInlineRejectOpen]);
+
+  const pendingCount = stats.pendingCount;
+
+  const rejectStageLabel = inlineRejectTarget?.approval_status === 'BUSINESS_PENDING'
+    ? t('requirement.approvalFlow.businessApproval')
+    : t('requirement.approvalFlow.techApproval');
 
   return (
     <div className="requirement-review-page">
@@ -324,6 +487,22 @@ const RequirementReviewPage: React.FC = () => {
         <div className="requirement-review-page-header-title">
           <Title heading={3} className="title">{t('requirement.review.title')}</Title>
           <Text type="tertiary">{t('requirement.review.description')}</Text>
+        </div>
+
+        {/* Statistics Cards */}
+        <div className="requirement-review-page-stats">
+          <div className="requirement-review-page-stat-card stat-pending">
+            <div className="stat-value">{stats.pendingCount}</div>
+            <div className="stat-label">{t('requirement.review.statPending')}</div>
+          </div>
+          <div className="requirement-review-page-stat-card stat-approved">
+            <div className="stat-value">{stats.approvedThisWeek}</div>
+            <div className="stat-label">{t('requirement.review.statApprovedWeek')}</div>
+          </div>
+          <div className="requirement-review-page-stat-card stat-avg-time">
+            <div className="stat-value">{stats.avgWaitDisplay}</div>
+            <div className="stat-label">{t('requirement.review.statAvgWait')}</div>
+          </div>
         </div>
 
         {/* Search Bar */}
@@ -368,7 +547,7 @@ const RequirementReviewPage: React.FC = () => {
           columns={columns}
           rowKey="id"
           loading={loading}
-          scroll={{ y: 'calc(100vh - 380px)' }}
+          scroll={{ y: 'calc(100vh - 440px)' }}
           empty={
             <EmptyState
               variant={keyword ? 'noResult' : 'noData'}
@@ -400,6 +579,96 @@ const RequirementReviewPage: React.FC = () => {
         onNavigate={(item) => setSelectedRequirement(item)}
         approvalPermissions={approvalPermissions}
       />
+
+      {/* Inline Reject Modal */}
+      <Modal
+        title={t('requirement.approval.rejectTitle') + ' - ' + rejectStageLabel}
+        visible={!!inlineRejectTarget}
+        onCancel={() => setInlineRejectTarget(null)}
+        footer={null}
+        width={520}
+        closeOnEsc
+        centered
+        maskClosable={false}
+      >
+        <Form onSubmit={handleInlineRejectSubmit} labelPosition="top">
+          <Form.TextArea
+            field="comment"
+            label={t('requirement.approval.rejectReason')}
+            placeholder={t('requirement.approval.rejectReasonPlaceholder')}
+            autosize={{ minRows: 3, maxRows: 6 }}
+            maxCount={2000}
+            showClear
+            rules={[
+              { required: true, message: t('requirement.approval.rejectReasonRequired') },
+            ]}
+          />
+          <div className="requirement-review-page-modal-footer">
+            <Button theme="light" onClick={() => setInlineRejectTarget(null)}>
+              {t('common.cancel')}
+            </Button>
+            <Button htmlType="submit" theme="solid" type="danger">
+              {t('requirement.approval.confirmReject')}
+            </Button>
+          </div>
+        </Form>
+      </Modal>
+
+      {/* Inline Tech Approve Modal */}
+      <Modal
+        title={t('requirement.approval.techApproveModalTitle')}
+        visible={!!inlineTechApproveTarget}
+        onCancel={() => setInlineTechApproveTarget(null)}
+        footer={null}
+        width={620}
+        closeOnEsc
+        centered
+        maskClosable={false}
+      >
+        <Form onSubmit={handleInlineTechApproveSubmit} labelPosition="top">
+          <Banner
+            type="info"
+            description={t('requirement.approval.techApproveHint')}
+            style={{ marginBottom: 16 }}
+          />
+          <Form.Slot label={t('requirement.assessment.businessValue')}>
+            <Form.Rating field="business_value" count={5} rules={[{ required: true, message: t('requirement.approval.ratingRequired') }]} noLabel />
+          </Form.Slot>
+          <Form.Slot label={t('requirement.assessment.technicalComplexity')}>
+            <Form.Rating field="technical_complexity" count={5} rules={[{ required: true, message: t('requirement.approval.ratingRequired') }]} noLabel />
+          </Form.Slot>
+          <Form.Slot label={t('requirement.assessment.automationFeasibility')}>
+            <Form.Rating field="automation_feasibility" count={5} rules={[{ required: true, message: t('requirement.approval.ratingRequired') }]} noLabel />
+          </Form.Slot>
+          <Form.Select
+            field="conclusion"
+            label={t('requirement.approval.techConclusion')}
+            placeholder={t('requirement.approval.techConclusionPlaceholder')}
+            rules={[{ required: true, message: t('requirement.approval.conclusionRequired') }]}
+            style={{ width: '100%' }}
+          >
+            <Form.Select.Option value="RECOMMENDED">{t('requirement.assessment.conclusion.RECOMMENDED')}</Form.Select.Option>
+            <Form.Select.Option value="CONDITIONAL">{t('requirement.assessment.conclusion.CONDITIONAL')}</Form.Select.Option>
+            <Form.Select.Option value="NOT_RECOMMENDED">{t('requirement.assessment.conclusion.NOT_RECOMMENDED')}</Form.Select.Option>
+          </Form.Select>
+          <Form.TextArea
+            field="comment"
+            label={t('requirement.approval.techComment')}
+            placeholder={t('requirement.approval.techCommentPlaceholder')}
+            autosize={{ minRows: 3, maxRows: 6 }}
+            maxCount={2000}
+            showClear
+          />
+          <div className="requirement-review-page-modal-footer">
+            <Button theme="light" onClick={() => setInlineTechApproveTarget(null)}>
+              {t('common.cancel')}
+            </Button>
+            <Button htmlType="submit" theme="solid" type="primary">
+              {t('requirement.approval.confirmTechApprove')}
+            </Button>
+          </div>
+        </Form>
+      </Modal>
     </div>
   );
 };
