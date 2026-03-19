@@ -307,7 +307,7 @@ const RequirementsReview = () => {
                   {t('requirements.detail.approve')}
                 </Button>
                 <Button
-                  icon={<IconCrossCircle />}
+                  icon={<IconCrossCircleStroked />}
                   theme="borderless"
                   size="small"
                   type="danger"
