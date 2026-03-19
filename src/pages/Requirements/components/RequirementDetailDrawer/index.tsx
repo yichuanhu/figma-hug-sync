@@ -17,6 +17,9 @@ import ApprovalActions from '../ApprovalActions';
 import AssessmentPanel from '../AssessmentPanel';
 import ROIPanel from '../ROIPanel';
 import ClassificationPanel from '../ClassificationPanel';
+import ArtifactPanel from '../ArtifactPanel';
+import DocumentPanel from '../DocumentPanel';
+import AcceptancePanel from '../AcceptancePanel';
 
 import './index.less';
 
