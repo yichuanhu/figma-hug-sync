@@ -22,6 +22,7 @@ import {
   IconEditStroked,
   IconDeleteStroked,
   IconUpload,
+  IconSend,
 } from '@douyinfe/semi-icons';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import EmptyState from '@/components/EmptyState';
