@@ -34,9 +34,11 @@ const activityTypeConfig: Record<string, { color: string; label: string }> = {
 const PropertyPanel = ({
   data,
   t,
+  onStatusChange,
 }: {
   data: RequirementItem;
   t: (key: string, options?: Record<string, unknown>) => string;
+  onStatusChange: (id: string, newStatus: string, comment?: string) => Promise<void>;
 }) => {
   const sCfg = statusConfig[data.status];
   const pCfg = priorityConfig[data.priority];
