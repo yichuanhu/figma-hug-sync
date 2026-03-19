@@ -499,6 +499,13 @@ const RequirementsWorkbench = () => {
           setEditModalVisible(true);
         }}
         onDelete={(record) => handleDelete(record)}
+        onStatusChange={async (id, newStatus, comment) => {
+          await updateRequirementStatus(id, newStatus, comment);
+          loadData();
+          // Refresh the selected record
+          const updated = (await fetchRequirementList({ ...queryParams, statusFilter, departmentFilter, priorityFilter })).list.find(r => r.id === id);
+          if (updated) setSelectedRecord(updated);
+        }}
         pagination={{
           currentPage,
           totalPages: Math.ceil(total / pageSize),
