@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import AppLayout from "@/components/layout/AppLayout";
 import Home from "@/pages/Home";
 import NotFound from "@/pages/NotFound";
@@ -108,6 +108,7 @@ const App = () => (
           <Route path="/dev-preview/empty-state-options" element={<EmptyStateOptionsPreview />} />
           
           {/* 需求中心 */}
+          <Route path="/requirements" element={<Navigate to="/requirements/list" replace />} />
           <Route path="/requirements/list" element={<RequirementsWorkbench />} />
           <Route path="/requirements/review" element={<RequirementsReview />} />
           <Route path="/requirements/team" element={<RequirementsTeam />} />
