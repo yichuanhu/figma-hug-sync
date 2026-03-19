@@ -336,7 +336,7 @@ const RequirementDetailDrawer = ({
 
         {/* 右侧属性面板 (40%) */}
         <div className="requirement-detail-right">
-          <PropertyPanel data={data} t={t} />
+          <PropertyPanel data={data} t={t} onStatusChange={onStatusChange} />
         </div>
       </div>
     </DetailDrawerWrapper>
