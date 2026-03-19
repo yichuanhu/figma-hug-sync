@@ -35,7 +35,10 @@ import {
   departmentOptions,
   fetchRequirementList,
   deleteRequirement,
+  createRequirement,
+  updateRequirement,
 } from './mockData';
+import RequirementFormModal from './components/RequirementFormModal';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -64,6 +67,9 @@ const RequirementsWorkbench = () => {
   // 状态
   const [loading, setLoading] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [createModalVisible, setCreateModalVisible] = useState(false);
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [editingRecord, setEditingRecord] = useState<RequirementItem | null>(null);
 
   // 列表数据
   const [listResponse, setListResponse] = useState<{
@@ -287,9 +293,10 @@ const RequirementsWorkbench = () => {
               {canEdit(record.status) && (
                 <Dropdown.Item
                   icon={<IconEditStroked />}
-                  onClick={(e) => {
+                  onClick={(e: React.MouseEvent) => {
                     e.stopPropagation();
-                    console.log('Edit requirement:', record.id);
+                    setEditingRecord(record);
+                    setEditModalVisible(true);
                   }}
                 >
                   {t('common.edit')}
@@ -385,7 +392,7 @@ const RequirementsWorkbench = () => {
               <Button icon={<IconUpload />} theme="light" type="tertiary">
                 {t('requirements.workbench.batchImport')}
               </Button>
-              <Button icon={<IconPlusStroked />} theme="solid" type="primary">
+              <Button icon={<IconPlusStroked />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
                 {t('requirements.workbench.newRequirement')}
               </Button>
             </Space>
@@ -438,6 +445,33 @@ const RequirementsWorkbench = () => {
           />
         )}
       </div>
+
+      {/* 新建需求弹窗 */}
+      <RequirementFormModal
+        visible={createModalVisible}
+        onCancel={() => setCreateModalVisible(false)}
+        onSuccess={async (values) => {
+          await createRequirement(values);
+          loadData();
+        }}
+      />
+
+      {/* 编辑需求弹窗 */}
+      <RequirementFormModal
+        visible={editModalVisible}
+        onCancel={() => {
+          setEditModalVisible(false);
+          setEditingRecord(null);
+        }}
+        editData={editingRecord}
+        onSuccess={async (values) => {
+          if (editingRecord) {
+            await updateRequirement(editingRecord.id, values);
+            loadData();
+          }
+          setEditingRecord(null);
+        }}
+      />
     </div>
   );
 };

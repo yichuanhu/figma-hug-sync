@@ -498,6 +498,26 @@
       "warning": "删除后将无法恢复，请谨慎操作",
       "success": "删除成功",
       "error": "删除失败，请重试"
+    },
+    "form": {
+      "createTitle": "新建需求",
+      "editTitle": "编辑需求",
+      "titleLabel": "需求标题",
+      "titlePlaceholder": "请输入需求标题",
+      "titleRequired": "请输入需求标题",
+      "titleMaxLength": "标题不能超过200个字符",
+      "descriptionLabel": "需求描述",
+      "descriptionPlaceholder": "请输入需求描述，包括业务背景、期望效果等",
+      "departmentPlaceholder": "请选择所属部门",
+      "departmentRequired": "请选择所属部门",
+      "priorityPlaceholder": "请选择优先级",
+      "priorityRequired": "请选择优先级",
+      "contactLabel": "联系人",
+      "contactPlaceholder": "请输入联系人信息",
+      "expectedLaunchDatePlaceholder": "请选择期望上线日期",
+      "createSuccess": "需求创建成功",
+      "editSuccess": "需求更新成功",
+      "submitError": "提交失败，请重试"
     }
   },
   "development": {

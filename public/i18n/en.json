@@ -496,6 +496,26 @@
       "warning": "This action cannot be undone",
       "success": "Deleted successfully",
       "error": "Delete failed, please try again"
+    },
+    "form": {
+      "createTitle": "New Requirement",
+      "editTitle": "Edit Requirement",
+      "titleLabel": "Title",
+      "titlePlaceholder": "Enter requirement title",
+      "titleRequired": "Title is required",
+      "titleMaxLength": "Title cannot exceed 200 characters",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Describe the requirement including business context and expected outcomes",
+      "departmentPlaceholder": "Select department",
+      "departmentRequired": "Department is required",
+      "priorityPlaceholder": "Select priority",
+      "priorityRequired": "Priority is required",
+      "contactLabel": "Contact",
+      "contactPlaceholder": "Enter contact information",
+      "expectedLaunchDatePlaceholder": "Select expected launch date",
+      "createSuccess": "Requirement created successfully",
+      "editSuccess": "Requirement updated successfully",
+      "submitError": "Submit failed, please try again"
     }
   },
   "development": {
