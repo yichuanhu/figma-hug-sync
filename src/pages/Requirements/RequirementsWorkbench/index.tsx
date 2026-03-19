@@ -382,7 +382,7 @@ const RequirementsWorkbench = () => {
           </Col>
           <Col>
             <Space>
-              <Button icon={<IconUploadStroked />} theme="light" type="tertiary">
+              <Button icon={<IconUpload />} theme="light" type="tertiary">
                 {t('requirements.workbench.batchImport')}
               </Button>
               <Button icon={<IconPlusStroked />} theme="solid" type="primary">
