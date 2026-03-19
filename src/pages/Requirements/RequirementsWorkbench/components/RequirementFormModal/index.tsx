@@ -84,16 +84,14 @@ const RequirementFormModal = ({
         field: 'expectedLaunchDate',
         label: t('requirements.fields.expectedLaunchDate'),
         render: (formApi) => {
-          // Use Semi DatePicker inline
-          const SemiDatePicker = require('@douyinfe/semi-ui').DatePicker;
           return (
-            <SemiDatePicker
+            <DatePicker
               type="date"
               style={{ width: '100%' }}
               placeholder={t('requirements.form.expectedLaunchDatePlaceholder')}
               value={formApi.getValue('expectedLaunchDate')}
-              onChange={(date: Date | null) => {
-                formApi.setValue('expectedLaunchDate', date);
+              onChange={(date) => {
+                formApi.setValue('expectedLaunchDate', date || null);
               }}
             />
           );
