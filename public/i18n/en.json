@@ -550,7 +550,11 @@
       "maintainability": "Maintainability",
       "assessmentComment": "Assessment notes (optional)",
       "submitAssessment": "Submit Assessment",
-      "assessmentSubmitted": "Assessment submitted"
+      "assessmentSubmitted": "Assessment submitted",
+      "submitForApproval": "Submit for Approval",
+      "submitConfirmTitle": "Submit for Approval",
+      "submitConfirmContent": "Once submitted, the requirement will enter the approval process. Continue?",
+      "submitSuccess": "Requirement submitted for approval"
     }
   },
   "development": {
