@@ -18,12 +18,12 @@ import {
   IconSearchStroked,
   IconPlusStroked,
   IconMoreStroked,
-  IconEyeOpened,
+  IconEyeOpenedStroked,
   IconEditStroked,
   IconDeleteStroked,
-  IconUpload,
-  IconSend,
+  IconSendStroked,
 } from '@douyinfe/semi-icons';
+import { Upload } from 'lucide-react';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
@@ -287,7 +287,7 @@ const RequirementsWorkbench = () => {
           render={
             <Dropdown.Menu>
               <Dropdown.Item
-                icon={<IconEyeOpened />}
+                icon={<IconEyeOpenedStroked />}
                 onClick={(e) => {
                   e.stopPropagation();
                   console.log('View requirement:', record.id);
@@ -309,7 +309,7 @@ const RequirementsWorkbench = () => {
               )}
               {canEdit(record.status) && (
                 <Dropdown.Item
-                  icon={<IconSend />}
+                  icon={<IconSendStroked />}
                   onClick={(e) => {
                     e.stopPropagation();
                     Modal.confirm({
@@ -415,7 +415,7 @@ const RequirementsWorkbench = () => {
           </Col>
           <Col>
             <Space>
-              <Button icon={<IconUpload />} theme="light" type="tertiary">
+              <Button icon={<Upload size={14} strokeWidth={2} />} theme="light" type="tertiary">
                 {t('requirements.workbench.batchImport')}
               </Button>
               <Button icon={<IconPlusStroked />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>

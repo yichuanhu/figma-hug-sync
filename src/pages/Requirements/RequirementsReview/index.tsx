@@ -15,9 +15,9 @@ import {
 } from '@douyinfe/semi-ui';
 import {
   IconSearchStroked,
-  IconTickCircle,
+  IconCheckCircleStroked,
   IconCrossCircleStroked,
-  IconEyeOpened,
+  IconEyeOpenedStroked,
   IconMoreStroked,
 } from '@douyinfe/semi-icons';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
@@ -300,7 +300,7 @@ const RequirementsReview = () => {
             render={
               <Dropdown.Menu>
                 <Dropdown.Item
-                  icon={<IconEyeOpened />}
+                  icon={<IconEyeOpenedStroked />}
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedRecord(record);
@@ -312,7 +312,7 @@ const RequirementsReview = () => {
                 {record.status === 'PENDING' && (
                   <>
                     <Dropdown.Item
-                      icon={<IconTickCircle />}
+                      icon={<IconCheckCircleStroked />}
                       onClick={(e) => {
                         e.stopPropagation();
                         openApprovalModal(record, 'approve');
@@ -334,7 +334,7 @@ const RequirementsReview = () => {
                 )}
                 {record.status === 'ASSESSING' && (
                   <Dropdown.Item
-                    icon={<IconEyeOpened />}
+                    icon={<IconEyeOpenedStroked />}
                     onClick={(e) => {
                       e.stopPropagation();
                       setSelectedRecord(record);

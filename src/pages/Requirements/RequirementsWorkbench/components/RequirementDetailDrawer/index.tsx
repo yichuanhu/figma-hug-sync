@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tag, Typography, Collapsible, Button, Input, Toast, Tooltip, Modal } from '@douyinfe/semi-ui';
 import {
-  IconChevronDown,
-  IconChevronRight,
+  IconChevronDownStroked,
+  IconChevronRightStroked,
   IconEditStroked,
   IconDeleteStroked,
-  IconSend,
+  IconSendStroked,
 } from '@douyinfe/semi-icons';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
@@ -134,7 +134,7 @@ const PropertyPanel = ({
               theme="solid"
               type="primary"
               size="small"
-              icon={<IconSend />}
+              icon={<IconSendStroked />}
               block
               onClick={() => {
                 Modal.confirm({
@@ -291,7 +291,7 @@ const RequirementDetailDrawer = ({
           {canEdit && (
             <Tooltip content={t('requirements.detail.submitForApproval')}>
               <Button
-                icon={<IconSend />}
+                icon={<IconSendStroked />}
                 theme="borderless"
                 size="small"
                 type="primary"
@@ -343,7 +343,7 @@ const RequirementDetailDrawer = ({
               className="requirement-detail-section-header"
               onClick={() => setDescExpanded(!descExpanded)}
             >
-              {descExpanded ? <IconChevronDown size="small" /> : <IconChevronRight size="small" />}
+              {descExpanded ? <IconChevronDownStroked size="small" /> : <IconChevronRightStroked size="small" />}
               <Text strong>{t('requirements.form.descriptionLabel')}</Text>
             </div>
             <Collapsible isOpen={descExpanded}>
