@@ -1,7 +1,8 @@
 .metrics-section {
   .metrics-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    max-width: calc(200px * 4 + 1px); // 限制最多4列
 
     // Hide dividers for last item in each row dynamically
     // We handle divider visibility via JS-free approach:
