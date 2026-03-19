@@ -3481,6 +3481,8 @@ export interface LYRequirementResponse {
   creator_email?: string | null;
   /** 附件列表 */
   attachments?: string[] | null;
+  /** 审批记录 */
+  approval_records?: LYApprovalRecord[] | null;
   /** 创建时间 */
   created_at: string;
   /** 更新时间 */
