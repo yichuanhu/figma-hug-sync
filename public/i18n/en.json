@@ -520,6 +520,21 @@
       "sectionClassification": "Classification & Priority",
       "sectionAdditional": "Additional Information",
       "descriptionMaxLength": "Description cannot exceed 2000 characters"
+    },
+    "detail": {
+      "activityStream": "Activity",
+      "attachments": "Attachments",
+      "files": "files",
+      "addComment": "Add a comment...",
+      "send": "Send",
+      "commentAdded": "Comment added",
+      "approval": "Approval",
+      "approve": "Approve",
+      "reject": "Reject",
+      "technicalAssessment": "Technical Assessment",
+      "score": "Score",
+      "conclusion": "Conclusion",
+      "recommendImplement": "Recommend Implementation"
     }
   },
   "development": {
