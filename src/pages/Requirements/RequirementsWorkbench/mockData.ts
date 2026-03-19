@@ -102,17 +102,72 @@ const mockTemplates: MockTemplate[] = [
   { title: 'Tax Filing Preparation', description: 'Automated tax data compilation, calculation verification, filing preparation, and submission tracking for multiple jurisdictions.', department: 'Finance', departmentId: 'dept-001', creatorId: 'user-001', priority: 'HIGH', status: 'STOPPED' },
 ];
 
+const generateMockAssessment = (reqId: string, status: RequirementStatus): TechnicalAssessment | undefined => {
+  if (!['DEVELOPING', 'DEVELOPED', 'RUNNING'].includes(status)) return undefined;
+  return {
+    id: `assess-${reqId}`,
+    requirementId: reqId,
+    assessorId: 'user-008',
+    assessorName: 'Angela Wu',
+    generalScores: {
+      businessComplexity: 3,
+      resourceAvailability: 4,
+      externalDependency: 5,
+      riskLevel: 4,
+    },
+    uiAutomationScores: status === 'RUNNING' ? {
+      systemStability: 3,
+      elementIdentifiability: 3,
+      processStandardization: 5,
+    } : undefined,
+    adpScores: undefined,
+    totalScore: status === 'RUNNING' ? 27 : 16,
+    maxScore: status === 'RUNNING' ? 35 : 20,
+    conclusion: 'PASSED',
+    comment: 'The requirement has clear business logic and stable target systems. Recommended for implementation.',
+    assessedAt: new Date(2026, 1, 15, 14, 0).toISOString(),
+  };
+};
+
+const generateMockArtifacts = (reqId: string, status: RequirementStatus): RequirementArtifact[] => {
+  if (!['DEVELOPING', 'DEVELOPED', 'RUNNING'].includes(status)) return [];
+  return [
+    {
+      id: `artifact-${reqId}-1`,
+      requirementId: reqId,
+      artifactType: 'PROCESS',
+      artifactId: 'proc-001',
+      artifactName: 'Procurement Approval Process',
+      contribution: 0.4,
+      description: 'Handles procurement request approval workflow',
+      createdAt: new Date(2026, 1, 20).toISOString(),
+    },
+    {
+      id: `artifact-${reqId}-2`,
+      requirementId: reqId,
+      artifactType: 'ADP_APP',
+      artifactId: 'adp-001',
+      artifactName: 'Invoice Recognition App',
+      contribution: 0.3,
+      description: 'Extracts invoice data using OCR',
+      createdAt: new Date(2026, 1, 21).toISOString(),
+    },
+  ];
+};
+
 const generateMockRequirements = (): RequirementItem[] => {
   return mockTemplates.map((tpl, index) => {
     const creator = mockCreators[tpl.creatorId];
     const createDate = new Date(2026, 0, 5 + index, 9 + (index % 8), (index * 13) % 60);
     const updateDate = new Date(createDate.getTime() + (1 + (index % 15)) * 24 * 60 * 60 * 1000);
     const launchDate = new Date(createDate.getTime() + (30 + (index % 60)) * 24 * 60 * 60 * 1000);
+    const id = generateUUID();
 
     return {
-      id: generateUUID(),
+      id,
       title: tpl.title,
       description: tpl.description,
+      businessBackground: index % 3 === 0 ? 'Current process is manual and time-consuming, requiring significant human effort. Automating this workflow will reduce processing time by 60% and minimize human errors.' : undefined,
       department: tpl.department,
       departmentId: tpl.departmentId,
       creatorId: tpl.creatorId,
@@ -120,9 +175,13 @@ const generateMockRequirements = (): RequirementItem[] => {
       creatorDepartment: creator.department,
       creatorRole: creator.role,
       creatorEmail: creator.email,
+      contactInfo: `${creator.name} - ${creator.email}`,
       priority: tpl.priority,
       status: tpl.status,
       expectedLaunchDate: launchDate.toISOString(),
+      involvedTech: index % 4 === 0 ? ['UI_AUTOMATION'] : index % 4 === 1 ? ['ADP'] : index % 4 === 2 ? ['UI_AUTOMATION', 'ADP'] : undefined,
+      assessment: generateMockAssessment(id, tpl.status),
+      artifacts: generateMockArtifacts(id, tpl.status),
       createdAt: createDate.toISOString(),
       updatedAt: updateDate.toISOString(),
     };
