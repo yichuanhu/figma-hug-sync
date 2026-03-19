@@ -71,6 +71,8 @@ const RequirementsWorkbench = () => {
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingRecord, setEditingRecord] = useState<RequirementItem | null>(null);
+  const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState<RequirementItem | null>(null);
 
   // 列表数据
   const [listResponse, setListResponse] = useState<{
