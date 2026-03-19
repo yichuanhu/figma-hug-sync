@@ -16,7 +16,7 @@ export const statusConfig: Record<RequirementStatus, { color: TagColor; i18nKey:
   ARCHIVED: { color: 'grey', i18nKey: 'requirements.status.archived' },
 };
 
-export const priorityConfig: Record<RequirementPriority, { color: string; i18nKey: string }> = {
+export const priorityConfig: Record<RequirementPriority, { color: TagColor; i18nKey: string }> = {
   HIGH: { color: 'red', i18nKey: 'requirements.priority.high' },
   MEDIUM: { color: 'orange', i18nKey: 'requirements.priority.medium' },
   LOW: { color: 'blue', i18nKey: 'requirements.priority.low' },

@@ -21,8 +21,9 @@ import {
   IconEyeOpened,
   IconEditStroked,
   IconDeleteStroked,
-  IconUploadStroked,
+  IconUpload,
 } from '@douyinfe/semi-icons';
+import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
