@@ -160,31 +160,61 @@
   flex-shrink: 0;
 }
 
-// ============= 技术评估表单 =============
+// ============= 技术评估评分卡 =============
 
-.requirement-detail-assessment-form {
+.requirement-assessment-form {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 16px;
 }
 
-.requirement-detail-assessment-row {
+.requirement-assessment-dimension-group {
+  background: var(--semi-color-fill-0);
+  border-radius: 6px;
+  padding: 12px;
+}
+
+.requirement-assessment-dimension-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.requirement-assessment-score-row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--semi-color-border);
+
+  &:last-of-type {
+    border-bottom: none;
+    margin-bottom: 4px;
+    padding-bottom: 0;
+  }
+}
+
+.requirement-assessment-subtotal {
+  padding-top: 8px;
+  text-align: right;
+}
+
+.requirement-assessment-result-section {
+  background: var(--semi-color-fill-0);
+  border-radius: 6px;
+  padding: 12px;
+}
+
+.requirement-assessment-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.requirement-assessment-result {
+  display: flex;
+  flex-direction: column;
   gap: 8px;
-}
-
-.requirement-detail-assessment-label {
-  flex-shrink: 0;
-  min-width: 60px;
-}
-
-.requirement-detail-assessment-total {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 0;
-  margin-top: 4px;
-  border-top: 1px solid var(--semi-color-border);
 }
