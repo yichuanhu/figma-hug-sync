@@ -2677,9 +2677,12 @@
     },
     "approvalStatus": {
       "DRAFT": "Draft",
-      "PENDING": "Pending",
-      "APPROVED": "Approved",
-      "REJECTED": "Rejected"
+      "BUSINESS_PENDING": "Biz Pending",
+      "BUSINESS_APPROVED": "Biz Approved",
+      "BUSINESS_REJECTED": "Biz Rejected",
+      "TECH_PENDING": "Tech Pending",
+      "TECH_APPROVED": "Approved",
+      "TECH_REJECTED": "Tech Rejected"
     },
     "devStatus": {
       "NOT_STARTED": "Not Started",

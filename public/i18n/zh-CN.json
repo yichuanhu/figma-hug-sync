@@ -2686,9 +2686,12 @@
     },
     "approvalStatus": {
       "DRAFT": "草稿",
-      "PENDING": "待审批",
-      "APPROVED": "已通过",
-      "REJECTED": "已驳回"
+      "BUSINESS_PENDING": "业务审批中",
+      "BUSINESS_APPROVED": "业务已通过",
+      "BUSINESS_REJECTED": "业务已驳回",
+      "TECH_PENDING": "技术审批中",
+      "TECH_APPROVED": "已通过",
+      "TECH_REJECTED": "技术已驳回"
     },
     "devStatus": {
       "NOT_STARTED": "未开始",
