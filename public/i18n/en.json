@@ -458,6 +458,46 @@
       "defaultDescription": "No files yet, click \"Upload File\" to start"
     }
   },
+  "requirements": {
+    "workbench": {
+      "title": "Requirements Workbench",
+      "description": "Manage and track the full lifecycle of automation requirements",
+      "searchPlaceholder": "Search requirement title",
+      "newRequirement": "New Requirement",
+      "batchImport": "Batch Import",
+      "noData": "No Requirements"
+    },
+    "fields": {
+      "title": "Title",
+      "department": "Department",
+      "priority": "Priority",
+      "expectedLaunchDate": "Expected Launch Date"
+    },
+    "status": {
+      "draft": "Draft",
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "assessing": "Assessing",
+      "developing": "Developing",
+      "developed": "Developed",
+      "running": "Running",
+      "stopped": "Stopped",
+      "archived": "Archived"
+    },
+    "priority": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
+    "deleteModal": {
+      "title": "Delete Requirement",
+      "confirmMessage": "Are you sure you want to delete \"{{name}}\"?",
+      "warning": "This action cannot be undone",
+      "success": "Deleted successfully",
+      "error": "Delete failed, please try again"
+    }
+  },
   "development": {
     "processDevelopment": {
       "breadcrumb": {

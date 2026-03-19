@@ -460,6 +460,46 @@
       "defaultDescription": "还没有上传任何文件，点击「上传文件」开始"
     }
   },
+  "requirements": {
+    "workbench": {
+      "title": "需求工作台",
+      "description": "管理和跟踪自动化需求的全生命周期",
+      "searchPlaceholder": "搜索需求标题",
+      "newRequirement": "新建需求",
+      "batchImport": "批量导入",
+      "noData": "暂无需求"
+    },
+    "fields": {
+      "title": "需求标题",
+      "department": "部门",
+      "priority": "优先级",
+      "expectedLaunchDate": "期望上线日期"
+    },
+    "status": {
+      "draft": "草稿",
+      "pending": "待审批",
+      "approved": "已通过",
+      "rejected": "已拒绝",
+      "assessing": "评估中",
+      "developing": "开发中",
+      "developed": "已开发",
+      "running": "运行中",
+      "stopped": "已停用",
+      "archived": "已归档"
+    },
+    "priority": {
+      "high": "高",
+      "medium": "中",
+      "low": "低"
+    },
+    "deleteModal": {
+      "title": "删除需求",
+      "confirmMessage": "确定要删除需求「{{name}}」吗？",
+      "warning": "删除后将无法恢复，请谨慎操作",
+      "success": "删除成功",
+      "error": "删除失败，请重试"
+    }
+  },
   "development": {
     "processDevelopment": {
       "breadcrumb": {
