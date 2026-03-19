@@ -555,6 +555,26 @@
       "submitConfirmTitle": "Submit for Approval",
       "submitConfirmContent": "Once submitted, the requirement will enter the approval process. Continue?",
       "submitSuccess": "Requirement submitted for approval"
+    },
+    "review": {
+      "title": "Requirement Review",
+      "description": "Review and assess pending requirements",
+      "searchPlaceholder": "Search requirements",
+      "pendingMe": "Pending Me",
+      "reviewedByMe": "Reviewed by Me",
+      "allReviews": "All",
+      "pendingCount": "Pending Approval",
+      "assessingCount": "Pending Assessment",
+      "approvedCount": "Approved",
+      "rejectedCount": "Rejected",
+      "noPending": "No pending requirements",
+      "noReviewed": "No reviewed records",
+      "noRecords": "No review records",
+      "startAssessment": "Start Assessment",
+      "approveModalTitle": "Approve Requirement",
+      "rejectModalTitle": "Reject Requirement",
+      "approveReasonPlaceholder": "Enter approval comments (optional)",
+      "rejectReasonPlaceholder": "Enter rejection reason"
     }
   },
   "development": {
