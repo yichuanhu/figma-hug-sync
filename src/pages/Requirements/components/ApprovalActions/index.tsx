@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Space, Modal, Toast, Form } from '@douyinfe/semi-ui';
-import type { LYRequirementResponse, ApprovalStatus } from '@/api';
+import { IconTickCircle, IconClose } from '@douyinfe/semi-icons';
+import type { LYRequirementResponse } from '@/api';
 import './index.less';
 
 interface ApprovalActionsProps {
@@ -27,10 +28,13 @@ const ApprovalActions = ({ requirement, onStatusChange }: ApprovalActionsProps) 
     }
   };
 
-  const handleApprove = async () => {
+  const handleApprove = () => {
     Modal.confirm({
       title: t('requirement.approval.approveConfirmTitle'),
+      icon: <IconTickCircle style={{ color: 'var(--semi-color-success)' }} />,
       content: t('requirement.approval.approveConfirmContent', { title: requirement.title }),
+      okText: t('requirement.approval.approve'),
+      cancelText: t('common.cancel'),
       onOk: async () => {
         try {
           await new Promise((resolve) => setTimeout(resolve, 400));
@@ -62,7 +66,6 @@ const ApprovalActions = ({ requirement, onStatusChange }: ApprovalActionsProps) 
   return (
     <div className="approval-actions">
       <Space>
-        {/* Draft → Submit for Approval */}
         {approval_status === 'DRAFT' && (
           <Button
             theme="solid"
@@ -74,14 +77,9 @@ const ApprovalActions = ({ requirement, onStatusChange }: ApprovalActionsProps) 
           </Button>
         )}
 
-        {/* Pending → Approve / Reject */}
         {approval_status === 'PENDING' && (
           <>
-            <Button
-              theme="solid"
-              type="primary"
-              onClick={handleApprove}
-            >
+            <Button theme="solid" type="primary" onClick={handleApprove}>
               {t('requirement.approval.approve')}
             </Button>
             <Button
@@ -94,7 +92,6 @@ const ApprovalActions = ({ requirement, onStatusChange }: ApprovalActionsProps) 
           </>
         )}
 
-        {/* Rejected → Resubmit */}
         {approval_status === 'REJECTED' && (
           <Button
             theme="solid"
@@ -107,14 +104,15 @@ const ApprovalActions = ({ requirement, onStatusChange }: ApprovalActionsProps) 
         )}
       </Space>
 
-      {/* Reject Modal with comment */}
+      {/* Reject Modal */}
       <Modal
         title={t('requirement.approval.rejectTitle')}
         visible={rejectModalVisible}
         onCancel={() => setRejectModalVisible(false)}
         footer={null}
-        width={480}
+        width={520}
         closeOnEsc
+        maskClosable={false}
       >
         <Form onSubmit={handleReject} labelPosition="top">
           <Form.TextArea
@@ -122,6 +120,8 @@ const ApprovalActions = ({ requirement, onStatusChange }: ApprovalActionsProps) 
             label={t('requirement.approval.rejectReason')}
             placeholder={t('requirement.approval.rejectReasonPlaceholder')}
             autosize={{ minRows: 3, maxRows: 6 }}
+            maxCount={2000}
+            showClear
             rules={[
               { required: true, message: t('requirement.approval.rejectReasonRequired') },
             ]}

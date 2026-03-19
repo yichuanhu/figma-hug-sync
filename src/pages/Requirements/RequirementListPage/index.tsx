@@ -284,8 +284,18 @@ const RequirementListPage: React.FC<RequirementListPageProps> = ({ defaultApprov
   const handleDelete = (record: LYRequirementResponse) => {
     Modal.confirm({
       title: t('requirement.list.deleteConfirmTitle'),
-      content: t('requirement.list.deleteConfirmContent', { title: record.title }),
-      okType: 'danger',
+      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      content: (
+        <>
+          <div>{t('requirement.list.deleteConfirmContent', { title: record.title })}</div>
+          <div style={{ color: 'var(--semi-color-text-2)', marginTop: 8 }}>
+            {t('requirement.list.deleteWarning')}
+          </div>
+        </>
+      ),
+      okText: t('common.confirm'),
+      cancelText: t('common.cancel'),
+      okButtonProps: { type: 'danger' },
       onOk: async () => {
         await new Promise((resolve) => setTimeout(resolve, 300));
         Toast.success(t('requirement.list.deleteSuccess'));
