@@ -1,35 +1,112 @@
+// RequirementsReview 需求评审页面样式
 .requirements-review {
   display: flex;
   flex-direction: column;
   height: 100%;
 
-  .requirements-review-header {
-    padding: 0 24px;
+  // 标题区域
+  &-header {
     flex-shrink: 0;
 
-    .requirements-review-title {
-      font-size: 20px;
-      font-weight: 600;
-      margin-top: 16px;
-      margin-bottom: 24px;
-      color: var(--semi-color-text-0);
+    &-title {
+      margin-bottom: 20px;
+
+      .title {
+        margin-bottom: 8px;
+      }
     }
   }
 
-  .requirements-review-content {
+  // 统计卡片
+  &-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+    flex-shrink: 0;
+  }
+
+  &-stat-card {
+    background: var(--semi-color-bg-0);
+    border-radius: 8px;
+    padding: 16px 20px;
+    border: 1px solid var(--semi-color-border);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &-stat-value {
+    margin: 0 !important;
+    line-height: 1 !important;
+  }
+
+  &-stat-pending {
+    border-left: 3px solid var(--semi-color-warning);
+  }
+
+  &-stat-assessing {
+    border-left: 3px solid rgb(var(--semi-purple-5));
+  }
+
+  &-stat-approved {
+    border-left: 3px solid var(--semi-color-success);
+  }
+
+  &-stat-rejected {
+    border-left: 3px solid var(--semi-color-danger);
+  }
+
+  // 内容区
+  &-content {
     flex: 1;
-    overflow: auto;
-    padding: 0 24px 24px;
+    min-height: 0;
+    overflow: hidden;
 
-    .requirements-review-card {
-      background-color: var(--semi-color-bg-0);
-      border-radius: 8px;
-      padding: 24px;
-      min-height: 400px;
-
-      .requirements-review-placeholder {
-        color: var(--semi-color-text-2);
-      }
+    .semi-tabs-content {
+      height: calc(100% - 46px);
+      overflow: hidden;
     }
+
+    .semi-tabs-pane {
+      height: 100%;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
+  // 工具栏
+  &-toolbar {
+    margin-bottom: 12px;
+    flex-shrink: 0;
+  }
+
+  &-search {
+    width: 320px;
+  }
+
+  // 行选中
+  .semi-table-row.requirements-review-row-selected {
+    background-color: var(--semi-color-fill-1);
+  }
+
+  // 弹窗
+  &-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  &-modal-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &-modal-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
   }
 }
