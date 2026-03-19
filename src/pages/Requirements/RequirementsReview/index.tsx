@@ -16,7 +16,7 @@ import {
 import {
   IconSearchStroked,
   IconTickCircle,
-  IconCloseCircle,
+  IconCrossCircleStroked,
   IconEyeOpened,
 } from '@douyinfe/semi-icons';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
