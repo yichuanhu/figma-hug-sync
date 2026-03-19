@@ -9,7 +9,7 @@ import {
   AvatarGroup,
   Tooltip,
 } from '@douyinfe/semi-ui';
-import { IconLink, IconFlow, IconServer, IconKey } from '@douyinfe/semi-icons';
+import { IconLink, IconServer, IconKey, IconSetting } from '@douyinfe/semi-icons';
 
 import './index.less';
 
