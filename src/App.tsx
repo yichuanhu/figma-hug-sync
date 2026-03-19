@@ -108,6 +108,7 @@ const App = () => (
           <Route path="/dev-preview/empty-state-options" element={<EmptyStateOptionsPreview />} />
           
           {/* 需求中心 */}
+          <Route path="/requirements" element={<Navigate to="/requirements/list" replace />} />
           <Route path="/requirements/list" element={<RequirementsWorkbench />} />
           <Route path="/requirements/review" element={<RequirementsReview />} />
           <Route path="/requirements/team" element={<RequirementsTeam />} />
