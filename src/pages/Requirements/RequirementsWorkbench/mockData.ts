@@ -1,8 +1,9 @@
+import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import type { RequirementItem, RequirementStatus, RequirementPriority, RequirementQueryParams, RequirementListResponse } from './types';
 
 // ============= 状态/优先级配置 =============
 
-export const statusConfig: Record<RequirementStatus, { color: string; i18nKey: string }> = {
+export const statusConfig: Record<RequirementStatus, { color: TagColor; i18nKey: string }> = {
   DRAFT: { color: 'grey', i18nKey: 'requirements.status.draft' },
   PENDING: { color: 'orange', i18nKey: 'requirements.status.pending' },
   APPROVED: { color: 'green', i18nKey: 'requirements.status.approved' },
