@@ -271,8 +271,8 @@ const RequirementListPage: React.FC<RequirementListPageProps> = ({ defaultApprov
 
   // Row click
   const handleRowClick = (record: LYRequirementResponse) => {
-    setSelectedRequirementId(record.id);
-    // TODO: Open detail drawer in Phase 2
+    setSelectedRequirement(record);
+    setDetailDrawerVisible(true);
   };
 
   // Delete
