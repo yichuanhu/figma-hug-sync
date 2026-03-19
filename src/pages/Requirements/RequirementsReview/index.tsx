@@ -289,71 +289,67 @@ const RequirementsReview = () => {
         title: t('common.actions'),
         dataIndex: 'action' as string,
         key: 'action',
-        width: 180,
+        width: 60,
         ellipsis: false,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        render: ((_: any, record: any) => {
-          if (record.status === 'PENDING') {
-            return (
-              <Space spacing={4}>
-                <Button
-                  icon={<IconTickCircle />}
-                  theme="borderless"
-                  size="small"
-                  type="primary"
-                  onClick={(e: React.MouseEvent) => {
+        render: ((_: any, record: any) => (
+          <Dropdown
+            trigger="click"
+            position="bottomRight"
+            clickToHide
+            render={
+              <Dropdown.Menu>
+                <Dropdown.Item
+                  icon={<IconEyeOpened />}
+                  onClick={(e) => {
                     e.stopPropagation();
-                    openApprovalModal(record, 'approve');
+                    setSelectedRecord(record);
+                    setDetailDrawerVisible(true);
                   }}
                 >
-                  {t('requirements.detail.approve')}
-                </Button>
-                <Button
-                  icon={<IconCrossCircleStroked />}
-                  theme="borderless"
-                  size="small"
-                  type="danger"
-                  onClick={(e: React.MouseEvent) => {
-                    e.stopPropagation();
-                    openApprovalModal(record, 'reject');
-                  }}
-                >
-                  {t('requirements.detail.reject')}
-                </Button>
-              </Space>
-            );
-          }
-          if (record.status === 'ASSESSING') {
-            return (
-              <Button
-                icon={<IconEyeOpened />}
-                theme="borderless"
-                size="small"
-                onClick={(e: React.MouseEvent) => {
-                  e.stopPropagation();
-                  setSelectedRecord(record);
-                  setDetailDrawerVisible(true);
-                }}
-              >
-                {t('requirements.review.startAssessment')}
-              </Button>
-            );
-          }
-          return (
-            <Button
-              icon={<IconEyeOpened />}
-              theme="borderless"
-              size="small"
-              onClick={(e: React.MouseEvent) => {
-                e.stopPropagation();
-                setSelectedRecord(record);
-                setDetailDrawerVisible(true);
-              }}
-            >
-              {t('common.viewDetail')}
-            </Button>
-          );
-        }),
+                  {t('common.viewDetail')}
+                </Dropdown.Item>
+                {record.status === 'PENDING' && (
+                  <>
+                    <Dropdown.Item
+                      icon={<IconTickCircle />}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openApprovalModal(record, 'approve');
+                      }}
+                    >
+                      {t('requirements.detail.approve')}
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      icon={<IconCrossCircleStroked />}
+                      type="danger"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openApprovalModal(record, 'reject');
+                      }}
+                    >
+                      {t('requirements.detail.reject')}
+                    </Dropdown.Item>
+                  </>
+                )}
+                {record.status === 'ASSESSING' && (
+                  <Dropdown.Item
+                    icon={<IconEyeOpened />}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedRecord(record);
+                      setDetailDrawerVisible(true);
+                    }}
+                  >
+                    {t('requirements.review.startAssessment')}
+                  </Dropdown.Item>
+                )}
+              </Dropdown.Menu>
+            }
+          >
+            <Button icon={<IconMoreStroked />} theme="borderless" onClick={(e) => e.stopPropagation()} />
+          </Dropdown>
+        )),
       });
     }
 
