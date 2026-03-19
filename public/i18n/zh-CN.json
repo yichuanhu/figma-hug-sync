@@ -517,7 +517,11 @@
       "expectedLaunchDatePlaceholder": "请选择期望上线日期",
       "createSuccess": "需求创建成功",
       "editSuccess": "需求更新成功",
-      "submitError": "提交失败，请重试"
+      "submitError": "提交失败，请重试",
+      "sectionBasicInfo": "基本信息",
+      "sectionClassification": "分类与优先级",
+      "sectionAdditional": "补充信息",
+      "descriptionMaxLength": "描述不能超过2000个字符"
     }
   },
   "development": {

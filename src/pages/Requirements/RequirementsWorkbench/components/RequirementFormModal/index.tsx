@@ -1,16 +1,20 @@
-import { useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { DatePicker } from '@douyinfe/semi-ui';
-import FormModal from '@/components/FormModal';
-import type { FieldConfig } from '@/components/FormModal';
+import {
+  Modal,
+  Form,
+  Toast,
+  Button,
+  DatePicker,
+} from '@douyinfe/semi-ui';
 import type { RequirementItem } from '../../types';
 import { departmentOptions } from '../../mockData';
+import './index.less';
 
 interface RequirementFormModalProps {
   visible: boolean;
   onCancel: () => void;
   onSuccess: (values: Record<string, unknown>) => void;
-  /** 编辑模式传入已有数据 */
   editData?: RequirementItem | null;
 }
 
@@ -21,6 +25,7 @@ const RequirementFormModal = ({
   editData,
 }: RequirementFormModalProps) => {
   const { t } = useTranslation();
+  const [loading, setLoading] = useState(false);
   const isEdit = !!editData;
 
   const priorityOptions = useMemo(
@@ -30,75 +35,6 @@ const RequirementFormModal = ({
       { value: 'LOW', label: t('requirements.priority.low') },
     ],
     [t],
-  );
-
-  const fields: FieldConfig[] = useMemo(
-    () => [
-      {
-        type: 'input',
-        field: 'title',
-        label: t('requirements.form.titleLabel'),
-        placeholder: t('requirements.form.titlePlaceholder'),
-        rules: [
-          { required: true, message: t('requirements.form.titleRequired') },
-          { max: 200, message: t('requirements.form.titleMaxLength') },
-        ],
-        maxLength: 200,
-        showClear: true,
-      },
-      {
-        type: 'textarea',
-        field: 'description',
-        label: t('requirements.form.descriptionLabel'),
-        placeholder: t('requirements.form.descriptionPlaceholder'),
-        maxCount: 2000,
-        autosize: { minRows: 3, maxRows: 8 },
-      },
-      {
-        type: 'select',
-        field: 'department',
-        label: t('requirements.fields.department'),
-        placeholder: t('requirements.form.departmentPlaceholder'),
-        rules: [{ required: true, message: t('requirements.form.departmentRequired') }],
-        options: departmentOptions,
-        filter: true,
-      },
-      {
-        type: 'select',
-        field: 'priority',
-        label: t('requirements.fields.priority'),
-        placeholder: t('requirements.form.priorityPlaceholder'),
-        rules: [{ required: true, message: t('requirements.form.priorityRequired') }],
-        options: priorityOptions,
-      },
-      {
-        type: 'input',
-        field: 'contactInfo',
-        label: t('requirements.form.contactLabel'),
-        placeholder: t('requirements.form.contactPlaceholder'),
-        maxLength: 100,
-        showClear: true,
-      },
-      {
-        type: 'custom',
-        field: 'expectedLaunchDate',
-        label: t('requirements.fields.expectedLaunchDate'),
-        render: (formApi) => {
-          return (
-            <DatePicker
-              type="date"
-              style={{ width: '100%' }}
-              placeholder={t('requirements.form.expectedLaunchDatePlaceholder')}
-              value={formApi.getValue('expectedLaunchDate')}
-              onChange={(date) => {
-                formApi.setValue('expectedLaunchDate', date || null);
-              }}
-            />
-          );
-        },
-      },
-    ],
-    [t, priorityOptions],
   );
 
   const initialValues = useMemo(() => {
@@ -120,32 +56,127 @@ const RequirementFormModal = ({
   }, [isEdit, editData]);
 
   const handleSubmit = async (values: Record<string, unknown>) => {
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    onSuccess(values);
+    setLoading(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      onSuccess(values);
+      Toast.success(
+        isEdit
+          ? t('requirements.form.editSuccess')
+          : t('requirements.form.createSuccess'),
+      );
+      onCancel();
+    } catch {
+      Toast.error(t('requirements.form.submitError'));
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <FormModal
+    <Modal
+      title={isEdit ? t('requirements.form.editTitle') : t('requirements.form.createTitle')}
       visible={visible}
-      title={
-        isEdit
-          ? t('requirements.form.editTitle')
-          : t('requirements.form.createTitle')
-      }
       onCancel={onCancel}
-      onSubmit={handleSubmit}
+      footer={null}
       width={520}
-      fields={fields}
-      initialValues={initialValues}
-      formKey={editData?.id || 'create'}
-      submitText={isEdit ? t('common.save') : t('common.create')}
-      successMessage={
-        isEdit
-          ? t('requirements.form.editSuccess')
-          : t('requirements.form.createSuccess')
-      }
-      errorMessage={t('requirements.form.submitError')}
-    />
+      centered
+      closeOnEsc
+      maskClosable={false}
+    >
+      <Form
+        onSubmit={handleSubmit}
+        labelPosition="top"
+        className="requirement-form-modal-form"
+        initValues={initialValues}
+        key={editData?.id || 'create'}
+      >
+        <div className="requirement-form-modal-content">
+          {/* 基本信息 */}
+          <div className="requirement-form-modal-section">
+            <div className="requirement-form-modal-section-title">
+              {t('requirements.form.sectionBasicInfo')}
+            </div>
+            <Form.Input
+              field="title"
+              label={t('requirements.form.titleLabel')}
+              placeholder={t('requirements.form.titlePlaceholder')}
+              trigger={['blur', 'change']}
+              rules={[
+                { required: true, message: t('requirements.form.titleRequired') },
+                { max: 200, message: t('requirements.form.titleMaxLength') },
+              ]}
+              maxLength={200}
+              showClear
+            />
+            <Form.TextArea
+              field="description"
+              label={t('requirements.form.descriptionLabel')}
+              placeholder={t('requirements.form.descriptionPlaceholder')}
+              autosize={{ minRows: 3, maxRows: 6 }}
+              maxCount={2000}
+              rules={[
+                { max: 2000, message: t('requirements.form.descriptionMaxLength') },
+              ]}
+            />
+          </div>
+
+          {/* 分类与优先级 */}
+          <div className="requirement-form-modal-section">
+            <div className="requirement-form-modal-section-title">
+              {t('requirements.form.sectionClassification')}
+            </div>
+            <Form.Select
+              field="department"
+              label={t('requirements.fields.department')}
+              placeholder={t('requirements.form.departmentPlaceholder')}
+              rules={[{ required: true, message: t('requirements.form.departmentRequired') }]}
+              optionList={departmentOptions}
+              filter
+              className="requirement-form-modal-select-full"
+            />
+            <Form.Select
+              field="priority"
+              label={t('requirements.fields.priority')}
+              placeholder={t('requirements.form.priorityPlaceholder')}
+              rules={[{ required: true, message: t('requirements.form.priorityRequired') }]}
+              optionList={priorityOptions}
+              className="requirement-form-modal-select-full"
+            />
+          </div>
+
+          {/* 补充信息 */}
+          <div className="requirement-form-modal-section">
+            <div className="requirement-form-modal-section-title">
+              {t('requirements.form.sectionAdditional')}
+            </div>
+            <Form.Input
+              field="contactInfo"
+              label={t('requirements.form.contactLabel')}
+              placeholder={t('requirements.form.contactPlaceholder')}
+              maxLength={100}
+              showClear
+            />
+            <Form.Slot label={t('requirements.fields.expectedLaunchDate')}>
+              <DatePicker
+                type="date"
+                style={{ width: '100%' }}
+                placeholder={t('requirements.form.expectedLaunchDatePlaceholder')}
+              />
+            </Form.Slot>
+          </div>
+        </div>
+
+        <div className="requirement-form-modal-footer">
+          <Button theme="light" onClick={onCancel}>
+            {t('common.cancel')}
+          </Button>
+          <Button htmlType="submit" theme="solid" type="primary" loading={loading}>
+            {isEdit ? t('common.save') : t('common.create')}
+          </Button>
+        </div>
+      </Form>
+    </Modal>
   );
 };
 
