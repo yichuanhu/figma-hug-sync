@@ -37,6 +37,7 @@ import {
   deleteRequirement,
   createRequirement,
   updateRequirement,
+  updateRequirementStatus,
 } from './mockData';
 import RequirementFormModal from './components/RequirementFormModal';
 import RequirementDetailDrawer from './components/RequirementDetailDrawer';
