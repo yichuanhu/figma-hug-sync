@@ -45,7 +45,7 @@ import EmptyStatePreview from "@/pages/DevPreview/EmptyStatePreview";
 import EmptyStateOptionsPreview from "@/pages/DevPreview/EmptyStateOptionsPreview";
 // Requirements
 import RequirementListPage from "@/pages/Requirements/RequirementListPage";
-// Requirements & Operations (legacy)
+import RequirementReviewPage from "@/pages/Requirements/RequirementReviewPage";
 import Operations from "@/pages/Operations";
 // Maintenance
 import MaintenanceWorkbench from "@/pages/Maintenance/MaintenanceWorkbench";
