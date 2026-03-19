@@ -311,11 +311,14 @@ const RequirementListPage: React.FC<RequirementListPageProps> = ({ defaultApprov
     LOW: { color: 'grey', i18nKey: 'requirement.priority.LOW' },
   };
 
-  const approvalStatusConfig: Record<ApprovalStatus, { color: 'grey' | 'orange' | 'green' | 'red'; i18nKey: string }> = {
+  const approvalStatusConfig: Record<ApprovalStatus, { color: 'grey' | 'orange' | 'green' | 'red' | 'blue'; i18nKey: string }> = {
     DRAFT: { color: 'grey', i18nKey: 'requirement.approvalStatus.DRAFT' },
-    PENDING: { color: 'orange', i18nKey: 'requirement.approvalStatus.PENDING' },
-    APPROVED: { color: 'green', i18nKey: 'requirement.approvalStatus.APPROVED' },
-    REJECTED: { color: 'red', i18nKey: 'requirement.approvalStatus.REJECTED' },
+    BUSINESS_PENDING: { color: 'orange', i18nKey: 'requirement.approvalStatus.BUSINESS_PENDING' },
+    BUSINESS_APPROVED: { color: 'blue', i18nKey: 'requirement.approvalStatus.BUSINESS_APPROVED' },
+    BUSINESS_REJECTED: { color: 'red', i18nKey: 'requirement.approvalStatus.BUSINESS_REJECTED' },
+    TECH_PENDING: { color: 'orange', i18nKey: 'requirement.approvalStatus.TECH_PENDING' },
+    TECH_APPROVED: { color: 'green', i18nKey: 'requirement.approvalStatus.TECH_APPROVED' },
+    TECH_REJECTED: { color: 'red', i18nKey: 'requirement.approvalStatus.TECH_REJECTED' },
   };
 
   const devStatusConfig: Record<DevelopmentStatus, { color: 'grey' | 'blue' | 'cyan' | 'green'; i18nKey: string }> = {

@@ -108,7 +108,7 @@ const App = () => (
           
           {/* 需求中心 */}
           <Route path="/requirements/list" element={<RequirementListPage />} />
-          <Route path="/requirements/review" element={<RequirementListPage defaultApprovalFilter="PENDING" />} />
+          <Route path="/requirements/review" element={<RequirementReviewPage />} />
           
           {/* 运营中心 & 运维中心 */}
           <Route path="/operations" element={<Operations />} />
