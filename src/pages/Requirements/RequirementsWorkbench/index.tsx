@@ -444,6 +444,33 @@ const RequirementsWorkbench = () => {
           />
         )}
       </div>
+
+      {/* 新建需求弹窗 */}
+      <RequirementFormModal
+        visible={createModalVisible}
+        onCancel={() => setCreateModalVisible(false)}
+        onSuccess={async (values) => {
+          await createRequirement(values);
+          loadData();
+        }}
+      />
+
+      {/* 编辑需求弹窗 */}
+      <RequirementFormModal
+        visible={editModalVisible}
+        onCancel={() => {
+          setEditModalVisible(false);
+          setEditingRecord(null);
+        }}
+        editData={editingRecord}
+        onSuccess={async (values) => {
+          if (editingRecord) {
+            await updateRequirement(editingRecord.id, values);
+            loadData();
+          }
+          setEditingRecord(null);
+        }}
+      />
     </div>
   );
 };
