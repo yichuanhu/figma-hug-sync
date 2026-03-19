@@ -25,6 +25,7 @@ import EmptyState from '@/components/EmptyState';
 import FilterPopover from '@/components/FilterPopover';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import RequirementFormModal from '../components/RequirementFormModal';
+import RequirementDetailDrawer from '../components/RequirementDetailDrawer';
 import RequirementStatusTag from '../components/RequirementStatusTag';
 import type {
   LYRequirementResponse,
@@ -216,8 +217,10 @@ const RequirementListPage: React.FC<RequirementListPageProps> = ({ defaultApprov
   const [formModalVisible, setFormModalVisible] = useState(false);
   const [editingRequirement, setEditingRequirement] = useState<LYRequirementResponse | null>(null);
 
-  // Selected row
-  const [selectedRequirementId, setSelectedRequirementId] = useState<string | null>(null);
+  // Selected row & detail drawer
+  const [selectedRequirement, setSelectedRequirement] = useState<LYRequirementResponse | null>(null);
+  const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
+  const selectedRequirementId = selectedRequirement?.id || null;
 
   const { range, list } = listResponse;
   const currentPage = Math.floor((range?.offset || 0) / (range?.size || 20)) + 1;
@@ -268,8 +271,8 @@ const RequirementListPage: React.FC<RequirementListPageProps> = ({ defaultApprov
 
   // Row click
   const handleRowClick = (record: LYRequirementResponse) => {
-    setSelectedRequirementId(record.id);
-    // TODO: Open detail drawer in Phase 2
+    setSelectedRequirement(record);
+    setDetailDrawerVisible(true);
   };
 
   // Delete
@@ -586,6 +589,19 @@ const RequirementListPage: React.FC<RequirementListPageProps> = ({ defaultApprov
           setEditingRequirement(null);
           loadData();
         }}
+      />
+
+      {/* Detail Drawer */}
+      <RequirementDetailDrawer
+        visible={detailDrawerVisible}
+        requirement={selectedRequirement}
+        requirementList={list}
+        onClose={() => {
+          setDetailDrawerVisible(false);
+          setSelectedRequirement(null);
+        }}
+        onNavigate={(item) => setSelectedRequirement(item)}
+        onDataChange={loadData}
       />
     </div>
   );

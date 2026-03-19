@@ -2722,6 +2722,36 @@
         "contactRequired": "Contact is required",
         "expectedDateRequired": "Expected date is required"
       }
+    },
+    "detail": {
+      "requirementId": "Requirement ID",
+      "status": "Status",
+      "basicInfo": "Basic Info",
+      "classification": "Classification",
+      "assessment": "Assessment",
+      "roi": "ROI Analysis",
+      "artifacts": "Artifacts",
+      "documents": "Documents",
+      "acceptance": "Acceptance"
+    },
+    "approval": {
+      "submitForApproval": "Submit for Approval",
+      "approve": "Approve",
+      "reject": "Reject",
+      "resubmit": "Resubmit",
+      "submitSuccess": "Submitted for approval",
+      "submitError": "Failed to submit",
+      "approveConfirmTitle": "Confirm Approval",
+      "approveConfirmContent": "Approve requirement \"{{title}}\"?",
+      "approveSuccess": "Approved",
+      "approveError": "Approval failed",
+      "rejectTitle": "Reject Requirement",
+      "rejectReason": "Rejection Reason",
+      "rejectReasonPlaceholder": "Enter rejection reason",
+      "rejectReasonRequired": "Rejection reason is required",
+      "confirmReject": "Confirm Reject",
+      "rejectSuccess": "Rejected",
+      "rejectError": "Rejection failed"
     }
   }
 }

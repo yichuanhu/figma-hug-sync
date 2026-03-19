@@ -2731,6 +2731,36 @@
         "contactRequired": "请输入联系人",
         "expectedDateRequired": "请选择期望上线日期"
       }
+    },
+    "detail": {
+      "requirementId": "需求编号",
+      "status": "状态",
+      "basicInfo": "基本信息",
+      "classification": "业务分类",
+      "assessment": "技术评估",
+      "roi": "ROI 分析",
+      "artifacts": "关联管理",
+      "documents": "实施文档",
+      "acceptance": "验收记录"
+    },
+    "approval": {
+      "submitForApproval": "提交审批",
+      "approve": "通过",
+      "reject": "驳回",
+      "resubmit": "重新提交",
+      "submitSuccess": "已提交审批",
+      "submitError": "提交审批失败",
+      "approveConfirmTitle": "确认通过",
+      "approveConfirmContent": "确认通过需求「{{title}}」吗？",
+      "approveSuccess": "审批已通过",
+      "approveError": "审批操作失败",
+      "rejectTitle": "驳回需求",
+      "rejectReason": "驳回原因",
+      "rejectReasonPlaceholder": "请输入驳回原因",
+      "rejectReasonRequired": "请输入驳回原因",
+      "confirmReject": "确认驳回",
+      "rejectSuccess": "已驳回",
+      "rejectError": "驳回操作失败"
     }
   }
 }
