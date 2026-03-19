@@ -119,6 +119,67 @@ const generateMockRequirement = (index: number): LYRequirementResponse => {
   const date = new Date();
   date.setDate(date.getDate() - index * 2);
 
+  const approvalStatus = approvalStatuses[index % approvalStatuses.length];
+
+  // Generate approval records based on status
+  const generateApprovalRecords = () => {
+    const records: import('@/api').LYApprovalRecord[] = [];
+    const submittedAt = new Date(date.getTime() - 86400000 * 3).toISOString();
+    const businessApprovedAt = new Date(date.getTime() - 86400000 * 2).toISOString();
+    const techAt = new Date(date.getTime() - 86400000).toISOString();
+    const businessAdmins = [
+      { id: 'admin-001', name: 'Robert Taylor', dept: 'Business Operations', role: 'Business Manager', email: 'robert.taylor@example.com' },
+      { id: 'admin-002', name: 'Jennifer Lee', dept: 'Strategy', role: 'VP of Strategy', email: 'jennifer.lee@example.com' },
+    ];
+    const devAdmins = [
+      { id: 'dev-001', name: 'Alex Thompson', dept: 'Engineering', role: 'Tech Lead', email: 'alex.thompson@example.com' },
+      { id: 'dev-002', name: 'Chris Wang', dept: 'Engineering', role: 'Architect', email: 'chris.wang@example.com' },
+    ];
+    const ba = businessAdmins[index % 2];
+    const da = devAdmins[index % 2];
+
+    if (approvalStatus !== 'DRAFT') {
+      records.push({
+        id: `ar-${index}-1`, stage: 'BUSINESS', action: 'SUBMIT',
+        operator_id: owner.id, operator_name: owner.name, operator_department: owner.department,
+        operator_role: owner.role, operator_email: owner.email, operated_at: submittedAt,
+      });
+    }
+    if (['BUSINESS_APPROVED', 'TECH_PENDING', 'TECH_APPROVED', 'TECH_REJECTED'].includes(approvalStatus)) {
+      records.push({
+        id: `ar-${index}-2`, stage: 'BUSINESS', action: 'APPROVE',
+        operator_id: ba.id, operator_name: ba.name, operator_department: ba.dept,
+        operator_role: ba.role, operator_email: ba.email, comment: 'Business value confirmed. Proceed to technical review.',
+        operated_at: businessApprovedAt,
+      });
+    }
+    if (approvalStatus === 'BUSINESS_REJECTED') {
+      records.push({
+        id: `ar-${index}-2`, stage: 'BUSINESS', action: 'REJECT',
+        operator_id: ba.id, operator_name: ba.name, operator_department: ba.dept,
+        operator_role: ba.role, operator_email: ba.email, comment: 'Insufficient business justification. Please provide more details on expected ROI.',
+        operated_at: businessApprovedAt,
+      });
+    }
+    if (approvalStatus === 'TECH_APPROVED') {
+      records.push({
+        id: `ar-${index}-3`, stage: 'TECH', action: 'APPROVE',
+        operator_id: da.id, operator_name: da.name, operator_department: da.dept,
+        operator_role: da.role, operator_email: da.email, comment: 'Technically feasible. API integration is straightforward.',
+        operated_at: techAt,
+      });
+    }
+    if (approvalStatus === 'TECH_REJECTED') {
+      records.push({
+        id: `ar-${index}-3`, stage: 'TECH', action: 'REJECT',
+        operator_id: da.id, operator_name: da.name, operator_department: da.dept,
+        operator_role: da.role, operator_email: da.email, comment: 'Current system architecture does not support this integration. Requires infrastructure upgrade first.',
+        operated_at: techAt,
+      });
+    }
+    return records;
+  };
+
   return {
     id: `REQ-${String(index + 1).padStart(4, '0')}`,
     title: titles[index % titles.length],
@@ -130,10 +191,11 @@ const generateMockRequirement = (index: number): LYRequirementResponse => {
     contact_email: owner.email,
     expected_online_date: new Date(Date.now() + (30 + index * 7) * 86400000).toISOString().slice(0, 10),
     priority: priorities[index % priorities.length],
-    approval_status: approvalStatuses[index % approvalStatuses.length],
+    approval_status: approvalStatus,
     development_status: devStatuses[index % devStatuses.length],
     operation_status: opStatuses[index % opStatuses.length],
     classifications,
+    approval_records: generateApprovalRecords(),
     creator_id: owner.id,
     creator_name: owner.name,
     creator_department: owner.department,
