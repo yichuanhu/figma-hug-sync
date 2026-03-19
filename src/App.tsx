@@ -44,7 +44,9 @@ import PersonalCenter from "@/pages/PersonalCenter";
 import EmptyStatePreview from "@/pages/DevPreview/EmptyStatePreview";
 import EmptyStateOptionsPreview from "@/pages/DevPreview/EmptyStateOptionsPreview";
 // Requirements & Operations
-import Requirements from "@/pages/Requirements";
+import RequirementsWorkbench from "@/pages/Requirements/RequirementsWorkbench";
+import RequirementsReview from "@/pages/Requirements/RequirementsReview";
+import RequirementsTeam from "@/pages/Requirements/RequirementsTeam";
 import Operations from "@/pages/Operations";
 // Maintenance
 import MaintenanceWorkbench from "@/pages/Maintenance/MaintenanceWorkbench";
@@ -105,8 +107,10 @@ const App = () => (
           <Route path="/dev-preview/empty-state" element={<EmptyStatePreview />} />
           <Route path="/dev-preview/empty-state-options" element={<EmptyStateOptionsPreview />} />
           
-          {/* 需求中心 & 运营中心 */}
-          <Route path="/requirements" element={<Requirements />} />
+          {/* 需求中心 */}
+          <Route path="/requirements/list" element={<RequirementsWorkbench />} />
+          <Route path="/requirements/review" element={<RequirementsReview />} />
+          <Route path="/requirements/team" element={<RequirementsTeam />} />
           <Route path="/operations" element={<Operations />} />
           <Route path="/maintenance" element={<MaintenanceWorkbench />} />
         </Route>

@@ -186,7 +186,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
       key: 'requirementsCenter',
       labelKey: 'sidebar.requirementsCenter',
       icon: <div className="sidebar-center-icon" dangerouslySetInnerHTML={{ __html: requirementsCenterIconRaw }} />,
-      path: '/requirements',
+      path: '/requirements/list',
     },
     {
       key: 'maintenanceCenter',
@@ -255,11 +255,11 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
   const requirementsCenterMenu: MenuItem[] = [
     // 需求管理 - 分组标题
     { key: 'requirementsManagement', labelKey: 'sidebar.requirementsManagement', isGroupLabel: true },
-    { key: 'requirementsList', labelKey: 'sidebar.requirementsList', icon: <ClipboardList size={20} strokeWidth={2} /> },
-    { key: 'requirementsReview', labelKey: 'sidebar.requirementsReview', icon: <CheckSquare size={20} strokeWidth={2} /> },
+    { key: 'requirementsList', labelKey: 'sidebar.requirementsList', icon: <ClipboardList size={20} strokeWidth={2} />, path: '/requirements/list' },
+    { key: 'requirementsReview', labelKey: 'sidebar.requirementsReview', icon: <CheckSquare size={20} strokeWidth={2} />, path: '/requirements/review' },
     // 协作管理 - 分组标题
     { key: 'collaborationManagement', labelKey: 'sidebar.collaborationManagement', isGroupLabel: true },
-    { key: 'teamMembers', labelKey: 'sidebar.teamMembers', icon: <Users size={20} strokeWidth={2} /> },
+    { key: 'teamMembers', labelKey: 'sidebar.teamMembers', icon: <Users size={20} strokeWidth={2} />, path: '/requirements/team' },
   ];
 
   // 运维中心的详细菜单结构 - 使用分组标题样式
@@ -327,6 +327,15 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
     }
     if (pathname === '/dev-center/release-management') {
       return 'processPublish';
+    }
+    if (pathname.startsWith('/requirements/list')) {
+      return 'requirementsList';
+    }
+    if (pathname.startsWith('/requirements/review')) {
+      return 'requirementsReview';
+    }
+    if (pathname.startsWith('/requirements/team')) {
+      return 'teamMembers';
     }
     return '';
   };

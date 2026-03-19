@@ -1,0 +1,35 @@
+.requirements-review {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .requirements-review-header {
+    padding: 0 24px;
+    flex-shrink: 0;
+
+    .requirements-review-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-top: 16px;
+      margin-bottom: 24px;
+      color: var(--semi-color-text-0);
+    }
+  }
+
+  .requirements-review-content {
+    flex: 1;
+    overflow: auto;
+    padding: 0 24px 24px;
+
+    .requirements-review-card {
+      background-color: var(--semi-color-bg-0);
+      border-radius: 8px;
+      padding: 24px;
+      min-height: 400px;
+
+      .requirements-review-placeholder {
+        color: var(--semi-color-text-2);
+      }
+    }
+  }
+}
