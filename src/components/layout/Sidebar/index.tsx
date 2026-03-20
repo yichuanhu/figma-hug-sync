@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Avatar, Popover, Tooltip } from '@douyinfe/semi-ui';
@@ -69,8 +69,6 @@ interface SidebarProps {
   collapsed: boolean;
   onToggleCollapse?: () => void;
   disableHover?: boolean;
-  iconBarWidth?: number;
-  onIconBarWidthChange?: (width: number) => void;
 }
 
 // 根据路径获取需要展开的菜单组
@@ -90,12 +88,7 @@ const getExpandedKeysByPath = (pathname: string): string[] => {
   return [];
 };
 
-const MIN_ICON_BAR_WIDTH = 68;
-const MAX_ICON_BAR_WIDTH = 180;
-const HORIZONTAL_THRESHOLD = 90; // 超过此宽度切换为横向排列
-
-const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, iconBarWidth = 68, onIconBarWidthChange }: SidebarProps) => {
-  const isHorizontalLayout = iconBarWidth >= HORIZONTAL_THRESHOLD;
+const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
@@ -597,12 +590,9 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, iconBarWid
   return (
     <div className="sidebar">
       {/* 左侧图标栏 */}
-      <div
-        className={`sidebar-icon-bar ${!collapsed ? 'with-border' : ''} ${isHorizontalLayout ? 'horizontal-layout' : ''}`}
-        style={{ width: iconBarWidth }}
-      >
+      <div className={`sidebar-icon-bar ${!collapsed ? 'with-border' : ''}`}>
         {/* Logo */}
-        <div className="sidebar-logo" style={{ width: iconBarWidth }}>
+        <div className="sidebar-logo">
           <img src={laiyeLogo} alt="Laiye" className="sidebar-logo-img" />
         </div>
 
@@ -651,34 +641,6 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, iconBarWid
             </Popover>
           </div>
         </div>
-
-        {/* 拖拽手柄 */}
-        <div
-          className="sidebar-resize-handle"
-          onMouseDown={(e) => {
-            e.preventDefault();
-            const startX = e.clientX;
-            const startWidth = iconBarWidth;
-            document.body.style.userSelect = 'none';
-            document.body.style.cursor = 'col-resize';
-
-            const onMouseMove = (ev: MouseEvent) => {
-              const delta = ev.clientX - startX;
-              const newWidth = Math.min(MAX_ICON_BAR_WIDTH, Math.max(MIN_ICON_BAR_WIDTH, startWidth + delta));
-              onIconBarWidthChange?.(newWidth);
-            };
-
-            const onMouseUp = () => {
-              document.body.style.userSelect = '';
-              document.body.style.cursor = '';
-              document.removeEventListener('mousemove', onMouseMove);
-              document.removeEventListener('mouseup', onMouseUp);
-            };
-
-            document.addEventListener('mousemove', onMouseMove);
-            document.addEventListener('mouseup', onMouseUp);
-          }}
-        />
       </div>
 
       {/* 右侧详细菜单 - 仅在展开时显示 */}

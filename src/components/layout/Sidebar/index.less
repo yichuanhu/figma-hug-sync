@@ -5,7 +5,7 @@
 
   // 左侧图标栏
   .sidebar-icon-bar {
-    // width is set via inline style
+    width: 68px;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -16,32 +16,6 @@
     padding-right: 4px;
     flex-shrink: 0;
     background-color: #EFF1F3;
-    position: relative;
-    transition: width 0.15s ease;
-
-    // 横向排列模式
-    &.horizontal-layout {
-      align-items: stretch;
-
-      .sidebar-main-icons,
-      .sidebar-bottom-icons {
-        align-items: stretch;
-      }
-
-      .sidebar-icon-btn {
-        flex-direction: row;
-        width: auto;
-        min-height: 40px;
-        padding: 8px 10px;
-        gap: 8px;
-        justify-content: flex-start;
-      }
-
-      .sidebar-icon-btn-label {
-        font-size: 12px;
-        text-align: left;
-      }
-    }
   }
 
   // Logo容器 - 高度56px
@@ -382,32 +356,6 @@
       flex: 1;
       overflow-y: auto;
       padding: 8px 0;
-    }
-  }
-
-  // 拖拽手柄 - 用于图标栏右边缘
-  .sidebar-resize-handle {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 4px;
-    height: 100%;
-    cursor: col-resize;
-    z-index: 10;
-
-    &::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 2px;
-      height: 100%;
-      background-color: transparent;
-      transition: background-color 0.15s;
-    }
-
-    &:hover::after {
-      background-color: var(--semi-color-primary);
     }
   }
 
