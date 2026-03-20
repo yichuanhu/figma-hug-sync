@@ -2870,5 +2870,71 @@
     "resources": {
       "title": "Resources"
     }
+  },
+  "operations": {
+    "comingSoon": "Coming soon, stay tuned",
+    "dashboard": {
+      "title": "Dashboard",
+      "timeRange": "Time Range",
+      "department": "Department",
+      "project": "Project",
+      "thisMonth": "This Month",
+      "lastMonth": "Last Month",
+      "thisQuarter": "This Quarter",
+      "thisYear": "This Year",
+      "allTime": "All Time",
+      "coreMetrics": "Core Metrics",
+      "totalSavedCost": "Total Saved Cost",
+      "robotUtilization": "Robot Utilization",
+      "activeRequirements": "Active Requirements",
+      "totalAutomationHours": "Automation Hours",
+      "totalInvestmentCost": "Total Investment",
+      "resourceOverview": "Resource Overview",
+      "interactiveRobot": "Interactive Robot",
+      "unattendedRobot": "Unattended Robot",
+      "onlineAuth": "Online/Licensed",
+      "todayTasks": "Today Tasks",
+      "totalTasks": "Total Tasks",
+      "count": "count",
+      "todayRuntime": "Today Runtime",
+      "totalRuntime": "Total Runtime",
+      "tenThousandHours": "0K hrs",
+      "hours": " hrs",
+      "minutes": " min",
+      "requirementOverview": "Requirement Overview",
+      "requirementDeveloping": "Developing",
+      "requirementCompleted": "Completed",
+      "requirementRunning": "Running",
+      "requirementTotal": "Total",
+      "roiTrend": "ROI Trend",
+      "roiPercent": "ROI%",
+      "investmentCostLabel": "Investment Cost",
+      "savedCostLabel": "Saved Cost",
+      "amountUnit": "Amount",
+      "deptRoiRanking": "Department ROI Ranking (Top 5)",
+      "reqRoiRanking": "Requirement ROI Ranking (Top 5)",
+      "rank": "Rank",
+      "departmentName": "Department",
+      "requirementName": "Requirement",
+      "trendLabel": "Trend",
+      "statusRunning": "Running",
+      "statusCompleted": "Completed",
+      "statusDeveloping": "Developing"
+    },
+    "roiAnalysis": {
+      "title": "ROI Analysis"
+    },
+    "resourceEfficiency": {
+      "title": "Resource Efficiency"
+    },
+    "businessOutcomes": {
+      "title": "Business Outcomes"
+    },
+    "costManagement": {
+      "title": "Cost Management"
+    },
+    "platformOperations": {
+      "title": "Platform Operations"
+    }
   }
 }
