@@ -1,43 +1,60 @@
 .resource-overview {
-  background: var(--semi-color-bg-0);
-  border-radius: 8px;
-  padding: 16px 20px;
-  margin-bottom: 16px;
+  background-color: var(--semi-color-bg-0);
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  padding: 20px;
+  margin-bottom: 20px;
 
   .resource-overview-title {
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 600;
     color: var(--semi-color-text-0);
-    margin-bottom: 12px;
+    line-height: 22px;
+    margin-bottom: 14px;
   }
 
   .resource-overview-grid {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
-    gap: 12px;
   }
 
   .resource-overview-item {
     display: flex;
     flex-direction: column;
     gap: 4px;
-    padding: 12px;
-    background: var(--semi-color-bg-1);
-    border-radius: 6px;
+    padding: 12px 20px;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1px;
+      height: 24px;
+      background-color: var(--semi-color-border);
+    }
+
+    &:last-child::after {
+      display: none;
+    }
   }
 
   .resource-overview-item-label {
-    font-size: 12px;
+    font-size: 13px;
+    font-weight: 500;
     color: var(--semi-color-text-2);
-    line-height: 16px;
+    line-height: 20px;
   }
 
   .resource-overview-item-value {
     font-size: 20px;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--semi-color-text-0);
     line-height: 28px;
     font-variant-numeric: tabular-nums;
+    margin-top: 4px;
   }
 
   .resource-overview-item-sub {

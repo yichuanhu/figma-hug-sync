@@ -1,23 +1,47 @@
 .operations-dashboard {
-  padding: 20px;
+  padding: 24px;
   height: 100%;
   overflow-y: auto;
-  background: var(--semi-color-bg-1);
 
   .operations-dashboard-header {
-    margin-bottom: 16px;
+    margin-bottom: 20px;
 
     h2 {
       font-size: 20px;
       font-weight: 600;
       color: var(--semi-color-text-0);
       margin: 0;
+      line-height: 28px;
     }
+  }
+
+  // 统一卡片样式 - 与首页 home-card 保持一致
+  .dashboard-card {
+    background-color: var(--semi-color-bg-0);
+    border-radius: 10px;
+    border: none;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    margin-bottom: 20px;
+  }
+
+  .dashboard-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .dashboard-card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--semi-color-text-0);
+    line-height: 22px;
   }
 
   .operations-dashboard-rankings {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 16px;
+    gap: 20px;
   }
 }
