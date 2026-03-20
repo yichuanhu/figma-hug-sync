@@ -360,6 +360,33 @@
     }
   }
 
+  // 拖拽手柄
+  .sidebar-resize-handle {
+    position: absolute;
+    top: 0;
+    right: -3px;
+    width: 6px;
+    height: 100%;
+    cursor: col-resize;
+    z-index: 10;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 100%;
+      background-color: transparent;
+      transition: background-color 0.15s;
+    }
+
+    &:hover::after {
+      background-color: var(--semi-color-primary);
+    }
+  }
+
   // 分组标题
   .sidebar-group-label {
     padding: 20px 16px 8px 16px;

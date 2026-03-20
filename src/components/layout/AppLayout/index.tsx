@@ -29,6 +29,8 @@ const AppLayout = () => {
           collapsed={effectiveCollapsed}
           onToggleCollapse={disableExpand ? undefined : () => setCollapsed(!collapsed)}
           disableHover={disableExpand}
+          panelWidth={panelWidth}
+          onPanelWidthChange={setPanelWidth}
         />
       </div>
 

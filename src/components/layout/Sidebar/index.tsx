@@ -650,7 +650,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, panelWidth
 
       {/* 右侧详细菜单 - 仅在展开时显示 */}
       {!collapsed && currentCenterMenu.length > 0 && (
-        <div className="sidebar-detail-panel">
+        <div className="sidebar-detail-panel" style={{ width: panelWidth }}>
           {/* 中心标题 */}
           <div className="sidebar-detail-header">
             <span className="sidebar-detail-title">{currentCenterLabel ? t(currentCenterLabel) : ''}</span>
@@ -661,6 +661,34 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, panelWidth
 
           {/* 菜单列表 */}
           <div className="sidebar-detail-list">{currentCenterMenu.map((item) => renderDetailMenuItem(item))}</div>
+
+          {/* 拖拽手柄 */}
+          <div
+            className="sidebar-resize-handle"
+            onMouseDown={(e) => {
+              e.preventDefault();
+              const startX = e.clientX;
+              const startWidth = panelWidth;
+              document.body.style.userSelect = 'none';
+              document.body.style.cursor = 'col-resize';
+
+              const onMouseMove = (ev: MouseEvent) => {
+                const delta = ev.clientX - startX;
+                const newWidth = Math.min(MAX_PANEL_WIDTH, Math.max(MIN_PANEL_WIDTH, startWidth + delta));
+                onPanelWidthChange?.(newWidth);
+              };
+
+              const onMouseUp = () => {
+                document.body.style.userSelect = '';
+                document.body.style.cursor = '';
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+              };
+
+              document.addEventListener('mousemove', onMouseMove);
+              document.addEventListener('mouseup', onMouseUp);
+            }}
+          />
         </div>
       )}
     </div>
