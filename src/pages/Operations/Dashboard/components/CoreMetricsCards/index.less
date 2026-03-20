@@ -1,0 +1,61 @@
+.core-metrics-cards {
+  margin-bottom: 16px;
+
+  .core-metrics-section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--semi-color-text-0);
+    margin-bottom: 12px;
+  }
+
+  .core-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+  }
+
+  .core-metric-card {
+    background: var(--semi-color-bg-0);
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    cursor: pointer;
+    transition: box-shadow 0.2s ease-out;
+
+    &:hover {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+  }
+
+  .core-metric-label {
+    font-size: 13px;
+    color: var(--semi-color-text-2);
+    line-height: 18px;
+  }
+
+  .core-metric-value {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--semi-color-text-0);
+    line-height: 32px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .core-metric-trend {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 12px;
+    line-height: 16px;
+
+    &.up {
+      color: var(--semi-color-success);
+    }
+
+    &.down {
+      color: var(--semi-color-danger);
+    }
+  }
+}

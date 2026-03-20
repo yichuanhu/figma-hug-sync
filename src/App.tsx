@@ -47,14 +47,17 @@ import PersonalCenter from "@/pages/PersonalCenter";
 // Dev Preview
 import EmptyStatePreview from "@/pages/DevPreview/EmptyStatePreview";
 import EmptyStateOptionsPreview from "@/pages/DevPreview/EmptyStateOptionsPreview";
-// Requirements & Operations
+// Operations
+import OperationsDashboard from "@/pages/Operations/Dashboard";
+import ROIAnalysis from "@/pages/Operations/ROIAnalysis";
+import ResourceEfficiency from "@/pages/Operations/ResourceEfficiency";
+import BusinessOutcomes from "@/pages/Operations/BusinessOutcomes";
+import CostManagement from "@/pages/Operations/CostManagement";
+import PlatformOperations from "@/pages/Operations/PlatformOperations";
+// Requirements & Other
 import RequirementsWorkbench from "@/pages/Requirements/RequirementsWorkbench";
 import RequirementsReview from "@/pages/Requirements/RequirementsReview";
 import RequirementsTeam from "@/pages/Requirements/RequirementsTeam";
-import ExecutionReport from "@/pages/Operations/ExecutionReport";
-import PerformanceAnalysis from "@/pages/Operations/PerformanceAnalysis";
-import TargetManagement from "@/pages/Operations/TargetManagement";
-import ReportExport from "@/pages/Operations/ReportExport";
 // Maintenance
 import MaintenanceWorkbench from "@/pages/Maintenance/MaintenanceWorkbench";
 
@@ -130,11 +133,13 @@ const App = () => {
           <Route path="/requirements/list" element={<RequirementsWorkbench />} />
           <Route path="/requirements/review" element={<RequirementsReview />} />
           <Route path="/requirements/team" element={<RequirementsTeam />} />
-          <Route path="/operations" element={<Navigate to="/operations/execution-report" replace />} />
-          <Route path="/operations/execution-report" element={<ExecutionReport />} />
-          <Route path="/operations/performance-analysis" element={<PerformanceAnalysis />} />
-          <Route path="/operations/target-management" element={<TargetManagement />} />
-          <Route path="/operations/report-export" element={<ReportExport />} />
+          <Route path="/operations" element={<Navigate to="/operations/dashboard" replace />} />
+          <Route path="/operations/dashboard" element={<OperationsDashboard />} />
+          <Route path="/operations/roi-analysis" element={<ROIAnalysis />} />
+          <Route path="/operations/resource-efficiency" element={<ResourceEfficiency />} />
+          <Route path="/operations/business-outcomes" element={<BusinessOutcomes />} />
+          <Route path="/operations/cost-management" element={<CostManagement />} />
+          <Route path="/operations/platform-operations" element={<PlatformOperations />} />
           <Route path="/maintenance" element={<MaintenanceWorkbench />} />
         </Route>
 

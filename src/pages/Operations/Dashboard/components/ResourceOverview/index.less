@@ -1,0 +1,47 @@
+.resource-overview {
+  background: var(--semi-color-bg-0);
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+
+  .resource-overview-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--semi-color-text-0);
+    margin-bottom: 12px;
+  }
+
+  .resource-overview-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+  }
+
+  .resource-overview-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px;
+    background: var(--semi-color-bg-1);
+    border-radius: 6px;
+  }
+
+  .resource-overview-item-label {
+    font-size: 12px;
+    color: var(--semi-color-text-2);
+    line-height: 16px;
+  }
+
+  .resource-overview-item-value {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--semi-color-text-0);
+    line-height: 28px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .resource-overview-item-sub {
+    font-size: 12px;
+    color: var(--semi-color-text-3);
+  }
+}
