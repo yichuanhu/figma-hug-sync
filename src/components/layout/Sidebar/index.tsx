@@ -248,12 +248,12 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
   const operationsCenterMenu: MenuItem[] = [
     // 数据分析 - 分组标题
     { key: 'dataAnalysis', labelKey: 'sidebar.dataAnalysis', isGroupLabel: true },
-    { key: 'executionReport', labelKey: 'sidebar.executionReport', icon: <BarChart3 size={20} strokeWidth={2} /> },
-    { key: 'performanceAnalysis', labelKey: 'sidebar.performanceAnalysis', icon: <TrendingUp size={20} strokeWidth={2} /> },
+    { key: 'executionReport', labelKey: 'sidebar.executionReport', icon: <BarChart3 size={20} strokeWidth={2} />, path: '/operations/execution-report' },
+    { key: 'performanceAnalysis', labelKey: 'sidebar.performanceAnalysis', icon: <TrendingUp size={20} strokeWidth={2} />, path: '/operations/performance-analysis' },
     // 运营管理 - 分组标题
     { key: 'operationsManagement', labelKey: 'sidebar.operationsManagement', isGroupLabel: true },
-    { key: 'targetManagement', labelKey: 'sidebar.targetManagement', icon: <Target size={20} strokeWidth={2} /> },
-    { key: 'reportExport', labelKey: 'sidebar.reportExport', icon: <FileText size={20} strokeWidth={2} /> },
+    { key: 'targetManagement', labelKey: 'sidebar.targetManagement', icon: <Target size={20} strokeWidth={2} />, path: '/operations/target-management' },
+    { key: 'reportExport', labelKey: 'sidebar.reportExport', icon: <FileText size={20} strokeWidth={2} />, path: '/operations/report-export' },
   ];
 
   // 需求中心的详细菜单结构 - 使用分组标题样式
