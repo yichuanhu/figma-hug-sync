@@ -399,12 +399,15 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
     const isHovered = hoveredCenterKey === item.key;
     const label = t(item.labelKey);
 
+    const shortLabel = t((item as any).shortLabelKey || item.labelKey);
+
     const iconButton = (
       <div
         className={`sidebar-icon-btn ${isActive ? 'active' : ''}`}
         onClick={() => handleCenterClick(item)}
       >
         {item.icon}
+        <span className="sidebar-icon-btn-label">{shortLabel}</span>
       </div>
     );
 
