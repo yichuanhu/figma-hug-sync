@@ -173,16 +173,19 @@
 
   // 图标按钮
   .sidebar-icon-btn {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    min-height: 48px;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 2px;
     cursor: pointer;
     border-radius: 8px;
     color: var(--semi-color-text-2);
-    margin-bottom: 4px;
+    margin-bottom: 2px;
     position: relative;
+    padding: 6px 4px 4px;
 
     &:hover {
       background-color: var(--semi-color-fill-1);
@@ -191,6 +194,18 @@
     &.active {
       background-color: var(--semi-color-fill-1);
     }
+  }
+
+  // 图标按钮下方文案
+  .sidebar-icon-btn-label {
+    font-size: 10px;
+    line-height: 14px;
+    color: var(--semi-color-text-2);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    text-align: center;
   }
 
   // 红点通知
