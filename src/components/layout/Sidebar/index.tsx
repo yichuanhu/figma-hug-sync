@@ -90,7 +90,10 @@ const getExpandedKeysByPath = (pathname: string): string[] => {
   return [];
 };
 
-const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarProps) => {
+const MIN_PANEL_WIDTH = 160;
+const MAX_PANEL_WIDTH = 400;
+
+const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, panelWidth = 220, onPanelWidthChange }: SidebarProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
