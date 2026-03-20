@@ -378,23 +378,32 @@ const RequirementsReview = () => {
         </div>
       </div>
 
-      {/* 统计卡片 */}
-      <div className="requirements-review-stats">
-        <div className="requirements-review-stat-card requirements-review-stat-pending">
-          <Text type="tertiary" size="small">{t('requirements.review.pendingCount')}</Text>
-          <Title heading={2} className="requirements-review-stat-value">{stats.pendingCount}</Title>
-        </div>
-        <div className="requirements-review-stat-card requirements-review-stat-assessing">
-          <Text type="tertiary" size="small">{t('requirements.review.assessingCount')}</Text>
-          <Title heading={2} className="requirements-review-stat-value">{stats.assessingCount}</Title>
-        </div>
-        <div className="requirements-review-stat-card requirements-review-stat-approved">
-          <Text type="tertiary" size="small">{t('requirements.review.approvedCount')}</Text>
-          <Title heading={2} className="requirements-review-stat-value">{stats.approvedCount}</Title>
-        </div>
-        <div className="requirements-review-stat-card requirements-review-stat-rejected">
-          <Text type="tertiary" size="small">{t('requirements.review.rejectedCount')}</Text>
-          <Title heading={2} className="requirements-review-stat-value">{stats.rejectedCount}</Title>
+      {/* 统计卡片 - 参考首页 MetricsSection 样式 */}
+      <div className="requirements-review-stats-card">
+        <div className="requirements-review-stats-grid">
+          {[
+            { label: t('requirements.review.pendingCount'), value: stats.pendingCount, color: 'var(--semi-color-warning)', icon: (
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5"/><path d="M12 7v5l3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            )},
+            { label: t('requirements.review.assessingCount'), value: stats.assessingCount, color: 'rgb(var(--semi-purple-5))', icon: (
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="currentColor" strokeWidth="1.5"/><path d="M9 12h6M9 16h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
+            )},
+            { label: t('requirements.review.approvedCount'), value: stats.approvedCount, color: 'var(--semi-color-success)', icon: (
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5"/><path d="M8 12l3 3 5-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            )},
+            { label: t('requirements.review.rejectedCount'), value: stats.rejectedCount, color: 'var(--semi-color-danger)', icon: (
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5"/><path d="M15 9l-6 6M9 9l6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            )},
+          ].map((item, idx, arr) => (
+            <div key={idx} className="requirements-review-metric-card">
+              <div className="requirements-review-metric-icon" style={{ color: item.color }}>{item.icon}</div>
+              <div className="requirements-review-metric-info">
+                <div className="requirements-review-metric-label">{item.label}</div>
+                <div className="requirements-review-metric-value">{item.value}</div>
+              </div>
+              {idx < arr.length - 1 && <div className="requirements-review-metric-divider" />}
+            </div>
+          ))}
         </div>
       </div>
 
