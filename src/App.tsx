@@ -1,5 +1,9 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { LocaleProvider } from '@douyinfe/semi-ui';
+import en_US from '@douyinfe/semi-ui/lib/es/locale/source/en_US';
+import zh_CN from '@douyinfe/semi-ui/lib/es/locale/source/zh_CN';
+import { useTranslation } from 'react-i18next';
 import AppLayout from "@/components/layout/AppLayout";
 import Home from "@/pages/Home";
 import NotFound from "@/pages/NotFound";
@@ -53,7 +57,18 @@ import MaintenanceWorkbench from "@/pages/Maintenance/MaintenanceWorkbench";
 
 const queryClient = new QueryClient();
 
-const App = () => (
+const semiLocaleMap: Record<string, any> = {
+  'en': en_US,
+  'en-US': en_US,
+  'zh-CN': zh_CN,
+};
+
+const App = () => {
+  const { i18n } = useTranslation();
+  const semiLocale = semiLocaleMap[i18n.language] || zh_CN;
+
+  return (
+  <LocaleProvider locale={semiLocale}>
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <Routes>
@@ -121,6 +136,8 @@ const App = () => (
       </Routes>
     </BrowserRouter>
   </QueryClientProvider>
-);
+  </LocaleProvider>
+  );
+};
 
 export default App;
