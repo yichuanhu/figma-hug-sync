@@ -567,8 +567,10 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
     const label = t(item.labelKey);
     const iconButton = (
       <div className="sidebar-icon-btn">
-        {item.icon}
-        {item.badge && <span className="sidebar-badge-dot" />}
+        <span className="sidebar-icon-btn-wrapper">
+          {item.icon}
+          {item.badge && <span className="sidebar-badge-dot" />}
+        </span>
       </div>
     );
 
