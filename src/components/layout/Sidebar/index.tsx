@@ -164,33 +164,38 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
   };
 
   // 中心级别菜单（左侧图标栏）
-  const centerMenuItems: MenuItem[] = [
-    { key: 'home', labelKey: 'sidebar.home', icon: <div className="sidebar-center-icon" dangerouslySetInnerHTML={{ __html: homeCenterIconRaw }} />, path: '/' },
+  const centerMenuItems: (MenuItem & { shortLabelKey: string })[] = [
+    { key: 'home', labelKey: 'sidebar.home', shortLabelKey: 'sidebar.homeShort', icon: <div className="sidebar-center-icon" dangerouslySetInnerHTML={{ __html: homeCenterIconRaw }} />, path: '/' },
     {
       key: 'developmentCenter',
       labelKey: 'sidebar.developmentCenter',
+      shortLabelKey: 'sidebar.developmentCenterShort',
       icon: <div className="sidebar-center-icon" dangerouslySetInnerHTML={{ __html: developmentCenterIconRaw }} />,
     },
     {
       key: 'schedulingCenter',
       labelKey: 'sidebar.schedulingCenter',
+      shortLabelKey: 'sidebar.schedulingCenterShort',
       icon: <div className="sidebar-center-icon" dangerouslySetInnerHTML={{ __html: schedulingCenterIconRaw }} />,
     },
     {
       key: 'operationsCenter',
       labelKey: 'sidebar.operationsCenter',
+      shortLabelKey: 'sidebar.operationsCenterShort',
       icon: <div className="sidebar-center-icon" dangerouslySetInnerHTML={{ __html: operationsCenterIconRaw }} />,
       path: '/operations',
     },
     {
       key: 'requirementsCenter',
       labelKey: 'sidebar.requirementsCenter',
+      shortLabelKey: 'sidebar.requirementsCenterShort',
       icon: <div className="sidebar-center-icon" dangerouslySetInnerHTML={{ __html: requirementsCenterIconRaw }} />,
       path: '/requirements/list',
     },
     {
       key: 'maintenanceCenter',
       labelKey: 'sidebar.maintenanceCenter',
+      shortLabelKey: 'sidebar.maintenanceCenterShort',
       icon: <div className="sidebar-center-icon" dangerouslySetInnerHTML={{ __html: maintenanceCenterIconRaw }} />,
       path: '/maintenance',
     },
@@ -394,12 +399,15 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
     const isHovered = hoveredCenterKey === item.key;
     const label = t(item.labelKey);
 
+    const shortLabel = t((item as any).shortLabelKey || item.labelKey);
+
     const iconButton = (
       <div
         className={`sidebar-icon-btn ${isActive ? 'active' : ''}`}
         onClick={() => handleCenterClick(item)}
       >
         {item.icon}
+        <span className="sidebar-icon-btn-label">{shortLabel}</span>
       </div>
     );
 
