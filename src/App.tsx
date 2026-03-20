@@ -57,7 +57,18 @@ import MaintenanceWorkbench from "@/pages/Maintenance/MaintenanceWorkbench";
 
 const queryClient = new QueryClient();
 
-const App = () => (
+const semiLocaleMap: Record<string, any> = {
+  'en': en_US,
+  'en-US': en_US,
+  'zh-CN': zh_CN,
+};
+
+const App = () => {
+  const { i18n } = useTranslation();
+  const semiLocale = semiLocaleMap[i18n.language] || zh_CN;
+
+  return (
+  <LocaleProvider locale={semiLocale}>
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <Routes>
