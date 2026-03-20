@@ -1,46 +1,61 @@
 .core-metrics-cards {
-  margin-bottom: 16px;
+  background-color: var(--semi-color-bg-0);
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  padding: 20px;
+  margin-bottom: 20px;
 
   .core-metrics-section-title {
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 600;
     color: var(--semi-color-text-0);
-    margin-bottom: 12px;
+    line-height: 22px;
+    margin-bottom: 14px;
   }
 
   .core-metrics-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 12px;
   }
 
   .core-metric-card {
-    background: var(--semi-color-bg-0);
-    border-radius: 8px;
-    padding: 16px;
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    cursor: pointer;
-    transition: box-shadow 0.2s ease-out;
+    gap: 4px;
+    padding: 12px 20px;
+    position: relative;
 
-    &:hover {
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    // 竖线分隔符 - 与首页 MetricsSection 一致
+    &::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1px;
+      height: 24px;
+      background-color: var(--semi-color-border);
+    }
+
+    &:last-child::after {
+      display: none;
     }
   }
 
   .core-metric-label {
     font-size: 13px;
+    font-weight: 500;
     color: var(--semi-color-text-2);
-    line-height: 18px;
+    line-height: 20px;
   }
 
   .core-metric-value {
     font-size: 24px;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--semi-color-text-0);
     line-height: 32px;
     font-variant-numeric: tabular-nums;
+    margin-top: 4px;
   }
 
   .core-metric-trend {
