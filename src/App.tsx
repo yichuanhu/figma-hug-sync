@@ -136,6 +136,8 @@ const App = () => {
       </Routes>
     </BrowserRouter>
   </QueryClientProvider>
-);
+  </LocaleProvider>
+  );
+};
 
 export default App;
