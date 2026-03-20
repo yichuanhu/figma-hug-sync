@@ -247,12 +247,14 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
   const operationsCenterMenu: MenuItem[] = [
     // 数据分析 - 分组标题
     { key: 'dataAnalysis', labelKey: 'sidebar.dataAnalysis', isGroupLabel: true },
-    { key: 'executionReport', labelKey: 'sidebar.executionReport', icon: <BarChart3 size={20} strokeWidth={2} />, path: '/operations/execution-report' },
-    { key: 'performanceAnalysis', labelKey: 'sidebar.performanceAnalysis', icon: <TrendingUp size={20} strokeWidth={2} />, path: '/operations/performance-analysis' },
+    { key: 'opsDashboard', labelKey: 'sidebar.opsDashboard', icon: <BarChart3 size={20} strokeWidth={2} />, path: '/operations/dashboard' },
+    { key: 'roiAnalysis', labelKey: 'sidebar.roiAnalysis', icon: <TrendingUp size={20} strokeWidth={2} />, path: '/operations/roi-analysis' },
+    { key: 'resourceEfficiency', labelKey: 'sidebar.resourceEfficiency', icon: <Activity size={20} strokeWidth={2} />, path: '/operations/resource-efficiency' },
+    { key: 'businessOutcomes', labelKey: 'sidebar.businessOutcomes', icon: <Target size={20} strokeWidth={2} />, path: '/operations/business-outcomes' },
     // 运营管理 - 分组标题
     { key: 'operationsManagement', labelKey: 'sidebar.operationsManagement', isGroupLabel: true },
-    { key: 'targetManagement', labelKey: 'sidebar.targetManagement', icon: <Target size={20} strokeWidth={2} />, path: '/operations/target-management' },
-    { key: 'reportExport', labelKey: 'sidebar.reportExport', icon: <FileText size={20} strokeWidth={2} />, path: '/operations/report-export' },
+    { key: 'costManagement', labelKey: 'sidebar.costManagement', icon: <FileText size={20} strokeWidth={2} />, path: '/operations/cost-management' },
+    { key: 'platformOperations', labelKey: 'sidebar.platformOperations', icon: <Settings size={20} strokeWidth={2} />, path: '/operations/platform-operations' },
   ];
 
   // 需求中心的详细菜单结构 - 使用分组标题样式
