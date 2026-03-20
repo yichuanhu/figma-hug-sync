@@ -343,17 +343,23 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
     if (pathname.startsWith('/requirements/team')) {
       return 'teamMembers';
     }
-    if (pathname === '/operations/execution-report') {
-      return 'executionReport';
+    if (pathname === '/operations/dashboard') {
+      return 'opsDashboard';
     }
-    if (pathname === '/operations/performance-analysis') {
-      return 'performanceAnalysis';
+    if (pathname === '/operations/roi-analysis') {
+      return 'roiAnalysis';
     }
-    if (pathname === '/operations/target-management') {
-      return 'targetManagement';
+    if (pathname === '/operations/resource-efficiency') {
+      return 'resourceEfficiency';
     }
-    if (pathname === '/operations/report-export') {
-      return 'reportExport';
+    if (pathname === '/operations/business-outcomes') {
+      return 'businessOutcomes';
+    }
+    if (pathname === '/operations/cost-management') {
+      return 'costManagement';
+    }
+    if (pathname === '/operations/platform-operations') {
+      return 'platformOperations';
     }
     return '';
   };
