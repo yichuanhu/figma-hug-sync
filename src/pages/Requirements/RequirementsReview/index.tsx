@@ -382,17 +382,65 @@ const RequirementsReview = () => {
       <div className="requirements-review-stats-card">
         <div className="requirements-review-stats-grid">
           {[
-            { label: t('requirements.review.pendingCount'), value: stats.pendingCount, color: 'var(--semi-color-warning)', icon: (
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5"/><path d="M12 7v5l3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            { label: t('requirements.review.pendingCount'), value: stats.pendingCount, icon: (
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <filter id="rv_pending_bg_i" x="8.9" y="1.09" width="14" height="15" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB"><feFlood floodOpacity="0" result="bg"/><feBlend in="SourceGraphic" in2="bg" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="ha"/><feOffset dy="1"/><feGaussianBlur stdDeviation="0.5"/><feComposite in2="ha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0"/><feBlend in2="shape" result="r"/></filter>
+                  <filter id="rv_pending_fg_i" x="-3" y="-1" width="28" height="28" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB"><feFlood floodOpacity="0" result="bg"/><feBlend in="SourceGraphic" in2="bg" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="ha"/><feOffset dy="3.667"/><feGaussianBlur stdDeviation="1.833"/><feComposite in2="ha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0"/><feBlend in2="shape" result="r"/></filter>
+                  <clipPath id="rv_pending_clip" transform="translate(3 1)"><circle cx="11" cy="13" r="10"/></clipPath>
+                  <linearGradient id="rv_pending_bg_g" x1="15.9" y1="1.09" x2="15.9" y2="15.09" gradientUnits="userSpaceOnUse"><stop stopColor="#F7AC6E"/><stop offset="1" stopColor="#EE5316"/></linearGradient>
+                  <linearGradient id="rv_pending_fg_g" x1="12" y1="7" x2="12" y2="17" gradientUnits="userSpaceOnUse"><stop stopColor="white"/><stop offset="1" stopColor="white" stopOpacity="0.3"/></linearGradient>
+                </defs>
+                <g filter="url(#rv_pending_bg_i)"><circle cx="15.9" cy="8.09" r="7" fill="url(#rv_pending_bg_g)"/></g>
+                <foreignObject x="-3" y="-1" width="28" height="28"><div style={{backdropFilter:'blur(1px)',WebkitBackdropFilter:'blur(1px)',clipPath:'url(#rv_pending_clip)',height:'100%',width:'100%',backgroundColor:'rgba(255,255,255,0.16)',border:'1px solid rgba(255,255,255,0.28)',boxShadow:'inset 0 1px 0 rgba(255,255,255,0.36)'}}/></foreignObject>
+                <g filter="url(#rv_pending_fg_i)"><circle cx="11" cy="13" r="10" fill="#F7AC6E" fillOpacity="0.45"/></g>
+                <path d="M9 10a1 1 0 012 0v4h4a1 1 0 010 2h-4.8a1.2 1.2 0 01-1.2-1.2V10z" fill="url(#rv_pending_fg_g)"/>
+              </svg>
             )},
-            { label: t('requirements.review.assessingCount'), value: stats.assessingCount, color: 'rgb(var(--semi-purple-5))', icon: (
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="currentColor" strokeWidth="1.5"/><path d="M9 12h6M9 16h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
+            { label: t('requirements.review.assessingCount'), value: stats.assessingCount, icon: (
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <filter id="rv_assess_bg_i" x="8.9" y="1.09" width="14" height="15" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB"><feFlood floodOpacity="0" result="bg"/><feBlend in="SourceGraphic" in2="bg" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="ha"/><feOffset dy="1"/><feGaussianBlur stdDeviation="0.5"/><feComposite in2="ha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0"/><feBlend in2="shape" result="r"/></filter>
+                  <filter id="rv_assess_fg_i" x="-3" y="-1" width="28" height="28" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB"><feFlood floodOpacity="0" result="bg"/><feBlend in="SourceGraphic" in2="bg" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="ha"/><feOffset dy="3.667"/><feGaussianBlur stdDeviation="1.833"/><feComposite in2="ha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0"/><feBlend in2="shape" result="r"/></filter>
+                  <clipPath id="rv_assess_clip" transform="translate(3 1)"><circle cx="11" cy="13" r="10"/></clipPath>
+                  <linearGradient id="rv_assess_bg_g" x1="15.9" y1="1.09" x2="15.9" y2="15.09" gradientUnits="userSpaceOnUse"><stop stopColor="#B18CFF"/><stop offset="1" stopColor="#6226EF"/></linearGradient>
+                  <linearGradient id="rv_assess_fg_g" x1="12" y1="7" x2="12" y2="19" gradientUnits="userSpaceOnUse"><stop stopColor="white"/><stop offset="1" stopColor="white" stopOpacity="0.3"/></linearGradient>
+                </defs>
+                <g filter="url(#rv_assess_bg_i)"><circle cx="15.9" cy="8.09" r="7" fill="url(#rv_assess_bg_g)"/></g>
+                <foreignObject x="-3" y="-1" width="28" height="28"><div style={{backdropFilter:'blur(1px)',WebkitBackdropFilter:'blur(1px)',clipPath:'url(#rv_assess_clip)',height:'100%',width:'100%',backgroundColor:'rgba(255,255,255,0.16)',border:'1px solid rgba(255,255,255,0.28)',boxShadow:'inset 0 1px 0 rgba(255,255,255,0.36)'}}/></foreignObject>
+                <g filter="url(#rv_assess_fg_i)"><circle cx="11" cy="13" r="10" fill="#B18CFF" fillOpacity="0.45"/></g>
+                <path d="M9 9H7.5A1.5 1.5 0 006 10.5v9A1.5 1.5 0 007.5 21h7a1.5 1.5 0 001.5-1.5v-9A1.5 1.5 0 0014.5 9H13m-4 0v-1a1 1 0 011-1h2a1 1 0 011 1v1m-4 0h4M9 14h4M9 17h2.5" stroke="url(#rv_assess_fg_g)" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+              </svg>
             )},
-            { label: t('requirements.review.approvedCount'), value: stats.approvedCount, color: 'var(--semi-color-success)', icon: (
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5"/><path d="M8 12l3 3 5-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            { label: t('requirements.review.approvedCount'), value: stats.approvedCount, icon: (
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <filter id="rv_approved_bg_i" x="8.9" y="1.09" width="14" height="15" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB"><feFlood floodOpacity="0" result="bg"/><feBlend in="SourceGraphic" in2="bg" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="ha"/><feOffset dy="1"/><feGaussianBlur stdDeviation="0.5"/><feComposite in2="ha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0"/><feBlend in2="shape" result="r"/></filter>
+                  <filter id="rv_approved_fg_i" x="-3" y="0" width="27" height="27" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB"><feFlood floodOpacity="0" result="bg"/><feBlend in="SourceGraphic" in2="bg" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="ha"/><feOffset dy="3.667"/><feGaussianBlur stdDeviation="1.833"/><feComposite in2="ha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0"/><feBlend in2="shape" result="r"/></filter>
+                  <clipPath id="rv_approved_clip" transform="translate(3 0)"><circle cx="10.5" cy="13.5" r="9.5"/></clipPath>
+                  <linearGradient id="rv_approved_bg_g" x1="15.9" y1="1.09" x2="15.9" y2="15.09" gradientUnits="userSpaceOnUse"><stop stopColor="#69E57E"/><stop offset="1" stopColor="#296733"/></linearGradient>
+                  <linearGradient id="rv_approved_fg_g" x1="10" y1="10" x2="10" y2="18.5" gradientUnits="userSpaceOnUse"><stop stopColor="white"/><stop offset="1" stopColor="white" stopOpacity="0.3"/></linearGradient>
+                </defs>
+                <g filter="url(#rv_approved_bg_i)"><circle cx="15.9" cy="8.09" r="7" fill="url(#rv_approved_bg_g)"/></g>
+                <foreignObject x="-3" y="0" width="27" height="27"><div style={{backdropFilter:'blur(1px)',WebkitBackdropFilter:'blur(1px)',clipPath:'url(#rv_approved_clip)',height:'100%',width:'100%',backgroundColor:'rgba(255,255,255,0.16)',border:'1px solid rgba(255,255,255,0.28)',boxShadow:'inset 0 1px 0 rgba(255,255,255,0.36)'}}/></foreignObject>
+                <g filter="url(#rv_approved_fg_i)"><circle cx="10.5" cy="13.5" r="9.5" fill="#46C05B" fillOpacity="0.45"/></g>
+                <path d="M13.19 10.42a1 1 0 011.4.23 1 1 0 01-.23 1.4L10.5 17.62a1.5 1.5 0 01-2.34-.13L5.29 14.5a1 1 0 011.41-1.41l2.67 2.67L13.19 10.42z" fill="url(#rv_approved_fg_g)"/>
+              </svg>
             )},
-            { label: t('requirements.review.rejectedCount'), value: stats.rejectedCount, color: 'var(--semi-color-danger)', icon: (
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5"/><path d="M15 9l-6 6M9 9l6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            { label: t('requirements.review.rejectedCount'), value: stats.rejectedCount, icon: (
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <filter id="rv_rejected_bg_i" x="8.9" y="1.09" width="14" height="15" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB"><feFlood floodOpacity="0" result="bg"/><feBlend in="SourceGraphic" in2="bg" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="ha"/><feOffset dy="1"/><feGaussianBlur stdDeviation="0.5"/><feComposite in2="ha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0"/><feBlend in2="shape" result="r"/></filter>
+                  <filter id="rv_rejected_fg_i" x="-3" y="-1" width="28" height="28" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB"><feFlood floodOpacity="0" result="bg"/><feBlend in="SourceGraphic" in2="bg" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="ha"/><feOffset dy="3.667"/><feGaussianBlur stdDeviation="1.833"/><feComposite in2="ha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0"/><feBlend in2="shape" result="r"/></filter>
+                  <clipPath id="rv_rejected_clip" transform="translate(3 1)"><circle cx="11" cy="13" r="10"/></clipPath>
+                  <linearGradient id="rv_rejected_bg_g" x1="15.9" y1="1.09" x2="15.9" y2="15.09" gradientUnits="userSpaceOnUse"><stop stopColor="#FF8E8E"/><stop offset="1" stopColor="#CC2929"/></linearGradient>
+                  <linearGradient id="rv_rejected_fg_g" x1="11" y1="9" x2="11" y2="17" gradientUnits="userSpaceOnUse"><stop stopColor="white"/><stop offset="1" stopColor="white" stopOpacity="0.3"/></linearGradient>
+                </defs>
+                <g filter="url(#rv_rejected_bg_i)"><circle cx="15.9" cy="8.09" r="7" fill="url(#rv_rejected_bg_g)"/></g>
+                <foreignObject x="-3" y="-1" width="28" height="28"><div style={{backdropFilter:'blur(1px)',WebkitBackdropFilter:'blur(1px)',clipPath:'url(#rv_rejected_clip)',height:'100%',width:'100%',backgroundColor:'rgba(255,255,255,0.16)',border:'1px solid rgba(255,255,255,0.28)',boxShadow:'inset 0 1px 0 rgba(255,255,255,0.36)'}}/></foreignObject>
+                <g filter="url(#rv_rejected_fg_i)"><circle cx="11" cy="13" r="10" fill="#FF6B6B" fillOpacity="0.45"/></g>
+                <path d="M14.12 10.88a1 1 0 010 1.41L12.41 14l1.71 1.71a1 1 0 01-1.41 1.41L11 15.41l-1.71 1.71a1 1 0 01-1.41-1.41L9.59 14l-1.71-1.71a1 1 0 011.41-1.41L11 12.59l1.71-1.71a1 1 0 011.41 0z" fill="url(#rv_rejected_fg_g)"/>
+              </svg>
             )},
           ].map((item, idx, arr) => (
             <div key={idx} className="requirements-review-metric-card">
