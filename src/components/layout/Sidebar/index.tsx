@@ -183,7 +183,6 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
       labelKey: 'sidebar.operationsCenter',
       shortLabelKey: 'sidebar.operationsCenterShort',
       icon: <div className="sidebar-center-icon" dangerouslySetInnerHTML={{ __html: operationsCenterIconRaw }} />,
-      path: '/operations',
     },
     {
       key: 'requirementsCenter',
