@@ -51,7 +51,10 @@ import EmptyStateOptionsPreview from "@/pages/DevPreview/EmptyStateOptionsPrevie
 import RequirementsWorkbench from "@/pages/Requirements/RequirementsWorkbench";
 import RequirementsReview from "@/pages/Requirements/RequirementsReview";
 import RequirementsTeam from "@/pages/Requirements/RequirementsTeam";
-import Operations from "@/pages/Operations";
+import ExecutionReport from "@/pages/Operations/ExecutionReport";
+import PerformanceAnalysis from "@/pages/Operations/PerformanceAnalysis";
+import TargetManagement from "@/pages/Operations/TargetManagement";
+import ReportExport from "@/pages/Operations/ReportExport";
 // Maintenance
 import MaintenanceWorkbench from "@/pages/Maintenance/MaintenanceWorkbench";
 
