@@ -444,7 +444,7 @@ const RequirementsReview = () => {
             )},
           ].map((item, idx, arr) => (
             <div key={idx} className="requirements-review-metric-card">
-              <div className="requirements-review-metric-icon" style={{ color: item.color }}>{item.icon}</div>
+              <div className="requirements-review-metric-icon">{item.icon}</div>
               <div className="requirements-review-metric-info">
                 <div className="requirements-review-metric-label">{item.label}</div>
                 <div className="requirements-review-metric-value">{item.value}</div>
