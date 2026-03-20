@@ -69,8 +69,8 @@ interface SidebarProps {
   collapsed: boolean;
   onToggleCollapse?: () => void;
   disableHover?: boolean;
-  panelWidth?: number;
-  onPanelWidthChange?: (width: number) => void;
+  iconBarWidth?: number;
+  onIconBarWidthChange?: (width: number) => void;
 }
 
 // 根据路径获取需要展开的菜单组
@@ -90,10 +90,12 @@ const getExpandedKeysByPath = (pathname: string): string[] => {
   return [];
 };
 
-const MIN_PANEL_WIDTH = 160;
-const MAX_PANEL_WIDTH = 400;
+const MIN_ICON_BAR_WIDTH = 68;
+const MAX_ICON_BAR_WIDTH = 180;
+const HORIZONTAL_THRESHOLD = 90; // 超过此宽度切换为横向排列
 
-const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, panelWidth = 220, onPanelWidthChange }: SidebarProps) => {
+const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, iconBarWidth = 68, onIconBarWidthChange }: SidebarProps) => {
+  const isHorizontalLayout = iconBarWidth >= HORIZONTAL_THRESHOLD;
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
@@ -595,9 +597,12 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, panelWidth
   return (
     <div className="sidebar">
       {/* 左侧图标栏 */}
-      <div className={`sidebar-icon-bar ${!collapsed ? 'with-border' : ''}`}>
+      <div
+        className={`sidebar-icon-bar ${!collapsed ? 'with-border' : ''} ${isHorizontalLayout ? 'horizontal-layout' : ''}`}
+        style={{ width: iconBarWidth }}
+      >
         {/* Logo */}
-        <div className="sidebar-logo">
+        <div className="sidebar-logo" style={{ width: iconBarWidth }}>
           <img src={laiyeLogo} alt="Laiye" className="sidebar-logo-img" />
         </div>
 
@@ -646,11 +651,39 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, panelWidth
             </Popover>
           </div>
         </div>
+
+        {/* 拖拽手柄 */}
+        <div
+          className="sidebar-resize-handle"
+          onMouseDown={(e) => {
+            e.preventDefault();
+            const startX = e.clientX;
+            const startWidth = iconBarWidth;
+            document.body.style.userSelect = 'none';
+            document.body.style.cursor = 'col-resize';
+
+            const onMouseMove = (ev: MouseEvent) => {
+              const delta = ev.clientX - startX;
+              const newWidth = Math.min(MAX_ICON_BAR_WIDTH, Math.max(MIN_ICON_BAR_WIDTH, startWidth + delta));
+              onIconBarWidthChange?.(newWidth);
+            };
+
+            const onMouseUp = () => {
+              document.body.style.userSelect = '';
+              document.body.style.cursor = '';
+              document.removeEventListener('mousemove', onMouseMove);
+              document.removeEventListener('mouseup', onMouseUp);
+            };
+
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+          }}
+        />
       </div>
 
       {/* 右侧详细菜单 - 仅在展开时显示 */}
       {!collapsed && currentCenterMenu.length > 0 && (
-        <div className="sidebar-detail-panel" style={{ width: panelWidth }}>
+        <div className="sidebar-detail-panel">
           {/* 中心标题 */}
           <div className="sidebar-detail-header">
             <span className="sidebar-detail-title">{currentCenterLabel ? t(currentCenterLabel) : ''}</span>
@@ -661,34 +694,6 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, panelWidth
 
           {/* 菜单列表 */}
           <div className="sidebar-detail-list">{currentCenterMenu.map((item) => renderDetailMenuItem(item))}</div>
-
-          {/* 拖拽手柄 */}
-          <div
-            className="sidebar-resize-handle"
-            onMouseDown={(e) => {
-              e.preventDefault();
-              const startX = e.clientX;
-              const startWidth = panelWidth;
-              document.body.style.userSelect = 'none';
-              document.body.style.cursor = 'col-resize';
-
-              const onMouseMove = (ev: MouseEvent) => {
-                const delta = ev.clientX - startX;
-                const newWidth = Math.min(MAX_PANEL_WIDTH, Math.max(MIN_PANEL_WIDTH, startWidth + delta));
-                onPanelWidthChange?.(newWidth);
-              };
-
-              const onMouseUp = () => {
-                document.body.style.userSelect = '';
-                document.body.style.cursor = '';
-                document.removeEventListener('mousemove', onMouseMove);
-                document.removeEventListener('mouseup', onMouseUp);
-              };
-
-              document.addEventListener('mousemove', onMouseMove);
-              document.addEventListener('mouseup', onMouseUp);
-            }}
-          />
         </div>
       )}
     </div>
