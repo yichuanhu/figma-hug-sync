@@ -5,7 +5,7 @@
 
   // 左侧图标栏
   .sidebar-icon-bar {
-    width: 68px;
+    // width is set via inline style
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -16,6 +16,32 @@
     padding-right: 4px;
     flex-shrink: 0;
     background-color: #EFF1F3;
+    position: relative;
+    transition: width 0.15s ease;
+
+    // 横向排列模式
+    &.horizontal-layout {
+      align-items: stretch;
+
+      .sidebar-main-icons,
+      .sidebar-bottom-icons {
+        align-items: stretch;
+      }
+
+      .sidebar-icon-btn {
+        flex-direction: row;
+        width: auto;
+        min-height: 40px;
+        padding: 8px 10px;
+        gap: 8px;
+        justify-content: flex-start;
+      }
+
+      .sidebar-icon-btn-label {
+        font-size: 12px;
+        text-align: left;
+      }
+    }
   }
 
   // Logo容器 - 高度56px
