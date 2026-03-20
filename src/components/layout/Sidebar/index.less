@@ -307,7 +307,7 @@
 
   // 右侧详细菜单面板
   .sidebar-detail-panel {
-    width: 220px;
+    // width is set via inline style
     height: calc(100% - 16px);
     margin: 8px 0 8px 0;
     display: flex;
@@ -317,6 +317,7 @@
     box-shadow: none;
     overflow: hidden;
     position: relative;
+    flex-shrink: 0;
 
     // 蓝色晕影（与页面卡片统一，位于右上角）
     &::before {
