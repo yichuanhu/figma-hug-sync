@@ -17,44 +17,74 @@
     }
   }
 
-  // 统计卡片
-  &-stats {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
+  // 统计卡片 - 参考首页 MetricsSection 样式
+  &-stats-card {
+    background-color: var(--semi-color-bg-0);
+    border-radius: 10px;
+    padding: 4px 0;
     margin-bottom: 20px;
     flex-shrink: 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   }
 
-  &-stat-card {
-    background: var(--semi-color-bg-0);
-    border-radius: 8px;
+  &-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  &-metric-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
     padding: 16px 20px;
-    border: 1px solid var(--semi-color-border);
+    position: relative;
+  }
+
+  &-metric-divider {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1px;
+    height: 24px;
+    background-color: var(--semi-color-border);
+  }
+
+  &-metric-icon {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+  }
+
+  &-metric-info {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    min-width: 0;
   }
 
-  &-stat-value {
-    margin: 0 !important;
-    line-height: 1 !important;
+  &-metric-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--semi-color-text-2);
+    line-height: 20px;
+    white-space: nowrap;
   }
 
-  &-stat-pending {
-    border-left: 3px solid var(--semi-color-warning);
-  }
-
-  &-stat-assessing {
-    border-left: 3px solid rgb(var(--semi-purple-5));
-  }
-
-  &-stat-approved {
-    border-left: 3px solid var(--semi-color-success);
-  }
-
-  &-stat-rejected {
-    border-left: 3px solid var(--semi-color-danger);
+  &-metric-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--semi-color-text-0);
+    line-height: 32px;
+    margin-top: 4px;
   }
 
   // 内容区
