@@ -8,6 +8,7 @@ const noExpandRoutes = ['/operations', '/maintenance', '/personal-center'];
 
 const AppLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const [panelWidth, setPanelWidth] = useState(220);
   const location = useLocation();
 
   const disableExpand = useMemo(
@@ -28,6 +29,8 @@ const AppLayout = () => {
           collapsed={effectiveCollapsed}
           onToggleCollapse={disableExpand ? undefined : () => setCollapsed(!collapsed)}
           disableHover={disableExpand}
+          panelWidth={panelWidth}
+          onPanelWidthChange={setPanelWidth}
         />
       </div>
 
