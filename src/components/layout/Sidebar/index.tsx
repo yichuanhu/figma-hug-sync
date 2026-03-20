@@ -90,10 +90,12 @@ const getExpandedKeysByPath = (pathname: string): string[] => {
   return [];
 };
 
-const MIN_PANEL_WIDTH = 160;
-const MAX_PANEL_WIDTH = 400;
+const MIN_ICON_BAR_WIDTH = 68;
+const MAX_ICON_BAR_WIDTH = 180;
+const HORIZONTAL_THRESHOLD = 90; // 超过此宽度切换为横向排列
 
-const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, panelWidth = 220, onPanelWidthChange }: SidebarProps) => {
+const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, iconBarWidth = 68, onIconBarWidthChange }: SidebarProps) => {
+  const isHorizontalLayout = iconBarWidth >= HORIZONTAL_THRESHOLD;
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
