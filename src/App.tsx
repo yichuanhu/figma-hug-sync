@@ -133,11 +133,13 @@ const App = () => {
           <Route path="/requirements/list" element={<RequirementsWorkbench />} />
           <Route path="/requirements/review" element={<RequirementsReview />} />
           <Route path="/requirements/team" element={<RequirementsTeam />} />
-          <Route path="/operations" element={<Navigate to="/operations/execution-report" replace />} />
-          <Route path="/operations/execution-report" element={<ExecutionReport />} />
-          <Route path="/operations/performance-analysis" element={<PerformanceAnalysis />} />
-          <Route path="/operations/target-management" element={<TargetManagement />} />
-          <Route path="/operations/report-export" element={<ReportExport />} />
+          <Route path="/operations" element={<Navigate to="/operations/dashboard" replace />} />
+          <Route path="/operations/dashboard" element={<OperationsDashboard />} />
+          <Route path="/operations/roi-analysis" element={<ROIAnalysis />} />
+          <Route path="/operations/resource-efficiency" element={<ResourceEfficiency />} />
+          <Route path="/operations/business-outcomes" element={<BusinessOutcomes />} />
+          <Route path="/operations/cost-management" element={<CostManagement />} />
+          <Route path="/operations/platform-operations" element={<PlatformOperations />} />
           <Route path="/maintenance" element={<MaintenanceWorkbench />} />
         </Route>
 
