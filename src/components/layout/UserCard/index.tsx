@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Popover, Avatar } from '@douyinfe/semi-ui';
 import './index.less';
 
