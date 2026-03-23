@@ -92,9 +92,9 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
     { key: t('worker.detail.fields.os'), value: workerData.os },
     { key: t('worker.detail.fields.arch'), value: workerData.arch },
     { key: t('worker.detail.fields.cpuModel'), value: workerData.cpu_model },
-    { key: t('worker.detail.fields.cpuCores'), value: `${workerData.cpu_cores}核` },
+    { key: t('worker.detail.fields.cpuCores'), value: `${workerData.cpu_cores} cores` },
     { key: t('worker.detail.fields.memoryCapacity'), value: workerData.memory_capacity },
-    { key: t('worker.detail.fields.robotCount'), value: `${workerData.robot_count}台` },
+    { key: t('worker.detail.fields.robotCount'), value: `${workerData.robot_count} units` },
   ];
 
   const extraActions = (

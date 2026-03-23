@@ -56,7 +56,7 @@ const mockAvailableWorkers: LYWorkerResponse[] = [
   {
     id: '550e8400-e29b-41d4-a716-446655440011',
     name: 'HR Bot-02',
-    description: 'For HR审批Process's bot',
+    description: 'Bot for HR approval processes',
     status: 'OFFLINE',
     sync_status: 'SYNCED',
     ip_address: '10.0.1.103',
@@ -82,7 +82,7 @@ const mockAvailableWorkers: LYWorkerResponse[] = [
   },
   {
     id: '550e8400-e29b-41d4-a716-446655440012',
-    name: '运维bot-02',
+    name: 'Ops Bot-02',
     description: 'For opsinspection's bot',
     status: 'IDLE',
     sync_status: 'SYNCED',
@@ -245,7 +245,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
     try {
       // 模拟API调用
       await new Promise(resolve => setTimeout(resolve, 500));
-      console.log('添加成员到组:', groupId, selectedWorkers.map(w => w.id));
+    console.log('Adding members to group:', groupId, selectedWorkers.map(w => w.id));
       
       Toast.success(t('workerGroup.addMembers.success', { count: selectedWorkers.length }));
       onCancel();

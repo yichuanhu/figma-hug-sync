@@ -19,7 +19,7 @@ interface EditWorkerModalProps {
 }
 
 // Already存在's botName(用于唯Mon性校验)
-const existingWorkerNames = ['Finance Bot-01', 'Finance Bot-02', 'Finance Bot-03', 'HR Bot-01', 'Ops Bot-01', '测试bot-01'];
+  const existingWorkerNames = ['Finance Bot-01', 'Finance Bot-02', 'Finance Bot-03', 'HR Bot-01', 'Ops Bot-01', 'Test Bot-01'];
 
 const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorkerModalProps) => {
   const { t } = useTranslation();

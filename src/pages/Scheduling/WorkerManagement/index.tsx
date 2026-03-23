@@ -483,8 +483,8 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
 
   // Search
   const handleSearch = (value: string) => {
-    setSearchValue(value);  // 立即Update输入框显示
-    debouncedSearch(value); // 防抖Update查询Parameter
+    setSearchValue(value);  // Immediately update input display
+    debouncedSearch(value); // Debounced query update
   };
 
   const handleFilterConfirm = (values: Record<string, unknown>) => {

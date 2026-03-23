@@ -129,7 +129,7 @@ const YearCalendarGrid: React.FC<YearCalendarGridProps> = ({
     return (
       <div key={`${year}-${month}`} className="year-calendar-month">
         <Text strong className="year-calendar-month-title">
-          {year}年{MONTH_NAMES[month]}
+          {MONTH_NAMES[month]} {year}
         </Text>
         <div className="year-calendar-month-header">
           {WEEKDAY_HEADERS.map((header, index) => (
