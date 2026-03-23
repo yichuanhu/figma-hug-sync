@@ -110,3 +110,74 @@ export const mockProjectRoiDetails: ProjectRoiDetail[] = [
   { projectName: 'Operational Efficiency', status: 'running', investmentCost: 103000, savedCost: 373700, roi: 263, requirementCount: 2 },
   { projectName: 'HR Digital Transformation', status: 'running', investmentCost: 90000, savedCost: 250750, roi: 179, requirementCount: 2 },
 ];
+
+// Resource Efficiency Mock Data
+export const mockResourceEfficiency: ResourceEfficiencyData = {
+  overallUtilization: 78.5,
+  totalRobots: 50,
+  working: 32,
+  idle: 8,
+  offline: 6,
+  maintenance: 4,
+  interactiveOnline: 5,
+  interactiveTotal: 10,
+  unattendedOnline: 35,
+  unattendedTotal: 40,
+  robotDetails: [
+    { id: 'bot-001', name: 'Invoice-Bot-01', type: 'unattended', group: 'Finance', status: 'working', utilization: 92, monthlyTasks: 3420, trend: [78, 82, 85, 88, 90, 92] },
+    { id: 'bot-002', name: 'Order-Bot-01', type: 'unattended', group: 'Operations', status: 'working', utilization: 88, monthlyTasks: 2850, trend: [70, 75, 80, 84, 86, 88] },
+    { id: 'bot-003', name: 'HR-Bot-01', type: 'interactive', group: 'HR', status: 'working', utilization: 76, monthlyTasks: 1230, trend: [60, 65, 68, 72, 74, 76] },
+    { id: 'bot-004', name: 'Contract-Bot-01', type: 'unattended', group: 'Legal', status: 'idle', utilization: 45, monthlyTasks: 680, trend: [30, 35, 38, 40, 42, 45] },
+    { id: 'bot-005', name: 'Data-Sync-Bot', type: 'unattended', group: 'IT', status: 'working', utilization: 82, monthlyTasks: 2100, trend: [65, 70, 74, 78, 80, 82] },
+    { id: 'bot-006', name: 'Expense-Bot-01', type: 'interactive', group: 'Finance', status: 'working', utilization: 85, monthlyTasks: 1950, trend: [68, 72, 76, 80, 83, 85] },
+    { id: 'bot-007', name: 'Inventory-Bot', type: 'unattended', group: 'Operations', status: 'offline', utilization: 0, monthlyTasks: 0, trend: [55, 48, 30, 15, 5, 0] },
+    { id: 'bot-008', name: 'Compliance-Bot', type: 'unattended', group: 'Legal', status: 'maintenance', utilization: 0, monthlyTasks: 0, trend: [40, 42, 38, 35, 10, 0] },
+  ],
+  taskStats: { total: 12580, success: 11450, failed: 420, running: 580, timeout: 130 },
+  todayTasks: 1258,
+  totalTasks: 98432,
+  todayRunMinutes: 452,
+  totalRunMinutes: 752400,
+  successRateToday: 94.2,
+  successRateTotal: 91.0,
+  utilizationTrend: [
+    { month: '2025-10', utilization: 68 },
+    { month: '2025-11', utilization: 72 },
+    { month: '2025-12', utilization: 74 },
+    { month: '2026-01', utilization: 76 },
+    { month: '2026-02', utilization: 77 },
+    { month: '2026-03', utilization: 78.5 },
+  ],
+  groupUtilization: [
+    { group: 'Finance', utilization: 88.5, robotCount: 2 },
+    { group: 'Operations', utilization: 72.0, robotCount: 2 },
+    { group: 'HR', utilization: 76.0, robotCount: 1 },
+    { group: 'IT', utilization: 82.0, robotCount: 1 },
+    { group: 'Legal', utilization: 22.5, robotCount: 2 },
+  ],
+  successRateTrend: [
+    { month: '2025-10', rate: 88.2 },
+    { month: '2025-11', rate: 89.5 },
+    { month: '2025-12', rate: 90.1 },
+    { month: '2026-01', rate: 91.8 },
+    { month: '2026-02', rate: 93.0 },
+    { month: '2026-03', rate: 94.2 },
+  ],
+};
+
+export const mockRobotGroups = [
+  { value: 'all', label: '' },
+  { value: 'finance', label: 'Finance' },
+  { value: 'operations', label: 'Operations' },
+  { value: 'hr', label: 'HR' },
+  { value: 'it', label: 'IT' },
+  { value: 'legal', label: 'Legal' },
+];
+
+export const mockRobotStatuses = [
+  { value: 'all', label: '' },
+  { value: 'working', label: 'Working' },
+  { value: 'idle', label: 'Idle' },
+  { value: 'offline', label: 'Offline' },
+  { value: 'maintenance', label: 'Maintenance' },
+];

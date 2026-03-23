@@ -1,10 +1,29 @@
 .resource-efficiency-page {
-  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
 
-  h2 {
-    font-size: 20px;
+  .dashboard-card {
+    background-color: var(--semi-color-bg-0);
+    border-radius: 10px;
+    border: none;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    margin-bottom: 20px;
+  }
+
+  .dashboard-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .dashboard-card-title {
+    font-size: 15px;
     font-weight: 600;
     color: var(--semi-color-text-0);
-    margin: 0 0 24px;
+    line-height: 22px;
   }
 }
