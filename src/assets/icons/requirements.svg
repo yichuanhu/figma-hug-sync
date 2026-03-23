@@ -3,10 +3,10 @@
 <path d="M1.09088 7.76923C1.09088 6.23983 2.43403 5 4.09088 5H10.547C11.3518 5 12.1229 5.29849 12.6869 5.8284L15.2308 8.21829C15.782 8.73615 16.0909 9.43311 16.0909 10.1591V20.2308C16.0909 21.7602 14.7477 23 13.0909 23H4.09088C2.43403 23 1.09088 21.7602 1.09088 20.2308V7.76923Z" fill="url(#paint0_linear_113_2169)"/>
 </g>
 <foreignObject x="3.63635" y="-2.90909" width="23.2727" height="28.7273"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(2px);clip-path:url(#bgblur_0_113_2169_clip_path);height:100%;width:100%"></div></foreignObject><g filter="url(#filter1_i_113_2169)" data-figma-bg-blur-radius="4">
-<path d="M7.63635 5.45455C7.63635 3.04458 9.59002 1.09091 12 1.09091H16.66C17.8632 1.09091 19.013 1.58771 19.8376 2.46387L21.723 4.46711C22.4849 5.27656 22.9091 6.34622 22.9091 7.45779V17.4545C22.9091 19.8645 20.9554 21.8182 18.5454 21.8182H12C9.59002 21.8182 7.63635 19.8645 7.63635 17.4545V5.45455Z" fill="#285BFF" fill-opacity="0.5"/>
+<path d="M7.63635 5.45455C7.63635 3.04458 9.59002 1.09091 12 1.09091H16.66C17.8632 1.09091 19.013 1.58771 19.8376 2.46387L21.723 4.46711C22.4849 5.27656 22.9091 6.34622 22.9091 7.45779V17.4545C22.9091 19.8645 20.9554 21.8182 18.5454 21.8182H12C9.59002 21.8182 7.63635 19.8645 7.63635 17.4545V5.45455Z" fill="#547DFF" fill-opacity="0.4"/>
 <path d="M11.9996 1.34091H16.6598C17.794 1.34091 18.8785 1.80892 19.6559 2.63486L21.5406 4.63876C22.2588 5.40183 22.6588 6.41021 22.6588 7.4581V17.4542C22.6588 19.7261 20.8174 21.5684 18.5455 21.5685H11.9996C9.7279 21.5683 7.88635 19.726 7.88635 17.4542V5.45419C7.88654 3.18258 9.72802 1.3411 11.9996 1.34091Z" stroke="url(#paint1_linear_113_2169)" stroke-opacity="0.4" stroke-width="0.5"/>
 </g>
-<path d="M19 13C19.5523 13 20 13.4477 20 14C20 14.5523 19.5523 15 19 15H11C10.4477 15 10 14.5523 10 14C10 13.4477 10.4477 13 11 13H19ZM14 9C14.5523 9 15 9.44772 15 10C15 10.5523 14.5523 11 14 11H11C10.4477 11 10 10.5523 10 10C10 9.44772 10.4477 9 11 9H14Z" fill="url(#paint2_linear_113_2169)"/>
+<path opacity="0.8" d="M19 13C19.5523 13 20 13.4477 20 14C20 14.5523 19.5523 15 19 15H11C10.4477 15 10 14.5523 10 14C10 13.4477 10.4477 13 11 13H19ZM14 9C14.5523 9 15 9.44772 15 10C15 10.5523 14.5523 11 14 11H11C10.4477 11 10 10.5523 10 10C10 9.44772 10.4477 9 11 9H14Z" fill="url(#paint2_linear_113_2169)"/>
 <defs>
 <filter id="filter0_i_113_2169" x="1.09088" y="5" width="15" height="19" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
 <feFlood flood-opacity="0" result="BackgroundImageFix"/>
@@ -34,12 +34,12 @@
 <stop offset="1" stop-color="#0A32B3"/>
 </linearGradient>
 <linearGradient id="paint1_linear_113_2169" x1="12.5" y1="8" x2="24" y2="17.5" gradientUnits="userSpaceOnUse">
-<stop stop-color="white"/>
+<stop stop-color="#B4C6FF"/>
 <stop offset="1" stop-color="white" stop-opacity="0"/>
 </linearGradient>
 <linearGradient id="paint2_linear_113_2169" x1="15" y1="9" x2="11" y2="13.5" gradientUnits="userSpaceOnUse">
 <stop stop-color="white"/>
-<stop offset="1" stop-color="white" stop-opacity="0.5"/>
+<stop offset="1" stop-color="white" stop-opacity="0.3"/>
 </linearGradient>
 </defs>
 </svg>
