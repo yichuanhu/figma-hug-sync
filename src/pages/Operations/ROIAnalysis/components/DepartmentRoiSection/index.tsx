@@ -9,13 +9,16 @@ interface Props {
   data: DepartmentRoiDetail[];
 }
 
-/* Semi Design color palette */
+/* Semi Design Level 3-4 muted palette */
 const COLORS = {
-  primary: '#165DFF',
-  success: '#00B42A',
-  warning: '#FF7D00',
-  danger: '#F53F3F',
-  purple: '#722ED1',
+  primary: '#94BFFF',
+  success: '#7BE188',
+  warning: '#FFCF8B',
+  danger: '#F98D8D',
+  purple: '#B59ADB',
+  textSuccess: '#00B42A',
+  textPrimary: '#165DFF',
+  textWarning: '#FF7D00',
 };
 
 const TOOLTIP_STYLE = {
@@ -27,7 +30,7 @@ const TOOLTIP_STYLE = {
   extraCssText: 'box-shadow: 0 4px 16px rgba(0,0,0,0.08); border-radius: 8px;',
 };
 
-const TREND_COLORS = ['#165DFF', '#00B42A', '#FF7D00', '#F53F3F', '#722ED1'];
+const TREND_COLORS = ['#94BFFF', '#7BE188', '#FFCF8B', '#F98D8D', '#B59ADB'];
 
 const DepartmentRoiSection = ({ data }: Props) => {
   const { t } = useTranslation();
@@ -39,7 +42,7 @@ const DepartmentRoiSection = ({ data }: Props) => {
     { title: t('operations.roiAnalysis.savedCost'), dataIndex: 'savedCost', width: 120,
       render: (v: number) => `$${(v / 1000).toFixed(0)}K` },
     { title: 'ROI', dataIndex: 'roi', width: 80, render: (v: number) => (
-      <span style={{ color: v >= 200 ? COLORS.success : v >= 100 ? COLORS.primary : COLORS.warning, fontWeight: 600 }}>{v}%</span>
+      <span style={{ color: v >= 200 ? COLORS.textSuccess : v >= 100 ? COLORS.textPrimary : COLORS.textWarning, fontWeight: 600 }}>{v}%</span>
     )},
     { title: t('operations.roiAnalysis.reqCount'), dataIndex: 'requirementCount', width: 80 },
     { title: t('operations.roiAnalysis.robotCount'), dataIndex: 'robotCount', width: 80 },
@@ -47,7 +50,7 @@ const DepartmentRoiSection = ({ data }: Props) => {
 
   // Bar chart
   const barOption = useMemo(() => ({
-    tooltip: { ...TOOLTIP_STYLE, trigger: 'axis', axisPointer: { type: 'shadow', shadowStyle: { color: 'rgba(22,93,255,0.04)' } } },
+    tooltip: { ...TOOLTIP_STYLE, trigger: 'axis', axisPointer: { type: 'shadow', shadowStyle: { color: 'rgba(148,191,255,0.04)' } } },
     legend: {
       data: [t('operations.roiAnalysis.investmentCost'), t('operations.roiAnalysis.savedCost')],
       bottom: 0, textStyle: { fontSize: 12, color: '#86909C' }, itemWidth: 12, itemHeight: 12, itemGap: 20,
@@ -69,14 +72,14 @@ const DepartmentRoiSection = ({ data }: Props) => {
       {
         name: t('operations.roiAnalysis.investmentCost'), type: 'bar', data: data.map(d => d.investmentCost),
         barWidth: 18, barGap: '30%',
-        itemStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: '#4E8AFF' }, { offset: 1, color: '#165DFF' }] }, borderRadius: [4, 4, 0, 0] },
-        emphasis: { itemStyle: { shadowBlur: 8, shadowColor: 'rgba(22,93,255,0.2)' } },
+        itemStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: '#A8CDFF' }, { offset: 1, color: '#94BFFF' }] }, borderRadius: [4, 4, 0, 0] },
+        emphasis: { itemStyle: { shadowBlur: 8, shadowColor: 'rgba(148,191,255,0.25)' } },
       },
       {
         name: t('operations.roiAnalysis.savedCost'), type: 'bar', data: data.map(d => d.savedCost),
         barWidth: 18,
-        itemStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: '#27C346' }, { offset: 1, color: '#00B42A' }] }, borderRadius: [4, 4, 0, 0] },
-        emphasis: { itemStyle: { shadowBlur: 8, shadowColor: 'rgba(0,180,42,0.2)' } },
+        itemStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: '#8FE99C' }, { offset: 1, color: '#7BE188' }] }, borderRadius: [4, 4, 0, 0] },
+        emphasis: { itemStyle: { shadowBlur: 8, shadowColor: 'rgba(123,225,136,0.25)' } },
       },
     ],
   }), [data, t]);

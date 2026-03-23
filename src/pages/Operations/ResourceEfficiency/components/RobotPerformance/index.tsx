@@ -9,14 +9,14 @@ interface Props {
   data: ResourceEfficiencyData;
 }
 
-/* Semi Design color palette */
+/* Semi Design Level 3-4 muted palette */
 const COLORS = {
-  primary: '#165DFF',
-  success: '#00B42A',
-  warning: '#FF7D00',
-  danger: '#F53F3F',
-  purple: '#722ED1',
-  teal: '#0FC6C2',
+  primary: '#94BFFF',
+  success: '#7BE188',
+  warning: '#FFCF8B',
+  danger: '#F98D8D',
+  purple: '#B59ADB',
+  teal: '#7BE7E3',
 };
 
 const TOOLTIP_STYLE = {
@@ -111,8 +111,8 @@ const RobotPerformance = ({ data }: Props) => {
       lineStyle: { width: 2.5, color: COLORS.primary },
       itemStyle: { color: COLORS.primary },
       areaStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [
-        { offset: 0, color: 'rgba(22,93,255,0.15)' },
-        { offset: 1, color: 'rgba(22,93,255,0.02)' },
+        { offset: 0, color: 'rgba(148,191,255,0.10)' },
+        { offset: 1, color: 'rgba(148,191,255,0.01)' },
       ]}},
     }],
   }), [data.utilizationTrend]);
@@ -162,8 +162,8 @@ const RobotPerformance = ({ data }: Props) => {
         symbol: 'none',
         lineStyle: { width: 1.5, color: COLORS.primary },
         areaStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [
-          { offset: 0, color: 'rgba(22,93,255,0.2)' },
-          { offset: 1, color: 'rgba(22,93,255,0)' },
+          { offset: 0, color: 'rgba(148,191,255,0.12)' },
+          { offset: 1, color: 'rgba(148,191,255,0)' },
         ]}},
       }],
     };
