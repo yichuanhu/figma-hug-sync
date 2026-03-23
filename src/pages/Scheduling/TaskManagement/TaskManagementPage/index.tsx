@@ -406,7 +406,7 @@ const TaskManagementPage = () => {
   // Cancel任务
   const handleCancelTask = (task: LYTaskResponse) => {
     if (task.task_status !== 'PENDING') {
-      Toast.warning('只能Cancel待ExecuteStatus's 任务');
+      Toast.warning('Can only cancel tasks in pending execution status');
       return;
     }
 
@@ -433,7 +433,7 @@ const TaskManagementPage = () => {
           loadData();
           Toast.success(t('task.cancelModal.success'));
         } catch (error) {
-          Toast.error(t('task.cancelModal.error', { message: '请Retry' }));
+          Toast.error(t('task.cancelModal.error', { message: 'Please retry' }));
         }
       },
     });
@@ -442,7 +442,7 @@ const TaskManagementPage = () => {
   // Stop任务
   const handleStopTask = (task: LYTaskResponse) => {
     if (task.execution_status !== 'RUNNING') {
-      Toast.warning('只能StopRunning中's 任务');
+      Toast.warning('Can only stop running tasks');
       return;
     }
 
@@ -469,7 +469,7 @@ const TaskManagementPage = () => {
           loadData();
           Toast.success(t('task.stopModal.success'));
         } catch (error) {
-          Toast.error(t('task.stopModal.error', { message: '请Retry' }));
+          Toast.error(t('task.stopModal.error', { message: 'Please retry' }));
         }
       },
     });
@@ -478,7 +478,7 @@ const TaskManagementPage = () => {
   // 重新Execute
   const handleRetryTask = (task: LYTaskResponse) => {
     if (task.task_status !== 'FAILED') {
-      Toast.warning('只能重新ExecuteFailed's 任务');
+      Toast.warning('Can only retry failed tasks');
       return;
     }
 
@@ -509,7 +509,7 @@ const TaskManagementPage = () => {
           loadData();
           Toast.success(t('task.retryModal.success'));
         } catch (error) {
-          Toast.error(t('task.retryModal.error', { message: '请Retry' }));
+          Toast.error(t('task.retryModal.error', { message: 'Please retry' }));
         }
       },
     });

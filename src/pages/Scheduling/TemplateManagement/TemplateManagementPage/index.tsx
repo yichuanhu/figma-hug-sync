@@ -80,8 +80,8 @@ const generateMockTemplateResponse = (index: number): LYExecutionTemplateRespons
     template_id: `tpl-${generateUUID().substring(0, 8)}`,
     template_name: `${process.process_name}Template${index + 1}`,
     description: index === 0 
-      ? 'This is Mon个功能完整's ExecuteTemplate, 包含了多种复杂's 业务场景Config. 该Template支持automationOrder Processing, 智能Data校验, Abnormal情况processing and 多渠道Notification推送 etc.功能. 同时集成了完整's Log追踪, ErrorRetry机制 and 人工干预Process, 确保任务Execute's 稳定性 and 可靠性. 适用于大规模批量任务's automationExecute场景. '
-      : (index % 3 === 0 ? null : `This is ${process.process_name}'s ExecuteTemplate, 用于快速Create任务`),
+      ? 'This is a fully-featured execution template with multiple complex business scenario configs. Supports automated order processing, smart data validation, anomalyprocessing and 多渠道Notification推送 etc.功能. 同时集成了完整's Log追踪, ErrorRetry机制 and 人工干预Process, 确保任务Execute's 稳定性 and 可靠性. 适用于大规模批量任务's automationExecute场景. '
+      : (index % 3 === 0 ? null : `This is ${process.process_name}'s ExecuteTemplate, for quickly creating tasks`),
     process_id: process.process_id,
     process_name: process.process_name,
     execution_target_type: targetTypes[index % targetTypes.length],

@@ -53,11 +53,11 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     version: 'v2.0.0',
     parameters: [
       { name: 'department', type: 'TEXT', required: true, description: 'Department name' },
-      { name: 'approvalCredential', type: 'CREDENTIAL', required: true, description: '审批Credential' },
+      { name: 'approvalCredential', type: 'CREDENTIAL', required: true, description: 'Approval credential' },
     ],
     output_parameters: [
-      { name: 'approvalStatus', type: 'TEXT', description: '审批Status' },
-      { name: 'approvedAmount', type: 'NUMBER', description: '审批通过金额' },
+      { name: 'approvalStatus', type: 'TEXT', description: 'Approval status' },
+      { name: 'approvedAmount', type: 'NUMBER', description: 'Approved amount' },
     ],
   },
   {
@@ -67,7 +67,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     version: 'v1.0.0',
     parameters: [],
     output_parameters: [
-      { name: 'employeeId', type: 'TEXT', description: '新员工ID' },
+      { name: 'employeeId', type: 'TEXT', description: 'New employee ID' },
     ],
   },
   {
@@ -81,8 +81,8 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     ],
     output_parameters: [
       { name: 'collectedCount', type: 'NUMBER', description: 'Collected data count' },
-      { name: 'dataFilePath', type: 'TEXT', description: 'DataFile路径' },
-      { name: 'isComplete', type: 'BOOLEAN', description: '是否采集Done' },
+      { name: 'dataFilePath', type: 'TEXT', description: 'Data file path' },
+      { name: 'isComplete', type: 'BOOLEAN', description: 'Collection complete' },
     ],
   },
 ];
@@ -106,7 +106,7 @@ const mockBots = [
 const mockCredentials = [
   { id: 'cred-001', name: 'System Admin Credentials' },
   { id: 'cred-002', name: 'API Access Credentials' },
-  { id: 'cred-003', name: 'Data库Credential' },
+  { id: 'cred-003', name: 'Database credential' },
 ];
 
 const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTemplateModalProps) => {
