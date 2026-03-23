@@ -7,11 +7,11 @@ interface Props {
   data: ProjectRoiDetail[];
 }
 
-/* Semi Design color palette */
+/* Semi Design Level 3-4 muted palette — text colors kept deeper for readability */
 const COLORS = {
-  primary: '#165DFF',
-  success: '#00B42A',
-  warning: '#FF7D00',
+  textSuccess: '#00B42A',
+  textPrimary: '#165DFF',
+  textWarning: '#FF7D00',
 };
 
 const ProjectRoiSection = ({ data }: Props) => {
@@ -39,7 +39,7 @@ const ProjectRoiSection = ({ data }: Props) => {
     { title: t('operations.roiAnalysis.savedCost'), dataIndex: 'savedCost', width: 130,
       render: (v: number) => `$${(v / 1000).toFixed(0)}K` },
     { title: 'ROI', dataIndex: 'roi', width: 80, render: (v: number) => (
-      <span style={{ color: v >= 200 ? COLORS.success : v >= 100 ? COLORS.primary : COLORS.warning, fontWeight: 600 }}>{v}%</span>
+      <span style={{ color: v >= 200 ? COLORS.textSuccess : v >= 100 ? COLORS.textPrimary : COLORS.textWarning, fontWeight: 600 }}>{v}%</span>
     )},
     { title: t('operations.roiAnalysis.reqCount'), dataIndex: 'requirementCount', width: 100 },
   ];
