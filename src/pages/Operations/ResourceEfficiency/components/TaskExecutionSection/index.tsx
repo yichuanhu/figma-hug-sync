@@ -8,13 +8,13 @@ interface Props {
   data: ResourceEfficiencyData;
 }
 
-/* Semi Design Level 3-4 muted palette */
+/* Semi Design color palette */
 const COLORS = {
-  primary: '#94BFFF',
-  success: '#7BE188',
-  warning: '#FFCF8B',
-  danger: '#F98D8D',
-  purple: '#B59ADB',
+  primary: '#165DFF',
+  success: '#00B42A',
+  warning: '#FF7D00',
+  danger: '#F53F3F',
+  purple: '#722ED1',
 };
 
 const TOOLTIP_STYLE = {
@@ -69,11 +69,11 @@ const TaskExecutionSection = ({ data }: Props) => {
       smooth: true,
       symbol: 'circle',
       symbolSize: 6,
-      lineStyle: { width: 2.5, color: '#7BE188' },
-      itemStyle: { color: '#7BE188' },
+      lineStyle: { width: 2.5, color: COLORS.success },
+      itemStyle: { color: COLORS.success },
       areaStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [
-        { offset: 0, color: 'rgba(123,225,136,0.10)' },
-        { offset: 1, color: 'rgba(123,225,136,0.01)' },
+        { offset: 0, color: 'rgba(0,180,42,0.15)' },
+        { offset: 1, color: 'rgba(0,180,42,0.02)' },
       ]}},
     }],
   }), [data.successRateTrend, t]);

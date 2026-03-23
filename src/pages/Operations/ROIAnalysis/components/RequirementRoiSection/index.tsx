@@ -9,18 +9,14 @@ interface Props {
   data: RequirementRoiDetail[];
 }
 
-/* Semi Design Level 3-4 muted palette */
+/* Semi Design color palette */
 const COLORS = {
-  primary: '#94BFFF',
-  success: '#7BE188',
-  warning: '#FFCF8B',
-  danger: '#F98D8D',
-  purple: '#B59ADB',
-  pie: ['#94BFFF', '#7BE188', '#FFCF8B', '#F98D8D'],
-  /* Deeper shades for text readability */
-  textSuccess: '#00B42A',
-  textPrimary: '#165DFF',
-  textWarning: '#FF7D00',
+  primary: '#165DFF',
+  success: '#00B42A',
+  warning: '#FF7D00',
+  danger: '#F53F3F',
+  purple: '#722ED1',
+  pie: ['#165DFF', '#00B42A', '#FF7D00', '#F53F3F'],
 };
 
 const TOOLTIP_STYLE = {
@@ -48,7 +44,7 @@ const RequirementRoiSection = ({ data }: Props) => {
     { title: t('operations.roiAnalysis.reqName'), dataIndex: 'name', width: 220 },
     { title: t('operations.dashboard.departmentName'), dataIndex: 'department', width: 120 },
     { title: 'ROI', dataIndex: 'roi', width: 80, render: (v: number) => (
-      <span style={{ color: v >= 200 ? COLORS.textSuccess : v >= 100 ? COLORS.textPrimary : COLORS.textWarning, fontWeight: 600 }}>{v}%</span>
+      <span style={{ color: v >= 200 ? COLORS.success : v >= 100 ? COLORS.primary : COLORS.warning, fontWeight: 600 }}>{v}%</span>
     )},
     { title: t('operations.roiAnalysis.investmentCost'), dataIndex: 'investmentCost', width: 120,
       render: (v: number) => `$${(v / 1000).toFixed(0)}K` },
@@ -106,7 +102,7 @@ const RequirementRoiSection = ({ data }: Props) => {
         `<div style="font-weight:600;margin-bottom:4px">${p.data[3]}</div>` +
         `<div style="display:flex;justify-content:space-between;gap:16px"><span style="color:#86909C">${t('operations.roiAnalysis.investmentCost')}</span><span style="font-weight:500">$${(p.data[0] / 1000).toFixed(0)}K</span></div>` +
         `<div style="display:flex;justify-content:space-between;gap:16px"><span style="color:#86909C">${t('operations.roiAnalysis.savedCost')}</span><span style="font-weight:500">$${(p.data[1] / 1000).toFixed(0)}K</span></div>` +
-        `<div style="display:flex;justify-content:space-between;gap:16px"><span style="color:#86909C">ROI</span><span style="font-weight:600;color:${p.data[2] >= 200 ? COLORS.textSuccess : COLORS.textPrimary}">${p.data[2]}%</span></div>`,
+        `<div style="display:flex;justify-content:space-between;gap:16px"><span style="color:#86909C">ROI</span><span style="font-weight:600;color:${p.data[2] >= 200 ? COLORS.success : COLORS.primary}">${p.data[2]}%</span></div>`,
     },
     grid: { left: 64, right: 24, top: 24, bottom: 44 },
     xAxis: {

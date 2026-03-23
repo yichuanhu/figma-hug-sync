@@ -19,8 +19,8 @@ const MiniTrend = ({ data }: { data: number[] }) => {
       data,
       smooth: true,
       symbol: 'none',
-      lineStyle: { width: 1.5, color: '#94BFFF' },
-      areaStyle: { color: 'rgba(148,191,255,0.06)' },
+      lineStyle: { width: 1.5, color: '#165DFF' },
+      areaStyle: { color: 'rgba(22, 93, 255, 0.08)' },
     }],
   }), [data]);
 

@@ -80,11 +80,11 @@ const RoiTrendChart = ({ data }: RoiTrendChartProps) => {
         smooth: true,
         symbol: 'circle',
         symbolSize: 6,
-        lineStyle: { width: 2.5, color: '#94BFFF' },
-        itemStyle: { color: '#94BFFF', borderWidth: 2, borderColor: '#fff' },
+        lineStyle: { width: 2.5, color: '#165DFF' },
+        itemStyle: { color: '#165DFF', borderWidth: 2, borderColor: '#fff' },
         areaStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [
-          { offset: 0, color: 'rgba(148,191,255,0.10)' },
-          { offset: 1, color: 'rgba(148,191,255,0.01)' },
+          { offset: 0, color: 'rgba(22,93,255,0.12)' },
+          { offset: 1, color: 'rgba(22,93,255,0.01)' },
         ]}},
       },
       {
@@ -93,8 +93,8 @@ const RoiTrendChart = ({ data }: RoiTrendChartProps) => {
         yAxisIndex: 1,
         data: data.map((d) => d.investmentCost),
         barWidth: 16,
-        itemStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: '#FFCF8B' }, { offset: 1, color: '#F7BA6A' }] }, borderRadius: [3, 3, 0, 0] },
-        emphasis: { itemStyle: { shadowBlur: 6, shadowColor: 'rgba(255,207,139,0.3)' } },
+        itemStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: '#FF9A2E' }, { offset: 1, color: '#FF7D00' }] }, borderRadius: [3, 3, 0, 0] },
+        emphasis: { itemStyle: { shadowBlur: 6, shadowColor: 'rgba(255,125,0,0.2)' } },
       },
       {
         name: t('operations.dashboard.savedCostLabel'),
@@ -102,8 +102,8 @@ const RoiTrendChart = ({ data }: RoiTrendChartProps) => {
         yAxisIndex: 1,
         data: data.map((d) => d.savedCost),
         barWidth: 16,
-        itemStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: '#7BE188' }, { offset: 1, color: '#5DC96A' }] }, borderRadius: [3, 3, 0, 0] },
-        emphasis: { itemStyle: { shadowBlur: 6, shadowColor: 'rgba(123,225,136,0.3)' } },
+        itemStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: '#27C346' }, { offset: 1, color: '#00B42A' }] }, borderRadius: [3, 3, 0, 0] },
+        emphasis: { itemStyle: { shadowBlur: 6, shadowColor: 'rgba(0,180,42,0.2)' } },
       },
     ],
   }), [data, t]);
