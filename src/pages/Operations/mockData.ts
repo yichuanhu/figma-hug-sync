@@ -65,16 +65,16 @@ export const mockRequirementRoi: RequirementRoiItem[] = [
 // 部门和项目选项
 export const mockDepartments = [
   { value: 'all', label: '全部' },
-  { value: 'finance', label: '财务部' },
-  { value: 'operations', label: '运营部' },
-  { value: 'hr', label: '人事部' },
-  { value: 'it', label: 'IT部' },
-  { value: 'legal', label: '法务部' },
+  { value: 'finance', label: 'Finance' },
+  { value: 'operations', label: 'Operations' },
+  { value: 'hr', label: 'Human Resources' },
+  { value: 'it', label: 'IT' },
+  { value: 'legal', label: 'Legal' },
 ];
 
 export const mockProjects = [
   { value: 'all', label: '全部' },
-  { value: 'proj-001', label: '财务自动化项目' },
-  { value: 'proj-002', label: '运营效能提升' },
-  { value: 'proj-003', label: 'HR数字化转型' },
+  { value: 'proj-001', label: 'Financial Automation' },
+  { value: 'proj-002', label: 'Operational Efficiency' },
+  { value: 'proj-003', label: 'HR Digital Transformation' },
 ];
