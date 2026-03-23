@@ -384,7 +384,7 @@ const TriggerRuleConfig = ({
                   direction="horizontal"
                   className={`${classPrefix}-month-checkbox-group`}
                 >
-                  {monthOptions.map((option) => (
+                  {getMonthOptions(t).map((option) => (
                     <Checkbox key={option.value} value={option.value}>
                       {option.label}
                     </Checkbox>
