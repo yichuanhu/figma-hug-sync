@@ -9,20 +9,21 @@ interface Props {
   data: ResourceEfficiencyData;
 }
 
+/* Semi Design color palette */
 const COLORS = {
-  primary: '#3B82F6',
-  success: '#10B981',
-  warning: '#F59E0B',
-  danger: '#EF4444',
-  purple: '#8B5CF6',
-  teal: '#14B8A6',
+  primary: '#165DFF',
+  success: '#00B42A',
+  warning: '#FF7D00',
+  danger: '#F53F3F',
+  purple: '#722ED1',
+  teal: '#0FC6C2',
 };
 
 const TOOLTIP_STYLE = {
   backgroundColor: 'rgba(255,255,255,0.96)',
-  borderColor: '#E5E7EB',
+  borderColor: '#E5E8EF',
   borderWidth: 1,
-  textStyle: { color: '#374151', fontSize: 12 },
+  textStyle: { color: '#1D2129', fontSize: 12 },
   padding: [10, 14],
   extraCssText: 'box-shadow: 0 4px 16px rgba(0,0,0,0.08); border-radius: 8px;',
 };
@@ -47,12 +48,12 @@ const RobotPerformance = ({ data }: Props) => {
       max: 100,
       radius: '90%',
       progress: { show: true, width: 14, roundCap: true, itemStyle: { color: COLORS.primary } },
-      axisLine: { lineStyle: { width: 14, color: [[1, '#E5E7EB']] } },
+      axisLine: { lineStyle: { width: 14, color: [[1, '#E5E8EF']] } },
       axisTick: { show: false },
       splitLine: { show: false },
       axisLabel: { show: false },
       pointer: { show: false },
-      title: { show: true, offsetCenter: [0, '30%'], fontSize: 13, color: '#6B7280' },
+      title: { show: true, offsetCenter: [0, '30%'], fontSize: 13, color: '#86909C' },
       detail: {
         valueAnimation: true,
         offsetCenter: [0, '-5%'],
@@ -68,7 +69,7 @@ const RobotPerformance = ({ data }: Props) => {
   // Pie option - robot type distribution
   const pieOption = useMemo(() => ({
     tooltip: { ...TOOLTIP_STYLE, trigger: 'item', formatter: '{b}: {c} ({d}%)' },
-    legend: { bottom: 0, textStyle: { fontSize: 12, color: '#6B7280' }, itemWidth: 12, itemHeight: 12 },
+    legend: { bottom: 0, textStyle: { fontSize: 12, color: '#86909C' }, itemWidth: 12, itemHeight: 12 },
     series: [{
       type: 'pie',
       radius: ['42%', '72%'],
@@ -77,8 +78,8 @@ const RobotPerformance = ({ data }: Props) => {
         { name: t('operations.dashboard.interactiveRobot'), value: data.interactiveTotal },
         { name: t('operations.dashboard.unattendedRobot'), value: data.unattendedTotal },
       ],
-      label: { show: true, formatter: '{b}\n{d}%', fontSize: 11, color: '#6B7280' },
-      labelLine: { length: 12, length2: 8, lineStyle: { color: '#D1D5DB' } },
+      label: { show: true, formatter: '{b}\n{d}%', fontSize: 11, color: '#86909C' },
+      labelLine: { length: 12, length2: 8, lineStyle: { color: '#C9CDD4' } },
       itemStyle: { borderRadius: 6, borderColor: '#fff', borderWidth: 2 },
       color: [COLORS.primary, COLORS.success],
       emphasis: { itemStyle: { shadowBlur: 12, shadowColor: 'rgba(0,0,0,0.12)' } },
@@ -92,14 +93,14 @@ const RobotPerformance = ({ data }: Props) => {
     xAxis: {
       type: 'category',
       data: data.utilizationTrend.map(d => d.month),
-      axisLabel: { fontSize: 11, color: '#9CA3AF' },
-      axisLine: { lineStyle: { color: '#E5E7EB' } },
+      axisLabel: { fontSize: 11, color: '#86909C' },
+      axisLine: { lineStyle: { color: '#E5E8EF' } },
     },
     yAxis: {
       type: 'value',
       max: 100,
-      axisLabel: { formatter: '{value}%', fontSize: 11, color: '#9CA3AF' },
-      splitLine: { lineStyle: { color: '#F3F4F6', type: 'dashed' } },
+      axisLabel: { formatter: '{value}%', fontSize: 11, color: '#86909C' },
+      splitLine: { lineStyle: { color: '#F2F3F5', type: 'dashed' } },
     },
     series: [{
       type: 'line',
@@ -110,8 +111,8 @@ const RobotPerformance = ({ data }: Props) => {
       lineStyle: { width: 2.5, color: COLORS.primary },
       itemStyle: { color: COLORS.primary },
       areaStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [
-        { offset: 0, color: 'rgba(59,130,246,0.15)' },
-        { offset: 1, color: 'rgba(59,130,246,0.02)' },
+        { offset: 0, color: 'rgba(22,93,255,0.15)' },
+        { offset: 1, color: 'rgba(22,93,255,0.02)' },
       ]}},
     }],
   }), [data.utilizationTrend]);
@@ -126,14 +127,14 @@ const RobotPerformance = ({ data }: Props) => {
     xAxis: {
       type: 'category',
       data: data.groupUtilization.map(g => g.group),
-      axisLabel: { fontSize: 11, color: '#9CA3AF' },
-      axisLine: { lineStyle: { color: '#E5E7EB' } },
+      axisLabel: { fontSize: 11, color: '#86909C' },
+      axisLine: { lineStyle: { color: '#E5E8EF' } },
     },
     yAxis: {
       type: 'value',
       max: 100,
-      axisLabel: { formatter: '{value}%', fontSize: 11, color: '#9CA3AF' },
-      splitLine: { lineStyle: { color: '#F3F4F6', type: 'dashed' } },
+      axisLabel: { formatter: '{value}%', fontSize: 11, color: '#86909C' },
+      splitLine: { lineStyle: { color: '#F2F3F5', type: 'dashed' } },
     },
     series: [{
       type: 'bar',
@@ -161,8 +162,8 @@ const RobotPerformance = ({ data }: Props) => {
         symbol: 'none',
         lineStyle: { width: 1.5, color: COLORS.primary },
         areaStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [
-          { offset: 0, color: 'rgba(59,130,246,0.2)' },
-          { offset: 1, color: 'rgba(59,130,246,0)' },
+          { offset: 0, color: 'rgba(22,93,255,0.2)' },
+          { offset: 1, color: 'rgba(22,93,255,0)' },
         ]}},
       }],
     };
@@ -232,11 +233,11 @@ const RobotPerformance = ({ data }: Props) => {
       <div className="robot-perf-charts-row">
         <div className="robot-perf-chart-card">
           <div className="chart-subtitle">{t('operations.resourceEfficiency.overallUtilization')}</div>
-          <ReactECharts option={gaugeOption} style={{ height: 240 }} opts={{ renderer: 'svg' }} />
+          <ReactECharts option={gaugeOption} style={{ height: 240, width: '100%' }} notMerge opts={{ renderer: 'svg' }} />
         </div>
         <div className="robot-perf-chart-card">
           <div className="chart-subtitle">{t('operations.resourceEfficiency.typeDistribution')}</div>
-          <ReactECharts option={pieOption} style={{ height: 240 }} opts={{ renderer: 'svg' }} />
+          <ReactECharts option={pieOption} style={{ height: 240, width: '100%' }} notMerge opts={{ renderer: 'svg' }} />
         </div>
       </div>
 
@@ -244,11 +245,11 @@ const RobotPerformance = ({ data }: Props) => {
       <div className="robot-perf-charts-row">
         <div className="robot-perf-chart-card">
           <div className="chart-subtitle">{t('operations.resourceEfficiency.utilizationTrend')}</div>
-          <ReactECharts option={trendOption} style={{ height: 240 }} opts={{ renderer: 'svg' }} />
+          <ReactECharts option={trendOption} style={{ height: 240, width: '100%' }} notMerge opts={{ renderer: 'svg' }} />
         </div>
         <div className="robot-perf-chart-card">
           <div className="chart-subtitle">{t('operations.resourceEfficiency.groupComparison')}</div>
-          <ReactECharts option={barOption} style={{ height: 240 }} opts={{ renderer: 'svg' }} />
+          <ReactECharts option={barOption} style={{ height: 240, width: '100%' }} notMerge opts={{ renderer: 'svg' }} />
         </div>
       </div>
 

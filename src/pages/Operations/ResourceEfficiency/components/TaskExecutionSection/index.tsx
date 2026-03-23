@@ -8,19 +8,20 @@ interface Props {
   data: ResourceEfficiencyData;
 }
 
+/* Semi Design color palette */
 const COLORS = {
-  primary: '#3B82F6',
-  success: '#10B981',
-  warning: '#F59E0B',
-  danger: '#EF4444',
-  purple: '#8B5CF6',
+  primary: '#165DFF',
+  success: '#00B42A',
+  warning: '#FF7D00',
+  danger: '#F53F3F',
+  purple: '#722ED1',
 };
 
 const TOOLTIP_STYLE = {
   backgroundColor: 'rgba(255,255,255,0.96)',
-  borderColor: '#E5E7EB',
+  borderColor: '#E5E8EF',
   borderWidth: 1,
-  textStyle: { color: '#374151', fontSize: 12 },
+  textStyle: { color: '#1D2129', fontSize: 12 },
   padding: [10, 14],
   extraCssText: 'box-shadow: 0 4px 16px rgba(0,0,0,0.08); border-radius: 8px;',
 };
@@ -52,15 +53,15 @@ const TaskExecutionSection = ({ data }: Props) => {
     xAxis: {
       type: 'category',
       data: data.successRateTrend.map(d => d.month),
-      axisLabel: { fontSize: 11, color: '#9CA3AF' },
-      axisLine: { lineStyle: { color: '#E5E7EB' } },
+      axisLabel: { fontSize: 11, color: '#86909C' },
+      axisLine: { lineStyle: { color: '#E5E8EF' } },
     },
     yAxis: {
       type: 'value',
       min: 80,
       max: 100,
-      axisLabel: { formatter: '{value}%', fontSize: 11, color: '#9CA3AF' },
-      splitLine: { lineStyle: { color: '#F3F4F6', type: 'dashed' } },
+      axisLabel: { formatter: '{value}%', fontSize: 11, color: '#86909C' },
+      splitLine: { lineStyle: { color: '#F2F3F5', type: 'dashed' } },
     },
     series: [{
       type: 'line',
@@ -71,8 +72,8 @@ const TaskExecutionSection = ({ data }: Props) => {
       lineStyle: { width: 2.5, color: COLORS.success },
       itemStyle: { color: COLORS.success },
       areaStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [
-        { offset: 0, color: 'rgba(16,185,129,0.15)' },
-        { offset: 1, color: 'rgba(16,185,129,0.02)' },
+        { offset: 0, color: 'rgba(0,180,42,0.15)' },
+        { offset: 1, color: 'rgba(0,180,42,0.02)' },
       ]}},
     }],
   }), [data.successRateTrend, t]);
@@ -126,7 +127,7 @@ const TaskExecutionSection = ({ data }: Props) => {
         </div>
         <div className="task-exec-chart-card">
           <div className="chart-subtitle">{t('operations.resourceEfficiency.successRateTrend')}</div>
-          <ReactECharts option={trendOption} style={{ height: 280 }} opts={{ renderer: 'svg' }} />
+          <ReactECharts option={trendOption} style={{ height: 280, width: '100%' }} notMerge opts={{ renderer: 'svg' }} />
         </div>
       </div>
     </div>

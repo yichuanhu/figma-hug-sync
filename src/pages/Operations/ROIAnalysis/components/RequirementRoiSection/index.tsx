@@ -9,23 +9,21 @@ interface Props {
   data: RequirementRoiDetail[];
 }
 
-/* Professional analytics palette */
+/* Semi Design color palette */
 const COLORS = {
-  primary: '#3B82F6',
-  success: '#10B981',
-  warning: '#F59E0B',
-  danger: '#EF4444',
-  purple: '#8B5CF6',
-  indigo: '#6366F1',
-  teal: '#14B8A6',
-  pie: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444'],
+  primary: '#165DFF',
+  success: '#00B42A',
+  warning: '#FF7D00',
+  danger: '#F53F3F',
+  purple: '#722ED1',
+  pie: ['#165DFF', '#00B42A', '#FF7D00', '#F53F3F'],
 };
 
 const TOOLTIP_STYLE = {
   backgroundColor: 'rgba(255,255,255,0.96)',
   borderColor: '#E5E7EB',
   borderWidth: 1,
-  textStyle: { color: '#374151', fontSize: 12 },
+  textStyle: { color: '#1D2129', fontSize: 12 },
   padding: [10, 14],
   extraCssText: 'box-shadow: 0 4px 16px rgba(0,0,0,0.08); border-radius: 8px;',
 };
@@ -75,14 +73,14 @@ const RequirementRoiSection = ({ data }: Props) => {
 
     return {
       tooltip: { ...TOOLTIP_STYLE, trigger: 'item', formatter: '{b}: {c} ({d}%)' },
-      legend: { bottom: 0, textStyle: { fontSize: 12, color: '#6B7280' }, itemWidth: 12, itemHeight: 12, itemGap: 16 },
+      legend: { bottom: 0, textStyle: { fontSize: 12, color: '#86909C' }, itemWidth: 12, itemHeight: 12, itemGap: 16 },
       series: [{
         type: 'pie',
         radius: ['42%', '72%'],
         center: ['50%', '42%'],
         data: pieData,
-        label: { show: true, formatter: '{b}\n{d}%', fontSize: 11, color: '#6B7280' },
-        labelLine: { length: 12, length2: 8, lineStyle: { color: '#D1D5DB' } },
+        label: { show: true, formatter: '{b}\n{d}%', fontSize: 11, color: '#86909C' },
+        labelLine: { length: 12, length2: 8, lineStyle: { color: '#C9CDD4' } },
         itemStyle: { borderRadius: 6, borderColor: '#fff', borderWidth: 2 },
         color: COLORS.pie,
         emphasis: {
@@ -102,24 +100,24 @@ const RequirementRoiSection = ({ data }: Props) => {
       trigger: 'item',
       formatter: (p: any) =>
         `<div style="font-weight:600;margin-bottom:4px">${p.data[3]}</div>` +
-        `<div style="display:flex;justify-content:space-between;gap:16px"><span style="color:#6B7280">${t('operations.roiAnalysis.investmentCost')}</span><span style="font-weight:500">$${(p.data[0] / 1000).toFixed(0)}K</span></div>` +
-        `<div style="display:flex;justify-content:space-between;gap:16px"><span style="color:#6B7280">${t('operations.roiAnalysis.savedCost')}</span><span style="font-weight:500">$${(p.data[1] / 1000).toFixed(0)}K</span></div>` +
-        `<div style="display:flex;justify-content:space-between;gap:16px"><span style="color:#6B7280">ROI</span><span style="font-weight:600;color:${p.data[2] >= 200 ? COLORS.success : COLORS.primary}">${p.data[2]}%</span></div>`,
+        `<div style="display:flex;justify-content:space-between;gap:16px"><span style="color:#86909C">${t('operations.roiAnalysis.investmentCost')}</span><span style="font-weight:500">$${(p.data[0] / 1000).toFixed(0)}K</span></div>` +
+        `<div style="display:flex;justify-content:space-between;gap:16px"><span style="color:#86909C">${t('operations.roiAnalysis.savedCost')}</span><span style="font-weight:500">$${(p.data[1] / 1000).toFixed(0)}K</span></div>` +
+        `<div style="display:flex;justify-content:space-between;gap:16px"><span style="color:#86909C">ROI</span><span style="font-weight:600;color:${p.data[2] >= 200 ? COLORS.success : COLORS.primary}">${p.data[2]}%</span></div>`,
     },
     grid: { left: 64, right: 24, top: 24, bottom: 44 },
     xAxis: {
       name: t('operations.roiAnalysis.investmentCost'),
-      nameTextStyle: { fontSize: 11, color: '#9CA3AF' },
-      axisLabel: { formatter: (v: number) => `$${(v / 1000).toFixed(0)}K`, fontSize: 11, color: '#9CA3AF' },
-      axisLine: { lineStyle: { color: '#E5E7EB' } },
-      splitLine: { lineStyle: { color: '#F3F4F6', type: 'dashed' } },
+      nameTextStyle: { fontSize: 11, color: '#86909C' },
+      axisLabel: { formatter: (v: number) => `$${(v / 1000).toFixed(0)}K`, fontSize: 11, color: '#86909C' },
+      axisLine: { lineStyle: { color: '#E5E8EF' } },
+      splitLine: { lineStyle: { color: '#F2F3F5', type: 'dashed' } },
     },
     yAxis: {
       name: t('operations.roiAnalysis.savedCost'),
-      nameTextStyle: { fontSize: 11, color: '#9CA3AF' },
-      axisLabel: { formatter: (v: number) => `$${(v / 1000).toFixed(0)}K`, fontSize: 11, color: '#9CA3AF' },
-      axisLine: { lineStyle: { color: '#E5E7EB' } },
-      splitLine: { lineStyle: { color: '#F3F4F6', type: 'dashed' } },
+      nameTextStyle: { fontSize: 11, color: '#86909C' },
+      axisLabel: { formatter: (v: number) => `$${(v / 1000).toFixed(0)}K`, fontSize: 11, color: '#86909C' },
+      axisLine: { lineStyle: { color: '#E5E8EF' } },
+      splitLine: { lineStyle: { color: '#F2F3F5', type: 'dashed' } },
     },
     series: [{
       type: 'scatter',
@@ -153,11 +151,11 @@ const RequirementRoiSection = ({ data }: Props) => {
         <div className="requirement-roi-charts-row">
           <div className="requirement-roi-chart-item">
             <div className="chart-subtitle">{t('operations.roiAnalysis.roiDistribution')}</div>
-            <ReactECharts option={pieOption} style={{ height: 260 }} opts={{ renderer: 'svg' }} />
+            <ReactECharts option={pieOption} style={{ height: 260, width: '100%' }} notMerge opts={{ renderer: 'svg' }} />
           </div>
           <div className="requirement-roi-chart-item">
             <div className="chart-subtitle">{t('operations.roiAnalysis.investVsSaved')}</div>
-            <ReactECharts option={scatterOption} style={{ height: 260 }} opts={{ renderer: 'svg' }} />
+            <ReactECharts option={scatterOption} style={{ height: 260, width: '100%' }} notMerge opts={{ renderer: 'svg' }} />
           </div>
         </div>
         <div className="requirement-roi-table">
