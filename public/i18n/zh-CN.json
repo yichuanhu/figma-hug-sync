@@ -2920,6 +2920,8 @@
       "investmentCostLabel": "投入成本",
       "savedCostLabel": "节约成本",
       "amountUnit": "金额(元)",
+      "tenThousandUnit": "万",
+      "selectAll": "全部",
       "deptRoiRanking": "部门ROI排行（Top 5）",
       "reqRoiRanking": "需求ROI排行（Top 5）",
       "rank": "排名",

@@ -60,7 +60,7 @@ const DashboardFilter = ({ filter, onFilterChange, onRefresh }: DashboardFilterP
           <Select
             size="small"
             value={filter.project}
-            optionList={mockProjects}
+            optionList={localizedProjects}
             onChange={(val) => onFilterChange({ ...filter, project: val as string })}
             style={{ width: 140 }}
           />

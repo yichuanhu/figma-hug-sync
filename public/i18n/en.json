@@ -2911,6 +2911,8 @@
       "investmentCostLabel": "Investment Cost",
       "savedCostLabel": "Saved Cost",
       "amountUnit": "Amount",
+      "tenThousandUnit": "K",
+      "selectAll": "All",
       "deptRoiRanking": "Department ROI Ranking (Top 5)",
       "reqRoiRanking": "Requirement ROI Ranking (Top 5)",
       "rank": "Rank",
