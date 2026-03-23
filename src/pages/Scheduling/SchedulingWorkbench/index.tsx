@@ -9,7 +9,7 @@ const SchedulingWorkbench = () => {
 
       <div className="scheduling-workbench content">
         <div className="scheduling-workbench content content-card">
-          <p className="scheduling-workbench content content-card placeholder-text">Scheduling Workbench content容区域</p>
+          <p className="scheduling-workbench content content-card placeholder-text">Scheduling Workbench placeholder content</p>
         </div>
       </div>
     </div>

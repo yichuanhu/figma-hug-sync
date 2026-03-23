@@ -24,7 +24,7 @@ interface AddMembersModalProps {
   onSuccess: () => void;
 }
 
-// Mock可添加的机器人数据
+// Mock可添加的botData
 const mockAvailableWorkers: LYWorkerResponse[] = [
   {
     id: '550e8400-e29b-41d4-a716-446655440010',
@@ -56,7 +56,7 @@ const mockAvailableWorkers: LYWorkerResponse[] = [
   {
     id: '550e8400-e29b-41d4-a716-446655440011',
     name: 'HR Bot-02',
-    description: 'For HR审批Process的机器人',
+    description: 'For HR审批Process的bot',
     status: 'OFFLINE',
     sync_status: 'SYNCED',
     ip_address: '10.0.1.103',
@@ -82,8 +82,8 @@ const mockAvailableWorkers: LYWorkerResponse[] = [
   },
   {
     id: '550e8400-e29b-41d4-a716-446655440012',
-    name: '运维机器人-02',
-    description: 'For ops巡检的机器人',
+    name: '运维bot-02',
+    description: 'For opsinspection的bot',
     status: 'IDLE',
     sync_status: 'SYNCED',
     ip_address: '10.0.2.51',
@@ -109,7 +109,7 @@ const mockAvailableWorkers: LYWorkerResponse[] = [
   },
 ];
 
-// 获取可添加的机器人列表
+// 获取可添加的botList
 const fetchAvailableWorkers = async (params: GetAvailableWorkersForGroupParams & { statusFilter?: WorkerStatus[] }): Promise<LYListResponseLYWorkerResponse> => {
   await new Promise(resolve => setTimeout(resolve, 300));
   
@@ -139,7 +139,7 @@ const fetchAvailableWorkers = async (params: GetAvailableWorkersForGroupParams &
   };
 };
 
-// Status配置
+// StatusConfig
 const statusConfig: Record<WorkerStatus, { color: 'green' | 'blue' | 'orange' | 'red' | 'grey'; i18nKey: string }> = {
   IDLE: { color: 'green', i18nKey: 'worker.status.idle' },
   BUSY: { color: 'blue', i18nKey: 'worker.status.busy' },
@@ -180,7 +180,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
     { value: 'OFFLINE', label: t('worker.status.offline') },
   ], [t]);
 
-  // Loading可选机器人列表
+  // LoadingOptionalbotList
   const loadWorkers = useCallback(async () => {
     setLoading(true);
     try {
@@ -211,7 +211,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
     }
   }, [visible, queryParams, loadWorkers]);
 
-  // Search - 防抖处理
+  // Search - 防抖processing
   const handleSearch = useMemo(
     () =>
       debounce((value: string) => {
@@ -220,7 +220,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
     []
   );
 
-  // 选择/Cancel选择机器人
+  // 选择/Cancel选择bot
   const handleSelectWorker = (worker: LYWorkerResponse, checked: boolean) => {
     if (checked) {
       setSelectedWorkers(prev => [...prev, worker]);
@@ -229,7 +229,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
     }
   };
 
-  // 移除已选机器人
+  // 移除已选bot
   const handleRemoveSelected = (workerId: string) => {
     setSelectedWorkers(prev => prev.filter(w => w.id !== workerId));
   };
@@ -322,7 +322,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
       width={800}
     >
       <div className="add-members-modal-content">
-        {/* 左侧：可选机器人列表 */}
+        {/* 左侧：OptionalbotList */}
         <div className="add-members-modal-left">
           <div className="add-members-modal-left-header">
             <Text strong>{t('workerGroup.addMembers.availableWorkers')}</Text>
@@ -382,7 +382,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
           </div>
         </div>
 
-        {/* 右侧：已选机器人列表 */}
+        {/* 右侧：已选botList */}
         <div className="add-members-modal-right">
           <div className="add-members-modal-right-header">
             <Text strong>

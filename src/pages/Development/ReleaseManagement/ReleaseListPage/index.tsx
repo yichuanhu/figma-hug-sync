@@ -40,7 +40,7 @@ import './index.less';
 
 const { Title, Text } = Typography;
 
-// Mock 数据生成器
+// Mock Datageneration器
 const generateMockReleaseResponse = (index: number): LYReleaseResponse => {
   const releaseTypes: ReleaseType[] = [
     'FIRST_RELEASE',
@@ -83,14 +83,14 @@ const generateMockReleaseResponse = (index: number): LYReleaseResponse => {
             ? 'Customer Info Sync' 
             : index % 4 === 2 
               ? 'Customer_Onboarding_KYC_Verification_And_Account_Provisioning_Enterprise_Workflow_With_Compliance_Check'
-              : '数据备份',
+              : 'Data备份',
         version_id: `ver-${index}-1`,
         version_number: `v1.${index}.0`,
         process_description: index % 4 === 0
-          ? '该Process用于处理来自SAP ERP系统的所有客户订单，包括订单验证、Inventory Check、价格计算、折扣应用、税费计算、物流分配、发票生成以及客户通知等完整的端到端业务Process。支持多币种、多仓库、多物流商的复杂场景处理。'
+          ? '该Process用于processing来自SAP ERP系统的所有客户订单，包括订单Validation、Inventory Check、价格calculation、折扣应用、税费calculation、物流分配、发票generation以及客户Notification等完整的端到端业务Process。支持多币种、多仓库、多物流商的复杂场景processing。'
           : index % 4 === 2
-            ? '客户入网全Process自动化，涵盖KYC身份验证、合规检查、风控评估、账户开通、权限分配、欢迎邮件发送及CRM系统同步等环节，支持多国家地区的监管要求适配。'
-            : index % 4 === 3 ? '' : '从 ERP 同步客户数据到 CRM',
+            ? '客户入网全Processautomation，涵盖KYC身份Validation、合规Check、风控评估、账户开通、权限分配、欢迎邮件发送及CRM系统同步等环节，支持多国家地区的监管要求适配。'
+            : index % 4 === 3 ? '' : '从 ERP 同步客户Data到 CRM',
       },
       ...(index % 2 === 0
         ? [
@@ -102,8 +102,8 @@ const generateMockReleaseResponse = (index: number): LYReleaseResponse => {
               version_id: `ver-${index}-2`,
               version_number: `v2.${index}.0`,
               process_description: index % 4 === 0 
-                ? '每M自动生成财务报表并分发给相关部门负责人，支持PDF和Excel双格式输出。' 
-                : '处理客户订单并验证',
+                ? '每M自动generation财务report并分发给相关部门负责人，支持PDF和Excel双Format输出。' 
+                : 'processing客户订单并Validation',
             },
           ]
         : []),
@@ -178,7 +178,7 @@ const ReleaseListPage: React.FC = () => {
     publish_date: [Date, Date] | null;
   }>({ release_type: [], publish_status: [], publisher: [], publish_date: null });
 
-  // 详情抽屉
+  // Details抽屉
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [selectedRelease, setSelectedRelease] =
     useState<LYReleaseResponse | null>(null);
@@ -192,7 +192,7 @@ const ReleaseListPage: React.FC = () => {
   const filterCount =
     activeFilters.release_type.length + activeFilters.publish_status.length + activeFilters.publisher.length;
 
-  // Loading数据
+  // LoadingData
   const loadData = async () => {
     setLoading(true);
     try {
@@ -219,7 +219,7 @@ const ReleaseListPage: React.FC = () => {
     loadData();
   }, [queryParams, activeFilters]);
 
-  // URL Parameter处理 - 打开详情
+  // URL Parameterprocessing - 打开Details
   useEffect(() => {
     const releaseId = searchParams.get('releaseId');
     if (releaseId && listResponse.list.length > 0) {
@@ -241,7 +241,7 @@ const ReleaseListPage: React.FC = () => {
     []
   );
 
-  // Filter操作
+  // FilterOperation
   const handleFilterConfirm = (values: Record<string, unknown>) => {
     const dateValue = values.publish_date as [Date, Date] | undefined;
     setActiveFilters({
@@ -259,7 +259,7 @@ const ReleaseListPage: React.FC = () => {
     setDetailDrawerVisible(true);
   };
 
-  // ReleaseType配置
+  // ReleaseTypeConfig
   const releaseTypeConfig: Record<
     ReleaseType,
     { color: 'blue' | 'cyan' | 'orange' | 'purple' | 'grey' | 'green'; i18nKey: string }
@@ -272,7 +272,7 @@ const ReleaseListPage: React.FC = () => {
     OPTIMIZATION: { color: 'green', i18nKey: 'release.releaseTypes.OPTIMIZATION' },
   };
 
-  // Status配置
+  // StatusConfig
   const statusConfig: Record<
     ReleaseStatus,
     { color: 'green' | 'red' | 'blue'; i18nKey: string }
@@ -401,7 +401,7 @@ const ReleaseListPage: React.FC = () => {
     label: t(config.i18nKey),
   }));
 
-  // Release者选项（从mock数据中提取）
+  // Release者选项（从mockData中提取）
   const publisherOptions = useMemo(() => {
     const publishers = ['John Smith', 'Jane Doe', 'Mike Wang'];
     return publishers.map((name) => ({ value: name, label: name }));
@@ -430,7 +430,7 @@ const ReleaseListPage: React.FC = () => {
             <Text type="tertiary">{t('release.list.description')}</Text>
           </div>
 
-          {/* 操作栏 */}
+          {/* Operation栏 */}
           <Row
             type="flex"
             justify="space-between"
@@ -543,7 +543,7 @@ const ReleaseListPage: React.FC = () => {
           />
         </div>
 
-        {/* 详情抽屉 */}
+        {/* Details抽屉 */}
         <ReleaseDetailDrawer
           visible={detailDrawerVisible}
           release={selectedRelease}

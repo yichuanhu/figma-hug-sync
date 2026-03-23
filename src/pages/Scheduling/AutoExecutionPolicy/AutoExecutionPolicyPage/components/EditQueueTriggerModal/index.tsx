@@ -34,7 +34,7 @@ interface EditQueueTriggerModalProps {
   onSuccess: () => void;
 }
 
-// Mock 执行模板
+// Mock ExecuteTemplate
 const mockTemplates = [
   {
     template_id: 'tpl-001',
@@ -68,7 +68,7 @@ const mockTemplates = [
   },
 ];
 
-// Mock Process列表
+// Mock ProcessList
 const mockProcesses: LYProcessActiveVersionResponse[] = [
   {
     process_id: 'proc-001',
@@ -117,7 +117,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
   },
 ];
 
-// Mock 队列列表
+// Mock QueueList
 const mockQueues = [
   { queue_id: 'queue-001', queue_name: 'Pending Orders Queue', monitored: false },
   { queue_id: 'queue-002', queue_name: 'Approval Tasks Queue', monitored: true },
@@ -125,7 +125,7 @@ const mockQueues = [
   { queue_id: 'queue-004', queue_name: 'Report Generation Queue', monitored: false },
 ];
 
-// Mock 个人凭据
+// Mock 个人Credential
 const mockCredentials = [
   { id: 'cred-001', name: 'System Admin Credentials' },
   { id: 'cred-002', name: 'API Access Credentials' },
@@ -140,7 +140,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
   const [formApi, setFormApi] = useState<any>(null);
   const [initialized, setInitialized] = useState(false);
 
-  // 第Tue步：任务配置
+  // 第Tue步：Task config
   const [selectedProcess, setSelectedProcess] = useState<LYProcessActiveVersionResponse | null>(null);
   const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);
 
@@ -154,7 +154,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
   const hasOutputParameters = selectedProcess && selectedProcess.output_parameters && selectedProcess.output_parameters.length > 0;
   const showRightPanel = (hasParameters || hasOutputParameters) && currentStep === 1;
 
-  // 初始化表单数据
+  // 初始化表单Data
   useEffect(() => {
     if (visible && trigger && formApi && !initialized) {
       // 查找对应的Process
@@ -165,7 +165,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
       setMinEffectiveMessages(trigger.min_effective_messages);
       setEnablePeriodicCheck(trigger.enable_periodic_check);
 
-      // 设置表单值
+      // Settings表单值
       formApi.setValues({
         triggerName: trigger.name,
         description: trigger.description || '',
@@ -185,7 +185,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
         enablePeriodicCheckSwitch: trigger.enable_periodic_check,
         periodicCheckInterval: trigger.periodic_check_interval || 30,
         messagesPerTrigger: trigger.messages_per_trigger,
-        // 设置参Number
+        // Settings参Number
         ...Object.fromEntries(
           Object.entries(trigger.input_parameters || {}).map(([k, v]) => [`param_${k}`, v])
         ),
@@ -220,7 +220,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
     }
   };
 
-  // 选择模板
+  // 选择Template
   const handleTemplateChange = (templateId: string | null) => {
     if (templateId && formApi) {
       const template = mockTemplates.find((t) => t.template_id === templateId);
@@ -315,7 +315,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
     }
   };
 
-  // 验证Step
+  // ValidationStep
   const validateStep = async (step: number): Promise<boolean> => {
     if (step === 0) {
       if (formApi) {
@@ -460,7 +460,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
     </div>
   );
 
-  // 渲染Step1左侧：任务配置
+  // 渲染Step1左侧：Task config
   const renderStep1LeftContent = () => (
     <>
       {/* Template selection */}
@@ -597,7 +597,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
     </>
   );
 
-  // 渲染Step1右侧：Parameter配置
+  // 渲染Step1右侧：ParameterConfig
   const renderStep1RightContent = () => (
     <>
       {/* Input parameters */}
@@ -789,7 +789,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
     </div>
   );
 
-  // 计算弹窗宽度
+  // calculation弹窗宽度
   const modalWidth = showRightPanel ? 900 : 520;
 
   return (

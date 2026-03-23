@@ -31,7 +31,7 @@ interface CreateQueueTriggerModalProps {
   onSuccess: () => void;
 }
 
-// Mock Process列表
+// Mock ProcessList
 const mockProcesses: LYProcessActiveVersionResponse[] = [
   {
     process_id: 'proc-001',
@@ -80,7 +80,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
   },
 ];
 
-// Mock 队列列表
+// Mock QueueList
 const mockQueues = [
   { queue_id: 'queue-001', queue_name: 'Pending Orders Queue', monitored: false },
   { queue_id: 'queue-002', queue_name: 'Approval Tasks Queue', monitored: true },
@@ -88,13 +88,13 @@ const mockQueues = [
   { queue_id: 'queue-004', queue_name: 'Report Generation Queue', monitored: false },
 ];
 
-// Mock 个人凭据
+// Mock 个人Credential
 const mockCredentials = [
   { id: 'cred-001', name: 'System Admin Credentials' },
   { id: 'cred-002', name: 'API Access Credentials' },
 ];
 
-// Mock 执行模板
+// Mock ExecuteTemplate
 const mockTemplates = [
   {
     template_id: 'tpl-001',
@@ -130,7 +130,7 @@ const mockTemplates = [
 
 import { TIMEZONE_GROUPS } from '@/constants/timezones';
 
-// 已存在的触发器Name (模拟)
+// 已存在的 TriggerName (模拟)
 const existingTriggerNames = ['Order Queue Trigger', 'Approval Queue Trigger'];
 
 const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTriggerModalProps) => {
@@ -139,7 +139,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
   const [currentStep, setCurrentStep] = useState(0);
   const [formApi, setFormApi] = useState<any>(null);
 
-  // 第Tue步：任务配置
+  // 第Tue步：Task config
   const [selectedProcess, setSelectedProcess] = useState<LYProcessActiveVersionResponse | null>(null);
   const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);
 
@@ -179,7 +179,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
     }
   };
 
-  // 选择模板
+  // 选择Template
   const handleTemplateChange = (templateId: string | null) => {
     if (templateId && formApi) {
       const template = mockTemplates.find((t) => t.template_id === templateId);
@@ -202,7 +202,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
     }
   };
 
-  // 验证模板Name唯Mon性
+  // ValidationTemplateName唯Mon性
   const validateTriggerName = (value: string) => {
     if (value && existingTriggerNames.includes(value.trim())) {
       return t('queueTrigger.validation.nameExists');
@@ -282,7 +282,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
     }
   };
 
-  // 验证Step
+  // ValidationStep
   const validateStep = async (step: number): Promise<boolean> => {
     if (step === 0) {
       if (formApi) {
@@ -435,7 +435,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
     </div>
   );
 
-  // 渲染Step1左侧：任务配置
+  // 渲染Step1左侧：Task config
   const renderStep1LeftContent = () => (
     <>
       {/* Template selection */}
@@ -572,7 +572,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
     </>
   );
 
-  // 渲染Step1右侧：Parameter配置
+  // 渲染Step1右侧：ParameterConfig
   const renderStep1RightContent = () => (
     <>
       {/* Input parameters */}
@@ -768,7 +768,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
     </div>
   );
 
-  // 计算弹窗宽度
+  // calculation弹窗宽度
   const modalWidth = showRightPanel ? 900 : 520;
 
   return (

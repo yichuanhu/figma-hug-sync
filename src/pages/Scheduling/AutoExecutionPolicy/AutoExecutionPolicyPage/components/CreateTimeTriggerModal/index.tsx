@@ -33,7 +33,7 @@ interface CreateTimeTriggerModalProps {
   onSuccess: () => void;
 }
 
-// Mock Process列表
+// Mock ProcessList
 const mockProcesses: LYProcessActiveVersionResponse[] = [
   {
     process_id: 'proc-001',
@@ -85,13 +85,13 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
   },
 ];
 
-// Mock 个人凭据
+// Mock 个人Credential
 const mockCredentials = [
   { id: 'cred-001', name: 'System Admin Credentials' },
   { id: 'cred-002', name: 'API Access Credentials' },
 ];
 
-// Mock 执行模板
+// Mock ExecuteTemplate
 const mockTemplates = [
   {
     template_id: 'tpl-001',
@@ -125,7 +125,7 @@ const mockTemplates = [
   },
 ];
 
-// 已存在的触发器Name (模拟)
+// 已存在的 TriggerName (模拟)
 const existingTriggerNames = ['Daily Order Sync', 'Weekly Report Generation'];
 
 const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTriggerModalProps) => {
@@ -134,9 +134,9 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
   const [currentStep, setCurrentStep] = useState(0);
   const [formApi, setFormApi] = useState<any>(null);
 
-  // 第Mon步：Basic Info - 使用 Form 管理
+  // 第Mon步：Basic Info - 使用 Form Manage
 
-  // 第Tue步：任务配置
+  // 第Tue步：Task config
   const [selectedProcess, setSelectedProcess] = useState<LYProcessActiveVersionResponse | null>(null);
   const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);
 
@@ -164,7 +164,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
   const hasOutputParameters = selectedProcess && selectedProcess.output_parameters && selectedProcess.output_parameters.length > 0;
   const showRightPanel = (hasParameters || hasOutputParameters) && currentStep === 1;
 
-  // 生成 Cron 表达式
+  // generation Cron 表达式
   const generatedCronExpression = useMemo(() => {
     if (ruleType !== 'BASIC') return cronExpression;
 
@@ -186,7 +186,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
     }
   }, [ruleType, frequencyType, minuteInterval, hourInterval, minuteOfHour, triggerHour, triggerMinute, selectedWeekdays, selectedMonthDay, cronExpression]);
 
-  // 预览触发时间
+  // PreviewTriggerTime
   const previewTimes = useMemo(() => {
     if (!startDateTime) return [];
     const times: string[] = [];
@@ -263,7 +263,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
     }
   };
 
-  // 选择模板
+  // 选择Template
   const handleTemplateChange = (templateId: string | null) => {
     if (templateId && formApi) {
       const template = mockTemplates.find((t) => t.template_id === templateId);
@@ -286,7 +286,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
     }
   };
 
-  // 验证模板Name唯Mon性
+  // ValidationTemplateName唯Mon性
   const validateTriggerName = (value: string) => {
     if (value && existingTriggerNames.includes(value.trim())) {
       return t('timeTrigger.validation.nameExists');
@@ -366,7 +366,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
     }
   };
 
-  // 验证Step
+  // ValidationStep
   const validateStep = async (step: number): Promise<boolean> => {
     if (step === 0) {
       if (formApi) {
@@ -512,7 +512,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
     </div>
   );
 
-  // 渲染Step1左侧：任务配置
+  // 渲染Step1左侧：Task config
   const renderStep1LeftContent = () => (
     <>
       {/* Template selection */}
@@ -649,7 +649,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
     </>
   );
 
-  // 渲染Step1右侧：Parameter配置
+  // 渲染Step1右侧：ParameterConfig
   const renderStep1RightContent = () => (
     <>
       {/* Input parameters */}
@@ -694,7 +694,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
     </>
   );
 
-  // 渲染Step2：Trigger Rules与预览
+  // 渲染Step2：Trigger Rules与Preview
   const renderStep2Content = () => (
     <>
       {/* Time rules - Using TriggerRuleConfig component */}
@@ -763,7 +763,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
     </>
   );
 
-  // 计算弹窗宽度
+  // calculation弹窗宽度
   const modalWidth = showRightPanel ? 900 : 520;
 
   return (

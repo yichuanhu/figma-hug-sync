@@ -49,7 +49,7 @@ const generateUUID = (): string => {
   });
 };
 
-// ============= Mock数据生成 =============
+// ============= MockDatageneration =============
 
 const mockProcesses = [
   { process_id: 'proc-001', process_name: 'Auto Order Processing' },
@@ -58,13 +58,13 @@ const mockProcesses = [
   { process_id: 'proc-004', process_name: 'Data Collection Flow' },
 ];
 
-const mockCreatorNames = ['John Smith', 'Jane Doe', 'Mike Wang', '赵Sat', '钱七'];
+const mockCreatorNames = ['John Smith', 'Jane Doe', 'Mike Wang', 'David Zhao', 'Chris Qian'];
 
 const generateMockTimeTriggerResponse = (index: number): LYTimeTriggerResponse => {
   const process = mockProcesses[index % mockProcesses.length];
   const priorities: TaskPriority[] = ['HIGH', 'MEDIUM', 'LOW'];
   const targetTypes: ExecutionTargetType[] = ['BOT_GROUP', 'BOT_IN_GROUP', 'UNGROUPED_BOT'];
-  const targetNames = ['Order Processing Group', 'Finance Approval Group', '人事管理组', 'RPA-BOT-001', 'RPA-BOT-002'];
+  const targetNames = ['Order Processing Group', 'Finance Approval Group', 'HR Management Group', 'RPA-BOT-001', 'RPA-BOT-002'];
   const statuses: TriggerStatus[] = ['ENABLED', 'DISABLED'];
   const ruleTypes: TriggerRuleType[] = ['BASIC', 'CRON'];
   const frequencyTypes: BasicFrequencyType[] = ['MINUTELY', 'HOURLY', 'DAILY', 'WEEKLY', 'MONTHLY'];
@@ -78,8 +78,8 @@ const generateMockTimeTriggerResponse = (index: number): LYTimeTriggerResponse =
 
   return {
     trigger_id: `trigger-${generateUUID().substring(0, 8)}`,
-    name: `${process.process_name}触发器${index + 1}`,
-    description: index % 5 === 0 ? null : index % 5 === 1 ? `这是${process.process_name}的定时触发器，用于定期自动Create任务。该触发器会按照预设的Time rules自动触发，Create对应的自动化任务并分配到指定的Execution target上运行。支持多种触发频率配置，包括每天、每周、每M等周期性触发，以及基于Cron表达式的高级配置。触发器还支持Work Calendar过滤，可以跳过非工作Sun执行，确保任务在合适的时间点触发。当触发器关联的ProcessVersion更新时，新Create的任务将自动使用最新Version。` : `这是${process.process_name}的定时触发器，用于定期自动Create任务`,
+    name: `${process.process_name} Trigger${index + 1}`,
+    description: index % 5 === 0 ? null : index % 5 === 1 ? `This is ${process.process_name}'s time trigger for periodic task creation. It runs on preset Time rules自动Trigger，Create对应的automation任务并分配到指定的Execution target上Running。支持多种Trigger频率Config，包括每天、每周、每M等周期性Trigger，以及基于Cron表达式的高级Config。 Trigger还支持Work Calendar过滤，可以Skipped非WorkSunExecute，确保任务在合适的Time点Trigger。当 Trigger关联的ProcessVersionUpdate时，新Create的任务将自动使用最新Version。` : `This is ${process.process_name}的Scheduled Trigger，用于定期auto-create 任务`,
     status,
     process_id: process.process_id,
     process_name: process.process_name,
@@ -103,7 +103,7 @@ const generateMockTimeTriggerResponse = (index: number): LYTimeTriggerResponse =
     end_date_time: index % 4 === 0 ? new Date(2026, 11, 31).toISOString() : null,
     enable_work_calendar: index % 3 === 0,
     work_calendar_id: index % 3 === 0 ? 'cal-001' : null,
-    work_calendar_name: index % 3 === 0 ? '公司Work Calendar' : null,
+    work_calendar_name: index % 3 === 0 ? 'Company Work Calendar' : null,
     work_calendar_execution_type: index % 3 === 0 ? 'WORKDAY' : null,
     next_trigger_time: status === 'ENABLED' ? nextTriggerDate.toISOString() : null,
     last_trigger_time: index > 5 ? new Date(2026, 1, 3, 9, 0).toISOString() : null,
@@ -114,7 +114,7 @@ const generateMockTimeTriggerResponse = (index: number): LYTimeTriggerResponse =
   };
 };
 
-// 生成 mock 数据
+// generation mock Data
 const generateMockTriggers = (count: number) => {
   return Array.from({ length: count }, (_, i) => generateMockTimeTriggerResponse(i));
 };
@@ -134,7 +134,7 @@ interface GetTriggersParams {
 const TimeTriggerList = () => {
   const { t } = useTranslation();
 
-  // 列表数据Status
+  // ListDataStatus
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [listResponse, setListResponse] = useState<LYListResponseLYTimeTriggerResponse>({
     range: { offset: 0, size: 20, total: 0 },
@@ -149,7 +149,7 @@ const TimeTriggerList = () => {
     status: undefined,
   });
 
-  // 选中Status（抽屉）
+  // SelectedStatus（抽屉）
   const [selectedTrigger, setSelectedTrigger] = useState<LYTimeTriggerResponse | null>(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
 
@@ -158,13 +158,13 @@ const TimeTriggerList = () => {
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingTrigger, setEditingTrigger] = useState<LYTimeTriggerResponse | null>(null);
 
-  // 从响应中直接获取分页信息
+  // 从响应中直接获取分页Info
   const { range, list } = listResponse;
   const currentPage = Math.floor((range?.offset || 0) / (range?.size || 20)) + 1;
   const pageSize = range?.size || 20;
   const total = range?.total || 0;
 
-  // 模拟Loading数据
+  // 模拟LoadingData
   const loadData = useCallback(async (params: GetTriggersParams) => {
     setLoading(true);
     try {
@@ -201,7 +201,7 @@ const TimeTriggerList = () => {
         list: paged,
       });
     } catch (error) {
-      console.error('LoadingTime trigger列表失败:', error);
+      console.error('LoadingTime triggerListFailed:', error);
       Toast.error(t('common.loadError'));
     } finally {
       setLoading(false);
@@ -232,13 +232,13 @@ const TimeTriggerList = () => {
     setQueryParams((prev) => ({ ...prev, offset: 0, status }));
   };
 
-  // Create触发器成功
+  // Create TriggerSuccess
   const handleCreateSuccess = () => {
     setCreateModalVisible(false);
     loadData(queryParams);
   };
 
-  // Edit触发器成功
+  // Edit TriggerSuccess
   const handleEditSuccess = () => {
     setEditModalVisible(false);
     setEditingTrigger(null);
@@ -251,13 +251,13 @@ const TimeTriggerList = () => {
     setEditModalVisible(true);
   };
 
-  // 打开详情抽屉
+  // 打开Details抽屉
   const handleOpenDrawer = (trigger: LYTimeTriggerResponse) => {
     setSelectedTrigger(trigger);
     setDrawerVisible(true);
   };
 
-  // 关闭详情抽屉
+  // CloseDetails抽屉
   const handleCloseDrawer = () => {
     setDrawerVisible(false);
     setSelectedTrigger(null);
@@ -268,13 +268,13 @@ const TimeTriggerList = () => {
     setSelectedTrigger(trigger);
   };
 
-  // 启用/禁用触发器（直接切换，不弹窗Confirm）
+  // Enable/Disable Trigger（直接切换，不弹窗Confirm）
   const handleToggleStatus = async (trigger: LYTimeTriggerResponse, checked: boolean) => {
     try {
       const newStatus: TriggerStatus = checked ? 'ENABLED' : 'DISABLED';
       const newNextTriggerTime = checked ? new Date(Date.now() + 86400000).toISOString() : null;
       
-      // 立即更新本地列表Status
+      // 立即Update本地ListStatus
       setListResponse((prev) => ({
         ...prev,
         list: prev.list.map((t) =>
@@ -284,7 +284,7 @@ const TimeTriggerList = () => {
         ),
       }));
       
-      // 同步更新 mock 数据
+      // 同步Update mock Data
       const mockIndex = allMockTriggers.findIndex((t) => t.trigger_id === trigger.trigger_id);
       if (mockIndex !== -1) {
         allMockTriggers[mockIndex] = { 
@@ -294,7 +294,7 @@ const TimeTriggerList = () => {
         };
       }
       
-      // 如果抽屉打开且是当前触发器，更新抽屉中的数据
+      // 如果抽屉打开且是当前 Trigger，Update抽屉中的Data
       if (selectedTrigger?.trigger_id === trigger.trigger_id) {
         setSelectedTrigger({
           ...trigger,
@@ -309,7 +309,7 @@ const TimeTriggerList = () => {
     }
   };
 
-  // Delete触发器
+  // Delete Trigger
   const handleDeleteTrigger = (trigger: LYTimeTriggerResponse) => {
     Modal.confirm({
       title: t('timeTrigger.deleteModal.title'),
@@ -341,7 +341,7 @@ const TimeTriggerList = () => {
     });
   };
 
-  // 格式化Trigger Rules显示
+  // Format化Trigger Rules显示
   const formatTriggerRule = (trigger: LYTimeTriggerResponse): string => {
     if (trigger.rule_type === 'CRON') {
       return trigger.cron_expression || '';
@@ -366,7 +366,7 @@ const TimeTriggerList = () => {
     }
   };
 
-  // 格式化时间
+  // Format化Time
   const formatTime = (time: string | null | undefined): string => {
     if (!time) return '-';
     return new Date(time).toLocaleString('zh-CN');
@@ -471,7 +471,7 @@ const TimeTriggerList = () => {
     },
   ];
 
-  // 判断是否有Filter条件
+  // 判断是否有FilterCondition
   const hasFilters = queryParams.keyword || queryParams.process_id || queryParams.status;
 
   // currentIndex no longer needed - navigation handled by DetailDrawerWrapper
@@ -572,14 +572,14 @@ const TimeTriggerList = () => {
         )}
       </div>
 
-      {/* Create触发器弹窗 */}
+      {/* Create Trigger弹窗 */}
       <CreateTimeTriggerModal
         visible={createModalVisible}
         onCancel={() => setCreateModalVisible(false)}
         onSuccess={handleCreateSuccess}
       />
 
-      {/* Edit触发器弹窗 */}
+      {/* Edit Trigger弹窗 */}
       <EditTimeTriggerModal
         visible={editModalVisible}
         trigger={editingTrigger}
@@ -590,7 +590,7 @@ const TimeTriggerList = () => {
         onSuccess={handleEditSuccess}
       />
 
-      {/* 详情抽屉 */}
+      {/* Details抽屉 */}
       <TimeTriggerDetailDrawer
         visible={drawerVisible}
         trigger={selectedTrigger}

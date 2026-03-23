@@ -131,7 +131,7 @@ const WorkCalendarManagement = () => {
   return (
       <div className="work-calendar-management">
 
-        {/* 返回按钮和标题 */}
+        {/* Back按钮和标题 */}
         <div className="work-calendar-management-header">
           <Tooltip content={t('common.back')} position="bottom">
             <Button 
@@ -146,7 +146,7 @@ const WorkCalendarManagement = () => {
           </Title>
         </div>
 
-        {/* 主体内容：左右两栏 */}
+        {/* 主体Content：左右两栏 */}
         <div className="work-calendar-management-content">
           {/* 左侧边栏 */}
           <CalendarSidebar

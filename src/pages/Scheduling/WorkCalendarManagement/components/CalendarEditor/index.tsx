@@ -175,7 +175,7 @@ const CalendarEditor: React.FC<CalendarEditorProps> = ({
         </div>
       </div>
 
-      {/* 底部操作栏 */}
+      {/* 底部Operation栏 */}
       <div className="calendar-editor-footer">
         <Button onClick={onCancel}>
           {t('workCalendar.editor.cancel')}

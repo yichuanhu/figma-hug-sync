@@ -29,7 +29,7 @@ interface EditTemplateModalProps {
   onSuccess: () => void;
 }
 
-// Mock Process列表
+// Mock ProcessList
 const mockProcesses: LYProcessActiveVersionResponse[] = [
   {
     process_id: 'proc-001',
@@ -53,7 +53,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     version: 'v2.0.0',
     parameters: [
       { name: 'department', type: 'TEXT', required: true, description: 'Department name' },
-      { name: 'approvalCredential', type: 'CREDENTIAL', required: true, description: '审批凭据' },
+      { name: 'approvalCredential', type: 'CREDENTIAL', required: true, description: '审批Credential' },
     ],
     output_parameters: [
       { name: 'approvalStatus', type: 'TEXT', description: '审批Status' },
@@ -81,8 +81,8 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     ],
     output_parameters: [
       { name: 'collectedCount', type: 'NUMBER', description: 'Collected data count' },
-      { name: 'dataFilePath', type: 'TEXT', description: '数据文件路径' },
-      { name: 'isComplete', type: 'BOOLEAN', description: '是否采集完成' },
+      { name: 'dataFilePath', type: 'TEXT', description: 'DataFile路径' },
+      { name: 'isComplete', type: 'BOOLEAN', description: '是否采集Done' },
     ],
   },
 ];
@@ -91,7 +91,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
 const mockBotGroups = [
   { id: 'group-001', name: 'Order Processing Group', onlineCount: 3, totalCount: 5 },
   { id: 'group-002', name: 'Finance Approval Group', onlineCount: 2, totalCount: 3 },
-  { id: 'group-003', name: '人事管理组', onlineCount: 1, totalCount: 2 },
+  { id: 'group-003', name: 'HR Management Group', onlineCount: 1, totalCount: 2 },
 ];
 
 const mockBots = [
@@ -102,11 +102,11 @@ const mockBots = [
   { id: 'bot-005', name: 'RPA-BOT-005', groupId: null, status: 'OFFLINE' },
 ];
 
-// Mock 个人凭据
+// Mock 个人Credential
 const mockCredentials = [
   { id: 'cred-001', name: 'System Admin Credentials' },
   { id: 'cred-002', name: 'API Access Credentials' },
-  { id: 'cred-003', name: '数据库凭据' },
+  { id: 'cred-003', name: 'Data库Credential' },
 ];
 
 const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTemplateModalProps) => {
@@ -121,7 +121,7 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
     if (targetType === 'BOT_GROUP') {
       return mockBotGroups.map((g) => ({
         value: g.id,
-        label: `${g.name} (${g.onlineCount}/${g.totalCount} 在线)`,
+        label: `${g.name} (${g.onlineCount}/${g.totalCount} Online)`,
       }));
     }
     if (targetType === 'UNGROUPED_BOT') {
@@ -129,7 +129,7 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
         .filter((b) => !b.groupId)
         .map((b) => ({
           value: b.id,
-          label: `${b.name} (${b.status === 'ONLINE' ? '在线' : '离线'})`,
+          label: `${b.name} (${b.status === 'ONLINE' ? 'Online' : 'Offline'})`,
         }));
     }
     // BOT_IN_GROUP
@@ -137,7 +137,7 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
       .filter((b) => b.groupId)
       .map((b) => ({
         value: b.id,
-        label: `${b.name} (${b.status === 'ONLINE' ? '在线' : '离线'})`,
+        label: `${b.name} (${b.status === 'ONLINE' ? 'Online' : 'Offline'})`,
       }));
   }, [targetType]);
 
@@ -148,7 +148,7 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
       setSelectedProcess(process || null);
       setTargetType(template.execution_target_type);
       
-      // 设置表单值
+      // Settings表单值
       formApi.setValues({
         templateName: template.template_name || '',
         description: template.description || '',
@@ -180,7 +180,7 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
     const process = mockProcesses.find((p) => p.process_id === processId);
     setSelectedProcess(process || null);
     
-    // 初始化Parameter默认值
+    // 初始化ParameterDefault值
     if (process && formApi) {
       process.parameters.forEach((param) => {
         if (param.default_value !== undefined && param.default_value !== null) {
@@ -282,7 +282,7 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
       // 模拟API调用
       await new Promise((resolve) => setTimeout(resolve, 500));
       
-      console.log('更新执行模板:', {
+      console.log('UpdateExecuteTemplate:', {
         template_id: template?.template_id,
         template_name: (values.templateName as string).trim(),
         description: (values.description as string)?.trim() || null,
@@ -299,7 +299,7 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
       Toast.success(t('template.editModal.success'));
       onSuccess();
     } catch (error) {
-      console.error('更新执行模板失败:', error);
+      console.error('UpdateExecuteTemplateFailed:', error);
       Toast.error(t('template.editModal.error'));
     } finally {
       setLoading(false);
@@ -331,7 +331,7 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
         }}
       >
         <div className="edit-template-modal-body">
-          {/* 左侧：基本配置 */}
+          {/* 左侧：基本Config */}
           <div className="edit-template-modal-left">
             <div className="edit-template-modal-content">
               {/* Basic Info */}
@@ -430,7 +430,7 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
                 )}
               </div>
 
-              {/* 任务设置 */}
+              {/* 任务Settings */}
               <div className="edit-template-modal-section">
                 <div className="edit-template-modal-section-title">
                   {t('template.createModal.settingsSection')}

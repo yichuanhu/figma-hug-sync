@@ -10,7 +10,7 @@ interface CreateProcessModalProps {
   onSuccess?: (processData: LYProcessResponse) => void;
 }
 
-// 生成UUID v4
+// generationUUID v4
 const generateUUID = (): string => {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0;
@@ -19,7 +19,7 @@ const generateUUID = (): string => {
   });
 };
 
-// 生成Mock的LYProcessResponse
+// generationMock的LYProcessResponse
 const generateMockLYProcessResponse = (request: LYCreateProcessRequest): LYProcessResponse => {
   const now = new Date().toISOString();
   return {
@@ -79,7 +79,7 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
       // 模拟API调用延迟
       await new Promise((resolve) => setTimeout(resolve, 300));
 
-      // 生成Mock响应 - 直接返回LYProcessResponse
+      // generationMock响应 - 直接BackLYProcessResponse
       const mockResponse = generateMockLYProcessResponse(createRequest);
 
       Toast.success(t('development.processDevelopment.createModal.success'));

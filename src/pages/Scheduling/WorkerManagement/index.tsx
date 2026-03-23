@@ -43,19 +43,19 @@ import './index.less';
 const { Title, Text } = Typography;
 const CheckboxGroup = Checkbox.Group;
 
-// Mock机器人组数据
+// Mockbot组Data
 const mockWorkerGroups = [
   { id: 'group-001', name: 'Finance Bot Group' },
   { id: 'group-002', name: 'HR Bot Group' },
   { id: 'group-003', name: 'Ops Inspection Bot Group' },
 ];
 
-// Mock数据 - 使用APIType
+// MockData - 使用APIType
 const mockWorkers: LYWorkerResponse[] = [
   {
     id: '550e8400-e29b-41d4-a716-446655440001',
     name: 'Finance Bot-01',
-    description: '这是企业核心财务自动化机器人，负责执行复杂的财务Process任务，包括发票自动识别与处理、报销单据审核、Auto Financial Report与分发、银企对账、税务申报数据准备等关键业务。该机器人配置了高可用性设置，支持7x24小时不间断运行，并具备完整的错误恢复和任务断点续传能力。',
+    description: 'This is 企业核心财务automationbot，负责Execute复杂的财务Process任务，包括发票自动识别与processing、报销单据Review、Auto Financial Report与分发、银企对账、税务申报Data准备等关键业务。该botConfig了高可用性Settings，支持7x24小时不间断Running，并具备完整的Error恢复和任务断点续传能力。',
     status: 'IDLE',
     sync_status: 'SYNCED',
     ip_address: '10.0.1.100',
@@ -84,7 +84,7 @@ const mockWorkers: LYWorkerResponse[] = [
   {
     id: '550e8400-e29b-41d4-a716-446655440002',
     name: 'Finance Bot-02',
-    description: 'For financial报表自动化的机器人',
+    description: 'For financialreportautomation的bot',
     status: 'BUSY',
     sync_status: 'PENDING',
     ip_address: '10.0.1.101',
@@ -142,7 +142,7 @@ const mockWorkers: LYWorkerResponse[] = [
   {
     id: '550e8400-e29b-41d4-a716-446655440004',
     name: 'HR Bot-01',
-    description: 'For HR审批Process的机器人',
+    description: 'For HR审批Process的bot',
     status: 'FAULT',
     sync_status: 'SYNCED',
     ip_address: '10.0.1.103',
@@ -171,7 +171,7 @@ const mockWorkers: LYWorkerResponse[] = [
   {
     id: '550e8400-e29b-41d4-a716-446655440005',
     name: 'Ops Bot-01',
-    description: 'For ops巡检的机器人',
+    description: 'For opsinspection的bot',
     status: 'IDLE',
     sync_status: 'SYNCED',
     ip_address: '10.0.2.50',
@@ -199,8 +199,8 @@ const mockWorkers: LYWorkerResponse[] = [
   },
   {
     id: '550e8400-e29b-41d4-a716-446655440006',
-    name: '测试机器人-01',
-    description: '用于自动化测试的机器人',
+    name: '测试bot-01',
+    description: '用于automation测试的bot',
     status: 'MAINTENANCE',
     sync_status: 'SYNCED',
     ip_address: '10.0.3.10',
@@ -242,9 +242,9 @@ interface SortState {
   sortOrder?: 'ascend' | 'descend';
 }
 
-// ============= 数据获取 - 返回LYListResponseLYWorkerResponse =============
+// ============= Data获取 - BackLYListResponseLYWorkerResponse =============
 
-// StatusSort优先级
+// StatusSortPriority
 const STATUS_ORDER: Record<string, number> = {
   BUSY: 1,
   IDLE: 2,
@@ -254,7 +254,7 @@ const STATUS_ORDER: Record<string, number> = {
 };
 
 const fetchWorkerList = async (params: GetWorkersParams & { filters?: FilterState; sort?: SortState }): Promise<LYListResponseLYWorkerResponse> => {
-  // 模拟网络延迟
+  // 模拟Network延迟
   await new Promise(resolve => setTimeout(resolve, 500));
   
   let data = [...mockWorkers];
@@ -278,16 +278,16 @@ const fetchWorkerList = async (params: GetWorkersParams & { filters?: FilterStat
     data = data.filter(item => params.filters!.sync_status.includes(item.sync_status));
   }
 
-  // 机器人组Filter
+  // bot组Filter
   if (params.filters?.group_id && params.filters.group_id.length > 0) {
     data = data.filter(item => {
       const selectedGroups = params.filters!.group_id;
-      // 检查是否选择了"未分组"
+      // Check是否选择了"未分组"
       if (selectedGroups.includes(UNGROUPED_FILTER_VALUE)) {
-        // 未分组的机器人
+        // 未分组的bot
         if (!item.group_id) return true;
       }
-      // 检查是否属于选中的机器人组
+      // Check是否属于Selected的bot组
       if (item.group_id && selectedGroups.includes(item.group_id)) {
         return true;
       }
@@ -295,7 +295,7 @@ const fetchWorkerList = async (params: GetWorkersParams & { filters?: FilterStat
     });
   }
 
-  // Sort处理
+  // Sortprocessing
   if (params.sort?.sortBy && params.sort?.sortOrder) {
     const { sortBy, sortOrder } = params.sort;
     data.sort((a, b) => {
@@ -316,7 +316,7 @@ const fetchWorkerList = async (params: GetWorkersParams & { filters?: FilterStat
   const size = params.size || 20;
   const paginatedData = data.slice(offset, offset + size);
 
-  // 返回LYListResponseLYWorkerResponse格式
+  // BackLYListResponseLYWorkerResponseFormat
   return {
     range: {
       offset,
@@ -359,7 +359,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
   const [loading, setLoading] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   
-  // 列表响应数据 - 直接使用API LYListResponseLYWorkerResponse
+  // List响应Data - 直接使用API LYListResponseLYWorkerResponse
   const [listResponse, setListResponse] = useState<LYListResponseLYWorkerResponse>({
     range: { offset: 0, size: 20, total: 0 },
     list: [],
@@ -384,7 +384,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
   const [addToGroupModalVisible, setAddToGroupModalVisible] = useState(false);
   const [addToGroupWorker, setAddToGroupWorker] = useState<LYWorkerResponse | null>(null);
 
-  // Status配置
+  // StatusConfig
   type WorkerStatus = LYWorkerResponse['status'];
   
   const statusConfig: Record<WorkerStatus, { color: string; text: string }> = useMemo(() => ({
@@ -414,7 +414,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     ],
   }), [t]);
 
-  // Loading数据
+  // LoadingData
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
@@ -431,13 +431,13 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     }
   }, [queryParams, filters, sortState]);
 
-  // 翻页并返回新数据（用于抽屉导航时自动翻页）
+  // 翻页并Back新Data（用于抽屉导航时自动翻页）
   const handleDrawerPageChange = useCallback(async (page: number): Promise<LYWorkerResponse[]> => {
     const currentPageSize = listResponse.range?.size || 20;
     const newOffset = (page - 1) * currentPageSize;
     setQueryParams(prev => ({ ...prev, offset: newOffset }));
     
-    // 直接获取数据而不是等待state更新
+    // 直接获取Data而不是WaitstateUpdate
     const response = await fetchWorkerList({
       ...queryParams,
       offset: newOffset,
@@ -448,7 +448,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     return response.list;
   }, [queryParams, filters, sortState, listResponse.range?.size]);
 
-  // 当Tab switch到非激活Status时，关闭抽屉
+  // 当Tab switch到非激活Status时，Close抽屉
   useEffect(() => {
     if (!isActive) {
       setDetailDrawerVisible(false);
@@ -460,7 +460,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     loadData();
   }, [loadData]);
 
-  // 处理从机器人组跳转过来的情况
+  // processing从bot组跳转过来的情况
   useEffect(() => {
     if (pendingWorkerId && listResponse.list.length > 0) {
       const worker = listResponse.list.find(w => w.id === pendingWorkerId);
@@ -483,8 +483,8 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
 
   // Search
   const handleSearch = (value: string) => {
-    setSearchValue(value);  // 立即更新输入框显示
-    debouncedSearch(value); // 防抖更新查询Parameter
+    setSearchValue(value);  // 立即Update输入框显示
+    debouncedSearch(value); // 防抖Update查询Parameter
   };
 
   const handleFilterConfirm = (values: Record<string, unknown>) => {
@@ -501,7 +501,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
 
   // 切换接收任务Status
   const handleToggleReceiveTasks = async (worker: LYWorkerResponse, checked: boolean) => {
-    // 更新本地数据
+    // Update本地Data
     setListResponse(prev => ({
       ...prev,
       list: prev.list.map(item => 
@@ -509,7 +509,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       ),
     }));
     
-    // 同时更新选中的worker（如果抽屉打开中）
+    // 同时UpdateSelected的worker（如果抽屉打开中）
     if (selectedWorker?.id === worker.id) {
       setSelectedWorker(prev => prev ? { ...prev, receive_tasks: checked } : null);
     }
@@ -520,7 +520,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
 
   // filterContent removed - using FilterPopover directly
 
-  // 打开详情抽屉
+  // 打开Details抽屉
   const openDetail = (worker: LYWorkerResponse) => {
     setSelectedWorker(worker);
     setDetailDrawerVisible(true);
@@ -537,7 +537,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
   const handleDeleteClick = (worker: LYWorkerResponse, e?: React.MouseEvent) => {
     e?.stopPropagation();
     
-    // 检查是否有未完成任务
+    // Check是否有未Done任务
     if (worker.status === 'BUSY') {
       Modal.warning({
         title: t('worker.deleteModal.cannotDelete'),
@@ -565,19 +565,19 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
         try {
           // 模拟Delete API 调用
           await new Promise(resolve => setTimeout(resolve, 500));
-          console.log('Delete机器人:', worker.id);
+          console.log('Deletebot:', worker.id);
           
-          // 关闭抽屉
+          // Close抽屉
           setDetailDrawerVisible(false);
           setSelectedWorker(null);
           
-          // 重新Loading数据
+          // 重新LoadingData
           loadData();
           
-          // 显示成功提示
+          // 显示Success提示
           Toast.success(t('worker.deleteModal.success'));
         } catch (error) {
-          // 显示错误提示
+          // 显示Error提示
           Toast.error(t('worker.deleteModal.error'));
           throw error;
         }
@@ -585,7 +585,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     });
   };
 
-  // 从详情抽屉跳转到Edit
+  // 从Details抽屉跳转到Edit
   const handleEditFromDrawer = () => {
     if (selectedWorker) {
       setEditingWorker(selectedWorker);
@@ -593,14 +593,14 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     }
   };
 
-  // 从详情抽屉Delete
+  // 从Details抽屉Delete
   const handleDeleteFromDrawer = () => {
     if (selectedWorker) {
       handleDeleteClick(selectedWorker);
     }
   };
 
-  // Edit机器人
+  // Editbot
   const handleEdit = (worker: LYWorkerResponse, e?: React.MouseEvent) => {
     e?.stopPropagation();
     setEditingWorker(worker);
@@ -614,36 +614,36 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     setAddToGroupModalVisible(true);
   };
 
-  // Create成功回调
+  // CreateSuccess回调
   const handleCreateSuccess = () => {
     loadData();
   };
 
-  // Edit成功回调
+  // EditSuccess回调
   const handleEditSuccess = (updatedWorker: LYWorkerResponse) => {
-    // 更新列表数据
+    // UpdateListData
     setListResponse(prev => ({
       ...prev,
       list: prev.list.map(item => 
         item.id === updatedWorker.id ? updatedWorker : item
       ),
     }));
-    // 同步更新选中的worker（如果抽屉打开中）
+    // 同步UpdateSelected的worker（如果抽屉打开中）
     if (selectedWorker?.id === updatedWorker.id) {
       setSelectedWorker(updatedWorker);
     }
   };
 
-  // 添加至分组成功回调
+  // 添加至分组Success回调
   const handleAddToGroupSuccess = (updatedWorker: LYWorkerResponse) => {
-    // 更新列表数据
+    // UpdateListData
     setListResponse(prev => ({
       ...prev,
       list: prev.list.map(item => 
         item.id === updatedWorker.id ? updatedWorker : item
       ),
     }));
-    // 同步更新选中的worker（如果抽屉打开中）
+    // 同步UpdateSelected的worker（如果抽屉打开中）
     if (selectedWorker?.id === updatedWorker.id) {
       setSelectedWorker(updatedWorker);
     }
@@ -673,7 +673,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
             group_name: null,
           };
           
-          // 更新列表数据
+          // UpdateListData
           setListResponse(prev => ({
             ...prev,
             list: prev.list.map(item => 
@@ -681,7 +681,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
             ),
           }));
           
-          // 同步更新选中的worker（如果抽屉打开中）
+          // 同步UpdateSelected的worker（如果抽屉打开中）
           if (selectedWorker?.id === updatedWorker.id) {
             setSelectedWorker(updatedWorker);
           }
@@ -695,7 +695,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     });
   };
 
-  // 从响应中获取分页信息
+  // 从响应中获取分页Info
   const { range, list } = listResponse;
   const currentPage = Math.floor((range?.offset || 0) / (range?.size || 20)) + 1;
   const pageSize = range?.size || 20;
@@ -773,7 +773,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       key: 'receive_tasks',
       width: 90,
       render: (receiveTasks: boolean, record: LYWorkerResponse) => {
-        // 只有在线且非故障Status才允许操作
+        // 只有Online且非故障Status才允许Operation
         const canOperate = record.status !== 'OFFLINE' && record.status !== 'FAULT';
         return (
           <div onClick={(e) => e.stopPropagation()}>
@@ -827,7 +827,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
               >
                 {t('worker.actions.edit')}
               </Dropdown.Item>
-              {/* 未分组的机器人显示"添加至分组"操作 */}
+              {/* 未分组的bot显示"添加至分组"Operation */}
               {!record.group_id && (
                 <Dropdown.Item 
                   icon={<IconUserListStroked />}
@@ -839,7 +839,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
                   {t('worker.actions.addToGroup')}
                 </Dropdown.Item>
               )}
-              {/* 已分组的机器人显示"移出分组"操作 */}
+              {/* 已分组的bot显示"移出分组"Operation */}
               {record.group_id && (
                 <Dropdown.Item 
                   icon={<IconMinusCircleStroked />}
@@ -876,9 +876,9 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
 
   return (
     <div className="worker-management">
-      {/* 操作栏 */}
+      {/* Operation栏 */}
       <div className="worker-management-header">
-        {/* 操作栏 */}
+        {/* Operation栏 */}
         <Row type="flex" justify="space-between" align="middle" className="worker-management-header-toolbar">
           <Col>
             <Space>
@@ -983,7 +983,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
         )}
       </div>
 
-      {/* 详情抽屉 */}
+      {/* Details抽屉 */}
       <WorkerDetailDrawer
         visible={detailDrawerVisible}
         onClose={() => setDetailDrawerVisible(false)}

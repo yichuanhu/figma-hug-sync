@@ -34,7 +34,7 @@ interface EditTimeTriggerModalProps {
   onSuccess: () => void;
 }
 
-// Mock 执行模板
+// Mock ExecuteTemplate
 const mockTemplates = [
   {
     template_id: 'tpl-001',
@@ -68,7 +68,7 @@ const mockTemplates = [
   },
 ];
 
-// Mock Process列表
+// Mock ProcessList
 const mockProcesses: LYProcessActiveVersionResponse[] = [
   {
     process_id: 'proc-001',
@@ -131,7 +131,7 @@ const mockBots = [
   { id: 'bot-002', name: 'RPA-BOT-002', groupId: null, status: 'ONLINE' },
 ];
 
-// Mock 凭据
+// Mock Credential
 const mockCredentials = [
   { id: 'cred-001', name: 'System Admin Credentials' },
   { id: 'cred-002', name: 'API Access Credentials' },
@@ -144,14 +144,14 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
   const [formApi, setFormApi] = useState<any>(null);
   const [initialized, setInitialized] = useState(false);
 
-  // 第Tue步：任务配置 - 仅保留需要的Status
+  // 第Tue步：Task config - 仅保留需要的Status
   const [selectedProcess, setSelectedProcess] = useState<LYProcessActiveVersionResponse | null>(null);
   const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);
 
   // 第Wed步：Trigger Rules
   const [ruleType, setRuleType] = useState<TriggerRuleType>('BASIC');
   const [frequencyType, setFrequencyType] = useState<BasicFrequencyType>('DAILY');
-  // 基本Type配置
+  // 基本TypeConfig
   const [minuteInterval, setMinuteInterval] = useState<number>(5);
   const [hourInterval, setHourInterval] = useState<number>(2);
   const [minuteOfHour, setMinuteOfHour] = useState<number>(0);
@@ -161,7 +161,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
   const [selectedMonthDay, setSelectedMonthDay] = useState<number | 'L'>(1);
   // Cron 表达式
   const [cronExpression, setCronExpression] = useState('');
-  // 时区和时间范围
+  // Timezone和Time范围
   const [timeZone, setTimeZone] = useState('Asia/Shanghai');
   const [startDateTime, setStartDateTime] = useState<Date | null>(new Date());
   const [endDateTime, setEndDateTime] = useState<Date | null>(null);
@@ -171,7 +171,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
   const [workCalendarId, setWorkCalendarId] = useState<string | null>(null);
   const [workCalendarExecutionType, setWorkCalendarExecutionType] = useState<'WORKDAY' | 'NON_WORKDAY'>('WORKDAY');
 
-  // 初始化表单数据
+  // 初始化表单Data
   useEffect(() => {
     if (visible && trigger && formApi && !initialized) {
       setCurrentStep(0);
@@ -179,7 +179,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
       setSelectedProcess(process || null);
       setTargetType(trigger.execution_target_type);
       
-      // 设置表单值
+      // Settings表单值
       const formValues: Record<string, any> = {
         triggerName: trigger.name,
         description: trigger.description || '',
@@ -192,7 +192,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
         enableRecording: trigger.enable_recording,
       };
       
-      // 设置参Number
+      // Settings参Number
       if (trigger.input_parameters && process) {
         process.parameters.forEach((param) => {
           if (trigger.input_parameters?.[param.name] !== undefined) {
@@ -215,9 +215,9 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
       setWorkCalendarId(trigger.work_calendar_id);
       setWorkCalendarExecutionType(trigger.work_calendar_execution_type || 'WORKDAY');
 
-      // 根据 frequencyType 和 cron_expression 解析详细配置
+      // 根据 frequencyType 和 cron_expression 解析详细Config
       if (trigger.rule_type === 'BASIC' && trigger.basic_frequency_type) {
-        // 解析 cron 表达式获取详细配置
+        // 解析 cron 表达式获取详细Config
         const cronParts = (trigger.cron_expression || '').split(' ');
         if (cronParts.length >= 5) {
           switch (trigger.basic_frequency_type) {
@@ -288,7 +288,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
   const hasOutputParameters = selectedProcess && selectedProcess.output_parameters && selectedProcess.output_parameters.length > 0;
   const showRightPanel = (hasParameters || hasOutputParameters) && currentStep === 1;
 
-  // 生成 Cron 表达式
+  // generation Cron 表达式
   const generatedCronExpression = useMemo(() => {
     if (ruleType !== 'BASIC') return cronExpression;
 
@@ -310,7 +310,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
     }
   }, [ruleType, frequencyType, minuteInterval, hourInterval, minuteOfHour, triggerHour, triggerMinute, selectedWeekdays, selectedMonthDay, cronExpression]);
 
-  // 预览触发时间
+  // PreviewTriggerTime
   const previewTimes = useMemo(() => {
     if (!startDateTime) return [];
     const times: string[] = [];
@@ -360,7 +360,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
     }
   }, [formApi]);
 
-  // 选择模板
+  // 选择Template
   const handleTemplateChange = useCallback((templateId: string | null) => {
     if (templateId && formApi) {
       const template = mockTemplates.find((t) => t.template_id === templateId);
@@ -455,7 +455,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
     }
   };
 
-  // 验证Step
+  // ValidationStep
   const validateStep = async (step: number): Promise<boolean> => {
     if (step === 0) {
       if (formApi) {
@@ -557,7 +557,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
       Toast.success(t('timeTrigger.editModal.success'));
       onSuccess();
     } catch (error) {
-      console.error('EditTime trigger失败:', error);
+      console.error('Edit time trigger failed:', error);
       Toast.error(t('timeTrigger.editModal.error'));
     } finally {
       setLoading(false);
@@ -590,7 +590,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
     </div>
   );
 
-  // 渲染Step1的左侧内容
+  // 渲染Step1的左侧Content
   const renderStep1LeftContent = () => (
     <>
       {/* Template selection */}
@@ -727,7 +727,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
     </>
   );
 
-  // 渲染Step1的右侧内容（Parameter配置）
+  // 渲染Step1的右侧Content（ParameterConfig）
   const renderStep1RightContent = () => (
     <>
       {hasParameters && (
@@ -769,7 +769,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
     </>
   );
 
-  // 渲染Step2：Trigger Rules与预览
+  // 渲染Step2：Trigger Rules与Preview
   const renderStep2Content = () => (
     <>
       {/* Time rules - Using TriggerRuleConfig component */}

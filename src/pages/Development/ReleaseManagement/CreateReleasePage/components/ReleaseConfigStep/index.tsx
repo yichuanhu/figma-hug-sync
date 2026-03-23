@@ -82,7 +82,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
     return groups;
   }, [resources]);
 
-  // 更新Resource配置
+  // UpdateResourceConfig
   const updateResource = (resourceId: string, updates: Partial<ResourceConfig>) => {
     onResourcesChange(
       resources.map((r) =>
@@ -101,7 +101,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
     onResourcesChange([...resources, ...newResources]);
   };
 
-  // 已添加Resource的 ID 列表
+  // 已添加Resource的 ID List
   const existingResourceIds = useMemo(() => resources.map((r) => r.resource_id), [resources]);
 
   // ResourceType标签

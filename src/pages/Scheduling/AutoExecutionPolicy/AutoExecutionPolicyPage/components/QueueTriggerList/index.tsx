@@ -46,7 +46,7 @@ const generateUUID = (): string => {
   });
 };
 
-// ============= Mock数据生成 =============
+// ============= MockDatageneration =============
 
 const mockProcesses = [
   { process_id: 'proc-001', process_name: 'Auto Order Processing' },
@@ -62,14 +62,14 @@ const mockQueues = [
   { queue_id: 'queue-004', queue_name: 'Report Generation Queue' },
 ];
 
-const mockCreatorNames = ['John Smith', 'Jane Doe', 'Mike Wang', '赵Sat', '钱七'];
+const mockCreatorNames = ['John Smith', 'Jane Doe', 'Mike Wang', 'David Zhao', 'Chris Qian'];
 
 const generateMockQueueTriggerResponse = (index: number): LYQueueTriggerResponse => {
   const process = mockProcesses[index % mockProcesses.length];
   const queue = mockQueues[index % mockQueues.length];
   const priorities: TaskPriority[] = ['HIGH', 'MEDIUM', 'LOW'];
   const targetTypes: ExecutionTargetType[] = ['BOT_GROUP', 'BOT_IN_GROUP', 'UNGROUPED_BOT'];
-  const targetNames = ['Order Processing Group', 'Finance Approval Group', '人事管理组', 'RPA-BOT-001', 'RPA-BOT-002'];
+  const targetNames = ['Order Processing Group', 'Finance Approval Group', 'HR Management Group', 'RPA-BOT-001', 'RPA-BOT-002'];
   const statuses: TriggerStatus[] = ['ENABLED', 'DISABLED'];
 
   const createDate = new Date(2026, 0, 1 + (index % 28), 10 + (index % 12), (index * 7) % 60);
@@ -77,8 +77,8 @@ const generateMockQueueTriggerResponse = (index: number): LYQueueTriggerResponse
 
   return {
     trigger_id: `qt-${generateUUID().substring(0, 8)}`,
-    name: `${queue.queue_name}触发器${index + 1}`,
-    description: index % 5 === 0 ? null : index % 5 === 1 ? `监控${queue.queue_name}，自动Create${process.process_name}任务。该队列触发器会实时监控指定队列中的消息数量，当有效消息数达到预设阈值时自动触发任务Create。支持配置每次触发消费的消息数量，以及定时检查机制，确保即使消息到达速度较慢也能及时处理。触发器Create的任务会自动携带队列消息作为Input parameters，实现端到端的自动化处理Process。适用于Order Processing、工单分配、Data Sync等需要基于消息驱动的自动化场景。` : `监控${queue.queue_name}，自动Create${process.process_name}任务`,
+    name: `${queue.queue_name} Trigger${index + 1}`,
+    description: index % 5 === 0 ? null : index % 5 === 1 ? `Monitor ${queue.queue_name}，auto-create ${process.process_name} tasks. This queue trigger will 实时Monitor 指定Queue中的MessageCount，当有效Message数达到预设阈值时自动Trigger任务Create。支持Config每次Trigger消费的MessageCount，以及ScheduledCheck机制，确保即使Message到达速度较慢也能及时processing。 TriggerCreate的任务会自动携带QueueMessage作为Input parameters，实现端到端的automationprocessingProcess。适用于Order Processing、工单分配、Data Sync等需要基于Message驱动的automation场景。` : `Monitor ${queue.queue_name}，auto-create ${process.process_name}任务`,
     status,
     process_id: process.process_id,
     process_name: process.process_name,
@@ -96,7 +96,7 @@ const generateMockQueueTriggerResponse = (index: number): LYQueueTriggerResponse
     time_zone: 'Asia/Shanghai',
     enable_work_calendar: index % 3 === 0,
     work_calendar_id: index % 3 === 0 ? 'cal-001' : null,
-    work_calendar_name: index % 3 === 0 ? '公司Work Calendar' : null,
+    work_calendar_name: index % 3 === 0 ? 'Company Work Calendar' : null,
     work_calendar_execution_type: index % 3 === 0 ? 'WORKDAY' : null,
     min_effective_messages: 1 + (index % 10),
     messages_per_trigger: 5 + (index % 20),
@@ -113,7 +113,7 @@ const generateMockQueueTriggerResponse = (index: number): LYQueueTriggerResponse
   };
 };
 
-// 生成 mock 数据
+// generation mock Data
 const generateMockTriggers = (count: number) => {
   return Array.from({ length: count }, (_, i) => generateMockQueueTriggerResponse(i));
 };
@@ -134,7 +134,7 @@ interface GetTriggersParams {
 const QueueTriggerList = () => {
   const { t } = useTranslation();
 
-  // 列表数据Status
+  // ListDataStatus
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [listResponse, setListResponse] = useState<LYListResponseLYQueueTriggerResponse>({
     range: { offset: 0, size: 20, total: 0 },
@@ -150,7 +150,7 @@ const QueueTriggerList = () => {
     status: undefined,
   });
 
-  // 选中Status（抽屉）
+  // SelectedStatus（抽屉）
   const [selectedTrigger, setSelectedTrigger] = useState<LYQueueTriggerResponse | null>(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
 
@@ -159,13 +159,13 @@ const QueueTriggerList = () => {
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingTrigger, setEditingTrigger] = useState<LYQueueTriggerResponse | null>(null);
 
-  // 从响应中直接获取分页信息
+  // 从响应中直接获取分页Info
   const { range, list } = listResponse;
   const currentPage = Math.floor((range?.offset || 0) / (range?.size || 20)) + 1;
   const pageSize = range?.size || 20;
   const total = range?.total || 0;
 
-  // 模拟Loading数据
+  // 模拟LoadingData
   const loadData = useCallback(async (params: GetTriggersParams) => {
     setLoading(true);
     try {
@@ -188,7 +188,7 @@ const QueueTriggerList = () => {
         filtered = filtered.filter((trigger) => trigger.process_id === params.process_id);
       }
 
-      // 按队列Filter
+      // 按QueueFilter
       if (params.queue_id) {
         filtered = filtered.filter((trigger) => trigger.queue_id === params.queue_id);
       }
@@ -207,7 +207,7 @@ const QueueTriggerList = () => {
         list: paged,
       });
     } catch (error) {
-      console.error('Loading队列触发器列表失败:', error);
+      console.error('LoadingQueue TriggerListFailed:', error);
       Toast.error(t('common.loadError'));
     } finally {
       setLoading(false);
@@ -233,7 +233,7 @@ const QueueTriggerList = () => {
     setQueryParams((prev) => ({ ...prev, offset: 0, process_id: processId }));
   };
 
-  // 队列Filter
+  // QueueFilter
   const handleQueueFilter = (queueId: string | undefined) => {
     setQueryParams((prev) => ({ ...prev, offset: 0, queue_id: queueId }));
   };
@@ -243,13 +243,13 @@ const QueueTriggerList = () => {
     setQueryParams((prev) => ({ ...prev, offset: 0, status }));
   };
 
-  // Create触发器成功
+  // Create TriggerSuccess
   const handleCreateSuccess = () => {
     setCreateModalVisible(false);
     loadData(queryParams);
   };
 
-  // Edit触发器成功
+  // Edit TriggerSuccess
   const handleEditSuccess = () => {
     setEditModalVisible(false);
     setEditingTrigger(null);
@@ -262,13 +262,13 @@ const QueueTriggerList = () => {
     setEditModalVisible(true);
   };
 
-  // 打开详情抽屉
+  // 打开Details抽屉
   const handleOpenDrawer = (trigger: LYQueueTriggerResponse) => {
     setSelectedTrigger(trigger);
     setDrawerVisible(true);
   };
 
-  // 关闭详情抽屉
+  // CloseDetails抽屉
   const handleCloseDrawer = () => {
     setDrawerVisible(false);
     setSelectedTrigger(null);
@@ -279,12 +279,12 @@ const QueueTriggerList = () => {
     setSelectedTrigger(trigger);
   };
 
-  // 启用/禁用触发器（直接切换，不弹窗Confirm）
+  // Enable/Disable Trigger（直接切换，不弹窗Confirm）
   const handleToggleStatus = async (trigger: LYQueueTriggerResponse, checked: boolean) => {
     try {
       const newStatus: TriggerStatus = checked ? 'ENABLED' : 'DISABLED';
       
-      // 立即更新本地列表Status
+      // 立即Update本地ListStatus
       setListResponse((prev) => ({
         ...prev,
         list: prev.list.map((t) =>
@@ -294,7 +294,7 @@ const QueueTriggerList = () => {
         ),
       }));
       
-      // 同步更新 mock 数据
+      // 同步Update mock Data
       const mockIndex = allMockTriggers.findIndex((t) => t.trigger_id === trigger.trigger_id);
       if (mockIndex !== -1) {
         allMockTriggers[mockIndex] = { 
@@ -303,7 +303,7 @@ const QueueTriggerList = () => {
         };
       }
       
-      // 如果抽屉打开且是当前触发器，更新抽屉中的数据
+      // 如果抽屉打开且是当前 Trigger，Update抽屉中的Data
       if (selectedTrigger?.trigger_id === trigger.trigger_id) {
         setSelectedTrigger({
           ...trigger,
@@ -317,7 +317,7 @@ const QueueTriggerList = () => {
     }
   };
 
-  // Delete触发器
+  // Delete Trigger
   const handleDeleteTrigger = (trigger: LYQueueTriggerResponse) => {
     Modal.confirm({
       title: t('queueTrigger.deleteModal.title'),
@@ -349,7 +349,7 @@ const QueueTriggerList = () => {
     });
   };
 
-  // 格式化时间
+  // Format化Time
   const formatTime = (time: string | null | undefined): string => {
     if (!time) return '-';
     return new Date(time).toLocaleString('zh-CN');
@@ -460,7 +460,7 @@ const QueueTriggerList = () => {
     },
   ];
 
-  // 判断是否有Filter条件
+  // 判断是否有FilterCondition
   const hasFilters = queryParams.keyword || queryParams.process_id || queryParams.queue_id || queryParams.status;
 
   // currentIndex no longer needed - navigation handled by DetailDrawerWrapper
@@ -591,7 +591,7 @@ const QueueTriggerList = () => {
         />
       )}
 
-      {/* 详情抽屉 */}
+      {/* Details抽屉 */}
       <QueueTriggerDetailDrawer
         visible={drawerVisible}
         trigger={selectedTrigger}

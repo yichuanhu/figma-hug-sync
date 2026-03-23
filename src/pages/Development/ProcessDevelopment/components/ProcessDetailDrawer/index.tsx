@@ -35,7 +35,7 @@ import './index.less';
 
 const { Title, Text } = Typography;
 
-// ============= Mock数据生成 =============
+// ============= MockDatageneration =============
 
 interface ProcessVariable {
   name: string;
@@ -66,9 +66,9 @@ const generateMockVersionData = (): VersionDetailData[] => {
   const versions = [
     { version: '1.0.0', note: 'Initial version with basic functionality', isActive: false },
     { version: '1.1.0', note: 'Performance optimization, fixed known issues', isActive: true },
-    { version: '1.2.0', note: '新增批量处理功能', isActive: true },
+    { version: '1.2.0', note: 'Add批量processing功能', isActive: true },
     { version: '2.0.0', note: '重构核心逻辑，提升稳定性', isActive: true },
-    { version: '2.1.0', note: '新增异常处理机制', isActive: false },
+    { version: '2.1.0', note: 'AddAbnormalprocessing机制', isActive: false },
   ];
 
   return versions.map((v, index) => ({
@@ -83,7 +83,7 @@ const generateMockVersionData = (): VersionDetailData[] => {
     package_size: Math.floor(Math.random() * 5000000) + 500000,
     package_checksum: `sha256:${generateUUID().replace(/-/g, '')}`,
     version_note: v.note,
-    usage_note: `使用说明：Version${v.version}的操作指引`,
+    usage_note: `使用说明：Version${v.version}的Operation指引`,
     creator_id: ['user-001', 'user-002', 'user-003'][index % 3],
     created_at: new Date(Date.now() - (versions.length - index) * 7 * 24 * 60 * 60 * 1000).toISOString(),
     publish_time: v.isActive ? new Date(Date.now() - (versions.length - index) * 2 * 24 * 60 * 60 * 1000).toISOString() : null,
@@ -95,12 +95,12 @@ const generateMockVersionData = (): VersionDetailData[] => {
     usage_instructions_url: 'https://docs.example.com/usage',
     development_environment: 'Win10 | X86',
     inputs: [
-      { name: 'inputParam1', type: 'Text' as const, value: '默认值', description: 'Input parameters1的Description' },
-      { name: 'inputParam2', type: 'Boolean' as const, value: 'true', description: '是否启用某功能' },
+      { name: 'inputParam1', type: 'Text' as const, value: 'Default值', description: 'Input parameters1的Description' },
+      { name: 'inputParam2', type: 'Boolean' as const, value: 'true', description: '是否Enable某功能' },
     ],
     outputs: [
-      { name: 'outputResult', type: 'Text' as const, value: '', description: '输出结果' },
-      { name: 'outputStatus', type: 'Number' as const, value: '0', description: '执行Status码' },
+      { name: 'outputResult', type: 'Text' as const, value: '', description: '输出Result' },
+      { name: 'outputStatus', type: 'Number' as const, value: '0', description: 'ExecuteStatus码' },
     ],
   }));
 };
@@ -111,8 +111,8 @@ const mockCreatorNameMap: Record<string, { name: string; department?: string; ro
   'user-001': { name: 'John Smith', department: '技术部', role: '高级工程师', email: 'zhangsan@example.com' },
   'user-002': { name: 'Jane Doe', department: '产品部', role: '产品经理', email: 'lisi@example.com' },
   'user-003': { name: 'Mike Wang', department: '运维部', role: '运维工程师', email: 'wangwu@example.com' },
-  'user-004': { name: '赵Sat', department: '测试部', role: '测试工程师', email: 'zhaoliu@example.com' },
-  'user-005': { name: '钱七', department: '技术部', role: '架构师', email: 'qianqi@example.com' },
+  'user-004': { name: 'David Zhao', department: '测试部', role: '测试工程师', email: 'zhaoliu@example.com' },
+  'user-005': { name: 'Chris Qian', department: '技术部', role: '架构师', email: 'qianqi@example.com' },
 };
 
 // ============= 组件Props =============
@@ -269,7 +269,7 @@ const ProcessDetailDrawer = ({
     return data;
   }, [versionData]);
 
-  // 计算最新激活Version（已ReleaseVersion中 publish_time 最新的）
+  // calculation最新激活Version（已ReleaseVersion中 publish_time 最新的）
   const latestActiveVersionId = useMemo(() => {
     const activeVersions = sortedVersionData.filter(v => v.is_active && v.publish_time);
     if (activeVersions.length === 0) return null;

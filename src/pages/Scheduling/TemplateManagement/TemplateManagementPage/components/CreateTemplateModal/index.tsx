@@ -27,7 +27,7 @@ interface CreateTemplateModalProps {
   onSuccess: () => void;
 }
 
-// Mock Process列表
+// Mock ProcessList
 const mockProcesses: LYProcessActiveVersionResponse[] = [
   {
     process_id: 'proc-001',
@@ -42,7 +42,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     output_parameters: [
       { name: 'processedCount', type: 'NUMBER', description: 'Processed order count' },
       { name: 'successRate', type: 'NUMBER', description: 'Processing success rate' },
-      { name: 'errorList', type: 'TEXT', description: '错误订单列表' },
+      { name: 'errorList', type: 'TEXT', description: 'Error订单List' },
     ],
   },
   {
@@ -52,7 +52,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     version: 'v2.0.0',
     parameters: [
       { name: 'department', type: 'TEXT', required: true, description: 'Department name' },
-      { name: 'approvalCredential', type: 'CREDENTIAL', required: true, description: '审批凭据' },
+      { name: 'approvalCredential', type: 'CREDENTIAL', required: true, description: '审批Credential' },
     ],
     output_parameters: [
       { name: 'approvalResult', type: 'BOOLEAN', description: 'Approval result' },
@@ -78,8 +78,8 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     ],
     output_parameters: [
       { name: 'collectedCount', type: 'NUMBER', description: 'Collected data count' },
-      { name: 'dataFilePath', type: 'TEXT', description: '数据文件路径' },
-      { name: 'isComplete', type: 'BOOLEAN', description: '是否采集完成' },
+      { name: 'dataFilePath', type: 'TEXT', description: 'DataFile路径' },
+      { name: 'isComplete', type: 'BOOLEAN', description: '是否采集Done' },
     ],
   },
 ];
@@ -88,7 +88,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
 const mockBotGroups = [
   { id: 'group-001', name: 'Order Processing Group', onlineCount: 3, totalCount: 5 },
   { id: 'group-002', name: 'Finance Approval Group', onlineCount: 2, totalCount: 3 },
-  { id: 'group-003', name: '人事管理组', onlineCount: 1, totalCount: 2 },
+  { id: 'group-003', name: 'HR Management Group', onlineCount: 1, totalCount: 2 },
 ];
 
 const mockBots = [
@@ -99,14 +99,14 @@ const mockBots = [
   { id: 'bot-005', name: 'RPA-BOT-005', groupId: null, status: 'OFFLINE' },
 ];
 
-// Mock 个人凭据
+// Mock 个人Credential
 const mockCredentials = [
   { id: 'cred-001', name: 'System Admin Credentials' },
   { id: 'cred-002', name: 'API Access Credentials' },
-  { id: 'cred-003', name: '数据库凭据' },
+  { id: 'cred-003', name: 'Data库Credential' },
 ];
 
-// 已存在的模板Name (模拟)
+// 已存在的TemplateName (模拟)
 const existingTemplateNames = ['Order Processing Default Template', 'Finance Approval Quick Template'];
 
 const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateModalProps) => {
@@ -121,7 +121,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
     if (targetType === 'BOT_GROUP') {
       return mockBotGroups.map((g) => ({
         value: g.id,
-        label: `${g.name} (${g.onlineCount}/${g.totalCount} 在线)`,
+        label: `${g.name} (${g.onlineCount}/${g.totalCount} Online)`,
       }));
     }
     if (targetType === 'UNGROUPED_BOT') {
@@ -129,7 +129,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
         .filter((b) => !b.groupId)
         .map((b) => ({
           value: b.id,
-          label: `${b.name} (${b.status === 'ONLINE' ? '在线' : '离线'})`,
+          label: `${b.name} (${b.status === 'ONLINE' ? 'Online' : 'Offline'})`,
         }));
     }
     // BOT_IN_GROUP
@@ -137,7 +137,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
       .filter((b) => b.groupId)
       .map((b) => ({
         value: b.id,
-        label: `${b.name} (${b.status === 'ONLINE' ? '在线' : '离线'})`,
+        label: `${b.name} (${b.status === 'ONLINE' ? 'Online' : 'Offline'})`,
       }));
   }, [targetType]);
 
@@ -155,7 +155,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
     const process = mockProcesses.find((p) => p.process_id === processId);
     setSelectedProcess(process || null);
     
-    // 初始化Parameter默认值
+    // 初始化ParameterDefault值
     if (process && formApi) {
       process.parameters.forEach((param) => {
         if (param.default_value !== undefined && param.default_value !== null) {
@@ -165,7 +165,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
     }
   }, [formApi]);
 
-  // 验证模板Name唯Mon性
+  // ValidationTemplateName唯Mon性
   const validateTemplateName = useCallback((value: string) => {
     if (value && existingTemplateNames.includes(value.trim())) {
       return t('template.validation.nameExists');
@@ -267,7 +267,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
       // 模拟API调用
       await new Promise((resolve) => setTimeout(resolve, 500));
       
-      console.log('Create执行模板:', {
+      console.log('CreateExecuteTemplate:', {
         template_name: (values.templateName as string).trim(),
         description: (values.description as string)?.trim() || null,
         process_id: values.processId,
@@ -283,7 +283,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
       Toast.success(t('template.createModal.success'));
       onSuccess();
     } catch (error) {
-      console.error('Create执行模板失败:', error);
+      console.error('CreateExecuteTemplateFailed:', error);
       Toast.error(t('template.createModal.error'));
     } finally {
       setLoading(false);
@@ -315,7 +315,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
         }}
       >
         <div className="create-template-modal-body">
-          {/* 左侧：基本配置 */}
+          {/* 左侧：基本Config */}
           <div className="create-template-modal-left">
             <div className="create-template-modal-content">
               {/* Basic Info */}

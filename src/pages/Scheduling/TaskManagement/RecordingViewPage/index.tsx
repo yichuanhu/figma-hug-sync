@@ -29,7 +29,7 @@ import './index.less';
 
 const { Title, Text } = Typography;
 
-// Mock 数据生成
+// Mock Datageneration
 const generateMockRecording = (executionId: string): LYRecordingInfoResponse => ({
   execution_id: executionId,
   file_id: 'file_' + Math.random().toString(36).substring(7),
@@ -49,18 +49,18 @@ const generateMockLogs = (): LYExecutionLogResponse[] => {
     'Initializing process engine...',
     'Successfully connected to database server',
     'Starting step 1: Reading input parameters',
-    '警告: Input parameters中存在空值，使用默认值替代',
-    '错误: 无法连接到目标服务器，请检查网络设置',
-    'Step 2 执行完成，耗时 1.5 s',
-    '正在处理数据转换...',
-    '数据验证通过',
-    '写入输出结果到文件',
+    'Warning: Input parameters contains null values, using defaults',
+    'Error: Unable to connect to target server, check network settings',
+    'Step 2 Execution completed, duration 1.5 s',
+    'Processing data transformation...',
+    'Data validation passed',
+    '写入输出Result到File',
     'Process execution completed',
-    '开始执行Step 3: 数据处理',
-    '警告: Found重复数据，已自动去重',
-    '错误: 文件写入失败，磁盘空间不足',
-    '正在重试操作...',
-    '操作成功完成',
+    'StartExecuteStep 3: Dataprocessing',
+    'Warning: FoundRepeatData，已自动去重',
+    'Error: File写入Failed，磁盘空间不足',
+    '正在RetryOperation...',
+    'OperationSuccessDone',
   ];
   
   const startTime = new Date();
@@ -114,12 +114,12 @@ const RecordingViewPage = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [highlightedLogId, setHighlightedLogId] = useState<string | null>(null);
   
-  // 录屏开始时间
+  // 录屏StartTime
   const recordingStartTime = useMemo(() => {
     return logs.length > 0 ? new Date(logs[0].log_time) : new Date();
   }, [logs]);
   
-  // Loading数据
+  // LoadingData
   const loadData = useCallback(async () => {
     if (!executionId) return;
     
@@ -149,7 +149,7 @@ const RecordingViewPage = () => {
     loadData();
   }, [loadData]);
 
-  // 仅刷新Sun志数据
+  // 仅RefreshSun志Data
   const loadLogsOnly = useCallback(async () => {
     if (!executionId) return;
     
@@ -168,21 +168,21 @@ const RecordingViewPage = () => {
     }
   }, [executionId]);
   
-  // 视频时间更新
+  // 视频TimeUpdate
   const handleTimeUpdate = useCallback((time: number) => {
     setCurrentTime(time);
     // 清除高亮Status（随播放自动同步）
     setHighlightedLogId(null);
   }, []);
   
-  // 点击错误标记
+  // 点击Error标记
   const handleMarkerClick = useCallback((marker: LYRecordingErrorMarker) => {
     setHighlightedLogId(marker.log_id);
   }, []);
   
   // 点击Sun志条目
   const handleLogClick = useCallback((log: LYExecutionLogResponse) => {
-    // 计算Sun志相对时间并跳转
+    // calculationSun志相对Time并跳转
     const logTime = new Date(log.log_time).getTime();
     const startTime = recordingStartTime.getTime();
     const position = Math.max(0, (logTime - startTime) / 1000);
@@ -191,16 +191,16 @@ const RecordingViewPage = () => {
     setHighlightedLogId(log.log_id);
   }, [recordingStartTime]);
   
-  // 导出录屏
+  // Export录屏
   const handleExport = useCallback(async () => {
     if (!recording) return;
     
     setExporting(true);
     try {
-      // Mock 导出
+      // Mock Export
       await new Promise((resolve) => setTimeout(resolve, 1500));
       
-      // 模拟下载
+      // 模拟Download
       const link = document.createElement('a');
       link.href = recording.file_url || '';
       link.download = recording.file_name;
@@ -217,10 +217,10 @@ const RecordingViewPage = () => {
     }
   }, [recording, t]);
   
-  // 返回
+  // Back
   const handleBack = useCallback(() => {
     if (taskIdFromUrl) {
-      // 返回到任务列表并打开对应任务的详情抽屉，同时传递 activeTab Parameter
+      // Back到任务List并打开对应任务的Details抽屉，同时传递 activeTab Parameter
       const params = new URLSearchParams();
       params.set('taskId', taskIdFromUrl);
       if (activeTabFromUrl) {

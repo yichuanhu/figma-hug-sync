@@ -87,7 +87,7 @@ const RollbackConfirmModal: React.FC<RollbackConfirmModalProps> = ({
             </Text>
           </div>
 
-          {/* 目标Version */}
+          {/* TargetVersion */}
           <div className="rollback-confirm-modal-version-card">
             <Text type="tertiary" size="small">
               {t('release.rollback.targetVersion')}

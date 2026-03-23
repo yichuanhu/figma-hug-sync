@@ -28,7 +28,7 @@ interface SyncRecordingPlayerProps {
   onRefresh?: () => void;
 }
 
-// 格式化时间为 mm:ss 或 hh:mm:ss
+// Format化Time为 mm:ss 或 hh:mm:ss
 const formatTime = (seconds: number): string => {
   const h = Math.floor(seconds / 3600);
   const m = Math.floor((seconds % 3600) / 60);
@@ -63,7 +63,7 @@ const SyncRecordingPlayer = ({
   
   const duration = recording?.duration || 0;
   
-  // 视频事件处理
+  // 视频事件processing
   const handleTimeUpdate = useCallback(() => {
     if (videoRef.current) {
       onTimeUpdate(videoRef.current.currentTime);
@@ -136,7 +136,7 @@ const SyncRecordingPlayer = ({
     };
   }, []);
   
-  // 跳转到指定时间
+  // 跳转到指Scheduled间
   const seekTo = useCallback((time: number) => {
     if (videoRef.current) {
       videoRef.current.currentTime = time;
@@ -150,13 +150,13 @@ const SyncRecordingPlayer = ({
     seekTo(time);
   }, [seekTo]);
   
-  // 错误标记点击
+  // Error标记点击
   const handleMarkerClick = useCallback((marker: LYRecordingErrorMarker) => {
     seekTo(marker.position);
     onMarkerClick(marker);
   }, [seekTo, onMarkerClick]);
   
-  // 计算错误标记位置
+  // calculationError标记位置
   const markerPositions = useMemo(() => {
     if (duration <= 0) return [];
     return errorMarkers.map((marker) => ({
@@ -177,7 +177,7 @@ const SyncRecordingPlayer = ({
     );
   }
   
-  // 渲染错误Status
+  // 渲染ErrorStatus
   if (error || !recording) {
     return (
       <div className="sync-recording-player">
@@ -246,9 +246,9 @@ const SyncRecordingPlayer = ({
         )}
       </div>
       
-      {/* 控制栏 */}
+      {/* Controls */}
       <div className="sync-recording-player-controls">
-        {/* 播放/暂停按钮 */}
+        {/* Play/Pause button */}
         <Button
           icon={isPlaying ? <Pause size={16} strokeWidth={2} /> : <Play size={16} strokeWidth={2} />}
           theme="borderless"
@@ -257,15 +257,15 @@ const SyncRecordingPlayer = ({
           onClick={togglePlay}
         />
         
-        {/* 当前时间 */}
+        {/* Current time */}
         <Text className="sync-recording-player-time">
           {formatTime(currentTime)}
         </Text>
         
-        {/* 进度条区域 */}
+        {/* Progress bar area */}
         <div className="sync-recording-player-progress">
           <div className="sync-recording-player-progress-bar">
-            {/* 缓冲进度 */}
+            {/* Buffer progress */}
             <div 
               className="sync-recording-player-progress-buffered"
               style={{ width: `${buffered}%` }}
@@ -282,7 +282,7 @@ const SyncRecordingPlayer = ({
               className="sync-recording-player-slider"
             />
             
-            {/* 错误标记 */}
+            {/* Error标记 */}
             {markerPositions.map((marker) => (
               <Tooltip
                 key={marker.log_id}
@@ -323,7 +323,7 @@ const SyncRecordingPlayer = ({
           onClick={toggleMute}
         />
         
-        {/* 全屏按钮 */}
+        {/* Fullscreen button */}
         <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
           <Button
             icon={isFullscreen ? <Minimize2 size={16} strokeWidth={2} /> : <Maximize2 size={16} strokeWidth={2} />}
@@ -334,7 +334,7 @@ const SyncRecordingPlayer = ({
         </Tooltip>
       </div>
       
-      {/* 录屏信息 */}
+      {/* 录屏Info */}
       <div className="sync-recording-player-info">
         <Text size="small" type="tertiary">
           {t('recording.player.fileInfo', { 

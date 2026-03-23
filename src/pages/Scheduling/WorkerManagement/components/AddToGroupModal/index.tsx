@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import type { LYWorkerResponse } from '@/api';
 import './index.less';
 
-// Mock机器人组数据
+// Mockbot组Data
 const mockWorkerGroups = [
   { id: 'group-001', name: 'Finance Bot Group' },
   { id: 'group-002', name: 'HR Bot Group' },

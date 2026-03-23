@@ -58,7 +58,7 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
       // 模拟API调用延迟
       await new Promise((resolve) => setTimeout(resolve, 300));
 
-      // 生成Mock响应 - 直接返回LYProcessResponse
+      // generationMock响应 - 直接BackLYProcessResponse
       const updatedProcess: LYProcessResponse = {
         ...processData,
         name: updateRequest.name || processData.name,

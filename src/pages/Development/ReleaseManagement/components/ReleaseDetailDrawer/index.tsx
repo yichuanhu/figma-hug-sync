@@ -47,10 +47,10 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
       { resource_id: 'param-002', resource_type: 'PARAMETER' as ResourceType, resource_name: '最大Retry count', test_value: '3', production_value: '5', use_test_as_production: false, is_previously_published: false, is_manual: true, used_by_processes: ['SAP_ERP_Order_Processing_And_Fulfillment_Workflow_V3'] },
       { resource_id: 'param-003', resource_type: 'PARAMETER' as ResourceType, resource_name: 'Enterprise_Database_Connection_String_With_Failover_And_LoadBalancing_Parameters', test_value: 'Server=test-db-cluster.internal.company.com,1433;Database=TestDB_Enterprise_v5;User Id=svc_test_account;Password=********;MultipleActiveResultSets=True;Connection Timeout=30;Encrypt=True;TrustServerCertificate=False;Application Name=RPA_Platform_Test;Max Pool Size=100;Min Pool Size=10;Load Balance Timeout=30;Failover Partner=test-db-failover.internal.company.com', production_value: '', use_test_as_production: true, is_previously_published: true, is_manual: false, used_by_processes: ['SAP_ERP_Order_Processing_And_Fulfillment_Workflow_V3', 'Data SyncProcess', 'Monthly_Financial_Report_Generation_And_Distribution_Workflow'] },
       { resource_id: 'cred-001', resource_type: 'CREDENTIAL' as ResourceType, resource_name: 'SAP_ERP_Production_System_Service_Account_Credentials_With_MFA', test_value: '********', test_username: 'svc_test_sap_erp_integration_account', test_password: '********', production_value: '********', production_username: 'svc_prod_sap_erp_admin_integration', production_password: '********', use_test_as_production: false, is_previously_published: true, is_manual: false, used_by_processes: ['SAP_ERP_Order_Processing_And_Fulfillment_Workflow_V3', 'Data SyncProcess'] },
-      { resource_id: 'cred-002', resource_type: 'CREDENTIAL' as ResourceType, resource_name: '邮件服务凭据', test_value: '********', test_username: 'mail_test', test_password: '********', production_value: '********', production_username: 'mail_user', production_password: '********', use_test_as_production: true, is_previously_published: false, is_manual: false, used_by_processes: ['通知发送Process'] },
+      { resource_id: 'cred-002', resource_type: 'CREDENTIAL' as ResourceType, resource_name: '邮件服务Credential', test_value: '********', test_username: 'mail_test', test_password: '********', production_value: '********', production_username: 'mail_user', production_password: '********', use_test_as_production: true, is_previously_published: false, is_manual: false, used_by_processes: ['Notification发送Process'] },
       { resource_id: 'queue-001', resource_type: 'QUEUE' as ResourceType, resource_name: 'High_Priority_Order_Processing_Queue_For_Enterprise_Customers_Region_APAC', test_value: '', production_value: '', use_test_as_production: false, is_previously_published: true, is_manual: false, used_by_processes: ['SAP_ERP_Order_Processing_And_Fulfillment_Workflow_V3'] },
       { resource_id: 'file-001', resource_type: 'FILE' as ResourceType, resource_name: 'Enterprise_Order_Invoice_Template_With_MultiLanguage_Support_2024_v3.xlsx', test_value: '', production_value: '', use_test_as_production: false, is_previously_published: true, is_manual: false, used_by_processes: ['SAP_ERP_Order_Processing_And_Fulfillment_Workflow_V3'] },
-      { resource_id: 'file-002', resource_type: 'FILE' as ResourceType, resource_name: '报表配置', test_value: '', production_value: '', use_test_as_production: false, is_previously_published: false, is_manual: true, used_by_processes: ['Monthly_Financial_Report_Generation_And_Distribution_Workflow'] },
+      { resource_id: 'file-002', resource_type: 'FILE' as ResourceType, resource_name: 'reportConfig', test_value: '', production_value: '', use_test_as_production: false, is_previously_published: false, is_manual: true, used_by_processes: ['Monthly_Financial_Report_Generation_And_Distribution_Workflow'] },
     ];
 
     const resources = release.resources?.length ? release.resources : mockResources;
@@ -63,17 +63,17 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
     };
   }, [release]);
 
-  // Mock Process内容（含超长Name和Description）
+  // Mock ProcessContent（含超长Name和Description）
   const mockContents = useMemo(() => {
     if (release?.contents?.length) return release.contents;
     return [
-      { process_id: 'proc-001', process_name: 'SAP_ERP_Order_Processing_And_Fulfillment_Workflow_V3', version_number: 'v3.2.1', process_description: '该Process用于处理来自SAP ERP系统的所有客户订单，包括订单验证、Inventory Check、价格计算、折扣应用、税费计算、物流分配、发票生成以及客户通知等完整的端到端业务Process。支持多币种、多仓库、多物流商的复杂场景处理，并集成了异常处理和自动重试机制以确保Process的高可靠性和数据Mon致性。' },
-      { process_id: 'proc-002', process_name: 'Inventory CheckProcess', version_number: 'v1.0.0', process_description: '定时检查库存' },
-      { process_id: 'proc-003', process_name: 'Monthly_Financial_Report_Generation_And_Distribution_Workflow', version_number: 'v2.1.0', process_description: '每M自动生成财务报表并分发给相关部门负责人，支持PDF和Excel双格式输出。' },
-      { process_id: 'proc-004', process_name: 'Customer_Onboarding_KYC_Verification_And_Account_Provisioning_Enterprise_Workflow_With_Compliance_Check', version_number: 'v1.3.0', process_description: '客户入网全Process自动化，涵盖KYC身份验证、合规检查、风控评估、账户开通、权限分配、欢迎邮件发送及CRM系统同步等环节，支持多国家地区的监管要求适配。' },
-      { process_id: 'proc-005', process_name: '邮件通知', version_number: 'v1.0.2', process_description: '' },
-      { process_id: 'proc-006', process_name: 'Automated_Invoice_Reconciliation_And_Payment_Processing_With_Multi_Currency_Support', version_number: 'v2.0.0', process_description: '自动对账与付款处理Process，支持多币种汇率转换、发票Wed单匹配、异常标记与人工审批、ERP回写及银企直连付款指令生成，确保财务数据准确性和时效性。' },
-      { process_id: 'proc-007', process_name: '数据备份', version_number: 'v1.1.0', process_description: '每Sun凌晨自动执行数据库增量备份并上传至云存储。' },
+      { process_id: 'proc-001', process_name: 'SAP_ERP_Order_Processing_And_Fulfillment_Workflow_V3', version_number: 'v3.2.1', process_description: '该Process用于processing来自SAP ERP系统的所有客户订单，包括订单Validation、Inventory Check、价格calculation、折扣应用、税费calculation、物流分配、发票generation以及客户Notification等完整的端到端业务Process。支持多币种、多仓库、多物流商的复杂场景processing，并集成了Abnormalprocessing和自动Retry机制以确保Process的高可靠性和DataMon致性。' },
+      { process_id: 'proc-002', process_name: 'Inventory CheckProcess', version_number: 'v1.0.0', process_description: 'ScheduledCheck库存' },
+      { process_id: 'proc-003', process_name: 'Monthly_Financial_Report_Generation_And_Distribution_Workflow', version_number: 'v2.1.0', process_description: '每M自动generation财务report并分发给相关部门负责人，支持PDF和Excel双Format输出。' },
+      { process_id: 'proc-004', process_name: 'Customer_Onboarding_KYC_Verification_And_Account_Provisioning_Enterprise_Workflow_With_Compliance_Check', version_number: 'v1.3.0', process_description: '客户入网全Processautomation，涵盖KYC身份Validation、合规Check、风控评估、账户开通、权限分配、欢迎邮件发送及CRM系统同步等环节，支持多国家地区的监管要求适配。' },
+      { process_id: 'proc-005', process_name: '邮件Notification', version_number: 'v1.0.2', process_description: '' },
+      { process_id: 'proc-006', process_name: 'Automated_Invoice_Reconciliation_And_Payment_Processing_With_Multi_Currency_Support', version_number: 'v2.0.0', process_description: '自动对账与付款processingProcess，支持多币种汇率Conversion、发票Wed单匹配、Abnormal标记与人工审批、ERP回写及银企直连付款指令generation，确保财务Data准确性和时效性。' },
+      { process_id: 'proc-007', process_name: 'Data备份', version_number: 'v1.1.0', process_description: '每Sun凌晨自动ExecuteData库增量备份并Upload至云存储。' },
     ];
   }, [release]);
 

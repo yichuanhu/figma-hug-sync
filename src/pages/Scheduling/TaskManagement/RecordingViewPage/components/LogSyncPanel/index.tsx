@@ -27,7 +27,7 @@ interface LogSyncPanelProps {
   onRefresh?: () => void;
 }
 
-// Log level颜色配置
+// Log level颜色Config
 const logLevelConfig: Record<LogLevel, { color: 'grey' | 'blue' | 'orange' | 'red' }> = {
   DEBUG: { color: 'grey' },
   INFO: { color: 'blue' },
@@ -35,12 +35,12 @@ const logLevelConfig: Record<LogLevel, { color: 'grey' | 'blue' | 'orange' | 're
   ERROR: { color: 'red' },
 };
 
-// 格式化时间戳
+// Format化Time戳
 const formatTimestamp = (isoString: string): string => {
   return isoString.replace('T', ' ').substring(11, 19);
 };
 
-// 解析Sun志时间为s数（相对于录屏开始时间）
+// 解析Sun志Time为s数（相对于录屏StartTime）
 const parseLogTimeToSeconds = (logTime: string, startTime: string): number => {
   const logDate = new Date(logTime).getTime();
   const startDate = new Date(startTime).getTime();
@@ -60,7 +60,7 @@ const LogSyncPanel = ({
   const [searchKeyword, setSearchKeyword] = useState('');
   const [filteredLogs, setFilteredLogs] = useState<LYExecutionLogResponse[]>(logs);
   
-  // 录屏开始时间（取第Mon条Sun志的时间）
+  // 录屏StartTime（取第Mon条Sun志的Time）
   const startTime = useMemo(() => {
     return logs.length > 0 ? logs[0].log_time : new Date().toISOString();
   }, [logs]);
@@ -88,7 +88,7 @@ const LogSyncPanel = ({
     handleSearch(searchKeyword);
   }, [logs, searchKeyword, handleSearch]);
   
-  // 根据当前播放时间找到最近的Sun志
+  // 根据当前播放Time找到最近的Sun志
   const currentLogIndex = useMemo(() => {
     if (filteredLogs.length === 0) return -1;
     

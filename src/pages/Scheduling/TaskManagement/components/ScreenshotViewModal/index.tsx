@@ -36,7 +36,7 @@ interface ScreenshotViewModalProps {
 }
 
 
-// 生成 UUID
+// generation UUID
 const generateUUID = (): string => {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0;
@@ -45,7 +45,7 @@ const generateUUID = (): string => {
   });
 };
 
-// Mock 数据生成
+// Mock Datageneration
 const generateMockScreenshot = (executionId: string, index: number): LYTaskScreenshotResponse => {
   const baseTime = new Date(2026, 0, 30, 14, 30);
   const capturedAt = new Date(baseTime.getTime() + index * 10000); // one every 10 seconds
@@ -75,7 +75,7 @@ const fetchScreenshots = async (
 ): Promise<LYListResponseLYTaskScreenshotResponse> => {
   await new Promise((resolve) => setTimeout(resolve, 500));
   
-  // 生成 12 张 mock screenshot
+  // generation 12 张 mock screenshot
   const mockData = Array(12)
     .fill(null)
     .map((_, index) => generateMockScreenshot(executionId, index));
@@ -94,7 +94,7 @@ const fetchScreenshots = async (
   };
 };
 
-// 格式化时间
+// Format化Time
 const formatTime = (isoTime: string): string => {
   const date = new Date(isoTime);
   const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -105,7 +105,7 @@ const formatTime = (isoTime: string): string => {
   return `${month}-${day} ${hours}:${minutes}:${seconds}`;
 };
 
-// 格式化文件大小
+// Format化File大小
 const formatFileSize = (bytes: number): string => {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
@@ -125,11 +125,11 @@ const ScreenshotViewModal = ({
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   
   
-  // 灯箱预览Status
+  // 灯箱PreviewStatus
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewIndex, setPreviewIndex] = useState(0);
   
-  // Loading数据
+  // LoadingData
   const loadData = useCallback(async () => {
     if (!executionId) return;
     
@@ -142,7 +142,7 @@ const ScreenshotViewModal = ({
     }
   }, [executionId]);
   
-  // 当弹窗打开或Sort变化时Loading数据
+  // 当弹窗打开或Sort变化时LoadingData
   useEffect(() => {
     if (visible) {
       loadData();
@@ -151,7 +151,7 @@ const ScreenshotViewModal = ({
     }
   }, [visible, loadData]);
   
-  // 处理选择
+  // processing选择
   const handleSelect = useCallback((id: string, selected: boolean) => {
     setSelectedIds((prev) => {
       const next = new Set(prev);
@@ -174,7 +174,7 @@ const ScreenshotViewModal = ({
     setSelectedIds(new Set());
   }, []);
   
-  // Delete选中项
+  // DeleteSelected项
   const handleDelete = useCallback(() => {
     // Mock Delete
     setScreenshots((prev) => prev.filter((s) => !selectedIds.has(s.id)));
@@ -214,7 +214,7 @@ const ScreenshotViewModal = ({
         setScreenshots((prev) => prev.filter((s) => s.id !== currentScreenshot.id));
         Toast.success(t('screenshot.deleteSuccess'));
         
-        // 调整预览索引
+        // 调整Preview索引
         if (screenshots.length <= 1) {
           setPreviewVisible(false);
         } else if (previewIndex >= screenshots.length - 1) {
@@ -230,13 +230,13 @@ const ScreenshotViewModal = ({
     return screenshots.length > 0 && selectedIds.size === screenshots.length;
   }, [screenshots, selectedIds]);
   
-  // 打开灯箱预览
+  // 打开灯箱Preview
   const handleOpenPreview = useCallback((index: number) => {
     setPreviewIndex(index);
     setPreviewVisible(true);
   }, []);
   
-  // 关闭灯箱
+  // Close灯箱
   const handleClosePreview = useCallback(() => {
     setPreviewVisible(false);
   }, []);
@@ -251,7 +251,7 @@ const ScreenshotViewModal = ({
     setPreviewIndex((prev) => (prev < screenshots.length - 1 ? prev + 1 : 0));
   }, [screenshots.length]);
   
-  // 当前预览的screenshot
+  // 当前Preview的screenshot
   const currentPreviewScreenshot = screenshots[previewIndex];
   
   
@@ -260,7 +260,7 @@ const ScreenshotViewModal = ({
     ? t('screenshot.modalTitle', { taskName })
     : t('screenshot.title');
 
-  // 预览图片列表
+  // Preview图片List
   const previewSrcList = useMemo(() => 
     screenshots.map((s) => s.file_url),
     [screenshots]
@@ -428,7 +428,7 @@ const ScreenshotViewModal = ({
             </Text>
           </div>
           
-          {/* 批量操作栏 */}
+          {/* 批量Operation栏 */}
           {selectedIds.size > 0 && (
             <BatchOperationBar
               selectedCount={selectedIds.size}
@@ -467,7 +467,7 @@ const ScreenshotViewModal = ({
         </div>
       </Modal>
       
-      {/* 自定义灯箱预览 */}
+      {/* 自定义灯箱Preview */}
       <ImagePreview
         visible={previewVisible}
         src={previewSrcList}
@@ -477,7 +477,7 @@ const ScreenshotViewModal = ({
         renderPreviewMenu={() => null}
       />
       
-      {/* 灯箱底部信息栏 */}
+      {/* 灯箱底部Info栏 */}
       {previewVisible && (
         <div className="screenshot-preview-overlay">
           {renderPreviewFooter()}

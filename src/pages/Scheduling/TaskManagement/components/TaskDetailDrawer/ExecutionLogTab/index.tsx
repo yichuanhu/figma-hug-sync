@@ -38,7 +38,7 @@ interface ExecutionLogTabProps {
   title?: string;
 }
 
-// Log level颜色配置
+// Log level颜色Config
 const logLevelConfig: Record<LogLevel, { color: 'grey' | 'blue' | 'orange' | 'red'; text: string }> = {
   DEBUG: { color: 'grey', text: 'DEBUG' },
   INFO: { color: 'blue', text: 'INFO' },
@@ -46,13 +46,13 @@ const logLevelConfig: Record<LogLevel, { color: 'grey' | 'blue' | 'orange' | 're
   ERROR: { color: 'red', text: 'ERROR' },
 };
 
-// Sun志消息截断阈值
+// Sun志Message截断阈值
 const MESSAGE_TRUNCATE_LENGTH = 200;
 
-// 自动刷新间隔（毫s）
+// 自动Refresh间隔（毫s）
 const AUTO_REFRESH_INTERVAL = 10000;
 
-// Mock 数据生成
+// Mock Datageneration
 const generateMockLog = (index: number): LYExecutionLogResponse => {
   const levels: LogLevel[] = ['DEBUG', 'INFO', 'WARN', 'ERROR'];
   const sources = ['CLIENT', 'SERVER'] as const;
@@ -60,12 +60,12 @@ const generateMockLog = (index: number): LYExecutionLogResponse => {
     'Initializing process engine...',
     'Successfully connected to database server',
     'Starting step 1: Reading input parameters',
-    '警告: Input parameters中存在空值，使用默认值替代',
-    '错误: 无法连接到目标服务器，请检查网络设置。错误代码: CONN_TIMEOUT，详细信息: 连接超时，目标地址: 192.168.1.100:8080，Retry count: 3，最后尝试时间: 2026-01-30 10:30:00',
-    'Step 2 执行完成，耗时 1.5 s',
-    '正在处理数据转换...',
-    '数据验证通过',
-    '写入输出结果到文件',
+    'Warning: Input parameters contains null values, using defaults',
+    'Error: Unable to connect to target server, check network settings。Error code: CONN_TIMEOUT，Details: Connection timeout，Target address: 192.168.1.100:8080，Retry count: 3，Last attempt time: 2026-01-30 10:30:00',
+    'Step 2 Execution completed, duration 1.5 s',
+    'Processing data transformation...',
+    'Data validation passed',
+    '写入输出Result到File',
     'Process execution completed',
   ];
   const levelIndex = index % 10 < 1 ? 3 : index % 10 < 3 ? 2 : index % 10 < 5 ? 0 : 1;
@@ -108,10 +108,10 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
   const [dateRangeFilter, setDateRangeFilter] = useState<[Date, Date] | null>(null);
   const [exporting, setExporting] = useState(false);
   
-  // 自动刷新定时器
+  // 自动RefreshScheduled器
   const refreshTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   
-  // LoadingSun志数据
+  // LoadingSun志Data
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
@@ -144,7 +144,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
         list: filteredLogs,
       });
       
-      // 首次Loading时获取统计
+      // 首次Loading时获取Statistics
       if (!summary) {
         setSummary(generateMockSummary());
       }
@@ -160,7 +160,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
     loadData();
   }, [loadData]);
   
-  // 自动刷新逻辑
+  // 自动Refresh逻辑
   useEffect(() => {
     if (executionStatus === 'RUNNING') {
       refreshTimerRef.current = setInterval(() => {
@@ -184,7 +184,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
     []
   );
   
-  // 分页信息
+  // 分页Info
   const { range, list } = listResponse;
   const currentPage = queryParams.page || 1;
   const pageSize = queryParams.page_size || 50;
@@ -205,7 +205,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
     }));
   }, []);
   
-  // 导出Sun志
+  // ExportSun志
   const handleExport = useCallback(async () => {
     if (total === 0) {
       Toast.warning(t('taskLog.noLogsToExport'));
@@ -214,16 +214,16 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
     
     setExporting(true);
     try {
-      // Mock 导出
+      // Mock Export
       await new Promise((resolve) => setTimeout(resolve, 1000));
       
-      // 生成 CSV 内容
+      // generation CSV Content
       const csvHeader = 'log_time,log_level,log_message,source\n';
       const csvContent = list.map((log) =>
         `"${log.log_time}","${log.log_level}","${log.log_message.replace(/"/g, '""')}","${log.source}"`
       ).join('\n');
       
-      // 触发下载
+      // TriggerDownload
       const blob = new Blob(['\ufeff' + csvHeader + csvContent], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -242,7 +242,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
     }
   }, [executionId, list, total, t]);
   
-  // View完整消息
+  // View完整Message
   const showFullMessage = useCallback((log: LYExecutionLogResponse) => {
     Modal.info({
       title: t('taskLog.fullMessage'),
@@ -351,7 +351,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
     ];
   }, [t]);
 
-  // Filter配置
+  // FilterConfig
   const filterSections = useMemo(() => [
     {
       key: 'dateRange',

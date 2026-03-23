@@ -57,14 +57,14 @@ const generateUUID = (): string => {
   });
 };
 
-// ============= Mock数据生成 =============
+// ============= MockDatageneration =============
 
 const mockCreatorNameMap: Record<string, string> = {
   'user-001': 'John Smith',
   'user-002': 'Jane Doe',
   'user-003': 'Mike Wang',
-  'user-004': '赵Sat',
-  'user-005': '钱七',
+  'user-004': 'David Zhao',
+  'user-005': 'Chris Qian',
 };
 
 const generateMockTaskResponse = (index: number): LYTaskResponse => {
@@ -72,14 +72,14 @@ const generateMockTaskResponse = (index: number): LYTaskResponse => {
     'Auto Order Processing',
     'Expense Reimbursement Approval',
     'Employee Onboarding Flow',
-    '采购申请Process',
-    '合同审批Process',
+    'Purchase Request Process',
+    'Contract Approval Process',
   ];
 
   const targetNames = [
     'Order Processing Group',
     'Finance Approval Group',
-    '人事管理组',
+    'HR Management Group',
     'RPA-BOT-001',
     'RPA-BOT-002',
   ];
@@ -128,7 +128,7 @@ const generateMockTaskResponse = (index: number): LYTaskResponse => {
       duration: taskStatus === 'COMPLETED' ? 300 : null,
       bot_id: generateUUID(),
       bot_name: `RPA-BOT-${String(index % 5 + 1).padStart(3, '0')}`,
-      error_message: taskStatus === 'FAILED' ? '执行超时：网络连接失败' : null,
+      error_message: taskStatus === 'FAILED' ? 'ExecuteTimeout：NetworkConnectionFailed' : null,
       log_count: 50 + (index % 50),
       screenshot_count: 5 + (index % 10),
     } : null,
@@ -175,19 +175,19 @@ const fetchTaskList = async (params: GetTasksParams): Promise<LYListResponseLYTa
     filteredData = filteredData.filter((item) => params.task_status!.includes(item.task_status));
   }
 
-  // 执行StatusFilter
+  // ExecuteStatusFilter
   if (params.execution_status && params.execution_status.length > 0) {
     filteredData = filteredData.filter((item) => 
       item.execution_status && params.execution_status!.includes(item.execution_status)
     );
   }
 
-  // 触发来源Filter
+  // Trigger来源Filter
   if (params.trigger_source && params.trigger_source.length > 0) {
     filteredData = filteredData.filter((item) => params.trigger_source!.includes(item.trigger_source));
   }
 
-  // 时间范围Filter
+  // Time范围Filter
   if (params.start_time) {
     const startDate = new Date(params.start_time);
     filteredData = filteredData.filter((item) => new Date(item.create_time) >= startDate);
@@ -216,7 +216,7 @@ const fetchTaskList = async (params: GetTasksParams): Promise<LYListResponseLYTa
   };
 };
 
-// ============= Status配置 =============
+// ============= StatusConfig =============
 
 const taskStatusConfig: Record<TaskStatus, { color: 'grey' | 'blue' | 'orange' | 'green' | 'red'; i18nKey: string }> = {
   PENDING: { color: 'grey', i18nKey: 'task.status.pending' },
@@ -312,7 +312,7 @@ const TaskManagementPage = () => {
     { value: 'TEMPLATE', label: t('task.triggerSource.template') },
   ], [t]);
 
-  // Loading数据
+  // LoadingData
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
@@ -335,22 +335,22 @@ const TaskManagementPage = () => {
     loadData();
   }, [loadData]);
 
-  // 从 URL Parameter中恢复抽屉Status（用于从录屏页面返回）或打开新建任务弹窗（从模板页面跳转）
+  // 从 URL Parameter中恢复抽屉Status（用于从录屏页面Back）或打开新建任务弹窗（从Template页面跳转）
   useEffect(() => {
     const taskIdFromUrl = searchParams.get('taskId');
     const activeTabFromUrl = searchParams.get('activeTab');
     const templateIdFromUrl = searchParams.get('templateId');
 
-    // 处理模板ID - 从 localStorage 获取模板数据并打开新建任务弹窗
+    // processingTemplateID - 从 localStorage 获取TemplateData并打开新建任务弹窗
     if (templateIdFromUrl) {
-      // 从 sessionStorage 获取传递的模板数据
+      // 从 sessionStorage 获取传递的TemplateData
       const templateDataStr = sessionStorage.getItem(`template_${templateIdFromUrl}`);
       if (templateDataStr) {
         try {
           const templateData = JSON.parse(templateDataStr) as LYExecutionTemplateResponse;
           setInitialTemplate(templateData);
           setCreateModalVisible(true);
-          // 清理 sessionStorage
+          // Cleanup sessionStorage
           sessionStorage.removeItem(`template_${templateIdFromUrl}`);
         } catch (e) {
           console.error('Failed to parse template data:', e);
@@ -361,12 +361,12 @@ const TaskManagementPage = () => {
       return;
     }
 
-    // 处理任务ID - 打开详情抽屉
+    // processing任务ID - 打开Details抽屉
     if (taskIdFromUrl && listResponse.list.length > 0) {
       const task = listResponse.list.find((t) => t.task_id === taskIdFromUrl);
       if (task) {
         setSelectedTask(task);
-        // 设置初始 tab
+        // Settings初始 tab
         if (activeTabFromUrl === 'executionHistory') {
           setInitialTab('executionHistory');
         } else {
@@ -396,7 +396,7 @@ const TaskManagementPage = () => {
     loadData();
   };
 
-  // 打开详情抽屉
+  // 打开Details抽屉
   const openTaskDetail = (record: LYTaskResponse) => {
     setSelectedTask(record);
     setDetailDrawerVisible(true);
@@ -406,7 +406,7 @@ const TaskManagementPage = () => {
   // Cancel任务
   const handleCancelTask = (task: LYTaskResponse) => {
     if (task.task_status !== 'PENDING') {
-      Toast.warning('只能Cancel待执行Status的任务');
+      Toast.warning('只能Cancel待ExecuteStatus的任务');
       return;
     }
 
@@ -433,16 +433,16 @@ const TaskManagementPage = () => {
           loadData();
           Toast.success(t('task.cancelModal.success'));
         } catch (error) {
-          Toast.error(t('task.cancelModal.error', { message: '请重试' }));
+          Toast.error(t('task.cancelModal.error', { message: '请Retry' }));
         }
       },
     });
   };
 
-  // 停止任务
+  // Stop任务
   const handleStopTask = (task: LYTaskResponse) => {
     if (task.execution_status !== 'RUNNING') {
-      Toast.warning('只能停止运行中的任务');
+      Toast.warning('只能StopRunning中的任务');
       return;
     }
 
@@ -469,16 +469,16 @@ const TaskManagementPage = () => {
           loadData();
           Toast.success(t('task.stopModal.success'));
         } catch (error) {
-          Toast.error(t('task.stopModal.error', { message: '请重试' }));
+          Toast.error(t('task.stopModal.error', { message: '请Retry' }));
         }
       },
     });
   };
 
-  // 重新执行
+  // 重新Execute
   const handleRetryTask = (task: LYTaskResponse) => {
     if (task.task_status !== 'FAILED') {
-      Toast.warning('只能重新执行失败的任务');
+      Toast.warning('只能重新ExecuteFailed的任务');
       return;
     }
 
@@ -509,7 +509,7 @@ const TaskManagementPage = () => {
           loadData();
           Toast.success(t('task.retryModal.success'));
         } catch (error) {
-          Toast.error(t('task.retryModal.error', { message: '请重试' }));
+          Toast.error(t('task.retryModal.error', { message: '请Retry' }));
         }
       },
     });
@@ -523,7 +523,7 @@ const TaskManagementPage = () => {
     setDateRange((values.dateRange as [Date, Date] | null) || null);
   };
 
-  // 分页信息
+  // 分页Info
   const { range, list } = listResponse;
   const currentPage = Math.floor((range?.offset || 0) / (range?.size || 20)) + 1;
   const pageSize = range?.size || 20;
@@ -617,13 +617,13 @@ const TaskManagementPage = () => {
       key: 'action',
       width: 60,
       render: (_: unknown, record: LYTaskResponse) => {
-        // 判断是否有可用操作
+        // 判断是否有可用Operation
         const hasStatusActions = 
           record.task_status === 'PENDING' ||
           record.execution_status === 'RUNNING' ||
           record.task_status === 'FAILED';
         
-        // 执行历史入口：只要有过执行记录就显示
+        // ExecuteHistory入口：只要有过ExecuteRecord就显示
         const hasExecutions = record.total_execution_count > 0;
         
         const hasActions = hasStatusActions || hasExecutions;

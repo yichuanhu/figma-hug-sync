@@ -39,7 +39,7 @@ interface QueueTriggerDetailDrawerProps {
   onScrollToRow?: (id: string) => void;
 }
 
-// Mock 执行记录
+// Mock ExecuteRecord
 const generateMockExecutionLogs = (triggerId: string): LYQueueTriggerExecutionLogResponse[] => {
   return Array.from({ length: 5 }, (_, i) => ({
     log_id: `log-${i}`,
@@ -69,20 +69,20 @@ const QueueTriggerDetailDrawer = ({
   const [activeTab, setActiveTab] = useState('basic');
   const [executionLogs, setExecutionLogs] = useState<LYQueueTriggerExecutionLogResponse[]>([]);
 
-  // Loading执行记录
+  // LoadingExecuteRecord
   useEffect(() => {
     if (visible && trigger) {
       setExecutionLogs(generateMockExecutionLogs(trigger.trigger_id));
     }
   }, [visible, trigger]);
 
-  // 格式化时间
+  // Format化Time
   const formatTime = (time: string | null | undefined): string => {
     if (!time) return '-';
     return new Date(time).toLocaleString('zh-CN');
   };
 
-  // 抽屉关闭时重置Status
+  // 抽屉Close时重置Status
   const handleClose = () => {
     setActiveTab('basic');
     onClose();
@@ -90,7 +90,7 @@ const QueueTriggerDetailDrawer = ({
 
   if (!trigger) return null;
 
-  // 执行记录表格列
+  // ExecuteRecord表格列
   const logColumns = [
     {
       title: t('queueTrigger.executionLog.table.triggerTime'),
@@ -136,7 +136,7 @@ const QueueTriggerDetailDrawer = ({
     },
   ];
 
-  // 额外操作按钮
+  // 额外Operation按钮
   const extraActions = (
     <>
       <Tooltip content={t('common.edit')}>
@@ -248,7 +248,7 @@ const QueueTriggerDetailDrawer = ({
               </Descriptions>
             </div>
 
-            {/* 任务配置 */}
+            {/* Task config */}
             <div className="queue-trigger-detail-drawer-section">
               <Text className="queue-trigger-detail-drawer-section-title">
                 {t('queueTrigger.detail.taskConfig')}
@@ -277,7 +277,7 @@ const QueueTriggerDetailDrawer = ({
               </Descriptions>
             </div>
 
-            {/* Status监控 */}
+            {/* Status monitoring */}
             <div className="queue-trigger-detail-drawer-section">
               <Text className="queue-trigger-detail-drawer-section-title">
                 {t('queueTrigger.detail.statusMonitor')}
