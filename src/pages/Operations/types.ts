@@ -60,6 +60,47 @@ export interface RequirementRoiItem {
   status: string;
 }
 
+
+// ROI Analysis - 需求维度详情
+export interface RequirementRoiDetail {
+  id: string;
+  name: string;
+  department: string;
+  roi: number;
+  investmentCost: number;
+  savedCost: number;
+  status: string;
+}
+
+// ROI Analysis - 部门维度详情
+export interface DepartmentRoiDetail {
+  department: string;
+  investmentCost: number;
+  savedCost: number;
+  roi: number;
+  requirementCount: number;
+  robotCount: number;
+  trend: number[];
+}
+
+// ROI Analysis - 项目维度详情
+export interface ProjectRoiDetail {
+  projectName: string;
+  status: string;
+  investmentCost: number;
+  savedCost: number;
+  roi: number;
+  requirementCount: number;
+}
+
+// ROI Analysis 筛选条件
+export interface RoiAnalysisFilter {
+  timeRange: string;
+  department: string;
+  project: string;
+  timeDimension: string;
+}
+
 // 筛选条件
 export interface DashboardFilter {
   timeRange: string;

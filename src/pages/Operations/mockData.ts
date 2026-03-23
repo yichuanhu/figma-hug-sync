@@ -5,6 +5,9 @@ import type {
   RoiTrendPoint,
   DepartmentRoiItem,
   RequirementRoiItem,
+  RequirementRoiDetail,
+  DepartmentRoiDetail,
+  ProjectRoiDetail,
 } from './types';
 
 export const mockRoiMetrics: RoiMetrics = {
