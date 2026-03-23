@@ -150,7 +150,7 @@ const CalendarEditor: React.FC<CalendarEditorProps> = ({
           </Form>
         </div>
 
-        {/* Sun历EditArea */}
+        {/* SunEditArea */}
         <div className="calendar-editor-calendar">
           <Text className="calendar-editor-section-title">
             {t('workCalendar.editor.calendarEdit')}
@@ -175,7 +175,7 @@ const CalendarEditor: React.FC<CalendarEditorProps> = ({
         </div>
       </div>
 
-      {/* 底部Operation栏 */}
+      {/* Operation */}
       <div className="calendar-editor-footer">
         <Button onClick={onCancel}>
           {t('workCalendar.editor.cancel')}

@@ -375,7 +375,7 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
         }}
       >
         <div className="create-task-modal-body">
-          {/* Left: 基本Config */}
+          {/* Left: Config */}
           <div className="create-task-modal-left">
             <div className="create-task-modal-content">
               {/* Template selection */}
@@ -520,11 +520,11 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
             </div>
           </div>
 
-          {/* Right: Process输入 and Process输出 */}
+          {/* Right: Process and Process */}
           {showRightPanel && (
             <div className="create-task-modal-right">
               <div className="create-task-modal-content">
-                {/* Process输入 */}
+                {/* Process */}
                 {hasParameters && (
                   <div className="create-task-modal-section">
                     <div className="create-task-modal-section-title">
@@ -536,7 +536,7 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
                   </div>
                 )}
 
-                {/* Process输出(只读) */}
+                {/* Process() */}
                 {hasOutputParameters && (
                   <div className="create-task-modal-section">
                     <div className="create-task-modal-section-title">

@@ -428,7 +428,7 @@ const ScreenshotViewModal = ({
             </Text>
           </div>
           
-          {/* 批量Operation栏 */}
+          {/* Operation */}
           {selectedIds.size > 0 && (
             <BatchOperationBar
               selectedCount={selectedIds.size}
@@ -467,7 +467,7 @@ const ScreenshotViewModal = ({
         </div>
       </Modal>
       
-      {/* 自定义灯箱Preview */}
+      {/* Preview */}
       <ImagePreview
         visible={previewVisible}
         src={previewSrcList}
@@ -477,7 +477,7 @@ const ScreenshotViewModal = ({
         renderPreviewMenu={() => null}
       />
       
-      {/* 灯箱底部Info栏 */}
+      {/* Info */}
       {previewVisible && (
         <div className="screenshot-preview-overlay">
           {renderPreviewFooter()}

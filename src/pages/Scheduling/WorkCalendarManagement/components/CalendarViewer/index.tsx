@@ -80,7 +80,7 @@ const CalendarViewer: React.FC<CalendarViewerProps> = ({ calendar, onEdit }) => 
           </Descriptions>
         </div>
 
-        {/* Sun历Preview */}
+        {/* SunPreview */}
         <div className="calendar-viewer-section">
           <Text className="calendar-viewer-section-title">
             {t('workCalendar.viewer.calendarPreview')}

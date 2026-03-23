@@ -131,7 +131,7 @@ const WorkCalendarManagement = () => {
   return (
       <div className="work-calendar-management">
 
-        {/* Back按钮 and 标题 */}
+        {/* Back and  */}
         <div className="work-calendar-management-header">
           <Tooltip content={t('common.back')} position="bottom">
             <Button 
@@ -146,9 +146,9 @@ const WorkCalendarManagement = () => {
           </Title>
         </div>
 
-        {/* 主体Content: 左右两栏 */}
+        {/* Content:  */}
         <div className="work-calendar-management-content">
-          {/* Left边栏 */}
+          {/* Left */}
           <CalendarSidebar
             calendars={calendars}
             selectedId={selectedCalendarId}
@@ -157,7 +157,7 @@ const WorkCalendarManagement = () => {
             onDelete={handleDeleteCalendar}
           />
           
-          {/* Right主Area */}
+          {/* RightArea */}
           <div className="work-calendar-management-main">
             {selectedCalendar ? (
               isEditing ? (
@@ -186,7 +186,7 @@ const WorkCalendarManagement = () => {
           </div>
         </div>
         
-        {/* 新建Sun历Modal */}
+        {/* SunModal */}
         <CreateCalendarModal
           visible={createModalVisible}
           onCancel={() => setCreateModalVisible(false)}

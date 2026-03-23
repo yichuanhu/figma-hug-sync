@@ -427,7 +427,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
         </div>
       </Card>
 
-      {/* 添加Resource模态框 */}
+      {/* Resource */}
       <AddResourceModal
         visible={addResourceModalVisible}
         onClose={() => setAddResourceModalVisible(false)}

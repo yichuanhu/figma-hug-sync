@@ -382,7 +382,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
           </div>
         </div>
 
-        {/* Right: Already选botList */}
+        {/* Right: AlreadybotList */}
         <div className="add-members-modal-right">
           <div className="add-members-modal-right-header">
             <Text strong>

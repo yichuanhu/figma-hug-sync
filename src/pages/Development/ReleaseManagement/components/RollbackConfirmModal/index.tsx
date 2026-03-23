@@ -104,7 +104,7 @@ const RollbackConfirmModal: React.FC<RollbackConfirmModalProps> = ({
           </div>
         </div>
 
-        {/* 影响说明 */}
+        {/*  */}
         <div className="rollback-confirm-modal-impacts">
           <Text strong>{t('release.rollback.impacts')}:</Text>
           <ul className="rollback-confirm-modal-impact-list">

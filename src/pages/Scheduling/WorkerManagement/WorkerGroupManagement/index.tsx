@@ -391,9 +391,9 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
 
   return (
     <div className="worker-group-management">
-      {/* Operation栏 */}
+      {/* Operation */}
       <div className="worker-group-management-header">
-        {/* Operation栏 */}
+        {/* Operation */}
         <Row type="flex" justify="space-between" align="middle" className="worker-group-management-header-toolbar">
           <Col>
             <Space>
@@ -500,7 +500,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
         onSuccess={handleEditSuccess}
       />
 
-      {/* 添加成员Modal */}
+      {/* Modal */}
       <AddMembersModal
         visible={addMembersModalVisible}
         onCancel={() => {

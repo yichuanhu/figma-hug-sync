@@ -331,7 +331,7 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
         }}
       >
         <div className="edit-template-modal-body">
-          {/* Left: 基本Config */}
+          {/* Left: Config */}
           <div className="edit-template-modal-left">
             <div className="edit-template-modal-content">
               {/* Basic Info */}
@@ -360,7 +360,7 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
                 />
               </div>
 
-              {/* Process选择 */}
+              {/* Process */}
               <div className="edit-template-modal-section">
                 <div className="edit-template-modal-section-title">
                   {t('template.createModal.processSection')}
@@ -430,7 +430,7 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
                 )}
               </div>
 
-              {/* 任务Settings */}
+              {/* Settings */}
               <div className="edit-template-modal-section">
                 <div className="edit-template-modal-section-title">
                   {t('template.createModal.settingsSection')}
@@ -509,7 +509,7 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
                   </div>
                 )}
 
-                {/* Process输出Parameter */}
+                {/* ProcessParameter */}
                 {hasOutputParameters && (
                   <div className="edit-template-modal-section">
                     <div className="edit-template-modal-section-title">

@@ -315,7 +315,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
         }}
       >
         <div className="create-template-modal-body">
-          {/* Left: 基本Config */}
+          {/* Left: Config */}
           <div className="create-template-modal-left">
             <div className="create-template-modal-content">
               {/* Basic Info */}
@@ -478,11 +478,11 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
             </div>
           </div>
 
-          {/* Right: Process输入 and Process输出 */}
+          {/* Right: Process and Process */}
           {showRightPanel && (
             <div className="create-template-modal-right">
               <div className="create-template-modal-content">
-                {/* Process输入 */}
+                {/* Process */}
                 {hasParameters && (
                   <div className="create-template-modal-section">
                     <div className="create-template-modal-section-title">
@@ -494,7 +494,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
                   </div>
                 )}
 
-                {/* Process输出(只读) */}
+                {/* Process() */}
                 {hasOutputParameters && (
                   <div className="create-template-modal-section">
                     <div className="create-template-modal-section-title">

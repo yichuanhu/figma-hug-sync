@@ -410,7 +410,7 @@ const TemplateManagementPage = () => {
   return (
       <div className="template-management">
 
-        {/* Back按钮 and 标题 */}
+        {/* Back and  */}
         <div className="template-management-header">
           <div className="template-management-header-title">
             <Tooltip content={t('common.back')} position="bottom">
@@ -426,7 +426,7 @@ const TemplateManagementPage = () => {
             </Title>
           </div>
 
-          {/* Operation栏 */}
+          {/* Operation */}
           <Row
             type="flex"
             justify="space-between"

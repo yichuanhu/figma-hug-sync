@@ -310,12 +310,12 @@ const SyncRecordingPlayer = ({
           </div>
         </div>
         
-        {/* 总时长 */}
+        {/* Total duration */}
         <Text className="sync-recording-player-time">
           {formatTime(duration)}
         </Text>
         
-        {/* 静音按钮 */}
+        {/* Mute button */}
         <Button
           icon={isMuted ? <IconVolume1Stroked /> : <IconVolume2Stroked />}
           theme="borderless"
@@ -334,7 +334,7 @@ const SyncRecordingPlayer = ({
         </Tooltip>
       </div>
       
-      {/* 录屏Info */}
+      {/* RecordingInfo */}
       <div className="sync-recording-player-info">
         <Text size="small" type="tertiary">
           {t('recording.player.fileInfo', { 

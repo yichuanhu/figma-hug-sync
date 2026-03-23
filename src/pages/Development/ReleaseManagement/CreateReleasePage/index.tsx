@@ -428,7 +428,7 @@ const CreateReleasePage: React.FC = () => {
           )}
         </div>
 
-        {/* 底部Operation栏 */}
+        {/* Operation */}
         <div className="create-release-page-footer">
           <div className="create-release-page-footer-left">
             {currentStep === 0 && (

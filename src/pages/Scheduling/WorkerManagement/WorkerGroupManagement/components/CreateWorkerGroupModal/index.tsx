@@ -145,7 +145,7 @@ const CreateWorkerGroupModal: React.FC<CreateWorkerGroupModalProps> = ({
         </div>
       </Modal>
 
-      {/* CreateSuccess后's 提示模态框 */}
+      {/* CreateSuccess's  */}
       <Modal
         visible={promptVisible}
         title={t('workerGroup.createModal.addMembersPrompt.title')}
@@ -169,7 +169,7 @@ const CreateWorkerGroupModal: React.FC<CreateWorkerGroupModalProps> = ({
         </div>
       </Modal>
 
-      {/* 添加成员模态框 */}
+      {/*  */}
       {createdGroup && (
         <AddMembersModal
           visible={addMembersVisible}

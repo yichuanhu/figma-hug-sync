@@ -827,7 +827,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
               >
                 {t('worker.actions.edit')}
               </Dropdown.Item>
-              {/* 未分组's bot显示"添加至分组"Operation */}
+              {/* 's bot""Operation */}
               {!record.group_id && (
                 <Dropdown.Item 
                   icon={<IconUserListStroked />}
@@ -839,7 +839,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
                   {t('worker.actions.addToGroup')}
                 </Dropdown.Item>
               )}
-              {/* Already分组's bot显示"移出分组"Operation */}
+              {/* Already's bot""Operation */}
               {record.group_id && (
                 <Dropdown.Item 
                   icon={<IconMinusCircleStroked />}
@@ -876,9 +876,9 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
 
   return (
     <div className="worker-management">
-      {/* Operation栏 */}
+      {/* Operation */}
       <div className="worker-management-header">
-        {/* Operation栏 */}
+        {/* Operation */}
         <Row type="flex" justify="space-between" align="middle" className="worker-management-header-toolbar">
           <Col>
             <Space>
@@ -1017,7 +1017,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
         }}
       />
 
-      {/* 密钥Modal */}
+      {/* Modal */}
       <WorkerKeyModal
         visible={keyModalVisible}
         onClose={() => setKeyModalVisible(false)}
@@ -1039,7 +1039,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
         onSuccess={handleEditSuccess}
       />
 
-      {/* 添加至分组Modal */}
+      {/* Modal */}
       <AddToGroupModal
         visible={addToGroupModalVisible}
         onCancel={() => setAddToGroupModalVisible(false)}

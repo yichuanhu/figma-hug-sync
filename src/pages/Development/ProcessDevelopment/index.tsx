@@ -508,7 +508,7 @@ const ProcessDevelopment = () => {
           <Text type="tertiary">{t('development.processDevelopment.description')}</Text>
         </div>
 
-        {/* Operation栏 */}
+        {/* Operation */}
         <Row type="flex" justify="space-between" align="middle" className="process-development-header-toolbar">
           <Col>
             <Space>
@@ -590,7 +590,7 @@ const ProcessDevelopment = () => {
         )}
       </div>
 
-      {/* 新建ProcessModal */}
+      {/* ProcessModal */}
       <CreateProcessModal
         visible={createModalVisible}
         onCancel={() => setCreateModalVisible(false)}
@@ -641,7 +641,7 @@ const ProcessDevelopment = () => {
         }}
       />
 
-      {/* 打开ProcessConfirmModal */}
+      {/* ProcessConfirmModal */}
       <OpenProcessModal />
       </div>
   );

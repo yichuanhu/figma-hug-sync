@@ -430,7 +430,7 @@ const ReleaseListPage: React.FC = () => {
             <Text type="tertiary">{t('release.list.description')}</Text>
           </div>
 
-          {/* Operation栏 */}
+          {/* Operation */}
           <Row
             type="flex"
             justify="space-between"

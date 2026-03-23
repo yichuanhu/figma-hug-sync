@@ -376,7 +376,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
 
   return (
     <div className="execution-log-tab">
-      {/* 标题 and Statistics */}
+      {/*  and Statistics */}
       <div className="execution-log-tab-header">
         {title && (
           <Text strong className="execution-log-tab-title">

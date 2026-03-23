@@ -382,7 +382,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
           </div>
         </div>
 
-        {/* Right: Already选Process */}
+        {/* Right: AlreadyProcess */}
         <div className="transfer-panel transfer-panel-right">
           <div className="transfer-panel-header">
             <Text strong>{t('release.create.selectedProcesses')}</Text>
