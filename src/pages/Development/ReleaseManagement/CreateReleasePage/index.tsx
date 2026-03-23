@@ -191,8 +191,8 @@ const CreateReleasePage: React.FC = () => {
     const files = [
       {
         resource_id: 'FILE-001',
-        resource_name: '订单Template',
-        original_name: '订单Template_v2.xlsx',
+        resource_name: 'Order Template',
+        original_name: 'order_template_v2.xlsx',
         is_previously_published: true,
         test_value: null,
         used_by_processes: processes.slice(0, 1).map((p) => ({
