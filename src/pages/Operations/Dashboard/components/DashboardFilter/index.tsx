@@ -23,6 +23,15 @@ const DashboardFilter = ({ filter, onFilterChange, onRefresh }: DashboardFilterP
     { value: 'all', label: t('operations.dashboard.allTime') },
   ];
 
+  const localizedDepartments = useMemo(() =>
+    mockDepartments.map(d => d.value === 'all' ? { ...d, label: t('operations.dashboard.selectAll') } : d),
+    [t]
+  );
+  const localizedProjects = useMemo(() =>
+    mockProjects.map(p => p.value === 'all' ? { ...p, label: t('operations.dashboard.selectAll') } : p),
+    [t]
+  );
+
   return (
     <div className="dashboard-filter">
       <div className="dashboard-filter-items">
