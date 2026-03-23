@@ -91,9 +91,9 @@ const generateMockProcess = (index: number): ProcessWithVersions => {
     'Data清洗Process's 详细Description',
     'task调度Process's 详细Description',
     'LoganalysisProcess's 详细Description',
-    'This is Mon段非常非常长's ProcessDescriptionText, use测试当DescriptionInfo超出Normal长度时, UI展示is否正确processing Text截断或换行logic. thisProcess涵盖 客户Data采集, Data清洗, FormatConversion, Target系统写入, AbnormalLogRecord, Retry机制Trigger, 邮件Notificationsend etc.多Step, 每Mon步都包含详细's ParameterConfig and 校验Rule, 确保DataMon致性 and 完整性. ',
-    '企业级跨部门多系统Data Sync and 清洗Process's Description, thisDescriptionalso非常长, 包含 Process设计理念, 技术架构, 性can指标, 安全策略, 合规to求, 运维规范 etc.多方面Content. ',
-    '全球化多语言Order Processing and 物流调度automationProcess's 完整DescriptionInfo',
+    'This is a very long process description text to test UI truncation and line-wrapping logic when description exceeds normal length. This process covers data collection, cleansing, format conversion, target system writing, exception logging, retry mechanism, and email notification.',
+    'Enterprise cross-department multi-system data sync and cleansing process description, covering design philosophy, technical architecture, performance metrics, security strategy, compliance requirements, and operations specifications.',
+    'Global multi-language order processing and logistics scheduling automation process full description.',
   ];
 
   const isPublished = index % 3 !== 0;
