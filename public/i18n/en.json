@@ -2955,7 +2955,25 @@
       "statusDeveloping": "Developing"
     },
     "roiAnalysis": {
-      "title": "ROI Analysis"
+      "title": "ROI Analysis",
+      "timeDimension": "Time Dimension",
+      "dimAll": "All",
+      "dimDaily": "Daily",
+      "dimWeekly": "Weekly",
+      "dimMonthly": "Monthly",
+      "requirementRoi": "Requirement ROI",
+      "departmentRoi": "Department ROI",
+      "projectRoi": "Project ROI",
+      "reqName": "Requirement",
+      "investmentCost": "Investment Cost",
+      "savedCost": "Saved Cost",
+      "roiDistribution": "ROI Distribution",
+      "investVsSaved": "Investment vs Savings",
+      "deptComparison": "Department Comparison",
+      "deptTrend": "Department ROI Trend",
+      "reqCount": "Requirements",
+      "robotCount": "Robots",
+      "projectName": "Project"
     },
     "resourceEfficiency": {
       "title": "Resource Efficiency"

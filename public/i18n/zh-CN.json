@@ -2962,7 +2962,25 @@
       "statusDeveloping": "开发中"
     },
     "roiAnalysis": {
-      "title": "ROI深度分析"
+      "title": "ROI深度分析",
+      "timeDimension": "时间维度",
+      "dimAll": "全部",
+      "dimDaily": "按日",
+      "dimWeekly": "按周",
+      "dimMonthly": "按月",
+      "requirementRoi": "需求维度ROI",
+      "departmentRoi": "部门维度ROI",
+      "projectRoi": "项目维度ROI",
+      "reqName": "需求名称",
+      "investmentCost": "投入成本",
+      "savedCost": "节约成本",
+      "roiDistribution": "ROI分布",
+      "investVsSaved": "投入 vs 收益",
+      "deptComparison": "部门对比",
+      "deptTrend": "部门ROI趋势",
+      "reqCount": "需求数",
+      "robotCount": "机器人数",
+      "projectName": "项目名称"
     },
     "resourceEfficiency": {
       "title": "资源效能监控"
