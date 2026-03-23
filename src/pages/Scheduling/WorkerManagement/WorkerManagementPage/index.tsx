@@ -16,7 +16,7 @@ const WorkerManagementPage = () => {
   const [pendingWorkerId, setPendingWorkerId] = useState<string | null>(null);
   const [openCreateWorker, setOpenCreateWorker] = useState(false);
 
-  // 从首页快捷入口跳转时自动打开新建弹窗
+  // from首页快捷入口跳转时auto-open新建Modal
   useEffect(() => {
     if ((location.state as any)?.openCreate) {
       setOpenCreateWorker(true);

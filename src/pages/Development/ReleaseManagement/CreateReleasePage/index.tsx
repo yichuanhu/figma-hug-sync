@@ -53,30 +53,30 @@ const CreateReleasePage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  // 步骤控制
+  // Step控制
   const [currentStep, setCurrentStep] = useState(0);
 
-  // 步骤1: 流程选择
+  // Step1: Processselect
   const [selectedProcesses, setSelectedProcesses] = useState<SelectedProcess[]>([]);
 
-  // 步骤2: 发布配置
+  // Step2: ReleaseConfig
   const [releaseType, setReleaseType] = useState<ReleaseType>('REQUIREMENT_CHANGE');
   const [description, setDescription] = useState('');
   const [resources, setResources] = useState<ResourceConfig[]>([]);
   const [detectingDependencies, setDetectingDependencies] = useState(false);
 
-  // 提交状态
+  // SubmitStatus
   const [submitting, setSubmitting] = useState(false);
 
   // Mock 依赖检测
   const detectDependencies = useCallback(async (processes: SelectedProcess[]): Promise<LYDependencyDetectionResponse> => {
     await new Promise((resolve) => setTimeout(resolve, 800));
 
-    // Mock 检测结果
+    // Mock 检测Result
     const parameters = [
       {
         resource_id: 'PARAM-001',
-        resource_name: 'ERP API 地址',
+        resource_name: 'ERP API Address',
         is_previously_published: true,
         test_value: 'https://test.erp.com/api',
         used_by_processes: processes.map((p) => ({
@@ -86,7 +86,7 @@ const CreateReleasePage: React.FC = () => {
       },
       {
         resource_id: 'PARAM-002',
-        resource_name: '批量处理数量',
+        resource_name: 'Batch processing count',
         is_previously_published: false,
         test_value: '100',
         used_by_processes: processes.slice(0, 1).map((p) => ({
@@ -96,9 +96,9 @@ const CreateReleasePage: React.FC = () => {
       },
       {
         resource_id: 'PARAM-003',
-        resource_name: '这是一个超级超级长的参数名称用来测试当参数名称文本过长时候资源卡片的标题区域是否能正确处理截断和换行的边界场景',
+        resource_name: 'This is a very long parameter name to test card title truncation and line wrapping edge cases',
         is_previously_published: false,
-        test_value: '这是一段非常非常长的文本类型参数值，用来模拟实际业务中可能出现的超长配置文本。例如一段完整的JSON配置内容：{"database":{"host":"192.168.1.100","port":5432,"username":"admin","password":"encrypted_password_here","database_name":"production_db","connection_pool_size":20,"timeout_ms":30000},"redis":{"host":"192.168.1.101","port":6379,"cluster_mode":true},"logging":{"level":"INFO","output":"file","path":"/var/log/app/"}}',
+        test_value: 'This is a very long text parameter simulating real business scenarios with extended config text. Example JSON config: {"database":{"host":"192.168.1.100","port":5432,"username":"admin","password":"encrypted_password_here","database_name":"production_db","connection_pool_size":20,"timeout_ms":30000},"redis":{"host":"192.168.1.101","port":6379,"cluster_mode":true},"logging":{"level":"INFO","output":"file","path":"/var/log/app/"}}',
         used_by_processes: processes.map((p) => ({
           process_id: p.process.id,
           process_name: p.process.name,
@@ -106,7 +106,7 @@ const CreateReleasePage: React.FC = () => {
       },
       {
         resource_id: 'PARAM-004',
-        resource_name: '全局化多语言翻译映射配置参数_包含中英日韩法德西葡俄阿等十国语言对照表',
+        resource_name: 'Global_Multilingual_Translation_Mapping_Config_Parameter_Including_10_Languages',
         is_previously_published: true,
         test_value: 'https://translation-service.internal.company.com/api/v3/multilingual/mapping?source=zh-CN&targets=en-US,ja-JP,ko-KR,fr-FR,de-DE,es-ES,pt-BR,ru-RU,ar-SA&format=json&include_variants=true&fallback=en-US',
         used_by_processes: processes.slice(0, 2).map((p) => ({
@@ -116,7 +116,7 @@ const CreateReleasePage: React.FC = () => {
       },
       {
         resource_id: 'PARAM-005',
-        resource_name: '启用自动重试',
+        resource_name: 'Enable Auto-Retry',
         is_previously_published: false,
         test_value: 'true',
         param_type: 'BOOLEAN',
@@ -127,7 +127,7 @@ const CreateReleasePage: React.FC = () => {
       },
       {
         resource_id: 'PARAM-006',
-        resource_name: '最大并发连接数',
+        resource_name: 'Max Concurrent Connections',
         is_previously_published: true,
         test_value: '256',
         param_type: 'NUMBER',
@@ -138,7 +138,7 @@ const CreateReleasePage: React.FC = () => {
       },
       {
         resource_id: 'PARAM-007',
-        resource_name: '启用调试模式',
+        resource_name: 'Enable Debug Mode',
         is_previously_published: true,
         test_value: 'false',
         param_type: 'BOOLEAN',
@@ -149,7 +149,7 @@ const CreateReleasePage: React.FC = () => {
       },
       {
         resource_id: 'PARAM-008',
-        resource_name: '超时时间阈值（毫秒）',
+        resource_name: 'TimeoutTime阈值(毫s)',
         is_previously_published: false,
         test_value: '30000',
         param_type: 'NUMBER',
@@ -163,7 +163,7 @@ const CreateReleasePage: React.FC = () => {
     const credentials = [
       {
         resource_id: 'CRED-001',
-        resource_name: 'ERP 系统凭据',
+        resource_name: 'ERP 系统Credential',
         is_previously_published: true,
         test_value: '******',
         used_by_processes: processes.map((p) => ({
@@ -177,7 +177,7 @@ const CreateReleasePage: React.FC = () => {
       ? [
           {
             resource_id: 'QUEUE-001',
-            resource_name: '订单处理队列',
+            resource_name: 'Order ProcessingQueue',
             is_previously_published: false,
             test_value: null,
             used_by_processes: processes.slice(0, 1).map((p) => ({
@@ -191,8 +191,8 @@ const CreateReleasePage: React.FC = () => {
     const files = [
       {
         resource_id: 'FILE-001',
-        resource_name: '订单模板',
-        original_name: '订单模板_v2.xlsx',
+        resource_name: '订单Template',
+        original_name: '订单Template_v2.xlsx',
         is_previously_published: true,
         test_value: null,
         used_by_processes: processes.slice(0, 1).map((p) => ({
@@ -205,7 +205,7 @@ const CreateReleasePage: React.FC = () => {
     return { parameters, credentials, queues, files };
   }, []);
 
-  // 当进入步骤2时，检测依赖
+  // 当进入Step2时, 检测依赖
   useEffect(() => {
     if (currentStep === 1 && selectedProcesses.length > 0) {
       setDetectingDependencies(true);
@@ -269,7 +269,7 @@ const CreateReleasePage: React.FC = () => {
     }
   }, [currentStep, selectedProcesses, detectDependencies]);
 
-  // 处理步骤变化
+  // processingStep变化
   const handleNext = () => {
     if (currentStep === 0) {
       if (selectedProcesses.length === 0) {
@@ -286,14 +286,14 @@ const CreateReleasePage: React.FC = () => {
     }
   };
 
-  // 处理发布提交
+  // processingReleaseSubmit
   const handleSubmit = async () => {
     if (!description.trim()) {
       Toast.warning(t('release.create.validation.descriptionRequired'));
       return;
     }
 
-    // 检查未发布资源的生产值
+    // Check未ReleaseResource's 生产值
     const missingProductionValues = resources.filter((r) => {
       if (r.is_previously_published || r.use_test_as_production) return false;
       if (r.resource_type === 'QUEUE' || r.resource_type === 'FILE') return false;
@@ -310,7 +310,7 @@ const CreateReleasePage: React.FC = () => {
 
     setSubmitting(true);
     try {
-      // Mock API 调用
+      // Mock API 调use
       const request: CreateReleaseRequest = {
         release_type: releaseType,
         description: description.trim(),
@@ -339,18 +339,18 @@ const CreateReleasePage: React.FC = () => {
     }
   };
 
-  // 检查是否有填写内容
+  // Checkis否has填写Content
   const hasContent = useMemo(() => {
-    // 检查是否选择了流程
+    // Checkis否select Process
     if (selectedProcesses.length > 0) return true;
-    // 检查是否填写了描述
+    // Checkis否填写 Description
     if (description.trim()) return true;
-    // 检查是否修改了资源配置
+    // Checkis否Modify ResourceConfig
     if (resources.some((r) => r.production_value || r.use_test_as_production)) return true;
     return false;
   }, [selectedProcesses, description, resources]);
 
-  // 处理取消/返回
+  // processingCancel/Back
   const handleCancel = () => {
     if (hasContent) {
       Modal.confirm({
@@ -371,7 +371,7 @@ const CreateReleasePage: React.FC = () => {
   return (
       <div className="create-release-page">
 
-        {/* 头部 */}
+        {/* Header */}
         <div className="create-release-page-header">
           <Button
             icon={<IconArrowLeft />}
@@ -385,7 +385,7 @@ const CreateReleasePage: React.FC = () => {
           </Title>
         </div>
 
-        {/* 步骤条 */}
+        {/* Step bar */}
         <div className="create-release-page-steps">
           <Steps current={currentStep} type="basic">
             <Steps.Step
@@ -399,7 +399,7 @@ const CreateReleasePage: React.FC = () => {
           </Steps>
         </div>
 
-        {/* 内容区域 */}
+        {/* Content area */}
         <div className="create-release-page-content">
           {currentStep === 0 && (
             <ProcessSelectionStep
@@ -428,7 +428,7 @@ const CreateReleasePage: React.FC = () => {
           )}
         </div>
 
-        {/* 底部操作栏 */}
+        {/* Operation */}
         <div className="create-release-page-footer">
           <div className="create-release-page-footer-left">
             {currentStep === 0 && (

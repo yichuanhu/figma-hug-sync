@@ -19,9 +19,9 @@ const bannerIconMap: Record<string, React.ComponentType<any>> = {
 };
 
 const priorityConfig: Record<string, { color: 'red' | 'orange' | 'blue'; label: string }> = {
-  urgent: { color: 'red', label: '紧急' },
-  important: { color: 'orange', label: '重要' },
-  normal: { color: 'blue', label: '普通' },
+  urgent: { color: 'red', label: 'Urgent' },
+  important: { color: 'orange', label: 'Important' },
+  normal: { color: 'blue', label: 'Normal' },
 };
 
 const AnnouncementSection = () => {

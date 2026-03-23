@@ -37,7 +37,7 @@ interface ExecutionHistoryTabProps {
   enableRecording: boolean;
 }
 
-// 执行状态配置
+// ExecuteStatusConfig
 const executionStatusConfig: Record<ExecutionStatus, { color: 'blue' | 'green' | 'red' | 'grey' | 'orange'; i18nKey: string }> = {
   RUNNING: { color: 'blue', i18nKey: 'task.executionStatus.running' },
   SUCCESS: { color: 'green', i18nKey: 'task.executionStatus.success' },
@@ -46,7 +46,7 @@ const executionStatusConfig: Record<ExecutionStatus, { color: 'blue' | 'green' |
   TIMEOUT: { color: 'orange', i18nKey: 'task.executionStatus.timeout' },
 };
 
-// 生成UUID
+// generationUUID
 const generateUUID = (): string => {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0;
@@ -55,12 +55,12 @@ const generateUUID = (): string => {
   });
 };
 
-// Mock数据生成
+// MockDatageneration
 const generateMockExecution = (taskId: string, index: number): LYTaskExecutionResponse => {
-  // 第一条记录用 SUCCESS 状态，这样用户可以看到查看录屏按钮
+  // 第Mon recordsuse SUCCESS Status, this样use户can看toView录屏by钮
   const statuses: ExecutionStatus[] = ['SUCCESS', 'RUNNING', 'FAILED', 'SUCCESS', 'TIMEOUT', 'STOPPED'];
   const botNames = ['RPA-BOT-001', 'RPA-BOT-002', 'RPA-BOT-003', 'RPA-BOT-004', 'RPA-BOT-005', 'RPA-BOT-006'];
-  // 最新的时间在前面，index越小时间越新
+  // 最新's Timein 前面, index越小Time越新
   const createDate = new Date(2026, 0, 30, 14 - index, 30 - (index * 5));
   const status = statuses[index % statuses.length];
   
@@ -73,20 +73,20 @@ const generateMockExecution = (taskId: string, index: number): LYTaskExecutionRe
     duration: status !== 'RUNNING' ? 300 + (index * 10) : null,
     bot_id: generateUUID(),
     bot_name: botNames[index % botNames.length],
-    error_message: status === 'FAILED' ? '执行失败：目标元素未找到' : status === 'TIMEOUT' ? '执行超时' : null,
+    error_message: status === 'FAILED' ? 'Execution failed: Target element not found' : status === 'TIMEOUT' ? 'ExecuteTimeout' : null,
     log_count: 50 + (index % 50),
     screenshot_count: index % 2 === 0 ? 5 + (index % 10) : 0,
   };
 };
 
-// Mock API调用
+// Mock API调use
 const fetchExecutionHistory = async (
   taskId: string,
   params: GetExecutionHistoryParams
 ): Promise<LYListResponseLYTaskExecutionResponse> => {
   await new Promise((resolve) => setTimeout(resolve, 300));
   
-  // 生成6条mock数据，按时间倒序排列（最新的在前面）
+  // generation6mockData, byTime倒序排列(最新's in 前面)
   const mockData = Array(6).fill(null).map((_, index) => generateMockExecution(taskId, index));
   
   const total = mockData.length;
@@ -100,7 +100,7 @@ const fetchExecutionHistory = async (
   };
 };
 
-// 格式化时间戳为tab标签
+// Format化Time戳astab标签
 const formatExecutionTime = (isoTime: string): string => {
   const date = new Date(isoTime);
   const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -120,7 +120,7 @@ const ExecutionHistoryTab = ({ taskId, taskName, enableRecording }: ExecutionHis
   const [infoCollapsed, setInfoCollapsed] = useState(false);
   const [screenshotModalVisible, setScreenshotModalVisible] = useState(false);
   
-  // 加载数据
+  // LoadingData
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
@@ -142,30 +142,30 @@ const ExecutionHistoryTab = ({ taskId, taskName, enableRecording }: ExecutionHis
     loadData();
   };
   
-  // 当前选中的执行记录
+  // 当前Selected's ExecuteRecord
   const selectedExecution = useMemo(() => {
     return executions.find((e) => e.execution_id === selectedExecutionId) || null;
   }, [executions, selectedExecutionId]);
   
-  // 查看录屏
+  // View录屏
   const handleViewRecording = useCallback(() => {
     if (selectedExecution) {
-      // 传递 taskId 和 activeTab 以便返回时重新打开抽屉并定位到执行历史tab
+      // 传递 taskId  and  activeTab 以便Back时重新openDrawer并定-bittoExecuteHistorytab
       navigate(`/scheduling-center/task-execution/task-list/${selectedExecution.execution_id}/recording?taskId=${taskId}&activeTab=executionHistory`);
     }
   }, [navigate, selectedExecution, taskId]);
   
-  // 查看截图
+  // Viewscreenshot
   const handleViewScreenshots = useCallback(() => {
     setScreenshotModalVisible(true);
   }, []);
   
-  // 关闭截图弹窗
+  // ClosescreenshotModal
   const handleCloseScreenshotModal = useCallback(() => {
     setScreenshotModalVisible(false);
   }, []);
   
-  // 执行信息描述数据
+  // ExecuteInfoDescriptionData
   const executionInfoData = useMemo(() => {
     if (!selectedExecution) return [];
     return [
@@ -186,10 +186,10 @@ const ExecutionHistoryTab = ({ taskId, taskName, enableRecording }: ExecutionHis
     ];
   }, [selectedExecution, t]);
   
-  // 是否显示查看录屏按钮
+  // is否displayView录屏by钮
   const showRecordingButton = enableRecording && selectedExecution?.status !== 'RUNNING';
   
-  // 是否显示查看截图按钮
+  // is否displayViewscreenshotby钮
   const showScreenshotButton = (selectedExecution?.screenshot_count || 0) > 0;
   
   if (loading && executions.length === 0) {
@@ -213,7 +213,7 @@ const ExecutionHistoryTab = ({ taskId, taskName, enableRecording }: ExecutionHis
   
   return (
     <div className="execution-history-tab">
-      {/* 顶部执行时间戳Tabs - 使用Semi原生滚动箭头 */}
+      {/* Top execution timestamp tabs - Using Semi native scroll arrows */}
       <div className="execution-history-tab-header">
         <Tabs
           type="button"
@@ -247,11 +247,11 @@ const ExecutionHistoryTab = ({ taskId, taskName, enableRecording }: ExecutionHis
         </Tabs>
       </div>
 
-      {/* 执行详情内容 */}
+      {/* Execution details content */}
       <div className="execution-history-tab-content">
         {selectedExecution && (
           <>
-            {/* 执行信息 - 可折叠 */}
+            {/* ExecuteInfo - collapsible */}
             <div className="execution-history-tab-info-section">
               <div 
                 className="execution-history-tab-info-header execution-history-tab-info-header--clickable"
@@ -292,7 +292,7 @@ const ExecutionHistoryTab = ({ taskId, taskName, enableRecording }: ExecutionHis
                 <div className="execution-history-tab-info-content">
                   <Descriptions data={executionInfoData} align="left" />
                   
-                  {/* 错误信息 */}
+                  {/* ErrorInfo */}
                   {selectedExecution.error_message && (
                     <div className="execution-history-tab-error">
                       <Text type="danger" size="small">
@@ -304,7 +304,7 @@ const ExecutionHistoryTab = ({ taskId, taskName, enableRecording }: ExecutionHis
               </Collapsible>
             </div>
 
-            {/* 执行日志 */}
+            {/* ExecuteLog */}
             <div className="execution-history-tab-logs-section">
               <div className="execution-history-tab-logs-content">
                 <ExecutionLogTab
@@ -318,7 +318,7 @@ const ExecutionHistoryTab = ({ taskId, taskName, enableRecording }: ExecutionHis
         )}
       </div>
       
-      {/* 截图查看弹窗 */}
+      {/* screenshotViewModal */}
       {selectedExecution && (
         <ScreenshotViewModal
           visible={screenshotModalVisible}

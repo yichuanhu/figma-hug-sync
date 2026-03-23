@@ -16,8 +16,8 @@ const WelcomeSection = () => {
     <div className="home-welcome">
       <h1 className="home-welcome-title">
         {t('homepage.welcomePrefix', 'Hi ')}
-        <span className="home-welcome-name">张三</span>
-        {t('homepage.welcomeSuffix', '，欢迎回来')}
+        <span className="home-welcome-name">John Smith</span>
+        {t('homepage.welcomeSuffix', ', welcome back')}
         <img src={waveHandIcon} alt="wave" className="home-welcome-wave-icon" />
       </h1>
       <div className="home-welcome-date">{dateStr}</div>

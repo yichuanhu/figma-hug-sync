@@ -27,41 +27,41 @@ interface CreateTemplateModalProps {
   onSuccess: () => void;
 }
 
-// Mock 流程列表
+// Mock ProcessList
 const mockProcesses: LYProcessActiveVersionResponse[] = [
   {
     process_id: 'proc-001',
-    process_name: '订单自动处理',
+    process_name: 'Auto Order Processing',
     version_id: 'ver-001',
     version: 'v1.2.0',
     parameters: [
-      { name: 'targetUrl', type: 'TEXT', required: true, description: '目标URL地址' },
-      { name: 'maxCount', type: 'NUMBER', required: false, default_value: 100, description: '最大处理数量' },
-      { name: 'enableRetry', type: 'BOOLEAN', required: false, default_value: true, description: '是否启用重试' },
+      { name: 'targetUrl', type: 'TEXT', required: true, description: 'Target URL address' },
+      { name: 'maxCount', type: 'NUMBER', required: false, default_value: 100, description: 'Maximum processing count' },
+      { name: 'enableRetry', type: 'BOOLEAN', required: false, default_value: true, description: 'Enable retry' },
     ],
     output_parameters: [
-      { name: 'processedCount', type: 'NUMBER', description: '已处理订单数量' },
-      { name: 'successRate', type: 'NUMBER', description: '处理成功率' },
-      { name: 'errorList', type: 'TEXT', description: '错误订单列表' },
+      { name: 'processedCount', type: 'NUMBER', description: 'Processed order count' },
+      { name: 'successRate', type: 'NUMBER', description: 'Processing success rate' },
+      { name: 'errorList', type: 'TEXT', description: 'Error order list' },
     ],
   },
   {
     process_id: 'proc-002',
-    process_name: '财务报销审批',
+    process_name: 'Expense Reimbursement Approval',
     version_id: 'ver-002',
     version: 'v2.0.0',
     parameters: [
-      { name: 'department', type: 'TEXT', required: true, description: '部门名称' },
-      { name: 'approvalCredential', type: 'CREDENTIAL', required: true, description: '审批凭据' },
+      { name: 'department', type: 'TEXT', required: true, description: 'Department name' },
+      { name: 'approvalCredential', type: 'CREDENTIAL', required: true, description: 'Approval credential' },
     ],
     output_parameters: [
-      { name: 'approvalResult', type: 'BOOLEAN', description: '审批结果' },
-      { name: 'approvalNote', type: 'TEXT', description: '审批意见' },
+      { name: 'approvalResult', type: 'BOOLEAN', description: 'Approval result' },
+      { name: 'approvalNote', type: 'TEXT', description: 'Approval comments' },
     ],
   },
   {
     process_id: 'proc-003',
-    process_name: '人事入职流程',
+    process_name: 'Employee Onboarding Flow',
     version_id: 'ver-003',
     version: 'v1.0.0',
     parameters: [],
@@ -69,26 +69,26 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
   },
   {
     process_id: 'proc-004',
-    process_name: '数据采集流程',
+    process_name: 'Data Collection Flow',
     version_id: 'ver-004',
     version: 'v1.5.0',
     parameters: [
-      { name: 'sourceUrl', type: 'TEXT', required: true, description: '数据源URL' },
-      { name: 'pageLimit', type: 'NUMBER', required: false, default_value: 10, description: '采集页数限制' },
+      { name: 'sourceUrl', type: 'TEXT', required: true, description: 'Data source URL' },
+      { name: 'pageLimit', type: 'NUMBER', required: false, default_value: 10, description: 'Page limit for collection' },
     ],
     output_parameters: [
-      { name: 'collectedCount', type: 'NUMBER', description: '采集数据条数' },
-      { name: 'dataFilePath', type: 'TEXT', description: '数据文件路径' },
-      { name: 'isComplete', type: 'BOOLEAN', description: '是否采集完成' },
+      { name: 'collectedCount', type: 'NUMBER', description: 'Collected data count' },
+      { name: 'dataFilePath', type: 'TEXT', description: 'Data file path' },
+      { name: 'isComplete', type: 'BOOLEAN', description: 'Collection complete' },
     ],
   },
 ];
 
-// Mock 执行目标
+// Mock Execution target
 const mockBotGroups = [
-  { id: 'group-001', name: '订单处理组', onlineCount: 3, totalCount: 5 },
-  { id: 'group-002', name: '财务审批组', onlineCount: 2, totalCount: 3 },
-  { id: 'group-003', name: '人事管理组', onlineCount: 1, totalCount: 2 },
+  { id: 'group-001', name: 'Order Processing Group', onlineCount: 3, totalCount: 5 },
+  { id: 'group-002', name: 'Finance Approval Group', onlineCount: 2, totalCount: 3 },
+  { id: 'group-003', name: 'HR Management Group', onlineCount: 1, totalCount: 2 },
 ];
 
 const mockBots = [
@@ -99,15 +99,15 @@ const mockBots = [
   { id: 'bot-005', name: 'RPA-BOT-005', groupId: null, status: 'OFFLINE' },
 ];
 
-// Mock 个人凭据
+// Mock 人Credential
 const mockCredentials = [
-  { id: 'cred-001', name: '系统管理员凭据' },
-  { id: 'cred-002', name: 'API访问凭据' },
-  { id: 'cred-003', name: '数据库凭据' },
+  { id: 'cred-001', name: 'System Admin Credentials' },
+  { id: 'cred-002', name: 'API Access Credentials' },
+  { id: 'cred-003', name: 'Database credential' },
 ];
 
-// 已存在的模板名称 (模拟)
-const existingTemplateNames = ['订单处理默认模板', '财务审批快速模板'];
+// Already存in 's TemplateName (模拟)
+const existingTemplateNames = ['Order Processing Default Template', 'Finance Approval Quick Template'];
 
 const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateModalProps) => {
   const { t } = useTranslation();
@@ -116,12 +116,12 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
   const [selectedProcess, setSelectedProcess] = useState<LYProcessActiveVersionResponse | null>(null);
   const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);
 
-  // 执行目标选项
+  // Execution target选项
   const targetOptions = useMemo(() => {
     if (targetType === 'BOT_GROUP') {
       return mockBotGroups.map((g) => ({
         value: g.id,
-        label: `${g.name} (${g.onlineCount}/${g.totalCount} 在线)`,
+        label: `${g.name} (${g.onlineCount}/${g.totalCount} Online)`,
       }));
     }
     if (targetType === 'UNGROUPED_BOT') {
@@ -129,7 +129,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
         .filter((b) => !b.groupId)
         .map((b) => ({
           value: b.id,
-          label: `${b.name} (${b.status === 'ONLINE' ? '在线' : '离线'})`,
+          label: `${b.name} (${b.status === 'ONLINE' ? 'Online' : 'Offline'})`,
         }));
     }
     // BOT_IN_GROUP
@@ -137,7 +137,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
       .filter((b) => b.groupId)
       .map((b) => ({
         value: b.id,
-        label: `${b.name} (${b.status === 'ONLINE' ? '在线' : '离线'})`,
+        label: `${b.name} (${b.status === 'ONLINE' ? 'Online' : 'Offline'})`,
       }));
   }, [targetType]);
 
@@ -150,12 +150,12 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
     }
   }, [visible, formApi]);
 
-  // 选择流程
+  // selectProcess
   const handleProcessChange = useCallback((processId: string) => {
     const process = mockProcesses.find((p) => p.process_id === processId);
     setSelectedProcess(process || null);
     
-    // 初始化参数默认值
+    // 初始化ParameterDefault值
     if (process && formApi) {
       process.parameters.forEach((param) => {
         if (param.default_value !== undefined && param.default_value !== null) {
@@ -165,7 +165,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
     }
   }, [formApi]);
 
-  // 验证模板名称唯一性
+  // ValidationTemplateName唯Mon性
   const validateTemplateName = useCallback((value: string) => {
     if (value && existingTemplateNames.includes(value.trim())) {
       return t('template.validation.nameExists');
@@ -173,7 +173,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
     return '';
   }, [t]);
 
-  // 渲染参数输入
+  // 渲染Parameterinput
   const renderParameterInput = (param: LYProcessParameterDefinition) => {
     const renderLabel = () => (
       <div className="create-template-modal-param-label">
@@ -200,7 +200,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
             key={param.name}
             field={`param_${param.name}`}
             label={renderLabel()}
-            placeholder={`请输入 ${param.name}`}
+            placeholder={`Please enter ${param.name}`}
             rules={rules}
           />
         );
@@ -210,7 +210,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
             key={param.name}
             field={`param_${param.name}`}
             label={renderLabel()}
-            placeholder={`请输入 ${param.name}`}
+            placeholder={`Please enter ${param.name}`}
             style={{ width: '100%' }}
             rules={rules}
           />
@@ -234,7 +234,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
             key={param.name}
             field={`param_${param.name}`}
             label={renderLabel()}
-            placeholder="请选择凭据"
+            placeholder="Select credentials"
             optionList={mockCredentials.map((c) => ({ value: c.id, label: c.name }))}
             style={{ width: '100%' }}
             rules={rules}
@@ -245,18 +245,18 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
     }
   };
 
-  // 判断是否有参数需要填写
+  // 判断is否hasParameterneed填写
   const hasParameters = selectedProcess && selectedProcess.parameters.length > 0;
-  // 判断是否有输出参数
+  // 判断is否hasoutputParameter
   const hasOutputParameters = selectedProcess && selectedProcess.output_parameters && selectedProcess.output_parameters.length > 0;
-  // 右侧是否需要显示
+  // Rightis否needdisplay
   const showRightPanel = hasParameters || hasOutputParameters;
 
-  // 提交
+  // Submit
   const handleSubmit = async (values: Record<string, unknown>) => {
     setLoading(true);
     try {
-      // 提取参数值
+      // 提取参Number
       const parameterValues: Record<string, unknown> = {};
       if (selectedProcess) {
         selectedProcess.parameters.forEach((param) => {
@@ -264,10 +264,10 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
         });
       }
 
-      // 模拟API调用
+      // 模拟API调use
       await new Promise((resolve) => setTimeout(resolve, 500));
       
-      console.log('创建执行模板:', {
+      console.log('CreateExecuteTemplate:', {
         template_name: (values.templateName as string).trim(),
         description: (values.description as string)?.trim() || null,
         process_id: values.processId,
@@ -283,7 +283,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
       Toast.success(t('template.createModal.success'));
       onSuccess();
     } catch (error) {
-      console.error('创建执行模板失败:', error);
+      console.error('CreateExecuteTemplateFailed:', error);
       Toast.error(t('template.createModal.error'));
     } finally {
       setLoading(false);
@@ -315,10 +315,10 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
         }}
       >
         <div className="create-template-modal-body">
-          {/* 左侧：基本配置 */}
+          {/* Left: Config */}
           <div className="create-template-modal-left">
             <div className="create-template-modal-content">
-              {/* 基本信息 */}
+              {/* Basic Info */}
               <div className="create-template-modal-section">
                 <div className="create-template-modal-section-title">
                   {t('template.createModal.basicSection')}
@@ -353,7 +353,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
                 />
               </div>
 
-              {/* 流程配置 */}
+              {/* Process config */}
               <div className="create-template-modal-section">
                 <div className="create-template-modal-section-title">
                   {t('template.createModal.processSection')}
@@ -372,7 +372,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
                 />
               </div>
 
-              {/* 执行目标 */}
+              {/* Execution target */}
               <div className="create-template-modal-section">
                 <div className="create-template-modal-section-title">
                   {t('template.createModal.targetSection')}
@@ -414,7 +414,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
                 )}
               </div>
 
-              {/* 执行设置 */}
+              {/* Execution settings */}
               <div className="create-template-modal-section">
                 <div className="create-template-modal-section-title">
                   {t('template.createModal.executionSection')}
@@ -478,11 +478,11 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
             </div>
           </div>
 
-          {/* 右侧：流程输入和流程输出 */}
+          {/* Right: Process and Process */}
           {showRightPanel && (
             <div className="create-template-modal-right">
               <div className="create-template-modal-content">
-                {/* 流程输入 */}
+                {/* Process */}
                 {hasParameters && (
                   <div className="create-template-modal-section">
                     <div className="create-template-modal-section-title">
@@ -494,7 +494,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
                   </div>
                 )}
 
-                {/* 流程输出（只读） */}
+                {/* Process() */}
                 {hasOutputParameters && (
                   <div className="create-template-modal-section">
                     <div className="create-template-modal-section-title">

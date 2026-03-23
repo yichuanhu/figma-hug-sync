@@ -36,7 +36,7 @@ interface ScreenshotViewModalProps {
 }
 
 
-// 生成 UUID
+// generation UUID
 const generateUUID = (): string => {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0;
@@ -45,12 +45,12 @@ const generateUUID = (): string => {
   });
 };
 
-// Mock 数据生成
+// Mock Datageneration
 const generateMockScreenshot = (executionId: string, index: number): LYTaskScreenshotResponse => {
   const baseTime = new Date(2026, 0, 30, 14, 30);
-  const capturedAt = new Date(baseTime.getTime() + index * 10000); // 每10秒一张
+  const capturedAt = new Date(baseTime.getTime() + index * 10000); // one every 10 seconds
   
-  // 使用 picsum.photos 作为 mock 图片
+  // using picsum.photos 作as mock 图片
   const imageId = 100 + index;
   
   return {
@@ -59,8 +59,8 @@ const generateMockScreenshot = (executionId: string, index: number): LYTaskScree
     file_id: generateUUID(),
     file_url: `https://picsum.photos/seed/${imageId}/1920/1080`,
     thumbnail_url: `https://picsum.photos/seed/${imageId}/320/180`,
-    name: index % 3 === 0 ? `步骤 ${index + 1} 截图` : null,
-    description: index % 4 === 0 ? `这是第 ${index + 1} 个截图的描述信息` : null,
+    name: index % 3 === 0 ? `Step ${index + 1} screenshot` : null,
+    description: index % 4 === 0 ? `This is the  ${index + 1}  screenshot description` : null,
     sequence_number: index + 1,
     captured_at: capturedAt.toISOString(),
     file_size: 150000 + Math.floor(Math.random() * 100000),
@@ -68,19 +68,19 @@ const generateMockScreenshot = (executionId: string, index: number): LYTaskScree
   };
 };
 
-// Mock API 调用
+// Mock API 调use
 const fetchScreenshots = async (
   executionId: string,
   params: GetScreenshotsParams
 ): Promise<LYListResponseLYTaskScreenshotResponse> => {
   await new Promise((resolve) => setTimeout(resolve, 500));
   
-  // 生成 12 张 mock 截图
+  // generation 12 张 mock screenshot
   const mockData = Array(12)
     .fill(null)
     .map((_, index) => generateMockScreenshot(executionId, index));
   
-  // 排序
+  // Sort
   const sorted = [...mockData].sort((a, b) => {
     if (params.sort_order === 'desc') {
       return b.sequence_number - a.sequence_number;
@@ -94,7 +94,7 @@ const fetchScreenshots = async (
   };
 };
 
-// 格式化时间
+// Format化Time
 const formatTime = (isoTime: string): string => {
   const date = new Date(isoTime);
   const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -105,7 +105,7 @@ const formatTime = (isoTime: string): string => {
   return `${month}-${day} ${hours}:${minutes}:${seconds}`;
 };
 
-// 格式化文件大小
+// Format化File大小
 const formatFileSize = (bytes: number): string => {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
@@ -125,11 +125,11 @@ const ScreenshotViewModal = ({
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   
   
-  // 灯箱预览状态
+  // 灯箱PreviewStatus
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewIndex, setPreviewIndex] = useState(0);
   
-  // 加载数据
+  // LoadingData
   const loadData = useCallback(async () => {
     if (!executionId) return;
     
@@ -142,16 +142,16 @@ const ScreenshotViewModal = ({
     }
   }, [executionId]);
   
-  // 当弹窗打开或排序变化时加载数据
+  // 当Modalopen或Sort变化时LoadingData
   useEffect(() => {
     if (visible) {
       loadData();
-      // 重置选择
+      // 重置select
       setSelectedIds(new Set());
     }
   }, [visible, loadData]);
   
-  // 处理选择
+  // processingselect
   const handleSelect = useCallback((id: string, selected: boolean) => {
     setSelectedIds((prev) => {
       const next = new Set(prev);
@@ -169,19 +169,19 @@ const ScreenshotViewModal = ({
     setSelectedIds(new Set(screenshots.map((s) => s.id)));
   }, [screenshots]);
   
-  // 清除选择
+  // 清除select
   const handleClearSelection = useCallback(() => {
     setSelectedIds(new Set());
   }, []);
   
-  // 删除选中项
+  // DeleteSelected项
   const handleDelete = useCallback(() => {
-    // Mock 删除
+    // Mock Delete
     setScreenshots((prev) => prev.filter((s) => !selectedIds.has(s.id)));
     setSelectedIds(new Set());
   }, [selectedIds]);
   
-  // 删除单个截图
+  // Delete单screenshot
   const handleDeleteSingle = useCallback((id: string, e?: React.MouseEvent) => {
     e?.stopPropagation();
     Modal.confirm({
@@ -198,7 +198,7 @@ const ScreenshotViewModal = ({
     });
   }, [t]);
   
-  // 灯箱中删除当前图片
+  // 灯箱Delete当前图片
   const handleDeleteInPreview = useCallback(() => {
     const currentScreenshot = screenshots[previewIndex];
     if (!currentScreenshot) return;
@@ -214,7 +214,7 @@ const ScreenshotViewModal = ({
         setScreenshots((prev) => prev.filter((s) => s.id !== currentScreenshot.id));
         Toast.success(t('screenshot.deleteSuccess'));
         
-        // 调整预览索引
+        // 调整Preview索引
         if (screenshots.length <= 1) {
           setPreviewVisible(false);
         } else if (previewIndex >= screenshots.length - 1) {
@@ -225,33 +225,33 @@ const ScreenshotViewModal = ({
   }, [screenshots, previewIndex, t]);
   
   
-  // 是否全选
+  // is否全选
   const isAllSelected = useMemo(() => {
     return screenshots.length > 0 && selectedIds.size === screenshots.length;
   }, [screenshots, selectedIds]);
   
-  // 打开灯箱预览
+  // open灯箱Preview
   const handleOpenPreview = useCallback((index: number) => {
     setPreviewIndex(index);
     setPreviewVisible(true);
   }, []);
   
-  // 关闭灯箱
+  // Close灯箱
   const handleClosePreview = useCallback(() => {
     setPreviewVisible(false);
   }, []);
   
-  // 上一张
+  // 上Mon张
   const handlePrevImage = useCallback(() => {
     setPreviewIndex((prev) => (prev > 0 ? prev - 1 : screenshots.length - 1));
   }, [screenshots.length]);
   
-  // 下一张
+  // 下Mon张
   const handleNextImage = useCallback(() => {
     setPreviewIndex((prev) => (prev < screenshots.length - 1 ? prev + 1 : 0));
   }, [screenshots.length]);
   
-  // 当前预览的截图
+  // 当前Preview's screenshot
   const currentPreviewScreenshot = screenshots[previewIndex];
   
   
@@ -260,13 +260,13 @@ const ScreenshotViewModal = ({
     ? t('screenshot.modalTitle', { taskName })
     : t('screenshot.title');
 
-  // 预览图片列表
+  // Preview图片List
   const previewSrcList = useMemo(() => 
     screenshots.map((s) => s.file_url),
     [screenshots]
   );
 
-  // 表格列定义
+  // Table列定义
   const columns: ColumnProps<LYTaskScreenshotResponse>[] = useMemo(() => [
     {
       title: (
@@ -307,7 +307,7 @@ const ScreenshotViewModal = ({
         >
           <Image
             src={record.thumbnail_url || record.file_url}
-            alt={record.name || `截图 ${record.sequence_number}`}
+            alt={record.name || `screenshot ${record.sequence_number}`}
             width={80}
             height={45}
             style={{ objectFit: 'cover', borderRadius: 4, cursor: 'pointer' }}
@@ -421,14 +421,14 @@ const ScreenshotViewModal = ({
         centered
       >
         <div className="screenshot-view-modal-content">
-          {/* 工具栏 */}
+          {/* Toolbar */}
           <div className="screenshot-view-modal-toolbar">
             <Text type="secondary">
               {t('screenshot.totalCount', { count: screenshots.length })}
             </Text>
           </div>
           
-          {/* 批量操作栏 */}
+          {/* Operation */}
           {selectedIds.size > 0 && (
             <BatchOperationBar
               selectedCount={selectedIds.size}
@@ -440,7 +440,7 @@ const ScreenshotViewModal = ({
             />
           )}
           
-          {/* 表格区域 */}
+          {/* Table area */}
           <div className="screenshot-view-modal-table">
             {loading ? (
               <div className="screenshot-view-modal-loading">
@@ -467,7 +467,7 @@ const ScreenshotViewModal = ({
         </div>
       </Modal>
       
-      {/* 自定义灯箱预览 */}
+      {/* Preview */}
       <ImagePreview
         visible={previewVisible}
         src={previewSrcList}
@@ -477,7 +477,7 @@ const ScreenshotViewModal = ({
         renderPreviewMenu={() => null}
       />
       
-      {/* 灯箱底部信息栏 */}
+      {/* Info */}
       {previewVisible && (
         <div className="screenshot-preview-overlay">
           {renderPreviewFooter()}

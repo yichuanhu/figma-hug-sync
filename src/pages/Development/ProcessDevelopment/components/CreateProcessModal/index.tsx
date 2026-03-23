@@ -10,7 +10,7 @@ interface CreateProcessModalProps {
   onSuccess?: (processData: LYProcessResponse) => void;
 }
 
-// 生成UUID v4
+// generationUUID v4
 const generateUUID = (): string => {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0;
@@ -19,7 +19,7 @@ const generateUUID = (): string => {
   });
 };
 
-// 生成Mock的LYProcessResponse
+// generationMock's LYProcessResponse
 const generateMockLYProcessResponse = (request: LYCreateProcessRequest): LYProcessResponse => {
   const now = new Date().toISOString();
   return {
@@ -42,7 +42,7 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
 
-  const existingProcessNames = ['订单自动处理流程', '财务报销审批流程', '人事入职流程'];
+  const existingProcessNames = ['Auto Order Processing Flow', 'Expense Reimbursement Flow', 'Employee Onboarding Flow'];
 
   const validateProcessNameFormat = (rule: unknown, value: string, callback: (error?: string) => void) => {
     if (!value) {
@@ -70,23 +70,23 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
   const handleSubmit = async (values: Record<string, unknown>) => {
     setLoading(true);
     try {
-      // 构建API请求参数 - 使用LYCreateProcessRequest类型
+      // 构建API请求Parameter - usingLYCreateProcessRequestType
       const createRequest: LYCreateProcessRequest = {
         name: values.name as string,
         description: (values.description as string) || undefined,
       };
 
-      // 模拟API调用延迟
+      // 模拟API调use延迟
       await new Promise((resolve) => setTimeout(resolve, 300));
 
-      // 生成Mock响应 - 直接返回LYProcessResponse
+      // generationMock响应 - 直接BackLYProcessResponse
       const mockResponse = generateMockLYProcessResponse(createRequest);
 
       Toast.success(t('development.processDevelopment.createModal.success'));
       onCancel();
       onSuccess?.(mockResponse);
     } catch (error) {
-      console.error('创建流程失败:', error);
+      console.error('Failed to create process:', error);
       Toast.error(t('development.processDevelopment.createModal.error'));
     } finally {
       setLoading(false);

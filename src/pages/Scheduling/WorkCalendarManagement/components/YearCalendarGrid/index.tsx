@@ -15,8 +15,8 @@ interface YearCalendarGridProps {
 }
 
 // Weekday headers
-const WEEKDAY_HEADERS = ['日', '一', '二', '三', '四', '五', '六'];
-const MONTH_NAMES = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+const WEEKDAY_HEADERS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const MONTH_NAMES = ['1M', '2M', '3M', '4M', '5M', '6M', '7M', '8M', '9M', '10M', '11M', '12M'];
 
 const YearCalendarGrid: React.FC<YearCalendarGridProps> = ({
   startDate,
@@ -57,7 +57,7 @@ const YearCalendarGrid: React.FC<YearCalendarGridProps> = ({
     const special = specialDatesMap.get(dateStr);
     if (special) {
       if (special.type === 'HOLIDAY') return true;
-      if (special.type === 'WORKDAY') return false; // 调休，是工作日
+      if (special.type === 'WORKDAY') return false; // Adjusted workday, is a workday
     }
     // Check if it's a weekend
     return weekendDays.includes(dayOfWeek);
@@ -129,7 +129,7 @@ const YearCalendarGrid: React.FC<YearCalendarGridProps> = ({
     return (
       <div key={`${year}-${month}`} className="year-calendar-month">
         <Text strong className="year-calendar-month-title">
-          {year}年{MONTH_NAMES[month]}
+          {MONTH_NAMES[month]} {year}
         </Text>
         <div className="year-calendar-month-header">
           {WEEKDAY_HEADERS.map((header, index) => (

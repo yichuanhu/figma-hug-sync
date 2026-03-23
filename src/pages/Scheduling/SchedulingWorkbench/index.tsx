@@ -4,12 +4,12 @@ const SchedulingWorkbench = () => {
   return (
     <div className="scheduling-workbench">
       <div className="scheduling-workbench header">
-        <h1 className="scheduling-workbench header title">调度工作台</h1>
+        <h1 className="scheduling-workbench header title">Scheduling Workbench</h1>
       </div>
 
       <div className="scheduling-workbench content">
         <div className="scheduling-workbench content content-card">
-          <p className="scheduling-workbench content content-card placeholder-text">调度工作台内容区域</p>
+          <p className="scheduling-workbench content content-card placeholder-text">Scheduling Workbench placeholder content</p>
         </div>
       </div>
     </div>

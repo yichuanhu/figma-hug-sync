@@ -42,7 +42,7 @@ interface TimeTriggerDetailDrawerProps {
   onScrollToRow?: (id: string) => void;
 }
 
-// Mock 执行记录
+// Mock ExecuteRecord
 const generateMockExecutionLogs = (triggerId: string): LYTriggerExecutionLogResponse[] => {
   return Array.from({ length: 5 }, (_, i) => ({
     log_id: `log-${i}`,
@@ -50,7 +50,7 @@ const generateMockExecutionLogs = (triggerId: string): LYTriggerExecutionLogResp
     trigger_time: new Date(2026, 1, 3 - i, 9, 0).toISOString(),
     status: i === 2 ? 'FAILED' : 'SUCCESS' as const,
     created_task_count: i === 2 ? 0 : 1,
-    error_message: i === 2 ? '流程机器人不可用' : null,
+    error_message: i === 2 ? 'Process robot unavailable' : null,
     created_at: new Date(2026, 1, 3 - i, 9, 0).toISOString(),
   }));
 };
@@ -71,7 +71,7 @@ const TimeTriggerDetailDrawer = ({
   const [executionLogs, setExecutionLogs] = useState<LYTriggerExecutionLogResponse[]>([]);
   const [previewExpanded, setPreviewExpanded] = useState(true);
 
-  // 预览触发时间
+  // PreviewTriggerTime
   const previewTimes = useMemo(() => {
     if (!trigger) return [];
     const times: string[] = [];
@@ -103,26 +103,26 @@ const TimeTriggerDetailDrawer = ({
     return times;
   }, [trigger]);
 
-  // 加载执行记录
+  // LoadingExecuteRecord
   useEffect(() => {
     if (visible && trigger) {
       setExecutionLogs(generateMockExecutionLogs(trigger.trigger_id));
     }
   }, [visible, trigger]);
 
-  // 抽屉关闭时重置状态
+  // DrawerClose时重置Status
   const handleClose = () => {
     setActiveTab('basic');
     onClose();
   };
 
-  // 格式化时间
+  // Format化Time
   const formatTime = (time: string | null | undefined): string => {
     if (!time) return '-';
     return new Date(time).toLocaleString('zh-CN');
   };
 
-  // 格式化触发规则显示
+  // Format化Trigger Rulesdisplay
   const formatTriggerRule = (): string => {
     if (!trigger) return '-';
     if (trigger.rule_type === 'CRON') {
@@ -150,7 +150,7 @@ const TimeTriggerDetailDrawer = ({
 
   if (!trigger) return null;
 
-  // 执行记录表格列
+  // ExecuteRecordTable列
   const logColumns = [
     {
       title: t('timeTrigger.executionLog.table.triggerTime'),
@@ -181,7 +181,7 @@ const TimeTriggerDetailDrawer = ({
     },
   ];
 
-  // 额外操作按钮
+  // 额外Operationby钮
   const extraActions = (
     <>
       <Tooltip content={t('common.edit')}>
@@ -226,7 +226,7 @@ const TimeTriggerDetailDrawer = ({
       >
         <TabPane tab={t('timeTrigger.detail.tabs.basicInfo')} itemKey="basic">
           <div className="time-trigger-detail-drawer-tab-content">
-            {/* 基本信息 */}
+            {/* Basic Info */}
             <div className="time-trigger-detail-drawer-section">
               <Text className="time-trigger-detail-drawer-section-title">
                 {t('timeTrigger.detail.basicInfo')}
@@ -262,7 +262,7 @@ const TimeTriggerDetailDrawer = ({
               </Descriptions>
             </div>
 
-            {/* 触发规则 */}
+            {/* Trigger Rules */}
             <div className="time-trigger-detail-drawer-section">
               <Text className="time-trigger-detail-drawer-section-title">
                 {t('timeTrigger.detail.triggerRule')}
@@ -293,7 +293,7 @@ const TimeTriggerDetailDrawer = ({
               </Descriptions>
             </div>
 
-            {/* 触发预览（可折叠） */}
+            {/* Trigger preview(collapsible) */}
             <div className="time-trigger-detail-drawer-section">
               <Space spacing={4} align="center" className="time-trigger-detail-drawer-section-title">
                 <Text style={{ fontWeight: 500 }}>
@@ -326,7 +326,7 @@ const TimeTriggerDetailDrawer = ({
               </Collapsible>
             </div>
 
-            {/* 任务配置 */}
+            {/* Task config */}
             <div className="time-trigger-detail-drawer-section">
               <Text className="time-trigger-detail-drawer-section-title">
                 {t('timeTrigger.detail.taskConfig')}
@@ -364,7 +364,7 @@ const TimeTriggerDetailDrawer = ({
               </Descriptions>
             </div>
 
-            {/* 输入参数 */}
+            {/* Input parameters */}
             <div className="time-trigger-detail-drawer-section">
               <Text className="time-trigger-detail-drawer-section-title">
                 {t('timeTrigger.detail.inputParameters')}

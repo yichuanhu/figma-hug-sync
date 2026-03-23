@@ -52,16 +52,16 @@ const generateUUID = (): string => {
   });
 };
 
-// ============= Mock数据生成 =============
+// ============= MockDatageneration =============
 
 const mockProcesses = [
-  { process_id: 'proc-001', process_name: '订单自动处理' },
-  { process_id: 'proc-002', process_name: '财务报销审批' },
-  { process_id: 'proc-003', process_name: '人事入职流程' },
-  { process_id: 'proc-004', process_name: '数据采集流程' },
+  { process_id: 'proc-001', process_name: 'Auto Order Processing' },
+  { process_id: 'proc-002', process_name: 'Expense Reimbursement Approval' },
+  { process_id: 'proc-003', process_name: 'Employee Onboarding Flow' },
+  { process_id: 'proc-004', process_name: 'Data Collection Flow' },
 ];
 
-const mockCreatorNames = ['张三', '李四', '王五', '赵六', '钱七'];
+const mockCreatorNames = ['John Smith', 'Jane Doe', 'Mike Wang', 'David Zhao', 'Chris Qian'];
 
 const generateMockTemplateResponse = (index: number): LYExecutionTemplateResponse & {
   created_at: string;
@@ -72,16 +72,16 @@ const generateMockTemplateResponse = (index: number): LYExecutionTemplateRespons
   const process = mockProcesses[index % mockProcesses.length];
   const priorities: TaskPriority[] = ['HIGH', 'MEDIUM', 'LOW'];
   const targetTypes: ExecutionTargetType[] = ['BOT_GROUP', 'BOT_IN_GROUP', 'UNGROUPED_BOT'];
-  const targetNames = ['订单处理组', '财务审批组', '人事管理组', 'RPA-BOT-001', 'RPA-BOT-002'];
+  const targetNames = ['Order Processing Group', 'Finance Approval Group', 'HR Management Group', 'RPA-BOT-001', 'RPA-BOT-002'];
   
   const createDate = new Date(2026, 0, 1 + (index % 28), 10 + (index % 12), (index * 7) % 60);
 
   return {
     template_id: `tpl-${generateUUID().substring(0, 8)}`,
-    template_name: `${process.process_name}模板${index + 1}`,
+    template_name: `${process.process_name}Template${index + 1}`,
     description: index === 0 
-      ? '这是一个功能完整的执行模板，包含了多种复杂的业务场景配置。该模板支持自动化订单处理、智能数据校验、异常情况处理和多渠道通知推送等功能。同时集成了完整的日志追踪、错误重试机制和人工干预流程，确保任务执行的稳定性和可靠性。适用于大规模批量任务的自动化执行场景。'
-      : (index % 3 === 0 ? null : `这是${process.process_name}的执行模板，用于快速创建任务`),
+      ? 'This is a fully-featured execution template supporting automated order processing, smart data validation, anomaly handling, and multi-channel notifications. Integrates complete log tracking, error retry mechanisms, and manual intervention processes for stable and reliable task execution. Suitable for large-scale batch automation scenarios.'
+      : (index % 3 === 0 ? null : `This is ${process.process_name}'s ExecuteTemplate, for quickly creating tasks`),
     process_id: process.process_id,
     process_name: process.process_name,
     execution_target_type: targetTypes[index % targetTypes.length],
@@ -99,7 +99,7 @@ const generateMockTemplateResponse = (index: number): LYExecutionTemplateRespons
   };
 };
 
-// 生成 mock 数据
+// generation mock Data
 const generateMockTemplates = (count: number) => {
   return Array.from({ length: count }, (_, i) => generateMockTemplateResponse(i));
 };
@@ -119,7 +119,7 @@ const TemplateManagementPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  // 列表数据状态
+  // ListDataStatus
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [listResponse, setListResponse] = useState<LYListResponseLYExecutionTemplateResponse>({
     range: { offset: 0, size: 20, total: 0 },
@@ -133,25 +133,25 @@ const TemplateManagementPage = () => {
     process_id: undefined,
   });
 
-  // 选中状态（抽屉）
+  // SelectedStatus(Drawer)
   const [selectedTemplate, setSelectedTemplate] = useState<LYExecutionTemplateResponse | null>(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
 
-  // 弹窗状态
+  // ModalStatus
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingTemplate, setEditingTemplate] = useState<LYExecutionTemplateResponse | null>(null);
 
-  // 从响应中直接获取分页信息
+  // from响应直接获取分页Info
   const { range, list } = listResponse;
   const currentPage = Math.floor((range?.offset || 0) / (range?.size || 20)) + 1;
   const pageSize = range?.size || 20;
   const total = range?.total || 0;
 
-  // 计算分页
+  // calculation分页
   const totalPages = Math.ceil(total / pageSize);
 
-  // 模拟加载数据
+  // 模拟LoadingData
   const loadData = useCallback(async (params: GetTemplatesParams) => {
     setLoading(true);
     try {
@@ -159,7 +159,7 @@ const TemplateManagementPage = () => {
 
       let filtered = [...allMockTemplates];
 
-      // 关键词搜索
+      // 关键词Search
       if (params.keyword) {
         const kw = params.keyword.toLowerCase();
         filtered = filtered.filter(
@@ -169,7 +169,7 @@ const TemplateManagementPage = () => {
         );
       }
 
-      // 按流程筛选
+      // byProcessFilter
       if (params.process_id) {
         filtered = filtered.filter((tpl) => tpl.process_id === params.process_id);
       }
@@ -183,7 +183,7 @@ const TemplateManagementPage = () => {
         list: paged,
       });
     } catch (error) {
-      console.error('加载模板列表失败:', error);
+      console.error('LoadingTemplateListFailed:', error);
       Toast.error(t('common.loadError'));
     } finally {
       setLoading(false);
@@ -195,7 +195,7 @@ const TemplateManagementPage = () => {
     loadData(queryParams);
   }, [queryParams, loadData]);
 
-  // 搜索防抖
+  // Searchdebounced
   const handleSearch = useMemo(
     () =>
       debounce((value: string) => {
@@ -204,24 +204,24 @@ const TemplateManagementPage = () => {
     []
   );
 
-  // 流程筛选
+  // ProcessFilter
   const handleProcessFilter = (processId: string | undefined) => {
     setQueryParams((prev) => ({ ...prev, offset: 0, process_id: processId }));
   };
 
-  // 创建模板成功
+  // CreateTemplateSuccess
   const handleCreateSuccess = () => {
     setCreateModalVisible(false);
     loadData(queryParams);
   };
 
-  // 编辑模板
+  // EditTemplate
   const handleEditTemplate = (template: LYExecutionTemplateResponse) => {
     setEditingTemplate(template);
     setEditModalVisible(true);
   };
 
-  // 编辑模板成功
+  // EditTemplateSuccess
   const handleEditSuccess = () => {
     setEditModalVisible(false);
     setEditingTemplate(null);
@@ -230,37 +230,37 @@ const TemplateManagementPage = () => {
     loadData(queryParams);
   };
 
-  // 打开详情抽屉
+  // openDetails drawer
   const handleOpenDrawer = (template: LYExecutionTemplateResponse) => {
     setSelectedTemplate(template);
     setDrawerVisible(true);
   };
 
-  // 关闭详情抽屉
+  // CloseDetails drawer
   const handleCloseDrawer = () => {
     setDrawerVisible(false);
     setSelectedTemplate(null);
   };
 
-  // 从抽屉编辑
+  // fromDrawerEdit
   const handleEditFromDrawer = (template: LYExecutionTemplateResponse) => {
     setEditingTemplate(template);
     setEditModalVisible(true);
   };
 
-  // 从抽屉删除
+  // fromDrawerDelete
   const handleDeleteFromDrawer = (template: LYExecutionTemplateResponse) => {
     handleDeleteTemplate(template);
     setDrawerVisible(false);
     setSelectedTemplate(null);
   };
 
-  // 翻页加载
+  // 翻页Loading
   const handlePageChangeForDrawer = async (page: number): Promise<LYExecutionTemplateResponse[]> => {
     const newOffset = (page - 1) * pageSize;
     setQueryParams((prev) => ({ ...prev, offset: newOffset }));
     
-    // 模拟获取新页数据
+    // 模拟获取新页Data
     await new Promise((resolve) => setTimeout(resolve, 300));
     
     let filtered = [...allMockTemplates];
@@ -280,14 +280,14 @@ const TemplateManagementPage = () => {
     return paged;
   };
 
-  // 使用模板
+  // usingTemplate
   const handleUseTemplate = (template: LYExecutionTemplateResponse) => {
-    // 将模板数据存入 sessionStorage，以便任务页面读取
+    // 将TemplateData存入 sessionStorage, 以便task页面读取
     sessionStorage.setItem(`template_${template.template_id}`, JSON.stringify(template));
     navigate(`/scheduling-center/task-execution/task-list?templateId=${template.template_id}`);
   };
 
-  // 删除模板
+  // DeleteTemplate
   const handleDeleteTemplate = (template: LYExecutionTemplateResponse) => {
     Modal.confirm({
       title: t('template.deleteModal.title'),
@@ -316,7 +316,7 @@ const TemplateManagementPage = () => {
     });
   };
 
-  // 表格列定义
+  // Table列定义
   const columns = [
     {
       title: t('template.table.name'),
@@ -404,13 +404,13 @@ const TemplateManagementPage = () => {
     },
   ];
 
-  // 判断是否有筛选条件
+  // 判断is否hasFilterCondition
   const hasFilters = queryParams.keyword || queryParams.process_id;
 
   return (
       <div className="template-management">
 
-        {/* 返回按钮和标题 */}
+        {/* Back and  */}
         <div className="template-management-header">
           <div className="template-management-header-title">
             <Tooltip content={t('common.back')} position="bottom">
@@ -426,7 +426,7 @@ const TemplateManagementPage = () => {
             </Title>
           </div>
 
-          {/* 操作栏 */}
+          {/* Operation */}
           <Row
             type="flex"
             justify="space-between"
@@ -468,7 +468,7 @@ const TemplateManagementPage = () => {
           </Row>
         </div>
 
-        {/* 表格区域 */}
+        {/* Table area */}
         <div className="template-management-table">
           {isInitialLoad ? (
             <TableSkeleton />
@@ -507,14 +507,14 @@ const TemplateManagementPage = () => {
           )}
         </div>
 
-        {/* 创建模板弹窗 */}
+        {/* CreateTemplateModal */}
         <CreateTemplateModal
           visible={createModalVisible}
           onCancel={() => setCreateModalVisible(false)}
           onSuccess={handleCreateSuccess}
         />
 
-        {/* 编辑模板弹窗 */}
+        {/* EditTemplateModal */}
         <EditTemplateModal
           visible={editModalVisible}
           template={editingTemplate}
@@ -525,7 +525,7 @@ const TemplateManagementPage = () => {
           onSuccess={handleEditSuccess}
         />
 
-        {/* 模板详情抽屉 */}
+        {/* TemplateDetails drawer */}
         <TemplateDetailDrawer
           visible={drawerVisible}
           template={selectedTemplate}

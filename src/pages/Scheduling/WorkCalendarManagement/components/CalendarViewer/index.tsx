@@ -41,7 +41,7 @@ const CalendarViewer: React.FC<CalendarViewerProps> = ({ calendar, onEdit }) => 
 
   return (
     <div className="calendar-viewer">
-      {/* 头部 */}
+      {/* Header */}
       <div className="calendar-viewer-header">
         <Title heading={5} className="calendar-viewer-header-title">
           {calendar.name}
@@ -54,9 +54,9 @@ const CalendarViewer: React.FC<CalendarViewerProps> = ({ calendar, onEdit }) => 
         </Button>
       </div>
 
-      {/* 内容区 */}
+      {/* Content area */}
       <div className="calendar-viewer-content">
-        {/* 基本信息 */}
+        {/* Basic Info */}
         <div className="calendar-viewer-section">
           <Text className="calendar-viewer-section-title">
             {t('workCalendar.viewer.basicInfo')}
@@ -80,7 +80,7 @@ const CalendarViewer: React.FC<CalendarViewerProps> = ({ calendar, onEdit }) => 
           </Descriptions>
         </div>
 
-        {/* 日历预览 */}
+        {/* SunPreview */}
         <div className="calendar-viewer-section">
           <Text className="calendar-viewer-section-title">
             {t('workCalendar.viewer.calendarPreview')}

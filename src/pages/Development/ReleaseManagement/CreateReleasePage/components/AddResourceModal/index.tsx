@@ -50,30 +50,30 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
   });
   const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
 
-  // Mock 可用资源数据
+  // Mock 可useResourceData
   const mockAvailableResources: AvailableResource[] = useMemo(() => [
-    // 参数
+    // Parameter
     { id: 'param-1', name: 'API_ENDPOINT', type: 'PARAMETER', test_value: 'https://api.test.com', is_published: true },
     { id: 'param-2', name: 'MAX_RETRIES', type: 'PARAMETER', test_value: '3', is_published: false },
     { id: 'param-3', name: 'TIMEOUT_SECONDS', type: 'PARAMETER', test_value: '30', is_published: false },
     { id: 'param-4', name: 'DEBUG_MODE', type: 'PARAMETER', test_value: 'true', is_published: true },
     { id: 'param-5', name: 'LOG_LEVEL', type: 'PARAMETER', test_value: 'INFO', is_published: false },
-    // 凭据
+    // Credential
     { id: 'cred-1', name: 'Database Credential', type: 'CREDENTIAL', test_value: '******', is_published: true },
     { id: 'cred-2', name: 'API Token', type: 'CREDENTIAL', test_value: '******', is_published: false },
     { id: 'cred-3', name: 'OAuth Client', type: 'CREDENTIAL', test_value: '******', is_published: false },
     { id: 'cred-4', name: 'SFTP Credential', type: 'CREDENTIAL', test_value: '******', is_published: true },
-    // 队列
+    // Queue
     { id: 'queue-1', name: 'Task Queue', type: 'QUEUE', is_published: true },
     { id: 'queue-2', name: 'Email Queue', type: 'QUEUE', is_published: false },
     { id: 'queue-3', name: 'Notification Queue', type: 'QUEUE', is_published: false },
-    // 文件
-    { id: 'file-1', name: '订单模板.xlsx', type: 'FILE', is_published: true },
-    { id: 'file-2', name: '报表配置.json', type: 'FILE', is_published: false },
-    { id: 'file-3', name: '数据映射.xml', type: 'FILE', is_published: false },
+    // File
+    { id: 'file-1', name: 'order-template.xlsx', type: 'FILE', is_published: true },
+    { id: 'file-2', name: 'report-config.json', type: 'FILE', is_published: false },
+    { id: 'file-3', name: 'data-mapping.xml', type: 'FILE', is_published: false },
   ], []);
 
-  // 过滤已添加的资源和按类型分组
+  // 过滤Alreadyadd's Resource and byType分组
   const getFilteredResources = (type: ResourceType) => {
     const searchText = searchTexts[type];
     return mockAvailableResources

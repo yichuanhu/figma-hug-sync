@@ -37,7 +37,7 @@ import './index.less';
 
 const { Title, Text } = Typography;
 
-// 日志级别颜色配置
+// Log level颜色Config
 const logLevelConfig: Record<LogLevel, { color: 'grey' | 'blue' | 'orange' | 'red'; text: string }> = {
   DEBUG: { color: 'grey', text: 'DEBUG' },
   INFO: { color: 'blue', text: 'INFO' },
@@ -45,27 +45,27 @@ const logLevelConfig: Record<LogLevel, { color: 'grey' | 'blue' | 'orange' | 're
   ERROR: { color: 'red', text: 'ERROR' },
 };
 
-// 日志消息截断阈值
+// LogMessage截断阈值
 const MESSAGE_TRUNCATE_LENGTH = 200;
 
-// 自动刷新间隔（毫秒）
+// auto-Refresh间隔(毫s)
 const AUTO_REFRESH_INTERVAL = 10000;
 
-// Mock 数据生成
+// Mock Datageneration
 const generateMockLog = (index: number): LYExecutionLogResponse => {
   const levels: LogLevel[] = ['DEBUG', 'INFO', 'WARN', 'ERROR'];
   const sources = ['CLIENT', 'SERVER'] as const;
   const messages = [
-    '正在初始化流程引擎...',
-    '成功连接到数据库服务器',
-    '开始执行步骤 1: 读取输入参数',
-    '警告: 输入参数中存在空值，使用默认值替代',
-    '错误: 无法连接到目标服务器，请检查网络设置。错误代码: CONN_TIMEOUT，详细信息: 连接超时，目标地址: 192.168.1.100:8080，重试次数: 3，最后尝试时间: 2026-01-30 10:30:00',
-    '步骤 2 执行完成，耗时 1.5 秒',
-    '正在处理数据转换...',
-    '数据验证通过',
-    '写入输出结果到文件',
-    '流程执行完成',
+    'Initializing process engine...',
+    'Successfully connected to database server',
+    'Starting step 1: Reading input parameters',
+    'Warning: Input parameters contains null values, using defaults',
+    'Error: Unable to connect to target server, check network settings. Error code: CONN_TIMEOUT, Details: Connection timeout, Target address: 192.168.1.100:8080, Retry count: 3, Last attempt time: 2026-01-30 10:30:00',
+    'Step 2 Execution completed, duration 1.5 s',
+    'Processing data transformation...',
+    'Data validation passed',
+    'Writing output result to file',
+    'Process execution completed',
   ];
   const levelIndex = index % 10 < 1 ? 3 : index % 10 < 3 ? 2 : index % 10 < 5 ? 0 : 1;
   const now = new Date();
@@ -93,7 +93,7 @@ const TaskLogPage = () => {
   const { executionId } = useParams<{ executionId: string }>();
   const navigate = useNavigate();
   
-  // 状态
+  // Status
   const [loading, setLoading] = useState(false);
   const [listResponse, setListResponse] = useState<LYListResponseLYExecutionLogResponse>({
     range: { offset: 0, size: 50, total: 0 },
@@ -109,24 +109,24 @@ const TaskLogPage = () => {
   const [expandedLogId, setExpandedLogId] = useState<string | null>(null);
   const [exporting, setExporting] = useState(false);
   
-  // 模拟执行状态（实际应从 API 获取）
+  // 模拟ExecuteStatus(实际应from API 获取)
   const [executionStatus] = useState<ExecutionStatus>('RUNNING');
   
-  // 自动刷新定时器
+  // auto-RefreshScheduled器
   const refreshTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   
-  // 加载日志数据
+  // LoadingLogData
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      // Mock API 调用
+      // Mock API 调use
       await new Promise((resolve) => setTimeout(resolve, 500));
       
       const mockLogs = Array.from({ length: 50 }, (_, i) => 
         generateMockLog(((queryParams.page || 1) - 1) * 50 + i)
       );
       
-      // 应用关键字筛选
+      // 应use关键字Filter
       let filteredLogs = mockLogs;
       if (queryParams.keyword) {
         filteredLogs = mockLogs.filter((log) =>
@@ -134,7 +134,7 @@ const TaskLogPage = () => {
         );
       }
       
-      // 应用级别筛选
+      // 应use级别Filter
       if (queryParams.log_level) {
         filteredLogs = filteredLogs.filter((log) => log.log_level === queryParams.log_level);
       }
@@ -148,7 +148,7 @@ const TaskLogPage = () => {
         list: filteredLogs,
       });
       
-      // 首次加载时获取统计
+      // 首Loading时获取Statistics
       if (!summary) {
         setSummary(generateMockSummary());
       }
@@ -159,12 +159,12 @@ const TaskLogPage = () => {
     }
   }, [queryParams, summary, t]);
   
-  // 初始加载
+  // 初始Loading
   useEffect(() => {
     loadData();
   }, [loadData]);
   
-  // 自动刷新逻辑
+  // auto-Refreshlogic
   useEffect(() => {
     if (executionStatus === 'RUNNING') {
       refreshTimerRef.current = setInterval(() => {
@@ -179,7 +179,7 @@ const TaskLogPage = () => {
     };
   }, [executionStatus, loadData]);
   
-  // 搜索防抖
+  // Searchdebounced
   const handleSearch = useMemo(
     () =>
       debounce((value: string) => {
@@ -188,13 +188,13 @@ const TaskLogPage = () => {
     []
   );
   
-  // 分页信息
+  // 分页Info
   const { range, list } = listResponse;
   const currentPage = queryParams.page || 1;
   const pageSize = queryParams.page_size || 50;
   const total = range?.total || 0;
   
-  // 确认筛选
+  // ConfirmFilter
   const handleConfirmFilter = useCallback((values: Record<string, unknown>) => {
     const newLevelFilter = (values.logLevel as LogLevel[]) || [];
     setLevelFilter(newLevelFilter);
@@ -205,7 +205,7 @@ const TaskLogPage = () => {
     }));
   }, []);
   
-  // 导出日志
+  // ExportLog
   const handleExport = useCallback(async () => {
     if (total === 0) {
       Toast.warning(t('taskLog.noLogsToExport'));
@@ -214,16 +214,16 @@ const TaskLogPage = () => {
     
     setExporting(true);
     try {
-      // Mock 导出
+      // Mock Export
       await new Promise((resolve) => setTimeout(resolve, 1000));
       
-      // 生成 CSV 内容
+      // generation CSV Content
       const csvHeader = 'log_time,log_level,log_message,source\n';
       const csvContent = list.map((log) =>
         `"${log.log_time}","${log.log_level}","${log.log_message.replace(/"/g, '""')}","${log.source}"`
       ).join('\n');
       
-      // 触发下载
+      // TriggerDownload
       const blob = new Blob(['\ufeff' + csvHeader + csvContent], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -242,12 +242,12 @@ const TaskLogPage = () => {
     }
   }, [executionId, list, total, t]);
   
-  // 展开/收起消息
+  // Expand/收起Message
   const toggleExpand = useCallback((logId: string) => {
     setExpandedLogId((prev) => (prev === logId ? null : logId));
   }, []);
   
-  // 查看完整消息
+  // View完整Message
   const showFullMessage = useCallback((log: LYExecutionLogResponse) => {
     Modal.info({
       title: t('taskLog.fullMessage'),
@@ -267,11 +267,11 @@ const TaskLogPage = () => {
     });
   }, [t]);
   
-  // 筛选按钮状态
+  // Filterby钮Status
   const hasActiveFilter = !!queryParams.log_level;
   const filterCount = queryParams.log_level ? 1 : 0;
   
-  // 表格列定义
+  // Table列定义
   const columns = [
     {
       title: t('taskLog.fields.logTime'),
@@ -339,7 +339,7 @@ const TaskLogPage = () => {
   return (
       <div className="task-log-page">
 
-        {/* 头部 */}
+        {/* Header */}
         <div className="task-log-page-header">
           <div className="task-log-page-header-title">
             <Title heading={4}>{t('taskLog.title')}</Title>
@@ -350,7 +350,7 @@ const TaskLogPage = () => {
             )}
           </div>
 
-          {/* 统计信息 */}
+          {/* Statistics */}
           {summary && (
             <div className="task-log-page-stats">
               <Space spacing={16}>
@@ -376,7 +376,7 @@ const TaskLogPage = () => {
             </div>
           )}
 
-          {/* 工具栏 */}
+          {/* Toolbar */}
           <Row type="flex" justify="space-between" align="middle" className="task-log-page-header-toolbar">
             <Col>
               <Space>
@@ -430,7 +430,7 @@ const TaskLogPage = () => {
           </Row>
         </div>
 
-        {/* 表格 */}
+        {/* Table */}
         <div className="task-log-page-table">
           <Table
             size="small"

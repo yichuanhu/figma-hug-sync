@@ -42,9 +42,9 @@ const EditWorkerGroupModal: React.FC<EditWorkerGroupModalProps> = ({
         description: values.description || null,
       };
 
-      // 模拟API调用
+      // 模拟API调use
       await new Promise(resolve => setTimeout(resolve, 500));
-      console.log('更新机器人组:', groupData.id, request);
+      console.log('Updating bot group:', groupData.id, request);
       
       const updatedGroup: LYWorkerGroupResponse = {
         ...groupData,

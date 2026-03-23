@@ -53,7 +53,7 @@ const CalendarEditor: React.FC<CalendarEditorProps> = ({
         if (existing) {
           return prev.filter((d) => d.date !== date || d.type !== 'HOLIDAY');
         }
-        // If it's a weekend, add as WORKDAY (调休)
+        // If it's a weekend, add as WORKDAY (Adjusted workday)
         return [...prev, { date, type: 'WORKDAY' as const }];
       } else {
         // If it's currently a workday, check if it was a WORKDAY special date
@@ -102,16 +102,16 @@ const CalendarEditor: React.FC<CalendarEditorProps> = ({
 
   return (
     <div className="calendar-editor">
-      {/* 头部 */}
+      {/* Header */}
       <div className="calendar-editor-header">
         <Title heading={5} className="calendar-editor-header-title">
           {t('workCalendar.editor.title')}
         </Title>
       </div>
 
-      {/* 内容区 */}
+      {/* Content area */}
       <div className="calendar-editor-content">
-        {/* 表单区域 */}
+        {/* Form area */}
         <div className="calendar-editor-form">
           <Form
             labelPosition="left"
@@ -150,7 +150,7 @@ const CalendarEditor: React.FC<CalendarEditorProps> = ({
           </Form>
         </div>
 
-        {/* 日历编辑区域 */}
+        {/* SunEditArea */}
         <div className="calendar-editor-calendar">
           <Text className="calendar-editor-section-title">
             {t('workCalendar.editor.calendarEdit')}
@@ -175,7 +175,7 @@ const CalendarEditor: React.FC<CalendarEditorProps> = ({
         </div>
       </div>
 
-      {/* 底部操作栏 */}
+      {/* Operation */}
       <div className="calendar-editor-footer">
         <Button onClick={onCancel}>
           {t('workCalendar.editor.cancel')}

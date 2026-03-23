@@ -18,8 +18,8 @@ interface EditWorkerModalProps {
   onSuccess?: (updatedData: LYWorkerResponse) => void;
 }
 
-// 已存在的机器人名称（用于唯一性校验）
-const existingWorkerNames = ['财务机器人-01', '财务机器人-02', '财务机器人-03', '人力机器人-01', '运维机器人-01', '测试机器人-01'];
+// Already存in 's botName(usefor 唯Mon性校验)
+  const existingWorkerNames = ['Finance Bot-01', 'Finance Bot-02', 'Finance Bot-03', 'HR Bot-01', 'Ops Bot-01', 'Test Bot-01'];
 
 const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorkerModalProps) => {
   const { t } = useTranslation();
@@ -49,7 +49,7 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
     }
   }, [visible, workerData]);
 
-  // 名称唯一性校验（排除当前编辑的机器人）
+  // Name唯Mon性校验(排除当前Edit's bot)
   const validateWorkerNameUnique = (rule: unknown, value: string, callback: (error?: string) => void) => {
     if (value === workerData?.name) {
       callback();
@@ -63,7 +63,7 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
     return true;
   };
 
-  // 检测连接信息是否发生变更
+  // 检测ConnectionInfois否发生变更
   const isConnectionChanged = (values: Record<string, unknown>): boolean => {
     const password = values.password as string;
     if (password && password.trim() !== '') return true;
@@ -84,12 +84,12 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
 
     setLoading(true);
     try {
-      // 模拟API调用延迟
+      // 模拟API调use延迟
       await new Promise((resolve) => setTimeout(resolve, 300));
 
       const connectionChanged = isConnectionChanged(values);
 
-      // 生成Mock响应
+      // generationMock响应
       const updatedWorker: LYWorkerResponse = {
         ...workerData,
         name: values.name as string,
@@ -99,9 +99,9 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
         enable_auto_unlock: desktopType === 'Console' ? (values.enableAutoUnlock as boolean) : undefined,
         display_size: desktopType === 'NotConsole' ? (values.displaySize as string) : undefined,
         force_login: values.forceLogin as boolean,
-        // 连接信息变更时，将密码同步状态设置为"待同步"
+        // ConnectionInfo变更时, 将密码同步StatusSettingsas"待同步"
         password_sync_status: connectionChanged ? 'PENDING' : workerData.password_sync_status,
-        // 连接信息变更时，将同步状态设置为"待同步"
+        // ConnectionInfo变更时, 将同步StatusSettingsas"待同步"
         sync_status: connectionChanged ? 'PENDING' : workerData.sync_status,
       };
 
@@ -109,7 +109,7 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
       onSuccess?.(updatedWorker);
       onCancel();
     } catch (error) {
-      console.error('更新机器人失败:', error);
+      console.error('Failed to update robot:', error);
     } finally {
       setLoading(false);
     }

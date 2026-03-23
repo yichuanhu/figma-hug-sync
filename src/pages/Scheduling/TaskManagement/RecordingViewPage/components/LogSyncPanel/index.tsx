@@ -27,7 +27,7 @@ interface LogSyncPanelProps {
   onRefresh?: () => void;
 }
 
-// 日志级别颜色配置
+// Log level颜色Config
 const logLevelConfig: Record<LogLevel, { color: 'grey' | 'blue' | 'orange' | 'red' }> = {
   DEBUG: { color: 'grey' },
   INFO: { color: 'blue' },
@@ -35,12 +35,12 @@ const logLevelConfig: Record<LogLevel, { color: 'grey' | 'blue' | 'orange' | 're
   ERROR: { color: 'red' },
 };
 
-// 格式化时间戳
+// Format化Time戳
 const formatTimestamp = (isoString: string): string => {
   return isoString.replace('T', ' ').substring(11, 19);
 };
 
-// 解析日志时间为秒数（相对于录屏开始时间）
+// 解析LogTimeass数(相forfor 录屏StartTime)
 const parseLogTimeToSeconds = (logTime: string, startTime: string): number => {
   const logDate = new Date(logTime).getTime();
   const startDate = new Date(startTime).getTime();
@@ -60,12 +60,12 @@ const LogSyncPanel = ({
   const [searchKeyword, setSearchKeyword] = useState('');
   const [filteredLogs, setFilteredLogs] = useState<LYExecutionLogResponse[]>(logs);
   
-  // 录屏开始时间（取第一条日志的时间）
+  // 录屏StartTime(取第MonLog's Time)
   const startTime = useMemo(() => {
     return logs.length > 0 ? logs[0].log_time : new Date().toISOString();
   }, [logs]);
   
-  // 搜索过滤
+  // Search过滤
   const handleSearch = useMemo(
     () =>
       debounce((keyword: string) => {
@@ -88,7 +88,7 @@ const LogSyncPanel = ({
     handleSearch(searchKeyword);
   }, [logs, searchKeyword, handleSearch]);
   
-  // 根据当前播放时间找到最近的日志
+  // 根据当前PlayTime找to最近's Log
   const currentLogIndex = useMemo(() => {
     if (filteredLogs.length === 0) return -1;
     
@@ -101,7 +101,7 @@ const LogSyncPanel = ({
     return 0;
   }, [filteredLogs, currentTime, startTime]);
   
-  // 自动滚动到当前日志
+  // auto-滚动to当前Log
   useEffect(() => {
     if (listRef.current && currentLogIndex >= 0 && !highlightedLogId) {
       const logItems = listRef.current.querySelectorAll('.log-sync-panel-item');
@@ -116,7 +116,7 @@ const LogSyncPanel = ({
     }
   }, [currentLogIndex, highlightedLogId]);
   
-  // 滚动到高亮的日志
+  // 滚动to高亮's Log
   useEffect(() => {
     if (listRef.current && highlightedLogId) {
       const targetItem = listRef.current.querySelector(
@@ -138,7 +138,7 @@ const LogSyncPanel = ({
   
   return (
     <div className="log-sync-panel">
-      {/* 工具栏 */}
+      {/* Toolbar */}
       <div className="log-sync-panel-toolbar">
         <Input
           prefix={<IconSearchStroked />}
@@ -159,7 +159,7 @@ const LogSyncPanel = ({
         )}
       </div>
       
-      {/* 日志列表 */}
+      {/* Log list */}
       <div ref={listRef} className="log-sync-panel-list">
         {loading ? (
           <div className="log-sync-panel-loading">
@@ -217,7 +217,7 @@ const LogSyncPanel = ({
         )}
       </div>
       
-      {/* 统计信息 */}
+      {/* Statistics */}
       <div className="log-sync-panel-footer">
         <Text size="small" type="tertiary">
           {t('recording.logPanel.total', { count: filteredLogs.length })}

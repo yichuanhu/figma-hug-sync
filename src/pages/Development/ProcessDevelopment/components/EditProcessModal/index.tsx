@@ -15,7 +15,7 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
 
-  const existingProcessNames = ['订单自动处理流程', '财务报销审批流程', '人事入职流程'];
+  const existingProcessNames = ['Auto Order Processing Flow', 'Expense Reimbursement Flow', 'Employee Onboarding Flow'];
 
   const validateProcessNameFormat = (rule: unknown, value: string, callback: (error?: string) => void) => {
     if (!value) {
@@ -49,16 +49,16 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
 
     setLoading(true);
     try {
-      // 构建API请求参数 - 使用LYUpdateProcessRequest类型
+      // 构建API请求Parameter - usingLYUpdateProcessRequestType
       const updateRequest: LYUpdateProcessRequest = {
         name: values.name as string,
         description: (values.description as string) || undefined,
       };
 
-      // 模拟API调用延迟
+      // 模拟API调use延迟
       await new Promise((resolve) => setTimeout(resolve, 300));
 
-      // 生成Mock响应 - 直接返回LYProcessResponse
+      // generationMock响应 - 直接BackLYProcessResponse
       const updatedProcess: LYProcessResponse = {
         ...processData,
         name: updateRequest.name || processData.name,
@@ -70,7 +70,7 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
       onSuccess?.(updatedProcess);
       onCancel();
     } catch (error) {
-      console.error('更新流程失败:', error);
+      console.error('Failed to update process:', error);
       Toast.error(t('development.processDevelopment.editModal.error'));
     } finally {
       setLoading(false);

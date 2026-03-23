@@ -11,7 +11,7 @@ import type {
 } from '@/api';
 import './index.less';
 
-// 状态类型定义
+// StatusType定义
 type WorkerStatus = 'OFFLINE' | 'IDLE' | 'BUSY' | 'FAULT' | 'MAINTENANCE';
 
 const { Text, Title } = Typography;
@@ -24,12 +24,12 @@ interface AddMembersModalProps {
   onSuccess: () => void;
 }
 
-// Mock可添加的机器人数据
+// Mock可add's botData
 const mockAvailableWorkers: LYWorkerResponse[] = [
   {
     id: '550e8400-e29b-41d4-a716-446655440010',
-    name: '财务机器人-03',
-    description: '用于发票处理的机器人',
+    name: 'Finance Bot-03',
+    description: 'Bot for invoice processing',
     status: 'IDLE',
     sync_status: 'SYNCED',
     ip_address: '10.0.1.102',
@@ -55,8 +55,8 @@ const mockAvailableWorkers: LYWorkerResponse[] = [
   },
   {
     id: '550e8400-e29b-41d4-a716-446655440011',
-    name: '人力机器人-02',
-    description: '用于人事审批流程的机器人',
+    name: 'HR Bot-02',
+    description: 'Bot for HR approval processes',
     status: 'OFFLINE',
     sync_status: 'SYNCED',
     ip_address: '10.0.1.103',
@@ -82,8 +82,8 @@ const mockAvailableWorkers: LYWorkerResponse[] = [
   },
   {
     id: '550e8400-e29b-41d4-a716-446655440012',
-    name: '运维机器人-02',
-    description: '用于运维巡检的机器人',
+    name: 'Ops Bot-02',
+    description: 'For opsinspection's bot',
     status: 'IDLE',
     sync_status: 'SYNCED',
     ip_address: '10.0.2.51',
@@ -109,7 +109,7 @@ const mockAvailableWorkers: LYWorkerResponse[] = [
   },
 ];
 
-// 获取可添加的机器人列表
+// 获取可add's botList
 const fetchAvailableWorkers = async (params: GetAvailableWorkersForGroupParams & { statusFilter?: WorkerStatus[] }): Promise<LYListResponseLYWorkerResponse> => {
   await new Promise(resolve => setTimeout(resolve, 300));
   
@@ -123,7 +123,7 @@ const fetchAvailableWorkers = async (params: GetAvailableWorkersForGroupParams &
     );
   }
 
-  // 状态筛选
+  // StatusFilter
   if (params.statusFilter && params.statusFilter.length > 0) {
     data = data.filter(item => params.statusFilter!.includes(item.status as WorkerStatus));
   }
@@ -139,7 +139,7 @@ const fetchAvailableWorkers = async (params: GetAvailableWorkersForGroupParams &
   };
 };
 
-// 状态配置
+// StatusConfig
 const statusConfig: Record<WorkerStatus, { color: 'green' | 'blue' | 'orange' | 'red' | 'grey'; i18nKey: string }> = {
   IDLE: { color: 'green', i18nKey: 'worker.status.idle' },
   BUSY: { color: 'blue', i18nKey: 'worker.status.busy' },
@@ -171,7 +171,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
   const [statusFilter, setStatusFilter] = useState<WorkerStatus[]>([]);
   const [selectedWorkers, setSelectedWorkers] = useState<LYWorkerResponse[]>([]);
 
-  // 状态筛选选项
+  // StatusFilter选项
   const statusOptions = useMemo(() => [
     { value: 'IDLE', label: t('worker.status.idle') },
     { value: 'BUSY', label: t('worker.status.busy') },
@@ -180,7 +180,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
     { value: 'OFFLINE', label: t('worker.status.offline') },
   ], [t]);
 
-  // 加载可选机器人列表
+  // LoadingOptionalbotList
   const loadWorkers = useCallback(async () => {
     setLoading(true);
     try {
@@ -199,7 +199,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
     }
   }, [visible, groupId]);
 
-  // 状态筛选变化时重置分页
+  // StatusFilter变化时重置分页
   const handleStatusFilterChange = (values: WorkerStatus[]) => {
     setStatusFilter(values);
     setQueryParams(prev => ({ ...prev, offset: 0 }));
@@ -211,7 +211,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
     }
   }, [visible, queryParams, loadWorkers]);
 
-  // 搜索 - 防抖处理
+  // Search - debouncedprocessing
   const handleSearch = useMemo(
     () =>
       debounce((value: string) => {
@@ -220,7 +220,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
     []
   );
 
-  // 选择/取消选择机器人
+  // select/Cancelselectbot
   const handleSelectWorker = (worker: LYWorkerResponse, checked: boolean) => {
     if (checked) {
       setSelectedWorkers(prev => [...prev, worker]);
@@ -229,12 +229,12 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
     }
   };
 
-  // 移除已选机器人
+  // removeAlready选bot
   const handleRemoveSelected = (workerId: string) => {
     setSelectedWorkers(prev => prev.filter(w => w.id !== workerId));
   };
 
-  // 提交
+  // Submit
   const handleSubmit = async () => {
     if (selectedWorkers.length === 0) {
       Toast.warning(t('workerGroup.addMembers.selectRequired'));
@@ -243,9 +243,9 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
 
     setSubmitting(true);
     try {
-      // 模拟API调用
+      // 模拟API调use
       await new Promise(resolve => setTimeout(resolve, 500));
-      console.log('添加成员到组:', groupId, selectedWorkers.map(w => w.id));
+    console.log('Adding members to group:', groupId, selectedWorkers.map(w => w.id));
       
       Toast.success(t('workerGroup.addMembers.success', { count: selectedWorkers.length }));
       onCancel();
@@ -322,7 +322,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
       width={800}
     >
       <div className="add-members-modal-content">
-        {/* 左侧：可选机器人列表 */}
+        {/* Left: OptionalbotList */}
         <div className="add-members-modal-left">
           <div className="add-members-modal-left-header">
             <Text strong>{t('workerGroup.addMembers.availableWorkers')}</Text>
@@ -382,7 +382,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
           </div>
         </div>
 
-        {/* 右侧：已选机器人列表 */}
+        {/* Right: AlreadybotList */}
         <div className="add-members-modal-right">
           <div className="add-members-modal-right-header">
             <Text strong>

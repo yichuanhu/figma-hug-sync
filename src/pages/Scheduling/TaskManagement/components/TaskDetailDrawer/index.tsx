@@ -84,7 +84,7 @@ const TaskDetailDrawer = ({
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('basicInfo');
 
-  // 只在抽屉首次打开时重置标签页
+  // 只in Drawer首open时重置标签页
   const prevVisible = useRef(visible);
   useEffect(() => {
     if (visible && !prevVisible.current) {

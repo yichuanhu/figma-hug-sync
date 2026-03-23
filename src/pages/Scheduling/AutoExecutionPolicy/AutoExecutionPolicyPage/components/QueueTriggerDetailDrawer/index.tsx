@@ -39,7 +39,7 @@ interface QueueTriggerDetailDrawerProps {
   onScrollToRow?: (id: string) => void;
 }
 
-// Mock 执行记录
+// Mock ExecuteRecord
 const generateMockExecutionLogs = (triggerId: string): LYQueueTriggerExecutionLogResponse[] => {
   return Array.from({ length: 5 }, (_, i) => ({
     log_id: `log-${i}`,
@@ -48,7 +48,7 @@ const generateMockExecutionLogs = (triggerId: string): LYQueueTriggerExecutionLo
     status: i === 2 ? 'FAILED' : 'SUCCESS' as const,
     created_task_count: i === 2 ? 0 : 1 + (i % 3),
     message_count_at_trigger: 10 + i * 5,
-    error_message: i === 2 ? '执行目标不可用' : null,
+    error_message: i === 2 ? 'Execution target unavailable' : null,
     trigger_type: i % 2 === 0 ? 'CONDITION' : 'PERIODIC' as const,
     created_at: new Date(2026, 1, 3 - i, 9, 0).toISOString(),
   }));
@@ -69,20 +69,20 @@ const QueueTriggerDetailDrawer = ({
   const [activeTab, setActiveTab] = useState('basic');
   const [executionLogs, setExecutionLogs] = useState<LYQueueTriggerExecutionLogResponse[]>([]);
 
-  // 加载执行记录
+  // LoadingExecuteRecord
   useEffect(() => {
     if (visible && trigger) {
       setExecutionLogs(generateMockExecutionLogs(trigger.trigger_id));
     }
   }, [visible, trigger]);
 
-  // 格式化时间
+  // Format化Time
   const formatTime = (time: string | null | undefined): string => {
     if (!time) return '-';
     return new Date(time).toLocaleString('zh-CN');
   };
 
-  // 抽屉关闭时重置状态
+  // DrawerClose时重置Status
   const handleClose = () => {
     setActiveTab('basic');
     onClose();
@@ -90,7 +90,7 @@ const QueueTriggerDetailDrawer = ({
 
   if (!trigger) return null;
 
-  // 执行记录表格列
+  // ExecuteRecordTable列
   const logColumns = [
     {
       title: t('queueTrigger.executionLog.table.triggerTime'),
@@ -136,7 +136,7 @@ const QueueTriggerDetailDrawer = ({
     },
   ];
 
-  // 额外操作按钮
+  // 额外Operationby钮
   const extraActions = (
     <>
       <Tooltip content={t('common.edit')}>
@@ -181,7 +181,7 @@ const QueueTriggerDetailDrawer = ({
       >
         <TabPane tab={t('queueTrigger.detail.tabs.basicInfo')} itemKey="basic">
           <div className="queue-trigger-detail-drawer-tab-content">
-            {/* 基本信息 */}
+            {/* Basic Info */}
             <div className="queue-trigger-detail-drawer-section">
               <Text className="queue-trigger-detail-drawer-section-title">
                 {t('queueTrigger.detail.basicInfo')}
@@ -217,7 +217,7 @@ const QueueTriggerDetailDrawer = ({
               </Descriptions>
             </div>
 
-            {/* 队列触发配置 */}
+            {/* Queue Trigger Config */}
             <div className="queue-trigger-detail-drawer-section">
               <Text className="queue-trigger-detail-drawer-section-title">
                 {t('queueTrigger.detail.queueConfig')}
@@ -248,7 +248,7 @@ const QueueTriggerDetailDrawer = ({
               </Descriptions>
             </div>
 
-            {/* 任务配置 */}
+            {/* Task config */}
             <div className="queue-trigger-detail-drawer-section">
               <Text className="queue-trigger-detail-drawer-section-title">
                 {t('queueTrigger.detail.taskConfig')}
@@ -277,7 +277,7 @@ const QueueTriggerDetailDrawer = ({
               </Descriptions>
             </div>
 
-            {/* 状态监控 */}
+            {/* Status monitoring */}
             <div className="queue-trigger-detail-drawer-section">
               <Text className="queue-trigger-detail-drawer-section-title">
                 {t('queueTrigger.detail.statusMonitor')}
@@ -310,7 +310,7 @@ const QueueTriggerDetailDrawer = ({
               </div>
             </div>
 
-            {/* 输入参数 */}
+            {/* Input parameters */}
             <div className="queue-trigger-detail-drawer-section">
               <Text className="queue-trigger-detail-drawer-section-title">
                 {t('queueTrigger.detail.inputParameters')}

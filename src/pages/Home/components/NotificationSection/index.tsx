@@ -6,9 +6,9 @@ import { notifications } from '../../mockData';
 import './index.less';
 
 const priorityConfig: Record<string, { color: string; label: string }> = {
-  URGENT: { color: 'red', label: '紧急' },
-  IMPORTANT: { color: 'orange', label: '重要' },
-  NORMAL: { color: 'grey', label: '普通' },
+  URGENT: { color: 'red', label: 'Urgent' },
+  IMPORTANT: { color: 'orange', label: 'Important' },
+  NORMAL: { color: 'grey', label: 'Normal' },
 };
 
 const NotificationSection = () => {

@@ -57,29 +57,29 @@ const generateUUID = (): string => {
   });
 };
 
-// ============= Mock数据生成 =============
+// ============= MockDatageneration =============
 
 const mockCreatorNameMap: Record<string, string> = {
-  'user-001': '张三',
-  'user-002': '李四',
-  'user-003': '王五',
-  'user-004': '赵六',
-  'user-005': '钱七',
+  'user-001': 'John Smith',
+  'user-002': 'Jane Doe',
+  'user-003': 'Mike Wang',
+  'user-004': 'David Zhao',
+  'user-005': 'Chris Qian',
 };
 
 const generateMockTaskResponse = (index: number): LYTaskResponse => {
   const processNames = [
-    '订单自动处理',
-    '财务报销审批',
-    '人事入职流程',
-    '采购申请流程',
-    '合同审批流程',
+    'Auto Order Processing',
+    'Expense Reimbursement Approval',
+    'Employee Onboarding Flow',
+    'Purchase Request Process',
+    'Contract Approval Process',
   ];
 
   const targetNames = [
-    '订单处理组',
-    '财务审批组',
-    '人事管理组',
+    'Order Processing Group',
+    'Finance Approval Group',
+    'HR Management Group',
     'RPA-BOT-001',
     'RPA-BOT-002',
   ];
@@ -128,7 +128,7 @@ const generateMockTaskResponse = (index: number): LYTaskResponse => {
       duration: taskStatus === 'COMPLETED' ? 300 : null,
       bot_id: generateUUID(),
       bot_name: `RPA-BOT-${String(index % 5 + 1).padStart(3, '0')}`,
-      error_message: taskStatus === 'FAILED' ? '执行超时：网络连接失败' : null,
+      error_message: taskStatus === 'FAILED' ? 'ExecuteTimeout: NetworkConnectionFailed' : null,
       log_count: 50 + (index % 50),
       screenshot_count: 5 + (index % 10),
     } : null,
@@ -141,7 +141,7 @@ const generateMockTaskResponse = (index: number): LYTaskResponse => {
       duration: 300,
       bot_id: generateUUID(),
       bot_name: `RPA-BOT-${String((index + i) % 5 + 1).padStart(3, '0')}`,
-      error_message: i > 0 ? '执行失败：目标元素未找到' : null,
+      error_message: i > 0 ? 'Execution failed: Target element not found' : null,
       log_count: 50 + (index % 50),
       screenshot_count: 5 + (index % 10),
     })) : [],
@@ -161,7 +161,7 @@ const fetchTaskList = async (params: GetTasksParams): Promise<LYListResponseLYTa
 
   let filteredData = [...mockTaskData];
 
-  // 搜索过滤
+  // Search过滤
   if (params.keyword?.trim()) {
     const keyword = params.keyword.toLowerCase().trim();
     filteredData = filteredData.filter((item) =>
@@ -170,24 +170,24 @@ const fetchTaskList = async (params: GetTasksParams): Promise<LYListResponseLYTa
     );
   }
 
-  // 任务状态筛选
+  // taskStatusFilter
   if (params.task_status && params.task_status.length > 0) {
     filteredData = filteredData.filter((item) => params.task_status!.includes(item.task_status));
   }
 
-  // 执行状态筛选
+  // ExecuteStatusFilter
   if (params.execution_status && params.execution_status.length > 0) {
     filteredData = filteredData.filter((item) => 
       item.execution_status && params.execution_status!.includes(item.execution_status)
     );
   }
 
-  // 触发来源筛选
+  // Trigger源Filter
   if (params.trigger_source && params.trigger_source.length > 0) {
     filteredData = filteredData.filter((item) => params.trigger_source!.includes(item.trigger_source));
   }
 
-  // 时间范围筛选
+  // Time范围Filter
   if (params.start_time) {
     const startDate = new Date(params.start_time);
     filteredData = filteredData.filter((item) => new Date(item.create_time) >= startDate);
@@ -197,7 +197,7 @@ const fetchTaskList = async (params: GetTasksParams): Promise<LYListResponseLYTa
     filteredData = filteredData.filter((item) => new Date(item.create_time) <= endDate);
   }
 
-  // 排序
+  // Sort
   filteredData.sort((a, b) => {
     const valueA = params.sort_by === 'priority' ? a.priority : a.create_time;
     const valueB = params.sort_by === 'priority' ? b.priority : b.create_time;
@@ -216,7 +216,7 @@ const fetchTaskList = async (params: GetTasksParams): Promise<LYListResponseLYTa
   };
 };
 
-// ============= 状态配置 =============
+// ============= StatusConfig =============
 
 const taskStatusConfig: Record<TaskStatus, { color: 'grey' | 'blue' | 'orange' | 'green' | 'red'; i18nKey: string }> = {
   PENDING: { color: 'grey', i18nKey: 'task.status.pending' },
@@ -259,7 +259,7 @@ const TaskManagementPage = () => {
     sort_order: 'desc',
   });
 
-  // 筛选状态
+  // FilterStatus
   const [taskStatusFilter, setTaskStatusFilter] = useState<string[]>([]);
   const [executionStatusFilter, setExecutionStatusFilter] = useState<string[]>([]);
   const [triggerSourceFilter, setTriggerSourceFilter] = useState<string[]>([]);
@@ -270,7 +270,7 @@ const TaskManagementPage = () => {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [createModalVisible, setCreateModalVisible] = useState(false);
 
-  // 从首页快捷入口跳转时自动打开新建弹窗
+  // from首页快捷入口跳转时auto-open新建Modal
   useEffect(() => {
     if ((location.state as any)?.openCreate) {
       setCreateModalVisible(true);
@@ -287,7 +287,7 @@ const TaskManagementPage = () => {
   });
   const [selectedTask, setSelectedTask] = useState<LYTaskResponse | null>(null);
 
-  // 筛选选项
+  // Filter选项
   const taskStatusOptions = useMemo(() => [
     { value: 'PENDING', label: t('task.status.pending') },
     { value: 'ASSIGNED', label: t('task.status.assigned') },
@@ -312,7 +312,7 @@ const TaskManagementPage = () => {
     { value: 'TEMPLATE', label: t('task.triggerSource.template') },
   ], [t]);
 
-  // 加载数据
+  // LoadingData
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
@@ -335,51 +335,51 @@ const TaskManagementPage = () => {
     loadData();
   }, [loadData]);
 
-  // 从 URL 参数中恢复抽屉状态（用于从录屏页面返回）或打开新建任务弹窗（从模板页面跳转）
+  // from URL Parameter恢复DrawerStatus(usefor from录屏页面Back)或open新建taskModal(fromTemplate页面跳转)
   useEffect(() => {
     const taskIdFromUrl = searchParams.get('taskId');
     const activeTabFromUrl = searchParams.get('activeTab');
     const templateIdFromUrl = searchParams.get('templateId');
 
-    // 处理模板ID - 从 localStorage 获取模板数据并打开新建任务弹窗
+    // processingTemplateID - from localStorage 获取TemplateData并open新建taskModal
     if (templateIdFromUrl) {
-      // 从 sessionStorage 获取传递的模板数据
+      // from sessionStorage 获取传递's TemplateData
       const templateDataStr = sessionStorage.getItem(`template_${templateIdFromUrl}`);
       if (templateDataStr) {
         try {
           const templateData = JSON.parse(templateDataStr) as LYExecutionTemplateResponse;
           setInitialTemplate(templateData);
           setCreateModalVisible(true);
-          // 清理 sessionStorage
+          // Cleanup sessionStorage
           sessionStorage.removeItem(`template_${templateIdFromUrl}`);
         } catch (e) {
           console.error('Failed to parse template data:', e);
         }
       }
-      // 清除 URL 参数
+      // 清除 URL Parameter
       setSearchParams({}, { replace: true });
       return;
     }
 
-    // 处理任务ID - 打开详情抽屉
+    // processingtaskID - openDetails drawer
     if (taskIdFromUrl && listResponse.list.length > 0) {
       const task = listResponse.list.find((t) => t.task_id === taskIdFromUrl);
       if (task) {
         setSelectedTask(task);
-        // 设置初始 tab
+        // Settings初始 tab
         if (activeTabFromUrl === 'executionHistory') {
           setInitialTab('executionHistory');
         } else {
           setInitialTab('basicInfo');
         }
         setDetailDrawerVisible(true);
-        // 清除 URL 参数
+        // 清除 URL Parameter
         setSearchParams({}, { replace: true });
       }
     }
   }, [searchParams, listResponse.list, setSearchParams]);
 
-  // 搜索防抖
+  // Searchdebounced
   const debouncedSearch = useMemo(
     () => debounce((value: string) => {
       setQueryParams((prev) => ({ ...prev, offset: 0, keyword: value }));
@@ -396,17 +396,17 @@ const TaskManagementPage = () => {
     loadData();
   };
 
-  // 打开详情抽屉
+  // openDetails drawer
   const openTaskDetail = (record: LYTaskResponse) => {
     setSelectedTask(record);
     setDetailDrawerVisible(true);
   };
 
 
-  // 取消任务
+  // Canceltask
   const handleCancelTask = (task: LYTaskResponse) => {
     if (task.task_status !== 'PENDING') {
-      Toast.warning('只能取消待执行状态的任务');
+      Toast.warning('Can only cancel tasks in pending execution status');
       return;
     }
 
@@ -433,16 +433,16 @@ const TaskManagementPage = () => {
           loadData();
           Toast.success(t('task.cancelModal.success'));
         } catch (error) {
-          Toast.error(t('task.cancelModal.error', { message: '请重试' }));
+          Toast.error(t('task.cancelModal.error', { message: 'Please retry' }));
         }
       },
     });
   };
 
-  // 停止任务
+  // Stoptask
   const handleStopTask = (task: LYTaskResponse) => {
     if (task.execution_status !== 'RUNNING') {
-      Toast.warning('只能停止运行中的任务');
+      Toast.warning('Can only stop running tasks');
       return;
     }
 
@@ -469,16 +469,16 @@ const TaskManagementPage = () => {
           loadData();
           Toast.success(t('task.stopModal.success'));
         } catch (error) {
-          Toast.error(t('task.stopModal.error', { message: '请重试' }));
+          Toast.error(t('task.stopModal.error', { message: 'Please retry' }));
         }
       },
     });
   };
 
-  // 重新执行
+  // 重新Execute
   const handleRetryTask = (task: LYTaskResponse) => {
     if (task.task_status !== 'FAILED') {
-      Toast.warning('只能重新执行失败的任务');
+      Toast.warning('Can only retry failed tasks');
       return;
     }
 
@@ -509,13 +509,13 @@ const TaskManagementPage = () => {
           loadData();
           Toast.success(t('task.retryModal.success'));
         } catch (error) {
-          Toast.error(t('task.retryModal.error', { message: '请重试' }));
+          Toast.error(t('task.retryModal.error', { message: 'Please retry' }));
         }
       },
     });
   };
 
-  // 筛选确认
+  // FilterConfirm
   const handleFilterConfirm = (values: Record<string, unknown>) => {
     setTaskStatusFilter((values.taskStatus as string[]) || []);
     setExecutionStatusFilter((values.executionStatus as string[]) || []);
@@ -523,7 +523,7 @@ const TaskManagementPage = () => {
     setDateRange((values.dateRange as [Date, Date] | null) || null);
   };
 
-  // 分页信息
+  // 分页Info
   const { range, list } = listResponse;
   const currentPage = Math.floor((range?.offset || 0) / (range?.size || 20)) + 1;
   const pageSize = range?.size || 20;
@@ -617,13 +617,13 @@ const TaskManagementPage = () => {
       key: 'action',
       width: 60,
       render: (_: unknown, record: LYTaskResponse) => {
-        // 判断是否有可用操作
+        // 判断is否has可useOperation
         const hasStatusActions = 
           record.task_status === 'PENDING' ||
           record.execution_status === 'RUNNING' ||
           record.task_status === 'FAILED';
         
-        // 执行历史入口：只要有过执行记录就显示
+        // ExecuteHistory入口: 只tohas过ExecuteRecorddisplay
         const hasExecutions = record.total_execution_count > 0;
         
         const hasActions = hasStatusActions || hasExecutions;

@@ -43,19 +43,19 @@ import './index.less';
 const { Title, Text } = Typography;
 const CheckboxGroup = Checkbox.Group;
 
-// Mock机器人组数据
+// Mockbot组Data
 const mockWorkerGroups = [
-  { id: 'group-001', name: '财务流程机器人组' },
-  { id: 'group-002', name: '人事流程机器人组' },
-  { id: 'group-003', name: '运维巡检机器人组' },
+  { id: 'group-001', name: 'Finance Bot Group' },
+  { id: 'group-002', name: 'HR Bot Group' },
+  { id: 'group-003', name: 'Ops Inspection Bot Group' },
 ];
 
-// Mock数据 - 使用API类型
+// MockData - usingAPIType
 const mockWorkers: LYWorkerResponse[] = [
   {
     id: '550e8400-e29b-41d4-a716-446655440001',
-    name: '财务机器人-01',
-    description: '这是企业核心财务自动化机器人，负责执行复杂的财务流程任务，包括发票自动识别与处理、报销单据审核、财务报表自动生成与分发、银企对账、税务申报数据准备等关键业务。该机器人配置了高可用性设置，支持7x24小时不间断运行，并具备完整的错误恢复和任务断点续传能力。',
+    name: 'Finance Bot-01',
+    description: 'Core enterprise finance automation bot handling complex financial tasks including invoice recognition, expense report review, financial report generation, bank reconciliation, and tax filing data preparation. Configured for high availability with 24/7 operation support and complete error recovery and task checkpoint capabilities.',
     status: 'IDLE',
     sync_status: 'SYNCED',
     ip_address: '10.0.1.100',
@@ -70,21 +70,21 @@ const mockWorkers: LYWorkerResponse[] = [
     device_token: 'abc123xyz789def456ghi012jkl345mno678pqr901stu234vwx567yzabc890',
     machine_code: 'F11FD4447A215F380A40',
     host_name: 'WIN-SERVER-01',
-    os: 'Windows Server 2019 Standard 64位',
+    os: 'Windows Server 2019 Standard 64-bit',
     arch: 'x64',
     cpu_model: 'Intel(R) Xeon(R) CPU E5-2680 v4 @ 2.40GHz',
     cpu_cores: 8,
     memory_capacity: '32 GB',
     robot_count: 1,
     group_id: 'group-001',
-    group_name: '财务流程机器人组',
+    group_name: 'Finance Bot Group',
     created_at: '2025-01-05 14:30:00',
     creator_id: 'admin',
   },
   {
     id: '550e8400-e29b-41d4-a716-446655440002',
-    name: '财务机器人-02',
-    description: '用于财务报表自动化的机器人',
+    name: 'Finance Bot-02',
+    description: 'Bot for financial report automation',
     status: 'BUSY',
     sync_status: 'PENDING',
     ip_address: '10.0.1.101',
@@ -99,21 +99,21 @@ const mockWorkers: LYWorkerResponse[] = [
     device_token: 'def456ghi012jkl345mno678pqr901stu234vwx567yzabc890abc123xyz789',
     machine_code: 'A22GE5558B326G491B51',
     host_name: 'WIN-SERVER-02',
-    os: 'Windows Server 2019 Standard 64位',
+    os: 'Windows Server 2019 Standard 64-bit',
     arch: 'x64',
     cpu_model: 'Intel(R) Xeon(R) CPU E5-2680 v4 @ 2.40GHz',
     cpu_cores: 8,
     memory_capacity: '16 GB',
     robot_count: 2,
     group_id: 'group-001',
-    group_name: '财务流程机器人组',
+    group_name: 'Finance Bot Group',
     created_at: '2025-01-06 09:15:00',
     creator_id: 'admin',
   },
   {
     id: '550e8400-e29b-41d4-a716-446655440003',
-    name: '财务机器人-03',
-    description: '用于发票处理的机器人',
+    name: 'Finance Bot-03',
+    description: 'Bot for invoice processing',
     status: 'OFFLINE',
     sync_status: 'SYNCED',
     ip_address: '10.0.1.102',
@@ -128,7 +128,7 @@ const mockWorkers: LYWorkerResponse[] = [
     device_token: 'ghi012jkl345mno678pqr901stu234vwx567yzabc890abc123xyz789def456',
     machine_code: 'B33HF6669C437H502C62',
     host_name: 'WIN-SERVER-03',
-    os: 'Windows 10 Pro 64位',
+    os: 'Windows 10 Pro 64-bit',
     arch: 'x64',
     cpu_model: 'Intel(R) Core(TM) i7-8700 @ 3.20GHz',
     cpu_cores: 6,
@@ -141,8 +141,8 @@ const mockWorkers: LYWorkerResponse[] = [
   },
   {
     id: '550e8400-e29b-41d4-a716-446655440004',
-    name: '人力机器人-01',
-    description: '用于人事审批流程的机器人',
+    name: 'HR Bot-01',
+    description: 'Bot for HR approval processes',
     status: 'FAULT',
     sync_status: 'SYNCED',
     ip_address: '10.0.1.103',
@@ -157,21 +157,21 @@ const mockWorkers: LYWorkerResponse[] = [
     device_token: 'jkl345mno678pqr901stu234vwx567yzabc890abc123xyz789def456ghi012',
     machine_code: 'C44IG7770D548I613D73',
     host_name: 'WIN-HR-01',
-    os: 'Windows 10 Pro 64位',
+    os: 'Windows 10 Pro 64-bit',
     arch: 'x64',
     cpu_model: 'Intel(R) Core(TM) i5-8400 @ 2.80GHz',
     cpu_cores: 6,
     memory_capacity: '8 GB',
     robot_count: 1,
     group_id: 'group-002',
-    group_name: '人事流程机器人组',
+    group_name: 'HR Bot Group',
     created_at: '2025-01-03 15:45:00',
     creator_id: 'hr_admin',
   },
   {
     id: '550e8400-e29b-41d4-a716-446655440005',
-    name: '运维机器人-01',
-    description: '用于运维巡检的机器人',
+    name: 'Ops Bot-01',
+    description: 'For opsinspection's bot',
     status: 'IDLE',
     sync_status: 'SYNCED',
     ip_address: '10.0.2.50',
@@ -186,21 +186,21 @@ const mockWorkers: LYWorkerResponse[] = [
     device_token: 'mno678pqr901stu234vwx567yzabc890abc123xyz789def456ghi012jkl345',
     machine_code: 'D55JH8881E659J724E84',
     host_name: 'WIN-OPS-01',
-    os: 'Windows Server 2022 Standard 64位',
+    os: 'Windows Server 2022 Standard 64-bit',
     arch: 'x64',
     cpu_model: 'AMD Ryzen 9 5900X 12-Core Processor',
     cpu_cores: 12,
     memory_capacity: '64 GB',
     robot_count: 1,
     group_id: 'group-003',
-    group_name: '运维巡检机器人组',
+    group_name: 'Ops Inspection Bot Group',
     created_at: '2025-01-02 08:30:00',
     creator_id: 'ops_admin',
   },
   {
     id: '550e8400-e29b-41d4-a716-446655440006',
-    name: '测试机器人-01',
-    description: '用于自动化测试的机器人',
+    name: 'Test Bot-01',
+    description: 'Bot for automation testing',
     status: 'MAINTENANCE',
     sync_status: 'SYNCED',
     ip_address: '10.0.3.10',
@@ -215,7 +215,7 @@ const mockWorkers: LYWorkerResponse[] = [
     device_token: 'pqr901stu234vwx567yzabc890abc123xyz789def456ghi012jkl345mno678',
     machine_code: 'E66KI9992F760K835F95',
     host_name: 'WIN-TEST-01',
-    os: 'Windows 11 Pro 64位',
+    os: 'Windows 11 Pro 64-bit',
     arch: 'x64',
     cpu_model: 'Intel(R) Core(TM) i9-12900K @ 3.20GHz',
     cpu_cores: 16,
@@ -228,7 +228,7 @@ const mockWorkers: LYWorkerResponse[] = [
   },
 ];
 
-// 特殊筛选值常量
+// 特殊Filter值常量
 const UNGROUPED_FILTER_VALUE = '__UNGROUPED__';
 
 interface FilterState {
@@ -242,9 +242,9 @@ interface SortState {
   sortOrder?: 'ascend' | 'descend';
 }
 
-// ============= 数据获取 - 返回LYListResponseLYWorkerResponse =============
+// ============= Data获取 - BackLYListResponseLYWorkerResponse =============
 
-// 状态排序优先级
+// StatusSortPriority
 const STATUS_ORDER: Record<string, number> = {
   BUSY: 1,
   IDLE: 2,
@@ -254,12 +254,12 @@ const STATUS_ORDER: Record<string, number> = {
 };
 
 const fetchWorkerList = async (params: GetWorkersParams & { filters?: FilterState; sort?: SortState }): Promise<LYListResponseLYWorkerResponse> => {
-  // 模拟网络延迟
+  // 模拟Network延迟
   await new Promise(resolve => setTimeout(resolve, 500));
   
   let data = [...mockWorkers];
 
-  // 关键词搜索（名称或IP）
+  // 关键词Search(Name或IP)
   if (params.keyword?.trim()) {
     const keyword = params.keyword.toLowerCase().trim();
     data = data.filter(item => 
@@ -268,26 +268,26 @@ const fetchWorkerList = async (params: GetWorkersParams & { filters?: FilterStat
     );
   }
 
-  // 状态筛选
+  // StatusFilter
   if (params.filters?.status && params.filters.status.length > 0) {
     data = data.filter(item => params.filters!.status.includes(item.status));
   }
 
-  // 同步状态筛选
+  // 同步StatusFilter
   if (params.filters?.sync_status && params.filters.sync_status.length > 0) {
     data = data.filter(item => params.filters!.sync_status.includes(item.sync_status));
   }
 
-  // 机器人组筛选
+  // bot组Filter
   if (params.filters?.group_id && params.filters.group_id.length > 0) {
     data = data.filter(item => {
       const selectedGroups = params.filters!.group_id;
-      // 检查是否选择了"未分组"
+      // Checkis否select "未分组"
       if (selectedGroups.includes(UNGROUPED_FILTER_VALUE)) {
-        // 未分组的机器人
+        // 未分组's bot
         if (!item.group_id) return true;
       }
-      // 检查是否属于选中的机器人组
+      // Checkis否属for Selected's bot组
       if (item.group_id && selectedGroups.includes(item.group_id)) {
         return true;
       }
@@ -295,7 +295,7 @@ const fetchWorkerList = async (params: GetWorkersParams & { filters?: FilterStat
     });
   }
 
-  // 排序处理
+  // Sortprocessing
   if (params.sort?.sortBy && params.sort?.sortOrder) {
     const { sortBy, sortOrder } = params.sort;
     data.sort((a, b) => {
@@ -316,7 +316,7 @@ const fetchWorkerList = async (params: GetWorkersParams & { filters?: FilterStat
   const size = params.size || 20;
   const paginatedData = data.slice(offset, offset + size);
 
-  // 返回LYListResponseLYWorkerResponse格式
+  // BackLYListResponseLYWorkerResponseFormat
   return {
     range: {
       offset,
@@ -339,10 +339,10 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  // 搜索框输入值（即时显示）
+  // Search框input值(即is shown)
   const [searchValue, setSearchValue] = useState('');
   
-  // 查询参数 - 使用API类型
+  // queryParameter - usingAPIType
   const [queryParams, setQueryParams] = useState<GetWorkersParams>({
     offset: 0,
     size: 20,
@@ -359,20 +359,20 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
   const [loading, setLoading] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   
-  // 列表响应数据 - 直接使用API LYListResponseLYWorkerResponse
+  // List响应Data - 直接usingAPI LYListResponseLYWorkerResponse
   const [listResponse, setListResponse] = useState<LYListResponseLYWorkerResponse>({
     range: { offset: 0, size: 20, total: 0 },
     list: [],
   });
   
-  // 抽屉和弹窗状态
+  // Drawer and ModalStatus
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [selectedWorker, setSelectedWorker] = useState<LYWorkerResponse | null>(null);
   const [keyModalVisible, setKeyModalVisible] = useState(false);
   const [keyModalWorker, setKeyModalWorker] = useState<LYWorkerResponse | null>(null);
   const [createModalVisible, setCreateModalVisible] = useState(false);
 
-  // 从首页快捷入口跳转时自动打开新建弹窗
+  // from首页快捷入口跳转时auto-open新建Modal
   useEffect(() => {
     if (openCreateFromHome) {
       setCreateModalVisible(true);
@@ -384,7 +384,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
   const [addToGroupModalVisible, setAddToGroupModalVisible] = useState(false);
   const [addToGroupWorker, setAddToGroupWorker] = useState<LYWorkerResponse | null>(null);
 
-  // 状态配置
+  // StatusConfig
   type WorkerStatus = LYWorkerResponse['status'];
   
   const statusConfig: Record<WorkerStatus, { color: string; text: string }> = useMemo(() => ({
@@ -395,7 +395,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     MAINTENANCE: { color: 'orange', text: t('worker.status.maintenance') },
   }), [t]);
 
-  // 筛选选项
+  // Filter选项
   const filterOptions = useMemo(() => ({
     status: [
       { label: t('worker.status.offline'), value: 'OFFLINE' },
@@ -414,7 +414,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     ],
   }), [t]);
 
-  // 加载数据
+  // LoadingData
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
@@ -431,13 +431,13 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     }
   }, [queryParams, filters, sortState]);
 
-  // 翻页并返回新数据（用于抽屉导航时自动翻页）
+  // 翻页并Back新Data(usefor Drawer导航时auto-翻页)
   const handleDrawerPageChange = useCallback(async (page: number): Promise<LYWorkerResponse[]> => {
     const currentPageSize = listResponse.range?.size || 20;
     const newOffset = (page - 1) * currentPageSize;
     setQueryParams(prev => ({ ...prev, offset: newOffset }));
     
-    // 直接获取数据而不是等待state更新
+    // 直接获取Data而notisWaitstateUpdate
     const response = await fetchWorkerList({
       ...queryParams,
       offset: newOffset,
@@ -448,19 +448,19 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     return response.list;
   }, [queryParams, filters, sortState, listResponse.range?.size]);
 
-  // 当Tab切换到非激活状态时，关闭抽屉
+  // 当Tab switchto非激活Status时, CloseDrawer
   useEffect(() => {
     if (!isActive) {
       setDetailDrawerVisible(false);
     }
   }, [isActive]);
 
-  // 初始化加载
+  // 初始化Loading
   useEffect(() => {
     loadData();
   }, [loadData]);
 
-  // 处理从机器人组跳转过来的情况
+  // processingfrombot组跳转过's 情况
   useEffect(() => {
     if (pendingWorkerId && listResponse.list.length > 0) {
       const worker = listResponse.list.find(w => w.id === pendingWorkerId);
@@ -472,7 +472,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     }
   }, [pendingWorkerId, listResponse.list, onWorkerDetailOpened]);
 
-  // 搜索防抖
+  // Searchdebounced
   const debouncedSearch = useMemo(
     () =>
       debounce((value: string) => {
@@ -481,10 +481,10 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     []
   );
 
-  // 搜索
+  // Search
   const handleSearch = (value: string) => {
-    setSearchValue(value);  // 立即更新输入框显示
-    debouncedSearch(value); // 防抖更新查询参数
+    setSearchValue(value);  // Immediately update input display
+    debouncedSearch(value); // Debounced query update
   };
 
   const handleFilterConfirm = (values: Record<string, unknown>) => {
@@ -499,9 +499,9 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
   const hasActiveFilters = Object.values(filters).some(arr => arr.length > 0);
   const activeFilterCount = Object.values(filters).reduce((sum, arr) => sum + arr.length, 0);
 
-  // 切换接收任务状态
+  // 切换接收taskStatus
   const handleToggleReceiveTasks = async (worker: LYWorkerResponse, checked: boolean) => {
-    // 更新本地数据
+    // Update本地Data
     setListResponse(prev => ({
       ...prev,
       list: prev.list.map(item => 
@@ -509,35 +509,35 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       ),
     }));
     
-    // 同时更新选中的worker（如果抽屉打开中）
+    // alsoUpdateSelected's worker(ifDraweropen)
     if (selectedWorker?.id === worker.id) {
       setSelectedWorker(prev => prev ? { ...prev, receive_tasks: checked } : null);
     }
     
-    // 模拟API调用
+    // 模拟API调use
     Toast.success(checked ? t('worker.receiveTasks.enabled') : t('worker.receiveTasks.disabled'));
   };
 
   // filterContent removed - using FilterPopover directly
 
-  // 打开详情抽屉
+  // openDetails drawer
   const openDetail = (worker: LYWorkerResponse) => {
     setSelectedWorker(worker);
     setDetailDrawerVisible(true);
   };
 
-  // 打开密钥弹窗
+  // open密钥Modal
   const openKeyModal = (worker: LYWorkerResponse, e?: React.MouseEvent) => {
     e?.stopPropagation();
     setKeyModalWorker(worker);
     setKeyModalVisible(true);
   };
 
-  // 删除确认
+  // DeleteConfirm
   const handleDeleteClick = (worker: LYWorkerResponse, e?: React.MouseEvent) => {
     e?.stopPropagation();
     
-    // 检查是否有未完成任务
+    // Checkis否has未Donetask
     if (worker.status === 'BUSY') {
       Modal.warning({
         title: t('worker.deleteModal.cannotDelete'),
@@ -563,21 +563,21 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       okButtonProps: { type: 'danger' },
       onOk: async () => {
         try {
-          // 模拟删除 API 调用
+          // 模拟Delete API 调use
           await new Promise(resolve => setTimeout(resolve, 500));
-          console.log('删除机器人:', worker.id);
+          console.log('Deletebot:', worker.id);
           
-          // 关闭抽屉
+          // CloseDrawer
           setDetailDrawerVisible(false);
           setSelectedWorker(null);
           
-          // 重新加载数据
+          // 重新LoadingData
           loadData();
           
-          // 显示成功提示
+          // displaySuccess提示
           Toast.success(t('worker.deleteModal.success'));
         } catch (error) {
-          // 显示错误提示
+          // displayError提示
           Toast.error(t('worker.deleteModal.error'));
           throw error;
         }
@@ -585,7 +585,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     });
   };
 
-  // 从详情抽屉跳转到编辑
+  // fromDetails drawer跳转toEdit
   const handleEditFromDrawer = () => {
     if (selectedWorker) {
       setEditingWorker(selectedWorker);
@@ -593,57 +593,57 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     }
   };
 
-  // 从详情抽屉删除
+  // fromDetails drawerDelete
   const handleDeleteFromDrawer = () => {
     if (selectedWorker) {
       handleDeleteClick(selectedWorker);
     }
   };
 
-  // 编辑机器人
+  // Editbot
   const handleEdit = (worker: LYWorkerResponse, e?: React.MouseEvent) => {
     e?.stopPropagation();
     setEditingWorker(worker);
     setEditModalVisible(true);
   };
 
-  // 添加至分组
+  // add至分组
   const handleAddToGroup = (worker: LYWorkerResponse, e?: React.MouseEvent) => {
     e?.stopPropagation();
     setAddToGroupWorker(worker);
     setAddToGroupModalVisible(true);
   };
 
-  // 创建成功回调
+  // CreateSuccess回调
   const handleCreateSuccess = () => {
     loadData();
   };
 
-  // 编辑成功回调
+  // EditSuccess回调
   const handleEditSuccess = (updatedWorker: LYWorkerResponse) => {
-    // 更新列表数据
+    // UpdateListData
     setListResponse(prev => ({
       ...prev,
       list: prev.list.map(item => 
         item.id === updatedWorker.id ? updatedWorker : item
       ),
     }));
-    // 同步更新选中的worker（如果抽屉打开中）
+    // 同步UpdateSelected's worker(ifDraweropen)
     if (selectedWorker?.id === updatedWorker.id) {
       setSelectedWorker(updatedWorker);
     }
   };
 
-  // 添加至分组成功回调
+  // add至分组Success回调
   const handleAddToGroupSuccess = (updatedWorker: LYWorkerResponse) => {
-    // 更新列表数据
+    // UpdateListData
     setListResponse(prev => ({
       ...prev,
       list: prev.list.map(item => 
         item.id === updatedWorker.id ? updatedWorker : item
       ),
     }));
-    // 同步更新选中的worker（如果抽屉打开中）
+    // 同步UpdateSelected's worker(ifDraweropen)
     if (selectedWorker?.id === updatedWorker.id) {
       setSelectedWorker(updatedWorker);
     }
@@ -664,7 +664,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       cancelText: t('common.cancel'),
       onOk: async () => {
         try {
-          // 模拟API调用
+          // 模拟API调use
           await new Promise(resolve => setTimeout(resolve, 500));
           
           const updatedWorker: LYWorkerResponse = {
@@ -673,7 +673,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
             group_name: null,
           };
           
-          // 更新列表数据
+          // UpdateListData
           setListResponse(prev => ({
             ...prev,
             list: prev.list.map(item => 
@@ -681,7 +681,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
             ),
           }));
           
-          // 同步更新选中的worker（如果抽屉打开中）
+          // 同步UpdateSelected's worker(ifDraweropen)
           if (selectedWorker?.id === updatedWorker.id) {
             setSelectedWorker(updatedWorker);
           }
@@ -695,7 +695,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     });
   };
 
-  // 从响应中获取分页信息
+  // from响应获取分页Info
   const { range, list } = listResponse;
   const currentPage = Math.floor((range?.offset || 0) / (range?.size || 20)) + 1;
   const pageSize = range?.size || 20;
@@ -773,7 +773,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       key: 'receive_tasks',
       width: 90,
       render: (receiveTasks: boolean, record: LYWorkerResponse) => {
-        // 只有在线且非故障状态才允许操作
+        // 只hasOnline且非故障Status才允许Operation
         const canOperate = record.status !== 'OFFLINE' && record.status !== 'FAULT';
         return (
           <div onClick={(e) => e.stopPropagation()}>
@@ -827,7 +827,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
               >
                 {t('worker.actions.edit')}
               </Dropdown.Item>
-              {/* 未分组的机器人显示"添加至分组"操作 */}
+              {/* 's bot""Operation */}
               {!record.group_id && (
                 <Dropdown.Item 
                   icon={<IconUserListStroked />}
@@ -839,7 +839,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
                   {t('worker.actions.addToGroup')}
                 </Dropdown.Item>
               )}
-              {/* 已分组的机器人显示"移出分组"操作 */}
+              {/* Already's bot""Operation */}
               {record.group_id && (
                 <Dropdown.Item 
                   icon={<IconMinusCircleStroked />}
@@ -876,9 +876,9 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
 
   return (
     <div className="worker-management">
-      {/* 操作栏 */}
+      {/* Operation */}
       <div className="worker-management-header">
-        {/* 操作栏 */}
+        {/* Operation */}
         <Row type="flex" justify="space-between" align="middle" className="worker-management-header-toolbar">
           <Col>
             <Space>
@@ -932,7 +932,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
         </Row>
       </div>
 
-      {/* 表格区域 */}
+      {/* Table area */}
       <div className="worker-management-table">
         {isInitialLoad ? (
           <TableSkeleton rows={10} columns={7} columnWidths={['18%', '10%', '15%', '12%', '10%', '15%', '10%']} />
@@ -983,7 +983,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
         )}
       </div>
 
-      {/* 详情抽屉 */}
+      {/* Details drawer */}
       <WorkerDetailDrawer
         visible={detailDrawerVisible}
         onClose={() => setDetailDrawerVisible(false)}
@@ -1017,21 +1017,21 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
         }}
       />
 
-      {/* 密钥弹窗 */}
+      {/* Modal */}
       <WorkerKeyModal
         visible={keyModalVisible}
         onClose={() => setKeyModalVisible(false)}
         workerData={keyModalWorker}
       />
 
-      {/* 创建弹窗 */}
+      {/* Create modal */}
       <CreateWorkerModal
         visible={createModalVisible}
         onCancel={() => setCreateModalVisible(false)}
         onSuccess={handleCreateSuccess}
       />
 
-      {/* 编辑弹窗 */}
+      {/* Edit modal */}
       <EditWorkerModal
         visible={editModalVisible}
         onCancel={() => setEditModalVisible(false)}
@@ -1039,7 +1039,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
         onSuccess={handleEditSuccess}
       />
 
-      {/* 添加至分组弹窗 */}
+      {/* Modal */}
       <AddToGroupModal
         visible={addToGroupModalVisible}
         onCancel={() => setAddToGroupModalVisible(false)}

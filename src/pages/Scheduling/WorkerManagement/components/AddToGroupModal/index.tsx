@@ -4,11 +4,11 @@ import { useTranslation } from 'react-i18next';
 import type { LYWorkerResponse } from '@/api';
 import './index.less';
 
-// Mock机器人组数据
+// Mockbot组Data
 const mockWorkerGroups = [
-  { id: 'group-001', name: '财务流程机器人组' },
-  { id: 'group-002', name: '人事流程机器人组' },
-  { id: 'group-003', name: '运维巡检机器人组' },
+  { id: 'group-001', name: 'Finance Bot Group' },
+  { id: 'group-002', name: 'HR Bot Group' },
+  { id: 'group-003', name: 'Ops Inspection Bot Group' },
 ];
 
 interface AddToGroupModalProps {
@@ -35,7 +35,7 @@ const AddToGroupModal = ({ visible, onCancel, workerData, onSuccess }: AddToGrou
 
     setLoading(true);
     try {
-      // 模拟API调用
+      // 模拟API调use
       await new Promise(resolve => setTimeout(resolve, 500));
       
       const selectedGroup = mockWorkerGroups.find(g => g.id === values.groupId);

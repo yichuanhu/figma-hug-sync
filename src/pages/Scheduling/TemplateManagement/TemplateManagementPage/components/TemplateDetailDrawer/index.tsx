@@ -97,9 +97,9 @@ const TemplateDetailDrawer = ({
   const hasParameters = inputParameters && Object.keys(inputParameters).length > 0;
 
   const mockUsageRecords = [
-    { id: '1', task_name: `${template.template_name}-任务-001`, created_by_name: '张三', created_at: '2026-01-28 14:30:25', status: 'SUCCESS' },
-    { id: '2', task_name: `${template.template_name}-任务-002`, created_by_name: '李四', created_at: '2026-01-27 10:15:42', status: 'FAILED' },
-    { id: '3', task_name: `${template.template_name}-任务-003`, created_by_name: '王五', created_at: '2026-01-25 09:08:33', status: 'SUCCESS' },
+    { id: '1', task_name: `${template.template_name}-Task-001`, created_by_name: 'John Smith', created_at: '2026-01-28 14:30:25', status: 'SUCCESS' },
+    { id: '2', task_name: `${template.template_name}-Task-002`, created_by_name: 'Jane Doe', created_at: '2026-01-27 10:15:42', status: 'FAILED' },
+    { id: '3', task_name: `${template.template_name}-Task-003`, created_by_name: 'Mike Wang', created_at: '2026-01-25 09:08:33', status: 'SUCCESS' },
   ];
 
   const usageHistoryColumns = [
