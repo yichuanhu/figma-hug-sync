@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Select, Button, Tag } from '@douyinfe/semi-ui';
+import { Select, Button } from '@douyinfe/semi-ui';
 import { IconRefresh } from '@douyinfe/semi-icons';
 import { useTranslation } from 'react-i18next';
 import { mockRobotGroups, mockRobotStatuses } from '@/pages/Operations/mockData';
@@ -23,6 +23,13 @@ const ResourceFilterBar = ({ filter, onFilterChange, onRefresh }: Props) => {
     { value: 'all', label: t('operations.dashboard.allTime') },
   ];
 
+  const timeDimensionOptions = [
+    { value: 'all', label: t('operations.roiAnalysis.dimAll') },
+    { value: 'daily', label: t('operations.roiAnalysis.dimDaily') },
+    { value: 'weekly', label: t('operations.roiAnalysis.dimWeekly') },
+    { value: 'monthly', label: t('operations.roiAnalysis.dimMonthly') },
+  ];
+
   const localizedGroups = useMemo(() =>
     mockRobotGroups.map(g => g.value === 'all' ? { ...g, label: t('operations.dashboard.selectAll') } : g),
     [t]
@@ -36,62 +43,28 @@ const ResourceFilterBar = ({ filter, onFilterChange, onRefresh }: Props) => {
     [t]
   );
 
-  const timeDimensions = [
-    { key: 'all', label: t('operations.roiAnalysis.dimAll') },
-    { key: 'daily', label: t('operations.roiAnalysis.dimDaily') },
-    { key: 'weekly', label: t('operations.roiAnalysis.dimWeekly') },
-    { key: 'monthly', label: t('operations.roiAnalysis.dimMonthly') },
-  ];
-
   return (
     <div className="resource-filter-bar">
       <div className="resource-filter-items">
         <div className="resource-filter-item">
           <span className="resource-filter-label">{t('operations.dashboard.timeRange')}</span>
-          <Select
-            size="small"
-            value={filter.timeRange}
-            optionList={timeRangeOptions}
-            onChange={(val) => onFilterChange({ ...filter, timeRange: val as string })}
-            style={{ width: 120 }}
-          />
+          <Select size="small" value={filter.timeRange} optionList={timeRangeOptions}
+            onChange={(val) => onFilterChange({ ...filter, timeRange: val as string })} style={{ width: 120 }} />
         </div>
         <div className="resource-filter-item">
           <span className="resource-filter-label">{t('operations.resourceEfficiency.group')}</span>
-          <Select
-            size="small"
-            value={filter.group}
-            optionList={localizedGroups}
-            onChange={(val) => onFilterChange({ ...filter, group: val as string })}
-            style={{ width: 120 }}
-          />
+          <Select size="small" value={filter.group} optionList={localizedGroups}
+            onChange={(val) => onFilterChange({ ...filter, group: val as string })} style={{ width: 120 }} />
         </div>
         <div className="resource-filter-item">
           <span className="resource-filter-label">{t('common.status')}</span>
-          <Select
-            size="small"
-            value={filter.status}
-            optionList={localizedStatuses}
-            onChange={(val) => onFilterChange({ ...filter, status: val as string })}
-            style={{ width: 120 }}
-          />
+          <Select size="small" value={filter.status} optionList={localizedStatuses}
+            onChange={(val) => onFilterChange({ ...filter, status: val as string })} style={{ width: 120 }} />
         </div>
         <div className="resource-filter-item">
           <span className="resource-filter-label">{t('operations.roiAnalysis.timeDimension')}</span>
-          <div className="resource-filter-dimensions">
-            {timeDimensions.map(d => (
-              <Tag
-                key={d.key}
-                color={filter.timeDimension === d.key ? 'blue' : undefined}
-                type={filter.timeDimension === d.key ? 'light' : 'ghost'}
-                size="small"
-                style={{ cursor: 'pointer' }}
-                onClick={() => onFilterChange({ ...filter, timeDimension: d.key })}
-              >
-                {d.label}
-              </Tag>
-            ))}
-          </div>
+          <Select size="small" value={filter.timeDimension} optionList={timeDimensionOptions}
+            onChange={(val) => onFilterChange({ ...filter, timeDimension: val as string })} style={{ width: 120 }} />
         </div>
       </div>
       <Button icon={<IconRefresh />} size="small" onClick={onRefresh}>
