@@ -163,7 +163,7 @@ const CreateReleasePage: React.FC = () => {
     const credentials = [
       {
         resource_id: 'CRED-001',
-        resource_name: 'ERP 系统Credential',
+        resource_name: 'ERP System Credential',
         is_previously_published: true,
         test_value: '******',
         used_by_processes: processes.map((p) => ({
