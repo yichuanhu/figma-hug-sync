@@ -62,10 +62,10 @@ const generateMockReleaseResponse = (index: number): LYReleaseResponse => {
     release_id: `RLS-${dateStr}-${String(index + 1).padStart(3, '0')}`,
     release_type: releaseType,
     description: index === 2 
-      ? '更新订单处理逻辑，修复库存检查问题' 
-      : `发布描述 ${index + 1}：包含多个流程的更新和配置变更`,
+      ? 'Updated order processing logic, fixed inventory check issues' 
+      : `发布描述 ${index + 1}：Contains multiple process updates and config changes`,
     publisher_id: `user-${(index % 3) + 1}`,
-    publisher_name: ['张三', '李四', '王五'][index % 3],
+    publisher_name: ['John Smith', 'Jane Doe', 'Mike Wang'][index % 3],
     publisher_department: ['技术部', '产品部', '运维部'][index % 3],
     publisher_role: ['高级工程师', '产品经理', '运维工程师'][index % 3],
     publisher_email: ['zhangsan@example.com', 'lisi@example.com', 'wangwu@example.com'][index % 3],
@@ -80,14 +80,14 @@ const generateMockReleaseResponse = (index: number): LYReleaseResponse => {
         process_name: index % 4 === 0 
           ? 'SAP_ERP_Order_Processing_And_Fulfillment_Workflow_With_Inventory_Check_V3' 
           : index % 4 === 1 
-            ? '客户信息同步' 
+            ? 'Customer Info Sync' 
             : index % 4 === 2 
               ? 'Customer_Onboarding_KYC_Verification_And_Account_Provisioning_Enterprise_Workflow_With_Compliance_Check'
               : '数据备份',
         version_id: `ver-${index}-1`,
         version_number: `v1.${index}.0`,
         process_description: index % 4 === 0
-          ? '该流程用于处理来自SAP ERP系统的所有客户订单，包括订单验证、库存检查、价格计算、折扣应用、税费计算、物流分配、发票生成以及客户通知等完整的端到端业务流程。支持多币种、多仓库、多物流商的复杂场景处理。'
+          ? '该流程用于处理来自SAP ERP系统的所有客户订单，包括订单验证、Inventory Check、价格计算、折扣应用、税费计算、物流分配、发票生成以及客户通知等完整的端到端业务流程。支持多币种、多仓库、多物流商的复杂场景处理。'
           : index % 4 === 2
             ? '客户入网全流程自动化，涵盖KYC身份验证、合规检查、风控评估、账户开通、权限分配、欢迎邮件发送及CRM系统同步等环节，支持多国家地区的监管要求适配。'
             : index % 4 === 3 ? '' : '从 ERP 同步客户数据到 CRM',
@@ -98,7 +98,7 @@ const generateMockReleaseResponse = (index: number): LYReleaseResponse => {
               process_id: `process-${index}-2`,
               process_name: index % 4 === 0 
                 ? 'Monthly_Financial_Report_Generation_And_Distribution_Workflow' 
-                : '订单处理',
+                : 'Order Processing',
               version_id: `ver-${index}-2`,
               version_number: `v2.${index}.0`,
               process_description: index % 4 === 0 
@@ -403,7 +403,7 @@ const ReleaseListPage: React.FC = () => {
 
   // 发布者选项（从mock数据中提取）
   const publisherOptions = useMemo(() => {
-    const publishers = ['张三', '李四', '王五'];
+    const publishers = ['John Smith', 'Jane Doe', 'Mike Wang'];
     return publishers.map((name) => ({ value: name, label: name }));
   }, []);
 

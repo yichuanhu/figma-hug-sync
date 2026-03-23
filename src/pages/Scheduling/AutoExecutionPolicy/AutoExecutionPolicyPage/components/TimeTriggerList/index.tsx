@@ -52,19 +52,19 @@ const generateUUID = (): string => {
 // ============= Mock数据生成 =============
 
 const mockProcesses = [
-  { process_id: 'proc-001', process_name: '订单自动处理' },
-  { process_id: 'proc-002', process_name: '财务报销审批' },
-  { process_id: 'proc-003', process_name: '人事入职流程' },
+  { process_id: 'proc-001', process_name: 'Auto Order Processing' },
+  { process_id: 'proc-002', process_name: 'Expense Reimbursement Approval' },
+  { process_id: 'proc-003', process_name: 'Employee Onboarding Flow' },
   { process_id: 'proc-004', process_name: '数据采集流程' },
 ];
 
-const mockCreatorNames = ['张三', '李四', '王五', '赵六', '钱七'];
+const mockCreatorNames = ['John Smith', 'Jane Doe', 'Mike Wang', '赵六', '钱七'];
 
 const generateMockTimeTriggerResponse = (index: number): LYTimeTriggerResponse => {
   const process = mockProcesses[index % mockProcesses.length];
   const priorities: TaskPriority[] = ['HIGH', 'MEDIUM', 'LOW'];
   const targetTypes: ExecutionTargetType[] = ['BOT_GROUP', 'BOT_IN_GROUP', 'UNGROUPED_BOT'];
-  const targetNames = ['订单处理组', '财务审批组', '人事管理组', 'RPA-BOT-001', 'RPA-BOT-002'];
+  const targetNames = ['Order Processing Group', 'Finance Approval Group', '人事管理组', 'RPA-BOT-001', 'RPA-BOT-002'];
   const statuses: TriggerStatus[] = ['ENABLED', 'DISABLED'];
   const ruleTypes: TriggerRuleType[] = ['BASIC', 'CRON'];
   const frequencyTypes: BasicFrequencyType[] = ['MINUTELY', 'HOURLY', 'DAILY', 'WEEKLY', 'MONTHLY'];

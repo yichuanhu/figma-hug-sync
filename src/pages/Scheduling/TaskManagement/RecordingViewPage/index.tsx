@@ -46,16 +46,16 @@ const generateMockLogs = (): LYExecutionLogResponse[] => {
   const levels: LogLevel[] = ['DEBUG', 'INFO', 'WARN', 'ERROR'];
   const sources = ['CLIENT', 'SERVER'] as const;
   const messages = [
-    '正在初始化流程引擎...',
-    '成功连接到数据库服务器',
-    '开始执行步骤 1: 读取输入参数',
+    'Initializing process engine...',
+    'Successfully connected to database server',
+    'Starting step 1: Reading input parameters',
     '警告: 输入参数中存在空值，使用默认值替代',
     '错误: 无法连接到目标服务器，请检查网络设置',
     '步骤 2 执行完成，耗时 1.5 秒',
     '正在处理数据转换...',
     '数据验证通过',
     '写入输出结果到文件',
-    '流程执行完成',
+    'Process execution completed',
     '开始执行步骤 3: 数据处理',
     '警告: 发现重复数据，已自动去重',
     '错误: 文件写入失败，磁盘空间不足',

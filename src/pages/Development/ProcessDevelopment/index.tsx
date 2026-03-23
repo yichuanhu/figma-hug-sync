@@ -56,21 +56,21 @@ const generateUUID = (): string => {
 // 生成符合LYProcessResponse格式的Mock数据
 const generateMockLYProcessResponse = (index: number): LYProcessResponse => {
   const processNames = [
-    '订单自动处理',
-    '财务报销审批',
-    '人事入职流程',
+    'Auto Order Processing',
+    'Expense Reimbursement Approval',
+    'Employee Onboarding Flow',
     '采购申请流程',
     '合同审批流程',
     '发票识别处理',
-    '客户信息同步',
+    'Customer Info Sync',
     '库存盘点流程',
     '销售数据汇总',
     '报表自动生成',
   ];
 
   const descriptions = [
-    '自动处理销售订单，包括订单验证、库存检查、发货通知',
-    '自动处理财务报销审批流程，包括发票识别、金额核对、审批通知',
+    '自动处理销售订单，包括订单验证、Inventory Check、发货通知',
+    '自动处理Expense Reimbursement Flow，包括发票识别、金额核对、审批通知',
     '自动化处理新员工入职流程，包括账号创建、权限分配、培训安排',
     '自动处理采购申请，包括供应商比价、审批流程、订单生成',
     '自动化合同审批流程，包括合同模板匹配、条款审核、签章流程',
@@ -117,9 +117,9 @@ let mockProcessData = generateMockProcessList();
 
 // 模拟创建者ID到名称的映射
 const mockCreatorNameMap: Record<string, { name: string; department?: string; role?: string; email?: string }> = {
-  'user-001': { name: '张三', department: '技术部', role: '高级工程师', email: 'zhangsan@example.com' },
-  'user-002': { name: '李四', department: '产品部', role: '产品经理', email: 'lisi@example.com' },
-  'user-003': { name: '王五', department: '运维部', role: '运维工程师', email: 'wangwu@example.com' },
+  'user-001': { name: 'John Smith', department: '技术部', role: '高级工程师', email: 'zhangsan@example.com' },
+  'user-002': { name: 'Jane Doe', department: '产品部', role: '产品经理', email: 'lisi@example.com' },
+  'user-003': { name: 'Mike Wang', department: '运维部', role: '运维工程师', email: 'wangwu@example.com' },
   'user-004': { name: '赵六', department: '测试部', role: '测试工程师', email: 'zhaoliu@example.com' },
   'user-005': { name: '钱七', department: '技术部', role: '架构师', email: 'qianqi@example.com' },
 };

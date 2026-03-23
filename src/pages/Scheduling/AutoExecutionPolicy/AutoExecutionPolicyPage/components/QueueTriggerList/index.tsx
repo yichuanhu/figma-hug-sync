@@ -49,27 +49,27 @@ const generateUUID = (): string => {
 // ============= Mock数据生成 =============
 
 const mockProcesses = [
-  { process_id: 'proc-001', process_name: '订单自动处理' },
-  { process_id: 'proc-002', process_name: '财务报销审批' },
-  { process_id: 'proc-003', process_name: '人事入职流程' },
+  { process_id: 'proc-001', process_name: 'Auto Order Processing' },
+  { process_id: 'proc-002', process_name: 'Expense Reimbursement Approval' },
+  { process_id: 'proc-003', process_name: 'Employee Onboarding Flow' },
   { process_id: 'proc-004', process_name: '数据采集流程' },
 ];
 
 const mockQueues = [
-  { queue_id: 'queue-001', queue_name: '订单待处理队列' },
-  { queue_id: 'queue-002', queue_name: '审批任务队列' },
-  { queue_id: 'queue-003', queue_name: '数据同步队列' },
+  { queue_id: 'queue-001', queue_name: 'Pending Orders Queue' },
+  { queue_id: 'queue-002', queue_name: 'Approval Tasks Queue' },
+  { queue_id: 'queue-003', queue_name: 'Data Sync队列' },
   { queue_id: 'queue-004', queue_name: '报表生成队列' },
 ];
 
-const mockCreatorNames = ['张三', '李四', '王五', '赵六', '钱七'];
+const mockCreatorNames = ['John Smith', 'Jane Doe', 'Mike Wang', '赵六', '钱七'];
 
 const generateMockQueueTriggerResponse = (index: number): LYQueueTriggerResponse => {
   const process = mockProcesses[index % mockProcesses.length];
   const queue = mockQueues[index % mockQueues.length];
   const priorities: TaskPriority[] = ['HIGH', 'MEDIUM', 'LOW'];
   const targetTypes: ExecutionTargetType[] = ['BOT_GROUP', 'BOT_IN_GROUP', 'UNGROUPED_BOT'];
-  const targetNames = ['订单处理组', '财务审批组', '人事管理组', 'RPA-BOT-001', 'RPA-BOT-002'];
+  const targetNames = ['Order Processing Group', 'Finance Approval Group', '人事管理组', 'RPA-BOT-001', 'RPA-BOT-002'];
   const statuses: TriggerStatus[] = ['ENABLED', 'DISABLED'];
 
   const createDate = new Date(2026, 0, 1 + (index % 28), 10 + (index % 12), (index * 7) % 60);
@@ -78,7 +78,7 @@ const generateMockQueueTriggerResponse = (index: number): LYQueueTriggerResponse
   return {
     trigger_id: `qt-${generateUUID().substring(0, 8)}`,
     name: `${queue.queue_name}触发器${index + 1}`,
-    description: index % 5 === 0 ? null : index % 5 === 1 ? `监控${queue.queue_name}，自动创建${process.process_name}任务。该队列触发器会实时监控指定队列中的消息数量，当有效消息数达到预设阈值时自动触发任务创建。支持配置每次触发消费的消息数量，以及定时检查机制，确保即使消息到达速度较慢也能及时处理。触发器创建的任务会自动携带队列消息作为输入参数，实现端到端的自动化处理流程。适用于订单处理、工单分配、数据同步等需要基于消息驱动的自动化场景。` : `监控${queue.queue_name}，自动创建${process.process_name}任务`,
+    description: index % 5 === 0 ? null : index % 5 === 1 ? `监控${queue.queue_name}，自动创建${process.process_name}任务。该队列触发器会实时监控指定队列中的消息数量，当有效消息数达到预设阈值时自动触发任务创建。支持配置每次触发消费的消息数量，以及定时检查机制，确保即使消息到达速度较慢也能及时处理。触发器创建的任务会自动携带队列消息作为输入参数，实现端到端的自动化处理流程。适用于Order Processing、工单分配、Data Sync等需要基于消息驱动的自动化场景。` : `监控${queue.queue_name}，自动创建${process.process_name}任务`,
     status,
     process_id: process.process_id,
     process_name: process.process_name,

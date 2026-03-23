@@ -38,7 +38,7 @@ interface ExecutionLogTabProps {
   title?: string;
 }
 
-// 日志级别颜色配置
+// Log level颜色配置
 const logLevelConfig: Record<LogLevel, { color: 'grey' | 'blue' | 'orange' | 'red'; text: string }> = {
   DEBUG: { color: 'grey', text: 'DEBUG' },
   INFO: { color: 'blue', text: 'INFO' },
@@ -57,16 +57,16 @@ const generateMockLog = (index: number): LYExecutionLogResponse => {
   const levels: LogLevel[] = ['DEBUG', 'INFO', 'WARN', 'ERROR'];
   const sources = ['CLIENT', 'SERVER'] as const;
   const messages = [
-    '正在初始化流程引擎...',
-    '成功连接到数据库服务器',
-    '开始执行步骤 1: 读取输入参数',
+    'Initializing process engine...',
+    'Successfully connected to database server',
+    'Starting step 1: Reading input parameters',
     '警告: 输入参数中存在空值，使用默认值替代',
-    '错误: 无法连接到目标服务器，请检查网络设置。错误代码: CONN_TIMEOUT，详细信息: 连接超时，目标地址: 192.168.1.100:8080，重试次数: 3，最后尝试时间: 2026-01-30 10:30:00',
+    '错误: 无法连接到目标服务器，请检查网络设置。错误代码: CONN_TIMEOUT，详细信息: 连接超时，目标地址: 192.168.1.100:8080，Retry count: 3，最后尝试时间: 2026-01-30 10:30:00',
     '步骤 2 执行完成，耗时 1.5 秒',
     '正在处理数据转换...',
     '数据验证通过',
     '写入输出结果到文件',
-    '流程执行完成',
+    'Process execution completed',
   ];
   const levelIndex = index % 10 < 1 ? 3 : index % 10 < 3 ? 2 : index % 10 < 5 ? 0 : 1;
   const now = new Date();

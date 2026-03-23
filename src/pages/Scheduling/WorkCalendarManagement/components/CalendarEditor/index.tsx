@@ -53,7 +53,7 @@ const CalendarEditor: React.FC<CalendarEditorProps> = ({
         if (existing) {
           return prev.filter((d) => d.date !== date || d.type !== 'HOLIDAY');
         }
-        // If it's a weekend, add as WORKDAY (调休)
+        // If it's a weekend, add as WORKDAY (Adjusted workday)
         return [...prev, { date, type: 'WORKDAY' as const }];
       } else {
         // If it's currently a workday, check if it was a WORKDAY special date

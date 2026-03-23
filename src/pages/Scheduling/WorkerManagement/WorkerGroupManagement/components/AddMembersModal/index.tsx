@@ -28,8 +28,8 @@ interface AddMembersModalProps {
 const mockAvailableWorkers: LYWorkerResponse[] = [
   {
     id: '550e8400-e29b-41d4-a716-446655440010',
-    name: '财务机器人-03',
-    description: '用于发票处理的机器人',
+    name: 'Finance Bot-03',
+    description: 'Bot for invoice processing',
     status: 'IDLE',
     sync_status: 'SYNCED',
     ip_address: '10.0.1.102',
@@ -55,7 +55,7 @@ const mockAvailableWorkers: LYWorkerResponse[] = [
   },
   {
     id: '550e8400-e29b-41d4-a716-446655440011',
-    name: '人力机器人-02',
+    name: 'HR Bot-02',
     description: '用于人事审批流程的机器人',
     status: 'OFFLINE',
     sync_status: 'SYNCED',

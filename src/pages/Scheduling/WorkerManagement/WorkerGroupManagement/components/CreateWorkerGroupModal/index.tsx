@@ -48,7 +48,7 @@ const CreateWorkerGroupModal: React.FC<CreateWorkerGroupModalProps> = ({
 
       // 模拟API调用
       await new Promise(resolve => setTimeout(resolve, 500));
-      console.log('创建机器人组:', request);
+      console.log('Creating bot group:', request);
       
       // 模拟返回创建的组ID
       const newGroupId = `GROUP-${Date.now()}`;

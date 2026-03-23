@@ -45,17 +45,17 @@ const CheckboxGroup = Checkbox.Group;
 
 // Mock机器人组数据
 const mockWorkerGroups = [
-  { id: 'group-001', name: '财务流程机器人组' },
-  { id: 'group-002', name: '人事流程机器人组' },
-  { id: 'group-003', name: '运维巡检机器人组' },
+  { id: 'group-001', name: 'Finance Bot Group' },
+  { id: 'group-002', name: 'HR Bot Group' },
+  { id: 'group-003', name: 'Ops Inspection Bot Group' },
 ];
 
 // Mock数据 - 使用API类型
 const mockWorkers: LYWorkerResponse[] = [
   {
     id: '550e8400-e29b-41d4-a716-446655440001',
-    name: '财务机器人-01',
-    description: '这是企业核心财务自动化机器人，负责执行复杂的财务流程任务，包括发票自动识别与处理、报销单据审核、财务报表自动生成与分发、银企对账、税务申报数据准备等关键业务。该机器人配置了高可用性设置，支持7x24小时不间断运行，并具备完整的错误恢复和任务断点续传能力。',
+    name: 'Finance Bot-01',
+    description: '这是企业核心财务自动化机器人，负责执行复杂的财务流程任务，包括发票自动识别与处理、报销单据审核、Auto Financial Report与分发、银企对账、税务申报数据准备等关键业务。该机器人配置了高可用性设置，支持7x24小时不间断运行，并具备完整的错误恢复和任务断点续传能力。',
     status: 'IDLE',
     sync_status: 'SYNCED',
     ip_address: '10.0.1.100',
@@ -77,13 +77,13 @@ const mockWorkers: LYWorkerResponse[] = [
     memory_capacity: '32 GB',
     robot_count: 1,
     group_id: 'group-001',
-    group_name: '财务流程机器人组',
+    group_name: 'Finance Bot Group',
     created_at: '2025-01-05 14:30:00',
     creator_id: 'admin',
   },
   {
     id: '550e8400-e29b-41d4-a716-446655440002',
-    name: '财务机器人-02',
+    name: 'Finance Bot-02',
     description: '用于财务报表自动化的机器人',
     status: 'BUSY',
     sync_status: 'PENDING',
@@ -106,14 +106,14 @@ const mockWorkers: LYWorkerResponse[] = [
     memory_capacity: '16 GB',
     robot_count: 2,
     group_id: 'group-001',
-    group_name: '财务流程机器人组',
+    group_name: 'Finance Bot Group',
     created_at: '2025-01-06 09:15:00',
     creator_id: 'admin',
   },
   {
     id: '550e8400-e29b-41d4-a716-446655440003',
-    name: '财务机器人-03',
-    description: '用于发票处理的机器人',
+    name: 'Finance Bot-03',
+    description: 'Bot for invoice processing',
     status: 'OFFLINE',
     sync_status: 'SYNCED',
     ip_address: '10.0.1.102',
@@ -141,7 +141,7 @@ const mockWorkers: LYWorkerResponse[] = [
   },
   {
     id: '550e8400-e29b-41d4-a716-446655440004',
-    name: '人力机器人-01',
+    name: 'HR Bot-01',
     description: '用于人事审批流程的机器人',
     status: 'FAULT',
     sync_status: 'SYNCED',
@@ -164,13 +164,13 @@ const mockWorkers: LYWorkerResponse[] = [
     memory_capacity: '8 GB',
     robot_count: 1,
     group_id: 'group-002',
-    group_name: '人事流程机器人组',
+    group_name: 'HR Bot Group',
     created_at: '2025-01-03 15:45:00',
     creator_id: 'hr_admin',
   },
   {
     id: '550e8400-e29b-41d4-a716-446655440005',
-    name: '运维机器人-01',
+    name: 'Ops Bot-01',
     description: '用于运维巡检的机器人',
     status: 'IDLE',
     sync_status: 'SYNCED',
@@ -193,7 +193,7 @@ const mockWorkers: LYWorkerResponse[] = [
     memory_capacity: '64 GB',
     robot_count: 1,
     group_id: 'group-003',
-    group_name: '运维巡检机器人组',
+    group_name: 'Ops Inspection Bot Group',
     created_at: '2025-01-02 08:30:00',
     creator_id: 'ops_admin',
   },

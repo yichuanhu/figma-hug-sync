@@ -50,7 +50,7 @@ const generateMockExecutionLogs = (triggerId: string): LYTriggerExecutionLogResp
     trigger_time: new Date(2026, 1, 3 - i, 9, 0).toISOString(),
     status: i === 2 ? 'FAILED' : 'SUCCESS' as const,
     created_task_count: i === 2 ? 0 : 1,
-    error_message: i === 2 ? '流程机器人不可用' : null,
+    error_message: i === 2 ? 'Process robot unavailable' : null,
     created_at: new Date(2026, 1, 3 - i, 9, 0).toISOString(),
   }));
 };

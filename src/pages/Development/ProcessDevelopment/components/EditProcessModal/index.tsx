@@ -15,7 +15,7 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
 
-  const existingProcessNames = ['订单自动处理流程', '财务报销审批流程', '人事入职流程'];
+  const existingProcessNames = ['Auto Order Processing Flow', 'Expense Reimbursement Flow', 'Employee Onboarding Flow'];
 
   const validateProcessNameFormat = (rule: unknown, value: string, callback: (error?: string) => void) => {
     if (!value) {
@@ -70,7 +70,7 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
       onSuccess?.(updatedProcess);
       onCancel();
     } catch (error) {
-      console.error('更新流程失败:', error);
+      console.error('Failed to update process:', error);
       Toast.error(t('development.processDevelopment.editModal.error'));
     } finally {
       setLoading(false);

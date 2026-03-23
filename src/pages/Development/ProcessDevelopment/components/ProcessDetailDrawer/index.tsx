@@ -39,7 +39,7 @@ const { Title, Text } = Typography;
 
 interface ProcessVariable {
   name: string;
-  type: '文本' | '布尔' | '数值';
+  type: 'Text' | 'Boolean' | 'Number';
   value?: string;
   description?: string;
 }
@@ -64,8 +64,8 @@ const generateUUID = (): string => {
 
 const generateMockVersionData = (): VersionDetailData[] => {
   const versions = [
-    { version: '1.0.0', note: '初始版本，实现基础功能', isActive: false },
-    { version: '1.1.0', note: '优化性能，修复已知问题', isActive: true },
+    { version: '1.0.0', note: 'Initial version with basic functionality', isActive: false },
+    { version: '1.1.0', note: 'Performance optimization, fixed known issues', isActive: true },
     { version: '1.2.0', note: '新增批量处理功能', isActive: true },
     { version: '2.0.0', note: '重构核心逻辑，提升稳定性', isActive: true },
     { version: '2.1.0', note: '新增异常处理机制', isActive: false },
@@ -95,12 +95,12 @@ const generateMockVersionData = (): VersionDetailData[] => {
     usage_instructions_url: 'https://docs.example.com/usage',
     development_environment: 'Win10 | X86',
     inputs: [
-      { name: 'inputParam1', type: '文本' as const, value: '默认值', description: '输入参数1的描述' },
-      { name: 'inputParam2', type: '布尔' as const, value: 'true', description: '是否启用某功能' },
+      { name: 'inputParam1', type: 'Text' as const, value: '默认值', description: '输入参数1的描述' },
+      { name: 'inputParam2', type: 'Boolean' as const, value: 'true', description: '是否启用某功能' },
     ],
     outputs: [
-      { name: 'outputResult', type: '文本' as const, value: '', description: '输出结果' },
-      { name: 'outputStatus', type: '数值' as const, value: '0', description: '执行状态码' },
+      { name: 'outputResult', type: 'Text' as const, value: '', description: '输出结果' },
+      { name: 'outputStatus', type: 'Number' as const, value: '0', description: '执行状态码' },
     ],
   }));
 };
@@ -108,9 +108,9 @@ const generateMockVersionData = (): VersionDetailData[] => {
 const initialMockVersionData: VersionDetailData[] = generateMockVersionData();
 
 const mockCreatorNameMap: Record<string, { name: string; department?: string; role?: string; email?: string }> = {
-  'user-001': { name: '张三', department: '技术部', role: '高级工程师', email: 'zhangsan@example.com' },
-  'user-002': { name: '李四', department: '产品部', role: '产品经理', email: 'lisi@example.com' },
-  'user-003': { name: '王五', department: '运维部', role: '运维工程师', email: 'wangwu@example.com' },
+  'user-001': { name: 'John Smith', department: '技术部', role: '高级工程师', email: 'zhangsan@example.com' },
+  'user-002': { name: 'Jane Doe', department: '产品部', role: '产品经理', email: 'lisi@example.com' },
+  'user-003': { name: 'Mike Wang', department: '运维部', role: '运维工程师', email: 'wangwu@example.com' },
   'user-004': { name: '赵六', department: '测试部', role: '测试工程师', email: 'zhaoliu@example.com' },
   'user-005': { name: '钱七', department: '技术部', role: '架构师', email: 'qianqi@example.com' },
 };

@@ -6,9 +6,9 @@ import './index.less';
 
 // Mock机器人组数据
 const mockWorkerGroups = [
-  { id: 'group-001', name: '财务流程机器人组' },
-  { id: 'group-002', name: '人事流程机器人组' },
-  { id: 'group-003', name: '运维巡检机器人组' },
+  { id: 'group-001', name: 'Finance Bot Group' },
+  { id: 'group-002', name: 'HR Bot Group' },
+  { id: 'group-003', name: 'Ops Inspection Bot Group' },
 ];
 
 interface AddToGroupModalProps {

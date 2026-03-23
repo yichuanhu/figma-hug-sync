@@ -27,7 +27,7 @@ interface LogSyncPanelProps {
   onRefresh?: () => void;
 }
 
-// 日志级别颜色配置
+// Log level颜色配置
 const logLevelConfig: Record<LogLevel, { color: 'grey' | 'blue' | 'orange' | 'red' }> = {
   DEBUG: { color: 'grey' },
   INFO: { color: 'blue' },

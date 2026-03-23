@@ -19,7 +19,7 @@ interface EditWorkerModalProps {
 }
 
 // 已存在的机器人名称（用于唯一性校验）
-const existingWorkerNames = ['财务机器人-01', '财务机器人-02', '财务机器人-03', '人力机器人-01', '运维机器人-01', '测试机器人-01'];
+const existingWorkerNames = ['Finance Bot-01', 'Finance Bot-02', 'Finance Bot-03', 'HR Bot-01', 'Ops Bot-01', '测试机器人-01'];
 
 const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorkerModalProps) => {
   const { t } = useTranslation();
@@ -109,7 +109,7 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
       onSuccess?.(updatedWorker);
       onCancel();
     } catch (error) {
-      console.error('更新机器人失败:', error);
+      console.error('Failed to update robot:', error);
     } finally {
       setLoading(false);
     }

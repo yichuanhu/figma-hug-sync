@@ -30,13 +30,13 @@ const generateUUID = (): string => {
 
 // Mock已有机器人列表（包含桌面类型信息）
 const existingWorkers: Array<{ id: string; name: string; desktop_type: 'Console' | 'NotConsole' }> = [
-  { id: '1', name: '财务机器人-01', desktop_type: 'Console' },
-  { id: '2', name: '财务机器人-02', desktop_type: 'NotConsole' },
-  { id: '3', name: '人力机器人-01', desktop_type: 'NotConsole' },
+  { id: '1', name: 'Finance Bot-01', desktop_type: 'Console' },
+  { id: '2', name: 'Finance Bot-02', desktop_type: 'NotConsole' },
+  { id: '3', name: 'HR Bot-01', desktop_type: 'NotConsole' },
 ];
 
 // 已存在的机器人名称（用于唯一性校验）
-const existingWorkerNames = ['财务机器人-01', '财务机器人-02', '财务机器人-03', '人力机器人-01', '运维机器人-01', '测试机器人-01'];
+const existingWorkerNames = ['Finance Bot-01', 'Finance Bot-02', 'Finance Bot-03', 'HR Bot-01', 'Ops Bot-01', '测试机器人-01'];
 
 const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalProps) => {
   const { t } = useTranslation();
@@ -121,7 +121,7 @@ const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalPr
       onCancel();
       onSuccess?.(mockResponse);
     } catch (error) {
-      console.error('创建机器人失败:', error);
+      console.error('Created robot失败:', error);
     } finally {
       setLoading(false);
     }

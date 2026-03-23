@@ -33,12 +33,12 @@ interface CreateTaskModalProps {
 const mockProcesses: LYProcessActiveVersionResponse[] = [
   {
     process_id: 'proc-001',
-    process_name: '订单自动处理',
+    process_name: 'Auto Order Processing',
     version_id: 'ver-001',
     version: 'v1.2.0',
     parameters: [
-      { name: 'targetUrl', type: 'TEXT', required: true, description: '目标URL地址' },
-      { name: 'maxCount', type: 'NUMBER', required: false, default_value: 100, description: '最大处理数量' },
+      { name: 'targetUrl', type: 'TEXT', required: true, description: 'Target URL address' },
+      { name: 'maxCount', type: 'NUMBER', required: false, default_value: 100, description: 'Maximum processing count' },
       { name: 'enableRetry', type: 'BOOLEAN', required: false, default_value: true, description: '是否启用重试' },
     ],
     output_parameters: [
@@ -49,7 +49,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
   },
   {
     process_id: 'proc-002',
-    process_name: '财务报销审批',
+    process_name: 'Expense Reimbursement Approval',
     version_id: 'ver-002',
     version: 'v2.0.0',
     parameters: [
@@ -63,7 +63,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
   },
   {
     process_id: 'proc-003',
-    process_name: '人事入职流程',
+    process_name: 'Employee Onboarding Flow',
     version_id: 'ver-003',
     version: 'v1.0.0',
     parameters: [],
@@ -88,8 +88,8 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
 
 // Mock 执行目标
 const mockBotGroups = [
-  { id: 'group-001', name: '订单处理组', onlineCount: 3, totalCount: 5 },
-  { id: 'group-002', name: '财务审批组', onlineCount: 2, totalCount: 3 },
+  { id: 'group-001', name: 'Order Processing Group', onlineCount: 3, totalCount: 5 },
+  { id: 'group-002', name: 'Finance Approval Group', onlineCount: 2, totalCount: 3 },
   { id: 'group-003', name: '人事管理组', onlineCount: 1, totalCount: 2 },
 ];
 
@@ -103,8 +103,8 @@ const mockBots = [
 
 // Mock 个人凭据
 const mockCredentials = [
-  { id: 'cred-001', name: '系统管理员凭据' },
-  { id: 'cred-002', name: 'API访问凭据' },
+  { id: 'cred-001', name: 'System Admin Credentials' },
+  { id: 'cred-002', name: 'API Access Credentials' },
   { id: 'cred-003', name: '数据库凭据' },
 ];
 
@@ -112,13 +112,13 @@ const mockCredentials = [
 const mockTemplates: LYExecutionTemplateResponse[] = [
   {
     template_id: 'tpl-001',
-    template_name: '订单处理默认模板',
-    description: '使用默认配置处理订单',
+    template_name: 'Order Processing Default Template',
+    description: 'Process orders with default config',
     process_id: 'proc-001',
-    process_name: '订单自动处理',
+    process_name: 'Auto Order Processing',
     execution_target_type: 'BOT_GROUP',
     execution_target_id: 'group-001',
-    execution_target_name: '订单处理组',
+    execution_target_name: 'Order Processing Group',
     priority: 'MEDIUM',
     max_execution_duration: 3600,
     validity_days: 7,
@@ -311,7 +311,7 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
   const handleSubmit = async (values: Record<string, unknown>) => {
     setLoading(true);
     try {
-      // 提取参数值
+      // 提取参Number
       const parameterValues: Record<string, unknown> = {};
       if (selectedProcess) {
         selectedProcess.parameters.forEach((param) => {

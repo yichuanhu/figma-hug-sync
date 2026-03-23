@@ -76,7 +76,7 @@ const CreateReleasePage: React.FC = () => {
     const parameters = [
       {
         resource_id: 'PARAM-001',
-        resource_name: 'ERP API 地址',
+        resource_name: 'ERP API Address',
         is_previously_published: true,
         test_value: 'https://test.erp.com/api',
         used_by_processes: processes.map((p) => ({
@@ -86,7 +86,7 @@ const CreateReleasePage: React.FC = () => {
       },
       {
         resource_id: 'PARAM-002',
-        resource_name: '批量处理数量',
+        resource_name: 'Batch processing count',
         is_previously_published: false,
         test_value: '100',
         used_by_processes: processes.slice(0, 1).map((p) => ({
@@ -96,9 +96,9 @@ const CreateReleasePage: React.FC = () => {
       },
       {
         resource_id: 'PARAM-003',
-        resource_name: '这是一个超级超级长的参数名称用来测试当参数名称文本过长时候资源卡片的标题区域是否能正确处理截断和换行的边界场景',
+        resource_name: '这是一个超级超级长的参数名称用来测试当参数名称Text过长时候资源卡片的标题区域是否能正确处理截断和换行的边界场景',
         is_previously_published: false,
-        test_value: '这是一段非常非常长的文本类型参数值，用来模拟实际业务中可能出现的超长配置文本。例如一段完整的JSON配置内容：{"database":{"host":"192.168.1.100","port":5432,"username":"admin","password":"encrypted_password_here","database_name":"production_db","connection_pool_size":20,"timeout_ms":30000},"redis":{"host":"192.168.1.101","port":6379,"cluster_mode":true},"logging":{"level":"INFO","output":"file","path":"/var/log/app/"}}',
+        test_value: '这是一段非常非常长的Text类型参Number，用来模拟实际业务中可能出现的超长配置Text。例如一段完整的JSON配置内容：{"database":{"host":"192.168.1.100","port":5432,"username":"admin","password":"encrypted_password_here","database_name":"production_db","connection_pool_size":20,"timeout_ms":30000},"redis":{"host":"192.168.1.101","port":6379,"cluster_mode":true},"logging":{"level":"INFO","output":"file","path":"/var/log/app/"}}',
         used_by_processes: processes.map((p) => ({
           process_id: p.process.id,
           process_name: p.process.name,
@@ -177,7 +177,7 @@ const CreateReleasePage: React.FC = () => {
       ? [
           {
             resource_id: 'QUEUE-001',
-            resource_name: '订单处理队列',
+            resource_name: 'Order Processing队列',
             is_previously_published: false,
             test_value: null,
             used_by_processes: processes.slice(0, 1).map((p) => ({

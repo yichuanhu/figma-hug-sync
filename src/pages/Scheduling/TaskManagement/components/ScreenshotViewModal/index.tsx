@@ -48,7 +48,7 @@ const generateUUID = (): string => {
 // Mock 数据生成
 const generateMockScreenshot = (executionId: string, index: number): LYTaskScreenshotResponse => {
   const baseTime = new Date(2026, 0, 30, 14, 30);
-  const capturedAt = new Date(baseTime.getTime() + index * 10000); // 每10秒一张
+  const capturedAt = new Date(baseTime.getTime() + index * 10000); // one every 10 seconds
   
   // 使用 picsum.photos 作为 mock 图片
   const imageId = 100 + index;

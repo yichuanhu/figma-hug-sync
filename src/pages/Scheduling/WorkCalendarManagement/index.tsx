@@ -67,7 +67,7 @@ const WorkCalendarManagement = () => {
       special_dates: [],
       reference_count: 0,
       creator_id: 'current-user',
-      creator_name: '当前用户',
+      creator_name: 'Current User',
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };

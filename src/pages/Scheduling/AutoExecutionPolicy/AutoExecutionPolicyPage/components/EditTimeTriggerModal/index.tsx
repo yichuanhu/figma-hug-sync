@@ -38,13 +38,13 @@ interface EditTimeTriggerModalProps {
 const mockTemplates = [
   {
     template_id: 'tpl-001',
-    template_name: '订单处理默认模板',
-    description: '使用默认配置处理订单',
+    template_name: 'Order Processing Default Template',
+    description: 'Process orders with default config',
     process_id: 'proc-001',
-    process_name: '订单自动处理',
+    process_name: 'Auto Order Processing',
     execution_target_type: 'BOT_GROUP' as ExecutionTargetType,
     execution_target_id: 'group-001',
-    execution_target_name: '订单处理组',
+    execution_target_name: 'Order Processing Group',
     priority: 'MEDIUM' as TaskPriority,
     max_execution_duration: 3600,
     validity_days: 7,
@@ -54,12 +54,12 @@ const mockTemplates = [
   {
     template_id: 'tpl-002',
     template_name: '财务审批快速模板',
-    description: '财务报销审批快速执行配置',
+    description: 'Expense Reimbursement Approval快速执行配置',
     process_id: 'proc-002',
-    process_name: '财务报销审批',
+    process_name: 'Expense Reimbursement Approval',
     execution_target_type: 'BOT_GROUP' as ExecutionTargetType,
     execution_target_id: 'group-002',
-    execution_target_name: '财务审批组',
+    execution_target_name: 'Finance Approval Group',
     priority: 'HIGH' as TaskPriority,
     max_execution_duration: 1800,
     validity_days: 3,
@@ -72,12 +72,12 @@ const mockTemplates = [
 const mockProcesses: LYProcessActiveVersionResponse[] = [
   {
     process_id: 'proc-001',
-    process_name: '订单自动处理',
+    process_name: 'Auto Order Processing',
     version_id: 'ver-001',
     version: 'v1.2.0',
     parameters: [
-      { name: 'targetUrl', type: 'TEXT', required: true, description: '目标URL地址' },
-      { name: 'maxCount', type: 'NUMBER', required: false, default_value: 100, description: '最大处理数量' },
+      { name: 'targetUrl', type: 'TEXT', required: true, description: 'Target URL address' },
+      { name: 'maxCount', type: 'NUMBER', required: false, default_value: 100, description: 'Maximum processing count' },
       { name: 'enableRetry', type: 'BOOLEAN', required: false, default_value: true, description: '是否启用重试' },
     ],
     output_parameters: [
@@ -87,7 +87,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
   },
   {
     process_id: 'proc-002',
-    process_name: '财务报销审批',
+    process_name: 'Expense Reimbursement Approval',
     version_id: 'ver-002',
     version: 'v2.0.0',
     parameters: [
@@ -99,7 +99,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
   },
   {
     process_id: 'proc-003',
-    process_name: '人事入职流程',
+    process_name: 'Employee Onboarding Flow',
     version_id: 'ver-003',
     version: 'v1.0.0',
     parameters: [],
@@ -122,8 +122,8 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
 
 // Mock 执行目标
 const mockBotGroups = [
-  { id: 'group-001', name: '订单处理组', onlineCount: 3, totalCount: 5 },
-  { id: 'group-002', name: '财务审批组', onlineCount: 2, totalCount: 3 },
+  { id: 'group-001', name: 'Order Processing Group', onlineCount: 3, totalCount: 5 },
+  { id: 'group-002', name: 'Finance Approval Group', onlineCount: 2, totalCount: 3 },
 ];
 
 const mockBots = [
@@ -133,8 +133,8 @@ const mockBots = [
 
 // Mock 凭据
 const mockCredentials = [
-  { id: 'cred-001', name: '系统管理员凭据' },
-  { id: 'cred-002', name: 'API访问凭据' },
+  { id: 'cred-001', name: 'System Admin Credentials' },
+  { id: 'cred-002', name: 'API Access Credentials' },
 ];
 
 const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTimeTriggerModalProps) => {
@@ -192,7 +192,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
         enableRecording: trigger.enable_recording,
       };
       
-      // 设置参数值
+      // 设置参Number
       if (trigger.input_parameters && process) {
         process.parameters.forEach((param) => {
           if (trigger.input_parameters?.[param.name] !== undefined) {
@@ -444,7 +444,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
             key={param.name}
             field={`param_${param.name}`}
             label={renderLabel()}
-            placeholder="请选择凭据"
+            placeholder="Select credentials"
             optionList={mockCredentials.map((c) => ({ value: c.id, label: c.name }))}
             style={{ width: '100%' }}
             rules={rules}

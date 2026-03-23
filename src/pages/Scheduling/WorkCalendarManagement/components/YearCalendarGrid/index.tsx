@@ -57,7 +57,7 @@ const YearCalendarGrid: React.FC<YearCalendarGridProps> = ({
     const special = specialDatesMap.get(dateStr);
     if (special) {
       if (special.type === 'HOLIDAY') return true;
-      if (special.type === 'WORKDAY') return false; // 调休，是工作日
+      if (special.type === 'WORKDAY') return false; // Adjusted workday，是工作日
     }
     // Check if it's a weekend
     return weekendDays.includes(dayOfWeek);

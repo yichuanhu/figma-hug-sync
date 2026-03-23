@@ -60,25 +60,25 @@ const generateUUID = (): string => {
 // ============= Mock数据生成 =============
 
 const mockCreatorNameMap: Record<string, string> = {
-  'user-001': '张三',
-  'user-002': '李四',
-  'user-003': '王五',
+  'user-001': 'John Smith',
+  'user-002': 'Jane Doe',
+  'user-003': 'Mike Wang',
   'user-004': '赵六',
   'user-005': '钱七',
 };
 
 const generateMockTaskResponse = (index: number): LYTaskResponse => {
   const processNames = [
-    '订单自动处理',
-    '财务报销审批',
-    '人事入职流程',
+    'Auto Order Processing',
+    'Expense Reimbursement Approval',
+    'Employee Onboarding Flow',
     '采购申请流程',
     '合同审批流程',
   ];
 
   const targetNames = [
-    '订单处理组',
-    '财务审批组',
+    'Order Processing Group',
+    'Finance Approval Group',
     '人事管理组',
     'RPA-BOT-001',
     'RPA-BOT-002',
@@ -141,7 +141,7 @@ const generateMockTaskResponse = (index: number): LYTaskResponse => {
       duration: 300,
       bot_id: generateUUID(),
       bot_name: `RPA-BOT-${String((index + i) % 5 + 1).padStart(3, '0')}`,
-      error_message: i > 0 ? '执行失败：目标元素未找到' : null,
+      error_message: i > 0 ? 'Execution failed: Target element not found' : null,
       log_count: 50 + (index % 50),
       screenshot_count: 5 + (index % 10),
     })) : [],

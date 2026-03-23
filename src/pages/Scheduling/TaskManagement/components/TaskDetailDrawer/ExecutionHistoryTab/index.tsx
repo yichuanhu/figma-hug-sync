@@ -73,7 +73,7 @@ const generateMockExecution = (taskId: string, index: number): LYTaskExecutionRe
     duration: status !== 'RUNNING' ? 300 + (index * 10) : null,
     bot_id: generateUUID(),
     bot_name: botNames[index % botNames.length],
-    error_message: status === 'FAILED' ? '执行失败：目标元素未找到' : status === 'TIMEOUT' ? '执行超时' : null,
+    error_message: status === 'FAILED' ? 'Execution failed: Target element not found' : status === 'TIMEOUT' ? '执行超时' : null,
     log_count: 50 + (index % 50),
     screenshot_count: index % 2 === 0 ? 5 + (index % 10) : 0,
   };
