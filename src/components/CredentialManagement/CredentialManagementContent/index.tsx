@@ -54,14 +54,14 @@ const generateMockCredential = (index: number): LYCredentialResponse => {
   const types: CredentialType[] = ['FIXED_VALUE', 'PERSONAL_REF'];
   const type = types[index % 2];
   const names = [
-    '企业邮箱凭据',
-    '数据库连接凭据',
-    '第三方API凭据',
-    'SSH服务器凭据',
-    'Git仓库凭据',
-    'ERP系统凭据',
-    'CRM系统凭据',
-    'OA系统凭据',
+    'Enterprise Email Credential',
+    'Database Connection Credential',
+    'Third-party API Credential',
+    'SSH Server Credential',
+    'Git Repository Credential',
+    'ERP System Credential',
+    'CRM System Credential',
+    'OA System Credential',
   ];
 
   // 部分凭据已发布
@@ -80,15 +80,15 @@ const generateMockCredential = (index: number): LYCredentialResponse => {
       password: '******',
     },
     description: index === 0
-      ? '这是企业核心业务系统的统一认证凭据，用于自动化流程访问多个关联系统。该凭据支持SSO单点登录、OAuth2.0授权、LDAP目录服务集成等多种认证方式。使用时需确保网络环境安全，并定期更新密码以符合企业安全合规要求。凭据的使用记录将被完整审计和追踪。'
-      : `这是${names[index % names.length]}的描述信息，用于第三方系统的访问认证。`,
+      ? 'Unified authentication credential for core enterprise systems, used by automation processes to access multiple linked systems. Supports SSO, OAuth 2.0, and LDAP integration. Ensure secure network environment and update passwords regularly for compliance. Full audit trail of credential usage.'
+      : `Description for ${names[index % names.length]}, used for third-party system authentication.`,
     linked_personal_credential_value: type === 'PERSONAL_REF' && index % 3 === 0 ? 'user/******' : '-',
     is_published: isPublished,
     created_by: `user-00${(index % 4) + 1}`,
-    created_by_name: ['张三', '李四', '王五', '赵六'][index % 4],
-    created_by_department: ['研发部', '产品部', '测试部', '运维部'][index % 4],
-    created_by_role: ['高级工程师', '产品经理', '测试工程师', '运维工程师'][index % 4],
-    created_by_email: ['zhangsan@example.com', 'lisi@example.com', 'wangwu@example.com', 'zhaoliu@example.com'][index % 4],
+    created_by_name: ['John Smith', 'Jane Doe', 'Mike Wang', 'David Zhao'][index % 4],
+    created_by_department: ['R&D Dept', 'Product Dept', 'QA Dept', 'Ops Dept'][index % 4],
+    created_by_role: ['Senior Engineer', 'Product Manager', 'QA Engineer', 'Ops Engineer'][index % 4],
+    created_by_email: ['john.smith@example.com', 'jane.doe@example.com', 'mike.wang@example.com', 'david.zhao@example.com'][index % 4],
     created_at: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
     updated_at: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
   };

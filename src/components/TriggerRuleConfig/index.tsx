@@ -85,41 +85,41 @@ export interface TriggerRuleConfigProps {
 
 import { TIMEZONE_GROUPS } from '@/constants/timezones';
 
-// 星期选项
-const weekdayOptions = [
-  { value: 1, label: '周一' },
-  { value: 2, label: '周二' },
-  { value: 3, label: '周三' },
-  { value: 4, label: '周四' },
-  { value: 5, label: '周五' },
-  { value: 6, label: '周六' },
-  { value: 0, label: '周日' },
+// 星期选项 - will be built with i18n in component
+const getWeekdayOptions = (t: (key: string) => string) => [
+  { value: 1, label: t('triggerRule.weekday.mon') },
+  { value: 2, label: t('triggerRule.weekday.tue') },
+  { value: 3, label: t('triggerRule.weekday.wed') },
+  { value: 4, label: t('triggerRule.weekday.thu') },
+  { value: 5, label: t('triggerRule.weekday.fri') },
+  { value: 6, label: t('triggerRule.weekday.sat') },
+  { value: 0, label: t('triggerRule.weekday.sun') },
 ];
 
 // 月份选项
-const monthOptions = [
-  { value: 1, label: '1月' },
-  { value: 2, label: '2月' },
-  { value: 3, label: '3月' },
-  { value: 4, label: '4月' },
-  { value: 5, label: '5月' },
-  { value: 6, label: '6月' },
-  { value: 7, label: '7月' },
-  { value: 8, label: '8月' },
-  { value: 9, label: '9月' },
-  { value: 10, label: '10月' },
-  { value: 11, label: '11月' },
-  { value: 12, label: '12月' },
+const getMonthOptions = (t: (key: string) => string) => [
+  { value: 1, label: t('triggerRule.month.jan') },
+  { value: 2, label: t('triggerRule.month.feb') },
+  { value: 3, label: t('triggerRule.month.mar') },
+  { value: 4, label: t('triggerRule.month.apr') },
+  { value: 5, label: t('triggerRule.month.may') },
+  { value: 6, label: t('triggerRule.month.jun') },
+  { value: 7, label: t('triggerRule.month.jul') },
+  { value: 8, label: t('triggerRule.month.aug') },
+  { value: 9, label: t('triggerRule.month.sep') },
+  { value: 10, label: t('triggerRule.month.oct') },
+  { value: 11, label: t('triggerRule.month.nov') },
+  { value: 12, label: t('triggerRule.month.dec') },
 ];
 
 // Cron 示例
-const cronExamples = [
-  { expression: '0 9 * * *', description: '每天 09:00' },
-  { expression: '0 8 * * 1', description: '每周一 08:00' },
-  { expression: '0 9 * * 1-5', description: '工作日每天 09:00' },
-  { expression: '59 23 L * *', description: '每月最后一天 23:59' },
-  { expression: '*/5 * * * *', description: '每5分钟' },
-  { expression: '0 9,15 * * *', description: '每天 09:00 和 15:00' },
+const getCronExamples = (t: (key: string) => string) => [
+  { expression: '0 9 * * *', description: t('triggerRule.cronExampleDesc.dailyAt9') },
+  { expression: '0 8 * * 1', description: t('triggerRule.cronExampleDesc.weeklyMon8') },
+  { expression: '0 9 * * 1-5', description: t('triggerRule.cronExampleDesc.weekdaysAt9') },
+  { expression: '59 23 L * *', description: t('triggerRule.cronExampleDesc.lastDayAt2359') },
+  { expression: '*/5 * * * *', description: t('triggerRule.cronExampleDesc.every5min') },
+  { expression: '0 9,15 * * *', description: t('triggerRule.cronExampleDesc.dailyAt9and15') },
 ];
 
 const TriggerRuleConfig = ({
