@@ -9,6 +9,27 @@ interface Props {
   data: RequirementRoiDetail[];
 }
 
+/* Professional analytics palette */
+const COLORS = {
+  primary: '#3B82F6',
+  success: '#10B981',
+  warning: '#F59E0B',
+  danger: '#EF4444',
+  purple: '#8B5CF6',
+  indigo: '#6366F1',
+  teal: '#14B8A6',
+  pie: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444'],
+};
+
+const TOOLTIP_STYLE = {
+  backgroundColor: 'rgba(255,255,255,0.96)',
+  borderColor: '#E5E7EB',
+  borderWidth: 1,
+  textStyle: { color: '#374151', fontSize: 12 },
+  padding: [10, 14],
+  extraCssText: 'box-shadow: 0 4px 16px rgba(0,0,0,0.08); border-radius: 8px;',
+};
+
 const RequirementRoiSection = ({ data }: Props) => {
   const { t } = useTranslation();
 
@@ -24,7 +45,9 @@ const RequirementRoiSection = ({ data }: Props) => {
     )},
     { title: t('operations.roiAnalysis.reqName'), dataIndex: 'name', width: 220 },
     { title: t('operations.dashboard.departmentName'), dataIndex: 'department', width: 120 },
-    { title: 'ROI', dataIndex: 'roi', width: 80, render: (v: number) => `${v}%` },
+    { title: 'ROI', dataIndex: 'roi', width: 80, render: (v: number) => (
+      <span style={{ color: v >= 200 ? COLORS.success : v >= 100 ? COLORS.primary : COLORS.warning, fontWeight: 600 }}>{v}%</span>
+    )},
     { title: t('operations.roiAnalysis.investmentCost'), dataIndex: 'investmentCost', width: 120,
       render: (v: number) => `$${(v / 1000).toFixed(0)}K` },
     { title: t('operations.roiAnalysis.savedCost'), dataIndex: 'savedCost', width: 120,
@@ -37,12 +60,12 @@ const RequirementRoiSection = ({ data }: Props) => {
     },
   ];
 
-  // Pie chart - ROI distribution by range
+  // Pie chart - ROI distribution
   const pieOption = useMemo(() => {
     const ranges = [
-      { name: '0-100%', min: 0, max: 100 },
-      { name: '100-200%', min: 100, max: 200 },
-      { name: '200-300%', min: 200, max: 300 },
+      { name: '0–100%', min: 0, max: 100 },
+      { name: '100–200%', min: 100, max: 200 },
+      { name: '200–300%', min: 200, max: 300 },
       { name: '300%+', min: 300, max: Infinity },
     ];
     const pieData = ranges.map(r => ({
@@ -51,16 +74,23 @@ const RequirementRoiSection = ({ data }: Props) => {
     })).filter(d => d.value > 0);
 
     return {
-      tooltip: { trigger: 'item', formatter: '{b}: {c} ({d}%)' },
-      legend: { bottom: 0, textStyle: { fontSize: 12 } },
+      tooltip: { ...TOOLTIP_STYLE, trigger: 'item', formatter: '{b}: {c} ({d}%)' },
+      legend: { bottom: 0, textStyle: { fontSize: 12, color: '#6B7280' }, itemWidth: 12, itemHeight: 12, itemGap: 16 },
       series: [{
         type: 'pie',
-        radius: ['40%', '70%'],
-        center: ['50%', '45%'],
+        radius: ['42%', '72%'],
+        center: ['50%', '42%'],
         data: pieData,
-        label: { show: true, formatter: '{b}\n{d}%', fontSize: 11 },
-        itemStyle: { borderRadius: 4, borderColor: '#fff', borderWidth: 2 },
-        color: ['#165DFF', '#00B42A', '#FF7D00', '#F53F3F'],
+        label: { show: true, formatter: '{b}\n{d}%', fontSize: 11, color: '#6B7280' },
+        labelLine: { length: 12, length2: 8, lineStyle: { color: '#D1D5DB' } },
+        itemStyle: { borderRadius: 6, borderColor: '#fff', borderWidth: 2 },
+        color: COLORS.pie,
+        emphasis: {
+          itemStyle: { shadowBlur: 12, shadowColor: 'rgba(0,0,0,0.12)' },
+          label: { fontSize: 13, fontWeight: 600 },
+        },
+        animationType: 'scale',
+        animationEasing: 'cubicOut',
       }],
     };
   }, [data]);
@@ -68,25 +98,49 @@ const RequirementRoiSection = ({ data }: Props) => {
   // Scatter chart - Investment vs Savings
   const scatterOption = useMemo(() => ({
     tooltip: {
+      ...TOOLTIP_STYLE,
       trigger: 'item',
-      formatter: (p: any) => `${p.data[3]}<br/>${t('operations.roiAnalysis.investmentCost')}: $${(p.data[0] / 1000).toFixed(0)}K<br/>${t('operations.roiAnalysis.savedCost')}: $${(p.data[1] / 1000).toFixed(0)}K<br/>ROI: ${p.data[2]}%`,
+      formatter: (p: any) =>
+        `<div style="font-weight:600;margin-bottom:4px">${p.data[3]}</div>` +
+        `<div style="display:flex;justify-content:space-between;gap:16px"><span style="color:#6B7280">${t('operations.roiAnalysis.investmentCost')}</span><span style="font-weight:500">$${(p.data[0] / 1000).toFixed(0)}K</span></div>` +
+        `<div style="display:flex;justify-content:space-between;gap:16px"><span style="color:#6B7280">${t('operations.roiAnalysis.savedCost')}</span><span style="font-weight:500">$${(p.data[1] / 1000).toFixed(0)}K</span></div>` +
+        `<div style="display:flex;justify-content:space-between;gap:16px"><span style="color:#6B7280">ROI</span><span style="font-weight:600;color:${p.data[2] >= 200 ? COLORS.success : COLORS.primary}">${p.data[2]}%</span></div>`,
     },
-    grid: { left: 60, right: 20, top: 20, bottom: 40 },
+    grid: { left: 64, right: 24, top: 24, bottom: 44 },
     xAxis: {
       name: t('operations.roiAnalysis.investmentCost'),
-      nameTextStyle: { fontSize: 11 },
-      axisLabel: { formatter: (v: number) => `$${(v / 1000).toFixed(0)}K`, fontSize: 11 },
+      nameTextStyle: { fontSize: 11, color: '#9CA3AF' },
+      axisLabel: { formatter: (v: number) => `$${(v / 1000).toFixed(0)}K`, fontSize: 11, color: '#9CA3AF' },
+      axisLine: { lineStyle: { color: '#E5E7EB' } },
+      splitLine: { lineStyle: { color: '#F3F4F6', type: 'dashed' } },
     },
     yAxis: {
       name: t('operations.roiAnalysis.savedCost'),
-      nameTextStyle: { fontSize: 11 },
-      axisLabel: { formatter: (v: number) => `$${(v / 1000).toFixed(0)}K`, fontSize: 11 },
+      nameTextStyle: { fontSize: 11, color: '#9CA3AF' },
+      axisLabel: { formatter: (v: number) => `$${(v / 1000).toFixed(0)}K`, fontSize: 11, color: '#9CA3AF' },
+      axisLine: { lineStyle: { color: '#E5E7EB' } },
+      splitLine: { lineStyle: { color: '#F3F4F6', type: 'dashed' } },
     },
     series: [{
       type: 'scatter',
       data: data.map(d => [d.investmentCost, d.savedCost, d.roi, d.name]),
-      symbolSize: (val: number[]) => Math.max(10, Math.min(val[2] / 8, 40)),
-      itemStyle: { color: '#165DFF', opacity: 0.7 },
+      symbolSize: (val: number[]) => Math.max(12, Math.min(val[2] / 6, 44)),
+      itemStyle: {
+        color: (params: any) => {
+          const roi = params.data[2];
+          if (roi >= 300) return COLORS.success;
+          if (roi >= 200) return COLORS.primary;
+          if (roi >= 100) return COLORS.warning;
+          return COLORS.danger;
+        },
+        opacity: 0.75,
+        shadowBlur: 6,
+        shadowColor: 'rgba(0,0,0,0.08)',
+      },
+      emphasis: {
+        itemStyle: { opacity: 1, shadowBlur: 12, shadowColor: 'rgba(0,0,0,0.15)', borderColor: '#fff', borderWidth: 2 },
+      },
+      animationDelay: (idx: number) => idx * 80,
     }],
   }), [data, t]);
 
@@ -102,11 +156,11 @@ const RequirementRoiSection = ({ data }: Props) => {
         <div className="requirement-roi-charts">
           <div className="requirement-roi-chart-item">
             <div className="chart-subtitle">{t('operations.roiAnalysis.roiDistribution')}</div>
-            <ReactECharts option={pieOption} style={{ height: 220 }} opts={{ renderer: 'svg' }} />
+            <ReactECharts option={pieOption} style={{ height: 240 }} opts={{ renderer: 'svg' }} />
           </div>
           <div className="requirement-roi-chart-item">
             <div className="chart-subtitle">{t('operations.roiAnalysis.investVsSaved')}</div>
-            <ReactECharts option={scatterOption} style={{ height: 220 }} opts={{ renderer: 'svg' }} />
+            <ReactECharts option={scatterOption} style={{ height: 240 }} opts={{ renderer: 'svg' }} />
           </div>
         </div>
       </div>
