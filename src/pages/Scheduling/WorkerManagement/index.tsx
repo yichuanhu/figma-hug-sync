@@ -171,7 +171,7 @@ const mockWorkers: LYWorkerResponse[] = [
   {
     id: '550e8400-e29b-41d4-a716-446655440005',
     name: 'Ops Bot-01',
-    description: 'For opsinspection's bot',
+    description: 'Bot for ops inspection',
     status: 'IDLE',
     sync_status: 'SYNCED',
     ip_address: '10.0.2.50',

@@ -64,7 +64,7 @@ interface WorkerGroupDetailDrawerProps {
 // Mock成员Data
 const mockMembers: LYWorkerGroupMemberResponse[] = [
   {
-    id: '550e8400-e29b-41d4-a716-446655440001', name: 'Finance Bot-01', description: 'For financialProcessautomation's bot',
+    id: '550e8400-e29b-41d4-a716-446655440001', name: 'Finance Bot-01', description: 'Bot for financial process automation',
     status: 'IDLE', sync_status: 'SYNCED', ip_address: '10.0.1.100', priority: 'HIGH', client_version: 'v6.7.0',
     last_heartbeat_time: '2025-01-08 10:25:33', receive_tasks: true, username: 'DOMAIN\\robot01', desktop_type: 'Console',
     enable_auto_unlock: true, force_login: false, device_token: 'abc123xyz789', machine_code: 'F11FD4447A215F380A40',
@@ -73,7 +73,7 @@ const mockMembers: LYWorkerGroupMemberResponse[] = [
     group_id: 'group-001', joined_at: '2025-01-06 10:00:00',
   },
   {
-    id: '550e8400-e29b-41d4-a716-446655440002', name: 'Finance Bot-02', description: 'For financialreportautomation's bot',
+    id: '550e8400-e29b-41d4-a716-446655440002', name: 'Finance Bot-02', description: 'Bot for financial report automation',
     status: 'BUSY', sync_status: 'PENDING', ip_address: '10.0.1.101', priority: 'MEDIUM', client_version: 'v6.7.0',
     last_heartbeat_time: '2025-01-08 10:20:15', receive_tasks: true, username: 'DOMAIN\\robot02', desktop_type: 'NotConsole',
     display_size: '1920x1080', force_login: true, device_token: 'def456ghi012', machine_code: 'A22GE5558B326G491B51',
