@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Typography } from '@douyinfe/semi-ui';
 import DashboardFilter from './components/DashboardFilter';
 import CoreMetricsCards from './components/CoreMetricsCards';
 import ResourceOverview from './components/ResourceOverview';
@@ -18,6 +19,8 @@ import {
 import type { DashboardFilter as FilterType } from '@/pages/Operations/types';
 import './index.less';
 
+const { Title } = Typography;
+
 const Dashboard = () => {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<FilterType>({
@@ -33,7 +36,9 @@ const Dashboard = () => {
   return (
     <div className="operations-dashboard">
       <div className="operations-dashboard-header">
-        <h2>{t('operations.dashboard.title')}</h2>
+        <div className="operations-dashboard-header-title">
+          <Title heading={3} className="title">{t('operations.dashboard.title')}</Title>
+        </div>
       </div>
       <DashboardFilter filter={filter} onFilterChange={setFilter} onRefresh={handleRefresh} />
       <CoreMetricsCards data={mockRoiMetrics} />
