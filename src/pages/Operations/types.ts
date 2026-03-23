@@ -107,3 +107,76 @@ export interface DashboardFilter {
   department: string;
   project: string;
 }
+
+// 资源效能 - 机器人详情
+export interface RobotDetail {
+  id: string;
+  name: string;
+  type: 'interactive' | 'unattended';
+  group: string;
+  status: 'working' | 'idle' | 'offline' | 'maintenance';
+  utilization: number;
+  monthlyTasks: number;
+  trend: number[];
+}
+
+// 资源效能 - 任务执行统计
+export interface TaskExecutionStats {
+  total: number;
+  success: number;
+  failed: number;
+  running: number;
+  timeout: number;
+}
+
+// 资源效能 - 利用率趋势点
+export interface UtilizationTrendPoint {
+  month: string;
+  utilization: number;
+}
+
+// 资源效能 - 分组利用率
+export interface GroupUtilization {
+  group: string;
+  utilization: number;
+  robotCount: number;
+}
+
+// 资源效能 - 成功率趋势点
+export interface SuccessRateTrendPoint {
+  month: string;
+  rate: number;
+}
+
+// 资源效能 - 聚合数据
+export interface ResourceEfficiencyData {
+  overallUtilization: number;
+  totalRobots: number;
+  working: number;
+  idle: number;
+  offline: number;
+  maintenance: number;
+  interactiveOnline: number;
+  interactiveTotal: number;
+  unattendedOnline: number;
+  unattendedTotal: number;
+  robotDetails: RobotDetail[];
+  taskStats: TaskExecutionStats;
+  todayTasks: number;
+  totalTasks: number;
+  todayRunMinutes: number;
+  totalRunMinutes: number;
+  successRateToday: number;
+  successRateTotal: number;
+  utilizationTrend: UtilizationTrendPoint[];
+  groupUtilization: GroupUtilization[];
+  successRateTrend: SuccessRateTrendPoint[];
+}
+
+// 资源效能 - 筛选条件
+export interface ResourceEfficiencyFilter {
+  timeRange: string;
+  group: string;
+  status: string;
+  timeDimension: string;
+}

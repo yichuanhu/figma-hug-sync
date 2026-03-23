@@ -8,6 +8,7 @@ import type {
   RequirementRoiDetail,
   DepartmentRoiDetail,
   ProjectRoiDetail,
+  ResourceEfficiencyData,
 } from './types';
 
 export const mockRoiMetrics: RoiMetrics = {
