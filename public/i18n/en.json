@@ -2976,7 +2976,33 @@
       "projectName": "Project"
     },
     "resourceEfficiency": {
-      "title": "Resource Efficiency"
+      "title": "Resource Efficiency",
+      "group": "Group",
+      "robotPerformance": "Robot Performance",
+      "taskExecution": "Task Execution Statistics",
+      "overallUtilization": "Overall Utilization",
+      "typeDistribution": "Robot Type Distribution",
+      "utilizationTrend": "Utilization Trend",
+      "groupComparison": "Group Utilization Comparison",
+      "robotName": "Robot Name",
+      "robotType": "Type",
+      "utilization": "Utilization",
+      "monthlyTasks": "Monthly Tasks",
+      "trendLabel": "Trend",
+      "statusWorking": "Working",
+      "statusIdle": "Idle",
+      "statusOffline": "Offline",
+      "statusMaintenance": "Maintenance",
+      "totalExecuted": "Total Executed",
+      "successCount": "Success",
+      "failedCount": "Failed",
+      "runningCount": "Running",
+      "timeoutCount": "Timeout",
+      "todayCumulative": "Today / Cumulative",
+      "successRate": "Success Rate",
+      "successRateToday": "Today Success Rate",
+      "successRateTotal": "Overall Success Rate",
+      "successRateTrend": "Success Rate Trend"
     },
     "businessOutcomes": {
       "title": "Business Outcomes"

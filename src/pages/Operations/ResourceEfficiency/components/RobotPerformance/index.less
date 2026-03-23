@@ -1,0 +1,89 @@
+.robot-performance-section {
+  .robot-perf-charts-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .robot-perf-chart-card {
+    background-color: var(--semi-color-fill-0);
+    border-radius: 8px;
+    padding: 16px;
+  }
+
+  .chart-subtitle {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--semi-color-text-1);
+    margin-bottom: 12px;
+  }
+
+  .robot-status-summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+
+    @media (max-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .robot-status-card {
+    background-color: var(--semi-color-fill-0);
+    border-radius: 8px;
+    padding: 12px 16px;
+    text-align: center;
+
+    .status-label {
+      font-size: 12px;
+      color: var(--semi-color-text-2);
+      margin-bottom: 4px;
+    }
+
+    .status-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--semi-color-text-0);
+      font-variant-numeric: tabular-nums;
+    }
+  }
+
+  .sparkline-cell {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .utilization-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .bar-track {
+      flex: 1;
+      height: 6px;
+      background-color: var(--semi-color-fill-1);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+
+    .bar-value {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--semi-color-text-0);
+      min-width: 40px;
+      text-align: right;
+    }
+  }
+}

@@ -2983,7 +2983,33 @@
       "projectName": "项目名称"
     },
     "resourceEfficiency": {
-      "title": "资源效能监控"
+      "title": "资源效能监控",
+      "group": "分组",
+      "robotPerformance": "机器人效能",
+      "taskExecution": "任务执行统计",
+      "overallUtilization": "整体利用率",
+      "typeDistribution": "机器人类型分布",
+      "utilizationTrend": "利用率趋势",
+      "groupComparison": "分组利用率对比",
+      "robotName": "机器人名称",
+      "robotType": "类型",
+      "utilization": "利用率",
+      "monthlyTasks": "月任务量",
+      "trendLabel": "趋势",
+      "statusWorking": "工作中",
+      "statusIdle": "空闲",
+      "statusOffline": "离线",
+      "statusMaintenance": "维护中",
+      "totalExecuted": "总执行数",
+      "successCount": "成功",
+      "failedCount": "失败",
+      "runningCount": "运行中",
+      "timeoutCount": "超时",
+      "todayCumulative": "今日 / 累计",
+      "successRate": "成功率",
+      "successRateToday": "今日成功率",
+      "successRateTotal": "累计成功率",
+      "successRateTrend": "成功率趋势"
     },
     "businessOutcomes": {
       "title": "业务成果看板"
