@@ -13,11 +13,11 @@ interface PersonalCredential {
 }
 
 const mockPersonalCredentials: PersonalCredential[] = [
-  { id: '1', name: '我的工作邮箱', username: 'work@example.com' },
-  { id: '2', name: '我的VPN账号', username: 'vpn_user' },
-  { id: '3', name: '我的ERP账号', username: 'erp_admin' },
-  { id: '4', name: '我的CRM账号', username: 'crm_user' },
-  { id: '5', name: '我的Git账号', username: 'git_dev' },
+  { id: '1', name: 'My Work Email', username: 'work@example.com' },
+  { id: '2', name: 'My VPN Account', username: 'vpn_user' },
+  { id: '3', name: 'My ERP Account', username: 'erp_admin' },
+  { id: '4', name: 'My CRM Account', username: 'crm_user' },
+  { id: '5', name: 'My Git Account', username: 'git_dev' },
 ];
 
 interface LinkPersonalCredentialModalProps {

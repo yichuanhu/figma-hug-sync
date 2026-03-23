@@ -70,11 +70,11 @@ const generateMockUsageRecords = (): UsageRecord[] => {
 };
 
 const generateMockLinkedCredentials = (count: number): LinkedCredential[] => {
-  const names = ['企业邮箱凭据', '数据库连接凭据', 'SSH服务器凭据', 'Git仓库凭据', 'ERP系统凭据'];
+  const names = ['Enterprise Email Credential', 'Database Connection Credential', 'SSH Server Credential', 'Git Repository Credential', 'ERP System Credential'];
   const types = ['PERSONAL_REF', 'PERSONAL_REF', 'PERSONAL_REF'];
   return Array.from({ length: count }, (_, i) => ({
     credential_id: `cred-${i + 1}`, credential_name: names[i % names.length], credential_type: types[i % types.length],
-    description: `${names[i % names.length]}的描述信息`, created_at: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
+    description: `Description for ${names[i % names.length]}`, created_at: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
   }));
 };
 

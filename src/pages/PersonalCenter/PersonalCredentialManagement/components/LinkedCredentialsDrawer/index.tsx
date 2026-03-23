@@ -41,13 +41,13 @@ const generateMockLinkedCredentials = (personalCredentialId: string): LinkedCred
   const count = (hash % 5) + 1; // 1-5个关联凭据
   
   const credentialNames = [
-    '企业邮箱凭据',
-    'Git仓库凭据',
-    'ERP系统凭据',
-    'VPN连接凭据',
-    'OA系统凭据',
-    '数据库连接凭据',
-    'SSH服务器凭据',
+    'Enterprise Email Credential',
+    'Git Repository Credential',
+    'ERP System Credential',
+    'VPN Connection Credential',
+    'OA System Credential',
+    'Database Connection Credential',
+    'SSH Server Credential',
     'CRM系统凭据',
   ];
 
