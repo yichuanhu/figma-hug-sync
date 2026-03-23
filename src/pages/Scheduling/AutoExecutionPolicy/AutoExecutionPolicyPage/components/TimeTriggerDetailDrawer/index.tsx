@@ -277,7 +277,7 @@ const TimeTriggerDetailDrawer = ({
                   {formatTriggerRule()}
                 </Descriptions.Item>
                 <Descriptions.Item itemKey={t('timeTrigger.detail.fields.timeZone')}>
-                  {trigger.time_zone}
+                  {TIMEZONE_OPTIONS.find(tz => tz.value === trigger.time_zone)?.label || trigger.time_zone}
                 </Descriptions.Item>
                 <Descriptions.Item itemKey={t('timeTrigger.detail.fields.startDateTime')}>
                   {formatTime(trigger.start_date_time)}
