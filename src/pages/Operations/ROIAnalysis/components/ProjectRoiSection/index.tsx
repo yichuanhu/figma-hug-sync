@@ -31,7 +31,9 @@ const ProjectRoiSection = ({ data }: Props) => {
       render: (v: number) => `$${(v / 1000).toFixed(0)}K` },
     { title: t('operations.roiAnalysis.savedCost'), dataIndex: 'savedCost', width: 130,
       render: (v: number) => `$${(v / 1000).toFixed(0)}K` },
-    { title: 'ROI', dataIndex: 'roi', width: 80, render: (v: number) => `${v}%` },
+    { title: 'ROI', dataIndex: 'roi', width: 80, render: (v: number) => (
+      <span style={{ color: v >= 200 ? '#10B981' : v >= 100 ? '#3B82F6' : '#F59E0B', fontWeight: 600 }}>{v}%</span>
+    )},
     { title: t('operations.roiAnalysis.reqCount'), dataIndex: 'requirementCount', width: 100 },
   ];
 
