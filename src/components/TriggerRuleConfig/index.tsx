@@ -283,7 +283,7 @@ const TriggerRuleConfig = ({
       <div className={`${classPrefix}-cron-examples`}>
         <div className={`${classPrefix}-cron-examples-title`}>{t('triggerRule.cronExamples.title')}</div>
         <ul className={`${classPrefix}-cron-examples-list`}>
-          {cronExamples.map((example, index) => (
+          {getCronExamples(t).map((example, index) => (
             <li
               key={index}
               className={`${classPrefix}-cron-examples-item`}
