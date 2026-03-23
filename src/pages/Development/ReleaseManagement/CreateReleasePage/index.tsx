@@ -149,7 +149,7 @@ const CreateReleasePage: React.FC = () => {
       },
       {
         resource_id: 'PARAM-008',
-        resource_name: 'TimeoutTime阈值(毫s)',
+        resource_name: 'Timeout Threshold (ms)',
         is_previously_published: false,
         test_value: '30000',
         param_type: 'NUMBER',
