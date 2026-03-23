@@ -96,9 +96,9 @@ const CreateReleasePage: React.FC = () => {
       },
       {
         resource_id: 'PARAM-003',
-        resource_name: 'This is Mon超级超级长's ParameterNameuse测试当ParameterNameText过长时候Resource卡片's Title areais否can正确processing截断 and 换行's 边界场景',
+        resource_name: 'This is a very long parameter name to test card title truncation and line wrapping edge cases',
         is_previously_published: false,
-        test_value: 'This is Mon段非常非常长's TextType参Number, use模拟实际业务可can出现's 超长ConfigText. 例likeMon段完整's JSONConfigContent: {"database":{"host":"192.168.1.100","port":5432,"username":"admin","password":"encrypted_password_here","database_name":"production_db","connection_pool_size":20,"timeout_ms":30000},"redis":{"host":"192.168.1.101","port":6379,"cluster_mode":true},"logging":{"level":"INFO","output":"file","path":"/var/log/app/"}}',
+        test_value: 'This is a very long text parameter simulating real business scenarios with extended config text. Example JSON config: {"database":{"host":"192.168.1.100","port":5432,"username":"admin","password":"encrypted_password_here","database_name":"production_db","connection_pool_size":20,"timeout_ms":30000},"redis":{"host":"192.168.1.101","port":6379,"cluster_mode":true},"logging":{"level":"INFO","output":"file","path":"/var/log/app/"}}',
         used_by_processes: processes.map((p) => ({
           process_id: p.process.id,
           process_name: p.process.name,
@@ -106,7 +106,7 @@ const CreateReleasePage: React.FC = () => {
       },
       {
         resource_id: 'PARAM-004',
-        resource_name: '全局化多语言翻译映射ConfigParameter_包含英Sun韩法德西葡俄阿 etc.十国语言for照表',
+        resource_name: 'Global_Multilingual_Translation_Mapping_Config_Parameter_Including_10_Languages',
         is_previously_published: true,
         test_value: 'https://translation-service.internal.company.com/api/v3/multilingual/mapping?source=zh-CN&targets=en-US,ja-JP,ko-KR,fr-FR,de-DE,es-ES,pt-BR,ru-RU,ar-SA&format=json&include_variants=true&fallback=en-US',
         used_by_processes: processes.slice(0, 2).map((p) => ({
@@ -116,7 +116,7 @@ const CreateReleasePage: React.FC = () => {
       },
       {
         resource_id: 'PARAM-005',
-        resource_name: 'Enableauto-Retry',
+        resource_name: 'Enable Auto-Retry',
         is_previously_published: false,
         test_value: 'true',
         param_type: 'BOOLEAN',
@@ -127,7 +127,7 @@ const CreateReleasePage: React.FC = () => {
       },
       {
         resource_id: 'PARAM-006',
-        resource_name: 'MaxConcurrentConnection数',
+        resource_name: 'Max Concurrent Connections',
         is_previously_published: true,
         test_value: '256',
         param_type: 'NUMBER',
@@ -138,7 +138,7 @@ const CreateReleasePage: React.FC = () => {
       },
       {
         resource_id: 'PARAM-007',
-        resource_name: 'Enable调试模式',
+        resource_name: 'Enable Debug Mode',
         is_previously_published: true,
         test_value: 'false',
         param_type: 'BOOLEAN',

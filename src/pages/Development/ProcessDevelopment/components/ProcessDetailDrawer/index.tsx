@@ -68,7 +68,7 @@ const generateMockVersionData = (): VersionDetailData[] => {
     { version: '1.1.0', note: 'Performance optimization, fixed known issues', isActive: true },
   { version: '1.2.0', note: 'Added batch processing feature', isActive: true },
   { version: '2.0.0', note: 'Refactored core logic, improved stability', isActive: true },
-    { version: '2.1.0', note: 'AddAbnormalprocessing机制', isActive: false },
+    { version: '2.1.0', note: 'Added error handling mechanism', isActive: false },
   ];
 
   return versions.map((v, index) => ({
@@ -83,7 +83,7 @@ const generateMockVersionData = (): VersionDetailData[] => {
     package_size: Math.floor(Math.random() * 5000000) + 500000,
     package_checksum: `sha256:${generateUUID().replace(/-/g, '')}`,
     version_note: v.note,
-    usage_note: `using说明: Version${v.version}'s Operation指引`,
+    usage_note: `Usage guide: Version ${v.version} operation instructions`,
     creator_id: ['user-001', 'user-002', 'user-003'][index % 3],
     created_at: new Date(Date.now() - (versions.length - index) * 7 * 24 * 60 * 60 * 1000).toISOString(),
     publish_time: v.isActive ? new Date(Date.now() - (versions.length - index) * 2 * 24 * 60 * 60 * 1000).toISOString() : null,
@@ -95,12 +95,12 @@ const generateMockVersionData = (): VersionDetailData[] => {
     usage_instructions_url: 'https://docs.example.com/usage',
     development_environment: 'Win10 | X86',
     inputs: [
-      { name: 'inputParam1', type: 'Text' as const, value: 'Default值', description: 'Input parameters1's Description' },
-      { name: 'inputParam2', type: 'Boolean' as const, value: 'true', description: 'is否Enable某feature' },
+      { name: 'inputParam1', type: 'Text' as const, value: 'Default', description: 'Input parameter 1 description' },
+      { name: 'inputParam2', type: 'Boolean' as const, value: 'true', description: 'Whether to enable this feature' },
     ],
     outputs: [
       { name: 'outputResult', type: 'Text' as const, value: '', description: 'outputResult' },
-      { name: 'outputStatus', type: 'Number' as const, value: '0', description: 'ExecuteStatus码' },
+      { name: 'outputStatus', type: 'Number' as const, value: '0', description: 'Execution status code' },
     ],
   }));
 };

@@ -73,7 +73,7 @@ const generateMockReleaseResponse = (index: number): LYReleaseResponse => {
     publish_status: status,
     process_count: (index % 3) + 1,
     resource_count: (index % 5) + 2,
-    error_message: status === 'FAILED' ? '缺失依赖: PARAM-CONFIG_PATH' : null,
+    error_message: status === 'FAILED' ? 'Missing dependency: PARAM-CONFIG_PATH' : null,
     contents: [
       {
         process_id: `process-${index}-1`,
@@ -83,14 +83,14 @@ const generateMockReleaseResponse = (index: number): LYReleaseResponse => {
             ? 'Customer Info Sync' 
             : index % 4 === 2 
               ? 'Customer_Onboarding_KYC_Verification_And_Account_Provisioning_Enterprise_Workflow_With_Compliance_Check'
-              : 'Data备份',
+              : 'Data Backup',
         version_id: `ver-${index}-1`,
         version_number: `v1.${index}.0`,
         process_description: index % 4 === 0
-          ? 'thisProcessusefor processing自SAP ERP系统's 所has客户订单, including订单Validation, Inventory Check, 价格calculation, 折扣应use, 税费calculation, 物流分配, 发票generationand客户Notification etc.完整's 端to端业务Process. supports多币, 多仓库, 多物流商's 复杂场景processing. '
+          ? 'This process handles all customer orders from SAP ERP system, including order validation, inventory check, pricing, discounts, tax calculation, logistics allocation, invoice generation and customer notification. Supports multi-currency, multi-warehouse, and multi-carrier complex scenarios.'
           : index % 4 === 2
-            ? '客户入网全Processautomation, 涵盖KYC身份Validation, 合规Check, 风控评估, 账户开通, 权限分配, 欢迎邮件send及CRM系统同步 etc.环节, supports多国家地区's 监管to求适配. '
-            : index % 4 === 3 ? '' : 'from ERP 同步客户Datato CRM',
+            ? 'Full customer onboarding automation covering KYC identity verification, compliance check, risk assessment, account provisioning, permission assignment, welcome email and CRM system sync, supporting multi-country regulatory compliance.'
+            : index % 4 === 3 ? '' : 'Sync customer data from ERP to CRM',
       },
       ...(index % 2 === 0
         ? [
@@ -102,8 +102,8 @@ const generateMockReleaseResponse = (index: number): LYReleaseResponse => {
               version_id: `ver-${index}-2`,
               version_number: `v2.${index}.0`,
               process_description: index % 4 === 0 
-                ? '每Mauto-generation财务report并分发to related部门stakeholder, supportsPDF and Excel双Formatoutput. ' 
-                : 'processing客户订单并Validation',
+                ? 'Monthly auto-generation of financial reports distributed to relevant department stakeholders, supporting PDF and Excel dual format output.'
+                : 'Process customer orders and validate',
             },
           ]
         : []),
