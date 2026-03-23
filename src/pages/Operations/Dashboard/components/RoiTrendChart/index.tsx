@@ -89,7 +89,7 @@ const RoiTrendChart = ({ data }: RoiTrendChartProps) => {
   return (
     <div className="roi-trend-chart">
       <div className="roi-trend-chart-title">{t('operations.dashboard.roiTrend')}</div>
-      <ReactECharts option={option} style={{ height: 320 }} notMerge />
+      <ReactECharts option={option} style={{ height: 320, minHeight: 250 }} notMerge opts={{ renderer: 'svg' }} />
     </div>
   );
 };
