@@ -55,29 +55,29 @@ const generateUUID = (): string => {
 // 生成符合LYProcessResponse格式的Mock数据
 const generateMockLYProcessResponse = (index: number): LYProcessResponse => {
   const processNames = [
-    '订单自动处理',
-    '财务报销审批',
-    '人事入职流程',
-    '采购申请流程',
-    '合同审批流程',
-    '发票识别处理',
-    '客户信息同步',
-    '库存盘点流程',
-    '销售数据汇总',
-    '报表自动生成',
+    'Auto Order Processing',
+    'Expense Reimbursement Approval',
+    'Employee Onboarding Flow',
+    'Purchase Request Flow',
+    'Contract Approval Flow',
+    'Invoice Recognition Processing',
+    'Customer Info Sync',
+    'Inventory Check Flow',
+    'Sales Data Summary',
+    'Auto Report Generation',
   ];
 
   const descriptions = [
-    '这是一个超长描述的自动化流程，用于测试文本展开收起功能。该流程包含多个复杂的业务逻辑步骤：首先进行数据采集和清洗，然后执行多维度的数据分析和处理，接着进行业务规则校验和异常检测，最后生成详细的执行报告并通过多渠道分发给相关负责人。整个流程支持断点续传、错误重试和人工干预等高级功能，确保业务处理的稳定性和可靠性。此外还包含完整的日志记录和审计追踪功能。',
-    '自动处理财务报销审批流程，包括发票识别、金额核对、审批通知',
-    '自动化处理新员工入职流程，包括账号创建、权限分配、培训安排。该流程涵盖了从HR系统接收入职通知开始，到自动创建企业邮箱、分配OA系统权限、配置VPN访问、安排入职培训课程、生成工牌制作申请等一系列操作。流程还会根据员工所属部门和岗位，自动匹配对应的权限模板和培训计划，确保新员工能够快速上手工作。',
-    '自动处理采购申请，包括供应商比价、审批流程、订单生成',
-    '自动化合同审批流程，包括合同模板匹配、条款审核、签章流程',
-    '自动识别和处理各类发票，包括OCR识别、信息提取、入账处理',
-    '自动同步客户信息到各个业务系统，保持数据一致性',
-    '自动执行库存盘点任务，生成差异报告，触发补货流程。该流程通过对比系统库存数据与实际盘点结果，自动识别差异项目并生成详细的差异分析报告。当差异超过预设阈值时，流程会自动触发补货申请，并将相关信息同步到ERP系统。支持多仓库并行盘点，以及定期自动盘点计划的配置。',
-    '自动汇总各渠道销售数据，生成分析报告，发送给相关负责人',
-    '定时自动生成各类业务报表，支持多种格式导出和分发',
+    'A comprehensive automation process for testing text expand/collapse. It includes data collection, multi-dimensional analysis, business rule validation, anomaly detection, and report generation with multi-channel distribution. Supports breakpoint resume, error retry, and manual intervention.',
+    'Automated expense reimbursement approval including invoice recognition, amount verification, and approval notification',
+    'Automated employee onboarding process including account creation, permission assignment, training scheduling. Covers HR notification, email setup, OA permissions, VPN access, training courses, and badge requests. Auto-matches permission templates and training plans by department.',
+    'Automated purchase request processing including supplier comparison, approval flow, and order generation',
+    'Automated contract approval including template matching, clause review, and signing process',
+    'Auto-recognize and process various invoices including OCR recognition, info extraction, and accounting',
+    'Auto-sync customer info across business systems to maintain data consistency',
+    'Automated inventory check with variance reporting and replenishment triggering. Compares system data with actual counts, identifies discrepancies, and triggers replenishment when thresholds are exceeded. Supports multi-warehouse parallel counting.',
+    'Auto-aggregate sales data from all channels, generate analysis reports, and distribute to stakeholders',
+    'Scheduled auto-generation of business reports with multi-format export and distribution support',
   ];
 
   const creatorIds = ['user-001', 'user-002', 'user-003', 'user-004', 'user-005'];
