@@ -1,86 +1,53 @@
 
 
-# 资源效能监控页面开发计划
+# ROI Analysis 页面布局优化：图表一排 + 表格一排
 
-## 需求概要
+## 当前问题
 
-根据设计文档 7.3 节，资源效能监控页面分区展示**机器人效能**和**任务执行统计**，支持筛选和时间维度切换。
+各区块内图表和表格左右混排，信息层次不清晰。
 
-## 页面结构
+## 优化方案
 
-```text
-┌─────────────────────────────────────────────────┐
-│ Resource Efficiency (Title)                     │
-├─────────────────────────────────────────────────┤
-│ Filter: TimeRange | Group | Status   [Refresh]  │
-│         TimeDimension: [All|Today|Week|Month]    │
-├─────────────────────────────────────────────────┤
-│ ▸ Robot Performance Section                     │
-│   ┌────────────────┬───────────────────────┐    │
-│   │ Utilization    │ Type Distribution     │    │
-│   │ Gauge + Stats  │ (Pie)                 │    │
-│   └────────────────┴───────────────────────┘    │
-│   ┌────────────────┬───────────────────────┐    │
-│   │ Utilization    │ Group Utilization      │    │
-│   │ Trend (Line)   │ Comparison (Bar)       │    │
-│   └────────────────┴───────────────────────┘    │
-│   ┌─────────────────────────────────────────┐   │
-│   │ Robot Detail Table                      │   │
-│   └─────────────────────────────────────────┘   │
-├─────────────────────────────────────────────────┤
-│ ▸ Task Execution Section                        │
-│   ┌─────────────────────────────────────────┐   │
-│   │ Summary Cards: Total|Success|Failed|    │   │
-│   │                Running|Timeout          │   │
-│   └─────────────────────────────────────────┘   │
-│   ┌────────────────┬───────────────────────┐    │
-│   │ Today/Cumul.   │ Success Rate Trend    │    │
-│   │ Stats Cards    │ (Line Chart)          │    │
-│   └────────────────┴───────────────────────┘    │
-└─────────────────────────────────────────────────┘
-```
-
-## 实施步骤
-
-### 1. 类型定义 (`types.ts`)
-新增：
-- `RobotDetail`：机器人详情（name, type, group, status, utilization, monthlyTasks, trend[]）
-- `TaskExecutionStats`：任务执行汇总（total, success, failed, running, timeout）
-- `ResourceEfficiencyData`：聚合数据（overallUtilization, totalRobots, working, idle, offline, maintenance, interactiveOnline/Total, unattendedOnline/Total, robotDetails[], taskStats, todayTasks, totalTasks, todayRunMinutes, totalRunMinutes, successRateToday, successRateTotal）
-- `ResourceEfficiencyFilter`：筛选条件（timeRange, group, status, timeDimension）
-
-### 2. Mock 数据 (`mockData.ts`)
-新增英文 Mock 数据：8台机器人详情、任务执行汇总、利用率趋势（6个月）、分组利用率对比、成功率趋势。
-
-### 3. 组件结构
+每个维度区块内改为**上方图表横排、下方表格全宽**的结构，保持现有三个区块纵向堆叠不变。
 
 ```text
-src/pages/Operations/ResourceEfficiency/
-├── index.tsx              # 主页面
-├── index.less
-└── components/
-    ├── ResourceFilterBar/       # 筛选栏
-    │   ├── index.tsx
-    │   └── index.less
-    ├── RobotPerformance/        # 机器人效能区块
-    │   ├── index.tsx            # Gauge + Pie + 趋势线 + 柱状图 + 详细表格
-    │   └── index.less
-    └── TaskExecutionSection/    # 任务执行统计区块
-        ├── index.tsx            # 汇总卡片 + 今日/累计 + 成功率趋势
-        └── index.less
+需求维度 ROI
+┌──────────────────┬──────────────────┐
+│ ROI Distribution │ Invest vs Saved  │
+│ (Pie)            │ (Scatter)        │
+└──────────────────┴──────────────────┘
+┌─────────────────────────────────────┐
+│ Requirement Ranking Table (全宽)    │
+└─────────────────────────────────────┘
+
+部门维度 ROI
+┌──────────────────┬──────────────────┐
+│ Dept Comparison  │ Dept ROI Trend   │
+│ (Bar)            │ (Multi-line)     │
+└──────────────────┴──────────────────┘
+┌─────────────────────────────────────┐
+│ Department Detail Table (全宽)      │
+└─────────────────────────────────────┘
+
+项目维度 ROI
+┌─────────────────────────────────────┐
+│ Project ROI Table (全宽，无图表)     │
+└─────────────────────────────────────┘
 ```
 
-### 4. 图表实现（ECharts）
-- **整体利用率**：ECharts Gauge 仪表盘（显示百分比）
-- **机器人类型分布**：ECharts Pie（人机交互 vs 无人值守）
-- **利用率趋势**：ECharts Line（月度折线）
-- **分组利用率对比**：ECharts Bar（各分组柱状对比）
-- **成功率趋势**：ECharts Line（成功率折线）
-- **机器人详细表格**：Semi UI Table（含迷你趋势 sparkline）
+## 改动文件
 
-### 5. i18n
-在 `operations.resourceEfficiency` 下新增约 35 个 key（筛选项、区块标题、表格列名、状态标签等），中英文双语。
+### 1. RequirementRoiSection
+- **index.tsx**：将 JSX 结构改为先渲染图表行（两个图表并排），再渲染全宽表格
+- **index.less**：`.requirement-roi-content` 改为 `flex-direction: column`；新增 `.requirement-roi-charts-row` 用 `grid-template-columns: 1fr 1fr` 横排两图表；表格全宽
 
-### 6. 样式
-沿用 `.dashboard-card` 规范，响应式 `@media` 断点（1200px/768px），图表区域两列布局在窄屏下堆叠。
+### 2. DepartmentRoiSection
+- **index.tsx**：将柱状图和趋势图放在一个横排容器中，表格独立放在下方全宽
+- **index.less**：`.department-roi-content` 改为 `flex-direction: column`；新增 `.department-roi-charts-row` 两列网格；表格全宽
+
+### 3. ProjectRoiSection
+- 无变化（已是全宽表格）
+
+### 4. 响应式
+所有图表横排在 `@media (max-width: 1200px)` 时切换为 `grid-template-columns: 1fr` 纵向堆叠。
 
