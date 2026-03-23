@@ -54,15 +54,15 @@ interface LinkedCredential {
 
 // ============= Mock数据生成 =============
 const generateMockUsageRecords = (): UsageRecord[] => {
-  const users = ['张三', '李四', '王五', '赵六', '钱七'];
+  const users = ['John Smith', 'Jane Doe', 'Mike Wang', 'David Zhao', 'Chris Qian'];
   const usageTypes: ('DEBUG' | 'TASK')[] = ['DEBUG', 'TASK'];
-  const processes = ['订单处理流程', '数据同步流程', '报表生成流程', '邮件发送流程'];
+  const processes = ['Order Processing Flow', 'Data Sync Flow', 'Report Generation Flow', 'Email Sending Flow'];
   const workers = ['Worker-01', 'Worker-02', 'Worker-03', 'Worker-04'];
   const screenshotUrls = ['https://picsum.photos/seed/usage1/800/600', 'https://picsum.photos/seed/usage2/800/600', 'https://picsum.photos/seed/usage3/800/600'];
   return Array.from({ length: 25 }, (_, i) => ({
     id: `usage-${i}`, user_id: `user-${(i % 5) + 1}`, user_name: users[i % users.length],
     usage_time: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
-    usage_type: usageTypes[Math.floor(Math.random() * usageTypes.length)], description: `凭据被成功获取`,
+    usage_type: usageTypes[Math.floor(Math.random() * usageTypes.length)], description: `Credential retrieved successfully`,
     process_name: processes[Math.floor(Math.random() * processes.length)], process_version: `1.0.${Math.floor(Math.random() * 10)}`,
     worker_name: workers[Math.floor(Math.random() * workers.length)], task_number: `TASK-${String(i + 1).padStart(6, '0')}`,
     screenshot_url: i % 3 === 0 ? screenshotUrls[i % screenshotUrls.length] : null,
