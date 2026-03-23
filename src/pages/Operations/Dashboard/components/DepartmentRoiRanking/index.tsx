@@ -31,7 +31,7 @@ const DepartmentRoiRanking = ({ data }: DepartmentRoiRankingProps) => {
   const { t } = useTranslation();
 
   const formatCurrency = (val: number) => {
-    if (val >= 10000) return `¥${(val / 10000).toFixed(1)}万`;
+    if (val >= 10000) return `¥${(val / 10000).toFixed(1)}${t('operations.dashboard.tenThousandUnit')}`;
     return `¥${val.toLocaleString()}`;
   };
 

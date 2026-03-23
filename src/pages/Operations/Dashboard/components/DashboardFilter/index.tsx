@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Select, Button } from '@douyinfe/semi-ui';
 import { IconRefresh } from '@douyinfe/semi-icons';
 import { useTranslation } from 'react-i18next';
@@ -22,6 +23,15 @@ const DashboardFilter = ({ filter, onFilterChange, onRefresh }: DashboardFilterP
     { value: 'all', label: t('operations.dashboard.allTime') },
   ];
 
+  const localizedDepartments = useMemo(() =>
+    mockDepartments.map(d => d.value === 'all' ? { ...d, label: t('operations.dashboard.selectAll') } : d),
+    [t]
+  );
+  const localizedProjects = useMemo(() =>
+    mockProjects.map(p => p.value === 'all' ? { ...p, label: t('operations.dashboard.selectAll') } : p),
+    [t]
+  );
+
   return (
     <div className="dashboard-filter">
       <div className="dashboard-filter-items">
@@ -40,7 +50,7 @@ const DashboardFilter = ({ filter, onFilterChange, onRefresh }: DashboardFilterP
           <Select
             size="small"
             value={filter.department}
-            optionList={mockDepartments}
+            optionList={localizedDepartments}
             onChange={(val) => onFilterChange({ ...filter, department: val as string })}
             style={{ width: 120 }}
           />
@@ -50,7 +60,7 @@ const DashboardFilter = ({ filter, onFilterChange, onRefresh }: DashboardFilterP
           <Select
             size="small"
             value={filter.project}
-            optionList={mockProjects}
+            optionList={localizedProjects}
             onChange={(val) => onFilterChange({ ...filter, project: val as string })}
             style={{ width: 140 }}
           />

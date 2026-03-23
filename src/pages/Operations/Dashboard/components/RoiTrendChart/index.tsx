@@ -49,7 +49,7 @@ const RoiTrendChart = ({ data }: RoiTrendChartProps) => {
         name: t('operations.dashboard.amountUnit'),
         position: 'right',
         axisLabel: {
-          formatter: (val: number) => `${(val / 10000).toFixed(0)}万`,
+          formatter: (val: number) => `${(val / 10000).toFixed(0)}${t('operations.dashboard.tenThousandUnit')}`,
           fontSize: 12,
         },
         splitLine: { show: false },
