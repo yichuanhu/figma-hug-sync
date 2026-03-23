@@ -73,7 +73,7 @@ export const mockDepartments = [
 ];
 
 export const mockProjects = [
-  { value: 'all', label: '全部' },
+  { value: 'all', label: '' },
   { value: 'proj-001', label: 'Financial Automation' },
   { value: 'proj-002', label: 'Operational Efficiency' },
   { value: 'proj-003', label: 'HR Digital Transformation' },
