@@ -159,7 +159,7 @@ const QueueTriggerList = () => {
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingTrigger, setEditingTrigger] = useState<LYQueueTriggerResponse | null>(null);
 
-  // 从响应中直接获取分页Info
+  // from响应直接获取分页Info
   const { range, list } = listResponse;
   const currentPage = Math.floor((range?.offset || 0) / (range?.size || 20)) + 1;
   const pageSize = range?.size || 20;
@@ -183,17 +183,17 @@ const QueueTriggerList = () => {
         );
       }
 
-      // 按ProcessFilter
+      // byProcessFilter
       if (params.process_id) {
         filtered = filtered.filter((trigger) => trigger.process_id === params.process_id);
       }
 
-      // 按QueueFilter
+      // byQueueFilter
       if (params.queue_id) {
         filtered = filtered.filter((trigger) => trigger.queue_id === params.queue_id);
       }
 
-      // 按StatusFilter
+      // byStatusFilter
       if (params.status) {
         filtered = filtered.filter((trigger) => trigger.status === params.status);
       }
@@ -219,7 +219,7 @@ const QueueTriggerList = () => {
     loadData(queryParams);
   }, [queryParams, loadData]);
 
-  // Search防抖
+  // Searchdebounced
   const handleSearch = useMemo(
     () =>
       debounce((value: string) => {
@@ -256,13 +256,13 @@ const QueueTriggerList = () => {
     loadData(queryParams);
   };
 
-  // 打开Edit modal
+  // openEdit modal
   const handleOpenEditModal = (trigger: LYQueueTriggerResponse) => {
     setEditingTrigger(trigger);
     setEditModalVisible(true);
   };
 
-  // 打开Details drawer
+  // openDetails drawer
   const handleOpenDrawer = (trigger: LYQueueTriggerResponse) => {
     setSelectedTrigger(trigger);
     setDrawerVisible(true);
@@ -274,17 +274,17 @@ const QueueTriggerList = () => {
     setSelectedTrigger(null);
   };
 
-  // Drawer中导航
+  // Drawer导航
   const handleNavigate = (trigger: LYQueueTriggerResponse) => {
     setSelectedTrigger(trigger);
   };
 
-  // Enable/Disable Trigger(直接切换, 不ModalConfirm)
+  // Enable/Disable Trigger(直接切换, notModalConfirm)
   const handleToggleStatus = async (trigger: LYQueueTriggerResponse, checked: boolean) => {
     try {
       const newStatus: TriggerStatus = checked ? 'ENABLED' : 'DISABLED';
       
-      // 立即Update本地ListStatus
+      // immediatelyUpdate本地ListStatus
       setListResponse((prev) => ({
         ...prev,
         list: prev.list.map((t) =>
@@ -303,7 +303,7 @@ const QueueTriggerList = () => {
         };
       }
       
-      // 如果Drawer打开且是当前 Trigger, UpdateDrawer中's Data
+      // ifDraweropen且is当前 Trigger, UpdateDrawer's Data
       if (selectedTrigger?.trigger_id === trigger.trigger_id) {
         setSelectedTrigger({
           ...trigger,
@@ -460,7 +460,7 @@ const QueueTriggerList = () => {
     },
   ];
 
-  // 判断是否有FilterCondition
+  // 判断is否hasFilterCondition
   const hasFilters = queryParams.keyword || queryParams.process_id || queryParams.queue_id || queryParams.status;
 
   // currentIndex no longer needed - navigation handled by DetailDrawerWrapper

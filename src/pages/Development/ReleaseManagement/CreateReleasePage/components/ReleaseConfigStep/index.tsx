@@ -66,7 +66,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
     { value: 'VERSION_ROLLBACK', label: t('release.releaseTypes.VERSION_ROLLBACK') },
   ];
 
-  // 按Type分组Resource
+  // byType分组Resource
   const groupedResources = useMemo(() => {
     const groups: Record<ResourceType, ResourceConfig[]> = {
       PARAMETER: [],
@@ -91,17 +91,17 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
     );
   };
 
-  // Delete手动添加's Resource
+  // Delete手动add's Resource
   const removeManualResource = (resourceId: string) => {
     onResourcesChange(resources.filter((r) => r.resource_id !== resourceId));
   };
 
-  // 添加手动Resource
+  // add手动Resource
   const handleAddResources = (newResources: ResourceConfig[]) => {
     onResourcesChange([...resources, ...newResources]);
   };
 
-  // Already添加Resource's  ID List
+  // AlreadyaddResource's  ID List
   const existingResourceIds = useMemo(() => resources.map((r) => r.resource_id), [resources]);
 
   // ResourceType标签

@@ -144,7 +144,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
   const [formApi, setFormApi] = useState<any>(null);
   const [initialized, setInitialized] = useState(false);
 
-  // 第Tue步: Task config - 仅保留需要's Status
+  // 第Tue步: Task config - 仅保留need's Status
   const [selectedProcess, setSelectedProcess] = useState<LYProcessActiveVersionResponse | null>(null);
   const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);
 
@@ -283,7 +283,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
     }
   }, [visible]);
 
-  // 判断是否有Parameter需要填写
+  // 判断is否hasParameterneed填写
   const hasParameters = selectedProcess && selectedProcess.parameters.length > 0;
   const hasOutputParameters = selectedProcess && selectedProcess.output_parameters && selectedProcess.output_parameters.length > 0;
   const showRightPanel = (hasParameters || hasOutputParameters) && currentStep === 1;
@@ -347,7 +347,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
     return times;
   }, [startDateTime, ruleType, frequencyType, minuteInterval, hourInterval, triggerHour, triggerMinute]);
 
-  // 选择Process
+  // selectProcess
   const handleProcessChange = useCallback((processId: string) => {
     const process = mockProcesses.find((p) => p.process_id === processId);
     setSelectedProcess(process || null);
@@ -360,7 +360,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
     }
   }, [formApi]);
 
-  // 选择Template
+  // selectTemplate
   const handleTemplateChange = useCallback((templateId: string | null) => {
     if (templateId && formApi) {
       const template = mockTemplates.find((t) => t.template_id === templateId);
@@ -383,7 +383,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
     }
   }, [formApi, handleProcessChange]);
 
-  // 渲染Parameter输入
+  // 渲染Parameterinput
   const renderParameterInput = (param: LYProcessParameterDefinition) => {
     const renderLabel = () => (
       <div className="edit-time-trigger-modal-param-label">

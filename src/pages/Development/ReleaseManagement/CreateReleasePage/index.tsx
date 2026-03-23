@@ -56,7 +56,7 @@ const CreateReleasePage: React.FC = () => {
   // Step控制
   const [currentStep, setCurrentStep] = useState(0);
 
-  // Step1: Process选择
+  // Step1: Processselect
   const [selectedProcesses, setSelectedProcesses] = useState<SelectedProcess[]>([]);
 
   // Step2: ReleaseConfig
@@ -96,9 +96,9 @@ const CreateReleasePage: React.FC = () => {
       },
       {
         resource_id: 'PARAM-003',
-        resource_name: 'This is Mon个超级超级长's ParameterName用来测试当ParameterNameText过长时候Resource卡片's Title area是否能正确processing截断 and 换行's 边界场景',
+        resource_name: 'This is Mon超级超级长's ParameterNameuse测试当ParameterNameText过长时候Resource卡片's Title areais否can正确processing截断 and 换行's 边界场景',
         is_previously_published: false,
-        test_value: 'This is Mon段非常非常长's TextType参Number, 用来模拟实际业务中可能出现's 超长ConfigText. 例如Mon段完整's JSONConfigContent: {"database":{"host":"192.168.1.100","port":5432,"username":"admin","password":"encrypted_password_here","database_name":"production_db","connection_pool_size":20,"timeout_ms":30000},"redis":{"host":"192.168.1.101","port":6379,"cluster_mode":true},"logging":{"level":"INFO","output":"file","path":"/var/log/app/"}}',
+        test_value: 'This is Mon段非常非常长's TextType参Number, use模拟实际业务可can出现's 超长ConfigText. 例likeMon段完整's JSONConfigContent: {"database":{"host":"192.168.1.100","port":5432,"username":"admin","password":"encrypted_password_here","database_name":"production_db","connection_pool_size":20,"timeout_ms":30000},"redis":{"host":"192.168.1.101","port":6379,"cluster_mode":true},"logging":{"level":"INFO","output":"file","path":"/var/log/app/"}}',
         used_by_processes: processes.map((p) => ({
           process_id: p.process.id,
           process_name: p.process.name,
@@ -106,7 +106,7 @@ const CreateReleasePage: React.FC = () => {
       },
       {
         resource_id: 'PARAM-004',
-        resource_name: '全局化多语言翻译映射ConfigParameter_包含中英Sun韩法德西葡俄阿 etc.十国语言对照表',
+        resource_name: '全局化多语言翻译映射ConfigParameter_包含英Sun韩法德西葡俄阿 etc.十国语言for照表',
         is_previously_published: true,
         test_value: 'https://translation-service.internal.company.com/api/v3/multilingual/mapping?source=zh-CN&targets=en-US,ja-JP,ko-KR,fr-FR,de-DE,es-ES,pt-BR,ru-RU,ar-SA&format=json&include_variants=true&fallback=en-US',
         used_by_processes: processes.slice(0, 2).map((p) => ({
@@ -116,7 +116,7 @@ const CreateReleasePage: React.FC = () => {
       },
       {
         resource_id: 'PARAM-005',
-        resource_name: 'Enable自动Retry',
+        resource_name: 'Enableauto-Retry',
         is_previously_published: false,
         test_value: 'true',
         param_type: 'BOOLEAN',
@@ -310,7 +310,7 @@ const CreateReleasePage: React.FC = () => {
 
     setSubmitting(true);
     try {
-      // Mock API 调用
+      // Mock API 调use
       const request: CreateReleaseRequest = {
         release_type: releaseType,
         description: description.trim(),
@@ -339,13 +339,13 @@ const CreateReleasePage: React.FC = () => {
     }
   };
 
-  // Check是否有填写Content
+  // Checkis否has填写Content
   const hasContent = useMemo(() => {
-    // Check是否选择了Process
+    // Checkis否select Process
     if (selectedProcesses.length > 0) return true;
-    // Check是否填写了Description
+    // Checkis否填写 Description
     if (description.trim()) return true;
-    // Check是否Modify了ResourceConfig
+    // Checkis否Modify ResourceConfig
     if (resources.some((r) => r.production_value || r.use_test_as_production)) return true;
     return false;
   }, [selectedProcesses, description, resources]);

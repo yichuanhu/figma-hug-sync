@@ -88,7 +88,7 @@ const mockQueues = [
   { queue_id: 'queue-004', queue_name: 'Report Generation Queue', monitored: false },
 ];
 
-// Mock 个人Credential
+// Mock 人Credential
 const mockCredentials = [
   { id: 'cred-001', name: 'System Admin Credentials' },
   { id: 'cred-002', name: 'API Access Credentials' },
@@ -130,7 +130,7 @@ const mockTemplates = [
 
 import { TIMEZONE_GROUPS } from '@/constants/timezones';
 
-// Already存在's  TriggerName (模拟)
+// Already存in 's  TriggerName (模拟)
 const existingTriggerNames = ['Order Queue Trigger', 'Approval Queue Trigger'];
 
 const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTriggerModalProps) => {
@@ -148,7 +148,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
   const [minEffectiveMessages, setMinEffectiveMessages] = useState(1);
   const [enablePeriodicCheck, setEnablePeriodicCheck] = useState(false);
 
-  // 判断是否有Parameter需要填写
+  // 判断is否hasParameterneed填写
   const hasParameters = selectedProcess && selectedProcess.parameters.length > 0;
   const hasOutputParameters = selectedProcess && selectedProcess.output_parameters && selectedProcess.output_parameters.length > 0;
   const showRightPanel = (hasParameters || hasOutputParameters) && currentStep === 1;
@@ -166,7 +166,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
     }
   }, [visible, formApi]);
 
-  // 选择Process
+  // selectProcess
   const handleProcessChange = (processId: string) => {
     const process = mockProcesses.find((p) => p.process_id === processId);
     setSelectedProcess(process || null);
@@ -179,7 +179,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
     }
   };
 
-  // 选择Template
+  // selectTemplate
   const handleTemplateChange = (templateId: string | null) => {
     if (templateId && formApi) {
       const template = mockTemplates.find((t) => t.template_id === templateId);
@@ -210,7 +210,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
     return '';
   };
 
-  // 渲染Parameter输入
+  // 渲染Parameterinput
   const renderParameterInput = (param: LYProcessParameterDefinition) => {
     const renderLabel = () => (
       <div className="create-queue-trigger-modal-param-label">

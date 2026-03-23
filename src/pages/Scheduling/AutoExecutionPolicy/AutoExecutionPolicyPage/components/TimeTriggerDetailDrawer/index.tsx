@@ -122,7 +122,7 @@ const TimeTriggerDetailDrawer = ({
     return new Date(time).toLocaleString('zh-CN');
   };
 
-  // Format化Trigger Rules显示
+  // Format化Trigger Rulesdisplay
   const formatTriggerRule = (): string => {
     if (!trigger) return '-';
     if (trigger.rule_type === 'CRON') {
@@ -181,7 +181,7 @@ const TimeTriggerDetailDrawer = ({
     },
   ];
 
-  // 额外Operation按钮
+  // 额外Operationby钮
   const extraActions = (
     <>
       <Tooltip content={t('common.edit')}>

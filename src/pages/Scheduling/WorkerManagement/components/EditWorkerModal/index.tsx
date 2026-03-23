@@ -18,7 +18,7 @@ interface EditWorkerModalProps {
   onSuccess?: (updatedData: LYWorkerResponse) => void;
 }
 
-// Already存在's botName(用于唯Mon性校验)
+// Already存in 's botName(usefor 唯Mon性校验)
   const existingWorkerNames = ['Finance Bot-01', 'Finance Bot-02', 'Finance Bot-03', 'HR Bot-01', 'Ops Bot-01', 'Test Bot-01'];
 
 const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorkerModalProps) => {
@@ -63,7 +63,7 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
     return true;
   };
 
-  // 检测ConnectionInfo是否发生变更
+  // 检测ConnectionInfois否发生变更
   const isConnectionChanged = (values: Record<string, unknown>): boolean => {
     const password = values.password as string;
     if (password && password.trim() !== '') return true;
@@ -84,7 +84,7 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
 
     setLoading(true);
     try {
-      // 模拟API调用延迟
+      // 模拟API调use延迟
       await new Promise((resolve) => setTimeout(resolve, 300));
 
       const connectionChanged = isConnectionChanged(values);
@@ -99,9 +99,9 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
         enable_auto_unlock: desktopType === 'Console' ? (values.enableAutoUnlock as boolean) : undefined,
         display_size: desktopType === 'NotConsole' ? (values.displaySize as string) : undefined,
         force_login: values.forceLogin as boolean,
-        // ConnectionInfo变更时, 将密码同步StatusSettings为"待同步"
+        // ConnectionInfo变更时, 将密码同步StatusSettingsas"待同步"
         password_sync_status: connectionChanged ? 'PENDING' : workerData.password_sync_status,
-        // ConnectionInfo变更时, 将同步StatusSettings为"待同步"
+        // ConnectionInfo变更时, 将同步StatusSettingsas"待同步"
         sync_status: connectionChanged ? 'PENDING' : workerData.sync_status,
       };
 

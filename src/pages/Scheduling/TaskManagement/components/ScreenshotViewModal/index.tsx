@@ -50,7 +50,7 @@ const generateMockScreenshot = (executionId: string, index: number): LYTaskScree
   const baseTime = new Date(2026, 0, 30, 14, 30);
   const capturedAt = new Date(baseTime.getTime() + index * 10000); // one every 10 seconds
   
-  // 使用 picsum.photos 作为 mock 图片
+  // using picsum.photos 作as mock 图片
   const imageId = 100 + index;
   
   return {
@@ -68,7 +68,7 @@ const generateMockScreenshot = (executionId: string, index: number): LYTaskScree
   };
 };
 
-// Mock API 调用
+// Mock API 调use
 const fetchScreenshots = async (
   executionId: string,
   params: GetScreenshotsParams
@@ -142,16 +142,16 @@ const ScreenshotViewModal = ({
     }
   }, [executionId]);
   
-  // 当Modal打开或Sort变化时LoadingData
+  // 当Modalopen或Sort变化时LoadingData
   useEffect(() => {
     if (visible) {
       loadData();
-      // 重置选择
+      // 重置select
       setSelectedIds(new Set());
     }
   }, [visible, loadData]);
   
-  // processing选择
+  // processingselect
   const handleSelect = useCallback((id: string, selected: boolean) => {
     setSelectedIds((prev) => {
       const next = new Set(prev);
@@ -169,7 +169,7 @@ const ScreenshotViewModal = ({
     setSelectedIds(new Set(screenshots.map((s) => s.id)));
   }, [screenshots]);
   
-  // 清除选择
+  // 清除select
   const handleClearSelection = useCallback(() => {
     setSelectedIds(new Set());
   }, []);
@@ -181,7 +181,7 @@ const ScreenshotViewModal = ({
     setSelectedIds(new Set());
   }, [selectedIds]);
   
-  // Delete单个screenshot
+  // Delete单screenshot
   const handleDeleteSingle = useCallback((id: string, e?: React.MouseEvent) => {
     e?.stopPropagation();
     Modal.confirm({
@@ -198,7 +198,7 @@ const ScreenshotViewModal = ({
     });
   }, [t]);
   
-  // 灯箱中Delete当前图片
+  // 灯箱Delete当前图片
   const handleDeleteInPreview = useCallback(() => {
     const currentScreenshot = screenshots[previewIndex];
     if (!currentScreenshot) return;
@@ -225,12 +225,12 @@ const ScreenshotViewModal = ({
   }, [screenshots, previewIndex, t]);
   
   
-  // 是否全选
+  // is否全选
   const isAllSelected = useMemo(() => {
     return screenshots.length > 0 && selectedIds.size === screenshots.length;
   }, [screenshots, selectedIds]);
   
-  // 打开灯箱Preview
+  // open灯箱Preview
   const handleOpenPreview = useCallback((index: number) => {
     setPreviewIndex(index);
     setPreviewVisible(true);

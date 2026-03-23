@@ -50,7 +50,7 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
   });
   const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
 
-  // Mock 可用ResourceData
+  // Mock 可useResourceData
   const mockAvailableResources: AvailableResource[] = useMemo(() => [
     // Parameter
     { id: 'param-1', name: 'API_ENDPOINT', type: 'PARAMETER', test_value: 'https://api.test.com', is_published: true },
@@ -73,7 +73,7 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
     { id: 'file-3', name: 'data-mapping.xml', type: 'FILE', is_published: false },
   ], []);
 
-  // 过滤Already添加's Resource and 按Type分组
+  // 过滤Alreadyadd's Resource and byType分组
   const getFilteredResources = (type: ResourceType) => {
     const searchText = searchTexts[type];
     return mockAvailableResources

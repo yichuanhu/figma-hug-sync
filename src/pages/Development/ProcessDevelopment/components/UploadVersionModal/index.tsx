@@ -25,11 +25,11 @@ const UploadVersionModal = ({ visible, onCancel, processData, onSuccess }: Uploa
       const files = info.fileList;
       setFileList(files);
 
-      // CheckFile名是否 and ProcessNameMon致
+      // CheckFile名is否 and ProcessNameMon致
       if (files.length > 0 && files[0].fileInstance && processData) {
         const fileName = files[0].fileInstance.name.replace('.bot', '');
         const processName = processData.name;
-        // 简单CheckFile名是否包含ProcessName
+        // 简单CheckFile名is否包含ProcessName
         if (!fileName.includes(processName) && !processName.includes(fileName.split('(')[0])) {
           setShowNameMismatchWarning(true);
         } else {
@@ -47,7 +47,7 @@ const UploadVersionModal = ({ visible, onCancel, processData, onSuccess }: Uploa
   }, []);
 
   const handleUpload = useCallback(async () => {
-    // FileUploadValidation通过 disabled 按钮processing, 无需 Toast
+    // FileUploadValidationvia disabled by钮processing, 无需 Toast
 
     setUploading(true);
     try {
@@ -75,9 +75,9 @@ const UploadVersionModal = ({ visible, onCancel, processData, onSuccess }: Uploa
     setShowNameMismatchWarning(false);
   }, []);
 
-  // 自定义Upload, 阻止自动Upload
+  // 自定义Upload, 阻止auto-Upload
   const customRequest = useCallback(() => {
-    // 不做任何事, 阻止自动Upload
+    // not做任何事, 阻止auto-Upload
     return { abort: () => {} };
   }, []);
 

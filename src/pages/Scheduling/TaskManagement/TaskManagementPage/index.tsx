@@ -170,7 +170,7 @@ const fetchTaskList = async (params: GetTasksParams): Promise<LYListResponseLYTa
     );
   }
 
-  // 任务StatusFilter
+  // taskStatusFilter
   if (params.task_status && params.task_status.length > 0) {
     filteredData = filteredData.filter((item) => params.task_status!.includes(item.task_status));
   }
@@ -182,7 +182,7 @@ const fetchTaskList = async (params: GetTasksParams): Promise<LYListResponseLYTa
     );
   }
 
-  // Trigger来源Filter
+  // Trigger源Filter
   if (params.trigger_source && params.trigger_source.length > 0) {
     filteredData = filteredData.filter((item) => params.trigger_source!.includes(item.trigger_source));
   }
@@ -270,7 +270,7 @@ const TaskManagementPage = () => {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [createModalVisible, setCreateModalVisible] = useState(false);
 
-  // 从首页快捷入口跳转时自动打开新建Modal
+  // from首页快捷入口跳转时auto-open新建Modal
   useEffect(() => {
     if ((location.state as any)?.openCreate) {
       setCreateModalVisible(true);
@@ -335,15 +335,15 @@ const TaskManagementPage = () => {
     loadData();
   }, [loadData]);
 
-  // 从 URL Parameter中恢复DrawerStatus(用于从录屏页面Back)或打开新建任务Modal(从Template页面跳转)
+  // from URL Parameter恢复DrawerStatus(usefor from录屏页面Back)或open新建taskModal(fromTemplate页面跳转)
   useEffect(() => {
     const taskIdFromUrl = searchParams.get('taskId');
     const activeTabFromUrl = searchParams.get('activeTab');
     const templateIdFromUrl = searchParams.get('templateId');
 
-    // processingTemplateID - 从 localStorage 获取TemplateData并打开新建任务Modal
+    // processingTemplateID - from localStorage 获取TemplateData并open新建taskModal
     if (templateIdFromUrl) {
-      // 从 sessionStorage 获取传递's TemplateData
+      // from sessionStorage 获取传递's TemplateData
       const templateDataStr = sessionStorage.getItem(`template_${templateIdFromUrl}`);
       if (templateDataStr) {
         try {
@@ -361,7 +361,7 @@ const TaskManagementPage = () => {
       return;
     }
 
-    // processing任务ID - 打开Details drawer
+    // processingtaskID - openDetails drawer
     if (taskIdFromUrl && listResponse.list.length > 0) {
       const task = listResponse.list.find((t) => t.task_id === taskIdFromUrl);
       if (task) {
@@ -379,7 +379,7 @@ const TaskManagementPage = () => {
     }
   }, [searchParams, listResponse.list, setSearchParams]);
 
-  // Search防抖
+  // Searchdebounced
   const debouncedSearch = useMemo(
     () => debounce((value: string) => {
       setQueryParams((prev) => ({ ...prev, offset: 0, keyword: value }));
@@ -396,14 +396,14 @@ const TaskManagementPage = () => {
     loadData();
   };
 
-  // 打开Details drawer
+  // openDetails drawer
   const openTaskDetail = (record: LYTaskResponse) => {
     setSelectedTask(record);
     setDetailDrawerVisible(true);
   };
 
 
-  // Cancel任务
+  // Canceltask
   const handleCancelTask = (task: LYTaskResponse) => {
     if (task.task_status !== 'PENDING') {
       Toast.warning('Can only cancel tasks in pending execution status');
@@ -439,7 +439,7 @@ const TaskManagementPage = () => {
     });
   };
 
-  // Stop任务
+  // Stoptask
   const handleStopTask = (task: LYTaskResponse) => {
     if (task.execution_status !== 'RUNNING') {
       Toast.warning('Can only stop running tasks');
@@ -617,13 +617,13 @@ const TaskManagementPage = () => {
       key: 'action',
       width: 60,
       render: (_: unknown, record: LYTaskResponse) => {
-        // 判断是否有可用Operation
+        // 判断is否has可useOperation
         const hasStatusActions = 
           record.task_status === 'PENDING' ||
           record.execution_status === 'RUNNING' ||
           record.task_status === 'FAILED';
         
-        // ExecuteHistory入口: 只要有过ExecuteRecord就显示
+        // ExecuteHistory入口: 只tohas过ExecuteRecorddisplay
         const hasExecutions = record.total_execution_count > 0;
         
         const hasActions = hasStatusActions || hasExecutions;

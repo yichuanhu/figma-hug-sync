@@ -66,8 +66,8 @@ const generateMockReleaseResponse = (index: number): LYReleaseResponse => {
       : `Release description ${index + 1}: Contains multiple process updates and config changes`,
     publisher_id: `user-${(index % 3) + 1}`,
     publisher_name: ['John Smith', 'Jane Doe', 'Mike Wang'][index % 3],
-    publisher_department: ['技术部', '产品部', '运维部'][index % 3],
-    publisher_role: ['高级工程师', '产品经理', '运维工程师'][index % 3],
+    publisher_department: ['Engineering', 'Product', 'Operations'][index % 3],
+    publisher_role: ['Senior Engineer', 'Product Manager', 'Ops Engineer'][index % 3],
     publisher_email: ['zhangsan@example.com', 'lisi@example.com', 'wangwu@example.com'][index % 3],
     publish_time: date.toISOString(),
     publish_status: status,
@@ -87,10 +87,10 @@ const generateMockReleaseResponse = (index: number): LYReleaseResponse => {
         version_id: `ver-${index}-1`,
         version_number: `v1.${index}.0`,
         process_description: index % 4 === 0
-          ? '该Process用于processing来自SAP ERP系统's 所有客户订单, 包括订单Validation, Inventory Check, 价格calculation, 折扣应用, 税费calculation, 物流分配, 发票generation以及客户Notification etc.完整's 端到端业务Process. 支持多币种, 多仓库, 多物流商's 复杂场景processing. '
+          ? 'thisProcessusefor processing自SAP ERP系统's 所has客户订单, including订单Validation, Inventory Check, 价格calculation, 折扣应use, 税费calculation, 物流分配, 发票generationand客户Notification etc.完整's 端to端业务Process. supports多币, 多仓库, 多物流商's 复杂场景processing. '
           : index % 4 === 2
-            ? '客户入网全Processautomation, 涵盖KYC身份Validation, 合规Check, 风控评估, 账户开通, 权限分配, 欢迎邮件发送及CRM系统同步 etc.环节, 支持多国家地区's 监管要求适配. '
-            : index % 4 === 3 ? '' : '从 ERP 同步客户Data到 CRM',
+            ? '客户入网全Processautomation, 涵盖KYC身份Validation, 合规Check, 风控评估, 账户开通, 权限分配, 欢迎邮件send及CRM系统同步 etc.环节, supports多国家地区's 监管to求适配. '
+            : index % 4 === 3 ? '' : 'from ERP 同步客户Datato CRM',
       },
       ...(index % 2 === 0
         ? [
@@ -102,7 +102,7 @@ const generateMockReleaseResponse = (index: number): LYReleaseResponse => {
               version_id: `ver-${index}-2`,
               version_number: `v2.${index}.0`,
               process_description: index % 4 === 0 
-                ? '每M自动generation财务report并分发给相关部门负责人, 支持PDF and Excel双Format输出. ' 
+                ? '每Mauto-generation财务report并分发to related部门stakeholder, supportsPDF and Excel双Formatoutput. ' 
                 : 'processing客户订单并Validation',
             },
           ]
@@ -196,7 +196,7 @@ const ReleaseListPage: React.FC = () => {
   const loadData = async () => {
     setLoading(true);
     try {
-      // Mock API 调用
+      // Mock API 调use
       await new Promise((resolve) => setTimeout(resolve, 500));
       const response = generateMockListResponse({
         ...queryParams,
@@ -219,7 +219,7 @@ const ReleaseListPage: React.FC = () => {
     loadData();
   }, [queryParams, activeFilters]);
 
-  // URL Parameterprocessing - 打开Details
+  // URL Parameterprocessing - openDetails
   useEffect(() => {
     const releaseId = searchParams.get('releaseId');
     if (releaseId && listResponse.list.length > 0) {
@@ -232,7 +232,7 @@ const ReleaseListPage: React.FC = () => {
     }
   }, [searchParams, listResponse]);
 
-  // Search防抖
+  // Searchdebounced
   const handleSearch = useMemo(
     () =>
       debounce((value: string) => {
@@ -322,7 +322,7 @@ const ReleaseListPage: React.FC = () => {
       width: 100,
       render: (contents: LYReleaseResponse['contents']) => {
         if (!contents || contents.length === 0) return '-';
-        return <Text>{contents.length}个Process</Text>;
+        return <Text>{contents.length}Process</Text>;
       },
     },
     {
@@ -401,7 +401,7 @@ const ReleaseListPage: React.FC = () => {
     label: t(config.i18nKey),
   }));
 
-  // Release者选项(从mockData中提取)
+  // Release者选项(frommockData提取)
   const publisherOptions = useMemo(() => {
     const publishers = ['John Smith', 'Jane Doe', 'Mike Wang'];
     return publishers.map((name) => ({ value: name, label: name }));

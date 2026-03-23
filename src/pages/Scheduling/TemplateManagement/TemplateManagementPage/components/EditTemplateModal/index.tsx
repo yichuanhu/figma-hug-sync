@@ -102,7 +102,7 @@ const mockBots = [
   { id: 'bot-005', name: 'RPA-BOT-005', groupId: null, status: 'OFFLINE' },
 ];
 
-// Mock 个人Credential
+// Mock 人Credential
 const mockCredentials = [
   { id: 'cred-001', name: 'System Admin Credentials' },
   { id: 'cred-002', name: 'API Access Credentials' },
@@ -175,7 +175,7 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
     }
   }, [visible, formApi]);
 
-  // 选择Process
+  // selectProcess
   const handleProcessChange = useCallback((processId: string) => {
     const process = mockProcesses.find((p) => p.process_id === processId);
     setSelectedProcess(process || null);
@@ -190,7 +190,7 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
     }
   }, [formApi]);
 
-  // 渲染Parameter输入
+  // 渲染Parameterinput
   const renderParameterInput = (param: LYProcessParameterDefinition) => {
     const renderLabel = () => (
       <div className="edit-template-modal-param-label">
@@ -262,7 +262,7 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
     }
   };
 
-  // 判断是否有Parameter
+  // 判断is否hasParameter
   const hasParameters = selectedProcess && selectedProcess.parameters.length > 0;
   const hasOutputParameters = selectedProcess && selectedProcess.output_parameters && selectedProcess.output_parameters.length > 0;
   const showRightPanel = hasParameters || hasOutputParameters;
@@ -279,7 +279,7 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
         });
       }
 
-      // 模拟API调用
+      // 模拟API调use
       await new Promise((resolve) => setTimeout(resolve, 500));
       
       console.log('UpdateExecuteTemplate:', {

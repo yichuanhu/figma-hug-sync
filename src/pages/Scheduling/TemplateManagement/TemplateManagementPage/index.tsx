@@ -142,7 +142,7 @@ const TemplateManagementPage = () => {
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingTemplate, setEditingTemplate] = useState<LYExecutionTemplateResponse | null>(null);
 
-  // 从响应中直接获取分页Info
+  // from响应直接获取分页Info
   const { range, list } = listResponse;
   const currentPage = Math.floor((range?.offset || 0) / (range?.size || 20)) + 1;
   const pageSize = range?.size || 20;
@@ -169,7 +169,7 @@ const TemplateManagementPage = () => {
         );
       }
 
-      // 按ProcessFilter
+      // byProcessFilter
       if (params.process_id) {
         filtered = filtered.filter((tpl) => tpl.process_id === params.process_id);
       }
@@ -195,7 +195,7 @@ const TemplateManagementPage = () => {
     loadData(queryParams);
   }, [queryParams, loadData]);
 
-  // Search防抖
+  // Searchdebounced
   const handleSearch = useMemo(
     () =>
       debounce((value: string) => {
@@ -230,7 +230,7 @@ const TemplateManagementPage = () => {
     loadData(queryParams);
   };
 
-  // 打开Details drawer
+  // openDetails drawer
   const handleOpenDrawer = (template: LYExecutionTemplateResponse) => {
     setSelectedTemplate(template);
     setDrawerVisible(true);
@@ -242,13 +242,13 @@ const TemplateManagementPage = () => {
     setSelectedTemplate(null);
   };
 
-  // 从DrawerEdit
+  // fromDrawerEdit
   const handleEditFromDrawer = (template: LYExecutionTemplateResponse) => {
     setEditingTemplate(template);
     setEditModalVisible(true);
   };
 
-  // 从DrawerDelete
+  // fromDrawerDelete
   const handleDeleteFromDrawer = (template: LYExecutionTemplateResponse) => {
     handleDeleteTemplate(template);
     setDrawerVisible(false);
@@ -280,9 +280,9 @@ const TemplateManagementPage = () => {
     return paged;
   };
 
-  // 使用Template
+  // usingTemplate
   const handleUseTemplate = (template: LYExecutionTemplateResponse) => {
-    // 将TemplateData存入 sessionStorage, 以便任务页面读取
+    // 将TemplateData存入 sessionStorage, 以便task页面读取
     sessionStorage.setItem(`template_${template.template_id}`, JSON.stringify(template));
     navigate(`/scheduling-center/task-execution/task-list?templateId=${template.template_id}`);
   };
@@ -404,7 +404,7 @@ const TemplateManagementPage = () => {
     },
   ];
 
-  // 判断是否有FilterCondition
+  // 判断is否hasFilterCondition
   const hasFilters = queryParams.keyword || queryParams.process_id;
 
   return (

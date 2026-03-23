@@ -49,7 +49,7 @@ const logLevelConfig: Record<LogLevel, { color: 'grey' | 'blue' | 'orange' | 're
 // LogMessage截断阈值
 const MESSAGE_TRUNCATE_LENGTH = 200;
 
-// 自动Refresh间隔(毫s)
+// auto-Refresh间隔(毫s)
 const AUTO_REFRESH_INTERVAL = 10000;
 
 // Mock Datageneration
@@ -108,21 +108,21 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
   const [dateRangeFilter, setDateRangeFilter] = useState<[Date, Date] | null>(null);
   const [exporting, setExporting] = useState(false);
   
-  // 自动RefreshScheduled器
+  // auto-RefreshScheduled器
   const refreshTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   
   // LoadingLogData
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      // Mock API 调用
+      // Mock API 调use
       await new Promise((resolve) => setTimeout(resolve, 500));
       
       const mockLogs = Array.from({ length: 50 }, (_, i) => 
         generateMockLog(((queryParams.page || 1) - 1) * 50 + i)
       );
       
-      // 应用关键字Filter
+      // 应use关键字Filter
       let filteredLogs = mockLogs;
       if (queryParams.keyword) {
         filteredLogs = mockLogs.filter((log) =>
@@ -130,7 +130,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
         );
       }
       
-      // 应用级别Filter
+      // 应use级别Filter
       if (queryParams.log_level) {
         filteredLogs = filteredLogs.filter((log) => log.log_level === queryParams.log_level);
       }
@@ -144,7 +144,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
         list: filteredLogs,
       });
       
-      // 首次Loading时获取Statistics
+      // 首Loading时获取Statistics
       if (!summary) {
         setSummary(generateMockSummary());
       }
@@ -160,7 +160,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
     loadData();
   }, [loadData]);
   
-  // 自动Refresh逻辑
+  // auto-Refreshlogic
   useEffect(() => {
     if (executionStatus === 'RUNNING') {
       refreshTimerRef.current = setInterval(() => {
@@ -175,7 +175,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
     };
   }, [executionStatus, loadData]);
   
-  // Search防抖
+  // Searchdebounced
   const handleSearch = useMemo(
     () =>
       debounce((value: string) => {
@@ -262,7 +262,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
     });
   }, [t]);
   
-  // Filter按钮Status
+  // Filterby钮Status
   const hasActiveFilter = !!queryParams.log_level;
   const filterCount = queryParams.log_level ? 1 : 0;
   

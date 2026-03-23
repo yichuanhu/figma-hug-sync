@@ -49,13 +49,13 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
 
     setLoading(true);
     try {
-      // 构建API请求Parameter - 使用LYUpdateProcessRequestType
+      // 构建API请求Parameter - usingLYUpdateProcessRequestType
       const updateRequest: LYUpdateProcessRequest = {
         name: values.name as string,
         description: (values.description as string) || undefined,
       };
 
-      // 模拟API调用延迟
+      // 模拟API调use延迟
       await new Promise((resolve) => setTimeout(resolve, 300));
 
       // generationMock响应 - 直接BackLYProcessResponse

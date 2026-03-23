@@ -136,7 +136,7 @@ const QueueTriggerDetailDrawer = ({
     },
   ];
 
-  // 额外Operation按钮
+  // 额外Operationby钮
   const extraActions = (
     <>
       <Tooltip content={t('common.edit')}>

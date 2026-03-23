@@ -28,7 +28,7 @@ interface SyncRecordingPlayerProps {
   onRefresh?: () => void;
 }
 
-// Format化Time为 mm:ss 或 hh:mm:ss
+// Format化Timeas mm:ss 或 hh:mm:ss
 const formatTime = (seconds: number): string => {
   const h = Math.floor(seconds / 3600);
   const m = Math.floor((seconds % 3600) / 60);
@@ -136,7 +136,7 @@ const SyncRecordingPlayer = ({
     };
   }, []);
   
-  // 跳转到指Scheduled间
+  // 跳转to指Scheduled间
   const seekTo = useCallback((time: number) => {
     if (videoRef.current) {
       videoRef.current.currentTime = time;
@@ -144,7 +144,7 @@ const SyncRecordingPlayer = ({
     }
   }, [onTimeUpdate]);
   
-  // 进度条点击
+  // 进度点击
   const handleSliderChange = useCallback((value: number | number[]) => {
     const time = Array.isArray(value) ? value[0] : value;
     seekTo(time);
@@ -156,7 +156,7 @@ const SyncRecordingPlayer = ({
     onMarkerClick(marker);
   }, [seekTo, onMarkerClick]);
   
-  // calculationError markers位置
+  // calculationError markers-bit置
   const markerPositions = useMemo(() => {
     if (duration <= 0) return [];
     return errorMarkers.map((marker) => ({

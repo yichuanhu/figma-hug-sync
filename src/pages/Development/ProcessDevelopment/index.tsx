@@ -51,7 +51,7 @@ const generateUUID = (): string => {
   });
 };
 
-// ============= MockDatageneration - 基于APIType =============
+// ============= MockDatageneration - 基for APIType =============
 
 // generation符合LYProcessResponseFormat's MockData
 const generateMockLYProcessResponse = (index: number): LYProcessResponse => {
@@ -76,9 +76,9 @@ const generateMockLYProcessResponse = (index: number): LYProcessResponse => {
     'Automate contract approval process including template matching, clause review, and signing process',
     'Auto-recognize and process various invoices including OCR recognition, info extraction, and accounting processing',
     'Auto-sync customer info to all business systems to maintain data consistency',
-    '自动Execute库存盘点任务, generation差异报告, Trigger补货Process',
-    '自动汇总各渠道销售Data, generationanalysis报告, 发送给相关负责人',
-    'Scheduled自动generation各类业务report, 支持多种FormatExport and 分发',
+    'Auto-execute inventory audit tasks, generate variance reports, and trigger replenishment process',
+    'Auto-aggregate sales data from all channels, generate analysis reports, and send to stakeholders',
+    'Scheduled auto-generation of various business reports with multi-format export and distribution',
   ];
 
   const creatorIds = ['user-001', 'user-002', 'user-003', 'user-004', 'user-005'];
@@ -115,13 +115,13 @@ const generateMockProcessList = (): LYProcessResponse[] => {
 // MockData存储
 let mockProcessData = generateMockProcessList();
 
-// 模拟Create者ID到Name's 映射
+// 模拟Create者IDtoName's 映射
 const mockCreatorNameMap: Record<string, { name: string; department?: string; role?: string; email?: string }> = {
-  'user-001': { name: 'John Smith', department: '技术部', role: '高级工程师', email: 'zhangsan@example.com' },
-  'user-002': { name: 'Jane Doe', department: '产品部', role: '产品经理', email: 'lisi@example.com' },
-  'user-003': { name: 'Mike Wang', department: '运维部', role: '运维工程师', email: 'wangwu@example.com' },
-  'user-004': { name: 'David Zhao', department: '测试部', role: '测试工程师', email: 'zhaoliu@example.com' },
-  'user-005': { name: 'Chris Qian', department: '技术部', role: '架构师', email: 'qianqi@example.com' },
+  'user-001': { name: 'John Smith', department: 'Engineering', role: 'Senior Engineer', email: 'john.smith@example.com' },
+  'user-002': { name: 'Jane Doe', department: 'Product', role: 'Product Manager', email: 'jane.doe@example.com' },
+  'user-003': { name: 'Mike Wang', department: 'Operations', role: 'Ops Engineer', email: 'mike.wang@example.com' },
+  'user-004': { name: 'David Zhao', department: 'QA', role: 'QA Engineer', email: 'david.zhao@example.com' },
+  'user-005': { name: 'Chris Qian', department: 'Engineering', role: 'Architect', email: 'chris.qian@example.com' },
 };
 
 // ============= Data获取 - BackLYListResponseLYProcessResponse =============
@@ -205,10 +205,10 @@ const ProcessDevelopment = () => {
   const location = useLocation();
   const { t } = useTranslation();
 
-  // Search框输入值(即is shown)
+  // Search框input值(即is shown)
   const [searchValue, setSearchValue] = useState('');
 
-  // 查询Parameter - 直接使用API GetProcessesParams
+  // queryParameter - 直接usingAPI GetProcessesParams
   const [queryParams, setQueryParams] = useState<GetProcessesParams>({
     offset: 0,
     size: 20,
@@ -225,18 +225,18 @@ const ProcessDevelopment = () => {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [createModalVisible, setCreateModalVisible] = useState(false);
 
-  // 从首页快捷入口跳转时自动打开新建Modal
+  // from首页快捷入口跳转时auto-open新建Modal
   useEffect(() => {
     if ((location.state as any)?.openCreate) {
       setCreateModalVisible(true);
-      // 清除 state 避免RefreshRepeat打开
+      // 清除 state 避免RefreshRepeatopen
       window.history.replaceState({}, document.title);
     }
   }, [location.state]);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
 
-  // List响应Data - 直接使用API LYListResponseLYProcessResponse
+  // List响应Data - 直接usingAPI LYListResponseLYProcessResponse
   const [listResponse, setListResponse] = useState<LYListResponseLYProcessResponse>({
     range: { offset: 0, size: 20, total: 0 },
     list: [],
@@ -266,7 +266,7 @@ const ProcessDevelopment = () => {
     }
   }, [queryParams, statusFilter]);
 
-  // 翻页并Back新Data(用于Drawer导航时自动翻页)
+  // 翻页并Back新Data(usefor Drawer导航时auto-翻页)
   const handleDrawerPageChange = useCallback(async (page: number): Promise<LYProcessResponse[]> => {
     const currentPageSize = listResponse.range?.size || 20;
     const newOffset = (page - 1) * currentPageSize;
@@ -286,7 +286,7 @@ const ProcessDevelopment = () => {
     loadData();
   }, [loadData]);
 
-  // Search防抖
+  // Searchdebounced
   const debouncedSearch = useMemo(
     () =>
       debounce((value: string) => {
@@ -295,13 +295,13 @@ const ProcessDevelopment = () => {
     []
   );
 
-  // Search - 使用防抖processing
+  // Search - usingdebouncedprocessing
   const handleSearch = (value: string) => {
-    setSearchValue(value);  // 立即Update输入框显示
-    debouncedSearch(value); // 防抖Update查询Parameter
+    setSearchValue(value);  // Immediately update input display
+    debouncedSearch(value); // Debounced query update
   };
 
-  // 打开ProcessDetails drawer
+  // openProcessDetails drawer
   const openProcessDetail = (record: LYProcessResponse) => {
     setSelectedProcess(record);
     if (!detailDrawerVisible) {
@@ -373,7 +373,7 @@ const ProcessDevelopment = () => {
     }));
   };
 
-  // 从响应中获取分页Info
+  // from响应获取分页Info
   const { range, list } = listResponse;
   const currentPage = Math.floor((range?.offset || 0) / (range?.size || 20)) + 1;
   const pageSize = range?.size || 20;

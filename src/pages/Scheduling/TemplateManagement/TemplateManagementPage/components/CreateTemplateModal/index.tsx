@@ -99,14 +99,14 @@ const mockBots = [
   { id: 'bot-005', name: 'RPA-BOT-005', groupId: null, status: 'OFFLINE' },
 ];
 
-// Mock 个人Credential
+// Mock 人Credential
 const mockCredentials = [
   { id: 'cred-001', name: 'System Admin Credentials' },
   { id: 'cred-002', name: 'API Access Credentials' },
   { id: 'cred-003', name: 'Database credential' },
 ];
 
-// Already存在's TemplateName (模拟)
+// Already存in 's TemplateName (模拟)
 const existingTemplateNames = ['Order Processing Default Template', 'Finance Approval Quick Template'];
 
 const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateModalProps) => {
@@ -150,7 +150,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
     }
   }, [visible, formApi]);
 
-  // 选择Process
+  // selectProcess
   const handleProcessChange = useCallback((processId: string) => {
     const process = mockProcesses.find((p) => p.process_id === processId);
     setSelectedProcess(process || null);
@@ -173,7 +173,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
     return '';
   }, [t]);
 
-  // 渲染Parameter输入
+  // 渲染Parameterinput
   const renderParameterInput = (param: LYProcessParameterDefinition) => {
     const renderLabel = () => (
       <div className="create-template-modal-param-label">
@@ -245,11 +245,11 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
     }
   };
 
-  // 判断是否有Parameter需要填写
+  // 判断is否hasParameterneed填写
   const hasParameters = selectedProcess && selectedProcess.parameters.length > 0;
-  // 判断是否有输出Parameter
+  // 判断is否hasoutputParameter
   const hasOutputParameters = selectedProcess && selectedProcess.output_parameters && selectedProcess.output_parameters.length > 0;
-  // Right是否需要显示
+  // Rightis否needdisplay
   const showRightPanel = hasParameters || hasOutputParameters;
 
   // Submit
@@ -264,7 +264,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
         });
       }
 
-      // 模拟API调用
+      // 模拟API调use
       await new Promise((resolve) => setTimeout(resolve, 500));
       
       console.log('CreateExecuteTemplate:', {

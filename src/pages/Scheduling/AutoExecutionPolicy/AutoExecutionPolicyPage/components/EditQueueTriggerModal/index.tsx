@@ -125,7 +125,7 @@ const mockQueues = [
   { queue_id: 'queue-004', queue_name: 'Report Generation Queue', monitored: false },
 ];
 
-// Mock 个人Credential
+// Mock 人Credential
 const mockCredentials = [
   { id: 'cred-001', name: 'System Admin Credentials' },
   { id: 'cred-002', name: 'API Access Credentials' },
@@ -149,7 +149,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
   const [minEffectiveMessages, setMinEffectiveMessages] = useState(1);
   const [enablePeriodicCheck, setEnablePeriodicCheck] = useState(false);
 
-  // 判断是否有Parameter需要填写
+  // 判断is否hasParameterneed填写
   const hasParameters = selectedProcess && selectedProcess.parameters.length > 0;
   const hasOutputParameters = selectedProcess && selectedProcess.output_parameters && selectedProcess.output_parameters.length > 0;
   const showRightPanel = (hasParameters || hasOutputParameters) && currentStep === 1;
@@ -157,7 +157,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
   // 初始化表单Data
   useEffect(() => {
     if (visible && trigger && formApi && !initialized) {
-      // 查找对应's Process
+      // 查找for应's Process
       const process = mockProcesses.find((p) => p.process_id === trigger.process_id);
       setSelectedProcess(process || null);
       setTargetType(trigger.execution_target_type);
@@ -207,7 +207,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
     }
   }, [visible]);
 
-  // 选择Process
+  // selectProcess
   const handleProcessChange = (processId: string) => {
     const process = mockProcesses.find((p) => p.process_id === processId);
     setSelectedProcess(process || null);
@@ -220,7 +220,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
     }
   };
 
-  // 选择Template
+  // selectTemplate
   const handleTemplateChange = (templateId: string | null) => {
     if (templateId && formApi) {
       const template = mockTemplates.find((t) => t.template_id === templateId);
@@ -243,7 +243,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
     }
   };
 
-  // 渲染Parameter输入
+  // 渲染Parameterinput
   const renderParameterInput = (param: LYProcessParameterDefinition) => {
     const renderLabel = () => (
       <div className="edit-queue-trigger-modal-param-label">

@@ -50,7 +50,7 @@ const mockWorkerGroups = [
   { id: 'group-003', name: 'Ops Inspection Bot Group' },
 ];
 
-// MockData - 使用APIType
+// MockData - usingAPIType
 const mockWorkers: LYWorkerResponse[] = [
   {
     id: '550e8400-e29b-41d4-a716-446655440001',
@@ -282,12 +282,12 @@ const fetchWorkerList = async (params: GetWorkersParams & { filters?: FilterStat
   if (params.filters?.group_id && params.filters.group_id.length > 0) {
     data = data.filter(item => {
       const selectedGroups = params.filters!.group_id;
-      // Check是否选择了"未分组"
+      // Checkis否select "未分组"
       if (selectedGroups.includes(UNGROUPED_FILTER_VALUE)) {
         // 未分组's bot
         if (!item.group_id) return true;
       }
-      // Check是否属于Selected's bot组
+      // Checkis否属for Selected's bot组
       if (item.group_id && selectedGroups.includes(item.group_id)) {
         return true;
       }
@@ -339,10 +339,10 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  // Search框输入值(即is shown)
+  // Search框input值(即is shown)
   const [searchValue, setSearchValue] = useState('');
   
-  // 查询Parameter - 使用APIType
+  // queryParameter - usingAPIType
   const [queryParams, setQueryParams] = useState<GetWorkersParams>({
     offset: 0,
     size: 20,
@@ -359,7 +359,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
   const [loading, setLoading] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   
-  // List响应Data - 直接使用API LYListResponseLYWorkerResponse
+  // List响应Data - 直接usingAPI LYListResponseLYWorkerResponse
   const [listResponse, setListResponse] = useState<LYListResponseLYWorkerResponse>({
     range: { offset: 0, size: 20, total: 0 },
     list: [],
@@ -372,7 +372,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
   const [keyModalWorker, setKeyModalWorker] = useState<LYWorkerResponse | null>(null);
   const [createModalVisible, setCreateModalVisible] = useState(false);
 
-  // 从首页快捷入口跳转时自动打开新建Modal
+  // from首页快捷入口跳转时auto-open新建Modal
   useEffect(() => {
     if (openCreateFromHome) {
       setCreateModalVisible(true);
@@ -431,13 +431,13 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     }
   }, [queryParams, filters, sortState]);
 
-  // 翻页并Back新Data(用于Drawer导航时自动翻页)
+  // 翻页并Back新Data(usefor Drawer导航时auto-翻页)
   const handleDrawerPageChange = useCallback(async (page: number): Promise<LYWorkerResponse[]> => {
     const currentPageSize = listResponse.range?.size || 20;
     const newOffset = (page - 1) * currentPageSize;
     setQueryParams(prev => ({ ...prev, offset: newOffset }));
     
-    // 直接获取Data而不是WaitstateUpdate
+    // 直接获取Data而notisWaitstateUpdate
     const response = await fetchWorkerList({
       ...queryParams,
       offset: newOffset,
@@ -448,7 +448,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     return response.list;
   }, [queryParams, filters, sortState, listResponse.range?.size]);
 
-  // 当Tab switch到非激活Status时, CloseDrawer
+  // 当Tab switchto非激活Status时, CloseDrawer
   useEffect(() => {
     if (!isActive) {
       setDetailDrawerVisible(false);
@@ -460,7 +460,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     loadData();
   }, [loadData]);
 
-  // processing从bot组跳转过来's 情况
+  // processingfrombot组跳转过's 情况
   useEffect(() => {
     if (pendingWorkerId && listResponse.list.length > 0) {
       const worker = listResponse.list.find(w => w.id === pendingWorkerId);
@@ -472,7 +472,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     }
   }, [pendingWorkerId, listResponse.list, onWorkerDetailOpened]);
 
-  // Search防抖
+  // Searchdebounced
   const debouncedSearch = useMemo(
     () =>
       debounce((value: string) => {
@@ -499,7 +499,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
   const hasActiveFilters = Object.values(filters).some(arr => arr.length > 0);
   const activeFilterCount = Object.values(filters).reduce((sum, arr) => sum + arr.length, 0);
 
-  // 切换接收任务Status
+  // 切换接收taskStatus
   const handleToggleReceiveTasks = async (worker: LYWorkerResponse, checked: boolean) => {
     // Update本地Data
     setListResponse(prev => ({
@@ -509,24 +509,24 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       ),
     }));
     
-    // 同时UpdateSelected's worker(如果Drawer打开中)
+    // alsoUpdateSelected's worker(ifDraweropen)
     if (selectedWorker?.id === worker.id) {
       setSelectedWorker(prev => prev ? { ...prev, receive_tasks: checked } : null);
     }
     
-    // 模拟API调用
+    // 模拟API调use
     Toast.success(checked ? t('worker.receiveTasks.enabled') : t('worker.receiveTasks.disabled'));
   };
 
   // filterContent removed - using FilterPopover directly
 
-  // 打开Details drawer
+  // openDetails drawer
   const openDetail = (worker: LYWorkerResponse) => {
     setSelectedWorker(worker);
     setDetailDrawerVisible(true);
   };
 
-  // 打开密钥Modal
+  // open密钥Modal
   const openKeyModal = (worker: LYWorkerResponse, e?: React.MouseEvent) => {
     e?.stopPropagation();
     setKeyModalWorker(worker);
@@ -537,7 +537,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
   const handleDeleteClick = (worker: LYWorkerResponse, e?: React.MouseEvent) => {
     e?.stopPropagation();
     
-    // Check是否有未Done任务
+    // Checkis否has未Donetask
     if (worker.status === 'BUSY') {
       Modal.warning({
         title: t('worker.deleteModal.cannotDelete'),
@@ -563,7 +563,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       okButtonProps: { type: 'danger' },
       onOk: async () => {
         try {
-          // 模拟Delete API 调用
+          // 模拟Delete API 调use
           await new Promise(resolve => setTimeout(resolve, 500));
           console.log('Deletebot:', worker.id);
           
@@ -574,10 +574,10 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
           // 重新LoadingData
           loadData();
           
-          // 显示Success提示
+          // displaySuccess提示
           Toast.success(t('worker.deleteModal.success'));
         } catch (error) {
-          // 显示Error提示
+          // displayError提示
           Toast.error(t('worker.deleteModal.error'));
           throw error;
         }
@@ -585,7 +585,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     });
   };
 
-  // 从Details drawer跳转到Edit
+  // fromDetails drawer跳转toEdit
   const handleEditFromDrawer = () => {
     if (selectedWorker) {
       setEditingWorker(selectedWorker);
@@ -593,7 +593,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     }
   };
 
-  // 从Details drawerDelete
+  // fromDetails drawerDelete
   const handleDeleteFromDrawer = () => {
     if (selectedWorker) {
       handleDeleteClick(selectedWorker);
@@ -607,7 +607,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     setEditModalVisible(true);
   };
 
-  // 添加至分组
+  // add至分组
   const handleAddToGroup = (worker: LYWorkerResponse, e?: React.MouseEvent) => {
     e?.stopPropagation();
     setAddToGroupWorker(worker);
@@ -628,13 +628,13 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
         item.id === updatedWorker.id ? updatedWorker : item
       ),
     }));
-    // 同步UpdateSelected's worker(如果Drawer打开中)
+    // 同步UpdateSelected's worker(ifDraweropen)
     if (selectedWorker?.id === updatedWorker.id) {
       setSelectedWorker(updatedWorker);
     }
   };
 
-  // 添加至分组Success回调
+  // add至分组Success回调
   const handleAddToGroupSuccess = (updatedWorker: LYWorkerResponse) => {
     // UpdateListData
     setListResponse(prev => ({
@@ -643,7 +643,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
         item.id === updatedWorker.id ? updatedWorker : item
       ),
     }));
-    // 同步UpdateSelected's worker(如果Drawer打开中)
+    // 同步UpdateSelected's worker(ifDraweropen)
     if (selectedWorker?.id === updatedWorker.id) {
       setSelectedWorker(updatedWorker);
     }
@@ -664,7 +664,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       cancelText: t('common.cancel'),
       onOk: async () => {
         try {
-          // 模拟API调用
+          // 模拟API调use
           await new Promise(resolve => setTimeout(resolve, 500));
           
           const updatedWorker: LYWorkerResponse = {
@@ -681,7 +681,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
             ),
           }));
           
-          // 同步UpdateSelected's worker(如果Drawer打开中)
+          // 同步UpdateSelected's worker(ifDraweropen)
           if (selectedWorker?.id === updatedWorker.id) {
             setSelectedWorker(updatedWorker);
           }
@@ -695,7 +695,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     });
   };
 
-  // 从响应中获取分页Info
+  // from响应获取分页Info
   const { range, list } = listResponse;
   const currentPage = Math.floor((range?.offset || 0) / (range?.size || 20)) + 1;
   const pageSize = range?.size || 20;
@@ -773,7 +773,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       key: 'receive_tasks',
       width: 90,
       render: (receiveTasks: boolean, record: LYWorkerResponse) => {
-        // 只有Online且非故障Status才允许Operation
+        // 只hasOnline且非故障Status才允许Operation
         const canOperate = record.status !== 'OFFLINE' && record.status !== 'FAULT';
         return (
           <div onClick={(e) => e.stopPropagation()}>

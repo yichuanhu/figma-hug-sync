@@ -70,13 +70,13 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
   const handleSubmit = async (values: Record<string, unknown>) => {
     setLoading(true);
     try {
-      // 构建API请求Parameter - 使用LYCreateProcessRequestType
+      // 构建API请求Parameter - usingLYCreateProcessRequestType
       const createRequest: LYCreateProcessRequest = {
         name: values.name as string,
         description: (values.description as string) || undefined,
       };
 
-      // 模拟API调用延迟
+      // 模拟API调use延迟
       await new Promise((resolve) => setTimeout(resolve, 300));
 
       // generationMock响应 - 直接BackLYProcessResponse

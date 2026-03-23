@@ -24,7 +24,7 @@ interface AddMembersModalProps {
   onSuccess: () => void;
 }
 
-// Mock可添加's botData
+// Mock可add's botData
 const mockAvailableWorkers: LYWorkerResponse[] = [
   {
     id: '550e8400-e29b-41d4-a716-446655440010',
@@ -109,7 +109,7 @@ const mockAvailableWorkers: LYWorkerResponse[] = [
   },
 ];
 
-// 获取可添加's botList
+// 获取可add's botList
 const fetchAvailableWorkers = async (params: GetAvailableWorkersForGroupParams & { statusFilter?: WorkerStatus[] }): Promise<LYListResponseLYWorkerResponse> => {
   await new Promise(resolve => setTimeout(resolve, 300));
   
@@ -211,7 +211,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
     }
   }, [visible, queryParams, loadWorkers]);
 
-  // Search - 防抖processing
+  // Search - debouncedprocessing
   const handleSearch = useMemo(
     () =>
       debounce((value: string) => {
@@ -220,7 +220,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
     []
   );
 
-  // 选择/Cancel选择bot
+  // select/Cancelselectbot
   const handleSelectWorker = (worker: LYWorkerResponse, checked: boolean) => {
     if (checked) {
       setSelectedWorkers(prev => [...prev, worker]);
@@ -229,7 +229,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
     }
   };
 
-  // 移除Already选bot
+  // removeAlready选bot
   const handleRemoveSelected = (workerId: string) => {
     setSelectedWorkers(prev => prev.filter(w => w.id !== workerId));
   };
@@ -243,7 +243,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
 
     setSubmitting(true);
     try {
-      // 模拟API调用
+      // 模拟API调use
       await new Promise(resolve => setTimeout(resolve, 500));
     console.log('Adding members to group:', groupId, selectedWorkers.map(w => w.id));
       

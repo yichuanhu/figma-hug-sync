@@ -117,7 +117,7 @@ interface WorkerGroupManagementProps {
 const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: WorkerGroupManagementProps) => {
   const { t } = useTranslation();
   
-  // 查询Parameter
+  // queryParameter
   const [queryParams, setQueryParams] = useState<GetWorkerGroupsParams>({
     offset: 0,
     size: 20,
@@ -155,7 +155,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
     }
   }, [queryParams]);
 
-  // 翻页并Back新Data(用于Drawer导航时自动翻页)
+  // 翻页并Back新Data(usefor Drawer导航时auto-翻页)
   const handleDrawerPageChange = useCallback(async (page: number): Promise<LYWorkerGroupResponse[]> => {
     const currentPageSize = listResponse.range?.size || 20;
     const newOffset = (page - 1) * currentPageSize;
@@ -169,7 +169,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
     return response.list;
   }, [queryParams, listResponse.range?.size]);
 
-  // 当Tab switch到非激活Status时, CloseDrawer
+  // 当Tab switchto非激活Status时, CloseDrawer
   useEffect(() => {
     if (!isActive) {
       setDetailDrawerVisible(false);
@@ -181,7 +181,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
     loadData();
   }, [loadData]);
 
-  // Search - 防抖processing
+  // Search - debouncedprocessing
   const handleSearch = useMemo(
     () =>
       debounce((value: string) => {
@@ -190,7 +190,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
     []
   );
 
-  // 打开Details drawer
+  // openDetails drawer
   const openDetail = (group: LYWorkerGroupResponse) => {
     setSelectedGroup(group);
     setDetailDrawerVisible(true);
@@ -203,14 +203,14 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
     setEditModalVisible(true);
   };
 
-  // 添加成员
+  // add成员
   const handleAddMembers = (group: LYWorkerGroupResponse, e?: React.MouseEvent) => {
     e?.stopPropagation();
     setAddMembersTargetGroup(group);
     setAddMembersModalVisible(true);
   };
 
-  // 从Details drawer跳转到Edit
+  // fromDetails drawer跳转toEdit
   const handleEditFromDrawer = () => {
     if (selectedGroup) {
       setEditingGroup(selectedGroup);
@@ -238,7 +238,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
       okButtonProps: { type: 'danger' },
       onOk: async () => {
         try {
-          // 模拟Delete API 调用
+          // 模拟Delete API 调use
           await new Promise(resolve => setTimeout(resolve, 500));
           
           // CloseDrawer
@@ -257,7 +257,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
     });
   };
 
-  // 从Details drawerDelete
+  // fromDetails drawerDelete
   const handleDeleteFromDrawer = () => {
     if (selectedGroup) {
       handleDeleteClick(selectedGroup);
@@ -278,13 +278,13 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
         item.id === updatedGroup.id ? updatedGroup : item
       ),
     }));
-    // 同步UpdateSelected's group(如果Drawer打开中)
+    // 同步UpdateSelected's group(ifDraweropen)
     if (selectedGroup?.id === updatedGroup.id) {
       setSelectedGroup(updatedGroup);
     }
   };
 
-  // 从响应中获取分页Info
+  // from响应获取分页Info
   const { range, list } = listResponse;
   const currentPage = Math.floor((range?.offset || 0) / (range?.size || 20)) + 1;
   const pageSize = range?.size || 20;

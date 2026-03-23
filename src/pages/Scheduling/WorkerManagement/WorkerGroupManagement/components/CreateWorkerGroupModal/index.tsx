@@ -31,7 +31,7 @@ const CreateWorkerGroupModal: React.FC<CreateWorkerGroupModalProps> = ({
   const [promptVisible, setPromptVisible] = useState(false);
   const [createdGroup, setCreatedGroup] = useState<CreatedGroupInfo | null>(null);
   
-  // 添加成员模态框
+  // add成员模态框
   const [addMembersVisible, setAddMembersVisible] = useState(false);
 
   const handleSubmit = async () => {
@@ -46,7 +46,7 @@ const CreateWorkerGroupModal: React.FC<CreateWorkerGroupModalProps> = ({
         description: values.description || null,
       };
 
-      // 模拟API调用
+      // 模拟API调use
       await new Promise(resolve => setTimeout(resolve, 500));
       console.log('Creating bot group:', request);
       
@@ -56,7 +56,7 @@ const CreateWorkerGroupModal: React.FC<CreateWorkerGroupModalProps> = ({
       Toast.success(t('workerGroup.createModal.success'));
       formApi.reset();
       
-      // SaveCreate's 组Info, 显示提示模态框
+      // SaveCreate's 组Info, display提示模态框
       setCreatedGroup({ id: newGroupId, name: values.name });
       onCancel(); // Close create modal first
       setPromptVisible(true); // Show add members prompt
@@ -76,25 +76,25 @@ const CreateWorkerGroupModal: React.FC<CreateWorkerGroupModalProps> = ({
     onCancel();
   };
 
-  // processing立即添加成员
+  // processingimmediatelyadd成员
   const handleAddNow = () => {
     setPromptVisible(false);
     setAddMembersVisible(true);
   };
 
-  // processing稍后添加
+  // processing稍后add
   const handleAddLater = () => {
     setPromptVisible(false);
     setCreatedGroup(null);
   };
 
-  // 添加成员Success
+  // add成员Success
   const handleAddMembersSuccess = () => {
     setAddMembersVisible(false);
     setCreatedGroup(null);
   };
 
-  // Cancel添加成员
+  // Canceladd成员
   const handleAddMembersCancel = () => {
     setAddMembersVisible(false);
     setCreatedGroup(null);

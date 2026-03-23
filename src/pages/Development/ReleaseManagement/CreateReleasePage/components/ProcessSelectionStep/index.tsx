@@ -38,27 +38,27 @@ interface ProcessSelectionStepProps {
 const generateMockVersions = (processIndex: number, isProcessPublished: boolean): ProcessVersion[] => {
   const versionCount = Math.floor(Math.random() * 3) + 2;
   
-  // 对于AlreadyPublished process, 随机决定是否有新Version可Release
+  // forfor AlreadyPublished process, 随机决定is否has新Version可Release
   const hasNewVersionAvailable = isProcessPublished && Math.random() > 0.5;
   
   return Array.from({ length: versionCount }, (_, i) => ({
     id: `ver-${processIndex + 1}-${i + 1}`,
     version: `v${versionCount - i}.${Math.floor(Math.random() * 10)}.0`,
-    // 如果有新Version可Release, 只有最后Mon个Version是AlreadyRelease's (不是最新's )
-    // 否则, 第Mon个Version(最新)是AlreadyRelease's 
+    // ifhas新Version可Release, 只has最后MonVersionisAlreadyRelease's (notis最新's )
+    // 否则, 第MonVersion(最新)isAlreadyRelease's 
     is_published: hasNewVersionAvailable ? i === versionCount - 1 : i === 0,
   }));
 };
 
-// CheckProcess是否有新Version可Release
+// CheckProcessis否has新Version可Release
 const hasNewVersionToPublish = (process: ProcessWithVersions): boolean => {
   if (!process.is_published) return false;
   
-  // 找到最新Version(第Mon个)
+  // 找to最新Version(第Mon)
   const latestVersion = process.versions[0];
   if (!latestVersion) return false;
   
-  // 如果最新Version未Release, 说明有新Version可Release
+  // if最新Version未Release, 说明has新Version可Release
   return !latestVersion.is_published;
 };
 
@@ -70,13 +70,13 @@ const generateMockProcess = (index: number): ProcessWithVersions => {
     'Inventory Check',
     'reportgeneration器',
     'DataImport',
-    '邮件发送',
+    '邮件send',
     'Fileprocessing',
     'Data清洗',
-    '任务调度',
+    'task调度',
     'Loganalysis',
-    'This is Mon个超级超级长's automationProcessName用来测试当ProcessName特别长's 时候UI是否能正确截断显示不会撑破布局导致样式错乱's 边界情况',
-    '企业级跨部门多系统Data Sync and 清洗Process_包含Abnormalprocessing and Retry机制_支持ConcurrentExecute and Priority调度_Version迭代持续优化中',
+    'This is Mon超级超级长's automationProcessNameuse测试当ProcessName特别长's 时候UIis否can正确截断displaynotwill撑破布局导致样式错乱's 边界情况',
+    '企业级跨部门多系统Data Sync and 清洗Process_包含Abnormalprocessing and Retry机制_supportsConcurrentExecute and Priority调度_Version迭代持续优化',
     '全球化多语言Order Processing and 物流调度automationProcess',
   ];
 
@@ -86,13 +86,13 @@ const generateMockProcess = (index: number): ProcessWithVersions => {
     'Inventory CheckProcess's 详细Description',
     'reportgeneration器Process's 详细Description',
     'DataImportProcess's 详细Description',
-    '邮件发送Process's 详细Description',
+    '邮件sendProcess's 详细Description',
     'FileprocessingProcess's 详细Description',
     'Data清洗Process's 详细Description',
-    '任务调度Process's 详细Description',
+    'task调度Process's 详细Description',
     'LoganalysisProcess's 详细Description',
-    'This is Mon段非常非常长's ProcessDescriptionText, 用来测试当DescriptionInfo超出Normal长度时, UI展示是否正确processing了Text截断或换行逻辑. 该Process涵盖了客户Data采集, Data清洗, FormatConversion, Target系统写入, AbnormalLogRecord, Retry机制Trigger, 邮件Notification发送 etc.多个Step, 每Mon步都包含详细's ParameterConfig and 校验Rule, 确保DataMon致性 and 完整性. ',
-    '企业级跨部门多系统Data Sync and 清洗Process's Description, 这个Description也非常长, 包含了Process设计理念, 技术架构, 性能指标, 安全策略, 合规要求, 运维规范 etc.多方面Content. ',
+    'This is Mon段非常非常长's ProcessDescriptionText, use测试当DescriptionInfo超出Normal长度时, UI展示is否正确processing Text截断或换行logic. thisProcess涵盖 客户Data采集, Data清洗, FormatConversion, Target系统写入, AbnormalLogRecord, Retry机制Trigger, 邮件Notificationsend etc.多Step, 每Mon步都包含详细's ParameterConfig and 校验Rule, 确保DataMon致性 and 完整性. ',
+    '企业级跨部门多系统Data Sync and 清洗Process's Description, thisDescriptionalso非常长, 包含 Process设计理念, 技术架构, 性can指标, 安全策略, 合规to求, 运维规范 etc.多方面Content. ',
     '全球化多语言Order Processing and 物流调度automationProcess's 完整DescriptionInfo',
   ];
 
@@ -136,9 +136,9 @@ const generateMockListResponse = (
   }
 
   // SortRule: 
-  // 1. 完全未Release's Process放在最前面
-  // 2. AlreadyRelease但有新Version可Release's Process排在第Tue
-  // 3. AlreadyRelease且没有新Version's Process排在最后面
+  // 1. 完全未Release's Process放in 最前面
+  // 2. AlreadyRelease但has新Version可Release's Process排in 第Tue
+  // 3. AlreadyRelease且no新Version's Process排in 最后面
   allData.sort((a, b) => {
     const aIsUnpublished = !a.is_published;
     const bIsUnpublished = !b.is_published;
@@ -149,7 +149,7 @@ const generateMockListResponse = (
     if (aIsUnpublished && !bIsUnpublished) return -1;
     if (!aIsUnpublished && bIsUnpublished) return 1;
     
-    // 都是AlreadyRelease's 情况下, 有新Version's 排前面
+    // 都isAlreadyRelease's 情况下, has新Version's 排前面
     if (!aIsUnpublished && !bIsUnpublished) {
       if (aHasNewVersion && !bHasNewVersion) return -1;
       if (!aHasNewVersion && bHasNewVersion) return 1;
@@ -191,7 +191,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
     loadData();
   }, [statusFilter]);
 
-  // Search防抖
+  // Searchdebounced
   const handleSearch = useMemo(
     () =>
       debounce((value: string) => {
@@ -201,15 +201,15 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
     [statusFilter]
   );
 
-  // Already选ProcessID集合(用于Left显示勾选Status)
+  // Already选ProcessID集合(usefor Leftdisplay勾选Status)
   const selectedIds = useMemo(() => {
     return new Set(selectedProcesses.map((sp) => sp.process.id));
   }, [selectedProcesses]);
 
-  // Left勾选processing - 同步到Right
+  // Left勾选processing - 同步toRight
   const handleLeftCheck = (process: ProcessWithVersions, checked: boolean) => {
     if (checked) {
-      // 添加到Already选List
+      // addtoAlready选List
       const newSelection: SelectedProcess = {
         process,
         version_id: process.latest_version_id,
@@ -217,7 +217,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
       };
       onSelectionChange([...selectedProcesses, newSelection]);
     } else {
-      // 从Already选List移除
+      // fromAlready选Listremove
       onSelectionChange(selectedProcesses.filter((sp) => sp.process.id !== process.id));
     }
   };
@@ -225,7 +225,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
   // 全选Left
   const handleLeftCheckAll = (checked: boolean) => {
     if (checked) {
-      // 添加所有未选's Process
+      // add所has未选's Process
       const unselectedProcesses = processList.filter((p) => !selectedIds.has(p.id));
       const newSelections: SelectedProcess[] = unselectedProcesses.map((process) => ({
         process,
@@ -234,13 +234,13 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
       }));
       onSelectionChange([...selectedProcesses, ...newSelections]);
     } else {
-      // 移除当前List中所有Already选's Process
+      // remove当前List所hasAlready选's Process
       const currentListIds = new Set(processList.map((p) => p.id));
       onSelectionChange(selectedProcesses.filter((sp) => !currentListIds.has(sp.process.id)));
     }
   };
 
-  // 从Right移除
+  // fromRightremove
   const handleRemoveFromRight = (processId: string) => {
     onSelectionChange(selectedProcesses.filter((sp) => sp.process.id !== processId));
   };
@@ -267,7 +267,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
     { value: 'unpublished', label: t('release.create.processStatus.unpublished') },
   ];
 
-  // 当前List中被Selected's Count
+  // 当前ListSelected's Count
   const currentListSelectedCount = processList.filter((p) => selectedIds.has(p.id)).length;
   const isLeftAllChecked = processList.length > 0 && currentListSelectedCount === processList.length;
   const isLeftIndeterminate = currentListSelectedCount > 0 && currentListSelectedCount < processList.length;

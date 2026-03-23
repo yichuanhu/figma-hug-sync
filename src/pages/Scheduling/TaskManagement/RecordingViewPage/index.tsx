@@ -38,7 +38,7 @@ const generateMockRecording = (executionId: string): LYRecordingInfoResponse => 
   file_size: 52428800, // 50 MB
   status: 'READY',
   created_at: new Date().toISOString(),
-  // 使用公共测试Video
+  // using公共测试Video
   file_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
 });
 
@@ -97,7 +97,7 @@ const RecordingViewPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   
-  // 获取来源任务 ID  and  activeTab
+  // 获取源task ID  and  activeTab
   const taskIdFromUrl = searchParams.get('taskId');
   const activeTabFromUrl = searchParams.get('activeTab');
   
@@ -127,7 +127,7 @@ const RecordingViewPage = () => {
     setError(null);
     
     try {
-      // Mock API 调用
+      // Mock API 调use
       await new Promise((resolve) => setTimeout(resolve, 800));
       
       const mockRecording = generateMockRecording(executionId);
@@ -155,7 +155,7 @@ const RecordingViewPage = () => {
     
     setLogsLoading(true);
     try {
-      // Mock API 调用 - 仅LoadingLog
+      // Mock API 调use - 仅LoadingLog
       await new Promise((resolve) => setTimeout(resolve, 400));
       const mockLogs = generateMockLogs();
       const startTime = new Date(mockLogs[0].log_time);
@@ -171,7 +171,7 @@ const RecordingViewPage = () => {
   // VideoTimeUpdate
   const handleTimeUpdate = useCallback((time: number) => {
     setCurrentTime(time);
-    // 清除高亮Status(随Play自动同步)
+    // 清除高亮Status(随Playauto-同步)
     setHighlightedLogId(null);
   }, []);
   
@@ -180,9 +180,9 @@ const RecordingViewPage = () => {
     setHighlightedLogId(marker.log_id);
   }, []);
   
-  // 点击Log条目
+  // 点击Log目
   const handleLogClick = useCallback((log: LYExecutionLogResponse) => {
-    // calculationLog相对Time并跳转
+    // calculationLog相forTime并跳转
     const logTime = new Date(log.log_time).getTime();
     const startTime = recordingStartTime.getTime();
     const position = Math.max(0, (logTime - startTime) / 1000);
@@ -220,7 +220,7 @@ const RecordingViewPage = () => {
   // Back
   const handleBack = useCallback(() => {
     if (taskIdFromUrl) {
-      // Back到任务List并打开对应任务's Details drawer, 同时传递 activeTab Parameter
+      // BacktotaskList并openfor应task's Details drawer, also传递 activeTab Parameter
       const params = new URLSearchParams();
       params.set('taskId', taskIdFromUrl);
       if (activeTabFromUrl) {

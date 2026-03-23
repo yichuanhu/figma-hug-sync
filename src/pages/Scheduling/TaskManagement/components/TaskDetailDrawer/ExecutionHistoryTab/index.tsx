@@ -57,10 +57,10 @@ const generateUUID = (): string => {
 
 // MockDatageneration
 const generateMockExecution = (taskId: string, index: number): LYTaskExecutionResponse => {
-  // 第Mon records用 SUCCESS Status, 这样用户可以看到View录屏按钮
+  // 第Mon recordsuse SUCCESS Status, this样use户can看toView录屏by钮
   const statuses: ExecutionStatus[] = ['SUCCESS', 'RUNNING', 'FAILED', 'SUCCESS', 'TIMEOUT', 'STOPPED'];
   const botNames = ['RPA-BOT-001', 'RPA-BOT-002', 'RPA-BOT-003', 'RPA-BOT-004', 'RPA-BOT-005', 'RPA-BOT-006'];
-  // 最新's Time在前面, index越小Time越新
+  // 最新's Timein 前面, index越小Time越新
   const createDate = new Date(2026, 0, 30, 14 - index, 30 - (index * 5));
   const status = statuses[index % statuses.length];
   
@@ -79,14 +79,14 @@ const generateMockExecution = (taskId: string, index: number): LYTaskExecutionRe
   };
 };
 
-// Mock API调用
+// Mock API调use
 const fetchExecutionHistory = async (
   taskId: string,
   params: GetExecutionHistoryParams
 ): Promise<LYListResponseLYTaskExecutionResponse> => {
   await new Promise((resolve) => setTimeout(resolve, 300));
   
-  // generation6条mockData, 按Time倒序排列(最新's 在前面)
+  // generation6mockData, byTime倒序排列(最新's in 前面)
   const mockData = Array(6).fill(null).map((_, index) => generateMockExecution(taskId, index));
   
   const total = mockData.length;
@@ -100,7 +100,7 @@ const fetchExecutionHistory = async (
   };
 };
 
-// Format化Time戳为tab标签
+// Format化Time戳astab标签
 const formatExecutionTime = (isoTime: string): string => {
   const date = new Date(isoTime);
   const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -150,7 +150,7 @@ const ExecutionHistoryTab = ({ taskId, taskName, enableRecording }: ExecutionHis
   // View录屏
   const handleViewRecording = useCallback(() => {
     if (selectedExecution) {
-      // 传递 taskId  and  activeTab 以便Back时重新打开Drawer并定位到ExecuteHistorytab
+      // 传递 taskId  and  activeTab 以便Back时重新openDrawer并定-bittoExecuteHistorytab
       navigate(`/scheduling-center/task-execution/task-list/${selectedExecution.execution_id}/recording?taskId=${taskId}&activeTab=executionHistory`);
     }
   }, [navigate, selectedExecution, taskId]);
@@ -186,10 +186,10 @@ const ExecutionHistoryTab = ({ taskId, taskName, enableRecording }: ExecutionHis
     ];
   }, [selectedExecution, t]);
   
-  // 是否显示View录屏按钮
+  // is否displayView录屏by钮
   const showRecordingButton = enableRecording && selectedExecution?.status !== 'RUNNING';
   
-  // 是否显示Viewscreenshot按钮
+  // is否displayViewscreenshotby钮
   const showScreenshotButton = (selectedExecution?.screenshot_count || 0) > 0;
   
   if (loading && executions.length === 0) {
