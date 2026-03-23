@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { TIMEZONE_OPTIONS } from '@/constants/timezones';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import { useTranslation } from 'react-i18next';
 import {
@@ -224,7 +225,7 @@ const QueueTriggerDetailDrawer = ({
               </Text>
               <Descriptions align="left">
                 <Descriptions.Item itemKey={t('queueTrigger.detail.fields.timeZone')}>
-                  {trigger.time_zone}
+                  {TIMEZONE_OPTIONS.find(tz => tz.value === trigger.time_zone)?.label || trigger.time_zone}
                 </Descriptions.Item>
                 <Descriptions.Item itemKey={t('queueTrigger.detail.fields.workCalendar')}>
                   {trigger.enable_work_calendar
