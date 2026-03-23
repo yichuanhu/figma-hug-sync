@@ -83,7 +83,7 @@ const mockAvailableWorkers: LYWorkerResponse[] = [
   {
     id: '550e8400-e29b-41d4-a716-446655440012',
     name: 'Ops Bot-02',
-    description: 'For opsinspection's bot',
+    description: 'Bot for ops inspection',
     status: 'IDLE',
     sync_status: 'SYNCED',
     ip_address: '10.0.2.51',

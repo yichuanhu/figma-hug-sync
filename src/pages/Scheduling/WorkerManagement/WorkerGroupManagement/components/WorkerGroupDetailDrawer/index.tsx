@@ -73,7 +73,7 @@ const mockMembers: LYWorkerGroupMemberResponse[] = [
     group_id: 'group-001', joined_at: '2025-01-06 10:00:00',
   },
   {
-    id: '550e8400-e29b-41d4-a716-446655440002', name: 'Finance Bot-02', description: 'For financialreportautomation's bot',
+    id: '550e8400-e29b-41d4-a716-446655440002', name: 'Finance Bot-02', description: 'Bot for financial report automation',
     status: 'BUSY', sync_status: 'PENDING', ip_address: '10.0.1.101', priority: 'MEDIUM', client_version: 'v6.7.0',
     last_heartbeat_time: '2025-01-08 10:20:15', receive_tasks: true, username: 'DOMAIN\\robot02', desktop_type: 'NotConsole',
     display_size: '1920x1080', force_login: true, device_token: 'def456ghi012', machine_code: 'A22GE5558B326G491B51',
