@@ -63,7 +63,7 @@ const mockCreatorNameMap: Record<string, string> = {
   'user-001': 'John Smith',
   'user-002': 'Jane Doe',
   'user-003': 'Mike Wang',
-  'user-004': '赵六',
+  'user-004': '赵Sat',
   'user-005': '钱七',
 };
 

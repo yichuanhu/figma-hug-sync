@@ -53,8 +53,8 @@ const mockTemplates = [
   },
   {
     template_id: 'tpl-002',
-    template_name: '财务审批快速模板',
-    description: 'Expense Reimbursement Approval快速执行配置',
+    template_name: 'Finance Approval Quick Template',
+    description: 'Expense Reimbursement Approvalquick execution config',
     process_id: 'proc-002',
     process_name: 'Expense Reimbursement Approval',
     execution_target_type: 'BOT_GROUP' as ExecutionTargetType,
@@ -64,7 +64,7 @@ const mockTemplates = [
     max_execution_duration: 1800,
     validity_days: 3,
     enable_recording: false,
-    input_parameters: { department: '财务部' },
+    input_parameters: { department: 'Finance Dept' },
   },
 ];
 
@@ -78,10 +78,10 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     parameters: [
       { name: 'targetUrl', type: 'TEXT', required: true, description: 'Target URL address' },
       { name: 'maxCount', type: 'NUMBER', required: false, default_value: 100, description: 'Maximum processing count' },
-      { name: 'enableRetry', type: 'BOOLEAN', required: false, default_value: true, description: '是否启用重试' },
+      { name: 'enableRetry', type: 'BOOLEAN', required: false, default_value: true, description: 'Enable retry' },
     ],
     output_parameters: [
-      { name: 'processedCount', type: 'NUMBER', description: '已处理订单数量' },
+      { name: 'processedCount', type: 'NUMBER', description: 'Processed order count' },
     ],
   },
   {
@@ -90,7 +90,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     version_id: 'ver-002',
     version: 'v2.0.0',
     parameters: [
-      { name: 'department', type: 'TEXT', required: true, description: '部门名称' },
+      { name: 'department', type: 'TEXT', required: true, description: 'Department name' },
     ],
     output_parameters: [],
   },
@@ -104,15 +104,15 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
   },
   {
     process_id: 'proc-004',
-    process_name: '数据采集流程',
+    process_name: 'Data Collection Flow',
     version_id: 'ver-004',
     version: 'v1.5.0',
     parameters: [
-      { name: 'sourceUrl', type: 'TEXT', required: true, description: '数据源URL' },
-      { name: 'pageLimit', type: 'NUMBER', required: false, default_value: 10, description: '采集页数限制' },
+      { name: 'sourceUrl', type: 'TEXT', required: true, description: 'Data source URL' },
+      { name: 'pageLimit', type: 'NUMBER', required: false, default_value: 10, description: 'Page limit for collection' },
     ],
     output_parameters: [
-      { name: 'collectedCount', type: 'NUMBER', description: '采集数据条数' },
+      { name: 'collectedCount', type: 'NUMBER', description: 'Collected data count' },
     ],
   },
 ];
@@ -122,7 +122,7 @@ const mockQueues = [
   { queue_id: 'queue-001', queue_name: 'Pending Orders Queue', monitored: false },
   { queue_id: 'queue-002', queue_name: 'Approval Tasks Queue', monitored: true },
   { queue_id: 'queue-003', queue_name: 'Data Sync队列', monitored: false },
-  { queue_id: 'queue-004', queue_name: '报表生成队列', monitored: false },
+  { queue_id: 'queue-004', queue_name: 'Report Generation Queue', monitored: false },
 ];
 
 // Mock 个人凭据
@@ -140,11 +140,11 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
   const [formApi, setFormApi] = useState<any>(null);
   const [initialized, setInitialized] = useState(false);
 
-  // 第二步：任务配置
+  // 第Tue步：任务配置
   const [selectedProcess, setSelectedProcess] = useState<LYProcessActiveVersionResponse | null>(null);
   const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);
 
-  // 第三步：队列触发配置
+  // 第Wed步：Queue Trigger Config
   const [enableWorkCalendar, setEnableWorkCalendar] = useState(false);
   const [minEffectiveMessages, setMinEffectiveMessages] = useState(1);
   const [enablePeriodicCheck, setEnablePeriodicCheck] = useState(false);
@@ -270,7 +270,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
             key={param.name}
             field={`param_${param.name}`}
             label={renderLabel()}
-            placeholder={`请输入 ${param.name}`}
+            placeholder={`Please enter ${param.name}`}
             rules={rules}
           />
         );
@@ -280,7 +280,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
             key={param.name}
             field={`param_${param.name}`}
             label={renderLabel()}
-            placeholder={`请输入 ${param.name}`}
+            placeholder={`Please enter ${param.name}`}
             style={{ width: '100%' }}
             rules={rules}
           />
@@ -315,7 +315,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
     }
   };
 
-  // 验证步骤
+  // 验证Step
   const validateStep = async (step: number): Promise<boolean> => {
     if (step === 0) {
       if (formApi) {
@@ -371,7 +371,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
     return true;
   };
 
-  // 下一步
+  // 下Mon步
   const handleNext = async () => {
     const isValid = await validateStep(currentStep);
     if (isValid) {
@@ -379,7 +379,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
     }
   };
 
-  // 上一步
+  // 上Mon步
   const handlePrev = () => {
     setCurrentStep((prev) => prev - 1);
   };
@@ -434,7 +434,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
     }
   };
 
-  // 渲染步骤0：基本信息
+  // 渲染Step0：Basic Info
   const renderStep0Content = () => (
     <div className="edit-queue-trigger-modal-section">
       <div className="edit-queue-trigger-modal-section-title">{t('queueTrigger.createModal.basicSection')}</div>
@@ -460,10 +460,10 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
     </div>
   );
 
-  // 渲染步骤1左侧：任务配置
+  // 渲染Step1左侧：任务配置
   const renderStep1LeftContent = () => (
     <>
-      {/* 模板选择 */}
+      {/* Template selection */}
       <div className="edit-queue-trigger-modal-section">
         <div className="edit-queue-trigger-modal-section-title">{t('task.createModal.selectTemplate')}</div>
         <Form.Select
@@ -597,7 +597,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
     </>
   );
 
-  // 渲染步骤1右侧：参数配置
+  // 渲染Step1右侧：参数配置
   const renderStep1RightContent = () => (
     <>
       {/* 输入参数 */}
@@ -642,7 +642,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
     </>
   );
 
-  // 渲染步骤2：队列触发配置
+  // 渲染Step2：Queue Trigger Config
   const renderStep2Content = () => (
     <div className="edit-queue-trigger-modal-section">
       <div className="edit-queue-trigger-modal-section-title">{t('queueTrigger.createModal.queueSection')}</div>
@@ -666,7 +666,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
         ))}
       </Form.Select>
 
-      {/* 启用工作日历 */}
+      {/* 启用工作Sun历 */}
       <div className="edit-queue-trigger-modal-field">
         <div className="semi-form-field-label-text">{t('queueTrigger.fields.enableWorkCalendar')}</div>
         <Form.Switch
@@ -774,7 +774,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
         </>
       )}
 
-      {/* 平均每若干条消息触发一次 */}
+      {/* 平均每若干条消息触发Mon次 */}
       <Form.InputNumber
         field="messagesPerTrigger"
         label={t('queueTrigger.fields.messagesPerTrigger')}
@@ -809,7 +809,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
         labelPosition="top"
         getFormApi={setFormApi}
       >
-        {/* 步骤条 */}
+        {/* Step条 */}
         <div className="edit-queue-trigger-modal-steps">
           <Steps current={currentStep} type="basic" size="small">
             <Steps.Step title={t('queueTrigger.createModal.steps.basicInfo')} />
@@ -818,7 +818,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
           </Steps>
         </div>
 
-        {/* 内容区域 */}
+        {/* Content area域 */}
         {currentStep === 0 && (
           <div className="edit-queue-trigger-modal-content">
             {renderStep0Content()}

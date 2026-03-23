@@ -202,7 +202,7 @@ const SyncRecordingPlayer = ({
       ref={containerRef} 
       className={`sync-recording-player ${isFullscreen ? 'fullscreen' : ''}`}
     >
-      {/* 视频区域 */}
+      {/* Video area */}
       <div className="sync-recording-player-video-container">
         <video
           ref={videoRef}
@@ -216,7 +216,7 @@ const SyncRecordingPlayer = ({
           className="sync-recording-player-video"
         />
         
-        {/* 视频加载错误 */}
+        {/* Video load error */}
         {videoError && (
           <div className="sync-recording-player-video-error">
             <Text type="danger">{videoError}</Text>
@@ -233,7 +233,7 @@ const SyncRecordingPlayer = ({
           </div>
         )}
         
-        {/* 播放按钮覆盖层 */}
+        {/* Play button overlay */}
         {!isPlaying && videoReady && (
           <div 
             className="sync-recording-player-play-overlay"

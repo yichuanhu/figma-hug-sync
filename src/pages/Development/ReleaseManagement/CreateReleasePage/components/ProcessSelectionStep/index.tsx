@@ -34,31 +34,31 @@ interface ProcessSelectionStepProps {
   onSelectionChange: (processes: SelectedProcess[]) => void;
 }
 
-// Mock 版本数据生成器
+// Mock Version数据生成器
 const generateMockVersions = (processIndex: number, isProcessPublished: boolean): ProcessVersion[] => {
   const versionCount = Math.floor(Math.random() * 3) + 2;
   
-  // 对于已Published process，随机决定是否有新版本可发布
+  // 对于已Published process，随机决定是否有新Version可发布
   const hasNewVersionAvailable = isProcessPublished && Math.random() > 0.5;
   
   return Array.from({ length: versionCount }, (_, i) => ({
     id: `ver-${processIndex + 1}-${i + 1}`,
     version: `v${versionCount - i}.${Math.floor(Math.random() * 10)}.0`,
-    // 如果有新版本可发布，只有最后一个版本是已发布的（不是最新的）
-    // 否则，第一个版本（最新）是已发布的
+    // 如果有新Version可发布，只有最后Mon个Version是已发布的（不是最新的）
+    // 否则，第Mon个Version（最新）是已发布的
     is_published: hasNewVersionAvailable ? i === versionCount - 1 : i === 0,
   }));
 };
 
-// 检查流程是否有新版本可发布
+// 检查流程是否有新Version可发布
 const hasNewVersionToPublish = (process: ProcessWithVersions): boolean => {
   if (!process.is_published) return false;
   
-  // 找到最新版本（第一个）
+  // 找到最新Version（第Mon个）
   const latestVersion = process.versions[0];
   if (!latestVersion) return false;
   
-  // 如果最新版本未发布，说明有新版本可发布
+  // 如果最新Version未发布，说明有新Version可发布
   return !latestVersion.is_published;
 };
 
@@ -74,9 +74,9 @@ const generateMockProcess = (index: number): ProcessWithVersions => {
     '文件处理',
     '数据清洗',
     '任务调度',
-    '日志分析',
-    '这是一个超级超级长的自动化流程名称用来测试当流程名称特别长的时候UI是否能正确截断显示不会撑破布局导致样式错乱的边界情况',
-    '企业级跨部门多系统Data Sync与清洗流程_包含异常处理与重试机制_支持并发执行与优先级调度_版本迭代持续优化中',
+    'Sun志分析',
+    '这是Mon个超级超级长的自动化流程名称用来测试当流程名称特别长的时候UI是否能正确截断显示不会撑破布局导致样式错乱的边界情况',
+    '企业级跨部门多系统Data Sync与清洗流程_包含异常处理与重试机制_支持并发执行与优先级调度_Version迭代持续优化中',
     '全球化多语言Order Processing与物流调度自动化流程',
   ];
 
@@ -90,8 +90,8 @@ const generateMockProcess = (index: number): ProcessWithVersions => {
     '文件处理流程的详细描述',
     '数据清洗流程的详细描述',
     '任务调度流程的详细描述',
-    '日志分析流程的详细描述',
-    '这是一段非常非常长的流程描述Text，用来测试当描述信息超出正常长度时，UI展示是否正确处理了Text截断或换行逻辑。该流程涵盖了客户数据采集、数据清洗、格式转换、目标系统写入、异常日志记录、重试机制触发、邮件通知发送等多个步骤，每一步都包含详细的参数配置和校验规则，确保数据一致性和完整性。',
+    'Sun志分析流程的详细描述',
+    '这是Mon段非常非常长的流程描述Text，用来测试当描述信息超出正常长度时，UI展示是否正确处理了Text截断或换行逻辑。该流程涵盖了客户数据采集、数据清洗、格式转换、目标系统写入、异常Sun志记录、重试机制触发、邮件通知发送等多个Step，每Mon步都包含详细的参数配置和校验规则，确保数据Mon致性和完整性。',
     '企业级跨部门多系统Data Sync与清洗流程的描述，这个描述也非常长，包含了流程设计理念、技术架构、性能指标、安全策略、合规要求、运维规范等多方面内容。',
     '全球化多语言Order Processing与物流调度自动化流程的完整描述信息',
   ];
@@ -137,8 +137,8 @@ const generateMockListResponse = (
 
   // 排序规则：
   // 1. 完全未发布的流程放在最前面
-  // 2. 已发布但有新版本可发布的流程排在第二
-  // 3. 已发布且没有新版本的流程排在最后面
+  // 2. 已发布但有新Version可发布的流程排在第Tue
+  // 3. 已发布且没有新Version的流程排在最后面
   allData.sort((a, b) => {
     const aIsUnpublished = !a.is_published;
     const bIsUnpublished = !b.is_published;
@@ -149,7 +149,7 @@ const generateMockListResponse = (
     if (aIsUnpublished && !bIsUnpublished) return -1;
     if (!aIsUnpublished && bIsUnpublished) return 1;
     
-    // 都是已发布的情况下，有新版本的排前面
+    // 都是已发布的情况下，有新Version的排前面
     if (!aIsUnpublished && !bIsUnpublished) {
       if (aHasNewVersion && !bHasNewVersion) return -1;
       if (!aHasNewVersion && bHasNewVersion) return 1;
@@ -245,7 +245,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
     onSelectionChange(selectedProcesses.filter((sp) => sp.process.id !== processId));
   };
 
-  // 修改版本
+  // 修改Version
   const handleVersionChange = (processId: string, versionId: string) => {
     const process = processList.find((p) => p.id === processId);
     if (!process) return;

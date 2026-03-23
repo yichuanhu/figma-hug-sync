@@ -39,7 +39,7 @@ const mockWorkerGroups: LYWorkerGroupResponse[] = [
   {
     id: 'group-001',
     name: 'Finance Bot Group',
-    description: 'This is the core enterprise finance automation bot group，包含多台高性能机器人，专门用于执行财务相关的自动化流程任务。该组负责处理发票识别与录入、费用报销审批、Auto Financial Report与分发、银企对账、税务数据准备等关键业务流程。支持任务负载均衡和故障自动转移，确保业务连续性。',
+    description: 'This is the core enterprise finance automation bot group，包含多台高性能机器人，专门用于执行财务相 automation flow任务。该组负责handling invoice recognition and entry、Expense Reimbursement Approval、Auto Financial Report与分发、银企对账、税务数据准备等关键业务流程。支持任务负载均衡和故障自动转移，确保业务连续性。',
     member_count: 5,
     creator_id: 'admin',
     creator_name: 'Admin',
@@ -49,7 +49,7 @@ const mockWorkerGroups: LYWorkerGroupResponse[] = [
   {
     id: 'group-002',
     name: 'HR Bot Group',
-    description: '用于人事审批、入职离职流程自动化',
+    description: 'For HR审批、入职离职流程自动化',
     member_count: 3,
     creator_id: 'hr_admin',
     creator_name: 'HRAdmin',
@@ -59,7 +59,7 @@ const mockWorkerGroups: LYWorkerGroupResponse[] = [
   {
     id: 'group-003',
     name: 'Ops Inspection Bot Group',
-    description: '用于服务器巡检、日志分析等运维任务',
+    description: '用于服务器巡检、Sun志分析等运维任务',
     member_count: 2,
     creator_id: 'ops_admin',
     creator_name: '运维Admin',
@@ -169,7 +169,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
     return response.list;
   }, [queryParams, listResponse.range?.size]);
 
-  // 当Tab切换到非激活状态时，关闭抽屉
+  // 当Tab switch到非激活状态时，关闭抽屉
   useEffect(() => {
     if (!isActive) {
       setDetailDrawerVisible(false);

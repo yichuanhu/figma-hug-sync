@@ -58,8 +58,8 @@ const CreateWorkerGroupModal: React.FC<CreateWorkerGroupModalProps> = ({
       
       // 保存创建的组信息，显示提示模态框
       setCreatedGroup({ id: newGroupId, name: values.name });
-      onCancel(); // 先关闭创建模态框
-      setPromptVisible(true); // 显示添加成员提示
+      onCancel(); // Close create modal first
+      setPromptVisible(true); // Show add members prompt
       
       onSuccess();
     } catch (error) {

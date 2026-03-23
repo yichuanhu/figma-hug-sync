@@ -83,7 +83,7 @@ const generateMockVersionData = (): VersionDetailData[] => {
     package_size: Math.floor(Math.random() * 5000000) + 500000,
     package_checksum: `sha256:${generateUUID().replace(/-/g, '')}`,
     version_note: v.note,
-    usage_note: `使用说明：版本${v.version}的操作指引`,
+    usage_note: `使用说明：Version${v.version}的操作指引`,
     creator_id: ['user-001', 'user-002', 'user-003'][index % 3],
     created_at: new Date(Date.now() - (versions.length - index) * 7 * 24 * 60 * 60 * 1000).toISOString(),
     publish_time: v.isActive ? new Date(Date.now() - (versions.length - index) * 2 * 24 * 60 * 60 * 1000).toISOString() : null,
@@ -111,7 +111,7 @@ const mockCreatorNameMap: Record<string, { name: string; department?: string; ro
   'user-001': { name: 'John Smith', department: '技术部', role: '高级工程师', email: 'zhangsan@example.com' },
   'user-002': { name: 'Jane Doe', department: '产品部', role: '产品经理', email: 'lisi@example.com' },
   'user-003': { name: 'Mike Wang', department: '运维部', role: '运维工程师', email: 'wangwu@example.com' },
-  'user-004': { name: '赵六', department: '测试部', role: '测试工程师', email: 'zhaoliu@example.com' },
+  'user-004': { name: '赵Sat', department: '测试部', role: '测试工程师', email: 'zhaoliu@example.com' },
   'user-005': { name: '钱七', department: '技术部', role: '架构师', email: 'qianqi@example.com' },
 };
 
@@ -269,7 +269,7 @@ const ProcessDetailDrawer = ({
     return data;
   }, [versionData]);
 
-  // 计算最新激活版本（已发布版本中 publish_time 最新的）
+  // 计算最新激活Version（已发布Version中 publish_time 最新的）
   const latestActiveVersionId = useMemo(() => {
     const activeVersions = sortedVersionData.filter(v => v.is_active && v.publish_time);
     if (activeVersions.length === 0) return null;

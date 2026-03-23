@@ -21,7 +21,7 @@ const AutoExecutionPolicyPage = () => {
 
   return (
     <div className="auto-execution-policy">
-      {/* 标题区域 */}
+      {/* Title area */}
       <div className="auto-execution-policy-header">
         <div className="auto-execution-policy-header-title">
           <Title heading={4} className="title">
@@ -36,7 +36,7 @@ const AutoExecutionPolicyPage = () => {
         </Button>
       </div>
 
-      {/* Tab切换 */}
+      {/* Tab switch */}
       <Tabs
         activeKey={activeTab}
         onChange={(key) => setActiveTab(key)}

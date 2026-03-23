@@ -40,7 +40,7 @@ const formatTimestamp = (isoString: string): string => {
   return isoString.replace('T', ' ').substring(11, 19);
 };
 
-// 解析日志时间为秒数（相对于录屏开始时间）
+// 解析Sun志时间为秒数（相对于录屏开始时间）
 const parseLogTimeToSeconds = (logTime: string, startTime: string): number => {
   const logDate = new Date(logTime).getTime();
   const startDate = new Date(startTime).getTime();
@@ -60,7 +60,7 @@ const LogSyncPanel = ({
   const [searchKeyword, setSearchKeyword] = useState('');
   const [filteredLogs, setFilteredLogs] = useState<LYExecutionLogResponse[]>(logs);
   
-  // 录屏开始时间（取第一条日志的时间）
+  // 录屏开始时间（取第Mon条Sun志的时间）
   const startTime = useMemo(() => {
     return logs.length > 0 ? logs[0].log_time : new Date().toISOString();
   }, [logs]);
@@ -88,7 +88,7 @@ const LogSyncPanel = ({
     handleSearch(searchKeyword);
   }, [logs, searchKeyword, handleSearch]);
   
-  // 根据当前播放时间找到最近的日志
+  // 根据当前播放时间找到最近的Sun志
   const currentLogIndex = useMemo(() => {
     if (filteredLogs.length === 0) return -1;
     
@@ -101,7 +101,7 @@ const LogSyncPanel = ({
     return 0;
   }, [filteredLogs, currentTime, startTime]);
   
-  // 自动滚动到当前日志
+  // 自动滚动到当前Sun志
   useEffect(() => {
     if (listRef.current && currentLogIndex >= 0 && !highlightedLogId) {
       const logItems = listRef.current.querySelectorAll('.log-sync-panel-item');
@@ -116,7 +116,7 @@ const LogSyncPanel = ({
     }
   }, [currentLogIndex, highlightedLogId]);
   
-  // 滚动到高亮的日志
+  // 滚动到高亮的Sun志
   useEffect(() => {
     if (listRef.current && highlightedLogId) {
       const targetItem = listRef.current.querySelector(
@@ -138,7 +138,7 @@ const LogSyncPanel = ({
   
   return (
     <div className="log-sync-panel">
-      {/* 工具栏 */}
+      {/* Toolbar */}
       <div className="log-sync-panel-toolbar">
         <Input
           prefix={<IconSearchStroked />}
@@ -159,7 +159,7 @@ const LogSyncPanel = ({
         )}
       </div>
       
-      {/* 日志列表 */}
+      {/* Log list */}
       <div ref={listRef} className="log-sync-panel-list">
         {loading ? (
           <div className="log-sync-panel-loading">
@@ -217,7 +217,7 @@ const LogSyncPanel = ({
         )}
       </div>
       
-      {/* 统计信息 */}
+      {/* Statistics */}
       <div className="log-sync-panel-footer">
         <Text size="small" type="tertiary">
           {t('recording.logPanel.total', { count: filteredLogs.length })}

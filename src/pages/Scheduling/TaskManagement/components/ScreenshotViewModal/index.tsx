@@ -59,8 +59,8 @@ const generateMockScreenshot = (executionId: string, index: number): LYTaskScree
     file_id: generateUUID(),
     file_url: `https://picsum.photos/seed/${imageId}/1920/1080`,
     thumbnail_url: `https://picsum.photos/seed/${imageId}/320/180`,
-    name: index % 3 === 0 ? `步骤 ${index + 1} 截图` : null,
-    description: index % 4 === 0 ? `这是第 ${index + 1} 个截图的描述信息` : null,
+    name: index % 3 === 0 ? `Step ${index + 1} screenshot` : null,
+    description: index % 4 === 0 ? `This is the  ${index + 1}  screenshot description` : null,
     sequence_number: index + 1,
     captured_at: capturedAt.toISOString(),
     file_size: 150000 + Math.floor(Math.random() * 100000),
@@ -75,7 +75,7 @@ const fetchScreenshots = async (
 ): Promise<LYListResponseLYTaskScreenshotResponse> => {
   await new Promise((resolve) => setTimeout(resolve, 500));
   
-  // 生成 12 张 mock 截图
+  // 生成 12 张 mock screenshot
   const mockData = Array(12)
     .fill(null)
     .map((_, index) => generateMockScreenshot(executionId, index));
@@ -181,7 +181,7 @@ const ScreenshotViewModal = ({
     setSelectedIds(new Set());
   }, [selectedIds]);
   
-  // 删除单个截图
+  // 删除单个screenshot
   const handleDeleteSingle = useCallback((id: string, e?: React.MouseEvent) => {
     e?.stopPropagation();
     Modal.confirm({
@@ -241,17 +241,17 @@ const ScreenshotViewModal = ({
     setPreviewVisible(false);
   }, []);
   
-  // 上一张
+  // 上Mon张
   const handlePrevImage = useCallback(() => {
     setPreviewIndex((prev) => (prev > 0 ? prev - 1 : screenshots.length - 1));
   }, [screenshots.length]);
   
-  // 下一张
+  // 下Mon张
   const handleNextImage = useCallback(() => {
     setPreviewIndex((prev) => (prev < screenshots.length - 1 ? prev + 1 : 0));
   }, [screenshots.length]);
   
-  // 当前预览的截图
+  // 当前预览的screenshot
   const currentPreviewScreenshot = screenshots[previewIndex];
   
   
@@ -307,7 +307,7 @@ const ScreenshotViewModal = ({
         >
           <Image
             src={record.thumbnail_url || record.file_url}
-            alt={record.name || `截图 ${record.sequence_number}`}
+            alt={record.name || `screenshot ${record.sequence_number}`}
             width={80}
             height={45}
             style={{ objectFit: 'cover', borderRadius: 4, cursor: 'pointer' }}
@@ -421,7 +421,7 @@ const ScreenshotViewModal = ({
         centered
       >
         <div className="screenshot-view-modal-content">
-          {/* 工具栏 */}
+          {/* Toolbar */}
           <div className="screenshot-view-modal-toolbar">
             <Text type="secondary">
               {t('screenshot.totalCount', { count: screenshots.length })}

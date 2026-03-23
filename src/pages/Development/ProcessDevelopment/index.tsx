@@ -75,7 +75,7 @@ const generateMockLYProcessResponse = (index: number): LYProcessResponse => {
     '自动处理采购申请，包括供应商比价、审批流程、订单生成',
     '自动化合同审批流程，包括合同模板匹配、条款审核、签章流程',
     '自动识别和处理各类发票，包括OCR识别、信息提取、入账处理',
-    '自动同步客户信息到各个业务系统，保持数据一致性',
+    '自动同步客户信息到各个业务系统，保持数据Mon致性',
     '自动执行库存盘点任务，生成差异报告，触发补货流程',
     '自动汇总各渠道销售数据，生成分析报告，发送给相关负责人',
     '定时自动生成各类业务报表，支持多种格式导出和分发',
@@ -120,7 +120,7 @@ const mockCreatorNameMap: Record<string, { name: string; department?: string; ro
   'user-001': { name: 'John Smith', department: '技术部', role: '高级工程师', email: 'zhangsan@example.com' },
   'user-002': { name: 'Jane Doe', department: '产品部', role: '产品经理', email: 'lisi@example.com' },
   'user-003': { name: 'Mike Wang', department: '运维部', role: '运维工程师', email: 'wangwu@example.com' },
-  'user-004': { name: '赵六', department: '测试部', role: '测试工程师', email: 'zhaoliu@example.com' },
+  'user-004': { name: '赵Sat', department: '测试部', role: '测试工程师', email: 'zhaoliu@example.com' },
   'user-005': { name: '钱七', department: '技术部', role: '架构师', email: 'qianqi@example.com' },
 };
 
@@ -499,7 +499,7 @@ const ProcessDevelopment = () => {
   return (
       <div className="process-development">
 
-      {/* 标题区域 */}
+      {/* Title area */}
       <div className="process-development-header">
         <div className="process-development-header-title">
           <Title heading={3} className="title">

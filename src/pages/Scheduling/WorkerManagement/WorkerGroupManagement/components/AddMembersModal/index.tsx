@@ -56,7 +56,7 @@ const mockAvailableWorkers: LYWorkerResponse[] = [
   {
     id: '550e8400-e29b-41d4-a716-446655440011',
     name: 'HR Bot-02',
-    description: '用于人事审批流程的机器人',
+    description: 'For HR审批流程的机器人',
     status: 'OFFLINE',
     sync_status: 'SYNCED',
     ip_address: '10.0.1.103',
@@ -83,7 +83,7 @@ const mockAvailableWorkers: LYWorkerResponse[] = [
   {
     id: '550e8400-e29b-41d4-a716-446655440012',
     name: '运维机器人-02',
-    description: '用于运维巡检的机器人',
+    description: 'For ops巡检的机器人',
     status: 'IDLE',
     sync_status: 'SYNCED',
     ip_address: '10.0.2.51',

@@ -58,10 +58,10 @@ const mockProcesses = [
   { process_id: 'proc-001', process_name: 'Auto Order Processing' },
   { process_id: 'proc-002', process_name: 'Expense Reimbursement Approval' },
   { process_id: 'proc-003', process_name: 'Employee Onboarding Flow' },
-  { process_id: 'proc-004', process_name: '数据采集流程' },
+  { process_id: 'proc-004', process_name: 'Data Collection Flow' },
 ];
 
-const mockCreatorNames = ['John Smith', 'Jane Doe', 'Mike Wang', '赵六', '钱七'];
+const mockCreatorNames = ['John Smith', 'Jane Doe', 'Mike Wang', '赵Sat', '钱七'];
 
 const generateMockTemplateResponse = (index: number): LYExecutionTemplateResponse & {
   created_at: string;
@@ -80,7 +80,7 @@ const generateMockTemplateResponse = (index: number): LYExecutionTemplateRespons
     template_id: `tpl-${generateUUID().substring(0, 8)}`,
     template_name: `${process.process_name}模板${index + 1}`,
     description: index === 0 
-      ? '这是一个功能完整的执行模板，包含了多种复杂的业务场景配置。该模板支持自动化Order Processing、智能数据校验、异常情况处理和多渠道通知推送等功能。同时集成了完整的日志追踪、错误重试机制和人工干预流程，确保任务执行的稳定性和可靠性。适用于大规模批量任务的自动化执行场景。'
+      ? '这是Mon个功能完整的执行模板，包含了多种复杂的业务场景配置。该模板支持自动化Order Processing、智能数据校验、异常情况处理和多渠道通知推送等功能。同时集成了完整的Sun志追踪、错误重试机制和人工干预流程，确保任务执行的稳定性和可靠性。适用于大规模批量任务的自动化执行场景。'
       : (index % 3 === 0 ? null : `这是${process.process_name}的执行模板，用于快速创建任务`),
     process_id: process.process_id,
     process_name: process.process_name,

@@ -35,7 +35,7 @@ const existingWorkers: Array<{ id: string; name: string; desktop_type: 'Console'
   { id: '3', name: 'HR Bot-01', desktop_type: 'NotConsole' },
 ];
 
-// 已存在的机器人名称（用于唯一性校验）
+// 已存在的机器人名称（用于唯Mon性校验）
 const existingWorkerNames = ['Finance Bot-01', 'Finance Bot-02', 'Finance Bot-03', 'HR Bot-01', 'Ops Bot-01', '测试机器人-01'];
 
 const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalProps) => {
@@ -62,7 +62,7 @@ const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalPr
     }
   }, [useSameDevice, selectedWorkerId]);
 
-  // 当取消勾选"同一机器"时重置状态
+  // 当取消勾选"同Mon机器"时重置状态
   useEffect(() => {
     if (!useSameDevice) {
       setSelectedWorkerId(undefined);
@@ -70,7 +70,7 @@ const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalPr
     }
   }, [useSameDevice]);
 
-  // 名称唯一性校验
+  // 名称唯Mon性校验
   const validateWorkerNameUnique = (rule: unknown, value: string, callback: (error?: string) => void) => {
     if (value && existingWorkerNames.includes(value.trim())) {
       callback(t('worker.create.validation.nameExists'));

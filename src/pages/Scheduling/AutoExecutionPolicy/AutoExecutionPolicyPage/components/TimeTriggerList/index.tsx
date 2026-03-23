@@ -55,10 +55,10 @@ const mockProcesses = [
   { process_id: 'proc-001', process_name: 'Auto Order Processing' },
   { process_id: 'proc-002', process_name: 'Expense Reimbursement Approval' },
   { process_id: 'proc-003', process_name: 'Employee Onboarding Flow' },
-  { process_id: 'proc-004', process_name: '数据采集流程' },
+  { process_id: 'proc-004', process_name: 'Data Collection Flow' },
 ];
 
-const mockCreatorNames = ['John Smith', 'Jane Doe', 'Mike Wang', '赵六', '钱七'];
+const mockCreatorNames = ['John Smith', 'Jane Doe', 'Mike Wang', '赵Sat', '钱七'];
 
 const generateMockTimeTriggerResponse = (index: number): LYTimeTriggerResponse => {
   const process = mockProcesses[index % mockProcesses.length];
@@ -79,7 +79,7 @@ const generateMockTimeTriggerResponse = (index: number): LYTimeTriggerResponse =
   return {
     trigger_id: `trigger-${generateUUID().substring(0, 8)}`,
     name: `${process.process_name}触发器${index + 1}`,
-    description: index % 5 === 0 ? null : index % 5 === 1 ? `这是${process.process_name}的定时触发器，用于定期自动创建任务。该触发器会按照预设的时间规则自动触发，创建对应的自动化任务并分配到指定的执行目标上运行。支持多种触发频率配置，包括每天、每周、每月等周期性触发，以及基于Cron表达式的高级配置。触发器还支持工作日历过滤，可以跳过非工作日执行，确保任务在合适的时间点触发。当触发器关联的流程版本更新时，新创建的任务将自动使用最新版本。` : `这是${process.process_name}的定时触发器，用于定期自动创建任务`,
+    description: index % 5 === 0 ? null : index % 5 === 1 ? `这是${process.process_name}的定时触发器，用于定期自动创建任务。该触发器会按照预设的时间规则自动触发，创建对应的自动化任务并分配到指定的执行目标上运行。支持多种触发频率配置，包括每天、每周、每M等周期性触发，以及基于Cron表达式的高级配置。触发器还支持工作Sun历过滤，可以跳过非工作Sun执行，确保任务在合适的时间点触发。当触发器关联的流程Version更新时，新创建的任务将自动使用最新Version。` : `这是${process.process_name}的定时触发器，用于定期自动创建任务`,
     status,
     process_id: process.process_id,
     process_name: process.process_name,
@@ -103,7 +103,7 @@ const generateMockTimeTriggerResponse = (index: number): LYTimeTriggerResponse =
     end_date_time: index % 4 === 0 ? new Date(2026, 11, 31).toISOString() : null,
     enable_work_calendar: index % 3 === 0,
     work_calendar_id: index % 3 === 0 ? 'cal-001' : null,
-    work_calendar_name: index % 3 === 0 ? '公司工作日历' : null,
+    work_calendar_name: index % 3 === 0 ? '公司工作Sun历' : null,
     work_calendar_execution_type: index % 3 === 0 ? 'WORKDAY' : null,
     next_trigger_time: status === 'ENABLED' ? nextTriggerDate.toISOString() : null,
     last_trigger_time: index > 5 ? new Date(2026, 1, 3, 9, 0).toISOString() : null,
@@ -201,7 +201,7 @@ const TimeTriggerList = () => {
         list: paged,
       });
     } catch (error) {
-      console.error('加载时间触发器列表失败:', error);
+      console.error('加载Time trigger列表失败:', error);
       Toast.error(t('common.loadError'));
     } finally {
       setLoading(false);
@@ -341,7 +341,7 @@ const TimeTriggerList = () => {
     });
   };
 
-  // 格式化触发规则显示
+  // 格式化Trigger Rules显示
   const formatTriggerRule = (trigger: LYTimeTriggerResponse): string => {
     if (trigger.rule_type === 'CRON') {
       return trigger.cron_expression || '';
@@ -478,7 +478,7 @@ const TimeTriggerList = () => {
 
   return (
     <div className="time-trigger-list">
-      {/* 工具栏 */}
+      {/* Toolbar */}
       <Row
         type="flex"
         justify="space-between"

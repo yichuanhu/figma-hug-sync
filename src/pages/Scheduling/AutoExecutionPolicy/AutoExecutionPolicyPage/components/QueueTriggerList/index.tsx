@@ -52,17 +52,17 @@ const mockProcesses = [
   { process_id: 'proc-001', process_name: 'Auto Order Processing' },
   { process_id: 'proc-002', process_name: 'Expense Reimbursement Approval' },
   { process_id: 'proc-003', process_name: 'Employee Onboarding Flow' },
-  { process_id: 'proc-004', process_name: '数据采集流程' },
+  { process_id: 'proc-004', process_name: 'Data Collection Flow' },
 ];
 
 const mockQueues = [
   { queue_id: 'queue-001', queue_name: 'Pending Orders Queue' },
   { queue_id: 'queue-002', queue_name: 'Approval Tasks Queue' },
   { queue_id: 'queue-003', queue_name: 'Data Sync队列' },
-  { queue_id: 'queue-004', queue_name: '报表生成队列' },
+  { queue_id: 'queue-004', queue_name: 'Report Generation Queue' },
 ];
 
-const mockCreatorNames = ['John Smith', 'Jane Doe', 'Mike Wang', '赵六', '钱七'];
+const mockCreatorNames = ['John Smith', 'Jane Doe', 'Mike Wang', '赵Sat', '钱七'];
 
 const generateMockQueueTriggerResponse = (index: number): LYQueueTriggerResponse => {
   const process = mockProcesses[index % mockProcesses.length];
@@ -96,7 +96,7 @@ const generateMockQueueTriggerResponse = (index: number): LYQueueTriggerResponse
     time_zone: 'Asia/Shanghai',
     enable_work_calendar: index % 3 === 0,
     work_calendar_id: index % 3 === 0 ? 'cal-001' : null,
-    work_calendar_name: index % 3 === 0 ? '公司工作日历' : null,
+    work_calendar_name: index % 3 === 0 ? '公司工作Sun历' : null,
     work_calendar_execution_type: index % 3 === 0 ? 'WORKDAY' : null,
     min_effective_messages: 1 + (index % 10),
     messages_per_trigger: 5 + (index % 20),
@@ -467,7 +467,7 @@ const QueueTriggerList = () => {
 
   return (
     <div className="queue-trigger-list">
-      {/* 工具栏 */}
+      {/* Toolbar */}
       <Row
         type="flex"
         justify="space-between"

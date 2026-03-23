@@ -67,13 +67,13 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
   const mockContents = useMemo(() => {
     if (release?.contents?.length) return release.contents;
     return [
-      { process_id: 'proc-001', process_name: 'SAP_ERP_Order_Processing_And_Fulfillment_Workflow_V3', version_number: 'v3.2.1', process_description: '该流程用于处理来自SAP ERP系统的所有客户订单，包括订单验证、Inventory Check、价格计算、折扣应用、税费计算、物流分配、发票生成以及客户通知等完整的端到端业务流程。支持多币种、多仓库、多物流商的复杂场景处理，并集成了异常处理和自动重试机制以确保流程的高可靠性和数据一致性。' },
+      { process_id: 'proc-001', process_name: 'SAP_ERP_Order_Processing_And_Fulfillment_Workflow_V3', version_number: 'v3.2.1', process_description: '该流程用于处理来自SAP ERP系统的所有客户订单，包括订单验证、Inventory Check、价格计算、折扣应用、税费计算、物流分配、发票生成以及客户通知等完整的端到端业务流程。支持多币种、多仓库、多物流商的复杂场景处理，并集成了异常处理和自动重试机制以确保流程的高可靠性和数据Mon致性。' },
       { process_id: 'proc-002', process_name: 'Inventory Check流程', version_number: 'v1.0.0', process_description: '定时检查库存' },
-      { process_id: 'proc-003', process_name: 'Monthly_Financial_Report_Generation_And_Distribution_Workflow', version_number: 'v2.1.0', process_description: '每月自动生成财务报表并分发给相关部门负责人，支持PDF和Excel双格式输出。' },
+      { process_id: 'proc-003', process_name: 'Monthly_Financial_Report_Generation_And_Distribution_Workflow', version_number: 'v2.1.0', process_description: '每M自动生成财务报表并分发给相关部门负责人，支持PDF和Excel双格式输出。' },
       { process_id: 'proc-004', process_name: 'Customer_Onboarding_KYC_Verification_And_Account_Provisioning_Enterprise_Workflow_With_Compliance_Check', version_number: 'v1.3.0', process_description: '客户入网全流程自动化，涵盖KYC身份验证、合规检查、风控评估、账户开通、权限分配、欢迎邮件发送及CRM系统同步等环节，支持多国家地区的监管要求适配。' },
       { process_id: 'proc-005', process_name: '邮件通知', version_number: 'v1.0.2', process_description: '' },
-      { process_id: 'proc-006', process_name: 'Automated_Invoice_Reconciliation_And_Payment_Processing_With_Multi_Currency_Support', version_number: 'v2.0.0', process_description: '自动对账与付款处理流程，支持多币种汇率转换、发票三单匹配、异常标记与人工审批、ERP回写及银企直连付款指令生成，确保财务数据准确性和时效性。' },
-      { process_id: 'proc-007', process_name: '数据备份', version_number: 'v1.1.0', process_description: '每日凌晨自动执行数据库增量备份并上传至云存储。' },
+      { process_id: 'proc-006', process_name: 'Automated_Invoice_Reconciliation_And_Payment_Processing_With_Multi_Currency_Support', version_number: 'v2.0.0', process_description: '自动对账与付款处理流程，支持多币种汇率转换、发票Wed单匹配、异常标记与人工审批、ERP回写及银企直连付款指令生成，确保财务数据准确性和时效性。' },
+      { process_id: 'proc-007', process_name: '数据备份', version_number: 'v1.1.0', process_description: '每Sun凌晨自动执行数据库增量备份并上传至云存储。' },
     ];
   }, [release]);
 

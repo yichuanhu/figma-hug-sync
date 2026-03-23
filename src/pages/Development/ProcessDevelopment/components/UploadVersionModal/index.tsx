@@ -25,7 +25,7 @@ const UploadVersionModal = ({ visible, onCancel, processData, onSuccess }: Uploa
       const files = info.fileList;
       setFileList(files);
 
-      // 检查文件名是否与流程名称一致
+      // 检查文件名是否与流程名称Mon致
       if (files.length > 0 && files[0].fileInstance && processData) {
         const fileName = files[0].fileInstance.name.replace('.bot', '');
         const processName = processData.name;

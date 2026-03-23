@@ -186,7 +186,7 @@ const WorkCalendarManagement = () => {
           </div>
         </div>
         
-        {/* 新建日历弹窗 */}
+        {/* 新建Sun历弹窗 */}
         <CreateCalendarModal
           visible={createModalVisible}
           onCancel={() => setCreateModalVisible(false)}

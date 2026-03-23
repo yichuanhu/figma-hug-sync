@@ -18,7 +18,7 @@ interface EditWorkerModalProps {
   onSuccess?: (updatedData: LYWorkerResponse) => void;
 }
 
-// 已存在的机器人名称（用于唯一性校验）
+// 已存在的机器人名称（用于唯Mon性校验）
 const existingWorkerNames = ['Finance Bot-01', 'Finance Bot-02', 'Finance Bot-03', 'HR Bot-01', 'Ops Bot-01', '测试机器人-01'];
 
 const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorkerModalProps) => {
@@ -49,7 +49,7 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
     }
   }, [visible, workerData]);
 
-  // 名称唯一性校验（排除当前编辑的机器人）
+  // 名称唯Mon性校验（排除当前编辑的机器人）
   const validateWorkerNameUnique = (rule: unknown, value: string, callback: (error?: string) => void) => {
     if (value === workerData?.name) {
       callback();

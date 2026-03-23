@@ -51,12 +51,12 @@ const generateMockLogs = (): LYExecutionLogResponse[] => {
     'Starting step 1: Reading input parameters',
     '警告: 输入参数中存在空值，使用默认值替代',
     '错误: 无法连接到目标服务器，请检查网络设置',
-    '步骤 2 执行完成，耗时 1.5 秒',
+    'Step 2 执行完成，耗时 1.5 秒',
     '正在处理数据转换...',
     '数据验证通过',
     '写入输出结果到文件',
     'Process execution completed',
-    '开始执行步骤 3: 数据处理',
+    '开始执行Step 3: 数据处理',
     '警告: 发现重复数据，已自动去重',
     '错误: 文件写入失败，磁盘空间不足',
     '正在重试操作...',
@@ -67,7 +67,7 @@ const generateMockLogs = (): LYExecutionLogResponse[] => {
   startTime.setMinutes(startTime.getMinutes() - 3);
   
   return Array.from({ length: 50 }, (_, i) => {
-    const logTime = new Date(startTime.getTime() + i * 3600); // 每条日志间隔约 3.6 秒
+    const logTime = new Date(startTime.getTime() + i * 3600); // 每条Sun志间隔约 3.6 秒
     const levelIndex = i % 10 < 1 ? 3 : i % 10 < 3 ? 2 : i % 10 < 5 ? 0 : 1;
     
     return {
@@ -149,13 +149,13 @@ const RecordingViewPage = () => {
     loadData();
   }, [loadData]);
 
-  // 仅刷新日志数据
+  // 仅刷新Sun志数据
   const loadLogsOnly = useCallback(async () => {
     if (!executionId) return;
     
     setLogsLoading(true);
     try {
-      // Mock API 调用 - 仅加载日志
+      // Mock API 调用 - 仅加载Sun志
       await new Promise((resolve) => setTimeout(resolve, 400));
       const mockLogs = generateMockLogs();
       const startTime = new Date(mockLogs[0].log_time);
@@ -180,9 +180,9 @@ const RecordingViewPage = () => {
     setHighlightedLogId(marker.log_id);
   }, []);
   
-  // 点击日志条目
+  // 点击Sun志条目
   const handleLogClick = useCallback((log: LYExecutionLogResponse) => {
-    // 计算日志相对时间并跳转
+    // 计算Sun志相对时间并跳转
     const logTime = new Date(log.log_time).getTime();
     const startTime = recordingStartTime.getTime();
     const position = Math.max(0, (logTime - startTime) / 1000);
@@ -235,7 +235,7 @@ const RecordingViewPage = () => {
   return (
       <div className="recording-view-page">
 
-        {/* 头部 */}
+        {/* Header */}
         <div className="recording-view-page-header">
           <Row type="flex" justify="space-between" align="middle">
             <Col>
@@ -280,7 +280,7 @@ const RecordingViewPage = () => {
           </Row>
         </div>
 
-        {/* 主内容区 */}
+        {/* 主Content area */}
         <div className="recording-view-page-content">
           {loading ? (
             <div className="recording-view-page-loading">
@@ -308,7 +308,7 @@ const RecordingViewPage = () => {
                 />
               </div>
               
-              {/* 右侧：日志面板 */}
+              {/* 右侧：Sun志面板 */}
               <div className="recording-view-page-logs">
                 <LogSyncPanel
                   logs={logs}

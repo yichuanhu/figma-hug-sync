@@ -53,13 +53,13 @@ const CreateReleasePage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  // 步骤控制
+  // Step控制
   const [currentStep, setCurrentStep] = useState(0);
 
-  // 步骤1: 流程选择
+  // Step1: 流程选择
   const [selectedProcesses, setSelectedProcesses] = useState<SelectedProcess[]>([]);
 
-  // 步骤2: 发布配置
+  // Step2: 发布配置
   const [releaseType, setReleaseType] = useState<ReleaseType>('REQUIREMENT_CHANGE');
   const [description, setDescription] = useState('');
   const [resources, setResources] = useState<ResourceConfig[]>([]);
@@ -96,9 +96,9 @@ const CreateReleasePage: React.FC = () => {
       },
       {
         resource_id: 'PARAM-003',
-        resource_name: '这是一个超级超级长的参数名称用来测试当参数名称Text过长时候资源卡片的标题区域是否能正确处理截断和换行的边界场景',
+        resource_name: '这是Mon个超级超级长的参数名称用来测试当参数名称Text过长时候资源卡片的Title area是否能正确处理截断和换行的边界场景',
         is_previously_published: false,
-        test_value: '这是一段非常非常长的Text类型参Number，用来模拟实际业务中可能出现的超长配置Text。例如一段完整的JSON配置内容：{"database":{"host":"192.168.1.100","port":5432,"username":"admin","password":"encrypted_password_here","database_name":"production_db","connection_pool_size":20,"timeout_ms":30000},"redis":{"host":"192.168.1.101","port":6379,"cluster_mode":true},"logging":{"level":"INFO","output":"file","path":"/var/log/app/"}}',
+        test_value: '这是Mon段非常非常长的Text类型参Number，用来模拟实际业务中可能出现的超长配置Text。例如Mon段完整的JSON配置内容：{"database":{"host":"192.168.1.100","port":5432,"username":"admin","password":"encrypted_password_here","database_name":"production_db","connection_pool_size":20,"timeout_ms":30000},"redis":{"host":"192.168.1.101","port":6379,"cluster_mode":true},"logging":{"level":"INFO","output":"file","path":"/var/log/app/"}}',
         used_by_processes: processes.map((p) => ({
           process_id: p.process.id,
           process_name: p.process.name,
@@ -106,7 +106,7 @@ const CreateReleasePage: React.FC = () => {
       },
       {
         resource_id: 'PARAM-004',
-        resource_name: '全局化多语言翻译映射配置参数_包含中英日韩法德西葡俄阿等十国语言对照表',
+        resource_name: '全局化多语言翻译映射配置参数_包含中英Sun韩法德西葡俄阿等十国语言对照表',
         is_previously_published: true,
         test_value: 'https://translation-service.internal.company.com/api/v3/multilingual/mapping?source=zh-CN&targets=en-US,ja-JP,ko-KR,fr-FR,de-DE,es-ES,pt-BR,ru-RU,ar-SA&format=json&include_variants=true&fallback=en-US',
         used_by_processes: processes.slice(0, 2).map((p) => ({
@@ -205,7 +205,7 @@ const CreateReleasePage: React.FC = () => {
     return { parameters, credentials, queues, files };
   }, []);
 
-  // 当进入步骤2时，检测依赖
+  // 当进入Step2时，检测依赖
   useEffect(() => {
     if (currentStep === 1 && selectedProcesses.length > 0) {
       setDetectingDependencies(true);
@@ -269,7 +269,7 @@ const CreateReleasePage: React.FC = () => {
     }
   }, [currentStep, selectedProcesses, detectDependencies]);
 
-  // 处理步骤变化
+  // 处理Step变化
   const handleNext = () => {
     if (currentStep === 0) {
       if (selectedProcesses.length === 0) {
@@ -371,7 +371,7 @@ const CreateReleasePage: React.FC = () => {
   return (
       <div className="create-release-page">
 
-        {/* 头部 */}
+        {/* Header */}
         <div className="create-release-page-header">
           <Button
             icon={<IconArrowLeft />}
@@ -385,7 +385,7 @@ const CreateReleasePage: React.FC = () => {
           </Title>
         </div>
 
-        {/* 步骤条 */}
+        {/* Step条 */}
         <div className="create-release-page-steps">
           <Steps current={currentStep} type="basic">
             <Steps.Step
@@ -399,7 +399,7 @@ const CreateReleasePage: React.FC = () => {
           </Steps>
         </div>
 
-        {/* 内容区域 */}
+        {/* Content area域 */}
         <div className="create-release-page-content">
           {currentStep === 0 && (
             <ProcessSelectionStep

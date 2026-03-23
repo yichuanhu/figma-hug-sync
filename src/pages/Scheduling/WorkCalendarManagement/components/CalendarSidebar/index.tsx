@@ -99,7 +99,7 @@ const CalendarSidebar: React.FC<CalendarSidebarProps> = ({
 
   return (
     <div className="calendar-sidebar">
-      {/* 新建按钮 */}
+      {/* New button */}
       <div className="calendar-sidebar-header">
         <Button
           icon={<IconPlusStroked />}
@@ -111,7 +111,7 @@ const CalendarSidebar: React.FC<CalendarSidebarProps> = ({
         </Button>
       </div>
 
-      {/* 日历列表 */}
+      {/* Calendar list */}
       <div className="calendar-sidebar-list">
         {calendars.length > 0 ? (
           calendars.map(renderCalendarItem)

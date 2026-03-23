@@ -102,16 +102,16 @@ const CalendarEditor: React.FC<CalendarEditorProps> = ({
 
   return (
     <div className="calendar-editor">
-      {/* 头部 */}
+      {/* Header */}
       <div className="calendar-editor-header">
         <Title heading={5} className="calendar-editor-header-title">
           {t('workCalendar.editor.title')}
         </Title>
       </div>
 
-      {/* 内容区 */}
+      {/* Content area */}
       <div className="calendar-editor-content">
-        {/* 表单区域 */}
+        {/* Form area */}
         <div className="calendar-editor-form">
           <Form
             labelPosition="left"
@@ -150,7 +150,7 @@ const CalendarEditor: React.FC<CalendarEditorProps> = ({
           </Form>
         </div>
 
-        {/* 日历编辑区域 */}
+        {/* Sun历编辑区域 */}
         <div className="calendar-editor-calendar">
           <Text className="calendar-editor-section-title">
             {t('workCalendar.editor.calendarEdit')}

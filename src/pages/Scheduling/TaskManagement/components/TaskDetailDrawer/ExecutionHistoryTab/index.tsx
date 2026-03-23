@@ -57,7 +57,7 @@ const generateUUID = (): string => {
 
 // Mock数据生成
 const generateMockExecution = (taskId: string, index: number): LYTaskExecutionResponse => {
-  // 第一条记录用 SUCCESS 状态，这样用户可以看到查看录屏按钮
+  // 第Mon条记录用 SUCCESS 状态，这样用户可以看到查看录屏按钮
   const statuses: ExecutionStatus[] = ['SUCCESS', 'RUNNING', 'FAILED', 'SUCCESS', 'TIMEOUT', 'STOPPED'];
   const botNames = ['RPA-BOT-001', 'RPA-BOT-002', 'RPA-BOT-003', 'RPA-BOT-004', 'RPA-BOT-005', 'RPA-BOT-006'];
   // 最新的时间在前面，index越小时间越新
@@ -155,12 +155,12 @@ const ExecutionHistoryTab = ({ taskId, taskName, enableRecording }: ExecutionHis
     }
   }, [navigate, selectedExecution, taskId]);
   
-  // 查看截图
+  // 查看screenshot
   const handleViewScreenshots = useCallback(() => {
     setScreenshotModalVisible(true);
   }, []);
   
-  // 关闭截图弹窗
+  // 关闭screenshot弹窗
   const handleCloseScreenshotModal = useCallback(() => {
     setScreenshotModalVisible(false);
   }, []);
@@ -189,7 +189,7 @@ const ExecutionHistoryTab = ({ taskId, taskName, enableRecording }: ExecutionHis
   // 是否显示查看录屏按钮
   const showRecordingButton = enableRecording && selectedExecution?.status !== 'RUNNING';
   
-  // 是否显示查看截图按钮
+  // 是否显示查看screenshot按钮
   const showScreenshotButton = (selectedExecution?.screenshot_count || 0) > 0;
   
   if (loading && executions.length === 0) {
@@ -213,7 +213,7 @@ const ExecutionHistoryTab = ({ taskId, taskName, enableRecording }: ExecutionHis
   
   return (
     <div className="execution-history-tab">
-      {/* 顶部执行时间戳Tabs - 使用Semi原生滚动箭头 */}
+      {/* Top execution timestamp tabs - Using Semi native scroll arrows */}
       <div className="execution-history-tab-header">
         <Tabs
           type="button"
@@ -247,7 +247,7 @@ const ExecutionHistoryTab = ({ taskId, taskName, enableRecording }: ExecutionHis
         </Tabs>
       </div>
 
-      {/* 执行详情内容 */}
+      {/* Execution details content */}
       <div className="execution-history-tab-content">
         {selectedExecution && (
           <>
@@ -304,7 +304,7 @@ const ExecutionHistoryTab = ({ taskId, taskName, enableRecording }: ExecutionHis
               </Collapsible>
             </div>
 
-            {/* 执行日志 */}
+            {/* 执行Sun志 */}
             <div className="execution-history-tab-logs-section">
               <div className="execution-history-tab-logs-content">
                 <ExecutionLogTab
@@ -318,7 +318,7 @@ const ExecutionHistoryTab = ({ taskId, taskName, enableRecording }: ExecutionHis
         )}
       </div>
       
-      {/* 截图查看弹窗 */}
+      {/* screenshot查看弹窗 */}
       {selectedExecution && (
         <ScreenshotViewModal
           visible={screenshotModalVisible}

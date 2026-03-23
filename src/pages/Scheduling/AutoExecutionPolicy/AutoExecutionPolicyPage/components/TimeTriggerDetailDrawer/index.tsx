@@ -122,7 +122,7 @@ const TimeTriggerDetailDrawer = ({
     return new Date(time).toLocaleString('zh-CN');
   };
 
-  // 格式化触发规则显示
+  // 格式化Trigger Rules显示
   const formatTriggerRule = (): string => {
     if (!trigger) return '-';
     if (trigger.rule_type === 'CRON') {
@@ -226,7 +226,7 @@ const TimeTriggerDetailDrawer = ({
       >
         <TabPane tab={t('timeTrigger.detail.tabs.basicInfo')} itemKey="basic">
           <div className="time-trigger-detail-drawer-tab-content">
-            {/* 基本信息 */}
+            {/* Basic Info */}
             <div className="time-trigger-detail-drawer-section">
               <Text className="time-trigger-detail-drawer-section-title">
                 {t('timeTrigger.detail.basicInfo')}
@@ -262,7 +262,7 @@ const TimeTriggerDetailDrawer = ({
               </Descriptions>
             </div>
 
-            {/* 触发规则 */}
+            {/* Trigger Rules */}
             <div className="time-trigger-detail-drawer-section">
               <Text className="time-trigger-detail-drawer-section-title">
                 {t('timeTrigger.detail.triggerRule')}

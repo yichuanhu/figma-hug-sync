@@ -63,7 +63,7 @@ const generateMockReleaseResponse = (index: number): LYReleaseResponse => {
     release_type: releaseType,
     description: index === 2 
       ? 'Updated order processing logic, fixed inventory check issues' 
-      : `发布描述 ${index + 1}：Contains multiple process updates and config changes`,
+      : `Release description ${index + 1}：Contains multiple process updates and config changes`,
     publisher_id: `user-${(index % 3) + 1}`,
     publisher_name: ['John Smith', 'Jane Doe', 'Mike Wang'][index % 3],
     publisher_department: ['技术部', '产品部', '运维部'][index % 3],
@@ -102,7 +102,7 @@ const generateMockReleaseResponse = (index: number): LYReleaseResponse => {
               version_id: `ver-${index}-2`,
               version_number: `v2.${index}.0`,
               process_description: index % 4 === 0 
-                ? '每月自动生成财务报表并分发给相关部门负责人，支持PDF和Excel双格式输出。' 
+                ? '每M自动生成财务报表并分发给相关部门负责人，支持PDF和Excel双格式输出。' 
                 : '处理客户订单并验证',
             },
           ]
@@ -407,21 +407,21 @@ const ReleaseListPage: React.FC = () => {
     return publishers.map((name) => ({ value: name, label: name }));
   }, []);
 
-  // 日期快捷选项
+  // Sun期快捷选项
   const datePresets = useMemo(() => {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     return [
       { text: '今天', start: today, end: now },
       { text: '最近7天', start: new Date(today.getTime() - 6 * 86400000), end: now },
-      { text: '本月', start: new Date(now.getFullYear(), now.getMonth(), 1), end: now },
+      { text: '本M', start: new Date(now.getFullYear(), now.getMonth(), 1), end: now },
     ];
   }, []);
 
   return (
       <div className="release-list-page">
 
-        {/* 标题区域 */}
+        {/* Title area */}
         <div className="release-list-page-header">
           <div className="release-list-page-header-title">
             <Title heading={3} className="title">

@@ -39,7 +39,7 @@ export const metrics: MetricItem[] = [
   { key: 'todayTasks', labelKey: 'homepage.metrics.todayTasks', value: 345, trend: 'up', trendValue: '+12%', icon: 'Play', iconColor: '#FF7D00', iconBgColor: '#FFF9F5', borderColor: '#FAEADB' },
   { key: 'successRate', labelKey: 'homepage.metrics.successRate', value: '98.5', unit: '%', trend: 'up', trendValue: '+0.3%', icon: 'CheckCircle', iconColor: '#00B365', iconBgColor: '#F3FBF7', borderColor: '#D5F0E3' },
   { key: 'savedHours', labelKey: 'homepage.metrics.savedHours', value: 156, unit: 'h', trend: 'up', trendValue: '+24h', icon: 'Clock', iconColor: '#0FC6C2', iconBgColor: '#F3FFFE', borderColor: '#D5F5F3' },
-  { key: 'savedCost', labelKey: 'homepage.metrics.savedCost', value: '23', unit: '万', trend: 'up', trendValue: '+2.1万', icon: 'TrendingUp', iconColor: '#F54A45', iconBgColor: '#FFF7F7', borderColor: '#FAE0E0' },
+  { key: 'savedCost', labelKey: 'homepage.metrics.savedCost', value: '23', unit: '0K', trend: 'up', trendValue: '+2.10K', icon: 'TrendingUp', iconColor: '#F54A45', iconBgColor: '#FFF7F7', borderColor: '#FAE0E0' },
   { key: 'weeklyNew', labelKey: 'homepage.metrics.weeklyNew', value: 12, trend: 'down', trendValue: '-3', icon: 'FolderPlus', iconColor: '#3370FF', iconBgColor: '#F5F8FF', borderColor: '#E0EAFF' },
 ];
 
@@ -55,7 +55,7 @@ export const notifications: NotificationItem[] = [
 export const banners: BannerItem[] = [
   {
     id: '1',
-    title: 'APA Creator 最新发布',
+    title: 'APA Creator Latest Release',
     subtitle: 'New process designer with powerful automation orchestration',
     version: 'v3.2.0',
     gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
@@ -64,7 +64,7 @@ export const banners: BannerItem[] = [
   },
   {
     id: '2',
-    title: 'APA Worker 最新发布',
+    title: 'APA Worker Latest Release',
     subtitle: 'Performance upgrade, supporting more automation scenarios',
     version: 'v2.8.0',
     gradient: 'linear-gradient(135deg, #2BC0E4 0%, #5B86E5 100%)',

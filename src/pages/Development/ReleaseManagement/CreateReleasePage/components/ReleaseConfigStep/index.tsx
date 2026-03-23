@@ -199,7 +199,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
                         <Input
                           placeholder={resource.is_previously_published
                             ? t('release.create.keepExistingValue')
-                            : t('release.create.enterCredentialUsername', '请输入账号')}
+                            : t('release.create.enterCredentialUsername', 'Please enter账号')}
                           value={resource.production_username}
                           onChange={(value) =>
                             updateResource(resource.resource_id, { production_username: value })
@@ -213,7 +213,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
                         <Input
                           placeholder={resource.is_previously_published
                             ? t('release.create.keepExistingValue')
-                            : t('release.create.enterCredentialPassword', '请输入密码')}
+                            : t('release.create.enterCredentialPassword', 'Please enter密码')}
                           value={resource.production_password}
                           onChange={(value) =>
                             updateResource(resource.resource_id, { production_password: value })
@@ -327,7 +327,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
 
   return (
     <div className="release-config-step">
-      {/* 基本信息 */}
+      {/* Basic Info */}
       <Card className="release-config-step-section" title={t('release.create.basicInfo')}>
         <Form labelPosition="left" labelWidth={100}>
           <Form.Slot label={t('release.create.releaseType')}>
@@ -355,7 +355,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
         </Form>
       </Card>
 
-      {/* 已选择的流程 */}
+      {/* Selected processes */}
       <Card
         className="release-config-step-section"
         title={
@@ -386,7 +386,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
         </div>
       </Card>
 
-      {/* 依赖资源 */}
+      {/* Dependent resources */}
       <Card
         className="release-config-step-section"
         title={

@@ -46,7 +46,7 @@ const logLevelConfig: Record<LogLevel, { color: 'grey' | 'blue' | 'orange' | 're
   ERROR: { color: 'red', text: 'ERROR' },
 };
 
-// 日志消息截断阈值
+// Sun志消息截断阈值
 const MESSAGE_TRUNCATE_LENGTH = 200;
 
 // 自动刷新间隔（毫秒）
@@ -62,7 +62,7 @@ const generateMockLog = (index: number): LYExecutionLogResponse => {
     'Starting step 1: Reading input parameters',
     '警告: 输入参数中存在空值，使用默认值替代',
     '错误: 无法连接到目标服务器，请检查网络设置。错误代码: CONN_TIMEOUT，详细信息: 连接超时，目标地址: 192.168.1.100:8080，Retry count: 3，最后尝试时间: 2026-01-30 10:30:00',
-    '步骤 2 执行完成，耗时 1.5 秒',
+    'Step 2 执行完成，耗时 1.5 秒',
     '正在处理数据转换...',
     '数据验证通过',
     '写入输出结果到文件',
@@ -111,7 +111,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
   // 自动刷新定时器
   const refreshTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   
-  // 加载日志数据
+  // 加载Sun志数据
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
@@ -205,7 +205,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
     }));
   }, []);
   
-  // 导出日志
+  // 导出Sun志
   const handleExport = useCallback(async () => {
     if (total === 0) {
       Toast.warning(t('taskLog.noLogsToExport'));
@@ -328,7 +328,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
     },
   ];
   
-  // 日期快捷选项
+  // Sun期快捷选项
   const datePresets = useMemo(() => {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -376,7 +376,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
 
   return (
     <div className="execution-log-tab">
-      {/* 标题和统计信息 */}
+      {/* 标题和Statistics */}
       <div className="execution-log-tab-header">
         {title && (
           <Text strong className="execution-log-tab-title">
@@ -409,7 +409,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
         )}
       </div>
 
-      {/* 工具栏 */}
+      {/* Toolbar */}
       <Row type="flex" justify="space-between" align="middle" className="execution-log-tab-toolbar">
         <Col>
           <Space>

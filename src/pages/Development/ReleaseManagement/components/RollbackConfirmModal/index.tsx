@@ -59,7 +59,7 @@ const RollbackConfirmModal: React.FC<RollbackConfirmModalProps> = ({
       maskClosable={false}
     >
       <div className="rollback-confirm-modal-content">
-        {/* 警告信息 */}
+        {/* Warning info */}
         <Banner
           type="warning"
           description={t('release.rollback.warning', {
@@ -69,9 +69,9 @@ const RollbackConfirmModal: React.FC<RollbackConfirmModalProps> = ({
           className="rollback-confirm-modal-banner"
         />
 
-        {/* 版本信息卡片 */}
+        {/* Version info card */}
         <div className="rollback-confirm-modal-versions">
-          {/* 当前版本 */}
+          {/* Current version */}
           <div className="rollback-confirm-modal-version-card">
             <Text type="tertiary" size="small">
               {t('release.rollback.currentVersion')}
@@ -87,7 +87,7 @@ const RollbackConfirmModal: React.FC<RollbackConfirmModalProps> = ({
             </Text>
           </div>
 
-          {/* 目标版本 */}
+          {/* 目标Version */}
           <div className="rollback-confirm-modal-version-card">
             <Text type="tertiary" size="small">
               {t('release.rollback.targetVersion')}

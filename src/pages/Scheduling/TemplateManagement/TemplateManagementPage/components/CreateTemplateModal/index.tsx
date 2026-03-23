@@ -37,10 +37,10 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     parameters: [
       { name: 'targetUrl', type: 'TEXT', required: true, description: 'Target URL address' },
       { name: 'maxCount', type: 'NUMBER', required: false, default_value: 100, description: 'Maximum processing count' },
-      { name: 'enableRetry', type: 'BOOLEAN', required: false, default_value: true, description: '是否启用重试' },
+      { name: 'enableRetry', type: 'BOOLEAN', required: false, default_value: true, description: 'Enable retry' },
     ],
     output_parameters: [
-      { name: 'processedCount', type: 'NUMBER', description: '已处理订单数量' },
+      { name: 'processedCount', type: 'NUMBER', description: 'Processed order count' },
       { name: 'successRate', type: 'NUMBER', description: '处理成功率' },
       { name: 'errorList', type: 'TEXT', description: '错误订单列表' },
     ],
@@ -51,7 +51,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     version_id: 'ver-002',
     version: 'v2.0.0',
     parameters: [
-      { name: 'department', type: 'TEXT', required: true, description: '部门名称' },
+      { name: 'department', type: 'TEXT', required: true, description: 'Department name' },
       { name: 'approvalCredential', type: 'CREDENTIAL', required: true, description: '审批凭据' },
     ],
     output_parameters: [
@@ -69,15 +69,15 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
   },
   {
     process_id: 'proc-004',
-    process_name: '数据采集流程',
+    process_name: 'Data Collection Flow',
     version_id: 'ver-004',
     version: 'v1.5.0',
     parameters: [
-      { name: 'sourceUrl', type: 'TEXT', required: true, description: '数据源URL' },
-      { name: 'pageLimit', type: 'NUMBER', required: false, default_value: 10, description: '采集页数限制' },
+      { name: 'sourceUrl', type: 'TEXT', required: true, description: 'Data source URL' },
+      { name: 'pageLimit', type: 'NUMBER', required: false, default_value: 10, description: 'Page limit for collection' },
     ],
     output_parameters: [
-      { name: 'collectedCount', type: 'NUMBER', description: '采集数据条数' },
+      { name: 'collectedCount', type: 'NUMBER', description: 'Collected data count' },
       { name: 'dataFilePath', type: 'TEXT', description: '数据文件路径' },
       { name: 'isComplete', type: 'BOOLEAN', description: '是否采集完成' },
     ],
@@ -107,7 +107,7 @@ const mockCredentials = [
 ];
 
 // 已存在的模板名称 (模拟)
-const existingTemplateNames = ['Order Processing Default Template', '财务审批快速模板'];
+const existingTemplateNames = ['Order Processing Default Template', 'Finance Approval Quick Template'];
 
 const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateModalProps) => {
   const { t } = useTranslation();
@@ -165,7 +165,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
     }
   }, [formApi]);
 
-  // 验证模板名称唯一性
+  // 验证模板名称唯Mon性
   const validateTemplateName = useCallback((value: string) => {
     if (value && existingTemplateNames.includes(value.trim())) {
       return t('template.validation.nameExists');
@@ -200,7 +200,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
             key={param.name}
             field={`param_${param.name}`}
             label={renderLabel()}
-            placeholder={`请输入 ${param.name}`}
+            placeholder={`Please enter ${param.name}`}
             rules={rules}
           />
         );
@@ -210,7 +210,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
             key={param.name}
             field={`param_${param.name}`}
             label={renderLabel()}
-            placeholder={`请输入 ${param.name}`}
+            placeholder={`Please enter ${param.name}`}
             style={{ width: '100%' }}
             rules={rules}
           />
@@ -318,7 +318,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
           {/* 左侧：基本配置 */}
           <div className="create-template-modal-left">
             <div className="create-template-modal-content">
-              {/* 基本信息 */}
+              {/* Basic Info */}
               <div className="create-template-modal-section">
                 <div className="create-template-modal-section-title">
                   {t('template.createModal.basicSection')}

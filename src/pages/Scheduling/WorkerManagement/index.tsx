@@ -84,7 +84,7 @@ const mockWorkers: LYWorkerResponse[] = [
   {
     id: '550e8400-e29b-41d4-a716-446655440002',
     name: 'Finance Bot-02',
-    description: '用于财务报表自动化的机器人',
+    description: 'For financial报表自动化的机器人',
     status: 'BUSY',
     sync_status: 'PENDING',
     ip_address: '10.0.1.101',
@@ -142,7 +142,7 @@ const mockWorkers: LYWorkerResponse[] = [
   {
     id: '550e8400-e29b-41d4-a716-446655440004',
     name: 'HR Bot-01',
-    description: '用于人事审批流程的机器人',
+    description: 'For HR审批流程的机器人',
     status: 'FAULT',
     sync_status: 'SYNCED',
     ip_address: '10.0.1.103',
@@ -171,7 +171,7 @@ const mockWorkers: LYWorkerResponse[] = [
   {
     id: '550e8400-e29b-41d4-a716-446655440005',
     name: 'Ops Bot-01',
-    description: '用于运维巡检的机器人',
+    description: 'For ops巡检的机器人',
     status: 'IDLE',
     sync_status: 'SYNCED',
     ip_address: '10.0.2.50',
@@ -448,7 +448,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     return response.list;
   }, [queryParams, filters, sortState, listResponse.range?.size]);
 
-  // 当Tab切换到非激活状态时，关闭抽屉
+  // 当Tab switch到非激活状态时，关闭抽屉
   useEffect(() => {
     if (!isActive) {
       setDetailDrawerVisible(false);

@@ -9,7 +9,7 @@ const DevelopmentWorkbench = () => {
 
       <div className="development-workbench content">
         <div className="development-workbench content content-card">
-          <p className="development-workbench content content-card placeholder-text">Development Workbench内容区域</p>
+          <p className="development-workbench content content-card placeholder-text">Development Workbench content容区域</p>
         </div>
       </div>
     </div>

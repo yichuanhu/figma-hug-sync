@@ -181,7 +181,7 @@ const QueueTriggerDetailDrawer = ({
       >
         <TabPane tab={t('queueTrigger.detail.tabs.basicInfo')} itemKey="basic">
           <div className="queue-trigger-detail-drawer-tab-content">
-            {/* 基本信息 */}
+            {/* Basic Info */}
             <div className="queue-trigger-detail-drawer-section">
               <Text className="queue-trigger-detail-drawer-section-title">
                 {t('queueTrigger.detail.basicInfo')}
@@ -217,7 +217,7 @@ const QueueTriggerDetailDrawer = ({
               </Descriptions>
             </div>
 
-            {/* 队列触发配置 */}
+            {/* Queue Trigger Config */}
             <div className="queue-trigger-detail-drawer-section">
               <Text className="queue-trigger-detail-drawer-section-title">
                 {t('queueTrigger.detail.queueConfig')}
