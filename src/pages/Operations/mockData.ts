@@ -5,6 +5,9 @@ import type {
   RoiTrendPoint,
   DepartmentRoiItem,
   RequirementRoiItem,
+  RequirementRoiDetail,
+  DepartmentRoiDetail,
+  ProjectRoiDetail,
 } from './types';
 
 export const mockRoiMetrics: RoiMetrics = {
@@ -77,4 +80,32 @@ export const mockProjects = [
   { value: 'proj-001', label: 'Financial Automation' },
   { value: 'proj-002', label: 'Operational Efficiency' },
   { value: 'proj-003', label: 'HR Digital Transformation' },
+];
+
+// ROI Analysis Mock Data
+export const mockRequirementRoiDetails: RequirementRoiDetail[] = [
+  { id: 'req-001', name: 'Invoice Auto-Recognition & Entry', department: 'Finance', roi: 512, investmentCost: 45000, savedCost: 275400, status: 'running' },
+  { id: 'req-002', name: 'Order Auto-Processing & Dispatch', department: 'Operations', roi: 348, investmentCost: 62000, savedCost: 277760, status: 'running' },
+  { id: 'req-003', name: 'Expense Report Auto-Approval', department: 'Finance', roi: 283, investmentCost: 38000, savedCost: 145540, status: 'running' },
+  { id: 'req-004', name: 'Payroll Auto-Calculation', department: 'Human Resources', roi: 221, investmentCost: 55000, savedCost: 176550, status: 'running' },
+  { id: 'req-005', name: 'Contract Clause Auto-Review', department: 'Legal', roi: 176, investmentCost: 72000, savedCost: 198720, status: 'running' },
+  { id: 'req-006', name: 'Customer Data Sync & Cleansing', department: 'IT', roi: 158, investmentCost: 48000, savedCost: 123840, status: 'completed' },
+  { id: 'req-007', name: 'Inventory Auto-Replenishment', department: 'Operations', roi: 134, investmentCost: 41000, savedCost: 95940, status: 'running' },
+  { id: 'req-008', name: 'Employee Onboarding Automation', department: 'Human Resources', roi: 112, investmentCost: 35000, savedCost: 74200, status: 'developing' },
+  { id: 'req-009', name: 'Tax Filing Auto-Submission', department: 'Finance', roi: 95, investmentCost: 58000, savedCost: 113100, status: 'completed' },
+  { id: 'req-010', name: 'Compliance Document Generation', department: 'Legal', roi: 67, investmentCost: 32000, savedCost: 53440, status: 'developing' },
+];
+
+export const mockDepartmentRoiDetails: DepartmentRoiDetail[] = [
+  { department: 'Finance', investmentCost: 141000, savedCost: 534040, roi: 279, requirementCount: 3, robotCount: 8, trend: [120, 180, 220, 260, 279] },
+  { department: 'Operations', investmentCost: 103000, savedCost: 373700, roi: 263, requirementCount: 2, robotCount: 6, trend: [80, 140, 190, 240, 263] },
+  { department: 'Human Resources', investmentCost: 90000, savedCost: 250750, roi: 179, requirementCount: 2, robotCount: 4, trend: [50, 90, 130, 160, 179] },
+  { department: 'Legal', investmentCost: 104000, savedCost: 252160, roi: 142, requirementCount: 2, robotCount: 3, trend: [30, 60, 95, 125, 142] },
+  { department: 'IT', investmentCost: 48000, savedCost: 123840, roi: 158, requirementCount: 1, robotCount: 2, trend: [40, 70, 110, 140, 158] },
+];
+
+export const mockProjectRoiDetails: ProjectRoiDetail[] = [
+  { projectName: 'Financial Automation', status: 'running', investmentCost: 141000, savedCost: 534040, roi: 279, requirementCount: 3 },
+  { projectName: 'Operational Efficiency', status: 'running', investmentCost: 103000, savedCost: 373700, roi: 263, requirementCount: 2 },
+  { projectName: 'HR Digital Transformation', status: 'running', investmentCost: 90000, savedCost: 250750, roi: 179, requirementCount: 2 },
 ];
