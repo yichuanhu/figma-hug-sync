@@ -64,7 +64,7 @@ export const mockRequirementRoi: RequirementRoiItem[] = [
 
 // 部门和项目选项
 export const mockDepartments = [
-  { value: 'all', label: '全部' },
+  { value: 'all', label: '' },
   { value: 'finance', label: 'Finance' },
   { value: 'operations', label: 'Operations' },
   { value: 'hr', label: 'Human Resources' },
