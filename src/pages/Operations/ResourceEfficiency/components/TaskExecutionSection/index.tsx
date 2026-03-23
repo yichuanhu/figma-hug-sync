@@ -8,14 +8,19 @@ interface Props {
   data: ResourceEfficiencyData;
 }
 
-/* ECharts default theme colors */
-const ECHARTS_COLORS = ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc'];
+const COLORS = {
+  primary: '#3B82F6',
+  success: '#10B981',
+  warning: '#F59E0B',
+  danger: '#EF4444',
+  purple: '#8B5CF6',
+};
 
 const TOOLTIP_STYLE = {
   backgroundColor: 'rgba(255,255,255,0.96)',
-  borderColor: '#e0e0e0',
+  borderColor: '#E5E7EB',
   borderWidth: 1,
-  textStyle: { color: '#333', fontSize: 12 },
+  textStyle: { color: '#374151', fontSize: 12 },
   padding: [10, 14],
   extraCssText: 'box-shadow: 0 4px 16px rgba(0,0,0,0.08); border-radius: 8px;',
 };
@@ -30,16 +35,15 @@ const TaskExecutionSection = ({ data }: Props) => {
   };
 
   const statCards = [
-    { label: t('operations.resourceEfficiency.totalExecuted'), value: data.taskStats.total, color: ECHARTS_COLORS[0] },
-    { label: t('operations.resourceEfficiency.successCount'), value: data.taskStats.success, color: ECHARTS_COLORS[1] },
-    { label: t('operations.resourceEfficiency.failedCount'), value: data.taskStats.failed, color: ECHARTS_COLORS[3] },
-    { label: t('operations.resourceEfficiency.runningCount'), value: data.taskStats.running, color: ECHARTS_COLORS[2] },
-    { label: t('operations.resourceEfficiency.timeoutCount'), value: data.taskStats.timeout, color: ECHARTS_COLORS[7] },
+    { label: t('operations.resourceEfficiency.totalExecuted'), value: data.taskStats.total, color: COLORS.primary },
+    { label: t('operations.resourceEfficiency.successCount'), value: data.taskStats.success, color: COLORS.success },
+    { label: t('operations.resourceEfficiency.failedCount'), value: data.taskStats.failed, color: COLORS.danger },
+    { label: t('operations.resourceEfficiency.runningCount'), value: data.taskStats.running, color: COLORS.warning },
+    { label: t('operations.resourceEfficiency.timeoutCount'), value: data.taskStats.timeout, color: COLORS.purple },
   ];
 
   // Success rate trend
   const trendOption = useMemo(() => ({
-    color: ECHARTS_COLORS,
     tooltip: { ...TOOLTIP_STYLE, trigger: 'axis', formatter: (p: any) =>
       `<div style="font-weight:600;margin-bottom:4px">${p[0].name}</div>` +
       `<div>${t('operations.resourceEfficiency.successRate')}: <b>${p[0].value}%</b></div>`
@@ -48,15 +52,15 @@ const TaskExecutionSection = ({ data }: Props) => {
     xAxis: {
       type: 'category',
       data: data.successRateTrend.map(d => d.month),
-      axisLabel: { fontSize: 11, color: '#666' },
-      axisLine: { lineStyle: { color: '#ccc' } },
+      axisLabel: { fontSize: 11, color: '#9CA3AF' },
+      axisLine: { lineStyle: { color: '#E5E7EB' } },
     },
     yAxis: {
       type: 'value',
       min: 80,
       max: 100,
-      axisLabel: { formatter: '{value}%', fontSize: 11, color: '#666' },
-      splitLine: { lineStyle: { color: '#f0f0f0', type: 'dashed' } },
+      axisLabel: { formatter: '{value}%', fontSize: 11, color: '#9CA3AF' },
+      splitLine: { lineStyle: { color: '#F3F4F6', type: 'dashed' } },
     },
     series: [{
       type: 'line',
@@ -64,8 +68,12 @@ const TaskExecutionSection = ({ data }: Props) => {
       smooth: true,
       symbol: 'circle',
       symbolSize: 6,
-      lineStyle: { width: 2.5 },
-      areaStyle: { opacity: 0.1 },
+      lineStyle: { width: 2.5, color: COLORS.success },
+      itemStyle: { color: COLORS.success },
+      areaStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [
+        { offset: 0, color: 'rgba(16,185,129,0.15)' },
+        { offset: 1, color: 'rgba(16,185,129,0.02)' },
+      ]}},
     }],
   }), [data.successRateTrend, t]);
 
@@ -108,17 +116,17 @@ const TaskExecutionSection = ({ data }: Props) => {
             </div>
             <div className="today-stat-item">
               <div className="today-label">{t('operations.resourceEfficiency.successRateToday')}</div>
-              <div className="today-value" style={{ color: ECHARTS_COLORS[1] }}>{data.successRateToday}%</div>
+              <div className="today-value" style={{ color: COLORS.success }}>{data.successRateToday}%</div>
             </div>
             <div className="today-stat-item">
               <div className="today-label">{t('operations.resourceEfficiency.successRateTotal')}</div>
-              <div className="today-value" style={{ color: ECHARTS_COLORS[0] }}>{data.successRateTotal}%</div>
+              <div className="today-value" style={{ color: COLORS.primary }}>{data.successRateTotal}%</div>
             </div>
           </div>
         </div>
         <div className="task-exec-chart-card">
           <div className="chart-subtitle">{t('operations.resourceEfficiency.successRateTrend')}</div>
-          <ReactECharts option={trendOption} style={{ height: 280, width: '100%' }} notMerge opts={{ renderer: 'svg' }} />
+          <ReactECharts option={trendOption} style={{ height: 280 }} opts={{ renderer: 'svg' }} />
         </div>
       </div>
     </div>

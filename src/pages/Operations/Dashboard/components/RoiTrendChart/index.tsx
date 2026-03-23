@@ -8,23 +8,13 @@ interface RoiTrendChartProps {
   data: RoiTrendPoint[];
 }
 
-/* ECharts default theme colors */
-const ECHARTS_COLORS = ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc'];
-
 const RoiTrendChart = ({ data }: RoiTrendChartProps) => {
   const { t } = useTranslation();
 
   const option = useMemo(() => ({
-    color: ECHARTS_COLORS,
     tooltip: {
       trigger: 'axis',
-      axisPointer: { type: 'cross', crossStyle: { color: '#ccc' }, lineStyle: { color: '#ccc', type: 'dashed' } },
-      backgroundColor: 'rgba(255,255,255,0.96)',
-      borderColor: '#e0e0e0',
-      borderWidth: 1,
-      textStyle: { color: '#333', fontSize: 12 },
-      padding: [10, 14],
-      extraCssText: 'box-shadow: 0 4px 16px rgba(0,0,0,0.08); border-radius: 8px;',
+      axisPointer: { type: 'cross' },
     },
     legend: {
       data: [
@@ -33,10 +23,7 @@ const RoiTrendChart = ({ data }: RoiTrendChartProps) => {
         t('operations.dashboard.savedCostLabel'),
       ],
       bottom: 0,
-      textStyle: { fontSize: 12, color: '#666' },
-      itemWidth: 12,
-      itemHeight: 12,
-      itemGap: 20,
+      textStyle: { fontSize: 12 },
     },
     grid: {
       left: 60,
@@ -47,31 +34,24 @@ const RoiTrendChart = ({ data }: RoiTrendChartProps) => {
     xAxis: {
       type: 'category',
       data: data.map((d) => d.month),
-      axisLabel: { fontSize: 12, color: '#666' },
-      axisLine: { lineStyle: { color: '#ccc' } },
-      axisTick: { show: false },
+      axisLabel: { fontSize: 12 },
     },
     yAxis: [
       {
         type: 'value',
         name: 'ROI%',
-        nameTextStyle: { color: '#999', fontSize: 11 },
         position: 'left',
-        axisLabel: { formatter: '{value}%', fontSize: 12, color: '#666' },
-        axisLine: { show: false },
+        axisLabel: { formatter: '{value}%', fontSize: 12 },
         splitLine: { lineStyle: { type: 'dashed', color: '#f0f0f0' } },
       },
       {
         type: 'value',
         name: t('operations.dashboard.amountUnit'),
-        nameTextStyle: { color: '#999', fontSize: 11 },
         position: 'right',
         axisLabel: {
           formatter: (val: number) => `${(val / 10000).toFixed(0)}${t('operations.dashboard.tenThousandUnit')}`,
           fontSize: 12,
-          color: '#666',
         },
-        axisLine: { show: false },
         splitLine: { show: false },
       },
     ],
@@ -84,9 +64,8 @@ const RoiTrendChart = ({ data }: RoiTrendChartProps) => {
         smooth: true,
         symbol: 'circle',
         symbolSize: 6,
-        lineStyle: { width: 2.5 },
-        itemStyle: { borderWidth: 2, borderColor: '#fff' },
-        areaStyle: { opacity: 0.08 },
+        lineStyle: { width: 2.5, color: '#165DFF' },
+        itemStyle: { color: '#165DFF' },
       },
       {
         name: t('operations.dashboard.investmentCostLabel'),
@@ -94,7 +73,7 @@ const RoiTrendChart = ({ data }: RoiTrendChartProps) => {
         yAxisIndex: 1,
         data: data.map((d) => d.investmentCost),
         barWidth: 16,
-        itemStyle: { borderRadius: [3, 3, 0, 0] },
+        itemStyle: { color: '#FF7D00', borderRadius: [3, 3, 0, 0] },
       },
       {
         name: t('operations.dashboard.savedCostLabel'),
@@ -102,7 +81,7 @@ const RoiTrendChart = ({ data }: RoiTrendChartProps) => {
         yAxisIndex: 1,
         data: data.map((d) => d.savedCost),
         barWidth: 16,
-        itemStyle: { borderRadius: [3, 3, 0, 0] },
+        itemStyle: { color: '#00B42A', borderRadius: [3, 3, 0, 0] },
       },
     ],
   }), [data, t]);
