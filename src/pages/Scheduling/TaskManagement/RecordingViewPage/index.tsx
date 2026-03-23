@@ -38,7 +38,7 @@ const generateMockRecording = (executionId: string): LYRecordingInfoResponse => 
   file_size: 52428800, // 50 MB
   status: 'READY',
   created_at: new Date().toISOString(),
-  // 使用公共测试视频
+  // 使用公共测试Video
   file_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
 });
 
@@ -54,12 +54,12 @@ const generateMockLogs = (): LYExecutionLogResponse[] => {
     'Step 2 Execution completed, duration 1.5 s',
     'Processing data transformation...',
     'Data validation passed',
-    '写入输出Result到File',
+    'Writing output result to file',
     'Process execution completed',
     'StartExecuteStep 3: Dataprocessing',
-    'Warning: FoundRepeatData，已自动去重',
-    'Error: File写入Failed，磁盘空间不足',
-    '正在RetryOperation...',
+    'Warning: Found duplicate data, auto-deduplicated',
+    'Error: File write failed, insufficient disk space',
+    'Retrying operation...',
     'OperationSuccessDone',
   ];
   
@@ -67,7 +67,7 @@ const generateMockLogs = (): LYExecutionLogResponse[] => {
   startTime.setMinutes(startTime.getMinutes() - 3);
   
   return Array.from({ length: 50 }, (_, i) => {
-    const logTime = new Date(startTime.getTime() + i * 3600); // 每条Sun志间隔约 3.6 s
+    const logTime = new Date(startTime.getTime() + i * 3600); // Log interval approx 3.6 s
     const levelIndex = i % 10 < 1 ? 3 : i % 10 < 3 ? 2 : i % 10 < 5 ? 0 : 1;
     
     return {
@@ -97,7 +97,7 @@ const RecordingViewPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   
-  // 获取来源任务 ID 和 activeTab
+  // 获取来源任务 ID  and  activeTab
   const taskIdFromUrl = searchParams.get('taskId');
   const activeTabFromUrl = searchParams.get('activeTab');
   
@@ -110,7 +110,7 @@ const RecordingViewPage = () => {
   const [errorMarkers, setErrorMarkers] = useState<LYRecordingErrorMarker[]>([]);
   const [error, setError] = useState<string | null>(null);
   
-  // 播放同步Status
+  // Play同步Status
   const [currentTime, setCurrentTime] = useState(0);
   const [highlightedLogId, setHighlightedLogId] = useState<string | null>(null);
   
@@ -149,13 +149,13 @@ const RecordingViewPage = () => {
     loadData();
   }, [loadData]);
 
-  // 仅RefreshSun志Data
+  // 仅RefreshLogData
   const loadLogsOnly = useCallback(async () => {
     if (!executionId) return;
     
     setLogsLoading(true);
     try {
-      // Mock API 调用 - 仅LoadingSun志
+      // Mock API 调用 - 仅LoadingLog
       await new Promise((resolve) => setTimeout(resolve, 400));
       const mockLogs = generateMockLogs();
       const startTime = new Date(mockLogs[0].log_time);
@@ -168,21 +168,21 @@ const RecordingViewPage = () => {
     }
   }, [executionId]);
   
-  // 视频TimeUpdate
+  // VideoTimeUpdate
   const handleTimeUpdate = useCallback((time: number) => {
     setCurrentTime(time);
-    // 清除高亮Status（随播放自动同步）
+    // 清除高亮Status(随Play自动同步)
     setHighlightedLogId(null);
   }, []);
   
-  // 点击Error标记
+  // 点击Error markers
   const handleMarkerClick = useCallback((marker: LYRecordingErrorMarker) => {
     setHighlightedLogId(marker.log_id);
   }, []);
   
-  // 点击Sun志条目
+  // 点击Log条目
   const handleLogClick = useCallback((log: LYExecutionLogResponse) => {
-    // calculationSun志相对Time并跳转
+    // calculationLog相对Time并跳转
     const logTime = new Date(log.log_time).getTime();
     const startTime = recordingStartTime.getTime();
     const position = Math.max(0, (logTime - startTime) / 1000);
@@ -220,7 +220,7 @@ const RecordingViewPage = () => {
   // Back
   const handleBack = useCallback(() => {
     if (taskIdFromUrl) {
-      // Back到任务List并打开对应任务的Details抽屉，同时传递 activeTab Parameter
+      // Back到任务List并打开对应任务's Details drawer, 同时传递 activeTab Parameter
       const params = new URLSearchParams();
       params.set('taskId', taskIdFromUrl);
       if (activeTabFromUrl) {
@@ -280,7 +280,7 @@ const RecordingViewPage = () => {
           </Row>
         </div>
 
-        {/* 主Content area */}
+        {/* Main content area */}
         <div className="recording-view-page-content">
           {loading ? (
             <div className="recording-view-page-loading">
@@ -296,7 +296,7 @@ const RecordingViewPage = () => {
             </div>
           ) : (
             <div className="recording-view-page-sync-container">
-              {/* 左侧：视频播放器 */}
+              {/* Left: Video player */}
               <div className="recording-view-page-player">
                 <SyncRecordingPlayer
                   recording={recording}
@@ -308,7 +308,7 @@ const RecordingViewPage = () => {
                 />
               </div>
               
-              {/* 右侧：Sun志面板 */}
+              {/* Right: Log panel */}
               <div className="recording-view-page-logs">
                 <LogSyncPanel
                   logs={logs}

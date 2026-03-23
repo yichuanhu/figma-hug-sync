@@ -19,7 +19,7 @@ const generateUUID = (): string => {
   });
 };
 
-// generationMock的LYProcessResponse
+// generationMock's LYProcessResponse
 const generateMockLYProcessResponse = (request: LYCreateProcessRequest): LYProcessResponse => {
   const now = new Date().toISOString();
   return {

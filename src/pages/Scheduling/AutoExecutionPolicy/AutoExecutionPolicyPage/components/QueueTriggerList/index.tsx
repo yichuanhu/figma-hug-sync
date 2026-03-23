@@ -78,7 +78,7 @@ const generateMockQueueTriggerResponse = (index: number): LYQueueTriggerResponse
   return {
     trigger_id: `qt-${generateUUID().substring(0, 8)}`,
     name: `${queue.queue_name} Trigger${index + 1}`,
-    description: index % 5 === 0 ? null : index % 5 === 1 ? `Monitor ${queue.queue_name}，auto-create ${process.process_name} tasks. This queue trigger will 实时Monitor 指定Queue中的MessageCount，当有效Message数达到预设阈值时自动Trigger任务Create。支持Config每次Trigger消费的MessageCount，以及ScheduledCheck机制，确保即使Message到达速度较慢也能及时processing。 TriggerCreate的任务会自动携带QueueMessage作为Input parameters，实现端到端的automationprocessingProcess。适用于Order Processing、工单分配、Data Sync等需要基于Message驱动的automation场景。` : `Monitor ${queue.queue_name}，auto-create ${process.process_name}任务`,
+    description: index % 5 === 0 ? null : index % 5 === 1 ? `Monitor ${queue.queue_name}, auto-create ${process.process_name} tasks. This queue trigger will 实时Monitor 指定Queue中's MessageCount, 当有效Message数达到预设阈值时自动Trigger任务Create. 支持Config每次Trigger消费's MessageCount, 以及ScheduledCheck机制, 确保即使Message到达速度较慢也能及时processing.  TriggerCreate's 任务会自动携带QueueMessage作为Input parameters, 实现端到端's automationprocessingProcess. 适用于Order Processing, 工单分配, Data Sync etc.需要基于Message驱动's automation场景. ` : `Monitor ${queue.queue_name}, auto-create ${process.process_name}任务`,
     status,
     process_id: process.process_id,
     process_name: process.process_name,
@@ -150,11 +150,11 @@ const QueueTriggerList = () => {
     status: undefined,
   });
 
-  // SelectedStatus（抽屉）
+  // SelectedStatus(Drawer)
   const [selectedTrigger, setSelectedTrigger] = useState<LYQueueTriggerResponse | null>(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
 
-  // 弹窗Status
+  // ModalStatus
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingTrigger, setEditingTrigger] = useState<LYQueueTriggerResponse | null>(null);
@@ -256,30 +256,30 @@ const QueueTriggerList = () => {
     loadData(queryParams);
   };
 
-  // 打开Edit弹窗
+  // 打开Edit modal
   const handleOpenEditModal = (trigger: LYQueueTriggerResponse) => {
     setEditingTrigger(trigger);
     setEditModalVisible(true);
   };
 
-  // 打开Details抽屉
+  // 打开Details drawer
   const handleOpenDrawer = (trigger: LYQueueTriggerResponse) => {
     setSelectedTrigger(trigger);
     setDrawerVisible(true);
   };
 
-  // CloseDetails抽屉
+  // CloseDetails drawer
   const handleCloseDrawer = () => {
     setDrawerVisible(false);
     setSelectedTrigger(null);
   };
 
-  // 抽屉中导航
+  // Drawer中导航
   const handleNavigate = (trigger: LYQueueTriggerResponse) => {
     setSelectedTrigger(trigger);
   };
 
-  // Enable/Disable Trigger（直接切换，不弹窗Confirm）
+  // Enable/Disable Trigger(直接切换, 不ModalConfirm)
   const handleToggleStatus = async (trigger: LYQueueTriggerResponse, checked: boolean) => {
     try {
       const newStatus: TriggerStatus = checked ? 'ENABLED' : 'DISABLED';
@@ -303,7 +303,7 @@ const QueueTriggerList = () => {
         };
       }
       
-      // 如果抽屉打开且是当前 Trigger，Update抽屉中的Data
+      // 如果Drawer打开且是当前 Trigger, UpdateDrawer中's Data
       if (selectedTrigger?.trigger_id === trigger.trigger_id) {
         setSelectedTrigger({
           ...trigger,
@@ -355,7 +355,7 @@ const QueueTriggerList = () => {
     return new Date(time).toLocaleString('zh-CN');
   };
 
-  // 表格列定义
+  // Table列定义
   const columns = [
     {
       title: t('queueTrigger.table.name'),
@@ -527,7 +527,7 @@ const QueueTriggerList = () => {
         </Col>
       </Row>
 
-      {/* 表格 */}
+      {/* Table */}
       {isInitialLoad ? (
         <TableSkeleton rows={5} />
       ) : list.length === 0 ? (
@@ -571,14 +571,14 @@ const QueueTriggerList = () => {
         />
       )}
 
-      {/* Create弹窗 */}
+      {/* Create modal */}
       <CreateQueueTriggerModal
         visible={createModalVisible}
         onCancel={() => setCreateModalVisible(false)}
         onSuccess={handleCreateSuccess}
       />
 
-      {/* Edit弹窗 */}
+      {/* Edit modal */}
       {editingTrigger && (
         <EditQueueTriggerModal
           visible={editModalVisible}
@@ -591,7 +591,7 @@ const QueueTriggerList = () => {
         />
       )}
 
-      {/* Details抽屉 */}
+      {/* Details drawer */}
       <QueueTriggerDetailDrawer
         visible={drawerVisible}
         trigger={selectedTrigger}

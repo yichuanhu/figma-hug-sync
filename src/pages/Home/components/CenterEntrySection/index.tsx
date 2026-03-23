@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import './index.less';
 
-// ============ 内联 JSX SVG 图标组件（支持 foreignObject 毛玻璃效果） ============
+// ============ 内联 JSX SVG 图标组件(支持 foreignObject 毛玻璃效果) ============
 
 const RequirementsIcon = () => (
   <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -45,10 +45,10 @@ const logLevelConfig: Record<LogLevel, { color: 'grey' | 'blue' | 'orange' | 're
   ERROR: { color: 'red', text: 'ERROR' },
 };
 
-// Sun志Message截断阈值
+// LogMessage截断阈值
 const MESSAGE_TRUNCATE_LENGTH = 200;
 
-// 自动Refresh间隔（毫s）
+// 自动Refresh间隔(毫s)
 const AUTO_REFRESH_INTERVAL = 10000;
 
 // Mock Datageneration
@@ -60,11 +60,11 @@ const generateMockLog = (index: number): LYExecutionLogResponse => {
     'Successfully connected to database server',
     'Starting step 1: Reading input parameters',
     'Warning: Input parameters contains null values, using defaults',
-    'Error: Unable to connect to target server, check network settings。Error code: CONN_TIMEOUT，Details: Connection timeout，Target address: 192.168.1.100:8080，Retry count: 3，Last attempt time: 2026-01-30 10:30:00',
+    'Error: Unable to connect to target server, check network settings. Error code: CONN_TIMEOUT, Details: Connection timeout, Target address: 192.168.1.100:8080, Retry count: 3, Last attempt time: 2026-01-30 10:30:00',
     'Step 2 Execution completed, duration 1.5 s',
     'Processing data transformation...',
     'Data validation passed',
-    '写入输出Result到File',
+    'Writing output result to file',
     'Process execution completed',
   ];
   const levelIndex = index % 10 < 1 ? 3 : index % 10 < 3 ? 2 : index % 10 < 5 ? 0 : 1;
@@ -109,13 +109,13 @@ const TaskLogPage = () => {
   const [expandedLogId, setExpandedLogId] = useState<string | null>(null);
   const [exporting, setExporting] = useState(false);
   
-  // 模拟ExecuteStatus（实际应从 API 获取）
+  // 模拟ExecuteStatus(实际应从 API 获取)
   const [executionStatus] = useState<ExecutionStatus>('RUNNING');
   
   // 自动RefreshScheduled器
   const refreshTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   
-  // LoadingSun志Data
+  // LoadingLogData
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
@@ -205,7 +205,7 @@ const TaskLogPage = () => {
     }));
   }, []);
   
-  // ExportSun志
+  // ExportLog
   const handleExport = useCallback(async () => {
     if (total === 0) {
       Toast.warning(t('taskLog.noLogsToExport'));
@@ -242,7 +242,7 @@ const TaskLogPage = () => {
     }
   }, [executionId, list, total, t]);
   
-  // 展开/收起Message
+  // Expand/收起Message
   const toggleExpand = useCallback((logId: string) => {
     setExpandedLogId((prev) => (prev === logId ? null : logId));
   }, []);
@@ -271,7 +271,7 @@ const TaskLogPage = () => {
   const hasActiveFilter = !!queryParams.log_level;
   const filterCount = queryParams.log_level ? 1 : 0;
   
-  // 表格列定义
+  // Table列定义
   const columns = [
     {
       title: t('taskLog.fields.logTime'),
@@ -430,7 +430,7 @@ const TaskLogPage = () => {
           </Row>
         </div>
 
-        {/* 表格 */}
+        {/* Table */}
         <div className="task-log-page-table">
           <Table
             size="small"

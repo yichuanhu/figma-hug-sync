@@ -40,7 +40,7 @@ const formatTimestamp = (isoString: string): string => {
   return isoString.replace('T', ' ').substring(11, 19);
 };
 
-// 解析Sun志Time为s数（相对于录屏StartTime）
+// 解析LogTime为s数(相对于录屏StartTime)
 const parseLogTimeToSeconds = (logTime: string, startTime: string): number => {
   const logDate = new Date(logTime).getTime();
   const startDate = new Date(startTime).getTime();
@@ -60,7 +60,7 @@ const LogSyncPanel = ({
   const [searchKeyword, setSearchKeyword] = useState('');
   const [filteredLogs, setFilteredLogs] = useState<LYExecutionLogResponse[]>(logs);
   
-  // 录屏StartTime（取第Mon条Sun志的Time）
+  // 录屏StartTime(取第Mon条Log's Time)
   const startTime = useMemo(() => {
     return logs.length > 0 ? logs[0].log_time : new Date().toISOString();
   }, [logs]);
@@ -88,7 +88,7 @@ const LogSyncPanel = ({
     handleSearch(searchKeyword);
   }, [logs, searchKeyword, handleSearch]);
   
-  // 根据当前播放Time找到最近的Sun志
+  // 根据当前PlayTime找到最近's Log
   const currentLogIndex = useMemo(() => {
     if (filteredLogs.length === 0) return -1;
     
@@ -101,7 +101,7 @@ const LogSyncPanel = ({
     return 0;
   }, [filteredLogs, currentTime, startTime]);
   
-  // 自动滚动到当前Sun志
+  // 自动滚动到当前Log
   useEffect(() => {
     if (listRef.current && currentLogIndex >= 0 && !highlightedLogId) {
       const logItems = listRef.current.querySelectorAll('.log-sync-panel-item');
@@ -116,7 +116,7 @@ const LogSyncPanel = ({
     }
   }, [currentLogIndex, highlightedLogId]);
   
-  // 滚动到高亮的Sun志
+  // 滚动到高亮's Log
   useEffect(() => {
     if (listRef.current && highlightedLogId) {
       const targetItem = listRef.current.querySelector(

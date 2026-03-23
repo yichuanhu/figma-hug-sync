@@ -63,7 +63,7 @@ const SyncRecordingPlayer = ({
   
   const duration = recording?.duration || 0;
   
-  // 视频事件processing
+  // Video事件processing
   const handleTimeUpdate = useCallback(() => {
     if (videoRef.current) {
       onTimeUpdate(videoRef.current.currentTime);
@@ -91,7 +91,7 @@ const SyncRecordingPlayer = ({
     setIsPlaying(false);
   }, []);
   
-  // 播放控制
+  // Play控制
   const togglePlay = useCallback(() => {
     if (!videoRef.current || !videoReady) return;
     
@@ -150,13 +150,13 @@ const SyncRecordingPlayer = ({
     seekTo(time);
   }, [seekTo]);
   
-  // Error标记点击
+  // Error markers点击
   const handleMarkerClick = useCallback((marker: LYRecordingErrorMarker) => {
     seekTo(marker.position);
     onMarkerClick(marker);
   }, [seekTo, onMarkerClick]);
   
-  // calculationError标记位置
+  // calculationError markers位置
   const markerPositions = useMemo(() => {
     if (duration <= 0) return [];
     return errorMarkers.map((marker) => ({
@@ -271,7 +271,7 @@ const SyncRecordingPlayer = ({
               style={{ width: `${buffered}%` }}
             />
             
-            {/* 滑块 */}
+            {/* Slider */}
             <Slider
               value={currentTime}
               min={0}
@@ -282,7 +282,7 @@ const SyncRecordingPlayer = ({
               className="sync-recording-player-slider"
             />
             
-            {/* Error标记 */}
+            {/* Error markers */}
             {markerPositions.map((marker) => (
               <Tooltip
                 key={marker.log_id}

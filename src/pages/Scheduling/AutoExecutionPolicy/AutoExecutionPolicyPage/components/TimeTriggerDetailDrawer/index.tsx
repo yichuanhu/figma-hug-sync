@@ -110,7 +110,7 @@ const TimeTriggerDetailDrawer = ({
     }
   }, [visible, trigger]);
 
-  // 抽屉Close时重置Status
+  // DrawerClose时重置Status
   const handleClose = () => {
     setActiveTab('basic');
     onClose();
@@ -150,7 +150,7 @@ const TimeTriggerDetailDrawer = ({
 
   if (!trigger) return null;
 
-  // ExecuteRecord表格列
+  // ExecuteRecordTable列
   const logColumns = [
     {
       title: t('timeTrigger.executionLog.table.triggerTime'),
@@ -293,7 +293,7 @@ const TimeTriggerDetailDrawer = ({
               </Descriptions>
             </div>
 
-            {/* Trigger preview（collapsible） */}
+            {/* Trigger preview(collapsible) */}
             <div className="time-trigger-detail-drawer-section">
               <Space spacing={4} align="center" className="time-trigger-detail-drawer-section-title">
                 <Text style={{ fontWeight: 500 }}>

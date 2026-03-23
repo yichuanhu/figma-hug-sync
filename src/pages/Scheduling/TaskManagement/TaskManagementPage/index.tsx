@@ -128,7 +128,7 @@ const generateMockTaskResponse = (index: number): LYTaskResponse => {
       duration: taskStatus === 'COMPLETED' ? 300 : null,
       bot_id: generateUUID(),
       bot_name: `RPA-BOT-${String(index % 5 + 1).padStart(3, '0')}`,
-      error_message: taskStatus === 'FAILED' ? 'ExecuteTimeout：NetworkConnectionFailed' : null,
+      error_message: taskStatus === 'FAILED' ? 'ExecuteTimeout: NetworkConnectionFailed' : null,
       log_count: 50 + (index % 50),
       screenshot_count: 5 + (index % 10),
     } : null,
@@ -270,7 +270,7 @@ const TaskManagementPage = () => {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [createModalVisible, setCreateModalVisible] = useState(false);
 
-  // 从首页快捷入口跳转时自动打开新建弹窗
+  // 从首页快捷入口跳转时自动打开新建Modal
   useEffect(() => {
     if ((location.state as any)?.openCreate) {
       setCreateModalVisible(true);
@@ -335,15 +335,15 @@ const TaskManagementPage = () => {
     loadData();
   }, [loadData]);
 
-  // 从 URL Parameter中恢复抽屉Status（用于从录屏页面Back）或打开新建任务弹窗（从Template页面跳转）
+  // 从 URL Parameter中恢复DrawerStatus(用于从录屏页面Back)或打开新建任务Modal(从Template页面跳转)
   useEffect(() => {
     const taskIdFromUrl = searchParams.get('taskId');
     const activeTabFromUrl = searchParams.get('activeTab');
     const templateIdFromUrl = searchParams.get('templateId');
 
-    // processingTemplateID - 从 localStorage 获取TemplateData并打开新建任务弹窗
+    // processingTemplateID - 从 localStorage 获取TemplateData并打开新建任务Modal
     if (templateIdFromUrl) {
-      // 从 sessionStorage 获取传递的TemplateData
+      // 从 sessionStorage 获取传递's TemplateData
       const templateDataStr = sessionStorage.getItem(`template_${templateIdFromUrl}`);
       if (templateDataStr) {
         try {
@@ -361,7 +361,7 @@ const TaskManagementPage = () => {
       return;
     }
 
-    // processing任务ID - 打开Details抽屉
+    // processing任务ID - 打开Details drawer
     if (taskIdFromUrl && listResponse.list.length > 0) {
       const task = listResponse.list.find((t) => t.task_id === taskIdFromUrl);
       if (task) {
@@ -396,7 +396,7 @@ const TaskManagementPage = () => {
     loadData();
   };
 
-  // 打开Details抽屉
+  // 打开Details drawer
   const openTaskDetail = (record: LYTaskResponse) => {
     setSelectedTask(record);
     setDetailDrawerVisible(true);
@@ -406,7 +406,7 @@ const TaskManagementPage = () => {
   // Cancel任务
   const handleCancelTask = (task: LYTaskResponse) => {
     if (task.task_status !== 'PENDING') {
-      Toast.warning('只能Cancel待ExecuteStatus的任务');
+      Toast.warning('只能Cancel待ExecuteStatus's 任务');
       return;
     }
 
@@ -442,7 +442,7 @@ const TaskManagementPage = () => {
   // Stop任务
   const handleStopTask = (task: LYTaskResponse) => {
     if (task.execution_status !== 'RUNNING') {
-      Toast.warning('只能StopRunning中的任务');
+      Toast.warning('只能StopRunning中's 任务');
       return;
     }
 
@@ -478,7 +478,7 @@ const TaskManagementPage = () => {
   // 重新Execute
   const handleRetryTask = (task: LYTaskResponse) => {
     if (task.task_status !== 'FAILED') {
-      Toast.warning('只能重新ExecuteFailed的任务');
+      Toast.warning('只能重新ExecuteFailed's 任务');
       return;
     }
 
@@ -623,7 +623,7 @@ const TaskManagementPage = () => {
           record.execution_status === 'RUNNING' ||
           record.task_status === 'FAILED';
         
-        // ExecuteHistory入口：只要有过ExecuteRecord就显示
+        // ExecuteHistory入口: 只要有过ExecuteRecord就显示
         const hasExecutions = record.total_execution_count > 0;
         
         const hasActions = hasStatusActions || hasExecutions;

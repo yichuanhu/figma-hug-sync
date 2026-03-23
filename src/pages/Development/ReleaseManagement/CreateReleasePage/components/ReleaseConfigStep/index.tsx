@@ -91,7 +91,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
     );
   };
 
-  // Delete手动添加的Resource
+  // Delete手动添加's Resource
   const removeManualResource = (resourceId: string) => {
     onResourcesChange(resources.filter((r) => r.resource_id !== resourceId));
   };
@@ -101,7 +101,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
     onResourcesChange([...resources, ...newResources]);
   };
 
-  // 已添加Resource的 ID List
+  // Already添加Resource's  ID List
   const existingResourceIds = useMemo(() => resources.map((r) => r.resource_id), [resources]);
 
   // ResourceType标签

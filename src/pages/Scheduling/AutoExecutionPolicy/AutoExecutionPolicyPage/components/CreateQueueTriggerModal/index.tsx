@@ -130,7 +130,7 @@ const mockTemplates = [
 
 import { TIMEZONE_GROUPS } from '@/constants/timezones';
 
-// 已存在的 TriggerName (模拟)
+// Already存在's  TriggerName (模拟)
 const existingTriggerNames = ['Order Queue Trigger', 'Approval Queue Trigger'];
 
 const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTriggerModalProps) => {
@@ -139,11 +139,11 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
   const [currentStep, setCurrentStep] = useState(0);
   const [formApi, setFormApi] = useState<any>(null);
 
-  // 第Tue步：Task config
+  // 第Tue步: Task config
   const [selectedProcess, setSelectedProcess] = useState<LYProcessActiveVersionResponse | null>(null);
   const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);
 
-  // 第Wed步：Queue Trigger Config
+  // 第Wed步: Queue Trigger Config
   const [enableWorkCalendar, setEnableWorkCalendar] = useState(false);
   const [minEffectiveMessages, setMinEffectiveMessages] = useState(1);
   const [enablePeriodicCheck, setEnablePeriodicCheck] = useState(false);
@@ -400,7 +400,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
     }
   };
 
-  // 渲染Step0：Basic Info
+  // 渲染Step0: Basic Info
   const renderStep0Content = () => (
     <div className="create-queue-trigger-modal-section">
       <div className="create-queue-trigger-modal-section-title">{t('queueTrigger.createModal.basicSection')}</div>
@@ -435,7 +435,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
     </div>
   );
 
-  // 渲染Step1左侧：Task config
+  // 渲染Step1Left: Task config
   const renderStep1LeftContent = () => (
     <>
       {/* Template selection */}
@@ -572,7 +572,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
     </>
   );
 
-  // 渲染Step1右侧：ParameterConfig
+  // 渲染Step1Right: ParameterConfig
   const renderStep1RightContent = () => (
     <>
       {/* Input parameters */}
@@ -617,7 +617,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
     </>
   );
 
-  // 渲染Step2：Queue Trigger Config
+  // 渲染Step2: Queue Trigger Config
   const renderStep2Content = () => (
     <div className="create-queue-trigger-modal-section">
       <div className="create-queue-trigger-modal-section-title">{t('queueTrigger.createModal.queueSection')}</div>
@@ -768,7 +768,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
     </div>
   );
 
-  // calculation弹窗宽度
+  // calculationModal宽度
   const modalWidth = showRightPanel ? 900 : 520;
 
   return (

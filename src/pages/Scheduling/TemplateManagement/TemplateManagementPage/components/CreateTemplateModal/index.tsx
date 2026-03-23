@@ -106,7 +106,7 @@ const mockCredentials = [
   { id: 'cred-003', name: 'Data库Credential' },
 ];
 
-// 已存在的TemplateName (模拟)
+// Already存在's TemplateName (模拟)
 const existingTemplateNames = ['Order Processing Default Template', 'Finance Approval Quick Template'];
 
 const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateModalProps) => {
@@ -249,7 +249,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
   const hasParameters = selectedProcess && selectedProcess.parameters.length > 0;
   // 判断是否有输出Parameter
   const hasOutputParameters = selectedProcess && selectedProcess.output_parameters && selectedProcess.output_parameters.length > 0;
-  // 右侧是否需要显示
+  // Right是否需要显示
   const showRightPanel = hasParameters || hasOutputParameters;
 
   // Submit
@@ -315,7 +315,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
         }}
       >
         <div className="create-template-modal-body">
-          {/* 左侧：基本Config */}
+          {/* Left: 基本Config */}
           <div className="create-template-modal-left">
             <div className="create-template-modal-content">
               {/* Basic Info */}
@@ -478,7 +478,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
             </div>
           </div>
 
-          {/* 右侧：Process输入和Process输出 */}
+          {/* Right: Process输入 and Process输出 */}
           {showRightPanel && (
             <div className="create-template-modal-right">
               <div className="create-template-modal-content">
@@ -494,7 +494,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
                   </div>
                 )}
 
-                {/* Process输出（只读） */}
+                {/* Process输出(只读) */}
                 {hasOutputParameters && (
                   <div className="create-template-modal-section">
                     <div className="create-template-modal-section-title">

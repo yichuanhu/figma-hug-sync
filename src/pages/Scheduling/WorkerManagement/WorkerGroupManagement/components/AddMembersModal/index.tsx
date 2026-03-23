@@ -24,7 +24,7 @@ interface AddMembersModalProps {
   onSuccess: () => void;
 }
 
-// Mock可添加的botData
+// Mock可添加's botData
 const mockAvailableWorkers: LYWorkerResponse[] = [
   {
     id: '550e8400-e29b-41d4-a716-446655440010',
@@ -56,7 +56,7 @@ const mockAvailableWorkers: LYWorkerResponse[] = [
   {
     id: '550e8400-e29b-41d4-a716-446655440011',
     name: 'HR Bot-02',
-    description: 'For HR审批Process的bot',
+    description: 'For HR审批Process's bot',
     status: 'OFFLINE',
     sync_status: 'SYNCED',
     ip_address: '10.0.1.103',
@@ -83,7 +83,7 @@ const mockAvailableWorkers: LYWorkerResponse[] = [
   {
     id: '550e8400-e29b-41d4-a716-446655440012',
     name: '运维bot-02',
-    description: 'For opsinspection的bot',
+    description: 'For opsinspection's bot',
     status: 'IDLE',
     sync_status: 'SYNCED',
     ip_address: '10.0.2.51',
@@ -109,7 +109,7 @@ const mockAvailableWorkers: LYWorkerResponse[] = [
   },
 ];
 
-// 获取可添加的botList
+// 获取可添加's botList
 const fetchAvailableWorkers = async (params: GetAvailableWorkersForGroupParams & { statusFilter?: WorkerStatus[] }): Promise<LYListResponseLYWorkerResponse> => {
   await new Promise(resolve => setTimeout(resolve, 300));
   
@@ -229,7 +229,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
     }
   };
 
-  // 移除已选bot
+  // 移除Already选bot
   const handleRemoveSelected = (workerId: string) => {
     setSelectedWorkers(prev => prev.filter(w => w.id !== workerId));
   };
@@ -322,7 +322,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
       width={800}
     >
       <div className="add-members-modal-content">
-        {/* 左侧：OptionalbotList */}
+        {/* Left: OptionalbotList */}
         <div className="add-members-modal-left">
           <div className="add-members-modal-left-header">
             <Text strong>{t('workerGroup.addMembers.availableWorkers')}</Text>
@@ -382,7 +382,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
           </div>
         </div>
 
-        {/* 右侧：已选botList */}
+        {/* Right: Already选botList */}
         <div className="add-members-modal-right">
           <div className="add-members-modal-right-header">
             <Text strong>

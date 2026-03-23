@@ -39,7 +39,7 @@ const mockWorkerGroups: LYWorkerGroupResponse[] = [
   {
     id: 'group-001',
     name: 'Finance Bot Group',
-    description: 'This is the core enterprise finance automation bot group，Contains multiple high-performance bots，Specifically for executing财务相 automation flow任务。该组负责handling invoice recognition and entry、Expense Reimbursement Approval、Auto Financial Report与分发、银企对账、税务Data准备等关键业务Process。支持任务负载均衡和故障自动转移，确保业务连续性。',
+    description: 'This is the core enterprise finance automation bot group, Contains multiple high-performance bots, Specifically for executing财务相 automation flow任务. 该组负责handling invoice recognition and entry, Expense Reimbursement Approval, Auto Financial Report and 分发, 银企对账, 税务Data准备 etc.关键业务Process. 支持任务负载均衡 and 故障自动转移, 确保业务连续性. ',
     member_count: 5,
     creator_id: 'admin',
     creator_name: 'Admin',
@@ -49,7 +49,7 @@ const mockWorkerGroups: LYWorkerGroupResponse[] = [
   {
     id: 'group-002',
     name: 'HR Bot Group',
-    description: 'For HR审批、onboarding离职Processautomation',
+    description: 'For HR审批, onboarding离职Processautomation',
     member_count: 3,
     creator_id: 'hr_admin',
     creator_name: 'HRAdmin',
@@ -59,7 +59,7 @@ const mockWorkerGroups: LYWorkerGroupResponse[] = [
   {
     id: 'group-003',
     name: 'Ops Inspection Bot Group',
-    description: '用于Serverinspection、Sun志analysis等运维任务',
+    description: '用于Serverinspection, Loganalysis etc.运维任务',
     member_count: 2,
     creator_id: 'ops_admin',
     creator_name: '运维Admin',
@@ -69,7 +69,7 @@ const mockWorkerGroups: LYWorkerGroupResponse[] = [
   {
     id: 'group-004',
     name: '测试automationbot组',
-    description: '用于automation测试任务的Execute',
+    description: '用于automation测试任务's Execute',
     member_count: 0,
     creator_id: 'qa_admin',
     creator_name: 'QAAdmin',
@@ -133,7 +133,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
     list: [],
   });
   
-  // 抽屉和弹窗Status
+  // Drawer and ModalStatus
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState<LYWorkerGroupResponse | null>(null);
   const [createModalVisible, setCreateModalVisible] = useState(false);
@@ -155,7 +155,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
     }
   }, [queryParams]);
 
-  // 翻页并Back新Data（用于抽屉导航时自动翻页）
+  // 翻页并Back新Data(用于Drawer导航时自动翻页)
   const handleDrawerPageChange = useCallback(async (page: number): Promise<LYWorkerGroupResponse[]> => {
     const currentPageSize = listResponse.range?.size || 20;
     const newOffset = (page - 1) * currentPageSize;
@@ -169,7 +169,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
     return response.list;
   }, [queryParams, listResponse.range?.size]);
 
-  // 当Tab switch到非激活Status时，Close抽屉
+  // 当Tab switch到非激活Status时, CloseDrawer
   useEffect(() => {
     if (!isActive) {
       setDetailDrawerVisible(false);
@@ -190,7 +190,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
     []
   );
 
-  // 打开Details抽屉
+  // 打开Details drawer
   const openDetail = (group: LYWorkerGroupResponse) => {
     setSelectedGroup(group);
     setDetailDrawerVisible(true);
@@ -210,7 +210,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
     setAddMembersModalVisible(true);
   };
 
-  // 从Details抽屉跳转到Edit
+  // 从Details drawer跳转到Edit
   const handleEditFromDrawer = () => {
     if (selectedGroup) {
       setEditingGroup(selectedGroup);
@@ -241,7 +241,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
           // 模拟Delete API 调用
           await new Promise(resolve => setTimeout(resolve, 500));
           
-          // Close抽屉
+          // CloseDrawer
           setDetailDrawerVisible(false);
           setSelectedGroup(null);
           
@@ -257,7 +257,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
     });
   };
 
-  // 从Details抽屉Delete
+  // 从Details drawerDelete
   const handleDeleteFromDrawer = () => {
     if (selectedGroup) {
       handleDeleteClick(selectedGroup);
@@ -278,7 +278,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
         item.id === updatedGroup.id ? updatedGroup : item
       ),
     }));
-    // 同步UpdateSelected的group（如果抽屉打开中）
+    // 同步UpdateSelected's group(如果Drawer打开中)
     if (selectedGroup?.id === updatedGroup.id) {
       setSelectedGroup(updatedGroup);
     }
@@ -419,7 +419,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
         </Row>
       </div>
 
-      {/* 表格区域 */}
+      {/* Table area */}
       <div className="worker-group-management-table">
         {isInitialLoad ? (
           <TableSkeleton rows={10} columns={4} columnWidths={['35%', '15%', '15%', '25%']} />
@@ -461,7 +461,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
         )}
       </div>
 
-      {/* Details抽屉 */}
+      {/* Details drawer */}
       <WorkerGroupDetailDrawer
         visible={detailDrawerVisible}
         onClose={() => setDetailDrawerVisible(false)}
@@ -485,14 +485,14 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
         }}
       />
 
-      {/* Create弹窗 */}
+      {/* Create modal */}
       <CreateWorkerGroupModal
         visible={createModalVisible}
         onCancel={() => setCreateModalVisible(false)}
         onSuccess={handleCreateSuccess}
       />
 
-      {/* Edit弹窗 */}
+      {/* Edit modal */}
       <EditWorkerGroupModal
         visible={editModalVisible}
         onCancel={() => setEditModalVisible(false)}
@@ -500,7 +500,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
         onSuccess={handleEditSuccess}
       />
 
-      {/* 添加成员弹窗 */}
+      {/* 添加成员Modal */}
       <AddMembersModal
         visible={addMembersModalVisible}
         onCancel={() => {

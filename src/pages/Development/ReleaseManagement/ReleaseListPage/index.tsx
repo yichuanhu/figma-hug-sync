@@ -63,7 +63,7 @@ const generateMockReleaseResponse = (index: number): LYReleaseResponse => {
     release_type: releaseType,
     description: index === 2 
       ? 'Updated order processing logic, fixed inventory check issues' 
-      : `Release description ${index + 1}：Contains multiple process updates and config changes`,
+      : `Release description ${index + 1}: Contains multiple process updates and config changes`,
     publisher_id: `user-${(index % 3) + 1}`,
     publisher_name: ['John Smith', 'Jane Doe', 'Mike Wang'][index % 3],
     publisher_department: ['技术部', '产品部', '运维部'][index % 3],
@@ -87,9 +87,9 @@ const generateMockReleaseResponse = (index: number): LYReleaseResponse => {
         version_id: `ver-${index}-1`,
         version_number: `v1.${index}.0`,
         process_description: index % 4 === 0
-          ? '该Process用于processing来自SAP ERP系统的所有客户订单，包括订单Validation、Inventory Check、价格calculation、折扣应用、税费calculation、物流分配、发票generation以及客户Notification等完整的端到端业务Process。支持多币种、多仓库、多物流商的复杂场景processing。'
+          ? '该Process用于processing来自SAP ERP系统's 所有客户订单, 包括订单Validation, Inventory Check, 价格calculation, 折扣应用, 税费calculation, 物流分配, 发票generation以及客户Notification etc.完整's 端到端业务Process. 支持多币种, 多仓库, 多物流商's 复杂场景processing. '
           : index % 4 === 2
-            ? '客户入网全Processautomation，涵盖KYC身份Validation、合规Check、风控评估、账户开通、权限分配、欢迎邮件发送及CRM系统同步等环节，支持多国家地区的监管要求适配。'
+            ? '客户入网全Processautomation, 涵盖KYC身份Validation, 合规Check, 风控评估, 账户开通, 权限分配, 欢迎邮件发送及CRM系统同步 etc.环节, 支持多国家地区's 监管要求适配. '
             : index % 4 === 3 ? '' : '从 ERP 同步客户Data到 CRM',
       },
       ...(index % 2 === 0
@@ -102,7 +102,7 @@ const generateMockReleaseResponse = (index: number): LYReleaseResponse => {
               version_id: `ver-${index}-2`,
               version_number: `v2.${index}.0`,
               process_description: index % 4 === 0 
-                ? '每M自动generation财务report并分发给相关部门负责人，支持PDF和Excel双Format输出。' 
+                ? '每M自动generation财务report并分发给相关部门负责人, 支持PDF and Excel双Format输出. ' 
                 : 'processing客户订单并Validation',
             },
           ]
@@ -178,7 +178,7 @@ const ReleaseListPage: React.FC = () => {
     publish_date: [Date, Date] | null;
   }>({ release_type: [], publish_status: [], publisher: [], publish_date: null });
 
-  // Details抽屉
+  // Details drawer
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [selectedRelease, setSelectedRelease] =
     useState<LYReleaseResponse | null>(null);
@@ -401,7 +401,7 @@ const ReleaseListPage: React.FC = () => {
     label: t(config.i18nKey),
   }));
 
-  // Release者选项（从mockData中提取）
+  // Release者选项(从mockData中提取)
   const publisherOptions = useMemo(() => {
     const publishers = ['John Smith', 'Jane Doe', 'Mike Wang'];
     return publishers.map((name) => ({ value: name, label: name }));
@@ -496,7 +496,7 @@ const ReleaseListPage: React.FC = () => {
           </Row>
         </div>
 
-        {/* 表格 */}
+        {/* Table */}
         <div className="release-list-page-table">
           <Table
             size="small"
@@ -543,7 +543,7 @@ const ReleaseListPage: React.FC = () => {
           />
         </div>
 
-        {/* Details抽屉 */}
+        {/* Details drawer */}
         <ReleaseDetailDrawer
           visible={detailDrawerVisible}
           release={selectedRelease}

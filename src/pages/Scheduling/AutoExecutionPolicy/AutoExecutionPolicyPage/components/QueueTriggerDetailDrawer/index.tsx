@@ -82,7 +82,7 @@ const QueueTriggerDetailDrawer = ({
     return new Date(time).toLocaleString('zh-CN');
   };
 
-  // 抽屉Close时重置Status
+  // DrawerClose时重置Status
   const handleClose = () => {
     setActiveTab('basic');
     onClose();
@@ -90,7 +90,7 @@ const QueueTriggerDetailDrawer = ({
 
   if (!trigger) return null;
 
-  // ExecuteRecord表格列
+  // ExecuteRecordTable列
   const logColumns = [
     {
       title: t('queueTrigger.executionLog.table.triggerTime'),

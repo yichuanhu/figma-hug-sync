@@ -80,8 +80,8 @@ const generateMockTemplateResponse = (index: number): LYExecutionTemplateRespons
     template_id: `tpl-${generateUUID().substring(0, 8)}`,
     template_name: `${process.process_name}Template${index + 1}`,
     description: index === 0 
-      ? 'This is Mon个功能完整的ExecuteTemplate，包含了多种复杂的业务场景Config。该Template支持automationOrder Processing、智能Data校验、Abnormal情况processing和多渠道Notification推送等功能。同时集成了完整的Sun志追踪、ErrorRetry机制和人工干预Process，确保任务Execute的稳定性和可靠性。适用于大规模批量任务的automationExecute场景。'
-      : (index % 3 === 0 ? null : `This is ${process.process_name}的ExecuteTemplate，用于快速Create任务`),
+      ? 'This is Mon个功能完整's ExecuteTemplate, 包含了多种复杂's 业务场景Config. 该Template支持automationOrder Processing, 智能Data校验, Abnormal情况processing and 多渠道Notification推送 etc.功能. 同时集成了完整's Log追踪, ErrorRetry机制 and 人工干预Process, 确保任务Execute's 稳定性 and 可靠性. 适用于大规模批量任务's automationExecute场景. '
+      : (index % 3 === 0 ? null : `This is ${process.process_name}'s ExecuteTemplate, 用于快速Create任务`),
     process_id: process.process_id,
     process_name: process.process_name,
     execution_target_type: targetTypes[index % targetTypes.length],
@@ -133,11 +133,11 @@ const TemplateManagementPage = () => {
     process_id: undefined,
   });
 
-  // SelectedStatus（抽屉）
+  // SelectedStatus(Drawer)
   const [selectedTemplate, setSelectedTemplate] = useState<LYExecutionTemplateResponse | null>(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
 
-  // 弹窗Status
+  // ModalStatus
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingTemplate, setEditingTemplate] = useState<LYExecutionTemplateResponse | null>(null);
@@ -230,25 +230,25 @@ const TemplateManagementPage = () => {
     loadData(queryParams);
   };
 
-  // 打开Details抽屉
+  // 打开Details drawer
   const handleOpenDrawer = (template: LYExecutionTemplateResponse) => {
     setSelectedTemplate(template);
     setDrawerVisible(true);
   };
 
-  // CloseDetails抽屉
+  // CloseDetails drawer
   const handleCloseDrawer = () => {
     setDrawerVisible(false);
     setSelectedTemplate(null);
   };
 
-  // 从抽屉Edit
+  // 从DrawerEdit
   const handleEditFromDrawer = (template: LYExecutionTemplateResponse) => {
     setEditingTemplate(template);
     setEditModalVisible(true);
   };
 
-  // 从抽屉Delete
+  // 从DrawerDelete
   const handleDeleteFromDrawer = (template: LYExecutionTemplateResponse) => {
     handleDeleteTemplate(template);
     setDrawerVisible(false);
@@ -282,7 +282,7 @@ const TemplateManagementPage = () => {
 
   // 使用Template
   const handleUseTemplate = (template: LYExecutionTemplateResponse) => {
-    // 将TemplateData存入 sessionStorage，以便任务页面读取
+    // 将TemplateData存入 sessionStorage, 以便任务页面读取
     sessionStorage.setItem(`template_${template.template_id}`, JSON.stringify(template));
     navigate(`/scheduling-center/task-execution/task-list?templateId=${template.template_id}`);
   };
@@ -316,7 +316,7 @@ const TemplateManagementPage = () => {
     });
   };
 
-  // 表格列定义
+  // Table列定义
   const columns = [
     {
       title: t('template.table.name'),
@@ -410,7 +410,7 @@ const TemplateManagementPage = () => {
   return (
       <div className="template-management">
 
-        {/* Back按钮和标题 */}
+        {/* Back按钮 and 标题 */}
         <div className="template-management-header">
           <div className="template-management-header-title">
             <Tooltip content={t('common.back')} position="bottom">
@@ -468,7 +468,7 @@ const TemplateManagementPage = () => {
           </Row>
         </div>
 
-        {/* 表格区域 */}
+        {/* Table area */}
         <div className="template-management-table">
           {isInitialLoad ? (
             <TableSkeleton />
@@ -507,14 +507,14 @@ const TemplateManagementPage = () => {
           )}
         </div>
 
-        {/* CreateTemplate弹窗 */}
+        {/* CreateTemplateModal */}
         <CreateTemplateModal
           visible={createModalVisible}
           onCancel={() => setCreateModalVisible(false)}
           onSuccess={handleCreateSuccess}
         />
 
-        {/* EditTemplate弹窗 */}
+        {/* EditTemplateModal */}
         <EditTemplateModal
           visible={editModalVisible}
           template={editingTemplate}
@@ -525,7 +525,7 @@ const TemplateManagementPage = () => {
           onSuccess={handleEditSuccess}
         />
 
-        {/* TemplateDetails抽屉 */}
+        {/* TemplateDetails drawer */}
         <TemplateDetailDrawer
           visible={drawerVisible}
           template={selectedTemplate}

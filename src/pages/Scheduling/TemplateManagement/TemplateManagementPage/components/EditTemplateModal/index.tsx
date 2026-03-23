@@ -331,7 +331,7 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
         }}
       >
         <div className="edit-template-modal-body">
-          {/* 左侧：基本Config */}
+          {/* Left: 基本Config */}
           <div className="edit-template-modal-left">
             <div className="edit-template-modal-content">
               {/* Basic Info */}
@@ -493,7 +493,7 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
             </div>
           </div>
 
-          {/* 右侧：ProcessParameter */}
+          {/* Right: ProcessParameter */}
           {showRightPanel && (
             <div className="edit-template-modal-right">
               <div className="edit-template-modal-content">

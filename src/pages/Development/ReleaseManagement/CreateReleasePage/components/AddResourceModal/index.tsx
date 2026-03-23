@@ -73,7 +73,7 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
     { id: 'file-3', name: 'data-mapping.xml', type: 'FILE', is_published: false },
   ], []);
 
-  // 过滤已添加的Resource和按Type分组
+  // 过滤Already添加's Resource and 按Type分组
   const getFilteredResources = (type: ResourceType) => {
     const searchText = searchTexts[type];
     return mockAvailableResources

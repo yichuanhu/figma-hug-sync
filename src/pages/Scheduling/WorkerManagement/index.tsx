@@ -55,7 +55,7 @@ const mockWorkers: LYWorkerResponse[] = [
   {
     id: '550e8400-e29b-41d4-a716-446655440001',
     name: 'Finance Bot-01',
-    description: 'This is 企业核心财务automationbot，负责Execute复杂的财务Process任务，包括发票自动识别与processing、报销单据Review、Auto Financial Report与分发、银企对账、税务申报Data准备等关键业务。该botConfig了高可用性Settings，支持7x24小时不间断Running，并具备完整的Error恢复和任务断点续传能力。',
+    description: 'This is 企业核心财务automationbot, 负责Execute复杂's 财务Process任务, 包括发票自动识别 and processing, 报销单据Review, Auto Financial Report and 分发, 银企对账, 税务申报Data准备 etc.关键业务. 该botConfig了高可用性Settings, 支持7x24小时不间断Running, 并具备完整's Error恢复 and 任务断点续传能力. ',
     status: 'IDLE',
     sync_status: 'SYNCED',
     ip_address: '10.0.1.100',
@@ -84,7 +84,7 @@ const mockWorkers: LYWorkerResponse[] = [
   {
     id: '550e8400-e29b-41d4-a716-446655440002',
     name: 'Finance Bot-02',
-    description: 'For financialreportautomation的bot',
+    description: 'For financialreportautomation's bot',
     status: 'BUSY',
     sync_status: 'PENDING',
     ip_address: '10.0.1.101',
@@ -142,7 +142,7 @@ const mockWorkers: LYWorkerResponse[] = [
   {
     id: '550e8400-e29b-41d4-a716-446655440004',
     name: 'HR Bot-01',
-    description: 'For HR审批Process的bot',
+    description: 'For HR审批Process's bot',
     status: 'FAULT',
     sync_status: 'SYNCED',
     ip_address: '10.0.1.103',
@@ -171,7 +171,7 @@ const mockWorkers: LYWorkerResponse[] = [
   {
     id: '550e8400-e29b-41d4-a716-446655440005',
     name: 'Ops Bot-01',
-    description: 'For opsinspection的bot',
+    description: 'For opsinspection's bot',
     status: 'IDLE',
     sync_status: 'SYNCED',
     ip_address: '10.0.2.50',
@@ -200,7 +200,7 @@ const mockWorkers: LYWorkerResponse[] = [
   {
     id: '550e8400-e29b-41d4-a716-446655440006',
     name: '测试bot-01',
-    description: '用于automation测试的bot',
+    description: '用于automation测试's bot',
     status: 'MAINTENANCE',
     sync_status: 'SYNCED',
     ip_address: '10.0.3.10',
@@ -259,7 +259,7 @@ const fetchWorkerList = async (params: GetWorkersParams & { filters?: FilterStat
   
   let data = [...mockWorkers];
 
-  // 关键词Search（Name或IP）
+  // 关键词Search(Name或IP)
   if (params.keyword?.trim()) {
     const keyword = params.keyword.toLowerCase().trim();
     data = data.filter(item => 
@@ -284,10 +284,10 @@ const fetchWorkerList = async (params: GetWorkersParams & { filters?: FilterStat
       const selectedGroups = params.filters!.group_id;
       // Check是否选择了"未分组"
       if (selectedGroups.includes(UNGROUPED_FILTER_VALUE)) {
-        // 未分组的bot
+        // 未分组's bot
         if (!item.group_id) return true;
       }
-      // Check是否属于Selected的bot组
+      // Check是否属于Selected's bot组
       if (item.group_id && selectedGroups.includes(item.group_id)) {
         return true;
       }
@@ -339,7 +339,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  // Search框输入值（即is shown）
+  // Search框输入值(即is shown)
   const [searchValue, setSearchValue] = useState('');
   
   // 查询Parameter - 使用APIType
@@ -365,14 +365,14 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     list: [],
   });
   
-  // 抽屉和弹窗Status
+  // Drawer and ModalStatus
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [selectedWorker, setSelectedWorker] = useState<LYWorkerResponse | null>(null);
   const [keyModalVisible, setKeyModalVisible] = useState(false);
   const [keyModalWorker, setKeyModalWorker] = useState<LYWorkerResponse | null>(null);
   const [createModalVisible, setCreateModalVisible] = useState(false);
 
-  // 从首页快捷入口跳转时自动打开新建弹窗
+  // 从首页快捷入口跳转时自动打开新建Modal
   useEffect(() => {
     if (openCreateFromHome) {
       setCreateModalVisible(true);
@@ -431,7 +431,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     }
   }, [queryParams, filters, sortState]);
 
-  // 翻页并Back新Data（用于抽屉导航时自动翻页）
+  // 翻页并Back新Data(用于Drawer导航时自动翻页)
   const handleDrawerPageChange = useCallback(async (page: number): Promise<LYWorkerResponse[]> => {
     const currentPageSize = listResponse.range?.size || 20;
     const newOffset = (page - 1) * currentPageSize;
@@ -448,7 +448,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     return response.list;
   }, [queryParams, filters, sortState, listResponse.range?.size]);
 
-  // 当Tab switch到非激活Status时，Close抽屉
+  // 当Tab switch到非激活Status时, CloseDrawer
   useEffect(() => {
     if (!isActive) {
       setDetailDrawerVisible(false);
@@ -460,7 +460,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     loadData();
   }, [loadData]);
 
-  // processing从bot组跳转过来的情况
+  // processing从bot组跳转过来's 情况
   useEffect(() => {
     if (pendingWorkerId && listResponse.list.length > 0) {
       const worker = listResponse.list.find(w => w.id === pendingWorkerId);
@@ -509,7 +509,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       ),
     }));
     
-    // 同时UpdateSelected的worker（如果抽屉打开中）
+    // 同时UpdateSelected's worker(如果Drawer打开中)
     if (selectedWorker?.id === worker.id) {
       setSelectedWorker(prev => prev ? { ...prev, receive_tasks: checked } : null);
     }
@@ -520,13 +520,13 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
 
   // filterContent removed - using FilterPopover directly
 
-  // 打开Details抽屉
+  // 打开Details drawer
   const openDetail = (worker: LYWorkerResponse) => {
     setSelectedWorker(worker);
     setDetailDrawerVisible(true);
   };
 
-  // 打开密钥弹窗
+  // 打开密钥Modal
   const openKeyModal = (worker: LYWorkerResponse, e?: React.MouseEvent) => {
     e?.stopPropagation();
     setKeyModalWorker(worker);
@@ -567,7 +567,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
           await new Promise(resolve => setTimeout(resolve, 500));
           console.log('Deletebot:', worker.id);
           
-          // Close抽屉
+          // CloseDrawer
           setDetailDrawerVisible(false);
           setSelectedWorker(null);
           
@@ -585,7 +585,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     });
   };
 
-  // 从Details抽屉跳转到Edit
+  // 从Details drawer跳转到Edit
   const handleEditFromDrawer = () => {
     if (selectedWorker) {
       setEditingWorker(selectedWorker);
@@ -593,7 +593,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     }
   };
 
-  // 从Details抽屉Delete
+  // 从Details drawerDelete
   const handleDeleteFromDrawer = () => {
     if (selectedWorker) {
       handleDeleteClick(selectedWorker);
@@ -628,7 +628,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
         item.id === updatedWorker.id ? updatedWorker : item
       ),
     }));
-    // 同步UpdateSelected的worker（如果抽屉打开中）
+    // 同步UpdateSelected's worker(如果Drawer打开中)
     if (selectedWorker?.id === updatedWorker.id) {
       setSelectedWorker(updatedWorker);
     }
@@ -643,7 +643,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
         item.id === updatedWorker.id ? updatedWorker : item
       ),
     }));
-    // 同步UpdateSelected的worker（如果抽屉打开中）
+    // 同步UpdateSelected's worker(如果Drawer打开中)
     if (selectedWorker?.id === updatedWorker.id) {
       setSelectedWorker(updatedWorker);
     }
@@ -681,7 +681,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
             ),
           }));
           
-          // 同步UpdateSelected的worker（如果抽屉打开中）
+          // 同步UpdateSelected's worker(如果Drawer打开中)
           if (selectedWorker?.id === updatedWorker.id) {
             setSelectedWorker(updatedWorker);
           }
@@ -827,7 +827,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
               >
                 {t('worker.actions.edit')}
               </Dropdown.Item>
-              {/* 未分组的bot显示"添加至分组"Operation */}
+              {/* 未分组's bot显示"添加至分组"Operation */}
               {!record.group_id && (
                 <Dropdown.Item 
                   icon={<IconUserListStroked />}
@@ -839,7 +839,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
                   {t('worker.actions.addToGroup')}
                 </Dropdown.Item>
               )}
-              {/* 已分组的bot显示"移出分组"Operation */}
+              {/* Already分组's bot显示"移出分组"Operation */}
               {record.group_id && (
                 <Dropdown.Item 
                   icon={<IconMinusCircleStroked />}
@@ -932,7 +932,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
         </Row>
       </div>
 
-      {/* 表格区域 */}
+      {/* Table area */}
       <div className="worker-management-table">
         {isInitialLoad ? (
           <TableSkeleton rows={10} columns={7} columnWidths={['18%', '10%', '15%', '12%', '10%', '15%', '10%']} />
@@ -983,7 +983,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
         )}
       </div>
 
-      {/* Details抽屉 */}
+      {/* Details drawer */}
       <WorkerDetailDrawer
         visible={detailDrawerVisible}
         onClose={() => setDetailDrawerVisible(false)}
@@ -1017,21 +1017,21 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
         }}
       />
 
-      {/* 密钥弹窗 */}
+      {/* 密钥Modal */}
       <WorkerKeyModal
         visible={keyModalVisible}
         onClose={() => setKeyModalVisible(false)}
         workerData={keyModalWorker}
       />
 
-      {/* Create弹窗 */}
+      {/* Create modal */}
       <CreateWorkerModal
         visible={createModalVisible}
         onCancel={() => setCreateModalVisible(false)}
         onSuccess={handleCreateSuccess}
       />
 
-      {/* Edit弹窗 */}
+      {/* Edit modal */}
       <EditWorkerModal
         visible={editModalVisible}
         onCancel={() => setEditModalVisible(false)}
@@ -1039,7 +1039,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
         onSuccess={handleEditSuccess}
       />
 
-      {/* 添加至分组弹窗 */}
+      {/* 添加至分组Modal */}
       <AddToGroupModal
         visible={addToGroupModalVisible}
         onCancel={() => setAddToGroupModalVisible(false)}

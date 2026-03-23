@@ -150,7 +150,7 @@ const CalendarEditor: React.FC<CalendarEditorProps> = ({
           </Form>
         </div>
 
-        {/* Sun历Edit区域 */}
+        {/* Sun历EditArea */}
         <div className="calendar-editor-calendar">
           <Text className="calendar-editor-section-title">
             {t('workCalendar.editor.calendarEdit')}

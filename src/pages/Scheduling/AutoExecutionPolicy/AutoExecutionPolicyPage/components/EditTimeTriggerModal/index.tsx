@@ -144,11 +144,11 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
   const [formApi, setFormApi] = useState<any>(null);
   const [initialized, setInitialized] = useState(false);
 
-  // 第Tue步：Task config - 仅保留需要的Status
+  // 第Tue步: Task config - 仅保留需要's Status
   const [selectedProcess, setSelectedProcess] = useState<LYProcessActiveVersionResponse | null>(null);
   const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);
 
-  // 第Wed步：Trigger Rules
+  // 第Wed步: Trigger Rules
   const [ruleType, setRuleType] = useState<TriggerRuleType>('BASIC');
   const [frequencyType, setFrequencyType] = useState<BasicFrequencyType>('DAILY');
   // 基本TypeConfig
@@ -161,7 +161,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
   const [selectedMonthDay, setSelectedMonthDay] = useState<number | 'L'>(1);
   // Cron 表达式
   const [cronExpression, setCronExpression] = useState('');
-  // Timezone和Time范围
+  // Timezone and Time范围
   const [timeZone, setTimeZone] = useState('Asia/Shanghai');
   const [startDateTime, setStartDateTime] = useState<Date | null>(new Date());
   const [endDateTime, setEndDateTime] = useState<Date | null>(null);
@@ -215,7 +215,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
       setWorkCalendarId(trigger.work_calendar_id);
       setWorkCalendarExecutionType(trigger.work_calendar_execution_type || 'WORKDAY');
 
-      // 根据 frequencyType 和 cron_expression 解析详细Config
+      // 根据 frequencyType  and  cron_expression 解析详细Config
       if (trigger.rule_type === 'BASIC' && trigger.basic_frequency_type) {
         // 解析 cron 表达式获取详细Config
         const cronParts = (trigger.cron_expression || '').split(' ');
@@ -564,7 +564,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
     }
   };
 
-  // 渲染Step0：Basic Info
+  // 渲染Step0: Basic Info
   const renderStep0Content = () => (
     <div className="edit-time-trigger-modal-section">
       <div className="edit-time-trigger-modal-section-title">{t('timeTrigger.createModal.basicSection')}</div>
@@ -590,7 +590,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
     </div>
   );
 
-  // 渲染Step1的左侧Content
+  // 渲染Step1's LeftContent
   const renderStep1LeftContent = () => (
     <>
       {/* Template selection */}
@@ -727,7 +727,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
     </>
   );
 
-  // 渲染Step1的右侧Content（ParameterConfig）
+  // 渲染Step1's RightContent(ParameterConfig)
   const renderStep1RightContent = () => (
     <>
       {hasParameters && (
@@ -769,7 +769,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
     </>
   );
 
-  // 渲染Step2：Trigger Rules与Preview
+  // 渲染Step2: Trigger Rules and Preview
   const renderStep2Content = () => (
     <>
       {/* Time rules - Using TriggerRuleConfig component */}

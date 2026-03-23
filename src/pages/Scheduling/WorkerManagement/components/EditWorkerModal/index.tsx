@@ -18,7 +18,7 @@ interface EditWorkerModalProps {
   onSuccess?: (updatedData: LYWorkerResponse) => void;
 }
 
-// 已存在的botName（用于唯Mon性校验）
+// Already存在's botName(用于唯Mon性校验)
 const existingWorkerNames = ['Finance Bot-01', 'Finance Bot-02', 'Finance Bot-03', 'HR Bot-01', 'Ops Bot-01', '测试bot-01'];
 
 const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorkerModalProps) => {
@@ -49,7 +49,7 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
     }
   }, [visible, workerData]);
 
-  // Name唯Mon性校验（排除当前Edit的bot）
+  // Name唯Mon性校验(排除当前Edit's bot)
   const validateWorkerNameUnique = (rule: unknown, value: string, callback: (error?: string) => void) => {
     if (value === workerData?.name) {
       callback();
@@ -99,9 +99,9 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
         enable_auto_unlock: desktopType === 'Console' ? (values.enableAutoUnlock as boolean) : undefined,
         display_size: desktopType === 'NotConsole' ? (values.displaySize as string) : undefined,
         force_login: values.forceLogin as boolean,
-        // ConnectionInfo变更时，将密码同步StatusSettings为"待同步"
+        // ConnectionInfo变更时, 将密码同步StatusSettings为"待同步"
         password_sync_status: connectionChanged ? 'PENDING' : workerData.password_sync_status,
-        // ConnectionInfo变更时，将同步StatusSettings为"待同步"
+        // ConnectionInfo变更时, 将同步StatusSettings为"待同步"
         sync_status: connectionChanged ? 'PENDING' : workerData.sync_status,
       };
 

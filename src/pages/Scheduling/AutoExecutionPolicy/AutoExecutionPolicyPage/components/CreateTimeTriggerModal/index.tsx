@@ -125,7 +125,7 @@ const mockTemplates = [
   },
 ];
 
-// 已存在的 TriggerName (模拟)
+// Already存在's  TriggerName (模拟)
 const existingTriggerNames = ['Daily Order Sync', 'Weekly Report Generation'];
 
 const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTriggerModalProps) => {
@@ -134,13 +134,13 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
   const [currentStep, setCurrentStep] = useState(0);
   const [formApi, setFormApi] = useState<any>(null);
 
-  // 第Mon步：Basic Info - 使用 Form Manage
+  // 第Mon步: Basic Info - 使用 Form Manage
 
-  // 第Tue步：Task config
+  // 第Tue步: Task config
   const [selectedProcess, setSelectedProcess] = useState<LYProcessActiveVersionResponse | null>(null);
   const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);
 
-  // 第Wed步：Trigger Rules
+  // 第Wed步: Trigger Rules
   const [ruleType, setRuleType] = useState<TriggerRuleType>('BASIC');
   const [frequencyType, setFrequencyType] = useState<BasicFrequencyType>('DAILY');
   const [minuteInterval, setMinuteInterval] = useState<number>(5);
@@ -477,7 +477,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
     }
   };
 
-  // 渲染Step0：Basic Info
+  // 渲染Step0: Basic Info
   const renderStep0Content = () => (
     <div className="create-time-trigger-modal-section">
       <div className="create-time-trigger-modal-section-title">{t('timeTrigger.createModal.basicSection')}</div>
@@ -512,7 +512,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
     </div>
   );
 
-  // 渲染Step1左侧：Task config
+  // 渲染Step1Left: Task config
   const renderStep1LeftContent = () => (
     <>
       {/* Template selection */}
@@ -649,7 +649,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
     </>
   );
 
-  // 渲染Step1右侧：ParameterConfig
+  // 渲染Step1Right: ParameterConfig
   const renderStep1RightContent = () => (
     <>
       {/* Input parameters */}
@@ -694,7 +694,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
     </>
   );
 
-  // 渲染Step2：Trigger Rules与Preview
+  // 渲染Step2: Trigger Rules and Preview
   const renderStep2Content = () => (
     <>
       {/* Time rules - Using TriggerRuleConfig component */}
@@ -763,7 +763,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
     </>
   );
 
-  // calculation弹窗宽度
+  // calculationModal宽度
   const modalWidth = showRightPanel ? 900 : 520;
 
   return (

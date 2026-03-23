@@ -96,9 +96,9 @@ const CreateReleasePage: React.FC = () => {
       },
       {
         resource_id: 'PARAM-003',
-        resource_name: 'This is Mon个超级超级长的ParameterName用来测试当ParameterNameText过长时候Resource卡片的Title area是否能正确processing截断和换行的边界场景',
+        resource_name: 'This is Mon个超级超级长's ParameterName用来测试当ParameterNameText过长时候Resource卡片's Title area是否能正确processing截断 and 换行's 边界场景',
         is_previously_published: false,
-        test_value: 'This is Mon段非常非常长的TextType参Number，用来模拟实际业务中可能出现的超长ConfigText。例如Mon段完整的JSONConfigContent：{"database":{"host":"192.168.1.100","port":5432,"username":"admin","password":"encrypted_password_here","database_name":"production_db","connection_pool_size":20,"timeout_ms":30000},"redis":{"host":"192.168.1.101","port":6379,"cluster_mode":true},"logging":{"level":"INFO","output":"file","path":"/var/log/app/"}}',
+        test_value: 'This is Mon段非常非常长's TextType参Number, 用来模拟实际业务中可能出现's 超长ConfigText. 例如Mon段完整's JSONConfigContent: {"database":{"host":"192.168.1.100","port":5432,"username":"admin","password":"encrypted_password_here","database_name":"production_db","connection_pool_size":20,"timeout_ms":30000},"redis":{"host":"192.168.1.101","port":6379,"cluster_mode":true},"logging":{"level":"INFO","output":"file","path":"/var/log/app/"}}',
         used_by_processes: processes.map((p) => ({
           process_id: p.process.id,
           process_name: p.process.name,
@@ -106,7 +106,7 @@ const CreateReleasePage: React.FC = () => {
       },
       {
         resource_id: 'PARAM-004',
-        resource_name: '全局化多语言翻译映射ConfigParameter_包含中英Sun韩法德西葡俄阿等十国语言对照表',
+        resource_name: '全局化多语言翻译映射ConfigParameter_包含中英Sun韩法德西葡俄阿 etc.十国语言对照表',
         is_previously_published: true,
         test_value: 'https://translation-service.internal.company.com/api/v3/multilingual/mapping?source=zh-CN&targets=en-US,ja-JP,ko-KR,fr-FR,de-DE,es-ES,pt-BR,ru-RU,ar-SA&format=json&include_variants=true&fallback=en-US',
         used_by_processes: processes.slice(0, 2).map((p) => ({
@@ -127,7 +127,7 @@ const CreateReleasePage: React.FC = () => {
       },
       {
         resource_id: 'PARAM-006',
-        resource_name: '最大ConcurrentConnection数',
+        resource_name: 'MaxConcurrentConnection数',
         is_previously_published: true,
         test_value: '256',
         param_type: 'NUMBER',
@@ -149,7 +149,7 @@ const CreateReleasePage: React.FC = () => {
       },
       {
         resource_id: 'PARAM-008',
-        resource_name: 'TimeoutTime阈值（毫s）',
+        resource_name: 'TimeoutTime阈值(毫s)',
         is_previously_published: false,
         test_value: '30000',
         param_type: 'NUMBER',
@@ -205,7 +205,7 @@ const CreateReleasePage: React.FC = () => {
     return { parameters, credentials, queues, files };
   }, []);
 
-  // 当进入Step2时，检测依赖
+  // 当进入Step2时, 检测依赖
   useEffect(() => {
     if (currentStep === 1 && selectedProcesses.length > 0) {
       setDetectingDependencies(true);
@@ -293,7 +293,7 @@ const CreateReleasePage: React.FC = () => {
       return;
     }
 
-    // Check未ReleaseResource的生产值
+    // Check未ReleaseResource's 生产值
     const missingProductionValues = resources.filter((r) => {
       if (r.is_previously_published || r.use_test_as_production) return false;
       if (r.resource_type === 'QUEUE' || r.resource_type === 'FILE') return false;

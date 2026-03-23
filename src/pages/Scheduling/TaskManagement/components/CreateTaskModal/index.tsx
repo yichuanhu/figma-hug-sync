@@ -347,7 +347,7 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
   const hasParameters = selectedProcess && selectedProcess.parameters.length > 0;
   // 判断是否有输出Parameter
   const hasOutputParameters = selectedProcess && selectedProcess.output_parameters && selectedProcess.output_parameters.length > 0;
-  // 右侧是否需要显示
+  // Right是否需要显示
   const showRightPanel = hasParameters || hasOutputParameters;
 
   return (
@@ -375,7 +375,7 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
         }}
       >
         <div className="create-task-modal-body">
-          {/* 左侧：基本Config */}
+          {/* Left: 基本Config */}
           <div className="create-task-modal-left">
             <div className="create-task-modal-content">
               {/* Template selection */}
@@ -520,7 +520,7 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
             </div>
           </div>
 
-          {/* 右侧：Process输入和Process输出 */}
+          {/* Right: Process输入 and Process输出 */}
           {showRightPanel && (
             <div className="create-task-modal-right">
               <div className="create-task-modal-content">
@@ -536,7 +536,7 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
                   </div>
                 )}
 
-                {/* Process输出（只读） */}
+                {/* Process输出(只读) */}
                 {hasOutputParameters && (
                   <div className="create-task-modal-section">
                     <div className="create-task-modal-section-title">

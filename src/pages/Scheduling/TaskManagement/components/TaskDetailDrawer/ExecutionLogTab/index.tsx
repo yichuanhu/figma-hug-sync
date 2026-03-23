@@ -46,10 +46,10 @@ const logLevelConfig: Record<LogLevel, { color: 'grey' | 'blue' | 'orange' | 're
   ERROR: { color: 'red', text: 'ERROR' },
 };
 
-// Sun志Message截断阈值
+// LogMessage截断阈值
 const MESSAGE_TRUNCATE_LENGTH = 200;
 
-// 自动Refresh间隔（毫s）
+// 自动Refresh间隔(毫s)
 const AUTO_REFRESH_INTERVAL = 10000;
 
 // Mock Datageneration
@@ -61,11 +61,11 @@ const generateMockLog = (index: number): LYExecutionLogResponse => {
     'Successfully connected to database server',
     'Starting step 1: Reading input parameters',
     'Warning: Input parameters contains null values, using defaults',
-    'Error: Unable to connect to target server, check network settings。Error code: CONN_TIMEOUT，Details: Connection timeout，Target address: 192.168.1.100:8080，Retry count: 3，Last attempt time: 2026-01-30 10:30:00',
+    'Error: Unable to connect to target server, check network settings. Error code: CONN_TIMEOUT, Details: Connection timeout, Target address: 192.168.1.100:8080, Retry count: 3, Last attempt time: 2026-01-30 10:30:00',
     'Step 2 Execution completed, duration 1.5 s',
     'Processing data transformation...',
     'Data validation passed',
-    '写入输出Result到File',
+    'Writing output result to file',
     'Process execution completed',
   ];
   const levelIndex = index % 10 < 1 ? 3 : index % 10 < 3 ? 2 : index % 10 < 5 ? 0 : 1;
@@ -111,7 +111,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
   // 自动RefreshScheduled器
   const refreshTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   
-  // LoadingSun志Data
+  // LoadingLogData
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
@@ -205,7 +205,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
     }));
   }, []);
   
-  // ExportSun志
+  // ExportLog
   const handleExport = useCallback(async () => {
     if (total === 0) {
       Toast.warning(t('taskLog.noLogsToExport'));
@@ -266,7 +266,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
   const hasActiveFilter = !!queryParams.log_level;
   const filterCount = queryParams.log_level ? 1 : 0;
   
-  // 表格列定义
+  // Table列定义
   const columns = [
     {
       title: t('taskLog.fields.logTime'),
@@ -376,7 +376,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
 
   return (
     <div className="execution-log-tab">
-      {/* 标题和Statistics */}
+      {/* 标题 and Statistics */}
       <div className="execution-log-tab-header">
         {title && (
           <Text strong className="execution-log-tab-title">
@@ -449,7 +449,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
         </Col>
       </Row>
 
-      {/* 表格 */}
+      {/* Table */}
       <div className="execution-log-tab-table">
         <Table
           size="small"

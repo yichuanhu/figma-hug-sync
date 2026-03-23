@@ -79,7 +79,7 @@ const generateMockTimeTriggerResponse = (index: number): LYTimeTriggerResponse =
   return {
     trigger_id: `trigger-${generateUUID().substring(0, 8)}`,
     name: `${process.process_name} Trigger${index + 1}`,
-    description: index % 5 === 0 ? null : index % 5 === 1 ? `This is ${process.process_name}'s time trigger for periodic task creation. It runs on preset Time rules自动Trigger，Create对应的automation任务并分配到指定的Execution target上Running。支持多种Trigger频率Config，包括每天、每周、每M等周期性Trigger，以及基于Cron表达式的高级Config。 Trigger还支持Work Calendar过滤，可以Skipped非WorkSunExecute，确保任务在合适的Time点Trigger。当 Trigger关联的ProcessVersionUpdate时，新Create的任务将自动使用最新Version。` : `This is ${process.process_name}的Scheduled Trigger，用于定期auto-create 任务`,
+    description: index % 5 === 0 ? null : index % 5 === 1 ? `This is ${process.process_name}'s time trigger for periodic task creation. It runs on preset Time rules自动Trigger, Create对应's automation任务并分配到指定's Execution target上Running. 支持多种Trigger频率Config, 包括每天, 每周, 每M etc.周期性Trigger, 以及基于Cron表达式's 高级Config.  Trigger还支持Work Calendar过滤, 可以Skipped非WorkSunExecute, 确保任务在合适's Time点Trigger. 当 Trigger关联's ProcessVersionUpdate时, 新Create's 任务将自动使用最新Version. ` : `This is ${process.process_name}'s Scheduled Trigger, 用于定期auto-create 任务`,
     status,
     process_id: process.process_id,
     process_name: process.process_name,
@@ -149,11 +149,11 @@ const TimeTriggerList = () => {
     status: undefined,
   });
 
-  // SelectedStatus（抽屉）
+  // SelectedStatus(Drawer)
   const [selectedTrigger, setSelectedTrigger] = useState<LYTimeTriggerResponse | null>(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
 
-  // 弹窗Status
+  // ModalStatus
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingTrigger, setEditingTrigger] = useState<LYTimeTriggerResponse | null>(null);
@@ -245,30 +245,30 @@ const TimeTriggerList = () => {
     loadData(queryParams);
   };
 
-  // 打开Edit弹窗
+  // 打开Edit modal
   const handleOpenEditModal = (trigger: LYTimeTriggerResponse) => {
     setEditingTrigger(trigger);
     setEditModalVisible(true);
   };
 
-  // 打开Details抽屉
+  // 打开Details drawer
   const handleOpenDrawer = (trigger: LYTimeTriggerResponse) => {
     setSelectedTrigger(trigger);
     setDrawerVisible(true);
   };
 
-  // CloseDetails抽屉
+  // CloseDetails drawer
   const handleCloseDrawer = () => {
     setDrawerVisible(false);
     setSelectedTrigger(null);
   };
 
-  // 抽屉中导航
+  // Drawer中导航
   const handleNavigate = (trigger: LYTimeTriggerResponse) => {
     setSelectedTrigger(trigger);
   };
 
-  // Enable/Disable Trigger（直接切换，不弹窗Confirm）
+  // Enable/Disable Trigger(直接切换, 不ModalConfirm)
   const handleToggleStatus = async (trigger: LYTimeTriggerResponse, checked: boolean) => {
     try {
       const newStatus: TriggerStatus = checked ? 'ENABLED' : 'DISABLED';
@@ -294,7 +294,7 @@ const TimeTriggerList = () => {
         };
       }
       
-      // 如果抽屉打开且是当前 Trigger，Update抽屉中的Data
+      // 如果Drawer打开且是当前 Trigger, UpdateDrawer中's Data
       if (selectedTrigger?.trigger_id === trigger.trigger_id) {
         setSelectedTrigger({
           ...trigger,
@@ -372,7 +372,7 @@ const TimeTriggerList = () => {
     return new Date(time).toLocaleString('zh-CN');
   };
 
-  // 表格列定义
+  // Table列定义
   const columns = [
     {
       title: t('timeTrigger.table.name'),
@@ -530,7 +530,7 @@ const TimeTriggerList = () => {
         </Col>
       </Row>
 
-      {/* 表格区域 */}
+      {/* Table area */}
       <div className="time-trigger-list-table">
         {isInitialLoad ? (
           <TableSkeleton />
@@ -572,14 +572,14 @@ const TimeTriggerList = () => {
         )}
       </div>
 
-      {/* Create Trigger弹窗 */}
+      {/* Create Trigger modal */}
       <CreateTimeTriggerModal
         visible={createModalVisible}
         onCancel={() => setCreateModalVisible(false)}
         onSuccess={handleCreateSuccess}
       />
 
-      {/* Edit Trigger弹窗 */}
+      {/* Edit Trigger modal */}
       <EditTimeTriggerModal
         visible={editModalVisible}
         trigger={editingTrigger}
@@ -590,7 +590,7 @@ const TimeTriggerList = () => {
         onSuccess={handleEditSuccess}
       />
 
-      {/* Details抽屉 */}
+      {/* Details drawer */}
       <TimeTriggerDetailDrawer
         visible={drawerVisible}
         trigger={selectedTrigger}

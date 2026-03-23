@@ -142,7 +142,7 @@ const ScreenshotViewModal = ({
     }
   }, [executionId]);
   
-  // 当弹窗打开或Sort变化时LoadingData
+  // 当Modal打开或Sort变化时LoadingData
   useEffect(() => {
     if (visible) {
       loadData();
@@ -251,7 +251,7 @@ const ScreenshotViewModal = ({
     setPreviewIndex((prev) => (prev < screenshots.length - 1 ? prev + 1 : 0));
   }, [screenshots.length]);
   
-  // 当前Preview的screenshot
+  // 当前Preview's screenshot
   const currentPreviewScreenshot = screenshots[previewIndex];
   
   
@@ -266,7 +266,7 @@ const ScreenshotViewModal = ({
     [screenshots]
   );
 
-  // 表格列定义
+  // Table列定义
   const columns: ColumnProps<LYTaskScreenshotResponse>[] = useMemo(() => [
     {
       title: (
@@ -440,7 +440,7 @@ const ScreenshotViewModal = ({
             />
           )}
           
-          {/* 表格区域 */}
+          {/* Table area */}
           <div className="screenshot-view-modal-table">
             {loading ? (
               <div className="screenshot-view-modal-loading">

@@ -28,14 +28,14 @@ const generateUUID = (): string => {
   });
 };
 
-// Mock已有botList（包含桌面TypeInfo）
+// MockAlready有botList(包含桌面TypeInfo)
 const existingWorkers: Array<{ id: string; name: string; desktop_type: 'Console' | 'NotConsole' }> = [
   { id: '1', name: 'Finance Bot-01', desktop_type: 'Console' },
   { id: '2', name: 'Finance Bot-02', desktop_type: 'NotConsole' },
   { id: '3', name: 'HR Bot-01', desktop_type: 'NotConsole' },
 ];
 
-// 已存在的botName（用于唯Mon性校验）
+// Already存在's botName(用于唯Mon性校验)
 const existingWorkerNames = ['Finance Bot-01', 'Finance Bot-02', 'Finance Bot-03', 'HR Bot-01', 'Ops Bot-01', '测试bot-01'];
 
 const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalProps) => {
@@ -46,12 +46,12 @@ const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalPr
   const [desktopType, setDesktopType] = useState<string>('Console');
   const [isLocalDesktopDisabled, setIsLocalDesktopDisabled] = useState(false);
 
-  // 当选择的已有bot变化时，Check其桌面Type
+  // 当选择's Already有bot变化时, Check其桌面Type
   useEffect(() => {
     if (useSameDevice && selectedWorkerId) {
       const selectedWorker = existingWorkers.find(w => w.id === selectedWorkerId);
       if (selectedWorker?.desktop_type === 'Console') {
-        // 已有bot是本地桌面型，当前只能选择远程桌面型
+        // Already有bot是本地桌面型, 当前只能选择远程桌面型
         setIsLocalDesktopDisabled(true);
         setDesktopType('NotConsole');
       } else {

@@ -67,7 +67,7 @@ const generateMockVersionData = (): VersionDetailData[] => {
     { version: '1.0.0', note: 'Initial version with basic functionality', isActive: false },
     { version: '1.1.0', note: 'Performance optimization, fixed known issues', isActive: true },
     { version: '1.2.0', note: 'Add批量processing功能', isActive: true },
-    { version: '2.0.0', note: '重构核心逻辑，提升稳定性', isActive: true },
+    { version: '2.0.0', note: '重构核心逻辑, 提升稳定性', isActive: true },
     { version: '2.1.0', note: 'AddAbnormalprocessing机制', isActive: false },
   ];
 
@@ -83,7 +83,7 @@ const generateMockVersionData = (): VersionDetailData[] => {
     package_size: Math.floor(Math.random() * 5000000) + 500000,
     package_checksum: `sha256:${generateUUID().replace(/-/g, '')}`,
     version_note: v.note,
-    usage_note: `使用说明：Version${v.version}的Operation指引`,
+    usage_note: `使用说明: Version${v.version}'s Operation指引`,
     creator_id: ['user-001', 'user-002', 'user-003'][index % 3],
     created_at: new Date(Date.now() - (versions.length - index) * 7 * 24 * 60 * 60 * 1000).toISOString(),
     publish_time: v.isActive ? new Date(Date.now() - (versions.length - index) * 2 * 24 * 60 * 60 * 1000).toISOString() : null,
@@ -95,7 +95,7 @@ const generateMockVersionData = (): VersionDetailData[] => {
     usage_instructions_url: 'https://docs.example.com/usage',
     development_environment: 'Win10 | X86',
     inputs: [
-      { name: 'inputParam1', type: 'Text' as const, value: 'Default值', description: 'Input parameters1的Description' },
+      { name: 'inputParam1', type: 'Text' as const, value: 'Default值', description: 'Input parameters1's Description' },
       { name: 'inputParam2', type: 'Boolean' as const, value: 'true', description: '是否Enable某功能' },
     ],
     outputs: [
@@ -269,7 +269,7 @@ const ProcessDetailDrawer = ({
     return data;
   }, [versionData]);
 
-  // calculation最新激活Version（已ReleaseVersion中 publish_time 最新的）
+  // calculation最新激活Version(AlreadyReleaseVersion中 publish_time 最新's )
   const latestActiveVersionId = useMemo(() => {
     const activeVersions = sortedVersionData.filter(v => v.is_active && v.publish_time);
     if (activeVersions.length === 0) return null;
