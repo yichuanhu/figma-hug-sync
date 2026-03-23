@@ -72,17 +72,17 @@ interface CredentialUsageListResponse {
 const generateUUID = (): string => 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => { const r = (Math.random() * 16) | 0; const v = c === 'x' ? r : (r & 0x3) | 0x8; return v.toString(16); });
 
 const generateMockUsageRecord = (index: number, context: 'development' | 'scheduling'): CredentialUsageRecord => {
-  const users = ['张三', '李四', '王五', '赵六', '钱七'];
-  const processes = ['订单处理流程', '数据同步流程', '报表生成流程', '审批流程', '通知发送流程'];
+  const users = ['John Smith', 'Jane Doe', 'Mike Wang', 'David Zhao', 'Chris Qian'];
+  const processes = ['Order Processing Flow', 'Data Sync Flow', 'Report Generation Flow', 'Approval Flow', 'Notification Flow'];
   const workers = ['Worker-01', 'Worker-02', 'Worker-03', 'Worker-04'];
   const versions = ['1.0.0', '1.0.1', '1.1.0', '2.0.0'];
   const screenshotUrls = ['https://picsum.photos/seed/screen1/800/600', 'https://picsum.photos/seed/screen2/800/600', 'https://picsum.photos/seed/screen3/800/600'];
 
   return {
     id: generateUUID(), user_id: `user-${(index % 5) + 1}`, user_name: users[index % users.length],
-    user_department: ['研发部', '产品部', '测试部', '运维部', '市场部'][index % 5],
-    user_role: ['高级工程师', '产品经理', '测试工程师', '运维工程师', '市场专员'][index % 5],
-    user_email: ['zhangsan@example.com', 'lisi@example.com', 'wangwu@example.com', 'zhaoliu@example.com', 'qianqi@example.com'][index % 5],
+    user_department: ['R&D Dept', 'Product Dept', 'QA Dept', 'Ops Dept', 'Marketing Dept'][index % 5],
+    user_role: ['Senior Engineer', 'Product Manager', 'QA Engineer', 'Ops Engineer', 'Marketing Specialist'][index % 5],
+    user_email: ['john.smith@example.com', 'jane.doe@example.com', 'mike.wang@example.com', 'david.zhao@example.com', 'chris.qian@example.com'][index % 5],
     usage_time: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
     usage_type: context === 'development' ? 'debug' : 'task',
     process_id: generateUUID(), process_name: processes[index % processes.length], process_version: versions[index % versions.length],
