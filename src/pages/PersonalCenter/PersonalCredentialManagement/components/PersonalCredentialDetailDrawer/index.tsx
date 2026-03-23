@@ -54,15 +54,15 @@ interface LinkedCredential {
 
 // ============= Mock数据生成 =============
 const generateMockUsageRecords = (): UsageRecord[] => {
-  const users = ['张三', '李四', '王五', '赵六', '钱七'];
+  const users = ['John Smith', 'Jane Doe', 'Mike Wang', 'David Zhao', 'Chris Qian'];
   const usageTypes: ('DEBUG' | 'TASK')[] = ['DEBUG', 'TASK'];
-  const processes = ['订单处理流程', '数据同步流程', '报表生成流程', '邮件发送流程'];
+  const processes = ['Order Processing Flow', 'Data Sync Flow', 'Report Generation Flow', 'Email Sending Flow'];
   const workers = ['Worker-01', 'Worker-02', 'Worker-03', 'Worker-04'];
   const screenshotUrls = ['https://picsum.photos/seed/usage1/800/600', 'https://picsum.photos/seed/usage2/800/600', 'https://picsum.photos/seed/usage3/800/600'];
   return Array.from({ length: 25 }, (_, i) => ({
     id: `usage-${i}`, user_id: `user-${(i % 5) + 1}`, user_name: users[i % users.length],
     usage_time: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
-    usage_type: usageTypes[Math.floor(Math.random() * usageTypes.length)], description: `凭据被成功获取`,
+    usage_type: usageTypes[Math.floor(Math.random() * usageTypes.length)], description: `Credential retrieved successfully`,
     process_name: processes[Math.floor(Math.random() * processes.length)], process_version: `1.0.${Math.floor(Math.random() * 10)}`,
     worker_name: workers[Math.floor(Math.random() * workers.length)], task_number: `TASK-${String(i + 1).padStart(6, '0')}`,
     screenshot_url: i % 3 === 0 ? screenshotUrls[i % screenshotUrls.length] : null,
@@ -70,11 +70,11 @@ const generateMockUsageRecords = (): UsageRecord[] => {
 };
 
 const generateMockLinkedCredentials = (count: number): LinkedCredential[] => {
-  const names = ['企业邮箱凭据', '数据库连接凭据', 'SSH服务器凭据', 'Git仓库凭据', 'ERP系统凭据'];
+  const names = ['Enterprise Email Credential', 'Database Connection Credential', 'SSH Server Credential', 'Git Repository Credential', 'ERP System Credential'];
   const types = ['PERSONAL_REF', 'PERSONAL_REF', 'PERSONAL_REF'];
   return Array.from({ length: count }, (_, i) => ({
     credential_id: `cred-${i + 1}`, credential_name: names[i % names.length], credential_type: types[i % types.length],
-    description: `${names[i % names.length]}的描述信息`, created_at: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
+    description: `Description for ${names[i % names.length]}`, created_at: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
   }));
 };
 
@@ -119,7 +119,7 @@ const PersonalCredentialDetailDrawer = ({
   });
 
   const userFilterOptions = [
-    { value: 'user-1', label: '张三' }, { value: 'user-2', label: '李四' }, { value: 'user-3', label: '王五' }, { value: 'user-4', label: '赵六' }, { value: 'user-5', label: '钱七' },
+    { value: 'user-1', label: 'John Smith' }, { value: 'user-2', label: 'Jane Doe' }, { value: 'user-3', label: 'Mike Wang' }, { value: 'user-4', label: 'David Zhao' }, { value: 'user-5', label: 'Chris Qian' },
   ];
 
   const loadUsageRecords = useCallback(async () => {

@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Popover, Avatar } from '@douyinfe/semi-ui';
 import './index.less';
 
@@ -34,11 +35,12 @@ interface UserCardProps {
  * 用户名片内容组件
  */
 export const UserCardContent: React.FC<UserCardProps> = ({ userInfo, className, style }) => {
+  const { t } = useTranslation();
   // 构建信息列表
   const infoItems = [
-    ...(userInfo.department ? [{ label: '部门', value: userInfo.department }] : []),
-    ...(userInfo.role ? [{ label: '角色', value: userInfo.role }] : []),
-    ...(userInfo.email ? [{ label: '邮箱', value: userInfo.email }] : []),
+    ...(userInfo.department ? [{ label: t('userCard.department'), value: userInfo.department }] : []),
+    ...(userInfo.role ? [{ label: t('userCard.role'), value: userInfo.role }] : []),
+    ...(userInfo.email ? [{ label: t('userCard.email'), value: userInfo.email }] : []),
     ...(userInfo.customFields || []),
   ];
 

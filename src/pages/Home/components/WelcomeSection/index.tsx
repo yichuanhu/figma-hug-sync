@@ -1,16 +1,16 @@
 import { useTranslation } from 'react-i18next';
+import dayjs from 'dayjs';
+import 'dayjs/locale/zh-cn';
 import waveHandIcon from '@/assets/wave-hand.svg';
 
 const WelcomeSection = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
-  const now = new Date();
-  const dateStr = now.toLocaleDateString('zh-CN', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    weekday: 'long',
-  });
+  const isZh = i18n.language === 'zh-CN';
+  const now = dayjs();
+  const dateStr = isZh
+    ? now.locale('zh-cn').format('YYYY年MM月DD日 dddd')
+    : now.locale('en').format('dddd, MMMM D, YYYY');
 
   return (
     <div className="home-welcome">

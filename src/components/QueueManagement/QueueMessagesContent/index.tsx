@@ -57,13 +57,13 @@ const generateMockMessage = (index: number, queueId: string, messageType: 'TEST'
   const priorities: QueueMessagePriority[] = ['HIGH', 'MEDIUM', 'LOW'];
   const status = statuses[index % 4];
   const isConsumed = status === 'CONSUMED';
-  const consumers = ['张三', '李四', '王五', '赵六'];
+  const consumers = ['John Smith', 'Jane Doe', 'Mike Wang', 'David Zhao'];
 
   return {
     message_id: generateUUID(),
     queue_id: queueId,
     message_number: `MSG-${String(index + 1).padStart(6, '0')}`,
-    content: `这是第${index + 1}条消息的内容，用于测试队列消息管理功能。消息可能包含订单信息、通知内容或其他业务数据。`,
+    content: `Content of message #${index + 1}, used for testing queue message management. May contain order info, notifications, or other business data.`,
     status,
     priority: priorities[index % 3],
     message_type: messageType,

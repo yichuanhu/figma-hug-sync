@@ -52,14 +52,14 @@ const generateMockParameter = (index: number): LYParameterResponse => {
   const types: ParameterType[] = [1, 2, 3];
   const type = types[index % 3];
   const names = [
-    '心跳间隔',
-    '任务超时时间',
-    '启用调试模式',
-    '最大并发数',
-    '默认语言',
-    '重试次数',
-    '日志级别',
-    '缓存时间',
+    'Heartbeat Interval',
+    'Task Timeout',
+    'Enable Debug Mode',
+    'Max Concurrency',
+    'Default Language',
+    'Retry Count',
+    'Log Level',
+    'Cache Duration',
   ];
 
   const getValueByType = (t: ParameterType, isDevValue: boolean): string => {
@@ -83,14 +83,14 @@ const generateMockParameter = (index: number): LYParameterResponse => {
     dev_value: getValueByType(type, true),
     prod_value: index % 3 === 0 ? null : getValueByType(type, false),
     description: index === 0
-      ? '这是系统核心配置参数，用于控制机器人与服务器之间的心跳检测频率。该参数直接影响系统对机器人在线状态的感知灵敏度和服务器资源消耗。建议在生产环境中根据网络状况和机器人规模进行调优，过短的间隔可能导致服务器负载过高，过长的间隔可能导致状态同步延迟。'
-      : `这是${names[index % names.length]}的描述信息，用于系统配置。`,
+      ? 'Core system configuration parameter controlling the heartbeat detection frequency between bots and the server. Directly affects online status detection sensitivity and server resource usage. Tune based on network conditions and bot scale in production.'
+      : `Description for ${names[index % names.length]}, used for system configuration.`,
     is_published: index % 3 !== 0,
     created_by: `user-00${(index % 4) + 1}`,
-    created_by_name: ['张三', '李四', '王五', '赵六'][index % 4],
-    created_by_department: ['研发部', '产品部', '测试部', '运维部'][index % 4],
-    created_by_role: ['高级工程师', '产品经理', '测试工程师', '运维工程师'][index % 4],
-    created_by_email: ['zhangsan@example.com', 'lisi@example.com', 'wangwu@example.com', 'zhaoliu@example.com'][index % 4],
+    created_by_name: ['John Smith', 'Jane Doe', 'Mike Wang', 'David Zhao'][index % 4],
+    created_by_department: ['R&D Dept', 'Product Dept', 'QA Dept', 'Ops Dept'][index % 4],
+    created_by_role: ['Senior Engineer', 'Product Manager', 'QA Engineer', 'Ops Engineer'][index % 4],
+    created_by_email: ['john.smith@example.com', 'jane.doe@example.com', 'mike.wang@example.com', 'david.zhao@example.com'][index % 4],
     created_at: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
     updated_at: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
   };

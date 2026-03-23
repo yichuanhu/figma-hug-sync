@@ -51,16 +51,16 @@ const generateUUID = (): string => {
 
 const generateMockPersonalCredential = (index: number): LYPersonalCredentialResponse => {
   const names = [
-    '个人邮箱',
-    'SSH登录',
-    '数据库账户',
-    'Git仓库',
-    'VPN账户',
-    'ERP系统',
-    'CRM系统',
-    'OA系统',
+    'Personal Email',
+    'SSH Login',
+    'Database Account',
+    'Git Repository',
+    'VPN Account',
+    'ERP System',
+    'CRM System',
+    'OA System',
   ];
-  const ownerNames = ['张三', '李四', '王五', '赵六'];
+  const ownerNames = ['John Smith', 'Jane Doe', 'Mike Wang', 'David Zhao'];
 
   return {
     credential_id: generateUUID(),
@@ -69,7 +69,7 @@ const generateMockPersonalCredential = (index: number): LYPersonalCredentialResp
       username: `user_${index}@example.com`,
       password: '******',
     },
-    description: index % 3 === 0 ? `这是${names[index % names.length]}的描述信息，用于管理个人账户凭据，确保安全访问各类系统。` : null,
+    description: index % 3 === 0 ? `Description for ${names[index % names.length]}, used for managing personal account credentials and ensuring secure access to various systems.` : null,
     linked_credentials_count: index % 6, // 0-5个关联凭据
     owner_id: generateUUID(),
     owner_name: ownerNames[index % ownerNames.length],

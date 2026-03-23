@@ -95,8 +95,6 @@
     "processRobot": "流程机器人",
     "executionResourceMonitoring": "执行资源监控",
     "executionAssets": "执行资产",
-    "documentProcessing": "文档处理应用",
-    "agentApplication": "智能体应用",
     "humanMachineTask": "人机协同任务",
     "businessConfig": "业务配置",
     "taskExecution": "任务执行",
@@ -1114,31 +1112,31 @@
       "detailInfo": "详细信息",
       "hostInfo": "主机信息",
       "fields": {
-      "workerName": "流程机器人名称",
-      "status": "状态",
-      "description": "描述",
-      "group": "所属分组",
-      "desktopType": "桌面类型",
-      "account": "帐户",
-      "passwordSyncStatus": "属性同步状态",
-      "forceLogin": "强制挤占登录",
-      "resolution": "分辨率",
-      "priority": "任务调度优先级",
-      "receiveTasks": "接收任务",
-      "machineCode": "机器码",
-      "hostName": "主机名称",
-      "hostIp": "主机IP",
-      "os": "操作系统",
-      "arch": "系统架构",
-      "cpuModel": "CPU型号",
-      "cpuCores": "CPU核心数",
-      "memoryCapacity": "内存容量",
-      "robotCount": "流程机器人数量",
-      "clientVersion": "客户端版本",
-      "lastHeartbeat": "最近连接时间",
-      "createdAt": "创建时间",
-      "creator": "创建者"
-    },
+        "workerName": "流程机器人名称",
+        "status": "状态",
+        "description": "描述",
+        "group": "所属分组",
+        "desktopType": "桌面类型",
+        "account": "帐户",
+        "passwordSyncStatus": "属性同步状态",
+        "forceLogin": "强制挤占登录",
+        "resolution": "分辨率",
+        "priority": "任务调度优先级",
+        "receiveTasks": "接收任务",
+        "machineCode": "机器码",
+        "hostName": "主机名称",
+        "hostIp": "主机IP",
+        "os": "操作系统",
+        "arch": "系统架构",
+        "cpuModel": "CPU型号",
+        "cpuCores": "CPU核心数",
+        "memoryCapacity": "内存容量",
+        "robotCount": "流程机器人数量",
+        "clientVersion": "客户端版本",
+        "lastHeartbeat": "最近连接时间",
+        "createdAt": "创建时间",
+        "creator": "创建者"
+      },
       "desktopTypes": {
         "console": "本地桌面型",
         "notConsole": "远程桌面型"
@@ -2123,9 +2121,9 @@
         "searchPlaceholder": "搜索资源名称",
         "resourceName": "资源名称",
         "noResources": "暂无可添加的资源",
-      "selectedCount": "已选中 {{count}} 项",
-      "fileName": "文件名称",
-      "originalFileName": "源文件名"
+        "selectedCount": "已选中 {{count}} 项",
+        "fileName": "文件名称",
+        "originalFileName": "源文件名"
       },
       "success": "发布创建成功！",
       "error": "发布创建失败，请重试",
@@ -2727,6 +2725,37 @@
     "cronExamples": {
       "title": "常用示例",
       "buttonText": "查看示例"
+    },
+    "weekday": {
+      "mon": "周一",
+      "tue": "周二",
+      "wed": "周三",
+      "thu": "周四",
+      "fri": "周五",
+      "sat": "周六",
+      "sun": "周日"
+    },
+    "month": {
+      "jan": "1月",
+      "feb": "2月",
+      "mar": "3月",
+      "apr": "4月",
+      "may": "5月",
+      "jun": "6月",
+      "jul": "7月",
+      "aug": "8月",
+      "sep": "9月",
+      "oct": "10月",
+      "nov": "11月",
+      "dec": "12月"
+    },
+    "cronExampleDesc": {
+      "dailyAt9": "每天 09:00",
+      "weeklyMon8": "每周一 08:00",
+      "weekdaysAt9": "工作日每天 09:00",
+      "lastDayAt2359": "每月最后一天 23:59",
+      "every5min": "每5分钟",
+      "dailyAt9and15": "每天 09:00 和 15:00"
     }
   },
   "botSelector": {
@@ -2947,5 +2976,10 @@
     "platformOperations": {
       "title": "平台运营"
     }
+  },
+  "userCard": {
+    "department": "部门",
+    "role": "角色",
+    "email": "邮箱"
   }
 }

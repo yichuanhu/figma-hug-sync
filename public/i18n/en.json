@@ -2718,6 +2718,37 @@
     "cronExamples": {
       "title": "Examples",
       "buttonText": "View Examples"
+    },
+    "weekday": {
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri",
+      "sat": "Sat",
+      "sun": "Sun"
+    },
+    "month": {
+      "jan": "Jan",
+      "feb": "Feb",
+      "mar": "Mar",
+      "apr": "Apr",
+      "may": "May",
+      "jun": "Jun",
+      "jul": "Jul",
+      "aug": "Aug",
+      "sep": "Sep",
+      "oct": "Oct",
+      "nov": "Nov",
+      "dec": "Dec"
+    },
+    "cronExampleDesc": {
+      "dailyAt9": "Daily at 09:00",
+      "weeklyMon8": "Every Monday at 08:00",
+      "weekdaysAt9": "Weekdays at 09:00",
+      "lastDayAt2359": "Last day of month at 23:59",
+      "every5min": "Every 5 minutes",
+      "dailyAt9and15": "Daily at 09:00 and 15:00"
     }
   },
   "botSelector": {
@@ -2938,5 +2969,10 @@
     "platformOperations": {
       "title": "Platform Operations"
     }
+  },
+  "userCard": {
+    "department": "Department",
+    "role": "Role",
+    "email": "Email"
   }
 }

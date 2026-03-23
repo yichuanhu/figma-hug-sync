@@ -149,7 +149,7 @@ const CreateReleasePage: React.FC = () => {
       },
       {
         resource_id: 'PARAM-008',
-        resource_name: 'TimeoutTime阈值(毫s)',
+        resource_name: 'Timeout Threshold (ms)',
         is_previously_published: false,
         test_value: '30000',
         param_type: 'NUMBER',
@@ -163,7 +163,7 @@ const CreateReleasePage: React.FC = () => {
     const credentials = [
       {
         resource_id: 'CRED-001',
-        resource_name: 'ERP 系统Credential',
+        resource_name: 'ERP System Credential',
         is_previously_published: true,
         test_value: '******',
         used_by_processes: processes.map((p) => ({
@@ -191,8 +191,8 @@ const CreateReleasePage: React.FC = () => {
     const files = [
       {
         resource_id: 'FILE-001',
-        resource_name: '订单Template',
-        original_name: '订单Template_v2.xlsx',
+        resource_name: 'Order Template',
+        original_name: 'order_template_v2.xlsx',
         is_previously_published: true,
         test_value: null,
         used_by_processes: processes.slice(0, 1).map((p) => ({

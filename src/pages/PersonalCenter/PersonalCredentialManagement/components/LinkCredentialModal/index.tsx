@@ -12,11 +12,11 @@ interface Credential {
 }
 
 const mockCredentials: Credential[] = [
-  { id: '1', name: '企业邮箱凭据' },
-  { id: '2', name: '数据库连接凭据' },
-  { id: '3', name: 'SSH服务器凭据' },
-  { id: '4', name: 'Git仓库凭据' },
-  { id: '5', name: 'ERP系统凭据' },
+  { id: '1', name: 'Enterprise Email Credential' },
+  { id: '2', name: 'Database Connection Credential' },
+  { id: '3', name: 'SSH Server Credential' },
+  { id: '4', name: 'Git Repository Credential' },
+  { id: '5', name: 'ERP System Credential' },
 ];
 
 interface LinkCredentialModalProps {

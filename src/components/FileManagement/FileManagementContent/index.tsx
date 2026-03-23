@@ -63,14 +63,14 @@ const generateMockFile = (index: number): LYFileResponse => {
     'workflow-config.yaml',
   ];
   const displayNames = [
-    '系统配置文件',
-    '数据模板',
-    '输入映射配置',
-    '流程资产包',
-    '报告模板',
-    '脚本辅助工具',
-    '加密凭据',
-    '工作流配置',
+    'System Configuration',
+    'Data Template',
+    'Input Mapping Config',
+    'Process Asset Package',
+    'Report Template',
+    'Script Helper Tool',
+    'Encrypted Credentials',
+    'Workflow Configuration',
   ];
 
   const originalName = originalNames[index % originalNames.length];
@@ -87,17 +87,17 @@ const generateMockFile = (index: number): LYFileResponse => {
     is_published: isPublished,
     source,
     description: index === 0
-      ? '这是一个核心配置文件，包含了多个关键系统的连接参数和认证信息。请勿随意修改。'
-      : `这是${displayName}的描述信息。`,
-    change_reason: index % 4 === 0 ? '修复配置错误' : undefined,
+      ? 'A core configuration file containing connection parameters and authentication info for multiple critical systems. Do not modify without authorization.'
+      : `Description for ${displayName}.`,
+    change_reason: index % 4 === 0 ? 'Fixed configuration error' : undefined,
     created_by: `user-00${(index % 4) + 1}`,
-    created_by_name: ['张三', '李四', '王五', '赵六'][index % 4],
-    created_by_department: ['研发部', '产品部', '测试部', '运维部'][index % 4],
-    created_by_role: ['高级工程师', '产品经理', '测试工程师', '运维工程师'][index % 4],
-    created_by_email: ['zhangsan@example.com', 'lisi@example.com', 'wangwu@example.com', 'zhaoliu@example.com'][index % 4],
+    created_by_name: ['John Smith', 'Jane Doe', 'Mike Wang', 'David Zhao'][index % 4],
+    created_by_department: ['R&D Dept', 'Product Dept', 'QA Dept', 'Ops Dept'][index % 4],
+    created_by_role: ['Senior Engineer', 'Product Manager', 'QA Engineer', 'Ops Engineer'][index % 4],
+    created_by_email: ['john.smith@example.com', 'jane.doe@example.com', 'mike.wang@example.com', 'david.zhao@example.com'][index % 4],
     created_at: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
     updated_by: index % 2 === 0 ? generateUUID() : null,
-    updated_by_name: index % 2 === 0 ? '更新者' : null,
+    updated_by_name: index % 2 === 0 ? 'Updater' : null,
     updated_at: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
   };
 };

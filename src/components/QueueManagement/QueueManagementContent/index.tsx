@@ -50,22 +50,22 @@ const generateUUID = (): string => {
 
 const generateMockQueue = (index: number): LYQueueResponse => {
   const names = [
-    '订单处理队列',
-    '邮件发送队列',
-    '数据同步队列',
-    '报表生成队列',
-    '通知推送队列',
-    '文件处理队列',
-    '任务调度队列',
-    '日志收集队列',
+    'Order Processing Queue',
+    'Email Sending Queue',
+    'Data Sync Queue',
+    'Report Generation Queue',
+    'Notification Push Queue',
+    'File Processing Queue',
+    'Task Scheduling Queue',
+    'Log Collection Queue',
   ];
 
   return {
     queue_id: generateUUID(),
     queue_name: names[index % names.length],
     description: index === 0
-      ? '这是一个高优先级的订单处理消息队列，用于接收和分发来自电商平台、ERP系统和客户服务系统的订单数据。支持消息持久化、优先级排序、死信队列和延迟消费等高级特性。队列配置了自动扩缩容策略，可根据消息积压情况动态调整消费者数量，确保业务高峰期的处理能力。'
-      : `这是${names[index % names.length]}的描述信息，用于处理相关业务消息。`,
+      ? 'A high-priority order processing message queue for receiving and distributing orders from e-commerce platforms, ERP systems, and customer service systems. Supports message persistence, priority sorting, dead letter queues, and delayed consumption. Configured with auto-scaling based on message backlog.'
+      : `Description for ${names[index % names.length]}, used for processing related business messages.`,
     is_published: index % 3 !== 0,
     test_unconsumed_count: Math.floor(Math.random() * 100),
     test_consumed_count: Math.floor(Math.random() * 500),
@@ -74,10 +74,10 @@ const generateMockQueue = (index: number): LYQueueResponse => {
     prod_consumed_count: Math.floor(Math.random() * 1000),
     prod_failed_count: Math.floor(Math.random() * 20),
     created_by: `user-00${(index % 4) + 1}`,
-    created_by_name: ['张三', '李四', '王五', '赵六'][index % 4],
-    created_by_department: ['研发部', '产品部', '测试部', '运维部'][index % 4],
-    created_by_role: ['高级工程师', '产品经理', '测试工程师', '运维工程师'][index % 4],
-    created_by_email: ['zhangsan@example.com', 'lisi@example.com', 'wangwu@example.com', 'zhaoliu@example.com'][index % 4],
+    created_by_name: ['John Smith', 'Jane Doe', 'Mike Wang', 'David Zhao'][index % 4],
+    created_by_department: ['R&D Dept', 'Product Dept', 'QA Dept', 'Ops Dept'][index % 4],
+    created_by_role: ['Senior Engineer', 'Product Manager', 'QA Engineer', 'Ops Engineer'][index % 4],
+    created_by_email: ['john.smith@example.com', 'jane.doe@example.com', 'mike.wang@example.com', 'david.zhao@example.com'][index % 4],
     created_at: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
     updated_at: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
   };

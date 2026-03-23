@@ -41,20 +41,20 @@ const generateMockLinkedCredentials = (personalCredentialId: string): LinkedCred
   const count = (hash % 5) + 1; // 1-5个关联凭据
   
   const credentialNames = [
-    '企业邮箱凭据',
-    'Git仓库凭据',
-    'ERP系统凭据',
-    'VPN连接凭据',
-    'OA系统凭据',
-    '数据库连接凭据',
-    'SSH服务器凭据',
-    'CRM系统凭据',
+    'Enterprise Email Credential',
+    'Git Repository Credential',
+    'ERP System Credential',
+    'VPN Connection Credential',
+    'OA System Credential',
+    'Database Connection Credential',
+    'SSH Server Credential',
+    'CRM System Credential',
   ];
 
   return Array.from({ length: count }, (_, i) => ({
     credential_id: `cred-${personalCredentialId.slice(0, 8)}-${i}`,
     credential_name: credentialNames[(hash + i) % credentialNames.length],
-    description: `这是${credentialNames[(hash + i) % credentialNames.length]}的描述信息，用于流程运行时的认证`,
+    description: `Description for ${credentialNames[(hash + i) % credentialNames.length]}, used for process authentication`,
     linked_at: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
   }));
 };
