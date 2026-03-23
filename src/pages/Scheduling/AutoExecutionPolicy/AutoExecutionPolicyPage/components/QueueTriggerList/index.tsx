@@ -78,7 +78,7 @@ const generateMockQueueTriggerResponse = (index: number): LYQueueTriggerResponse
   return {
     trigger_id: `qt-${generateUUID().substring(0, 8)}`,
     name: `${queue.queue_name} Trigger${index + 1}`,
-    description: index % 5 === 0 ? null : index % 5 === 1 ? `Monitor ${queue.queue_name}, auto-create ${process.process_name} tasks. This queue trigger will 实时Monitor 指定Queue中's MessageCount, 当有效Message数达到预设阈值时自动Trigger任务Create. 支持Config每次Trigger消费's MessageCount, 以及ScheduledCheck机制, 确保即使Message到达速度较慢也能及时processing.  TriggerCreate's 任务会自动携带QueueMessage作为Input parameters, 实现端到端's automationprocessingProcess. 适用于Order Processing, 工单分配, Data Sync etc.需要基于Message驱动's automation场景. ` : `Monitor ${queue.queue_name}, auto-create ${process.process_name}任务`,
+    description: index % 5 === 0 ? null : index % 5 === 1 ? `Monitors ${queue.queue_name} in real-time and auto-creates ${process.process_name} tasks. When effective message count reaches the preset threshold, tasks are automatically triggered. Supports configuring message consumption per trigger and scheduled check mechanisms. Created tasks carry queue messages as input parameters for end-to-end automation. Suitable for order processing, ticket assignment, and message-driven scenarios.` : `Monitor ${queue.queue_name}, auto-create ${process.process_name} tasks`,
     status,
     process_id: process.process_id,
     process_name: process.process_name,

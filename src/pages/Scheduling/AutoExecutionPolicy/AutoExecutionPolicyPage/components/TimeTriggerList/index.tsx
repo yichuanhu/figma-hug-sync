@@ -79,7 +79,7 @@ const generateMockTimeTriggerResponse = (index: number): LYTimeTriggerResponse =
   return {
     trigger_id: `trigger-${generateUUID().substring(0, 8)}`,
     name: `${process.process_name} Trigger${index + 1}`,
-    description: index % 5 === 0 ? null : index % 5 === 1 ? `This is ${process.process_name}'s time trigger for periodic task creation. It runs on preset Time rules自动Trigger, Create对应's automation任务并分配到指定's Execution target上Running. 支持多种Trigger频率Config, 包括每天, 每周, 每M etc.周期性Trigger, 以及基于Cron表达式's 高级Config.  Trigger还支持Work Calendar过滤, 可以Skipped非WorkSunExecute, 确保任务在合适's Time点Trigger. 当 Trigger关联's ProcessVersionUpdate时, 新Create's 任务将自动使用最新Version. ` : `This is ${process.process_name}'s Scheduled Trigger, 用于定期auto-create 任务`,
+    description: index % 5 === 0 ? null : index % 5 === 1 ? `This is ${process.process_name}'s time trigger for periodic task creation. Automatically triggers and creates tasks assigned to specified execution targets. Supports daily, weekly, monthly, and Cron expression schedules. Also supports work calendar filtering to skip non-working days. When the associated process version updates, new tasks use the latest version.` : `${process.process_name} scheduled trigger for periodic task creation`,
     status,
     process_id: process.process_id,
     process_name: process.process_name,
