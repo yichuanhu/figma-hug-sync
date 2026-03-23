@@ -75,9 +75,9 @@ const generateMockProcess = (index: number): ProcessWithVersions => {
     'Data清洗',
     'task调度',
     'Loganalysis',
-    'This is Mon超级超级长's automationProcessNameuse测试当ProcessName特别长's 时候UIis否can正确截断displaynotwill撑破布局导致样式错乱's 边界情况',
-    '企业级跨部门多系统Data Sync and 清洗Process_包含Abnormalprocessing and Retry机制_supportsConcurrentExecute and Priority调度_Version迭代持续优化',
-    '全球化多语言Order Processing and 物流调度automationProcess',
+    'This is a super long automation process name to test UI truncation when the process name is extremely long and may break the layout',
+    'Enterprise Cross-Department Multi-System Data Sync and Cleansing Process with Exception Handling and Retry Mechanism',
+    'Global Multi-Language Order Processing and Logistics Scheduling Automation Process',
   ];
 
   const descriptions = [
