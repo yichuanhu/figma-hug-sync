@@ -72,8 +72,8 @@ const generateMockTaskResponse = (index: number): LYTaskResponse => {
     'Auto Order Processing',
     'Expense Reimbursement Approval',
     'Employee Onboarding Flow',
-    '采购申请流程',
-    '合同审批流程',
+    '采购申请Process',
+    '合同审批Process',
   ];
 
   const targetNames = [
@@ -161,7 +161,7 @@ const fetchTaskList = async (params: GetTasksParams): Promise<LYListResponseLYTa
 
   let filteredData = [...mockTaskData];
 
-  // 搜索过滤
+  // Search过滤
   if (params.keyword?.trim()) {
     const keyword = params.keyword.toLowerCase().trim();
     filteredData = filteredData.filter((item) =>
@@ -170,24 +170,24 @@ const fetchTaskList = async (params: GetTasksParams): Promise<LYListResponseLYTa
     );
   }
 
-  // 任务状态筛选
+  // 任务StatusFilter
   if (params.task_status && params.task_status.length > 0) {
     filteredData = filteredData.filter((item) => params.task_status!.includes(item.task_status));
   }
 
-  // 执行状态筛选
+  // 执行StatusFilter
   if (params.execution_status && params.execution_status.length > 0) {
     filteredData = filteredData.filter((item) => 
       item.execution_status && params.execution_status!.includes(item.execution_status)
     );
   }
 
-  // 触发来源筛选
+  // 触发来源Filter
   if (params.trigger_source && params.trigger_source.length > 0) {
     filteredData = filteredData.filter((item) => params.trigger_source!.includes(item.trigger_source));
   }
 
-  // 时间范围筛选
+  // 时间范围Filter
   if (params.start_time) {
     const startDate = new Date(params.start_time);
     filteredData = filteredData.filter((item) => new Date(item.create_time) >= startDate);
@@ -197,7 +197,7 @@ const fetchTaskList = async (params: GetTasksParams): Promise<LYListResponseLYTa
     filteredData = filteredData.filter((item) => new Date(item.create_time) <= endDate);
   }
 
-  // 排序
+  // Sort
   filteredData.sort((a, b) => {
     const valueA = params.sort_by === 'priority' ? a.priority : a.create_time;
     const valueB = params.sort_by === 'priority' ? b.priority : b.create_time;
@@ -216,7 +216,7 @@ const fetchTaskList = async (params: GetTasksParams): Promise<LYListResponseLYTa
   };
 };
 
-// ============= 状态配置 =============
+// ============= Status配置 =============
 
 const taskStatusConfig: Record<TaskStatus, { color: 'grey' | 'blue' | 'orange' | 'green' | 'red'; i18nKey: string }> = {
   PENDING: { color: 'grey', i18nKey: 'task.status.pending' },
@@ -259,7 +259,7 @@ const TaskManagementPage = () => {
     sort_order: 'desc',
   });
 
-  // 筛选状态
+  // FilterStatus
   const [taskStatusFilter, setTaskStatusFilter] = useState<string[]>([]);
   const [executionStatusFilter, setExecutionStatusFilter] = useState<string[]>([]);
   const [triggerSourceFilter, setTriggerSourceFilter] = useState<string[]>([]);
@@ -287,7 +287,7 @@ const TaskManagementPage = () => {
   });
   const [selectedTask, setSelectedTask] = useState<LYTaskResponse | null>(null);
 
-  // 筛选选项
+  // Filter选项
   const taskStatusOptions = useMemo(() => [
     { value: 'PENDING', label: t('task.status.pending') },
     { value: 'ASSIGNED', label: t('task.status.assigned') },
@@ -312,7 +312,7 @@ const TaskManagementPage = () => {
     { value: 'TEMPLATE', label: t('task.triggerSource.template') },
   ], [t]);
 
-  // 加载数据
+  // Loading数据
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
@@ -335,7 +335,7 @@ const TaskManagementPage = () => {
     loadData();
   }, [loadData]);
 
-  // 从 URL 参数中恢复抽屉状态（用于从录屏页面返回）或打开新建任务弹窗（从模板页面跳转）
+  // 从 URL Parameter中恢复抽屉Status（用于从录屏页面返回）或打开新建任务弹窗（从模板页面跳转）
   useEffect(() => {
     const taskIdFromUrl = searchParams.get('taskId');
     const activeTabFromUrl = searchParams.get('activeTab');
@@ -356,7 +356,7 @@ const TaskManagementPage = () => {
           console.error('Failed to parse template data:', e);
         }
       }
-      // 清除 URL 参数
+      // 清除 URL Parameter
       setSearchParams({}, { replace: true });
       return;
     }
@@ -373,13 +373,13 @@ const TaskManagementPage = () => {
           setInitialTab('basicInfo');
         }
         setDetailDrawerVisible(true);
-        // 清除 URL 参数
+        // 清除 URL Parameter
         setSearchParams({}, { replace: true });
       }
     }
   }, [searchParams, listResponse.list, setSearchParams]);
 
-  // 搜索防抖
+  // Search防抖
   const debouncedSearch = useMemo(
     () => debounce((value: string) => {
       setQueryParams((prev) => ({ ...prev, offset: 0, keyword: value }));
@@ -403,10 +403,10 @@ const TaskManagementPage = () => {
   };
 
 
-  // 取消任务
+  // Cancel任务
   const handleCancelTask = (task: LYTaskResponse) => {
     if (task.task_status !== 'PENDING') {
-      Toast.warning('只能取消待执行状态的任务');
+      Toast.warning('只能Cancel待执行Status的任务');
       return;
     }
 
@@ -515,7 +515,7 @@ const TaskManagementPage = () => {
     });
   };
 
-  // 筛选确认
+  // FilterConfirm
   const handleFilterConfirm = (values: Record<string, unknown>) => {
     setTaskStatusFilter((values.taskStatus as string[]) || []);
     setExecutionStatusFilter((values.executionStatus as string[]) || []);

@@ -31,7 +31,7 @@ interface CreateQueueTriggerModalProps {
   onSuccess: () => void;
 }
 
-// Mock 流程列表
+// Mock Process列表
 const mockProcesses: LYProcessActiveVersionResponse[] = [
   {
     process_id: 'proc-001',
@@ -84,7 +84,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
 const mockQueues = [
   { queue_id: 'queue-001', queue_name: 'Pending Orders Queue', monitored: false },
   { queue_id: 'queue-002', queue_name: 'Approval Tasks Queue', monitored: true },
-  { queue_id: 'queue-003', queue_name: 'Data Sync队列', monitored: false },
+  { queue_id: 'queue-003', queue_name: 'Data Sync Queue', monitored: false },
   { queue_id: 'queue-004', queue_name: 'Report Generation Queue', monitored: false },
 ];
 
@@ -130,7 +130,7 @@ const mockTemplates = [
 
 import { TIMEZONE_GROUPS } from '@/constants/timezones';
 
-// 已存在的触发器名称 (模拟)
+// 已存在的触发器Name (模拟)
 const existingTriggerNames = ['Order Queue Trigger', 'Approval Queue Trigger'];
 
 const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTriggerModalProps) => {
@@ -148,7 +148,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
   const [minEffectiveMessages, setMinEffectiveMessages] = useState(1);
   const [enablePeriodicCheck, setEnablePeriodicCheck] = useState(false);
 
-  // 判断是否有参数需要填写
+  // 判断是否有Parameter需要填写
   const hasParameters = selectedProcess && selectedProcess.parameters.length > 0;
   const hasOutputParameters = selectedProcess && selectedProcess.output_parameters && selectedProcess.output_parameters.length > 0;
   const showRightPanel = (hasParameters || hasOutputParameters) && currentStep === 1;
@@ -166,7 +166,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
     }
   }, [visible, formApi]);
 
-  // 选择流程
+  // 选择Process
   const handleProcessChange = (processId: string) => {
     const process = mockProcesses.find((p) => p.process_id === processId);
     setSelectedProcess(process || null);
@@ -202,7 +202,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
     }
   };
 
-  // 验证模板名称唯Mon性
+  // 验证模板Name唯Mon性
   const validateTriggerName = (value: string) => {
     if (value && existingTriggerNames.includes(value.trim())) {
       return t('queueTrigger.validation.nameExists');
@@ -210,7 +210,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
     return '';
   };
 
-  // 渲染参数输入
+  // 渲染Parameter输入
   const renderParameterInput = (param: LYProcessParameterDefinition) => {
     const renderLabel = () => (
       <div className="create-queue-trigger-modal-param-label">
@@ -351,7 +351,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
     setCurrentStep((prev) => prev - 1);
   };
 
-  // 提交
+  // Submit
   const handleSubmit = async () => {
     const isValid = await validateStep(currentStep);
     if (!isValid) return;
@@ -453,7 +453,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
         />
       </div>
 
-      {/* 流程配置 */}
+      {/* Process config */}
       <div className="create-queue-trigger-modal-section">
         <div className="create-queue-trigger-modal-section-title">{t('queueTrigger.createModal.processSection')}</div>
         <Form.Select
@@ -470,7 +470,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
         />
       </div>
 
-      {/* 执行目标 */}
+      {/* Execution target */}
       <div className="create-queue-trigger-modal-section">
         <div className="create-queue-trigger-modal-section-title">{t('queueTrigger.createModal.targetSection')}</div>
         <Form.RadioGroup
@@ -510,7 +510,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
         )}
       </div>
 
-      {/* 执行设置 */}
+      {/* Execution settings */}
       <div className="create-queue-trigger-modal-section">
         <div className="create-queue-trigger-modal-section-title">{t('queueTrigger.createModal.executionSection')}</div>
         <Form.RadioGroup
@@ -572,10 +572,10 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
     </>
   );
 
-  // 渲染Step1右侧：参数配置
+  // 渲染Step1右侧：Parameter配置
   const renderStep1RightContent = () => (
     <>
-      {/* 输入参数 */}
+      {/* Input parameters */}
       {hasParameters && (
         <div className="create-queue-trigger-modal-section">
           <div className="create-queue-trigger-modal-section-title">{t('queueTrigger.createModal.parameterSection')}</div>
@@ -585,7 +585,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
         </div>
       )}
 
-      {/* 输出参数展示 */}
+      {/* Output parameters display */}
       {hasOutputParameters && (
         <div className="create-queue-trigger-modal-section">
           <div className="create-queue-trigger-modal-section-title">{t('template.createModal.outputParametersSection')}</div>
@@ -607,7 +607,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
         </div>
       )}
 
-      {/* 如果没有任何参数 */}
+      {/* If no parameters */}
       {!hasParameters && !hasOutputParameters && (
         <div className="create-queue-trigger-modal-no-params">
           <IconInbox size="extra-large" style={{ color: 'var(--semi-color-text-2)', marginBottom: 8 }} />
@@ -622,7 +622,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
     <div className="create-queue-trigger-modal-section">
       <div className="create-queue-trigger-modal-section-title">{t('queueTrigger.createModal.queueSection')}</div>
       
-      {/* 触发器时区 */}
+      {/* Trigger timezone */}
       <Form.Select
         field="timeZone"
         label={t('queueTrigger.fields.timeZone')}
@@ -642,7 +642,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
         ))}
       </Form.Select>
 
-      {/* 启用工作Sun历 */}
+      {/* Enable work calendar */}
       <div className="create-queue-trigger-modal-field">
         <div className="semi-form-field-label-text">{t('queueTrigger.fields.enableWorkCalendar')}</div>
         <Form.Switch
@@ -674,7 +674,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
         </>
       )}
 
-      {/* 监控队列 */}
+      {/* Monitor queue */}
       <Form.Select
         field="queueId"
         label={t('queueTrigger.fields.monitoredQueue')}
@@ -693,14 +693,14 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
             <Select.Option {...rest} value={value} disabled={disabled} selected={selected}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
                 <span>{label}</span>
-                {disabled && <Tag size="small" color="orange">已被监控</Tag>}
+                {disabled && <Tag size="small" color="orange">Already monitored</Tag>}
               </div>
             </Select.Option>
           );
         }}
       />
 
-      {/* 触发最少有效消息数 */}
+      {/* Min effective messages to trigger */}
       <Form.InputNumber
         field="minEffectiveMessages"
         label={t('queueTrigger.fields.minEffectiveMessages')}
@@ -716,7 +716,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
         style={{ width: '100%' }}
       />
 
-      {/* 启用定时检查 - 仅当 minEffectiveMessages > 1 时显示 */}
+      {/* Enable scheduled check - Only when minEffectiveMessages > 1 is shown */}
       {minEffectiveMessages > 1 && (
         <>
           <div className="create-queue-trigger-modal-field">
@@ -752,7 +752,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
         </>
       )}
 
-      {/* 平均每若干条消息触发Mon次 */}
+      {/* Trigger once per N messages */}
       <Form.InputNumber
         field="messagesPerTrigger"
         label={t('queueTrigger.fields.messagesPerTrigger')}
@@ -794,7 +794,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
           enableRecording: false,
         }}
       >
-        {/* Step条 */}
+        {/* Step bar */}
         <div className="create-queue-trigger-modal-steps">
           <Steps current={currentStep} type="basic" size="small">
             <Steps.Step title={t('queueTrigger.createModal.steps.basicInfo')} />
@@ -803,7 +803,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
           </Steps>
         </div>
 
-        {/* Content area域 */}
+        {/* Content area */}
         {currentStep === 0 && (
           <div className="create-queue-trigger-modal-content">
             {renderStep0Content()}
@@ -833,7 +833,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
           </div>
         )}
 
-        {/* 底部按钮 */}
+        {/* Footer buttons */}
         <div className="create-queue-trigger-modal-footer">
           <Button theme="light" onClick={onCancel}>
             {t('common.cancel')}

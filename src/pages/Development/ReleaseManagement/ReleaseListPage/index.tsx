@@ -87,9 +87,9 @@ const generateMockReleaseResponse = (index: number): LYReleaseResponse => {
         version_id: `ver-${index}-1`,
         version_number: `v1.${index}.0`,
         process_description: index % 4 === 0
-          ? '该流程用于处理来自SAP ERP系统的所有客户订单，包括订单验证、Inventory Check、价格计算、折扣应用、税费计算、物流分配、发票生成以及客户通知等完整的端到端业务流程。支持多币种、多仓库、多物流商的复杂场景处理。'
+          ? '该Process用于处理来自SAP ERP系统的所有客户订单，包括订单验证、Inventory Check、价格计算、折扣应用、税费计算、物流分配、发票生成以及客户通知等完整的端到端业务Process。支持多币种、多仓库、多物流商的复杂场景处理。'
           : index % 4 === 2
-            ? '客户入网全流程自动化，涵盖KYC身份验证、合规检查、风控评估、账户开通、权限分配、欢迎邮件发送及CRM系统同步等环节，支持多国家地区的监管要求适配。'
+            ? '客户入网全Process自动化，涵盖KYC身份验证、合规检查、风控评估、账户开通、权限分配、欢迎邮件发送及CRM系统同步等环节，支持多国家地区的监管要求适配。'
             : index % 4 === 3 ? '' : '从 ERP 同步客户数据到 CRM',
       },
       ...(index % 2 === 0
@@ -169,7 +169,7 @@ const ReleaseListPage: React.FC = () => {
     keyword: '',
   });
 
-  // 筛选状态
+  // FilterStatus
   const [filterVisible, setFilterVisible] = useState(false);
   const [activeFilters, setActiveFilters] = useState<{
     release_type: ReleaseType[];
@@ -192,7 +192,7 @@ const ReleaseListPage: React.FC = () => {
   const filterCount =
     activeFilters.release_type.length + activeFilters.publish_status.length + activeFilters.publisher.length;
 
-  // 加载数据
+  // Loading数据
   const loadData = async () => {
     setLoading(true);
     try {
@@ -219,7 +219,7 @@ const ReleaseListPage: React.FC = () => {
     loadData();
   }, [queryParams, activeFilters]);
 
-  // URL 参数处理 - 打开详情
+  // URL Parameter处理 - 打开详情
   useEffect(() => {
     const releaseId = searchParams.get('releaseId');
     if (releaseId && listResponse.list.length > 0) {
@@ -232,7 +232,7 @@ const ReleaseListPage: React.FC = () => {
     }
   }, [searchParams, listResponse]);
 
-  // 搜索防抖
+  // Search防抖
   const handleSearch = useMemo(
     () =>
       debounce((value: string) => {
@@ -241,7 +241,7 @@ const ReleaseListPage: React.FC = () => {
     []
   );
 
-  // 筛选操作
+  // Filter操作
   const handleFilterConfirm = (values: Record<string, unknown>) => {
     const dateValue = values.publish_date as [Date, Date] | undefined;
     setActiveFilters({
@@ -259,7 +259,7 @@ const ReleaseListPage: React.FC = () => {
     setDetailDrawerVisible(true);
   };
 
-  // 发布类型配置
+  // ReleaseType配置
   const releaseTypeConfig: Record<
     ReleaseType,
     { color: 'blue' | 'cyan' | 'orange' | 'purple' | 'grey' | 'green'; i18nKey: string }
@@ -272,7 +272,7 @@ const ReleaseListPage: React.FC = () => {
     OPTIMIZATION: { color: 'green', i18nKey: 'release.releaseTypes.OPTIMIZATION' },
   };
 
-  // 状态配置
+  // Status配置
   const statusConfig: Record<
     ReleaseStatus,
     { color: 'green' | 'red' | 'blue'; i18nKey: string }
@@ -322,7 +322,7 @@ const ReleaseListPage: React.FC = () => {
       width: 100,
       render: (contents: LYReleaseResponse['contents']) => {
         if (!contents || contents.length === 0) return '-';
-        return <Text>{contents.length}个流程</Text>;
+        return <Text>{contents.length}个Process</Text>;
       },
     },
     {
@@ -388,7 +388,7 @@ const ReleaseListPage: React.FC = () => {
     },
   ];
 
-  // 筛选选项
+  // Filter选项
   const releaseTypeOptions = Object.entries(releaseTypeConfig).map(
     ([value, config]) => ({
       value,
@@ -401,7 +401,7 @@ const ReleaseListPage: React.FC = () => {
     label: t(config.i18nKey),
   }));
 
-  // 发布者选项（从mock数据中提取）
+  // Release者选项（从mock数据中提取）
   const publisherOptions = useMemo(() => {
     const publishers = ['John Smith', 'Jane Doe', 'Mike Wang'];
     return publishers.map((name) => ({ value: name, label: name }));

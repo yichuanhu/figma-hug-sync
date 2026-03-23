@@ -24,7 +24,7 @@ const BatchOperationBar = ({
 }: BatchOperationBarProps) => {
   const { t } = useTranslation();
 
-  // 确认删除
+  // ConfirmDelete
   const handleDeleteClick = () => {
     Modal.confirm({
       title: t('screenshot.deleteModal.title'),

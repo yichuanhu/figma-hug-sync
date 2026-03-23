@@ -29,7 +29,7 @@ interface CreateTaskModalProps {
   initialTemplate?: LYExecutionTemplateResponse | null;
 }
 
-// Mock 流程列表
+// Mock Process列表
 const mockProcesses: LYProcessActiveVersionResponse[] = [
   {
     process_id: 'proc-001',
@@ -43,7 +43,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     ],
     output_parameters: [
       { name: 'processedCount', type: 'NUMBER', description: 'Processed order count' },
-      { name: 'successRate', type: 'NUMBER', description: '处理成功率' },
+      { name: 'successRate', type: 'NUMBER', description: 'Processing success rate' },
       { name: 'errorList', type: 'TEXT', description: '错误订单列表' },
     ],
   },
@@ -57,7 +57,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
       { name: 'approvalCredential', type: 'CREDENTIAL', required: true, description: '审批凭据' },
     ],
     output_parameters: [
-      { name: 'approvalResult', type: 'BOOLEAN', description: '审批结果' },
+      { name: 'approvalResult', type: 'BOOLEAN', description: 'Approval result' },
       { name: 'approvalNote', type: 'TEXT', description: '审批意见' },
     ],
   },
@@ -86,7 +86,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
   },
 ];
 
-// Mock 执行目标
+// Mock Execution target
 const mockBotGroups = [
   { id: 'group-001', name: 'Order Processing Group', onlineCount: 3, totalCount: 5 },
   { id: 'group-002', name: 'Finance Approval Group', onlineCount: 2, totalCount: 3 },
@@ -135,7 +135,7 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
   const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // 执行目标选项
+  // Execution target选项
   const targetOptions = useMemo(() => {
     if (targetType === 'BOT_GROUP') {
       return mockBotGroups.map((g) => ({
@@ -173,7 +173,7 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
   // 初始化时根据 initialTemplate 预填表单
   useEffect(() => {
     if (visible && initialTemplate && formApi && !isInitialized) {
-      // 选择流程
+      // 选择Process
       const process = mockProcesses.find((p) => p.process_id === initialTemplate.process_id);
       if (process) {
         setSelectedProcess(process);
@@ -198,11 +198,11 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
     }
   }, [visible, initialTemplate, formApi, isInitialized]);
 
-  // 选择流程
+  // 选择Process
   const handleProcessChange = useCallback((processId: string) => {
     const process = mockProcesses.find((p) => p.process_id === processId);
     setSelectedProcess(process || null);
-    // 初始化参数默认值
+    // 初始化Parameter默认值
     if (process && formApi) {
       process.parameters.forEach((param) => {
         if (param.default_value !== undefined && param.default_value !== null) {
@@ -235,7 +235,7 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
     }
   }, [formApi, handleProcessChange]);
 
-  // 渲染参数输入
+  // 渲染Parameter输入
   const renderParameterInput = (param: LYProcessParameterDefinition) => {
     const renderLabel = () => (
       <div className="create-task-modal-param-label">
@@ -307,7 +307,7 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
     }
   };
 
-  // 提交
+  // Submit
   const handleSubmit = async (values: Record<string, unknown>) => {
     setLoading(true);
     try {
@@ -322,7 +322,7 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
       // 模拟API调用
       await new Promise((resolve) => setTimeout(resolve, 500));
       
-      console.log('创建任务:', {
+      console.log('Create任务:', {
         process_id: values.processId,
         execution_target_type: values.targetType,
         execution_target_id: values.targetId,
@@ -336,16 +336,16 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
       Toast.success(t('task.createModal.success'));
       onSuccess();
     } catch (error) {
-      console.error('创建任务失败:', error);
+      console.error('Create任务失败:', error);
       Toast.error(t('task.createModal.error'));
     } finally {
       setLoading(false);
     }
   };
 
-  // 判断是否有参数需要填写
+  // 判断是否有Parameter需要填写
   const hasParameters = selectedProcess && selectedProcess.parameters.length > 0;
-  // 判断是否有输出参数
+  // 判断是否有输出Parameter
   const hasOutputParameters = selectedProcess && selectedProcess.output_parameters && selectedProcess.output_parameters.length > 0;
   // 右侧是否需要显示
   const showRightPanel = hasParameters || hasOutputParameters;
@@ -395,7 +395,7 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
                 />
               </div>
 
-              {/* 流程配置 */}
+              {/* Process config */}
               <div className="create-task-modal-section">
                 <div className="create-task-modal-section-title">
                   {t('task.createModal.processSection')}
@@ -414,7 +414,7 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
                 />
               </div>
 
-              {/* 执行目标 */}
+              {/* Execution target */}
               <div className="create-task-modal-section">
                 <div className="create-task-modal-section-title">
                   {t('task.createModal.targetSection')}
@@ -456,7 +456,7 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
                 )}
               </div>
 
-              {/* 执行设置 */}
+              {/* Execution settings */}
               <div className="create-task-modal-section">
                 <div className="create-task-modal-section-title">
                   {t('task.createModal.executionSection')}
@@ -520,11 +520,11 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
             </div>
           </div>
 
-          {/* 右侧：流程输入和流程输出 */}
+          {/* 右侧：Process输入和Process输出 */}
           {showRightPanel && (
             <div className="create-task-modal-right">
               <div className="create-task-modal-content">
-                {/* 流程输入 */}
+                {/* Process输入 */}
                 {hasParameters && (
                   <div className="create-task-modal-section">
                     <div className="create-task-modal-section-title">
@@ -536,7 +536,7 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
                   </div>
                 )}
 
-                {/* 流程输出（只读） */}
+                {/* Process输出（只读） */}
                 {hasOutputParameters && (
                   <div className="create-task-modal-section">
                     <div className="create-task-modal-section-title">

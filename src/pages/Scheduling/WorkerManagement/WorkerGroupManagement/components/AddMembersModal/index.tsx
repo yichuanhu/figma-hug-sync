@@ -11,7 +11,7 @@ import type {
 } from '@/api';
 import './index.less';
 
-// 状态类型定义
+// StatusType定义
 type WorkerStatus = 'OFFLINE' | 'IDLE' | 'BUSY' | 'FAULT' | 'MAINTENANCE';
 
 const { Text, Title } = Typography;
@@ -56,7 +56,7 @@ const mockAvailableWorkers: LYWorkerResponse[] = [
   {
     id: '550e8400-e29b-41d4-a716-446655440011',
     name: 'HR Bot-02',
-    description: 'For HR审批流程的机器人',
+    description: 'For HR审批Process的机器人',
     status: 'OFFLINE',
     sync_status: 'SYNCED',
     ip_address: '10.0.1.103',
@@ -123,7 +123,7 @@ const fetchAvailableWorkers = async (params: GetAvailableWorkersForGroupParams &
     );
   }
 
-  // 状态筛选
+  // StatusFilter
   if (params.statusFilter && params.statusFilter.length > 0) {
     data = data.filter(item => params.statusFilter!.includes(item.status as WorkerStatus));
   }
@@ -139,7 +139,7 @@ const fetchAvailableWorkers = async (params: GetAvailableWorkersForGroupParams &
   };
 };
 
-// 状态配置
+// Status配置
 const statusConfig: Record<WorkerStatus, { color: 'green' | 'blue' | 'orange' | 'red' | 'grey'; i18nKey: string }> = {
   IDLE: { color: 'green', i18nKey: 'worker.status.idle' },
   BUSY: { color: 'blue', i18nKey: 'worker.status.busy' },
@@ -171,7 +171,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
   const [statusFilter, setStatusFilter] = useState<WorkerStatus[]>([]);
   const [selectedWorkers, setSelectedWorkers] = useState<LYWorkerResponse[]>([]);
 
-  // 状态筛选选项
+  // StatusFilter选项
   const statusOptions = useMemo(() => [
     { value: 'IDLE', label: t('worker.status.idle') },
     { value: 'BUSY', label: t('worker.status.busy') },
@@ -180,7 +180,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
     { value: 'OFFLINE', label: t('worker.status.offline') },
   ], [t]);
 
-  // 加载可选机器人列表
+  // Loading可选机器人列表
   const loadWorkers = useCallback(async () => {
     setLoading(true);
     try {
@@ -199,7 +199,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
     }
   }, [visible, groupId]);
 
-  // 状态筛选变化时重置分页
+  // StatusFilter变化时重置分页
   const handleStatusFilterChange = (values: WorkerStatus[]) => {
     setStatusFilter(values);
     setQueryParams(prev => ({ ...prev, offset: 0 }));
@@ -211,7 +211,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
     }
   }, [visible, queryParams, loadWorkers]);
 
-  // 搜索 - 防抖处理
+  // Search - 防抖处理
   const handleSearch = useMemo(
     () =>
       debounce((value: string) => {
@@ -220,7 +220,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
     []
   );
 
-  // 选择/取消选择机器人
+  // 选择/Cancel选择机器人
   const handleSelectWorker = (worker: LYWorkerResponse, checked: boolean) => {
     if (checked) {
       setSelectedWorkers(prev => [...prev, worker]);
@@ -234,7 +234,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
     setSelectedWorkers(prev => prev.filter(w => w.id !== workerId));
   };
 
-  // 提交
+  // Submit
   const handleSubmit = async () => {
     if (selectedWorkers.length === 0) {
       Toast.warning(t('workerGroup.addMembers.selectRequired'));

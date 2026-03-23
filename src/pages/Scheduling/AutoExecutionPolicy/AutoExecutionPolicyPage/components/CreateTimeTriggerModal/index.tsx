@@ -33,7 +33,7 @@ interface CreateTimeTriggerModalProps {
   onSuccess: () => void;
 }
 
-// Mock 流程列表
+// Mock Process列表
 const mockProcesses: LYProcessActiveVersionResponse[] = [
   {
     process_id: 'proc-001',
@@ -47,7 +47,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     ],
     output_parameters: [
       { name: 'processedCount', type: 'NUMBER', description: 'Processed order count' },
-      { name: 'successRate', type: 'NUMBER', description: '处理成功率' },
+      { name: 'successRate', type: 'NUMBER', description: 'Processing success rate' },
     ],
   },
   {
@@ -59,7 +59,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
       { name: 'department', type: 'TEXT', required: true, description: 'Department name' },
     ],
     output_parameters: [
-      { name: 'approvalResult', type: 'BOOLEAN', description: '审批结果' },
+      { name: 'approvalResult', type: 'BOOLEAN', description: 'Approval result' },
     ],
   },
   {
@@ -125,8 +125,8 @@ const mockTemplates = [
   },
 ];
 
-// 已存在的触发器名称 (模拟)
-const existingTriggerNames = ['每Sun订单同步', '每周报表生成'];
+// 已存在的触发器Name (模拟)
+const existingTriggerNames = ['Daily Order Sync', 'Weekly Report Generation'];
 
 const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTriggerModalProps) => {
   const { t } = useTranslation();
@@ -159,7 +159,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
   const [workCalendarId, setWorkCalendarId] = useState<string | null>(null);
   const [workCalendarExecutionType, setWorkCalendarExecutionType] = useState<'WORKDAY' | 'NON_WORKDAY'>('WORKDAY');
 
-  // 判断是否有参数需要填写
+  // 判断是否有Parameter需要填写
   const hasParameters = selectedProcess && selectedProcess.parameters.length > 0;
   const hasOutputParameters = selectedProcess && selectedProcess.output_parameters && selectedProcess.output_parameters.length > 0;
   const showRightPanel = (hasParameters || hasOutputParameters) && currentStep === 1;
@@ -250,7 +250,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
     }
   }, [visible, formApi]);
 
-  // 选择流程
+  // 选择Process
   const handleProcessChange = (processId: string) => {
     const process = mockProcesses.find((p) => p.process_id === processId);
     setSelectedProcess(process || null);
@@ -286,7 +286,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
     }
   };
 
-  // 验证模板名称唯Mon性
+  // 验证模板Name唯Mon性
   const validateTriggerName = (value: string) => {
     if (value && existingTriggerNames.includes(value.trim())) {
       return t('timeTrigger.validation.nameExists');
@@ -294,7 +294,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
     return '';
   };
 
-  // 渲染参数输入
+  // 渲染Parameter输入
   const renderParameterInput = (param: LYProcessParameterDefinition) => {
     const renderLabel = () => (
       <div className="create-time-trigger-modal-param-label">
@@ -416,7 +416,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
     setCurrentStep((prev) => prev - 1);
   };
 
-  // 提交
+  // Submit
   const handleSubmit = async () => {
     if (ruleType === 'CRON' && !cronExpression.trim()) {
       Toast.warning(t('timeTrigger.validation.cronExpressionRequired'));
@@ -530,7 +530,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
         />
       </div>
 
-      {/* 流程配置 */}
+      {/* Process config */}
       <div className="create-time-trigger-modal-section">
         <div className="create-time-trigger-modal-section-title">{t('timeTrigger.createModal.processSection')}</div>
         <Form.Select
@@ -547,7 +547,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
         />
       </div>
 
-      {/* 执行目标 */}
+      {/* Execution target */}
       <div className="create-time-trigger-modal-section">
         <div className="create-time-trigger-modal-section-title">{t('timeTrigger.createModal.targetSection')}</div>
         <Form.RadioGroup
@@ -587,7 +587,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
         )}
       </div>
 
-      {/* 执行设置 */}
+      {/* Execution settings */}
       <div className="create-time-trigger-modal-section">
         <div className="create-time-trigger-modal-section-title">{t('timeTrigger.createModal.executionSection')}</div>
         <Form.RadioGroup
@@ -649,10 +649,10 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
     </>
   );
 
-  // 渲染Step1右侧：参数配置
+  // 渲染Step1右侧：Parameter配置
   const renderStep1RightContent = () => (
     <>
-      {/* 输入参数 */}
+      {/* Input parameters */}
       {hasParameters && (
         <div className="create-time-trigger-modal-section">
           <div className="create-time-trigger-modal-section-title">{t('timeTrigger.createModal.parameterSection')}</div>
@@ -662,7 +662,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
         </div>
       )}
 
-      {/* 输出参数展示 */}
+      {/* Output parameters display */}
       {hasOutputParameters && (
         <div className="create-time-trigger-modal-section">
           <div className="create-time-trigger-modal-section-title">{t('template.createModal.outputParametersSection')}</div>
@@ -684,7 +684,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
         </div>
       )}
 
-      {/* 如果没有任何参数 */}
+      {/* If no parameters */}
       {!hasParameters && !hasOutputParameters && (
         <div className="create-time-trigger-modal-no-params">
           <Inbox size={36} strokeWidth={2} style={{ color: 'var(--semi-color-text-2)', marginBottom: 8 }} />
@@ -697,7 +697,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
   // 渲染Step2：Trigger Rules与预览
   const renderStep2Content = () => (
     <>
-      {/* 时间规则 - 使用 TriggerRuleConfig 组件 */}
+      {/* Time rules - Using TriggerRuleConfig component */}
       <TriggerRuleConfig
         ruleType={ruleType}
         onRuleTypeChange={setRuleType}
@@ -737,7 +737,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
         showWorkCalendar={true}
       />
 
-      {/* 触发预览 - 与Trigger Rules之间用横线分隔 */}
+      {/* Trigger preview - Separated from Trigger Rules by a line */}
       <div className="create-time-trigger-modal-section" style={{ borderTop: '1px solid var(--semi-color-border)', paddingTop: 20 }}>
         <div className="create-time-trigger-modal-section-title">{t('timeTrigger.createModal.previewSection')}</div>
         <div className="create-time-trigger-modal-preview">
@@ -789,7 +789,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
           enableRecording: false,
         }}
       >
-        {/* Step条 */}
+        {/* Step bar */}
         <div className="create-time-trigger-modal-steps">
           <Steps current={currentStep} type="basic" size="small">
             <Steps.Step title={t('timeTrigger.createModal.steps.basicInfo')} />
@@ -798,7 +798,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
           </Steps>
         </div>
 
-        {/* Content area域 */}
+        {/* Content area */}
         {currentStep === 0 && (
           <div className="create-time-trigger-modal-content">
             {renderStep0Content()}
@@ -828,7 +828,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
           </div>
         )}
 
-        {/* 底部按钮 */}
+        {/* Footer buttons */}
         <div className="create-time-trigger-modal-footer">
           <Button theme="light" onClick={onCancel}>
             {t('common.cancel')}

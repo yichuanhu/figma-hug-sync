@@ -58,7 +58,7 @@ const mockProcesses = [
 const mockQueues = [
   { queue_id: 'queue-001', queue_name: 'Pending Orders Queue' },
   { queue_id: 'queue-002', queue_name: 'Approval Tasks Queue' },
-  { queue_id: 'queue-003', queue_name: 'Data Sync队列' },
+  { queue_id: 'queue-003', queue_name: 'Data Sync Queue' },
   { queue_id: 'queue-004', queue_name: 'Report Generation Queue' },
 ];
 
@@ -78,7 +78,7 @@ const generateMockQueueTriggerResponse = (index: number): LYQueueTriggerResponse
   return {
     trigger_id: `qt-${generateUUID().substring(0, 8)}`,
     name: `${queue.queue_name}触发器${index + 1}`,
-    description: index % 5 === 0 ? null : index % 5 === 1 ? `监控${queue.queue_name}，自动创建${process.process_name}任务。该队列触发器会实时监控指定队列中的消息数量，当有效消息数达到预设阈值时自动触发任务创建。支持配置每次触发消费的消息数量，以及定时检查机制，确保即使消息到达速度较慢也能及时处理。触发器创建的任务会自动携带队列消息作为输入参数，实现端到端的自动化处理流程。适用于Order Processing、工单分配、Data Sync等需要基于消息驱动的自动化场景。` : `监控${queue.queue_name}，自动创建${process.process_name}任务`,
+    description: index % 5 === 0 ? null : index % 5 === 1 ? `监控${queue.queue_name}，自动Create${process.process_name}任务。该队列触发器会实时监控指定队列中的消息数量，当有效消息数达到预设阈值时自动触发任务Create。支持配置每次触发消费的消息数量，以及定时检查机制，确保即使消息到达速度较慢也能及时处理。触发器Create的任务会自动携带队列消息作为Input parameters，实现端到端的自动化处理Process。适用于Order Processing、工单分配、Data Sync等需要基于消息驱动的自动化场景。` : `监控${queue.queue_name}，自动Create${process.process_name}任务`,
     status,
     process_id: process.process_id,
     process_name: process.process_name,
@@ -96,7 +96,7 @@ const generateMockQueueTriggerResponse = (index: number): LYQueueTriggerResponse
     time_zone: 'Asia/Shanghai',
     enable_work_calendar: index % 3 === 0,
     work_calendar_id: index % 3 === 0 ? 'cal-001' : null,
-    work_calendar_name: index % 3 === 0 ? '公司工作Sun历' : null,
+    work_calendar_name: index % 3 === 0 ? '公司Work Calendar' : null,
     work_calendar_execution_type: index % 3 === 0 ? 'WORKDAY' : null,
     min_effective_messages: 1 + (index % 10),
     messages_per_trigger: 5 + (index % 20),
@@ -134,7 +134,7 @@ interface GetTriggersParams {
 const QueueTriggerList = () => {
   const { t } = useTranslation();
 
-  // 列表数据状态
+  // 列表数据Status
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [listResponse, setListResponse] = useState<LYListResponseLYQueueTriggerResponse>({
     range: { offset: 0, size: 20, total: 0 },
@@ -150,11 +150,11 @@ const QueueTriggerList = () => {
     status: undefined,
   });
 
-  // 选中状态（抽屉）
+  // 选中Status（抽屉）
   const [selectedTrigger, setSelectedTrigger] = useState<LYQueueTriggerResponse | null>(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
 
-  // 弹窗状态
+  // 弹窗Status
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingTrigger, setEditingTrigger] = useState<LYQueueTriggerResponse | null>(null);
@@ -165,7 +165,7 @@ const QueueTriggerList = () => {
   const pageSize = range?.size || 20;
   const total = range?.total || 0;
 
-  // 模拟加载数据
+  // 模拟Loading数据
   const loadData = useCallback(async (params: GetTriggersParams) => {
     setLoading(true);
     try {
@@ -173,7 +173,7 @@ const QueueTriggerList = () => {
 
       let filtered = [...allMockTriggers];
 
-      // 关键词搜索
+      // 关键词Search
       if (params.keyword) {
         const kw = params.keyword.toLowerCase();
         filtered = filtered.filter(
@@ -183,17 +183,17 @@ const QueueTriggerList = () => {
         );
       }
 
-      // 按流程筛选
+      // 按ProcessFilter
       if (params.process_id) {
         filtered = filtered.filter((trigger) => trigger.process_id === params.process_id);
       }
 
-      // 按队列筛选
+      // 按队列Filter
       if (params.queue_id) {
         filtered = filtered.filter((trigger) => trigger.queue_id === params.queue_id);
       }
 
-      // 按状态筛选
+      // 按StatusFilter
       if (params.status) {
         filtered = filtered.filter((trigger) => trigger.status === params.status);
       }
@@ -207,7 +207,7 @@ const QueueTriggerList = () => {
         list: paged,
       });
     } catch (error) {
-      console.error('加载队列触发器列表失败:', error);
+      console.error('Loading队列触发器列表失败:', error);
       Toast.error(t('common.loadError'));
     } finally {
       setLoading(false);
@@ -219,7 +219,7 @@ const QueueTriggerList = () => {
     loadData(queryParams);
   }, [queryParams, loadData]);
 
-  // 搜索防抖
+  // Search防抖
   const handleSearch = useMemo(
     () =>
       debounce((value: string) => {
@@ -228,35 +228,35 @@ const QueueTriggerList = () => {
     []
   );
 
-  // 流程筛选
+  // ProcessFilter
   const handleProcessFilter = (processId: string | undefined) => {
     setQueryParams((prev) => ({ ...prev, offset: 0, process_id: processId }));
   };
 
-  // 队列筛选
+  // 队列Filter
   const handleQueueFilter = (queueId: string | undefined) => {
     setQueryParams((prev) => ({ ...prev, offset: 0, queue_id: queueId }));
   };
 
-  // 状态筛选
+  // StatusFilter
   const handleStatusFilter = (status: TriggerStatus | undefined) => {
     setQueryParams((prev) => ({ ...prev, offset: 0, status }));
   };
 
-  // 创建触发器成功
+  // Create触发器成功
   const handleCreateSuccess = () => {
     setCreateModalVisible(false);
     loadData(queryParams);
   };
 
-  // 编辑触发器成功
+  // Edit触发器成功
   const handleEditSuccess = () => {
     setEditModalVisible(false);
     setEditingTrigger(null);
     loadData(queryParams);
   };
 
-  // 打开编辑弹窗
+  // 打开Edit弹窗
   const handleOpenEditModal = (trigger: LYQueueTriggerResponse) => {
     setEditingTrigger(trigger);
     setEditModalVisible(true);
@@ -279,12 +279,12 @@ const QueueTriggerList = () => {
     setSelectedTrigger(trigger);
   };
 
-  // 启用/禁用触发器（直接切换，不弹窗确认）
+  // 启用/禁用触发器（直接切换，不弹窗Confirm）
   const handleToggleStatus = async (trigger: LYQueueTriggerResponse, checked: boolean) => {
     try {
       const newStatus: TriggerStatus = checked ? 'ENABLED' : 'DISABLED';
       
-      // 立即更新本地列表状态
+      // 立即更新本地列表Status
       setListResponse((prev) => ({
         ...prev,
         list: prev.list.map((t) =>
@@ -317,7 +317,7 @@ const QueueTriggerList = () => {
     }
   };
 
-  // 删除触发器
+  // Delete触发器
   const handleDeleteTrigger = (trigger: LYQueueTriggerResponse) => {
     Modal.confirm({
       title: t('queueTrigger.deleteModal.title'),
@@ -460,7 +460,7 @@ const QueueTriggerList = () => {
     },
   ];
 
-  // 判断是否有筛选条件
+  // 判断是否有Filter条件
   const hasFilters = queryParams.keyword || queryParams.process_id || queryParams.queue_id || queryParams.status;
 
   // currentIndex no longer needed - navigation handled by DetailDrawerWrapper
@@ -571,14 +571,14 @@ const QueueTriggerList = () => {
         />
       )}
 
-      {/* 创建弹窗 */}
+      {/* Create弹窗 */}
       <CreateQueueTriggerModal
         visible={createModalVisible}
         onCancel={() => setCreateModalVisible(false)}
         onSuccess={handleCreateSuccess}
       />
 
-      {/* 编辑弹窗 */}
+      {/* Edit弹窗 */}
       {editingTrigger && (
         <EditQueueTriggerModal
           visible={editModalVisible}

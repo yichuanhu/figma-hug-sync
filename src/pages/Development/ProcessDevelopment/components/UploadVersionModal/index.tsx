@@ -25,11 +25,11 @@ const UploadVersionModal = ({ visible, onCancel, processData, onSuccess }: Uploa
       const files = info.fileList;
       setFileList(files);
 
-      // 检查文件名是否与流程名称Mon致
+      // 检查文件名是否与ProcessNameMon致
       if (files.length > 0 && files[0].fileInstance && processData) {
         const fileName = files[0].fileInstance.name.replace('.bot', '');
         const processName = processData.name;
-        // 简单检查文件名是否包含流程名称
+        // 简单检查文件名是否包含ProcessName
         if (!fileName.includes(processName) && !processName.includes(fileName.split('(')[0])) {
           setShowNameMismatchWarning(true);
         } else {

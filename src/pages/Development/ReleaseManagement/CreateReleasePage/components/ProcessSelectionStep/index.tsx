@@ -38,19 +38,19 @@ interface ProcessSelectionStepProps {
 const generateMockVersions = (processIndex: number, isProcessPublished: boolean): ProcessVersion[] => {
   const versionCount = Math.floor(Math.random() * 3) + 2;
   
-  // 对于已Published process，随机决定是否有新Version可发布
+  // 对于已Published process，随机决定是否有新Version可Release
   const hasNewVersionAvailable = isProcessPublished && Math.random() > 0.5;
   
   return Array.from({ length: versionCount }, (_, i) => ({
     id: `ver-${processIndex + 1}-${i + 1}`,
     version: `v${versionCount - i}.${Math.floor(Math.random() * 10)}.0`,
-    // 如果有新Version可发布，只有最后Mon个Version是已发布的（不是最新的）
-    // 否则，第Mon个Version（最新）是已发布的
+    // 如果有新Version可Release，只有最后Mon个Version是已Release的（不是最新的）
+    // 否则，第Mon个Version（最新）是已Release的
     is_published: hasNewVersionAvailable ? i === versionCount - 1 : i === 0,
   }));
 };
 
-// 检查流程是否有新Version可发布
+// 检查Process是否有新Version可Release
 const hasNewVersionToPublish = (process: ProcessWithVersions): boolean => {
   if (!process.is_published) return false;
   
@@ -58,7 +58,7 @@ const hasNewVersionToPublish = (process: ProcessWithVersions): boolean => {
   const latestVersion = process.versions[0];
   if (!latestVersion) return false;
   
-  // 如果最新Version未发布，说明有新Version可发布
+  // 如果最新Version未Release，说明有新Version可Release
   return !latestVersion.is_published;
 };
 
@@ -75,25 +75,25 @@ const generateMockProcess = (index: number): ProcessWithVersions => {
     '数据清洗',
     '任务调度',
     'Sun志分析',
-    '这是Mon个超级超级长的自动化流程名称用来测试当流程名称特别长的时候UI是否能正确截断显示不会撑破布局导致样式错乱的边界情况',
-    '企业级跨部门多系统Data Sync与清洗流程_包含异常处理与重试机制_支持并发执行与优先级调度_Version迭代持续优化中',
-    '全球化多语言Order Processing与物流调度自动化流程',
+    '这是Mon个超级超级长的自动化ProcessName用来测试当ProcessName特别长的时候UI是否能正确截断显示不会撑破布局导致样式错乱的边界情况',
+    '企业级跨部门多系统Data Sync与清洗Process_包含异常处理与重试机制_支持并发执行与优先级调度_Version迭代持续优化中',
+    '全球化多语言Order Processing与物流调度自动化Process',
   ];
 
   const descriptions = [
-    'Customer Info Sync流程的详细描述',
-    'Order Processing流程的详细描述',
-    'Inventory Check流程的详细描述',
-    '报表生成器流程的详细描述',
-    '数据导入流程的详细描述',
-    '邮件发送流程的详细描述',
-    '文件处理流程的详细描述',
-    '数据清洗流程的详细描述',
-    '任务调度流程的详细描述',
-    'Sun志分析流程的详细描述',
-    '这是Mon段非常非常长的流程描述Text，用来测试当描述信息超出正常长度时，UI展示是否正确处理了Text截断或换行逻辑。该流程涵盖了客户数据采集、数据清洗、格式转换、目标系统写入、异常Sun志记录、重试机制触发、邮件通知发送等多个Step，每Mon步都包含详细的参数配置和校验规则，确保数据Mon致性和完整性。',
-    '企业级跨部门多系统Data Sync与清洗流程的描述，这个描述也非常长，包含了流程设计理念、技术架构、性能指标、安全策略、合规要求、运维规范等多方面内容。',
-    '全球化多语言Order Processing与物流调度自动化流程的完整描述信息',
+    'Customer Info SyncProcess的详细Description',
+    'Order ProcessingProcess的详细Description',
+    'Inventory CheckProcess的详细Description',
+    '报表生成器Process的详细Description',
+    '数据导入Process的详细Description',
+    '邮件发送Process的详细Description',
+    '文件处理Process的详细Description',
+    '数据清洗Process的详细Description',
+    '任务调度Process的详细Description',
+    'Sun志分析Process的详细Description',
+    '这是Mon段非常非常长的ProcessDescriptionText，用来测试当Description信息超出正常长度时，UI展示是否正确处理了Text截断或换行逻辑。该Process涵盖了客户数据采集、数据清洗、格式转换、目标系统写入、异常Sun志记录、重试机制触发、邮件通知发送等多个Step，每Mon步都包含详细的Parameter配置和校验规则，确保数据Mon致性和完整性。',
+    '企业级跨部门多系统Data Sync与清洗Process的Description，这个Description也非常长，包含了Process设计理念、技术架构、性能指标、安全策略、合规要求、运维规范等多方面内容。',
+    '全球化多语言Order Processing与物流调度自动化Process的完整Description信息',
   ];
 
   const isPublished = index % 3 !== 0;
@@ -135,21 +135,21 @@ const generateMockListResponse = (
     });
   }
 
-  // 排序规则：
-  // 1. 完全未发布的流程放在最前面
-  // 2. 已发布但有新Version可发布的流程排在第Tue
-  // 3. 已发布且没有新Version的流程排在最后面
+  // Sort规则：
+  // 1. 完全未Release的Process放在最前面
+  // 2. 已Release但有新Version可Release的Process排在第Tue
+  // 3. 已Release且没有新Version的Process排在最后面
   allData.sort((a, b) => {
     const aIsUnpublished = !a.is_published;
     const bIsUnpublished = !b.is_published;
     const aHasNewVersion = hasNewVersionToPublish(a);
     const bHasNewVersion = hasNewVersionToPublish(b);
     
-    // 未发布的排最前
+    // 未Release的排最前
     if (aIsUnpublished && !bIsUnpublished) return -1;
     if (!aIsUnpublished && bIsUnpublished) return 1;
     
-    // 都是已发布的情况下，有新Version的排前面
+    // 都是已Release的情况下，有新Version的排前面
     if (!aIsUnpublished && !bIsUnpublished) {
       if (aHasNewVersion && !bHasNewVersion) return -1;
       if (!aHasNewVersion && bHasNewVersion) return 1;
@@ -175,7 +175,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
   const [keyword, setKeyword] = useState('');
   const [statusFilter, setStatusFilter] = useState<string | undefined>(undefined);
 
-  // 加载数据
+  // Loading数据
   const loadData = async (searchKeyword = keyword) => {
     setLoading(true);
     try {
@@ -191,7 +191,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
     loadData();
   }, [statusFilter]);
 
-  // 搜索防抖
+  // Search防抖
   const handleSearch = useMemo(
     () =>
       debounce((value: string) => {
@@ -201,7 +201,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
     [statusFilter]
   );
 
-  // 已选流程ID集合（用于左侧显示勾选状态）
+  // 已选ProcessID集合（用于左侧显示勾选Status）
   const selectedIds = useMemo(() => {
     return new Set(selectedProcesses.map((sp) => sp.process.id));
   }, [selectedProcesses]);
@@ -225,7 +225,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
   // 全选左侧
   const handleLeftCheckAll = (checked: boolean) => {
     if (checked) {
-      // 添加所有未选的流程
+      // 添加所有未选的Process
       const unselectedProcesses = processList.filter((p) => !selectedIds.has(p.id));
       const newSelections: SelectedProcess[] = unselectedProcesses.map((process) => ({
         process,
@@ -234,7 +234,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
       }));
       onSelectionChange([...selectedProcesses, ...newSelections]);
     } else {
-      // 移除当前列表中所有已选的流程
+      // 移除当前列表中所有已选的Process
       const currentListIds = new Set(processList.map((p) => p.id));
       onSelectionChange(selectedProcesses.filter((sp) => !currentListIds.has(sp.process.id)));
     }
@@ -245,7 +245,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
     onSelectionChange(selectedProcesses.filter((sp) => sp.process.id !== processId));
   };
 
-  // 修改Version
+  // ModifyVersion
   const handleVersionChange = (processId: string, versionId: string) => {
     const process = processList.find((p) => p.id === processId);
     if (!process) return;
@@ -275,7 +275,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
   return (
     <div className="process-selection-step">
       <div className="transfer-container">
-        {/* 左侧：可选流程 */}
+        {/* 左侧：可选Process */}
         <div className="transfer-panel transfer-panel-left">
           <div className="transfer-panel-header">
             <Text strong>{t('release.create.availableProcesses')}</Text>
@@ -327,7 +327,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
                     const isSelected = selectedIds.has(process.id);
                     const hasNewVersion = hasNewVersionToPublish(process);
                     
-                    // 确定标签类型和文字
+                    // 确定标签Type和文字
                     let tagColor: 'green' | 'blue' | 'grey' = 'grey';
                     let tagText = t('release.create.processStatus.unpublished');
                     
@@ -382,7 +382,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
           </div>
         </div>
 
-        {/* 右侧：已选流程 */}
+        {/* 右侧：已选Process */}
         <div className="transfer-panel transfer-panel-right">
           <div className="transfer-panel-header">
             <Text strong>{t('release.create.selectedProcesses')}</Text>

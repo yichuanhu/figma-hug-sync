@@ -39,7 +39,7 @@ const mockWorkerGroups: LYWorkerGroupResponse[] = [
   {
     id: 'group-001',
     name: 'Finance Bot Group',
-    description: 'This is the core enterprise finance automation bot group，包含多台高性能机器人，专门用于执行财务相 automation flow任务。该组负责handling invoice recognition and entry、Expense Reimbursement Approval、Auto Financial Report与分发、银企对账、税务数据准备等关键业务流程。支持任务负载均衡和故障自动转移，确保业务连续性。',
+    description: 'This is the core enterprise finance automation bot group，Contains multiple high-performance bots，Specifically for executing财务相 automation flow任务。该组负责handling invoice recognition and entry、Expense Reimbursement Approval、Auto Financial Report与分发、银企对账、税务数据准备等关键业务Process。支持任务负载均衡和故障自动转移，确保业务连续性。',
     member_count: 5,
     creator_id: 'admin',
     creator_name: 'Admin',
@@ -49,7 +49,7 @@ const mockWorkerGroups: LYWorkerGroupResponse[] = [
   {
     id: 'group-002',
     name: 'HR Bot Group',
-    description: 'For HR审批、入职离职流程自动化',
+    description: 'For HR审批、入职离职Process自动化',
     member_count: 3,
     creator_id: 'hr_admin',
     creator_name: 'HRAdmin',
@@ -85,7 +85,7 @@ const fetchWorkerGroupList = async (params: GetWorkerGroupsParams): Promise<LYLi
   
   let data = [...mockWorkerGroups];
 
-  // 关键词搜索
+  // 关键词Search
   if (params.keyword?.trim()) {
     const keyword = params.keyword.toLowerCase().trim();
     data = data.filter(item => 
@@ -117,7 +117,7 @@ interface WorkerGroupManagementProps {
 const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: WorkerGroupManagementProps) => {
   const { t } = useTranslation();
   
-  // 查询参数
+  // 查询Parameter
   const [queryParams, setQueryParams] = useState<GetWorkerGroupsParams>({
     offset: 0,
     size: 20,
@@ -133,7 +133,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
     list: [],
   });
   
-  // 抽屉和弹窗状态
+  // 抽屉和弹窗Status
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState<LYWorkerGroupResponse | null>(null);
   const [createModalVisible, setCreateModalVisible] = useState(false);
@@ -142,7 +142,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
   const [addMembersModalVisible, setAddMembersModalVisible] = useState(false);
   const [addMembersTargetGroup, setAddMembersTargetGroup] = useState<LYWorkerGroupResponse | null>(null);
 
-  // 加载数据
+  // Loading数据
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
@@ -169,19 +169,19 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
     return response.list;
   }, [queryParams, listResponse.range?.size]);
 
-  // 当Tab switch到非激活状态时，关闭抽屉
+  // 当Tab switch到非激活Status时，关闭抽屉
   useEffect(() => {
     if (!isActive) {
       setDetailDrawerVisible(false);
     }
   }, [isActive]);
 
-  // 初始化加载
+  // 初始化Loading
   useEffect(() => {
     loadData();
   }, [loadData]);
 
-  // 搜索 - 防抖处理
+  // Search - 防抖处理
   const handleSearch = useMemo(
     () =>
       debounce((value: string) => {
@@ -196,7 +196,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
     setDetailDrawerVisible(true);
   };
 
-  // 编辑机器人组
+  // Edit机器人组
   const handleEdit = (group: LYWorkerGroupResponse, e?: React.MouseEvent) => {
     e?.stopPropagation();
     setEditingGroup(group);
@@ -210,7 +210,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
     setAddMembersModalVisible(true);
   };
 
-  // 从详情抽屉跳转到编辑
+  // 从详情抽屉跳转到Edit
   const handleEditFromDrawer = () => {
     if (selectedGroup) {
       setEditingGroup(selectedGroup);
@@ -218,7 +218,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
     }
   };
 
-  // 删除确认
+  // DeleteConfirm
   const handleDeleteClick = (group: LYWorkerGroupResponse, e?: React.MouseEvent) => {
     e?.stopPropagation();
 
@@ -238,14 +238,14 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
       okButtonProps: { type: 'danger' },
       onOk: async () => {
         try {
-          // 模拟删除 API 调用
+          // 模拟Delete API 调用
           await new Promise(resolve => setTimeout(resolve, 500));
           
           // 关闭抽屉
           setDetailDrawerVisible(false);
           setSelectedGroup(null);
           
-          // 重新加载数据
+          // 重新Loading数据
           loadData();
           
           Toast.success(t('workerGroup.deleteModal.success'));
@@ -257,19 +257,19 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
     });
   };
 
-  // 从详情抽屉删除
+  // 从详情抽屉Delete
   const handleDeleteFromDrawer = () => {
     if (selectedGroup) {
       handleDeleteClick(selectedGroup);
     }
   };
 
-  // 创建成功回调
+  // Create成功回调
   const handleCreateSuccess = () => {
     loadData();
   };
 
-  // 编辑成功回调
+  // Edit成功回调
   const handleEditSuccess = (updatedGroup: LYWorkerGroupResponse) => {
     // 更新列表数据
     setListResponse(prev => ({
@@ -485,14 +485,14 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
         }}
       />
 
-      {/* 创建弹窗 */}
+      {/* Create弹窗 */}
       <CreateWorkerGroupModal
         visible={createModalVisible}
         onCancel={() => setCreateModalVisible(false)}
         onSuccess={handleCreateSuccess}
       />
 
-      {/* 编辑弹窗 */}
+      {/* Edit弹窗 */}
       <EditWorkerGroupModal
         visible={editModalVisible}
         onCancel={() => setEditModalVisible(false)}

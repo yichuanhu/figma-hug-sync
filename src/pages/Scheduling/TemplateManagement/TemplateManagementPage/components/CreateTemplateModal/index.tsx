@@ -27,7 +27,7 @@ interface CreateTemplateModalProps {
   onSuccess: () => void;
 }
 
-// Mock 流程列表
+// Mock Process列表
 const mockProcesses: LYProcessActiveVersionResponse[] = [
   {
     process_id: 'proc-001',
@@ -41,7 +41,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     ],
     output_parameters: [
       { name: 'processedCount', type: 'NUMBER', description: 'Processed order count' },
-      { name: 'successRate', type: 'NUMBER', description: '处理成功率' },
+      { name: 'successRate', type: 'NUMBER', description: 'Processing success rate' },
       { name: 'errorList', type: 'TEXT', description: '错误订单列表' },
     ],
   },
@@ -55,7 +55,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
       { name: 'approvalCredential', type: 'CREDENTIAL', required: true, description: '审批凭据' },
     ],
     output_parameters: [
-      { name: 'approvalResult', type: 'BOOLEAN', description: '审批结果' },
+      { name: 'approvalResult', type: 'BOOLEAN', description: 'Approval result' },
       { name: 'approvalNote', type: 'TEXT', description: '审批意见' },
     ],
   },
@@ -84,7 +84,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
   },
 ];
 
-// Mock 执行目标
+// Mock Execution target
 const mockBotGroups = [
   { id: 'group-001', name: 'Order Processing Group', onlineCount: 3, totalCount: 5 },
   { id: 'group-002', name: 'Finance Approval Group', onlineCount: 2, totalCount: 3 },
@@ -106,7 +106,7 @@ const mockCredentials = [
   { id: 'cred-003', name: '数据库凭据' },
 ];
 
-// 已存在的模板名称 (模拟)
+// 已存在的模板Name (模拟)
 const existingTemplateNames = ['Order Processing Default Template', 'Finance Approval Quick Template'];
 
 const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateModalProps) => {
@@ -116,7 +116,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
   const [selectedProcess, setSelectedProcess] = useState<LYProcessActiveVersionResponse | null>(null);
   const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);
 
-  // 执行目标选项
+  // Execution target选项
   const targetOptions = useMemo(() => {
     if (targetType === 'BOT_GROUP') {
       return mockBotGroups.map((g) => ({
@@ -150,12 +150,12 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
     }
   }, [visible, formApi]);
 
-  // 选择流程
+  // 选择Process
   const handleProcessChange = useCallback((processId: string) => {
     const process = mockProcesses.find((p) => p.process_id === processId);
     setSelectedProcess(process || null);
     
-    // 初始化参数默认值
+    // 初始化Parameter默认值
     if (process && formApi) {
       process.parameters.forEach((param) => {
         if (param.default_value !== undefined && param.default_value !== null) {
@@ -165,7 +165,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
     }
   }, [formApi]);
 
-  // 验证模板名称唯Mon性
+  // 验证模板Name唯Mon性
   const validateTemplateName = useCallback((value: string) => {
     if (value && existingTemplateNames.includes(value.trim())) {
       return t('template.validation.nameExists');
@@ -173,7 +173,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
     return '';
   }, [t]);
 
-  // 渲染参数输入
+  // 渲染Parameter输入
   const renderParameterInput = (param: LYProcessParameterDefinition) => {
     const renderLabel = () => (
       <div className="create-template-modal-param-label">
@@ -245,14 +245,14 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
     }
   };
 
-  // 判断是否有参数需要填写
+  // 判断是否有Parameter需要填写
   const hasParameters = selectedProcess && selectedProcess.parameters.length > 0;
-  // 判断是否有输出参数
+  // 判断是否有输出Parameter
   const hasOutputParameters = selectedProcess && selectedProcess.output_parameters && selectedProcess.output_parameters.length > 0;
   // 右侧是否需要显示
   const showRightPanel = hasParameters || hasOutputParameters;
 
-  // 提交
+  // Submit
   const handleSubmit = async (values: Record<string, unknown>) => {
     setLoading(true);
     try {
@@ -267,7 +267,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
       // 模拟API调用
       await new Promise((resolve) => setTimeout(resolve, 500));
       
-      console.log('创建执行模板:', {
+      console.log('Create执行模板:', {
         template_name: (values.templateName as string).trim(),
         description: (values.description as string)?.trim() || null,
         process_id: values.processId,
@@ -283,7 +283,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
       Toast.success(t('template.createModal.success'));
       onSuccess();
     } catch (error) {
-      console.error('创建执行模板失败:', error);
+      console.error('Create执行模板失败:', error);
       Toast.error(t('template.createModal.error'));
     } finally {
       setLoading(false);
@@ -353,7 +353,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
                 />
               </div>
 
-              {/* 流程配置 */}
+              {/* Process config */}
               <div className="create-template-modal-section">
                 <div className="create-template-modal-section-title">
                   {t('template.createModal.processSection')}
@@ -372,7 +372,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
                 />
               </div>
 
-              {/* 执行目标 */}
+              {/* Execution target */}
               <div className="create-template-modal-section">
                 <div className="create-template-modal-section-title">
                   {t('template.createModal.targetSection')}
@@ -414,7 +414,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
                 )}
               </div>
 
-              {/* 执行设置 */}
+              {/* Execution settings */}
               <div className="create-template-modal-section">
                 <div className="create-template-modal-section-title">
                   {t('template.createModal.executionSection')}
@@ -478,11 +478,11 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
             </div>
           </div>
 
-          {/* 右侧：流程输入和流程输出 */}
+          {/* 右侧：Process输入和Process输出 */}
           {showRightPanel && (
             <div className="create-template-modal-right">
               <div className="create-template-modal-content">
-                {/* 流程输入 */}
+                {/* Process输入 */}
                 {hasParameters && (
                   <div className="create-template-modal-section">
                     <div className="create-template-modal-section-title">
@@ -494,7 +494,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
                   </div>
                 )}
 
-                {/* 流程输出（只读） */}
+                {/* Process输出（只读） */}
                 {hasOutputParameters && (
                   <div className="create-template-modal-section">
                     <div className="create-template-modal-section-title">

@@ -12,7 +12,7 @@ interface CreateWorkerGroupModalProps {
   onSuccess: () => void;
 }
 
-// 创建后生成的组信息
+// Create后生成的组信息
 interface CreatedGroupInfo {
   id: string;
   name: string;
@@ -27,7 +27,7 @@ const CreateWorkerGroupModal: React.FC<CreateWorkerGroupModalProps> = ({
   const [loading, setLoading] = useState(false);
   const [formApi, setFormApi] = useState<any>(null);
   
-  // 创建成功后的提示模态框
+  // Create成功后的提示模态框
   const [promptVisible, setPromptVisible] = useState(false);
   const [createdGroup, setCreatedGroup] = useState<CreatedGroupInfo | null>(null);
   
@@ -50,13 +50,13 @@ const CreateWorkerGroupModal: React.FC<CreateWorkerGroupModalProps> = ({
       await new Promise(resolve => setTimeout(resolve, 500));
       console.log('Creating bot group:', request);
       
-      // 模拟返回创建的组ID
+      // 模拟返回Create的组ID
       const newGroupId = `GROUP-${Date.now()}`;
       
       Toast.success(t('workerGroup.createModal.success'));
       formApi.reset();
       
-      // 保存创建的组信息，显示提示模态框
+      // SaveCreate的组信息，显示提示模态框
       setCreatedGroup({ id: newGroupId, name: values.name });
       onCancel(); // Close create modal first
       setPromptVisible(true); // Show add members prompt
@@ -94,7 +94,7 @@ const CreateWorkerGroupModal: React.FC<CreateWorkerGroupModalProps> = ({
     setCreatedGroup(null);
   };
 
-  // 取消添加成员
+  // Cancel添加成员
   const handleAddMembersCancel = () => {
     setAddMembersVisible(false);
     setCreatedGroup(null);
@@ -145,7 +145,7 @@ const CreateWorkerGroupModal: React.FC<CreateWorkerGroupModalProps> = ({
         </div>
       </Modal>
 
-      {/* 创建成功后的提示模态框 */}
+      {/* Create成功后的提示模态框 */}
       <Modal
         visible={promptVisible}
         title={t('workerGroup.createModal.addMembersPrompt.title')}

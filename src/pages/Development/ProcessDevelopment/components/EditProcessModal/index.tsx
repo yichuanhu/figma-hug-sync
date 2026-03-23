@@ -49,7 +49,7 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
 
     setLoading(true);
     try {
-      // 构建API请求参数 - 使用LYUpdateProcessRequest类型
+      // 构建API请求Parameter - 使用LYUpdateProcessRequestType
       const updateRequest: LYUpdateProcessRequest = {
         name: values.name as string,
         description: (values.description as string) || undefined,

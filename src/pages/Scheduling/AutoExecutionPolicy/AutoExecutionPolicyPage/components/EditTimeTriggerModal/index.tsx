@@ -68,7 +68,7 @@ const mockTemplates = [
   },
 ];
 
-// Mock 流程列表
+// Mock Process列表
 const mockProcesses: LYProcessActiveVersionResponse[] = [
   {
     process_id: 'proc-001',
@@ -82,7 +82,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     ],
     output_parameters: [
       { name: 'processedCount', type: 'NUMBER', description: 'Processed order count' },
-      { name: 'successRate', type: 'NUMBER', description: '处理成功率' },
+      { name: 'successRate', type: 'NUMBER', description: 'Processing success rate' },
     ],
   },
   {
@@ -94,7 +94,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
       { name: 'department', type: 'TEXT', required: true, description: 'Department name' },
     ],
     output_parameters: [
-      { name: 'approvalResult', type: 'BOOLEAN', description: '审批结果' },
+      { name: 'approvalResult', type: 'BOOLEAN', description: 'Approval result' },
     ],
   },
   {
@@ -120,7 +120,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
   },
 ];
 
-// Mock 执行目标
+// Mock Execution target
 const mockBotGroups = [
   { id: 'group-001', name: 'Order Processing Group', onlineCount: 3, totalCount: 5 },
   { id: 'group-002', name: 'Finance Approval Group', onlineCount: 2, totalCount: 3 },
@@ -144,14 +144,14 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
   const [formApi, setFormApi] = useState<any>(null);
   const [initialized, setInitialized] = useState(false);
 
-  // 第Tue步：任务配置 - 仅保留需要的状态
+  // 第Tue步：任务配置 - 仅保留需要的Status
   const [selectedProcess, setSelectedProcess] = useState<LYProcessActiveVersionResponse | null>(null);
   const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);
 
   // 第Wed步：Trigger Rules
   const [ruleType, setRuleType] = useState<TriggerRuleType>('BASIC');
   const [frequencyType, setFrequencyType] = useState<BasicFrequencyType>('DAILY');
-  // 基本类型配置
+  // 基本Type配置
   const [minuteInterval, setMinuteInterval] = useState<number>(5);
   const [hourInterval, setHourInterval] = useState<number>(2);
   const [minuteOfHour, setMinuteOfHour] = useState<number>(0);
@@ -166,7 +166,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
   const [startDateTime, setStartDateTime] = useState<Date | null>(new Date());
   const [endDateTime, setEndDateTime] = useState<Date | null>(null);
   const [endTimeType, setEndTimeType] = useState<'never' | 'custom'>('never');
-  // 工作Sun历
+  // Work Calendar
   const [enableWorkCalendar, setEnableWorkCalendar] = useState(false);
   const [workCalendarId, setWorkCalendarId] = useState<string | null>(null);
   const [workCalendarExecutionType, setWorkCalendarExecutionType] = useState<'WORKDAY' | 'NON_WORKDAY'>('WORKDAY');
@@ -283,7 +283,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
     }
   }, [visible]);
 
-  // 判断是否有参数需要填写
+  // 判断是否有Parameter需要填写
   const hasParameters = selectedProcess && selectedProcess.parameters.length > 0;
   const hasOutputParameters = selectedProcess && selectedProcess.output_parameters && selectedProcess.output_parameters.length > 0;
   const showRightPanel = (hasParameters || hasOutputParameters) && currentStep === 1;
@@ -347,7 +347,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
     return times;
   }, [startDateTime, ruleType, frequencyType, minuteInterval, hourInterval, triggerHour, triggerMinute]);
 
-  // 选择流程
+  // 选择Process
   const handleProcessChange = useCallback((processId: string) => {
     const process = mockProcesses.find((p) => p.process_id === processId);
     setSelectedProcess(process || null);
@@ -383,7 +383,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
     }
   }, [formApi, handleProcessChange]);
 
-  // 渲染参数输入
+  // 渲染Parameter输入
   const renderParameterInput = (param: LYProcessParameterDefinition) => {
     const renderLabel = () => (
       <div className="edit-time-trigger-modal-param-label">
@@ -531,7 +531,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
 
       const finalCronExpression = ruleType === 'CRON' ? cronExpression : generatedCronExpression;
       
-      console.log('编辑Time trigger:', {
+      console.log('EditTime trigger:', {
         trigger_id: trigger?.trigger_id,
         name: formValues?.triggerName?.trim(),
         description: formValues?.description?.trim() || null,
@@ -557,7 +557,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
       Toast.success(t('timeTrigger.editModal.success'));
       onSuccess();
     } catch (error) {
-      console.error('编辑Time trigger失败:', error);
+      console.error('EditTime trigger失败:', error);
       Toast.error(t('timeTrigger.editModal.error'));
     } finally {
       setLoading(false);
@@ -608,7 +608,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
         />
       </div>
 
-      {/* 流程配置 */}
+      {/* Process config */}
       <div className="edit-time-trigger-modal-section">
         <div className="edit-time-trigger-modal-section-title">{t('timeTrigger.createModal.processSection')}</div>
         <Form.Select
@@ -625,7 +625,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
         />
       </div>
 
-      {/* 执行目标 */}
+      {/* Execution target */}
       <div className="edit-time-trigger-modal-section">
         <div className="edit-time-trigger-modal-section-title">{t('timeTrigger.createModal.targetSection')}</div>
         <Form.RadioGroup
@@ -665,7 +665,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
         )}
       </div>
 
-      {/* 执行设置 */}
+      {/* Execution settings */}
       <div className="edit-time-trigger-modal-section">
         <div className="edit-time-trigger-modal-section-title">{t('timeTrigger.createModal.executionSection')}</div>
         <Form.RadioGroup
@@ -727,7 +727,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
     </>
   );
 
-  // 渲染Step1的右侧内容（参数配置）
+  // 渲染Step1的右侧内容（Parameter配置）
   const renderStep1RightContent = () => (
     <>
       {hasParameters && (
@@ -772,7 +772,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
   // 渲染Step2：Trigger Rules与预览
   const renderStep2Content = () => (
     <>
-      {/* 时间规则 - 使用 TriggerRuleConfig 组件 */}
+      {/* Time rules - Using TriggerRuleConfig component */}
       <TriggerRuleConfig
         ruleType={ruleType}
         onRuleTypeChange={setRuleType}
@@ -812,7 +812,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
         showWorkCalendar={true}
       />
 
-      {/* 触发预览 - 与Trigger Rules之间用横线分隔 */}
+      {/* Trigger preview - Separated from Trigger Rules by a line */}
       <div className="edit-time-trigger-modal-section" style={{ borderTop: '1px solid var(--semi-color-border)', paddingTop: 20 }}>
         <div className="edit-time-trigger-modal-section-title">{t('timeTrigger.createModal.previewSection')}</div>
         <div className="edit-time-trigger-modal-preview">
@@ -863,7 +863,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
           enableRecording: false,
         }}
       >
-        {/* Step条 */}
+        {/* Step bar */}
         <div className="edit-time-trigger-modal-steps">
           <Steps current={currentStep} type="basic" size="small">
             <Steps.Step title={t('timeTrigger.createModal.steps.basicInfo')} />
@@ -872,7 +872,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
           </Steps>
         </div>
 
-        {/* Content area域 */}
+        {/* Content area */}
         {currentStep === 0 && (
           <div className="edit-time-trigger-modal-content">
             {renderStep0Content()}
@@ -902,7 +902,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
           </div>
         )}
 
-        {/* 底部按钮 */}
+        {/* Footer buttons */}
         <div className="edit-time-trigger-modal-footer">
           <Button theme="light" onClick={onCancel}>
             {t('common.cancel')}

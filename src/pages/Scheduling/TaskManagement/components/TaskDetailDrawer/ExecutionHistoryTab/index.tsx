@@ -37,7 +37,7 @@ interface ExecutionHistoryTabProps {
   enableRecording: boolean;
 }
 
-// 执行状态配置
+// 执行Status配置
 const executionStatusConfig: Record<ExecutionStatus, { color: 'blue' | 'green' | 'red' | 'grey' | 'orange'; i18nKey: string }> = {
   RUNNING: { color: 'blue', i18nKey: 'task.executionStatus.running' },
   SUCCESS: { color: 'green', i18nKey: 'task.executionStatus.success' },
@@ -57,7 +57,7 @@ const generateUUID = (): string => {
 
 // Mock数据生成
 const generateMockExecution = (taskId: string, index: number): LYTaskExecutionResponse => {
-  // 第Mon条记录用 SUCCESS 状态，这样用户可以看到查看录屏按钮
+  // 第Mon records用 SUCCESS Status，这样用户可以看到View录屏按钮
   const statuses: ExecutionStatus[] = ['SUCCESS', 'RUNNING', 'FAILED', 'SUCCESS', 'TIMEOUT', 'STOPPED'];
   const botNames = ['RPA-BOT-001', 'RPA-BOT-002', 'RPA-BOT-003', 'RPA-BOT-004', 'RPA-BOT-005', 'RPA-BOT-006'];
   // 最新的时间在前面，index越小时间越新
@@ -120,7 +120,7 @@ const ExecutionHistoryTab = ({ taskId, taskName, enableRecording }: ExecutionHis
   const [infoCollapsed, setInfoCollapsed] = useState(false);
   const [screenshotModalVisible, setScreenshotModalVisible] = useState(false);
   
-  // 加载数据
+  // Loading数据
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
@@ -147,7 +147,7 @@ const ExecutionHistoryTab = ({ taskId, taskName, enableRecording }: ExecutionHis
     return executions.find((e) => e.execution_id === selectedExecutionId) || null;
   }, [executions, selectedExecutionId]);
   
-  // 查看录屏
+  // View录屏
   const handleViewRecording = useCallback(() => {
     if (selectedExecution) {
       // 传递 taskId 和 activeTab 以便返回时重新打开抽屉并定位到执行历史tab
@@ -155,7 +155,7 @@ const ExecutionHistoryTab = ({ taskId, taskName, enableRecording }: ExecutionHis
     }
   }, [navigate, selectedExecution, taskId]);
   
-  // 查看screenshot
+  // Viewscreenshot
   const handleViewScreenshots = useCallback(() => {
     setScreenshotModalVisible(true);
   }, []);
@@ -165,7 +165,7 @@ const ExecutionHistoryTab = ({ taskId, taskName, enableRecording }: ExecutionHis
     setScreenshotModalVisible(false);
   }, []);
   
-  // 执行信息描述数据
+  // 执行信息Description数据
   const executionInfoData = useMemo(() => {
     if (!selectedExecution) return [];
     return [
@@ -186,10 +186,10 @@ const ExecutionHistoryTab = ({ taskId, taskName, enableRecording }: ExecutionHis
     ];
   }, [selectedExecution, t]);
   
-  // 是否显示查看录屏按钮
+  // 是否显示View录屏按钮
   const showRecordingButton = enableRecording && selectedExecution?.status !== 'RUNNING';
   
-  // 是否显示查看screenshot按钮
+  // 是否显示Viewscreenshot按钮
   const showScreenshotButton = (selectedExecution?.screenshot_count || 0) > 0;
   
   if (loading && executions.length === 0) {
@@ -318,7 +318,7 @@ const ExecutionHistoryTab = ({ taskId, taskName, enableRecording }: ExecutionHis
         )}
       </div>
       
-      {/* screenshot查看弹窗 */}
+      {/* screenshotView弹窗 */}
       {selectedExecution && (
         <ScreenshotViewModal
           visible={screenshotModalVisible}

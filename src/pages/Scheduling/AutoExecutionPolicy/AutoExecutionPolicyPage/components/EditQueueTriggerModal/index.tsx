@@ -68,7 +68,7 @@ const mockTemplates = [
   },
 ];
 
-// Mock 流程列表
+// Mock Process列表
 const mockProcesses: LYProcessActiveVersionResponse[] = [
   {
     process_id: 'proc-001',
@@ -121,7 +121,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
 const mockQueues = [
   { queue_id: 'queue-001', queue_name: 'Pending Orders Queue', monitored: false },
   { queue_id: 'queue-002', queue_name: 'Approval Tasks Queue', monitored: true },
-  { queue_id: 'queue-003', queue_name: 'Data Sync队列', monitored: false },
+  { queue_id: 'queue-003', queue_name: 'Data Sync Queue', monitored: false },
   { queue_id: 'queue-004', queue_name: 'Report Generation Queue', monitored: false },
 ];
 
@@ -149,7 +149,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
   const [minEffectiveMessages, setMinEffectiveMessages] = useState(1);
   const [enablePeriodicCheck, setEnablePeriodicCheck] = useState(false);
 
-  // 判断是否有参数需要填写
+  // 判断是否有Parameter需要填写
   const hasParameters = selectedProcess && selectedProcess.parameters.length > 0;
   const hasOutputParameters = selectedProcess && selectedProcess.output_parameters && selectedProcess.output_parameters.length > 0;
   const showRightPanel = (hasParameters || hasOutputParameters) && currentStep === 1;
@@ -157,7 +157,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
   // 初始化表单数据
   useEffect(() => {
     if (visible && trigger && formApi && !initialized) {
-      // 查找对应的流程
+      // 查找对应的Process
       const process = mockProcesses.find((p) => p.process_id === trigger.process_id);
       setSelectedProcess(process || null);
       setTargetType(trigger.execution_target_type);
@@ -207,7 +207,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
     }
   }, [visible]);
 
-  // 选择流程
+  // 选择Process
   const handleProcessChange = (processId: string) => {
     const process = mockProcesses.find((p) => p.process_id === processId);
     setSelectedProcess(process || null);
@@ -243,7 +243,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
     }
   };
 
-  // 渲染参数输入
+  // 渲染Parameter输入
   const renderParameterInput = (param: LYProcessParameterDefinition) => {
     const renderLabel = () => (
       <div className="edit-queue-trigger-modal-param-label">
@@ -384,7 +384,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
     setCurrentStep((prev) => prev - 1);
   };
 
-  // 提交
+  // Submit
   const handleSubmit = async () => {
     const isValid = await validateStep(currentStep);
     if (!isValid) return;
@@ -401,7 +401,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
         });
       }
 
-      console.log('更新队列触发器:', {
+      console.log('Updating queue trigger:', {
         trigger_id: trigger.trigger_id,
         name: formValues?.triggerName?.trim(),
         description: formValues?.description?.trim() || null,
@@ -427,7 +427,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
       Toast.success(t('queueTrigger.editModal.success'));
       onSuccess();
     } catch (error) {
-      console.error('更新队列触发器失败:', error);
+      console.error('Failed to update queue trigger:', error);
       Toast.error(t('queueTrigger.editModal.error'));
     } finally {
       setLoading(false);
@@ -478,7 +478,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
         />
       </div>
 
-      {/* 流程配置 */}
+      {/* Process config */}
       <div className="edit-queue-trigger-modal-section">
         <div className="edit-queue-trigger-modal-section-title">{t('queueTrigger.createModal.processSection')}</div>
         <Form.Select
@@ -495,7 +495,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
         />
       </div>
 
-      {/* 执行目标 */}
+      {/* Execution target */}
       <div className="edit-queue-trigger-modal-section">
         <div className="edit-queue-trigger-modal-section-title">{t('queueTrigger.createModal.targetSection')}</div>
         <Form.RadioGroup
@@ -535,7 +535,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
         )}
       </div>
 
-      {/* 执行设置 */}
+      {/* Execution settings */}
       <div className="edit-queue-trigger-modal-section">
         <div className="edit-queue-trigger-modal-section-title">{t('queueTrigger.createModal.executionSection')}</div>
         <Form.RadioGroup
@@ -597,10 +597,10 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
     </>
   );
 
-  // 渲染Step1右侧：参数配置
+  // 渲染Step1右侧：Parameter配置
   const renderStep1RightContent = () => (
     <>
-      {/* 输入参数 */}
+      {/* Input parameters */}
       {hasParameters && (
         <div className="edit-queue-trigger-modal-section">
           <div className="edit-queue-trigger-modal-section-title">{t('queueTrigger.createModal.parameterSection')}</div>
@@ -610,7 +610,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
         </div>
       )}
 
-      {/* 输出参数展示 */}
+      {/* Output parameters display */}
       {hasOutputParameters && (
         <div className="edit-queue-trigger-modal-section">
           <div className="edit-queue-trigger-modal-section-title">{t('template.createModal.outputParametersSection')}</div>
@@ -632,7 +632,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
         </div>
       )}
 
-      {/* 如果没有任何参数 */}
+      {/* If no parameters */}
       {!hasParameters && !hasOutputParameters && (
         <div className="edit-queue-trigger-modal-no-params">
           <Inbox size={36} strokeWidth={2} style={{ color: 'var(--semi-color-text-2)', marginBottom: 8 }} />
@@ -647,7 +647,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
     <div className="edit-queue-trigger-modal-section">
       <div className="edit-queue-trigger-modal-section-title">{t('queueTrigger.createModal.queueSection')}</div>
       
-      {/* 触发器时区 */}
+      {/* Trigger timezone */}
       <Form.Select
         field="timeZone"
         label={t('queueTrigger.fields.timeZone')}
@@ -666,7 +666,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
         ))}
       </Form.Select>
 
-      {/* 启用工作Sun历 */}
+      {/* Enable work calendar */}
       <div className="edit-queue-trigger-modal-field">
         <div className="semi-form-field-label-text">{t('queueTrigger.fields.enableWorkCalendar')}</div>
         <Form.Switch
@@ -697,7 +697,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
         </>
       )}
 
-      {/* 监控队列 */}
+      {/* Monitor queue */}
       <Form.Select
         field="queueId"
         label={t('queueTrigger.fields.monitoredQueue')}
@@ -717,14 +717,14 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
             <Select.Option {...rest} value={value} disabled={disabled} selected={selected}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
                 <span>{label}</span>
-                {disabled && !isCurrentQueue && <Tag size="small" color="orange">已被监控</Tag>}
+                {disabled && !isCurrentQueue && <Tag size="small" color="orange">Already monitored</Tag>}
               </div>
             </Select.Option>
           );
         }}
       />
 
-      {/* 触发最少有效消息数 */}
+      {/* Min effective messages to trigger */}
       <Form.InputNumber
         field="minEffectiveMessages"
         label={t('queueTrigger.fields.minEffectiveMessages')}
@@ -739,7 +739,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
         style={{ width: '100%' }}
       />
 
-      {/* 启用定时检查 - 仅当 minEffectiveMessages > 1 时显示 */}
+      {/* Enable scheduled check - Only when minEffectiveMessages > 1 is shown */}
       {minEffectiveMessages > 1 && (
         <>
           <div className="edit-queue-trigger-modal-field">
@@ -774,7 +774,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
         </>
       )}
 
-      {/* 平均每若干条消息触发Mon次 */}
+      {/* Trigger once per N messages */}
       <Form.InputNumber
         field="messagesPerTrigger"
         label={t('queueTrigger.fields.messagesPerTrigger')}
@@ -809,7 +809,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
         labelPosition="top"
         getFormApi={setFormApi}
       >
-        {/* Step条 */}
+        {/* Step bar */}
         <div className="edit-queue-trigger-modal-steps">
           <Steps current={currentStep} type="basic" size="small">
             <Steps.Step title={t('queueTrigger.createModal.steps.basicInfo')} />
@@ -818,7 +818,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
           </Steps>
         </div>
 
-        {/* Content area域 */}
+        {/* Content area */}
         {currentStep === 0 && (
           <div className="edit-queue-trigger-modal-content">
             {renderStep0Content()}
@@ -848,7 +848,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
           </div>
         )}
 
-        {/* 底部按钮 */}
+        {/* Footer buttons */}
         <div className="edit-queue-trigger-modal-footer">
           <Button theme="light" onClick={onCancel}>
             {t('common.cancel')}

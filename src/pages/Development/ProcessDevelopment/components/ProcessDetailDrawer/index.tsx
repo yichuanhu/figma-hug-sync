@@ -95,12 +95,12 @@ const generateMockVersionData = (): VersionDetailData[] => {
     usage_instructions_url: 'https://docs.example.com/usage',
     development_environment: 'Win10 | X86',
     inputs: [
-      { name: 'inputParam1', type: 'Text' as const, value: '默认值', description: '输入参数1的描述' },
+      { name: 'inputParam1', type: 'Text' as const, value: '默认值', description: 'Input parameters1的Description' },
       { name: 'inputParam2', type: 'Boolean' as const, value: 'true', description: '是否启用某功能' },
     ],
     outputs: [
       { name: 'outputResult', type: 'Text' as const, value: '', description: '输出结果' },
-      { name: 'outputStatus', type: 'Number' as const, value: '0', description: '执行状态码' },
+      { name: 'outputStatus', type: 'Number' as const, value: '0', description: '执行Status码' },
     ],
   }));
 };
@@ -269,7 +269,7 @@ const ProcessDetailDrawer = ({
     return data;
   }, [versionData]);
 
-  // 计算最新激活Version（已发布Version中 publish_time 最新的）
+  // 计算最新激活Version（已ReleaseVersion中 publish_time 最新的）
   const latestActiveVersionId = useMemo(() => {
     const activeVersions = sortedVersionData.filter(v => v.is_active && v.publish_time);
     if (activeVersions.length === 0) return null;

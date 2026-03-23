@@ -165,7 +165,7 @@ const SyncRecordingPlayer = ({
     }));
   }, [errorMarkers, duration]);
   
-  // 渲染加载状态
+  // 渲染LoadingStatus
   if (loading) {
     return (
       <div className="sync-recording-player">
@@ -177,7 +177,7 @@ const SyncRecordingPlayer = ({
     );
   }
   
-  // 渲染错误状态
+  // 渲染错误Status
   if (error || !recording) {
     return (
       <div className="sync-recording-player">

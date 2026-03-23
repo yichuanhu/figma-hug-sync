@@ -56,7 +56,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
   const { t } = useTranslation();
   const [addResourceModalVisible, setAddResourceModalVisible] = useState(false);
 
-  // 发布类型选项
+  // ReleaseType选项
   const releaseTypeOptions = [
     { value: 'FIRST_RELEASE', label: t('release.releaseTypes.FIRST_RELEASE') },
     { value: 'REQUIREMENT_CHANGE', label: t('release.releaseTypes.REQUIREMENT_CHANGE') },
@@ -66,7 +66,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
     { value: 'VERSION_ROLLBACK', label: t('release.releaseTypes.VERSION_ROLLBACK') },
   ];
 
-  // 按类型分组资源
+  // 按Type分组Resource
   const groupedResources = useMemo(() => {
     const groups: Record<ResourceType, ResourceConfig[]> = {
       PARAMETER: [],
@@ -82,7 +82,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
     return groups;
   }, [resources]);
 
-  // 更新资源配置
+  // 更新Resource配置
   const updateResource = (resourceId: string, updates: Partial<ResourceConfig>) => {
     onResourcesChange(
       resources.map((r) =>
@@ -91,20 +91,20 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
     );
   };
 
-  // 删除手动添加的资源
+  // Delete手动添加的Resource
   const removeManualResource = (resourceId: string) => {
     onResourcesChange(resources.filter((r) => r.resource_id !== resourceId));
   };
 
-  // 添加手动资源
+  // 添加手动Resource
   const handleAddResources = (newResources: ResourceConfig[]) => {
     onResourcesChange([...resources, ...newResources]);
   };
 
-  // 已添加资源的 ID 列表
+  // 已添加Resource的 ID 列表
   const existingResourceIds = useMemo(() => resources.map((r) => r.resource_id), [resources]);
 
-  // 资源类型标签
+  // ResourceType标签
   const resourceTypeLabels: Record<ResourceType, string> = {
     PARAMETER: t('release.create.resourceTypes.parameter'),
     CREDENTIAL: t('release.create.resourceTypes.credential'),
@@ -112,7 +112,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
     FILE: t('release.create.resourceTypes.file'),
   };
 
-  // 渲染资源卡片
+  // 渲染Resource卡片
   const renderResourceCard = (resource: ResourceConfig) => {
     const isCredential = resource.resource_type === 'CREDENTIAL';
     const isQueue = resource.resource_type === 'QUEUE';
@@ -304,7 +304,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
     );
   };
 
-  // 渲染资源分组
+  // 渲染Resource分组
   const renderResourceGroup = (type: ResourceType, resourceList: ResourceConfig[]) => {
     if (resourceList.length === 0) return null;
 
@@ -427,7 +427,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
         </div>
       </Card>
 
-      {/* 添加资源模态框 */}
+      {/* 添加Resource模态框 */}
       <AddResourceModal
         visible={addResourceModalVisible}
         onClose={() => setAddResourceModalVisible(false)}

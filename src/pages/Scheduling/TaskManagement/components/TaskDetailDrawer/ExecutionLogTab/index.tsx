@@ -49,7 +49,7 @@ const logLevelConfig: Record<LogLevel, { color: 'grey' | 'blue' | 'orange' | 're
 // Sun志消息截断阈值
 const MESSAGE_TRUNCATE_LENGTH = 200;
 
-// 自动刷新间隔（毫秒）
+// 自动刷新间隔（毫s）
 const AUTO_REFRESH_INTERVAL = 10000;
 
 // Mock 数据生成
@@ -60,9 +60,9 @@ const generateMockLog = (index: number): LYExecutionLogResponse => {
     'Initializing process engine...',
     'Successfully connected to database server',
     'Starting step 1: Reading input parameters',
-    '警告: 输入参数中存在空值，使用默认值替代',
+    '警告: Input parameters中存在空值，使用默认值替代',
     '错误: 无法连接到目标服务器，请检查网络设置。错误代码: CONN_TIMEOUT，详细信息: 连接超时，目标地址: 192.168.1.100:8080，Retry count: 3，最后尝试时间: 2026-01-30 10:30:00',
-    'Step 2 执行完成，耗时 1.5 秒',
+    'Step 2 执行完成，耗时 1.5 s',
     '正在处理数据转换...',
     '数据验证通过',
     '写入输出结果到文件',
@@ -92,7 +92,7 @@ const generateMockSummary = (): LYLogSummaryResponse => ({
 const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: ExecutionLogTabProps) => {
   const { t } = useTranslation();
   
-  // 状态
+  // Status
   const [loading, setLoading] = useState(false);
   const [listResponse, setListResponse] = useState<LYListResponseLYExecutionLogResponse>({
     range: { offset: 0, size: 50, total: 0 },
@@ -111,7 +111,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
   // 自动刷新定时器
   const refreshTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   
-  // 加载Sun志数据
+  // LoadingSun志数据
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
@@ -122,7 +122,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
         generateMockLog(((queryParams.page || 1) - 1) * 50 + i)
       );
       
-      // 应用关键字筛选
+      // 应用关键字Filter
       let filteredLogs = mockLogs;
       if (queryParams.keyword) {
         filteredLogs = mockLogs.filter((log) =>
@@ -130,7 +130,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
         );
       }
       
-      // 应用级别筛选
+      // 应用级别Filter
       if (queryParams.log_level) {
         filteredLogs = filteredLogs.filter((log) => log.log_level === queryParams.log_level);
       }
@@ -144,7 +144,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
         list: filteredLogs,
       });
       
-      // 首次加载时获取统计
+      // 首次Loading时获取统计
       if (!summary) {
         setSummary(generateMockSummary());
       }
@@ -155,7 +155,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
     }
   }, [queryParams, summary, t]);
   
-  // 初始加载
+  // 初始Loading
   useEffect(() => {
     loadData();
   }, [loadData]);
@@ -175,7 +175,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
     };
   }, [executionStatus, loadData]);
   
-  // 搜索防抖
+  // Search防抖
   const handleSearch = useMemo(
     () =>
       debounce((value: string) => {
@@ -190,7 +190,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
   const pageSize = queryParams.page_size || 50;
   const total = range?.total || 0;
   
-  // 确认筛选
+  // ConfirmFilter
   const handleConfirmFilter = useCallback((values: Record<string, unknown>) => {
     const newLevelFilter = (values.logLevel as LogLevel[]) || [];
     const newDateRange = (values.dateRange as [Date, Date] | null) || null;
@@ -242,7 +242,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
     }
   }, [executionId, list, total, t]);
   
-  // 查看完整消息
+  // View完整消息
   const showFullMessage = useCallback((log: LYExecutionLogResponse) => {
     Modal.info({
       title: t('taskLog.fullMessage'),
@@ -262,7 +262,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
     });
   }, [t]);
   
-  // 筛选按钮状态
+  // Filter按钮Status
   const hasActiveFilter = !!queryParams.log_level;
   const filterCount = queryParams.log_level ? 1 : 0;
   
@@ -351,7 +351,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
     ];
   }, [t]);
 
-  // 筛选配置
+  // Filter配置
   const filterSections = useMemo(() => [
     {
       key: 'dateRange',

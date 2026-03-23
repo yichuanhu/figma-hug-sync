@@ -70,7 +70,7 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
   const handleSubmit = async (values: Record<string, unknown>) => {
     setLoading(true);
     try {
-      // 构建API请求参数 - 使用LYCreateProcessRequest类型
+      // 构建API请求Parameter - 使用LYCreateProcessRequestType
       const createRequest: LYCreateProcessRequest = {
         name: values.name as string,
         description: (values.description as string) || undefined,

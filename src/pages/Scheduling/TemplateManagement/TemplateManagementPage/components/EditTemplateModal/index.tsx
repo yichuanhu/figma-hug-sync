@@ -29,7 +29,7 @@ interface EditTemplateModalProps {
   onSuccess: () => void;
 }
 
-// Mock 流程列表
+// Mock Process列表
 const mockProcesses: LYProcessActiveVersionResponse[] = [
   {
     process_id: 'proc-001',
@@ -43,7 +43,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     ],
     output_parameters: [
       { name: 'processedCount', type: 'NUMBER', description: 'Processed order count' },
-      { name: 'successRate', type: 'NUMBER', description: '处理成功率' },
+      { name: 'successRate', type: 'NUMBER', description: 'Processing success rate' },
     ],
   },
   {
@@ -56,7 +56,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
       { name: 'approvalCredential', type: 'CREDENTIAL', required: true, description: '审批凭据' },
     ],
     output_parameters: [
-      { name: 'approvalStatus', type: 'TEXT', description: '审批状态' },
+      { name: 'approvalStatus', type: 'TEXT', description: '审批Status' },
       { name: 'approvedAmount', type: 'NUMBER', description: '审批通过金额' },
     ],
   },
@@ -87,7 +87,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
   },
 ];
 
-// Mock 执行目标
+// Mock Execution target
 const mockBotGroups = [
   { id: 'group-001', name: 'Order Processing Group', onlineCount: 3, totalCount: 5 },
   { id: 'group-002', name: 'Finance Approval Group', onlineCount: 2, totalCount: 3 },
@@ -116,7 +116,7 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
   const [selectedProcess, setSelectedProcess] = useState<LYProcessActiveVersionResponse | null>(null);
   const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);
 
-  // 执行目标选项
+  // Execution target选项
   const targetOptions = useMemo(() => {
     if (targetType === 'BOT_GROUP') {
       return mockBotGroups.map((g) => ({
@@ -175,12 +175,12 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
     }
   }, [visible, formApi]);
 
-  // 选择流程
+  // 选择Process
   const handleProcessChange = useCallback((processId: string) => {
     const process = mockProcesses.find((p) => p.process_id === processId);
     setSelectedProcess(process || null);
     
-    // 初始化参数默认值
+    // 初始化Parameter默认值
     if (process && formApi) {
       process.parameters.forEach((param) => {
         if (param.default_value !== undefined && param.default_value !== null) {
@@ -190,7 +190,7 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
     }
   }, [formApi]);
 
-  // 渲染参数输入
+  // 渲染Parameter输入
   const renderParameterInput = (param: LYProcessParameterDefinition) => {
     const renderLabel = () => (
       <div className="edit-template-modal-param-label">
@@ -262,12 +262,12 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
     }
   };
 
-  // 判断是否有参数
+  // 判断是否有Parameter
   const hasParameters = selectedProcess && selectedProcess.parameters.length > 0;
   const hasOutputParameters = selectedProcess && selectedProcess.output_parameters && selectedProcess.output_parameters.length > 0;
   const showRightPanel = hasParameters || hasOutputParameters;
 
-  // 提交
+  // Submit
   const handleSubmit = async (values: Record<string, unknown>) => {
     setLoading(true);
     try {
@@ -360,7 +360,7 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
                 />
               </div>
 
-              {/* 流程选择 */}
+              {/* Process选择 */}
               <div className="edit-template-modal-section">
                 <div className="edit-template-modal-section-title">
                   {t('template.createModal.processSection')}
@@ -386,7 +386,7 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
                 )}
               </div>
 
-              {/* 执行目标 */}
+              {/* Execution target */}
               <div className="edit-template-modal-section">
                 <div className="edit-template-modal-section-title">
                   {t('template.createModal.targetSection')}
@@ -493,11 +493,11 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
             </div>
           </div>
 
-          {/* 右侧：流程参数 */}
+          {/* 右侧：ProcessParameter */}
           {showRightPanel && (
             <div className="edit-template-modal-right">
               <div className="edit-template-modal-content">
-                {/* 流程输入参数 */}
+                {/* ProcessInput parameters */}
                 {hasParameters && (
                   <div className="edit-template-modal-section">
                     <div className="edit-template-modal-section-title">
@@ -509,7 +509,7 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
                   </div>
                 )}
 
-                {/* 流程输出参数 */}
+                {/* Process输出Parameter */}
                 {hasOutputParameters && (
                   <div className="edit-template-modal-section">
                     <div className="edit-template-modal-section-title">
@@ -539,7 +539,7 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
           )}
         </div>
 
-        {/* 底部按钮 */}
+        {/* Footer buttons */}
         <div className="edit-template-modal-footer">
           <Button theme="light" onClick={onCancel}>
             {t('common.cancel')}

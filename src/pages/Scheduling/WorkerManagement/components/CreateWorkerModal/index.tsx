@@ -28,14 +28,14 @@ const generateUUID = (): string => {
   });
 };
 
-// Mock已有机器人列表（包含桌面类型信息）
+// Mock已有机器人列表（包含桌面Type信息）
 const existingWorkers: Array<{ id: string; name: string; desktop_type: 'Console' | 'NotConsole' }> = [
   { id: '1', name: 'Finance Bot-01', desktop_type: 'Console' },
   { id: '2', name: 'Finance Bot-02', desktop_type: 'NotConsole' },
   { id: '3', name: 'HR Bot-01', desktop_type: 'NotConsole' },
 ];
 
-// 已存在的机器人名称（用于唯Mon性校验）
+// 已存在的机器人Name（用于唯Mon性校验）
 const existingWorkerNames = ['Finance Bot-01', 'Finance Bot-02', 'Finance Bot-03', 'HR Bot-01', 'Ops Bot-01', '测试机器人-01'];
 
 const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalProps) => {
@@ -46,7 +46,7 @@ const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalPr
   const [desktopType, setDesktopType] = useState<string>('Console');
   const [isLocalDesktopDisabled, setIsLocalDesktopDisabled] = useState(false);
 
-  // 当选择的已有机器人变化时，检查其桌面类型
+  // 当选择的已有机器人变化时，检查其桌面Type
   useEffect(() => {
     if (useSameDevice && selectedWorkerId) {
       const selectedWorker = existingWorkers.find(w => w.id === selectedWorkerId);
@@ -62,7 +62,7 @@ const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalPr
     }
   }, [useSameDevice, selectedWorkerId]);
 
-  // 当取消勾选"同Mon机器"时重置状态
+  // 当Cancel勾选"同Mon机器"时重置Status
   useEffect(() => {
     if (!useSameDevice) {
       setSelectedWorkerId(undefined);
@@ -70,7 +70,7 @@ const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalPr
     }
   }, [useSameDevice]);
 
-  // 名称唯Mon性校验
+  // Name唯Mon性校验
   const validateWorkerNameUnique = (rule: unknown, value: string, callback: (error?: string) => void) => {
     if (value && existingWorkerNames.includes(value.trim())) {
       callback(t('worker.create.validation.nameExists'));

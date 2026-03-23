@@ -69,7 +69,7 @@ const QueueTriggerDetailDrawer = ({
   const [activeTab, setActiveTab] = useState('basic');
   const [executionLogs, setExecutionLogs] = useState<LYQueueTriggerExecutionLogResponse[]>([]);
 
-  // 加载执行记录
+  // Loading执行记录
   useEffect(() => {
     if (visible && trigger) {
       setExecutionLogs(generateMockExecutionLogs(trigger.trigger_id));
@@ -82,7 +82,7 @@ const QueueTriggerDetailDrawer = ({
     return new Date(time).toLocaleString('zh-CN');
   };
 
-  // 抽屉关闭时重置状态
+  // 抽屉关闭时重置Status
   const handleClose = () => {
     setActiveTab('basic');
     onClose();
@@ -277,7 +277,7 @@ const QueueTriggerDetailDrawer = ({
               </Descriptions>
             </div>
 
-            {/* 状态监控 */}
+            {/* Status监控 */}
             <div className="queue-trigger-detail-drawer-section">
               <Text className="queue-trigger-detail-drawer-section-title">
                 {t('queueTrigger.detail.statusMonitor')}
@@ -310,7 +310,7 @@ const QueueTriggerDetailDrawer = ({
               </div>
             </div>
 
-            {/* 输入参数 */}
+            {/* Input parameters */}
             <div className="queue-trigger-detail-drawer-section">
               <Text className="queue-trigger-detail-drawer-section-title">
                 {t('queueTrigger.detail.inputParameters')}

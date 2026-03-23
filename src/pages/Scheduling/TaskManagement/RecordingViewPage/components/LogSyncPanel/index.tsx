@@ -40,7 +40,7 @@ const formatTimestamp = (isoString: string): string => {
   return isoString.replace('T', ' ').substring(11, 19);
 };
 
-// 解析Sun志时间为秒数（相对于录屏开始时间）
+// 解析Sun志时间为s数（相对于录屏开始时间）
 const parseLogTimeToSeconds = (logTime: string, startTime: string): number => {
   const logDate = new Date(logTime).getTime();
   const startDate = new Date(startTime).getTime();
@@ -65,7 +65,7 @@ const LogSyncPanel = ({
     return logs.length > 0 ? logs[0].log_time : new Date().toISOString();
   }, [logs]);
   
-  // 搜索过滤
+  // Search过滤
   const handleSearch = useMemo(
     () =>
       debounce((keyword: string) => {

@@ -80,8 +80,8 @@ const generateMockTemplateResponse = (index: number): LYExecutionTemplateRespons
     template_id: `tpl-${generateUUID().substring(0, 8)}`,
     template_name: `${process.process_name}模板${index + 1}`,
     description: index === 0 
-      ? '这是Mon个功能完整的执行模板，包含了多种复杂的业务场景配置。该模板支持自动化Order Processing、智能数据校验、异常情况处理和多渠道通知推送等功能。同时集成了完整的Sun志追踪、错误重试机制和人工干预流程，确保任务执行的稳定性和可靠性。适用于大规模批量任务的自动化执行场景。'
-      : (index % 3 === 0 ? null : `这是${process.process_name}的执行模板，用于快速创建任务`),
+      ? '这是Mon个功能完整的执行模板，包含了多种复杂的业务场景配置。该模板支持自动化Order Processing、智能数据校验、异常情况处理和多渠道通知推送等功能。同时集成了完整的Sun志追踪、错误重试机制和人工干预Process，确保任务执行的稳定性和可靠性。适用于大规模批量任务的自动化执行场景。'
+      : (index % 3 === 0 ? null : `这是${process.process_name}的执行模板，用于快速Create任务`),
     process_id: process.process_id,
     process_name: process.process_name,
     execution_target_type: targetTypes[index % targetTypes.length],
@@ -119,7 +119,7 @@ const TemplateManagementPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  // 列表数据状态
+  // 列表数据Status
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [listResponse, setListResponse] = useState<LYListResponseLYExecutionTemplateResponse>({
     range: { offset: 0, size: 20, total: 0 },
@@ -133,11 +133,11 @@ const TemplateManagementPage = () => {
     process_id: undefined,
   });
 
-  // 选中状态（抽屉）
+  // 选中Status（抽屉）
   const [selectedTemplate, setSelectedTemplate] = useState<LYExecutionTemplateResponse | null>(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
 
-  // 弹窗状态
+  // 弹窗Status
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingTemplate, setEditingTemplate] = useState<LYExecutionTemplateResponse | null>(null);
@@ -151,7 +151,7 @@ const TemplateManagementPage = () => {
   // 计算分页
   const totalPages = Math.ceil(total / pageSize);
 
-  // 模拟加载数据
+  // 模拟Loading数据
   const loadData = useCallback(async (params: GetTemplatesParams) => {
     setLoading(true);
     try {
@@ -159,7 +159,7 @@ const TemplateManagementPage = () => {
 
       let filtered = [...allMockTemplates];
 
-      // 关键词搜索
+      // 关键词Search
       if (params.keyword) {
         const kw = params.keyword.toLowerCase();
         filtered = filtered.filter(
@@ -169,7 +169,7 @@ const TemplateManagementPage = () => {
         );
       }
 
-      // 按流程筛选
+      // 按ProcessFilter
       if (params.process_id) {
         filtered = filtered.filter((tpl) => tpl.process_id === params.process_id);
       }
@@ -183,7 +183,7 @@ const TemplateManagementPage = () => {
         list: paged,
       });
     } catch (error) {
-      console.error('加载模板列表失败:', error);
+      console.error('Loading模板列表失败:', error);
       Toast.error(t('common.loadError'));
     } finally {
       setLoading(false);
@@ -195,7 +195,7 @@ const TemplateManagementPage = () => {
     loadData(queryParams);
   }, [queryParams, loadData]);
 
-  // 搜索防抖
+  // Search防抖
   const handleSearch = useMemo(
     () =>
       debounce((value: string) => {
@@ -204,24 +204,24 @@ const TemplateManagementPage = () => {
     []
   );
 
-  // 流程筛选
+  // ProcessFilter
   const handleProcessFilter = (processId: string | undefined) => {
     setQueryParams((prev) => ({ ...prev, offset: 0, process_id: processId }));
   };
 
-  // 创建模板成功
+  // Create模板成功
   const handleCreateSuccess = () => {
     setCreateModalVisible(false);
     loadData(queryParams);
   };
 
-  // 编辑模板
+  // Edit模板
   const handleEditTemplate = (template: LYExecutionTemplateResponse) => {
     setEditingTemplate(template);
     setEditModalVisible(true);
   };
 
-  // 编辑模板成功
+  // Edit模板成功
   const handleEditSuccess = () => {
     setEditModalVisible(false);
     setEditingTemplate(null);
@@ -242,20 +242,20 @@ const TemplateManagementPage = () => {
     setSelectedTemplate(null);
   };
 
-  // 从抽屉编辑
+  // 从抽屉Edit
   const handleEditFromDrawer = (template: LYExecutionTemplateResponse) => {
     setEditingTemplate(template);
     setEditModalVisible(true);
   };
 
-  // 从抽屉删除
+  // 从抽屉Delete
   const handleDeleteFromDrawer = (template: LYExecutionTemplateResponse) => {
     handleDeleteTemplate(template);
     setDrawerVisible(false);
     setSelectedTemplate(null);
   };
 
-  // 翻页加载
+  // 翻页Loading
   const handlePageChangeForDrawer = async (page: number): Promise<LYExecutionTemplateResponse[]> => {
     const newOffset = (page - 1) * pageSize;
     setQueryParams((prev) => ({ ...prev, offset: newOffset }));
@@ -287,7 +287,7 @@ const TemplateManagementPage = () => {
     navigate(`/scheduling-center/task-execution/task-list?templateId=${template.template_id}`);
   };
 
-  // 删除模板
+  // Delete模板
   const handleDeleteTemplate = (template: LYExecutionTemplateResponse) => {
     Modal.confirm({
       title: t('template.deleteModal.title'),
@@ -404,7 +404,7 @@ const TemplateManagementPage = () => {
     },
   ];
 
-  // 判断是否有筛选条件
+  // 判断是否有Filter条件
   const hasFilters = queryParams.keyword || queryParams.process_id;
 
   return (
@@ -507,14 +507,14 @@ const TemplateManagementPage = () => {
           )}
         </div>
 
-        {/* 创建模板弹窗 */}
+        {/* Create模板弹窗 */}
         <CreateTemplateModal
           visible={createModalVisible}
           onCancel={() => setCreateModalVisible(false)}
           onSuccess={handleCreateSuccess}
         />
 
-        {/* 编辑模板弹窗 */}
+        {/* Edit模板弹窗 */}
         <EditTemplateModal
           visible={editModalVisible}
           template={editingTemplate}

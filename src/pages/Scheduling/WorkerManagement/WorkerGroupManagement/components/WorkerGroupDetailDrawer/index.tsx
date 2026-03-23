@@ -64,7 +64,7 @@ interface WorkerGroupDetailDrawerProps {
 // Mock成员数据
 const mockMembers: LYWorkerGroupMemberResponse[] = [
   {
-    id: '550e8400-e29b-41d4-a716-446655440001', name: 'Finance Bot-01', description: 'For financial流程自动化的机器人',
+    id: '550e8400-e29b-41d4-a716-446655440001', name: 'Finance Bot-01', description: 'For financialProcess自动化的机器人',
     status: 'IDLE', sync_status: 'SYNCED', ip_address: '10.0.1.100', priority: 'HIGH', client_version: 'v6.7.0',
     last_heartbeat_time: '2025-01-08 10:25:33', receive_tasks: true, username: 'DOMAIN\\robot01', desktop_type: 'Console',
     enable_auto_unlock: true, force_login: false, device_token: 'abc123xyz789', machine_code: 'F11FD4447A215F380A40',

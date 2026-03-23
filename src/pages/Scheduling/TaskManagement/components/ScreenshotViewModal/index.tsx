@@ -80,7 +80,7 @@ const fetchScreenshots = async (
     .fill(null)
     .map((_, index) => generateMockScreenshot(executionId, index));
   
-  // 排序
+  // Sort
   const sorted = [...mockData].sort((a, b) => {
     if (params.sort_order === 'desc') {
       return b.sequence_number - a.sequence_number;
@@ -125,11 +125,11 @@ const ScreenshotViewModal = ({
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   
   
-  // 灯箱预览状态
+  // 灯箱预览Status
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewIndex, setPreviewIndex] = useState(0);
   
-  // 加载数据
+  // Loading数据
   const loadData = useCallback(async () => {
     if (!executionId) return;
     
@@ -142,7 +142,7 @@ const ScreenshotViewModal = ({
     }
   }, [executionId]);
   
-  // 当弹窗打开或排序变化时加载数据
+  // 当弹窗打开或Sort变化时Loading数据
   useEffect(() => {
     if (visible) {
       loadData();
@@ -174,14 +174,14 @@ const ScreenshotViewModal = ({
     setSelectedIds(new Set());
   }, []);
   
-  // 删除选中项
+  // Delete选中项
   const handleDelete = useCallback(() => {
-    // Mock 删除
+    // Mock Delete
     setScreenshots((prev) => prev.filter((s) => !selectedIds.has(s.id)));
     setSelectedIds(new Set());
   }, [selectedIds]);
   
-  // 删除单个screenshot
+  // Delete单个screenshot
   const handleDeleteSingle = useCallback((id: string, e?: React.MouseEvent) => {
     e?.stopPropagation();
     Modal.confirm({
@@ -198,7 +198,7 @@ const ScreenshotViewModal = ({
     });
   }, [t]);
   
-  // 灯箱中删除当前图片
+  // 灯箱中Delete当前图片
   const handleDeleteInPreview = useCallback(() => {
     const currentScreenshot = screenshots[previewIndex];
     if (!currentScreenshot) return;

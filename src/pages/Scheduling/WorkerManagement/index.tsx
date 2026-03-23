@@ -50,12 +50,12 @@ const mockWorkerGroups = [
   { id: 'group-003', name: 'Ops Inspection Bot Group' },
 ];
 
-// Mock数据 - 使用API类型
+// Mock数据 - 使用APIType
 const mockWorkers: LYWorkerResponse[] = [
   {
     id: '550e8400-e29b-41d4-a716-446655440001',
     name: 'Finance Bot-01',
-    description: '这是企业核心财务自动化机器人，负责执行复杂的财务流程任务，包括发票自动识别与处理、报销单据审核、Auto Financial Report与分发、银企对账、税务申报数据准备等关键业务。该机器人配置了高可用性设置，支持7x24小时不间断运行，并具备完整的错误恢复和任务断点续传能力。',
+    description: '这是企业核心财务自动化机器人，负责执行复杂的财务Process任务，包括发票自动识别与处理、报销单据审核、Auto Financial Report与分发、银企对账、税务申报数据准备等关键业务。该机器人配置了高可用性设置，支持7x24小时不间断运行，并具备完整的错误恢复和任务断点续传能力。',
     status: 'IDLE',
     sync_status: 'SYNCED',
     ip_address: '10.0.1.100',
@@ -142,7 +142,7 @@ const mockWorkers: LYWorkerResponse[] = [
   {
     id: '550e8400-e29b-41d4-a716-446655440004',
     name: 'HR Bot-01',
-    description: 'For HR审批流程的机器人',
+    description: 'For HR审批Process的机器人',
     status: 'FAULT',
     sync_status: 'SYNCED',
     ip_address: '10.0.1.103',
@@ -228,7 +228,7 @@ const mockWorkers: LYWorkerResponse[] = [
   },
 ];
 
-// 特殊筛选值常量
+// 特殊Filter值常量
 const UNGROUPED_FILTER_VALUE = '__UNGROUPED__';
 
 interface FilterState {
@@ -244,7 +244,7 @@ interface SortState {
 
 // ============= 数据获取 - 返回LYListResponseLYWorkerResponse =============
 
-// 状态排序优先级
+// StatusSort优先级
 const STATUS_ORDER: Record<string, number> = {
   BUSY: 1,
   IDLE: 2,
@@ -259,7 +259,7 @@ const fetchWorkerList = async (params: GetWorkersParams & { filters?: FilterStat
   
   let data = [...mockWorkers];
 
-  // 关键词搜索（名称或IP）
+  // 关键词Search（Name或IP）
   if (params.keyword?.trim()) {
     const keyword = params.keyword.toLowerCase().trim();
     data = data.filter(item => 
@@ -268,17 +268,17 @@ const fetchWorkerList = async (params: GetWorkersParams & { filters?: FilterStat
     );
   }
 
-  // 状态筛选
+  // StatusFilter
   if (params.filters?.status && params.filters.status.length > 0) {
     data = data.filter(item => params.filters!.status.includes(item.status));
   }
 
-  // 同步状态筛选
+  // 同步StatusFilter
   if (params.filters?.sync_status && params.filters.sync_status.length > 0) {
     data = data.filter(item => params.filters!.sync_status.includes(item.sync_status));
   }
 
-  // 机器人组筛选
+  // 机器人组Filter
   if (params.filters?.group_id && params.filters.group_id.length > 0) {
     data = data.filter(item => {
       const selectedGroups = params.filters!.group_id;
@@ -295,7 +295,7 @@ const fetchWorkerList = async (params: GetWorkersParams & { filters?: FilterStat
     });
   }
 
-  // 排序处理
+  // Sort处理
   if (params.sort?.sortBy && params.sort?.sortOrder) {
     const { sortBy, sortOrder } = params.sort;
     data.sort((a, b) => {
@@ -339,10 +339,10 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  // 搜索框输入值（即时显示）
+  // Search框输入值（即is shown）
   const [searchValue, setSearchValue] = useState('');
   
-  // 查询参数 - 使用API类型
+  // 查询Parameter - 使用APIType
   const [queryParams, setQueryParams] = useState<GetWorkersParams>({
     offset: 0,
     size: 20,
@@ -365,7 +365,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     list: [],
   });
   
-  // 抽屉和弹窗状态
+  // 抽屉和弹窗Status
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [selectedWorker, setSelectedWorker] = useState<LYWorkerResponse | null>(null);
   const [keyModalVisible, setKeyModalVisible] = useState(false);
@@ -384,7 +384,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
   const [addToGroupModalVisible, setAddToGroupModalVisible] = useState(false);
   const [addToGroupWorker, setAddToGroupWorker] = useState<LYWorkerResponse | null>(null);
 
-  // 状态配置
+  // Status配置
   type WorkerStatus = LYWorkerResponse['status'];
   
   const statusConfig: Record<WorkerStatus, { color: string; text: string }> = useMemo(() => ({
@@ -395,7 +395,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     MAINTENANCE: { color: 'orange', text: t('worker.status.maintenance') },
   }), [t]);
 
-  // 筛选选项
+  // Filter选项
   const filterOptions = useMemo(() => ({
     status: [
       { label: t('worker.status.offline'), value: 'OFFLINE' },
@@ -414,7 +414,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     ],
   }), [t]);
 
-  // 加载数据
+  // Loading数据
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
@@ -448,14 +448,14 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     return response.list;
   }, [queryParams, filters, sortState, listResponse.range?.size]);
 
-  // 当Tab switch到非激活状态时，关闭抽屉
+  // 当Tab switch到非激活Status时，关闭抽屉
   useEffect(() => {
     if (!isActive) {
       setDetailDrawerVisible(false);
     }
   }, [isActive]);
 
-  // 初始化加载
+  // 初始化Loading
   useEffect(() => {
     loadData();
   }, [loadData]);
@@ -472,7 +472,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     }
   }, [pendingWorkerId, listResponse.list, onWorkerDetailOpened]);
 
-  // 搜索防抖
+  // Search防抖
   const debouncedSearch = useMemo(
     () =>
       debounce((value: string) => {
@@ -481,10 +481,10 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     []
   );
 
-  // 搜索
+  // Search
   const handleSearch = (value: string) => {
     setSearchValue(value);  // 立即更新输入框显示
-    debouncedSearch(value); // 防抖更新查询参数
+    debouncedSearch(value); // 防抖更新查询Parameter
   };
 
   const handleFilterConfirm = (values: Record<string, unknown>) => {
@@ -499,7 +499,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
   const hasActiveFilters = Object.values(filters).some(arr => arr.length > 0);
   const activeFilterCount = Object.values(filters).reduce((sum, arr) => sum + arr.length, 0);
 
-  // 切换接收任务状态
+  // 切换接收任务Status
   const handleToggleReceiveTasks = async (worker: LYWorkerResponse, checked: boolean) => {
     // 更新本地数据
     setListResponse(prev => ({
@@ -533,7 +533,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     setKeyModalVisible(true);
   };
 
-  // 删除确认
+  // DeleteConfirm
   const handleDeleteClick = (worker: LYWorkerResponse, e?: React.MouseEvent) => {
     e?.stopPropagation();
     
@@ -563,15 +563,15 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       okButtonProps: { type: 'danger' },
       onOk: async () => {
         try {
-          // 模拟删除 API 调用
+          // 模拟Delete API 调用
           await new Promise(resolve => setTimeout(resolve, 500));
-          console.log('删除机器人:', worker.id);
+          console.log('Delete机器人:', worker.id);
           
           // 关闭抽屉
           setDetailDrawerVisible(false);
           setSelectedWorker(null);
           
-          // 重新加载数据
+          // 重新Loading数据
           loadData();
           
           // 显示成功提示
@@ -585,7 +585,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     });
   };
 
-  // 从详情抽屉跳转到编辑
+  // 从详情抽屉跳转到Edit
   const handleEditFromDrawer = () => {
     if (selectedWorker) {
       setEditingWorker(selectedWorker);
@@ -593,14 +593,14 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     }
   };
 
-  // 从详情抽屉删除
+  // 从详情抽屉Delete
   const handleDeleteFromDrawer = () => {
     if (selectedWorker) {
       handleDeleteClick(selectedWorker);
     }
   };
 
-  // 编辑机器人
+  // Edit机器人
   const handleEdit = (worker: LYWorkerResponse, e?: React.MouseEvent) => {
     e?.stopPropagation();
     setEditingWorker(worker);
@@ -614,12 +614,12 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     setAddToGroupModalVisible(true);
   };
 
-  // 创建成功回调
+  // Create成功回调
   const handleCreateSuccess = () => {
     loadData();
   };
 
-  // 编辑成功回调
+  // Edit成功回调
   const handleEditSuccess = (updatedWorker: LYWorkerResponse) => {
     // 更新列表数据
     setListResponse(prev => ({
@@ -773,7 +773,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       key: 'receive_tasks',
       width: 90,
       render: (receiveTasks: boolean, record: LYWorkerResponse) => {
-        // 只有在线且非故障状态才允许操作
+        // 只有在线且非故障Status才允许操作
         const canOperate = record.status !== 'OFFLINE' && record.status !== 'FAULT';
         return (
           <div onClick={(e) => e.stopPropagation()}>
@@ -1024,14 +1024,14 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
         workerData={keyModalWorker}
       />
 
-      {/* 创建弹窗 */}
+      {/* Create弹窗 */}
       <CreateWorkerModal
         visible={createModalVisible}
         onCancel={() => setCreateModalVisible(false)}
         onSuccess={handleCreateSuccess}
       />
 
-      {/* 编辑弹窗 */}
+      {/* Edit弹窗 */}
       <EditWorkerModal
         visible={editModalVisible}
         onCancel={() => setEditModalVisible(false)}

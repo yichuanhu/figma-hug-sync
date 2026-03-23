@@ -103,14 +103,14 @@ const TimeTriggerDetailDrawer = ({
     return times;
   }, [trigger]);
 
-  // 加载执行记录
+  // Loading执行记录
   useEffect(() => {
     if (visible && trigger) {
       setExecutionLogs(generateMockExecutionLogs(trigger.trigger_id));
     }
   }, [visible, trigger]);
 
-  // 抽屉关闭时重置状态
+  // 抽屉关闭时重置Status
   const handleClose = () => {
     setActiveTab('basic');
     onClose();
@@ -293,7 +293,7 @@ const TimeTriggerDetailDrawer = ({
               </Descriptions>
             </div>
 
-            {/* 触发预览（可折叠） */}
+            {/* Trigger preview（可折叠） */}
             <div className="time-trigger-detail-drawer-section">
               <Space spacing={4} align="center" className="time-trigger-detail-drawer-section-title">
                 <Text style={{ fontWeight: 500 }}>
@@ -364,7 +364,7 @@ const TimeTriggerDetailDrawer = ({
               </Descriptions>
             </div>
 
-            {/* 输入参数 */}
+            {/* Input parameters */}
             <div className="time-trigger-detail-drawer-section">
               <Text className="time-trigger-detail-drawer-section-title">
                 {t('timeTrigger.detail.inputParameters')}

@@ -34,7 +34,7 @@ const generateMockRecording = (executionId: string): LYRecordingInfoResponse => 
   execution_id: executionId,
   file_id: 'file_' + Math.random().toString(36).substring(7),
   file_name: `task-exec-${executionId}.mp4`,
-  duration: 180, // 3 分钟
+  duration: 180, // 3 min
   file_size: 52428800, // 50 MB
   status: 'READY',
   created_at: new Date().toISOString(),
@@ -49,15 +49,15 @@ const generateMockLogs = (): LYExecutionLogResponse[] => {
     'Initializing process engine...',
     'Successfully connected to database server',
     'Starting step 1: Reading input parameters',
-    '警告: 输入参数中存在空值，使用默认值替代',
+    '警告: Input parameters中存在空值，使用默认值替代',
     '错误: 无法连接到目标服务器，请检查网络设置',
-    'Step 2 执行完成，耗时 1.5 秒',
+    'Step 2 执行完成，耗时 1.5 s',
     '正在处理数据转换...',
     '数据验证通过',
     '写入输出结果到文件',
     'Process execution completed',
     '开始执行Step 3: 数据处理',
-    '警告: 发现重复数据，已自动去重',
+    '警告: Found重复数据，已自动去重',
     '错误: 文件写入失败，磁盘空间不足',
     '正在重试操作...',
     '操作成功完成',
@@ -67,7 +67,7 @@ const generateMockLogs = (): LYExecutionLogResponse[] => {
   startTime.setMinutes(startTime.getMinutes() - 3);
   
   return Array.from({ length: 50 }, (_, i) => {
-    const logTime = new Date(startTime.getTime() + i * 3600); // 每条Sun志间隔约 3.6 秒
+    const logTime = new Date(startTime.getTime() + i * 3600); // 每条Sun志间隔约 3.6 s
     const levelIndex = i % 10 < 1 ? 3 : i % 10 < 3 ? 2 : i % 10 < 5 ? 0 : 1;
     
     return {
@@ -101,7 +101,7 @@ const RecordingViewPage = () => {
   const taskIdFromUrl = searchParams.get('taskId');
   const activeTabFromUrl = searchParams.get('activeTab');
   
-  // 状态
+  // Status
   const [loading, setLoading] = useState(true);
   const [logsLoading, setLogsLoading] = useState(false);
   const [exporting, setExporting] = useState(false);
@@ -110,7 +110,7 @@ const RecordingViewPage = () => {
   const [errorMarkers, setErrorMarkers] = useState<LYRecordingErrorMarker[]>([]);
   const [error, setError] = useState<string | null>(null);
   
-  // 播放同步状态
+  // 播放同步Status
   const [currentTime, setCurrentTime] = useState(0);
   const [highlightedLogId, setHighlightedLogId] = useState<string | null>(null);
   
@@ -119,7 +119,7 @@ const RecordingViewPage = () => {
     return logs.length > 0 ? new Date(logs[0].log_time) : new Date();
   }, [logs]);
   
-  // 加载数据
+  // Loading数据
   const loadData = useCallback(async () => {
     if (!executionId) return;
     
@@ -155,7 +155,7 @@ const RecordingViewPage = () => {
     
     setLogsLoading(true);
     try {
-      // Mock API 调用 - 仅加载Sun志
+      // Mock API 调用 - 仅LoadingSun志
       await new Promise((resolve) => setTimeout(resolve, 400));
       const mockLogs = generateMockLogs();
       const startTime = new Date(mockLogs[0].log_time);
@@ -171,7 +171,7 @@ const RecordingViewPage = () => {
   // 视频时间更新
   const handleTimeUpdate = useCallback((time: number) => {
     setCurrentTime(time);
-    // 清除高亮状态（随播放自动同步）
+    // 清除高亮Status（随播放自动同步）
     setHighlightedLogId(null);
   }, []);
   
@@ -220,7 +220,7 @@ const RecordingViewPage = () => {
   // 返回
   const handleBack = useCallback(() => {
     if (taskIdFromUrl) {
-      // 返回到任务列表并打开对应任务的详情抽屉，同时传递 activeTab 参数
+      // 返回到任务列表并打开对应任务的详情抽屉，同时传递 activeTab Parameter
       const params = new URLSearchParams();
       params.set('taskId', taskIdFromUrl);
       if (activeTabFromUrl) {

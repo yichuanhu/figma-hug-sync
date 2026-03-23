@@ -56,16 +56,16 @@ const CreateReleasePage: React.FC = () => {
   // Step控制
   const [currentStep, setCurrentStep] = useState(0);
 
-  // Step1: 流程选择
+  // Step1: Process选择
   const [selectedProcesses, setSelectedProcesses] = useState<SelectedProcess[]>([]);
 
-  // Step2: 发布配置
+  // Step2: Release配置
   const [releaseType, setReleaseType] = useState<ReleaseType>('REQUIREMENT_CHANGE');
   const [description, setDescription] = useState('');
   const [resources, setResources] = useState<ResourceConfig[]>([]);
   const [detectingDependencies, setDetectingDependencies] = useState(false);
 
-  // 提交状态
+  // SubmitStatus
   const [submitting, setSubmitting] = useState(false);
 
   // Mock 依赖检测
@@ -96,9 +96,9 @@ const CreateReleasePage: React.FC = () => {
       },
       {
         resource_id: 'PARAM-003',
-        resource_name: '这是Mon个超级超级长的参数名称用来测试当参数名称Text过长时候资源卡片的Title area是否能正确处理截断和换行的边界场景',
+        resource_name: '这是Mon个超级超级长的ParameterName用来测试当ParameterNameText过长时候Resource卡片的Title area是否能正确处理截断和换行的边界场景',
         is_previously_published: false,
-        test_value: '这是Mon段非常非常长的Text类型参Number，用来模拟实际业务中可能出现的超长配置Text。例如Mon段完整的JSON配置内容：{"database":{"host":"192.168.1.100","port":5432,"username":"admin","password":"encrypted_password_here","database_name":"production_db","connection_pool_size":20,"timeout_ms":30000},"redis":{"host":"192.168.1.101","port":6379,"cluster_mode":true},"logging":{"level":"INFO","output":"file","path":"/var/log/app/"}}',
+        test_value: '这是Mon段非常非常长的TextType参Number，用来模拟实际业务中可能出现的超长配置Text。例如Mon段完整的JSON配置内容：{"database":{"host":"192.168.1.100","port":5432,"username":"admin","password":"encrypted_password_here","database_name":"production_db","connection_pool_size":20,"timeout_ms":30000},"redis":{"host":"192.168.1.101","port":6379,"cluster_mode":true},"logging":{"level":"INFO","output":"file","path":"/var/log/app/"}}',
         used_by_processes: processes.map((p) => ({
           process_id: p.process.id,
           process_name: p.process.name,
@@ -106,7 +106,7 @@ const CreateReleasePage: React.FC = () => {
       },
       {
         resource_id: 'PARAM-004',
-        resource_name: '全局化多语言翻译映射配置参数_包含中英Sun韩法德西葡俄阿等十国语言对照表',
+        resource_name: '全局化多语言翻译映射配置Parameter_包含中英Sun韩法德西葡俄阿等十国语言对照表',
         is_previously_published: true,
         test_value: 'https://translation-service.internal.company.com/api/v3/multilingual/mapping?source=zh-CN&targets=en-US,ja-JP,ko-KR,fr-FR,de-DE,es-ES,pt-BR,ru-RU,ar-SA&format=json&include_variants=true&fallback=en-US',
         used_by_processes: processes.slice(0, 2).map((p) => ({
@@ -149,7 +149,7 @@ const CreateReleasePage: React.FC = () => {
       },
       {
         resource_id: 'PARAM-008',
-        resource_name: '超时时间阈值（毫秒）',
+        resource_name: '超时时间阈值（毫s）',
         is_previously_published: false,
         test_value: '30000',
         param_type: 'NUMBER',
@@ -286,14 +286,14 @@ const CreateReleasePage: React.FC = () => {
     }
   };
 
-  // 处理发布提交
+  // 处理ReleaseSubmit
   const handleSubmit = async () => {
     if (!description.trim()) {
       Toast.warning(t('release.create.validation.descriptionRequired'));
       return;
     }
 
-    // 检查未发布资源的生产值
+    // 检查未ReleaseResource的生产值
     const missingProductionValues = resources.filter((r) => {
       if (r.is_previously_published || r.use_test_as_production) return false;
       if (r.resource_type === 'QUEUE' || r.resource_type === 'FILE') return false;
@@ -341,16 +341,16 @@ const CreateReleasePage: React.FC = () => {
 
   // 检查是否有填写内容
   const hasContent = useMemo(() => {
-    // 检查是否选择了流程
+    // 检查是否选择了Process
     if (selectedProcesses.length > 0) return true;
-    // 检查是否填写了描述
+    // 检查是否填写了Description
     if (description.trim()) return true;
-    // 检查是否修改了资源配置
+    // 检查是否Modify了Resource配置
     if (resources.some((r) => r.production_value || r.use_test_as_production)) return true;
     return false;
   }, [selectedProcesses, description, resources]);
 
-  // 处理取消/返回
+  // 处理Cancel/返回
   const handleCancel = () => {
     if (hasContent) {
       Modal.confirm({
@@ -385,7 +385,7 @@ const CreateReleasePage: React.FC = () => {
           </Title>
         </div>
 
-        {/* Step条 */}
+        {/* Step bar */}
         <div className="create-release-page-steps">
           <Steps current={currentStep} type="basic">
             <Steps.Step
@@ -399,7 +399,7 @@ const CreateReleasePage: React.FC = () => {
           </Steps>
         </div>
 
-        {/* Content area域 */}
+        {/* Content area */}
         <div className="create-release-page-content">
           {currentStep === 0 && (
             <ProcessSelectionStep
