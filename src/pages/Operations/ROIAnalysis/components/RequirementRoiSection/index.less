@@ -1,5 +1,11 @@
 .requirement-roi-section {
   .requirement-roi-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .requirement-roi-charts-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
@@ -11,12 +17,6 @@
 
   .requirement-roi-table {
     overflow-x: auto;
-  }
-
-  .requirement-roi-charts {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
   }
 
   .requirement-roi-chart-item {

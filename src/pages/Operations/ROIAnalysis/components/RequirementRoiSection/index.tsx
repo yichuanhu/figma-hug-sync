@@ -150,18 +150,18 @@ const RequirementRoiSection = ({ data }: Props) => {
         <span className="dashboard-card-title">{t('operations.roiAnalysis.requirementRoi')}</span>
       </div>
       <div className="requirement-roi-content">
-        <div className="requirement-roi-table">
-          <Table columns={columns} dataSource={data} rowKey="id" size="small" pagination={false} />
-        </div>
-        <div className="requirement-roi-charts">
+        <div className="requirement-roi-charts-row">
           <div className="requirement-roi-chart-item">
             <div className="chart-subtitle">{t('operations.roiAnalysis.roiDistribution')}</div>
-            <ReactECharts option={pieOption} style={{ height: 240 }} opts={{ renderer: 'svg' }} />
+            <ReactECharts option={pieOption} style={{ height: 260 }} opts={{ renderer: 'svg' }} />
           </div>
           <div className="requirement-roi-chart-item">
             <div className="chart-subtitle">{t('operations.roiAnalysis.investVsSaved')}</div>
-            <ReactECharts option={scatterOption} style={{ height: 240 }} opts={{ renderer: 'svg' }} />
+            <ReactECharts option={scatterOption} style={{ height: 260 }} opts={{ renderer: 'svg' }} />
           </div>
+        </div>
+        <div className="requirement-roi-table">
+          <Table columns={columns} dataSource={data} rowKey="id" size="small" pagination={false} />
         </div>
       </div>
     </div>

@@ -120,14 +120,18 @@ const DepartmentRoiSection = ({ data }: Props) => {
         <span className="dashboard-card-title">{t('operations.roiAnalysis.departmentRoi')}</span>
       </div>
       <div className="department-roi-content">
-        <div className="department-roi-left">
-          <div className="chart-subtitle">{t('operations.roiAnalysis.deptComparison')}</div>
-          <ReactECharts option={barOption} style={{ height: 260 }} opts={{ renderer: 'svg' }} />
-          <Table columns={columns} dataSource={data} rowKey="department" size="small" pagination={false} style={{ marginTop: 12 }} />
+        <div className="department-roi-charts-row">
+          <div className="department-roi-chart-item">
+            <div className="chart-subtitle">{t('operations.roiAnalysis.deptComparison')}</div>
+            <ReactECharts option={barOption} style={{ height: 280 }} opts={{ renderer: 'svg' }} />
+          </div>
+          <div className="department-roi-chart-item">
+            <div className="chart-subtitle">{t('operations.roiAnalysis.deptTrend')}</div>
+            <ReactECharts option={trendOption} style={{ height: 280 }} opts={{ renderer: 'svg' }} />
+          </div>
         </div>
-        <div className="department-roi-right">
-          <div className="chart-subtitle">{t('operations.roiAnalysis.deptTrend')}</div>
-          <ReactECharts option={trendOption} style={{ height: 300 }} opts={{ renderer: 'svg' }} />
+        <div className="department-roi-table">
+          <Table columns={columns} dataSource={data} rowKey="department" size="small" pagination={false} />
         </div>
       </div>
     </div>
