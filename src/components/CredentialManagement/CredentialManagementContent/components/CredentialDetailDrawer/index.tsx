@@ -150,7 +150,7 @@ const CredentialDetailDrawer = ({
   });
 
   const userFilterOptions = [
-    { value: 'user-1', label: '张三' }, { value: 'user-2', label: '李四' }, { value: 'user-3', label: '王五' }, { value: 'user-4', label: '赵六' }, { value: 'user-5', label: '钱七' },
+    { value: 'user-1', label: 'John Smith' }, { value: 'user-2', label: 'Jane Doe' }, { value: 'user-3', label: 'Mike Wang' }, { value: 'user-4', label: 'David Zhao' }, { value: 'user-5', label: 'Chris Qian' },
   ];
 
   const loadUsageData = useCallback(async () => {
