@@ -358,7 +358,7 @@ const TriggerRuleConfig = ({
                 onChange={(values) => onSelectedWeekdaysChange(values as number[])}
                 direction="horizontal"
               >
-                {weekdayOptions.map((option) => (
+                {getWeekdayOptions(t).map((option) => (
                   <Checkbox key={option.value} value={option.value}>
                     {option.label}
                   </Checkbox>
