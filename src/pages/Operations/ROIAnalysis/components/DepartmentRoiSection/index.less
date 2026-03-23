@@ -1,5 +1,11 @@
 .department-roi-section {
   .department-roi-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .department-roi-charts-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
@@ -9,10 +15,16 @@
     }
   }
 
-  .chart-subtitle {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--semi-color-text-1);
-    margin-bottom: 8px;
+  .department-roi-chart-item {
+    .chart-subtitle {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--semi-color-text-1);
+      margin-bottom: 8px;
+    }
+  }
+
+  .department-roi-table {
+    overflow-x: auto;
   }
 }
