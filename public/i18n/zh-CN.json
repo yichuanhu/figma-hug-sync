@@ -3051,7 +3051,11 @@
       "pageTitle": "ACP Skills"
     },
     "showcases": {
-      "pageTitle": "案例展示"
+      "pageTitle": "案例展示",
+      "department": "部门",
+      "views": "浏览量",
+      "technologies": "使用技术",
+      "highlights": "亮点成果"
     },
     "detail": {
       "basicInfo": "基本信息",

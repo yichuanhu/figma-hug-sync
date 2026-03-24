@@ -3044,7 +3044,11 @@
       "pageTitle": "ACP Skills"
     },
     "showcases": {
-      "pageTitle": "Showcases"
+      "pageTitle": "Showcases",
+      "department": "Department",
+      "views": "Views",
+      "technologies": "Technologies",
+      "highlights": "Highlights"
     },
     "detail": {
       "basicInfo": "Basic Info",
