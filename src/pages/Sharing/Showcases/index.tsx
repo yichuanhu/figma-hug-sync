@@ -3,22 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { Typography, Input, Card, Tag, Avatar, Space } from '@douyinfe/semi-ui';
 import { IconSearchStroked, IconStarStroked } from '@douyinfe/semi-icons';
 import { Eye } from 'lucide-react';
+import ShowcaseDetailDrawer, { ShowcaseItem } from './components/ShowcaseDetailDrawer';
 import './index.less';
 
 const { Title, Text, Paragraph } = Typography;
-
-interface ShowcaseItem {
-  id: string;
-  name: string;
-  description: string;
-  tags: string[];
-  author: string;
-  department: string;
-  views: number;
-  rating: number;
-  updatedAt: string;
-  coverColor: string;
-}
 
 const showcasesMockData: ShowcaseItem[] = [
   {
@@ -31,7 +19,21 @@ const showcasesMockData: ShowcaseItem[] = [
     views: 3456,
     rating: 4.9,
     updatedAt: '2026-03-20',
+    createdAt: '2025-08-10',
     coverColor: 'var(--semi-color-primary)',
+    status: 'published',
+    technologies: ['Creator', 'APA', 'SAP Connector'],
+    highlights: [
+      'Reduced month-end closing cycle from 5 days to 1 day',
+      'Automated 95% of journal entry postings',
+      'Real-time reconciliation dashboard with exception alerts',
+      'Seamless integration with SAP ERP and Oracle Financials',
+    ],
+    versionHistory: [
+      { version: '3.0', releaseDate: '2026-03-20', author: 'John Smith', changelog: 'Added multi-currency reconciliation and regulatory compliance checks' },
+      { version: '2.0', releaseDate: '2025-12-05', author: 'John Smith', changelog: 'Introduced automated journal entry validation and approval workflow' },
+      { version: '1.0', releaseDate: '2025-08-10', author: 'John Smith', changelog: 'Initial release with basic closing automation and report generation' },
+    ],
   },
   {
     id: 'case-002',
@@ -43,7 +45,20 @@ const showcasesMockData: ShowcaseItem[] = [
     views: 2890,
     rating: 4.8,
     updatedAt: '2026-03-18',
+    createdAt: '2025-09-15',
     coverColor: 'var(--semi-color-success)',
+    status: 'published',
+    technologies: ['APA', 'Email Parser', 'ERP Connector'],
+    highlights: [
+      'Processes 500+ orders daily with 99.5% accuracy',
+      'Intelligent duplicate detection reduces data errors by 80%',
+      'Automatic exception routing to specialized teams',
+    ],
+    versionHistory: [
+      { version: '2.5', releaseDate: '2026-03-18', author: 'Sarah Chen', changelog: 'Added intelligent priority scoring and express order fast-track' },
+      { version: '2.0', releaseDate: '2026-01-10', author: 'Sarah Chen', changelog: 'Introduced duplicate detection engine and batch processing mode' },
+      { version: '1.0', releaseDate: '2025-09-15', author: 'Sarah Chen', changelog: 'Initial email-to-ERP order pipeline with basic validation' },
+    ],
   },
   {
     id: 'case-003',
@@ -55,7 +70,19 @@ const showcasesMockData: ShowcaseItem[] = [
     views: 2134,
     rating: 4.7,
     updatedAt: '2026-03-15',
+    createdAt: '2025-07-20',
     coverColor: 'var(--semi-color-warning)',
+    status: 'published',
+    technologies: ['Creator', 'Active Directory', 'Workday'],
+    highlights: [
+      'Reduced onboarding time from 3 days to 4 hours',
+      'Automated provisioning across 12 enterprise systems',
+      'Self-service portal for new hires to track progress',
+    ],
+    versionHistory: [
+      { version: '2.0', releaseDate: '2026-03-15', author: 'Michael Lee', changelog: 'Added self-service portal and multi-department onboarding tracks' },
+      { version: '1.0', releaseDate: '2025-07-20', author: 'Michael Lee', changelog: 'Initial automated onboarding with account provisioning and document collection' },
+    ],
   },
   {
     id: 'case-004',
@@ -67,7 +94,19 @@ const showcasesMockData: ShowcaseItem[] = [
     views: 1876,
     rating: 4.6,
     updatedAt: '2026-03-10',
+    createdAt: '2025-10-01',
     coverColor: 'var(--semi-color-tertiary)',
+    status: 'published',
+    technologies: ['APA', 'OCR Engine', 'SAP Connector'],
+    highlights: [
+      'Three-way matching with 98% accuracy',
+      'Processes 1,000+ invoices per day',
+      'Automated discrepancy escalation with audit trail',
+    ],
+    versionHistory: [
+      { version: '1.5', releaseDate: '2026-03-10', author: 'Emily Wang', changelog: 'Enhanced OCR accuracy and added multi-format invoice support' },
+      { version: '1.0', releaseDate: '2025-10-01', author: 'Emily Wang', changelog: 'Initial three-way matching bot with basic reconciliation' },
+    ],
   },
   {
     id: 'case-005',
@@ -79,19 +118,38 @@ const showcasesMockData: ShowcaseItem[] = [
     views: 1543,
     rating: 4.5,
     updatedAt: '2026-03-05',
+    createdAt: '2025-11-12',
     coverColor: 'var(--semi-color-danger)',
+    status: 'published',
+    technologies: ['ACP', 'NLP Engine', 'Zendesk API'],
+    highlights: [
+      'AI classification accuracy of 94%',
+      'Reduced average routing time from 15 minutes to 30 seconds',
+      'Dynamic priority scoring based on customer tier and issue severity',
+    ],
+    versionHistory: [
+      { version: '1.2', releaseDate: '2026-03-05', author: 'David Park', changelog: 'Added sentiment analysis and VIP customer auto-escalation' },
+      { version: '1.0', releaseDate: '2025-11-12', author: 'David Park', changelog: 'Initial AI-powered ticket classification and team routing' },
+    ],
   },
 ];
 
 const Showcases = () => {
   const { t } = useTranslation();
   const [searchText, setSearchText] = useState('');
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<ShowcaseItem | null>(null);
 
   const filteredData = showcasesMockData.filter((item) =>
     !searchText || item.name.toLowerCase().includes(searchText.toLowerCase()) ||
     item.description.toLowerCase().includes(searchText.toLowerCase()) ||
     item.tags.some((tag) => tag.toLowerCase().includes(searchText.toLowerCase()))
   );
+
+  const handleCardClick = (item: ShowcaseItem) => {
+    setSelectedItem(item);
+    setDrawerVisible(true);
+  };
 
   return (
     <div className="showcases-page">
@@ -112,7 +170,8 @@ const Showcases = () => {
       </div>
       <div className="showcases-page-grid">
         {filteredData.map((item) => (
-          <Card key={item.id} className="showcase-card">
+          <div key={item.id} onClick={() => handleCardClick(item)}>
+          <Card className="showcase-card">
             <div className="showcase-card-cover" style={{ backgroundColor: item.coverColor }} />
             <div className="showcase-card-body">
               <Text strong className="showcase-card-name">{item.name}</Text>
@@ -139,8 +198,17 @@ const Showcases = () => {
               </div>
             </div>
           </Card>
+          </div>
         ))}
       </div>
+
+      <ShowcaseDetailDrawer
+        visible={drawerVisible}
+        onClose={() => setDrawerVisible(false)}
+        item={selectedItem}
+        dataList={filteredData}
+        onNavigate={(item) => setSelectedItem(item)}
+      />
     </div>
   );
 };
