@@ -1,53 +1,78 @@
 
 
-# ROI Analysis 页面布局优化：图表一排 + 表格一排
+# 共享中心（Sharing Center）前端设计方案（修订）
 
-## 当前问题
+## 修订内容
 
-各区块内图表和表格左右混排，信息层次不清晰。
+1. Creator 组件页面使用**顶部水平 Tab**
+2. **所有 Mock 数据（业务内容）使用英文**，UI 标签通过 i18n 翻译
 
-## 优化方案
-
-每个维度区块内改为**上方图表横排、下方表格全宽**的结构，保持现有三个区块纵向堆叠不变。
+## 侧边栏菜单结构
 
 ```text
-需求维度 ROI
-┌──────────────────┬──────────────────┐
-│ ROI Distribution │ Invest vs Saved  │
-│ (Pie)            │ (Scatter)        │
-└──────────────────┴──────────────────┘
-┌─────────────────────────────────────┐
-│ Requirement Ranking Table (全宽)    │
-└─────────────────────────────────────┘
-
-部门维度 ROI
-┌──────────────────┬──────────────────┐
-│ Dept Comparison  │ Dept ROI Trend   │
-│ (Bar)            │ (Multi-line)     │
-└──────────────────┴──────────────────┘
-┌─────────────────────────────────────┐
-│ Department Detail Table (全宽)      │
-└─────────────────────────────────────┘
-
-项目维度 ROI
-┌─────────────────────────────────────┐
-│ Project ROI Table (全宽，无图表)     │
-└─────────────────────────────────────┘
+共享中心
+├─ 可执行组件          (分组标题)
+│  └─ Creator 组件     → /sharing/components/creator
+├─ AI Skills           (分组标题)
+│  ├─ APA Skills       → /sharing/skills/apa
+│  └─ ACP Skills       → /sharing/skills/acp
+└─ 案例展示            (分组标题)
+   └─ 案例列表         → /sharing/showcases
 ```
 
-## 改动文件
+## Creator 组件页面布局
 
-### 1. RequirementRoiSection
-- **index.tsx**：将 JSX 结构改为先渲染图表行（两个图表并排），再渲染全宽表格
-- **index.less**：`.requirement-roi-content` 改为 `flex-direction: column`；新增 `.requirement-roi-charts-row` 用 `grid-template-columns: 1fr 1fr` 横排两图表；表格全宽
+Semi UI `Tabs`（顶部）+ `keepDOM={false}`，三个 Tab：Commands、API Connectors、Custom Components。
 
-### 2. DepartmentRoiSection
-- **index.tsx**：将柱状图和趋势图放在一个横排容器中，表格独立放在下方全宽
-- **index.less**：`.department-roi-content` 改为 `flex-direction: column`；新增 `.department-roi-charts-row` 两列网格；表格全宽
+```text
+┌─────────────────────────────────────────────┐
+│  Creator 组件                                │
+├─────────────────────────────────────────────┤
+│  [Commands]  [API Connectors]  [Custom]      │
+├─────────────────────────────────────────────┤
+│  [Search] [Filter] [Sort]                    │
+│  ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐       │
+│  │ Card │ │ Card │ │ Card │ │ Card │       │
+│  └──────┘ └──────┘ └──────┘ └──────┘       │
+└─────────────────────────────────────────────┘
+```
 
-### 3. ProjectRoiSection
-- 无变化（已是全宽表格）
+## Mock 数据规范
 
-### 4. 响应式
-所有图表横排在 `@media (max-width: 1200px)` 时切换为 `grid-template-columns: 1fr` 纵向堆叠。
+所有业务 Mock 数据使用英文，示例：
+
+- 组件名：`"Invoice Auto-Recognition"`, `"SAP Data Connector"`, `"PDF Parser Widget"`
+- 技能名：`"Email Classification"`, `"Document Extraction"`
+- 案例名：`"Finance Month-End Closing Automation"`, `"Order Processing Pipeline"`
+- 部门名：`"Finance"`, `"Operations"`, `"Human Resources"`
+- 标签：`["finance", "invoice", "OCR"]`
+- 描述：`"Automatically recognizes and extracts invoice data from scanned documents"`
+
+UI 标签（Tab 名称、筛选标签、列标题等）通过 i18n 提供中英文翻译。
+
+## 改动文件清单
+
+| 文件 | 改动 |
+|------|------|
+| `src/assets/icons/sharing.svg` | 新增：共享中心图标 |
+| `src/components/layout/Sidebar/index.tsx` | 修改：添加共享中心菜单项和路由匹配 |
+| `src/App.tsx` | 修改：注册路由（/sharing redirect + 4 页面） |
+| `public/i18n/zh-CN.json` | 修改：添加共享中心相关翻译 |
+| `public/i18n/en.json` | 修改：对应英文翻译 |
+| `src/pages/Sharing/Components/CreatorComponents/index.tsx` | 新增：顶部 Tab 页面 |
+| `src/pages/Sharing/Components/CreatorComponents/index.less` | 新增：样式 |
+| `src/pages/Sharing/Components/CreatorComponents/types.ts` | 新增：数据类型 |
+| `src/pages/Sharing/Components/CreatorComponents/mockData.ts` | 新增：英文 Mock 数据 |
+| `src/pages/Sharing/Components/components/ComponentCard/` | 新增：组件卡片 |
+| `src/pages/Sharing/Skills/APASkills/` | 新增：APA Skills 列表页（英文 Mock） |
+| `src/pages/Sharing/Skills/ACPSkills/` | 新增：ACP Skills 列表页（英文 Mock） |
+| `src/pages/Sharing/Skills/components/SkillCard/` | 新增：Skill 卡片 |
+| `src/pages/Sharing/Showcases/` | 新增：案例展示列表页（英文 Mock） |
+
+## 实施步骤
+
+1. **导航集成**：图标 + 侧边栏菜单 + 路由 + i18n
+2. **Creator 组件页面**：顶部 Tab 三面板 + 组件卡片 + 英文 Mock 数据
+3. **Skills 页面**：APA Skills + ACP Skills（英文 Mock）
+4. **案例展示页面**（英文 Mock）
 
