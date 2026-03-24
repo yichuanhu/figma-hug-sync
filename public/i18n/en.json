@@ -136,6 +136,15 @@
     "dataManagement": "Data Management",
     "databaseManagement": "Database Management",
     "securityManagement": "Security Management",
+    "sharingCenter": "Sharing Center",
+    "sharingCenterShort": "Sharing",
+    "executableComponents": "Executable Components",
+    "creatorComponents": "Creator Components",
+    "aiSkills": "AI Skills",
+    "apaSkills": "APA Skills",
+    "acpSkills": "ACP Skills",
+    "showcasesGroup": "Showcases",
+    "showcasesList": "Case List",
     "userMenu": {
       "organization": "{{name}}",
       "adminConsole": "Admin Console",
@@ -3018,5 +3027,24 @@
     "department": "Department",
     "role": "Role",
     "email": "Email"
+  },
+  "sharing": {
+    "creatorComponents": {
+      "pageTitle": "Creator Components",
+      "tabs": {
+        "commands": "Commands",
+        "apiConnectors": "API Connectors",
+        "customComponents": "Custom Components"
+      }
+    },
+    "apaSkills": {
+      "pageTitle": "APA Skills"
+    },
+    "acpSkills": {
+      "pageTitle": "ACP Skills"
+    },
+    "showcases": {
+      "pageTitle": "Showcases"
+    }
   }
 }

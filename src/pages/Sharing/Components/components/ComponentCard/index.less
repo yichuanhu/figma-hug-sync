@@ -1,0 +1,57 @@
+.component-card {
+  cursor: pointer;
+  transition: box-shadow 0.2s, transform 0.2s;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  .semi-card-body {
+    padding: 16px;
+  }
+
+  .component-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .component-card-title-area {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .component-card-name {
+    font-size: 14px;
+  }
+
+  .component-card-desc {
+    margin-bottom: 12px;
+    min-height: 36px;
+  }
+
+  .component-card-tags {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+
+  .component-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--semi-color-border);
+    padding-top: 12px;
+  }
+
+  .component-card-stat {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+}

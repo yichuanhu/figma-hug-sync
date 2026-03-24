@@ -1,0 +1,30 @@
+.skills-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .skills-page-header {
+    flex-shrink: 0;
+    margin-bottom: 16px;
+
+    .title {
+      margin: 0;
+    }
+  }
+
+  .skills-page-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-shrink: 0;
+  }
+
+  .skills-page-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+    overflow: auto;
+    flex: 1;
+  }
+}

@@ -52,6 +52,7 @@ import requirementsCenterIconRaw from '@/assets/icons/requirements.svg?raw';
 import schedulingCenterIconRaw from '@/assets/icons/scheduling.svg?raw';
 import operationsCenterIconRaw from '@/assets/icons/operations.svg?raw';
 import maintenanceCenterIconRaw from '@/assets/icons/maintenance.svg?raw';
+import sharingCenterIconRaw from '@/assets/icons/sharing.svg?raw';
 
 import './index.less';
 
@@ -135,6 +136,9 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
     if (pathname.startsWith('/requirements')) {
       return 'requirementsCenter';
     }
+    if (pathname.startsWith('/sharing')) {
+      return 'sharingCenter';
+    }
     if (pathname.startsWith('/maintenance')) {
       return 'maintenanceCenter';
     }
@@ -197,6 +201,12 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
       shortLabelKey: 'sidebar.maintenanceCenterShort',
       icon: <div className="sidebar-center-icon" dangerouslySetInnerHTML={{ __html: maintenanceCenterIconRaw }} />,
       path: '/maintenance',
+    },
+    {
+      key: 'sharingCenter',
+      labelKey: 'sidebar.sharingCenter',
+      shortLabelKey: 'sidebar.sharingCenterShort',
+      icon: <div className="sidebar-center-icon" dangerouslySetInnerHTML={{ __html: sharingCenterIconRaw }} />,
     },
   ];
 
@@ -284,6 +294,20 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
     { key: 'securityManagement', labelKey: 'sidebar.securityManagement', icon: <Shield size={20} strokeWidth={2} /> },
   ];
 
+  // 共享中心的详细菜单结构
+  const sharingCenterMenu: MenuItem[] = [
+    // 可执行组件 - 分组标题
+    { key: 'executableComponents', labelKey: 'sidebar.executableComponents', isGroupLabel: true },
+    { key: 'creatorComponents', labelKey: 'sidebar.creatorComponents', icon: <IconGridView />, path: '/sharing/components/creator' },
+    // AI Skills - 分组标题
+    { key: 'aiSkills', labelKey: 'sidebar.aiSkills', isGroupLabel: true },
+    { key: 'apaSkills', labelKey: 'sidebar.apaSkills', icon: <Bot size={20} strokeWidth={2} />, path: '/sharing/skills/apa' },
+    { key: 'acpSkills', labelKey: 'sidebar.acpSkills', icon: <Workflow size={20} strokeWidth={2} />, path: '/sharing/skills/acp' },
+    // 案例展示 - 分组标题
+    { key: 'showcasesGroup', labelKey: 'sidebar.showcasesGroup', isGroupLabel: true },
+    { key: 'showcasesList', labelKey: 'sidebar.showcasesList', icon: <IconBookStroked />, path: '/sharing/showcases' },
+  ];
+
   // 根据当前路由获取选中的菜单key
   const getSelectedKeyByPath = (pathname: string): string => {
     if (pathname.startsWith('/scheduling-center/resource-monitoring/worker-management')) {
@@ -361,6 +385,18 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
     if (pathname === '/operations/platform-operations') {
       return 'platformOperations';
     }
+    if (pathname === '/sharing/components/creator') {
+      return 'creatorComponents';
+    }
+    if (pathname === '/sharing/skills/apa') {
+      return 'apaSkills';
+    }
+    if (pathname === '/sharing/skills/acp') {
+      return 'acpSkills';
+    }
+    if (pathname === '/sharing/showcases') {
+      return 'showcasesList';
+    }
     return '';
   };
 
@@ -406,6 +442,8 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
         return requirementsCenterMenu;
       case 'maintenanceCenter':
         return maintenanceCenterMenu;
+      case 'sharingCenter':
+        return sharingCenterMenu;
       default:
         return [];
     }

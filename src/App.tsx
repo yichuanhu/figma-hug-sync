@@ -60,6 +60,11 @@ import RequirementsReview from "@/pages/Requirements/RequirementsReview";
 import RequirementsTeam from "@/pages/Requirements/RequirementsTeam";
 // Maintenance
 import MaintenanceWorkbench from "@/pages/Maintenance/MaintenanceWorkbench";
+// Sharing Center
+import CreatorComponents from "@/pages/Sharing/Components/CreatorComponents";
+import APASkills from "@/pages/Sharing/Skills/APASkills";
+import ACPSkills from "@/pages/Sharing/Skills/ACPSkills";
+import Showcases from "@/pages/Sharing/Showcases";
 
 const queryClient = new QueryClient();
 
@@ -141,6 +146,12 @@ const App = () => {
           <Route path="/operations/cost-management" element={<CostManagement />} />
           <Route path="/operations/platform-operations" element={<PlatformOperations />} />
           <Route path="/maintenance" element={<MaintenanceWorkbench />} />
+          {/* 共享中心 */}
+          <Route path="/sharing" element={<Navigate to="/sharing/components/creator" replace />} />
+          <Route path="/sharing/components/creator" element={<CreatorComponents />} />
+          <Route path="/sharing/skills/apa" element={<APASkills />} />
+          <Route path="/sharing/skills/acp" element={<ACPSkills />} />
+          <Route path="/sharing/showcases" element={<Showcases />} />
         </Route>
 
         {/* 无布局页面 */}
