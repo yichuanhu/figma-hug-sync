@@ -13,7 +13,8 @@ interface ComponentCardProps {
 
 const ComponentCard = ({ item, onClick }: ComponentCardProps) => {
   return (
-    <Card className="component-card" onClick={() => onClick?.(item)}>
+    <div onClick={() => onClick?.(item)}>
+    <Card className="component-card">
       <div className="component-card-header">
         <Avatar size="small" shape="square" style={{ backgroundColor: 'var(--semi-color-primary)' }}>
           {item.name.charAt(0)}
