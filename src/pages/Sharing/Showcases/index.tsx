@@ -198,6 +198,7 @@ const Showcases = () => {
               </div>
             </div>
           </Card>
+          </div>
         ))}
       </div>
 
