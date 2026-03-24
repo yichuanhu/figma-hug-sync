@@ -3071,6 +3071,13 @@
         "draft": "草稿",
         "deprecated": "已弃用"
       }
+    },
+    "filter": {
+      "status": "状态",
+      "tags": "标签",
+      "category": "类别",
+      "department": "部门",
+      "author": "作者"
     }
   }
 }

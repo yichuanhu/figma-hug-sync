@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Typography, Input, Card, Tag, Avatar, Space } from '@douyinfe/semi-ui';
+import { Typography, Input, Card, Tag, Space } from '@douyinfe/semi-ui';
 import { IconSearchStroked, IconStarStroked } from '@douyinfe/semi-icons';
 import { Eye } from 'lucide-react';
 import ShowcaseDetailDrawer, { ShowcaseItem } from './components/ShowcaseDetailDrawer';
+import FilterPopover, { FilterSection } from '@/components/FilterPopover';
 import './index.less';
 
 const { Title, Text, Paragraph } = Typography;
@@ -139,17 +140,58 @@ const Showcases = () => {
   const [searchText, setSearchText] = useState('');
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState<ShowcaseItem | null>(null);
+  const [filterVisible, setFilterVisible] = useState(false);
+  const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
+  const [tagsFilter, setTagsFilter] = useState<string[]>([]);
 
-  const filteredData = showcasesMockData.filter((item) =>
-    !searchText || item.name.toLowerCase().includes(searchText.toLowerCase()) ||
-    item.description.toLowerCase().includes(searchText.toLowerCase()) ||
-    item.tags.some((tag) => tag.toLowerCase().includes(searchText.toLowerCase()))
-  );
+  const departmentOptions = useMemo(() => {
+    const deps = new Set(showcasesMockData.map((item) => item.department));
+    return Array.from(deps).map((dep) => ({ value: dep, label: dep }));
+  }, []);
 
-  const handleCardClick = (item: ShowcaseItem) => {
+  const tagOptions = useMemo(() => {
+    const allTags = new Set<string>();
+    showcasesMockData.forEach((item) => item.tags.forEach((tag) => allTags.add(tag)));
+    return Array.from(allTags).map((tag) => ({ value: tag, label: tag }));
+  }, []);
+
+  const filterSections: FilterSection[] = useMemo(() => [
+    {
+      key: 'department',
+      label: t('sharing.filter.department'),
+      type: 'checkbox',
+      options: departmentOptions,
+      value: departmentFilter,
+    },
+    {
+      key: 'tags',
+      label: t('sharing.filter.tags'),
+      type: 'checkbox',
+      options: tagOptions,
+      value: tagsFilter,
+    },
+  ], [t, departmentFilter, tagsFilter, departmentOptions, tagOptions]);
+
+  const filteredData = showcasesMockData.filter((item) => {
+    if (searchText && !item.name.toLowerCase().includes(searchText.toLowerCase()) &&
+      !item.description.toLowerCase().includes(searchText.toLowerCase()) &&
+      !item.tags.some((tag) => tag.toLowerCase().includes(searchText.toLowerCase()))) {
+      return false;
+    }
+    if (departmentFilter.length > 0 && !departmentFilter.includes(item.department)) return false;
+    if (tagsFilter.length > 0 && !tagsFilter.some((tag) => item.tags.includes(tag))) return false;
+    return true;
+  });
+
+  const handleCardClick = useCallback((item: ShowcaseItem) => {
     setSelectedItem(item);
     setDrawerVisible(true);
-  };
+  }, []);
+
+  const handleFilterConfirm = useCallback((values: Record<string, unknown>) => {
+    setDepartmentFilter(values.department as string[] || []);
+    setTagsFilter(values.tags as string[] || []);
+  }, []);
 
   return (
     <div className="showcases-page">
@@ -166,6 +208,12 @@ const Showcases = () => {
           onChange={setSearchText}
           showClear
           style={{ width: 280 }}
+        />
+        <FilterPopover
+          sections={filterSections}
+          visible={filterVisible}
+          onVisibleChange={setFilterVisible}
+          onConfirm={handleFilterConfirm}
         />
       </div>
       <div className="showcases-page-grid">

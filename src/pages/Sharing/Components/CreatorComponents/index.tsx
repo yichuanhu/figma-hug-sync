@@ -1,9 +1,10 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Typography, Tabs, Input } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import ComponentCard from '../components/ComponentCard';
 import ComponentDetailDrawer from '../components/ComponentDetailDrawer';
+import FilterPopover, { FilterSection } from '@/components/FilterPopover';
 import { commandsMockData, apiConnectorsMockData, customComponentsMockData } from './mockData';
 import { ComponentItem } from './types';
 import './index.less';
@@ -17,6 +18,9 @@ const CreatorComponents = () => {
   const [searchText, setSearchText] = useState('');
   const [selectedItem, setSelectedItem] = useState<ComponentItem | null>(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
+  const [filterVisible, setFilterVisible] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<string[]>([]);
+  const [tagsFilter, setTagsFilter] = useState<string[]>([]);
 
   const getDataByTab = (tab: string): ComponentItem[] => {
     switch (tab) {
@@ -27,11 +31,45 @@ const CreatorComponents = () => {
     }
   };
 
-  const filteredData = getDataByTab(activeTab).filter((item) =>
-    !searchText || item.name.toLowerCase().includes(searchText.toLowerCase()) ||
-    item.description.toLowerCase().includes(searchText.toLowerCase()) ||
-    item.tags.some((tag) => tag.toLowerCase().includes(searchText.toLowerCase()))
-  );
+  const currentData = getDataByTab(activeTab);
+
+  const tagOptions = useMemo(() => {
+    const allTags = new Set<string>();
+    currentData.forEach((item) => item.tags.forEach((tag) => allTags.add(tag)));
+    return Array.from(allTags).map((tag) => ({ value: tag, label: tag }));
+  }, [currentData]);
+
+  const filterSections: FilterSection[] = useMemo(() => [
+    {
+      key: 'status',
+      label: t('sharing.filter.status'),
+      type: 'checkbox',
+      options: [
+        { value: 'published', label: t('sharing.detail.status.published') },
+        { value: 'draft', label: t('sharing.detail.status.draft') },
+        { value: 'deprecated', label: t('sharing.detail.status.deprecated') },
+      ],
+      value: statusFilter,
+    },
+    {
+      key: 'tags',
+      label: t('sharing.filter.tags'),
+      type: 'checkbox',
+      options: tagOptions,
+      value: tagsFilter,
+    },
+  ], [t, statusFilter, tagsFilter, tagOptions]);
+
+  const filteredData = currentData.filter((item) => {
+    if (searchText && !item.name.toLowerCase().includes(searchText.toLowerCase()) &&
+      !item.description.toLowerCase().includes(searchText.toLowerCase()) &&
+      !item.tags.some((tag) => tag.toLowerCase().includes(searchText.toLowerCase()))) {
+      return false;
+    }
+    if (statusFilter.length > 0 && !statusFilter.includes(item.status)) return false;
+    if (tagsFilter.length > 0 && !tagsFilter.some((tag) => item.tags.includes(tag))) return false;
+    return true;
+  });
 
   const handleCardClick = useCallback((item: ComponentItem) => {
     setSelectedItem(item);
@@ -46,6 +84,18 @@ const CreatorComponents = () => {
     setSelectedItem(item);
   }, []);
 
+  const handleFilterConfirm = useCallback((values: Record<string, unknown>) => {
+    setStatusFilter(values.status as string[] || []);
+    setTagsFilter(values.tags as string[] || []);
+  }, []);
+
+  const handleTabChange = useCallback((key: string) => {
+    setActiveTab(key);
+    setSearchText('');
+    setStatusFilter([]);
+    setTagsFilter([]);
+  }, []);
+
   const renderTabContent = () => (
     <div className="creator-components-tab-content">
       <div className="creator-components-toolbar">
@@ -56,6 +106,12 @@ const CreatorComponents = () => {
           onChange={setSearchText}
           showClear
           style={{ width: 280 }}
+        />
+        <FilterPopover
+          sections={filterSections}
+          visible={filterVisible}
+          onVisibleChange={setFilterVisible}
+          onConfirm={handleFilterConfirm}
         />
       </div>
       <div className="creator-components-grid">
@@ -76,7 +132,7 @@ const CreatorComponents = () => {
 
       <Tabs
         activeKey={activeTab}
-        onChange={(key) => { setActiveTab(key); setSearchText(''); }}
+        onChange={handleTabChange}
         className="creator-components-tabs"
         keepDOM={false}
       >

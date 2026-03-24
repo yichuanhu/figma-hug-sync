@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Typography, Input } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import SkillCard, { SkillItem } from '../components/SkillCard';
 import SkillDetailDrawer from '../components/SkillDetailDrawer';
+import FilterPopover, { FilterSection } from '@/components/FilterPopover';
 import './index.less';
 
 const { Title } = Typography;
@@ -113,25 +114,58 @@ const APASkills = () => {
   const [searchText, setSearchText] = useState('');
   const [selectedItem, setSelectedItem] = useState<SkillItem | null>(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
+  const [filterVisible, setFilterVisible] = useState(false);
+  const [categoryFilter, setCategoryFilter] = useState<string[]>([]);
+  const [tagsFilter, setTagsFilter] = useState<string[]>([]);
 
-  const filteredData = apaSkillsMockData.filter((item) =>
-    !searchText || item.name.toLowerCase().includes(searchText.toLowerCase()) ||
-    item.description.toLowerCase().includes(searchText.toLowerCase()) ||
-    item.tags.some((tag) => tag.toLowerCase().includes(searchText.toLowerCase()))
-  );
+  const categoryOptions = useMemo(() => {
+    const cats = new Set(apaSkillsMockData.map((item) => item.category));
+    return Array.from(cats).map((cat) => ({ value: cat, label: cat }));
+  }, []);
 
-  const handleCardClick = (item: SkillItem) => {
+  const tagOptions = useMemo(() => {
+    const allTags = new Set<string>();
+    apaSkillsMockData.forEach((item) => item.tags.forEach((tag) => allTags.add(tag)));
+    return Array.from(allTags).map((tag) => ({ value: tag, label: tag }));
+  }, []);
+
+  const filterSections: FilterSection[] = useMemo(() => [
+    {
+      key: 'category',
+      label: t('sharing.filter.category'),
+      type: 'checkbox',
+      options: categoryOptions,
+      value: categoryFilter,
+    },
+    {
+      key: 'tags',
+      label: t('sharing.filter.tags'),
+      type: 'checkbox',
+      options: tagOptions,
+      value: tagsFilter,
+    },
+  ], [t, categoryFilter, tagsFilter, categoryOptions, tagOptions]);
+
+  const filteredData = apaSkillsMockData.filter((item) => {
+    if (searchText && !item.name.toLowerCase().includes(searchText.toLowerCase()) &&
+      !item.description.toLowerCase().includes(searchText.toLowerCase()) &&
+      !item.tags.some((tag) => tag.toLowerCase().includes(searchText.toLowerCase()))) {
+      return false;
+    }
+    if (categoryFilter.length > 0 && !categoryFilter.includes(item.category)) return false;
+    if (tagsFilter.length > 0 && !tagsFilter.some((tag) => item.tags.includes(tag))) return false;
+    return true;
+  });
+
+  const handleCardClick = useCallback((item: SkillItem) => {
     setSelectedItem(item);
     setDrawerVisible(true);
-  };
+  }, []);
 
-  const handleDrawerClose = () => {
-    setDrawerVisible(false);
-  };
-
-  const handleNavigate = (item: SkillItem) => {
-    setSelectedItem(item);
-  };
+  const handleFilterConfirm = useCallback((values: Record<string, unknown>) => {
+    setCategoryFilter(values.category as string[] || []);
+    setTagsFilter(values.tags as string[] || []);
+  }, []);
 
   return (
     <div className="skills-page">
@@ -149,6 +183,12 @@ const APASkills = () => {
           showClear
           style={{ width: 280 }}
         />
+        <FilterPopover
+          sections={filterSections}
+          visible={filterVisible}
+          onVisibleChange={setFilterVisible}
+          onConfirm={handleFilterConfirm}
+        />
       </div>
       <div className="skills-page-grid">
         {filteredData.map((item) => (
@@ -157,10 +197,10 @@ const APASkills = () => {
       </div>
       <SkillDetailDrawer
         visible={drawerVisible}
-        onClose={handleDrawerClose}
+        onClose={() => setDrawerVisible(false)}
         item={selectedItem}
         dataList={filteredData}
-        onNavigate={handleNavigate}
+        onNavigate={(item) => setSelectedItem(item)}
       />
     </div>
   );
