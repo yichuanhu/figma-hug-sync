@@ -48,6 +48,7 @@ const ComponentCard = ({ item, onClick }: ComponentCardProps) => {
         <Text size="small" type="tertiary">{item.author}</Text>
       </div>
     </Card>
+    </div>
   );
 };
 
