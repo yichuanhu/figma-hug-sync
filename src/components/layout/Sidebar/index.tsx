@@ -385,6 +385,18 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
     if (pathname === '/operations/platform-operations') {
       return 'platformOperations';
     }
+    if (pathname === '/sharing/components/creator') {
+      return 'creatorComponents';
+    }
+    if (pathname === '/sharing/skills/apa') {
+      return 'apaSkills';
+    }
+    if (pathname === '/sharing/skills/acp') {
+      return 'acpSkills';
+    }
+    if (pathname === '/sharing/showcases') {
+      return 'showcasesList';
+    }
     return '';
   };
 
