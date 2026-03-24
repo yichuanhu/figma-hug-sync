@@ -36,7 +36,7 @@ interface SkillCardProps {
 
 const SkillCard = ({ item, onClick }: SkillCardProps) => {
   return (
-    <div onClick={() => onClick?.(item)}>
+    <div className="skill-card-wrapper" onClick={() => onClick?.(item)}>
       <Card className="skill-card">
         <div className="skill-card-body">
           <div className="skill-card-header">
