@@ -3027,5 +3027,24 @@
     "department": "Department",
     "role": "Role",
     "email": "Email"
+  },
+  "sharing": {
+    "creatorComponents": {
+      "pageTitle": "Creator Components",
+      "tabs": {
+        "commands": "Commands",
+        "apiConnectors": "API Connectors",
+        "customComponents": "Custom Components"
+      }
+    },
+    "apaSkills": {
+      "pageTitle": "APA Skills"
+    },
+    "acpSkills": {
+      "pageTitle": "ACP Skills"
+    },
+    "showcases": {
+      "pageTitle": "Showcases"
+    }
   }
 }

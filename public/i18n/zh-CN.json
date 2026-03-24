@@ -3034,5 +3034,24 @@
     "department": "部门",
     "role": "角色",
     "email": "邮箱"
+  },
+  "sharing": {
+    "creatorComponents": {
+      "pageTitle": "Creator组件",
+      "tabs": {
+        "commands": "命令",
+        "apiConnectors": "API Connectors",
+        "customComponents": "自定义组件"
+      }
+    },
+    "apaSkills": {
+      "pageTitle": "APA Skills"
+    },
+    "acpSkills": {
+      "pageTitle": "ACP Skills"
+    },
+    "showcases": {
+      "pageTitle": "案例展示"
+    }
   }
 }
