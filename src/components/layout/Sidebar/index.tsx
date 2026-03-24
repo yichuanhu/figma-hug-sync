@@ -136,6 +136,9 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
     if (pathname.startsWith('/requirements')) {
       return 'requirementsCenter';
     }
+    if (pathname.startsWith('/sharing')) {
+      return 'sharingCenter';
+    }
     if (pathname.startsWith('/maintenance')) {
       return 'maintenanceCenter';
     }
