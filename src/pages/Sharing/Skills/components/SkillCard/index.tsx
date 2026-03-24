@@ -36,8 +36,8 @@ interface SkillCardProps {
 
 const SkillCard = ({ item, onClick }: SkillCardProps) => {
   return (
-    <div onClick={() => onClick?.(item)}>
-      <Card className="skill-card">
+    <div className="skill-card-wrapper" onClick={() => onClick?.(item)}>
+      <Card className="skill-card" style={{ height: '100%' }}>
         <div className="skill-card-body">
           <div className="skill-card-header">
             <Avatar size="small" shape="square" style={{ backgroundColor: 'var(--semi-color-primary)' }}>
