@@ -442,6 +442,8 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
         return requirementsCenterMenu;
       case 'maintenanceCenter':
         return maintenanceCenterMenu;
+      case 'sharingCenter':
+        return sharingCenterMenu;
       default:
         return [];
     }
