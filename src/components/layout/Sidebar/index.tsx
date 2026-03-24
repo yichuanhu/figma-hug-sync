@@ -202,6 +202,12 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
       icon: <div className="sidebar-center-icon" dangerouslySetInnerHTML={{ __html: maintenanceCenterIconRaw }} />,
       path: '/maintenance',
     },
+    {
+      key: 'sharingCenter',
+      labelKey: 'sidebar.sharingCenter',
+      shortLabelKey: 'sidebar.sharingCenterShort',
+      icon: <div className="sidebar-center-icon" dangerouslySetInnerHTML={{ __html: sharingCenterIconRaw }} />,
+    },
   ];
 
   // 开发中心的详细菜单结构 - 使用分组标题样式
