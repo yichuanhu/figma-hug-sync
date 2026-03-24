@@ -3064,6 +3064,13 @@
         "draft": "Draft",
         "deprecated": "Deprecated"
       }
+    },
+    "filter": {
+      "status": "Status",
+      "tags": "Tags",
+      "category": "Category",
+      "department": "Department",
+      "author": "Author"
     }
   }
 }
