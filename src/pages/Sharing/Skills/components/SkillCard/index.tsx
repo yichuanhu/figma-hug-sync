@@ -24,7 +24,7 @@ interface SkillCardProps {
 
 const SkillCard = ({ item }: SkillCardProps) => {
   return (
-    <Card className="skill-card" hoverable>
+    <Card className="skill-card">
       <div className="skill-card-body">
         <div className="skill-card-header">
           <Avatar size="small" shape="square" style={{ backgroundColor: 'var(--semi-color-primary)' }}>

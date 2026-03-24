@@ -15,7 +15,7 @@ const ComponentCard = ({ item }: ComponentCardProps) => {
   const { t } = useTranslation();
 
   return (
-    <Card className="component-card" hoverable>
+    <Card className="component-card">
       <div className="component-card-header">
         <Avatar size="small" shape="square" style={{ backgroundColor: 'var(--semi-color-primary)' }}>
           {item.name.charAt(0)}
