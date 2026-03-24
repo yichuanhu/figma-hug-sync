@@ -3045,6 +3045,21 @@
     },
     "showcases": {
       "pageTitle": "Showcases"
+    },
+    "detail": {
+      "basicInfo": "Basic Info",
+      "version": "Version",
+      "author": "Author",
+      "downloads": "Downloads",
+      "rating": "Rating",
+      "tags": "Tags",
+      "dependencies": "Dependencies",
+      "versionHistory": "Version History",
+      "status": {
+        "published": "Published",
+        "draft": "Draft",
+        "deprecated": "Deprecated"
+      }
     }
   }
 }
