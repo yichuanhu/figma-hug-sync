@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import { Card, Tag, Typography, Space, Avatar } from '@douyinfe/semi-ui';
 import { IconStarStroked } from '@douyinfe/semi-icons';
 import { Download } from 'lucide-react';
@@ -9,12 +8,12 @@ const { Text, Paragraph } = Typography;
 
 interface ComponentCardProps {
   item: ComponentItem;
+  onClick?: (item: ComponentItem) => void;
 }
 
-const ComponentCard = ({ item }: ComponentCardProps) => {
-  const { t } = useTranslation();
-
+const ComponentCard = ({ item, onClick }: ComponentCardProps) => {
   return (
+    <div onClick={() => onClick?.(item)}>
     <Card className="component-card">
       <div className="component-card-header">
         <Avatar size="small" shape="square" style={{ backgroundColor: 'var(--semi-color-primary)' }}>
@@ -49,6 +48,7 @@ const ComponentCard = ({ item }: ComponentCardProps) => {
         <Text size="small" type="tertiary">{item.author}</Text>
       </div>
     </Card>
+    </div>
   );
 };
 

@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Typography, Tabs, Input } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import ComponentCard from '../components/ComponentCard';
+import ComponentDetailDrawer from '../components/ComponentDetailDrawer';
 import { commandsMockData, apiConnectorsMockData, customComponentsMockData } from './mockData';
 import { ComponentItem } from './types';
 import './index.less';
@@ -14,6 +15,8 @@ const CreatorComponents = () => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('commands');
   const [searchText, setSearchText] = useState('');
+  const [selectedItem, setSelectedItem] = useState<ComponentItem | null>(null);
+  const [drawerVisible, setDrawerVisible] = useState(false);
 
   const getDataByTab = (tab: string): ComponentItem[] => {
     switch (tab) {
@@ -30,6 +33,19 @@ const CreatorComponents = () => {
     item.tags.some((tag) => tag.toLowerCase().includes(searchText.toLowerCase()))
   );
 
+  const handleCardClick = useCallback((item: ComponentItem) => {
+    setSelectedItem(item);
+    setDrawerVisible(true);
+  }, []);
+
+  const handleDrawerClose = useCallback(() => {
+    setDrawerVisible(false);
+  }, []);
+
+  const handleDrawerNavigate = useCallback((item: ComponentItem) => {
+    setSelectedItem(item);
+  }, []);
+
   const renderTabContent = () => (
     <div className="creator-components-tab-content">
       <div className="creator-components-toolbar">
@@ -44,7 +60,7 @@ const CreatorComponents = () => {
       </div>
       <div className="creator-components-grid">
         {filteredData.map((item) => (
-          <ComponentCard key={item.id} item={item} />
+          <ComponentCard key={item.id} item={item} onClick={handleCardClick} />
         ))}
       </div>
     </div>
@@ -74,6 +90,14 @@ const CreatorComponents = () => {
           {renderTabContent()}
         </TabPane>
       </Tabs>
+
+      <ComponentDetailDrawer
+        visible={drawerVisible}
+        onClose={handleDrawerClose}
+        item={selectedItem}
+        dataList={filteredData}
+        onNavigate={handleDrawerNavigate}
+      />
     </div>
   );
 };

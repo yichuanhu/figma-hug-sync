@@ -3052,6 +3052,21 @@
     },
     "showcases": {
       "pageTitle": "案例展示"
+    },
+    "detail": {
+      "basicInfo": "基本信息",
+      "version": "版本",
+      "author": "作者",
+      "downloads": "下载量",
+      "rating": "评分",
+      "tags": "标签",
+      "dependencies": "依赖项",
+      "versionHistory": "版本历史",
+      "status": {
+        "published": "已发布",
+        "draft": "草稿",
+        "deprecated": "已弃用"
+      }
     }
   }
 }
