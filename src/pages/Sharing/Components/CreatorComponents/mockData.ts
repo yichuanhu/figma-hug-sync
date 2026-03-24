@@ -13,6 +13,14 @@ export const commandsMockData: ComponentItem[] = [
     rating: 4.8,
     updatedAt: '2026-03-15',
     status: 'published',
+    createdAt: '2025-06-10',
+    dependencies: ['OCR Engine v3.2', 'PDF Parser v1.4'],
+    versionHistory: [
+      { version: '2.1.0', releaseDate: '2026-03-15', changelog: 'Added multi-language invoice support and improved accuracy for handwritten fields', author: 'John Smith' },
+      { version: '2.0.0', releaseDate: '2026-01-20', changelog: 'Major refactor with new OCR engine integration and batch processing capability', author: 'John Smith' },
+      { version: '1.5.2', releaseDate: '2025-11-05', changelog: 'Fixed date format parsing for European invoices', author: 'Sarah Chen' },
+      { version: '1.0.0', releaseDate: '2025-06-10', changelog: 'Initial release with basic invoice recognition', author: 'John Smith' },
+    ],
   },
   {
     id: 'cmd-002',
@@ -26,6 +34,13 @@ export const commandsMockData: ComponentItem[] = [
     rating: 4.5,
     updatedAt: '2026-03-10',
     status: 'published',
+    createdAt: '2025-08-15',
+    dependencies: ['SMTP Connector v2.0'],
+    versionHistory: [
+      { version: '1.3.2', releaseDate: '2026-03-10', changelog: 'Fixed attachment encoding issue for non-ASCII filenames', author: 'Sarah Chen' },
+      { version: '1.3.0', releaseDate: '2026-02-01', changelog: 'Added HTML template engine and inline image support', author: 'Sarah Chen' },
+      { version: '1.0.0', releaseDate: '2025-08-15', changelog: 'Initial release with basic batch sending', author: 'Sarah Chen' },
+    ],
   },
   {
     id: 'cmd-003',
@@ -39,6 +54,14 @@ export const commandsMockData: ComponentItem[] = [
     rating: 4.9,
     updatedAt: '2026-03-20',
     status: 'published',
+    createdAt: '2025-03-01',
+    dependencies: ['LibreOffice Bridge v4.1', 'PDF Engine v2.3'],
+    versionHistory: [
+      { version: '3.0.1', releaseDate: '2026-03-20', changelog: 'Hotfix for Excel formula preservation during PDF conversion', author: 'Michael Lee' },
+      { version: '3.0.0', releaseDate: '2026-03-05', changelog: 'Added CSV to Excel conversion with auto-schema detection', author: 'Michael Lee' },
+      { version: '2.0.0', releaseDate: '2025-10-12', changelog: 'Introduced batch conversion mode and progress tracking', author: 'Michael Lee' },
+      { version: '1.0.0', releaseDate: '2025-03-01', changelog: 'Initial release supporting PDF and Word conversions', author: 'Michael Lee' },
+    ],
   },
   {
     id: 'cmd-004',
@@ -52,6 +75,12 @@ export const commandsMockData: ComponentItem[] = [
     rating: 4.2,
     updatedAt: '2026-02-28',
     status: 'published',
+    createdAt: '2025-12-01',
+    dependencies: ['Rule Engine v1.2'],
+    versionHistory: [
+      { version: '1.0.5', releaseDate: '2026-02-28', changelog: 'Added support for cross-field validation rules', author: 'Emily Wang' },
+      { version: '1.0.0', releaseDate: '2025-12-01', changelog: 'Initial release with JSON schema validation', author: 'Emily Wang' },
+    ],
   },
   {
     id: 'cmd-005',
@@ -65,6 +94,12 @@ export const commandsMockData: ComponentItem[] = [
     rating: 4.3,
     updatedAt: '2026-03-05',
     status: 'published',
+    createdAt: '2025-09-20',
+    dependencies: ['Browser Engine v5.0'],
+    versionHistory: [
+      { version: '1.1.0', releaseDate: '2026-03-05', changelog: 'Added element-specific capture and viewport simulation', author: 'David Park' },
+      { version: '1.0.0', releaseDate: '2025-09-20', changelog: 'Initial release with full-page screenshot', author: 'David Park' },
+    ],
   },
 ];
 
@@ -81,6 +116,13 @@ export const apiConnectorsMockData: ComponentItem[] = [
     rating: 4.7,
     updatedAt: '2026-03-18',
     status: 'published',
+    createdAt: '2025-05-15',
+    dependencies: ['SAP RFC SDK v7.5'],
+    versionHistory: [
+      { version: '2.0.0', releaseDate: '2026-03-18', changelog: 'Full rewrite with async connection pooling and retry logic', author: 'Robert Zhang' },
+      { version: '1.2.0', releaseDate: '2025-12-10', changelog: 'Added support for SAP S/4HANA Cloud APIs', author: 'Robert Zhang' },
+      { version: '1.0.0', releaseDate: '2025-05-15', changelog: 'Initial release with basic BAPI/RFC calls', author: 'Robert Zhang' },
+    ],
   },
   {
     id: 'api-002',
@@ -94,6 +136,13 @@ export const apiConnectorsMockData: ComponentItem[] = [
     rating: 4.6,
     updatedAt: '2026-03-12',
     status: 'published',
+    createdAt: '2025-07-01',
+    dependencies: ['OAuth2 Client v3.0'],
+    versionHistory: [
+      { version: '1.5.3', releaseDate: '2026-03-12', changelog: 'Fixed token refresh race condition in concurrent requests', author: 'Lisa Johnson' },
+      { version: '1.5.0', releaseDate: '2026-01-15', changelog: 'Added bulk API support for large data operations', author: 'Lisa Johnson' },
+      { version: '1.0.0', releaseDate: '2025-07-01', changelog: 'Initial release with basic CRUD operations', author: 'Lisa Johnson' },
+    ],
   },
   {
     id: 'api-003',
@@ -107,6 +156,12 @@ export const apiConnectorsMockData: ComponentItem[] = [
     rating: 4.4,
     updatedAt: '2026-03-08',
     status: 'published',
+    createdAt: '2025-10-01',
+    dependencies: ['Slack SDK v6.0'],
+    versionHistory: [
+      { version: '1.2.1', releaseDate: '2026-03-08', changelog: 'Added Block Kit message builder support', author: 'Alex Kim' },
+      { version: '1.0.0', releaseDate: '2025-10-01', changelog: 'Initial release with channel messaging', author: 'Alex Kim' },
+    ],
   },
   {
     id: 'api-004',
@@ -120,6 +175,13 @@ export const apiConnectorsMockData: ComponentItem[] = [
     rating: 4.8,
     updatedAt: '2026-03-22',
     status: 'published',
+    createdAt: '2025-04-20',
+    dependencies: ['Google API Client v4.0'],
+    versionHistory: [
+      { version: '2.3.0', releaseDate: '2026-03-22', changelog: 'Added formula preservation and named range support', author: 'Kevin Wu' },
+      { version: '2.0.0', releaseDate: '2025-11-30', changelog: 'Bi-directional sync with conflict resolution', author: 'Kevin Wu' },
+      { version: '1.0.0', releaseDate: '2025-04-20', changelog: 'Initial release with read/write operations', author: 'Kevin Wu' },
+    ],
   },
 ];
 
@@ -136,6 +198,13 @@ export const customComponentsMockData: ComponentItem[] = [
     rating: 4.6,
     updatedAt: '2026-03-14',
     status: 'published',
+    createdAt: '2025-07-20',
+    dependencies: ['PDF.js v3.11', 'Canvas Renderer v2.0'],
+    versionHistory: [
+      { version: '1.4.0', releaseDate: '2026-03-14', changelog: 'Added table structure detection with row/column merging', author: 'Anna Liu' },
+      { version: '1.2.0', releaseDate: '2025-12-05', changelog: 'Improved image extraction quality and added EXIF preservation', author: 'Anna Liu' },
+      { version: '1.0.0', releaseDate: '2025-07-20', changelog: 'Initial release with text extraction', author: 'Anna Liu' },
+    ],
   },
   {
     id: 'cust-002',
@@ -149,6 +218,14 @@ export const customComponentsMockData: ComponentItem[] = [
     rating: 4.9,
     updatedAt: '2026-03-19',
     status: 'published',
+    createdAt: '2025-02-10',
+    dependencies: ['JSON Schema Validator v5.0', 'Form Engine v3.1'],
+    versionHistory: [
+      { version: '2.1.2', releaseDate: '2026-03-19', changelog: 'Fixed conditional field visibility with nested dependencies', author: 'Chris Brown' },
+      { version: '2.1.0', releaseDate: '2026-02-15', changelog: 'Added file upload fields and rich text editor integration', author: 'Chris Brown' },
+      { version: '2.0.0', releaseDate: '2025-09-01', changelog: 'Complete rewrite with drag-and-drop field ordering', author: 'Chris Brown' },
+      { version: '1.0.0', releaseDate: '2025-02-10', changelog: 'Initial release with basic form generation', author: 'Chris Brown' },
+    ],
   },
   {
     id: 'cust-003',
@@ -162,6 +239,12 @@ export const customComponentsMockData: ComponentItem[] = [
     rating: 4.3,
     updatedAt: '2026-03-01',
     status: 'published',
+    createdAt: '2025-11-15',
+    dependencies: ['ECharts v5.5', 'Data Adapter v1.0'],
+    versionHistory: [
+      { version: '1.0.3', releaseDate: '2026-03-01', changelog: 'Fixed tooltip positioning on mobile viewports', author: 'Sophie Tang' },
+      { version: '1.0.0', releaseDate: '2025-11-15', changelog: 'Initial release with bar, line, and pie chart types', author: 'Sophie Tang' },
+    ],
   },
   {
     id: 'cust-004',
@@ -175,5 +258,12 @@ export const customComponentsMockData: ComponentItem[] = [
     rating: 4.5,
     updatedAt: '2026-03-07',
     status: 'published',
+    createdAt: '2025-10-05',
+    dependencies: ['Flow Engine v2.0', 'Canvas Kit v1.3'],
+    versionHistory: [
+      { version: '1.2.0', releaseDate: '2026-03-07', changelog: 'Added parallel approval branches and auto-escalation rules', author: 'James Wilson' },
+      { version: '1.1.0', releaseDate: '2025-12-20', changelog: 'Added conditional routing based on form field values', author: 'James Wilson' },
+      { version: '1.0.0', releaseDate: '2025-10-05', changelog: 'Initial release with sequential approval chains', author: 'James Wilson' },
+    ],
   },
 ];

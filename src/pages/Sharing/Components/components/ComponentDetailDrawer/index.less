@@ -1,0 +1,43 @@
+.component-detail-content {
+  padding: 20px 24px;
+  overflow: auto;
+  height: 100%;
+
+  .component-detail-section {
+    margin-bottom: 24px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .component-detail-section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .component-detail-title-area {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .component-detail-section-title {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 14px;
+  }
+
+  .component-detail-version-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  // Descriptions left align
+  .semi-descriptions-item-key {
+    width: 100px;
+    color: var(--semi-color-text-2);
+  }
+}
