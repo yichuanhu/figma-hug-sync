@@ -60,6 +60,11 @@ import RequirementsReview from "@/pages/Requirements/RequirementsReview";
 import RequirementsTeam from "@/pages/Requirements/RequirementsTeam";
 // Maintenance
 import MaintenanceWorkbench from "@/pages/Maintenance/MaintenanceWorkbench";
+// Sharing Center
+import CreatorComponents from "@/pages/Sharing/Components/CreatorComponents";
+import APASkills from "@/pages/Sharing/Skills/APASkills";
+import ACPSkills from "@/pages/Sharing/Skills/ACPSkills";
+import Showcases from "@/pages/Sharing/Showcases";
 
 const queryClient = new QueryClient();
 
