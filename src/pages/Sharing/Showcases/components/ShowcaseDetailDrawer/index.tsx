@@ -3,7 +3,6 @@ import { Descriptions, Tag, Typography, Timeline, Avatar, Space } from '@douyinf
 import { IconStarStroked } from '@douyinfe/semi-icons';
 import { Eye } from 'lucide-react';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
-import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import './index.less';
 
 const { Text, Paragraph } = Typography;
