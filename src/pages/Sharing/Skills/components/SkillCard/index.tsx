@@ -1,6 +1,7 @@
 import { Card, Tag, Typography, Space, Avatar } from '@douyinfe/semi-ui';
 import { IconStarStroked } from '@douyinfe/semi-icons';
 import { Download } from 'lucide-react';
+import { getAvatarColor } from '@/utils/avatarColor';
 import './index.less';
 
 const { Text, Paragraph } = Typography;
