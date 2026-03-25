@@ -220,9 +220,10 @@ const Showcases = () => {
         {filteredData.map((item) => (
           <div key={item.id} className="showcase-card-wrapper" onClick={() => handleCardClick(item)}>
           <Card className="showcase-card">
-            <div className="showcase-card-cover" style={{ backgroundColor: item.coverColor }} />
-            <div className="showcase-card-body">
+            <div className="showcase-card-cover" style={{ backgroundColor: item.coverColor }}>
               <Text strong className="showcase-card-name">{item.name}</Text>
+            </div>
+            <div className="showcase-card-body">
               <Paragraph ellipsis={{ rows: 2 }} type="tertiary" size="small" className="showcase-card-desc">
                 {item.description}
               </Paragraph>
