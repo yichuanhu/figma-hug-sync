@@ -41,7 +41,7 @@ const SkillCard = ({ item, onClick }: SkillCardProps) => {
       <Card className="skill-card">
         <div className="skill-card-body">
           <div className="skill-card-header">
-            <Avatar size="small" shape="square" style={{ backgroundColor: 'var(--semi-color-primary)' }}>
+            <Avatar size="small" shape="circle" color={getAvatarColor(item.name)}>
               {item.name.charAt(0)}
             </Avatar>
             <div className="skill-card-title-area">

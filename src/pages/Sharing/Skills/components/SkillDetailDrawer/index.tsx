@@ -44,7 +44,7 @@ const SkillDetailDrawer = ({ visible, onClose, item, dataList, onNavigate }: Ski
         {/* Header */}
         <div className="skill-detail-section">
           <div className="skill-detail-section-header">
-            <Avatar size="default" shape="square" style={{ backgroundColor: 'var(--semi-color-primary)' }}>
+            <Avatar size="default" shape="circle" color={getAvatarColor(item.name)}>
               {item.name.charAt(0)}
             </Avatar>
             <div className="skill-detail-title-area">

@@ -2,6 +2,7 @@ import { Card, Tag, Typography, Space, Avatar } from '@douyinfe/semi-ui';
 import { IconStarStroked } from '@douyinfe/semi-icons';
 import { Download } from 'lucide-react';
 import { ComponentItem } from '../../CreatorComponents/types';
+import { getAvatarColor } from '@/utils/avatarColor';
 import './index.less';
 
 const { Text, Paragraph } = Typography;
@@ -16,7 +17,7 @@ const ComponentCard = ({ item, onClick }: ComponentCardProps) => {
     <div onClick={() => onClick?.(item)}>
     <Card className="component-card">
       <div className="component-card-header">
-        <Avatar size="small" shape="square" style={{ backgroundColor: 'var(--semi-color-primary)' }}>
+        <Avatar size="small" shape="circle" color={getAvatarColor(item.name)}>
           {item.name.charAt(0)}
         </Avatar>
         <div className="component-card-title-area">

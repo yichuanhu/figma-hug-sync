@@ -77,7 +77,7 @@ const ComponentDetailDrawer = ({
         {/* Basic Info */}
         <div className="component-detail-section">
           <div className="component-detail-section-header">
-            <Avatar size="default" shape="square" style={{ backgroundColor: 'var(--semi-color-primary)' }}>
+            <Avatar size="default" shape="circle" color={getAvatarColor(item.name)}>
               {item.name.charAt(0)}
             </Avatar>
             <div className="component-detail-title-area">
