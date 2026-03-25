@@ -224,6 +224,9 @@ const Showcases = () => {
               <Text strong className="showcase-card-name">{item.name}</Text>
             </div>
             <div className="showcase-card-body">
+              <Paragraph ellipsis={{ rows: 2 }} type="tertiary" size="small" className="showcase-card-desc">
+                {item.description}
+              </Paragraph>
               <div className="showcase-card-tags">
                 {item.tags.slice(0, 3).map((tag) => (
                   <Tag key={tag} size="small" color="violet" type="light">{tag}</Tag>
