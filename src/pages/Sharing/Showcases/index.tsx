@@ -220,7 +220,7 @@ const Showcases = () => {
         {filteredData.map((item) => (
           <div key={item.id} className="showcase-card-wrapper" onClick={() => handleCardClick(item)}>
           <Card className="showcase-card">
-            <div className="showcase-card-cover" style={{ backgroundColor: item.coverColor }}>
+            <div className="showcase-card-cover" style={{ '--cover-color': item.coverColor } as React.CSSProperties}>
               <Text strong className="showcase-card-name">{item.name}</Text>
             </div>
             <div className="showcase-card-body">
