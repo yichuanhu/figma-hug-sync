@@ -4,6 +4,7 @@ import { IconStarStroked } from '@douyinfe/semi-icons';
 import { Download } from 'lucide-react';
 import { ComponentItem, SubCommand } from '../../CreatorComponents/types';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
+import { getAvatarColor } from '@/utils/avatarColor';
 import './index.less';
 
 const { Text, Paragraph } = Typography;
