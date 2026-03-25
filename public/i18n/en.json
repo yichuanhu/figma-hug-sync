@@ -3059,6 +3059,11 @@
       "tags": "Tags",
       "dependencies": "Dependencies",
       "versionHistory": "Version History",
+      "subCommands": "Included Commands",
+      "subApis": "Included APIs",
+      "subComponents": "Included Components",
+      "subCommandName": "Name",
+      "subCommandDesc": "Usage Description",
       "status": {
         "published": "Published",
         "draft": "Draft",

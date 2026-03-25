@@ -1,5 +1,10 @@
 export type ComponentType = 'command' | 'apiConnector' | 'customComponent';
 
+export interface SubCommand {
+  name: string;
+  description: string;
+}
+
 export interface VersionRecord {
   version: string;
   releaseDate: string;
@@ -22,4 +27,5 @@ export interface ComponentItem {
   createdAt?: string;
   dependencies?: string[];
   versionHistory?: VersionRecord[];
+  subCommands?: SubCommand[];
 }
