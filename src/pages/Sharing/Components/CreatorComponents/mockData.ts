@@ -15,6 +15,14 @@ export const commandsMockData: ComponentItem[] = [
     status: 'published',
     createdAt: '2025-06-10',
     dependencies: ['OCR Engine v3.2', 'PDF Parser v1.4'],
+    subCommands: [
+      { name: 'Scan Invoice Image', description: 'Scans uploaded invoice images and detects text regions using OCR' },
+      { name: 'Extract Header Fields', description: 'Extracts invoice number, date, vendor name, and total amount from header area' },
+      { name: 'Parse Line Items', description: 'Identifies and parses individual line items including description, quantity, and price' },
+      { name: 'Validate Tax Calculation', description: 'Cross-checks tax amounts against line item totals and applicable tax rates' },
+      { name: 'Export to Structured JSON', description: 'Converts extracted invoice data into a standardized JSON format for downstream processing' },
+      { name: 'Batch Process Invoices', description: 'Processes multiple invoice files in a single batch with progress tracking' },
+    ],
     versionHistory: [
       { version: '2.1.0', releaseDate: '2026-03-15', changelog: 'Added multi-language invoice support and improved accuracy for handwritten fields', author: 'John Smith' },
       { version: '2.0.0', releaseDate: '2026-01-20', changelog: 'Major refactor with new OCR engine integration and batch processing capability', author: 'John Smith' },
@@ -36,6 +44,13 @@ export const commandsMockData: ComponentItem[] = [
     status: 'published',
     createdAt: '2025-08-15',
     dependencies: ['SMTP Connector v2.0'],
+    subCommands: [
+      { name: 'Load Recipient List', description: 'Imports recipient list from CSV, Excel, or database query results' },
+      { name: 'Render Email Template', description: 'Renders HTML email body using Mustache templates with dynamic variable substitution' },
+      { name: 'Attach Files', description: 'Attaches one or more files to each email with optional per-recipient file mapping' },
+      { name: 'Send Batch', description: 'Sends all queued emails with configurable concurrency and retry logic' },
+      { name: 'Generate Delivery Report', description: 'Produces a summary report of sent, bounced, and failed deliveries' },
+    ],
     versionHistory: [
       { version: '1.3.2', releaseDate: '2026-03-10', changelog: 'Fixed attachment encoding issue for non-ASCII filenames', author: 'Sarah Chen' },
       { version: '1.3.0', releaseDate: '2026-02-01', changelog: 'Added HTML template engine and inline image support', author: 'Sarah Chen' },
@@ -56,6 +71,14 @@ export const commandsMockData: ComponentItem[] = [
     status: 'published',
     createdAt: '2025-03-01',
     dependencies: ['LibreOffice Bridge v4.1', 'PDF Engine v2.3'],
+    subCommands: [
+      { name: 'Convert PDF to Word', description: 'Converts PDF documents to editable DOCX format preserving layout and fonts' },
+      { name: 'Convert Word to PDF', description: 'Renders Word documents as PDF with embedded fonts and vector graphics' },
+      { name: 'Convert Excel to CSV', description: 'Exports Excel worksheets to CSV with configurable delimiter and encoding' },
+      { name: 'Convert CSV to Excel', description: 'Imports CSV data into Excel with auto-detected column types and formatting' },
+      { name: 'Batch Convert Files', description: 'Converts multiple files in a directory with format auto-detection' },
+      { name: 'Validate Output Fidelity', description: 'Compares source and target documents to verify conversion accuracy' },
+    ],
     versionHistory: [
       { version: '3.0.1', releaseDate: '2026-03-20', changelog: 'Hotfix for Excel formula preservation during PDF conversion', author: 'Michael Lee' },
       { version: '3.0.0', releaseDate: '2026-03-05', changelog: 'Added CSV to Excel conversion with auto-schema detection', author: 'Michael Lee' },
@@ -77,6 +100,13 @@ export const commandsMockData: ComponentItem[] = [
     status: 'published',
     createdAt: '2025-12-01',
     dependencies: ['Rule Engine v1.2'],
+    subCommands: [
+      { name: 'Load Validation Rules', description: 'Loads business validation rules from JSON schema or rule definition file' },
+      { name: 'Validate Data Fields', description: 'Checks each field against type constraints, required flags, and format patterns' },
+      { name: 'Cross-Field Validation', description: 'Validates inter-field dependencies such as date ranges and conditional requirements' },
+      { name: 'Generate Error Report', description: 'Produces a detailed error report with row numbers, field names, and violation descriptions' },
+      { name: 'Auto-Fix Common Issues', description: 'Automatically corrects common data issues like trimming whitespace and normalizing dates' },
+    ],
     versionHistory: [
       { version: '1.0.5', releaseDate: '2026-02-28', changelog: 'Added support for cross-field validation rules', author: 'Emily Wang' },
       { version: '1.0.0', releaseDate: '2025-12-01', changelog: 'Initial release with JSON schema validation', author: 'Emily Wang' },
@@ -96,6 +126,13 @@ export const commandsMockData: ComponentItem[] = [
     status: 'published',
     createdAt: '2025-09-20',
     dependencies: ['Browser Engine v5.0'],
+    subCommands: [
+      { name: 'Capture Full Page', description: 'Takes a full-page screenshot including content below the fold' },
+      { name: 'Capture Element', description: 'Captures a specific DOM element by CSS selector or XPath' },
+      { name: 'Set Viewport Size', description: 'Configures browser viewport dimensions before capture' },
+      { name: 'Add Watermark', description: 'Overlays a text or image watermark on the captured screenshot' },
+      { name: 'Save to Cloud Storage', description: 'Uploads the screenshot to configured cloud storage with a unique filename' },
+    ],
     versionHistory: [
       { version: '1.1.0', releaseDate: '2026-03-05', changelog: 'Added element-specific capture and viewport simulation', author: 'David Park' },
       { version: '1.0.0', releaseDate: '2025-09-20', changelog: 'Initial release with full-page screenshot', author: 'David Park' },
@@ -115,6 +152,14 @@ export const commandsMockData: ComponentItem[] = [
     status: 'published',
     createdAt: '2025-09-01',
     dependencies: ['Slack SDK v6.0'],
+    subCommands: [
+      { name: 'List Inactive Channels', description: 'Scans all channels and identifies those with no activity beyond the threshold' },
+      { name: 'Export Channel Messages', description: 'Exports full message history of a channel to JSON or CSV format' },
+      { name: 'Set Inactivity Threshold', description: 'Configures the number of days of inactivity before a channel is flagged' },
+      { name: 'Archive Channel', description: 'Archives a single Slack channel and notifies remaining members' },
+      { name: 'Batch Archive Channels', description: 'Archives multiple flagged channels in a single operation with rollback support' },
+      { name: 'Generate Archive Report', description: 'Creates a summary report of all archived channels with member counts and last activity dates' },
+    ],
     versionHistory: [
       { version: '1.2.0', releaseDate: '2026-03-12', changelog: 'Added message export to CSV before archiving', author: 'Alex Kim' },
       { version: '1.0.0', releaseDate: '2025-09-01', changelog: 'Initial release with inactivity-based archival', author: 'Alex Kim' },
@@ -134,6 +179,13 @@ export const commandsMockData: ComponentItem[] = [
     status: 'published',
     createdAt: '2025-07-15',
     dependencies: ['Workday SOAP Client v3.0', 'Email Service v2.1'],
+    subCommands: [
+      { name: 'Create Employee Profile', description: 'Creates a new worker profile in Workday with personal and job information' },
+      { name: 'Enroll Benefits', description: 'Automatically enrolls the new hire in default benefit plans based on eligibility' },
+      { name: 'Provision IT Assets', description: 'Triggers IT provisioning requests for laptop, email account, and access badges' },
+      { name: 'Send Welcome Email', description: 'Sends a personalized welcome email with onboarding checklist and first-day instructions' },
+      { name: 'Assign Training Courses', description: 'Enrolls the new hire in mandatory compliance and role-specific training programs' },
+    ],
     versionHistory: [
       { version: '1.1.0', releaseDate: '2026-03-18', changelog: 'Added IT asset provisioning and welcome email automation', author: 'Rachel Adams' },
       { version: '1.0.0', releaseDate: '2025-07-15', changelog: 'Initial release with profile creation and benefits enrollment', author: 'Rachel Adams' },
@@ -153,6 +205,14 @@ export const commandsMockData: ComponentItem[] = [
     status: 'published',
     createdAt: '2025-05-10',
     dependencies: ['OAuth2 Client v3.0', 'ML Scoring Engine v1.2'],
+    subCommands: [
+      { name: 'Fetch Lead Data', description: 'Retrieves lead records from Salesforce with engagement history and demographic fields' },
+      { name: 'Calculate Engagement Score', description: 'Computes a score based on email opens, website visits, and form submissions' },
+      { name: 'Apply Demographic Weighting', description: 'Adjusts scores based on company size, industry, and job title relevance' },
+      { name: 'Run Predictive Model', description: 'Executes the ML model to predict conversion probability for each lead' },
+      { name: 'Update Lead Scores', description: 'Writes computed scores back to Salesforce lead records in bulk' },
+      { name: 'Generate Scoring Report', description: 'Creates a summary report with score distribution and top-ranked leads' },
+    ],
     versionHistory: [
       { version: '2.0.1', releaseDate: '2026-03-20', changelog: 'Fixed scoring recalculation for bulk lead imports', author: 'Lisa Johnson' },
       { version: '2.0.0', releaseDate: '2026-01-05', changelog: 'Added ML-based predictive scoring model', author: 'Lisa Johnson' },
@@ -173,6 +233,13 @@ export const commandsMockData: ComponentItem[] = [
     status: 'published',
     createdAt: '2025-11-01',
     dependencies: ['Bot Framework SDK v4.21', 'Speech-to-Text v2.0'],
+    subCommands: [
+      { name: 'Join Meeting', description: 'Joins a scheduled Skype meeting as a bot participant to begin recording' },
+      { name: 'Record Audio Stream', description: 'Captures the audio stream of all participants in real time' },
+      { name: 'Transcribe Audio', description: 'Converts recorded audio to text using speech-to-text with speaker diarization' },
+      { name: 'Generate Meeting Summary', description: 'Produces an AI-generated summary of key discussion points and action items' },
+      { name: 'Export Recording', description: 'Saves the audio file and transcript to the configured storage location' },
+    ],
     versionHistory: [
       { version: '1.0.3', releaseDate: '2026-03-06', changelog: 'Improved transcription accuracy for multi-speaker meetings', author: 'Daniel Park' },
       { version: '1.0.0', releaseDate: '2025-11-01', changelog: 'Initial release with recording and basic transcription', author: 'Daniel Park' },
@@ -192,6 +259,14 @@ export const commandsMockData: ComponentItem[] = [
     status: 'published',
     createdAt: '2025-06-01',
     dependencies: ['Google Cloud SDK v4.2', 'Alerting Engine v1.5'],
+    subCommands: [
+      { name: 'Collect Resource Metrics', description: 'Gathers CPU, memory, disk, and network metrics from GCP Monitoring API' },
+      { name: 'Detect Anomalies', description: 'Runs anomaly detection algorithms on collected metrics to identify unusual patterns' },
+      { name: 'Trigger Auto-Scaling', description: 'Automatically adjusts Compute Engine instance count based on load thresholds' },
+      { name: 'Send Alert Notification', description: 'Sends alert notifications via email, Slack, or PagerDuty when thresholds are breached' },
+      { name: 'Generate Usage Report', description: 'Creates a daily or weekly resource usage and cost summary report' },
+      { name: 'Check Budget Thresholds', description: 'Monitors spending against budget limits and triggers warnings at configurable percentages' },
+    ],
     versionHistory: [
       { version: '1.3.0', releaseDate: '2026-03-17', changelog: 'Added cost anomaly detection and budget threshold alerts', author: 'Priya Sharma' },
       { version: '1.1.0', releaseDate: '2025-10-20', changelog: 'Added auto-scaling trigger for Compute Engine instances', author: 'Priya Sharma' },
@@ -212,6 +287,13 @@ export const commandsMockData: ComponentItem[] = [
     status: 'published',
     createdAt: '2025-08-01',
     dependencies: ['Microsoft Graph SDK v5.40', 'Bot Framework SDK v4.21'],
+    subCommands: [
+      { name: 'Create Approval Request', description: 'Initiates a new approval request with configurable approval chain and form data' },
+      { name: 'Send Adaptive Card', description: 'Posts an interactive adaptive card to the approver in Teams with approve/reject buttons' },
+      { name: 'Process Approval Response', description: 'Handles the approver response and routes to the next level or completes the workflow' },
+      { name: 'Escalate Overdue Approvals', description: 'Automatically escalates approval requests that exceed the configured SLA timeout' },
+      { name: 'Generate Audit Trail', description: 'Records all approval actions with timestamps and approver details for compliance' },
+    ],
     versionHistory: [
       { version: '1.2.1', releaseDate: '2026-03-15', changelog: 'Fixed timeout issue for sequential multi-level approvals', author: 'Thomas Mueller' },
       { version: '1.2.0', releaseDate: '2026-01-25', changelog: 'Added parallel approval branches and delegation support', author: 'Thomas Mueller' },
@@ -235,6 +317,13 @@ export const apiConnectorsMockData: ComponentItem[] = [
     status: 'published',
     createdAt: '2025-05-15',
     dependencies: ['SAP RFC SDK v7.5'],
+    subCommands: [
+      { name: 'Connect to SAP Instance', description: 'Establishes an RFC connection to the target SAP system with credential validation' },
+      { name: 'Execute BAPI Call', description: 'Invokes a specified BAPI function module with input parameters and returns results' },
+      { name: 'Read Table Data', description: 'Reads data from SAP tables using RFC_READ_TABLE with optional field and row filters' },
+      { name: 'Sync Master Data', description: 'Synchronizes material, vendor, or customer master data to the local data store' },
+      { name: 'Monitor Connection Pool', description: 'Tracks active connections, idle timeouts, and pool utilization metrics' },
+    ],
     versionHistory: [
       { version: '2.0.0', releaseDate: '2026-03-18', changelog: 'Full rewrite with async connection pooling and retry logic', author: 'Robert Zhang' },
       { version: '1.2.0', releaseDate: '2025-12-10', changelog: 'Added support for SAP S/4HANA Cloud APIs', author: 'Robert Zhang' },
@@ -255,6 +344,14 @@ export const apiConnectorsMockData: ComponentItem[] = [
     status: 'published',
     createdAt: '2025-07-01',
     dependencies: ['OAuth2 Client v3.0'],
+    subCommands: [
+      { name: 'Query SOQL Records', description: 'Executes a SOQL query and returns matching Salesforce records with pagination' },
+      { name: 'Create Object', description: 'Creates a new Salesforce object record with field validation' },
+      { name: 'Update Object', description: 'Updates an existing Salesforce object by record ID with partial field updates' },
+      { name: 'Delete Object', description: 'Deletes a Salesforce object record by ID with soft-delete support' },
+      { name: 'Bulk Upsert Objects', description: 'Performs bulk upsert operations using the Salesforce Bulk API 2.0' },
+      { name: 'Manage OAuth Tokens', description: 'Handles OAuth2 token acquisition, refresh, and secure storage' },
+    ],
     versionHistory: [
       { version: '1.5.3', releaseDate: '2026-03-12', changelog: 'Fixed token refresh race condition in concurrent requests', author: 'Lisa Johnson' },
       { version: '1.5.0', releaseDate: '2026-01-15', changelog: 'Added bulk API support for large data operations', author: 'Lisa Johnson' },
@@ -275,6 +372,13 @@ export const apiConnectorsMockData: ComponentItem[] = [
     status: 'published',
     createdAt: '2025-10-01',
     dependencies: ['Slack SDK v6.0'],
+    subCommands: [
+      { name: 'Send Channel Message', description: 'Posts a formatted text or Block Kit message to a specified Slack channel' },
+      { name: 'Send Direct Message', description: 'Sends a private message to a Slack user by user ID or email' },
+      { name: 'Upload File', description: 'Uploads a file to a Slack channel with an optional comment' },
+      { name: 'Build Block Kit Message', description: 'Constructs rich interactive messages using Slack Block Kit components' },
+      { name: 'Schedule Message', description: 'Schedules a message to be sent at a future timestamp' },
+    ],
     versionHistory: [
       { version: '1.2.1', releaseDate: '2026-03-08', changelog: 'Added Block Kit message builder support', author: 'Alex Kim' },
       { version: '1.0.0', releaseDate: '2025-10-01', changelog: 'Initial release with channel messaging', author: 'Alex Kim' },
@@ -294,6 +398,13 @@ export const apiConnectorsMockData: ComponentItem[] = [
     status: 'published',
     createdAt: '2025-04-20',
     dependencies: ['Google API Client v4.0'],
+    subCommands: [
+      { name: 'Read Sheet Data', description: 'Reads cell values from a specified sheet range with type detection' },
+      { name: 'Write Sheet Data', description: 'Writes data to a specified sheet range with optional formatting' },
+      { name: 'Sync Bi-Directional', description: 'Performs two-way sync between local data and Google Sheet with conflict resolution' },
+      { name: 'Create New Sheet', description: 'Creates a new worksheet tab within an existing Google Spreadsheet' },
+      { name: 'Manage Named Ranges', description: 'Creates, updates, or deletes named ranges for structured data access' },
+    ],
     versionHistory: [
       { version: '2.3.0', releaseDate: '2026-03-22', changelog: 'Added formula preservation and named range support', author: 'Kevin Wu' },
       { version: '2.0.0', releaseDate: '2025-11-30', changelog: 'Bi-directional sync with conflict resolution', author: 'Kevin Wu' },
@@ -314,6 +425,13 @@ export const apiConnectorsMockData: ComponentItem[] = [
     status: 'published',
     createdAt: '2025-04-01',
     dependencies: ['Workday SOAP Client v3.0', 'OAuth2 Client v3.0'],
+    subCommands: [
+      { name: 'Sync Employee Profiles', description: 'Synchronizes employee personal and job data from Workday to local store' },
+      { name: 'Export Payroll Data', description: 'Extracts payroll calculation results for a specified pay period' },
+      { name: 'Submit Time-Off Request', description: 'Creates an absence request in Workday on behalf of an employee' },
+      { name: 'Query Organization Hierarchy', description: 'Retrieves the organizational structure including supervisory and cost center hierarchies' },
+      { name: 'Update Worker Record', description: 'Updates specific fields on a worker profile such as job title or location' },
+    ],
     versionHistory: [
       { version: '2.1.0', releaseDate: '2026-03-20', changelog: 'Added absence management and time-off request automation', author: 'Rachel Adams' },
       { version: '2.0.0', releaseDate: '2025-12-15', changelog: 'Full REST API migration with bulk employee data export', author: 'Rachel Adams' },
@@ -334,6 +452,13 @@ export const apiConnectorsMockData: ComponentItem[] = [
     status: 'published',
     createdAt: '2025-08-10',
     dependencies: ['Bot Framework SDK v4.21', 'Microsoft Graph Client v5.0'],
+    subCommands: [
+      { name: 'Send Text Message', description: 'Sends a plain text or rich-format message to a Skype contact or group' },
+      { name: 'Schedule Meeting', description: 'Creates a Skype meeting with participants, agenda, and calendar invite' },
+      { name: 'List Contacts', description: 'Retrieves the contact list with online status and profile information' },
+      { name: 'Share File', description: 'Sends a file attachment to a Skype conversation thread' },
+      { name: 'Create Group Chat', description: 'Creates a new group chat with specified participants and topic' },
+    ],
     versionHistory: [
       { version: '1.3.0', releaseDate: '2026-03-11', changelog: 'Added meeting scheduling and calendar integration', author: 'Daniel Park' },
       { version: '1.1.0', releaseDate: '2025-11-20', changelog: 'Added group chat creation and file sharing support', author: 'Daniel Park' },
@@ -354,6 +479,14 @@ export const apiConnectorsMockData: ComponentItem[] = [
     status: 'published',
     createdAt: '2025-03-15',
     dependencies: ['Google Cloud SDK v4.2', 'gRPC Client v1.60'],
+    subCommands: [
+      { name: 'Upload to Cloud Storage', description: 'Uploads files to a GCS bucket with configurable content type and ACL' },
+      { name: 'Query BigQuery', description: 'Executes a BigQuery SQL query and returns results with schema metadata' },
+      { name: 'Publish to Pub/Sub', description: 'Publishes messages to a Pub/Sub topic with optional attributes and ordering key' },
+      { name: 'Subscribe to Pub/Sub', description: 'Creates or manages Pub/Sub subscriptions with pull or push delivery' },
+      { name: 'Trigger Cloud Function', description: 'Invokes a Cloud Function via HTTP trigger with payload and authentication' },
+      { name: 'List Storage Objects', description: 'Lists objects in a GCS bucket with prefix filtering and pagination' },
+    ],
     versionHistory: [
       { version: '2.0.1', releaseDate: '2026-03-21', changelog: 'Fixed BigQuery streaming insert timeout for large datasets', author: 'Priya Sharma' },
       { version: '2.0.0', releaseDate: '2026-01-10', changelog: 'Added Pub/Sub integration and Cloud Functions trigger support', author: 'Priya Sharma' },
@@ -374,6 +507,14 @@ export const apiConnectorsMockData: ComponentItem[] = [
     status: 'published',
     createdAt: '2025-06-20',
     dependencies: ['Microsoft Graph SDK v5.40', 'OAuth2 Client v3.0'],
+    subCommands: [
+      { name: 'Post Channel Message', description: 'Posts a text or adaptive card message to a Teams channel' },
+      { name: 'Create Team Channel', description: 'Creates a new channel within a Microsoft Teams team with description and settings' },
+      { name: 'Send Adaptive Card', description: 'Sends an interactive adaptive card to a channel or chat for user input' },
+      { name: 'Schedule Online Meeting', description: 'Creates a Teams online meeting with attendees, agenda, and lobby settings' },
+      { name: 'Track Meeting Attendance', description: 'Retrieves attendance records for completed Teams meetings' },
+      { name: 'Manage Team Membership', description: 'Adds or removes members and owners from a Microsoft Teams team' },
+    ],
     versionHistory: [
       { version: '1.4.2', releaseDate: '2026-03-19', changelog: 'Fixed adaptive card action handling for approval workflows', author: 'Thomas Mueller' },
       { version: '1.4.0', releaseDate: '2026-02-05', changelog: 'Added meeting lifecycle automation and attendance tracking', author: 'Thomas Mueller' },
@@ -398,6 +539,13 @@ export const customComponentsMockData: ComponentItem[] = [
     status: 'published',
     createdAt: '2025-07-20',
     dependencies: ['PDF.js v3.11', 'Canvas Renderer v2.0'],
+    subCommands: [
+      { name: 'Extract Text by Page', description: 'Extracts all text content from a specified page range with reading order detection' },
+      { name: 'Detect Table Boundaries', description: 'Identifies table structures within PDF pages using line and cell detection algorithms' },
+      { name: 'Extract Table Data', description: 'Parses detected tables into structured row-column data with merged cell support' },
+      { name: 'Export Embedded Images', description: 'Extracts all embedded images from the PDF with original resolution and format' },
+      { name: 'Preserve Layout Metadata', description: 'Captures font, size, color, and position metadata for each text block' },
+    ],
     versionHistory: [
       { version: '1.4.0', releaseDate: '2026-03-14', changelog: 'Added table structure detection with row/column merging', author: 'Anna Liu' },
       { version: '1.2.0', releaseDate: '2025-12-05', changelog: 'Improved image extraction quality and added EXIF preservation', author: 'Anna Liu' },
@@ -418,6 +566,14 @@ export const customComponentsMockData: ComponentItem[] = [
     status: 'published',
     createdAt: '2025-02-10',
     dependencies: ['JSON Schema Validator v5.0', 'Form Engine v3.1'],
+    subCommands: [
+      { name: 'Load Schema Definition', description: 'Parses a JSON schema file and generates the corresponding form field configuration' },
+      { name: 'Render Form Fields', description: 'Dynamically renders input fields based on the loaded schema with validation rules' },
+      { name: 'Add Conditional Logic', description: 'Configures field visibility and requirement rules based on other field values' },
+      { name: 'Handle File Uploads', description: 'Manages file upload fields with drag-and-drop, preview, and size validation' },
+      { name: 'Submit Form Data', description: 'Validates all fields and submits the collected data to the configured endpoint' },
+      { name: 'Export Form Template', description: 'Exports the current form configuration as a reusable JSON schema template' },
+    ],
     versionHistory: [
       { version: '2.1.2', releaseDate: '2026-03-19', changelog: 'Fixed conditional field visibility with nested dependencies', author: 'Chris Brown' },
       { version: '2.1.0', releaseDate: '2026-02-15', changelog: 'Added file upload fields and rich text editor integration', author: 'Chris Brown' },
@@ -439,6 +595,13 @@ export const customComponentsMockData: ComponentItem[] = [
     status: 'published',
     createdAt: '2025-11-15',
     dependencies: ['ECharts v5.5', 'Data Adapter v1.0'],
+    subCommands: [
+      { name: 'Configure Chart Type', description: 'Selects and configures the chart type: bar, line, pie, scatter, or heatmap' },
+      { name: 'Bind Data Source', description: 'Connects the chart to a data source with field mapping and refresh interval' },
+      { name: 'Set Chart Options', description: 'Customizes chart appearance including colors, legends, axes, and tooltips' },
+      { name: 'Enable Real-Time Updates', description: 'Configures WebSocket or polling-based data refresh for live dashboards' },
+      { name: 'Export Chart Image', description: 'Exports the rendered chart as PNG or SVG for reports and presentations' },
+    ],
     versionHistory: [
       { version: '1.0.3', releaseDate: '2026-03-01', changelog: 'Fixed tooltip positioning on mobile viewports', author: 'Sophie Tang' },
       { version: '1.0.0', releaseDate: '2025-11-15', changelog: 'Initial release with bar, line, and pie chart types', author: 'Sophie Tang' },
@@ -458,6 +621,14 @@ export const customComponentsMockData: ComponentItem[] = [
     status: 'published',
     createdAt: '2025-10-05',
     dependencies: ['Flow Engine v2.0', 'Canvas Kit v1.3'],
+    subCommands: [
+      { name: 'Add Approval Node', description: 'Adds a new approval step to the workflow canvas with approver assignment' },
+      { name: 'Configure Routing Rules', description: 'Sets conditional routing logic between nodes based on field values or expressions' },
+      { name: 'Set Parallel Branches', description: 'Creates parallel approval branches that execute simultaneously' },
+      { name: 'Define Escalation Policy', description: 'Configures automatic escalation rules for overdue approval steps' },
+      { name: 'Validate Workflow', description: 'Checks the workflow for errors such as missing approvers or unreachable nodes' },
+      { name: 'Publish Workflow', description: 'Deploys the designed workflow for use in production approval processes' },
+    ],
     versionHistory: [
       { version: '1.2.0', releaseDate: '2026-03-07', changelog: 'Added parallel approval branches and auto-escalation rules', author: 'James Wilson' },
       { version: '1.1.0', releaseDate: '2025-12-20', changelog: 'Added conditional routing based on form field values', author: 'James Wilson' },
