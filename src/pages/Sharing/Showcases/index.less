@@ -49,19 +49,29 @@
 
   .showcase-card-cover {
     height: 80px;
-    opacity: 0.15;
     position: relative;
     display: flex;
     align-items: flex-end;
     padding: 12px 16px;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-color: inherit;
+      opacity: 0.15;
+    }
   }
 
   .showcase-card-name {
     font-size: 14px;
     display: block;
     position: relative;
-    opacity: 1;
-    // Reset the parent's opacity effect for text
+    z-index: 1;
+  }
+
+  .showcase-card-body {
+    padding: 16px;
   }
 
   .showcase-card-desc {
