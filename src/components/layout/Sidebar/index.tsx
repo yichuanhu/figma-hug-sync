@@ -196,17 +196,17 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
       path: '/requirements/list',
     },
     {
+      key: 'sharingCenter',
+      labelKey: 'sidebar.sharingCenter',
+      shortLabelKey: 'sidebar.sharingCenterShort',
+      icon: <div className="sidebar-center-icon" dangerouslySetInnerHTML={{ __html: sharingCenterIconRaw }} />,
+    },
+    {
       key: 'maintenanceCenter',
       labelKey: 'sidebar.maintenanceCenter',
       shortLabelKey: 'sidebar.maintenanceCenterShort',
       icon: <div className="sidebar-center-icon" dangerouslySetInnerHTML={{ __html: maintenanceCenterIconRaw }} />,
       path: '/maintenance',
-    },
-    {
-      key: 'sharingCenter',
-      labelKey: 'sidebar.sharingCenter',
-      shortLabelKey: 'sidebar.sharingCenterShort',
-      icon: <div className="sidebar-center-icon" dangerouslySetInnerHTML={{ __html: sharingCenterIconRaw }} />,
     },
   ];
 
