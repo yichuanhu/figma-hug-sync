@@ -3066,6 +3066,11 @@
       "tags": "标签",
       "dependencies": "依赖项",
       "versionHistory": "版本历史",
+      "subCommands": "包含命令",
+      "subApis": "包含接口",
+      "subComponents": "包含组件",
+      "subCommandName": "命令名称",
+      "subCommandDesc": "使用说明",
       "status": {
         "published": "已发布",
         "draft": "草稿",

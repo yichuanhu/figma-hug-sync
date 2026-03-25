@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Descriptions, Tag, Typography, Table, Timeline, Avatar, Space } from '@douyinfe/semi-ui';
 import { IconStarStroked } from '@douyinfe/semi-icons';
 import { Download } from 'lucide-react';
-import { ComponentItem } from '../../CreatorComponents/types';
+import { ComponentItem, SubCommand } from '../../CreatorComponents/types';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import './index.less';
 
@@ -38,6 +38,27 @@ const ComponentDetailDrawer = ({
     draft: 'grey',
     deprecated: 'red',
   };
+
+  const subSectionTitleMap: Record<string, string> = {
+    command: t('sharing.detail.subCommands'),
+    apiConnector: t('sharing.detail.subApis'),
+    customComponent: t('sharing.detail.subComponents'),
+  };
+
+  const subCommandColumns = [
+    {
+      title: t('sharing.detail.subCommandName'),
+      dataIndex: 'name',
+      key: 'name',
+      width: 220,
+    },
+    {
+      title: t('sharing.detail.subCommandDesc'),
+      dataIndex: 'description',
+      key: 'description',
+      ellipsis: true,
+    },
+  ];
 
   return (
     <DetailDrawerWrapper
@@ -106,6 +127,20 @@ const ComponentDetailDrawer = ({
             ))}
           </div>
         </div>
+
+        {/* Sub Commands / APIs / Components */}
+        {item.subCommands && item.subCommands.length > 0 && (
+          <div className="component-detail-section">
+            <Text strong className="component-detail-section-title">{subSectionTitleMap[item.type]}</Text>
+            <Table
+              columns={subCommandColumns}
+              dataSource={item.subCommands}
+              pagination={false}
+              size="small"
+              rowKey="name"
+            />
+          </div>
+        )}
 
         {/* Dependencies */}
         {item.dependencies && item.dependencies.length > 0 && (
