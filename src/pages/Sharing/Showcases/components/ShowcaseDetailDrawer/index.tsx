@@ -2,7 +2,6 @@ import { useTranslation } from 'react-i18next';
 import { Descriptions, Tag, Typography, Timeline, Avatar, Space } from '@douyinfe/semi-ui';
 import { IconStarStroked } from '@douyinfe/semi-icons';
 import { Eye } from 'lucide-react';
-import { getAvatarColor } from '@/utils/avatarColor';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import './index.less';
 
@@ -68,7 +67,7 @@ const ShowcaseDetailDrawer = ({ visible, onClose, item, dataList, onNavigate }: 
         {/* Header */}
         <div className="showcase-detail-section">
           <div className="showcase-detail-section-header">
-            <Avatar size="default" shape="circle" color={getAvatarColor(item.name)}>
+            <Avatar size="default" shape="circle" style={{ backgroundColor: item.coverColor }}>
               {item.name.charAt(0)}
             </Avatar>
             <div className="showcase-detail-title-area">
