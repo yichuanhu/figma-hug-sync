@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Descriptions, Tag, Typography, Timeline, Avatar, Space } from '@douyinfe/semi-ui';
 import { IconStarStroked } from '@douyinfe/semi-icons';
 import { Eye } from 'lucide-react';
-import { getAvatarColor } from '@/utils/avatarColor';
+import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import './index.less';
 
