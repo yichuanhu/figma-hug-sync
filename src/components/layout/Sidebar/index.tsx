@@ -171,6 +171,13 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
   const centerMenuItems: (MenuItem & { shortLabelKey: string })[] = [
     { key: 'home', labelKey: 'sidebar.home', shortLabelKey: 'sidebar.homeShort', icon: <div className="sidebar-center-icon" dangerouslySetInnerHTML={{ __html: homeCenterIconRaw }} />, path: '/' },
     {
+      key: 'requirementsCenter',
+      labelKey: 'sidebar.requirementsCenter',
+      shortLabelKey: 'sidebar.requirementsCenterShort',
+      icon: <div className="sidebar-center-icon" dangerouslySetInnerHTML={{ __html: requirementsCenterIconRaw }} />,
+      path: '/requirements/list',
+    },
+    {
       key: 'developmentCenter',
       labelKey: 'sidebar.developmentCenter',
       shortLabelKey: 'sidebar.developmentCenterShort',
@@ -187,13 +194,6 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
       labelKey: 'sidebar.operationsCenter',
       shortLabelKey: 'sidebar.operationsCenterShort',
       icon: <div className="sidebar-center-icon" dangerouslySetInnerHTML={{ __html: operationsCenterIconRaw }} />,
-    },
-    {
-      key: 'requirementsCenter',
-      labelKey: 'sidebar.requirementsCenter',
-      shortLabelKey: 'sidebar.requirementsCenterShort',
-      icon: <div className="sidebar-center-icon" dangerouslySetInnerHTML={{ __html: requirementsCenterIconRaw }} />,
-      path: '/requirements/list',
     },
     {
       key: 'sharingCenter',
