@@ -1,37 +1,54 @@
 
 
-## Plan: Add "Included Commands/APIs/Components" Sub-items to Each Component
+## Plan: Optimize Long Description Display for Parameter Help Icons
 
-Based on the screenshot, each component (command library) contains multiple sub-commands displayed as a table with "命令名称" (name) and "使用说明" (description) columns in the detail drawer.
+### Problem
+The question mark (?) icon next to process input parameters uses a plain `Tooltip` to show descriptions. When descriptions are very long (up to 2000 characters), the tooltip becomes unwieldy — too wide, overflows the viewport, and is hard to read.
 
-### Changes
+### Solution
+Replace the `Tooltip` with a `Popover` that has:
+- Fixed max-width (360px) and max-height (200px)
+- Internal scrolling (`overflow-y: auto`) for long content
+- `wordBreak: break-word` for proper text wrapping
+- Trigger on hover (consistent with current behavior)
 
-**1. Update `types.ts` — Add sub-item type**
+### Affected Files (6 locations with the same pattern)
 
-Add a `SubCommand` interface with `name` and `description` fields, and add an optional `subCommands` array to `ComponentItem`.
+1. **`src/pages/Scheduling/TaskManagement/components/CreateTaskModal/index.tsx`** (line 247)
+2. **`src/pages/Scheduling/TemplateManagement/TemplateManagementPage/components/CreateTemplateModal/index.tsx`** (line 185)
+3. **`src/pages/Scheduling/TemplateManagement/TemplateManagementPage/components/EditTemplateModal/index.tsx`** (line 202)
+4. **`src/pages/Scheduling/AutoExecutionPolicy/AutoExecutionPolicyPage/components/CreateQueueTriggerModal/index.tsx`** (line 222)
+5. **`src/pages/Scheduling/AutoExecutionPolicy/AutoExecutionPolicyPage/components/EditQueueTriggerModal/index.tsx`** (line 255)
 
-**2. Update `mockData.ts` — Add sub-commands to all entries**
+### Change Detail
 
-Add 4–8 `subCommands` entries to every mock item across all three arrays (commands, apiConnectors, customComponents). Each sub-command will be contextually relevant to the parent component. For example:
+In each file, replace:
+```tsx
+<Tooltip content={param.description}>
+  <IconHelpCircleStroked ... />
+</Tooltip>
+```
 
-- **Slack Channel Archiver**: "Export channel messages", "Set inactivity threshold", "Batch archive channels", etc.
-- **Salesforce REST Adapter**: "Query SOQL records", "Bulk upsert objects", "Manage OAuth tokens", etc.
-- **PDF Parser Widget**: "Extract text by page", "Detect table boundaries", "Export images", etc.
+With:
+```tsx
+<Popover
+  content={
+    <div style={{ maxWidth: 320, maxHeight: 200, overflowY: 'auto', wordBreak: 'break-word', fontSize: 12, lineHeight: '20px' }}>
+      {param.description}
+    </div>
+  }
+  trigger="hover"
+  position="topLeft"
+  showArrow
+>
+  <IconHelpCircleStroked ... />
+</Popover>
+```
 
-**3. Update `ComponentDetailDrawer/index.tsx` — Display sub-commands table**
+Import `Popover` from `@douyinfe/semi-ui` in each file (replacing or adding to existing imports).
 
-Add a new section "包含命令" (Included Commands) between the Tags and Dependencies sections. Render a Semi `Table` component with two columns:
-- 命令名称 (Command Name)
-- 使用说明 (Usage Description)
-
-The section label will adapt by component type:
-- `command` → "包含命令" (Included Commands)
-- `apiConnector` → "包含接口" (Included APIs)  
-- `customComponent` → "包含组件" (Included Components)
-
-### Technical Details
-
-- Sub-commands table uses Semi `Table` with `pagination={false}` and `size="small"`
-- Description column text uses `ellipsis` or max-width truncation consistent with the screenshot
-- New i18n keys: `sharing.detail.subCommands`, `sharing.detail.subApis`, `sharing.detail.subComponents`, `sharing.detail.subCommandName`, `sharing.detail.subCommandDesc`
+### Why Popover over Tooltip
+- `Popover` supports rich content with scrolling containers
+- `Tooltip` is designed for short text and doesn't handle overflow well
+- Consistent with the project's existing `long-text-scroll-standard` pattern (max-height + overflow-y: auto)
 
