@@ -6,7 +6,7 @@ import {
   Button,
   Toast,
   Typography,
-  Tooltip,
+  Popover,
   Tag,
   Steps,
   Select,
@@ -219,9 +219,18 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
           {param.type}
         </Tag>
         {param.description && (
-          <Tooltip content={param.description}>
+          <Popover
+            content={
+              <div style={{ maxWidth: 320, maxHeight: 200, overflowY: 'auto', wordBreak: 'break-word', fontSize: 12, lineHeight: '20px' }}>
+                {param.description}
+              </div>
+            }
+            trigger="hover"
+            position="topLeft"
+            showArrow
+          >
             <IconHelpCircleStroked size="small" style={{ color: 'var(--semi-color-text-2)', marginLeft: 4, cursor: 'help' }} />
-          </Tooltip>
+          </Popover>
         )}
       </div>
     );
