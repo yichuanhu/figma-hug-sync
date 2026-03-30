@@ -259,7 +259,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
               </div>
             }
             trigger="hover"
-            position="topLeft"
+            position="top"
             showArrow
           >
             <IconHelpCircleStroked size="small" style={{ color: 'var(--semi-color-text-2)', marginLeft: 4, cursor: 'help' }} />
