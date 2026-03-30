@@ -37,7 +37,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     version_id: 'ver-001',
     version: 'v1.2.0',
     parameters: [
-      { name: 'targetUrl', type: 'TEXT', required: true, description: 'Target URL address' },
+      { name: 'targetUrl', type: 'TEXT', required: true, description: 'Target URL address for the automated order processing workflow. This parameter specifies the endpoint from which the RPA bot will fetch pending orders. The URL must be a fully qualified HTTPS address pointing to the order management system API. Supported formats include REST endpoints and GraphQL queries. When configuring this parameter, ensure that the target server allows automated access and that the appropriate authentication credentials have been set up in the credential store. If the URL contains query parameters, they should be URL-encoded. The bot will validate the URL format before execution and will retry up to 3 times if the initial connection fails. For load-balanced environments, provide the primary gateway URL rather than individual server addresses.' },
       { name: 'maxCount', type: 'NUMBER', required: false, default_value: 100, description: 'Maximum processing count' },
       { name: 'enableRetry', type: 'BOOLEAN', required: false, default_value: true, description: 'Enable retry' },
     ],
