@@ -12,11 +12,6 @@ import {
   IconChevronUp,
   IconGridView,
   IconFolderStroked,
-  IconHomeStroked,
-  IconCalendarClockStroked,
-  IconCodeStroked,
-  IconShareStroked,
-  IconWrenchStroked,
 } from '@douyinfe/semi-icons';
 import {
   ListStart,
@@ -31,7 +26,6 @@ import {
   Bot,
   Settings,
   FileText,
-  BarChart2,
   BarChart3,
   TrendingUp,
   Target,
@@ -43,6 +37,12 @@ import {
   Activity,
   Database,
   Shield,
+  LayoutDashboard,
+  FileSearch,
+  Terminal,
+  PieChart,
+  Rocket,
+  SlidersHorizontal,
 } from 'lucide-react';
 const LayoutIcon = () => (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -227,37 +227,37 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
 
   // 中心级别菜单（左侧图标栏）
   const centerMenuItems: MenuItem[] = [
-    { key: 'home', labelKey: 'sidebar.home', icon: <IconHomeStroked style={{ fontSize: 20 }} />, path: '/' },
+    { key: 'home', labelKey: 'sidebar.home', icon: <LayoutDashboard size={20} strokeWidth={1.8} />, path: '/' },
     {
       key: 'requirementsCenter',
       labelKey: 'sidebar.requirementsCenter',
-      icon: <FileText size={20} strokeWidth={2} />,
+      icon: <FileSearch size={20} strokeWidth={1.8} />,
       path: '/requirements/list',
     },
     {
       key: 'developmentCenter',
       labelKey: 'sidebar.developmentCenter',
-      icon: <IconCodeStroked style={{ fontSize: 20 }} />,
+      icon: <Terminal size={20} strokeWidth={1.8} />,
     },
     {
       key: 'schedulingCenter',
       labelKey: 'sidebar.schedulingCenter',
-      icon: <IconCalendarClockStroked style={{ fontSize: 20 }} />,
+      icon: <CalendarClock size={20} strokeWidth={1.8} />,
     },
     {
       key: 'operationsCenter',
       labelKey: 'sidebar.operationsCenter',
-      icon: <BarChart2 size={20} strokeWidth={2} />,
+      icon: <PieChart size={20} strokeWidth={1.8} />,
     },
     {
       key: 'sharingCenter',
       labelKey: 'sidebar.sharingCenter',
-      icon: <IconShareStroked style={{ fontSize: 20 }} />,
+      icon: <Rocket size={20} strokeWidth={1.8} />,
     },
     {
       key: 'maintenanceCenter',
       labelKey: 'sidebar.maintenanceCenter',
-      icon: <IconWrenchStroked style={{ fontSize: 20 }} />,
+      icon: <SlidersHorizontal size={20} strokeWidth={1.8} />,
       path: '/maintenance',
     },
   ];
