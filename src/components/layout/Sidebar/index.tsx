@@ -227,7 +227,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
 
   // 中心级别菜单（左侧图标栏）
   const centerMenuItems: MenuItem[] = [
-    { key: 'home', labelKey: 'sidebar.home', icon: <LayoutDashboard size={20} strokeWidth={1.8} />, path: '/' },
+    { key: 'home', labelKey: 'sidebar.home', icon: <House size={20} strokeWidth={1.8} />, path: '/' },
     {
       key: 'requirementsCenter',
       labelKey: 'sidebar.requirementsCenter',
