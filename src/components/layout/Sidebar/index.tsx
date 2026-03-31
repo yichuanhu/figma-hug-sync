@@ -487,7 +487,6 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
         onClick={() => handleCenterClick(item)}
       >
         <span className="sidebar-center-icon">{item.icon}</span>
-        <span className="sidebar-center-icon">{item.icon}</span>
         <span className="sidebar-icon-btn-label">{label}</span>
       </div>
     );
