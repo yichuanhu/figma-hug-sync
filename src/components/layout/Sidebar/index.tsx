@@ -676,7 +676,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
           {item.icon}
           {item.badge && <span className="sidebar-badge-dot" />}
         </span>
-        {!collapsed && <span className="sidebar-icon-btn-label">{label}</span>}
+        <span className="sidebar-icon-btn-label">{label}</span>
       </div>
     );
 
