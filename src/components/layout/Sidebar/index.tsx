@@ -37,7 +37,7 @@ import {
   Activity,
   Database,
   Shield,
-  LayoutDashboard,
+  House,
   FileSearch,
   Terminal,
   PieChart,
