@@ -64,6 +64,8 @@ interface SidebarProps {
   collapsed: boolean;
   onToggleCollapse?: () => void;
   disableHover?: boolean;
+  detailPanelVisible?: boolean;
+  onToggleDetailPanel?: () => void;
 }
 
 // 根据路径获取需要展开的菜单组
