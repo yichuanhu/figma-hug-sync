@@ -14,6 +14,7 @@ import {
   IconFolderStroked,
 } from '@douyinfe/semi-icons';
 import {
+  Home,
   ListStart,
   MonitorCheck,
   Parentheses,
@@ -37,6 +38,8 @@ import {
   Activity,
   Database,
   Shield,
+  Code,
+  Share2,
 } from 'lucide-react';
 const LayoutIcon = () => (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -44,15 +47,6 @@ const LayoutIcon = () => (
   </svg>
 );
 import laiyeLogo from '@/assets/laiye-logo.png';
-
-// 中心图标 - 使用 ?raw 导入保留 SVG 内部的毛玻璃效果
-import homeCenterIconRaw from '@/assets/icons/home.svg?raw';
-import developmentCenterIconRaw from '@/assets/icons/development.svg?raw';
-import requirementsCenterIconRaw from '@/assets/icons/requirements.svg?raw';
-import schedulingCenterIconRaw from '@/assets/icons/scheduling.svg?raw';
-import operationsCenterIconRaw from '@/assets/icons/operations.svg?raw';
-import maintenanceCenterIconRaw from '@/assets/icons/maintenance.svg?raw';
-import sharingCenterIconRaw from '@/assets/icons/sharing.svg?raw';
 
 import './index.less';
 
