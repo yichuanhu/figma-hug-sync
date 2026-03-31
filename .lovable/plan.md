@@ -1,72 +1,116 @@
 
 
-## 方案：飞书风格菜单选中样式重构 + 头像区域优化
+## 方案：完整重构主菜单（sidebar-icon-bar）样式
 
-### 问题分析
+### 飞书参考样式总结
 
-对比飞书截图与当前实现：
+**展开态（180px）**：
+- 菜单项：图标(20px) + 文字(14px) 水平排列，`gap: 8px`
+- 内边距：`padding: 8px 12px`，`border-radius: 8px`
+- 普通态：文字 `var(--semi-color-text-0)`，图标 `var(--semi-color-text-2)`，`font-weight: 500`
+- hover：`var(--semi-color-fill-0)` 背景
+- **选中态**：**`var(--semi-color-bg-0)` 白色背景**，文字和图标颜色不变，`font-weight: 600`
+- 无任何 `::before` 指示条
+- 底部：头像(左) + 铃铛(右) 水平排列
 
-1. **选中样式错误**：当前使用灰色背景 + 左侧蓝色竖条指示器（`::before`），飞书实际是**浅蓝背景 + 蓝色文字/图标**，无任何指示条
-2. **收起态选中样式**：当前有底部蓝色横条，飞书同样是浅蓝背景 + 蓝色文字，无横条
-3. **头像区域**：需参考飞书的头像 + 右侧按钮布局（展开态并排，收起态上下排列）
+**收起态（64px）**：
+- 菜单项：图标在上 + 11px文字在下，纵向排列居中
+- 宽度 56px，`padding: 8px 4px 4px`，`border-radius: 8px`
+- **选中态**：同样 `var(--semi-color-bg-0)` 白色背景，文字/图标颜色不变
+- 底部：**铃铛为白色圆形按钮**（32px直径、`border-radius: 50%`、`var(--semi-color-bg-0)` 背景），位于头像上方，间距 `16px`
+- Logo 居中，隐藏产品名称
 
 ### 改动
 
-#### 1. 移除蓝色指示条 + 飞书选中样式 — `index.less`
+#### 重写 `src/components/layout/Sidebar/index.less`
 
-**展开态 `.sidebar-icon-btn.active`**：
-- 删除 `&::before` 伪元素（蓝色左侧竖条）
-- 背景改为 `var(--semi-color-primary-light-default)`（浅蓝）
-- 文字颜色改为 `var(--semi-color-primary)`（蓝色）
-- 图标颜色改为 `var(--semi-color-primary)`（蓝色）
-- `font-weight: 600`
-
-**收起态 `.sidebar-icon-bar.collapsed .sidebar-icon-btn.active`**：
-- 删除 `&::before` 底部横条样式
-- 同样使用浅蓝背景 + 蓝色文字/图标
-
-**普通态**：
-- 文字颜色 `var(--semi-color-text-1)`（略深灰），非选中时更轻
-- 图标颜色 `var(--semi-color-text-2)`
-
-#### 2. 头像与铃铛区域 — `index.tsx` + `index.less`
-
-参考飞书：展开时头像在左、铃铛在右（已有），确保样式对齐。收起时头像在上、铃铛在下（已有），确认间距。
-
-当前逻辑已基本正确，微调 `.sidebar-bottom-section` 样式使之更贴近飞书：
-- 展开态：`padding: 12px`，头像和铃铛垂直居中对齐
-- 收起态：居中堆叠，`gap: 8px`
-
-### 具体样式变更（`index.less`）
+**1. 展开态选中样式（第 277-288 行）**：
 
 ```less
-// 展开态选中
-.sidebar-icon-btn {
-  &.active {
-    background-color: var(--semi-color-primary-light-default);
-    // 删除整个 &::before 块
+&.active {
+  background-color: var(--semi-color-bg-0);
 
-    .sidebar-icon-btn-label {
-      color: var(--semi-color-primary);
-      font-weight: 600;
-    }
-    .sidebar-center-icon {
-      color: var(--semi-color-primary);
+  .sidebar-icon-btn-label {
+    font-weight: 600;
+    // 不覆盖颜色，继承普通态
+  }
+
+  // 移除 .sidebar-center-icon 蓝色覆盖
+}
+```
+
+**2. 收起态（第 19-67 行）**：
+
+```less
+&.collapsed {
+  width: 64px;
+  padding: 0 4px 12px 4px;
+  align-items: center;
+
+  .sidebar-icon-btn {
+    width: 56px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 4px 4px;
+    gap: 2px;
+    border-radius: 8px;
+
+    &.active {
+      background-color: var(--semi-color-bg-0);
     }
   }
-}
 
-// 收起态选中 - 删除 &.active::before 块
-.sidebar-icon-bar.collapsed {
-  .sidebar-icon-btn {
-    // 移除 &.active::before { ... } 整段
+  .sidebar-icon-btn-label {
+    display: block;
+    font-size: 11px;
+    line-height: 14px;
+    text-align: center;
+    max-width: 56px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .sidebar-center-icon { margin: 0; }
+
+  .sidebar-logo {
+    width: 64px;
+    justify-content: center;
+    padding-left: 0;
+  }
+
+  .sidebar-bottom-section {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+
+    .sidebar-bottom-bell {
+      order: -1;
+
+      .sidebar-icon-btn-small {
+        width: 32px;
+        height: 32px;
+        background-color: var(--semi-color-bg-0);
+        border-radius: 50%;
+      }
+    }
   }
 }
 ```
+
+### 变更汇总
+
+| 属性 | 之前 | 之后 |
+|------|------|------|
+| 选中态背景 | `var(--semi-color-primary-light-default)` | `var(--semi-color-bg-0)` |
+| 选中态文字色 | `var(--semi-color-primary)` 蓝色 | 不变（继承普通态） |
+| 选中态图标色 | `var(--semi-color-primary)` 蓝色 | 不变（继承普通态） |
+| 收起态底部间距 | `gap: 4px` | `gap: 16px` |
+| 收起态铃铛样式 | 方形28px | 圆形白底32px `var(--semi-color-bg-0)` |
 
 ### 文件变更
 
 | 文件 | 改动 |
 |------|------|
-| `Sidebar/index.less` | 移除 `::before` 指示条，改用飞书风格浅蓝背景+蓝色文字选中态 |
+| `Sidebar/index.less` | 重写选中态背景为 `var(--semi-color-bg-0)`、移除蓝色覆盖、收起态铃铛圆形白底、间距16px |
 
