@@ -227,37 +227,37 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
 
   // 中心级别菜单（左侧图标栏）
   const centerMenuItems: MenuItem[] = [
-    { key: 'home', labelKey: 'sidebar.home', icon: <IconHome style={{ fontSize: 20 }} />, path: '/' },
+    { key: 'home', labelKey: 'sidebar.home', icon: <IconHomeStroked style={{ fontSize: 20 }} />, path: '/' },
     {
       key: 'requirementsCenter',
       labelKey: 'sidebar.requirementsCenter',
-      icon: <IconArticle style={{ fontSize: 20 }} />,
+      icon: <FileText size={20} strokeWidth={2} />,
       path: '/requirements/list',
     },
     {
       key: 'developmentCenter',
       labelKey: 'sidebar.developmentCenter',
-      icon: <IconCode style={{ fontSize: 20 }} />,
+      icon: <IconCodeStroked style={{ fontSize: 20 }} />,
     },
     {
       key: 'schedulingCenter',
       labelKey: 'sidebar.schedulingCenter',
-      icon: <IconCalendarClock style={{ fontSize: 20 }} />,
+      icon: <IconCalendarClockStroked style={{ fontSize: 20 }} />,
     },
     {
       key: 'operationsCenter',
       labelKey: 'sidebar.operationsCenter',
-      icon: <IconHistogram style={{ fontSize: 20 }} />,
+      icon: <BarChart2 size={20} strokeWidth={2} />,
     },
     {
       key: 'sharingCenter',
       labelKey: 'sidebar.sharingCenter',
-      icon: <IconShare style={{ fontSize: 20 }} />,
+      icon: <IconShareStroked style={{ fontSize: 20 }} />,
     },
     {
       key: 'maintenanceCenter',
       labelKey: 'sidebar.maintenanceCenter',
-      icon: <IconWrench style={{ fontSize: 20 }} />,
+      icon: <IconWrenchStroked style={{ fontSize: 20 }} />,
       path: '/maintenance',
     },
   ];
