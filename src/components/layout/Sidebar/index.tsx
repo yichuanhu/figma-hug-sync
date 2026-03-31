@@ -231,7 +231,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     {
       key: 'requirementsCenter',
       labelKey: 'sidebar.requirementsCenter',
-      icon: <FileSearch size={20} strokeWidth={1.8} />,
+      icon: <ListChecks size={20} strokeWidth={1.8} />,
       path: '/requirements/list',
     },
     {
