@@ -148,15 +148,23 @@
     margin-top: 8px;
     margin-bottom: 8px;
 
-    .sidebar-avatar-user {
+    .sidebar-avatar-user,
+    .sidebar-avatar-user.semi-avatar {
+      background: #000000 !important;
       background-color: #000000 !important;
       color: var(--semi-color-white) !important;
       cursor: pointer;
       flex-shrink: 0;
       width: 32px !important;
       height: 32px !important;
-      font-size: 14px !important;
-      line-height: 32px !important;
+    }
+
+    .sidebar-avatar-user .semi-avatar-label,
+    .sidebar-avatar-user.semi-avatar .semi-avatar-label {
+      color: var(--semi-color-white) !important;
+      font-size: 12px !important;
+      font-weight: 400 !important;
+      line-height: 1 !important;
     }
   }
 
