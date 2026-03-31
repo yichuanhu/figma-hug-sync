@@ -22,12 +22,24 @@
       padding: 0 4px 12px 4px;
 
       .sidebar-icon-btn {
-        width: 52px;
+        width: 56px;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        padding: 6px 4px 4px;
+        padding: 8px 4px 4px;
         gap: 2px;
+        border-radius: 8px;
+
+        &.active::before {
+          left: 0;
+          top: auto;
+          bottom: 0;
+          width: 24px;
+          height: 3px;
+          border-radius: 3px 3px 0 0;
+          left: 50%;
+          transform: translateX(-50%);
+        }
       }
 
       .sidebar-icon-btn-label {
