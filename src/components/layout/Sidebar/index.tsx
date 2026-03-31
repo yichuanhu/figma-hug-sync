@@ -15,10 +15,8 @@ import {
   IconHomeStroked,
   IconCalendarClockStroked,
   IconCodeStroked,
-  IconHistogramStroked,
   IconShareStroked,
   IconWrenchStroked,
-  IconArticle,
 } from '@douyinfe/semi-icons';
 import {
   ListStart,
