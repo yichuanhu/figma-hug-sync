@@ -100,6 +100,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
   const [hoveredCenterKey, setHoveredCenterKey] = useState<string | null>(null);
   const [floatingExpandedKeys, setFloatingExpandedKeys] = useState<string[]>(initialExpandedKeys);
   const [isDragging, setIsDragging] = useState(false);
+  const [noTransition, setNoTransition] = useState(false);
   const dragStartX = useRef<number>(0);
   const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -123,20 +124,24 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     e.preventDefault();
     dragStartX.current = e.clientX;
     setIsDragging(true);
+    setNoTransition(true);
 
     const handleMouseMove = (moveEvent: MouseEvent) => {
       const delta = moveEvent.clientX - dragStartX.current;
       const threshold = 50;
       if (collapsed && delta > threshold) {
+        setNoTransition(false); // 触发时恢复动画
         onToggleCollapse?.();
         cleanup();
       } else if (!collapsed && delta < -threshold) {
+        setNoTransition(false);
         onToggleCollapse?.();
         cleanup();
       }
     };
 
     const handleMouseUp = () => {
+      setNoTransition(false);
       cleanup();
     };
 
@@ -695,7 +700,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
   return (
     <div className="sidebar">
       {/* 左侧图标栏 */}
-      <div className={`sidebar-icon-bar ${!collapsed ? 'with-border' : ''} ${collapsed ? 'collapsed' : ''}`}>
+      <div className={`sidebar-icon-bar ${!collapsed ? 'with-border' : ''} ${collapsed ? 'collapsed' : ''} ${noTransition ? 'no-transition' : ''}`}>
         {/* Logo */}
         <div className="sidebar-logo">
           <img src={laiyeLogo} alt="Laiye" className="sidebar-logo-img" />
