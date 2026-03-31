@@ -101,6 +101,22 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
   const [floatingExpandedKeys, setFloatingExpandedKeys] = useState<string[]>(initialExpandedKeys);
   const [isDragging, setIsDragging] = useState(false);
   const dragStartX = useRef<number>(0);
+  const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // 安全设置 hover key，带延迟关闭防止鼠标移动到浮动菜单时闪烁
+  const safeSetHoveredKey = useCallback((key: string | null) => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+    if (key) {
+      setHoveredCenterKey(key);
+    } else {
+      hoverTimeoutRef.current = setTimeout(() => {
+        setHoveredCenterKey(null);
+      }, 150);
+    }
+  }, []);
 
   // 拖拽手柄逻辑
   const handleDragStart = useCallback((e: React.MouseEvent) => {
