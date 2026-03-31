@@ -12,11 +12,6 @@ import {
   IconChevronUp,
   IconGridView,
   IconFolderStroked,
-  IconHomeStroked,
-  IconCalendarClockStroked,
-  IconCodeStroked,
-  IconShareStroked,
-  IconWrenchStroked,
 } from '@douyinfe/semi-icons';
 import {
   ListStart,
