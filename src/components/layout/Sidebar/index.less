@@ -49,6 +49,7 @@
         overflow: hidden;
         text-overflow: ellipsis;
         max-width: 56px;
+        animation: fadeIn 0.2s ease;
       }
 
       .sidebar-center-icon {
@@ -59,6 +60,11 @@
         width: 64px;
         justify-content: center;
         padding-left: 0;
+
+        .sidebar-logo-title {
+          opacity: 0;
+          max-width: 0;
+        }
       }
 
       .sidebar-bottom-section {
@@ -102,6 +108,10 @@
       font-weight: 600;
       color: var(--semi-color-text-0);
       white-space: nowrap;
+      transition: opacity 0.2s ease, max-width 0.2s ease;
+      opacity: 1;
+      max-width: 120px;
+      overflow: hidden;
     }
   }
 
@@ -128,6 +138,7 @@
     justify-content: space-between;
     padding: 8px 12px;
     gap: 8px;
+    transition: all 0.25s ease;
   }
 
   // 拖拽手柄
@@ -341,6 +352,9 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    transition: opacity 0.2s ease, max-width 0.2s ease;
+    opacity: 1;
+    max-width: 120px;
   }
 
   // 红点通知
@@ -453,6 +467,7 @@
     box-shadow: none;
     overflow: hidden;
     position: relative;
+    transition: width 0.25s ease, opacity 0.2s ease;
 
     // 蓝色晕影（与页面卡片统一，位于右上角）
     &::before {
@@ -579,5 +594,11 @@
   // 子菜单容器
   .sidebar-submenu {
     margin-top: 0;
+  }
+
+  // 淡入动画
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
 }
