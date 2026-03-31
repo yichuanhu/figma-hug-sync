@@ -203,37 +203,37 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
 
   // 中心级别菜单（左侧图标栏）
   const centerMenuItems: MenuItem[] = [
-    { key: 'home', labelKey: 'sidebar.home', icon: <Home size={20} strokeWidth={2} />, path: '/' },
+    { key: 'home', labelKey: 'sidebar.home', icon: <Home size={20} fill="currentColor" strokeWidth={0} />, path: '/' },
     {
       key: 'requirementsCenter',
       labelKey: 'sidebar.requirementsCenter',
-      icon: <ClipboardList size={20} strokeWidth={2} />,
+      icon: <ClipboardList size={20} fill="currentColor" strokeWidth={1} />,
       path: '/requirements/list',
     },
     {
       key: 'developmentCenter',
       labelKey: 'sidebar.developmentCenter',
-      icon: <Code size={20} strokeWidth={2} />,
+      icon: <Code size={20} fill="currentColor" strokeWidth={1.5} />,
     },
     {
       key: 'schedulingCenter',
       labelKey: 'sidebar.schedulingCenter',
-      icon: <CalendarClock size={20} strokeWidth={2} />,
+      icon: <CalendarClock size={20} fill="currentColor" strokeWidth={1} />,
     },
     {
       key: 'operationsCenter',
       labelKey: 'sidebar.operationsCenter',
-      icon: <BarChart3 size={20} strokeWidth={2} />,
+      icon: <BarChart3 size={20} fill="currentColor" strokeWidth={1} />,
     },
     {
       key: 'sharingCenter',
       labelKey: 'sidebar.sharingCenter',
-      icon: <Share2 size={20} strokeWidth={2} />,
+      icon: <Share2 size={20} fill="currentColor" strokeWidth={1} />,
     },
     {
       key: 'maintenanceCenter',
       labelKey: 'sidebar.maintenanceCenter',
-      icon: <Wrench size={20} strokeWidth={2} />,
+      icon: <Wrench size={20} fill="currentColor" strokeWidth={1} />,
       path: '/maintenance',
     },
   ];
