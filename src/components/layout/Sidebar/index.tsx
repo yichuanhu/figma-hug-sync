@@ -451,9 +451,6 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     if (targetPath) {
       navigate(targetPath);
       setHoveredCenterKey(null);
-      if (centerMenu.length > 0 && collapsed) {
-        onToggleCollapse?.();
-      }
     }
   };
 
