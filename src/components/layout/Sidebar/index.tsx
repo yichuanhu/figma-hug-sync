@@ -12,6 +12,13 @@ import {
   IconChevronUp,
   IconGridView,
   IconFolderStroked,
+  IconHome,
+  IconCalendar,
+  IconCode,
+  IconSetting,
+  IconBarChartH,
+  IconShareMonoStroked,
+  IconWrench,
 } from '@douyinfe/semi-icons';
 import {
   Home,
