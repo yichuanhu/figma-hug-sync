@@ -21,7 +21,6 @@ import {
   IconArticle,
 } from '@douyinfe/semi-icons';
 import {
-  Home,
   ListStart,
   MonitorCheck,
   Parentheses,
@@ -40,13 +39,10 @@ import {
   ClipboardList,
   CheckSquare,
   Users,
-  Wrench,
   AlertTriangle,
   Activity,
   Database,
   Shield,
-  Code,
-  Share2,
 } from 'lucide-react';
 const LayoutIcon = () => (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
