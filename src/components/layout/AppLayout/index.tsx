@@ -8,6 +8,7 @@ const noExpandRoutes = ['/maintenance', '/personal-center'];
 
 const AppLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const [detailPanelVisible, setDetailPanelVisible] = useState(true);
   const location = useLocation();
 
   const disableExpand = useMemo(
@@ -28,6 +29,8 @@ const AppLayout = () => {
           collapsed={effectiveCollapsed}
           onToggleCollapse={disableExpand ? undefined : () => setCollapsed(!collapsed)}
           disableHover={disableExpand}
+          detailPanelVisible={detailPanelVisible}
+          onToggleDetailPanel={() => setDetailPanelVisible(!detailPanelVisible)}
         />
       </div>
 
