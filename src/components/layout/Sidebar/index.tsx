@@ -12,9 +12,15 @@ import {
   IconChevronUp,
   IconGridView,
   IconFolderStroked,
+  IconHome,
+  IconCalendarClock,
+  IconCode,
+  IconHistogram,
+  IconShare,
+  IconWrench,
+  IconArticle,
 } from '@douyinfe/semi-icons';
 import {
-  Home,
   ListStart,
   MonitorCheck,
   Parentheses,
@@ -38,8 +44,6 @@ import {
   Activity,
   Database,
   Shield,
-  Code,
-  Share2,
 } from 'lucide-react';
 const LayoutIcon = () => (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -203,37 +207,37 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
 
   // 中心级别菜单（左侧图标栏）
   const centerMenuItems: MenuItem[] = [
-    { key: 'home', labelKey: 'sidebar.home', icon: <Home size={20} fill="currentColor" strokeWidth={0} />, path: '/' },
+    { key: 'home', labelKey: 'sidebar.home', icon: <IconHome style={{ fontSize: 20 }} />, path: '/' },
     {
       key: 'requirementsCenter',
       labelKey: 'sidebar.requirementsCenter',
-      icon: <ClipboardList size={20} fill="currentColor" strokeWidth={1} />,
+      icon: <IconArticle style={{ fontSize: 20 }} />,
       path: '/requirements/list',
     },
     {
       key: 'developmentCenter',
       labelKey: 'sidebar.developmentCenter',
-      icon: <Code size={20} fill="currentColor" strokeWidth={1.5} />,
+      icon: <IconCode style={{ fontSize: 20 }} />,
     },
     {
       key: 'schedulingCenter',
       labelKey: 'sidebar.schedulingCenter',
-      icon: <CalendarClock size={20} fill="currentColor" strokeWidth={1} />,
+      icon: <IconCalendarClock style={{ fontSize: 20 }} />,
     },
     {
       key: 'operationsCenter',
       labelKey: 'sidebar.operationsCenter',
-      icon: <BarChart3 size={20} fill="currentColor" strokeWidth={1} />,
+      icon: <IconHistogram style={{ fontSize: 20 }} />,
     },
     {
       key: 'sharingCenter',
       labelKey: 'sidebar.sharingCenter',
-      icon: <Share2 size={20} fill="currentColor" strokeWidth={1} />,
+      icon: <IconShare style={{ fontSize: 20 }} />,
     },
     {
       key: 'maintenanceCenter',
       labelKey: 'sidebar.maintenanceCenter',
-      icon: <Wrench size={20} fill="currentColor" strokeWidth={1} />,
+      icon: <IconWrench style={{ fontSize: 20 }} />,
       path: '/maintenance',
     },
   ];
