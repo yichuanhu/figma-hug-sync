@@ -704,7 +704,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
         {/* Logo */}
         <div className="sidebar-logo">
           <img src={laiyeLogo} alt="Laiye" className="sidebar-logo-img" />
-          {!collapsed && <span className="sidebar-logo-title">数字员工平台</span>}
+          <span className="sidebar-logo-title">数字员工平台</span>
         </div>
 
         {/* 主菜单图标 */}
