@@ -72,11 +72,6 @@
             border-radius: 50%;
           }
         }
-
-        .sidebar-avatar .sidebar-avatar-user {
-          width: 32px !important;
-          height: 32px !important;
-        }
       }
     }
   }
@@ -154,10 +149,12 @@
     margin-bottom: 8px;
 
     .sidebar-avatar-user {
-      background-color: #1C1F23;
-      color: var(--semi-color-white);
+      background-color: #000000 !important;
+      color: var(--semi-color-white) !important;
       cursor: pointer;
       flex-shrink: 0;
+      width: 32px !important;
+      height: 32px !important;
     }
   }
 
@@ -326,6 +323,9 @@
     width: 32px;
     height: 32px;
     min-width: 32px;
+    max-width: 32px;
+    max-height: 32px;
+    box-sizing: border-box;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -333,7 +333,7 @@
     border-radius: 6px;
     color: var(--semi-color-tertiary);
     flex-shrink: 0;
-    padding: 5px;
+    padding: 0;
 
     &:hover {
       background-color: var(--semi-color-fill-0);
