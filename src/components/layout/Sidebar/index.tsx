@@ -444,15 +444,13 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
     const isHovered = hoveredCenterKey === item.key;
     const label = t(item.labelKey);
 
-    const shortLabel = t((item as any).shortLabelKey || item.labelKey);
-
     const iconButton = (
       <div
         className={`sidebar-icon-btn ${isActive ? 'active' : ''}`}
         onClick={() => handleCenterClick(item)}
       >
-        {item.icon}
-        <span className="sidebar-icon-btn-label">{shortLabel}</span>
+        <span className="sidebar-center-icon">{item.icon}</span>
+        {!collapsed && <span className="sidebar-icon-btn-label">{label}</span>}
       </div>
     );
 
@@ -471,14 +469,17 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
           }
         }}
       >
-        <Tooltip content={label} position="right">
-          {iconButton}
-        </Tooltip>
+        {collapsed ? (
+          <Tooltip content={label} position="right">
+            {iconButton}
+          </Tooltip>
+        ) : (
+          iconButton
+        )}
 
         {/* 收起时的浮动菜单 */}
         {collapsed && hasSubMenu && isHovered && (
           <div className="sidebar-floating-menu">
-            {/* 浮动菜单标题和展开按钮 */}
             <div className="sidebar-floating-menu-header">
               <span className="sidebar-floating-menu-title">{label}</span>
               <div
@@ -492,7 +493,6 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
                 <LayoutIcon />
               </div>
             </div>
-            {/* 菜单列表 - 可滚动 */}
             <div className="sidebar-floating-menu-list">
               {getCenterMenu(item.key).map((menuItem) => renderFloatingMenuItem(menuItem))}
             </div>
