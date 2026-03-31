@@ -41,7 +41,7 @@ import {
   ListChecks,
   Terminal,
   PieChart,
-  Rocket,
+  Share2,
   SlidersHorizontal,
 } from 'lucide-react';
 const LayoutIcon = () => (
@@ -252,7 +252,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     {
       key: 'sharingCenter',
       labelKey: 'sidebar.sharingCenter',
-      icon: <Rocket size={20} strokeWidth={1.8} />,
+      icon: <Share2 size={20} strokeWidth={1.8} />,
     },
     {
       key: 'maintenanceCenter',
