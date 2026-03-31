@@ -496,12 +496,12 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
         key={item.key}
         className="sidebar-icon-btn-wrapper"
         onMouseEnter={() => {
-          if (collapsed && hasSubMenu && !disableHover) {
+          if (collapsed && hasSubMenu && !disableHover && !detailPanelVisible) {
             setHoveredCenterKey(item.key);
           }
         }}
         onMouseLeave={() => {
-          if (collapsed && hasSubMenu && !disableHover) {
+          if (collapsed && hasSubMenu && !disableHover && !detailPanelVisible) {
             setHoveredCenterKey(null);
           }
         }}
@@ -509,7 +509,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
         {iconButton}
 
         {/* 收起时的浮动菜单 */}
-        {collapsed && hasSubMenu && isHovered && (
+        {collapsed && hasSubMenu && isHovered && !detailPanelVisible && (
           <div className="sidebar-floating-menu">
             <div className="sidebar-floating-menu-header">
               <span className="sidebar-floating-menu-title">{label}</span>

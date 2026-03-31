@@ -24,7 +24,7 @@ const AppLayout = () => {
   return (
     <div className="app-layout">
       {/* 侧边栏 */}
-      <div className={`app-layout-sidebar ${effectiveCollapsed ? 'collapsed' : 'expanded'}`}>
+      <div className={`app-layout-sidebar ${effectiveCollapsed ? 'collapsed' : 'expanded'} ${detailPanelVisible ? 'detail-visible' : ''}`}>
         <Sidebar
           collapsed={effectiveCollapsed}
           onToggleCollapse={disableExpand ? undefined : () => setCollapsed(!collapsed)}
