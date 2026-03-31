@@ -38,7 +38,7 @@ import {
   Database,
   Shield,
   House,
-  ClipboardList,
+  ListChecks,
   Terminal,
   PieChart,
   Rocket,
