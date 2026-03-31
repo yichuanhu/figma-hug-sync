@@ -14,7 +14,11 @@
     padding: 0 8px 12px 8px;
     flex-shrink: 0;
     background-color: #EFF1F3;
-    transition: width 0.2s ease;
+    transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &.no-transition {
+      transition: none;
+    }
 
     &.collapsed {
       width: 64px;

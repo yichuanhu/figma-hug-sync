@@ -100,6 +100,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
   const [hoveredCenterKey, setHoveredCenterKey] = useState<string | null>(null);
   const [floatingExpandedKeys, setFloatingExpandedKeys] = useState<string[]>(initialExpandedKeys);
   const [isDragging, setIsDragging] = useState(false);
+  const [noTransition, setNoTransition] = useState(false);
   const dragStartX = useRef<number>(0);
   const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
