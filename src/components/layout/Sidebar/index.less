@@ -141,24 +141,25 @@
     transition: all 0.25s ease;
   }
 
-  // 拖拽手柄 - 可交互区域7px，视觉线条1px居中
+  // 拖拽手柄 - 可交互区域7px，视觉线条2px居中，高度与子菜单卡片一致
   .sidebar-drag-handle {
     position: absolute;
     right: -3px;
-    top: 0;
+    top: 8px;
     width: 7px;
-    height: 100%;
+    height: calc(100% - 16px);
     cursor: col-resize;
     z-index: 10;
 
-    // 视觉线条1px居中显示
+    // 视觉线条2px居中显示
     &::after {
       content: '';
       position: absolute;
       top: 0;
       left: 3px;
-      width: 1px;
+      width: 2px;
       height: 100%;
+      border-radius: 1px;
       transition: background-color 0.2s;
     }
 
