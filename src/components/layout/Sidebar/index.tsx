@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Avatar, Popover, Tooltip } from '@douyinfe/semi-ui';
@@ -93,6 +93,44 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
   const [expandedKeys, setExpandedKeys] = useState<string[]>(initialExpandedKeys);
   const [hoveredCenterKey, setHoveredCenterKey] = useState<string | null>(null);
   const [floatingExpandedKeys, setFloatingExpandedKeys] = useState<string[]>(initialExpandedKeys);
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartX = useRef<number>(0);
+
+  // 拖拽手柄逻辑
+  const handleDragStart = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    dragStartX.current = e.clientX;
+    setIsDragging(true);
+
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      const delta = moveEvent.clientX - dragStartX.current;
+      const threshold = 50;
+      if (collapsed && delta > threshold) {
+        onToggleCollapse?.();
+        cleanup();
+      } else if (!collapsed && delta < -threshold) {
+        onToggleCollapse?.();
+        cleanup();
+      }
+    };
+
+    const handleMouseUp = () => {
+      cleanup();
+    };
+
+    const cleanup = () => {
+      setIsDragging(false);
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    };
+
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+  }, [collapsed, onToggleCollapse]);
 
   // 当路由变化时，自动展开对应的菜单组
   useEffect(() => {
@@ -652,10 +690,11 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
 
         {/* 底部菜单图标 */}
         <div className="sidebar-bottom-icons">
-          {bottomMenuItems.map(renderBottomMenuItem)}
+          {bottomMenuItems.filter(item => item.key !== 'notifications').map(renderBottomMenuItem)}
 
-          {/* 用户头像 - 带下拉菜单 */}
-          <div className="sidebar-avatar">
+          {/* 头像 + 消息铃铛 */}
+          <div className={`sidebar-bottom-section ${collapsed ? 'collapsed' : ''}`}>
+            {/* 用户头像 - 带下拉菜单 */}
             <Popover
               trigger="hover"
               position="rightBottom"
@@ -690,8 +729,23 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
                 L
               </Avatar>
             </Popover>
+
+            {/* 消息铃铛 */}
+            <div className="sidebar-bottom-bell">
+              <Tooltip content={t('sidebar.notifications')} position="right" disabled={!collapsed}>
+                <div className="sidebar-icon-btn-small" style={{ cursor: 'pointer' }}>
+                  <IconBellStroked style={{ fontSize: 18 }} />
+                </div>
+              </Tooltip>
+            </div>
           </div>
         </div>
+
+        {/* 拖拽手柄 */}
+        <div
+          className={`sidebar-drag-handle ${isDragging ? 'dragging' : ''}`}
+          onMouseDown={handleDragStart}
+        />
       </div>
 
       {/* 右侧详细菜单 - 仅在展开时显示 */}

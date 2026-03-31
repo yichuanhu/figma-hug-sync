@@ -5,8 +5,9 @@
 
   // 左侧图标栏
   .sidebar-icon-bar {
-    width: 200px;
+    width: 180px;
     height: 100%;
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: stretch;
@@ -16,12 +17,12 @@
     transition: width 0.2s ease;
 
     &.collapsed {
-      width: 68px;
+      width: 64px;
       align-items: center;
       padding: 0 4px 12px 4px;
 
       .sidebar-icon-btn {
-        width: 56px;
+        width: 52px;
         flex-direction: column;
         justify-content: center;
         padding: 6px 4px 4px;
@@ -37,7 +38,19 @@
       }
 
       .sidebar-logo {
-        width: 68px;
+        width: 64px;
+        justify-content: center;
+        padding-left: 0;
+      }
+
+      .sidebar-bottom-section {
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+
+        .sidebar-bottom-bell {
+          order: -1;
+        }
       }
     }
   }
@@ -80,6 +93,33 @@
     display: flex;
     flex-direction: column;
     align-items: stretch;
+  }
+
+  // 底部区域：头像 + 消息铃铛
+  .sidebar-bottom-section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    gap: 8px;
+  }
+
+  // 拖拽手柄
+  .sidebar-drag-handle {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    cursor: col-resize;
+    z-index: 10;
+    transition: background-color 0.2s;
+
+    &:hover,
+    &.dragging {
+      background-color: var(--semi-color-primary);
+    }
   }
 
   // 用户头像区域
