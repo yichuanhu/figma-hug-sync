@@ -740,13 +740,13 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
         />
       </div>
 
-      {/* 右侧详细菜单 - 仅在展开时显示 */}
-      {!collapsed && currentCenterMenu.length > 0 && (
+      {/* 右侧详细菜单 - 由 detailPanelVisible 独立控制 */}
+      {detailPanelVisible && currentCenterMenu.length > 0 && (
         <div className="sidebar-detail-panel">
           {/* 中心标题 */}
           <div className="sidebar-detail-header">
             <span className="sidebar-detail-title">{currentCenterLabel ? t(currentCenterLabel) : ''}</span>
-            <div className="sidebar-icon-btn-small" onClick={onToggleCollapse} title={t('sidebar.expandSidebar')}>
+            <div className="sidebar-icon-btn-small" onClick={onToggleDetailPanel} title={t('sidebar.collapseSidebar')}>
               <LayoutIcon />
             </div>
           </div>
