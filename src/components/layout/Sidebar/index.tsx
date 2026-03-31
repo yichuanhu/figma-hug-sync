@@ -41,7 +41,7 @@ import {
   ListChecks,
   Terminal,
   PieChart,
-  Rocket,
+  Share2,
   SlidersHorizontal,
 } from 'lucide-react';
 const LayoutIcon = () => (
