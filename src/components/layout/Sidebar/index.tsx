@@ -690,10 +690,11 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
 
         {/* 底部菜单图标 */}
         <div className="sidebar-bottom-icons">
-          {bottomMenuItems.map(renderBottomMenuItem)}
+          {bottomMenuItems.filter(item => item.key !== 'notifications').map(renderBottomMenuItem)}
 
-          {/* 用户头像 - 带下拉菜单 */}
-          <div className="sidebar-avatar">
+          {/* 头像 + 消息铃铛 */}
+          <div className={`sidebar-bottom-section ${collapsed ? 'collapsed' : ''}`}>
+            {/* 用户头像 - 带下拉菜单 */}
             <Popover
               trigger="hover"
               position="rightBottom"
@@ -728,8 +729,23 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
                 L
               </Avatar>
             </Popover>
+
+            {/* 消息铃铛 */}
+            <div className="sidebar-bottom-bell">
+              <Tooltip content={t('sidebar.notifications')} position="right" disabled={!collapsed}>
+                <div className="sidebar-icon-btn-small" style={{ cursor: 'pointer' }}>
+                  <IconBellStroked style={{ fontSize: 18 }} />
+                </div>
+              </Tooltip>
+            </div>
           </div>
         </div>
+
+        {/* 拖拽手柄 */}
+        <div
+          className={`sidebar-drag-handle ${isDragging ? 'dragging' : ''}`}
+          onMouseDown={handleDragStart}
+        />
       </div>
 
       {/* 右侧详细菜单 - 仅在展开时显示 */}
