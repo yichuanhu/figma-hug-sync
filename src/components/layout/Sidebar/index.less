@@ -252,18 +252,23 @@
     justify-content: flex-start;
     gap: 10px;
     cursor: pointer;
-    border-radius: 8px;
-    color: var(--semi-color-text-2);
+    border-radius: 6px;
+    color: var(--semi-color-tertiary);
     margin-bottom: 2px;
     position: relative;
-    padding: 8px 12px;
+    padding: 10px 12px;
 
     &:hover {
-      background-color: var(--semi-color-fill-1);
+      background-color: var(--semi-color-fill-0);
     }
 
     &.active {
-      background-color: var(--semi-color-fill-1);
+      background-color: var(--semi-color-primary-light-default);
+
+      .sidebar-icon-btn-label {
+        color: var(--semi-color-primary);
+        font-weight: 600;
+      }
     }
   }
 
@@ -272,7 +277,7 @@
     font-size: 14px;
     line-height: 20px;
     font-weight: 500;
-    color: var(--semi-color-text-1);
+    color: var(--semi-color-text-0);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

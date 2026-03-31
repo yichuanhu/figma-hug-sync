@@ -690,8 +690,6 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
 
         {/* 底部菜单图标 */}
         <div className="sidebar-bottom-icons">
-          {bottomMenuItems.filter(item => item.key !== 'notifications').map(renderBottomMenuItem)}
-
           {/* 头像 + 消息铃铛 */}
           <div className={`sidebar-bottom-section ${collapsed ? 'collapsed' : ''}`}>
             {/* 用户头像 - 带下拉菜单 */}
