@@ -715,7 +715,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
               position="rightBottom"
               showArrow={false}
               spacing={4}
-              mouseLeaveDelay={100}
+              mouseLeaveDelay={300}
               mouseEnterDelay={0}
               content={
                 <UserInfoDropdown
