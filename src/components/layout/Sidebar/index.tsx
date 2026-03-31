@@ -14,6 +14,7 @@ import {
   IconFolderStroked,
 } from '@douyinfe/semi-icons';
 import {
+  Home,
   ListStart,
   MonitorCheck,
   Parentheses,
@@ -37,6 +38,8 @@ import {
   Activity,
   Database,
   Shield,
+  Code,
+  Share2,
 } from 'lucide-react';
 const LayoutIcon = () => (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -44,15 +47,6 @@ const LayoutIcon = () => (
   </svg>
 );
 import laiyeLogo from '@/assets/laiye-logo.png';
-
-// 中心图标 - 使用 ?raw 导入保留 SVG 内部的毛玻璃效果
-import homeCenterIconRaw from '@/assets/icons/home.svg?raw';
-import developmentCenterIconRaw from '@/assets/icons/development.svg?raw';
-import requirementsCenterIconRaw from '@/assets/icons/requirements.svg?raw';
-import schedulingCenterIconRaw from '@/assets/icons/scheduling.svg?raw';
-import operationsCenterIconRaw from '@/assets/icons/operations.svg?raw';
-import maintenanceCenterIconRaw from '@/assets/icons/maintenance.svg?raw';
-import sharingCenterIconRaw from '@/assets/icons/sharing.svg?raw';
 
 import './index.less';
 
@@ -168,44 +162,38 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
   };
 
   // 中心级别菜单（左侧图标栏）
-  const centerMenuItems: (MenuItem & { shortLabelKey: string })[] = [
-    { key: 'home', labelKey: 'sidebar.home', shortLabelKey: 'sidebar.homeShort', icon: <div className="sidebar-center-icon" dangerouslySetInnerHTML={{ __html: homeCenterIconRaw }} />, path: '/' },
+  const centerMenuItems: MenuItem[] = [
+    { key: 'home', labelKey: 'sidebar.home', icon: <Home size={20} strokeWidth={2} />, path: '/' },
     {
       key: 'requirementsCenter',
       labelKey: 'sidebar.requirementsCenter',
-      shortLabelKey: 'sidebar.requirementsCenterShort',
-      icon: <div className="sidebar-center-icon" dangerouslySetInnerHTML={{ __html: requirementsCenterIconRaw }} />,
+      icon: <ClipboardList size={20} strokeWidth={2} />,
       path: '/requirements/list',
     },
     {
       key: 'developmentCenter',
       labelKey: 'sidebar.developmentCenter',
-      shortLabelKey: 'sidebar.developmentCenterShort',
-      icon: <div className="sidebar-center-icon" dangerouslySetInnerHTML={{ __html: developmentCenterIconRaw }} />,
+      icon: <Code size={20} strokeWidth={2} />,
     },
     {
       key: 'schedulingCenter',
       labelKey: 'sidebar.schedulingCenter',
-      shortLabelKey: 'sidebar.schedulingCenterShort',
-      icon: <div className="sidebar-center-icon" dangerouslySetInnerHTML={{ __html: schedulingCenterIconRaw }} />,
+      icon: <CalendarClock size={20} strokeWidth={2} />,
     },
     {
       key: 'operationsCenter',
       labelKey: 'sidebar.operationsCenter',
-      shortLabelKey: 'sidebar.operationsCenterShort',
-      icon: <div className="sidebar-center-icon" dangerouslySetInnerHTML={{ __html: operationsCenterIconRaw }} />,
+      icon: <BarChart3 size={20} strokeWidth={2} />,
     },
     {
       key: 'sharingCenter',
       labelKey: 'sidebar.sharingCenter',
-      shortLabelKey: 'sidebar.sharingCenterShort',
-      icon: <div className="sidebar-center-icon" dangerouslySetInnerHTML={{ __html: sharingCenterIconRaw }} />,
+      icon: <Share2 size={20} strokeWidth={2} />,
     },
     {
       key: 'maintenanceCenter',
       labelKey: 'sidebar.maintenanceCenter',
-      shortLabelKey: 'sidebar.maintenanceCenterShort',
-      icon: <div className="sidebar-center-icon" dangerouslySetInnerHTML={{ __html: maintenanceCenterIconRaw }} />,
+      icon: <Wrench size={20} strokeWidth={2} />,
       path: '/maintenance',
     },
   ];
@@ -456,15 +444,13 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
     const isHovered = hoveredCenterKey === item.key;
     const label = t(item.labelKey);
 
-    const shortLabel = t((item as any).shortLabelKey || item.labelKey);
-
     const iconButton = (
       <div
         className={`sidebar-icon-btn ${isActive ? 'active' : ''}`}
         onClick={() => handleCenterClick(item)}
       >
-        {item.icon}
-        <span className="sidebar-icon-btn-label">{shortLabel}</span>
+        <span className="sidebar-center-icon">{item.icon}</span>
+        {!collapsed && <span className="sidebar-icon-btn-label">{label}</span>}
       </div>
     );
 
@@ -483,14 +469,17 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
           }
         }}
       >
-        <Tooltip content={label} position="right">
-          {iconButton}
-        </Tooltip>
+        {collapsed ? (
+          <Tooltip content={label} position="right">
+            {iconButton}
+          </Tooltip>
+        ) : (
+          iconButton
+        )}
 
         {/* 收起时的浮动菜单 */}
         {collapsed && hasSubMenu && isHovered && (
           <div className="sidebar-floating-menu">
-            {/* 浮动菜单标题和展开按钮 */}
             <div className="sidebar-floating-menu-header">
               <span className="sidebar-floating-menu-title">{label}</span>
               <div
@@ -504,7 +493,6 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
                 <LayoutIcon />
               </div>
             </div>
-            {/* 菜单列表 - 可滚动 */}
             <div className="sidebar-floating-menu-list">
               {getCenterMenu(item.key).map((menuItem) => renderFloatingMenuItem(menuItem))}
             </div>
@@ -624,18 +612,23 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
     const label = t(item.labelKey);
     const iconButton = (
       <div className="sidebar-icon-btn">
-        <span className="sidebar-icon-btn-wrapper">
+        <span className="sidebar-center-icon" style={{ position: 'relative' }}>
           {item.icon}
           {item.badge && <span className="sidebar-badge-dot" />}
         </span>
+        {!collapsed && <span className="sidebar-icon-btn-label">{label}</span>}
       </div>
     );
 
     return (
       <div key={item.key}>
-        <Tooltip content={label} position="right">
-          {iconButton}
-        </Tooltip>
+        {collapsed ? (
+          <Tooltip content={label} position="right">
+            {iconButton}
+          </Tooltip>
+        ) : (
+          iconButton
+        )}
       </div>
     );
   };
@@ -647,7 +640,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
   return (
     <div className="sidebar">
       {/* 左侧图标栏 */}
-      <div className={`sidebar-icon-bar ${!collapsed ? 'with-border' : ''}`}>
+      <div className={`sidebar-icon-bar ${!collapsed ? 'with-border' : ''} ${collapsed ? 'collapsed' : ''}`}>
         {/* Logo */}
         <div className="sidebar-logo">
           <img src={laiyeLogo} alt="Laiye" className="sidebar-logo-img" />
