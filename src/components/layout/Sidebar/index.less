@@ -282,26 +282,15 @@
     }
 
     &.active {
-      background-color: var(--semi-color-fill-0);
-
-      &::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 6px;
-        bottom: 6px;
-        width: 3px;
-        border-radius: 0 3px 3px 0;
-        background-color: var(--semi-color-primary);
-      }
+      background-color: var(--semi-color-primary-light-default);
 
       .sidebar-icon-btn-label {
-        color: var(--semi-color-text-0);
-        font-weight: 500;
+        color: var(--semi-color-primary);
+        font-weight: 600;
       }
 
       .sidebar-center-icon {
-        color: var(--semi-color-text-0);
+        color: var(--semi-color-primary);
       }
     }
   }
