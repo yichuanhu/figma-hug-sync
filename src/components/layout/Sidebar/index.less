@@ -131,15 +131,25 @@
     position: absolute;
     right: 0;
     top: 0;
-    width: 4px;
+    width: 1px;
     height: 100%;
     cursor: col-resize;
     z-index: 10;
     transition: background-color 0.2s;
 
+    // 扩大可点击区域但视觉保持1px
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -3px;
+      width: 7px;
+      height: 100%;
+    }
+
     &:hover,
     &.dragging {
-      background-color: var(--semi-color-primary);
+      background-color: rgba(22, 93, 255, 0.5);
     }
   }
 
