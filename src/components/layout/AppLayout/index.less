@@ -4,13 +4,47 @@
   height: 100vh;
   width: 100%;
   overflow: hidden;
+  position: relative;
+  background-color: #EFF1F3;
+
+  // 蓝色晕影 - 左上角
+  &::before {
+    content: '';
+    position: absolute;
+    top: -10%;
+    left: -5%;
+    width: 50%;
+    height: 60%;
+    background: radial-gradient(ellipse at center, rgba(22, 93, 255, 0.06) 0%, rgba(22, 93, 255, 0.03) 35%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  // 蓝色晕影 - 右下角
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -10%;
+    right: -5%;
+    width: 50%;
+    height: 55%;
+    background: radial-gradient(ellipse at center, rgba(22, 93, 255, 0.05) 0%, rgba(22, 93, 255, 0.02) 35%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  // 确保子元素在晕影之上
+  > * {
+    position: relative;
+    z-index: 1;
+  }
 
   // 侧边栏容器
   .app-layout-sidebar {
     height: 100vh;
     display: flex;
     flex-direction: row;
-    background-color: #EFF1F3;
+    background-color: transparent;
     transition: width 0.2s;
     flex-shrink: 0;
     position: relative;
@@ -36,16 +70,19 @@
   .app-layout-content {
     flex: 1;
     overflow: hidden;
-    background-color: #EFF1F3;
+    background-color: transparent;
     padding: 8px;
     padding-left: 8px;
     display: flex;
     flex-direction: column;
 
     .app-layout-content-card {
-      background-color: var(--semi-color-default);
+      background-color: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border-radius: 8px;
-      box-shadow: none;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.5);
       height: 100%;
       overflow: hidden;
       display: flex;
