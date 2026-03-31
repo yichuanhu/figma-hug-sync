@@ -264,6 +264,17 @@
   // 图标按钮容器
   .sidebar-icon-btn-wrapper {
     position: relative;
+
+    // 透明桥接区域，防止鼠标从菜单项移向浮动菜单时触发 mouseLeave
+    &:has(.sidebar-floating-menu)::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: -12px;
+      width: 12px;
+      height: 100%;
+      z-index: 999;
+    }
   }
 
   // 中心图标样式（内联SVG容器）

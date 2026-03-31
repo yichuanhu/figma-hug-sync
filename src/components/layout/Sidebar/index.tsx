@@ -101,6 +101,22 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
   const [floatingExpandedKeys, setFloatingExpandedKeys] = useState<string[]>(initialExpandedKeys);
   const [isDragging, setIsDragging] = useState(false);
   const dragStartX = useRef<number>(0);
+  const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // 安全设置 hover key，带延迟关闭防止鼠标移动到浮动菜单时闪烁
+  const safeSetHoveredKey = useCallback((key: string | null) => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+    if (key) {
+      setHoveredCenterKey(key);
+    } else {
+      hoverTimeoutRef.current = setTimeout(() => {
+        setHoveredCenterKey(null);
+      }, 150);
+    }
+  }, []);
 
   // 拖拽手柄逻辑
   const handleDragStart = useCallback((e: React.MouseEvent) => {
@@ -501,12 +517,12 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
         className="sidebar-icon-btn-wrapper"
         onMouseEnter={() => {
           if (hasSubMenu && !disableHover && !detailPanelVisible) {
-            setHoveredCenterKey(item.key);
+            safeSetHoveredKey(item.key);
           }
         }}
         onMouseLeave={() => {
           if (hasSubMenu && !disableHover && !detailPanelVisible) {
-            setHoveredCenterKey(null);
+            safeSetHoveredKey(null);
           }
         }}
       >
@@ -514,7 +530,11 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
 
         {/* 收起时的浮动菜单 */}
         {hasSubMenu && isHovered && !detailPanelVisible && (
-          <div className="sidebar-floating-menu">
+          <div
+            className="sidebar-floating-menu"
+            onMouseEnter={() => safeSetHoveredKey(item.key)}
+            onMouseLeave={() => safeSetHoveredKey(null)}
+          >
             <div className="sidebar-floating-menu-header">
               <span className="sidebar-floating-menu-title">{label}</span>
               <div
@@ -695,7 +715,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
               position="rightBottom"
               showArrow={false}
               spacing={4}
-              mouseLeaveDelay={100}
+              mouseLeaveDelay={300}
               mouseEnterDelay={0}
               content={
                 <UserInfoDropdown
