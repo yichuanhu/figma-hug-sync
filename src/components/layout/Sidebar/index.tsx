@@ -530,7 +530,11 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
 
         {/* 收起时的浮动菜单 */}
         {hasSubMenu && isHovered && !detailPanelVisible && (
-          <div className="sidebar-floating-menu">
+          <div
+            className="sidebar-floating-menu"
+            onMouseEnter={() => safeSetHoveredKey(item.key)}
+            onMouseLeave={() => safeSetHoveredKey(null)}
+          >
             <div className="sidebar-floating-menu-header">
               <span className="sidebar-floating-menu-title">{label}</span>
               <div
