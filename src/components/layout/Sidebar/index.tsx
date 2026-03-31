@@ -716,7 +716,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
                 />
               }
             >
-              <Avatar style={{ width: 32, height: 32 }} className="sidebar-avatar-user">
+              <Avatar size="small" className="sidebar-avatar-user">
                 L
               </Avatar>
             </Popover>
