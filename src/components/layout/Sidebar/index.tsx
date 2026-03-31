@@ -518,7 +518,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
                 className="sidebar-icon-btn-small"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onToggleCollapse?.();
+                  onToggleDetailPanel?.();
                 }}
                 title={t('sidebar.expandSidebar')}
               >
