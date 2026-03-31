@@ -95,6 +95,33 @@
     align-items: stretch;
   }
 
+  // 底部区域：头像 + 消息铃铛
+  .sidebar-bottom-section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    gap: 8px;
+  }
+
+  // 拖拽手柄
+  .sidebar-drag-handle {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    cursor: col-resize;
+    z-index: 10;
+    transition: background-color 0.2s;
+
+    &:hover,
+    &.dragging {
+      background-color: var(--semi-color-primary);
+    }
+  }
+
   // 用户头像区域
   .sidebar-avatar {
     margin-top: 8px;
