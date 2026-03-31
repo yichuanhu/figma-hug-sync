@@ -507,13 +507,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
           }
         }}
       >
-        {collapsed ? (
-          <Tooltip content={label} position="right">
-            {iconButton}
-          </Tooltip>
-        ) : (
-          iconButton
-        )}
+        {iconButton}
 
         {/* 收起时的浮动菜单 */}
         {collapsed && hasSubMenu && isHovered && (
