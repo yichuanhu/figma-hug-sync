@@ -612,18 +612,23 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
     const label = t(item.labelKey);
     const iconButton = (
       <div className="sidebar-icon-btn">
-        <span className="sidebar-icon-btn-wrapper">
+        <span className="sidebar-center-icon" style={{ position: 'relative' }}>
           {item.icon}
           {item.badge && <span className="sidebar-badge-dot" />}
         </span>
+        {!collapsed && <span className="sidebar-icon-btn-label">{label}</span>}
       </div>
     );
 
     return (
       <div key={item.key}>
-        <Tooltip content={label} position="right">
-          {iconButton}
-        </Tooltip>
+        {collapsed ? (
+          <Tooltip content={label} position="right">
+            {iconButton}
+          </Tooltip>
+        ) : (
+          iconButton
+        )}
       </div>
     );
   };
