@@ -31,7 +31,7 @@
         border-radius: 8px;
 
         &.active {
-          background-color: var(--semi-color-primary-light-default);
+          background-color: var(--semi-color-bg-0);
         }
       }
 
@@ -58,10 +58,17 @@
       .sidebar-bottom-section {
         flex-direction: column;
         align-items: center;
-        gap: 4px;
+        gap: 16px;
 
         .sidebar-bottom-bell {
           order: -1;
+
+          .sidebar-icon-btn-small {
+            width: 32px;
+            height: 32px;
+            background-color: var(--semi-color-bg-0);
+            border-radius: 50%;
+          }
         }
       }
     }
@@ -275,15 +282,10 @@
     }
 
     &.active {
-      background-color: var(--semi-color-primary-light-default);
+      background-color: var(--semi-color-bg-0);
 
       .sidebar-icon-btn-label {
-        color: var(--semi-color-primary);
         font-weight: 600;
-      }
-
-      .sidebar-center-icon {
-        color: var(--semi-color-primary);
       }
     }
   }
