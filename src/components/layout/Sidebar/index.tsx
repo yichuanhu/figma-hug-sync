@@ -31,6 +31,7 @@ import {
   Bot,
   Settings,
   FileText,
+  BarChart2,
   BarChart3,
   TrendingUp,
   Target,
