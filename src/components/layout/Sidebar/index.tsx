@@ -700,7 +700,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
   return (
     <div className="sidebar">
       {/* 左侧图标栏 */}
-      <div className={`sidebar-icon-bar ${!collapsed ? 'with-border' : ''} ${collapsed ? 'collapsed' : ''}`}>
+      <div className={`sidebar-icon-bar ${!collapsed ? 'with-border' : ''} ${collapsed ? 'collapsed' : ''} ${noTransition ? 'no-transition' : ''}`}>
         {/* Logo */}
         <div className="sidebar-logo">
           <img src={laiyeLogo} alt="Laiye" className="sidebar-logo-img" />
