@@ -124,20 +124,24 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     e.preventDefault();
     dragStartX.current = e.clientX;
     setIsDragging(true);
+    setNoTransition(true);
 
     const handleMouseMove = (moveEvent: MouseEvent) => {
       const delta = moveEvent.clientX - dragStartX.current;
       const threshold = 50;
       if (collapsed && delta > threshold) {
+        setNoTransition(false); // 触发时恢复动画
         onToggleCollapse?.();
         cleanup();
       } else if (!collapsed && delta < -threshold) {
+        setNoTransition(false);
         onToggleCollapse?.();
         cleanup();
       }
     };
 
     const handleMouseUp = () => {
+      setNoTransition(false);
       cleanup();
     };
 
