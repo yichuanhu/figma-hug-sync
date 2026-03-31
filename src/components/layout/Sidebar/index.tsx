@@ -93,6 +93,44 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
   const [expandedKeys, setExpandedKeys] = useState<string[]>(initialExpandedKeys);
   const [hoveredCenterKey, setHoveredCenterKey] = useState<string | null>(null);
   const [floatingExpandedKeys, setFloatingExpandedKeys] = useState<string[]>(initialExpandedKeys);
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartX = useRef<number>(0);
+
+  // 拖拽手柄逻辑
+  const handleDragStart = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    dragStartX.current = e.clientX;
+    setIsDragging(true);
+
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      const delta = moveEvent.clientX - dragStartX.current;
+      const threshold = 50;
+      if (collapsed && delta > threshold) {
+        onToggleCollapse?.();
+        cleanup();
+      } else if (!collapsed && delta < -threshold) {
+        onToggleCollapse?.();
+        cleanup();
+      }
+    };
+
+    const handleMouseUp = () => {
+      cleanup();
+    };
+
+    const cleanup = () => {
+      setIsDragging(false);
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    };
+
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+  }, [collapsed, onToggleCollapse]);
 
   // 当路由变化时，自动展开对应的菜单组
   useEffect(() => {
