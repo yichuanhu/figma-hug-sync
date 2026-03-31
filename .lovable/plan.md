@@ -1,83 +1,72 @@
 
 
-## 方案：修复重复图标 + 飞书风格菜单样式精调
+## 方案：飞书风格菜单选中样式重构 + 头像区域优化
 
-### 问题
+### 问题分析
 
-1. **图标重复**：`renderIconMenuItem` 中第489-490行，`sidebar-center-icon` 渲染了两次 `{item.icon}`
-2. **展开/收起样式与飞书不一致**：间距、高度、选中样式需要精确对齐飞书截图
+对比飞书截图与当前实现：
+
+1. **选中样式错误**：当前使用灰色背景 + 左侧蓝色竖条指示器（`::before`），飞书实际是**浅蓝背景 + 蓝色文字/图标**，无任何指示条
+2. **收起态选中样式**：当前有底部蓝色横条，飞书同样是浅蓝背景 + 蓝色文字，无横条
+3. **头像区域**：需参考飞书的头像 + 右侧按钮布局（展开态并排，收起态上下排列）
 
 ### 改动
 
-#### 1. 删除重复图标 — `Sidebar/index.tsx`（第490行）
+#### 1. 移除蓝色指示条 + 飞书选中样式 — `index.less`
 
-删除第490行 `<span className="sidebar-center-icon">{item.icon}</span>`，仅保留第489行的一个。
+**展开态 `.sidebar-icon-btn.active`**：
+- 删除 `&::before` 伪元素（蓝色左侧竖条）
+- 背景改为 `var(--semi-color-primary-light-default)`（浅蓝）
+- 文字颜色改为 `var(--semi-color-primary)`（蓝色）
+- 图标颜色改为 `var(--semi-color-primary)`（蓝色）
+- `font-weight: 600`
 
-#### 2. 飞书风格样式精调 — `Sidebar/index.less`
+**收起态 `.sidebar-icon-bar.collapsed .sidebar-icon-btn.active`**：
+- 删除 `&::before` 底部横条样式
+- 同样使用浅蓝背景 + 蓝色文字/图标
 
-参照截图（image-104），对展开态和收起态进行精确调整：
+**普通态**：
+- 文字颜色 `var(--semi-color-text-1)`（略深灰），非选中时更轻
+- 图标颜色 `var(--semi-color-text-2)`
 
-**展开态 `.sidebar-icon-btn`**：
-| 属性 | 当前值 | 飞书风格 |
-|------|--------|----------|
-| min-height | 40px | 36px |
-| padding | 10px 12px | 8px 12px |
-| gap | 10px | 8px |
-| margin-bottom | 2px | 0 |
-| border-radius | 6px | 8px |
+#### 2. 头像与铃铛区域 — `index.tsx` + `index.less`
 
-**展开态 `.sidebar-icon-btn-label`**：
-- font-size: 14px（不变）
-- font-weight: 400（普通态），选中态 500
+参考飞书：展开时头像在左、铃铛在右（已有），确保样式对齐。收起时头像在上、铃铛在下（已有），确认间距。
 
-**展开态选中态 `.sidebar-icon-btn.active`**：
-| 属性 | 当前值 | 飞书风格 |
-|------|--------|----------|
-| background | primary-light-default | `rgba(31, 35, 41, 0.08)` 浅灰底 |
-| label color | primary 蓝色 | `var(--semi-color-text-0)` 黑色 |
-| font-weight | 600 | 500 |
-| 左侧指示条 | 无 | 3px 蓝色竖条（左边缘） |
+当前逻辑已基本正确，微调 `.sidebar-bottom-section` 样式使之更贴近飞书：
+- 展开态：`padding: 12px`，头像和铃铛垂直居中对齐
+- 收起态：居中堆叠，`gap: 8px`
 
-飞书选中态使用左侧蓝色竖条指示，而非蓝色背景+蓝字。通过 `::before` 伪元素实现：
+### 具体样式变更（`index.less`）
+
 ```less
-&.active {
-  background-color: var(--semi-color-fill-0);
-  position: relative;
-  &::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 6px;
-    bottom: 6px;
-    width: 3px;
-    border-radius: 0 3px 3px 0;
-    background-color: var(--semi-color-primary);
+// 展开态选中
+.sidebar-icon-btn {
+  &.active {
+    background-color: var(--semi-color-primary-light-default);
+    // 删除整个 &::before 块
+
+    .sidebar-icon-btn-label {
+      color: var(--semi-color-primary);
+      font-weight: 600;
+    }
+    .sidebar-center-icon {
+      color: var(--semi-color-primary);
+    }
   }
-  .sidebar-icon-btn-label {
-    color: var(--semi-color-text-0);
-    font-weight: 500;
+}
+
+// 收起态选中 - 删除 &.active::before 块
+.sidebar-icon-bar.collapsed {
+  .sidebar-icon-btn {
+    // 移除 &.active::before { ... } 整段
   }
 }
 ```
-
-**收起态 `.sidebar-icon-bar.collapsed .sidebar-icon-btn`**：
-| 属性 | 当前值 | 飞书风格 |
-|------|--------|----------|
-| width | 52px | 56px |
-| padding | 6px 4px 4px | 8px 4px 4px |
-| gap | 2px | 2px（不变） |
-| border-radius | 6px（继承） | 8px |
-
-收起态选中项同样用左侧蓝色竖条（或底部短横条），不用蓝色背景。
-
-**图标颜色统一**：
-- 普通态：`var(--semi-color-text-2)` 灰色
-- 选中态：`var(--semi-color-text-0)` 深色（飞书选中图标不变蓝）
 
 ### 文件变更
 
 | 文件 | 改动 |
 |------|------|
-| `Sidebar/index.tsx` | 删除第490行重复的 `sidebar-center-icon` |
-| `Sidebar/index.less` | 调整展开/收起态间距、选中样式为飞书风格（灰底+蓝色左侧指示条） |
+| `Sidebar/index.less` | 移除 `::before` 指示条，改用飞书风格浅蓝背景+蓝色文字选中态 |
 
