@@ -640,7 +640,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false }: SidebarP
   return (
     <div className="sidebar">
       {/* 左侧图标栏 */}
-      <div className={`sidebar-icon-bar ${!collapsed ? 'with-border' : ''}`}>
+      <div className={`sidebar-icon-bar ${!collapsed ? 'with-border' : ''} ${collapsed ? 'collapsed' : ''}`}>
         {/* Logo */}
         <div className="sidebar-logo">
           <img src={laiyeLogo} alt="Laiye" className="sidebar-logo-img" />
