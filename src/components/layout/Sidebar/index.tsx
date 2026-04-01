@@ -39,12 +39,19 @@ import {
   Shield,
 } from 'lucide-react';
 import homeIcon from '@/assets/icons/home.png';
+import homeActiveIcon from '@/assets/icons/home-active.png';
 import requirementsIcon from '@/assets/icons/requirements.png';
+import requirementsActiveIcon from '@/assets/icons/requirements-active.png';
 import developmentIcon from '@/assets/icons/development.png';
+import developmentActiveIcon from '@/assets/icons/development-active.png';
 import schedulingIcon from '@/assets/icons/scheduling.png';
+import schedulingActiveIcon from '@/assets/icons/scheduling-active.png';
 import operationsIcon from '@/assets/icons/operations.png';
+import operationsActiveIcon from '@/assets/icons/operations-active.png';
 import sharingIcon from '@/assets/icons/sharing.png';
+import sharingActiveIcon from '@/assets/icons/sharing-active.png';
 import maintenanceIcon from '@/assets/icons/maintenance.png';
+import maintenanceActiveIcon from '@/assets/icons/maintenance-active.png';
 
 const MenuIcon = ({ src, size = 20 }: { src: string; size?: number }) => (
   <img src={src} alt="" width={size} height={size} style={{ display: 'block' }} />
