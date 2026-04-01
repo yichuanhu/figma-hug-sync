@@ -69,6 +69,7 @@ interface MenuItem {
   key: string;
   labelKey: string;
   icon?: React.ReactNode;
+  activeIcon?: React.ReactNode;
   children?: MenuItem[];
   badge?: number;
   path?: string;
