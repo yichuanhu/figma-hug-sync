@@ -242,7 +242,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     {
       key: 'schedulingCenter',
       labelKey: 'sidebar.schedulingCenter',
-      icon: <CalendarClock size={20} strokeWidth={1.8} />,
+      icon: <ClipboardClock size={20} strokeWidth={1.8} />,
     },
     {
       key: 'operationsCenter',
