@@ -20,7 +20,7 @@ import {
   FolderCheck,
   Forward,
   Workflow,
-  CalendarClock,
+  ClipboardClock,
   Play,
   History,
   Bot,
