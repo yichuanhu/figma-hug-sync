@@ -234,37 +234,37 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
 
   // 中心级别菜单（左侧图标栏）
   const centerMenuItems: MenuItem[] = [
-    { key: 'home', labelKey: 'sidebar.home', icon: <House size={20} strokeWidth={1.8} />, path: '/' },
+    { key: 'home', labelKey: 'sidebar.home', icon: <SvgIcon svg={homeSvg} />, path: '/' },
     {
       key: 'requirementsCenter',
       labelKey: 'sidebar.requirementsCenter',
-      icon: <ListChecks size={20} strokeWidth={1.8} />,
+      icon: <SvgIcon svg={requirementsSvg} />,
       path: '/requirements/list',
     },
     {
       key: 'developmentCenter',
       labelKey: 'sidebar.developmentCenter',
-      icon: <Terminal size={20} strokeWidth={1.8} />,
+      icon: <SvgIcon svg={developmentSvg} />,
     },
     {
       key: 'schedulingCenter',
       labelKey: 'sidebar.schedulingCenter',
-      icon: <ClipboardClock size={20} strokeWidth={1.8} />,
+      icon: <SvgIcon svg={schedulingSvg} />,
     },
     {
       key: 'operationsCenter',
       labelKey: 'sidebar.operationsCenter',
-      icon: <PieChart size={20} strokeWidth={1.8} />,
+      icon: <SvgIcon svg={operationsSvg} />,
     },
     {
       key: 'sharingCenter',
       labelKey: 'sidebar.sharingCenter',
-      icon: <Share2 size={20} strokeWidth={1.8} />,
+      icon: <SvgIcon svg={sharingSvg} />,
     },
     {
       key: 'maintenanceCenter',
       labelKey: 'sidebar.maintenanceCenter',
-      icon: <SlidersHorizontal size={20} strokeWidth={1.8} />,
+      icon: <SvgIcon svg={maintenanceSvg} />,
       path: '/maintenance',
     },
   ];
