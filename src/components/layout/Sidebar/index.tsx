@@ -20,7 +20,6 @@ import {
   FolderCheck,
   Forward,
   Workflow,
-  ClipboardClock,
   Play,
   History,
   Bot,
@@ -37,13 +36,21 @@ import {
   Activity,
   Database,
   Shield,
-  House,
-  ListChecks,
-  Terminal,
-  PieChart,
-  Share2,
-  SlidersHorizontal,
 } from 'lucide-react';
+import homeSvg from '@/assets/icons/home.svg?raw';
+import requirementsSvg from '@/assets/icons/requirements.svg?raw';
+import developmentSvg from '@/assets/icons/development.svg?raw';
+import schedulingSvg from '@/assets/icons/scheduling.svg?raw';
+import operationsSvg from '@/assets/icons/operations.svg?raw';
+import sharingSvg from '@/assets/icons/sharing.svg?raw';
+import maintenanceSvg from '@/assets/icons/maintenance.svg?raw';
+
+const SvgIcon = ({ svg, size = 20 }: { svg: string; size?: number }) => (
+  <span
+    style={{ width: size, height: size, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
+    dangerouslySetInnerHTML={{ __html: svg }}
+  />
+);
 const LayoutIcon = () => (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path fillRule="evenodd" clipRule="evenodd" d="M3 15.75C2.17157 15.75 1.5 15.0784 1.5 14.25L1.5 3.75C1.5 2.92157 2.17157 2.25 3 2.25L15 2.25C15.8284 2.25 16.5 2.92157 16.5 3.75L16.5 14.25C16.5 15.0784 15.8284 15.75 15 15.75L3 15.75ZM3 3.75L3 14.25L6.375 14.25L6.375 3.75L3 3.75ZM7.875 3.75L7.875 14.25L15 14.25L15 3.75L7.875 3.75Z" fill="currentColor"/>
@@ -227,37 +234,37 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
 
   // 中心级别菜单（左侧图标栏）
   const centerMenuItems: MenuItem[] = [
-    { key: 'home', labelKey: 'sidebar.home', icon: <House size={20} strokeWidth={1.8} />, path: '/' },
+    { key: 'home', labelKey: 'sidebar.home', icon: <SvgIcon svg={homeSvg} />, path: '/' },
     {
       key: 'requirementsCenter',
       labelKey: 'sidebar.requirementsCenter',
-      icon: <ListChecks size={20} strokeWidth={1.8} />,
+      icon: <SvgIcon svg={requirementsSvg} />,
       path: '/requirements/list',
     },
     {
       key: 'developmentCenter',
       labelKey: 'sidebar.developmentCenter',
-      icon: <Terminal size={20} strokeWidth={1.8} />,
+      icon: <SvgIcon svg={developmentSvg} />,
     },
     {
       key: 'schedulingCenter',
       labelKey: 'sidebar.schedulingCenter',
-      icon: <ClipboardClock size={20} strokeWidth={1.8} />,
+      icon: <SvgIcon svg={schedulingSvg} />,
     },
     {
       key: 'operationsCenter',
       labelKey: 'sidebar.operationsCenter',
-      icon: <PieChart size={20} strokeWidth={1.8} />,
+      icon: <SvgIcon svg={operationsSvg} />,
     },
     {
       key: 'sharingCenter',
       labelKey: 'sidebar.sharingCenter',
-      icon: <Share2 size={20} strokeWidth={1.8} />,
+      icon: <SvgIcon svg={sharingSvg} />,
     },
     {
       key: 'maintenanceCenter',
       labelKey: 'sidebar.maintenanceCenter',
-      icon: <SlidersHorizontal size={20} strokeWidth={1.8} />,
+      icon: <SvgIcon svg={maintenanceSvg} />,
       path: '/maintenance',
     },
   ];
@@ -301,7 +308,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     { key: 'schedulingFiles', labelKey: 'sidebar.files', icon: <FolderCheck size={20} strokeWidth={2} />, path: '/scheduling-center/business-assets/files' },
     // 4. 任务执行 - 分组标题
     { key: 'taskExecution', labelKey: 'sidebar.taskExecution', isGroupLabel: true },
-    { key: 'autoExecutionPolicy', labelKey: 'sidebar.autoExecutionPolicy', icon: <ClipboardClock size={20} strokeWidth={2} />, path: '/scheduling-center/task-execution/auto-execution-policy' },
+    { key: 'autoExecutionPolicy', labelKey: 'sidebar.autoExecutionPolicy', icon: <SvgIcon svg={schedulingSvg} size={20} />, path: '/scheduling-center/task-execution/auto-execution-policy' },
     { key: 'taskList', labelKey: 'sidebar.taskList', icon: <ClipboardList size={20} strokeWidth={2} />, path: '/scheduling-center/task-execution/task-list' },
   ];
 
