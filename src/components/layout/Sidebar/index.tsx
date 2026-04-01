@@ -39,12 +39,19 @@ import {
   Shield,
 } from 'lucide-react';
 import homeIcon from '@/assets/icons/home.png';
+import homeActiveIcon from '@/assets/icons/home-active.png';
 import requirementsIcon from '@/assets/icons/requirements.png';
+import requirementsActiveIcon from '@/assets/icons/requirements-active.png';
 import developmentIcon from '@/assets/icons/development.png';
+import developmentActiveIcon from '@/assets/icons/development-active.png';
 import schedulingIcon from '@/assets/icons/scheduling.png';
+import schedulingActiveIcon from '@/assets/icons/scheduling-active.png';
 import operationsIcon from '@/assets/icons/operations.png';
+import operationsActiveIcon from '@/assets/icons/operations-active.png';
 import sharingIcon from '@/assets/icons/sharing.png';
+import sharingActiveIcon from '@/assets/icons/sharing-active.png';
 import maintenanceIcon from '@/assets/icons/maintenance.png';
+import maintenanceActiveIcon from '@/assets/icons/maintenance-active.png';
 
 const MenuIcon = ({ src, size = 20 }: { src: string; size?: number }) => (
   <img src={src} alt="" width={size} height={size} style={{ display: 'block' }} />
@@ -62,6 +69,7 @@ interface MenuItem {
   key: string;
   labelKey: string;
   icon?: React.ReactNode;
+  activeIcon?: React.ReactNode;
   children?: MenuItem[];
   badge?: number;
   path?: string;
@@ -232,37 +240,43 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
 
   // 中心级别菜单（左侧图标栏）
   const centerMenuItems: MenuItem[] = [
-    { key: 'home', labelKey: 'sidebar.home', icon: <MenuIcon src={homeIcon} />, path: '/' },
+    { key: 'home', labelKey: 'sidebar.home', icon: <MenuIcon src={homeIcon} />, activeIcon: <MenuIcon src={homeActiveIcon} />, path: '/' },
     {
       key: 'requirementsCenter',
       labelKey: 'sidebar.requirementsCenter',
       icon: <MenuIcon src={requirementsIcon} />,
+      activeIcon: <MenuIcon src={requirementsActiveIcon} />,
       path: '/requirements/list',
     },
     {
       key: 'developmentCenter',
       labelKey: 'sidebar.developmentCenter',
       icon: <MenuIcon src={developmentIcon} />,
+      activeIcon: <MenuIcon src={developmentActiveIcon} />,
     },
     {
       key: 'schedulingCenter',
       labelKey: 'sidebar.schedulingCenter',
       icon: <MenuIcon src={schedulingIcon} />,
+      activeIcon: <MenuIcon src={schedulingActiveIcon} />,
     },
     {
       key: 'operationsCenter',
       labelKey: 'sidebar.operationsCenter',
       icon: <MenuIcon src={operationsIcon} />,
+      activeIcon: <MenuIcon src={operationsActiveIcon} />,
     },
     {
       key: 'sharingCenter',
       labelKey: 'sidebar.sharingCenter',
       icon: <MenuIcon src={sharingIcon} />,
+      activeIcon: <MenuIcon src={sharingActiveIcon} />,
     },
     {
       key: 'maintenanceCenter',
       labelKey: 'sidebar.maintenanceCenter',
       icon: <MenuIcon src={maintenanceIcon} />,
+      activeIcon: <MenuIcon src={maintenanceActiveIcon} />,
       path: '/maintenance',
     },
   ];
@@ -515,7 +529,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
         className={`sidebar-icon-btn ${isActive ? 'active' : ''}`}
         onClick={() => handleCenterClick(item)}
       >
-        <span className="sidebar-center-icon">{item.icon}</span>
+        <span className="sidebar-center-icon">{isActive && item.activeIcon ? item.activeIcon : item.icon}</span>
         <span className="sidebar-icon-btn-label">{label}</span>
       </div>
     );
