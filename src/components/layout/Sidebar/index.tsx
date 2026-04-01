@@ -240,37 +240,43 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
 
   // 中心级别菜单（左侧图标栏）
   const centerMenuItems: MenuItem[] = [
-    { key: 'home', labelKey: 'sidebar.home', icon: <MenuIcon src={homeIcon} />, path: '/' },
+    { key: 'home', labelKey: 'sidebar.home', icon: <MenuIcon src={homeIcon} />, activeIcon: <MenuIcon src={homeActiveIcon} />, path: '/' },
     {
       key: 'requirementsCenter',
       labelKey: 'sidebar.requirementsCenter',
       icon: <MenuIcon src={requirementsIcon} />,
+      activeIcon: <MenuIcon src={requirementsActiveIcon} />,
       path: '/requirements/list',
     },
     {
       key: 'developmentCenter',
       labelKey: 'sidebar.developmentCenter',
       icon: <MenuIcon src={developmentIcon} />,
+      activeIcon: <MenuIcon src={developmentActiveIcon} />,
     },
     {
       key: 'schedulingCenter',
       labelKey: 'sidebar.schedulingCenter',
       icon: <MenuIcon src={schedulingIcon} />,
+      activeIcon: <MenuIcon src={schedulingActiveIcon} />,
     },
     {
       key: 'operationsCenter',
       labelKey: 'sidebar.operationsCenter',
       icon: <MenuIcon src={operationsIcon} />,
+      activeIcon: <MenuIcon src={operationsActiveIcon} />,
     },
     {
       key: 'sharingCenter',
       labelKey: 'sidebar.sharingCenter',
       icon: <MenuIcon src={sharingIcon} />,
+      activeIcon: <MenuIcon src={sharingActiveIcon} />,
     },
     {
       key: 'maintenanceCenter',
       labelKey: 'sidebar.maintenanceCenter',
       icon: <MenuIcon src={maintenanceIcon} />,
+      activeIcon: <MenuIcon src={maintenanceActiveIcon} />,
       path: '/maintenance',
     },
   ];
