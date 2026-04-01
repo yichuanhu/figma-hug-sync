@@ -38,28 +38,17 @@ import {
   Database,
   Shield,
 } from 'lucide-react';
-import homeSvg from '@/assets/icons/home.svg?raw';
-import requirementsSvg from '@/assets/icons/requirements.svg?raw';
-import developmentSvg from '@/assets/icons/development.svg?raw';
-import schedulingSvg from '@/assets/icons/scheduling.svg?raw';
-import operationsSvg from '@/assets/icons/operations.svg?raw';
-import sharingSvg from '@/assets/icons/sharing.svg?raw';
-import maintenanceSvg from '@/assets/icons/maintenance.svg?raw';
+import homeIcon from '@/assets/icons/home.png';
+import requirementsIcon from '@/assets/icons/requirements.png';
+import developmentIcon from '@/assets/icons/development.png';
+import schedulingIcon from '@/assets/icons/scheduling.png';
+import operationsIcon from '@/assets/icons/operations.png';
+import sharingIcon from '@/assets/icons/sharing.png';
+import maintenanceIcon from '@/assets/icons/maintenance.png';
 
-const SvgIcon = ({ svg, size = 20 }: { svg: string; size?: number }) => {
-  const spanRef = useRef<HTMLSpanElement>(null);
-  useEffect(() => {
-    if (!spanRef.current) return;
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(svg, 'image/svg+xml');
-    const svgEl = doc.documentElement;
-    svgEl.setAttribute('width', String(size));
-    svgEl.setAttribute('height', String(size));
-    spanRef.current.innerHTML = '';
-    spanRef.current.appendChild(document.importNode(svgEl, true));
-  }, [svg, size]);
-  return <span ref={spanRef} style={{ width: size, height: size, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }} />;
-};
+const MenuIcon = ({ src, size = 20 }: { src: string; size?: number }) => (
+  <img src={src} alt="" width={size} height={size} style={{ display: 'block' }} />
+);
 const LayoutIcon = () => (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path fillRule="evenodd" clipRule="evenodd" d="M3 15.75C2.17157 15.75 1.5 15.0784 1.5 14.25L1.5 3.75C1.5 2.92157 2.17157 2.25 3 2.25L15 2.25C15.8284 2.25 16.5 2.92157 16.5 3.75L16.5 14.25C16.5 15.0784 15.8284 15.75 15 15.75L3 15.75ZM3 3.75L3 14.25L6.375 14.25L6.375 3.75L3 3.75ZM7.875 3.75L7.875 14.25L15 14.25L15 3.75L7.875 3.75Z" fill="currentColor"/>
@@ -243,37 +232,37 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
 
   // 中心级别菜单（左侧图标栏）
   const centerMenuItems: MenuItem[] = [
-    { key: 'home', labelKey: 'sidebar.home', icon: <SvgIcon svg={homeSvg} />, path: '/' },
+    { key: 'home', labelKey: 'sidebar.home', icon: <MenuIcon src={homeIcon} />, path: '/' },
     {
       key: 'requirementsCenter',
       labelKey: 'sidebar.requirementsCenter',
-      icon: <SvgIcon svg={requirementsSvg} />,
+      icon: <MenuIcon src={requirementsIcon} />,
       path: '/requirements/list',
     },
     {
       key: 'developmentCenter',
       labelKey: 'sidebar.developmentCenter',
-      icon: <SvgIcon svg={developmentSvg} />,
+      icon: <MenuIcon src={developmentIcon} />,
     },
     {
       key: 'schedulingCenter',
       labelKey: 'sidebar.schedulingCenter',
-      icon: <SvgIcon svg={schedulingSvg} />,
+      icon: <MenuIcon src={schedulingIcon} />,
     },
     {
       key: 'operationsCenter',
       labelKey: 'sidebar.operationsCenter',
-      icon: <SvgIcon svg={operationsSvg} />,
+      icon: <MenuIcon src={operationsIcon} />,
     },
     {
       key: 'sharingCenter',
       labelKey: 'sidebar.sharingCenter',
-      icon: <SvgIcon svg={sharingSvg} />,
+      icon: <MenuIcon src={sharingIcon} />,
     },
     {
       key: 'maintenanceCenter',
       labelKey: 'sidebar.maintenanceCenter',
-      icon: <SvgIcon svg={maintenanceSvg} />,
+      icon: <MenuIcon src={maintenanceIcon} />,
       path: '/maintenance',
     },
   ];
@@ -317,7 +306,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     { key: 'schedulingFiles', labelKey: 'sidebar.files', icon: <FolderCheck size={20} strokeWidth={2} />, path: '/scheduling-center/business-assets/files' },
     // 4. 任务执行 - 分组标题
     { key: 'taskExecution', labelKey: 'sidebar.taskExecution', isGroupLabel: true },
-    { key: 'autoExecutionPolicy', labelKey: 'sidebar.autoExecutionPolicy', icon: <SvgIcon svg={schedulingSvg} size={20} />, path: '/scheduling-center/task-execution/auto-execution-policy' },
+    { key: 'autoExecutionPolicy', labelKey: 'sidebar.autoExecutionPolicy', icon: <MenuIcon src={schedulingIcon} size={20} />, path: '/scheduling-center/task-execution/auto-execution-policy' },
     { key: 'taskList', labelKey: 'sidebar.taskList', icon: <ClipboardList size={20} strokeWidth={2} />, path: '/scheduling-center/task-execution/task-list' },
   ];
 
