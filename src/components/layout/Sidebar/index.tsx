@@ -39,24 +39,15 @@ import {
   Shield,
   CalendarClock,
 } from 'lucide-react';
-import homeIcon from '@/assets/icons/home.png';
-import homeActiveIcon from '@/assets/icons/home-active.png';
-import requirementsIcon from '@/assets/icons/requirements.png';
-import requirementsActiveIcon from '@/assets/icons/requirements-active.png';
-import developmentIcon from '@/assets/icons/development.png';
-import developmentActiveIcon from '@/assets/icons/development-active.png';
-import schedulingIcon from '@/assets/icons/scheduling.png';
-import schedulingActiveIcon from '@/assets/icons/scheduling-active.png';
-import operationsIcon from '@/assets/icons/operations.png';
-import operationsActiveIcon from '@/assets/icons/operations-active.png';
-import sharingIcon from '@/assets/icons/sharing.png';
-import sharingActiveIcon from '@/assets/icons/sharing-active.png';
-import maintenanceIcon from '@/assets/icons/maintenance.png';
-import maintenanceActiveIcon from '@/assets/icons/maintenance-active.png';
-
-const MenuIcon = ({ src, size = 20 }: { src: string; size?: number }) => (
-  <img src={src} alt="" width={size} height={size} style={{ display: 'block' }} />
-);
+import {
+  House,
+  ListChecks,
+  Code,
+  CalendarCheck,
+  ChartLineUp,
+  ShareNetwork,
+  Wrench as PhWrench,
+} from '@phosphor-icons/react';
 const LayoutIcon = () => (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path fillRule="evenodd" clipRule="evenodd" d="M3 15.75C2.17157 15.75 1.5 15.0784 1.5 14.25L1.5 3.75C1.5 2.92157 2.17157 2.25 3 2.25L15 2.25C15.8284 2.25 16.5 2.92157 16.5 3.75L16.5 14.25C16.5 15.0784 15.8284 15.75 15 15.75L3 15.75ZM3 3.75L3 14.25L6.375 14.25L6.375 3.75L3 3.75ZM7.875 3.75L7.875 14.25L15 14.25L15 3.75L7.875 3.75Z" fill="currentColor"/>
@@ -241,43 +232,43 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
 
   // 中心级别菜单（左侧图标栏）
   const centerMenuItems: MenuItem[] = [
-    { key: 'home', labelKey: 'sidebar.home', icon: <MenuIcon src={homeIcon} />, activeIcon: <MenuIcon src={homeActiveIcon} />, path: '/' },
+    { key: 'home', labelKey: 'sidebar.home', icon: <House size={20} weight="regular" />, activeIcon: <House size={20} weight="fill" />, path: '/' },
     {
       key: 'requirementsCenter',
       labelKey: 'sidebar.requirementsCenter',
-      icon: <MenuIcon src={requirementsIcon} />,
-      activeIcon: <MenuIcon src={requirementsActiveIcon} />,
+      icon: <ListChecks size={20} weight="regular" />,
+      activeIcon: <ListChecks size={20} weight="fill" />,
       path: '/requirements/list',
     },
     {
       key: 'developmentCenter',
       labelKey: 'sidebar.developmentCenter',
-      icon: <MenuIcon src={developmentIcon} />,
-      activeIcon: <MenuIcon src={developmentActiveIcon} />,
+      icon: <Code size={20} weight="regular" />,
+      activeIcon: <Code size={20} weight="fill" />,
     },
     {
       key: 'schedulingCenter',
       labelKey: 'sidebar.schedulingCenter',
-      icon: <MenuIcon src={schedulingIcon} />,
-      activeIcon: <MenuIcon src={schedulingActiveIcon} />,
+      icon: <CalendarCheck size={20} weight="regular" />,
+      activeIcon: <CalendarCheck size={20} weight="fill" />,
     },
     {
       key: 'operationsCenter',
       labelKey: 'sidebar.operationsCenter',
-      icon: <MenuIcon src={operationsIcon} />,
-      activeIcon: <MenuIcon src={operationsActiveIcon} />,
+      icon: <ChartLineUp size={20} weight="regular" />,
+      activeIcon: <ChartLineUp size={20} weight="fill" />,
     },
     {
       key: 'sharingCenter',
       labelKey: 'sidebar.sharingCenter',
-      icon: <MenuIcon src={sharingIcon} />,
-      activeIcon: <MenuIcon src={sharingActiveIcon} />,
+      icon: <ShareNetwork size={20} weight="regular" />,
+      activeIcon: <ShareNetwork size={20} weight="fill" />,
     },
     {
       key: 'maintenanceCenter',
       labelKey: 'sidebar.maintenanceCenter',
-      icon: <MenuIcon src={maintenanceIcon} />,
-      activeIcon: <MenuIcon src={maintenanceActiveIcon} />,
+      icon: <PhWrench size={20} weight="regular" />,
+      activeIcon: <PhWrench size={20} weight="fill" />,
       path: '/maintenance',
     },
   ];
