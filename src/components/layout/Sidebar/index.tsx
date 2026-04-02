@@ -37,6 +37,7 @@ import {
   Database,
   Shield,
   Airplay,
+  CalendarClock,
   Home,
   CodeXml,
   ChartSpline,
