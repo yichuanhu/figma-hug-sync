@@ -36,7 +36,7 @@ import {
   Activity,
   Database,
   Shield,
-  CalendarClock,
+  Airplay,
   Home,
   CodeXml,
   ChartSpline,
@@ -246,8 +246,8 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     {
       key: 'schedulingCenter',
       labelKey: 'sidebar.schedulingCenter',
-      icon: <CalendarClock size={20} strokeWidth={2} />,
-      activeIcon: <CalendarClock size={20} strokeWidth={2} className="text-primary" />,
+      icon: <Airplay size={20} strokeWidth={2} />,
+      activeIcon: <Airplay size={20} strokeWidth={2} className="text-primary" />,
     },
     {
       key: 'operationsCenter',
@@ -309,7 +309,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     { key: 'schedulingFiles', labelKey: 'sidebar.files', icon: <FolderCheck size={20} strokeWidth={2} />, path: '/scheduling-center/business-assets/files' },
     // 4. 任务执行 - 分组标题
     { key: 'taskExecution', labelKey: 'sidebar.taskExecution', isGroupLabel: true },
-    { key: 'autoExecutionPolicy', labelKey: 'sidebar.autoExecutionPolicy', icon: <CalendarClock size={20} strokeWidth={2} />, path: '/scheduling-center/task-execution/auto-execution-policy' },
+    { key: 'autoExecutionPolicy', labelKey: 'sidebar.autoExecutionPolicy', icon: <Airplay size={20} strokeWidth={2} />, path: '/scheduling-center/task-execution/auto-execution-policy' },
     { key: 'taskList', labelKey: 'sidebar.taskList', icon: <ClipboardList size={20} strokeWidth={2} />, path: '/scheduling-center/task-execution/task-list' },
   ];
 
