@@ -232,43 +232,43 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
 
   // 中心级别菜单（左侧图标栏）
   const centerMenuItems: MenuItem[] = [
-    { key: 'home', labelKey: 'sidebar.home', icon: <MenuIcon src={homeIcon} />, activeIcon: <MenuIcon src={homeActiveIcon} />, path: '/' },
+    { key: 'home', labelKey: 'sidebar.home', icon: <House size={20} weight="regular" />, activeIcon: <House size={20} weight="fill" />, path: '/' },
     {
       key: 'requirementsCenter',
       labelKey: 'sidebar.requirementsCenter',
-      icon: <MenuIcon src={requirementsIcon} />,
-      activeIcon: <MenuIcon src={requirementsActiveIcon} />,
+      icon: <ListChecks size={20} weight="regular" />,
+      activeIcon: <ListChecks size={20} weight="fill" />,
       path: '/requirements/list',
     },
     {
       key: 'developmentCenter',
       labelKey: 'sidebar.developmentCenter',
-      icon: <MenuIcon src={developmentIcon} />,
-      activeIcon: <MenuIcon src={developmentActiveIcon} />,
+      icon: <Code size={20} weight="regular" />,
+      activeIcon: <Code size={20} weight="fill" />,
     },
     {
       key: 'schedulingCenter',
       labelKey: 'sidebar.schedulingCenter',
-      icon: <MenuIcon src={schedulingIcon} />,
-      activeIcon: <MenuIcon src={schedulingActiveIcon} />,
+      icon: <CalendarCheck size={20} weight="regular" />,
+      activeIcon: <CalendarCheck size={20} weight="fill" />,
     },
     {
       key: 'operationsCenter',
       labelKey: 'sidebar.operationsCenter',
-      icon: <MenuIcon src={operationsIcon} />,
-      activeIcon: <MenuIcon src={operationsActiveIcon} />,
+      icon: <ChartLineUp size={20} weight="regular" />,
+      activeIcon: <ChartLineUp size={20} weight="fill" />,
     },
     {
       key: 'sharingCenter',
       labelKey: 'sidebar.sharingCenter',
-      icon: <MenuIcon src={sharingIcon} />,
-      activeIcon: <MenuIcon src={sharingActiveIcon} />,
+      icon: <ShareNetwork size={20} weight="regular" />,
+      activeIcon: <ShareNetwork size={20} weight="fill" />,
     },
     {
       key: 'maintenanceCenter',
       labelKey: 'sidebar.maintenanceCenter',
-      icon: <MenuIcon src={maintenanceIcon} />,
-      activeIcon: <MenuIcon src={maintenanceActiveIcon} />,
+      icon: <PhWrench size={20} weight="regular" />,
+      activeIcon: <PhWrench size={20} weight="fill" />,
       path: '/maintenance',
     },
   ];
