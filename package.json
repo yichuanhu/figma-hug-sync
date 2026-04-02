@@ -15,6 +15,7 @@
     "@douyinfe/semi-illustrations": "^2.90.13",
     "@douyinfe/semi-ui": "^2.90.13",
     "@hookform/resolvers": "^3.10.0",
+    "@icon-park/react": "^1.4.2",
     "@laiye_packages/uci": "^1.0.3",
     "@laiye_packages/uci-react": "^1.0.1",
     "@phosphor-icons/react": "^2.1.10",

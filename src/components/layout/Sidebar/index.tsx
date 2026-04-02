@@ -38,13 +38,17 @@ import {
   Database,
   Shield,
   CalendarClock,
-  Home,
-  ClipboardCheck,
-  Code2,
-  CalendarDays,
-  BarChart2,
-  Share2,
 } from 'lucide-react';
+import {
+  Home as IPHome,
+  ListCheckbox as IPListCheckbox,
+  Code as IPCode,
+  CalendarThirtyTwo as IPCalendar,
+  ChartLine as IPChartLine,
+  ShareTwo as IPShare,
+  Toolkit as IPToolKit,
+} from '@icon-park/react';
+import '@icon-park/react/styles/index.css';
 const LayoutIcon = () => (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path fillRule="evenodd" clipRule="evenodd" d="M3 15.75C2.17157 15.75 1.5 15.0784 1.5 14.25L1.5 3.75C1.5 2.92157 2.17157 2.25 3 2.25L15 2.25C15.8284 2.25 16.5 2.92157 16.5 3.75L16.5 14.25C16.5 15.0784 15.8284 15.75 15 15.75L3 15.75ZM3 3.75L3 14.25L6.375 14.25L6.375 3.75L3 3.75ZM7.875 3.75L7.875 14.25L15 14.25L15 3.75L7.875 3.75Z" fill="currentColor"/>
@@ -229,43 +233,43 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
 
   // 中心级别菜单（左侧图标栏）
   const centerMenuItems: MenuItem[] = [
-    { key: 'home', labelKey: 'sidebar.home', icon: <Home size={20} strokeWidth={2} />, activeIcon: <Home size={20} strokeWidth={2} />, path: '/' },
+    { key: 'home', labelKey: 'sidebar.home', icon: <IPHome theme="outline" size={20} />, activeIcon: <IPHome theme="filled" size={20} />, path: '/' },
     {
       key: 'requirementsCenter',
       labelKey: 'sidebar.requirementsCenter',
-      icon: <ClipboardCheck size={20} strokeWidth={2} />,
-      activeIcon: <ClipboardCheck size={20} strokeWidth={2} />,
+      icon: <IPListCheckbox theme="outline" size={20} />,
+      activeIcon: <IPListCheckbox theme="filled" size={20} />,
       path: '/requirements/list',
     },
     {
       key: 'developmentCenter',
       labelKey: 'sidebar.developmentCenter',
-      icon: <Code2 size={20} strokeWidth={2} />,
-      activeIcon: <Code2 size={20} strokeWidth={2} />,
+      icon: <IPCode theme="outline" size={20} />,
+      activeIcon: <IPCode theme="filled" size={20} />,
     },
     {
       key: 'schedulingCenter',
       labelKey: 'sidebar.schedulingCenter',
-      icon: <CalendarDays size={20} strokeWidth={2} />,
-      activeIcon: <CalendarDays size={20} strokeWidth={2} />,
+      icon: <IPCalendar theme="outline" size={20} />,
+      activeIcon: <IPCalendar theme="filled" size={20} />,
     },
     {
       key: 'operationsCenter',
       labelKey: 'sidebar.operationsCenter',
-      icon: <BarChart2 size={20} strokeWidth={2} />,
-      activeIcon: <BarChart2 size={20} strokeWidth={2} />,
+      icon: <IPChartLine theme="outline" size={20} />,
+      activeIcon: <IPChartLine theme="filled" size={20} />,
     },
     {
       key: 'sharingCenter',
       labelKey: 'sidebar.sharingCenter',
-      icon: <Share2 size={20} strokeWidth={2} />,
-      activeIcon: <Share2 size={20} strokeWidth={2} />,
+      icon: <IPShare theme="outline" size={20} />,
+      activeIcon: <IPShare theme="filled" size={20} />,
     },
     {
       key: 'maintenanceCenter',
       labelKey: 'sidebar.maintenanceCenter',
-      icon: <Wrench size={20} strokeWidth={2} />,
-      activeIcon: <Wrench size={20} strokeWidth={2} />,
+      icon: <IPToolKit theme="outline" size={20} />,
+      activeIcon: <IPToolKit theme="filled" size={20} />,
       path: '/maintenance',
     },
   ];
