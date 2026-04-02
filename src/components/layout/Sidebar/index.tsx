@@ -317,7 +317,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
   const operationsCenterMenu: MenuItem[] = [
     // 数据分析 - 分组标题
     { key: 'dataAnalysis', labelKey: 'sidebar.dataAnalysis', isGroupLabel: true },
-    { key: 'opsDashboard', labelKey: 'sidebar.opsDashboard', icon: <BarChart3 size={20} strokeWidth={2} />, path: '/operations/dashboard' },
+    { key: 'opsDashboard', labelKey: 'sidebar.opsDashboard', icon: <ChartSpline size={20} strokeWidth={2} />, path: '/operations/dashboard' },
     { key: 'roiAnalysis', labelKey: 'sidebar.roiAnalysis', icon: <TrendingUp size={20} strokeWidth={2} />, path: '/operations/roi-analysis' },
     { key: 'resourceEfficiency', labelKey: 'sidebar.resourceEfficiency', icon: <Activity size={20} strokeWidth={2} />, path: '/operations/resource-efficiency' },
     { key: 'businessOutcomes', labelKey: 'sidebar.businessOutcomes', icon: <Target size={20} strokeWidth={2} />, path: '/operations/business-outcomes' },
