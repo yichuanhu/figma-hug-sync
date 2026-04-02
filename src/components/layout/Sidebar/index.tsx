@@ -38,16 +38,10 @@ import {
   Database,
   Shield,
   CalendarClock,
+  Home,
+  Code,
+  Share2,
 } from 'lucide-react';
-import {
-  Home as IPHome,
-  ListCheckbox as IPListCheckbox,
-  Code as IPCode,
-  CalendarThirtyTwo as IPCalendar,
-  ChartLine as IPChartLine,
-  ShareTwo as IPShare,
-  Toolkit as IPToolKit,
-} from '@icon-park/react';
 import '@icon-park/react/styles/index.css';
 const LayoutIcon = () => (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
