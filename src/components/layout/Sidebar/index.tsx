@@ -46,7 +46,7 @@ import {
   CalendarThirtyTwo as IPCalendar,
   ChartLine as IPChartLine,
   ShareTwo as IPShare,
-  ToolKit as IPToolKit,
+  Toolkit as IPToolKit,
 } from '@icon-park/react';
 import '@icon-park/react/styles/index.css';
 const LayoutIcon = () => (
