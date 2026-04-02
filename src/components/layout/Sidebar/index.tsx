@@ -26,7 +26,6 @@ import {
   Bot,
   Settings,
   FileText,
-  BarChart3,
   TrendingUp,
   Target,
   ClipboardList,
@@ -39,8 +38,11 @@ import {
   Shield,
   CalendarClock,
   Home,
-  Code,
-  Share2,
+  CodeXml,
+  ChartSpline,
+  LibraryBig,
+  MonitorCog,
+  ScrollText,
 } from 'lucide-react';
 
 const LayoutIcon = () => (
@@ -231,15 +233,15 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     {
       key: 'requirementsCenter',
       labelKey: 'sidebar.requirementsCenter',
-      icon: <ClipboardList size={20} strokeWidth={2} />,
-      activeIcon: <ClipboardList size={20} strokeWidth={2} className="text-primary" />,
+      icon: <ScrollText size={20} strokeWidth={2} />,
+      activeIcon: <ScrollText size={20} strokeWidth={2} className="text-primary" />,
       path: '/requirements/list',
     },
     {
       key: 'developmentCenter',
       labelKey: 'sidebar.developmentCenter',
-      icon: <Code size={20} strokeWidth={2} />,
-      activeIcon: <Code size={20} strokeWidth={2} className="text-primary" />,
+      icon: <CodeXml size={20} strokeWidth={2} />,
+      activeIcon: <CodeXml size={20} strokeWidth={2} className="text-primary" />,
     },
     {
       key: 'schedulingCenter',
@@ -250,20 +252,20 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     {
       key: 'operationsCenter',
       labelKey: 'sidebar.operationsCenter',
-      icon: <BarChart3 size={20} strokeWidth={2} />,
-      activeIcon: <BarChart3 size={20} strokeWidth={2} className="text-primary" />,
+      icon: <ChartSpline size={20} strokeWidth={2} />,
+      activeIcon: <ChartSpline size={20} strokeWidth={2} className="text-primary" />,
     },
     {
       key: 'sharingCenter',
       labelKey: 'sidebar.sharingCenter',
-      icon: <Share2 size={20} strokeWidth={2} />,
-      activeIcon: <Share2 size={20} strokeWidth={2} className="text-primary" />,
+      icon: <LibraryBig size={20} strokeWidth={2} />,
+      activeIcon: <LibraryBig size={20} strokeWidth={2} className="text-primary" />,
     },
     {
       key: 'maintenanceCenter',
       labelKey: 'sidebar.maintenanceCenter',
-      icon: <Wrench size={20} strokeWidth={2} />,
-      activeIcon: <Wrench size={20} strokeWidth={2} className="text-primary" />,
+      icon: <MonitorCog size={20} strokeWidth={2} />,
+      activeIcon: <MonitorCog size={20} strokeWidth={2} className="text-primary" />,
       path: '/maintenance',
     },
   ];
@@ -315,7 +317,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
   const operationsCenterMenu: MenuItem[] = [
     // 数据分析 - 分组标题
     { key: 'dataAnalysis', labelKey: 'sidebar.dataAnalysis', isGroupLabel: true },
-    { key: 'opsDashboard', labelKey: 'sidebar.opsDashboard', icon: <BarChart3 size={20} strokeWidth={2} />, path: '/operations/dashboard' },
+    { key: 'opsDashboard', labelKey: 'sidebar.opsDashboard', icon: <ChartSpline size={20} strokeWidth={2} />, path: '/operations/dashboard' },
     { key: 'roiAnalysis', labelKey: 'sidebar.roiAnalysis', icon: <TrendingUp size={20} strokeWidth={2} />, path: '/operations/roi-analysis' },
     { key: 'resourceEfficiency', labelKey: 'sidebar.resourceEfficiency', icon: <Activity size={20} strokeWidth={2} />, path: '/operations/resource-efficiency' },
     { key: 'businessOutcomes', labelKey: 'sidebar.businessOutcomes', icon: <Target size={20} strokeWidth={2} />, path: '/operations/business-outcomes' },
