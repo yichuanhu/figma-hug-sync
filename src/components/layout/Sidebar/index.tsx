@@ -233,43 +233,43 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
 
   // 中心级别菜单（左侧图标栏）
   const centerMenuItems: MenuItem[] = [
-    { key: 'home', labelKey: 'sidebar.home', icon: <IPHome theme="outline" size={20} />, activeIcon: <IPHome theme="filled" size={20} fill="var(--semi-color-primary)" />, path: '/' },
+    { key: 'home', labelKey: 'sidebar.home', icon: <IPHome theme="outline" size={20} />, activeIcon: <IPHome theme="outline" size={20} fill="var(--semi-color-primary)" />, path: '/' },
     {
       key: 'requirementsCenter',
       labelKey: 'sidebar.requirementsCenter',
       icon: <IPListCheckbox theme="outline" size={20} />,
-      activeIcon: <IPListCheckbox theme="filled" size={20} fill="var(--semi-color-primary)" />,
+      activeIcon: <IPListCheckbox theme="outline" size={20} fill="var(--semi-color-primary)" />,
       path: '/requirements/list',
     },
     {
       key: 'developmentCenter',
       labelKey: 'sidebar.developmentCenter',
       icon: <IPCode theme="outline" size={20} />,
-      activeIcon: <IPCode theme="filled" size={20} fill="var(--semi-color-primary)" />,
+      activeIcon: <IPCode theme="outline" size={20} fill="var(--semi-color-primary)" />,
     },
     {
       key: 'schedulingCenter',
       labelKey: 'sidebar.schedulingCenter',
       icon: <IPCalendar theme="outline" size={20} />,
-      activeIcon: <IPCalendar theme="filled" size={20} fill="var(--semi-color-primary)" />,
+      activeIcon: <IPCalendar theme="outline" size={20} fill="var(--semi-color-primary)" />,
     },
     {
       key: 'operationsCenter',
       labelKey: 'sidebar.operationsCenter',
       icon: <IPChartLine theme="outline" size={20} />,
-      activeIcon: <IPChartLine theme="filled" size={20} fill="var(--semi-color-primary)" />,
+      activeIcon: <IPChartLine theme="outline" size={20} fill="var(--semi-color-primary)" />,
     },
     {
       key: 'sharingCenter',
       labelKey: 'sidebar.sharingCenter',
       icon: <IPShare theme="outline" size={20} />,
-      activeIcon: <IPShare theme="filled" size={20} fill="var(--semi-color-primary)" />,
+      activeIcon: <IPShare theme="outline" size={20} fill="var(--semi-color-primary)" />,
     },
     {
       key: 'maintenanceCenter',
       labelKey: 'sidebar.maintenanceCenter',
       icon: <IPToolKit theme="outline" size={20} />,
-      activeIcon: <IPToolKit theme="filled" size={20} fill="var(--semi-color-primary)" />,
+      activeIcon: <IPToolKit theme="outline" size={20} fill="var(--semi-color-primary)" />,
       path: '/maintenance',
     },
   ];
