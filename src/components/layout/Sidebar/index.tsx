@@ -38,15 +38,12 @@ import {
   Database,
   Shield,
   CalendarClock,
-} from 'lucide-react';
-import {
   Home,
   ClipboardCheck,
   Code2,
   CalendarDays,
   BarChart2,
   Share2,
-  Wrench as LuWrench,
 } from 'lucide-react';
 const LayoutIcon = () => (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
