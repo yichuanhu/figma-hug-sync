@@ -37,6 +37,7 @@ import {
   Activity,
   Database,
   Shield,
+  RefreshCw,
 } from 'lucide-react';
 import homeIcon from '@/assets/icons/home.png';
 import homeActiveIcon from '@/assets/icons/home-active.png';
