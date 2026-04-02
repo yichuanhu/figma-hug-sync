@@ -233,43 +233,43 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
 
   // 中心级别菜单（左侧图标栏）
   const centerMenuItems: MenuItem[] = [
-    { key: 'home', labelKey: 'sidebar.home', icon: <Home size={20} strokeWidth={2} />, activeIcon: <Home size={20} strokeWidth={2} />, path: '/' },
+    { key: 'home', labelKey: 'sidebar.home', icon: <IPHome theme="outline" size={20} />, activeIcon: <IPHome theme="filled" size={20} />, path: '/' },
     {
       key: 'requirementsCenter',
       labelKey: 'sidebar.requirementsCenter',
-      icon: <ClipboardCheck size={20} strokeWidth={2} />,
-      activeIcon: <ClipboardCheck size={20} strokeWidth={2} />,
+      icon: <IPListCheckbox theme="outline" size={20} />,
+      activeIcon: <IPListCheckbox theme="filled" size={20} />,
       path: '/requirements/list',
     },
     {
       key: 'developmentCenter',
       labelKey: 'sidebar.developmentCenter',
-      icon: <Code2 size={20} strokeWidth={2} />,
-      activeIcon: <Code2 size={20} strokeWidth={2} />,
+      icon: <IPCode theme="outline" size={20} />,
+      activeIcon: <IPCode theme="filled" size={20} />,
     },
     {
       key: 'schedulingCenter',
       labelKey: 'sidebar.schedulingCenter',
-      icon: <CalendarDays size={20} strokeWidth={2} />,
-      activeIcon: <CalendarDays size={20} strokeWidth={2} />,
+      icon: <IPCalendar theme="outline" size={20} />,
+      activeIcon: <IPCalendar theme="filled" size={20} />,
     },
     {
       key: 'operationsCenter',
       labelKey: 'sidebar.operationsCenter',
-      icon: <BarChart2 size={20} strokeWidth={2} />,
-      activeIcon: <BarChart2 size={20} strokeWidth={2} />,
+      icon: <IPChartLine theme="outline" size={20} />,
+      activeIcon: <IPChartLine theme="filled" size={20} />,
     },
     {
       key: 'sharingCenter',
       labelKey: 'sidebar.sharingCenter',
-      icon: <Share2 size={20} strokeWidth={2} />,
-      activeIcon: <Share2 size={20} strokeWidth={2} />,
+      icon: <IPShare theme="outline" size={20} />,
+      activeIcon: <IPShare theme="filled" size={20} />,
     },
     {
       key: 'maintenanceCenter',
       labelKey: 'sidebar.maintenanceCenter',
-      icon: <Wrench size={20} strokeWidth={2} />,
-      activeIcon: <Wrench size={20} strokeWidth={2} />,
+      icon: <IPToolKit theme="outline" size={20} />,
+      activeIcon: <IPToolKit theme="filled" size={20} />,
       path: '/maintenance',
     },
   ];
