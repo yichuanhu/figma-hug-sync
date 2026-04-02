@@ -26,7 +26,6 @@ import {
   Bot,
   Settings,
   FileText,
-  BarChart3,
   TrendingUp,
   Target,
   ClipboardList,
@@ -39,8 +38,11 @@ import {
   Shield,
   CalendarClock,
   Home,
-  Code,
-  Share2,
+  CodeXml,
+  ChartSpline,
+  LibraryBig,
+  MonitorCog,
+  ScrollText,
 } from 'lucide-react';
 
 const LayoutIcon = () => (
