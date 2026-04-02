@@ -41,19 +41,12 @@ import {
 } from 'lucide-react';
 import {
   House,
-  HouseFill,
   ListChecks,
-  ListChecksFill,
   Code,
-  CodeFill,
   CalendarCheck,
-  CalendarCheckFill,
   ChartLineUp,
-  ChartLineUpFill,
   ShareNetwork,
-  ShareNetworkFill,
   Wrench as PhWrench,
-  WrenchFill,
 } from '@phosphor-icons/react';
 const LayoutIcon = () => (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
