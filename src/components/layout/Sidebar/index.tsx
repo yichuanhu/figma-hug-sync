@@ -37,6 +37,7 @@ import {
   Activity,
   Database,
   Shield,
+  RefreshCw,
 } from 'lucide-react';
 import homeIcon from '@/assets/icons/home.png';
 import homeActiveIcon from '@/assets/icons/home-active.png';
@@ -320,7 +321,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     { key: 'schedulingFiles', labelKey: 'sidebar.files', icon: <FolderCheck size={20} strokeWidth={2} />, path: '/scheduling-center/business-assets/files' },
     // 4. 任务执行 - 分组标题
     { key: 'taskExecution', labelKey: 'sidebar.taskExecution', isGroupLabel: true },
-    { key: 'autoExecutionPolicy', labelKey: 'sidebar.autoExecutionPolicy', icon: <MenuIcon src={schedulingIcon} size={20} />, path: '/scheduling-center/task-execution/auto-execution-policy' },
+    { key: 'autoExecutionPolicy', labelKey: 'sidebar.autoExecutionPolicy', icon: <RefreshCw size={20} strokeWidth={2} />, path: '/scheduling-center/task-execution/auto-execution-policy' },
     { key: 'taskList', labelKey: 'sidebar.taskList', icon: <ClipboardList size={20} strokeWidth={2} />, path: '/scheduling-center/task-execution/task-list' },
   ];
 
