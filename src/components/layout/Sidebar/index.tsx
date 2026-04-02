@@ -233,15 +233,15 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     {
       key: 'requirementsCenter',
       labelKey: 'sidebar.requirementsCenter',
-      icon: <ClipboardList size={20} strokeWidth={2} />,
-      activeIcon: <ClipboardList size={20} strokeWidth={2} className="text-primary" />,
+      icon: <ScrollText size={20} strokeWidth={2} />,
+      activeIcon: <ScrollText size={20} strokeWidth={2} className="text-primary" />,
       path: '/requirements/list',
     },
     {
       key: 'developmentCenter',
       labelKey: 'sidebar.developmentCenter',
-      icon: <Code size={20} strokeWidth={2} />,
-      activeIcon: <Code size={20} strokeWidth={2} className="text-primary" />,
+      icon: <CodeXml size={20} strokeWidth={2} />,
+      activeIcon: <CodeXml size={20} strokeWidth={2} className="text-primary" />,
     },
     {
       key: 'schedulingCenter',
@@ -252,14 +252,14 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     {
       key: 'operationsCenter',
       labelKey: 'sidebar.operationsCenter',
-      icon: <BarChart3 size={20} strokeWidth={2} />,
-      activeIcon: <BarChart3 size={20} strokeWidth={2} className="text-primary" />,
+      icon: <ChartSpline size={20} strokeWidth={2} />,
+      activeIcon: <ChartSpline size={20} strokeWidth={2} className="text-primary" />,
     },
     {
       key: 'sharingCenter',
       labelKey: 'sidebar.sharingCenter',
-      icon: <Share2 size={20} strokeWidth={2} />,
-      activeIcon: <Share2 size={20} strokeWidth={2} className="text-primary" />,
+      icon: <LibraryBig size={20} strokeWidth={2} />,
+      activeIcon: <LibraryBig size={20} strokeWidth={2} className="text-primary" />,
     },
     {
       key: 'maintenanceCenter',
