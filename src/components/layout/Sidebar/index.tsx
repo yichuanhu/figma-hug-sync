@@ -229,43 +229,43 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
 
   // 中心级别菜单（左侧图标栏）
   const centerMenuItems: MenuItem[] = [
-    { key: 'home', labelKey: 'sidebar.home', icon: <Home size={20} strokeWidth={1.5} />, activeIcon: <Home size={20} strokeWidth={2.5} />, path: '/' },
+    { key: 'home', labelKey: 'sidebar.home', icon: <Home size={20} strokeWidth={2} />, activeIcon: <Home size={20} strokeWidth={2} />, path: '/' },
     {
       key: 'requirementsCenter',
       labelKey: 'sidebar.requirementsCenter',
-      icon: <ClipboardCheck size={20} strokeWidth={1.5} />,
-      activeIcon: <ClipboardCheck size={20} strokeWidth={2.5} />,
+      icon: <ClipboardCheck size={20} strokeWidth={2} />,
+      activeIcon: <ClipboardCheck size={20} strokeWidth={2} />,
       path: '/requirements/list',
     },
     {
       key: 'developmentCenter',
       labelKey: 'sidebar.developmentCenter',
-      icon: <Code2 size={20} strokeWidth={1.5} />,
-      activeIcon: <Code2 size={20} strokeWidth={2.5} />,
+      icon: <Code2 size={20} strokeWidth={2} />,
+      activeIcon: <Code2 size={20} strokeWidth={2} />,
     },
     {
       key: 'schedulingCenter',
       labelKey: 'sidebar.schedulingCenter',
-      icon: <CalendarDays size={20} strokeWidth={1.5} />,
-      activeIcon: <CalendarDays size={20} strokeWidth={2.5} />,
+      icon: <CalendarDays size={20} strokeWidth={2} />,
+      activeIcon: <CalendarDays size={20} strokeWidth={2} />,
     },
     {
       key: 'operationsCenter',
       labelKey: 'sidebar.operationsCenter',
-      icon: <BarChart2 size={20} strokeWidth={1.5} />,
-      activeIcon: <BarChart2 size={20} strokeWidth={2.5} />,
+      icon: <BarChart2 size={20} strokeWidth={2} />,
+      activeIcon: <BarChart2 size={20} strokeWidth={2} />,
     },
     {
       key: 'sharingCenter',
       labelKey: 'sidebar.sharingCenter',
-      icon: <Share2 size={20} strokeWidth={1.5} />,
-      activeIcon: <Share2 size={20} strokeWidth={2.5} />,
+      icon: <Share2 size={20} strokeWidth={2} />,
+      activeIcon: <Share2 size={20} strokeWidth={2} />,
     },
     {
       key: 'maintenanceCenter',
       labelKey: 'sidebar.maintenanceCenter',
-      icon: <Wrench size={20} strokeWidth={1.5} />,
-      activeIcon: <Wrench size={20} strokeWidth={2.5} />,
+      icon: <Wrench size={20} strokeWidth={2} />,
+      activeIcon: <Wrench size={20} strokeWidth={2} />,
       path: '/maintenance',
     },
   ];
