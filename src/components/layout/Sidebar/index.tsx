@@ -264,8 +264,8 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     {
       key: 'maintenanceCenter',
       labelKey: 'sidebar.maintenanceCenter',
-      icon: <Wrench size={20} strokeWidth={2} />,
-      activeIcon: <Wrench size={20} strokeWidth={2} className="text-primary" />,
+      icon: <MonitorCog size={20} strokeWidth={2} />,
+      activeIcon: <MonitorCog size={20} strokeWidth={2} className="text-primary" />,
       path: '/maintenance',
     },
   ];
