@@ -246,8 +246,8 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     {
       key: 'schedulingCenter',
       labelKey: 'sidebar.schedulingCenter',
-      icon: <CalendarClock size={20} strokeWidth={2} />,
-      activeIcon: <CalendarClock size={20} strokeWidth={2} className="text-primary" />,
+      icon: <Airplay size={20} strokeWidth={2} />,
+      activeIcon: <Airplay size={20} strokeWidth={2} className="text-primary" />,
     },
     {
       key: 'operationsCenter',
