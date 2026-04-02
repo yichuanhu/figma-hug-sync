@@ -38,16 +38,13 @@ import {
   Database,
   Shield,
   CalendarClock,
+  Home,
+  ClipboardCheck,
+  Code2,
+  CalendarDays,
+  BarChart2,
+  Share2,
 } from 'lucide-react';
-import {
-  House,
-  ListChecks,
-  Code,
-  CalendarCheck,
-  ChartLineUp,
-  ShareNetwork,
-  Wrench as PhWrench,
-} from '@phosphor-icons/react';
 const LayoutIcon = () => (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path fillRule="evenodd" clipRule="evenodd" d="M3 15.75C2.17157 15.75 1.5 15.0784 1.5 14.25L1.5 3.75C1.5 2.92157 2.17157 2.25 3 2.25L15 2.25C15.8284 2.25 16.5 2.92157 16.5 3.75L16.5 14.25C16.5 15.0784 15.8284 15.75 15 15.75L3 15.75ZM3 3.75L3 14.25L6.375 14.25L6.375 3.75L3 3.75ZM7.875 3.75L7.875 14.25L15 14.25L15 3.75L7.875 3.75Z" fill="currentColor"/>
@@ -232,43 +229,43 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
 
   // 中心级别菜单（左侧图标栏）
   const centerMenuItems: MenuItem[] = [
-    { key: 'home', labelKey: 'sidebar.home', icon: <House size={20} weight="regular" />, activeIcon: <House size={20} weight="fill" />, path: '/' },
+    { key: 'home', labelKey: 'sidebar.home', icon: <Home size={20} strokeWidth={1.5} />, activeIcon: <Home size={20} strokeWidth={2.5} />, path: '/' },
     {
       key: 'requirementsCenter',
       labelKey: 'sidebar.requirementsCenter',
-      icon: <ListChecks size={20} weight="regular" />,
-      activeIcon: <ListChecks size={20} weight="fill" />,
+      icon: <ClipboardCheck size={20} strokeWidth={1.5} />,
+      activeIcon: <ClipboardCheck size={20} strokeWidth={2.5} />,
       path: '/requirements/list',
     },
     {
       key: 'developmentCenter',
       labelKey: 'sidebar.developmentCenter',
-      icon: <Code size={20} weight="regular" />,
-      activeIcon: <Code size={20} weight="fill" />,
+      icon: <Code2 size={20} strokeWidth={1.5} />,
+      activeIcon: <Code2 size={20} strokeWidth={2.5} />,
     },
     {
       key: 'schedulingCenter',
       labelKey: 'sidebar.schedulingCenter',
-      icon: <CalendarCheck size={20} weight="regular" />,
-      activeIcon: <CalendarCheck size={20} weight="fill" />,
+      icon: <CalendarDays size={20} strokeWidth={1.5} />,
+      activeIcon: <CalendarDays size={20} strokeWidth={2.5} />,
     },
     {
       key: 'operationsCenter',
       labelKey: 'sidebar.operationsCenter',
-      icon: <ChartLineUp size={20} weight="regular" />,
-      activeIcon: <ChartLineUp size={20} weight="fill" />,
+      icon: <BarChart2 size={20} strokeWidth={1.5} />,
+      activeIcon: <BarChart2 size={20} strokeWidth={2.5} />,
     },
     {
       key: 'sharingCenter',
       labelKey: 'sidebar.sharingCenter',
-      icon: <ShareNetwork size={20} weight="regular" />,
-      activeIcon: <ShareNetwork size={20} weight="fill" />,
+      icon: <Share2 size={20} strokeWidth={1.5} />,
+      activeIcon: <Share2 size={20} strokeWidth={2.5} />,
     },
     {
       key: 'maintenanceCenter',
       labelKey: 'sidebar.maintenanceCenter',
-      icon: <PhWrench size={20} weight="regular" />,
-      activeIcon: <PhWrench size={20} weight="fill" />,
+      icon: <Wrench size={20} strokeWidth={1.5} />,
+      activeIcon: <Wrench size={20} strokeWidth={2.5} />,
       path: '/maintenance',
     },
   ];
