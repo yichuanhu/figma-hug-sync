@@ -11,7 +11,7 @@ import {
 } from '@douyinfe/semi-ui';
 import {
   IconDeleteStroked,
-  IconSearch,
+  IconSearchStroked,
   IconFlowChartStroked,
 } from '@douyinfe/semi-icons';
 import { User, UserPlus } from 'lucide-react';
