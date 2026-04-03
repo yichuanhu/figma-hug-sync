@@ -385,6 +385,17 @@ const TemplateManagementPage = () => {
                 {t('template.actions.edit')}
               </Dropdown.Item>
               <Dropdown.Item
+                icon={<Users size={16} strokeWidth={2} />}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedTemplate(record);
+                  setDetailInitialTab('collaborators');
+                  setDrawerVisible(true);
+                }}
+              >
+                {t('collaborator.actions.manageCollaborators')}
+              </Dropdown.Item>
+              <Dropdown.Item
                 icon={<IconDeleteStroked />}
                 type="danger"
                 onClick={(e) => {
