@@ -370,6 +370,17 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
                 {t('workerGroup.actions.edit')}
               </Dropdown.Item>
               <Dropdown.Item 
+                icon={<Users size={16} strokeWidth={2} />}
+                onClick={(e) => {
+                  e?.stopPropagation?.();
+                  setSelectedGroup(record);
+                  setDetailInitialTab('collaborators');
+                  setDetailDrawerVisible(true);
+                }}
+              >
+                {t('collaborator.actions.manageCollaborators')}
+              </Dropdown.Item>
+              <Dropdown.Item 
                 icon={<IconDeleteStroked />}
                 type="danger" 
                 onClick={(e) => {
