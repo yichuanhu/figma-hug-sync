@@ -38,7 +38,8 @@ import WorkerKeyModal from './components/WorkerKeyModal';
 import CreateWorkerModal from './components/CreateWorkerModal';
 import EditWorkerModal from './components/EditWorkerModal';
 import AddToGroupModal from './components/AddToGroupModal';
-import type { LYWorkerResponse, LYListResponseLYWorkerResponse, GetWorkersParams } from '@/api';
+import type { LYWorkerResponse, LYListResponseLYWorkerResponse, GetWorkersParams, CollaboratorAssetType } from '@/api';
+import CollaboratorAddModal from '@/components/CollaboratorManager/CollaboratorAddModal';
 import './index.less';
 
 const { Title, Text } = Typography;
