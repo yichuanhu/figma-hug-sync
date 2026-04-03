@@ -456,15 +456,14 @@ const TimeTriggerList = () => {
                 {t('timeTrigger.actions.edit')}
               </Dropdown.Item>
               <Dropdown.Item
-                icon={<Users size={16} strokeWidth={2} />}
+                icon={<UserPlus size={16} strokeWidth={2} />}
                 onClick={(e) => {
                   e.stopPropagation();
-                  setSelectedTrigger(record);
-                  setDetailInitialTab('collaborators');
-                  setDrawerVisible(true);
+                  setAddCollaboratorAssetId(record.trigger_id);
+                  setAddCollaboratorModalVisible(true);
                 }}
               >
-                {t('collaborator.actions.manageCollaborators')}
+                {t('collaborator.actions.addCollaborator')}
               </Dropdown.Item>
               <Dropdown.Item
                 icon={<IconDeleteStroked />}
