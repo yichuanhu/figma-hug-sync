@@ -118,7 +118,7 @@ const TimeTriggerDetailDrawer = ({
 
   // DrawerClose时重置Status
   const handleClose = () => {
-    setActiveTab('basic');
+    setActiveTab(initialTab);
     onClose();
   };
 
