@@ -2504,6 +2504,7 @@
       "content": "确定将协作者「{{name}}」移除吗？",
       "contentWithCascade": "确定将协作者「{{name}}」移除吗？将同时从 {{count}} 个依赖资产中移除该协作者的继承权限。"
     },
+    "inheritedRoleHint": "继承权限不可修改，如需调整角色，请将此用户直接添加为当前资产的协作者",
     "updateSuccess": "角色更新成功",
     "updateSuccessWithCascade": "角色更新成功，已同步更新 {{count}} 个依赖资产",
     "removeSuccess": "已移除协作者",
