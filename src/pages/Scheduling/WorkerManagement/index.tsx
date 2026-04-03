@@ -1000,7 +1000,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       {/* Details drawer */}
       <WorkerDetailDrawer
         visible={detailDrawerVisible}
-        onClose={() => setDetailDrawerVisible(false)}
+        onClose={() => { setDetailDrawerVisible(false); setDetailInitialTab('basic'); }}
         workerData={selectedWorker}
         onEdit={handleEditFromDrawer}
         onViewKey={() => {
