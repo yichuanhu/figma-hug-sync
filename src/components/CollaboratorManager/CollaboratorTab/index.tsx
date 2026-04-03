@@ -291,7 +291,7 @@ const CollaboratorTab = ({
         />
         {canManage && (
           <Button
-            icon={<IconPlusStroked />}
+            icon={<UserPlus size={14} strokeWidth={2} />}
             theme="solid"
             type="primary"
             onClick={() => setAddModalVisible(true)}
