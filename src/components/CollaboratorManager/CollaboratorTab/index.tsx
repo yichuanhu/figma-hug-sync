@@ -246,7 +246,7 @@ const CollaboratorTab = ({
       key: 'role',
       width: 160,
       render: (_: unknown, record: AssetCollaborator) => {
-        const isInherited = record.source === 'INHERITED' || (record.inheritance_sources && record.inheritance_sources.length > 0 && record.source !== 'DIRECT');
+        const isInherited = record.source === 'INHERITED' || (record.inheritance_sources && record.inheritance_sources.length > 0 && record.source !== 'DIRECT' && record.source !== 'MIXED');
         const isDisabled = record.is_owner || isInherited || !canManage;
         const canRemove = !record.is_owner && !isInherited && canManage;
 
