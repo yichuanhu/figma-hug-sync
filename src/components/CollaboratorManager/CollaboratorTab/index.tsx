@@ -262,9 +262,19 @@ const CollaboratorTab = ({
 
         if (isInherited && !record.is_owner) {
           return (
-            <Tooltip content={t('collaborator.inheritedRoleHint')} position="topRight">
-              {selectEl}
-            </Tooltip>
+            <div className="collaborator-tab-inherited-role">
+              <Tooltip content={t('collaborator.inheritedRoleHint')} position="topRight">
+                {selectEl}
+              </Tooltip>
+              {canManage && (
+                <span
+                  className="collaborator-tab-quick-add"
+                  onClick={() => handleQuickAdd(record)}
+                >
+                  {t('collaborator.actions.quickAdd')}
+                </span>
+              )}
+            </div>
           );
         }
 

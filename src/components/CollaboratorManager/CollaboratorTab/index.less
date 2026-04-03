@@ -88,6 +88,24 @@
   }
 }
 
+  &-inherited-role {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &-quick-add {
+    cursor: pointer;
+    color: var(--semi-color-primary);
+    font-size: 12px;
+    line-height: 18px;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
 // 角色下拉移除选项 hover 样式
 .semi-select-option-removable:hover {
   background-color: var(--semi-color-fill-0);
