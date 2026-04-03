@@ -2486,12 +2486,12 @@
       "OBSERVER": "仅能查看资产信息和协作者列表"
     },
     "addModal": {
-      "title": "添加协作人",
+      "title": "添加协作者",
       "searchPlaceholder": "搜索用户或部门",
       "users": "用户",
       "departments": "部门",
-      "contacts": "联系人",
-      "selectedTitle": "已选协作人",
+      "orgStructure": "组织架构",
+      "selectedTitle": "已选协作者",
       "unit": "个",
       "emptySelection": "请从左侧选择用户或部门",
       "noSelection": "请至少选择一个协作者",

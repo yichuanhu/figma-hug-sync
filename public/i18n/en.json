@@ -3126,7 +3126,7 @@
       "searchPlaceholder": "Search users or departments",
       "users": "Users",
       "departments": "Departments",
-      "contacts": "Contacts",
+      "orgStructure": "Organization",
       "selectedTitle": "Selected Collaborators",
       "unit": "",
       "emptySelection": "Select users or departments from the left",

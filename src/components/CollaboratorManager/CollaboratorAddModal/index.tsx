@@ -8,7 +8,6 @@ import {
   Checkbox,
   Toast,
   Breadcrumb,
-  Avatar,
 } from '@douyinfe/semi-ui';
 import {
   IconSearch,
@@ -42,78 +41,78 @@ interface DeptNode {
   id: string;
   name: string;
   children?: DeptNode[];
-  users?: { id: string; name: string; department: string; avatar?: string }[];
+  users?: { id: string; name: string; department: string }[];
 }
 
 const mockOrgTree: DeptNode = {
   id: 'root',
-  name: 'Laiye Technology',
+  name: '来也科技',
   children: [
     {
       id: 'dept-ceo',
-      name: 'CEO Office',
+      name: 'CEO办公室',
       children: [],
       users: [
-        { id: 'user-ceo-001', name: 'Alex Chen', department: 'CEO Office' },
+        { id: 'user-ceo-001', name: '陈明远', department: 'CEO办公室' },
       ],
     },
     {
       id: 'dept-enterprise',
-      name: 'Enterprise Business Center',
+      name: '大客户业务中心',
       children: [
         {
           id: 'dept-north',
-          name: 'North Region BU',
+          name: '华北区域事业部',
           children: [
             {
               id: 'dept-north-solution',
-              name: 'North Solution Team',
+              name: '华北区域解决方案与交付团队（含项目管理及售后支持组）',
               children: [],
               users: [
-                { id: 'user-n-001', name: 'Liu Yi', department: 'North Solution Team' },
-                { id: 'user-n-002', name: 'Rong Wenjie', department: 'North Solution Team' },
-                { id: 'user-n-003', name: 'Zhang Yue', department: 'North Solution Team' },
-                { id: 'user-n-004', name: 'Zheng Shuguang', department: 'North Solution Team' },
+                { id: 'user-n-001', name: '刘毅', department: '华北区域解决方案与交付团队（含项目管理及售后支持组）' },
+                { id: 'user-n-002', name: '荣文杰', department: '华北区域解决方案与交付团队（含项目管理及售后支持组）' },
+                { id: 'user-n-003', name: '张越', department: '华北区域解决方案与交付团队（含项目管理及售后支持组）' },
+                { id: 'user-n-004', name: '郑曙光', department: '华北区域解决方案与交付团队（含项目管理及售后支持组）' },
               ],
             },
           ],
           users: [
-            { id: 'user-north-001', name: 'Wang Lei', department: 'North Region BU' },
+            { id: 'user-north-001', name: '王磊', department: '华北区域事业部' },
           ],
         },
         {
           id: 'dept-east',
-          name: 'East Region BU',
+          name: '华东区域事业部',
           children: [],
           users: [
-            { id: 'user-e-001', name: 'Sun Qian', department: 'East Region BU' },
-            { id: 'user-e-002', name: 'Li Wei', department: 'East Region BU' },
+            { id: 'user-e-001', name: '孙茜', department: '华东区域事业部' },
+            { id: 'user-e-002', name: '李伟', department: '华东区域事业部' },
           ],
         },
         {
           id: 'dept-south',
-          name: 'South Region BU',
+          name: '华南及西南区域事业部（含港澳台业务拓展组）',
           children: [],
           users: [
-            { id: 'user-s-001', name: 'Zhao Min', department: 'South Region BU' },
+            { id: 'user-s-001', name: '赵敏', department: '华南及西南区域事业部（含港澳台业务拓展组）' },
           ],
         },
         {
           id: 'dept-expert',
-          name: 'Expert Enablement Group',
+          name: '专家赋能组',
           children: [],
           users: [
-            { id: 'user-exp-001', name: 'Zhou Jie', department: 'Expert Enablement Group' },
-            { id: 'user-exp-002', name: 'Wu Fang', department: 'Expert Enablement Group' },
+            { id: 'user-exp-001', name: '周杰', department: '专家赋能组' },
+            { id: 'user-exp-002', name: '吴芳', department: '专家赋能组' },
           ],
         },
         {
           id: 'dept-prof-service',
-          name: 'Professional Services',
+          name: '专业服务与客户成功管理中心（大客户定制化实施团队）',
           children: [],
           users: [
-            { id: 'user-ps-001', name: 'Zheng Hao', department: 'Professional Services' },
-            { id: 'user-ps-002', name: 'Ma Xiaoling', department: 'Professional Services' },
+            { id: 'user-ps-001', name: '郑浩', department: '专业服务与客户成功管理中心（大客户定制化实施团队）' },
+            { id: 'user-ps-002', name: '马小玲', department: '专业服务与客户成功管理中心（大客户定制化实施团队）' },
           ],
         },
       ],
@@ -121,42 +120,42 @@ const mockOrgTree: DeptNode = {
     },
     {
       id: 'dept-rd',
-      name: 'R&D Center',
+      name: '研发中心',
       children: [
         {
           id: 'dept-frontend',
-          name: 'Frontend Team',
+          name: '前端开发团队',
           children: [],
           users: [
-            { id: 'user-fe-001', name: 'Feng Chao', department: 'Frontend Team' },
-            { id: 'user-fe-002', name: 'Chen Lin', department: 'Frontend Team' },
-            { id: 'user-fe-003', name: 'Xu Peng', department: 'Frontend Team' },
+            { id: 'user-fe-001', name: '冯超', department: '前端开发团队' },
+            { id: 'user-fe-002', name: '陈琳', department: '前端开发团队' },
+            { id: 'user-fe-003', name: '徐鹏', department: '前端开发团队' },
           ],
         },
         {
           id: 'dept-backend',
-          name: 'Backend Team',
+          name: '后端开发团队',
           children: [],
           users: [
-            { id: 'user-be-001', name: 'Chu Yang', department: 'Backend Team' },
-            { id: 'user-be-002', name: 'Wei Dong', department: 'Backend Team' },
+            { id: 'user-be-001', name: '楚阳', department: '后端开发团队' },
+            { id: 'user-be-002', name: '魏东', department: '后端开发团队' },
           ],
         },
         {
           id: 'dept-ai',
-          name: 'AI Platform Team',
+          name: 'AI平台与大模型应用研发团队',
           children: [],
           users: [
-            { id: 'user-ai-001', name: 'Qian Ming', department: 'AI Platform Team' },
-            { id: 'user-ai-002', name: 'Huang Rui', department: 'AI Platform Team' },
+            { id: 'user-ai-001', name: '钱明', department: 'AI平台与大模型应用研发团队' },
+            { id: 'user-ai-002', name: '黄瑞', department: 'AI平台与大模型应用研发团队' },
           ],
         },
         {
           id: 'dept-qa',
-          name: 'QA Team',
+          name: '质量保障团队',
           children: [],
           users: [
-            { id: 'user-qa-001', name: 'Jiang Ting', department: 'QA Team' },
+            { id: 'user-qa-001', name: '蒋婷', department: '质量保障团队' },
           ],
         },
       ],
@@ -164,51 +163,71 @@ const mockOrgTree: DeptNode = {
     },
     {
       id: 'dept-product',
-      name: 'Product Center',
+      name: 'APA产品部',
       children: [
         {
           id: 'dept-product-rpa',
-          name: 'RPA Product Team',
+          name: 'RPA产品团队',
           children: [],
           users: [
-            { id: 'user-prpa-001', name: 'Deng Xiao', department: 'RPA Product Team' },
+            { id: 'user-prpa-001', name: '邓晓', department: 'RPA产品团队' },
           ],
         },
         {
           id: 'dept-product-idp',
-          name: 'IDP Product Team',
+          name: 'IDP产品团队',
           children: [],
           users: [
-            { id: 'user-pidp-001', name: 'Cao Jun', department: 'IDP Product Team' },
+            { id: 'user-pidp-001', name: '曹军', department: 'IDP产品团队' },
+          ],
+        },
+        {
+          id: 'dept-product-team',
+          name: '产品团队',
+          children: [],
+          users: [
+            { id: 'user-pt-001', name: '范里鸿', department: '产品团队' },
+            { id: 'user-pt-002', name: '胡一川', department: '产品团队' },
+            { id: 'user-pt-003', name: '殷星', department: '产品团队' },
           ],
         },
       ],
       users: [],
     },
     {
-      id: 'dept-marketing',
-      name: 'Marketing Department',
+      id: 'dept-digital-worker',
+      name: '数字员工部',
       children: [],
       users: [
-        { id: 'user-mkt-001', name: 'Tang Li', department: 'Marketing Department' },
-        { id: 'user-mkt-002', name: 'Shen Bo', department: 'Marketing Department' },
+        { id: 'user-dw-001', name: '蔡炫', department: '数字员工部' },
+        { id: 'user-dw-002', name: '黄令辉', department: '数字员工部' },
+        { id: 'user-dw-003', name: '林晓峰', department: '数字员工部' },
+      ],
+    },
+    {
+      id: 'dept-marketing',
+      name: '市场部',
+      children: [],
+      users: [
+        { id: 'user-mkt-001', name: '唐丽', department: '市场部' },
+        { id: 'user-mkt-002', name: '沈波', department: '市场部' },
       ],
     },
     {
       id: 'dept-hr',
-      name: 'Human Resources',
+      name: '人力资源部',
       children: [],
       users: [
-        { id: 'user-hr-001', name: 'Liang Fei', department: 'Human Resources' },
+        { id: 'user-hr-001', name: '梁飞', department: '人力资源部' },
       ],
     },
     {
       id: 'dept-finance',
-      name: 'Finance Department',
+      name: '财务部',
       children: [],
       users: [
-        { id: 'user-fin-001', name: 'Xie Yun', department: 'Finance Department' },
-        { id: 'user-fin-002', name: 'Pan Hua', department: 'Finance Department' },
+        { id: 'user-fin-001', name: '谢云', department: '财务部' },
+        { id: 'user-fin-002', name: '潘华', department: '财务部' },
       ],
     },
   ],
@@ -408,7 +427,7 @@ const CollaboratorAddModal = ({
     });
   };
 
-  // 渲染用户行
+  // 渲染用户行 - 点击整行可选中
   const renderUserItem = (user: { id: string; name: string; department: string }) => {
     const disabled = existingMap.has(user.id);
     const checked = isSelected(user.id);
@@ -421,9 +440,7 @@ const CollaboratorAddModal = ({
         onClick={() => !disabled && toggleUser(user)}
       >
         <Checkbox checked={checked} disabled={disabled} />
-        <Avatar size="small" style={{ flexShrink: 0 }}>
-          {user.name.charAt(0)}
-        </Avatar>
+        <UserCircle size={20} strokeWidth={1.5} className="collaborator-add-modal-left-item-icon" />
         <div className="collaborator-add-modal-left-item-info">
           <Text size="small">{user.name}</Text>
           {!disabled && <span className="collaborator-add-modal-left-item-dept">{user.department}</span>}
@@ -437,7 +454,7 @@ const CollaboratorAddModal = ({
     );
   };
 
-  // 渲染部门行
+  // 渲染部门行 - 点击整行可选中
   const renderDeptItem = (dept: DeptNode) => {
     const disabled = existingMap.has(dept.id);
     const checked = isSelected(dept.id);
@@ -449,19 +466,21 @@ const CollaboratorAddModal = ({
       <div
         key={dept.id}
         className={`collaborator-add-modal-left-item ${checked ? 'selected' : ''} ${disabled ? 'disabled' : ''}`}
+        onClick={() => !disabled && toggleDept(dept)}
       >
         <Checkbox
           checked={checked}
           disabled={disabled}
-          onChange={() => toggleDept(dept)}
         />
-        <Building2 size={16} strokeWidth={2} className="collaborator-add-modal-left-item-icon" />
-        <Text size="small" className="collaborator-add-modal-left-item-name">
-          {dept.name}
+        <Building2 size={20} strokeWidth={1.5} className="collaborator-add-modal-left-item-icon" />
+        <div className="collaborator-add-modal-left-item-name">
+          <Text size="small" ellipsis={{ showTooltip: true }}>
+            {dept.name}
+          </Text>
           {userCount > 0 && (
             <span className="collaborator-add-modal-left-item-count">({userCount})</span>
           )}
-        </Text>
+        </div>
         {disabled && existingLabel && (
           <span className="collaborator-add-modal-left-item-existing">
             {existingLabel}
@@ -472,6 +491,7 @@ const CollaboratorAddModal = ({
             className="collaborator-add-modal-left-item-drill"
             onClick={(e) => { e.stopPropagation(); navigateToDept(dept.id); }}
           >
+            {t('collaborator.addModal.drillDown')}
             <IconChevronRight size="small" />
           </span>
         )}
@@ -517,9 +537,7 @@ const CollaboratorAddModal = ({
 
     return (
       <div className="collaborator-add-modal-left-list">
-        {/* 子部门带下钻箭头 */}
         {children.map((dept) => renderDeptItem(dept))}
-        {/* 当前部门下的用户 */}
         {users.map((user) => renderUserItem(user))}
         {children.length === 0 && users.length === 0 && (
           <div className="collaborator-add-modal-left-empty">
@@ -551,7 +569,7 @@ const CollaboratorAddModal = ({
       }
     >
       <div className="collaborator-add-modal-content">
-        {/* 左栏: 部门树浏览 */}
+        {/* 左栏: 组织架构树浏览 */}
         <div className="collaborator-add-modal-left">
           <div className="collaborator-add-modal-left-search">
             <Input
@@ -563,14 +581,14 @@ const CollaboratorAddModal = ({
             />
           </div>
 
-          {/* 面包屑导航 - 始终显示（根节点也显示"联系人"） */}
+          {/* 面包屑导航 - 始终显示 */}
           {!searchResults && (
             <div className="collaborator-add-modal-left-breadcrumb">
               <Breadcrumb compact={false}>
                 <Breadcrumb.Item
                   onClick={breadcrumbPath.length > 1 ? () => navigateToDept('root') : undefined}
                 >
-                  {t('collaborator.addModal.contacts')}
+                  {t('collaborator.addModal.orgStructure')}
                 </Breadcrumb.Item>
                 {breadcrumbPath.map((node, index) => (
                   <Breadcrumb.Item
@@ -589,7 +607,7 @@ const CollaboratorAddModal = ({
           </div>
         </div>
 
-        {/* 右栏: 已选协作人列表 */}
+        {/* 右栏: 已选协作者列表 */}
         <div className="collaborator-add-modal-right">
           <div className="collaborator-add-modal-right-header">
             {t('collaborator.addModal.selectedTitle')}：{selected.length} {t('collaborator.addModal.unit')}
@@ -605,11 +623,9 @@ const CollaboratorAddModal = ({
                   <div className="collaborator-add-modal-right-item-info">
                     <span className="collaborator-add-modal-right-item-icon">
                       {item.collaborator_type === 'DEPARTMENT' ? (
-                        <Building2 size={16} strokeWidth={2} />
+                        <Building2 size={20} strokeWidth={1.5} />
                       ) : (
-                        <Avatar size="extra-small">
-                          {item.collaborator_name.charAt(0)}
-                        </Avatar>
+                        <UserCircle size={20} strokeWidth={1.5} />
                       )}
                     </span>
                     <Text size="small" ellipsis={{ showTooltip: true }} style={{ maxWidth: 100 }}>
