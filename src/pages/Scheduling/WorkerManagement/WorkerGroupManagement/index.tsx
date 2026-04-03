@@ -373,7 +373,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
                 {t('workerGroup.actions.edit')}
               </Dropdown.Item>
               <Dropdown.Item 
-                icon={<UserPlus size={16} strokeWidth={2} style={{ color: "inherit" }} />}
+                icon={<UserPlus size={14} strokeWidth={2} />}
                 onClick={(e) => {
                   e?.stopPropagation?.();
                   setAddCollaboratorAssetId(record.id);
