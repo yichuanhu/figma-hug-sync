@@ -10,7 +10,7 @@ import {
   Breadcrumb,
 } from '@douyinfe/semi-ui';
 import {
-  IconSearch,
+  IconSearchStroked,
   IconClose,
   IconChevronRight,
   IconFlowChartStroked,

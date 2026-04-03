@@ -280,7 +280,7 @@ const CollaboratorTab = ({
     <div className="collaborator-tab">
       <div className="collaborator-tab-toolbar">
         <Input
-          prefix={<IconSearch />}
+          prefix={<IconSearchStroked />}
           placeholder={t('collaborator.searchPlaceholder')}
           value={searchValue}
           onChange={setSearchValue}
