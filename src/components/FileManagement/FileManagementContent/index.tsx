@@ -213,6 +213,8 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
   const [reuploadModalVisible, setReuploadModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [detailInitialTab, setDetailInitialTab] = useState('basic');
+  const [addCollaboratorModalVisible, setAddCollaboratorModalVisible] = useState(false);
+  const [addCollaboratorAssetId, setAddCollaboratorAssetId] = useState('');
 
   // 加载数据
   const loadData = useCallback(async () => {
