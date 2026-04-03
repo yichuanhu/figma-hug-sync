@@ -462,7 +462,25 @@ export const addCollaborators = (
   const newCollaborators: AssetCollaborator[] = [];
 
   for (const item of items) {
-    if (existing.some((c) => c.collaborator_id === item.collaborator_id)) continue;
+    const existingCollab = existing.find((c) => c.collaborator_id === item.collaborator_id);
+    if (existingCollab) {
+      // 已存在且为纯继承 → 升级为 MIXED（直接+继承）
+      if (existingCollab.source === 'INHERITED') {
+        existingCollab.source = 'MIXED';
+        existingCollab.role = item.role;
+        if (!existingCollab.source_types) existingCollab.source_types = [];
+        if (!existingCollab.source_types.includes('DIRECT')) {
+          existingCollab.source_types.unshift('DIRECT');
+        }
+        const allRoles = [item.role, ...(existingCollab.inheritance_sources || []).map((s) => s.role)];
+        existingCollab.final_role = calculateFinalRole(allRoles);
+        existingCollab.added_by = 'user-001';
+        existingCollab.added_by_name = MOCK_USERS['user-001'].name;
+        existingCollab.added_time = now;
+        directCount++;
+      }
+      continue;
+    }
     directCount++;
     newCollaborators.push({
       id: `collab-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,

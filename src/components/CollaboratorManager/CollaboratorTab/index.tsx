@@ -23,7 +23,7 @@ import type {
 } from '@/api/index';
 import { COLLABORATOR_ROLE_PRIORITY } from '@/api/index';
 import { useCollaboratorCascade } from '@/hooks/useCollaboratorCascade';
-import { getCollaborators } from '@/components/CollaboratorManager/mockData';
+import { getCollaborators, addCollaborators } from '@/components/CollaboratorManager/mockData';
 import CollaboratorRoleSelect from '../CollaboratorRoleSelect';
 import CollaboratorAddModal from '../CollaboratorAddModal';
 import EmptyState from '@/components/EmptyState';
@@ -120,6 +120,23 @@ const CollaboratorTab = ({
       });
     },
     [t, cascadeRemove, canCascade, cascadeCount, assetType, assetId]
+  );
+
+  const handleQuickAdd = useCallback(
+    (record: AssetCollaborator) => {
+      addCollaborators(assetType, assetId, [
+        {
+          collaborator_type: record.collaborator_type,
+          collaborator_id: record.collaborator_id,
+          collaborator_name: record.collaborator_name,
+          department_name: record.department_name,
+          role: record.final_role,
+        },
+      ]);
+      setCollaborators(getCollaborators(assetType, assetId));
+      Toast.success(t('collaborator.quickAddSuccess'));
+    },
+    [assetType, assetId, t]
   );
 
   const handleAddSuccess = useCallback(() => {
@@ -229,7 +246,7 @@ const CollaboratorTab = ({
       key: 'role',
       width: 160,
       render: (_: unknown, record: AssetCollaborator) => {
-        const isInherited = record.source === 'INHERITED' || (record.inheritance_sources && record.inheritance_sources.length > 0 && record.source !== 'DIRECT');
+        const isInherited = record.source === 'INHERITED' || (record.inheritance_sources && record.inheritance_sources.length > 0 && record.source !== 'DIRECT' && record.source !== 'MIXED');
         const isDisabled = record.is_owner || isInherited || !canManage;
         const canRemove = !record.is_owner && !isInherited && canManage;
 
@@ -245,9 +262,19 @@ const CollaboratorTab = ({
 
         if (isInherited && !record.is_owner) {
           return (
-            <Tooltip content={t('collaborator.inheritedRoleHint')} position="topRight">
-              {selectEl}
-            </Tooltip>
+            <div className="collaborator-tab-inherited-role">
+              <Tooltip content={t('collaborator.inheritedRoleHint')} position="topRight">
+                {selectEl}
+              </Tooltip>
+              {canManage && (
+                <span
+                  className="collaborator-tab-quick-add"
+                  onClick={() => handleQuickAdd(record)}
+                >
+                  {t('collaborator.actions.quickAdd')}
+                </span>
+              )}
+            </div>
           );
         }
 

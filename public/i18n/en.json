@@ -3120,7 +3120,8 @@
     "actions": {
       "remove": "Remove",
       "add": "Add Collaborator",
-      "addCollaborator": "Add Collaborator"
+      "addCollaborator": "Add Collaborator",
+      "quickAdd": "Add as Collaborator"
     },
     "table": {
       "name": "Name",
@@ -3148,6 +3149,7 @@
     "cascade": {
       "addHint": "Will also add inherited permissions to {{count}} dependent assets",
       "removeHint": "Will also remove inherited permissions from {{count}} dependent assets"
-    }
+    },
+    "quickAddSuccess": "Successfully added as a direct collaborator of the current asset"
   }
 }

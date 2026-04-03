@@ -2484,7 +2484,8 @@
     "actions": {
       "remove": "移除",
       "add": "添加协作者",
-      "addCollaborator": "添加协作者"
+      "addCollaborator": "添加协作者",
+      "quickAdd": "添加为协作者"
     },
     "table": {
       "name": "名称",
@@ -2512,6 +2513,7 @@
     "cascade": {
       "addHint": "将同时为 {{count}} 个依赖资产添加继承权限",
       "removeHint": "将同时从 {{count}} 个依赖资产移除继承权限"
-    }
+    },
+    "quickAddSuccess": "已添加为当前资产的直接协作者"
   }
 }
