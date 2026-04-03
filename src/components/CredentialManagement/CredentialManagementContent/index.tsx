@@ -185,6 +185,8 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
   const [linkPersonalModalVisible, setLinkPersonalModalVisible] = useState(false);
   const [linkingCredential, setLinkingCredential] = useState<LYCredentialResponse | null>(null);
   const [initialDetailTab, setInitialDetailTab] = useState<'basic' | 'usage' | 'collaborators'>('basic');
+  const [addCollaboratorModalVisible, setAddCollaboratorModalVisible] = useState(false);
+  const [addCollaboratorAssetId, setAddCollaboratorAssetId] = useState('');
 
   // 加载数据
   const loadData = useCallback(async () => {
