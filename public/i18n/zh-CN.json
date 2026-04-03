@@ -2479,12 +2479,20 @@
       "title": "移除协作者",
       "content": "确定要移除协作者「{{name}}」吗？移除后该用户将失去对此资产的访问权限。"
     },
+    "roleDesc": {
+      "MANAGER": "完全控制：查看、修改、使用、管理协作者",
+      "MAINTAINER": "修改和使用资产，但不能管理协作者",
+      "USER": "可以使用/引用资产，但不能修改",
+      "OBSERVER": "仅能查看资产信息和协作者列表"
+    },
     "addModal": {
       "title": "添加协作人",
-      "searchPlaceholder": "搜索用户、群组、部门或用户组",
+      "searchPlaceholder": "搜索用户或部门",
       "users": "用户",
       "departments": "部门",
-      "selectedCount": "已选：{{count}} 个",
+      "contacts": "联系人",
+      "selectedTitle": "已选协作人",
+      "unit": "个",
       "emptySelection": "请从左侧选择用户或部门",
       "noSelection": "请至少选择一个协作者",
       "success": "成功添加 {{count}} 个协作者",
@@ -2492,7 +2500,8 @@
       "drillDown": "下级",
       "noResults": "无匹配结果",
       "emptyDept": "该部门暂无成员",
-      "alreadyAdded": "已添加"
+      "alreadyAdded": "已添加",
+      "grantedPermission": "已授予{{role}}权限"
     },
     "dispatch": {
       "noPermission": "无权限",

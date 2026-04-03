@@ -3115,12 +3115,20 @@
       "title": "Remove Collaborator",
       "content": "Are you sure you want to remove collaborator \"{{name}}\"? They will lose access to this asset."
     },
+    "roleDesc": {
+      "MANAGER": "Full control: view, edit, use, and manage collaborators",
+      "MAINTAINER": "Edit and use assets, but cannot manage collaborators",
+      "USER": "Can use/reference assets, but cannot edit",
+      "OBSERVER": "Can only view asset info and collaborator list"
+    },
     "addModal": {
       "title": "Add Collaborators",
-      "searchPlaceholder": "Search users, groups, departments or user groups",
+      "searchPlaceholder": "Search users or departments",
       "users": "Users",
       "departments": "Departments",
-      "selectedCount": "Selected: {{count}}",
+      "contacts": "Contacts",
+      "selectedTitle": "Selected Collaborators",
+      "unit": "",
       "emptySelection": "Select users or departments from the left",
       "noSelection": "Please select at least one collaborator",
       "success": "Successfully added {{count}} collaborators",
@@ -3128,7 +3136,8 @@
       "drillDown": "Sub",
       "noResults": "No matching results",
       "emptyDept": "No members in this department",
-      "alreadyAdded": "Added"
+      "alreadyAdded": "Added",
+      "grantedPermission": "Granted {{role}} permission"
     },
     "dispatch": {
       "noPermission": "No Permission",
