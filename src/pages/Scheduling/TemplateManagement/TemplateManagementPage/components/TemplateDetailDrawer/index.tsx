@@ -74,6 +74,7 @@ const TemplateDetailDrawer = ({
 }: TemplateDetailDrawerProps) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('basicInfo');
+  const { canManage } = useCollaboratorPermission('TASK_TEMPLATE', template?.template_id);
 
   useEffect(() => {
     if (!visible) setActiveTab('basicInfo');
