@@ -585,7 +585,7 @@ const CollaboratorAddModal = ({
         <div className="collaborator-add-modal-left">
           <div className="collaborator-add-modal-left-search">
             <Input
-              prefix={<IconSearch />}
+              prefix={<IconSearchStroked />}
               placeholder={t('collaborator.addModal.searchPlaceholder')}
               value={searchValue}
               onChange={setSearchValue}
