@@ -593,6 +593,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
           totalPages: Math.ceil(total / queryParams.pageSize),
         }}
         onPageChange={handleDrawerPageChange}
+        initialTab={detailInitialTab}
         onScrollToRow={(id) => {
           const row = document.getElementById(`parameter-row-${id}`);
           row?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
