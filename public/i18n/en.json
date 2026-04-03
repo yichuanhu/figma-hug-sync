@@ -3140,6 +3140,7 @@
       "content": "Are you sure you want to remove collaborator \"{{name}}\"?",
       "contentWithCascade": "Are you sure you want to remove collaborator \"{{name}}\"? This will also remove inherited permissions from {{count}} dependent assets."
     },
+    "inheritedRoleHint": "Inherited roles cannot be modified. To change the role, please add this user directly as a collaborator of the current asset.",
     "updateSuccess": "Role updated successfully",
     "updateSuccessWithCascade": "Role updated, synced to {{count}} dependent assets",
     "removeSuccess": "Collaborator removed",

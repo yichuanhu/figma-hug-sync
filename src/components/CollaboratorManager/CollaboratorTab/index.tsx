@@ -8,6 +8,7 @@ import {
   Typography,
   Toast,
   Modal,
+  Tooltip,
 } from '@douyinfe/semi-ui';
 import {
   IconMinusCircleStroked,
@@ -228,9 +229,11 @@ const CollaboratorTab = ({
       key: 'role',
       width: 160,
       render: (_: unknown, record: AssetCollaborator) => {
-        const isDisabled = record.is_owner || record.source === 'INHERITED' || !canManage;
-        const canRemove = !record.is_owner && record.source !== 'INHERITED' && canManage;
-        return (
+        const isInherited = record.source === 'INHERITED' || (record.inheritance_sources && record.inheritance_sources.length > 0 && record.source !== 'DIRECT');
+        const isDisabled = record.is_owner || isInherited || !canManage;
+        const canRemove = !record.is_owner && !isInherited && canManage;
+
+        const selectEl = (
           <CollaboratorRoleSelect
             value={record.final_role}
             onChange={(role) => handleRoleChange(record, role)}
@@ -239,6 +242,16 @@ const CollaboratorTab = ({
             onRemove={canRemove ? () => handleRemove(record) : undefined}
           />
         );
+
+        if (isInherited && !record.is_owner) {
+          return (
+            <Tooltip content={t('collaborator.inheritedRoleHint')} position="topRight">
+              {selectEl}
+            </Tooltip>
+          );
+        }
+
+        return selectEl;
       },
     },
   ];
