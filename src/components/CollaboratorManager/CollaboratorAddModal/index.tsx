@@ -21,6 +21,7 @@ import type {
   CollaboratorRole,
   CollaboratorType,
 } from '@/api/index';
+import { ASSET_AVAILABLE_ROLES } from '@/api/index';
 import CollaboratorRoleSelect from '../CollaboratorRoleSelect';
 
 import './index.less';
@@ -165,6 +166,12 @@ const CollaboratorAddModal = ({
   const [selected, setSelected] = useState<SelectedItem[]>([]);
   const [currentDeptId, setCurrentDeptId] = useState('root');
 
+  // 该资产类型的默认角色（取可用角色中的 USER，若无则取最后一个）
+  const defaultRole = useMemo(() => {
+    const roles = ASSET_AVAILABLE_ROLES[assetType] || ['USER'];
+    return roles.includes('USER') ? 'USER' : roles[roles.length - 1];
+  }, [assetType]);
+
   // 已存在的协作者ID（直接分配的）
   const existingIds = useMemo(() => {
     return new Set(
@@ -224,12 +231,12 @@ const CollaboratorAddModal = ({
             collaborator_id: user.id,
             collaborator_name: user.name,
             department_name: user.department,
-            role: 'USER' as CollaboratorRole,
+            role: defaultRole as CollaboratorRole,
           },
         ];
       });
     },
-    [existingIds]
+    [existingIds, defaultRole]
   );
 
   const toggleDept = useCallback(
@@ -244,16 +251,22 @@ const CollaboratorAddModal = ({
             collaborator_type: 'DEPARTMENT' as CollaboratorType,
             collaborator_id: dept.id,
             collaborator_name: dept.name,
-            role: 'USER' as CollaboratorRole,
+            role: defaultRole as CollaboratorRole,
           },
         ];
       });
     },
-    [existingIds]
+    [existingIds, defaultRole]
   );
 
   const removeSelected = useCallback((id: string) => {
     setSelected((prev) => prev.filter((s) => s.collaborator_id !== id));
+  }, []);
+
+  const updateSelectedRole = useCallback((id: string, role: CollaboratorRole) => {
+    setSelected((prev) =>
+      prev.map((s) => (s.collaborator_id === id ? { ...s, role } : s))
+    );
   }, []);
 
   const handleSubmit = useCallback(async () => {
@@ -308,7 +321,12 @@ const CollaboratorAddModal = ({
                     />
                     <Building2 size={16} strokeWidth={2} className="collaborator-add-modal-left-item-icon" />
                     <Text size="small" className="collaborator-add-modal-left-item-name">{dept.name}</Text>
-                    {dept.children && dept.children.length > 0 && (
+                    {disabled && (
+                      <span className="collaborator-add-modal-left-item-existing">
+                        {t('collaborator.addModal.alreadyAdded')}
+                      </span>
+                    )}
+                    {!disabled && dept.children && dept.children.length > 0 && (
                       <span
                         className="collaborator-add-modal-left-item-drill"
                         onClick={(e) => { e.stopPropagation(); navigateToDept(dept.id); }}
@@ -342,6 +360,11 @@ const CollaboratorAddModal = ({
                       <Text size="small">{user.name}</Text>
                       <span className="collaborator-add-modal-left-item-dept">{user.department}</span>
                     </div>
+                    {disabled && (
+                      <span className="collaborator-add-modal-left-item-existing">
+                        {t('collaborator.addModal.alreadyAdded')}
+                      </span>
+                    )}
                   </div>
                 );
               })}
@@ -377,7 +400,12 @@ const CollaboratorAddModal = ({
               />
               <Building2 size={16} strokeWidth={2} className="collaborator-add-modal-left-item-icon" />
               <Text size="small" className="collaborator-add-modal-left-item-name">{dept.name}</Text>
-              {(dept.children && dept.children.length > 0) && (
+              {disabled && (
+                <span className="collaborator-add-modal-left-item-existing">
+                  {t('collaborator.addModal.alreadyAdded')}
+                </span>
+              )}
+              {!disabled && (dept.children && dept.children.length > 0) && (
                 <span
                   className="collaborator-add-modal-left-item-drill"
                   onClick={(e) => { e.stopPropagation(); navigateToDept(dept.id); }}
@@ -403,6 +431,11 @@ const CollaboratorAddModal = ({
                 <Text size="small">{user.name}</Text>
                 <span className="collaborator-add-modal-left-item-dept">{user.department}</span>
               </div>
+              {disabled && (
+                <span className="collaborator-add-modal-left-item-existing">
+                  {t('collaborator.addModal.alreadyAdded')}
+                </span>
+              )}
             </div>
           );
         })}
@@ -469,7 +502,7 @@ const CollaboratorAddModal = ({
           </div>
         </div>
 
-        {/* 右栏: 已选列表 */}
+        {/* 右栏: 已选列表（带角色选择） */}
         <div className="collaborator-add-modal-right">
           <div className="collaborator-add-modal-right-header">
             {t('collaborator.addModal.selectedCount', { count: selected.length })}
@@ -490,16 +523,25 @@ const CollaboratorAddModal = ({
                         <UserCircle size={16} strokeWidth={2} />
                       )}
                     </span>
-                    <Text size="small" ellipsis={{ showTooltip: true }} style={{ maxWidth: 120 }}>
+                    <Text size="small" ellipsis={{ showTooltip: true }} style={{ maxWidth: 100 }}>
                       {item.collaborator_name}
                     </Text>
                   </div>
-                  <Button
-                    icon={<IconClose />}
-                    theme="borderless"
-                    size="small"
-                    onClick={() => removeSelected(item.collaborator_id)}
-                  />
+                  <div className="collaborator-add-modal-right-item-actions">
+                    <CollaboratorRoleSelect
+                      value={item.role}
+                      onChange={(role) => updateSelectedRole(item.collaborator_id, role)}
+                      assetType={assetType}
+                      size="small"
+                    />
+                    <Button
+                      icon={<IconClose />}
+                      theme="borderless"
+                      size="small"
+                      className="collaborator-add-modal-right-item-remove"
+                      onClick={() => removeSelected(item.collaborator_id)}
+                    />
+                  </div>
                 </div>
               ))}
             </div>
