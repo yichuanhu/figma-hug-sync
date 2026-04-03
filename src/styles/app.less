@@ -163,11 +163,20 @@ body {
       color: var(--semi-color-text-2);
     }
 
+    // Lucide 图标颜色与 Semi 图标保持一致
+    .semi-dropdown-item-icon > svg {
+      color: var(--semi-color-text-2);
+    }
+
     // 危险操作与其他操作保持一致
     &.semi-dropdown-item-danger {
       color: var(--semi-color-text-0);
       
       .semi-icon {
+        color: var(--semi-color-text-2);
+      }
+
+      .semi-dropdown-item-icon > svg {
         color: var(--semi-color-text-2);
       }
     }
