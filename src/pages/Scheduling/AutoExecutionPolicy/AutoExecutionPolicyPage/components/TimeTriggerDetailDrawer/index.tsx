@@ -43,6 +43,7 @@ interface TimeTriggerDetailDrawerProps {
   onToggleStatus: (trigger: LYTimeTriggerResponse, checked: boolean) => void;
   onRefresh?: () => void;
   onScrollToRow?: (id: string) => void;
+  initialTab?: string;
 }
 
 // Mock ExecuteRecord
