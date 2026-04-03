@@ -452,6 +452,17 @@ const TimeTriggerList = () => {
                 {t('timeTrigger.actions.edit')}
               </Dropdown.Item>
               <Dropdown.Item
+                icon={<Users size={16} strokeWidth={2} />}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedTrigger(record);
+                  setDetailInitialTab('collaborators');
+                  setDrawerVisible(true);
+                }}
+              >
+                {t('collaborator.actions.manageCollaborators')}
+              </Dropdown.Item>
+              <Dropdown.Item
                 icon={<IconDeleteStroked />}
                 type="danger"
                 onClick={(e) => {
