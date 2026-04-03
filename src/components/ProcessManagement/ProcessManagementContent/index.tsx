@@ -29,7 +29,7 @@ import {
   IconEditStroked,
   IconDeleteStroked,
 } from '@douyinfe/semi-icons';
-import { PlayCircle } from 'lucide-react';
+import { PlayCircle, Users } from 'lucide-react';
 import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
 import ProcessDetailDrawer from './components/ProcessDetailDrawer';
