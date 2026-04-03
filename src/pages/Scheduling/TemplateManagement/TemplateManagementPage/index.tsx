@@ -557,6 +557,7 @@ const TemplateManagementPage = () => {
             totalPages,
           }}
           onPageChange={handlePageChangeForDrawer}
+          initialTab={detailInitialTab}
         />
       </div>
   );

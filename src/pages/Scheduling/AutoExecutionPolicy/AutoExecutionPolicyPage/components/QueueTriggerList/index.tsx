@@ -616,6 +616,7 @@ const QueueTriggerList = () => {
         onEdit={handleOpenEditModal}
         onDelete={handleDeleteTrigger}
         onToggleStatus={handleToggleStatus}
+        initialTab={detailInitialTab}
       />
     </div>
   );

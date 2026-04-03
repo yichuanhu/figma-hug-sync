@@ -616,6 +616,7 @@ const TimeTriggerList = () => {
         onDelete={handleDeleteTrigger}
         onToggleStatus={handleToggleStatus}
         onRefresh={() => loadData(queryParams)}
+        initialTab={detailInitialTab}
       />
     </div>
   );
