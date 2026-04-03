@@ -68,7 +68,7 @@ const CollaboratorRoleSelect = ({
         return t(`collaborator.roles.${role}`) as unknown as React.ReactNode;
       }}
       renderOptionItem={(renderProps) => {
-        const { disabled: optDisabled, selected, label, value: optValue, onMouseEnter, onClick, style } = renderProps;
+        const { disabled: optDisabled, selected, focused, label, value: optValue, onMouseEnter, onClick, style } = renderProps;
         return (
           <div
             style={{
@@ -78,7 +78,7 @@ const CollaboratorRoleSelect = ({
               padding: '8px 12px',
               cursor: optDisabled ? 'not-allowed' : 'pointer',
             }}
-            className={`semi-select-option${selected ? ' semi-select-option-selected' : ''}${optDisabled ? ' semi-select-option-disabled' : ''}`}
+            className={`semi-select-option${selected ? ' semi-select-option-selected' : ''}${focused ? ' semi-select-option-focused' : ''}${optDisabled ? ' semi-select-option-disabled' : ''}`}
             onClick={onClick}
             onMouseEnter={onMouseEnter}
           >
