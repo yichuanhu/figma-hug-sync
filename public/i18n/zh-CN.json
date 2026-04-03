@@ -2446,7 +2446,7 @@
     "tabTitle": "协作者",
     "owner": "归属者",
     "empty": "暂无协作者",
-    "searchPlaceholder": "搜索协作者...",
+    "searchPlaceholder": "搜索协作者",
     "roles": {
       "MANAGER": "管理者",
       "MAINTAINER": "编辑者",
