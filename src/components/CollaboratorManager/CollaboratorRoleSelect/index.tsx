@@ -57,7 +57,7 @@ const CollaboratorRoleSelect = ({
           </span>
         </div>
         {selected && (
-          <IconTickStroked className="collaborator-role-option-check" />
+          <IconCheckStroked className="collaborator-role-option-check" />
         )}
       </div>
     );
