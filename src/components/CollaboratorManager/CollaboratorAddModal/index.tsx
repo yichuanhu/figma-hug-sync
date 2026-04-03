@@ -627,9 +627,9 @@ const CollaboratorAddModal = ({
                   <div className="collaborator-add-modal-right-item-info">
                     <span className="collaborator-add-modal-right-item-icon">
                       {item.collaborator_type === 'DEPARTMENT' ? (
-                        <Building2 size={20} strokeWidth={1.5} />
+                        <IconFlowChartStroked size="small" style={{ fontSize: 14 }} />
                       ) : (
-                        <UserCircle size={20} strokeWidth={1.5} />
+                        <User size={14} strokeWidth={2} />
                       )}
                     </span>
                     <Text size="small" ellipsis={{ showTooltip: true }} style={{ maxWidth: 100 }}>
