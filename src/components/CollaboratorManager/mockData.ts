@@ -65,26 +65,28 @@ const calculateFinalRole = (roles: CollaboratorRole[]): CollaboratorRole => {
 };
 
 // ============= Mock 用户与部门数据 =============
+// 注意：部分 user ID 与 CollaboratorAddModal 中的组织架构树 mock 数据保持一致
+// 以便在添加协作者弹窗中正确展示"已添加"状态
 
 const MOCK_USERS = {
   'user-001': { name: '张三', department: '来也科技-大客户业务中心-APA产品部-产品团队' },
-  'user-002': { name: '李四', department: '来也科技-大客户业务中心-北区BU-北区解决方案团队' },
+  'user-n-001': { name: 'David Liu', department: 'North China Regional Solution and Delivery Team' },
   'user-003': { name: '王五', department: '来也科技-大客户业务中心-APA产品部-APA-客户端团队' },
   'user-004': { name: '赵六', department: '来也科技-大客户业务中心-南区BU' },
-  'user-005': { name: '孙七', department: '来也科技-财务中心-会计部' },
-  'user-006': { name: '周八', department: '来也科技-技术中心-基础架构部' },
-  'user-007': { name: '吴九', department: '来也科技-人力资源中心-招聘部' },
-  'user-008': { name: '郑十', department: '来也科技-大客户业务中心-APA产品部-产品团队' },
-  'user-009': { name: '陈小明', department: '来也科技-运营中心-供应链管理部' },
+  'user-fin-001': { name: 'Yun Xie', department: 'Finance Department' },
+  'user-fe-001': { name: 'Charles Feng', department: 'Frontend Development Team' },
+  'user-hr-001': { name: 'Fei Liang', department: 'Human Resources Department' },
+  'user-pt-001': { name: 'Lihong Fan', department: 'Product Team' },
+  'user-dw-001': { name: 'Xuan Cai', department: 'Digital Worker Division' },
   'user-010': { name: '林晓华', department: '来也科技-法务部-合规团队' },
 };
 
 const MOCK_DEPARTMENTS = {
-  'dept-001': { name: '财务部' },
-  'dept-002': { name: 'APA产品部' },
-  'dept-003': { name: '人力资源中心' },
-  'dept-004': { name: '技术中心' },
-  'dept-005': { name: '运营中心' },
+  'dept-finance': { name: 'Finance Department' },
+  'dept-product': { name: 'APA Product Division' },
+  'dept-hr': { name: 'Human Resources Department' },
+  'dept-rd': { name: 'R&D Center' },
+  'dept-enterprise': { name: 'Enterprise Business Center' },
 };
 
 /** 初始化 Mock 协作者数据 - 根据资产类型和ID生成丰富的场景数据 */
