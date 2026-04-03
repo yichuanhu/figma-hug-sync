@@ -290,9 +290,10 @@ const CollaboratorTab = ({
         />
         {canManage && (
           <Button
-            icon={<UserPlus size={14} strokeWidth={2} />}
+            icon={<IconPlusStroked />}
+            theme="solid"
+            type="primary"
             onClick={() => setAddModalVisible(true)}
-            className="collaborator-tab-add-btn"
           >
             {t('collaborator.actions.add')}
           </Button>
