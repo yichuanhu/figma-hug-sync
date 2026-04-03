@@ -1,10 +1,9 @@
 import { useTranslation } from 'react-i18next';
-import { Select } from '@douyinfe/semi-ui';
-import { IconTick } from '@douyinfe/semi-icons';
+import { Select, Typography } from '@douyinfe/semi-ui';
 import type { CollaboratorRole, CollaboratorAssetType } from '@/api/index';
 import { ASSET_AVAILABLE_ROLES } from '@/api/index';
 
-import './index.less';
+const { Text } = Typography;
 
 interface CollaboratorRoleSelectProps {
   value: CollaboratorRole;
@@ -27,44 +26,18 @@ const CollaboratorRoleSelect = ({
 
   const availableRoles = ASSET_AVAILABLE_ROLES[assetType] || ['MANAGER', 'MAINTAINER', 'USER', 'OBSERVER'];
 
-  const renderOptionItem = (renderProps: {
-    disabled: boolean;
-    selected: boolean;
-    label: React.ReactNode;
-    value: string;
-    focused: boolean;
-    onMouseEnter: (e: React.MouseEvent) => void;
-    onClick: (e: React.MouseEvent) => void;
-    style?: React.CSSProperties;
-    className?: string;
-  }) => {
-    const { selected, value: optValue, focused, onMouseEnter, onClick, style, className } = renderProps;
-    const desc = t(`collaborator.roleDesc.${optValue}`);
-
-    return (
-      <div
-        className={`collaborator-role-option ${className || ''} ${focused ? 'collaborator-role-option-focused' : ''} ${selected ? 'collaborator-role-option-selected' : ''}`}
-        style={style}
-        onMouseEnter={onMouseEnter}
-        onClick={onClick}
-      >
-        <div className="collaborator-role-option-content">
-          <span className="collaborator-role-option-label">
-            {t(`collaborator.roles.${optValue}`)}
-          </span>
-          <span className="collaborator-role-option-desc">
-            {desc}
-          </span>
-        </div>
-        {selected && (
-          <IconTick className="collaborator-role-option-check" />
-        )}
-      </div>
-    );
-  };
-
   const removeSlot = onRemove ? (
-    <div className="collaborator-role-remove" onClick={onRemove}>
+    <div
+      style={{
+        padding: '8px 12px',
+        cursor: 'pointer',
+        color: 'var(--semi-color-danger)',
+        fontSize: 14,
+      }}
+      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--semi-color-fill-0)'; }}
+      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = ''; }}
+      onClick={onRemove}
+    >
       {t('collaborator.actions.remove')}
     </div>
   ) : undefined;
@@ -76,17 +49,21 @@ const CollaboratorRoleSelect = ({
       disabled={disabled}
       size={size}
       style={{ width: 100 }}
-      renderOptionItem={renderOptionItem}
+      dropdownStyle={{ width: 260 }}
+      outerBottomSlot={removeSlot}
       renderSelectedItem={(optionNode) => {
         const role = (optionNode as { value: string }).value;
         return t(`collaborator.roles.${role}`) as unknown as React.ReactNode;
       }}
-      dropdownStyle={{ width: 260 }}
-      outerBottomSlot={removeSlot}
     >
       {availableRoles.map((role) => (
-        <Select.Option key={role} value={role} label={t(`collaborator.roles.${role}`)}>
-          {t(`collaborator.roles.${role}`)}
+        <Select.Option key={role} value={role} label={t(`collaborator.roles.${role}`)} showTick>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <span>{t(`collaborator.roles.${role}`)}</span>
+            <Text size="small" type="tertiary" style={{ fontSize: 12, lineHeight: '18px' }}>
+              {t(`collaborator.roleDesc.${role}`)}
+            </Text>
+          </div>
         </Select.Option>
       ))}
     </Select>
