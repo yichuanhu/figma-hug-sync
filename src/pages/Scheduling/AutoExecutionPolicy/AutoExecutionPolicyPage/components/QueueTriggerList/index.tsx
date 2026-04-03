@@ -267,6 +267,7 @@ const QueueTriggerList = () => {
   // openDetails drawer
   const handleOpenDrawer = (trigger: LYQueueTriggerResponse) => {
     setSelectedTrigger(trigger);
+    setDetailInitialTab('basic');
     setDrawerVisible(true);
   };
 
