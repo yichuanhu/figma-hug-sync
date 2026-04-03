@@ -303,6 +303,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
   // 打开流程详情抽屉
   const openProcessDetail = (record: LYProcessResponse) => {
     setSelectedProcess(record);
+    setDetailInitialTab('detail');
     if (!detailDrawerVisible) {
       setDetailDrawerVisible(true);
     }
