@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import { Select } from '@douyinfe/semi-ui';
+import { Select, Divider } from '@douyinfe/semi-ui';
 import { Typography } from '@douyinfe/semi-ui';
+import { IconDeleteStroked } from '@douyinfe/semi-icons';
 import type { CollaboratorRole, CollaboratorAssetType } from '@/api/index';
 import { ASSET_AVAILABLE_ROLES } from '@/api/index';
 
@@ -12,6 +13,7 @@ interface CollaboratorRoleSelectProps {
   assetType: CollaboratorAssetType;
   disabled?: boolean;
   size?: 'small' | 'default' | 'large';
+  onRemove?: () => void;
 }
 
 const CollaboratorRoleSelect = ({
@@ -20,6 +22,7 @@ const CollaboratorRoleSelect = ({
   assetType,
   disabled = false,
   size = 'small',
+  onRemove,
 }: CollaboratorRoleSelectProps) => {
   const { t } = useTranslation();
 
@@ -68,6 +71,27 @@ const CollaboratorRoleSelect = ({
     );
   };
 
+  const removeSlot = onRemove ? (
+    <>
+      <Divider style={{ margin: 0 }} />
+      <div
+        style={{
+          padding: '8px 12px',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 6,
+          color: 'var(--semi-color-danger)',
+          fontSize: 13,
+        }}
+        onClick={onRemove}
+      >
+        <IconDeleteStroked size="small" style={{ fontSize: 14 }} />
+        {t('collaborator.actions.remove')}
+      </div>
+    </>
+  ) : undefined;
+
   return (
     <Select
       value={value}
@@ -78,6 +102,7 @@ const CollaboratorRoleSelect = ({
       style={{ width: 100 }}
       renderOptionItem={renderOptionItem}
       dropdownStyle={{ width: 260 }}
+      outerBottomSlot={removeSlot}
     />
   );
 };
