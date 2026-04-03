@@ -3127,13 +3127,26 @@
       "role": "Role"
     },
     "source": {
-      "inheritedFromCount": "{{count}} inherited permissions"
+      "inheritedFromCount": "{{count}} inherited permissions",
+      "inheritedFromProcess": "Inherited from process \"{{name}}\"",
+      "inheritedFromGroup": "Inherited from robot group \"{{name}}\"",
+      "direct": "Direct",
+      "department": "Department",
+      "inheritedHierarchy": "Hierarchy inherited",
+      "inheritedDependency": "Dependency inherited"
     },
     "removeConfirm": {
       "title": "Confirm Remove Collaborator",
-      "content": "Are you sure you want to remove collaborator \"{{name}}\"?"
+      "content": "Are you sure you want to remove collaborator \"{{name}}\"?",
+      "contentWithCascade": "Are you sure you want to remove collaborator \"{{name}}\"? This will also remove inherited permissions from {{count}} dependent assets."
     },
     "updateSuccess": "Role updated successfully",
-    "removeSuccess": "Collaborator removed"
+    "updateSuccessWithCascade": "Role updated, synced to {{count}} dependent assets",
+    "removeSuccess": "Collaborator removed",
+    "removeSuccessWithCascade": "Collaborator removed, also removed from {{count}} dependent assets",
+    "cascade": {
+      "addHint": "Will also add inherited permissions to {{count}} dependent assets",
+      "removeHint": "Will also remove inherited permissions from {{count}} dependent assets"
+    }
   }
 }
