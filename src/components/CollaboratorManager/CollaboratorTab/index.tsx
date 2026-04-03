@@ -164,7 +164,7 @@ const CollaboratorTab = ({
         content: t('collaborator.removeConfirm.content', { name: record.collaborator_name }),
         okText: t('common.confirm'),
         cancelText: t('common.cancel'),
-        okButtonProps: { type: 'danger' },
+        okButtonProps: { type: 'primary', theme: 'solid' },
         onOk: async () => {
           setCollaborators((prev) => prev.filter((c) => c.id !== record.id));
           Toast.success(t('collaborator.removeSuccess'));
