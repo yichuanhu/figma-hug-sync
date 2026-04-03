@@ -39,6 +39,8 @@ import type {
 import CreateTemplateModal from './components/CreateTemplateModal';
 import EditTemplateModal from './components/EditTemplateModal';
 import TemplateDetailDrawer from './components/TemplateDetailDrawer';
+import CollaboratorAddModal from '@/components/CollaboratorManager/CollaboratorAddModal';
+import type { CollaboratorAssetType } from '@/api';
 import './index.less';
 
 const { Title, Text } = Typography;
