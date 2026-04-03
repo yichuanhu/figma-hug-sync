@@ -29,13 +29,15 @@ import {
   IconPlayCircle,
   IconDeleteStroked,
 } from '@douyinfe/semi-icons';
+import { UserPlus } from 'lucide-react';
 // AppLayout removed - now handled at route level
 import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
 import ProcessDetailDrawer from './components/ProcessDetailDrawer';
 import { useOpenProcess } from './hooks/useOpenProcess';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
-import type { LYProcessResponse, GetProcessesParams, LYListResponseLYProcessResponse } from '@/api';
+import CollaboratorAddModal from '@/components/CollaboratorManager/CollaboratorAddModal';
+import type { LYProcessResponse, GetProcessesParams, LYListResponseLYProcessResponse, CollaboratorAssetType } from '@/api';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -235,6 +237,8 @@ const ProcessDevelopment = () => {
   }, [location.state]);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
+  const [collaboratorAddVisible, setCollaboratorAddVisible] = useState(false);
+  const [collaboratorTargetProcess, setCollaboratorTargetProcess] = useState<LYProcessResponse | null>(null);
 
   // List响应Data - 直接usingAPI LYListResponseLYProcessResponse
   const [listResponse, setListResponse] = useState<LYListResponseLYProcessResponse>({
@@ -478,6 +482,16 @@ const ProcessDevelopment = () => {
                 {t('common.run')}
               </Dropdown.Item>
               <Dropdown.Item
+                icon={<UserPlus size={14} strokeWidth={2} />}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCollaboratorTargetProcess(record);
+                  setCollaboratorAddVisible(true);
+                }}
+              >
+                {t('collaborator.actions.addCollaborator')}
+              </Dropdown.Item>
+              <Dropdown.Item
                 icon={<IconDeleteStroked />}
                 type="danger"
                 onClick={(e) => {
@@ -643,6 +657,15 @@ const ProcessDevelopment = () => {
 
       {/* ProcessConfirmModal */}
       <OpenProcessModal />
+
+      <CollaboratorAddModal
+        visible={collaboratorAddVisible}
+        onClose={() => setCollaboratorAddVisible(false)}
+        onSuccess={() => setCollaboratorAddVisible(false)}
+        assetType={'PROCESS' as CollaboratorAssetType}
+        assetId={collaboratorTargetProcess?.id || ''}
+        existingCollaborators={[]}
+      />
       </div>
   );
 };

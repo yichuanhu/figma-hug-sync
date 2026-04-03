@@ -31,6 +31,7 @@ import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import ExpandableText from '@/components/ExpandableText';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
+import CollaboratorTab from '@/components/CollaboratorManager/CollaboratorTab';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -470,6 +471,14 @@ const ProcessDetailDrawer = ({
               </div>
             </div>
           )}
+        </TabPane>
+        <TabPane tab={t('collaborator.tabTitle')} itemKey="collaborators">
+          <CollaboratorTab
+            assetType="PROCESS"
+            assetId={processData.id}
+            context="development"
+            canManage={true}
+          />
         </TabPane>
       </Tabs>
 
