@@ -3085,39 +3085,14 @@
     "searchPlaceholder": "Search collaborators...",
     "roles": {
       "MANAGER": "Manager",
-      "MAINTAINER": "Maintainer",
+      "MAINTAINER": "Editor",
       "USER": "User",
       "OBSERVER": "Observer"
     },
-    "type": {
-      "USER": "Individual",
-      "DEPARTMENT": "Department"
-    },
-    "source": {
-      "direct": "Direct",
-      "inherited": "Inherited",
-      "inheritedFromCount": "Inherited from {{count}} sources"
-    },
-    "table": {
-      "name": "Name",
-      "type": "Type",
-      "role": "Role",
-      "source": "Source"
-    },
-    "actions": {
-      "add": "Add Collaborator",
-      "remove": "Remove",
-      "addCollaborator": "Add Collaborator"
-    },
-    "updateSuccess": "Role updated successfully",
-    "removeSuccess": "Collaborator removed",
-    "removeConfirm": {
-      "title": "Remove Collaborator",
-      "content": "Are you sure you want to remove collaborator \"{{name}}\"? They will lose access to this asset."
-    },
+...
     "roleDesc": {
       "MANAGER": "Full control: view, edit, use, and manage collaborators",
-      "MAINTAINER": "Edit and use assets, but cannot manage collaborators",
+      "MAINTAINER": "Can edit and use assets, but cannot manage collaborators",
       "USER": "Can use/reference assets, but cannot edit",
       "OBSERVER": "Can only view asset info and collaborator list"
     },

@@ -28,17 +28,20 @@ const CollaboratorRoleSelect = ({
 
   const removeSlot = onRemove ? (
     <div
-      style={{
-        padding: '8px 12px',
-        cursor: 'pointer',
-        color: 'var(--semi-color-danger)',
-        fontSize: 14,
-      }}
-      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--semi-color-fill-0)'; }}
-      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = ''; }}
+      className="semi-select-option"
       onClick={onRemove}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onRemove();
+        }
+      }}
     >
-      {t('collaborator.actions.remove')}
+      <span className="semi-select-option-text" style={{ color: 'var(--semi-color-danger)' }}>
+        {t('collaborator.actions.remove')}
+      </span>
     </div>
   ) : undefined;
 
@@ -49,7 +52,7 @@ const CollaboratorRoleSelect = ({
       disabled={disabled}
       size={size}
       style={{ width: 100 }}
-      dropdownStyle={{ width: 260 }}
+      dropdownStyle={{ width: 280 }}
       outerBottomSlot={removeSlot}
       renderSelectedItem={(optionNode) => {
         const role = (optionNode as { value: string }).value;
@@ -60,7 +63,7 @@ const CollaboratorRoleSelect = ({
         <Select.Option key={role} value={role} label={t(`collaborator.roles.${role}`)} showTick>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <span>{t(`collaborator.roles.${role}`)}</span>
-            <Text size="small" type="tertiary" style={{ fontSize: 12, lineHeight: '18px' }}>
+            <Text size="small" type="tertiary" style={{ lineHeight: '18px' }}>
               {t(`collaborator.roleDesc.${role}`)}
             </Text>
           </div>

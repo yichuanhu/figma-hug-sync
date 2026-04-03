@@ -2449,39 +2449,14 @@
     "searchPlaceholder": "搜索协作者...",
     "roles": {
       "MANAGER": "管理者",
-      "MAINTAINER": "维护者",
+      "MAINTAINER": "编辑者",
       "USER": "使用者",
       "OBSERVER": "观察者"
     },
-    "type": {
-      "USER": "个人",
-      "DEPARTMENT": "部门"
-    },
-    "source": {
-      "direct": "直接分配",
-      "inherited": "继承",
-      "inheritedFromCount": "继承自{{count}}个来源"
-    },
-    "table": {
-      "name": "名称",
-      "type": "类型",
-      "role": "角色",
-      "source": "权限来源"
-    },
-    "actions": {
-      "add": "添加协作者",
-      "remove": "移除",
-      "addCollaborator": "添加协作者"
-    },
-    "updateSuccess": "角色更新成功",
-    "removeSuccess": "协作者已移除",
-    "removeConfirm": {
-      "title": "移除协作者",
-      "content": "确定要移除协作者「{{name}}」吗？移除后该用户将失去对此资产的访问权限。"
-    },
+...
     "roleDesc": {
       "MANAGER": "完全控制：查看、修改、使用、管理协作者",
-      "MAINTAINER": "修改和使用资产，但不能管理协作者",
+      "MAINTAINER": "可编辑和使用资产，但不能管理协作者",
       "USER": "可以使用/引用资产，但不能修改",
       "OBSERVER": "仅能查看资产信息和协作者列表"
     },
