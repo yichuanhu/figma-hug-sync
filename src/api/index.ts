@@ -3377,12 +3377,21 @@ export type CollaboratorAssetType =
   | 'TRIGGER'
   | 'TASK_TEMPLATE';
 
+/** 权限来源分类 */
+export type CollaboratorSourceType =
+  | 'DIRECT'
+  | 'DEPARTMENT'
+  | 'INHERITED_HIERARCHY'
+  | 'INHERITED_DEPENDENCY';
+
 /** 继承来源 */
 export interface CollaboratorInheritanceSource {
   asset_type: CollaboratorAssetType;
   asset_id: string;
   asset_name: string;
   role: CollaboratorRole;
+  /** 继承类型：层级继承 or 依赖继承 */
+  source_type: 'INHERITED_HIERARCHY' | 'INHERITED_DEPENDENCY';
 }
 
 /** 协作者响应 */
@@ -3401,6 +3410,8 @@ export interface AssetCollaborator {
   is_owner: boolean;
   /** 权限来源: DIRECT=直接分配, INHERITED=继承 */
   source: 'DIRECT' | 'INHERITED';
+  /** 详细来源分类 */
+  source_types?: CollaboratorSourceType[];
   inheritance_sources?: CollaboratorInheritanceSource[];
   /** MAX计算后的最终权限 */
   final_role: CollaboratorRole;
@@ -3428,6 +3439,16 @@ export interface CollaboratorUpdateRequest {
   role: CollaboratorRole;
 }
 
+/** 资产依赖关系 */
+export interface AssetDependency {
+  parent_type: CollaboratorAssetType;
+  parent_id: string;
+  parent_name: string;
+  child_type: CollaboratorAssetType;
+  child_id: string;
+  child_name: string;
+}
+
 /** 角色权限矩阵 */
 export const COLLABORATOR_ROLE_PRIORITY: Record<CollaboratorRole, number> = {
   OBSERVER: 1,
@@ -3447,4 +3468,30 @@ export const ASSET_AVAILABLE_ROLES: Record<CollaboratorAssetType, CollaboratorRo
   WORKER_GROUP: ['MANAGER', 'MAINTAINER', 'USER', 'OBSERVER'],
   TRIGGER: ['MANAGER', 'MAINTAINER', 'OBSERVER'],
   TASK_TEMPLATE: ['MANAGER', 'MAINTAINER', 'USER', 'OBSERVER'],
+};
+
+/**
+ * 继承规则：定义资产类型间的继承关系
+ * key = 子资产类型，value = 可继承的父资产类型列表及继承类型
+ */
+export const INHERITANCE_RULES: Record<
+  string,
+  { parent_type: CollaboratorAssetType; source_type: 'INHERITED_HIERARCHY' | 'INHERITED_DEPENDENCY' }[]
+> = {
+  // 依赖继承：参数/凭据/队列/文件 继承自流程
+  PARAMETER: [{ parent_type: 'PROCESS', source_type: 'INHERITED_DEPENDENCY' }],
+  CREDENTIAL: [{ parent_type: 'PROCESS', source_type: 'INHERITED_DEPENDENCY' }],
+  QUEUE: [{ parent_type: 'PROCESS', source_type: 'INHERITED_DEPENDENCY' }],
+  FILE: [{ parent_type: 'PROCESS', source_type: 'INHERITED_DEPENDENCY' }],
+  // 层级继承：机器人 继承自机器人组
+  WORKER: [{ parent_type: 'WORKER_GROUP', source_type: 'INHERITED_HIERARCHY' }],
+};
+
+/**
+ * 级联规则：定义资产类型的下游依赖
+ * key = 父资产类型，value = 依赖的子资产类型列表
+ */
+export const CASCADE_RULES: Record<string, CollaboratorAssetType[]> = {
+  PROCESS: ['PARAMETER', 'CREDENTIAL', 'QUEUE', 'FILE'],
+  WORKER_GROUP: ['WORKER'],
 };
