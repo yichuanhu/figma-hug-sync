@@ -454,8 +454,8 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
                 <Dropdown.Item icon={<History size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleViewUsage(record); }}>
                   {t('credential.actions.viewUsage')}
                 </Dropdown.Item>
-                <Dropdown.Item icon={<Users size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); setSelectedCredential(record); setInitialDetailTab('collaborators'); setDetailDrawerVisible(true); }}>
-                  {t('collaborator.actions.manageCollaborators')}
+                <Dropdown.Item icon={<UserPlus size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); setAddCollaboratorAssetId(record.credential_id); setAddCollaboratorModalVisible(true); }}>
+                  {t('collaborator.actions.addCollaborator')}
                 </Dropdown.Item>
                 {canDelete && (
                   <Dropdown.Item icon={<IconDeleteStroked />} type="danger" onClick={(e) => { e.stopPropagation(); handleDelete(record); }}>
