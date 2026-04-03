@@ -472,6 +472,14 @@ const ProcessDetailDrawer = ({
             </div>
           )}
         </TabPane>
+        <TabPane tab={t('collaborator.tabTitle')} itemKey="collaborators">
+          <CollaboratorTab
+            assetType="PROCESS"
+            assetId={processData.id}
+            context="development"
+            canManage={true}
+          />
+        </TabPane>
       </Tabs>
 
       <UploadVersionModal visible={uploadVersionModalVisible} onCancel={() => setUploadVersionModalVisible(false)} processData={processData} onSuccess={() => {}} />
