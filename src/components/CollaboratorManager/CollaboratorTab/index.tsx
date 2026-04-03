@@ -15,7 +15,7 @@ import {
   IconFlowChartStroked,
   IconPlusStroked,
 } from '@douyinfe/semi-icons';
-import { User } from 'lucide-react';
+import { User, UserPlus } from 'lucide-react';
 import type {
   AssetCollaborator,
   CollaboratorAssetType,
