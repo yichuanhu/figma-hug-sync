@@ -1029,6 +1029,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
           const row = document.getElementById(`worker-row-${id}`);
           row?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }}
+        initialTab={detailInitialTab}
       />
 
       {/* Modal */}
