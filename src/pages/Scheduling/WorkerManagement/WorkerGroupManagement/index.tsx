@@ -137,6 +137,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
   // Drawer and ModalStatus
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState<LYWorkerGroupResponse | null>(null);
+  const [detailInitialTab, setDetailInitialTab] = useState('basicInfo');
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingGroup, setEditingGroup] = useState<LYWorkerGroupResponse | null>(null);
