@@ -673,6 +673,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
         }}
         onPageChange={handleDrawerPageChange}
         context={context}
+        initialTab={detailInitialTab}
       />
 
       {/* 打开流程确认弹窗 - 仅开发中心 */}
