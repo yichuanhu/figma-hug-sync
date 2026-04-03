@@ -52,7 +52,7 @@ export const useCollaboratorPermission = (
     , safeSourceDetails[0].role);
   }, [safeSourceDetails]);
 
-  const directRole = sourceDetails.find((s) => s.sourceType === 'DIRECT')?.role || null;
+  const directRole = safeSourceDetails.find((s) => s.sourceType === 'DIRECT')?.role || null;
   const priority = finalRole ? COLLABORATOR_ROLE_PRIORITY[finalRole] : 0;
 
   return {
