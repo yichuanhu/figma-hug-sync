@@ -58,16 +58,27 @@ const CollaboratorRoleSelect = ({
         const role = (optionNode as { value: string }).value;
         return t(`collaborator.roles.${role}`) as unknown as React.ReactNode;
       }}
-    >
-      {availableRoles.map((role) => (
-        <Select.Option key={role} value={role} label={t(`collaborator.roles.${role}`)} showTick>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <span>{t(`collaborator.roles.${role}`)}</span>
+      renderOptionItem={({ disabled: optDisabled, selected, label, value: optValue, ...rest }) => (
+        <div
+          className={`semi-select-option${selected ? ' semi-select-option-selected' : ''}${optDisabled ? ' semi-select-option-disabled' : ''}`}
+          style={{ display: 'flex', alignItems: 'flex-start', padding: '8px 12px', cursor: optDisabled ? 'not-allowed' : 'pointer' }}
+          onClick={() => !optDisabled && rest.onMouseEnter && onChange(optValue as CollaboratorRole)}
+          {...rest}
+        >
+          <div style={{ width: 20, flexShrink: 0, marginTop: 2 }}>
+            {selected && <span className="semi-select-option-icon semi-select-option-icon-tick" />}
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1 }}>
+            <span>{label}</span>
             <Text size="small" type="tertiary" style={{ lineHeight: '18px' }}>
-              {t(`collaborator.roleDesc.${role}`)}
+              {t(`collaborator.roleDesc.${optValue}`)}
             </Text>
           </div>
-        </Select.Option>
+        </div>
+      )}
+    >
+      {availableRoles.map((role) => (
+        <Select.Option key={role} value={role} label={t(`collaborator.roles.${role}`)} showTick={false} />
       ))}
     </Select>
   );
