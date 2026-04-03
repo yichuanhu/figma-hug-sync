@@ -311,12 +311,12 @@ const CollaboratorAddModal = ({
     existingCollaborators
       .filter((c) => c.source === 'DIRECT')
       .forEach((c) => map.set(c.collaborator_id, c.role));
-    // Mock: 模拟已授权的用户和部门
+    // Mock: simulate pre-authorized users and departments
     if (map.size === 0) {
-      map.set('user-dw-001', 'MANAGER' as CollaboratorRole); // 蔡炫 - 管理者
-      map.set('user-dw-002', 'MAINTAINER' as CollaboratorRole); // 黄令辉 - 维护者
-      map.set('dept-digital-worker', 'USER' as CollaboratorRole); // 数字员工部 - 使用者
-      map.set('user-fe-001', 'OBSERVER' as CollaboratorRole); // 冯超 - 观察者
+      map.set('user-dw-001', 'MANAGER' as CollaboratorRole); // Xuan Cai - Manager
+      map.set('user-dw-002', 'MAINTAINER' as CollaboratorRole); // Linghui Huang - Maintainer
+      map.set('dept-digital-worker', 'USER' as CollaboratorRole); // Digital Worker Division - User
+      map.set('user-fe-001', 'OBSERVER' as CollaboratorRole); // Charles Feng - Observer
     }
     return map;
   }, [existingCollaborators]);
