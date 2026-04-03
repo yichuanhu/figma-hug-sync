@@ -235,6 +235,7 @@ const TemplateManagementPage = () => {
   // openDetails drawer
   const handleOpenDrawer = (template: LYExecutionTemplateResponse) => {
     setSelectedTemplate(template);
+    setDetailInitialTab('basicInfo');
     setDrawerVisible(true);
   };
 
