@@ -452,6 +452,7 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
                       value={formApi?.getValue('targetId')}
                       onChange={(v) => formApi?.setValue('targetId', v)}
                       placeholder={t('task.createModal.targetPlaceholder')}
+                      enablePermissionCheck
                     />
                     <Form.Input
                       field="targetId"
