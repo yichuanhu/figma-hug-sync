@@ -283,7 +283,7 @@ const CollaboratorTab = ({
           return (
             <Popover
               content={popoverContent}
-              position="topRight"
+              position="top"
               showArrow
               trigger="hover"
             >
