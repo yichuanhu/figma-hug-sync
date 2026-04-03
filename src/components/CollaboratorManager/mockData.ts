@@ -118,15 +118,15 @@ const initMockData = (assetType: CollaboratorAssetType, assetId: string): AssetC
     final_role: 'MANAGER',
   });
 
-  // ===== 场景2: 直接分配的编辑者 =====
+  // ===== 场景2: 直接分配的编辑者 (与org树匹配: David Liu) =====
   base.push({
     id: `${assetId}-collab-002`,
     asset_type: assetType,
     asset_id: assetId,
     collaborator_type: 'USER',
-    collaborator_id: 'user-002',
-    collaborator_name: MOCK_USERS['user-002'].name,
-    department_name: MOCK_USERS['user-002'].department,
+    collaborator_id: 'user-n-001',
+    collaborator_name: MOCK_USERS['user-n-001'].name,
+    department_name: MOCK_USERS['user-n-001'].department,
     role: 'MAINTAINER',
     added_by: 'user-001',
     added_by_name: MOCK_USERS['user-001'].name,
@@ -137,15 +137,15 @@ const initMockData = (assetType: CollaboratorAssetType, assetId: string): AssetC
     final_role: 'MAINTAINER',
   });
 
-  // ===== 场景3: 直接分配的使用者 =====
+  // ===== 场景3: 直接分配的使用者 (与org树匹配: Yun Xie) =====
   base.push({
     id: `${assetId}-collab-003`,
     asset_type: assetType,
     asset_id: assetId,
     collaborator_type: 'USER',
-    collaborator_id: 'user-005',
-    collaborator_name: MOCK_USERS['user-005'].name,
-    department_name: MOCK_USERS['user-005'].department,
+    collaborator_id: 'user-fin-001',
+    collaborator_name: MOCK_USERS['user-fin-001'].name,
+    department_name: MOCK_USERS['user-fin-001'].department,
     role: 'USER',
     added_by: 'user-001',
     added_by_name: MOCK_USERS['user-001'].name,
@@ -156,15 +156,15 @@ const initMockData = (assetType: CollaboratorAssetType, assetId: string): AssetC
     final_role: 'USER',
   });
 
-  // ===== 场景4: 直接分配的观察者 =====
+  // ===== 场景4: 直接分配的观察者 (与org树匹配: Charles Feng) =====
   base.push({
     id: `${assetId}-collab-004`,
     asset_type: assetType,
     asset_id: assetId,
     collaborator_type: 'USER',
-    collaborator_id: 'user-010',
-    collaborator_name: MOCK_USERS['user-010'].name,
-    department_name: MOCK_USERS['user-010'].department,
+    collaborator_id: 'user-fe-001',
+    collaborator_name: MOCK_USERS['user-fe-001'].name,
+    department_name: MOCK_USERS['user-fe-001'].department,
     role: 'OBSERVER',
     added_by: 'user-001',
     added_by_name: MOCK_USERS['user-001'].name,
@@ -175,14 +175,14 @@ const initMockData = (assetType: CollaboratorAssetType, assetId: string): AssetC
     final_role: 'OBSERVER',
   });
 
-  // ===== 场景5: 部门协作者（整个部门拥有权限） =====
+  // ===== 场景5: 部门协作者（与org树匹配: Finance Department） =====
   base.push({
     id: `${assetId}-collab-005`,
     asset_type: assetType,
     asset_id: assetId,
     collaborator_type: 'DEPARTMENT',
-    collaborator_id: 'dept-001',
-    collaborator_name: MOCK_DEPARTMENTS['dept-001'].name,
+    collaborator_id: 'dept-finance',
+    collaborator_name: MOCK_DEPARTMENTS['dept-finance'].name,
     role: 'USER',
     added_by: 'user-001',
     added_by_name: MOCK_USERS['user-001'].name,
@@ -193,14 +193,14 @@ const initMockData = (assetType: CollaboratorAssetType, assetId: string): AssetC
     final_role: 'USER',
   });
 
-  // ===== 场景6: 另一个部门协作者（观察者权限） =====
+  // ===== 场景6: 另一个部门协作者（与org树匹配: R&D Center） =====
   base.push({
     id: `${assetId}-collab-006`,
     asset_type: assetType,
     asset_id: assetId,
     collaborator_type: 'DEPARTMENT',
-    collaborator_id: 'dept-004',
-    collaborator_name: MOCK_DEPARTMENTS['dept-004'].name,
+    collaborator_id: 'dept-rd',
+    collaborator_name: MOCK_DEPARTMENTS['dept-rd'].name,
     role: 'OBSERVER',
     added_by: 'user-001',
     added_by_name: MOCK_USERS['user-001'].name,
