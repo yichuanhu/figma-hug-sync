@@ -2480,6 +2480,18 @@
     "dispatch": {
       "noPermission": "无权限",
       "noPermissionTip": "您对该执行目标没有使用者（USER）及以上权限，无法选择"
+    },
+    "actions": {
+      "remove": "移除",
+      "add": "添加协作者",
+      "addCollaborator": "添加协作者"
+    },
+    "table": {
+      "name": "名称",
+      "role": "角色"
+    },
+    "source": {
+      "inheritedFromCount": "共 {{count}} 条继承权限"
     }
   }
 }
