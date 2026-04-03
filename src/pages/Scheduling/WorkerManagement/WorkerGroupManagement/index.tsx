@@ -30,7 +30,8 @@ import WorkerGroupDetailDrawer from './components/WorkerGroupDetailDrawer';
 import CreateWorkerGroupModal from './components/CreateWorkerGroupModal';
 import EditWorkerGroupModal from './components/EditWorkerGroupModal';
 import AddMembersModal from './components/AddMembersModal';
-import type { LYWorkerGroupResponse, LYListResponseLYWorkerGroupResponse, GetWorkerGroupsParams } from '@/api';
+import type { LYWorkerGroupResponse, LYListResponseLYWorkerGroupResponse, GetWorkerGroupsParams, CollaboratorAssetType } from '@/api';
+import CollaboratorAddModal from '@/components/CollaboratorManager/CollaboratorAddModal';
 import './index.less';
 
 const { Title, Text } = Typography;
