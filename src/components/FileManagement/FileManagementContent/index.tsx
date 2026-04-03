@@ -456,6 +456,17 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
               >
                 {t('file.actions.download')}
               </Dropdown.Item>
+              <Dropdown.Item
+                icon={<Users size={16} strokeWidth={2} />}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedFile(record);
+                  setDetailInitialTab('collaborators');
+                  setDetailDrawerVisible(true);
+                }}
+              >
+                {t('collaborator.actions.manageCollaborators')}
+              </Dropdown.Item>
               {context === 'development' && !record.is_published && (
                 <Dropdown.Item
                   icon={<IconDeleteStroked />}
