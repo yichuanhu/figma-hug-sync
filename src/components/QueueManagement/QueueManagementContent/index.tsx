@@ -406,6 +406,9 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
                     {t('common.edit')}
                   </Dropdown.Item>
                 )}
+                <Dropdown.Item icon={<Users size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); setSelectedQueue(record); setDetailInitialTab('collaborators'); setDetailDrawerVisible(true); }}>
+                  {t('collaborator.actions.manageCollaborators')}
+                </Dropdown.Item>
                 {canDelete && (
                   <Dropdown.Item 
                     icon={<IconDeleteStroked />}
