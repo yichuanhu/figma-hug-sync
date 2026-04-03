@@ -187,40 +187,30 @@ const CollaboratorTab = ({
     });
   }, []);
 
-  // 渲染权限来源
+  // 渲染权限来源（仅继承时展示）
   const renderSource = (record: AssetCollaborator) => {
-    if (record.source === 'DIRECT') {
-      return (
-        <Tag size="small" color="blue" type="light">{t('collaborator.source.direct')}</Tag>
-      );
-    }
+    if (record.source !== 'INHERITED') return null;
     const sources = record.inheritance_sources || [];
+    if (sources.length === 0) return null;
     const isExpanded = expandedRows.has(record.id);
     return (
-      <div className="collaborator-tab-source-inline">
-        <Tag size="small" color="orange" type="light">
-          {t('collaborator.source.inherited')}
-        </Tag>
-        {sources.length > 0 && (
-          <div className="collaborator-tab-source-detail">
-            {(isExpanded ? sources : sources.slice(0, 1)).map((src, idx) => (
-              <div key={idx} className="collaborator-tab-source-detail-item">
-                <Text size="small" type="tertiary">
-                  {src.asset_name} → {t(`collaborator.roles.${src.role}`)}
-                </Text>
-              </div>
-            ))}
-            {sources.length > 1 && (
-              <span
-                className="collaborator-tab-source-detail-toggle"
-                onClick={() => toggleExpand(record.id)}
-              >
-                {isExpanded
-                  ? t('common.collapse')
-                  : t('collaborator.source.inheritedFromCount', { count: sources.length })}
-              </span>
-            )}
+      <div className="collaborator-tab-source-detail">
+        {(isExpanded ? sources : sources.slice(0, 1)).map((src, idx) => (
+          <div key={idx} className="collaborator-tab-source-detail-item">
+            <Text size="small" type="tertiary">
+              {src.asset_name} → {t(`collaborator.roles.${src.role}`)}
+            </Text>
           </div>
+        ))}
+        {sources.length > 1 && (
+          <span
+            className="collaborator-tab-source-detail-toggle"
+            onClick={() => toggleExpand(record.id)}
+          >
+            {isExpanded
+              ? t('common.collapse')
+              : t('collaborator.source.inheritedFromCount', { count: sources.length })}
+          </span>
         )}
       </div>
     );
