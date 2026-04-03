@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Select } from '@douyinfe/semi-ui';
-import { IconCheckStroked } from '@douyinfe/semi-icons';
+import { IconTick } from '@douyinfe/semi-icons';
 import type { CollaboratorRole, CollaboratorAssetType } from '@/api/index';
 import { ASSET_AVAILABLE_ROLES } from '@/api/index';
 
