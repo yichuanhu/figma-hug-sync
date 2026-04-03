@@ -102,7 +102,7 @@ const fetchGroupMembers = async (params: GetWorkerGroupMembersParams): Promise<L
 
 const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
   visible, onClose, groupData, onEdit, onDelete, onRefresh,
-  dataList = [], onNavigate, pagination, onPageChange, onNavigateToWorkerDetail, onScrollToRow,
+  dataList = [], onNavigate, pagination, onPageChange, onNavigateToWorkerDetail, onScrollToRow, initialTab = 'basicInfo',
 }) => {
   const { t } = useTranslation();
   const { canManage: canManageCollaborators } = useCollaboratorPermission('WORKER_GROUP', groupData?.id);
