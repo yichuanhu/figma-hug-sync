@@ -106,6 +106,11 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
 }) => {
   const { t } = useTranslation();
   const { canManage: canManageCollaborators } = useCollaboratorPermission('WORKER_GROUP', groupData?.id);
+  const [activeTab, setActiveTab] = useState(initialTab);
+
+  useEffect(() => {
+    if (visible && groupData) setActiveTab(initialTab);
+  }, [visible, groupData?.id, initialTab]);
 
   const [membersLoading, setMembersLoading] = useState(false);
   const [membersResponse, setMembersResponse] = useState<LYListResponseLYWorkerGroupMemberResponse>({ range: { offset: 0, size: 20, total: 0 }, list: [] });
