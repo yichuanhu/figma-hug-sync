@@ -14,7 +14,18 @@
   }
 
   &-search {
-    width: 240px;
+    width: 320px;
+  }
+
+  &-add-btn {
+    background-color: rgb(var(--semi-grey-9)) !important;
+    border-color: rgb(var(--semi-grey-9)) !important;
+    color: #fff !important;
+
+    &:hover {
+      background-color: rgb(var(--semi-grey-8)) !important;
+      border-color: rgb(var(--semi-grey-8)) !important;
+    }
   }
 
   &-table {
@@ -24,16 +35,22 @@
 
   &-name-cell {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 8px;
+    padding: 4px 0;
 
     &-icon {
       color: var(--semi-color-text-2);
       flex-shrink: 0;
+      margin-top: 2px;
     }
 
     &-info {
       min-width: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
     }
 
     &-label {
@@ -41,14 +58,41 @@
       align-items: center;
       gap: 4px;
     }
+
+    &-source {
+      margin-top: 2px;
+    }
   }
 
   &-owner-tag {
     font-size: 12px;
   }
 
+  &-role-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+
+    &-remove {
+      cursor: pointer;
+      color: var(--semi-color-danger);
+      font-size: 12px;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  &-source-inline {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
   &-source-detail {
-    margin-top: 4px;
+    margin-top: 2px;
 
     &-item {
       display: flex;

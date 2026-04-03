@@ -5,7 +5,6 @@ import {
   Button,
   Input,
   Tag,
-  Tooltip,
   Typography,
   Toast,
   Modal,
@@ -13,8 +12,9 @@ import {
 import {
   IconDeleteStroked,
   IconSearch,
+  IconFlowChartStroked,
 } from '@douyinfe/semi-icons';
-import { Users, Building2, UserCircle } from 'lucide-react';
+import { User, UserPlus } from 'lucide-react';
 import type {
   AssetCollaborator,
   CollaboratorAssetType,
@@ -39,7 +39,7 @@ const generateMockCollaborators = (assetType: CollaboratorAssetType, assetId: st
       collaborator_type: 'USER',
       collaborator_id: 'user-001',
       collaborator_name: '张三',
-      department_name: '研发部',
+      department_name: '来也科技-大客户业务中心-APA产品部-产品团队',
       role: 'MANAGER',
       added_by: 'system',
       added_by_name: '系统',
@@ -55,7 +55,7 @@ const generateMockCollaborators = (assetType: CollaboratorAssetType, assetId: st
       collaborator_type: 'USER',
       collaborator_id: 'user-002',
       collaborator_name: '李四',
-      department_name: 'IT部',
+      department_name: '来也科技-大客户业务中心-北区BU-北区解决方案团队',
       role: 'MAINTAINER',
       added_by: 'user-001',
       added_by_name: '张三',
@@ -86,7 +86,7 @@ const generateMockCollaborators = (assetType: CollaboratorAssetType, assetId: st
       collaborator_type: 'USER',
       collaborator_id: 'user-003',
       collaborator_name: '王五',
-      department_name: '产品部',
+      department_name: '来也科技-大客户业务中心-APA产品部-APA-客户端团队',
       role: 'MAINTAINER',
       added_by: 'system',
       added_by_name: '系统',
@@ -124,7 +124,6 @@ const CollaboratorTab = ({
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
 
-  // 加载数据
   const loadData = useCallback(async () => {
     setLoading(true);
     await new Promise((resolve) => setTimeout(resolve, 300));
@@ -136,7 +135,6 @@ const CollaboratorTab = ({
     loadData();
   }, [loadData]);
 
-  // 过滤
   const filteredData = useMemo(() => {
     if (!searchValue) return collaborators;
     const keyword = searchValue.toLowerCase();
@@ -147,7 +145,6 @@ const CollaboratorTab = ({
     );
   }, [collaborators, searchValue]);
 
-  // 更新角色
   const handleRoleChange = useCallback(
     async (record: AssetCollaborator, newRole: CollaboratorRole) => {
       setCollaborators((prev) =>
@@ -158,7 +155,6 @@ const CollaboratorTab = ({
     [t]
   );
 
-  // 移除协作者
   const handleRemove = useCallback(
     (record: AssetCollaborator) => {
       Modal.confirm({
@@ -177,13 +173,11 @@ const CollaboratorTab = ({
     [t]
   );
 
-  // 添加成功
   const handleAddSuccess = useCallback(() => {
     loadData();
     setAddModalVisible(false);
   }, [loadData]);
 
-  // 展开/收起继承来源
   const toggleExpand = useCallback((id: string) => {
     setExpandedRows((prev) => {
       const next = new Set(prev);
@@ -193,24 +187,62 @@ const CollaboratorTab = ({
     });
   }, []);
 
+  // 渲染权限来源
+  const renderSource = (record: AssetCollaborator) => {
+    if (record.source === 'DIRECT') {
+      return (
+        <Tag size="small" color="blue" type="light">{t('collaborator.source.direct')}</Tag>
+      );
+    }
+    const sources = record.inheritance_sources || [];
+    const isExpanded = expandedRows.has(record.id);
+    return (
+      <div className="collaborator-tab-source-inline">
+        <Tag size="small" color="orange" type="light">
+          {t('collaborator.source.inherited')}
+        </Tag>
+        {sources.length > 0 && (
+          <div className="collaborator-tab-source-detail">
+            {(isExpanded ? sources : sources.slice(0, 1)).map((src, idx) => (
+              <div key={idx} className="collaborator-tab-source-detail-item">
+                <Text size="small" type="tertiary">
+                  {src.asset_name} → {t(`collaborator.roles.${src.role}`)}
+                </Text>
+              </div>
+            ))}
+            {sources.length > 1 && (
+              <span
+                className="collaborator-tab-source-detail-toggle"
+                onClick={() => toggleExpand(record.id)}
+              >
+                {isExpanded
+                  ? t('common.collapse')
+                  : t('collaborator.source.inheritedFromCount', { count: sources.length })}
+              </span>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   const columns = [
     {
       title: t('collaborator.table.name'),
       dataIndex: 'collaborator_name',
       key: 'collaborator_name',
-      width: 200,
       render: (_: unknown, record: AssetCollaborator) => (
         <div className="collaborator-tab-name-cell">
           <span className="collaborator-tab-name-cell-icon">
             {record.collaborator_type === 'DEPARTMENT' ? (
-              <Building2 size={16} strokeWidth={2} />
+              <IconFlowChartStroked size="small" style={{ fontSize: 14 }} />
             ) : (
-              <UserCircle size={16} strokeWidth={2} />
+              <User size={14} strokeWidth={2} />
             )}
           </span>
           <div className="collaborator-tab-name-cell-info">
             <div className="collaborator-tab-name-cell-label">
-              <Text ellipsis={{ showTooltip: true }} style={{ maxWidth: 120 }}>
+              <Text ellipsis={{ showTooltip: true }} style={{ maxWidth: 200 }}>
                 {record.collaborator_name}
               </Text>
               {record.is_owner && (
@@ -220,96 +252,42 @@ const CollaboratorTab = ({
               )}
             </div>
             {record.department_name && record.collaborator_type === 'USER' && (
-              <Text size="small" type="tertiary">{record.department_name}</Text>
+              <Text size="small" type="tertiary" ellipsis={{ showTooltip: true }} style={{ maxWidth: 360 }}>
+                {record.department_name}
+              </Text>
             )}
+            <div className="collaborator-tab-name-cell-source">
+              {renderSource(record)}
+            </div>
           </div>
         </div>
-      ),
-    },
-    {
-      title: t('collaborator.table.type'),
-      dataIndex: 'collaborator_type',
-      key: 'collaborator_type',
-      width: 80,
-      render: (type: string) => (
-        <Text>{t(`collaborator.type.${type}`)}</Text>
       ),
     },
     {
       title: t('collaborator.table.role'),
       dataIndex: 'role',
       key: 'role',
-      width: 120,
+      width: 160,
       render: (_: unknown, record: AssetCollaborator) => {
         const isDisabled = record.is_owner || record.source === 'INHERITED' || !canManage;
+        const canRemove = !record.is_owner && record.source !== 'INHERITED' && canManage;
         return (
-          <CollaboratorRoleSelect
-            value={record.final_role}
-            onChange={(role) => handleRoleChange(record, role)}
-            assetType={assetType}
-            disabled={isDisabled}
-          />
-        );
-      },
-    },
-    {
-      title: t('collaborator.table.source'),
-      dataIndex: 'source',
-      key: 'source',
-      width: 180,
-      render: (_: unknown, record: AssetCollaborator) => {
-        if (record.source === 'DIRECT') {
-          return <Tag size="small" color="blue" type="light">{t('collaborator.source.direct')}</Tag>;
-        }
-        const sources = record.inheritance_sources || [];
-        const isExpanded = expandedRows.has(record.id);
-        return (
-          <div>
-            <Tag size="small" color="orange" type="light">
-              {t('collaborator.source.inherited')}
-            </Tag>
-            {sources.length > 0 && (
-              <div className="collaborator-tab-source-detail">
-                {(isExpanded ? sources : sources.slice(0, 1)).map((src, idx) => (
-                  <div key={idx} className="collaborator-tab-source-detail-item">
-                    <Text size="small" type="tertiary">
-                      {src.asset_name} → {t(`collaborator.roles.${src.role}`)}
-                    </Text>
-                  </div>
-                ))}
-                {sources.length > 1 && (
-                  <span
-                    className="collaborator-tab-source-detail-toggle"
-                    onClick={() => toggleExpand(record.id)}
-                  >
-                    {isExpanded
-                      ? t('common.collapse')
-                      : t('collaborator.source.inheritedFromCount', { count: sources.length })}
-                  </span>
-                )}
-              </div>
+          <div className="collaborator-tab-role-cell">
+            <CollaboratorRoleSelect
+              value={record.final_role}
+              onChange={(role) => handleRoleChange(record, role)}
+              assetType={assetType}
+              disabled={isDisabled}
+            />
+            {canRemove && (
+              <span
+                className="collaborator-tab-role-cell-remove"
+                onClick={() => handleRemove(record)}
+              >
+                {t('collaborator.actions.remove')}
+              </span>
             )}
           </div>
-        );
-      },
-    },
-    {
-      title: t('common.actions'),
-      key: 'actions',
-      width: 60,
-      render: (_: unknown, record: AssetCollaborator) => {
-        if (record.is_owner || record.source === 'INHERITED' || !canManage) {
-          return null;
-        }
-        return (
-          <Tooltip content={t('collaborator.actions.remove')}>
-            <Button
-              icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />}
-              theme="borderless"
-              size="small"
-              onClick={() => handleRemove(record)}
-            />
-          </Tooltip>
         );
       },
     },
@@ -328,8 +306,9 @@ const CollaboratorTab = ({
         />
         {canManage && (
           <Button
-            icon={<Users size={14} strokeWidth={2} />}
+            icon={<UserPlus size={14} strokeWidth={2} />}
             onClick={() => setAddModalVisible(true)}
+            className="collaborator-tab-add-btn"
           >
             {t('collaborator.actions.add')}
           </Button>
