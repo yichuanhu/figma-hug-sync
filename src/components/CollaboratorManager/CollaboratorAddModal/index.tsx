@@ -635,7 +635,7 @@ const CollaboratorAddModal = ({
                         <User size={14} strokeWidth={2} />
                       )}
                     </span>
-                    <Text size="small" ellipsis={{ showTooltip: true }} style={{ maxWidth: 100 }}>
+                    <Text style={{ fontSize: 14 }} ellipsis={{ showTooltip: true }}>
                       {item.collaborator_name}
                     </Text>
                   </div>
