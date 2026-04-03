@@ -37,6 +37,8 @@ import type {
 import UploadFileModal from './components/UploadFileModal';
 import ReuploadFileModal from './components/ReuploadFileModal';
 import FileDetailDrawer from './components/FileDetailDrawer';
+import CollaboratorAddModal from '@/components/CollaboratorManager/CollaboratorAddModal';
+import type { CollaboratorAssetType } from '@/api/index';
 
 import './index.less';
 
