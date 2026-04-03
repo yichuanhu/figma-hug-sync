@@ -131,16 +131,13 @@ interface ProcessDetailDrawerProps {
   onEdit?: () => void;
   onRun?: () => void;
   onDelete?: () => void;
-  // 导航相关
   dataList?: LYProcessResponse[];
   onNavigate?: (process: LYProcessResponse) => void;
-  // 分页相关
   pagination?: PaginationInfo;
   onPageChange?: (page: number, direction: 'prev' | 'next') => void;
-  // 上下文
   context?: 'development' | 'scheduling';
-  // 滚动到行
   onScrollToRow?: (id: string) => void;
+  initialTab?: string;
 }
 
 // ============= 状态配置 =============
