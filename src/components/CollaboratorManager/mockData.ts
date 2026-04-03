@@ -285,16 +285,15 @@ const initMockData = (assetType: CollaboratorAssetType, assetId: string): AssetC
       final_role: 'OBSERVER',
     });
 
-    // 场景9: 混合来源用户（直接分配 + 继承，MAX取最高）
-    // 例如：直接分配 USER，从流程继承 MAINTAINER → final_role = MAINTAINER
+    // 场景9: 混合来源用户（直接 + 继承, 与org树匹配: Fei Liang）
     base.push({
       id: `${assetId}-collab-009`,
       asset_type: assetType,
       asset_id: assetId,
       collaborator_type: 'USER',
-      collaborator_id: 'user-006',
-      collaborator_name: MOCK_USERS['user-006'].name,
-      department_name: MOCK_USERS['user-006'].department,
+      collaborator_id: 'user-hr-001',
+      collaborator_name: MOCK_USERS['user-hr-001'].name,
+      department_name: MOCK_USERS['user-hr-001'].department,
       role: 'USER',
       added_by: 'user-001',
       added_by_name: MOCK_USERS['user-001'].name,
