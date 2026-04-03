@@ -3132,6 +3132,8 @@
     "removeConfirm": {
       "title": "Confirm Remove Collaborator",
       "content": "Are you sure you want to remove collaborator \"{{name}}\"?"
-    }
+    },
+    "updateSuccess": "Role updated successfully",
+    "removeSuccess": "Collaborator removed"
   }
 }
