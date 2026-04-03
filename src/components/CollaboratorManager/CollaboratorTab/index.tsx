@@ -13,7 +13,6 @@ import {
   IconMinusCircleStroked,
   IconSearchStroked,
   IconFlowChartStroked,
-  IconPlusStroked,
 } from '@douyinfe/semi-icons';
 import { User, UserPlus } from 'lucide-react';
 import type {
@@ -21,6 +20,9 @@ import type {
   CollaboratorAssetType,
   CollaboratorRole,
 } from '@/api/index';
+import { COLLABORATOR_ROLE_PRIORITY } from '@/api/index';
+import { useCollaboratorCascade } from '@/hooks/useCollaboratorCascade';
+import { getCollaborators } from '@/components/CollaboratorManager/mockData';
 import CollaboratorRoleSelect from '../CollaboratorRoleSelect';
 import CollaboratorAddModal from '../CollaboratorAddModal';
 import EmptyState from '@/components/EmptyState';
@@ -28,82 +30,6 @@ import EmptyState from '@/components/EmptyState';
 import './index.less';
 
 const { Text } = Typography;
-
-// Mock 数据生成
-const generateMockCollaborators = (assetType: CollaboratorAssetType, assetId: string): AssetCollaborator[] => {
-  const now = new Date().toISOString();
-  const collaborators: AssetCollaborator[] = [
-    {
-      id: 'collab-001',
-      asset_type: assetType,
-      asset_id: assetId,
-      collaborator_type: 'USER',
-      collaborator_id: 'user-001',
-      collaborator_name: '张三',
-      department_name: '来也科技-大客户业务中心-APA产品部-产品团队',
-      role: 'MANAGER',
-      added_by: 'system',
-      added_by_name: '系统',
-      added_time: now,
-      is_owner: true,
-      source: 'DIRECT',
-      final_role: 'MANAGER',
-    },
-    {
-      id: 'collab-002',
-      asset_type: assetType,
-      asset_id: assetId,
-      collaborator_type: 'USER',
-      collaborator_id: 'user-002',
-      collaborator_name: '李四',
-      department_name: '来也科技-大客户业务中心-北区BU-北区解决方案团队',
-      role: 'MAINTAINER',
-      added_by: 'user-001',
-      added_by_name: '张三',
-      added_time: now,
-      is_owner: false,
-      source: 'DIRECT',
-      final_role: 'MAINTAINER',
-    },
-    {
-      id: 'collab-003',
-      asset_type: assetType,
-      asset_id: assetId,
-      collaborator_type: 'DEPARTMENT',
-      collaborator_id: 'dept-001',
-      collaborator_name: '财务部',
-      role: 'USER',
-      added_by: 'user-001',
-      added_by_name: '张三',
-      added_time: now,
-      is_owner: false,
-      source: 'DIRECT',
-      final_role: 'USER',
-    },
-    {
-      id: 'collab-004',
-      asset_type: assetType,
-      asset_id: assetId,
-      collaborator_type: 'USER',
-      collaborator_id: 'user-003',
-      collaborator_name: '王五',
-      department_name: '来也科技-大客户业务中心-APA产品部-APA-客户端团队',
-      role: 'MAINTAINER',
-      added_by: 'system',
-      added_by_name: '系统',
-      added_time: now,
-      is_owner: false,
-      source: 'INHERITED',
-      inheritance_sources: [
-        { asset_type: 'PROCESS', asset_id: 'proc-001', asset_name: '财务报销流程', role: 'USER' },
-        { asset_type: 'PROCESS', asset_id: 'proc-002', asset_name: '采购申请流程', role: 'MAINTAINER' },
-        { asset_type: 'PROCESS', asset_id: 'proc-003', asset_name: '报表生成流程', role: 'OBSERVER' },
-      ],
-      final_role: 'MAINTAINER',
-    },
-  ];
-  return collaborators;
-};
 
 interface CollaboratorTabProps {
   assetType: CollaboratorAssetType;
@@ -125,10 +51,13 @@ const CollaboratorTab = ({
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
 
+  const { cascadeRemove, cascadeUpdateRole, canCascade, cascadeCount } =
+    useCollaboratorCascade(assetType, assetId);
+
   const loadData = useCallback(async () => {
     setLoading(true);
     await new Promise((resolve) => setTimeout(resolve, 300));
-    setCollaborators(generateMockCollaborators(assetType, assetId));
+    setCollaborators(getCollaborators(assetType, assetId));
     setLoading(false);
   }, [assetType, assetId]);
 
@@ -148,36 +77,54 @@ const CollaboratorTab = ({
 
   const handleRoleChange = useCallback(
     async (record: AssetCollaborator, newRole: CollaboratorRole) => {
-      setCollaborators((prev) =>
-        prev.map((c) => (c.id === record.id ? { ...c, role: newRole, final_role: newRole } : c))
-      );
-      Toast.success(t('collaborator.updateSuccess'));
+      const result = cascadeUpdateRole(record.id, newRole);
+      setCollaborators(getCollaborators(assetType, assetId));
+      if (result.cascadeCount > 0) {
+        Toast.success(
+          t('collaborator.updateSuccessWithCascade', { count: result.cascadeCount })
+        );
+      } else {
+        Toast.success(t('collaborator.updateSuccess'));
+      }
     },
-    [t]
+    [t, cascadeUpdateRole, assetType, assetId]
   );
 
   const handleRemove = useCallback(
     (record: AssetCollaborator) => {
+      const cascadeInfo = canCascade && cascadeCount > 0;
       Modal.confirm({
         title: t('collaborator.removeConfirm.title'),
         icon: <IconMinusCircleStroked style={{ color: 'var(--semi-color-warning)' }} />,
-        content: t('collaborator.removeConfirm.content', { name: record.collaborator_name }),
+        content: cascadeInfo
+          ? t('collaborator.removeConfirm.contentWithCascade', {
+              name: record.collaborator_name,
+              count: cascadeCount,
+            })
+          : t('collaborator.removeConfirm.content', { name: record.collaborator_name }),
         okText: t('common.confirm'),
         cancelText: t('common.cancel'),
         okButtonProps: { type: 'primary', theme: 'solid' },
         onOk: async () => {
-          setCollaborators((prev) => prev.filter((c) => c.id !== record.id));
-          Toast.success(t('collaborator.removeSuccess'));
+          const result = cascadeRemove(record.id);
+          setCollaborators(getCollaborators(assetType, assetId));
+          if (result.cascadeCount > 0) {
+            Toast.success(
+              t('collaborator.removeSuccessWithCascade', { count: result.cascadeCount })
+            );
+          } else {
+            Toast.success(t('collaborator.removeSuccess'));
+          }
         },
       });
     },
-    [t]
+    [t, cascadeRemove, canCascade, cascadeCount, assetType, assetId]
   );
 
   const handleAddSuccess = useCallback(() => {
-    loadData();
+    setCollaborators(getCollaborators(assetType, assetId));
     setAddModalVisible(false);
-  }, [loadData]);
+  }, [assetType, assetId]);
 
   const toggleExpand = useCallback((id: string) => {
     setExpandedRows((prev) => {
@@ -194,15 +141,35 @@ const CollaboratorTab = ({
     const sources = record.inheritance_sources || [];
     if (sources.length === 0) return null;
     const isExpanded = expandedRows.has(record.id);
+
+    // 生成 MAX 计算说明
+    const maxCalcText = sources.length > 1
+      ? (() => {
+          const roleNames = sources.map((s) => t(`collaborator.roles.${s.role}`));
+          return `MAX(${roleNames.join(', ')}) = ${t(`collaborator.roles.${record.final_role}`)}`;
+        })()
+      : null;
+
     return (
       <div className="collaborator-tab-source-detail">
         {(isExpanded ? sources : sources.slice(0, 1)).map((src, idx) => (
           <div key={idx} className="collaborator-tab-source-detail-item">
             <Text size="small" type="tertiary">
-              {src.asset_name} → {t(`collaborator.roles.${src.role}`)}
+              {src.source_type === 'INHERITED_HIERARCHY'
+                ? t('collaborator.source.inheritedFromGroup', { name: src.asset_name })
+                : t('collaborator.source.inheritedFromProcess', { name: src.asset_name })}
+              {' → '}
+              {t(`collaborator.roles.${src.role}`)}
             </Text>
           </div>
         ))}
+        {isExpanded && maxCalcText && (
+          <div className="collaborator-tab-source-detail-item">
+            <Text size="small" type="tertiary" style={{ fontStyle: 'italic' }}>
+              {maxCalcText}
+            </Text>
+          </div>
+        )}
         {sources.length > 1 && (
           <span
             className="collaborator-tab-source-detail-toggle"
