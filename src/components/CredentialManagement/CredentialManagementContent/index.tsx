@@ -182,7 +182,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [linkPersonalModalVisible, setLinkPersonalModalVisible] = useState(false);
   const [linkingCredential, setLinkingCredential] = useState<LYCredentialResponse | null>(null);
-  const [initialDetailTab, setInitialDetailTab] = useState<'basic' | 'usage'>('basic');
+  const [initialDetailTab, setInitialDetailTab] = useState<'basic' | 'usage' | 'collaborators'>('basic');
 
   // 加载数据
   const loadData = useCallback(async () => {
