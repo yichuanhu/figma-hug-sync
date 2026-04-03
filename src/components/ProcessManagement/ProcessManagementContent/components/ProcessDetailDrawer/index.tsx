@@ -348,6 +348,10 @@ const ProcessDetailDrawer = ({
     }
   }, [sortedVersionData, selectedVersionId]);
 
+  useEffect(() => {
+    if (processData) setActiveTab(initialTab);
+  }, [processData?.id, initialTab]);
+
   // 关闭时重置
   const handleClose = () => {
     setActiveTab('detail');
