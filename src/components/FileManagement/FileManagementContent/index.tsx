@@ -640,10 +640,12 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
         onClose={() => {
           setDetailDrawerVisible(false);
           setSelectedFile(null);
+          setDetailInitialTab('basic');
         }}
         onNavigate={handleDrawerNavigate}
         onReupload={handleReupload}
         onDelete={handleDelete}
+        initialTab={detailInitialTab}
       />
     </div>
   );
