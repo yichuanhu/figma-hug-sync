@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect } from 'react';
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import { useTranslation } from 'react-i18next';
 import CollaboratorTab from '@/components/CollaboratorManager/CollaboratorTab';
@@ -174,15 +174,20 @@ const CredentialDetailDrawer = ({
     if (visible && activeTab === 'usage' && credential) loadUsageData();
   }, [visible, activeTab, credential?.credential_id, userFilter, dateRange, usageQueryParams]);
 
+  const prevVisibleRef = useRef(false);
+  useEffect(() => {
+    if (visible && !prevVisibleRef.current) setActiveTab(initialTab);
+    prevVisibleRef.current = visible;
+  }, [visible, initialTab]);
+
   useEffect(() => {
     if (credential) {
-      setActiveTab(initialTab);
       setUsageQueryParams({ page: 1, pageSize: 20 });
       resetFilters();
       setUsageListResponse(null);
       setIsUsageInitialLoad(true);
     }
-  }, [credential?.credential_id, initialTab]);
+  }, [credential?.credential_id]);
 
   const formatDateTime = (dateStr: string | undefined) => {
     if (!dateStr) return '-';

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import {
   Typography,
@@ -108,9 +108,11 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
   const { canManage: canManageCollaborators } = useCollaboratorPermission('WORKER_GROUP', groupData?.id);
   const [activeTab, setActiveTab] = useState(initialTab);
 
+  const prevVisibleRef = useRef(false);
   useEffect(() => {
-    if (visible && groupData) setActiveTab(initialTab);
-  }, [visible, groupData?.id, initialTab]);
+    if (visible && !prevVisibleRef.current) setActiveTab(initialTab);
+    prevVisibleRef.current = visible;
+  }, [visible, initialTab]);
 
   const [membersLoading, setMembersLoading] = useState(false);
   const [membersResponse, setMembersResponse] = useState<LYListResponseLYWorkerGroupMemberResponse>({ range: { offset: 0, size: 20, total: 0 }, list: [] });

@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect } from 'react';
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import { useTranslation } from 'react-i18next';
 import {
@@ -348,9 +348,11 @@ const ProcessDetailDrawer = ({
     }
   }, [sortedVersionData, selectedVersionId]);
 
+  const prevVisibleRef = useRef(false);
   useEffect(() => {
-    if (processData) setActiveTab(initialTab);
-  }, [processData?.id, initialTab]);
+    if (visible && !prevVisibleRef.current) setActiveTab(initialTab);
+    prevVisibleRef.current = visible;
+  }, [visible, initialTab]);
 
   // 关闭时重置
   const handleClose = () => {

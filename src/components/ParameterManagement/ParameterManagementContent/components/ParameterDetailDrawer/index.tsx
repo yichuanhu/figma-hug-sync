@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import { useTranslation } from 'react-i18next';
 import {
@@ -65,9 +65,11 @@ const ParameterDetailDrawer = ({
 
   const { canManage } = useCollaboratorPermission('PARAMETER', parameter?.parameter_id);
 
+  const prevVisibleRef = useRef(false);
   useEffect(() => {
-    if (parameter) setActiveTab(initialTab);
-  }, [parameter?.parameter_id, initialTab]);
+    if (visible && !prevVisibleRef.current) setActiveTab(initialTab);
+    prevVisibleRef.current = visible;
+  }, [visible, initialTab]);
 
   // 格式化日期
   const formatDate = (dateString: string | null) => {
