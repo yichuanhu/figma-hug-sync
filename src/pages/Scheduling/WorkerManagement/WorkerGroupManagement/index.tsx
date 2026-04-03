@@ -497,6 +497,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
           const row = document.getElementById(`worker-group-row-${id}`);
           row?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }}
+        initialTab={detailInitialTab}
       />
 
       {/* Create modal */}
