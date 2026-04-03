@@ -230,43 +230,43 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
 
   // 中心级别菜单（左侧图标栏）
   const centerMenuItems: MenuItem[] = [
-    { key: 'home', labelKey: 'sidebar.home', icon: <Home size={20} strokeWidth={2} />, activeIcon: <Home size={20} strokeWidth={2} className="text-primary" />, path: '/' },
+    { key: 'home', labelKey: 'sidebar.home', icon: <Home size={18} strokeWidth={2} />, activeIcon: <Home size={18} strokeWidth={2} className="text-primary" />, path: '/' },
     {
       key: 'requirementsCenter',
       labelKey: 'sidebar.requirementsCenter',
-      icon: <ScrollText size={20} strokeWidth={2} />,
-      activeIcon: <ScrollText size={20} strokeWidth={2} className="text-primary" />,
+      icon: <ScrollText size={18} strokeWidth={2} />,
+      activeIcon: <ScrollText size={18} strokeWidth={2} className="text-primary" />,
       path: '/requirements/list',
     },
     {
       key: 'developmentCenter',
       labelKey: 'sidebar.developmentCenter',
-      icon: <CodeXml size={20} strokeWidth={2} />,
-      activeIcon: <CodeXml size={20} strokeWidth={2} className="text-primary" />,
+      icon: <CodeXml size={18} strokeWidth={2} />,
+      activeIcon: <CodeXml size={18} strokeWidth={2} className="text-primary" />,
     },
     {
       key: 'schedulingCenter',
       labelKey: 'sidebar.schedulingCenter',
-      icon: <Airplay size={20} strokeWidth={2} />,
-      activeIcon: <Airplay size={20} strokeWidth={2} className="text-primary" />,
+      icon: <Airplay size={18} strokeWidth={2} />,
+      activeIcon: <Airplay size={18} strokeWidth={2} className="text-primary" />,
     },
     {
       key: 'operationsCenter',
       labelKey: 'sidebar.operationsCenter',
-      icon: <ChartSpline size={20} strokeWidth={2} />,
-      activeIcon: <ChartSpline size={20} strokeWidth={2} className="text-primary" />,
+      icon: <ChartSpline size={18} strokeWidth={2} />,
+      activeIcon: <ChartSpline size={18} strokeWidth={2} className="text-primary" />,
     },
     {
       key: 'sharingCenter',
       labelKey: 'sidebar.sharingCenter',
-      icon: <LibraryBig size={20} strokeWidth={2} />,
-      activeIcon: <LibraryBig size={20} strokeWidth={2} className="text-primary" />,
+      icon: <LibraryBig size={18} strokeWidth={2} />,
+      activeIcon: <LibraryBig size={18} strokeWidth={2} className="text-primary" />,
     },
     {
       key: 'maintenanceCenter',
       labelKey: 'sidebar.maintenanceCenter',
-      icon: <MonitorCog size={20} strokeWidth={2} />,
-      activeIcon: <MonitorCog size={20} strokeWidth={2} className="text-primary" />,
+      icon: <MonitorCog size={18} strokeWidth={2} />,
+      activeIcon: <MonitorCog size={18} strokeWidth={2} className="text-primary" />,
       path: '/maintenance',
     },
   ];
@@ -275,16 +275,16 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
   const developmentCenterMenu: MenuItem[] = [
     // 开发任务管理 - 分组标题
     { key: 'developmentTaskManagement', labelKey: 'sidebar.developmentTaskManagement', isGroupLabel: true },
-    { key: 'automationProcess', labelKey: 'sidebar.automationProcess', icon: <Workflow size={20} strokeWidth={2} />, path: '/process-development' },
+    { key: 'automationProcess', labelKey: 'sidebar.automationProcess', icon: <Workflow size={18} strokeWidth={2} />, path: '/process-development' },
     // 业务资产配置 - 分组标题
     { key: 'businessAssetConfig', labelKey: 'sidebar.businessAssetConfig', isGroupLabel: true },
-    { key: 'devQueue', labelKey: 'sidebar.queue', icon: <ListStart size={20} strokeWidth={2} />, path: '/dev-center/business-assets/queues' },
-    { key: 'devCredentials', labelKey: 'sidebar.credentials', icon: <MonitorCheck size={20} strokeWidth={2} />, path: '/dev-center/business-assets/credentials' },
-    { key: 'devParameters', labelKey: 'sidebar.parameters', icon: <Parentheses size={20} strokeWidth={2} />, path: '/dev-center/business-assets/parameters' },
-    { key: 'files', labelKey: 'sidebar.files', icon: <FolderCheck size={20} strokeWidth={2} />, path: '/dev-center/business-assets/files' },
+    { key: 'devQueue', labelKey: 'sidebar.queue', icon: <ListStart size={18} strokeWidth={2} />, path: '/dev-center/business-assets/queues' },
+    { key: 'devCredentials', labelKey: 'sidebar.credentials', icon: <MonitorCheck size={18} strokeWidth={2} />, path: '/dev-center/business-assets/credentials' },
+    { key: 'devParameters', labelKey: 'sidebar.parameters', icon: <Parentheses size={18} strokeWidth={2} />, path: '/dev-center/business-assets/parameters' },
+    { key: 'files', labelKey: 'sidebar.files', icon: <FolderCheck size={18} strokeWidth={2} />, path: '/dev-center/business-assets/files' },
     // 发布管理 - 分组标题
     { key: 'publishManagement', labelKey: 'sidebar.publishManagement', isGroupLabel: true },
-    { key: 'processPublish', labelKey: 'sidebar.processPublish', icon: <Forward size={20} strokeWidth={2} />, path: '/dev-center/release-management' },
+    { key: 'processPublish', labelKey: 'sidebar.processPublish', icon: <Forward size={18} strokeWidth={2} />, path: '/dev-center/release-management' },
   ];
 
   const bottomMenuItems: MenuItem[] = [
@@ -295,64 +295,64 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
   const schedulingCenterMenu: MenuItem[] = [
     // 1. 执行资产 - 分组标题
     { key: 'executionAssets', labelKey: 'sidebar.executionAssets', isGroupLabel: true },
-    { key: 'schedulingAutomationProcess', labelKey: 'sidebar.automationProcess', icon: <Workflow size={20} strokeWidth={2} />, path: '/scheduling-center/execution-assets/automation-process' },
-    { key: 'documentProcessing', labelKey: 'sidebar.documentProcessing', icon: <FileText size={20} strokeWidth={2} /> },
-    { key: 'agentApplication', labelKey: 'sidebar.agentApplication', icon: <Bot size={20} strokeWidth={2} /> },
-    { key: 'humanMachineTask', labelKey: 'sidebar.humanMachineTask', icon: <Users size={20} strokeWidth={2} /> },
+    { key: 'schedulingAutomationProcess', labelKey: 'sidebar.automationProcess', icon: <Workflow size={18} strokeWidth={2} />, path: '/scheduling-center/execution-assets/automation-process' },
+    { key: 'documentProcessing', labelKey: 'sidebar.documentProcessing', icon: <FileText size={18} strokeWidth={2} /> },
+    { key: 'agentApplication', labelKey: 'sidebar.agentApplication', icon: <Bot size={18} strokeWidth={2} /> },
+    { key: 'humanMachineTask', labelKey: 'sidebar.humanMachineTask', icon: <Users size={18} strokeWidth={2} /> },
     // 2. 执行资源监控 - 分组标题
     { key: 'executionResourceMonitoring', labelKey: 'sidebar.executionResourceMonitoring', isGroupLabel: true },
-    { key: 'workerManagement', labelKey: 'sidebar.processRobot', icon: <Bot size={20} strokeWidth={2} />, path: '/scheduling-center/resource-monitoring/worker-management' },
+    { key: 'workerManagement', labelKey: 'sidebar.processRobot', icon: <Bot size={18} strokeWidth={2} />, path: '/scheduling-center/resource-monitoring/worker-management' },
     // 3. 业务资产配置 - 分组标题
     { key: 'schedulingBusinessAssetConfig', labelKey: 'sidebar.businessAssetConfig', isGroupLabel: true },
-    { key: 'schedulingQueue', labelKey: 'sidebar.queue', icon: <ListStart size={20} strokeWidth={2} />, path: '/scheduling-center/business-assets/queues' },
-    { key: 'schedulingCredentials', labelKey: 'sidebar.credentials', icon: <MonitorCheck size={20} strokeWidth={2} />, path: '/scheduling-center/business-assets/credentials' },
-    { key: 'schedulingParameters', labelKey: 'sidebar.parameters', icon: <Parentheses size={20} strokeWidth={2} />, path: '/scheduling-center/business-assets/parameters' },
-    { key: 'schedulingFiles', labelKey: 'sidebar.files', icon: <FolderCheck size={20} strokeWidth={2} />, path: '/scheduling-center/business-assets/files' },
+    { key: 'schedulingQueue', labelKey: 'sidebar.queue', icon: <ListStart size={18} strokeWidth={2} />, path: '/scheduling-center/business-assets/queues' },
+    { key: 'schedulingCredentials', labelKey: 'sidebar.credentials', icon: <MonitorCheck size={18} strokeWidth={2} />, path: '/scheduling-center/business-assets/credentials' },
+    { key: 'schedulingParameters', labelKey: 'sidebar.parameters', icon: <Parentheses size={18} strokeWidth={2} />, path: '/scheduling-center/business-assets/parameters' },
+    { key: 'schedulingFiles', labelKey: 'sidebar.files', icon: <FolderCheck size={18} strokeWidth={2} />, path: '/scheduling-center/business-assets/files' },
     // 4. 任务执行 - 分组标题
     { key: 'taskExecution', labelKey: 'sidebar.taskExecution', isGroupLabel: true },
-    { key: 'autoExecutionPolicy', labelKey: 'sidebar.autoExecutionPolicy', icon: <CalendarClock size={20} strokeWidth={2} />, path: '/scheduling-center/task-execution/auto-execution-policy' },
-    { key: 'taskList', labelKey: 'sidebar.taskList', icon: <ClipboardList size={20} strokeWidth={2} />, path: '/scheduling-center/task-execution/task-list' },
+    { key: 'autoExecutionPolicy', labelKey: 'sidebar.autoExecutionPolicy', icon: <CalendarClock size={18} strokeWidth={2} />, path: '/scheduling-center/task-execution/auto-execution-policy' },
+    { key: 'taskList', labelKey: 'sidebar.taskList', icon: <ClipboardList size={18} strokeWidth={2} />, path: '/scheduling-center/task-execution/task-list' },
   ];
 
   // 运营中心的详细菜单结构 - 使用分组标题样式
   const operationsCenterMenu: MenuItem[] = [
     // 数据分析 - 分组标题
     { key: 'dataAnalysis', labelKey: 'sidebar.dataAnalysis', isGroupLabel: true },
-    { key: 'opsDashboard', labelKey: 'sidebar.opsDashboard', icon: <ChartSpline size={20} strokeWidth={2} />, path: '/operations/dashboard' },
-    { key: 'roiAnalysis', labelKey: 'sidebar.roiAnalysis', icon: <TrendingUp size={20} strokeWidth={2} />, path: '/operations/roi-analysis' },
-    { key: 'resourceEfficiency', labelKey: 'sidebar.resourceEfficiency', icon: <Activity size={20} strokeWidth={2} />, path: '/operations/resource-efficiency' },
-    { key: 'businessOutcomes', labelKey: 'sidebar.businessOutcomes', icon: <Target size={20} strokeWidth={2} />, path: '/operations/business-outcomes' },
+    { key: 'opsDashboard', labelKey: 'sidebar.opsDashboard', icon: <ChartSpline size={18} strokeWidth={2} />, path: '/operations/dashboard' },
+    { key: 'roiAnalysis', labelKey: 'sidebar.roiAnalysis', icon: <TrendingUp size={18} strokeWidth={2} />, path: '/operations/roi-analysis' },
+    { key: 'resourceEfficiency', labelKey: 'sidebar.resourceEfficiency', icon: <Activity size={18} strokeWidth={2} />, path: '/operations/resource-efficiency' },
+    { key: 'businessOutcomes', labelKey: 'sidebar.businessOutcomes', icon: <Target size={18} strokeWidth={2} />, path: '/operations/business-outcomes' },
     // 运营管理 - 分组标题
     { key: 'operationsManagement', labelKey: 'sidebar.operationsManagement', isGroupLabel: true },
-    { key: 'costManagement', labelKey: 'sidebar.costManagement', icon: <FileText size={20} strokeWidth={2} />, path: '/operations/cost-management' },
-    { key: 'platformOperations', labelKey: 'sidebar.platformOperations', icon: <Settings size={20} strokeWidth={2} />, path: '/operations/platform-operations' },
+    { key: 'costManagement', labelKey: 'sidebar.costManagement', icon: <FileText size={18} strokeWidth={2} />, path: '/operations/cost-management' },
+    { key: 'platformOperations', labelKey: 'sidebar.platformOperations', icon: <Settings size={18} strokeWidth={2} />, path: '/operations/platform-operations' },
   ];
 
   // 需求中心的详细菜单结构 - 使用分组标题样式
   const requirementsCenterMenu: MenuItem[] = [
     // 需求管理 - 分组标题
     { key: 'requirementsManagement', labelKey: 'sidebar.requirementsManagement', isGroupLabel: true },
-    { key: 'requirementsList', labelKey: 'sidebar.requirementsList', icon: <ClipboardList size={20} strokeWidth={2} />, path: '/requirements/list' },
-    { key: 'requirementsReview', labelKey: 'sidebar.requirementsReview', icon: <CheckSquare size={20} strokeWidth={2} />, path: '/requirements/review' },
+    { key: 'requirementsList', labelKey: 'sidebar.requirementsList', icon: <ClipboardList size={18} strokeWidth={2} />, path: '/requirements/list' },
+    { key: 'requirementsReview', labelKey: 'sidebar.requirementsReview', icon: <CheckSquare size={18} strokeWidth={2} />, path: '/requirements/review' },
     // 协作管理 - 分组标题
     { key: 'collaborationManagement', labelKey: 'sidebar.collaborationManagement', isGroupLabel: true },
-    { key: 'teamMembers', labelKey: 'sidebar.teamMembers', icon: <Users size={20} strokeWidth={2} />, path: '/requirements/team' },
+    { key: 'teamMembers', labelKey: 'sidebar.teamMembers', icon: <Users size={18} strokeWidth={2} />, path: '/requirements/team' },
   ];
 
   // 运维中心的详细菜单结构 - 使用分组标题样式
   const maintenanceCenterMenu: MenuItem[] = [
     // 系统运维 - 分组标题
     { key: 'systemMaintenance', labelKey: 'sidebar.systemMaintenance', isGroupLabel: true },
-    { key: 'systemConfig', labelKey: 'sidebar.systemConfig', icon: <Settings size={20} strokeWidth={2} /> },
-    { key: 'troubleshooting', labelKey: 'sidebar.troubleshooting', icon: <Wrench size={20} strokeWidth={2} /> },
+    { key: 'systemConfig', labelKey: 'sidebar.systemConfig', icon: <Settings size={18} strokeWidth={2} /> },
+    { key: 'troubleshooting', labelKey: 'sidebar.troubleshooting', icon: <Wrench size={18} strokeWidth={2} /> },
     // 监控告警 - 分组标题
     { key: 'monitoringAlerts', labelKey: 'sidebar.monitoringAlerts', isGroupLabel: true },
-    { key: 'alertManagement', labelKey: 'sidebar.alertManagement', icon: <AlertTriangle size={20} strokeWidth={2} /> },
-    { key: 'systemMonitoring', labelKey: 'sidebar.systemMonitoring', icon: <Activity size={20} strokeWidth={2} /> },
+    { key: 'alertManagement', labelKey: 'sidebar.alertManagement', icon: <AlertTriangle size={18} strokeWidth={2} /> },
+    { key: 'systemMonitoring', labelKey: 'sidebar.systemMonitoring', icon: <Activity size={18} strokeWidth={2} /> },
     // 数据管理 - 分组标题
     { key: 'dataManagement', labelKey: 'sidebar.dataManagement', isGroupLabel: true },
-    { key: 'databaseManagement', labelKey: 'sidebar.databaseManagement', icon: <Database size={20} strokeWidth={2} /> },
-    { key: 'securityManagement', labelKey: 'sidebar.securityManagement', icon: <Shield size={20} strokeWidth={2} /> },
+    { key: 'databaseManagement', labelKey: 'sidebar.databaseManagement', icon: <Database size={18} strokeWidth={2} /> },
+    { key: 'securityManagement', labelKey: 'sidebar.securityManagement', icon: <Shield size={18} strokeWidth={2} /> },
   ];
 
   // 共享中心的详细菜单结构
@@ -362,8 +362,8 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     { key: 'creatorComponents', labelKey: 'sidebar.creatorComponents', icon: <IconGridView />, path: '/sharing/components/creator' },
     // AI Skills - 分组标题
     { key: 'aiSkills', labelKey: 'sidebar.aiSkills', isGroupLabel: true },
-    { key: 'apaSkills', labelKey: 'sidebar.apaSkills', icon: <Bot size={20} strokeWidth={2} />, path: '/sharing/skills/apa' },
-    { key: 'acpSkills', labelKey: 'sidebar.acpSkills', icon: <Workflow size={20} strokeWidth={2} />, path: '/sharing/skills/acp' },
+    { key: 'apaSkills', labelKey: 'sidebar.apaSkills', icon: <Bot size={18} strokeWidth={2} />, path: '/sharing/skills/apa' },
+    { key: 'acpSkills', labelKey: 'sidebar.acpSkills', icon: <Workflow size={18} strokeWidth={2} />, path: '/sharing/skills/acp' },
     // 案例展示 - 分组标题
     { key: 'showcasesGroup', labelKey: 'sidebar.showcasesGroup', isGroupLabel: true },
     { key: 'showcasesList', labelKey: 'sidebar.showcasesList', icon: <IconBookStroked />, path: '/sharing/showcases' },
