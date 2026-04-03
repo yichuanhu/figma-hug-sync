@@ -2491,7 +2491,8 @@
       "submit": "确认",
       "drillDown": "下级",
       "noResults": "无匹配结果",
-      "emptyDept": "该部门暂无成员"
+      "emptyDept": "该部门暂无成员",
+      "alreadyAdded": "已添加"
     },
     "dispatch": {
       "noPermission": "无权限",

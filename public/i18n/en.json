@@ -3127,7 +3127,8 @@
       "submit": "Confirm",
       "drillDown": "Sub",
       "noResults": "No matching results",
-      "emptyDept": "No members in this department"
+      "emptyDept": "No members in this department",
+      "alreadyAdded": "Added"
     },
     "dispatch": {
       "noPermission": "No Permission",
