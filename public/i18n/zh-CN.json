@@ -2489,6 +2489,10 @@
       "noSelection": "请至少选择一个协作者",
       "success": "成功添加 {{count}} 个协作者",
       "submit": "添加 ({{count}})"
+    },
+    "dispatch": {
+      "noPermission": "无权限",
+      "noPermissionTip": "您对该执行目标没有使用者（USER）及以上权限，无法选择"
     }
   }
 }
