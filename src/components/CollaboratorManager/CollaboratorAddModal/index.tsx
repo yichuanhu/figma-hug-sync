@@ -511,7 +511,7 @@ const CollaboratorAddModal = ({
           {searchResults.depts.length > 0 && (
             <>
               <div className="collaborator-add-modal-left-section-title">
-                <Building2 size={14} strokeWidth={2} />
+              <IconFlowChartStroked size="small" style={{ fontSize: 14 }} />
                 {t('collaborator.addModal.departments')}
               </div>
               {searchResults.depts.map((dept) => renderDeptItem(dept))}
@@ -520,7 +520,7 @@ const CollaboratorAddModal = ({
           {searchResults.users.length > 0 && (
             <>
               <div className="collaborator-add-modal-left-section-title">
-                <UserCircle size={14} strokeWidth={2} />
+                <User size={14} strokeWidth={2} />
                 {t('collaborator.addModal.users')}
               </div>
               {searchResults.users.map((user) => renderUserItem(user))}
