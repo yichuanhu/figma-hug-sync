@@ -71,6 +71,7 @@ const QueueTriggerDetailDrawer = ({
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('basic');
   const [executionLogs, setExecutionLogs] = useState<LYQueueTriggerExecutionLogResponse[]>([]);
+  const { canManage } = useCollaboratorPermission('TRIGGER', trigger?.trigger_id);
 
   // LoadingExecuteRecord
   useEffect(() => {
