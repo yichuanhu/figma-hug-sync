@@ -61,6 +61,7 @@ interface WorkerGroupDetailDrawerProps {
   onPageChange?: (page: number, direction: 'prev' | 'next') => void;
   onNavigateToWorkerDetail?: (workerId: string) => void;
   onScrollToRow?: (id: string) => void;
+  initialTab?: string;
 }
 
 // Mock成员Data
