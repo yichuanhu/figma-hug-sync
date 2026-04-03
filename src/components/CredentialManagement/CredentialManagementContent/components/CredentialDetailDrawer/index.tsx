@@ -141,6 +141,7 @@ const CredentialDetailDrawer = ({
 }: CredentialDetailDrawerProps) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState(initialTab);
+  const { canManage } = useCollaboratorPermission('CREDENTIAL', credential?.credential_id);
 
   const [usageLoading, setUsageLoading] = useState(false);
   const [usageListResponse, setUsageListResponse] = useState<CredentialUsageListResponse | null>(null);
