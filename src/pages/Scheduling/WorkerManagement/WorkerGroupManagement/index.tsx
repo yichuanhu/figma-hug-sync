@@ -195,6 +195,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
   // openDetails drawer
   const openDetail = (group: LYWorkerGroupResponse) => {
     setSelectedGroup(group);
+    setDetailInitialTab('basicInfo');
     setDetailDrawerVisible(true);
   };
 
