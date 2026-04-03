@@ -855,6 +855,17 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
                 </Dropdown.Item>
               )}
               <Dropdown.Item 
+                icon={<Users size={16} strokeWidth={2} />}
+                onClick={(e) => {
+                  e?.stopPropagation?.();
+                  setSelectedWorker(record);
+                  setDetailInitialTab('collaborators');
+                  setDetailDrawerVisible(true);
+                }}
+              >
+                {t('collaborator.actions.manageCollaborators')}
+              </Dropdown.Item>
+              <Dropdown.Item 
                 icon={<IconDeleteStroked />} 
                 type="danger" 
                 onClick={(e) => {
