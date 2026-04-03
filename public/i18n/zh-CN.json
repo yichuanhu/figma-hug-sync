@@ -2469,7 +2469,7 @@
       "source": "权限来源"
     },
     "actions": {
-      "add": "添加协作人",
+      "add": "添加协作者",
       "remove": "移除",
       "addCollaborator": "添加协作者"
     },
