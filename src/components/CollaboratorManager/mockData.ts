@@ -259,15 +259,15 @@ const initMockData = (assetType: CollaboratorAssetType, assetId: string): AssetC
       final_role: 'MAINTAINER',
     });
 
-    // 场景8: 纯继承用户（观察者角色继承）
+    // 场景8: 纯继承用户（观察者角色继承, 与org树匹配: Xuan Cai）
     base.push({
       id: `${assetId}-collab-008`,
       asset_type: assetType,
       asset_id: assetId,
       collaborator_type: 'USER',
-      collaborator_id: 'user-009',
-      collaborator_name: MOCK_USERS['user-009'].name,
-      department_name: MOCK_USERS['user-009'].department,
+      collaborator_id: 'user-dw-001',
+      collaborator_name: MOCK_USERS['user-dw-001'].name,
+      department_name: MOCK_USERS['user-dw-001'].department,
       role: 'OBSERVER',
       added_by: 'system',
       added_by_name: '系统',
