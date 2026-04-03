@@ -40,6 +40,7 @@ interface QueueTriggerDetailDrawerProps {
   onToggleStatus: (trigger: LYQueueTriggerResponse, checked: boolean) => void;
   onRefresh?: () => void;
   onScrollToRow?: (id: string) => void;
+  initialTab?: string;
 }
 
 // Mock ExecuteRecord
