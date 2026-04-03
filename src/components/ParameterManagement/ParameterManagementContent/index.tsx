@@ -278,6 +278,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
   // 点击行查看详情
   const handleRowClick = (record: LYParameterResponse) => {
     setSelectedParameter(record);
+    setDetailInitialTab('basic');
     setDetailDrawerVisible(true);
   };
 
