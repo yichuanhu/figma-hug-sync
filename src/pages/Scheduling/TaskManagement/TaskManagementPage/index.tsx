@@ -31,8 +31,7 @@ import {
   IconDeleteStroked,
   
 } from '@douyinfe/semi-icons';
-import { RefreshCw, PlayCircle, Monitor, Bot, Component } from 'lucide-react';
-import { IconComponentPlaceholderStroked } from '@douyinfe/semi-icons';
+import { RefreshCw, PlayCircle, Monitor, Bot, Component, ClipboardClock } from 'lucide-react';
 import type { 
   LYTaskResponse, 
   GetTasksParams, 
@@ -694,7 +693,7 @@ const TaskManagementPage = () => {
           <div className="task-management-page-header-title">
             <Title heading={4}>{t('task.title')}</Title>
             <Button
-              icon={<IconComponentPlaceholderStroked />}
+              icon={<ClipboardClock size={16} strokeWidth={2} />}
               onClick={() => navigate('/scheduling-center/task-execution/templates')}
             >
               {t('template.entryButton')}
