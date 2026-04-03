@@ -8,6 +8,7 @@ import {
   Checkbox,
   Toast,
   Breadcrumb,
+  Avatar,
 } from '@douyinfe/semi-ui';
 import {
   IconSearch,
@@ -41,78 +42,173 @@ interface DeptNode {
   id: string;
   name: string;
   children?: DeptNode[];
-  users?: { id: string; name: string; department: string }[];
+  users?: { id: string; name: string; department: string; avatar?: string }[];
 }
 
 const mockOrgTree: DeptNode = {
   id: 'root',
-  name: '来也科技',
+  name: 'Laiye Technology',
   children: [
     {
-      id: 'dept-001',
-      name: '大客户业务中心',
+      id: 'dept-ceo',
+      name: 'CEO Office',
+      children: [],
+      users: [
+        { id: 'user-ceo-001', name: 'Alex Chen', department: 'CEO Office' },
+      ],
+    },
+    {
+      id: 'dept-enterprise',
+      name: 'Enterprise Business Center',
       children: [
-        { id: 'dept-011', name: 'Admin Team', users: [
-          { id: 'user-101', name: '张三', department: 'Admin Team' },
-          { id: 'user-102', name: '李四', department: 'Admin Team' },
-        ]},
-        { id: 'dept-012', name: '北区BU', users: [
-          { id: 'user-201', name: '王五', department: '北区BU' },
-          { id: 'user-202', name: '赵六', department: '北区BU' },
-        ]},
-        { id: 'dept-013', name: '东区BU', users: [
-          { id: 'user-301', name: '钱七', department: '东区BU' },
-        ]},
-        { id: 'dept-014', name: '南区BU', users: [
-          { id: 'user-401', name: '孙八', department: '南区BU' },
-        ]},
-        { id: 'dept-015', name: '电力BU', users: [] },
-        { id: 'dept-016', name: '东南亚BU', users: [] },
-        { id: 'dept-017', name: '赋能专家组', users: [
-          { id: 'user-501', name: '周九', department: '赋能专家组' },
-          { id: 'user-502', name: '吴十', department: '赋能专家组' },
-        ]},
-        { id: 'dept-018', name: '专业服务部', users: [
-          { id: 'user-601', name: '郑十一', department: '专业服务部' },
-        ]},
+        {
+          id: 'dept-north',
+          name: 'North Region BU',
+          children: [
+            {
+              id: 'dept-north-solution',
+              name: 'North Solution Team',
+              children: [],
+              users: [
+                { id: 'user-n-001', name: 'Liu Yi', department: 'North Solution Team' },
+                { id: 'user-n-002', name: 'Rong Wenjie', department: 'North Solution Team' },
+                { id: 'user-n-003', name: 'Zhang Yue', department: 'North Solution Team' },
+                { id: 'user-n-004', name: 'Zheng Shuguang', department: 'North Solution Team' },
+              ],
+            },
+          ],
+          users: [
+            { id: 'user-north-001', name: 'Wang Lei', department: 'North Region BU' },
+          ],
+        },
+        {
+          id: 'dept-east',
+          name: 'East Region BU',
+          children: [],
+          users: [
+            { id: 'user-e-001', name: 'Sun Qian', department: 'East Region BU' },
+            { id: 'user-e-002', name: 'Li Wei', department: 'East Region BU' },
+          ],
+        },
+        {
+          id: 'dept-south',
+          name: 'South Region BU',
+          children: [],
+          users: [
+            { id: 'user-s-001', name: 'Zhao Min', department: 'South Region BU' },
+          ],
+        },
+        {
+          id: 'dept-expert',
+          name: 'Expert Enablement Group',
+          children: [],
+          users: [
+            { id: 'user-exp-001', name: 'Zhou Jie', department: 'Expert Enablement Group' },
+            { id: 'user-exp-002', name: 'Wu Fang', department: 'Expert Enablement Group' },
+          ],
+        },
+        {
+          id: 'dept-prof-service',
+          name: 'Professional Services',
+          children: [],
+          users: [
+            { id: 'user-ps-001', name: 'Zheng Hao', department: 'Professional Services' },
+            { id: 'user-ps-002', name: 'Ma Xiaoling', department: 'Professional Services' },
+          ],
+        },
       ],
       users: [],
     },
     {
-      id: 'dept-002',
-      name: '研发中心',
+      id: 'dept-rd',
+      name: 'R&D Center',
       children: [
-        { id: 'dept-021', name: '前端组', users: [
-          { id: 'user-701', name: '冯十二', department: '前端组' },
-          { id: 'user-702', name: '陈十三', department: '前端组' },
-        ]},
-        { id: 'dept-022', name: '后端组', users: [
-          { id: 'user-801', name: '褚十四', department: '后端组' },
-        ]},
+        {
+          id: 'dept-frontend',
+          name: 'Frontend Team',
+          children: [],
+          users: [
+            { id: 'user-fe-001', name: 'Feng Chao', department: 'Frontend Team' },
+            { id: 'user-fe-002', name: 'Chen Lin', department: 'Frontend Team' },
+            { id: 'user-fe-003', name: 'Xu Peng', department: 'Frontend Team' },
+          ],
+        },
+        {
+          id: 'dept-backend',
+          name: 'Backend Team',
+          children: [],
+          users: [
+            { id: 'user-be-001', name: 'Chu Yang', department: 'Backend Team' },
+            { id: 'user-be-002', name: 'Wei Dong', department: 'Backend Team' },
+          ],
+        },
+        {
+          id: 'dept-ai',
+          name: 'AI Platform Team',
+          children: [],
+          users: [
+            { id: 'user-ai-001', name: 'Qian Ming', department: 'AI Platform Team' },
+            { id: 'user-ai-002', name: 'Huang Rui', department: 'AI Platform Team' },
+          ],
+        },
+        {
+          id: 'dept-qa',
+          name: 'QA Team',
+          children: [],
+          users: [
+            { id: 'user-qa-001', name: 'Jiang Ting', department: 'QA Team' },
+          ],
+        },
       ],
       users: [],
     },
     {
-      id: 'dept-003',
-      name: '市场部',
+      id: 'dept-product',
+      name: 'Product Center',
+      children: [
+        {
+          id: 'dept-product-rpa',
+          name: 'RPA Product Team',
+          children: [],
+          users: [
+            { id: 'user-prpa-001', name: 'Deng Xiao', department: 'RPA Product Team' },
+          ],
+        },
+        {
+          id: 'dept-product-idp',
+          name: 'IDP Product Team',
+          children: [],
+          users: [
+            { id: 'user-pidp-001', name: 'Cao Jun', department: 'IDP Product Team' },
+          ],
+        },
+      ],
+      users: [],
+    },
+    {
+      id: 'dept-marketing',
+      name: 'Marketing Department',
+      children: [],
       users: [
-        { id: 'user-004', name: '赵六', department: '市场部' },
-        { id: 'user-005', name: '钱七', department: '运营部' },
+        { id: 'user-mkt-001', name: 'Tang Li', department: 'Marketing Department' },
+        { id: 'user-mkt-002', name: 'Shen Bo', department: 'Marketing Department' },
       ],
     },
     {
-      id: 'dept-004',
-      name: '运营部',
+      id: 'dept-hr',
+      name: 'Human Resources',
+      children: [],
       users: [
-        { id: 'user-006', name: '孙八', department: 'IT部' },
+        { id: 'user-hr-001', name: 'Liang Fei', department: 'Human Resources' },
       ],
     },
     {
-      id: 'dept-005',
-      name: 'IT部',
+      id: 'dept-finance',
+      name: 'Finance Department',
+      children: [],
       users: [
-        { id: 'user-007', name: '周九', department: '研发部' },
-        { id: 'user-008', name: '吴十', department: '财务部' },
+        { id: 'user-fin-001', name: 'Xie Yun', department: 'Finance Department' },
+        { id: 'user-fin-002', name: 'Pan Hua', department: 'Finance Department' },
       ],
     },
   ],
@@ -144,6 +240,15 @@ const getBreadcrumbPath = (node: DeptNode, targetId: string, path: DeptNode[] = 
   return null;
 };
 
+// 计算部门下的总人数（含子部门）
+const countUsers = (node: DeptNode): number => {
+  let count = node.users?.length || 0;
+  node.children?.forEach((child) => {
+    count += countUsers(child);
+  });
+  return count;
+};
+
 interface CollaboratorAddModalProps {
   visible: boolean;
   onClose: () => void;
@@ -172,13 +277,13 @@ const CollaboratorAddModal = ({
     return roles.includes('USER') ? 'USER' : roles[roles.length - 1];
   }, [assetType]);
 
-  // 已存在的协作者ID（直接分配的）
-  const existingIds = useMemo(() => {
-    return new Set(
-      existingCollaborators
-        .filter((c) => c.source === 'DIRECT')
-        .map((c) => c.collaborator_id)
-    );
+  // 已存在的协作者 Map（id -> role）
+  const existingMap = useMemo(() => {
+    const map = new Map<string, CollaboratorRole>();
+    existingCollaborators
+      .filter((c) => c.source === 'DIRECT')
+      .forEach((c) => map.set(c.collaborator_id, c.role));
+    return map;
   }, [existingCollaborators]);
 
   // 当前部门节点
@@ -220,7 +325,7 @@ const CollaboratorAddModal = ({
 
   const toggleUser = useCallback(
     (user: { id: string; name: string; department: string }) => {
-      if (existingIds.has(user.id)) return;
+      if (existingMap.has(user.id)) return;
       setSelected((prev) => {
         const exists = prev.find((s) => s.collaborator_id === user.id);
         if (exists) return prev.filter((s) => s.collaborator_id !== user.id);
@@ -236,12 +341,12 @@ const CollaboratorAddModal = ({
         ];
       });
     },
-    [existingIds, defaultRole]
+    [existingMap, defaultRole]
   );
 
   const toggleDept = useCallback(
     (dept: DeptNode) => {
-      if (existingIds.has(dept.id)) return;
+      if (existingMap.has(dept.id)) return;
       setSelected((prev) => {
         const exists = prev.find((s) => s.collaborator_id === dept.id);
         if (exists) return prev.filter((s) => s.collaborator_id !== dept.id);
@@ -256,7 +361,7 @@ const CollaboratorAddModal = ({
         ];
       });
     },
-    [existingIds, defaultRole]
+    [existingMap, defaultRole]
   );
 
   const removeSelected = useCallback((id: string) => {
@@ -294,9 +399,88 @@ const CollaboratorAddModal = ({
     setSearchValue('');
   }, []);
 
-  // 渲染左侧内容：部门树浏览 or 搜索结果
+  // 获取已授予权限的显示文本
+  const getExistingRoleLabel = (id: string): string | null => {
+    const role = existingMap.get(id);
+    if (!role) return null;
+    return t('collaborator.addModal.grantedPermission', {
+      role: t(`collaborator.roles.${role}`),
+    });
+  };
+
+  // 渲染用户行
+  const renderUserItem = (user: { id: string; name: string; department: string }) => {
+    const disabled = existingMap.has(user.id);
+    const checked = isSelected(user.id);
+    const existingLabel = getExistingRoleLabel(user.id);
+
+    return (
+      <div
+        key={user.id}
+        className={`collaborator-add-modal-left-item ${checked ? 'selected' : ''} ${disabled ? 'disabled' : ''}`}
+        onClick={() => !disabled && toggleUser(user)}
+      >
+        <Checkbox checked={checked} disabled={disabled} />
+        <Avatar size="small" style={{ flexShrink: 0 }}>
+          {user.name.charAt(0)}
+        </Avatar>
+        <div className="collaborator-add-modal-left-item-info">
+          <Text size="small">{user.name}</Text>
+          {!disabled && <span className="collaborator-add-modal-left-item-dept">{user.department}</span>}
+        </div>
+        {disabled && existingLabel && (
+          <span className="collaborator-add-modal-left-item-existing">
+            {existingLabel}
+          </span>
+        )}
+      </div>
+    );
+  };
+
+  // 渲染部门行
+  const renderDeptItem = (dept: DeptNode) => {
+    const disabled = existingMap.has(dept.id);
+    const checked = isSelected(dept.id);
+    const existingLabel = getExistingRoleLabel(dept.id);
+    const userCount = countUsers(dept);
+    const hasChildren = (dept.children && dept.children.length > 0) || (dept.users && dept.users.length > 0);
+
+    return (
+      <div
+        key={dept.id}
+        className={`collaborator-add-modal-left-item ${checked ? 'selected' : ''} ${disabled ? 'disabled' : ''}`}
+      >
+        <Checkbox
+          checked={checked}
+          disabled={disabled}
+          onChange={() => toggleDept(dept)}
+        />
+        <Building2 size={16} strokeWidth={2} className="collaborator-add-modal-left-item-icon" />
+        <Text size="small" className="collaborator-add-modal-left-item-name">
+          {dept.name}
+          {userCount > 0 && (
+            <span className="collaborator-add-modal-left-item-count">({userCount})</span>
+          )}
+        </Text>
+        {disabled && existingLabel && (
+          <span className="collaborator-add-modal-left-item-existing">
+            {existingLabel}
+          </span>
+        )}
+        {!disabled && hasChildren && (
+          <span
+            className="collaborator-add-modal-left-item-drill"
+            onClick={(e) => { e.stopPropagation(); navigateToDept(dept.id); }}
+          >
+            <IconChevronRight size="small" />
+          </span>
+        )}
+      </div>
+    );
+  };
+
+  // 渲染左侧内容
   const renderLeftContent = () => {
-    // 搜索模式
     if (searchResults) {
       return (
         <div className="collaborator-add-modal-left-list">
@@ -306,37 +490,7 @@ const CollaboratorAddModal = ({
                 <Building2 size={14} strokeWidth={2} />
                 {t('collaborator.addModal.departments')}
               </div>
-              {searchResults.depts.map((dept) => {
-                const disabled = existingIds.has(dept.id);
-                const checked = isSelected(dept.id);
-                return (
-                  <div
-                    key={dept.id}
-                    className={`collaborator-add-modal-left-item ${checked ? 'selected' : ''} ${disabled ? 'disabled' : ''}`}
-                  >
-                    <Checkbox
-                      checked={checked}
-                      disabled={disabled}
-                      onChange={() => toggleDept(dept)}
-                    />
-                    <Building2 size={16} strokeWidth={2} className="collaborator-add-modal-left-item-icon" />
-                    <Text size="small" className="collaborator-add-modal-left-item-name">{dept.name}</Text>
-                    {disabled && (
-                      <span className="collaborator-add-modal-left-item-existing">
-                        {t('collaborator.addModal.alreadyAdded')}
-                      </span>
-                    )}
-                    {!disabled && dept.children && dept.children.length > 0 && (
-                      <span
-                        className="collaborator-add-modal-left-item-drill"
-                        onClick={(e) => { e.stopPropagation(); navigateToDept(dept.id); }}
-                      >
-                        {t('collaborator.addModal.drillDown')} <IconChevronRight size="small" />
-                      </span>
-                    )}
-                  </div>
-                );
-              })}
+              {searchResults.depts.map((dept) => renderDeptItem(dept))}
             </>
           )}
           {searchResults.users.length > 0 && (
@@ -345,29 +499,7 @@ const CollaboratorAddModal = ({
                 <UserCircle size={14} strokeWidth={2} />
                 {t('collaborator.addModal.users')}
               </div>
-              {searchResults.users.map((user) => {
-                const disabled = existingIds.has(user.id);
-                const checked = isSelected(user.id);
-                return (
-                  <div
-                    key={user.id}
-                    className={`collaborator-add-modal-left-item ${checked ? 'selected' : ''} ${disabled ? 'disabled' : ''}`}
-                    onClick={() => !disabled && toggleUser(user)}
-                  >
-                    <Checkbox checked={checked} disabled={disabled} />
-                    <UserCircle size={16} strokeWidth={2} className="collaborator-add-modal-left-item-icon" />
-                    <div className="collaborator-add-modal-left-item-info">
-                      <Text size="small">{user.name}</Text>
-                      <span className="collaborator-add-modal-left-item-dept">{user.department}</span>
-                    </div>
-                    {disabled && (
-                      <span className="collaborator-add-modal-left-item-existing">
-                        {t('collaborator.addModal.alreadyAdded')}
-                      </span>
-                    )}
-                  </div>
-                );
-              })}
+              {searchResults.users.map((user) => renderUserItem(user))}
             </>
           )}
           {searchResults.depts.length === 0 && searchResults.users.length === 0 && (
@@ -385,60 +517,10 @@ const CollaboratorAddModal = ({
 
     return (
       <div className="collaborator-add-modal-left-list">
-        {children.map((dept) => {
-          const disabled = existingIds.has(dept.id);
-          const checked = isSelected(dept.id);
-          return (
-            <div
-              key={dept.id}
-              className={`collaborator-add-modal-left-item ${checked ? 'selected' : ''} ${disabled ? 'disabled' : ''}`}
-            >
-              <Checkbox
-                checked={checked}
-                disabled={disabled}
-                onChange={() => toggleDept(dept)}
-              />
-              <Building2 size={16} strokeWidth={2} className="collaborator-add-modal-left-item-icon" />
-              <Text size="small" className="collaborator-add-modal-left-item-name">{dept.name}</Text>
-              {disabled && (
-                <span className="collaborator-add-modal-left-item-existing">
-                  {t('collaborator.addModal.alreadyAdded')}
-                </span>
-              )}
-              {!disabled && (dept.children && dept.children.length > 0) && (
-                <span
-                  className="collaborator-add-modal-left-item-drill"
-                  onClick={(e) => { e.stopPropagation(); navigateToDept(dept.id); }}
-                >
-                  {t('collaborator.addModal.drillDown')} <IconChevronRight size="small" />
-                </span>
-              )}
-            </div>
-          );
-        })}
-        {users.map((user) => {
-          const disabled = existingIds.has(user.id);
-          const checked = isSelected(user.id);
-          return (
-            <div
-              key={user.id}
-              className={`collaborator-add-modal-left-item ${checked ? 'selected' : ''} ${disabled ? 'disabled' : ''}`}
-              onClick={() => !disabled && toggleUser(user)}
-            >
-              <Checkbox checked={checked} disabled={disabled} />
-              <UserCircle size={16} strokeWidth={2} className="collaborator-add-modal-left-item-icon" />
-              <div className="collaborator-add-modal-left-item-info">
-                <Text size="small">{user.name}</Text>
-                <span className="collaborator-add-modal-left-item-dept">{user.department}</span>
-              </div>
-              {disabled && (
-                <span className="collaborator-add-modal-left-item-existing">
-                  {t('collaborator.addModal.alreadyAdded')}
-                </span>
-              )}
-            </div>
-          );
-        })}
+        {/* 子部门带下钻箭头 */}
+        {children.map((dept) => renderDeptItem(dept))}
+        {/* 当前部门下的用户 */}
+        {users.map((user) => renderUserItem(user))}
         {children.length === 0 && users.length === 0 && (
           <div className="collaborator-add-modal-left-empty">
             {t('collaborator.addModal.emptyDept')}
@@ -458,12 +540,12 @@ const CollaboratorAddModal = ({
       maskClosable={false}
       className="collaborator-add-modal"
       footer={
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
           <Button theme="light" onClick={handleClose}>
             {t('common.cancel')}
           </Button>
           <Button theme="solid" onClick={handleSubmit} disabled={selected.length === 0}>
-            {t('collaborator.addModal.submit', { count: selected.length })}
+            {t('common.confirm')}
           </Button>
         </div>
       }
@@ -481,10 +563,15 @@ const CollaboratorAddModal = ({
             />
           </div>
 
-          {/* 面包屑导航 */}
-          {!searchResults && breadcrumbPath.length > 1 && (
+          {/* 面包屑导航 - 始终显示（根节点也显示"联系人"） */}
+          {!searchResults && (
             <div className="collaborator-add-modal-left-breadcrumb">
               <Breadcrumb compact={false}>
+                <Breadcrumb.Item
+                  onClick={breadcrumbPath.length > 1 ? () => navigateToDept('root') : undefined}
+                >
+                  {t('collaborator.addModal.contacts')}
+                </Breadcrumb.Item>
                 {breadcrumbPath.map((node, index) => (
                   <Breadcrumb.Item
                     key={node.id}
@@ -502,10 +589,10 @@ const CollaboratorAddModal = ({
           </div>
         </div>
 
-        {/* 右栏: 已选列表（带角色选择） */}
+        {/* 右栏: 已选协作人列表 */}
         <div className="collaborator-add-modal-right">
           <div className="collaborator-add-modal-right-header">
-            {t('collaborator.addModal.selectedCount', { count: selected.length })}
+            {t('collaborator.addModal.selectedTitle')}：{selected.length} {t('collaborator.addModal.unit')}
           </div>
           {selected.length === 0 ? (
             <div className="collaborator-add-modal-right-empty">
@@ -520,7 +607,9 @@ const CollaboratorAddModal = ({
                       {item.collaborator_type === 'DEPARTMENT' ? (
                         <Building2 size={16} strokeWidth={2} />
                       ) : (
-                        <UserCircle size={16} strokeWidth={2} />
+                        <Avatar size="extra-small">
+                          {item.collaborator_name.charAt(0)}
+                        </Avatar>
                       )}
                     </span>
                     <Text size="small" ellipsis={{ showTooltip: true }} style={{ maxWidth: 100 }}>
