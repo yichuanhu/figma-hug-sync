@@ -3116,6 +3116,18 @@
     "dispatch": {
       "noPermission": "No Permission",
       "noPermissionTip": "You do not have USER or higher permission for this execution target"
+    },
+    "actions": {
+      "remove": "Remove",
+      "add": "Add Collaborator",
+      "addCollaborator": "Add Collaborator"
+    },
+    "table": {
+      "name": "Name",
+      "role": "Role"
+    },
+    "source": {
+      "inheritedFromCount": "{{count}} inherited permissions"
     }
   }
 }
