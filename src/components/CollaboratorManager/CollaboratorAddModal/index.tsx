@@ -479,14 +479,11 @@ const CollaboratorAddModal = ({
           checked={checked}
           disabled={disabled}
         />
-        <Building2 size={20} strokeWidth={1.5} className="collaborator-add-modal-left-item-icon" />
+        <IconFlowChartStroked size="small" className="collaborator-add-modal-left-item-icon" style={{ fontSize: 14 }} />
         <div className="collaborator-add-modal-left-item-name">
-          <Text size="small" ellipsis={{ showTooltip: true }}>
+          <Text style={{ fontSize: 14 }} ellipsis={{ showTooltip: true }}>
             {dept.name}
           </Text>
-          {userCount > 0 && (
-            <span className="collaborator-add-modal-left-item-count">({userCount})</span>
-          )}
         </div>
         {disabled && existingLabel && (
           <span className="collaborator-add-modal-left-item-existing">
