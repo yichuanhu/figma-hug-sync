@@ -38,6 +38,8 @@ import type {
 import CreateTimeTriggerModal from '../CreateTimeTriggerModal';
 import EditTimeTriggerModal from '../EditTimeTriggerModal';
 import TimeTriggerDetailDrawer from '../TimeTriggerDetailDrawer';
+import CollaboratorAddModal from '@/components/CollaboratorManager/CollaboratorAddModal';
+import type { CollaboratorAssetType } from '@/api';
 import './index.less';
 
 // ============= 工具函数 =============
