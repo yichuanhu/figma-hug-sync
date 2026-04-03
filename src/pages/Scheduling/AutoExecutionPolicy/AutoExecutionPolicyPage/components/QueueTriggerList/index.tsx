@@ -35,6 +35,8 @@ import type {
 import CreateQueueTriggerModal from '../CreateQueueTriggerModal';
 import EditQueueTriggerModal from '../EditQueueTriggerModal';
 import QueueTriggerDetailDrawer from '../QueueTriggerDetailDrawer';
+import CollaboratorAddModal from '@/components/CollaboratorManager/CollaboratorAddModal';
+import type { CollaboratorAssetType } from '@/api';
 import './index.less';
 
 // ============= 工具函数 =============
