@@ -29,6 +29,7 @@ import {
   IconPlayCircle,
   IconDeleteStroked,
 } from '@douyinfe/semi-icons';
+import { UserPlus } from 'lucide-react';
 // AppLayout removed - now handled at route level
 import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
