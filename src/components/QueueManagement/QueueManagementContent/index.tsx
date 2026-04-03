@@ -258,6 +258,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
   // 点击行查看详情
   const handleRowClick = (record: LYQueueResponse) => {
     setSelectedQueue(record);
+    setDetailInitialTab('basic');
     setDetailDrawerVisible(true);
   };
 
