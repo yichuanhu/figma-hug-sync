@@ -122,6 +122,23 @@ const CollaboratorTab = ({
     [t, cascadeRemove, canCascade, cascadeCount, assetType, assetId]
   );
 
+  const handleQuickAdd = useCallback(
+    (record: AssetCollaborator) => {
+      addCollaborators(assetType, assetId, [
+        {
+          collaborator_type: record.collaborator_type,
+          collaborator_id: record.collaborator_id,
+          collaborator_name: record.collaborator_name,
+          department_name: record.department_name,
+          role: record.final_role,
+        },
+      ]);
+      setCollaborators(getCollaborators(assetType, assetId));
+      Toast.success(t('collaborator.quickAddSuccess'));
+    },
+    [assetType, assetId, t]
+  );
+
   const handleAddSuccess = useCallback(() => {
     setCollaborators(getCollaborators(assetType, assetId));
     setAddModalVisible(false);
