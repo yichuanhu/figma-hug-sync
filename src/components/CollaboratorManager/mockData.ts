@@ -339,18 +339,18 @@ const initMockData = (assetType: CollaboratorAssetType, assetId: string): AssetC
         final_role: calculateFinalRole(multiRoles), // = MANAGER
       });
 
-      // 场景11: 三源混合（直接 OBSERVER + 继承 USER + 继承 MAINTAINER → final = MAINTAINER）
+      // 场景11: 三源混合（直接 + 多源继承, 与org树匹配: Lihong Fan）
       base.push({
         id: `${assetId}-collab-011`,
         asset_type: assetType,
         asset_id: assetId,
         collaborator_type: 'USER',
-        collaborator_id: 'user-008',
-        collaborator_name: MOCK_USERS['user-008'].name,
-        department_name: MOCK_USERS['user-008'].department,
+        collaborator_id: 'user-pt-001',
+        collaborator_name: MOCK_USERS['user-pt-001'].name,
+        department_name: MOCK_USERS['user-pt-001'].department,
         role: 'OBSERVER',
-        added_by: 'user-002',
-        added_by_name: MOCK_USERS['user-002'].name,
+        added_by: 'user-n-001',
+        added_by_name: MOCK_USERS['user-n-001'].name,
         added_time: now,
         is_owner: false,
         source: 'DIRECT',
