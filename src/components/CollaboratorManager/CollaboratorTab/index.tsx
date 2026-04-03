@@ -246,9 +246,11 @@ const CollaboratorTab = ({
                 {record.department_name}
               </Text>
             )}
-            <div className="collaborator-tab-name-cell-source">
-              {renderSource(record)}
-            </div>
+            {renderSource(record) && (
+              <div className="collaborator-tab-name-cell-source">
+                {renderSource(record)}
+              </div>
+            )}
           </div>
         </div>
       ),
