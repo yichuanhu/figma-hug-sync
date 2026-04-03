@@ -562,6 +562,15 @@ const TemplateManagementPage = () => {
           onPageChange={handlePageChangeForDrawer}
           initialTab={detailInitialTab}
         />
+
+        <CollaboratorAddModal
+          visible={addCollaboratorModalVisible}
+          onClose={() => setAddCollaboratorModalVisible(false)}
+          onSuccess={() => setAddCollaboratorModalVisible(false)}
+          assetType={'TASK_TEMPLATE' as CollaboratorAssetType}
+          assetId={addCollaboratorAssetId}
+          existingCollaborators={[]}
+        />
       </div>
   );
 };

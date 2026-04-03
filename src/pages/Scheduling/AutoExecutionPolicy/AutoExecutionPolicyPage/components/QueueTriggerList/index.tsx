@@ -621,6 +621,15 @@ const QueueTriggerList = () => {
         onToggleStatus={handleToggleStatus}
         initialTab={detailInitialTab}
       />
+
+      <CollaboratorAddModal
+        visible={addCollaboratorModalVisible}
+        onClose={() => setAddCollaboratorModalVisible(false)}
+        onSuccess={() => setAddCollaboratorModalVisible(false)}
+        assetType={'TRIGGER' as CollaboratorAssetType}
+        assetId={addCollaboratorAssetId}
+        existingCollaborators={[]}
+      />
     </div>
   );
 };
