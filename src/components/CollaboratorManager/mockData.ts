@@ -9,23 +9,44 @@ import { COLLABORATOR_ROLE_PRIORITY, CASCADE_RULES } from '@/api/index';
 
 // ============= Mock 资产依赖图 =============
 
-/** Mock 资产依赖关系 */
+/** Mock 资产依赖关系 - 全面覆盖所有继承场景 */
 const MOCK_DEPENDENCIES: AssetDependency[] = [
-  // 流程 → 参数
+  // ===== 流程 proc-001 → 参数/凭据/队列/文件（依赖继承） =====
   { parent_type: 'PROCESS', parent_id: 'proc-001', parent_name: 'Financial Reimbursement Process', child_type: 'PARAMETER', child_id: 'param-001', child_name: 'Reimbursement Amount Limit' },
   { parent_type: 'PROCESS', parent_id: 'proc-001', parent_name: 'Financial Reimbursement Process', child_type: 'PARAMETER', child_id: 'param-002', child_name: 'Approval Threshold' },
-  // 流程 → 凭据
   { parent_type: 'PROCESS', parent_id: 'proc-001', parent_name: 'Financial Reimbursement Process', child_type: 'CREDENTIAL', child_id: 'cred-001', child_name: 'SAP System Credential' },
-  // 流程 → 队列
+  { parent_type: 'PROCESS', parent_id: 'proc-001', parent_name: 'Financial Reimbursement Process', child_type: 'CREDENTIAL', child_id: 'cred-002', child_name: 'Oracle ERP Credential' },
   { parent_type: 'PROCESS', parent_id: 'proc-001', parent_name: 'Financial Reimbursement Process', child_type: 'QUEUE', child_id: 'queue-001', child_name: 'Reimbursement Task Queue' },
-  // 流程 → 文件
   { parent_type: 'PROCESS', parent_id: 'proc-001', parent_name: 'Financial Reimbursement Process', child_type: 'FILE', child_id: 'file-001', child_name: 'Invoice Template' },
-  // 另一个流程的依赖
+  { parent_type: 'PROCESS', parent_id: 'proc-001', parent_name: 'Financial Reimbursement Process', child_type: 'FILE', child_id: 'file-002', child_name: 'Reimbursement Policy Document' },
+
+  // ===== 流程 proc-002 → 参数/凭据/队列/文件（共享子资产，多源继承场景） =====
   { parent_type: 'PROCESS', parent_id: 'proc-002', parent_name: 'Procurement Request Process', child_type: 'PARAMETER', child_id: 'param-001', child_name: 'Reimbursement Amount Limit' },
   { parent_type: 'PROCESS', parent_id: 'proc-002', parent_name: 'Procurement Request Process', child_type: 'CREDENTIAL', child_id: 'cred-001', child_name: 'SAP System Credential' },
-  // 机器人组 → 机器人
+  { parent_type: 'PROCESS', parent_id: 'proc-002', parent_name: 'Procurement Request Process', child_type: 'QUEUE', child_id: 'queue-002', child_name: 'Procurement Order Queue' },
+  { parent_type: 'PROCESS', parent_id: 'proc-002', parent_name: 'Procurement Request Process', child_type: 'FILE', child_id: 'file-003', child_name: 'Purchase Order Template' },
+
+  // ===== 流程 proc-003 → 参数/凭据（另一组依赖） =====
+  { parent_type: 'PROCESS', parent_id: 'proc-003', parent_name: 'Employee Onboarding Process', child_type: 'PARAMETER', child_id: 'param-003', child_name: 'Probation Period Config' },
+  { parent_type: 'PROCESS', parent_id: 'proc-003', parent_name: 'Employee Onboarding Process', child_type: 'CREDENTIAL', child_id: 'cred-003', child_name: 'HR System Credential' },
+  { parent_type: 'PROCESS', parent_id: 'proc-003', parent_name: 'Employee Onboarding Process', child_type: 'QUEUE', child_id: 'queue-003', child_name: 'Onboarding Task Queue' },
+  { parent_type: 'PROCESS', parent_id: 'proc-003', parent_name: 'Employee Onboarding Process', child_type: 'FILE', child_id: 'file-004', child_name: 'Employment Contract Template' },
+
+  // ===== 流程 proc-004 → 共享凭据（三源继承场景） =====
+  { parent_type: 'PROCESS', parent_id: 'proc-004', parent_name: 'Monthly Report Generation', child_type: 'CREDENTIAL', child_id: 'cred-001', child_name: 'SAP System Credential' },
+  { parent_type: 'PROCESS', parent_id: 'proc-004', parent_name: 'Monthly Report Generation', child_type: 'PARAMETER', child_id: 'param-004', child_name: 'Report Output Format' },
+
+  // ===== 机器人组 wg-001 → 机器人（层级继承） =====
   { parent_type: 'WORKER_GROUP', parent_id: 'wg-001', parent_name: 'Finance Robot Group', child_type: 'WORKER', child_id: 'worker-001', child_name: 'Finance Robot 01' },
   { parent_type: 'WORKER_GROUP', parent_id: 'wg-001', parent_name: 'Finance Robot Group', child_type: 'WORKER', child_id: 'worker-002', child_name: 'Finance Robot 02' },
+  { parent_type: 'WORKER_GROUP', parent_id: 'wg-001', parent_name: 'Finance Robot Group', child_type: 'WORKER', child_id: 'worker-003', child_name: 'Finance Robot 03' },
+
+  // ===== 机器人组 wg-002 → 机器人 =====
+  { parent_type: 'WORKER_GROUP', parent_id: 'wg-002', parent_name: 'Operations Robot Group', child_type: 'WORKER', child_id: 'worker-004', child_name: 'Operations Robot 01' },
+  { parent_type: 'WORKER_GROUP', parent_id: 'wg-002', parent_name: 'Operations Robot Group', child_type: 'WORKER', child_id: 'worker-005', child_name: 'Operations Robot 02' },
+
+  // ===== 机器人组 wg-003 → 机器人 =====
+  { parent_type: 'WORKER_GROUP', parent_id: 'wg-003', parent_name: 'IT Support Robot Group', child_type: 'WORKER', child_id: 'worker-006', child_name: 'IT Support Robot 01' },
 ];
 
 // ============= Mock 协作者存储 =============
@@ -37,112 +58,257 @@ const storeKey = (assetType: CollaboratorAssetType, assetId: string) => `${asset
 
 /** 计算最终权限 = MAX(所有来源) */
 const calculateFinalRole = (roles: CollaboratorRole[]): CollaboratorRole => {
+  if (!roles || roles.length === 0) return 'OBSERVER';
   return roles.reduce((max, current) =>
     COLLABORATOR_ROLE_PRIORITY[current] > COLLABORATOR_ROLE_PRIORITY[max] ? current : max
   );
 };
 
-/** 初始化 Mock 协作者数据 */
+// ============= Mock 用户与部门数据 =============
+
+const MOCK_USERS = {
+  'user-001': { name: '张三', department: '来也科技-大客户业务中心-APA产品部-产品团队' },
+  'user-002': { name: '李四', department: '来也科技-大客户业务中心-北区BU-北区解决方案团队' },
+  'user-003': { name: '王五', department: '来也科技-大客户业务中心-APA产品部-APA-客户端团队' },
+  'user-004': { name: '赵六', department: '来也科技-大客户业务中心-南区BU' },
+  'user-005': { name: '孙七', department: '来也科技-财务中心-会计部' },
+  'user-006': { name: '周八', department: '来也科技-技术中心-基础架构部' },
+  'user-007': { name: '吴九', department: '来也科技-人力资源中心-招聘部' },
+  'user-008': { name: '郑十', department: '来也科技-大客户业务中心-APA产品部-产品团队' },
+  'user-009': { name: '陈小明', department: '来也科技-运营中心-供应链管理部' },
+  'user-010': { name: '林晓华', department: '来也科技-法务部-合规团队' },
+};
+
+const MOCK_DEPARTMENTS = {
+  'dept-001': { name: '财务部' },
+  'dept-002': { name: 'APA产品部' },
+  'dept-003': { name: '人力资源中心' },
+  'dept-004': { name: '技术中心' },
+  'dept-005': { name: '运营中心' },
+};
+
+/** 初始化 Mock 协作者数据 - 根据资产类型和ID生成丰富的场景数据 */
 const initMockData = (assetType: CollaboratorAssetType, assetId: string): AssetCollaborator[] => {
   const now = new Date().toISOString();
+  const oneHourAgo = new Date(Date.now() - 3600000).toISOString();
+  const oneDayAgo = new Date(Date.now() - 86400000).toISOString();
+  const oneWeekAgo = new Date(Date.now() - 604800000).toISOString();
+  const oneMonthAgo = new Date(Date.now() - 2592000000).toISOString();
 
-  const baseCollaborators: AssetCollaborator[] = [
-    {
-      id: `${assetId}-collab-001`,
-      asset_type: assetType,
-      asset_id: assetId,
-      collaborator_type: 'USER',
-      collaborator_id: 'user-001',
-      collaborator_name: '张三',
-      department_name: '来也科技-大客户业务中心-APA产品部-产品团队',
-      role: 'MANAGER',
-      added_by: 'system',
-      added_by_name: '系统',
-      added_time: now,
-      is_owner: true,
-      source: 'DIRECT',
-      source_types: ['DIRECT'],
-      final_role: 'MANAGER',
-    },
-    {
-      id: `${assetId}-collab-002`,
-      asset_type: assetType,
-      asset_id: assetId,
-      collaborator_type: 'USER',
-      collaborator_id: 'user-002',
-      collaborator_name: '李四',
-      department_name: '来也科技-大客户业务中心-北区BU-北区解决方案团队',
-      role: 'MAINTAINER',
-      added_by: 'user-001',
-      added_by_name: '张三',
-      added_time: now,
-      is_owner: false,
-      source: 'DIRECT',
-      source_types: ['DIRECT'],
-      final_role: 'MAINTAINER',
-    },
-    {
-      id: `${assetId}-collab-003`,
-      asset_type: assetType,
-      asset_id: assetId,
-      collaborator_type: 'DEPARTMENT',
-      collaborator_id: 'dept-001',
-      collaborator_name: '财务部',
-      role: 'USER',
-      added_by: 'user-001',
-      added_by_name: '张三',
-      added_time: now,
-      is_owner: false,
-      source: 'DIRECT',
-      source_types: ['DIRECT'],
-      final_role: 'USER',
-    },
-  ];
+  const base: AssetCollaborator[] = [];
 
-  // 对于子资产，添加继承协作者示例
+  // ===== 场景1: 创建者/拥有者 (所有资产都有) =====
+  base.push({
+    id: `${assetId}-collab-001`,
+    asset_type: assetType,
+    asset_id: assetId,
+    collaborator_type: 'USER',
+    collaborator_id: 'user-001',
+    collaborator_name: MOCK_USERS['user-001'].name,
+    department_name: MOCK_USERS['user-001'].department,
+    role: 'MANAGER',
+    added_by: 'system',
+    added_by_name: '系统',
+    added_time: oneMonthAgo,
+    is_owner: true,
+    source: 'DIRECT',
+    source_types: ['DIRECT'],
+    final_role: 'MANAGER',
+  });
+
+  // ===== 场景2: 直接分配的编辑者 =====
+  base.push({
+    id: `${assetId}-collab-002`,
+    asset_type: assetType,
+    asset_id: assetId,
+    collaborator_type: 'USER',
+    collaborator_id: 'user-002',
+    collaborator_name: MOCK_USERS['user-002'].name,
+    department_name: MOCK_USERS['user-002'].department,
+    role: 'MAINTAINER',
+    added_by: 'user-001',
+    added_by_name: MOCK_USERS['user-001'].name,
+    added_time: oneWeekAgo,
+    is_owner: false,
+    source: 'DIRECT',
+    source_types: ['DIRECT'],
+    final_role: 'MAINTAINER',
+  });
+
+  // ===== 场景3: 直接分配的使用者 =====
+  base.push({
+    id: `${assetId}-collab-003`,
+    asset_type: assetType,
+    asset_id: assetId,
+    collaborator_type: 'USER',
+    collaborator_id: 'user-005',
+    collaborator_name: MOCK_USERS['user-005'].name,
+    department_name: MOCK_USERS['user-005'].department,
+    role: 'USER',
+    added_by: 'user-001',
+    added_by_name: MOCK_USERS['user-001'].name,
+    added_time: oneDayAgo,
+    is_owner: false,
+    source: 'DIRECT',
+    source_types: ['DIRECT'],
+    final_role: 'USER',
+  });
+
+  // ===== 场景4: 直接分配的观察者 =====
+  base.push({
+    id: `${assetId}-collab-004`,
+    asset_type: assetType,
+    asset_id: assetId,
+    collaborator_type: 'USER',
+    collaborator_id: 'user-010',
+    collaborator_name: MOCK_USERS['user-010'].name,
+    department_name: MOCK_USERS['user-010'].department,
+    role: 'OBSERVER',
+    added_by: 'user-001',
+    added_by_name: MOCK_USERS['user-001'].name,
+    added_time: oneHourAgo,
+    is_owner: false,
+    source: 'DIRECT',
+    source_types: ['DIRECT'],
+    final_role: 'OBSERVER',
+  });
+
+  // ===== 场景5: 部门协作者（整个部门拥有权限） =====
+  base.push({
+    id: `${assetId}-collab-005`,
+    asset_type: assetType,
+    asset_id: assetId,
+    collaborator_type: 'DEPARTMENT',
+    collaborator_id: 'dept-001',
+    collaborator_name: MOCK_DEPARTMENTS['dept-001'].name,
+    role: 'USER',
+    added_by: 'user-001',
+    added_by_name: MOCK_USERS['user-001'].name,
+    added_time: oneWeekAgo,
+    is_owner: false,
+    source: 'DIRECT',
+    source_types: ['DIRECT'],
+    final_role: 'USER',
+  });
+
+  // ===== 场景6: 另一个部门协作者（观察者权限） =====
+  base.push({
+    id: `${assetId}-collab-006`,
+    asset_type: assetType,
+    asset_id: assetId,
+    collaborator_type: 'DEPARTMENT',
+    collaborator_id: 'dept-004',
+    collaborator_name: MOCK_DEPARTMENTS['dept-004'].name,
+    role: 'OBSERVER',
+    added_by: 'user-001',
+    added_by_name: MOCK_USERS['user-001'].name,
+    added_time: oneDayAgo,
+    is_owner: false,
+    source: 'DIRECT',
+    source_types: ['DIRECT'],
+    final_role: 'OBSERVER',
+  });
+
+  // ===== 场景7-10: 继承协作者（仅子资产有） =====
   const inheritedSources = getParentDependencies(assetType, assetId);
+
   if (inheritedSources.length > 0) {
     const sourceType = assetType === 'WORKER' ? 'INHERITED_HIERARCHY' : 'INHERITED_DEPENDENCY';
-    baseCollaborators.push({
-      id: `${assetId}-collab-004`,
+
+    // 场景7: 纯继承用户（仅从一个父资产继承）
+    base.push({
+      id: `${assetId}-collab-007`,
       asset_type: assetType,
       asset_id: assetId,
       collaborator_type: 'USER',
       collaborator_id: 'user-003',
-      collaborator_name: '王五',
-      department_name: '来也科技-大客户业务中心-APA产品部-APA-客户端团队',
+      collaborator_name: MOCK_USERS['user-003'].name,
+      department_name: MOCK_USERS['user-003'].department,
       role: 'MAINTAINER',
       added_by: 'system',
       added_by_name: '系统',
-      added_time: now,
+      added_time: oneWeekAgo,
       is_owner: false,
       source: 'INHERITED',
       source_types: [sourceType],
-      inheritance_sources: inheritedSources.map((dep) => ({
-        asset_type: dep.parent_type,
-        asset_id: dep.parent_id,
-        asset_name: dep.parent_name,
-        role: 'USER' as CollaboratorRole,
+      inheritance_sources: [{
+        asset_type: inheritedSources[0].parent_type,
+        asset_id: inheritedSources[0].parent_id,
+        asset_name: inheritedSources[0].parent_name,
+        role: 'MAINTAINER',
         source_type: sourceType,
-      })),
-      final_role: calculateFinalRole(['USER', 'MAINTAINER']),
+      }],
+      final_role: 'MAINTAINER',
     });
 
-    // 添加一个多源继承的示例（同一用户从多个流程继承不同角色）
+    // 场景8: 纯继承用户（观察者角色继承）
+    base.push({
+      id: `${assetId}-collab-008`,
+      asset_type: assetType,
+      asset_id: assetId,
+      collaborator_type: 'USER',
+      collaborator_id: 'user-009',
+      collaborator_name: MOCK_USERS['user-009'].name,
+      department_name: MOCK_USERS['user-009'].department,
+      role: 'OBSERVER',
+      added_by: 'system',
+      added_by_name: '系统',
+      added_time: oneDayAgo,
+      is_owner: false,
+      source: 'INHERITED',
+      source_types: [sourceType],
+      inheritance_sources: [{
+        asset_type: inheritedSources[0].parent_type,
+        asset_id: inheritedSources[0].parent_id,
+        asset_name: inheritedSources[0].parent_name,
+        role: 'OBSERVER',
+        source_type: sourceType,
+      }],
+      final_role: 'OBSERVER',
+    });
+
+    // 场景9: 混合来源用户（直接分配 + 继承，MAX取最高）
+    // 例如：直接分配 USER，从流程继承 MAINTAINER → final_role = MAINTAINER
+    base.push({
+      id: `${assetId}-collab-009`,
+      asset_type: assetType,
+      asset_id: assetId,
+      collaborator_type: 'USER',
+      collaborator_id: 'user-006',
+      collaborator_name: MOCK_USERS['user-006'].name,
+      department_name: MOCK_USERS['user-006'].department,
+      role: 'USER',
+      added_by: 'user-001',
+      added_by_name: MOCK_USERS['user-001'].name,
+      added_time: oneDayAgo,
+      is_owner: false,
+      source: 'DIRECT',
+      source_types: ['DIRECT', sourceType],
+      inheritance_sources: [{
+        asset_type: inheritedSources[0].parent_type,
+        asset_id: inheritedSources[0].parent_id,
+        asset_name: inheritedSources[0].parent_name,
+        role: 'MAINTAINER',
+        source_type: sourceType,
+      }],
+      final_role: calculateFinalRole(['USER', 'MAINTAINER']), // = MAINTAINER
+    });
+
+    // 场景10: 多源继承用户（从多个父资产继承不同角色，MAX合并）
     if (inheritedSources.length > 1) {
-      const roles: CollaboratorRole[] = ['USER', 'MAINTAINER'];
-      baseCollaborators.push({
-        id: `${assetId}-collab-005`,
+      const multiRoles: CollaboratorRole[] = ['USER', 'MANAGER'];
+      base.push({
+        id: `${assetId}-collab-010`,
         asset_type: assetType,
         asset_id: assetId,
         collaborator_type: 'USER',
         collaborator_id: 'user-004',
-        collaborator_name: '赵六',
-        department_name: '来也科技-大客户业务中心-南区BU',
-        role: 'MAINTAINER',
+        collaborator_name: MOCK_USERS['user-004'].name,
+        department_name: MOCK_USERS['user-004'].department,
+        role: 'MANAGER',
         added_by: 'system',
         added_by_name: '系统',
-        added_time: now,
+        added_time: oneWeekAgo,
         is_owner: false,
         source: 'INHERITED',
         source_types: [sourceType],
@@ -150,15 +316,85 @@ const initMockData = (assetType: CollaboratorAssetType, assetId: string): AssetC
           asset_type: dep.parent_type,
           asset_id: dep.parent_id,
           asset_name: dep.parent_name,
-          role: roles[idx % roles.length],
+          role: multiRoles[idx % multiRoles.length],
           source_type: sourceType,
         })),
-        final_role: calculateFinalRole(roles),
+        final_role: calculateFinalRole(multiRoles), // = MANAGER
+      });
+
+      // 场景11: 三源混合（直接 OBSERVER + 继承 USER + 继承 MAINTAINER → final = MAINTAINER）
+      base.push({
+        id: `${assetId}-collab-011`,
+        asset_type: assetType,
+        asset_id: assetId,
+        collaborator_type: 'USER',
+        collaborator_id: 'user-008',
+        collaborator_name: MOCK_USERS['user-008'].name,
+        department_name: MOCK_USERS['user-008'].department,
+        role: 'OBSERVER',
+        added_by: 'user-002',
+        added_by_name: MOCK_USERS['user-002'].name,
+        added_time: now,
+        is_owner: false,
+        source: 'DIRECT',
+        source_types: ['DIRECT', sourceType],
+        inheritance_sources: inheritedSources.map((dep, idx) => ({
+          asset_type: dep.parent_type,
+          asset_id: dep.parent_id,
+          asset_name: dep.parent_name,
+          role: (['USER', 'MAINTAINER'] as CollaboratorRole[])[idx % 2],
+          source_type: sourceType,
+        })),
+        final_role: calculateFinalRole(['OBSERVER', 'USER', 'MAINTAINER']), // = MAINTAINER
       });
     }
+
+    // 场景12: 继承的部门协作者
+    base.push({
+      id: `${assetId}-collab-012`,
+      asset_type: assetType,
+      asset_id: assetId,
+      collaborator_type: 'DEPARTMENT',
+      collaborator_id: 'dept-002',
+      collaborator_name: MOCK_DEPARTMENTS['dept-002'].name,
+      role: 'MAINTAINER',
+      added_by: 'system',
+      added_by_name: '系统',
+      added_time: oneWeekAgo,
+      is_owner: false,
+      source: 'INHERITED',
+      source_types: [sourceType],
+      inheritance_sources: [{
+        asset_type: inheritedSources[0].parent_type,
+        asset_id: inheritedSources[0].parent_id,
+        asset_name: inheritedSources[0].parent_name,
+        role: 'MAINTAINER',
+        source_type: sourceType,
+      }],
+      final_role: 'MAINTAINER',
+    });
   }
 
-  return baseCollaborators;
+  // ===== 场景13: 仅部门权限的用户（通过部门分配，无直接权限）=====
+  base.push({
+    id: `${assetId}-collab-013`,
+    asset_type: assetType,
+    asset_id: assetId,
+    collaborator_type: 'USER',
+    collaborator_id: 'user-007',
+    collaborator_name: MOCK_USERS['user-007'].name,
+    department_name: MOCK_USERS['user-007'].department,
+    role: 'USER',
+    added_by: 'system',
+    added_by_name: '系统',
+    added_time: oneWeekAgo,
+    is_owner: false,
+    source: 'DIRECT',
+    source_types: ['DEPARTMENT'],
+    final_role: 'USER',
+  });
+
+  return base;
 };
 
 // ============= 公开 API =============
@@ -221,7 +457,7 @@ export const addCollaborators = (
       department_name: item.department_name,
       role: item.role,
       added_by: 'user-001',
-      added_by_name: '张三',
+      added_by_name: MOCK_USERS['user-001'].name,
       added_time: now,
       is_owner: false,
       source: 'DIRECT',
@@ -235,7 +471,6 @@ export const addCollaborators = (
   // 级联到下游依赖资产
   let cascadeCount = 0;
   const childDeps = getChildDependencies(assetType, assetId);
-  const parentAssetName = assetType === 'WORKER_GROUP' ? 'Robot Group' : 'Process';
 
   for (const dep of childDeps) {
     const childKey = storeKey(dep.child_type, dep.child_id);
@@ -250,7 +485,7 @@ export const addCollaborators = (
         existingChild.inheritance_sources.push({
           asset_type: assetType,
           asset_id: assetId,
-          asset_name: `${parentAssetName} (${dep.parent_name})`,
+          asset_name: dep.parent_name,
           role: item.role,
           source_type: sourceType,
         });
@@ -315,14 +550,27 @@ export const removeCollaborator = (
     const childCollabs = getCollaborators(dep.child_type, dep.child_id);
     const updated = childCollabs.filter((c) => {
       if (c.collaborator_id !== target.collaborator_id) return true;
-      if (c.source === 'DIRECT') return true; // 保留直接分配
+      if (c.source === 'DIRECT' && !c.inheritance_sources?.some(
+        (s) => s.asset_type === assetType && s.asset_id === assetId
+      )) return true; // 保留无关直接分配
       // 移除来自当前资产的继承来源
       if (c.inheritance_sources) {
         c.inheritance_sources = c.inheritance_sources.filter(
           (s) => !(s.asset_type === assetType && s.asset_id === assetId)
         );
         if (c.inheritance_sources.length > 0) {
-          c.final_role = calculateFinalRole(c.inheritance_sources.map((s) => s.role));
+          // 还有其他继承来源，重新计算 MAX
+          const allRoles = c.source === 'DIRECT'
+            ? [c.role, ...c.inheritance_sources.map((s) => s.role)]
+            : c.inheritance_sources.map((s) => s.role);
+          c.final_role = calculateFinalRole(allRoles);
+          return true;
+        }
+        // 没有继承来源了
+        if (c.source === 'DIRECT') {
+          // 保留直接分配，清理继承标记
+          c.source_types = c.source_types?.filter((t) => t === 'DIRECT' || t === 'DEPARTMENT');
+          c.final_role = c.role;
           return true;
         }
       }
