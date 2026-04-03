@@ -461,7 +461,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
                 {t('file.actions.download')}
               </Dropdown.Item>
               <Dropdown.Item
-                icon={<UserPlus size={16} strokeWidth={2} />}
+                icon={<UserPlus size={14} strokeWidth={2} />}
                 onClick={(e) => {
                   e.stopPropagation();
                   setAddCollaboratorAssetId(record.id);
