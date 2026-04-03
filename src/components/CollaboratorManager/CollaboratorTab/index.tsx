@@ -11,7 +11,7 @@ import {
 } from '@douyinfe/semi-ui';
 import {
   IconDeleteStroked,
-  IconSearch,
+  IconSearchStroked,
   IconFlowChartStroked,
 } from '@douyinfe/semi-icons';
 import { User, UserPlus } from 'lucide-react';
@@ -280,7 +280,7 @@ const CollaboratorTab = ({
     <div className="collaborator-tab">
       <div className="collaborator-tab-toolbar">
         <Input
-          prefix={<IconSearch />}
+          prefix={<IconSearchStroked />}
           placeholder={t('collaborator.searchPlaceholder')}
           value={searchValue}
           onChange={setSearchValue}
