@@ -34,7 +34,8 @@ import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
 import ProcessDetailDrawer from './components/ProcessDetailDrawer';
 import { useOpenProcess } from './hooks/useOpenProcess';
-import type { LYProcessResponse, GetProcessesParams, LYListResponseLYProcessResponse } from '@/api';
+import CollaboratorAddModal from '@/components/CollaboratorManager/CollaboratorAddModal';
+import type { LYProcessResponse, GetProcessesParams, LYListResponseLYProcessResponse, CollaboratorAssetType } from '@/api';
 import './index.less';
 
 const { Title, Text } = Typography;

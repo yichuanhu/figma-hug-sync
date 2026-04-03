@@ -37,6 +37,8 @@ import type {
 import CreateParameterModal from './components/CreateParameterModal';
 import EditParameterModal from './components/EditParameterModal';
 import ParameterDetailDrawer from './components/ParameterDetailDrawer';
+import CollaboratorAddModal from '@/components/CollaboratorManager/CollaboratorAddModal';
+import type { CollaboratorAssetType } from '@/api/index';
 
 import './index.less';
 

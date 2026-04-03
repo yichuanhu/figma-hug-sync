@@ -650,6 +650,16 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
         onDelete={handleDelete}
         initialTab={detailInitialTab}
       />
+
+      {/* 添加协作者弹窗 */}
+      <CollaboratorAddModal
+        visible={addCollaboratorModalVisible}
+        onClose={() => setAddCollaboratorModalVisible(false)}
+        onSuccess={() => setAddCollaboratorModalVisible(false)}
+        assetType={'FILE' as CollaboratorAssetType}
+        assetId={addCollaboratorAssetId}
+        existingCollaborators={[]}
+      />
     </div>
   );
 };

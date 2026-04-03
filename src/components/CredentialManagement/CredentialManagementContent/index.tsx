@@ -38,6 +38,8 @@ import CreateCredentialModal from './components/CreateCredentialModal';
 import EditCredentialModal from './components/EditCredentialModal';
 import CredentialDetailDrawer from './components/CredentialDetailDrawer';
 import LinkPersonalCredentialModal from './components/LinkPersonalCredentialModal';
+import CollaboratorAddModal from '@/components/CollaboratorManager/CollaboratorAddModal';
+import type { CollaboratorAssetType } from '@/api/index';
 
 import './index.less';
 

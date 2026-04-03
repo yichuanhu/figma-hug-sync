@@ -37,6 +37,8 @@ import type {
 import CreateQueueModal from './components/CreateQueueModal';
 import EditQueueModal from './components/EditQueueModal';
 import QueueDetailDrawer from './components/QueueDetailDrawer';
+import CollaboratorAddModal from '@/components/CollaboratorManager/CollaboratorAddModal';
+import type { CollaboratorAssetType } from '@/api/index';
 
 import './index.less';
 
