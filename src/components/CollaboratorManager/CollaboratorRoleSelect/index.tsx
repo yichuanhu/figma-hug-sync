@@ -1,7 +1,10 @@
 import { useTranslation } from 'react-i18next';
 import { Select } from '@douyinfe/semi-ui';
+import { IconTick } from '@douyinfe/semi-icons';
 import type { CollaboratorRole, CollaboratorAssetType } from '@/api/index';
 import { ASSET_AVAILABLE_ROLES } from '@/api/index';
+
+import './index.less';
 
 interface CollaboratorRoleSelectProps {
   value: CollaboratorRole;
@@ -35,51 +38,33 @@ const CollaboratorRoleSelect = ({
     style?: React.CSSProperties;
     className?: string;
   }) => {
-    const { selected, value: optValue, onMouseEnter, onClick, className } = renderProps;
+    const { selected, value: optValue, focused, onMouseEnter, onClick, style, className } = renderProps;
     const desc = t(`collaborator.roleDesc.${optValue}`);
 
     return (
       <div
-        className={className}
-        style={{
-          padding: '8px 12px',
-          cursor: 'pointer',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-start',
-        }}
+        className={`collaborator-role-option ${className || ''} ${focused ? 'collaborator-role-option-focused' : ''} ${selected ? 'collaborator-role-option-selected' : ''}`}
+        style={style}
         onMouseEnter={onMouseEnter}
         onClick={onClick}
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <span style={{ 
-            fontSize: 14, 
-            fontWeight: selected ? 600 : 400,
-            color: selected ? 'var(--semi-color-primary)' : 'var(--semi-color-text-0)',
-          }}>
+        <div className="collaborator-role-option-content">
+          <span className="collaborator-role-option-label">
             {t(`collaborator.roles.${optValue}`)}
           </span>
-          <span style={{ fontSize: 12, color: 'var(--semi-color-text-2)', lineHeight: '18px' }}>
+          <span className="collaborator-role-option-desc">
             {desc}
           </span>
         </div>
         {selected && (
-          <span style={{ color: 'var(--semi-color-primary)', fontSize: 16, marginTop: 2 }}>✓</span>
+          <IconTick className="collaborator-role-option-check" />
         )}
       </div>
     );
   };
 
   const removeSlot = onRemove ? (
-    <div
-      style={{
-        padding: '8px 12px',
-        cursor: 'pointer',
-        color: 'var(--semi-color-danger)',
-        fontSize: 14,
-      }}
-      onClick={onRemove}
-    >
+    <div className="collaborator-role-remove" onClick={onRemove}>
       {t('collaborator.actions.remove')}
     </div>
   ) : undefined;
