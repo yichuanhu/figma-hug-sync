@@ -1,138 +1,110 @@
 
 
-# 协作者管理功能实现计划（方案 C：详情抽屉 Tab + 弹窗添加）
+# 协作者权限继承逻辑优化计划
 
-## 交互方案概述
+## 需求概要
 
-在每个资产的详情抽屉中新增「协作者」Tab，展示协作者列表；通过表格行「更多」菜单新增「管理协作者」入口直接打开详情抽屉的协作者 Tab。添加协作者使用独立 900px 弹窗（双栏布局：左侧部门树 + 右侧已选列表）。
+根据 STORY-002 文档，实现资源依赖级联继承的前端逻辑：
+- **层级继承**：机器人继承机器人组权限
+- **依赖继承**：参数/凭据/队列/文件继承流程权限
+- **最终权限** = MAX(直接权限, 部门权限, 层级继承, 依赖继承)
+- **级联操作**：流程添加/移除/变更协作者时，自动级联到依赖资产
 
-```text
-┌── 资产详情抽屉 (900px) ──────────────────────┐
-│  流程：财务报销流程                         [×] │
-│  ┌────────┬──────────┬───────────┐           │
-│  │基本信息 │ 版本管理  │ 协作者 ③  │           │
-│  └────────┴──────────┴───────────┘           │
-│  ┌──────────────────────────────────────┐    │
-│  │ 🔍 搜索            [+ 添加协作人]    │    │
-│  ├──────────────────────────────────────┤    │
-│  │ 名称        类型   角色    来源  操作 │    │
-│  │ 张三(归属)   个人  管理者  直接   --  │    │
-│  │ 李四         个人  ▼维护者 直接  [×]  │    │
-│  │ 财务部       部门  ▼使用者 直接  [×]  │    │
-│  │ 王五         个人   维护者 继承   --  │    │
-│  │  └─ 继承自: 报销流程→USER,           │    │
-│  │            采购流程→MAINT             │    │
-│  └──────────────────────────────────────┘    │
-└──────────────────────────────────────────────┘
-```
+## 当前状态
 
----
+现有实现使用静态 Mock 数据，继承关系已有基本的 UI 展示（继承来源展开/折叠），但缺乏：
+1. 级联传播逻辑（添加/移除/变更时自动同步依赖资产）
+2. MAX 权限合并计算
+3. 资产间依赖关系的数据模型
+4. 继承权限来源的分类展示（层级继承 vs 依赖继承）
 
 ## 实现步骤
 
-### 第 1 步：API 类型定义与 Mock 数据
+### 第 1 步：扩展类型定义
 
 **文件**: `src/api/index.ts`
 
-新增类型：
-- `CollaboratorRole`: `'MANAGER' | 'MAINTAINER' | 'USER' | 'OBSERVER'`
-- `CollaboratorType`: `'USER' | 'DEPARTMENT'`
-- `AssetType`: `'PROCESS' | 'PARAMETER' | 'CREDENTIAL' | 'QUEUE' | 'FILE' | 'WORKER' | 'WORKER_GROUP' | 'TRIGGER' | 'TASK_TEMPLATE'`
-- `AssetCollaborator` 接口：含 id、asset_type、collaborator_type、collaborator_name、role、is_owner、inheritance_sources、final_role 等字段
-- `CollaboratorAddRequest`、`CollaboratorUpdateRequest` 请求类型
-- 资产类型→可用角色映射（触发器不支持 USER）
+- 新增 `CollaboratorSource` 类型，区分 `'DIRECT' | 'INHERITED_HIERARCHY' | 'INHERITED_DEPENDENCY' | 'DEPARTMENT'`
+- 扩展 `CollaboratorInheritanceSource` 增加 `source_type` 字段（标识是层级继承还是依赖继承）
+- 新增 `AssetDependency` 接口描述资产依赖关系
+- 新增继承关系映射常量 `INHERITANCE_RULES`：定义哪些资产类型可以从哪些父类型继承
 
-### 第 2 步：共享组件 — CollaboratorTab
+### 第 2 步：Mock 依赖关系数据
 
-**文件**: `src/components/CollaboratorManager/CollaboratorTab/index.tsx` + `index.less`
+**文件**: `src/components/CollaboratorManager/mockData.ts`（新建）
 
-协作者列表 Tab 内容组件，嵌入各详情抽屉的 TabPane 中：
-- 顶部：搜索框 + 「添加协作人」按钮（仅 MANAGER 可见）
-- 表格列：名称（含用户/部门图标）、类型、角色（MANAGER 可操作的下拉选择）、权限来源、操作（移除按钮）
-- 归属者行：角色下拉禁用，无移除按钮，显示「归属者」标签
-- 继承行：角色下拉禁用，无移除按钮，可展开查看继承来源详情（最多3个）
-- 底部分页
+抽取并扩展 Mock 数据为独立模块：
+- Mock 资产依赖图：流程→参数/凭据/队列/文件，机器人组→机器人
+- Mock 协作者数据，包含直接分配和继承两种来源
+- 提供 `getAssetDependencies(assetType, assetId)` 函数
+- 提供 `getCollaborators(assetType, assetId)` 函数，内部实现 MAX 权限合并
 
-Props：`assetType`、`assetId`、`context`、`canManage`
+### 第 3 步：实现级联传播逻辑
 
-### 第 3 步：共享组件 — CollaboratorAddModal
+**文件**: `src/hooks/useCollaboratorCascade.ts`（新建）
 
-**文件**: `src/components/CollaboratorManager/CollaboratorAddModal/index.tsx` + `index.less`
+```typescript
+useCollaboratorCascade(assetType, assetId)
+  → { 
+      addCollaborator(collaborators) // 添加时级联到依赖资产
+      removeCollaborator(collaboratorId) // 移除时级联清理继承权限
+      updateRole(collaboratorId, newRole) // 变更时级联更新
+    }
+```
 
-900px 弹窗，双栏布局：
-- 左栏（约 50%）：部门树 + 搜索框，勾选用户/部门
-- 右栏（约 50%）：已选协作人列表，每项带角色下拉（默认「使用者」）和删除按钮
-- 已存在的协作者在左栏置灰不可选
-- 底部：取消 + 添加按钮
-- 角色下拉根据 assetType 过滤可用角色
+核心逻辑：
+- **添加**：查找当前资产的所有依赖资产，为每个依赖资产添加相同角色的继承协作者
+- **移除**：从依赖资产中移除来源为当前资产的继承记录；如有直接分配权限则保留
+- **变更角色**：更新依赖资产上对应继承记录的角色，重新计算 MAX 最终权限
+- **冲突处理**：`final_role = MAX(所有来源权限)`
 
-### 第 4 步：共享组件 — CollaboratorRoleSelect
-
-**文件**: `src/components/CollaboratorManager/CollaboratorRoleSelect/index.tsx`
-
-角色下拉选择器，根据 assetType 过滤可用角色，每个选项带权限说明文案。归属者/继承权限时 disabled。
-
-### 第 5 步：权限 Hook
+### 第 4 步：更新权限合并计算
 
 **文件**: `src/hooks/useCollaboratorPermission.ts`
 
-```typescript
-useCollaboratorPermission(assetType, assetId)
-  → { role, canManage, canEdit, canUse, canView, loading }
-```
+增强权限计算逻辑：
+- 收集所有权限来源（直接、部门、层级继承、依赖继承）
+- 使用 `COLLABORATOR_ROLE_PRIORITY` 取 MAX
+- 返回 `final_role` 和各来源明细
 
-当前阶段使用 Mock 数据，后续接入真实 API。
+### 第 5 步：更新 CollaboratorTab 级联行为
 
-### 第 6 步：集成到各资产详情抽屉
+**文件**: `src/components/CollaboratorManager/CollaboratorTab/index.tsx`
 
-为以下模块的详情抽屉添加「协作者」TabPane：
+- 引入 `useCollaboratorCascade`，替换现有的简单增删改逻辑
+- 添加协作者时调用级联添加
+- 移除协作者时调用级联移除，并在确认弹窗中提示"将同时从 N 个依赖资产移除"
+- 变更角色时调用级联更新
+- 继承行权限来源展示增加来源类型标签（"继承自机器人组" vs "继承自流程"）
+- 继承行展开详情增加最终权限计算说明：`MAX(USER, MAINTAINER, USER) = MAINTAINER`
 
-| 模块 | 详情抽屉文件 | 现有 Tab |
-|------|------------|---------|
-| 流程 | `ProcessDetailDrawer` | 详情、版本管理 → +协作者 |
-| 凭据 | `CredentialDetailDrawer` | 基本信息、使用记录 → +协作者 |
-| 参数 | `ParameterDetailDrawer` | 无Tab → 改为 Tab 布局 +协作者 |
-| 队列 | `QueueDetailDrawer` | 无Tab → 改为 Tab 布局 +协作者 |
-| 文件 | `FileDetailDrawer` | 视具体情况 +协作者 |
-| 机器人 | `WorkerDetailDrawer` | 有Tab → +协作者 |
-| 机器人分组 | 待确认 | +协作者 |
-| 触发器 | 待确认 | +协作者 |
-| 任务模板 | 待确认 | +协作者 |
+### 第 6 步：更新 Mock 数据展示
 
-改动模式统一：引入 `CollaboratorTab`，添加 `<TabPane tab="协作者" itemKey="collaborators">`。
+更新 `generateMockCollaborators` 以体现：
+- 混合来源协作者（同时有直接和继承权限的用户）
+- 多源继承合并（同一用户从多个流程继承，合并为一行）
+- 层级继承示例（机器人从机器人组继承）
+- `final_role` 正确反映 MAX 计算结果
 
-### 第 7 步：表格行菜单增加入口
+### 第 7 步：i18n 补充
 
-为每个资产的 `Dropdown.Menu` 添加「管理协作者」菜单项（Users 图标），点击后打开详情抽屉并切换到协作者 Tab（通过 `initialTab='collaborators'`）。
+**文件**: `public/i18n/zh-CN.json`, `public/i18n/en.json`
 
-### 第 8 步：移除确认弹窗
-
-使用 `Modal.confirm` 实现移除协作者确认对话框，符合项目现有删除确认规范。
-
-### 第 9 步：任务派发权限集成（STORY-003）
-
-在任务派发弹窗的「执行目标」选择器中：
-- 调用权限检查判断用户对机器人/机器人组是否有 USER+ 权限
-- 无权限的选项禁用并显示 Tooltip 提示
-- 派发时二次验证权限
-
-### 第 10 步：i18n
-
-在 `public/i18n/zh-CN.json` 和 `en.json` 中新增 `collaborator` 命名空间，约 60 个键：角色名称、操作按钮、权限来源描述、确认对话框文案、错误提示等。
-
----
+新增词条：
+- 权限来源类型：直接分配、继承自机器人组、继承自流程
+- 级联提示：「将同时为 N 个依赖资产添加协作者」
+- MAX 计算说明文案
+- 移除级联提示文案
 
 ## 文件变更汇总
 
 | 文件 | 操作 |
 |------|------|
-| `src/api/index.ts` | 新增协作者相关类型 |
-| `src/components/CollaboratorManager/CollaboratorTab/` | 新建：协作者列表 Tab 组件 |
-| `src/components/CollaboratorManager/CollaboratorAddModal/` | 新建：添加协作者弹窗 |
-| `src/components/CollaboratorManager/CollaboratorRoleSelect/` | 新建：角色选择器 |
-| `src/hooks/useCollaboratorPermission.ts` | 新建：权限判断 Hook |
-| 9个 DetailDrawer 组件 | 修改：新增协作者 TabPane |
-| 9个 ManagementContent 组件 | 修改：Dropdown 菜单新增入口 |
-| `public/i18n/zh-CN.json` | 新增 collaborator 命名空间 |
-| `public/i18n/en.json` | 新增 collaborator 命名空间 |
+| `src/api/index.ts` | 修改：扩展继承来源类型、新增依赖关系接口 |
+| `src/components/CollaboratorManager/mockData.ts` | 新建：统一 Mock 数据与依赖图 |
+| `src/hooks/useCollaboratorCascade.ts` | 新建：级联传播逻辑 Hook |
+| `src/hooks/useCollaboratorPermission.ts` | 修改：增强 MAX 权限合并 |
+| `src/components/CollaboratorManager/CollaboratorTab/index.tsx` | 修改：集成级联逻辑、优化继承展示 |
+| `public/i18n/zh-CN.json` | 修改：新增继承相关词条 |
+| `public/i18n/en.json` | 修改：新增继承相关词条 |
 
