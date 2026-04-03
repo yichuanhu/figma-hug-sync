@@ -47,73 +47,73 @@ interface DeptNode {
 
 const mockLaiyeOrg: DeptNode = {
   id: 'laiye',
-  name: '来也科技',
+  name: 'Laiye Technology',
   children: [
     {
       id: 'dept-ceo',
-      name: 'CEO办公室',
+      name: 'CEO Office',
       children: [],
       users: [
-        { id: 'user-ceo-001', name: '陈明远', department: 'CEO办公室' },
+        { id: 'user-ceo-001', name: 'Michael Chen', department: 'CEO Office' },
       ],
     },
     {
       id: 'dept-enterprise',
-      name: '大客户业务中心',
+      name: 'Enterprise Business Center',
       children: [
         {
           id: 'dept-north',
-          name: '华北区域事业部',
+          name: 'North China Regional Business Division',
           children: [
             {
               id: 'dept-north-solution',
-              name: '华北区域解决方案与交付团队（含项目管理及售后支持组）',
+              name: 'North China Regional Solution and Delivery Team (Including Project Management and After-Sales Support Group)',
               children: [],
               users: [
-                { id: 'user-n-001', name: '刘毅', department: '华北区域解决方案与交付团队（含项目管理及售后支持组）' },
-                { id: 'user-n-002', name: '荣文杰', department: '华北区域解决方案与交付团队（含项目管理及售后支持组）' },
-                { id: 'user-n-003', name: '张越', department: '华北区域解决方案与交付团队（含项目管理及售后支持组）' },
-                { id: 'user-n-004', name: '郑曙光', department: '华北区域解决方案与交付团队（含项目管理及售后支持组）' },
+                { id: 'user-n-001', name: 'David Liu', department: 'North China Regional Solution and Delivery Team' },
+                { id: 'user-n-002', name: 'Wenjie Rong', department: 'North China Regional Solution and Delivery Team' },
+                { id: 'user-n-003', name: 'Yue Zhang', department: 'North China Regional Solution and Delivery Team' },
+                { id: 'user-n-004', name: 'Alexander Christopher Wellington-Blackstone III', department: 'North China Regional Solution and Delivery Team' },
               ],
             },
           ],
           users: [
-            { id: 'user-north-001', name: '王磊', department: '华北区域事业部' },
+            { id: 'user-north-001', name: 'Lei Wang', department: 'North China Regional Business Division' },
           ],
         },
         {
           id: 'dept-east',
-          name: '华东区域事业部',
+          name: 'East China Regional Business Division',
           children: [],
           users: [
-            { id: 'user-e-001', name: '孙茜', department: '华东区域事业部' },
-            { id: 'user-e-002', name: '李伟', department: '华东区域事业部' },
+            { id: 'user-e-001', name: 'Sophia Sun', department: 'East China Regional Business Division' },
+            { id: 'user-e-002', name: 'William Li', department: 'East China Regional Business Division' },
           ],
         },
         {
           id: 'dept-south',
-          name: '华南及西南区域事业部（含港澳台业务拓展组）',
+          name: 'South and Southwest China Regional Business Division (Including HK-Macau-TW Expansion Group)',
           children: [],
           users: [
-            { id: 'user-s-001', name: '赵敏', department: '华南及西南区域事业部（含港澳台业务拓展组）' },
+            { id: 'user-s-001', name: 'Emily Zhao', department: 'South and Southwest China Regional Business Division' },
           ],
         },
         {
           id: 'dept-expert',
-          name: '专家赋能组',
+          name: 'Expert Enablement Group',
           children: [],
           users: [
-            { id: 'user-exp-001', name: '周杰', department: '专家赋能组' },
-            { id: 'user-exp-002', name: '吴芳', department: '专家赋能组' },
+            { id: 'user-exp-001', name: 'Jack Zhou', department: 'Expert Enablement Group' },
+            { id: 'user-exp-002', name: 'Fiona Wu', department: 'Expert Enablement Group' },
           ],
         },
         {
           id: 'dept-prof-service',
-          name: '专业服务与客户成功管理中心（大客户定制化实施团队）',
+          name: 'Professional Services and Customer Success Management Center (Enterprise Customized Implementation Team)',
           children: [],
           users: [
-            { id: 'user-ps-001', name: '郑浩', department: '专业服务与客户成功管理中心（大客户定制化实施团队）' },
-            { id: 'user-ps-002', name: '马小玲', department: '专业服务与客户成功管理中心（大客户定制化实施团队）' },
+            { id: 'user-ps-001', name: 'Henry Zheng', department: 'Professional Services and Customer Success Management Center' },
+            { id: 'user-ps-002', name: 'Josephine Marguerite Beaumont-Richardson', department: 'Professional Services and Customer Success Management Center' },
           ],
         },
       ],
@@ -121,42 +121,42 @@ const mockLaiyeOrg: DeptNode = {
     },
     {
       id: 'dept-rd',
-      name: '研发中心',
+      name: 'R&D Center',
       children: [
         {
           id: 'dept-frontend',
-          name: '前端开发团队',
+          name: 'Frontend Development Team',
           children: [],
           users: [
-            { id: 'user-fe-001', name: '冯超', department: '前端开发团队' },
-            { id: 'user-fe-002', name: '陈琳', department: '前端开发团队' },
-            { id: 'user-fe-003', name: '徐鹏', department: '前端开发团队' },
+            { id: 'user-fe-001', name: 'Charles Feng', department: 'Frontend Development Team' },
+            { id: 'user-fe-002', name: 'Linda Chen', department: 'Frontend Development Team' },
+            { id: 'user-fe-003', name: 'Peng Xu', department: 'Frontend Development Team' },
           ],
         },
         {
           id: 'dept-backend',
-          name: '后端开发团队',
+          name: 'Backend Development Team',
           children: [],
           users: [
-            { id: 'user-be-001', name: '楚阳', department: '后端开发团队' },
-            { id: 'user-be-002', name: '魏东', department: '后端开发团队' },
+            { id: 'user-be-001', name: 'Yang Chu', department: 'Backend Development Team' },
+            { id: 'user-be-002', name: 'Dong Wei', department: 'Backend Development Team' },
           ],
         },
         {
           id: 'dept-ai',
-          name: 'AI平台与大模型应用研发团队',
+          name: 'AI Platform and Large Language Model Application R&D Team',
           children: [],
           users: [
-            { id: 'user-ai-001', name: '钱明', department: 'AI平台与大模型应用研发团队' },
-            { id: 'user-ai-002', name: '黄瑞', department: 'AI平台与大模型应用研发团队' },
+            { id: 'user-ai-001', name: 'Ming Qian', department: 'AI Platform and Large Language Model Application R&D Team' },
+            { id: 'user-ai-002', name: 'Ray Huang', department: 'AI Platform and Large Language Model Application R&D Team' },
           ],
         },
         {
           id: 'dept-qa',
-          name: '质量保障团队',
+          name: 'Quality Assurance Team',
           children: [],
           users: [
-            { id: 'user-qa-001', name: '蒋婷', department: '质量保障团队' },
+            { id: 'user-qa-001', name: 'Ting Jiang', department: 'Quality Assurance Team' },
           ],
         },
       ],
@@ -164,32 +164,32 @@ const mockLaiyeOrg: DeptNode = {
     },
     {
       id: 'dept-product',
-      name: 'APA产品部',
+      name: 'APA Product Division',
       children: [
         {
           id: 'dept-product-rpa',
-          name: 'RPA产品团队',
+          name: 'RPA Product Team',
           children: [],
           users: [
-            { id: 'user-prpa-001', name: '邓晓', department: 'RPA产品团队' },
+            { id: 'user-prpa-001', name: 'Xiao Deng', department: 'RPA Product Team' },
           ],
         },
         {
           id: 'dept-product-idp',
-          name: 'IDP产品团队',
+          name: 'IDP Product Team',
           children: [],
           users: [
-            { id: 'user-pidp-001', name: '曹军', department: 'IDP产品团队' },
+            { id: 'user-pidp-001', name: 'Jun Cao', department: 'IDP Product Team' },
           ],
         },
         {
           id: 'dept-product-team',
-          name: '产品团队',
+          name: 'Product Team',
           children: [],
           users: [
-            { id: 'user-pt-001', name: '范里鸿', department: '产品团队' },
-            { id: 'user-pt-002', name: '胡一川', department: '产品团队' },
-            { id: 'user-pt-003', name: '殷星', department: '产品团队' },
+            { id: 'user-pt-001', name: 'Lihong Fan', department: 'Product Team' },
+            { id: 'user-pt-002', name: 'Yichuan Hu', department: 'Product Team' },
+            { id: 'user-pt-003', name: 'Xing Yin', department: 'Product Team' },
           ],
         },
       ],
@@ -197,38 +197,38 @@ const mockLaiyeOrg: DeptNode = {
     },
     {
       id: 'dept-digital-worker',
-      name: '数字员工部',
+      name: 'Digital Worker Division',
       children: [],
       users: [
-        { id: 'user-dw-001', name: '蔡炫', department: '数字员工部' },
-        { id: 'user-dw-002', name: '黄令辉', department: '数字员工部' },
-        { id: 'user-dw-003', name: '林晓峰', department: '数字员工部' },
+        { id: 'user-dw-001', name: 'Xuan Cai', department: 'Digital Worker Division' },
+        { id: 'user-dw-002', name: 'Linghui Huang', department: 'Digital Worker Division' },
+        { id: 'user-dw-003', name: 'Xiaofeng Lin', department: 'Digital Worker Division' },
       ],
     },
     {
       id: 'dept-marketing',
-      name: '市场部',
+      name: 'Marketing Department',
       children: [],
       users: [
-        { id: 'user-mkt-001', name: '唐丽', department: '市场部' },
-        { id: 'user-mkt-002', name: '沈波', department: '市场部' },
+        { id: 'user-mkt-001', name: 'Lisa Tang', department: 'Marketing Department' },
+        { id: 'user-mkt-002', name: 'Bob Shen', department: 'Marketing Department' },
       ],
     },
     {
       id: 'dept-hr',
-      name: '人力资源部',
+      name: 'Human Resources Department',
       children: [],
       users: [
-        { id: 'user-hr-001', name: '梁飞', department: '人力资源部' },
+        { id: 'user-hr-001', name: 'Fei Liang', department: 'Human Resources Department' },
       ],
     },
     {
       id: 'dept-finance',
-      name: '财务部',
+      name: 'Finance Department',
       children: [],
       users: [
-        { id: 'user-fin-001', name: '谢云', department: '财务部' },
-        { id: 'user-fin-002', name: '潘华', department: '财务部' },
+        { id: 'user-fin-001', name: 'Yun Xie', department: 'Finance Department' },
+        { id: 'user-fin-002', name: 'Hua Pan', department: 'Finance Department' },
       ],
     },
   ],
