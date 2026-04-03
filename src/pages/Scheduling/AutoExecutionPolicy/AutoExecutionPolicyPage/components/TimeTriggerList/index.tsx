@@ -456,7 +456,7 @@ const TimeTriggerList = () => {
                 {t('timeTrigger.actions.edit')}
               </Dropdown.Item>
               <Dropdown.Item
-                icon={<UserPlus size={16} strokeWidth={2} />}
+                icon={<UserPlus size={16} strokeWidth={2} style={{ color: "inherit" }} />}
                 onClick={(e) => {
                   e.stopPropagation();
                   setAddCollaboratorAssetId(record.trigger_id);

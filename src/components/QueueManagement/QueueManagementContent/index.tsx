@@ -410,7 +410,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
                     {t('common.edit')}
                   </Dropdown.Item>
                 )}
-                <Dropdown.Item icon={<UserPlus size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); setAddCollaboratorAssetId(record.queue_id); setAddCollaboratorModalVisible(true); }}>
+                <Dropdown.Item icon={<UserPlus size={16} strokeWidth={2} style={{ color: "inherit" }} />} onClick={(e) => { e.stopPropagation(); setAddCollaboratorAssetId(record.queue_id); setAddCollaboratorModalVisible(true); }}>
                   {t('collaborator.actions.addCollaborator')}
                 </Dropdown.Item>
                 {canDelete && (
