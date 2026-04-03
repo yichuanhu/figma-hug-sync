@@ -2496,6 +2496,8 @@
     "removeConfirm": {
       "title": "移除协作者确认",
       "content": "确定将协作者「{{name}}」移除吗？"
-    }
+    },
+    "updateSuccess": "角色更新成功",
+    "removeSuccess": "已移除协作者"
   }
 }
