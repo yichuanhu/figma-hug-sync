@@ -13,8 +13,9 @@ import {
   IconSearch,
   IconClose,
   IconChevronRight,
+  IconFlowChartStroked,
 } from '@douyinfe/semi-icons';
-import { UserCircle, Building2 } from 'lucide-react';
+import { User, Building2 } from 'lucide-react';
 import type {
   AssetCollaborator,
   CollaboratorAssetType,
