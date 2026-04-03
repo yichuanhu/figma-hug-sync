@@ -243,6 +243,7 @@ const TemplateManagementPage = () => {
   const handleCloseDrawer = () => {
     setDrawerVisible(false);
     setSelectedTemplate(null);
+    setDetailInitialTab('basicInfo');
   };
 
   // fromDrawerEdit

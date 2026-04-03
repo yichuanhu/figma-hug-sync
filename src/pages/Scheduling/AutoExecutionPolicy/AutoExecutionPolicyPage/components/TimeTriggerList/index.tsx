@@ -264,6 +264,7 @@ const TimeTriggerList = () => {
   const handleCloseDrawer = () => {
     setDrawerVisible(false);
     setSelectedTrigger(null);
+    setDetailInitialTab('basic');
   };
 
   // Drawer导航
