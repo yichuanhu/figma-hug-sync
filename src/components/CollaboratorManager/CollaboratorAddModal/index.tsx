@@ -448,10 +448,9 @@ const CollaboratorAddModal = ({
         onClick={() => !disabled && toggleUser(user)}
       >
         <Checkbox checked={checked} disabled={disabled} />
-        <UserCircle size={20} strokeWidth={1.5} className="collaborator-add-modal-left-item-icon" />
+        <User size={14} strokeWidth={2} className="collaborator-add-modal-left-item-icon" />
         <div className="collaborator-add-modal-left-item-info">
-          <Text size="small">{user.name}</Text>
-          {!disabled && <span className="collaborator-add-modal-left-item-dept">{user.department}</span>}
+          <Text style={{ fontSize: 14 }}>{user.name}</Text>
         </div>
         {disabled && existingLabel && (
           <span className="collaborator-add-modal-left-item-existing">
