@@ -296,12 +296,19 @@ const CollaboratorAddModal = ({
     return roles.includes('USER') ? 'USER' : roles[roles.length - 1];
   }, [assetType]);
 
-  // 已存在的协作者 Map（id -> role）
+  // 已存在的协作者 Map（id -> role）- 含 mock 数据演示
   const existingMap = useMemo(() => {
     const map = new Map<string, CollaboratorRole>();
     existingCollaborators
       .filter((c) => c.source === 'DIRECT')
       .forEach((c) => map.set(c.collaborator_id, c.role));
+    // Mock: 模拟已授权的用户和部门
+    if (map.size === 0) {
+      map.set('user-dw-001', 'MANAGER' as CollaboratorRole); // 蔡炫 - 管理者
+      map.set('user-dw-002', 'MAINTAINER' as CollaboratorRole); // 黄令辉 - 维护者
+      map.set('dept-digital-worker', 'USER' as CollaboratorRole); // 数字员工部 - 使用者
+      map.set('user-fe-001', 'OBSERVER' as CollaboratorRole); // 冯超 - 观察者
+    }
     return map;
   }, [existingCollaborators]);
 
