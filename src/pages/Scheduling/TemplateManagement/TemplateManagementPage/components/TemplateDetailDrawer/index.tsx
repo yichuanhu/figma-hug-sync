@@ -44,6 +44,7 @@ interface TemplateDetailDrawerProps {
   pagination?: PaginationInfo;
   onPageChange?: (page: number, direction: 'prev' | 'next') => void;
   onScrollToRow?: (templateId: string) => void;
+  initialTab?: string;
 }
 
 const priorityConfig: Record<TaskPriority, { color: 'red' | 'orange' | 'grey' | 'blue'; i18nKey: string }> = {
