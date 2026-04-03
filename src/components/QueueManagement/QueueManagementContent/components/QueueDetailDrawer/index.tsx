@@ -61,9 +61,11 @@ const QueueDetailDrawer = ({
 
   const { canManage } = useCollaboratorPermission('QUEUE', queue?.queue_id);
 
+  const prevVisibleRef = useRef(false);
   useEffect(() => {
-    if (queue) setActiveTab(initialTab);
-  }, [queue?.queue_id, initialTab]);
+    if (visible && !prevVisibleRef.current) setActiveTab(initialTab);
+    prevVisibleRef.current = visible;
+  }, [visible, initialTab]);
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return '-';

@@ -348,9 +348,11 @@ const ProcessDetailDrawer = ({
     }
   }, [sortedVersionData, selectedVersionId]);
 
+  const prevVisibleRef = useRef(false);
   useEffect(() => {
-    if (processData) setActiveTab(initialTab);
-  }, [processData?.id, initialTab]);
+    if (visible && !prevVisibleRef.current) setActiveTab(initialTab);
+    prevVisibleRef.current = visible;
+  }, [visible, initialTab]);
 
   // 关闭时重置
   const handleClose = () => {

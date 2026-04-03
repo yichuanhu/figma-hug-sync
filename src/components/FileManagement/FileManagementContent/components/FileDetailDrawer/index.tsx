@@ -76,9 +76,11 @@ const FileDetailDrawer = ({
 
   const { canManage } = useCollaboratorPermission('FILE', file?.id);
 
+  const prevVisibleRef = useRef(false);
   useEffect(() => {
-    if (file) setActiveTab(initialTab);
-  }, [file?.id, initialTab]);
+    if (visible && !prevVisibleRef.current) setActiveTab(initialTab);
+    prevVisibleRef.current = visible;
+  }, [visible, initialTab]);
 
   // 保存宽度到 localStorage
   useEffect(() => {
