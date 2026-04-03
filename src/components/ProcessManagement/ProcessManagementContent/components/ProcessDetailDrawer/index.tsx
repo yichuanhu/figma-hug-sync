@@ -31,6 +31,8 @@ import DetailSkeleton from '@/components/DetailSkeleton';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import ExpandableText from '@/components/ExpandableText';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
+import CollaboratorTab from '@/components/CollaboratorManager/CollaboratorTab';
+import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -129,16 +131,13 @@ interface ProcessDetailDrawerProps {
   onEdit?: () => void;
   onRun?: () => void;
   onDelete?: () => void;
-  // 导航相关
   dataList?: LYProcessResponse[];
   onNavigate?: (process: LYProcessResponse) => void;
-  // 分页相关
   pagination?: PaginationInfo;
   onPageChange?: (page: number, direction: 'prev' | 'next') => void;
-  // 上下文
   context?: 'development' | 'scheduling';
-  // 滚动到行
   onScrollToRow?: (id: string) => void;
+  initialTab?: string;
 }
 
 // ============= 状态配置 =============
@@ -280,13 +279,15 @@ const ProcessDetailDrawer = ({
   onPageChange,
   context = 'development',
   onScrollToRow,
+  initialTab = 'detail',
 }: ProcessDetailDrawerProps) => {
   const isSchedulingContext = context === 'scheduling';
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState('detail');
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [selectedVersionId, setSelectedVersionId] = useState<string | null>(null);
   const [uploadVersionModalVisible, setUploadVersionModalVisible] = useState(false);
   const [versionData, setVersionData] = useState<VersionDetailData[]>(initialMockVersionData);
+  const { canManage } = useCollaboratorPermission('PROCESS', processData?.id);
 
   // 版本数据按版本号降序排列
   const sortedVersionData = useMemo(() => {
@@ -346,6 +347,10 @@ const ProcessDetailDrawer = ({
       setSelectedVersionId(sortedVersionData[0].id);
     }
   }, [sortedVersionData, selectedVersionId]);
+
+  useEffect(() => {
+    if (processData) setActiveTab(initialTab);
+  }, [processData?.id, initialTab]);
 
   // 关闭时重置
   const handleClose = () => {
@@ -569,6 +574,14 @@ const ProcessDetailDrawer = ({
               </div>
             </div>
           )}
+        </TabPane>
+        <TabPane tab={t('collaborator.tabTitle')} itemKey="collaborators">
+          <CollaboratorTab
+            assetType="PROCESS"
+            assetId={processData.id}
+            context={context}
+            canManage={canManage}
+          />
         </TabPane>
       </Tabs>
 

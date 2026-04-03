@@ -26,7 +26,7 @@ import {
   IconDeleteStroked,
   IconEditStroked,
 } from '@douyinfe/semi-icons';
-import { Unlink, Link, History } from 'lucide-react';
+import { Unlink, Link, History, Users } from 'lucide-react';
 import { debounce } from 'lodash';
 import type {
   LYCredentialResponse,
@@ -182,7 +182,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [linkPersonalModalVisible, setLinkPersonalModalVisible] = useState(false);
   const [linkingCredential, setLinkingCredential] = useState<LYCredentialResponse | null>(null);
-  const [initialDetailTab, setInitialDetailTab] = useState<'basic' | 'usage'>('basic');
+  const [initialDetailTab, setInitialDetailTab] = useState<'basic' | 'usage' | 'collaborators'>('basic');
 
   // 加载数据
   const loadData = useCallback(async () => {
@@ -449,6 +449,9 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
                 )}
                 <Dropdown.Item icon={<History size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleViewUsage(record); }}>
                   {t('credential.actions.viewUsage')}
+                </Dropdown.Item>
+                <Dropdown.Item icon={<Users size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); setSelectedCredential(record); setInitialDetailTab('collaborators'); setDetailDrawerVisible(true); }}>
+                  {t('collaborator.actions.manageCollaborators')}
                 </Dropdown.Item>
                 {canDelete && (
                   <Dropdown.Item icon={<IconDeleteStroked />} type="danger" onClick={(e) => { e.stopPropagation(); handleDelete(record); }}>

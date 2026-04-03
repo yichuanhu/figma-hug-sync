@@ -28,6 +28,7 @@ import {
   IconEditStroked,
 } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
+import { Users } from 'lucide-react';
 import type {
   LYQueueResponse,
   LYQueueListResultResponse,
@@ -168,6 +169,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
+  const [detailInitialTab, setDetailInitialTab] = useState('basic');
 
   // 加载数据
   const loadData = useCallback(async () => {
@@ -256,6 +258,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
   // 点击行查看详情
   const handleRowClick = (record: LYQueueResponse) => {
     setSelectedQueue(record);
+    setDetailInitialTab('basic');
     setDetailDrawerVisible(true);
   };
 
@@ -403,6 +406,9 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
                     {t('common.edit')}
                   </Dropdown.Item>
                 )}
+                <Dropdown.Item icon={<Users size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); setSelectedQueue(record); setDetailInitialTab('collaborators'); setDetailDrawerVisible(true); }}>
+                  {t('collaborator.actions.manageCollaborators')}
+                </Dropdown.Item>
                 {canDelete && (
                   <Dropdown.Item 
                     icon={<IconDeleteStroked />}
@@ -581,6 +587,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
           totalPages: Math.ceil(total / queryParams.pageSize),
         }}
         onPageChange={handleDrawerPageChange}
+        initialTab={detailInitialTab}
         onScrollToRow={(id) => {
           const row = document.getElementById(`queue-row-${id}`);
           row?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });

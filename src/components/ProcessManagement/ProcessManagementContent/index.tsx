@@ -29,7 +29,7 @@ import {
   IconEditStroked,
   IconDeleteStroked,
 } from '@douyinfe/semi-icons';
-import { PlayCircle } from 'lucide-react';
+import { PlayCircle, Users } from 'lucide-react';
 import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
 import ProcessDetailDrawer from './components/ProcessDetailDrawer';
@@ -233,6 +233,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
+  const [detailInitialTab, setDetailInitialTab] = useState('detail');
 
   // 列表响应数据 - 直接使用API LYListResponseLYProcessResponse
   const [listResponse, setListResponse] = useState<LYListResponseLYProcessResponse>({
@@ -302,6 +303,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
   // 打开流程详情抽屉
   const openProcessDetail = (record: LYProcessResponse) => {
     setSelectedProcess(record);
+    setDetailInitialTab('detail');
     if (!detailDrawerVisible) {
       setDetailDrawerVisible(true);
     }
@@ -485,6 +487,17 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
                     {t('common.edit')}
                   </Dropdown.Item>
                   <Dropdown.Item
+                    icon={<Users size={16} strokeWidth={2} />}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedProcess(record);
+                      setDetailInitialTab('collaborators');
+                      setDetailDrawerVisible(true);
+                    }}
+                  >
+                    {t('collaborator.actions.manageCollaborators')}
+                  </Dropdown.Item>
+                  <Dropdown.Item
                     icon={<IconDeleteStroked />}
                     type="danger"
                     onClick={(e) => {
@@ -661,6 +674,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
         }}
         onPageChange={handleDrawerPageChange}
         context={context}
+        initialTab={detailInitialTab}
       />
 
       {/* 打开流程确认弹窗 - 仅开发中心 */}

@@ -1,6 +1,8 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import { useTranslation } from 'react-i18next';
+import CollaboratorTab from '@/components/CollaboratorManager/CollaboratorTab';
+import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import {
   Descriptions,
   Tag,
@@ -119,7 +121,7 @@ interface CredentialDetailDrawerProps {
   onNavigate?: (credential: LYCredentialResponse) => void;
   pagination?: PaginationInfo;
   onPageChange?: (page: number, direction: 'prev' | 'next') => void;
-  initialTab?: 'basic' | 'usage';
+  initialTab?: 'basic' | 'usage' | 'collaborators';
   onScrollToRow?: (id: string) => void;
 }
 
@@ -139,6 +141,7 @@ const CredentialDetailDrawer = ({
 }: CredentialDetailDrawerProps) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState(initialTab);
+  const { canManage } = useCollaboratorPermission('CREDENTIAL', credential?.credential_id);
 
   const [usageLoading, setUsageLoading] = useState(false);
   const [usageListResponse, setUsageListResponse] = useState<CredentialUsageListResponse | null>(null);
@@ -286,7 +289,7 @@ const CredentialDetailDrawer = ({
       storageKey="credentialDetailDrawerWidth"
       className="credential-detail-drawer"
     >
-      <Tabs activeKey={activeTab} onChange={(key) => setActiveTab(key as 'basic' | 'usage')} className="credential-detail-drawer-tabs">
+      <Tabs activeKey={activeTab} onChange={(key) => setActiveTab(key as 'basic' | 'usage' | 'collaborators')} className="credential-detail-drawer-tabs">
         <TabPane tab={t('credential.detail.tabs.basicInfo')} itemKey="basic">
           <div className="credential-detail-drawer-content">
             <Descriptions data={descriptionData} align="left" />
@@ -330,6 +333,15 @@ const CredentialDetailDrawer = ({
               <Table size="small" columns={usageColumns} dataSource={usageListResponse?.data || []} rowKey="id" loading={usageLoading} empty={<EmptyState description={t('credential.usage.empty')} />} pagination={{ currentPage: usageQueryParams.page, pageSize: usageQueryParams.pageSize, total: usageTotal, onPageChange: (page) => setUsageQueryParams((prev) => ({ ...prev, page })), showSizeChanger: true, showTotal: true }} scroll={{ y: 'calc(100vh - 350px)' }} />
             )}
           </div>
+        </TabPane>
+
+        <TabPane tab={t('collaborator.tabTitle')} itemKey="collaborators">
+          <CollaboratorTab
+            assetType="CREDENTIAL"
+            assetId={credential.credential_id}
+            context={context}
+            canManage={canManage}
+          />
         </TabPane>
       </Tabs>
     </DetailDrawerWrapper>

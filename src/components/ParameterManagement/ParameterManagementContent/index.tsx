@@ -27,6 +27,7 @@ import {
   IconEditStroked,
 } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
+import { Users } from 'lucide-react';
 import type {
   LYParameterResponse,
   LYParameterListResultResponse,
@@ -194,6 +195,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
+  const [detailInitialTab, setDetailInitialTab] = useState('basic');
 
   // 加载数据
   const loadData = useCallback(async () => {
@@ -276,6 +278,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
   // 点击行查看详情
   const handleRowClick = (record: LYParameterResponse) => {
     setSelectedParameter(record);
+    setDetailInitialTab('basic');
     setDetailDrawerVisible(true);
   };
 
@@ -400,6 +403,9 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
                     {t('common.edit')}
                   </Dropdown.Item>
                 )}
+                <Dropdown.Item icon={<Users size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); setSelectedParameter(record); setDetailInitialTab('collaborators'); setDetailDrawerVisible(true); }}>
+                  {t('collaborator.actions.manageCollaborators')}
+                </Dropdown.Item>
                 {canDelete && (
                   <Dropdown.Item 
                     icon={<IconDeleteStroked />}
@@ -587,6 +593,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
           totalPages: Math.ceil(total / queryParams.pageSize),
         }}
         onPageChange={handleDrawerPageChange}
+        initialTab={detailInitialTab}
         onScrollToRow={(id) => {
           const row = document.getElementById(`parameter-row-${id}`);
           row?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
