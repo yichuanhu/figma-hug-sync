@@ -68,9 +68,10 @@ const QueueTriggerDetailDrawer = ({
   onDelete,
   onToggleStatus,
   onScrollToRow,
+  initialTab = 'basic',
 }: QueueTriggerDetailDrawerProps) => {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState('basic');
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [executionLogs, setExecutionLogs] = useState<LYQueueTriggerExecutionLogResponse[]>([]);
   const { canManage } = useCollaboratorPermission('TRIGGER', trigger?.trigger_id);
 
