@@ -3107,7 +3107,7 @@
     "actions": {
       "add": "Add Collaborator",
       "remove": "Remove",
-      "manageCollaborators": "Manage Collaborators"
+      "addCollaborator": "Add Collaborator"
     },
     "updateSuccess": "Role updated successfully",
     "removeSuccess": "Collaborator removed",
@@ -3117,14 +3117,17 @@
     },
     "addModal": {
       "title": "Add Collaborators",
-      "searchPlaceholder": "Search users or departments...",
+      "searchPlaceholder": "Search users, groups, departments or user groups",
       "users": "Users",
       "departments": "Departments",
-      "selectedCount": "Selected ({{count}})",
+      "selectedCount": "Selected: {{count}}",
       "emptySelection": "Select users or departments from the left",
       "noSelection": "Please select at least one collaborator",
       "success": "Successfully added {{count}} collaborators",
-      "submit": "Add ({{count}})"
+      "submit": "Confirm",
+      "drillDown": "Sub",
+      "noResults": "No matching results",
+      "emptyDept": "No members in this department"
     },
     "dispatch": {
       "noPermission": "No Permission",

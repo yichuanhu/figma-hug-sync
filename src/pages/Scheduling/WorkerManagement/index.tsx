@@ -30,7 +30,7 @@ import {
   IconUserListStroked,
   IconMinusCircleStroked,
 } from '@douyinfe/semi-icons';
-import { Users } from 'lucide-react';
+import { UserPlus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import WorkerDetailDrawer from './components/WorkerDetailDrawer';
@@ -38,7 +38,8 @@ import WorkerKeyModal from './components/WorkerKeyModal';
 import CreateWorkerModal from './components/CreateWorkerModal';
 import EditWorkerModal from './components/EditWorkerModal';
 import AddToGroupModal from './components/AddToGroupModal';
-import type { LYWorkerResponse, LYListResponseLYWorkerResponse, GetWorkersParams } from '@/api';
+import type { LYWorkerResponse, LYListResponseLYWorkerResponse, GetWorkersParams, CollaboratorAssetType } from '@/api';
+import CollaboratorAddModal from '@/components/CollaboratorManager/CollaboratorAddModal';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -370,6 +371,8 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [selectedWorker, setSelectedWorker] = useState<LYWorkerResponse | null>(null);
   const [detailInitialTab, setDetailInitialTab] = useState('basic');
+  const [addCollaboratorModalVisible, setAddCollaboratorModalVisible] = useState(false);
+  const [addCollaboratorAssetId, setAddCollaboratorAssetId] = useState('');
   const [keyModalVisible, setKeyModalVisible] = useState(false);
   const [keyModalWorker, setKeyModalWorker] = useState<LYWorkerResponse | null>(null);
   const [createModalVisible, setCreateModalVisible] = useState(false);
@@ -855,15 +858,14 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
                 </Dropdown.Item>
               )}
               <Dropdown.Item 
-                icon={<Users size={16} strokeWidth={2} />}
+                icon={<UserPlus size={16} strokeWidth={2} />}
                 onClick={(e) => {
                   e?.stopPropagation?.();
-                  setSelectedWorker(record);
-                  setDetailInitialTab('collaborators');
-                  setDetailDrawerVisible(true);
+                  setAddCollaboratorAssetId(record.id);
+                  setAddCollaboratorModalVisible(true);
                 }}
               >
-                {t('collaborator.actions.manageCollaborators')}
+                {t('collaborator.actions.addCollaborator')}
               </Dropdown.Item>
               <Dropdown.Item 
                 icon={<IconDeleteStroked />} 
@@ -1062,6 +1064,14 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
         onSuccess={handleAddToGroupSuccess}
       />
 
+      <CollaboratorAddModal
+        visible={addCollaboratorModalVisible}
+        onClose={() => setAddCollaboratorModalVisible(false)}
+        onSuccess={() => setAddCollaboratorModalVisible(false)}
+        assetType={'WORKER' as CollaboratorAssetType}
+        assetId={addCollaboratorAssetId}
+        existingCollaborators={[]}
+      />
     </div>
   );
 };

@@ -26,7 +26,7 @@ import {
   IconDeleteStroked,
   IconDownloadStroked,
 } from '@douyinfe/semi-icons';
-import { RefreshCw, Users } from 'lucide-react';
+import { RefreshCw, UserPlus } from 'lucide-react';
 import { debounce } from 'lodash';
 import type {
   LYFileResponse,
@@ -37,6 +37,8 @@ import type {
 import UploadFileModal from './components/UploadFileModal';
 import ReuploadFileModal from './components/ReuploadFileModal';
 import FileDetailDrawer from './components/FileDetailDrawer';
+import CollaboratorAddModal from '@/components/CollaboratorManager/CollaboratorAddModal';
+import type { CollaboratorAssetType } from '@/api/index';
 
 import './index.less';
 
@@ -211,6 +213,8 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
   const [reuploadModalVisible, setReuploadModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [detailInitialTab, setDetailInitialTab] = useState('basic');
+  const [addCollaboratorModalVisible, setAddCollaboratorModalVisible] = useState(false);
+  const [addCollaboratorAssetId, setAddCollaboratorAssetId] = useState('');
 
   // 加载数据
   const loadData = useCallback(async () => {
@@ -457,15 +461,14 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
                 {t('file.actions.download')}
               </Dropdown.Item>
               <Dropdown.Item
-                icon={<Users size={16} strokeWidth={2} />}
+                icon={<UserPlus size={16} strokeWidth={2} />}
                 onClick={(e) => {
                   e.stopPropagation();
-                  setSelectedFile(record);
-                  setDetailInitialTab('collaborators');
-                  setDetailDrawerVisible(true);
+                  setAddCollaboratorAssetId(record.id);
+                  setAddCollaboratorModalVisible(true);
                 }}
               >
-                {t('collaborator.actions.manageCollaborators')}
+                {t('collaborator.actions.addCollaborator')}
               </Dropdown.Item>
               {context === 'development' && !record.is_published && (
                 <Dropdown.Item
@@ -646,6 +649,16 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
         onReupload={handleReupload}
         onDelete={handleDelete}
         initialTab={detailInitialTab}
+      />
+
+      {/* 添加协作者弹窗 */}
+      <CollaboratorAddModal
+        visible={addCollaboratorModalVisible}
+        onClose={() => setAddCollaboratorModalVisible(false)}
+        onSuccess={() => setAddCollaboratorModalVisible(false)}
+        assetType={'FILE' as CollaboratorAssetType}
+        assetId={addCollaboratorAssetId}
+        existingCollaborators={[]}
       />
     </div>
   );

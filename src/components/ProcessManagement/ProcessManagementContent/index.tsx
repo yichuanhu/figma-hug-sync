@@ -29,12 +29,13 @@ import {
   IconEditStroked,
   IconDeleteStroked,
 } from '@douyinfe/semi-icons';
-import { PlayCircle, Users } from 'lucide-react';
+import { PlayCircle, UserPlus } from 'lucide-react';
 import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
 import ProcessDetailDrawer from './components/ProcessDetailDrawer';
 import { useOpenProcess } from './hooks/useOpenProcess';
-import type { LYProcessResponse, GetProcessesParams, LYListResponseLYProcessResponse } from '@/api';
+import CollaboratorAddModal from '@/components/CollaboratorManager/CollaboratorAddModal';
+import type { LYProcessResponse, GetProcessesParams, LYListResponseLYProcessResponse, CollaboratorAssetType } from '@/api';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -234,6 +235,8 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [detailInitialTab, setDetailInitialTab] = useState('detail');
+  const [addCollaboratorModalVisible, setAddCollaboratorModalVisible] = useState(false);
+  const [addCollaboratorAssetId, setAddCollaboratorAssetId] = useState('');
 
   // 列表响应数据 - 直接使用API LYListResponseLYProcessResponse
   const [listResponse, setListResponse] = useState<LYListResponseLYProcessResponse>({
@@ -487,15 +490,14 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
                     {t('common.edit')}
                   </Dropdown.Item>
                   <Dropdown.Item
-                    icon={<Users size={16} strokeWidth={2} />}
+                    icon={<UserPlus size={16} strokeWidth={2} />}
                     onClick={(e) => {
                       e.stopPropagation();
-                      setSelectedProcess(record);
-                      setDetailInitialTab('collaborators');
-                      setDetailDrawerVisible(true);
+                      setAddCollaboratorAssetId(record.id);
+                      setAddCollaboratorModalVisible(true);
                     }}
                   >
-                    {t('collaborator.actions.manageCollaborators')}
+                    {t('collaborator.actions.addCollaborator')}
                   </Dropdown.Item>
                   <Dropdown.Item
                     icon={<IconDeleteStroked />}
@@ -679,6 +681,15 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
 
       {/* 打开流程确认弹窗 - 仅开发中心 */}
       {!isSchedulingContext && <OpenProcessModal />}
+
+      <CollaboratorAddModal
+        visible={addCollaboratorModalVisible}
+        onClose={() => setAddCollaboratorModalVisible(false)}
+        onSuccess={() => setAddCollaboratorModalVisible(false)}
+        assetType={'PROCESS' as CollaboratorAssetType}
+        assetId={addCollaboratorAssetId}
+        existingCollaborators={[]}
+      />
     </div>
   );
 };

@@ -22,7 +22,7 @@ import {
   IconDeleteStroked,
   IconEditStroked,
 } from '@douyinfe/semi-icons';
-import { Users } from 'lucide-react';
+import { UserPlus } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import type {
@@ -35,6 +35,8 @@ import type {
 import CreateQueueTriggerModal from '../CreateQueueTriggerModal';
 import EditQueueTriggerModal from '../EditQueueTriggerModal';
 import QueueTriggerDetailDrawer from '../QueueTriggerDetailDrawer';
+import CollaboratorAddModal from '@/components/CollaboratorManager/CollaboratorAddModal';
+import type { CollaboratorAssetType } from '@/api';
 import './index.less';
 
 // ============= 工具函数 =============
@@ -155,6 +157,8 @@ const QueueTriggerList = () => {
   const [selectedTrigger, setSelectedTrigger] = useState<LYQueueTriggerResponse | null>(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [detailInitialTab, setDetailInitialTab] = useState('basic');
+  const [addCollaboratorModalVisible, setAddCollaboratorModalVisible] = useState(false);
+  const [addCollaboratorAssetId, setAddCollaboratorAssetId] = useState('');
 
   // ModalStatus
   const [createModalVisible, setCreateModalVisible] = useState(false);
@@ -441,15 +445,14 @@ const QueueTriggerList = () => {
                 {t('queueTrigger.actions.edit')}
               </Dropdown.Item>
               <Dropdown.Item
-                icon={<Users size={16} strokeWidth={2} />}
+                icon={<UserPlus size={16} strokeWidth={2} />}
                 onClick={(e) => {
                   e.stopPropagation();
-                  setSelectedTrigger(record);
-                  setDetailInitialTab('collaborators');
-                  setDrawerVisible(true);
+                  setAddCollaboratorAssetId(record.trigger_id);
+                  setAddCollaboratorModalVisible(true);
                 }}
               >
-                {t('collaborator.actions.manageCollaborators')}
+                {t('collaborator.actions.addCollaborator')}
               </Dropdown.Item>
               <Dropdown.Item
                 icon={<IconDeleteStroked />}
@@ -617,6 +620,15 @@ const QueueTriggerList = () => {
         onDelete={handleDeleteTrigger}
         onToggleStatus={handleToggleStatus}
         initialTab={detailInitialTab}
+      />
+
+      <CollaboratorAddModal
+        visible={addCollaboratorModalVisible}
+        onClose={() => setAddCollaboratorModalVisible(false)}
+        onSuccess={() => setAddCollaboratorModalVisible(false)}
+        assetType={'TRIGGER' as CollaboratorAssetType}
+        assetId={addCollaboratorAssetId}
+        existingCollaborators={[]}
       />
     </div>
   );

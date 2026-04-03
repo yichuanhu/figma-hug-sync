@@ -28,7 +28,7 @@ import {
   IconEditStroked,
 } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
-import { Users } from 'lucide-react';
+import { UserPlus } from 'lucide-react';
 import type {
   LYQueueResponse,
   LYQueueListResultResponse,
@@ -37,6 +37,8 @@ import type {
 import CreateQueueModal from './components/CreateQueueModal';
 import EditQueueModal from './components/EditQueueModal';
 import QueueDetailDrawer from './components/QueueDetailDrawer';
+import CollaboratorAddModal from '@/components/CollaboratorManager/CollaboratorAddModal';
+import type { CollaboratorAssetType } from '@/api/index';
 
 import './index.less';
 
@@ -170,6 +172,8 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [detailInitialTab, setDetailInitialTab] = useState('basic');
+  const [addCollaboratorModalVisible, setAddCollaboratorModalVisible] = useState(false);
+  const [addCollaboratorAssetId, setAddCollaboratorAssetId] = useState('');
 
   // 加载数据
   const loadData = useCallback(async () => {
@@ -406,8 +410,8 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
                     {t('common.edit')}
                   </Dropdown.Item>
                 )}
-                <Dropdown.Item icon={<Users size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); setSelectedQueue(record); setDetailInitialTab('collaborators'); setDetailDrawerVisible(true); }}>
-                  {t('collaborator.actions.manageCollaborators')}
+                <Dropdown.Item icon={<UserPlus size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); setAddCollaboratorAssetId(record.queue_id); setAddCollaboratorModalVisible(true); }}>
+                  {t('collaborator.actions.addCollaborator')}
                 </Dropdown.Item>
                 {canDelete && (
                   <Dropdown.Item 
@@ -592,6 +596,15 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
           const row = document.getElementById(`queue-row-${id}`);
           row?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }}
+      />
+
+      <CollaboratorAddModal
+        visible={addCollaboratorModalVisible}
+        onClose={() => setAddCollaboratorModalVisible(false)}
+        onSuccess={() => setAddCollaboratorModalVisible(false)}
+        assetType={'QUEUE' as CollaboratorAssetType}
+        assetId={addCollaboratorAssetId}
+        existingCollaborators={[]}
       />
     </div>
   );

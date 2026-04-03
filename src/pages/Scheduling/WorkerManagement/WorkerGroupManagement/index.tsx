@@ -23,14 +23,15 @@ import {
   IconDeleteStroked,
   IconUserAdd,
 } from '@douyinfe/semi-icons';
-import { Users } from 'lucide-react';
+import { UserPlus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { debounce } from 'lodash';
 import WorkerGroupDetailDrawer from './components/WorkerGroupDetailDrawer';
 import CreateWorkerGroupModal from './components/CreateWorkerGroupModal';
 import EditWorkerGroupModal from './components/EditWorkerGroupModal';
 import AddMembersModal from './components/AddMembersModal';
-import type { LYWorkerGroupResponse, LYListResponseLYWorkerGroupResponse, GetWorkerGroupsParams } from '@/api';
+import type { LYWorkerGroupResponse, LYListResponseLYWorkerGroupResponse, GetWorkerGroupsParams, CollaboratorAssetType } from '@/api';
+import CollaboratorAddModal from '@/components/CollaboratorManager/CollaboratorAddModal';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -138,6 +139,8 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState<LYWorkerGroupResponse | null>(null);
   const [detailInitialTab, setDetailInitialTab] = useState('basicInfo');
+  const [addCollaboratorModalVisible, setAddCollaboratorModalVisible] = useState(false);
+  const [addCollaboratorAssetId, setAddCollaboratorAssetId] = useState('');
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingGroup, setEditingGroup] = useState<LYWorkerGroupResponse | null>(null);
@@ -370,15 +373,14 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
                 {t('workerGroup.actions.edit')}
               </Dropdown.Item>
               <Dropdown.Item 
-                icon={<Users size={16} strokeWidth={2} />}
+                icon={<UserPlus size={16} strokeWidth={2} />}
                 onClick={(e) => {
                   e?.stopPropagation?.();
-                  setSelectedGroup(record);
-                  setDetailInitialTab('collaborators');
-                  setDetailDrawerVisible(true);
+                  setAddCollaboratorAssetId(record.id);
+                  setAddCollaboratorModalVisible(true);
                 }}
               >
-                {t('collaborator.actions.manageCollaborators')}
+                {t('collaborator.actions.addCollaborator')}
               </Dropdown.Item>
               <Dropdown.Item 
                 icon={<IconDeleteStroked />}
@@ -525,6 +527,15 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
         groupId={addMembersTargetGroup?.id || ''}
         groupName={addMembersTargetGroup?.name || ''}
         onSuccess={loadData}
+      />
+
+      <CollaboratorAddModal
+        visible={addCollaboratorModalVisible}
+        onClose={() => setAddCollaboratorModalVisible(false)}
+        onSuccess={() => setAddCollaboratorModalVisible(false)}
+        assetType={'WORKER_GROUP' as CollaboratorAssetType}
+        assetId={addCollaboratorAssetId}
+        existingCollaborators={[]}
       />
     </div>
   );

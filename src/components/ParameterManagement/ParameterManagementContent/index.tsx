@@ -27,7 +27,7 @@ import {
   IconEditStroked,
 } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
-import { Users } from 'lucide-react';
+import { UserPlus } from 'lucide-react';
 import type {
   LYParameterResponse,
   LYParameterListResultResponse,
@@ -37,6 +37,8 @@ import type {
 import CreateParameterModal from './components/CreateParameterModal';
 import EditParameterModal from './components/EditParameterModal';
 import ParameterDetailDrawer from './components/ParameterDetailDrawer';
+import CollaboratorAddModal from '@/components/CollaboratorManager/CollaboratorAddModal';
+import type { CollaboratorAssetType } from '@/api/index';
 
 import './index.less';
 
@@ -181,6 +183,8 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
   // 发布状态筛选（仅开发中心使用）
   const [publishedFilter, setPublishedFilter] = useState<boolean | null>(null);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
+  const [addCollaboratorModalVisible, setAddCollaboratorModalVisible] = useState(false);
+  const [addCollaboratorAssetId, setAddCollaboratorAssetId] = useState('');
 
   // 列表数据
   const [listResponse, setListResponse] = useState<LYParameterListResultResponse | null>(null);
@@ -403,8 +407,8 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
                     {t('common.edit')}
                   </Dropdown.Item>
                 )}
-                <Dropdown.Item icon={<Users size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); setSelectedParameter(record); setDetailInitialTab('collaborators'); setDetailDrawerVisible(true); }}>
-                  {t('collaborator.actions.manageCollaborators')}
+                <Dropdown.Item icon={<UserPlus size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); setAddCollaboratorAssetId(record.parameter_id); setAddCollaboratorModalVisible(true); }}>
+                  {t('collaborator.actions.addCollaborator')}
                 </Dropdown.Item>
                 {canDelete && (
                   <Dropdown.Item 
@@ -598,6 +602,15 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
           const row = document.getElementById(`parameter-row-${id}`);
           row?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }}
+      />
+
+      <CollaboratorAddModal
+        visible={addCollaboratorModalVisible}
+        onClose={() => setAddCollaboratorModalVisible(false)}
+        onSuccess={() => setAddCollaboratorModalVisible(false)}
+        assetType={'PARAMETER' as CollaboratorAssetType}
+        assetId={addCollaboratorAssetId}
+        existingCollaborators={[]}
       />
     </div>
   );

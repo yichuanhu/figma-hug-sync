@@ -26,7 +26,7 @@ import {
   IconDeleteStroked,
   IconEditStroked,
 } from '@douyinfe/semi-icons';
-import { Unlink, Link, History, Users } from 'lucide-react';
+import { Unlink, Link, History, UserPlus } from 'lucide-react';
 import { debounce } from 'lodash';
 import type {
   LYCredentialResponse,
@@ -38,6 +38,8 @@ import CreateCredentialModal from './components/CreateCredentialModal';
 import EditCredentialModal from './components/EditCredentialModal';
 import CredentialDetailDrawer from './components/CredentialDetailDrawer';
 import LinkPersonalCredentialModal from './components/LinkPersonalCredentialModal';
+import CollaboratorAddModal from '@/components/CollaboratorManager/CollaboratorAddModal';
+import type { CollaboratorAssetType } from '@/api/index';
 
 import './index.less';
 
@@ -183,6 +185,8 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
   const [linkPersonalModalVisible, setLinkPersonalModalVisible] = useState(false);
   const [linkingCredential, setLinkingCredential] = useState<LYCredentialResponse | null>(null);
   const [initialDetailTab, setInitialDetailTab] = useState<'basic' | 'usage' | 'collaborators'>('basic');
+  const [addCollaboratorModalVisible, setAddCollaboratorModalVisible] = useState(false);
+  const [addCollaboratorAssetId, setAddCollaboratorAssetId] = useState('');
 
   // 加载数据
   const loadData = useCallback(async () => {
@@ -450,8 +454,8 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
                 <Dropdown.Item icon={<History size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleViewUsage(record); }}>
                   {t('credential.actions.viewUsage')}
                 </Dropdown.Item>
-                <Dropdown.Item icon={<Users size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); setSelectedCredential(record); setInitialDetailTab('collaborators'); setDetailDrawerVisible(true); }}>
-                  {t('collaborator.actions.manageCollaborators')}
+                <Dropdown.Item icon={<UserPlus size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); setAddCollaboratorAssetId(record.credential_id); setAddCollaboratorModalVisible(true); }}>
+                  {t('collaborator.actions.addCollaborator')}
                 </Dropdown.Item>
                 {canDelete && (
                   <Dropdown.Item icon={<IconDeleteStroked />} type="danger" onClick={(e) => { e.stopPropagation(); handleDelete(record); }}>
@@ -653,6 +657,15 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
           setLinkingCredential(null);
           loadData();
         }}
+      />
+
+      <CollaboratorAddModal
+        visible={addCollaboratorModalVisible}
+        onClose={() => setAddCollaboratorModalVisible(false)}
+        onSuccess={() => setAddCollaboratorModalVisible(false)}
+        assetType={'CREDENTIAL' as CollaboratorAssetType}
+        assetId={addCollaboratorAssetId}
+        existingCollaborators={[]}
       />
     </div>
   );

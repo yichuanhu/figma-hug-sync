@@ -29,7 +29,7 @@ import {
   IconEditStroked,
   IconChevronLeft,
 } from '@douyinfe/semi-icons';
-import { Users } from 'lucide-react';
+import { UserPlus } from 'lucide-react';
 import type { 
   LYExecutionTemplateResponse,
   LYListResponseLYExecutionTemplateResponse,
@@ -39,6 +39,8 @@ import type {
 import CreateTemplateModal from './components/CreateTemplateModal';
 import EditTemplateModal from './components/EditTemplateModal';
 import TemplateDetailDrawer from './components/TemplateDetailDrawer';
+import CollaboratorAddModal from '@/components/CollaboratorManager/CollaboratorAddModal';
+import type { CollaboratorAssetType } from '@/api';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -138,6 +140,8 @@ const TemplateManagementPage = () => {
   const [selectedTemplate, setSelectedTemplate] = useState<LYExecutionTemplateResponse | null>(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [detailInitialTab, setDetailInitialTab] = useState('basicInfo');
+  const [addCollaboratorModalVisible, setAddCollaboratorModalVisible] = useState(false);
+  const [addCollaboratorAssetId, setAddCollaboratorAssetId] = useState('');
 
   // ModalStatus
   const [createModalVisible, setCreateModalVisible] = useState(false);
@@ -385,15 +389,14 @@ const TemplateManagementPage = () => {
                 {t('template.actions.edit')}
               </Dropdown.Item>
               <Dropdown.Item
-                icon={<Users size={16} strokeWidth={2} />}
+                icon={<UserPlus size={16} strokeWidth={2} />}
                 onClick={(e) => {
                   e.stopPropagation();
-                  setSelectedTemplate(record);
-                  setDetailInitialTab('collaborators');
-                  setDrawerVisible(true);
+                  setAddCollaboratorAssetId(record.template_id);
+                  setAddCollaboratorModalVisible(true);
                 }}
               >
-                {t('collaborator.actions.manageCollaborators')}
+                {t('collaborator.actions.addCollaborator')}
               </Dropdown.Item>
               <Dropdown.Item
                 icon={<IconDeleteStroked />}
@@ -558,6 +561,15 @@ const TemplateManagementPage = () => {
           }}
           onPageChange={handlePageChangeForDrawer}
           initialTab={detailInitialTab}
+        />
+
+        <CollaboratorAddModal
+          visible={addCollaboratorModalVisible}
+          onClose={() => setAddCollaboratorModalVisible(false)}
+          onSuccess={() => setAddCollaboratorModalVisible(false)}
+          assetType={'TASK_TEMPLATE' as CollaboratorAssetType}
+          assetId={addCollaboratorAssetId}
+          existingCollaborators={[]}
         />
       </div>
   );
