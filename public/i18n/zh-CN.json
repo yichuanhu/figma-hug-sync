@@ -2443,7 +2443,7 @@
     }
   },
   "collaborator": {
-    "tabTitle": "协作者",
+    "tabTitle": "协作者管理",
     "owner": "归属者",
     "empty": "暂无协作者",
     "searchPlaceholder": "搜索协作者",

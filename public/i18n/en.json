@@ -3079,7 +3079,7 @@
     }
   },
   "collaborator": {
-    "tabTitle": "Collaborators",
+    "tabTitle": "Collaborator Management",
     "owner": "Owner",
     "empty": "No collaborators",
     "searchPlaceholder": "Search collaborators",
