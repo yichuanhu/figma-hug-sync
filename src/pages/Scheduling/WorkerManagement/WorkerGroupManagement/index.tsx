@@ -23,6 +23,7 @@ import {
   IconDeleteStroked,
   IconUserAdd,
 } from '@douyinfe/semi-icons';
+import { Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { debounce } from 'lodash';
 import WorkerGroupDetailDrawer from './components/WorkerGroupDetailDrawer';

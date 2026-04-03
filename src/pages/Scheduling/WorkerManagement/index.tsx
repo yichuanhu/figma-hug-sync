@@ -30,6 +30,7 @@ import {
   IconUserListStroked,
   IconMinusCircleStroked,
 } from '@douyinfe/semi-icons';
+import { Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import WorkerDetailDrawer from './components/WorkerDetailDrawer';
