@@ -399,6 +399,14 @@ const TimeTriggerDetailDrawer = ({
             />
           </div>
         </TabPane>
+        <TabPane tab={t('collaborator.tabTitle')} itemKey="collaborators">
+          <CollaboratorTab
+            assetType="TRIGGER"
+            assetId={trigger.trigger_id}
+            context="scheduling"
+            canManage={canManage}
+          />
+        </TabPane>
       </Tabs>
     </DetailDrawerWrapper>
   );

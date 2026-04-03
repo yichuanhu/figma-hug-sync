@@ -174,6 +174,14 @@ const TemplateDetailDrawer = ({
             <Table dataSource={mockUsageRecords} rowKey="id" size="small" pagination={false} columns={usageHistoryColumns} empty={<EmptyState variant="noData" description={t('template.detail.noUsageHistory')} />} />
           </div>
         </TabPane>
+        <TabPane tab={t('collaborator.tabTitle')} itemKey="collaborators">
+          <CollaboratorTab
+            assetType="TASK_TEMPLATE"
+            assetId={template.template_id}
+            context="scheduling"
+            canManage={canManage}
+          />
+        </TabPane>
       </Tabs>
     </DetailDrawerWrapper>
   );

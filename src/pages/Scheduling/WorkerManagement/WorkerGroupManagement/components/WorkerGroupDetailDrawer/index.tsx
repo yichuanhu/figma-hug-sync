@@ -268,6 +268,14 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
             </div>
           </div>
         </TabPane>
+        <TabPane tab={t('collaborator.tabTitle')} itemKey="collaborators">
+          <CollaboratorTab
+            assetType="WORKER_GROUP"
+            assetId={groupData.id}
+            context="scheduling"
+            canManage={canManageCollaborators}
+          />
+        </TabPane>
       </Tabs>
       <AddMembersModal visible={addMembersVisible} onCancel={() => setAddMembersVisible(false)} groupId={groupData.id} groupName={groupData.name} onSuccess={handleAddMembersSuccess} />
     </DetailDrawerWrapper>
