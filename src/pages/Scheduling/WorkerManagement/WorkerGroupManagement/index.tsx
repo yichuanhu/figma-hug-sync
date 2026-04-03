@@ -478,7 +478,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
       {/* Details drawer */}
       <WorkerGroupDetailDrawer
         visible={detailDrawerVisible}
-        onClose={() => setDetailDrawerVisible(false)}
+        onClose={() => { setDetailDrawerVisible(false); setDetailInitialTab('basicInfo'); }}
         groupData={selectedGroup}
         onEdit={handleEditFromDrawer}
         onDelete={handleDeleteFromDrawer}
