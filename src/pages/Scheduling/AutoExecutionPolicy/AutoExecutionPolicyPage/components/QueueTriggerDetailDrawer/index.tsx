@@ -90,7 +90,7 @@ const QueueTriggerDetailDrawer = ({
 
   // DrawerClose时重置Status
   const handleClose = () => {
-    setActiveTab('basic');
+    setActiveTab(initialTab);
     onClose();
   };
 

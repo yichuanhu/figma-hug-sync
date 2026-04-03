@@ -72,14 +72,15 @@ const TemplateDetailDrawer = ({
   pagination,
   onPageChange,
   onScrollToRow,
+  initialTab = 'basicInfo',
 }: TemplateDetailDrawerProps) => {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState('basicInfo');
+  const [activeTab, setActiveTab] = useState(initialTab);
   const { canManage } = useCollaboratorPermission('TASK_TEMPLATE', template?.template_id);
 
   useEffect(() => {
-    if (!visible) setActiveTab('basicInfo');
-  }, [visible]);
+    if (!visible) setActiveTab(initialTab);
+  }, [visible, initialTab]);
 
   if (!visible || !template) return null;
 
