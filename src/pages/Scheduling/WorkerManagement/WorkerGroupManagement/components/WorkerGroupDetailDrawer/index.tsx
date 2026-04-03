@@ -244,7 +244,7 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
       storageKey="workerGroupDetailDrawerWidth"
       className="worker-group-detail-drawer"
     >
-      <Tabs type="line" className="worker-group-detail-drawer-tabs">
+      <Tabs type="line" activeKey={activeTab} onChange={setActiveTab} className="worker-group-detail-drawer-tabs">
         <TabPane tab={t('workerGroup.detail.basicInfo')} itemKey="basicInfo">
           <div className="worker-group-detail-drawer-tab-content">
             <div className="worker-group-detail-drawer-info-section">
