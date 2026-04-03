@@ -29,11 +29,12 @@ const CollaboratorRoleSelect = ({
 
   const removeSlot = onRemove ? (
     <div
-      className="semi-select-option"
+      className="semi-select-option semi-select-option-removable"
       style={{
         display: 'flex',
         alignItems: 'flex-start',
         padding: '8px 12px',
+        cursor: 'pointer',
       }}
       onClick={onRemove}
       role="button"
