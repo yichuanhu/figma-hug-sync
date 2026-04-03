@@ -210,7 +210,23 @@ const initMockData = (assetType: CollaboratorAssetType, assetId: string): AssetC
   });
 
   // ===== 场景7-10: 继承协作者（仅子资产有） =====
-  const inheritedSources = getParentDependencies(assetType, assetId);
+  // 先尝试精确匹配依赖图，若无匹配则根据资产类型生成模拟继承来源
+  let inheritedSources = getParentDependencies(assetType, assetId);
+
+  // 对于有继承规则但无精确匹配的资产类型，生成虚拟继承来源
+  const CHILD_ASSET_TYPES: CollaboratorAssetType[] = ['PARAMETER', 'CREDENTIAL', 'QUEUE', 'FILE', 'WORKER'];
+  if (inheritedSources.length === 0 && CHILD_ASSET_TYPES.includes(assetType)) {
+    if (assetType === 'WORKER') {
+      inheritedSources = [
+        { parent_type: 'WORKER_GROUP', parent_id: 'wg-001', parent_name: 'Finance Robot Group', child_type: assetType, child_id: assetId, child_name: '' },
+      ];
+    } else {
+      inheritedSources = [
+        { parent_type: 'PROCESS', parent_id: 'proc-001', parent_name: 'Financial Reimbursement Process', child_type: assetType, child_id: assetId, child_name: '' },
+        { parent_type: 'PROCESS', parent_id: 'proc-002', parent_name: 'Procurement Request Process', child_type: assetType, child_id: assetId, child_name: '' },
+      ];
+    }
+  }
 
   if (inheritedSources.length > 0) {
     const sourceType = assetType === 'WORKER' ? 'INHERITED_HIERARCHY' : 'INHERITED_DEPENDENCY';
