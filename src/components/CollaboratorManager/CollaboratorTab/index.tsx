@@ -10,7 +10,7 @@ import {
   Modal,
 } from '@douyinfe/semi-ui';
 import {
-  IconDeleteStroked,
+  IconMinusCircleStroked,
   IconSearchStroked,
   IconFlowChartStroked,
   IconPlusStroked,
@@ -160,7 +160,7 @@ const CollaboratorTab = ({
     (record: AssetCollaborator) => {
       Modal.confirm({
         title: t('collaborator.removeConfirm.title'),
-        icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+        icon: <IconMinusCircleStroked style={{ color: 'var(--semi-color-warning)' }} />,
         content: t('collaborator.removeConfirm.content', { name: record.collaborator_name }),
         okText: t('common.confirm'),
         cancelText: t('common.cancel'),

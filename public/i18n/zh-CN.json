@@ -2492,6 +2492,10 @@
     },
     "source": {
       "inheritedFromCount": "共 {{count}} 条继承权限"
+    },
+    "removeConfirm": {
+      "title": "移除协作者确认",
+      "content": "确定将协作者「{{name}}」移除吗？"
     }
   }
 }

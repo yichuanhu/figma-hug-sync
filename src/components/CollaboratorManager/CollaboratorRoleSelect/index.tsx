@@ -30,6 +30,11 @@ const CollaboratorRoleSelect = ({
   const removeSlot = onRemove ? (
     <div
       className="semi-select-option"
+      style={{
+        display: 'flex',
+        alignItems: 'flex-start',
+        padding: '8px 12px',
+      }}
       onClick={onRemove}
       role="button"
       tabIndex={0}
@@ -40,9 +45,12 @@ const CollaboratorRoleSelect = ({
         }
       }}
     >
-      <span className="semi-select-option-text" style={{ color: 'var(--semi-color-danger)' }}>
-        {t('collaborator.actions.remove')}
-      </span>
+      <div style={{ width: 20, flexShrink: 0, marginTop: 2 }} />
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1 }}>
+        <span className="semi-select-option-text" style={{ color: 'var(--semi-color-danger)' }}>
+          {t('collaborator.actions.remove')}
+        </span>
+      </div>
     </div>
   ) : undefined;
 
