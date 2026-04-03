@@ -2491,13 +2491,26 @@
       "role": "角色"
     },
     "source": {
-      "inheritedFromCount": "共 {{count}} 条继承权限"
+      "inheritedFromCount": "共 {{count}} 条继承权限",
+      "inheritedFromProcess": "继承自流程「{{name}}」",
+      "inheritedFromGroup": "继承自机器人组「{{name}}」",
+      "direct": "直接分配",
+      "department": "部门权限",
+      "inheritedHierarchy": "层级继承",
+      "inheritedDependency": "依赖继承"
     },
     "removeConfirm": {
       "title": "移除协作者确认",
-      "content": "确定将协作者「{{name}}」移除吗？"
+      "content": "确定将协作者「{{name}}」移除吗？",
+      "contentWithCascade": "确定将协作者「{{name}}」移除吗？将同时从 {{count}} 个依赖资产中移除该协作者的继承权限。"
     },
     "updateSuccess": "角色更新成功",
-    "removeSuccess": "已移除协作者"
+    "updateSuccessWithCascade": "角色更新成功，已同步更新 {{count}} 个依赖资产",
+    "removeSuccess": "已移除协作者",
+    "removeSuccessWithCascade": "已移除协作者，同时从 {{count}} 个依赖资产中移除",
+    "cascade": {
+      "addHint": "将同时为 {{count}} 个依赖资产添加继承权限",
+      "removeHint": "将同时从 {{count}} 个依赖资产移除继承权限"
+    }
   }
 }
