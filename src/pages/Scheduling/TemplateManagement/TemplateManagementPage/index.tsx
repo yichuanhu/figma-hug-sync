@@ -29,7 +29,7 @@ import {
   IconEditStroked,
   IconChevronLeft,
 } from '@douyinfe/semi-icons';
-import { Users } from 'lucide-react';
+import { UserPlus } from 'lucide-react';
 import type { 
   LYExecutionTemplateResponse,
   LYListResponseLYExecutionTemplateResponse,

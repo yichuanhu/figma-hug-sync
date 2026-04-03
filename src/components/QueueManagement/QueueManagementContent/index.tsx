@@ -28,7 +28,7 @@ import {
   IconEditStroked,
 } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
-import { Users } from 'lucide-react';
+import { UserPlus } from 'lucide-react';
 import type {
   LYQueueResponse,
   LYQueueListResultResponse,
