@@ -210,6 +210,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
   const [uploadModalVisible, setUploadModalVisible] = useState(false);
   const [reuploadModalVisible, setReuploadModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
+  const [detailInitialTab, setDetailInitialTab] = useState('basic');
 
   // 加载数据
   const loadData = useCallback(async () => {
