@@ -3356,3 +3356,95 @@ export interface LYListResponseLYQueueTriggerExecutionLogResponse {
   /** 列表 */
   list: LYQueueTriggerExecutionLogResponse[];
 }
+
+// ============= 协作者管理类型定义 =============
+
+/** 协作者角色 */
+export type CollaboratorRole = 'MANAGER' | 'MAINTAINER' | 'USER' | 'OBSERVER';
+
+/** 协作者类型 */
+export type CollaboratorType = 'USER' | 'DEPARTMENT';
+
+/** 资产类型（协作者管理） */
+export type CollaboratorAssetType =
+  | 'PROCESS'
+  | 'PARAMETER'
+  | 'CREDENTIAL'
+  | 'QUEUE'
+  | 'FILE'
+  | 'WORKER'
+  | 'WORKER_GROUP'
+  | 'TRIGGER'
+  | 'TASK_TEMPLATE';
+
+/** 继承来源 */
+export interface CollaboratorInheritanceSource {
+  asset_type: CollaboratorAssetType;
+  asset_id: string;
+  asset_name: string;
+  role: CollaboratorRole;
+}
+
+/** 协作者响应 */
+export interface AssetCollaborator {
+  id: string;
+  asset_type: CollaboratorAssetType;
+  asset_id: string;
+  collaborator_type: CollaboratorType;
+  collaborator_id: string;
+  collaborator_name: string;
+  department_name?: string;
+  role: CollaboratorRole;
+  added_by: string;
+  added_by_name: string;
+  added_time: string;
+  is_owner: boolean;
+  /** 权限来源: DIRECT=直接分配, INHERITED=继承 */
+  source: 'DIRECT' | 'INHERITED';
+  inheritance_sources?: CollaboratorInheritanceSource[];
+  /** MAX计算后的最终权限 */
+  final_role: CollaboratorRole;
+}
+
+/** 添加协作者请求（单个） */
+export interface CollaboratorAddItem {
+  collaborator_type: CollaboratorType;
+  collaborator_id: string;
+  collaborator_name: string;
+  department_name?: string;
+  role: CollaboratorRole;
+}
+
+/** 添加协作者请求 */
+export interface CollaboratorAddRequest {
+  asset_type: CollaboratorAssetType;
+  asset_id: string;
+  collaborators: CollaboratorAddItem[];
+}
+
+/** 更新协作者角色请求 */
+export interface CollaboratorUpdateRequest {
+  collaborator_id: string;
+  role: CollaboratorRole;
+}
+
+/** 角色权限矩阵 */
+export const COLLABORATOR_ROLE_PRIORITY: Record<CollaboratorRole, number> = {
+  OBSERVER: 1,
+  USER: 2,
+  MAINTAINER: 3,
+  MANAGER: 4,
+};
+
+/** 资产类型可用角色映射（触发器不支持USER） */
+export const ASSET_AVAILABLE_ROLES: Record<CollaboratorAssetType, CollaboratorRole[]> = {
+  PROCESS: ['MANAGER', 'MAINTAINER', 'USER', 'OBSERVER'],
+  PARAMETER: ['MANAGER', 'MAINTAINER', 'USER', 'OBSERVER'],
+  CREDENTIAL: ['MANAGER', 'MAINTAINER', 'USER', 'OBSERVER'],
+  QUEUE: ['MANAGER', 'MAINTAINER', 'USER', 'OBSERVER'],
+  FILE: ['MANAGER', 'MAINTAINER', 'USER', 'OBSERVER'],
+  WORKER: ['MANAGER', 'MAINTAINER', 'USER', 'OBSERVER'],
+  WORKER_GROUP: ['MANAGER', 'MAINTAINER', 'USER', 'OBSERVER'],
+  TRIGGER: ['MANAGER', 'MAINTAINER', 'OBSERVER'],
+  TASK_TEMPLATE: ['MANAGER', 'MAINTAINER', 'USER', 'OBSERVER'],
+};
