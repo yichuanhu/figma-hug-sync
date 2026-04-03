@@ -183,6 +183,8 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
   // 发布状态筛选（仅开发中心使用）
   const [publishedFilter, setPublishedFilter] = useState<boolean | null>(null);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
+  const [addCollaboratorModalVisible, setAddCollaboratorModalVisible] = useState(false);
+  const [addCollaboratorAssetId, setAddCollaboratorAssetId] = useState('');
 
   // 列表数据
   const [listResponse, setListResponse] = useState<LYParameterListResultResponse | null>(null);
