@@ -198,20 +198,20 @@ const CollaboratorTab = ({
       <div className="collaborator-tab-source-detail">
         {(isExpanded ? sources : sources.slice(0, 1)).map((src, idx) => (
           <div key={idx} className="collaborator-tab-source-detail-item">
-            <Text type="tertiary" style={{ fontSize: 14 }}>
+            <Text size="small" type="tertiary">
               {src.asset_name} → {t(`collaborator.roles.${src.role}`)}
             </Text>
           </div>
         ))}
         {sources.length > 1 && (
-          <Text link
+          <span
             className="collaborator-tab-source-detail-toggle"
             onClick={() => toggleExpand(record.id)}
           >
             {isExpanded
               ? t('common.collapse')
               : t('collaborator.source.inheritedFromCount', { count: sources.length })}
-          </Text>
+          </span>
         )}
       </div>
     );
@@ -243,7 +243,7 @@ const CollaboratorTab = ({
               )}
             </div>
             {record.department_name && record.collaborator_type === 'USER' && (
-              <Text type="tertiary" ellipsis={{ showTooltip: true }} style={{ maxWidth: 360, fontSize: 14 }}>
+              <Text size="small" type="tertiary" ellipsis={{ showTooltip: true }} style={{ maxWidth: 360 }}>
                 {record.department_name}
               </Text>
             )}
