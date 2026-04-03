@@ -264,22 +264,13 @@ const CollaboratorTab = ({
         const isDisabled = record.is_owner || record.source === 'INHERITED' || !canManage;
         const canRemove = !record.is_owner && record.source !== 'INHERITED' && canManage;
         return (
-          <div className="collaborator-tab-role-cell">
-            <CollaboratorRoleSelect
-              value={record.final_role}
-              onChange={(role) => handleRoleChange(record, role)}
-              assetType={assetType}
-              disabled={isDisabled}
-            />
-            {canRemove && (
-              <span
-                className="collaborator-tab-role-cell-remove"
-                onClick={() => handleRemove(record)}
-              >
-                {t('collaborator.actions.remove')}
-              </span>
-            )}
-          </div>
+          <CollaboratorRoleSelect
+            value={record.final_role}
+            onChange={(role) => handleRoleChange(record, role)}
+            assetType={assetType}
+            disabled={isDisabled}
+            onRemove={canRemove ? () => handleRemove(record) : undefined}
+          />
         );
       },
     },
