@@ -597,6 +597,15 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
           row?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }}
       />
+
+      <CollaboratorAddModal
+        visible={addCollaboratorModalVisible}
+        onClose={() => setAddCollaboratorModalVisible(false)}
+        onSuccess={() => setAddCollaboratorModalVisible(false)}
+        assetType={'QUEUE' as CollaboratorAssetType}
+        assetId={addCollaboratorAssetId}
+        existingCollaborators={[]}
+      />
     </div>
   );
 };
