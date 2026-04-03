@@ -3089,7 +3089,6 @@
       "USER": "User",
       "OBSERVER": "Observer"
     },
-...
     "roleDesc": {
       "MANAGER": "Full control: view, edit, use, and manage collaborators",
       "MAINTAINER": "Can edit and use assets, but cannot manage collaborators",
