@@ -235,6 +235,8 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [detailInitialTab, setDetailInitialTab] = useState('detail');
+  const [addCollaboratorModalVisible, setAddCollaboratorModalVisible] = useState(false);
+  const [addCollaboratorAssetId, setAddCollaboratorAssetId] = useState('');
 
   // 列表响应数据 - 直接使用API LYListResponseLYProcessResponse
   const [listResponse, setListResponse] = useState<LYListResponseLYProcessResponse>({
