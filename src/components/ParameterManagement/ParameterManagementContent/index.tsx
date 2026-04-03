@@ -402,6 +402,9 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
                     {t('common.edit')}
                   </Dropdown.Item>
                 )}
+                <Dropdown.Item icon={<Users size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); setSelectedParameter(record); setDetailInitialTab('collaborators'); setDetailDrawerVisible(true); }}>
+                  {t('collaborator.actions.manageCollaborators')}
+                </Dropdown.Item>
                 {canDelete && (
                   <Dropdown.Item 
                     icon={<IconDeleteStroked />}
