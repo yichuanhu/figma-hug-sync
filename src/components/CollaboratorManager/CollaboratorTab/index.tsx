@@ -9,6 +9,7 @@ import {
   Toast,
   Modal,
   Tooltip,
+  Popover,
 } from '@douyinfe/semi-ui';
 import {
   IconMinusCircleStroked,
@@ -261,20 +262,33 @@ const CollaboratorTab = ({
         );
 
         if (isInherited && !record.is_owner) {
-          return (
-            <div className="collaborator-tab-inherited-role">
-              <Tooltip content={t('collaborator.inheritedRoleHint')} position="topRight">
-                {selectEl}
-              </Tooltip>
+          const popoverContent = (
+            <div className="collaborator-tab-inherited-popover">
+              <div className="collaborator-tab-inherited-popover-text">
+                {t('collaborator.inheritedRoleHint')}
+              </div>
               {canManage && (
-                <span
-                  className="collaborator-tab-quick-add"
+                <Button
+                  size="small"
+                  theme="solid"
+                  type="primary"
                   onClick={() => handleQuickAdd(record)}
+                  style={{ marginTop: 8, width: '100%' }}
                 >
                   {t('collaborator.actions.quickAdd')}
-                </span>
+                </Button>
               )}
             </div>
+          );
+          return (
+            <Popover
+              content={popoverContent}
+              position="topRight"
+              showArrow
+              trigger="hover"
+            >
+              {selectEl}
+            </Popover>
           );
         }
 
