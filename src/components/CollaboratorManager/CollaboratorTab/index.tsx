@@ -137,7 +137,6 @@ const CollaboratorTab = ({
 
   // 渲染权限来源（仅继承时展示）
   const renderSource = (record: AssetCollaborator) => {
-    if (record.source !== 'INHERITED') return null;
     const sources = record.inheritance_sources || [];
     if (sources.length === 0) return null;
     const isExpanded = expandedRows.has(record.id);
