@@ -12,6 +12,8 @@ import {
   Modal,
   Space,
   Divider,
+  Tabs,
+  TabPane,
 } from '@douyinfe/semi-ui';
 import {
   IconChevronLeft,
@@ -23,6 +25,8 @@ import {
 import { X, Maximize2, Minimize2 } from 'lucide-react';
 import type { LYFileResponse, FileSource } from '@/api/index';
 import ExpandableText from '@/components/ExpandableText';
+import CollaboratorTab from '@/components/CollaboratorManager/CollaboratorTab';
+import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 
 import './index.less';
 
@@ -44,6 +48,7 @@ interface FileDetailDrawerProps {
   onNavigate: (direction: 'prev' | 'next') => void;
   onReupload: (file: LYFileResponse) => void;
   onDelete: (file: LYFileResponse) => void;
+  initialTab?: string;
 }
 
 const FileDetailDrawer = ({
@@ -56,9 +61,11 @@ const FileDetailDrawer = ({
   onNavigate,
   onReupload,
   onDelete,
+  initialTab = 'basic',
 }: FileDetailDrawerProps) => {
   const { t } = useTranslation();
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [drawerWidth, setDrawerWidth] = useState(() => {
     const saved = localStorage.getItem('file-detail-drawer-width');
     return saved ? Math.max(Number(saved), 576) : 900;
@@ -66,6 +73,12 @@ const FileDetailDrawer = ({
   const isResizing = useRef(false);
   const startX = useRef(0);
   const startWidth = useRef(drawerWidth);
+
+  const { canManage } = useCollaboratorPermission('FILE', file?.id);
+
+  useEffect(() => {
+    if (file) setActiveTab(initialTab);
+  }, [file?.id, initialTab]);
 
   // 保存宽度到 localStorage
   useEffect(() => {
@@ -126,7 +139,6 @@ const FileDetailDrawer = ({
   const handleDownload = useCallback(() => {
     if (file) {
       Toast.info(t('file.actions.downloading'));
-      // 模拟下载
       setTimeout(() => {
         Toast.success(t('file.actions.downloadSuccess'));
       }, 500);
@@ -136,8 +148,6 @@ const FileDetailDrawer = ({
   // 删除检查
   const handleDelete = useCallback(() => {
     if (!file) return;
-
-    // 已发布的文件不允许删除
     if (file.is_published) {
       Modal.warning({
         title: t('file.deleteModal.cannotDeleteTitle'),
@@ -146,12 +156,12 @@ const FileDetailDrawer = ({
       });
       return;
     }
-
     onDelete(file);
   }, [file, onDelete, t]);
 
   // 抽屉关闭时重置状态
   const handleClose = useCallback(() => {
+    setActiveTab('basic');
     onClose();
   }, [onClose]);
 
@@ -163,7 +173,7 @@ const FileDetailDrawer = ({
 
   // 已发布的文件不允许重新上传和删除
   const canReupload = context === 'development' && !file.is_published;
-  const canDelete = context === 'development' && !file.is_published;
+  const canDeleteFile = context === 'development' && !file.is_published;
 
   return (
     <SideSheet
@@ -176,69 +186,31 @@ const FileDetailDrawer = ({
           </Tooltip>
           <Space spacing={8} style={{ flexShrink: 0 }}>
             <Tooltip content={t('common.previous')}>
-              <Button
-                icon={<IconChevronLeft />}
-                theme="borderless"
-                size="small"
-                disabled={!canGoPrev}
-                onClick={() => onNavigate('prev')}
-              />
+              <Button icon={<IconChevronLeft />} theme="borderless" size="small" disabled={!canGoPrev} onClick={() => onNavigate('prev')} />
             </Tooltip>
             <Tooltip content={t('common.next')}>
-              <Button
-                icon={<IconChevronRight />}
-                theme="borderless"
-                size="small"
-                disabled={!canGoNext}
-                onClick={() => onNavigate('next')}
-              />
+              <Button icon={<IconChevronRight />} theme="borderless" size="small" disabled={!canGoNext} onClick={() => onNavigate('next')} />
             </Tooltip>
             <Divider layout="vertical" className="file-detail-drawer-header-divider" />
             {context === 'development' && canReupload && (
               <Tooltip content={t('file.actions.reupload')}>
-                <Button
-                  icon={<IconUpload />}
-                  theme="borderless"
-                  size="small"
-                  onClick={() => onReupload(file)}
-                />
+                <Button icon={<IconUpload />} theme="borderless" size="small" onClick={() => onReupload(file)} />
               </Tooltip>
             )}
             <Tooltip content={t('file.actions.download')}>
-              <Button
-                icon={<IconDownloadStroked />}
-                theme="borderless"
-                size="small"
-                onClick={handleDownload}
-              />
+              <Button icon={<IconDownloadStroked />} theme="borderless" size="small" onClick={handleDownload} />
             </Tooltip>
-            {context === 'development' && canDelete && (
+            {context === 'development' && canDeleteFile && (
               <Tooltip content={t('common.delete')}>
-                <Button
-                  icon={<IconDeleteStroked className="file-detail-drawer-header-delete-icon" />}
-                  theme="borderless"
-                  size="small"
-                  onClick={handleDelete}
-                />
+                <Button icon={<IconDeleteStroked className="file-detail-drawer-header-delete-icon" />} theme="borderless" size="small" onClick={handleDelete} />
               </Tooltip>
             )}
             <Divider layout="vertical" className="file-detail-drawer-header-divider" />
             <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
-              <Button
-                icon={isFullscreen ? <Minimize2 size={16} strokeWidth={2} /> : <Maximize2 size={16} strokeWidth={2} />}
-                theme="borderless"
-                size="small"
-                onClick={toggleFullscreen}
-              />
+              <Button icon={isFullscreen ? <Minimize2 size={16} strokeWidth={2} /> : <Maximize2 size={16} strokeWidth={2} />} theme="borderless" size="small" onClick={toggleFullscreen} />
             </Tooltip>
             <Tooltip content={t('common.close')}>
-              <Button
-                icon={<X size={16} strokeWidth={2} />}
-                theme="borderless"
-                size="small"
-                onClick={handleClose}
-                className="file-detail-drawer-header-close-btn"
-              />
+              <Button icon={<X size={16} strokeWidth={2} />} theme="borderless" size="small" onClick={handleClose} className="file-detail-drawer-header-close-btn" />
             </Tooltip>
           </Space>
         </div>
@@ -253,66 +225,56 @@ const FileDetailDrawer = ({
       className={`card-sidesheet resizable-sidesheet file-detail-drawer ${isFullscreen ? 'fullscreen-sidesheet' : ''}`}
     >
       {!isFullscreen && <div className="file-detail-drawer-resize-handle" onMouseDown={handleMouseDown} />}
-      <div className="file-detail-drawer-content">
-        {/* 基本信息区块 */}
-        <div className="file-detail-drawer-section">
-          <Text className="file-detail-drawer-section-title">{t('file.detail.basicInfo')}</Text>
-          <Descriptions align="left">
-            <Descriptions.Item itemKey={t('file.table.name')}>
-              {file.display_name}
-            </Descriptions.Item>
-            <Descriptions.Item itemKey={t('file.table.source')}>
-              <Tag color={sourceConfig[file.source].color}>
-                {t(sourceConfig[file.source].i18nKey)}
-              </Tag>
-            </Descriptions.Item>
-            {/* 发布状态 - 仅开发中心显示 */}
-            {context === 'development' && (
-              <Descriptions.Item itemKey={t('file.detail.publishStatus')}>
-                <Tag color={file.is_published ? 'green' : 'grey'}>
-                  {file.is_published ? t('file.detail.published') : t('file.detail.unpublished')}
-                </Tag>
-              </Descriptions.Item>
-            )}
-            <Descriptions.Item itemKey={t('common.description')}>
-              <ExpandableText text={file.description} maxLines={3} />
-            </Descriptions.Item>
-            <Descriptions.Item itemKey={t('common.creator')}>
-              {file.created_by_name ? <UserNameWithCard name={file.created_by_name} userId={file.created_by} department={file.created_by_department || undefined} role={file.created_by_role || undefined} email={file.created_by_email || undefined} /> : '-'}
-            </Descriptions.Item>
-            <Descriptions.Item itemKey={t('common.createTime')}>
-              {formatTime(file.created_at)}
-            </Descriptions.Item>
-            <Descriptions.Item itemKey={t('file.detail.updater')}>
-              {file.updated_by_name ? <UserNameWithCard name={file.updated_by_name} userId={file.updated_by} /> : '-'}
-            </Descriptions.Item>
-            <Descriptions.Item itemKey={t('common.updateTime')}>
-              {formatTime(file.updated_at)}
-            </Descriptions.Item>
-            {file.change_reason && (
-              <Descriptions.Item itemKey={t('file.fields.changeReason')}>
-                {file.change_reason}
-              </Descriptions.Item>
-            )}
-          </Descriptions>
-        </div>
-
-        {/* 文件内容区块 */}
-        <div className="file-detail-drawer-section">
-          <Text className="file-detail-drawer-section-title">{t('file.detail.fileContent')}</Text>
-          <Descriptions align="left">
-            <Descriptions.Item itemKey={t('file.detail.originalName')}>
-              {file.original_name}
-            </Descriptions.Item>
-            <Descriptions.Item itemKey={t('file.table.size')}>
-              <span className="file-detail-drawer-mono">{formatFileSize(file.file_size)}</span>
-            </Descriptions.Item>
-            <Descriptions.Item itemKey={t('file.detail.mimeType')}>
-              {file.mime_type || '-'}
-            </Descriptions.Item>
-          </Descriptions>
-        </div>
-      </div>
+      <Tabs activeKey={activeTab} onChange={setActiveTab} className="file-detail-drawer-tabs" keepDOM={false}>
+        <TabPane tab={t('file.detail.basicInfo')} itemKey="basic">
+          <div className="file-detail-drawer-content">
+            <div className="file-detail-drawer-section">
+              <Text className="file-detail-drawer-section-title">{t('file.detail.basicInfo')}</Text>
+              <Descriptions align="left">
+                <Descriptions.Item itemKey={t('file.table.name')}>{file.display_name}</Descriptions.Item>
+                <Descriptions.Item itemKey={t('file.table.source')}>
+                  <Tag color={sourceConfig[file.source].color}>{t(sourceConfig[file.source].i18nKey)}</Tag>
+                </Descriptions.Item>
+                {context === 'development' && (
+                  <Descriptions.Item itemKey={t('file.detail.publishStatus')}>
+                    <Tag color={file.is_published ? 'green' : 'grey'}>{file.is_published ? t('file.detail.published') : t('file.detail.unpublished')}</Tag>
+                  </Descriptions.Item>
+                )}
+                <Descriptions.Item itemKey={t('common.description')}><ExpandableText text={file.description} maxLines={3} /></Descriptions.Item>
+                <Descriptions.Item itemKey={t('common.creator')}>
+                  {file.created_by_name ? <UserNameWithCard name={file.created_by_name} userId={file.created_by} department={file.created_by_department || undefined} role={file.created_by_role || undefined} email={file.created_by_email || undefined} /> : '-'}
+                </Descriptions.Item>
+                <Descriptions.Item itemKey={t('common.createTime')}>{formatTime(file.created_at)}</Descriptions.Item>
+                <Descriptions.Item itemKey={t('file.detail.updater')}>
+                  {file.updated_by_name ? <UserNameWithCard name={file.updated_by_name} userId={file.updated_by} /> : '-'}
+                </Descriptions.Item>
+                <Descriptions.Item itemKey={t('common.updateTime')}>{formatTime(file.updated_at)}</Descriptions.Item>
+                {file.change_reason && (
+                  <Descriptions.Item itemKey={t('file.fields.changeReason')}>{file.change_reason}</Descriptions.Item>
+                )}
+              </Descriptions>
+            </div>
+            <div className="file-detail-drawer-section">
+              <Text className="file-detail-drawer-section-title">{t('file.detail.fileContent')}</Text>
+              <Descriptions align="left">
+                <Descriptions.Item itemKey={t('file.detail.originalName')}>{file.original_name}</Descriptions.Item>
+                <Descriptions.Item itemKey={t('file.table.size')}>
+                  <span className="file-detail-drawer-mono">{formatFileSize(file.file_size)}</span>
+                </Descriptions.Item>
+                <Descriptions.Item itemKey={t('file.detail.mimeType')}>{file.mime_type || '-'}</Descriptions.Item>
+              </Descriptions>
+            </div>
+          </div>
+        </TabPane>
+        <TabPane tab={t('collaborator.tabTitle')} itemKey="collaborators">
+          <CollaboratorTab
+            assetType="FILE"
+            assetId={file.id}
+            context={context}
+            canManage={canManage}
+          />
+        </TabPane>
+      </Tabs>
     </SideSheet>
   );
 };

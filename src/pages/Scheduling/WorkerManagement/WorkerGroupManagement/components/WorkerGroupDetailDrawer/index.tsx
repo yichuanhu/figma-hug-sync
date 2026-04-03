@@ -42,6 +42,8 @@ import type {
 } from '@/api';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
+import CollaboratorTab from '@/components/CollaboratorManager/CollaboratorTab';
+import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import './index.less';
 
 const { Text } = Typography;
@@ -102,6 +104,7 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
   dataList = [], onNavigate, pagination, onPageChange, onNavigateToWorkerDetail, onScrollToRow,
 }) => {
   const { t } = useTranslation();
+  const { canManage: canManageCollaborators } = useCollaboratorPermission('WORKER_GROUP', groupData?.id);
 
   const [membersLoading, setMembersLoading] = useState(false);
   const [membersResponse, setMembersResponse] = useState<LYListResponseLYWorkerGroupMemberResponse>({ range: { offset: 0, size: 20, total: 0 }, list: [] });
@@ -264,6 +267,14 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
               </div>
             </div>
           </div>
+        </TabPane>
+        <TabPane tab={t('collaborator.tabTitle')} itemKey="collaborators">
+          <CollaboratorTab
+            assetType="WORKER_GROUP"
+            assetId={groupData.id}
+            context="scheduling"
+            canManage={canManageCollaborators}
+          />
         </TabPane>
       </Tabs>
       <AddMembersModal visible={addMembersVisible} onCancel={() => setAddMembersVisible(false)} groupId={groupData.id} groupName={groupData.name} onSuccess={handleAddMembersSuccess} />
