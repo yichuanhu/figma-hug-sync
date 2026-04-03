@@ -69,9 +69,10 @@ const TimeTriggerDetailDrawer = ({
   onDelete,
   onToggleStatus,
   onScrollToRow,
+  initialTab = 'basic',
 }: TimeTriggerDetailDrawerProps) => {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState('basic');
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [executionLogs, setExecutionLogs] = useState<LYTriggerExecutionLogResponse[]>([]);
   const [previewExpanded, setPreviewExpanded] = useState(true);
   const { canManage } = useCollaboratorPermission('TRIGGER', trigger?.trigger_id);
