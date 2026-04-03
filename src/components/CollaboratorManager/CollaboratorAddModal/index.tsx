@@ -305,19 +305,20 @@ const CollaboratorAddModal = ({
     return roles.includes('USER') ? 'USER' : roles[roles.length - 1];
   }, [assetType]);
 
-  // 已存在的协作者 Map（id -> role）- 含 mock 数据演示
+  // 已存在的协作者 Map（id -> role）
   const existingMap = useMemo(() => {
     const map = new Map<string, CollaboratorRole>();
     existingCollaborators
       .filter((c) => c.source === 'DIRECT')
       .forEach((c) => map.set(c.collaborator_id, c.role));
-    // Mock: simulate pre-authorized users and departments
-    if (map.size === 0) {
-      map.set('user-dw-001', 'MANAGER' as CollaboratorRole); // Xuan Cai - Manager
-      map.set('user-dw-002', 'MAINTAINER' as CollaboratorRole); // Linghui Huang - Maintainer
-      map.set('dept-digital-worker', 'USER' as CollaboratorRole); // Digital Worker Division - User
-      map.set('user-fe-001', 'OBSERVER' as CollaboratorRole); // Charles Feng - Observer
-    }
+    // 继承来源的协作者也标记为已添加
+    existingCollaborators
+      .filter((c) => c.source === 'INHERITED')
+      .forEach((c) => map.set(c.collaborator_id, c.final_role));
+    // 部门协作者
+    existingCollaborators
+      .filter((c) => c.collaborator_type === 'DEPARTMENT')
+      .forEach((c) => map.set(c.collaborator_id, c.role));
     return map;
   }, [existingCollaborators]);
 
