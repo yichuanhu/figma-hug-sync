@@ -237,6 +237,8 @@ const ProcessDevelopment = () => {
   }, [location.state]);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
+  const [collaboratorAddVisible, setCollaboratorAddVisible] = useState(false);
+  const [collaboratorTargetProcess, setCollaboratorTargetProcess] = useState<LYProcessResponse | null>(null);
 
   // List响应Data - 直接usingAPI LYListResponseLYProcessResponse
   const [listResponse, setListResponse] = useState<LYListResponseLYProcessResponse>({
