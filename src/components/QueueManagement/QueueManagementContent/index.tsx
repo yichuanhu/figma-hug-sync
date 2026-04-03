@@ -587,6 +587,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
           totalPages: Math.ceil(total / queryParams.pageSize),
         }}
         onPageChange={handleDrawerPageChange}
+        initialTab={detailInitialTab}
         onScrollToRow={(id) => {
           const row = document.getElementById(`queue-row-${id}`);
           row?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
