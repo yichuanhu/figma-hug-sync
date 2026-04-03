@@ -681,6 +681,15 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
 
       {/* 打开流程确认弹窗 - 仅开发中心 */}
       {!isSchedulingContext && <OpenProcessModal />}
+
+      <CollaboratorAddModal
+        visible={addCollaboratorModalVisible}
+        onClose={() => setAddCollaboratorModalVisible(false)}
+        onSuccess={() => setAddCollaboratorModalVisible(false)}
+        assetType={'PROCESS' as CollaboratorAssetType}
+        assetId={addCollaboratorAssetId}
+        existingCollaborators={[]}
+      />
     </div>
   );
 };

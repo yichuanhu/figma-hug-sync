@@ -658,6 +658,15 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
           loadData();
         }}
       />
+
+      <CollaboratorAddModal
+        visible={addCollaboratorModalVisible}
+        onClose={() => setAddCollaboratorModalVisible(false)}
+        onSuccess={() => setAddCollaboratorModalVisible(false)}
+        assetType={'CREDENTIAL' as CollaboratorAssetType}
+        assetId={addCollaboratorAssetId}
+        existingCollaborators={[]}
+      />
     </div>
   );
 };

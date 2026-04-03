@@ -603,6 +603,15 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
           row?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }}
       />
+
+      <CollaboratorAddModal
+        visible={addCollaboratorModalVisible}
+        onClose={() => setAddCollaboratorModalVisible(false)}
+        onSuccess={() => setAddCollaboratorModalVisible(false)}
+        assetType={'PARAMETER' as CollaboratorAssetType}
+        assetId={addCollaboratorAssetId}
+        existingCollaborators={[]}
+      />
     </div>
   );
 };
