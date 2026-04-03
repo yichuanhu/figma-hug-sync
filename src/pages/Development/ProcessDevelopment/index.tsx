@@ -482,6 +482,16 @@ const ProcessDevelopment = () => {
                 {t('common.run')}
               </Dropdown.Item>
               <Dropdown.Item
+                icon={<UserPlus size={14} strokeWidth={2} />}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCollaboratorTargetProcess(record);
+                  setCollaboratorAddVisible(true);
+                }}
+              >
+                {t('collaborator.actions.addCollaborator')}
+              </Dropdown.Item>
+              <Dropdown.Item
                 icon={<IconDeleteStroked />}
                 type="danger"
                 onClick={(e) => {
