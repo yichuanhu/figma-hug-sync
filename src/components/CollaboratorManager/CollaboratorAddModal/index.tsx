@@ -235,6 +235,14 @@ const mockLaiyeOrg: DeptNode = {
   users: [],
 };
 
+// 虚拟根节点，包含"来也科技"作为可选部门
+const mockOrgTree: DeptNode = {
+  id: 'root',
+  name: '组织架构',
+  children: [mockLaiyeOrg],
+  users: [],
+};
+
 // 扁平化查找节点
 const findNode = (node: DeptNode, id: string): DeptNode | null => {
   if (node.id === id) return node;
