@@ -525,6 +525,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
   // openDetails drawer
   const openDetail = (worker: LYWorkerResponse) => {
     setSelectedWorker(worker);
+    setDetailInitialTab('basic');
     setDetailDrawerVisible(true);
   };
 
