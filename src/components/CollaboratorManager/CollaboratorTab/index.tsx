@@ -286,6 +286,7 @@ const CollaboratorTab = ({
           value={searchValue}
           onChange={setSearchValue}
           className="collaborator-tab-search"
+          style={{ width: 320 }}
           showClear
         />
         {canManage && (
