@@ -597,17 +597,12 @@ const CollaboratorAddModal = ({
           {!searchResults && (
             <div className="collaborator-add-modal-left-breadcrumb">
               <Breadcrumb compact={false}>
-                <Breadcrumb.Item
-                  onClick={breadcrumbPath.length > 1 ? () => navigateToDept('root') : undefined}
-                >
-                  {t('collaborator.addModal.orgStructure')}
-                </Breadcrumb.Item>
                 {breadcrumbPath.map((node, index) => (
                   <Breadcrumb.Item
                     key={node.id}
                     onClick={index < breadcrumbPath.length - 1 ? () => navigateToDept(node.id) : undefined}
                   >
-                    {node.name}
+                    {node.id === 'root' ? t('collaborator.addModal.orgStructure') : node.name}
                   </Breadcrumb.Item>
                 ))}
               </Breadcrumb>
