@@ -22,6 +22,7 @@ import {
   IconDeleteStroked,
   IconEditStroked,
 } from '@douyinfe/semi-icons';
+import { Users } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import type {
@@ -153,6 +154,7 @@ const QueueTriggerList = () => {
   // SelectedStatus(Drawer)
   const [selectedTrigger, setSelectedTrigger] = useState<LYQueueTriggerResponse | null>(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
+  const [detailInitialTab, setDetailInitialTab] = useState('basic');
 
   // ModalStatus
   const [createModalVisible, setCreateModalVisible] = useState(false);
@@ -265,6 +267,7 @@ const QueueTriggerList = () => {
   // openDetails drawer
   const handleOpenDrawer = (trigger: LYQueueTriggerResponse) => {
     setSelectedTrigger(trigger);
+    setDetailInitialTab('basic');
     setDrawerVisible(true);
   };
 
@@ -272,6 +275,7 @@ const QueueTriggerList = () => {
   const handleCloseDrawer = () => {
     setDrawerVisible(false);
     setSelectedTrigger(null);
+    setDetailInitialTab('basic');
   };
 
   // Drawer导航
@@ -435,6 +439,17 @@ const QueueTriggerList = () => {
                 }}
               >
                 {t('queueTrigger.actions.edit')}
+              </Dropdown.Item>
+              <Dropdown.Item
+                icon={<Users size={16} strokeWidth={2} />}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedTrigger(record);
+                  setDetailInitialTab('collaborators');
+                  setDrawerVisible(true);
+                }}
+              >
+                {t('collaborator.actions.manageCollaborators')}
               </Dropdown.Item>
               <Dropdown.Item
                 icon={<IconDeleteStroked />}
@@ -601,6 +616,7 @@ const QueueTriggerList = () => {
         onEdit={handleOpenEditModal}
         onDelete={handleDeleteTrigger}
         onToggleStatus={handleToggleStatus}
+        initialTab={detailInitialTab}
       />
     </div>
   );

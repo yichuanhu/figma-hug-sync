@@ -29,6 +29,7 @@ import {
   IconEditStroked,
   IconChevronLeft,
 } from '@douyinfe/semi-icons';
+import { Users } from 'lucide-react';
 import type { 
   LYExecutionTemplateResponse,
   LYListResponseLYExecutionTemplateResponse,
@@ -136,6 +137,7 @@ const TemplateManagementPage = () => {
   // SelectedStatus(Drawer)
   const [selectedTemplate, setSelectedTemplate] = useState<LYExecutionTemplateResponse | null>(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
+  const [detailInitialTab, setDetailInitialTab] = useState('basicInfo');
 
   // ModalStatus
   const [createModalVisible, setCreateModalVisible] = useState(false);
@@ -233,6 +235,7 @@ const TemplateManagementPage = () => {
   // openDetails drawer
   const handleOpenDrawer = (template: LYExecutionTemplateResponse) => {
     setSelectedTemplate(template);
+    setDetailInitialTab('basicInfo');
     setDrawerVisible(true);
   };
 
@@ -240,6 +243,7 @@ const TemplateManagementPage = () => {
   const handleCloseDrawer = () => {
     setDrawerVisible(false);
     setSelectedTemplate(null);
+    setDetailInitialTab('basicInfo');
   };
 
   // fromDrawerEdit
@@ -379,6 +383,17 @@ const TemplateManagementPage = () => {
                 }}
               >
                 {t('template.actions.edit')}
+              </Dropdown.Item>
+              <Dropdown.Item
+                icon={<Users size={16} strokeWidth={2} />}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedTemplate(record);
+                  setDetailInitialTab('collaborators');
+                  setDrawerVisible(true);
+                }}
+              >
+                {t('collaborator.actions.manageCollaborators')}
               </Dropdown.Item>
               <Dropdown.Item
                 icon={<IconDeleteStroked />}
@@ -542,6 +557,7 @@ const TemplateManagementPage = () => {
             totalPages,
           }}
           onPageChange={handlePageChangeForDrawer}
+          initialTab={detailInitialTab}
         />
       </div>
   );

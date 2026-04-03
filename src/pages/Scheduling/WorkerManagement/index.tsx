@@ -30,6 +30,7 @@ import {
   IconUserListStroked,
   IconMinusCircleStroked,
 } from '@douyinfe/semi-icons';
+import { Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import WorkerDetailDrawer from './components/WorkerDetailDrawer';
@@ -368,6 +369,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
   // Drawer and ModalStatus
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [selectedWorker, setSelectedWorker] = useState<LYWorkerResponse | null>(null);
+  const [detailInitialTab, setDetailInitialTab] = useState('basic');
   const [keyModalVisible, setKeyModalVisible] = useState(false);
   const [keyModalWorker, setKeyModalWorker] = useState<LYWorkerResponse | null>(null);
   const [createModalVisible, setCreateModalVisible] = useState(false);
@@ -523,6 +525,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
   // openDetails drawer
   const openDetail = (worker: LYWorkerResponse) => {
     setSelectedWorker(worker);
+    setDetailInitialTab('basic');
     setDetailDrawerVisible(true);
   };
 
@@ -852,6 +855,17 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
                 </Dropdown.Item>
               )}
               <Dropdown.Item 
+                icon={<Users size={16} strokeWidth={2} />}
+                onClick={(e) => {
+                  e?.stopPropagation?.();
+                  setSelectedWorker(record);
+                  setDetailInitialTab('collaborators');
+                  setDetailDrawerVisible(true);
+                }}
+              >
+                {t('collaborator.actions.manageCollaborators')}
+              </Dropdown.Item>
+              <Dropdown.Item 
                 icon={<IconDeleteStroked />} 
                 type="danger" 
                 onClick={(e) => {
@@ -986,7 +1000,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       {/* Details drawer */}
       <WorkerDetailDrawer
         visible={detailDrawerVisible}
-        onClose={() => setDetailDrawerVisible(false)}
+        onClose={() => { setDetailDrawerVisible(false); setDetailInitialTab('basic'); }}
         workerData={selectedWorker}
         onEdit={handleEditFromDrawer}
         onViewKey={() => {
@@ -1015,6 +1029,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
           const row = document.getElementById(`worker-row-${id}`);
           row?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }}
+        initialTab={detailInitialTab}
       />
 
       {/* Modal */}

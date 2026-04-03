@@ -26,7 +26,7 @@ import {
   IconDeleteStroked,
   IconDownloadStroked,
 } from '@douyinfe/semi-icons';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, Users } from 'lucide-react';
 import { debounce } from 'lodash';
 import type {
   LYFileResponse,
@@ -210,6 +210,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
   const [uploadModalVisible, setUploadModalVisible] = useState(false);
   const [reuploadModalVisible, setReuploadModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
+  const [detailInitialTab, setDetailInitialTab] = useState('basic');
 
   // 加载数据
   const loadData = useCallback(async () => {
@@ -261,6 +262,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
   // 点击行查看详情
   const handleRowClick = (record: LYFileResponse) => {
     setSelectedFile(record);
+    setDetailInitialTab('basic');
     setDetailDrawerVisible(true);
   };
 
@@ -454,6 +456,17 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
               >
                 {t('file.actions.download')}
               </Dropdown.Item>
+              <Dropdown.Item
+                icon={<Users size={16} strokeWidth={2} />}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedFile(record);
+                  setDetailInitialTab('collaborators');
+                  setDetailDrawerVisible(true);
+                }}
+              >
+                {t('collaborator.actions.manageCollaborators')}
+              </Dropdown.Item>
               {context === 'development' && !record.is_published && (
                 <Dropdown.Item
                   icon={<IconDeleteStroked />}
@@ -627,10 +640,12 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
         onClose={() => {
           setDetailDrawerVisible(false);
           setSelectedFile(null);
+          setDetailInitialTab('basic');
         }}
         onNavigate={handleDrawerNavigate}
         onReupload={handleReupload}
         onDelete={handleDelete}
+        initialTab={detailInitialTab}
       />
     </div>
   );

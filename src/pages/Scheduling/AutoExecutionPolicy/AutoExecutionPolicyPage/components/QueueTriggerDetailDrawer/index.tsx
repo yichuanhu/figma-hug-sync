@@ -40,6 +40,7 @@ interface QueueTriggerDetailDrawerProps {
   onToggleStatus: (trigger: LYQueueTriggerResponse, checked: boolean) => void;
   onRefresh?: () => void;
   onScrollToRow?: (id: string) => void;
+  initialTab?: string;
 }
 
 // Mock ExecuteRecord
@@ -67,9 +68,10 @@ const QueueTriggerDetailDrawer = ({
   onDelete,
   onToggleStatus,
   onScrollToRow,
+  initialTab = 'basic',
 }: QueueTriggerDetailDrawerProps) => {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState('basic');
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [executionLogs, setExecutionLogs] = useState<LYQueueTriggerExecutionLogResponse[]>([]);
   const { canManage } = useCollaboratorPermission('TRIGGER', trigger?.trigger_id);
 
@@ -88,7 +90,7 @@ const QueueTriggerDetailDrawer = ({
 
   // DrawerClose时重置Status
   const handleClose = () => {
-    setActiveTab('basic');
+    setActiveTab(initialTab);
     onClose();
   };
 

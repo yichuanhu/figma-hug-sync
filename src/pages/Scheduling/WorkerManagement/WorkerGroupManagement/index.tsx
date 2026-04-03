@@ -23,6 +23,7 @@ import {
   IconDeleteStroked,
   IconUserAdd,
 } from '@douyinfe/semi-icons';
+import { Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { debounce } from 'lodash';
 import WorkerGroupDetailDrawer from './components/WorkerGroupDetailDrawer';
@@ -136,6 +137,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
   // Drawer and ModalStatus
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState<LYWorkerGroupResponse | null>(null);
+  const [detailInitialTab, setDetailInitialTab] = useState('basicInfo');
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingGroup, setEditingGroup] = useState<LYWorkerGroupResponse | null>(null);
@@ -193,6 +195,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
   // openDetails drawer
   const openDetail = (group: LYWorkerGroupResponse) => {
     setSelectedGroup(group);
+    setDetailInitialTab('basicInfo');
     setDetailDrawerVisible(true);
   };
 
@@ -367,6 +370,17 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
                 {t('workerGroup.actions.edit')}
               </Dropdown.Item>
               <Dropdown.Item 
+                icon={<Users size={16} strokeWidth={2} />}
+                onClick={(e) => {
+                  e?.stopPropagation?.();
+                  setSelectedGroup(record);
+                  setDetailInitialTab('collaborators');
+                  setDetailDrawerVisible(true);
+                }}
+              >
+                {t('collaborator.actions.manageCollaborators')}
+              </Dropdown.Item>
+              <Dropdown.Item 
                 icon={<IconDeleteStroked />}
                 type="danger" 
                 onClick={(e) => {
@@ -464,7 +478,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
       {/* Details drawer */}
       <WorkerGroupDetailDrawer
         visible={detailDrawerVisible}
-        onClose={() => setDetailDrawerVisible(false)}
+        onClose={() => { setDetailDrawerVisible(false); setDetailInitialTab('basicInfo'); }}
         groupData={selectedGroup}
         onEdit={handleEditFromDrawer}
         onDelete={handleDeleteFromDrawer}
@@ -483,6 +497,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
           const row = document.getElementById(`worker-group-row-${id}`);
           row?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }}
+        initialTab={detailInitialTab}
       />
 
       {/* Create modal */}

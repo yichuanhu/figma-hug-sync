@@ -43,6 +43,7 @@ interface TimeTriggerDetailDrawerProps {
   onToggleStatus: (trigger: LYTimeTriggerResponse, checked: boolean) => void;
   onRefresh?: () => void;
   onScrollToRow?: (id: string) => void;
+  initialTab?: string;
 }
 
 // Mock ExecuteRecord
@@ -68,9 +69,10 @@ const TimeTriggerDetailDrawer = ({
   onDelete,
   onToggleStatus,
   onScrollToRow,
+  initialTab = 'basic',
 }: TimeTriggerDetailDrawerProps) => {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState('basic');
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [executionLogs, setExecutionLogs] = useState<LYTriggerExecutionLogResponse[]>([]);
   const [previewExpanded, setPreviewExpanded] = useState(true);
   const { canManage } = useCollaboratorPermission('TRIGGER', trigger?.trigger_id);
@@ -116,7 +118,7 @@ const TimeTriggerDetailDrawer = ({
 
   // DrawerClose时重置Status
   const handleClose = () => {
-    setActiveTab('basic');
+    setActiveTab(initialTab);
     onClose();
   };
 

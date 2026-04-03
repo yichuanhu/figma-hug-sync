@@ -61,6 +61,7 @@ interface WorkerGroupDetailDrawerProps {
   onPageChange?: (page: number, direction: 'prev' | 'next') => void;
   onNavigateToWorkerDetail?: (workerId: string) => void;
   onScrollToRow?: (id: string) => void;
+  initialTab?: string;
 }
 
 // Mock成员Data
@@ -101,10 +102,15 @@ const fetchGroupMembers = async (params: GetWorkerGroupMembersParams): Promise<L
 
 const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
   visible, onClose, groupData, onEdit, onDelete, onRefresh,
-  dataList = [], onNavigate, pagination, onPageChange, onNavigateToWorkerDetail, onScrollToRow,
+  dataList = [], onNavigate, pagination, onPageChange, onNavigateToWorkerDetail, onScrollToRow, initialTab = 'basicInfo',
 }) => {
   const { t } = useTranslation();
   const { canManage: canManageCollaborators } = useCollaboratorPermission('WORKER_GROUP', groupData?.id);
+  const [activeTab, setActiveTab] = useState(initialTab);
+
+  useEffect(() => {
+    if (visible && groupData) setActiveTab(initialTab);
+  }, [visible, groupData?.id, initialTab]);
 
   const [membersLoading, setMembersLoading] = useState(false);
   const [membersResponse, setMembersResponse] = useState<LYListResponseLYWorkerGroupMemberResponse>({ range: { offset: 0, size: 20, total: 0 }, list: [] });
@@ -238,7 +244,7 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
       storageKey="workerGroupDetailDrawerWidth"
       className="worker-group-detail-drawer"
     >
-      <Tabs type="line" className="worker-group-detail-drawer-tabs">
+      <Tabs type="line" activeKey={activeTab} onChange={setActiveTab} className="worker-group-detail-drawer-tabs">
         <TabPane tab={t('workerGroup.detail.basicInfo')} itemKey="basicInfo">
           <div className="worker-group-detail-drawer-tab-content">
             <div className="worker-group-detail-drawer-info-section">

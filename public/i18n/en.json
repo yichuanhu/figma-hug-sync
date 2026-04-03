@@ -3125,6 +3125,10 @@
       "noSelection": "Please select at least one collaborator",
       "success": "Successfully added {{count}} collaborators",
       "submit": "Add ({{count}})"
+    },
+    "dispatch": {
+      "noPermission": "No Permission",
+      "noPermissionTip": "You do not have USER or higher permission for this execution target"
     }
   }
 }

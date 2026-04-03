@@ -23,6 +23,7 @@ import {
   IconEditStroked,
   IconClockStroked,
 } from '@douyinfe/semi-icons';
+import { Users } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import type {
@@ -152,6 +153,7 @@ const TimeTriggerList = () => {
   // SelectedStatus(Drawer)
   const [selectedTrigger, setSelectedTrigger] = useState<LYTimeTriggerResponse | null>(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
+  const [detailInitialTab, setDetailInitialTab] = useState('basic');
 
   // ModalStatus
   const [createModalVisible, setCreateModalVisible] = useState(false);
@@ -254,6 +256,7 @@ const TimeTriggerList = () => {
   // openDetails drawer
   const handleOpenDrawer = (trigger: LYTimeTriggerResponse) => {
     setSelectedTrigger(trigger);
+    setDetailInitialTab('basic');
     setDrawerVisible(true);
   };
 
@@ -261,6 +264,7 @@ const TimeTriggerList = () => {
   const handleCloseDrawer = () => {
     setDrawerVisible(false);
     setSelectedTrigger(null);
+    setDetailInitialTab('basic');
   };
 
   // Drawer导航
@@ -448,6 +452,17 @@ const TimeTriggerList = () => {
                 {t('timeTrigger.actions.edit')}
               </Dropdown.Item>
               <Dropdown.Item
+                icon={<Users size={16} strokeWidth={2} />}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedTrigger(record);
+                  setDetailInitialTab('collaborators');
+                  setDrawerVisible(true);
+                }}
+              >
+                {t('collaborator.actions.manageCollaborators')}
+              </Dropdown.Item>
+              <Dropdown.Item
                 icon={<IconDeleteStroked />}
                 type="danger"
                 onClick={(e) => {
@@ -601,6 +616,7 @@ const TimeTriggerList = () => {
         onDelete={handleDeleteTrigger}
         onToggleStatus={handleToggleStatus}
         onRefresh={() => loadData(queryParams)}
+        initialTab={detailInitialTab}
       />
     </div>
   );
