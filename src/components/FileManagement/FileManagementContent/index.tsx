@@ -262,6 +262,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
   // 点击行查看详情
   const handleRowClick = (record: LYFileResponse) => {
     setSelectedFile(record);
+    setDetailInitialTab('basic');
     setDetailDrawerVisible(true);
   };
 
