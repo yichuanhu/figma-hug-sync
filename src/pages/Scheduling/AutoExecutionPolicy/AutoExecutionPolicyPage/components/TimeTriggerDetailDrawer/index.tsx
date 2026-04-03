@@ -26,6 +26,8 @@ import { Collapsible } from '@douyinfe/semi-ui';
 import type { LYTimeTriggerResponse, LYTriggerExecutionLogResponse } from '@/api';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import ExpandableText from '@/components/ExpandableText';
+import CollaboratorTab from '@/components/CollaboratorManager/CollaboratorTab';
+import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import './index.less';
 
 const { Text } = Typography;
