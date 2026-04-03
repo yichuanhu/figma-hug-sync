@@ -256,6 +256,7 @@ const TimeTriggerList = () => {
   // openDetails drawer
   const handleOpenDrawer = (trigger: LYTimeTriggerResponse) => {
     setSelectedTrigger(trigger);
+    setDetailInitialTab('basic');
     setDrawerVisible(true);
   };
 
