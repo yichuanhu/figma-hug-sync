@@ -3128,6 +3128,10 @@
     },
     "source": {
       "inheritedFromCount": "{{count}} inherited permissions"
+    },
+    "removeConfirm": {
+      "title": "Confirm Remove Collaborator",
+      "content": "Are you sure you want to remove collaborator \"{{name}}\"?"
     }
   }
 }
