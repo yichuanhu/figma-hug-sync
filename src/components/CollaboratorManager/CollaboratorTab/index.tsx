@@ -23,7 +23,7 @@ import type {
 } from '@/api/index';
 import { COLLABORATOR_ROLE_PRIORITY } from '@/api/index';
 import { useCollaboratorCascade } from '@/hooks/useCollaboratorCascade';
-import { getCollaborators } from '@/components/CollaboratorManager/mockData';
+import { getCollaborators, addCollaborators } from '@/components/CollaboratorManager/mockData';
 import CollaboratorRoleSelect from '../CollaboratorRoleSelect';
 import CollaboratorAddModal from '../CollaboratorAddModal';
 import EmptyState from '@/components/EmptyState';
