@@ -41,14 +41,16 @@ export const useCollaboratorPermission = (
   }, [_assetId]);
 
   // 计算 MAX(所有来源权限)
+  const safeSourceDetails = Array.isArray(sourceDetails) ? sourceDetails : [];
+
   const finalRole = useMemo(() => {
-    if (sourceDetails.length === 0) return null;
-    return sourceDetails.reduce<CollaboratorRole>((max, current) =>
+    if (safeSourceDetails.length === 0) return null;
+    return safeSourceDetails.reduce<CollaboratorRole>((max, current) =>
       COLLABORATOR_ROLE_PRIORITY[current.role] > COLLABORATOR_ROLE_PRIORITY[max]
         ? current.role
         : max
-    , sourceDetails[0].role);
-  }, [sourceDetails]);
+    , safeSourceDetails[0].role);
+  }, [safeSourceDetails]);
 
   const directRole = sourceDetails.find((s) => s.sourceType === 'DIRECT')?.role || null;
   const priority = finalRole ? COLLABORATOR_ROLE_PRIORITY[finalRole] : 0;
