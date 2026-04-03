@@ -3409,7 +3409,7 @@ export interface AssetCollaborator {
   added_time: string;
   is_owner: boolean;
   /** 权限来源: DIRECT=直接分配, INHERITED=继承 */
-  source: 'DIRECT' | 'INHERITED';
+  source: 'DIRECT' | 'INHERITED' | 'MIXED';
   /** 详细来源分类 */
   source_types?: CollaboratorSourceType[];
   inheritance_sources?: CollaboratorInheritanceSource[];
