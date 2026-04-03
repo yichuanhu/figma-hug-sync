@@ -45,8 +45,8 @@ interface DeptNode {
   users?: { id: string; name: string; department: string }[];
 }
 
-const mockOrgTree: DeptNode = {
-  id: 'root',
+const mockLaiyeOrg: DeptNode = {
+  id: 'laiye',
   name: '来也科技',
   children: [
     {
