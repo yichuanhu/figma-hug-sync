@@ -137,6 +137,7 @@ const TemplateManagementPage = () => {
   // SelectedStatus(Drawer)
   const [selectedTemplate, setSelectedTemplate] = useState<LYExecutionTemplateResponse | null>(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
+  const [detailInitialTab, setDetailInitialTab] = useState('basicInfo');
 
   // ModalStatus
   const [createModalVisible, setCreateModalVisible] = useState(false);

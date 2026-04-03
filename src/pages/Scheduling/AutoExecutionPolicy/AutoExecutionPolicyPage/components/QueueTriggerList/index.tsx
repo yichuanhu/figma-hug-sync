@@ -154,6 +154,7 @@ const QueueTriggerList = () => {
   // SelectedStatus(Drawer)
   const [selectedTrigger, setSelectedTrigger] = useState<LYQueueTriggerResponse | null>(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
+  const [detailInitialTab, setDetailInitialTab] = useState('basic');
 
   // ModalStatus
   const [createModalVisible, setCreateModalVisible] = useState(false);

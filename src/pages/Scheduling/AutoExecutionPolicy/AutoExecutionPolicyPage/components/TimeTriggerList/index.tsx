@@ -153,6 +153,7 @@ const TimeTriggerList = () => {
   // SelectedStatus(Drawer)
   const [selectedTrigger, setSelectedTrigger] = useState<LYTimeTriggerResponse | null>(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
+  const [detailInitialTab, setDetailInitialTab] = useState('basic');
 
   // ModalStatus
   const [createModalVisible, setCreateModalVisible] = useState(false);
