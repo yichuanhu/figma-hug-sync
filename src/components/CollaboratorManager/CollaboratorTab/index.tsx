@@ -15,7 +15,7 @@ import {
   IconFlowChartStroked,
   IconPlusStroked,
 } from '@douyinfe/semi-icons';
-import { User } from 'lucide-react';
+import { User, UserPlus } from 'lucide-react';
 import type {
   AssetCollaborator,
   CollaboratorAssetType,
@@ -291,7 +291,7 @@ const CollaboratorTab = ({
         />
         {canManage && (
           <Button
-            icon={<IconPlusStroked />}
+            icon={<UserPlus size={14} strokeWidth={2} />}
             theme="solid"
             type="primary"
             onClick={() => setAddModalVisible(true)}
