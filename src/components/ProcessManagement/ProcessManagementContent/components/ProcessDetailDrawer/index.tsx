@@ -279,13 +279,15 @@ const ProcessDetailDrawer = ({
   onPageChange,
   context = 'development',
   onScrollToRow,
+  initialTab = 'detail',
 }: ProcessDetailDrawerProps) => {
   const isSchedulingContext = context === 'scheduling';
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState('detail');
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [selectedVersionId, setSelectedVersionId] = useState<string | null>(null);
   const [uploadVersionModalVisible, setUploadVersionModalVisible] = useState(false);
   const [versionData, setVersionData] = useState<VersionDetailData[]>(initialMockVersionData);
+  const { canManage } = useCollaboratorPermission('PROCESS', processData?.id);
 
   // 版本数据按版本号降序排列
   const sortedVersionData = useMemo(() => {
