@@ -73,6 +73,7 @@ const TimeTriggerDetailDrawer = ({
   const [activeTab, setActiveTab] = useState('basic');
   const [executionLogs, setExecutionLogs] = useState<LYTriggerExecutionLogResponse[]>([]);
   const [previewExpanded, setPreviewExpanded] = useState(true);
+  const { canManage } = useCollaboratorPermission('TRIGGER', trigger?.trigger_id);
 
   // PreviewTriggerTime
   const previewTimes = useMemo(() => {
