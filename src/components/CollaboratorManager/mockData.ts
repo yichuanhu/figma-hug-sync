@@ -366,14 +366,14 @@ const initMockData = (assetType: CollaboratorAssetType, assetId: string): AssetC
       });
     }
 
-    // 场景12: 继承的部门协作者
+    // 场景12: 继承的部门协作者（与org树匹配: APA Product Division）
     base.push({
       id: `${assetId}-collab-012`,
       asset_type: assetType,
       asset_id: assetId,
       collaborator_type: 'DEPARTMENT',
-      collaborator_id: 'dept-002',
-      collaborator_name: MOCK_DEPARTMENTS['dept-002'].name,
+      collaborator_id: 'dept-product',
+      collaborator_name: MOCK_DEPARTMENTS['dept-product'].name,
       role: 'MAINTAINER',
       added_by: 'system',
       added_by_name: '系统',
