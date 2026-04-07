@@ -51,6 +51,7 @@ const CollaboratorTab = ({
   const [searchValue, setSearchValue] = useState('');
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
+  const [quickAddingId, setQuickAddingId] = useState<string | null>(null);
 
   const { cascadeRemove, cascadeUpdateRole, canCascade, cascadeCount } =
     useCollaboratorCascade(assetType, assetId);
