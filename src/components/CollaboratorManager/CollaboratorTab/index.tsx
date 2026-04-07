@@ -219,27 +219,34 @@ const CollaboratorTab = ({
             </Text>
           </div>
         )}
-        {inheritedItems.map((src, idx) => (
-          <div key={idx} className="collaborator-tab-source-detail-item">
-            <Text size="small" type="tertiary">
-              {src.source_type === 'INHERITED_HIERARCHY'
-                ? t('collaborator.source.inheritedFromGroup', { name: src.asset_name })
-                : t('collaborator.source.inheritedFromProcess', { name: src.asset_name })}
-              {' → '}
-              {t(`collaborator.roles.${src.role}`)}
-            </Text>
-          </div>
-        ))}
+        {inheritedItems.map((src, idx) => {
+          const sourceName = src.source_type === 'INHERITED_HIERARCHY'
+            ? t('collaborator.source.inheritedFromGroup', { name: src.asset_name })
+            : t('collaborator.source.inheritedFromProcess', { name: src.asset_name });
+          return (
+            <div key={idx} className="collaborator-tab-source-detail-item">
+              <Tooltip content={sourceName} position="top" style={{ maxWidth: 360 }}>
+                <Text size="small" type="tertiary" ellipsis style={{ maxWidth: 280, display: 'inline-block', verticalAlign: 'middle' }}>
+                  {sourceName}
+                </Text>
+              </Tooltip>
+              <Text size="small" type="tertiary">
+                {' → '}
+                {t(`collaborator.roles.${src.role}`)}
+              </Text>
+            </div>
+          );
+        })}
         {isExpanded && remainCount > 0 && (
           <div className="collaborator-tab-source-detail-item">
-            <Text size="small" type="tertiary" style={{ fontStyle: 'italic' }}>
+            <Text size="small" type="tertiary">
               {t('collaborator.source.remainingCount', { count: remainCount })}
             </Text>
           </div>
         )}
         {isExpanded && effectiveText && (
           <div className="collaborator-tab-source-detail-item">
-            <Text size="small" type="tertiary" style={{ fontStyle: 'italic' }}>
+            <Text size="small" type="tertiary">
               {effectiveText}
             </Text>
           </div>
