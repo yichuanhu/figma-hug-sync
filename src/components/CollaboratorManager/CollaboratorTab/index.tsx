@@ -154,23 +154,42 @@ const CollaboratorTab = ({
     });
   }, []);
 
-  // 渲染权限来源（仅继承时展示）
+  // 渲染权限来源（继承或 MIXED 时展示）
   const renderSource = (record: AssetCollaborator) => {
     const sources = record.inheritance_sources || [];
-    if (sources.length === 0) return null;
+    const isMixed = record.source === 'MIXED';
+
+    // MIXED 时即使 sources 为空也要展示直接分配行
+    if (sources.length === 0 && !isMixed) return null;
+
     const isExpanded = expandedRows.has(record.id);
 
-    // 生成 MAX 计算说明
-    const maxCalcText = sources.length > 1
-      ? (() => {
-          const roleNames = sources.map((s) => t(`collaborator.roles.${s.role}`));
-          return `MAX(${roleNames.join(', ')}) = ${t(`collaborator.roles.${record.final_role}`)}`;
-        })()
+    // 构建展示项：MIXED 时在顶部插入直接分配行
+    const allRoleNames: string[] = [];
+    if (isMixed && record.role) {
+      allRoleNames.push(t(`collaborator.roles.${record.role}`));
+    }
+    sources.forEach((s) => allRoleNames.push(t(`collaborator.roles.${s.role}`)));
+
+    // 生成 MAX 计算说明（多于1个来源时展示）
+    const maxCalcText = allRoleNames.length > 1
+      ? `MAX(${allRoleNames.join(', ')}) = ${t(`collaborator.roles.${record.final_role}`)}`
       : null;
+
+    const inheritedItems = isExpanded ? sources : sources.slice(0, 1);
 
     return (
       <div className="collaborator-tab-source-detail">
-        {(isExpanded ? sources : sources.slice(0, 1)).map((src, idx) => (
+        {isMixed && record.role && (
+          <div className="collaborator-tab-source-detail-item">
+            <Text size="small" type="tertiary">
+              {t('collaborator.source.directRole')}
+              {' → '}
+              {t(`collaborator.roles.${record.role}`)}
+            </Text>
+          </div>
+        )}
+        {inheritedItems.map((src, idx) => (
           <div key={idx} className="collaborator-tab-source-detail-item">
             <Text size="small" type="tertiary">
               {src.source_type === 'INHERITED_HIERARCHY'
