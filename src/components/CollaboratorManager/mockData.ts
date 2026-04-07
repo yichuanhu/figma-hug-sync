@@ -224,8 +224,8 @@ const initMockData = (assetType: CollaboratorAssetType, assetId: string): AssetC
       ];
     } else {
       inheritedSources = [
-        { parent_type: 'PROCESS', parent_id: 'proc-001', parent_name: 'Financial Reimbursement Process', child_type: assetType, child_id: assetId, child_name: '' },
-        { parent_type: 'PROCESS', parent_id: 'proc-002', parent_name: 'Procurement Request Process', child_type: assetType, child_id: assetId, child_name: '' },
+        { parent_type: 'PROCESS', parent_id: 'proc-001', parent_name: 'Financial Reimbursement Automation Process - Monthly Expense Report Review and Approval Workflow', child_type: assetType, child_id: assetId, child_name: '' },
+        { parent_type: 'PROCESS', parent_id: 'proc-002', parent_name: 'Procurement Request and Vendor Onboarding End-to-End Automation Process with Multi-Level Approval', child_type: assetType, child_id: assetId, child_name: '' },
       ];
     }
   }
