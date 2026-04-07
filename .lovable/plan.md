@@ -1,40 +1,76 @@
 
 
-# 为继承协作者添加「快速添加」交互
+# MIXED 协作者展示优化 — 直接分配 + 继承权限双重展示及低权限提醒
 
-## 需求
+## 问题
 
-当前继承权限的协作者，Tooltip 提示"请将此用户直接添加为当前资产的协作者"，但没有实际操作入口。需要增加一个快速操作，让用户可以一键将继承协作者添加为当前资产的直接协作者。
+1. MIXED 协作者（同时拥有直接分配和继承权限）在列表中只显示继承来源，缺少直接分配角色的展示
+2. 当用户将直接分配角色设为低于继承角色时（如直接分配观察者，但继承了管理者），final_role 仍为继承角色（MAX 取高），用户修改角色后看不到任何效果，容易困惑
 
-## 实现方案
+## 交互设计
 
-### 交互设计
+### 1. MIXED 协作者来源展示
 
-在继承协作者的角色列，Tooltip 提示文案末尾增加一个可点击的「添加为协作者」链接按钮。点击后：
-1. 以继承的 final_role 作为默认角色，直接将该用户添加为当前资产的直接协作者
-2. 添加成功后刷新列表，该协作者变为 MIXED 类型（同时拥有直接权限和继承权限），角色下拉变为可编辑
-3. 显示成功提示
+在继承来源列表顶部增加一行"直接分配 → 角色名"，与继承来源视觉一致。MAX 计算说明同时包含直接分配角色。
 
-### 文件变更
+```text
+示例展示：
+  直接分配 → 观察者
+  继承自流程「订单处理」 → 管理者
+  MAX(观察者, 管理者) = 管理者
+```
+
+### 2. 低权限提醒交互
+
+当 MIXED 协作者的直接分配角色（`record.role`）低于继承角色（即 `final_role` 由继承决定而非直接分配决定）时：
+
+- 角色下拉框**可正常操作**（修改直接分配角色）
+- 角色下拉框下方显示一行**橙色警告提示**："当前直接分配角色低于继承角色，实际生效角色为 {final_role}"
+- 用户修改角色后，如果新选的角色仍低于继承角色，提示继续保留；如果新角色高于或等于继承角色，提示消失
+
+这样用户可以清晰看到：修改生效了（直接分配角色确实变了），但最终权限没变（因为 MAX 取的是继承的高权限）。
+
+## 文件变更
 
 | 文件 | 变更 |
 |------|------|
-| `src/components/CollaboratorManager/CollaboratorTab/index.tsx` | 增加 `handleQuickAdd` 方法；修改继承协作者角色列渲染，将 Tooltip 替换为包含操作链接的交互 |
-| `src/components/CollaboratorManager/CollaboratorTab/index.less` | 添加快速添加链接样式 |
-| `src/components/CollaboratorManager/mockData.ts` | `addCollaborators` 方法支持将已有继承协作者升级为 MIXED 类型 |
-| `public/i18n/zh-CN.json` | 添加词条：`collaborator.actions.quickAdd`（"添加为协作者"）、`collaborator.quickAddSuccess`（"已添加为当前资产的直接协作者"） |
+| `src/components/CollaboratorManager/CollaboratorTab/index.tsx` | 1. `renderSource` 增加 MIXED 时的直接分配行展示及 MAX 计算包含直接角色；2. 角色列对 MIXED 且直接角色 < 继承角色时，显示橙色警告文案 |
+| `src/components/CollaboratorManager/CollaboratorTab/index.less` | 添加警告提示样式 `.collaborator-tab-role-warning` |
+| `public/i18n/zh-CN.json` | 新增词条：`collaborator.source.directRole`（"直接分配"）、`collaborator.roleLowerThanInherited`（"当前直接分配角色低于继承角色，实际生效角色为{{role}}"） |
 | `public/i18n/en.json` | 对应英文词条 |
 
-### 技术细节
+## 技术细节
 
-**CollaboratorTab 角色列渲染改造**：对纯继承协作者（`isInherited && !record.is_owner`），在角色 Select 下方渲染一个文字链接「添加为协作者」，点击后调用 `handleQuickAdd`。
+### renderSource 改造
 
-**handleQuickAdd 逻辑**：
 ```text
-1. 调用 mockData 的 addCollaborators，传入 collaborator_id/name/type 和 final_role
-2. 刷新列表数据
-3. Toast 提示成功
+renderSource(record):
+  sources = record.inheritance_sources || []
+  isMixed = record.source === 'MIXED'
+
+  // MIXED 时即使 sources 为空也要展示直接分配行
+  if (sources.length === 0 && !isMixed) return null
+
+  allItems = []
+  if (isMixed):
+    allItems.push({ label: "直接分配", role: record.role })  // record.role = 直接分配角色
+  allItems.push(...sources)  // 继承来源
+
+  // MAX 计算文案：将所有角色（含直接分配）都纳入
+  if (allItems.length > 1):
+    maxText = MAX(所有角色名) = final_role
 ```
 
-**mockData 升级处理**：在 `addCollaborators` 中检测如果该用户已存在且为 INHERITED，则将 source 改为 MIXED，增加直接权限记录，重新计算 final_role。
+### 角色列低权限警告逻辑
+
+```text
+// 在角色列 render 中，MIXED 协作者额外判断：
+if (record.source === 'MIXED'):
+  inheritedMaxRole = MAX(inheritance_sources 中所有 role)
+  if (PRIORITY[record.role] < PRIORITY[inheritedMaxRole]):
+    // 在 Select 下方渲染橙色警告文字
+    显示: "当前直接分配角色低于继承角色，实际生效角色为 {final_role}"
+```
+
+警告使用 `var(--semi-color-warning)` 颜色，字号 12px，限制最大宽度 200px 以避免撑开列宽。
 
