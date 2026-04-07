@@ -336,20 +336,6 @@ const CollaboratorTab = ({
           );
         }
 
-        // MIXED 且直接角色低于继承角色时显示警告
-        if (showRoleWarning) {
-          return (
-            <div>
-              {selectEl}
-              <div className="collaborator-tab-role-warning">
-                {t('collaborator.roleLowerThanInherited', {
-                  role: t(`collaborator.roles.${record.final_role}`),
-                })}
-              </div>
-            </div>
-          );
-        }
-
         return selectEl;
       },
     },
