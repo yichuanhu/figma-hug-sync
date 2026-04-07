@@ -2498,7 +2498,9 @@
       "direct": "直接分配",
       "department": "部门权限",
       "inheritedHierarchy": "层级继承",
-      "inheritedDependency": "依赖继承"
+      "inheritedDependency": "依赖继承",
+      "effectiveRole": "最终生效角色: {{role}}(取所有来源中的最高权限)",
+      "remainingCount": "还有 {{count}} 条继承来源"
     },
     "removeConfirm": {
       "title": "移除协作者确认",
