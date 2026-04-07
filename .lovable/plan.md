@@ -1,55 +1,52 @@
 
 
-# 继承来源名称：智能 Tooltip + 角色紧跟布局优化
+# 优化「添加为协作者」交互 — 点击后弹出角色选择下拉
 
 ## 问题
 
-1. 当列宽足够、来源名称已完整展示时，hover 仍弹出 Tooltip，体验冗余
-2. 角色字段（→ 管理者）被 `flex-shrink: 0` + `flex: none` 强制右对齐，名称短时中间留白
+当前点击"添加为协作者"按钮后，直接以继承的 `final_role` 添加，用户无法选择角色。
 
 ## 方案
 
-### 1. 智能 Tooltip（仅截断时显示）
+将"添加为协作者"按钮改为两步交互：点击按钮后，按钮区域替换为角色选择下拉菜单（复用 `CollaboratorRoleSelect`），用户选择角色后执行添加。
 
-将手动 `<Tooltip>` 包裹改为 Semi UI Typography 自带的 `ellipsis={{ showTooltip: true }}`，仅在文字被截断时才自动弹出 Tooltip，未截断时不弹出。
+### 交互流程
 
-### 2. 角色字段紧跟名称
+```text
+初始状态（Popover 内）:
+  继承权限不可修改...
+  提示: 若直接分配的角色低于继承角色...
+  ┌──────────────────┐
+  │   添加为协作者    │
+  └──────────────────┘
 
-移除 CSS 中 `.semi-typography:last-child` 的 `flex: none`，改为自然流式排列。角色文字直接跟在来源名称后面，不再撑满右侧。
+点击按钮后（Popover 内原地替换）:
+  继承权限不可修改...
+  提示: 若直接分配的角色低于继承角色...
+  ┌─ 请选择角色 ─────┐
+  │ 管理者            │  ← 角色下拉自动展开
+  │ 编辑者            │
+  │ 使用者            │
+  │ 观察者            │
+  └──────────────────┘
+```
 
-## 文件变更
+### 文件变更
 
 | 文件 | 变更 |
 |------|------|
-| `CollaboratorTab/index.tsx` | 移除外层 `<Tooltip>` 包裹，改用 `<Text ellipsis={{ showTooltip: true }}>` 自带智能 Tooltip；角色 Text 不变 |
-| `CollaboratorTab/index.less` | `.&-source-detail-item .semi-typography:last-child` 移除 `flex: none`，保留 `flex-shrink: 0` |
+| `CollaboratorTab/index.tsx` | Popover 内增加状态管理，点击按钮后切换为 `CollaboratorRoleSelect`；选择角色后调用 `handleQuickAdd` 并传入所选角色 |
 
 ### 技术细节
 
-**TSX 改造（第227-237行）**：
-```text
-// 改前：手动 Tooltip 包裹
-<Tooltip content={sourceName}><Text ellipsis={{ showTooltip: false }}>...</Text></Tooltip>
-<Text>→ 角色</Text>
+1. **新增状态** `quickAddingId`：记录当前正在选择角色的协作者 ID，初始为 `null`
 
-// 改后：Typography 自带 ellipsis tooltip
-<Text ellipsis={{ showTooltip: true }}>来源名称</Text>
-<Text>→ 角色</Text>
-```
+2. **Popover 内容改造**（第325-344行）：
+   - 当 `quickAddingId !== record.id` 时，显示原按钮
+   - 当 `quickAddingId === record.id` 时，将按钮替换为 `CollaboratorRoleSelect`（不传 `value`，使用 `defaultOpen` 自动展开下拉）
+   - 选择角色后调用 `handleQuickAdd(record, selectedRole)` 并重置 `quickAddingId`
 
-**LESS 改造（第92-95行）**：
-```less
-// 改前
-&:last-child {
-  flex-shrink: 0;
-  flex: none;
-}
+3. **修改 `handleQuickAdd`**：增加 `role` 参数，不再默认使用 `record.final_role`，改为使用用户选择的角色
 
-// 改后
-&:last-child {
-  flex-shrink: 0;
-}
-```
-
-这样角色文字不会撑满剩余空间，而是紧跟在来源名称后方。
+4. **Popover 关闭时**：重置 `quickAddingId = null`，确保下次打开回到初始状态
 
