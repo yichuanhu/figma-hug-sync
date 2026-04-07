@@ -286,6 +286,7 @@ const initMockData = (assetType: CollaboratorAssetType, assetId: string): AssetC
     });
 
     // 场景9: 混合来源用户（直接 + 继承, 与org树匹配: Fei Liang）
+    // 直接分配 USER，继承 MAINTAINER → final_role = MAINTAINER（直接角色低于继承角色，触发警告）
     base.push({
       id: `${assetId}-collab-009`,
       asset_type: assetType,
@@ -299,7 +300,7 @@ const initMockData = (assetType: CollaboratorAssetType, assetId: string): AssetC
       added_by_name: MOCK_USERS['user-001'].name,
       added_time: oneDayAgo,
       is_owner: false,
-      source: 'DIRECT',
+      source: 'MIXED',
       source_types: ['DIRECT', sourceType],
       inheritance_sources: [{
         asset_type: inheritedSources[0].parent_type,
@@ -340,6 +341,7 @@ const initMockData = (assetType: CollaboratorAssetType, assetId: string): AssetC
       });
 
       // 场景11: 三源混合（直接 + 多源继承, 与org树匹配: Lihong Fan）
+      // 直接分配 OBSERVER，继承 USER + MAINTAINER → final_role = MAINTAINER（直接角色低于继承角色，触发警告）
       base.push({
         id: `${assetId}-collab-011`,
         asset_type: assetType,
@@ -353,7 +355,7 @@ const initMockData = (assetType: CollaboratorAssetType, assetId: string): AssetC
         added_by_name: MOCK_USERS['user-n-001'].name,
         added_time: now,
         is_owner: false,
-        source: 'DIRECT',
+        source: 'MIXED',
         source_types: ['DIRECT', sourceType],
         inheritance_sources: inheritedSources.map((dep, idx) => ({
           asset_type: dep.parent_type,
