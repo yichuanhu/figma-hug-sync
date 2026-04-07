@@ -146,17 +146,18 @@ const CollaboratorTab = ({
   );
 
   const handleQuickAdd = useCallback(
-    (record: AssetCollaborator) => {
+    (record: AssetCollaborator, role: CollaboratorRole) => {
       addCollaborators(assetType, assetId, [
         {
           collaborator_type: record.collaborator_type,
           collaborator_id: record.collaborator_id,
           collaborator_name: record.collaborator_name,
           department_name: record.department_name,
-          role: record.final_role,
+          role,
         },
       ]);
       setCollaborators(getCollaborators(assetType, assetId));
+      setQuickAddingId(null);
       Toast.success(t('collaborator.quickAddSuccess'));
     },
     [assetType, assetId, t]
