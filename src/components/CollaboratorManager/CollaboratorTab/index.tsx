@@ -302,17 +302,6 @@ const CollaboratorTab = ({
           />
         );
 
-        // MIXED 协作者：检查直接分配角色是否低于继承角色
-        const isMixed = record.source === 'MIXED';
-        const inheritedSources = record.inheritance_sources || [];
-        let showRoleWarning = false;
-        if (isMixed && record.role && inheritedSources.length > 0) {
-          const inheritedMaxPriority = Math.max(
-            ...inheritedSources.map((s) => COLLABORATOR_ROLE_PRIORITY[s.role] || 0)
-          );
-          showRoleWarning = COLLABORATOR_ROLE_PRIORITY[record.role] < inheritedMaxPriority;
-        }
-
         if (isInherited && !record.is_owner) {
           const popoverContent = (
             <div className="collaborator-tab-inherited-popover">
