@@ -1,65 +1,68 @@
 
 
-# 优化继承来源展示 — 按角色优先级排序 + 限制前3条 + MAX说明优化
+# 协作者名称列宽度自适应抽屉宽度
 
-## 变更内容
+## 问题
 
-### 1. 继承来源按角色优先级降序排列
+当前名称列中的协作者名称、部门字段、继承来源名称均使用固定 `maxWidth`（200px、360px、280px），导致抽屉宽度变化时文字截断不跟随调整，浪费空间或展示不足。
 
-在 `renderSource` 中，对 `inheritance_sources` 按 `COLLABORATOR_ROLE_PRIORITY` 从高到低排序，确保最高权限来源展示在最前面。
+## 方案
 
-### 2. 展示上限为前3条
+将所有硬编码的 `maxWidth` 改为 CSS 百分比/flex 布局自适应，让文字截断宽度跟随名称列实际宽度变化。
 
-- 折叠时：显示排序后的第1条（最高权限来源）
-- 展开时：显示排序后的前3条
-- 超过3条时，底部显示「还有 N 条继承来源」
-
-### 3. MAX 计算文案优化
-
-将 `MAX(使用者, 管理者) = 管理者` 替换为自然语言：
-
-```text
-中文：最终生效角色：管理者（取所有来源中的最高权限）
-英文：Effective role: Manager (highest permission across all sources)
-```
-
-## 文件变更
+### 文件变更
 
 | 文件 | 变更 |
 |------|------|
-| `src/components/CollaboratorManager/CollaboratorTab/index.tsx` | `renderSource` 中：1. sources 按 PRIORITY 降序排序；2. 展示上限改为3条；3. maxCalcText 改为自然语言 |
-| `public/i18n/zh-CN.json` | 新增 `collaborator.source.effectiveRole`："最终生效角色：{{role}}（取所有来源中的最高权限）"；修改 `collaborator.source.inheritedFromCount` 为 "还有 {{count}} 条继承来源" |
-| `public/i18n/en.json` | 对应英文词条 |
+| `CollaboratorTab/index.tsx` | 移除名称、部门、继承来源的固定 `maxWidth` 内联样式，改用 CSS class 控制 |
+| `CollaboratorTab/index.less` | 新增/修改样式，使用 `max-width: 100%` + `overflow: hidden` 实现自适应截断 |
 
-## 技术细节
+### 技术细节
 
-### renderSource 改造
+**1. 协作者名称（第284行）**
 
-```text
-renderSource(record):
-  // 1. 按角色优先级降序排序
-  sortedSources = [...sources].sort(
-    (a, b) => PRIORITY[b.role] - PRIORITY[a.role]
-  )
-
-  // 2. 最多展示前3条
-  topSources = sortedSources.slice(0, 3)
-  remainCount = Math.max(0, sortedSources.length - 3)
-
-  // 3. 折叠/展开逻辑
-  inheritedItems = isExpanded ? topSources : topSources.slice(0, 1)
-
-  // 4. 自然语言替代 MAX 公式（多于1个来源时展示）
-  effectiveText = t('collaborator.source.effectiveRole', {
-    role: t(`collaborator.roles.${record.final_role}`)
-  })
-
-  // 5. 展开时底部：
-  //    - 若 remainCount > 0: 显示「还有 N 条继承来源」
-  //    - 显示 effectiveText
+移除 `style={{ maxWidth: 200 }}`，改为 CSS：
+```less
+&-label {
+  // 已有 flex
+  min-width: 0; // 允许 flex 子元素收缩
+  
+  .semi-typography {
+    min-width: 0;
+    flex: 1;
+  }
+}
 ```
 
-### 展开/收起触发条件
+**2. 部门字段（第294行）**
 
-当 `topSources.length > 1` 时（即排序后前3条中有多条）才显示展开/收起按钮，与现有交互一致。
+移除 `style={{ maxWidth: 360 }}`，在 `&-info` 下依赖已有的 `min-width: 0; flex: 1` 使 Text 自然撑满可用宽度：
+```less
+&-info {
+  // 已有 min-width: 0; flex: 1
+  .semi-typography {
+    max-width: 100%;
+  }
+}
+```
+
+**3. 继承来源名称（第229行）**
+
+移除 `style={{ maxWidth: 280, display: 'inline-block', verticalAlign: 'middle' }}`，改用 CSS class：
+```less
+&-source-detail-item {
+  min-width: 0;
+  
+  .semi-typography {
+    flex: 1;
+    min-width: 0;
+  }
+}
+```
+
+来源 item 改为 `flex` 布局（已有），来源名称 Text 用 `flex: 1; min-width: 0` 自动填充剩余空间，角色名 Text 用 `flex-shrink: 0` 保持不被压缩。
+
+**4. Tooltip 的 maxWidth**
+
+Tooltip 的 `style={{ maxWidth: 360 }}` 保留，这是气泡本身的宽度限制，与列宽无关。
 
