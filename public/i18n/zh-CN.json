@@ -2514,6 +2514,7 @@
       "addHint": "将同时为 {{count}} 个依赖资产添加继承权限",
       "removeHint": "将同时从 {{count}} 个依赖资产移除继承权限"
     },
-    "quickAddSuccess": "已添加为当前资产的直接协作者"
+    "quickAddSuccess": "已添加为当前资产的直接协作者",
+    "roleLowerThanInherited": "当前直接分配角色低于继承角色，实际生效角色为{{role}}"
   }
 }
