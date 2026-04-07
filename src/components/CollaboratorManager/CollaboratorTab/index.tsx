@@ -304,9 +304,12 @@ const CollaboratorTab = ({
 
         if (isInherited && !record.is_owner) {
           const popoverContent = (
-            <div className="collaborator-tab-inherited-popover">
+              <div className="collaborator-tab-inherited-popover">
               <div className="collaborator-tab-inherited-popover-text">
                 {t('collaborator.inheritedRoleHint')}
+              </div>
+              <div className="collaborator-tab-inherited-popover-hint">
+                {t('collaborator.inheritedRoleMaxHint')}
               </div>
               {canManage && (
                 <Button
