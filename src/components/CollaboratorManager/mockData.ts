@@ -312,9 +312,14 @@ const initMockData = (assetType: CollaboratorAssetType, assetId: string): AssetC
       final_role: calculateFinalRole(['USER', 'MAINTAINER']), // = MAINTAINER
     });
 
-    // 场景10: 多源继承用户（从多个父资产继承不同角色，MAX合并）
+    // 场景10: 多源继承用户（从4个以上父资产继承不同角色，MAX合并，测试超出3条展示）
+    const extraSources = [
+      ...inheritedSources,
+      { parent_type: 'PROCESS' as const, parent_id: 'proc-003', parent_name: 'Employee Onboarding and Training Assignment Automated Workflow - Cross Department Coordination', child_type: assetType, child_id: assetId, child_name: '' },
+      { parent_type: 'PROCESS' as const, parent_id: 'proc-004', parent_name: 'Monthly Financial Report Generation and Distribution Automation with Data Validation Pipeline', child_type: assetType, child_id: assetId, child_name: '' },
+    ];
+    const multiRoles: CollaboratorRole[] = ['USER', 'MANAGER', 'OBSERVER', 'MAINTAINER'];
     if (inheritedSources.length > 1) {
-      const multiRoles: CollaboratorRole[] = ['USER', 'MANAGER'];
       base.push({
         id: `${assetId}-collab-010`,
         asset_type: assetType,
@@ -330,7 +335,7 @@ const initMockData = (assetType: CollaboratorAssetType, assetId: string): AssetC
         is_owner: false,
         source: 'INHERITED',
         source_types: [sourceType],
-        inheritance_sources: inheritedSources.map((dep, idx) => ({
+        inheritance_sources: extraSources.map((dep, idx) => ({
           asset_type: dep.parent_type,
           asset_id: dep.parent_id,
           asset_name: dep.parent_name,
@@ -340,8 +345,7 @@ const initMockData = (assetType: CollaboratorAssetType, assetId: string): AssetC
         final_role: calculateFinalRole(multiRoles), // = MANAGER
       });
 
-      // 场景11: 三源混合（直接 + 多源继承, 与org树匹配: Lihong Fan）
-      // 直接分配 OBSERVER，继承 USER + MAINTAINER → final_role = MAINTAINER（直接角色低于继承角色，触发警告）
+      // 场景11: 多源混合（直接 + 4源继承, 与org树匹配: Lihong Fan）
       base.push({
         id: `${assetId}-collab-011`,
         asset_type: assetType,
@@ -357,14 +361,14 @@ const initMockData = (assetType: CollaboratorAssetType, assetId: string): AssetC
         is_owner: false,
         source: 'MIXED',
         source_types: ['DIRECT', sourceType],
-        inheritance_sources: inheritedSources.map((dep, idx) => ({
+        inheritance_sources: extraSources.map((dep, idx) => ({
           asset_type: dep.parent_type,
           asset_id: dep.parent_id,
           asset_name: dep.parent_name,
-          role: (['USER', 'MAINTAINER'] as CollaboratorRole[])[idx % 2],
+          role: (['USER', 'MAINTAINER', 'OBSERVER', 'MANAGER'] as CollaboratorRole[])[idx % 4],
           source_type: sourceType,
         })),
-        final_role: calculateFinalRole(['OBSERVER', 'USER', 'MAINTAINER']), // = MAINTAINER
+        final_role: calculateFinalRole(['OBSERVER', 'USER', 'MAINTAINER', 'OBSERVER', 'MANAGER']), // = MANAGER
       });
     }
 
