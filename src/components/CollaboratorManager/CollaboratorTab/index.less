@@ -41,12 +41,22 @@
       display: flex;
       flex-direction: column;
       gap: 2px;
+
+      > .semi-typography {
+        max-width: 100%;
+      }
     }
 
     &-label {
       display: flex;
       align-items: center;
       gap: 4px;
+      min-width: 0;
+
+      .semi-typography {
+        min-width: 0;
+        flex: 1;
+      }
     }
 
     &-source {
@@ -73,6 +83,17 @@
       font-size: 12px;
       color: var(--semi-color-text-2);
       line-height: 20px;
+      min-width: 0;
+
+      .semi-typography {
+        flex: 1;
+        min-width: 0;
+
+        &:last-child {
+          flex-shrink: 0;
+          flex: none;
+        }
+      }
     }
 
     &-toggle {

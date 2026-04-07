@@ -226,7 +226,7 @@ const CollaboratorTab = ({
           return (
             <div key={idx} className="collaborator-tab-source-detail-item">
               <Tooltip content={sourceName} position="top" style={{ maxWidth: 360 }}>
-                <Text size="small" type="tertiary" ellipsis style={{ maxWidth: 280, display: 'inline-block', verticalAlign: 'middle' }}>
+                <Text size="small" type="tertiary" ellipsis={{ showTooltip: false }}>
                   {sourceName}
                 </Text>
               </Tooltip>
@@ -281,7 +281,7 @@ const CollaboratorTab = ({
           </span>
           <div className="collaborator-tab-name-cell-info">
             <div className="collaborator-tab-name-cell-label">
-              <Text ellipsis={{ showTooltip: true }} style={{ maxWidth: 200 }}>
+              <Text ellipsis={{ showTooltip: true }}>
                 {record.collaborator_name}
               </Text>
               {record.is_owner && (
@@ -291,7 +291,7 @@ const CollaboratorTab = ({
               )}
             </div>
             {record.department_name && record.collaborator_type === 'USER' && (
-              <Text size="small" type="tertiary" ellipsis={{ showTooltip: true }} style={{ maxWidth: 360 }}>
+              <Text size="small" type="tertiary" ellipsis={{ showTooltip: true }}>
                 {record.department_name}
               </Text>
             )}
