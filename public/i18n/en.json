@@ -3134,7 +3134,9 @@
       "direct": "Direct",
       "department": "Department",
       "inheritedHierarchy": "Hierarchy inherited",
-      "inheritedDependency": "Dependency inherited"
+      "inheritedDependency": "Dependency inherited",
+      "effectiveRole": "Effective role: {{role}} (highest permission across all sources)",
+      "remainingCount": "{{count}} more inherited sources"
     },
     "removeConfirm": {
       "title": "Confirm Remove Collaborator",

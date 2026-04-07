@@ -186,19 +186,27 @@ const CollaboratorTab = ({
 
     const isExpanded = expandedRows.has(record.id);
 
-    // 构建展示项：MIXED 时在顶部插入直接分配行
-    const allRoleNames: string[] = [];
-    if (isMixed && record.role) {
-      allRoleNames.push(t(`collaborator.roles.${record.role}`));
-    }
-    sources.forEach((s) => allRoleNames.push(t(`collaborator.roles.${s.role}`)));
+    // 1. 按角色优先级降序排序
+    const sortedSources = [...sources].sort(
+      (a, b) => (COLLABORATOR_ROLE_PRIORITY[b.role] || 0) - (COLLABORATOR_ROLE_PRIORITY[a.role] || 0)
+    );
 
-    // 生成 MAX 计算说明（多于1个来源时展示）
-    const maxCalcText = allRoleNames.length > 1
-      ? `MAX(${allRoleNames.join(', ')}) = ${t(`collaborator.roles.${record.final_role}`)}`
+    // 2. 最多展示前3条
+    const topSources = sortedSources.slice(0, 3);
+    const remainCount = Math.max(0, sortedSources.length - 3);
+
+    // 构建所有角色名（含直接分配）用于判断是否需要生效角色说明
+    const allRoleCount = (isMixed && record.role ? 1 : 0) + sortedSources.length;
+
+    // 3. 折叠/展开逻辑
+    const inheritedItems = isExpanded ? topSources : topSources.slice(0, 1);
+
+    // 4. 自然语言替代 MAX 公式
+    const effectiveText = allRoleCount > 1
+      ? t('collaborator.source.effectiveRole', {
+          role: t(`collaborator.roles.${record.final_role}`),
+        })
       : null;
-
-    const inheritedItems = isExpanded ? sources : sources.slice(0, 1);
 
     return (
       <div className="collaborator-tab-source-detail">
@@ -222,21 +230,28 @@ const CollaboratorTab = ({
             </Text>
           </div>
         ))}
-        {isExpanded && maxCalcText && (
+        {isExpanded && remainCount > 0 && (
           <div className="collaborator-tab-source-detail-item">
             <Text size="small" type="tertiary" style={{ fontStyle: 'italic' }}>
-              {maxCalcText}
+              {t('collaborator.source.remainingCount', { count: remainCount })}
             </Text>
           </div>
         )}
-        {sources.length > 1 && (
+        {isExpanded && effectiveText && (
+          <div className="collaborator-tab-source-detail-item">
+            <Text size="small" type="tertiary" style={{ fontStyle: 'italic' }}>
+              {effectiveText}
+            </Text>
+          </div>
+        )}
+        {topSources.length > 1 && (
           <span
             className="collaborator-tab-source-detail-toggle"
             onClick={() => toggleExpand(record.id)}
           >
             {isExpanded
               ? t('common.collapse')
-              : t('collaborator.source.inheritedFromCount', { count: sources.length })}
+              : t('collaborator.source.inheritedFromCount', { count: sortedSources.length })}
           </span>
         )}
       </div>
