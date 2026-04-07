@@ -3150,6 +3150,7 @@
       "addHint": "Will also add inherited permissions to {{count}} dependent assets",
       "removeHint": "Will also remove inherited permissions from {{count}} dependent assets"
     },
-    "quickAddSuccess": "Successfully added as a direct collaborator of the current asset"
+    "quickAddSuccess": "Successfully added as a direct collaborator of the current asset",
+    "roleLowerThanInherited": "Direct role is lower than inherited role. Effective role is {{role}}"
   }
 }

@@ -280,6 +280,17 @@ const CollaboratorTab = ({
           />
         );
 
+        // MIXED 协作者：检查直接分配角色是否低于继承角色
+        const isMixed = record.source === 'MIXED';
+        const inheritedSources = record.inheritance_sources || [];
+        let showRoleWarning = false;
+        if (isMixed && record.role && inheritedSources.length > 0) {
+          const inheritedMaxPriority = Math.max(
+            ...inheritedSources.map((s) => COLLABORATOR_ROLE_PRIORITY[s.role] || 0)
+          );
+          showRoleWarning = COLLABORATOR_ROLE_PRIORITY[record.role] < inheritedMaxPriority;
+        }
+
         if (isInherited && !record.is_owner) {
           const popoverContent = (
             <div className="collaborator-tab-inherited-popover">
@@ -308,6 +319,20 @@ const CollaboratorTab = ({
             >
               {selectEl}
             </Popover>
+          );
+        }
+
+        // MIXED 且直接角色低于继承角色时显示警告
+        if (showRoleWarning) {
+          return (
+            <div>
+              {selectEl}
+              <div className="collaborator-tab-role-warning">
+                {t('collaborator.roleLowerThanInherited', {
+                  role: t(`collaborator.roles.${record.final_role}`),
+                })}
+              </div>
+            </div>
           );
         }
 
