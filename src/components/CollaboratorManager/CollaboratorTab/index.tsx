@@ -51,6 +51,7 @@ const CollaboratorTab = ({
   const [searchValue, setSearchValue] = useState('');
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
+  const [quickAddingId, setQuickAddingId] = useState<string | null>(null);
 
   const { cascadeRemove, cascadeUpdateRole, canCascade, cascadeCount } =
     useCollaboratorCascade(assetType, assetId);
@@ -145,17 +146,18 @@ const CollaboratorTab = ({
   );
 
   const handleQuickAdd = useCallback(
-    (record: AssetCollaborator) => {
+    (record: AssetCollaborator, role: CollaboratorRole) => {
       addCollaborators(assetType, assetId, [
         {
           collaborator_type: record.collaborator_type,
           collaborator_id: record.collaborator_id,
           collaborator_name: record.collaborator_name,
           department_name: record.department_name,
-          role: record.final_role,
+          role,
         },
       ]);
       setCollaborators(getCollaborators(assetType, assetId));
+      setQuickAddingId(null);
       Toast.success(t('collaborator.quickAddSuccess'));
     },
     [assetType, assetId, t]
@@ -331,15 +333,27 @@ const CollaboratorTab = ({
                 {t('collaborator.inheritedRoleMaxHint')}
               </div>
               {canManage && (
-                <Button
-                  size="small"
-                  theme="solid"
-                  type="primary"
-                  onClick={() => handleQuickAdd(record)}
-                  style={{ marginTop: 8, width: '100%' }}
-                >
-                  {t('collaborator.actions.quickAdd')}
-                </Button>
+                quickAddingId === record.id ? (
+                  <div style={{ marginTop: 8 }}>
+                    <CollaboratorRoleSelect
+                      value={record.final_role}
+                      onChange={(role) => handleQuickAdd(record, role)}
+                      assetType={assetType}
+                      disabled={false}
+                      size="small"
+                    />
+                  </div>
+                ) : (
+                  <Button
+                    size="small"
+                    theme="solid"
+                    type="primary"
+                    onClick={() => setQuickAddingId(record.id)}
+                    style={{ marginTop: 8, width: '100%' }}
+                  >
+                    {t('collaborator.actions.quickAdd')}
+                  </Button>
+                )
               )}
             </div>
           );
@@ -349,6 +363,9 @@ const CollaboratorTab = ({
               position="top"
               showArrow
               trigger="hover"
+              onVisibleChange={(visible) => {
+                if (!visible) setQuickAddingId(null);
+              }}
             >
               {selectEl}
             </Popover>
