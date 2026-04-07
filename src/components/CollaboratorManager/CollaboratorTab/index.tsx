@@ -281,7 +281,7 @@ const CollaboratorTab = ({
           </span>
           <div className="collaborator-tab-name-cell-info">
             <div className="collaborator-tab-name-cell-label">
-              <Text ellipsis={{ showTooltip: true }} style={{ maxWidth: 200 }}>
+              <Text ellipsis={{ showTooltip: true }}>
                 {record.collaborator_name}
               </Text>
               {record.is_owner && (
