@@ -8,7 +8,6 @@ import {
   Typography,
   Toast,
   Modal,
-  Tooltip,
   Popover,
 } from '@douyinfe/semi-ui';
 import {
@@ -225,11 +224,9 @@ const CollaboratorTab = ({
             : t('collaborator.source.inheritedFromProcess', { name: src.asset_name });
           return (
             <div key={idx} className="collaborator-tab-source-detail-item">
-              <Tooltip content={sourceName} position="top" style={{ maxWidth: 360 }}>
-                <Text size="small" type="tertiary" ellipsis={{ showTooltip: false }}>
-                  {sourceName}
-                </Text>
-              </Tooltip>
+              <Text size="small" type="tertiary" ellipsis={{ showTooltip: true }}>
+                {sourceName}
+              </Text>
               <Text size="small" type="tertiary">
                 {' → '}
                 {t(`collaborator.roles.${src.role}`)}
