@@ -183,7 +183,7 @@ const CollaboratorTab = ({
         {isMixed && record.role && (
           <div className="collaborator-tab-source-detail-item">
             <Text size="small" type="tertiary">
-              {t('collaborator.source.directRole')}
+              {t('collaborator.source.direct')}
               {' → '}
               {t(`collaborator.roles.${record.role}`)}
             </Text>
