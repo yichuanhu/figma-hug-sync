@@ -12,29 +12,29 @@ import { COLLABORATOR_ROLE_PRIORITY, CASCADE_RULES } from '@/api/index';
 /** Mock 资产依赖关系 - 全面覆盖所有继承场景 */
 const MOCK_DEPENDENCIES: AssetDependency[] = [
   // ===== 流程 proc-001 → 参数/凭据/队列/文件（依赖继承） =====
-  { parent_type: 'PROCESS', parent_id: 'proc-001', parent_name: 'Financial Reimbursement Process', child_type: 'PARAMETER', child_id: 'param-001', child_name: 'Reimbursement Amount Limit' },
-  { parent_type: 'PROCESS', parent_id: 'proc-001', parent_name: 'Financial Reimbursement Process', child_type: 'PARAMETER', child_id: 'param-002', child_name: 'Approval Threshold' },
-  { parent_type: 'PROCESS', parent_id: 'proc-001', parent_name: 'Financial Reimbursement Process', child_type: 'CREDENTIAL', child_id: 'cred-001', child_name: 'SAP System Credential' },
-  { parent_type: 'PROCESS', parent_id: 'proc-001', parent_name: 'Financial Reimbursement Process', child_type: 'CREDENTIAL', child_id: 'cred-002', child_name: 'Oracle ERP Credential' },
-  { parent_type: 'PROCESS', parent_id: 'proc-001', parent_name: 'Financial Reimbursement Process', child_type: 'QUEUE', child_id: 'queue-001', child_name: 'Reimbursement Task Queue' },
-  { parent_type: 'PROCESS', parent_id: 'proc-001', parent_name: 'Financial Reimbursement Process', child_type: 'FILE', child_id: 'file-001', child_name: 'Invoice Template' },
-  { parent_type: 'PROCESS', parent_id: 'proc-001', parent_name: 'Financial Reimbursement Process', child_type: 'FILE', child_id: 'file-002', child_name: 'Reimbursement Policy Document' },
+  { parent_type: 'PROCESS', parent_id: 'proc-001', parent_name: 'Financial Reimbursement Automation Process - Monthly Expense Report Review and Approval Workflow', child_type: 'PARAMETER', child_id: 'param-001', child_name: 'Reimbursement Amount Limit' },
+  { parent_type: 'PROCESS', parent_id: 'proc-001', parent_name: 'Financial Reimbursement Automation Process - Monthly Expense Report Review and Approval Workflow', child_type: 'PARAMETER', child_id: 'param-002', child_name: 'Approval Threshold' },
+  { parent_type: 'PROCESS', parent_id: 'proc-001', parent_name: 'Financial Reimbursement Automation Process - Monthly Expense Report Review and Approval Workflow', child_type: 'CREDENTIAL', child_id: 'cred-001', child_name: 'SAP System Credential' },
+  { parent_type: 'PROCESS', parent_id: 'proc-001', parent_name: 'Financial Reimbursement Automation Process - Monthly Expense Report Review and Approval Workflow', child_type: 'CREDENTIAL', child_id: 'cred-002', child_name: 'Oracle ERP Credential' },
+  { parent_type: 'PROCESS', parent_id: 'proc-001', parent_name: 'Financial Reimbursement Automation Process - Monthly Expense Report Review and Approval Workflow', child_type: 'QUEUE', child_id: 'queue-001', child_name: 'Reimbursement Task Queue' },
+  { parent_type: 'PROCESS', parent_id: 'proc-001', parent_name: 'Financial Reimbursement Automation Process - Monthly Expense Report Review and Approval Workflow', child_type: 'FILE', child_id: 'file-001', child_name: 'Invoice Template' },
+  { parent_type: 'PROCESS', parent_id: 'proc-001', parent_name: 'Financial Reimbursement Automation Process - Monthly Expense Report Review and Approval Workflow', child_type: 'FILE', child_id: 'file-002', child_name: 'Reimbursement Policy Document' },
 
   // ===== 流程 proc-002 → 参数/凭据/队列/文件（共享子资产，多源继承场景） =====
-  { parent_type: 'PROCESS', parent_id: 'proc-002', parent_name: 'Procurement Request Process', child_type: 'PARAMETER', child_id: 'param-001', child_name: 'Reimbursement Amount Limit' },
-  { parent_type: 'PROCESS', parent_id: 'proc-002', parent_name: 'Procurement Request Process', child_type: 'CREDENTIAL', child_id: 'cred-001', child_name: 'SAP System Credential' },
-  { parent_type: 'PROCESS', parent_id: 'proc-002', parent_name: 'Procurement Request Process', child_type: 'QUEUE', child_id: 'queue-002', child_name: 'Procurement Order Queue' },
-  { parent_type: 'PROCESS', parent_id: 'proc-002', parent_name: 'Procurement Request Process', child_type: 'FILE', child_id: 'file-003', child_name: 'Purchase Order Template' },
+  { parent_type: 'PROCESS', parent_id: 'proc-002', parent_name: 'Procurement Request and Vendor Onboarding End-to-End Automation Process with Multi-Level Approval', child_type: 'PARAMETER', child_id: 'param-001', child_name: 'Reimbursement Amount Limit' },
+  { parent_type: 'PROCESS', parent_id: 'proc-002', parent_name: 'Procurement Request and Vendor Onboarding End-to-End Automation Process with Multi-Level Approval', child_type: 'CREDENTIAL', child_id: 'cred-001', child_name: 'SAP System Credential' },
+  { parent_type: 'PROCESS', parent_id: 'proc-002', parent_name: 'Procurement Request and Vendor Onboarding End-to-End Automation Process with Multi-Level Approval', child_type: 'QUEUE', child_id: 'queue-002', child_name: 'Procurement Order Queue' },
+  { parent_type: 'PROCESS', parent_id: 'proc-002', parent_name: 'Procurement Request and Vendor Onboarding End-to-End Automation Process with Multi-Level Approval', child_type: 'FILE', child_id: 'file-003', child_name: 'Purchase Order Template' },
 
   // ===== 流程 proc-003 → 参数/凭据（另一组依赖） =====
-  { parent_type: 'PROCESS', parent_id: 'proc-003', parent_name: 'Employee Onboarding Process', child_type: 'PARAMETER', child_id: 'param-003', child_name: 'Probation Period Config' },
-  { parent_type: 'PROCESS', parent_id: 'proc-003', parent_name: 'Employee Onboarding Process', child_type: 'CREDENTIAL', child_id: 'cred-003', child_name: 'HR System Credential' },
-  { parent_type: 'PROCESS', parent_id: 'proc-003', parent_name: 'Employee Onboarding Process', child_type: 'QUEUE', child_id: 'queue-003', child_name: 'Onboarding Task Queue' },
-  { parent_type: 'PROCESS', parent_id: 'proc-003', parent_name: 'Employee Onboarding Process', child_type: 'FILE', child_id: 'file-004', child_name: 'Employment Contract Template' },
+  { parent_type: 'PROCESS', parent_id: 'proc-003', parent_name: 'Employee Onboarding and Training Assignment Automated Workflow - Cross Department Coordination', child_type: 'PARAMETER', child_id: 'param-003', child_name: 'Probation Period Config' },
+  { parent_type: 'PROCESS', parent_id: 'proc-003', parent_name: 'Employee Onboarding and Training Assignment Automated Workflow - Cross Department Coordination', child_type: 'CREDENTIAL', child_id: 'cred-003', child_name: 'HR System Credential' },
+  { parent_type: 'PROCESS', parent_id: 'proc-003', parent_name: 'Employee Onboarding and Training Assignment Automated Workflow - Cross Department Coordination', child_type: 'QUEUE', child_id: 'queue-003', child_name: 'Onboarding Task Queue' },
+  { parent_type: 'PROCESS', parent_id: 'proc-003', parent_name: 'Employee Onboarding and Training Assignment Automated Workflow - Cross Department Coordination', child_type: 'FILE', child_id: 'file-004', child_name: 'Employment Contract Template' },
 
   // ===== 流程 proc-004 → 共享凭据（三源继承场景） =====
-  { parent_type: 'PROCESS', parent_id: 'proc-004', parent_name: 'Monthly Report Generation', child_type: 'CREDENTIAL', child_id: 'cred-001', child_name: 'SAP System Credential' },
-  { parent_type: 'PROCESS', parent_id: 'proc-004', parent_name: 'Monthly Report Generation', child_type: 'PARAMETER', child_id: 'param-004', child_name: 'Report Output Format' },
+  { parent_type: 'PROCESS', parent_id: 'proc-004', parent_name: 'Monthly Financial Report Generation and Distribution Automation with Data Validation Pipeline', child_type: 'CREDENTIAL', child_id: 'cred-001', child_name: 'SAP System Credential' },
+  { parent_type: 'PROCESS', parent_id: 'proc-004', parent_name: 'Monthly Financial Report Generation and Distribution Automation with Data Validation Pipeline', child_type: 'PARAMETER', child_id: 'param-004', child_name: 'Report Output Format' },
 
   // ===== 机器人组 wg-001 → 机器人（层级继承） =====
   { parent_type: 'WORKER_GROUP', parent_id: 'wg-001', parent_name: 'Finance Robot Group', child_type: 'WORKER', child_id: 'worker-001', child_name: 'Finance Robot 01' },
