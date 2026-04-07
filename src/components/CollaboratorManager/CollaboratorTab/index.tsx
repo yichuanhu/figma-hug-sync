@@ -291,7 +291,7 @@ const CollaboratorTab = ({
               )}
             </div>
             {record.department_name && record.collaborator_type === 'USER' && (
-              <Text size="small" type="tertiary" ellipsis={{ showTooltip: true }} style={{ maxWidth: 360 }}>
+              <Text size="small" type="tertiary" ellipsis={{ showTooltip: true }}>
                 {record.department_name}
               </Text>
             )}
