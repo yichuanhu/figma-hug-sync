@@ -81,6 +81,28 @@ const CollaboratorTab = ({
     async (record: AssetCollaborator, newRole: CollaboratorRole) => {
       const result = cascadeUpdateRole(record.id, newRole);
       setCollaborators(getCollaborators(assetType, assetId));
+
+      // MIXED 协作者：检查新角色是否低于继承角色
+      const isMixed = record.source === 'MIXED';
+      const inheritedSources = record.inheritance_sources || [];
+      if (isMixed && inheritedSources.length > 0) {
+        const inheritedMaxPriority = Math.max(
+          ...inheritedSources.map((s) => COLLABORATOR_ROLE_PRIORITY[s.role] || 0)
+        );
+        if (COLLABORATOR_ROLE_PRIORITY[newRole] < inheritedMaxPriority) {
+          const inheritedMaxRole = inheritedSources.reduce((max, s) =>
+            (COLLABORATOR_ROLE_PRIORITY[s.role] || 0) > (COLLABORATOR_ROLE_PRIORITY[max.role] || 0) ? s : max
+          ).role;
+          Toast.warning(
+            t('collaborator.roleLowerWarningToast', {
+              directRole: t(`collaborator.roles.${newRole}`),
+              inheritedRole: t(`collaborator.roles.${inheritedMaxRole}`),
+            })
+          );
+          return;
+        }
+      }
+
       if (result.cascadeCount > 0) {
         Toast.success(
           t('collaborator.updateSuccessWithCascade', { count: result.cascadeCount })
@@ -280,22 +302,14 @@ const CollaboratorTab = ({
           />
         );
 
-        // MIXED 协作者：检查直接分配角色是否低于继承角色
-        const isMixed = record.source === 'MIXED';
-        const inheritedSources = record.inheritance_sources || [];
-        let showRoleWarning = false;
-        if (isMixed && record.role && inheritedSources.length > 0) {
-          const inheritedMaxPriority = Math.max(
-            ...inheritedSources.map((s) => COLLABORATOR_ROLE_PRIORITY[s.role] || 0)
-          );
-          showRoleWarning = COLLABORATOR_ROLE_PRIORITY[record.role] < inheritedMaxPriority;
-        }
-
         if (isInherited && !record.is_owner) {
           const popoverContent = (
-            <div className="collaborator-tab-inherited-popover">
+              <div className="collaborator-tab-inherited-popover">
               <div className="collaborator-tab-inherited-popover-text">
                 {t('collaborator.inheritedRoleHint')}
+              </div>
+              <div className="collaborator-tab-inherited-popover-hint">
+                {t('collaborator.inheritedRoleMaxHint')}
               </div>
               {canManage && (
                 <Button
@@ -319,20 +333,6 @@ const CollaboratorTab = ({
             >
               {selectEl}
             </Popover>
-          );
-        }
-
-        // MIXED 且直接角色低于继承角色时显示警告
-        if (showRoleWarning) {
-          return (
-            <div>
-              {selectEl}
-              <div className="collaborator-tab-role-warning">
-                {t('collaborator.roleLowerThanInherited', {
-                  role: t(`collaborator.roles.${record.final_role}`),
-                })}
-              </div>
-            </div>
           );
         }
 
