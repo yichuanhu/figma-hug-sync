@@ -83,6 +83,17 @@
       font-size: 12px;
       color: var(--semi-color-text-2);
       line-height: 20px;
+      min-width: 0;
+
+      .semi-typography {
+        flex: 1;
+        min-width: 0;
+
+        &:last-child {
+          flex-shrink: 0;
+          flex: none;
+        }
+      }
     }
 
     &-toggle {
