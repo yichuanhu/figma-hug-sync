@@ -363,6 +363,9 @@ const CollaboratorTab = ({
               position="top"
               showArrow
               trigger="hover"
+              onVisibleChange={(visible) => {
+                if (!visible) setQuickAddingId(null);
+              }}
             >
               {selectEl}
             </Popover>
