@@ -333,15 +333,27 @@ const CollaboratorTab = ({
                 {t('collaborator.inheritedRoleMaxHint')}
               </div>
               {canManage && (
-                <Button
-                  size="small"
-                  theme="solid"
-                  type="primary"
-                  onClick={() => handleQuickAdd(record)}
-                  style={{ marginTop: 8, width: '100%' }}
-                >
-                  {t('collaborator.actions.quickAdd')}
-                </Button>
+                quickAddingId === record.id ? (
+                  <div style={{ marginTop: 8 }}>
+                    <CollaboratorRoleSelect
+                      value={record.final_role}
+                      onChange={(role) => handleQuickAdd(record, role)}
+                      assetType={assetType}
+                      disabled={false}
+                      size="small"
+                    />
+                  </div>
+                ) : (
+                  <Button
+                    size="small"
+                    theme="solid"
+                    type="primary"
+                    onClick={() => setQuickAddingId(record.id)}
+                    style={{ marginTop: 8, width: '100%' }}
+                  >
+                    {t('collaborator.actions.quickAdd')}
+                  </Button>
+                )
               )}
             </div>
           );
