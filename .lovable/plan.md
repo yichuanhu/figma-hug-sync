@@ -1,76 +1,72 @@
 
 
-# MIXED 协作者展示优化 — 直接分配 + 继承权限双重展示及低权限提醒
+# 优化协作者权限提示交互
 
-## 问题
+## 推荐方案：统一气泡卡片，按时机提示
 
-1. MIXED 协作者（同时拥有直接分配和继承权限）在列表中只显示继承来源，缺少直接分配角色的展示
-2. 当用户将直接分配角色设为低于继承角色时（如直接分配观察者，但继承了管理者），final_role 仍为继承角色（MAX 取高），用户修改角色后看不到任何效果，容易困惑
+核心思路：**不做持久化警告展示**，只在用户操作的关键节点通过气泡卡片告知。
 
-## 交互设计
+### 交互设计
 
-### 1. MIXED 协作者来源展示
+#### 1. 继承协作者「添加为协作者」气泡卡片 — 增加权限说明
 
-在继承来源列表顶部增加一行"直接分配 → 角色名"，与继承来源视觉一致。MAX 计算说明同时包含直接分配角色。
+在现有的继承协作者 Popover 气泡卡片中（参考用户截图），在"添加为协作者"按钮上方增加一行说明文案：
 
 ```text
-示例展示：
-  直接分配 → 观察者
-  继承自流程「订单处理」 → 管理者
-  MAX(观察者, 管理者) = 管理者
+继承权限不可修改，如需调整角色，请将
+此用户直接添加为当前资产的协作者
+╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌
+提示：若直接分配的角色低于继承角色，
+实际生效角色仍为继承的最高权限
+╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌
+      [ 添加为协作者 ]
 ```
 
-### 2. 低权限提醒交互
+提示行使用次要文字色（tertiary），让用户在添加前就知道权限合并规则。
 
-当 MIXED 协作者的直接分配角色（`record.role`）低于继承角色（即 `final_role` 由继承决定而非直接分配决定）时：
+#### 2. MIXED 协作者修改角色时 — Toast 提示替代持久警告
 
-- 角色下拉框**可正常操作**（修改直接分配角色）
-- 角色下拉框下方显示一行**橙色警告提示**："当前直接分配角色低于继承角色，实际生效角色为 {final_role}"
-- 用户修改角色后，如果新选的角色仍低于继承角色，提示继续保留；如果新角色高于或等于继承角色，提示消失
+移除当前角色下拉框下方的橙色持久警告。改为：当用户修改 MIXED 协作者的直接分配角色后，如果新角色仍低于继承角色，通过 **Toast.warning** 提示：
 
-这样用户可以清晰看到：修改生效了（直接分配角色确实变了），但最终权限没变（因为 MAX 取的是继承的高权限）。
+> "直接分配角色已更新为「观察者」，但实际生效角色仍为继承的「管理者」（取最高权限）"
+
+如果新角色高于或等于继承角色，则正常显示 Toast.success。
+
+这样：
+- 列表视觉干净，无冗余警告
+- 用户在修改时能明确知道修改生效了、但最终权限没变
+- 在添加前就已被告知规则，修改后再次确认，形成完整认知闭环
 
 ## 文件变更
 
 | 文件 | 变更 |
 |------|------|
-| `src/components/CollaboratorManager/CollaboratorTab/index.tsx` | 1. `renderSource` 增加 MIXED 时的直接分配行展示及 MAX 计算包含直接角色；2. 角色列对 MIXED 且直接角色 < 继承角色时，显示橙色警告文案 |
-| `src/components/CollaboratorManager/CollaboratorTab/index.less` | 添加警告提示样式 `.collaborator-tab-role-warning` |
-| `public/i18n/zh-CN.json` | 新增词条：`collaborator.source.directRole`（"直接分配"）、`collaborator.roleLowerThanInherited`（"当前直接分配角色低于继承角色，实际生效角色为{{role}}"） |
+| `src/components/CollaboratorManager/CollaboratorTab/index.tsx` | 1. 继承协作者 Popover 增加权限合并规则提示文案；2. 移除 MIXED 低权限的持久橙色警告；3. `handleRoleChange` 中增加判断：MIXED 且新角色 < 继承角色时用 Toast.warning 替代 Toast.success |
+| `src/components/CollaboratorManager/CollaboratorTab/index.less` | 移除 `.collaborator-tab-role-warning` 样式 |
+| `public/i18n/zh-CN.json` | 修改词条：`collaborator.inheritedRoleHint` 增加权限合并提示；新增 `collaborator.roleLowerWarningToast`（"直接分配角色已更新为「{{directRole}}」，但实际生效角色仍为继承的「{{inheritedRole}}」（取最高权限）"） |
 | `public/i18n/en.json` | 对应英文词条 |
 
 ## 技术细节
 
-### renderSource 改造
+### handleRoleChange 改造
 
 ```text
-renderSource(record):
-  sources = record.inheritance_sources || []
-  isMixed = record.source === 'MIXED'
-
-  // MIXED 时即使 sources 为空也要展示直接分配行
-  if (sources.length === 0 && !isMixed) return null
-
-  allItems = []
-  if (isMixed):
-    allItems.push({ label: "直接分配", role: record.role })  // record.role = 直接分配角色
-  allItems.push(...sources)  // 继承来源
-
-  // MAX 计算文案：将所有角色（含直接分配）都纳入
-  if (allItems.length > 1):
-    maxText = MAX(所有角色名) = final_role
+handleRoleChange(record, newRole):
+  执行角色更新...
+  
+  if (record.source === 'MIXED'):
+    inheritedMaxRole = MAX(inheritance_sources)
+    if (PRIORITY[newRole] < PRIORITY[inheritedMaxRole]):
+      Toast.warning(t('collaborator.roleLowerWarningToast', {
+        directRole: t(roles.newRole),
+        inheritedRole: t(roles.inheritedMaxRole)
+      }))
+      return
+  
+  Toast.success(正常成功提示)
 ```
 
-### 角色列低权限警告逻辑
+### 角色列渲染简化
 
-```text
-// 在角色列 render 中，MIXED 协作者额外判断：
-if (record.source === 'MIXED'):
-  inheritedMaxRole = MAX(inheritance_sources 中所有 role)
-  if (PRIORITY[record.role] < PRIORITY[inheritedMaxRole]):
-    // 在 Select 下方渲染橙色警告文字
-    显示: "当前直接分配角色低于继承角色，实际生效角色为 {final_role}"
-```
-
-警告使用 `var(--semi-color-warning)` 颜色，字号 12px，限制最大宽度 200px 以避免撑开列宽。
+移除 `showRoleWarning` 相关逻辑和 `.collaborator-tab-role-warning` 的 JSX 渲染，MIXED 协作者直接返回可编辑的 selectEl。
 
