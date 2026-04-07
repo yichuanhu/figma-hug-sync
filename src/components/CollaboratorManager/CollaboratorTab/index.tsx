@@ -9,7 +9,6 @@ import {
   Toast,
   Modal,
   Popover,
-  Popover,
 } from '@douyinfe/semi-ui';
 import {
   IconMinusCircleStroked,
