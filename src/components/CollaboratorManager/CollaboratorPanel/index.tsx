@@ -1,7 +1,6 @@
 import { useState, useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Input,
   Tag,
   Typography,
   Toast,
@@ -10,16 +9,15 @@ import {
   Avatar,
   AvatarGroup,
   Button,
+  Divider,
 } from '@douyinfe/semi-ui';
 import {
   IconMinusCircleStroked,
-  IconSearchStroked,
   IconFlowChartStroked,
   IconChevronLeft,
   IconChevronDown,
-  IconPlus,
 } from '@douyinfe/semi-icons';
-import { User, UserPlus, Building2 } from 'lucide-react';
+import { X, UserPlus } from 'lucide-react';
 import type {
   AssetCollaborator,
   CollaboratorAssetType,
@@ -89,7 +87,6 @@ const CollaboratorPanel = ({
     }
   }, [visible, loadData, assetType]);
 
-  // 搜索结果：从组织架构中搜索，排除已有协作者
   const searchResults = useMemo(() => {
     if (!searchValue.trim()) return [];
     const existingIds = collaborators.map((c) => c.collaborator_id);
@@ -97,7 +94,6 @@ const CollaboratorPanel = ({
     return searchOrgUsers(searchValue, [...existingIds, ...selectedIds]);
   }, [searchValue, collaborators, selectedUsers]);
 
-  // 管理视图的过滤
   const filteredData = useMemo(() => {
     if (!searchValue) return collaborators;
     const keyword = searchValue.toLowerCase();
@@ -163,7 +159,6 @@ const CollaboratorPanel = ({
     [t, cascadeRemove, canCascade, cascadeCount, assetType, assetId]
   );
 
-  // 批量添加：将所有已选用户以统一角色添加
   const handleBatchAdd = useCallback(() => {
     if (selectedUsers.length === 0) return;
     addCollaborators(
@@ -184,13 +179,11 @@ const CollaboratorPanel = ({
     Toast.success(t('collaborator.quickAddSuccess'));
   }, [assetType, assetId, selectedUsers, batchRole, t]);
 
-  // 点击搜索结果选中用户
   const handleSelectUser = useCallback((user: OrgUser) => {
     setSelectedUsers((prev) => [...prev, user]);
     setSearchValue('');
   }, []);
 
-  // 移除已选用户
   const handleDeselectUser = useCallback((userId: string) => {
     setSelectedUsers((prev) => prev.filter((u) => u.id !== userId));
   }, []);
@@ -213,10 +206,22 @@ const CollaboratorPanel = ({
     [assetType, assetId, t]
   );
 
+  // 从组织架构添加：隐藏主弹窗，打开组织架构弹窗
+  const handleOpenOrgModal = useCallback(() => {
+    onVisibleChange(false);
+    setAddModalVisible(true);
+  }, [onVisibleChange]);
+
+  const handleAddModalClose = useCallback(() => {
+    setAddModalVisible(false);
+    onVisibleChange(true);
+  }, [onVisibleChange]);
+
   const handleAddSuccess = useCallback(() => {
     setCollaborators(getCollaborators(assetType, assetId));
     setAddModalVisible(false);
-  }, [assetType, assetId]);
+    onVisibleChange(true);
+  }, [assetType, assetId, onVisibleChange]);
 
   const toggleExpand = useCallback((id: string) => {
     setExpandedRows((prev) => {
@@ -368,7 +373,7 @@ const CollaboratorPanel = ({
             }
           >
             {record.collaborator_type === 'DEPARTMENT' ? (
-              <Building2 size={14} strokeWidth={2} />
+              <IconFlowChartStroked size="small" />
             ) : (
               record.collaborator_name.slice(0, 1)
             )}
@@ -399,7 +404,7 @@ const CollaboratorPanel = ({
     );
   };
 
-  // 渲染搜索结果中的用户行（点击即选中）
+  // 渲染搜索结果中的用户行
   const renderSearchResultItem = (user: OrgUser) => {
     return (
       <div
@@ -428,35 +433,34 @@ const CollaboratorPanel = ({
     );
   };
 
-  // Quick view header with avatar group (shown inside modal body, not modal title)
-  const renderQuickViewHeader = () => (
-    <div className="collaborator-panel-header">
-      <span className="collaborator-panel-header-title">
-        {t('collaborator.actions.addCollaborator')}
-      </span>
-      <div
-        className="collaborator-panel-header-right"
-        onClick={() => setPanelView('manage')}
-      >
-        <AvatarGroup size="extra-extra-small" maxCount={3}>
-          {collaborators.slice(0, 3).map((c) => (
-            <Avatar
-              key={c.id}
-              style={
-                c.collaborator_type === 'USER'
-                  ? { backgroundColor: '#000000', color: '#ffffff' }
-                  : { backgroundColor: 'var(--semi-color-fill-1)', color: 'var(--semi-color-text-2)' }
-              }
-            >
-              {c.collaborator_name.slice(0, 1)}
-            </Avatar>
-          ))}
-        </AvatarGroup>
-        <Tag size="small" type="ghost" className="collaborator-panel-count-tag">
-          {t('collaborator.panel.peopleCount', { count: collaborators.length })}
-        </Tag>
-        <IconChevronLeft style={{ transform: 'rotate(180deg)', fontSize: 12 }} />
-      </div>
+  // 头像组 + 人数（共用于 title 右侧）
+  const renderAvatarGroup = () => (
+    <div
+      className="collaborator-panel-header-right"
+      onClick={() => setPanelView('manage')}
+    >
+      <AvatarGroup size="extra-extra-small" maxCount={3}>
+        {collaborators.slice(0, 3).map((c) => (
+          <Avatar
+            key={c.id}
+            style={
+              c.collaborator_type === 'USER'
+                ? { backgroundColor: '#000000', color: '#ffffff' }
+                : { backgroundColor: 'var(--semi-color-fill-1)', color: 'var(--semi-color-text-2)' }
+            }
+          >
+            {c.collaborator_type === 'DEPARTMENT' ? (
+              <IconFlowChartStroked style={{ fontSize: 10 }} />
+            ) : (
+              c.collaborator_name.slice(0, 1)
+            )}
+          </Avatar>
+        ))}
+      </AvatarGroup>
+      <Tag size="small" type="ghost" className="collaborator-panel-count-tag">
+        {t('collaborator.panel.peopleCount', { count: collaborators.length })}
+      </Tag>
+      <IconChevronLeft style={{ transform: 'rotate(180deg)', fontSize: 12 }} />
     </div>
   );
 
@@ -531,10 +535,8 @@ const CollaboratorPanel = ({
   // Quick view content
   const renderQuickView = () => (
     <div className="collaborator-panel-quick">
-      {renderQuickViewHeader()}
       {renderSearchBox()}
 
-      {/* 搜索结果列表 */}
       {searchValue.trim() && (
         <div className="collaborator-panel-search-results">
           {searchResults.length > 0 ? (
@@ -557,12 +559,12 @@ const CollaboratorPanel = ({
           </Button>
         </div>
       ) : !searchValue.trim() ? (
-        <div style={{ padding: '8px 24px 16px' }}>
+        <div style={{ padding: '8px 0 16px' }}>
           <Button
             type="tertiary"
             icon={<IconFlowChartStroked />}
             block
-            onClick={() => setAddModalVisible(true)}
+            onClick={handleOpenOrgModal}
           >
             {t('collaborator.panel.addFromOrg')}
           </Button>
@@ -590,7 +592,7 @@ const CollaboratorPanel = ({
       {canManage && (
         <div
           className="collaborator-panel-action-row collaborator-panel-manage-add"
-          onClick={() => setAddModalVisible(true)}
+          onClick={handleOpenOrgModal}
         >
           <div className="collaborator-panel-action-row-icon">
             <UserPlus size={14} strokeWidth={2} />
@@ -601,15 +603,37 @@ const CollaboratorPanel = ({
     </div>
   );
 
-  const modalTitle = panelView === 'manage' ? (
-    <div
-      className="collaborator-panel-manage-back"
-      onClick={() => setPanelView('quick')}
-    >
-      <IconChevronLeft size="small" />
-      <span>{t('collaborator.panel.manageTitle')}</span>
+  // Modal title: 左侧标题/返回，右侧头像组 | 分隔线 | 关闭按钮
+  const modalTitle = (
+    <div className="collaborator-panel-modal-title">
+      <div className="collaborator-panel-modal-title-left">
+        {panelView === 'manage' ? (
+          <div
+            className="collaborator-panel-manage-back"
+            onClick={() => setPanelView('quick')}
+          >
+            <IconChevronLeft size="small" />
+            <span>{t('collaborator.panel.manageTitle')}</span>
+          </div>
+        ) : (
+          <span className="collaborator-panel-header-title">
+            {t('collaborator.actions.addCollaborator')}
+          </span>
+        )}
+      </div>
+      <div className="collaborator-panel-modal-title-right">
+        {renderAvatarGroup()}
+        <Divider layout="vertical" style={{ height: 16, margin: '0 4px' }} />
+        <Button
+          icon={<X size={16} />}
+          theme="borderless"
+          type="tertiary"
+          size="small"
+          onClick={() => onVisibleChange(false)}
+        />
+      </div>
     </div>
-  ) : undefined;
+  );
 
   return (
     <>
@@ -617,11 +641,10 @@ const CollaboratorPanel = ({
         visible={visible}
         onCancel={() => onVisibleChange(false)}
         footer={null}
-        closable
+        closable={false}
         title={modalTitle}
         width={480}
         className="collaborator-panel-modal"
-        bodyStyle={{ padding: 0 }}
       >
         <div className="collaborator-panel">
           {panelView === 'quick' ? renderQuickView() : renderManageView()}
@@ -629,7 +652,7 @@ const CollaboratorPanel = ({
       </Modal>
       <CollaboratorAddModal
         visible={addModalVisible}
-        onClose={() => setAddModalVisible(false)}
+        onClose={handleAddModalClose}
         onSuccess={handleAddSuccess}
         assetType={assetType}
         assetId={assetId}
