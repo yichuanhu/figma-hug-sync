@@ -23,9 +23,10 @@ import type {
   CollaboratorAssetType,
   CollaboratorRole,
 } from '@/api/index';
-import { COLLABORATOR_ROLE_PRIORITY } from '@/api/index';
+import { COLLABORATOR_ROLE_PRIORITY, ASSET_AVAILABLE_ROLES } from '@/api/index';
 import { useCollaboratorCascade } from '@/hooks/useCollaboratorCascade';
-import { getCollaborators, addCollaborators } from '@/components/CollaboratorManager/mockData';
+import { getCollaborators, addCollaborators, searchOrgUsers } from '@/components/CollaboratorManager/mockData';
+import type { OrgUser } from '@/components/CollaboratorManager/mockData';
 import CollaboratorRoleSelect from '../CollaboratorRoleSelect';
 import CollaboratorAddModal from '../CollaboratorAddModal';
 import { getAvatarColor } from '@/utils/avatarColor';
@@ -82,6 +83,14 @@ const CollaboratorPanel = ({
     }
   }, [visible, loadData]);
 
+  // 搜索结果：从组织架构中搜索，排除已有协作者
+  const searchResults = useMemo(() => {
+    if (!searchValue.trim()) return [];
+    const existingIds = collaborators.map((c) => c.collaborator_id);
+    return searchOrgUsers(searchValue, existingIds);
+  }, [searchValue, collaborators]);
+
+  // 管理视图的过滤
   const filteredData = useMemo(() => {
     if (!searchValue) return collaborators;
     const keyword = searchValue.toLowerCase();
@@ -145,6 +154,26 @@ const CollaboratorPanel = ({
       });
     },
     [t, cascadeRemove, canCascade, cascadeCount, assetType, assetId]
+  );
+
+  // 快捷添加：从搜索结果中添加用户，选定角色后直接添加
+  const handleSearchAdd = useCallback(
+    (user: OrgUser, role: CollaboratorRole) => {
+      addCollaborators(assetType, assetId, [
+        {
+          collaborator_type: 'USER',
+          collaborator_id: user.id,
+          collaborator_name: user.name,
+          department_name: user.department,
+          role,
+        },
+      ]);
+      setCollaborators(getCollaborators(assetType, assetId));
+      setQuickAddingId(null);
+      setSearchValue('');
+      Toast.success(t('collaborator.quickAddSuccess'));
+    },
+    [assetType, assetId, t]
   );
 
   const handleQuickAdd = useCallback(
@@ -351,6 +380,52 @@ const CollaboratorPanel = ({
     );
   };
 
+  // 渲染搜索结果中的用户行
+  const renderSearchResultItem = (user: OrgUser) => {
+    const isSelecting = quickAddingId === user.id;
+
+    return (
+      <div key={user.id} className="collaborator-panel-item">
+        <div className="collaborator-panel-item-left">
+          <Avatar
+            size="small"
+            style={{ backgroundColor: '#000000', color: '#ffffff' }}
+          >
+            {user.name.slice(0, 1)}
+          </Avatar>
+          <div className="collaborator-panel-item-info">
+            <Text ellipsis={{ showTooltip: true }} className="collaborator-panel-item-name">
+              {user.name}
+            </Text>
+            <Text size="small" type="tertiary" ellipsis={{ showTooltip: true }}>
+              {user.department}
+            </Text>
+          </div>
+        </div>
+        <div className="collaborator-panel-item-right">
+          {isSelecting ? (
+            <CollaboratorRoleSelect
+              value={ASSET_AVAILABLE_ROLES[assetType]?.[0] || 'OBSERVER'}
+              onChange={(role) => handleSearchAdd(user, role)}
+              assetType={assetType}
+              disabled={false}
+              size="small"
+            />
+          ) : (
+            <Button
+              size="small"
+              theme="light"
+              type="primary"
+              onClick={() => setQuickAddingId(user.id)}
+            >
+              {t('common.add')}
+            </Button>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   // Quick view header with avatar group
   const renderQuickViewHeader = () => (
     <div className="collaborator-panel-header">
@@ -394,6 +469,18 @@ const CollaboratorPanel = ({
           size="default"
         />
       </div>
+      {/* 搜索结果列表 */}
+      {searchValue.trim() && (
+        <div className="collaborator-panel-search-results">
+          {searchResults.length > 0 ? (
+            searchResults.map((user) => renderSearchResultItem(user))
+          ) : (
+            <div className="collaborator-panel-search-empty">
+              <Text type="tertiary" size="small">{t('collaborator.panel.noSearchResults')}</Text>
+            </div>
+          )}
+        </div>
+      )}
       <div
         className="collaborator-panel-action-row"
         onClick={() => setAddModalVisible(true)}
