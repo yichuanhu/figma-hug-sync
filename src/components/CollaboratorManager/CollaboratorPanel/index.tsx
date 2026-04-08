@@ -445,7 +445,7 @@ const CollaboratorPanel = ({
               style={
                 c.collaborator_type === 'USER'
                   ? { backgroundColor: '#000000', color: '#ffffff' }
-                  : { backgroundColor: `var(--semi-color-${getAvatarColor(c.collaborator_name)})` }
+                  : { backgroundColor: 'var(--semi-color-fill-1)', color: 'var(--semi-color-text-2)' }
               }
             >
               {c.collaborator_name.slice(0, 1)}
