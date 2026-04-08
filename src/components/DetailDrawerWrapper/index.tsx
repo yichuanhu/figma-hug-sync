@@ -91,6 +91,7 @@ function DetailDrawerWrapper<T>({
   children,
   extraActions,
   showNavigation = true,
+  collaboratorProps,
   dataList,
   currentId,
   getId,
@@ -105,6 +106,7 @@ function DetailDrawerWrapper<T>({
 }: DetailDrawerWrapperProps<T>) {
   const { t } = useTranslation();
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [collaboratorPanelVisible, setCollaboratorPanelVisible] = useState(false);
   const [drawerWidth, setDrawerWidth] = useState(() => {
     if (storageKey) {
       const saved = localStorage.getItem(storageKey);
