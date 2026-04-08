@@ -299,7 +299,7 @@ const CredentialDetailDrawer = ({
       storageKey="credentialDetailDrawerWidth"
       className="credential-detail-drawer"
     >
-      <Tabs activeKey={activeTab} onChange={(key) => setActiveTab(key as 'basic' | 'usage' | 'collaborators')} className="credential-detail-drawer-tabs">
+      <Tabs activeKey={activeTab} onChange={(key) => setActiveTab(key as 'basic' | 'usage')} className="credential-detail-drawer-tabs">
         <TabPane tab={t('credential.detail.tabs.basicInfo')} itemKey="basic">
           <div className="credential-detail-drawer-content">
             <Descriptions data={descriptionData} align="left" />
