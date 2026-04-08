@@ -162,7 +162,6 @@ const FileDetailDrawer = ({
 
   // 抽屉关闭时重置状态
   const handleClose = useCallback(() => {
-    setActiveTab('basic');
     onClose();
   }, [onClose]);
 
