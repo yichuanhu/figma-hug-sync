@@ -545,13 +545,13 @@ const CollaboratorPanel = ({
       {selectedUsers.length > 0 ? (
         <div className="collaborator-panel-batch-actions">
           <Button type="tertiary" onClick={() => setSelectedUsers([])}>
-            {t('collaborator.actions.cancel')}
+            {t('common.cancel')}
           </Button>
           <Button type="primary" theme="solid" onClick={handleBatchAdd}>
-            {t('collaborator.actions.confirm')}
+            {t('common.confirm')}
           </Button>
         </div>
-      ) : (
+      ) : !searchValue.trim() ? (
         <div style={{ padding: '8px 24px 16px' }}>
           <Button
             type="tertiary"
@@ -562,7 +562,7 @@ const CollaboratorPanel = ({
             {t('collaborator.panel.addFromOrg')}
           </Button>
         </div>
-      )}
+      ) : null}
     </div>
   );
 
