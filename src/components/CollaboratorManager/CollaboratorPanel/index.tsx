@@ -161,25 +161,37 @@ const CollaboratorPanel = ({
     [t, cascadeRemove, canCascade, cascadeCount, assetType, assetId]
   );
 
-  // 快捷添加：从搜索结果中添加用户
-  const handleSearchAdd = useCallback(
-    (user: OrgUser, role: CollaboratorRole) => {
-      addCollaborators(assetType, assetId, [
-        {
-          collaborator_type: 'USER',
-          collaborator_id: user.id,
-          collaborator_name: user.name,
-          department_name: user.department,
-          role,
-        },
-      ]);
-      setCollaborators(getCollaborators(assetType, assetId));
-      setQuickAddingId(null);
-      setSearchValue('');
-      Toast.success(t('collaborator.quickAddSuccess'));
-    },
-    [assetType, assetId, t]
-  );
+  // 批量添加：将所有已选用户以统一角色添加
+  const handleBatchAdd = useCallback(() => {
+    if (selectedUsers.length === 0) return;
+    addCollaborators(
+      assetType,
+      assetId,
+      selectedUsers.map((user) => ({
+        collaborator_type: 'USER' as const,
+        collaborator_id: user.id,
+        collaborator_name: user.name,
+        department_name: user.department,
+        role: batchRole,
+      }))
+    );
+    setCollaborators(getCollaborators(assetType, assetId));
+    setSelectedUsers([]);
+    setSearchValue('');
+    setBatchRole(ASSET_AVAILABLE_ROLES[assetType]?.[ASSET_AVAILABLE_ROLES[assetType].length - 1] || 'OBSERVER');
+    Toast.success(t('collaborator.quickAddSuccess'));
+  }, [assetType, assetId, selectedUsers, batchRole, t]);
+
+  // 点击搜索结果选中用户
+  const handleSelectUser = useCallback((user: OrgUser) => {
+    setSelectedUsers((prev) => [...prev, user]);
+    setSearchValue('');
+  }, []);
+
+  // 移除已选用户
+  const handleDeselectUser = useCallback((userId: string) => {
+    setSelectedUsers((prev) => prev.filter((u) => u.id !== userId));
+  }, []);
 
   const handleQuickAdd = useCallback(
     (record: AssetCollaborator, role: CollaboratorRole) => {
