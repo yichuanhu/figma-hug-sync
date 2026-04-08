@@ -35,7 +35,7 @@ import type {
 import CreateQueueTriggerModal from '../CreateQueueTriggerModal';
 import EditQueueTriggerModal from '../EditQueueTriggerModal';
 import QueueTriggerDetailDrawer from '../QueueTriggerDetailDrawer';
-import CollaboratorAddModal from '@/components/CollaboratorManager/CollaboratorAddModal';
+import CollaboratorPanel from '@/components/CollaboratorManager/CollaboratorPanel';
 import type { CollaboratorAssetType } from '@/api';
 import './index.less';
 
@@ -622,13 +622,13 @@ const QueueTriggerList = () => {
         initialTab={detailInitialTab}
       />
 
-      <CollaboratorAddModal
+      <CollaboratorPanel
         visible={addCollaboratorModalVisible}
-        onClose={() => setAddCollaboratorModalVisible(false)}
-        onSuccess={() => setAddCollaboratorModalVisible(false)}
+        onVisibleChange={setAddCollaboratorModalVisible}
         assetType={'TRIGGER' as CollaboratorAssetType}
         assetId={addCollaboratorAssetId}
-        existingCollaborators={[]}
+        context="development"
+        canManage={true}
       />
     </div>
   );

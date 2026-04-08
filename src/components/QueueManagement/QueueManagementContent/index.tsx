@@ -37,7 +37,7 @@ import type {
 import CreateQueueModal from './components/CreateQueueModal';
 import EditQueueModal from './components/EditQueueModal';
 import QueueDetailDrawer from './components/QueueDetailDrawer';
-import CollaboratorAddModal from '@/components/CollaboratorManager/CollaboratorAddModal';
+import CollaboratorPanel from '@/components/CollaboratorManager/CollaboratorPanel';
 import type { CollaboratorAssetType } from '@/api/index';
 
 import './index.less';
@@ -598,13 +598,13 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
         }}
       />
 
-      <CollaboratorAddModal
+      <CollaboratorPanel
         visible={addCollaboratorModalVisible}
-        onClose={() => setAddCollaboratorModalVisible(false)}
-        onSuccess={() => setAddCollaboratorModalVisible(false)}
+        onVisibleChange={setAddCollaboratorModalVisible}
         assetType={'QUEUE' as CollaboratorAssetType}
         assetId={addCollaboratorAssetId}
-        existingCollaborators={[]}
+        context="development"
+        canManage={true}
       />
     </div>
   );

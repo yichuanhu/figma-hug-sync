@@ -38,7 +38,7 @@ import CreateCredentialModal from './components/CreateCredentialModal';
 import EditCredentialModal from './components/EditCredentialModal';
 import CredentialDetailDrawer from './components/CredentialDetailDrawer';
 import LinkPersonalCredentialModal from './components/LinkPersonalCredentialModal';
-import CollaboratorAddModal from '@/components/CollaboratorManager/CollaboratorAddModal';
+import CollaboratorPanel from '@/components/CollaboratorManager/CollaboratorPanel';
 import type { CollaboratorAssetType } from '@/api/index';
 
 import './index.less';
@@ -659,13 +659,13 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
         }}
       />
 
-      <CollaboratorAddModal
+      <CollaboratorPanel
         visible={addCollaboratorModalVisible}
-        onClose={() => setAddCollaboratorModalVisible(false)}
-        onSuccess={() => setAddCollaboratorModalVisible(false)}
+        onVisibleChange={setAddCollaboratorModalVisible}
         assetType={'CREDENTIAL' as CollaboratorAssetType}
         assetId={addCollaboratorAssetId}
-        existingCollaborators={[]}
+        context="development"
+        canManage={true}
       />
     </div>
   );

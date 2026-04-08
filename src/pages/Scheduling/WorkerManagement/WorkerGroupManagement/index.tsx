@@ -31,7 +31,7 @@ import CreateWorkerGroupModal from './components/CreateWorkerGroupModal';
 import EditWorkerGroupModal from './components/EditWorkerGroupModal';
 import AddMembersModal from './components/AddMembersModal';
 import type { LYWorkerGroupResponse, LYListResponseLYWorkerGroupResponse, GetWorkerGroupsParams, CollaboratorAssetType } from '@/api';
-import CollaboratorAddModal from '@/components/CollaboratorManager/CollaboratorAddModal';
+import CollaboratorPanel from '@/components/CollaboratorManager/CollaboratorPanel';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -529,13 +529,13 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
         onSuccess={loadData}
       />
 
-      <CollaboratorAddModal
+      <CollaboratorPanel
         visible={addCollaboratorModalVisible}
-        onClose={() => setAddCollaboratorModalVisible(false)}
-        onSuccess={() => setAddCollaboratorModalVisible(false)}
+        onVisibleChange={setAddCollaboratorModalVisible}
         assetType={'WORKER_GROUP' as CollaboratorAssetType}
         assetId={addCollaboratorAssetId}
-        existingCollaborators={[]}
+        context="development"
+        canManage={true}
       />
     </div>
   );

@@ -39,7 +39,7 @@ import type {
 import CreateTemplateModal from './components/CreateTemplateModal';
 import EditTemplateModal from './components/EditTemplateModal';
 import TemplateDetailDrawer from './components/TemplateDetailDrawer';
-import CollaboratorAddModal from '@/components/CollaboratorManager/CollaboratorAddModal';
+import CollaboratorPanel from '@/components/CollaboratorManager/CollaboratorPanel';
 import type { CollaboratorAssetType } from '@/api';
 import './index.less';
 
@@ -563,14 +563,14 @@ const TemplateManagementPage = () => {
           initialTab={detailInitialTab}
         />
 
-        <CollaboratorAddModal
-          visible={addCollaboratorModalVisible}
-          onClose={() => setAddCollaboratorModalVisible(false)}
-          onSuccess={() => setAddCollaboratorModalVisible(false)}
-          assetType={'TASK_TEMPLATE' as CollaboratorAssetType}
-          assetId={addCollaboratorAssetId}
-          existingCollaborators={[]}
-        />
+        <CollaboratorPanel
+        visible={addCollaboratorModalVisible}
+        onVisibleChange={setAddCollaboratorModalVisible}
+        assetType={'TASK_TEMPLATE' as CollaboratorAssetType}
+        assetId={addCollaboratorAssetId}
+        context="development"
+        canManage={true}
+      />
       </div>
   );
 };
