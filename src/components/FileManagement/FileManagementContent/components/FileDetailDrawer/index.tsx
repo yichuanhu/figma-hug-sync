@@ -207,6 +207,18 @@ const FileDetailDrawer = ({
                 <Button icon={<IconDeleteStroked className="file-detail-drawer-header-delete-icon" />} theme="borderless" size="small" onClick={handleDelete} />
               </Tooltip>
             )}
+            <CollaboratorPanel
+              assetType="FILE"
+              assetId={file.id}
+              context={context}
+              canManage={canManage}
+              visible={collaboratorPanelVisible}
+              onVisibleChange={setCollaboratorPanelVisible}
+            >
+              <Tooltip content={t('collaborator.tabTitle')}>
+                <Button icon={<Users size={14} strokeWidth={2} />} theme="borderless" size="small" />
+              </Tooltip>
+            </CollaboratorPanel>
             <Divider layout="vertical" className="file-detail-drawer-header-divider" />
             <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
               <Button icon={isFullscreen ? <Minimize2 size={16} strokeWidth={2} /> : <Maximize2 size={16} strokeWidth={2} />} theme="borderless" size="small" onClick={toggleFullscreen} />
