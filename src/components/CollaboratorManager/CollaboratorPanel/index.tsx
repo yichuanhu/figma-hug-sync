@@ -542,16 +542,27 @@ const CollaboratorPanel = ({
         </div>
       )}
 
-      <div style={{ padding: '8px 24px 16px' }}>
-        <Button
-          type="tertiary"
-          icon={<IconFlowChartStroked />}
-          block
-          onClick={() => setAddModalVisible(true)}
-        >
-          {t('collaborator.panel.addFromOrg')}
-        </Button>
-      </div>
+      {selectedUsers.length > 0 ? (
+        <div className="collaborator-panel-batch-actions">
+          <Button type="tertiary" onClick={() => setSelectedUsers([])}>
+            {t('collaborator.actions.cancel')}
+          </Button>
+          <Button type="primary" theme="solid" onClick={handleBatchAdd}>
+            {t('collaborator.actions.confirm')}
+          </Button>
+        </div>
+      ) : (
+        <div style={{ padding: '8px 24px 16px' }}>
+          <Button
+            type="tertiary"
+            icon={<IconFlowChartStroked />}
+            block
+            onClick={() => setAddModalVisible(true)}
+          >
+            {t('collaborator.panel.addFromOrg')}
+          </Button>
+        </div>
+      )}
     </div>
   );
 
