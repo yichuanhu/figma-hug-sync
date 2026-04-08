@@ -288,6 +288,12 @@ const CredentialDetailDrawer = ({
       onPageChange={onPageChange}
       onScrollToRow={onScrollToRow}
       extraActions={extraActions}
+      collaboratorProps={{
+        assetType: 'CREDENTIAL',
+        assetId: credential.credential_id,
+        context,
+        canManage,
+      }}
       defaultWidth={900}
       minWidth={576}
       storageKey="credentialDetailDrawerWidth"
