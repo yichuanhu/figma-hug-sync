@@ -104,7 +104,6 @@ const ParameterDetailDrawer = ({
   );
 
   const handleClose = () => {
-    setActiveTab('basic');
     onClose();
   };
 
