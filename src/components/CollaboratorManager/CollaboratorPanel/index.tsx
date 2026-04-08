@@ -91,8 +91,9 @@ const CollaboratorPanel = ({
   const searchResults = useMemo(() => {
     if (!searchValue.trim()) return [];
     const existingIds = collaborators.map((c) => c.collaborator_id);
-    return searchOrgUsers(searchValue, existingIds);
-  }, [searchValue, collaborators]);
+    const selectedIds = selectedUsers.map((u) => u.id);
+    return searchOrgUsers(searchValue, [...existingIds, ...selectedIds]);
+  }, [searchValue, collaborators, selectedUsers]);
 
   // 管理视图的过滤
   const filteredData = useMemo(() => {
