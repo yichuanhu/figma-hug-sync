@@ -58,15 +58,8 @@ const ParameterDetailDrawer = ({
 }: ParameterDetailDrawerProps) => {
   const { t } = useTranslation();
   const { Text } = Typography;
-  const [activeTab, setActiveTab] = useState(initialTab);
 
   const { canManage } = useCollaboratorPermission('PARAMETER', parameter?.parameter_id);
-
-  const prevVisibleRef = useRef(false);
-  useEffect(() => {
-    if (visible && !prevVisibleRef.current) setActiveTab(initialTab);
-    prevVisibleRef.current = visible;
-  }, [visible, initialTab]);
 
   // 格式化日期
   const formatDate = (dateString: string | null) => {
