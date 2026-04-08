@@ -16,6 +16,8 @@ import {
   IconSearchStroked,
   IconFlowChartStroked,
   IconChevronLeft,
+  IconChevronDown,
+  IconPlus,
 } from '@douyinfe/semi-icons';
 import { User, UserPlus, Building2 } from 'lucide-react';
 import type {
@@ -426,7 +428,7 @@ const CollaboratorPanel = ({
     );
   };
 
-  // Quick view header with avatar group
+  // Quick view header with avatar group (shown inside modal body, not modal title)
   const renderQuickViewHeader = () => (
     <div className="collaborator-panel-header">
       <span className="collaborator-panel-header-title">
@@ -458,48 +460,87 @@ const CollaboratorPanel = ({
     </div>
   );
 
+  // Feishu-style search input box
+  const renderSearchBox = () => (
+    <div className="collaborator-panel-search-area">
+      <div className="collaborator-panel-search-input-box">
+        <div className="collaborator-panel-search-input-left">
+          {selectedUsers.map((user) => (
+            <Tag
+              key={user.id}
+              closable
+              avatarShape="circle"
+              onClose={() => handleDeselectUser(user.id)}
+              size="large"
+              className="collaborator-panel-selected-tag"
+            >
+              {user.name}
+            </Tag>
+          ))}
+          <Input
+            prefix={selectedUsers.length === 0 ? <IconSearchStroked /> : undefined}
+            placeholder={selectedUsers.length === 0 ? t('collaborator.addModal.searchPlaceholder') : ''}
+            value={searchValue}
+            onChange={setSearchValue}
+            showClear
+            size="default"
+            className="collaborator-panel-search-inline-input"
+          />
+        </div>
+        {selectedUsers.length > 0 && (
+          <div className="collaborator-panel-search-input-right">
+            <Popover
+              content={
+                <div style={{ padding: 4 }}>
+                  {(ASSET_AVAILABLE_ROLES[assetType] || []).map((role) => (
+                    <div
+                      key={role}
+                      className={`semi-select-option${batchRole === role ? ' semi-select-option-selected' : ''}`}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '8px 12px',
+                        cursor: 'pointer',
+                        borderRadius: 4,
+                        minWidth: 160,
+                      }}
+                      onClick={() => setBatchRole(role)}
+                    >
+                      <span>{t(`collaborator.roles.${role}`)}</span>
+                      {batchRole === role && (
+                        <span style={{ color: 'var(--semi-color-primary)', marginLeft: 8 }}>✓</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              }
+              trigger="click"
+              position="bottomRight"
+              showArrow={false}
+            >
+              <span className="collaborator-panel-role-text-btn">
+                {t(`collaborator.roles.${batchRole}`)}
+                <IconChevronDown size="small" />
+              </span>
+            </Popover>
+            <div
+              className="collaborator-panel-add-btn"
+              onClick={handleBatchAdd}
+            >
+              <IconPlus size="small" />
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
   // Quick view content
   const renderQuickView = () => (
     <div className="collaborator-panel-quick">
       {renderQuickViewHeader()}
-
-      {/* 搜索输入区：已选 Tag + 搜索框 + 角色选择 */}
-      <div className="collaborator-panel-search-area">
-        <div className="collaborator-panel-search-input-row">
-          <div className="collaborator-panel-search-tags-input">
-            {selectedUsers.map((user) => (
-              <Tag
-                key={user.id}
-                closable
-                onClose={() => handleDeselectUser(user.id)}
-                size="large"
-                color="light-blue"
-                className="collaborator-panel-selected-tag"
-              >
-                {user.name}
-              </Tag>
-            ))}
-            <Input
-              prefix={selectedUsers.length === 0 ? <IconSearchStroked /> : undefined}
-              placeholder={selectedUsers.length === 0 ? t('collaborator.addModal.searchPlaceholder') : ''}
-              value={searchValue}
-              onChange={setSearchValue}
-              showClear
-              size="default"
-              className="collaborator-panel-search-inline-input"
-            />
-          </div>
-          {selectedUsers.length > 0 && (
-            <CollaboratorRoleSelect
-              value={batchRole}
-              onChange={(role) => setBatchRole(role)}
-              assetType={assetType}
-              disabled={false}
-              size="small"
-            />
-          )}
-        </div>
-      </div>
+      {renderSearchBox()}
 
       {/* 搜索结果列表 */}
       {searchValue.trim() && (
@@ -511,18 +552,6 @@ const CollaboratorPanel = ({
               <Text type="tertiary" size="small">{t('collaborator.panel.noSearchResults')}</Text>
             </div>
           )}
-        </div>
-      )}
-
-      {/* 批量操作按钮 */}
-      {selectedUsers.length > 0 && (
-        <div className="collaborator-panel-batch-actions">
-          <Button theme="light" onClick={() => { setSelectedUsers([]); setSearchValue(''); }}>
-            {t('common.cancel')}
-          </Button>
-          <Button theme="solid" type="primary" onClick={handleBatchAdd}>
-            {t('collaborator.panel.done')}
-          </Button>
         </div>
       )}
 
@@ -541,17 +570,6 @@ const CollaboratorPanel = ({
   // Manage view content
   const renderManageView = () => (
     <div className="collaborator-panel-manage">
-      <div className="collaborator-panel-manage-header">
-        <div
-          className="collaborator-panel-manage-back"
-          onClick={() => setPanelView('quick')}
-        >
-          <IconChevronLeft size="small" />
-          <span className="collaborator-panel-header-title" style={{ fontSize: 15 }}>
-            {t('collaborator.panel.manageTitle')}
-          </span>
-        </div>
-      </div>
       <div className="collaborator-panel-manage-subtitle">
         <Text size="small" type="tertiary">
           {t('collaborator.panel.allAccessUsers')}
@@ -579,6 +597,16 @@ const CollaboratorPanel = ({
     </div>
   );
 
+  const modalTitle = panelView === 'manage' ? (
+    <div
+      className="collaborator-panel-manage-back"
+      onClick={() => setPanelView('quick')}
+    >
+      <IconChevronLeft size="small" />
+      <span>{t('collaborator.panel.manageTitle')}</span>
+    </div>
+  ) : undefined;
+
   return (
     <>
       <Modal
@@ -586,7 +614,7 @@ const CollaboratorPanel = ({
         onCancel={() => onVisibleChange(false)}
         footer={null}
         closable
-        title={null}
+        title={modalTitle}
         width={480}
         className="collaborator-panel-modal"
         bodyStyle={{ padding: 0 }}
