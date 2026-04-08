@@ -552,14 +552,15 @@ const CollaboratorPanel = ({
         </div>
       )}
 
-      <div
-        className="collaborator-panel-action-row"
-        onClick={() => setAddModalVisible(true)}
-      >
-        <div className="collaborator-panel-action-row-icon">
-          <IconFlowChartStroked size="small" />
-        </div>
-        <Text>{t('collaborator.panel.addFromOrg')}</Text>
+      <div style={{ padding: '8px 24px 16px' }}>
+        <Button
+          type="tertiary"
+          icon={<IconFlowChartStroked />}
+          block
+          onClick={() => setAddModalVisible(true)}
+        >
+          {t('collaborator.panel.addFromOrg')}
+        </Button>
       </div>
     </div>
   );
