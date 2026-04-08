@@ -299,20 +299,22 @@ function DetailDrawerWrapper<T>({
 
               {/* 协作者分享按钮 */}
               {collaboratorProps && (
-                <CollaboratorPanel
-                  assetType={collaboratorProps.assetType}
-                  assetId={collaboratorProps.assetId}
-                  context={collaboratorProps.context}
-                  canManage={collaboratorProps.canManage}
-                  visible={collaboratorPanelVisible}
-                  onVisibleChange={setCollaboratorPanelVisible}
-                >
+                <>
                   <Button
                     icon={<Users size={14} strokeWidth={2} />}
                     theme="borderless"
                     size="small"
+                    onClick={() => setCollaboratorPanelVisible(true)}
                   />
-                </CollaboratorPanel>
+                  <CollaboratorPanel
+                    assetType={collaboratorProps.assetType}
+                    assetId={collaboratorProps.assetId}
+                    context={collaboratorProps.context}
+                    canManage={collaboratorProps.canManage}
+                    visible={collaboratorPanelVisible}
+                    onVisibleChange={setCollaboratorPanelVisible}
+                  />
+                </>
               )}
 
               {/* 如果有额外操作按钮或协作者按钮，添加分隔线 */}

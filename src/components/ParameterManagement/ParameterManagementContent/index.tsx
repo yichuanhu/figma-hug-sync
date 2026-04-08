@@ -37,7 +37,7 @@ import type {
 import CreateParameterModal from './components/CreateParameterModal';
 import EditParameterModal from './components/EditParameterModal';
 import ParameterDetailDrawer from './components/ParameterDetailDrawer';
-import CollaboratorAddModal from '@/components/CollaboratorManager/CollaboratorAddModal';
+import CollaboratorPanel from '@/components/CollaboratorManager/CollaboratorPanel';
 import type { CollaboratorAssetType } from '@/api/index';
 
 import './index.less';
@@ -604,13 +604,13 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
         }}
       />
 
-      <CollaboratorAddModal
+      <CollaboratorPanel
         visible={addCollaboratorModalVisible}
-        onClose={() => setAddCollaboratorModalVisible(false)}
-        onSuccess={() => setAddCollaboratorModalVisible(false)}
+        onVisibleChange={setAddCollaboratorModalVisible}
         assetType={'PARAMETER' as CollaboratorAssetType}
         assetId={addCollaboratorAssetId}
-        existingCollaborators={[]}
+        context="development"
+        canManage={true}
       />
     </div>
   );

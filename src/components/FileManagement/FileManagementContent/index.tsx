@@ -37,7 +37,7 @@ import type {
 import UploadFileModal from './components/UploadFileModal';
 import ReuploadFileModal from './components/ReuploadFileModal';
 import FileDetailDrawer from './components/FileDetailDrawer';
-import CollaboratorAddModal from '@/components/CollaboratorManager/CollaboratorAddModal';
+import CollaboratorPanel from '@/components/CollaboratorManager/CollaboratorPanel';
 import type { CollaboratorAssetType } from '@/api/index';
 
 import './index.less';
@@ -652,13 +652,13 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
       />
 
       {/* 添加协作者弹窗 */}
-      <CollaboratorAddModal
+      <CollaboratorPanel
         visible={addCollaboratorModalVisible}
-        onClose={() => setAddCollaboratorModalVisible(false)}
-        onSuccess={() => setAddCollaboratorModalVisible(false)}
+        onVisibleChange={setAddCollaboratorModalVisible}
         assetType={'FILE' as CollaboratorAssetType}
         assetId={addCollaboratorAssetId}
-        existingCollaborators={[]}
+        context="development"
+        canManage={true}
       />
     </div>
   );

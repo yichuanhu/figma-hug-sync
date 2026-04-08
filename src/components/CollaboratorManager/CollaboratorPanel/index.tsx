@@ -42,7 +42,6 @@ interface CollaboratorPanelProps {
   canManage: boolean;
   visible: boolean;
   onVisibleChange: (visible: boolean) => void;
-  children: React.ReactNode;
 }
 
 const CollaboratorPanel = ({
@@ -52,7 +51,6 @@ const CollaboratorPanel = ({
   canManage,
   visible,
   onVisibleChange,
-  children,
 }: CollaboratorPanelProps) => {
   const { t } = useTranslation();
   const [panelView, setPanelView] = useState<'quick' | 'manage'>('quick');
@@ -156,7 +154,7 @@ const CollaboratorPanel = ({
     [t, cascadeRemove, canCascade, cascadeCount, assetType, assetId]
   );
 
-  // 快捷添加：从搜索结果中添加用户，选定角色后直接添加
+  // 快捷添加：从搜索结果中添加用户
   const handleSearchAdd = useCallback(
     (user: OrgUser, role: CollaboratorRole) => {
       addCollaborators(assetType, assetId, [
@@ -429,7 +427,7 @@ const CollaboratorPanel = ({
   // Quick view header with avatar group
   const renderQuickViewHeader = () => (
     <div className="collaborator-panel-header">
-      <Text strong>{t('collaborator.tabTitle')}</Text>
+      <Text strong>{t('collaborator.actions.addCollaborator')}</Text>
       <div
         className="collaborator-panel-header-right"
         onClick={() => setPanelView('manage')}
@@ -532,9 +530,22 @@ const CollaboratorPanel = ({
     </div>
   );
 
-  const panelContent = (
-    <div className="collaborator-panel">
-      {panelView === 'quick' ? renderQuickView() : renderManageView()}
+  return (
+    <>
+      <Modal
+        visible={visible}
+        onCancel={() => onVisibleChange(false)}
+        footer={null}
+        closable
+        title={null}
+        width={480}
+        className="collaborator-panel-modal"
+        bodyStyle={{ padding: 0 }}
+      >
+        <div className="collaborator-panel">
+          {panelView === 'quick' ? renderQuickView() : renderManageView()}
+        </div>
+      </Modal>
       <CollaboratorAddModal
         visible={addModalVisible}
         onClose={() => setAddModalVisible(false)}
@@ -543,21 +554,7 @@ const CollaboratorPanel = ({
         assetId={assetId}
         existingCollaborators={collaborators}
       />
-    </div>
-  );
-
-  return (
-    <Popover
-      content={panelContent}
-      visible={visible}
-      onVisibleChange={onVisibleChange}
-      trigger="click"
-      position="bottomRight"
-      showArrow={false}
-      stopPropagation
-    >
-      {children}
-    </Popover>
+    </>
   );
 };
 

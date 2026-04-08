@@ -38,7 +38,7 @@ import type {
 import CreateTimeTriggerModal from '../CreateTimeTriggerModal';
 import EditTimeTriggerModal from '../EditTimeTriggerModal';
 import TimeTriggerDetailDrawer from '../TimeTriggerDetailDrawer';
-import CollaboratorAddModal from '@/components/CollaboratorManager/CollaboratorAddModal';
+import CollaboratorPanel from '@/components/CollaboratorManager/CollaboratorPanel';
 import type { CollaboratorAssetType } from '@/api';
 import './index.less';
 
@@ -622,13 +622,13 @@ const TimeTriggerList = () => {
         initialTab={detailInitialTab}
       />
 
-      <CollaboratorAddModal
+      <CollaboratorPanel
         visible={addCollaboratorModalVisible}
-        onClose={() => setAddCollaboratorModalVisible(false)}
-        onSuccess={() => setAddCollaboratorModalVisible(false)}
+        onVisibleChange={setAddCollaboratorModalVisible}
         assetType={'TRIGGER' as CollaboratorAssetType}
         assetId={addCollaboratorAssetId}
-        existingCollaborators={[]}
+        context="scheduling"
+        canManage={true}
       />
     </div>
   );

@@ -39,7 +39,7 @@ import CreateWorkerModal from './components/CreateWorkerModal';
 import EditWorkerModal from './components/EditWorkerModal';
 import AddToGroupModal from './components/AddToGroupModal';
 import type { LYWorkerResponse, LYListResponseLYWorkerResponse, GetWorkersParams, CollaboratorAssetType } from '@/api';
-import CollaboratorAddModal from '@/components/CollaboratorManager/CollaboratorAddModal';
+import CollaboratorPanel from '@/components/CollaboratorManager/CollaboratorPanel';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -1064,13 +1064,13 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
         onSuccess={handleAddToGroupSuccess}
       />
 
-      <CollaboratorAddModal
+      <CollaboratorPanel
         visible={addCollaboratorModalVisible}
-        onClose={() => setAddCollaboratorModalVisible(false)}
-        onSuccess={() => setAddCollaboratorModalVisible(false)}
+        onVisibleChange={setAddCollaboratorModalVisible}
         assetType={'WORKER' as CollaboratorAssetType}
         assetId={addCollaboratorAssetId}
-        existingCollaborators={[]}
+        context="scheduling"
+        canManage={true}
       />
     </div>
   );

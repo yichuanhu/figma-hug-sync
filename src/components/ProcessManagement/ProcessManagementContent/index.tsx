@@ -34,7 +34,7 @@ import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
 import ProcessDetailDrawer from './components/ProcessDetailDrawer';
 import { useOpenProcess } from './hooks/useOpenProcess';
-import CollaboratorAddModal from '@/components/CollaboratorManager/CollaboratorAddModal';
+import CollaboratorPanel from '@/components/CollaboratorManager/CollaboratorPanel';
 import type { LYProcessResponse, GetProcessesParams, LYListResponseLYProcessResponse, CollaboratorAssetType } from '@/api';
 import './index.less';
 
@@ -682,13 +682,13 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       {/* 打开流程确认弹窗 - 仅开发中心 */}
       {!isSchedulingContext && <OpenProcessModal />}
 
-      <CollaboratorAddModal
+      <CollaboratorPanel
         visible={addCollaboratorModalVisible}
-        onClose={() => setAddCollaboratorModalVisible(false)}
-        onSuccess={() => setAddCollaboratorModalVisible(false)}
+        onVisibleChange={setAddCollaboratorModalVisible}
         assetType={'PROCESS' as CollaboratorAssetType}
         assetId={addCollaboratorAssetId}
-        existingCollaborators={[]}
+        context="development"
+        canManage={true}
       />
     </div>
   );
