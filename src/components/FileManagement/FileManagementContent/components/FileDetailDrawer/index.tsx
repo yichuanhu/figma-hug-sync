@@ -78,9 +78,8 @@ const FileDetailDrawer = ({
 
   const prevVisibleRef = useRef(false);
   useEffect(() => {
-    if (visible && !prevVisibleRef.current) setActiveTab(initialTab);
     prevVisibleRef.current = visible;
-  }, [visible, initialTab]);
+  }, [visible]);
 
   // 保存宽度到 localStorage
   useEffect(() => {
