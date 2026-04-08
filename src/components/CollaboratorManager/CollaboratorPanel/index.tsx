@@ -59,6 +59,10 @@ const CollaboratorPanel = ({
   const [searchValue, setSearchValue] = useState('');
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [quickAddingId, setQuickAddingId] = useState<string | null>(null);
+  const [selectedUsers, setSelectedUsers] = useState<OrgUser[]>([]);
+  const [batchRole, setBatchRole] = useState<CollaboratorRole>(
+    ASSET_AVAILABLE_ROLES[assetType]?.[ASSET_AVAILABLE_ROLES[assetType].length - 1] || 'OBSERVER'
+  );
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
 
   const { cascadeRemove, cascadeUpdateRole, canCascade, cascadeCount } =
@@ -77,16 +81,19 @@ const CollaboratorPanel = ({
       setPanelView('quick');
       setSearchValue('');
       setQuickAddingId(null);
+      setSelectedUsers([]);
+      setBatchRole(ASSET_AVAILABLE_ROLES[assetType]?.[ASSET_AVAILABLE_ROLES[assetType].length - 1] || 'OBSERVER');
       setExpandedRows(new Set());
     }
-  }, [visible, loadData]);
+  }, [visible, loadData, assetType]);
 
   // 搜索结果：从组织架构中搜索，排除已有协作者
   const searchResults = useMemo(() => {
     if (!searchValue.trim()) return [];
     const existingIds = collaborators.map((c) => c.collaborator_id);
-    return searchOrgUsers(searchValue, existingIds);
-  }, [searchValue, collaborators]);
+    const selectedIds = selectedUsers.map((u) => u.id);
+    return searchOrgUsers(searchValue, [...existingIds, ...selectedIds]);
+  }, [searchValue, collaborators, selectedUsers]);
 
   // 管理视图的过滤
   const filteredData = useMemo(() => {
@@ -154,25 +161,37 @@ const CollaboratorPanel = ({
     [t, cascadeRemove, canCascade, cascadeCount, assetType, assetId]
   );
 
-  // 快捷添加：从搜索结果中添加用户
-  const handleSearchAdd = useCallback(
-    (user: OrgUser, role: CollaboratorRole) => {
-      addCollaborators(assetType, assetId, [
-        {
-          collaborator_type: 'USER',
-          collaborator_id: user.id,
-          collaborator_name: user.name,
-          department_name: user.department,
-          role,
-        },
-      ]);
-      setCollaborators(getCollaborators(assetType, assetId));
-      setQuickAddingId(null);
-      setSearchValue('');
-      Toast.success(t('collaborator.quickAddSuccess'));
-    },
-    [assetType, assetId, t]
-  );
+  // 批量添加：将所有已选用户以统一角色添加
+  const handleBatchAdd = useCallback(() => {
+    if (selectedUsers.length === 0) return;
+    addCollaborators(
+      assetType,
+      assetId,
+      selectedUsers.map((user) => ({
+        collaborator_type: 'USER' as const,
+        collaborator_id: user.id,
+        collaborator_name: user.name,
+        department_name: user.department,
+        role: batchRole,
+      }))
+    );
+    setCollaborators(getCollaborators(assetType, assetId));
+    setSelectedUsers([]);
+    setSearchValue('');
+    setBatchRole(ASSET_AVAILABLE_ROLES[assetType]?.[ASSET_AVAILABLE_ROLES[assetType].length - 1] || 'OBSERVER');
+    Toast.success(t('collaborator.quickAddSuccess'));
+  }, [assetType, assetId, selectedUsers, batchRole, t]);
+
+  // 点击搜索结果选中用户
+  const handleSelectUser = useCallback((user: OrgUser) => {
+    setSelectedUsers((prev) => [...prev, user]);
+    setSearchValue('');
+  }, []);
+
+  // 移除已选用户
+  const handleDeselectUser = useCallback((userId: string) => {
+    setSelectedUsers((prev) => prev.filter((u) => u.id !== userId));
+  }, []);
 
   const handleQuickAdd = useCallback(
     (record: AssetCollaborator, role: CollaboratorRole) => {
@@ -378,12 +397,15 @@ const CollaboratorPanel = ({
     );
   };
 
-  // 渲染搜索结果中的用户行
+  // 渲染搜索结果中的用户行（点击即选中）
   const renderSearchResultItem = (user: OrgUser) => {
-    const isSelecting = quickAddingId === user.id;
-
     return (
-      <div key={user.id} className="collaborator-panel-item">
+      <div
+        key={user.id}
+        className="collaborator-panel-item"
+        style={{ cursor: 'pointer' }}
+        onClick={() => handleSelectUser(user)}
+      >
         <div className="collaborator-panel-item-left">
           <Avatar
             size="small"
@@ -399,26 +421,6 @@ const CollaboratorPanel = ({
               {user.department}
             </Text>
           </div>
-        </div>
-        <div className="collaborator-panel-item-right">
-          {isSelecting ? (
-            <CollaboratorRoleSelect
-              value={ASSET_AVAILABLE_ROLES[assetType]?.[0] || 'OBSERVER'}
-              onChange={(role) => handleSearchAdd(user, role)}
-              assetType={assetType}
-              disabled={false}
-              size="small"
-            />
-          ) : (
-            <Button
-              size="small"
-              theme="light"
-              type="primary"
-              onClick={() => setQuickAddingId(user.id)}
-            >
-              {t('common.add')}
-            </Button>
-          )}
         </div>
       </div>
     );
@@ -457,16 +459,45 @@ const CollaboratorPanel = ({
   const renderQuickView = () => (
     <div className="collaborator-panel-quick">
       {renderQuickViewHeader()}
-      <div className="collaborator-panel-search">
-        <Input
-          prefix={<IconSearchStroked />}
-          placeholder={t('collaborator.addModal.searchPlaceholder')}
-          value={searchValue}
-          onChange={setSearchValue}
-          showClear
-          size="default"
-        />
+
+      {/* 搜索输入区：已选 Tag + 搜索框 + 角色选择 */}
+      <div className="collaborator-panel-search-area">
+        <div className="collaborator-panel-search-input-row">
+          <div className="collaborator-panel-search-tags-input">
+            {selectedUsers.map((user) => (
+              <Tag
+                key={user.id}
+                closable
+                onClose={() => handleDeselectUser(user.id)}
+                size="large"
+                color="light-blue"
+                className="collaborator-panel-selected-tag"
+              >
+                {user.name}
+              </Tag>
+            ))}
+            <Input
+              prefix={selectedUsers.length === 0 ? <IconSearchStroked /> : undefined}
+              placeholder={selectedUsers.length === 0 ? t('collaborator.addModal.searchPlaceholder') : ''}
+              value={searchValue}
+              onChange={setSearchValue}
+              showClear
+              size="default"
+              className="collaborator-panel-search-inline-input"
+            />
+          </div>
+          {selectedUsers.length > 0 && (
+            <CollaboratorRoleSelect
+              value={batchRole}
+              onChange={(role) => setBatchRole(role)}
+              assetType={assetType}
+              disabled={false}
+              size="small"
+            />
+          )}
+        </div>
       </div>
+
       {/* 搜索结果列表 */}
       {searchValue.trim() && (
         <div className="collaborator-panel-search-results">
@@ -479,6 +510,19 @@ const CollaboratorPanel = ({
           )}
         </div>
       )}
+
+      {/* 批量操作按钮 */}
+      {selectedUsers.length > 0 && (
+        <div className="collaborator-panel-batch-actions">
+          <Button theme="light" onClick={() => { setSelectedUsers([]); setSearchValue(''); }}>
+            {t('common.cancel')}
+          </Button>
+          <Button theme="solid" type="primary" onClick={handleBatchAdd}>
+            {t('collaborator.panel.done')}
+          </Button>
+        </div>
+      )}
+
       <div
         className="collaborator-panel-action-row"
         onClick={() => setAddModalVisible(true)}
