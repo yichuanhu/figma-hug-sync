@@ -2525,7 +2525,8 @@
       "allAccessUsers": "所有可访问此资产的用户",
       "addFromOrg": "从组织架构添加",
       "peopleCount": "{{count}}人",
-      "noSearchResults": "未找到匹配的用户"
+      "noSearchResults": "未找到匹配的用户",
+      "done": "完成"
     }
   }
 }

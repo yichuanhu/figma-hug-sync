@@ -3161,7 +3161,8 @@
       "allAccessUsers": "All users with access to this asset",
       "addFromOrg": "Add from organization",
       "peopleCount": "{{count}} people",
-      "noSearchResults": "No matching users found"
+      "noSearchResults": "No matching users found",
+      "done": "Done"
     }
   }
 }
