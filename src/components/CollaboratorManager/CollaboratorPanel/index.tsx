@@ -460,9 +460,10 @@ const CollaboratorPanel = ({
     </div>
   );
 
-  // Feishu-style search input box
+  // Feishu-style unified search input
   const renderSearchBox = () => (
-      <div className="collaborator-panel-search-input-box">
+    <div className="collaborator-panel-search-input-box">
+      <div className="collaborator-panel-search-input-left">
         {selectedUsers.map((user) => (
           <Tag
             key={user.id}
@@ -475,62 +476,51 @@ const CollaboratorPanel = ({
             {user.name}
           </Tag>
         ))}
-        <Input
-          prefix={selectedUsers.length === 0 ? <IconSearchStroked /> : undefined}
+        <input
+          className="collaborator-panel-search-native-input"
           placeholder={selectedUsers.length === 0 ? t('collaborator.addModal.searchPlaceholder') : ''}
           value={searchValue}
-          onChange={setSearchValue}
-          showClear
-          size="default"
-          className="collaborator-panel-search-inline-input"
+          onChange={(e) => setSearchValue(e.target.value)}
         />
-        {selectedUsers.length > 0 && (
-          <>
-            <span className="collaborator-panel-search-divider" />
-            <Popover
-              content={
-                <div style={{ padding: 4 }}>
-                  {(ASSET_AVAILABLE_ROLES[assetType] || []).map((role) => (
-                    <div
-                      key={role}
-                      className={`semi-select-option${batchRole === role ? ' semi-select-option-selected' : ''}`}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        padding: '8px 12px',
-                        cursor: 'pointer',
-                        borderRadius: 4,
-                        minWidth: 160,
-                      }}
-                      onClick={() => setBatchRole(role)}
-                    >
-                      <span>{t(`collaborator.roles.${role}`)}</span>
-                      {batchRole === role && (
-                        <span style={{ color: 'var(--semi-color-primary)', marginLeft: 8 }}>✓</span>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              }
-              trigger="click"
-              position="bottomRight"
-              showArrow={false}
-            >
-              <span className="collaborator-panel-role-text-btn">
-                {t(`collaborator.roles.${batchRole}`)}
-                <IconChevronDown size="small" />
-              </span>
-            </Popover>
-            <div
-              className="collaborator-panel-add-btn"
-              onClick={handleBatchAdd}
-            >
-              <IconPlus size="small" />
-            </div>
-          </>
-        )}
       </div>
+      {selectedUsers.length > 0 && (
+        <Popover
+          content={
+            <div style={{ padding: 4 }}>
+              {(ASSET_AVAILABLE_ROLES[assetType] || []).map((role) => (
+                <div
+                  key={role}
+                  className={`semi-select-option${batchRole === role ? ' semi-select-option-selected' : ''}`}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '8px 12px',
+                    cursor: 'pointer',
+                    borderRadius: 4,
+                    minWidth: 160,
+                  }}
+                  onClick={() => setBatchRole(role)}
+                >
+                  <span>{t(`collaborator.roles.${role}`)}</span>
+                  {batchRole === role && (
+                    <span style={{ color: 'var(--semi-color-primary)', marginLeft: 8 }}>✓</span>
+                  )}
+                </div>
+              ))}
+            </div>
+          }
+          trigger="click"
+          position="bottomRight"
+          showArrow={false}
+        >
+          <span className="collaborator-panel-role-text-btn">
+            {t(`collaborator.roles.${batchRole}`)}
+            <IconChevronDown size="small" />
+          </span>
+        </Popover>
+      )}
+    </div>
   );
 
   // Quick view content
