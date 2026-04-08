@@ -81,9 +81,11 @@ const CollaboratorPanel = ({
       setPanelView('quick');
       setSearchValue('');
       setQuickAddingId(null);
+      setSelectedUsers([]);
+      setBatchRole(ASSET_AVAILABLE_ROLES[assetType]?.[ASSET_AVAILABLE_ROLES[assetType].length - 1] || 'OBSERVER');
       setExpandedRows(new Set());
     }
-  }, [visible, loadData]);
+  }, [visible, loadData, assetType]);
 
   // 搜索结果：从组织架构中搜索，排除已有协作者
   const searchResults = useMemo(() => {
