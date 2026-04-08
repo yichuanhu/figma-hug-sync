@@ -8,6 +8,9 @@ import {
   IconChevronLeft,
   IconChevronRight,
 } from '@douyinfe/semi-icons';
+import { Users } from 'lucide-react';
+import type { CollaboratorAssetType } from '@/api/index';
+import CollaboratorPanel from '@/components/CollaboratorManager/CollaboratorPanel';
 import './index.less';
 
 const { Title } = Typography;
