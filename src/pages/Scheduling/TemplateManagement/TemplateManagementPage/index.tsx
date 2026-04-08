@@ -568,7 +568,7 @@ const TemplateManagementPage = () => {
         onVisibleChange={setAddCollaboratorModalVisible}
         assetType={'TASK_TEMPLATE' as CollaboratorAssetType}
         assetId={addCollaboratorAssetId}
-        context="development"
+        context="scheduling"
         canManage={true}
       />
       </div>

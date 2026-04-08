@@ -534,7 +534,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
         onVisibleChange={setAddCollaboratorModalVisible}
         assetType={'WORKER_GROUP' as CollaboratorAssetType}
         assetId={addCollaboratorAssetId}
-        context="development"
+        context="scheduling"
         canManage={true}
       />
     </div>

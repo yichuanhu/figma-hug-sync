@@ -1069,7 +1069,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
         onVisibleChange={setAddCollaboratorModalVisible}
         assetType={'WORKER' as CollaboratorAssetType}
         assetId={addCollaboratorAssetId}
-        context="development"
+        context="scheduling"
         canManage={true}
       />
     </div>

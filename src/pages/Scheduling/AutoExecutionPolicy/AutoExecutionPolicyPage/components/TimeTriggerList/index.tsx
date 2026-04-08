@@ -627,7 +627,7 @@ const TimeTriggerList = () => {
         onVisibleChange={setAddCollaboratorModalVisible}
         assetType={'TRIGGER' as CollaboratorAssetType}
         assetId={addCollaboratorAssetId}
-        context="development"
+        context="scheduling"
         canManage={true}
       />
     </div>
