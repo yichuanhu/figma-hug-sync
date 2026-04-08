@@ -462,7 +462,6 @@ const CollaboratorPanel = ({
 
   // Feishu-style search input box
   const renderSearchBox = () => (
-    <div className="collaborator-panel-search-area">
       <div className="collaborator-panel-search-input-box">
         {selectedUsers.map((user) => (
           <Tag
