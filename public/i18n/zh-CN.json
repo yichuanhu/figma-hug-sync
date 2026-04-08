@@ -7,6 +7,7 @@
     "delete": "删除",
     "edit": "编辑",
     "create": "创建",
+    "add": "添加",
     "reset": "重置",
     "search": "搜索",
     "filter": "筛选",
@@ -2523,7 +2524,8 @@
       "manageTitle": "管理协作者",
       "allAccessUsers": "所有可访问此资产的用户",
       "addFromOrg": "从组织架构添加",
-      "peopleCount": "{{count}}人"
+      "peopleCount": "{{count}}人",
+      "noSearchResults": "未找到匹配的用户"
     }
   }
 }

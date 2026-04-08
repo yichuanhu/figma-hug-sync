@@ -683,3 +683,67 @@ export const getCascadeCount = (
 export const hasCascadeRules = (assetType: CollaboratorAssetType): boolean => {
   return !!(CASCADE_RULES[assetType]?.length);
 };
+
+// ============= 组织架构用户搜索（供快捷添加使用） =============
+
+export interface OrgUser {
+  id: string;
+  name: string;
+  department: string;
+}
+
+/** 组织架构所有用户（与 CollaboratorAddModal 中的 mock 数据保持一致） */
+const ALL_ORG_USERS: OrgUser[] = [
+  { id: 'user-ceo-001', name: 'Michael Chen', department: 'CEO Office' },
+  { id: 'user-n-001', name: 'David Liu', department: 'North China Regional Solution and Delivery Team' },
+  { id: 'user-n-002', name: 'Wenjie Rong', department: 'North China Regional Solution and Delivery Team' },
+  { id: 'user-n-003', name: 'Yue Zhang', department: 'North China Regional Solution and Delivery Team' },
+  { id: 'user-n-004', name: 'Alexander Christopher Wellington-Blackstone III', department: 'North China Regional Solution and Delivery Team' },
+  { id: 'user-north-001', name: 'Lei Wang', department: 'North China Regional Business Division' },
+  { id: 'user-e-001', name: 'Sophia Sun', department: 'East China Regional Business Division' },
+  { id: 'user-e-002', name: 'William Li', department: 'East China Regional Business Division' },
+  { id: 'user-s-001', name: 'Emily Zhao', department: 'South and Southwest China Regional Business Division' },
+  { id: 'user-exp-001', name: 'Jack Zhou', department: 'Expert Enablement Group' },
+  { id: 'user-exp-002', name: 'Fiona Wu', department: 'Expert Enablement Group' },
+  { id: 'user-ps-001', name: 'Henry Zheng', department: 'Professional Services and Customer Success Management Center' },
+  { id: 'user-ps-002', name: 'Josephine Marguerite Beaumont-Richardson', department: 'Professional Services and Customer Success Management Center' },
+  { id: 'user-fe-001', name: 'Charles Feng', department: 'Frontend Development Team' },
+  { id: 'user-fe-002', name: 'Linda Chen', department: 'Frontend Development Team' },
+  { id: 'user-fe-003', name: 'Peng Xu', department: 'Frontend Development Team' },
+  { id: 'user-be-001', name: 'Yang Chu', department: 'Backend Development Team' },
+  { id: 'user-be-002', name: 'Dong Wei', department: 'Backend Development Team' },
+  { id: 'user-ai-001', name: 'Ming Qian', department: 'AI Platform and Large Language Model Application R&D Team' },
+  { id: 'user-ai-002', name: 'Ray Huang', department: 'AI Platform and Large Language Model Application R&D Team' },
+  { id: 'user-qa-001', name: 'Ting Jiang', department: 'Quality Assurance Team' },
+  { id: 'user-prpa-001', name: 'Xiao Deng', department: 'RPA Product Team' },
+  { id: 'user-pidp-001', name: 'Jun Cao', department: 'IDP Product Team' },
+  { id: 'user-pt-001', name: 'Lihong Fan', department: 'Product Team' },
+  { id: 'user-pt-002', name: 'Yichuan Hu', department: 'Product Team' },
+  { id: 'user-pt-003', name: 'Xing Yin', department: 'Product Team' },
+  { id: 'user-dw-001', name: 'Xuan Cai', department: 'Digital Worker Division' },
+  { id: 'user-dw-002', name: 'Linghui Huang', department: 'Digital Worker Division' },
+  { id: 'user-dw-003', name: 'Xiaofeng Lin', department: 'Digital Worker Division' },
+  { id: 'user-mkt-001', name: 'Lisa Tang', department: 'Marketing Department' },
+  { id: 'user-mkt-002', name: 'Bob Shen', department: 'Marketing Department' },
+  { id: 'user-hr-001', name: 'Fei Liang', department: 'Human Resources Department' },
+  { id: 'user-fin-001', name: 'Yun Xie', department: 'Finance Department' },
+  { id: 'user-fin-002', name: 'Hua Pan', department: 'Finance Department' },
+  { id: 'user-001', name: '张三', department: '来也科技-大客户业务中心-APA产品部-产品团队' },
+  { id: 'user-003', name: '王五', department: '来也科技-大客户业务中心-APA产品部-APA-客户端团队' },
+  { id: 'user-004', name: '赵六', department: '来也科技-大客户业务中心-南区BU' },
+  { id: 'user-010', name: '林晓华', department: '来也科技-法务部-合规团队' },
+];
+
+/** 搜索组织架构用户（排除已有协作者） */
+export const searchOrgUsers = (
+  keyword: string,
+  existingCollaboratorIds: string[]
+): OrgUser[] => {
+  if (!keyword.trim()) return [];
+  const lower = keyword.toLowerCase();
+  return ALL_ORG_USERS.filter(
+    (u) =>
+      !existingCollaboratorIds.includes(u.id) &&
+      (u.name.toLowerCase().includes(lower) || u.department.toLowerCase().includes(lower))
+  ).slice(0, 8);
+};

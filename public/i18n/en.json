@@ -9,6 +9,7 @@
     "delete": "Delete",
     "edit": "Edit",
     "create": "Create",
+    "add": "Add",
     "reset": "Reset",
     "search": "Search",
     "filter": "Filter",
@@ -3159,7 +3160,8 @@
       "manageTitle": "Manage Collaborators",
       "allAccessUsers": "All users with access to this asset",
       "addFromOrg": "Add from organization",
-      "peopleCount": "{{count}} people"
+      "peopleCount": "{{count}} people",
+      "noSearchResults": "No matching users found"
     }
   }
 }
