@@ -464,31 +464,30 @@ const CollaboratorPanel = ({
   const renderSearchBox = () => (
     <div className="collaborator-panel-search-area">
       <div className="collaborator-panel-search-input-box">
-        <div className="collaborator-panel-search-input-left">
-          {selectedUsers.map((user) => (
-            <Tag
-              key={user.id}
-              closable
-              avatarShape="circle"
-              onClose={() => handleDeselectUser(user.id)}
-              size="large"
-              className="collaborator-panel-selected-tag"
-            >
-              {user.name}
-            </Tag>
-          ))}
-          <Input
-            prefix={selectedUsers.length === 0 ? <IconSearchStroked /> : undefined}
-            placeholder={selectedUsers.length === 0 ? t('collaborator.addModal.searchPlaceholder') : ''}
-            value={searchValue}
-            onChange={setSearchValue}
-            showClear
-            size="default"
-            className="collaborator-panel-search-inline-input"
-          />
-        </div>
+        {selectedUsers.map((user) => (
+          <Tag
+            key={user.id}
+            closable
+            avatarShape="circle"
+            onClose={() => handleDeselectUser(user.id)}
+            size="large"
+            className="collaborator-panel-selected-tag"
+          >
+            {user.name}
+          </Tag>
+        ))}
+        <Input
+          prefix={selectedUsers.length === 0 ? <IconSearchStroked /> : undefined}
+          placeholder={selectedUsers.length === 0 ? t('collaborator.addModal.searchPlaceholder') : ''}
+          value={searchValue}
+          onChange={setSearchValue}
+          showClear
+          size="default"
+          className="collaborator-panel-search-inline-input"
+        />
         {selectedUsers.length > 0 && (
-          <div className="collaborator-panel-search-input-right">
+          <>
+            <span className="collaborator-panel-search-divider" />
             <Popover
               content={
                 <div style={{ padding: 4 }}>
@@ -530,7 +529,7 @@ const CollaboratorPanel = ({
             >
               <IconPlus size="small" />
             </div>
-          </div>
+          </>
         )}
       </div>
     </div>
