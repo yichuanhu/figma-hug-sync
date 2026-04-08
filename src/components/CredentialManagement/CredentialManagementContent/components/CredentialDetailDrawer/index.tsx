@@ -344,15 +344,6 @@ const CredentialDetailDrawer = ({
             )}
           </div>
         </TabPane>
-
-        <TabPane tab={t('collaborator.tabTitle')} itemKey="collaborators">
-          <CollaboratorTab
-            assetType="CREDENTIAL"
-            assetId={credential.credential_id}
-            context={context}
-            canManage={canManage}
-          />
-        </TabPane>
       </Tabs>
     </DetailDrawerWrapper>
   );
