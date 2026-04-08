@@ -576,14 +576,6 @@ const ProcessDetailDrawer = ({
             </div>
           )}
         </TabPane>
-        <TabPane tab={t('collaborator.tabTitle')} itemKey="collaborators">
-          <CollaboratorTab
-            assetType="PROCESS"
-            assetId={processData.id}
-            context={context}
-            canManage={canManage}
-          />
-        </TabPane>
       </Tabs>
 
       <UploadVersionModal
