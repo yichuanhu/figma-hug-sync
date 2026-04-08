@@ -65,7 +65,7 @@ const FileDetailDrawer = ({
 }: FileDetailDrawerProps) => {
   const { t } = useTranslation();
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [activeTab, setActiveTab] = useState(initialTab);
+  const [collaboratorPanelVisible, setCollaboratorPanelVisible] = useState(false);
   const [drawerWidth, setDrawerWidth] = useState(() => {
     const saved = localStorage.getItem('file-detail-drawer-width');
     return saved ? Math.max(Number(saved), 576) : 900;
