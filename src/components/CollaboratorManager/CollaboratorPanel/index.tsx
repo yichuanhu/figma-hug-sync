@@ -608,6 +608,16 @@ const CollaboratorPanel = ({
     </div>
   );
 
+  const modalTitle = panelView === 'manage' ? (
+    <div
+      className="collaborator-panel-manage-back"
+      onClick={() => setPanelView('quick')}
+    >
+      <IconChevronLeft size="small" />
+      <span>{t('collaborator.panel.manageTitle')}</span>
+    </div>
+  ) : undefined;
+
   return (
     <>
       <Modal
@@ -615,7 +625,7 @@ const CollaboratorPanel = ({
         onCancel={() => onVisibleChange(false)}
         footer={null}
         closable
-        title={null}
+        title={modalTitle}
         width={480}
         className="collaborator-panel-modal"
         bodyStyle={{ padding: 0 }}
