@@ -25,7 +25,7 @@ import {
 import { X, Maximize2, Minimize2 } from 'lucide-react';
 import type { LYFileResponse, FileSource } from '@/api/index';
 import ExpandableText from '@/components/ExpandableText';
-import CollaboratorTab from '@/components/CollaboratorManager/CollaboratorTab';
+import CollaboratorPanel from '@/components/CollaboratorManager/CollaboratorPanel';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 
 import './index.less';
