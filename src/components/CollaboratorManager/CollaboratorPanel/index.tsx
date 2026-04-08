@@ -531,7 +531,6 @@ const CollaboratorPanel = ({
           </>
         )}
       </div>
-    </div>
   );
 
   // Quick view content
