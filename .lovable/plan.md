@@ -1,56 +1,45 @@
 
 
-# 快捷搜索改为批量添加模式（参考飞书）
+# 协作者搜索框统一化 + 组织架构按钮样式优化
 
-## 当前问题
+## 变更概要
 
-搜索到用户后只能逐个添加，每次选一个用户就要选角色并确认，效率低。
-
-## 方案
-
-参考飞书截图，改为：搜索选中用户 → 以 Tag 形式展示在输入框中（可多选、可删除）→ 统一选择角色 → 点击完成批量添加。
-
-### 交互流程
-
-```text
-┌─────────────────────────────────────────┐
-│  添加协作者            [👤👤👤] [8人] → │
-├─────────────────────────────────────────┤
-│  [刘晗 ×] [王明 ×] |     可阅读 ▼  [+] │  ← 输入框内展示已选 Tag + 统一角色选择
-├─────────────────────────────────────────┤
-│  👤 搜索结果1  产品团队                  │  ← 点击即选中，加入 Tag
-│  👤 搜索结果2  技术团队                  │
-├─────────────────────────────────────────┤
-│          [取消]        [完成]            │  ← 有已选用户时显示底部按钮
-├─────────────────────────────────────────┤
-│  📂 从组织架构添加                       │
-└─────────────────────────────────────────┘
-```
+两处修改：
+1. 将搜索框改为单一容器，内部包含：已选 Tag + 搜索输入 + 角色选择按钮 + 添加按钮，去掉当前外层 `.collaborator-panel-search-area` 的额外包裹层
+2. "从组织架构添加"改为 Semi UI 的 `Button` 次按钮样式
 
 ## 文件变更
 
 | 文件 | 变更 |
 |------|------|
-| `CollaboratorPanel/index.tsx` | Quick View 改造为批量选人模式 |
-| `CollaboratorPanel/index.less` | 新增已选 Tag 行、底部按钮样式 |
-| i18n 翻译文件 | 新增 `collaborator.panel.done`、`collaborator.panel.selectedCount` 等 key |
+| `CollaboratorPanel/index.tsx` | 搜索框结构扁平化；组织架构按钮改为 `<Button type="tertiary">` |
+| `CollaboratorPanel/index.less` | 移除 `.collaborator-panel-search-area` 外层样式，调整搜索框为直接挂在面板下的单容器；移除 `.collaborator-panel-action-row` 相关样式，改为按钮区域 |
 
-### 技术细节
+### 具体改动
 
-1. **新增状态**：
-   - `selectedUsers: OrgUser[]` — 已选中待添加的用户列表
-   - `batchRole: CollaboratorRole` — 统一角色，默认取 `ASSET_AVAILABLE_ROLES[assetType][0]`（观察者）
+**1. 搜索框（index.tsx L464-536）**
 
-2. **搜索输入区改造**：
-   - 输入框上方或内部以 Tag 展示已选用户（`Tag` 带 `closable`，点 × 移除）
-   - 输入框右侧固定一个 `CollaboratorRoleSelect`（控制 `batchRole`）
-   - 搜索结果中点击用户 → 加入 `selectedUsers`，同时从搜索结果中排除已选用户
+移除 `.collaborator-panel-search-area` 包裹 div，`.collaborator-panel-search-input-box` 直接作为搜索区域容器，加上 `margin: 0 24px 12px` 定位。内部结构保持不变：`Tag[]` + `Input` + `divider` + `role-text-btn` + `add-btn`，全部在同一个圆角边框容器内。
 
-3. **搜索结果列表**：点击用户行直接选中（无需再点"添加"按钮），已选用户从结果中隐藏
+**2. 组织架构按钮（index.tsx L557-565）**
 
-4. **底部操作栏**：当 `selectedUsers.length > 0` 时，显示「取消」和「完成」按钮。点击「完成」调用 `addCollaborators` 批量添加所有 `selectedUsers`，角色统一为 `batchRole`
+将当前的 `.collaborator-panel-action-row` div 替换为：
 
-5. **重置逻辑**：完成添加或关闭弹窗时，清空 `selectedUsers`、`batchRole`、`searchValue`
+```tsx
+<div style={{ padding: '8px 24px 16px' }}>
+  <Button
+    type="tertiary"
+    icon={<IconFlowChartStroked />}
+    block
+    onClick={() => setAddModalVisible(true)}
+  >
+    {t('collaborator.panel.addFromOrg')}
+  </Button>
+</div>
+```
 
-6. **移除原有逐个添加逻辑**：删除 `handleSearchAdd` 中的单用户模式和搜索结果行的"添加"按钮 + `CollaboratorRoleSelect` 切换
+**3. Less 清理**
+
+- `.collaborator-panel-search-area` 的 `padding` 移到 `.collaborator-panel-search-input-box` 的 `margin` 上
+- 移除快捷视图中 `.collaborator-panel-action-row` 的圆形图标背景样式（管理视图中如果也用到则保留）
 
