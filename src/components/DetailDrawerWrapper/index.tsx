@@ -22,6 +22,13 @@ export interface PaginationInfo {
   total: number;
 }
 
+export interface CollaboratorProps {
+  assetType: CollaboratorAssetType;
+  assetId: string;
+  context: 'development' | 'scheduling';
+  canManage: boolean;
+}
+
 export interface DetailDrawerWrapperProps<T> {
   /** 是否显示抽屉 */
   visible: boolean;
@@ -35,6 +42,8 @@ export interface DetailDrawerWrapperProps<T> {
   extraActions?: ReactNode;
   /** 是否显示导航按钮，默认 true */
   showNavigation?: boolean;
+  /** 协作者面板配置（传入后自动在 header 渲染分享按钮） */
+  collaboratorProps?: CollaboratorProps;
 
   // ========== 导航相关 ==========
   /** 数据列表 */
