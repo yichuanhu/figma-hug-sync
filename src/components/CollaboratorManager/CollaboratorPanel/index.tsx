@@ -59,6 +59,10 @@ const CollaboratorPanel = ({
   const [searchValue, setSearchValue] = useState('');
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [quickAddingId, setQuickAddingId] = useState<string | null>(null);
+  const [selectedUsers, setSelectedUsers] = useState<OrgUser[]>([]);
+  const [batchRole, setBatchRole] = useState<CollaboratorRole>(
+    ASSET_AVAILABLE_ROLES[assetType]?.[ASSET_AVAILABLE_ROLES[assetType].length - 1] || 'OBSERVER'
+  );
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
 
   const { cascadeRemove, cascadeUpdateRole, canCascade, cascadeCount } =
