@@ -56,23 +56,31 @@
     font-size: 12px;
   }
 
-  // ===== Search input box (Feishu style, single container) =====
+  // ===== Feishu-style unified search input =====
   &-search-input-box {
     margin: 0 24px 12px;
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
-    gap: 4px;
     border: 1.5px solid var(--semi-color-border);
     border-radius: 8px;
-    padding: 6px 8px 6px 12px;
-    min-height: 40px;
+    min-height: 36px;
     transition: border-color 0.2s;
     background: var(--semi-color-bg-0);
+    overflow: hidden;
 
     &:focus-within {
       border-color: var(--semi-color-primary);
     }
+  }
+
+  &-search-input-left {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    min-width: 0;
   }
 
   &-selected-tag {
@@ -81,34 +89,20 @@
     max-width: 120px;
   }
 
-  &-search-inline-input {
+  &-search-native-input {
     flex: 1;
-    min-width: 80px;
+    min-width: 60px;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+    line-height: 28px;
+    color: var(--semi-color-text-0);
+    padding: 0;
 
-    .semi-input-wrapper {
-      border: none !important;
-      background: transparent !important;
-      box-shadow: none !important;
-      padding: 0 !important;
-      height: 28px !important;
+    &::placeholder {
+      color: var(--semi-color-text-2);
     }
-
-    .semi-input {
-      font-size: 14px;
-      padding: 0 !important;
-    }
-
-    .semi-input-clearbtn {
-      margin-right: 0;
-    }
-  }
-
-  &-search-divider {
-    width: 1px;
-    height: 20px;
-    background: var(--semi-color-border);
-    flex-shrink: 0;
-    margin: 0 4px;
   }
 
   &-role-text-btn {
@@ -116,35 +110,17 @@
     align-items: center;
     gap: 2px;
     cursor: pointer;
-    color: var(--semi-color-primary);
+    color: var(--semi-color-text-0);
     font-size: 14px;
-    font-weight: 500;
     white-space: nowrap;
-    padding: 2px 4px;
-    border-radius: 4px;
-    transition: background-color 0.15s;
+    padding: 6px 12px;
+    border-left: 1px solid var(--semi-color-border);
     user-select: none;
     flex-shrink: 0;
-
-    &:hover {
-      background-color: var(--semi-color-primary-light-default);
-    }
-  }
-
-  &-add-btn {
-    width: 28px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-    cursor: pointer;
-    color: var(--semi-color-primary);
     transition: background-color 0.15s;
-    flex-shrink: 0;
 
     &:hover {
-      background-color: var(--semi-color-primary-light-default);
+      background-color: var(--semi-color-fill-0);
     }
   }
 
