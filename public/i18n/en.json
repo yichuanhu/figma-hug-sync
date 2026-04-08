@@ -3159,7 +3159,8 @@
       "manageTitle": "Manage Collaborators",
       "allAccessUsers": "All users with access to this asset",
       "addFromOrg": "Add from organization",
-      "peopleCount": "{{count}} people"
+      "peopleCount": "{{count}} people",
+      "noSearchResults": "No matching users found"
     }
   }
 }
