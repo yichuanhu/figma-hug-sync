@@ -429,7 +429,9 @@ const CollaboratorPanel = ({
   // Quick view header with avatar group
   const renderQuickViewHeader = () => (
     <div className="collaborator-panel-header">
-      <Text strong>{t('collaborator.actions.addCollaborator')}</Text>
+      <span className="collaborator-panel-header-title">
+        {t('collaborator.actions.addCollaborator')}
+      </span>
       <div
         className="collaborator-panel-header-right"
         onClick={() => setPanelView('manage')}
@@ -451,6 +453,7 @@ const CollaboratorPanel = ({
         <Tag size="small" type="ghost" className="collaborator-panel-count-tag">
           {t('collaborator.panel.peopleCount', { count: collaborators.length })}
         </Tag>
+        <IconChevronLeft style={{ transform: 'rotate(180deg)', fontSize: 12 }} />
       </div>
     </div>
   );
