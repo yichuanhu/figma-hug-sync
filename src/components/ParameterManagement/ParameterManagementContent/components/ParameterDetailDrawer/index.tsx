@@ -132,62 +132,56 @@ const ParameterDetailDrawer = ({
       minWidth={576}
       storageKey="parameter-detail-drawer-width"
       className="parameter-detail-drawer"
+      collaboratorProps={{
+        assetType: 'PARAMETER',
+        assetId: parameter.parameter_id,
+        context,
+        canManage,
+      }}
     >
-      <Tabs activeKey={activeTab} onChange={setActiveTab} className="parameter-detail-drawer-tabs" keepDOM={false}>
-        <TabPane tab={t('parameter.detail.tabs.basicInfo')} itemKey="basic">
-          <div className="parameter-detail-drawer-content">
-            <Descriptions align="left">
-              <Descriptions.Item itemKey={t('parameter.fields.name')}>
-                {parameter.parameter_name || '-'}
-              </Descriptions.Item>
-              <Descriptions.Item itemKey={t('parameter.fields.type')}>
-                {parameter.parameter_type && (
-                  <Tag color={typeConfig[parameter.parameter_type].color}>
-                    {t(typeConfig[parameter.parameter_type].i18nKey)}
-                  </Tag>
-                )}
-              </Descriptions.Item>
-              <Descriptions.Item
-                itemKey={context === 'development'
-                  ? t('parameter.table.devValue')
-                  : t('parameter.table.prodValue')
-                }
-              >
-                <Text>{getParameterValueDisplay()}</Text>
-              </Descriptions.Item>
-              {context === 'development' && (
-                <Descriptions.Item itemKey={t('parameter.detail.isPublished')}>
-                  {parameter.is_published ? (
-                    <Tag color="green">{t('parameter.detail.published')}</Tag>
-                  ) : (
-                    <Tag color="grey">{t('parameter.detail.unpublished')}</Tag>
-                  )}
-                </Descriptions.Item>
+      <div className="parameter-detail-drawer-content" style={{ padding: '16px 24px' }}>
+        <Descriptions align="left">
+          <Descriptions.Item itemKey={t('parameter.fields.name')}>
+            {parameter.parameter_name || '-'}
+          </Descriptions.Item>
+          <Descriptions.Item itemKey={t('parameter.fields.type')}>
+            {parameter.parameter_type && (
+              <Tag color={typeConfig[parameter.parameter_type].color}>
+                {t(typeConfig[parameter.parameter_type].i18nKey)}
+              </Tag>
+            )}
+          </Descriptions.Item>
+          <Descriptions.Item
+            itemKey={context === 'development'
+              ? t('parameter.table.devValue')
+              : t('parameter.table.prodValue')
+            }
+          >
+            <Text>{getParameterValueDisplay()}</Text>
+          </Descriptions.Item>
+          {context === 'development' && (
+            <Descriptions.Item itemKey={t('parameter.detail.isPublished')}>
+              {parameter.is_published ? (
+                <Tag color="green">{t('parameter.detail.published')}</Tag>
+              ) : (
+                <Tag color="grey">{t('parameter.detail.unpublished')}</Tag>
               )}
-              <Descriptions.Item itemKey={t('common.description')}>
-                <ExpandableText text={parameter.description} maxLines={3} />
-              </Descriptions.Item>
-              <Descriptions.Item itemKey={t('common.creator')}>
-                {parameter.created_by_name ? <UserNameWithCard name={parameter.created_by_name} userId={parameter.created_by} department={parameter.created_by_department || undefined} role={parameter.created_by_role || undefined} email={parameter.created_by_email || undefined} /> : '-'}
-              </Descriptions.Item>
-              <Descriptions.Item itemKey={t('common.createTime')}>
-                {formatDate(parameter.created_at || null)}
-              </Descriptions.Item>
-              <Descriptions.Item itemKey={t('common.updateTime')}>
-                {formatDate(parameter.updated_at || null)}
-              </Descriptions.Item>
-            </Descriptions>
-          </div>
-        </TabPane>
-        <TabPane tab={t('collaborator.tabTitle')} itemKey="collaborators">
-          <CollaboratorTab
-            assetType="PARAMETER"
-            assetId={parameter.parameter_id}
-            context={context}
-            canManage={canManage}
-          />
-        </TabPane>
-      </Tabs>
+            </Descriptions.Item>
+          )}
+          <Descriptions.Item itemKey={t('common.description')}>
+            <ExpandableText text={parameter.description} maxLines={3} />
+          </Descriptions.Item>
+          <Descriptions.Item itemKey={t('common.creator')}>
+            {parameter.created_by_name ? <UserNameWithCard name={parameter.created_by_name} userId={parameter.created_by} department={parameter.created_by_department || undefined} role={parameter.created_by_role || undefined} email={parameter.created_by_email || undefined} /> : '-'}
+          </Descriptions.Item>
+          <Descriptions.Item itemKey={t('common.createTime')}>
+            {formatDate(parameter.created_at || null)}
+          </Descriptions.Item>
+          <Descriptions.Item itemKey={t('common.updateTime')}>
+            {formatDate(parameter.updated_at || null)}
+          </Descriptions.Item>
+        </Descriptions>
+      </div>
     </DetailDrawerWrapper>
   );
 };
