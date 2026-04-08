@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -8,8 +8,6 @@ import {
   Descriptions,
   Tag,
   Tooltip,
-  Tabs,
-  TabPane,
 } from '@douyinfe/semi-ui';
 import {
   IconEditStroked,
@@ -20,7 +18,6 @@ import type { LYQueueResponse } from '@/api/index';
 import ExpandableText from '@/components/ExpandableText';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
-import CollaboratorTab from '@/components/CollaboratorManager/CollaboratorTab';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 
 import './index.less';
@@ -52,20 +49,12 @@ const QueueDetailDrawer = ({
   pagination,
   onPageChange,
   onScrollToRow,
-  initialTab = 'basic',
 }: QueueDetailDrawerProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { Text } = Typography;
-  const [activeTab, setActiveTab] = useState(initialTab);
 
   const { canManage } = useCollaboratorPermission('QUEUE', queue?.queue_id);
-
-  const prevVisibleRef = useRef(false);
-  useEffect(() => {
-    if (visible && !prevVisibleRef.current) setActiveTab(initialTab);
-    prevVisibleRef.current = visible;
-  }, [visible, initialTab]);
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return '-';
@@ -101,15 +90,10 @@ const QueueDetailDrawer = ({
     </>
   );
 
-  const handleClose = () => {
-    setActiveTab('basic');
-    onClose();
-  };
-
   return (
     <DetailDrawerWrapper
       visible={visible}
-      onClose={handleClose}
+      onClose={onClose}
       title={queue.queue_name}
       dataList={allQueues}
       currentId={queue.queue_id}
@@ -119,77 +103,71 @@ const QueueDetailDrawer = ({
       onPageChange={onPageChange}
       onScrollToRow={onScrollToRow}
       extraActions={extraActions}
+      collaboratorProps={{
+        assetType: 'QUEUE',
+        assetId: queue.queue_id,
+        context,
+        canManage,
+      }}
       defaultWidth={900}
       minWidth={576}
       storageKey="queue-detail-drawer-width"
       className="queue-detail-drawer"
     >
-      <Tabs activeKey={activeTab} onChange={setActiveTab} className="queue-detail-drawer-tabs" keepDOM={false}>
-        <TabPane tab={t('queue.detail.tabs.basicInfo')} itemKey="basic">
-          <div className="queue-detail-drawer-content">
-            <Text strong className="queue-detail-drawer-section-title">
-              {t('queue.detail.tabs.basicInfo')}
-            </Text>
-            <Descriptions align="left">
-              <Descriptions.Item itemKey={t('queue.fields.name')}>
-                {queue.queue_name || '-'}
-              </Descriptions.Item>
-              {context === 'development' && (
-                <Descriptions.Item itemKey={t('queue.detail.isPublished')}>
-                  {queue.is_published ? (
-                    <Tag color="green">{t('queue.detail.published')}</Tag>
-                  ) : (
-                    <Tag color="grey">{t('queue.detail.unpublished')}</Tag>
-                  )}
-                </Descriptions.Item>
+      <div className="queue-detail-drawer-content" style={{ padding: '16px 24px' }}>
+        <Text strong className="queue-detail-drawer-section-title">
+          {t('queue.detail.tabs.basicInfo')}
+        </Text>
+        <Descriptions align="left">
+          <Descriptions.Item itemKey={t('queue.fields.name')}>
+            {queue.queue_name || '-'}
+          </Descriptions.Item>
+          {context === 'development' && (
+            <Descriptions.Item itemKey={t('queue.detail.isPublished')}>
+              {queue.is_published ? (
+                <Tag color="green">{t('queue.detail.published')}</Tag>
+              ) : (
+                <Tag color="grey">{t('queue.detail.unpublished')}</Tag>
               )}
-              <Descriptions.Item itemKey={t('common.description')}>
-                <ExpandableText text={queue.description} maxLines={3} />
-              </Descriptions.Item>
-            </Descriptions>
+            </Descriptions.Item>
+          )}
+          <Descriptions.Item itemKey={t('common.description')}>
+            <ExpandableText text={queue.description} maxLines={3} />
+          </Descriptions.Item>
+        </Descriptions>
 
-            <Text strong className="queue-detail-drawer-section-title">
-              {t('queue.detail.messageStats')}
+        <Text strong className="queue-detail-drawer-section-title">
+          {t('queue.detail.messageStats')}
+        </Text>
+        <Descriptions align="left">
+          <Descriptions.Item itemKey={t('queue.table.unconsumedCount')}>
+            {context === 'development' ? queue.test_unconsumed_count : queue.prod_unconsumed_count}
+          </Descriptions.Item>
+          <Descriptions.Item itemKey={t('queue.table.consumedCount')}>
+            {context === 'development' ? queue.test_consumed_count : queue.prod_consumed_count}
+          </Descriptions.Item>
+          <Descriptions.Item itemKey={t('queue.table.failedCount')}>
+            <Text type={((context === 'development' ? queue.test_failed_count : queue.prod_failed_count) || 0) > 0 ? 'danger' : undefined}>
+              {context === 'development' ? queue.test_failed_count : queue.prod_failed_count}
             </Text>
-            <Descriptions align="left">
-              <Descriptions.Item itemKey={t('queue.table.unconsumedCount')}>
-                {context === 'development' ? queue.test_unconsumed_count : queue.prod_unconsumed_count}
-              </Descriptions.Item>
-              <Descriptions.Item itemKey={t('queue.table.consumedCount')}>
-                {context === 'development' ? queue.test_consumed_count : queue.prod_consumed_count}
-              </Descriptions.Item>
-              <Descriptions.Item itemKey={t('queue.table.failedCount')}>
-                <Text type={((context === 'development' ? queue.test_failed_count : queue.prod_failed_count) || 0) > 0 ? 'danger' : undefined}>
-                  {context === 'development' ? queue.test_failed_count : queue.prod_failed_count}
-                </Text>
-              </Descriptions.Item>
-            </Descriptions>
+          </Descriptions.Item>
+        </Descriptions>
 
-            <Text strong className="queue-detail-drawer-section-title">
-              {t('queue.detail.systemInfo')}
-            </Text>
-            <Descriptions align="left">
-              <Descriptions.Item itemKey={t('common.creator')}>
-                {queue.created_by_name ? <UserNameWithCard name={queue.created_by_name} userId={queue.created_by} department={queue.created_by_department || undefined} role={queue.created_by_role || undefined} email={queue.created_by_email || undefined} /> : '-'}
-              </Descriptions.Item>
-              <Descriptions.Item itemKey={t('common.createTime')}>
-                {formatDate(queue.created_at || null)}
-              </Descriptions.Item>
-              <Descriptions.Item itemKey={t('common.updateTime')}>
-                {formatDate(queue.updated_at || null)}
-              </Descriptions.Item>
-            </Descriptions>
-          </div>
-        </TabPane>
-        <TabPane tab={t('collaborator.tabTitle')} itemKey="collaborators">
-          <CollaboratorTab
-            assetType="QUEUE"
-            assetId={queue.queue_id}
-            context={context}
-            canManage={canManage}
-          />
-        </TabPane>
-      </Tabs>
+        <Text strong className="queue-detail-drawer-section-title">
+          {t('queue.detail.systemInfo')}
+        </Text>
+        <Descriptions align="left">
+          <Descriptions.Item itemKey={t('common.creator')}>
+            {queue.created_by_name ? <UserNameWithCard name={queue.created_by_name} userId={queue.created_by} department={queue.created_by_department || undefined} role={queue.created_by_role || undefined} email={queue.created_by_email || undefined} /> : '-'}
+          </Descriptions.Item>
+          <Descriptions.Item itemKey={t('common.createTime')}>
+            {formatDate(queue.created_at || null)}
+          </Descriptions.Item>
+          <Descriptions.Item itemKey={t('common.updateTime')}>
+            {formatDate(queue.updated_at || null)}
+          </Descriptions.Item>
+        </Descriptions>
+      </div>
     </DetailDrawerWrapper>
   );
 };
