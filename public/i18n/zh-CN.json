@@ -2518,6 +2518,12 @@
     },
     "quickAddSuccess": "已添加为当前资产的直接协作者",
     "inheritedRoleMaxHint": "提示: 若直接分配的角色低于继承角色, 实际生效角色仍为继承的最高权限",
-    "roleLowerWarningToast": "直接分配角色已更新为{{directRole}}, 但实际生效角色仍为继承的{{inheritedRole}}(取最高权限)"
+    "roleLowerWarningToast": "直接分配角色已更新为{{directRole}}, 但实际生效角色仍为继承的{{inheritedRole}}(取最高权限)",
+    "panel": {
+      "manageTitle": "管理协作者",
+      "allAccessUsers": "所有可访问此资产的用户",
+      "addFromOrg": "从组织架构添加",
+      "peopleCount": "{{count}}人"
+    }
   }
 }

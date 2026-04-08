@@ -3154,6 +3154,12 @@
     },
     "quickAddSuccess": "Successfully added as a direct collaborator of the current asset",
     "inheritedRoleMaxHint": "Note: If the direct role is lower than the inherited role, the effective role remains the highest inherited permission.",
-    "roleLowerWarningToast": "Direct role updated to {{directRole}}, but effective role remains {{inheritedRole}} (highest permission applies)"
+    "roleLowerWarningToast": "Direct role updated to {{directRole}}, but effective role remains {{inheritedRole}} (highest permission applies)",
+    "panel": {
+      "manageTitle": "Manage Collaborators",
+      "allAccessUsers": "All users with access to this asset",
+      "addFromOrg": "Add from organization",
+      "peopleCount": "{{count}} people"
+    }
   }
 }

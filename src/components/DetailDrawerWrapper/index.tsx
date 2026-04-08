@@ -8,6 +8,9 @@ import {
   IconChevronLeft,
   IconChevronRight,
 } from '@douyinfe/semi-icons';
+import { Users } from 'lucide-react';
+import type { CollaboratorAssetType } from '@/api/index';
+import CollaboratorPanel from '@/components/CollaboratorManager/CollaboratorPanel';
 import './index.less';
 
 const { Title } = Typography;
@@ -17,6 +20,13 @@ export interface PaginationInfo {
   totalPages: number;
   pageSize: number;
   total: number;
+}
+
+export interface CollaboratorProps {
+  assetType: CollaboratorAssetType;
+  assetId: string;
+  context: 'development' | 'scheduling';
+  canManage: boolean;
 }
 
 export interface DetailDrawerWrapperProps<T> {
@@ -32,6 +42,8 @@ export interface DetailDrawerWrapperProps<T> {
   extraActions?: ReactNode;
   /** 是否显示导航按钮，默认 true */
   showNavigation?: boolean;
+  /** 协作者面板配置（传入后自动在 header 渲染分享按钮） */
+  collaboratorProps?: CollaboratorProps;
 
   // ========== 导航相关 ==========
   /** 数据列表 */
@@ -79,6 +91,7 @@ function DetailDrawerWrapper<T>({
   children,
   extraActions,
   showNavigation = true,
+  collaboratorProps,
   dataList,
   currentId,
   getId,
@@ -93,6 +106,7 @@ function DetailDrawerWrapper<T>({
 }: DetailDrawerWrapperProps<T>) {
   const { t } = useTranslation();
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [collaboratorPanelVisible, setCollaboratorPanelVisible] = useState(false);
   const [drawerWidth, setDrawerWidth] = useState(() => {
     if (storageKey) {
       const saved = localStorage.getItem(storageKey);
@@ -283,8 +297,28 @@ function DetailDrawerWrapper<T>({
               {/* 额外操作按钮 */}
               {extraActions}
 
-              {/* 如果有额外操作按钮，添加分隔线 */}
-              {extraActions && <Divider layout="vertical" className="detail-drawer-wrapper-header-divider" />}
+              {/* 协作者分享按钮 */}
+              {collaboratorProps && (
+                <CollaboratorPanel
+                  assetType={collaboratorProps.assetType}
+                  assetId={collaboratorProps.assetId}
+                  context={collaboratorProps.context}
+                  canManage={collaboratorProps.canManage}
+                  visible={collaboratorPanelVisible}
+                  onVisibleChange={setCollaboratorPanelVisible}
+                >
+                  <Tooltip content={t('collaborator.tabTitle')}>
+                    <Button
+                      icon={<Users size={14} strokeWidth={2} />}
+                      theme="borderless"
+                      size="small"
+                    />
+                  </Tooltip>
+                </CollaboratorPanel>
+              )}
+
+              {/* 如果有额外操作按钮或协作者按钮，添加分隔线 */}
+              {(extraActions || collaboratorProps) && <Divider layout="vertical" className="detail-drawer-wrapper-header-divider" />}
 
               {/* 全屏按钮 */}
               <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>

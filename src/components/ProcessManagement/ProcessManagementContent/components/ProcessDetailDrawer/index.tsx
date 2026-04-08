@@ -31,7 +31,6 @@ import DetailSkeleton from '@/components/DetailSkeleton';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import ExpandableText from '@/components/ExpandableText';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
-import CollaboratorTab from '@/components/CollaboratorManager/CollaboratorTab';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import './index.less';
 
@@ -447,6 +446,12 @@ const ProcessDetailDrawer = ({
       onPageChange={onPageChange}
       onScrollToRow={onScrollToRow}
       extraActions={extraActions}
+      collaboratorProps={{
+        assetType: 'PROCESS',
+        assetId: processData.id,
+        context,
+        canManage,
+      }}
       defaultWidth={900}
       minWidth={576}
       storageKey="processDetailDrawerWidth"
@@ -576,14 +581,6 @@ const ProcessDetailDrawer = ({
               </div>
             </div>
           )}
-        </TabPane>
-        <TabPane tab={t('collaborator.tabTitle')} itemKey="collaborators">
-          <CollaboratorTab
-            assetType="PROCESS"
-            assetId={processData.id}
-            context={context}
-            canManage={canManage}
-          />
         </TabPane>
       </Tabs>
 
