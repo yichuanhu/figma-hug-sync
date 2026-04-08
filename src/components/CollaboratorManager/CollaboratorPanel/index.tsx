@@ -547,7 +547,9 @@ const CollaboratorPanel = ({
           onClick={() => setPanelView('quick')}
         >
           <IconChevronLeft size="small" />
-          <Text strong>{t('collaborator.panel.manageTitle')}</Text>
+          <span className="collaborator-panel-header-title" style={{ fontSize: 15 }}>
+            {t('collaborator.panel.manageTitle')}
+          </span>
         </div>
       </div>
       <div className="collaborator-panel-manage-subtitle">
