@@ -570,17 +570,6 @@ const CollaboratorPanel = ({
   // Manage view content
   const renderManageView = () => (
     <div className="collaborator-panel-manage">
-      <div className="collaborator-panel-manage-header">
-        <div
-          className="collaborator-panel-manage-back"
-          onClick={() => setPanelView('quick')}
-        >
-          <IconChevronLeft size="small" />
-          <span className="collaborator-panel-header-title" style={{ fontSize: 15 }}>
-            {t('collaborator.panel.manageTitle')}
-          </span>
-        </div>
-      </div>
       <div className="collaborator-panel-manage-subtitle">
         <Text size="small" type="tertiary">
           {t('collaborator.panel.allAccessUsers')}
