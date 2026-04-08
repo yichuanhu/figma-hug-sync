@@ -446,6 +446,12 @@ const ProcessDetailDrawer = ({
       onPageChange={onPageChange}
       onScrollToRow={onScrollToRow}
       extraActions={extraActions}
+      collaboratorProps={{
+        assetType: 'PROCESS',
+        assetId: processData.id,
+        context,
+        canManage,
+      }}
       defaultWidth={900}
       minWidth={576}
       storageKey="processDetailDrawerWidth"
