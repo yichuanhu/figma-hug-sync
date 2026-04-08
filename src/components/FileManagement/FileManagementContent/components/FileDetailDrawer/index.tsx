@@ -12,8 +12,6 @@ import {
   Modal,
   Space,
   Divider,
-  Tabs,
-  TabPane,
 } from '@douyinfe/semi-ui';
 import {
   IconChevronLeft,
