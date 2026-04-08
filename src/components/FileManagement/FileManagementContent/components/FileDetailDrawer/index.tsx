@@ -211,9 +211,7 @@ const FileDetailDrawer = ({
               visible={collaboratorPanelVisible}
               onVisibleChange={setCollaboratorPanelVisible}
             >
-              <Tooltip content={t('collaborator.tabTitle')}>
-                <Button icon={<Users size={14} strokeWidth={2} />} theme="borderless" size="small" />
-              </Tooltip>
+              <Button icon={<Users size={14} strokeWidth={2} />} theme="borderless" size="small" />
             </CollaboratorPanel>
             <Divider layout="vertical" className="file-detail-drawer-header-divider" />
             <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
