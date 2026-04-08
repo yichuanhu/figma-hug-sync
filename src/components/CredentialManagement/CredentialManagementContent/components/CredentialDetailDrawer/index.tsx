@@ -120,7 +120,7 @@ interface CredentialDetailDrawerProps {
   onNavigate?: (credential: LYCredentialResponse) => void;
   pagination?: PaginationInfo;
   onPageChange?: (page: number, direction: 'prev' | 'next') => void;
-  initialTab?: 'basic' | 'usage' | 'collaborators';
+  initialTab?: 'basic' | 'usage';
   onScrollToRow?: (id: string) => void;
 }
 
