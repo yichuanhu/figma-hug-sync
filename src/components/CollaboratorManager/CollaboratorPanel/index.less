@@ -63,10 +63,12 @@
 
   &-search-input-box {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
+    gap: 4px;
     border: 1.5px solid var(--semi-color-border);
     border-radius: 8px;
-    padding: 6px 6px 6px 12px;
+    padding: 6px 8px 6px 12px;
     min-height: 40px;
     transition: border-color 0.2s;
     background: var(--semi-color-bg-0);
@@ -74,15 +76,6 @@
     &:focus-within {
       border-color: var(--semi-color-primary);
     }
-  }
-
-  &-search-input-left {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 4px;
   }
 
   &-selected-tag {
@@ -113,14 +106,12 @@
     }
   }
 
-  &-search-input-right {
-    display: flex;
-    align-items: center;
+  &-search-divider {
+    width: 1px;
+    height: 20px;
+    background: var(--semi-color-border);
     flex-shrink: 0;
-    gap: 2px;
-    margin-left: 4px;
-    border-left: 1px solid var(--semi-color-border);
-    padding-left: 8px;
+    margin: 0 4px;
   }
 
   &-role-text-btn {
@@ -136,6 +127,7 @@
     border-radius: 4px;
     transition: background-color 0.15s;
     user-select: none;
+    flex-shrink: 0;
 
     &:hover {
       background-color: var(--semi-color-primary-light-default);
@@ -151,8 +143,6 @@
     border-radius: 6px;
     cursor: pointer;
     color: var(--semi-color-primary);
-    font-size: 18px;
-    font-weight: 500;
     transition: background-color 0.15s;
     flex-shrink: 0;
 
