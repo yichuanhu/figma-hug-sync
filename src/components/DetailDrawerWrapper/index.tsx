@@ -297,8 +297,28 @@ function DetailDrawerWrapper<T>({
               {/* 额外操作按钮 */}
               {extraActions}
 
-              {/* 如果有额外操作按钮，添加分隔线 */}
-              {extraActions && <Divider layout="vertical" className="detail-drawer-wrapper-header-divider" />}
+              {/* 协作者分享按钮 */}
+              {collaboratorProps && (
+                <CollaboratorPanel
+                  assetType={collaboratorProps.assetType}
+                  assetId={collaboratorProps.assetId}
+                  context={collaboratorProps.context}
+                  canManage={collaboratorProps.canManage}
+                  visible={collaboratorPanelVisible}
+                  onVisibleChange={setCollaboratorPanelVisible}
+                >
+                  <Tooltip content={t('collaborator.tabTitle')}>
+                    <Button
+                      icon={<Users size={14} strokeWidth={2} />}
+                      theme="borderless"
+                      size="small"
+                    />
+                  </Tooltip>
+                </CollaboratorPanel>
+              )}
+
+              {/* 如果有额外操作按钮或协作者按钮，添加分隔线 */}
+              {(extraActions || collaboratorProps) && <Divider layout="vertical" className="detail-drawer-wrapper-header-divider" />}
 
               {/* 全屏按钮 */}
               <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
