@@ -239,56 +239,44 @@ const FileDetailDrawer = ({
       className={`card-sidesheet resizable-sidesheet file-detail-drawer ${isFullscreen ? 'fullscreen-sidesheet' : ''}`}
     >
       {!isFullscreen && <div className="file-detail-drawer-resize-handle" onMouseDown={handleMouseDown} />}
-      <Tabs activeKey={activeTab} onChange={setActiveTab} className="file-detail-drawer-tabs" keepDOM={false}>
-        <TabPane tab={t('file.detail.basicInfo')} itemKey="basic">
-          <div className="file-detail-drawer-content">
-            <div className="file-detail-drawer-section">
-              <Text className="file-detail-drawer-section-title">{t('file.detail.basicInfo')}</Text>
-              <Descriptions align="left">
-                <Descriptions.Item itemKey={t('file.table.name')}>{file.display_name}</Descriptions.Item>
-                <Descriptions.Item itemKey={t('file.table.source')}>
-                  <Tag color={sourceConfig[file.source].color}>{t(sourceConfig[file.source].i18nKey)}</Tag>
-                </Descriptions.Item>
-                {context === 'development' && (
-                  <Descriptions.Item itemKey={t('file.detail.publishStatus')}>
-                    <Tag color={file.is_published ? 'green' : 'grey'}>{file.is_published ? t('file.detail.published') : t('file.detail.unpublished')}</Tag>
-                  </Descriptions.Item>
-                )}
-                <Descriptions.Item itemKey={t('common.description')}><ExpandableText text={file.description} maxLines={3} /></Descriptions.Item>
-                <Descriptions.Item itemKey={t('common.creator')}>
-                  {file.created_by_name ? <UserNameWithCard name={file.created_by_name} userId={file.created_by} department={file.created_by_department || undefined} role={file.created_by_role || undefined} email={file.created_by_email || undefined} /> : '-'}
-                </Descriptions.Item>
-                <Descriptions.Item itemKey={t('common.createTime')}>{formatTime(file.created_at)}</Descriptions.Item>
-                <Descriptions.Item itemKey={t('file.detail.updater')}>
-                  {file.updated_by_name ? <UserNameWithCard name={file.updated_by_name} userId={file.updated_by} /> : '-'}
-                </Descriptions.Item>
-                <Descriptions.Item itemKey={t('common.updateTime')}>{formatTime(file.updated_at)}</Descriptions.Item>
-                {file.change_reason && (
-                  <Descriptions.Item itemKey={t('file.fields.changeReason')}>{file.change_reason}</Descriptions.Item>
-                )}
-              </Descriptions>
-            </div>
-            <div className="file-detail-drawer-section">
-              <Text className="file-detail-drawer-section-title">{t('file.detail.fileContent')}</Text>
-              <Descriptions align="left">
-                <Descriptions.Item itemKey={t('file.detail.originalName')}>{file.original_name}</Descriptions.Item>
-                <Descriptions.Item itemKey={t('file.table.size')}>
-                  <span className="file-detail-drawer-mono">{formatFileSize(file.file_size)}</span>
-                </Descriptions.Item>
-                <Descriptions.Item itemKey={t('file.detail.mimeType')}>{file.mime_type || '-'}</Descriptions.Item>
-              </Descriptions>
-            </div>
-          </div>
-        </TabPane>
-        <TabPane tab={t('collaborator.tabTitle')} itemKey="collaborators">
-          <CollaboratorTab
-            assetType="FILE"
-            assetId={file.id}
-            context={context}
-            canManage={canManage}
-          />
-        </TabPane>
-      </Tabs>
+      <div className="file-detail-drawer-content" style={{ padding: '16px 24px' }}>
+        <div className="file-detail-drawer-section">
+          <Text className="file-detail-drawer-section-title">{t('file.detail.basicInfo')}</Text>
+          <Descriptions align="left">
+            <Descriptions.Item itemKey={t('file.table.name')}>{file.display_name}</Descriptions.Item>
+            <Descriptions.Item itemKey={t('file.table.source')}>
+              <Tag color={sourceConfig[file.source].color}>{t(sourceConfig[file.source].i18nKey)}</Tag>
+            </Descriptions.Item>
+            {context === 'development' && (
+              <Descriptions.Item itemKey={t('file.detail.publishStatus')}>
+                <Tag color={file.is_published ? 'green' : 'grey'}>{file.is_published ? t('file.detail.published') : t('file.detail.unpublished')}</Tag>
+              </Descriptions.Item>
+            )}
+            <Descriptions.Item itemKey={t('common.description')}><ExpandableText text={file.description} maxLines={3} /></Descriptions.Item>
+            <Descriptions.Item itemKey={t('common.creator')}>
+              {file.created_by_name ? <UserNameWithCard name={file.created_by_name} userId={file.created_by} department={file.created_by_department || undefined} role={file.created_by_role || undefined} email={file.created_by_email || undefined} /> : '-'}
+            </Descriptions.Item>
+            <Descriptions.Item itemKey={t('common.createTime')}>{formatTime(file.created_at)}</Descriptions.Item>
+            <Descriptions.Item itemKey={t('file.detail.updater')}>
+              {file.updated_by_name ? <UserNameWithCard name={file.updated_by_name} userId={file.updated_by} /> : '-'}
+            </Descriptions.Item>
+            <Descriptions.Item itemKey={t('common.updateTime')}>{formatTime(file.updated_at)}</Descriptions.Item>
+            {file.change_reason && (
+              <Descriptions.Item itemKey={t('file.fields.changeReason')}>{file.change_reason}</Descriptions.Item>
+            )}
+          </Descriptions>
+        </div>
+        <div className="file-detail-drawer-section">
+          <Text className="file-detail-drawer-section-title">{t('file.detail.fileContent')}</Text>
+          <Descriptions align="left">
+            <Descriptions.Item itemKey={t('file.detail.originalName')}>{file.original_name}</Descriptions.Item>
+            <Descriptions.Item itemKey={t('file.table.size')}>
+              <span className="file-detail-drawer-mono">{formatFileSize(file.file_size)}</span>
+            </Descriptions.Item>
+            <Descriptions.Item itemKey={t('file.detail.mimeType')}>{file.mime_type || '-'}</Descriptions.Item>
+          </Descriptions>
+        </div>
+      </div>
     </SideSheet>
   );
 };
