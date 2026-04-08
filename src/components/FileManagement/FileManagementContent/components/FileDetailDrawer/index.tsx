@@ -22,7 +22,7 @@ import {
   IconDownloadStroked,
   IconDeleteStroked,
 } from '@douyinfe/semi-icons';
-import { X, Maximize2, Minimize2 } from 'lucide-react';
+import { X, Maximize2, Minimize2, Users } from 'lucide-react';
 import type { LYFileResponse, FileSource } from '@/api/index';
 import ExpandableText from '@/components/ExpandableText';
 import CollaboratorPanel from '@/components/CollaboratorManager/CollaboratorPanel';
