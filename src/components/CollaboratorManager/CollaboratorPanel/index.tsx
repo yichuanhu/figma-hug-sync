@@ -363,7 +363,7 @@ const CollaboratorPanel = ({
             size="small"
             style={
               record.collaborator_type === 'DEPARTMENT'
-                ? { backgroundColor: `var(--semi-color-${getAvatarColor(record.collaborator_name)})` }
+                ? { backgroundColor: 'var(--semi-color-fill-1)', color: 'var(--semi-color-text-2)' }
                 : { backgroundColor: '#000000', color: '#ffffff' }
             }
           >
@@ -445,7 +445,7 @@ const CollaboratorPanel = ({
               style={
                 c.collaborator_type === 'USER'
                   ? { backgroundColor: '#000000', color: '#ffffff' }
-                  : { backgroundColor: `var(--semi-color-${getAvatarColor(c.collaborator_name)})` }
+                  : { backgroundColor: 'var(--semi-color-fill-1)', color: 'var(--semi-color-text-2)' }
               }
             >
               {c.collaborator_name.slice(0, 1)}
@@ -545,13 +545,13 @@ const CollaboratorPanel = ({
       {selectedUsers.length > 0 ? (
         <div className="collaborator-panel-batch-actions">
           <Button type="tertiary" onClick={() => setSelectedUsers([])}>
-            {t('collaborator.actions.cancel')}
+            {t('common.cancel')}
           </Button>
           <Button type="primary" theme="solid" onClick={handleBatchAdd}>
-            {t('collaborator.actions.confirm')}
+            {t('common.confirm')}
           </Button>
         </div>
-      ) : (
+      ) : !searchValue.trim() ? (
         <div style={{ padding: '8px 24px 16px' }}>
           <Button
             type="tertiary"
@@ -562,7 +562,7 @@ const CollaboratorPanel = ({
             {t('collaborator.panel.addFromOrg')}
           </Button>
         </div>
-      )}
+      ) : null}
     </div>
   );
 
