@@ -363,7 +363,7 @@ const CollaboratorPanel = ({
             size="small"
             style={
               record.collaborator_type === 'DEPARTMENT'
-                ? { backgroundColor: `var(--semi-color-${getAvatarColor(record.collaborator_name)})` }
+                ? { backgroundColor: 'var(--semi-color-fill-1)', color: 'var(--semi-color-text-2)' }
                 : { backgroundColor: '#000000', color: '#ffffff' }
             }
           >
