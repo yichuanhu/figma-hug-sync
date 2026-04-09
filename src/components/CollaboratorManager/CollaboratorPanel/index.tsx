@@ -648,12 +648,9 @@ const CollaboratorPanel = ({
     return (
       <div className="collaborator-panel-source-detail">
         {isMixed && record.role && (
-          <div className="collaborator-panel-source-detail-item">
-            <Text size="small" type="tertiary" ellipsis={{ showTooltip: true }} className="source-name">
-              {t('collaborator.source.direct')}
-            </Text>
-            <Text size="small" type="tertiary" className="source-role">
-              → {t(`collaborator.roles.${record.role}`)}
+          <div className="collaborator-panel-source-detail-item source-direct">
+            <Text size="small" type="tertiary">
+              {t('collaborator.source.direct')} → {t(`collaborator.roles.${record.role}`)}
             </Text>
           </div>
         )}
