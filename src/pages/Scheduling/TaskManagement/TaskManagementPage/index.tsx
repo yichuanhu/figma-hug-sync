@@ -241,6 +241,7 @@ const TaskManagementPage = () => {
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const { t } = useTranslation();
+  const { openCollaborator, renderCollaboratorPanel } = useCollaboratorAction();
 
   const [searchValue, setSearchValue] = useState('');
   const [queryParams, setQueryParams] = useState<GetTasksParams>({
