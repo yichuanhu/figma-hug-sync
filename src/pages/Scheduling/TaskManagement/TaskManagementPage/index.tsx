@@ -23,7 +23,7 @@ import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
 import CreateTaskModal from '../components/CreateTaskModal';
 import TaskDetailDrawer from '../components/TaskDetailDrawer';
-import { Bot, ClipboardClock, Component, Ellipsis, MinusCircle, Monitor, PlayCircle, Plus, RefreshCw, Trash2, XCircle } from 'lucide-react';
+import { Bot, ClipboardClock, Component, Ellipsis, MinusCircle, Monitor, PlayCircle, Plus, RefreshCw, Trash2, UserPlus, XCircle } from 'lucide-react';
 import type { 
   LYTaskResponse, 
   GetTasksParams, 
@@ -34,6 +34,7 @@ import type {
   TriggerSource,
   TaskPriority,
 } from '@/api';
+import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
 import './index.less';
 
 const { Title } = Typography;
@@ -240,6 +241,7 @@ const TaskManagementPage = () => {
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const { t } = useTranslation();
+  const { openCollaborator, renderCollaboratorPanel } = useCollaboratorAction();
 
   const [searchValue, setSearchValue] = useState('');
   const [queryParams, setQueryParams] = useState<GetTasksParams>({
@@ -392,7 +394,6 @@ const TaskManagementPage = () => {
     setSelectedTask(record);
     setDetailDrawerVisible(true);
   };
-
 
   // Canceltask
   const handleCancelTask = (task: LYTaskResponse) => {
@@ -608,21 +609,6 @@ const TaskManagementPage = () => {
       key: 'action',
       width: 60,
       render: (_: unknown, record: LYTaskResponse) => {
-        // 判断is否has可useOperation
-        const hasStatusActions = 
-          record.task_status === 'PENDING' ||
-          record.execution_status === 'RUNNING' ||
-          record.task_status === 'FAILED';
-        
-        // ExecuteHistory入口: 只tohas过ExecuteRecorddisplay
-        const hasExecutions = record.total_execution_count > 0;
-        
-        const hasActions = hasStatusActions || hasExecutions;
-
-        if (!hasActions) {
-          return null;
-        }
-
         return (
           <Dropdown
             trigger="click"
@@ -663,6 +649,15 @@ const TaskManagementPage = () => {
                     {t('task.actions.retry')}
                   </Dropdown.Item>
                 )}
+                <Dropdown.Item
+                    icon={<UserPlus size={14} strokeWidth={2} />}
+                    onClick={(e) => {
+                      e?.stopPropagation();
+                      openCollaborator(record.task_id);
+                    }}
+                  >
+                    {t('collaborator.actions.addCollaborator')}
+                  </Dropdown.Item>
               </Dropdown.Menu>
             }
           >
@@ -825,6 +820,12 @@ const TaskManagementPage = () => {
           dataSource={list}
           onSelectTask={setSelectedTask}
           initialTab={initialTab}
+          collaboratorProps={selectedTask ? {
+            assetType: 'TASK',
+            assetId: selectedTask.task_id,
+            context: 'scheduling',
+            canManage: true,
+          } : undefined}
           pagination={{
             currentPage,
             pageSize,
@@ -843,6 +844,7 @@ const TaskManagementPage = () => {
             setListResponse(response);
           }}
         />
+        {renderCollaboratorPanel('TASK', 'scheduling')}
       </div>
   );
 };

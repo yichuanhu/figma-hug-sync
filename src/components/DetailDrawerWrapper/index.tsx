@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback, useEffect, ReactNode, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SideSheet, Typography, Button, Divider, Tooltip, Row, Col, Space } from '@douyinfe/semi-ui';
-import { ChevronLeft, ChevronRight, Maximize2, Minimize2, Users, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Maximize2, Minimize2, UserPlus, X } from 'lucide-react';
 import type { CollaboratorAssetType } from '@/api/index';
 import CollaboratorPanel from '@/components/CollaboratorManager/CollaboratorPanel';
 import './index.less';
@@ -296,7 +296,7 @@ function DetailDrawerWrapper<T>({
               {collaboratorProps && (
                 <>
                   <Button
-                    icon={<Users size={14} strokeWidth={2} />}
+                    icon={<UserPlus size={14} strokeWidth={2} />}
                     theme="borderless"
                     type="tertiary"
                     size="small"

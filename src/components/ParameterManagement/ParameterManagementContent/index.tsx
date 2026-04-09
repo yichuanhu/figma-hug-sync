@@ -31,8 +31,7 @@ import type {
 import CreateParameterModal from './components/CreateParameterModal';
 import EditParameterModal from './components/EditParameterModal';
 import ParameterDetailDrawer from './components/ParameterDetailDrawer';
-import CollaboratorPanel from '@/components/CollaboratorManager/CollaboratorPanel';
-import type { CollaboratorAssetType } from '@/api/index';
+import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
 
 import './index.less';
 
@@ -177,8 +176,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
   // 发布状态筛选（仅开发中心使用）
   const [publishedFilter, setPublishedFilter] = useState<boolean | null>(null);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
-  const [addCollaboratorModalVisible, setAddCollaboratorModalVisible] = useState(false);
-  const [addCollaboratorAssetId, setAddCollaboratorAssetId] = useState('');
+  const { openCollaborator, renderCollaboratorPanel } = useCollaboratorAction();
 
   // 列表数据
   const [listResponse, setListResponse] = useState<LYParameterListResultResponse | null>(null);
@@ -401,7 +399,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
                     {t('common.edit')}
                   </Dropdown.Item>
                 )}
-                <Dropdown.Item icon={<UserPlus size={14} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); setAddCollaboratorAssetId(record.parameter_id); setAddCollaboratorModalVisible(true); }}>
+                <Dropdown.Item icon={<UserPlus size={14} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); openCollaborator(record.parameter_id); }}>
                   {t('collaborator.actions.addCollaborator')}
                 </Dropdown.Item>
                 {canDelete && (
@@ -598,14 +596,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
         }}
       />
 
-      <CollaboratorPanel
-        visible={addCollaboratorModalVisible}
-        onVisibleChange={setAddCollaboratorModalVisible}
-        assetType={'PARAMETER' as CollaboratorAssetType}
-        assetId={addCollaboratorAssetId}
-        context="development"
-        canManage={true}
-      />
+      {renderCollaboratorPanel('PARAMETER', context)}
     </div>
   );
 };

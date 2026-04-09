@@ -31,8 +31,7 @@ import type {
 import UploadFileModal from './components/UploadFileModal';
 import ReuploadFileModal from './components/ReuploadFileModal';
 import FileDetailDrawer from './components/FileDetailDrawer';
-import CollaboratorPanel from '@/components/CollaboratorManager/CollaboratorPanel';
-import type { CollaboratorAssetType } from '@/api/index';
+import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
 
 import './index.less';
 
@@ -207,8 +206,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
   const [reuploadModalVisible, setReuploadModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [detailInitialTab, setDetailInitialTab] = useState('basic');
-  const [addCollaboratorModalVisible, setAddCollaboratorModalVisible] = useState(false);
-  const [addCollaboratorAssetId, setAddCollaboratorAssetId] = useState('');
+  const { openCollaborator, renderCollaboratorPanel } = useCollaboratorAction();
 
   // 加载数据
   const loadData = useCallback(async () => {
@@ -458,8 +456,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
                 icon={<UserPlus size={14} strokeWidth={2} />}
                 onClick={(e) => {
                   e.stopPropagation();
-                  setAddCollaboratorAssetId(record.id);
-                  setAddCollaboratorModalVisible(true);
+                  openCollaborator(record.id);
                 }}
               >
                 {t('collaborator.actions.addCollaborator')}
@@ -645,15 +642,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
         initialTab={detailInitialTab}
       />
 
-      {/* 添加协作者弹窗 */}
-      <CollaboratorPanel
-        visible={addCollaboratorModalVisible}
-        onVisibleChange={setAddCollaboratorModalVisible}
-        assetType={'FILE' as CollaboratorAssetType}
-        assetId={addCollaboratorAssetId}
-        context="development"
-        canManage={true}
-      />
+      {renderCollaboratorPanel('FILE', context)}
     </div>
   );
 };

@@ -3375,7 +3375,8 @@ export type CollaboratorAssetType =
   | 'WORKER'
   | 'WORKER_GROUP'
   | 'TRIGGER'
-  | 'TASK_TEMPLATE';
+  | 'TASK_TEMPLATE'
+  | 'TASK';
 
 /** 权限来源分类 */
 export type CollaboratorSourceType =
@@ -3468,6 +3469,7 @@ export const ASSET_AVAILABLE_ROLES: Record<CollaboratorAssetType, CollaboratorRo
   WORKER_GROUP: ['MANAGER', 'MAINTAINER', 'USER', 'OBSERVER'],
   TRIGGER: ['MANAGER', 'MAINTAINER', 'OBSERVER'],
   TASK_TEMPLATE: ['MANAGER', 'MAINTAINER', 'USER', 'OBSERVER'],
+  TASK: ['MANAGER', 'MAINTAINER', 'USER', 'OBSERVER'],
 };
 
 /**

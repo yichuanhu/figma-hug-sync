@@ -22,8 +22,8 @@ import WorkerGroupDetailDrawer from './components/WorkerGroupDetailDrawer';
 import CreateWorkerGroupModal from './components/CreateWorkerGroupModal';
 import EditWorkerGroupModal from './components/EditWorkerGroupModal';
 import AddMembersModal from './components/AddMembersModal';
-import type { LYWorkerGroupResponse, LYListResponseLYWorkerGroupResponse, GetWorkerGroupsParams, CollaboratorAssetType } from '@/api';
-import CollaboratorPanel from '@/components/CollaboratorManager/CollaboratorPanel';
+import type { LYWorkerGroupResponse, LYListResponseLYWorkerGroupResponse, GetWorkerGroupsParams } from '@/api';
+import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -131,8 +131,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState<LYWorkerGroupResponse | null>(null);
   const [detailInitialTab, setDetailInitialTab] = useState('basicInfo');
-  const [addCollaboratorModalVisible, setAddCollaboratorModalVisible] = useState(false);
-  const [addCollaboratorAssetId, setAddCollaboratorAssetId] = useState('');
+  const { openCollaborator, renderCollaboratorPanel } = useCollaboratorAction();
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingGroup, setEditingGroup] = useState<LYWorkerGroupResponse | null>(null);
@@ -368,8 +367,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
                 icon={<UserPlus size={14} strokeWidth={2} />}
                 onClick={(e) => {
                   e?.stopPropagation?.();
-                  setAddCollaboratorAssetId(record.id);
-                  setAddCollaboratorModalVisible(true);
+                  openCollaborator(record.id);
                 }}
               >
                 {t('collaborator.actions.addCollaborator')}
@@ -521,14 +519,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
         onSuccess={loadData}
       />
 
-      <CollaboratorPanel
-        visible={addCollaboratorModalVisible}
-        onVisibleChange={setAddCollaboratorModalVisible}
-        assetType={'WORKER_GROUP' as CollaboratorAssetType}
-        assetId={addCollaboratorAssetId}
-        context="scheduling"
-        canManage={true}
-      />
+      {renderCollaboratorPanel('WORKER_GROUP', 'scheduling')}
     </div>
   );
 };

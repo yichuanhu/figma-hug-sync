@@ -10,6 +10,7 @@ import {
   Tabs,
   TabPane,
 } from '@douyinfe/semi-ui';
+import type { CollaboratorProps } from '@/components/DetailDrawerWrapper';
 import { Inbox, MinusCircle, PlayCircle, XCircle } from 'lucide-react';
 import type {
   LYTaskResponse,
@@ -37,6 +38,7 @@ interface TaskDetailDrawerProps {
   onPageChange?: (page: number, direction: 'prev' | 'next') => void;
   onScrollToRow?: (taskId: string) => void;
   initialTab?: 'basicInfo' | 'executionHistory';
+  collaboratorProps?: CollaboratorProps;
 }
 
 const taskStatusConfig: Record<TaskStatus, { color: 'grey' | 'blue' | 'orange' | 'green' | 'red'; i18nKey: string }> = {
@@ -76,6 +78,7 @@ const TaskDetailDrawer = ({
   onPageChange,
   onScrollToRow,
   initialTab = 'basicInfo',
+  collaboratorProps,
 }: TaskDetailDrawerProps) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('basicInfo');
@@ -157,6 +160,7 @@ const TaskDetailDrawer = ({
       minWidth={576}
       storageKey="taskDetailDrawerWidth"
       className="task-detail-drawer"
+      collaboratorProps={collaboratorProps}
     >
       <Tabs activeKey={activeTab} onChange={setActiveTab} className="task-detail-drawer-tabs">
         <TabPane tab={t('task.detail.tabs.basicInfo')} itemKey="basicInfo">

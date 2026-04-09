@@ -27,8 +27,8 @@ import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
 import ProcessDetailDrawer from './components/ProcessDetailDrawer';
 import { useOpenProcess } from './hooks/useOpenProcess';
-import CollaboratorPanel from '@/components/CollaboratorManager/CollaboratorPanel';
-import type { LYProcessResponse, GetProcessesParams, LYListResponseLYProcessResponse, CollaboratorAssetType } from '@/api';
+import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
+import type { LYProcessResponse, GetProcessesParams, LYListResponseLYProcessResponse } from '@/api';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -228,8 +228,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [detailInitialTab, setDetailInitialTab] = useState('detail');
-  const [addCollaboratorModalVisible, setAddCollaboratorModalVisible] = useState(false);
-  const [addCollaboratorAssetId, setAddCollaboratorAssetId] = useState('');
+  const { openCollaborator, renderCollaboratorPanel } = useCollaboratorAction();
 
   // 列表响应数据 - 直接使用API LYListResponseLYProcessResponse
   const [listResponse, setListResponse] = useState<LYListResponseLYProcessResponse>({
@@ -486,8 +485,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
                     icon={<UserPlus size={14} strokeWidth={2} />}
                     onClick={(e) => {
                       e.stopPropagation();
-                      setAddCollaboratorAssetId(record.id);
-                      setAddCollaboratorModalVisible(true);
+                      openCollaborator(record.id);
                     }}
                   >
                     {t('collaborator.actions.addCollaborator')}
@@ -675,14 +673,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       {/* 打开流程确认弹窗 - 仅开发中心 */}
       {!isSchedulingContext && <OpenProcessModal />}
 
-      <CollaboratorPanel
-        visible={addCollaboratorModalVisible}
-        onVisibleChange={setAddCollaboratorModalVisible}
-        assetType={'PROCESS' as CollaboratorAssetType}
-        assetId={addCollaboratorAssetId}
-        context="development"
-        canManage={true}
-      />
+      {renderCollaboratorPanel('PROCESS', context)}
     </div>
   );
 };

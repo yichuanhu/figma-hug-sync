@@ -29,8 +29,7 @@ import type {
 import CreateQueueTriggerModal from '../CreateQueueTriggerModal';
 import EditQueueTriggerModal from '../EditQueueTriggerModal';
 import QueueTriggerDetailDrawer from '../QueueTriggerDetailDrawer';
-import CollaboratorPanel from '@/components/CollaboratorManager/CollaboratorPanel';
-import type { CollaboratorAssetType } from '@/api';
+import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
 import './index.less';
 
 // ============= 工具函数 =============
@@ -151,8 +150,7 @@ const QueueTriggerList = () => {
   const [selectedTrigger, setSelectedTrigger] = useState<LYQueueTriggerResponse | null>(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [detailInitialTab, setDetailInitialTab] = useState('basic');
-  const [addCollaboratorModalVisible, setAddCollaboratorModalVisible] = useState(false);
-  const [addCollaboratorAssetId, setAddCollaboratorAssetId] = useState('');
+  const { openCollaborator, renderCollaboratorPanel } = useCollaboratorAction();
 
   // ModalStatus
   const [createModalVisible, setCreateModalVisible] = useState(false);
@@ -442,8 +440,7 @@ const QueueTriggerList = () => {
                 icon={<UserPlus size={14} strokeWidth={2} />}
                 onClick={(e) => {
                   e.stopPropagation();
-                  setAddCollaboratorAssetId(record.trigger_id);
-                  setAddCollaboratorModalVisible(true);
+                  openCollaborator(record.trigger_id);
                 }}
               >
                 {t('collaborator.actions.addCollaborator')}
@@ -616,14 +613,7 @@ const QueueTriggerList = () => {
         initialTab={detailInitialTab}
       />
 
-      <CollaboratorPanel
-        visible={addCollaboratorModalVisible}
-        onVisibleChange={setAddCollaboratorModalVisible}
-        assetType={'TRIGGER' as CollaboratorAssetType}
-        assetId={addCollaboratorAssetId}
-        context="scheduling"
-        canManage={true}
-      />
+      {renderCollaboratorPanel('TRIGGER', 'scheduling')}
     </div>
   );
 };

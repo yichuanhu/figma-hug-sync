@@ -13,7 +13,7 @@ import {
   Space,
   Divider,
 } from '@douyinfe/semi-ui';
-import { ChevronLeft, ChevronRight, Download, Maximize2, Minimize2, Trash2, Upload, Users, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Download, Maximize2, Minimize2, Trash2, Upload, UserPlus, X } from 'lucide-react';
 import type { LYFileResponse, FileSource } from '@/api/index';
 import ExpandableText from '@/components/ExpandableText';
 import CollaboratorPanel from '@/components/CollaboratorManager/CollaboratorPanel';
@@ -197,7 +197,7 @@ const FileDetailDrawer = ({
               </Tooltip>
             )}
             <Button
-              icon={<Users size={14} strokeWidth={2} />}
+              icon={<UserPlus size={14} strokeWidth={2} />}
               theme="borderless"
               size="small"
               onClick={() => setCollaboratorPanelVisible(true)}

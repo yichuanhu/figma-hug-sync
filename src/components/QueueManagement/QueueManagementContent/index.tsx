@@ -30,8 +30,7 @@ import type {
 import CreateQueueModal from './components/CreateQueueModal';
 import EditQueueModal from './components/EditQueueModal';
 import QueueDetailDrawer from './components/QueueDetailDrawer';
-import CollaboratorPanel from '@/components/CollaboratorManager/CollaboratorPanel';
-import type { CollaboratorAssetType } from '@/api/index';
+import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
 
 import './index.less';
 
@@ -165,8 +164,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [detailInitialTab, setDetailInitialTab] = useState('basic');
-  const [addCollaboratorModalVisible, setAddCollaboratorModalVisible] = useState(false);
-  const [addCollaboratorAssetId, setAddCollaboratorAssetId] = useState('');
+  const { openCollaborator, renderCollaboratorPanel } = useCollaboratorAction();
 
   // 加载数据
   const loadData = useCallback(async () => {
@@ -403,7 +401,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
                     {t('common.edit')}
                   </Dropdown.Item>
                 )}
-                <Dropdown.Item icon={<UserPlus size={14} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); setAddCollaboratorAssetId(record.queue_id); setAddCollaboratorModalVisible(true); }}>
+                <Dropdown.Item icon={<UserPlus size={14} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); openCollaborator(record.queue_id); }}>
                   {t('collaborator.actions.addCollaborator')}
                 </Dropdown.Item>
                 {canDelete && (
@@ -591,14 +589,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
         }}
       />
 
-      <CollaboratorPanel
-        visible={addCollaboratorModalVisible}
-        onVisibleChange={setAddCollaboratorModalVisible}
-        assetType={'QUEUE' as CollaboratorAssetType}
-        assetId={addCollaboratorAssetId}
-        context="development"
-        canManage={true}
-      />
+      {renderCollaboratorPanel('QUEUE', context)}
     </div>
   );
 };
