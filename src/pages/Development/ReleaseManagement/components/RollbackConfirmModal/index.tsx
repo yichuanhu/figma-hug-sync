@@ -44,7 +44,7 @@ const RollbackConfirmModal: React.FC<RollbackConfirmModalProps> = ({
       className="rollback-confirm-modal"
       title={
         <Space>
-          <AlertTriangle size={16} strokeWidth={2} />
+          <AlertTriangle size={16} strokeWidth={2} color="var(--semi-color-warning)" />
           {t('release.rollback.title')}
         </Space>
       }

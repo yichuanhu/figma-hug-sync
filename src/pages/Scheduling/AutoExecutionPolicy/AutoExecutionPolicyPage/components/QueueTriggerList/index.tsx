@@ -322,7 +322,7 @@ const QueueTriggerList = () => {
   const handleDeleteTrigger = (trigger: LYQueueTriggerResponse) => {
     Modal.confirm({
       title: t('queueTrigger.deleteModal.title'),
-      icon: <Trash2 size={16} strokeWidth={2} />,
+      icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
       content: (
         <>
           <div>{t('queueTrigger.deleteModal.confirmMessage', { name: trigger.name })}</div>

@@ -298,7 +298,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
 
     Modal.confirm({
       title: t('file.deleteModal.title'),
-      icon: <Trash2 size={16} strokeWidth={2} />,
+      icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
       content: t('file.deleteModal.confirmMessage', { name: record.display_name }),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),

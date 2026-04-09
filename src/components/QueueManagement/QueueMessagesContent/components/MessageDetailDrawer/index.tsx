@@ -81,7 +81,7 @@ const MessageDetailDrawer = ({
         </Tooltip>
       )}
       <Tooltip content={t('common.delete')}>
-        <Button icon={<Trash2 size={16} strokeWidth={2} />} theme="borderless" size="small" onClick={() => onDelete(message)} />
+        <Button icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />} theme="borderless" size="small" onClick={() => onDelete(message)} />
       </Tooltip>
     </>
   );

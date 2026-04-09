@@ -313,7 +313,7 @@ const TimeTriggerList = () => {
   const handleDeleteTrigger = (trigger: LYTimeTriggerResponse) => {
     Modal.confirm({
       title: t('timeTrigger.deleteModal.title'),
-      icon: <Trash2 size={16} strokeWidth={2} />,
+      icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
       content: (
         <>
           <div>{t('timeTrigger.deleteModal.confirmMessage', { name: trigger.name })}</div>
