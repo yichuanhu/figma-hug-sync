@@ -921,7 +921,7 @@ const CollaboratorPanel = ({
           </Button>
         </div>
       ) : !searchValue.trim() ? (
-        <div style={{ paddingTop: '12px' }}>
+        <div style={{ paddingTop: '12px', display: 'flex', justifyContent: 'flex-end' }}>
           <Button
             type="tertiary"
             icon={<Network size={16} strokeWidth={2} />}
@@ -951,7 +951,7 @@ const CollaboratorPanel = ({
         )}
       </div>
       {canManage && (
-        <div className="collaborator-panel-manage-add">
+        <div className="collaborator-panel-manage-add" style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Button
             type="tertiary"
             icon={<UserPlus size={14} />}
