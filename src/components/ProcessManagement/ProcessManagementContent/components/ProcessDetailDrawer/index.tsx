@@ -419,7 +419,7 @@ const ProcessDetailDrawer = ({
       )}
       {!isSchedulingContext && onEdit && (
         <Tooltip content={t('common.edit')}>
-          <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={onEdit} />
+          <Button icon={<IconEditStroked />} theme="borderless" type="tertiary" size="small" onClick={onEdit} />
         </Tooltip>
       )}
       <Tooltip content={t('common.run')}>
