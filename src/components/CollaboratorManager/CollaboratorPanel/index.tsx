@@ -437,7 +437,7 @@ const CollaboratorPanel = ({
   const renderAvatarGroup = () => (
     <div
       className="collaborator-panel-header-right"
-      onClick={() => setPanelView('manage')}
+      onClick={() => { setPanelView('manage'); setSearchValue(''); setSelectedUsers([]); }}
     >
       <AvatarGroup size="extra-extra-small" maxCount={3}>
         {collaborators.slice(0, 3).map((c) => (
@@ -547,8 +547,8 @@ const CollaboratorPanel = ({
         </Text>
       </div>
       <div className="collaborator-panel-manage-list">
-        {filteredData.map((record) => renderCollaboratorItem(record))}
-        {filteredData.length === 0 && (
+        {collaborators.map((record) => renderCollaboratorItem(record))}
+        {collaborators.length === 0 && (
           <div className="collaborator-panel-manage-empty">
             <Text type="tertiary">{t('collaborator.empty')}</Text>
           </div>
