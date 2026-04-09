@@ -338,8 +338,22 @@
     margin-top: 2px;
 
     &-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
       font-size: 12px;
       line-height: 18px;
+      min-width: 0;
+
+      .source-name {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .source-role {
+        flex-shrink: 0;
+        white-space: nowrap;
+      }
     }
 
     &-toggle {
