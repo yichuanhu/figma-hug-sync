@@ -609,16 +609,6 @@ const TaskManagementPage = () => {
       key: 'action',
       width: 60,
       render: (_: unknown, record: LYTaskResponse) => {
-        // 判断is否has可useOperation
-        const hasStatusActions = 
-          record.task_status === 'PENDING' ||
-          record.execution_status === 'RUNNING' ||
-          record.task_status === 'FAILED';
-        
-        // ExecuteHistory入口: 只tohas过ExecuteRecorddisplay
-        const hasExecutions = record.total_execution_count > 0;
-        
-        // 所有任务都有协作者操作，所以总是显示菜单
         return (
           <Dropdown
             trigger="click"
