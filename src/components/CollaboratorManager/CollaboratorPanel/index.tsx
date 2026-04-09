@@ -556,14 +556,15 @@ const CollaboratorPanel = ({
         )}
       </div>
       {canManage && (
-        <div
-          className="collaborator-panel-action-row collaborator-panel-manage-add"
-          onClick={handleOpenOrgModal}
-        >
-          <div className="collaborator-panel-action-row-icon">
-            <UserPlus size={14} strokeWidth={2} />
-          </div>
-          <Text>{t('collaborator.actions.addCollaborator')}</Text>
+        <div className="collaborator-panel-manage-add">
+          <Button
+            type="tertiary"
+            icon={<UserPlus size={14} />}
+            block
+            onClick={handleOpenOrgModal}
+          >
+            {t('collaborator.actions.addCollaborator')}
+          </Button>
         </div>
       )}
     </div>
