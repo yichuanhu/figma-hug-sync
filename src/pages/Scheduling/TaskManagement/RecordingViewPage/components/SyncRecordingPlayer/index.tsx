@@ -313,7 +313,7 @@ const SyncRecordingPlayer = ({
         
         {/* Mute button */}
         <Button
-          icon={isMuted ? <IconVolume1Stroked /> : <IconVolume2Stroked />}
+          icon={isMuted ? <VolumeX size={16} strokeWidth={2} /> : <Volume2 size={16} strokeWidth={2} />}
           theme="borderless"
           size="small"
           onClick={toggleMute}
