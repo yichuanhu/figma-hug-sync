@@ -659,6 +659,15 @@ const TaskManagementPage = () => {
                     {t('task.actions.retry')}
                   </Dropdown.Item>
                 )}
+                <Dropdown.Item
+                    icon={<UserPlus size={14} strokeWidth={2} />}
+                    onClick={(e) => {
+                      e?.stopPropagation();
+                      openCollaborator(record.task_id);
+                    }}
+                  >
+                    {t('collaborator.actions.addCollaborator')}
+                  </Dropdown.Item>
               </Dropdown.Menu>
             }
           >
@@ -839,6 +848,7 @@ const TaskManagementPage = () => {
             setListResponse(response);
           }}
         />
+        {renderCollaboratorPanel('TASK', 'scheduling')}
       </div>
   );
 };
