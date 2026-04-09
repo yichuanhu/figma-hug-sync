@@ -127,6 +127,9 @@
       background: transparent !important;
       box-shadow: none !important;
       flex-shrink: 0;
+      width: auto !important;
+      min-width: unset !important;
+      padding-right: 0 !important;
 
       &:hover {
         background: transparent !important;
@@ -137,12 +140,18 @@
         gap: 0;
         width: auto !important;
         min-width: unset !important;
+        padding: 0 !important;
       }
 
       .semi-select-selection-text {
         width: auto !important;
         flex-shrink: 0;
         white-space: nowrap;
+      }
+
+      .semi-select-arrow {
+        margin-left: 0 !important;
+        padding-left: 0 !important;
       }
 
       &:hover .semi-select-selection-text,
