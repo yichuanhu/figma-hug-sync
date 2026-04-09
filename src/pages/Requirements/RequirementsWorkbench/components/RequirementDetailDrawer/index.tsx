@@ -318,6 +318,7 @@ const RequirementDetailDrawer = ({
                 theme="borderless"
                 type="tertiary"
                 size="small"
+                onClick={() => onEdit(data)}
               />
             </Tooltip>
           )}
