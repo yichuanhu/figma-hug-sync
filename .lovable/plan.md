@@ -1,29 +1,31 @@
 
 
-# 添加协作者后自动关闭弹窗
+# 修复：切换到管理视图时清除搜索状态
 
-## 变更
+## 问题原因
 
-**文件**: `CollaboratorPanel/index.tsx` (L161-179)
+管理视图的协作者列表使用了 `filteredData`，该变量会根据 `searchValue` 过滤协作者。当在快捷添加视图搜索无结果后，点击切换到管理视图时，`searchValue` 未被清除，导致过滤后列表为空，显示"暂无协作者"。
 
-在 `handleBatchAdd` 回调末尾添加 `onVisibleChange(false)` 关闭弹窗，并将 `onVisibleChange` 加入依赖数组：
+## 改动
+
+**文件**: `CollaboratorPanel/index.tsx`
+
+在点击切换到管理视图时（L440），同时清除 `searchValue`：
 
 ```tsx
-const handleBatchAdd = useCallback(() => {
-  if (selectedUsers.length === 0) return;
-  addCollaborators(/* ... 保持不变 ... */);
-  setCollaborators(getCollaborators(assetType, assetId));
-  setSelectedUsers([]);
+onClick={() => {
+  setPanelView('manage');
   setSearchValue('');
-  setBatchRole(ASSET_AVAILABLE_ROLES[assetType]?.[ASSET_AVAILABLE_ROLES[assetType].length - 1] || 'OBSERVER');
-  Toast.success(t('collaborator.quickAddSuccess'));
-  onVisibleChange(false); // 关闭弹窗（包括快捷视图和管理视图）
-}, [assetType, assetId, selectedUsers, batchRole, t, onVisibleChange]);
+  setSelectedUsers([]);
+}}
 ```
 
-这会同时关闭快捷添加弹窗和管理视图弹窗，因为两者共用同一个 `visible` / `onVisibleChange` 控制。
+同时，管理视图的列表应直接使用 `collaborators` 而非 `filteredData`，因为管理视图没有搜索功能，不需要过滤：
+
+- L550: `filteredData.map(...)` → `collaborators.map(...)`
+- L551: `filteredData.length === 0` → `collaborators.length === 0`
 
 | 文件 | 改动 |
 |------|------|
-| `CollaboratorPanel/index.tsx` | `handleBatchAdd` 末尾新增 `onVisibleChange(false)`，依赖数组补充 `onVisibleChange` |
+| `CollaboratorPanel/index.tsx` | 切换管理视图时清除搜索状态；管理视图列表改用 `collaborators` |
 
