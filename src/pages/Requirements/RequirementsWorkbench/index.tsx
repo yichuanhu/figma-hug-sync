@@ -14,16 +14,7 @@ import {
   Toast,
   Space,
 } from '@douyinfe/semi-ui';
-import {
-  IconSearchStroked,
-  IconPlusStroked,
-  IconMoreStroked,
-  IconEyeOpenedStroked,
-  IconEditStroked,
-  IconDeleteStroked,
-  IconSendStroked,
-} from '@douyinfe/semi-icons';
-import { Upload } from 'lucide-react';
+import { Ellipsis, Eye, Pencil, Plus, Search, Send, Trash2, Upload } from 'lucide-react';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
@@ -160,7 +151,7 @@ const RequirementsWorkbench = () => {
   const handleDelete = (record: RequirementItem) => {
     Modal.confirm({
       title: t('requirements.deleteModal.title'),
-      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      icon: <Trash2 size={16} strokeWidth={2} />,
       content: (
         <>
           <div>{t('requirements.deleteModal.confirmMessage', { name: record.title })}</div>
@@ -287,7 +278,7 @@ const RequirementsWorkbench = () => {
           render={
             <Dropdown.Menu>
               <Dropdown.Item
-                icon={<IconEyeOpenedStroked />}
+                icon={<Eye size={16} strokeWidth={2} />}
                 onClick={(e) => {
                   e.stopPropagation();
                   console.log('View requirement:', record.id);
@@ -297,7 +288,7 @@ const RequirementsWorkbench = () => {
               </Dropdown.Item>
               {canEdit(record.status) && (
                 <Dropdown.Item
-                  icon={<IconEditStroked />}
+                  icon={<Pencil size={16} strokeWidth={2} />}
                   onClick={(e: React.MouseEvent) => {
                     e.stopPropagation();
                     setEditingRecord(record);
@@ -309,7 +300,7 @@ const RequirementsWorkbench = () => {
               )}
               {canEdit(record.status) && (
                 <Dropdown.Item
-                  icon={<IconSendStroked />}
+                  icon={<Send size={16} strokeWidth={2} />}
                   onClick={(e) => {
                     e.stopPropagation();
                     Modal.confirm({
@@ -330,7 +321,7 @@ const RequirementsWorkbench = () => {
               )}
               {canDelete(record.status) && (
                 <Dropdown.Item
-                  icon={<IconDeleteStroked />}
+                  icon={<Trash2 size={16} strokeWidth={2} />}
                   type="danger"
                   onClick={(e) => {
                     e.stopPropagation();
@@ -343,7 +334,7 @@ const RequirementsWorkbench = () => {
             </Dropdown.Menu>
           }
         >
-          <Button icon={<IconMoreStroked />} theme="borderless" onClick={(e) => e.stopPropagation()} />
+          <Button icon={<Ellipsis size={16} strokeWidth={2} />} theme="borderless" onClick={(e) => e.stopPropagation()} />
         </Dropdown>
       ),
     },
@@ -370,7 +361,7 @@ const RequirementsWorkbench = () => {
           <Col>
             <Space>
               <Input
-                prefix={<IconSearchStroked />}
+                prefix={<Search size={16} strokeWidth={2} />}
                 placeholder={t('requirements.workbench.searchPlaceholder')}
                 className="requirements-workbench-search-input"
                 value={searchValue}
@@ -418,7 +409,7 @@ const RequirementsWorkbench = () => {
               <Button icon={<Upload size={14} strokeWidth={2} />} theme="light" type="tertiary">
                 {t('requirements.workbench.batchImport')}
               </Button>
-              <Button icon={<IconPlusStroked />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
+              <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
                 {t('requirements.workbench.newRequirement')}
               </Button>
             </Space>

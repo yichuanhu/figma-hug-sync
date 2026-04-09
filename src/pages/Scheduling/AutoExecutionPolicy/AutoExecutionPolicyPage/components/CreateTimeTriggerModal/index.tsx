@@ -10,8 +10,7 @@ import {
   Tag,
   Steps,
 } from '@douyinfe/semi-ui';
-import { IconHelpCircleStroked } from '@douyinfe/semi-icons';
-import { Inbox } from 'lucide-react';
+import { HelpCircle, Inbox } from 'lucide-react';
 import TriggerRuleConfig from '@/components/TriggerRuleConfig';
 import BotTargetSelector from '@/components/BotTargetSelector';
 import { getWorkCalendarOptions } from '@/mocks/workCalendar';
@@ -313,7 +312,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
             position="top"
             showArrow
           >
-            <IconHelpCircleStroked size="small" style={{ color: 'var(--semi-color-text-2)', marginLeft: 4, cursor: 'help' }} />
+            <HelpCircle size={16} strokeWidth={2} />
           </Popover>
         )}
       </div>

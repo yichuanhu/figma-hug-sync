@@ -15,14 +15,7 @@ import {
   Switch,
   Tooltip,
 } from '@douyinfe/semi-ui';
-import {
-  IconSearchStroked,
-  IconPlusStroked,
-  IconMoreStroked,
-  IconDeleteStroked,
-  IconEditStroked,
-} from '@douyinfe/semi-icons';
-import { UserPlus } from 'lucide-react';
+import { Ellipsis, Pencil, Plus, Search, Trash2, UserPlus } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import type {
@@ -329,7 +322,7 @@ const QueueTriggerList = () => {
   const handleDeleteTrigger = (trigger: LYQueueTriggerResponse) => {
     Modal.confirm({
       title: t('queueTrigger.deleteModal.title'),
-      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      icon: <Trash2 size={16} strokeWidth={2} />,
       content: (
         <>
           <div>{t('queueTrigger.deleteModal.confirmMessage', { name: trigger.name })}</div>
@@ -436,7 +429,7 @@ const QueueTriggerList = () => {
           render={
             <Dropdown.Menu>
               <Dropdown.Item
-                icon={<IconEditStroked />}
+                icon={<Pencil size={16} strokeWidth={2} />}
                 onClick={(e) => {
                   e.stopPropagation();
                   handleOpenEditModal(record);
@@ -455,7 +448,7 @@ const QueueTriggerList = () => {
                 {t('collaborator.actions.addCollaborator')}
               </Dropdown.Item>
               <Dropdown.Item
-                icon={<IconDeleteStroked />}
+                icon={<Trash2 size={16} strokeWidth={2} />}
                 type="danger"
                 onClick={(e) => {
                   e.stopPropagation();
@@ -468,7 +461,7 @@ const QueueTriggerList = () => {
           }
         >
           <Button
-            icon={<IconMoreStroked />}
+            icon={<Ellipsis size={16} strokeWidth={2} />}
             theme="borderless"
             type="tertiary"
             onClick={(e) => e.stopPropagation()}
@@ -495,7 +488,7 @@ const QueueTriggerList = () => {
         <Col>
           <Space>
             <Input
-              prefix={<IconSearchStroked />}
+              prefix={<Search size={16} strokeWidth={2} />}
               placeholder={t('queueTrigger.searchPlaceholder')}
               onChange={(value) => handleSearch(value)}
               showClear
@@ -536,7 +529,7 @@ const QueueTriggerList = () => {
         </Col>
         <Col>
           <Button
-            icon={<IconPlusStroked />}
+            icon={<Plus size={16} strokeWidth={2} />}
             theme="solid"
             onClick={() => setCreateModalVisible(true)}
           >

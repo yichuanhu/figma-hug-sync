@@ -1,6 +1,5 @@
 import { Card, Tag, Typography, Space, Avatar } from '@douyinfe/semi-ui';
-import { IconStarStroked } from '@douyinfe/semi-icons';
-import { Download } from 'lucide-react';
+import { Download, Star } from 'lucide-react';
 import { getAvatarColor } from '@/utils/avatarColor';
 import './index.less';
 
@@ -66,7 +65,7 @@ const SkillCard = ({ item, onClick }: SkillCardProps) => {
                 <Text size="small" type="tertiary">{item.downloads.toLocaleString()}</Text>
               </span>
               <span className="skill-card-stat">
-                <IconStarStroked size="small" style={{ color: 'var(--semi-color-warning)' }} />
+                <Star size={16} strokeWidth={2} />
                 <Text size="small" type="tertiary">{item.rating}</Text>
               </span>
             </Space>

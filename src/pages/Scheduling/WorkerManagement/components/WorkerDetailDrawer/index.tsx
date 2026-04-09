@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Typography, Button, Tag, Descriptions, Switch, Tooltip, Space, Tabs, TabPane } from '@douyinfe/semi-ui';
-import { IconEditStroked, IconDeleteStroked, IconKeyStroked, IconUserListStroked, IconMinusCircleStroked } from '@douyinfe/semi-icons';
 import type { LYWorkerResponse } from '@/api';
 import ExpandableText from '@/components/ExpandableText';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
@@ -9,6 +8,7 @@ import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import CollaboratorTab from '@/components/CollaboratorManager/CollaboratorTab';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import './index.less';
+import { Key, MinusCircle, Pencil, Trash2, Users } from 'lucide-react';
 
 const { Text } = Typography;
 
@@ -60,7 +60,7 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
         <Space spacing={8}>
           <Tag color="blue" type="light">{workerData.group_name}</Tag>
           <Tooltip content={t('worker.actions.removeFromGroup')}>
-            <Button icon={<IconMinusCircleStroked />} theme="borderless" size="small" type="tertiary" onClick={() => onRemoveFromGroup?.(workerData)} />
+            <Button icon={<MinusCircle size={16} strokeWidth={2} />} theme="borderless" size="small" type="tertiary" onClick={() => onRemoveFromGroup?.(workerData)} />
           </Tooltip>
         </Space>
       );
@@ -69,7 +69,7 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
       <Space spacing={8}>
         <Text type="tertiary">{t('worker.filter.ungrouped')}</Text>
         <Tooltip content={t('worker.actions.addToGroup')}>
-          <Button icon={<IconUserListStroked />} theme="borderless" size="small" type="tertiary" onClick={() => onAddToGroup?.(workerData)} />
+          <Button icon={<Users size={16} strokeWidth={2} />} theme="borderless" size="small" type="tertiary" onClick={() => onAddToGroup?.(workerData)} />
         </Tooltip>
       </Space>
     );
@@ -110,13 +110,13 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
   const extraActions = (
     <>
       <Tooltip content={t('common.edit')}>
-        <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={onEdit} />
+        <Button icon={<Pencil size={16} strokeWidth={2} />} theme="borderless" size="small" onClick={onEdit} />
       </Tooltip>
       <Tooltip content={t('worker.actions.viewKey')}>
-        <Button icon={<IconKeyStroked />} theme="borderless" size="small" onClick={onViewKey} />
+        <Button icon={<Key size={16} strokeWidth={2} />} theme="borderless" size="small" onClick={onViewKey} />
       </Tooltip>
       <Tooltip content={t('common.delete')}>
-        <Button icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />} theme="borderless" size="small" onClick={onDelete} />
+        <Button icon={<Trash2 size={16} strokeWidth={2} />} theme="borderless" size="small" onClick={onDelete} />
       </Tooltip>
     </>
   );

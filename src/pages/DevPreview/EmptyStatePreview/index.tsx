@@ -1,9 +1,9 @@
 import { Typography, Card, Row, Col, Button } from '@douyinfe/semi-ui';
-import { IconPlusStroked } from '@douyinfe/semi-icons';
 import EmptyState, { EmptyStateVariant } from '@/components/EmptyState';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import './index.less';
+import { Plus } from 'lucide-react';
 
 const { Title, Text } = Typography;
 
@@ -73,7 +73,7 @@ const EmptyStatePreview = () => {
         <Button
           theme="solid"
           type="primary"
-          icon={<IconPlusStroked />}
+          icon={<Plus size={16} strokeWidth={2} />}
           onClick={() => navigate('/')}
         >
           {t(item.footerLabel)}

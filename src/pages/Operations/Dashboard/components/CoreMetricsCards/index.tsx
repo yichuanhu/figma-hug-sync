@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import { IconArrowUp, IconArrowDown } from '@douyinfe/semi-icons';
 import type { RoiMetrics } from '@/pages/Operations/types';
 import './index.less';
+import { ArrowDown, ArrowUp } from 'lucide-react';
 
 interface CoreMetricsCardsProps {
   data: RoiMetrics;
@@ -69,7 +69,7 @@ const CoreMetricsCards = ({ data }: CoreMetricsCardsProps) => {
             <div className="core-metric-value">{card.value}</div>
             {card.trend !== null && (
               <div className={`core-metric-trend ${card.trend >= 0 ? 'up' : 'down'}`}>
-                {card.trend >= 0 ? <IconArrowUp size="small" /> : <IconArrowDown size="small" />}
+                {card.trend >= 0 ? <ArrowUp size={16} strokeWidth={2} /> : <ArrowDown size={16} strokeWidth={2} />}
                 <span>{card.trendLabel}</span>
               </div>
             )}

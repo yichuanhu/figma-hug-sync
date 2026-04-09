@@ -13,13 +13,6 @@ import {
   Dropdown,
   TextArea,
 } from '@douyinfe/semi-ui';
-import {
-  IconSearchStroked,
-  IconCheckCircleStroked,
-  IconCrossCircleStroked,
-  IconEyeOpenedStroked,
-  IconMoreStroked,
-} from '@douyinfe/semi-icons';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
@@ -35,6 +28,7 @@ import {
 } from '../RequirementsWorkbench/mockData';
 import RequirementDetailDrawer from '../RequirementsWorkbench/components/RequirementDetailDrawer';
 import './index.less';
+import { CheckCircle, Ellipsis, Eye, Search, XCircle } from 'lucide-react';
 
 const { Title, Text } = Typography;
 
@@ -300,7 +294,7 @@ const RequirementsReview = () => {
             render={
               <Dropdown.Menu>
                 <Dropdown.Item
-                  icon={<IconEyeOpenedStroked />}
+                  icon={<Eye size={16} strokeWidth={2} />}
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedRecord(record);
@@ -312,7 +306,7 @@ const RequirementsReview = () => {
                 {record.status === 'PENDING' && (
                   <>
                     <Dropdown.Item
-                      icon={<IconCheckCircleStroked />}
+                      icon={<CheckCircle size={16} strokeWidth={2} />}
                       onClick={(e) => {
                         e.stopPropagation();
                         openApprovalModal(record, 'approve');
@@ -321,7 +315,7 @@ const RequirementsReview = () => {
                       {t('requirements.detail.approve')}
                     </Dropdown.Item>
                     <Dropdown.Item
-                      icon={<IconCrossCircleStroked />}
+                      icon={<XCircle size={16} strokeWidth={2} />}
                       type="danger"
                       onClick={(e) => {
                         e.stopPropagation();
@@ -334,7 +328,7 @@ const RequirementsReview = () => {
                 )}
                 {record.status === 'ASSESSING' && (
                   <Dropdown.Item
-                    icon={<IconEyeOpenedStroked />}
+                    icon={<Eye size={16} strokeWidth={2} />}
                     onClick={(e) => {
                       e.stopPropagation();
                       setSelectedRecord(record);
@@ -347,7 +341,7 @@ const RequirementsReview = () => {
               </Dropdown.Menu>
             }
           >
-            <Button icon={<IconMoreStroked />} theme="borderless" onClick={(e) => e.stopPropagation()} />
+            <Button icon={<Ellipsis size={16} strokeWidth={2} />} theme="borderless" onClick={(e) => e.stopPropagation()} />
           </Dropdown>
         )),
       });
@@ -477,7 +471,7 @@ const RequirementsReview = () => {
           >
             <div className="requirements-review-toolbar">
               <Input
-                prefix={<IconSearchStroked />}
+                prefix={<Search size={16} strokeWidth={2} />}
                 placeholder={t('requirements.review.searchPlaceholder')}
                 className="requirements-review-search"
                 value={searchValue}
@@ -514,7 +508,7 @@ const RequirementsReview = () => {
           <TabPane tab={t('requirements.review.reviewedByMe')} itemKey="reviewed">
             <div className="requirements-review-toolbar">
               <Input
-                prefix={<IconSearchStroked />}
+                prefix={<Search size={16} strokeWidth={2} />}
                 placeholder={t('requirements.review.searchPlaceholder')}
                 className="requirements-review-search"
                 value={searchValue}
@@ -550,7 +544,7 @@ const RequirementsReview = () => {
           <TabPane tab={t('requirements.review.allReviews')} itemKey="all">
             <div className="requirements-review-toolbar">
               <Input
-                prefix={<IconSearchStroked />}
+                prefix={<Search size={16} strokeWidth={2} />}
                 placeholder={t('requirements.review.searchPlaceholder')}
                 className="requirements-review-search"
                 value={searchValue}

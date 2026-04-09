@@ -8,15 +8,13 @@ import {
   Tabs,
   TabPane,
 } from '@douyinfe/semi-ui';
-import {
-  IconExternalOpenStroked,
-} from '@douyinfe/semi-icons';
 import type { LYReleaseResponse, ReleaseType, ReleaseStatus, ResourceType } from '@/api';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import ExpandableText from '@/components/ExpandableText';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 
 import './index.less';
+import { ExternalLink } from 'lucide-react';
 
 const { Title, Text } = Typography;
 
@@ -155,7 +153,7 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
             <div className="release-detail-drawer-process-card-header">
               <span onClick={() => handleProcessClick(content.process_id)} className="release-detail-drawer-process-name">
                 <Text strong ellipsis={{ showTooltip: true }}>{content.process_name}</Text>
-                <IconExternalOpenStroked className="release-detail-drawer-link-icon" />
+                <ExternalLink size={16} strokeWidth={2} className="release-detail-drawer-link-icon" />
               </span>
               <Tag size="small" color="blue">{content.version_number}</Tag>
             </div>
@@ -178,7 +176,7 @@ const ReleaseDetailDrawer: React.FC<ReleaseDetailDrawerProps> = ({
                   <div className="release-detail-drawer-resource-card-header">
                     <span onClick={() => handleResourceClick(type as ResourceType, resource.resource_id)} className="release-detail-drawer-resource-name">
                       <Text strong ellipsis={{ showTooltip: true }}>{resource.resource_name}</Text>
-                      <IconExternalOpenStroked className="release-detail-drawer-link-icon" />
+                      <ExternalLink size={16} strokeWidth={2} className="release-detail-drawer-link-icon" />
                     </span>
                     {resource.is_manual && <Tag size="small" color="grey" className="release-detail-drawer-resource-tag">{t('release.create.manuallyAdded')}</Tag>}
                   </div>

@@ -24,11 +24,7 @@ import DetailSkeleton from '@/components/DetailSkeleton';
 import TableSkeleton from '@/components/TableSkeleton';
 import ExpandableText from '@/components/ExpandableText';
 import FilterPopover from '@/components/FilterPopover';
-import {
-  IconEditStroked,
-  IconDeleteStroked,
-} from '@douyinfe/semi-icons';
-import { Download } from 'lucide-react';
+import { Download, Pencil, Trash2 } from 'lucide-react';
 import type { LYCredentialResponse, CredentialType, LYRangeResponse } from '@/api/index';
 import { useUsageRecordFilter } from '@/hooks/useUsageRecordFilter';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
@@ -206,7 +202,7 @@ const CredentialDetailDrawer = ({
     if (!credential) return;
     Modal.confirm({
       title: t('credential.deleteModal.title'),
-      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      icon: <Trash2 size={16} strokeWidth={2} />,
       content: t('credential.deleteModal.confirmMessage', { name: credential.credential_name }),
       okText: t('common.confirm'), cancelText: t('common.cancel'), okButtonProps: { type: 'danger' },
       onOk: async () => {
@@ -264,12 +260,12 @@ const CredentialDetailDrawer = ({
     <>
       {!credential.is_published && (
         <Tooltip content={t('common.edit')}>
-          <Button icon={<IconEditStroked />} theme="borderless" type="tertiary" size="small" onClick={handleEdit} />
+          <Button icon={<Pencil size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={handleEdit} />
         </Tooltip>
       )}
       {context === 'development' && !credential.is_published && (
         <Tooltip content={t('common.delete')}>
-          <Button icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />} theme="borderless" type="tertiary" size="small" onClick={handleDelete} />
+          <Button icon={<Trash2 size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={handleDelete} />
         </Tooltip>
       )}
     </>

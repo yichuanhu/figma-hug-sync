@@ -18,17 +18,12 @@ import {
   Col,
   Space,
 } from '@douyinfe/semi-ui';
-import {
-  IconClose,
-  IconInfoCircle,
-  IconPlusStroked,
-  IconDeleteStroked,
-} from '@douyinfe/semi-icons';
 import type { ReleaseType, ResourceType } from '@/api';
 import type { SelectedProcess, ResourceConfig } from '../../index';
 import AddResourceModal from '../AddResourceModal';
 
 import './index.less';
+import { Info, Plus, Trash2, X } from 'lucide-react';
 
 const { Title, Text } = Typography;
 
@@ -142,7 +137,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
             )}
             {resource.is_manual && (
               <Button
-                icon={<IconDeleteStroked />}
+                icon={<Trash2 size={16} strokeWidth={2} />}
                 theme="borderless"
                 type="danger"
                 size="small"
@@ -375,7 +370,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
                 </Text>
               </div>
               <Button
-                icon={<IconClose />}
+                icon={<X size={16} strokeWidth={2} />}
                 theme="borderless"
                 type="tertiary"
                 size="small"
@@ -397,7 +392,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
         }
         headerExtraContent={
           <Button
-            icon={<IconPlusStroked />}
+            icon={<Plus size={16} strokeWidth={2} />}
             theme="light"
             size="small"
             onClick={() => setAddResourceModalVisible(true)}
@@ -408,7 +403,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
       >
         <Banner
           type="info"
-          icon={<IconInfoCircle />}
+          icon={<Info size={16} strokeWidth={2} />}
           description={t('release.create.dependencyHint')}
           className="release-config-step-banner"
         />

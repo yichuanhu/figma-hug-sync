@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Descriptions, Tag, Typography, Table, Timeline, Avatar, Space } from '@douyinfe/semi-ui';
-import { IconStarStroked } from '@douyinfe/semi-icons';
-import { Download } from 'lucide-react';
+import { Download, Star } from 'lucide-react';
 import { ComponentItem, SubCommand } from '../../CreatorComponents/types';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import { getAvatarColor } from '@/utils/avatarColor';
@@ -109,7 +108,7 @@ const ComponentDetailDrawer = ({
               )},
               { key: t('sharing.detail.rating'), value: (
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                  <IconStarStroked size="small" style={{ color: 'var(--semi-color-warning)' }} />
+                  <Star size={16} strokeWidth={2} />
                   {item.rating}
                 </span>
               )},

@@ -11,11 +11,7 @@ import {
   Spin,
   Tooltip,
 } from '@douyinfe/semi-ui';
-import {
-  IconDownloadStroked,
-  IconChevronLeft,
-} from '@douyinfe/semi-icons';
-import { RefreshCw } from 'lucide-react';
+import { ChevronLeft, Download, RefreshCw } from 'lucide-react';
 // AppLayout removed
 import SyncRecordingPlayer from './components/SyncRecordingPlayer';
 import LogSyncPanel from './components/LogSyncPanel';
@@ -242,7 +238,7 @@ const RecordingViewPage = () => {
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <Tooltip content={t('common.back')} position="bottom">
                   <Button
-                    icon={<IconChevronLeft />}
+                    icon={<ChevronLeft size={16} strokeWidth={2} />}
                     theme="borderless"
                     onClick={handleBack}
                   />
@@ -267,7 +263,7 @@ const RecordingViewPage = () => {
                   {t('common.refresh')}
                 </Button>
                 <Button
-                  icon={<IconDownloadStroked />}
+                  icon={<Download size={16} strokeWidth={2} />}
                   type="primary"
                   onClick={handleExport}
                   loading={exporting}

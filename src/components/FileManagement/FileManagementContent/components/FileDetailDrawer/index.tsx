@@ -13,14 +13,7 @@ import {
   Space,
   Divider,
 } from '@douyinfe/semi-ui';
-import {
-  IconChevronLeft,
-  IconChevronRight,
-  IconUpload,
-  IconDownloadStroked,
-  IconDeleteStroked,
-} from '@douyinfe/semi-icons';
-import { X, Maximize2, Minimize2, Users } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Download, Maximize2, Minimize2, Trash2, Upload, Users, X } from 'lucide-react';
 import type { LYFileResponse, FileSource } from '@/api/index';
 import ExpandableText from '@/components/ExpandableText';
 import CollaboratorPanel from '@/components/CollaboratorManager/CollaboratorPanel';
@@ -184,23 +177,23 @@ const FileDetailDrawer = ({
           </Tooltip>
           <Space spacing={8} style={{ flexShrink: 0 }}>
             <Tooltip content={t('common.previous')}>
-              <Button icon={<IconChevronLeft />} theme="borderless" size="small" disabled={!canGoPrev} onClick={() => onNavigate('prev')} />
+              <Button icon={<ChevronLeft size={16} strokeWidth={2} />} theme="borderless" size="small" disabled={!canGoPrev} onClick={() => onNavigate('prev')} />
             </Tooltip>
             <Tooltip content={t('common.next')}>
-              <Button icon={<IconChevronRight />} theme="borderless" size="small" disabled={!canGoNext} onClick={() => onNavigate('next')} />
+              <Button icon={<ChevronRight size={16} strokeWidth={2} />} theme="borderless" size="small" disabled={!canGoNext} onClick={() => onNavigate('next')} />
             </Tooltip>
             <Divider layout="vertical" className="file-detail-drawer-header-divider" />
             {context === 'development' && canReupload && (
               <Tooltip content={t('file.actions.reupload')}>
-                <Button icon={<IconUpload />} theme="borderless" size="small" onClick={() => onReupload(file)} />
+                <Button icon={<Upload size={16} strokeWidth={2} />} theme="borderless" size="small" onClick={() => onReupload(file)} />
               </Tooltip>
             )}
             <Tooltip content={t('file.actions.download')}>
-              <Button icon={<IconDownloadStroked />} theme="borderless" size="small" onClick={handleDownload} />
+              <Button icon={<Download size={16} strokeWidth={2} />} theme="borderless" size="small" onClick={handleDownload} />
             </Tooltip>
             {context === 'development' && canDeleteFile && (
               <Tooltip content={t('common.delete')}>
-                <Button icon={<IconDeleteStroked className="file-detail-drawer-header-delete-icon" />} theme="borderless" size="small" onClick={handleDelete} />
+                <Button icon={<Trash2 size={16} strokeWidth={2} className="file-detail-drawer-header-delete-icon" />} theme="borderless" size="small" onClick={handleDelete} />
               </Tooltip>
             )}
             <Button

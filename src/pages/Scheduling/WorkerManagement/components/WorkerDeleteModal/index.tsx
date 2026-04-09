@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Modal, Typography } from '@douyinfe/semi-ui';
-import { IconAlertTriangle } from '@douyinfe/semi-icons';
 import './index.less';
+import { AlertTriangle } from 'lucide-react';
 
 const { Text } = Typography;
 
@@ -29,7 +29,7 @@ const WorkerDeleteModal = ({ visible, onClose, workerData, onConfirm }: WorkerDe
     <Modal
       title={
         <div className="worker-delete-modal-header">
-          <IconAlertTriangle className="worker-delete-modal-header-icon" />
+          <AlertTriangle size={16} strokeWidth={2} className="worker-delete-modal-header-icon" />
           <span>{t('worker.deleteModal.title')}</span>
         </div>
       }

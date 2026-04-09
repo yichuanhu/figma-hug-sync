@@ -7,8 +7,8 @@ import {
   DatePicker,
   Typography,
 } from '@douyinfe/semi-ui';
-import { IconFilterStroked } from '@douyinfe/semi-icons';
 import './index.less';
+import { Filter } from 'lucide-react';
 
 const { Text } = Typography;
 
@@ -249,7 +249,7 @@ const FilterPopover = ({
   // 默认触发按钮
   const defaultTrigger = (
     <Button
-      icon={<IconFilterStroked />}
+      icon={<Filter size={16} strokeWidth={2} />}
       type={filterCount > 0 ? 'primary' : 'tertiary'}
       theme={filterCount > 0 ? 'solid' : 'light'}
     >

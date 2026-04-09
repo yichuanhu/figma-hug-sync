@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Typography } from '@douyinfe/semi-ui';
-import { IconClockStroked } from '@douyinfe/semi-icons';
 import './index.less';
+import { Clock } from 'lucide-react';
 
 const { Text } = Typography;
 
@@ -10,7 +10,7 @@ const QueueTriggerPlaceholder = () => {
 
   return (
     <div className="queue-trigger-placeholder">
-      <IconClockStroked className="queue-trigger-placeholder-icon" />
+      <Clock size={16} strokeWidth={2} className="queue-trigger-placeholder-icon" />
       <div className="queue-trigger-placeholder-title">
         {t('queueTrigger.pageTitle')}
       </div>

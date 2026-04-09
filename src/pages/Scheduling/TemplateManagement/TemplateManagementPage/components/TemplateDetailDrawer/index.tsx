@@ -11,12 +11,7 @@ import {
   TabPane,
   Table,
 } from '@douyinfe/semi-ui';
-import {
-  IconExternalOpenStroked,
-  IconEditStroked,
-  IconDeleteStroked,
-} from '@douyinfe/semi-icons';
-import { Inbox } from 'lucide-react';
+import { ExternalLink, Inbox, Pencil, Trash2 } from 'lucide-react';
 import type {
   LYExecutionTemplateResponse,
   TaskPriority,
@@ -120,13 +115,13 @@ const TemplateDetailDrawer = ({
   const extraActions = (
     <>
       <Tooltip content={t('template.actions.use')}>
-        <Button icon={<IconExternalOpenStroked />} theme="borderless" type="tertiary" size="small" onClick={() => onUse(template)} />
+        <Button icon={<ExternalLink size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={() => onUse(template)} />
       </Tooltip>
       <Tooltip content={t('common.edit')}>
-        <Button icon={<IconEditStroked />} theme="borderless" type="tertiary" size="small" onClick={() => onEdit(template)} />
+        <Button icon={<Pencil size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={() => onEdit(template)} />
       </Tooltip>
       <Tooltip content={t('common.delete')}>
-        <Button icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />} theme="borderless" type="tertiary" size="small" onClick={() => onDelete(template)} />
+        <Button icon={<Trash2 size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={() => onDelete(template)} />
       </Tooltip>
     </>
   );

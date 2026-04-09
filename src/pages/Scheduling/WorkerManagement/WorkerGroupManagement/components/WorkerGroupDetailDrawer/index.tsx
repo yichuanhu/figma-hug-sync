@@ -22,15 +22,6 @@ import EmptyState from '@/components/EmptyState';
 import DetailSkeleton from '@/components/DetailSkeleton';
 import TableSkeleton from '@/components/TableSkeleton';
 import ExpandableText from '@/components/ExpandableText';
-import {
-  IconEditStroked,
-  IconDeleteStroked,
-  IconSearchStroked,
-  IconPlusStroked,
-  IconMoreStroked,
-  IconEyeOpenedStroked,
-  IconMinusCircleStroked,
-} from '@douyinfe/semi-icons';
 import { useTranslation } from 'react-i18next';
 import { debounce } from 'lodash';
 import AddMembersModal from '../AddMembersModal';
@@ -45,6 +36,7 @@ import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import CollaboratorTab from '@/components/CollaboratorManager/CollaboratorTab';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import './index.less';
+import { Ellipsis, Eye, MinusCircle, Pencil, Plus, Search, Trash2 } from 'lucide-react';
 
 const { Text } = Typography;
 
@@ -172,7 +164,7 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
     e?.stopPropagation();
     Modal.confirm({
       title: t('workerGroup.removeMember.title'),
-      icon: <IconMinusCircleStroked style={{ color: 'var(--semi-color-warning)' }} />,
+      icon: <MinusCircle size={16} strokeWidth={2} />,
       content: t('workerGroup.removeMember.confirmMessage', { name: member.name }),
       okText: t('workerGroup.removeMember.confirm'), cancelText: t('common.cancel'),
       onOk: async () => {
@@ -210,20 +202,20 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
     { title: t('common.actions'), dataIndex: 'action', key: 'action', width: 60, render: (_: unknown, record: LYWorkerGroupMemberResponse) => (
       <Dropdown trigger="click" position="bottomRight" stopPropagation clickToHide render={
         <Dropdown.Menu>
-          <Dropdown.Item icon={<IconEyeOpenedStroked />} onClick={(e) => { e?.stopPropagation?.(); if (onNavigateToWorkerDetail) { onClose(); onNavigateToWorkerDetail(record.id); } }}>{t('workerGroup.actions.viewDetail')}</Dropdown.Item>
-          <Dropdown.Item icon={<IconMinusCircleStroked />} type="warning" onClick={(e) => { e?.stopPropagation?.(); handleRemoveMember(record); }}>{t('workerGroup.actions.removeFromGroup')}</Dropdown.Item>
+          <Dropdown.Item icon={<Eye size={16} strokeWidth={2} />} onClick={(e) => { e?.stopPropagation?.(); if (onNavigateToWorkerDetail) { onClose(); onNavigateToWorkerDetail(record.id); } }}>{t('workerGroup.actions.viewDetail')}</Dropdown.Item>
+          <Dropdown.Item icon={<MinusCircle size={16} strokeWidth={2} />} type="warning" onClick={(e) => { e?.stopPropagation?.(); handleRemoveMember(record); }}>{t('workerGroup.actions.removeFromGroup')}</Dropdown.Item>
         </Dropdown.Menu>
-      }><Button icon={<IconMoreStroked />} theme="borderless" onClick={(e) => e.stopPropagation()} /></Dropdown>
+      }><Button icon={<Ellipsis size={16} strokeWidth={2} />} theme="borderless" onClick={(e) => e.stopPropagation()} /></Dropdown>
     ) },
   ];
 
   const extraActions = (
     <>
       <Tooltip content={t('common.edit')}>
-        <Button icon={<IconEditStroked />} theme="borderless" type="tertiary" size="small" onClick={onEdit} />
+        <Button icon={<Pencil size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={onEdit} />
       </Tooltip>
       <Tooltip content={t('common.delete')}>
-        <Button icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />} theme="borderless" type="tertiary" size="small" onClick={onDelete} />
+        <Button icon={<Trash2 size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={onDelete} />
       </Tooltip>
     </>
   );
@@ -260,14 +252,14 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
               <Row type="flex" justify="space-between" align="middle" className="worker-group-detail-drawer-members-toolbar">
                 <Col>
                   <Space>
-                    <Input prefix={<IconSearchStroked />} placeholder={t('workerGroup.detail.searchMemberPlaceholder')} className="worker-group-detail-drawer-members-search" onChange={handleSearch} showClear />
+                    <Input prefix={<Search size={16} strokeWidth={2} />} placeholder={t('workerGroup.detail.searchMemberPlaceholder')} className="worker-group-detail-drawer-members-search" onChange={handleSearch} showClear />
                     <Select placeholder={t('workerGroup.addMembers.statusFilter')} multiple maxTagCount={1} value={statusFilter} onChange={handleStatusFilterChange} style={{ width: 160 }} showClear>
                       {statusOptions.map(option => <Select.Option key={option.value} value={option.value}>{option.label}</Select.Option>)}
                     </Select>
                   </Space>
                 </Col>
                 <Col>
-                  <Button icon={<IconPlusStroked />} theme="solid" type="primary" onClick={() => setAddMembersVisible(true)}>{t('workerGroup.detail.addMember')}</Button>
+                  <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => setAddMembersVisible(true)}>{t('workerGroup.detail.addMember')}</Button>
                 </Col>
               </Row>
               <div className="worker-group-detail-drawer-members-table">

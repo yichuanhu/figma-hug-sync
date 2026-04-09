@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { Select, Typography } from '@douyinfe/semi-ui';
-import { IconTick } from '@douyinfe/semi-icons';
 import type { CollaboratorRole, CollaboratorAssetType } from '@/api/index';
 import { ASSET_AVAILABLE_ROLES } from '@/api/index';
+import { Check } from 'lucide-react';
 
 const { Text } = Typography;
 
@@ -84,7 +84,7 @@ const CollaboratorRoleSelect = ({
             onMouseEnter={onMouseEnter}
           >
             <div style={{ width: 20, flexShrink: 0, marginTop: 2 }}>
-              {selected && <IconTick size="small" />}
+              {selected && <Check size={16} strokeWidth={2} />}
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1 }}>
               <span>{label}</span>

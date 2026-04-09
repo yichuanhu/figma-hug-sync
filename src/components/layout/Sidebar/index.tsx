@@ -4,47 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Avatar, Popover, Tooltip } from '@douyinfe/semi-ui';
 import { UserInfoDropdown } from '../UserInfoDropdown';
-import {
-  IconBellStroked,
-  IconBookStroked,
-  IconCloudStroked,
-  IconSourceControl,
-  IconChevronDown,
-  IconChevronUp,
-  IconGridView,
-  IconFolderStroked,
-} from '@douyinfe/semi-icons';
-import {
-  ListStart,
-  MonitorCheck,
-  Parentheses,
-  FolderCheck,
-  Forward,
-  Workflow,
-  Play,
-  History,
-  Bot,
-  Settings,
-  FileText,
-  TrendingUp,
-  Target,
-  ClipboardList,
-  CheckSquare,
-  Users,
-  Wrench,
-  AlertTriangle,
-  Activity,
-  Database,
-  Shield,
-  Airplay,
-  CalendarClock,
-  Home,
-  CodeXml,
-  ChartSpline,
-  LibraryBig,
-  MonitorCog,
-  ScrollText,
-} from 'lucide-react';
+import { Activity, Airplay, AlertTriangle, Bell, BookOpen, Bot, CalendarClock, ChartSpline, CheckSquare, ChevronDown, ChevronUp, ClipboardList, Cloud, CodeXml, Database, FileText, Folder, FolderCheck, Forward, GitBranch, History, Home, LayoutGrid, LibraryBig, ListStart, MonitorCheck, MonitorCog, Parentheses, Play, ScrollText, Settings, Shield, Target, TrendingUp, Users, Workflow, Wrench } from 'lucide-react';
 
 const LayoutIcon = () => (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -288,7 +248,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
   ];
 
   const bottomMenuItems: MenuItem[] = [
-    { key: 'messageCenter', labelKey: 'sidebar.messageCenter', icon: <IconBellStroked />, badge: 999 },
+    { key: 'messageCenter', labelKey: 'sidebar.messageCenter', icon: <Bell size={16} strokeWidth={2} />, badge: 999 },
   ];
 
   // 调度中心的详细菜单结构 - 使用分组标题样式
@@ -359,14 +319,14 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
   const sharingCenterMenu: MenuItem[] = [
     // 可执行组件 - 分组标题
     { key: 'executableComponents', labelKey: 'sidebar.executableComponents', isGroupLabel: true },
-    { key: 'creatorComponents', labelKey: 'sidebar.creatorComponents', icon: <IconGridView />, path: '/sharing/components/creator' },
+    { key: 'creatorComponents', labelKey: 'sidebar.creatorComponents', icon: <LayoutGrid size={16} strokeWidth={2} />, path: '/sharing/components/creator' },
     // AI Skills - 分组标题
     { key: 'aiSkills', labelKey: 'sidebar.aiSkills', isGroupLabel: true },
     { key: 'apaSkills', labelKey: 'sidebar.apaSkills', icon: <Bot size={18} strokeWidth={2} />, path: '/sharing/skills/apa' },
     { key: 'acpSkills', labelKey: 'sidebar.acpSkills', icon: <Workflow size={18} strokeWidth={2} />, path: '/sharing/skills/acp' },
     // 案例展示 - 分组标题
     { key: 'showcasesGroup', labelKey: 'sidebar.showcasesGroup', isGroupLabel: true },
-    { key: 'showcasesList', labelKey: 'sidebar.showcasesList', icon: <IconBookStroked />, path: '/sharing/showcases' },
+    { key: 'showcasesList', labelKey: 'sidebar.showcasesList', icon: <BookOpen size={16} strokeWidth={2} />, path: '/sharing/showcases' },
   ];
 
   // 根据当前路由获取选中的菜单key
@@ -608,7 +568,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
 
             {hasChildren && (
               <span className="sidebar-menu-arrow">
-                {isExpanded ? <IconChevronUp size="small" /> : <IconChevronDown size="small" />}
+                {isExpanded ? <ChevronUp size={16} strokeWidth={2} /> : <ChevronDown size={16} strokeWidth={2} />}
               </span>
             )}
           </div>
@@ -661,7 +621,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
             {/* 展开箭头 */}
             {hasChildren && (
               <span className="sidebar-menu-arrow">
-                {isExpanded ? <IconChevronUp size="small" /> : <IconChevronDown size="small" />}
+                {isExpanded ? <ChevronUp size={16} strokeWidth={2} /> : <ChevronDown size={16} strokeWidth={2} />}
               </span>
             )}
           </div>
@@ -766,7 +726,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
             <div className="sidebar-bottom-bell">
               <Tooltip content={t('sidebar.notifications')} position="right" disabled={!collapsed}>
                 <div className="sidebar-icon-btn-small" style={{ cursor: 'pointer' }}>
-                  <IconBellStroked style={{ fontSize: 18 }} />
+                  <Bell size={16} strokeWidth={2} />
                 </div>
               </Tooltip>
             </div>

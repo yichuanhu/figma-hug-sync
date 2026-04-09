@@ -7,11 +7,8 @@ import {
   Typography,
   Spin,
 } from '@douyinfe/semi-ui';
-import {
-  IconVolume1Stroked,
-  IconVolume2Stroked,
-} from '@douyinfe/semi-icons';
-import { Play, Pause, Maximize2, Minimize2, RefreshCw } from 'lucide-react';
+import { IconVolume1Stroked, IconVolume2Stroked } from '@douyinfe/semi-icons';
+import { Maximize2, Minimize2, Pause, Play, RefreshCw, Volume2 } from 'lucide-react';
 import type { LYRecordingInfoResponse, LYRecordingErrorMarker } from '@/api';
 import './index.less';
 

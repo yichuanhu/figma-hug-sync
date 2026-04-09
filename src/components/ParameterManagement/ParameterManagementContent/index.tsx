@@ -19,15 +19,8 @@ import {
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
-import {
-  IconSearchStroked,
-  IconPlusStroked,
-  IconMoreStroked,
-  IconDeleteStroked,
-  IconEditStroked,
-} from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
-import { UserPlus } from 'lucide-react';
+import { Ellipsis, Pencil, Plus, Search, Trash2, UserPlus } from 'lucide-react';
 import type {
   LYParameterResponse,
   LYParameterListResultResponse,
@@ -303,7 +296,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
 
     Modal.confirm({
       title: t('parameter.deleteModal.title'),
-      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      icon: <Trash2 size={16} strokeWidth={2} />,
       content: t('parameter.deleteModal.confirmMessage', { name: record.parameter_name }),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
@@ -403,7 +396,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
             render={
               <Dropdown.Menu>
                 {canEdit && (
-                  <Dropdown.Item icon={<IconEditStroked />} onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>
+                  <Dropdown.Item icon={<Pencil size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>
                     {t('common.edit')}
                   </Dropdown.Item>
                 )}
@@ -412,7 +405,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
                 </Dropdown.Item>
                 {canDelete && (
                   <Dropdown.Item 
-                    icon={<IconDeleteStroked />}
+                    icon={<Trash2 size={16} strokeWidth={2} />}
                     type="danger" 
                     onClick={(e) => { e.stopPropagation(); handleDelete(record); }}
                   >
@@ -422,7 +415,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
               </Dropdown.Menu>
             }
           >
-            <Button icon={<IconMoreStroked />} theme="borderless" type="tertiary" onClick={(e) => e.stopPropagation()} />
+            <Button icon={<Ellipsis size={16} strokeWidth={2} />} theme="borderless" type="tertiary" onClick={(e) => e.stopPropagation()} />
           </Dropdown>
         );
       },
@@ -454,7 +447,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
           <Col>
             <Space>
               <Input
-                prefix={<IconSearchStroked />}
+                prefix={<Search size={16} strokeWidth={2} />}
                 placeholder={t('parameter.searchPlaceholder')}
                 className="parameter-management-content-search-input"
                 value={searchValue}
@@ -499,7 +492,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
           </Col>
           <Col>
             <Button
-              icon={<IconPlusStroked />}
+              icon={<Plus size={16} strokeWidth={2} />}
               theme="solid"
               type="primary"
               onClick={() => setCreateModalVisible(true)}

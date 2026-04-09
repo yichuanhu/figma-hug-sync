@@ -9,7 +9,6 @@ import {
   Popover,
   Tag,
 } from '@douyinfe/semi-ui';
-import { IconHelpCircleStroked } from '@douyinfe/semi-icons';
 import BotTargetSelector from '@/components/BotTargetSelector';
 import type {
   LYProcessActiveVersionResponse,
@@ -18,6 +17,7 @@ import type {
   TaskPriority,
 } from '@/api';
 import './index.less';
+import { HelpCircle } from 'lucide-react';
 
 const { Text } = Typography;
 
@@ -192,7 +192,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
             position="top"
             showArrow
           >
-            <IconHelpCircleStroked size="small" style={{ color: 'var(--semi-color-text-2)', marginLeft: 4, cursor: 'help' }} />
+            <HelpCircle size={16} strokeWidth={2} />
           </Popover>
         )}
       </div>

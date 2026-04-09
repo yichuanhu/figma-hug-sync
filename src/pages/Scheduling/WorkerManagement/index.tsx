@@ -19,18 +19,7 @@ import {
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
-import {
-  IconSearchStroked, 
-  IconPlusStroked, 
-  IconMoreStroked, 
-  IconEyeOpenedStroked, 
-  IconEditStroked, 
-  IconDeleteStroked,
-  IconKeyStroked,
-  IconUserListStroked,
-  IconMinusCircleStroked,
-} from '@douyinfe/semi-icons';
-import { UserPlus } from 'lucide-react';
+import { Ellipsis, Eye, Key, MinusCircle, Pencil, Plus, Search, Trash2, UserPlus, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import WorkerDetailDrawer from './components/WorkerDetailDrawer';
@@ -555,7 +544,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
 
     Modal.confirm({
       title: t('worker.deleteModal.title'),
-      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      icon: <Trash2 size={16} strokeWidth={2} />,
       content: (
         <>
           <div>{t('worker.deleteModal.confirmMessage', { name: worker.name })}</div>
@@ -661,7 +650,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     
     Modal.confirm({
       title: t('worker.removeFromGroup.title'),
-      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-warning)' }} />,
+      icon: <Trash2 size={16} strokeWidth={2} />,
       content: t('worker.removeFromGroup.confirmMessage', { 
         name: worker.name,
         group: worker.group_name 
@@ -807,7 +796,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
           render={
             <Dropdown.Menu>
               <Dropdown.Item 
-                icon={<IconEyeOpenedStroked />} 
+                icon={<Eye size={16} strokeWidth={2} />} 
                 onClick={(e) => {
                   e?.stopPropagation?.();
                   openDetail(record);
@@ -816,7 +805,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
                 {t('worker.actions.viewDetail')}
               </Dropdown.Item>
               <Dropdown.Item 
-                icon={<IconKeyStroked />}
+                icon={<Key size={16} strokeWidth={2} />}
                 onClick={(e) => {
                   e?.stopPropagation?.();
                   openKeyModal(record);
@@ -825,7 +814,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
                 {t('worker.actions.viewKey')}
               </Dropdown.Item>
               <Dropdown.Item 
-                icon={<IconEditStroked />} 
+                icon={<Pencil size={16} strokeWidth={2} />} 
                 onClick={(e) => {
                   e?.stopPropagation?.();
                   handleEdit(record);
@@ -836,7 +825,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
               {/* 's bot""Operation */}
               {!record.group_id && (
                 <Dropdown.Item 
-                  icon={<IconUserListStroked />}
+                  icon={<Users size={16} strokeWidth={2} />}
                   onClick={(e) => {
                     e?.stopPropagation?.();
                     handleAddToGroup(record);
@@ -848,7 +837,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
               {/* Already's bot""Operation */}
               {record.group_id && (
                 <Dropdown.Item 
-                  icon={<IconMinusCircleStroked />}
+                  icon={<MinusCircle size={16} strokeWidth={2} />}
                   onClick={(e) => {
                     e?.stopPropagation?.();
                     handleRemoveFromGroup(record);
@@ -868,7 +857,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
                 {t('collaborator.actions.addCollaborator')}
               </Dropdown.Item>
               <Dropdown.Item 
-                icon={<IconDeleteStroked />} 
+                icon={<Trash2 size={16} strokeWidth={2} />} 
                 type="danger" 
                 onClick={(e) => {
                   e?.stopPropagation?.();
@@ -881,7 +870,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
           }
         >
           <Button 
-            icon={<IconMoreStroked />} 
+            icon={<Ellipsis size={16} strokeWidth={2} />} 
             theme="borderless" 
             onClick={(e) => e.stopPropagation()}
           />
@@ -899,7 +888,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
           <Col>
             <Space>
               <Input 
-                prefix={<IconSearchStroked />}
+                prefix={<Search size={16} strokeWidth={2} />}
                 placeholder={t('worker.searchPlaceholder')}
                 className="worker-management-search-input"
                 value={searchValue}
@@ -937,7 +926,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
           </Col>
           <Col>
             <Button 
-              icon={<IconPlusStroked />} 
+              icon={<Plus size={16} strokeWidth={2} />} 
               theme="solid" 
               type="primary"
               onClick={() => setCreateModalVisible(true)}

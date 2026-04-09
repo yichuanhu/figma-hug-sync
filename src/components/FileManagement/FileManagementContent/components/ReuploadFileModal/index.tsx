@@ -11,10 +11,7 @@ import {
   Progress,
   Input,
 } from '@douyinfe/semi-ui';
-import {
-  IconAlertCircle,
-} from '@douyinfe/semi-icons';
-import { Inbox, File as FileIcon, X } from 'lucide-react';
+import { AlertCircle, File as FileIcon, Inbox, X } from 'lucide-react';
 import type { FileItem } from '@douyinfe/semi-ui/lib/es/upload';
 import type { LYFileResponse } from '@/api/index';
 
@@ -267,7 +264,7 @@ const ReuploadFileModal = ({
         {/* 当前文件信息提示 */}
         <Banner
           type="info"
-          icon={<IconAlertCircle />}
+          icon={<AlertCircle size={16} strokeWidth={2} />}
           description={
             <span>
               {t('file.reupload.currentFile')}: <strong>{file?.display_name}</strong>
@@ -280,7 +277,7 @@ const ReuploadFileModal = ({
         {showWarning && (
           <Banner
             type="warning"
-            icon={<IconAlertCircle />}
+            icon={<AlertCircle size={16} strokeWidth={2} />}
             description={showWarning}
             onClose={handleDismissWarning}
             className="reupload-file-modal-warning"

@@ -22,16 +22,7 @@ import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
 import CreateTaskModal from '../components/CreateTaskModal';
 import TaskDetailDrawer from '../components/TaskDetailDrawer';
-import {
-  IconSearchStroked,
-  IconPlusStroked,
-  IconMoreStroked,
-  IconMinusCircleStroked,
-  IconCrossCircleStroked,
-  IconDeleteStroked,
-  
-} from '@douyinfe/semi-icons';
-import { RefreshCw, PlayCircle, Monitor, Bot, Component, ClipboardClock } from 'lucide-react';
+import { Bot, ClipboardClock, Component, Ellipsis, MinusCircle, Monitor, PlayCircle, Plus, RefreshCw, Search, Trash2, XCircle } from 'lucide-react';
 import type { 
   LYTaskResponse, 
   GetTasksParams, 
@@ -411,7 +402,7 @@ const TaskManagementPage = () => {
 
     Modal.confirm({
       title: t('task.cancelModal.title'),
-      icon: <IconCrossCircleStroked style={{ color: 'var(--semi-color-warning)' }} />,
+      icon: <XCircle size={16} strokeWidth={2} />,
       content: (
         <>
           <div>{t('task.cancelModal.confirmMessage', { taskId: task.task_id })}</div>
@@ -447,7 +438,7 @@ const TaskManagementPage = () => {
 
     Modal.confirm({
       title: t('task.stopModal.title'),
-      icon: <IconMinusCircleStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      icon: <MinusCircle size={16} strokeWidth={2} />,
       content: (
         <>
           <div>{t('task.stopModal.confirmMessage', { taskId: task.task_id })}</div>
@@ -640,7 +631,7 @@ const TaskManagementPage = () => {
               <Dropdown.Menu>
                 {record.task_status === 'PENDING' && (
                   <Dropdown.Item
-                    icon={<IconCrossCircleStroked />}
+                    icon={<XCircle size={16} strokeWidth={2} />}
                     onClick={(e) => {
                       e?.stopPropagation();
                       handleCancelTask(record);
@@ -651,7 +642,7 @@ const TaskManagementPage = () => {
                 )}
                 {record.execution_status === 'RUNNING' && (
                   <Dropdown.Item
-                    icon={<IconMinusCircleStroked />}
+                    icon={<MinusCircle size={16} strokeWidth={2} />}
                     onClick={(e) => {
                       e?.stopPropagation();
                       handleStopTask(record);
@@ -675,7 +666,7 @@ const TaskManagementPage = () => {
             }
           >
             <Button
-              icon={<IconMoreStroked />}
+              icon={<Ellipsis size={16} strokeWidth={2} />}
               theme="borderless"
               type="tertiary"
               onClick={(e) => e.stopPropagation()}
@@ -703,7 +694,7 @@ const TaskManagementPage = () => {
             <Col>
               <Space>
                 <Input
-                  prefix={<IconSearchStroked />}
+                  prefix={<Search size={16} strokeWidth={2} />}
                   placeholder={t('task.searchPlaceholder')}
                   style={{ width: 320 }}
                   value={searchValue}
@@ -752,7 +743,7 @@ const TaskManagementPage = () => {
                   {t('task.refresh')}
                 </Button>
                 <Button
-                  icon={<IconPlusStroked />}
+                  icon={<Plus size={16} strokeWidth={2} />}
                   theme="solid"
                   type="primary"
                   onClick={() => setCreateModalVisible(true)}

@@ -11,10 +11,7 @@ import {
   Progress,
   Input,
 } from '@douyinfe/semi-ui';
-import {
-  IconAlertCircle,
-} from '@douyinfe/semi-icons';
-import { Inbox, File as FileIcon, X } from 'lucide-react';
+import { AlertCircle, File as FileIcon, Inbox, X } from 'lucide-react';
 import type { FileItem } from '@douyinfe/semi-ui/lib/es/upload';
 
 import './index.less';
@@ -290,7 +287,7 @@ const UploadFileModal = ({
         {showWarning && (
           <Banner
             type="warning"
-            icon={<IconAlertCircle />}
+            icon={<AlertCircle size={16} strokeWidth={2} />}
             description={showWarning}
             onClose={handleDismissWarning}
             className="upload-file-modal-warning"

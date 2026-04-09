@@ -8,10 +8,7 @@ import {
   Tooltip,
 } from '@douyinfe/semi-ui';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag';
-import {
-  IconDeleteStroked,
-} from '@douyinfe/semi-icons';
-import { PlayCircle, RefreshCw } from 'lucide-react';
+import { PlayCircle, RefreshCw, Trash2 } from 'lucide-react';
 import type { LYQueueMessageResponse, QueueMessageStatus, QueueMessagePriority } from '@/api/index';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 
@@ -84,7 +81,7 @@ const MessageDetailDrawer = ({
         </Tooltip>
       )}
       <Tooltip content={t('common.delete')}>
-        <Button icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />} theme="borderless" size="small" onClick={() => onDelete(message)} />
+        <Button icon={<Trash2 size={16} strokeWidth={2} />} theme="borderless" size="small" onClick={() => onDelete(message)} />
       </Tooltip>
     </>
   );

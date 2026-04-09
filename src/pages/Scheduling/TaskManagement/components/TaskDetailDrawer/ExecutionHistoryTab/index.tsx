@@ -12,12 +12,6 @@ import {
   Spin,
   Collapsible,
 } from '@douyinfe/semi-ui';
-import {
-   IconVideoStroked,
-   IconImageStroked,
-  IconChevronDown,
-  IconChevronUp,
-} from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import ExecutionLogTab from '../ExecutionLogTab';
 import ScreenshotViewModal from '../../ScreenshotViewModal';
@@ -28,6 +22,7 @@ import type {
   GetExecutionHistoryParams,
 } from '@/api';
 import './index.less';
+import { ChevronDown, ChevronUp, ImageIcon, Video } from 'lucide-react';
 
 const { Text } = Typography;
 
@@ -258,7 +253,7 @@ const ExecutionHistoryTab = ({ taskId, taskName, enableRecording }: ExecutionHis
                 onClick={() => setInfoCollapsed(!infoCollapsed)}
               >
                 <Space>
-                  {infoCollapsed ? <IconChevronDown size="small" /> : <IconChevronUp size="small" />}
+                  {infoCollapsed ? <ChevronDown size={16} strokeWidth={2} /> : <ChevronUp size={16} strokeWidth={2} />}
                   <Text strong className="execution-history-tab-section-title">
                     {t('executionHistory.executionInfo')}
                   </Text>
@@ -267,7 +262,7 @@ const ExecutionHistoryTab = ({ taskId, taskName, enableRecording }: ExecutionHis
                   <Space>
                     {showRecordingButton && (
                       <Button
-                         icon={<IconVideoStroked />}
+                         icon={<Video size={16} strokeWidth={2} />}
                         size="small"
                         theme="borderless"
                         onClick={handleViewRecording}
@@ -277,7 +272,7 @@ const ExecutionHistoryTab = ({ taskId, taskName, enableRecording }: ExecutionHis
                     )}
                     {showScreenshotButton && (
                       <Button
-                         icon={<IconImageStroked />}
+                         icon={<ImageIcon size={16} strokeWidth={2} />}
                         size="small"
                         theme="borderless"
                         onClick={handleViewScreenshots}

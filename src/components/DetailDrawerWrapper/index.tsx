@@ -1,14 +1,7 @@
 import { useState, useRef, useCallback, useEffect, ReactNode, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SideSheet, Typography, Button, Divider, Tooltip, Row, Col, Space } from '@douyinfe/semi-ui';
-import {
-  IconMaximize,
-  IconMinimize,
-  IconClose,
-  IconChevronLeft,
-  IconChevronRight,
-} from '@douyinfe/semi-icons';
-import { Users } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Maximize2, Minimize2, Users, X } from 'lucide-react';
 import type { CollaboratorAssetType } from '@/api/index';
 import CollaboratorPanel from '@/components/CollaboratorManager/CollaboratorPanel';
 import './index.less';
@@ -271,7 +264,7 @@ function DetailDrawerWrapper<T>({
                   <Tooltip content={t('common.previous')}>
                     <span style={{ display: 'inline-flex', alignItems: 'center' }}>
                       <Button
-                        icon={<IconChevronLeft />}
+                        icon={<ChevronLeft size={16} strokeWidth={2} />}
                         theme="borderless"
                         type="tertiary"
                         size="small"
@@ -283,7 +276,7 @@ function DetailDrawerWrapper<T>({
                   <Tooltip content={t('common.next')}>
                     <span style={{ display: 'inline-flex', alignItems: 'center' }}>
                       <Button
-                        icon={<IconChevronRight />}
+                        icon={<ChevronRight size={16} strokeWidth={2} />}
                         theme="borderless"
                         type="tertiary"
                         size="small"
@@ -326,7 +319,7 @@ function DetailDrawerWrapper<T>({
               {/* 全屏按钮 */}
               <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
                 <Button
-                  icon={isFullscreen ? <IconMinimize /> : <IconMaximize />}
+                  icon={isFullscreen ? <Minimize2 size={16} strokeWidth={2} /> : <Maximize2 size={16} strokeWidth={2} />}
                   theme="borderless"
                   type="tertiary"
                   size="small"
@@ -337,7 +330,7 @@ function DetailDrawerWrapper<T>({
               {/* 关闭按钮 */}
               <Tooltip content={t('common.close')}>
                 <Button
-                  icon={<IconClose />}
+                  icon={<X size={16} strokeWidth={2} />}
                   theme="borderless"
                   type="tertiary"
                   size="small"

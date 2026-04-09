@@ -20,16 +20,7 @@ import {
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
-import {
-  IconSearchStroked,
-  IconPlusStroked,
-  IconMoreStroked,
-  IconExternalOpenStroked,
-  IconEditStroked,
-  IconPlayCircle,
-  IconDeleteStroked,
-} from '@douyinfe/semi-icons';
-import { UserPlus } from 'lucide-react';
+import { Ellipsis, ExternalLink, Pencil, PlayCircle, Plus, Search, Trash2, UserPlus } from 'lucide-react';
 // AppLayout removed - now handled at route level
 import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
@@ -333,7 +324,7 @@ const ProcessDevelopment = () => {
 
     Modal.confirm({
       title: t('development.processDevelopment.deleteModal.title'),
-      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      icon: <Trash2 size={16} strokeWidth={2} />,
       content: (
         <>
           <div>{t('development.processDevelopment.deleteModal.confirmMessage', { name: processToDelete.name })}</div>
@@ -461,7 +452,7 @@ const ProcessDevelopment = () => {
           render={
             <Dropdown.Menu>
               <Dropdown.Item
-                icon={<IconExternalOpenStroked />}
+                icon={<ExternalLink size={16} strokeWidth={2} />}
                 onClick={(e) => {
                   e.stopPropagation();
                   openProcess({ id: record.id, name: record.name });
@@ -470,7 +461,7 @@ const ProcessDevelopment = () => {
                 {t('development.processDevelopment.actions.openProcess')}
               </Dropdown.Item>
               <Dropdown.Item
-                icon={<IconEditStroked />}
+                icon={<Pencil size={16} strokeWidth={2} />}
                 onClick={(e) => {
                   e.stopPropagation();
                   handleEdit(record);
@@ -478,7 +469,7 @@ const ProcessDevelopment = () => {
               >
                 {t('common.edit')}
               </Dropdown.Item>
-              <Dropdown.Item icon={<IconPlayCircle />} onClick={handleRun}>
+              <Dropdown.Item icon={<PlayCircle size={16} strokeWidth={2} />} onClick={handleRun}>
                 {t('common.run')}
               </Dropdown.Item>
               <Dropdown.Item
@@ -492,7 +483,7 @@ const ProcessDevelopment = () => {
                 {t('collaborator.actions.addCollaborator')}
               </Dropdown.Item>
               <Dropdown.Item
-                icon={<IconDeleteStroked />}
+                icon={<Trash2 size={16} strokeWidth={2} />}
                 type="danger"
                 onClick={(e) => {
                   e.stopPropagation();
@@ -504,7 +495,7 @@ const ProcessDevelopment = () => {
             </Dropdown.Menu>
           }
         >
-          <Button icon={<IconMoreStroked />} theme="borderless" onClick={(e) => e.stopPropagation()} />
+          <Button icon={<Ellipsis size={16} strokeWidth={2} />} theme="borderless" onClick={(e) => e.stopPropagation()} />
         </Dropdown>
       ),
     },
@@ -527,7 +518,7 @@ const ProcessDevelopment = () => {
           <Col>
             <Space>
               <Input
-                prefix={<IconSearchStroked />}
+                prefix={<Search size={16} strokeWidth={2} />}
                 placeholder={t('development.processDevelopment.searchPlaceholder')}
                 className="process-development-search-input"
                 value={searchValue}
@@ -555,7 +546,7 @@ const ProcessDevelopment = () => {
             </Space>
           </Col>
           <Col>
-            <Button icon={<IconPlusStroked />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
+            <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
               {t('development.processDevelopment.createProcess')}
             </Button>
           </Col>

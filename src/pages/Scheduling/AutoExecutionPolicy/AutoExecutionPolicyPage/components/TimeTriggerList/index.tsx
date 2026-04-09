@@ -15,15 +15,7 @@ import {
   Switch,
   Tooltip,
 } from '@douyinfe/semi-ui';
-import {
-  IconSearchStroked,
-  IconPlusStroked,
-  IconMoreStroked,
-  IconDeleteStroked,
-  IconEditStroked,
-  IconClockStroked,
-} from '@douyinfe/semi-icons';
-import { UserPlus } from 'lucide-react';
+import { Clock, Ellipsis, Pencil, Plus, Search, Trash2, UserPlus } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import type {
@@ -321,7 +313,7 @@ const TimeTriggerList = () => {
   const handleDeleteTrigger = (trigger: LYTimeTriggerResponse) => {
     Modal.confirm({
       title: t('timeTrigger.deleteModal.title'),
-      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      icon: <Trash2 size={16} strokeWidth={2} />,
       content: (
         <>
           <div>{t('timeTrigger.deleteModal.confirmMessage', { name: trigger.name })}</div>
@@ -401,7 +393,7 @@ const TimeTriggerList = () => {
       width: 180,
       render: (_: unknown, record: LYTimeTriggerResponse) => (
         <div>
-          <IconClockStroked size="small" />
+          <Clock size={16} strokeWidth={2} />
           <span>{formatTriggerRule(record)}</span>
         </div>
       ),
@@ -447,7 +439,7 @@ const TimeTriggerList = () => {
           render={
             <Dropdown.Menu>
               <Dropdown.Item
-                icon={<IconEditStroked />}
+                icon={<Pencil size={16} strokeWidth={2} />}
                 onClick={(e) => {
                   e.stopPropagation();
                   handleOpenEditModal(record);
@@ -466,7 +458,7 @@ const TimeTriggerList = () => {
                 {t('collaborator.actions.addCollaborator')}
               </Dropdown.Item>
               <Dropdown.Item
-                icon={<IconDeleteStroked />}
+                icon={<Trash2 size={16} strokeWidth={2} />}
                 type="danger"
                 onClick={(e) => {
                   e.stopPropagation();
@@ -479,7 +471,7 @@ const TimeTriggerList = () => {
           }
         >
           <Button
-            icon={<IconMoreStroked />}
+            icon={<Ellipsis size={16} strokeWidth={2} />}
             theme="borderless"
             type="tertiary"
             onClick={(e) => e.stopPropagation()}
@@ -506,7 +498,7 @@ const TimeTriggerList = () => {
         <Col>
           <Space>
             <Input
-              prefix={<IconSearchStroked />}
+              prefix={<Search size={16} strokeWidth={2} />}
               placeholder={t('timeTrigger.searchPlaceholder')}
               onChange={handleSearch}
               showClear
@@ -538,7 +530,7 @@ const TimeTriggerList = () => {
         </Col>
         <Col>
           <Button
-            icon={<IconPlusStroked />}
+            icon={<Plus size={16} strokeWidth={2} />}
             theme="solid"
             type="primary"
             onClick={() => setCreateModalVisible(true)}

@@ -9,7 +9,6 @@ import {
   Spin,
   Modal,
 } from '@douyinfe/semi-ui';
-import { IconArrowLeft, IconInfoCircle } from '@douyinfe/semi-icons';
 // AppLayout removed - now handled at route level
 import ProcessSelectionStep from './components/ProcessSelectionStep';
 import ReleaseConfigStep from './components/ReleaseConfigStep';
@@ -22,6 +21,7 @@ import type {
 } from '@/api';
 
 import './index.less';
+import { ArrowLeft, Info } from 'lucide-react';
 
 const { Title, Text } = Typography;
 
@@ -355,7 +355,7 @@ const CreateReleasePage: React.FC = () => {
     if (hasContent) {
       Modal.confirm({
         title: t('release.create.exitConfirm.title'),
-        icon: <IconInfoCircle style={{ color: 'var(--semi-color-warning)' }} />,
+        icon: <Info size={16} strokeWidth={2} />,
         content: t('release.create.exitConfirm.content'),
         okText: t('release.create.exitConfirm.confirm'),
         cancelText: t('release.create.exitConfirm.cancel'),
@@ -374,7 +374,7 @@ const CreateReleasePage: React.FC = () => {
         {/* Header */}
         <div className="create-release-page-header">
           <Button
-            icon={<IconArrowLeft />}
+            icon={<ArrowLeft size={16} strokeWidth={2} />}
             theme="borderless"
             type="tertiary"
             onClick={handleCancel}

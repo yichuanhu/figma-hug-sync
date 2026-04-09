@@ -21,15 +21,7 @@ import EmptyState from '@/components/EmptyState';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
-import {
-  IconSearchStroked,
-  IconPlusStroked,
-  IconMoreStroked,
-  IconExternalOpenStroked,
-  IconEditStroked,
-  IconDeleteStroked,
-} from '@douyinfe/semi-icons';
-import { PlayCircle, UserPlus } from 'lucide-react';
+import { Ellipsis, ExternalLink, Pencil, PlayCircle, Plus, Search, Trash2, UserPlus } from 'lucide-react';
 import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
 import ProcessDetailDrawer from './components/ProcessDetailDrawer';
@@ -332,7 +324,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
 
     Modal.confirm({
       title: t('development.processDevelopment.deleteModal.title'),
-      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      icon: <Trash2 size={16} strokeWidth={2} />,
       content: (
         <>
           <div>{t('development.processDevelopment.deleteModal.confirmMessage', { name: processToDelete.name })}</div>
@@ -472,7 +464,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
               {!isSchedulingContext && (
                 <>
                   <Dropdown.Item
-                    icon={<IconExternalOpenStroked />}
+                    icon={<ExternalLink size={16} strokeWidth={2} />}
                     onClick={(e) => {
                       e.stopPropagation();
                       openProcess({ id: record.id, name: record.name });
@@ -481,7 +473,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
                     {t('development.processDevelopment.actions.openProcess')}
                   </Dropdown.Item>
                   <Dropdown.Item
-                    icon={<IconEditStroked />}
+                    icon={<Pencil size={16} strokeWidth={2} />}
                     onClick={(e) => {
                       e.stopPropagation();
                       handleEdit(record);
@@ -500,7 +492,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
                     {t('collaborator.actions.addCollaborator')}
                   </Dropdown.Item>
                   <Dropdown.Item
-                    icon={<IconDeleteStroked />}
+                    icon={<Trash2 size={16} strokeWidth={2} />}
                     type="danger"
                     onClick={(e) => {
                       e.stopPropagation();
@@ -514,7 +506,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
             </Dropdown.Menu>
           }
         >
-          <Button icon={<IconMoreStroked />} theme="borderless" onClick={(e) => e.stopPropagation()} />
+          <Button icon={<Ellipsis size={16} strokeWidth={2} />} theme="borderless" onClick={(e) => e.stopPropagation()} />
         </Dropdown>
       ),
     },
@@ -544,7 +536,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
           <Col>
             <Space>
               <Input
-                prefix={<IconSearchStroked />}
+                prefix={<Search size={16} strokeWidth={2} />}
                 placeholder={t('development.processDevelopment.searchPlaceholder')}
                 className="process-management-search-input"
                 value={searchValue}
@@ -577,7 +569,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
           <Col>
             {/* 调度中心不显示新建按钮 */}
             {!isSchedulingContext && (
-              <Button icon={<IconPlusStroked />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
+              <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
                 {t('development.processDevelopment.createProcess')}
               </Button>
             )}

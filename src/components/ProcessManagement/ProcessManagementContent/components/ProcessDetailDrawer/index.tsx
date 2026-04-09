@@ -15,15 +15,6 @@ import {
   Modal,
   TextArea,
 } from '@douyinfe/semi-ui';
-import {
-  IconEditStroked,
-  IconPlayCircle,
-  IconDeleteStroked,
-  IconExternalOpenStroked,
-  IconUpload,
-  IconHelpCircleStroked,
-  IconLink,
-} from '@douyinfe/semi-icons';
 import type { LYProcessResponse, LYProcessVersionResponse } from '@/api';
 import UploadVersionModal from '../UploadVersionModal';
 import EmptyState from '@/components/EmptyState';
@@ -33,6 +24,7 @@ import ExpandableText from '@/components/ExpandableText';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import './index.less';
+import { ExternalLink, HelpCircle, Link, Pencil, PlayCircle, Trash2, Upload } from 'lucide-react';
 
 const { Title, Text } = Typography;
 
@@ -237,7 +229,7 @@ const VariableCard = ({ variable, index, onDescriptionChange }: VariableCardProp
                 </Text>
               </Tooltip>
               <Tooltip content={t('development.processDevelopment.detail.variable.editDescTip')}>
-                <Button icon={<IconEditStroked />} theme="borderless" size="small" type="tertiary" className="process-detail-drawer-variable-card-edit-btn" onClick={handleStartEdit} />
+                <Button icon={<Pencil size={16} strokeWidth={2} />} theme="borderless" size="small" type="tertiary" className="process-detail-drawer-variable-card-edit-btn" onClick={handleStartEdit} />
               </Tooltip>
             </div>
           )}
@@ -321,7 +313,7 @@ const ProcessDetailDrawer = ({
     Modal.confirm({
       title: t('development.processDevelopment.detail.versionList.deleteConfirmTitle'),
       content: t('development.processDevelopment.detail.versionList.deleteConfirmContent', { version: version.version }),
-      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      icon: <Trash2 size={16} strokeWidth={2} />,
       okType: 'danger',
       onOk: () => {
         setVersionData(prevData => prevData.filter(v => v.id !== version.id));
@@ -398,7 +390,7 @@ const ProcessDetailDrawer = ({
       key: t('development.processDevelopment.detail.versionDetail.usageInstructions'),
       value: version.usage_instructions_url ? (
         <a href={version.usage_instructions_url} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center' }}>
-          <IconLink style={{ marginRight: 4 }} />
+          <Link size={16} strokeWidth={2} />
           {t('development.processDevelopment.detail.versionDetail.viewInstructions')}
         </a>
       ) : (
@@ -414,20 +406,20 @@ const ProcessDetailDrawer = ({
     <>
       {!isSchedulingContext && onOpen && (
         <Tooltip content={t('development.processDevelopment.actions.openProcess')}>
-          <Button icon={<IconExternalOpenStroked />} theme="borderless" type="tertiary" size="small" onClick={onOpen} />
+          <Button icon={<ExternalLink size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={onOpen} />
         </Tooltip>
       )}
       {!isSchedulingContext && onEdit && (
         <Tooltip content={t('common.edit')}>
-          <Button icon={<IconEditStroked />} theme="borderless" type="tertiary" size="small" onClick={onEdit} />
+          <Button icon={<Pencil size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={onEdit} />
         </Tooltip>
       )}
       <Tooltip content={t('common.run')}>
-        <Button icon={<IconPlayCircle />} theme="borderless" type="tertiary" size="small" onClick={onRun} />
+        <Button icon={<PlayCircle size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={onRun} />
       </Tooltip>
       {!isSchedulingContext && onDelete && (
         <Tooltip content={t('common.delete')}>
-          <Button icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />} theme="borderless" type="tertiary" size="small" onClick={onDelete} />
+          <Button icon={<Trash2 size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={onDelete} />
         </Tooltip>
       )}
     </>
@@ -468,7 +460,7 @@ const ProcessDetailDrawer = ({
           {sortedVersionData.length === 0 ? (
             <div className="process-detail-drawer-version-empty">
               <EmptyState description={t('development.processDevelopment.detail.empty.noVersions')} size={120} />
-              <Button icon={<IconUpload />} theme="solid" className="process-detail-drawer-version-empty-upload-btn" onClick={() => setUploadVersionModalVisible(true)}>
+              <Button icon={<Upload size={16} strokeWidth={2} />} theme="solid" className="process-detail-drawer-version-empty-upload-btn" onClick={() => setUploadVersionModalVisible(true)}>
                 {t('development.processDevelopment.detail.versionList.uploadVersion')}
               </Button>
             </div>
@@ -480,10 +472,10 @@ const ProcessDetailDrawer = ({
                     {t('development.processDevelopment.detail.versionList.title')}
                   </Text>
                   <Tooltip content={t('development.processDevelopment.detail.versionList.titleTooltip')}>
-                    <IconHelpCircleStroked style={{ color: 'var(--semi-color-text-2)', fontSize: 14 }} />
+                    <HelpCircle size={16} strokeWidth={2} />
                   </Tooltip>
                 </div>
-                <Button icon={<IconUpload />} theme="solid" className="process-detail-drawer-version-sidebar-upload-btn" onClick={() => setUploadVersionModalVisible(true)}>
+                <Button icon={<Upload size={16} strokeWidth={2} />} theme="solid" className="process-detail-drawer-version-sidebar-upload-btn" onClick={() => setUploadVersionModalVisible(true)}>
                   {t('development.processDevelopment.detail.versionList.uploadVersion')}
                 </Button>
                 <div className="process-detail-drawer-version-sidebar-list">
@@ -522,12 +514,12 @@ const ProcessDetailDrawer = ({
                       <Descriptions data={getVersionDescriptionData(selectedVersion)} align="left" />
                       {selectedVersion.is_active ? (
                         <Tooltip content={t('development.processDevelopment.detail.versionList.cannotDeletePublished')}>
-                          <Button icon={<IconDeleteStroked />} type="tertiary" className="process-detail-drawer-version-detail-delete-btn" disabled onClick={() => handleDeleteVersion(selectedVersion)}>
+                          <Button icon={<Trash2 size={16} strokeWidth={2} />} type="tertiary" className="process-detail-drawer-version-detail-delete-btn" disabled onClick={() => handleDeleteVersion(selectedVersion)}>
                             {t('development.processDevelopment.detail.versionList.deleteVersion')}
                           </Button>
                         </Tooltip>
                       ) : (
-                        <Button icon={<IconDeleteStroked />} type="tertiary" className="process-detail-drawer-version-detail-delete-btn" onClick={() => handleDeleteVersion(selectedVersion)}>
+                        <Button icon={<Trash2 size={16} strokeWidth={2} />} type="tertiary" className="process-detail-drawer-version-detail-delete-btn" onClick={() => handleDeleteVersion(selectedVersion)}>
                           {t('development.processDevelopment.detail.versionList.deleteVersion')}
                         </Button>
                       )}

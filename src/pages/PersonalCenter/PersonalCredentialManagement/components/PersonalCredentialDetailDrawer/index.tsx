@@ -23,13 +23,7 @@ import EmptyState from '@/components/EmptyState';
 import DetailSkeleton from '@/components/DetailSkeleton';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
-import {
-  IconEditStroked,
-  IconDeleteStroked,
-  IconEyeOpenedStroked,
-  IconMoreStroked,
-} from '@douyinfe/semi-icons';
-import { Download, Link, Unlink } from 'lucide-react';
+import { Download, Ellipsis, Eye, Link, Pencil, Trash2, Unlink } from 'lucide-react';
 import type { LYPersonalCredentialResponse } from '@/api/index';
 import ExpandableText from '@/components/ExpandableText';
 import { useUsageRecordFilter } from '@/hooks/useUsageRecordFilter';
@@ -163,7 +157,7 @@ const PersonalCredentialDetailDrawer = ({
   const handleDelete = useCallback(() => {
     if (!credential) return;
     Modal.confirm({
-      title: t('personalCredential.deleteModal.title'), icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      title: t('personalCredential.deleteModal.title'), icon: <Trash2 size={16} strokeWidth={2} />,
       content: t('personalCredential.deleteModal.confirmMessage'), okText: t('common.confirm'), cancelText: t('common.cancel'), okButtonProps: { type: 'danger' },
       onOk: async () => { await new Promise((resolve) => setTimeout(resolve, 500)); Toast.success(t('personalCredential.deleteModal.success')); onDelete(credential); onClose(); },
     });
@@ -171,7 +165,7 @@ const PersonalCredentialDetailDrawer = ({
 
   const handleUnlinkCredential = useCallback((linkedCredential: LinkedCredential) => {
     Modal.confirm({
-      title: t('personalCredential.linkedCredentials.unlinkModal.title'), icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      title: t('personalCredential.linkedCredentials.unlinkModal.title'), icon: <Trash2 size={16} strokeWidth={2} />,
       content: t('personalCredential.linkedCredentials.unlinkModal.content', { name: linkedCredential.credential_name }),
       okText: t('common.confirm'), cancelText: t('common.cancel'), okButtonProps: { type: 'danger' },
       onOk: async () => {
@@ -226,13 +220,13 @@ const PersonalCredentialDetailDrawer = ({
   const extraActions = (
     <>
       <Tooltip content={t('common.edit')}>
-        <Button icon={<IconEditStroked />} theme="borderless" type="tertiary" size="small" onClick={() => onEdit(credential)} />
+        <Button icon={<Pencil size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={() => onEdit(credential)} />
       </Tooltip>
       <Tooltip content={t('personalCredential.actions.linkCredential')}>
         <Button icon={<Link size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={() => onLinkCredential(credential)} />
       </Tooltip>
       <Tooltip content={t('common.delete')}>
-        <Button icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />} theme="borderless" type="tertiary" size="small" onClick={handleDelete} />
+        <Button icon={<Trash2 size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={handleDelete} />
       </Tooltip>
     </>
   );
@@ -274,10 +268,10 @@ const PersonalCredentialDetailDrawer = ({
                 { title: t('common.actions'), key: 'actions', width: 80, render: (_: unknown, record: LinkedCredential) => (
                   <Dropdown trigger="click" position="bottomRight" clickToHide render={
                     <Dropdown.Menu>
-                      <Dropdown.Item icon={<IconEyeOpenedStroked />} onClick={(e) => { e.stopPropagation(); handleNavigateToCredential(record); }}>{t('common.viewDetail')}</Dropdown.Item>
+                      <Dropdown.Item icon={<Eye size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleNavigateToCredential(record); }}>{t('common.viewDetail')}</Dropdown.Item>
                       <Dropdown.Item icon={<Unlink size={16} strokeWidth={2} />} type="danger" onClick={(e) => { e.stopPropagation(); handleUnlinkCredential(record); }}>{t('personalCredential.linkedCredentials.unlink')}</Dropdown.Item>
                     </Dropdown.Menu>
-                  }><Button icon={<IconMoreStroked />} theme="borderless" type="tertiary" onClick={(e) => e.stopPropagation()} /></Dropdown>
+                  }><Button icon={<Ellipsis size={16} strokeWidth={2} />} theme="borderless" type="tertiary" onClick={(e) => e.stopPropagation()} /></Dropdown>
                 ) },
               ]} dataSource={linkedCredentials} rowKey="credential_id" pagination={false} empty={
                 <EmptyState description={t('personalCredential.linkedCredentials.empty')} footer={

@@ -12,11 +12,7 @@ import {
   Col,
   Space,
 } from '@douyinfe/semi-ui';
-import {
-  IconSearchStroked,
-   IconDownloadStroked,
-} from '@douyinfe/semi-icons';
-import { RefreshCw } from 'lucide-react';
+import { Download, RefreshCw, Search } from 'lucide-react';
 import { debounce } from 'lodash';
 import FilterPopover from '@/components/FilterPopover';
 import EmptyState from '@/components/EmptyState';
@@ -414,7 +410,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
         <Col>
           <Space>
             <Input
-              prefix={<IconSearchStroked />}
+              prefix={<Search size={16} strokeWidth={2} />}
               placeholder={t('taskLog.searchPlaceholder')}
               onChange={handleSearch}
               showClear
@@ -438,7 +434,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
               {t('taskLog.refresh')}
             </Button>
             <Button
-               icon={<IconDownloadStroked />}
+               icon={<Download size={16} strokeWidth={2} />}
               onClick={handleExport}
               loading={exporting}
               disabled={total === 0}

@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Typography, Button, Descriptions } from '@douyinfe/semi-ui';
-import { IconEditStroked } from '@douyinfe/semi-icons';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import { format } from 'date-fns';
 import YearCalendarGrid from '../YearCalendarGrid';
 import type { LYWorkCalendarResponse } from '@/api/index';
 import './index.less';
+import { Pencil } from 'lucide-react';
 
 const { Title, Text } = Typography;
 
@@ -47,7 +47,7 @@ const CalendarViewer: React.FC<CalendarViewerProps> = ({ calendar, onEdit }) => 
           {calendar.name}
         </Title>
         <Button
-          icon={<IconEditStroked />}
+          icon={<Pencil size={16} strokeWidth={2} />}
           onClick={onEdit}
         >
           {t('workCalendar.viewer.edit')}

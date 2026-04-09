@@ -1,6 +1,5 @@
 import { Empty, Button } from '@douyinfe/semi-ui';
-import { IconHomeStroked } from '@douyinfe/semi-icons';
-import { RefreshCw } from 'lucide-react';
+import { Home, RefreshCw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
@@ -79,7 +78,7 @@ const EmptyState = ({
                   key="goHome"
                   theme="light"
                   type="primary"
-                  icon={<IconHomeStroked />}
+                  icon={<Home size={16} strokeWidth={2} />}
                   onClick={() => navigate('/')}
                 >
                   {t('emptyState.goHome')}

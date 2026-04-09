@@ -10,12 +10,12 @@ import {
   Checkbox,
   Empty,
 } from '@douyinfe/semi-ui';
-import { IconSearchStroked, IconClose, IconInbox } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
 import type { LYPublishableProcessResponse, LYListResponseLYPublishableProcessResponse } from '@/api';
 import type { SelectedProcess } from '../../index';
 
 import './index.less';
+import { Inbox, Search, X } from 'lucide-react';
 
 const { Text } = Typography;
 
@@ -287,7 +287,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
           <div className="transfer-panel-toolbar">
             <Space>
               <Input
-                prefix={<IconSearchStroked />}
+                prefix={<Search size={16} strokeWidth={2} />}
                 placeholder={t('release.create.searchProcessPlaceholder')}
                 onChange={(value) => handleSearch(value)}
                 showClear
@@ -370,7 +370,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
                 </div>
               ) : (
                 <Empty
-                  image={<IconInbox size="extra-large" style={{ color: 'var(--semi-color-text-2)' }} />}
+                  image={<Inbox size={16} strokeWidth={2} />}
                   description={
                     keyword || statusFilter
                       ? t('common.noResult')
@@ -427,7 +427,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
                           className="delete-icon"
                           onClick={() => handleRemoveFromRight(process.id)}
                         >
-                          <IconClose style={{ color: 'var(--semi-color-text-2)' }} />
+                          <X size={16} strokeWidth={2} />
                         </span>
                       </div>
                     </div>
@@ -436,7 +436,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
               </div>
             ) : (
               <Empty
-                image={<IconInbox size="extra-large" style={{ color: 'var(--semi-color-text-2)' }} />}
+                image={<Inbox size={16} strokeWidth={2} />}
                 description={t('release.create.noSelectedProcess')}
               />
             )}
