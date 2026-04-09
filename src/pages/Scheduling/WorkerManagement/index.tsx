@@ -544,7 +544,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
 
     Modal.confirm({
       title: t('worker.deleteModal.title'),
-      icon: <Trash2 size={16} strokeWidth={2} />,
+      icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
       content: (
         <>
           <div>{t('worker.deleteModal.confirmMessage', { name: worker.name })}</div>
@@ -650,7 +650,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     
     Modal.confirm({
       title: t('worker.removeFromGroup.title'),
-      icon: <Trash2 size={16} strokeWidth={2} />,
+      icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
       content: t('worker.removeFromGroup.confirmMessage', { 
         name: worker.name,
         group: worker.group_name 

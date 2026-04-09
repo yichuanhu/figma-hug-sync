@@ -296,7 +296,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
 
     Modal.confirm({
       title: t('parameter.deleteModal.title'),
-      icon: <Trash2 size={16} strokeWidth={2} />,
+      icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
       content: t('parameter.deleteModal.confirmMessage', { name: record.parameter_name }),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),

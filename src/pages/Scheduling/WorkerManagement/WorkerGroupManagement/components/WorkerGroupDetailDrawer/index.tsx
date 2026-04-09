@@ -164,7 +164,7 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
     e?.stopPropagation();
     Modal.confirm({
       title: t('workerGroup.removeMember.title'),
-      icon: <MinusCircle size={16} strokeWidth={2} />,
+      icon: <MinusCircle size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
       content: t('workerGroup.removeMember.confirmMessage', { name: member.name }),
       okText: t('workerGroup.removeMember.confirm'), cancelText: t('common.cancel'),
       onOk: async () => {

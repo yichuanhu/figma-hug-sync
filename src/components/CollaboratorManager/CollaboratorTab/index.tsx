@@ -114,7 +114,7 @@ const CollaboratorTab = ({
       const cascadeInfo = canCascade && cascadeCount > 0;
       Modal.confirm({
         title: t('collaborator.removeConfirm.title'),
-        icon: <MinusCircle size={16} strokeWidth={2} />,
+        icon: <MinusCircle size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
         content: cascadeInfo
           ? t('collaborator.removeConfirm.contentWithCascade', {
               name: record.collaborator_name,

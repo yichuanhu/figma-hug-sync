@@ -283,7 +283,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
 
     Modal.confirm({
       title: t('queue.deleteModal.title'),
-      icon: <Trash2 size={16} strokeWidth={2} />,
+      icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
       content: t('queue.deleteModal.confirmMessage', { name: record.queue_name }),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),

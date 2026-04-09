@@ -302,7 +302,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
   const handleDelete = (record: LYCredentialResponse) => {
     Modal.confirm({
       title: t('credential.deleteModal.title'),
-      icon: <Trash2 size={16} strokeWidth={2} />,
+      icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
       content: t('credential.deleteModal.confirmMessage', { name: record.credential_name }),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),

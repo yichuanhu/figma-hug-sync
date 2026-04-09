@@ -146,7 +146,7 @@ const LinkedCredentialsDrawer = ({
   const handleUnlink = (record: LinkedCredential) => {
     Modal.confirm({
       title: t('personalCredential.linkedCredentials.unlinkConfirmTitle'),
-      icon: <Trash2 size={16} strokeWidth={2} />,
+      icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
       content: t('personalCredential.linkedCredentials.unlinkConfirmContent', { name: record.credential_name }),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),

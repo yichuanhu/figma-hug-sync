@@ -438,7 +438,7 @@ const TaskManagementPage = () => {
 
     Modal.confirm({
       title: t('task.stopModal.title'),
-      icon: <MinusCircle size={16} strokeWidth={2} />,
+      icon: <MinusCircle size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
       content: (
         <>
           <div>{t('task.stopModal.confirmMessage', { taskId: task.task_id })}</div>

@@ -221,7 +221,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
 
     Modal.confirm({
       title: t('workerGroup.deleteModal.title'),
-      icon: <Trash2 size={16} strokeWidth={2} />,
+      icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
       content: (
         <>
           <div>{t('workerGroup.deleteModal.confirmMessage', { name: group.name })}</div>
