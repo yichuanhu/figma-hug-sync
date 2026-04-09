@@ -938,7 +938,7 @@ const CollaboratorPanel = ({
   const renderManageView = () => (
     <div className="collaborator-panel-manage">
       <div className="collaborator-panel-manage-subtitle">
-        <Text size="small" type="tertiary">
+        <Text strong style={{ fontSize: 14 }}>
           {t('collaborator.panel.allAccessUsers')}
         </Text>
       </div>
