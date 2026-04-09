@@ -133,7 +133,7 @@ const TaskDetailDrawer = ({
       )}
       {canStop && (
         <Tooltip content={t('task.actions.stop')}>
-          <Button icon={<IconMinusCircleStroked />} theme="borderless" size="small" onClick={() => onStop(task)} />
+          <Button icon={<IconMinusCircleStroked />} theme="borderless" type="tertiary" size="small" onClick={() => onStop(task)} />
         </Tooltip>
       )}
       {canRetry && (
