@@ -339,6 +339,7 @@ function DetailDrawerWrapper<T>({
                 <Button
                   icon={<IconClose />}
                   theme="borderless"
+                  type="tertiary"
                   size="small"
                   onClick={onClose}
                   className="detail-drawer-wrapper-header-close-btn"
