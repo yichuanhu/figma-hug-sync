@@ -15,7 +15,7 @@ import {
   Switch,
   Tooltip,
 } from '@douyinfe/semi-ui';
-import { Ellipsis, Pencil, Plus, Search, Trash2, UserPlus } from 'lucide-react';
+import { Ellipsis, Pencil, Plus, Trash2, UserPlus } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import type {
@@ -488,7 +488,7 @@ const QueueTriggerList = () => {
         <Col>
           <Space>
             <Input
-              prefix={<Search size={16} strokeWidth={2} />}
+              prefix={<IconSearchStroked />}
               placeholder={t('queueTrigger.searchPlaceholder')}
               onChange={(value) => handleSearch(value)}
               showClear

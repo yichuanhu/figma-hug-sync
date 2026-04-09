@@ -20,7 +20,7 @@ import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
 import { debounce } from 'lodash';
-import { Ellipsis, Eye, Pencil, Plus, Search, Trash2, UserPlus } from 'lucide-react';
+import { Ellipsis, Eye, Pencil, Plus, Trash2, UserPlus } from 'lucide-react';
 import type {
   LYQueueResponse,
   LYQueueListResultResponse,
@@ -449,7 +449,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
           <Col>
             <Space>
               <Input
-                prefix={<Search size={16} strokeWidth={2} />}
+                prefix={<IconSearchStroked />}
                 placeholder={t('queue.searchPlaceholder')}
                 className="queue-management-content-search-input"
                 value={searchValue}

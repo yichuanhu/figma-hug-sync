@@ -15,7 +15,7 @@ import type { LYPublishableProcessResponse, LYListResponseLYPublishableProcessRe
 import type { SelectedProcess } from '../../index';
 
 import './index.less';
-import { Inbox, Search, X } from 'lucide-react';
+import { Inbox, X } from 'lucide-react';
 
 const { Text } = Typography;
 
@@ -287,7 +287,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
           <div className="transfer-panel-toolbar">
             <Space>
               <Input
-                prefix={<Search size={16} strokeWidth={2} />}
+                prefix={<IconSearchStroked />}
                 placeholder={t('release.create.searchProcessPlaceholder')}
                 onChange={(value) => handleSearch(value)}
                 showClear

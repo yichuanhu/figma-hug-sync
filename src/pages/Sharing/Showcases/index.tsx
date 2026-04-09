@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Typography, Input, Card, Tag, Space } from '@douyinfe/semi-ui';
-import { Eye, Search, Star } from 'lucide-react';
+import { Eye, Star } from 'lucide-react';
 import ShowcaseDetailDrawer, { ShowcaseItem } from './components/ShowcaseDetailDrawer';
 import FilterPopover, { FilterSection } from '@/components/FilterPopover';
 import './index.less';
@@ -201,7 +201,7 @@ const Showcases = () => {
       </div>
       <div className="showcases-page-toolbar">
         <Input
-          prefix={<Search size={16} strokeWidth={2} />}
+          prefix={<IconSearchStroked />}
           placeholder={t('common.search')}
           value={searchText}
           onChange={setSearchText}

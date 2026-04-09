@@ -31,7 +31,7 @@ import type {
 } from '@/api';
 
 import './index.less';
-import { Ellipsis, Filter, Plus, Search } from 'lucide-react';
+import { Ellipsis, Filter, Plus } from 'lucide-react';
 
 const { Title, Text } = Typography;
 
@@ -435,7 +435,7 @@ const ReleaseListPage: React.FC = () => {
             <Col>
               <Space>
                 <Input
-                  prefix={<Search size={16} strokeWidth={2} />}
+                  prefix={<IconSearchStroked />}
                   placeholder={t('release.list.searchPlaceholder')}
                   onChange={handleSearch}
                   showClear

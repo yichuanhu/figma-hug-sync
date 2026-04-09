@@ -20,7 +20,7 @@ import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
 import { debounce } from 'lodash';
-import { Ellipsis, Pencil, Plus, Search, Trash2, UserPlus } from 'lucide-react';
+import { Ellipsis, Pencil, Plus, Trash2, UserPlus } from 'lucide-react';
 import type {
   LYParameterResponse,
   LYParameterListResultResponse,
@@ -447,7 +447,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
           <Col>
             <Space>
               <Input
-                prefix={<Search size={16} strokeWidth={2} />}
+                prefix={<IconSearchStroked />}
                 placeholder={t('parameter.searchPlaceholder')}
                 className="parameter-management-content-search-input"
                 value={searchValue}

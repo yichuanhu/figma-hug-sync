@@ -15,7 +15,7 @@ import {
   Switch,
   Tooltip,
 } from '@douyinfe/semi-ui';
-import { Clock, Ellipsis, Pencil, Plus, Search, Trash2, UserPlus } from 'lucide-react';
+import { Clock, Ellipsis, Pencil, Plus, Trash2, UserPlus } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import type {
@@ -498,7 +498,7 @@ const TimeTriggerList = () => {
         <Col>
           <Space>
             <Input
-              prefix={<Search size={16} strokeWidth={2} />}
+              prefix={<IconSearchStroked />}
               placeholder={t('timeTrigger.searchPlaceholder')}
               onChange={handleSearch}
               showClear

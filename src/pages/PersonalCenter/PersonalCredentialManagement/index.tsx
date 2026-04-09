@@ -15,7 +15,7 @@ import {
 } from '@douyinfe/semi-ui';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
-import { Ellipsis, Eye, History, Link, Pencil, Plus, Search, Trash2 } from 'lucide-react';
+import { Ellipsis, Eye, History, Link, Pencil, Plus, Trash2 } from 'lucide-react';
 import { debounce } from 'lodash';
 import type {
   LYPersonalCredentialResponse,
@@ -342,7 +342,7 @@ const PersonalCredentialManagement = () => {
           <Col>
             <Space>
               <Input
-                prefix={<Search size={16} strokeWidth={2} />}
+                prefix={<IconSearchStroked />}
                 placeholder={t('personalCredential.searchPlaceholder')}
                 className="personal-credential-management-search-input"
                 value={searchValue}

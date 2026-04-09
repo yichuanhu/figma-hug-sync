@@ -7,7 +7,6 @@ import FilterPopover, { FilterSection } from '@/components/FilterPopover';
 import { commandsMockData, apiConnectorsMockData, customComponentsMockData } from './mockData';
 import { ComponentItem } from './types';
 import './index.less';
-import { Search } from 'lucide-react';
 
 const { Title } = Typography;
 const TabPane = Tabs.TabPane;
@@ -100,7 +99,7 @@ const CreatorComponents = () => {
     <div className="creator-components-tab-content">
       <div className="creator-components-toolbar">
         <Input
-          prefix={<Search size={16} strokeWidth={2} />}
+          prefix={<IconSearchStroked />}
           placeholder={t('common.search')}
           value={searchText}
           onChange={setSearchText}

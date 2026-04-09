@@ -8,7 +8,7 @@ import {
   Empty,
   Spin,
 } from '@douyinfe/semi-ui';
-import { RefreshCw, Search } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
 import { debounce } from 'lodash';
 import type { LYExecutionLogResponse, LogLevel } from '@/api';
 import './index.less';
@@ -138,7 +138,7 @@ const LogSyncPanel = ({
       {/* Toolbar */}
       <div className="log-sync-panel-toolbar">
         <Input
-          prefix={<Search size={16} strokeWidth={2} />}
+          prefix={<IconSearchStroked />}
           placeholder={t('recording.logPanel.searchPlaceholder')}
           value={searchKeyword}
           onChange={setSearchKeyword}

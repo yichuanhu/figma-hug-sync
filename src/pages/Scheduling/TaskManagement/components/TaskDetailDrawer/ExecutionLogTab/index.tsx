@@ -12,7 +12,7 @@ import {
   Col,
   Space,
 } from '@douyinfe/semi-ui';
-import { Download, RefreshCw, Search } from 'lucide-react';
+import { Download, RefreshCw } from 'lucide-react';
 import { debounce } from 'lodash';
 import FilterPopover from '@/components/FilterPopover';
 import EmptyState from '@/components/EmptyState';
@@ -410,7 +410,7 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
         <Col>
           <Space>
             <Input
-              prefix={<Search size={16} strokeWidth={2} />}
+              prefix={<IconSearchStroked />}
               placeholder={t('taskLog.searchPlaceholder')}
               onChange={handleSearch}
               showClear

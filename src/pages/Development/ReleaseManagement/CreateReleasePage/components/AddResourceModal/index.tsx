@@ -14,7 +14,6 @@ import type { ResourceType } from '@/api';
 import type { ResourceConfig } from '../../index';
 
 import './index.less';
-import { Search } from 'lucide-react';
 
 const { Text } = Typography;
 
@@ -223,7 +222,7 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
             >
               <div className="add-resource-modal-tab-search">
                 <Input
-                  prefix={<Search size={16} strokeWidth={2} />}
+                  prefix={<IconSearchStroked />}
                   placeholder={t('release.create.addResource.searchPlaceholder')}
                   value={searchTexts[type]}
                   onChange={(value) => handleSearchChange(type, value)}

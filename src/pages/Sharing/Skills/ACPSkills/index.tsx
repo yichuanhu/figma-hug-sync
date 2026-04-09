@@ -5,7 +5,6 @@ import SkillCard, { SkillItem } from '../components/SkillCard';
 import SkillDetailDrawer from '../components/SkillDetailDrawer';
 import FilterPopover, { FilterSection } from '@/components/FilterPopover';
 import '../APASkills/index.less';
-import { Search } from 'lucide-react';
 
 const { Title } = Typography;
 
@@ -176,7 +175,7 @@ const ACPSkills = () => {
       </div>
       <div className="skills-page-toolbar">
         <Input
-          prefix={<Search size={16} strokeWidth={2} />}
+          prefix={<IconSearchStroked />}
           placeholder={t('common.search')}
           value={searchText}
           onChange={setSearchText}

@@ -19,7 +19,7 @@ import {
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
-import { Ellipsis, Eye, Key, MinusCircle, Pencil, Plus, Search, Trash2, UserPlus, Users } from 'lucide-react';
+import { Ellipsis, Eye, Key, MinusCircle, Pencil, Plus, Trash2, UserPlus, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import WorkerDetailDrawer from './components/WorkerDetailDrawer';
@@ -888,7 +888,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
           <Col>
             <Space>
               <Input 
-                prefix={<Search size={16} strokeWidth={2} />}
+                prefix={<IconSearchStroked />}
                 placeholder={t('worker.searchPlaceholder')}
                 className="worker-management-search-input"
                 value={searchValue}
