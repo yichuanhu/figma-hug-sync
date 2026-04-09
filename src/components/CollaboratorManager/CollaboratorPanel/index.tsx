@@ -525,7 +525,7 @@ const CollaboratorPanel = ({
           </Button>
         </div>
       ) : !searchValue.trim() ? (
-        <div style={{ paddingTop: '24px' }}>
+        <div style={{ paddingTop: '12px' }}>
           <Button
             type="tertiary"
             icon={<IconFlowChartStroked />}
