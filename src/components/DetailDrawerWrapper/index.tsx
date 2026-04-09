@@ -328,6 +328,7 @@ function DetailDrawerWrapper<T>({
                 <Button
                   icon={isFullscreen ? <IconMinimize /> : <IconMaximize />}
                   theme="borderless"
+                  type="tertiary"
                   size="small"
                   onClick={toggleFullscreen}
                 />
