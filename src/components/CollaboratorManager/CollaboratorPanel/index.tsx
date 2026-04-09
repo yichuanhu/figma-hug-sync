@@ -525,11 +525,10 @@ const CollaboratorPanel = ({
           </Button>
         </div>
       ) : !searchValue.trim() ? (
-        <div style={{ padding: '8px 0 16px' }}>
+        <div style={{ paddingTop: '24px' }}>
           <Button
             type="tertiary"
             icon={<IconFlowChartStroked />}
-            block
             onClick={handleOpenOrgModal}
           >
             {t('collaborator.panel.addFromOrg')}
@@ -560,7 +559,6 @@ const CollaboratorPanel = ({
           <Button
             type="tertiary"
             icon={<UserPlus size={14} />}
-            block
             onClick={handleOpenOrgModal}
           >
             {t('collaborator.actions.addCollaborator')}
