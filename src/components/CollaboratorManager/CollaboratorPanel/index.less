@@ -121,21 +121,24 @@
     }
   }
 
-  &-role-text-btn {
-    display: flex;
-    align-items: center;
-    gap: 2px;
-    cursor: pointer;
-    color: var(--semi-color-text-0);
-    font-size: 14px;
-    white-space: nowrap;
-    padding: 6px 12px;
-    user-select: none;
-    flex-shrink: 0;
-    transition: background-color 0.15s;
+  &-search-input-box {
+    .semi-select {
+      border: none !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      flex-shrink: 0;
 
-    &:hover {
-      background-color: var(--semi-color-fill-0);
+      &:hover {
+        background: transparent !important;
+      }
+
+      .semi-select-selection {
+        font-size: 14px;
+      }
+
+      &:hover .semi-select-selection-text {
+        color: var(--semi-color-primary);
+      }
     }
   }
 
