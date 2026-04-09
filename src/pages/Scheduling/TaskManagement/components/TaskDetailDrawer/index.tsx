@@ -1,7 +1,7 @@
 import { useMemo, useState, useEffect, useRef } from 'react';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import { useTranslation } from 'react-i18next';
-import type { CollaboratorProps } from '@/components/DetailDrawerWrapper';
+import {
   Button,
   Tooltip,
   Typography,
@@ -10,6 +10,7 @@ import type { CollaboratorProps } from '@/components/DetailDrawerWrapper';
   Tabs,
   TabPane,
 } from '@douyinfe/semi-ui';
+import type { CollaboratorProps } from '@/components/DetailDrawerWrapper';
 import { Inbox, MinusCircle, PlayCircle, XCircle } from 'lucide-react';
 import type {
   LYTaskResponse,
