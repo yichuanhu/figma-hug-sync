@@ -648,14 +648,7 @@ const ProcessDevelopment = () => {
       {/* ProcessConfirmModal */}
       <OpenProcessModal />
 
-      <CollaboratorAddModal
-        visible={collaboratorAddVisible}
-        onClose={() => setCollaboratorAddVisible(false)}
-        onSuccess={() => setCollaboratorAddVisible(false)}
-        assetType={'PROCESS' as CollaboratorAssetType}
-        assetId={collaboratorTargetProcess?.id || ''}
-        existingCollaborators={[]}
-      />
+      {renderCollaboratorPanel('PROCESS', 'development')}
       </div>
   );
 };

@@ -642,15 +642,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
         initialTab={detailInitialTab}
       />
 
-      {/* 添加协作者弹窗 */}
-      <CollaboratorPanel
-        visible={addCollaboratorModalVisible}
-        onVisibleChange={setAddCollaboratorModalVisible}
-        assetType={'FILE' as CollaboratorAssetType}
-        assetId={addCollaboratorAssetId}
-        context="development"
-        canManage={true}
-      />
+      {renderCollaboratorPanel('FILE', context)}
     </div>
   );
 };

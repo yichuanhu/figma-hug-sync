@@ -552,14 +552,7 @@ const TemplateManagementPage = () => {
           initialTab={detailInitialTab}
         />
 
-        <CollaboratorPanel
-        visible={addCollaboratorModalVisible}
-        onVisibleChange={setAddCollaboratorModalVisible}
-        assetType={'TASK_TEMPLATE' as CollaboratorAssetType}
-        assetId={addCollaboratorAssetId}
-        context="scheduling"
-        canManage={true}
-      />
+        {renderCollaboratorPanel('TASK_TEMPLATE', 'scheduling')}
       </div>
   );
 };

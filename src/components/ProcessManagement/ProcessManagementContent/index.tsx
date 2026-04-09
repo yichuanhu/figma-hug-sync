@@ -673,14 +673,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       {/* 打开流程确认弹窗 - 仅开发中心 */}
       {!isSchedulingContext && <OpenProcessModal />}
 
-      <CollaboratorPanel
-        visible={addCollaboratorModalVisible}
-        onVisibleChange={setAddCollaboratorModalVisible}
-        assetType={'PROCESS' as CollaboratorAssetType}
-        assetId={addCollaboratorAssetId}
-        context="development"
-        canManage={true}
-      />
+      {renderCollaboratorPanel('PROCESS', context)}
     </div>
   );
 };
