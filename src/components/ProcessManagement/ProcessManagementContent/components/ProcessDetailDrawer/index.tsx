@@ -423,7 +423,7 @@ const ProcessDetailDrawer = ({
         </Tooltip>
       )}
       <Tooltip content={t('common.run')}>
-        <Button icon={<IconPlayCircle />} theme="borderless" size="small" onClick={onRun} />
+        <Button icon={<IconPlayCircle />} theme="borderless" type="tertiary" size="small" onClick={onRun} />
       </Tooltip>
       {!isSchedulingContext && onDelete && (
         <Tooltip content={t('common.delete')}>
