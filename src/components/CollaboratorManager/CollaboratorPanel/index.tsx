@@ -14,7 +14,6 @@ import {
   IconMinusCircleStroked,
   IconFlowChartStroked,
   IconChevronLeft,
-  IconChevronDown,
 } from '@douyinfe/semi-icons';
 import { X, UserPlus } from 'lucide-react';
 import type {
