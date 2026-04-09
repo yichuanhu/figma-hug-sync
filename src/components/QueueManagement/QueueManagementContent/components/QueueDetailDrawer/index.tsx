@@ -75,16 +75,16 @@ const QueueDetailDrawer = ({
   const extraActions = (
     <>
       <Tooltip content={t('queue.actions.viewMessages')}>
-        <Button icon={<IconList />} theme="borderless" size="small" onClick={handleViewMessages} />
+        <Button icon={<IconList />} theme="borderless" type="tertiary" size="small" onClick={handleViewMessages} />
       </Tooltip>
       {!queue.is_published && (
         <Tooltip content={t('common.edit')}>
-          <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={() => onEdit(queue)} />
+          <Button icon={<IconEditStroked />} theme="borderless" type="tertiary" size="small" onClick={() => onEdit(queue)} />
         </Tooltip>
       )}
       {onDelete && context === 'development' && !queue.is_published && (
         <Tooltip content={t('common.delete')}>
-          <Button icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />} theme="borderless" size="small" onClick={() => onDelete(queue)} />
+          <Button icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />} theme="borderless" type="tertiary" size="small" onClick={() => onDelete(queue)} />
         </Tooltip>
       )}
     </>

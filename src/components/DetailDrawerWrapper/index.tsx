@@ -273,6 +273,7 @@ function DetailDrawerWrapper<T>({
                       <Button
                         icon={<IconChevronLeft />}
                         theme="borderless"
+                        type="tertiary"
                         size="small"
                         disabled={!canGoPrev}
                         onClick={() => handleNavigate('prev')}
@@ -284,6 +285,7 @@ function DetailDrawerWrapper<T>({
                       <Button
                         icon={<IconChevronRight />}
                         theme="borderless"
+                        type="tertiary"
                         size="small"
                         disabled={!canGoNext}
                         onClick={() => handleNavigate('next')}
@@ -303,6 +305,7 @@ function DetailDrawerWrapper<T>({
                   <Button
                     icon={<Users size={14} strokeWidth={2} />}
                     theme="borderless"
+                    type="tertiary"
                     size="small"
                     onClick={() => setCollaboratorPanelVisible(true)}
                   />
@@ -325,6 +328,7 @@ function DetailDrawerWrapper<T>({
                 <Button
                   icon={isFullscreen ? <IconMinimize /> : <IconMaximize />}
                   theme="borderless"
+                  type="tertiary"
                   size="small"
                   onClick={toggleFullscreen}
                 />
@@ -335,6 +339,7 @@ function DetailDrawerWrapper<T>({
                 <Button
                   icon={<IconClose />}
                   theme="borderless"
+                  type="tertiary"
                   size="small"
                   onClick={onClose}
                   className="detail-drawer-wrapper-header-close-btn"

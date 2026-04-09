@@ -194,6 +194,7 @@ const TimeTriggerDetailDrawer = ({
         <Button
           icon={<IconEditStroked />}
           theme="borderless"
+          type="tertiary"
           size="small"
           onClick={() => onEdit(trigger)}
         />
@@ -202,6 +203,7 @@ const TimeTriggerDetailDrawer = ({
         <Button
           icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />}
           theme="borderless"
+          type="tertiary"
           size="small"
           onClick={() => onDelete(trigger)}
         />

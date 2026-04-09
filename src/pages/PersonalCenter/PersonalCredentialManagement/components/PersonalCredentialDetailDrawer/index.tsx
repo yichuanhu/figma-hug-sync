@@ -226,13 +226,13 @@ const PersonalCredentialDetailDrawer = ({
   const extraActions = (
     <>
       <Tooltip content={t('common.edit')}>
-        <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={() => onEdit(credential)} />
+        <Button icon={<IconEditStroked />} theme="borderless" type="tertiary" size="small" onClick={() => onEdit(credential)} />
       </Tooltip>
       <Tooltip content={t('personalCredential.actions.linkCredential')}>
-        <Button icon={<Link size={16} strokeWidth={2} />} theme="borderless" size="small" onClick={() => onLinkCredential(credential)} />
+        <Button icon={<Link size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={() => onLinkCredential(credential)} />
       </Tooltip>
       <Tooltip content={t('common.delete')}>
-        <Button icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />} theme="borderless" size="small" onClick={handleDelete} />
+        <Button icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />} theme="borderless" type="tertiary" size="small" onClick={handleDelete} />
       </Tooltip>
     </>
   );

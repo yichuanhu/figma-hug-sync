@@ -85,6 +85,7 @@ const ParameterDetailDrawer = ({
           <Button
             icon={<IconEditStroked />}
             theme="borderless"
+            type="tertiary"
             size="small"
             onClick={() => onEdit(parameter)}
           />
@@ -95,6 +96,7 @@ const ParameterDetailDrawer = ({
           <Button
             icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />}
             theme="borderless"
+            type="tertiary"
             size="small"
             onClick={() => onDelete(parameter)}
           />

@@ -128,17 +128,17 @@ const TaskDetailDrawer = ({
     <>
       {canCancel && (
         <Tooltip content={t('task.actions.cancel')}>
-          <Button icon={<IconCrossCircleStroked />} theme="borderless" size="small" onClick={() => onCancel(task)} />
+          <Button icon={<IconCrossCircleStroked />} theme="borderless" type="tertiary" size="small" onClick={() => onCancel(task)} />
         </Tooltip>
       )}
       {canStop && (
         <Tooltip content={t('task.actions.stop')}>
-          <Button icon={<IconMinusCircleStroked />} theme="borderless" size="small" onClick={() => onStop(task)} />
+          <Button icon={<IconMinusCircleStroked />} theme="borderless" type="tertiary" size="small" onClick={() => onStop(task)} />
         </Tooltip>
       )}
       {canRetry && (
         <Tooltip content={t('task.actions.retry')}>
-          <Button icon={<PlayCircle size={16} strokeWidth={2} />} theme="borderless" size="small" onClick={() => onRetry(task)} />
+          <Button icon={<PlayCircle size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={() => onRetry(task)} />
         </Tooltip>
       )}
     </>

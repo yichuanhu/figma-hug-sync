@@ -354,20 +354,20 @@ const ProcessDetailDrawer = ({
     <>
       {onOpen && (
         <Tooltip content={t('development.processDevelopment.actions.openProcess')}>
-          <Button icon={<IconExternalOpenStroked />} theme="borderless" size="small" onClick={onOpen} />
+          <Button icon={<IconExternalOpenStroked />} theme="borderless" type="tertiary" size="small" onClick={onOpen} />
         </Tooltip>
       )}
       {onEdit && (
         <Tooltip content={t('common.edit')}>
-          <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={onEdit} />
+          <Button icon={<IconEditStroked />} theme="borderless" type="tertiary" size="small" onClick={onEdit} />
         </Tooltip>
       )}
       <Tooltip content={t('common.run')}>
-        <Button icon={<IconPlayCircle />} theme="borderless" size="small" onClick={onRun} />
+        <Button icon={<IconPlayCircle />} theme="borderless" type="tertiary" size="small" onClick={onRun} />
       </Tooltip>
       {onDelete && (
         <Tooltip content={t('common.delete')}>
-          <Button icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />} theme="borderless" size="small" onClick={onDelete} />
+          <Button icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />} theme="borderless" type="tertiary" size="small" onClick={onDelete} />
         </Tooltip>
       )}
     </>

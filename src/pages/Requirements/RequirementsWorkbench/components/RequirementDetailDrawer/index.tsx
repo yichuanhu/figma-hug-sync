@@ -295,7 +295,7 @@ const RequirementDetailDrawer = ({
                 icon={<IconSendStroked />}
                 theme="borderless"
                 size="small"
-                type="primary"
+                type="tertiary"
                 onClick={() => {
                   Modal.confirm({
                     title: t('requirements.detail.submitConfirmTitle'),
@@ -316,6 +316,7 @@ const RequirementDetailDrawer = ({
               <Button
                 icon={<IconEditStroked />}
                 theme="borderless"
+                type="tertiary"
                 size="small"
                 onClick={() => onEdit(data)}
               />
@@ -326,8 +327,8 @@ const RequirementDetailDrawer = ({
               <Button
                 icon={<IconDeleteStroked />}
                 theme="borderless"
+                type="tertiary"
                 size="small"
-                type="danger"
                 onClick={() => onDelete(data)}
               />
             </Tooltip>
