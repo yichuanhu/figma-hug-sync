@@ -23,7 +23,7 @@ import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
 import CreateTaskModal from '../components/CreateTaskModal';
 import TaskDetailDrawer from '../components/TaskDetailDrawer';
-import { Bot, ClipboardClock, Component, Ellipsis, MinusCircle, Monitor, PlayCircle, Plus, RefreshCw, Trash2, XCircle } from 'lucide-react';
+import { Bot, ClipboardClock, Component, Ellipsis, MinusCircle, Monitor, PlayCircle, Plus, RefreshCw, Trash2, UserPlus, XCircle } from 'lucide-react';
 import type { 
   LYTaskResponse, 
   GetTasksParams, 
@@ -34,6 +34,7 @@ import type {
   TriggerSource,
   TaskPriority,
 } from '@/api';
+import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
 import './index.less';
 
 const { Title } = Typography;
