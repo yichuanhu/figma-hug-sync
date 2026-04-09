@@ -608,7 +608,7 @@ const CollaboratorPanel = ({
         footer={null}
         closable={false}
         title={modalTitle}
-        width={480}
+        width={660}
         className="collaborator-panel-modal"
       >
         <div className="collaborator-panel">
