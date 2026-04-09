@@ -618,11 +618,8 @@ const TaskManagementPage = () => {
         // ExecuteHistory入口: 只tohas过ExecuteRecorddisplay
         const hasExecutions = record.total_execution_count > 0;
         
-        const hasActions = hasStatusActions || hasExecutions;
-
-        if (!hasActions) {
-          return null;
-        }
+        // 所有任务都有协作者操作，所以总是显示菜单
+        return (
 
         return (
           <Dropdown
