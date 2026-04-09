@@ -559,7 +559,6 @@ const CollaboratorPanel = ({
           <Button
             type="tertiary"
             icon={<UserPlus size={14} />}
-            block
             onClick={handleOpenOrgModal}
           >
             {t('collaborator.actions.addCollaborator')}
