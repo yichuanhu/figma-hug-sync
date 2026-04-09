@@ -1,7 +1,7 @@
 import { useMemo, useState, useEffect, useRef } from 'react';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import { useTranslation } from 'react-i18next';
-import {
+import type { CollaboratorProps } from '@/components/DetailDrawerWrapper';
   Button,
   Tooltip,
   Typography,
