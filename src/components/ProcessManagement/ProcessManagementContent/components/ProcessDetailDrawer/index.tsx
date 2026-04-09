@@ -414,7 +414,7 @@ const ProcessDetailDrawer = ({
     <>
       {!isSchedulingContext && onOpen && (
         <Tooltip content={t('development.processDevelopment.actions.openProcess')}>
-          <Button icon={<IconExternalOpenStroked />} theme="borderless" size="small" onClick={onOpen} />
+          <Button icon={<IconExternalOpenStroked />} theme="borderless" type="tertiary" size="small" onClick={onOpen} />
         </Tooltip>
       )}
       {!isSchedulingContext && onEdit && (
