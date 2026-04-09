@@ -488,46 +488,12 @@ const CollaboratorPanel = ({
         />
       </div>
       {selectedUsers.length > 0 && (
-        <Popover
-          content={
-            <div style={{ padding: 4, width: 280 }}>
-              {(ASSET_AVAILABLE_ROLES[assetType] || []).map((role) => (
-                <div
-                  key={role}
-                  className={`semi-select-option${batchRole === role ? ' semi-select-option-selected' : ''}${batchRole === role ? ' semi-select-option-focused' : ''}`}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    padding: '8px 12px',
-                    cursor: 'pointer',
-                    borderRadius: 4,
-                  }}
-                  onClick={() => setBatchRole(role)}
-                >
-                  <div style={{ width: 20, flexShrink: 0, marginTop: 2 }}>
-                    {batchRole === role && (
-                      <span style={{ color: 'var(--semi-color-primary)', fontSize: 14 }}>✓</span>
-                    )}
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1 }}>
-                    <span>{t(`collaborator.roles.${role}`)}</span>
-                    <Text size="small" type="tertiary" style={{ lineHeight: '18px' }}>
-                      {t(`collaborator.roleDesc.${role}`)}
-                    </Text>
-                  </div>
-                </div>
-              ))}
-            </div>
-          }
-          trigger="click"
-          position="bottomRight"
-          showArrow={false}
-        >
-          <span className="collaborator-panel-role-text-btn">
-            {t(`collaborator.roles.${batchRole}`)}
-            <IconChevronDown size="small" />
-          </span>
-        </Popover>
+        <CollaboratorRoleSelect
+          value={batchRole}
+          onChange={(role) => setBatchRole(role)}
+          assetType={assetType}
+          size="small"
+        />
       )}
     </div>
   );
