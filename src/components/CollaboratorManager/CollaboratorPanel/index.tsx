@@ -850,9 +850,9 @@ const CollaboratorPanel = ({
         ))}
       </AvatarGroup>
       <Tag size="small" type="ghost" className="collaborator-panel-count-tag">
-        {t('collaborator.panel.peopleCount', { count: collaborators.length })}
+        +{collaborators.length}
       </Tag>
-      <ChevronLeft size={16} strokeWidth={2} />
+      <ChevronRight size={16} strokeWidth={2} />
     </div>
   );
 
