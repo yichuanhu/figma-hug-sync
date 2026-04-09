@@ -1,85 +1,61 @@
 
 
-# 协作者功能统一与组件化
+# 优化协作者弹窗与组织架构弹窗的交互体验（修订版）
 
-## 问题分析
+## 问题
 
-1. **图标不一致**：详情抽屉 header 使用 `Users` 图标，表格操作菜单使用 `UserPlus` 图标
-2. **页面覆盖不全**：开发中心的 ProcessDevelopment 仍使用旧的 `CollaboratorAddModal`，TaskManagement 和 ReleaseManagement 缺少协作者功能
-3. **重复代码**：每个页面都独立维护 `addCollaboratorModalVisible` + `addCollaboratorAssetId` 状态和 `CollaboratorPanel` 渲染逻辑
+当前有**两个入口**会触发关闭主弹窗→打开组织架构弹窗的生硬跳转：
+1. **快捷添加视图**：底部"从组织架构添加"按钮（L527 `handleOpenOrgModal`）
+2. **管理视图**：底部"添加协作者"按钮（L557 `handleOpenOrgModal`）
 
-## 改动方案
+两处都调用 `handleOpenOrgModal`，先 `onVisibleChange(false)` 关闭 660px 主弹窗，再 `setAddModalVisible(true)` 打开 900px 组织架构弹窗，导致动画叠加、位置偏移。
 
-### 1. 统一图标为 `UserPlus`
+## 方案
 
-将详情抽屉 header 中的协作者按钮图标从 `Users` 改为 `UserPlus`，与表格操作菜单保持一致。
+将两个独立 Modal 合并为**单个 Modal 内的三视图切换**，通过 `panelView` 状态控制。
 
-**文件**: `src/components/DetailDrawerWrapper/index.tsx`
-- L299: `<Users size={14}>` → `<UserPlus size={14} strokeWidth={2}>`
+### 视图结构
 
-同时统一 `FileDetailDrawer` 中手动渲染的协作者按钮图标。
+```text
+panelView: 'quick' | 'manage' | 'org'
 
-### 2. 创建 `useCollaboratorAction` Hook
-
-提取通用的协作者操作逻辑为一个可复用的 Hook。
-
-**新文件**: `src/hooks/useCollaboratorAction.ts`
-
-```typescript
-interface UseCollaboratorActionReturn {
-  collaboratorVisible: boolean;
-  collaboratorAssetId: string;
-  openCollaborator: (assetId: string) => void;
-  closeCollaborator: () => void;
-  setCollaboratorVisible: (visible: boolean) => void;
-  renderCollaboratorPanel: (assetType, context, canManage?) => ReactNode;
-}
+quick  ─→ "从组织架构添加"按钮 ─→ org（记录 previousView = 'quick'）
+manage ─→ "添加协作者"按钮    ─→ org（记录 previousView = 'manage'）
+org    ─→ 返回按钮           ─→ previousView（quick 或 manage）
 ```
 
-封装状态管理 (`visible`, `assetId`) + `CollaboratorPanel` 渲染，各页面只需调用 Hook 即可。
+### 具体改动
 
-### 3. 各页面接入 Hook
+**文件**: `src/components/CollaboratorManager/CollaboratorPanel/index.tsx`
 
-**已有协作者功能的页面**（替换重复代码为 Hook）：
-- `src/components/CredentialManagement/CredentialManagementContent/index.tsx`
-- `src/components/ParameterManagement/ParameterManagementContent/index.tsx`
-- `src/components/QueueManagement/QueueManagementContent/index.tsx`
-- `src/components/ProcessManagement/ProcessManagementContent/index.tsx`
-- `src/components/FileManagement/FileManagementContent/index.tsx`
-- `src/pages/Scheduling/TemplateManagement/TemplateManagementPage/index.tsx`
-- `src/pages/Scheduling/WorkerManagement/index.tsx`
-- `src/pages/Scheduling/WorkerManagement/WorkerGroupManagement/index.tsx`
-- `src/pages/Scheduling/AutoExecutionPolicy/.../TimeTriggerList/index.tsx`
-- `src/pages/Scheduling/AutoExecutionPolicy/.../QueueTriggerList/index.tsx`
+1. **扩展 panelView 类型**：`'quick' | 'manage' | 'org'`，新增 `previousView` 状态记录来源视图
+2. **将 CollaboratorAddModal 内容内联**：组织架构浏览（面包屑、部门树、搜索、已选列表）作为 `org` 视图渲染在同一 Modal 内
+3. **动态 Modal 宽度**：`org` 视图 900px，其余 660px
+4. **动态 Modal 标题**：
+   - `quick` → "添加协作者"
+   - `manage` → ← 管理协作者
+   - `org` → ← 从组织架构添加
+5. **删除互斥逻辑**：移除 `handleOpenOrgModal`、`handleAddModalClose`、`handleAddSuccess`、`addModalVisible` 状态及 `CollaboratorAddModal` 引用
+6. **两个入口统一改为视图切换**：
+   - 快捷视图"从组织架构添加"按钮：`setPanelView('org'); setPreviousView('quick')`
+   - 管理视图"添加协作者"按钮：`setPanelView('org'); setPreviousView('manage')`
+7. **org 视图返回**：点击返回按钮 → `setPanelView(previousView)`，同时清空组织架构相关状态
 
-**使用旧组件的页面**（`CollaboratorAddModal` → Hook）：
-- `src/pages/Development/ProcessDevelopment/index.tsx`
+**文件**: `src/components/CollaboratorManager/CollaboratorPanel/index.less`
 
-**缺少协作者功能的页面**（新增）：
-- `src/pages/Scheduling/TaskManagement/TaskManagementPage/index.tsx` — 表格操作菜单添加"添加协作者"
-- `src/pages/Scheduling/TaskManagement/components/TaskDetailDrawer/index.tsx` — 详情抽屉添加 `collaboratorProps`
+- 添加 Modal 宽度过渡：`transition: width 0.2s ease`
+- 添加 `org` 视图的两栏布局样式（左侧部门树 + 右侧已选列表）
 
-注：`CollaboratorAssetType` 需新增 `'TASK'` 类型，以及对应的 `ASSET_AVAILABLE_ROLES` 配置。
+### Modal 标题与返回逻辑
 
-ReleaseManagement（发布管理）属于版本发布流程，不涉及资产级协作者管理，不纳入。
-
-### 4. API 类型扩展
-
-**文件**: `src/api/index.ts`
-- `CollaboratorAssetType` 新增 `'TASK'`
-- `ASSET_AVAILABLE_ROLES` 新增 `TASK` 映射
-
-## 文件变更汇总
+| panelView | 标题左侧 | 返回目标 |
+|-----------|----------|----------|
+| `quick` | "添加协作者" | - |
+| `manage` | ← 管理协作者 | `quick` |
+| `org` | ← 从组织架构添加 | `previousView`（quick 或 manage） |
 
 | 文件 | 改动 |
 |------|------|
-| `src/hooks/useCollaboratorAction.ts` | 新建 Hook，封装协作者弹窗状态+渲染 |
-| `src/api/index.ts` | 新增 `TASK` 资产类型 |
-| `src/components/DetailDrawerWrapper/index.tsx` | 图标 Users → UserPlus |
-| 10 个已有协作者的页面 | 替换重复代码为 Hook |
-| `src/pages/Development/ProcessDevelopment/index.tsx` | CollaboratorAddModal → Hook |
-| `src/pages/Scheduling/TaskManagement/...` (2 个文件) | 新增协作者功能 |
-| `src/components/FileManagement/.../FileDetailDrawer/index.tsx` | 图标统一 |
-
-共约 **16 个文件**。
+| `CollaboratorPanel/index.tsx` | 合并 org 视图，删除互斥逻辑，动态宽度，两个入口统一改为视图切换 |
+| `CollaboratorPanel/index.less` | org 视图样式，Modal 宽度过渡动画 |
 
