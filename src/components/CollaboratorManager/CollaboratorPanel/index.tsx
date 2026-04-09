@@ -1207,7 +1207,7 @@ const CollaboratorPanel = ({
       footer={null}
       closable={false}
       title={modalTitle}
-      width={panelView === 'org' ? 900 : 660}
+      width={panelView === 'quick' ? 660 : 900}
       className={`collaborator-panel-modal${panelView === 'org' ? ' collaborator-panel-modal--org' : ''}`}
     >
       <div className="collaborator-panel">
