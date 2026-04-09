@@ -820,6 +820,12 @@ const TaskManagementPage = () => {
           dataSource={list}
           onSelectTask={setSelectedTask}
           initialTab={initialTab}
+          collaboratorProps={selectedTask ? {
+            assetType: 'TASK',
+            assetId: selectedTask.task_id,
+            context: 'scheduling',
+            canManage: true,
+          } : undefined}
           pagination={{
             currentPage,
             pageSize,
