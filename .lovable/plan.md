@@ -1,81 +1,85 @@
 
 
-# 统计：Semi 图标 → Lucide 图标映射表
+# 协作者功能统一与组件化
 
-共发现 **55 个** Semi UI 图标在项目中使用，分布于 **93 个文件**。以下是完整的映射关系：
+## 问题分析
 
-## 映射表
+1. **图标不一致**：详情抽屉 header 使用 `Users` 图标，表格操作菜单使用 `UserPlus` 图标
+2. **页面覆盖不全**：开发中心的 ProcessDevelopment 仍使用旧的 `CollaboratorAddModal`，TaskManagement 和 ReleaseManagement 缺少协作者功能
+3. **重复代码**：每个页面都独立维护 `addCollaboratorModalVisible` + `addCollaboratorAssetId` 状态和 `CollaboratorPanel` 渲染逻辑
 
-| Semi 图标 | 使用次数 | Lucide 替代 | 说明 |
-|-----------|---------|-------------|------|
-| `IconDeleteStroked` | ~100 | `Trash2` | 删除 |
-| `IconSearchStroked` | ~61 | `Search` | 搜索 |
-| `IconEditStroked` | ~52 | `Pencil` | 编辑 |
-| `IconMoreStroked` | ~40 | `MoreHorizontal` 或 `Ellipsis` | 更多操作 |
-| `IconPlusStroked` | ~38 | `Plus` | 新增 |
-| `IconHelpCircleStroked` | ~19 | `HelpCircle` | 帮助提示 |
-| `IconEyeOpenedStroked` | ~17 | `Eye` | 查看 |
-| `IconChevronLeft` | ~17 | `ChevronLeft` | 左箭头 |
-| `IconMinusCircleStroked` | ~16 | `MinusCircle` | 减少/移除 |
-| `IconExternalOpenStroked` | ~15 | `ExternalLink` | 外部链接 |
-| `IconStarStroked` | ~12 | `Star` | 收藏/评分 |
-| `IconUpload` | ~10 | `Upload` | 上传（已有部分使用Lucide） |
-| `IconFlowChartStroked` | ~10 | `GitBranch` 或 `Network` | 流程/组织架构 |
-| `IconDownloadStroked` | ~10 | `Download` | 下载 |
-| `IconClose` | ~10 | `X` | 关闭（已有部分使用Lucide） |
-| `IconInbox` | ~9 | `Inbox` | 收件箱/空状态（已有部分使用Lucide） |
-| `IconAlertCircle` | ~9 | `AlertCircle` | 警告圆形 |
-| `IconChevronUp` | ~8 | `ChevronUp` | 上箭头 |
-| `IconChevronRight` | ~8 | `ChevronRight` | 右箭头 |
-| `IconChevronDown` | ~8 | `ChevronDown` | 下箭头 |
-| `IconCrossCircleStroked` | ~7 | `XCircle` | 错误/关闭圆形 |
-| `IconRefresh` | ~6 | `RefreshCw` | 刷新（已有部分使用Lucide） |
-| `IconPlayCircle` | ~6 | `PlayCircle` | 运行（已有部分使用Lucide） |
-| `IconSendStroked` | ~5 | `Send` | 发送/提交 |
-| `IconVolume` | ~4 | `Volume2` | 音量 |
-| `IconUserListStroked` | ~4 | `Users` | 用户列表 |
-| `IconLink` | ~4 | `Link` | 链接（已有部分使用Lucide） |
-| `IconKeyStroked` | ~4 | `Key` | 密钥/凭据 |
-| `IconInfoCircle` | ~4 | `Info` | 信息 |
-| `IconClockStroked` | ~4 | `Clock` | 时间 |
-| `IconAlertTriangle` | ~4 | `AlertTriangle` | 三角警告 |
-| `IconFilterStroked` | ~3 | `Filter` | 筛选 |
-| `IconBellStroked` | ~3 | `Bell` | 通知 |
-| `IconVideoStroked` | ~2 | `Video` | 视频 |
-| `IconUserGroup` | ~2 | `Users` | 用户组 |
-| `IconUserAdd` | ~2 | `UserPlus` | 添加用户（已有部分使用Lucide） |
-| `IconTick` | ~2 | `Check` | 勾选（已有部分使用Lucide） |
-| `IconMinimize` | ~2 | `Minimize2` | 最小化（已有部分使用Lucide） |
-| `IconMaximize` | ~2 | `Maximize2` | 最大化（已有部分使用Lucide） |
-| `IconMap` | ~2 | `Map` | 地图 |
-| `IconList` | ~2 | `List` | 列表视图 |
-| `IconImageStroked` | ~2 | `Image` | 图片 |
-| `IconHomeStroked` | ~2 | `Home` | 首页 |
-| `IconGridView` | ~2 | `LayoutGrid` | 网格视图 |
-| `IconCopyStroked` | ~2 | `Copy` | 复制 |
-| `IconChevronRightStroked` | ~2 | `ChevronRight` | 同 IconChevronRight |
-| `IconChevronDownStroked` | ~2 | `ChevronDown` | 同 IconChevronDown |
-| `IconCheckCircleStroked` | ~2 | `CheckCircle` | 成功勾选 |
-| `IconCalendarStroked` | ~2 | `Calendar` | 日历 |
-| `IconBookStroked` | ~2 | `BookOpen` | 文档/书籍 |
-| `IconArrowUp` | ~2 | `ArrowUp` | 向上 |
-| `IconArrowLeft` | ~2 | `ArrowLeft` | 向左 |
-| `IconArrowDown` | ~2 | `ArrowDown` | 向下 |
-| `IconApartment` | ~2 | `Building2` | 组织/部门 |
-| `IconSourceControl` | ~1 | `GitBranch` | 版本控制 |
-| `IconFolderStroked` | ~1 | `Folder` | 文件夹 |
-| `IconCloudStroked` | ~1 | `Cloud` | 云 |
+## 改动方案
 
-## 已部分迁移的图标
+### 1. 统一图标为 `UserPlus`
 
-以下图标在项目中已有部分文件使用了 Lucide 版本，需要统一剩余文件：
-- `PlayCircle`、`X`、`Check`、`Inbox`、`RefreshCw`、`Upload`、`Link`、`UserPlus`、`Maximize2`、`Minimize2`
+将详情抽屉 header 中的协作者按钮图标从 `Users` 改为 `UserPlus`，与表格操作菜单保持一致。
 
-## 统一规范
+**文件**: `src/components/DetailDrawerWrapper/index.tsx`
+- L299: `<Users size={14}>` → `<UserPlus size={14} strokeWidth={2}>`
 
-所有 Lucide 图标使用 `size={16} strokeWidth={2}`（按钮/操作场景）或 `size={14} strokeWidth={2}`（行内/小尺寸场景），与现有标准保持一致。
+同时统一 `FileDetailDrawer` 中手动渲染的协作者按钮图标。
 
-## 实施范围
+### 2. 创建 `useCollaboratorAction` Hook
 
-共涉及 **93 个文件**，约 **460 处** import 需要修改。确认映射表无误后可批量替换。
+提取通用的协作者操作逻辑为一个可复用的 Hook。
+
+**新文件**: `src/hooks/useCollaboratorAction.ts`
+
+```typescript
+interface UseCollaboratorActionReturn {
+  collaboratorVisible: boolean;
+  collaboratorAssetId: string;
+  openCollaborator: (assetId: string) => void;
+  closeCollaborator: () => void;
+  setCollaboratorVisible: (visible: boolean) => void;
+  renderCollaboratorPanel: (assetType, context, canManage?) => ReactNode;
+}
+```
+
+封装状态管理 (`visible`, `assetId`) + `CollaboratorPanel` 渲染，各页面只需调用 Hook 即可。
+
+### 3. 各页面接入 Hook
+
+**已有协作者功能的页面**（替换重复代码为 Hook）：
+- `src/components/CredentialManagement/CredentialManagementContent/index.tsx`
+- `src/components/ParameterManagement/ParameterManagementContent/index.tsx`
+- `src/components/QueueManagement/QueueManagementContent/index.tsx`
+- `src/components/ProcessManagement/ProcessManagementContent/index.tsx`
+- `src/components/FileManagement/FileManagementContent/index.tsx`
+- `src/pages/Scheduling/TemplateManagement/TemplateManagementPage/index.tsx`
+- `src/pages/Scheduling/WorkerManagement/index.tsx`
+- `src/pages/Scheduling/WorkerManagement/WorkerGroupManagement/index.tsx`
+- `src/pages/Scheduling/AutoExecutionPolicy/.../TimeTriggerList/index.tsx`
+- `src/pages/Scheduling/AutoExecutionPolicy/.../QueueTriggerList/index.tsx`
+
+**使用旧组件的页面**（`CollaboratorAddModal` → Hook）：
+- `src/pages/Development/ProcessDevelopment/index.tsx`
+
+**缺少协作者功能的页面**（新增）：
+- `src/pages/Scheduling/TaskManagement/TaskManagementPage/index.tsx` — 表格操作菜单添加"添加协作者"
+- `src/pages/Scheduling/TaskManagement/components/TaskDetailDrawer/index.tsx` — 详情抽屉添加 `collaboratorProps`
+
+注：`CollaboratorAssetType` 需新增 `'TASK'` 类型，以及对应的 `ASSET_AVAILABLE_ROLES` 配置。
+
+ReleaseManagement（发布管理）属于版本发布流程，不涉及资产级协作者管理，不纳入。
+
+### 4. API 类型扩展
+
+**文件**: `src/api/index.ts`
+- `CollaboratorAssetType` 新增 `'TASK'`
+- `ASSET_AVAILABLE_ROLES` 新增 `TASK` 映射
+
+## 文件变更汇总
+
+| 文件 | 改动 |
+|------|------|
+| `src/hooks/useCollaboratorAction.ts` | 新建 Hook，封装协作者弹窗状态+渲染 |
+| `src/api/index.ts` | 新增 `TASK` 资产类型 |
+| `src/components/DetailDrawerWrapper/index.tsx` | 图标 Users → UserPlus |
+| 10 个已有协作者的页面 | 替换重复代码为 Hook |
+| `src/pages/Development/ProcessDevelopment/index.tsx` | CollaboratorAddModal → Hook |
+| `src/pages/Scheduling/TaskManagement/...` (2 个文件) | 新增协作者功能 |
+| `src/components/FileManagement/.../FileDetailDrawer/index.tsx` | 图标统一 |
+
+共约 **16 个文件**。
 
