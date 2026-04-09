@@ -3,12 +3,12 @@ import { Home, RefreshCw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import noDataSvg from '@/assets/empty-state/no-data.svg';
-import noResultSvg from '@/assets/empty-state/no-result.svg';
-import errorSvg from '@/assets/empty-state/error.svg';
-import noAccessSvg from '@/assets/empty-state/no-access.svg';
+import noDataSvg from '@/assets/empty-state/no-data.png';
+import noResultSvg from '@/assets/empty-state/no-result.png';
+import errorSvg from '@/assets/empty-state/error.png';
+import noAccessSvg from '@/assets/empty-state/no-access.png';
 import maintenanceSvg from '@/assets/empty-state/maintenance.svg';
-import notFoundSvg from '@/assets/empty-state/not-found.svg';
+import notFoundSvg from '@/assets/empty-state/not-found.png';
 
 import './index.less';
 
