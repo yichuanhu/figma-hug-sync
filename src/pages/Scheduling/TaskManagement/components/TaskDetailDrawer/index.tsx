@@ -10,11 +10,7 @@ import {
   Tabs,
   TabPane,
 } from '@douyinfe/semi-ui';
-import {
-  IconCrossCircleStroked,
-  IconMinusCircleStroked,
-} from '@douyinfe/semi-icons';
-import { PlayCircle, Inbox } from 'lucide-react';
+import { Inbox, MinusCircle, PlayCircle, XCircle } from 'lucide-react';
 import type {
   LYTaskResponse,
   TaskStatus,
@@ -128,12 +124,12 @@ const TaskDetailDrawer = ({
     <>
       {canCancel && (
         <Tooltip content={t('task.actions.cancel')}>
-          <Button icon={<IconCrossCircleStroked />} theme="borderless" type="tertiary" size="small" onClick={() => onCancel(task)} />
+          <Button icon={<XCircle size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={() => onCancel(task)} />
         </Tooltip>
       )}
       {canStop && (
         <Tooltip content={t('task.actions.stop')}>
-          <Button icon={<IconMinusCircleStroked />} theme="borderless" type="tertiary" size="small" onClick={() => onStop(task)} />
+          <Button icon={<MinusCircle size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={() => onStop(task)} />
         </Tooltip>
       )}
       {canRetry && (

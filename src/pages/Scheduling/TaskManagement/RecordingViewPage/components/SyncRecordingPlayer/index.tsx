@@ -7,11 +7,7 @@ import {
   Typography,
   Spin,
 } from '@douyinfe/semi-ui';
-import {
-  IconVolume1Stroked,
-  IconVolume2Stroked,
-} from '@douyinfe/semi-icons';
-import { Play, Pause, Maximize2, Minimize2, RefreshCw } from 'lucide-react';
+import { Maximize2, Minimize2, Pause, Play, RefreshCw, Volume2, VolumeX } from 'lucide-react';
 import type { LYRecordingInfoResponse, LYRecordingErrorMarker } from '@/api';
 import './index.less';
 
@@ -317,7 +313,7 @@ const SyncRecordingPlayer = ({
         
         {/* Mute button */}
         <Button
-          icon={isMuted ? <IconVolume1Stroked /> : <IconVolume2Stroked />}
+          icon={isMuted ? <VolumeX size={16} strokeWidth={2} /> : <Volume2 size={16} strokeWidth={2} />}
           theme="borderless"
           size="small"
           onClick={toggleMute}

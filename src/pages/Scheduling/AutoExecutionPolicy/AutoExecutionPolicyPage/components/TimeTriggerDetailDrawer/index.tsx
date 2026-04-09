@@ -15,13 +15,6 @@ import {
   Table,
   Switch,
 } from '@douyinfe/semi-ui';
-import {
-  IconEditStroked,
-  IconDeleteStroked,
-  IconInbox,
-  IconChevronDown,
-  IconChevronUp,
-} from '@douyinfe/semi-icons';
 import { Collapsible } from '@douyinfe/semi-ui';
 import type { LYTimeTriggerResponse, LYTriggerExecutionLogResponse } from '@/api';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
@@ -29,6 +22,7 @@ import ExpandableText from '@/components/ExpandableText';
 import CollaboratorTab from '@/components/CollaboratorManager/CollaboratorTab';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import './index.less';
+import { ChevronDown, ChevronUp, Inbox, Pencil, Trash2 } from 'lucide-react';
 
 const { Text } = Typography;
 
@@ -192,7 +186,7 @@ const TimeTriggerDetailDrawer = ({
     <>
       <Tooltip content={t('common.edit')}>
         <Button
-          icon={<IconEditStroked />}
+          icon={<Pencil size={16} strokeWidth={2} />}
           theme="borderless"
           type="tertiary"
           size="small"
@@ -201,7 +195,7 @@ const TimeTriggerDetailDrawer = ({
       </Tooltip>
       <Tooltip content={t('common.delete')}>
         <Button
-          icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />}
+          icon={<Trash2 size={16} strokeWidth={2} />}
           theme="borderless"
           type="tertiary"
           size="small"
@@ -310,7 +304,7 @@ const TimeTriggerDetailDrawer = ({
                 <Button
                   theme="borderless"
                   size="small"
-                  icon={previewExpanded ? <IconChevronUp size="small" /> : <IconChevronDown size="small" />}
+                  icon={previewExpanded ? <ChevronUp size={16} strokeWidth={2} /> : <ChevronDown size={16} strokeWidth={2} />}
                   onClick={() => setPreviewExpanded(!previewExpanded)}
                 />
               </Space>
@@ -383,7 +377,7 @@ const TimeTriggerDetailDrawer = ({
                 </div>
               ) : (
                 <div className="time-trigger-detail-drawer-no-data">
-                  <IconInbox style={{ marginRight: 6 }} />
+                  <Inbox size={16} strokeWidth={2} />
                   {t('timeTrigger.detail.noInputParameters')}
                 </div>
               )}

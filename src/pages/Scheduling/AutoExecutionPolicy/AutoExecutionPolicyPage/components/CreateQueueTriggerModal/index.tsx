@@ -12,7 +12,6 @@ import {
   Select,
   Banner,
 } from '@douyinfe/semi-ui';
-import { IconHelpCircleStroked, IconInbox } from '@douyinfe/semi-icons';
 import BotTargetSelector from '@/components/BotTargetSelector';
 import { getWorkCalendarOptions } from '@/mocks/workCalendar';
 import type {
@@ -129,6 +128,7 @@ const mockTemplates = [
 ];
 
 import { TIMEZONE_GROUPS } from '@/constants/timezones';
+import { HelpCircle, Inbox } from 'lucide-react';
 
 // Already存in 's  TriggerName (模拟)
 const existingTriggerNames = ['Order Queue Trigger', 'Approval Queue Trigger'];
@@ -229,7 +229,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
             position="top"
             showArrow
           >
-            <IconHelpCircleStroked size="small" style={{ color: 'var(--semi-color-text-2)', marginLeft: 4, cursor: 'help' }} />
+            <HelpCircle size={16} strokeWidth={2} />
           </Popover>
         )}
       </div>
@@ -619,7 +619,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
       {/* If no parameters */}
       {!hasParameters && !hasOutputParameters && (
         <div className="create-queue-trigger-modal-no-params">
-          <IconInbox size="extra-large" style={{ color: 'var(--semi-color-text-2)', marginBottom: 8 }} />
+          <Inbox size={16} strokeWidth={2} />
           <div>{t('template.createModal.noParameters')}</div>
         </div>
       )}

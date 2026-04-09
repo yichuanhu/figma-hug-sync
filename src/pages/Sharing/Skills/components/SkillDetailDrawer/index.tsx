@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Descriptions, Tag, Typography, Timeline, Avatar, Space } from '@douyinfe/semi-ui';
-import { IconStarStroked } from '@douyinfe/semi-icons';
-import { Download } from 'lucide-react';
+import { Download, Star } from 'lucide-react';
 import { SkillItem } from '../SkillCard';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import { getAvatarColor } from '@/utils/avatarColor';
@@ -80,7 +79,7 @@ const SkillDetailDrawer = ({ visible, onClose, item, dataList, onNavigate }: Ski
               )},
               { key: t('sharing.detail.rating'), value: (
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                  <IconStarStroked size="small" style={{ color: 'var(--semi-color-warning)' }} />
+                  <Star size={16} strokeWidth={2} />
                   {item.rating}
                 </span>
               )},

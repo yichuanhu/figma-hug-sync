@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 import { Select, Button } from '@douyinfe/semi-ui';
-import { IconRefresh } from '@douyinfe/semi-icons';
 import { useTranslation } from 'react-i18next';
 import { mockDepartments, mockProjects } from '@/pages/Operations/mockData';
 import type { DashboardFilter as FilterType } from '@/pages/Operations/types';
 import './index.less';
+import { RefreshCw } from 'lucide-react';
 
 interface DashboardFilterProps {
   filter: FilterType;
@@ -67,7 +67,7 @@ const DashboardFilter = ({ filter, onFilterChange, onRefresh }: DashboardFilterP
         </div>
       </div>
       <Button
-        icon={<IconRefresh />}
+        icon={<RefreshCw size={16} strokeWidth={2} />}
         size="small"
         onClick={onRefresh}
       >

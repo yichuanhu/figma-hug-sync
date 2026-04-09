@@ -12,8 +12,8 @@ import {
   Toast,
   Input,
 } from '@douyinfe/semi-ui';
-import { IconPlusStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
 import type { RequirementItem, RequirementArtifact, ArtifactType } from '../../types';
+import { Plus, Trash2 } from 'lucide-react';
 
 const { Text } = Typography;
 
@@ -144,7 +144,7 @@ const ArtifactSection = ({ data, onArtifactsChange }: ArtifactSectionProps) => {
             width: 60,
             render: (_: unknown, record: RequirementArtifact) => (
               <Button
-                icon={<IconDeleteStroked />}
+                icon={<Trash2 size={16} strokeWidth={2} />}
                 theme="borderless"
                 size="small"
                 type="danger"
@@ -162,7 +162,7 @@ const ArtifactSection = ({ data, onArtifactsChange }: ArtifactSectionProps) => {
         <Text strong>{t('requirements.artifact.title')}</Text>
         {canEdit && (
           <Button
-            icon={<IconPlusStroked />}
+            icon={<Plus size={16} strokeWidth={2} />}
             size="small"
             theme="borderless"
             onClick={() => setModalVisible(true)}

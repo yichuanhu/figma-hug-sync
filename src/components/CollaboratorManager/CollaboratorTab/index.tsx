@@ -10,12 +10,7 @@ import {
   Modal,
   Popover,
 } from '@douyinfe/semi-ui';
-import {
-  IconMinusCircleStroked,
-  IconSearchStroked,
-  IconFlowChartStroked,
-} from '@douyinfe/semi-icons';
-import { User, UserPlus } from 'lucide-react';
+import { MinusCircle, Network, Search, User, UserPlus } from 'lucide-react';
 import type {
   AssetCollaborator,
   CollaboratorAssetType,
@@ -119,7 +114,7 @@ const CollaboratorTab = ({
       const cascadeInfo = canCascade && cascadeCount > 0;
       Modal.confirm({
         title: t('collaborator.removeConfirm.title'),
-        icon: <IconMinusCircleStroked style={{ color: 'var(--semi-color-warning)' }} />,
+        icon: <MinusCircle size={16} strokeWidth={2} />,
         content: cascadeInfo
           ? t('collaborator.removeConfirm.contentWithCascade', {
               name: record.collaborator_name,
@@ -273,7 +268,7 @@ const CollaboratorTab = ({
         <div className="collaborator-tab-name-cell">
           <span className="collaborator-tab-name-cell-icon">
             {record.collaborator_type === 'DEPARTMENT' ? (
-              <IconFlowChartStroked size="small" style={{ fontSize: 14 }} />
+              <Network size={16} strokeWidth={2} />
             ) : (
               <User size={14} strokeWidth={2} />
             )}
@@ -381,7 +376,7 @@ const CollaboratorTab = ({
     <div className="collaborator-tab">
       <div className="collaborator-tab-toolbar">
         <Input
-          prefix={<IconSearchStroked />}
+          prefix={<Search size={16} strokeWidth={2} />}
           placeholder={t('collaborator.searchPlaceholder')}
           value={searchValue}
           onChange={setSearchValue}

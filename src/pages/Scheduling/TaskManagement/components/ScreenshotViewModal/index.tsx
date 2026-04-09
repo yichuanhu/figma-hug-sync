@@ -11,11 +11,6 @@ import {
   Image,
   ImagePreview,
 } from '@douyinfe/semi-ui';
-import {
-  IconDeleteStroked,
-  IconChevronLeft,
-  IconChevronRight,
-} from '@douyinfe/semi-icons';
 import type { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
 import EmptyState from '@/components/EmptyState';
 import BatchOperationBar from './components/BatchOperationBar';
@@ -25,6 +20,7 @@ import type {
   GetScreenshotsParams,
 } from '@/api';
 import './index.less';
+import { ChevronLeft, ChevronRight, Trash2 } from 'lucide-react';
 
 const { Text } = Typography;
 
@@ -186,7 +182,7 @@ const ScreenshotViewModal = ({
     e?.stopPropagation();
     Modal.confirm({
       title: t('screenshot.deleteConfirm.title'),
-      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      icon: <Trash2 size={16} strokeWidth={2} />,
       content: t('screenshot.deleteConfirm.content'),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
@@ -205,7 +201,7 @@ const ScreenshotViewModal = ({
     
     Modal.confirm({
       title: t('screenshot.deleteConfirm.title'),
-      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      icon: <Trash2 size={16} strokeWidth={2} />,
       content: t('screenshot.deleteConfirm.content'),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
@@ -343,7 +339,7 @@ const ScreenshotViewModal = ({
       width: 80,
       render: (_: unknown, record: LYTaskScreenshotResponse) => (
         <Button
-          icon={<IconDeleteStroked />}
+          icon={<Trash2 size={16} strokeWidth={2} />}
           theme="borderless"
           size="small"
           onClick={(e) => handleDeleteSingle(record.id, e)}
@@ -384,19 +380,19 @@ const ScreenshotViewModal = ({
         </div>
         <div className="screenshot-preview-actions">
           <Button
-            icon={<IconChevronLeft />}
+            icon={<ChevronLeft size={16} strokeWidth={2} />}
             theme="borderless"
             onClick={handlePrevImage}
             disabled={screenshots.length <= 1}
           />
           <Button
-            icon={<IconChevronRight />}
+            icon={<ChevronRight size={16} strokeWidth={2} />}
             theme="borderless"
             onClick={handleNextImage}
             disabled={screenshots.length <= 1}
           />
           <Button
-            icon={<IconDeleteStroked />}
+            icon={<Trash2 size={16} strokeWidth={2} />}
             theme="borderless"
             onClick={handleDeleteInPreview}
           >

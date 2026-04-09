@@ -10,7 +10,6 @@ import {
   Tag,
   Steps,
 } from '@douyinfe/semi-ui';
-import { IconHelpCircleStroked, IconInbox } from '@douyinfe/semi-icons';
 import TriggerRuleConfig from '@/components/TriggerRuleConfig';
 import BotTargetSelector from '@/components/BotTargetSelector';
 import { getWorkCalendarOptions } from '@/mocks/workCalendar';
@@ -24,6 +23,7 @@ import type {
   BasicFrequencyType,
 } from '@/api';
 import './index.less';
+import { HelpCircle, Inbox } from 'lucide-react';
 
 const { Text } = Typography;
 
@@ -402,7 +402,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
             position="top"
             showArrow
           >
-            <IconHelpCircleStroked size="small" style={{ color: 'var(--semi-color-text-2)', marginLeft: 4, cursor: 'help' }} />
+            <HelpCircle size={16} strokeWidth={2} />
           </Popover>
         )}
       </div>
@@ -771,7 +771,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
 
       {!hasParameters && !hasOutputParameters && (
         <div className="edit-time-trigger-modal-no-params">
-          <IconInbox size="extra-large" style={{ color: 'var(--semi-color-text-2)', marginBottom: 8 }} />
+          <Inbox size={16} strokeWidth={2} />
           <div>{t('template.createModal.noParameters')}</div>
         </div>
       )}

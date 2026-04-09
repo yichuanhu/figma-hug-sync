@@ -19,16 +19,8 @@ import {
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
-import {
-  IconSearchStroked,
-  IconPlusStroked,
-  IconMoreStroked,
-  IconDeleteStroked,
-  IconEyeOpenedStroked,
-  IconEditStroked,
-} from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
-import { UserPlus } from 'lucide-react';
+import { Ellipsis, Eye, Pencil, Plus, Search, Trash2, UserPlus } from 'lucide-react';
 import type {
   LYQueueResponse,
   LYQueueListResultResponse,
@@ -291,7 +283,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
 
     Modal.confirm({
       title: t('queue.deleteModal.title'),
-      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      icon: <Trash2 size={16} strokeWidth={2} />,
       content: t('queue.deleteModal.confirmMessage', { name: record.queue_name }),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
@@ -402,11 +394,11 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
             clickToHide
             render={
               <Dropdown.Menu>
-                <Dropdown.Item icon={<IconEyeOpenedStroked />} onClick={(e) => { e.stopPropagation(); handleViewMessages(record); }}>
+                <Dropdown.Item icon={<Eye size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleViewMessages(record); }}>
                   {t('queue.actions.viewMessages')}
                 </Dropdown.Item>
                 {canEdit && (
-                  <Dropdown.Item icon={<IconEditStroked />} onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>
+                  <Dropdown.Item icon={<Pencil size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>
                     {t('common.edit')}
                   </Dropdown.Item>
                 )}
@@ -415,7 +407,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
                 </Dropdown.Item>
                 {canDelete && (
                   <Dropdown.Item 
-                    icon={<IconDeleteStroked />}
+                    icon={<Trash2 size={16} strokeWidth={2} />}
                     type="danger" 
                     onClick={(e) => { e.stopPropagation(); handleDelete(record); }}
                   >
@@ -425,7 +417,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
               </Dropdown.Menu>
             }
           >
-            <Button icon={<IconMoreStroked />} theme="borderless" type="tertiary" onClick={(e) => e.stopPropagation()} />
+            <Button icon={<Ellipsis size={16} strokeWidth={2} />} theme="borderless" type="tertiary" onClick={(e) => e.stopPropagation()} />
           </Dropdown>
         );
       },
@@ -457,7 +449,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
           <Col>
             <Space>
               <Input
-                prefix={<IconSearchStroked />}
+                prefix={<Search size={16} strokeWidth={2} />}
                 placeholder={t('queue.searchPlaceholder')}
                 className="queue-management-content-search-input"
                 value={searchValue}
@@ -493,7 +485,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
           {context === 'development' && (
             <Col>
               <Button
-                icon={<IconPlusStroked />}
+                icon={<Plus size={16} strokeWidth={2} />}
                 theme="solid"
                 type="primary"
                 onClick={() => setCreateModalVisible(true)}

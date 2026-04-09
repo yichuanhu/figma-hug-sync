@@ -6,8 +6,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Avatar, Popover, Dropdown } from '@douyinfe/semi-ui';
-import { IconApartment } from '@douyinfe/semi-icons';
-import { Monitor, User, LogOut, ExternalLink, Languages, ChevronRight } from 'lucide-react';
+import { Building2, ChevronRight, ExternalLink, Languages, LogOut, Monitor, User } from 'lucide-react';
 import './index.less';
 
 export interface UserInfoConfig {
@@ -137,7 +136,7 @@ export const UserInfoDropdown: React.FC<UserInfoDropdownProps> = ({
           {/* 公司信息 */}
           {companyName && (
             <div className="layout-user-dropdown__company">
-              <IconApartment style={{ fontSize: 14, color: 'var(--semi-color-text-3)' }} />
+              <Building2 size={16} strokeWidth={2} />
               <div className="layout-user-dropdown__company-name">{companyName}</div>
             </div>
           )}

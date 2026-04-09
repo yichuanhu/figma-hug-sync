@@ -17,8 +17,7 @@ import {
   TagInput,
   Banner,
 } from '@douyinfe/semi-ui';
-import { IconHelpCircleStroked } from '@douyinfe/semi-icons';
-import { Check, X } from 'lucide-react';
+import { Check, HelpCircle, X } from 'lucide-react';
 import type { TriggerRuleType, BasicFrequencyType } from '@/api';
 import './index.less';
 
@@ -618,10 +617,7 @@ const TriggerRuleConfig = ({
                   trigger="hover"
                   showArrow
                 >
-                  <IconHelpCircleStroked 
-                    size="small" 
-                    className={`${classPrefix}-cron-help-icon`}
-                  />
+                  <HelpCircle size={16} strokeWidth={2} className={`${classPrefix}-cron-help-icon`} />
                 </Popover>
               </div>
               <div className={`${classPrefix}-cron-input-row`}>

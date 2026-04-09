@@ -14,16 +14,7 @@ import {
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
-import {
-  IconSearchStroked, 
-  IconPlusStroked, 
-  IconMoreStroked, 
-  IconEyeOpenedStroked, 
-  IconEditStroked, 
-  IconDeleteStroked,
-  IconUserAdd,
-} from '@douyinfe/semi-icons';
-import { UserPlus } from 'lucide-react';
+import { Ellipsis, Eye, Pencil, Plus, Search, Trash2, UserPlus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { debounce } from 'lodash';
 import WorkerGroupDetailDrawer from './components/WorkerGroupDetailDrawer';
@@ -230,7 +221,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
 
     Modal.confirm({
       title: t('workerGroup.deleteModal.title'),
-      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      icon: <Trash2 size={16} strokeWidth={2} />,
       content: (
         <>
           <div>{t('workerGroup.deleteModal.confirmMessage', { name: group.name })}</div>
@@ -346,7 +337,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
           render={
             <Dropdown.Menu>
               <Dropdown.Item 
-                icon={<IconEyeOpenedStroked />} 
+                icon={<Eye size={16} strokeWidth={2} />} 
                 onClick={(e) => {
                   e?.stopPropagation?.();
                   openDetail(record);
@@ -355,7 +346,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
                 {t('workerGroup.actions.viewDetail')}
               </Dropdown.Item>
               <Dropdown.Item 
-                icon={<IconUserAdd />} 
+                icon={<UserPlus size={16} strokeWidth={2} />} 
                 onClick={(e) => {
                   e?.stopPropagation?.();
                   handleAddMembers(record);
@@ -364,7 +355,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
                 {t('workerGroup.detail.addMember')}
               </Dropdown.Item>
               <Dropdown.Item 
-                icon={<IconEditStroked />} 
+                icon={<Pencil size={16} strokeWidth={2} />} 
                 onClick={(e) => {
                   e?.stopPropagation?.();
                   handleEdit(record);
@@ -383,7 +374,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
                 {t('collaborator.actions.addCollaborator')}
               </Dropdown.Item>
               <Dropdown.Item 
-                icon={<IconDeleteStroked />}
+                icon={<Trash2 size={16} strokeWidth={2} />}
                 type="danger" 
                 onClick={(e) => {
                   e?.stopPropagation?.();
@@ -396,7 +387,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
           }
         >
           <Button 
-            icon={<IconMoreStroked />} 
+            icon={<Ellipsis size={16} strokeWidth={2} />} 
             theme="borderless" 
             onClick={(e) => e.stopPropagation()}
           />
@@ -414,7 +405,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
           <Col>
             <Space>
               <Input 
-                prefix={<IconSearchStroked />}
+                prefix={<Search size={16} strokeWidth={2} />}
                 placeholder={t('workerGroup.searchPlaceholder')}
                 className="worker-group-management-search-input"
                 onChange={handleSearch}
@@ -424,7 +415,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
           </Col>
           <Col>
             <Button 
-              icon={<IconPlusStroked />} 
+              icon={<Plus size={16} strokeWidth={2} />} 
               theme="solid" 
               type="primary"
               onClick={() => setCreateModalVisible(true)}

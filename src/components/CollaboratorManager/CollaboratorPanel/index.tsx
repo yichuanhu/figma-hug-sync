@@ -11,12 +11,7 @@ import {
   Button,
   Divider,
 } from '@douyinfe/semi-ui';
-import {
-  IconMinusCircleStroked,
-  IconFlowChartStroked,
-  IconChevronLeft,
-} from '@douyinfe/semi-icons';
-import { X, UserPlus } from 'lucide-react';
+import { ChevronLeft, MinusCircle, Network, UserPlus, X } from 'lucide-react';
 import type {
   AssetCollaborator,
   CollaboratorAssetType,
@@ -138,7 +133,7 @@ const CollaboratorPanel = ({
       const cascadeInfo = canCascade && cascadeCount > 0;
       Modal.confirm({
         title: t('collaborator.removeConfirm.title'),
-        icon: <IconMinusCircleStroked style={{ color: 'var(--semi-color-warning)' }} />,
+        icon: <MinusCircle size={16} strokeWidth={2} />,
         content: cascadeInfo
           ? t('collaborator.removeConfirm.contentWithCascade', {
               name: record.collaborator_name,
@@ -373,7 +368,7 @@ const CollaboratorPanel = ({
             }
           >
             {record.collaborator_type === 'DEPARTMENT' ? (
-              <IconFlowChartStroked size="small" />
+              <Network size={16} strokeWidth={2} />
             ) : (
               record.collaborator_name.slice(0, 1)
             )}
@@ -450,7 +445,7 @@ const CollaboratorPanel = ({
             }
           >
             {c.collaborator_type === 'DEPARTMENT' ? (
-              <IconFlowChartStroked style={{ fontSize: 10 }} />
+              <Network size={16} strokeWidth={2} />
             ) : (
               c.collaborator_name.slice(0, 1)
             )}
@@ -460,7 +455,7 @@ const CollaboratorPanel = ({
       <Tag size="small" type="ghost" className="collaborator-panel-count-tag">
         {t('collaborator.panel.peopleCount', { count: collaborators.length })}
       </Tag>
-      <IconChevronLeft style={{ transform: 'rotate(180deg)', fontSize: 12 }} />
+      <ChevronLeft size={16} strokeWidth={2} />
     </div>
   );
 
@@ -528,7 +523,7 @@ const CollaboratorPanel = ({
         <div style={{ paddingTop: '12px' }}>
           <Button
             type="tertiary"
-            icon={<IconFlowChartStroked />}
+            icon={<Network size={16} strokeWidth={2} />}
             onClick={handleOpenOrgModal}
           >
             {t('collaborator.panel.addFromOrg')}
@@ -577,7 +572,7 @@ const CollaboratorPanel = ({
             className="collaborator-panel-manage-back"
             onClick={() => setPanelView('quick')}
           >
-            <IconChevronLeft size="small" />
+            <ChevronLeft size={16} strokeWidth={2} />
             <span>{t('collaborator.panel.manageTitle')}</span>
           </div>
         ) : (

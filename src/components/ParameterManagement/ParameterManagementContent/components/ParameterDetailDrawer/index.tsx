@@ -8,10 +8,6 @@ import {
   Tag,
   Tooltip,
 } from '@douyinfe/semi-ui';
-import {
-  IconEditStroked,
-  IconDeleteStroked,
-} from '@douyinfe/semi-icons';
 import type { LYParameterResponse, ParameterType } from '@/api/index';
 import ExpandableText from '@/components/ExpandableText';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
@@ -19,6 +15,7 @@ import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 
 import './index.less';
+import { Pencil, Trash2 } from 'lucide-react';
 
 // 参数类型配置
 const typeConfig: Record<ParameterType, { color: 'blue' | 'green' | 'orange'; i18nKey: string }> = {
@@ -83,7 +80,7 @@ const ParameterDetailDrawer = ({
       {!parameter.is_published && (
         <Tooltip content={t('common.edit')}>
           <Button
-            icon={<IconEditStroked />}
+            icon={<Pencil size={16} strokeWidth={2} />}
             theme="borderless"
             type="tertiary"
             size="small"
@@ -94,7 +91,7 @@ const ParameterDetailDrawer = ({
       {onDelete && context === 'development' && !parameter.is_published && (
         <Tooltip content={t('common.delete')}>
           <Button
-            icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />}
+            icon={<Trash2 size={16} strokeWidth={2} />}
             theme="borderless"
             type="tertiary"
             size="small"

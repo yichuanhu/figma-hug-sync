@@ -16,10 +16,7 @@ import {
 } from '@douyinfe/semi-ui';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
-import {
-  IconDeleteStroked,
-} from '@douyinfe/semi-icons';
-import { X, Maximize2, Minimize2, Unlink, Link } from 'lucide-react';
+import { Link, Maximize2, Minimize2, Trash2, Unlink, X } from 'lucide-react';
 import type { PersonalCredential } from '../../index';
 
 import './index.less';
@@ -149,7 +146,7 @@ const LinkedCredentialsDrawer = ({
   const handleUnlink = (record: LinkedCredential) => {
     Modal.confirm({
       title: t('personalCredential.linkedCredentials.unlinkConfirmTitle'),
-      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      icon: <Trash2 size={16} strokeWidth={2} />,
       content: t('personalCredential.linkedCredentials.unlinkConfirmContent', { name: record.credential_name }),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),

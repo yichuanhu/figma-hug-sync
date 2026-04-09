@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Modal, Form, Toast, Button } from '@douyinfe/semi-ui';
-import { IconUserGroup } from '@douyinfe/semi-icons';
 import { useTranslation } from 'react-i18next';
 import type { LYCreateWorkerGroupRequest } from '@/api';
 import AddMembersModal from '../AddMembersModal';
 import './index.less';
+import { Users } from 'lucide-react';
 
 interface CreateWorkerGroupModalProps {
   visible: boolean;
@@ -155,7 +155,7 @@ const CreateWorkerGroupModal: React.FC<CreateWorkerGroupModalProps> = ({
             <Button onClick={handleAddLater}>
               {t('workerGroup.createModal.addMembersPrompt.later')}
             </Button>
-            <Button type="primary" theme="solid" icon={<IconUserGroup />} onClick={handleAddNow}>
+            <Button type="primary" theme="solid" icon={<Users size={16} strokeWidth={2} />} onClick={handleAddNow}>
               {t('workerGroup.createModal.addMembersPrompt.addNow')}
             </Button>
           </div>

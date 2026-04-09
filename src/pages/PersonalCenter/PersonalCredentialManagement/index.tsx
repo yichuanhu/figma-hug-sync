@@ -15,15 +15,7 @@ import {
 } from '@douyinfe/semi-ui';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
-import {
-  IconSearchStroked,
-  IconPlusStroked,
-  IconMoreStroked,
-  IconDeleteStroked,
-  IconEditStroked,
-  IconEyeOpenedStroked,
-} from '@douyinfe/semi-icons';
-import { History, Link } from 'lucide-react';
+import { Ellipsis, Eye, History, Link, Pencil, Plus, Search, Trash2 } from 'lucide-react';
 import { debounce } from 'lodash';
 import type {
   LYPersonalCredentialResponse,
@@ -211,7 +203,7 @@ const PersonalCredentialManagement = () => {
   const handleDelete = (record: LYPersonalCredentialResponse) => {
     Modal.confirm({
       title: t('personalCredential.deleteModal.title'),
-      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      icon: <Trash2 size={16} strokeWidth={2} />,
       content: t('personalCredential.deleteModal.confirmMessage'),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
@@ -312,10 +304,10 @@ const PersonalCredentialManagement = () => {
           clickToHide
           render={
             <Dropdown.Menu>
-              <Dropdown.Item icon={<IconEditStroked />} onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>
+              <Dropdown.Item icon={<Pencil size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>
                 {t('common.edit')}
               </Dropdown.Item>
-              <Dropdown.Item icon={<IconEyeOpenedStroked />} onClick={(e) => { e.stopPropagation(); handleViewLinkedCredentials(record); }}>
+              <Dropdown.Item icon={<Eye size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleViewLinkedCredentials(record); }}>
                 {t('personalCredential.actions.viewLinkedCredentials')}
               </Dropdown.Item>
               <Dropdown.Item icon={<History size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleViewUsage(record); }}>
@@ -324,13 +316,13 @@ const PersonalCredentialManagement = () => {
               <Dropdown.Item icon={<Link size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleLinkCredential(record); }}>
                 {t('personalCredential.actions.linkCredential')}
               </Dropdown.Item>
-              <Dropdown.Item icon={<IconDeleteStroked />} type="danger" onClick={(e) => { e.stopPropagation(); handleDelete(record); }}>
+              <Dropdown.Item icon={<Trash2 size={16} strokeWidth={2} />} type="danger" onClick={(e) => { e.stopPropagation(); handleDelete(record); }}>
                 {t('common.delete')}
               </Dropdown.Item>
             </Dropdown.Menu>
           }
         >
-          <Button icon={<IconMoreStroked />} theme="borderless" type="tertiary" onClick={(e) => e.stopPropagation()} />
+          <Button icon={<Ellipsis size={16} strokeWidth={2} />} theme="borderless" type="tertiary" onClick={(e) => e.stopPropagation()} />
         </Dropdown>
       ),
     },
@@ -350,7 +342,7 @@ const PersonalCredentialManagement = () => {
           <Col>
             <Space>
               <Input
-                prefix={<IconSearchStroked />}
+                prefix={<Search size={16} strokeWidth={2} />}
                 placeholder={t('personalCredential.searchPlaceholder')}
                 className="personal-credential-management-search-input"
                 value={searchValue}
@@ -361,7 +353,7 @@ const PersonalCredentialManagement = () => {
             </Space>
           </Col>
           <Col>
-            <Button icon={<IconPlusStroked />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
+            <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
               {t('personalCredential.createCredential')}
             </Button>
           </Col>

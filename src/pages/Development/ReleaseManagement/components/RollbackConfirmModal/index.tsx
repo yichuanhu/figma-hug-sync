@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Typography, Tag, Space, Banner } from '@douyinfe/semi-ui';
-import { IconAlertTriangle } from '@douyinfe/semi-icons';
 import type { LYReleaseResponse } from '@/api';
 
 import './index.less';
+import { AlertTriangle } from 'lucide-react';
 
 const { Title, Text } = Typography;
 
@@ -44,7 +44,7 @@ const RollbackConfirmModal: React.FC<RollbackConfirmModalProps> = ({
       className="rollback-confirm-modal"
       title={
         <Space>
-          <IconAlertTriangle style={{ color: 'var(--semi-color-warning)' }} />
+          <AlertTriangle size={16} strokeWidth={2} />
           {t('release.rollback.title')}
         </Space>
       }

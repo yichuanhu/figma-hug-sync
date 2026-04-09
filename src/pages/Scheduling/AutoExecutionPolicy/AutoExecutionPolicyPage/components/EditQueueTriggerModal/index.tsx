@@ -12,8 +12,7 @@ import {
   Select,
   Banner,
 } from '@douyinfe/semi-ui';
-import { IconHelpCircleStroked } from '@douyinfe/semi-icons';
-import { Inbox } from 'lucide-react';
+import { HelpCircle, Inbox } from 'lucide-react';
 import BotTargetSelector from '@/components/BotTargetSelector';
 import { getWorkCalendarOptions } from '@/mocks/workCalendar';
 import type {
@@ -262,7 +261,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
             position="top"
             showArrow
           >
-            <IconHelpCircleStroked size="small" style={{ color: 'var(--semi-color-text-2)', marginLeft: 4, cursor: 'help' }} />
+            <HelpCircle size={16} strokeWidth={2} />
           </Popover>
         )}
       </div>

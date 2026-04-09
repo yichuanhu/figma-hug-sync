@@ -10,11 +10,11 @@ import {
   Tag,
   Typography,
 } from '@douyinfe/semi-ui';
-import { IconSearchStroked } from '@douyinfe/semi-icons';
 import type { ResourceType } from '@/api';
 import type { ResourceConfig } from '../../index';
 
 import './index.less';
+import { Search } from 'lucide-react';
 
 const { Text } = Typography;
 
@@ -223,7 +223,7 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
             >
               <div className="add-resource-modal-tab-search">
                 <Input
-                  prefix={<IconSearchStroked />}
+                  prefix={<Search size={16} strokeWidth={2} />}
                   placeholder={t('release.create.addResource.searchPlaceholder')}
                   value={searchTexts[type]}
                   onChange={(value) => handleSearchChange(type, value)}

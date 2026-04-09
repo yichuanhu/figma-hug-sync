@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Typography, Dropdown, Modal } from '@douyinfe/semi-ui';
-import { IconPlusStroked, IconMoreStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
 import type { LYWorkCalendarResponse } from '@/api/index';
 import './index.less';
+import { Ellipsis, Plus, Trash2 } from 'lucide-react';
 
 const { Text } = Typography;
 
@@ -76,7 +76,7 @@ const CalendarSidebar: React.FC<CalendarSidebarProps> = ({
           render={
             <Dropdown.Menu>
               <Dropdown.Item
-                icon={<IconDeleteStroked />}
+                icon={<Trash2 size={16} strokeWidth={2} />}
                 type={canDelete ? 'danger' : 'tertiary'}
                 disabled={!canDelete}
                 onClick={(e) => handleDelete(calendar, e as unknown as React.MouseEvent)}
@@ -90,7 +90,7 @@ const CalendarSidebar: React.FC<CalendarSidebarProps> = ({
             className="calendar-sidebar-item-more"
             onClick={(e) => e.stopPropagation()}
           >
-            <IconMoreStroked />
+            <Ellipsis size={16} strokeWidth={2} />
           </div>
         </Dropdown>
       </div>
@@ -102,7 +102,7 @@ const CalendarSidebar: React.FC<CalendarSidebarProps> = ({
       {/* New button */}
       <div className="calendar-sidebar-header">
         <Button
-          icon={<IconPlusStroked />}
+          icon={<Plus size={16} strokeWidth={2} />}
           theme="solid"
           block
           onClick={onCreate}

@@ -9,13 +9,7 @@ import {
   Toast,
   Breadcrumb,
 } from '@douyinfe/semi-ui';
-import {
-  IconSearchStroked,
-  IconClose,
-  IconChevronRight,
-  IconFlowChartStroked,
-} from '@douyinfe/semi-icons';
-import { User, Building2 } from 'lucide-react';
+import { Building2, ChevronRight, Network, Search, User, X } from 'lucide-react';
 import type {
   AssetCollaborator,
   CollaboratorAssetType,
@@ -488,7 +482,7 @@ const CollaboratorAddModal = ({
           checked={checked}
           disabled={disabled}
         />
-        <IconFlowChartStroked size="small" className="collaborator-add-modal-left-item-icon" style={{ fontSize: 14 }} />
+        <Network size={16} strokeWidth={2} className="collaborator-add-modal-left-item-icon" />
         <div className="collaborator-add-modal-left-item-name">
           <Text style={{ fontSize: 14 }} ellipsis={{ showTooltip: true }}>
             {dept.name}
@@ -505,7 +499,7 @@ const CollaboratorAddModal = ({
             onClick={(e) => { e.stopPropagation(); navigateToDept(dept.id); }}
           >
             {t('collaborator.addModal.drillDown')}
-            <IconChevronRight size="small" />
+            <ChevronRight size={16} strokeWidth={2} />
           </span>
         )}
       </div>
@@ -520,7 +514,7 @@ const CollaboratorAddModal = ({
           {searchResults.depts.length > 0 && (
             <>
               <div className="collaborator-add-modal-left-section-title">
-              <IconFlowChartStroked size="small" style={{ fontSize: 14 }} />
+              <Network size={16} strokeWidth={2} />
                 {t('collaborator.addModal.departments')}
               </div>
               {searchResults.depts.map((dept) => renderDeptItem(dept))}
@@ -586,7 +580,7 @@ const CollaboratorAddModal = ({
         <div className="collaborator-add-modal-left">
           <div className="collaborator-add-modal-left-search">
             <Input
-              prefix={<IconSearchStroked />}
+              prefix={<Search size={16} strokeWidth={2} />}
               placeholder={t('collaborator.addModal.searchPlaceholder')}
               value={searchValue}
               onChange={setSearchValue}
@@ -631,7 +625,7 @@ const CollaboratorAddModal = ({
                   <div className="collaborator-add-modal-right-item-info">
                     <span className="collaborator-add-modal-right-item-icon">
                       {item.collaborator_type === 'DEPARTMENT' ? (
-                        <IconFlowChartStroked size="small" style={{ fontSize: 14 }} />
+                        <Network size={16} strokeWidth={2} />
                       ) : (
                         <User size={14} strokeWidth={2} />
                       )}
@@ -648,7 +642,7 @@ const CollaboratorAddModal = ({
                       size="small"
                     />
                     <Button
-                      icon={<IconClose />}
+                      icon={<X size={16} strokeWidth={2} />}
                       theme="borderless"
                       size="small"
                       className="collaborator-add-modal-right-item-remove"

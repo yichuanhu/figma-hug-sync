@@ -20,16 +20,7 @@ import {
 // AppLayout removed
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
-import {
-  IconSearchStroked,
-  IconPlusStroked,
-  IconMoreStroked,
-  IconDeleteStroked,
-  IconExternalOpenStroked,
-  IconEditStroked,
-  IconChevronLeft,
-} from '@douyinfe/semi-icons';
-import { UserPlus } from 'lucide-react';
+import { ChevronLeft, Ellipsis, ExternalLink, Pencil, Plus, Search, Trash2, UserPlus } from 'lucide-react';
 import type { 
   LYExecutionTemplateResponse,
   LYListResponseLYExecutionTemplateResponse,
@@ -299,7 +290,7 @@ const TemplateManagementPage = () => {
   const handleDeleteTemplate = (template: LYExecutionTemplateResponse) => {
     Modal.confirm({
       title: t('template.deleteModal.title'),
-      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      icon: <Trash2 size={16} strokeWidth={2} />,
       content: (
         <>
           <div>{t('template.deleteModal.confirmMessage', { name: template.template_name })}</div>
@@ -371,7 +362,7 @@ const TemplateManagementPage = () => {
           render={
             <Dropdown.Menu>
               <Dropdown.Item
-                icon={<IconExternalOpenStroked />}
+                icon={<ExternalLink size={16} strokeWidth={2} />}
                 onClick={(e) => {
                   e.stopPropagation();
                   handleUseTemplate(record);
@@ -380,7 +371,7 @@ const TemplateManagementPage = () => {
                 {t('template.actions.use')}
               </Dropdown.Item>
               <Dropdown.Item
-                icon={<IconEditStroked />}
+                icon={<Pencil size={16} strokeWidth={2} />}
                 onClick={(e) => {
                   e.stopPropagation();
                   handleEditTemplate(record);
@@ -399,7 +390,7 @@ const TemplateManagementPage = () => {
                 {t('collaborator.actions.addCollaborator')}
               </Dropdown.Item>
               <Dropdown.Item
-                icon={<IconDeleteStroked />}
+                icon={<Trash2 size={16} strokeWidth={2} />}
                 type="danger"
                 onClick={(e) => {
                   e.stopPropagation();
@@ -412,7 +403,7 @@ const TemplateManagementPage = () => {
           }
         >
           <Button 
-            icon={<IconMoreStroked />} 
+            icon={<Ellipsis size={16} strokeWidth={2} />} 
             theme="borderless" 
             type="tertiary"
             onClick={(e) => e.stopPropagation()}
@@ -433,7 +424,7 @@ const TemplateManagementPage = () => {
           <div className="template-management-header-title">
             <Tooltip content={t('common.back')} position="bottom">
               <Button
-                icon={<IconChevronLeft />}
+                icon={<ChevronLeft size={16} strokeWidth={2} />}
                 theme="borderless"
                 onClick={() => navigate('/scheduling-center/task-execution/task-list')}
                 className="template-management-back-btn"
@@ -454,7 +445,7 @@ const TemplateManagementPage = () => {
             <Col>
               <Space>
                 <Input
-                  prefix={<IconSearchStroked />}
+                  prefix={<Search size={16} strokeWidth={2} />}
                   placeholder={t('template.searchPlaceholder')}
                   onChange={handleSearch}
                   showClear
@@ -475,7 +466,7 @@ const TemplateManagementPage = () => {
             </Col>
             <Col>
               <Button
-                icon={<IconPlusStroked />}
+                icon={<Plus size={16} strokeWidth={2} />}
                 theme="solid"
                 type="primary"
                 onClick={() => setCreateModalVisible(true)}

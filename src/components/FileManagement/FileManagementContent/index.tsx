@@ -19,14 +19,7 @@ import {
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
-import {
-  IconSearchStroked,
-  IconUpload,
-  IconMoreStroked,
-  IconDeleteStroked,
-  IconDownloadStroked,
-} from '@douyinfe/semi-icons';
-import { RefreshCw, UserPlus } from 'lucide-react';
+import { Download, Ellipsis, RefreshCw, Search, Trash2, Upload, UserPlus } from 'lucide-react';
 import { debounce } from 'lodash';
 import type {
   LYFileResponse,
@@ -305,7 +298,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
 
     Modal.confirm({
       title: t('file.deleteModal.title'),
-      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      icon: <Trash2 size={16} strokeWidth={2} />,
       content: t('file.deleteModal.confirmMessage', { name: record.display_name }),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
@@ -452,7 +445,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
                 </Dropdown.Item>
               )}
               <Dropdown.Item
-                 icon={<IconDownloadStroked />}
+                 icon={<Download size={16} strokeWidth={2} />}
                 onClick={(e) => {
                   e.stopPropagation();
                   handleDownload(record);
@@ -472,7 +465,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
               </Dropdown.Item>
               {context === 'development' && !record.is_published && (
                 <Dropdown.Item
-                  icon={<IconDeleteStroked />}
+                  icon={<Trash2 size={16} strokeWidth={2} />}
                   type="danger"
                   onClick={(e) => {
                     e.stopPropagation();
@@ -486,7 +479,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
           }
         >
           <Button
-            icon={<IconMoreStroked />}
+            icon={<Ellipsis size={16} strokeWidth={2} />}
             theme="borderless"
             type="tertiary"
             onClick={(e) => e.stopPropagation()}
@@ -526,7 +519,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
           <Col>
             <Space>
               <Input
-                prefix={<IconSearchStroked />}
+                prefix={<Search size={16} strokeWidth={2} />}
                 placeholder={t('file.searchPlaceholder')}
                 className="file-management-content-search-input"
                 value={searchValue}
@@ -556,7 +549,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
           <Col>
             {context === 'development' && (
               <Button
-                icon={<IconUpload />}
+                icon={<Upload size={16} strokeWidth={2} />}
                 theme="solid"
                 style={{ backgroundColor: 'var(--semi-color-text-0)', borderColor: 'var(--semi-color-text-0)' }}
                 onClick={handleUploadClick}

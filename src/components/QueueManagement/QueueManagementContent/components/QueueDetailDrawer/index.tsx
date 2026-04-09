@@ -9,11 +9,6 @@ import {
   Tag,
   Tooltip,
 } from '@douyinfe/semi-ui';
-import {
-  IconEditStroked,
-  IconDeleteStroked,
-  IconList,
-} from '@douyinfe/semi-icons';
 import type { LYQueueResponse } from '@/api/index';
 import ExpandableText from '@/components/ExpandableText';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
@@ -21,6 +16,7 @@ import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 
 import './index.less';
+import { List, Pencil, Trash2 } from 'lucide-react';
 
 interface QueueDetailDrawerProps {
   visible: boolean;
@@ -75,16 +71,16 @@ const QueueDetailDrawer = ({
   const extraActions = (
     <>
       <Tooltip content={t('queue.actions.viewMessages')}>
-        <Button icon={<IconList />} theme="borderless" type="tertiary" size="small" onClick={handleViewMessages} />
+        <Button icon={<List size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={handleViewMessages} />
       </Tooltip>
       {!queue.is_published && (
         <Tooltip content={t('common.edit')}>
-          <Button icon={<IconEditStroked />} theme="borderless" type="tertiary" size="small" onClick={() => onEdit(queue)} />
+          <Button icon={<Pencil size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={() => onEdit(queue)} />
         </Tooltip>
       )}
       {onDelete && context === 'development' && !queue.is_published && (
         <Tooltip content={t('common.delete')}>
-          <Button icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />} theme="borderless" type="tertiary" size="small" onClick={() => onDelete(queue)} />
+          <Button icon={<Trash2 size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={() => onDelete(queue)} />
         </Tooltip>
       )}
     </>

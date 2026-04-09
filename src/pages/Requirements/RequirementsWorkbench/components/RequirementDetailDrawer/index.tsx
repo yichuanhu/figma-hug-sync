@@ -1,13 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tag, Typography, Collapsible, Button, Input, Toast, Tooltip, Modal } from '@douyinfe/semi-ui';
-import {
-  IconChevronDownStroked,
-  IconChevronRightStroked,
-  IconEditStroked,
-  IconDeleteStroked,
-  IconSendStroked,
-} from '@douyinfe/semi-icons';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
@@ -18,6 +11,7 @@ import ApprovalSection from './ApprovalSection';
 import ArtifactSection from './ArtifactSection';
 import TechnicalAssessmentSection from './TechnicalAssessmentSection';
 import './index.less';
+import { ChevronDown, ChevronRight, Pencil, Send, Trash2 } from 'lucide-react';
 
 const { Text, Title, Paragraph } = Typography;
 
@@ -135,7 +129,7 @@ const PropertyPanel = ({
               theme="solid"
               type="primary"
               size="small"
-              icon={<IconSendStroked />}
+              icon={<Send size={16} strokeWidth={2} />}
               block
               onClick={() => {
                 Modal.confirm({
@@ -292,7 +286,7 @@ const RequirementDetailDrawer = ({
           {canEdit && (
             <Tooltip content={t('requirements.detail.submitForApproval')}>
               <Button
-                icon={<IconSendStroked />}
+                icon={<Send size={16} strokeWidth={2} />}
                 theme="borderless"
                 size="small"
                 type="tertiary"
@@ -314,7 +308,7 @@ const RequirementDetailDrawer = ({
           {canEdit && (
             <Tooltip content={t('common.edit')}>
               <Button
-                icon={<IconEditStroked />}
+                icon={<Pencil size={16} strokeWidth={2} />}
                 theme="borderless"
                 type="tertiary"
                 size="small"
@@ -325,7 +319,7 @@ const RequirementDetailDrawer = ({
           {canDelete && (
             <Tooltip content={t('common.delete')}>
               <Button
-                icon={<IconDeleteStroked />}
+                icon={<Trash2 size={16} strokeWidth={2} />}
                 theme="borderless"
                 type="tertiary"
                 size="small"
@@ -345,7 +339,7 @@ const RequirementDetailDrawer = ({
               className="requirement-detail-section-header"
               onClick={() => setDescExpanded(!descExpanded)}
             >
-              {descExpanded ? <IconChevronDownStroked size="small" /> : <IconChevronRightStroked size="small" />}
+              {descExpanded ? <ChevronDown size={16} strokeWidth={2} /> : <ChevronRight size={16} strokeWidth={2} />}
               <Text strong>{t('requirements.form.descriptionLabel')}</Text>
             </div>
             <Collapsible isOpen={descExpanded}>

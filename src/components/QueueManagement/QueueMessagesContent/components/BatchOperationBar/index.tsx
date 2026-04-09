@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Button, Space, Typography } from '@douyinfe/semi-ui';
-import { IconDeleteStroked } from '@douyinfe/semi-icons';
-import { RefreshCw, X } from 'lucide-react';
+import { RefreshCw, Trash2, X } from 'lucide-react';
 
 import './index.less';
 
@@ -42,7 +41,7 @@ const BatchOperationBar = ({
           {t('queueMessage.batch.requeue')}
         </Button>
         <Button
-          icon={<IconDeleteStroked />}
+          icon={<Trash2 size={16} strokeWidth={2} />}
           type="danger"
           onClick={onBatchDelete}
         >

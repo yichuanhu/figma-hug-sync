@@ -21,13 +21,7 @@ import {
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
-import {
-  IconSearchStroked,
-  IconMoreStroked,
-  IconDeleteStroked,
-  IconChevronLeft,
-} from '@douyinfe/semi-icons';
-import { PlayCircle, RefreshCw } from 'lucide-react';
+import { ChevronLeft, Ellipsis, PlayCircle, RefreshCw, Search, Trash2 } from 'lucide-react';
 import { debounce } from 'lodash';
 import type {
   LYQueueMessageResponse,
@@ -338,7 +332,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
   const handleDelete = (record: LYQueueMessageResponse) => {
     Modal.confirm({
       title: t('queueMessage.deleteModal.title'),
-      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      icon: <Trash2 size={16} strokeWidth={2} />,
       content: t('queueMessage.deleteModal.confirmMessage'),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
@@ -360,7 +354,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
 
     Modal.confirm({
       title: t('queueMessage.batch.deleteTitle'),
-      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      icon: <Trash2 size={16} strokeWidth={2} />,
       content: t('queueMessage.batch.deleteConfirm', { count: selectedRowKeys.length }),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
@@ -538,7 +532,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
                 </Dropdown.Item>
               )}
               <Dropdown.Item 
-                icon={<IconDeleteStroked />}
+                icon={<Trash2 size={16} strokeWidth={2} />}
                 type="danger" 
                 onClick={(e) => { e.stopPropagation(); handleDelete(record); }}
               >
@@ -547,7 +541,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
             </Dropdown.Menu>
           }
         >
-          <Button icon={<IconMoreStroked />} theme="borderless" type="tertiary" onClick={(e) => e.stopPropagation()} />
+          <Button icon={<Ellipsis size={16} strokeWidth={2} />} theme="borderless" type="tertiary" onClick={(e) => e.stopPropagation()} />
         </Dropdown>
       ),
     },
@@ -579,7 +573,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
       <div className="queue-messages-content-header">
         <div className="queue-messages-content-header-title">
           <Button 
-            icon={<IconChevronLeft />} 
+            icon={<ChevronLeft size={16} strokeWidth={2} />} 
             theme="borderless" 
             onClick={handleBack}
             className="queue-messages-content-back-btn"

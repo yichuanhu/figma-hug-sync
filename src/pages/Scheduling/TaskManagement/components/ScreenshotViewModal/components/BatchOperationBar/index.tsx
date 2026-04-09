@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Button, Typography, Space, Modal, Toast } from '@douyinfe/semi-ui';
-import { IconDeleteStroked } from '@douyinfe/semi-icons';
 import './index.less';
+import { Trash2 } from 'lucide-react';
 
 const { Text } = Typography;
 
@@ -28,7 +28,7 @@ const BatchOperationBar = ({
   const handleDeleteClick = () => {
     Modal.confirm({
       title: t('screenshot.deleteModal.title'),
-      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      icon: <Trash2 size={16} strokeWidth={2} />,
       content: t('screenshot.deleteModal.confirmMessage', { count: selectedCount }),
       okType: 'danger',
       okText: t('common.delete'),
@@ -58,7 +58,7 @@ const BatchOperationBar = ({
       </Space>
       <Space>
         <Button
-          icon={<IconDeleteStroked />}
+          icon={<Trash2 size={16} strokeWidth={2} />}
           theme="light"
           type="danger"
           size="small"

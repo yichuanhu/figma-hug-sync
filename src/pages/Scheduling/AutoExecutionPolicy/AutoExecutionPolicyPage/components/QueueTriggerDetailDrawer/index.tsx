@@ -15,11 +15,7 @@ import {
   Table,
   Switch,
 } from '@douyinfe/semi-ui';
-import {
-  IconEditStroked,
-  IconDeleteStroked,
-} from '@douyinfe/semi-icons';
-import { Inbox } from 'lucide-react';
+import { Inbox, Pencil, Trash2 } from 'lucide-react';
 import type { LYQueueTriggerResponse, LYQueueTriggerExecutionLogResponse } from '@/api';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import ExpandableText from '@/components/ExpandableText';
@@ -147,7 +143,7 @@ const QueueTriggerDetailDrawer = ({
     <>
       <Tooltip content={t('common.edit')}>
         <Button
-          icon={<IconEditStroked />}
+          icon={<Pencil size={16} strokeWidth={2} />}
           theme="borderless"
           size="small"
           onClick={() => onEdit(trigger)}
@@ -155,7 +151,7 @@ const QueueTriggerDetailDrawer = ({
       </Tooltip>
       <Tooltip content={t('common.delete')}>
         <Button
-          icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />}
+          icon={<Trash2 size={16} strokeWidth={2} />}
           theme="borderless"
           size="small"
           onClick={() => onDelete(trigger)}

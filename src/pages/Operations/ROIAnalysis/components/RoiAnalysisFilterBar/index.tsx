@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 import { Select, Button } from '@douyinfe/semi-ui';
-import { IconRefresh } from '@douyinfe/semi-icons';
 import { useTranslation } from 'react-i18next';
 import { mockDepartments, mockProjects } from '@/pages/Operations/mockData';
 import type { RoiAnalysisFilter } from '@/pages/Operations/types';
 import './index.less';
+import { RefreshCw } from 'lucide-react';
 
 interface Props {
   filter: RoiAnalysisFilter;
@@ -63,7 +63,7 @@ const RoiAnalysisFilterBar = ({ filter, onFilterChange, onRefresh }: Props) => {
             onChange={(val) => onFilterChange({ ...filter, timeDimension: val as string })} style={{ width: 120 }} />
         </div>
       </div>
-      <Button icon={<IconRefresh />} size="small" onClick={onRefresh}>
+      <Button icon={<RefreshCw size={16} strokeWidth={2} />} size="small" onClick={onRefresh}>
         {t('common.refresh')}
       </Button>
     </div>

@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Typography, Tabs, Button } from '@douyinfe/semi-ui';
-import { IconCalendarStroked } from '@douyinfe/semi-icons';
 import TimeTriggerList from './components/TimeTriggerList';
 import QueueTriggerList from './components/QueueTriggerList';
 import './index.less';
+import { Calendar } from 'lucide-react';
 
 const { Title } = Typography;
 const TabPane = Tabs.TabPane;
@@ -29,7 +29,7 @@ const AutoExecutionPolicyPage = () => {
           </Title>
         </div>
         <Button
-          icon={<IconCalendarStroked />}
+          icon={<Calendar size={16} strokeWidth={2} />}
           onClick={handleWorkCalendarClick}
         >
           {t('workCalendar.entryButton')}
