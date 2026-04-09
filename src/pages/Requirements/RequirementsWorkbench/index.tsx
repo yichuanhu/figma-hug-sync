@@ -14,6 +14,7 @@ import {
   Toast,
   Space,
 } from '@douyinfe/semi-ui';
+import { IconSearchStroked } from '@douyinfe/semi-icons';
 import { Ellipsis, Eye, Pencil, Plus, Send, Trash2, Upload } from 'lucide-react';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import EmptyState from '@/components/EmptyState';

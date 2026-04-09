@@ -10,6 +10,7 @@ import {
   Modal,
   Popover,
 } from '@douyinfe/semi-ui';
+import { IconSearchStroked } from '@douyinfe/semi-icons';
 import { MinusCircle, Network, User, UserPlus } from 'lucide-react';
 import type {
   AssetCollaborator,

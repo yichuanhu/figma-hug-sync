@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Typography, Input } from '@douyinfe/semi-ui';
+import { IconSearchStroked } from '@douyinfe/semi-icons';
 import SkillCard, { SkillItem } from '../components/SkillCard';
 import SkillDetailDrawer from '../components/SkillDetailDrawer';
 import FilterPopover, { FilterSection } from '@/components/FilterPopover';

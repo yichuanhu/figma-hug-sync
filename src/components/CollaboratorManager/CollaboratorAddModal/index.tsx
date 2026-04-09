@@ -9,6 +9,7 @@ import {
   Toast,
   Breadcrumb,
 } from '@douyinfe/semi-ui';
+import { IconSearchStroked } from '@douyinfe/semi-icons';
 import { Building2, ChevronRight, Network, User, X } from 'lucide-react';
 import type {
   AssetCollaborator,

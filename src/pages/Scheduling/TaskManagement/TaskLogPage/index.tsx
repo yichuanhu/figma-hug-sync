@@ -14,6 +14,7 @@ import {
   Col,
   Space,
 } from '@douyinfe/semi-ui';
+import { IconSearchStroked } from '@douyinfe/semi-icons';
 import { ChevronDown, ChevronUp, Download, RefreshCw } from 'lucide-react';
 import { debounce } from 'lodash';
 // AppLayout removed

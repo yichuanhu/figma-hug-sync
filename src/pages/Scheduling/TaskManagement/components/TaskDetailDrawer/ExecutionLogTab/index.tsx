@@ -12,6 +12,7 @@ import {
   Col,
   Space,
 } from '@douyinfe/semi-ui';
+import { IconSearchStroked } from '@douyinfe/semi-icons';
 import { Download, RefreshCw } from 'lucide-react';
 import { debounce } from 'lodash';
 import FilterPopover from '@/components/FilterPopover';

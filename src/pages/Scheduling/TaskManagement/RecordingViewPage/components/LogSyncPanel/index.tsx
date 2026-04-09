@@ -8,6 +8,7 @@ import {
   Empty,
   Spin,
 } from '@douyinfe/semi-ui';
+import { IconSearchStroked } from '@douyinfe/semi-icons';
 import { RefreshCw } from 'lucide-react';
 import { debounce } from 'lodash';
 import type { LYExecutionLogResponse, LogLevel } from '@/api';

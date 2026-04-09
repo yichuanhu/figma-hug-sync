@@ -10,6 +10,7 @@ import {
   Tag,
   Typography,
 } from '@douyinfe/semi-ui';
+import { IconSearchStroked } from '@douyinfe/semi-icons';
 import type { ResourceType } from '@/api';
 import type { ResourceConfig } from '../../index';
 

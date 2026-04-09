@@ -15,6 +15,7 @@ import {
   Dropdown,
   Toast,
 } from '@douyinfe/semi-ui';
+import { IconSearchStroked } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
 import type { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
 // AppLayout removed

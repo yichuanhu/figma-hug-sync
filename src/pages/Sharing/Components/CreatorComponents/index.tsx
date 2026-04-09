@@ -1,6 +1,7 @@
 import { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Typography, Tabs, Input } from '@douyinfe/semi-ui';
+import { IconSearchStroked } from '@douyinfe/semi-icons';
 import ComponentCard from '../components/ComponentCard';
 import ComponentDetailDrawer from '../components/ComponentDetailDrawer';
 import FilterPopover, { FilterSection } from '@/components/FilterPopover';

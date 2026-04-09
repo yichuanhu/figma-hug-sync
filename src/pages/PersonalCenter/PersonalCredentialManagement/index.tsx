@@ -13,6 +13,7 @@ import {
   Tag,
   Typography,
 } from '@douyinfe/semi-ui';
+import { IconSearchStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import { Ellipsis, Eye, History, Link, Pencil, Plus, Trash2 } from 'lucide-react';
