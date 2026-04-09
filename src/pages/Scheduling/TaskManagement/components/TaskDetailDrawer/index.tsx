@@ -128,7 +128,7 @@ const TaskDetailDrawer = ({
     <>
       {canCancel && (
         <Tooltip content={t('task.actions.cancel')}>
-          <Button icon={<IconCrossCircleStroked />} theme="borderless" size="small" onClick={() => onCancel(task)} />
+          <Button icon={<IconCrossCircleStroked />} theme="borderless" type="tertiary" size="small" onClick={() => onCancel(task)} />
         </Tooltip>
       )}
       {canStop && (
