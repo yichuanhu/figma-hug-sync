@@ -393,7 +393,7 @@ const TaskManagementPage = () => {
     setSelectedTask(record);
     setDetailDrawerVisible(true);
   };
-
+  const { openCollaborator, renderCollaboratorPanel } = useCollaboratorAction();
 
   // Canceltask
   const handleCancelTask = (task: LYTaskResponse) => {
