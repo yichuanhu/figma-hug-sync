@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Typography, Button, Tag, Descriptions, Switch, Tooltip, Space, Tabs, TabPane } from '@douyinfe/semi-ui';
+import { Typography, Button, Tag, Descriptions, Switch, Tooltip, Space } from '@douyinfe/semi-ui';
 import type { LYWorkerResponse } from '@/api';
 import ExpandableText from '@/components/ExpandableText';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
-import CollaboratorTab from '@/components/CollaboratorManager/CollaboratorTab';
-import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import './index.less';
 import { Key, MinusCircle, Pencil, Trash2, Users } from 'lucide-react';
 
@@ -27,17 +25,11 @@ interface WorkerDetailDrawerProps {
   pagination?: PaginationInfo;
   onPageChange?: (page: number, direction: 'prev' | 'next') => void;
   onScrollToRow?: (id: string) => void;
-  initialTab?: string;
+  
 }
 
-const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, onDelete, onToggleReceiveTasks, onAddToGroup, onRemoveFromGroup, dataList = [], onNavigate, pagination, onPageChange, onScrollToRow, initialTab = 'basic' }: WorkerDetailDrawerProps) => {
+const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, onDelete, onToggleReceiveTasks, onAddToGroup, onRemoveFromGroup, dataList = [], onNavigate, pagination, onPageChange, onScrollToRow }: WorkerDetailDrawerProps) => {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState(initialTab);
-  const { canManage } = useCollaboratorPermission('WORKER', workerData?.id);
-
-  useEffect(() => {
-    if (workerData) setActiveTab(initialTab);
-  }, [workerData?.id, initialTab]);
 
   if (!workerData) return null;
 
@@ -122,7 +114,6 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
   );
 
   const handleClose = () => {
-    setActiveTab('basic');
     onClose();
   };
 
@@ -144,38 +135,26 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
       storageKey="workerDetailDrawerWidth"
       className="worker-detail-drawer"
     >
-      <Tabs activeKey={activeTab} onChange={setActiveTab} className="worker-detail-drawer-tabs" keepDOM={false}>
-        <TabPane tab={t('worker.detail.basicInfo')} itemKey="basic">
-          <div className="worker-detail-drawer-tab-content">
-            <div className="worker-detail-drawer-info-section">
-              <Text strong className="worker-detail-drawer-info-title">{t('worker.detail.basicInfo')}</Text>
-              <Descriptions data={basicInfoData} align="left" />
-            </div>
-            <div className="worker-detail-drawer-info-section">
-              <Text strong className="worker-detail-drawer-info-title">{t('worker.detail.detailInfo')}</Text>
-              <Descriptions data={detailInfoData} align="left" />
-            </div>
-            <div className="worker-detail-drawer-info-section">
-              <Text strong className="worker-detail-drawer-info-title">{t('worker.detail.hostInfo')}</Text>
-              <Descriptions data={hostInfoData} align="left" />
-            </div>
-            <div>
-              <Descriptions align="left" data={[
-                { key: t('worker.detail.fields.createdAt'), value: workerData.created_at },
-                { key: t('worker.detail.fields.creator'), value: workerData.creator_id },
-              ]} />
-            </div>
-          </div>
-        </TabPane>
-        <TabPane tab={t('collaborator.tabTitle')} itemKey="collaborators">
-          <CollaboratorTab
-            assetType="WORKER"
-            assetId={workerData.id}
-            context="scheduling"
-            canManage={canManage}
-          />
-        </TabPane>
-      </Tabs>
+      <div className="worker-detail-drawer-tab-content">
+        <div className="worker-detail-drawer-info-section">
+          <Text strong className="worker-detail-drawer-info-title">{t('worker.detail.basicInfo')}</Text>
+          <Descriptions data={basicInfoData} align="left" />
+        </div>
+        <div className="worker-detail-drawer-info-section">
+          <Text strong className="worker-detail-drawer-info-title">{t('worker.detail.detailInfo')}</Text>
+          <Descriptions data={detailInfoData} align="left" />
+        </div>
+        <div className="worker-detail-drawer-info-section">
+          <Text strong className="worker-detail-drawer-info-title">{t('worker.detail.hostInfo')}</Text>
+          <Descriptions data={hostInfoData} align="left" />
+        </div>
+        <div>
+          <Descriptions align="left" data={[
+            { key: t('worker.detail.fields.createdAt'), value: workerData.created_at },
+            { key: t('worker.detail.fields.creator'), value: workerData.creator_id },
+          ]} />
+        </div>
+      </div>
     </DetailDrawerWrapper>
   );
 };

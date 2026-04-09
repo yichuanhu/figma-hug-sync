@@ -19,8 +19,6 @@ import { Inbox, Pencil, Trash2 } from 'lucide-react';
 import type { LYQueueTriggerResponse, LYQueueTriggerExecutionLogResponse } from '@/api';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import ExpandableText from '@/components/ExpandableText';
-import CollaboratorTab from '@/components/CollaboratorManager/CollaboratorTab';
-import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import './index.less';
 
 const { Text } = Typography;
@@ -69,7 +67,7 @@ const QueueTriggerDetailDrawer = ({
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState(initialTab);
   const [executionLogs, setExecutionLogs] = useState<LYQueueTriggerExecutionLogResponse[]>([]);
-  const { canManage } = useCollaboratorPermission('TRIGGER', trigger?.trigger_id);
+  
 
   // LoadingExecuteRecord
   useEffect(() => {
@@ -341,14 +339,6 @@ const QueueTriggerDetailDrawer = ({
               empty={t('queueTrigger.executionLog.noLogs')}
             />
           </div>
-        </TabPane>
-        <TabPane tab={t('collaborator.tabTitle')} itemKey="collaborators">
-          <CollaboratorTab
-            assetType="TRIGGER"
-            assetId={trigger.trigger_id}
-            context="scheduling"
-            canManage={canManage}
-          />
         </TabPane>
       </Tabs>
     </DetailDrawerWrapper>
