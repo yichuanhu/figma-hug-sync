@@ -649,8 +649,11 @@ const CollaboratorPanel = ({
       <div className="collaborator-panel-source-detail">
         {isMixed && record.role && (
           <div className="collaborator-panel-source-detail-item">
-            <Text size="small" type="tertiary">
-              {t('collaborator.source.direct')} → {t(`collaborator.roles.${record.role}`)}
+            <Text size="small" type="tertiary" ellipsis={{ showTooltip: true }} className="source-name">
+              {t('collaborator.source.direct')}
+            </Text>
+            <Text size="small" type="tertiary" className="source-role">
+              → {t(`collaborator.roles.${record.role}`)}
             </Text>
           </div>
         )}
@@ -660,8 +663,11 @@ const CollaboratorPanel = ({
             : t('collaborator.source.inheritedFromProcess', { name: src.asset_name });
           return (
             <div key={idx} className="collaborator-panel-source-detail-item">
-              <Text size="small" type="tertiary" ellipsis={{ showTooltip: true }}>
-                {sourceName} → {t(`collaborator.roles.${src.role}`)}
+              <Text size="small" type="tertiary" ellipsis={{ showTooltip: true }} className="source-name">
+                {sourceName}
+              </Text>
+              <Text size="small" type="tertiary" className="source-role">
+                → {t(`collaborator.roles.${src.role}`)}
               </Text>
             </div>
           );
