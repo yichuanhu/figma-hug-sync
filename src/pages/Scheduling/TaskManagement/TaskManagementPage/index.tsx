@@ -620,8 +620,6 @@ const TaskManagementPage = () => {
         
         // 所有任务都有协作者操作，所以总是显示菜单
         return (
-
-        return (
           <Dropdown
             trigger="click"
             position="bottomRight"
