@@ -285,6 +285,7 @@ function DetailDrawerWrapper<T>({
                       <Button
                         icon={<IconChevronRight />}
                         theme="borderless"
+                        type="tertiary"
                         size="small"
                         disabled={!canGoNext}
                         onClick={() => handleNavigate('next')}
