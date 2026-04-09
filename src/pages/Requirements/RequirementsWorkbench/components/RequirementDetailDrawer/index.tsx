@@ -295,7 +295,7 @@ const RequirementDetailDrawer = ({
                 icon={<IconSendStroked />}
                 theme="borderless"
                 size="small"
-                type="primary"
+                type="tertiary"
                 onClick={() => {
                   Modal.confirm({
                     title: t('requirements.detail.submitConfirmTitle'),
