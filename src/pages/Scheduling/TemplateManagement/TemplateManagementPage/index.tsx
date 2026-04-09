@@ -31,8 +31,7 @@ import type {
 import CreateTemplateModal from './components/CreateTemplateModal';
 import EditTemplateModal from './components/EditTemplateModal';
 import TemplateDetailDrawer from './components/TemplateDetailDrawer';
-import CollaboratorPanel from '@/components/CollaboratorManager/CollaboratorPanel';
-import type { CollaboratorAssetType } from '@/api';
+import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -132,8 +131,7 @@ const TemplateManagementPage = () => {
   const [selectedTemplate, setSelectedTemplate] = useState<LYExecutionTemplateResponse | null>(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [detailInitialTab, setDetailInitialTab] = useState('basicInfo');
-  const [addCollaboratorModalVisible, setAddCollaboratorModalVisible] = useState(false);
-  const [addCollaboratorAssetId, setAddCollaboratorAssetId] = useState('');
+  const { openCollaborator, renderCollaboratorPanel } = useCollaboratorAction();
 
   // ModalStatus
   const [createModalVisible, setCreateModalVisible] = useState(false);

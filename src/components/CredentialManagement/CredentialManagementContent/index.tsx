@@ -32,8 +32,7 @@ import CreateCredentialModal from './components/CreateCredentialModal';
 import EditCredentialModal from './components/EditCredentialModal';
 import CredentialDetailDrawer from './components/CredentialDetailDrawer';
 import LinkPersonalCredentialModal from './components/LinkPersonalCredentialModal';
-import CollaboratorPanel from '@/components/CollaboratorManager/CollaboratorPanel';
-import type { CollaboratorAssetType } from '@/api/index';
+import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
 
 import './index.less';
 
@@ -179,8 +178,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
   const [linkPersonalModalVisible, setLinkPersonalModalVisible] = useState(false);
   const [linkingCredential, setLinkingCredential] = useState<LYCredentialResponse | null>(null);
   const [initialDetailTab, setInitialDetailTab] = useState<'basic' | 'usage'>('basic');
-  const [addCollaboratorModalVisible, setAddCollaboratorModalVisible] = useState(false);
-  const [addCollaboratorAssetId, setAddCollaboratorAssetId] = useState('');
+  const { openCollaborator, renderCollaboratorPanel } = useCollaboratorAction();
 
   // 加载数据
   const loadData = useCallback(async () => {
@@ -448,7 +446,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
                 <Dropdown.Item icon={<History size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleViewUsage(record); }}>
                   {t('credential.actions.viewUsage')}
                 </Dropdown.Item>
-                <Dropdown.Item icon={<UserPlus size={14} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); setAddCollaboratorAssetId(record.credential_id); setAddCollaboratorModalVisible(true); }}>
+                <Dropdown.Item icon={<UserPlus size={14} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); openCollaborator(record.credential_id); }}>
                   {t('collaborator.actions.addCollaborator')}
                 </Dropdown.Item>
                 {canDelete && (
@@ -653,14 +651,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
         }}
       />
 
-      <CollaboratorPanel
-        visible={addCollaboratorModalVisible}
-        onVisibleChange={setAddCollaboratorModalVisible}
-        assetType={'CREDENTIAL' as CollaboratorAssetType}
-        assetId={addCollaboratorAssetId}
-        context="development"
-        canManage={true}
-      />
+      {renderCollaboratorPanel('CREDENTIAL', context)}
     </div>
   );
 };

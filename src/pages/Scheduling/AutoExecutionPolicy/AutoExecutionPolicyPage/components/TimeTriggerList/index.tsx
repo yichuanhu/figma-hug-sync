@@ -31,8 +31,7 @@ import type {
 import CreateTimeTriggerModal from '../CreateTimeTriggerModal';
 import EditTimeTriggerModal from '../EditTimeTriggerModal';
 import TimeTriggerDetailDrawer from '../TimeTriggerDetailDrawer';
-import CollaboratorPanel from '@/components/CollaboratorManager/CollaboratorPanel';
-import type { CollaboratorAssetType } from '@/api';
+import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
 import './index.less';
 
 // ============= 工具函数 =============
@@ -149,8 +148,7 @@ const TimeTriggerList = () => {
   const [selectedTrigger, setSelectedTrigger] = useState<LYTimeTriggerResponse | null>(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [detailInitialTab, setDetailInitialTab] = useState('basic');
-  const [addCollaboratorModalVisible, setAddCollaboratorModalVisible] = useState(false);
-  const [addCollaboratorAssetId, setAddCollaboratorAssetId] = useState('');
+  const { openCollaborator, renderCollaboratorPanel } = useCollaboratorAction();
 
   // ModalStatus
   const [createModalVisible, setCreateModalVisible] = useState(false);
@@ -615,14 +613,7 @@ const TimeTriggerList = () => {
         initialTab={detailInitialTab}
       />
 
-      <CollaboratorPanel
-        visible={addCollaboratorModalVisible}
-        onVisibleChange={setAddCollaboratorModalVisible}
-        assetType={'TRIGGER' as CollaboratorAssetType}
-        assetId={addCollaboratorAssetId}
-        context="scheduling"
-        canManage={true}
-      />
+      {renderCollaboratorPanel('TRIGGER', 'scheduling')}
     </div>
   );
 };
