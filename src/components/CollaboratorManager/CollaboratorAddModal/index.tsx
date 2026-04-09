@@ -9,7 +9,8 @@ import {
   Toast,
   Breadcrumb,
 } from '@douyinfe/semi-ui';
-import { Building2, ChevronRight, Network, Search, User, X } from 'lucide-react';
+import { IconSearchStroked } from '@douyinfe/semi-icons';
+import { Building2, ChevronRight, Network, User, X } from 'lucide-react';
 import type {
   AssetCollaborator,
   CollaboratorAssetType,
@@ -580,7 +581,7 @@ const CollaboratorAddModal = ({
         <div className="collaborator-add-modal-left">
           <div className="collaborator-add-modal-left-search">
             <Input
-              prefix={<Search size={16} strokeWidth={2} />}
+              prefix={<IconSearchStroked />}
               placeholder={t('collaborator.addModal.searchPlaceholder')}
               value={searchValue}
               onChange={setSearchValue}

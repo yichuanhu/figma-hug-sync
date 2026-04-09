@@ -10,7 +10,8 @@ import {
   Modal,
   Popover,
 } from '@douyinfe/semi-ui';
-import { MinusCircle, Network, Search, User, UserPlus } from 'lucide-react';
+import { IconSearchStroked } from '@douyinfe/semi-icons';
+import { MinusCircle, Network, User, UserPlus } from 'lucide-react';
 import type {
   AssetCollaborator,
   CollaboratorAssetType,
@@ -376,7 +377,7 @@ const CollaboratorTab = ({
     <div className="collaborator-tab">
       <div className="collaborator-tab-toolbar">
         <Input
-          prefix={<Search size={16} strokeWidth={2} />}
+          prefix={<IconSearchStroked />}
           placeholder={t('collaborator.searchPlaceholder')}
           value={searchValue}
           onChange={setSearchValue}

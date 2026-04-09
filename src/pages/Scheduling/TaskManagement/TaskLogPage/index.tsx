@@ -14,7 +14,8 @@ import {
   Col,
   Space,
 } from '@douyinfe/semi-ui';
-import { ChevronDown, ChevronUp, Download, RefreshCw, Search } from 'lucide-react';
+import { IconSearchStroked } from '@douyinfe/semi-icons';
+import { ChevronDown, ChevronUp, Download, RefreshCw } from 'lucide-react';
 import { debounce } from 'lodash';
 // AppLayout removed
 import FilterPopover from '@/components/FilterPopover';
@@ -375,7 +376,7 @@ const TaskLogPage = () => {
             <Col>
               <Space>
                 <Input
-                  prefix={<Search size={16} strokeWidth={2} />}
+                  prefix={<IconSearchStroked />}
                   placeholder={t('taskLog.searchPlaceholder')}
                   onChange={handleSearch}
                   showClear

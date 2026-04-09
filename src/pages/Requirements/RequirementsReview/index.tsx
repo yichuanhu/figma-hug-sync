@@ -13,6 +13,7 @@ import {
   Dropdown,
   TextArea,
 } from '@douyinfe/semi-ui';
+import { IconSearchStroked } from '@douyinfe/semi-icons';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
@@ -28,7 +29,7 @@ import {
 } from '../RequirementsWorkbench/mockData';
 import RequirementDetailDrawer from '../RequirementsWorkbench/components/RequirementDetailDrawer';
 import './index.less';
-import { CheckCircle, Ellipsis, Eye, Search, XCircle } from 'lucide-react';
+import { CheckCircle, Ellipsis, Eye, XCircle } from 'lucide-react';
 
 const { Title, Text } = Typography;
 
@@ -471,7 +472,7 @@ const RequirementsReview = () => {
           >
             <div className="requirements-review-toolbar">
               <Input
-                prefix={<Search size={16} strokeWidth={2} />}
+                prefix={<IconSearchStroked />}
                 placeholder={t('requirements.review.searchPlaceholder')}
                 className="requirements-review-search"
                 value={searchValue}
@@ -508,7 +509,7 @@ const RequirementsReview = () => {
           <TabPane tab={t('requirements.review.reviewedByMe')} itemKey="reviewed">
             <div className="requirements-review-toolbar">
               <Input
-                prefix={<Search size={16} strokeWidth={2} />}
+                prefix={<IconSearchStroked />}
                 placeholder={t('requirements.review.searchPlaceholder')}
                 className="requirements-review-search"
                 value={searchValue}
@@ -544,7 +545,7 @@ const RequirementsReview = () => {
           <TabPane tab={t('requirements.review.allReviews')} itemKey="all">
             <div className="requirements-review-toolbar">
               <Input
-                prefix={<Search size={16} strokeWidth={2} />}
+                prefix={<IconSearchStroked />}
                 placeholder={t('requirements.review.searchPlaceholder')}
                 className="requirements-review-search"
                 value={searchValue}

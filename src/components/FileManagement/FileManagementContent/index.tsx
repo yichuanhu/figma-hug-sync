@@ -16,10 +16,11 @@ import {
   Tooltip,
   Breadcrumb,
 } from '@douyinfe/semi-ui';
+import { IconSearchStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
-import { Download, Ellipsis, RefreshCw, Search, Trash2, Upload, UserPlus } from 'lucide-react';
+import { Download, Ellipsis, RefreshCw, Trash2, Upload, UserPlus } from 'lucide-react';
 import { debounce } from 'lodash';
 import type {
   LYFileResponse,
@@ -519,7 +520,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
           <Col>
             <Space>
               <Input
-                prefix={<Search size={16} strokeWidth={2} />}
+                prefix={<IconSearchStroked />}
                 placeholder={t('file.searchPlaceholder')}
                 className="file-management-content-search-input"
                 value={searchValue}

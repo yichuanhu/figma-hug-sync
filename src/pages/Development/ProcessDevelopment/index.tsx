@@ -17,10 +17,11 @@ import {
   Toast,
   Space,
 } from '@douyinfe/semi-ui';
+import { IconSearchStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
-import { Ellipsis, ExternalLink, Pencil, PlayCircle, Plus, Search, Trash2, UserPlus } from 'lucide-react';
+import { Ellipsis, ExternalLink, Pencil, PlayCircle, Plus, Trash2, UserPlus } from 'lucide-react';
 // AppLayout removed - now handled at route level
 import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
@@ -518,7 +519,7 @@ const ProcessDevelopment = () => {
           <Col>
             <Space>
               <Input
-                prefix={<Search size={16} strokeWidth={2} />}
+                prefix={<IconSearchStroked />}
                 placeholder={t('development.processDevelopment.searchPlaceholder')}
                 className="process-development-search-input"
                 value={searchValue}

@@ -16,13 +16,14 @@ import {
   Toast,
   Space,
 } from '@douyinfe/semi-ui';
+import { IconSearchStroked } from '@douyinfe/semi-icons';
 // AppLayout removed
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
 import CreateTaskModal from '../components/CreateTaskModal';
 import TaskDetailDrawer from '../components/TaskDetailDrawer';
-import { Bot, ClipboardClock, Component, Ellipsis, MinusCircle, Monitor, PlayCircle, Plus, RefreshCw, Search, Trash2, XCircle } from 'lucide-react';
+import { Bot, ClipboardClock, Component, Ellipsis, MinusCircle, Monitor, PlayCircle, Plus, RefreshCw, Trash2, XCircle } from 'lucide-react';
 import type { 
   LYTaskResponse, 
   GetTasksParams, 
@@ -694,7 +695,7 @@ const TaskManagementPage = () => {
             <Col>
               <Space>
                 <Input
-                  prefix={<Search size={16} strokeWidth={2} />}
+                  prefix={<IconSearchStroked />}
                   placeholder={t('task.searchPlaceholder')}
                   style={{ width: 320 }}
                   value={searchValue}

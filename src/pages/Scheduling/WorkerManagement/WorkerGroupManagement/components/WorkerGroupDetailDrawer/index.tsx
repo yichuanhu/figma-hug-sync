@@ -18,6 +18,7 @@ import {
   Tabs,
   TabPane,
 } from '@douyinfe/semi-ui';
+import { IconSearchStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import DetailSkeleton from '@/components/DetailSkeleton';
 import TableSkeleton from '@/components/TableSkeleton';
@@ -36,7 +37,7 @@ import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import CollaboratorTab from '@/components/CollaboratorManager/CollaboratorTab';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import './index.less';
-import { Ellipsis, Eye, MinusCircle, Pencil, Plus, Search, Trash2 } from 'lucide-react';
+import { Ellipsis, Eye, MinusCircle, Pencil, Plus, Trash2 } from 'lucide-react';
 
 const { Text } = Typography;
 
@@ -252,7 +253,7 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
               <Row type="flex" justify="space-between" align="middle" className="worker-group-detail-drawer-members-toolbar">
                 <Col>
                   <Space>
-                    <Input prefix={<Search size={16} strokeWidth={2} />} placeholder={t('workerGroup.detail.searchMemberPlaceholder')} className="worker-group-detail-drawer-members-search" onChange={handleSearch} showClear />
+                    <Input prefix={<IconSearchStroked />} placeholder={t('workerGroup.detail.searchMemberPlaceholder')} className="worker-group-detail-drawer-members-search" onChange={handleSearch} showClear />
                     <Select placeholder={t('workerGroup.addMembers.statusFilter')} multiple maxTagCount={1} value={statusFilter} onChange={handleStatusFilterChange} style={{ width: 160 }} showClear>
                       {statusOptions.map(option => <Select.Option key={option.value} value={option.value}>{option.label}</Select.Option>)}
                     </Select>

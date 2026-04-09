@@ -15,6 +15,7 @@ import {
   Dropdown,
   Toast,
 } from '@douyinfe/semi-ui';
+import { IconSearchStroked } from '@douyinfe/semi-icons';
 import { debounce } from 'lodash';
 import type { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
 // AppLayout removed
@@ -31,7 +32,7 @@ import type {
 } from '@/api';
 
 import './index.less';
-import { Ellipsis, Filter, Plus, Search } from 'lucide-react';
+import { Ellipsis, Filter, Plus } from 'lucide-react';
 
 const { Title, Text } = Typography;
 
@@ -435,7 +436,7 @@ const ReleaseListPage: React.FC = () => {
             <Col>
               <Space>
                 <Input
-                  prefix={<Search size={16} strokeWidth={2} />}
+                  prefix={<IconSearchStroked />}
                   placeholder={t('release.list.searchPlaceholder')}
                   onChange={handleSearch}
                   showClear

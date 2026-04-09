@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Modal, Input, Table, Typography, Checkbox, Toast, Select, Tag, Space } from '@douyinfe/semi-ui';
+import { IconSearchStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import { useTranslation } from 'react-i18next';
 import { debounce } from 'lodash';
@@ -9,7 +10,7 @@ import type {
   GetAvailableWorkersForGroupParams,
 } from '@/api';
 import './index.less';
-import { Search, X } from 'lucide-react';
+import { X } from 'lucide-react';
 
 // StatusType定义
 type WorkerStatus = 'OFFLINE' | 'IDLE' | 'BUSY' | 'FAULT' | 'MAINTENANCE';
@@ -330,7 +331,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
           <div className="add-members-modal-left-filter">
             <Space>
               <Input 
-                prefix={<Search size={16} strokeWidth={2} />}
+                prefix={<IconSearchStroked />}
                 placeholder={t('workerGroup.addMembers.searchPlaceholder')}
                 onChange={handleSearch}
                 showClear

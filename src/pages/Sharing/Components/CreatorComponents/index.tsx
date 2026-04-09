@@ -1,13 +1,13 @@
 import { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Typography, Tabs, Input } from '@douyinfe/semi-ui';
+import { IconSearchStroked } from '@douyinfe/semi-icons';
 import ComponentCard from '../components/ComponentCard';
 import ComponentDetailDrawer from '../components/ComponentDetailDrawer';
 import FilterPopover, { FilterSection } from '@/components/FilterPopover';
 import { commandsMockData, apiConnectorsMockData, customComponentsMockData } from './mockData';
 import { ComponentItem } from './types';
 import './index.less';
-import { Search } from 'lucide-react';
 
 const { Title } = Typography;
 const TabPane = Tabs.TabPane;
@@ -100,7 +100,7 @@ const CreatorComponents = () => {
     <div className="creator-components-tab-content">
       <div className="creator-components-toolbar">
         <Input
-          prefix={<Search size={16} strokeWidth={2} />}
+          prefix={<IconSearchStroked />}
           placeholder={t('common.search')}
           value={searchText}
           onChange={setSearchText}

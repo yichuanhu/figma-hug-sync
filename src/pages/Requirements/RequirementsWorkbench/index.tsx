@@ -14,7 +14,8 @@ import {
   Toast,
   Space,
 } from '@douyinfe/semi-ui';
-import { Ellipsis, Eye, Pencil, Plus, Search, Send, Trash2, Upload } from 'lucide-react';
+import { IconSearchStroked } from '@douyinfe/semi-icons';
+import { Ellipsis, Eye, Pencil, Plus, Send, Trash2, Upload } from 'lucide-react';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
@@ -361,7 +362,7 @@ const RequirementsWorkbench = () => {
           <Col>
             <Space>
               <Input
-                prefix={<Search size={16} strokeWidth={2} />}
+                prefix={<IconSearchStroked />}
                 placeholder={t('requirements.workbench.searchPlaceholder')}
                 className="requirements-workbench-search-input"
                 value={searchValue}

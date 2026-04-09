@@ -17,10 +17,11 @@ import {
   Select,
   Tooltip,
 } from '@douyinfe/semi-ui';
+import { IconSearchStroked } from '@douyinfe/semi-icons';
 // AppLayout removed
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
-import { ChevronLeft, Ellipsis, ExternalLink, Pencil, Plus, Search, Trash2, UserPlus } from 'lucide-react';
+import { ChevronLeft, Ellipsis, ExternalLink, Pencil, Plus, Trash2, UserPlus } from 'lucide-react';
 import type { 
   LYExecutionTemplateResponse,
   LYListResponseLYExecutionTemplateResponse,
@@ -445,7 +446,7 @@ const TemplateManagementPage = () => {
             <Col>
               <Space>
                 <Input
-                  prefix={<Search size={16} strokeWidth={2} />}
+                  prefix={<IconSearchStroked />}
                   placeholder={t('template.searchPlaceholder')}
                   onChange={handleSearch}
                   showClear

@@ -17,11 +17,12 @@ import {
   Toast,
   Space,
 } from '@douyinfe/semi-ui';
+import { IconSearchStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
-import { Ellipsis, ExternalLink, Pencil, PlayCircle, Plus, Search, Trash2, UserPlus } from 'lucide-react';
+import { Ellipsis, ExternalLink, Pencil, PlayCircle, Plus, Trash2, UserPlus } from 'lucide-react';
 import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
 import ProcessDetailDrawer from './components/ProcessDetailDrawer';
@@ -536,7 +537,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
           <Col>
             <Space>
               <Input
-                prefix={<Search size={16} strokeWidth={2} />}
+                prefix={<IconSearchStroked />}
                 placeholder={t('development.processDevelopment.searchPlaceholder')}
                 className="process-management-search-input"
                 value={searchValue}

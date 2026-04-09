@@ -11,10 +11,11 @@ import {
   Modal,
   Toast,
 } from '@douyinfe/semi-ui';
+import { IconSearchStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
-import { Ellipsis, Eye, Pencil, Plus, Search, Trash2, UserPlus } from 'lucide-react';
+import { Ellipsis, Eye, Pencil, Plus, Trash2, UserPlus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { debounce } from 'lodash';
 import WorkerGroupDetailDrawer from './components/WorkerGroupDetailDrawer';
@@ -405,7 +406,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
           <Col>
             <Space>
               <Input 
-                prefix={<Search size={16} strokeWidth={2} />}
+                prefix={<IconSearchStroked />}
                 placeholder={t('workerGroup.searchPlaceholder')}
                 className="worker-group-management-search-input"
                 onChange={handleSearch}
