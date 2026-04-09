@@ -427,7 +427,7 @@ const ProcessDetailDrawer = ({
       </Tooltip>
       {!isSchedulingContext && onDelete && (
         <Tooltip content={t('common.delete')}>
-          <Button icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />} theme="borderless" size="small" onClick={onDelete} />
+          <Button icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />} theme="borderless" type="tertiary" size="small" onClick={onDelete} />
         </Tooltip>
       )}
     </>

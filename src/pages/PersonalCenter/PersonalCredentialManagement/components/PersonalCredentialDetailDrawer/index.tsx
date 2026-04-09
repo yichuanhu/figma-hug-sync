@@ -232,7 +232,7 @@ const PersonalCredentialDetailDrawer = ({
         <Button icon={<Link size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={() => onLinkCredential(credential)} />
       </Tooltip>
       <Tooltip content={t('common.delete')}>
-        <Button icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />} theme="borderless" size="small" onClick={handleDelete} />
+        <Button icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />} theme="borderless" type="tertiary" size="small" onClick={handleDelete} />
       </Tooltip>
     </>
   );

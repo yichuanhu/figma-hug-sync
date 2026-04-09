@@ -326,8 +326,8 @@ const RequirementDetailDrawer = ({
               <Button
                 icon={<IconDeleteStroked />}
                 theme="borderless"
+                type="tertiary"
                 size="small"
-                type="danger"
                 onClick={() => onDelete(data)}
               />
             </Tooltip>

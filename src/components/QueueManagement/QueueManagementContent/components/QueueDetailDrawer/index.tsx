@@ -84,7 +84,7 @@ const QueueDetailDrawer = ({
       )}
       {onDelete && context === 'development' && !queue.is_published && (
         <Tooltip content={t('common.delete')}>
-          <Button icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />} theme="borderless" size="small" onClick={() => onDelete(queue)} />
+          <Button icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />} theme="borderless" type="tertiary" size="small" onClick={() => onDelete(queue)} />
         </Tooltip>
       )}
     </>

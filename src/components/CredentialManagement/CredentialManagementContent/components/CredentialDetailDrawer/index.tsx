@@ -269,7 +269,7 @@ const CredentialDetailDrawer = ({
       )}
       {context === 'development' && !credential.is_published && (
         <Tooltip content={t('common.delete')}>
-          <Button icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />} theme="borderless" size="small" onClick={handleDelete} />
+          <Button icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />} theme="borderless" type="tertiary" size="small" onClick={handleDelete} />
         </Tooltip>
       )}
     </>

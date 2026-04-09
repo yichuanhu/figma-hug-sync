@@ -138,7 +138,7 @@ const TaskDetailDrawer = ({
       )}
       {canRetry && (
         <Tooltip content={t('task.actions.retry')}>
-          <Button icon={<PlayCircle size={16} strokeWidth={2} />} theme="borderless" size="small" onClick={() => onRetry(task)} />
+          <Button icon={<PlayCircle size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={() => onRetry(task)} />
         </Tooltip>
       )}
     </>

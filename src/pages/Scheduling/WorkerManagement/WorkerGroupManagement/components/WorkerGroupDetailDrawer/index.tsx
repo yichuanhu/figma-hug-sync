@@ -223,7 +223,7 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
         <Button icon={<IconEditStroked />} theme="borderless" type="tertiary" size="small" onClick={onEdit} />
       </Tooltip>
       <Tooltip content={t('common.delete')}>
-        <Button icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />} theme="borderless" size="small" onClick={onDelete} />
+        <Button icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />} theme="borderless" type="tertiary" size="small" onClick={onDelete} />
       </Tooltip>
     </>
   );
