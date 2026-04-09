@@ -176,7 +176,8 @@ const CollaboratorPanel = ({
     setSearchValue('');
     setBatchRole(ASSET_AVAILABLE_ROLES[assetType]?.[ASSET_AVAILABLE_ROLES[assetType].length - 1] || 'OBSERVER');
     Toast.success(t('collaborator.quickAddSuccess'));
-  }, [assetType, assetId, selectedUsers, batchRole, t]);
+    onVisibleChange(false);
+  }, [assetType, assetId, selectedUsers, batchRole, t, onVisibleChange]);
 
   const handleSelectUser = useCallback((user: OrgUser) => {
     setSelectedUsers((prev) => [...prev, user]);
