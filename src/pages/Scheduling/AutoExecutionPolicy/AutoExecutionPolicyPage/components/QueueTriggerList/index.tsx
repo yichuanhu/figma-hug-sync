@@ -440,8 +440,7 @@ const QueueTriggerList = () => {
                 icon={<UserPlus size={14} strokeWidth={2} />}
                 onClick={(e) => {
                   e.stopPropagation();
-                  setAddCollaboratorAssetId(record.trigger_id);
-                  setAddCollaboratorModalVisible(true);
+                  openCollaborator(record.trigger_id);
                 }}
               >
                 {t('collaborator.actions.addCollaborator')}

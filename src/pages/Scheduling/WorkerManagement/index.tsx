@@ -850,8 +850,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
                 icon={<UserPlus size={14} strokeWidth={2} />}
                 onClick={(e) => {
                   e?.stopPropagation?.();
-                  setAddCollaboratorAssetId(record.id);
-                  setAddCollaboratorModalVisible(true);
+                  openCollaborator(record.id);
                 }}
               >
                 {t('collaborator.actions.addCollaborator')}

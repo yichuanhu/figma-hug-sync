@@ -382,8 +382,7 @@ const TemplateManagementPage = () => {
                 icon={<UserPlus size={14} strokeWidth={2} />}
                 onClick={(e) => {
                   e.stopPropagation();
-                  setAddCollaboratorAssetId(record.template_id);
-                  setAddCollaboratorModalVisible(true);
+                  openCollaborator(record.template_id);
                 }}
               >
                 {t('collaborator.actions.addCollaborator')}
