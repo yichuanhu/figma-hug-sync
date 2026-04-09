@@ -79,7 +79,7 @@ const QueueDetailDrawer = ({
       </Tooltip>
       {!queue.is_published && (
         <Tooltip content={t('common.edit')}>
-          <Button icon={<IconEditStroked />} theme="borderless" size="small" onClick={() => onEdit(queue)} />
+          <Button icon={<IconEditStroked />} theme="borderless" type="tertiary" size="small" onClick={() => onEdit(queue)} />
         </Tooltip>
       )}
       {onDelete && context === 'development' && !queue.is_published && (
