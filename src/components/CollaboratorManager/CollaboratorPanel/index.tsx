@@ -14,6 +14,7 @@ import {
   Checkbox,
   Breadcrumb,
 } from '@douyinfe/semi-ui';
+import { IconSearchStroked } from '@douyinfe/semi-icons';
 import { ChevronLeft, ChevronRight, MinusCircle, Network, Search, User, UserPlus, X } from 'lucide-react';
 import type {
   AssetCollaborator,
@@ -1077,7 +1078,7 @@ const CollaboratorPanel = ({
         <div className="collaborator-add-modal-left">
           <div className="collaborator-add-modal-left-search">
             <Input
-              prefix={<Search size={16} strokeWidth={2} />}
+              prefix={<IconSearchStroked />}
               placeholder={t('collaborator.addModal.searchPlaceholder')}
               value={orgSearchValue}
               onChange={setOrgSearchValue}
