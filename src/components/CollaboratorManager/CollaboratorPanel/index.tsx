@@ -1208,7 +1208,7 @@ const CollaboratorPanel = ({
       closable={false}
       title={modalTitle}
       width={panelView === 'org' ? 900 : 660}
-      className="collaborator-panel-modal"
+      className={`collaborator-panel-modal${panelView === 'org' ? ' collaborator-panel-modal--org' : ''}`}
     >
       <div className="collaborator-panel">
         {panelView === 'quick' && renderQuickView()}
