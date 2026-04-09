@@ -19,8 +19,6 @@ import { Collapsible } from '@douyinfe/semi-ui';
 import type { LYTimeTriggerResponse, LYTriggerExecutionLogResponse } from '@/api';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import ExpandableText from '@/components/ExpandableText';
-import CollaboratorTab from '@/components/CollaboratorManager/CollaboratorTab';
-import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import './index.less';
 import { ChevronDown, ChevronUp, Inbox, Pencil, Trash2 } from 'lucide-react';
 
@@ -69,7 +67,7 @@ const TimeTriggerDetailDrawer = ({
   const [activeTab, setActiveTab] = useState(initialTab);
   const [executionLogs, setExecutionLogs] = useState<LYTriggerExecutionLogResponse[]>([]);
   const [previewExpanded, setPreviewExpanded] = useState(true);
-  const { canManage } = useCollaboratorPermission('TRIGGER', trigger?.trigger_id);
+  
 
   // PreviewTriggerTime
   const previewTimes = useMemo(() => {
@@ -396,14 +394,6 @@ const TimeTriggerDetailDrawer = ({
               empty={t('timeTrigger.executionLog.noLogs')}
             />
           </div>
-        </TabPane>
-        <TabPane tab={t('collaborator.tabTitle')} itemKey="collaborators">
-          <CollaboratorTab
-            assetType="TRIGGER"
-            assetId={trigger.trigger_id}
-            context="scheduling"
-            canManage={canManage}
-          />
         </TabPane>
       </Tabs>
     </DetailDrawerWrapper>

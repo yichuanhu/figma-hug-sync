@@ -21,8 +21,6 @@ import EmptyState from '@/components/EmptyState';
 import ExpandableText from '@/components/ExpandableText';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
-import CollaboratorTab from '@/components/CollaboratorManager/CollaboratorTab';
-import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import './index.less';
 
 const { Text } = Typography;
@@ -71,7 +69,7 @@ const TemplateDetailDrawer = ({
 }: TemplateDetailDrawerProps) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState(initialTab);
-  const { canManage } = useCollaboratorPermission('TASK_TEMPLATE', template?.template_id);
+  
 
   useEffect(() => {
     if (!visible) setActiveTab(initialTab);
@@ -170,14 +168,6 @@ const TemplateDetailDrawer = ({
           <div className="template-detail-drawer-tab-content">
             <Table dataSource={mockUsageRecords} rowKey="id" size="small" pagination={false} columns={usageHistoryColumns} empty={<EmptyState variant="noData" description={t('template.detail.noUsageHistory')} />} />
           </div>
-        </TabPane>
-        <TabPane tab={t('collaborator.tabTitle')} itemKey="collaborators">
-          <CollaboratorTab
-            assetType="TASK_TEMPLATE"
-            assetId={template.template_id}
-            context="scheduling"
-            canManage={canManage}
-          />
         </TabPane>
       </Tabs>
     </DetailDrawerWrapper>
