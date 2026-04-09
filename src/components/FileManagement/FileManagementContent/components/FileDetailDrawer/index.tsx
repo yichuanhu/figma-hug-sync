@@ -193,7 +193,7 @@ const FileDetailDrawer = ({
             </Tooltip>
             {context === 'development' && canDeleteFile && (
               <Tooltip content={t('common.delete')}>
-                <Button icon={<Trash2 size={16} strokeWidth={2} className="file-detail-drawer-header-delete-icon" />} theme="borderless" size="small" onClick={handleDelete} />
+                <Button icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" className="file-detail-drawer-header-delete-icon" />} theme="borderless" size="small" onClick={handleDelete} />
               </Tooltip>
             )}
             <Button
