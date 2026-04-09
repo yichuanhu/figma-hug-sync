@@ -305,6 +305,7 @@ function DetailDrawerWrapper<T>({
                   <Button
                     icon={<Users size={14} strokeWidth={2} />}
                     theme="borderless"
+                    type="tertiary"
                     size="small"
                     onClick={() => setCollaboratorPanelVisible(true)}
                   />
