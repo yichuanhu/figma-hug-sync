@@ -1,28 +1,77 @@
 
 
-# 移除详情抽屉中残留的协作者 Tab
+# 修复依赖资源来源显示：名称固定宽度截断，角色始终可见
 
 ## 问题
 
-根据已确立的规范，协作者管理统一通过抽屉标题栏右侧的"分享"图标按钮触发 Modal 弹窗完成，详情抽屉内不再使用协作者 Tab。但以下 **6 个文件**仍保留了协作者 Tab：
+当前在 CollaboratorPanel 中，来源名称和角色被合并在单个 `<Text>` 元素内（L663-664），当名称过长被截断时，角色文字（如 `→ 使用者`）也被一起截断不可见。CollaboratorTab 中虽然分成两个元素，但 flex 7:3 比例在窄空间下角色仍可能被挤压。
 
-| 文件 | 资产类型 | 移除 Tab 后剩余 Tab 数 | 处理方式 |
-|------|---------|----------------------|---------|
-| `ProcessDetailDrawer/index.tsx` | 流程 | 3（基本信息、版本历史、流程参数） | 仅移除协作者 TabPane |
-| `WorkerDetailDrawer/index.tsx` | 机器人 | 1（基本信息） | 移除 Tabs 组件，直接平铺内容 |
-| `WorkerGroupDetailDrawer/index.tsx` | 机器人组 | 1（基本信息） | 移除 Tabs 组件，直接平铺内容 |
-| `TemplateDetailDrawer/index.tsx` | 执行模板 | 2（基本信息、使用历史） | 仅移除协作者 TabPane |
-| `TimeTriggerDetailDrawer/index.tsx` | 时间触发器 | 2（基本信息、触发记录） | 仅移除协作者 TabPane |
-| `QueueTriggerDetailDrawer/index.tsx` | 队列触发器 | 2（基本信息、触发记录） | 仅移除协作者 TabPane |
+## 方案
 
-## 改动
+将来源名称和角色拆分为两个独立元素，名称用固定宽度+ellipsis+tooltip，角色用 `flex-shrink: 0` 保证始终显示。
 
-每个文件：
-1. 删除 `CollaboratorTab` 和 `useCollaboratorPermission` 的 import
-2. 删除 `canManage` 相关代码
-3. 删除 `itemKey="collaborators"` 的 TabPane
-4. 对于 WorkerDetailDrawer 和 WorkerGroupDetailDrawer，移除 Tabs 包裹，直接渲染原"基本信息"Tab 的内容
-5. 清理 `initialTab` 中对 `'collaborators'` 的引用（如有）
+### 改动
 
-共 **6 个文件**，纯删除操作。
+**1. `CollaboratorPanel/index.tsx`（L662-665）**
+
+将合并的单个 `<Text>` 拆为两个：
+
+```tsx
+<div key={idx} className="collaborator-panel-source-detail-item">
+  <Text size="small" type="tertiary" ellipsis={{ showTooltip: true }} className="source-name">
+    {sourceName}
+  </Text>
+  <Text size="small" type="tertiary" className="source-role">
+    → {t(`collaborator.roles.${src.role}`)}
+  </Text>
+</div>
+```
+
+同样处理直接分配行（L651-654）。
+
+**2. `CollaboratorPanel/index.less`（source-detail-item 样式）**
+
+```less
+&-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  line-height: 18px;
+  min-width: 0;
+
+  .source-name {
+    flex: 1;
+    min-width: 0; // 允许 ellipsis 生效
+  }
+  .source-role {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+}
+```
+
+**3. `CollaboratorTab/index.tsx`（L224-232）**
+
+已是两个元素，保持不变，仅确认 CSS 中 `:last-child` 的 `flex-shrink: 0` 已生效。
+
+**4. `CollaboratorTab/index.less`（L79-99）**
+
+将 `flex: 7` / `flex: 3` 改为：
+```less
+&:first-child {
+  flex: 1;
+  min-width: 0;
+}
+&:last-child {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+```
+
+| 文件 | 改动 |
+|------|------|
+| `CollaboratorPanel/index.tsx` | 拆分来源名称与角色为独立元素 |
+| `CollaboratorPanel/index.less` | 添加 flex 布局，名称可截断，角色不缩 |
+| `CollaboratorTab/index.less` | flex 7:3 改为 flex:1 + shrink:0 |
 
