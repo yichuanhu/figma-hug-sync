@@ -1,5 +1,6 @@
 import { createRoot } from "react-dom/client";
 import { Toast } from '@douyinfe/semi-ui';
+import '@douyinfe/semi-ui/lib/es/_base/base.css';
 
 import App from "./App.tsx";
 import './i18n';
