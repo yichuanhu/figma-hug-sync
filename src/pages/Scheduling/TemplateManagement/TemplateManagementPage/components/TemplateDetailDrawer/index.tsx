@@ -121,7 +121,7 @@ const TemplateDetailDrawer = ({
         <Button icon={<Pencil size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={() => onEdit(template)} />
       </Tooltip>
       <Tooltip content={t('common.delete')}>
-        <Button icon={<Trash2 size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={() => onDelete(template)} />
+        <Button icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />} theme="borderless" type="tertiary" size="small" onClick={() => onDelete(template)} />
       </Tooltip>
     </>
   );

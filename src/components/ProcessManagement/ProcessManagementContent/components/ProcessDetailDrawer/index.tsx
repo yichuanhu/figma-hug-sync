@@ -313,7 +313,7 @@ const ProcessDetailDrawer = ({
     Modal.confirm({
       title: t('development.processDevelopment.detail.versionList.deleteConfirmTitle'),
       content: t('development.processDevelopment.detail.versionList.deleteConfirmContent', { version: version.version }),
-      icon: <Trash2 size={16} strokeWidth={2} />,
+      icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
       okType: 'danger',
       onOk: () => {
         setVersionData(prevData => prevData.filter(v => v.id !== version.id));
@@ -419,7 +419,7 @@ const ProcessDetailDrawer = ({
       </Tooltip>
       {!isSchedulingContext && onDelete && (
         <Tooltip content={t('common.delete')}>
-          <Button icon={<Trash2 size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={onDelete} />
+          <Button icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />} theme="borderless" type="tertiary" size="small" onClick={onDelete} />
         </Tooltip>
       )}
     </>
@@ -514,12 +514,12 @@ const ProcessDetailDrawer = ({
                       <Descriptions data={getVersionDescriptionData(selectedVersion)} align="left" />
                       {selectedVersion.is_active ? (
                         <Tooltip content={t('development.processDevelopment.detail.versionList.cannotDeletePublished')}>
-                          <Button icon={<Trash2 size={16} strokeWidth={2} />} type="tertiary" className="process-detail-drawer-version-detail-delete-btn" disabled onClick={() => handleDeleteVersion(selectedVersion)}>
+                          <Button icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />} type="tertiary" className="process-detail-drawer-version-detail-delete-btn" disabled onClick={() => handleDeleteVersion(selectedVersion)}>
                             {t('development.processDevelopment.detail.versionList.deleteVersion')}
                           </Button>
                         </Tooltip>
                       ) : (
-                        <Button icon={<Trash2 size={16} strokeWidth={2} />} type="tertiary" className="process-detail-drawer-version-detail-delete-btn" onClick={() => handleDeleteVersion(selectedVersion)}>
+                        <Button icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />} type="tertiary" className="process-detail-drawer-version-detail-delete-btn" onClick={() => handleDeleteVersion(selectedVersion)}>
                           {t('development.processDevelopment.detail.versionList.deleteVersion')}
                         </Button>
                       )}

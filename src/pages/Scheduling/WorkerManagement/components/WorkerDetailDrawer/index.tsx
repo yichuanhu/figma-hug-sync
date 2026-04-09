@@ -116,7 +116,7 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
         <Button icon={<Key size={16} strokeWidth={2} />} theme="borderless" size="small" onClick={onViewKey} />
       </Tooltip>
       <Tooltip content={t('common.delete')}>
-        <Button icon={<Trash2 size={16} strokeWidth={2} />} theme="borderless" size="small" onClick={onDelete} />
+        <Button icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />} theme="borderless" size="small" onClick={onDelete} />
       </Tooltip>
     </>
   );

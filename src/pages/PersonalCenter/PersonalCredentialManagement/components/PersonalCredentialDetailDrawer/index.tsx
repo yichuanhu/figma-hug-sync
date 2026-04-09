@@ -157,7 +157,7 @@ const PersonalCredentialDetailDrawer = ({
   const handleDelete = useCallback(() => {
     if (!credential) return;
     Modal.confirm({
-      title: t('personalCredential.deleteModal.title'), icon: <Trash2 size={16} strokeWidth={2} />,
+      title: t('personalCredential.deleteModal.title'), icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
       content: t('personalCredential.deleteModal.confirmMessage'), okText: t('common.confirm'), cancelText: t('common.cancel'), okButtonProps: { type: 'danger' },
       onOk: async () => { await new Promise((resolve) => setTimeout(resolve, 500)); Toast.success(t('personalCredential.deleteModal.success')); onDelete(credential); onClose(); },
     });
@@ -165,7 +165,7 @@ const PersonalCredentialDetailDrawer = ({
 
   const handleUnlinkCredential = useCallback((linkedCredential: LinkedCredential) => {
     Modal.confirm({
-      title: t('personalCredential.linkedCredentials.unlinkModal.title'), icon: <Trash2 size={16} strokeWidth={2} />,
+      title: t('personalCredential.linkedCredentials.unlinkModal.title'), icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
       content: t('personalCredential.linkedCredentials.unlinkModal.content', { name: linkedCredential.credential_name }),
       okText: t('common.confirm'), cancelText: t('common.cancel'), okButtonProps: { type: 'danger' },
       onOk: async () => {
@@ -226,7 +226,7 @@ const PersonalCredentialDetailDrawer = ({
         <Button icon={<Link size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={() => onLinkCredential(credential)} />
       </Tooltip>
       <Tooltip content={t('common.delete')}>
-        <Button icon={<Trash2 size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={handleDelete} />
+        <Button icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />} theme="borderless" type="tertiary" size="small" onClick={handleDelete} />
       </Tooltip>
     </>
   );
