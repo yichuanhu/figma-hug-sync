@@ -75,7 +75,7 @@ const QueueDetailDrawer = ({
   const extraActions = (
     <>
       <Tooltip content={t('queue.actions.viewMessages')}>
-        <Button icon={<IconList />} theme="borderless" size="small" onClick={handleViewMessages} />
+        <Button icon={<IconList />} theme="borderless" type="tertiary" size="small" onClick={handleViewMessages} />
       </Tooltip>
       {!queue.is_published && (
         <Tooltip content={t('common.edit')}>
