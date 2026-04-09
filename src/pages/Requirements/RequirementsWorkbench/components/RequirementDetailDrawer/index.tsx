@@ -316,8 +316,8 @@ const RequirementDetailDrawer = ({
               <Button
                 icon={<IconEditStroked />}
                 theme="borderless"
+                type="tertiary"
                 size="small"
-                onClick={() => onEdit(data)}
               />
             </Tooltip>
           )}
