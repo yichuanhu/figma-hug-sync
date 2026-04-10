@@ -139,6 +139,17 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
           ]}
         />
 
+        <Form.Slot label={t('common.owningDepartment')}>
+          <DepartmentSelect
+            value={owningDepartmentId}
+            onChange={setOwningDepartmentId}
+          />
+        </Form.Slot>
+
+        <Form.Slot label={t('common.owner')}>
+          <span>{MOCK_CURRENT_USER.name}</span>
+        </Form.Slot>
+
         <div className="create-process-modal-footer">
           <Button theme="light" onClick={onCancel}>
             {t('common.cancel')}
