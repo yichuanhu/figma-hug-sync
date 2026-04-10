@@ -757,9 +757,11 @@ const CollaboratorPanel = ({
       </Popover>
     ) : roleSelect;
 
+    const isDepartment = record.collaborator_type === 'DEPARTMENT';
+
     return (
-      <div key={record.id} className="collaborator-panel-item">
-        <div className="collaborator-panel-item-left">
+      <div key={record.id} className={`collaborator-panel-item${isDepartment ? ' collaborator-panel-item--center' : ''}`}>
+        <div className={`collaborator-panel-item-left${isDepartment ? ' collaborator-panel-item-left--center' : ''}`}>
           <Avatar
             size="small"
             style={
