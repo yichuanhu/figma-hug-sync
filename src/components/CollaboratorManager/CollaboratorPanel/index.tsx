@@ -999,19 +999,19 @@ const CollaboratorPanel = ({
         className={`collaborator-add-modal-left-item ${checked ? 'selected' : ''}`}
         onClick={() => toggleOrgDept(dept)}
       >
-        <Checkbox checked={checked} disabled={disabled} />
+        <Checkbox checked={checked} />
         <Network size={16} strokeWidth={2} className="collaborator-add-modal-left-item-icon" />
         <div className="collaborator-add-modal-left-item-name">
           <Text style={{ fontSize: 14 }} ellipsis={{ showTooltip: true }}>
             {dept.name}
           </Text>
         </div>
-        {disabled && existingLabel && (
+        {existingLabel && (
           <span className="collaborator-add-modal-left-item-existing">
             {existingLabel}
           </span>
         )}
-        {!disabled && hasChildren && (
+        {hasChildren && (
           <span
             className="collaborator-add-modal-left-item-drill"
             onClick={(e) => { e.stopPropagation(); navigateToDept(dept.id); }}
