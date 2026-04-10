@@ -318,8 +318,11 @@ function DetailDrawerWrapper<T>({
                 </>
               )}
 
-              {/* 如果有额外操作按钮或协作者按钮，添加分隔线 */}
-              {(extraActions || collaboratorProps) && <Divider layout="vertical" className="detail-drawer-wrapper-header-divider" />}
+              {/* 删除按钮 - 始终在最后 */}
+              {deleteAction}
+
+              {/* 如果有额外操作按钮、协作者按钮或删除按钮，添加分隔线 */}
+              {(extraActions || collaboratorProps || deleteAction) && <Divider layout="vertical" className="detail-drawer-wrapper-header-divider" />}
 
               {/* 全屏按钮 */}
               <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
