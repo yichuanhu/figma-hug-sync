@@ -87,6 +87,7 @@ const ParameterDetailDrawer = ({
             onClick={() => onEdit(parameter)}
           />
         </Tooltip>
+      )}
     </>
   );
 
