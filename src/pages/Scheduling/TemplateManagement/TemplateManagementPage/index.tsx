@@ -49,10 +49,10 @@ const generateUUID = (): string => {
 // ============= MockDatageneration =============
 
 const mockProcesses = [
-  { process_id: 'proc-001', process_name: 'Auto Order Processing' },
-  { process_id: 'proc-002', process_name: 'Expense Reimbursement Approval' },
-  { process_id: 'proc-003', process_name: 'Employee Onboarding Flow' },
-  { process_id: 'proc-004', process_name: 'Data Collection Flow' },
+  { process_id: 'proc-001', process_name: 'Auto Order Processing', owning_department_name: 'Finance Department' },
+  { process_id: 'proc-002', process_name: 'Expense Reimbursement Approval', owning_department_name: 'Enterprise Business Center' },
+  { process_id: 'proc-003', process_name: 'Employee Onboarding Flow', owning_department_name: 'Human Resources Department' },
+  { process_id: 'proc-004', process_name: 'Data Collection Flow', owning_department_name: 'R&D Center' },
 ];
 
 const mockCreatorNames = ['John Smith', 'Jane Doe', 'Mike Wang', 'David Zhao', 'Chris Qian'];
@@ -86,6 +86,7 @@ const generateMockTemplateResponse = (index: number): LYExecutionTemplateRespons
     validity_days: 7 + (index % 7),
     enable_recording: index % 2 === 0,
     input_parameters: { targetUrl: 'https://example.com', maxCount: 100 },
+    owning_department_name: process.owning_department_name,
     created_at: createDate.toISOString(),
     updated_at: createDate.toISOString(),
     created_by_id: `user-00${(index % 5) + 1}`,
@@ -335,6 +336,13 @@ const TemplateManagementPage = () => {
       width: 160,
       ellipsis: true,
       render: (text: string) => text || '-',
+    },
+    {
+      title: t('common.owningDepartment'),
+      dataIndex: 'owning_department_name',
+      width: 140,
+      ellipsis: true,
+      render: (text: string | null) => text || '-',
     },
     {
       title: t('template.table.creator'),
