@@ -124,6 +124,7 @@ interface GetTriggersParams {
   process_id?: string;
   queue_id?: string;
   status?: TriggerStatus;
+  owning_department_name?: string;
 }
 
 // ============= 组件 =============
@@ -145,6 +146,7 @@ const QueueTriggerList = () => {
     process_id: undefined,
     queue_id: undefined,
     status: undefined,
+    owning_department_name: undefined,
   });
 
   // SelectedStatus(Drawer)
@@ -195,6 +197,11 @@ const QueueTriggerList = () => {
       // byStatusFilter
       if (params.status) {
         filtered = filtered.filter((trigger) => trigger.status === params.status);
+      }
+
+      // by归属部门Filter
+      if (params.owning_department_name) {
+        filtered = filtered.filter((trigger) => trigger.owning_department_name === params.owning_department_name);
       }
 
       const offset = params.offset || 0;
@@ -477,8 +484,12 @@ const QueueTriggerList = () => {
     },
   ];
 
-  // 判断is否hasFilterCondition
-  const hasFilters = queryParams.keyword || queryParams.process_id || queryParams.queue_id || queryParams.status;
+  const departmentOptions = useMemo(() => {
+    const depts = [...new Set(allMockTriggers.map(t => t.owning_department_name).filter(Boolean))];
+    return depts.map(d => ({ value: d, label: d }));
+  }, []);
+
+  const hasFilters = queryParams.keyword || queryParams.process_id || queryParams.queue_id || queryParams.status || queryParams.owning_department_name;
 
   // currentIndex no longer needed - navigation handled by DetailDrawerWrapper
 
@@ -530,6 +541,14 @@ const QueueTriggerList = () => {
               onChange={(v) => handleStatusFilter(v as TriggerStatus | undefined)}
               showClear
               style={{ width: 120 }}
+            />
+            <Select
+              placeholder={t('common.owningDepartment')}
+              value={queryParams.owning_department_name}
+              onChange={(v) => setQueryParams(prev => ({ ...prev, offset: 0, owning_department_name: v as string | undefined }))}
+              showClear
+              style={{ width: 160 }}
+              optionList={departmentOptions}
             />
           </Space>
         </Col>

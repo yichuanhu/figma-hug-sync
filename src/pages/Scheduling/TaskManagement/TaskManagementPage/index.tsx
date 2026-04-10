@@ -182,6 +182,11 @@ const fetchTaskList = async (params: GetTasksParams): Promise<LYListResponseLYTa
     filteredData = filteredData.filter((item) => params.trigger_source!.includes(item.trigger_source));
   }
 
+  // 归属部门Filter
+  if ((params as any).owning_department_names && (params as any).owning_department_names.length > 0) {
+    filteredData = filteredData.filter((item) => (params as any).owning_department_names.includes((item as any).owning_department_name));
+  }
+
   // Time范围Filter
   if (params.start_time) {
     const startDate = new Date(params.start_time);
@@ -259,6 +264,7 @@ const TaskManagementPage = () => {
   const [taskStatusFilter, setTaskStatusFilter] = useState<string[]>([]);
   const [executionStatusFilter, setExecutionStatusFilter] = useState<string[]>([]);
   const [triggerSourceFilter, setTriggerSourceFilter] = useState<string[]>([]);
+  const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
   const [dateRange, setDateRange] = useState<[Date, Date] | null>(null);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
 
@@ -308,6 +314,11 @@ const TaskManagementPage = () => {
     { value: 'TEMPLATE', label: t('task.triggerSource.template') },
   ], [t]);
 
+  const departmentOptions = useMemo(() => {
+    const depts = [...new Set(mockTaskData.map((t: any) => t.owning_department_name).filter(Boolean))];
+    return depts.map(d => ({ value: d, label: d }));
+  }, []);
+
   // LoadingData
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -317,15 +328,16 @@ const TaskManagementPage = () => {
         task_status: taskStatusFilter.length > 0 ? taskStatusFilter as TaskStatus[] : undefined,
         execution_status: executionStatusFilter.length > 0 ? executionStatusFilter as ExecutionStatus[] : undefined,
         trigger_source: triggerSourceFilter.length > 0 ? triggerSourceFilter as TriggerSource[] : undefined,
+        owning_department_names: departmentFilter.length > 0 ? departmentFilter : undefined,
         start_time: dateRange?.[0]?.toISOString(),
         end_time: dateRange?.[1]?.toISOString(),
-      });
+      } as any);
       setListResponse(response);
     } finally {
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, taskStatusFilter, executionStatusFilter, triggerSourceFilter, dateRange]);
+  }, [queryParams, taskStatusFilter, executionStatusFilter, triggerSourceFilter, departmentFilter, dateRange]);
 
   useEffect(() => {
     loadData();
@@ -515,6 +527,7 @@ const TaskManagementPage = () => {
     setTaskStatusFilter((values.taskStatus as string[]) || []);
     setExecutionStatusFilter((values.executionStatus as string[]) || []);
     setTriggerSourceFilter((values.triggerSource as string[]) || []);
+    setDepartmentFilter((values.department as string[]) || []);
     setDateRange((values.dateRange as [Date, Date] | null) || null);
   };
 
@@ -733,6 +746,13 @@ const TaskManagementPage = () => {
                       type: 'checkbox',
                       options: triggerSourceOptions,
                       value: triggerSourceFilter,
+                    },
+                    {
+                      key: 'department',
+                      label: t('common.owningDepartment'),
+                      type: 'checkbox',
+                      options: departmentOptions,
+                      value: departmentFilter,
                     },
                     {
                       key: 'dateRange',

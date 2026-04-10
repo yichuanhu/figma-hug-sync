@@ -106,6 +106,7 @@ interface GetTemplatesParams {
   size?: number;
   keyword?: string;
   process_id?: string;
+  owning_department_name?: string;
 }
 
 // ============= 组件 =============
@@ -126,6 +127,7 @@ const TemplateManagementPage = () => {
     size: 20,
     keyword: '',
     process_id: undefined,
+    owning_department_name: undefined,
   });
 
   // SelectedStatus(Drawer)
@@ -169,6 +171,11 @@ const TemplateManagementPage = () => {
       // byProcessFilter
       if (params.process_id) {
         filtered = filtered.filter((tpl) => tpl.process_id === params.process_id);
+      }
+
+      // by归属部门Filter
+      if (params.owning_department_name) {
+        filtered = filtered.filter((tpl: any) => tpl.owning_department_name === params.owning_department_name);
       }
 
       const offset = params.offset || 0;
@@ -419,8 +426,12 @@ const TemplateManagementPage = () => {
     },
   ];
 
-  // 判断is否hasFilterCondition
-  const hasFilters = queryParams.keyword || queryParams.process_id;
+  const departmentOptions = useMemo(() => {
+    const depts = [...new Set(allMockTemplates.map((t: any) => t.owning_department_name).filter(Boolean))];
+    return depts.map(d => ({ value: d, label: d }));
+  }, []);
+
+  const hasFilters = queryParams.keyword || queryParams.process_id || queryParams.owning_department_name;
 
   return (
       <div className="template-management">
@@ -467,6 +478,14 @@ const TemplateManagementPage = () => {
                     value: p.process_id,
                     label: p.process_name,
                   }))}
+                />
+                <Select
+                  placeholder={t('common.owningDepartment')}
+                  value={queryParams.owning_department_name}
+                  onChange={(v) => setQueryParams(prev => ({ ...prev, offset: 0, owning_department_name: v as string | undefined }))}
+                  showClear
+                  style={{ width: 160 }}
+                  optionList={departmentOptions}
                 />
               </Space>
             </Col>
