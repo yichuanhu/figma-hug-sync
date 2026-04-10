@@ -15,6 +15,7 @@ import {
   Space,
   Modal,
   Toast,
+  Select,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
@@ -233,7 +234,6 @@ interface FilterState {
   status: string[];
   sync_status: string[];
   group_id: string[];
-  owning_department_name: string[];
 }
 
 interface SortState {
@@ -292,8 +292,8 @@ const fetchWorkerList = async (params: GetWorkersParams & { filters?: FilterStat
   }
 
   // 归属部门Filter
-  if (params.filters?.owning_department_name && params.filters.owning_department_name.length > 0) {
-    data = data.filter(item => params.filters!.owning_department_name.includes((item as any).owning_department_name));
+  if ((params as any).owning_department_name) {
+    data = data.filter(item => (item as any).owning_department_name === (params as any).owning_department_name);
   }
 
   // Sortprocessing
@@ -354,8 +354,8 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     status: [],
     sync_status: [],
     group_id: [],
-    owning_department_name: [],
   });
+  const [departmentFilter, setDepartmentFilter] = useState<string | undefined>(undefined);
   const [sortState, setSortState] = useState<SortState>({});
   const [filterVisible, setFilterVisible] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -416,11 +416,12 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       { label: t('worker.filter.ungrouped'), value: UNGROUPED_FILTER_VALUE },
       ...mockWorkerGroups.map(g => ({ label: g.name, value: g.id })),
     ],
-    owning_department_name: (() => {
-      const depts = [...new Set(mockWorkers.map(w => (w as any).owning_department_name).filter(Boolean))];
-      return depts.map(d => ({ label: d, value: d }));
-    })(),
   }), [t]);
+
+  const departmentOptions = useMemo(() => {
+    const depts = [...new Set(mockWorkers.map(w => (w as any).owning_department_name).filter(Boolean))];
+    return depts.map(d => ({ value: d, label: d }));
+  }, []);
 
   // LoadingData
   const loadData = useCallback(async () => {
@@ -430,14 +431,15 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
         ...queryParams,
         filters,
         sort: sortState,
-      });
+        owning_department_name: departmentFilter,
+      } as any);
       setListResponse(response);
       return response.list;
     } finally {
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, filters, sortState]);
+  }, [queryParams, filters, sortState, departmentFilter]);
 
   // 翻页并Back新Data(usefor Drawer导航时auto-翻页)
   const handleDrawerPageChange = useCallback(async (page: number): Promise<LYWorkerResponse[]> => {
@@ -451,10 +453,11 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       offset: newOffset,
       filters,
       sort: sortState,
-    });
+      owning_department_name: departmentFilter,
+    } as any);
     setListResponse(response);
     return response.list;
-  }, [queryParams, filters, sortState, listResponse.range?.size]);
+  }, [queryParams, filters, sortState, departmentFilter, listResponse.range?.size]);
 
   // 当Tab switchto非激活Status时, CloseDrawer
   useEffect(() => {
@@ -500,7 +503,6 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       status: (values.status as string[]) || [],
       sync_status: (values.sync_status as string[]) || [],
       group_id: (values.group_id as string[]) || [],
-      owning_department_name: (values.owning_department_name as string[]) || [],
     });
     setQueryParams(prev => ({ ...prev, offset: 0 }));
   };
@@ -942,14 +944,18 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
                     options: filterOptions.group_id,
                     value: filters.group_id,
                   },
-                  {
-                    key: 'owning_department_name',
-                    label: t('common.owningDepartment'),
-                    type: 'checkbox',
-                    options: filterOptions.owning_department_name,
-                    value: filters.owning_department_name,
-                  },
                 ]}
+              />
+              <Select
+                placeholder={t('common.owningDepartment')}
+                value={departmentFilter}
+                onChange={(v) => {
+                  setDepartmentFilter(v as string | undefined);
+                  setQueryParams(prev => ({ ...prev, offset: 0 }));
+                }}
+                showClear
+                style={{ width: 160 }}
+                optionList={departmentOptions}
               />
             </Space>
           </Col>
