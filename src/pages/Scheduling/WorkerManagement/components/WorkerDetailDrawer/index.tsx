@@ -107,10 +107,13 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
       <Tooltip content={t('worker.actions.viewKey')}>
         <Button icon={<Key size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={onViewKey} />
       </Tooltip>
-      <Tooltip content={t('common.delete')}>
-        <Button icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />} theme="borderless" type="tertiary" size="small" onClick={onDelete} />
-      </Tooltip>
     </>
+  );
+
+  const deleteAction = (
+    <Tooltip content={t('common.delete')}>
+      <Button icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />} theme="borderless" type="tertiary" size="small" onClick={onDelete} />
+    </Tooltip>
   );
 
   const handleClose = () => {
@@ -130,6 +133,7 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
       onPageChange={onPageChange}
       onScrollToRow={onScrollToRow}
       extraActions={extraActions}
+      deleteAction={deleteAction}
       defaultWidth={900}
       minWidth={576}
       storageKey="workerDetailDrawerWidth"

@@ -136,7 +136,6 @@ const QueueTriggerDetailDrawer = ({
     },
   ];
 
-  // 额外Operationby钮
   const extraActions = (
     <>
       <Tooltip content={t('common.edit')}>
@@ -148,16 +147,19 @@ const QueueTriggerDetailDrawer = ({
           onClick={() => onEdit(trigger)}
         />
       </Tooltip>
-      <Tooltip content={t('common.delete')}>
-        <Button
-          icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />}
-          theme="borderless"
-          type="tertiary"
-          size="small"
-          onClick={() => onDelete(trigger)}
-        />
-      </Tooltip>
     </>
+  );
+
+  const deleteAction = (
+    <Tooltip content={t('common.delete')}>
+      <Button
+        icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />}
+        theme="borderless"
+        type="tertiary"
+        size="small"
+        onClick={() => onDelete(trigger)}
+      />
+    </Tooltip>
   );
 
   return (
@@ -171,6 +173,7 @@ const QueueTriggerDetailDrawer = ({
       onNavigate={onNavigate}
       onScrollToRow={onScrollToRow}
       extraActions={extraActions}
+      deleteAction={deleteAction}
       defaultWidth={900}
       minWidth={576}
       storageKey="queue-trigger-detail-drawer-width"

@@ -316,18 +316,20 @@ const RequirementDetailDrawer = ({
               />
             </Tooltip>
           )}
-          {canDelete && (
-            <Tooltip content={t('common.delete')}>
-              <Button
-                icon={<Trash2 size={16} strokeWidth={2} />}
-                theme="borderless"
-                type="tertiary"
-                size="small"
-                onClick={() => onDelete(data)}
-              />
-            </Tooltip>
-          )}
         </>
+      }
+      deleteAction={
+        canDelete ? (
+          <Tooltip content={t('common.delete')}>
+            <Button
+              icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />}
+              theme="borderless"
+              type="tertiary"
+              size="small"
+              onClick={() => onDelete(data)}
+            />
+          </Tooltip>
+        ) : null
       }
     >
       <div className="requirement-detail-layout">

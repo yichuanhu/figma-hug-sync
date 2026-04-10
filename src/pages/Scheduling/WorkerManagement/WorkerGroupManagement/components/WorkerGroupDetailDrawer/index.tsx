@@ -213,10 +213,13 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
       <Tooltip content={t('common.edit')}>
         <Button icon={<Pencil size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={onEdit} />
       </Tooltip>
-      <Tooltip content={t('common.delete')}>
-        <Button icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />} theme="borderless" type="tertiary" size="small" onClick={onDelete} />
-      </Tooltip>
     </>
+  );
+
+  const deleteAction = (
+    <Tooltip content={t('common.delete')}>
+      <Button icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />} theme="borderless" type="tertiary" size="small" onClick={onDelete} />
+    </Tooltip>
   );
 
   return (
@@ -232,6 +235,7 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
       onPageChange={onPageChange}
       onScrollToRow={onScrollToRow}
       extraActions={extraActions}
+      deleteAction={deleteAction}
       defaultWidth={900}
       minWidth={576}
       storageKey="workerGroupDetailDrawerWidth"

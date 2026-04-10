@@ -225,10 +225,13 @@ const PersonalCredentialDetailDrawer = ({
       <Tooltip content={t('personalCredential.actions.linkCredential')}>
         <Button icon={<Link size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={() => onLinkCredential(credential)} />
       </Tooltip>
-      <Tooltip content={t('common.delete')}>
-        <Button icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />} theme="borderless" type="tertiary" size="small" onClick={handleDelete} />
-      </Tooltip>
     </>
+  );
+
+  const deleteAction = (
+    <Tooltip content={t('common.delete')}>
+      <Button icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />} theme="borderless" type="tertiary" size="small" onClick={handleDelete} />
+    </Tooltip>
   );
 
   return (
@@ -244,6 +247,7 @@ const PersonalCredentialDetailDrawer = ({
       onPageChange={onPageChange}
       onScrollToRow={onScrollToRow}
       extraActions={extraActions}
+      deleteAction={deleteAction}
       defaultWidth={900}
       minWidth={576}
       storageKey="personalCredentialDetailDrawerWidth"

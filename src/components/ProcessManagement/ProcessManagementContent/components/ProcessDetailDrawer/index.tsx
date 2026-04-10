@@ -401,7 +401,6 @@ const ProcessDetailDrawer = ({
     { key: t('development.processDevelopment.detail.versionDetail.developmentEnvironment'), value: version.development_environment || 'Win10 | X86' },
   ];
 
-  // 额外操作按钮
   const extraActions = (
     <>
       {!isSchedulingContext && onOpen && (
@@ -417,13 +416,14 @@ const ProcessDetailDrawer = ({
       <Tooltip content={t('common.run')}>
         <Button icon={<PlayCircle size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={onRun} />
       </Tooltip>
-      {!isSchedulingContext && onDelete && (
-        <Tooltip content={t('common.delete')}>
-          <Button icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />} theme="borderless" type="tertiary" size="small" onClick={onDelete} />
-        </Tooltip>
-      )}
     </>
   );
+
+  const deleteAction = !isSchedulingContext && onDelete ? (
+    <Tooltip content={t('common.delete')}>
+      <Button icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />} theme="borderless" type="tertiary" size="small" onClick={onDelete} />
+    </Tooltip>
+  ) : null;
 
   return (
     <DetailDrawerWrapper
@@ -438,6 +438,7 @@ const ProcessDetailDrawer = ({
       onPageChange={onPageChange}
       onScrollToRow={onScrollToRow}
       extraActions={extraActions}
+      deleteAction={deleteAction}
       collaboratorProps={{
         assetType: 'PROCESS',
         assetId: processData.id,

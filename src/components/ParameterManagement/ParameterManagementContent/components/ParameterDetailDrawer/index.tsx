@@ -87,20 +87,20 @@ const ParameterDetailDrawer = ({
             onClick={() => onEdit(parameter)}
           />
         </Tooltip>
-      )}
-      {onDelete && context === 'development' && !parameter.is_published && (
-        <Tooltip content={t('common.delete')}>
-          <Button
-            icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />}
-            theme="borderless"
-            type="tertiary"
-            size="small"
-            onClick={() => onDelete(parameter)}
-          />
-        </Tooltip>
-      )}
     </>
   );
+
+  const deleteAction = onDelete && context === 'development' && !parameter.is_published ? (
+    <Tooltip content={t('common.delete')}>
+      <Button
+        icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />}
+        theme="borderless"
+        type="tertiary"
+        size="small"
+        onClick={() => onDelete(parameter)}
+      />
+    </Tooltip>
+  ) : null;
 
   const handleClose = () => {
     onClose();
@@ -119,6 +119,7 @@ const ParameterDetailDrawer = ({
       onPageChange={onPageChange}
       onScrollToRow={onScrollToRow}
       extraActions={extraActions}
+      deleteAction={deleteAction}
       defaultWidth={900}
       minWidth={576}
       storageKey="parameter-detail-drawer-width"
