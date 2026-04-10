@@ -47,10 +47,10 @@ const generateUUID = (): string => {
 // ============= MockDatageneration =============
 
 const mockProcesses = [
-  { process_id: 'proc-001', process_name: 'Auto Order Processing' },
-  { process_id: 'proc-002', process_name: 'Expense Reimbursement Approval' },
-  { process_id: 'proc-003', process_name: 'Employee Onboarding Flow' },
-  { process_id: 'proc-004', process_name: 'Data Collection Flow' },
+  { process_id: 'proc-001', process_name: 'Auto Order Processing', owning_department_name: 'Finance Department' },
+  { process_id: 'proc-002', process_name: 'Expense Reimbursement Approval', owning_department_name: 'Enterprise Business Center' },
+  { process_id: 'proc-003', process_name: 'Employee Onboarding Flow', owning_department_name: 'Human Resources Department' },
+  { process_id: 'proc-004', process_name: 'Data Collection Flow', owning_department_name: 'R&D Center' },
 ];
 
 const mockCreatorNames = ['John Smith', 'Jane Doe', 'Mike Wang', 'David Zhao', 'Chris Qian'];
@@ -78,6 +78,7 @@ const generateMockTimeTriggerResponse = (index: number): LYTimeTriggerResponse =
     status,
     process_id: process.process_id,
     process_name: process.process_name,
+    owning_department_name: process.owning_department_name,
     department_id: `dept-00${(index % 3) + 1}`,
     execution_target_type: targetTypes[index % targetTypes.length],
     execution_target_id: `target-${index}`,
@@ -425,6 +426,13 @@ const TimeTriggerList = () => {
           {record.status === 'DISABLED' ? t('timeTrigger.detail.notScheduled') : formatTime(time)}
         </span>
       ),
+    },
+    {
+      title: t('common.owningDepartment'),
+      dataIndex: 'owning_department_name',
+      width: 140,
+      ellipsis: true,
+      render: (text: string | null) => text || '-',
     },
     {
       title: t('common.actions'),

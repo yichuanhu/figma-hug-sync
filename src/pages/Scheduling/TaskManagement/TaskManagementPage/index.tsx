@@ -89,10 +89,13 @@ const generateMockTaskResponse = (index: number): LYTaskResponse => {
   const hasExecution = ['ASSIGNED', 'WAITING', 'COMPLETED', 'FAILED', 'CANCELLED'].includes(taskStatus);
   const creatorId = creatorIds[index % creatorIds.length];
 
+  const deptNames = ['Finance Department', 'Enterprise Business Center', 'Human Resources Department', 'R&D Center', 'Finance Department'];
+
   return {
     task_id: `TASK-${String(100000 + index).substring(1)}`,
     process_id: generateUUID(),
     process_name: processNames[index % processNames.length],
+    owning_department_name: deptNames[index % deptNames.length],
     process_version_id: generateUUID(),
     process_version: `v${(index % 5) + 1}.0.0`,
     execution_target_type: targetTypes[index % targetTypes.length],
@@ -595,6 +598,14 @@ const TaskManagementPage = () => {
       key: 'trigger_source',
       width: 100,
       render: (source: TriggerSource) => t(`task.triggerSource.${source.toLowerCase()}`),
+    },
+    {
+      title: t('common.owningDepartment'),
+      dataIndex: 'owning_department_name',
+      key: 'owning_department_name',
+      width: 140,
+      ellipsis: true,
+      render: (text: string | null) => text || '-',
     },
     {
       title: t('task.table.createTime'),
