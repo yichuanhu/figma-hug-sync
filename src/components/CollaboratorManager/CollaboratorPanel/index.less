@@ -71,6 +71,16 @@
       &:hover {
         background-color: var(--semi-color-fill-0);
       }
+
+      // Ensure all children are vertically centered
+      .semi-avatar-group {
+        display: inline-flex;
+        align-items: center;
+      }
+
+      > svg {
+        flex-shrink: 0;
+      }
     }
   }
 
