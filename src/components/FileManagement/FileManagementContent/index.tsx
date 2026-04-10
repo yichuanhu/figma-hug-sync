@@ -595,14 +595,13 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
         visible={detailDrawerVisible}
         file={selectedFile}
         context={context}
-        currentIndex={currentFileIndex}
-        totalCount={listResponse?.data?.length || 0}
+        dataList={listResponse?.data || []}
         onClose={() => {
           setDetailDrawerVisible(false);
           setSelectedFile(null);
           setDetailInitialTab('basic');
         }}
-        onNavigate={handleDrawerNavigate}
+        onNavigate={(file) => setSelectedFile(file)}
         onDelete={handleDelete}
         initialTab={detailInitialTab}
       />
