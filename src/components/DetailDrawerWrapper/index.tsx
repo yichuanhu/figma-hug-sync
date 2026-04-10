@@ -86,6 +86,7 @@ function DetailDrawerWrapper<T>({
   children,
   extraActions,
   deleteAction,
+  showNavigation = true,
   collaboratorProps,
   dataList,
   currentId,
