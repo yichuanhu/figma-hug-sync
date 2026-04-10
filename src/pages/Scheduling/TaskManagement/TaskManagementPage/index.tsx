@@ -765,7 +765,6 @@ const TaskManagementPage = () => {
                   style={{ width: 160 }}
                   optionList={departmentOptions}
                 />
-                />
               </Space>
             </Col>
             <Col>
