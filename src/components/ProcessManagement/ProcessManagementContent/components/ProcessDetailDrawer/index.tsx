@@ -21,6 +21,7 @@ import EmptyState from '@/components/EmptyState';
 import DetailSkeleton from '@/components/DetailSkeleton';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import ExpandableText from '@/components/ExpandableText';
+import { getDepartmentName } from '@/mocks/departmentData';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import './index.less';
@@ -367,6 +368,8 @@ const ProcessDetailDrawer = ({
   const descriptionData = [
     { key: t('development.processDevelopment.fields.processName'), value: processData.name },
     { key: t('common.description'), value: <ExpandableText text={processData.description} maxLines={3} /> },
+    { key: t('common.owningDepartment'), value: getDepartmentName(processData.owning_department_id) },
+    { key: t('common.owner'), value: processData.owner_name ? <UserNameWithCard name={processData.owner_name} userId={processData.owner_id || ''} /> : '-' },
     { key: t('common.creator'), value: creatorInfo ? <UserNameWithCard name={creatorInfo.name} userId={processData.creator_id} department={creatorInfo.department} role={creatorInfo.role} email={creatorInfo.email} /> : '-' },
     { key: t('common.createTime'), value: formatDateTime(processData.created_at) },
     { key: t('common.updateTime'), value: formatDateTime(processData.updated_at) },

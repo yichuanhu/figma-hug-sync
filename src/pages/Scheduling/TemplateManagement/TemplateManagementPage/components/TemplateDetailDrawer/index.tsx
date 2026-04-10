@@ -19,6 +19,7 @@ import type {
 } from '@/api';
 import EmptyState from '@/components/EmptyState';
 import ExpandableText from '@/components/ExpandableText';
+import { getDepartmentName } from '@/mocks/departmentData';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import './index.less';
@@ -81,6 +82,8 @@ const TemplateDetailDrawer = ({
   const basicInfoData = [
     { key: t('template.fields.name'), value: template.template_name },
     { key: t('common.description'), value: <ExpandableText text={template.description} maxLines={3} /> },
+    { key: t('common.owningDepartment'), value: getDepartmentName(template.owning_department_id) },
+    { key: t('common.owner'), value: template.owner_name || '-' },
     { key: t('template.fields.process'), value: template.process_name || '-' },
     { key: t('template.fields.targetType'), value: t(targetTypeI18nKeys[template.execution_target_type] || 'template.targetType.botGroup') },
     { key: t('template.fields.target'), value: template.execution_target_name || '-' },

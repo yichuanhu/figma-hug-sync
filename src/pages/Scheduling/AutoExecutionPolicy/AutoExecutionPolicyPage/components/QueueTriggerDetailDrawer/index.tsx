@@ -19,6 +19,7 @@ import { Inbox, Pencil, Trash2 } from 'lucide-react';
 import type { LYQueueTriggerResponse, LYQueueTriggerExecutionLogResponse } from '@/api';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import ExpandableText from '@/components/ExpandableText';
+import { getDepartmentName } from '@/mocks/departmentData';
 import './index.less';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 
@@ -204,6 +205,12 @@ const QueueTriggerDetailDrawer = ({
                 </Descriptions.Item>
                 <Descriptions.Item itemKey={t('queueTrigger.detail.fields.description')}>
                   <ExpandableText text={trigger.description} maxLines={3} />
+                </Descriptions.Item>
+                <Descriptions.Item itemKey={t('common.owningDepartment')}>
+                  {getDepartmentName(trigger.owning_department_id)}
+                </Descriptions.Item>
+                <Descriptions.Item itemKey={t('common.owner')}>
+                  {trigger.owner_name || '-'}
                 </Descriptions.Item>
                 <Descriptions.Item itemKey={t('queueTrigger.detail.fields.status')}>
                   <Space spacing={8}>

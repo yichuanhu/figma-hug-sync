@@ -23,6 +23,7 @@ import EmptyState from '@/components/EmptyState';
 import DetailSkeleton from '@/components/DetailSkeleton';
 import TableSkeleton from '@/components/TableSkeleton';
 import ExpandableText from '@/components/ExpandableText';
+import { getDepartmentName } from '@/mocks/departmentData';
 import { useTranslation } from 'react-i18next';
 import { debounce } from 'lodash';
 import AddMembersModal from '../AddMembersModal';

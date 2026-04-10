@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Modal, Form, Toast, Button } from '@douyinfe/semi-ui';
 import { useTranslation } from 'react-i18next';
 import type { LYCreateWorkerGroupRequest } from '@/api';
+import DepartmentSelect from '@/components/DepartmentSelect';
+import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 import AddMembersModal from '../AddMembersModal';
 import './index.less';
 import { Users } from 'lucide-react';
@@ -25,6 +27,7 @@ const CreateWorkerGroupModal: React.FC<CreateWorkerGroupModalProps> = ({
 }) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
+  const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>(undefined);
   const [formApi, setFormApi] = useState<any>(null);
   
   // CreateSuccess后's 提示模态框
@@ -131,6 +134,12 @@ const CreateWorkerGroupModal: React.FC<CreateWorkerGroupModalProps> = ({
               showClear
             />
             
+            <Form.Slot label={t('common.owningDepartment')}>
+              <DepartmentSelect value={owningDepartmentId} onChange={setOwningDepartmentId} />
+            </Form.Slot>
+            <Form.Slot label={t('common.owner')}>
+              <span>{MOCK_CURRENT_USER.name}</span>
+            </Form.Slot>
             <Form.TextArea
               field="description"
               label={t('common.description')}

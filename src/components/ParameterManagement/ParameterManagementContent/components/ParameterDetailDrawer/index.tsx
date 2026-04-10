@@ -10,6 +10,7 @@ import {
 } from '@douyinfe/semi-ui';
 import type { LYParameterResponse, ParameterType } from '@/api/index';
 import ExpandableText from '@/components/ExpandableText';
+import { getDepartmentName } from '@/mocks/departmentData';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
@@ -161,6 +162,12 @@ const ParameterDetailDrawer = ({
               )}
             </Descriptions.Item>
           )}
+          <Descriptions.Item itemKey={t('common.owningDepartment')}>
+            {getDepartmentName(parameter.owning_department_id)}
+          </Descriptions.Item>
+          <Descriptions.Item itemKey={t('common.owner')}>
+            {parameter.owner_name ? <UserNameWithCard name={parameter.owner_name} userId={parameter.owner_id || ''} /> : '-'}
+          </Descriptions.Item>
           <Descriptions.Item itemKey={t('common.description')}>
             <ExpandableText text={parameter.description} maxLines={3} />
           </Descriptions.Item>
