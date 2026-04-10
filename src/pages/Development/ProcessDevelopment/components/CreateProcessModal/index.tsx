@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import DepartmentSelect from '@/components/DepartmentSelect';
+import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 import { Modal, Form, Toast, Button } from '@douyinfe/semi-ui';
 import type { LYCreateProcessRequest, LYProcessResponse } from '@/api';
 import './index.less';
@@ -41,6 +43,7 @@ const generateMockLYProcessResponse = (request: LYCreateProcessRequest): LYProce
 const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModalProps) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
+  const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>(undefined);
 
   const existingProcessNames = ['Auto Order Processing Flow', 'Expense Reimbursement Flow', 'Employee Onboarding Flow'];
 
@@ -70,10 +73,16 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
   const handleSubmit = async (values: Record<string, unknown>) => {
     setLoading(true);
     try {
+      if (!owningDepartmentId) {
+        Toast.warning(t('common.owningDepartmentRequired'));
+        setLoading(false);
+        return;
+      }
       // 构建API请求Parameter - usingLYCreateProcessRequestType
       const createRequest: LYCreateProcessRequest = {
         name: values.name as string,
         description: (values.description as string) || undefined,
+        owning_department_id: owningDepartmentId,
       };
 
       // 模拟API调use延迟
