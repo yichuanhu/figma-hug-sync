@@ -22,6 +22,7 @@ const CreateParameterModal = ({
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [parameterType, setParameterType] = useState<ParameterType>(1);
+  const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>();
 
   const handleSubmit = async (values: {
     name: string;
@@ -163,7 +164,6 @@ const CreateParameterModal = ({
         <Form.Slot label={t('common.owner')}>
           <span>{MOCK_CURRENT_USER.name}</span>
         </Form.Slot>
-        />
 
         <div className="create-parameter-modal-footer">
           <Button theme="light" onClick={onCancel}>
