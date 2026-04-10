@@ -769,6 +769,14 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       sorter: true,
     },
     {
+      title: t('common.owningDepartment'),
+      dataIndex: 'owning_department_name',
+      key: 'owning_department_name',
+      width: 140,
+      ellipsis: true,
+      render: (text: string | null) => text || '-',
+    },
+    {
       title: t('worker.table.receiveTasks'),
       dataIndex: 'receive_tasks',
       key: 'receive_tasks',
