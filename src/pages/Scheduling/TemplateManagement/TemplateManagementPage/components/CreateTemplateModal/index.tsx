@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 import {
   Modal,
   Form,
@@ -34,6 +35,8 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     process_name: 'Auto Order Processing',
     version_id: 'ver-001',
     version: 'v1.2.0',
+    owning_department_id: 'dept-tech',
+    owning_department_name: 'Technology Department',
     parameters: [
       { name: 'targetUrl', type: 'TEXT', required: true, description: 'Target URL address' },
       { name: 'maxCount', type: 'NUMBER', required: false, default_value: 100, description: 'Maximum processing count' },
@@ -50,6 +53,8 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     process_name: 'Expense Reimbursement Approval',
     version_id: 'ver-002',
     version: 'v2.0.0',
+    owning_department_id: 'dept-finance',
+    owning_department_name: 'Finance Department',
     parameters: [
       { name: 'department', type: 'TEXT', required: true, description: 'Department name' },
       { name: 'approvalCredential', type: 'CREDENTIAL', required: true, description: 'Approval credential' },
@@ -64,6 +69,8 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     process_name: 'Employee Onboarding Flow',
     version_id: 'ver-003',
     version: 'v1.0.0',
+    owning_department_id: 'dept-hr',
+    owning_department_name: 'Human Resources',
     parameters: [],
     output_parameters: [],
   },
@@ -72,6 +79,8 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     process_name: 'Data Collection Flow',
     version_id: 'ver-004',
     version: 'v1.5.0',
+    owning_department_id: 'dept-tech',
+    owning_department_name: 'Technology Department',
     parameters: [
       { name: 'sourceUrl', type: 'TEXT', required: true, description: 'Data source URL' },
       { name: 'pageLimit', type: 'NUMBER', required: false, default_value: 10, description: 'Page limit for collection' },
@@ -360,6 +369,20 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
                   showClear
                   rows={3}
                 />
+                <div className="semi-form-field" style={{ marginBottom: 12 }}>
+                  <label className="semi-form-field-label">
+                    <span className="semi-form-field-label-text">{t('common.owningDepartment')}</span>
+                  </label>
+                  <Text type="tertiary">
+                    {selectedProcess?.owning_department_name || (selectedProcess ? MOCK_CURRENT_USER.department_name : t('template.createModal.selectProcessFirst'))}
+                  </Text>
+                </div>
+                <div className="semi-form-field" style={{ marginBottom: 12 }}>
+                  <label className="semi-form-field-label">
+                    <span className="semi-form-field-label-text">{t('common.owner')}</span>
+                  </label>
+                  <Text>{MOCK_CURRENT_USER.name}</Text>
+                </div>
               </div>
 
               {/* Process config */}
