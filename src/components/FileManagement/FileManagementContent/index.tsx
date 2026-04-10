@@ -29,7 +29,7 @@ import type {
   FileSource,
 } from '@/api/index';
 import UploadFileModal from './components/UploadFileModal';
-import ReuploadFileModal from './components/ReuploadFileModal';
+
 import FileDetailDrawer from './components/FileDetailDrawer';
 import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
 
@@ -196,14 +196,14 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
 
   // 选中的文件（用于详情）
   const [selectedFile, setSelectedFile] = useState<LYFileResponse | null>(null);
-  const [reuploadingFile, setReuploadingFile] = useState<LYFileResponse | null>(null);
+  
 
   // 预选文件（用于先选择文件再弹窗）
   const [preSelectedFile, setPreSelectedFile] = useState<File | null>(null);
 
   // 模态框/抽屉状态
   const [uploadModalVisible, setUploadModalVisible] = useState(false);
-  const [reuploadModalVisible, setReuploadModalVisible] = useState(false);
+  
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [detailInitialTab, setDetailInitialTab] = useState('basic');
   const { openCollaborator, renderCollaboratorPanel } = useCollaboratorAction();
@@ -262,17 +262,6 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
     setDetailDrawerVisible(true);
   };
 
-  // 重新上传
-  const handleReupload = (record: LYFileResponse) => {
-    // 已发布的文件不允许重新上传
-    if (record.is_published) {
-      Toast.warning(t('file.detail.cannotReuploadPublished'));
-      return;
-    }
-    setReuploadingFile(record);
-    setReuploadModalVisible(true);
-    setDetailDrawerVisible(false);
-  };
 
   // 下载
   const handleDownload = (record: LYFileResponse) => {
@@ -432,17 +421,6 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
           clickToHide
           render={
             <Dropdown.Menu>
-              {context === 'development' && !record.is_published && (
-                <Dropdown.Item
-                  icon={<RefreshCw size={16} strokeWidth={2} />}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleReupload(record);
-                  }}
-                >
-                  {t('file.actions.reupload')}
-                </Dropdown.Item>
-              )}
               <Dropdown.Item
                  icon={<Download size={16} strokeWidth={2} />}
                 onClick={(e) => {
@@ -612,18 +590,6 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
         preSelectedFile={preSelectedFile}
       />
 
-      {/* 重新上传弹窗 */}
-      <ReuploadFileModal
-        visible={reuploadModalVisible}
-        file={reuploadingFile}
-        onClose={() => {
-          setReuploadModalVisible(false);
-          setReuploadingFile(null);
-        }}
-        onSuccess={loadData}
-        existingFileNames={existingFileNames}
-      />
-
       {/* 详情抽屉 */}
       <FileDetailDrawer
         visible={detailDrawerVisible}
@@ -637,7 +603,6 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
           setDetailInitialTab('basic');
         }}
         onNavigate={handleDrawerNavigate}
-        onReupload={handleReupload}
         onDelete={handleDelete}
         initialTab={detailInitialTab}
       />
