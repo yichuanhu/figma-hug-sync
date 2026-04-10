@@ -813,6 +813,14 @@ export interface LYWorkerResponse {
    * 更新时间
    */
   updated_at?: string | null;
+  /** 归属部门ID */
+  owning_department_id?: string | null;
+  /** 归属部门名称 */
+  owning_department_name?: string | null;
+  /** 归属者ID */
+  owner_id?: string | null;
+  /** 归属者名称 */
+  owner_name?: string | null;
 }
 
 /**
@@ -1174,13 +1182,15 @@ export interface LYCredentialResponse {
    * 更新时间
    */
   updated_at: string;
+  /** 归属部门ID */
+  owning_department_id?: string | null;
+  /** 归属部门名称 */
+  owning_department_name?: string | null;
+  /** 归属者ID */
+  owner_id?: string | null;
+  /** 归属者名称 */
+  owner_name?: string | null;
 }
-
-/**
- * LYCredentialListResultResponse
- * 凭据列表结果响应
- */
-export interface LYCredentialListResultResponse {
   /**
    * Data
    * 凭据列表
