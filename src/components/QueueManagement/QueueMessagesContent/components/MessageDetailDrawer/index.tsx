@@ -72,16 +72,16 @@ const MessageDetailDrawer = ({
     <>
       {message.status === 'UNCONSUMED_ACTIVE' && (
         <Tooltip content={t('queueMessage.actions.consume')}>
-          <Button icon={<PlayCircle size={16} strokeWidth={2} />} theme="borderless" size="small" onClick={() => onConsume(message)} />
+          <Button icon={<PlayCircle size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={() => onConsume(message)} />
         </Tooltip>
       )}
       {(message.status === 'CONSUMED' || message.status === 'EXPIRED') && (
         <Tooltip content={t('queueMessage.actions.requeue')}>
-          <Button icon={<RefreshCw size={16} strokeWidth={2} />} theme="borderless" size="small" onClick={() => onRequeue(message)} />
+          <Button icon={<RefreshCw size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={() => onRequeue(message)} />
         </Tooltip>
       )}
       <Tooltip content={t('common.delete')}>
-        <Button icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />} theme="borderless" size="small" onClick={() => onDelete(message)} />
+        <Button icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />} theme="borderless" type="tertiary" size="small" onClick={() => onDelete(message)} />
       </Tooltip>
     </>
   );
