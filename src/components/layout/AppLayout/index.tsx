@@ -7,7 +7,7 @@ import './index.less';
 const noExpandRoutes = ['/personal-center'];
 
 const AppLayout = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const [detailPanelVisible, setDetailPanelVisible] = useState(true);
   const location = useLocation();
 
