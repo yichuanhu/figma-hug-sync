@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import { useTranslation } from 'react-i18next';
 import {
-  SideSheet,
   Button,
   Typography,
   Descriptions,
@@ -10,18 +9,16 @@ import {
   Tooltip,
   Toast,
   Modal,
-  Space,
-  Divider,
 } from '@douyinfe/semi-ui';
-import { ChevronLeft, ChevronRight, Download, Maximize2, Minimize2, Trash2, UserPlus, X } from 'lucide-react';
+import { Download, Trash2 } from 'lucide-react';
 import type { LYFileResponse, FileSource } from '@/api/index';
 import ExpandableText from '@/components/ExpandableText';
-import CollaboratorPanel from '@/components/CollaboratorManager/CollaboratorPanel';
+import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 
 import './index.less';
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 // 来源类型配置
 const sourceConfig: Record<FileSource, { color: 'blue' | 'green'; i18nKey: string }> = {
@@ -33,11 +30,9 @@ interface FileDetailDrawerProps {
   visible: boolean;
   file: LYFileResponse | null;
   context: 'development' | 'scheduling';
-  currentIndex: number;
-  totalCount: number;
+  dataList: LYFileResponse[];
   onClose: () => void;
-  onNavigate: (direction: 'prev' | 'next') => void;
-  
+  onNavigate: (file: LYFileResponse) => void;
   onDelete: (file: LYFileResponse) => void;
   initialTab?: string;
 }
@@ -46,66 +41,15 @@ const FileDetailDrawer = ({
   visible,
   file,
   context,
-  currentIndex,
-  totalCount,
+  dataList,
   onClose,
   onNavigate,
-  
   onDelete,
   initialTab = 'basic',
 }: FileDetailDrawerProps) => {
   const { t } = useTranslation();
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const [collaboratorPanelVisible, setCollaboratorPanelVisible] = useState(false);
-  const [drawerWidth, setDrawerWidth] = useState(() => {
-    const saved = localStorage.getItem('file-detail-drawer-width');
-    return saved ? Math.max(Number(saved), 576) : 900;
-  });
-  const isResizing = useRef(false);
-  const startX = useRef(0);
-  const startWidth = useRef(drawerWidth);
 
   const { canManage } = useCollaboratorPermission('FILE', file?.id);
-
-  const prevVisibleRef = useRef(false);
-  useEffect(() => {
-    prevVisibleRef.current = visible;
-  }, [visible]);
-
-  // 保存宽度到 localStorage
-  useEffect(() => {
-    if (!isFullscreen) {
-      localStorage.setItem('file-detail-drawer-width', drawerWidth.toString());
-    }
-  }, [drawerWidth, isFullscreen]);
-
-  // 拖拽调整宽度
-  const handleMouseDown = useCallback(
-    (e: React.MouseEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      isResizing.current = true;
-      startX.current = e.clientX;
-      startWidth.current = drawerWidth;
-      document.body.style.cursor = 'ew-resize';
-      document.body.style.userSelect = 'none';
-      const handleMouseMove = (e: MouseEvent) => {
-        if (!isResizing.current) return;
-        const diff = startX.current - e.clientX;
-        setDrawerWidth(Math.min(Math.max(startWidth.current + diff, 576), window.innerWidth - 100));
-      };
-      const handleMouseUp = () => {
-        isResizing.current = false;
-        document.body.style.cursor = '';
-        document.body.style.userSelect = '';
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
-      };
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-    },
-    [drawerWidth],
-  );
 
   // 格式化文件大小
   const formatFileSize = (bytes: number): string => {
@@ -121,11 +65,6 @@ const FileDetailDrawer = ({
     if (!time) return '-';
     return new Date(time).toLocaleString('zh-CN');
   };
-
-  // 切换全屏
-  const toggleFullscreen = useCallback(() => {
-    setIsFullscreen((prev) => !prev);
-  }, []);
 
   // 下载文件
   const handleDownload = useCallback(() => {
@@ -151,78 +90,46 @@ const FileDetailDrawer = ({
     onDelete(file);
   }, [file, onDelete, t]);
 
-  // 抽屉关闭时重置状态
-  const handleClose = useCallback(() => {
-    onClose();
-  }, [onClose]);
-
-  // 导航
-  const canGoPrev = currentIndex > 0;
-  const canGoNext = currentIndex < totalCount - 1;
-
   if (!file) return null;
 
   const canDeleteFile = context === 'development' && !file.is_published;
 
+  const extraActions = (
+    <>
+      <Tooltip content={t('file.actions.download')}>
+        <Button icon={<Download size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={handleDownload} />
+      </Tooltip>
+    </>
+  );
+
+  const deleteAction = canDeleteFile ? (
+    <Tooltip content={t('common.delete')}>
+      <Button icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />} theme="borderless" type="tertiary" size="small" onClick={handleDelete} />
+    </Tooltip>
+  ) : null;
+
   return (
-    <SideSheet
-      title={
-        <div className="file-detail-drawer-header">
-          <Tooltip content={file.display_name}>
-            <Title heading={5} className="file-detail-drawer-header-title">
-              {file.display_name}
-            </Title>
-          </Tooltip>
-          <Space spacing={8} style={{ flexShrink: 0 }}>
-            <Tooltip content={t('common.previous')}>
-              <Button icon={<ChevronLeft size={16} strokeWidth={2} />} theme="borderless" size="small" disabled={!canGoPrev} onClick={() => onNavigate('prev')} />
-            </Tooltip>
-            <Tooltip content={t('common.next')}>
-              <Button icon={<ChevronRight size={16} strokeWidth={2} />} theme="borderless" size="small" disabled={!canGoNext} onClick={() => onNavigate('next')} />
-            </Tooltip>
-            <Divider layout="vertical" className="file-detail-drawer-header-divider" />
-            <Tooltip content={t('file.actions.download')}>
-              <Button icon={<Download size={16} strokeWidth={2} />} theme="borderless" size="small" onClick={handleDownload} />
-            </Tooltip>
-            {context === 'development' && canDeleteFile && (
-              <Tooltip content={t('common.delete')}>
-                <Button icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" className="file-detail-drawer-header-delete-icon" />} theme="borderless" size="small" onClick={handleDelete} />
-              </Tooltip>
-            )}
-            <Button
-              icon={<UserPlus size={14} strokeWidth={2} />}
-              theme="borderless"
-              size="small"
-              onClick={() => setCollaboratorPanelVisible(true)}
-            />
-            <CollaboratorPanel
-              assetType="FILE"
-              assetId={file.id}
-              context={context}
-              canManage={canManage}
-              visible={collaboratorPanelVisible}
-              onVisibleChange={setCollaboratorPanelVisible}
-            />
-            <Divider layout="vertical" className="file-detail-drawer-header-divider" />
-            <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
-              <Button icon={isFullscreen ? <Minimize2 size={16} strokeWidth={2} /> : <Maximize2 size={16} strokeWidth={2} />} theme="borderless" size="small" onClick={toggleFullscreen} />
-            </Tooltip>
-            <Tooltip content={t('common.close')}>
-              <Button icon={<X size={16} strokeWidth={2} />} theme="borderless" size="small" onClick={handleClose} className="file-detail-drawer-header-close-btn" />
-            </Tooltip>
-          </Space>
-        </div>
-      }
+    <DetailDrawerWrapper
       visible={visible}
-      onCancel={handleClose}
-      placement="right"
-      width={isFullscreen ? '100%' : drawerWidth}
-      mask={false}
-      footer={null}
-      closable={false}
-      className={`card-sidesheet resizable-sidesheet file-detail-drawer ${isFullscreen ? 'fullscreen-sidesheet' : ''}`}
+      onClose={onClose}
+      title={file.display_name}
+      dataList={dataList}
+      currentId={file.id}
+      getId={(item) => item.id}
+      onNavigate={onNavigate}
+      extraActions={extraActions}
+      deleteAction={deleteAction}
+      collaboratorProps={{
+        assetType: 'FILE',
+        assetId: file.id,
+        context,
+        canManage,
+      }}
+      defaultWidth={900}
+      minWidth={576}
+      storageKey="file-detail-drawer-width"
+      className="file-detail-drawer"
     >
-      {!isFullscreen && <div className="file-detail-drawer-resize-handle" onMouseDown={handleMouseDown} />}
       <div className="file-detail-drawer-content" style={{ padding: '16px 24px' }}>
         <div className="file-detail-drawer-section">
           <Text className="file-detail-drawer-section-title">{t('file.detail.basicInfo')}</Text>
@@ -261,7 +168,7 @@ const FileDetailDrawer = ({
           </Descriptions>
         </div>
       </div>
-    </SideSheet>
+    </DetailDrawerWrapper>
   );
 };
 
