@@ -10,6 +10,7 @@ import {
   Space,
   Modal,
   Toast,
+  Select,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
@@ -92,6 +93,11 @@ const fetchWorkerGroupList = async (params: GetWorkerGroupsParams): Promise<LYLi
     );
   }
 
+  // 归属部门Filter
+  if ((params as any).owning_department_name) {
+    data = data.filter(item => (item as any).owning_department_name === (params as any).owning_department_name);
+  }
+
   const total = data.length;
   const offset = params.offset || 0;
   const size = params.size || 20;
@@ -116,10 +122,11 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
   const { t } = useTranslation();
   
   // queryParameter
-  const [queryParams, setQueryParams] = useState<GetWorkerGroupsParams>({
+  const [queryParams, setQueryParams] = useState<GetWorkerGroupsParams & { owning_department_name?: string }>({
     offset: 0,
     size: 20,
     keyword: undefined,
+    owning_department_name: undefined,
   });
   
   const [loading, setLoading] = useState(true);
@@ -415,6 +422,11 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
         <Row type="flex" justify="space-between" align="middle" className="worker-group-management-header-toolbar">
           <Col>
             <Space>
+  const departmentOptions = useMemo(() => {
+    const depts = [...new Set(mockWorkerGroups.map(g => (g as any).owning_department_name).filter(Boolean))];
+    return depts.map(d => ({ value: d, label: d }));
+  }, []);
+
               <Input 
                 prefix={<IconSearchStroked />}
                 placeholder={t('workerGroup.searchPlaceholder')}
