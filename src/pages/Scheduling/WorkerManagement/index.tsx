@@ -20,6 +20,7 @@ import { IconSearchStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
+import { Select } from '@douyinfe/semi-ui';
 import { Ellipsis, Eye, Key, MinusCircle, Pencil, Plus, Trash2, UserPlus, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -233,7 +234,6 @@ interface FilterState {
   status: string[];
   sync_status: string[];
   group_id: string[];
-  owning_department_name: string[];
 }
 
 interface SortState {
@@ -354,8 +354,8 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     status: [],
     sync_status: [],
     group_id: [],
-    owning_department_name: [],
   });
+  const [departmentFilter, setDepartmentFilter] = useState<string | undefined>(undefined);
   const [sortState, setSortState] = useState<SortState>({});
   const [filterVisible, setFilterVisible] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -416,11 +416,12 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       { label: t('worker.filter.ungrouped'), value: UNGROUPED_FILTER_VALUE },
       ...mockWorkerGroups.map(g => ({ label: g.name, value: g.id })),
     ],
-    owning_department_name: (() => {
-      const depts = [...new Set(mockWorkers.map(w => (w as any).owning_department_name).filter(Boolean))];
-      return depts.map(d => ({ label: d, value: d }));
-    })(),
   }), [t]);
+
+  const departmentOptions = useMemo(() => {
+    const depts = [...new Set(mockWorkers.map(w => (w as any).owning_department_name).filter(Boolean))];
+    return depts.map(d => ({ value: d, label: d }));
+  }, []);
 
   // LoadingData
   const loadData = useCallback(async () => {
@@ -500,7 +501,6 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       status: (values.status as string[]) || [],
       sync_status: (values.sync_status as string[]) || [],
       group_id: (values.group_id as string[]) || [],
-      owning_department_name: (values.owning_department_name as string[]) || [],
     });
     setQueryParams(prev => ({ ...prev, offset: 0 }));
   };
@@ -942,14 +942,18 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
                     options: filterOptions.group_id,
                     value: filters.group_id,
                   },
-                  {
-                    key: 'owning_department_name',
-                    label: t('common.owningDepartment'),
-                    type: 'checkbox',
-                    options: filterOptions.owning_department_name,
-                    value: filters.owning_department_name,
-                  },
                 ]}
+              />
+              <Select
+                placeholder={t('common.owningDepartment')}
+                value={departmentFilter}
+                onChange={(v) => {
+                  setDepartmentFilter(v as string | undefined);
+                  setQueryParams(prev => ({ ...prev, offset: 0 }));
+                }}
+                showClear
+                style={{ width: 160 }}
+                optionList={departmentOptions}
               />
             </Space>
           </Col>
