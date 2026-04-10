@@ -453,10 +453,11 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       offset: newOffset,
       filters,
       sort: sortState,
-    });
+      owning_department_name: departmentFilter,
+    } as any);
     setListResponse(response);
     return response.list;
-  }, [queryParams, filters, sortState, listResponse.range?.size]);
+  }, [queryParams, filters, sortState, departmentFilter, listResponse.range?.size]);
 
   // 当Tab switchto非激活Status时, CloseDrawer
   useEffect(() => {

@@ -183,8 +183,8 @@ const fetchTaskList = async (params: GetTasksParams): Promise<LYListResponseLYTa
   }
 
   // 归属部门Filter
-  if ((params as any).owning_department_names && (params as any).owning_department_names.length > 0) {
-    filteredData = filteredData.filter((item) => (params as any).owning_department_names.includes((item as any).owning_department_name));
+  if ((params as any).owning_department_name) {
+    filteredData = filteredData.filter((item) => (item as any).owning_department_name === (params as any).owning_department_name);
   }
 
   // Time范围Filter
@@ -264,7 +264,7 @@ const TaskManagementPage = () => {
   const [taskStatusFilter, setTaskStatusFilter] = useState<string[]>([]);
   const [executionStatusFilter, setExecutionStatusFilter] = useState<string[]>([]);
   const [triggerSourceFilter, setTriggerSourceFilter] = useState<string[]>([]);
-  const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
+  const [departmentFilter, setDepartmentFilter] = useState<string | undefined>(undefined);
   const [dateRange, setDateRange] = useState<[Date, Date] | null>(null);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
 
@@ -328,7 +328,7 @@ const TaskManagementPage = () => {
         task_status: taskStatusFilter.length > 0 ? taskStatusFilter as TaskStatus[] : undefined,
         execution_status: executionStatusFilter.length > 0 ? executionStatusFilter as ExecutionStatus[] : undefined,
         trigger_source: triggerSourceFilter.length > 0 ? triggerSourceFilter as TriggerSource[] : undefined,
-        owning_department_names: departmentFilter.length > 0 ? departmentFilter : undefined,
+        owning_department_name: departmentFilter,
         start_time: dateRange?.[0]?.toISOString(),
         end_time: dateRange?.[1]?.toISOString(),
       } as any);
@@ -527,7 +527,6 @@ const TaskManagementPage = () => {
     setTaskStatusFilter((values.taskStatus as string[]) || []);
     setExecutionStatusFilter((values.executionStatus as string[]) || []);
     setTriggerSourceFilter((values.triggerSource as string[]) || []);
-    setDepartmentFilter((values.department as string[]) || []);
     setDateRange((values.dateRange as [Date, Date] | null) || null);
   };
 
@@ -748,19 +747,24 @@ const TaskManagementPage = () => {
                       value: triggerSourceFilter,
                     },
                     {
-                      key: 'department',
-                      label: t('common.owningDepartment'),
-                      type: 'checkbox',
-                      options: departmentOptions,
-                      value: departmentFilter,
-                    },
-                    {
                       key: 'dateRange',
                       label: t('task.filter.dateRange'),
                       type: 'dateRange',
                       value: dateRange,
                     },
                   ]}
+                />
+                <Select
+                  placeholder={t('common.owningDepartment')}
+                  value={departmentFilter}
+                  onChange={(v) => {
+                    setDepartmentFilter(v as string | undefined);
+                    setQueryParams(prev => ({ ...prev, offset: 0 }));
+                  }}
+                  showClear
+                  style={{ width: 160 }}
+                  optionList={departmentOptions}
+                />
                 />
               </Space>
             </Col>
