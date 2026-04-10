@@ -33,6 +33,8 @@ export interface DetailDrawerWrapperProps<T> {
   children: ReactNode;
   /** 额外的操作按钮（显示在导航和全屏之间） */
   extraActions?: ReactNode;
+  /** 删除操作按钮（始终显示在协作者按钮之后、分隔线之前） */
+  deleteAction?: ReactNode;
   /** 是否显示导航按钮，默认 true */
   showNavigation?: boolean;
   /** 协作者面板配置（传入后自动在 header 渲染分享按钮） */
@@ -83,6 +85,7 @@ function DetailDrawerWrapper<T>({
   title,
   children,
   extraActions,
+  deleteAction,
   showNavigation = true,
   collaboratorProps,
   dataList,
@@ -315,8 +318,11 @@ function DetailDrawerWrapper<T>({
                 </>
               )}
 
-              {/* 如果有额外操作按钮或协作者按钮，添加分隔线 */}
-              {(extraActions || collaboratorProps) && <Divider layout="vertical" className="detail-drawer-wrapper-header-divider" />}
+              {/* 删除按钮 - 始终在最后 */}
+              {deleteAction}
+
+              {/* 如果有额外操作按钮、协作者按钮或删除按钮，添加分隔线 */}
+              {(extraActions || collaboratorProps || deleteAction) && <Divider layout="vertical" className="detail-drawer-wrapper-header-divider" />}
 
               {/* 全屏按钮 */}
               <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>

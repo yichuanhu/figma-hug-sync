@@ -80,10 +80,13 @@ const MessageDetailDrawer = ({
           <Button icon={<RefreshCw size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={() => onRequeue(message)} />
         </Tooltip>
       )}
-      <Tooltip content={t('common.delete')}>
-        <Button icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />} theme="borderless" type="tertiary" size="small" onClick={() => onDelete(message)} />
-      </Tooltip>
     </>
+  );
+
+  const deleteAction = (
+    <Tooltip content={t('common.delete')}>
+      <Button icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />} theme="borderless" type="tertiary" size="small" onClick={() => onDelete(message)} />
+    </Tooltip>
   );
 
   return (
@@ -96,6 +99,7 @@ const MessageDetailDrawer = ({
       getId={(item) => item.message_id}
       onNavigate={onNavigate}
       extraActions={extraActions}
+      deleteAction={deleteAction}
       defaultWidth={900}
       minWidth={576}
       storageKey="queue-message-detail-drawer-width"

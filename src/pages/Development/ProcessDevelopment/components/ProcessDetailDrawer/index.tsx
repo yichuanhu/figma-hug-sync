@@ -357,13 +357,14 @@ const ProcessDetailDrawer = ({
       <Tooltip content={t('common.run')}>
         <Button icon={<PlayCircle size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={onRun} />
       </Tooltip>
-      {onDelete && (
-        <Tooltip content={t('common.delete')}>
-          <Button icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />} theme="borderless" type="tertiary" size="small" onClick={onDelete} />
-        </Tooltip>
-      )}
     </>
   );
+
+  const deleteAction = onDelete ? (
+    <Tooltip content={t('common.delete')}>
+      <Button icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />} theme="borderless" type="tertiary" size="small" onClick={onDelete} />
+    </Tooltip>
+  ) : null;
 
   return (
     <DetailDrawerWrapper
@@ -378,6 +379,7 @@ const ProcessDetailDrawer = ({
       onPageChange={onPageChange}
       onScrollToRow={onScrollToRow}
       extraActions={extraActions}
+      deleteAction={deleteAction}
       defaultWidth={900}
       minWidth={576}
       storageKey="devProcessDetailDrawerWidth"

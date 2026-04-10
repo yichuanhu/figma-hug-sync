@@ -263,13 +263,14 @@ const CredentialDetailDrawer = ({
           <Button icon={<Pencil size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={handleEdit} />
         </Tooltip>
       )}
-      {context === 'development' && !credential.is_published && (
-        <Tooltip content={t('common.delete')}>
-          <Button icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />} theme="borderless" type="tertiary" size="small" onClick={handleDelete} />
-        </Tooltip>
-      )}
     </>
   );
+
+  const deleteAction = context === 'development' && !credential.is_published ? (
+    <Tooltip content={t('common.delete')}>
+      <Button icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />} theme="borderless" type="tertiary" size="small" onClick={handleDelete} />
+    </Tooltip>
+  ) : null;
 
   return (
     <DetailDrawerWrapper
@@ -284,6 +285,7 @@ const CredentialDetailDrawer = ({
       onPageChange={onPageChange}
       onScrollToRow={onScrollToRow}
       extraActions={extraActions}
+      deleteAction={deleteAction}
       collaboratorProps={{
         assetType: 'CREDENTIAL',
         assetId: credential.credential_id,
