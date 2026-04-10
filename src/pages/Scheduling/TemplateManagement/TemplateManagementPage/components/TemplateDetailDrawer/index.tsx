@@ -22,6 +22,7 @@ import ExpandableText from '@/components/ExpandableText';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import './index.less';
+import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 
 const { Text } = Typography;
 
@@ -141,6 +142,12 @@ const TemplateDetailDrawer = ({
       onScrollToRow={onScrollToRow}
       extraActions={extraActions}
       deleteAction={deleteAction}
+      collaboratorProps={{
+        assetType: 'TASK_TEMPLATE',
+        assetId: template.template_id,
+        context: 'scheduling',
+        canManage: true,
+      }}
       defaultWidth={900}
       minWidth={576}
       storageKey="templateDetailDrawerWidth"
