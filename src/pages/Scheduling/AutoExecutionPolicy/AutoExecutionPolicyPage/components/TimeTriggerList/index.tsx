@@ -123,6 +123,7 @@ interface GetTriggersParams {
   keyword?: string;
   process_id?: string;
   status?: TriggerStatus;
+  owning_department_name?: string;
 }
 
 // ============= 组件 =============
@@ -143,6 +144,7 @@ const TimeTriggerList = () => {
     keyword: '',
     process_id: undefined,
     status: undefined,
+    owning_department_name: undefined,
   });
 
   // SelectedStatus(Drawer)
@@ -188,6 +190,11 @@ const TimeTriggerList = () => {
       // byStatusFilter
       if (params.status) {
         filtered = filtered.filter((trigger) => trigger.status === params.status);
+      }
+
+      // by归属部门Filter
+      if (params.owning_department_name) {
+        filtered = filtered.filter((trigger) => trigger.owning_department_name === params.owning_department_name);
       }
 
       const offset = params.offset || 0;
@@ -487,8 +494,12 @@ const TimeTriggerList = () => {
     },
   ];
 
-  // 判断is否hasFilterCondition
-  const hasFilters = queryParams.keyword || queryParams.process_id || queryParams.status;
+  const departmentOptions = useMemo(() => {
+    const depts = [...new Set(allMockTriggers.map(t => t.owning_department_name).filter(Boolean))];
+    return depts.map(d => ({ value: d, label: d }));
+  }, []);
+
+  const hasFilters = queryParams.keyword || queryParams.process_id || queryParams.status || queryParams.owning_department_name;
 
   // currentIndex no longer needed - navigation handled by DetailDrawerWrapper
 
@@ -531,6 +542,14 @@ const TimeTriggerList = () => {
                 { value: 'ENABLED', label: t('timeTrigger.status.enabled') },
                 { value: 'DISABLED', label: t('timeTrigger.status.disabled') },
               ]}
+            />
+            <Select
+              placeholder={t('common.owningDepartment')}
+              value={queryParams.owning_department_name}
+              onChange={(v) => setQueryParams(prev => ({ ...prev, offset: 0, owning_department_name: v as string | undefined }))}
+              showClear
+              style={{ width: 160 }}
+              optionList={departmentOptions}
             />
           </Space>
         </Col>
