@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Form, Button, Toast } from '@douyinfe/semi-ui';
 import type { CredentialType } from '@/api/index';
-
+import DepartmentSelect from '@/components/DepartmentSelect';
 import './index.less';
+import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 
 interface CreateCredentialModalProps {
   visible: boolean;
@@ -20,6 +21,7 @@ const CreateCredentialModal = ({
 }: CreateCredentialModalProps) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
+  const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>(undefined);
 
   const handleSubmit = async (values: {
     credential_name: string;
@@ -132,6 +134,18 @@ const CreateCredentialModal = ({
           autosize={{ minRows: 3, maxRows: 6 }}
           trigger="blur"
         />
+
+        
+        <Form.Slot label={t('common.owningDepartment')}>
+          <DepartmentSelect
+            value={owningDepartmentId}
+            onChange={setOwningDepartmentId}
+          />
+        </Form.Slot>
+
+        <Form.Slot label={t('common.owner')}>
+          <span>{MOCK_CURRENT_USER.name}</span>
+        </Form.Slot>
 
         <div className="create-credential-modal-footer">
           <Button theme="light" onClick={onCancel}>

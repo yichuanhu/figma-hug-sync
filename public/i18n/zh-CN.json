@@ -38,7 +38,11 @@
     "refresh": "刷新",
     "seconds": "秒",
     "days": "天",
-    "selectAll": "全选"
+    "selectAll": "全选",
+    "owningDepartment": "归属部门",
+    "owner": "归属者",
+    "owningDepartmentPlaceholder": "请选择归属部门",
+    "owningDepartmentRequired": "请选择归属部门"
   },
   "emptyState": {
     "retry": "重试",

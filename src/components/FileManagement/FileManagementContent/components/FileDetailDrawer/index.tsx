@@ -13,6 +13,7 @@ import {
 import { Download, Trash2 } from 'lucide-react';
 import type { LYFileResponse, FileSource } from '@/api/index';
 import ExpandableText from '@/components/ExpandableText';
+import { getDepartmentName } from '@/mocks/departmentData';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 
@@ -143,6 +144,8 @@ const FileDetailDrawer = ({
                 <Tag color={file.is_published ? 'green' : 'grey'}>{file.is_published ? t('file.detail.published') : t('file.detail.unpublished')}</Tag>
               </Descriptions.Item>
             )}
+            <Descriptions.Item itemKey={t('common.owningDepartment')}>{getDepartmentName(file.owning_department_id)}</Descriptions.Item>
+            <Descriptions.Item itemKey={t('common.owner')}>{file.owner_name ? <UserNameWithCard name={file.owner_name} userId={file.owner_id || ''} /> : '-'}</Descriptions.Item>
             <Descriptions.Item itemKey={t('common.description')}><ExpandableText text={file.description} maxLines={3} /></Descriptions.Item>
             <Descriptions.Item itemKey={t('common.creator')}>
               {file.created_by_name ? <UserNameWithCard name={file.created_by_name} userId={file.created_by} department={file.created_by_department || undefined} role={file.created_by_role || undefined} email={file.created_by_email || undefined} /> : '-'}

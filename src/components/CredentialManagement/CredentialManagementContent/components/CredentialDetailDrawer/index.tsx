@@ -23,6 +23,7 @@ import EmptyState from '@/components/EmptyState';
 import DetailSkeleton from '@/components/DetailSkeleton';
 import TableSkeleton from '@/components/TableSkeleton';
 import ExpandableText from '@/components/ExpandableText';
+import { getDepartmentName } from '@/mocks/departmentData';
 import FilterPopover from '@/components/FilterPopover';
 import { Download, Pencil, Trash2 } from 'lucide-react';
 import type { LYCredentialResponse, CredentialType, LYRangeResponse } from '@/api/index';
@@ -221,6 +222,8 @@ const CredentialDetailDrawer = ({
       { key: t('credential.detail.type'), value: <Tag color={typeConfig[credential.credential_type].color} type="light">{t(typeConfig[credential.credential_type].i18nKey)}</Tag> },
       { key: context === 'development' ? t('credential.detail.testValue') : t('credential.detail.productionValue'), value: <Text>{getCredentialValueDisplay}</Text> },
       ...(context === 'development' ? [{ key: t('credential.detail.publishStatus'), value: <Tag color={credential.is_published ? 'green' : 'grey'}>{credential.is_published ? t('credential.detail.published') : t('credential.detail.unpublished')}</Tag> }] : []),
+      { key: t('common.owningDepartment'), value: getDepartmentName(credential.owning_department_id) },
+      { key: t('common.owner'), value: credential.owner_name ? <UserNameWithCard name={credential.owner_name} userId={credential.owner_id || ''} /> : '-' },
       { key: t('common.description'), value: <ExpandableText text={credential.description} maxLines={3} /> },
       ...(credential.credential_type === 'PERSONAL_REF' ? [{ key: t('credential.detail.linkedPersonalCredential'), value: credential.linked_personal_credential_value || '-' }] : []),
       { key: t('common.creator'), value: credential.created_by_name ? <UserNameWithCard name={credential.created_by_name} userId={credential.created_by} department={credential.created_by_department || undefined} role={credential.created_by_role || undefined} email={credential.created_by_email || undefined} /> : '-' },

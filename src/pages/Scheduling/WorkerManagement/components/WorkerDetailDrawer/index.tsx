@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Typography, Button, Tag, Descriptions, Switch, Tooltip, Space } from '@douyinfe/semi-ui';
 import type { LYWorkerResponse } from '@/api';
 import ExpandableText from '@/components/ExpandableText';
+import { getDepartmentName } from '@/mocks/departmentData';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import './index.less';
@@ -71,6 +72,8 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
     { key: t('worker.detail.fields.workerName'), value: workerData.name },
     { key: t('worker.detail.fields.group'), value: renderGroupValue() },
     { key: t('worker.detail.fields.description'), value: <ExpandableText text={workerData.description} maxLines={3} /> },
+    { key: t('common.owningDepartment'), value: getDepartmentName(workerData.owning_department_id) },
+    { key: t('common.owner'), value: workerData.owner_name || '-' },
     { key: t('worker.detail.fields.status'), value: <Tag color={statusCfg.color as any} type="light">{statusCfg.text}</Tag> },
     { key: t('worker.detail.fields.receiveTasks'), value: <Switch checked={workerData.receive_tasks} size="small" disabled={!canOperateReceiveTasks} onChange={(checked) => onToggleReceiveTasks?.(workerData, checked)} /> },
   ];

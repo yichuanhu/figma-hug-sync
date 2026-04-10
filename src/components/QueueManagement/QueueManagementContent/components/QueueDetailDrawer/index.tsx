@@ -11,6 +11,7 @@ import {
 } from '@douyinfe/semi-ui';
 import type { LYQueueResponse } from '@/api/index';
 import ExpandableText from '@/components/ExpandableText';
+import { getDepartmentName } from '@/mocks/departmentData';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
@@ -129,6 +130,12 @@ const QueueDetailDrawer = ({
               )}
             </Descriptions.Item>
           )}
+          <Descriptions.Item itemKey={t('common.owningDepartment')}>
+            {getDepartmentName(queue.owning_department_id)}
+          </Descriptions.Item>
+          <Descriptions.Item itemKey={t('common.owner')}>
+            {queue.owner_name ? <UserNameWithCard name={queue.owner_name} userId={queue.owner_id || ''} /> : '-'}
+          </Descriptions.Item>
           <Descriptions.Item itemKey={t('common.description')}>
             <ExpandableText text={queue.description} maxLines={3} />
           </Descriptions.Item>

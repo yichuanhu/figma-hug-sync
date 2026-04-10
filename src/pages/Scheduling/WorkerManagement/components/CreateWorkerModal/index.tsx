@@ -11,6 +11,8 @@ import {
   Banner,
 } from '@douyinfe/semi-ui';
 import type { LYWorkerResponse } from '@/api';
+import DepartmentSelect from '@/components/DepartmentSelect';
+import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 import './index.less';
 
 interface CreateWorkerModalProps {
@@ -44,6 +46,7 @@ const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalPr
   const [useSameDevice, setUseSameDevice] = useState(false);
   const [selectedWorkerId, setSelectedWorkerId] = useState<string | undefined>(undefined);
   const [desktopType, setDesktopType] = useState<string>('Console');
+  const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>(undefined);
   const [isLocalDesktopDisabled, setIsLocalDesktopDisabled] = useState(false);
 
   // 当select's Alreadyhasbot变化时, Checkits桌面Type
@@ -164,6 +167,12 @@ const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalPr
               ]}
               showClear
             />
+            <Form.Slot label={t('common.owningDepartment')}>
+              <DepartmentSelect value={owningDepartmentId} onChange={setOwningDepartmentId} />
+            </Form.Slot>
+            <Form.Slot label={t('common.owner')}>
+              <span>{MOCK_CURRENT_USER.name}</span>
+            </Form.Slot>
             <Form.TextArea
               field="description"
               label={t('common.description')}

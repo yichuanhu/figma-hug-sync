@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Form, Button, Toast, Radio } from '@douyinfe/semi-ui';
 import type { ParameterType } from '@/api/index';
-
+import DepartmentSelect from '@/components/DepartmentSelect';
 import './index.less';
+import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 
 interface CreateParameterModalProps {
   visible: boolean;
@@ -150,6 +151,18 @@ const CreateParameterModal = ({
           placeholder={t('parameter.fields.descriptionPlaceholder')}
           maxCount={2000}
           rows={3}
+        />
+
+        <Form.Slot label={t('common.owningDepartment')}>
+          <DepartmentSelect
+            value={owningDepartmentId}
+            onChange={setOwningDepartmentId}
+          />
+        </Form.Slot>
+
+        <Form.Slot label={t('common.owner')}>
+          <span>{MOCK_CURRENT_USER.name}</span>
+        </Form.Slot>
         />
 
         <div className="create-parameter-modal-footer">

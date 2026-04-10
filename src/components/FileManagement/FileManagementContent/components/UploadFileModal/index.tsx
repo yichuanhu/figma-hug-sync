@@ -12,6 +12,8 @@ import {
   Input,
 } from '@douyinfe/semi-ui';
 import { AlertCircle, File as FileIcon, Inbox, X } from 'lucide-react';
+import DepartmentSelect from '@/components/DepartmentSelect';
+import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 import type { FileItem } from '@douyinfe/semi-ui/lib/es/upload';
 
 import './index.less';
@@ -60,6 +62,7 @@ const UploadFileModal = ({
   const [showWarning, setShowWarning] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [displayNameError, setDisplayNameError] = useState<string | null>(null);
+  const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>(undefined);
 
   // 当弹窗打开时，如果有预选文件则设置
   useEffect(() => {
@@ -353,6 +356,20 @@ const UploadFileModal = ({
             )}
           </div>
         )}
+
+        <div className="upload-file-modal-display-name">
+            <div className="upload-file-modal-display-name-label">
+              <Text>{t('common.owningDepartment')}</Text>
+              <Text type="danger"> *</Text>
+            </div>
+            <DepartmentSelect value={owningDepartmentId} onChange={setOwningDepartmentId} />
+          </div>
+          <div className="upload-file-modal-display-name">
+            <div className="upload-file-modal-display-name-label">
+              <Text>{t('common.owner')}</Text>
+            </div>
+            <span>{MOCK_CURRENT_USER.name}</span>
+          </div>
 
         <Form className="upload-file-modal-form" initValues={{ description: '' }}>
           <Form.TextArea

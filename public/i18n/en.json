@@ -53,7 +53,11 @@
     "refresh": "Refresh",
     "seconds": "seconds",
     "days": "days",
-    "selectAll": "Select All"
+    "selectAll": "Select All",
+    "owningDepartment": "Owning Department",
+    "owner": "Owner",
+    "owningDepartmentPlaceholder": "Select owning department",
+    "owningDepartmentRequired": "Please select owning department"
   },
   "emptyState": {
     "retry": "Retry",

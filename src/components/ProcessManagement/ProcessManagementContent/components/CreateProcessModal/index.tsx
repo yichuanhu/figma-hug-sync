@@ -2,13 +2,9 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Form, Toast, Button } from '@douyinfe/semi-ui';
 import type { LYCreateProcessRequest, LYProcessResponse } from '@/api';
+import DepartmentSelect from '@/components/DepartmentSelect';
+import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 import './index.less';
-
-interface CreateProcessModalProps {
-  visible: boolean;
-  onCancel: () => void;
-  onSuccess?: (processData: LYProcessResponse) => void;
-}
 
 // 生成UUID v4
 const generateUUID = (): string => {
@@ -20,7 +16,7 @@ const generateUUID = (): string => {
 };
 
 // 生成Mock的LYProcessResponse
-const generateMockLYProcessResponse = (request: LYCreateProcessRequest): LYProcessResponse => {
+const generateMockLYProcessResponse = (request: LYCreateProcessRequest, owningDepartmentId: string, owningDepartmentName: string): LYProcessResponse => {
   const now = new Date().toISOString();
   return {
     id: generateUUID(),
@@ -31,16 +27,27 @@ const generateMockLYProcessResponse = (request: LYCreateProcessRequest): LYProce
     timeout: 60,
     status: 'DEVELOPING',
     current_version_id: null,
-    creator_id: 'user-001',
+    creator_id: MOCK_CURRENT_USER.id,
     requirement_id: request.requirement_id || null,
     created_at: now,
     updated_at: now,
+    owning_department_id: owningDepartmentId,
+    owning_department_name: owningDepartmentName,
+    owner_id: MOCK_CURRENT_USER.id,
+    owner_name: MOCK_CURRENT_USER.name,
   };
 };
+
+interface CreateProcessModalProps {
+  visible: boolean;
+  onCancel: () => void;
+  onSuccess?: (processData: LYProcessResponse) => void;
+}
 
 const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModalProps) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
+  const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>(undefined);
 
   const existingProcessNames = ['订单自动处理流程', '财务报销审批流程', '人事入职流程'];
 
@@ -49,7 +56,6 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
       callback();
       return true;
     }
-    // 不能以数字开头，不能包含特殊符号(下划线除外)和空格
     const namePattern = /^[^\d][a-zA-Z0-9\u4e00-\u9fa5_]*$/;
     if (!namePattern.test(value.trim())) {
       callback(t('development.processDevelopment.createModal.validation.nameFormatError'));
@@ -71,17 +77,22 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
   const handleSubmit = async (values: Record<string, unknown>) => {
     setLoading(true);
     try {
-      // 构建API请求参数 - 使用LYCreateProcessRequest类型
+      if (!owningDepartmentId) {
+        Toast.warning(t('common.owningDepartmentRequired'));
+        setLoading(false);
+        return;
+      }
+
       const createRequest: LYCreateProcessRequest = {
         name: values.name as string,
         description: (values.description as string) || undefined,
+        owning_department_id: owningDepartmentId,
       };
 
-      // 模拟API调用延迟
       await new Promise((resolve) => setTimeout(resolve, 300));
 
-      // 生成Mock响应 - 直接返回LYProcessResponse
-      const mockResponse = generateMockLYProcessResponse(createRequest);
+      const { getDepartmentName } = await import('@/mocks/departmentData');
+      const mockResponse = generateMockLYProcessResponse(createRequest, owningDepartmentId, getDepartmentName(owningDepartmentId));
 
       Toast.success(t('development.processDevelopment.createModal.success'));
       onCancel();
@@ -130,6 +141,17 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
             { max: 2000, message: t('development.processDevelopment.createModal.validation.descriptionLengthError') },
           ]}
         />
+
+        <Form.Slot label={t('common.owningDepartment')}>
+          <DepartmentSelect
+            value={owningDepartmentId}
+            onChange={setOwningDepartmentId}
+          />
+        </Form.Slot>
+
+        <Form.Slot label={t('common.owner')}>
+          <span>{MOCK_CURRENT_USER.name}</span>
+        </Form.Slot>
 
         <div className="create-process-modal-footer">
           <Button theme="light" onClick={onCancel}>

@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Form, Button, Toast } from '@douyinfe/semi-ui';
-
+import DepartmentSelect from '@/components/DepartmentSelect';
 import './index.less';
+import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 
 interface CreateQueueModalProps {
   visible: boolean;
@@ -17,6 +18,7 @@ const CreateQueueModal = ({
 }: CreateQueueModalProps) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
+  const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>(undefined);
 
   // 模拟已存在的队列名称
   const existingQueueNames = ['订单处理队列', '邮件发送队列', '数据同步队列'];
@@ -87,6 +89,18 @@ const CreateQueueModal = ({
           maxCount={2000}
           rows={3}
         />
+
+        
+        <Form.Slot label={t('common.owningDepartment')}>
+          <DepartmentSelect
+            value={owningDepartmentId}
+            onChange={setOwningDepartmentId}
+          />
+        </Form.Slot>
+
+        <Form.Slot label={t('common.owner')}>
+          <span>{MOCK_CURRENT_USER.name}</span>
+        </Form.Slot>
 
         <div className="create-queue-modal-footer">
           <Button theme="light" onClick={onCancel}>

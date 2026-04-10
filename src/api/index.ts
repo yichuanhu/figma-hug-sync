@@ -58,6 +58,8 @@ export interface LYCreateProcessRequest {
    * 关联需求ID
    */
   requirement_id?: string | null;
+  /** 归属部门ID */
+  owning_department_id?: string | null;
 }
 
 /**
@@ -365,6 +367,14 @@ export interface LYProcessResponse {
    * 更新时间
    */
   updated_at: string | null;
+  /** 归属部门ID */
+  owning_department_id?: string | null;
+  /** 归属部门名称 */
+  owning_department_name?: string | null;
+  /** 归属者ID */
+  owner_id?: string | null;
+  /** 归属者名称 */
+  owner_name?: string | null;
 }
 
 /**
@@ -803,6 +813,14 @@ export interface LYWorkerResponse {
    * 更新时间
    */
   updated_at?: string | null;
+  /** 归属部门ID */
+  owning_department_id?: string | null;
+  /** 归属部门名称 */
+  owning_department_name?: string | null;
+  /** 归属者ID */
+  owner_id?: string | null;
+  /** 归属者名称 */
+  owner_name?: string | null;
 }
 
 /**
@@ -1164,6 +1182,14 @@ export interface LYCredentialResponse {
    * 更新时间
    */
   updated_at: string;
+  /** 归属部门ID */
+  owning_department_id?: string | null;
+  /** 归属部门名称 */
+  owning_department_name?: string | null;
+  /** 归属者ID */
+  owner_id?: string | null;
+  /** 归属者名称 */
+  owner_name?: string | null;
 }
 
 /**
@@ -1363,6 +1389,14 @@ export interface LYParameterResponse {
    * 更新时间
    */
   updated_at: string;
+  /** 归属部门ID */
+  owning_department_id?: string | null;
+  /** 归属部门名称 */
+  owning_department_name?: string | null;
+  /** 归属者ID */
+  owner_id?: string | null;
+  /** 归属者名称 */
+  owner_name?: string | null;
 }
 
 /**
@@ -1576,6 +1610,14 @@ export interface LYWorkerGroupResponse {
   creator_name?: string | null;
   created_at: string | null;
   updated_at: string | null;
+  /** 归属部门ID */
+  owning_department_id?: string | null;
+  /** 归属部门名称 */
+  owning_department_name?: string | null;
+  /** 归属者ID */
+  owner_id?: string | null;
+  /** 归属者名称 */
+  owner_name?: string | null;
 }
 
 /** LYListResponse[LYWorkerGroupResponse] */
@@ -1718,6 +1760,14 @@ export interface LYQueueResponse {
   created_at: string;
   /** 更新时间 */
   updated_at: string;
+  /** 归属部门ID */
+  owning_department_id?: string | null;
+  /** 归属部门名称 */
+  owning_department_name?: string | null;
+  /** 归属者ID */
+  owner_id?: string | null;
+  /** 归属者名称 */
+  owner_name?: string | null;
 }
 
 /**
@@ -2015,6 +2065,14 @@ export interface LYTaskResponse {
   creator_id: string;
   /** 创建者名称 */
   creator_name?: string | null;
+  /** 归属部门ID */
+  owning_department_id?: string | null;
+  /** 归属部门名称 */
+  owning_department_name?: string | null;
+  /** 归属者ID */
+  owner_id?: string | null;
+  /** 归属者名称 */
+  owner_name?: string | null;
 }
 
 /**
@@ -2138,6 +2196,14 @@ export interface LYExecutionTemplateResponse {
   created_by_id?: string | null;
   /** 创建者名称 */
   created_by_name?: string | null;
+  /** 归属部门ID */
+  owning_department_id?: string | null;
+  /** 归属部门名称 */
+  owning_department_name?: string | null;
+  /** 归属者ID */
+  owner_id?: string | null;
+  /** 归属者名称 */
+  owner_name?: string | null;
 }
 
 /** LYListResponse[LYExecutionTemplateResponse] */
@@ -2769,6 +2835,14 @@ export interface LYFileResponse {
   updated_by_name?: string | null;
   /** 更新时间 */
   updated_at: string;
+  /** 归属部门ID */
+  owning_department_id?: string | null;
+  /** 归属部门名称 */
+  owning_department_name?: string | null;
+  /** 归属者ID */
+  owner_id?: string | null;
+  /** 归属者名称 */
+  owner_name?: string | null;
 }
 
 /** LYListResponse[LYFileResponse] */
@@ -2928,6 +3002,14 @@ export interface LYTimeTriggerResponse {
   created_at: string;
   /** 更新时间 */
   updated_at: string;
+  /** 归属部门ID */
+  owning_department_id?: string | null;
+  /** 归属部门名称 */
+  owning_department_name?: string | null;
+  /** 归属者ID */
+  owner_id?: string | null;
+  /** 归属者名称 */
+  owner_name?: string | null;
 }
 
 /** LYListResponse[LYTimeTriggerResponse] */
@@ -3244,6 +3326,14 @@ export interface LYQueueTriggerResponse {
   created_at: string;
   /** 更新时间 */
   updated_at: string;
+  /** 归属部门ID */
+  owning_department_id?: string | null;
+  /** 归属部门名称 */
+  owning_department_name?: string | null;
+  /** 归属者ID */
+  owner_id?: string | null;
+  /** 归属者名称 */
+  owner_name?: string | null;
 }
 
 /** LYListResponse[LYQueueTriggerResponse] */
