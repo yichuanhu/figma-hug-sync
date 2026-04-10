@@ -13,7 +13,7 @@ import {
   Space,
   Divider,
 } from '@douyinfe/semi-ui';
-import { ChevronLeft, ChevronRight, Download, Maximize2, Minimize2, Trash2, Upload, UserPlus, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Download, Maximize2, Minimize2, Trash2, UserPlus, X } from 'lucide-react';
 import type { LYFileResponse, FileSource } from '@/api/index';
 import ExpandableText from '@/components/ExpandableText';
 import CollaboratorPanel from '@/components/CollaboratorManager/CollaboratorPanel';
@@ -37,7 +37,7 @@ interface FileDetailDrawerProps {
   totalCount: number;
   onClose: () => void;
   onNavigate: (direction: 'prev' | 'next') => void;
-  onReupload: (file: LYFileResponse) => void;
+  
   onDelete: (file: LYFileResponse) => void;
   initialTab?: string;
 }
@@ -50,7 +50,7 @@ const FileDetailDrawer = ({
   totalCount,
   onClose,
   onNavigate,
-  onReupload,
+  
   onDelete,
   initialTab = 'basic',
 }: FileDetailDrawerProps) => {
@@ -162,8 +162,6 @@ const FileDetailDrawer = ({
 
   if (!file) return null;
 
-  // 已发布的文件不允许重新上传和删除
-  const canReupload = context === 'development' && !file.is_published;
   const canDeleteFile = context === 'development' && !file.is_published;
 
   return (
@@ -183,11 +181,6 @@ const FileDetailDrawer = ({
               <Button icon={<ChevronRight size={16} strokeWidth={2} />} theme="borderless" size="small" disabled={!canGoNext} onClick={() => onNavigate('next')} />
             </Tooltip>
             <Divider layout="vertical" className="file-detail-drawer-header-divider" />
-            {context === 'development' && canReupload && (
-              <Tooltip content={t('file.actions.reupload')}>
-                <Button icon={<Upload size={16} strokeWidth={2} />} theme="borderless" size="small" onClick={() => onReupload(file)} />
-              </Tooltip>
-            )}
             <Tooltip content={t('file.actions.download')}>
               <Button icon={<Download size={16} strokeWidth={2} />} theme="borderless" size="small" onClick={handleDownload} />
             </Tooltip>
