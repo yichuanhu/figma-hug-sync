@@ -261,7 +261,39 @@ function DetailDrawerWrapper<T>({
           </Col>
           <Col>
             <Space spacing={4}>
-              {/* 导航按钮 */}
+              {/* 额外操作按钮（不含删除） */}
+              {extraActions}
+
+              {/* 协作者分享按钮 */}
+              {collaboratorProps && (
+                <>
+                  <Tooltip content={t('common.share')}>
+                    <Button
+                      icon={<UserPlus size={16} strokeWidth={2} />}
+                      theme="borderless"
+                      type="tertiary"
+                      size="small"
+                      onClick={() => setCollaboratorPanelVisible(true)}
+                    />
+                  </Tooltip>
+                  <CollaboratorPanel
+                    assetType={collaboratorProps.assetType}
+                    assetId={collaboratorProps.assetId}
+                    context={collaboratorProps.context}
+                    canManage={collaboratorProps.canManage}
+                    visible={collaboratorPanelVisible}
+                    onVisibleChange={setCollaboratorPanelVisible}
+                  />
+                </>
+              )}
+
+              {/* 删除按钮 - 操作区最后 */}
+              {deleteAction}
+
+              {/* 如果有操作按钮，添加分隔线 */}
+              {(extraActions || collaboratorProps || deleteAction) && <Divider layout="vertical" className="detail-drawer-wrapper-header-divider" />}
+
+              {/* 导航按钮 - 固定在右侧 */}
               {showNavigation && (
                 <>
                   <Tooltip content={t('common.previous')}>
@@ -291,38 +323,6 @@ function DetailDrawerWrapper<T>({
                   <Divider layout="vertical" className="detail-drawer-wrapper-header-divider" />
                 </>
               )}
-
-              {/* 额外操作按钮（不含删除） */}
-              {extraActions}
-
-              {/* 协作者分享按钮 - 放在删除按钮之前 */}
-              {collaboratorProps && (
-                <>
-                  <Tooltip content={t('common.share')}>
-                    <Button
-                      icon={<UserPlus size={16} strokeWidth={2} />}
-                      theme="borderless"
-                      type="tertiary"
-                      size="small"
-                      onClick={() => setCollaboratorPanelVisible(true)}
-                    />
-                  </Tooltip>
-                  <CollaboratorPanel
-                    assetType={collaboratorProps.assetType}
-                    assetId={collaboratorProps.assetId}
-                    context={collaboratorProps.context}
-                    canManage={collaboratorProps.canManage}
-                    visible={collaboratorPanelVisible}
-                    onVisibleChange={setCollaboratorPanelVisible}
-                  />
-                </>
-              )}
-
-              {/* 删除按钮 - 始终在最后 */}
-              {deleteAction}
-
-              {/* 如果有额外操作按钮、协作者按钮或删除按钮，添加分隔线 */}
-              {(extraActions || collaboratorProps || deleteAction) && <Divider layout="vertical" className="detail-drawer-wrapper-header-divider" />}
 
               {/* 全屏按钮 */}
               <Tooltip content={isFullscreen ? t('common.exitFullscreen') : t('common.fullscreen')}>
