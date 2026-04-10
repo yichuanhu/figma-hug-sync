@@ -839,6 +839,7 @@ const TaskManagementPage = () => {
             loadData();
           }}
           initialTemplate={initialTemplate}
+        />
         <TaskDetailDrawer
           visible={detailDrawerVisible}
           task={selectedTask}
