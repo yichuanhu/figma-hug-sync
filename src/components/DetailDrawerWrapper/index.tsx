@@ -289,19 +289,21 @@ function DetailDrawerWrapper<T>({
                 </>
               )}
 
-              {/* 额外操作按钮 */}
+              {/* 额外操作按钮（不含删除） */}
               {extraActions}
 
-              {/* 协作者分享按钮 */}
+              {/* 协作者分享按钮 - 放在删除按钮之前 */}
               {collaboratorProps && (
                 <>
-                  <Button
-                    icon={<UserPlus size={14} strokeWidth={2} />}
-                    theme="borderless"
-                    type="tertiary"
-                    size="small"
-                    onClick={() => setCollaboratorPanelVisible(true)}
-                  />
+                  <Tooltip content={t('common.share')}>
+                    <Button
+                      icon={<UserPlus size={16} strokeWidth={2} />}
+                      theme="borderless"
+                      type="tertiary"
+                      size="small"
+                      onClick={() => setCollaboratorPanelVisible(true)}
+                    />
+                  </Tooltip>
                   <CollaboratorPanel
                     assetType={collaboratorProps.assetType}
                     assetId={collaboratorProps.assetId}
