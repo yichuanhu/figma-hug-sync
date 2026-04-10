@@ -380,6 +380,12 @@ const ProcessDetailDrawer = ({
       onScrollToRow={onScrollToRow}
       extraActions={extraActions}
       deleteAction={deleteAction}
+      collaboratorProps={{
+        assetType: 'PROCESS',
+        assetId: processData.id,
+        context: 'development',
+        canManage: true,
+      }}
       defaultWidth={900}
       minWidth={576}
       storageKey="devProcessDetailDrawerWidth"
