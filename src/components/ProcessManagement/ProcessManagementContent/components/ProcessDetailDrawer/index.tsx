@@ -122,7 +122,6 @@ interface ProcessDetailDrawerProps {
   onEdit?: () => void;
   onRun?: () => void;
   onDelete?: () => void;
-  onShare?: () => void;
   dataList?: LYProcessResponse[];
   onNavigate?: (process: LYProcessResponse) => void;
   pagination?: PaginationInfo;
@@ -265,7 +264,6 @@ const ProcessDetailDrawer = ({
   onEdit,
   onRun,
   onDelete,
-  onShare,
   dataList = [],
   onNavigate,
   pagination,
