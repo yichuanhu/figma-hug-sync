@@ -414,6 +414,11 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
     },
   ];
 
+  const departmentOptions = useMemo(() => {
+    const depts = [...new Set(mockWorkerGroups.map(g => (g as any).owning_department_name).filter(Boolean))];
+    return depts.map(d => ({ value: d, label: d }));
+  }, []);
+
   return (
     <div className="worker-group-management">
       {/* Operation */}
@@ -422,17 +427,20 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
         <Row type="flex" justify="space-between" align="middle" className="worker-group-management-header-toolbar">
           <Col>
             <Space>
-  const departmentOptions = useMemo(() => {
-    const depts = [...new Set(mockWorkerGroups.map(g => (g as any).owning_department_name).filter(Boolean))];
-    return depts.map(d => ({ value: d, label: d }));
-  }, []);
-
               <Input 
                 prefix={<IconSearchStroked />}
                 placeholder={t('workerGroup.searchPlaceholder')}
                 className="worker-group-management-search-input"
                 onChange={handleSearch}
                 showClear
+              />
+              <Select
+                placeholder={t('common.owningDepartment')}
+                value={queryParams.owning_department_name}
+                onChange={(v) => setQueryParams(prev => ({ ...prev, offset: 0, owning_department_name: v as string | undefined }))}
+                showClear
+                style={{ width: 160 }}
+                optionList={departmentOptions}
               />
             </Space>
           </Col>
