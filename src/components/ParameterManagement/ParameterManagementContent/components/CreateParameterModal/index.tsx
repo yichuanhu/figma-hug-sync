@@ -22,6 +22,7 @@ const CreateParameterModal = ({
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [parameterType, setParameterType] = useState<ParameterType>(1);
+  const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>();
 
   const handleSubmit = async (values: {
     name: string;
