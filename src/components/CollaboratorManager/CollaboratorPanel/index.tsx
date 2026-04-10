@@ -346,9 +346,8 @@ const CollaboratorPanel = ({
   // ===== Quick/Manage view logic =====
   const searchResults = useMemo(() => {
     if (!searchValue.trim()) return [];
-    const existingIds = collaborators.map((c) => c.collaborator_id);
     const selectedIds = selectedUsers.map((u) => u.id);
-    return searchOrgUsers(searchValue, [...existingIds, ...selectedIds]);
+    return searchOrgUsers(searchValue, selectedIds);
   }, [searchValue, collaborators, selectedUsers]);
 
   const filteredData = useMemo(() => {
@@ -546,7 +545,6 @@ const CollaboratorPanel = ({
 
   const toggleOrgUser = useCallback(
     (user: { id: string; name: string; department: string }) => {
-      if (existingMap.has(user.id)) return;
       setOrgSelected((prev) => {
         const exists = prev.find((s) => s.collaborator_id === user.id);
         if (exists) return prev.filter((s) => s.collaborator_id !== user.id);
@@ -567,7 +565,6 @@ const CollaboratorPanel = ({
 
   const toggleOrgDept = useCallback(
     (dept: DeptNode) => {
-      if (existingMap.has(dept.id)) return;
       setOrgSelected((prev) => {
         const exists = prev.find((s) => s.collaborator_id === dept.id);
         if (exists) return prev.filter((s) => s.collaborator_id !== dept.id);
@@ -968,22 +965,21 @@ const CollaboratorPanel = ({
 
   // ===== Org view render helpers =====
   const renderOrgUserItem = (user: { id: string; name: string; department: string }) => {
-    const disabled = existingMap.has(user.id);
     const checked = isOrgSelected(user.id);
     const existingLabel = getExistingRoleLabel(user.id);
 
     return (
       <div
         key={user.id}
-        className={`collaborator-add-modal-left-item ${checked ? 'selected' : ''} ${disabled ? 'disabled' : ''}`}
-        onClick={() => !disabled && toggleOrgUser(user)}
+        className={`collaborator-add-modal-left-item ${checked ? 'selected' : ''}`}
+        onClick={() => toggleOrgUser(user)}
       >
-        <Checkbox checked={checked} disabled={disabled} />
+        <Checkbox checked={checked} />
         <User size={14} strokeWidth={2} className="collaborator-add-modal-left-item-icon" />
         <div className="collaborator-add-modal-left-item-info">
           <Text style={{ fontSize: 14 }}>{user.name}</Text>
         </div>
-        {disabled && existingLabel && (
+        {existingLabel && (
           <span className="collaborator-add-modal-left-item-existing">
             {existingLabel}
           </span>
@@ -993,7 +989,6 @@ const CollaboratorPanel = ({
   };
 
   const renderOrgDeptItem = (dept: DeptNode) => {
-    const disabled = existingMap.has(dept.id);
     const checked = isOrgSelected(dept.id);
     const existingLabel = getExistingRoleLabel(dept.id);
     const hasChildren = (dept.children && dept.children.length > 0) || (dept.users && dept.users.length > 0);
@@ -1001,22 +996,22 @@ const CollaboratorPanel = ({
     return (
       <div
         key={dept.id}
-        className={`collaborator-add-modal-left-item ${checked ? 'selected' : ''} ${disabled ? 'disabled' : ''}`}
-        onClick={() => !disabled && toggleOrgDept(dept)}
+        className={`collaborator-add-modal-left-item ${checked ? 'selected' : ''}`}
+        onClick={() => toggleOrgDept(dept)}
       >
-        <Checkbox checked={checked} disabled={disabled} />
+        <Checkbox checked={checked} />
         <Network size={16} strokeWidth={2} className="collaborator-add-modal-left-item-icon" />
         <div className="collaborator-add-modal-left-item-name">
           <Text style={{ fontSize: 14 }} ellipsis={{ showTooltip: true }}>
             {dept.name}
           </Text>
         </div>
-        {disabled && existingLabel && (
+        {existingLabel && (
           <span className="collaborator-add-modal-left-item-existing">
             {existingLabel}
           </span>
         )}
-        {!disabled && hasChildren && (
+        {hasChildren && (
           <span
             className="collaborator-add-modal-left-item-drill"
             onClick={(e) => { e.stopPropagation(); navigateToDept(dept.id); }}

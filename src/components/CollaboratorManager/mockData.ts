@@ -470,21 +470,21 @@ export const addCollaborators = (
   for (const item of items) {
     const existingCollab = existing.find((c) => c.collaborator_id === item.collaborator_id);
     if (existingCollab) {
-      // 已存在且为纯继承 → 升级为 MIXED（直接+继承）
+      // 已存在：覆盖角色（upsert）
       if (existingCollab.source === 'INHERITED') {
         existingCollab.source = 'MIXED';
-        existingCollab.role = item.role;
         if (!existingCollab.source_types) existingCollab.source_types = [];
         if (!existingCollab.source_types.includes('DIRECT')) {
           existingCollab.source_types.unshift('DIRECT');
         }
-        const allRoles = [item.role, ...(existingCollab.inheritance_sources || []).map((s) => s.role)];
-        existingCollab.final_role = calculateFinalRole(allRoles);
-        existingCollab.added_by = 'user-001';
-        existingCollab.added_by_name = MOCK_USERS['user-001'].name;
-        existingCollab.added_time = now;
-        directCount++;
       }
+      existingCollab.role = item.role;
+      const allRoles = [item.role, ...(existingCollab.inheritance_sources || []).map((s) => s.role)];
+      existingCollab.final_role = calculateFinalRole(allRoles);
+      existingCollab.added_by = 'user-001';
+      existingCollab.added_by_name = MOCK_USERS['user-001'].name;
+      existingCollab.added_time = now;
+      directCount++;
       continue;
     }
     directCount++;
@@ -743,7 +743,6 @@ export const searchOrgUsers = (
   const lower = keyword.toLowerCase();
   return ALL_ORG_USERS.filter(
     (u) =>
-      !existingCollaboratorIds.includes(u.id) &&
       (u.name.toLowerCase().includes(lower) || u.department.toLowerCase().includes(lower))
   ).slice(0, 8);
 };

@@ -356,7 +356,6 @@ const CollaboratorAddModal = ({
 
   const toggleUser = useCallback(
     (user: { id: string; name: string; department: string }) => {
-      if (existingMap.has(user.id)) return;
       setSelected((prev) => {
         const exists = prev.find((s) => s.collaborator_id === user.id);
         if (exists) return prev.filter((s) => s.collaborator_id !== user.id);
@@ -372,12 +371,11 @@ const CollaboratorAddModal = ({
         ];
       });
     },
-    [existingMap, defaultRole]
+    [defaultRole]
   );
 
   const toggleDept = useCallback(
     (dept: DeptNode) => {
-      if (existingMap.has(dept.id)) return;
       setSelected((prev) => {
         const exists = prev.find((s) => s.collaborator_id === dept.id);
         if (exists) return prev.filter((s) => s.collaborator_id !== dept.id);
@@ -392,7 +390,7 @@ const CollaboratorAddModal = ({
         ];
       });
     },
-    [existingMap, defaultRole]
+    [defaultRole]
   );
 
   const removeSelected = useCallback((id: string) => {
@@ -441,22 +439,21 @@ const CollaboratorAddModal = ({
 
   // 渲染用户行 - 点击整行可选中
   const renderUserItem = (user: { id: string; name: string; department: string }) => {
-    const disabled = existingMap.has(user.id);
     const checked = isSelected(user.id);
     const existingLabel = getExistingRoleLabel(user.id);
 
     return (
       <div
         key={user.id}
-        className={`collaborator-add-modal-left-item ${checked ? 'selected' : ''} ${disabled ? 'disabled' : ''}`}
-        onClick={() => !disabled && toggleUser(user)}
+        className={`collaborator-add-modal-left-item ${checked ? 'selected' : ''}`}
+        onClick={() => toggleUser(user)}
       >
-        <Checkbox checked={checked} disabled={disabled} />
+        <Checkbox checked={checked} />
         <User size={14} strokeWidth={2} className="collaborator-add-modal-left-item-icon" />
         <div className="collaborator-add-modal-left-item-info">
           <Text style={{ fontSize: 14 }}>{user.name}</Text>
         </div>
-        {disabled && existingLabel && (
+        {existingLabel && (
           <span className="collaborator-add-modal-left-item-existing">
             {existingLabel}
           </span>
@@ -467,7 +464,6 @@ const CollaboratorAddModal = ({
 
   // 渲染部门行 - 点击整行可选中
   const renderDeptItem = (dept: DeptNode) => {
-    const disabled = existingMap.has(dept.id);
     const checked = isSelected(dept.id);
     const existingLabel = getExistingRoleLabel(dept.id);
     const userCount = countUsers(dept);
@@ -476,25 +472,22 @@ const CollaboratorAddModal = ({
     return (
       <div
         key={dept.id}
-        className={`collaborator-add-modal-left-item ${checked ? 'selected' : ''} ${disabled ? 'disabled' : ''}`}
-        onClick={() => !disabled && toggleDept(dept)}
+        className={`collaborator-add-modal-left-item ${checked ? 'selected' : ''}`}
+        onClick={() => toggleDept(dept)}
       >
-        <Checkbox
-          checked={checked}
-          disabled={disabled}
-        />
+        <Checkbox checked={checked} />
         <Network size={16} strokeWidth={2} className="collaborator-add-modal-left-item-icon" />
         <div className="collaborator-add-modal-left-item-name">
           <Text style={{ fontSize: 14 }} ellipsis={{ showTooltip: true }}>
             {dept.name}
           </Text>
         </div>
-        {disabled && existingLabel && (
+        {existingLabel && (
           <span className="collaborator-add-modal-left-item-existing">
             {existingLabel}
           </span>
         )}
-        {!disabled && hasChildren && (
+        {hasChildren && (
           <span
             className="collaborator-add-modal-left-item-drill"
             onClick={(e) => { e.stopPropagation(); navigateToDept(dept.id); }}
