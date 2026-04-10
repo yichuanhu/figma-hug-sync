@@ -292,8 +292,8 @@ const fetchWorkerList = async (params: GetWorkersParams & { filters?: FilterStat
   }
 
   // 归属部门Filter
-  if (params.filters?.owning_department_name && params.filters.owning_department_name.length > 0) {
-    data = data.filter(item => params.filters!.owning_department_name.includes((item as any).owning_department_name));
+  if ((params as any).owning_department_name) {
+    data = data.filter(item => (item as any).owning_department_name === (params as any).owning_department_name);
   }
 
   // Sortprocessing
@@ -431,14 +431,15 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
         ...queryParams,
         filters,
         sort: sortState,
-      });
+        owning_department_name: departmentFilter,
+      } as any);
       setListResponse(response);
       return response.list;
     } finally {
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, filters, sortState]);
+  }, [queryParams, filters, sortState, departmentFilter]);
 
   // 翻页并Back新Data(usefor Drawer导航时auto-翻页)
   const handleDrawerPageChange = useCallback(async (page: number): Promise<LYWorkerResponse[]> => {
