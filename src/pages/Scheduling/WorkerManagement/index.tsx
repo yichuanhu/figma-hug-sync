@@ -233,6 +233,7 @@ interface FilterState {
   status: string[];
   sync_status: string[];
   group_id: string[];
+  owning_department_name: string[];
 }
 
 interface SortState {
@@ -280,17 +281,19 @@ const fetchWorkerList = async (params: GetWorkersParams & { filters?: FilterStat
   if (params.filters?.group_id && params.filters.group_id.length > 0) {
     data = data.filter(item => {
       const selectedGroups = params.filters!.group_id;
-      // Checkis否select "未分组"
       if (selectedGroups.includes(UNGROUPED_FILTER_VALUE)) {
-        // 未分组's bot
         if (!item.group_id) return true;
       }
-      // Checkis否属for Selected's bot组
       if (item.group_id && selectedGroups.includes(item.group_id)) {
         return true;
       }
       return false;
     });
+  }
+
+  // 归属部门Filter
+  if (params.filters?.owning_department_name && params.filters.owning_department_name.length > 0) {
+    data = data.filter(item => params.filters!.owning_department_name.includes((item as any).owning_department_name));
   }
 
   // Sortprocessing
@@ -351,6 +354,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     status: [],
     sync_status: [],
     group_id: [],
+    owning_department_name: [],
   });
   const [sortState, setSortState] = useState<SortState>({});
   const [filterVisible, setFilterVisible] = useState(false);
@@ -412,6 +416,10 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       { label: t('worker.filter.ungrouped'), value: UNGROUPED_FILTER_VALUE },
       ...mockWorkerGroups.map(g => ({ label: g.name, value: g.id })),
     ],
+    owning_department_name: (() => {
+      const depts = [...new Set(mockWorkers.map(w => (w as any).owning_department_name).filter(Boolean))];
+      return depts.map(d => ({ label: d, value: d }));
+    })(),
   }), [t]);
 
   // LoadingData
@@ -492,6 +500,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       status: (values.status as string[]) || [],
       sync_status: (values.sync_status as string[]) || [],
       group_id: (values.group_id as string[]) || [],
+      owning_department_name: (values.owning_department_name as string[]) || [],
     });
     setQueryParams(prev => ({ ...prev, offset: 0 }));
   };
@@ -932,6 +941,13 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
                     type: 'checkbox',
                     options: filterOptions.group_id,
                     value: filters.group_id,
+                  },
+                  {
+                    key: 'owning_department_name',
+                    label: t('common.owningDepartment'),
+                    type: 'checkbox',
+                    options: filterOptions.owning_department_name,
+                    value: filters.owning_department_name,
                   },
                 ]}
               />

@@ -748,6 +748,13 @@ const TaskManagementPage = () => {
                       value: triggerSourceFilter,
                     },
                     {
+                      key: 'department',
+                      label: t('common.owningDepartment'),
+                      type: 'checkbox',
+                      options: departmentOptions,
+                      value: departmentFilter,
+                    },
+                    {
                       key: 'dateRange',
                       label: t('task.filter.dateRange'),
                       type: 'dateRange',
