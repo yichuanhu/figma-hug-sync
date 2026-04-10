@@ -102,13 +102,13 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
   const extraActions = (
     <>
       <Tooltip content={t('common.edit')}>
-        <Button icon={<Pencil size={16} strokeWidth={2} />} theme="borderless" size="small" onClick={onEdit} />
+        <Button icon={<Pencil size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={onEdit} />
       </Tooltip>
       <Tooltip content={t('worker.actions.viewKey')}>
-        <Button icon={<Key size={16} strokeWidth={2} />} theme="borderless" size="small" onClick={onViewKey} />
+        <Button icon={<Key size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={onViewKey} />
       </Tooltip>
       <Tooltip content={t('common.delete')}>
-        <Button icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />} theme="borderless" size="small" onClick={onDelete} />
+        <Button icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />} theme="borderless" type="tertiary" size="small" onClick={onDelete} />
       </Tooltip>
     </>
   );

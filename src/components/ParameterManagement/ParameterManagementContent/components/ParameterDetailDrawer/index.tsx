@@ -91,7 +91,7 @@ const ParameterDetailDrawer = ({
       {onDelete && context === 'development' && !parameter.is_published && (
         <Tooltip content={t('common.delete')}>
           <Button
-            icon={<Trash2 size={16} strokeWidth={2} />}
+            icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />}
             theme="borderless"
             type="tertiary"
             size="small"
