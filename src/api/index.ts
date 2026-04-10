@@ -2155,6 +2155,10 @@ export interface LYProcessActiveVersionResponse {
   parameters: LYProcessParameterDefinition[];
   /** 输出参数定义 */
   output_parameters?: LYProcessOutputParameterDefinition[];
+  /** 归属部门ID */
+  owning_department_id?: string;
+  /** 归属部门名称 */
+  owning_department_name?: string;
 }
 
 /**
