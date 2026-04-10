@@ -163,7 +163,6 @@ const CreateParameterModal = ({
         <Form.Slot label={t('common.owner')}>
           <span>{MOCK_CURRENT_USER.name}</span>
         </Form.Slot>
-        />
 
         <div className="create-parameter-modal-footer">
           <Button theme="light" onClick={onCancel}>
