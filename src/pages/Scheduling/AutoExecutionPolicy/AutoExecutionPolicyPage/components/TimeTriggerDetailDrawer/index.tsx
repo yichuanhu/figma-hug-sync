@@ -21,6 +21,7 @@ import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import ExpandableText from '@/components/ExpandableText';
 import './index.less';
 import { ChevronDown, ChevronUp, Inbox, Pencil, Trash2 } from 'lucide-react';
+import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 
 const { Text } = Typography;
 
@@ -218,6 +219,12 @@ const TimeTriggerDetailDrawer = ({
       onScrollToRow={onScrollToRow}
       extraActions={extraActions}
       deleteAction={deleteAction}
+      collaboratorProps={{
+        assetType: 'TRIGGER',
+        assetId: trigger.trigger_id,
+        context: 'scheduling',
+        canManage: true,
+      }}
       defaultWidth={900}
       minWidth={576}
       storageKey="time-trigger-detail-drawer-width"

@@ -20,6 +20,7 @@ import type { LYQueueTriggerResponse, LYQueueTriggerExecutionLogResponse } from 
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import ExpandableText from '@/components/ExpandableText';
 import './index.less';
+import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 
 const { Text } = Typography;
 
@@ -174,6 +175,12 @@ const QueueTriggerDetailDrawer = ({
       onScrollToRow={onScrollToRow}
       extraActions={extraActions}
       deleteAction={deleteAction}
+      collaboratorProps={{
+        assetType: 'TRIGGER',
+        assetId: trigger.trigger_id,
+        context: 'scheduling',
+        canManage: true,
+      }}
       defaultWidth={900}
       minWidth={576}
       storageKey="queue-trigger-detail-drawer-width"
