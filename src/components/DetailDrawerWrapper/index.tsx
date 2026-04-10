@@ -33,6 +33,8 @@ export interface DetailDrawerWrapperProps<T> {
   children: ReactNode;
   /** 额外的操作按钮（显示在导航和全屏之间） */
   extraActions?: ReactNode;
+  /** 删除操作按钮（始终显示在协作者按钮之后、分隔线之前） */
+  deleteAction?: ReactNode;
   /** 是否显示导航按钮，默认 true */
   showNavigation?: boolean;
   /** 协作者面板配置（传入后自动在 header 渲染分享按钮） */
