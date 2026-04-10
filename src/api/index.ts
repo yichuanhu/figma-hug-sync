@@ -1191,6 +1191,12 @@ export interface LYCredentialResponse {
   /** 归属者名称 */
   owner_name?: string | null;
 }
+
+/**
+ * LYCredentialListResultResponse
+ * 凭据列表结果响应
+ */
+export interface LYCredentialListResultResponse {
   /**
    * Data
    * 凭据列表
