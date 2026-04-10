@@ -656,6 +656,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
         onEdit={isSchedulingContext ? undefined : () => handleEdit()}
         onRun={handleRun}
         onDelete={isSchedulingContext ? undefined : () => handleDeleteClick()}
+        onShare={() => selectedProcess && openCollaborator(selectedProcess.id)}
         onOpen={isSchedulingContext ? undefined : () => selectedProcess && openProcess(selectedProcess)}
         dataList={list}
         onNavigate={(process) => setSelectedProcess(process)}

@@ -24,7 +24,7 @@ import ExpandableText from '@/components/ExpandableText';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import './index.less';
-import { ExternalLink, HelpCircle, Link, Pencil, PlayCircle, Trash2, Upload } from 'lucide-react';
+import { ExternalLink, HelpCircle, Link, Pencil, PlayCircle, Trash2, Upload, UserPlus } from 'lucide-react';
 
 const { Title, Text } = Typography;
 
@@ -122,6 +122,7 @@ interface ProcessDetailDrawerProps {
   onEdit?: () => void;
   onRun?: () => void;
   onDelete?: () => void;
+  onShare?: () => void;
   dataList?: LYProcessResponse[];
   onNavigate?: (process: LYProcessResponse) => void;
   pagination?: PaginationInfo;
@@ -264,6 +265,7 @@ const ProcessDetailDrawer = ({
   onEdit,
   onRun,
   onDelete,
+  onShare,
   dataList = [],
   onNavigate,
   pagination,
@@ -417,6 +419,11 @@ const ProcessDetailDrawer = ({
       <Tooltip content={t('common.run')}>
         <Button icon={<PlayCircle size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={onRun} />
       </Tooltip>
+      {onShare && (
+        <Tooltip content={t('common.share')}>
+          <Button icon={<UserPlus size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={onShare} />
+        </Tooltip>
+      )}
       {!isSchedulingContext && onDelete && (
         <Tooltip content={t('common.delete')}>
           <Button icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />} theme="borderless" type="tertiary" size="small" onClick={onDelete} />
