@@ -3,9 +3,31 @@ import { useTranslation } from 'react-i18next';
 import { TreeSelect } from '@douyinfe/semi-ui';
 import { departmentTree, DeptTreeNode } from '@/mocks/departmentData';
 
-interface DepartmentSelectProps {
-  value?: string | string[];
-  onChange?: (value: string | string[]) => void;
+interface DepartmentSelectBaseProps {
+  placeholder?: string;
+  disabled?: boolean;
+  style?: React.CSSProperties;
+  className?: string;
+  useNameAsValue?: boolean;
+}
+
+interface SingleSelectProps extends DepartmentSelectBaseProps {
+  multiple?: false;
+  value?: string;
+  onChange?: (value: string) => void;
+  showClear?: boolean;
+  maxTagCount?: never;
+}
+
+interface MultiSelectProps extends DepartmentSelectBaseProps {
+  multiple: true;
+  value?: string[];
+  onChange?: (value: string[]) => void;
+  showClear?: boolean;
+  maxTagCount?: number;
+}
+
+type DepartmentSelectProps = SingleSelectProps | MultiSelectProps;
   placeholder?: string;
   disabled?: boolean;
   style?: React.CSSProperties;
