@@ -183,8 +183,9 @@ const fetchTaskList = async (params: GetTasksParams): Promise<LYListResponseLYTa
   }
 
   // 归属部门Filter
-  if ((params as any).owning_department_name) {
-    filteredData = filteredData.filter((item) => (item as any).owning_department_name === (params as any).owning_department_name);
+  if ((params as any).owning_department_name && (params as any).owning_department_name.length > 0) {
+    const deptNames: string[] = (params as any).owning_department_name;
+    filteredData = filteredData.filter((item) => deptNames.includes((item as any).owning_department_name));
   }
 
   // Time范围Filter
