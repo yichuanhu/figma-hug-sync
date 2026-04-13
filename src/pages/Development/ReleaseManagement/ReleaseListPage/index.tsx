@@ -2,12 +2,12 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
-  // Breadcrumb removed
   Typography,
   Button,
   Table,
   Tag,
   Input,
+  Select,
   Row,
   Col,
   Space,
@@ -186,7 +186,7 @@ const ReleaseListPage: React.FC = () => {
   const total = range?.total || 0;
 
   const filterCount =
-    activeFilters.release_type.length + activeFilters.publish_status.length + activeFilters.publisher.length;
+    activeFilters.release_type.length + activeFilters.publish_status.length;
 
   // LoadingData
   const loadData = async () => {
@@ -240,12 +240,12 @@ const ReleaseListPage: React.FC = () => {
   // FilterOperation
   const handleFilterConfirm = (values: Record<string, unknown>) => {
     const dateValue = values.publish_date as [Date, Date] | undefined;
-    setActiveFilters({
+    setActiveFilters(prev => ({
+      ...prev,
       release_type: (values.release_type as ReleaseType[]) || [],
       publish_status: (values.publish_status as ReleaseStatus[]) || [],
-      publisher: (values.publisher as string[]) || [],
       publish_date: dateValue && dateValue.length === 2 ? dateValue : null,
-    });
+    }));
     setQueryParams((prev) => ({ ...prev, offset: 0 }));
   };
 
@@ -442,6 +442,19 @@ const ReleaseListPage: React.FC = () => {
                   showClear
                   className="release-list-page-search-input"
                 />
+                <Select
+                  placeholder={t('release.list.columns.publisher')}
+                  value={activeFilters.publisher}
+                  onChange={(v) => {
+                    setActiveFilters(prev => ({ ...prev, publisher: v as string[] }));
+                    setQueryParams(prev => ({ ...prev, offset: 0 }));
+                  }}
+                  multiple
+                  showClear
+                  maxTagCount={1}
+                  style={{ width: 180 }}
+                  optionList={publisherOptions}
+                />
                 <FilterPopover
                   visible={filterVisible}
                   onVisibleChange={setFilterVisible}
@@ -460,13 +473,6 @@ const ReleaseListPage: React.FC = () => {
                       type: 'checkbox',
                       value: activeFilters.publish_status,
                       options: statusOptions,
-                    },
-                    {
-                      key: 'publisher',
-                      label: t('release.list.columns.publisher'),
-                      type: 'checkbox',
-                      value: activeFilters.publisher,
-                      options: publisherOptions,
                     },
                     {
                       key: 'publish_date',

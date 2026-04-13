@@ -265,7 +265,7 @@ const TaskManagementPage = () => {
   const [taskStatusFilter, setTaskStatusFilter] = useState<string[]>([]);
   const [executionStatusFilter, setExecutionStatusFilter] = useState<string[]>([]);
   const [triggerSourceFilter, setTriggerSourceFilter] = useState<string[]>([]);
-  const [departmentFilter, setDepartmentFilter] = useState<string | undefined>(undefined);
+  const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
   const [dateRange, setDateRange] = useState<[Date, Date] | null>(null);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
 
@@ -721,6 +721,19 @@ const TaskManagementPage = () => {
                   onChange={handleSearch}
                   showClear
                 />
+                <Select
+                  placeholder={t('common.owningDepartment')}
+                  value={departmentFilter}
+                  onChange={(v) => {
+                    setDepartmentFilter(v as string[]);
+                    setQueryParams(prev => ({ ...prev, offset: 0 }));
+                  }}
+                  multiple
+                  showClear
+                  maxTagCount={1}
+                  style={{ width: 180 }}
+                  optionList={departmentOptions}
+                />
                 <FilterPopover
                   visible={filterPopoverVisible}
                   onVisibleChange={setFilterPopoverVisible}
@@ -754,17 +767,6 @@ const TaskManagementPage = () => {
                       value: dateRange,
                     },
                   ]}
-                />
-                <Select
-                  placeholder={t('common.owningDepartment')}
-                  value={departmentFilter}
-                  onChange={(v) => {
-                    setDepartmentFilter(v as string | undefined);
-                    setQueryParams(prev => ({ ...prev, offset: 0 }));
-                  }}
-                  showClear
-                  style={{ width: 160 }}
-                  optionList={departmentOptions}
                 />
               </Space>
             </Col>

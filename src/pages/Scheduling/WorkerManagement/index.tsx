@@ -355,7 +355,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     sync_status: [],
     group_id: [],
   });
-  const [departmentFilter, setDepartmentFilter] = useState<string | undefined>(undefined);
+  const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
   const [sortState, setSortState] = useState<SortState>({});
   const [filterVisible, setFilterVisible] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -499,11 +499,11 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
   };
 
   const handleFilterConfirm = (values: Record<string, unknown>) => {
-    setFilters({
+    setFilters(prev => ({
+      ...prev,
       status: (values.status as string[]) || [],
       sync_status: (values.sync_status as string[]) || [],
-      group_id: (values.group_id as string[]) || [],
-    });
+    }));
     setQueryParams(prev => ({ ...prev, offset: 0 }));
   };
 
@@ -918,6 +918,32 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
                 value={searchValue}
                 onChange={handleSearch}
               />
+              <Select
+                placeholder={t('common.owningDepartment')}
+                value={departmentFilter}
+                onChange={(v) => {
+                  setDepartmentFilter(v as string[]);
+                  setQueryParams(prev => ({ ...prev, offset: 0 }));
+                }}
+                multiple
+                showClear
+                maxTagCount={1}
+                style={{ width: 180 }}
+                optionList={departmentOptions}
+              />
+              <Select
+                placeholder={t('worker.filter.workerGroup')}
+                value={filters.group_id}
+                onChange={(v) => {
+                  setFilters(prev => ({ ...prev, group_id: v as string[] }));
+                  setQueryParams(prev => ({ ...prev, offset: 0 }));
+                }}
+                multiple
+                showClear
+                maxTagCount={1}
+                style={{ width: 180 }}
+                optionList={filterOptions.group_id}
+              />
               <FilterPopover
                 visible={filterVisible}
                 onVisibleChange={setFilterVisible}
@@ -937,25 +963,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
                     options: filterOptions.sync_status,
                     value: filters.sync_status,
                   },
-                  {
-                    key: 'group_id',
-                    label: t('worker.filter.workerGroup'),
-                    type: 'checkbox',
-                    options: filterOptions.group_id,
-                    value: filters.group_id,
-                  },
                 ]}
-              />
-              <Select
-                placeholder={t('common.owningDepartment')}
-                value={departmentFilter}
-                onChange={(v) => {
-                  setDepartmentFilter(v as string | undefined);
-                  setQueryParams(prev => ({ ...prev, offset: 0 }));
-                }}
-                showClear
-                style={{ width: 160 }}
-                optionList={departmentOptions}
               />
             </Space>
           </Col>
