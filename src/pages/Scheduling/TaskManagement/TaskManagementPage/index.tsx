@@ -729,7 +729,7 @@ const TaskManagementPage = () => {
                   showClear
                   maxTagCount={1}
                   useNameAsValue
-                  style={{ minWidth: 120, maxWidth: 600 }}
+                  style={{ width: 'auto', minWidth: 120, maxWidth: 600 }}
                 />
                 <FilterPopover
                   visible={filterPopoverVisible}
