@@ -219,10 +219,10 @@ const RequirementsReview = () => {
         ellipsis: true,
       },
       {
-        title: t('requirements.fields.department'),
-        dataIndex: 'department',
-        key: 'department',
-        width: 100,
+        title: t('common.owningDepartment'),
+        dataIndex: 'owning_department_name',
+        key: 'owning_department_name',
+        width: 140,
         ellipsis: true,
       },
       {
@@ -617,8 +617,8 @@ const RequirementsReview = () => {
               <Text strong>{approvalTarget.title}</Text>
             </div>
             <div className="requirements-review-modal-info">
-              <Text type="tertiary" size="small">{t('requirements.fields.department')}</Text>
-              <Text>{approvalTarget.department}</Text>
+              <Text type="tertiary" size="small">{t('common.owningDepartment')}</Text>
+              <Text>{approvalTarget.owning_department_name}</Text>
             </div>
             <TextArea
               placeholder={
