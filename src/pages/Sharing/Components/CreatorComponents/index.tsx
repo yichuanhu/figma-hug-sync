@@ -127,7 +127,7 @@ const CreatorComponents = () => {
   return (
     <div className="creator-components">
       <div className="creator-components-header">
-        <Title heading={4} className="title">
+        <Title heading={3} className="title">
           {t('sharing.creatorComponents.pageTitle')}
         </Title>
       </div>

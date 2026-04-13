@@ -337,7 +337,7 @@ const TaskLogPage = () => {
         {/* Header */}
         <div className="task-log-page-header">
           <div className="task-log-page-header-title">
-            <Title heading={4}>{t('taskLog.title')}</Title>
+            <Title heading={3}>{t('taskLog.title')}</Title>
             {executionStatus === 'RUNNING' && (
               <Tag color="blue" type="light" className="task-log-page-header-status">
                 {t('taskLog.autoRefresh')}

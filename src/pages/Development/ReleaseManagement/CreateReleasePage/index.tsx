@@ -380,7 +380,7 @@ const CreateReleasePage: React.FC = () => {
             onClick={handleCancel}
             className="create-release-page-back-btn"
           />
-          <Title heading={4} className="create-release-page-title">
+          <Title heading={3} className="create-release-page-title">
             {t('release.create.title')}
           </Title>
         </div>

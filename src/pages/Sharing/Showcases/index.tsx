@@ -172,7 +172,7 @@ const Showcases = () => {
   return (
     <div className="showcases-page">
       <div className="showcases-page-header">
-        <Title heading={4} className="title">
+        <Title heading={3} className="title">
           {t('sharing.showcases.pageTitle')}
         </Title>
       </div>
