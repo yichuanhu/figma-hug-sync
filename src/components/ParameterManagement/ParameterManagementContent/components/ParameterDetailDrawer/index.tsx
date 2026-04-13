@@ -90,7 +90,7 @@ const ParameterDetailDrawer = ({
     </>
   );
 
-  const deleteAction = onDelete && context === 'development' && !parameter.is_published ? (
+  const deleteAction = onDelete && context === 'development' ? (
     <Tooltip content={t('common.delete')}>
       <Button
         icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />}

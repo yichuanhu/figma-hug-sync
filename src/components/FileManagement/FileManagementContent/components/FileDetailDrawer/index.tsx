@@ -80,20 +80,12 @@ const FileDetailDrawer = ({
   // 删除检查
   const handleDelete = useCallback(() => {
     if (!file) return;
-    if (file.is_published) {
-      Modal.warning({
-        title: t('file.deleteModal.cannotDeleteTitle'),
-        content: t('file.deleteModal.publishedError'),
-        okText: t('common.confirm'),
-      });
-      return;
-    }
     onDelete(file);
   }, [file, onDelete, t]);
 
   if (!file) return null;
 
-  const canDeleteFile = context === 'development' && !file.is_published;
+  const canDeleteFile = context === 'development';
 
   const extraActions = (
     <>

@@ -274,16 +274,6 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
 
   // 删除文件
   const handleDelete = (record: LYFileResponse) => {
-    // 已发布的文件不允许删除
-    if (record.is_published) {
-      Modal.warning({
-        title: t('file.deleteModal.cannotDeleteTitle'),
-        content: t('file.deleteModal.publishedError'),
-        okText: t('common.confirm'),
-      });
-      return;
-    }
-
     Modal.confirm({
       title: t('file.deleteModal.title'),
       icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
@@ -439,7 +429,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
               >
                 {t('collaborator.actions.addCollaborator')}
               </Dropdown.Item>
-              {context === 'development' && !record.is_published && (
+              {context === 'development' && (
                 <Dropdown.Item
                   icon={<Trash2 size={16} strokeWidth={2} />}
                   type="danger"
