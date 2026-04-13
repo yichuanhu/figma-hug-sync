@@ -471,7 +471,7 @@ const TemplateManagementPage = () => {
                   value={queryParams.process_id}
                   onChange={(v) => handleProcessFilter(v as string | undefined)}
                   showClear
-                  style={{ width: 180 }}
+                  style={{ width: 260 }}
                   optionList={mockProcesses.map((p) => ({
                     value: p.process_id,
                     label: p.process_name,
