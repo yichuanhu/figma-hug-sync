@@ -416,7 +416,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
       key: 'actions',
       width: 80,
       render: (_: unknown, record: LYCredentialResponse) => {
-        const canDelete = context === 'development' && !record.is_published;
+        const canDelete = context === 'development';
 
         return (
           <Dropdown
