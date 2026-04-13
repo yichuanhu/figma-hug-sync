@@ -383,8 +383,6 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
       key: 'actions',
       width: 80,
       render: (_: unknown, record: LYParameterResponse) => {
-        // 已发布的参数不允许编辑和删除
-        const canEdit = !record.is_published;
         const canDelete = context === 'development' && !record.is_published;
 
         return (
@@ -394,11 +392,9 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
             clickToHide
             render={
               <Dropdown.Menu>
-                {canEdit && (
-                  <Dropdown.Item icon={<Pencil size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>
-                    {t('common.edit')}
-                  </Dropdown.Item>
-                )}
+                <Dropdown.Item icon={<Pencil size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>
+                  {t('common.edit')}
+                </Dropdown.Item>
                 <Dropdown.Item icon={<UserPlus size={14} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); openCollaborator(record.parameter_id); }}>
                   {t('collaborator.actions.addCollaborator')}
                 </Dropdown.Item>

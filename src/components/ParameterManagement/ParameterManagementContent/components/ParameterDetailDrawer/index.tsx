@@ -78,17 +78,15 @@ const ParameterDetailDrawer = ({
   // 额外操作按钮
   const extraActions = (
     <>
-      {!parameter.is_published && (
-        <Tooltip content={t('common.edit')}>
-          <Button
-            icon={<Pencil size={16} strokeWidth={2} />}
-            theme="borderless"
-            type="tertiary"
-            size="small"
-            onClick={() => onEdit(parameter)}
-          />
-        </Tooltip>
-      )}
+      <Tooltip content={t('common.edit')}>
+        <Button
+          icon={<Pencil size={16} strokeWidth={2} />}
+          theme="borderless"
+          type="tertiary"
+          size="small"
+          onClick={() => onEdit(parameter)}
+        />
+      </Tooltip>
     </>
   );
 

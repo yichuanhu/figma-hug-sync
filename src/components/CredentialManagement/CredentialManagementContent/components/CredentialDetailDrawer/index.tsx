@@ -261,11 +261,9 @@ const CredentialDetailDrawer = ({
 
   const extraActions = (
     <>
-      {!credential.is_published && (
-        <Tooltip content={t('common.edit')}>
-          <Button icon={<Pencil size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={handleEdit} />
-        </Tooltip>
-      )}
+      <Tooltip content={t('common.edit')}>
+        <Button icon={<Pencil size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={handleEdit} />
+      </Tooltip>
     </>
   );
 
