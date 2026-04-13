@@ -191,7 +191,7 @@ const Showcases = () => {
           showClear
           maxTagCount={1}
           useNameAsValue
-          style={{ width: 200 }}
+          style={{ width: 'auto', minWidth: 120, maxWidth: 600 }}
         />
         <Select
           placeholder={t('sharing.filter.tags')}

@@ -579,7 +579,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
                   setQueryParams((prev) => ({ ...prev, offset: 0 }));
                 }}
                 placeholder={t('common.owningDepartmentPlaceholder')}
-                style={{ width: 200 }}
+                style={{ width: 'auto', minWidth: 120, maxWidth: 600 }}
                 maxTagCount={1}
                 showClear
               />
