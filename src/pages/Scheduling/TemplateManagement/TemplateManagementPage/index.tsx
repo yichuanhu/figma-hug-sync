@@ -477,13 +477,13 @@ const TemplateManagementPage = () => {
                     label: p.process_name,
                   }))}
                 />
-                <Select
+                <DepartmentSelect
                   placeholder={t('common.owningDepartment')}
                   value={queryParams.owning_department_name}
                   onChange={(v) => setQueryParams(prev => ({ ...prev, offset: 0, owning_department_name: v as string | undefined }))}
                   showClear
+                  useNameAsValue
                   style={{ width: 160 }}
-                  optionList={departmentOptions}
                 />
               </Space>
             </Col>

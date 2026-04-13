@@ -916,18 +916,18 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
                 value={searchValue}
                 onChange={handleSearch}
               />
-              <Select
+              <DepartmentSelect
                 placeholder={t('common.owningDepartment')}
                 value={departmentFilter}
                 onChange={(v) => {
-                  setDepartmentFilter(v as string[]);
+                  setDepartmentFilter(v);
                   setQueryParams(prev => ({ ...prev, offset: 0 }));
                 }}
                 multiple
                 showClear
                 maxTagCount={1}
+                useNameAsValue
                 style={{ width: 180 }}
-                optionList={departmentOptions}
               />
               <Select
                 placeholder={t('worker.filter.workerGroup')}

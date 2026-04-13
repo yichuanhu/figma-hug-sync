@@ -432,13 +432,13 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
                 onChange={handleSearch}
                 showClear
               />
-              <Select
+              <DepartmentSelect
                 placeholder={t('common.owningDepartment')}
                 value={queryParams.owning_department_name}
                 onChange={(v) => setQueryParams(prev => ({ ...prev, offset: 0, owning_department_name: v as string | undefined }))}
                 showClear
+                useNameAsValue
                 style={{ width: 160 }}
-                optionList={departmentOptions}
               />
             </Space>
           </Col>
