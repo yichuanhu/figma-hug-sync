@@ -21,7 +21,7 @@ import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
 import { debounce } from 'lodash';
-import { Ellipsis, Eye, Pencil, Plus, Trash2, UserPlus } from 'lucide-react';
+import { Ellipsis, List, Pencil, Plus, Trash2, UserPlus } from 'lucide-react';
 import type {
   LYQueueResponse,
   LYQueueListResultResponse,
@@ -393,7 +393,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
             clickToHide
             render={
               <Dropdown.Menu>
-                <Dropdown.Item icon={<Eye size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleViewMessages(record); }}>
+                <Dropdown.Item icon={<List size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleViewMessages(record); }}>
                   {t('queue.actions.viewMessages')}
                 </Dropdown.Item>
                 {canEdit && (
