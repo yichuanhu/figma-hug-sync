@@ -27,7 +27,7 @@ import type { RequirementItem, RequirementQueryParams } from './types';
 import {
   statusConfig,
   priorityConfig,
-  departmentOptions,
+  
   fetchRequirementList,
   deleteRequirement,
   createRequirement,
@@ -372,18 +372,18 @@ const RequirementsWorkbench = () => {
                 showClear
                 maxLength={100}
               />
-              <Select
+              <DepartmentSelect
                 placeholder={t('requirements.fields.department')}
                 value={departmentFilter}
                 onChange={(v) => {
-                  setDepartmentFilter(v as string[]);
+                  setDepartmentFilter(v);
                   setQueryParams((prev) => ({ ...prev, offset: 0 }));
                 }}
                 multiple
                 showClear
                 maxTagCount={1}
+                useNameAsValue
                 style={{ width: 180 }}
-                optionList={departmentOptions}
               />
               <FilterPopover
                 visible={filterPopoverVisible}
