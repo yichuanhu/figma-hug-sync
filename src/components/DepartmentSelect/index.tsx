@@ -86,7 +86,7 @@ const DepartmentSelect = (props: DepartmentSelectProps) => {
       searchAutoFocus
       searchPosition="dropdown"
       showSearchClear
-      style={{ width: '100%', ...style }}
+      style={{ ...style }}
       className={className}
       dropdownStyle={{ maxHeight: 320, overflow: 'auto' }}
     />
