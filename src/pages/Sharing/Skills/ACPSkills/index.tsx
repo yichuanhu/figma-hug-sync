@@ -162,7 +162,7 @@ const ACPSkills = () => {
   return (
     <div className="skills-page">
       <div className="skills-page-header">
-        <Title heading={4} className="title">
+        <Title heading={3} className="title">
           {t('sharing.acpSkills.pageTitle')}
         </Title>
       </div>

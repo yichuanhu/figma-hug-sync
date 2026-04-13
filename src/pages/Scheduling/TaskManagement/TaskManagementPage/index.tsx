@@ -702,7 +702,7 @@ const TaskManagementPage = () => {
 
         <div className="task-management-page-header">
           <div className="task-management-page-header-title">
-            <Title heading={4}>{t('task.title')}</Title>
+            <Title heading={3}>{t('task.title')}</Title>
             <Button
               icon={<ClipboardClock size={16} strokeWidth={2} />}
               onClick={() => navigate('/scheduling-center/task-execution/templates')}

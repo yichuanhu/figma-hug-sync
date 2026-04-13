@@ -24,7 +24,7 @@ const AutoExecutionPolicyPage = () => {
       {/* Title area */}
       <div className="auto-execution-policy-header">
         <div className="auto-execution-policy-header-title">
-          <Title heading={4} className="title">
+          <Title heading={3} className="title">
             {t('autoExecutionPolicy.pageTitle')}
           </Title>
         </div>

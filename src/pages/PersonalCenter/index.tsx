@@ -36,7 +36,7 @@ const PersonalCenter = () => {
 
   return (
     <div className="personal-center-page">
-      <Title heading={4} className="personal-center-title">{t('personalCenter.title')}</Title>
+      <Title heading={3} className="personal-center-title">{t('personalCenter.title')}</Title>
       {/* Tabs */}
       <div className="personal-center-tabs">
         <Tabs activeKey={activeTab} onChange={handleTabChange}>
