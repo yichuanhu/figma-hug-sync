@@ -22,6 +22,7 @@ import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
 import { Ellipsis, ExternalLink, Pencil, PlayCircle, Plus, Trash2, UserPlus } from 'lucide-react';
+import DepartmentSelect from '@/components/DepartmentSelect';
 // AppLayout removed - now handled at route level
 import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
@@ -79,6 +80,8 @@ const generateMockLYProcessResponse = (index: number): LYProcessResponse => {
   const statuses = ['DEVELOPING', 'PUBLISHED', 'ARCHIVED'];
   const languages = ['Python', 'JavaScript', 'Java'];
   const processTypes = ['RPA', 'AI', 'Hybrid'];
+  const departmentNames = ['Finance', 'HR', 'IT', 'Procurement', 'Logistics', 'Sales'];
+  const departmentIds = ['dept-001', 'dept-002', 'dept-003', 'dept-004', 'dept-005', 'dept-006'];
 
   const createDate = new Date(2025, 0, 1 + (index % 20), 10 + (index % 12), (index * 7) % 60, 0);
   const updateDate = new Date(createDate.getTime() + (index % 10) * 24 * 60 * 60 * 1000);
@@ -94,6 +97,8 @@ const generateMockLYProcessResponse = (index: number): LYProcessResponse => {
     current_version_id: index % 2 === 0 ? `ver-${generateUUID().substring(0, 8)}` : null,
     creator_id: creatorIds[index % creatorIds.length],
     requirement_id: index % 3 === 0 ? `req-${generateUUID().substring(0, 8)}` : null,
+    owning_department_id: departmentIds[index % departmentIds.length],
+    owning_department_name: departmentNames[index % departmentNames.length],
     created_at: createDate.toISOString(),
     updated_at: updateDate.toISOString(),
   };
@@ -120,7 +125,7 @@ const mockCreatorNameMap: Record<string, { name: string; department?: string; ro
 
 // ============= Data获取 - BackLYListResponseLYProcessResponse =============
 
-const fetchProcessList = async (params: GetProcessesParams & { statusFilter?: string[] }): Promise<LYListResponseLYProcessResponse> => {
+const fetchProcessList = async (params: GetProcessesParams & { statusFilter?: string[]; departmentFilter?: string[] }): Promise<LYListResponseLYProcessResponse> => {
   // 模拟Network延迟
   await new Promise((resolve) => setTimeout(resolve, 300));
 
@@ -140,6 +145,11 @@ const fetchProcessList = async (params: GetProcessesParams & { statusFilter?: st
   // StatusFilter
   if (params.statusFilter && params.statusFilter.length > 0) {
     filteredData = filteredData.filter((item) => params.statusFilter!.includes(item.status));
+  }
+
+  // DepartmentFilter
+  if (params.departmentFilter && params.departmentFilter.length > 0) {
+    filteredData = filteredData.filter((item) => params.departmentFilter!.includes((item as any).owning_department_name));
   }
 
   // Sortprocessing
@@ -213,6 +223,7 @@ const ProcessDevelopment = () => {
 
   // StatusFilter
   const [statusFilter, setStatusFilter] = useState<string[]>([]);
+  const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
 
   const [loading, setLoading] = useState(true);
@@ -252,14 +263,14 @@ const ProcessDevelopment = () => {
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetchProcessList({ ...queryParams, statusFilter });
+      const response = await fetchProcessList({ ...queryParams, statusFilter, departmentFilter });
       setListResponse(response);
       return response.list;
     } finally {
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, statusFilter]);
+  }, [queryParams, statusFilter, departmentFilter]);
 
   // 翻页并Back新Data(usefor Drawer导航时auto-翻页)
   const handleDrawerPageChange = useCallback(async (page: number): Promise<LYProcessResponse[]> => {
@@ -271,10 +282,11 @@ const ProcessDevelopment = () => {
       ...queryParams,
       offset: newOffset,
       statusFilter,
+      departmentFilter,
     });
     setListResponse(response);
     return response.list;
-  }, [queryParams, statusFilter, listResponse.range?.size]);
+  }, [queryParams, statusFilter, departmentFilter, listResponse.range?.size]);
 
   // 初始化Loading
   useEffect(() => {
@@ -418,6 +430,14 @@ const ProcessDevelopment = () => {
       },
     },
     {
+      title: t('common.owningDepartment'),
+      dataIndex: 'owning_department_name',
+      key: 'owning_department_name',
+      width: 140,
+      ellipsis: true,
+      render: (value: string | null) => value || '-',
+    },
+    {
       title: t('common.createTime'),
       dataIndex: 'created_at',
       key: 'created_at',
@@ -541,6 +561,19 @@ const ProcessDevelopment = () => {
                     value: statusFilter,
                   },
                 ]}
+              />
+              <DepartmentSelect
+                placeholder={t('common.owningDepartment')}
+                value={departmentFilter}
+                onChange={(v) => {
+                  setDepartmentFilter(v);
+                  setQueryParams((prev) => ({ ...prev, offset: 0 }));
+                }}
+                multiple
+                showClear
+                maxTagCount={1}
+                useNameAsValue
+                style={{ width: 200 }}
               />
             </Space>
           </Col>
