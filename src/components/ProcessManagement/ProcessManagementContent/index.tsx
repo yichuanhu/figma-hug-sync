@@ -238,6 +238,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
 
   // 状态筛选 - 调度中心默认只显示已发布
   const [statusFilter, setStatusFilter] = useState<string[]>(isSchedulingContext ? ['PUBLISHED'] : []);
+  const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
 
   const [loading, setLoading] = useState(true);
