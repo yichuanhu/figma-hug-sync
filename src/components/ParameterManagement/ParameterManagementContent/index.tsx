@@ -188,6 +188,8 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
   // 发布状态筛选（仅开发中心使用）
   const [publishedFilter, setPublishedFilter] = useState<boolean | null>(null);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
+  // 部门筛选
+  const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
   const { openCollaborator, renderCollaboratorPanel } = useCollaboratorAction();
 
   // 列表数据
