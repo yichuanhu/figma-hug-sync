@@ -382,7 +382,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
       key: 'actions',
       width: 80,
       render: (_: unknown, record: LYQueueResponse) => {
-        const canDelete = context === 'development' && !record.is_published;
+        const canDelete = context === 'development';
 
         return (
           <Dropdown
