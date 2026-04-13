@@ -1,10 +1,9 @@
 import { useState, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Typography, Input, Card, Tag, Space } from '@douyinfe/semi-ui';
+import { Typography, Input, Card, Tag, Space, Select } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import { Eye, Star } from 'lucide-react';
 import ShowcaseDetailDrawer, { ShowcaseItem } from './components/ShowcaseDetailDrawer';
-import FilterPopover, { FilterSection } from '@/components/FilterPopover';
 import './index.less';
 
 const { Title, Text, Paragraph } = Typography;
@@ -140,7 +139,6 @@ const Showcases = () => {
   const [searchText, setSearchText] = useState('');
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState<ShowcaseItem | null>(null);
-  const [filterVisible, setFilterVisible] = useState(false);
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
   const [tagsFilter, setTagsFilter] = useState<string[]>([]);
 
@@ -154,23 +152,6 @@ const Showcases = () => {
     showcasesMockData.forEach((item) => item.tags.forEach((tag) => allTags.add(tag)));
     return Array.from(allTags).map((tag) => ({ value: tag, label: tag }));
   }, []);
-
-  const filterSections: FilterSection[] = useMemo(() => [
-    {
-      key: 'department',
-      label: t('sharing.filter.department'),
-      type: 'checkbox',
-      options: departmentOptions,
-      value: departmentFilter,
-    },
-    {
-      key: 'tags',
-      label: t('sharing.filter.tags'),
-      type: 'checkbox',
-      options: tagOptions,
-      value: tagsFilter,
-    },
-  ], [t, departmentFilter, tagsFilter, departmentOptions, tagOptions]);
 
   const filteredData = showcasesMockData.filter((item) => {
     if (searchText && !item.name.toLowerCase().includes(searchText.toLowerCase()) &&
@@ -186,11 +167,6 @@ const Showcases = () => {
   const handleCardClick = useCallback((item: ShowcaseItem) => {
     setSelectedItem(item);
     setDrawerVisible(true);
-  }, []);
-
-  const handleFilterConfirm = useCallback((values: Record<string, unknown>) => {
-    setDepartmentFilter(values.department as string[] || []);
-    setTagsFilter(values.tags as string[] || []);
   }, []);
 
   return (
@@ -209,11 +185,25 @@ const Showcases = () => {
           showClear
           style={{ width: 280 }}
         />
-        <FilterPopover
-          sections={filterSections}
-          visible={filterVisible}
-          onVisibleChange={setFilterVisible}
-          onConfirm={handleFilterConfirm}
+        <Select
+          placeholder={t('sharing.filter.department')}
+          value={departmentFilter}
+          onChange={(v) => setDepartmentFilter(v as string[])}
+          multiple
+          showClear
+          maxTagCount={1}
+          style={{ width: 180 }}
+          optionList={departmentOptions}
+        />
+        <Select
+          placeholder={t('sharing.filter.tags')}
+          value={tagsFilter}
+          onChange={(v) => setTagsFilter(v as string[])}
+          multiple
+          showClear
+          maxTagCount={1}
+          style={{ width: 180 }}
+          optionList={tagOptions}
         />
       </div>
       <div className="showcases-page-grid">
