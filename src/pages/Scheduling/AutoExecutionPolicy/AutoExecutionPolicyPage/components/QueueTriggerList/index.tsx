@@ -15,6 +15,7 @@ import {
   Switch,
   Tooltip,
 } from '@douyinfe/semi-ui';
+import DepartmentSelect from '@/components/DepartmentSelect';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import { Ellipsis, Pencil, Plus, Trash2, UserPlus } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';

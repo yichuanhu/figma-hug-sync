@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Typography, Input, Card, Tag, Space, Select } from '@douyinfe/semi-ui';
+import DepartmentSelect from '@/components/DepartmentSelect';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import { Eye, Star } from 'lucide-react';
 import ShowcaseDetailDrawer, { ShowcaseItem } from './components/ShowcaseDetailDrawer';

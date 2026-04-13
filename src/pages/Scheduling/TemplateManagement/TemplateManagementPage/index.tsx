@@ -17,6 +17,7 @@ import {
   Select,
   Tooltip,
 } from '@douyinfe/semi-ui';
+import DepartmentSelect from '@/components/DepartmentSelect';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 // AppLayout removed
 import EmptyState from '@/components/EmptyState';
