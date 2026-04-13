@@ -203,6 +203,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
         offset: (queryParams.page - 1) * queryParams.pageSize,
         size: queryParams.pageSize,
         typeFilter: typeFilter.length > 0 ? typeFilter[0] : null,
+        departmentFilter,
       });
       setListResponse(response);
       return response.data;
@@ -214,7 +215,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, typeFilter, context, t]);
+  }, [queryParams, typeFilter, departmentFilter, context, t]);
 
   // 翻页并返回新数据（用于抽屉导航时自动翻页）
   const handleDrawerPageChange = useCallback(async (page: number): Promise<LYCredentialResponse[]> => {
@@ -227,6 +228,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
         offset: (page - 1) * queryParams.pageSize,
         size: queryParams.pageSize,
         typeFilter: typeFilter.length > 0 ? typeFilter[0] : null,
+        departmentFilter,
       });
       setListResponse(response);
       return response.data;
