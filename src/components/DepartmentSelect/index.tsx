@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { TreeSelect } from '@douyinfe/semi-ui';
+import { TreeSelect, Tooltip, Typography } from '@douyinfe/semi-ui';
 import { departmentTree, DeptTreeNode } from '@/mocks/departmentData';
 
 interface DepartmentSelectBaseProps {
@@ -49,6 +49,35 @@ const normalizeDepartmentTree = (
       : undefined,
   }));
 
+/** Collect all labels from tree */
+const collectLabels = (nodes: DeptTreeNode[]): string[] => {
+  const labels: string[] = [];
+  const walk = (list: DeptTreeNode[]) => {
+    for (const n of list) {
+      labels.push(n.label);
+      if (n.children) walk(n.children);
+    }
+  };
+  walk(nodes);
+  return labels;
+};
+
+/** Estimate text width: CJK chars ~14px, others ~8px, plus tree indent & padding */
+const estimateMaxDropdownWidth = (labels: string[]): number => {
+  let maxWidth = 0;
+  for (const label of labels) {
+    let w = 0;
+    for (const ch of label) {
+      w += ch.charCodeAt(0) > 255 ? 14 : 8;
+    }
+    if (w > maxWidth) maxWidth = w;
+  }
+  // Add padding for tree indent (up to 3 levels * 20px) + checkbox/icon + scrollbar
+  return Math.min(maxWidth + 100, 600);
+};
+
+const { Text } = Typography;
+
 const DepartmentSelect = (props: DepartmentSelectProps) => {
   const {
     value,
@@ -70,6 +99,8 @@ const DepartmentSelect = (props: DepartmentSelectProps) => {
     [useNameAsValue],
   );
 
+  const dropdownWidth = useMemo(() => estimateMaxDropdownWidth(collectLabels(departmentTree)), []);
+
   return (
     <TreeSelect
       value={value}
@@ -88,7 +119,15 @@ const DepartmentSelect = (props: DepartmentSelectProps) => {
       showSearchClear
       style={{ width: '100%', ...style }}
       className={className}
-      dropdownStyle={{ maxHeight: 320, overflow: 'auto' }}
+      dropdownStyle={{ maxHeight: 320, overflow: 'auto', width: dropdownWidth }}
+      renderLabel={(label) => (
+        <Text
+          ellipsis={{ showTooltip: true }}
+          style={{ width: '100%', margin: 0 }}
+        >
+          {label as string}
+        </Text>
+      )}
     />
   );
 };
