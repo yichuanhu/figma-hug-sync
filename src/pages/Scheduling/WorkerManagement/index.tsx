@@ -499,11 +499,11 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
   };
 
   const handleFilterConfirm = (values: Record<string, unknown>) => {
-    setFilters({
+    setFilters(prev => ({
+      ...prev,
       status: (values.status as string[]) || [],
       sync_status: (values.sync_status as string[]) || [],
-      group_id: (values.group_id as string[]) || [],
-    });
+    }));
     setQueryParams(prev => ({ ...prev, offset: 0 }));
   };
 
