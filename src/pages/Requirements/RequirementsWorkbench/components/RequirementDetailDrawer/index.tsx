@@ -68,9 +68,9 @@ const PropertyPanel = ({
       <div className="requirement-detail-property-group">
         <div className="requirement-detail-property-item">
           <Text type="tertiary" size="small" className="requirement-detail-property-label">
-            {t('requirements.fields.department')}
+            {t('common.owningDepartment')}
           </Text>
-          <Text>{data.department}</Text>
+          <Text>{data.owning_department_name}</Text>
         </div>
 
         <div className="requirement-detail-property-item">

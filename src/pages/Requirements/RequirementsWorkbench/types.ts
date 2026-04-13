@@ -92,8 +92,8 @@ export interface RequirementItem {
   title: string;
   description: string;
   businessBackground?: string;
-  department: string;
-  departmentId: string;
+  owning_department_name: string;
+  owning_department_id: string;
   creatorId: string;
   creatorName: string;
   creatorDepartment?: string;

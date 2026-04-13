@@ -50,7 +50,7 @@ const RequirementFormModal = ({
         title: editData.title,
         description: editData.description,
         businessBackground: editData.businessBackground || '',
-        department: editData.department,
+        department: editData.owning_department_name,
         priority: editData.priority,
         contactInfo: editData.contactInfo || '',
         expectedLaunchDate: editData.expectedLaunchDate
@@ -64,10 +64,10 @@ const RequirementFormModal = ({
   }, [isEdit, editData]);
 
   useEffect(() => {
-    const nextDepartment = editData?.department || undefined;
+    const nextDepartment = editData?.owning_department_name || undefined;
     setDepartmentValue(nextDepartment);
     formApi?.setValue?.('department', nextDepartment);
-  }, [editData?.department, editData?.id, formApi, visible]);
+  }, [editData?.owning_department_name, editData?.id, formApi, visible]);
 
   const handleDepartmentChange = (value: string) => {
     setDepartmentValue(value);

@@ -200,10 +200,10 @@ const RequirementsWorkbench = () => {
       onHeaderCell: () => ({ onClick: () => handleSort('title') }),
     },
     {
-      title: t('requirements.fields.department'),
-      dataIndex: 'department',
-      key: 'department',
-      width: 120,
+      title: t('common.owningDepartment'),
+      dataIndex: 'owning_department_name',
+      key: 'owning_department_name',
+      width: 140,
       ellipsis: true,
     },
     {
