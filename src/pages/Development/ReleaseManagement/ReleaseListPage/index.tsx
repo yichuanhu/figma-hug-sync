@@ -442,6 +442,19 @@ const ReleaseListPage: React.FC = () => {
                   showClear
                   className="release-list-page-search-input"
                 />
+                <Select
+                  placeholder={t('release.list.columns.publisher')}
+                  value={activeFilters.publisher}
+                  onChange={(v) => {
+                    setActiveFilters(prev => ({ ...prev, publisher: v as string[] }));
+                    setQueryParams(prev => ({ ...prev, offset: 0 }));
+                  }}
+                  multiple
+                  showClear
+                  maxTagCount={1}
+                  style={{ width: 180 }}
+                  optionList={publisherOptions}
+                />
                 <FilterPopover
                   visible={filterVisible}
                   onVisibleChange={setFilterVisible}
@@ -460,13 +473,6 @@ const ReleaseListPage: React.FC = () => {
                       type: 'checkbox',
                       value: activeFilters.publish_status,
                       options: statusOptions,
-                    },
-                    {
-                      key: 'publisher',
-                      label: t('release.list.columns.publisher'),
-                      type: 'checkbox',
-                      value: activeFilters.publisher,
-                      options: publisherOptions,
                     },
                     {
                       key: 'publish_date',
