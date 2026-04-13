@@ -289,10 +289,11 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       ...queryParams,
       offset: newOffset,
       statusFilter,
+      departmentFilter,
     });
     setListResponse(response);
     return response.list;
-  }, [queryParams, statusFilter, listResponse.range?.size]);
+  }, [queryParams, statusFilter, departmentFilter, listResponse.range?.size]);
 
   // 初始化加载
   useEffect(() => {
