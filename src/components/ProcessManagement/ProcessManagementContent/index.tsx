@@ -570,6 +570,19 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
                 showClear
                 maxLength={100}
               />
+              <DepartmentSelect
+                multiple
+                useNameAsValue
+                value={departmentFilter}
+                onChange={(val) => {
+                  setDepartmentFilter(val);
+                  setQueryParams((prev) => ({ ...prev, offset: 0 }));
+                }}
+                placeholder={t('common.owningDepartmentPlaceholder')}
+                style={{ width: 200 }}
+                maxTagCount={1}
+                showClear
+              />
               {/* 调度中心不显示筛选 */}
               {!isSchedulingContext && (
                 <FilterPopover
