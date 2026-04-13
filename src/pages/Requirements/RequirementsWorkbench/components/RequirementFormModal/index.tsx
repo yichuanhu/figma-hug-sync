@@ -147,7 +147,12 @@ const RequirementFormModal = ({
             showClear
           />
 
-          <Form.Slot label={t('requirements.fields.department')}>
+          <Form.Slot
+            label={t('requirements.fields.department')}
+            field="department"
+            trigger={['change', 'blur']}
+            rules={[{ required: true, message: t('requirements.form.departmentRequired') }]}
+          >
             <DepartmentSelect
               useNameAsValue
               placeholder={t('requirements.form.departmentPlaceholder')}

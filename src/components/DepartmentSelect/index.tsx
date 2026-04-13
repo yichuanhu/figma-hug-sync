@@ -69,13 +69,15 @@ const DepartmentSelect = (props: DepartmentSelectProps) => {
       showClear={showClear ?? !multiple}
       maxTagCount={maxTagCount}
       defaultExpandAll
+      expandAll
+      treeNodeFilterProp="label"
       filterTreeNode
       searchAutoFocus
-      searchPosition="dropdown"
+      searchPosition="trigger"
       showSearchClear
       style={{ width: '100%', ...style }}
       className={className}
-      dropdownStyle={{ maxHeight: 320, overflow: 'auto' }}
+      dropdownStyle={{ maxHeight: 320, overflow: 'auto', padding: 8 }}
     />
   );
 };
