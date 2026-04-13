@@ -11,7 +11,7 @@ import {
 } from '@douyinfe/semi-ui';
 import { Upload as UploadIcon } from 'lucide-react';
 import type { RequirementItem } from '../../types';
-import { departmentOptions } from '../../mockData';
+import DepartmentSelect from '@/components/DepartmentSelect';
 import './index.less';
 
 const { Text } = Typography;
