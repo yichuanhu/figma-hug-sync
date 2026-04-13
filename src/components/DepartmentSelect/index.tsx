@@ -29,12 +29,24 @@ interface MultiSelectProps extends DepartmentSelectBaseProps {
 
 type DepartmentSelectProps = SingleSelectProps | MultiSelectProps;
 
-/** Transform tree to use label as value */
-const transformTreeToNameValues = (nodes: DeptTreeNode[]): DeptTreeNode[] =>
-  nodes.map(node => ({
-    value: node.label,
+interface DepartmentTreeSelectNode {
+  key: string;
+  value: string;
+  label: string;
+  children?: DepartmentTreeSelectNode[];
+}
+
+const normalizeDepartmentTree = (
+  nodes: DeptTreeNode[],
+  useNameAsValue: boolean,
+): DepartmentTreeSelectNode[] =>
+  nodes.map((node) => ({
+    key: node.value,
+    value: useNameAsValue ? node.label : node.value,
     label: node.label,
-    children: node.children ? transformTreeToNameValues(node.children) : undefined,
+    children: node.children
+      ? normalizeDepartmentTree(node.children, useNameAsValue)
+      : undefined,
   }));
 
 const DepartmentSelect = (props: DepartmentSelectProps) => {
@@ -54,8 +66,8 @@ const DepartmentSelect = (props: DepartmentSelectProps) => {
   const { t } = useTranslation();
 
   const treeData = useMemo(
-    () => (useNameAsValue ? transformTreeToNameValues(departmentTree) : departmentTree),
-    [useNameAsValue]
+    () => normalizeDepartmentTree(departmentTree, useNameAsValue),
+    [useNameAsValue],
   );
 
   return (
@@ -69,15 +81,14 @@ const DepartmentSelect = (props: DepartmentSelectProps) => {
       showClear={showClear ?? !multiple}
       maxTagCount={maxTagCount}
       defaultExpandAll
-      expandAll
       treeNodeFilterProp="label"
       filterTreeNode
       searchAutoFocus
-      searchPosition="trigger"
+      searchPosition="dropdown"
       showSearchClear
       style={{ width: '100%', ...style }}
       className={className}
-      dropdownStyle={{ maxHeight: 320, overflow: 'auto', padding: 8 }}
+      dropdownStyle={{ maxHeight: 320, overflow: 'auto' }}
     />
   );
 };
