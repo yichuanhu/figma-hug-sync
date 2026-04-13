@@ -232,7 +232,8 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
         offset: (queryParams.page - 1) * queryParams.pageSize,
         size: queryParams.pageSize,
         sourceFilter: sourceFilter.length > 0 ? sourceFilter[0] : null,
-      });
+        departmentFilter,
+      } as any);
       setListResponse(response);
       return response.data;
     } catch (error) {
@@ -243,7 +244,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, sourceFilter, context, t]);
+  }, [queryParams, sourceFilter, departmentFilter, context, t]);
 
   useEffect(() => {
     loadData();
