@@ -355,7 +355,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     sync_status: [],
     group_id: [],
   });
-  const [departmentFilter, setDepartmentFilter] = useState<string | undefined>(undefined);
+  const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
   const [sortState, setSortState] = useState<SortState>({});
   const [filterVisible, setFilterVisible] = useState(false);
   const [loading, setLoading] = useState(true);
