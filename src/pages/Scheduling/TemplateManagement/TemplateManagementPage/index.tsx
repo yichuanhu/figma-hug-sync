@@ -427,10 +427,7 @@ const TemplateManagementPage = () => {
     },
   ];
 
-  const departmentOptions = useMemo(() => {
-    const depts = [...new Set(allMockTemplates.map((t: any) => t.owning_department_name).filter(Boolean))];
-    return depts.map(d => ({ value: d, label: d }));
-  }, []);
+  // departmentOptions removed - using DepartmentSelect with tree data
 
   const hasFilters = queryParams.keyword || queryParams.process_id || queryParams.owning_department_name;
 

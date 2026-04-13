@@ -143,10 +143,7 @@ const Showcases = () => {
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
   const [tagsFilter, setTagsFilter] = useState<string[]>([]);
 
-  const departmentOptions = useMemo(() => {
-    const deps = new Set(showcasesMockData.map((item) => item.department));
-    return Array.from(deps).map((dep) => ({ value: dep, label: dep }));
-  }, []);
+  // departmentOptions removed - using DepartmentSelect with tree data
 
   const tagOptions = useMemo(() => {
     const allTags = new Set<string>();
