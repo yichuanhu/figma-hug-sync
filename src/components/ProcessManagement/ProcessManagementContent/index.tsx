@@ -270,14 +270,14 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetchProcessList({ ...queryParams, statusFilter });
+      const response = await fetchProcessList({ ...queryParams, statusFilter, departmentFilter });
       setListResponse(response);
       return response.list;
     } finally {
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, statusFilter]);
+  }, [queryParams, statusFilter, departmentFilter]);
 
   // 翻页并返回新数据（用于抽屉导航时自动翻页）
   const handleDrawerPageChange = useCallback(async (page: number): Promise<LYProcessResponse[]> => {
