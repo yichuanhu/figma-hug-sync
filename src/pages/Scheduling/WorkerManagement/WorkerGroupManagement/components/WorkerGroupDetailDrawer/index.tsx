@@ -239,6 +239,12 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
       onScrollToRow={onScrollToRow}
       extraActions={extraActions}
       deleteAction={deleteAction}
+      collaboratorProps={{
+        assetType: 'WORKER_GROUP',
+        assetId: groupData.id,
+        context: 'scheduling',
+        canManage: true,
+      }}
       defaultWidth={900}
       minWidth={576}
       storageKey="workerGroupDetailDrawerWidth"
