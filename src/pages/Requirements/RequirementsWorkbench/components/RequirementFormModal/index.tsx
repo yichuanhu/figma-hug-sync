@@ -11,7 +11,7 @@ import {
 } from '@douyinfe/semi-ui';
 import { Upload as UploadIcon } from 'lucide-react';
 import type { RequirementItem } from '../../types';
-import { departmentOptions } from '../../mockData';
+import DepartmentSelect from '@/components/DepartmentSelect';
 import './index.less';
 
 const { Text } = Typography;
@@ -147,16 +147,12 @@ const RequirementFormModal = ({
             showClear
           />
 
-          <Form.Select
-            field="department"
-            label={t('requirements.fields.department')}
-            placeholder={t('requirements.form.departmentPlaceholder')}
-            rules={[{ required: true, message: t('requirements.form.departmentRequired') }]}
-            optionList={departmentOptions}
-            filter
-            trigger={['blur', 'change']}
-            className="requirement-form-modal-select-full"
-          />
+          <Form.Slot label={t('requirements.fields.department')}>
+            <DepartmentSelect
+              useNameAsValue
+              placeholder={t('requirements.form.departmentPlaceholder')}
+            />
+          </Form.Slot>
 
           <Form.Input
             field="contactInfo"

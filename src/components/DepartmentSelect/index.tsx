@@ -68,6 +68,7 @@ const DepartmentSelect = (props: DepartmentSelectProps) => {
       multiple={multiple}
       showClear={showClear ?? !multiple}
       maxTagCount={maxTagCount}
+      defaultExpandAll
       filterTreeNode
       searchAutoFocus
       searchPosition="dropdown"
