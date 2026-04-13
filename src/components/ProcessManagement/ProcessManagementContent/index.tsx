@@ -80,6 +80,16 @@ const generateMockLYProcessResponse = (index: number): LYProcessResponse => {
   const languages = ['Python', 'JavaScript', 'Java'];
   const processTypes = ['RPA', 'AI', 'Hybrid'];
 
+  const departments = [
+    { id: 'dept-001', name: 'Finance Department' },
+    { id: 'dept-002', name: 'Enterprise Business Center' },
+    { id: 'dept-003', name: 'Human Resources Department' },
+    { id: 'dept-004', name: 'R&D Center' },
+    { id: 'dept-005', name: 'Operations Department' },
+  ];
+
+  const dept = departments[index % departments.length];
+
   const createDate = new Date(2025, 0, 1 + (index % 20), 10 + (index % 12), (index * 7) % 60, 0);
   const updateDate = new Date(createDate.getTime() + (index % 10) * 24 * 60 * 60 * 1000);
 
@@ -94,6 +104,8 @@ const generateMockLYProcessResponse = (index: number): LYProcessResponse => {
     current_version_id: index % 2 === 0 ? `ver-${generateUUID().substring(0, 8)}` : null,
     creator_id: creatorIds[index % creatorIds.length],
     requirement_id: index % 3 === 0 ? `req-${generateUUID().substring(0, 8)}` : null,
+    owning_department_id: dept.id,
+    owning_department_name: dept.name,
     created_at: createDate.toISOString(),
     updated_at: updateDate.toISOString(),
   };
