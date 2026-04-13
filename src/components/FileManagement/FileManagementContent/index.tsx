@@ -20,6 +20,7 @@ import { IconSearchStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
+import DepartmentSelect from '@/components/DepartmentSelect';
 import { Download, Ellipsis, Trash2, Upload, UserPlus } from 'lucide-react';
 import { debounce } from 'lodash';
 import type {
@@ -73,6 +74,9 @@ const generateMockFile = (index: number): LYFileResponse => {
   // 部分文件已发布
   const isPublished = index % 3 === 0;
   
+  const deptNames = ['Finance Department', 'R&D Center', 'Enterprise Business Center', 'Human Resources Department'];
+  const deptIds = ['dept-finance', 'dept-rd', 'dept-enterprise', 'dept-hr'];
+
   return {
     id: generateUUID(),
     display_name: displayName,
@@ -85,6 +89,8 @@ const generateMockFile = (index: number): LYFileResponse => {
       ? 'A core configuration file containing connection parameters and authentication info for multiple critical systems. Do not modify without authorization.'
       : `Description for ${displayName}.`,
     change_reason: index % 4 === 0 ? 'Fixed configuration error' : undefined,
+    owning_department_id: deptIds[index % deptIds.length],
+    owning_department_name: deptNames[index % deptNames.length],
     created_by: `user-00${(index % 4) + 1}`,
     created_by_name: ['John Smith', 'Jane Doe', 'Mike Wang', 'David Zhao'][index % 4],
     created_by_department: ['R&D Dept', 'Product Dept', 'QA Dept', 'Ops Dept'][index % 4],
@@ -118,6 +124,12 @@ const fetchFileList = async (
   // 来源筛选
   if (params.sourceFilter) {
     data = data.filter((item) => item.source === params.sourceFilter);
+  }
+
+  // 部门筛选
+  if ((params as any).departmentFilter && (params as any).departmentFilter.length > 0) {
+    const deptNames: string[] = (params as any).departmentFilter;
+    data = data.filter((item) => deptNames.includes((item as any).owning_department_name));
   }
 
   const total = data.length;
@@ -188,6 +200,8 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
   // 来源筛选
   const [sourceFilter, setSourceFilter] = useState<FileSource[]>([]);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
+  // 部门筛选
+  const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
 
   // 列表数据
   const [listResponse, setListResponse] = useState<LYFileListResultResponse | null>(null);
@@ -218,7 +232,8 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
         offset: (queryParams.page - 1) * queryParams.pageSize,
         size: queryParams.pageSize,
         sourceFilter: sourceFilter.length > 0 ? sourceFilter[0] : null,
-      });
+        departmentFilter,
+      } as any);
       setListResponse(response);
       return response.data;
     } catch (error) {
@@ -229,7 +244,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, sourceFilter, context, t]);
+  }, [queryParams, sourceFilter, departmentFilter, context, t]);
 
   useEffect(() => {
     loadData();
@@ -391,6 +406,14 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
       ),
     }] : []),
     {
+      title: t('common.owningDepartment'),
+      dataIndex: 'owning_department_name',
+      key: 'owning_department_name',
+      width: 140,
+      ellipsis: true,
+      render: (text: string | null) => text || '-',
+    },
+    {
       title: t('common.description'),
       dataIndex: 'description',
       key: 'description',
@@ -499,6 +522,19 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
                 onChange={handleSearch}
                 showClear
                 maxLength={100}
+              />
+              <DepartmentSelect
+                placeholder={t('common.owningDepartment')}
+                value={departmentFilter}
+                onChange={(v) => {
+                  setDepartmentFilter(v);
+                  setQueryParams((prev) => ({ ...prev, page: 1 }));
+                }}
+                multiple
+                showClear
+                maxTagCount={1}
+                useNameAsValue
+                style={{ width: 200 }}
               />
               <FilterPopover
                 visible={filterPopoverVisible}

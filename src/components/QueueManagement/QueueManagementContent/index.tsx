@@ -20,6 +20,7 @@ import { IconSearchStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
+import DepartmentSelect from '@/components/DepartmentSelect';
 import { debounce } from 'lodash';
 import { Ellipsis, List, Pencil, Plus, Trash2, UserPlus } from 'lucide-react';
 import type {
@@ -55,6 +56,9 @@ const generateMockQueue = (index: number): LYQueueResponse => {
     'Log Collection Queue',
   ];
 
+  const deptNames = ['Finance Department', 'R&D Center', 'Enterprise Business Center', 'Human Resources Department'];
+  const deptIds = ['dept-finance', 'dept-rd', 'dept-enterprise', 'dept-hr'];
+
   return {
     queue_id: generateUUID(),
     queue_name: names[index % names.length],
@@ -68,6 +72,8 @@ const generateMockQueue = (index: number): LYQueueResponse => {
     prod_unconsumed_count: Math.floor(Math.random() * 200),
     prod_consumed_count: Math.floor(Math.random() * 1000),
     prod_failed_count: Math.floor(Math.random() * 20),
+    owning_department_id: deptIds[index % deptIds.length],
+    owning_department_name: deptNames[index % deptNames.length],
     created_by: `user-00${(index % 4) + 1}`,
     created_by_name: ['John Smith', 'Jane Doe', 'Mike Wang', 'David Zhao'][index % 4],
     created_by_department: ['R&D Dept', 'Product Dept', 'QA Dept', 'Ops Dept'][index % 4],
@@ -104,6 +110,12 @@ const fetchQueueList = async (
   // 发布状态筛选
   if (params.publishedFilter !== null && params.publishedFilter !== undefined) {
     data = data.filter((item) => item.is_published === params.publishedFilter);
+  }
+
+  // 部门筛选
+  if ((params as any).departmentFilter && (params as any).departmentFilter.length > 0) {
+    const deptNames: string[] = (params as any).departmentFilter;
+    data = data.filter((item) => deptNames.includes((item as any).owning_department_name));
   }
 
   const total = data.length;
@@ -149,6 +161,8 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
   // 发布状态筛选（仅开发中心使用）
   const [publishedFilter, setPublishedFilter] = useState<boolean | null>(null);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
+  // 部门筛选
+  const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
 
   // 列表数据
   const [listResponse, setListResponse] = useState<LYQueueListResultResponse | null>(null);
@@ -176,7 +190,8 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
         offset: (queryParams.page - 1) * queryParams.pageSize,
         size: queryParams.pageSize,
         publishedFilter: context === 'development' ? publishedFilter : null,
-      });
+        departmentFilter,
+      } as any);
       setListResponse(response);
       return response.data;
     } catch (error) {
@@ -187,7 +202,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, publishedFilter, context, t]);
+  }, [queryParams, publishedFilter, departmentFilter, context, t]);
 
   // 翻页并返回新数据（用于抽屉导航时自动翻页）
   const handleDrawerPageChange = useCallback(async (page: number): Promise<LYQueueResponse[]> => {
@@ -200,13 +215,14 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
         offset: (page - 1) * queryParams.pageSize,
         size: queryParams.pageSize,
         publishedFilter: context === 'development' ? publishedFilter : null,
-      });
+        departmentFilter,
+      } as any);
       setListResponse(response);
       return response.data;
     } catch {
       return [];
     }
-  }, [queryParams, publishedFilter, context]);
+  }, [queryParams, publishedFilter, departmentFilter, context]);
 
   useEffect(() => {
     loadData();
@@ -370,6 +386,14 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
       ),
     }] : []),
     {
+      title: t('common.owningDepartment'),
+      dataIndex: 'owning_department_name',
+      key: 'owning_department_name',
+      width: 140,
+      ellipsis: true,
+      render: (text: string | null) => text || '-',
+    },
+    {
       title: t('common.description'),
       dataIndex: 'description',
       key: 'description',
@@ -451,6 +475,19 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
                 onChange={handleSearch}
                 showClear
                 maxLength={100}
+              />
+              <DepartmentSelect
+                placeholder={t('common.owningDepartment')}
+                value={departmentFilter}
+                onChange={(v) => {
+                  setDepartmentFilter(v);
+                  setQueryParams((prev) => ({ ...prev, page: 1 }));
+                }}
+                multiple
+                showClear
+                maxTagCount={1}
+                useNameAsValue
+                style={{ width: 200 }}
               />
               {context === 'development' && (
                 <FilterPopover

@@ -20,6 +20,7 @@ import { IconSearchStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
+import DepartmentSelect from '@/components/DepartmentSelect';
 import { debounce } from 'lodash';
 import { Ellipsis, Pencil, Plus, Trash2, UserPlus } from 'lucide-react';
 import type {
@@ -72,6 +73,9 @@ const generateMockParameter = (index: number): LYParameterResponse => {
     }
   };
 
+  const deptNames = ['Finance Department', 'R&D Center', 'Enterprise Business Center', 'Human Resources Department'];
+  const deptIds = ['dept-finance', 'dept-rd', 'dept-enterprise', 'dept-hr'];
+
   return {
     parameter_id: generateUUID(),
     parameter_name: names[index % names.length],
@@ -82,6 +86,8 @@ const generateMockParameter = (index: number): LYParameterResponse => {
       ? 'Core system configuration parameter controlling the heartbeat detection frequency between bots and the server. Directly affects online status detection sensitivity and server resource usage. Tune based on network conditions and bot scale in production.'
       : `Description for ${names[index % names.length]}, used for system configuration.`,
     is_published: index % 3 !== 0,
+    owning_department_id: deptIds[index % deptIds.length],
+    owning_department_name: deptNames[index % deptNames.length],
     created_by: `user-00${(index % 4) + 1}`,
     created_by_name: ['John Smith', 'Jane Doe', 'Mike Wang', 'David Zhao'][index % 4],
     created_by_department: ['R&D Dept', 'Product Dept', 'QA Dept', 'Ops Dept'][index % 4],
@@ -123,6 +129,12 @@ const fetchParameterList = async (
   // 发布状态筛选
   if (params.publishedFilter !== null && params.publishedFilter !== undefined) {
     data = data.filter((item) => item.is_published === params.publishedFilter);
+  }
+
+  // 部门筛选
+  if ((params as any).departmentFilter && (params as any).departmentFilter.length > 0) {
+    const deptNames: string[] = (params as any).departmentFilter;
+    data = data.filter((item) => deptNames.includes((item as any).owning_department_name));
   }
 
   const total = data.length;
@@ -176,6 +188,8 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
   // 发布状态筛选（仅开发中心使用）
   const [publishedFilter, setPublishedFilter] = useState<boolean | null>(null);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
+  // 部门筛选
+  const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
   const { openCollaborator, renderCollaboratorPanel } = useCollaboratorAction();
 
   // 列表数据
@@ -204,7 +218,8 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
         size: queryParams.pageSize,
         typeFilter: typeFilter.length > 0 ? typeFilter[0] : null,
         publishedFilter: context === 'development' ? publishedFilter : null,
-      });
+        departmentFilter,
+      } as any);
       setListResponse(response);
       return response.data;
     } catch (error) {
@@ -215,7 +230,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, typeFilter, publishedFilter, context, t]);
+  }, [queryParams, typeFilter, publishedFilter, departmentFilter, context, t]);
 
   // 翻页并返回新数据（用于抽屉导航时自动翻页）
   const handleDrawerPageChange = useCallback(async (page: number): Promise<LYParameterResponse[]> => {
@@ -229,13 +244,14 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
         size: queryParams.pageSize,
         typeFilter: typeFilter.length > 0 ? typeFilter[0] : null,
         publishedFilter: context === 'development' ? publishedFilter : null,
-      });
+        departmentFilter,
+      } as any);
       setListResponse(response);
       return response.data;
     } catch {
       return [];
     }
-  }, [queryParams, typeFilter, publishedFilter, context]);
+  }, [queryParams, typeFilter, publishedFilter, departmentFilter, context]);
 
   useEffect(() => {
     loadData();
@@ -371,6 +387,14 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
       ),
     }] : []),
     {
+      title: t('common.owningDepartment'),
+      dataIndex: 'owning_department_name',
+      key: 'owning_department_name',
+      width: 140,
+      ellipsis: true,
+      render: (text: string | null) => text || '-',
+    },
+    {
       title: t('common.description'),
       dataIndex: 'description',
       key: 'description',
@@ -449,6 +473,19 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
                 onChange={handleSearch}
                 showClear
                 maxLength={100}
+              />
+              <DepartmentSelect
+                placeholder={t('common.owningDepartment')}
+                value={departmentFilter}
+                onChange={(v) => {
+                  setDepartmentFilter(v);
+                  setQueryParams((prev) => ({ ...prev, page: 1 }));
+                }}
+                multiple
+                showClear
+                maxTagCount={1}
+                useNameAsValue
+                style={{ width: 200 }}
               />
               <FilterPopover
                 visible={filterPopoverVisible}

@@ -20,6 +20,7 @@ import { IconSearchStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
+import DepartmentSelect from '@/components/DepartmentSelect';
 import { Ellipsis, History, Link, Pencil, Plus, Trash2, Unlink, UserPlus } from 'lucide-react';
 import { debounce } from 'lodash';
 import type {
@@ -62,6 +63,9 @@ const generateMockCredential = (index: number): LYCredentialResponse => {
   // 部分凭据已发布
   const isPublished = index % 3 === 0;
 
+  const deptNames = ['Finance Department', 'R&D Center', 'Enterprise Business Center', 'Human Resources Department'];
+  const deptIds = ['dept-finance', 'dept-rd', 'dept-enterprise', 'dept-hr'];
+
   return {
     credential_id: generateUUID(),
     credential_name: names[index % names.length],
@@ -79,6 +83,8 @@ const generateMockCredential = (index: number): LYCredentialResponse => {
       : `Description for ${names[index % names.length]}, used for third-party system authentication.`,
     linked_personal_credential_value: type === 'PERSONAL_REF' && index % 3 === 0 ? 'user/******' : '-',
     is_published: isPublished,
+    owning_department_id: deptIds[index % deptIds.length],
+    owning_department_name: deptNames[index % deptNames.length],
     created_by: `user-00${(index % 4) + 1}`,
     created_by_name: ['John Smith', 'Jane Doe', 'Mike Wang', 'David Zhao'][index % 4],
     created_by_department: ['R&D Dept', 'Product Dept', 'QA Dept', 'Ops Dept'][index % 4],
@@ -95,7 +101,7 @@ const generateMockCredentialList = (): LYCredentialResponse[] => {
 
 // 模拟API调用
 const fetchCredentialList = async (
-  params: GetCredentialsParams & { typeFilter?: CredentialType | null }
+  params: GetCredentialsParams & { typeFilter?: CredentialType | null; departmentFilter?: string[] }
 ): Promise<LYCredentialListResultResponse> => {
   await new Promise((resolve) => setTimeout(resolve, 500));
 
@@ -110,6 +116,11 @@ const fetchCredentialList = async (
   // 类型筛选
   if (params.typeFilter) {
     data = data.filter((item) => item.credential_type === params.typeFilter);
+  }
+
+  // 部门筛选
+  if (params.departmentFilter && params.departmentFilter.length > 0) {
+    data = data.filter((item) => params.departmentFilter!.includes((item as any).owning_department_name));
   }
 
   const total = data.length;
@@ -161,6 +172,8 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
   // 类型筛选
   const [typeFilter, setTypeFilter] = useState<CredentialType[]>([]);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
+  // 部门筛选
+  const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
 
   // 列表数据
   const [listResponse, setListResponse] = useState<LYCredentialListResultResponse | null>(null);
@@ -190,6 +203,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
         offset: (queryParams.page - 1) * queryParams.pageSize,
         size: queryParams.pageSize,
         typeFilter: typeFilter.length > 0 ? typeFilter[0] : null,
+        departmentFilter,
       });
       setListResponse(response);
       return response.data;
@@ -201,7 +215,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, typeFilter, context, t]);
+  }, [queryParams, typeFilter, departmentFilter, context, t]);
 
   // 翻页并返回新数据（用于抽屉导航时自动翻页）
   const handleDrawerPageChange = useCallback(async (page: number): Promise<LYCredentialResponse[]> => {
@@ -214,13 +228,14 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
         offset: (page - 1) * queryParams.pageSize,
         size: queryParams.pageSize,
         typeFilter: typeFilter.length > 0 ? typeFilter[0] : null,
+        departmentFilter,
       });
       setListResponse(response);
       return response.data;
     } catch {
       return [];
     }
-  }, [queryParams, typeFilter, context]);
+  }, [queryParams, typeFilter, departmentFilter, context]);
 
   useEffect(() => {
     loadData();
@@ -410,6 +425,14 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
       ),
     }] : []),
     {
+      title: t('common.owningDepartment'),
+      dataIndex: 'owning_department_name',
+      key: 'owning_department_name',
+      width: 140,
+      ellipsis: true,
+      render: (text: string | null) => text || '-',
+    },
+    {
       title: t('common.description'),
       dataIndex: 'description',
       key: 'description',
@@ -498,6 +521,19 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
                 onChange={handleSearch}
                 showClear
                 maxLength={100}
+              />
+              <DepartmentSelect
+                placeholder={t('common.owningDepartment')}
+                value={departmentFilter}
+                onChange={(v) => {
+                  setDepartmentFilter(v);
+                  setQueryParams((prev) => ({ ...prev, page: 1 }));
+                }}
+                multiple
+                showClear
+                maxTagCount={1}
+                useNameAsValue
+                style={{ width: 200 }}
               />
               <FilterPopover
                 visible={filterPopoverVisible}
