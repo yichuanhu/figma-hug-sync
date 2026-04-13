@@ -56,6 +56,9 @@ const generateMockQueue = (index: number): LYQueueResponse => {
     'Log Collection Queue',
   ];
 
+  const deptNames = ['Finance Department', 'R&D Center', 'Enterprise Business Center', 'Human Resources Department'];
+  const deptIds = ['dept-finance', 'dept-rd', 'dept-enterprise', 'dept-hr'];
+
   return {
     queue_id: generateUUID(),
     queue_name: names[index % names.length],
@@ -69,6 +72,8 @@ const generateMockQueue = (index: number): LYQueueResponse => {
     prod_unconsumed_count: Math.floor(Math.random() * 200),
     prod_consumed_count: Math.floor(Math.random() * 1000),
     prod_failed_count: Math.floor(Math.random() * 20),
+    owning_department_id: deptIds[index % deptIds.length],
+    owning_department_name: deptNames[index % deptNames.length],
     created_by: `user-00${(index % 4) + 1}`,
     created_by_name: ['John Smith', 'Jane Doe', 'Mike Wang', 'David Zhao'][index % 4],
     created_by_department: ['R&D Dept', 'Product Dept', 'QA Dept', 'Ops Dept'][index % 4],
