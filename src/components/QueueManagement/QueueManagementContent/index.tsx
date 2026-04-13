@@ -112,6 +112,12 @@ const fetchQueueList = async (
     data = data.filter((item) => item.is_published === params.publishedFilter);
   }
 
+  // 部门筛选
+  if ((params as any).departmentFilter && (params as any).departmentFilter.length > 0) {
+    const deptNames: string[] = (params as any).departmentFilter;
+    data = data.filter((item) => deptNames.includes((item as any).owning_department_name));
+  }
+
   const total = data.length;
   const offset = params.offset || 0;
   const size = params.size || 20;
@@ -155,6 +161,8 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
   // 发布状态筛选（仅开发中心使用）
   const [publishedFilter, setPublishedFilter] = useState<boolean | null>(null);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
+  // 部门筛选
+  const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
 
   // 列表数据
   const [listResponse, setListResponse] = useState<LYQueueListResultResponse | null>(null);
