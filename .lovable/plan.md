@@ -1,18 +1,24 @@
 
 
-# 页面标题统一为 heading={3}
+# 需求表单部门替换 + TreeSelect 数据显示修复
 
-将以下 9 个文件中的 `heading={4}` 改为 `heading={3}`：
+## 问题分析
 
-1. `src/pages/Scheduling/TaskManagement/TaskManagementPage/index.tsx`
-2. `src/pages/Scheduling/TaskManagement/TaskLogPage/index.tsx`
-3. `src/pages/Scheduling/AutoExecutionPolicy/AutoExecutionPolicyPage/index.tsx`
-4. `src/pages/PersonalCenter/index.tsx`
-5. `src/pages/Sharing/Skills/APASkills/index.tsx`
-6. `src/pages/Sharing/Skills/ACPSkills/index.tsx`
-7. `src/pages/Sharing/Showcases/index.tsx`
-8. `src/pages/Sharing/Components/CreatorComponents/index.tsx`
-9. `src/pages/Development/ReleaseManagement/CreateReleasePage/index.tsx`
+1. **RequirementFormModal** 仍使用 `Form.Select` + `departmentOptions`，需替换为 `DepartmentSelect`
+2. **DepartmentSelect 树形数据不显示** — Semi UI `TreeSelect` 默认折叠所有节点，且根节点 "Laiye Technology" 可能未自动展开，导致用户只看到搜索框无内容
 
-每个文件仅修改一处：`heading={4}` → `heading={3}`，无其他改动。
+## 修改方案
+
+### 1. DepartmentSelect 组件增加 `defaultExpandAll`
+**文件**: `src/components/DepartmentSelect/index.tsx`
+- 给 `TreeSelect` 添加 `defaultExpandAll` 属性，确保树节点默认展开显示
+
+### 2. RequirementFormModal 替换部门选择
+**文件**: `src/pages/Requirements/RequirementsWorkbench/components/RequirementFormModal/index.tsx`
+- 移除 `import { departmentOptions } from '../../mockData'`
+- 导入 `DepartmentSelect`
+- 将 `Form.Select` (department 字段) 替换为 `Form.Slot` + `DepartmentSelect`（单选模式，`useNameAsValue`）
+- 保留 `required` 校验逻辑
+
+共修改 2 个文件，改动量很小。
 
