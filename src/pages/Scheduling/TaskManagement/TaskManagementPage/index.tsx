@@ -17,6 +17,8 @@ import {
   Space,
   Select,
 } from '@douyinfe/semi-ui';
+// DepartmentSelect import placeholder - will be added below
+} from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 // AppLayout removed
 import EmptyState from '@/components/EmptyState';
