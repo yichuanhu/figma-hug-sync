@@ -73,6 +73,9 @@ const generateMockParameter = (index: number): LYParameterResponse => {
     }
   };
 
+  const deptNames = ['Finance Department', 'R&D Center', 'Enterprise Business Center', 'Human Resources Department'];
+  const deptIds = ['dept-finance', 'dept-rd', 'dept-enterprise', 'dept-hr'];
+
   return {
     parameter_id: generateUUID(),
     parameter_name: names[index % names.length],
@@ -83,6 +86,8 @@ const generateMockParameter = (index: number): LYParameterResponse => {
       ? 'Core system configuration parameter controlling the heartbeat detection frequency between bots and the server. Directly affects online status detection sensitivity and server resource usage. Tune based on network conditions and bot scale in production.'
       : `Description for ${names[index % names.length]}, used for system configuration.`,
     is_published: index % 3 !== 0,
+    owning_department_id: deptIds[index % deptIds.length],
+    owning_department_name: deptNames[index % deptNames.length],
     created_by: `user-00${(index % 4) + 1}`,
     created_by_name: ['John Smith', 'Jane Doe', 'Mike Wang', 'David Zhao'][index % 4],
     created_by_department: ['R&D Dept', 'Product Dept', 'QA Dept', 'Ops Dept'][index % 4],
@@ -124,6 +129,12 @@ const fetchParameterList = async (
   // 发布状态筛选
   if (params.publishedFilter !== null && params.publishedFilter !== undefined) {
     data = data.filter((item) => item.is_published === params.publishedFilter);
+  }
+
+  // 部门筛选
+  if ((params as any).departmentFilter && (params as any).departmentFilter.length > 0) {
+    const deptNames: string[] = (params as any).departmentFilter;
+    data = data.filter((item) => deptNames.includes((item as any).owning_department_name));
   }
 
   const total = data.length;
