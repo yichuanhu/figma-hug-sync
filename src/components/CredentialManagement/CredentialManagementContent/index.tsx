@@ -235,7 +235,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
     } catch {
       return [];
     }
-  }, [queryParams, typeFilter, context]);
+  }, [queryParams, typeFilter, departmentFilter, context]);
 
   useEffect(() => {
     loadData();
