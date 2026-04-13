@@ -452,7 +452,7 @@ const ReleaseListPage: React.FC = () => {
                   multiple
                   showClear
                   maxTagCount={1}
-                  style={{ width: 260 }}
+                  style={{ width: 200 }}
                   optionList={publisherOptions}
                 />
                 <FilterPopover

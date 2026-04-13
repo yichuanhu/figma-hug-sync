@@ -182,7 +182,7 @@ const ACPSkills = () => {
           multiple
           showClear
           maxTagCount={1}
-          style={{ width: 260 }}
+          style={{ width: 200 }}
           optionList={tagOptions}
         />
         <FilterPopover
