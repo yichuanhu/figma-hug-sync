@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Typography, Tabs, Input } from '@douyinfe/semi-ui';
+import { Typography, Tabs, Input, Select } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import ComponentCard from '../components/ComponentCard';
 import ComponentDetailDrawer from '../components/ComponentDetailDrawer';
@@ -51,14 +51,7 @@ const CreatorComponents = () => {
       ],
       value: statusFilter,
     },
-    {
-      key: 'tags',
-      label: t('sharing.filter.tags'),
-      type: 'checkbox',
-      options: tagOptions,
-      value: tagsFilter,
-    },
-  ], [t, statusFilter, tagsFilter, tagOptions]);
+  ], [t, statusFilter]);
 
   const filteredData = currentData.filter((item) => {
     if (searchText && !item.name.toLowerCase().includes(searchText.toLowerCase()) &&
@@ -86,7 +79,6 @@ const CreatorComponents = () => {
 
   const handleFilterConfirm = useCallback((values: Record<string, unknown>) => {
     setStatusFilter(values.status as string[] || []);
-    setTagsFilter(values.tags as string[] || []);
   }, []);
 
   const handleTabChange = useCallback((key: string) => {
@@ -106,6 +98,16 @@ const CreatorComponents = () => {
           onChange={setSearchText}
           showClear
           style={{ width: 280 }}
+        />
+        <Select
+          placeholder={t('sharing.filter.tags')}
+          value={tagsFilter}
+          onChange={(v) => setTagsFilter(v as string[])}
+          multiple
+          showClear
+          maxTagCount={1}
+          style={{ width: 180 }}
+          optionList={tagOptions}
         />
         <FilterPopover
           sections={filterSections}

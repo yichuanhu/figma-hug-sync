@@ -13,6 +13,7 @@ import {
   Modal,
   Toast,
   Space,
+  Select,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import { Ellipsis, Eye, Pencil, Plus, Send, Trash2, Upload } from 'lucide-react';
@@ -370,12 +371,24 @@ const RequirementsWorkbench = () => {
                 showClear
                 maxLength={100}
               />
+              <Select
+                placeholder={t('requirements.fields.department')}
+                value={departmentFilter}
+                onChange={(v) => {
+                  setDepartmentFilter(v as string[]);
+                  setQueryParams((prev) => ({ ...prev, offset: 0 }));
+                }}
+                multiple
+                showClear
+                maxTagCount={1}
+                style={{ width: 180 }}
+                optionList={departmentOptions}
+              />
               <FilterPopover
                 visible={filterPopoverVisible}
                 onVisibleChange={setFilterPopoverVisible}
                 onConfirm={(values) => {
                   setStatusFilter((values.status as string[]) || []);
-                  setDepartmentFilter((values.department as string[]) || []);
                   setPriorityFilter((values.priority as string[]) || []);
                   setQueryParams((prev) => ({ ...prev, offset: 0 }));
                 }}
@@ -386,13 +399,6 @@ const RequirementsWorkbench = () => {
                     type: 'checkbox',
                     options: statusOptions,
                     value: statusFilter,
-                  },
-                  {
-                    key: 'department',
-                    label: t('requirements.fields.department'),
-                    type: 'checkbox',
-                    options: departmentOptions,
-                    value: departmentFilter,
                   },
                   {
                     key: 'priority',

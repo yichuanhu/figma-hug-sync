@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Typography, Input } from '@douyinfe/semi-ui';
+import { Typography, Input, Select } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import SkillCard, { SkillItem } from '../components/SkillCard';
 import SkillDetailDrawer from '../components/SkillDetailDrawer';
@@ -137,14 +137,7 @@ const APASkills = () => {
       options: categoryOptions,
       value: categoryFilter,
     },
-    {
-      key: 'tags',
-      label: t('sharing.filter.tags'),
-      type: 'checkbox',
-      options: tagOptions,
-      value: tagsFilter,
-    },
-  ], [t, categoryFilter, tagsFilter, categoryOptions, tagOptions]);
+  ], [t, categoryFilter, categoryOptions]);
 
   const filteredData = apaSkillsMockData.filter((item) => {
     if (searchText && !item.name.toLowerCase().includes(searchText.toLowerCase()) &&
@@ -164,7 +157,6 @@ const APASkills = () => {
 
   const handleFilterConfirm = useCallback((values: Record<string, unknown>) => {
     setCategoryFilter(values.category as string[] || []);
-    setTagsFilter(values.tags as string[] || []);
   }, []);
 
   return (
@@ -182,6 +174,16 @@ const APASkills = () => {
           onChange={setSearchText}
           showClear
           style={{ width: 280 }}
+        />
+        <Select
+          placeholder={t('sharing.filter.tags')}
+          value={tagsFilter}
+          onChange={(v) => setTagsFilter(v as string[])}
+          multiple
+          showClear
+          maxTagCount={1}
+          style={{ width: 180 }}
+          optionList={tagOptions}
         />
         <FilterPopover
           sections={filterSections}
