@@ -429,6 +429,13 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       ),
     }]),
     {
+      title: t('common.owningDepartment'),
+      dataIndex: 'owning_department_name',
+      key: 'owning_department_name',
+      width: 140,
+      render: (value: string | null) => value || '-',
+    },
+    {
       title: t('common.creator'),
       dataIndex: 'creator_id',
       key: 'creator_id',
