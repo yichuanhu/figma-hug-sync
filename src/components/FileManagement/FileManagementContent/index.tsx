@@ -200,6 +200,8 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
   // 来源筛选
   const [sourceFilter, setSourceFilter] = useState<FileSource[]>([]);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
+  // 部门筛选
+  const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
 
   // 列表数据
   const [listResponse, setListResponse] = useState<LYFileListResultResponse | null>(null);
