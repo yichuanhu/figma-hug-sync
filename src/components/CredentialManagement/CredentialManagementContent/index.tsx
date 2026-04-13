@@ -533,7 +533,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
                 showClear
                 maxTagCount={1}
                 useNameAsValue
-                style={{ width: 200 }}
+                style={{ minWidth: 120, maxWidth: 600 }}
               />
               <FilterPopover
                 visible={filterPopoverVisible}
