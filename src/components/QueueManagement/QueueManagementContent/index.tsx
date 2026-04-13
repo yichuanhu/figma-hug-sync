@@ -222,7 +222,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
     } catch {
       return [];
     }
-  }, [queryParams, publishedFilter, context]);
+  }, [queryParams, publishedFilter, departmentFilter, context]);
 
   useEffect(() => {
     loadData();
