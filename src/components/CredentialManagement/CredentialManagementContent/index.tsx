@@ -172,6 +172,8 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
   // 类型筛选
   const [typeFilter, setTypeFilter] = useState<CredentialType[]>([]);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
+  // 部门筛选
+  const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
 
   // 列表数据
   const [listResponse, setListResponse] = useState<LYCredentialListResultResponse | null>(null);
