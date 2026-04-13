@@ -175,6 +175,7 @@
     "deleteModal": {
       "title": "删除凭据",
       "confirmMessage": "确定删除该凭据吗？关联此凭据的流程可能无法正常运行。",
+      "publishedWarning": "该凭据已发布，删除后可能影响正在运行的流程，请谨慎操作。",
       "success": "凭据删除成功"
     },
     "detail": {
@@ -284,6 +285,7 @@
     "deleteModal": {
       "title": "删除参数",
       "confirmMessage": "确定要删除参数「{{name}}」吗？",
+      "publishedWarning": "该参数已发布，删除后可能影响正在运行的流程，请谨慎操作。",
       "publishedError": "已发布的参数不允许删除",
       "success": "参数删除成功"
     },
@@ -358,6 +360,7 @@
     "deleteModal": {
       "title": "删除文件",
       "confirmMessage": "确定要删除文件「{{name}}」吗？",
+      "publishedWarning": "该文件已发布，删除后可能影响正在运行的流程，请谨慎操作。",
       "cannotDeleteTitle": "无法删除",
       "publishedError": "已发布的文件不允许删除",
       "success": "文件删除成功"
@@ -1057,6 +1060,7 @@
     "deleteModal": {
       "title": "删除队列",
       "confirmMessage": "确定要删除队列「{{name}}」吗？删除后队列中的所有消息也将被删除。",
+      "publishedWarning": "该队列已发布，删除后可能影响正在运行的流程，请谨慎操作。",
       "publishedError": "已发布的队列不允许删除",
       "success": "队列删除成功"
     },

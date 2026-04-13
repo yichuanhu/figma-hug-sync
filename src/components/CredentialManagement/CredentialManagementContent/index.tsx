@@ -302,12 +302,18 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
     Modal.confirm({
       title: t('credential.deleteModal.title'),
       icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
-      content: t('credential.deleteModal.confirmMessage', { name: record.credential_name }),
+      content: (
+        <div>
+          <div>{t('credential.deleteModal.confirmMessage', { name: record.credential_name })}</div>
+          {record.is_published && (
+            <div style={{ color: 'var(--semi-color-warning)', marginTop: 8 }}>{t('credential.deleteModal.publishedWarning')}</div>
+          )}
+        </div>
+      ),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
       okButtonProps: { type: 'danger' },
       onOk: async () => {
-        // 模拟删除
         await new Promise((resolve) => setTimeout(resolve, 500));
         Toast.success(t('credential.deleteModal.success'));
         loadData();

@@ -230,6 +230,7 @@
     "deleteModal": {
       "title": "Delete Credential",
       "confirmMessage": "Delete this credential? Linked processes may not work properly.",
+      "publishedWarning": "This credential is published. Deleting it may affect running processes. Please proceed with caution.",
       "success": "Credential deleted"
     },
     "detail": {
@@ -361,6 +362,7 @@
     "deleteModal": {
       "title": "Delete Parameter",
       "confirmMessage": "Delete parameter \"{{name}}\"?",
+      "publishedWarning": "This parameter is published. Deleting it may affect running processes. Please proceed with caution.",
       "publishedError": "Published parameters cannot be deleted",
       "success": "Parameter deleted"
     },
@@ -452,6 +454,7 @@
     "deleteModal": {
       "title": "Delete File",
       "confirmMessage": "Delete file \"{{name}}\"?",
+      "publishedWarning": "This file is published. Deleting it may affect running processes. Please proceed with caution.",
       "cannotDeleteTitle": "Cannot Delete",
       "publishedError": "Published files cannot be deleted",
       "success": "File deleted"
@@ -1467,6 +1470,7 @@
     "deleteModal": {
       "title": "Delete Queue",
       "confirmMessage": "Delete queue \"{{name}}\"? All messages will also be deleted.",
+      "publishedWarning": "This queue is published. Deleting it may affect running processes. Please proceed with caution.",
       "publishedError": "Published queues cannot be deleted",
       "success": "Queue deleted"
     },

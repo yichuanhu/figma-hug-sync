@@ -274,21 +274,21 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
 
   // 删除队列
   const handleDelete = (record: LYQueueResponse) => {
-    // 检查是否已发布
-    if (record.is_published) {
-      Toast.error(t('queue.deleteModal.publishedError'));
-      return;
-    }
-
     Modal.confirm({
       title: t('queue.deleteModal.title'),
       icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
-      content: t('queue.deleteModal.confirmMessage', { name: record.queue_name }),
+      content: (
+        <div>
+          <div>{t('queue.deleteModal.confirmMessage', { name: record.queue_name })}</div>
+          {record.is_published && (
+            <div style={{ color: 'var(--semi-color-warning)', marginTop: 8 }}>{t('queue.deleteModal.publishedWarning')}</div>
+          )}
+        </div>
+      ),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
       okButtonProps: { type: 'danger' },
       onOk: async () => {
-        // 模拟删除
         await new Promise((resolve) => setTimeout(resolve, 500));
         Toast.success(t('queue.deleteModal.success'));
         loadData();

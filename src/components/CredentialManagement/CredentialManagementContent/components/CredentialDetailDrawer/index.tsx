@@ -204,7 +204,14 @@ const CredentialDetailDrawer = ({
     Modal.confirm({
       title: t('credential.deleteModal.title'),
       icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
-      content: t('credential.deleteModal.confirmMessage', { name: credential.credential_name }),
+      content: (
+        <div>
+          <div>{t('credential.deleteModal.confirmMessage', { name: credential.credential_name })}</div>
+          {credential.is_published && (
+            <div style={{ color: 'var(--semi-color-warning)', marginTop: 8 }}>{t('credential.deleteModal.publishedWarning')}</div>
+          )}
+        </div>
+      ),
       okText: t('common.confirm'), cancelText: t('common.cancel'), okButtonProps: { type: 'danger' },
       onOk: async () => {
         await new Promise((resolve) => setTimeout(resolve, 500));
@@ -267,7 +274,7 @@ const CredentialDetailDrawer = ({
     </>
   );
 
-  const deleteAction = context === 'development' && !credential.is_published ? (
+  const deleteAction = context === 'development' ? (
     <Tooltip content={t('common.delete')}>
       <Button icon={<Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />} theme="borderless" type="tertiary" size="small" onClick={handleDelete} />
     </Tooltip>
