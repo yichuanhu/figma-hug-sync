@@ -383,7 +383,7 @@ const RequirementsWorkbench = () => {
                 showClear
                 maxTagCount={1}
                 useNameAsValue
-                style={{ width: 180 }}
+                style={{ width: 260 }}
               />
               <FilterPopover
                 visible={filterPopoverVisible}

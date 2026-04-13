@@ -927,7 +927,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
                 showClear
                 maxTagCount={1}
                 useNameAsValue
-                style={{ width: 180 }}
+                style={{ width: 260 }}
               />
               <Select
                 placeholder={t('worker.filter.workerGroup')}
