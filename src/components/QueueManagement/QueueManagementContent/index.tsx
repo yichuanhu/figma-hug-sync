@@ -386,6 +386,14 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
       ),
     }] : []),
     {
+      title: t('common.owningDepartment'),
+      dataIndex: 'owning_department_name',
+      key: 'owning_department_name',
+      width: 140,
+      ellipsis: true,
+      render: (text: string | null) => text || '-',
+    },
+    {
       title: t('common.description'),
       dataIndex: 'description',
       key: 'description',
@@ -467,6 +475,19 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
                 onChange={handleSearch}
                 showClear
                 maxLength={100}
+              />
+              <DepartmentSelect
+                placeholder={t('common.owningDepartment')}
+                value={departmentFilter}
+                onChange={(v) => {
+                  setDepartmentFilter(v);
+                  setQueryParams((prev) => ({ ...prev, page: 1 }));
+                }}
+                multiple
+                showClear
+                maxTagCount={1}
+                useNameAsValue
+                style={{ width: 200 }}
               />
               {context === 'development' && (
                 <FilterPopover
