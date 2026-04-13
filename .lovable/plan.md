@@ -1,56 +1,68 @@
 
 
-# 归属部门功能补全方案
+# 综合筛选优化方案
 
-## 缺失项汇总
+## 目标
 
-以下组件在之前的实现中未添加归属部门/归属者字段：
+将 FilterPopover 中的**动态数据类型**（归属部门、标签等不固定选项）提取为独立的多选下拉框，FilterPopover 仅保留**固定数据类型**（状态、优先级、类别等枚举值），并将 FilterPopover 放到筛选栏最右侧。
 
-### 创建弹窗（4个） — 调度中心继承类实体
+## 布局示意
 
-这些实体从所选流程自动继承归属部门（只读展示）：
+```text
+[搜索框] [归属部门 ▼] [标签 ▼] ... [综合筛选 ⊞]
+                                      ↑ 最右侧
+```
 
-| 组件 | 路径 |
-|------|------|
-| 时间触发器 | `CreateTimeTriggerModal/index.tsx` |
-| 队列触发器 | `CreateQueueTriggerModal/index.tsx` |
-| 任务模板 | `CreateTemplateModal/index.tsx` |
-| 任务 | `CreateTaskModal/index.tsx` |
+独立下拉框使用 Semi `Select` 组件：`multiple`、`showClear`、`maxTagCount={1}`、`width: 180`。
 
-### 详情抽屉（1个）
+## 涉及页面及改动
 
-| 组件 | 路径 |
-|------|------|
-| 机器人分组 | `WorkerGroupDetailDrawer/index.tsx` |
+### 1. 需求工作台
+**文件**: `src/pages/Requirements/RequirementsWorkbench/index.tsx`
+- **提取**: `department`（归属部门）→ 独立多选 Select
+- **保留在 FilterPopover**: `status`（状态）、`priority`（优先级）
+- **布局**: `[搜索框] [归属部门 ▼] [FilterPopover]`
 
-## 改动内容
+### 2. 案例展示（Showcases）
+**文件**: `src/pages/Sharing/Showcases/index.tsx`
+- **提取**: `department`（部门）和 `tags`（标签）→ 两个独立多选 Select
+- **结果**: FilterPopover 无剩余固定筛选项，**移除 FilterPopover**
+- **布局**: `[搜索框] [部门 ▼] [标签 ▼]`
 
-### 1. API 类型扩展（`src/api/index.ts`）
+### 3. APA 技能
+**文件**: `src/pages/Sharing/Skills/APASkills/index.tsx`
+- **提取**: `tags`（标签）→ 独立多选 Select
+- **保留在 FilterPopover**: `category`（类别，固定枚举）
+- **布局**: `[搜索框] [标签 ▼] [FilterPopover]`
 
-为 `LYProcessActiveVersionResponse` 添加 `owning_department_id` 和 `owning_department_name` 字段，以便触发器/模板/任务在选择流程时能获取其归属部门。
+### 4. ACP 技能
+**文件**: `src/pages/Sharing/Skills/ACPSkills/index.tsx`
+- 同 APA 技能，完全一致的处理方式
 
-### 2. Mock 流程数据补充（4个文件）
+### 5. 创作者组件
+**文件**: `src/pages/Sharing/Components/CreatorComponents/index.tsx`
+- **提取**: `tags`（标签）→ 独立多选 Select
+- **保留在 FilterPopover**: `status`（状态，固定枚举）
+- **布局**: `[搜索框] [标签 ▼] [FilterPopover]`
 
-在 `CreateTimeTriggerModal`、`CreateQueueTriggerModal`、`CreateTemplateModal`、`CreateTaskModal` 中的 `mockProcesses` 数据添加 `owning_department_id` 和 `owning_department_name` 字段。
+## 不需要改动的页面
 
-### 3. 创建弹窗添加归属字段（4个文件）
+- 机器人管理、任务管理 — 归属部门已是独立下拉框
+- 队列/凭据/参数/文件管理 — 仅含固定筛选项
+- 任务日志/执行日志 — 仅含固定筛选项
 
-在基本信息区域（Step 1），流程选择后方添加：
-- **归属部门**：只读展示，自动从选中流程继承（`selectedProcess.owning_department_name`）
-- **归属者**：只读展示当前用户（`MOCK_CURRENT_USER.name`）
+## 技术细节
 
-当用户切换流程时，归属部门自动更新。
+- 每个提取出来的筛选项保留原有 state 变量和过滤逻辑不变
+- FilterPopover 的 `sections` 数组移除对应的动态 section，`onConfirm` 回调同步更新
+- 独立 Select 的 `onChange` 直接调用对应的 setState
+- Showcases 页面完全移除 FilterPopover 相关导入和状态
 
-### 4. 机器人分组详情抽屉（1个文件）
+## 涉及文件清单（共5个）
 
-在 `WorkerGroupDetailDrawer` 的 `basicInfoData` 中添加归属部门和归属者两行（同机器人详情抽屉一致）。
-
-## 涉及文件（共6个）
-
-1. `src/api/index.ts` — LYProcessActiveVersionResponse 增加归属字段
-2. `src/pages/Scheduling/AutoExecutionPolicy/.../CreateTimeTriggerModal/index.tsx`
-3. `src/pages/Scheduling/AutoExecutionPolicy/.../CreateQueueTriggerModal/index.tsx`
-4. `src/pages/Scheduling/TemplateManagement/.../CreateTemplateModal/index.tsx`
-5. `src/pages/Scheduling/TaskManagement/components/CreateTaskModal/index.tsx`
-6. `src/pages/Scheduling/WorkerManagement/WorkerGroupManagement/components/WorkerGroupDetailDrawer/index.tsx`
+1. `src/pages/Requirements/RequirementsWorkbench/index.tsx`
+2. `src/pages/Sharing/Showcases/index.tsx`
+3. `src/pages/Sharing/Skills/APASkills/index.tsx`
+4. `src/pages/Sharing/Skills/ACPSkills/index.tsx`
+5. `src/pages/Sharing/Components/CreatorComponents/index.tsx`
 
