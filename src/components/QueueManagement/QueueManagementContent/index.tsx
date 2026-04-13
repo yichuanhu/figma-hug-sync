@@ -190,7 +190,8 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
         offset: (queryParams.page - 1) * queryParams.pageSize,
         size: queryParams.pageSize,
         publishedFilter: context === 'development' ? publishedFilter : null,
-      });
+        departmentFilter,
+      } as any);
       setListResponse(response);
       return response.data;
     } catch (error) {
@@ -201,7 +202,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, publishedFilter, context, t]);
+  }, [queryParams, publishedFilter, departmentFilter, context, t]);
 
   // 翻页并返回新数据（用于抽屉导航时自动翻页）
   const handleDrawerPageChange = useCallback(async (page: number): Promise<LYQueueResponse[]> => {
@@ -214,7 +215,8 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
         offset: (page - 1) * queryParams.pageSize,
         size: queryParams.pageSize,
         publishedFilter: context === 'development' ? publishedFilter : null,
-      });
+        departmentFilter,
+      } as any);
       setListResponse(response);
       return response.data;
     } catch {
