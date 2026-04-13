@@ -218,7 +218,8 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
         size: queryParams.pageSize,
         typeFilter: typeFilter.length > 0 ? typeFilter[0] : null,
         publishedFilter: context === 'development' ? publishedFilter : null,
-      });
+        departmentFilter,
+      } as any);
       setListResponse(response);
       return response.data;
     } catch (error) {
@@ -229,7 +230,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, typeFilter, publishedFilter, context, t]);
+  }, [queryParams, typeFilter, publishedFilter, departmentFilter, context, t]);
 
   // 翻页并返回新数据（用于抽屉导航时自动翻页）
   const handleDrawerPageChange = useCallback(async (page: number): Promise<LYParameterResponse[]> => {
@@ -243,7 +244,8 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
         size: queryParams.pageSize,
         typeFilter: typeFilter.length > 0 ? typeFilter[0] : null,
         publishedFilter: context === 'development' ? publishedFilter : null,
-      });
+        departmentFilter,
+      } as any);
       setListResponse(response);
       return response.data;
     } catch {
