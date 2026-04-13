@@ -416,8 +416,6 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
       key: 'actions',
       width: 80,
       render: (_: unknown, record: LYCredentialResponse) => {
-        // 已发布的凭据不允许编辑和删除
-        const canEdit = !record.is_published;
         const canDelete = context === 'development' && !record.is_published;
 
         return (
@@ -427,11 +425,9 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
             clickToHide
             render={
               <Dropdown.Menu>
-                {canEdit && (
-                  <Dropdown.Item icon={<Pencil size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>
-                    {t('common.edit')}
-                  </Dropdown.Item>
-                )}
+                <Dropdown.Item icon={<Pencil size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>
+                  {t('common.edit')}
+                </Dropdown.Item>
                 {record.credential_type === 'PERSONAL_REF' && (
                   hasLinkedPersonalCredential(record) ? (
                     <Dropdown.Item icon={<Unlink size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleUnlinkPersonal(record); }}>

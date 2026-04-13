@@ -382,8 +382,6 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
       key: 'actions',
       width: 80,
       render: (_: unknown, record: LYQueueResponse) => {
-        // 已发布的队列不允许编辑和删除
-        const canEdit = !record.is_published;
         const canDelete = context === 'development' && !record.is_published;
 
         return (
@@ -396,11 +394,9 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
                 <Dropdown.Item icon={<List size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleViewMessages(record); }}>
                   {t('queue.actions.viewMessages')}
                 </Dropdown.Item>
-                {canEdit && (
-                  <Dropdown.Item icon={<Pencil size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>
-                    {t('common.edit')}
-                  </Dropdown.Item>
-                )}
+                <Dropdown.Item icon={<Pencil size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>
+                  {t('common.edit')}
+                </Dropdown.Item>
                 <Dropdown.Item icon={<UserPlus size={14} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); openCollaborator(record.queue_id); }}>
                   {t('collaborator.actions.addCollaborator')}
                 </Dropdown.Item>

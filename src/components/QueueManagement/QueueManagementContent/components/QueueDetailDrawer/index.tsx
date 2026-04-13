@@ -74,11 +74,9 @@ const QueueDetailDrawer = ({
       <Tooltip content={t('queue.actions.viewMessages')}>
         <Button icon={<List size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={handleViewMessages} />
       </Tooltip>
-      {!queue.is_published && (
-        <Tooltip content={t('common.edit')}>
-          <Button icon={<Pencil size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={() => onEdit(queue)} />
-        </Tooltip>
-      )}
+      <Tooltip content={t('common.edit')}>
+        <Button icon={<Pencil size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={() => onEdit(queue)} />
+      </Tooltip>
     </>
   );
 
