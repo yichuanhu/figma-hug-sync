@@ -186,7 +186,7 @@ const ReleaseListPage: React.FC = () => {
   const total = range?.total || 0;
 
   const filterCount =
-    activeFilters.release_type.length + activeFilters.publish_status.length + activeFilters.publisher.length;
+    activeFilters.release_type.length + activeFilters.publish_status.length;
 
   // LoadingData
   const loadData = async () => {
