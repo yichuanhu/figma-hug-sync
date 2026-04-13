@@ -399,8 +399,8 @@ const TimeTriggerList = () => {
       dataIndex: 'rule_type',
       width: 180,
       render: (_: unknown, record: LYTimeTriggerResponse) => (
-        <div>
-          <Clock size={16} strokeWidth={2} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+          <Clock size={16} strokeWidth={2} style={{ flexShrink: 0 }} />
           <span>{formatTriggerRule(record)}</span>
         </div>
       ),
