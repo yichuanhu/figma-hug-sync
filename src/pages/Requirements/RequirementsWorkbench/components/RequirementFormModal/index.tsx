@@ -147,16 +147,12 @@ const RequirementFormModal = ({
             showClear
           />
 
-          <Form.Select
-            field="department"
-            label={t('requirements.fields.department')}
-            placeholder={t('requirements.form.departmentPlaceholder')}
-            rules={[{ required: true, message: t('requirements.form.departmentRequired') }]}
-            optionList={departmentOptions}
-            filter
-            trigger={['blur', 'change']}
-            className="requirement-form-modal-select-full"
-          />
+          <Form.Slot label={t('requirements.fields.department')}>
+            <DepartmentSelect
+              useNameAsValue
+              placeholder={t('requirements.form.departmentPlaceholder')}
+            />
+          </Form.Slot>
 
           <Form.Input
             field="contactInfo"
