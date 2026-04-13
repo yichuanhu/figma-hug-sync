@@ -251,7 +251,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
     } catch {
       return [];
     }
-  }, [queryParams, typeFilter, publishedFilter, context]);
+  }, [queryParams, typeFilter, publishedFilter, departmentFilter, context]);
 
   useEffect(() => {
     loadData();
