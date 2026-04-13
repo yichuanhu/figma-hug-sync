@@ -293,8 +293,9 @@ const fetchWorkerList = async (params: GetWorkersParams & { filters?: FilterStat
   }
 
   // 归属部门Filter
-  if ((params as any).owning_department_name) {
-    data = data.filter(item => (item as any).owning_department_name === (params as any).owning_department_name);
+  if ((params as any).owning_department_name && (params as any).owning_department_name.length > 0) {
+    const deptNames: string[] = (params as any).owning_department_name;
+    data = data.filter(item => deptNames.includes((item as any).owning_department_name));
   }
 
   // Sortprocessing

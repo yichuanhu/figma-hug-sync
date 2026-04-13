@@ -201,8 +201,9 @@ const QueueTriggerList = () => {
       }
 
       // by归属部门Filter
-      if (params.owning_department_name) {
-        filtered = filtered.filter((trigger) => trigger.owning_department_name === params.owning_department_name);
+      if (params.owning_department_name && params.owning_department_name.length > 0) {
+        const deptNames: string[] = Array.isArray(params.owning_department_name) ? params.owning_department_name : [params.owning_department_name];
+        filtered = filtered.filter((trigger) => deptNames.includes(trigger.owning_department_name));
       }
 
       const offset = params.offset || 0;
