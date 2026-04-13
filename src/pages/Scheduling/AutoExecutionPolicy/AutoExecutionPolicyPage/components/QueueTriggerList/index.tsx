@@ -546,7 +546,7 @@ const QueueTriggerList = () => {
               onChange={(v) => setQueryParams(prev => ({ ...prev, offset: 0, owning_department_name: v as string | undefined }))}
               showClear
               useNameAsValue
-              style={{ width: 160 }}
+              style={{ width: 260 }}
             />
           </Space>
         </Col>

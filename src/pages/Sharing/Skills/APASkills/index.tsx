@@ -182,7 +182,7 @@ const APASkills = () => {
           multiple
           showClear
           maxTagCount={1}
-          style={{ width: 180 }}
+          style={{ width: 260 }}
           optionList={tagOptions}
         />
         <FilterPopover
