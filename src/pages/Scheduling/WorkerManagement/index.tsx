@@ -17,6 +17,7 @@ import {
   Toast,
   Select,
 } from '@douyinfe/semi-ui';
+import DepartmentSelect from '@/components/DepartmentSelect';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
@@ -418,10 +419,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     ],
   }), [t]);
 
-  const departmentOptions = useMemo(() => {
-    const depts = [...new Set(mockWorkers.map(w => (w as any).owning_department_name).filter(Boolean))];
-    return depts.map(d => ({ value: d, label: d }));
-  }, []);
+  // departmentOptions removed - using DepartmentSelect with tree data
 
   // LoadingData
   const loadData = useCallback(async () => {
@@ -918,18 +916,18 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
                 value={searchValue}
                 onChange={handleSearch}
               />
-              <Select
+              <DepartmentSelect
                 placeholder={t('common.owningDepartment')}
                 value={departmentFilter}
                 onChange={(v) => {
-                  setDepartmentFilter(v as string[]);
+                  setDepartmentFilter(v);
                   setQueryParams(prev => ({ ...prev, offset: 0 }));
                 }}
                 multiple
                 showClear
                 maxTagCount={1}
+                useNameAsValue
                 style={{ width: 180 }}
-                optionList={departmentOptions}
               />
               <Select
                 placeholder={t('worker.filter.workerGroup')}

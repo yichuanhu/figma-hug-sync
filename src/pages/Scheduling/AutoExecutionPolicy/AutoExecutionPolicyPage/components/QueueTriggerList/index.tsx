@@ -15,6 +15,7 @@ import {
   Switch,
   Tooltip,
 } from '@douyinfe/semi-ui';
+import DepartmentSelect from '@/components/DepartmentSelect';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import { Ellipsis, Pencil, Plus, Trash2, UserPlus } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
@@ -484,10 +485,7 @@ const QueueTriggerList = () => {
     },
   ];
 
-  const departmentOptions = useMemo(() => {
-    const depts = [...new Set(allMockTriggers.map(t => t.owning_department_name).filter(Boolean))];
-    return depts.map(d => ({ value: d, label: d }));
-  }, []);
+  // departmentOptions removed - using DepartmentSelect with tree data
 
   const hasFilters = queryParams.keyword || queryParams.process_id || queryParams.queue_id || queryParams.status || queryParams.owning_department_name;
 
@@ -542,13 +540,13 @@ const QueueTriggerList = () => {
               showClear
               style={{ width: 120 }}
             />
-            <Select
+            <DepartmentSelect
               placeholder={t('common.owningDepartment')}
               value={queryParams.owning_department_name}
               onChange={(v) => setQueryParams(prev => ({ ...prev, offset: 0, owning_department_name: v as string | undefined }))}
               showClear
+              useNameAsValue
               style={{ width: 160 }}
-              optionList={departmentOptions}
             />
           </Space>
         </Col>

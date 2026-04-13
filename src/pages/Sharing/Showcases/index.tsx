@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Typography, Input, Card, Tag, Space, Select } from '@douyinfe/semi-ui';
+import DepartmentSelect from '@/components/DepartmentSelect';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import { Eye, Star } from 'lucide-react';
 import ShowcaseDetailDrawer, { ShowcaseItem } from './components/ShowcaseDetailDrawer';
@@ -142,10 +143,7 @@ const Showcases = () => {
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
   const [tagsFilter, setTagsFilter] = useState<string[]>([]);
 
-  const departmentOptions = useMemo(() => {
-    const deps = new Set(showcasesMockData.map((item) => item.department));
-    return Array.from(deps).map((dep) => ({ value: dep, label: dep }));
-  }, []);
+  // departmentOptions removed - using DepartmentSelect with tree data
 
   const tagOptions = useMemo(() => {
     const allTags = new Set<string>();
@@ -185,15 +183,15 @@ const Showcases = () => {
           showClear
           style={{ width: 280 }}
         />
-        <Select
+        <DepartmentSelect
           placeholder={t('sharing.filter.department')}
           value={departmentFilter}
-          onChange={(v) => setDepartmentFilter(v as string[])}
+          onChange={(v) => setDepartmentFilter(v)}
           multiple
           showClear
           maxTagCount={1}
+          useNameAsValue
           style={{ width: 180 }}
-          optionList={departmentOptions}
         />
         <Select
           placeholder={t('sharing.filter.tags')}
