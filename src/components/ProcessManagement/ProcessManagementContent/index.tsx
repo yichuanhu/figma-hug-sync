@@ -22,6 +22,7 @@ import EmptyState from '@/components/EmptyState';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
+import DepartmentSelect from '@/components/DepartmentSelect';
 import { Ellipsis, ExternalLink, Pencil, PlayCircle, Plus, Trash2, UserPlus } from 'lucide-react';
 import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
