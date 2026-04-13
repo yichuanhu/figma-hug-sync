@@ -22,6 +22,7 @@ import EmptyState from '@/components/EmptyState';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
+import DepartmentSelect from '@/components/DepartmentSelect';
 import { Ellipsis, ExternalLink, Pencil, PlayCircle, Plus, Trash2, UserPlus } from 'lucide-react';
 import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
@@ -79,6 +80,16 @@ const generateMockLYProcessResponse = (index: number): LYProcessResponse => {
   const languages = ['Python', 'JavaScript', 'Java'];
   const processTypes = ['RPA', 'AI', 'Hybrid'];
 
+  const departments = [
+    { id: 'dept-001', name: 'Finance Department' },
+    { id: 'dept-002', name: 'Enterprise Business Center' },
+    { id: 'dept-003', name: 'Human Resources Department' },
+    { id: 'dept-004', name: 'R&D Center' },
+    { id: 'dept-005', name: 'Operations Department' },
+  ];
+
+  const dept = departments[index % departments.length];
+
   const createDate = new Date(2025, 0, 1 + (index % 20), 10 + (index % 12), (index * 7) % 60, 0);
   const updateDate = new Date(createDate.getTime() + (index % 10) * 24 * 60 * 60 * 1000);
 
@@ -93,6 +104,8 @@ const generateMockLYProcessResponse = (index: number): LYProcessResponse => {
     current_version_id: index % 2 === 0 ? `ver-${generateUUID().substring(0, 8)}` : null,
     creator_id: creatorIds[index % creatorIds.length],
     requirement_id: index % 3 === 0 ? `req-${generateUUID().substring(0, 8)}` : null,
+    owning_department_id: dept.id,
+    owning_department_name: dept.name,
     created_at: createDate.toISOString(),
     updated_at: updateDate.toISOString(),
   };
@@ -119,7 +132,7 @@ const mockCreatorInfoMap: Record<string, { name: string; department?: string; ro
 
 // ============= 数据获取 - 返回LYListResponseLYProcessResponse =============
 
-const fetchProcessList = async (params: GetProcessesParams & { statusFilter?: string[] }): Promise<LYListResponseLYProcessResponse> => {
+const fetchProcessList = async (params: GetProcessesParams & { statusFilter?: string[]; departmentFilter?: string[] }): Promise<LYListResponseLYProcessResponse> => {
   // 模拟网络延迟
   await new Promise((resolve) => setTimeout(resolve, 300));
 
@@ -139,6 +152,11 @@ const fetchProcessList = async (params: GetProcessesParams & { statusFilter?: st
   // 状态筛选
   if (params.statusFilter && params.statusFilter.length > 0) {
     filteredData = filteredData.filter((item) => params.statusFilter!.includes(item.status));
+  }
+
+  // 归属部门筛选
+  if (params.departmentFilter && params.departmentFilter.length > 0) {
+    filteredData = filteredData.filter((item) => params.departmentFilter!.includes((item as any).owning_department_name));
   }
 
   // 排序处理
@@ -220,6 +238,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
 
   // 状态筛选 - 调度中心默认只显示已发布
   const [statusFilter, setStatusFilter] = useState<string[]>(isSchedulingContext ? ['PUBLISHED'] : []);
+  const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
 
   const [loading, setLoading] = useState(true);
@@ -251,14 +270,14 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetchProcessList({ ...queryParams, statusFilter });
+      const response = await fetchProcessList({ ...queryParams, statusFilter, departmentFilter });
       setListResponse(response);
       return response.list;
     } finally {
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, statusFilter]);
+  }, [queryParams, statusFilter, departmentFilter]);
 
   // 翻页并返回新数据（用于抽屉导航时自动翻页）
   const handleDrawerPageChange = useCallback(async (page: number): Promise<LYProcessResponse[]> => {
@@ -270,10 +289,11 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       ...queryParams,
       offset: newOffset,
       statusFilter,
+      departmentFilter,
     });
     setListResponse(response);
     return response.list;
-  }, [queryParams, statusFilter, listResponse.range?.size]);
+  }, [queryParams, statusFilter, departmentFilter, listResponse.range?.size]);
 
   // 初始化加载
   useEffect(() => {
@@ -409,6 +429,13 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       ),
     }]),
     {
+      title: t('common.owningDepartment'),
+      dataIndex: 'owning_department_name',
+      key: 'owning_department_name',
+      width: 140,
+      render: (value: string | null) => value || '-',
+    },
+    {
       title: t('common.creator'),
       dataIndex: 'creator_id',
       key: 'creator_id',
@@ -542,6 +569,19 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
                 onChange={handleSearch}
                 showClear
                 maxLength={100}
+              />
+              <DepartmentSelect
+                multiple
+                useNameAsValue
+                value={departmentFilter}
+                onChange={(val) => {
+                  setDepartmentFilter(val);
+                  setQueryParams((prev) => ({ ...prev, offset: 0 }));
+                }}
+                placeholder={t('common.owningDepartmentPlaceholder')}
+                style={{ width: 200 }}
+                maxTagCount={1}
+                showClear
               />
               {/* 调度中心不显示筛选 */}
               {!isSchedulingContext && (
