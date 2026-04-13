@@ -8,14 +8,15 @@ interface DepartmentSelectBaseProps {
   disabled?: boolean;
   style?: React.CSSProperties;
   className?: string;
+  /** Use department name as value instead of ID (for filter compatibility) */
   useNameAsValue?: boolean;
+  showClear?: boolean;
 }
 
 interface SingleSelectProps extends DepartmentSelectBaseProps {
   multiple?: false;
   value?: string;
   onChange?: (value: string) => void;
-  showClear?: boolean;
   maxTagCount?: never;
 }
 
@@ -23,24 +24,10 @@ interface MultiSelectProps extends DepartmentSelectBaseProps {
   multiple: true;
   value?: string[];
   onChange?: (value: string[]) => void;
-  showClear?: boolean;
   maxTagCount?: number;
 }
 
 type DepartmentSelectProps = SingleSelectProps | MultiSelectProps;
-  placeholder?: string;
-  disabled?: boolean;
-  style?: React.CSSProperties;
-  className?: string;
-  /** Enable multi-select mode */
-  multiple?: boolean;
-  /** Show clear button */
-  showClear?: boolean;
-  /** Max tag count in multi-select mode */
-  maxTagCount?: number;
-  /** Use department name as value instead of ID (for filter compatibility) */
-  useNameAsValue?: boolean;
-}
 
 /** Transform tree to use label as value */
 const transformTreeToNameValues = (nodes: DeptTreeNode[]): DeptTreeNode[] =>
@@ -50,18 +37,20 @@ const transformTreeToNameValues = (nodes: DeptTreeNode[]): DeptTreeNode[] =>
     children: node.children ? transformTreeToNameValues(node.children) : undefined,
   }));
 
-const DepartmentSelect = ({
-  value,
-  onChange,
-  placeholder,
-  disabled = false,
-  style,
-  className,
-  multiple = false,
-  showClear,
-  maxTagCount,
-  useNameAsValue = false,
-}: DepartmentSelectProps) => {
+const DepartmentSelect = (props: DepartmentSelectProps) => {
+  const {
+    value,
+    onChange,
+    placeholder,
+    disabled = false,
+    style,
+    className,
+    multiple = false,
+    showClear,
+    maxTagCount,
+    useNameAsValue = false,
+  } = props as any;
+
   const { t } = useTranslation();
 
   const treeData = useMemo(
