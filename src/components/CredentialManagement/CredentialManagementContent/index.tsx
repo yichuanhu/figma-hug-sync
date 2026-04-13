@@ -20,6 +20,7 @@ import { IconSearchStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
+import DepartmentSelect from '@/components/DepartmentSelect';
 import { Ellipsis, History, Link, Pencil, Plus, Trash2, Unlink, UserPlus } from 'lucide-react';
 import { debounce } from 'lodash';
 import type {
