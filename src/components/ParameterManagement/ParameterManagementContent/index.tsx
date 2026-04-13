@@ -287,21 +287,21 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
 
   // 删除参数
   const handleDelete = (record: LYParameterResponse) => {
-    // 检查是否已发布
-    if (record.is_published) {
-      Toast.error(t('parameter.deleteModal.publishedError'));
-      return;
-    }
-
     Modal.confirm({
       title: t('parameter.deleteModal.title'),
       icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
-      content: t('parameter.deleteModal.confirmMessage', { name: record.parameter_name }),
+      content: (
+        <div>
+          <div>{t('parameter.deleteModal.confirmMessage', { name: record.parameter_name })}</div>
+          {record.is_published && (
+            <div style={{ color: 'var(--semi-color-warning)', marginTop: 8 }}>{t('parameter.deleteModal.publishedWarning')}</div>
+          )}
+        </div>
+      ),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
       okButtonProps: { type: 'danger' },
       onOk: async () => {
-        // 模拟删除
         await new Promise((resolve) => setTimeout(resolve, 500));
         Toast.success(t('parameter.deleteModal.success'));
         loadData();
