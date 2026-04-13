@@ -524,7 +524,7 @@ const TimeTriggerList = () => {
               value={queryParams.process_id}
               onChange={(v) => handleProcessFilter(v as string | undefined)}
               showClear
-              style={{ width: 180 }}
+              style={{ width: 200 }}
               optionList={mockProcesses.map((p) => ({
                 value: p.process_id,
                 label: p.process_name,
@@ -547,7 +547,7 @@ const TimeTriggerList = () => {
               onChange={(v) => setQueryParams(prev => ({ ...prev, offset: 0, owning_department_name: v as string | undefined }))}
               showClear
               useNameAsValue
-              style={{ width: 260 }}
+              style={{ width: 200 }}
             />
           </Space>
         </Col>

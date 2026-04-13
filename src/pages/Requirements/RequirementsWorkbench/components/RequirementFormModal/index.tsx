@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Modal,
@@ -31,6 +31,8 @@ const RequirementFormModal = ({
 }: RequirementFormModalProps) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
+  const [formApi, setFormApi] = useState<any>(null);
+  const [departmentValue, setDepartmentValue] = useState<string | undefined>(undefined);
   const isEdit = !!editData;
 
   const priorityOptions = useMemo(
@@ -60,6 +62,17 @@ const RequirementFormModal = ({
       priority: 'MEDIUM',
     };
   }, [isEdit, editData]);
+
+  useEffect(() => {
+    const nextDepartment = editData?.department || undefined;
+    setDepartmentValue(nextDepartment);
+    formApi?.setValue?.('department', nextDepartment);
+  }, [editData?.department, editData?.id, formApi, visible]);
+
+  const handleDepartmentChange = (value: string) => {
+    setDepartmentValue(value);
+    formApi?.setValue?.('department', value);
+  };
 
   const handleSubmit = async (values: Record<string, unknown>) => {
     setLoading(true);
@@ -96,6 +109,7 @@ const RequirementFormModal = ({
         className="requirement-form-modal-form"
         initValues={initialValues}
         key={editData?.id || 'create'}
+        getFormApi={setFormApi}
       >
         <div className="requirement-form-modal-content">
           {/* 基本信息区块 */}
@@ -148,7 +162,15 @@ const RequirementFormModal = ({
           />
 
           <Form.Slot label={t('requirements.fields.department')}>
+            <Form.Input
+              field="department"
+              noLabel
+              rules={[{ required: true, message: t('requirements.form.departmentRequired') }]}
+              style={{ display: 'none' }}
+            />
             <DepartmentSelect
+              value={departmentValue}
+              onChange={handleDepartmentChange}
               useNameAsValue
               placeholder={t('requirements.form.departmentPlaceholder')}
             />

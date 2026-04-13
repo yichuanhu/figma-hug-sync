@@ -927,7 +927,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
                 showClear
                 maxTagCount={1}
                 useNameAsValue
-                style={{ width: 260 }}
+                style={{ width: 200 }}
               />
               <Select
                 placeholder={t('worker.filter.workerGroup')}
@@ -939,7 +939,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
                 multiple
                 showClear
                 maxTagCount={1}
-                style={{ width: 260 }}
+                style={{ width: 200 }}
                 optionList={filterOptions.group_id}
               />
               <FilterPopover
