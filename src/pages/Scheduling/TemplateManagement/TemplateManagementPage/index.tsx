@@ -175,8 +175,9 @@ const TemplateManagementPage = () => {
       }
 
       // by归属部门Filter
-      if (params.owning_department_name) {
-        filtered = filtered.filter((tpl: any) => tpl.owning_department_name === params.owning_department_name);
+      if (params.owning_department_name && params.owning_department_name.length > 0) {
+        const deptNames: string[] = Array.isArray(params.owning_department_name) ? params.owning_department_name : [params.owning_department_name];
+        filtered = filtered.filter((tpl: any) => deptNames.includes(tpl.owning_department_name));
       }
 
       const offset = params.offset || 0;
