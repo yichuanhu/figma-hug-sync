@@ -132,7 +132,7 @@ const mockCreatorInfoMap: Record<string, { name: string; department?: string; ro
 
 // ============= 数据获取 - 返回LYListResponseLYProcessResponse =============
 
-const fetchProcessList = async (params: GetProcessesParams & { statusFilter?: string[] }): Promise<LYListResponseLYProcessResponse> => {
+const fetchProcessList = async (params: GetProcessesParams & { statusFilter?: string[]; departmentFilter?: string[] }): Promise<LYListResponseLYProcessResponse> => {
   // 模拟网络延迟
   await new Promise((resolve) => setTimeout(resolve, 300));
 
@@ -152,6 +152,11 @@ const fetchProcessList = async (params: GetProcessesParams & { statusFilter?: st
   // 状态筛选
   if (params.statusFilter && params.statusFilter.length > 0) {
     filteredData = filteredData.filter((item) => params.statusFilter!.includes(item.status));
+  }
+
+  // 归属部门筛选
+  if (params.departmentFilter && params.departmentFilter.length > 0) {
+    filteredData = filteredData.filter((item) => params.departmentFilter!.includes((item as any).owning_department_name));
   }
 
   // 排序处理
