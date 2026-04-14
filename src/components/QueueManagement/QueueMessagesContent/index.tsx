@@ -332,8 +332,9 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
   // 删除消息
   const handleDelete = (record: LYQueueMessageResponse) => {
     Modal.confirm({
-      title: t('queueMessage.deleteModal.title'),      content: t('queueMessage.deleteModal.confirmMessage'),
+      title: t('queueMessage.deleteModal.title'),
       icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      content: t('queueMessage.deleteModal.confirmMessage'),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
       okButtonProps: { type: 'danger' },
@@ -353,8 +354,9 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
     }
 
     Modal.confirm({
-      title: t('queueMessage.batch.deleteTitle'),      content: t('queueMessage.batch.deleteConfirm', { count: selectedRowKeys.length }),
+      title: t('queueMessage.batch.deleteTitle'),
       icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      content: t('queueMessage.batch.deleteConfirm', { count: selectedRowKeys.length }),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
       okButtonProps: { type: 'danger' },

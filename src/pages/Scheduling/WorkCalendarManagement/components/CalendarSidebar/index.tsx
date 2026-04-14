@@ -38,8 +38,8 @@ const CalendarSidebar: React.FC<CalendarSidebarProps> = ({
     
     Modal.confirm({
       title: t('workCalendar.sidebar.deleteConfirmTitle'),
-      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
-      content: t('workCalendar.sidebar.deleteConfirmMessage', { name: calendar.name }),
+icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+content: t('workCalendar.sidebar.deleteConfirmMessage', { name: calendar.name }),
       okType: 'danger',
       onOk: () => onDelete(calendar.id),
     });

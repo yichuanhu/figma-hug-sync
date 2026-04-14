@@ -28,8 +28,9 @@ const BatchOperationBar = ({
   // ConfirmDelete
   const handleDeleteClick = () => {
     Modal.confirm({
-      title: t('screenshot.deleteModal.title'),      content: t('screenshot.deleteModal.confirmMessage', { count: selectedCount }),
+      title: t('screenshot.deleteModal.title'),
       icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      content: t('screenshot.deleteModal.confirmMessage', { count: selectedCount }),
       okType: 'danger',
       okText: t('common.delete'),
       cancelText: t('common.cancel'),

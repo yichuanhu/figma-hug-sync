@@ -203,8 +203,9 @@ const PersonalCredentialManagement = () => {
   // 删除凭据
   const handleDelete = (record: LYPersonalCredentialResponse) => {
     Modal.confirm({
-      title: t('personalCredential.deleteModal.title'),      content: t('personalCredential.deleteModal.confirmMessage'),
+      title: t('personalCredential.deleteModal.title'),
       icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      content: t('personalCredential.deleteModal.confirmMessage'),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
       okButtonProps: { type: 'danger' },
