@@ -124,6 +124,7 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
   const [formApi, setFormApi] = useState<any>(null);
   const [selectedProcess, setSelectedProcess] = useState<LYProcessActiveVersionResponse | null>(null);
   const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);
+  const [ownerId, setOwnerId] = useState<string | undefined>(template?.owner_id || undefined);
 
   // Execution target选项
   const targetOptions = useMemo(() => {
