@@ -635,45 +635,47 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
         {isInitialLoad ? (
           <TableSkeleton columns={8} rows={10} />
         ) : (
-          <Table
-            size="small"
-            dataSource={listResponse?.data || []}
-            columns={columns}
-            rowKey="message_id"
-            loading={loading}
-            rowSelection={rowSelection}
-            pagination={false}
-            scroll={{ y: 'calc(100vh - 380px)' }}
-            empty={
-              <EmptyState
-                variant={queryParams.keyword || filterCount > 0 ? 'noResult' : 'noData'}
-                description={queryParams.keyword || filterCount > 0 
-                  ? t('queueMessage.empty.filterDescription') 
-                  : t('queueMessage.empty.defaultDescription')}
-              />
-            }
-            onRow={(record) => ({
-              onClick: () => handleRowClick(record as LYQueueMessageResponse),
-              className: selectedMessage?.message_id === record?.message_id && detailDrawerVisible 
-                ? 'queue-messages-row-selected' 
-                : '',
-              id: `queue-message-row-${record?.message_id}`,
-            })}
-          />
-          {total > queryParams.pageSize * 2 && (
-            <div style={{ paddingTop: 8, display: 'flex', justifyContent: 'flex-end' }}>
-              <Pagination
-                total={total}
-                pageSize={queryParams.pageSize}
-                currentPage={queryParams.page}
-                onPageChange={handlePageChange}
-                onPageSizeChange={(newPageSize) => setQueryParams((prev) => ({ ...prev, page: 1, pageSize: newPageSize }))}
-                showTotal
-                showSizeChanger
-                size="small"
-              />
-            </div>
-          )}
+          <>
+            <Table
+              size="small"
+              dataSource={listResponse?.data || []}
+              columns={columns}
+              rowKey="message_id"
+              loading={loading}
+              rowSelection={rowSelection}
+              pagination={false}
+              scroll={{ y: 'calc(100vh - 380px)' }}
+              empty={
+                <EmptyState
+                  variant={queryParams.keyword || filterCount > 0 ? 'noResult' : 'noData'}
+                  description={queryParams.keyword || filterCount > 0 
+                    ? t('queueMessage.empty.filterDescription') 
+                    : t('queueMessage.empty.defaultDescription')}
+                />
+              }
+              onRow={(record) => ({
+                onClick: () => handleRowClick(record as LYQueueMessageResponse),
+                className: selectedMessage?.message_id === record?.message_id && detailDrawerVisible 
+                  ? 'queue-messages-row-selected' 
+                  : '',
+                id: `queue-message-row-${record?.message_id}`,
+              })}
+            />
+            {total > queryParams.pageSize * 2 && (
+              <div style={{ paddingTop: 8, display: 'flex', justifyContent: 'flex-end' }}>
+                <Pagination
+                  total={total}
+                  pageSize={queryParams.pageSize}
+                  currentPage={queryParams.page}
+                  onPageChange={handlePageChange}
+                  onPageSizeChange={(newPageSize) => setQueryParams((prev) => ({ ...prev, page: 1, pageSize: newPageSize }))}
+                  showTotal
+                  showSizeChanger
+                  size="small"
+                />
+              </div>
+            )}
+          </>
         )}
       </div>
 
