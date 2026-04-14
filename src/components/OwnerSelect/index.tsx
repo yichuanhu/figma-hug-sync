@@ -53,6 +53,7 @@ const buildOwnerTree = (
       value: u.id,
       label: u.name,
       isLeaf: true,
+      isUser: true,
     }));
 
     const allChildren = [...childDeptNodes, ...userNodes];
