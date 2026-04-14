@@ -474,7 +474,7 @@ const TemplateManagementPage = () => {
                   multiple
                   maxTagCount={1}
                   showClear
-                  style={{ width: 200 }}
+                  style={{ width: 'auto', minWidth: 120 }}
                   optionList={mockProcesses.map((p) => ({
                     value: p.process_id,
                     label: p.process_name,

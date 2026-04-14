@@ -545,6 +545,19 @@ const ProcessDevelopment = () => {
                 showClear
                 maxLength={100}
               />
+              <DepartmentSelect
+                placeholder={t('common.filterDepartment')}
+                value={departmentFilter}
+                onChange={(v) => {
+                  setDepartmentFilter(v);
+                  setQueryParams((prev) => ({ ...prev, offset: 0 }));
+                }}
+                multiple
+                showClear
+                maxTagCount={1}
+                useNameAsValue
+                style={{ width: 'auto', minWidth: 120, maxWidth: 600 }}
+              />
               <FilterPopover
                 visible={filterPopoverVisible}
                 onVisibleChange={setFilterPopoverVisible}
@@ -561,19 +574,6 @@ const ProcessDevelopment = () => {
                     value: statusFilter,
                   },
                 ]}
-              />
-              <DepartmentSelect
-                placeholder={t('common.filterDepartment')}
-                value={departmentFilter}
-                onChange={(v) => {
-                  setDepartmentFilter(v);
-                  setQueryParams((prev) => ({ ...prev, offset: 0 }));
-                }}
-                multiple
-                showClear
-                maxTagCount={1}
-                useNameAsValue
-                style={{ width: 'auto', minWidth: 120, maxWidth: 600 }}
               />
             </Space>
           </Col>
