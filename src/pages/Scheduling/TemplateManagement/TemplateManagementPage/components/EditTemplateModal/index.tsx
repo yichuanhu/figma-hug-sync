@@ -36,6 +36,8 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     process_name: 'Auto Order Processing',
     version_id: 'ver-001',
     version: 'v1.2.0',
+    owning_department_id: 'dept-tech',
+    owning_department_name: 'Technology Department',
     parameters: [
       { name: 'targetUrl', type: 'TEXT', required: true, description: 'Target URL address' },
       { name: 'maxCount', type: 'NUMBER', required: false, default_value: 100, description: 'Maximum processing count' },
@@ -51,6 +53,8 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     process_name: 'Expense Reimbursement Approval',
     version_id: 'ver-002',
     version: 'v2.0.0',
+    owning_department_id: 'dept-finance',
+    owning_department_name: 'Finance Department',
     parameters: [
       { name: 'department', type: 'TEXT', required: true, description: 'Department name' },
       { name: 'approvalCredential', type: 'CREDENTIAL', required: true, description: 'Approval credential' },
@@ -65,6 +69,8 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     process_name: 'Employee Onboarding Flow',
     version_id: 'ver-003',
     version: 'v1.0.0',
+    owning_department_id: 'dept-hr',
+    owning_department_name: 'HR Department',
     parameters: [],
     output_parameters: [
       { name: 'employeeId', type: 'TEXT', description: 'New employee ID' },
@@ -75,6 +81,8 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     process_name: 'Data Collection Flow',
     version_id: 'ver-004',
     version: 'v1.5.0',
+    owning_department_id: 'dept-ops',
+    owning_department_name: 'Operations Department',
     parameters: [
       { name: 'sourceUrl', type: 'TEXT', required: true, description: 'Data source URL' },
       { name: 'pageLimit', type: 'NUMBER', required: false, default_value: 10, description: 'Page limit for collection' },
@@ -349,14 +357,6 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
                   {t('template.createModal.basicInfo')}
                 </div>
 
-                <Form.Slot label={t('common.owningDepartment')}>
-                  <Form.Input field="__dept_readonly" noLabel initValue={template?.owning_department_name || '-'} disabled style={{ width: '100%' }} />
-                </Form.Slot>
-
-                <Form.Slot label={t('common.owner')}>
-                  <Form.Input field="__owner_readonly" noLabel initValue={template?.owner_name || '-'} disabled style={{ width: '100%' }} />
-                </Form.Slot>
-
                 <Form.Input
                   field="templateName"
                   label={t('template.fields.name')}
@@ -376,6 +376,9 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
                   showClear
                   rows={3}
                 />
+                <Form.Slot label={t('common.owner')}>
+                  <Form.Input field="__owner_readonly" noLabel initValue={template?.owner_name || '-'} disabled style={{ width: '100%' }} />
+                </Form.Slot>
               </div>
 
               {/* Process */}
@@ -396,11 +399,16 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
                   onChange={(v) => handleProcessChange(v as string)}
                 />
                 {selectedProcess && (
-                  <div className="edit-template-modal-version-info">
-                    <Text type="tertiary" size="small">
-                      {t('template.createModal.versionInfo')}: {selectedProcess.version}
-                    </Text>
-                  </div>
+                  <>
+                    <div className="edit-template-modal-version-info">
+                      <Text type="tertiary" size="small">
+                        {t('template.createModal.versionInfo')}: {selectedProcess.version}
+                      </Text>
+                    </div>
+                    <Form.Slot label={t('common.owningDepartment')}>
+                      <Form.Input field="__dept_readonly" noLabel initValue={selectedProcess.owning_department_name || template?.owning_department_name || '-'} disabled style={{ width: '100%' }} />
+                    </Form.Slot>
+                  </>
                 )}
               </div>
 
