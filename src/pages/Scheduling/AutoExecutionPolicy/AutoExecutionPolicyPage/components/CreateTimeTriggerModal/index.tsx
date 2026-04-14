@@ -12,6 +12,7 @@ import {
   Steps,
 } from '@douyinfe/semi-ui';
 import { HelpCircle, Inbox } from 'lucide-react';
+import DepartmentSelect from '@/components/DepartmentSelect';
 import TriggerRuleConfig from '@/components/TriggerRuleConfig';
 import BotTargetSelector from '@/components/BotTargetSelector';
 import { getWorkCalendarOptions } from '@/mocks/workCalendar';
@@ -34,7 +35,7 @@ interface CreateTimeTriggerModalProps {
 }
 
 // Mock ProcessList
-const mockProcesses: LYProcessActiveVersionResponse[] = [
+const mockProcesses: (LYProcessActiveVersionResponse & { owner_name?: string })[] = [
   {
     process_id: 'proc-001',
     process_name: 'Auto Order Processing',
@@ -42,6 +43,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     version: 'v1.2.0',
     owning_department_id: 'dept-tech',
     owning_department_name: 'Technology Department',
+    owner_name: '张三',
     parameters: [
       { name: 'targetUrl', type: 'TEXT', required: true, description: 'Target URL address' },
       { name: 'maxCount', type: 'NUMBER', required: false, default_value: 100, description: 'Maximum processing count' },
@@ -59,6 +61,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     version: 'v2.0.0',
     owning_department_id: 'dept-finance',
     owning_department_name: 'Finance Department',
+    owner_name: '李四',
     parameters: [
       { name: 'department', type: 'TEXT', required: true, description: 'Department name' },
     ],
@@ -73,6 +76,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     version: 'v1.0.0',
     owning_department_id: 'dept-hr',
     owning_department_name: 'Human Resources',
+    owner_name: '王五',
     parameters: [],
     output_parameters: [],
   },
@@ -83,6 +87,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     version: 'v1.5.0',
     owning_department_id: 'dept-tech',
     owning_department_name: 'Technology Department',
+    owner_name: '赵六',
     parameters: [
       { name: 'sourceUrl', type: 'TEXT', required: true, description: 'Data source URL' },
       { name: 'pageLimit', type: 'NUMBER', required: false, default_value: 10, description: 'Page limit for collection' },
@@ -145,8 +150,9 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
   // 第Mon步: Basic Info - using Form Manage
 
   // 第Tue步: Task config
-  const [selectedProcess, setSelectedProcess] = useState<LYProcessActiveVersionResponse | null>(null);
+  const [selectedProcess, setSelectedProcess] = useState<(LYProcessActiveVersionResponse & { owner_name?: string }) | null>(null);
   const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);
+  const [owningDepartmentId, setOwningDepartmentId] = useState<string>('');
 
   // 第Wed步: Trigger Rules
   const [ruleType, setRuleType] = useState<TriggerRuleType>('BASIC');
@@ -526,20 +532,12 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
         showClear
         rows={3}
       />
-      <div className="semi-form-field" style={{ marginBottom: 12 }}>
-        <label className="semi-form-field-label">
-          <span className="semi-form-field-label-text">{t('common.owningDepartment')}</span>
-        </label>
-        <Text type="tertiary">
-          {selectedProcess?.owning_department_name || (selectedProcess ? MOCK_CURRENT_USER.department_name : t('timeTrigger.createModal.selectProcessFirst'))}
-        </Text>
-      </div>
-      <div className="semi-form-field" style={{ marginBottom: 12 }}>
-        <label className="semi-form-field-label">
-          <span className="semi-form-field-label-text">{t('common.owner')}</span>
-        </label>
-        <Text>{MOCK_CURRENT_USER.name}</Text>
-      </div>
+      <Form.Slot label={t('common.owningDepartment')}>
+        <DepartmentSelect value={owningDepartmentId} onChange={setOwningDepartmentId} />
+      </Form.Slot>
+      <Form.Slot label={t('common.owner')}>
+        <Form.Input field="__owner_readonly" noLabel initValue={MOCK_CURRENT_USER.name} disabled style={{ width: '100%' }} />
+      </Form.Slot>
     </div>
   );
 
@@ -576,6 +574,16 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
           ]}
           onChange={(v) => handleProcessChange(v as string)}
         />
+        {selectedProcess && (
+          <>
+            <Form.Slot label={t('common.owningDepartment')}>
+              <Form.Input field="__process_dept_readonly" noLabel initValue={selectedProcess.owning_department_name || '-'} disabled style={{ width: '100%' }} />
+            </Form.Slot>
+            <Form.Slot label={t('common.owner')}>
+              <Form.Input field="__process_owner_readonly" noLabel initValue={selectedProcess.owner_name || '-'} disabled style={{ width: '100%' }} />
+            </Form.Slot>
+          </>
+        )}
       </div>
 
       {/* Execution target */}

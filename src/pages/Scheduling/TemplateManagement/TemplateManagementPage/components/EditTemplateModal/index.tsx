@@ -350,11 +350,11 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
                 </div>
 
                 <Form.Slot label={t('common.owningDepartment')}>
-                  <span>{template?.owning_department_name || '-'}</span>
+                  <Form.Input field="__dept_readonly" noLabel initValue={template?.owning_department_name || '-'} disabled style={{ width: '100%' }} />
                 </Form.Slot>
 
                 <Form.Slot label={t('common.owner')}>
-                  <span>{template?.owner_name || '-'}</span>
+                  <Form.Input field="__owner_readonly" noLabel initValue={template?.owner_name || '-'} disabled style={{ width: '100%' }} />
                 </Form.Slot>
 
                 <Form.Input

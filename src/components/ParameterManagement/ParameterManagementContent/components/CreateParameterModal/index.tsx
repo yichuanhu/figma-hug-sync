@@ -166,7 +166,7 @@ const CreateParameterModal = ({
         </Form.Slot>
 
         <Form.Slot label={t('common.owner')}>
-          <span>{MOCK_CURRENT_USER.name}</span>
+          <Form.Input field="__owner_readonly" noLabel initValue={MOCK_CURRENT_USER.name} disabled style={{ width: '100%' }} />
         </Form.Slot>
 
         <div className="create-parameter-modal-footer">

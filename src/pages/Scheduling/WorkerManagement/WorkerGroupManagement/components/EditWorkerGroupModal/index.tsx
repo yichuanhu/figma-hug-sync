@@ -121,7 +121,7 @@ const EditWorkerGroupModal: React.FC<EditWorkerGroupModalProps> = ({
           </Form.Slot>
 
           <Form.Slot label={t('common.owner')}>
-            <span>{groupData?.owner_name || '-'}</span>
+            <Form.Input field="__owner_readonly" noLabel initValue={groupData?.owner_name || '-'} disabled style={{ width: '100%' }} />
           </Form.Slot>
         </Form>
       </div>

@@ -186,7 +186,7 @@ const EditParameterModal = ({
           </Form.Slot>
 
           <Form.Slot label={t('common.owner')}>
-            <span>{parameter?.owner_name || '-'}</span>
+            <Form.Input field="__owner_readonly" noLabel initValue={parameter?.owner_name || '-'} disabled style={{ width: '100%' }} />
           </Form.Slot>
 
           <div className="edit-parameter-modal-footer">

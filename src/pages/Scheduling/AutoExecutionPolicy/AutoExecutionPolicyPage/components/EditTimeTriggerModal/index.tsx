@@ -23,6 +23,8 @@ import type {
   BasicFrequencyType,
 } from '@/api';
 import './index.less';
+import DepartmentSelect from '@/components/DepartmentSelect';
+import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 import { HelpCircle, Inbox } from 'lucide-react';
 
 const { Text } = Typography;
@@ -155,6 +157,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
   // 第Tue步: Task config - 仅保留need's Status
   const [selectedProcess, setSelectedProcess] = useState<(LYProcessActiveVersionResponse & { owning_department_name?: string; owner_name?: string }) | null>(null);
   const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);
+  const [owningDepartmentId, setOwningDepartmentId] = useState<string>('');
 
   // 第Wed步: Trigger Rules
   const [ruleType, setRuleType] = useState<TriggerRuleType>('BASIC');
@@ -605,6 +608,12 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
         showClear
         rows={3}
       />
+      <Form.Slot label={t('common.owningDepartment')}>
+        <DepartmentSelect value={owningDepartmentId} onChange={setOwningDepartmentId} />
+      </Form.Slot>
+      <Form.Slot label={t('common.owner')}>
+        <Form.Input field="__owner_readonly" noLabel initValue={trigger?.owner_name || '-'} disabled style={{ width: '100%' }} />
+      </Form.Slot>
     </div>
   );
 
@@ -644,10 +653,10 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
         {selectedProcess && (
           <>
             <Form.Slot label={t('common.owningDepartment')}>
-              <span>{selectedProcess.owning_department_name || '-'}</span>
+              <Form.Input field="__process_dept_readonly" noLabel initValue={selectedProcess.owning_department_name || '-'} disabled style={{ width: '100%' }} />
             </Form.Slot>
             <Form.Slot label={t('common.owner')}>
-              <span>{selectedProcess.owner_name || '-'}</span>
+              <Form.Input field="__process_owner_readonly" noLabel initValue={selectedProcess.owner_name || '-'} disabled style={{ width: '100%' }} />
             </Form.Slot>
           </>
         )}

@@ -373,7 +373,7 @@ const UploadFileModal = ({
             <div className="upload-file-modal-display-name-label">
               <Text>{t('common.owner')}</Text>
             </div>
-            <span>{MOCK_CURRENT_USER.name}</span>
+            <input className="semi-input semi-input-default" disabled value={MOCK_CURRENT_USER.name} style={{ width: '100%', cursor: 'not-allowed' }} />
           </div>
 
         <Form className="upload-file-modal-form" initValues={{ description: '' }}>
