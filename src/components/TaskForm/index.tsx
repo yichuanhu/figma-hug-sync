@@ -331,6 +331,13 @@ const TaskForm = (props: TaskFormProps) => {
                   onChange={v => handleProcessChange(v as string)}
                   disabled={source === TaskFormSource.Process}
                 />
+                {/* 归属部门（只读，根据流程自动继承） */}
+                <Form.Input
+                  field="owning_department_name"
+                  label={t('common.owningDepartment')}
+                  placeholder="-"
+                  disabled
+                />
               </div>
 
               {/* 执行目标 */}
