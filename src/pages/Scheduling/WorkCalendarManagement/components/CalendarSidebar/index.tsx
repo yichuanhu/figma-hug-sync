@@ -31,7 +31,6 @@ const CalendarSidebar: React.FC<CalendarSidebarProps> = ({
     if (calendar.reference_count > 0) {
       Modal.warning({
         title: t('workCalendar.sidebar.deleteConfirmTitle'),
-        icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
         content: t('workCalendar.sidebar.cannotDelete'),
       });
       return;
