@@ -552,7 +552,7 @@ const TimeTriggerList = () => {
               onChange={(v) => setQueryParams(prev => ({ ...prev, offset: 0, owning_department_name: v as string | undefined }))}
               showClear
               useNameAsValue
-              style={{ width: 'auto', minWidth: 120, maxWidth: 600 }}
+              style={{ width: 'auto', minWidth: 150, maxWidth: 600 }}
             />
           </Space>
         </Col>
