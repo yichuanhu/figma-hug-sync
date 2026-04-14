@@ -644,10 +644,10 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
         {selectedProcess && (
           <>
             <Form.Slot label={t('common.owningDepartment')}>
-              <span>{selectedProcess.owning_department_name || '-'}</span>
+              <Form.Input field="__process_dept_readonly" noLabel initValue={selectedProcess.owning_department_name || '-'} disabled style={{ width: '100%' }} />
             </Form.Slot>
             <Form.Slot label={t('common.owner')}>
-              <span>{selectedProcess.owner_name || '-'}</span>
+              <Form.Input field="__process_owner_readonly" noLabel initValue={selectedProcess.owner_name || '-'} disabled style={{ width: '100%' }} />
             </Form.Slot>
           </>
         )}
