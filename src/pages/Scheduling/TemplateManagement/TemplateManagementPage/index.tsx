@@ -106,7 +106,7 @@ interface GetTemplatesParams {
   offset?: number;
   size?: number;
   keyword?: string;
-  process_id?: string;
+  process_id?: string[];
   owning_department_name?: string;
 }
 

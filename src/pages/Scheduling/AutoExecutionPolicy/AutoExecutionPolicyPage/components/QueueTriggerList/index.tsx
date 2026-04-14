@@ -122,9 +122,9 @@ interface GetTriggersParams {
   offset?: number;
   size?: number;
   keyword?: string;
-  process_id?: string;
-  queue_id?: string;
-  status?: TriggerStatus;
+  process_id?: string[];
+  queue_id?: string[];
+  status?: TriggerStatus[];
   owning_department_name?: string;
 }
 
