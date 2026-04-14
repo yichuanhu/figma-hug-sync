@@ -30,6 +30,10 @@ const CreateCredentialModal = ({
     password: string;
     description?: string;
   }) => {
+    if (!owningDepartmentId) {
+      Toast.warning(t('common.owningDepartmentRequired'));
+      return;
+    }
     setLoading(true);
     try {
       // 模拟API调用
