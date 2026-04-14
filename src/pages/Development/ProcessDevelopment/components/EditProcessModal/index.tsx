@@ -17,6 +17,7 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>(processData?.owning_department_id || undefined);
+  const [ownerId, setOwnerId] = useState<string | undefined>(processData?.owner_id || undefined);
 
   const existingProcessNames = ['Auto Order Processing Flow', 'Expense Reimbursement Flow', 'Employee Onboarding Flow'];
 
@@ -131,7 +132,7 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
         </Form.Slot>
 
         <Form.Slot label={t('common.owner')}>
-          <Form.Input field="__owner_readonly" noLabel initValue={processData?.owner_name || '-'} disabled style={{ width: '100%' }} />
+          <OwnerSelect value={ownerId} onChange={setOwnerId} />
         </Form.Slot>
 
         <div className="edit-process-modal-footer">

@@ -170,7 +170,7 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
             </Form.Slot>
 
             <Form.Slot label={t('common.owner')}>
-              <Form.Input field="__owner_readonly" noLabel initValue={workerData?.owner_name || '-'} disabled style={{ width: '100%' }} />
+              <OwnerSelect value={ownerId} onChange={setOwnerId} />
             </Form.Slot>
 
             <Form.TextArea
