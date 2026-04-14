@@ -1,23 +1,50 @@
-## 已完成：TaskForm + ParameterInput 公共组件还原
 
-### 新建文件
-1. `src/components/TaskForm/types.ts` — 类型定义（ITaskInfo, TaskFormRef, TaskFormSource, Priority, LYInputParameterItem 等）
-2. `src/components/TaskForm/hooks/useTaskFormData.ts` — Mock 数据 hooks（useGetProcesses, useGetProcessVersion, useGetWorkerGroups, useWorkerGroupsTree）
-3. `src/components/TaskForm/index.tsx` — 主组件（Form + Spin，左侧配置 + 右侧参数）
-4. `src/components/TaskForm/index.less` — 主样式
-5. `src/components/TaskForm/components/ParameterInput/index.tsx` — 参数输入组件（String/Number/Boolean/Credential）
-6. `src/components/TaskForm/components/ParameterInput/index.less` — 参数输入样式
 
-### 修改文件
-- CreateTaskModal — 使用 `<TaskForm source={TaskFormSource.TaskList}>`
-- CreateTemplateModal — 使用 `<TaskForm source={TaskFormSource.TaskTemplate}>`
-- CreateTimeTriggerModal — 第二步使用 `<TaskForm source={TaskFormSource.TimerTrigger}>`
-- CreateQueueTriggerModal — 第二步使用 `<TaskForm source={TaskFormSource.QueueTrigger}>`
-- i18n (zh-CN / en) — 新增 worker 状态、执行目标、参数验证等翻译 key
+## 方案：补充归属部门 + 触发器第二步模板选择
 
-### 关键变化
-- 执行目标：从三种（BOT_GROUP/BOT_IN_GROUP/UNGROUPED_BOT）改为两种（worker_group/worker）
-- 机器人选择：从 BotTargetSelector 改为 Form.Cascader 树形选择
-- 参数输入：从 Form.Input 改为 Form.TextArea（string）；Credential 从 Select 改为用户名+密码
-- 机器人状态：5 种状态（OFFLINE/IDLE/BUSY/FAULT/MAINTENANCE）
-- useImperativeHandle：暴露 init/submit/pre 三个方法
+### 问题分析
+
+1. **归属部门缺失**：根据系统规范，任务/模板/触发器创建时，归属部门应作为只读字段，根据所选流程自动继承显示。当前所有新建弹窗（CreateTaskModal、CreateTemplateModal、CreateTimeTriggerModal、CreateQueueTriggerModal）均只有归属者（OwnerSelect），缺少归属部门展示。
+
+2. **触发器第二步缺少模板选择**：时间触发器和队列触发器的第二步（任务配置）直接渲染 `<TaskForm>` 且不传 `preFormItem`，缺少模板选择入口。应与新建任务弹窗保持一致，包含模板选择 + 归属者。
+
+### 改动计划
+
+#### 1. TaskForm 组件增加归属部门只读展示
+
+**文件**: `src/components/TaskForm/index.tsx`
+
+- 在流程选择（`process_id`）下方增加一个只读的归属部门字段（`Form.Input` disabled）
+- 当用户选择流程时，从流程数据中获取 `owning_department_name` 并自动填充
+- Mock 数据中为流程添加 `owning_department_id` / `owning_department_name` 字段
+
+**文件**: `src/components/TaskForm/types.ts`
+- `LYProcessResponse` 增加 `owning_department_id` 和 `owning_department_name` 字段
+
+**文件**: `src/components/TaskForm/hooks/useTaskFormData.ts`
+- Mock 流程数据增加归属部门字段
+
+#### 2. 触发器第二步与新建任务保持一致
+
+**文件**: `CreateTimeTriggerModal/index.tsx` 和 `CreateQueueTriggerModal/index.tsx`
+
+- 为第二步的 `<TaskForm>` 传入 `preFormItem`，包含：
+  - 模板选择（Form.Select，与 CreateTaskModal 相同的 mockTemplates）
+  - 归属者（OwnerSelect）
+- 这样第二步的任务配置页面与新建任务弹窗完全一致
+
+#### 3. i18n 补充
+
+- 添加归属部门相关翻译 key（如有缺失）
+
+### 改动文件清单
+
+| 文件 | 改动 |
+|------|------|
+| `src/components/TaskForm/types.ts` | LYProcessResponse 增加部门字段 |
+| `src/components/TaskForm/hooks/useTaskFormData.ts` | Mock 数据增加部门信息 |
+| `src/components/TaskForm/index.tsx` | 流程选择后显示只读归属部门 |
+| `CreateTimeTriggerModal/index.tsx` | 第二步传入 preFormItem（模板选择 + 归属者） |
+| `CreateQueueTriggerModal/index.tsx` | 第二步传入 preFormItem（模板选择 + 归属者） |
+| i18n 文件（如需） | 补充缺失 key |
+
