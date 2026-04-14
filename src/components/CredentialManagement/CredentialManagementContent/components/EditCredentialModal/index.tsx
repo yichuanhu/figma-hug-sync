@@ -107,7 +107,8 @@ const EditCredentialModal = ({
         <Form.Input
           field="credential_name"
           label={t('credential.fields.name')}
-          disabled
+          rules={[{ required: true, message: t('credential.validation.nameRequired') }]}
+          trigger={['blur', 'change']}
         />
 
         <div className="edit-credential-modal-type-disabled">

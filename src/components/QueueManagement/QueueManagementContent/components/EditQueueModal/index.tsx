@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Modal, Form, Button, Toast, Typography } from '@douyinfe/semi-ui';
+import { Modal, Form, Button, Toast } from '@douyinfe/semi-ui';
 import type { LYQueueResponse } from '@/api/index';
 import DepartmentSelect from '@/components/DepartmentSelect';
 
@@ -46,7 +46,7 @@ const EditQueueModal = ({
     }
   };
 
-  const { Text } = Typography;
+  
 
   return (
     <Modal
@@ -68,18 +68,13 @@ const EditQueueModal = ({
         }}
         key={queue?.queue_id}
       >
-        {/* 队列名称只读显示 */}
-        <div className="edit-queue-modal-readonly-field">
-          <Text strong className="edit-queue-modal-readonly-label">
-            {t('queue.fields.name')}
-          </Text>
-          <Text className="edit-queue-modal-readonly-value">
-            {queue?.queue_name || '-'}
-          </Text>
-          <Text type="tertiary" size="small" className="edit-queue-modal-readonly-hint">
-            {t('queue.fields.nameReadonly')}
-          </Text>
-        </div>
+        <Form.Input
+          field="queue_name"
+          label={t('queue.fields.name')}
+          initValue={queue?.queue_name || ''}
+          rules={[{ required: true, message: t('queue.validation.nameRequired') }]}
+          trigger={['blur', 'change']}
+        />
 
         <Form.TextArea
           field="description"
