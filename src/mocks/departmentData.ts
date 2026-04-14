@@ -23,7 +23,13 @@ export const departmentTree: DeptTreeNode[] = [
         value: 'dept-enterprise',
         label: 'Enterprise Business Center',
         children: [
-          { value: 'dept-north', label: 'North China Regional Business Division' },
+          {
+            value: 'dept-north',
+            label: 'North China Regional Business Division',
+            children: [
+              { value: 'dept-north-solution', label: 'North China Regional Solution and Delivery Team' },
+            ],
+          },
           { value: 'dept-east', label: 'East China Regional Business Division' },
           { value: 'dept-south', label: 'South and Southwest China Regional Business Division' },
           { value: 'dept-expert', label: 'Expert Enablement Group' },
