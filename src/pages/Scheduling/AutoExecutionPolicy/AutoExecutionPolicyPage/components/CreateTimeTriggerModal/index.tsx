@@ -12,6 +12,7 @@ import {
   Steps,
 } from '@douyinfe/semi-ui';
 import { HelpCircle, Inbox } from 'lucide-react';
+import OwnerSelect from '@/components/OwnerSelect';
 
 import TriggerRuleConfig from '@/components/TriggerRuleConfig';
 import BotTargetSelector from '@/components/BotTargetSelector';
@@ -144,6 +145,7 @@ const existingTriggerNames = ['Daily Order Sync', 'Weekly Report Generation'];
 const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTriggerModalProps) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
+  const [ownerId, setOwnerId] = useState<string>(MOCK_CURRENT_USER.id);
   const [currentStep, setCurrentStep] = useState(0);
   const [formApi, setFormApi] = useState<any>(null);
 

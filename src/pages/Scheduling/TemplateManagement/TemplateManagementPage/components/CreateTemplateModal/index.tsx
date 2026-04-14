@@ -11,6 +11,7 @@ import {
   Tag,
 } from '@douyinfe/semi-ui';
 import BotTargetSelector from '@/components/BotTargetSelector';
+import OwnerSelect from '@/components/OwnerSelect';
 import type {
   LYProcessActiveVersionResponse,
   LYProcessParameterDefinition,
@@ -121,6 +122,7 @@ const existingTemplateNames = ['Order Processing Default Template', 'Finance App
 const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateModalProps) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
+  const [ownerId, setOwnerId] = useState<string>(MOCK_CURRENT_USER.id);
   const [formApi, setFormApi] = useState<any>(null);
   const [selectedProcess, setSelectedProcess] = useState<LYProcessActiveVersionResponse | null>(null);
   const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);

@@ -48,6 +48,7 @@ const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalPr
   const [selectedWorkerId, setSelectedWorkerId] = useState<string | undefined>(undefined);
   const [desktopType, setDesktopType] = useState<string>('Console');
   const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>(undefined);
+  const [ownerId, setOwnerId] = useState<string>(MOCK_CURRENT_USER.id);
   const [isLocalDesktopDisabled, setIsLocalDesktopDisabled] = useState(false);
 
   // 当select's Alreadyhasbot变化时, Checkits桌面Type

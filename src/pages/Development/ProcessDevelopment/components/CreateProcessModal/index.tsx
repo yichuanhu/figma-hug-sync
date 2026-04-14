@@ -45,6 +45,7 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>(undefined);
+  const [ownerId, setOwnerId] = useState<string>(MOCK_CURRENT_USER.id);
 
   const existingProcessNames = ['Auto Order Processing Flow', 'Expense Reimbursement Flow', 'Employee Onboarding Flow'];
 

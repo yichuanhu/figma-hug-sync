@@ -24,6 +24,7 @@ const CreateParameterModal = ({
   const [loading, setLoading] = useState(false);
   const [parameterType, setParameterType] = useState<ParameterType>(1);
   const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>();
+  const [ownerId, setOwnerId] = useState<string>(MOCK_CURRENT_USER.id);
 
   const handleSubmit = async (values: {
     name: string;

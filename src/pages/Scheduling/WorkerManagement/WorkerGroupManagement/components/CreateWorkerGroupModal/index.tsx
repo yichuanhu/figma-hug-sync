@@ -29,6 +29,7 @@ const CreateWorkerGroupModal: React.FC<CreateWorkerGroupModalProps> = ({
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>(undefined);
+  const [ownerId, setOwnerId] = useState<string>(MOCK_CURRENT_USER.id);
   const [formApi, setFormApi] = useState<any>(null);
   
   // CreateSuccess后's 提示模态框

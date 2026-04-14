@@ -11,6 +11,7 @@ import {
   Tag,
 } from '@douyinfe/semi-ui';
 import BotTargetSelector from '@/components/BotTargetSelector';
+import OwnerSelect from '@/components/OwnerSelect';
 import type {
   LYProcessActiveVersionResponse,
   LYExecutionTemplateResponse,
@@ -139,6 +140,7 @@ const mockTemplates: LYExecutionTemplateResponse[] = [
 const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: CreateTaskModalProps) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
+  const [ownerId, setOwnerId] = useState<string>(MOCK_CURRENT_USER.id);
   const [formApi, setFormApi] = useState<any>(null);
   const [selectedProcess, setSelectedProcess] = useState<LYProcessActiveVersionResponse | null>(null);
   const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);

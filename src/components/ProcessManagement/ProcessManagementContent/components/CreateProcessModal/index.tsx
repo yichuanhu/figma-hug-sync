@@ -49,6 +49,7 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>(undefined);
+  const [ownerId, setOwnerId] = useState<string>(MOCK_CURRENT_USER.id);
 
   const existingProcessNames = ['订单自动处理流程', '财务报销审批流程', '人事入职流程'];
 

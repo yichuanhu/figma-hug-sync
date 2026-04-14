@@ -35,6 +35,7 @@ const RequirementFormModal = ({
   const [loading, setLoading] = useState(false);
   const [formApi, setFormApi] = useState<any>(null);
   const [departmentValue, setDepartmentValue] = useState<string | undefined>(undefined);
+  const [ownerId, setOwnerId] = useState<string>(MOCK_CURRENT_USER.id);
   const isEdit = !!editData;
 
   const priorityOptions = useMemo(
