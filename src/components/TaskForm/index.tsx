@@ -23,7 +23,7 @@ const TaskForm = (props: TaskFormProps) => {
   const { taskRef, params, showParamsHandle, source, preFormItem, bottomFormItem, showRightPanel } = props;
   const [formApi, setFormApi] = useState<FormApi<ITaskInfo> | null>(null);
   const [selectedProcess, setSelectedProcess] = useState<LYProcessResponse | null>(null);
-  const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);
+  const [targetType, setTargetType] = useState<ExecutionTargetType>('worker');
   const [inputParameters, setInputParameters] = useState<LYInputParameterItem[]>([]);
   const [outputParameters, setOutputParameters] = useState<LYOutputParameterItem[]>([]);
   const [loading, setLoading] = useState<boolean>(false);

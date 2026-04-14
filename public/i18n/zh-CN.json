@@ -1289,7 +1289,7 @@
       "selectTarget": "选择目标",
       "targetType": {
         "botGroup": "机器人组",
-        "botInGroup": "组中的机器人",
+        "botInGroup": "机器人",
         "ungroupedBot": "未分组机器人"
       },
       "executionSection": "执行设置",
@@ -1565,7 +1565,7 @@
     },
     "targetType": {
       "botGroup": "机器人组",
-      "botInGroup": "组内机器人",
+      "botInGroup": "机器人",
       "ungroupedBot": "未分组机器人"
     },
     "detail": {
@@ -1891,7 +1891,7 @@
     },
     "targetType": {
       "botGroup": "机器人组",
-      "botInGroup": "组内机器人",
+      "botInGroup": "机器人",
       "ungroupedBot": "未分组机器人"
     }
   },
@@ -2072,7 +2072,7 @@
     },
     "targetType": {
       "botGroup": "机器人组",
-      "botInGroup": "组内机器人",
+      "botInGroup": "机器人",
       "ungroupedBot": "未分组机器人"
     },
     "empty": {
