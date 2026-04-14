@@ -112,7 +112,7 @@ const DepartmentSelect = (props: DepartmentSelectProps) => {
       checkRelation="unRelated"
       showClear={showClear ?? !multiple}
       maxTagCount={maxTagCount}
-      defaultExpandAll
+      defaultExpandedKeys={treeData.length > 0 ? [treeData[0].key] : []}
       treeNodeFilterProp="label"
       filterTreeNode
       searchAutoFocus
