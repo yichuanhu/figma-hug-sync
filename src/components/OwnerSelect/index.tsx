@@ -116,7 +116,7 @@ const OwnerSelect = ({
       placeholder={placeholder || t('common.ownerPlaceholder')}
       disabled={disabled}
       showClear
-      defaultExpandAll
+      defaultExpandedKeys={treeData.length > 0 ? [treeData[0].key] : []}
       treeNodeFilterProp="label"
       filterTreeNode
       searchAutoFocus
