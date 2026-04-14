@@ -145,6 +145,25 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
     }
   }, [visible]);
 
+  // 第二步预置表单项：模板选择 + 归属者
+  const taskPreFormItem = (
+    <div className="task-template-section">
+      <div className="task-template-section-title">{t('task.createModal.selectTemplate')}</div>
+      <Form.Select
+        field="templateId"
+        noLabel
+        placeholder={t('task.createModal.templatePlaceholder')}
+        optionList={mockTemplates.map((tpl) => ({ value: tpl.template_id, label: tpl.template_name }))}
+        showClear
+        filter
+        className="task-template-select-full"
+      />
+      <Form.Slot label={t('common.owner')}>
+        <OwnerSelect value={ownerId} onChange={setOwnerId} />
+      </Form.Slot>
+    </div>
+  );
+
   const validateTriggerName = (value: string) => {
     if (value && existingTriggerNames.includes(value.trim())) {
       return t('timeTrigger.validation.nameExists');
