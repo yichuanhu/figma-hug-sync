@@ -368,18 +368,27 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
                   size={120}
                 />
               }
-              pagination={{
-                total,
-                pageSize,
-                currentPage,
-                onPageChange: (page) => {
-                  setQueryParams(prev => ({ ...prev, offset: (page - 1) * pageSize }));
-                },
-                showTotal: true,
-                showSizeChanger: true,
-              }}
+              pagination={false}
               scroll={{ y: 260 }}
             />
+            {total > 0 && (
+              <div className="add-members-modal-left-pagination">
+                <Pagination
+                  total={total}
+                  pageSize={pageSize}
+                  currentPage={currentPage}
+                  onPageChange={(page) => {
+                    setQueryParams(prev => ({ ...prev, offset: (page - 1) * pageSize }));
+                  }}
+                  onPageSizeChange={(newPageSize) => {
+                    setQueryParams(prev => ({ ...prev, offset: 0, size: newPageSize }));
+                  }}
+                  showTotal
+                  showSizeChanger
+                  size="small"
+                />
+              </div>
+            )}
           </div>
         </div>
 
