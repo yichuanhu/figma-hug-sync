@@ -929,7 +929,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
                 style={{ width: 'auto', minWidth: 120, maxWidth: 600 }}
               />
               <Select
-                placeholder={t('worker.filter.workerGroup')}
+                placeholder={t('common.filterGroup')}
                 value={filters.group_id}
                 onChange={(v) => {
                   setFilters(prev => ({ ...prev, group_id: v as string[] }));
