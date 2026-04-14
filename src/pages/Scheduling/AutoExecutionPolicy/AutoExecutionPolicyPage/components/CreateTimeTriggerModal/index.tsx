@@ -35,7 +35,7 @@ interface CreateTimeTriggerModalProps {
 }
 
 // Mock ProcessList
-const mockProcesses: LYProcessActiveVersionResponse[] = [
+const mockProcesses: (LYProcessActiveVersionResponse & { owner_name?: string })[] = [
   {
     process_id: 'proc-001',
     process_name: 'Auto Order Processing',
@@ -43,6 +43,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     version: 'v1.2.0',
     owning_department_id: 'dept-tech',
     owning_department_name: 'Technology Department',
+    owner_name: '张三',
     parameters: [
       { name: 'targetUrl', type: 'TEXT', required: true, description: 'Target URL address' },
       { name: 'maxCount', type: 'NUMBER', required: false, default_value: 100, description: 'Maximum processing count' },
@@ -60,6 +61,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     version: 'v2.0.0',
     owning_department_id: 'dept-finance',
     owning_department_name: 'Finance Department',
+    owner_name: '李四',
     parameters: [
       { name: 'department', type: 'TEXT', required: true, description: 'Department name' },
     ],
@@ -74,6 +76,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     version: 'v1.0.0',
     owning_department_id: 'dept-hr',
     owning_department_name: 'Human Resources',
+    owner_name: '王五',
     parameters: [],
     output_parameters: [],
   },
@@ -84,6 +87,7 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     version: 'v1.5.0',
     owning_department_id: 'dept-tech',
     owning_department_name: 'Technology Department',
+    owner_name: '赵六',
     parameters: [
       { name: 'sourceUrl', type: 'TEXT', required: true, description: 'Data source URL' },
       { name: 'pageLimit', type: 'NUMBER', required: false, default_value: 10, description: 'Page limit for collection' },
