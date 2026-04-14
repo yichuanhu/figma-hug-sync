@@ -19,6 +19,7 @@ import {
   Image,
   Dropdown,
 } from '@douyinfe/semi-ui';
+import { IconDeleteStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import DetailSkeleton from '@/components/DetailSkeleton';
 import TableSkeleton from '@/components/TableSkeleton';
@@ -158,6 +159,7 @@ const PersonalCredentialDetailDrawer = ({
     if (!credential) return;
     Modal.confirm({
       title: t('personalCredential.deleteModal.title'),      content: t('personalCredential.deleteModal.confirmMessage'), okText: t('common.confirm'), cancelText: t('common.cancel'), okButtonProps: { type: 'danger' },
+      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
       onOk: async () => { await new Promise((resolve) => setTimeout(resolve, 500)); Toast.success(t('personalCredential.deleteModal.success')); onDelete(credential); onClose(); },
     });
   }, [credential, t, onDelete, onClose]);

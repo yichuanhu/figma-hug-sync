@@ -16,7 +16,7 @@ import {
   Tooltip,
   Breadcrumb,
 } from '@douyinfe/semi-ui';
-import { IconSearchStroked } from '@douyinfe/semi-icons';
+import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
@@ -291,6 +291,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
   const handleDelete = (record: LYFileResponse) => {
     Modal.confirm({
       title: t('file.deleteModal.title'),      content: (
+      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
         <div>
           <div>{t('file.deleteModal.confirmMessage', { name: record.display_name })}</div>
           {record.is_published && (

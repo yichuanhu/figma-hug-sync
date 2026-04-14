@@ -16,7 +16,7 @@ import {
   Tooltip,
   Breadcrumb,
 } from '@douyinfe/semi-ui';
-import { IconSearchStroked } from '@douyinfe/semi-icons';
+import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
@@ -305,6 +305,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
   const handleDelete = (record: LYParameterResponse) => {
     Modal.confirm({
       title: t('parameter.deleteModal.title'),      content: (
+      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
         <div>
           <div>{t('parameter.deleteModal.confirmMessage', { name: record.parameter_name })}</div>
           {record.is_published && (

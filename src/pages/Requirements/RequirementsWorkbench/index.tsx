@@ -16,7 +16,7 @@ import {
   Select,
 } from '@douyinfe/semi-ui';
 import DepartmentSelect from '@/components/DepartmentSelect';
-import { IconSearchStroked } from '@douyinfe/semi-icons';
+import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
 import { Ellipsis, Eye, Pencil, Plus, Send, Trash2, Upload } from 'lucide-react';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import EmptyState from '@/components/EmptyState';
@@ -154,6 +154,7 @@ const RequirementsWorkbench = () => {
   const handleDelete = (record: RequirementItem) => {
     Modal.confirm({
       title: t('requirements.deleteModal.title'),      content: (
+      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
         <>
           <div>{t('requirements.deleteModal.confirmMessage', { name: record.title })}</div>
           <div style={{ color: 'var(--semi-color-text-2)', marginTop: 8 }}>

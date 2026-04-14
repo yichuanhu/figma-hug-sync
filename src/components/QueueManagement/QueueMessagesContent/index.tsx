@@ -18,6 +18,7 @@ import {
   Tooltip,
   Breadcrumb,
 } from '@douyinfe/semi-ui';
+import { IconDeleteStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
@@ -332,6 +333,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
   const handleDelete = (record: LYQueueMessageResponse) => {
     Modal.confirm({
       title: t('queueMessage.deleteModal.title'),      content: t('queueMessage.deleteModal.confirmMessage'),
+      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
       okButtonProps: { type: 'danger' },
@@ -352,6 +354,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
 
     Modal.confirm({
       title: t('queueMessage.batch.deleteTitle'),      content: t('queueMessage.batch.deleteConfirm', { count: selectedRowKeys.length }),
+      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
       okButtonProps: { type: 'danger' },

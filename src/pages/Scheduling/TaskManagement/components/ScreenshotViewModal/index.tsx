@@ -11,6 +11,7 @@ import {
   Image,
   ImagePreview,
 } from '@douyinfe/semi-ui';
+import { IconDeleteStroked } from '@douyinfe/semi-icons';
 import type { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
 import EmptyState from '@/components/EmptyState';
 import BatchOperationBar from './components/BatchOperationBar';
@@ -182,6 +183,7 @@ const ScreenshotViewModal = ({
     e?.stopPropagation();
     Modal.confirm({
       title: t('screenshot.deleteConfirm.title'),      content: t('screenshot.deleteConfirm.content'),
+      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
       okButtonProps: { type: 'danger' },
@@ -199,6 +201,7 @@ const ScreenshotViewModal = ({
     
     Modal.confirm({
       title: t('screenshot.deleteConfirm.title'),      content: t('screenshot.deleteConfirm.content'),
+      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
       okButtonProps: { type: 'danger' },

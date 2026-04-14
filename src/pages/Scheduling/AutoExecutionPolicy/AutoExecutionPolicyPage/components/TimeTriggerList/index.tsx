@@ -16,7 +16,7 @@ import {
   Tooltip,
 } from '@douyinfe/semi-ui';
 import DepartmentSelect from '@/components/DepartmentSelect';
-import { IconSearchStroked } from '@douyinfe/semi-icons';
+import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
 import { Clock, Ellipsis, Pencil, Plus, Trash2, UserPlus } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
@@ -322,6 +322,7 @@ const TimeTriggerList = () => {
   const handleDeleteTrigger = (trigger: LYTimeTriggerResponse) => {
     Modal.confirm({
       title: t('timeTrigger.deleteModal.title'),      content: (
+      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
         <>
           <div>{t('timeTrigger.deleteModal.confirmMessage', { name: trigger.name })}</div>
           <div style={{ color: 'var(--semi-color-text-2)', marginTop: 8 }}>

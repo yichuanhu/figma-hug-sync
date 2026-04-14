@@ -13,7 +13,7 @@ import {
   Select,
 } from '@douyinfe/semi-ui';
 import DepartmentSelect from '@/components/DepartmentSelect';
-import { IconSearchStroked } from '@douyinfe/semi-icons';
+import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
@@ -233,6 +233,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
 
     Modal.confirm({
       title: t('workerGroup.deleteModal.title'),      content: (
+      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
         <>
           <div>{t('workerGroup.deleteModal.confirmMessage', { name: group.name })}</div>
           <div style={{ color: 'var(--semi-color-text-2)', marginTop: 8 }}>
