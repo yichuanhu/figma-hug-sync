@@ -11,6 +11,7 @@ import {
   Row,
   Col,
   Space,
+  Pagination,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import { Download, RefreshCw } from 'lucide-react';
@@ -465,21 +466,23 @@ const ExecutionLogTab = ({ executionId, executionStatus = 'RUNNING', title }: Ex
               }
             />
           }
-          pagination={{
-            total,
-            pageSize,
-            currentPage,
-            showSizeChanger: true,
-            showTotal: true,
-            pageSizeOpts: [20, 50, 100, 200],
-            onPageChange: (page) => {
-              setQueryParams((prev) => ({ ...prev, page }));
-            },
-            onPageSizeChange: (size) => {
-              setQueryParams((prev) => ({ ...prev, page: 1, page_size: size }));
-            },
-          }}
+          pagination={false}
         />
+        {total > pageSize * 2 && (
+          <div style={{ paddingTop: 8, display: 'flex', justifyContent: 'flex-end' }}>
+            <Pagination
+              total={total}
+              pageSize={pageSize}
+              currentPage={currentPage}
+              onPageChange={(page) => setQueryParams((prev) => ({ ...prev, page }))}
+              onPageSizeChange={(size) => setQueryParams((prev) => ({ ...prev, page: 1, page_size: size }))}
+              showTotal
+              showSizeChanger
+              pageSizeOpts={[20, 50, 100, 200]}
+              size="small"
+            />
+          </div>
+        )}
       </div>
     </div>
   );
