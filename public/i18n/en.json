@@ -57,7 +57,14 @@
     "owningDepartment": "Owning Department",
     "owner": "Owner",
     "owningDepartmentPlaceholder": "Select owning department",
-    "owningDepartmentRequired": "Please select owning department"
+    "owningDepartmentRequired": "Please select owning department",
+    "filterProcess": "Filter Process",
+    "filterStatus": "Filter Status",
+    "filterQueue": "Filter Queue",
+    "filterDepartment": "Filter Department",
+    "filterTags": "Filter Tags",
+    "filterGroup": "Filter Group",
+    "filterPublisher": "Filter Publisher"
   },
   "emptyState": {
     "retry": "Retry",
