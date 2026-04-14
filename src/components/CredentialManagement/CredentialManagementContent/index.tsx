@@ -315,9 +315,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
   // 删除凭据
   const handleDelete = (record: LYCredentialResponse) => {
     Modal.confirm({
-      title: t('credential.deleteModal.title'),
-      icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
-      content: (
+      title: t('credential.deleteModal.title'),      content: (
         <div>
           <div>{t('credential.deleteModal.confirmMessage', { name: record.credential_name })}</div>
           {record.is_published && (

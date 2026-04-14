@@ -157,16 +157,14 @@ const PersonalCredentialDetailDrawer = ({
   const handleDelete = useCallback(() => {
     if (!credential) return;
     Modal.confirm({
-      title: t('personalCredential.deleteModal.title'), icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
-      content: t('personalCredential.deleteModal.confirmMessage'), okText: t('common.confirm'), cancelText: t('common.cancel'), okButtonProps: { type: 'danger' },
+      title: t('personalCredential.deleteModal.title'),      content: t('personalCredential.deleteModal.confirmMessage'), okText: t('common.confirm'), cancelText: t('common.cancel'), okButtonProps: { type: 'danger' },
       onOk: async () => { await new Promise((resolve) => setTimeout(resolve, 500)); Toast.success(t('personalCredential.deleteModal.success')); onDelete(credential); onClose(); },
     });
   }, [credential, t, onDelete, onClose]);
 
   const handleUnlinkCredential = useCallback((linkedCredential: LinkedCredential) => {
     Modal.confirm({
-      title: t('personalCredential.linkedCredentials.unlinkModal.title'), icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
-      content: t('personalCredential.linkedCredentials.unlinkModal.content', { name: linkedCredential.credential_name }),
+      title: t('personalCredential.linkedCredentials.unlinkModal.title'),      content: t('personalCredential.linkedCredentials.unlinkModal.content', { name: linkedCredential.credential_name }),
       okText: t('common.confirm'), cancelText: t('common.cancel'), okButtonProps: { type: 'danger' },
       onOk: async () => {
         await new Promise((resolve) => setTimeout(resolve, 500));

@@ -16,7 +16,7 @@ import {
 } from '@douyinfe/semi-ui';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
-import { Link, Maximize2, Minimize2, Trash2, Unlink, X } from 'lucide-react';
+import { Link, Maximize2, Minimize2, Unlink, X } from 'lucide-react';
 import type { PersonalCredential } from '../../index';
 
 import './index.less';
@@ -145,9 +145,7 @@ const LinkedCredentialsDrawer = ({
   // 解除关联
   const handleUnlink = (record: LinkedCredential) => {
     Modal.confirm({
-      title: t('personalCredential.linkedCredentials.unlinkConfirmTitle'),
-      icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
-      content: t('personalCredential.linkedCredentials.unlinkConfirmContent', { name: record.credential_name }),
+      title: t('personalCredential.linkedCredentials.unlinkConfirmTitle'),      content: t('personalCredential.linkedCredentials.unlinkConfirmContent', { name: record.credential_name }),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
       okButtonProps: { type: 'danger' },

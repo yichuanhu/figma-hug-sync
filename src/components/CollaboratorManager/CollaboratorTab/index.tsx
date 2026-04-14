@@ -11,7 +11,7 @@ import {
   Popover,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
-import { MinusCircle, Network, User, UserPlus } from 'lucide-react';
+import { Network, User, UserPlus } from 'lucide-react';
 import type {
   AssetCollaborator,
   CollaboratorAssetType,
@@ -114,9 +114,7 @@ const CollaboratorTab = ({
     (record: AssetCollaborator) => {
       const cascadeInfo = canCascade && cascadeCount > 0;
       Modal.confirm({
-        title: t('collaborator.removeConfirm.title'),
-        icon: <MinusCircle size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
-        content: cascadeInfo
+        title: t('collaborator.removeConfirm.title'),        content: cascadeInfo
           ? t('collaborator.removeConfirm.contentWithCascade', {
               name: record.collaborator_name,
               count: cascadeCount,

@@ -304,9 +304,7 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
   // 删除参数
   const handleDelete = (record: LYParameterResponse) => {
     Modal.confirm({
-      title: t('parameter.deleteModal.title'),
-      icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
-      content: (
+      title: t('parameter.deleteModal.title'),      content: (
         <div>
           <div>{t('parameter.deleteModal.confirmMessage', { name: record.parameter_name })}</div>
           {record.is_published && (

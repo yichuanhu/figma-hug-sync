@@ -21,7 +21,7 @@ import {
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
-import { ChevronLeft, Ellipsis, PlayCircle, RefreshCw, Search, Trash2 } from 'lucide-react';
+import { ChevronLeft, Ellipsis, PlayCircle, RefreshCw, Trash2 } from 'lucide-react';
 import { debounce } from 'lodash';
 import type {
   LYQueueMessageResponse,
@@ -331,9 +331,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
   // 删除消息
   const handleDelete = (record: LYQueueMessageResponse) => {
     Modal.confirm({
-      title: t('queueMessage.deleteModal.title'),
-      icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
-      content: t('queueMessage.deleteModal.confirmMessage'),
+      title: t('queueMessage.deleteModal.title'),      content: t('queueMessage.deleteModal.confirmMessage'),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
       okButtonProps: { type: 'danger' },
@@ -353,9 +351,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
     }
 
     Modal.confirm({
-      title: t('queueMessage.batch.deleteTitle'),
-      icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
-      content: t('queueMessage.batch.deleteConfirm', { count: selectedRowKeys.length }),
+      title: t('queueMessage.batch.deleteTitle'),      content: t('queueMessage.batch.deleteConfirm', { count: selectedRowKeys.length }),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
       okButtonProps: { type: 'danger' },

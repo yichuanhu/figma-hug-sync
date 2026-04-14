@@ -23,7 +23,7 @@ import FilterPopover from '@/components/FilterPopover';
 import DepartmentSelect from '@/components/DepartmentSelect';
 import CreateTaskModal from '../components/CreateTaskModal';
 import TaskDetailDrawer from '../components/TaskDetailDrawer';
-import { Bot, ClipboardClock, Component, Ellipsis, MinusCircle, Monitor, PlayCircle, Plus, RefreshCw, Trash2, UserPlus, XCircle } from 'lucide-react';
+import { Bot, ClipboardClock, Component, Ellipsis, MinusCircle, PlayCircle, Plus, RefreshCw, UserPlus, XCircle } from 'lucide-react';
 import type { 
   LYTaskResponse, 
   GetTasksParams, 
@@ -416,9 +416,7 @@ const TaskManagementPage = () => {
     }
 
     Modal.confirm({
-      title: t('task.cancelModal.title'),
-      icon: <XCircle size={16} strokeWidth={2} />,
-      content: (
+      title: t('task.cancelModal.title'),      content: (
         <>
           <div>{t('task.cancelModal.confirmMessage', { taskId: task.task_id })}</div>
           <div style={{ color: 'var(--semi-color-text-2)', marginTop: 8 }}>
@@ -452,9 +450,7 @@ const TaskManagementPage = () => {
     }
 
     Modal.confirm({
-      title: t('task.stopModal.title'),
-      icon: <MinusCircle size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
-      content: (
+      title: t('task.stopModal.title'),      content: (
         <>
           <div>{t('task.stopModal.confirmMessage', { taskId: task.task_id })}</div>
           <div style={{ color: 'var(--semi-color-text-2)', marginTop: 8 }}>
@@ -488,9 +484,7 @@ const TaskManagementPage = () => {
     }
 
     Modal.confirm({
-      title: t('task.retryModal.title'),
-      icon: <PlayCircle size={16} strokeWidth={2} style={{ color: 'var(--semi-color-primary)' }} />,
-      content: (
+      title: t('task.retryModal.title'),      content: (
         <>
           <div>{t('task.retryModal.confirmMessage', { taskId: task.task_id })}</div>
           <div style={{ color: 'var(--semi-color-text-2)', marginTop: 8 }}>

@@ -313,9 +313,7 @@ const ProcessDetailDrawer = ({
     }
     Modal.confirm({
       title: t('development.processDevelopment.detail.versionList.deleteConfirmTitle'),
-      content: t('development.processDevelopment.detail.versionList.deleteConfirmContent', { version: version.version }),
-      icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
-      okType: 'danger',
+      content: t('development.processDevelopment.detail.versionList.deleteConfirmContent', { version: version.version }),      okType: 'danger',
       onOk: () => {
         setVersionData(prevData => prevData.filter(v => v.id !== version.id));
         if (selectedVersionId === version.id) {

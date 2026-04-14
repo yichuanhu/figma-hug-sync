@@ -21,7 +21,7 @@ import type {
 } from '@/api';
 
 import './index.less';
-import { ArrowLeft, Info } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 
 const { Title, Text } = Typography;
 
@@ -354,9 +354,7 @@ const CreateReleasePage: React.FC = () => {
   const handleCancel = () => {
     if (hasContent) {
       Modal.confirm({
-        title: t('release.create.exitConfirm.title'),
-        icon: <Info size={16} strokeWidth={2} />,
-        content: t('release.create.exitConfirm.content'),
+        title: t('release.create.exitConfirm.title'),        content: t('release.create.exitConfirm.content'),
         okText: t('release.create.exitConfirm.confirm'),
         cancelText: t('release.create.exitConfirm.cancel'),
         onOk: () => {

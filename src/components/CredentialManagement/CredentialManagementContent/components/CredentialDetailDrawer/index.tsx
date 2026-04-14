@@ -202,9 +202,7 @@ const CredentialDetailDrawer = ({
   const handleDelete = () => {
     if (!credential) return;
     Modal.confirm({
-      title: t('credential.deleteModal.title'),
-      icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
-      content: (
+      title: t('credential.deleteModal.title'),      content: (
         <div>
           <div>{t('credential.deleteModal.confirmMessage', { name: credential.credential_name })}</div>
           {credential.is_published && (

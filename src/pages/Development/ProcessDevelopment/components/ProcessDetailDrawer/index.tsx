@@ -25,7 +25,7 @@ import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 
 import { getDepartmentName } from '@/mocks/departmentData';
 import './index.less';
-import { ExternalLink, HelpCircle, Link, Pencil, PlayCircle, Trash2, Upload } from 'lucide-react';
+import { ExternalLink, Link, Pencil, PlayCircle, Trash2, Upload } from 'lucide-react';
 
 const { Title, Text } = Typography;
 
@@ -278,9 +278,7 @@ const ProcessDetailDrawer = ({
     }
     Modal.confirm({
       title: t('development.processDevelopment.detail.versionList.deleteConfirmTitle'),
-      content: t('development.processDevelopment.detail.versionList.deleteConfirmContent', { version: version.version }),
-      icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
-      okType: 'danger',
+      content: t('development.processDevelopment.detail.versionList.deleteConfirmContent', { version: version.version }),      okType: 'danger',
       onOk: () => {
         setVersionData(prev => prev.filter(v => v.id !== version.id));
         if (selectedVersionId === version.id) setSelectedVersionId(null);

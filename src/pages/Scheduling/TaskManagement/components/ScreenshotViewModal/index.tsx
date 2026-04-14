@@ -181,9 +181,7 @@ const ScreenshotViewModal = ({
   const handleDeleteSingle = useCallback((id: string, e?: React.MouseEvent) => {
     e?.stopPropagation();
     Modal.confirm({
-      title: t('screenshot.deleteConfirm.title'),
-      icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
-      content: t('screenshot.deleteConfirm.content'),
+      title: t('screenshot.deleteConfirm.title'),      content: t('screenshot.deleteConfirm.content'),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
       okButtonProps: { type: 'danger' },
@@ -200,9 +198,7 @@ const ScreenshotViewModal = ({
     if (!currentScreenshot) return;
     
     Modal.confirm({
-      title: t('screenshot.deleteConfirm.title'),
-      icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
-      content: t('screenshot.deleteConfirm.content'),
+      title: t('screenshot.deleteConfirm.title'),      content: t('screenshot.deleteConfirm.content'),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
       okButtonProps: { type: 'danger' },
