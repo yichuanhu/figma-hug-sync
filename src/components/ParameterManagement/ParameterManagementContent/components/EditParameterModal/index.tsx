@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Modal, Form, Button, Toast, Radio } from '@douyinfe/semi-ui';
 import type { LYParameterResponse, ParameterType } from '@/api/index';
 import DepartmentSelect from '@/components/DepartmentSelect';
+import OwnerSelect from '@/components/OwnerSelect';
 
 import './index.less';
 
@@ -25,6 +26,7 @@ const EditParameterModal = ({
   const [loading, setLoading] = useState(false);
   const [parameterType, setParameterType] = useState<ParameterType>(1);
   const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>(parameter?.owning_department_id || undefined);
+  const [ownerId, setOwnerId] = useState<string | undefined>(parameter?.owner_id || undefined);
 
   useEffect(() => {
     if (parameter) {
@@ -186,7 +188,7 @@ const EditParameterModal = ({
           </Form.Slot>
 
           <Form.Slot label={t('common.owner')}>
-            <Form.Input field="__owner_readonly" noLabel initValue={parameter?.owner_name || '-'} disabled style={{ width: '100%' }} />
+            <OwnerSelect value={ownerId} onChange={setOwnerId} />
           </Form.Slot>
 
           <div className="edit-parameter-modal-footer">

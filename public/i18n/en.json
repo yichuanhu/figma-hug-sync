@@ -58,6 +58,7 @@
     "owner": "Owner",
     "owningDepartmentPlaceholder": "Select owning department",
     "owningDepartmentRequired": "Please select owning department",
+    "ownerPlaceholder": "Select owner",
     "filterProcess": "Filter Process",
     "filterStatus": "Filter Status",
     "filterQueue": "Filter Queue",

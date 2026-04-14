@@ -10,6 +10,7 @@ import {
 } from '@douyinfe/semi-ui';
 import type { LYWorkerResponse } from '@/api';
 import DepartmentSelect from '@/components/DepartmentSelect';
+import OwnerSelect from '@/components/OwnerSelect';
 import './index.less';
 
 interface EditWorkerModalProps {
@@ -28,6 +29,7 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
   const [desktopType, setDesktopType] = useState<string>('Console');
   const [configChanged, setConfigChanged] = useState(false);
   const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>(workerData?.owning_department_id || undefined);
+  const [ownerId, setOwnerId] = useState<string | undefined>(workerData?.owner_id || undefined);
 
   const originalConfig = useMemo(() => ({
     desktopType: workerData?.desktop_type || 'Console',
@@ -169,7 +171,7 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
             </Form.Slot>
 
             <Form.Slot label={t('common.owner')}>
-              <Form.Input field="__owner_readonly" noLabel initValue={workerData?.owner_name || '-'} disabled style={{ width: '100%' }} />
+              <OwnerSelect value={ownerId} onChange={setOwnerId} />
             </Form.Slot>
 
             <Form.TextArea

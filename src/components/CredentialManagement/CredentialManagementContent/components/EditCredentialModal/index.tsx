@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Modal, Form, Button, Toast } from '@douyinfe/semi-ui';
 import type { LYCredentialResponse } from '@/api/index';
 import DepartmentSelect from '@/components/DepartmentSelect';
+import OwnerSelect from '@/components/OwnerSelect';
 
 import './index.less';
 
@@ -24,6 +25,7 @@ const EditCredentialModal = ({
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>(credential?.owning_department_id || undefined);
+  const [ownerId, setOwnerId] = useState<string | undefined>(credential?.owner_id || undefined);
 
   // 获取当前入口的凭据值
   const getCurrentValue = () => {
@@ -170,7 +172,7 @@ const EditCredentialModal = ({
         </Form.Slot>
 
         <Form.Slot label={t('common.owner')}>
-          <Form.Input field="__owner_readonly" noLabel initValue={credential?.owner_name || '-'} disabled style={{ width: '100%' }} />
+          <OwnerSelect value={ownerId} onChange={setOwnerId} />
         </Form.Slot>
 
         <div className="edit-credential-modal-footer">

@@ -18,6 +18,7 @@ import type {
   TaskPriority,
 } from '@/api';
 import './index.less';
+import OwnerSelect from '@/components/OwnerSelect';
 import { HelpCircle } from 'lucide-react';
 
 const { Text } = Typography;
@@ -123,6 +124,7 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
   const [formApi, setFormApi] = useState<any>(null);
   const [selectedProcess, setSelectedProcess] = useState<LYProcessActiveVersionResponse | null>(null);
   const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);
+  const [ownerId, setOwnerId] = useState<string | undefined>(template?.owner_id || undefined);
 
   // Execution target选项
   const targetOptions = useMemo(() => {
@@ -377,7 +379,7 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
                   rows={3}
                 />
                 <Form.Slot label={t('common.owner')}>
-                  <Form.Input field="__owner_readonly" noLabel initValue={template?.owner_name || '-'} disabled style={{ width: '100%' }} />
+                  <OwnerSelect value={ownerId} onChange={setOwnerId} />
                 </Form.Slot>
               </div>
 

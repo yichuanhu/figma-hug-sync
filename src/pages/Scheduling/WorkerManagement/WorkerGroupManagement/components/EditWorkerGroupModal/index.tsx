@@ -3,6 +3,7 @@ import { Modal, Form, Toast } from '@douyinfe/semi-ui';
 import { useTranslation } from 'react-i18next';
 import type { LYWorkerGroupResponse, LYUpdateWorkerGroupRequest } from '@/api';
 import DepartmentSelect from '@/components/DepartmentSelect';
+import OwnerSelect from '@/components/OwnerSelect';
 import './index.less';
 
 interface EditWorkerGroupModalProps {
@@ -22,6 +23,7 @@ const EditWorkerGroupModal: React.FC<EditWorkerGroupModalProps> = ({
   const [loading, setLoading] = useState(false);
   const [formApi, setFormApi] = useState<any>(null);
   const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>(groupData?.owning_department_id || undefined);
+  const [ownerId, setOwnerId] = useState<string | undefined>(groupData?.owner_id || undefined);
 
   useEffect(() => {
     if (visible && groupData && formApi) {
@@ -110,7 +112,7 @@ const EditWorkerGroupModal: React.FC<EditWorkerGroupModalProps> = ({
           </Form.Slot>
 
           <Form.Slot label={t('common.owner')}>
-            <Form.Input field="__owner_readonly" noLabel initValue={groupData?.owner_name || '-'} disabled style={{ width: '100%' }} />
+            <OwnerSelect value={ownerId} onChange={setOwnerId} />
           </Form.Slot>
           
           <Form.TextArea

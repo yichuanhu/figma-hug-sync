@@ -43,6 +43,7 @@
     "owner": "归属者",
     "owningDepartmentPlaceholder": "请选择归属部门",
     "owningDepartmentRequired": "请选择归属部门",
+    "ownerPlaceholder": "请选择归属者",
     "filterProcess": "筛选流程",
     "filterStatus": "筛选状态",
     "filterQueue": "筛选队列",

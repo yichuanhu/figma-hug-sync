@@ -693,7 +693,7 @@ export interface OrgUser {
 }
 
 /** 组织架构所有用户（与 CollaboratorAddModal 中的 mock 数据保持一致） */
-const ALL_ORG_USERS: OrgUser[] = [
+export const ALL_ORG_USERS: OrgUser[] = [
   { id: 'user-ceo-001', name: 'Michael Chen', department: 'CEO Office' },
   { id: 'user-n-001', name: 'David Liu', department: 'North China Regional Solution and Delivery Team' },
   { id: 'user-n-002', name: 'Wenjie Rong', department: 'North China Regional Solution and Delivery Team' },

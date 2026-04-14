@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Modal, Form, Button, Toast } from '@douyinfe/semi-ui';
 import type { LYQueueResponse } from '@/api/index';
 import DepartmentSelect from '@/components/DepartmentSelect';
+import OwnerSelect from '@/components/OwnerSelect';
 
 import './index.less';
 
@@ -22,6 +23,7 @@ const EditQueueModal = ({
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>(queue?.owning_department_id || undefined);
+  const [ownerId, setOwnerId] = useState<string | undefined>(queue?.owner_id || undefined);
 
   const handleSubmit = async (values: {
     description?: string;
@@ -92,7 +94,7 @@ const EditQueueModal = ({
         </Form.Slot>
 
         <Form.Slot label={t('common.owner')}>
-          <Form.Input field="__owner_readonly" noLabel initValue={queue?.owner_name || '-'} disabled style={{ width: '100%' }} />
+          <OwnerSelect value={ownerId} onChange={setOwnerId} />
         </Form.Slot>
 
         <div className="edit-queue-modal-footer">
