@@ -411,6 +411,9 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
                   className="create-task-modal-select-full"
                   onChange={(v) => handleTemplateChange(v as string | null)}
                 />
+                <Form.Slot label={t('common.owner')}>
+                  <Form.Input field="__owner_readonly" noLabel initValue={MOCK_CURRENT_USER.name} disabled style={{ width: '100%' }} />
+                </Form.Slot>
               </div>
 
               {/* Process config */}
@@ -430,20 +433,11 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
                   ]}
                   onChange={(v) => handleProcessChange(v as string)}
                 />
-                <div className="semi-form-field" style={{ marginBottom: 12 }}>
-                  <label className="semi-form-field-label">
-                    <span className="semi-form-field-label-text">{t('common.owningDepartment')}</span>
-                  </label>
-                  <Text type="tertiary">
-                    {selectedProcess?.owning_department_name || (selectedProcess ? MOCK_CURRENT_USER.department_name : t('task.createModal.selectProcessFirst'))}
-                  </Text>
-                </div>
-                <div className="semi-form-field" style={{ marginBottom: 12 }}>
-                  <label className="semi-form-field-label">
-                    <span className="semi-form-field-label-text">{t('common.owner')}</span>
-                  </label>
-                  <Text>{MOCK_CURRENT_USER.name}</Text>
-                </div>
+                {selectedProcess && (
+                  <Form.Slot label={t('common.owningDepartment')}>
+                    <Form.Input field="__process_dept_readonly" noLabel initValue={selectedProcess.owning_department_name || '-'} disabled style={{ width: '100%' }} />
+                  </Form.Slot>
+                )}
               </div>
 
               {/* Execution target */}
