@@ -138,6 +138,7 @@ const mockTemplates = [
 
 import { TIMEZONE_GROUPS } from '@/constants/timezones';
 import { HelpCircle, Inbox } from 'lucide-react';
+import DepartmentSelect from '@/components/DepartmentSelect';
 
 // Already存in 's  TriggerName (模拟)
 const existingTriggerNames = ['Order Queue Trigger', 'Approval Queue Trigger'];
@@ -151,6 +152,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
   // 第Tue步: Task config
   const [selectedProcess, setSelectedProcess] = useState<LYProcessActiveVersionResponse | null>(null);
   const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);
+  const [owningDepartmentId, setOwningDepartmentId] = useState<string>('');
 
   // 第Wed步: Queue Trigger Config
   const [enableWorkCalendar, setEnableWorkCalendar] = useState(false);

@@ -148,6 +148,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
   // 第Tue步: Task config
   const [selectedProcess, setSelectedProcess] = useState<LYProcessActiveVersionResponse | null>(null);
   const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);
+  const [owningDepartmentId, setOwningDepartmentId] = useState<string>('');
 
   // 第Wed步: Trigger Rules
   const [ruleType, setRuleType] = useState<TriggerRuleType>('BASIC');
@@ -569,6 +570,16 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
           ]}
           onChange={(v) => handleProcessChange(v as string)}
         />
+        {selectedProcess && (
+          <>
+            <Form.Slot label={t('common.owningDepartment')}>
+              <Form.Input field="__process_dept_readonly" noLabel initValue={selectedProcess.owning_department_name || '-'} disabled style={{ width: '100%' }} />
+            </Form.Slot>
+            <Form.Slot label={t('common.owner')}>
+              <Form.Input field="__process_owner_readonly" noLabel initValue={selectedProcess.owner_name || '-'} disabled style={{ width: '100%' }} />
+            </Form.Slot>
+          </>
+        )}
       </div>
 
       {/* Execution target */}
