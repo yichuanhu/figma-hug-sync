@@ -18,6 +18,7 @@ import type {
   TaskPriority,
 } from '@/api';
 import './index.less';
+import OwnerSelect from '@/components/OwnerSelect';
 import { HelpCircle } from 'lucide-react';
 
 const { Text } = Typography;

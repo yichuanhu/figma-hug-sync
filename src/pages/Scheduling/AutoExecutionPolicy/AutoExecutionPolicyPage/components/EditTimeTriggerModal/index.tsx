@@ -24,6 +24,7 @@ import type {
 } from '@/api';
 import './index.less';
 import DepartmentSelect from '@/components/DepartmentSelect';
+import OwnerSelect from '@/components/OwnerSelect';
 import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 import { HelpCircle, Inbox } from 'lucide-react';
 
