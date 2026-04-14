@@ -14,6 +14,7 @@ import {
 import OwnerSelect from '@/components/OwnerSelect';
 import TaskForm, { TaskFormSource } from '@/components/TaskForm';
 import type { TaskFormRef } from '@/components/TaskForm';
+import type { LYExecutionTemplateResponse } from '@/api';
 import { TIMEZONE_GROUPS } from '@/constants/timezones';
 import { getWorkCalendarOptions } from '@/mocks/workCalendar';
 import './index.less';
@@ -34,6 +35,25 @@ const mockQueues = [
 
 // 已存在的触发器名（模拟）
 const existingTriggerNames = ['Order Queue Trigger', 'Approval Queue Trigger'];
+
+// Mock 模板列表
+const mockTemplates: LYExecutionTemplateResponse[] = [
+  {
+    template_id: 'tpl-001',
+    template_name: 'Order Processing Default Template',
+    description: 'Process orders with default config',
+    process_id: 'proc-001',
+    process_name: 'Auto Order Processing',
+    execution_target_type: 'BOT_GROUP',
+    execution_target_id: 'group-001',
+    execution_target_name: 'Order Processing Group',
+    priority: 'MEDIUM',
+    max_execution_duration: 3600,
+    validity_days: 7,
+    enable_recording: true,
+    input_parameters: { targetUrl: 'https://orders.example.com', maxCount: 50 },
+  },
+];
 
 const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTriggerModalProps) => {
   const { t } = useTranslation();
