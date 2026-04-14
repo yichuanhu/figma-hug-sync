@@ -577,6 +577,15 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
   const renderStep0Content = () => (
     <div className="edit-time-trigger-modal-section">
       <div className="edit-time-trigger-modal-section-title">{t('timeTrigger.createModal.basicSection')}</div>
+
+      <Form.Slot label={t('common.owningDepartment')}>
+        <span>{trigger?.owning_department_name || '-'}</span>
+      </Form.Slot>
+
+      <Form.Slot label={t('common.owner')}>
+        <span>{trigger?.owner_name || '-'}</span>
+      </Form.Slot>
+
       <Form.Input
         field="triggerName"
         label={t('timeTrigger.fields.name')}

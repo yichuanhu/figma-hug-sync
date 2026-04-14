@@ -9,6 +9,7 @@ import {
   Banner,
 } from '@douyinfe/semi-ui';
 import type { LYWorkerResponse } from '@/api';
+import DepartmentSelect from '@/components/DepartmentSelect';
 import './index.less';
 
 interface EditWorkerModalProps {
@@ -26,6 +27,7 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
   const [loading, setLoading] = useState(false);
   const [desktopType, setDesktopType] = useState<string>('Console');
   const [configChanged, setConfigChanged] = useState(false);
+  const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>(workerData?.owning_department_id || undefined);
 
   const originalConfig = useMemo(() => ({
     desktopType: workerData?.desktop_type || 'Console',
@@ -145,6 +147,18 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
         <div className="edit-worker-modal-content">
           <div className="edit-worker-modal-section">
             <div className="edit-worker-modal-section-title">{t('worker.create.basicInfo')}</div>
+
+            <Form.Slot label={t('common.owningDepartment')}>
+              <DepartmentSelect
+                value={owningDepartmentId}
+                onChange={setOwningDepartmentId}
+              />
+            </Form.Slot>
+
+            <Form.Slot label={t('common.owner')}>
+              <span>{workerData?.owner_name || '-'}</span>
+            </Form.Slot>
+
             <Form.Input
               field="name"
               label={t('worker.detail.fields.workerName')}

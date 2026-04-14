@@ -348,6 +348,15 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
                 <div className="edit-template-modal-section-title">
                   {t('template.createModal.basicInfo')}
                 </div>
+
+                <Form.Slot label={t('common.owningDepartment')}>
+                  <span>{template?.owning_department_name || '-'}</span>
+                </Form.Slot>
+
+                <Form.Slot label={t('common.owner')}>
+                  <span>{template?.owner_name || '-'}</span>
+                </Form.Slot>
+
                 <Form.Input
                   field="templateName"
                   label={t('template.fields.name')}

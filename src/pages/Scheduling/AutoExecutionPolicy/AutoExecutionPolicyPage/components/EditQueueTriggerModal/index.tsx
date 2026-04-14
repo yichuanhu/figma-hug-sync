@@ -446,6 +446,15 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
   const renderStep0Content = () => (
     <div className="edit-queue-trigger-modal-section">
       <div className="edit-queue-trigger-modal-section-title">{t('queueTrigger.createModal.basicSection')}</div>
+
+      <Form.Slot label={t('common.owningDepartment')}>
+        <span>{trigger?.owning_department_name || '-'}</span>
+      </Form.Slot>
+
+      <Form.Slot label={t('common.owner')}>
+        <span>{trigger?.owner_name || '-'}</span>
+      </Form.Slot>
+
       <Form.Input
         field="triggerName"
         label={t('queueTrigger.fields.name')}

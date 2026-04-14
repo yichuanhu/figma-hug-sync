@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Form, Toast, Button } from '@douyinfe/semi-ui';
 import type { LYUpdateProcessRequest, LYProcessResponse } from '@/api';
+import DepartmentSelect from '@/components/DepartmentSelect';
 import './index.less';
 
 interface EditProcessModalProps {
@@ -14,6 +15,7 @@ interface EditProcessModalProps {
 const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditProcessModalProps) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
+  const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>(processData?.owning_department_id || undefined);
 
   const existingProcessNames = ['订单自动处理流程', '财务报销审批流程', '人事入职流程'];
 
@@ -122,6 +124,17 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
             { max: 2000, message: t('development.processDevelopment.createModal.validation.descriptionLengthError') },
           ]}
         />
+
+        <Form.Slot label={t('common.owningDepartment')}>
+          <DepartmentSelect
+            value={owningDepartmentId}
+            onChange={setOwningDepartmentId}
+          />
+        </Form.Slot>
+
+        <Form.Slot label={t('common.owner')}>
+          <span>{processData?.owner_name || '-'}</span>
+        </Form.Slot>
 
         <div className="edit-process-modal-footer">
           <Button theme="light" onClick={onCancel}>
