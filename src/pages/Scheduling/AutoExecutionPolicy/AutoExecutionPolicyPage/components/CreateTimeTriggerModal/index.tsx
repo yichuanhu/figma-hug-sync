@@ -145,7 +145,17 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
     }
   }, [visible]);
 
-  // 第二步预置表单项：模板选择 + 归属者
+  // 模板选择回调
+  const handleTemplateChange = useCallback((templateId: string | null) => {
+    if (templateId && taskRef.current) {
+      const template = mockTemplates.find((t) => t.template_id === templateId);
+      if (template) {
+        taskRef.current.fillTemplate(template);
+      }
+    }
+  }, []);
+
+  // 第二步预置表单项：模板选择（不含归属者）
   const taskPreFormItem = (
     <div className="task-template-section">
       <div className="task-template-section-title">{t('task.createModal.selectTemplate')}</div>
@@ -157,10 +167,8 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
         showClear
         filter
         className="task-template-select-full"
+        onChange={(v) => handleTemplateChange(v as string | null)}
       />
-      <Form.Slot label={t('common.owner')}>
-        <OwnerSelect value={ownerId} onChange={setOwnerId} />
-      </Form.Slot>
     </div>
   );
 

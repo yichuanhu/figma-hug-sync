@@ -70,6 +70,16 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
     }
   }, [t, onSuccess]);
 
+  // 模板选择回调
+  const handleTemplateChange = useCallback((templateId: string | null) => {
+    if (templateId && taskRef.current) {
+      const template = mockTemplates.find((t) => t.template_id === templateId);
+      if (template) {
+        taskRef.current.fillTemplate(template);
+      }
+    }
+  }, []);
+
   // 预置表单项：模板选择 + 归属者
   const preFormItem = (
     <div className="task-template-section">
@@ -82,6 +92,7 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
         showClear
         filter
         className="task-template-select-full"
+        onChange={(v) => handleTemplateChange(v as string | null)}
       />
       <Form.Slot label={t('common.owner')}>
         <OwnerSelect value={ownerId} onChange={setOwnerId} />
