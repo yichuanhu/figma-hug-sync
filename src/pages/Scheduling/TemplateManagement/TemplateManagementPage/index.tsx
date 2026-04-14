@@ -280,8 +280,8 @@ const TemplateManagementPage = () => {
           (tpl.description && tpl.description.toLowerCase().includes(kw))
       );
     }
-    if (queryParams.process_id) {
-      filtered = filtered.filter((tpl) => tpl.process_id === queryParams.process_id);
+    if (queryParams.process_id && queryParams.process_id.length > 0) {
+      filtered = filtered.filter((tpl) => queryParams.process_id!.includes(tpl.process_id));
     }
     
     const paged = filtered.slice(newOffset, newOffset + pageSize);
