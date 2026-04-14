@@ -175,7 +175,7 @@ const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalPr
               <DepartmentSelect value={owningDepartmentId} onChange={setOwningDepartmentId} />
             </Form.Slot>
             <Form.Slot label={t('common.owner')}>
-              <span>{MOCK_CURRENT_USER.name}</span>
+              <Form.Input field="__owner_readonly" noLabel initValue={MOCK_CURRENT_USER.name} disabled style={{ width: '100%' }} />
             </Form.Slot>
             <Form.TextArea
               field="description"

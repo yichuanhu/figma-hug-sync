@@ -156,7 +156,7 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
             </Form.Slot>
 
             <Form.Slot label={t('common.owner')}>
-              <span>{workerData?.owner_name || '-'}</span>
+              <Form.Input field="__owner_readonly" noLabel initValue={workerData?.owner_name || '-'} disabled style={{ width: '100%' }} />
             </Form.Slot>
 
             <Form.Input
