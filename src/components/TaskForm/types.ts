@@ -52,6 +52,8 @@ export interface LYProcessResponse {
   description?: string | null;
   status: string;
   current_version_id?: string | null;
+  owning_department_id?: string | null;
+  owning_department_name?: string | null;
 }
 
 // 流程版本详情

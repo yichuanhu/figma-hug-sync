@@ -15,6 +15,7 @@ import type { TaskFormRef } from '@/components/TaskForm';
 import type {
   TriggerRuleType,
   BasicFrequencyType,
+  LYExecutionTemplateResponse,
 } from '@/api';
 import './index.less';
 
@@ -28,6 +29,25 @@ import { getWorkCalendarOptions } from '@/mocks/workCalendar';
 
 // 已存在的触发器名（模拟）
 const existingTriggerNames = ['Daily Order Sync', 'Weekly Report Generation'];
+
+// Mock 模板列表
+const mockTemplates: LYExecutionTemplateResponse[] = [
+  {
+    template_id: 'tpl-001',
+    template_name: 'Order Processing Default Template',
+    description: 'Process orders with default config',
+    process_id: 'proc-001',
+    process_name: 'Auto Order Processing',
+    execution_target_type: 'BOT_GROUP',
+    execution_target_id: 'group-001',
+    execution_target_name: 'Order Processing Group',
+    priority: 'MEDIUM',
+    max_execution_duration: 3600,
+    validity_days: 7,
+    enable_recording: true,
+    input_parameters: { targetUrl: 'https://orders.example.com', maxCount: 50 },
+  },
+];
 
 const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTriggerModalProps) => {
   const { t } = useTranslation();
@@ -124,6 +144,25 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
       taskRef.current.init();
     }
   }, [visible]);
+
+  // 第二步预置表单项：模板选择 + 归属者
+  const taskPreFormItem = (
+    <div className="task-template-section">
+      <div className="task-template-section-title">{t('task.createModal.selectTemplate')}</div>
+      <Form.Select
+        field="templateId"
+        noLabel
+        placeholder={t('task.createModal.templatePlaceholder')}
+        optionList={mockTemplates.map((tpl) => ({ value: tpl.template_id, label: tpl.template_name }))}
+        showClear
+        filter
+        className="task-template-select-full"
+      />
+      <Form.Slot label={t('common.owner')}>
+        <OwnerSelect value={ownerId} onChange={setOwnerId} />
+      </Form.Slot>
+    </div>
+  );
 
   const validateTriggerName = (value: string) => {
     if (value && existingTriggerNames.includes(value.trim())) {
@@ -306,6 +345,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
           taskRef={taskRef}
           showParamsHandle={setShowRightPanel}
           source={TaskFormSource.TimerTrigger}
+          preFormItem={taskPreFormItem}
           showRightPanel={showRightPanel}
         />
       )}

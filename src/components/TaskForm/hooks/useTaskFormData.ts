@@ -18,6 +18,8 @@ const mockProcessList: LYProcessResponse[] = [
     description: 'Automated order processing workflow',
     status: 'PUBLISHED',
     current_version_id: 'ver-001',
+    owning_department_id: 'dept-002',
+    owning_department_name: 'Operations Department',
   },
   {
     id: 'proc-002',
@@ -25,6 +27,8 @@ const mockProcessList: LYProcessResponse[] = [
     description: 'Finance approval automation',
     status: 'PUBLISHED',
     current_version_id: 'ver-002',
+    owning_department_id: 'dept-003',
+    owning_department_name: 'Finance Department',
   },
   {
     id: 'proc-003',
@@ -32,6 +36,8 @@ const mockProcessList: LYProcessResponse[] = [
     description: 'HR onboarding process',
     status: 'PUBLISHED',
     current_version_id: 'ver-003',
+    owning_department_id: 'dept-004',
+    owning_department_name: 'Human Resources Department',
   },
   {
     id: 'proc-004',
@@ -39,6 +45,8 @@ const mockProcessList: LYProcessResponse[] = [
     description: 'Data collection and extraction',
     status: 'PUBLISHED',
     current_version_id: 'ver-004',
+    owning_department_id: 'dept-001',
+    owning_department_name: 'Technology Department',
   },
 ];
 

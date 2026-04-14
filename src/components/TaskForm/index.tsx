@@ -245,9 +245,11 @@ const TaskForm = (props: TaskFormProps) => {
           return;
         }
         setSelectedProcess(process);
+        // 自动填充归属部门
+        formApi?.setValue('owning_department_name', process.owning_department_name || '');
       }
     },
-    [processData, t]
+    [processData, t, formApi]
   );
 
   const renderSelectedItem = (optionNode: { label?: string; name?: string }) => {
@@ -330,6 +332,13 @@ const TaskForm = (props: TaskFormProps) => {
                   rules={[{ required: true, message: t('template.validation.processRequired') }]}
                   onChange={v => handleProcessChange(v as string)}
                   disabled={source === TaskFormSource.Process}
+                />
+                {/* 归属部门（只读，根据流程自动继承） */}
+                <Form.Input
+                  field="owning_department_name"
+                  label={t('common.owningDepartment')}
+                  placeholder="-"
+                  disabled
                 />
               </div>
 
