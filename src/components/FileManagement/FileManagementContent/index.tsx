@@ -534,7 +534,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
                 showClear
                 maxTagCount={1}
                 useNameAsValue
-                style={{ width: 'auto', minWidth: 120, maxWidth: 600 }}
+                style={{ width: 'auto', minWidth: 150, maxWidth: 600 }}
               />
               <FilterPopover
                 visible={filterPopoverVisible}
