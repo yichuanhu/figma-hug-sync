@@ -578,7 +578,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
                   setDepartmentFilter(val);
                   setQueryParams((prev) => ({ ...prev, offset: 0 }));
                 }}
-                placeholder={t('common.owningDepartmentPlaceholder')}
+                placeholder={t('common.filterDepartment')}
                 style={{ width: 'auto', minWidth: 120, maxWidth: 600 }}
                 maxTagCount={1}
                 showClear
