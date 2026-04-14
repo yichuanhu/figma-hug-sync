@@ -12,6 +12,7 @@ import {
 } from '@douyinfe/semi-ui';
 import type { LYWorkerResponse } from '@/api';
 import DepartmentSelect from '@/components/DepartmentSelect';
+import OwnerSelect from '@/components/OwnerSelect';
 import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 import './index.less';
 
@@ -175,7 +176,7 @@ const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalPr
               <DepartmentSelect value={owningDepartmentId} onChange={setOwningDepartmentId} />
             </Form.Slot>
             <Form.Slot label={t('common.owner')}>
-              <Form.Input field="__owner_readonly" noLabel initValue={MOCK_CURRENT_USER.name} disabled style={{ width: '100%' }} />
+              <OwnerSelect value={ownerId} onChange={setOwnerId} />
             </Form.Slot>
             <Form.TextArea
               field="description"

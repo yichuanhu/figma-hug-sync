@@ -533,7 +533,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
         rows={3}
       />
       <Form.Slot label={t('common.owner')}>
-        <Form.Input field="__owner_readonly" noLabel initValue={MOCK_CURRENT_USER.name} disabled style={{ width: '100%' }} />
+        <OwnerSelect value={ownerId} onChange={setOwnerId} />
       </Form.Slot>
     </div>
   );

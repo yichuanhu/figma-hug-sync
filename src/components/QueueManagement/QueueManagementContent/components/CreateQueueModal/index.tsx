@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Form, Button, Toast } from '@douyinfe/semi-ui';
 import DepartmentSelect from '@/components/DepartmentSelect';
+import OwnerSelect from '@/components/OwnerSelect';
 import './index.less';
 import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 
@@ -19,6 +20,7 @@ const CreateQueueModal = ({
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>(undefined);
+  const [ownerId, setOwnerId] = useState<string>(MOCK_CURRENT_USER.id);
 
   // 模拟已存在的队列名称
   const existingQueueNames = ['订单处理队列', '邮件发送队列', '数据同步队列'];
@@ -103,7 +105,7 @@ const CreateQueueModal = ({
         </Form.Slot>
 
         <Form.Slot label={t('common.owner')}>
-          <Form.Input field="__owner_readonly" noLabel initValue={MOCK_CURRENT_USER.name} disabled style={{ width: '100%' }} />
+          <OwnerSelect value={ownerId} onChange={setOwnerId} />
         </Form.Slot>
 
         <div className="create-queue-modal-footer">

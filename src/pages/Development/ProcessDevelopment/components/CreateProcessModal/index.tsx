@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DepartmentSelect from '@/components/DepartmentSelect';
+import OwnerSelect from '@/components/OwnerSelect';
 import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 import { Modal, Form, Toast, Button } from '@douyinfe/semi-ui';
 import type { LYCreateProcessRequest, LYProcessResponse } from '@/api';
@@ -147,7 +148,7 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
         </Form.Slot>
 
         <Form.Slot label={t('common.owner')}>
-          <Form.Input field="__owner_readonly" noLabel initValue={MOCK_CURRENT_USER.name} disabled style={{ width: '100%' }} />
+          <OwnerSelect value={ownerId} onChange={setOwnerId} />
         </Form.Slot>
 
         <div className="create-process-modal-footer">

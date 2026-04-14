@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TreeSelect, Typography } from '@douyinfe/semi-ui';
-import { User, Building2 } from 'lucide-react';
+import { User } from 'lucide-react';
 import { departmentTree, DeptTreeNode } from '@/mocks/departmentData';
 import { ALL_ORG_USERS, OrgUser } from '@/components/CollaboratorManager/mockData';
 
@@ -129,10 +129,8 @@ const OwnerSelect = ({
         const isUser = (data as any)?.isUser;
         return (
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, width: '100%', minWidth: 0 }}>
-            {isUser ? (
+            {isUser && (
               <User size={14} style={{ flexShrink: 0, color: 'var(--semi-color-text-2)' }} />
-            ) : (
-              <Building2 size={14} style={{ flexShrink: 0, color: 'var(--semi-color-text-2)' }} />
             )}
             <Text
               ellipsis={{ showTooltip: true }}
