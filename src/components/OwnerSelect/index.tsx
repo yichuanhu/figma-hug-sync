@@ -20,6 +20,7 @@ interface TreeNode {
   label: string;
   disabled?: boolean;
   isLeaf?: boolean;
+  isUser?: boolean;
   children?: TreeNode[];
 }
 
