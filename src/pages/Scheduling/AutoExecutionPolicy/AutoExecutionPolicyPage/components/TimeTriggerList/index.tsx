@@ -527,7 +527,7 @@ const TimeTriggerList = () => {
               multiple
               maxTagCount={1}
               showClear
-              style={{ width: 200 }}
+              style={{ width: 'auto', minWidth: 120 }}
               optionList={mockProcesses.map((p) => ({
                 value: p.process_id,
                 label: p.process_name,
@@ -540,7 +540,7 @@ const TimeTriggerList = () => {
               multiple
               maxTagCount={1}
               showClear
-              style={{ width: 200 }}
+              style={{ width: 'auto', minWidth: 120 }}
               optionList={[
                 { value: 'ENABLED', label: t('timeTrigger.status.enabled') },
                 { value: 'DISABLED', label: t('timeTrigger.status.disabled') },

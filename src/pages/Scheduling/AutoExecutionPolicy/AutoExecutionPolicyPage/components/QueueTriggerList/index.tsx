@@ -518,7 +518,7 @@ const QueueTriggerList = () => {
               multiple
               maxTagCount={1}
               showClear
-              style={{ width: 200 }}
+              style={{ width: 'auto', minWidth: 120 }}
             />
             <Select
               placeholder={t('common.filterQueue')}
@@ -528,7 +528,7 @@ const QueueTriggerList = () => {
               multiple
               maxTagCount={1}
               showClear
-              style={{ width: 200 }}
+              style={{ width: 'auto', minWidth: 120 }}
             />
             <Select
               placeholder={t('common.filterStatus')}
@@ -541,7 +541,7 @@ const QueueTriggerList = () => {
               multiple
               maxTagCount={1}
               showClear
-              style={{ width: 200 }}
+              style={{ width: 'auto', minWidth: 120 }}
             />
             <DepartmentSelect
               placeholder={t('common.filterDepartment')}
