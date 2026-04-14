@@ -430,7 +430,7 @@ const TemplateManagementPage = () => {
 
   // departmentOptions removed - using DepartmentSelect with tree data
 
-  const hasFilters = queryParams.keyword || queryParams.process_id || queryParams.owning_department_name;
+  const hasFilters = queryParams.keyword || (queryParams.process_id && queryParams.process_id.length > 0) || queryParams.owning_department_name;
 
   return (
       <div className="template-management">
