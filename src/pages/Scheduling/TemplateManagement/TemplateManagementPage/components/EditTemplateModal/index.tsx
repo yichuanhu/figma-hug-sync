@@ -53,6 +53,8 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     process_name: 'Expense Reimbursement Approval',
     version_id: 'ver-002',
     version: 'v2.0.0',
+    owning_department_id: 'dept-finance',
+    owning_department_name: 'Finance Department',
     parameters: [
       { name: 'department', type: 'TEXT', required: true, description: 'Department name' },
       { name: 'approvalCredential', type: 'CREDENTIAL', required: true, description: 'Approval credential' },
