@@ -125,14 +125,24 @@ const OwnerSelect = ({
       style={{ width: '100%', ...style }}
       className={className}
       dropdownStyle={{ maxHeight: 320, overflow: 'auto', width: dropdownWidth }}
-      renderLabel={(label) => (
-        <Text
-          ellipsis={{ showTooltip: true }}
-          style={{ width: '100%', margin: 0 }}
-        >
-          {label as string}
-        </Text>
-      )}
+      renderLabel={(label, data) => {
+        const isUser = (data as any)?.isUser;
+        return (
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, width: '100%', minWidth: 0 }}>
+            {isUser ? (
+              <User size={14} style={{ flexShrink: 0, color: 'var(--semi-color-text-2)' }} />
+            ) : (
+              <Building2 size={14} style={{ flexShrink: 0, color: 'var(--semi-color-text-2)' }} />
+            )}
+            <Text
+              ellipsis={{ showTooltip: true }}
+              style={{ flex: 1, minWidth: 0, margin: 0 }}
+            >
+              {label as string}
+            </Text>
+          </span>
+        );
+      }}
     />
   );
 };
