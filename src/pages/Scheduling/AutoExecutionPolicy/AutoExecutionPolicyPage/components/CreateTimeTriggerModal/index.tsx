@@ -150,7 +150,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
   // 第Mon步: Basic Info - using Form Manage
 
   // 第Tue步: Task config
-  const [selectedProcess, setSelectedProcess] = useState<LYProcessActiveVersionResponse | null>(null);
+  const [selectedProcess, setSelectedProcess] = useState<(LYProcessActiveVersionResponse & { owner_name?: string }) | null>(null);
   const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);
   const [owningDepartmentId, setOwningDepartmentId] = useState<string>('');
 
