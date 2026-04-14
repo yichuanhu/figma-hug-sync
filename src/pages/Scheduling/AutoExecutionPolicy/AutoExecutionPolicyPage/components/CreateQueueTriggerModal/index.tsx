@@ -142,7 +142,7 @@ const mockTemplates = [
 
 import { TIMEZONE_GROUPS } from '@/constants/timezones';
 import { HelpCircle, Inbox } from 'lucide-react';
-import DepartmentSelect from '@/components/DepartmentSelect';
+
 
 // Already存in 's  TriggerName (模拟)
 const existingTriggerNames = ['Order Queue Trigger', 'Approval Queue Trigger'];
@@ -156,7 +156,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
   // 第Tue步: Task config
   const [selectedProcess, setSelectedProcess] = useState<(LYProcessActiveVersionResponse & { owner_name?: string }) | null>(null);
   const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);
-  const [owningDepartmentId, setOwningDepartmentId] = useState<string>('');
+  
 
   // 第Wed步: Queue Trigger Config
   const [enableWorkCalendar, setEnableWorkCalendar] = useState(false);
@@ -456,9 +456,6 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
         showClear
         rows={3}
       />
-      <Form.Slot label={t('common.owningDepartment')}>
-        <DepartmentSelect value={owningDepartmentId} onChange={setOwningDepartmentId} />
-      </Form.Slot>
       <Form.Slot label={t('common.owner')}>
         <Form.Input field="__owner_readonly" noLabel initValue={MOCK_CURRENT_USER.name} disabled style={{ width: '100%' }} />
       </Form.Slot>
@@ -499,14 +496,9 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
           onChange={(v) => handleProcessChange(v as string)}
         />
         {selectedProcess && (
-          <>
-            <Form.Slot label={t('common.owningDepartment')}>
-              <Form.Input field="__process_dept_readonly" noLabel initValue={selectedProcess.owning_department_name || '-'} disabled style={{ width: '100%' }} />
-            </Form.Slot>
-            <Form.Slot label={t('common.owner')}>
-              <Form.Input field="__process_owner_readonly" noLabel initValue={selectedProcess.owner_name || '-'} disabled style={{ width: '100%' }} />
-            </Form.Slot>
-          </>
+          <Form.Slot label={t('common.owningDepartment')}>
+            <Form.Input field="__process_dept_readonly" noLabel initValue={selectedProcess.owning_department_name || '-'} disabled style={{ width: '100%' }} />
+          </Form.Slot>
         )}
       </div>
 
