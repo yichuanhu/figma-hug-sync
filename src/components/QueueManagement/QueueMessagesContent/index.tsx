@@ -17,6 +17,7 @@ import {
   Typography,
   Tooltip,
   Breadcrumb,
+  Pagination,
 } from '@douyinfe/semi-ui';
 import { IconDeleteStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
@@ -641,15 +642,7 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
             rowKey="message_id"
             loading={loading}
             rowSelection={rowSelection}
-            pagination={{
-              currentPage: queryParams.page,
-              pageSize: queryParams.pageSize,
-              total,
-              onPageChange: handlePageChange,
-              onPageSizeChange: (newPageSize) => setQueryParams((prev) => ({ ...prev, page: 1, pageSize: newPageSize })),
-              showTotal: true,
-              showSizeChanger: true,
-            }}
+            pagination={false}
             scroll={{ y: 'calc(100vh - 380px)' }}
             empty={
               <EmptyState
@@ -667,6 +660,20 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
               id: `queue-message-row-${record?.message_id}`,
             })}
           />
+          {total > queryParams.pageSize * 2 && (
+            <div style={{ paddingTop: 8, display: 'flex', justifyContent: 'flex-end' }}>
+              <Pagination
+                total={total}
+                pageSize={queryParams.pageSize}
+                currentPage={queryParams.page}
+                onPageChange={handlePageChange}
+                onPageSizeChange={(newPageSize) => setQueryParams((prev) => ({ ...prev, page: 1, pageSize: newPageSize }))}
+                showTotal
+                showSizeChanger
+                size="small"
+              />
+            </div>
+          )}
         )}
       </div>
 

@@ -18,6 +18,7 @@ import {
   DatePicker,
   Image,
   Dropdown,
+  Pagination,
 } from '@douyinfe/semi-ui';
 import { IconDeleteStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
@@ -321,7 +322,23 @@ const PersonalCredentialDetailDrawer = ({
             {isUsageInitialLoad ? (
               <TableSkeleton rows={8} columns={8} columnWidths={['10%', '15%', '8%', '14%', '8%', '10%', '12%', '8%']} />
             ) : (
-              <Table size="small" columns={usageColumns} dataSource={usageRecords} rowKey="id" loading={usageLoading} pagination={{ currentPage: usageQueryParams.page, pageSize: usageQueryParams.pageSize, total: usageTotal, onPageChange: (page) => setUsageQueryParams((prev) => ({ ...prev, page })), showSizeChanger: true, showTotal: true }} scroll={{ y: 'calc(100vh - 350px)' }} empty={<EmptyState description={t('credential.usage.empty')} />} />
+              <>
+                <Table size="small" columns={usageColumns} dataSource={usageRecords} rowKey="id" loading={usageLoading} pagination={false} scroll={{ y: 'calc(100vh - 350px)' }} empty={<EmptyState description={t('credential.usage.empty')} />} />
+                {usageTotal > usageQueryParams.pageSize * 2 && (
+                  <div style={{ paddingTop: 8, display: 'flex', justifyContent: 'flex-end' }}>
+                    <Pagination
+                      total={usageTotal}
+                      pageSize={usageQueryParams.pageSize}
+                      currentPage={usageQueryParams.page}
+                      onPageChange={(page) => setUsageQueryParams((prev) => ({ ...prev, page }))}
+                      onPageSizeChange={(size) => setUsageQueryParams((prev) => ({ ...prev, page: 1, pageSize: size }))}
+                      showTotal
+                      showSizeChanger
+                      size="small"
+                    />
+                  </div>
+                )}
+              </>
             )}
           </div>
         </TabPane>

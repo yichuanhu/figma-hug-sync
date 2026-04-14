@@ -17,6 +17,7 @@ import {
   Tooltip,
   Tabs,
   TabPane,
+  Pagination,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
@@ -273,7 +274,21 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
                 </Col>
               </Row>
               <div className="worker-group-detail-drawer-members-table">
-                <Table size="small" columns={memberColumns} dataSource={list} loading={membersLoading} rowKey="id" empty={<EmptyState variant={queryParams.keyword ? 'noResult' : 'noData'} description={queryParams.keyword ? t('common.noResult') : t('workerGroup.detail.noMembers')} />} pagination={{ total, pageSize, currentPage, onPageChange: (page) => setQueryParams(prev => ({ ...prev, offset: (page - 1) * pageSize })), showSizeChanger: true, showTotal: true }} scroll={{ y: 'calc(100vh - 400px)' }} />
+                <Table size="small" columns={memberColumns} dataSource={list} loading={membersLoading} rowKey="id" empty={<EmptyState variant={queryParams.keyword ? 'noResult' : 'noData'} description={queryParams.keyword ? t('common.noResult') : t('workerGroup.detail.noMembers')} />} pagination={false} scroll={{ y: 'calc(100vh - 400px)' }} />
+                {total > pageSize * 2 && (
+                  <div style={{ paddingTop: 8, display: 'flex', justifyContent: 'flex-end' }}>
+                    <Pagination
+                      total={total}
+                      pageSize={pageSize}
+                      currentPage={currentPage}
+                      onPageChange={(page) => setQueryParams(prev => ({ ...prev, offset: (page - 1) * pageSize }))}
+                      onPageSizeChange={(newPageSize) => setQueryParams(prev => ({ ...prev, offset: 0, size: newPageSize }))}
+                      showTotal
+                      showSizeChanger
+                      size="small"
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </div>

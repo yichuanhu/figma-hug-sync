@@ -371,7 +371,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({
               pagination={false}
               scroll={{ y: 260 }}
             />
-            {total > 0 && (
+            {total > pageSize * 2 && (
               <div className="add-members-modal-left-pagination">
                 <Pagination
                   total={total}
