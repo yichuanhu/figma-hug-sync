@@ -291,9 +291,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
   // 删除队列
   const handleDelete = (record: LYQueueResponse) => {
     Modal.confirm({
-      title: t('queue.deleteModal.title'),
-      icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
-      content: (
+      title: t('queue.deleteModal.title'),      content: (
         <div>
           <div>{t('queue.deleteModal.confirmMessage', { name: record.queue_name })}</div>
           {record.is_published && (

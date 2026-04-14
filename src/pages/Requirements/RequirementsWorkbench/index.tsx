@@ -153,9 +153,7 @@ const RequirementsWorkbench = () => {
   // 删除
   const handleDelete = (record: RequirementItem) => {
     Modal.confirm({
-      title: t('requirements.deleteModal.title'),
-      icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
-      content: (
+      title: t('requirements.deleteModal.title'),      content: (
         <>
           <div>{t('requirements.deleteModal.confirmMessage', { name: record.title })}</div>
           <div style={{ color: 'var(--semi-color-text-2)', marginTop: 8 }}>

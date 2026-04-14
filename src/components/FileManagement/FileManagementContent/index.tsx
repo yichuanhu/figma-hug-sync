@@ -290,9 +290,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
   // 删除文件
   const handleDelete = (record: LYFileResponse) => {
     Modal.confirm({
-      title: t('file.deleteModal.title'),
-      icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
-      content: (
+      title: t('file.deleteModal.title'),      content: (
         <div>
           <div>{t('file.deleteModal.confirmMessage', { name: record.display_name })}</div>
           {record.is_published && (

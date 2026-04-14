@@ -298,9 +298,7 @@ const TemplateManagementPage = () => {
   // DeleteTemplate
   const handleDeleteTemplate = (template: LYExecutionTemplateResponse) => {
     Modal.confirm({
-      title: t('template.deleteModal.title'),
-      icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
-      content: (
+      title: t('template.deleteModal.title'),      content: (
         <>
           <div>{t('template.deleteModal.confirmMessage', { name: template.template_name })}</div>
           <div style={{ color: 'var(--semi-color-text-2)', marginTop: 8 }}>

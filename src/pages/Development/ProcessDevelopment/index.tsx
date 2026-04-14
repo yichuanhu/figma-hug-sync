@@ -335,9 +335,7 @@ const ProcessDevelopment = () => {
     if (!processToDelete) return;
 
     Modal.confirm({
-      title: t('development.processDevelopment.deleteModal.title'),
-      icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
-      content: (
+      title: t('development.processDevelopment.deleteModal.title'),      content: (
         <>
           <div>{t('development.processDevelopment.deleteModal.confirmMessage', { name: processToDelete.name })}</div>
           <div style={{ color: 'var(--semi-color-text-2)', marginTop: 8 }}>

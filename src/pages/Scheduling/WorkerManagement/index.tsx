@@ -559,9 +559,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     }
 
     Modal.confirm({
-      title: t('worker.deleteModal.title'),
-      icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
-      content: (
+      title: t('worker.deleteModal.title'),      content: (
         <>
           <div>{t('worker.deleteModal.confirmMessage', { name: worker.name })}</div>
           <div style={{ color: 'var(--semi-color-text-2)', marginTop: 8 }}>
@@ -665,9 +663,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     e?.stopPropagation();
     
     Modal.confirm({
-      title: t('worker.removeFromGroup.title'),
-      icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
-      content: t('worker.removeFromGroup.confirmMessage', { 
+      title: t('worker.removeFromGroup.title'),      content: t('worker.removeFromGroup.confirmMessage', { 
         name: worker.name,
         group: worker.group_name 
       }),

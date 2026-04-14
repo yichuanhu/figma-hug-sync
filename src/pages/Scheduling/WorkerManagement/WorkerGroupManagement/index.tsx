@@ -232,9 +232,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
     e?.stopPropagation();
 
     Modal.confirm({
-      title: t('workerGroup.deleteModal.title'),
-      icon: <Trash2 size={16} strokeWidth={2} color="var(--semi-color-danger)" />,
-      content: (
+      title: t('workerGroup.deleteModal.title'),      content: (
         <>
           <div>{t('workerGroup.deleteModal.confirmMessage', { name: group.name })}</div>
           <div style={{ color: 'var(--semi-color-text-2)', marginTop: 8 }}>
