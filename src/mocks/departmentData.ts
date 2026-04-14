@@ -34,8 +34,25 @@ export const departmentTree: DeptTreeNode[] = [
         value: 'dept-rd',
         label: 'R&D Center',
         children: [
-          { value: 'dept-apa-product', label: 'APA Product Division' },
-          { value: 'dept-dw', label: 'Digital Worker Division' },
+          {
+            value: 'dept-apa-product',
+            label: 'APA Product Division',
+            children: [
+              { value: 'dept-fe', label: 'Frontend Development Team' },
+              { value: 'dept-be', label: 'Backend Development Team' },
+              { value: 'dept-ai', label: 'AI Platform and Large Language Model Application R&D Team' },
+              { value: 'dept-qa', label: 'Quality Assurance Team' },
+              { value: 'dept-product', label: 'Product Team' },
+            ],
+          },
+          {
+            value: 'dept-dw',
+            label: 'Digital Worker Division',
+            children: [
+              { value: 'dept-rpa-product', label: 'RPA Product Team' },
+              { value: 'dept-idp-product', label: 'IDP Product Team' },
+            ],
+          },
           { value: 'dept-platform', label: 'Platform Engineering Division' },
         ],
       },
