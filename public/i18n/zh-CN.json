@@ -50,7 +50,8 @@
     "filterDepartment": "筛选归属部门",
     "filterTags": "筛选标签",
     "filterGroup": "筛选分组",
-    "filterPublisher": "筛选发布者"
+    "filterPublisher": "筛选发布者",
+    "num": "个"
   },
   "emptyState": {
     "retry": "重试",
@@ -1255,7 +1256,8 @@
       "high": "高",
       "medium": "中",
       "low": "低",
-      "manualQueueBreaker": "插队"
+      "manualQueueBreaker": "插队",
+      "urgent": "紧急"
     },
     "triggerSource": {
       "manual": "手动创建",
@@ -1532,7 +1534,12 @@
       "maxDurationHint": "范围 60-86400 秒",
       "validityDays": "有效期（天）",
       "validityDaysHint": "范围 1-30 天",
-      "enableRecording": "启用录屏"
+      "enableRecording": "启用录屏",
+      "workerGroupPlaceholder": "请选择机器人组",
+      "workerPlaceholder": "请选择机器人",
+      "ungrouped": "未分组",
+      "taskRepeat": "创建重复任务",
+      "taskNum": "创建任务数"
     },
     "validation": {
       "nameRequired": "请输入模板名称",
@@ -1543,7 +1550,18 @@
       "targetRequired": "请选择执行目标",
       "maxDurationRange": "执行时长必须在 60-86400 秒之间",
       "validityDaysRange": "有效期必须在 1-30 天之间",
-      "parameterRequired": "请填写必填参数 {{name}}"
+      "parameterRequired": "请填写必填参数 {{name}}",
+      "workerGroupRequired": "请选择机器人组",
+      "workerRequired": "请选择机器人",
+      "processNoVersion": "所选流程没有可用版本",
+      "mustBeInteger": "请输入整数",
+      "maxDurationRequired": "请输入最大执行时间",
+      "validityDaysRequired": "请输入有效期",
+      "taskNumRequired": "请输入创建任务数",
+      "taskNumRange": "创建任务数必须在 1-100 之间",
+      "parameterPlaceholder": "请输入 {{name}}",
+      "credentialUserPlaceholder": "请输入用户名",
+      "credentialPasswordPlaceholder": "请输入密码"
     },
     "targetType": {
       "botGroup": "机器人组",
