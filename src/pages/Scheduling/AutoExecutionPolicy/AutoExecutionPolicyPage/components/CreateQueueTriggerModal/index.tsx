@@ -313,6 +313,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
           taskRef={taskRef}
           showParamsHandle={setShowRightPanel}
           source={TaskFormSource.QueueTrigger}
+          preFormItem={taskPreFormItem}
           showRightPanel={showRightPanel}
         />
       )}

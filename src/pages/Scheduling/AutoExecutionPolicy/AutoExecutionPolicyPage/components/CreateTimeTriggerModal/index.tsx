@@ -306,6 +306,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
           taskRef={taskRef}
           showParamsHandle={setShowRightPanel}
           source={TaskFormSource.TimerTrigger}
+          preFormItem={taskPreFormItem}
           showRightPanel={showRightPanel}
         />
       )}
