@@ -153,7 +153,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
   const [initialized, setInitialized] = useState(false);
 
   // 第Tue步: Task config - 仅保留need's Status
-  const [selectedProcess, setSelectedProcess] = useState<LYProcessActiveVersionResponse | null>(null);
+  const [selectedProcess, setSelectedProcess] = useState<(LYProcessActiveVersionResponse & { owning_department_name?: string; owner_name?: string }) | null>(null);
   const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);
 
   // 第Wed步: Trigger Rules
