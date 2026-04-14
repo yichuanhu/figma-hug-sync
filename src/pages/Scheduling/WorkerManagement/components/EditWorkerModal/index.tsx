@@ -29,6 +29,7 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
   const [desktopType, setDesktopType] = useState<string>('Console');
   const [configChanged, setConfigChanged] = useState(false);
   const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>(workerData?.owning_department_id || undefined);
+  const [ownerId, setOwnerId] = useState<string | undefined>(workerData?.owner_id || undefined);
 
   const originalConfig = useMemo(() => ({
     desktopType: workerData?.desktop_type || 'Console',
