@@ -1,49 +1,54 @@
 
 
-## 方案：统一筛选栏布局顺序与筛选框自适应宽度
+## 方案：统一筛选框宽度与空状态布局一致性
 
-### 一、自动化流程页面筛选项顺序调整
+### 问题分析
 
-**文件**：`src/pages/Development/ProcessDevelopment/index.tsx`
+**问题 1：DepartmentSelect 筛选框 placeholder 被截断**
+所有 14 个页面的 DepartmentSelect 使用 `minWidth: 120`，但 "筛选归属部门" 需要约 140-150px，导致 placeholder 被截断为 "筛选归属..."。需要将 `minWidth` 从 120 调大。
 
-当前顺序：`搜索框 → FilterPopover（筛选） → DepartmentSelect（归属部门）`
-队列页面顺序：`搜索框 → DepartmentSelect（归属部门） → FilterPopover（筛选）`
+**问题 2：空数据时搜索框/筛选框宽度塌陷**
+大部分页面的搜索框只设了 `width: 320px`，没有 `min-width`。当表格无数据时，flex 布局可能压缩宽度。只有 `ProcessDevelopment` 加了 `min-width: 320px`，其他页面均缺失。
 
-将 `DepartmentSelect` 移到 `FilterPopover` 前面，与队列页面保持一致。
-
----
-
-### 二、所有筛选下拉框宽度改为自适应
-
-当前所有非 DepartmentSelect 的筛选 Select 均使用 `style={{ width: 200 }}`，需改为 `style={{ width: 'auto', minWidth: 120 }}`，使宽度跟随 placeholder 文字长度自适应。
-
-DepartmentSelect 已有 `width: 'auto', minWidth: 120, maxWidth: 600`，无需修改。
-
-需修改的文件和筛选项：
-
-| # | 文件 | 筛选项 | 当前 width | 改为 |
-|---|------|--------|-----------|------|
-| 1 | `TimeTriggerList/index.tsx` | 流程 Select | 200 | auto, minWidth: 120 |
-| 2 | `TimeTriggerList/index.tsx` | 状态 Select | 200 | auto, minWidth: 120 |
-| 3 | `QueueTriggerList/index.tsx` | 流程 Select | 200 | auto, minWidth: 120 |
-| 4 | `QueueTriggerList/index.tsx` | 队列 Select | 200 | auto, minWidth: 120 |
-| 5 | `QueueTriggerList/index.tsx` | 状态 Select | 200 | auto, minWidth: 120 |
-| 6 | `TemplateManagementPage/index.tsx` | 流程 Select | 200 | auto, minWidth: 120 |
-| 7 | `WorkerManagement/index.tsx` | 分组 Select | 200 | auto, minWidth: 120 |
-| 8 | `ReleaseListPage/index.tsx` | 发布者 Select | 200 | auto, minWidth: 120 |
-| 9 | `Showcases/index.tsx` | 标签 Select | 200 | auto, minWidth: 120 |
-| 10 | `APASkills/index.tsx` | 标签 Select | 200 | auto, minWidth: 120 |
-| 11 | `ACPSkills/index.tsx` | 标签 Select | 200 | auto, minWidth: 120 |
-| 12 | `CreatorComponents/index.tsx` | 标签 Select | 200 | auto, minWidth: 120 |
+另外 `TimeTriggerList` 和 `QueueTriggerList` 搜索框宽度为 260px，与其他页面的 320px 不一致。
 
 ---
 
-### 修改文件汇总
+### 修改清单
 
-| 改动类型 | 文件数 |
-|---------|--------|
-| 顺序调整 | 1（ProcessDevelopment） |
-| 宽度自适应 | 12（上表所列） |
+#### A. DepartmentSelect minWidth 统一调大（14处）
 
-总计 **12 个文件**，改动量极小（每处仅修改 style 属性或调换 JSX 顺序）。
+所有页面的 `style={{ width: 'auto', minWidth: 120, maxWidth: 600 }}` 改为 `minWidth: 150`，确保 "筛选归属部门" 不被截断。
+
+涉及文件：ProcessDevelopment、ProcessManagementContent、TimeTriggerList、QueueTriggerList、TemplateManagementPage、TaskManagementPage、WorkerManagement、WorkerGroupManagement、Showcases、RequirementsWorkbench、FileManagementContent、ParameterManagementContent、CredentialManagementContent、QueueManagementContent
+
+#### B. 搜索框添加 min-width 防空状态塌陷（16个 .less 文件）
+
+为所有 `width: 320px` 的搜索框 CSS 补充 `min-width: 320px`：
+
+| 文件 | 当前 |
+|------|------|
+| ProcessManagementContent/index.less | 仅 width: 320px |
+| QueueManagementContent/index.less | 仅 width: 320px |
+| FileManagementContent/index.less | 仅 width: 320px |
+| ParameterManagementContent/index.less | 仅 width: 320px |
+| CredentialManagementContent/index.less | 仅 width: 320px |
+| WorkerManagement/index.less | 仅 width: 320px |
+| WorkerGroupManagement/index.less | 仅 width: 320px |
+| TaskManagementPage/index.less | 仅 width: 320px |
+| TaskLogPage/index.less | 仅 width: 320px |
+| RequirementsWorkbench/index.less | 仅 width: 320px |
+| ReleaseListPage/index.less | 仅 width: 320px |
+| PersonalCredentialManagement/index.less | 仅 width: 320px |
+| QueueMessagesContent/index.less | 仅 width: 320px |
+| TimeTriggerList/index.less | width: 260px → 320px + min-width |
+| QueueTriggerList/index.less | width: 260px → 320px + min-width |
+
+`ProcessDevelopment/index.less` 已有 min-width，无需修改。
+
+---
+
+### 改动量
+
+共约 **29 处修改**（14 处 tsx minWidth + 15 处 less min-width），每处改动仅 1-2 行。
 
