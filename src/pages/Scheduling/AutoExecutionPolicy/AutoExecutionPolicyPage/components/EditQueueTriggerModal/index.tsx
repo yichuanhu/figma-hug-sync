@@ -482,7 +482,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
         <DepartmentSelect value={owningDepartmentId} onChange={setOwningDepartmentId} />
       </Form.Slot>
       <Form.Slot label={t('common.owner')}>
-        <Form.Input field="__owner_readonly" noLabel initValue={trigger?.owner_name || '-'} disabled style={{ width: '100%' }} />
+        <OwnerSelect value={ownerId} onChange={setOwnerId} />
       </Form.Slot>
     </div>
   );

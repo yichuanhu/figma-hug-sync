@@ -614,7 +614,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
         <DepartmentSelect value={owningDepartmentId} onChange={setOwningDepartmentId} />
       </Form.Slot>
       <Form.Slot label={t('common.owner')}>
-        <Form.Input field="__owner_readonly" noLabel initValue={trigger?.owner_name || '-'} disabled style={{ width: '100%' }} />
+        <OwnerSelect value={ownerId} onChange={setOwnerId} />
       </Form.Slot>
     </div>
   );

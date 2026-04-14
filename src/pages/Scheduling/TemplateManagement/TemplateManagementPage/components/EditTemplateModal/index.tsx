@@ -378,7 +378,7 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
                   rows={3}
                 />
                 <Form.Slot label={t('common.owner')}>
-                  <Form.Input field="__owner_readonly" noLabel initValue={template?.owner_name || '-'} disabled style={{ width: '100%' }} />
+                  <OwnerSelect value={ownerId} onChange={setOwnerId} />
                 </Form.Slot>
               </div>
 
