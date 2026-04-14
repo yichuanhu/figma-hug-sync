@@ -65,7 +65,8 @@
     "filterDepartment": "Filter Department",
     "filterTags": "Filter Tags",
     "filterGroup": "Filter Group",
-    "filterPublisher": "Filter Publisher"
+    "filterPublisher": "Filter Publisher",
+    "num": "items"
   },
   "emptyState": {
     "retry": "Retry",
@@ -1679,7 +1680,8 @@
       "high": "High",
       "medium": "Medium",
       "low": "Low",
-      "manualQueueBreaker": "Queue Jump"
+      "manualQueueBreaker": "Queue Jump",
+      "urgent": "Urgent"
     },
     "triggerSource": {
       "manual": "Manual",
@@ -2006,7 +2008,12 @@
       "maxDurationHint": "Range: 60-86400 seconds",
       "validityDays": "Validity (days)",
       "validityDaysHint": "Range: 1-30 days",
-      "enableRecording": "Enable Recording"
+      "enableRecording": "Enable Recording",
+      "workerGroupPlaceholder": "Please select worker group",
+      "workerPlaceholder": "Please select worker",
+      "ungrouped": "Ungrouped",
+      "taskRepeat": "Create Repeated Tasks",
+      "taskNum": "Task Count"
     },
     "validation": {
       "nameRequired": "Please enter template name",
@@ -2017,7 +2024,18 @@
       "targetRequired": "Please select target",
       "maxDurationRange": "Duration must be 60-86400 seconds",
       "validityDaysRange": "Validity must be 1-30 days",
-      "parameterRequired": "Please fill in required parameter {{name}}"
+      "parameterRequired": "Please fill in required parameter {{name}}",
+      "workerGroupRequired": "Please select a worker group",
+      "workerRequired": "Please select a worker",
+      "processNoVersion": "Selected process has no available version",
+      "mustBeInteger": "Please enter an integer",
+      "maxDurationRequired": "Please enter max execution duration",
+      "validityDaysRequired": "Please enter validity days",
+      "taskNumRequired": "Please enter task count",
+      "taskNumRange": "Task count must be between 1 and 100",
+      "parameterPlaceholder": "Please enter {{name}}",
+      "credentialUserPlaceholder": "Please enter username",
+      "credentialPasswordPlaceholder": "Please enter password"
     },
     "targetType": {
       "botGroup": "Worker Group",

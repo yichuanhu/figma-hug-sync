@@ -1,0 +1,81 @@
+.task-template {
+  &-param-item {
+    margin-bottom: 16px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    .semi-form-field-label {
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .semi-switch {
+      display: block;
+    }
+  }
+
+  &-param-label {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--semi-color-text-0);
+  }
+
+  &-no-params {
+    color: var(--semi-color-text-2);
+    padding: 32px 16px;
+    text-align: center;
+  }
+
+  &-output-param-item {
+    padding: 12px;
+    background: var(--semi-color-fill-0);
+    border-radius: 6px;
+    margin-bottom: 8px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &-output-param-name {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--semi-color-text-0);
+  }
+
+  &-output-param-desc {
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--semi-color-text-2);
+  }
+}
+
+.parameter-input-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  &-name {
+    font-weight: 600;
+  }
+
+  &-type {
+    text-transform: uppercase;
+  }
+}
+
+.parameter-input-credential-field {
+  margin-bottom: 8px;
+}
+
+.parameter-label-description {
+  max-width: 300px;
+  max-height: 300px;
+  overflow-y: auto;
+}

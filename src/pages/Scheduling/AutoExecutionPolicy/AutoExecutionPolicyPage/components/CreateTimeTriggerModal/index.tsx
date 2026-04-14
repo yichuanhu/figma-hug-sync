@@ -1,33 +1,22 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { MOCK_CURRENT_USER, getDepartmentName } from '@/mocks/departmentData';
+import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 import {
   Modal,
   Form,
   Button,
   Toast,
-  Typography,
-  Popover,
-  Tag,
   Steps,
 } from '@douyinfe/semi-ui';
-import { HelpCircle, Inbox } from 'lucide-react';
 import OwnerSelect from '@/components/OwnerSelect';
-
 import TriggerRuleConfig from '@/components/TriggerRuleConfig';
-import BotTargetSelector from '@/components/BotTargetSelector';
-import { getWorkCalendarOptions } from '@/mocks/workCalendar';
+import TaskForm, { TaskFormSource } from '@/components/TaskForm';
+import type { TaskFormRef } from '@/components/TaskForm';
 import type {
-  LYProcessActiveVersionResponse,
-  LYProcessParameterDefinition,
-  ExecutionTargetType,
-  TaskPriority,
   TriggerRuleType,
   BasicFrequencyType,
 } from '@/api';
 import './index.less';
-
-const { Text } = Typography;
 
 interface CreateTimeTriggerModalProps {
   visible: boolean;
@@ -35,111 +24,9 @@ interface CreateTimeTriggerModalProps {
   onSuccess: () => void;
 }
 
-// Mock ProcessList
-const mockProcesses: (LYProcessActiveVersionResponse & { owner_name?: string })[] = [
-  {
-    process_id: 'proc-001',
-    process_name: 'Auto Order Processing',
-    version_id: 'ver-001',
-    version: 'v1.2.0',
-    owning_department_id: 'dept-tech',
-    owning_department_name: 'Technology Department',
-    owner_name: '张三',
-    parameters: [
-      { name: 'targetUrl', type: 'TEXT', required: true, description: 'Target URL address' },
-      { name: 'maxCount', type: 'NUMBER', required: false, default_value: 100, description: 'Maximum processing count' },
-      { name: 'enableRetry', type: 'BOOLEAN', required: false, default_value: true, description: 'Enable retry' },
-    ],
-    output_parameters: [
-      { name: 'processedCount', type: 'NUMBER', description: 'Processed order count' },
-      { name: 'successRate', type: 'NUMBER', description: 'Processing success rate' },
-    ],
-  },
-  {
-    process_id: 'proc-002',
-    process_name: 'Expense Reimbursement Approval',
-    version_id: 'ver-002',
-    version: 'v2.0.0',
-    owning_department_id: 'dept-finance',
-    owning_department_name: 'Finance Department',
-    owner_name: '李四',
-    parameters: [
-      { name: 'department', type: 'TEXT', required: true, description: 'Department name' },
-    ],
-    output_parameters: [
-      { name: 'approvalResult', type: 'BOOLEAN', description: 'Approval result' },
-    ],
-  },
-  {
-    process_id: 'proc-003',
-    process_name: 'Employee Onboarding Flow',
-    version_id: 'ver-003',
-    version: 'v1.0.0',
-    owning_department_id: 'dept-hr',
-    owning_department_name: 'Human Resources',
-    owner_name: '王五',
-    parameters: [],
-    output_parameters: [],
-  },
-  {
-    process_id: 'proc-004',
-    process_name: 'Data Collection Flow',
-    version_id: 'ver-004',
-    version: 'v1.5.0',
-    owning_department_id: 'dept-tech',
-    owning_department_name: 'Technology Department',
-    owner_name: '赵六',
-    parameters: [
-      { name: 'sourceUrl', type: 'TEXT', required: true, description: 'Data source URL' },
-      { name: 'pageLimit', type: 'NUMBER', required: false, default_value: 10, description: 'Page limit for collection' },
-    ],
-    output_parameters: [
-      { name: 'collectedCount', type: 'NUMBER', description: 'Collected data count' },
-    ],
-  },
-];
+import { getWorkCalendarOptions } from '@/mocks/workCalendar';
 
-// Mock 人Credential
-const mockCredentials = [
-  { id: 'cred-001', name: 'System Admin Credentials' },
-  { id: 'cred-002', name: 'API Access Credentials' },
-];
-
-// Mock ExecuteTemplate
-const mockTemplates = [
-  {
-    template_id: 'tpl-001',
-    template_name: 'Order Processing Default Template',
-    description: 'Process orders with default config',
-    process_id: 'proc-001',
-    process_name: 'Auto Order Processing',
-    execution_target_type: 'BOT_GROUP' as ExecutionTargetType,
-    execution_target_id: 'group-001',
-    execution_target_name: 'Order Processing Group',
-    priority: 'MEDIUM' as TaskPriority,
-    max_execution_duration: 3600,
-    validity_days: 7,
-    enable_recording: true,
-    input_parameters: { targetUrl: 'https://orders.example.com', maxCount: 50 },
-  },
-  {
-    template_id: 'tpl-002',
-    template_name: 'Finance Approval Quick Template',
-    description: 'Expense Reimbursement Approvalquick execution config',
-    process_id: 'proc-002',
-    process_name: 'Expense Reimbursement Approval',
-    execution_target_type: 'BOT_GROUP' as ExecutionTargetType,
-    execution_target_id: 'group-002',
-    execution_target_name: 'Finance Approval Group',
-    priority: 'HIGH' as TaskPriority,
-    max_execution_duration: 1800,
-    validity_days: 3,
-    enable_recording: false,
-    input_parameters: { department: 'Finance Dept' },
-  },
-];
-
-// Already存in 's  TriggerName (模拟)
+// 已存在的触发器名（模拟）
 const existingTriggerNames = ['Daily Order Sync', 'Weekly Report Generation'];
 
 const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTriggerModalProps) => {
@@ -147,16 +34,10 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
   const [loading, setLoading] = useState(false);
   const [ownerId, setOwnerId] = useState<string>(MOCK_CURRENT_USER.id);
   const [currentStep, setCurrentStep] = useState(0);
-  const [formApi, setFormApi] = useState<any>(null);
+  const [showRightPanel, setShowRightPanel] = useState(false);
+  const taskRef = useRef<TaskFormRef>(null);
 
-  // 第Mon步: Basic Info - using Form Manage
-
-  // 第Tue步: Task config
-  const [selectedProcess, setSelectedProcess] = useState<(LYProcessActiveVersionResponse & { owner_name?: string }) | null>(null);
-  const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);
-  
-
-  // 第Wed步: Trigger Rules
+  // 第三步: Trigger Rules
   const [ruleType, setRuleType] = useState<TriggerRuleType>('BASIC');
   const [frequencyType, setFrequencyType] = useState<BasicFrequencyType>('DAILY');
   const [minuteInterval, setMinuteInterval] = useState<number>(5);
@@ -175,61 +56,39 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
   const [workCalendarId, setWorkCalendarId] = useState<string | null>(null);
   const [workCalendarExecutionType, setWorkCalendarExecutionType] = useState<'WORKDAY' | 'NON_WORKDAY'>('WORKDAY');
 
-  // 判断is否hasParameterneed填写
-  const hasParameters = selectedProcess && selectedProcess.parameters.length > 0;
-  const hasOutputParameters = selectedProcess && selectedProcess.output_parameters && selectedProcess.output_parameters.length > 0;
-  const showRightPanel = (hasParameters || hasOutputParameters) && currentStep === 1;
-
-  // generation Cron 表达式
+  // 生成 Cron 表达式
   const generatedCronExpression = useMemo(() => {
     if (ruleType !== 'BASIC') return cronExpression;
-
     switch (frequencyType) {
-      case 'MINUTELY':
-        return `*/${minuteInterval} * * * *`;
-      case 'HOURLY':
-        return `${minuteOfHour} */${hourInterval} * * *`;
-      case 'DAILY':
-        return `${triggerMinute} ${triggerHour} * * *`;
-      case 'WEEKLY':
+      case 'MINUTELY': return `*/${minuteInterval} * * * *`;
+      case 'HOURLY': return `${minuteOfHour} */${hourInterval} * * *`;
+      case 'DAILY': return `${triggerMinute} ${triggerHour} * * *`;
+      case 'WEEKLY': {
         const weekdayStr = selectedWeekdays.length > 0 ? selectedWeekdays.sort().join(',') : '*';
         return `${triggerMinute} ${triggerHour} * * ${weekdayStr}`;
-      case 'MONTHLY':
+      }
+      case 'MONTHLY': {
         const dayStr = selectedMonthDay === 'L' ? 'L' : selectedMonthDay;
         return `${triggerMinute} ${triggerHour} ${dayStr} * *`;
-      default:
-        return '';
+      }
+      default: return '';
     }
   }, [ruleType, frequencyType, minuteInterval, hourInterval, minuteOfHour, triggerHour, triggerMinute, selectedWeekdays, selectedMonthDay, cronExpression]);
 
-  // PreviewTriggerTime
+  // 预览触发时间
   const previewTimes = useMemo(() => {
     if (!startDateTime) return [];
     const times: string[] = [];
     const now = new Date(startDateTime);
-    
     for (let i = 0; i < 10; i++) {
       const triggerTime = new Date(now);
       if (ruleType === 'BASIC') {
         switch (frequencyType) {
-          case 'MINUTELY':
-            triggerTime.setMinutes(triggerTime.getMinutes() + i * minuteInterval);
-            break;
-          case 'HOURLY':
-            triggerTime.setHours(triggerTime.getHours() + i * hourInterval);
-            break;
-          case 'DAILY':
-            triggerTime.setDate(triggerTime.getDate() + i);
-            triggerTime.setHours(triggerHour, triggerMinute, 0, 0);
-            break;
-          case 'WEEKLY':
-            triggerTime.setDate(triggerTime.getDate() + i * 7);
-            triggerTime.setHours(triggerHour, triggerMinute, 0, 0);
-            break;
-          case 'MONTHLY':
-            triggerTime.setMonth(triggerTime.getMonth() + i);
-            triggerTime.setHours(triggerHour, triggerMinute, 0, 0);
-            break;
+          case 'MINUTELY': triggerTime.setMinutes(triggerTime.getMinutes() + i * minuteInterval); break;
+          case 'HOURLY': triggerTime.setHours(triggerTime.getHours() + i * hourInterval); break;
+          case 'DAILY': triggerTime.setDate(triggerTime.getDate() + i); triggerTime.setHours(triggerHour, triggerMinute, 0, 0); break;
+          case 'WEEKLY': triggerTime.setDate(triggerTime.getDate() + i * 7); triggerTime.setHours(triggerHour, triggerMinute, 0, 0); break;
+          case 'MONTHLY': triggerTime.setMonth(triggerTime.getMonth() + i); triggerTime.setHours(triggerHour, triggerMinute, 0, 0); break;
         }
       } else {
         triggerTime.setDate(triggerTime.getDate() + i);
@@ -239,13 +98,11 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
     return times;
   }, [startDateTime, ruleType, frequencyType, minuteInterval, hourInterval, triggerHour, triggerMinute]);
 
-  // 重置表单
+  // 重置
   useEffect(() => {
     if (!visible) {
       setCurrentStep(0);
-      formApi?.reset();
-      setSelectedProcess(null);
-      setTargetType(null);
+      setShowRightPanel(false);
       setRuleType('BASIC');
       setFrequencyType('DAILY');
       setMinuteInterval(5);
@@ -263,46 +120,11 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
       setEnableWorkCalendar(false);
       setWorkCalendarId(null);
       setWorkCalendarExecutionType('WORKDAY');
+    } else if (taskRef.current) {
+      taskRef.current.init();
     }
-  }, [visible, formApi]);
+  }, [visible]);
 
-  // selectProcess
-  const handleProcessChange = (processId: string) => {
-    const process = mockProcesses.find((p) => p.process_id === processId);
-    setSelectedProcess(process || null);
-    if (process && formApi) {
-      process.parameters.forEach((param) => {
-        if (param.default_value !== undefined && param.default_value !== null) {
-          formApi.setValue(`param_${param.name}`, param.default_value);
-        }
-      });
-    }
-  };
-
-  // selectTemplate
-  const handleTemplateChange = (templateId: string | null) => {
-    if (templateId && formApi) {
-      const template = mockTemplates.find((t) => t.template_id === templateId);
-      if (template) {
-        handleProcessChange(template.process_id);
-        setTargetType(template.execution_target_type);
-        formApi.setValues({
-          processId: template.process_id,
-          targetType: template.execution_target_type,
-          targetId: template.execution_target_id,
-          priority: template.priority,
-          maxDuration: template.max_execution_duration,
-          validityDays: template.validity_days,
-          enableRecording: template.enable_recording,
-          ...Object.fromEntries(
-            Object.entries(template.input_parameters || {}).map(([k, v]) => [`param_${k}`, v])
-          ),
-        });
-      }
-    }
-  };
-
-  // ValidationTemplateName唯Mon性
   const validateTriggerName = (value: string) => {
     if (value && existingTriggerNames.includes(value.trim())) {
       return t('timeTrigger.validation.nameExists');
@@ -310,138 +132,22 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
     return '';
   };
 
-  // 渲染Parameterinput
-  const renderParameterInput = (param: LYProcessParameterDefinition) => {
-    const renderLabel = () => (
-      <div className="create-time-trigger-modal-param-label">
-        <span>{param.name}</span>
-        <Tag size="small" color="grey" style={{ marginLeft: 8 }}>
-          {param.type}
-        </Tag>
-        {param.description && (
-          <Popover
-            content={
-              <div style={{ maxWidth: 320, maxHeight: 200, overflowY: 'auto', wordBreak: 'break-word', fontSize: 12, lineHeight: '20px' }}>
-                {param.description}
-              </div>
-            }
-            trigger="hover"
-            position="top"
-            showArrow
-          >
-            <HelpCircle size={16} strokeWidth={2} />
-          </Popover>
-        )}
-      </div>
-    );
-
-    const rules = param.required 
-      ? [{ required: true, message: t('timeTrigger.validation.parameterRequired', { name: param.name }) }]
-      : [];
-
-    switch (param.type) {
-      case 'TEXT':
-        return (
-          <Form.Input
-            key={param.name}
-            field={`param_${param.name}`}
-            label={renderLabel()}
-            placeholder={`Please enter ${param.name}`}
-            rules={rules}
-          />
-        );
-      case 'NUMBER':
-        return (
-          <Form.InputNumber
-            key={param.name}
-            field={`param_${param.name}`}
-            label={renderLabel()}
-            placeholder={`Please enter ${param.name}`}
-            style={{ width: '100%' }}
-            rules={rules}
-          />
-        );
-      case 'BOOLEAN':
-        return (
-          <div className="create-time-trigger-modal-param-item" key={param.name}>
-            <div className="semi-form-field-label">
-              {renderLabel()}
-            </div>
-            <Form.Switch
-              field={`param_${param.name}`}
-              noLabel
-              size="small"
-            />
-          </div>
-        );
-      case 'CREDENTIAL':
-        return (
-          <Form.Select
-            key={param.name}
-            field={`param_${param.name}`}
-            label={renderLabel()}
-            placeholder="Select credentials"
-            optionList={mockCredentials.map((c) => ({ value: c.id, label: c.name }))}
-            style={{ width: '100%' }}
-            rules={rules}
-          />
-        );
-      default:
-        return null;
-    }
-  };
-
-  // ValidationStep
-  const validateStep = async (step: number): Promise<boolean> => {
-    if (step === 0) {
-      if (formApi) {
-        try {
-          await formApi.validate(['triggerName']);
-          return true;
-        } catch (errors) {
-          return false;
-        }
-      }
-      return false;
-    }
-    
-    if (step === 1) {
-      if (formApi) {
-        try {
-          const fieldsToValidate = ['processId', 'targetType', 'targetId', 'maxDuration', 'validityDays'];
-          if (selectedProcess) {
-            selectedProcess.parameters.forEach((param) => {
-              if (param.required) {
-                fieldsToValidate.push(`param_${param.name}`);
-              }
-            });
-          }
-          await formApi.validate(fieldsToValidate);
-          return true;
-        } catch (errors) {
-          return false;
-        }
-      }
-      return false;
-    }
-    
-    return true;
-  };
-
-  // 下Mon步
   const handleNext = async () => {
-    const isValid = await validateStep(currentStep);
-    if (isValid) {
-      setCurrentStep((prev) => prev + 1);
+    if (currentStep === 1) {
+      // 验证 TaskForm
+      const result = await taskRef.current?.submit();
+      if (!result) return;
     }
+    setCurrentStep((prev) => prev + 1);
   };
 
-  // 上Mon步
   const handlePrev = () => {
+    if (currentStep === 2 && taskRef.current) {
+      taskRef.current.pre();
+    }
     setCurrentStep((prev) => prev - 1);
   };
 
-  // Submit
   const handleSubmit = async () => {
     if (ruleType === 'CRON' && !cronExpression.trim()) {
       Toast.warning(t('timeTrigger.validation.cronExpressionRequired'));
@@ -459,39 +165,8 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
     setLoading(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 500));
-      
-      const formValues = formApi?.getValues();
-      const parameterValues: Record<string, unknown> = {};
-      if (selectedProcess) {
-        selectedProcess.parameters.forEach((param) => {
-          parameterValues[param.name] = formValues?.[`param_${param.name}`];
-        });
-      }
-
       const finalCronExpression = ruleType === 'CRON' ? cronExpression : generatedCronExpression;
-      
-      console.log('Creating time trigger:', {
-        name: formValues?.triggerName?.trim(),
-        description: formValues?.description?.trim() || null,
-        process_id: formValues?.processId,
-        execution_target_type: formValues?.targetType,
-        execution_target_id: formValues?.targetId,
-        priority: formValues?.priority,
-        max_execution_duration: formValues?.maxDuration,
-        validity_days: formValues?.validityDays,
-        enable_recording: formValues?.enableRecording,
-        input_parameters: parameterValues,
-        rule_type: ruleType,
-        cron_expression: finalCronExpression,
-        basic_frequency_type: ruleType === 'BASIC' ? frequencyType : null,
-        time_zone: timeZone,
-        start_date_time: startDateTime?.toISOString(),
-        end_date_time: endDateTime?.toISOString() || null,
-        enable_work_calendar: enableWorkCalendar,
-        work_calendar_id: enableWorkCalendar ? workCalendarId : null,
-        work_calendar_execution_type: enableWorkCalendar ? workCalendarExecutionType : null,
-      });
-
+      console.log('Creating time trigger:', { cron: finalCronExpression });
       Toast.success(t('timeTrigger.createModal.success'));
       onSuccess();
     } catch (error) {
@@ -502,235 +177,46 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
     }
   };
 
-  // 渲染Step0: Basic Info
+  // Step0: 基本信息
   const renderStep0Content = () => (
     <div className="create-time-trigger-modal-section">
       <div className="create-time-trigger-modal-section-title">{t('timeTrigger.createModal.basicSection')}</div>
-      <Form.Input
-        field="triggerName"
-        label={t('timeTrigger.fields.name')}
-        placeholder={t('timeTrigger.fields.namePlaceholder')}
-        maxLength={255}
-        showClear
-        rules={[
-          { required: true, message: t('timeTrigger.validation.nameRequired') },
-          { max: 255, message: t('timeTrigger.validation.nameLengthError') },
-          { validator: (rule, value, callback) => {
-            const error = validateTriggerName(value);
-            if (error) {
-              callback(error);
-              return false;
-            }
-            callback();
-            return true;
-          }},
-        ]}
-      />
-      <Form.TextArea
-        field="description"
-        label={t('timeTrigger.fields.description')}
-        placeholder={t('timeTrigger.fields.descriptionPlaceholder')}
-        maxCount={2000}
-        showClear
-        rows={3}
-      />
-      <Form.Slot label={t('common.owner')}>
-        <OwnerSelect value={ownerId} onChange={setOwnerId} />
-      </Form.Slot>
+      <Form labelPosition="top">
+        <Form.Input
+          field="triggerName"
+          label={t('timeTrigger.fields.name')}
+          placeholder={t('timeTrigger.fields.namePlaceholder')}
+          maxLength={255}
+          showClear
+          rules={[
+            { required: true, message: t('timeTrigger.validation.nameRequired') },
+            { max: 255, message: t('timeTrigger.validation.nameLengthError') },
+            { validator: (_rule: any, value: string, callback: (msg?: string) => void) => {
+              const error = validateTriggerName(value);
+              if (error) { callback(error); return false; }
+              callback();
+              return true;
+            }},
+          ]}
+        />
+        <Form.TextArea
+          field="description"
+          label={t('timeTrigger.fields.description')}
+          placeholder={t('timeTrigger.fields.descriptionPlaceholder')}
+          maxCount={2000}
+          showClear
+          rows={3}
+        />
+        <Form.Slot label={t('common.owner')}>
+          <OwnerSelect value={ownerId} onChange={setOwnerId} />
+        </Form.Slot>
+      </Form>
     </div>
   );
 
-  // 渲染Step1Left: Task config
-  const renderStep1LeftContent = () => (
-    <>
-      {/* Template selection */}
-      <div className="create-time-trigger-modal-section">
-        <div className="create-time-trigger-modal-section-title">{t('task.createModal.selectTemplate')}</div>
-        <Form.Select
-          field="templateId"
-          noLabel
-          placeholder={t('task.createModal.templatePlaceholder')}
-          optionList={mockTemplates.map((tpl) => ({ value: tpl.template_id, label: tpl.template_name }))}
-          showClear
-          filter
-          className="create-time-trigger-modal-select-full"
-          onChange={(v) => handleTemplateChange(v as string | null)}
-        />
-      </div>
-
-      {/* Process config */}
-      <div className="create-time-trigger-modal-section">
-        <div className="create-time-trigger-modal-section-title">{t('timeTrigger.createModal.processSection')}</div>
-        <Form.Select
-          field="processId"
-          label={t('timeTrigger.fields.process')}
-          placeholder={t('timeTrigger.fields.processPlaceholder')}
-          optionList={mockProcesses.map((p) => ({ value: p.process_id, label: p.process_name }))}
-          filter
-          className="create-time-trigger-modal-select-full"
-          rules={[
-            { required: true, message: t('timeTrigger.validation.processRequired') },
-          ]}
-          onChange={(v) => handleProcessChange(v as string)}
-        />
-        {selectedProcess && (
-          <Form.Slot label={t('common.owningDepartment')}>
-            <Form.Input field="__process_dept_readonly" noLabel initValue={selectedProcess.owning_department_name || '-'} disabled style={{ width: '100%' }} />
-          </Form.Slot>
-        )}
-      </div>
-
-      {/* Execution target */}
-      <div className="create-time-trigger-modal-section">
-        <div className="create-time-trigger-modal-section-title">{t('timeTrigger.createModal.targetSection')}</div>
-        <Form.RadioGroup
-          field="targetType"
-          label={t('timeTrigger.fields.targetType')}
-          direction="horizontal"
-          rules={[
-            { required: true, message: t('timeTrigger.validation.targetTypeRequired') },
-          ]}
-          onChange={(e) => {
-            setTargetType(e.target.value as ExecutionTargetType);
-            formApi?.setValue('targetId', undefined);
-          }}
-        >
-          <Form.Radio value="BOT_GROUP">{t('timeTrigger.targetType.botGroup')}</Form.Radio>
-          <Form.Radio value="BOT_IN_GROUP">{t('timeTrigger.targetType.botInGroup')}</Form.Radio>
-          <Form.Radio value="UNGROUPED_BOT">{t('timeTrigger.targetType.ungroupedBot')}</Form.Radio>
-        </Form.RadioGroup>
-        {targetType && (
-          <div className="create-time-trigger-modal-field">
-            <div className="create-time-trigger-modal-field-label">{t('task.createModal.selectTarget')}</div>
-            <BotTargetSelector
-              targetType={targetType}
-              value={formApi?.getValue('targetId')}
-              onChange={(v) => formApi?.setValue('targetId', v)}
-              placeholder={t('timeTrigger.fields.targetPlaceholder')}
-            />
-            <Form.Input
-              field="targetId"
-              noLabel
-              style={{ display: 'none' }}
-              rules={[
-                { required: true, message: t('timeTrigger.validation.targetRequired') },
-              ]}
-            />
-          </div>
-        )}
-      </div>
-
-      {/* Execution settings */}
-      <div className="create-time-trigger-modal-section">
-        <div className="create-time-trigger-modal-section-title">{t('timeTrigger.createModal.executionSection')}</div>
-        <Form.RadioGroup
-          field="priority"
-          label={t('timeTrigger.fields.priority')}
-          direction="horizontal"
-        >
-          <Form.Radio value="HIGH">{t('task.priority.high')}</Form.Radio>
-          <Form.Radio value="MEDIUM">{t('task.priority.medium')}</Form.Radio>
-          <Form.Radio value="LOW">{t('task.priority.low')}</Form.Radio>
-        </Form.RadioGroup>
-        <Form.InputNumber
-          field="maxDuration"
-          label={t('timeTrigger.fields.maxDuration')}
-          min={60}
-          max={86400}
-          suffix={t('common.seconds')}
-          style={{ width: 150 }}
-          rules={[
-            { required: true, message: t('task.validation.maxDurationRequired') },
-            { validator: (rule, value, callback) => {
-              if (value < 60 || value > 86400) {
-                callback(t('task.validation.maxDurationRange'));
-                return false;
-              }
-              callback();
-              return true;
-            }},
-          ]}
-        />
-        <Form.InputNumber
-          field="validityDays"
-          label={t('timeTrigger.fields.validityDays')}
-          min={1}
-          max={30}
-          suffix={t('common.days')}
-          style={{ width: 150 }}
-          rules={[
-            { required: true, message: t('task.validation.validityDaysRequired') },
-            { validator: (rule, value, callback) => {
-              if (value < 1 || value > 30) {
-                callback(t('task.validation.validityDaysRange'));
-                return false;
-              }
-              callback();
-              return true;
-            }},
-          ]}
-        />
-        <div className="create-time-trigger-modal-field">
-          <div className="semi-form-field-label-text">{t('timeTrigger.fields.enableRecording')}</div>
-          <Form.Switch
-            field="enableRecording"
-            noLabel
-            size="small"
-          />
-        </div>
-      </div>
-    </>
-  );
-
-  // 渲染Step1Right: ParameterConfig
-  const renderStep1RightContent = () => (
-    <>
-      {/* Input parameters */}
-      {hasParameters && (
-        <div className="create-time-trigger-modal-section">
-          <div className="create-time-trigger-modal-section-title">{t('timeTrigger.createModal.parameterSection')}</div>
-          <div className="create-time-trigger-modal-params">
-            {selectedProcess?.parameters.map((param) => renderParameterInput(param))}
-          </div>
-        </div>
-      )}
-
-      {/* Output parameters display */}
-      {hasOutputParameters && (
-        <div className="create-time-trigger-modal-section">
-          <div className="create-time-trigger-modal-section-title">{t('template.createModal.outputParametersSection')}</div>
-          <div className="create-time-trigger-modal-output-params">
-            {selectedProcess?.output_parameters?.map((param) => (
-              <div className="create-time-trigger-modal-output-param-item" key={param.name}>
-                <div className="create-time-trigger-modal-output-param-name">
-                  <span>{param.name}</span>
-                  <Tag size="small" color="grey" style={{ marginLeft: 8 }}>
-                    {param.type}
-                  </Tag>
-                </div>
-                {param.description && (
-                  <div className="create-time-trigger-modal-output-param-desc">{param.description}</div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* If no parameters */}
-      {!hasParameters && !hasOutputParameters && (
-        <div className="create-time-trigger-modal-no-params">
-          <Inbox size={36} strokeWidth={2} style={{ color: 'var(--semi-color-text-2)', marginBottom: 8 }} />
-          <div>{t('template.createModal.noParameters')}</div>
-        </div>
-      )}
-    </>
-  );
-
-  // 渲染Step2: Trigger Rules and Preview
+  // Step2: 触发规则
   const renderStep2Content = () => (
     <>
-      {/* Time rules - Using TriggerRuleConfig component */}
       <TriggerRuleConfig
         ruleType={ruleType}
         onRuleTypeChange={setRuleType}
@@ -769,35 +255,25 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
         workCalendarOptions={getWorkCalendarOptions()}
         showWorkCalendar={true}
       />
-
-      {/* Trigger preview - Separated from Trigger Rules by a line */}
       <div className="create-time-trigger-modal-section" style={{ borderTop: '1px solid var(--semi-color-border)', paddingTop: 20 }}>
         <div className="create-time-trigger-modal-section-title">{t('timeTrigger.createModal.previewSection')}</div>
         <div className="create-time-trigger-modal-preview">
-          <div className="create-time-trigger-modal-preview-title">
-            {t('timeTrigger.createModal.previewTitle')}
-          </div>
+          <div className="create-time-trigger-modal-preview-title">{t('timeTrigger.createModal.previewTitle')}</div>
           {previewTimes.length > 0 ? (
             <ul className="create-time-trigger-modal-preview-list">
               {previewTimes.map((time, index) => (
-                <li key={index}>
-                  <span className="preview-index">{index + 1}.</span>
-                  {time}
-                </li>
+                <li key={index}><span className="preview-index">{index + 1}.</span>{time}</li>
               ))}
             </ul>
           ) : (
-            <div className="create-time-trigger-modal-preview-empty">
-              {t('timeTrigger.createModal.noPreview')}
-            </div>
+            <div className="create-time-trigger-modal-preview-empty">{t('timeTrigger.createModal.noPreview')}</div>
           )}
         </div>
       </div>
     </>
   );
 
-  // calculationModal宽度
-  const modalWidth = showRightPanel ? 900 : 520;
+  const modalWidth = showRightPanel && currentStep === 1 ? 900 : 520;
 
   return (
     <Modal
@@ -811,77 +287,46 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
       width={modalWidth}
       centered
     >
-      <Form
-        className="create-time-trigger-modal-form"
-        labelPosition="top"
-        getFormApi={setFormApi}
-        initValues={{
-          priority: 'MEDIUM',
-          maxDuration: 3600,
-          validityDays: 7,
-          enableRecording: false,
-        }}
-      >
-        {/* Step bar */}
-        <div className="create-time-trigger-modal-steps">
-          <Steps current={currentStep} type="basic" size="small">
-            <Steps.Step title={t('timeTrigger.createModal.steps.basicInfo')} />
-            <Steps.Step title={t('timeTrigger.createModal.steps.taskConfig')} />
-            <Steps.Step title={t('timeTrigger.createModal.steps.triggerRule')} />
-          </Steps>
+      <div className="create-time-trigger-modal-steps">
+        <Steps current={currentStep} type="basic" size="small">
+          <Steps.Step title={t('timeTrigger.createModal.steps.basicInfo')} />
+          <Steps.Step title={t('timeTrigger.createModal.steps.taskConfig')} />
+          <Steps.Step title={t('timeTrigger.createModal.steps.triggerRule')} />
+        </Steps>
+      </div>
+
+      {currentStep === 0 && (
+        <div className="create-time-trigger-modal-content">
+          {renderStep0Content()}
         </div>
+      )}
 
-        {/* Content area */}
-        {currentStep === 0 && (
-          <div className="create-time-trigger-modal-content">
-            {renderStep0Content()}
-          </div>
-        )}
+      {currentStep === 1 && (
+        <TaskForm
+          taskRef={taskRef}
+          showParamsHandle={setShowRightPanel}
+          source={TaskFormSource.TimerTrigger}
+          showRightPanel={showRightPanel}
+        />
+      )}
 
-        {currentStep === 1 && (
-          <div className="create-time-trigger-modal-body">
-            <div className="create-time-trigger-modal-left">
-              <div className="create-time-trigger-modal-content">
-                {renderStep1LeftContent()}
-              </div>
-            </div>
-            {showRightPanel && (
-              <div className="create-time-trigger-modal-right">
-                <div className="create-time-trigger-modal-content">
-                  {renderStep1RightContent()}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {currentStep === 2 && (
-          <div className="create-time-trigger-modal-content">
-            {renderStep2Content()}
-          </div>
-        )}
-
-        {/* Footer buttons */}
-        <div className="create-time-trigger-modal-footer">
-          <Button theme="light" onClick={onCancel}>
-            {t('common.cancel')}
-          </Button>
-          {currentStep > 0 && (
-            <Button onClick={handlePrev}>
-              {t('timeTrigger.createModal.prevStep')}
-            </Button>
-          )}
-          {currentStep < 2 ? (
-            <Button theme="solid" type="primary" onClick={handleNext}>
-              {t('timeTrigger.createModal.nextStep')}
-            </Button>
-          ) : (
-            <Button theme="solid" type="primary" onClick={handleSubmit} loading={loading}>
-              {t('common.create')}
-            </Button>
-          )}
+      {currentStep === 2 && (
+        <div className="create-time-trigger-modal-content">
+          {renderStep2Content()}
         </div>
-      </Form>
+      )}
+
+      <div className="create-time-trigger-modal-footer">
+        <Button theme="light" onClick={onCancel}>{t('common.cancel')}</Button>
+        {currentStep > 0 && (
+          <Button onClick={handlePrev}>{t('timeTrigger.createModal.prevStep')}</Button>
+        )}
+        {currentStep < 2 ? (
+          <Button theme="solid" type="primary" onClick={handleNext}>{t('timeTrigger.createModal.nextStep')}</Button>
+        ) : (
+          <Button theme="solid" type="primary" onClick={handleSubmit} loading={loading}>{t('common.create')}</Button>
+        )}
+      </div>
     </Modal>
   );
 };
