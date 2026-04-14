@@ -69,12 +69,14 @@ const mockTemplates = [
 ];
 
 // Mock ProcessList
-const mockProcesses: LYProcessActiveVersionResponse[] = [
+const mockProcesses: (LYProcessActiveVersionResponse & { owning_department_name?: string; owner_name?: string })[] = [
   {
     process_id: 'proc-001',
     process_name: 'Auto Order Processing',
     version_id: 'ver-001',
     version: 'v1.2.0',
+    owning_department_name: '技术研发部',
+    owner_name: '张三',
     parameters: [
       { name: 'targetUrl', type: 'TEXT', required: true, description: 'Target URL address' },
       { name: 'maxCount', type: 'NUMBER', required: false, default_value: 100, description: 'Maximum processing count' },
@@ -90,6 +92,8 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     process_name: 'Expense Reimbursement Approval',
     version_id: 'ver-002',
     version: 'v2.0.0',
+    owning_department_name: '财务部',
+    owner_name: '李四',
     parameters: [
       { name: 'department', type: 'TEXT', required: true, description: 'Department name' },
     ],
@@ -102,6 +106,8 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     process_name: 'Employee Onboarding Flow',
     version_id: 'ver-003',
     version: 'v1.0.0',
+    owning_department_name: '人力资源部',
+    owner_name: '王五',
     parameters: [],
     output_parameters: [],
   },
@@ -110,6 +116,8 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     process_name: 'Data Collection Flow',
     version_id: 'ver-004',
     version: 'v1.5.0',
+    owning_department_name: '数据中心',
+    owner_name: '赵六',
     parameters: [
       { name: 'sourceUrl', type: 'TEXT', required: true, description: 'Data source URL' },
       { name: 'pageLimit', type: 'NUMBER', required: false, default_value: 10, description: 'Page limit for collection' },
@@ -145,7 +153,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
   const [initialized, setInitialized] = useState(false);
 
   // 第Tue步: Task config - 仅保留need's Status
-  const [selectedProcess, setSelectedProcess] = useState<LYProcessActiveVersionResponse | null>(null);
+  const [selectedProcess, setSelectedProcess] = useState<(LYProcessActiveVersionResponse & { owning_department_name?: string; owner_name?: string }) | null>(null);
   const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);
 
   // 第Wed步: Trigger Rules
@@ -578,14 +586,6 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
     <div className="edit-time-trigger-modal-section">
       <div className="edit-time-trigger-modal-section-title">{t('timeTrigger.createModal.basicSection')}</div>
 
-      <Form.Slot label={t('common.owningDepartment')}>
-        <span>{trigger?.owning_department_name || '-'}</span>
-      </Form.Slot>
-
-      <Form.Slot label={t('common.owner')}>
-        <span>{trigger?.owner_name || '-'}</span>
-      </Form.Slot>
-
       <Form.Input
         field="triggerName"
         label={t('timeTrigger.fields.name')}
@@ -641,6 +641,16 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
           ]}
           onChange={(v) => handleProcessChange(v as string)}
         />
+        {selectedProcess && (
+          <>
+            <Form.Slot label={t('common.owningDepartment')}>
+              <span>{selectedProcess.owning_department_name || '-'}</span>
+            </Form.Slot>
+            <Form.Slot label={t('common.owner')}>
+              <span>{selectedProcess.owner_name || '-'}</span>
+            </Form.Slot>
+          </>
+        )}
       </div>
 
       {/* Execution target */}
