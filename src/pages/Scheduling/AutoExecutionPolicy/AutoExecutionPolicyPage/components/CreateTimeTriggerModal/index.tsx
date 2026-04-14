@@ -152,7 +152,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
   // 第Tue步: Task config
   const [selectedProcess, setSelectedProcess] = useState<(LYProcessActiveVersionResponse & { owner_name?: string }) | null>(null);
   const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);
-  const [owningDepartmentId, setOwningDepartmentId] = useState<string>('');
+  
 
   // 第Wed步: Trigger Rules
   const [ruleType, setRuleType] = useState<TriggerRuleType>('BASIC');

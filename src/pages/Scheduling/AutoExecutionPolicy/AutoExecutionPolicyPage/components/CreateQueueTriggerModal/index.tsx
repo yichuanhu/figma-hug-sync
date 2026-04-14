@@ -156,7 +156,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
   // 第Tue步: Task config
   const [selectedProcess, setSelectedProcess] = useState<(LYProcessActiveVersionResponse & { owner_name?: string }) | null>(null);
   const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);
-  const [owningDepartmentId, setOwningDepartmentId] = useState<string>('');
+  
 
   // 第Wed步: Queue Trigger Config
   const [enableWorkCalendar, setEnableWorkCalendar] = useState(false);
