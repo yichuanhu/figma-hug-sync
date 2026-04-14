@@ -46,7 +46,7 @@ const EditQueueModal = ({
     }
   };
 
-  const { Text } = Typography;
+  
 
   return (
     <Modal
