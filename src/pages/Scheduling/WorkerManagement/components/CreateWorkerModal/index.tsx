@@ -12,6 +12,7 @@ import {
 } from '@douyinfe/semi-ui';
 import type { LYWorkerResponse } from '@/api';
 import DepartmentSelect from '@/components/DepartmentSelect';
+import OwnerSelect from '@/components/OwnerSelect';
 import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 import './index.less';
 
@@ -47,6 +48,7 @@ const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalPr
   const [selectedWorkerId, setSelectedWorkerId] = useState<string | undefined>(undefined);
   const [desktopType, setDesktopType] = useState<string>('Console');
   const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>(undefined);
+  const [ownerId, setOwnerId] = useState<string>(MOCK_CURRENT_USER.id);
   const [isLocalDesktopDisabled, setIsLocalDesktopDisabled] = useState(false);
 
   // 当select's Alreadyhasbot变化时, Checkits桌面Type
@@ -175,7 +177,7 @@ const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalPr
               <DepartmentSelect value={owningDepartmentId} onChange={setOwningDepartmentId} />
             </Form.Slot>
             <Form.Slot label={t('common.owner')}>
-              <Form.Input field="__owner_readonly" noLabel initValue={MOCK_CURRENT_USER.name} disabled style={{ width: '100%' }} />
+              <OwnerSelect value={ownerId} onChange={setOwnerId} />
             </Form.Slot>
             <Form.TextArea
               field="description"

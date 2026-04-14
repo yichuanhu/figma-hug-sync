@@ -3,6 +3,7 @@ import { Modal, Form, Toast, Button } from '@douyinfe/semi-ui';
 import { useTranslation } from 'react-i18next';
 import type { LYCreateWorkerGroupRequest } from '@/api';
 import DepartmentSelect from '@/components/DepartmentSelect';
+import OwnerSelect from '@/components/OwnerSelect';
 import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 import AddMembersModal from '../AddMembersModal';
 import './index.less';
@@ -28,6 +29,7 @@ const CreateWorkerGroupModal: React.FC<CreateWorkerGroupModalProps> = ({
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>(undefined);
+  const [ownerId, setOwnerId] = useState<string>(MOCK_CURRENT_USER.id);
   const [formApi, setFormApi] = useState<any>(null);
   
   // CreateSuccess后's 提示模态框
@@ -143,7 +145,7 @@ const CreateWorkerGroupModal: React.FC<CreateWorkerGroupModalProps> = ({
               <DepartmentSelect value={owningDepartmentId} onChange={setOwningDepartmentId} />
             </Form.Slot>
             <Form.Slot label={t('common.owner')}>
-              <Form.Input field="__owner_readonly" noLabel initValue={MOCK_CURRENT_USER.name} disabled style={{ width: '100%' }} />
+              <OwnerSelect value={ownerId} onChange={setOwnerId} />
             </Form.Slot>
             <Form.TextArea
               field="description"

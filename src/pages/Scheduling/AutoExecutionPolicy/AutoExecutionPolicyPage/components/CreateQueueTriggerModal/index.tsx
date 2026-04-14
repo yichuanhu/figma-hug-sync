@@ -14,6 +14,7 @@ import {
   Banner,
 } from '@douyinfe/semi-ui';
 import BotTargetSelector from '@/components/BotTargetSelector';
+import OwnerSelect from '@/components/OwnerSelect';
 import { getWorkCalendarOptions } from '@/mocks/workCalendar';
 import type {
   LYProcessActiveVersionResponse,
@@ -150,6 +151,7 @@ const existingTriggerNames = ['Order Queue Trigger', 'Approval Queue Trigger'];
 const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTriggerModalProps) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
+  const [ownerId, setOwnerId] = useState<string>(MOCK_CURRENT_USER.id);
   const [currentStep, setCurrentStep] = useState(0);
   const [formApi, setFormApi] = useState<any>(null);
 
@@ -457,7 +459,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
         rows={3}
       />
       <Form.Slot label={t('common.owner')}>
-        <Form.Input field="__owner_readonly" noLabel initValue={MOCK_CURRENT_USER.name} disabled style={{ width: '100%' }} />
+        <OwnerSelect value={ownerId} onChange={setOwnerId} />
       </Form.Slot>
     </div>
   );

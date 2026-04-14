@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Modal, Form, Button, Toast, Radio } from '@douyinfe/semi-ui';
 import type { ParameterType } from '@/api/index';
 import DepartmentSelect from '@/components/DepartmentSelect';
+import OwnerSelect from '@/components/OwnerSelect';
 import './index.less';
 import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 
@@ -23,6 +24,7 @@ const CreateParameterModal = ({
   const [loading, setLoading] = useState(false);
   const [parameterType, setParameterType] = useState<ParameterType>(1);
   const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>();
+  const [ownerId, setOwnerId] = useState<string>(MOCK_CURRENT_USER.id);
 
   const handleSubmit = async (values: {
     name: string;
@@ -166,7 +168,7 @@ const CreateParameterModal = ({
         </Form.Slot>
 
         <Form.Slot label={t('common.owner')}>
-          <Form.Input field="__owner_readonly" noLabel initValue={MOCK_CURRENT_USER.name} disabled style={{ width: '100%' }} />
+          <OwnerSelect value={ownerId} onChange={setOwnerId} />
         </Form.Slot>
 
         <div className="create-parameter-modal-footer">
