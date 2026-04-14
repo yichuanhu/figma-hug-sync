@@ -144,9 +144,9 @@ const QueueTriggerList = () => {
     offset: 0,
     size: 20,
     keyword: '',
-    process_id: undefined,
-    queue_id: undefined,
-    status: undefined,
+    process_id: [],
+    queue_id: [],
+    status: [],
     owning_department_name: undefined,
   });
 
@@ -186,18 +186,18 @@ const QueueTriggerList = () => {
       }
 
       // byProcessFilter
-      if (params.process_id) {
-        filtered = filtered.filter((trigger) => trigger.process_id === params.process_id);
+      if (params.process_id && params.process_id.length > 0) {
+        filtered = filtered.filter((trigger) => params.process_id!.includes(trigger.process_id));
       }
 
       // byQueueFilter
-      if (params.queue_id) {
-        filtered = filtered.filter((trigger) => trigger.queue_id === params.queue_id);
+      if (params.queue_id && params.queue_id.length > 0) {
+        filtered = filtered.filter((trigger) => params.queue_id!.includes(trigger.queue_id));
       }
 
       // byStatusFilter
-      if (params.status) {
-        filtered = filtered.filter((trigger) => trigger.status === params.status);
+      if (params.status && params.status.length > 0) {
+        filtered = filtered.filter((trigger) => params.status!.includes(trigger.status));
       }
 
       // by归属部门Filter
@@ -237,18 +237,18 @@ const QueueTriggerList = () => {
   );
 
   // ProcessFilter
-  const handleProcessFilter = (processId: string | undefined) => {
-    setQueryParams((prev) => ({ ...prev, offset: 0, process_id: processId }));
+  const handleProcessFilter = (processIds: string[]) => {
+    setQueryParams((prev) => ({ ...prev, offset: 0, process_id: processIds }));
   };
 
   // QueueFilter
-  const handleQueueFilter = (queueId: string | undefined) => {
-    setQueryParams((prev) => ({ ...prev, offset: 0, queue_id: queueId }));
+  const handleQueueFilter = (queueIds: string[]) => {
+    setQueryParams((prev) => ({ ...prev, offset: 0, queue_id: queueIds }));
   };
 
   // StatusFilter
-  const handleStatusFilter = (status: TriggerStatus | undefined) => {
-    setQueryParams((prev) => ({ ...prev, offset: 0, status }));
+  const handleStatusFilter = (statuses: TriggerStatus[]) => {
+    setQueryParams((prev) => ({ ...prev, offset: 0, status: statuses }));
   };
 
   // Create TriggerSuccess
@@ -488,7 +488,7 @@ const QueueTriggerList = () => {
 
   // departmentOptions removed - using DepartmentSelect with tree data
 
-  const hasFilters = queryParams.keyword || queryParams.process_id || queryParams.queue_id || queryParams.status || queryParams.owning_department_name;
+  const hasFilters = queryParams.keyword || (queryParams.process_id && queryParams.process_id.length > 0) || (queryParams.queue_id && queryParams.queue_id.length > 0) || (queryParams.status && queryParams.status.length > 0) || queryParams.owning_department_name;
 
   // currentIndex no longer needed - navigation handled by DetailDrawerWrapper
 
@@ -511,38 +511,40 @@ const QueueTriggerList = () => {
               className="queue-trigger-list-search-input"
             />
             <Select
-              placeholder={t('queueTrigger.filter.allProcesses')}
-              optionList={[
-                { value: '', label: t('queueTrigger.filter.allProcesses') },
-                ...mockProcesses.map((p) => ({ value: p.process_id, label: p.process_name })),
-              ]}
-              value={queryParams.process_id || ''}
-              onChange={(value) => handleProcessFilter(value as string || undefined)}
-              style={{ width: 160 }}
+              placeholder={t('common.filterProcess')}
+              optionList={mockProcesses.map((p) => ({ value: p.process_id, label: p.process_name }))}
+              value={queryParams.process_id}
+              onChange={(value) => handleProcessFilter(value as string[])}
+              multiple
+              maxTagCount={1}
+              showClear
+              style={{ width: 200 }}
             />
             <Select
-              placeholder={t('queueTrigger.filter.allQueues')}
-              optionList={[
-                { value: '', label: t('queueTrigger.filter.allQueues') },
-                ...mockQueues.map((q) => ({ value: q.queue_id, label: q.queue_name })),
-              ]}
-              value={queryParams.queue_id || ''}
-              onChange={(value) => handleQueueFilter(value as string || undefined)}
-              style={{ width: 160 }}
+              placeholder={t('common.filterQueue')}
+              optionList={mockQueues.map((q) => ({ value: q.queue_id, label: q.queue_name }))}
+              value={queryParams.queue_id}
+              onChange={(value) => handleQueueFilter(value as string[])}
+              multiple
+              maxTagCount={1}
+              showClear
+              style={{ width: 200 }}
             />
             <Select
-              placeholder={t('queueTrigger.filter.allStatus')}
+              placeholder={t('common.filterStatus')}
               optionList={[
                 { value: 'ENABLED', label: t('queueTrigger.status.enabled') },
                 { value: 'DISABLED', label: t('queueTrigger.status.disabled') },
               ]}
               value={queryParams.status}
-              onChange={(v) => handleStatusFilter(v as TriggerStatus | undefined)}
+              onChange={(v) => handleStatusFilter(v as TriggerStatus[])}
+              multiple
+              maxTagCount={1}
               showClear
-              style={{ width: 120 }}
+              style={{ width: 200 }}
             />
             <DepartmentSelect
-              placeholder={t('common.owningDepartment')}
+              placeholder={t('common.filterDepartment')}
               value={queryParams.owning_department_name}
               onChange={(v) => setQueryParams(prev => ({ ...prev, offset: 0, owning_department_name: v as string | undefined }))}
               showClear

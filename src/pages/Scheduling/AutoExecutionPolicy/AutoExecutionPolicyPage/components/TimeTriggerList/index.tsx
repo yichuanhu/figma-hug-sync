@@ -143,8 +143,8 @@ const TimeTriggerList = () => {
     offset: 0,
     size: 20,
     keyword: '',
-    process_id: undefined,
-    status: undefined,
+    process_id: [],
+    status: [],
     owning_department_name: undefined,
   });
 
@@ -184,13 +184,13 @@ const TimeTriggerList = () => {
       }
 
       // byProcessFilter
-      if (params.process_id) {
-        filtered = filtered.filter((trigger) => trigger.process_id === params.process_id);
+      if (params.process_id && params.process_id.length > 0) {
+        filtered = filtered.filter((trigger) => params.process_id!.includes(trigger.process_id));
       }
 
       // byStatusFilter
-      if (params.status) {
-        filtered = filtered.filter((trigger) => trigger.status === params.status);
+      if (params.status && params.status.length > 0) {
+        filtered = filtered.filter((trigger) => params.status!.includes(trigger.status));
       }
 
       // by归属部门Filter
@@ -230,13 +230,13 @@ const TimeTriggerList = () => {
   );
 
   // ProcessFilter
-  const handleProcessFilter = (processId: string | undefined) => {
-    setQueryParams((prev) => ({ ...prev, offset: 0, process_id: processId }));
+  const handleProcessFilter = (processIds: string[]) => {
+    setQueryParams((prev) => ({ ...prev, offset: 0, process_id: processIds }));
   };
 
   // StatusFilter
-  const handleStatusFilter = (status: TriggerStatus | undefined) => {
-    setQueryParams((prev) => ({ ...prev, offset: 0, status }));
+  const handleStatusFilter = (statuses: TriggerStatus[]) => {
+    setQueryParams((prev) => ({ ...prev, offset: 0, status: statuses }));
   };
 
   // Create TriggerSuccess
@@ -498,7 +498,7 @@ const TimeTriggerList = () => {
 
   // departmentOptions removed - using DepartmentSelect with tree data
 
-  const hasFilters = queryParams.keyword || queryParams.process_id || queryParams.status || queryParams.owning_department_name;
+  const hasFilters = queryParams.keyword || (queryParams.process_id && queryParams.process_id.length > 0) || (queryParams.status && queryParams.status.length > 0) || queryParams.owning_department_name;
 
   // currentIndex no longer needed - navigation handled by DetailDrawerWrapper
 
@@ -521,9 +521,11 @@ const TimeTriggerList = () => {
               className="time-trigger-list-search-input"
             />
             <Select
-              placeholder={t('timeTrigger.filter.allProcesses')}
+              placeholder={t('common.filterProcess')}
               value={queryParams.process_id}
-              onChange={(v) => handleProcessFilter(v as string | undefined)}
+              onChange={(v) => handleProcessFilter(v as string[])}
+              multiple
+              maxTagCount={1}
               showClear
               style={{ width: 200 }}
               optionList={mockProcesses.map((p) => ({
@@ -532,18 +534,20 @@ const TimeTriggerList = () => {
               }))}
             />
             <Select
-              placeholder={t('timeTrigger.filter.allStatus')}
+              placeholder={t('common.filterStatus')}
               value={queryParams.status}
-              onChange={(v) => handleStatusFilter(v as TriggerStatus | undefined)}
+              onChange={(v) => handleStatusFilter(v as TriggerStatus[])}
+              multiple
+              maxTagCount={1}
               showClear
-              style={{ width: 120 }}
+              style={{ width: 200 }}
               optionList={[
                 { value: 'ENABLED', label: t('timeTrigger.status.enabled') },
                 { value: 'DISABLED', label: t('timeTrigger.status.disabled') },
               ]}
             />
             <DepartmentSelect
-              placeholder={t('common.owningDepartment')}
+              placeholder={t('common.filterDepartment')}
               value={queryParams.owning_department_name}
               onChange={(v) => setQueryParams(prev => ({ ...prev, offset: 0, owning_department_name: v as string | undefined }))}
               showClear
