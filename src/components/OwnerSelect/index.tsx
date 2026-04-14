@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TreeSelect, Typography } from '@douyinfe/semi-ui';
+import { User, Building2 } from 'lucide-react';
 import { departmentTree, DeptTreeNode } from '@/mocks/departmentData';
 import { ALL_ORG_USERS, OrgUser } from '@/components/CollaboratorManager/mockData';
 
@@ -19,6 +20,7 @@ interface TreeNode {
   label: string;
   disabled?: boolean;
   isLeaf?: boolean;
+  isUser?: boolean;
   children?: TreeNode[];
 }
 
@@ -51,6 +53,7 @@ const buildOwnerTree = (
       value: u.id,
       label: u.name,
       isLeaf: true,
+      isUser: true,
     }));
 
     const allChildren = [...childDeptNodes, ...userNodes];
@@ -122,14 +125,24 @@ const OwnerSelect = ({
       style={{ width: '100%', ...style }}
       className={className}
       dropdownStyle={{ maxHeight: 320, overflow: 'auto', width: dropdownWidth }}
-      renderLabel={(label) => (
-        <Text
-          ellipsis={{ showTooltip: true }}
-          style={{ width: '100%', margin: 0 }}
-        >
-          {label as string}
-        </Text>
-      )}
+      renderLabel={(label, data) => {
+        const isUser = (data as any)?.isUser;
+        return (
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, width: '100%', minWidth: 0 }}>
+            {isUser ? (
+              <User size={14} style={{ flexShrink: 0, color: 'var(--semi-color-text-2)' }} />
+            ) : (
+              <Building2 size={14} style={{ flexShrink: 0, color: 'var(--semi-color-text-2)' }} />
+            )}
+            <Text
+              ellipsis={{ showTooltip: true }}
+              style={{ flex: 1, minWidth: 0, margin: 0 }}
+            >
+              {label as string}
+            </Text>
+          </span>
+        );
+      }}
     />
   );
 };
