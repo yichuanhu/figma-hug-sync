@@ -23,7 +23,8 @@ import type {
   TaskPriority,
 } from '@/api';
 import './index.less';
-
+import DepartmentSelect from '@/components/DepartmentSelect';
+import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 const { Text } = Typography;
 
 interface EditQueueTriggerModalProps {
