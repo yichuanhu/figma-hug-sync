@@ -12,6 +12,7 @@ import {
   Steps,
 } from '@douyinfe/semi-ui';
 import { HelpCircle, Inbox } from 'lucide-react';
+import DepartmentSelect from '@/components/DepartmentSelect';
 import TriggerRuleConfig from '@/components/TriggerRuleConfig';
 import BotTargetSelector from '@/components/BotTargetSelector';
 import { getWorkCalendarOptions } from '@/mocks/workCalendar';
@@ -526,20 +527,12 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
         showClear
         rows={3}
       />
-      <div className="semi-form-field" style={{ marginBottom: 12 }}>
-        <label className="semi-form-field-label">
-          <span className="semi-form-field-label-text">{t('common.owningDepartment')}</span>
-        </label>
-        <Text type="tertiary">
-          {selectedProcess?.owning_department_name || (selectedProcess ? MOCK_CURRENT_USER.department_name : t('timeTrigger.createModal.selectProcessFirst'))}
-        </Text>
-      </div>
-      <div className="semi-form-field" style={{ marginBottom: 12 }}>
-        <label className="semi-form-field-label">
-          <span className="semi-form-field-label-text">{t('common.owner')}</span>
-        </label>
-        <Text>{MOCK_CURRENT_USER.name}</Text>
-      </div>
+      <Form.Slot label={t('common.owningDepartment')}>
+        <DepartmentSelect value={owningDepartmentId} onChange={setOwningDepartmentId} />
+      </Form.Slot>
+      <Form.Slot label={t('common.owner')}>
+        <Form.Input field="__owner_readonly" noLabel initValue={MOCK_CURRENT_USER.name} disabled style={{ width: '100%' }} />
+      </Form.Slot>
     </div>
   );
 
