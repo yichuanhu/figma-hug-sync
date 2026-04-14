@@ -100,7 +100,7 @@ const CreatorComponents = () => {
           style={{ width: 280 }}
         />
         <Select
-          placeholder={t('sharing.filter.tags')}
+          placeholder={t('common.filterTags')}
           value={tagsFilter}
           onChange={(v) => setTagsFilter(v as string[])}
           multiple

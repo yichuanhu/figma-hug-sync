@@ -42,7 +42,14 @@
     "owningDepartment": "归属部门",
     "owner": "归属者",
     "owningDepartmentPlaceholder": "请选择归属部门",
-    "owningDepartmentRequired": "请选择归属部门"
+    "owningDepartmentRequired": "请选择归属部门",
+    "filterProcess": "筛选流程",
+    "filterStatus": "筛选状态",
+    "filterQueue": "筛选队列",
+    "filterDepartment": "筛选归属部门",
+    "filterTags": "筛选标签",
+    "filterGroup": "筛选分组",
+    "filterPublisher": "筛选发布者"
   },
   "emptyState": {
     "retry": "重试",

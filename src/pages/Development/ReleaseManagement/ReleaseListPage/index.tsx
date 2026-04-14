@@ -443,7 +443,7 @@ const ReleaseListPage: React.FC = () => {
                   className="release-list-page-search-input"
                 />
                 <Select
-                  placeholder={t('release.list.columns.publisher')}
+                  placeholder={t('common.filterPublisher')}
                   value={activeFilters.publisher}
                   onChange={(v) => {
                     setActiveFilters(prev => ({ ...prev, publisher: v as string[] }));

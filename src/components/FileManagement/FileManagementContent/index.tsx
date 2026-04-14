@@ -524,7 +524,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
                 maxLength={100}
               />
               <DepartmentSelect
-                placeholder={t('common.owningDepartment')}
+                placeholder={t('common.filterDepartment')}
                 value={departmentFilter}
                 onChange={(v) => {
                   setDepartmentFilter(v);

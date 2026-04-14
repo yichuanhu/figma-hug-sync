@@ -106,7 +106,7 @@ interface GetTemplatesParams {
   offset?: number;
   size?: number;
   keyword?: string;
-  process_id?: string;
+  process_id?: string[];
   owning_department_name?: string;
 }
 
@@ -127,7 +127,7 @@ const TemplateManagementPage = () => {
     offset: 0,
     size: 20,
     keyword: '',
-    process_id: undefined,
+    process_id: [],
     owning_department_name: undefined,
   });
 
@@ -170,8 +170,8 @@ const TemplateManagementPage = () => {
       }
 
       // byProcessFilter
-      if (params.process_id) {
-        filtered = filtered.filter((tpl) => tpl.process_id === params.process_id);
+      if (params.process_id && params.process_id.length > 0) {
+        filtered = filtered.filter((tpl) => params.process_id!.includes(tpl.process_id));
       }
 
       // by归属部门Filter
@@ -211,8 +211,8 @@ const TemplateManagementPage = () => {
   );
 
   // ProcessFilter
-  const handleProcessFilter = (processId: string | undefined) => {
-    setQueryParams((prev) => ({ ...prev, offset: 0, process_id: processId }));
+  const handleProcessFilter = (processIds: string[]) => {
+    setQueryParams((prev) => ({ ...prev, offset: 0, process_id: processIds }));
   };
 
   // CreateTemplateSuccess
@@ -280,8 +280,8 @@ const TemplateManagementPage = () => {
           (tpl.description && tpl.description.toLowerCase().includes(kw))
       );
     }
-    if (queryParams.process_id) {
-      filtered = filtered.filter((tpl) => tpl.process_id === queryParams.process_id);
+    if (queryParams.process_id && queryParams.process_id.length > 0) {
+      filtered = filtered.filter((tpl) => queryParams.process_id!.includes(tpl.process_id));
     }
     
     const paged = filtered.slice(newOffset, newOffset + pageSize);
@@ -430,7 +430,7 @@ const TemplateManagementPage = () => {
 
   // departmentOptions removed - using DepartmentSelect with tree data
 
-  const hasFilters = queryParams.keyword || queryParams.process_id || queryParams.owning_department_name;
+  const hasFilters = queryParams.keyword || (queryParams.process_id && queryParams.process_id.length > 0) || queryParams.owning_department_name;
 
   return (
       <div className="template-management">
@@ -468,9 +468,11 @@ const TemplateManagementPage = () => {
                   className="template-management-search-input"
                 />
                 <Select
-                  placeholder={t('template.filterByProcess')}
+                  placeholder={t('common.filterProcess')}
                   value={queryParams.process_id}
-                  onChange={(v) => handleProcessFilter(v as string | undefined)}
+                  onChange={(v) => handleProcessFilter(v as string[])}
+                  multiple
+                  maxTagCount={1}
                   showClear
                   style={{ width: 200 }}
                   optionList={mockProcesses.map((p) => ({
@@ -479,7 +481,7 @@ const TemplateManagementPage = () => {
                   }))}
                 />
                 <DepartmentSelect
-                  placeholder={t('common.owningDepartment')}
+                  placeholder={t('common.filterDepartment')}
                   value={queryParams.owning_department_name}
                   onChange={(v) => setQueryParams(prev => ({ ...prev, offset: 0, owning_department_name: v as string | undefined }))}
                   showClear

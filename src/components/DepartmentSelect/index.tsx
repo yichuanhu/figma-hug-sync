@@ -109,6 +109,7 @@ const DepartmentSelect = (props: DepartmentSelectProps) => {
       placeholder={placeholder || t('common.owningDepartmentPlaceholder')}
       disabled={disabled}
       multiple={multiple}
+      checkRelation="unRelated"
       showClear={showClear ?? !multiple}
       maxTagCount={maxTagCount}
       defaultExpandAll
