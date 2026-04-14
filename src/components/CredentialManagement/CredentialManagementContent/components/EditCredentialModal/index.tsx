@@ -169,7 +169,7 @@ const EditCredentialModal = ({
         </Form.Slot>
 
         <Form.Slot label={t('common.owner')}>
-          <span>{credential?.owner_name || '-'}</span>
+          <Form.Input field="__owner_readonly" noLabel initValue={credential?.owner_name || '-'} disabled style={{ width: '100%' }} />
         </Form.Slot>
 
         <div className="edit-credential-modal-footer">

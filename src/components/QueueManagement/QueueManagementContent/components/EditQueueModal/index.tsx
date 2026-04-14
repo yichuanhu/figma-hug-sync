@@ -97,7 +97,7 @@ const EditQueueModal = ({
         </Form.Slot>
 
         <Form.Slot label={t('common.owner')}>
-          <span>{queue?.owner_name || '-'}</span>
+          <Form.Input field="__owner_readonly" noLabel initValue={queue?.owner_name || '-'} disabled style={{ width: '100%' }} />
         </Form.Slot>
 
         <div className="edit-queue-modal-footer">
