@@ -3,6 +3,7 @@ import { Modal, Form, Toast } from '@douyinfe/semi-ui';
 import { useTranslation } from 'react-i18next';
 import type { LYWorkerGroupResponse, LYUpdateWorkerGroupRequest } from '@/api';
 import DepartmentSelect from '@/components/DepartmentSelect';
+import OwnerSelect from '@/components/OwnerSelect';
 import './index.less';
 
 interface EditWorkerGroupModalProps {

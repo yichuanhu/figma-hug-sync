@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Modal, Form, Toast, Button } from '@douyinfe/semi-ui';
 import type { LYUpdateProcessRequest, LYProcessResponse } from '@/api';
 import DepartmentSelect from '@/components/DepartmentSelect';
+import OwnerSelect from '@/components/OwnerSelect';
 import './index.less';
 
 interface EditProcessModalProps {

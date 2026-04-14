@@ -10,6 +10,7 @@ import {
 } from '@douyinfe/semi-ui';
 import type { LYWorkerResponse } from '@/api';
 import DepartmentSelect from '@/components/DepartmentSelect';
+import OwnerSelect from '@/components/OwnerSelect';
 import './index.less';
 
 interface EditWorkerModalProps {

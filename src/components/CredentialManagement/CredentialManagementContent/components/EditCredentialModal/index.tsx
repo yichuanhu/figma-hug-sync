@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Modal, Form, Button, Toast } from '@douyinfe/semi-ui';
 import type { LYCredentialResponse } from '@/api/index';
 import DepartmentSelect from '@/components/DepartmentSelect';
+import OwnerSelect from '@/components/OwnerSelect';
 
 import './index.less';
 
