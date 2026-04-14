@@ -245,9 +245,11 @@ const TaskForm = (props: TaskFormProps) => {
           return;
         }
         setSelectedProcess(process);
+        // 自动填充归属部门
+        formApi?.setValue('owning_department_name', process.owning_department_name || '');
       }
     },
-    [processData, t]
+    [processData, t, formApi]
   );
 
   const renderSelectedItem = (optionNode: { label?: string; name?: string }) => {
