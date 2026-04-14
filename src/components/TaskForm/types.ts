@@ -3,6 +3,7 @@
  * 百分百还原参考代码的类型结构
  */
 import { Ref } from 'react';
+import type { LYExecutionTemplateResponse } from '@/api';
 
 // 任务优先级枚举
 export enum Priority {
@@ -108,6 +109,7 @@ export interface TaskFormRef {
   init: () => void;
   submit: () => Promise<ITaskInfo | null>;
   pre: () => ITaskInfo;
+  fillTemplate: (template: LYExecutionTemplateResponse) => void;
 }
 
 // TaskForm props 接口

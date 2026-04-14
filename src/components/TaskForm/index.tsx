@@ -225,16 +225,6 @@ const TaskForm = (props: TaskFormProps) => {
     };
   }, [formApi, getInputParameterValues, getWorkerData, outputParameters]);
 
-  useImperativeHandle(
-    taskRef,
-    () => ({
-      init: initForm,
-      submit: submitForm,
-      pre: preForm,
-    }),
-    [initForm, submitForm]
-  );
-
   // 选择流程
   const handleProcessChange = useCallback(
     (processId: string) => {
@@ -250,6 +240,42 @@ const TaskForm = (props: TaskFormProps) => {
       }
     },
     [processData, t, formApi]
+  );
+
+  // 通过模板填充表单
+  const fillTemplate = useCallback(
+    (template: import('@/api').LYExecutionTemplateResponse) => {
+      if (!formApi) return;
+      // 选择对应流程
+      if (template.process_id) {
+        formApi.setValue('process_id', template.process_id);
+        handleProcessChange(template.process_id);
+      }
+      // 设置执行目标
+      if (template.execution_target_type === 'BOT_GROUP') {
+        setTargetType('worker_group');
+        formApi.setValue('worker_group_id', template.execution_target_id);
+      } else {
+        setTargetType('worker');
+      }
+      // 设置执行设置
+      formApi.setValue('priority', template.priority || Priority.MEDIUM);
+      formApi.setValue('max_execution_duration', template.max_execution_duration || 3600);
+      formApi.setValue('validity_days', template.validity_days || 7);
+      formApi.setValue('enable_recording', template.enable_recording || false);
+    },
+    [formApi, handleProcessChange]
+  );
+
+  useImperativeHandle(
+    taskRef,
+    () => ({
+      init: initForm,
+      submit: submitForm,
+      pre: preForm,
+      fillTemplate,
+    }),
+    [initForm, submitForm, fillTemplate]
   );
 
   const renderSelectedItem = (optionNode: { label?: string; name?: string }) => {
