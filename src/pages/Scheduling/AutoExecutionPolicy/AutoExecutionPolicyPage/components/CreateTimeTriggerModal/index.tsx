@@ -12,7 +12,7 @@ import {
   Steps,
 } from '@douyinfe/semi-ui';
 import { HelpCircle, Inbox } from 'lucide-react';
-import DepartmentSelect from '@/components/DepartmentSelect';
+
 import TriggerRuleConfig from '@/components/TriggerRuleConfig';
 import BotTargetSelector from '@/components/BotTargetSelector';
 import { getWorkCalendarOptions } from '@/mocks/workCalendar';

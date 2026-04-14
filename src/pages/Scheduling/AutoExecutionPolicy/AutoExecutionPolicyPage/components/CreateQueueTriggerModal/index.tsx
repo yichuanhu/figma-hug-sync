@@ -142,7 +142,7 @@ const mockTemplates = [
 
 import { TIMEZONE_GROUPS } from '@/constants/timezones';
 import { HelpCircle, Inbox } from 'lucide-react';
-import DepartmentSelect from '@/components/DepartmentSelect';
+
 
 // Already存in 's  TriggerName (模拟)
 const existingTriggerNames = ['Order Queue Trigger', 'Approval Queue Trigger'];
