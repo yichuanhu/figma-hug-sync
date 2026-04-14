@@ -69,6 +69,8 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     process_name: 'Employee Onboarding Flow',
     version_id: 'ver-003',
     version: 'v1.0.0',
+    owning_department_id: 'dept-hr',
+    owning_department_name: 'HR Department',
     parameters: [],
     output_parameters: [
       { name: 'employeeId', type: 'TEXT', description: 'New employee ID' },
@@ -79,6 +81,8 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     process_name: 'Data Collection Flow',
     version_id: 'ver-004',
     version: 'v1.5.0',
+    owning_department_id: 'dept-ops',
+    owning_department_name: 'Operations Department',
     parameters: [
       { name: 'sourceUrl', type: 'TEXT', required: true, description: 'Data source URL' },
       { name: 'pageLimit', type: 'NUMBER', required: false, default_value: 10, description: 'Page limit for collection' },
