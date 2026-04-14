@@ -184,7 +184,7 @@ const Showcases = () => {
           style={{ width: 280 }}
         />
         <DepartmentSelect
-          placeholder={t('sharing.filter.department')}
+          placeholder={t('common.filterDepartment')}
           value={departmentFilter}
           onChange={(v) => setDepartmentFilter(v)}
           multiple
@@ -194,7 +194,7 @@ const Showcases = () => {
           style={{ width: 'auto', minWidth: 120, maxWidth: 600 }}
         />
         <Select
-          placeholder={t('sharing.filter.tags')}
+          placeholder={t('common.filterTags')}
           value={tagsFilter}
           onChange={(v) => setTagsFilter(v as string[])}
           multiple

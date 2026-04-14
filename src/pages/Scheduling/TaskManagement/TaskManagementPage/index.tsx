@@ -713,7 +713,7 @@ const TaskManagementPage = () => {
                   showClear
                 />
                 <DepartmentSelect
-                  placeholder={t('common.owningDepartment')}
+                  placeholder={t('common.filterDepartment')}
                   value={departmentFilter}
                   onChange={(v) => {
                     setDepartmentFilter(v);

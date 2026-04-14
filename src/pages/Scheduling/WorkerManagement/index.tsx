@@ -916,7 +916,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
                 onChange={handleSearch}
               />
               <DepartmentSelect
-                placeholder={t('common.owningDepartment')}
+                placeholder={t('common.filterDepartment')}
                 value={departmentFilter}
                 onChange={(v) => {
                   setDepartmentFilter(v);
