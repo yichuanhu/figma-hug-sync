@@ -23,7 +23,7 @@ import FilterPopover from '@/components/FilterPopover';
 import DepartmentSelect from '@/components/DepartmentSelect';
 import CreateTaskModal from '../components/CreateTaskModal';
 import TaskDetailDrawer from '../components/TaskDetailDrawer';
-import { Bot, ClipboardClock, Component, Ellipsis, MinusCircle, Monitor, PlayCircle, Plus, RefreshCw, Trash2, UserPlus, XCircle } from 'lucide-react';
+import { Bot, ClipboardClock, Component, Ellipsis, MinusCircle, PlayCircle, Plus, RefreshCw, UserPlus, XCircle } from 'lucide-react';
 import type { 
   LYTaskResponse, 
   GetTasksParams, 

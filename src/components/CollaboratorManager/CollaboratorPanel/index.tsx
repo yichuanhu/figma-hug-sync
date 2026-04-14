@@ -15,7 +15,7 @@ import {
   Breadcrumb,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
-import { ChevronLeft, ChevronRight, MinusCircle, Network, Search, User, UserPlus, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Network, Search, User, UserPlus, X } from 'lucide-react';
 import type {
   AssetCollaborator,
   CollaboratorAssetType,

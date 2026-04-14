@@ -16,7 +16,7 @@ import {
 } from '@douyinfe/semi-ui';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
-import { Link, Maximize2, Minimize2, Trash2, Unlink, X } from 'lucide-react';
+import { Link, Maximize2, Minimize2, Unlink, X } from 'lucide-react';
 import type { PersonalCredential } from '../../index';
 
 import './index.less';

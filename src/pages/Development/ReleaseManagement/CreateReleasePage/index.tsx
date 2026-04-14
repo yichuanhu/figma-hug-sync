@@ -21,7 +21,7 @@ import type {
 } from '@/api';
 
 import './index.less';
-import { ArrowLeft, Info } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 
 const { Title, Text } = Typography;
 

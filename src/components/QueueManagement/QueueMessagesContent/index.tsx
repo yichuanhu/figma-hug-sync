@@ -21,7 +21,7 @@ import {
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
-import { ChevronLeft, Ellipsis, PlayCircle, RefreshCw, Search, Trash2 } from 'lucide-react';
+import { ChevronLeft, Ellipsis, PlayCircle, RefreshCw, Trash2 } from 'lucide-react';
 import { debounce } from 'lodash';
 import type {
   LYQueueMessageResponse,

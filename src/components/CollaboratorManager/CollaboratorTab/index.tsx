@@ -11,7 +11,7 @@ import {
   Popover,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
-import { MinusCircle, Network, User, UserPlus } from 'lucide-react';
+import { Network, User, UserPlus } from 'lucide-react';
 import type {
   AssetCollaborator,
   CollaboratorAssetType,

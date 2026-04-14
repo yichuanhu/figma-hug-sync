@@ -25,7 +25,7 @@ import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 
 import { getDepartmentName } from '@/mocks/departmentData';
 import './index.less';
-import { ExternalLink, HelpCircle, Link, Pencil, PlayCircle, Trash2, Upload } from 'lucide-react';
+import { ExternalLink, Link, Pencil, PlayCircle, Trash2, Upload } from 'lucide-react';
 
 const { Title, Text } = Typography;
 
