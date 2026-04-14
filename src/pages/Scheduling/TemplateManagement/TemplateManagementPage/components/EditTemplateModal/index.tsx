@@ -36,6 +36,8 @@ const mockProcesses: LYProcessActiveVersionResponse[] = [
     process_name: 'Auto Order Processing',
     version_id: 'ver-001',
     version: 'v1.2.0',
+    owning_department_id: 'dept-tech',
+    owning_department_name: 'Technology Department',
     parameters: [
       { name: 'targetUrl', type: 'TEXT', required: true, description: 'Target URL address' },
       { name: 'maxCount', type: 'NUMBER', required: false, default_value: 100, description: 'Maximum processing count' },
