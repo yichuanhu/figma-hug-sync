@@ -148,17 +148,6 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
           <div className="edit-worker-modal-section">
             <div className="edit-worker-modal-section-title">{t('worker.create.basicInfo')}</div>
 
-            <Form.Slot label={t('common.owningDepartment')}>
-              <DepartmentSelect
-                value={owningDepartmentId}
-                onChange={setOwningDepartmentId}
-              />
-            </Form.Slot>
-
-            <Form.Slot label={t('common.owner')}>
-              <Form.Input field="__owner_readonly" noLabel initValue={workerData?.owner_name || '-'} disabled style={{ width: '100%' }} />
-            </Form.Slot>
-
             <Form.Input
               field="name"
               label={t('worker.detail.fields.workerName')}
@@ -171,6 +160,18 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
               ]}
               showClear
             />
+
+            <Form.Slot label={t('common.owningDepartment')}>
+              <DepartmentSelect
+                value={owningDepartmentId}
+                onChange={setOwningDepartmentId}
+              />
+            </Form.Slot>
+
+            <Form.Slot label={t('common.owner')}>
+              <Form.Input field="__owner_readonly" noLabel initValue={workerData?.owner_name || '-'} disabled style={{ width: '100%' }} />
+            </Form.Slot>
+
             <Form.TextArea
               field="description"
               label={t('common.description')}
