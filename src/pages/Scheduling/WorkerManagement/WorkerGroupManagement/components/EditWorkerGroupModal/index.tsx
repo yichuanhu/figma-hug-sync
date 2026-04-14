@@ -101,17 +101,6 @@ const EditWorkerGroupModal: React.FC<EditWorkerGroupModalProps> = ({
             maxLength={30}
             showClear
           />
-          
-          <Form.TextArea
-            field="description"
-            label={t('common.description')}
-            placeholder={t('workerGroup.fields.descriptionPlaceholder')}
-            maxCount={2000}
-            autosize={{ minRows: 3, maxRows: 6 }}
-            rules={[
-              { max: 2000, message: t('workerGroup.validation.descriptionLengthError') },
-            ]}
-          />
 
           <Form.Slot label={t('common.owningDepartment')}>
             <DepartmentSelect
@@ -123,6 +112,17 @@ const EditWorkerGroupModal: React.FC<EditWorkerGroupModalProps> = ({
           <Form.Slot label={t('common.owner')}>
             <Form.Input field="__owner_readonly" noLabel initValue={groupData?.owner_name || '-'} disabled style={{ width: '100%' }} />
           </Form.Slot>
+          
+          <Form.TextArea
+            field="description"
+            label={t('common.description')}
+            placeholder={t('workerGroup.fields.descriptionPlaceholder')}
+            maxCount={2000}
+            autosize={{ minRows: 3, maxRows: 6 }}
+            rules={[
+              { max: 2000, message: t('workerGroup.validation.descriptionLengthError') },
+            ]}
+          />
         </Form>
       </div>
     </Modal>

@@ -349,14 +349,6 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
                   {t('template.createModal.basicInfo')}
                 </div>
 
-                <Form.Slot label={t('common.owningDepartment')}>
-                  <Form.Input field="__dept_readonly" noLabel initValue={template?.owning_department_name || '-'} disabled style={{ width: '100%' }} />
-                </Form.Slot>
-
-                <Form.Slot label={t('common.owner')}>
-                  <Form.Input field="__owner_readonly" noLabel initValue={template?.owner_name || '-'} disabled style={{ width: '100%' }} />
-                </Form.Slot>
-
                 <Form.Input
                   field="templateName"
                   label={t('template.fields.name')}
@@ -376,6 +368,9 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
                   showClear
                   rows={3}
                 />
+                <Form.Slot label={t('common.owner')}>
+                  <Form.Input field="__owner_readonly" noLabel initValue={template?.owner_name || '-'} disabled style={{ width: '100%' }} />
+                </Form.Slot>
               </div>
 
               {/* Process */}
@@ -396,11 +391,16 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
                   onChange={(v) => handleProcessChange(v as string)}
                 />
                 {selectedProcess && (
-                  <div className="edit-template-modal-version-info">
-                    <Text type="tertiary" size="small">
-                      {t('template.createModal.versionInfo')}: {selectedProcess.version}
-                    </Text>
-                  </div>
+                  <>
+                    <div className="edit-template-modal-version-info">
+                      <Text type="tertiary" size="small">
+                        {t('template.createModal.versionInfo')}: {selectedProcess.version}
+                      </Text>
+                    </div>
+                    <Form.Slot label={t('common.owningDepartment')}>
+                      <Form.Input field="__dept_readonly" noLabel initValue={selectedProcess.owning_department_name || template?.owning_department_name || '-'} disabled style={{ width: '100%' }} />
+                    </Form.Slot>
+                  </>
                 )}
               </div>
 
