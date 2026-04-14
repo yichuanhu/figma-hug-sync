@@ -151,6 +151,7 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
   // 第Tue步: Task config
   const [selectedProcess, setSelectedProcess] = useState<(LYProcessActiveVersionResponse & { owning_department_name?: string; owner_name?: string }) | null>(null);
   const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);
+  const [owningDepartmentId, setOwningDepartmentId] = useState<string>('');
 
   // 第Wed步: Queue Trigger Config
   const [enableWorkCalendar, setEnableWorkCalendar] = useState(false);
@@ -475,6 +476,12 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
         showClear
         rows={3}
       />
+      <Form.Slot label={t('common.owningDepartment')}>
+        <DepartmentSelect value={owningDepartmentId} onChange={setOwningDepartmentId} />
+      </Form.Slot>
+      <Form.Slot label={t('common.owner')}>
+        <Form.Input field="__owner_readonly" noLabel initValue={trigger?.owner_name || '-'} disabled style={{ width: '100%' }} />
+      </Form.Slot>
     </div>
   );
 
