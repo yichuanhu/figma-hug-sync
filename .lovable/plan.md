@@ -1,78 +1,49 @@
 
 
-## 方案：UI 修复 + 筛选工具栏统一优化
+## 方案：统一筛选栏布局顺序与筛选框自适应宽度
 
-### 一、UI 修复（2项）
+### 一、自动化流程页面筛选项顺序调整
 
-#### 1. 自动化流程页面搜索框宽度统一为 320px
-**文件**：`src/pages/Development/ProcessDevelopment/index.less`
+**文件**：`src/pages/Development/ProcessDevelopment/index.tsx`
 
-当前 `&-search-input` 仅设置了 `width: 320px`，在空状态下可能被 flex 布局压缩。添加 `min-width: 320px` 保证固定宽度。
+当前顺序：`搜索框 → FilterPopover（筛选） → DepartmentSelect（归属部门）`
+队列页面顺序：`搜索框 → DepartmentSelect（归属部门） → FilterPopover（筛选）`
 
-#### 2. 新建发布页面 transfer-container 高度改为 600px
-**文件**：`src/pages/Development/ReleaseManagement/CreateReleasePage/components/ProcessSelectionStep/index.less`
-
-第 4 行 `height: calc(100vh - 380px)` → `height: 600px`，保留 `min-height: 400px`。
+将 `DepartmentSelect` 移到 `FilterPopover` 前面，与队列页面保持一致。
 
 ---
 
-### 二、筛选工具栏优化（3项）
+### 二、所有筛选下拉框宽度改为自适应
 
-#### 1. 统一所有筛选项 placeholder 为"筛选XXX"格式
+当前所有非 DepartmentSelect 的筛选 Select 均使用 `style={{ width: 200 }}`，需改为 `style={{ width: 'auto', minWidth: 120 }}`，使宽度跟随 placeholder 文字长度自适应。
 
-需要修改 placeholder 的组件及目标文案：
+DepartmentSelect 已有 `width: 'auto', minWidth: 120, maxWidth: 600`，无需修改。
 
-| 组件/页面 | 当前 placeholder | 改为 |
-|-----------|-----------------|------|
-| TimeTriggerList - 流程 Select | `timeTrigger.filter.allProcesses` | "筛选流程" |
-| TimeTriggerList - 状态 Select | `timeTrigger.filter.allStatus` | "筛选状态" |
-| QueueTriggerList - 流程 Select | `queueTrigger.filter.allProcesses` | "筛选流程" |
-| QueueTriggerList - 队列 Select | `queueTrigger.filter.allQueues` | "筛选队列" |
-| QueueTriggerList - 状态 Select | `queueTrigger.filter.allStatus` | "筛选状态" |
-| TemplateManagement - 流程 Select | `template.filterByProcess` | "筛选流程" |
-| 所有 DepartmentSelect 筛选 (12处) | `common.owningDepartment` | "筛选归属部门" |
-| Sharing 页面 DepartmentSelect | `sharing.filter.department` | "筛选归属部门" |
-| Sharing 标签 Select (4处) | `sharing.filter.tags` | "筛选标签" |
+需修改的文件和筛选项：
 
-**i18n 新增 key**（`zh-CN.json` / `en.json`）：
-- `common.filterProcess` → 筛选流程 / Filter Process
-- `common.filterStatus` → 筛选状态 / Filter Status
-- `common.filterQueue` → 筛选队列 / Filter Queue
-- `common.filterDepartment` → 筛选归属部门 / Filter Department
-- `common.filterTags` → 筛选标签 / Filter Tags
-
-#### 2. 所有筛选下拉改为多选样式
-
-以下 Select 当前为单选，需添加 `multiple`、`maxTagCount={1}`、`showClear`：
-
-| 文件 | 筛选项 | 改动 |
-|------|--------|------|
-| `TimeTriggerList/index.tsx` | 流程 Select | 单选→多选，value/onChange 类型改为数组 |
-| `TimeTriggerList/index.tsx` | 状态 Select | 单选→多选 |
-| `QueueTriggerList/index.tsx` | 流程 Select | 单选→多选，移除"全部"选项 |
-| `QueueTriggerList/index.tsx` | 队列 Select | 单选→多选，移除"全部"选项 |
-| `QueueTriggerList/index.tsx` | 状态 Select | 单选→多选 |
-| `TemplateManagement/index.tsx` | 流程 Select | 单选→多选 |
-
-同时修改对应的过滤逻辑：从 `item.field === value` 改为 `!array.length || array.includes(item.field)`，queryParams 类型从 `string | undefined` 改为 `string[]`。
-
-#### 3. DepartmentSelect 改为非级联选择
-
-**文件**：`src/components/DepartmentSelect/index.tsx`
-
-在 `<TreeSelect>` 上添加 `checkRelation="unRelated"`，使多选时选中父节点不自动选中子节点。
+| # | 文件 | 筛选项 | 当前 width | 改为 |
+|---|------|--------|-----------|------|
+| 1 | `TimeTriggerList/index.tsx` | 流程 Select | 200 | auto, minWidth: 120 |
+| 2 | `TimeTriggerList/index.tsx` | 状态 Select | 200 | auto, minWidth: 120 |
+| 3 | `QueueTriggerList/index.tsx` | 流程 Select | 200 | auto, minWidth: 120 |
+| 4 | `QueueTriggerList/index.tsx` | 队列 Select | 200 | auto, minWidth: 120 |
+| 5 | `QueueTriggerList/index.tsx` | 状态 Select | 200 | auto, minWidth: 120 |
+| 6 | `TemplateManagementPage/index.tsx` | 流程 Select | 200 | auto, minWidth: 120 |
+| 7 | `WorkerManagement/index.tsx` | 分组 Select | 200 | auto, minWidth: 120 |
+| 8 | `ReleaseListPage/index.tsx` | 发布者 Select | 200 | auto, minWidth: 120 |
+| 9 | `Showcases/index.tsx` | 标签 Select | 200 | auto, minWidth: 120 |
+| 10 | `APASkills/index.tsx` | 标签 Select | 200 | auto, minWidth: 120 |
+| 11 | `ACPSkills/index.tsx` | 标签 Select | 200 | auto, minWidth: 120 |
+| 12 | `CreatorComponents/index.tsx` | 标签 Select | 200 | auto, minWidth: 120 |
 
 ---
 
 ### 修改文件汇总
 
-| 类别 | 文件数 | 文件 |
-|------|--------|------|
-| CSS 修复 | 2 | `ProcessDevelopment/index.less`, `ProcessSelectionStep/index.less` |
-| DepartmentSelect | 1 | `DepartmentSelect/index.tsx` |
-| 单选→多选 + placeholder | 3 | `TimeTriggerList/index.tsx`, `QueueTriggerList/index.tsx`, `TemplateManagementPage/index.tsx` |
-| 仅 placeholder | ~12 | 各管理页面的 DepartmentSelect placeholder、Sharing 页面标签 Select |
-| i18n | 2 | `zh-CN.json`, `en.json` |
+| 改动类型 | 文件数 |
+|---------|--------|
+| 顺序调整 | 1（ProcessDevelopment） |
+| 宽度自适应 | 12（上表所列） |
 
-总计约 **20 个文件**。
+总计 **12 个文件**，改动量极小（每处仅修改 style 属性或调换 JSX 顺序）。
 
