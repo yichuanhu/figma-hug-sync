@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Modal, Form, Toast } from '@douyinfe/semi-ui';
 import { useTranslation } from 'react-i18next';
 import type { LYWorkerGroupResponse, LYUpdateWorkerGroupRequest } from '@/api';
+import DepartmentSelect from '@/components/DepartmentSelect';
 import './index.less';
 
 interface EditWorkerGroupModalProps {
@@ -20,6 +21,7 @@ const EditWorkerGroupModal: React.FC<EditWorkerGroupModalProps> = ({
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [formApi, setFormApi] = useState<any>(null);
+  const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>(groupData?.owning_department_id || undefined);
 
   useEffect(() => {
     if (visible && groupData && formApi) {
@@ -110,6 +112,17 @@ const EditWorkerGroupModal: React.FC<EditWorkerGroupModalProps> = ({
               { max: 2000, message: t('workerGroup.validation.descriptionLengthError') },
             ]}
           />
+
+          <Form.Slot label={t('common.owningDepartment')}>
+            <DepartmentSelect
+              value={owningDepartmentId}
+              onChange={setOwningDepartmentId}
+            />
+          </Form.Slot>
+
+          <Form.Slot label={t('common.owner')}>
+            <span>{groupData?.owner_name || '-'}</span>
+          </Form.Slot>
         </Form>
       </div>
     </Modal>
