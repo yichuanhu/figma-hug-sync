@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TreeSelect, Typography } from '@douyinfe/semi-ui';
+import { User, Building2 } from 'lucide-react';
 import { departmentTree, DeptTreeNode } from '@/mocks/departmentData';
 import { ALL_ORG_USERS, OrgUser } from '@/components/CollaboratorManager/mockData';
 
