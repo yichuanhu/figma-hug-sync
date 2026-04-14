@@ -210,7 +210,7 @@ const QueueTriggerDetailDrawer = ({
                   {getDepartmentName(trigger.owning_department_id)}
                 </Descriptions.Item>
                 <Descriptions.Item itemKey={t('common.owner')}>
-                  {trigger.owner_name || '-'}
+                  {trigger.owner_name ? <UserNameWithCard name={trigger.owner_name} userId={trigger.owner_id || ''} /> : '-'}
                 </Descriptions.Item>
                 <Descriptions.Item itemKey={t('queueTrigger.detail.fields.status')}>
                   <Space spacing={8}>

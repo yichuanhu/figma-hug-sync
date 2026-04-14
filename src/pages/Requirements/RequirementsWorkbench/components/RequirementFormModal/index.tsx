@@ -12,6 +12,7 @@ import {
 import { Upload as UploadIcon } from 'lucide-react';
 import type { RequirementItem } from '../../types';
 import DepartmentSelect from '@/components/DepartmentSelect';
+import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 import './index.less';
 
 const { Text } = Typography;
@@ -161,7 +162,7 @@ const RequirementFormModal = ({
             showClear
           />
 
-          <Form.Slot label={t('requirements.fields.department')}>
+          <Form.Slot label={t('common.owningDepartment')}>
             <Form.Input
               field="department"
               noLabel
@@ -174,6 +175,10 @@ const RequirementFormModal = ({
               useNameAsValue
               placeholder={t('requirements.form.departmentPlaceholder')}
             />
+          </Form.Slot>
+
+          <Form.Slot label={t('common.owner')}>
+            <span>{MOCK_CURRENT_USER.name}</span>
           </Form.Slot>
 
           <Form.Input

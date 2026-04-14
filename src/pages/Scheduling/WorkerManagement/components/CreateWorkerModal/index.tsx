@@ -84,6 +84,10 @@ const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalPr
   };
 
   const handleSubmit = async (values: Record<string, unknown>) => {
+    if (!owningDepartmentId) {
+      Toast.warning(t('common.owningDepartmentRequired'));
+      return;
+    }
     setLoading(true);
     try {
       // 模拟API调use延迟

@@ -32,6 +32,10 @@ const CreateParameterModal = ({
     numberValue?: number;
     description?: string;
   }) => {
+    if (!owningDepartmentId) {
+      Toast.warning(t('common.owningDepartmentRequired'));
+      return;
+    }
     setLoading(true);
     try {
       // 根据类型获取参数值

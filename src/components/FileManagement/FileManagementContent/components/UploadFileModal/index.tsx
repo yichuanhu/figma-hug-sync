@@ -211,6 +211,11 @@ const UploadFileModal = ({
       return;
     }
 
+    if (!owningDepartmentId) {
+      Toast.warning(t('common.owningDepartmentRequired'));
+      return;
+    }
+
     setSubmitting(true);
     setUploadProgress(0);
 

@@ -40,6 +40,11 @@ const CreateWorkerGroupModal: React.FC<CreateWorkerGroupModalProps> = ({
   const handleSubmit = async () => {
     if (!formApi) return;
     
+    if (!owningDepartmentId) {
+      Toast.warning(t('common.owningDepartmentRequired'));
+      return;
+    }
+
     try {
       const values = await formApi.validate();
       setLoading(true);
