@@ -225,6 +225,23 @@ const TaskForm = (props: TaskFormProps) => {
     };
   }, [formApi, getInputParameterValues, getWorkerData, outputParameters]);
 
+  // 选择流程
+  const handleProcessChange = useCallback(
+    (processId: string) => {
+      const process = processData?.list.find((p) => p.id === processId);
+      if (process) {
+        if (!process.current_version_id) {
+          Toast.error(t('template.validation.processNoVersion'));
+          return;
+        }
+        setSelectedProcess(process);
+        // 自动填充归属部门
+        formApi?.setValue('owning_department_name', process.owning_department_name || '');
+      }
+    },
+    [processData, t, formApi]
+  );
+
   // 通过模板填充表单
   const fillTemplate = useCallback(
     (template: import('@/api').LYExecutionTemplateResponse) => {
@@ -240,7 +257,6 @@ const TaskForm = (props: TaskFormProps) => {
         formApi.setValue('worker_group_id', template.execution_target_id);
       } else {
         setTargetType('worker');
-        // worker需要通过pendingValidation处理
       }
       // 设置执行设置
       formApi.setValue('priority', template.priority || Priority.MEDIUM);
@@ -260,23 +276,6 @@ const TaskForm = (props: TaskFormProps) => {
       fillTemplate,
     }),
     [initForm, submitForm, fillTemplate]
-  );
-
-  // 选择流程
-  const handleProcessChange = useCallback(
-    (processId: string) => {
-      const process = processData?.list.find((p) => p.id === processId);
-      if (process) {
-        if (!process.current_version_id) {
-          Toast.error(t('template.validation.processNoVersion'));
-          return;
-        }
-        setSelectedProcess(process);
-        // 自动填充归属部门
-        formApi?.setValue('owning_department_name', process.owning_department_name || '');
-      }
-    },
-    [processData, t, formApi]
   );
 
   const renderSelectedItem = (optionNode: { label?: string; name?: string }) => {
