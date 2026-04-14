@@ -68,18 +68,13 @@ const EditQueueModal = ({
         }}
         key={queue?.queue_id}
       >
-        {/* 队列名称只读显示 */}
-        <div className="edit-queue-modal-readonly-field">
-          <Text strong className="edit-queue-modal-readonly-label">
-            {t('queue.fields.name')}
-          </Text>
-          <Text className="edit-queue-modal-readonly-value">
-            {queue?.queue_name || '-'}
-          </Text>
-          <Text type="tertiary" size="small" className="edit-queue-modal-readonly-hint">
-            {t('queue.fields.nameReadonly')}
-          </Text>
-        </div>
+        <Form.Input
+          field="queue_name"
+          label={t('queue.fields.name')}
+          initValue={queue?.queue_name || ''}
+          rules={[{ required: true, message: t('queue.validation.nameRequired') }]}
+          trigger={['blur', 'change']}
+        />
 
         <Form.TextArea
           field="description"

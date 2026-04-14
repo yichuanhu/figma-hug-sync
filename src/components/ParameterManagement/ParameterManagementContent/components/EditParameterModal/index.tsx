@@ -122,8 +122,8 @@ const EditParameterModal = ({
             field="name"
             label={t('parameter.fields.name')}
             initValue={parameter.parameter_name}
-            disabled
-            extraText={t('parameter.fields.nameReadonly')}
+            rules={[{ required: true, message: t('parameter.validation.nameRequired') }]}
+            trigger={['blur', 'change']}
           />
           <Form.Select
             field="type"
