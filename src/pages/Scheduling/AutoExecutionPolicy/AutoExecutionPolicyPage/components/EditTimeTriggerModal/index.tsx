@@ -159,6 +159,7 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
   const [selectedProcess, setSelectedProcess] = useState<(LYProcessActiveVersionResponse & { owning_department_name?: string; owner_name?: string }) | null>(null);
   const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);
   const [owningDepartmentId, setOwningDepartmentId] = useState<string>('');
+  const [ownerId, setOwnerId] = useState<string | undefined>(trigger?.owner_id || undefined);
 
   // 第Wed步: Trigger Rules
   const [ruleType, setRuleType] = useState<TriggerRuleType>('BASIC');
