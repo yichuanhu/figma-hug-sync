@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Typography, Dropdown, Modal } from '@douyinfe/semi-ui';
+import { IconDeleteStroked } from '@douyinfe/semi-icons';
 import type { LYWorkCalendarResponse } from '@/api/index';
 import './index.less';
 import { Ellipsis, Plus, Trash2 } from 'lucide-react';
@@ -37,7 +38,8 @@ const CalendarSidebar: React.FC<CalendarSidebarProps> = ({
     
     Modal.confirm({
       title: t('workCalendar.sidebar.deleteConfirmTitle'),
-      content: t('workCalendar.sidebar.deleteConfirmMessage', { name: calendar.name }),
+icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+content: t('workCalendar.sidebar.deleteConfirmMessage', { name: calendar.name }),
       okType: 'danger',
       onOk: () => onDelete(calendar.id),
     });

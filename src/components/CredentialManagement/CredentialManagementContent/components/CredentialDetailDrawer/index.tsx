@@ -19,6 +19,7 @@ import {
   DatePicker,
   Image,
 } from '@douyinfe/semi-ui';
+import { IconDeleteStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import DetailSkeleton from '@/components/DetailSkeleton';
 import TableSkeleton from '@/components/TableSkeleton';
@@ -202,7 +203,9 @@ const CredentialDetailDrawer = ({
   const handleDelete = () => {
     if (!credential) return;
     Modal.confirm({
-      title: t('credential.deleteModal.title'),      content: (
+      title: t('credential.deleteModal.title'),
+      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      content: (
         <div>
           <div>{t('credential.deleteModal.confirmMessage', { name: credential.credential_name })}</div>
           {credential.is_published && (

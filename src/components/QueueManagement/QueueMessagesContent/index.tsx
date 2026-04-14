@@ -18,6 +18,7 @@ import {
   Tooltip,
   Breadcrumb,
 } from '@douyinfe/semi-ui';
+import { IconDeleteStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
@@ -331,7 +332,9 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
   // 删除消息
   const handleDelete = (record: LYQueueMessageResponse) => {
     Modal.confirm({
-      title: t('queueMessage.deleteModal.title'),      content: t('queueMessage.deleteModal.confirmMessage'),
+      title: t('queueMessage.deleteModal.title'),
+      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      content: t('queueMessage.deleteModal.confirmMessage'),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
       okButtonProps: { type: 'danger' },
@@ -351,7 +354,9 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
     }
 
     Modal.confirm({
-      title: t('queueMessage.batch.deleteTitle'),      content: t('queueMessage.batch.deleteConfirm', { count: selectedRowKeys.length }),
+      title: t('queueMessage.batch.deleteTitle'),
+      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      content: t('queueMessage.batch.deleteConfirm', { count: selectedRowKeys.length }),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
       okButtonProps: { type: 'danger' },

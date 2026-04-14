@@ -13,7 +13,7 @@ import {
   Tag,
   Typography,
 } from '@douyinfe/semi-ui';
-import { IconSearchStroked } from '@douyinfe/semi-icons';
+import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import { Ellipsis, Eye, History, Link, Pencil, Plus, Trash2 } from 'lucide-react';
@@ -203,7 +203,9 @@ const PersonalCredentialManagement = () => {
   // 删除凭据
   const handleDelete = (record: LYPersonalCredentialResponse) => {
     Modal.confirm({
-      title: t('personalCredential.deleteModal.title'),      content: t('personalCredential.deleteModal.confirmMessage'),
+      title: t('personalCredential.deleteModal.title'),
+      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      content: t('personalCredential.deleteModal.confirmMessage'),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
       okButtonProps: { type: 'danger' },

@@ -16,7 +16,7 @@ import {
   Tooltip,
   Breadcrumb,
 } from '@douyinfe/semi-ui';
-import { IconSearchStroked } from '@douyinfe/semi-icons';
+import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
@@ -315,7 +315,9 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
   // 删除凭据
   const handleDelete = (record: LYCredentialResponse) => {
     Modal.confirm({
-      title: t('credential.deleteModal.title'),      content: (
+      title: t('credential.deleteModal.title'),
+      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      content: (
         <div>
           <div>{t('credential.deleteModal.confirmMessage', { name: record.credential_name })}</div>
           {record.is_published && (

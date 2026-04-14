@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Button, Typography, Space, Modal, Toast } from '@douyinfe/semi-ui';
+import { IconDeleteStroked } from '@douyinfe/semi-icons';
 import './index.less';
 import { Trash2 } from 'lucide-react';
 
@@ -27,7 +28,9 @@ const BatchOperationBar = ({
   // ConfirmDelete
   const handleDeleteClick = () => {
     Modal.confirm({
-      title: t('screenshot.deleteModal.title'),      content: t('screenshot.deleteModal.confirmMessage', { count: selectedCount }),
+      title: t('screenshot.deleteModal.title'),
+      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      content: t('screenshot.deleteModal.confirmMessage', { count: selectedCount }),
       okType: 'danger',
       okText: t('common.delete'),
       cancelText: t('common.cancel'),

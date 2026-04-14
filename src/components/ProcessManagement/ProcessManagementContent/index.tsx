@@ -17,7 +17,7 @@ import {
   Toast,
   Space,
 } from '@douyinfe/semi-ui';
-import { IconSearchStroked } from '@douyinfe/semi-icons';
+import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import TableSkeleton from '@/components/TableSkeleton';
@@ -343,7 +343,9 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
     if (!processToDelete) return;
 
     Modal.confirm({
-      title: t('development.processDevelopment.deleteModal.title'),      content: (
+      title: t('development.processDevelopment.deleteModal.title'),
+      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      content: (
         <>
           <div>{t('development.processDevelopment.deleteModal.confirmMessage', { name: processToDelete.name })}</div>
           <div style={{ color: 'var(--semi-color-text-2)', marginTop: 8 }}>

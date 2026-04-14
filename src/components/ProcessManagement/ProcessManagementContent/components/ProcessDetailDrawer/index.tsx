@@ -15,6 +15,7 @@ import {
   Modal,
   TextArea,
 } from '@douyinfe/semi-ui';
+import { IconDeleteStroked } from '@douyinfe/semi-icons';
 import type { LYProcessResponse, LYProcessVersionResponse } from '@/api';
 import UploadVersionModal from '../UploadVersionModal';
 import EmptyState from '@/components/EmptyState';
@@ -313,7 +314,8 @@ const ProcessDetailDrawer = ({
     }
     Modal.confirm({
       title: t('development.processDevelopment.detail.versionList.deleteConfirmTitle'),
-      content: t('development.processDevelopment.detail.versionList.deleteConfirmContent', { version: version.version }),      okType: 'danger',
+icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+content: t('development.processDevelopment.detail.versionList.deleteConfirmContent', { version: version.version }),      okType: 'danger',
       onOk: () => {
         setVersionData(prevData => prevData.filter(v => v.id !== version.id));
         if (selectedVersionId === version.id) {

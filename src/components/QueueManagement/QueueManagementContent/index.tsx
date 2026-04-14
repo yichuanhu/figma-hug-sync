@@ -16,7 +16,7 @@ import {
   Tooltip,
   Breadcrumb,
 } from '@douyinfe/semi-ui';
-import { IconSearchStroked } from '@douyinfe/semi-icons';
+import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
@@ -291,7 +291,9 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
   // 删除队列
   const handleDelete = (record: LYQueueResponse) => {
     Modal.confirm({
-      title: t('queue.deleteModal.title'),      content: (
+      title: t('queue.deleteModal.title'),
+      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
+      content: (
         <div>
           <div>{t('queue.deleteModal.confirmMessage', { name: record.queue_name })}</div>
           {record.is_published && (
