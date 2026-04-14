@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Modal, Typography } from '@douyinfe/semi-ui';
+import { IconDeleteStroked } from '@douyinfe/semi-icons';
 import './index.less';
 
 const { Text } = Typography;
@@ -27,6 +28,7 @@ const WorkerDeleteModal = ({ visible, onClose, workerData, onConfirm }: WorkerDe
   return (
     <Modal
       title={t('worker.deleteModal.title')}
+      icon={<IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />}
       visible={visible}
       onCancel={onClose}
       onOk={hasPendingTasks ? undefined : onConfirm}
