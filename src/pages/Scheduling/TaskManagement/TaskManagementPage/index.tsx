@@ -36,7 +36,7 @@ import type {
   TriggerSource,
   TaskPriority,
 } from '@/api';
-import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
+
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -252,7 +252,7 @@ const TaskManagementPage = () => {
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const { t } = useTranslation();
-  const { openCollaborator, renderCollaboratorPanel } = useCollaboratorAction();
+  
 
   const [searchValue, setSearchValue] = useState('');
   const [queryParams, setQueryParams] = useState<GetTasksParams>({
@@ -666,15 +666,6 @@ const TaskManagementPage = () => {
                     {t('task.actions.retry')}
                   </Dropdown.Item>
                 )}
-                <Dropdown.Item
-                    icon={<UserPlus size={14} strokeWidth={2} />}
-                    onClick={(e) => {
-                      e?.stopPropagation();
-                      openCollaborator(record.task_id);
-                    }}
-                  >
-                    {t('collaborator.actions.addCollaborator')}
-                  </Dropdown.Item>
               </Dropdown.Menu>
             }
           >
@@ -864,12 +855,6 @@ const TaskManagementPage = () => {
           dataSource={list}
           onSelectTask={setSelectedTask}
           initialTab={initialTab}
-          collaboratorProps={selectedTask ? {
-            assetType: 'TASK',
-            assetId: selectedTask.task_id,
-            context: 'scheduling',
-            canManage: true,
-          } : undefined}
           pagination={{
             currentPage,
             pageSize,
@@ -888,7 +873,7 @@ const TaskManagementPage = () => {
             setListResponse(response);
           }}
         />
-        {renderCollaboratorPanel('TASK', 'scheduling')}
+        
       </div>
   );
 };
