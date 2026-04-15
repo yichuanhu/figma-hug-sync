@@ -132,6 +132,7 @@ interface ProcessDetailDrawerProps {
   context?: 'development' | 'scheduling';
   onScrollToRow?: (id: string) => void;
   initialTab?: string;
+  onDependenciesChange?: (processId: string, deps: LYProcessDependency[]) => void;
 }
 
 // ============= 状态配置 =============
