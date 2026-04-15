@@ -15,6 +15,7 @@ import {
   Typography,
   Tooltip,
   Breadcrumb,
+  Pagination,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
@@ -540,15 +541,7 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
             columns={columns}
             rowKey="queue_id"
             loading={loading}
-            pagination={{
-              currentPage: queryParams.page,
-              pageSize: queryParams.pageSize,
-              total,
-              onPageChange: handlePageChange,
-              onPageSizeChange: (newPageSize) => setQueryParams((prev) => ({ ...prev, page: 1, pageSize: newPageSize })),
-              showTotal: true,
-              showSizeChanger: true,
-            }}
+            pagination={false}
             empty={
               <EmptyState
                 variant={queryParams.keyword || departmentFilter.length > 0 || filterCount > 0 ? 'noResult' : 'noData'}
@@ -565,7 +558,6 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
                 : '',
               style: { cursor: 'pointer' },
             })}
-            scroll={{ y: 'calc(100vh - 320px)' }}
           />
         )}
       </div>
