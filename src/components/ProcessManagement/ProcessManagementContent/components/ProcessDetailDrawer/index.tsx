@@ -589,11 +589,11 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
           <DependencyTab
             dependencies={processData.dependencies || []}
             onDependenciesChange={
-              onDependenciesChange
+              !isSchedulingContext && onDependenciesChange
                 ? (deps) => onDependenciesChange(processData.id, deps)
                 : undefined
             }
-            readOnly={!onDependenciesChange}
+            readOnly={isSchedulingContext}
             context={context}
           />
         </TabPane>
