@@ -203,8 +203,8 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
     { title: t('common.actions'), dataIndex: 'action', key: 'action', width: 60, render: (_: unknown, record: LYWorkerGroupMemberResponse) => (
       <Dropdown trigger="click" position="bottomRight" stopPropagation clickToHide render={
         <Dropdown.Menu>
-          <Dropdown.Item icon={<Eye size={16} strokeWidth={2} />} onClick={(e) => { e?.stopPropagation?.(); if (onNavigateToWorkerDetail) { onClose(); onNavigateToWorkerDetail(record.id); } }}>{t('workerGroup.actions.viewDetail')}</Dropdown.Item>
-          <Dropdown.Item icon={<MinusCircle size={16} strokeWidth={2} />} type="warning" onClick={(e) => { e?.stopPropagation?.(); handleRemoveMember(record); }}>{t('workerGroup.actions.removeFromGroup')}</Dropdown.Item>
+          <Dropdown.Item icon={<Eye size={16} strokeWidth={2} />} onClick={() => { if (onNavigateToWorkerDetail) { onClose(); onNavigateToWorkerDetail(record.id); } }}>{t('workerGroup.actions.viewDetail')}</Dropdown.Item>
+          <Dropdown.Item icon={<MinusCircle size={16} strokeWidth={2} />} type="warning" onClick={() => { handleRemoveMember(record); }}>{t('workerGroup.actions.removeFromGroup')}</Dropdown.Item>
         </Dropdown.Menu>
       }><Button icon={<Ellipsis size={16} strokeWidth={2} />} theme="borderless" onClick={(e) => e.stopPropagation()} /></Dropdown>
     ) },
