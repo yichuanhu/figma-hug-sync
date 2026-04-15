@@ -990,8 +990,8 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
             rowKey="id"
             empty={
               <EmptyState 
-                variant={queryParams.keyword ? 'noResult' : 'noData'}
-                description={queryParams.keyword ? t('common.noResult') : t('worker.noData')} 
+                variant={queryParams.keyword || departmentFilter.length > 0 || hasActiveFilters ? 'noResult' : 'noData'}
+                description={queryParams.keyword || departmentFilter.length > 0 || hasActiveFilters ? t('common.noResult') : t('worker.noData')} 
               />
             }
             onRow={(record) => {

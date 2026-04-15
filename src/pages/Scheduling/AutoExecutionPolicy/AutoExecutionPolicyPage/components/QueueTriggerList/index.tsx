@@ -565,48 +565,50 @@ const QueueTriggerList = () => {
       </Row>
 
       {/* Table */}
-      {isInitialLoad ? (
-        <TableSkeleton rows={5} />
-      ) : list.length === 0 ? (
-        <EmptyState
-          variant={hasFilters ? 'noResult' : 'noData'}
-          description={
-            hasFilters
-              ? t('queueTrigger.empty.filterDescription')
-              : t('queueTrigger.empty.defaultDescription')
-          }
-        />
-      ) : (
-        <Table
-          size="small"
-          dataSource={list}
-          columns={columns}
-          rowKey="trigger_id"
-          loading={loading && !isInitialLoad}
-          pagination={{
-            currentPage,
-            pageSize,
-            total,
-            showTotal: true,
-            showSizeChanger: true,
-            pageSizeOpts: [10, 20, 50],
-            onChange: (page, size) => {
-              setQueryParams((prev) => ({
-                ...prev,
-                offset: (page - 1) * size,
-                size,
-              }));
-            },
-          }}
-          onRow={(record) => ({
-            onClick: () => handleOpenDrawer(record as LYQueueTriggerResponse),
-            className: selectedTrigger?.trigger_id === (record as LYQueueTriggerResponse).trigger_id
-              ? 'queue-trigger-row-selected'
-              : '',
-          })}
-          className="queue-trigger-list-table"
-        />
-      )}
+      <div className="queue-trigger-list-table">
+        {isInitialLoad ? (
+          <TableSkeleton rows={5} />
+        ) : (
+          <Table
+            size="small"
+            dataSource={list}
+            columns={columns}
+            rowKey="trigger_id"
+            loading={loading && !isInitialLoad}
+            empty={
+              <EmptyState
+                variant={hasFilters ? 'noResult' : 'noData'}
+                description={
+                  hasFilters
+                    ? t('queueTrigger.empty.filterDescription')
+                    : t('queueTrigger.empty.defaultDescription')
+                }
+              />
+            }
+            pagination={{
+              currentPage,
+              pageSize,
+              total,
+              showTotal: true,
+              showSizeChanger: true,
+              pageSizeOpts: [10, 20, 50],
+              onChange: (page, size) => {
+                setQueryParams((prev) => ({
+                  ...prev,
+                  offset: (page - 1) * size,
+                  size,
+                }));
+              },
+            }}
+            onRow={(record) => ({
+              onClick: () => handleOpenDrawer(record as LYQueueTriggerResponse),
+              className: selectedTrigger?.trigger_id === (record as LYQueueTriggerResponse).trigger_id
+                ? 'queue-trigger-row-selected'
+                : '',
+            })}
+          />
+        )}
+      </div>
 
       {/* Create modal */}
       <CreateQueueTriggerModal

@@ -572,11 +572,6 @@ const TimeTriggerList = () => {
       <div className="time-trigger-list-table">
         {isInitialLoad ? (
           <TableSkeleton />
-        ) : list.length === 0 ? (
-          <EmptyState
-            variant={hasFilters ? 'noResult' : 'noData'}
-            description={hasFilters ? t('common.noResult') : t('timeTrigger.noData')}
-          />
         ) : (
           <Table
             size="small"
@@ -584,6 +579,12 @@ const TimeTriggerList = () => {
             rowKey="trigger_id"
             loading={loading && !isInitialLoad}
             columns={columns}
+            empty={
+              <EmptyState
+                variant={hasFilters ? 'noResult' : 'noData'}
+                description={hasFilters ? t('common.noResult') : t('timeTrigger.noData')}
+              />
+            }
             onRow={(record) => ({
               onClick: () => handleOpenDrawer(record as LYTimeTriggerResponse),
               style: { cursor: 'pointer' },

@@ -468,8 +468,8 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
             rowKey="id"
             empty={
               <EmptyState 
-                variant={queryParams.keyword ? 'noResult' : 'noData'}
-                description={queryParams.keyword ? t('common.noResult') : t('workerGroup.noData')} 
+                variant={queryParams.keyword || queryParams.owning_department_name ? 'noResult' : 'noData'}
+                description={queryParams.keyword || queryParams.owning_department_name ? t('common.noResult') : t('workerGroup.noData')} 
               />
             }
             onRow={(record) => {

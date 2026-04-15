@@ -551,8 +551,8 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
             }}
             empty={
               <EmptyState
-                variant={queryParams.keyword || filterCount > 0 ? 'noResult' : 'noData'}
-                description={queryParams.keyword || filterCount > 0 
+                variant={queryParams.keyword || departmentFilter.length > 0 || filterCount > 0 ? 'noResult' : 'noData'}
+                description={queryParams.keyword || departmentFilter.length > 0 || filterCount > 0 
                   ? t('queue.empty.filterDescription') 
                   : t('queue.empty.defaultDescription')}
               />

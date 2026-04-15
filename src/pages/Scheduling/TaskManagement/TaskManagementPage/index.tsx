@@ -782,15 +782,6 @@ const TaskManagementPage = () => {
         <div className="task-management-page-table">
           {isInitialLoad ? (
             <TableSkeleton />
-          ) : list.length === 0 ? (
-            <EmptyState
-              variant={searchValue || taskStatusFilter.length > 0 || executionStatusFilter.length > 0 || triggerSourceFilter.length > 0 || departmentFilter.length > 0 || dateRange ? 'noResult' : 'noData'}
-              description={
-                searchValue || taskStatusFilter.length > 0 || executionStatusFilter.length > 0 || triggerSourceFilter.length > 0 || departmentFilter.length > 0 || dateRange
-                  ? t('task.empty.filterDescription')
-                  : t('task.empty.defaultDescription')
-              }
-            />
           ) : (
             <Table
               size="small"
@@ -798,6 +789,16 @@ const TaskManagementPage = () => {
               dataSource={list}
               rowKey="task_id"
               loading={loading && !isInitialLoad}
+              empty={
+                <EmptyState
+                  variant={searchValue || taskStatusFilter.length > 0 || executionStatusFilter.length > 0 || triggerSourceFilter.length > 0 || departmentFilter.length > 0 || dateRange ? 'noResult' : 'noData'}
+                  description={
+                    searchValue || taskStatusFilter.length > 0 || executionStatusFilter.length > 0 || triggerSourceFilter.length > 0 || departmentFilter.length > 0 || dateRange
+                      ? t('task.empty.filterDescription')
+                      : t('task.empty.defaultDescription')
+                  }
+                />
+              }
               pagination={{
                 total,
                 pageSize,

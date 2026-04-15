@@ -574,15 +574,6 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
       <div className="file-management-content-table" ref={tableContainerRef}>
         {isInitialLoad ? (
           <TableSkeleton />
-        ) : listResponse?.data?.length === 0 ? (
-          <EmptyState
-            variant={queryParams.keyword || sourceFilter.length > 0 ? 'noResult' : 'noData'}
-            description={
-              queryParams.keyword || sourceFilter.length > 0
-                ? t('file.empty.filterDescription')
-                : t('file.empty.defaultDescription')
-            }
-          />
         ) : (
           <Table
             size="small"
@@ -600,6 +591,16 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
               showSizeChanger: true,
               showTotal: true,
             }}
+            empty={
+              <EmptyState
+                variant={queryParams.keyword || departmentFilter.length > 0 || sourceFilter.length > 0 ? 'noResult' : 'noData'}
+                description={
+                  queryParams.keyword || departmentFilter.length > 0 || sourceFilter.length > 0
+                    ? t('file.empty.filterDescription')
+                    : t('file.empty.defaultDescription')
+                }
+              />
+            }
             onRow={(record) => ({
               onClick: () => handleRowClick(record as LYFileResponse),
               className:
