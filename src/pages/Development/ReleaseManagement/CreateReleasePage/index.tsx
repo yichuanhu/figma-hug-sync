@@ -64,206 +64,43 @@ const CreateReleasePage: React.FC = () => {
   const [resources, setResources] = useState<ResourceConfig[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
-  // Mock 依赖检测
-  const detectDependencies = useCallback(async (processes: SelectedProcess[]): Promise<LYDependencyDetectionResponse> => {
-    await new Promise((resolve) => setTimeout(resolve, 800));
-
-    // Mock 检测Result
-    const parameters = [
-      {
-        resource_id: 'PARAM-001',
-        resource_name: 'ERP API Address',
-        is_previously_published: true,
-        test_value: 'https://test.erp.com/api',
-        used_by_processes: processes.map((p) => ({
-          process_id: p.process.id,
-          process_name: p.process.name,
-        })),
-      },
-      {
-        resource_id: 'PARAM-002',
-        resource_name: 'Batch processing count',
-        is_previously_published: false,
-        test_value: '100',
-        used_by_processes: processes.slice(0, 1).map((p) => ({
-          process_id: p.process.id,
-          process_name: p.process.name,
-        })),
-      },
-      {
-        resource_id: 'PARAM-003',
-        resource_name: 'This is a very long parameter name to test card title truncation and line wrapping edge cases',
-        is_previously_published: false,
-        test_value: 'This is a very long text parameter simulating real business scenarios with extended config text. Example JSON config: {"database":{"host":"192.168.1.100","port":5432,"username":"admin","password":"encrypted_password_here","database_name":"production_db","connection_pool_size":20,"timeout_ms":30000},"redis":{"host":"192.168.1.101","port":6379,"cluster_mode":true},"logging":{"level":"INFO","output":"file","path":"/var/log/app/"}}',
-        used_by_processes: processes.map((p) => ({
-          process_id: p.process.id,
-          process_name: p.process.name,
-        })),
-      },
-      {
-        resource_id: 'PARAM-004',
-        resource_name: 'Global_Multilingual_Translation_Mapping_Config_Parameter_Including_10_Languages',
-        is_previously_published: true,
-        test_value: 'https://translation-service.internal.company.com/api/v3/multilingual/mapping?source=zh-CN&targets=en-US,ja-JP,ko-KR,fr-FR,de-DE,es-ES,pt-BR,ru-RU,ar-SA&format=json&include_variants=true&fallback=en-US',
-        used_by_processes: processes.slice(0, 2).map((p) => ({
-          process_id: p.process.id,
-          process_name: p.process.name,
-        })),
-      },
-      {
-        resource_id: 'PARAM-005',
-        resource_name: 'Enable Auto-Retry',
-        is_previously_published: false,
-        test_value: 'true',
-        param_type: 'BOOLEAN',
-        used_by_processes: processes.slice(0, 1).map((p) => ({
-          process_id: p.process.id,
-          process_name: p.process.name,
-        })),
-      },
-      {
-        resource_id: 'PARAM-006',
-        resource_name: 'Max Concurrent Connections',
-        is_previously_published: true,
-        test_value: '256',
-        param_type: 'NUMBER',
-        used_by_processes: processes.map((p) => ({
-          process_id: p.process.id,
-          process_name: p.process.name,
-        })),
-      },
-      {
-        resource_id: 'PARAM-007',
-        resource_name: 'Enable Debug Mode',
-        is_previously_published: true,
-        test_value: 'false',
-        param_type: 'BOOLEAN',
-        used_by_processes: processes.slice(0, 2).map((p) => ({
-          process_id: p.process.id,
-          process_name: p.process.name,
-        })),
-      },
-      {
-        resource_id: 'PARAM-008',
-        resource_name: 'Timeout Threshold (ms)',
-        is_previously_published: false,
-        test_value: '30000',
-        param_type: 'NUMBER',
-        used_by_processes: processes.slice(0, 1).map((p) => ({
-          process_id: p.process.id,
-          process_name: p.process.name,
-        })),
-      },
-    ];
-
-    const credentials = [
-      {
-        resource_id: 'CRED-001',
-        resource_name: 'ERP System Credential',
-        is_previously_published: true,
-        test_value: '******',
-        used_by_processes: processes.map((p) => ({
-          process_id: p.process.id,
-          process_name: p.process.name,
-        })),
-      },
-    ];
-
-    const queues = processes.length > 1
-      ? [
-          {
-            resource_id: 'QUEUE-001',
-            resource_name: 'Order ProcessingQueue',
-            is_previously_published: false,
-            test_value: null,
-            used_by_processes: processes.slice(0, 1).map((p) => ({
-              process_id: p.process.id,
-              process_name: p.process.name,
-            })),
-          },
-        ]
-      : [];
-
-    const files = [
-      {
-        resource_id: 'FILE-001',
-        resource_name: 'Order Template',
-        original_name: 'order_template_v2.xlsx',
-        is_previously_published: true,
-        test_value: null,
-        used_by_processes: processes.slice(0, 1).map((p) => ({
-          process_id: p.process.id,
-          process_name: p.process.name,
-        })),
-      },
-    ];
-
-    return { parameters, credentials, queues, files };
-  }, []);
-
-  // 当进入Step2时, 检测依赖
+  // 当进入Step2时, 从流程依赖聚合资源
   useEffect(() => {
     if (currentStep === 1 && selectedProcesses.length > 0) {
-      setDetectingDependencies(true);
-      detectDependencies(selectedProcesses)
-        .then((result) => {
-          const allResources: ResourceConfig[] = [
-            ...result.parameters.map((r: any) => ({
-              resource_id: r.resource_id,
-              resource_name: r.resource_name,
-              resource_type: 'PARAMETER' as ResourceType,
-              is_manual: false,
-              is_previously_published: r.is_previously_published,
-              test_value: r.test_value,
-              production_value: '',
-              use_test_as_production: false,
-              used_by_processes: r.used_by_processes.map((p: any) => p.process_name),
-              param_type: r.param_type || 'TEXT',
-            })),
-            ...result.credentials.map((r) => ({
-              resource_id: r.resource_id,
-              resource_name: r.resource_name,
-              resource_type: 'CREDENTIAL' as ResourceType,
-              is_manual: false,
-              is_previously_published: r.is_previously_published,
-              test_value: r.test_value,
-              test_username: (r as any).test_username || 'test_admin',
-              test_password: (r as any).test_password || '********',
-              production_value: '',
-              use_test_as_production: false,
-              used_by_processes: r.used_by_processes.map((p) => p.process_name),
-            })),
-            ...result.queues.map((r) => ({
-              resource_id: r.resource_id,
-              resource_name: r.resource_name,
-              resource_type: 'QUEUE' as ResourceType,
-              is_manual: false,
-              is_previously_published: r.is_previously_published,
-              test_value: r.test_value,
-              production_value: '',
-              use_test_as_production: false,
-              used_by_processes: r.used_by_processes.map((p) => p.process_name),
-            })),
-            ...(result.files || []).map((r) => ({
-              resource_id: r.resource_id,
-              resource_name: r.resource_name,
-              resource_type: 'FILE' as ResourceType,
-              is_manual: false,
-              is_previously_published: r.is_previously_published,
-              test_value: r.test_value,
-              production_value: '',
-              use_test_as_production: false,
-              used_by_processes: r.used_by_processes.map((p) => p.process_name),
-              original_name: (r as any).original_name,
-            })),
-          ];
-          setResources(allResources);
-        })
-        .finally(() => {
-          setDetectingDependencies(false);
+      const allResources: ResourceConfig[] = [];
+      const seenIds = new Set<string>();
+
+      selectedProcesses.forEach((sp) => {
+        const deps = sp.process.dependencies || [];
+        deps.forEach((dep) => {
+          if (seenIds.has(dep.resource_id)) {
+            // 已存在，合并 used_by_processes
+            const existing = allResources.find((r) => r.resource_id === dep.resource_id);
+            if (existing && !existing.used_by_processes.includes(sp.process.name)) {
+              existing.used_by_processes.push(sp.process.name);
+            }
+            return;
+          }
+          seenIds.add(dep.resource_id);
+          allResources.push({
+            resource_id: dep.resource_id,
+            resource_name: dep.resource_name,
+            resource_type: dep.resource_type,
+            is_manual: dep.source === 'MANUAL',
+            is_previously_published: false,
+            test_value: undefined,
+            production_value: '',
+            use_test_as_production: false,
+            used_by_processes: [sp.process.name],
+            param_type: dep.param_type || 'TEXT',
+            original_name: dep.original_name,
+          });
         });
+      });
+
+      setResources(allResources);
     }
-  }, [currentStep, selectedProcesses, detectDependencies]);
+  }, [currentStep, selectedProcesses]);
 
   // processingStep变化
   const handleNext = () => {
