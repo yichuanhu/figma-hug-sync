@@ -57,5 +57,34 @@
       min-width: 0;
       flex: 1;
     }
+
+    .dependency-tab-item-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .dependency-tab-item-name-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dependency-tab-item-name-link {
+      cursor: pointer;
+      color: var(--semi-color-primary);
+
+      &:hover {
+        color: var(--semi-color-primary-hover);
+      }
+    }
+
+    .dependency-tab-item-link-icon {
+      color: var(--semi-color-primary);
+      flex-shrink: 0;
+      cursor: pointer;
+    }
   }
 }

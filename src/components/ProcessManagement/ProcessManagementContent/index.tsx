@@ -97,16 +97,16 @@ const generateMockLYProcessResponse = (index: number): LYProcessResponse => {
 
   // 生成 Mock 依赖数据
   const mockDependencies: LYProcessDependency[] = [
-    { resource_id: `param-auto-${index}-1`, resource_name: 'ERP API Address', resource_type: 'PARAMETER', source: 'AUTO_DETECTED', param_type: 'TEXT' },
-    { resource_id: `param-auto-${index}-2`, resource_name: 'Batch Processing Count', resource_type: 'PARAMETER', source: 'AUTO_DETECTED', param_type: 'NUMBER' },
-    { resource_id: `cred-auto-${index}-1`, resource_name: 'ERP System Credential', resource_type: 'CREDENTIAL', source: 'AUTO_DETECTED' },
+    { resource_id: `param-auto-${index}-1`, resource_name: 'ERP API Address', resource_type: 'PARAMETER', source: 'AUTO_DETECTED', param_type: 'TEXT', resource_value: 'https://erp.example.com/api/v2' },
+    { resource_id: `param-auto-${index}-2`, resource_name: 'Batch Processing Count', resource_type: 'PARAMETER', source: 'AUTO_DETECTED', param_type: 'NUMBER', resource_value: '500' },
+    { resource_id: `cred-auto-${index}-1`, resource_name: 'ERP System Credential', resource_type: 'CREDENTIAL', source: 'AUTO_DETECTED', resource_value: '••••••••' },
     ...(index % 2 === 0 ? [
-      { resource_id: `param-manual-${index}-1`, resource_name: 'Debug Mode', resource_type: 'PARAMETER' as const, source: 'MANUAL' as const, param_type: 'BOOLEAN' as const },
-      { resource_id: `queue-auto-${index}-1`, resource_name: 'Order Processing Queue', resource_type: 'QUEUE' as const, source: 'AUTO_DETECTED' as const },
+      { resource_id: `param-manual-${index}-1`, resource_name: 'Debug Mode', resource_type: 'PARAMETER' as const, source: 'MANUAL' as const, param_type: 'BOOLEAN' as const, resource_value: 'true' },
+      { resource_id: `queue-auto-${index}-1`, resource_name: 'Order Processing Queue', resource_type: 'QUEUE' as const, source: 'AUTO_DETECTED' as const, resource_value: '12 messages' },
     ] : []),
     ...(index % 3 === 0 ? [
-      { resource_id: `file-auto-${index}-1`, resource_name: 'Order Template', resource_type: 'FILE' as const, source: 'AUTO_DETECTED' as const, original_name: 'order_template_v2.xlsx' },
-      { resource_id: `cred-manual-${index}-1`, resource_name: 'SFTP Credential', resource_type: 'CREDENTIAL' as const, source: 'MANUAL' as const },
+      { resource_id: `file-auto-${index}-1`, resource_name: 'Order Template', resource_type: 'FILE' as const, source: 'AUTO_DETECTED' as const, original_name: 'order_template_v2.xlsx', resource_value: 'order_template_v2.xlsx' },
+      { resource_id: `cred-manual-${index}-1`, resource_name: 'SFTP Credential', resource_type: 'CREDENTIAL' as const, source: 'MANUAL' as const, resource_value: '••••••••' },
     ] : []),
   ];
 
