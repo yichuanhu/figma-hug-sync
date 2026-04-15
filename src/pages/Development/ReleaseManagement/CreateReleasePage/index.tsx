@@ -240,7 +240,6 @@ const CreateReleasePage: React.FC = () => {
           )}
 
           {currentStep === 1 && (
-            <Spin spinning={detectingDependencies} tip={t('release.create.detectingDependencies')}>
               <ReleaseConfigStep
                 selectedProcesses={selectedProcesses}
                 onRemoveProcess={(processId) => {
@@ -255,7 +254,6 @@ const CreateReleasePage: React.FC = () => {
                 resources={resources}
                 onResourcesChange={setResources}
               />
-            </Spin>
           )}
         </div>
 
@@ -289,7 +287,7 @@ const CreateReleasePage: React.FC = () => {
                 theme="solid"
                 onClick={handleSubmit}
                 loading={submitting}
-                disabled={detectingDependencies || selectedProcesses.length === 0}
+                disabled={selectedProcesses.length === 0}
               >
                 {t('release.create.confirmPublish')}
               </Button>

@@ -2784,6 +2784,8 @@ export interface LYPublishableProcessResponse {
   is_published: boolean;
   /** 更新时间 */
   updated_at: string;
+  /** 资源依赖列表（流程级别） */
+  dependencies?: LYProcessDependency[];
 }
 
 /** LYListResponse[LYPublishableProcessResponse] */
