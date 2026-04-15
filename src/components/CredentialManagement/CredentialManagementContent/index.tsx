@@ -591,7 +591,16 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
                 description={(queryParams.keyword || departmentFilter.length > 0 || typeFilter.length > 0) ? t('common.noResult') : t('credential.noData')} 
               />
             }
-            pagination={false}
+            scroll={{ y: 'calc(100vh - 320px)' }}
+            pagination={{
+              currentPage: queryParams.page,
+              pageSize: queryParams.pageSize,
+              total,
+              onPageChange: handlePageChange,
+              onPageSizeChange: (newPageSize: number) => setQueryParams((prev) => ({ ...prev, page: 1, pageSize: newPageSize })),
+              showTotal: true,
+              showSizeChanger: true,
+            }}
             onRow={(record) => ({
               id: `credential-row-${(record as LYCredentialResponse).credential_id}`,
               onClick: () => handleRowClick(record as LYCredentialResponse),
@@ -603,20 +612,6 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
           />
         )}
       </div>
-      {total > queryParams.pageSize * 2 && (
-        <div style={{ flexShrink: 0, paddingTop: 12 }}>
-          <Pagination
-            currentPage={queryParams.page}
-            pageSize={queryParams.pageSize}
-            total={total}
-            onPageChange={handlePageChange}
-            onPageSizeChange={(newPageSize) => setQueryParams((prev) => ({ ...prev, page: 1, pageSize: newPageSize }))}
-            showTotal
-            showSizeChanger
-            size="small"
-          />
-        </div>
-      )}
 
 
       {/* 新建凭据模态框 */}

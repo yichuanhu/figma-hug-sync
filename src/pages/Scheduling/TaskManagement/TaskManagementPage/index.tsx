@@ -800,7 +800,20 @@ const TaskManagementPage = () => {
                   }
                 />
               }
-              pagination={false}
+              pagination={{
+                currentPage,
+                pageSize,
+                total,
+                onPageChange: (page: number) => {
+                  setQueryParams((prev) => ({ ...prev, offset: (page - 1) * pageSize }));
+                },
+                onPageSizeChange: (size: number) => {
+                  setQueryParams((prev) => ({ ...prev, offset: 0, size }));
+                },
+                showTotal: true,
+                showSizeChanger: true,
+                pageSizeOpts: [10, 20, 50, 100],
+              }}
               onRow={(record) => ({
                 onClick: () => openTaskDetail(record as LYTaskResponse),
                 style: { cursor: 'pointer' },
@@ -809,25 +822,6 @@ const TaskManagementPage = () => {
             />
           )}
         </div>
-        {total > pageSize * 2 && (
-          <div style={{ flexShrink: 0, paddingTop: 12 }}>
-            <Pagination
-              currentPage={currentPage}
-              pageSize={pageSize}
-              total={total}
-              onPageChange={(page) => {
-                setQueryParams((prev) => ({ ...prev, offset: (page - 1) * pageSize }));
-              }}
-              onPageSizeChange={(size) => {
-                setQueryParams((prev) => ({ ...prev, offset: 0, size }));
-              }}
-              showTotal
-              showSizeChanger
-              size="small"
-              pageSizeOpts={[10, 20, 50, 100]}
-            />
-          </div>
-        )}
 
         <CreateTaskModal
           visible={createModalVisible}
