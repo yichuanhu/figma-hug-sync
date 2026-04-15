@@ -15,6 +15,7 @@ import {
   Typography,
   Tooltip,
   Breadcrumb,
+  Pagination,
   
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
@@ -582,16 +583,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
             dataSource={listResponse?.data || []}
             rowKey="id"
             loading={loading && !isInitialLoad}
-            scroll={tableScrollY ? { y: tableScrollY } : undefined}
-            pagination={{
-              currentPage: queryParams.page,
-              pageSize: queryParams.pageSize,
-              total,
-              onPageChange: handlePageChange,
-              onPageSizeChange: (newPageSize: number) => setQueryParams((prev) => ({ ...prev, page: 1, pageSize: newPageSize })),
-              showTotal: true,
-              showSizeChanger: true,
-            }}
+            pagination={false}
             empty={
               <EmptyState
                 variant={queryParams.keyword || departmentFilter.length > 0 || sourceFilter.length > 0 ? 'noResult' : 'noData'}
@@ -610,6 +602,28 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
                   : '',
             })}
           />
+        )}
+        {total > 0 && (
+          <div className="list-pagination">
+            <Text type="tertiary">
+              {t('common.showingRecords', {
+                start: (queryParams.page - 1) * queryParams.pageSize + 1,
+                end: Math.min(queryParams.page * queryParams.pageSize, total),
+                total,
+              })}
+            </Text>
+            <div className="list-pagination-right">
+              <Text type="tertiary">{t('common.totalPages', { total: Math.ceil(total / queryParams.pageSize) })}</Text>
+              <Pagination
+                currentPage={queryParams.page}
+                pageSize={queryParams.pageSize}
+                total={total}
+                showSizeChanger
+                onPageChange={handlePageChange}
+                onPageSizeChange={(newPageSize: number) => setQueryParams((prev) => ({ ...prev, page: 1, pageSize: newPageSize }))}
+              />
+            </div>
+          </div>
         )}
       </div>
 

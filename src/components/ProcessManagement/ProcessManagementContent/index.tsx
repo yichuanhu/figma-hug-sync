@@ -16,6 +16,7 @@ import {
   Modal,
   Toast,
   Space,
+  Pagination,
   
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
@@ -642,19 +643,32 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
                 style: { cursor: 'pointer' },
               };
             }}
-            scroll={{ y: 'calc(100vh - 320px)' }}
-            pagination={{
-              currentPage,
-              pageSize,
-              total,
-              onPageChange: (page: number) => {
-                setQueryParams((prev) => ({ ...prev, offset: (page - 1) * pageSize }));
-              },
-              onPageSizeChange: (newPageSize: number) => setQueryParams((prev) => ({ ...prev, offset: 0, size: newPageSize })),
-              showTotal: true,
-              showSizeChanger: true,
-            }}
+            pagination={false}
           />
+        )}
+        {total > 0 && (
+          <div className="list-pagination">
+            <Text type="tertiary">
+              {t('common.showingRecords', {
+                start: (currentPage - 1) * pageSize + 1,
+                end: Math.min(currentPage * pageSize, total),
+                total,
+              })}
+            </Text>
+            <div className="list-pagination-right">
+              <Text type="tertiary">{t('common.totalPages', { total: Math.ceil(total / pageSize) })}</Text>
+              <Pagination
+                currentPage={currentPage}
+                pageSize={pageSize}
+                total={total}
+                showSizeChanger
+                onPageChange={(page: number) => {
+                  setQueryParams((prev) => ({ ...prev, offset: (page - 1) * pageSize }));
+                }}
+                onPageSizeChange={(newPageSize: number) => setQueryParams((prev) => ({ ...prev, offset: 0, size: newPageSize }))}
+              />
+            </div>
+          </div>
         )}
       </div>
 
