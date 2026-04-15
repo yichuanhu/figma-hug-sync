@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { Typography, Tag, Button, Space, Modal, Toast } from '@douyinfe/semi-ui';
 import { IconDeleteStroked } from '@douyinfe/semi-icons';
-import { Plus, Trash2 } from 'lucide-react';
+import { ExternalLink, Plus, Trash2 } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import type { LYProcessDependency, ResourceType } from '@/api';
 import AddResourceModal from '@/pages/Development/ReleaseManagement/CreateReleasePage/components/AddResourceModal';
@@ -16,10 +17,19 @@ interface DependencyTabProps {
   dependencies: LYProcessDependency[];
   onDependenciesChange?: (deps: LYProcessDependency[]) => void;
   readOnly?: boolean;
+  context?: 'development' | 'scheduling';
 }
 
-const DependencyTab = ({ dependencies, onDependenciesChange, readOnly = false }: DependencyTabProps) => {
+const RESOURCE_TYPE_ROUTE_MAP: Record<ResourceType, string> = {
+  PARAMETER: 'parameters',
+  CREDENTIAL: 'credentials',
+  QUEUE: 'queues',
+  FILE: 'files',
+};
+
+const DependencyTab = ({ dependencies, onDependenciesChange, readOnly = false, context = 'development' }: DependencyTabProps) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [addModalVisible, setAddModalVisible] = useState(false);
 
   const resourceTypeLabels: Record<ResourceType, string> = {
@@ -72,6 +82,14 @@ const DependencyTab = ({ dependencies, onDependenciesChange, readOnly = false }:
     Toast.success(t('processDependency.addSuccess', { count: newDeps.length }));
   };
 
+  const handleNavigateToResource = (dep: LYProcessDependency) => {
+    const basePath = context === 'development'
+      ? '/dev-center/business-assets'
+      : '/scheduling-center/business-assets';
+    const route = RESOURCE_TYPE_ROUTE_MAP[dep.resource_type];
+    navigate(`${basePath}/${route}?resourceId=${dep.resource_id}`);
+  };
+
   const existingIds = useMemo(() => dependencies.map((d) => d.resource_id), [dependencies]);
 
   const renderGroup = (type: ResourceType, items: LYProcessDependency[]) => {
@@ -88,18 +106,39 @@ const DependencyTab = ({ dependencies, onDependenciesChange, readOnly = false }:
           {items.map((dep) => (
             <div key={dep.resource_id} className="dependency-tab-item">
               <div className="dependency-tab-item-left">
-                <Text strong ellipsis={{ showTooltip: true }} style={{ maxWidth: 300 }}>
-                  {dep.resource_name}
-                </Text>
-                <Tag
-                  color={dep.source === 'AUTO_DETECTED' ? 'blue' : 'grey'}
-                  size="small"
-                  type="light"
-                >
-                  {dep.source === 'AUTO_DETECTED'
-                    ? t('processDependency.sourceAutoDetected')
-                    : t('processDependency.sourceManual')}
-                </Tag>
+                <div className="dependency-tab-item-info">
+                  <div className="dependency-tab-item-name-row">
+                    <Text
+                      strong
+                      ellipsis={{ showTooltip: true }}
+                      style={{ maxWidth: 240 }}
+                      className="dependency-tab-item-name-link"
+                      onClick={() => handleNavigateToResource(dep)}
+                    >
+                      {dep.resource_name}
+                    </Text>
+                    <ExternalLink size={12} strokeWidth={2} className="dependency-tab-item-link-icon" />
+                    <Tag
+                      color={dep.source === 'AUTO_DETECTED' ? 'blue' : 'grey'}
+                      size="small"
+                      type="light"
+                    >
+                      {dep.source === 'AUTO_DETECTED'
+                        ? t('processDependency.sourceAutoDetected')
+                        : t('processDependency.sourceManual')}
+                    </Tag>
+                  </div>
+                  {dep.resource_value && (
+                    <Text
+                      type="tertiary"
+                      size="small"
+                      ellipsis={{ showTooltip: true }}
+                      style={{ maxWidth: 360 }}
+                    >
+                      {dep.resource_value}
+                    </Text>
+                  )}
+                </div>
               </div>
               {!readOnly && dep.source === 'MANUAL' && (
                 <Button

@@ -396,6 +396,8 @@ export interface LYProcessDependency {
   param_type?: 'TEXT' | 'BOOLEAN' | 'NUMBER';
   /** 源文件名（仅 FILE） */
   original_name?: string;
+  /** 资源当前值（后端从资源管理表联查） */
+  resource_value?: string;
 }
 
 /**
