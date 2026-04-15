@@ -53,7 +53,8 @@
     "filterTags": "筛选标签",
     "filterGroup": "筛选分组",
     "filterPublisher": "筛选发布者",
-    "num": "个"
+    "num": "个",
+    "share": "添加协作者"
   },
   "emptyState": {
     "retry": "重试",

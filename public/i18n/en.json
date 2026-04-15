@@ -67,7 +67,8 @@
     "filterTags": "Filter Tags",
     "filterGroup": "Filter Group",
     "filterPublisher": "Filter Publisher",
-    "num": "items"
+    "num": "items",
+    "share": "Add Collaborator"
   },
   "emptyState": {
     "retry": "Retry",
