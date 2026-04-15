@@ -14,6 +14,8 @@ import {
   Select,
   Switch,
   Tooltip,
+  Typography,
+  Pagination,
   
 } from '@douyinfe/semi-ui';
 import DepartmentSelect from '@/components/DepartmentSelect';
@@ -586,20 +588,7 @@ const QueueTriggerList = () => {
                 }
               />
             }
-            pagination={{
-              currentPage,
-              pageSize,
-              total,
-              onPageChange: (page: number) => {
-                setQueryParams((prev) => ({ ...prev, offset: (page - 1) * pageSize }));
-              },
-              onPageSizeChange: (size: number) => {
-                setQueryParams((prev) => ({ ...prev, offset: 0, size }));
-              },
-              showTotal: true,
-              showSizeChanger: true,
-              pageSizeOpts: [10, 20, 50],
-            }}
+            pagination={false}
             onRow={(record) => ({
               onClick: () => handleOpenDrawer(record as LYQueueTriggerResponse),
               className: selectedTrigger?.trigger_id === (record as LYQueueTriggerResponse).trigger_id
@@ -607,6 +596,33 @@ const QueueTriggerList = () => {
                 : '',
             })}
           />
+        )}
+        {total > 0 && (
+          <div className="list-pagination">
+            <Typography.Text type="tertiary">
+              {t('common.showingRecords', {
+                start: (currentPage - 1) * pageSize + 1,
+                end: Math.min(currentPage * pageSize, total),
+                total,
+              })}
+            </Typography.Text>
+            <div className="list-pagination-right">
+              <Typography.Text type="tertiary">{t('common.totalPages', { total: Math.ceil(total / pageSize) })}</Typography.Text>
+              <Pagination
+                currentPage={currentPage}
+                pageSize={pageSize}
+                total={total}
+                showSizeChanger
+                pageSizeOpts={[10, 20, 50]}
+                onPageChange={(page: number) => {
+                  setQueryParams((prev) => ({ ...prev, offset: (page - 1) * pageSize }));
+                }}
+                onPageSizeChange={(size: number) => {
+                  setQueryParams((prev) => ({ ...prev, offset: 0, size }));
+                }}
+              />
+            </div>
+          </div>
         )}
       </div>
 

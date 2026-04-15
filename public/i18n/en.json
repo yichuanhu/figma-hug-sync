@@ -32,6 +32,7 @@
     "status": "Status",
     "actions": "Actions",
     "showingRecords": "Showing {{start}}-{{end}} of {{total}}",
+    "totalPages": "{{total}} pages",
     "startTime": "Start Time",
     "endTime": "End Time",
     "startDate": "Start Date",

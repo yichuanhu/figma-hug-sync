@@ -15,6 +15,7 @@ import {
   Modal,
   Toast,
   Space,
+  Pagination,
   
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
@@ -38,7 +39,7 @@ import type {
 import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
 import './index.less';
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 // ============= 工具函数 =============
 
@@ -800,26 +801,40 @@ const TaskManagementPage = () => {
                   }
                 />
               }
-              pagination={{
-                currentPage,
-                pageSize,
-                total,
-                onPageChange: (page: number) => {
-                  setQueryParams((prev) => ({ ...prev, offset: (page - 1) * pageSize }));
-                },
-                onPageSizeChange: (size: number) => {
-                  setQueryParams((prev) => ({ ...prev, offset: 0, size }));
-                },
-                showTotal: true,
-                showSizeChanger: true,
-                pageSizeOpts: [10, 20, 50, 100],
-              }}
+              pagination={false}
               onRow={(record) => ({
                 onClick: () => openTaskDetail(record as LYTaskResponse),
                 style: { cursor: 'pointer' },
                 className: selectedTask?.task_id === (record as LYTaskResponse).task_id && detailDrawerVisible ? 'task-row-selected' : '',
               })}
             />
+          )}
+          {total > 0 && (
+            <div className="list-pagination">
+              <Text type="tertiary">
+                {t('common.showingRecords', {
+                  start: (currentPage - 1) * pageSize + 1,
+                  end: Math.min(currentPage * pageSize, total),
+                  total,
+                })}
+              </Text>
+              <div className="list-pagination-right">
+                <Text type="tertiary">{t('common.totalPages', { total: Math.ceil(total / pageSize) })}</Text>
+                <Pagination
+                  currentPage={currentPage}
+                  pageSize={pageSize}
+                  total={total}
+                  showSizeChanger
+                  pageSizeOpts={[10, 20, 50, 100]}
+                  onPageChange={(page: number) => {
+                    setQueryParams((prev) => ({ ...prev, offset: (page - 1) * pageSize }));
+                  }}
+                  onPageSizeChange={(size: number) => {
+                    setQueryParams((prev) => ({ ...prev, offset: 0, size }));
+                  }}
+                />
+              </div>
+            </div>
           )}
         </div>
 

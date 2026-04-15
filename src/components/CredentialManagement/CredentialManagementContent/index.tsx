@@ -15,6 +15,7 @@ import {
   Typography,
   Tooltip,
   Breadcrumb,
+  Pagination,
   
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
@@ -591,16 +592,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
                 description={(queryParams.keyword || departmentFilter.length > 0 || typeFilter.length > 0) ? t('common.noResult') : t('credential.noData')} 
               />
             }
-            scroll={{ y: 'calc(100vh - 320px)' }}
-            pagination={{
-              currentPage: queryParams.page,
-              pageSize: queryParams.pageSize,
-              total,
-              onPageChange: handlePageChange,
-              onPageSizeChange: (newPageSize: number) => setQueryParams((prev) => ({ ...prev, page: 1, pageSize: newPageSize })),
-              showTotal: true,
-              showSizeChanger: true,
-            }}
+            pagination={false}
             onRow={(record) => ({
               id: `credential-row-${(record as LYCredentialResponse).credential_id}`,
               onClick: () => handleRowClick(record as LYCredentialResponse),
@@ -610,6 +602,28 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
               style: { cursor: 'pointer' },
             })}
           />
+        )}
+        {total > 0 && (
+          <div className="list-pagination">
+            <Text type="tertiary">
+              {t('common.showingRecords', {
+                start: (queryParams.page - 1) * queryParams.pageSize + 1,
+                end: Math.min(queryParams.page * queryParams.pageSize, total),
+                total,
+              })}
+            </Text>
+            <div className="list-pagination-right">
+              <Text type="tertiary">{t('common.totalPages', { total: Math.ceil(total / queryParams.pageSize) })}</Text>
+              <Pagination
+                currentPage={queryParams.page}
+                pageSize={queryParams.pageSize}
+                total={total}
+                showSizeChanger
+                onPageChange={handlePageChange}
+                onPageSizeChange={(newPageSize: number) => setQueryParams((prev) => ({ ...prev, page: 1, pageSize: newPageSize }))}
+              />
+            </div>
+          </div>
         )}
       </div>
 
