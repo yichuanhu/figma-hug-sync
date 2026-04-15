@@ -3214,6 +3214,7 @@
     },
     "deleteSuccess": "Dependency deleted",
     "addSuccess": "{{count}} dependencies added",
-    "autoDetectedNew": "{{count}} new dependencies auto-detected"
+    "autoDetectedNew": "{{count}} new dependencies auto-detected",
+    "value": "Value"
   }
 }
