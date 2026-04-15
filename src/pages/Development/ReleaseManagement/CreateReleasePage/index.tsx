@@ -15,7 +15,6 @@ import ReleaseConfigStep from './components/ReleaseConfigStep';
 import type {
   LYPublishableProcessResponse,
   ReleaseType,
-  LYDependencyDetectionResponse,
   CreateReleaseRequest,
   ResourceType,
 } from '@/api';
@@ -63,9 +62,6 @@ const CreateReleasePage: React.FC = () => {
   const [releaseType, setReleaseType] = useState<ReleaseType>('REQUIREMENT_CHANGE');
   const [description, setDescription] = useState('');
   const [resources, setResources] = useState<ResourceConfig[]>([]);
-  const [detectingDependencies, setDetectingDependencies] = useState(false);
-
-  // SubmitStatus
   const [submitting, setSubmitting] = useState(false);
 
   // Mock 依赖检测
