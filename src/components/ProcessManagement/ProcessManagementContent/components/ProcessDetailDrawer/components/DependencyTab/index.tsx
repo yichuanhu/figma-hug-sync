@@ -77,6 +77,7 @@ const DependencyTab = ({ dependencies, onDependenciesChange, readOnly = false, c
       source: 'MANUAL' as const,
       param_type: r.param_type,
       original_name: r.original_name,
+      resource_value: r.test_value || undefined,
     }));
     onDependenciesChange?.([...dependencies, ...newDeps]);
     Toast.success(t('processDependency.addSuccess', { count: newDeps.length }));
