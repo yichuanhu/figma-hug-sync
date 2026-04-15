@@ -274,8 +274,8 @@ const PersonalCredentialDetailDrawer = ({
                 { title: t('common.actions'), key: 'actions', width: 80, render: (_: unknown, record: LinkedCredential) => (
                   <Dropdown trigger="click" position="bottomRight" clickToHide render={
                     <Dropdown.Menu>
-                      <Dropdown.Item icon={<Eye size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleNavigateToCredential(record); }}>{t('common.viewDetail')}</Dropdown.Item>
-                      <Dropdown.Item icon={<Unlink size={16} strokeWidth={2} />} type="danger" onClick={(e) => { e.stopPropagation(); handleUnlinkCredential(record); }}>{t('personalCredential.linkedCredentials.unlink')}</Dropdown.Item>
+                      <Dropdown.Item icon={<Eye size={16} strokeWidth={2} />} onClick={() => { handleNavigateToCredential(record); }}>{t('common.viewDetail')}</Dropdown.Item>
+                      <Dropdown.Item icon={<Unlink size={16} strokeWidth={2} />} type="danger" onClick={() => { handleUnlinkCredential(record); }}>{t('personalCredential.linkedCredentials.unlink')}</Dropdown.Item>
                     </Dropdown.Menu>
                   }><Button icon={<Ellipsis size={16} strokeWidth={2} />} theme="borderless" type="tertiary" onClick={(e) => e.stopPropagation()} /></Dropdown>
                 ) },
