@@ -16,7 +16,7 @@ import {
   TextArea,
 } from '@douyinfe/semi-ui';
 import { IconDeleteStroked } from '@douyinfe/semi-icons';
-import type { LYProcessResponse, LYProcessVersionResponse } from '@/api';
+import type { LYProcessResponse, LYProcessVersionResponse, LYProcessDependency } from '@/api';
 import UploadVersionModal from '../UploadVersionModal';
 import EmptyState from '@/components/EmptyState';
 import DetailSkeleton from '@/components/DetailSkeleton';
@@ -27,6 +27,7 @@ import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import './index.less';
 import { ExternalLink, HelpCircle, Link, Pencil, PlayCircle, Trash2, Upload } from 'lucide-react';
+import DependencyTab from './components/DependencyTab';
 
 const { Title, Text } = Typography;
 
