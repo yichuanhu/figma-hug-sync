@@ -1,104 +1,48 @@
 
 
-## 需求方案：资源依赖前置 — 流程级别管理
+## 修订需求文档
 
-### 核心设计
+将 `.lovable/plan.md` 重写为面向前后端团队的正式需求文档，修正上一版的表述问题：
 
-依赖统一挂在**流程维度**，所有版本共享同一份依赖列表。上传新版本时自动解析并**增量合并**到流程依赖中，手动添加的依赖永久保留。
+**核心修正**：后端变更的原因是「前端需求变更（依赖关系从发布阶段前置到流程管理阶段）」驱动的，而非后端本身存在缺陷。文档应清晰表达：因为前端将依赖管理前置到流程维度，所以后端需要配合新增流程级别的依赖存储、上传时的增量合并、以及对应的 CRUD 接口。
 
-```text
-流程 A 的依赖列表（统一维护）
-├── ERP API Address    [自动解析] ← v1.0 上传时解析出
-├── Order Queue        [自动解析] ← v1.0 上传时解析出
-├── Batch Count        [自动解析] ← v2.0 上传时新增
-├── SFTP Credential    [手动添加] ← 用户手动添加一次，永久保留
-└── Debug Mode         [手动添加]
-
-发布时：选中流程 → 直接读取流程.dependencies → 配置生产值 → 发布
-```
-
-### 数据模型变更
-
-**`src/api/index.ts`** 新增类型，扩展 `LYProcessResponse`：
-
-```typescript
-interface LYProcessDependency {
-  resource_id: string;
-  resource_name: string;
-  resource_type: ResourceType; // PARAMETER | CREDENTIAL | QUEUE | FILE
-  source: 'AUTO_DETECTED' | 'MANUAL';
-  param_type?: 'TEXT' | 'BOOLEAN' | 'NUMBER';
-  original_name?: string; // 文件资源
-}
-
-// LYProcessResponse 新增字段
-dependencies?: LYProcessDependency[];
-```
-
-### 前端展示方案
-
-#### 1. 流程详情抽屉 — 新增「资源依赖」Tab
-
-在 `ProcessDetailDrawer` 现有的「详情」「版本管理」后新增第三个 Tab。
+### 文档结构
 
 ```text
-┌─────────────────────────────────────────────┐
-│  详情  │  版本管理  │  资源依赖 (6)          │
-├─────────────────────────────────────────────┤
-│                         [+ 添加依赖]         │
-│─────────────────────────────────────────────│
-│  参数 (3)                                    │
-│  ┌─────────────────────────────────────────┐ │
-│  │ ERP API Address        [自动解析]       │ │
-│  │ Batch Count            [自动解析]       │ │
-│  │ Debug Mode             [手动添加] [🗑]  │ │
-│  └─────────────────────────────────────────┘ │
-│  凭据 (2)                                    │
-│  ┌─────────────────────────────────────────┐ │
-│  │ ERP Credential         [自动解析]       │ │
-│  │ SFTP Credential        [手动添加] [🗑]  │ │
-│  └─────────────────────────────────────────┘ │
-│  队列 (1)                                    │
-│  ┌─────────────────────────────────────────┐ │
-│  │ Order Queue            [自动解析]       │ │
-│  └─────────────────────────────────────────┘ │
-└─────────────────────────────────────────────┘
+一、需求背景与目标
+  - 现状：依赖在发布阶段确认（解析+手动添加）
+  - 变更目标：前置到流程管理阶段
+  - 变更驱动：前端交互优化 → 后端配合适配
+
+二、核心设计
+  - 流程级别统一维护依赖列表
+  - 自动解析（上传版本时）+ 手动添加
+  - 发布时直接读取流程依赖
+
+三、数据模型
+  - LYProcessDependency 结构定义
+  - LYProcessResponse 扩展
+
+四、前端变更说明
+  - 流程详情抽屉新增「资源依赖」Tab
+  - 上传版本后自动刷新依赖列表
+  - 创建发布简化（移除 detectDependencies）
+
+五、后端变更需求（因前端需求变更而需配合调整）
+  - 流程详情接口：返回 dependencies 字段
+  - 版本上传接口：上传成功后自动解析依赖，增量合并到流程依赖列表，返回新增数量
+  - 流程依赖 CRUD 接口（GET/POST/DELETE）
+  - 发布相关接口：返回 dependencies 字段
+
+六、前后端对接要点
+  - 接口对照表
+
+七、实施顺序建议
 ```
-
-- 按资源类型分组展示（复用 ReleaseConfigStep 的分组样式）
-- 每项显示：资源名称 + 来源标签（自动解析/手动添加）
-- 手动添加的可删除，自动解析的不可删除
-- 右上角「添加依赖」按钮，复用 `AddResourceModal`
-- `development` 上下文可编辑，`scheduling` 上下文只读（隐藏添加/删除按钮）
-
-#### 2. 上传版本后自动解析
-
-`UploadVersionModal` 上传成功回调中触发 Mock 依赖解析，增量合并到流程的依赖列表，Toast 提示「已自动解析出 N 项新资源依赖」。
-
-#### 3. 创建发布 — 简化
-
-`CreateReleasePage` 第二步改为直接聚合所选流程的 `dependencies` 字段，移除 `detectDependencies` 调用和 `detectingDependencies` loading。仍保留发布级别的「添加依赖」按钮用于临时补充。
 
 ### 涉及文件
 
 | 文件 | 改动 |
 |------|------|
-| `src/api/index.ts` | 新增 `LYProcessDependency`，扩展 `LYProcessResponse` |
-| `ProcessDetailDrawer/index.tsx` | 新增「资源依赖」TabPane |
-| `ProcessDetailDrawer/index.less` | 依赖 Tab 样式 |
-| 新建 `ProcessDetailDrawer/components/DependencyTab/` | 依赖管理组件（分组展示 + 添加/删除） |
-| `AddResourceModal` | 从 Release 目录提取为共享组件（或直接引用） |
-| `UploadVersionModal/index.tsx` | 上传成功后触发依赖解析并合并 |
-| `CreateReleasePage/index.tsx` | 移除 `detectDependencies`，改读流程依赖 |
-| `ReleaseConfigStep/index.tsx` | 资源卡片新增来源流程标注 |
-| `ProcessManagementContent/index.tsx` | Mock 数据中为流程添加 `dependencies` 字段 |
-| i18n `zh-CN.json` / `en.json` | 新增依赖管理相关词条 |
-
-### 实施顺序
-
-1. 数据模型 + Mock 数据（API 类型 + 流程 Mock 补充 dependencies）
-2. DependencyTab 组件 + 集成到 ProcessDetailDrawer
-3. UploadVersionModal 自动解析合并
-4. CreateReleasePage 简化（读取流程依赖替代 detectDependencies）
-5. i18n 词条补充
+| `.lovable/plan.md` | 重写为正式需求文档，修正后端需求表述 |
 
