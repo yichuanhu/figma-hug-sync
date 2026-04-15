@@ -360,8 +360,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
             <Dropdown.Menu>
               <Dropdown.Item 
                 icon={<Eye size={16} strokeWidth={2} />} 
-                onClick={(e) => {
-                  e?.stopPropagation?.();
+                onClick={() => {
                   openDetail(record);
                 }}
               >
@@ -369,8 +368,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
               </Dropdown.Item>
               <Dropdown.Item 
                 icon={<UserPlus size={16} strokeWidth={2} />} 
-                onClick={(e) => {
-                  e?.stopPropagation?.();
+                onClick={() => {
                   handleAddMembers(record);
                 }}
               >
@@ -378,8 +376,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
               </Dropdown.Item>
               <Dropdown.Item 
                 icon={<Pencil size={16} strokeWidth={2} />} 
-                onClick={(e) => {
-                  e?.stopPropagation?.();
+                onClick={() => {
                   handleEdit(record);
                 }}
               >
@@ -387,8 +384,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
               </Dropdown.Item>
               <Dropdown.Item 
                 icon={<UserPlus size={14} strokeWidth={2} />}
-                onClick={(e) => {
-                  e?.stopPropagation?.();
+                onClick={() => {
                   openCollaborator(record.id);
                 }}
               >
@@ -397,8 +393,7 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
               <Dropdown.Item 
                 icon={<Trash2 size={16} strokeWidth={2} />}
                 type="danger" 
-                onClick={(e) => {
-                  e?.stopPropagation?.();
+                onClick={() => {
                   handleDeleteClick(record);
                 }}
               >

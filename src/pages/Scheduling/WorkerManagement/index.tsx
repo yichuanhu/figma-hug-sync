@@ -821,8 +821,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
             <Dropdown.Menu>
               <Dropdown.Item 
                 icon={<Eye size={16} strokeWidth={2} />} 
-                onClick={(e) => {
-                  e?.stopPropagation?.();
+                onClick={() => {
                   openDetail(record);
                 }}
               >
@@ -830,8 +829,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
               </Dropdown.Item>
               <Dropdown.Item 
                 icon={<Key size={16} strokeWidth={2} />}
-                onClick={(e) => {
-                  e?.stopPropagation?.();
+                onClick={() => {
                   openKeyModal(record);
                 }}
               >
@@ -839,8 +837,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
               </Dropdown.Item>
               <Dropdown.Item 
                 icon={<Pencil size={16} strokeWidth={2} />} 
-                onClick={(e) => {
-                  e?.stopPropagation?.();
+                onClick={() => {
                   handleEdit(record);
                 }}
               >
@@ -850,8 +847,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
               {!record.group_id && (
                 <Dropdown.Item 
                   icon={<Users size={16} strokeWidth={2} />}
-                  onClick={(e) => {
-                    e?.stopPropagation?.();
+                  onClick={() => {
                     handleAddToGroup(record);
                   }}
                 >
@@ -862,8 +858,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
               {record.group_id && (
                 <Dropdown.Item 
                   icon={<MinusCircle size={16} strokeWidth={2} />}
-                  onClick={(e) => {
-                    e?.stopPropagation?.();
+                  onClick={() => {
                     handleRemoveFromGroup(record);
                   }}
                 >
@@ -872,8 +867,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
               )}
               <Dropdown.Item 
                 icon={<UserPlus size={14} strokeWidth={2} />}
-                onClick={(e) => {
-                  e?.stopPropagation?.();
+                onClick={() => {
                   openCollaborator(record.id);
                 }}
               >
@@ -882,8 +876,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
               <Dropdown.Item 
                 icon={<Trash2 size={16} strokeWidth={2} />} 
                 type="danger" 
-                onClick={(e) => {
-                  e?.stopPropagation?.();
+                onClick={() => {
                   handleDeleteClick(record);
                 }}
               >
