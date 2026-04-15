@@ -150,10 +150,10 @@ interface LYProcessResponse {
     ▼
 遍历每个解析出的资源名称，查询资源管理表获取完整信息
     │
-    ├── 参数名称 → 查询参数管理表 → 获取 resource_id、param_type
-    ├── 凭据名称 → 查询凭据管理表 → 获取 resource_id
-    ├── 队列名称 → 查询队列管理表 → 获取 resource_id
-    └── 文件名称 → 查询文件管理表 → 获取 resource_id、original_name
+    ├── 参数名称 → 查询参数管理表 → 获取 resource_id、param_type、当前值(resource_value)
+    ├── 凭据名称 → 查询凭据管理表 → 获取 resource_id、掩码值(resource_value)
+    ├── 队列名称 → 查询队列管理表 → 获取 resource_id、队列状态信息(resource_value)
+    └── 文件名称 → 查询文件管理表 → 获取 resource_id、original_name、文件名(resource_value)
     │
     ▼
 增量合并到流程的 dependencies 列表
@@ -215,17 +215,26 @@ interface LYProcessResponse {
       "resource_name": "ERP API Address",
       "resource_type": "PARAMETER",
       "source": "AUTO_DETECTED",
-      "param_type": "TEXT"
+      "param_type": "TEXT",
+      "resource_value": "https://erp.example.com/api/v2"
     },
     {
       "resource_id": "cred-002",
       "resource_name": "SFTP Credential",
       "resource_type": "CREDENTIAL",
-      "source": "MANUAL"
+      "source": "MANUAL",
+      "resource_value": "••••••••"
     }
   ]
 }
 ```
+
+**`resource_value` 字段说明**：
+- 后端在返回依赖列表时，需联查对应资源管理表，填充每项依赖的当前值
+- **参数**：返回参数的当前值（如 `"500"`、`"true"`、`"https://..."`）
+- **凭据**：出于安全考虑，返回掩码值 `"••••••••"`，不暴露明文
+- **队列**：返回队列概要信息（如消息数量）
+- **文件**：返回源文件名（`original_name`）
 
 #### 5.4 发布相关接口适配
 
