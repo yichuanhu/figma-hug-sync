@@ -739,6 +739,16 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
         onPageChange={handleDrawerPageChange}
         context={context}
         initialTab={detailInitialTab}
+        onDependenciesChange={(processId, deps) => {
+          const idx = mockProcessData.findIndex((p) => p.id === processId);
+          if (idx !== -1) {
+            mockProcessData[idx] = { ...mockProcessData[idx], dependencies: deps };
+            // Update selected process to reflect changes
+            if (selectedProcess?.id === processId) {
+              setSelectedProcess({ ...mockProcessData[idx] });
+            }
+          }
+        }}
       />
 
       {/* 打开流程确认弹窗 - 仅开发中心 */}
