@@ -126,11 +126,11 @@ const DependencyTab = ({ dependencies, onDependenciesChange, readOnly = false, c
       <div className="dependency-tab-resource-card-body">
         {dep.resource_type === 'CREDENTIAL' ? (
           <Text type="tertiary" ellipsis={{ showTooltip: true }}>
-            {context === 'development' ? t('processDependency.devValue') : t('processDependency.prodValue')}: ********
+            {context === 'development' ? t('processDependency.devValue') : t('processDependency.prodValue')}：********
           </Text>
         ) : dep.resource_type === 'PARAMETER' && dep.resource_value ? (
           <div className="dependency-tab-value-field">
-            <Text type="tertiary">{context === 'development' ? t('processDependency.devValue') : t('processDependency.prodValue')}:</Text>
+            <Text type="tertiary">{context === 'development' ? t('processDependency.devValue') : t('processDependency.prodValue')}：</Text>
             <div className="dependency-tab-value-scroll">
               <Text>{dep.resource_value}</Text>
             </div>
