@@ -496,12 +496,12 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
         <Dropdown
           trigger="click"
           position="bottomRight"
+          stopPropagation
           clickToHide
           render={
             <Dropdown.Menu>
               {/* 调度中心显示运行操作 */}
-              <Dropdown.Item icon={<PlayCircle size={16} strokeWidth={2} />} onClick={(e) => {
-                e.stopPropagation();
+              <Dropdown.Item icon={<PlayCircle size={16} strokeWidth={2} />} onClick={() => {
                 handleRun();
               }}>
                 {t('common.run')}
@@ -511,8 +511,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
                 <>
                   <Dropdown.Item
                     icon={<ExternalLink size={16} strokeWidth={2} />}
-                    onClick={(e) => {
-                      e.stopPropagation();
+                    onClick={() => {
                       openProcess({ id: record.id, name: record.name });
                     }}
                   >
@@ -520,33 +519,32 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
                   </Dropdown.Item>
                   <Dropdown.Item
                     icon={<Pencil size={16} strokeWidth={2} />}
-                    onClick={(e) => {
-                      e.stopPropagation();
+                    onClick={() => {
                       handleEdit(record);
                     }}
                   >
                     {t('common.edit')}
                   </Dropdown.Item>
-                  <Dropdown.Item
-                    icon={<UserPlus size={14} strokeWidth={2} />}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      openCollaborator(record.id);
-                    }}
-                  >
-                    {t('collaborator.actions.addCollaborator')}
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    icon={<Trash2 size={16} strokeWidth={2} />}
-                    type="danger"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDeleteClick(record);
-                    }}
-                  >
-                    {t('common.delete')}
-                  </Dropdown.Item>
                 </>
+              )}
+              <Dropdown.Item
+                icon={<UserPlus size={14} strokeWidth={2} />}
+                onClick={() => {
+                  openCollaborator(record.id);
+                }}
+              >
+                {t('collaborator.actions.addCollaborator')}
+              </Dropdown.Item>
+              {!isSchedulingContext && (
+                <Dropdown.Item
+                  icon={<Trash2 size={16} strokeWidth={2} />}
+                  type="danger"
+                  onClick={() => {
+                    handleDeleteClick(record);
+                  }}
+                >
+                  {t('common.delete')}
+                </Dropdown.Item>
               )}
             </Dropdown.Menu>
           }
