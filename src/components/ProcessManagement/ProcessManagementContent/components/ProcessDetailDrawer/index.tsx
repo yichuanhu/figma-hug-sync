@@ -275,6 +275,7 @@ const ProcessDetailDrawer = ({
   context = 'development',
   onScrollToRow,
   initialTab = 'detail',
+  onDependenciesChange,
 }: ProcessDetailDrawerProps) => {
   const isSchedulingContext = context === 'scheduling';
   const { t } = useTranslation();
