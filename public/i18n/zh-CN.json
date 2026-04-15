@@ -27,6 +27,8 @@
     "no": "否",
     "copy": "复制",
     "description": "描述",
+    "showingRecords": "显示 {{start}}-{{end}} 条，共 {{total}} 条",
+    "totalPages": "共 {{total}} 页",
     "creator": "创建者",
     "createTime": "创建时间",
     "updateTime": "更新时间",
