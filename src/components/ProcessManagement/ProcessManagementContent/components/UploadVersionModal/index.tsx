@@ -3,14 +3,14 @@ import { useTranslation } from 'react-i18next';
 import { Modal, Upload, Button, Toast, Banner } from '@douyinfe/semi-ui';
 import { AlertCircle, File as FileIcon, Inbox, X } from 'lucide-react';
 import type { FileItem } from '@douyinfe/semi-ui/lib/es/upload';
-import type { LYProcessResponse } from '@/api';
+import type { LYProcessResponse, LYProcessDependency } from '@/api';
 import './index.less';
 
 interface UploadVersionModalProps {
   visible: boolean;
   onCancel: () => void;
   processData: LYProcessResponse | null;
-  onSuccess?: () => void;
+  onSuccess?: (newDeps?: LYProcessDependency[]) => void;
 }
 
 const UploadVersionModal = ({ visible, onCancel, processData, onSuccess }: UploadVersionModalProps) => {
@@ -46,23 +46,40 @@ const UploadVersionModal = ({ visible, onCancel, processData, onSuccess }: Uploa
   }, []);
 
   const handleUpload = useCallback(async () => {
-    // 文件上传验证通过 disabled 按钮处理，无需 Toast
-
     setUploading(true);
     try {
       // 模拟上传延迟
       await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      // 模拟自动解析出新依赖
+      const existingIds = new Set((processData?.dependencies || []).map((d) => d.resource_id));
+      const mockNewDeps: LYProcessDependency[] = [];
+      const possibleNewDeps: LYProcessDependency[] = [
+        { resource_id: `param-new-${Date.now()}-1`, resource_name: 'Retry Interval (ms)', resource_type: 'PARAMETER', source: 'AUTO_DETECTED', param_type: 'NUMBER' },
+        { resource_id: `param-new-${Date.now()}-2`, resource_name: 'Notification Endpoint', resource_type: 'PARAMETER', source: 'AUTO_DETECTED', param_type: 'TEXT' },
+      ];
+      possibleNewDeps.forEach((d) => {
+        if (!existingIds.has(d.resource_id)) {
+          mockNewDeps.push(d);
+        }
+      });
+
       Toast.success(t('development.processDevelopment.detail.uploadVersion.success'));
+
+      if (mockNewDeps.length > 0) {
+        Toast.info(t('processDependency.autoDetectedNew', { count: mockNewDeps.length }));
+      }
+
       setFileList([]);
       setShowNameMismatchWarning(false);
-      onSuccess?.();
+      onSuccess?.(mockNewDeps.length > 0 ? mockNewDeps : undefined);
       onCancel();
     } catch (error) {
       Toast.error(t('development.processDevelopment.detail.uploadVersion.error'));
     } finally {
       setUploading(false);
     }
-  }, [fileList, t, onSuccess, onCancel]);
+  }, [fileList, t, onSuccess, onCancel, processData]);
 
   const handleClose = useCallback(() => {
     setFileList([]);
