@@ -3201,5 +3201,19 @@
       "noSearchResults": "No matching users found",
       "done": "Done"
     }
+  },
+  "processDependency": {
+    "tabTitle": "Dependencies",
+    "addButton": "Add Dependency",
+    "empty": "No dependencies",
+    "sourceAutoDetected": "Auto-detected",
+    "sourceManual": "Manually Added",
+    "deleteConfirm": {
+      "title": "Delete Dependency",
+      "content": "Are you sure you want to delete dependency \"{{name}}\"?"
+    },
+    "deleteSuccess": "Dependency deleted",
+    "addSuccess": "{{count}} dependencies added",
+    "autoDetectedNew": "{{count}} new dependencies auto-detected"
   }
 }
