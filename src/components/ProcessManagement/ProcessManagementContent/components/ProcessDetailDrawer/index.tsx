@@ -594,6 +594,7 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
                 : undefined
             }
             readOnly={isSchedulingContext}
+            context={context}
           />
         </TabPane>
       </Tabs>
