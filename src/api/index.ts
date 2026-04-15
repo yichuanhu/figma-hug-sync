@@ -375,6 +375,27 @@ export interface LYProcessResponse {
   owner_id?: string | null;
   /** 归属者名称 */
   owner_name?: string | null;
+  /** 资源依赖列表（流程级别） */
+  dependencies?: LYProcessDependency[];
+}
+
+/**
+ * LYProcessDependency
+ * 流程级别资源依赖
+ */
+export interface LYProcessDependency {
+  /** 资源ID */
+  resource_id: string;
+  /** 资源名称 */
+  resource_name: string;
+  /** 资源类型 */
+  resource_type: ResourceType;
+  /** 来源：自动解析 / 手动添加 */
+  source: 'AUTO_DETECTED' | 'MANUAL';
+  /** 参数类型（仅 PARAMETER） */
+  param_type?: 'TEXT' | 'BOOLEAN' | 'NUMBER';
+  /** 源文件名（仅 FILE） */
+  original_name?: string;
 }
 
 /**
