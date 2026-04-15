@@ -594,23 +594,29 @@ const TimeTriggerList = () => {
                   ? 'time-trigger-row-selected'
                   : '',
             })}
-            pagination={{
-              total,
-              pageSize,
-              currentPage,
-              showSizeChanger: true,
-              showTotal: true,
-              pageSizeOpts: [10, 20, 50, 100],
-              onPageChange: (page) => {
-                setQueryParams((prev) => ({ ...prev, offset: (page - 1) * pageSize }));
-              },
-              onPageSizeChange: (size) => {
-                setQueryParams((prev) => ({ ...prev, offset: 0, size }));
-              },
-            }}
+            pagination={false}
           />
         )}
       </div>
+      {total > pageSize * 2 && (
+        <div style={{ flexShrink: 0, paddingTop: 12 }}>
+          <Pagination
+            currentPage={currentPage}
+            pageSize={pageSize}
+            total={total}
+            onPageChange={(page) => {
+              setQueryParams((prev) => ({ ...prev, offset: (page - 1) * pageSize }));
+            }}
+            onPageSizeChange={(size) => {
+              setQueryParams((prev) => ({ ...prev, offset: 0, size }));
+            }}
+            showTotal
+            showSizeChanger
+            size="small"
+            pageSizeOpts={[10, 20, 50, 100]}
+          />
+        </div>
+      )}
 
       {/* Create Trigger modal */}
       <CreateTimeTriggerModal

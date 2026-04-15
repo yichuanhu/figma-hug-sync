@@ -582,16 +582,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
             dataSource={listResponse?.data || []}
             rowKey="id"
             loading={loading && !isInitialLoad}
-            scroll={tableScrollY ? { y: tableScrollY } : undefined}
-            pagination={{
-              currentPage: queryParams.page,
-              pageSize: queryParams.pageSize,
-              total,
-              onPageChange: handlePageChange,
-              onPageSizeChange: (newPageSize) => setQueryParams((prev) => ({ ...prev, page: 1, pageSize: newPageSize })),
-              showSizeChanger: true,
-              showTotal: true,
-            }}
+            pagination={false}
             empty={
               <EmptyState
                 variant={queryParams.keyword || departmentFilter.length > 0 || sourceFilter.length > 0 ? 'noResult' : 'noData'}
@@ -612,6 +603,20 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
           />
         )}
       </div>
+      {total > queryParams.pageSize * 2 && (
+        <div style={{ flexShrink: 0, paddingTop: 12 }}>
+          <Pagination
+            currentPage={queryParams.page}
+            pageSize={queryParams.pageSize}
+            total={total}
+            onPageChange={handlePageChange}
+            onPageSizeChange={(newPageSize) => setQueryParams((prev) => ({ ...prev, page: 1, pageSize: newPageSize }))}
+            showTotal
+            showSizeChanger
+            size="small"
+          />
+        </div>
+      )}
 
       {/* 上传文件弹窗 */}
       <UploadFileModal
