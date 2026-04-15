@@ -586,8 +586,8 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
             loading={loading}
             empty={
               <EmptyState 
-                variant={queryParams.keyword ? 'noResult' : 'noData'}
-                description={queryParams.keyword ? t('common.noResult') : t('credential.noData')} 
+                variant={(queryParams.keyword || departmentFilter.length > 0 || typeFilter.length > 0) ? 'noResult' : 'noData'}
+                description={(queryParams.keyword || departmentFilter.length > 0 || typeFilter.length > 0) ? t('common.noResult') : t('credential.noData')} 
               />
             }
             pagination={{

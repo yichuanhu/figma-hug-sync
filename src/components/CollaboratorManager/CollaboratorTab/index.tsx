@@ -402,7 +402,7 @@ const CollaboratorTab = ({
           dataSource={filteredData}
           rowKey="id"
           loading={loading}
-          empty={<EmptyState description={t('collaborator.empty')} />}
+          empty={<EmptyState variant={searchValue ? 'noResult' : 'noData'} description={searchValue ? t('common.noResult') : t('collaborator.empty')} />}
           pagination={false}
           scroll={{ y: 'calc(100vh - 280px)' }}
         />
