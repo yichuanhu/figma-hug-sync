@@ -2566,5 +2566,19 @@
       "noSearchResults": "未找到匹配的用户",
       "done": "完成"
     }
+  },
+  "processDependency": {
+    "tabTitle": "资源依赖",
+    "addButton": "添加依赖",
+    "empty": "暂无资源依赖",
+    "sourceAutoDetected": "自动解析",
+    "sourceManual": "手动添加",
+    "deleteConfirm": {
+      "title": "删除依赖",
+      "content": "确定要删除依赖「{{name}}」吗？"
+    },
+    "deleteSuccess": "依赖已删除",
+    "addSuccess": "已添加 {{count}} 项依赖",
+    "autoDetectedNew": "已自动解析出 {{count}} 项新资源依赖"
   }
 }

@@ -31,7 +31,7 @@ import EditProcessModal from './components/EditProcessModal';
 import ProcessDetailDrawer from './components/ProcessDetailDrawer';
 import { useOpenProcess } from './hooks/useOpenProcess';
 import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
-import type { LYProcessResponse, GetProcessesParams, LYListResponseLYProcessResponse } from '@/api';
+import type { LYProcessResponse, LYProcessDependency, GetProcessesParams, LYListResponseLYProcessResponse } from '@/api';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -95,6 +95,21 @@ const generateMockLYProcessResponse = (index: number): LYProcessResponse => {
   const createDate = new Date(2025, 0, 1 + (index % 20), 10 + (index % 12), (index * 7) % 60, 0);
   const updateDate = new Date(createDate.getTime() + (index % 10) * 24 * 60 * 60 * 1000);
 
+  // 生成 Mock 依赖数据
+  const mockDependencies: LYProcessDependency[] = [
+    { resource_id: `param-auto-${index}-1`, resource_name: 'ERP API Address', resource_type: 'PARAMETER', source: 'AUTO_DETECTED', param_type: 'TEXT' },
+    { resource_id: `param-auto-${index}-2`, resource_name: 'Batch Processing Count', resource_type: 'PARAMETER', source: 'AUTO_DETECTED', param_type: 'NUMBER' },
+    { resource_id: `cred-auto-${index}-1`, resource_name: 'ERP System Credential', resource_type: 'CREDENTIAL', source: 'AUTO_DETECTED' },
+    ...(index % 2 === 0 ? [
+      { resource_id: `param-manual-${index}-1`, resource_name: 'Debug Mode', resource_type: 'PARAMETER' as const, source: 'MANUAL' as const, param_type: 'BOOLEAN' as const },
+      { resource_id: `queue-auto-${index}-1`, resource_name: 'Order Processing Queue', resource_type: 'QUEUE' as const, source: 'AUTO_DETECTED' as const },
+    ] : []),
+    ...(index % 3 === 0 ? [
+      { resource_id: `file-auto-${index}-1`, resource_name: 'Order Template', resource_type: 'FILE' as const, source: 'AUTO_DETECTED' as const, original_name: 'order_template_v2.xlsx' },
+      { resource_id: `cred-manual-${index}-1`, resource_name: 'SFTP Credential', resource_type: 'CREDENTIAL' as const, source: 'MANUAL' as const },
+    ] : []),
+  ];
+
   return {
     id: generateUUID(),
     name: processNames[index % processNames.length],
@@ -110,6 +125,7 @@ const generateMockLYProcessResponse = (index: number): LYProcessResponse => {
     owning_department_name: dept.name,
     created_at: createDate.toISOString(),
     updated_at: updateDate.toISOString(),
+    dependencies: mockDependencies,
   };
 };
 
@@ -723,6 +739,16 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
         onPageChange={handleDrawerPageChange}
         context={context}
         initialTab={detailInitialTab}
+        onDependenciesChange={(processId, deps) => {
+          const idx = mockProcessData.findIndex((p) => p.id === processId);
+          if (idx !== -1) {
+            mockProcessData[idx] = { ...mockProcessData[idx], dependencies: deps };
+            // Update selected process to reflect changes
+            if (selectedProcess?.id === processId) {
+              setSelectedProcess({ ...mockProcessData[idx] });
+            }
+          }
+        }}
       />
 
       {/* 打开流程确认弹窗 - 仅开发中心 */}

@@ -16,7 +16,7 @@ import {
   TextArea,
 } from '@douyinfe/semi-ui';
 import { IconDeleteStroked } from '@douyinfe/semi-icons';
-import type { LYProcessResponse, LYProcessVersionResponse } from '@/api';
+import type { LYProcessResponse, LYProcessVersionResponse, LYProcessDependency } from '@/api';
 import UploadVersionModal from '../UploadVersionModal';
 import EmptyState from '@/components/EmptyState';
 import DetailSkeleton from '@/components/DetailSkeleton';
@@ -27,6 +27,7 @@ import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import './index.less';
 import { ExternalLink, HelpCircle, Link, Pencil, PlayCircle, Trash2, Upload } from 'lucide-react';
+import DependencyTab from './components/DependencyTab';
 
 const { Title, Text } = Typography;
 
@@ -131,6 +132,7 @@ interface ProcessDetailDrawerProps {
   context?: 'development' | 'scheduling';
   onScrollToRow?: (id: string) => void;
   initialTab?: string;
+  onDependenciesChange?: (processId: string, deps: LYProcessDependency[]) => void;
 }
 
 // ============= 状态配置 =============
@@ -273,6 +275,7 @@ const ProcessDetailDrawer = ({
   context = 'development',
   onScrollToRow,
   initialTab = 'detail',
+  onDependenciesChange,
 }: ProcessDetailDrawerProps) => {
   const isSchedulingContext = context === 'scheduling';
   const { t } = useTranslation();
@@ -578,13 +581,33 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
             </div>
           )}
         </TabPane>
+
+        <TabPane
+          tab={`${t('processDependency.tabTitle')} (${processData.dependencies?.length || 0})`}
+          itemKey="dependencies"
+        >
+          <DependencyTab
+            dependencies={processData.dependencies || []}
+            onDependenciesChange={
+              !isSchedulingContext && onDependenciesChange
+                ? (deps) => onDependenciesChange(processData.id, deps)
+                : undefined
+            }
+            readOnly={isSchedulingContext}
+          />
+        </TabPane>
       </Tabs>
 
       <UploadVersionModal
         visible={uploadVersionModalVisible}
         onCancel={() => setUploadVersionModalVisible(false)}
         processData={processData}
-        onSuccess={() => {}}
+        onSuccess={(newDeps) => {
+          if (newDeps && newDeps.length > 0 && onDependenciesChange) {
+            const merged = [...(processData.dependencies || []), ...newDeps];
+            onDependenciesChange(processData.id, merged);
+          }
+        }}
       />
     </DetailDrawerWrapper>
   );
