@@ -581,7 +581,21 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
             </div>
           )}
         </TabPane>
-      </Tabs>
+
+        <TabPane
+          tab={`${t('processDependency.tabTitle')} (${processData.dependencies?.length || 0})`}
+          itemKey="dependencies"
+        >
+          <DependencyTab
+            dependencies={processData.dependencies || []}
+            onDependenciesChange={
+              !isSchedulingContext && onDependenciesChange
+                ? (deps) => onDependenciesChange(processData.id, deps)
+                : undefined
+            }
+            readOnly={isSchedulingContext}
+          />
+        </TabPane>
 
       <UploadVersionModal
         visible={uploadVersionModalVisible}
