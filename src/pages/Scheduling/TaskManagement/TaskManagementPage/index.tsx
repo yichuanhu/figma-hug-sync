@@ -25,7 +25,7 @@ import FilterPopover from '@/components/FilterPopover';
 import DepartmentSelect from '@/components/DepartmentSelect';
 import CreateTaskModal from '../components/CreateTaskModal';
 import TaskDetailDrawer from '../components/TaskDetailDrawer';
-import { Bot, ClipboardClock, Component, Ellipsis, MinusCircle, PlayCircle, Plus, RefreshCw, XCircle } from 'lucide-react';
+import { Bot, ClipboardClock, Component, Ellipsis, History, MinusCircle, PlayCircle, Plus, RefreshCw, XCircle } from 'lucide-react';
 import type { 
   LYTaskResponse, 
   GetTasksParams, 
@@ -633,6 +633,17 @@ const TaskManagementPage = () => {
             clickToHide
             render={
               <Dropdown.Menu>
+                <Dropdown.Item
+                  icon={<History size={16} strokeWidth={2} />}
+                  onClick={(e) => {
+                    e?.stopPropagation();
+                    setSelectedTask(record);
+                    setInitialTab('executionHistory');
+                    setDetailDrawerVisible(true);
+                  }}
+                >
+                  {t('task.actions.viewExecutionHistory')}
+                </Dropdown.Item>
                 {record.task_status === 'PENDING' && (
                   <Dropdown.Item
                     icon={<XCircle size={16} strokeWidth={2} />}

@@ -1277,7 +1277,8 @@
     "actions": {
       "cancel": "取消任务",
       "stop": "停止任务",
-      "retry": "重新执行"
+      "retry": "重新执行",
+      "viewExecutionHistory": "查看执行历史"
     },
     "createModal": {
       "title": "新建任务",
