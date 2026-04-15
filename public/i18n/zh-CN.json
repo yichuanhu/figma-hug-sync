@@ -2579,6 +2579,7 @@
     },
     "deleteSuccess": "依赖已删除",
     "addSuccess": "已添加 {{count}} 项依赖",
-    "autoDetectedNew": "已自动解析出 {{count}} 项新资源依赖"
+    "autoDetectedNew": "已自动解析出 {{count}} 项新资源依赖",
+    "value": "值"
   }
 }
