@@ -104,6 +104,7 @@ const generateMockLYProcessResponse = (index: number): LYProcessResponse => {
     { resource_id: `file-auto-${index}-1`, resource_name: 'Enterprise_Order_Invoice_Template_With_MultiLanguage_Support_And_Regional_Tax_Compliance_2024_v3.xlsx', resource_type: 'FILE' as const, source: 'AUTO_DETECTED' as const, original_name: 'Enterprise_Order_Invoice_Template_With_MultiLanguage_Support_And_Regional_Tax_Compliance_2024_v3.xlsx' },
     ...(index % 2 === 0 ? [
       { resource_id: `param-manual-${index}-1`, resource_name: 'Debug Mode', resource_type: 'PARAMETER' as const, source: 'MANUAL' as const, param_type: 'BOOLEAN' as const, resource_value: 'true' },
+      { resource_id: `param-manual-${index}-2`, resource_name: 'Custom API Endpoint', resource_type: 'PARAMETER' as const, source: 'MANUAL' as const, param_type: 'TEXT' as const, resource_value: 'https://custom-api.example.com/v3/data' },
     ] : []),
     ...(index % 3 === 0 ? [
       { resource_id: `cred-manual-${index}-1`, resource_name: 'SFTP Credential', resource_type: 'CREDENTIAL' as const, source: 'MANUAL' as const, resource_value: '••••••••' },
