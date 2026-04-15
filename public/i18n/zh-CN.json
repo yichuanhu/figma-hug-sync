@@ -134,7 +134,7 @@
     "noData": "暂无凭据",
     "table": {
       "name": "凭据名称",
-      "testValue": "凭据值（测试）",
+      "testValue": "凭据值（开发）",
       "productionValue": "凭据值（生产）",
       "type": "类型"
     },
@@ -152,7 +152,7 @@
       "type": "类型",
       "typePlaceholder": "请选择凭据类型",
       "value": "凭据值",
-      "testValue": "凭据值（测试）",
+      "testValue": "凭据值（开发）",
       "productionValue": "凭据值（生产）",
       "username": "用户名",
       "usernamePlaceholder": "请输入用户名",
@@ -173,7 +173,7 @@
     },
     "createModal": {
       "title": "新建凭据",
-      "successDev": "凭据创建成功（测试值已设置）",
+      "successDev": "凭据创建成功（开发值已设置）",
       "successProd": "凭据创建成功（生产值已设置）",
       "error": "创建失败，请重试"
     },
@@ -193,7 +193,7 @@
     "detail": {
       "name": "凭据名称",
       "type": "凭据类型",
-      "testValue": "凭据值（调试）",
+      "testValue": "凭据值（开发）",
       "productionValue": "凭据值（生产）",
       "linkedPersonalCredential": "关联个人凭据",
       "publishStatus": "发布状态",
@@ -1663,11 +1663,11 @@
       "alreadyPublished": "已发布",
       "manuallyAdded": "手动添加",
       "usedBy": "来自",
-      "testValue": "测试值",
+      "testValue": "开发值",
       "productionValue": "生产值",
       "keepExistingValue": "留空保留现有值",
       "enterProductionValue": "请输入生产值",
-      "useTestAsProduction": "使用测试值作为生产值",
+      "useTestAsProduction": "使用开发值作为生产值",
       "validation": {
         "noProcessSelected": "请至少选择一个流程",
         "descriptionRequired": "请输入发布描述",
@@ -2581,6 +2581,8 @@
     "deleteSuccess": "依赖已删除",
     "addSuccess": "已添加 {{count}} 项依赖",
     "autoDetectedNew": "已自动解析出 {{count}} 项新资源依赖",
-    "value": "值"
+    "value": "值",
+    "devValue": "开发值",
+    "prodValue": "生产值"
   }
 }

@@ -185,7 +185,7 @@
     "noData": "No Credentials",
     "table": {
       "name": "Credential Name",
-      "testValue": "Value (Test)",
+      "testValue": "Value (Dev)",
       "productionValue": "Value (Production)",
       "type": "Type",
       "linkedPersonalCredential": "Linked Personal Credential"
@@ -205,7 +205,7 @@
       "type": "Type",
       "typePlaceholder": "Select credential type",
       "value": "Credential Value",
-      "testValue": "Value (Test)",
+      "testValue": "Value (Dev)",
       "productionValue": "Value (Production)",
       "username": "Username",
       "usernamePlaceholder": "Enter username",
@@ -250,7 +250,7 @@
       "systemInfo": "System Info",
       "name": "Credential Name",
       "type": "Credential Type",
-      "testValue": "Value (Debug)",
+      "testValue": "Value (Dev)",
       "productionValue": "Value (Production)",
       "linkedPersonalCredential": "Linked Personal Credential",
       "publishStatus": "Publish Status",
@@ -2148,7 +2148,7 @@
       "alreadyPublished": "Published",
       "manuallyAdded": "Manually Added",
       "usedBy": "From",
-      "testValue": "Test Value",
+      "testValue": "Dev Value",
       "productionValue": "Production Value",
       "keepExistingValue": "Leave empty to keep existing",
       "enterProductionValue": "Enter production value",
@@ -3216,6 +3216,8 @@
     "deleteSuccess": "Dependency deleted",
     "addSuccess": "{{count}} dependencies added",
     "autoDetectedNew": "{{count}} new dependencies auto-detected",
-    "value": "Value"
+    "value": "Value",
+    "devValue": "Dev Value",
+    "prodValue": "Prod Value"
   }
 }
