@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Typography, Tag, Button, Space, Modal, Toast } from '@douyinfe/semi-ui';
+import { Typography, Tag, Button, Modal, Toast } from '@douyinfe/semi-ui';
 import { IconDeleteStroked } from '@douyinfe/semi-icons';
 import { ExternalLink, Plus, Trash2 } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
@@ -11,7 +11,7 @@ import type { ResourceConfig } from '@/pages/Development/ReleaseManagement/Creat
 
 import './index.less';
 
-const { Text } = Typography;
+const { Title, Text } = Typography;
 
 interface DependencyTabProps {
   dependencies: LYProcessDependency[];
@@ -92,65 +92,67 @@ const DependencyTab = ({ dependencies, onDependenciesChange, readOnly = false, c
 
   const existingIds = useMemo(() => dependencies.map((d) => d.resource_id), [dependencies]);
 
+  const renderResourceCard = (dep: LYProcessDependency) => (
+    <div key={dep.resource_id} className="dependency-tab-resource-card">
+      <div className="dependency-tab-resource-card-header">
+        <span
+          className="dependency-tab-resource-name"
+          onClick={() => handleNavigateToResource(dep)}
+        >
+          <Text strong ellipsis={{ showTooltip: true }}>{dep.resource_name}</Text>
+          <ExternalLink size={16} strokeWidth={2} className="dependency-tab-link-icon" />
+        </span>
+        <Tag
+          color={dep.source === 'AUTO_DETECTED' ? 'blue' : 'grey'}
+          size="small"
+          type="light"
+          className="dependency-tab-resource-tag"
+        >
+          {dep.source === 'AUTO_DETECTED'
+            ? t('processDependency.sourceAutoDetected')
+            : t('processDependency.sourceManual')}
+        </Tag>
+        {!readOnly && dep.source === 'MANUAL' && (
+          <Button
+            icon={<Trash2 size={14} strokeWidth={2} />}
+            theme="borderless"
+            type="danger"
+            size="small"
+            className="dependency-tab-delete-btn"
+            onClick={() => handleDelete(dep)}
+          />
+        )}
+      </div>
+      <div className="dependency-tab-resource-card-body">
+        {dep.resource_type === 'CREDENTIAL' ? (
+          <Text type="tertiary" ellipsis={{ showTooltip: true }}>
+            {t('processDependency.value')}: ********
+          </Text>
+        ) : dep.resource_type === 'PARAMETER' && dep.resource_value ? (
+          <div className="dependency-tab-value-field">
+            <Text type="tertiary">{t('processDependency.value')}:</Text>
+            <div className="dependency-tab-value-scroll">
+              <Text>{dep.resource_value}</Text>
+            </div>
+          </div>
+        ) : dep.resource_value ? (
+          <Text type="tertiary" ellipsis={{ showTooltip: true }}>
+            {t('processDependency.value')}: {dep.resource_value}
+          </Text>
+        ) : null}
+      </div>
+    </div>
+  );
+
   const renderGroup = (type: ResourceType, items: LYProcessDependency[]) => {
     if (items.length === 0) return null;
     return (
-      <div key={type} className="dependency-tab-group">
-        <div className="dependency-tab-group-header">
-          <Space>
-            <Text strong>{resourceTypeLabels[type]}</Text>
-            <Tag size="small">{items.length}</Tag>
-          </Space>
-        </div>
-        <div className="dependency-tab-group-list">
-          {items.map((dep) => (
-            <div key={dep.resource_id} className="dependency-tab-item">
-              <div className="dependency-tab-item-left">
-                <div className="dependency-tab-item-info">
-                  <div className="dependency-tab-item-name-row">
-                    <Text
-                      strong
-                      ellipsis={{ showTooltip: true }}
-                      style={{ maxWidth: 240 }}
-                      className="dependency-tab-item-name-link"
-                      onClick={() => handleNavigateToResource(dep)}
-                    >
-                      {dep.resource_name}
-                    </Text>
-                    <ExternalLink size={12} strokeWidth={2} className="dependency-tab-item-link-icon" />
-                    <Tag
-                      color={dep.source === 'AUTO_DETECTED' ? 'blue' : 'grey'}
-                      size="small"
-                      type="light"
-                    >
-                      {dep.source === 'AUTO_DETECTED'
-                        ? t('processDependency.sourceAutoDetected')
-                        : t('processDependency.sourceManual')}
-                    </Tag>
-                  </div>
-                  {dep.resource_value && (
-                    <Text
-                      type="tertiary"
-                      size="small"
-                      ellipsis={{ showTooltip: true }}
-                      style={{ maxWidth: 360 }}
-                    >
-                      {dep.resource_value}
-                    </Text>
-                  )}
-                </div>
-              </div>
-              {!readOnly && dep.source === 'MANUAL' && (
-                <Button
-                  icon={<Trash2 size={14} strokeWidth={2} />}
-                  theme="borderless"
-                  type="danger"
-                  size="small"
-                  onClick={() => handleDelete(dep)}
-                />
-              )}
-            </div>
-          ))}
+      <div key={type} className="dependency-tab-section">
+        <Title heading={6} className="dependency-tab-section-title">
+          {resourceTypeLabels[type]} ({items.length})
+        </Title>
+        <div className="dependency-tab-resource-list">
+          {items.map((dep) => renderResourceCard(dep))}
         </div>
       </div>
     );
