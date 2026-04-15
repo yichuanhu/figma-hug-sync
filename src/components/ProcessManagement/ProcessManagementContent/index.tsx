@@ -16,6 +16,7 @@ import {
   Modal,
   Toast,
   Space,
+  Pagination,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';

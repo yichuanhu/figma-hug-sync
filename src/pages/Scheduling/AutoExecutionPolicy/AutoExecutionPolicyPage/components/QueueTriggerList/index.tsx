@@ -14,6 +14,7 @@ import {
   Select,
   Switch,
   Tooltip,
+  Pagination,
 } from '@douyinfe/semi-ui';
 import DepartmentSelect from '@/components/DepartmentSelect';
 import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
