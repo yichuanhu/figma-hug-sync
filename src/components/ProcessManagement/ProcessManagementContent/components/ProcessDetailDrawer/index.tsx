@@ -596,6 +596,7 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
             readOnly={isSchedulingContext}
           />
         </TabPane>
+      </Tabs>
 
       <UploadVersionModal
         visible={uploadVersionModalVisible}
