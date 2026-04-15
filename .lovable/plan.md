@@ -246,11 +246,12 @@ interface LYProcessResponse {
 
 | 场景 | 前端行为 | 后端职责 |
 |------|----------|----------|
-| 查看流程依赖 | 读取 `process.dependencies` 渲染分组列表 | 流程详情接口返回 `dependencies`，联查资源管理表获取最新信息 |
-| 上传新版本 | 上传成功后刷新流程详情，展示新增依赖数量 | 上传处理中自动触发解析 → 资源匹配 → 增量合并，返回新增数量 |
+| 查看流程依赖 | 读取 `process.dependencies` 渲染分组列表，展示资源名称（可点击跳转）和当前值 | 流程详情接口返回 `dependencies`，联查资源管理表获取 `resource_value` |
+| 跳转到资源详情 | 点击资源名称，根据 `resource_type` 跳转到对应资源管理页面（参数/凭据/队列/文件） | 无需额外支持（前端路由跳转） |
+| 上传新版本 | 上传成功后刷新流程详情，展示新增依赖数量 | 上传处理中自动触发解析 → 资源匹配（含 resource_value）→ 增量合并，返回新增数量 |
 | 手动添加依赖 | 调用 POST 接口，传入资源 ID 和类型 | 校验资源存在性，写入依赖记录，source=MANUAL |
 | 删除手动依赖 | 调用 DELETE 接口 | 校验 source=MANUAL 才允许删除，否则拒绝 |
-| 创建发布 | 从所选流程的 dependencies 聚合，不调用 detectDependencies | 发布流程列表接口返回 dependencies 字段 |
+| 创建发布 | 从所选流程的 dependencies 聚合，不调用 detectDependencies | 发布流程列表接口返回 dependencies 字段（含 resource_value） |
 
 ---
 
