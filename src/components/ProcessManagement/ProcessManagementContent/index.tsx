@@ -496,6 +496,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
         <Dropdown
           trigger="click"
           position="bottomRight"
+          stopPropagation
           clickToHide
           render={
             <Dropdown.Menu>
