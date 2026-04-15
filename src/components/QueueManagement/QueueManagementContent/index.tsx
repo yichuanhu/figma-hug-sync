@@ -15,7 +15,7 @@ import {
   Typography,
   Tooltip,
   Breadcrumb,
-  Pagination,
+  
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
@@ -541,7 +541,16 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
             columns={columns}
             rowKey="queue_id"
             loading={loading}
-            pagination={false}
+            scroll={{ y: 'calc(100vh - 320px)' }}
+            pagination={{
+              currentPage: queryParams.page,
+              pageSize: queryParams.pageSize,
+              total,
+              onPageChange: handlePageChange,
+              onPageSizeChange: (newPageSize: number) => setQueryParams((prev) => ({ ...prev, page: 1, pageSize: newPageSize })),
+              showTotal: true,
+              showSizeChanger: true,
+            }}
             empty={
               <EmptyState
                 variant={queryParams.keyword || departmentFilter.length > 0 || filterCount > 0 ? 'noResult' : 'noData'}
@@ -561,20 +570,6 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
           />
         )}
       </div>
-      {total > queryParams.pageSize * 2 && (
-        <div style={{ flexShrink: 0, paddingTop: 12 }}>
-          <Pagination
-            currentPage={queryParams.page}
-            pageSize={queryParams.pageSize}
-            total={total}
-            onPageChange={handlePageChange}
-            onPageSizeChange={(newPageSize) => setQueryParams((prev) => ({ ...prev, page: 1, pageSize: newPageSize }))}
-            showTotal
-            showSizeChanger
-            size="small"
-          />
-        </div>
-      )}
 
       {/* 新建队列弹窗 */}
       <CreateQueueModal

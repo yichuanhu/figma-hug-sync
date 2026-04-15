@@ -14,7 +14,7 @@ import {
   Select,
   Switch,
   Tooltip,
-  Pagination,
+  
 } from '@douyinfe/semi-ui';
 import DepartmentSelect from '@/components/DepartmentSelect';
 import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
@@ -586,7 +586,20 @@ const QueueTriggerList = () => {
                 }
               />
             }
-            pagination={false}
+            pagination={{
+              currentPage,
+              pageSize,
+              total,
+              onPageChange: (page: number) => {
+                setQueryParams((prev) => ({ ...prev, offset: (page - 1) * pageSize }));
+              },
+              onPageSizeChange: (size: number) => {
+                setQueryParams((prev) => ({ ...prev, offset: 0, size }));
+              },
+              showTotal: true,
+              showSizeChanger: true,
+              pageSizeOpts: [10, 20, 50],
+            }}
             onRow={(record) => ({
               onClick: () => handleOpenDrawer(record as LYQueueTriggerResponse),
               className: selectedTrigger?.trigger_id === (record as LYQueueTriggerResponse).trigger_id
@@ -596,25 +609,6 @@ const QueueTriggerList = () => {
           />
         )}
       </div>
-      {total > pageSize * 2 && (
-        <div style={{ flexShrink: 0, paddingTop: 12 }}>
-          <Pagination
-            currentPage={currentPage}
-            pageSize={pageSize}
-            total={total}
-            onPageChange={(page) => {
-              setQueryParams((prev) => ({ ...prev, offset: (page - 1) * pageSize }));
-            }}
-            onPageSizeChange={(size) => {
-              setQueryParams((prev) => ({ ...prev, offset: 0, size }));
-            }}
-            showTotal
-            showSizeChanger
-            size="small"
-            pageSizeOpts={[10, 20, 50]}
-          />
-        </div>
-      )}
 
       {/* Create modal */}
       <CreateQueueTriggerModal

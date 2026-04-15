@@ -11,7 +11,7 @@ import {
   Modal,
   Toast,
   Select,
-  Pagination,
+  
 } from '@douyinfe/semi-ui';
 import DepartmentSelect from '@/components/DepartmentSelect';
 import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
@@ -482,26 +482,21 @@ const WorkerGroupManagement = ({ isActive = true, onNavigateToWorkerDetail }: Wo
                 style: { cursor: 'pointer' },
               };
             }}
-            pagination={false}
+            scroll={{ y: 'calc(100vh - 320px)' }}
+            pagination={{
+              currentPage,
+              pageSize,
+              total,
+              onPageChange: (page: number) => {
+                setQueryParams(prev => ({ ...prev, offset: (page - 1) * pageSize }));
+              },
+              onPageSizeChange: (newPageSize: number) => setQueryParams(prev => ({ ...prev, offset: 0, size: newPageSize })),
+              showTotal: true,
+              showSizeChanger: true,
+            }}
           />
         )}
       </div>
-      {total > pageSize * 2 && (
-        <div style={{ flexShrink: 0, paddingTop: 12 }}>
-          <Pagination
-            currentPage={currentPage}
-            pageSize={pageSize}
-            total={total}
-            onPageChange={(page) => {
-              setQueryParams(prev => ({ ...prev, offset: (page - 1) * pageSize }));
-            }}
-            onPageSizeChange={(newPageSize) => setQueryParams(prev => ({ ...prev, offset: 0, size: newPageSize }))}
-            showTotal
-            showSizeChanger
-            size="small"
-          />
-        </div>
-      )}
 
       {/* Details drawer */}
       <WorkerGroupDetailDrawer
