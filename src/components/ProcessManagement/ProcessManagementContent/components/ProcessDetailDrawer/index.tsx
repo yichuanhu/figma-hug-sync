@@ -602,7 +602,12 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
         visible={uploadVersionModalVisible}
         onCancel={() => setUploadVersionModalVisible(false)}
         processData={processData}
-        onSuccess={() => {}}
+        onSuccess={(newDeps) => {
+          if (newDeps && newDeps.length > 0 && onDependenciesChange) {
+            const merged = [...(processData.dependencies || []), ...newDeps];
+            onDependenciesChange(processData.id, merged);
+          }
+        }}
       />
     </DetailDrawerWrapper>
   );
