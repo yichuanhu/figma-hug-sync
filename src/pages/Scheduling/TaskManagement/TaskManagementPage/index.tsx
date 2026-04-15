@@ -36,7 +36,6 @@ import type {
   TriggerSource,
   TaskPriority,
 } from '@/api';
-import TableActionDropdown from '@/components/TableActionDropdown';
 
 import './index.less';
 
@@ -628,8 +627,11 @@ const TaskManagementPage = () => {
       width: 60,
       render: (_: unknown, record: LYTaskResponse) => {
         return (
-          <TableActionDropdown
-            menu={
+          <Dropdown
+            trigger="click"
+            position="bottomRight"
+            clickToHide
+            render={
               <Dropdown.Menu>
                 <Dropdown.Item
                   icon={<History size={16} strokeWidth={2} />}
@@ -677,7 +679,14 @@ const TaskManagementPage = () => {
                 )}
               </Dropdown.Menu>
             }
-          />
+          >
+            <Button
+              icon={<Ellipsis size={16} strokeWidth={2} />}
+              theme="borderless"
+              type="tertiary"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </Dropdown>
         );
       },
     },

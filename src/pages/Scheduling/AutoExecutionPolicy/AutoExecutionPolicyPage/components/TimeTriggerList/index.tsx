@@ -36,7 +36,6 @@ import CreateTimeTriggerModal from '../CreateTimeTriggerModal';
 import EditTimeTriggerModal from '../EditTimeTriggerModal';
 import TimeTriggerDetailDrawer from '../TimeTriggerDetailDrawer';
 import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
-import TableActionDropdown from '@/components/TableActionDropdown';
 import './index.less';
 
 // ============= 工具函数 =============
@@ -452,8 +451,11 @@ const TimeTriggerList = () => {
       dataIndex: 'actions',
       width: 80,
       render: (_: unknown, record: LYTimeTriggerResponse) => (
-        <TableActionDropdown
-          menu={
+        <Dropdown
+          trigger="click"
+          position="bottomRight"
+          clickToHide
+          render={
             <Dropdown.Menu>
               <Dropdown.Item
                 icon={<Pencil size={16} strokeWidth={2} />}
@@ -485,7 +487,14 @@ const TimeTriggerList = () => {
               </Dropdown.Item>
             </Dropdown.Menu>
           }
-        />
+        >
+          <Button
+            icon={<Ellipsis size={16} strokeWidth={2} />}
+            theme="borderless"
+            type="tertiary"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </Dropdown>
       ),
     },
   ];

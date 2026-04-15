@@ -524,19 +524,19 @@ const QueueMessagesContent = ({ context }: QueueMessagesContentProps) => {
           render={
             <Dropdown.Menu>
               {record.status === 'UNCONSUMED_ACTIVE' && (
-                <Dropdown.Item icon={<PlayCircle size={16} strokeWidth={2} />} onClick={() => { handleConsume(record); }}>
+                <Dropdown.Item icon={<PlayCircle size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleConsume(record); }}>
                   {t('queueMessage.actions.consume')}
                 </Dropdown.Item>
               )}
               {(record.status === 'CONSUMED' || record.status === 'EXPIRED') && (
-                <Dropdown.Item icon={<RefreshCw size={16} strokeWidth={2} />} onClick={() => { handleRequeue(record); }}>
+                <Dropdown.Item icon={<RefreshCw size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleRequeue(record); }}>
                   {t('queueMessage.actions.requeue')}
                 </Dropdown.Item>
               )}
               <Dropdown.Item 
                 icon={<Trash2 size={16} strokeWidth={2} />}
                 type="danger" 
-                onClick={() => { handleDelete(record); }}
+                onClick={(e) => { e.stopPropagation(); handleDelete(record); }}
               >
                 {t('common.delete')}
               </Dropdown.Item>

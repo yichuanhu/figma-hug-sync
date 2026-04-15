@@ -417,20 +417,20 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
             clickToHide
             render={
               <Dropdown.Menu>
-                <Dropdown.Item icon={<List size={16} strokeWidth={2} />} onClick={() => { handleViewMessages(record); }}>
+                <Dropdown.Item icon={<List size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleViewMessages(record); }}>
                   {t('queue.actions.viewMessages')}
                 </Dropdown.Item>
-                <Dropdown.Item icon={<Pencil size={16} strokeWidth={2} />} onClick={() => { handleEdit(record); }}>
+                <Dropdown.Item icon={<Pencil size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>
                   {t('common.edit')}
                 </Dropdown.Item>
-                <Dropdown.Item icon={<UserPlus size={14} strokeWidth={2} />} onClick={() => { openCollaborator(record.queue_id); }}>
+                <Dropdown.Item icon={<UserPlus size={14} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); openCollaborator(record.queue_id); }}>
                   {t('collaborator.actions.addCollaborator')}
                 </Dropdown.Item>
                 {canDelete && (
                   <Dropdown.Item 
                     icon={<Trash2 size={16} strokeWidth={2} />}
                     type="danger" 
-                    onClick={() => { handleDelete(record); }}
+                    onClick={(e) => { e.stopPropagation(); handleDelete(record); }}
                   >
                     {t('common.delete')}
                   </Dropdown.Item>

@@ -34,7 +34,6 @@ import CreateQueueTriggerModal from '../CreateQueueTriggerModal';
 import EditQueueTriggerModal from '../EditQueueTriggerModal';
 import QueueTriggerDetailDrawer from '../QueueTriggerDetailDrawer';
 import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
-import TableActionDropdown from '@/components/TableActionDropdown';
 import './index.less';
 
 // ============= 工具函数 =============
@@ -442,8 +441,11 @@ const QueueTriggerList = () => {
       dataIndex: 'actions',
       width: 80,
       render: (_: unknown, record: LYQueueTriggerResponse) => (
-        <TableActionDropdown
-          menu={
+        <Dropdown
+          trigger="click"
+          position="bottomRight"
+          clickToHide
+          render={
             <Dropdown.Menu>
               <Dropdown.Item
                 icon={<Pencil size={16} strokeWidth={2} />}
@@ -475,7 +477,14 @@ const QueueTriggerList = () => {
               </Dropdown.Item>
             </Dropdown.Menu>
           }
-        />
+        >
+          <Button
+            icon={<Ellipsis size={16} strokeWidth={2} />}
+            theme="borderless"
+            type="tertiary"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </Dropdown>
       ),
     },
   ];

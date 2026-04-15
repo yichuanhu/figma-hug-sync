@@ -456,28 +456,28 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
             clickToHide
             render={
               <Dropdown.Menu>
-                <Dropdown.Item icon={<Pencil size={16} strokeWidth={2} />} onClick={() => { handleEdit(record); }}>
+                <Dropdown.Item icon={<Pencil size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>
                   {t('common.edit')}
                 </Dropdown.Item>
                 {record.credential_type === 'PERSONAL_REF' && (
                   hasLinkedPersonalCredential(record) ? (
-                    <Dropdown.Item icon={<Unlink size={16} strokeWidth={2} />} onClick={() => { handleUnlinkPersonal(record); }}>
+                    <Dropdown.Item icon={<Unlink size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleUnlinkPersonal(record); }}>
                       {t('personalCredential.actions.unlinkCredential')}
                     </Dropdown.Item>
                   ) : (
-                    <Dropdown.Item icon={<Link size={16} strokeWidth={2} />} onClick={() => { handleLinkPersonal(record); }}>
+                    <Dropdown.Item icon={<Link size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleLinkPersonal(record); }}>
                       {t('credential.actions.linkPersonal')}
                     </Dropdown.Item>
                   )
                 )}
-                <Dropdown.Item icon={<History size={16} strokeWidth={2} />} onClick={() => { handleViewUsage(record); }}>
+                <Dropdown.Item icon={<History size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleViewUsage(record); }}>
                   {t('credential.actions.viewUsage')}
                 </Dropdown.Item>
-                <Dropdown.Item icon={<UserPlus size={14} strokeWidth={2} />} onClick={() => { openCollaborator(record.credential_id); }}>
+                <Dropdown.Item icon={<UserPlus size={14} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); openCollaborator(record.credential_id); }}>
                   {t('collaborator.actions.addCollaborator')}
                 </Dropdown.Item>
                 {canDelete && (
-                  <Dropdown.Item icon={<Trash2 size={16} strokeWidth={2} />} type="danger" onClick={() => { handleDelete(record); }}>
+                  <Dropdown.Item icon={<Trash2 size={16} strokeWidth={2} />} type="danger" onClick={(e) => { e.stopPropagation(); handleDelete(record); }}>
                     {t('common.delete')}
                   </Dropdown.Item>
                 )}

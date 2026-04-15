@@ -305,19 +305,19 @@ const PersonalCredentialManagement = () => {
           clickToHide
           render={
             <Dropdown.Menu>
-              <Dropdown.Item icon={<Pencil size={16} strokeWidth={2} />} onClick={() => { handleEdit(record); }}>
+              <Dropdown.Item icon={<Pencil size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>
                 {t('common.edit')}
               </Dropdown.Item>
-              <Dropdown.Item icon={<Eye size={16} strokeWidth={2} />} onClick={() => { handleViewLinkedCredentials(record); }}>
+              <Dropdown.Item icon={<Eye size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleViewLinkedCredentials(record); }}>
                 {t('personalCredential.actions.viewLinkedCredentials')}
               </Dropdown.Item>
-              <Dropdown.Item icon={<History size={16} strokeWidth={2} />} onClick={() => { handleViewUsage(record); }}>
+              <Dropdown.Item icon={<History size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleViewUsage(record); }}>
                 {t('personalCredential.actions.viewUsage')}
               </Dropdown.Item>
-              <Dropdown.Item icon={<Link size={16} strokeWidth={2} />} onClick={() => { handleLinkCredential(record); }}>
+              <Dropdown.Item icon={<Link size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleLinkCredential(record); }}>
                 {t('personalCredential.actions.linkCredential')}
               </Dropdown.Item>
-              <Dropdown.Item icon={<Trash2 size={16} strokeWidth={2} />} type="danger" onClick={() => { handleDelete(record); }}>
+              <Dropdown.Item icon={<Trash2 size={16} strokeWidth={2} />} type="danger" onClick={(e) => { e.stopPropagation(); handleDelete(record); }}>
                 {t('common.delete')}
               </Dropdown.Item>
             </Dropdown.Menu>
