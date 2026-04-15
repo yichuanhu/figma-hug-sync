@@ -15,6 +15,7 @@ import {
   Modal,
   Toast,
   Space,
+  Pagination,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
@@ -782,15 +783,6 @@ const TaskManagementPage = () => {
         <div className="task-management-page-table">
           {isInitialLoad ? (
             <TableSkeleton />
-          ) : list.length === 0 ? (
-            <EmptyState
-              variant={searchValue || taskStatusFilter.length > 0 || executionStatusFilter.length > 0 || triggerSourceFilter.length > 0 || departmentFilter.length > 0 || dateRange ? 'noResult' : 'noData'}
-              description={
-                searchValue || taskStatusFilter.length > 0 || executionStatusFilter.length > 0 || triggerSourceFilter.length > 0 || departmentFilter.length > 0 || dateRange
-                  ? t('task.empty.filterDescription')
-                  : t('task.empty.defaultDescription')
-              }
-            />
           ) : (
             <Table
               size="small"
@@ -798,20 +790,17 @@ const TaskManagementPage = () => {
               dataSource={list}
               rowKey="task_id"
               loading={loading && !isInitialLoad}
-              pagination={{
-                total,
-                pageSize,
-                currentPage,
-                onPageChange: (page) => {
-                  setQueryParams((prev) => ({ ...prev, offset: (page - 1) * pageSize }));
-                },
-                onPageSizeChange: (size) => {
-                  setQueryParams((prev) => ({ ...prev, offset: 0, size }));
-                },
-                showSizeChanger: true,
-                showTotal: true,
-                pageSizeOpts: [10, 20, 50, 100],
-              }}
+              empty={
+                <EmptyState
+                  variant={searchValue || taskStatusFilter.length > 0 || executionStatusFilter.length > 0 || triggerSourceFilter.length > 0 || departmentFilter.length > 0 || dateRange ? 'noResult' : 'noData'}
+                  description={
+                    searchValue || taskStatusFilter.length > 0 || executionStatusFilter.length > 0 || triggerSourceFilter.length > 0 || departmentFilter.length > 0 || dateRange
+                      ? t('task.empty.filterDescription')
+                      : t('task.empty.defaultDescription')
+                  }
+                />
+              }
+              pagination={false}
               onRow={(record) => ({
                 onClick: () => openTaskDetail(record as LYTaskResponse),
                 style: { cursor: 'pointer' },
@@ -820,6 +809,25 @@ const TaskManagementPage = () => {
             />
           )}
         </div>
+        {total > pageSize * 2 && (
+          <div style={{ flexShrink: 0, paddingTop: 12 }}>
+            <Pagination
+              currentPage={currentPage}
+              pageSize={pageSize}
+              total={total}
+              onPageChange={(page) => {
+                setQueryParams((prev) => ({ ...prev, offset: (page - 1) * pageSize }));
+              }}
+              onPageSizeChange={(size) => {
+                setQueryParams((prev) => ({ ...prev, offset: 0, size }));
+              }}
+              showTotal
+              showSizeChanger
+              size="small"
+              pageSizeOpts={[10, 20, 50, 100]}
+            />
+          </div>
+        )}
 
         <CreateTaskModal
           visible={createModalVisible}

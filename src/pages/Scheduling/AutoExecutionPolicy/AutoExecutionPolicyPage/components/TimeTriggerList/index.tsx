@@ -14,6 +14,7 @@ import {
   Select,
   Switch,
   Tooltip,
+  Pagination,
 } from '@douyinfe/semi-ui';
 import DepartmentSelect from '@/components/DepartmentSelect';
 import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
@@ -572,11 +573,6 @@ const TimeTriggerList = () => {
       <div className="time-trigger-list-table">
         {isInitialLoad ? (
           <TableSkeleton />
-        ) : list.length === 0 ? (
-          <EmptyState
-            variant={hasFilters ? 'noResult' : 'noData'}
-            description={hasFilters ? t('common.noResult') : t('timeTrigger.noData')}
-          />
         ) : (
           <Table
             size="small"
@@ -584,6 +580,12 @@ const TimeTriggerList = () => {
             rowKey="trigger_id"
             loading={loading && !isInitialLoad}
             columns={columns}
+            empty={
+              <EmptyState
+                variant={hasFilters ? 'noResult' : 'noData'}
+                description={hasFilters ? t('common.noResult') : t('timeTrigger.noData')}
+              />
+            }
             onRow={(record) => ({
               onClick: () => handleOpenDrawer(record as LYTimeTriggerResponse),
               style: { cursor: 'pointer' },
@@ -592,23 +594,29 @@ const TimeTriggerList = () => {
                   ? 'time-trigger-row-selected'
                   : '',
             })}
-            pagination={{
-              total,
-              pageSize,
-              currentPage,
-              showSizeChanger: true,
-              showTotal: true,
-              pageSizeOpts: [10, 20, 50, 100],
-              onPageChange: (page) => {
-                setQueryParams((prev) => ({ ...prev, offset: (page - 1) * pageSize }));
-              },
-              onPageSizeChange: (size) => {
-                setQueryParams((prev) => ({ ...prev, offset: 0, size }));
-              },
-            }}
+            pagination={false}
           />
         )}
       </div>
+      {total > pageSize * 2 && (
+        <div style={{ flexShrink: 0, paddingTop: 12 }}>
+          <Pagination
+            currentPage={currentPage}
+            pageSize={pageSize}
+            total={total}
+            onPageChange={(page) => {
+              setQueryParams((prev) => ({ ...prev, offset: (page - 1) * pageSize }));
+            }}
+            onPageSizeChange={(size) => {
+              setQueryParams((prev) => ({ ...prev, offset: 0, size }));
+            }}
+            showTotal
+            showSizeChanger
+            size="small"
+            pageSizeOpts={[10, 20, 50, 100]}
+          />
+        </div>
+      )}
 
       {/* Create Trigger modal */}
       <CreateTimeTriggerModal

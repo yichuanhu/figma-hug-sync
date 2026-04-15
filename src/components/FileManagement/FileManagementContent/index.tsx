@@ -15,6 +15,7 @@ import {
   Typography,
   Tooltip,
   Breadcrumb,
+  Pagination,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
@@ -574,15 +575,6 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
       <div className="file-management-content-table" ref={tableContainerRef}>
         {isInitialLoad ? (
           <TableSkeleton />
-        ) : listResponse?.data?.length === 0 ? (
-          <EmptyState
-            variant={queryParams.keyword || sourceFilter.length > 0 ? 'noResult' : 'noData'}
-            description={
-              queryParams.keyword || sourceFilter.length > 0
-                ? t('file.empty.filterDescription')
-                : t('file.empty.defaultDescription')
-            }
-          />
         ) : (
           <Table
             size="small"
@@ -590,16 +582,17 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
             dataSource={listResponse?.data || []}
             rowKey="id"
             loading={loading && !isInitialLoad}
-            scroll={tableScrollY ? { y: tableScrollY } : undefined}
-            pagination={{
-              currentPage: queryParams.page,
-              pageSize: queryParams.pageSize,
-              total,
-              onPageChange: handlePageChange,
-              onPageSizeChange: (newPageSize) => setQueryParams((prev) => ({ ...prev, page: 1, pageSize: newPageSize })),
-              showSizeChanger: true,
-              showTotal: true,
-            }}
+            pagination={false}
+            empty={
+              <EmptyState
+                variant={queryParams.keyword || departmentFilter.length > 0 || sourceFilter.length > 0 ? 'noResult' : 'noData'}
+                description={
+                  queryParams.keyword || departmentFilter.length > 0 || sourceFilter.length > 0
+                    ? t('file.empty.filterDescription')
+                    : t('file.empty.defaultDescription')
+                }
+              />
+            }
             onRow={(record) => ({
               onClick: () => handleRowClick(record as LYFileResponse),
               className:
@@ -610,6 +603,20 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
           />
         )}
       </div>
+      {total > queryParams.pageSize * 2 && (
+        <div style={{ flexShrink: 0, paddingTop: 12 }}>
+          <Pagination
+            currentPage={queryParams.page}
+            pageSize={queryParams.pageSize}
+            total={total}
+            onPageChange={handlePageChange}
+            onPageSizeChange={(newPageSize) => setQueryParams((prev) => ({ ...prev, page: 1, pageSize: newPageSize }))}
+            showTotal
+            showSizeChanger
+            size="small"
+          />
+        </div>
+      )}
 
       {/* 上传文件弹窗 */}
       <UploadFileModal

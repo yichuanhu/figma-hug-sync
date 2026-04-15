@@ -15,6 +15,7 @@ import {
   Typography,
   Tooltip,
   Breadcrumb,
+  Pagination,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
@@ -546,20 +547,11 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
             columns={columns}
             rowKey="parameter_id"
             loading={loading}
-            pagination={{
-              currentPage: queryParams.page,
-              pageSize: queryParams.pageSize,
-              total,
-              onPageChange: handlePageChange,
-              onPageSizeChange: (newPageSize) => setQueryParams((prev) => ({ ...prev, page: 1, pageSize: newPageSize })),
-              showTotal: true,
-              showSizeChanger: true,
-            }}
-            scroll={{ y: 'calc(100vh - 320px)' }}
+            pagination={false}
             empty={
               <EmptyState
-                variant={queryParams.keyword || filterCount > 0 ? 'noResult' : 'noData'}
-                description={queryParams.keyword || filterCount > 0 
+                variant={queryParams.keyword || departmentFilter.length > 0 || filterCount > 0 ? 'noResult' : 'noData'}
+                description={queryParams.keyword || departmentFilter.length > 0 || filterCount > 0 
                   ? t('parameter.empty.filterDescription') 
                   : t('parameter.empty.defaultDescription')}
               />
@@ -574,6 +566,20 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
           />
         )}
       </div>
+      {total > queryParams.pageSize * 2 && (
+        <div style={{ flexShrink: 0, paddingTop: 12 }}>
+          <Pagination
+            currentPage={queryParams.page}
+            pageSize={queryParams.pageSize}
+            total={total}
+            onPageChange={handlePageChange}
+            onPageSizeChange={(newPageSize) => setQueryParams((prev) => ({ ...prev, page: 1, pageSize: newPageSize }))}
+            showTotal
+            showSizeChanger
+            size="small"
+          />
+        </div>
+      )}
 
       {/* 新建参数弹窗 */}
       <CreateParameterModal

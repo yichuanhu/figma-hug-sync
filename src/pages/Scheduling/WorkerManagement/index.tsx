@@ -16,6 +16,7 @@ import {
   Modal,
   Toast,
   Select,
+  Pagination,
 } from '@douyinfe/semi-ui';
 import DepartmentSelect from '@/components/DepartmentSelect';
 import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
@@ -990,8 +991,8 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
             rowKey="id"
             empty={
               <EmptyState 
-                variant={queryParams.keyword ? 'noResult' : 'noData'}
-                description={queryParams.keyword ? t('common.noResult') : t('worker.noData')} 
+                variant={queryParams.keyword || departmentFilter.length > 0 || hasActiveFilters ? 'noResult' : 'noData'}
+                description={queryParams.keyword || departmentFilter.length > 0 || hasActiveFilters ? t('common.noResult') : t('worker.noData')} 
               />
             }
             onRow={(record) => {
@@ -1012,21 +1013,26 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
                 });
               }
             }}
-            pagination={{
-              total,
-              pageSize,
-              currentPage,
-              onPageChange: (page) => {
-                setQueryParams(prev => ({ ...prev, offset: (page - 1) * pageSize }));
-              },
-              onPageSizeChange: (newPageSize) => setQueryParams(prev => ({ ...prev, offset: 0, size: newPageSize })),
-              showSizeChanger: true,
-              showTotal: true,
-            }}
-            scroll={{ y: 'calc(100vh - 320px)' }}
+            pagination={false}
           />
         )}
       </div>
+      {total > pageSize * 2 && (
+        <div style={{ flexShrink: 0, paddingTop: 12 }}>
+          <Pagination
+            currentPage={currentPage}
+            pageSize={pageSize}
+            total={total}
+            onPageChange={(page) => {
+              setQueryParams(prev => ({ ...prev, offset: (page - 1) * pageSize }));
+            }}
+            onPageSizeChange={(newPageSize) => setQueryParams(prev => ({ ...prev, offset: 0, size: newPageSize }))}
+            showTotal
+            showSizeChanger
+            size="small"
+          />
+        </div>
+      )}
 
       {/* Details drawer */}
       <WorkerDetailDrawer
