@@ -42,25 +42,31 @@
     :global {
       .semi-banner {
         align-items: flex-start;
+        padding: 16px;
       }
 
       .semi-banner-icon {
-        align-self: flex-start;
-        margin-top: 2px;
+        display: flex;
+        align-items: center;
+        height: 22px; // 与标题行高对齐
+        margin-top: 0;
+        flex-shrink: 0;
       }
 
       .semi-banner-title {
-        font-weight: 500;
+        font-weight: 600;
+        line-height: 22px;
       }
 
       .semi-banner-content {
         display: flex;
         flex-direction: column;
-        gap: 4px;
+        gap: 8px;
       }
 
       .semi-banner-description {
         margin-top: 0;
+        padding-left: 0;
       }
     }
   }
