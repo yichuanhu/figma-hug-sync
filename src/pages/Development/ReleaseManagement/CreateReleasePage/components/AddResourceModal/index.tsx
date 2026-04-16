@@ -158,6 +158,24 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
     },
   ];
 
+  const credentialColumns = [
+    {
+      title: t('release.create.addResource.resourceName'),
+      dataIndex: 'name',
+      key: 'name',
+      render: (name: string, record: AvailableResource) => (
+        <div className="add-resource-modal-name-cell">
+          <Text strong>{name}</Text>
+          {record.is_published && (
+            <Tag color="green" size="small">
+              {t('release.create.alreadyPublished')}
+            </Tag>
+          )}
+        </div>
+      ),
+    },
+  ];
+
   const fileColumns = [
     {
       title: t('release.create.addResource.resourceName'),
@@ -239,7 +257,7 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
                 />
               </div>
               <Table
-                columns={type === 'QUEUE' ? queueColumns : type === 'FILE' ? fileColumns : columns}
+                columns={type === 'CREDENTIAL' ? credentialColumns : type === 'QUEUE' ? queueColumns : type === 'FILE' ? fileColumns : columns}
                 dataSource={getFilteredResources(type)}
                 rowKey="id"
                 rowSelection={rowSelection}
