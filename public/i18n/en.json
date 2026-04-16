@@ -3214,10 +3214,10 @@
     "sourceAutoDetected": "Auto-detected",
     "sourceManual": "Manually Added",
     "deleteConfirm": {
-      "title": "Delete Dependency",
-      "content": "Are you sure you want to delete dependency \"{{name}}\"?"
+      "title": "Remove Dependency",
+      "content": "After removal, the dependency \"{{name}}\" will no longer be associated with this process, but the resource itself will not be deleted. Are you sure you want to remove it?"
     },
-    "deleteSuccess": "Dependency deleted",
+    "deleteSuccess": "Dependency removed",
     "addSuccess": "{{count}} dependencies added",
     "autoDetectedNew": "{{count}} new dependencies auto-detected",
     "value": "Value",

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Typography, Tag, Button, Modal, Toast, Banner } from '@douyinfe/semi-ui';
 import { IconDeleteStroked } from '@douyinfe/semi-icons';
-import { AlertCircle, ArrowRight, ExternalLink, Plus, Trash2 } from 'lucide-react';
+import { AlertCircle, ArrowRight, ExternalLink, Minus, Plus } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import type { LYProcessDependency, ResourceType } from '@/api';
 import AddResourceModal from '@/pages/Development/ReleaseManagement/CreateReleasePage/components/AddResourceModal';
@@ -60,13 +60,11 @@ const DependencyTab = ({ dependencies, onDependenciesChange, readOnly = false, c
   );
 
   const handleDelete = (dep: LYProcessDependency) => {
-    Modal.confirm({
+    Modal.warning({
       title: t('processDependency.deleteConfirm.title'),
-      icon: <IconDeleteStroked style={{ color: 'var(--semi-color-danger)' }} />,
       content: t('processDependency.deleteConfirm.content', { name: dep.resource_name }),
-      okText: t('common.delete'),
+      okText: t('common.confirm'),
       cancelText: t('common.cancel'),
-      okButtonProps: { type: 'danger' },
       onOk: () => {
         onDependenciesChange?.(dependencies.filter((d) => d.resource_id !== dep.resource_id));
         Toast.success(t('processDependency.deleteSuccess'));
@@ -144,7 +142,7 @@ const DependencyTab = ({ dependencies, onDependenciesChange, readOnly = false, c
           )}
           {!readOnly && dep.source === 'MANUAL' && !isMissing && (
             <Button
-              icon={<Trash2 size={14} strokeWidth={2} />}
+              icon={<Minus size={14} strokeWidth={2} />}
               theme="borderless"
               type="danger"
               size="small"
