@@ -1,9 +1,9 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Typography, Tag, Button, Modal, Toast } from '@douyinfe/semi-ui';
+import { Typography, Tag, Button, Modal, Toast, Banner } from '@douyinfe/semi-ui';
 import { IconDeleteStroked } from '@douyinfe/semi-icons';
-import { ExternalLink, Plus, Trash2 } from 'lucide-react';
+import { AlertCircle, ExternalLink, Plus, Trash2 } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import type { LYProcessDependency, ResourceType } from '@/api';
 import AddResourceModal from '@/pages/Development/ReleaseManagement/CreateReleasePage/components/AddResourceModal';
@@ -54,6 +54,11 @@ const DependencyTab = ({ dependencies, onDependenciesChange, readOnly = false, c
     return groups;
   }, [dependencies]);
 
+  const missingCount = useMemo(
+    () => dependencies.filter((d) => d.status === 'MISSING').length,
+    [dependencies],
+  );
+
   const handleDelete = (dep: LYProcessDependency) => {
     Modal.confirm({
       title: t('processDependency.deleteConfirm.title'),
@@ -91,55 +96,94 @@ const DependencyTab = ({ dependencies, onDependenciesChange, readOnly = false, c
     navigate(`${basePath}/${route}?resourceId=${dep.resource_id}`);
   };
 
+  const handleGoCreate = (dep: LYProcessDependency) => {
+    const basePath = context === 'development'
+      ? '/dev-center/business-assets'
+      : '/scheduling-center/business-assets';
+    const route = RESOURCE_TYPE_ROUTE_MAP[dep.resource_type];
+    navigate(`${basePath}/${route}`);
+  };
+
   const existingIds = useMemo(() => dependencies.map((d) => d.resource_id), [dependencies]);
 
-  const renderResourceCard = (dep: LYProcessDependency) => (
-    <div key={dep.resource_id} className="dependency-tab-resource-card">
-      <div className="dependency-tab-resource-card-header">
-        <span
-          className="dependency-tab-resource-name"
-          onClick={() => handleNavigateToResource(dep)}
-        >
-          <Text strong ellipsis={{ showTooltip: true }}>{dep.resource_name}</Text>
-          <ExternalLink size={16} strokeWidth={2} className="dependency-tab-link-icon" />
-        </span>
-        <Tag
-          color={dep.source === 'AUTO_DETECTED' ? 'blue' : 'grey'}
-          size="small"
-          type="light"
-          className="dependency-tab-resource-tag"
-        >
-          {dep.source === 'AUTO_DETECTED'
-            ? t('processDependency.sourceAutoDetected')
-            : t('processDependency.sourceManual')}
-        </Tag>
-        {!readOnly && dep.source === 'MANUAL' && (
-          <Button
-            icon={<Trash2 size={14} strokeWidth={2} />}
-            theme="borderless"
-            type="danger"
+  const renderResourceCard = (dep: LYProcessDependency) => {
+    const isMissing = dep.status === 'MISSING';
+
+    return (
+      <div
+        key={dep.resource_id}
+        className={`dependency-tab-resource-card${isMissing ? ' dependency-tab-missing-card' : ''}`}
+      >
+        <div className="dependency-tab-resource-card-header">
+          <span
+            className="dependency-tab-resource-name"
+            onClick={() => !isMissing && handleNavigateToResource(dep)}
+            style={isMissing ? { cursor: 'default' } : undefined}
+          >
+            <Text strong ellipsis={{ showTooltip: true }} style={isMissing ? { color: 'var(--semi-color-text-2)' } : undefined}>
+              {dep.resource_name}
+            </Text>
+            {!isMissing && (
+              <ExternalLink size={16} strokeWidth={2} className="dependency-tab-link-icon" />
+            )}
+          </span>
+          <Tag
+            color={dep.source === 'AUTO_DETECTED' ? 'blue' : 'grey'}
             size="small"
-            className="dependency-tab-delete-btn"
-            onClick={() => handleDelete(dep)}
-          />
-        )}
-      </div>
-      <div className="dependency-tab-resource-card-body">
-        {dep.resource_type === 'CREDENTIAL' ? (
-          <Text type="tertiary" ellipsis={{ showTooltip: true }}>
-            {context === 'development' ? t('processDependency.devValue') : t('processDependency.prodValue')}：********
-          </Text>
-        ) : dep.resource_type === 'PARAMETER' && dep.resource_value ? (
-          <div className="dependency-tab-value-field">
-            <Text type="tertiary">{context === 'development' ? t('processDependency.devValue') : t('processDependency.prodValue')}：</Text>
-            <div className="dependency-tab-value-scroll">
-              <Text>{dep.resource_value}</Text>
+            type="light"
+            className="dependency-tab-resource-tag"
+          >
+            {dep.source === 'AUTO_DETECTED'
+              ? t('processDependency.sourceAutoDetected')
+              : t('processDependency.sourceManual')}
+          </Tag>
+          {isMissing && (
+            <Tag color="red" size="small" type="light" className="dependency-tab-resource-tag">
+              {t('processDependency.missingTag')}
+            </Tag>
+          )}
+          {!readOnly && dep.source === 'MANUAL' && !isMissing && (
+            <Button
+              icon={<Trash2 size={14} strokeWidth={2} />}
+              theme="borderless"
+              type="danger"
+              size="small"
+              className="dependency-tab-delete-btn"
+              onClick={() => handleDelete(dep)}
+            />
+          )}
+        </div>
+        <div className="dependency-tab-resource-card-body">
+          {isMissing ? (
+            <div className="dependency-tab-missing-hint">
+              <Text type="warning" size="small">
+                {t('processDependency.missingHint')}
+              </Text>
+              <Button
+                size="small"
+                theme="light"
+                type="warning"
+                onClick={() => handleGoCreate(dep)}
+              >
+                {t('processDependency.goCreate')}
+              </Button>
             </div>
-          </div>
-        ) : null}
+          ) : dep.resource_type === 'CREDENTIAL' ? (
+            <Text type="tertiary" ellipsis={{ showTooltip: true }}>
+              {context === 'development' ? t('processDependency.devValue') : t('processDependency.prodValue')}：********
+            </Text>
+          ) : dep.resource_type === 'PARAMETER' && dep.resource_value ? (
+            <div className="dependency-tab-value-field">
+              <Text type="tertiary">{context === 'development' ? t('processDependency.devValue') : t('processDependency.prodValue')}：</Text>
+              <div className="dependency-tab-value-scroll">
+                <Text>{dep.resource_value}</Text>
+              </div>
+            </div>
+          ) : null}
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   const renderGroup = (type: ResourceType, items: LYProcessDependency[]) => {
     if (items.length === 0) return null;
@@ -168,6 +212,15 @@ const DependencyTab = ({ dependencies, onDependenciesChange, readOnly = false, c
             {t('processDependency.addButton')}
           </Button>
         </div>
+      )}
+
+      {missingCount > 0 && (
+        <Banner
+          type="warning"
+          icon={<AlertCircle size={16} strokeWidth={2} />}
+          description={t('processDependency.missingBanner', { count: missingCount })}
+          className="dependency-tab-missing-banner"
+        />
       )}
 
       {dependencies.length === 0 ? (

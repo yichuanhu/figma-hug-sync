@@ -2584,6 +2584,11 @@
     "autoDetectedNew": "已自动解析出 {{count}} 项新资源依赖",
     "value": "值",
     "devValue": "开发值",
-    "prodValue": "生产值"
+    "prodValue": "生产值",
+    "missingBanner": "有 {{count}} 项依赖资源在业务资产中已被删除，请前往重新创建",
+    "missingTag": "已失效",
+    "missingHint": "对应资源已被删除，请前往业务资产重新创建",
+    "goCreate": "前往创建",
+    "uploadMissingWarning": "发现 {{count}} 项依赖资源已失效，请在资源依赖页签中处理"
   }
 }

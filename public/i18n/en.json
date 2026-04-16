@@ -3218,6 +3218,11 @@
     "autoDetectedNew": "{{count}} new dependencies auto-detected",
     "value": "Value",
     "devValue": "Dev Value",
-    "prodValue": "Prod Value"
+    "prodValue": "Prod Value",
+    "missingBanner": "{{count}} dependency resources have been deleted from business assets, please recreate them",
+    "missingTag": "Invalid",
+    "missingHint": "The corresponding resource has been deleted, please go to Business Assets to recreate it",
+    "goCreate": "Go Create",
+    "uploadMissingWarning": "{{count}} dependency resources are invalid, please handle them in the Dependencies tab"
   }
 }

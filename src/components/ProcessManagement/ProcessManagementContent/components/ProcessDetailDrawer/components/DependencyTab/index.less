@@ -10,6 +10,10 @@
     padding: 0 4px;
   }
 
+  .dependency-tab-missing-banner {
+    border-radius: 8px;
+  }
+
   .dependency-tab-empty {
     display: flex;
     justify-content: center;
@@ -23,7 +27,7 @@
     gap: 24px;
   }
 
-  // Section title - matches release detail drawer
+  // Section title
   .dependency-tab-section {
     .dependency-tab-section-title {
       margin-bottom: 8px;
@@ -33,14 +37,14 @@
     }
   }
 
-  // Resource list - card layout with gap
+  // Resource list
   .dependency-tab-resource-list {
     display: flex;
     flex-direction: column;
     gap: 12px;
   }
 
-  // Resource card - matches release detail drawer style
+  // Resource card
   .dependency-tab-resource-card {
     padding: 12px 16px;
     background: var(--semi-color-fill-0);
@@ -62,6 +66,20 @@
         margin-top: 0;
       }
     }
+  }
+
+  // Missing (invalid) resource card
+  .dependency-tab-missing-card {
+    border: 1px solid var(--semi-color-warning-light-active);
+    background: var(--semi-color-warning-light-default);
+  }
+
+  // Missing hint with go-create button
+  .dependency-tab-missing-hint {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
   }
 
   // Clickable resource name
@@ -99,7 +117,7 @@
     flex-shrink: 0;
   }
 
-  // Value field with scrollable content (for long parameter values)
+  // Value field with scrollable content
   .dependency-tab-value-field {
     display: flex;
     flex-direction: column;
