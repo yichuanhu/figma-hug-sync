@@ -1689,7 +1689,11 @@
         "content": "您有未保存的内容，确定要退出新建发布吗？",
         "confirm": "确定退出",
         "cancel": "继续编辑"
-      }
+      },
+      "missingDependencyBanner": "以下流程包含已失效的依赖资源，请先前往处理后再发布",
+      "goHandleDependency": "前往处理",
+      "cannotPublishMissing": "存在失效依赖资源，无法发布",
+      "hasMissingDependency": "存在失效依赖"
     },
     "rollback": {
       "title": "确认回退",
