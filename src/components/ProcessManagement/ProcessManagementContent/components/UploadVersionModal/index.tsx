@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Upload, Button, Toast, Banner, Notification } from '@douyinfe/semi-ui';
 import { AlertCircle, File as FileIcon, Inbox, X } from 'lucide-react';
@@ -18,6 +18,8 @@ const UploadVersionModal = ({ visible, onCancel, processData, onSuccess, onGoToD
   const { t } = useTranslation();
   const [uploading, setUploading] = useState(false);
   const [fileList, setFileList] = useState<FileItem[]>([]);
+  const goToDepsRef = useRef(onGoToDependencies);
+  useEffect(() => { goToDepsRef.current = onGoToDependencies; }, [onGoToDependencies]);
   const [showNameMismatchWarning, setShowNameMismatchWarning] = useState(false);
 
   const handleFileChange = useCallback(
@@ -91,7 +93,7 @@ const UploadVersionModal = ({ visible, onCancel, processData, onSuccess, onGoToD
       const missingDeps = mockNewDeps.filter((d) => d.status === 'MISSING');
       if (missingDeps.length > 0) {
         const missingNames = missingDeps.map((d) => d.resource_name);
-        const goHandler = onGoToDependencies;
+        const goHandler = goToDepsRef;
         Notification.warning({
           title: t('processDependency.uploadMissingWarningTitle'),
           content: (
@@ -104,14 +106,14 @@ const UploadVersionModal = ({ visible, onCancel, processData, onSuccess, onGoToD
                   <span key={i} className="upload-missing-notification-name">• {name}</span>
                 ))}
               </div>
-              {goHandler && (
+              {goHandler.current && (
                 <Button
                   size="small"
                   theme="light"
                   type="warning"
                   style={{ marginTop: 8 }}
                   onClick={() => {
-                    goHandler();
+                    goHandler.current?.();
                     Notification.destroyAll();
                   }}
                 >
