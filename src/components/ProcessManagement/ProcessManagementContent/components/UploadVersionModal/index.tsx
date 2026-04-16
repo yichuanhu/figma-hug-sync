@@ -28,7 +28,6 @@ const UploadVersionModal = ({ visible, onCancel, processData, onSuccess }: Uploa
       if (files.length > 0 && files[0].fileInstance && processData) {
         const fileName = files[0].fileInstance.name.replace('.bot', '');
         const processName = processData.name;
-        // 简单检查文件名是否包含流程名称
         if (!fileName.includes(processName) && !processName.includes(fileName.split('(')[0])) {
           setShowNameMismatchWarning(true);
         } else {
@@ -51,12 +50,26 @@ const UploadVersionModal = ({ visible, onCancel, processData, onSuccess }: Uploa
       // 模拟上传延迟
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // 模拟自动解析出新依赖
+      // 模拟自动解析出新依赖（部分可能已失效）
       const existingIds = new Set((processData?.dependencies || []).map((d) => d.resource_id));
       const mockNewDeps: LYProcessDependency[] = [];
       const possibleNewDeps: LYProcessDependency[] = [
-        { resource_id: `param-new-${Date.now()}-1`, resource_name: 'Retry Interval (ms)', resource_type: 'PARAMETER', source: 'AUTO_DETECTED', param_type: 'NUMBER' },
-        { resource_id: `param-new-${Date.now()}-2`, resource_name: 'Notification Endpoint', resource_type: 'PARAMETER', source: 'AUTO_DETECTED', param_type: 'TEXT' },
+        {
+          resource_id: `param-new-${Date.now()}-1`,
+          resource_name: 'Retry Interval (ms)',
+          resource_type: 'PARAMETER',
+          source: 'AUTO_DETECTED',
+          param_type: 'NUMBER',
+          status: 'ACTIVE',
+        },
+        {
+          resource_id: `param-new-${Date.now()}-2`,
+          resource_name: 'Notification Endpoint',
+          resource_type: 'PARAMETER',
+          source: 'AUTO_DETECTED',
+          param_type: 'TEXT',
+          status: 'MISSING', // 模拟已失效的依赖
+        },
       ];
       possibleNewDeps.forEach((d) => {
         if (!existingIds.has(d.resource_id)) {
@@ -66,7 +79,11 @@ const UploadVersionModal = ({ visible, onCancel, processData, onSuccess }: Uploa
 
       Toast.success(t('development.processDevelopment.detail.uploadVersion.success'));
 
-      if (mockNewDeps.length > 0) {
+      // 统计失效依赖数量并提示
+      const missingCount = mockNewDeps.filter((d) => d.status === 'MISSING').length;
+      if (missingCount > 0) {
+        Toast.warning(t('processDependency.uploadMissingWarning', { count: missingCount }));
+      } else if (mockNewDeps.length > 0) {
         Toast.info(t('processDependency.autoDetectedNew', { count: mockNewDeps.length }));
       }
 
@@ -93,7 +110,6 @@ const UploadVersionModal = ({ visible, onCancel, processData, onSuccess }: Uploa
 
   // 自定义上传，阻止自动上传
   const customRequest = useCallback(() => {
-    // 不做任何事，阻止自动上传
     return { abort: () => {} };
   }, []);
 
@@ -157,7 +173,6 @@ const UploadVersionModal = ({ visible, onCancel, processData, onSuccess }: Uploa
             />
           </div>
         )}
-
       </div>
     </Modal>
   );

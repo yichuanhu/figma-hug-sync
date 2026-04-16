@@ -398,6 +398,8 @@ export interface LYProcessDependency {
   original_name?: string;
   /** 资源当前值（后端从资源管理表联查） */
   resource_value?: string;
+  /** 资源状态：正常 / 已失效（业务资源表中已删除） */
+  status?: 'ACTIVE' | 'MISSING';
 }
 
 /**
