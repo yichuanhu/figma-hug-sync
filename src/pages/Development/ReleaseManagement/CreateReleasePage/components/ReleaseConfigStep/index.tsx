@@ -398,7 +398,8 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
         {processesWithMissingDeps.length > 0 && (
           <Banner
             type="danger"
-            icon={<AlertTriangle size={16} strokeWidth={2} />}
+            icon={null}
+            closeIcon={null}
             className="release-config-step-banner"
             title={t('release.create.missingDependencyBanner')}
             description={
