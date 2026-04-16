@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -9,7 +9,7 @@ import {
   TextArea,
   Tag,
   Button,
-  Banner,
+  Modal,
   Input,
   InputNumber,
   Checkbox,
@@ -24,7 +24,7 @@ import type { SelectedProcess, ResourceConfig } from '../../index';
 
 
 import './index.less';
-import { AlertTriangle, ExternalLink, Trash2, X } from 'lucide-react';
+import { ExternalLink, Trash2, X, AlertTriangle } from 'lucide-react';
 
 const { Title, Text } = Typography;
 
@@ -53,7 +53,40 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  
+  const missingModalShownRef = useRef(false);
+
+  // 缺失依赖弹窗提示
+  useEffect(() => {
+    if (processesWithMissingDeps.length > 0 && !missingModalShownRef.current) {
+      missingModalShownRef.current = true;
+      Modal.warning({
+        title: t('release.create.missingDependencyBanner'),
+        icon: <AlertTriangle size={24} strokeWidth={2} style={{ color: 'var(--semi-color-warning)' }} />,
+        content: (
+          <div className="release-config-step-missing-modal-content">
+            <div className="release-config-step-missing-modal-list">
+              {processesWithMissingDeps.map((sp) => (
+                <div key={sp.process.id} className="release-config-step-missing-modal-item">
+                  <span>•</span>
+                  <Text ellipsis={{ showTooltip: true }} style={{ maxWidth: 300 }}>
+                    {sp.process.name}
+                  </Text>
+                </div>
+              ))}
+            </div>
+          </div>
+        ),
+        okText: t('processDependency.goHandle'),
+        cancelText: t('common.close'),
+        onOk: () => {
+          const first = processesWithMissingDeps[0];
+          if (first) {
+            navigate(`/process-development?processId=${first.process.id}&tab=dependencies`);
+          }
+        },
+      });
+    }
+  }, [processesWithMissingDeps]);
 
   // ReleaseType选项
   const releaseTypeOptions = [
@@ -395,39 +428,6 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
           </Space>
         }
       >
-        {processesWithMissingDeps.length > 0 && (
-          <Banner
-            type="danger"
-            icon={null}
-            closeIcon={null}
-            className="release-config-step-banner"
-            title={t('release.create.missingDependencyBanner')}
-            description={
-              <div className="release-config-step-missing-banner-content">
-                <div className="release-config-step-missing-process-list">
-                  {processesWithMissingDeps.map((sp) => (
-                    <div key={sp.process.id} className="release-config-step-missing-process-item">
-                      <Text size="small" strong ellipsis={{ showTooltip: true }} style={{ maxWidth: 200 }}>
-                        {sp.process.name}
-                      </Text>
-                      <Button
-                        size="small"
-                        theme="borderless"
-                        type="primary"
-                        icon={<ExternalLink size={14} strokeWidth={2} />}
-                        onClick={() => {
-                          navigate(`/process-development?processId=${sp.process.id}&tab=dependencies`);
-                        }}
-                      >
-                        {t('release.create.goHandleDependency')}
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            }
-          />
-        )}
 
 
         <div className="release-config-step-resources">

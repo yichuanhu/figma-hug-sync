@@ -35,32 +35,6 @@
 // 重新打开嵌套以保持后续样式
 .release-config-step {
 
-  .release-config-step-banner {
-    margin-bottom: 16px;
-    border-radius: 8px;
-
-    :global {
-      .semi-banner {
-        padding: 16px 20px;
-        border-radius: 8px;
-      }
-
-      .semi-banner-title {
-        font-weight: 600;
-        font-size: 14px;
-        margin-bottom: 4px;
-      }
-
-      .semi-banner-content {
-        display: flex;
-        flex-direction: column;
-      }
-
-      .semi-banner-description {
-        margin-top: 0;
-      }
-    }
-  }
 
   .release-config-step-process-list {
     display: flex;
@@ -198,21 +172,25 @@
     text-align: center;
   }
 
-  .release-config-step-missing-banner-content {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
+}
 
-  .release-config-step-missing-process-list {
+// 缺失依赖弹窗内容样式
+.release-config-step-missing-modal-content {
+  .release-config-step-missing-modal-list {
     display: flex;
     flex-direction: column;
     gap: 4px;
-  }
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: var(--semi-color-fill-0);
+    border-radius: 6px;
 
-  .release-config-step-missing-process-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    .release-config-step-missing-modal-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      line-height: 20px;
+    }
   }
 }
