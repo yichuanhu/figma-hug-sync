@@ -24,7 +24,7 @@ import type { SelectedProcess, ResourceConfig } from '../../index';
 
 
 import './index.less';
-import { AlertTriangle, Info, Trash2, X } from 'lucide-react';
+import { AlertTriangle, Trash2, X } from 'lucide-react';
 
 const { Title, Text } = Typography;
 
