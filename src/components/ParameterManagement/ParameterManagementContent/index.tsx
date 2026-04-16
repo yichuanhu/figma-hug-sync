@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Button,
   Input,
@@ -205,8 +205,22 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
 
   // 模态框/抽屉状态
   const [createModalVisible, setCreateModalVisible] = useState(false);
+  const [createDefaultName, setCreateDefaultName] = useState<string | undefined>();
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
+
+  // 处理从依赖页跳转来的 openCreate
+  const location = useLocation();
+  useEffect(() => {
+    const state = location.state as any;
+    if (state?.openCreate) {
+      setCreateModalVisible(true);
+      if (state.defaultName) {
+        setCreateDefaultName(state.defaultName);
+      }
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
   const [detailInitialTab, setDetailInitialTab] = useState('basic');
 
   // 加载数据
@@ -594,9 +608,11 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
       <CreateParameterModal
         visible={createModalVisible}
         context={context}
-        onCancel={() => setCreateModalVisible(false)}
+        defaultName={createDefaultName}
+        onCancel={() => { setCreateModalVisible(false); setCreateDefaultName(undefined); }}
         onSuccess={() => {
           setCreateModalVisible(false);
+          setCreateDefaultName(undefined);
           loadData();
         }}
       />

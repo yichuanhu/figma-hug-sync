@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import {
   Button,
   Input,
@@ -177,8 +177,22 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
 
   // 模态框/抽屉状态
   const [createModalVisible, setCreateModalVisible] = useState(false);
+  const [createDefaultName, setCreateDefaultName] = useState<string | undefined>();
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
+
+  // 处理从依赖页跳转来的 openCreate
+  const location = useLocation();
+  useEffect(() => {
+    const state = location.state as any;
+    if (state?.openCreate) {
+      setCreateModalVisible(true);
+      if (state.defaultName) {
+        setCreateDefaultName(state.defaultName);
+      }
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
   const [detailInitialTab, setDetailInitialTab] = useState('basic');
   const { openCollaborator, renderCollaboratorPanel } = useCollaboratorAction();
 
@@ -588,9 +602,11 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
       {/* 新建队列弹窗 */}
       <CreateQueueModal
         visible={createModalVisible}
-        onCancel={() => setCreateModalVisible(false)}
+        defaultName={createDefaultName}
+        onCancel={() => { setCreateModalVisible(false); setCreateDefaultName(undefined); }}
         onSuccess={() => {
           setCreateModalVisible(false);
+          setCreateDefaultName(undefined);
           loadData();
         }}
       />
