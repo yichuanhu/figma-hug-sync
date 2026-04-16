@@ -126,7 +126,7 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
   const [selectedProcess, setSelectedProcess] = useState<LYProcessActiveVersionResponse | null>(null);
   const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);
   const [ownerId, setOwnerId] = useState<string | undefined>(template?.owner_id || undefined);
-  const { canManage } = useCollaboratorPermission('TEMPLATE', template?.template_id);
+  const { canManage } = useCollaboratorPermission('TASK_TEMPLATE', template?.template_id);
 
   // Execution target选项
   const targetOptions = useMemo(() => {
