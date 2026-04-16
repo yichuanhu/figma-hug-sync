@@ -2175,7 +2175,11 @@
         "content": "You have unsaved changes. Exit?",
         "confirm": "Exit",
         "cancel": "Continue Editing"
-      }
+      },
+      "missingDependencyBanner": "The following processes contain invalid dependency resources. Please handle them before releasing.",
+      "goHandleDependency": "Go to Handle",
+      "cannotPublishMissing": "Cannot release: invalid dependency resources exist",
+      "hasMissingDependency": "Has invalid dependencies"
     },
     "actions": {
       "rollback": "Rollback"

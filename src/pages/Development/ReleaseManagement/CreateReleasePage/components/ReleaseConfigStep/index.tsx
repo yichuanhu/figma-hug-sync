@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Typography,
@@ -23,7 +24,7 @@ import type { SelectedProcess, ResourceConfig } from '../../index';
 
 
 import './index.less';
-import { Info, Trash2, X } from 'lucide-react';
+import { AlertTriangle, Info, Trash2, X } from 'lucide-react';
 
 const { Title, Text } = Typography;
 
@@ -36,6 +37,7 @@ interface ReleaseConfigStepProps {
   onDescriptionChange: (desc: string) => void;
   resources: ResourceConfig[];
   onResourcesChange: (resources: ResourceConfig[]) => void;
+  processesWithMissingDeps?: SelectedProcess[];
 }
 
 const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
@@ -47,8 +49,10 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
   onDescriptionChange,
   resources,
   onResourcesChange,
+  processesWithMissingDeps = [],
 }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   
 
   // ReleaseType选项
@@ -391,6 +395,38 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
           </Space>
         }
       >
+        {processesWithMissingDeps.length > 0 && (
+          <Banner
+            type="danger"
+            icon={<AlertTriangle size={16} strokeWidth={2} />}
+            className="release-config-step-banner"
+            description={
+              <div className="release-config-step-missing-banner-content">
+                <Text>{t('release.create.missingDependencyBanner')}</Text>
+                <div className="release-config-step-missing-process-list">
+                  {processesWithMissingDeps.map((sp) => (
+                    <div key={sp.process.id} className="release-config-step-missing-process-item">
+                      <Text size="small" strong ellipsis={{ showTooltip: true }} style={{ maxWidth: 200 }}>
+                        {sp.process.name}
+                      </Text>
+                      <Button
+                        size="small"
+                        theme="borderless"
+                        type="primary"
+                        onClick={() => {
+                          navigate(`/process-development?processId=${sp.process.id}&tab=dependencies`);
+                        }}
+                      >
+                        {t('release.create.goHandleDependency')}
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            }
+          />
+        )}
+
         <Banner
           type="info"
           icon={<Info size={16} strokeWidth={2} />}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Tooltip } from '@douyinfe/semi-ui';
 import { useTranslation } from 'react-i18next';
 import {
   Typography,
@@ -45,6 +46,7 @@ export interface ResourceConfig {
   used_by_processes: string[];
   original_name?: string;
   param_type?: 'TEXT' | 'BOOLEAN' | 'NUMBER';
+  status?: 'ACTIVE' | 'MISSING';
 }
 
 const CreateReleasePage: React.FC = () => {
@@ -93,6 +95,7 @@ const CreateReleasePage: React.FC = () => {
             used_by_processes: [sp.process.name],
             param_type: dep.param_type || 'TEXT',
             original_name: dep.original_name,
+            status: dep.status || 'ACTIVE',
           });
         });
       });
@@ -100,6 +103,19 @@ const CreateReleasePage: React.FC = () => {
       setResources(allResources);
     }
   }, [currentStep, selectedProcesses]);
+
+  // 检查是否存在失效依赖
+  const hasMissingResources = useMemo(() => {
+    return resources.some((r) => r.status === 'MISSING');
+  }, [resources]);
+
+  // 获取包含失效依赖的流程列表
+  const processesWithMissingDeps = useMemo(() => {
+    return selectedProcesses.filter((sp) => {
+      const deps = sp.process.dependencies || [];
+      return deps.some((dep) => dep.status === 'MISSING');
+    });
+  }, [selectedProcesses]);
 
   // processingStep变化
   const handleNext = () => {
@@ -252,6 +268,7 @@ const CreateReleasePage: React.FC = () => {
                 onDescriptionChange={setDescription}
                 resources={resources}
                 onResourcesChange={setResources}
+                processesWithMissingDeps={processesWithMissingDeps}
               />
           )}
         </div>
@@ -281,15 +298,22 @@ const CreateReleasePage: React.FC = () => {
               </Button>
             )}
             {currentStep === 1 && (
-              <Button
-                type="primary"
-                theme="solid"
-                onClick={handleSubmit}
-                loading={submitting}
-                disabled={selectedProcesses.length === 0}
+              <Tooltip
+                content={hasMissingResources ? t('release.create.cannotPublishMissing') : undefined}
+                position="top"
               >
-                {t('release.create.confirmPublish')}
-              </Button>
+                <span>
+                  <Button
+                    type="primary"
+                    theme="solid"
+                    onClick={handleSubmit}
+                    loading={submitting}
+                    disabled={selectedProcesses.length === 0 || hasMissingResources}
+                  >
+                    {t('release.create.confirmPublish')}
+                  </Button>
+                </span>
+              </Tooltip>
             )}
           </div>
         </div>

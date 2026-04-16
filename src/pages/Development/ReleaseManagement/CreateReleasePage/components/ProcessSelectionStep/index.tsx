@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { LYProcessDependency } from '@/api';
 import {
   Typography,
   Input,
@@ -16,7 +17,7 @@ import type { LYPublishableProcessResponse, LYListResponseLYPublishableProcessRe
 import type { SelectedProcess } from '../../index';
 
 import './index.less';
-import { Inbox, X } from 'lucide-react';
+import { AlertTriangle, Inbox, X } from 'lucide-react';
 
 const { Text } = Typography;
 
@@ -100,6 +101,26 @@ const generateMockProcess = (index: number): ProcessWithVersions => {
   const isPublished = index % 3 !== 0;
   const versions = generateMockVersions(index, isPublished);
 
+  // Mock dependencies - some processes have MISSING dependencies
+  const mockDeps: LYProcessDependency[] = [];
+  if (index % 4 === 1 || index % 4 === 2) {
+    // These processes have MISSING deps
+    mockDeps.push(
+      { resource_id: `param-pub-${index}-1`, resource_name: 'API_Endpoint', resource_type: 'PARAMETER', source: 'AUTO_DETECTED', param_type: 'TEXT', resource_value: 'https://api.example.com', status: 'ACTIVE' },
+      { resource_id: `param-pub-missing-${index}-1`, resource_name: 'Payment_Gateway_Config', resource_type: 'PARAMETER', source: 'AUTO_DETECTED', param_type: 'TEXT', status: 'MISSING' },
+    );
+    if (index % 4 === 2) {
+      mockDeps.push(
+        { resource_id: `cred-pub-missing-${index}-1`, resource_name: 'AWS_S3_Access_Key', resource_type: 'CREDENTIAL', source: 'AUTO_DETECTED', status: 'MISSING' },
+      );
+    }
+  } else {
+    mockDeps.push(
+      { resource_id: `param-pub-${index}-1`, resource_name: 'API_Endpoint', resource_type: 'PARAMETER', source: 'AUTO_DETECTED', param_type: 'TEXT', resource_value: 'https://api.example.com', status: 'ACTIVE' },
+      { resource_id: `cred-pub-${index}-1`, resource_name: 'DB_Credential', resource_type: 'CREDENTIAL', source: 'AUTO_DETECTED', resource_value: '••••••••', status: 'ACTIVE' },
+    );
+  }
+
   return {
     id: `process-${index + 1}`,
     name: names[index % names.length],
@@ -110,6 +131,7 @@ const generateMockProcess = (index: number): ProcessWithVersions => {
     is_published: isPublished,
     updated_at: new Date(Date.now() - index * 24 * 60 * 60 * 1000).toISOString(),
     versions,
+    dependencies: mockDeps,
   };
 };
 
@@ -327,6 +349,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
                 {processList.map((process) => {
                     const isSelected = selectedIds.has(process.id);
                     const hasNewVersion = hasNewVersionToPublish(process);
+                    const hasMissingDeps = (process.dependencies || []).some((d) => d.status === 'MISSING');
                     
                     // 确定标签Type and 文字
                     let tagColor: 'green' | 'blue' | 'grey' = 'grey';
@@ -358,6 +381,9 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
                         />
                         <div className="process-item-content">
                           <Text className="process-name" ellipsis={{ showTooltip: true }}>{process.name}</Text>
+                          {hasMissingDeps && (
+                            <AlertTriangle size={14} strokeWidth={2} style={{ color: 'var(--semi-color-warning)', flexShrink: 0 }} />
+                          )}
                           <Tag size="small" color={tagColor}>
                             {tagText}
                           </Tag>
