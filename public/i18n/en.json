@@ -3228,6 +3228,7 @@
     "missingHint": "The corresponding resource has been deleted, please go to Business Assets to recreate it",
     "goCreate": "Go Create",
     "goHandle": "Go to Handle",
+    "credentialUsername": "Username",
     "uploadMissingWarningTitle": "Dependency Resource Alert",
     "uploadMissingWarning": "{{count}} dependency resources are invalid, please handle:"
   }
