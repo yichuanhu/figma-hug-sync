@@ -24,7 +24,7 @@ import type { SelectedProcess, ResourceConfig } from '../../index';
 
 
 import './index.less';
-import { ExternalLink, Trash2, X, AlertTriangle } from 'lucide-react';
+import { ExternalLink, Trash2, X } from 'lucide-react';
 
 const { Title, Text } = Typography;
 
@@ -61,7 +61,6 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
       missingModalShownRef.current = true;
       Modal.warning({
         title: t('release.create.missingDependencyBanner'),
-        icon: <AlertTriangle size={24} strokeWidth={2} style={{ color: 'var(--semi-color-warning)' }} />,
         content: (
           <div className="release-config-step-missing-modal-content">
             <div className="release-config-step-missing-modal-list">
