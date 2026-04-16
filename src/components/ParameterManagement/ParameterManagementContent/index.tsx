@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import {
   Button,
   Input,
@@ -174,6 +174,7 @@ export interface ParameterManagementContentProps {
 const ParameterManagementContent = ({ context }: ParameterManagementContentProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   // 搜索框输入值（即时显示）
   const [searchValue, setSearchValue] = useState('');
