@@ -243,6 +243,34 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
     loadData();
   }, [loadData]);
 
+  // 处理URL参数 - 从依赖Tab跳转过来时自动打开详情抽屉
+  useEffect(() => {
+    const resourceId = searchParams.get('resourceId');
+    if (resourceId && listResponse?.data && !isInitialLoad) {
+      const target = listResponse.data.find((item) => item.id === resourceId);
+      if (target) {
+        setSelectedFile(target);
+        setDetailInitialTab('basic');
+        setDetailDrawerVisible(true);
+        setSearchParams({}, { replace: true });
+      } else {
+        const fetchById = async () => {
+          try {
+            await new Promise((resolve) => setTimeout(resolve, 300));
+            const mock = generateMockFile(0);
+            (mock as any).id = resourceId;
+            setSelectedFile(mock);
+            setDetailInitialTab('basic');
+            setDetailDrawerVisible(true);
+            setSearchParams({}, { replace: true });
+          } catch {
+            setSearchParams({}, { replace: true });
+          }
+        };
+        fetchById();
+      }
+    }
+  }, [searchParams, listResponse?.data, isInitialLoad, setSearchParams]);
   // 搜索防抖
   const debouncedSearch = useMemo(
     () =>
