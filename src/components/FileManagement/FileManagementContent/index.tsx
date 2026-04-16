@@ -47,6 +47,8 @@ const generateUUID = (): string => {
   });
 };
 
+const mockFileIds = Array.from({ length: 15 }, (_, index) => `file-${index + 1}`);
+
 const generateMockFile = (index: number): LYFileResponse => {
   const sources: FileSource[] = ['MANUAL', 'AUTOMATION_PROCESS'];
   const source = sources[index % 2];
@@ -80,7 +82,7 @@ const generateMockFile = (index: number): LYFileResponse => {
   const deptIds = ['dept-finance', 'dept-rd', 'dept-enterprise', 'dept-hr'];
 
   return {
-    id: generateUUID(),
+    id: mockFileIds[index] || generateUUID(),
     display_name: displayName,
     original_name: originalName,
     storage_id: generateUUID(),
@@ -107,6 +109,30 @@ const generateMockFile = (index: number): LYFileResponse => {
 
 const generateMockFileList = (): LYFileResponse[] => {
   return Array.from({ length: 15 }, (_, i) => generateMockFile(i));
+};
+
+const getFilteredFileList = (
+  params: GetFilesParams & {
+    sourceFilter?: FileSource | null;
+    departmentFilter?: string[];
+  }
+): LYFileResponse[] => {
+  let data = generateMockFileList();
+
+  if (params.keyword) {
+    const keyword = params.keyword.toLowerCase();
+    data = data.filter((item) => item.display_name.toLowerCase().includes(keyword));
+  }
+
+  if (params.sourceFilter) {
+    data = data.filter((item) => item.source === params.sourceFilter);
+  }
+
+  if (params.departmentFilter && params.departmentFilter.length > 0) {
+    data = data.filter((item) => params.departmentFilter!.includes((item as any).owning_department_name));
+  }
+
+  return data;
 };
 
 // 模拟API调用
@@ -246,31 +272,58 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
   // 处理URL参数 - 从依赖Tab跳转过来时自动打开详情抽屉
   useEffect(() => {
     const resourceId = searchParams.get('resourceId');
-    if (resourceId && listResponse?.data && !isInitialLoad) {
-      const target = listResponse.data.find((item) => item.id === resourceId);
-      if (target) {
-        setSelectedFile(target);
-        setDetailInitialTab('basic');
-        setDetailDrawerVisible(true);
-        setSearchParams({}, { replace: true });
-      } else {
-        const fetchById = async () => {
-          try {
-            await new Promise((resolve) => setTimeout(resolve, 300));
-            const mock = generateMockFile(0);
-            (mock as any).id = resourceId;
-            setSelectedFile(mock);
-            setDetailInitialTab('basic');
-            setDetailDrawerVisible(true);
-            setSearchParams({}, { replace: true });
-          } catch {
-            setSearchParams({}, { replace: true });
-          }
-        };
-        fetchById();
-      }
+    if (!resourceId || isInitialLoad) {
+      return;
     }
-  }, [searchParams, listResponse?.data, isInitialLoad, setSearchParams]);
+
+    const filteredData = getFilteredFileList({
+      keyword: queryParams.keyword || undefined,
+      context,
+      offset: 0,
+      size: queryParams.pageSize,
+      sourceFilter: sourceFilter.length > 0 ? sourceFilter[0] : null,
+      departmentFilter,
+    } as any);
+    const targetIndex = filteredData.findIndex((item) => item.id === resourceId);
+
+    if (targetIndex === -1) {
+      setSearchParams({}, { replace: true });
+      return;
+    }
+
+    const targetPage = Math.floor(targetIndex / queryParams.pageSize) + 1;
+    if (queryParams.page !== targetPage) {
+      setQueryParams((prev) => ({ ...prev, page: targetPage }));
+      return;
+    }
+
+    const target = filteredData[targetIndex];
+    setSelectedFile(target);
+    setDetailInitialTab('basic');
+    setDetailDrawerVisible(true);
+    setSearchParams({}, { replace: true });
+  }, [
+    context,
+    departmentFilter,
+    isInitialLoad,
+    queryParams.keyword,
+    queryParams.page,
+    queryParams.pageSize,
+    searchParams,
+    setSearchParams,
+    sourceFilter,
+  ]);
+
+  useEffect(() => {
+    if (!detailDrawerVisible || !selectedFile?.id) {
+      return;
+    }
+
+    requestAnimationFrame(() => {
+      const row = document.getElementById(`file-row-${selectedFile.id}`);
+      row?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+  }, [detailDrawerVisible, selectedFile?.id, listResponse?.data]);
   // 搜索防抖
   const debouncedSearch = useMemo(
     () =>
@@ -614,6 +667,7 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
               />
             }
             onRow={(record) => ({
+              id: `file-row-${(record as LYFileResponse).id}`,
               onClick: () => handleRowClick(record as LYFileResponse),
               className:
                 selectedFile?.id === (record as LYFileResponse).id && detailDrawerVisible

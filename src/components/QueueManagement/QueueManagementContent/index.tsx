@@ -46,6 +46,8 @@ const generateUUID = (): string => {
   });
 };
 
+const mockQueueIds = Array.from({ length: 15 }, (_, index) => `queue-${index + 1}`);
+
 const generateMockQueue = (index: number): LYQueueResponse => {
   const names = [
     'Order Processing Queue',
@@ -62,7 +64,7 @@ const generateMockQueue = (index: number): LYQueueResponse => {
   const deptIds = ['dept-finance', 'dept-rd', 'dept-enterprise', 'dept-hr'];
 
   return {
-    queue_id: generateUUID(),
+    queue_id: mockQueueIds[index] || generateUUID(),
     queue_name: names[index % names.length],
     description: index === 0
       ? 'A high-priority order processing message queue for receiving and distributing orders from e-commerce platforms, ERP systems, and customer service systems. Supports message persistence, priority sorting, dead letter queues, and delayed consumption. Configured with auto-scaling based on message backlog.'
@@ -88,6 +90,31 @@ const generateMockQueue = (index: number): LYQueueResponse => {
 
 const generateMockQueueList = (): LYQueueResponse[] => {
   return Array.from({ length: 15 }, (_, i) => generateMockQueue(i));
+};
+
+const getFilteredQueueList = (
+  params: GetQueuesParams & { departmentFilter?: string[] }
+): LYQueueResponse[] => {
+  let data = generateMockQueueList();
+
+  if (params.context === 'scheduling') {
+    data = data.filter((item) => item.is_published);
+  }
+
+  if (params.keyword) {
+    const keyword = params.keyword.toLowerCase();
+    data = data.filter((item) => item.queue_name.toLowerCase().includes(keyword));
+  }
+
+  if ((params as any).publishedFilter !== null && (params as any).publishedFilter !== undefined) {
+    data = data.filter((item) => item.is_published === (params as any).publishedFilter);
+  }
+
+  if (params.departmentFilter && params.departmentFilter.length > 0) {
+    data = data.filter((item) => params.departmentFilter!.includes((item as any).owning_department_name));
+  }
+
+  return data;
 };
 
 // 模拟API调用
@@ -244,20 +271,61 @@ const QueueManagementContent = ({ context }: QueueManagementContentProps) => {
     loadData();
   }, [loadData]);
 
-  // 从 URL 参数中恢复抽屉状态（用于从消息列表页面返回）
+  // 从 URL 参数中恢复抽屉状态（用于从消息列表或依赖Tab跳转）
   useEffect(() => {
-    const queueIdFromUrl = searchParams.get('queueId');
-    
-    if (queueIdFromUrl && listResponse && listResponse.data.length > 0) {
-      const queue = listResponse.data.find((q) => q.queue_id === queueIdFromUrl);
-      if (queue) {
-        setSelectedQueue(queue);
-        setDetailDrawerVisible(true);
-        // 清除 URL 参数
-        setSearchParams({}, { replace: true });
-      }
+    const resourceId = searchParams.get('resourceId') || searchParams.get('queueId');
+    if (!resourceId || isInitialLoad) {
+      return;
     }
-  }, [searchParams, listResponse, setSearchParams]);
+
+    const filteredData = getFilteredQueueList({
+      keyword: queryParams.keyword || undefined,
+      context,
+      offset: 0,
+      size: queryParams.pageSize,
+      publishedFilter: context === 'development' ? publishedFilter : null,
+      departmentFilter,
+    } as any);
+    const targetIndex = filteredData.findIndex((item) => item.queue_id === resourceId);
+
+    if (targetIndex === -1) {
+      setSearchParams({}, { replace: true });
+      return;
+    }
+
+    const targetPage = Math.floor(targetIndex / queryParams.pageSize) + 1;
+    if (queryParams.page !== targetPage) {
+      setQueryParams((prev) => ({ ...prev, page: targetPage }));
+      return;
+    }
+
+    const target = filteredData[targetIndex];
+    setSelectedQueue(target);
+    setDetailInitialTab('basic');
+    setDetailDrawerVisible(true);
+    setSearchParams({}, { replace: true });
+  }, [
+    context,
+    departmentFilter,
+    isInitialLoad,
+    publishedFilter,
+    queryParams.keyword,
+    queryParams.page,
+    queryParams.pageSize,
+    searchParams,
+    setSearchParams,
+  ]);
+
+  useEffect(() => {
+    if (!detailDrawerVisible || !selectedQueue?.queue_id) {
+      return;
+    }
+
+    requestAnimationFrame(() => {
+      const row = document.getElementById(`queue-row-${selectedQueue.queue_id}`);
+      row?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+  }, [detailDrawerVisible, selectedQueue?.queue_id, listResponse?.data]);
 
   // 搜索防抖
   const debouncedSearch = useMemo(
