@@ -268,6 +268,7 @@ const CreateReleasePage: React.FC = () => {
                 onDescriptionChange={setDescription}
                 resources={resources}
                 onResourcesChange={setResources}
+                processesWithMissingDeps={processesWithMissingDeps}
               />
           )}
         </div>
@@ -297,15 +298,22 @@ const CreateReleasePage: React.FC = () => {
               </Button>
             )}
             {currentStep === 1 && (
-              <Button
-                type="primary"
-                theme="solid"
-                onClick={handleSubmit}
-                loading={submitting}
-                disabled={selectedProcesses.length === 0}
+              <Tooltip
+                content={hasMissingResources ? t('release.create.cannotPublishMissing') : undefined}
+                position="top"
               >
-                {t('release.create.confirmPublish')}
-              </Button>
+                <span>
+                  <Button
+                    type="primary"
+                    theme="solid"
+                    onClick={handleSubmit}
+                    loading={submitting}
+                    disabled={selectedProcesses.length === 0 || hasMissingResources}
+                  >
+                    {t('release.create.confirmPublish')}
+                  </Button>
+                </span>
+              </Tooltip>
             )}
           </div>
         </div>
