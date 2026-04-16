@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Button,
@@ -167,6 +167,7 @@ export interface FileManagementContentProps {
 
 const FileManagementContent = ({ context }: FileManagementContentProps) => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { t } = useTranslation();
 
   // 搜索框输入值
