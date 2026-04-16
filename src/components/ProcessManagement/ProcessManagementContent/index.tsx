@@ -226,6 +226,52 @@ const fetchProcessList = async (params: GetProcessesParams & { statusFilter?: st
   };
 };
 
+const getFilteredProcessList = (params: GetProcessesParams & { statusFilter?: string[]; departmentFilter?: string[] }) => {
+  let filteredData = [...mockProcessData];
+
+  if (params.keyword?.trim()) {
+    const keyword = params.keyword.toLowerCase().trim();
+    filteredData = filteredData.filter(
+      (item) =>
+        item.name.toLowerCase().includes(keyword) || (item.description?.toLowerCase().includes(keyword) ?? false),
+    );
+  }
+
+  if (params.statusFilter && params.statusFilter.length > 0) {
+    filteredData = filteredData.filter((item) => params.statusFilter!.includes(item.status));
+  }
+
+  if (params.departmentFilter && params.departmentFilter.length > 0) {
+    filteredData = filteredData.filter((item) => params.departmentFilter!.includes((item as any).owning_department_name));
+  }
+
+  filteredData.sort((a, b) => {
+    let valueA: string;
+    let valueB: string;
+
+    switch (params.sort_by) {
+      case 'name':
+        valueA = a.name;
+        valueB = b.name;
+        break;
+      case 'updated_at':
+        valueA = a.updated_at || '';
+        valueB = b.updated_at || '';
+        break;
+      case 'created_at':
+      default:
+        valueA = a.created_at || '';
+        valueB = b.created_at || '';
+        break;
+    }
+
+    const comparison = valueA.localeCompare(valueB);
+    return params.sort_order === 'asc' ? comparison : -comparison;
+  });
+
+  return filteredData;
+};
+
 // ============= 状态配置 =============
 
 const statusConfig: Record<string, { color: 'grey' | 'green' | 'orange'; i18nKey: string }> = {
@@ -330,20 +376,42 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
   useEffect(() => {
     const processId = searchParams.get('processId');
     const tab = searchParams.get('tab');
-    if (processId && !isInitialLoad) {
-      const targetProcess = mockProcessData.find((p) => p.id === processId);
-      if (targetProcess) {
-        setSelectedProcess(targetProcess);
-        if (tab) {
-          setDetailInitialTab(tab);
-        }
-        setDetailDrawerVisible(true);
-        setSearchParams({}, { replace: true });
-      } else {
-        setSearchParams({}, { replace: true });
-      }
+    if (!processId || isInitialLoad) {
+      return;
     }
-  }, [searchParams, isInitialLoad, setSearchParams]);
+
+    const filteredData = getFilteredProcessList({ ...queryParams, statusFilter, departmentFilter });
+    const targetIndex = filteredData.findIndex((item) => item.id === processId);
+
+    if (targetIndex === -1) {
+      setSearchParams({}, { replace: true });
+      return;
+    }
+
+    const currentPageSize = queryParams.size || 20;
+    const targetOffset = Math.floor(targetIndex / currentPageSize) * currentPageSize;
+    if ((queryParams.offset || 0) !== targetOffset) {
+      setQueryParams((prev) => ({ ...prev, offset: targetOffset }));
+      return;
+    }
+
+    const targetProcess = filteredData[targetIndex];
+    setSelectedProcess(targetProcess);
+    setDetailInitialTab(tab || 'detail');
+    setDetailDrawerVisible(true);
+    setSearchParams({}, { replace: true });
+  }, [queryParams, statusFilter, departmentFilter, searchParams, isInitialLoad, setSearchParams]);
+
+  useEffect(() => {
+    if (!detailDrawerVisible || !selectedProcess?.id) {
+      return;
+    }
+
+    requestAnimationFrame(() => {
+      const row = document.getElementById(`process-row-${selectedProcess.id}`);
+      row?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+  }, [detailDrawerVisible, selectedProcess?.id, listResponse.list]);
 
   // 搜索防抖
   const debouncedSearch = useMemo(
@@ -679,6 +747,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
             onRow={(record) => {
               const isSelected = selectedProcess?.id === record?.id && detailDrawerVisible;
               return {
+                id: `process-row-${(record as LYProcessResponse).id}`,
                 onClick: () => record && openProcessDetail(record as LYProcessResponse),
                 className: isSelected ? 'process-management-row-selected' : undefined,
                 style: { cursor: 'pointer' },
@@ -764,6 +833,10 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
         onPageChange={handleDrawerPageChange}
         context={context}
         initialTab={detailInitialTab}
+        onScrollToRow={(id) => {
+          const row = document.getElementById(`process-row-${id}`);
+          row?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }}
         onDependenciesChange={(processId, deps) => {
           const idx = mockProcessData.findIndex((p) => p.id === processId);
           if (idx !== -1) {
