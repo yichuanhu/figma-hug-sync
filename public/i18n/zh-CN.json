@@ -2580,10 +2580,10 @@
     "sourceAutoDetected": "自动解析",
     "sourceManual": "手动添加",
     "deleteConfirm": {
-      "title": "删除依赖",
-      "content": "确定要删除依赖「{{name}}」吗？"
+      "title": "移除依赖",
+      "content": "移除后，该依赖资源「{{name}}」将不再与当前流程关联，但资源本身不会被删除。确定要移除吗？"
     },
-    "deleteSuccess": "依赖已删除",
+    "deleteSuccess": "依赖已移除",
     "addSuccess": "已添加 {{count}} 项依赖",
     "autoDetectedNew": "已自动解析出 {{count}} 项新资源依赖",
     "value": "值",
