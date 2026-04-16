@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { LYProcessDependency } from '@/api';
 import {
   Typography,
   Input,
@@ -16,7 +17,7 @@ import type { LYPublishableProcessResponse, LYListResponseLYPublishableProcessRe
 import type { SelectedProcess } from '../../index';
 
 import './index.less';
-import { Inbox, X } from 'lucide-react';
+import { AlertTriangle, Inbox, X } from 'lucide-react';
 
 const { Text } = Typography;
 
