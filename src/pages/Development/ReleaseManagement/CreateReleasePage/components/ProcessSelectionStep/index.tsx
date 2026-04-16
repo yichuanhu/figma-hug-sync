@@ -18,6 +18,7 @@ import type { SelectedProcess } from '../../index';
 
 import './index.less';
 import { AlertTriangle, Inbox, X } from 'lucide-react';
+import { Tooltip } from '@douyinfe/semi-ui';
 
 const { Text } = Typography;
 
@@ -382,7 +383,9 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
                         <div className="process-item-content">
                           <Text className="process-name" ellipsis={{ showTooltip: true }}>{process.name}</Text>
                           {hasMissingDeps && (
-                            <AlertTriangle size={14} strokeWidth={2} style={{ color: 'var(--semi-color-warning)', flexShrink: 0 }} />
+                            <Tooltip content={t('release.create.hasMissingDependency')} position="top">
+                              <AlertTriangle size={14} strokeWidth={2} style={{ color: 'var(--semi-color-warning)', flexShrink: 0 }} />
+                            </Tooltip>
                           )}
                           <Tag size="small" color={tagColor}>
                             {tagText}
