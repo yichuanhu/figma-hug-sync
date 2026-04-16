@@ -68,32 +68,32 @@ const hasNewVersionToPublish = (process: ProcessWithVersions): boolean => {
 // Mock Datageneration器
 const generateMockProcess = (index: number): ProcessWithVersions => {
   const names = [
+    'Auto Order Processing',
+    'Expense Reimbursement Approval',
+    'Employee Onboarding Flow',
+    'Purchase Request Flow',
+    'Contract Approval Flow',
+    'Invoice Recognition Processing',
     'Customer Info Sync',
-    'Order Processing',
-    'Inventory Check',
-    'Report Generator',
-    'Data Import',
-    'Email Sending',
-    'File Processing',
-    'Data Cleansing',
-    'Task Scheduling',
-    'Log Analysis',
+    'Inventory Check Flow',
+    'Sales Data Summary',
+    'Auto Report Generation',
     'This is a super long automation process name to test UI truncation when the process name is extremely long and may break the layout',
     'Enterprise Cross-Department Multi-System Data Sync and Cleansing Process with Exception Handling and Retry Mechanism',
     'Global Multi-Language Order Processing and Logistics Scheduling Automation Process',
   ];
 
   const descriptions = [
-    'Detailed description of Customer Info Sync process',
-    'Detailed description of Order Processing process',
-    'Detailed description of Inventory Check process',
-    'Detailed description of Report Generator process',
-    'Detailed description of Data Import process',
-    'Detailed description of Email Sending process',
-    'Detailed description of File Processing process',
-    'Detailed description of Data Cleansing process',
-    'Detailed description of Task Scheduling process',
-    'Detailed description of Log Analysis process',
+    'A comprehensive automation process for order processing including data collection and analysis',
+    'Automated expense reimbursement approval including invoice recognition and amount verification',
+    'Automated employee onboarding process including account creation and permission assignment',
+    'Automated purchase request processing including supplier comparison and approval flow',
+    'Automated contract approval including template matching and clause review',
+    'Auto-recognize and process various invoices including OCR recognition and info extraction',
+    'Auto-sync customer info across business systems to maintain data consistency',
+    'Automated inventory check with variance reporting and replenishment triggering',
+    'Auto-aggregate sales data from all channels and generate analysis reports',
+    'Scheduled auto-generation of business reports with multi-format export',
     'This is a very long process description text to test UI truncation and line-wrapping logic when description exceeds normal length. This process covers data collection, cleansing, format conversion, target system writing, exception logging, retry mechanism, and email notification.',
     'Enterprise cross-department multi-system data sync and cleansing process description, covering design philosophy, technical architecture, performance metrics, security strategy, compliance requirements, and operations specifications.',
     'Global multi-language order processing and logistics scheduling automation process full description.',
@@ -104,21 +104,28 @@ const generateMockProcess = (index: number): ProcessWithVersions => {
 
   // Mock dependencies - some processes have MISSING dependencies
   const mockDeps: LYProcessDependency[] = [];
-  if (index % 4 === 1 || index % 4 === 2) {
-    // These processes have MISSING deps
-      mockDeps.push(
-        { resource_id: `param-auto-${index}-1`, resource_name: 'ERP API Address', resource_type: 'PARAMETER', source: 'AUTO_DETECTED', param_type: 'TEXT', resource_value: 'https://erp.example.com/api/v2', status: 'ACTIVE' },
-        { resource_id: `param-missing-${index}-1`, resource_name: 'Payment_Gateway_Config', resource_type: 'PARAMETER', source: 'AUTO_DETECTED', param_type: 'TEXT', status: 'MISSING' },
-      );
-    if (index % 4 === 2) {
-      mockDeps.push(
-          { resource_id: `cred-missing-${index}-1`, resource_name: 'AWS_S3_Access_Key', resource_type: 'CREDENTIAL', source: 'AUTO_DETECTED', status: 'MISSING' },
-      );
-    }
-  } else {
+  // ACTIVE dependencies - reference real resource page IDs
+  const paramNames = ['Heartbeat Interval', 'Task Timeout', 'Enable Debug Mode', 'Max Concurrency', 'Default Language', 'Retry Count', 'Log Level', 'Cache Duration'];
+  const credNames = ['Enterprise Email Credential', 'Database Connection Credential', 'Third-party API Credential', 'SSH Server Credential', 'Git Repository Credential', 'ERP System Credential', 'CRM System Credential', 'OA System Credential'];
+  const queueNames = ['Order Processing Queue', 'Email Sending Queue', 'Data Sync Queue', 'Report Generation Queue', 'Notification Push Queue', 'File Processing Queue', 'Task Scheduling Queue', 'Log Collection Queue'];
+  const fileNames = ['System Configuration', 'Data Template', 'Input Mapping Config', 'Process Asset Package', 'Report Template', 'Script Helper Tool', 'Encrypted Credentials', 'Workflow Configuration'];
+
+  mockDeps.push(
+    { resource_id: `param-${(index % 8) + 1}`, resource_name: paramNames[index % 8], resource_type: 'PARAMETER', source: 'AUTO_DETECTED', param_type: 'TEXT', resource_value: 'https://erp.example.com/api/v2', status: 'ACTIVE' },
+    { resource_id: `cred-${(index % 8) + 1}`, resource_name: credNames[index % 8], resource_type: 'CREDENTIAL', source: 'AUTO_DETECTED', resource_value: '••••••••', status: 'ACTIVE' },
+    { resource_id: `queue-${(index % 8) + 1}`, resource_name: queueNames[index % 8], resource_type: 'QUEUE', source: 'AUTO_DETECTED', status: 'ACTIVE' },
+    { resource_id: `file-${(index % 8) + 1}`, resource_name: fileNames[index % 8], resource_type: 'FILE', source: 'AUTO_DETECTED', original_name: 'config.json', status: 'ACTIVE' },
+  );
+
+  // Some processes have MISSING deps
+  if (index % 3 === 0) {
     mockDeps.push(
-        { resource_id: `param-auto-${index}-1`, resource_name: 'ERP API Address', resource_type: 'PARAMETER', source: 'AUTO_DETECTED', param_type: 'TEXT', resource_value: 'https://erp.example.com/api/v2', status: 'ACTIVE' },
-        { resource_id: `cred-auto-${index}-1`, resource_name: 'SAP_ERP_Production_System_Service_Account_Credentials_With_Multi_Factor_Authentication_And_IP_Whitelisting', resource_type: 'CREDENTIAL', source: 'AUTO_DETECTED', resource_value: '••••••••', status: 'ACTIVE' },
+      { resource_id: `param-missing-${index}`, resource_name: 'Payment_Gateway_Config', resource_type: 'PARAMETER', source: 'AUTO_DETECTED', param_type: 'TEXT', status: 'MISSING' },
+    );
+  }
+  if (index % 4 === 0) {
+    mockDeps.push(
+      { resource_id: `cred-missing-${index}`, resource_name: 'AWS_S3_Access_Key', resource_type: 'CREDENTIAL', source: 'AUTO_DETECTED', status: 'MISSING' },
     );
   }
 
