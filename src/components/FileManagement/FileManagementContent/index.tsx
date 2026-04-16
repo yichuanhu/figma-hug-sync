@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Button,
@@ -202,6 +202,16 @@ const FileManagementContent = ({ context }: FileManagementContentProps) => {
   
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [detailInitialTab, setDetailInitialTab] = useState('basic');
+
+  // 处理从依赖页跳转来的 openCreate
+  const location = useLocation();
+  useEffect(() => {
+    const state = location.state as any;
+    if (state?.openCreate) {
+      setUploadModalVisible(true);
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
   const { openCollaborator, renderCollaboratorPanel } = useCollaboratorAction();
 
   // 加载数据

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Button,
@@ -188,8 +188,22 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
 
   // 模态框/抽屉状态
   const [createModalVisible, setCreateModalVisible] = useState(false);
+  const [createDefaultName, setCreateDefaultName] = useState<string | undefined>();
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
+
+  // 处理从依赖页跳转来的 openCreate
+  const location = useLocation();
+  useEffect(() => {
+    const state = location.state as any;
+    if (state?.openCreate) {
+      setCreateModalVisible(true);
+      if (state.defaultName) {
+        setCreateDefaultName(state.defaultName);
+      }
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
   const [linkPersonalModalVisible, setLinkPersonalModalVisible] = useState(false);
   const [linkingCredential, setLinkingCredential] = useState<LYCredentialResponse | null>(null);
   const [initialDetailTab, setInitialDetailTab] = useState<'basic' | 'usage'>('basic');
@@ -632,9 +646,11 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
       <CreateCredentialModal
         visible={createModalVisible}
         context={context}
-        onCancel={() => setCreateModalVisible(false)}
+        defaultName={createDefaultName}
+        onCancel={() => { setCreateModalVisible(false); setCreateDefaultName(undefined); }}
         onSuccess={() => {
           setCreateModalVisible(false);
+          setCreateDefaultName(undefined);
           loadData();
         }}
       />
