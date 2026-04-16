@@ -415,7 +415,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
                         type="primary"
                         icon={<ExternalLink size={14} strokeWidth={2} />}
                         onClick={() => {
-                          navigate(`/dev-center/automation-process?processId=${sp.process.id}&tab=dependencies`);
+                          navigate(`/process-development?processId=${sp.process.id}&tab=dependencies`);
                         }}
                       >
                         {t('release.create.goHandleDependency')}
