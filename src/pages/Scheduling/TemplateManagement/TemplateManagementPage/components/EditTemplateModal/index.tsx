@@ -19,6 +19,7 @@ import type {
 } from '@/api';
 import './index.less';
 import OwnerSelect from '@/components/OwnerSelect';
+import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import { HelpCircle } from 'lucide-react';
 
 const { Text } = Typography;
@@ -125,6 +126,7 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
   const [selectedProcess, setSelectedProcess] = useState<LYProcessActiveVersionResponse | null>(null);
   const [targetType, setTargetType] = useState<ExecutionTargetType | null>(null);
   const [ownerId, setOwnerId] = useState<string | undefined>(template?.owner_id || undefined);
+  const { canManage } = useCollaboratorPermission('TASK_TEMPLATE', template?.template_id);
 
   // Execution target选项
   const targetOptions = useMemo(() => {
@@ -379,7 +381,7 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
                   rows={3}
                 />
                 <Form.Slot label={t('common.owner')}>
-                  <OwnerSelect value={ownerId} onChange={setOwnerId} />
+                  <OwnerSelect value={ownerId} onChange={setOwnerId} disabled={!canManage} />
                 </Form.Slot>
               </div>
 

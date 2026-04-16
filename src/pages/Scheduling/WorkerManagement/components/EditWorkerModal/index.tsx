@@ -11,6 +11,7 @@ import {
 import type { LYWorkerResponse } from '@/api';
 import DepartmentSelect from '@/components/DepartmentSelect';
 import OwnerSelect from '@/components/OwnerSelect';
+import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import './index.less';
 
 interface EditWorkerModalProps {
@@ -30,6 +31,7 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
   const [configChanged, setConfigChanged] = useState(false);
   const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>(workerData?.owning_department_id || undefined);
   const [ownerId, setOwnerId] = useState<string | undefined>(workerData?.owner_id || undefined);
+  const { canManage } = useCollaboratorPermission('WORKER', workerData?.id);
 
   const originalConfig = useMemo(() => ({
     desktopType: workerData?.desktop_type || 'Console',
@@ -167,11 +169,12 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
               <DepartmentSelect
                 value={owningDepartmentId}
                 onChange={setOwningDepartmentId}
+                disabled={!canManage}
               />
             </Form.Slot>
 
             <Form.Slot label={t('common.owner')}>
-              <OwnerSelect value={ownerId} onChange={setOwnerId} />
+              <OwnerSelect value={ownerId} onChange={setOwnerId} disabled={!canManage} />
             </Form.Slot>
 
             <Form.TextArea

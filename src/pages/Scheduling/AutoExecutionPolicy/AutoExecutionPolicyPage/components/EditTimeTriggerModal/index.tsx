@@ -25,6 +25,7 @@ import type {
 import './index.less';
 import DepartmentSelect from '@/components/DepartmentSelect';
 import OwnerSelect from '@/components/OwnerSelect';
+import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 import { HelpCircle, Inbox } from 'lucide-react';
 
@@ -151,6 +152,7 @@ const mockCredentials = [
 const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTimeTriggerModalProps) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
+  const { canManage } = useCollaboratorPermission('TRIGGER', trigger?.trigger_id);
   const [currentStep, setCurrentStep] = useState(0);
   const [formApi, setFormApi] = useState<any>(null);
   const [initialized, setInitialized] = useState(false);
@@ -611,10 +613,10 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
         rows={3}
       />
       <Form.Slot label={t('common.owningDepartment')}>
-        <DepartmentSelect value={owningDepartmentId} onChange={setOwningDepartmentId} />
+        <DepartmentSelect value={owningDepartmentId} onChange={setOwningDepartmentId} disabled={!canManage} />
       </Form.Slot>
       <Form.Slot label={t('common.owner')}>
-        <OwnerSelect value={ownerId} onChange={setOwnerId} />
+        <OwnerSelect value={ownerId} onChange={setOwnerId} disabled={!canManage} />
       </Form.Slot>
     </div>
   );
