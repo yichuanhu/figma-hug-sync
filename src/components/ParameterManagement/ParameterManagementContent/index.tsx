@@ -106,40 +106,49 @@ const generateMockParameterList = (): LYParameterResponse[] => {
   return Array.from({ length: 15 }, (_, i) => generateMockParameter(i));
 };
 
+const getFilteredParameterList = (
+  params: GetParametersParams & {
+    typeFilter?: ParameterType | null;
+    publishedFilter?: boolean | null;
+    departmentFilter?: string[];
+  }
+): LYParameterResponse[] => {
+  let data = generateMockParameterList();
+
+  if (params.context === 'scheduling') {
+    data = data.filter((item) => item.is_published);
+  }
+
+  if (params.keyword) {
+    const keyword = params.keyword.toLowerCase();
+    data = data.filter((item) => item.parameter_name.toLowerCase().includes(keyword));
+  }
+
+  if (params.typeFilter) {
+    data = data.filter((item) => item.parameter_type === params.typeFilter);
+  }
+
+  if (params.publishedFilter !== null && params.publishedFilter !== undefined) {
+    data = data.filter((item) => item.is_published === params.publishedFilter);
+  }
+
+  if (params.departmentFilter && params.departmentFilter.length > 0) {
+    data = data.filter((item) => params.departmentFilter!.includes(item.owning_department_name || ''));
+  }
+
+  return data;
+};
+
 // 模拟API调用
 const fetchParameterList = async (
   params: GetParametersParams & { typeFilter?: ParameterType | null; publishedFilter?: boolean | null }
 ): Promise<LYParameterListResultResponse> => {
   await new Promise((resolve) => setTimeout(resolve, 500));
 
-  let data = generateMockParameterList();
-
-  // 调度中心只显示已发布的参数
-  if (params.context === 'scheduling') {
-    data = data.filter((item) => item.is_published);
-  }
-
-  // 关键词筛选
-  if (params.keyword) {
-    const keyword = params.keyword.toLowerCase();
-    data = data.filter((item) => item.parameter_name.toLowerCase().includes(keyword));
-  }
-
-  // 类型筛选
-  if (params.typeFilter) {
-    data = data.filter((item) => item.parameter_type === params.typeFilter);
-  }
-
-  // 发布状态筛选
-  if (params.publishedFilter !== null && params.publishedFilter !== undefined) {
-    data = data.filter((item) => item.is_published === params.publishedFilter);
-  }
-
-  // 部门筛选
-  if ((params as any).departmentFilter && (params as any).departmentFilter.length > 0) {
-    const deptNames: string[] = (params as any).departmentFilter;
-    data = data.filter((item) => deptNames.includes((item as any).owning_department_name));
-  }
+  const data = getFilteredParameterList({
+    ...params,
+    departmentFilter: (params as any).departmentFilter,
+  });
 
   const total = data.length;
   const offset = params.offset || 0;
@@ -279,32 +288,60 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
   // 处理URL参数 - 从依赖Tab跳转过来时自动打开详情抽屉
   useEffect(() => {
     const resourceId = searchParams.get('resourceId');
-    if (resourceId && listResponse?.data && !isInitialLoad) {
-      const target = listResponse.data.find((item) => item.parameter_id === resourceId);
-      if (target) {
-        setSelectedParameter(target);
-        setDetailInitialTab('basic');
-        setDetailDrawerVisible(true);
-        setSearchParams({}, { replace: true });
-      } else {
-        // 模拟通过ID获取详情
-        const fetchById = async () => {
-          try {
-            await new Promise((resolve) => setTimeout(resolve, 300));
-            const mock = generateMockParameter(0);
-            mock.parameter_id = resourceId;
-            setSelectedParameter(mock);
-            setDetailInitialTab('basic');
-            setDetailDrawerVisible(true);
-            setSearchParams({}, { replace: true });
-          } catch {
-            setSearchParams({}, { replace: true });
-          }
-        };
-        fetchById();
-      }
+    if (!resourceId || isInitialLoad) {
+      return;
     }
-  }, [searchParams, listResponse?.data, isInitialLoad, setSearchParams]);
+
+    const filteredData = getFilteredParameterList({
+      keyword: queryParams.keyword || undefined,
+      context,
+      offset: (queryParams.page - 1) * queryParams.pageSize,
+      size: queryParams.pageSize,
+      typeFilter: typeFilter.length > 0 ? typeFilter[0] : null,
+      publishedFilter: context === 'development' ? publishedFilter : null,
+      departmentFilter,
+    });
+    const targetIndex = filteredData.findIndex((item) => item.parameter_id === resourceId);
+
+    if (targetIndex === -1) {
+      setSearchParams({}, { replace: true });
+      return;
+    }
+
+    const targetPage = Math.floor(targetIndex / queryParams.pageSize) + 1;
+    if (queryParams.page !== targetPage) {
+      setQueryParams((prev) => ({ ...prev, page: targetPage }));
+      return;
+    }
+
+    const target = filteredData[targetIndex];
+    setSelectedParameter(target);
+    setDetailInitialTab('basic');
+    setDetailDrawerVisible(true);
+    setSearchParams({}, { replace: true });
+  }, [
+    context,
+    departmentFilter,
+    isInitialLoad,
+    publishedFilter,
+    queryParams.keyword,
+    queryParams.page,
+    queryParams.pageSize,
+    searchParams,
+    setSearchParams,
+    typeFilter,
+  ]);
+
+  useEffect(() => {
+    if (!detailDrawerVisible || !selectedParameter?.parameter_id) {
+      return;
+    }
+
+    requestAnimationFrame(() => {
+      const row = document.getElementById(`parameter-row-${selectedParameter.parameter_id}`);
+      row?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+  }, [detailDrawerVisible, selectedParameter?.parameter_id, listResponse?.data]);
   // 搜索防抖
   const debouncedSearch = useMemo(
     () =>
