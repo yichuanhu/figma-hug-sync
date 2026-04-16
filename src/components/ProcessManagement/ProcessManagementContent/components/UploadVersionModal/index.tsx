@@ -89,12 +89,12 @@ const UploadVersionModal = ({ visible, onCancel, processData, onSuccess, onGoToD
 
       Toast.success(t('development.processDevelopment.detail.uploadVersion.success'));
 
-      // 统计失效依赖数量并用 Notification 提示
+      // 统计失效依赖数量并用 Modal 提示
       const missingDeps = mockNewDeps.filter((d) => d.status === 'MISSING');
       if (missingDeps.length > 0) {
         const missingNames = missingDeps.map((d) => d.resource_name);
         const goHandler = goToDepsRef;
-        Notification.warning({
+        Modal.warning({
           title: t('processDependency.uploadMissingWarningTitle'),
           content: (
             <div className="upload-missing-notification">
@@ -106,25 +106,13 @@ const UploadVersionModal = ({ visible, onCancel, processData, onSuccess, onGoToD
                   <span key={i} className="upload-missing-notification-name">• {name}</span>
                 ))}
               </div>
-              {goHandler.current && (
-                <Button
-                  size="small"
-                  theme="light"
-                  type="warning"
-                  style={{ marginTop: 8 }}
-                  onClick={() => {
-                    goHandler.current?.();
-                    Notification.destroyAll();
-                  }}
-                >
-                  {t('processDependency.goHandle')}
-                </Button>
-              )}
             </div>
           ),
-          duration: 0, // 不自动关闭，需要用户手动关闭
-          position: 'top',
-          theme: 'light',
+          okText: t('processDependency.goHandle'),
+          cancelText: t('common.close'),
+          onOk: () => {
+            goHandler.current?.();
+          },
         });
       } else if (mockNewDeps.length > 0) {
         Toast.info(t('processDependency.autoDetectedNew', { count: mockNewDeps.length }));
