@@ -104,6 +104,19 @@ const CreateReleasePage: React.FC = () => {
     }
   }, [currentStep, selectedProcesses]);
 
+  // 检查是否存在失效依赖
+  const hasMissingResources = useMemo(() => {
+    return resources.some((r) => r.status === 'MISSING');
+  }, [resources]);
+
+  // 获取包含失效依赖的流程列表
+  const processesWithMissingDeps = useMemo(() => {
+    return selectedProcesses.filter((sp) => {
+      const deps = sp.process.dependencies || [];
+      return deps.some((dep) => dep.status === 'MISSING');
+    });
+  }, [selectedProcesses]);
+
   // processingStep变化
   const handleNext = () => {
     if (currentStep === 0) {
