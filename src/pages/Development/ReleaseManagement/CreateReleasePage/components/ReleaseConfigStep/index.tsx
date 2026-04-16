@@ -24,7 +24,7 @@ import type { SelectedProcess, ResourceConfig } from '../../index';
 
 
 import './index.less';
-import { AlertTriangle, Info, Trash2, X } from 'lucide-react';
+import { AlertTriangle, Trash2, X } from 'lucide-react';
 
 const { Title, Text } = Typography;
 
@@ -427,12 +427,6 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
           />
         )}
 
-        <Banner
-          type="info"
-          icon={<Info size={16} strokeWidth={2} />}
-          description={t('release.create.dependencyHint')}
-          className="release-config-step-banner"
-        />
 
         <div className="release-config-step-resources">
           {renderResourceGroup('PARAMETER', groupedResources.PARAMETER)}
