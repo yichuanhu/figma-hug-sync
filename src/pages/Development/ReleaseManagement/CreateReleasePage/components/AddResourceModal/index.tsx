@@ -202,9 +202,9 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
   };
 
   const rowSelection = {
-    selectedRowKeys,
+    selectedRowKeys: selectedRowKeysMap[activeTab],
     onChange: (keys: (string | number)[]) => {
-      setSelectedRowKeys(keys as string[]);
+      setSelectedRowKeysMap((prev) => ({ ...prev, [activeTab]: keys as string[] }));
     },
   };
 
@@ -216,7 +216,7 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
       onOk={handleConfirm}
       okText={t('common.confirm')}
       cancelText={t('common.cancel')}
-      okButtonProps={{ disabled: selectedRowKeys.length === 0 }}
+      okButtonProps={{ disabled: allSelectedKeys.length === 0 }}
       width={700}
       className="add-resource-modal"
     >
@@ -255,10 +255,10 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
           ))}
         </Tabs>
 
-        {selectedRowKeys.length > 0 && (
+        {allSelectedKeys.length > 0 && (
           <div className="add-resource-modal-selected-count">
             <Text type="tertiary">
-              {t('release.create.addResource.selectedCount', { count: selectedRowKeys.length })}
+              {t('release.create.addResource.selectedCount', { count: allSelectedKeys.length })}
             </Text>
           </div>
         )}
