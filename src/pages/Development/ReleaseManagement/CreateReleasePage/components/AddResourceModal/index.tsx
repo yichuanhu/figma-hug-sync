@@ -97,12 +97,15 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
 
   const handleTabChange = (key: string) => {
     setActiveTab(key as ResourceType);
-    setSelectedRowKeys([]);
   };
+
+  const allSelectedKeys = useMemo(() => {
+    return Object.values(selectedRowKeysMap).flat();
+  }, [selectedRowKeysMap]);
 
   const handleConfirm = () => {
     const selectedResources = mockAvailableResources
-      .filter((r) => selectedRowKeys.includes(r.id))
+      .filter((r) => allSelectedKeys.includes(r.id))
       .map((r): ResourceConfig => ({
         resource_id: r.id,
         resource_name: r.name,
@@ -121,12 +124,11 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
   };
 
   const handleClose = () => {
-    setSelectedRowKeys([]);
-    setSearchTexts({
-      PARAMETER: '',
-      CREDENTIAL: '',
-      QUEUE: '',
-        FILE: '',
+    setSelectedRowKeysMap({
+      PARAMETER: [],
+      CREDENTIAL: [],
+      QUEUE: [],
+      FILE: [],
     });
     setActiveTab('PARAMETER');
     onClose();
