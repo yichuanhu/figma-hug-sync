@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Tooltip } from '@douyinfe/semi-ui';
 import { useTranslation } from 'react-i18next';
 import {
   Typography,
@@ -45,6 +46,7 @@ export interface ResourceConfig {
   used_by_processes: string[];
   original_name?: string;
   param_type?: 'TEXT' | 'BOOLEAN' | 'NUMBER';
+  status?: 'ACTIVE' | 'MISSING';
 }
 
 const CreateReleasePage: React.FC = () => {
@@ -93,6 +95,7 @@ const CreateReleasePage: React.FC = () => {
             used_by_processes: [sp.process.name],
             param_type: dep.param_type || 'TEXT',
             original_name: dep.original_name,
+            status: dep.status || 'ACTIVE',
           });
         });
       });
