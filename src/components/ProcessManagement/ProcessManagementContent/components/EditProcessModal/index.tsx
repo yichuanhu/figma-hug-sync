@@ -4,6 +4,7 @@ import { Modal, Form, Toast, Button } from '@douyinfe/semi-ui';
 import type { LYUpdateProcessRequest, LYProcessResponse } from '@/api';
 import DepartmentSelect from '@/components/DepartmentSelect';
 import OwnerSelect from '@/components/OwnerSelect';
+import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import './index.less';
 
 interface EditProcessModalProps {
@@ -18,6 +19,7 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
   const [loading, setLoading] = useState(false);
   const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>(processData?.owning_department_id || undefined);
   const [ownerId, setOwnerId] = useState<string | undefined>(processData?.owner_id || undefined);
+  const { canManage } = useCollaboratorPermission('PROCESS', processData?.id);
 
   const existingProcessNames = ['订单自动处理流程', '财务报销审批流程', '人事入职流程'];
 
@@ -131,11 +133,12 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
           <DepartmentSelect
             value={owningDepartmentId}
             onChange={setOwningDepartmentId}
+            disabled={!canManage}
           />
         </Form.Slot>
 
         <Form.Slot label={t('common.owner')}>
-          <OwnerSelect value={ownerId} onChange={setOwnerId} />
+          <OwnerSelect value={ownerId} onChange={setOwnerId} disabled={!canManage} />
         </Form.Slot>
 
         <div className="edit-process-modal-footer">
