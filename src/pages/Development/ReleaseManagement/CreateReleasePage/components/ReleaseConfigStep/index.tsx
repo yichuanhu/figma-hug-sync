@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -53,7 +53,40 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  
+  const missingModalShownRef = useRef(false);
+
+  // 缺失依赖弹窗提示
+  useEffect(() => {
+    if (processesWithMissingDeps.length > 0 && !missingModalShownRef.current) {
+      missingModalShownRef.current = true;
+      Modal.warning({
+        title: t('release.create.missingDependencyBanner'),
+        icon: <AlertTriangle size={24} strokeWidth={2} style={{ color: 'var(--semi-color-warning)' }} />,
+        content: (
+          <div className="release-config-step-missing-modal-content">
+            <div className="release-config-step-missing-modal-list">
+              {processesWithMissingDeps.map((sp) => (
+                <div key={sp.process.id} className="release-config-step-missing-modal-item">
+                  <span>•</span>
+                  <Text ellipsis={{ showTooltip: true }} style={{ maxWidth: 300 }}>
+                    {sp.process.name}
+                  </Text>
+                </div>
+              ))}
+            </div>
+          </div>
+        ),
+        okText: t('processDependency.goHandle'),
+        cancelText: t('common.close'),
+        onOk: () => {
+          const first = processesWithMissingDeps[0];
+          if (first) {
+            navigate(`/process-development?processId=${first.process.id}&tab=dependencies`);
+          }
+        },
+      });
+    }
+  }, [processesWithMissingDeps]);
 
   // ReleaseType选项
   const releaseTypeOptions = [
