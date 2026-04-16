@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import type { LYWorkerGroupResponse, LYUpdateWorkerGroupRequest } from '@/api';
 import DepartmentSelect from '@/components/DepartmentSelect';
 import OwnerSelect from '@/components/OwnerSelect';
+import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import './index.less';
 
 interface EditWorkerGroupModalProps {
@@ -24,6 +25,7 @@ const EditWorkerGroupModal: React.FC<EditWorkerGroupModalProps> = ({
   const [formApi, setFormApi] = useState<any>(null);
   const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>(groupData?.owning_department_id || undefined);
   const [ownerId, setOwnerId] = useState<string | undefined>(groupData?.owner_id || undefined);
+  const { canManage } = useCollaboratorPermission('WORKER_GROUP', groupData?.id);
 
   useEffect(() => {
     if (visible && groupData && formApi) {
@@ -108,11 +110,12 @@ const EditWorkerGroupModal: React.FC<EditWorkerGroupModalProps> = ({
             <DepartmentSelect
               value={owningDepartmentId}
               onChange={setOwningDepartmentId}
+              disabled={!canManage}
             />
           </Form.Slot>
 
           <Form.Slot label={t('common.owner')}>
-            <OwnerSelect value={ownerId} onChange={setOwnerId} />
+            <OwnerSelect value={ownerId} onChange={setOwnerId} disabled={!canManage} />
           </Form.Slot>
           
           <Form.TextArea
