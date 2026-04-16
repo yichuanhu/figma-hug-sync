@@ -24,7 +24,7 @@ import type { SelectedProcess, ResourceConfig } from '../../index';
 
 
 import './index.less';
-import { AlertTriangle, Trash2, X } from 'lucide-react';
+import { AlertTriangle, ExternalLink, Trash2, X } from 'lucide-react';
 
 const { Title, Text } = Typography;
 
@@ -413,6 +413,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
                         size="small"
                         theme="borderless"
                         type="primary"
+                        icon={<ExternalLink size={14} strokeWidth={2} />}
                         onClick={() => {
                           navigate(`/process-development?processId=${sp.process.id}&tab=dependencies`);
                         }}

@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import {
   Button,
   Input,
@@ -174,6 +174,7 @@ export interface ParameterManagementContentProps {
 const ParameterManagementContent = ({ context }: ParameterManagementContentProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   // 搜索框输入值（即时显示）
   const [searchValue, setSearchValue] = useState('');
@@ -273,6 +274,35 @@ const ParameterManagementContent = ({ context }: ParameterManagementContentProps
     loadData();
   }, [loadData]);
 
+  // 处理URL参数 - 从依赖Tab跳转过来时自动打开详情抽屉
+  useEffect(() => {
+    const resourceId = searchParams.get('resourceId');
+    if (resourceId && listResponse?.data && !isInitialLoad) {
+      const target = listResponse.data.find((item) => item.parameter_id === resourceId);
+      if (target) {
+        setSelectedParameter(target);
+        setDetailInitialTab('basic');
+        setDetailDrawerVisible(true);
+        setSearchParams({}, { replace: true });
+      } else {
+        // 模拟通过ID获取详情
+        const fetchById = async () => {
+          try {
+            await new Promise((resolve) => setTimeout(resolve, 300));
+            const mock = generateMockParameter(0);
+            mock.parameter_id = resourceId;
+            setSelectedParameter(mock);
+            setDetailInitialTab('basic');
+            setDetailDrawerVisible(true);
+            setSearchParams({}, { replace: true });
+          } catch {
+            setSearchParams({}, { replace: true });
+          }
+        };
+        fetchById();
+      }
+    }
+  }, [searchParams, listResponse?.data, isInitialLoad, setSearchParams]);
   // 搜索防抖
   const debouncedSearch = useMemo(
     () =>

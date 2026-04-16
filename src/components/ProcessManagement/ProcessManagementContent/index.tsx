@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { debounce } from 'lodash';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Breadcrumb,
@@ -242,6 +242,7 @@ interface ProcessManagementContentProps {
 
 const ProcessManagementContent = ({ context }: ProcessManagementContentProps) => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { t } = useTranslation();
 
   // 根据context决定是否只显示已发布的流程
@@ -322,6 +323,25 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
   useEffect(() => {
     loadData();
   }, [loadData]);
+
+  // 处理URL参数 - 从发布页跳转过来时自动打开流程详情抽屉的依赖Tab
+  useEffect(() => {
+    const processId = searchParams.get('processId');
+    const tab = searchParams.get('tab');
+    if (processId && !isInitialLoad) {
+      const targetProcess = mockProcessData.find((p) => p.id === processId);
+      if (targetProcess) {
+        setSelectedProcess(targetProcess);
+        if (tab) {
+          setDetailInitialTab(tab);
+        }
+        setDetailDrawerVisible(true);
+        setSearchParams({}, { replace: true });
+      } else {
+        setSearchParams({}, { replace: true });
+      }
+    }
+  }, [searchParams, isInitialLoad, setSearchParams]);
 
   // 搜索防抖
   const debouncedSearch = useMemo(
