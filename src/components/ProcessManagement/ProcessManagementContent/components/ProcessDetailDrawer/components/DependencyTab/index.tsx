@@ -168,9 +168,9 @@ const DependencyTab = ({ dependencies, onDependenciesChange, readOnly = false, c
                 {t('processDependency.goCreate')}
               </Button>
             </div>
-          ) : dep.resource_type === 'CREDENTIAL' ? (
+          ) : dep.resource_type === 'CREDENTIAL' && dep.resource_value ? (
             <Text type="tertiary" ellipsis={{ showTooltip: true }}>
-              {context === 'development' ? t('processDependency.devValue') : t('processDependency.prodValue')}：********
+              {t('processDependency.credentialUsername')}：{dep.resource_value}
             </Text>
           ) : dep.resource_type === 'PARAMETER' && dep.resource_value ? (
             <div className="dependency-tab-value-field">
