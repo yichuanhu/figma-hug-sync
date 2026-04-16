@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Typography,
@@ -20,10 +20,10 @@ import {
 } from '@douyinfe/semi-ui';
 import type { ReleaseType, ResourceType } from '@/api';
 import type { SelectedProcess, ResourceConfig } from '../../index';
-import AddResourceModal from '../AddResourceModal';
+
 
 import './index.less';
-import { Info, Plus, Trash2, X } from 'lucide-react';
+import { Info, Trash2, X } from 'lucide-react';
 
 const { Title, Text } = Typography;
 
@@ -49,7 +49,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
   onResourcesChange,
 }) => {
   const { t } = useTranslation();
-  const [addResourceModalVisible, setAddResourceModalVisible] = useState(false);
+  
 
   // ReleaseType选项
   const releaseTypeOptions = [
@@ -390,16 +390,6 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
             <Tag size="small">{totalResourceCount}</Tag>
           </Space>
         }
-        headerExtraContent={
-          <Button
-            icon={<Plus size={16} strokeWidth={2} />}
-            theme="light"
-            size="small"
-            onClick={() => setAddResourceModalVisible(true)}
-          >
-            {t('release.create.addResource.button')}
-          </Button>
-        }
       >
         <Banner
           type="info"
@@ -422,13 +412,6 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
         </div>
       </Card>
 
-      {/* Resource */}
-      <AddResourceModal
-        visible={addResourceModalVisible}
-        onClose={() => setAddResourceModalVisible(false)}
-        onConfirm={handleAddResources}
-        existingResourceIds={existingResourceIds}
-      />
     </div>
   );
 };
