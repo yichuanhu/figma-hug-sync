@@ -101,7 +101,7 @@ const DependencyTab = ({ dependencies, onDependenciesChange, readOnly = false, c
       ? '/dev-center/business-assets'
       : '/scheduling-center/business-assets';
     const route = RESOURCE_TYPE_ROUTE_MAP[dep.resource_type];
-    navigate(`${basePath}/${route}`);
+    navigate(`${basePath}/${route}`, { state: { openCreate: true, defaultName: dep.resource_name } });
   };
 
   const existingIds = useMemo(() => dependencies.map((d) => d.resource_id), [dependencies]);
