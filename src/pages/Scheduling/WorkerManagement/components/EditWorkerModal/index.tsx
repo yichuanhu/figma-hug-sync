@@ -11,6 +11,7 @@ import {
 import type { LYWorkerResponse } from '@/api';
 import DepartmentSelect from '@/components/DepartmentSelect';
 import OwnerSelect from '@/components/OwnerSelect';
+import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import './index.less';
 
 interface EditWorkerModalProps {

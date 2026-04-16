@@ -19,6 +19,7 @@ import type {
 } from '@/api';
 import './index.less';
 import OwnerSelect from '@/components/OwnerSelect';
+import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import { HelpCircle } from 'lucide-react';
 
 const { Text } = Typography;

@@ -25,6 +25,7 @@ import type {
 import './index.less';
 import DepartmentSelect from '@/components/DepartmentSelect';
 import OwnerSelect from '@/components/OwnerSelect';
+import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 const { Text } = Typography;
 
