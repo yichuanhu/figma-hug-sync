@@ -47,6 +47,8 @@ const generateUUID = (): string => {
   });
 };
 
+const mockProcessIds = Array.from({ length: 46 }, (_, index) => `process-${index + 1}`);
+
 // ============= Mock数据生成 - 基于API类型 =============
 
 // 生成符合LYProcessResponse格式的Mock数据
@@ -116,7 +118,7 @@ const generateMockLYProcessResponse = (index: number): LYProcessResponse => {
   ];
 
   return {
-    id: generateUUID(),
+    id: mockProcessIds[index] || generateUUID(),
     name: processNames[index % processNames.length],
     description: descriptions[index % descriptions.length],
     language: languages[index % languages.length] || null,

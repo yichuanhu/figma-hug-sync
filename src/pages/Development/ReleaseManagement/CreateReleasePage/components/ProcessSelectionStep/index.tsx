@@ -106,19 +106,19 @@ const generateMockProcess = (index: number): ProcessWithVersions => {
   const mockDeps: LYProcessDependency[] = [];
   if (index % 4 === 1 || index % 4 === 2) {
     // These processes have MISSING deps
-    mockDeps.push(
-      { resource_id: `param-pub-${index}-1`, resource_name: 'API_Endpoint', resource_type: 'PARAMETER', source: 'AUTO_DETECTED', param_type: 'TEXT', resource_value: 'https://api.example.com', status: 'ACTIVE' },
-      { resource_id: `param-pub-missing-${index}-1`, resource_name: 'Payment_Gateway_Config', resource_type: 'PARAMETER', source: 'AUTO_DETECTED', param_type: 'TEXT', status: 'MISSING' },
-    );
+      mockDeps.push(
+        { resource_id: `param-auto-${index}-1`, resource_name: 'ERP API Address', resource_type: 'PARAMETER', source: 'AUTO_DETECTED', param_type: 'TEXT', resource_value: 'https://erp.example.com/api/v2', status: 'ACTIVE' },
+        { resource_id: `param-missing-${index}-1`, resource_name: 'Payment_Gateway_Config', resource_type: 'PARAMETER', source: 'AUTO_DETECTED', param_type: 'TEXT', status: 'MISSING' },
+      );
     if (index % 4 === 2) {
       mockDeps.push(
-        { resource_id: `cred-pub-missing-${index}-1`, resource_name: 'AWS_S3_Access_Key', resource_type: 'CREDENTIAL', source: 'AUTO_DETECTED', status: 'MISSING' },
+          { resource_id: `cred-missing-${index}-1`, resource_name: 'AWS_S3_Access_Key', resource_type: 'CREDENTIAL', source: 'AUTO_DETECTED', status: 'MISSING' },
       );
     }
   } else {
     mockDeps.push(
-      { resource_id: `param-pub-${index}-1`, resource_name: 'API_Endpoint', resource_type: 'PARAMETER', source: 'AUTO_DETECTED', param_type: 'TEXT', resource_value: 'https://api.example.com', status: 'ACTIVE' },
-      { resource_id: `cred-pub-${index}-1`, resource_name: 'DB_Credential', resource_type: 'CREDENTIAL', source: 'AUTO_DETECTED', resource_value: '••••••••', status: 'ACTIVE' },
+        { resource_id: `param-auto-${index}-1`, resource_name: 'ERP API Address', resource_type: 'PARAMETER', source: 'AUTO_DETECTED', param_type: 'TEXT', resource_value: 'https://erp.example.com/api/v2', status: 'ACTIVE' },
+        { resource_id: `cred-auto-${index}-1`, resource_name: 'SAP_ERP_Production_System_Service_Account_Credentials_With_Multi_Factor_Authentication_And_IP_Whitelisting', resource_type: 'CREDENTIAL', source: 'AUTO_DETECTED', resource_value: '••••••••', status: 'ACTIVE' },
     );
   }
 

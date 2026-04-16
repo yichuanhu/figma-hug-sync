@@ -47,6 +47,8 @@ const generateUUID = (): string => {
   });
 };
 
+const mockParameterIds = Array.from({ length: 15 }, (_, index) => `param-${index + 1}`);
+
 const generateMockParameter = (index: number): LYParameterResponse => {
   const types: ParameterType[] = [1, 2, 3];
   const type = types[index % 3];
@@ -79,7 +81,7 @@ const generateMockParameter = (index: number): LYParameterResponse => {
   const deptIds = ['dept-finance', 'dept-rd', 'dept-enterprise', 'dept-hr'];
 
   return {
-    parameter_id: generateUUID(),
+    parameter_id: mockParameterIds[index] || generateUUID(),
     parameter_name: names[index % names.length],
     parameter_type: type,
     dev_value: getValueByType(type, true),
