@@ -3223,6 +3223,8 @@
     "missingTag": "Invalid",
     "missingHint": "The corresponding resource has been deleted, please go to Business Assets to recreate it",
     "goCreate": "Go Create",
-    "uploadMissingWarning": "{{count}} dependency resources are invalid, please handle them in the Dependencies tab"
+    "goHandle": "Go Handle",
+    "uploadMissingWarningTitle": "Dependency Resource Alert",
+    "uploadMissingWarning": "{{count}} dependency resources are invalid, please handle:"
   }
 }

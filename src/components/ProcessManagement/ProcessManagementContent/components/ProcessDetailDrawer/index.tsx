@@ -609,6 +609,7 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
             onDependenciesChange(processData.id, merged);
           }
         }}
+        onGoToDependencies={() => setActiveTab('dependencies')}
       />
     </DetailDrawerWrapper>
   );

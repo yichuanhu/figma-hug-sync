@@ -2589,6 +2589,8 @@
     "missingTag": "已失效",
     "missingHint": "对应资源已被删除，请前往业务资产重新创建",
     "goCreate": "前往创建",
-    "uploadMissingWarning": "发现 {{count}} 项依赖资源已失效，请在资源依赖页签中处理"
+    "goHandle": "去处理",
+    "uploadMissingWarningTitle": "依赖资源失效提醒",
+    "uploadMissingWarning": "发现 {{count}} 项依赖资源已失效，请前往处理："
   }
 }
