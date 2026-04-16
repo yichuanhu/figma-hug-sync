@@ -324,6 +324,25 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
     loadData();
   }, [loadData]);
 
+  // 处理URL参数 - 从发布页跳转过来时自动打开流程详情抽屉的依赖Tab
+  useEffect(() => {
+    const processId = searchParams.get('processId');
+    const tab = searchParams.get('tab');
+    if (processId && !isInitialLoad) {
+      const targetProcess = mockProcessData.find((p) => p.id === processId);
+      if (targetProcess) {
+        setSelectedProcess(targetProcess);
+        if (tab) {
+          setDetailInitialTab(tab);
+        }
+        setDetailDrawerVisible(true);
+        setSearchParams({}, { replace: true });
+      } else {
+        setSearchParams({}, { replace: true });
+      }
+    }
+  }, [searchParams, isInitialLoad, setSearchParams]);
+
   // 搜索防抖
   const debouncedSearch = useMemo(
     () =>
