@@ -99,21 +99,28 @@ const generateMockLYProcessResponse = (index: number): LYProcessResponse => {
 
   // 生成 Mock 依赖数据
   const mockDependencies: LYProcessDependency[] = [
-    { resource_id: `param-auto-${index}-1`, resource_name: 'ERP API Address', resource_type: 'PARAMETER', source: 'AUTO_DETECTED', param_type: 'TEXT', resource_value: 'https://erp.example.com/api/v2', status: 'ACTIVE' },
-    { resource_id: `param-auto-${index}-2`, resource_name: 'Global_System_Timeout_Configuration_For_All_Enterprise_Services_And_Microservices_With_Circuit_Breaker_V2', resource_type: 'PARAMETER', source: 'AUTO_DETECTED', param_type: 'TEXT', resource_value: '{"timeout_ms":30000,"retry_enabled":true,"retry_count":3,"retry_delay_ms":1000,"circuit_breaker":{"enabled":true,"threshold":5,"reset_timeout_ms":60000},"fallback":{"enabled":true,"default_value":"N/A"},"monitoring":{"log_level":"INFO","alert_threshold_ms":25000}}', status: 'ACTIVE' },
-    { resource_id: `cred-auto-${index}-1`, resource_name: 'SAP_ERP_Production_System_Service_Account_Credentials_With_Multi_Factor_Authentication_And_IP_Whitelisting', resource_type: 'CREDENTIAL', source: 'AUTO_DETECTED', resource_value: '••••••••', status: 'ACTIVE' },
-    { resource_id: `queue-auto-${index}-1`, resource_name: 'High_Priority_Order_Processing_Queue_For_Enterprise_Customers_Region_APAC_With_Dead_Letter_Retry_Policy', resource_type: 'QUEUE' as const, source: 'AUTO_DETECTED' as const, status: 'ACTIVE' as const },
-    { resource_id: `file-auto-${index}-1`, resource_name: 'Enterprise_Order_Invoice_Template_With_MultiLanguage_Support_And_Regional_Tax_Compliance_2024_v3.xlsx', resource_type: 'FILE' as const, source: 'AUTO_DETECTED' as const, original_name: 'Enterprise_Order_Invoice_Template_With_MultiLanguage_Support_And_Regional_Tax_Compliance_2024_v3.xlsx', status: 'ACTIVE' as const },
-    // Mock MISSING dependencies
-    { resource_id: `param-missing-${index}-1`, resource_name: 'Payment_Gateway_Config', resource_type: 'PARAMETER' as const, source: 'AUTO_DETECTED' as const, param_type: 'TEXT' as const, status: 'MISSING' as const },
-    { resource_id: `cred-missing-${index}-1`, resource_name: 'AWS_S3_Access_Key', resource_type: 'CREDENTIAL' as const, source: 'AUTO_DETECTED' as const, status: 'MISSING' as const },
-    { resource_id: `queue-missing-${index}-1`, resource_name: 'Email_Notification_Queue', resource_type: 'QUEUE' as const, source: 'AUTO_DETECTED' as const, status: 'MISSING' as const },
+    // ACTIVE dependencies - reference real resource page IDs and names
+    { resource_id: `param-${(index % 8) + 1}`, resource_name: ['Heartbeat Interval', 'Task Timeout', 'Enable Debug Mode', 'Max Concurrency', 'Default Language', 'Retry Count', 'Log Level', 'Cache Duration'][index % 8], resource_type: 'PARAMETER', source: 'AUTO_DETECTED', param_type: 'TEXT', resource_value: 'https://erp.example.com/api/v2', status: 'ACTIVE' },
+    { resource_id: `param-${((index + 3) % 8) + 1}`, resource_name: ['Heartbeat Interval', 'Task Timeout', 'Enable Debug Mode', 'Max Concurrency', 'Default Language', 'Retry Count', 'Log Level', 'Cache Duration'][(index + 3) % 8], resource_type: 'PARAMETER', source: 'AUTO_DETECTED', param_type: 'TEXT', resource_value: '{"timeout_ms":30000,"retry_enabled":true}', status: 'ACTIVE' },
+    { resource_id: `cred-${(index % 8) + 1}`, resource_name: ['Enterprise Email Credential', 'Database Connection Credential', 'Third-party API Credential', 'SSH Server Credential', 'Git Repository Credential', 'ERP System Credential', 'CRM System Credential', 'OA System Credential'][index % 8], resource_type: 'CREDENTIAL', source: 'AUTO_DETECTED', resource_value: '••••••••', status: 'ACTIVE' },
+    { resource_id: `queue-${(index % 8) + 1}`, resource_name: ['Order Processing Queue', 'Email Sending Queue', 'Data Sync Queue', 'Report Generation Queue', 'Notification Push Queue', 'File Processing Queue', 'Task Scheduling Queue', 'Log Collection Queue'][index % 8], resource_type: 'QUEUE' as const, source: 'AUTO_DETECTED' as const, status: 'ACTIVE' as const },
+    { resource_id: `file-${(index % 8) + 1}`, resource_name: ['System Configuration', 'Data Template', 'Input Mapping Config', 'Process Asset Package', 'Report Template', 'Script Helper Tool', 'Encrypted Credentials', 'Workflow Configuration'][index % 8], resource_type: 'FILE' as const, source: 'AUTO_DETECTED' as const, original_name: ['config.json', 'data-template.xlsx', 'input-mapping.xml', 'process-assets.zip', 'report-template.docx', 'script-helper.py', 'credentials.enc', 'workflow-config.yaml'][index % 8], status: 'ACTIVE' as const },
+    // MISSING dependencies - IDs that don't exist in resource pages
+    ...(index % 3 === 0 ? [
+      { resource_id: `param-missing-${index}`, resource_name: 'Payment_Gateway_Config', resource_type: 'PARAMETER' as const, source: 'AUTO_DETECTED' as const, param_type: 'TEXT' as const, status: 'MISSING' as const },
+    ] : []),
+    ...(index % 4 === 0 ? [
+      { resource_id: `cred-missing-${index}`, resource_name: 'AWS_S3_Access_Key', resource_type: 'CREDENTIAL' as const, source: 'AUTO_DETECTED' as const, status: 'MISSING' as const },
+    ] : []),
+    ...(index % 5 === 0 ? [
+      { resource_id: `queue-missing-${index}`, resource_name: 'Email_Notification_Queue', resource_type: 'QUEUE' as const, source: 'AUTO_DETECTED' as const, status: 'MISSING' as const },
+    ] : []),
+    // MANUAL dependencies - also reference real resource IDs
     ...(index % 2 === 0 ? [
-      { resource_id: `param-manual-${index}-1`, resource_name: 'Debug Mode', resource_type: 'PARAMETER' as const, source: 'MANUAL' as const, param_type: 'BOOLEAN' as const, resource_value: 'true', status: 'ACTIVE' as const },
-      { resource_id: `param-manual-${index}-2`, resource_name: 'Custom API Endpoint', resource_type: 'PARAMETER' as const, source: 'MANUAL' as const, param_type: 'TEXT' as const, resource_value: 'https://custom-api.example.com/v3/data', status: 'ACTIVE' as const },
+      { resource_id: `param-${((index + 5) % 8) + 1}`, resource_name: ['Heartbeat Interval', 'Task Timeout', 'Enable Debug Mode', 'Max Concurrency', 'Default Language', 'Retry Count', 'Log Level', 'Cache Duration'][(index + 5) % 8], resource_type: 'PARAMETER' as const, source: 'MANUAL' as const, param_type: 'BOOLEAN' as const, resource_value: 'true', status: 'ACTIVE' as const },
     ] : []),
     ...(index % 3 === 0 ? [
-      { resource_id: `cred-manual-${index}-1`, resource_name: 'SFTP Credential', resource_type: 'CREDENTIAL' as const, source: 'MANUAL' as const, resource_value: '••••••••', status: 'ACTIVE' as const },
+      { resource_id: `cred-${((index + 2) % 8) + 1}`, resource_name: ['Enterprise Email Credential', 'Database Connection Credential', 'Third-party API Credential', 'SSH Server Credential', 'Git Repository Credential', 'ERP System Credential', 'CRM System Credential', 'OA System Credential'][(index + 2) % 8], resource_type: 'CREDENTIAL' as const, source: 'MANUAL' as const, resource_value: '••••••••', status: 'ACTIVE' as const },
     ] : []),
   ];
 
