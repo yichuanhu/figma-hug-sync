@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Modal, Upload, Button, Toast, Banner, Notification } from '@douyinfe/semi-ui';
+import { Modal, Upload, Button, Toast, Banner } from '@douyinfe/semi-ui';
 import { AlertCircle, File as FileIcon, Inbox, X } from 'lucide-react';
 import type { FileItem } from '@douyinfe/semi-ui/lib/es/upload';
 import type { LYProcessResponse, LYProcessDependency } from '@/api';
