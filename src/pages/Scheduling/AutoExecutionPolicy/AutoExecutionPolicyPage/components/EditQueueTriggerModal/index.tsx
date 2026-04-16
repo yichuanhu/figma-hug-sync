@@ -146,6 +146,7 @@ import { TIMEZONE_GROUPS } from '@/constants/timezones';
 const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQueueTriggerModalProps) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
+  const { canManage } = useCollaboratorPermission('TRIGGER', trigger?.trigger_id);
   const [currentStep, setCurrentStep] = useState(0);
   const [formApi, setFormApi] = useState<any>(null);
   const [initialized, setInitialized] = useState(false);
@@ -480,10 +481,10 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
         rows={3}
       />
       <Form.Slot label={t('common.owningDepartment')}>
-        <DepartmentSelect value={owningDepartmentId} onChange={setOwningDepartmentId} />
+        <DepartmentSelect value={owningDepartmentId} onChange={setOwningDepartmentId} disabled={!canManage} />
       </Form.Slot>
       <Form.Slot label={t('common.owner')}>
-        <OwnerSelect value={ownerId} onChange={setOwnerId} />
+        <OwnerSelect value={ownerId} onChange={setOwnerId} disabled={!canManage} />
       </Form.Slot>
     </div>
   );

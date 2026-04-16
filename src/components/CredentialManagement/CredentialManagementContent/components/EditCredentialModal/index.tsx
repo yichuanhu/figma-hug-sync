@@ -27,6 +27,7 @@ const EditCredentialModal = ({
   const [loading, setLoading] = useState(false);
   const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>(credential?.owning_department_id || undefined);
   const [ownerId, setOwnerId] = useState<string | undefined>(credential?.owner_id || undefined);
+  const { canManage } = useCollaboratorPermission('CREDENTIAL', credential?.credential_id);
 
   // 获取当前入口的凭据值
   const getCurrentValue = () => {
@@ -169,11 +170,12 @@ const EditCredentialModal = ({
           <DepartmentSelect
             value={owningDepartmentId}
             onChange={setOwningDepartmentId}
+            disabled={!canManage}
           />
         </Form.Slot>
 
         <Form.Slot label={t('common.owner')}>
-          <OwnerSelect value={ownerId} onChange={setOwnerId} />
+          <OwnerSelect value={ownerId} onChange={setOwnerId} disabled={!canManage} />
         </Form.Slot>
 
         <div className="edit-credential-modal-footer">

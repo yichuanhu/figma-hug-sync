@@ -152,6 +152,7 @@ const mockCredentials = [
 const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTimeTriggerModalProps) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
+  const { canManage } = useCollaboratorPermission('TRIGGER', trigger?.trigger_id);
   const [currentStep, setCurrentStep] = useState(0);
   const [formApi, setFormApi] = useState<any>(null);
   const [initialized, setInitialized] = useState(false);

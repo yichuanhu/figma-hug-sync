@@ -28,6 +28,7 @@ const EditParameterModal = ({
   const [parameterType, setParameterType] = useState<ParameterType>(1);
   const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>(parameter?.owning_department_id || undefined);
   const [ownerId, setOwnerId] = useState<string | undefined>(parameter?.owner_id || undefined);
+  const { canManage } = useCollaboratorPermission('PARAMETER', parameter?.parameter_id);
 
   useEffect(() => {
     if (parameter) {
@@ -185,11 +186,12 @@ const EditParameterModal = ({
             <DepartmentSelect
               value={owningDepartmentId}
               onChange={setOwningDepartmentId}
+              disabled={!canManage}
             />
           </Form.Slot>
 
           <Form.Slot label={t('common.owner')}>
-            <OwnerSelect value={ownerId} onChange={setOwnerId} />
+            <OwnerSelect value={ownerId} onChange={setOwnerId} disabled={!canManage} />
           </Form.Slot>
 
           <div className="edit-parameter-modal-footer">
