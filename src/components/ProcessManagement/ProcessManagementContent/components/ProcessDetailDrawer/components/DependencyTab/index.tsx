@@ -162,7 +162,7 @@ const DependencyTab = ({ dependencies, onDependenciesChange, readOnly = false, c
               <Button
                 size="small"
                 theme="light"
-                type="warning"
+                type="primary"
                 onClick={() => handleGoCreate(dep)}
               >
                 {t('processDependency.goCreate')}
@@ -205,7 +205,8 @@ const DependencyTab = ({ dependencies, onDependenciesChange, readOnly = false, c
         <div className="dependency-tab-toolbar">
           <Button
             icon={<Plus size={16} strokeWidth={2} />}
-            theme="light"
+            theme="solid"
+            type="primary"
             size="small"
             onClick={() => setAddModalVisible(true)}
           >
