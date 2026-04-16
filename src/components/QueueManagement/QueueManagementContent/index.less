@@ -33,12 +33,16 @@
 
   .queue-management-content-table {
     flex: 1;
-    overflow: auto;
+    overflow: hidden;
     min-height: 0;
+    display: flex;
+    flex-direction: column;
 
     // 约束 Semi Table wrapper 高度，不超出父容器
     .semi-table-wrapper {
-      max-height: 100%;
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
     }
 
   }

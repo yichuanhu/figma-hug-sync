@@ -48,6 +48,8 @@ const generateUUID = (): string => {
   });
 };
 
+const mockCredentialIds = Array.from({ length: 15 }, (_, index) => `cred-${index + 1}`);
+
 const generateMockCredential = (index: number): LYCredentialResponse => {
   const types: CredentialType[] = ['FIXED_VALUE', 'PERSONAL_REF'];
   const type = types[index % 2];
@@ -69,7 +71,7 @@ const generateMockCredential = (index: number): LYCredentialResponse => {
   const deptIds = ['dept-finance', 'dept-rd', 'dept-enterprise', 'dept-hr'];
 
   return {
-    credential_id: generateUUID(),
+    credential_id: mockCredentialIds[index] || generateUUID(),
     credential_name: names[index % names.length],
     credential_type: type,
     test_value: {
@@ -99,6 +101,30 @@ const generateMockCredential = (index: number): LYCredentialResponse => {
 
 const generateMockCredentialList = (): LYCredentialResponse[] => {
   return Array.from({ length: 15 }, (_, i) => generateMockCredential(i));
+};
+
+const getFilteredCredentialList = (
+  params: GetCredentialsParams & {
+    typeFilter?: CredentialType | null;
+    departmentFilter?: string[];
+  }
+): LYCredentialResponse[] => {
+  let data = generateMockCredentialList();
+
+  if (params.keyword) {
+    const keyword = params.keyword.toLowerCase();
+    data = data.filter((item) => item.credential_name.toLowerCase().includes(keyword));
+  }
+
+  if (params.typeFilter) {
+    data = data.filter((item) => item.credential_type === params.typeFilter);
+  }
+
+  if (params.departmentFilter && params.departmentFilter.length > 0) {
+    data = data.filter((item) => params.departmentFilter!.includes((item as any).owning_department_name));
+  }
+
+  return data;
 };
 
 // 模拟API调用
@@ -257,42 +283,61 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
     loadData();
   }, [loadData]);
 
-  // 处理URL参数 - 从个人凭据跳转过来时自动打开详情抽屉
+  // 处理URL参数 - 从依赖Tab或个人凭据跳转过来时自动打开详情抽屉
   useEffect(() => {
-    const credentialId = searchParams.get('credentialId');
-    if (credentialId && listResponse?.data && !isInitialLoad) {
-      // 先在当前列表中查找
-      const targetCredential = listResponse.data.find(
-        (item) => item.credential_id === credentialId
-      );
-      if (targetCredential) {
-        setSelectedCredential(targetCredential);
-        setInitialDetailTab('basic');
-        setDetailDrawerVisible(true);
-        // 清除URL参数
-        setSearchParams({}, { replace: true });
-      } else {
-        // 如果当前列表中找不到，模拟通过ID获取凭据详情
-        const fetchCredentialById = async () => {
-          try {
-            // 模拟API调用获取单个凭据
-            await new Promise((resolve) => setTimeout(resolve, 300));
-            const mockCredential = generateMockCredential(0);
-            mockCredential.credential_id = credentialId;
-            setSelectedCredential(mockCredential);
-            setInitialDetailTab('basic');
-            setDetailDrawerVisible(true);
-            setSearchParams({}, { replace: true });
-          } catch (error) {
-            console.error('获取凭据详情失败:', error);
-            Toast.error(t('credential.detail.loadError'));
-            setSearchParams({}, { replace: true });
-          }
-        };
-        fetchCredentialById();
-      }
+    const resourceId = searchParams.get('resourceId') || searchParams.get('credentialId');
+    if (!resourceId || isInitialLoad) {
+      return;
     }
-  }, [searchParams, listResponse?.data, isInitialLoad, setSearchParams, t]);
+
+    const filteredData = getFilteredCredentialList({
+      keyword: queryParams.keyword || undefined,
+      context,
+      offset: 0,
+      size: queryParams.pageSize,
+      typeFilter: typeFilter.length > 0 ? typeFilter[0] : null,
+      departmentFilter,
+    });
+    const targetIndex = filteredData.findIndex((item) => item.credential_id === resourceId);
+
+    if (targetIndex === -1) {
+      setSearchParams({}, { replace: true });
+      return;
+    }
+
+    const targetPage = Math.floor(targetIndex / queryParams.pageSize) + 1;
+    if (queryParams.page !== targetPage) {
+      setQueryParams((prev) => ({ ...prev, page: targetPage }));
+      return;
+    }
+
+    const target = filteredData[targetIndex];
+    setSelectedCredential(target);
+    setInitialDetailTab('basic');
+    setDetailDrawerVisible(true);
+    setSearchParams({}, { replace: true });
+  }, [
+    context,
+    departmentFilter,
+    isInitialLoad,
+    queryParams.keyword,
+    queryParams.page,
+    queryParams.pageSize,
+    searchParams,
+    setSearchParams,
+    typeFilter,
+  ]);
+
+  useEffect(() => {
+    if (!detailDrawerVisible || !selectedCredential?.credential_id) {
+      return;
+    }
+
+    requestAnimationFrame(() => {
+      const row = document.getElementById(`credential-row-${selectedCredential.credential_id}`);
+      row?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+  }, [detailDrawerVisible, selectedCredential?.credential_id, listResponse?.data]);
 
   // 搜索防抖
   const debouncedSearch = useMemo(
