@@ -349,6 +349,7 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
                 {processList.map((process) => {
                     const isSelected = selectedIds.has(process.id);
                     const hasNewVersion = hasNewVersionToPublish(process);
+                    const hasMissingDeps = (process.dependencies || []).some((d) => d.status === 'MISSING');
                     
                     // 确定标签Type and 文字
                     let tagColor: 'green' | 'blue' | 'grey' = 'grey';
@@ -380,6 +381,9 @@ const ProcessSelectionStep: React.FC<ProcessSelectionStepProps> = ({
                         />
                         <div className="process-item-content">
                           <Text className="process-name" ellipsis={{ showTooltip: true }}>{process.name}</Text>
+                          {hasMissingDeps && (
+                            <AlertTriangle size={14} strokeWidth={2} style={{ color: 'var(--semi-color-warning)', flexShrink: 0 }} />
+                          )}
                           <Tag size="small" color={tagColor}>
                             {tagText}
                           </Tag>
