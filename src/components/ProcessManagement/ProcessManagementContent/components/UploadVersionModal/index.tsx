@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Modal, Upload, Button, Toast, Banner } from '@douyinfe/semi-ui';
+import { Modal, Upload, Button, Toast, Banner, Notification } from '@douyinfe/semi-ui';
 import { AlertCircle, File as FileIcon, Inbox, X } from 'lucide-react';
 import type { FileItem } from '@douyinfe/semi-ui/lib/es/upload';
 import type { LYProcessResponse, LYProcessDependency } from '@/api';
@@ -11,9 +11,10 @@ interface UploadVersionModalProps {
   onCancel: () => void;
   processData: LYProcessResponse | null;
   onSuccess?: (newDeps?: LYProcessDependency[]) => void;
+  onGoToDependencies?: () => void;
 }
 
-const UploadVersionModal = ({ visible, onCancel, processData, onSuccess }: UploadVersionModalProps) => {
+const UploadVersionModal = ({ visible, onCancel, processData, onSuccess, onGoToDependencies }: UploadVersionModalProps) => {
   const { t } = useTranslation();
   const [uploading, setUploading] = useState(false);
   const [fileList, setFileList] = useState<FileItem[]>([]);
@@ -70,6 +71,13 @@ const UploadVersionModal = ({ visible, onCancel, processData, onSuccess }: Uploa
           param_type: 'TEXT',
           status: 'MISSING', // 模拟已失效的依赖
         },
+        {
+          resource_id: `cred-new-${Date.now()}-1`,
+          resource_name: 'Redis_Cache_Auth',
+          resource_type: 'CREDENTIAL',
+          source: 'AUTO_DETECTED',
+          status: 'MISSING',
+        },
       ];
       possibleNewDeps.forEach((d) => {
         if (!existingIds.has(d.resource_id)) {
@@ -79,10 +87,43 @@ const UploadVersionModal = ({ visible, onCancel, processData, onSuccess }: Uploa
 
       Toast.success(t('development.processDevelopment.detail.uploadVersion.success'));
 
-      // 统计失效依赖数量并提示
-      const missingCount = mockNewDeps.filter((d) => d.status === 'MISSING').length;
-      if (missingCount > 0) {
-        Toast.warning(t('processDependency.uploadMissingWarning', { count: missingCount }));
+      // 统计失效依赖数量并用 Notification 提示
+      const missingDeps = mockNewDeps.filter((d) => d.status === 'MISSING');
+      if (missingDeps.length > 0) {
+        const missingNames = missingDeps.map((d) => d.resource_name);
+        const goHandler = onGoToDependencies;
+        Notification.warning({
+          title: t('processDependency.uploadMissingWarningTitle'),
+          content: (
+            <div className="upload-missing-notification">
+              <div className="upload-missing-notification-desc">
+                {t('processDependency.uploadMissingWarning', { count: missingDeps.length })}
+              </div>
+              <div className="upload-missing-notification-names">
+                {missingNames.map((name, i) => (
+                  <span key={i} className="upload-missing-notification-name">• {name}</span>
+                ))}
+              </div>
+              {goHandler && (
+                <Button
+                  size="small"
+                  theme="light"
+                  type="warning"
+                  style={{ marginTop: 8 }}
+                  onClick={() => {
+                    goHandler();
+                    Notification.destroyAll();
+                  }}
+                >
+                  {t('processDependency.goHandle')}
+                </Button>
+              )}
+            </div>
+          ),
+          duration: 0, // 不自动关闭，需要用户手动关闭
+          position: 'top',
+          theme: 'light',
+        });
       } else if (mockNewDeps.length > 0) {
         Toast.info(t('processDependency.autoDetectedNew', { count: mockNewDeps.length }));
       }
@@ -96,7 +137,7 @@ const UploadVersionModal = ({ visible, onCancel, processData, onSuccess }: Uploa
     } finally {
       setUploading(false);
     }
-  }, [fileList, t, onSuccess, onCancel, processData]);
+  }, [fileList, t, onSuccess, onCancel, processData, onGoToDependencies]);
 
   const handleClose = useCallback(() => {
     setFileList([]);
