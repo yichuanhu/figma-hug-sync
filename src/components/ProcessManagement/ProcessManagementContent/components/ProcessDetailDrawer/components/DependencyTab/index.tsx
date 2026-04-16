@@ -163,6 +163,8 @@ const DependencyTab = ({ dependencies, onDependenciesChange, readOnly = false, c
                 size="small"
                 theme="light"
                 type="primary"
+                icon={<ArrowRight size={14} strokeWidth={2} />}
+                iconPosition="right"
                 onClick={() => handleGoCreate(dep)}
               >
                 {t('processDependency.goCreate')}
