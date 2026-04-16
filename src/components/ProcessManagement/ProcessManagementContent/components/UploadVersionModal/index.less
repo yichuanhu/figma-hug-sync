@@ -102,3 +102,35 @@
 .upload-version-modal .semi-upload-drag {
   transition: all 0.2s ease-out;
 }
+
+// 上传失效依赖 Notification 内容样式
+.upload-missing-notification {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  .upload-missing-notification-desc {
+    font-size: 13px;
+    color: var(--semi-color-text-1);
+    line-height: 20px;
+  }
+
+  .upload-missing-notification-names {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 4px 0;
+    padding: 6px 8px;
+    background: var(--semi-color-warning-light-default);
+    border-radius: 4px;
+    max-height: 100px;
+    overflow-y: auto;
+
+    .upload-missing-notification-name {
+      font-size: 13px;
+      color: var(--semi-color-text-0);
+      line-height: 20px;
+      word-break: break-all;
+    }
+  }
+}
