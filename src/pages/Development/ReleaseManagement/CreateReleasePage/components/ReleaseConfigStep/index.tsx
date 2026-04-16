@@ -9,7 +9,7 @@ import {
   TextArea,
   Tag,
   Button,
-  Banner,
+  Modal,
   Input,
   InputNumber,
   Checkbox,
@@ -24,7 +24,7 @@ import type { SelectedProcess, ResourceConfig } from '../../index';
 
 
 import './index.less';
-import { AlertTriangle, ExternalLink, Trash2, X } from 'lucide-react';
+import { ExternalLink, Trash2, X, AlertTriangle } from 'lucide-react';
 
 const { Title, Text } = Typography;
 
