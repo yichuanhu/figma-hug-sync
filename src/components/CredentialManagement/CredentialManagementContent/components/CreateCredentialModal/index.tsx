@@ -12,6 +12,7 @@ interface CreateCredentialModalProps {
   context: 'development' | 'scheduling';
   onCancel: () => void;
   onSuccess: () => void;
+  defaultName?: string;
 }
 
 const CreateCredentialModal = ({
@@ -19,6 +20,7 @@ const CreateCredentialModal = ({
   context,
   onCancel,
   onSuccess,
+  defaultName,
 }: CreateCredentialModalProps) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
@@ -80,6 +82,8 @@ const CreateCredentialModal = ({
         className="create-credential-modal-form"
         onSubmit={handleSubmit}
         labelPosition="top"
+        initValues={{ credential_name: defaultName || undefined }}
+        key={defaultName}
       >
         <Form.Input
           field="credential_name"

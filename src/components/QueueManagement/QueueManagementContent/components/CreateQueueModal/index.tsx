@@ -10,12 +10,14 @@ interface CreateQueueModalProps {
   visible: boolean;
   onCancel: () => void;
   onSuccess: () => void;
+  defaultName?: string;
 }
 
 const CreateQueueModal = ({
   visible,
   onCancel,
   onSuccess,
+  defaultName,
 }: CreateQueueModalProps) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
@@ -74,6 +76,8 @@ const CreateQueueModal = ({
         className="create-queue-modal-form"
         onSubmit={handleSubmit}
         labelPosition="top"
+        initValues={{ name: defaultName || undefined }}
+        key={defaultName}
       >
         <Form.Input
           field="name"

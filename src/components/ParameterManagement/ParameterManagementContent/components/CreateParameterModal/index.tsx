@@ -12,6 +12,7 @@ interface CreateParameterModalProps {
   context: 'development' | 'scheduling';
   onCancel: () => void;
   onSuccess: () => void;
+  defaultName?: string;
 }
 
 const CreateParameterModal = ({
@@ -19,6 +20,7 @@ const CreateParameterModal = ({
   context,
   onCancel,
   onSuccess,
+  defaultName,
 }: CreateParameterModalProps) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
@@ -94,7 +96,8 @@ const CreateParameterModal = ({
         className="create-parameter-modal-form"
         onSubmit={handleSubmit}
         labelPosition="top"
-        initValues={{ type: 1, boolValue: 'True' }}
+        initValues={{ type: 1, boolValue: 'True', name: defaultName || undefined }}
+        key={defaultName}
       >
         <Form.Input
           field="name"
