@@ -48,7 +48,12 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
     QUEUE: '',
     FILE: '',
   });
-  const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
+  const [selectedRowKeysMap, setSelectedRowKeysMap] = useState<Record<ResourceType, string[]>>({
+    PARAMETER: [],
+    CREDENTIAL: [],
+    QUEUE: [],
+    FILE: [],
+  });
 
   // Mock 可useResourceData
   const mockAvailableResources: AvailableResource[] = useMemo(() => [
