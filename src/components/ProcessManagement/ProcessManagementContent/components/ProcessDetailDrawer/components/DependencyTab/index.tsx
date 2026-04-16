@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Typography, Tag, Button, Modal, Toast, Banner } from '@douyinfe/semi-ui';
 import { IconDeleteStroked } from '@douyinfe/semi-icons';
-import { AlertCircle, ExternalLink, Plus, Trash2 } from 'lucide-react';
+import { AlertCircle, ArrowRight, ExternalLink, Plus, Trash2 } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import type { LYProcessDependency, ResourceType } from '@/api';
 import AddResourceModal from '@/pages/Development/ReleaseManagement/CreateReleasePage/components/AddResourceModal';
