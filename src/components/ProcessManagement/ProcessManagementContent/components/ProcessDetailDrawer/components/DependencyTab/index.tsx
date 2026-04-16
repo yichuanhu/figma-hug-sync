@@ -207,7 +207,6 @@ const DependencyTab = ({ dependencies, onDependenciesChange, readOnly = false, c
             icon={<Plus size={16} strokeWidth={2} />}
             theme="solid"
             type="primary"
-            size="small"
             onClick={() => setAddModalVisible(true)}
           >
             {t('processDependency.addButton')}
