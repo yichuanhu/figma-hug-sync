@@ -400,9 +400,9 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
             type="danger"
             icon={<AlertTriangle size={16} strokeWidth={2} />}
             className="release-config-step-banner"
+            title={t('release.create.missingDependencyBanner')}
             description={
               <div className="release-config-step-missing-banner-content">
-                <Text>{t('release.create.missingDependencyBanner')}</Text>
                 <div className="release-config-step-missing-process-list">
                   {processesWithMissingDeps.map((sp) => (
                     <div key={sp.process.id} className="release-config-step-missing-process-item">
