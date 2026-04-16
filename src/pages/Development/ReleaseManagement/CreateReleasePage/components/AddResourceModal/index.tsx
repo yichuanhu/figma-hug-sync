@@ -257,7 +257,7 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
                 />
               </div>
               <Table
-                columns={type === 'QUEUE' ? queueColumns : type === 'FILE' ? fileColumns : columns}
+                columns={type === 'CREDENTIAL' ? credentialColumns : type === 'QUEUE' ? queueColumns : type === 'FILE' ? fileColumns : columns}
                 dataSource={getFilteredResources(type)}
                 rowKey="id"
                 rowSelection={rowSelection}
