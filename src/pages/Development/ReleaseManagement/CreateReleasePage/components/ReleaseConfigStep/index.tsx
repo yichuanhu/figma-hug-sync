@@ -428,39 +428,6 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
           </Space>
         }
       >
-        {processesWithMissingDeps.length > 0 && (
-          <Banner
-            type="danger"
-            icon={null}
-            closeIcon={null}
-            className="release-config-step-banner"
-            title={t('release.create.missingDependencyBanner')}
-            description={
-              <div className="release-config-step-missing-banner-content">
-                <div className="release-config-step-missing-process-list">
-                  {processesWithMissingDeps.map((sp) => (
-                    <div key={sp.process.id} className="release-config-step-missing-process-item">
-                      <Text size="small" strong ellipsis={{ showTooltip: true }} style={{ maxWidth: 200 }}>
-                        {sp.process.name}
-                      </Text>
-                      <Button
-                        size="small"
-                        theme="borderless"
-                        type="primary"
-                        icon={<ExternalLink size={14} strokeWidth={2} />}
-                        onClick={() => {
-                          navigate(`/process-development?processId=${sp.process.id}&tab=dependencies`);
-                        }}
-                      >
-                        {t('release.create.goHandleDependency')}
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            }
-          />
-        )}
 
 
         <div className="release-config-step-resources">
