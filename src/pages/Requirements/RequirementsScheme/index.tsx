@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Typography, Button, Input, Tag, Toast, Modal, Empty, Space, Dropdown } from '@douyinfe/semi-ui';
+import { Typography, Button, Input, TextArea, Tag, Toast, Modal, Space, Dropdown } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import { Upload, Ellipsis, CheckCircle, Eye, Trash2, History } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
@@ -15,7 +15,6 @@ import { parseSchemeYaml } from './schemeYamlParser';
 import './index.less';
 
 const { Title, Text } = Typography;
-const { TextArea } = Input;
 
 const RequirementsScheme = () => {
   const { t } = useTranslation();
