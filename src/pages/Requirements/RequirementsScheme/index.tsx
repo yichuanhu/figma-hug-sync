@@ -95,7 +95,43 @@ const RequirementsScheme = () => {
     });
   };
 
+  const closeUploadModal = () => {
+    setUploadVisible(false);
+    setFileList([]);
+    setYamlText('');
+    setParseErrors([]);
+  };
+
+  const handleFileChange = (info: { fileList: FileItem[] }) => {
+    const files = info.fileList;
+    setFileList(files);
+    setParseErrors([]);
+    setYamlText('');
+    const file = files[0]?.fileInstance;
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => setYamlText((e.target?.result as string) ?? '');
+    reader.onerror = () => Toast.error(t('requirements.scheme.uploadReadError'));
+    reader.readAsText(file);
+  };
+
+  const beforeUpload = ({ file }: { file: FileItem }) => {
+    const inst = file.fileInstance;
+    if (!inst) return false;
+    const isYaml = /\.(ya?ml)$/i.test(inst.name);
+    if (!isYaml) {
+      Toast.error(t('requirements.scheme.uploadFileTypeError'));
+      return { fileInstance: inst, status: 'validateFail', shouldUpload: false } as never;
+    }
+    if (inst.size > 1024 * 1024) {
+      Toast.error(t('requirements.scheme.uploadFileTooLarge'));
+      return { fileInstance: inst, status: 'validateFail', shouldUpload: false } as never;
+    }
+    return true;
+  };
+
   const handleUpload = async () => {
+    if (!yamlText) return;
     const result = parseSchemeYaml(yamlText);
     if (!result.ok) {
       setParseErrors(result.errors.map((e) => (e.line ? `第 ${e.line} 行: ${e.message}` : e.message)));
@@ -103,9 +139,7 @@ const RequirementsScheme = () => {
     }
     await addScheme(result.scheme!);
     Toast.success(t('requirements.scheme.uploadSuccess'));
-    setUploadVisible(false);
-    setYamlText('');
-    setParseErrors([]);
+    closeUploadModal();
     load();
   };
 
