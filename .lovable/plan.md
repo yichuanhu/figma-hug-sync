@@ -1,66 +1,95 @@
-## 第 4 批需求范围（待审批）
 
-> 本批仅列范围，不写实现。请逐项勾选「✅ 通过 / ❌ 砍掉 / ✏️ 调整」后我再进入开发。
+# 第 4 批正式实施方案
 
-### 一、背景
-
-第 3 批已交付：多级审批进度条（Story-006 只读展示） + 关联流程聚合状态（Story-009 只读展示）。
-以下 Story 在原需求文档中存在线索但**尚未实现**或**仅 mock 硬编码**，需用户确认是否纳入第 4 批。
+按用户决定，A+B+C+D 全量实现。分三个小批交付，降低单次改动面。
 
 ---
 
-### 二、候选 Story 清单
+## 批次 4.1：Story-A 审批流编辑器 + Story-C 角色解析器（强耦合）
 
-#### Story-A：方案管理 · 多级审批流编辑器（关联 Story-006）
-**现状**：`schemeConfig.ts` 中有审批级别配置占位（角色/部门），但方案管理页 UI 暂不可视化编辑；`generateMockApprovalFlow` 仍走硬编码三级模板，编辑方案不会影响新建需求。
+**目标**：方案管理页可视化编辑审批流，新建需求时按方案 + 解析器生成真实审批人。
 
-**拟交付范围**：
-1. 方案管理详情/编辑页新增「审批流」Tab：可视化增删级、设节点名称、模式（任一/会签/多数）、审批人选择（OwnerSelect）
-2. 新建/激活方案时，方案的 `approvalFlow` 真正写入需求 `approvalFlowConfig`
-3. 已激活方案变更 → 仅影响**新建**需求，存量需求保持快照
-4. 列表展示 / 删除级别 / 拖拽排序
+### 改动文件
+- `src/pages/Requirements/RequirementsScheme/components/SchemeEditDrawer/`（或现有编辑入口）新增「审批流」Tab
+  - 增删级、上下移序、节点名称、模式（任一/会签/多数）
+  - 审批人选择：支持 3 种粒度（用户 / 角色占位符 / 部门占位符）混选
+- `src/pages/Requirements/RequirementsWorkbench/types.ts`
+  - 恢复 `ApprovalLevelConfig.mode: 'any_one' | 'all' | 'majority'`
+  - `approver_type` 扩展为 `'user' | 'role' | 'department'`
+- `src/pages/Requirements/RequirementsWorkbench/utils/approverResolver.ts`（新建）
+  - `resolveApprovers(level, requirement)` → 真实用户列表
+  - 规则：`role-line-manager` 查提交人部门主管；`dept-committee` / `dept-it` 查指定部门成员
+  - 解析失败 fallback 到方案预填的兜底审批人
+- `src/pages/Requirements/RequirementsWorkbench/mockData.ts`
+  - `generateMockApprovalFlow(requirement)` 改为：读取激活方案的 `approval_flow` → 调 `resolveApprovers` → 生成快照
+  - 删除硬编码 `APPROVAL_LEVEL_TEMPLATES`
+  - 存量需求保持快照不变；仅**新建**需求受方案变更影响
+- `schemeConfig.ts`：保留角色占位符不变（已是角色形式）
 
-**取舍点**：① 是否要拖拽排序；② 审批人粒度（用户 / 角色 / 部门）任选其一还是三种都支持。
-
----
-
-#### Story-B：关联流程管理（关联 Story-009 扩展）
-**现状**：详情抽屉关联流程列表只读展示。
-
-**拟交付范围**：
-1. 详情抽屉关联流程区块新增「管理」按钮 → 弹出 Modal
-2. Modal 内：搜索 + 多选项目内现有流程；已关联项可解除
-3. 流程名支持点击跳转 `/dev-center/automation-process` 详情
-4. mock 层提供 `addLinkedProcess` / `removeLinkedProcess` / `MOCK_PROCESS_POOL`
-
-**取舍点**：① 是否仅需求 owner 可管理，还是协作者也可以；② 是否要在 BoardView/列表上也允许快捷管理。
-
----
-
-#### Story-C：审批流配置「角色 → 实际审批人」解析器
-**现状**：方案配置里写的是 `role-line-manager` / `dept-committee` 占位，运行期没有解析逻辑。
-
-**拟交付范围**：
-1. 工具函数 `resolveApprovers(rolePlaceholder, requirement)` → 返回真实用户列表
-2. 解析规则：直属主管查需求提交人部门、委员会查指定部门、IT 查固定组
-3. 解析失败 fallback：使用方案中预填的兜底审批人
-
-**取舍点**：是否本批就要做（Story-A 不做的话，本项也无意义）。
+### 关键约束
+- 方案变更只影响新建，存量保留 `approvalFlowConfig` 快照
+- 模式语义：`any_one` 任一通过即推进 / `all` 全部通过 / `majority` 过半通过
 
 ---
 
-#### Story-D：审批历史与撤回
-**现状**：审批动作即时改写当前级状态，无历史轨迹；无撤回能力。
+## 批次 4.2：Story-B 关联流程管理
 
-**拟交付范围**：
-1. 详情抽屉「活动流」新增审批事件条目（谁、何时、批准/驳回、评论）
-2. 提交人可在 `PENDING_APPROVAL` 状态撤回需求 → 回到 `DRAFT`
-3. 驳回后允许提交人修改并「重新提交」→ 重置审批流到 L1
+**目标**：详情抽屉关联流程区块支持手动添加/解除 + 跳转流程详情。
 
-**取舍点**：① 撤回是否要审批人确认；② 重新提交是否清空历史。
+### 改动文件
+- `src/pages/Requirements/RequirementsWorkbench/components/ManageLinkedProcessesModal/`（重建）
+  - 搜索 + 多选项目内现有流程
+  - 已关联项展示解除按钮
+- `LinkedProcessesSection/index.tsx`
+  - 新增「管理」按钮（需求 owner 可见，协作者只读）
+  - 流程名变为 `Link` 跳转 `/dev-center/automation-process?processId=xxx`
+- `mockData.ts`
+  - 恢复 `MOCK_PROCESS_POOL`（项目内可关联流程候选池）
+  - 恢复 `addLinkedProcess(reqId, processId)` / `removeLinkedProcess(reqId, processId)`
+- `RequirementDetailDrawer/index.tsx`：把 `onChanged` 回调和 owner 判定回传给 Section
+- i18n：新增管理/搜索/解除/成功失败提示文案
+
+### 权限约束
+- 仅需求 owner（`MOCK_CURRENT_USER_ID === requirement.ownerId`）可管理；协作者只读
 
 ---
 
-### 三、请用户裁定
+## 批次 4.3：Story-D 审批历史 + 撤回 + 重新提交
 
-请回复每个 Story 的处理方式（A / B / C / D）。我会根据通过项重写 plan.md 第 4 批正式实施方案后再动代码。
+**目标**：审批留痕 + 提交人撤回 / 驳回后重新提交。
+
+### 改动文件
+- `types.ts`：新增 `ApprovalHistoryEntry { level, approverId, action: 'approve'|'reject'|'withdraw'|'resubmit', comment?, timestamp }`，挂在 `RequirementItem.approvalHistory`
+- `mockData.ts`
+  - `advanceApprovalFlow` 每次调用 push 一条 history
+  - 新增 `withdrawRequirement(id)`：仅 `PENDING_APPROVAL` + 提交人可调；状态回 `DRAFT`，记录 history
+  - 新增 `resubmitRequirement(id)`：`REJECTED` → 重置 flow 到 L1、状态 `PENDING_APPROVAL`，**保留**历史（追加 resubmit 条目）
+- `RequirementDetailDrawer/ActivityFeed`（或现有活动流组件）
+  - 渲染 history 条目（图标 + 审批人 + 时间 + 评论）
+- `RequirementDetailDrawer/ApprovalSection.tsx`
+  - 提交人 + `PENDING_APPROVAL` → 显示「撤回」按钮（无需审批人确认，直接回 DRAFT）
+  - 提交人 + `REJECTED` → 显示「重新提交」按钮
+- i18n：撤回/重新提交/历史相关文案
+
+### 取舍落地
+- 撤回**无需**审批人确认（用户裁定取最简方案）
+- 重新提交**保留**历史轨迹（审计需要）
+
+---
+
+## 交付顺序与验证
+
+```text
+4.1 (A+C) → 自测：编辑方案审批流 → 新建需求 → 进度条按新配置生成
+   ↓
+4.2 (B)   → 自测：详情抽屉添加/解除流程 → 跳转流程详情
+   ↓
+4.3 (D)   → 自测：审批留痕 → 提交人撤回 → 驳回后重新提交
+```
+
+每批完成后等用户确认再进下一批。
+
+---
+
+## 待用户确认
+- 三批顺序与拆分是否 OK？若 OK，回复"开始 4.1"我即进入默认模式从批次 4.1 动手。
