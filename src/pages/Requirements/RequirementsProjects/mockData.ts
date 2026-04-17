@@ -268,3 +268,149 @@ export const findWorkspaceByRequirementId = (requirementId: string): { workspace
   if (!p) return null;
   return { workspace: w, project: p };
 };
+
+// ===================== 工作空间成员 =====================
+
+/**
+ * 部门管理员映射：dept-id -> userId[]
+ * 这些用户在所属部门所在的工作空间会自动获得 MANAGER 身份（继承），
+ * 列表中不展示，仅在添加成员弹窗中标记为「自动继承」并禁用勾选。
+ */
+const departmentManagers: Record<string, string[]> = {
+  'dept-finance': ['user-fin-001'],
+  'dept-hr': ['user-hr-001'],
+  'dept-fe': ['user-fe-001'],
+  'dept-be': ['user-be-001'],
+  'dept-product': ['user-pt-001'],
+  'dept-dw': ['user-dw-001'],
+};
+
+let workspaceMembers: WorkspaceMember[] = [
+  { id: 'wm-001', workspaceId: 'ws-001', userId: 'user-001', userName: '张三', department: 'APA Product Division', role: 'MANAGER', addedAt: '2026-01-08T10:00:00Z' },
+  { id: 'wm-002', workspaceId: 'ws-001', userId: 'user-fe-002', userName: 'Linda Chen', department: 'Frontend Development Team', role: 'MEMBER', addedAt: '2026-01-09T10:00:00Z' },
+  { id: 'wm-003', workspaceId: 'ws-003', userId: 'user-001', userName: '张三', department: 'APA Product Division', role: 'MANAGER', addedAt: '2026-02-02T11:00:00Z' },
+  { id: 'wm-004', workspaceId: 'ws-005', userId: 'user-001', userName: '张三', department: 'APA Product Division', role: 'MANAGER', addedAt: '2025-11-15T09:00:00Z' },
+  { id: 'wm-005', workspaceId: 'ws-005', userId: 'user-be-002', userName: 'Dong Wei', department: 'Backend Development Team', role: 'MEMBER', addedAt: '2025-11-16T09:00:00Z' },
+];
+
+const buildInheritedMembers = (workspaceId: string): WorkspaceMemberView[] => {
+  const ws = workspaces.find((w) => w.id === workspaceId);
+  if (!ws) return [];
+  const inheritedUserIds = departmentManagers[ws.departmentId] ?? [];
+  return inheritedUserIds.map((uid) => {
+    const u = ALL_ORG_USERS.find((x) => x.id === uid);
+    return {
+      id: `inherited-${workspaceId}-${uid}`,
+      workspaceId,
+      userId: uid,
+      userName: u?.name ?? uid,
+      department: u?.department ?? '-',
+      role: 'MANAGER' as WorkspaceMemberRole,
+      addedAt: ws.createdAt,
+      inheritedAsDeptManager: true,
+    };
+  });
+};
+
+export const isInheritedDeptManager = (workspaceId: string, userId: string): boolean => {
+  const ws = workspaces.find((w) => w.id === workspaceId);
+  if (!ws) return false;
+  return (departmentManagers[ws.departmentId] ?? []).includes(userId);
+};
+
+export const fetchWorkspaceMembers = async (workspaceId: string): Promise<WorkspaceMember[]> => {
+  return delay(workspaceMembers.filter((m) => m.workspaceId === workspaceId));
+};
+
+export const fetchAllWorkspaceMembersIncludingInherited = async (
+  workspaceId: string,
+): Promise<WorkspaceMemberView[]> => {
+  const explicit = workspaceMembers
+    .filter((m) => m.workspaceId === workspaceId)
+    .map<WorkspaceMemberView>((m) => ({ ...m }));
+  const inherited = buildInheritedMembers(workspaceId).filter(
+    (i) => !explicit.some((e) => e.userId === i.userId),
+  );
+  return delay([...inherited, ...explicit]);
+};
+
+const syncMemberCount = (workspaceId: string) => {
+  const explicitCount = workspaceMembers.filter((m) => m.workspaceId === workspaceId).length;
+  const inheritedExtra = buildInheritedMembers(workspaceId).filter(
+    (i) => !workspaceMembers.some((e) => e.workspaceId === workspaceId && e.userId === i.userId),
+  ).length;
+  workspaces = workspaces.map((w) =>
+    w.id === workspaceId ? { ...w, memberCount: explicitCount + inheritedExtra } : w,
+  );
+};
+
+export interface AddMemberInput {
+  userId: string;
+  userName: string;
+  department: string;
+  role: WorkspaceMemberRole;
+}
+
+export const addWorkspaceMembers = async (
+  workspaceId: string,
+  members: AddMemberInput[],
+): Promise<void> => {
+  for (const m of members) {
+    if (isInheritedDeptManager(workspaceId, m.userId)) continue;
+    if (workspaceMembers.some((x) => x.workspaceId === workspaceId && x.userId === m.userId)) continue;
+    workspaceMembers = [
+      ...workspaceMembers,
+      {
+        id: `wm-${Date.now()}-${m.userId}`,
+        workspaceId,
+        userId: m.userId,
+        userName: m.userName,
+        department: m.department,
+        role: m.role,
+        addedAt: now(),
+      },
+    ];
+  }
+  syncMemberCount(workspaceId);
+  await delay(null);
+};
+
+const explicitManagerCount = (workspaceId: string, excludeMemberId?: string): number =>
+  workspaceMembers.filter(
+    (m) => m.workspaceId === workspaceId && m.role === 'MANAGER' && m.id !== excludeMemberId,
+  ).length;
+
+export const updateWorkspaceMemberRole = async (
+  memberId: string,
+  role: WorkspaceMemberRole,
+): Promise<void> => {
+  const target = workspaceMembers.find((m) => m.id === memberId);
+  if (!target) return;
+  if (target.role === 'MANAGER' && role === 'MEMBER') {
+    const remainingExplicit = explicitManagerCount(target.workspaceId, memberId);
+    const inheritedCount = buildInheritedMembers(target.workspaceId).length;
+    if (remainingExplicit + inheritedCount < 1) {
+      throw new Error('MUST_KEEP_ONE_MANAGER');
+    }
+  }
+  workspaceMembers = workspaceMembers.map((m) => (m.id === memberId ? { ...m, role } : m));
+  await delay(null);
+};
+
+export const removeWorkspaceMember = async (memberId: string): Promise<void> => {
+  const target = workspaceMembers.find((m) => m.id === memberId);
+  if (!target) return;
+  if (target.role === 'MANAGER') {
+    const remainingExplicit = explicitManagerCount(target.workspaceId, memberId);
+    const inheritedCount = buildInheritedMembers(target.workspaceId).length;
+    if (remainingExplicit + inheritedCount < 1) {
+      throw new Error('MUST_KEEP_ONE_MANAGER');
+    }
+  }
+  workspaceMembers = workspaceMembers.filter((m) => m.id !== memberId);
+  syncMemberCount(target.workspaceId);
+  await delay(null);
+};
+
+workspaces.forEach((w) => syncMemberCount(w.id));
+
