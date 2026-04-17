@@ -379,6 +379,71 @@ const RequirementsAssessment = () => {
       </div>
 
       <div className="requirements-assessment-content">
+        <Row
+          type="flex"
+          justify="space-between"
+          align="middle"
+          className="requirements-assessment-toolbar"
+        >
+          <Col>
+            <Space>
+              <Input
+                prefix={<IconSearchStroked />}
+                placeholder={t('requirements.assessment.searchPlaceholder')}
+                className="requirements-assessment-search-input"
+                value={searchValue}
+                onChange={setSearchValue}
+                showClear
+                maxLength={100}
+              />
+              <DepartmentSelect
+                placeholder={t('common.filterDepartment')}
+                value={departmentFilter}
+                onChange={(v) => setDepartmentFilter(v as string[])}
+                multiple
+                showClear
+                maxTagCount={1}
+                useNameAsValue
+                style={{ width: 'auto', minWidth: 150, maxWidth: 600 }}
+              />
+              {activeTab !== 'pending' && (
+                <FilterPopover
+                  visible={filterPopoverVisible}
+                  onVisibleChange={setFilterPopoverVisible}
+                  onConfirm={(values) => {
+                    setConclusionFilter((values.conclusion as string) || 'ALL');
+                    setSortKey((values.sort as 'default' | 'netScoreDesc' | 'netScoreAsc') || 'default');
+                  }}
+                  sections={[
+                    {
+                      key: 'conclusion',
+                      label: t('requirements.assessment.filterConclusion'),
+                      type: 'radio',
+                      options: [
+                        { label: t('requirements.assessment.filterConclusionAll'), value: 'ALL' },
+                        { label: t('requirements.assessmentV2.conclusion.RECOMMEND'), value: 'RECOMMEND' },
+                        { label: t('requirements.assessmentV2.conclusion.CAUTION'), value: 'CAUTION' },
+                        { label: t('requirements.assessmentV2.conclusion.REJECT'), value: 'REJECT' },
+                      ],
+                      value: conclusionFilter,
+                    },
+                    {
+                      key: 'sort',
+                      label: t('requirements.assessment.sortBy'),
+                      type: 'radio',
+                      options: [
+                        { label: t('requirements.assessment.sortDefault'), value: 'default' },
+                        { label: t('requirements.assessment.sortNetScoreDesc'), value: 'netScoreDesc' },
+                        { label: t('requirements.assessment.sortNetScoreAsc'), value: 'netScoreAsc' },
+                      ],
+                      value: sortKey,
+                    },
+                  ]}
+                />
+              )}
+            </Space>
+          </Col>
+        </Row>
         <Tabs activeKey={activeTab} onChange={(k) => setActiveTab(k as AssessTab)} keepDOM={false}>
           <TabPane
             tab={
