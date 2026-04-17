@@ -139,7 +139,7 @@ const ManageLinkedProcessesModal = ({ visible, requirementId, linked, onClose, o
                   className={`manage-linked-processes-modal__candidate-row ${checked ? 'is-checked' : ''}`}
                   onClick={() => toggle(p.id)}
                 >
-                  <Checkbox checked={checked} onChange={() => toggle(p.id)} onClick={(e) => e.stopPropagation()} />
+                  <Checkbox checked={checked} onChange={() => toggle(p.id)} />
                   <Text className="manage-linked-processes-modal__name" ellipsis={{ showTooltip: true }}>{p.name}</Text>
                   <Tag size="small" color={cfg.color} type="light">{t(cfg.i18nKey)}</Tag>
                   <Text type="tertiary" size="small">{p.ownerName ?? '-'}</Text>
