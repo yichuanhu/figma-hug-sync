@@ -279,6 +279,7 @@ const RequirementsWorkbench = () => {
       dataIndex: 'action',
       key: 'action',
       width: 60,
+      fixed: 'right' as const,
       render: (_: unknown, record: RequirementItem) => (
         <Dropdown
           trigger="click"
