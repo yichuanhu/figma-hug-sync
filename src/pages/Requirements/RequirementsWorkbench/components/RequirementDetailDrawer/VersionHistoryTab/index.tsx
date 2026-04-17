@@ -129,8 +129,8 @@ const VersionHistoryTab = ({ data }: Props) => {
             )}
             {renderField(
               t('requirements.versionHistory.fields.totalCost'),
-              selected.snapshot.costEstimate ? `¥${selected.snapshot.costEstimate.totalCost.toLocaleString()}` : undefined,
-              data.costEstimate ? `¥${data.costEstimate.totalCost.toLocaleString()}` : undefined,
+              selected.snapshot.costEstimate ? `¥${Math.round(selected.snapshot.costEstimate.monthlySavedAmount).toLocaleString()}` : undefined,
+              data.costEstimate ? `¥${Math.round(data.costEstimate.monthlySavedAmount).toLocaleString()}` : undefined,
             )}
           </>
         )}
