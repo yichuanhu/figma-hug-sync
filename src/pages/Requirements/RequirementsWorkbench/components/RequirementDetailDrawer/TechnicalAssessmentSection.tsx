@@ -59,8 +59,8 @@ const TechnicalAssessmentSection = ({ data, onStatusChange }: TechnicalAssessmen
   const [comment, setComment] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  const isAssessing = data.status === 'ASSESSING';
-  const showResult = data.assessment && ['DEVELOPING', 'DEVELOPED', 'RUNNING'].includes(data.status);
+  const isAssessing = data.status === 'PENDING_ASSESSMENT';
+  const showResult = data.assessment && (['DEVELOPING', 'LAUNCHED', 'OFFLINE'] as string[]).includes(data.status);
 
   if (!isAssessing && !showResult) return null;
 

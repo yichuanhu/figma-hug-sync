@@ -151,7 +151,7 @@ const RequirementsReview = () => {
 
     setApprovalSubmitting(true);
     try {
-      const newStatus = approvalAction === 'approve' ? 'APPROVED' : 'REJECTED';
+      const newStatus = approvalAction === 'approve' ? 'PENDING_ASSESSMENT' : 'REJECTED';
       const comment = approvalReason.trim()
         ? `${approvalAction === 'approve' ? 'Approved' : 'Rejected'}. ${approvalReason.trim()}`
         : `${approvalAction === 'approve' ? 'Approved' : 'Rejected'} by ${CURRENT_REVIEWER.name}.`;
@@ -185,11 +185,11 @@ const RequirementsReview = () => {
   const handleStatusChange = async (id: string, newStatus: string, comment?: string) => {
     await updateRequirementStatus(id, newStatus, comment);
 
-    if (['APPROVED', 'REJECTED'].includes(newStatus)) {
+    if (['PENDING_ASSESSMENT', 'REJECTED'].includes(newStatus)) {
       mockReviewHistory.push({
         requirementId: id,
         reviewerId: CURRENT_REVIEWER_ID,
-        action: newStatus === 'APPROVED' ? 'approved' : 'rejected',
+        action: newStatus === 'PENDING_ASSESSMENT' ? 'approved' : 'rejected',
         comment: comment || '',
         timestamp: new Date().toISOString(),
       });
@@ -304,7 +304,7 @@ const RequirementsReview = () => {
                 >
                   {t('common.viewDetail')}
                 </Dropdown.Item>
-                {record.status === 'PENDING' && (
+                {record.status === 'PENDING_APPROVAL' && (
                   <>
                     <Dropdown.Item
                       icon={<CheckCircle size={16} strokeWidth={2} />}
@@ -327,7 +327,7 @@ const RequirementsReview = () => {
                     </Dropdown.Item>
                   </>
                 )}
-                {record.status === 'ASSESSING' && (
+                {record.status === 'PENDING_ASSESSMENT' && (
                   <Dropdown.Item
                     icon={<Eye size={16} strokeWidth={2} />}
                     onClick={(e) => {
