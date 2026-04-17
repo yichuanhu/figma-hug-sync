@@ -1,8 +1,9 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Typography, Button, Input, TextArea, Tag, Toast, Modal, Dropdown } from '@douyinfe/semi-ui';
+import { Typography, Button, Input, Tag, Toast, Modal, Dropdown, Upload } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
-import { Upload, Ellipsis, CheckCircle, Eye, Trash2, History, Pencil } from 'lucide-react';
+import type { FileItem } from '@douyinfe/semi-ui/lib/es/upload';
+import { Upload as UploadIcon, Ellipsis, CheckCircle, Eye, Trash2, History, Pencil, Inbox, File as FileIcon, X } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import {
   fetchSchemes,
@@ -26,6 +27,7 @@ const RequirementsScheme = () => {
   const [loading, setLoading] = useState(true);
 
   const [uploadVisible, setUploadVisible] = useState(false);
+  const [fileList, setFileList] = useState<FileItem[]>([]);
   const [yamlText, setYamlText] = useState('');
   const [parseErrors, setParseErrors] = useState<string[]>([]);
 
@@ -93,7 +95,43 @@ const RequirementsScheme = () => {
     });
   };
 
+  const closeUploadModal = () => {
+    setUploadVisible(false);
+    setFileList([]);
+    setYamlText('');
+    setParseErrors([]);
+  };
+
+  const handleFileChange = (info: { fileList: FileItem[] }) => {
+    const files = info.fileList;
+    setFileList(files);
+    setParseErrors([]);
+    setYamlText('');
+    const file = files[0]?.fileInstance;
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => setYamlText((e.target?.result as string) ?? '');
+    reader.onerror = () => Toast.error(t('requirements.scheme.uploadReadError'));
+    reader.readAsText(file);
+  };
+
+  const beforeUpload = ({ file }: { file: FileItem }) => {
+    const inst = file.fileInstance;
+    if (!inst) return false;
+    const isYaml = /\.(ya?ml)$/i.test(inst.name);
+    if (!isYaml) {
+      Toast.error(t('requirements.scheme.uploadFileTypeError'));
+      return { fileInstance: inst, status: 'validateFail', shouldUpload: false } as never;
+    }
+    if (inst.size > 1024 * 1024) {
+      Toast.error(t('requirements.scheme.uploadFileTooLarge'));
+      return { fileInstance: inst, status: 'validateFail', shouldUpload: false } as never;
+    }
+    return true;
+  };
+
   const handleUpload = async () => {
+    if (!yamlText) return;
     const result = parseSchemeYaml(yamlText);
     if (!result.ok) {
       setParseErrors(result.errors.map((e) => (e.line ? `第 ${e.line} 行: ${e.message}` : e.message)));
@@ -101,9 +139,7 @@ const RequirementsScheme = () => {
     }
     await addScheme(result.scheme!);
     Toast.success(t('requirements.scheme.uploadSuccess'));
-    setUploadVisible(false);
-    setYamlText('');
-    setParseErrors([]);
+    closeUploadModal();
     load();
   };
 
@@ -123,7 +159,7 @@ const RequirementsScheme = () => {
             onChange={setKeyword}
             showClear
           />
-          <Button icon={<Upload size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => setUploadVisible(true)}>
+          <Button icon={<UploadIcon size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => setUploadVisible(true)}>
             {t('requirements.scheme.upload')}
           </Button>
         </div>
@@ -200,20 +236,51 @@ const RequirementsScheme = () => {
       <Modal
         title={t('requirements.scheme.uploadTitle')}
         visible={uploadVisible}
-        onCancel={() => { setUploadVisible(false); setYamlText(''); setParseErrors([]); }}
+        onCancel={closeUploadModal}
         onOk={handleUpload}
         okText={t('requirements.scheme.parseAndCreate')}
         cancelText={t('common.cancel')}
+        okButtonProps={{ disabled: !yamlText }}
         width={600}
+        className="scheme-upload-modal"
+        maskClosable={false}
       >
         <Text type="tertiary" size="small">{t('requirements.scheme.uploadHint')}</Text>
-        <TextArea
-          value={yamlText}
-          onChange={(v) => { setYamlText(v); setParseErrors([]); }}
-          rows={12}
-          style={{ marginTop: 12, fontFamily: 'Menlo, monospace' }}
-          placeholder={'meta:\n  code: MY-SCHEME\n  name: 我的方案\n  version: 1.0.0\ncustom_fields: []\nassessment_models: {}\napproval_flow:\n  levels: []'}
-        />
+        <div style={{ marginTop: 12 }}>
+          <Upload
+            action=""
+            customRequest={() => ({ abort: () => {} })}
+            accept=".yaml,.yml"
+            limit={1}
+            draggable
+            dragIcon={<Inbox size={36} strokeWidth={2} />}
+            dragMainText={t('requirements.scheme.uploadDragHint')}
+            dragSubText={t('requirements.scheme.uploadFileTypeHint')}
+            beforeUpload={beforeUpload}
+            onChange={handleFileChange}
+            onRemove={() => { setFileList([]); setYamlText(''); setParseErrors([]); return true; }}
+            fileList={fileList}
+            className="scheme-upload-uploader"
+          />
+          {fileList.length > 0 && fileList[0].fileInstance && (
+            <div className="scheme-upload-file-info">
+              <div className="file-info-left">
+                <FileIcon size={16} strokeWidth={2} />
+                <span className="file-name">{fileList[0].fileInstance.name}</span>
+                <span className="file-size">
+                  {(fileList[0].fileInstance.size / 1024).toFixed(1)} KB
+                </span>
+              </div>
+              <Button
+                icon={<X size={14} strokeWidth={2} />}
+                type="tertiary"
+                theme="borderless"
+                size="small"
+                onClick={() => { setFileList([]); setYamlText(''); setParseErrors([]); }}
+              />
+            </div>
+          )}
+        </div>
         {parseErrors.length > 0 && (
           <div style={{ marginTop: 12, padding: 12, background: 'var(--semi-color-danger-light-default)', borderRadius: 4 }}>
             {parseErrors.map((e, i) => (
