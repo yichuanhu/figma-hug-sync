@@ -5,7 +5,6 @@ import {
   Form,
   Toast,
   Button,
-  DatePicker,
   Upload,
   Typography,
 } from '@douyinfe/semi-ui';
@@ -14,6 +13,8 @@ import type { RequirementItem } from '../../types';
 import DepartmentSelect from '@/components/DepartmentSelect';
 import OwnerSelect from '@/components/OwnerSelect';
 import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
+import { getActiveScheme } from '../../mockData';
+import SchemeFieldRenderer from '../SchemeFieldRenderer';
 import './index.less';
 
 const { Text } = Typography;
@@ -47,8 +48,14 @@ const RequirementFormModal = ({
     [t],
   );
 
+  const activeScheme = useMemo(() => getActiveScheme(), []);
+
   const initialValues = useMemo(() => {
     if (isEdit && editData) {
+      const formData = (editData.form_data ?? {}) as Record<string, unknown>;
+      // 把 0~1 的 ratio 反向归一化为 0~100 显示
+      const ratio = formData.automationRatio;
+      const ratioDisplay = typeof ratio === 'number' && ratio <= 1 ? ratio * 100 : ratio;
       return {
         title: editData.title,
         description: editData.description,
@@ -59,6 +66,8 @@ const RequirementFormModal = ({
         expectedLaunchDate: editData.expectedLaunchDate
           ? new Date(editData.expectedLaunchDate)
           : undefined,
+        ...formData,
+        automationRatio: ratioDisplay,
       };
     }
     return {
@@ -81,7 +90,21 @@ const RequirementFormModal = ({
     setLoading(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 300));
-      onSuccess(values);
+      // 把动态字段拆分到 form_data，系统字段保留在顶层
+      const systemKeys = new Set([
+        'title', 'description', 'businessBackground', 'department', 'priority',
+        'contactInfo', 'expectedLaunchDate',
+      ]);
+      const form_data: Record<string, unknown> = {};
+      activeScheme.custom_fields.forEach((f) => {
+        if (values[f.key] !== undefined) form_data[f.key] = values[f.key];
+      });
+      const submitValues = { ...values, form_data };
+      // 移除已抽到 form_data 的 key（防止系统字段被污染）
+      Object.keys(form_data).forEach((k) => {
+        if (!systemKeys.has(k)) delete (submitValues as Record<string, unknown>)[k];
+      });
+      onSuccess(submitValues);
       Toast.success(
         isEdit
           ? t('requirements.form.editSuccess')
