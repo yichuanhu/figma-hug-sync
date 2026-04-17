@@ -1,0 +1,93 @@
+.maintenance-config-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  &-header {
+    flex-shrink: 0;
+    margin-bottom: 16px;
+
+    .title {
+      margin-bottom: 8px;
+    }
+  }
+
+  &-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  &-body {
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+
+    .semi-tabs {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .semi-tabs-content {
+      flex: 1;
+      overflow: auto;
+      min-height: 0;
+      padding-right: 4px;
+    }
+  }
+
+  .config-section {
+    background: var(--semi-color-bg-1);
+    border: 1px solid var(--semi-color-border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 16px;
+
+    &__title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--semi-color-text-0);
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--semi-color-border);
+    }
+
+    &__grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px 24px;
+    }
+
+    &__field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+
+      label {
+        font-size: 13px;
+        color: var(--semi-color-text-1);
+      }
+    }
+
+    &__full {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .dict-editor {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    &__row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+  }
+}
