@@ -12,12 +12,17 @@ import {
   Toast,
   Dropdown,
   TextArea,
+  Row,
+  Col,
+  Space,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
+import DepartmentSelect from '@/components/DepartmentSelect';
+import FilterPopover from '@/components/FilterPopover';
 import type { RequirementItem } from '../RequirementsWorkbench/types';
 import {
   statusConfig,
