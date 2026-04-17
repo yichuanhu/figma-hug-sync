@@ -409,7 +409,6 @@ const RequirementsAssessment = () => {
                   onVisibleChange={setFilterPopoverVisible}
                   onConfirm={(values) => {
                     setConclusionFilter((values.conclusion as string) || 'ALL');
-                    setSortKey((values.sort as 'default' | 'netScoreDesc' | 'netScoreAsc') || 'default');
                   }}
                   sections={[
                     {
@@ -423,17 +422,6 @@ const RequirementsAssessment = () => {
                         { label: t('requirements.assessmentV2.conclusion.REJECT'), value: 'REJECT' },
                       ],
                       value: conclusionFilter,
-                    },
-                    {
-                      key: 'sort',
-                      label: t('requirements.assessment.sortBy'),
-                      type: 'radio',
-                      options: [
-                        { label: t('requirements.assessment.sortDefault'), value: 'default' },
-                        { label: t('requirements.assessment.sortNetScoreDesc'), value: 'netScoreDesc' },
-                        { label: t('requirements.assessment.sortNetScoreAsc'), value: 'netScoreAsc' },
-                      ],
-                      value: sortKey,
                     },
                   ]}
                 />
