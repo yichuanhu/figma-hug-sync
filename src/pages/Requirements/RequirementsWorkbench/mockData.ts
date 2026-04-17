@@ -591,9 +591,22 @@ export const updateRequirementStatus = async (
   await new Promise((resolve) => setTimeout(resolve, 300));
   const index = mockRequirementData.findIndex((item) => item.id === id);
   if (index === -1) return null;
+  const cur = mockRequirementData[index];
+  const target = newStatus as RequirementStatus;
+
+  // 切到 PENDING_APPROVAL 时按方案生成审批流快照（无快照才生成，避免覆盖已有进度）
+  let nextFlow = cur.approvalFlowConfig;
+  if (target === 'PENDING_APPROVAL' && !nextFlow) {
+    nextFlow = generateMockApprovalFlow('PENDING_APPROVAL', {
+      creatorId: cur.creatorId,
+      owning_department_id: cur.owning_department_id,
+    });
+  }
+
   mockRequirementData[index] = {
-    ...mockRequirementData[index],
-    status: newStatus as RequirementStatus,
+    ...cur,
+    status: target,
+    approvalFlowConfig: nextFlow,
     updatedAt: new Date().toISOString(),
   };
   return mockRequirementData[index];
