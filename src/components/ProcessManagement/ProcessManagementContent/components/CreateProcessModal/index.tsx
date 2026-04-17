@@ -4,6 +4,7 @@ import { Modal, Form, Toast, Button } from '@douyinfe/semi-ui';
 import type { LYCreateProcessRequest, LYProcessResponse } from '@/api';
 import DepartmentSelect from '@/components/DepartmentSelect';
 import OwnerSelect from '@/components/OwnerSelect';
+import WorkspaceSelect from '@/components/WorkspaceSelect';
 import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 import './index.less';
 
@@ -50,6 +51,7 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
   const [loading, setLoading] = useState(false);
   const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>(undefined);
   const [ownerId, setOwnerId] = useState<string>(MOCK_CURRENT_USER.id);
+  const [workspaceId, setWorkspaceId] = useState<string | undefined>(undefined);
 
   const existingProcessNames = ['订单自动处理流程', '财务报销审批流程', '人事入职流程'];
 
@@ -81,6 +83,11 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
     try {
       if (!owningDepartmentId) {
         Toast.warning(t('common.owningDepartmentRequired'));
+        setLoading(false);
+        return;
+      }
+      if (!workspaceId) {
+        Toast.warning(t('workspaceSelect.required'));
         setLoading(false);
         return;
       }
@@ -147,7 +154,24 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
         <Form.Slot label={t('common.owningDepartment')}>
           <DepartmentSelect
             value={owningDepartmentId}
-            onChange={setOwningDepartmentId}
+            onChange={(v) => {
+              setOwningDepartmentId(v);
+              setWorkspaceId(undefined);
+            }}
+          />
+        </Form.Slot>
+
+        <Form.Slot label={{ text: t('workspaceSelect.label'), required: true }}>
+          <WorkspaceSelect
+            value={workspaceId}
+            onChange={setWorkspaceId}
+            departmentId={owningDepartmentId}
+            placeholder={
+              owningDepartmentId
+                ? t('workspaceSelect.placeholder')
+                : t('workspaceSelect.pickDeptFirst')
+            }
+            disabled={!owningDepartmentId}
           />
         </Form.Slot>
 

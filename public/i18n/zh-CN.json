@@ -2002,7 +2002,8 @@
       "validation": {
         "noProcessSelected": "请至少选择一个流程",
         "descriptionRequired": "请输入发布描述",
-        "missingProductionValues": "请为未发布的资源填写生产值"
+        "missingProductionValues": "请为未发布的资源填写生产值",
+        "noWorkspaceWithRequirement": "发布失败：没有任何工作空间关联了需求。请先在「项目与工作空间」为流程所属工作空间关联同部门下的需求。"
       },
       "addResource": {
         "button": "添加资源",
@@ -3091,5 +3092,11 @@
         "checkSuccess": "探活完成"
       }
     }
+  },
+  "workspaceSelect": {
+    "label": "所属工作空间",
+    "placeholder": "请选择所属工作空间",
+    "pickDeptFirst": "请先选择关联部门",
+    "required": "请选择所属工作空间"
   }
 }

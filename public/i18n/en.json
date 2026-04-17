@@ -2485,7 +2485,8 @@
       "validation": {
         "noProcessSelected": "Select at least one process",
         "descriptionRequired": "Please enter description",
-        "missingProductionValues": "Please fill production values for unpublished resources"
+        "missingProductionValues": "Please fill production values for unpublished resources",
+        "noWorkspaceWithRequirement": "Release blocked: no workspace has linked requirements. Please link a same-department requirement to the process's workspace in Project & Workspace first."
       },
       "addResource": {
         "button": "Add Resource",
@@ -3724,5 +3725,11 @@
         "checkSuccess": "Check completed"
       }
     }
+  },
+  "workspaceSelect": {
+    "label": "Workspace",
+    "placeholder": "Select workspace",
+    "pickDeptFirst": "Select department first",
+    "required": "Please select a workspace"
   }
 }
