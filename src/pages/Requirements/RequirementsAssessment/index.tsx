@@ -9,13 +9,17 @@ import {
   Button,
   Input,
   Dropdown,
-  Select,
+  Row,
+  Col,
+  Space,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
+import DepartmentSelect from '@/components/DepartmentSelect';
+import FilterPopover from '@/components/FilterPopover';
 import type { RequirementItem } from '../RequirementsWorkbench/types';
 import {
   statusConfig,
@@ -44,6 +48,8 @@ const RequirementsAssessment = () => {
   const [searchValue, setSearchValue] = useState('');
   const [conclusionFilter, setConclusionFilter] = useState<string>('ALL');
   const [sortKey, setSortKey] = useState<'default' | 'netScoreDesc' | 'netScoreAsc'>('default');
+  const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
+  const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [allRequirements, setAllRequirements] = useState<RequirementItem[]>([]);
@@ -112,6 +118,9 @@ const RequirementsAssessment = () => {
         (item) => item.title.toLowerCase().includes(kw) || item.description.toLowerCase().includes(kw),
       );
     }
+    if (departmentFilter.length > 0) {
+      data = data.filter((item) => departmentFilter.includes(item.owning_department_name));
+    }
     if (activeTab !== 'pending' && conclusionFilter !== 'ALL') {
       data = data.filter((item) => item.detailedAssessment?.conclusion === conclusionFilter);
     }
@@ -123,7 +132,7 @@ const RequirementsAssessment = () => {
       });
     }
     return data;
-  }, [activeTab, allRequirements, searchValue, conclusionFilter, sortKey]);
+  }, [activeTab, allRequirements, searchValue, departmentFilter, conclusionFilter, sortKey]);
 
   const handleStatusChange = async (id: string, newStatus: string, comment?: string) => {
     await updateRequirementStatus(id, newStatus, comment);
@@ -369,6 +378,71 @@ const RequirementsAssessment = () => {
       </div>
 
       <div className="requirements-assessment-content">
+        <Row
+          type="flex"
+          justify="space-between"
+          align="middle"
+          className="requirements-assessment-toolbar"
+        >
+          <Col>
+            <Space>
+              <Input
+                prefix={<IconSearchStroked />}
+                placeholder={t('requirements.assessment.searchPlaceholder')}
+                className="requirements-assessment-search-input"
+                value={searchValue}
+                onChange={setSearchValue}
+                showClear
+                maxLength={100}
+              />
+              <DepartmentSelect
+                placeholder={t('common.filterDepartment')}
+                value={departmentFilter}
+                onChange={(v) => setDepartmentFilter(v as string[])}
+                multiple
+                showClear
+                maxTagCount={1}
+                useNameAsValue
+                style={{ width: 'auto', minWidth: 150, maxWidth: 600 }}
+              />
+              {activeTab !== 'pending' && (
+                <FilterPopover
+                  visible={filterPopoverVisible}
+                  onVisibleChange={setFilterPopoverVisible}
+                  onConfirm={(values) => {
+                    setConclusionFilter((values.conclusion as string) || 'ALL');
+                    setSortKey((values.sort as 'default' | 'netScoreDesc' | 'netScoreAsc') || 'default');
+                  }}
+                  sections={[
+                    {
+                      key: 'conclusion',
+                      label: t('requirements.assessment.filterConclusion'),
+                      type: 'radio',
+                      options: [
+                        { label: t('requirements.assessment.filterConclusionAll'), value: 'ALL' },
+                        { label: t('requirements.assessmentV2.conclusion.RECOMMEND'), value: 'RECOMMEND' },
+                        { label: t('requirements.assessmentV2.conclusion.CAUTION'), value: 'CAUTION' },
+                        { label: t('requirements.assessmentV2.conclusion.REJECT'), value: 'REJECT' },
+                      ],
+                      value: conclusionFilter,
+                    },
+                    {
+                      key: 'sort',
+                      label: t('requirements.assessment.sortBy'),
+                      type: 'radio',
+                      options: [
+                        { label: t('requirements.assessment.sortDefault'), value: 'default' },
+                        { label: t('requirements.assessment.sortNetScoreDesc'), value: 'netScoreDesc' },
+                        { label: t('requirements.assessment.sortNetScoreAsc'), value: 'netScoreAsc' },
+                      ],
+                      value: sortKey,
+                    },
+                  ]}
+                />
+              )}
+            </Space>
+          </Col>
+        </Row>
         <Tabs activeKey={activeTab} onChange={(k) => setActiveTab(k as AssessTab)} keepDOM={false}>
           <TabPane
             tab={
@@ -383,16 +457,6 @@ const RequirementsAssessment = () => {
             }
             itemKey="pending"
           >
-            <div className="requirements-assessment-toolbar">
-              <Input
-                prefix={<IconSearchStroked />}
-                placeholder={t('requirements.assessment.searchPlaceholder')}
-                className="requirements-assessment-search"
-                value={searchValue}
-                onChange={setSearchValue}
-                showClear
-              />
-            </div>
             {isInitialLoad ? (
               <TableSkeleton rows={6} columns={9} />
             ) : (
@@ -423,37 +487,6 @@ const RequirementsAssessment = () => {
           </TabPane>
 
           <TabPane tab={t('requirements.assessment.assessedByMe')} itemKey="assessed">
-            <div className="requirements-assessment-toolbar">
-              <Input
-                prefix={<IconSearchStroked />}
-                placeholder={t('requirements.assessment.searchPlaceholder')}
-                className="requirements-assessment-search"
-                value={searchValue}
-                onChange={setSearchValue}
-                showClear
-              />
-              <Select
-                value={conclusionFilter}
-                onChange={(v) => setConclusionFilter(v as string)}
-                style={{ width: 160 }}
-                prefix={t('requirements.assessment.filterConclusion')}
-              >
-                <Select.Option value="ALL">{t('requirements.assessment.filterConclusionAll')}</Select.Option>
-                <Select.Option value="RECOMMEND">{t('requirements.assessmentV2.conclusion.RECOMMEND')}</Select.Option>
-                <Select.Option value="CAUTION">{t('requirements.assessmentV2.conclusion.CAUTION')}</Select.Option>
-                <Select.Option value="REJECT">{t('requirements.assessmentV2.conclusion.REJECT')}</Select.Option>
-              </Select>
-              <Select
-                value={sortKey}
-                onChange={(v) => setSortKey(v as typeof sortKey)}
-                style={{ width: 220 }}
-                prefix={t('requirements.assessment.sortBy')}
-              >
-                <Select.Option value="default">{t('requirements.assessment.sortDefault')}</Select.Option>
-                <Select.Option value="netScoreDesc">{t('requirements.assessment.sortNetScoreDesc')}</Select.Option>
-                <Select.Option value="netScoreAsc">{t('requirements.assessment.sortNetScoreAsc')}</Select.Option>
-              </Select>
-            </div>
             {isInitialLoad ? (
               <TableSkeleton rows={6} columns={9} />
             ) : (
@@ -480,37 +513,6 @@ const RequirementsAssessment = () => {
           </TabPane>
 
           <TabPane tab={t('requirements.assessment.allAssessments')} itemKey="all">
-            <div className="requirements-assessment-toolbar">
-              <Input
-                prefix={<IconSearchStroked />}
-                placeholder={t('requirements.assessment.searchPlaceholder')}
-                className="requirements-assessment-search"
-                value={searchValue}
-                onChange={setSearchValue}
-                showClear
-              />
-              <Select
-                value={conclusionFilter}
-                onChange={(v) => setConclusionFilter(v as string)}
-                style={{ width: 160 }}
-                prefix={t('requirements.assessment.filterConclusion')}
-              >
-                <Select.Option value="ALL">{t('requirements.assessment.filterConclusionAll')}</Select.Option>
-                <Select.Option value="RECOMMEND">{t('requirements.assessmentV2.conclusion.RECOMMEND')}</Select.Option>
-                <Select.Option value="CAUTION">{t('requirements.assessmentV2.conclusion.CAUTION')}</Select.Option>
-                <Select.Option value="REJECT">{t('requirements.assessmentV2.conclusion.REJECT')}</Select.Option>
-              </Select>
-              <Select
-                value={sortKey}
-                onChange={(v) => setSortKey(v as typeof sortKey)}
-                style={{ width: 220 }}
-                prefix={t('requirements.assessment.sortBy')}
-              >
-                <Select.Option value="default">{t('requirements.assessment.sortDefault')}</Select.Option>
-                <Select.Option value="netScoreDesc">{t('requirements.assessment.sortNetScoreDesc')}</Select.Option>
-                <Select.Option value="netScoreAsc">{t('requirements.assessment.sortNetScoreAsc')}</Select.Option>
-              </Select>
-            </div>
             {isInitialLoad ? (
               <TableSkeleton rows={6} columns={9} />
             ) : (

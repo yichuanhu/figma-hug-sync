@@ -12,12 +12,17 @@ import {
   Toast,
   Dropdown,
   TextArea,
+  Row,
+  Col,
+  Space,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
+import DepartmentSelect from '@/components/DepartmentSelect';
+import FilterPopover from '@/components/FilterPopover';
 import type { RequirementItem } from '../RequirementsWorkbench/types';
 import {
   statusConfig,
@@ -54,6 +59,9 @@ const RequirementsReview = () => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<ReviewTab>('pending');
   const [searchValue, setSearchValue] = useState('');
+  const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
+  const [statusFilter, setStatusFilter] = useState<string[]>([]);
+  const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [allRequirements, setAllRequirements] = useState<RequirementItem[]>([]);
@@ -134,8 +142,14 @@ const RequirementsReview = () => {
           item.title.toLowerCase().includes(kw) || item.description.toLowerCase().includes(kw),
       );
     }
+    if (departmentFilter.length > 0) {
+      data = data.filter((item) => departmentFilter.includes(item.owning_department_name));
+    }
+    if (statusFilter.length > 0) {
+      data = data.filter((item) => statusFilter.includes(item.status));
+    }
     return data;
-  }, [activeTab, allRequirements, searchValue]);
+  }, [activeTab, allRequirements, searchValue, departmentFilter, statusFilter]);
 
   // 审批操作（走多级审批引擎）
   const openApprovalModal = (record: RequirementItem, action: 'approve' | 'reject') => {
@@ -467,6 +481,57 @@ const RequirementsReview = () => {
 
       {/* Tabs + 表格 */}
       <div className="requirements-review-content">
+        <Row
+          type="flex"
+          justify="space-between"
+          align="middle"
+          className="requirements-review-toolbar"
+        >
+          <Col>
+            <Space>
+              <Input
+                prefix={<IconSearchStroked />}
+                placeholder={t('requirements.review.searchPlaceholder')}
+                className="requirements-review-search-input"
+                value={searchValue}
+                onChange={setSearchValue}
+                showClear
+                maxLength={100}
+              />
+              <DepartmentSelect
+                placeholder={t('common.filterDepartment')}
+                value={departmentFilter}
+                onChange={(v) => setDepartmentFilter(v as string[])}
+                multiple
+                showClear
+                maxTagCount={1}
+                useNameAsValue
+                style={{ width: 'auto', minWidth: 150, maxWidth: 600 }}
+              />
+              <FilterPopover
+                visible={filterPopoverVisible}
+                onVisibleChange={setFilterPopoverVisible}
+                onConfirm={(values) => {
+                  setStatusFilter((values.status as string[]) || []);
+                }}
+                sections={[
+                  {
+                    key: 'status',
+                    label: t('common.status'),
+                    type: 'checkbox',
+                    options: [
+                      { label: t('requirements.status.pendingApproval'), value: 'PENDING_APPROVAL' },
+                      { label: t('requirements.status.rejected'), value: 'REJECTED' },
+                      { label: t('requirements.status.withdrawn'), value: 'WITHDRAWN' },
+                      { label: t('requirements.status.approved'), value: 'APPROVED' },
+                    ],
+                    value: statusFilter,
+                  },
+                ]}
+              />
+            </Space>
+          </Col>
+        </Row>
         <Tabs
           activeKey={activeTab}
           onChange={(key) => setActiveTab(key as ReviewTab)}
@@ -485,16 +550,6 @@ const RequirementsReview = () => {
             }
             itemKey="pending"
           >
-            <div className="requirements-review-toolbar">
-              <Input
-                prefix={<IconSearchStroked />}
-                placeholder={t('requirements.review.searchPlaceholder')}
-                className="requirements-review-search"
-                value={searchValue}
-                onChange={setSearchValue}
-                showClear
-              />
-            </div>
             {isInitialLoad ? (
               <TableSkeleton rows={6} columns={7} columnWidths={['22%', '10%', '10%', '8%', '12%', '14%', '14%']} />
             ) : (
@@ -522,16 +577,6 @@ const RequirementsReview = () => {
           </TabPane>
 
           <TabPane tab={t('requirements.review.reviewedByMe')} itemKey="reviewed">
-            <div className="requirements-review-toolbar">
-              <Input
-                prefix={<IconSearchStroked />}
-                placeholder={t('requirements.review.searchPlaceholder')}
-                className="requirements-review-search"
-                value={searchValue}
-                onChange={setSearchValue}
-                showClear
-              />
-            </div>
             {isInitialLoad ? (
               <TableSkeleton rows={6} columns={6} columnWidths={['25%', '12%', '12%', '10%', '15%', '16%']} />
             ) : (
@@ -558,16 +603,6 @@ const RequirementsReview = () => {
           </TabPane>
 
           <TabPane tab={t('requirements.review.allReviews')} itemKey="all">
-            <div className="requirements-review-toolbar">
-              <Input
-                prefix={<IconSearchStroked />}
-                placeholder={t('requirements.review.searchPlaceholder')}
-                className="requirements-review-search"
-                value={searchValue}
-                onChange={setSearchValue}
-                showClear
-              />
-            </div>
             {isInitialLoad ? (
               <TableSkeleton rows={6} columns={7} columnWidths={['22%', '10%', '10%', '8%', '12%', '14%', '14%']} />
             ) : (
