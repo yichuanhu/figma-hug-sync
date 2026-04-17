@@ -598,20 +598,7 @@
         "inProgress": "进行中",
         "online": "全部上线",
         "failed": "存在异常"
-      },
-      "manage": "管理",
-      "manageTitle": "管理关联流程",
-      "linkedSection": "已关联",
-      "candidateSection": "可关联流程",
-      "searchPlaceholder": "按名称或编号搜索",
-      "noCandidate": "暂无可关联流程",
-      "link": "关联",
-      "unlink": "解除",
-      "linkSuccess": "关联成功",
-      "unlinkSuccess": "已解除关联",
-      "linkFailed": "关联失败",
-      "unlinkFailed": "解除失败",
-      "openProcess": "前往流程详情"
+      }
     },
     "assessmentV2": {
       "valueCard": "业务价值",

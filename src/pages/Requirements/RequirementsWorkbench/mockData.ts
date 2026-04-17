@@ -393,24 +393,12 @@ const generateMockVersions = (
   ];
 };
 
-/** Mock 流程候选池（供需求关联流程选择） */
-export const MOCK_PROCESS_POOL: LinkedProcess[] = [
-  { id: 'proc-001', name: 'Procurement Approval Process', status: 'ONLINE',     ownerName: 'Sarah Li' },
-  { id: 'proc-002', name: 'Invoice OCR Pipeline',         status: 'TESTING',    ownerName: 'Michael Wang' },
-  { id: 'proc-003', name: 'Vendor Notification Workflow', status: 'DEVELOPING', ownerName: 'Emily Chen' },
-  { id: 'proc-004', name: 'Customer Credit Assessment',   status: 'ONLINE',     ownerName: 'Jessica Liu' },
-  { id: 'proc-005', name: 'Payroll Data Validation',      status: 'PENDING',    ownerName: 'Emily Chen' },
-  { id: 'proc-006', name: 'Server Health Monitoring',     status: 'ONLINE',     ownerName: 'Angela Wu' },
-  { id: 'proc-007', name: 'Expense Report Processing',    status: 'TESTING',    ownerName: 'Robert Xu' },
-  { id: 'proc-008', name: 'Freight Cost Optimization',    status: 'FAILED',     ownerName: 'David Zhang' },
-];
-
 const generateMockLinkedProcesses = (status: RequirementStatus, idx: number): LinkedProcess[] | undefined => {
   if (!(['DEVELOPING', 'LAUNCHED', 'OFFLINE'] as RequirementStatus[]).includes(status)) return undefined;
   const pool: LinkedProcess[] = [
-    MOCK_PROCESS_POOL[0],
-    MOCK_PROCESS_POOL[1],
-    { ...MOCK_PROCESS_POOL[2], status: idx % 3 === 0 ? 'FAILED' : 'DEVELOPING' },
+    { id: 'proc-001', name: 'Procurement Approval Process', status: 'ONLINE',     ownerName: 'Sarah Li' },
+    { id: 'proc-002', name: 'Invoice OCR Pipeline',         status: 'TESTING',    ownerName: 'Michael Wang' },
+    { id: 'proc-003', name: 'Vendor Notification Workflow', status: idx % 3 === 0 ? 'FAILED' : 'DEVELOPING', ownerName: 'Emily Chen' },
   ];
   return pool.slice(0, (idx % 3) + 1);
 };
@@ -542,7 +530,6 @@ export const createRequirement = async (values: Record<string, unknown>): Promis
     form_data,
     baselineFormData: baseline,
     costEstimate: cost,
-    approvalFlowConfig: undefined,
     version: 1,
     createdAt: now,
     updatedAt: now,
@@ -645,16 +632,9 @@ export const updateRequirementStatus = async (
   await new Promise((resolve) => setTimeout(resolve, 300));
   const index = mockRequirementData.findIndex((item) => item.id === id);
   if (index === -1) return null;
-  const cur = mockRequirementData[index];
-  // 进入审批 / 被驳回时按当前激活方案重新生成审批流，使方案管理页编辑后立即生效
-  const shouldRegenFlow = newStatus === 'PENDING_APPROVAL' || newStatus === 'REJECTED';
-  const nextFlow = shouldRegenFlow
-    ? generateMockApprovalFlow(newStatus as RequirementStatus)
-    : cur.approvalFlowConfig;
   mockRequirementData[index] = {
-    ...cur,
+    ...mockRequirementData[index],
     status: newStatus as RequirementStatus,
-    approvalFlowConfig: nextFlow,
     updatedAt: new Date().toISOString(),
   };
   return mockRequirementData[index];
@@ -696,37 +676,19 @@ export const updateRequirementAssessment = async (
 
 // ============= Story-006 多级审批 mock =============
 
-import { getActiveScheme as getActiveSchemeFromStore } from './schemeConfig';
-import type { ApprovalLevelConfig, ApprovalFlowMode } from './types';
+const APPROVAL_LEVEL_TEMPLATES: Array<{ name: string; mode: ApprovalFlowLevel['mode']; approvers: Array<{ id: string; name: string }> }> = [
+  { name: '部门主管审批', mode: 'any_one', approvers: [{ id: 'user-001', name: 'John Smith' }, { id: 'user-007', name: 'Robert Xu' }] },
+  { name: '业务审批（会签）', mode: 'all',     approvers: [{ id: 'user-002', name: 'Emily Chen' }, { id: 'user-006', name: 'Jessica Liu' }] },
+  { name: 'IT 复核',         mode: 'any_one', approvers: [{ id: 'user-008', name: 'Angela Wu' }, { id: 'user-003', name: 'Michael Wang' }] },
+];
 
-/** 将 Scheme 的 ApprovalLevelConfig 适配为运行时 ApprovalFlowLevel（仅 user 类型支持具名审批人） */
-const adaptSchemeLevel = (lvl: ApprovalLevelConfig): {
-  name: string;
-  mode: ApprovalFlowMode;
-  approvers: Array<{ id: string; name: string }>;
-} => {
-  const mode: ApprovalFlowMode = lvl.mode ?? (lvl.count_sign ? 'all' : 'any_one');
-  // 仅 user 类型直接取具名审批人；role/department 兜底取占位审批人
-  const approvers: Array<{ id: string; name: string }> = lvl.approver_type === 'user'
-    ? lvl.approver_ids.map((uid) => ({ id: uid, name: mockCreators[uid]?.name ?? uid }))
-    : [{ id: 'user-007', name: mockCreators['user-007'].name }];
-  return { name: lvl.name, mode, approvers };
-};
-
-/** 根据需求当前状态推导审批流的进度（mock）— 接入激活方案 approval_flow */
+/** 根据需求当前状态推导审批流的进度（mock） */
 export const generateMockApprovalFlow = (status: RequirementStatus): MultiLevelApprovalConfig | undefined => {
   if (status === 'DRAFT' || status === 'WITHDRAWN') return undefined;
 
-  const scheme = getActiveSchemeFromStore();
-  const schemeLevels = scheme?.approval_flow?.levels ?? [];
-  if (schemeLevels.length === 0) return undefined;
-
-  const sorted = [...schemeLevels].sort((a, b) => a.order - b.order);
-  const templates = sorted.map(adaptSchemeLevel);
-
   const baseTime = new Date(2026, 1, 10).getTime();
   const buildLevel = (idx: number, levelStatus: 'all_approved' | 'pending_here' | 'wait' | 'rejected_here'): ApprovalFlowLevel => {
-    const tpl = templates[idx];
+    const tpl = APPROVAL_LEVEL_TEMPLATES[idx];
     const approvers: ApprovalFlowApprover[] = tpl.approvers.map((a, i) => {
       if (levelStatus === 'all_approved') {
         return { ...a, status: 'APPROVED', actedAt: new Date(baseTime + (idx * 2 + i) * 3600 * 1000).toISOString(), comment: '审核通过' };
@@ -743,18 +705,23 @@ export const generateMockApprovalFlow = (status: RequirementStatus): MultiLevelA
 
   let currentLevel = 1;
   const levels: ApprovalFlowLevel[] = [];
-  const total = templates.length;
 
   if (status === 'PENDING_APPROVAL') {
     currentLevel = 1;
-    for (let i = 0; i < total; i++) levels.push(buildLevel(i, i === 0 ? 'pending_here' : 'wait'));
+    levels.push(buildLevel(0, 'pending_here'));
+    levels.push(buildLevel(1, 'wait'));
+    levels.push(buildLevel(2, 'wait'));
   } else if (status === 'REJECTED') {
     currentLevel = 1;
-    for (let i = 0; i < total; i++) levels.push(buildLevel(i, i === 0 ? 'rejected_here' : 'wait'));
+    levels.push(buildLevel(0, 'rejected_here'));
+    levels.push(buildLevel(1, 'wait'));
+    levels.push(buildLevel(2, 'wait'));
   } else {
-    // PENDING_ASSESSMENT 及之后 → 全部通过
-    currentLevel = total + 1;
-    for (let i = 0; i < total; i++) levels.push(buildLevel(i, 'all_approved'));
+    // PENDING_ASSESSMENT / PENDING_PROJECT / DEVELOPING / LAUNCHED / OFFLINE → 全部通过
+    currentLevel = 4;
+    levels.push(buildLevel(0, 'all_approved'));
+    levels.push(buildLevel(1, 'all_approved'));
+    levels.push(buildLevel(2, 'all_approved'));
   }
 
   return { levels, currentLevel };
@@ -826,41 +793,4 @@ export const advanceApprovalFlow = async (
   return mockRequirementData[index];
 };
 
-// ============= Story-009 关联流程 增删 =============
-
-export const addLinkedProcess = async (
-  requirementId: string,
-  processId: string,
-): Promise<RequirementItem | null> => {
-  await new Promise((resolve) => setTimeout(resolve, 200));
-  const index = mockRequirementData.findIndex((r) => r.id === requirementId);
-  if (index === -1) return null;
-  const cur = mockRequirementData[index];
-  const exists = (cur.linkedProcesses ?? []).some((p) => p.id === processId);
-  if (exists) return cur;
-  const proc = MOCK_PROCESS_POOL.find((p) => p.id === processId);
-  if (!proc) return cur;
-  mockRequirementData[index] = {
-    ...cur,
-    linkedProcesses: [...(cur.linkedProcesses ?? []), { ...proc }],
-    updatedAt: new Date().toISOString(),
-  };
-  return mockRequirementData[index];
-};
-
-export const removeLinkedProcess = async (
-  requirementId: string,
-  processId: string,
-): Promise<RequirementItem | null> => {
-  await new Promise((resolve) => setTimeout(resolve, 200));
-  const index = mockRequirementData.findIndex((r) => r.id === requirementId);
-  if (index === -1) return null;
-  const cur = mockRequirementData[index];
-  mockRequirementData[index] = {
-    ...cur,
-    linkedProcesses: (cur.linkedProcesses ?? []).filter((p) => p.id !== processId),
-    updatedAt: new Date().toISOString(),
-  };
-  return mockRequirementData[index];
-};
 

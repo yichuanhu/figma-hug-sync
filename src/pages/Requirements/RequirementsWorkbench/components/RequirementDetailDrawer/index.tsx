@@ -356,7 +356,7 @@ const RequirementDetailDrawer = ({
                   </div>
                 )}
 
-                <LinkedProcessesSection requirementId={data.id} processes={data.linkedProcesses} onChanged={onRefresh} />
+                <LinkedProcessesSection processes={data.linkedProcesses} />
 
                 <ArtifactSection data={data} />
 

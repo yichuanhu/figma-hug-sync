@@ -708,20 +708,7 @@
         "inProgress": "In Progress",
         "online": "All Online",
         "failed": "Has Failure"
-      },
-      "manage": "Manage",
-      "manageTitle": "Manage Linked Processes",
-      "linkedSection": "Linked",
-      "candidateSection": "Available Processes",
-      "searchPlaceholder": "Search by name or ID",
-      "noCandidate": "No available processes",
-      "link": "Link",
-      "unlink": "Unlink",
-      "linkSuccess": "Linked successfully",
-      "unlinkSuccess": "Unlinked successfully",
-      "linkFailed": "Failed to link",
-      "unlinkFailed": "Failed to unlink",
-      "openProcess": "Open process details"
+      }
     },
     "assessmentV2": {
       "valueCard": "Business Value",

@@ -86,9 +86,9 @@ export const PRESET_SCHEMES: RequirementScheme[] = [
     },
     approval_flow: {
       levels: [
-        { order: 1, name: '部门主管审批', approver_type: 'user', approver_ids: ['user-001', 'user-007'], mode: 'any_one' },
-        { order: 2, name: '业务审批（会签）', approver_type: 'user', approver_ids: ['user-002', 'user-006'], mode: 'all', count_sign: true },
-        { order: 3, name: 'IT 复核', approver_type: 'user', approver_ids: ['user-008', 'user-003'], mode: 'any_one' },
+        { order: 1, name: '直属主管审批', approver_type: 'role', approver_ids: ['role-line-manager'] },
+        { order: 2, name: '部门负责人审批', approver_type: 'role', approver_ids: ['role-dept-head'] },
+        { order: 3, name: '需求委员会审批', approver_type: 'department', approver_ids: ['dept-committee'] },
       ],
     },
     cost_config: {
@@ -144,7 +144,7 @@ export const PRESET_SCHEMES: RequirementScheme[] = [
     },
     approval_flow: {
       levels: [
-        { order: 1, name: '部门负责人审批', approver_type: 'user', approver_ids: ['user-007'], mode: 'any_one' },
+        { order: 1, name: '部门负责人审批', approver_type: 'role', approver_ids: ['role-dept-head'] },
       ],
     },
     cost_config: {
@@ -225,8 +225,8 @@ export const PRESET_SCHEMES: RequirementScheme[] = [
     },
     approval_flow: {
       levels: [
-        { order: 1, name: 'AI 团队评审', approver_type: 'user', approver_ids: ['user-008', 'user-003'], mode: 'all', count_sign: true },
-        { order: 2, name: '部门负责人审批', approver_type: 'user', approver_ids: ['user-007'], mode: 'any_one' },
+        { order: 1, name: 'AI 团队评审', approver_type: 'role', approver_ids: ['role-ai-lead'] },
+        { order: 2, name: '部门负责人审批', approver_type: 'role', approver_ids: ['role-dept-head'] },
       ],
     },
     cost_config: {
