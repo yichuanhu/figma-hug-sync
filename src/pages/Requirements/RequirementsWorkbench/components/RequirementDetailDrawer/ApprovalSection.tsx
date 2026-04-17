@@ -15,7 +15,7 @@ const ApprovalSection = ({ data, onStatusChange }: ApprovalSectionProps) => {
   const [reason, setReason] = useState('');
   const [submitting, setSubmitting] = useState<'approve' | 'reject' | null>(null);
 
-  if (data.status !== 'PENDING') return null;
+  if (data.status !== 'PENDING_APPROVAL') return null;
 
   const handleAction = async (action: 'approve' | 'reject') => {
     if (action === 'reject' && !reason.trim()) {

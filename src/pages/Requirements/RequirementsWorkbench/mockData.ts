@@ -1,20 +1,21 @@
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
-import type { RequirementItem, RequirementStatus, RequirementPriority, RequirementQueryParams, RequirementListResponse, ActivityRecord, TechnicalAssessment, RequirementArtifact } from './types';
+import type {
+  RequirementItem,
+  RequirementStatus,
+  RequirementPriority,
+  RequirementQueryParams,
+  RequirementListResponse,
+  ActivityRecord,
+  TechnicalAssessment,
+  RequirementArtifact,
+} from './types';
+import { statusConfigV2 } from './statusConfig';
 
-// ============= 状态/优先级配置 =============
+// ============= 旧 statusConfig（兼容，已迁移至 statusConfigV2） =============
 
-export const statusConfig: Record<RequirementStatus, { color: TagColor; i18nKey: string }> = {
-  DRAFT: { color: 'grey', i18nKey: 'requirements.status.draft' },
-  PENDING: { color: 'orange', i18nKey: 'requirements.status.pending' },
-  APPROVED: { color: 'green', i18nKey: 'requirements.status.approved' },
-  REJECTED: { color: 'red', i18nKey: 'requirements.status.rejected' },
-  ASSESSING: { color: 'purple', i18nKey: 'requirements.status.assessing' },
-  DEVELOPING: { color: 'blue', i18nKey: 'requirements.status.developing' },
-  DEVELOPED: { color: 'cyan', i18nKey: 'requirements.status.developed' },
-  RUNNING: { color: 'green', i18nKey: 'requirements.status.running' },
-  STOPPED: { color: 'orange', i18nKey: 'requirements.status.stopped' },
-  ARCHIVED: { color: 'grey', i18nKey: 'requirements.status.archived' },
-};
+export const statusConfig: Record<RequirementStatus, { color: TagColor; i18nKey: string }> = Object.fromEntries(
+  Object.entries(statusConfigV2).map(([k, v]) => [k, { color: v.color, i18nKey: v.i18nKey }])
+) as Record<RequirementStatus, { color: TagColor; i18nKey: string }>;
 
 export const priorityConfig: Record<RequirementPriority, { color: TagColor; i18nKey: string }> = {
   HIGH: { color: 'red', i18nKey: 'requirements.priority.high' },
@@ -36,8 +37,6 @@ const mockCreators: Record<string, { name: string; department: string; role: str
 };
 
 export { mockCreators };
-
-// ============= Mock 部门列表 =============
 
 export const departmentOptions = [
   { value: 'Finance', label: 'Finance' },
@@ -68,42 +67,46 @@ interface MockTemplate {
 }
 
 const mockTemplates: MockTemplate[] = [
-  { title: 'Monthly Financial Report Automation', description: 'Automate the generation and distribution of monthly financial reports across all business units, including data aggregation from ERP and CRM systems.', owning_department_name: 'Finance', owning_department_id: 'dept-001', creatorId: 'user-001', priority: 'HIGH', status: 'RUNNING' },
+  // 9 状态全覆盖（DRAFT / PENDING_APPROVAL / PENDING_ASSESSMENT / PENDING_PROJECT / DEVELOPING / LAUNCHED / OFFLINE / REJECTED / WITHDRAWN）
+  { title: 'Monthly Financial Report Automation', description: 'Automate the generation and distribution of monthly financial reports across all business units, including data aggregation from ERP and CRM systems.', owning_department_name: 'Finance', owning_department_id: 'dept-001', creatorId: 'user-001', priority: 'HIGH', status: 'LAUNCHED' },
   { title: 'Employee Onboarding Workflow', description: 'Streamline the new hire onboarding process including IT provisioning, badge creation, training enrollment, and benefits registration.', owning_department_name: 'HR', owning_department_id: 'dept-002', creatorId: 'user-002', priority: 'HIGH', status: 'DEVELOPING' },
-  { title: 'Invoice Processing Pipeline', description: 'Automated invoice capture, OCR extraction, three-way matching with POs, and routing for approval with exception handling.', owning_department_name: 'Finance', owning_department_id: 'dept-001', creatorId: 'user-007', priority: 'HIGH', status: 'APPROVED' },
-  { title: 'Vendor Registration Portal', description: 'Self-service vendor registration and qualification system with automated compliance checks and document verification.', owning_department_name: 'Procurement', owning_department_id: 'dept-004', creatorId: 'user-004', priority: 'MEDIUM', status: 'PENDING' },
-  { title: 'Warehouse Inventory Reconciliation', description: 'Automated daily inventory reconciliation between WMS and ERP systems with discrepancy alerting and resolution workflow.', owning_department_name: 'Logistics', owning_department_id: 'dept-005', creatorId: 'user-005', priority: 'MEDIUM', status: 'ASSESSING' },
+  { title: 'Invoice Processing Pipeline', description: 'Automated invoice capture, OCR extraction, three-way matching with POs, and routing for approval with exception handling.', owning_department_name: 'Finance', owning_department_id: 'dept-001', creatorId: 'user-007', priority: 'HIGH', status: 'PENDING_PROJECT' },
+  { title: 'Vendor Registration Portal', description: 'Self-service vendor registration and qualification system with automated compliance checks and document verification.', owning_department_name: 'Procurement', owning_department_id: 'dept-004', creatorId: 'user-004', priority: 'MEDIUM', status: 'PENDING_APPROVAL' },
+  { title: 'Warehouse Inventory Reconciliation', description: 'Automated daily inventory reconciliation between WMS and ERP systems with discrepancy alerting and resolution workflow.', owning_department_name: 'Logistics', owning_department_id: 'dept-005', creatorId: 'user-005', priority: 'MEDIUM', status: 'PENDING_ASSESSMENT' },
   { title: 'Customer Order Status Notification', description: 'Real-time order tracking and automated customer notification system via email and SMS for key status changes.', owning_department_name: 'Sales', owning_department_id: 'dept-006', creatorId: 'user-006', priority: 'LOW', status: 'DRAFT' },
-  { title: 'IT Service Desk Ticket Routing', description: 'Intelligent ticket classification and routing based on NLP analysis of ticket content, urgency detection, and SLA tracking.', owning_department_name: 'IT', owning_department_id: 'dept-003', creatorId: 'user-003', priority: 'HIGH', status: 'DEVELOPED' },
-  { title: 'Purchase Order Approval Workflow', description: 'Multi-level PO approval workflow with dynamic routing based on amount thresholds, budget validation, and vendor scoring.', owning_department_name: 'Procurement', owning_department_id: 'dept-004', creatorId: 'user-004', priority: 'HIGH', status: 'RUNNING' },
+  { title: 'IT Service Desk Ticket Routing', description: 'Intelligent ticket classification and routing based on NLP analysis of ticket content, urgency detection, and SLA tracking.', owning_department_name: 'IT', owning_department_id: 'dept-003', creatorId: 'user-003', priority: 'HIGH', status: 'DEVELOPING' },
+  { title: 'Purchase Order Approval Workflow', description: 'Multi-level PO approval workflow with dynamic routing based on amount thresholds, budget validation, and vendor scoring.', owning_department_name: 'Procurement', owning_department_id: 'dept-004', creatorId: 'user-004', priority: 'HIGH', status: 'LAUNCHED' },
   { title: 'Payroll Data Validation', description: 'Automated payroll data cross-validation against attendance records, leave management system, and benefit deductions.', owning_department_name: 'HR', owning_department_id: 'dept-002', creatorId: 'user-002', priority: 'MEDIUM', status: 'REJECTED' },
-  { title: 'Sales Commission Calculation', description: 'Automated monthly sales commission calculation based on tiered commission structures, deal registration rules, and quota attainment.', owning_department_name: 'Sales', owning_department_id: 'dept-006', creatorId: 'user-006', priority: 'MEDIUM', status: 'PENDING' },
-  { title: 'Contract Renewal Tracking', description: 'Proactive contract expiration monitoring with automated renewal reminders, stakeholder notifications, and renegotiation triggers.', owning_department_name: 'Procurement', owning_department_id: 'dept-004', creatorId: 'user-004', priority: 'LOW', status: 'APPROVED' },
+  { title: 'Sales Commission Calculation', description: 'Automated monthly sales commission calculation based on tiered commission structures, deal registration rules, and quota attainment.', owning_department_name: 'Sales', owning_department_id: 'dept-006', creatorId: 'user-006', priority: 'MEDIUM', status: 'PENDING_APPROVAL' },
+  { title: 'Contract Renewal Tracking', description: 'Proactive contract expiration monitoring with automated renewal reminders, stakeholder notifications, and renegotiation triggers.', owning_department_name: 'Procurement', owning_department_id: 'dept-004', creatorId: 'user-004', priority: 'LOW', status: 'PENDING_PROJECT' },
   { title: 'Employee Leave Management', description: 'End-to-end leave request workflow with balance calculations, manager approvals, calendar synchronization, and payroll integration.', owning_department_name: 'HR', owning_department_id: 'dept-002', creatorId: 'user-002', priority: 'MEDIUM', status: 'DEVELOPING' },
-  { title: 'Freight Cost Optimization', description: 'Automated freight carrier selection and rate comparison across multiple logistics providers with real-time cost optimization.', owning_department_name: 'Logistics', owning_department_id: 'dept-005', creatorId: 'user-005', priority: 'HIGH', status: 'ASSESSING' },
-  { title: 'Budget Variance Analysis', description: 'Automated monthly budget vs actual comparison with drill-down capabilities, trend analysis, and management exception reporting.', owning_department_name: 'Finance', owning_department_id: 'dept-001', creatorId: 'user-001', priority: 'MEDIUM', status: 'DRAFT' },
-  { title: 'Server Health Monitoring Dashboard', description: 'Automated infrastructure monitoring with alerting, capacity planning recommendations, and incident response workflow triggers.', owning_department_name: 'IT', owning_department_id: 'dept-003', creatorId: 'user-008', priority: 'HIGH', status: 'RUNNING' },
-  { title: 'Supplier Performance Scorecard', description: 'Quarterly supplier evaluation automation including delivery metrics, quality scores, pricing competitiveness, and compliance adherence.', owning_department_name: 'Procurement', owning_department_id: 'dept-004', creatorId: 'user-004', priority: 'LOW', status: 'DEVELOPED' },
-  { title: 'Customer Credit Assessment', description: 'Automated credit evaluation workflow for new customers including financial data retrieval, scoring model execution, and limit recommendations.', owning_department_name: 'Sales', owning_department_id: 'dept-006', creatorId: 'user-006', priority: 'HIGH', status: 'PENDING' },
-  { title: 'Compliance Audit Documentation', description: 'Automated compilation of compliance evidence packages, control testing documentation, and regulatory submission preparation.', owning_department_name: 'Finance', owning_department_id: 'dept-001', creatorId: 'user-007', priority: 'HIGH', status: 'APPROVED' },
+  { title: 'Freight Cost Optimization', description: 'Automated freight carrier selection and rate comparison across multiple logistics providers with real-time cost optimization.', owning_department_name: 'Logistics', owning_department_id: 'dept-005', creatorId: 'user-005', priority: 'HIGH', status: 'PENDING_ASSESSMENT' },
+  { title: 'Budget Variance Analysis', description: 'Automated monthly budget vs actual comparison with drill-down capabilities, trend analysis, and management exception reporting.', owning_department_name: 'Finance', owning_department_id: 'dept-001', creatorId: 'user-001', priority: 'MEDIUM', status: 'WITHDRAWN' },
+  { title: 'Server Health Monitoring Dashboard', description: 'Automated infrastructure monitoring with alerting, capacity planning recommendations, and incident response workflow triggers.', owning_department_name: 'IT', owning_department_id: 'dept-003', creatorId: 'user-008', priority: 'HIGH', status: 'LAUNCHED' },
+  { title: 'Supplier Performance Scorecard', description: 'Quarterly supplier evaluation automation including delivery metrics, quality scores, pricing competitiveness, and compliance adherence.', owning_department_name: 'Procurement', owning_department_id: 'dept-004', creatorId: 'user-004', priority: 'LOW', status: 'OFFLINE' },
+  { title: 'Customer Credit Assessment', description: 'Automated credit evaluation workflow for new customers including financial data retrieval, scoring model execution, and limit recommendations.', owning_department_name: 'Sales', owning_department_id: 'dept-006', creatorId: 'user-006', priority: 'HIGH', status: 'PENDING_APPROVAL' },
+  { title: 'Compliance Audit Documentation', description: 'Automated compilation of compliance evidence packages, control testing documentation, and regulatory submission preparation.', owning_department_name: 'Finance', owning_department_id: 'dept-001', creatorId: 'user-007', priority: 'HIGH', status: 'PENDING_PROJECT' },
   { title: 'Shift Scheduling Optimization', description: 'AI-driven workforce scheduling considering labor regulations, employee preferences, skill requirements, and demand forecasting.', owning_department_name: 'HR', owning_department_id: 'dept-002', creatorId: 'user-002', priority: 'MEDIUM', status: 'DRAFT' },
-  { title: 'Returns Processing Automation', description: 'Automated customer return handling with RMA generation, quality inspection routing, refund processing, and inventory restocking.', owning_department_name: 'Logistics', owning_department_id: 'dept-005', creatorId: 'user-005', priority: 'LOW', status: 'STOPPED' },
+  { title: 'Returns Processing Automation', description: 'Automated customer return handling with RMA generation, quality inspection routing, refund processing, and inventory restocking.', owning_department_name: 'Logistics', owning_department_id: 'dept-005', creatorId: 'user-005', priority: 'LOW', status: 'OFFLINE' },
   { title: 'Software License Management', description: 'Automated tracking of software licenses, usage monitoring, renewal alerting, compliance verification, and cost optimization.', owning_department_name: 'IT', owning_department_id: 'dept-003', creatorId: 'user-003', priority: 'MEDIUM', status: 'DEVELOPING' },
-  { title: 'Accounts Receivable Aging Report', description: 'Automated AR aging analysis with customer payment pattern recognition, dunning letter generation, and collection priority scoring.', owning_department_name: 'Finance', owning_department_id: 'dept-001', creatorId: 'user-001', priority: 'HIGH', status: 'RUNNING' },
-  { title: 'Delivery Route Planning', description: 'Optimized delivery route calculation considering traffic patterns, delivery windows, vehicle capacity, and fuel cost minimization.', owning_department_name: 'Logistics', owning_department_id: 'dept-005', creatorId: 'user-005', priority: 'HIGH', status: 'ASSESSING' },
-  { title: 'CRM Data Enrichment', description: 'Automated customer data enrichment from external sources including firmographic data, social media profiles, and industry classification.', owning_department_name: 'Sales', owning_department_id: 'dept-006', creatorId: 'user-006', priority: 'LOW', status: 'ARCHIVED' },
-  { title: 'Expense Report Processing', description: 'Automated expense report validation with receipt OCR, policy compliance checking, duplicate detection, and approval routing.', owning_department_name: 'Finance', owning_department_id: 'dept-001', creatorId: 'user-007', priority: 'MEDIUM', status: 'DEVELOPED' },
-  { title: 'Security Patch Deployment', description: 'Automated security patch assessment, testing pipeline, staged deployment across environments, and rollback procedures.', owning_department_name: 'IT', owning_department_id: 'dept-003', creatorId: 'user-008', priority: 'HIGH', status: 'PENDING' },
+  { title: 'Accounts Receivable Aging Report', description: 'Automated AR aging analysis with customer payment pattern recognition, dunning letter generation, and collection priority scoring.', owning_department_name: 'Finance', owning_department_id: 'dept-001', creatorId: 'user-001', priority: 'HIGH', status: 'LAUNCHED' },
+  { title: 'Delivery Route Planning', description: 'Optimized delivery route calculation considering traffic patterns, delivery windows, vehicle capacity, and fuel cost minimization.', owning_department_name: 'Logistics', owning_department_id: 'dept-005', creatorId: 'user-005', priority: 'HIGH', status: 'PENDING_ASSESSMENT' },
+  { title: 'CRM Data Enrichment', description: 'Automated customer data enrichment from external sources including firmographic data, social media profiles, and industry classification.', owning_department_name: 'Sales', owning_department_id: 'dept-006', creatorId: 'user-006', priority: 'LOW', status: 'OFFLINE' },
+  { title: 'Expense Report Processing', description: 'Automated expense report validation with receipt OCR, policy compliance checking, duplicate detection, and approval routing.', owning_department_name: 'Finance', owning_department_id: 'dept-001', creatorId: 'user-007', priority: 'MEDIUM', status: 'DEVELOPING' },
+  { title: 'Security Patch Deployment', description: 'Automated security patch assessment, testing pipeline, staged deployment across environments, and rollback procedures.', owning_department_name: 'IT', owning_department_id: 'dept-003', creatorId: 'user-008', priority: 'HIGH', status: 'PENDING_APPROVAL' },
   { title: 'Employee Performance Review Cycle', description: 'End-to-end performance review automation including goal setting, self-assessment collection, manager review, and calibration workflows.', owning_department_name: 'HR', owning_department_id: 'dept-002', creatorId: 'user-002', priority: 'MEDIUM', status: 'REJECTED' },
   { title: 'Procurement Demand Forecasting', description: 'ML-driven demand forecasting for procurement planning with safety stock optimization and automated purchase requisition generation.', owning_department_name: 'Procurement', owning_department_id: 'dept-004', creatorId: 'user-004', priority: 'HIGH', status: 'DRAFT' },
-  { title: 'Sales Pipeline Analytics', description: 'Automated pipeline health monitoring with win/loss analysis, deal velocity tracking, and revenue forecasting for management review.', owning_department_name: 'Sales', owning_department_id: 'dept-006', creatorId: 'user-006', priority: 'MEDIUM', status: 'APPROVED' },
+  { title: 'Sales Pipeline Analytics', description: 'Automated pipeline health monitoring with win/loss analysis, deal velocity tracking, and revenue forecasting for management review.', owning_department_name: 'Sales', owning_department_id: 'dept-006', creatorId: 'user-006', priority: 'MEDIUM', status: 'PENDING_PROJECT' },
   { title: 'Data Backup Verification', description: 'Automated backup integrity verification, restore testing, retention policy enforcement, and compliance reporting across all data stores.', owning_department_name: 'IT', owning_department_id: 'dept-003', creatorId: 'user-003', priority: 'HIGH', status: 'DEVELOPING' },
-  { title: 'Cross-Border Shipping Compliance', description: 'Automated customs documentation preparation, tariff classification, restricted party screening, and export control compliance.', owning_department_name: 'Logistics', owning_department_id: 'dept-005', creatorId: 'user-005', priority: 'HIGH', status: 'PENDING' },
-  { title: 'Tax Filing Preparation', description: 'Automated tax data compilation, calculation verification, filing preparation, and submission tracking for multiple jurisdictions.', owning_department_name: 'Finance', owning_department_id: 'dept-001', creatorId: 'user-001', priority: 'HIGH', status: 'STOPPED' },
+  { title: 'Cross-Border Shipping Compliance', description: 'Automated customs documentation preparation, tariff classification, restricted party screening, and export control compliance.', owning_department_name: 'Logistics', owning_department_id: 'dept-005', creatorId: 'user-005', priority: 'HIGH', status: 'PENDING_APPROVAL' },
+  { title: 'Tax Filing Preparation', description: 'Automated tax data compilation, calculation verification, filing preparation, and submission tracking for multiple jurisdictions.', owning_department_name: 'Finance', owning_department_id: 'dept-001', creatorId: 'user-001', priority: 'HIGH', status: 'OFFLINE' },
 ];
 
+// 视为"开发中之后"的状态
+const POST_DEV: RequirementStatus[] = ['DEVELOPING', 'LAUNCHED', 'OFFLINE'];
+
 const generateMockAssessment = (reqId: string, status: RequirementStatus): TechnicalAssessment | undefined => {
-  if (!['DEVELOPING', 'DEVELOPED', 'RUNNING'].includes(status)) return undefined;
+  if (!POST_DEV.includes(status)) return undefined;
   return {
     id: `assess-${reqId}`,
     requirementId: reqId,
@@ -115,14 +118,14 @@ const generateMockAssessment = (reqId: string, status: RequirementStatus): Techn
       externalDependency: 5,
       riskLevel: 4,
     },
-    uiAutomationScores: status === 'RUNNING' ? {
+    uiAutomationScores: status === 'LAUNCHED' ? {
       systemStability: 3,
       elementIdentifiability: 3,
       processStandardization: 5,
     } : undefined,
     adpScores: undefined,
-    totalScore: status === 'RUNNING' ? 27 : 16,
-    maxScore: status === 'RUNNING' ? 35 : 20,
+    totalScore: status === 'LAUNCHED' ? 27 : 16,
+    maxScore: status === 'LAUNCHED' ? 35 : 20,
     conclusion: 'PASSED',
     comment: 'The requirement has clear business logic and stable target systems. Recommended for implementation.',
     assessedAt: new Date(2026, 1, 15, 14, 0).toISOString(),
@@ -130,7 +133,7 @@ const generateMockAssessment = (reqId: string, status: RequirementStatus): Techn
 };
 
 const generateMockArtifacts = (reqId: string, status: RequirementStatus): RequirementArtifact[] => {
-  if (!['DEVELOPING', 'DEVELOPED', 'RUNNING'].includes(status)) return [];
+  if (!POST_DEV.includes(status)) return [];
   return [
     {
       id: `artifact-${reqId}-1`,
@@ -155,6 +158,9 @@ const generateMockArtifacts = (reqId: string, status: RequirementStatus): Requir
   ];
 };
 
+// 简单的价值/复杂度模拟得分
+const mockScore = (seed: number, base = 50, range = 50) => Math.round(base + ((seed * 17) % range));
+
 const generateMockRequirements = (): RequirementItem[] => {
   return mockTemplates.map((tpl, index) => {
     const creator = mockCreators[tpl.creatorId];
@@ -162,14 +168,22 @@ const generateMockRequirements = (): RequirementItem[] => {
     const updateDate = new Date(createDate.getTime() + (1 + (index % 15)) * 24 * 60 * 60 * 1000);
     const launchDate = new Date(createDate.getTime() + (30 + (index % 60)) * 24 * 60 * 60 * 1000);
     const id = generateUUID();
+    const reqNo = `REQ-2026-${String(index + 1).padStart(4, '0')}`;
+
+    const hasScores = tpl.status !== 'DRAFT' && tpl.status !== 'WITHDRAWN';
 
     return {
       id,
+      req_no: reqNo,
+      scheme_id: 'scheme-rpa-pro',
+      scheme_version: '1.0.0',
       title: tpl.title,
       description: tpl.description,
       businessBackground: index % 3 === 0 ? 'Current process is manual and time-consuming, requiring significant human effort. Automating this workflow will reduce processing time by 60% and minimize human errors.' : undefined,
       owning_department_name: tpl.owning_department_name,
       owning_department_id: tpl.owning_department_id,
+      owner_id: tpl.creatorId,
+      owner_name: creator.name,
       creatorId: tpl.creatorId,
       creatorName: creator.name,
       creatorDepartment: creator.department,
@@ -182,6 +196,9 @@ const generateMockRequirements = (): RequirementItem[] => {
       involvedTech: index % 4 === 0 ? ['UI_AUTOMATION'] : index % 4 === 1 ? ['ADP'] : index % 4 === 2 ? ['UI_AUTOMATION', 'ADP'] : undefined,
       assessment: generateMockAssessment(id, tpl.status),
       artifacts: generateMockArtifacts(id, tpl.status),
+      value_score: hasScores ? mockScore(index, 50, 50) : undefined,
+      complexity_score: hasScores ? mockScore(index + 7, 30, 60) : undefined,
+      version: 1,
       createdAt: createDate.toISOString(),
       updatedAt: updateDate.toISOString(),
     };
@@ -197,32 +214,28 @@ export const fetchRequirementList = async (params: RequirementQueryParams): Prom
 
   let filtered = [...mockRequirementData];
 
-  // 关键词搜索
   if (params.keyword?.trim()) {
     const kw = params.keyword.toLowerCase().trim();
     filtered = filtered.filter(
       (item) =>
         item.title.toLowerCase().includes(kw) ||
-        item.description.toLowerCase().includes(kw),
+        item.description.toLowerCase().includes(kw) ||
+        (item.req_no || '').toLowerCase().includes(kw),
     );
   }
 
-  // 状态筛选
   if (params.statusFilter && params.statusFilter.length > 0) {
     filtered = filtered.filter((item) => params.statusFilter!.includes(item.status));
   }
 
-  // 部门筛选
   if (params.departmentFilter && params.departmentFilter.length > 0) {
     filtered = filtered.filter((item) => params.departmentFilter!.includes(item.owning_department_name));
   }
 
-  // 优先级筛选
   if (params.priorityFilter && params.priorityFilter.length > 0) {
     filtered = filtered.filter((item) => params.priorityFilter!.includes(item.priority));
   }
 
-  // 排序
   filtered.sort((a, b) => {
     let vA: string;
     let vB: string;
@@ -245,7 +258,6 @@ export const fetchRequirementList = async (params: RequirementQueryParams): Prom
     return params.sort_order === 'asc' ? cmp : -cmp;
   });
 
-  // 分页
   const total = filtered.length;
   const offset = params.offset || 0;
   const size = params.size || 20;
@@ -257,23 +269,24 @@ export const fetchRequirementList = async (params: RequirementQueryParams): Prom
   };
 };
 
-// 删除 mock 需求
 export const deleteRequirement = async (id: string): Promise<void> => {
   await new Promise((resolve) => setTimeout(resolve, 500));
   mockRequirementData = mockRequirementData.filter((item) => item.id !== id);
 };
 
-// 创建 mock 需求
 export const createRequirement = async (values: Record<string, unknown>): Promise<RequirementItem> => {
   await new Promise((resolve) => setTimeout(resolve, 300));
   const now = new Date().toISOString();
   const creator = mockCreators['user-001'];
   const newItem: RequirementItem = {
     id: generateUUID(),
+    req_no: `REQ-2026-${String(mockRequirementData.length + 1).padStart(4, '0')}`,
     title: values.title as string,
     description: (values.description as string) || '',
     owning_department_name: values.department as string,
     owning_department_id: 'dept-new',
+    owner_id: 'user-001',
+    owner_name: creator.name,
     creatorId: 'user-001',
     creatorName: creator.name,
     creatorDepartment: creator.department,
@@ -285,6 +298,7 @@ export const createRequirement = async (values: Record<string, unknown>): Promis
     expectedLaunchDate: values.expectedLaunchDate
       ? (values.expectedLaunchDate as Date).toISOString()
       : undefined,
+    version: 1,
     createdAt: now,
     updatedAt: now,
   };
@@ -292,7 +306,6 @@ export const createRequirement = async (values: Record<string, unknown>): Promis
   return newItem;
 };
 
-// 更新 mock 需求
 export const updateRequirement = async (id: string, values: Record<string, unknown>): Promise<RequirementItem | null> => {
   await new Promise((resolve) => setTimeout(resolve, 300));
   const index = mockRequirementData.findIndex((item) => item.id === id);
@@ -314,58 +327,47 @@ export const updateRequirement = async (id: string, values: Record<string, unkno
 
 // ============= Mock 活动记录 =============
 
-const activityTemplates: Record<RequirementStatus, ActivityRecord[]> = {
+const activityTemplates: Partial<Record<RequirementStatus, ActivityRecord[]>> = {
   DRAFT: [
     { id: 'act-1', type: 'created', actorId: 'user-001', actorName: 'John Smith', content: 'Created this requirement as a draft.', timestamp: '' },
   ],
-  PENDING: [
+  PENDING_APPROVAL: [
     { id: 'act-1', type: 'created', actorId: 'user-001', actorName: 'John Smith', content: 'Created this requirement as a draft.', timestamp: '' },
-    { id: 'act-2', type: 'status_change', actorId: 'user-001', actorName: 'John Smith', content: 'Submitted for approval.', fromStatus: 'DRAFT', toStatus: 'PENDING', timestamp: '' },
+    { id: 'act-2', type: 'status_change', actorId: 'user-001', actorName: 'John Smith', content: 'Submitted for approval.', fromStatus: 'DRAFT', toStatus: 'PENDING_APPROVAL', timestamp: '' },
   ],
-  APPROVED: [
+  PENDING_ASSESSMENT: [
+    { id: 'act-1', type: 'created', actorId: 'user-004', actorName: 'Sarah Li', content: 'Created this requirement as a draft.', timestamp: '' },
+    { id: 'act-2', type: 'approval', actorId: 'user-007', actorName: 'Robert Xu', content: 'Approved. Proceed with technical assessment.', timestamp: '' },
+    { id: 'act-3', type: 'comment', actorId: 'user-003', actorName: 'Michael Wang', content: 'Starting technical feasibility assessment.', timestamp: '' },
+  ],
+  PENDING_PROJECT: [
     { id: 'act-1', type: 'created', actorId: 'user-002', actorName: 'Emily Chen', content: 'Created this requirement as a draft.', timestamp: '' },
-    { id: 'act-2', type: 'status_change', actorId: 'user-002', actorName: 'Emily Chen', content: 'Submitted for approval.', fromStatus: 'DRAFT', toStatus: 'PENDING', timestamp: '' },
-    { id: 'act-3', type: 'approval', actorId: 'user-007', actorName: 'Robert Xu', content: 'Approved. The business case is solid and aligns with Q2 objectives.', timestamp: '' },
+    { id: 'act-2', type: 'approval', actorId: 'user-007', actorName: 'Robert Xu', content: 'Approved. The business case is solid.', timestamp: '' },
+    { id: 'act-3', type: 'assessment', actorId: 'user-008', actorName: 'Angela Wu', content: 'Assessment passed. Ready for project initiation.', timestamp: '' },
   ],
   REJECTED: [
     { id: 'act-1', type: 'created', actorId: 'user-002', actorName: 'Emily Chen', content: 'Created this requirement as a draft.', timestamp: '' },
-    { id: 'act-2', type: 'status_change', actorId: 'user-002', actorName: 'Emily Chen', content: 'Submitted for approval.', fromStatus: 'DRAFT', toStatus: 'PENDING', timestamp: '' },
-    { id: 'act-3', type: 'approval', actorId: 'user-007', actorName: 'Robert Xu', content: 'Rejected. Insufficient ROI justification. Please provide more detailed cost-benefit analysis.', timestamp: '' },
+    { id: 'act-2', type: 'approval', actorId: 'user-007', actorName: 'Robert Xu', content: 'Rejected. Insufficient ROI justification.', timestamp: '' },
   ],
-  ASSESSING: [
-    { id: 'act-1', type: 'created', actorId: 'user-004', actorName: 'Sarah Li', content: 'Created this requirement as a draft.', timestamp: '' },
-    { id: 'act-2', type: 'status_change', actorId: 'user-004', actorName: 'Sarah Li', content: 'Submitted for approval.', fromStatus: 'DRAFT', toStatus: 'PENDING', timestamp: '' },
-    { id: 'act-3', type: 'approval', actorId: 'user-007', actorName: 'Robert Xu', content: 'Approved. Proceed with technical assessment.', timestamp: '' },
-    { id: 'act-4', type: 'comment', actorId: 'user-003', actorName: 'Michael Wang', content: 'Starting technical feasibility assessment. Will evaluate integration complexity with existing systems.', timestamp: '' },
+  WITHDRAWN: [
+    { id: 'act-1', type: 'created', actorId: 'user-001', actorName: 'John Smith', content: 'Created this requirement as a draft.', timestamp: '' },
+    { id: 'act-2', type: 'status_change', actorId: 'user-001', actorName: 'John Smith', content: 'Withdrawn the requirement.', fromStatus: 'PENDING_APPROVAL', toStatus: 'WITHDRAWN', timestamp: '' },
   ],
   DEVELOPING: [
-    { id: 'act-1', type: 'created', actorId: 'user-002', actorName: 'Emily Chen', content: 'Created this requirement as a draft.', timestamp: '' },
-    { id: 'act-2', type: 'status_change', actorId: 'user-002', actorName: 'Emily Chen', content: 'Submitted for approval.', fromStatus: 'DRAFT', toStatus: 'PENDING', timestamp: '' },
-    { id: 'act-3', type: 'approval', actorId: 'user-007', actorName: 'Robert Xu', content: 'Approved.', timestamp: '' },
-    { id: 'act-4', type: 'assessment', actorId: 'user-008', actorName: 'Angela Wu', content: 'Technical assessment completed. Score: 82/100. Recommendation: Proceed with development.', timestamp: '' },
-    { id: 'act-5', type: 'status_change', actorId: 'user-003', actorName: 'Michael Wang', content: 'Development started.', fromStatus: 'ASSESSING', toStatus: 'DEVELOPING', timestamp: '' },
-  ],
-  DEVELOPED: [
-    { id: 'act-1', type: 'created', actorId: 'user-003', actorName: 'Michael Wang', content: 'Created this requirement.', timestamp: '' },
+    { id: 'act-1', type: 'created', actorId: 'user-002', actorName: 'Emily Chen', content: 'Created this requirement.', timestamp: '' },
     { id: 'act-2', type: 'approval', actorId: 'user-007', actorName: 'Robert Xu', content: 'Approved.', timestamp: '' },
-    { id: 'act-3', type: 'assessment', actorId: 'user-008', actorName: 'Angela Wu', content: 'Technical assessment completed. Score: 90/100.', timestamp: '' },
-    { id: 'act-4', type: 'status_change', actorId: 'user-003', actorName: 'Michael Wang', content: 'Development completed. Ready for acceptance testing.', fromStatus: 'DEVELOPING', toStatus: 'DEVELOPED', timestamp: '' },
+    { id: 'act-3', type: 'assessment', actorId: 'user-008', actorName: 'Angela Wu', content: 'Technical assessment completed. Score: 82/100.', timestamp: '' },
+    { id: 'act-4', type: 'status_change', actorId: 'user-003', actorName: 'Michael Wang', content: 'Development started.', fromStatus: 'PENDING_PROJECT', toStatus: 'DEVELOPING', timestamp: '' },
   ],
-  RUNNING: [
+  LAUNCHED: [
     { id: 'act-1', type: 'created', actorId: 'user-001', actorName: 'John Smith', content: 'Created this requirement.', timestamp: '' },
     { id: 'act-2', type: 'approval', actorId: 'user-007', actorName: 'Robert Xu', content: 'Approved.', timestamp: '' },
-    { id: 'act-3', type: 'assessment', actorId: 'user-008', actorName: 'Angela Wu', content: 'Technical assessment passed. Score: 88/100.', timestamp: '' },
-    { id: 'act-4', type: 'status_change', actorId: 'user-003', actorName: 'Michael Wang', content: 'Development completed.', fromStatus: 'DEVELOPING', toStatus: 'DEVELOPED', timestamp: '' },
-    { id: 'act-5', type: 'comment', actorId: 'user-001', actorName: 'John Smith', content: 'Acceptance testing passed. All criteria met.', timestamp: '' },
-    { id: 'act-6', type: 'status_change', actorId: 'user-001', actorName: 'John Smith', content: 'Deployed to production. Now running.', fromStatus: 'DEVELOPED', toStatus: 'RUNNING', timestamp: '' },
+    { id: 'act-3', type: 'assessment', actorId: 'user-008', actorName: 'Angela Wu', content: 'Assessment passed. Score: 88/100.', timestamp: '' },
+    { id: 'act-4', type: 'status_change', actorId: 'user-001', actorName: 'John Smith', content: 'Deployed to production. Now running.', fromStatus: 'DEVELOPING', toStatus: 'LAUNCHED', timestamp: '' },
   ],
-  STOPPED: [
+  OFFLINE: [
     { id: 'act-1', type: 'created', actorId: 'user-005', actorName: 'David Zhang', content: 'Created this requirement.', timestamp: '' },
-    { id: 'act-2', type: 'status_change', actorId: 'user-005', actorName: 'David Zhang', content: 'Requirement stopped due to business priority change.', fromStatus: 'RUNNING', toStatus: 'STOPPED', timestamp: '' },
-  ],
-  ARCHIVED: [
-    { id: 'act-1', type: 'created', actorId: 'user-006', actorName: 'Jessica Liu', content: 'Created this requirement.', timestamp: '' },
-    { id: 'act-2', type: 'status_change', actorId: 'user-006', actorName: 'Jessica Liu', content: 'Requirement archived.', fromStatus: 'RUNNING', toStatus: 'ARCHIVED', timestamp: '' },
+    { id: 'act-2', type: 'status_change', actorId: 'user-005', actorName: 'David Zhang', content: 'Requirement taken offline.', fromStatus: 'LAUNCHED', toStatus: 'OFFLINE', timestamp: '' },
   ],
 };
 
@@ -373,7 +375,7 @@ export const fetchActivities = async (requirementId: string): Promise<ActivityRe
   await new Promise((resolve) => setTimeout(resolve, 200));
   const req = mockRequirementData.find((r) => r.id === requirementId);
   if (!req) return [];
-  const templates = activityTemplates[req.status] || activityTemplates.DRAFT;
+  const templates = activityTemplates[req.status] || activityTemplates.DRAFT || [];
   const baseDate = new Date(req.createdAt);
   return templates.map((tpl, i) => ({
     ...tpl,
@@ -382,11 +384,10 @@ export const fetchActivities = async (requirementId: string): Promise<ActivityRe
   }));
 };
 
-// 更新需求状态（审批/评估）
 export const updateRequirementStatus = async (
   id: string,
   newStatus: string,
-  comment?: string,
+  _comment?: string,
 ): Promise<RequirementItem | null> => {
   await new Promise((resolve) => setTimeout(resolve, 300));
   const index = mockRequirementData.findIndex((item) => item.id === id);

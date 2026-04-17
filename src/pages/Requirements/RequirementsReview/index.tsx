@@ -93,8 +93,8 @@ const RequirementsReview = () => {
 
   // 统计数据
   const stats = useMemo(() => {
-    const pendingCount = allRequirements.filter((r) => r.status === 'PENDING').length;
-    const assessingCount = allRequirements.filter((r) => r.status === 'ASSESSING').length;
+    const pendingCount = allRequirements.filter((r) => r.status === 'PENDING_APPROVAL').length;
+    const assessingCount = allRequirements.filter((r) => r.status === 'PENDING_ASSESSMENT').length;
     const reviewedCount = mockReviewHistory.length;
     const approvedCount = mockReviewHistory.filter((r) => r.action === 'approved').length;
     const rejectedCount = mockReviewHistory.filter((r) => r.action === 'rejected').length;
@@ -106,8 +106,8 @@ const RequirementsReview = () => {
     let data: RequirementItem[];
     switch (activeTab) {
       case 'pending':
-        // 待我审批：PENDING 和 ASSESSING 状态
-        data = allRequirements.filter((r) => r.status === 'PENDING' || r.status === 'ASSESSING');
+        // 待我审批：PENDING_APPROVAL 和 PENDING_ASSESSMENT 状态
+        data = allRequirements.filter((r) => r.status === 'PENDING_APPROVAL' || r.status === 'PENDING_ASSESSMENT');
         break;
       case 'reviewed':
         // 我已审批：通过审批记录匹配
@@ -151,7 +151,7 @@ const RequirementsReview = () => {
 
     setApprovalSubmitting(true);
     try {
-      const newStatus = approvalAction === 'approve' ? 'APPROVED' : 'REJECTED';
+      const newStatus = approvalAction === 'approve' ? 'PENDING_ASSESSMENT' : 'REJECTED';
       const comment = approvalReason.trim()
         ? `${approvalAction === 'approve' ? 'Approved' : 'Rejected'}. ${approvalReason.trim()}`
         : `${approvalAction === 'approve' ? 'Approved' : 'Rejected'} by ${CURRENT_REVIEWER.name}.`;
@@ -185,11 +185,11 @@ const RequirementsReview = () => {
   const handleStatusChange = async (id: string, newStatus: string, comment?: string) => {
     await updateRequirementStatus(id, newStatus, comment);
 
-    if (['APPROVED', 'REJECTED'].includes(newStatus)) {
+    if (['PENDING_ASSESSMENT', 'REJECTED'].includes(newStatus)) {
       mockReviewHistory.push({
         requirementId: id,
         reviewerId: CURRENT_REVIEWER_ID,
-        action: newStatus === 'APPROVED' ? 'approved' : 'rejected',
+        action: newStatus === 'PENDING_ASSESSMENT' ? 'approved' : 'rejected',
         comment: comment || '',
         timestamp: new Date().toISOString(),
       });
@@ -304,7 +304,7 @@ const RequirementsReview = () => {
                 >
                   {t('common.viewDetail')}
                 </Dropdown.Item>
-                {record.status === 'PENDING' && (
+                {record.status === 'PENDING_APPROVAL' && (
                   <>
                     <Dropdown.Item
                       icon={<CheckCircle size={16} strokeWidth={2} />}
@@ -327,7 +327,7 @@ const RequirementsReview = () => {
                     </Dropdown.Item>
                   </>
                 )}
-                {record.status === 'ASSESSING' && (
+                {record.status === 'PENDING_ASSESSMENT' && (
                   <Dropdown.Item
                     icon={<Eye size={16} strokeWidth={2} />}
                     onClick={(e) => {
