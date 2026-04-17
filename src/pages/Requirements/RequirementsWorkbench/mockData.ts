@@ -542,6 +542,7 @@ export const createRequirement = async (values: Record<string, unknown>): Promis
     form_data,
     baselineFormData: baseline,
     costEstimate: cost,
+    approvalFlowConfig: undefined,
     version: 1,
     createdAt: now,
     updatedAt: now,
