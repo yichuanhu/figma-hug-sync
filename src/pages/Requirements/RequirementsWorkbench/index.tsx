@@ -447,13 +447,22 @@ const RequirementsWorkbench = () => {
         </Row>
       </div>
 
-      {/* 表格区域 */}
+      {/* 内容区域：表格 / 看板 */}
       <div className="requirements-workbench-table">
         {isInitialLoad ? (
           <TableSkeleton
             rows={10}
             columns={7}
             columnWidths={['22%', '10%', '10%', '8%', '12%', '12%', '14%']}
+          />
+        ) : viewMode === 'board' ? (
+          <BoardView
+            list={list}
+            selectedId={detailDrawerVisible ? selectedRecord?.id : undefined}
+            onCardClick={(record) => {
+              setSelectedRecord(record);
+              if (!detailDrawerVisible) setDetailDrawerVisible(true);
+            }}
           />
         ) : (
           <Table
