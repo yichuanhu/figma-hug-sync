@@ -249,7 +249,7 @@ const RequirementsProjects = () => {
             <TableSkeleton columns={columns.length} rows={6} />
           ) : filtered.length === 0 ? (
             <EmptyState
-              type={keyword || statusFilter !== 'ALL' ? 'noSearchResults' : 'noData'}
+              variant={keyword || statusFilter !== 'ALL' ? 'noResult' : 'noData'}
               description={
                 keyword || statusFilter !== 'ALL'
                   ? t('common.noSearchResults')
@@ -281,7 +281,9 @@ const RequirementsProjects = () => {
         data={selected}
         dataList={filtered}
         pagination={{
-          current: selected ? filtered.findIndex((p) => p.id === selected.id) + 1 : 0,
+          currentPage: selected ? filtered.findIndex((p) => p.id === selected.id) + 1 : 1,
+          totalPages: filtered.length,
+          pageSize: 1,
           total: filtered.length,
         }}
         onClose={() => setDrawerVisible(false)}

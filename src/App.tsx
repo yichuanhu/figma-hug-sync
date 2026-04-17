@@ -60,6 +60,7 @@ import RequirementsReview from "@/pages/Requirements/RequirementsReview";
 import RequirementsAssessment from "@/pages/Requirements/RequirementsAssessment";
 import RequirementsTeam from "@/pages/Requirements/RequirementsTeam";
 import RequirementsScheme from "@/pages/Requirements/RequirementsScheme";
+import RequirementsProjects from "@/pages/Requirements/RequirementsProjects";
 // Maintenance
 import MaintenanceWorkbench from "@/pages/Maintenance/MaintenanceWorkbench";
 import MaintenanceConfig from "@/pages/Maintenance/ConfigManagement";

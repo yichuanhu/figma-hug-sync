@@ -295,6 +295,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     { key: 'requirementsList', labelKey: 'sidebar.requirementsList', icon: <ClipboardList size={18} strokeWidth={2} />, path: '/requirements/list' },
     { key: 'requirementsReview', labelKey: 'sidebar.requirementsReview', icon: <CheckSquare size={18} strokeWidth={2} />, path: '/requirements/review' },
     { key: 'requirementsAssessment', labelKey: 'sidebar.requirementsAssessment', icon: <FolderCheck size={18} strokeWidth={2} />, path: '/requirements/assessment' },
+    { key: 'requirementsProjects', labelKey: 'sidebar.requirementsProjects', icon: <FolderKanban size={18} strokeWidth={2} />, path: '/requirements/projects' },
     { key: 'requirementsScheme', labelKey: 'sidebar.requirementsScheme', icon: <Settings size={18} strokeWidth={2} />, path: '/requirements/scheme' },
     // 协作管理 - 分组标题
     { key: 'collaborationManagement', labelKey: 'sidebar.collaborationManagement', isGroupLabel: true },
