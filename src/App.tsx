@@ -150,7 +150,15 @@ const App = () => {
           <Route path="/operations/business-outcomes" element={<BusinessOutcomes />} />
           <Route path="/operations/cost-management" element={<CostManagement />} />
           <Route path="/operations/platform-operations" element={<PlatformOperations />} />
-          <Route path="/maintenance" element={<MaintenanceWorkbench />} />
+          <Route path="/maintenance" element={<Navigate to="/maintenance/config/system-params" replace />} />
+          <Route path="/maintenance/workbench" element={<MaintenanceWorkbench />} />
+          <Route path="/maintenance/config/system-params" element={<MaintenanceConfig />} />
+          <Route path="/maintenance/config/service-params" element={<MaintenanceConfig />} />
+          <Route path="/maintenance/config/infrastructure" element={<MaintenanceConfig />} />
+          <Route path="/maintenance/config/monitoring" element={<MaintenanceConfig />} />
+          <Route path="/maintenance/config/logger" element={<MaintenanceConfig />} />
+          <Route path="/maintenance/dashboard/system-metrics" element={<SystemMetricsPage />} />
+          <Route path="/maintenance/dashboard/middleware-status" element={<MiddlewareStatusPage />} />
           {/* 共享中心 */}
           <Route path="/sharing" element={<Navigate to="/sharing/components/creator" replace />} />
           <Route path="/sharing/components/creator" element={<CreatorComponents />} />
