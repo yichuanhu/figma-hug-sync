@@ -1,7 +1,8 @@
 /**
  * 项目与工作空间 — Mock 数据与 Mock API
  */
-import type { Project, Workspace, ProjectAggregatedStatus } from './types';
+import type { Project, Workspace, ProjectAggregatedStatus, WorkspaceMember, WorkspaceMemberRole, WorkspaceMemberView } from './types';
+import { ALL_ORG_USERS } from '@/components/CollaboratorManager/mockData';
 
 const now = () => new Date().toISOString();
 
