@@ -15,6 +15,8 @@ import type {
   MultiLevelApprovalConfig,
   ApprovalFlowLevel,
   ApprovalFlowApprover,
+  ApprovalHistoryEntry,
+  ApprovalHistoryAction,
 } from './types';
 import { statusConfigV2 } from './statusConfig';
 
