@@ -176,6 +176,8 @@ const generateMockRequirements = (): RequirementItem[] => {
 
     const hasScores = tpl.status !== 'DRAFT' && tpl.status !== 'WITHDRAWN';
 
+    const { cost: costEstimate, baseline: baselineFormData } = generateMockCost(tpl.status, index);
+
     return {
       id,
       req_no: reqNo,
@@ -201,7 +203,9 @@ const generateMockRequirements = (): RequirementItem[] => {
       assessment: generateMockAssessment(id, tpl.status),
       artifacts: generateMockArtifacts(id, tpl.status),
       detailedAssessment: generateMockDetailedAssessment(tpl.status, index),
-      costEstimate: generateMockCost(tpl.status, index),
+      form_data: baselineFormData ? { ...baselineFormData } : undefined,
+      baselineFormData,
+      costEstimate,
       historyVersions: generateMockVersions(tpl.status, index, tpl.title, tpl.description, tpl.priority),
       linkedProcesses: generateMockLinkedProcesses(tpl.status, index),
       value_score: hasScores ? mockScore(index, 50, 50) : undefined,
