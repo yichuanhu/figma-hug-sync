@@ -236,6 +236,18 @@ const RequirementsWorkbench = () => {
       render: (status: string) => <StatusDot status={normalizeStatus(status)} />,
     },
     {
+      title: t('common.owningDepartment'),
+      dataIndex: 'owning_department_name',
+      key: 'owning_department_name',
+      width: 140,
+      ellipsis: { showTitle: false },
+      render: (v: string) => (
+        <Text ellipsis={{ showTooltip: true }} style={{ maxWidth: 120 }}>
+          {v || '-'}
+        </Text>
+      ),
+    },
+    {
       title: t('requirements.fields.valueScore', '价值得分'),
       dataIndex: 'value_score',
       key: 'value_score',
