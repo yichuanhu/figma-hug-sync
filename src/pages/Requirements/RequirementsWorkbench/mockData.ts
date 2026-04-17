@@ -12,6 +12,9 @@ import type {
   CostEstimateData,
   VersionSnapshot,
   LinkedProcess,
+  MultiLevelApprovalConfig,
+  ApprovalFlowLevel,
+  ApprovalFlowApprover,
 } from './types';
 import { statusConfigV2 } from './statusConfig';
 
