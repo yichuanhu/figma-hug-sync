@@ -421,24 +421,6 @@ const RequirementsWorkbench = () => {
           </Col>
           <Col>
             <Space>
-              <ButtonGroup>
-                <Button
-                  icon={<ListIcon size={14} strokeWidth={2} />}
-                  theme={viewMode === 'table' ? 'solid' : 'light'}
-                  type={viewMode === 'table' ? 'primary' : 'tertiary'}
-                  onClick={() => setViewMode('table')}
-                >
-                  {t('requirements.workbench.viewTable')}
-                </Button>
-                <Button
-                  icon={<LayoutGrid size={14} strokeWidth={2} />}
-                  theme={viewMode === 'board' ? 'solid' : 'light'}
-                  type={viewMode === 'board' ? 'primary' : 'tertiary'}
-                  onClick={() => setViewMode('board')}
-                >
-                  {t('requirements.workbench.viewBoard')}
-                </Button>
-              </ButtonGroup>
               <Button icon={<Upload size={14} strokeWidth={2} />} theme="light" type="tertiary">
                 {t('requirements.workbench.batchImport')}
               </Button>
@@ -447,6 +429,24 @@ const RequirementsWorkbench = () => {
               </Button>
             </Space>
           </Col>
+        </Row>
+        <Row type="flex" justify="end" style={{ marginTop: 12 }}>
+          <ButtonGroup>
+            <Button
+              icon={<ListIcon size={14} strokeWidth={2} />}
+              theme={viewMode === 'table' ? 'solid' : 'light'}
+              type={viewMode === 'table' ? 'primary' : 'tertiary'}
+              onClick={() => setViewMode('table')}
+              aria-label={t('requirements.workbench.viewTable')}
+            />
+            <Button
+              icon={<LayoutGrid size={14} strokeWidth={2} />}
+              theme={viewMode === 'board' ? 'solid' : 'light'}
+              type={viewMode === 'board' ? 'primary' : 'tertiary'}
+              onClick={() => setViewMode('board')}
+              aria-label={t('requirements.workbench.viewBoard')}
+            />
+          </ButtonGroup>
         </Row>
       </div>
 
