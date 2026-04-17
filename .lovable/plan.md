@@ -1,58 +1,44 @@
 
 
-## 问题回顾
+## 调整：方案上传改为「上传 YAML 文件」
 
-### 1. 审批流卡片的展开/收起
-当前 `ApprovalFlowProgress`（详情抽屉「概览」Tab 顶部）始终展开显示：顶部 Steps 进度条 + 下方各级详情列表。用户希望默认只显示顶部进度条（紧凑预览），点击后才展开下方各级详情列表。
+### 需求依据
+文档 §3.2 明确："第一期：cost_config（含 rate_table）通过 YAML 文件离线配置，由实施人员在部署时根据客户实际情况编写，客户如需调整费率也由实施人员协助修改 YAML 后**重新上传 Scheme**"。Scheme 完整结构（meta / form / cost_config / assessment / workflow）也是 YAML 文件，因此 UI 应是**文件上传**，而非文本粘贴。
 
-### 2. 添加评论功能与需求不符
-当前在概览 Tab 底部有「添加评论」输入框，提交后写入活动流（`type: 'comment'`）。回顾需求中心定位：
-
-- 需求中心是**结构化的需求生命周期管理**（草稿 → 审批 → 评估 → 开发 → 上线 → 复盘），关键交互是**审批意见**和**技术评估意见**，已分别承载在 ApprovalSection 的审批意见框和 AssessmentTab 中。
-- 自由评论会与活动流（系统留痕）混在一起，污染审计轨迹，且没有 @人、回复、解决等社交能力，价值薄弱。
-
-**结论：评论功能与需求不符，移除**。活动流仅保留系统行为（创建、状态变更、审批留痕、评估提交）。
-
-### 3. 「关联流程」与「关联流程/应用」重复
-
-现状：
-- **`LinkedProcessesSection`（关联流程）**：展示已关联的流程及上线状态，支持 owner 管理（添加 / 解除 / 跳转流程详情）。**强调"实施载体的上线状态"**。
-- **`ArtifactSection`（关联流程/应用）**：维护流程 / ADP 应用 / Agent / 人机协同，每条带"贡献度（百分比）"和"说明"，用于 **ROI 分摊计算**。
-
-两者数据模型和定位不同，但 UI 上确实并列出现造成"重复"观感。回顾需求文档：需求要支持"一个需求由多种交付物（流程 / 应用 / Agent / 协同）共同实现，按贡献度分摊 ROI"——这是 **ArtifactSection** 的核心价值。而 `LinkedProcessesSection` 实质是 ArtifactSection 中"流程类交付物"的状态视图特例。
-
-**结论：合并为一个「交付物」区块**，由 `ArtifactSection` 升级承担：
-- 列里展示**类型 / 名称 / 状态（仅流程类显示上线状态点 + Tag，其它类型隐藏或显示"-"） / 负责人 / 贡献度 / 说明**
-- 名称列对流程类型保留 Link 跳转 `/dev-center/automation-process?processId=xxx`
-- 顶部聚合状态徽章（如"1/2 已上线"）只统计流程类
-- 移除独立的 `LinkedProcessesSection`
+### 当前实现差距
+`src/pages/Requirements/RequirementsScheme/index.tsx` 上传弹窗使用 `TextArea` 让用户粘贴 YAML 文本。需改为标准的拖拽/点选 `.yaml`/`.yml` 文件上传交互。
 
 ---
 
-## 实施方案（一次提交）
+## 实施方案（单次提交）
 
-### 改动 1：审批流卡片支持折叠（默认收起）
-- `ApprovalFlowProgress/index.tsx`：
-  - 新增 `expanded` state，默认 `false`
-  - Header 行加 Chevron 切换图标，点击切换
-  - 用 `Collapsible` 包裹下方"各级详情列表"区域；顶部 Steps 进度条始终可见
-  - 当前层级 Tag「当前 L4」保留在 header 右侧
+### 改动 1：上传弹窗改为文件上传
+文件：`src/pages/Requirements/RequirementsScheme/index.tsx`
 
-### 改动 2：移除评论功能
-- `RequirementDetailDrawer/index.tsx`：
-  - 删除 `commentText` state、`handleAddComment`、底部 `requirement-detail-comment-input` Input
-  - 活动流类型表移除 `comment`
-  - i18n 键 `requirements.detail.addComment` / `send` / `commentAdded` 保留但不再使用（可后续清理）
-- `mockData.ts`：`fetchActivities` mock 中如果有 `comment` 类型记录则移除（保持活动流纯净）
+- 移除 `TextArea` + 直接粘贴 YAML 的交互
+- 引入 Semi UI `Upload`（`draggable`，`accept=".yaml,.yml"`，`limit=1`）
+  - 视觉遵循 [Upload Modal 标准 v3]：Lucide `Inbox` 图标（size=36, strokeWidth=2），隐藏原生文件列表，自定义已选文件展示（文件名 + 大小 + 移除按钮）
+- 选中文件后用 `FileReader.readAsText()` 读取内容，仍走 `parseSchemeYaml(text)` 解析
+- 校验：
+  - 仅允许 `.yaml` / `.yml`，超过 1MB 拒绝并 Toast
+  - 解析失败：错误列表展示在已选文件下方（保留现有 `parseErrors` 渲染样式）
+- 「解析并创建」按钮：仅当文件已选且解析无致命错误时可点击；点击时再次解析并 `addScheme`
+- 关闭弹窗时清空已选文件和错误
 
-### 改动 3：合并关联流程到交付物
-- 删除 `LinkedProcessesSection` 在 `RequirementDetailDrawer` 的引用（组件文件保留以便回滚）
-- 升级 `ArtifactSection`：
-  - 新增 `linkedProcesses` 数据透传，对 `PROCESS` 类型行渲染状态点 + Tag + Link
-  - 顶部 header 增加聚合徽章「N/M 已上线」（若包含流程类型）
-  - 新增/解除 `PROCESS` 类型时同步操作 `addLinkedProcesses` / `removeLinkedProcess`，复用现有 mock API
-  - 列顺序：类型 / 名称 / 状态 / 贡献度 / 说明 / 操作
-- i18n：`requirements.artifact.colStatus` 等少量补充
+### 改动 2：i18n 文案补齐
+文件：`public/i18n/zh-CN.json`、`public/i18n/en.json`
+
+- `requirements.scheme.uploadDragHint`：「点击或拖拽 YAML 文件到此区域上传」/ "Click or drag a YAML file here to upload"
+- `requirements.scheme.uploadFileTypeHint`：「仅支持 .yaml / .yml 格式，单文件不超过 1MB」
+- `requirements.scheme.uploadFileTypeError`：「仅支持 .yaml 或 .yml 文件」
+- `requirements.scheme.uploadFileTooLarge`：「文件大小不能超过 1MB」
+- 弹窗副标题 `uploadHint` 改为引导性文案（说明 YAML 需包含 meta / custom_fields / assessment_models / approval_flow / cost_config 等节点）
+- 移除/不再使用粘贴示例 placeholder
+
+### 不改动
+- `parseSchemeYaml`：解析逻辑无需变化（仍接收字符串）
+- `cost_config` 类型与 `RPA-PRO` 预设：本次仅调整上传交互；类型与文档对齐（`rate_table` 数组化、`default_rate` 等）作为后续单独需求处理
+- `ManageLinkedProcessesModal` 等其他模块
 
 ---
 
@@ -60,11 +46,15 @@
 
 | 文件 | 改动 |
 |---|---|
-| `ApprovalFlowProgress/index.tsx` + `.less` | 加 Chevron 折叠交互 |
-| `RequirementDetailDrawer/index.tsx` | 移除评论输入；移除 LinkedProcessesSection 引用；活动流配置精简 |
-| `RequirementDetailDrawer/ArtifactSection.tsx` | 集成流程上线状态、跳转、聚合徽章；接 mock API |
-| `mockData.ts` | 清理评论类活动；保持 `addLinkedProcesses` / `removeLinkedProcess` 不变 |
-| `public/i18n/{zh-CN,en}.json` | 补 `colStatus` 等键 |
+| `src/pages/Requirements/RequirementsScheme/index.tsx` | 上传弹窗：TextArea → Upload（拖拽/点选 YAML） |
+| `public/i18n/zh-CN.json` / `en.json` | 新增 4 条上传相关文案，调整 `uploadHint` |
 
-`ManageLinkedProcessesModal` 暂保留，由 `ArtifactSection` 在添加流程类型时复用其搜索面板（或直接合并到统一新增弹窗，下个迭代再做）。
+---
+
+## 验证清单
+1. 进入「需求中心 → 方案管理」点「上传方案」，弹窗显示 Inbox 拖拽区
+2. 拖入 `.txt` 文件 → Toast 报错；拖入 >1MB `.yaml` → Toast 报错
+3. 拖入合法 YAML 文件 → 显示文件名 + 大小 + ×；点「解析并创建」 → 成功 Toast，方案出现在列表
+4. 拖入语法错误 YAML → 错误列表显示行号
+5. 关闭重开弹窗 → 状态已清空
 
