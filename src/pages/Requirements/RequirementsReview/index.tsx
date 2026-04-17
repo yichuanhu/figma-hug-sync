@@ -550,16 +550,6 @@ const RequirementsReview = () => {
             }
             itemKey="pending"
           >
-            <div className="requirements-review-toolbar">
-              <Input
-                prefix={<IconSearchStroked />}
-                placeholder={t('requirements.review.searchPlaceholder')}
-                className="requirements-review-search"
-                value={searchValue}
-                onChange={setSearchValue}
-                showClear
-              />
-            </div>
             {isInitialLoad ? (
               <TableSkeleton rows={6} columns={7} columnWidths={['22%', '10%', '10%', '8%', '12%', '14%', '14%']} />
             ) : (
@@ -587,16 +577,6 @@ const RequirementsReview = () => {
           </TabPane>
 
           <TabPane tab={t('requirements.review.reviewedByMe')} itemKey="reviewed">
-            <div className="requirements-review-toolbar">
-              <Input
-                prefix={<IconSearchStroked />}
-                placeholder={t('requirements.review.searchPlaceholder')}
-                className="requirements-review-search"
-                value={searchValue}
-                onChange={setSearchValue}
-                showClear
-              />
-            </div>
             {isInitialLoad ? (
               <TableSkeleton rows={6} columns={6} columnWidths={['25%', '12%', '12%', '10%', '15%', '16%']} />
             ) : (
@@ -623,16 +603,6 @@ const RequirementsReview = () => {
           </TabPane>
 
           <TabPane tab={t('requirements.review.allReviews')} itemKey="all">
-            <div className="requirements-review-toolbar">
-              <Input
-                prefix={<IconSearchStroked />}
-                placeholder={t('requirements.review.searchPlaceholder')}
-                className="requirements-review-search"
-                value={searchValue}
-                onChange={setSearchValue}
-                showClear
-              />
-            </div>
             {isInitialLoad ? (
               <TableSkeleton rows={6} columns={7} columnWidths={['22%', '10%', '10%', '8%', '12%', '14%', '14%']} />
             ) : (
