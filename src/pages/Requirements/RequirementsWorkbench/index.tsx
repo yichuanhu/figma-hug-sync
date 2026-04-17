@@ -38,6 +38,7 @@ import ScoreBar from './components/ScoreBar';
 import TitleCell from './components/TitleCell';
 import RelativeTime from './components/RelativeTime';
 import BoardView from './components/BoardView';
+import DepartmentSavingsSummary from './components/DepartmentSavingsSummary';
 import './index.less';
 
 const { Title, Text } = Typography;
