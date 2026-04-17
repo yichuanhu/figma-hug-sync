@@ -1,115 +1,115 @@
 
 
-## 重新设计 成本预估 Tab（按 STORY-010 自动计算模式）
+## 第 2 批：Scheme 驱动的动态需求表单 + 成本预估联动
 
-### 一、范围澄清
+### 一、目标
 
-之前实现错误地把成本预估做成了**用户手填的项目预算估算**（角色×人数×人天 + 基础设施费）。重读 STORY-010 后，正确语义是：
+让"激活方案 (Active Scheme)"成为需求表单与成本预估的唯一事实来源：
+1. 需求新建/编辑表单的字段从激活 Scheme 的 `custom_fields` 动态渲染（不再硬编码）。
+2. 成本预估的人天费率与每日工时从激活 Scheme 的 `cost_config` 读取（替代当前硬编码的 `DEFAULT_SCHEME_COST_CONFIG`）。
+3. 用户编辑表单中的频率/时长/可自动化比例/岗位级别后，保存即自动重算 `costEstimate` 并写回。
 
-> **基于需求表单基线数据，自动计算"自动化后每月可节省多少"**，用户**不参与编辑**，只查看公式与结果。
+### 二、数据契约
 
-### 二、数据契约调整
+#### 1. Scheme 扩展（`types.ts`）
+- `RequirementScheme.cost_config` 已存在但字段不对，新增/复用：
+  ```ts
+  CostConfig {
+    avg_hourly_cost: number;
+    working_hours_per_day: number;
+    working_days_per_month: number;
+    rate_table?: Record<JobLevel, number>;  // 新增：岗位级别 → 人天单价
+  }
+  ```
+- 保留现有 `SchemeCostConfig`（CostEstimateTab 内部用），从 active scheme 派生。
 
-**1. `RequirementItem` 增加表单基线字段**（来自创建需求时的 `form_data`，第 2 批动态表单会真正落地，本次先在 mock 里造好）：
+#### 2. Mock 激活方案（`mockData.ts`）
+新增导出：
 ```ts
-formData?: {
-  frequency: number;          // 月均执行次数
-  durationMinutes: number;    // 单次耗时（分钟）
-  automationRatio: number;    // 可自动化比例 0~1
-  jobLevel: 'P4'|'P5'|'P6'|'P7'; // 岗位级别
+const ACTIVE_SCHEME: RequirementScheme = {
+  id: 'scheme-rpa-pro',
+  name: 'RPA Pro 标准方案',
+  custom_fields: [
+    { key: 'frequency', label: '执行频率', type: 'number', unit: '次/月', required: true, validation: { min: 1, max: 1000 } },
+    { key: 'durationMinutes', label: '单次耗时', type: 'number', unit: '分钟', required: true, validation: { min: 1, max: 600 } },
+    { key: 'automationRatio', label: '可自动化比例', type: 'percentage', required: true, validation: { min: 0, max: 100 } },
+    { key: 'jobLevel', label: '岗位级别', type: 'select', required: true, options: [
+      { label: 'P4（初级）', value: 'P4' },
+      { label: 'P5（中级）', value: 'P5' },
+      { label: 'P6（高级）', value: 'P6' },
+      { label: 'P7（资深）', value: 'P7' },
+    ]},
+  ],
+  cost_config: {
+    avg_hourly_cost: 200,
+    working_hours_per_day: 8,
+    working_days_per_month: 22,
+    rate_table: { P4: 800, P5: 1200, P6: 1800, P7: 2600 },
+  },
+  // ... 其他字段填默认值
 };
+export const getActiveScheme = (): RequirementScheme => ACTIVE_SCHEME;
+export const getActiveSchemeCostConfig = (): SchemeCostConfig => ({
+  workingHoursPerDay: ACTIVE_SCHEME.cost_config!.working_hours_per_day,
+  rateTable: ACTIVE_SCHEME.cost_config!.rate_table!,
+  schemeName: ACTIVE_SCHEME.name,
+});
 ```
 
-**2. `Scheme.cost_config` 增加费率表**（mock）：
+`computeCostEstimate` 调用方默认改读 `getActiveSchemeCostConfig()`。
+
+### 三、UI 改造
+
+#### 1. `RequirementFormModal` 改为 Scheme 驱动
+- 当前形态：硬编码 Title / Department / Owner / Description / Priority / 联系人 / 期望上线 等字段。
+- 新形态：保留**基础信息区**（Title / Department / Owner / Priority / 期望上线 / Description —— 这些是系统级字段，不进 custom_fields），下方新增**「业务基线（自动化收益评估）」**分组，按 `activeScheme.custom_fields` 动态渲染：
+  - `number` → `InputNumber`（带 unit suffix）
+  - `percentage` → `InputNumber` min=0 max=100 suffix="%"
+  - `select` → `Select`（用 `options`）
+  - `text/textarea` → `Input/TextArea`
+  - 校验：`required` + `validation.min/max` 全部走 Semi 原生 `rules`，`trigger=['blur','change']`。
+- 提交时：把 custom 字段值合并写入 `form_data`，并解析出 `baselineFormData`（4 个核心字段），自动 `computeCostEstimate` 写回 `costEstimate`。
+- 编辑模式：从 `editData.form_data` 回填初始值。
+
+#### 2. 抽出动态字段渲染组件
+- 新增 `components/SchemeFieldRenderer/index.tsx`：根据 `SchemeField` 类型渲染对应 Form 控件 + 校验 rules。复用于 FormModal 的"业务基线"区。
+- 100 行以内，无独立 less。
+
+#### 3. `mockData.createRequirement` / `updateRequirement` 自动重算
+- 接收 `form_data: Record<string, unknown>`。
+- 提取 `frequency / durationMinutes / automationRatio / jobLevel` → `baselineFormData`。
+- 若四个字段齐全：调用 `computeCostEstimate(baseline, getActiveSchemeCostConfig())` → 写入 `costEstimate` + `baselineFormData`。
+- 若不齐：清空 `costEstimate`（避免脏数据）。
+
+#### 4. `CostEstimateTab` 切换数据源
+- 当前：`computeCostEstimate(data.baselineFormData, DEFAULT_SCHEME_COST_CONFIG)`。
+- 改为：`computeCostEstimate(data.baselineFormData, getActiveSchemeCostConfig())`。
+- 副标题中的 `schemeName / dailyRate / hours` 自然反映激活方案变化。
+- 移除导出 `DEFAULT_SCHEME_COST_CONFIG`（仅作内部 fallback）。
+
+### 四、Mock 数据补齐
+所有 mock 需求生成时，把 `baselineFormData` 同步写入 `form_data`：
 ```ts
-costConfig: {
-  workingHoursPerDay: 8,
-  rateTable: { P4: 800, P5: 1200, P6: 1800, P7: 2600 } // 元/人天
-}
+form_data: { ...baseline },
+baselineFormData: baseline,
+costEstimate: computeCostEstimate(baseline, getActiveSchemeCostConfig()),
 ```
 
-**3. `CostEstimateData` 重定义为只读计算结果**（不再保存用户输入）：
-```ts
-interface CostEstimateData {
-  // 基线快照
-  frequency: number;
-  durationMinutes: number;
-  automationRatio: number;
-  jobLevel: string;
-  // 计算参数快照
-  workingHoursPerDay: number;
-  dailyRate: number;
-  // 计算结果
-  monthlySavedHours: number;      // 频率 × 时长 × 比例 / 60
-  monthlySavedPersonDays: number; // 工时 / 每天工时
-  monthlySavedAmount: number;     // 人天 × 单价
-  computedAt: string;
-}
-```
+### 五、文件改动清单
 
-### 三、UI 重构（`CostEstimateTab/index.tsx`）
+1. `src/pages/Requirements/RequirementsWorkbench/types.ts` — `CostConfig` 增加 `rate_table`
+2. `src/pages/Requirements/RequirementsWorkbench/mockData.ts` — 新增 `ACTIVE_SCHEME` / `getActiveScheme` / `getActiveSchemeCostConfig`；`computeCostEstimate` 默认读激活方案；create/update 自动重算；mock 生成时写入 `form_data`
+3. `src/pages/Requirements/RequirementsWorkbench/components/SchemeFieldRenderer/index.tsx` — 新建动态字段渲染器
+4. `src/pages/Requirements/RequirementsWorkbench/components/RequirementFormModal/index.tsx` — 在表单底部插入"业务基线"分组（Title 上方"分组小标题 + 动态字段"），编辑模式回填 `form_data`
+5. `src/pages/Requirements/RequirementsWorkbench/components/RequirementFormModal/index.less` — 新增 `.requirement-form-section-divider` / `.requirement-form-section-title` 样式
+6. `src/pages/Requirements/RequirementsWorkbench/components/RequirementDetailDrawer/CostEstimateTab/index.tsx` — 改读 `getActiveSchemeCostConfig()`
+7. `public/i18n/zh-CN.json` + `public/i18n/en.json` — 新增 `requirements.form.baselineSection` / 动态字段 label 兜底 i18n key
 
-完全重写为**只读展示卡**，三段式：
+### 六、设计规范遵循
 
-**第 1 段：成本基线数据（来自表单）**
-- 4 项 read-only Descriptions：执行频率 / 单次时长 / 可自动化比例 / 岗位级别
-- 若 `formData` 缺失，展示 EmptyState「该需求尚未填写基线数据」
-
-**第 2 段：预估节省（自动计算结果）**
-- 3 个高亮指标卡（沿用现有 `cost-result-cell` 样式）：
-  - 月均节省工时（h）
-  - 月均节省人天（d）
-  - 月均节省金额（¥）—— primary 色加重显示
-- 顶部副标题展示参数来源：`基于激活方案 {schemeName} · 岗位 P6 单价 ¥1800/d · 每日 8h`
-
-**第 3 段：计算公式（透明化）**
-- 一个浅色 info 卡，使用等宽字体逐行展示：
-  ```
-  月均节省工时 = 20 次 × 30 分钟 × 80% / 60 = 8.00 h
-  月均节省人天 = 8.00 h / 8 h = 1.00 d
-  月均节省金额 = 1.00 d × ¥1800/d = ¥1,800
-  ```
-
-**移除内容**：
-- 角色添加/删除、人数/人天 InputNumber
-- infra / thirdParty / other 三项手填
-- ROI 备注输入框
-- 「保存」按钮、editable / lockedReason 状态分支
-- `onSaveCost` prop（详情抽屉同步移除调用与 i18n）
-
-### 四、按部门聚合视图（新增）
-
-需求列表页 `/requirements/list` 顶部新增**"预估节省汇总卡片"**（可折叠或与现有筛选并列）：
-
-- 形态：横向部门小卡片列表，每张展示：
-  - 部门名 + 需求数
-  - Σ 月均节省金额（¥）
-  - Σ 月均节省人天（d）
-- 数据源：遍历 `mockRequirements`，按 `department` 聚合 `costEstimate.monthlySavedAmount` / `monthlySavedPersonDays`。
-- 仅在「列表」视图展示，看板视图不展示，避免拥挤。
-
-### 五、自动重算时机
-
-在 `mockData.ts` 内新增工具函数 `computeCostEstimate(req, scheme)`，在以下时机调用并写回：
-- 创建需求（formData 落库后）
-- 编辑表单字段（frequency/duration/ratio/jobLevel 任一变化）
-- Scheme cost_config 变更（暂不实现，留 TODO）
-
-### 六、文件改动清单
-
-1. `src/pages/Requirements/RequirementsWorkbench/types.ts` — 重定义 `CostEstimateData`，扩展 `RequirementItem.formData` 与 Scheme `costConfig`
-2. `src/pages/Requirements/RequirementsWorkbench/mockData.ts` — 新增 `computeCostEstimate`、为现有 mock 需求补 `formData`、移除 `updateRequirementCost` 暴露方式（改为内部自动重算）
-3. `src/pages/Requirements/RequirementsWorkbench/components/RequirementDetailDrawer/CostEstimateTab/index.tsx` — 完全重写为只读展示
-4. `src/pages/Requirements/RequirementsWorkbench/components/RequirementDetailDrawer/CostEstimateTab/index.less` — 新增公式块样式 `.cost-formula-block`（等宽字体、浅灰底）
-5. `src/pages/Requirements/RequirementsWorkbench/components/RequirementDetailDrawer/index.tsx` — 移除 `handleSaveCost` 调用与 prop 传递
-6. `src/pages/Requirements/RequirementsWorkbench/index.tsx` — 列表视图顶部加"按部门节省汇总"卡片
-7. `public/i18n/zh-CN.json` + `public/i18n/en.json` — 新增 baseline / savedHours / savedPersonDays / savedAmount / formulaTitle / departmentSummary 等 key，移除旧的 addRole/people/days/infra/thirdParty/other/save/lockedAfterLaunch 等
-
-### 七、设计规范遵循
-
-- 只读 Descriptions 使用 Semi UI `Descriptions` 组件（size="small", row）
-- 指标卡复用现有 `.cost-result-grid` / `.cost-result-cell`
-- 公式块用 `font-family: 'SF Mono', Menlo, monospace; background: var(--semi-color-fill-0); padding: 12px; border-radius: 6px;`
-- 部门汇总卡片复用首页指标卡视觉（`0 1px 3px` 基础阴影、12px 圆角）
-- 文案中文优先，i18n 同步中英文
+- 表单分组样式参考 modal/form-layout-preference：本表单字段 > 6，使用 section divider + 小标题。
+- 字段顺序：基础信息（Title → Dept → Owner → Priority → 期望上线 → Description）→ 分隔线 → 业务基线（4 个动态字段）→ 联系信息。
+- 校验：Semi 原生 rules + `trigger=['blur','change']`，红色错误提示，无 Toast。
+- i18n：业务基线分组中文优先，custom_fields 的 label 直接来自 Scheme（已是中文）。
+- Lucide 图标 stroke=2，size=14（行内）。
 
