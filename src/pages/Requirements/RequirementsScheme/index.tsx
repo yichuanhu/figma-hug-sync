@@ -27,6 +27,7 @@ const RequirementsScheme = () => {
   const [loading, setLoading] = useState(true);
 
   const [uploadVisible, setUploadVisible] = useState(false);
+  const [fileList, setFileList] = useState<FileItem[]>([]);
   const [yamlText, setYamlText] = useState('');
   const [parseErrors, setParseErrors] = useState<string[]>([]);
 
@@ -124,7 +125,7 @@ const RequirementsScheme = () => {
             onChange={setKeyword}
             showClear
           />
-          <Button icon={<Upload size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => setUploadVisible(true)}>
+          <Button icon={<UploadIcon size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => setUploadVisible(true)}>
             {t('requirements.scheme.upload')}
           </Button>
         </div>
