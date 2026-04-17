@@ -1,13 +1,9 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Typography, Tag } from '@douyinfe/semi-ui';
-import { Workflow } from 'lucide-react';
-import UserNameWithCard from '@/components/layout/UserNameWithCard';
+import { Typography, Tag, Avatar, Tooltip } from '@douyinfe/semi-ui';
+import { Bookmark, Zap, Calendar } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
-import PriorityIndicator from '../PriorityIndicator';
-import ScoreBar from '../ScoreBar';
 import { statusConfigV2, statusOptionsV2, legacyStatusMap } from '../../statusConfig';
-import { aggregateLinkedStatus } from '../../utils/aggregateLinkedStatus';
 import type { RequirementItem, RequirementStatus } from '../../types';
 import './index.less';
 
@@ -30,6 +26,22 @@ const colorMap: Record<string, string> = {
 
 const normalize = (s: string): RequirementStatus =>
   (statusConfigV2[s as RequirementStatus] ? (s as RequirementStatus) : legacyStatusMap[s]) || 'DRAFT';
+
+// Priority -> 图标颜色（参考 PingCode：高优先级用闪电图标，普通用书签）
+const priorityAccent: Record<string, { color: string; icon: 'bolt' | 'bookmark' }> = {
+  HIGHEST: { color: 'var(--semi-color-danger)', icon: 'bolt' },
+  HIGH:    { color: 'var(--semi-color-warning)', icon: 'bolt' },
+  MEDIUM:  { color: 'var(--semi-color-primary)', icon: 'bookmark' },
+  LOW:     { color: 'var(--semi-color-text-2)', icon: 'bookmark' },
+  LOWEST:  { color: 'var(--semi-color-text-2)', icon: 'bookmark' },
+};
+
+const formatDate = (d?: string) => {
+  if (!d) return '';
+  const date = new Date(d);
+  if (Number.isNaN(date.getTime())) return '';
+  return `${date.getMonth() + 1}月${date.getDate()}日`;
+};
 
 const BoardView = ({ list, selectedId, onCardClick }: BoardViewProps) => {
   const { t } = useTranslation();
@@ -64,58 +76,53 @@ const BoardView = ({ list, selectedId, onCardClick }: BoardViewProps) => {
                     <EmptyState variant="noData" description={t('requirements.workbench.noData')} />
                   </div>
                 ) : (
-                  items.map((item) => (
-                    <div
-                      key={item.id}
-                      className={`req-board__card${selectedId === item.id ? ' req-board__card--selected' : ''}`}
-                      onClick={() => onCardClick(item)}
-                    >
-                      <div className="req-board__card-top">
-                        <PriorityIndicator priority={item.priority} />
-                        <Typography.Text type="tertiary" size="small" className="req-board__card-no">
-                          {item.req_no || `REQ-${item.id.slice(0, 8)}`}
-                        </Typography.Text>
-                      </div>
-                      <Typography.Text className="req-board__card-title" ellipsis={{ rows: 2, showTooltip: true }}>
-                        {item.title}
-                      </Typography.Text>
-                      <div className="req-board__card-meta">
-                        <Tag size="small" color="white" type="light">{item.owning_department_name}</Tag>
-                      </div>
-                      <div className="req-board__card-scores">
-                        <div className="req-board__card-score">
-                          <Typography.Text type="tertiary" size="small">
-                            {t('requirements.fields.valueScore', '价值')}
+                  items.map((item) => {
+                    const pAccent = priorityAccent[item.priority] || priorityAccent.MEDIUM;
+                    const ownerName = item.owner_name || item.creatorName || '';
+                    const dueDate = formatDate((item as any).expectedReleaseDate || (item as any).expected_release_date);
+                    return (
+                      <div
+                        key={item.id}
+                        className={`req-board__card${selectedId === item.id ? ' req-board__card--selected' : ''}`}
+                        onClick={() => onCardClick(item)}
+                      >
+                        <span className="req-board__card-bar" style={{ backgroundColor: pAccent.color }} />
+                        <div className="req-board__card-inner">
+                          <div className="req-board__card-top">
+                            <span className="req-board__card-icon" style={{ color: pAccent.color }}>
+                              {pAccent.icon === 'bolt'
+                                ? <Zap size={14} strokeWidth={2} fill={pAccent.color} />
+                                : <Bookmark size={14} strokeWidth={2} fill={pAccent.color} />}
+                            </span>
+                            <Typography.Text type="tertiary" size="small" className="req-board__card-no">
+                              {item.req_no || `REQ-${item.id.slice(0, 8)}`}
+                            </Typography.Text>
+                            <Tooltip content={ownerName} position="top">
+                              <Avatar size="extra-small" className="req-board__card-avatar">
+                                {ownerName.slice(0, 1)}
+                              </Avatar>
+                            </Tooltip>
+                          </div>
+                          <Typography.Text className="req-board__card-title" ellipsis={{ rows: 2, showTooltip: true }}>
+                            {item.title}
                           </Typography.Text>
-                          <ScoreBar value={item.value_score} variant="value" />
-                        </div>
-                        <div className="req-board__card-score">
-                          <Typography.Text type="tertiary" size="small">
-                            {t('requirements.fields.complexityScore', '复杂度')}
-                          </Typography.Text>
-                          <ScoreBar value={item.complexity_score} variant="complexity" />
+                          {(cfg || dueDate) && (
+                            <div className="req-board__card-footer">
+                              <Tag size="small" color={cfg.color} type="light">
+                                {t(cfg.i18nKey)}
+                              </Tag>
+                              {dueDate && (
+                                <span className="req-board__card-date">
+                                  <Calendar size={12} strokeWidth={2} />
+                                  {dueDate}
+                                </span>
+                              )}
+                            </div>
+                          )}
                         </div>
                       </div>
-                      <div className="req-board__card-footer">
-                        <UserNameWithCard
-                          name={item.owner_name || item.creatorName}
-                          userId={item.owner_id || item.creatorId}
-                          department={item.creatorDepartment}
-                          role={item.creatorRole}
-                          email={item.creatorEmail}
-                        />
-                        {item.linkedProcesses && item.linkedProcesses.length > 0 && (() => {
-                          const agg = aggregateLinkedStatus(item.linkedProcesses);
-                          return (
-                            <Tag size="small" color={agg.color} type="light" className="req-board__card-link-chip">
-                              <Workflow size={12} strokeWidth={2} style={{ marginRight: 4 }} />
-                              {`${agg.online}/${agg.total}`}
-                            </Tag>
-                          );
-                        })()}
-                      </div>
-                    </div>
-                  ))
+                    );
+                  })
                 )}
               </div>
             </div>
