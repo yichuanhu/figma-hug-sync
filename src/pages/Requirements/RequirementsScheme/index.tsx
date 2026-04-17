@@ -12,6 +12,7 @@ import {
 } from '../RequirementsWorkbench/schemeConfig';
 import type { RequirementScheme } from '../RequirementsWorkbench/types';
 import { parseSchemeYaml } from './schemeYamlParser';
+import SchemeDetailDrawer from './components/SchemeDetailDrawer';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -197,41 +198,16 @@ const RequirementsScheme = () => {
         )}
       </Modal>
 
-      {/* 详情弹窗（简化为 Modal，阶段 2 替换为 DetailDrawer） */}
-      <Modal
-        title={detailScheme?.name}
+      {/* 详情抽屉 */}
+      <SchemeDetailDrawer
         visible={!!detailScheme}
-        onCancel={() => setDetailScheme(null)}
-        footer={null}
-        width={680}
-      >
-        {detailScheme && (
-          <Space vertical align="start" style={{ width: '100%' }}>
-            <Text type="tertiary">{detailScheme.code} · v{detailScheme.version}</Text>
-            <Text>{detailScheme.description}</Text>
-            <Text strong style={{ marginTop: 12 }}>表单字段（{detailScheme.custom_fields.length}）</Text>
-            <div style={{ width: '100%' }}>
-              {detailScheme.custom_fields.map((f) => (
-                <div key={f.key} style={{ display: 'flex', gap: 8, padding: '4px 0' }}>
-                  <Tag size="small" color="grey" type="light">{f.type}</Tag>
-                  <Text>{f.label}</Text>
-                  {f.required && <Text type="danger" size="small">*</Text>}
-                </div>
-              ))}
-            </div>
-            <Text strong style={{ marginTop: 12 }}>审批流程（{detailScheme.approval_flow.levels.length} 级）</Text>
-            {detailScheme.approval_flow.levels.map((l) => (
-              <Text key={l.order} size="small">第 {l.order} 级：{l.name}（{l.approver_type}）</Text>
-            ))}
-            {detailScheme.cost_config && (
-              <>
-                <Text strong style={{ marginTop: 12 }}>成本配置</Text>
-                <Text size="small">平均时薪：¥{detailScheme.cost_config.avg_hourly_cost} · {detailScheme.cost_config.working_hours_per_day}h/天 · {detailScheme.cost_config.working_days_per_month}天/月</Text>
-              </>
-            )}
-          </Space>
-        )}
-      </Modal>
+        scheme={detailScheme}
+        schemes={schemes}
+        onClose={() => setDetailScheme(null)}
+        onNavigate={(s) => setDetailScheme(s)}
+        onActivate={handleActivate}
+        onDelete={(s) => { setDetailScheme(null); handleDelete(s); }}
+      />
     </div>
   );
 };
