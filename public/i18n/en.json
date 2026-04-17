@@ -986,7 +986,13 @@
       "viewAssessment": "View Assessment",
       "assessorCol": "Assessor",
       "netScoreCol": "Net Score",
-      "conclusionCol": "Conclusion"
+      "conclusionCol": "Conclusion",
+      "filterConclusion": "Conclusion",
+      "filterConclusionAll": "All conclusions",
+      "sortBy": "Sort",
+      "sortNetScoreDesc": "Net score (high to low)",
+      "sortNetScoreAsc": "Net score (low to high)",
+      "sortDefault": "Default (recently updated)"
     },
     "list": {
       "subtitle": "{{department}} · {{creator}}"
