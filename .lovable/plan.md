@@ -1,115 +1,73 @@
 
 
-## 第 2 批：Scheme 驱动的动态需求表单 + 成本预估联动
+## 第 3 批：多级会签审批进度条 + 关联流程聚合状态
 
-### 一、目标
+### 一、范围与需求来源
 
-让"激活方案 (Active Scheme)"成为需求表单与成本预估的唯一事实来源：
-1. 需求新建/编辑表单的字段从激活 Scheme 的 `custom_fields` 动态渲染（不再硬编码）。
-2. 成本预估的人天费率与每日工时从激活 Scheme 的 `cost_config` 读取（替代当前硬编码的 `DEFAULT_SCHEME_COST_CONFIG`）。
-3. 用户编辑表单中的频率/时长/可自动化比例/岗位级别后，保存即自动重算 `costEstimate` 并写回。
+| 功能 | Story | 现状 |
+|---|---|---|
+| 多级审批进度条（Story-006） | ✅ 类型 `MultiLevelApprovalConfig` / `ApprovalFlowLevel` 已就位 | 无 mock 数据、无 UI |
+| 关联流程聚合状态（Story-009） | ✅ 类型 `LinkedProcess` + mock 数据已就位 | 详情抽屉未渲染 |
 
-### 二、数据契约
+均在已确认范围内，本批属于"补 mock + 加 UI 渲染 + 接审批动作"。
 
-#### 1. Scheme 扩展（`types.ts`）
-- `RequirementScheme.cost_config` 已存在但字段不对，新增/复用：
-  ```ts
-  CostConfig {
-    avg_hourly_cost: number;
-    working_hours_per_day: number;
-    working_days_per_month: number;
-    rate_table?: Record<JobLevel, number>;  // 新增：岗位级别 → 人天单价
-  }
-  ```
-- 保留现有 `SchemeCostConfig`（CostEstimateTab 内部用），从 active scheme 派生。
+### 二、多级审批进度条
 
-#### 2. Mock 激活方案（`mockData.ts`）
-新增导出：
-```ts
-const ACTIVE_SCHEME: RequirementScheme = {
-  id: 'scheme-rpa-pro',
-  name: 'RPA Pro 标准方案',
-  custom_fields: [
-    { key: 'frequency', label: '执行频率', type: 'number', unit: '次/月', required: true, validation: { min: 1, max: 1000 } },
-    { key: 'durationMinutes', label: '单次耗时', type: 'number', unit: '分钟', required: true, validation: { min: 1, max: 600 } },
-    { key: 'automationRatio', label: '可自动化比例', type: 'percentage', required: true, validation: { min: 0, max: 100 } },
-    { key: 'jobLevel', label: '岗位级别', type: 'select', required: true, options: [
-      { label: 'P4（初级）', value: 'P4' },
-      { label: 'P5（中级）', value: 'P5' },
-      { label: 'P6（高级）', value: 'P6' },
-      { label: 'P7（资深）', value: 'P7' },
-    ]},
-  ],
-  cost_config: {
-    avg_hourly_cost: 200,
-    working_hours_per_day: 8,
-    working_days_per_month: 22,
-    rate_table: { P4: 800, P5: 1200, P6: 1800, P7: 2600 },
-  },
-  // ... 其他字段填默认值
-};
-export const getActiveScheme = (): RequirementScheme => ACTIVE_SCHEME;
-export const getActiveSchemeCostConfig = (): SchemeCostConfig => ({
-  workingHoursPerDay: ACTIVE_SCHEME.cost_config!.working_hours_per_day,
-  rateTable: ACTIVE_SCHEME.cost_config!.rate_table!,
-  schemeName: ACTIVE_SCHEME.name,
-});
-```
+**1. Mock 数据（`mockData.ts`）**
+- 新增 `generateMockApprovalFlow(status, idx): MultiLevelApprovalConfig | undefined`
+  - `DRAFT / WITHDRAWN` → undefined
+  - 其他状态 → 3 级流程：`部门主管(any_one)` → `业务审批(all 会签 2 人)` → `IT 复核(any_one)`
+  - 各级 approver 状态根据需求当前 status 推进：`PENDING_APPROVAL` 停在 currentLevel；`PENDING_ASSESSMENT` 及之后全 APPROVED；`REJECTED` 在某级 REJECTED
+- 写入 `requirementItem.approvalFlowConfig`
 
-`computeCostEstimate` 调用方默认改读 `getActiveSchemeCostConfig()`。
+**2. 新组件 `ApprovalFlowProgress/index.tsx`（详情抽屉左栏，Overview Tab 顶部）**
+- 横向 Steps 形态，每级一节点：
+  - 节点状态映射 → Semi `Steps` 的 `status`：全部 APPROVED → finish；任一 REJECTED → error；含 PENDING 且为 currentLevel → process；未到 → wait
+  - 节点标题：`L{level} {name}`
+  - 节点描述：`mode` 中文化（任一 / 会签 / 多数）+ approver 头像组（`UserNameWithCard` 紧凑模式 / 简化为 Avatar + Tooltip 名）
+- 每级下方展开区：approver 列表（姓名 / 状态 Tag / 评论 / 时间），用浅灰底卡片
+- 仅当 `data.approvalFlowConfig` 存在时渲染
 
-### 三、UI 改造
+**3. `ApprovalSection`（右栏审批动作）增强**
+- 当 `currentLevel` 的当前用户存在于 approvers 时显示「批准 / 驳回」（mock 当前用户固定 `user-001`，命中即可见）
+- 操作后：mock 函数推进当前级 approver 状态；若该级 mode 满足条件 → currentLevel++；末级满足 → 整体 status → `PENDING_ASSESSMENT`；任一 REJECTED → status → `REJECTED`
+- 抽屉刷新时进度条同步推进
 
-#### 1. `RequirementFormModal` 改为 Scheme 驱动
-- 当前形态：硬编码 Title / Department / Owner / Description / Priority / 联系人 / 期望上线 等字段。
-- 新形态：保留**基础信息区**（Title / Department / Owner / Priority / 期望上线 / Description —— 这些是系统级字段，不进 custom_fields），下方新增**「业务基线（自动化收益评估）」**分组，按 `activeScheme.custom_fields` 动态渲染：
-  - `number` → `InputNumber`（带 unit suffix）
-  - `percentage` → `InputNumber` min=0 max=100 suffix="%"
-  - `select` → `Select`（用 `options`）
-  - `text/textarea` → `Input/TextArea`
-  - 校验：`required` + `validation.min/max` 全部走 Semi 原生 `rules`，`trigger=['blur','change']`。
-- 提交时：把 custom 字段值合并写入 `form_data`，并解析出 `baselineFormData`（4 个核心字段），自动 `computeCostEstimate` 写回 `costEstimate`。
-- 编辑模式：从 `editData.form_data` 回填初始值。
+### 三、关联流程聚合状态
 
-#### 2. 抽出动态字段渲染组件
-- 新增 `components/SchemeFieldRenderer/index.tsx`：根据 `SchemeField` 类型渲染对应 Form 控件 + 校验 rules。复用于 FormModal 的"业务基线"区。
-- 100 行以内，无独立 less。
+**1. 新组件 `LinkedProcessesSection/index.tsx`（Overview Tab，活动流上方）**
+- 标题行：`关联流程` + 聚合状态 Tag（见下）+ 数量徽标
+- 列表：每个流程一行
+  - 左：状态点（颜色对齐 statusConfig）+ 流程名（Typography ellipsis）
+  - 中：状态 Tag（DEVELOPING / TESTING / PENDING / ONLINE / FAILED 中文化）
+  - 右：负责人 `UserNameWithCard`
+- 空：复用 `EmptyState noData` + 文案"暂无关联流程"
 
-#### 3. `mockData.createRequirement` / `updateRequirement` 自动重算
-- 接收 `form_data: Record<string, unknown>`。
-- 提取 `frequency / durationMinutes / automationRatio / jobLevel` → `baselineFormData`。
-- 若四个字段齐全：调用 `computeCostEstimate(baseline, getActiveSchemeCostConfig())` → 写入 `costEstimate` + `baselineFormData`。
-- 若不齐：清空 `costEstimate`（避免脏数据）。
+**2. 聚合状态计算工具 `aggregateLinkedStatus(processes)`**
+- 优先级：任一 FAILED → `FAILED`；全部 ONLINE → `ONLINE`；任一 DEVELOPING/TESTING → `IN_PROGRESS`；其余 → `PENDING`
+- 输出 `{ key, label, color }` 供顶部 Tag 渲染
 
-#### 4. `CostEstimateTab` 切换数据源
-- 当前：`computeCostEstimate(data.baselineFormData, DEFAULT_SCHEME_COST_CONFIG)`。
-- 改为：`computeCostEstimate(data.baselineFormData, getActiveSchemeCostConfig())`。
-- 副标题中的 `schemeName / dailyRate / hours` 自然反映激活方案变化。
-- 移除导出 `DEFAULT_SCHEME_COST_CONFIG`（仅作内部 fallback）。
+**3. 列表页"关联流程"列（可选）**
+- 在 BoardView 卡片底部加一个小 chip：`{ONLINE icon} 2/3` 表示已上线流程数 / 总数
+- TableView 不动（避免列爆炸）
 
-### 四、Mock 数据补齐
-所有 mock 需求生成时，把 `baselineFormData` 同步写入 `form_data`：
-```ts
-form_data: { ...baseline },
-baselineFormData: baseline,
-costEstimate: computeCostEstimate(baseline, getActiveSchemeCostConfig()),
-```
+### 四、文件改动清单
 
-### 五、文件改动清单
+1. `RequirementsWorkbench/mockData.ts` — 新增 `generateMockApprovalFlow`，写入需求；新增 `advanceApprovalFlow(id, action, comment)` 推进函数
+2. `RequirementsWorkbench/components/ApprovalFlowProgress/index.tsx` + `index.less`（新建，~120 行）
+3. `RequirementsWorkbench/components/LinkedProcessesSection/index.tsx` + `index.less`（新建，~80 行）
+4. `RequirementsWorkbench/utils/aggregateLinkedStatus.ts`（新建，~30 行）
+5. `RequirementsWorkbench/components/RequirementDetailDrawer/index.tsx` — Overview Tab 顶部插入 `ApprovalFlowProgress`、`ArtifactSection` 之前插入 `LinkedProcessesSection`
+6. `RequirementsWorkbench/components/RequirementDetailDrawer/ApprovalSection.tsx` — 改为基于 `approvalFlowConfig.currentLevel` 的当前用户判断 + 调 `advanceApprovalFlow`
+7. `RequirementsWorkbench/components/BoardView/index.tsx` — 卡片底部加流程进度 chip（仅当存在 linkedProcesses）
+8. `public/i18n/zh-CN.json` + `en.json` — 新增 `requirements.approvalFlow.* / requirements.linkedProcesses.*` 文案
 
-1. `src/pages/Requirements/RequirementsWorkbench/types.ts` — `CostConfig` 增加 `rate_table`
-2. `src/pages/Requirements/RequirementsWorkbench/mockData.ts` — 新增 `ACTIVE_SCHEME` / `getActiveScheme` / `getActiveSchemeCostConfig`；`computeCostEstimate` 默认读激活方案；create/update 自动重算；mock 生成时写入 `form_data`
-3. `src/pages/Requirements/RequirementsWorkbench/components/SchemeFieldRenderer/index.tsx` — 新建动态字段渲染器
-4. `src/pages/Requirements/RequirementsWorkbench/components/RequirementFormModal/index.tsx` — 在表单底部插入"业务基线"分组（Title 上方"分组小标题 + 动态字段"），编辑模式回填 `form_data`
-5. `src/pages/Requirements/RequirementsWorkbench/components/RequirementFormModal/index.less` — 新增 `.requirement-form-section-divider` / `.requirement-form-section-title` 样式
-6. `src/pages/Requirements/RequirementsWorkbench/components/RequirementDetailDrawer/CostEstimateTab/index.tsx` — 改读 `getActiveSchemeCostConfig()`
-7. `public/i18n/zh-CN.json` + `public/i18n/en.json` — 新增 `requirements.form.baselineSection` / 动态字段 label 兜底 i18n key
+### 五、设计规范遵循
 
-### 六、设计规范遵循
-
-- 表单分组样式参考 modal/form-layout-preference：本表单字段 > 6，使用 section divider + 小标题。
-- 字段顺序：基础信息（Title → Dept → Owner → Priority → 期望上线 → Description）→ 分隔线 → 业务基线（4 个动态字段）→ 联系信息。
-- 校验：Semi 原生 rules + `trigger=['blur','change']`，红色错误提示，无 Toast。
-- i18n：业务基线分组中文优先，custom_fields 的 label 直接来自 Scheme（已是中文）。
-- Lucide 图标 stroke=2，size=14（行内）。
+- 进度条用 Semi `Steps`（type="basic" 或 "navigation"），不自造
+- 状态色对齐 `statusConfigV2` 已有色板（grey/orange/cyan/blue/green/red）
+- 头像组复用 `UserNameWithCard`；Tag size="small"，type="light"
+- 文案中文优先，i18n key 同步中英
+- Lucide 图标 stroke=2，行内 size=14，节点标题 size=16
+- 不引入新依赖
 
