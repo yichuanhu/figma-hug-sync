@@ -1,103 +1,94 @@
-# 需求中心重构 — 完整规划方案
 
-## 一、核心理解
 
-新需求中心的本质转变：从**硬编码评估表单 + 4 维状态**升级为 **Scheme 驱动 + 9 状态生命周期**。一个核心点贯穿全局：
-- **方案 (Scheme)** 是租户级配置，决定表单字段、评估模型、审批流程；
-- **需求 (Requirement)** 的 form_data 完全由激活 Scheme 的 custom_fields 动态决定；
-- **前半段状态**（草稿→待立项）由审批/评估流推动；**后半段**（开发中→已上线/已下线）由项目/工作空间侧关联结果与流程状态自动聚合（本期 mock 模拟）；
-- **版本管理**：编辑即创建快照；列表只看最新版，详情可切版本。
+# 阶段 1 实施计划：基础架构 + 方案管理页
 
-## 二、目录与新增/重构清单
+## 一、目标
 
-```text
-src/pages/Requirements/
-├── RequirementsWorkbench/        [重构]
-│   ├── types.ts                  [全新] 9 状态、Scheme/Field/Assessment/Approval 类型
-│   ├── mockData.ts               [全新] Mock 需求 + 审批/评估/版本/关联
-│   ├── schemeConfig.ts           [新增] 内置 3 个预设 Scheme（RPA 专业版/轻量版/AI 文档）
-│   ├── statusConfig.ts           [新增] 9 状态颜色/标签/可执行操作映射
-│   ├── index.tsx + .less         [重构] 列表（编号/标题/部门/状态/价值&复杂度得分/创建时间）
-│   └── components/
-│       ├── DynamicSchemeForm/    [新增-核心] 13 类型字段渲染引擎 + depends_on
-│       │   ├── index.tsx
-│       │   ├── FieldRenderer.tsx
-│       │   ├── fields/{Text,Textarea,Number,Percentage,Select,MultiSelect,
-│       │   │           Radio,Checkbox,CheckboxGroup,Date,FileUpload,
-│       │   │           RichText,Calculation}.tsx
-│       │   └── useSchemeForm.ts
-│       ├── RequirementFormModal/ [重构] 系统字段 + DynamicSchemeForm
-│       ├── RequirementDetailDrawer/ [重构-Tab 化]
-│       │   ├── index.tsx         （顶部含版本切换 + 状态聚合摘要）
-│       │   ├── BasicInfoTab/
-│       │   ├── AssessmentTab/    （价值评估 / 复杂度评估，分组+档位）
-│       │   ├── ApprovalTab/      （多级串行进度）
-│       │   ├── ImplementationTab/
-│       │   ├── LinkedEntitiesTab/（项目/工作空间/流程列表，只读）
-│       │   ├── CostEstimationTab/（成本基线 + 预估节省，公式透明）
-│       │   └── VersionHistoryDrawer/（版本列表 + 只读切换）
-│       └── assessmentEngine.ts   [新增] expression 解析 + tier 匹配 + 加权聚合
-├── RequirementsReview/           [重构] 适配新 9 状态（待审批/待评估页签）
-├── RequirementsScheme/           [新增] 方案管理页（/requirements/scheme）
-│   ├── index.tsx + .less
-│   ├── components/
-│   │   ├── SchemeCard/           （方案卡片：激活/未激活/预设标签）
-│   │   ├── SchemeDetailDrawer/   （Tab：基本信息/表单字段/评估模型/审批流程/成本配置）
-│   │   ├── SchemeUploadModal/    （YAML 上传 + 校验 + 错误行号提示）
-│   │   ├── SchemeActivateModal/  （激活确认）
-│   │   └── SchemeVersionDrawer/  （版本历史）
-│   └── schemeYamlParser.ts       [新增] js-yaml 解析 + 结构校验
-└── RequirementsTeam/             [保留]
+交付独立可用的基础设施 + 方案管理页，为后续阶段做铺垫。本阶段不破坏现有需求列表/详情/审核的可用性（旧弹窗占位、详情简化、审核仅适配状态映射）。
+
+## 二、文件清单
+
+### 1. 类型与数据层（重构）
+
+**`src/pages/Requirements/RequirementsWorkbench/types.ts`** [重写]
+- 9 状态：`DRAFT | PENDING_APPROVAL | PENDING_ASSESSMENT | PENDING_PROJECT | DEVELOPING | LAUNCHED | OFFLINE | REJECTED | WITHDRAWN`
+- `RequirementScheme`：id、code、name、version、status(active/inactive)、is_preset、custom_fields、value_assessment_model、complexity_assessment_model、approval_flow、cost_config、created_at
+- `SchemeField`：key、label、type(13种)、required、placeholder、options、depends_on、validation、expression(calculation)、description
+- `AssessmentModel`：dimensions[{key,label,weight,source_field,expression?}]、tiers[{condition,score,label}]、weight(总权重)
+- `ApprovalFlowConfig`：levels[{order,name,approver_type,approver_ids}]
+- `CostConfig`：avg_hourly_cost、working_hours_per_day、working_days_per_month、custom_basis
+- `ApprovalRecord`：id、req_id、level、approver_id、approver_name、status(pending/approved/rejected)、comment、acted_at
+- `AssessmentRecord`：id、req_id、type(value/complexity)、assessor_id、scores、tier_results、total_score、acted_at
+- `RequirementVersion`：version、snapshot(RequirementItem)、change_log、created_by、created_at
+- `LinkedEntity`：id、type(workspace/process)、name、status
+- `RequirementItem` [新结构]：id、req_no(REQ-YYYY-NNNN)、scheme_id、scheme_version、title、department_id/name、owner_id/name、status、form_data(动态)、value_score、complexity_score、approvals[]、assessments[]、versions[]、linked_entities[]、cost_estimation、creator/timestamps、version
+
+**`src/pages/Requirements/RequirementsWorkbench/mockData.ts`** [重写]
+- 8-12 条覆盖 9 状态的 mock 需求，form_data 对应预设 Scheme
+- 内置审批/评估/版本/关联记录
+
+**`src/pages/Requirements/RequirementsWorkbench/schemeConfig.ts`** [新增]
+- 3 个预设 Scheme JSON：
+  - `RPA-PRO`：RPA 专业版（完整 13 字段、价值+复杂度双模型、3 级审批）
+  - `RPA-LITE`：RPA 轻量版（精简 6 字段、单评估、1 级审批）
+  - `ADP-DOC`：AI 文档处理（含 OCR 维度、文档相关字段）
+
+**`src/pages/Requirements/RequirementsWorkbench/statusConfig.ts`** [新增]
+- 9 状态 → 颜色（Semi tag color）/ 中英标签 / 图标 / 可执行操作集合 映射
+
+### 2. 方案管理页（新增）
+
+```
+src/pages/Requirements/RequirementsScheme/
+├── index.tsx + index.less        列表（卡片网格）+ 上传按钮 + 搜索
+├── schemeYamlParser.ts            js-yaml 解析 + 4 节点结构校验 + 错误行号
+└── components/
+    ├── SchemeCard/                单卡片（名称/版本/状态徽标/激活/预设标签/操作菜单）
+    ├── SchemeDetailDrawer/        900px 抽屉，Tabs：基本信息 / 表单字段 / 评估模型 / 审批流程 / 成本配置（只读展示）
+    ├── SchemeUploadModal/         520px，Lucide Inbox 拖拽 + YAML 解析预览 + 校验错误列表
+    ├── SchemeActivateModal/       520px 激活确认（提示同租户唯一激活）
+    └── SchemeVersionDrawer/       版本历史列表 + 切换查看
 ```
 
-外围：
-- `src/router/routes.tsx`：新增 `/requirements/scheme`
-- `src/components/Layout/AppLayout`：侧边栏需求中心增加"方案管理"菜单项
-- `public/i18n/{zh-CN,en}.json`：新增状态/Scheme/字段类型翻译
-- 删除/废弃：旧 `TechnicalAssessmentSection`、旧 4 维状态相关组件
+依赖：新增 `js-yaml` + `@types/js-yaml`。
 
-## 三、分阶段实施
+### 3. 列表页轻量适配
 
-### 阶段 1：基础架构 + 方案管理页（独立可交付）
-- 重构 `types.ts`：9 状态、Scheme、SchemeField、AssessmentModel、ApprovalRecord、AssessmentRecord、Version
-- 重构 `mockData.ts` + 新增 `schemeConfig.ts`（3 个预设 Scheme YAML 对应 JSON）
-- 新增 `RequirementsScheme/`：列表/详情/上传/激活/版本历史
-- 路由 + 侧边栏 + i18n
-- 更新 `RequirementsWorkbench/index.tsx` 列表列与状态映射（先用旧弹窗占位，详情抽屉先简化）
+**`src/pages/Requirements/RequirementsWorkbench/index.tsx`** [改]
+- 列：编号 / 标题 / 部门 / 归属人 / 状态(新9态) / 价值得分 / 复杂度得分 / 创建时间 / 操作
+- 状态 Tag 改用 `statusConfig`
+- 创建/编辑弹窗、详情抽屉本阶段保留旧实现（仅适配新字段读取，避免崩溃；完整重构在阶段 2）
 
-### 阶段 2：动态表单 + CRUD 重构
-- 新增 `DynamicSchemeForm/` 完整 13 字段类型 + depends_on + 验证
-- 重构 `RequirementFormModal`：系统字段（标题/部门/归属人）+ 动态字段
-- 重构 `RequirementDetailDrawer` 为 Tab 结构：BasicInfoTab + ImplementationTab
-- 实现需求编号自动生成 `REQ-YYYY-NNNN`
-- 草稿保存允许 department_id/owner_id 为空，提交校验
+**`src/pages/Requirements/RequirementsReview/index.tsx`** [改]
+- 状态映射改为新 9 态，待审批=`PENDING_APPROVAL`、评估中=`PENDING_ASSESSMENT`、已通过=`PENDING_PROJECT`及以后、已驳回=`REJECTED`
+- 不动布局/页签结构
 
-### 阶段 3：审批 + 评估
-- 新增 `assessmentEngine.ts`：expression 解析（四则运算 + source_fields 替换）+ tier 自动匹配
-- AssessmentTab：价值评估（扁平+自动计算）+ 复杂度评估（分组+档位）+ 加权综合得分
-- ApprovalTab：多级串行进度（"第 N/M 级审批中"）+ 通过/拒绝/撤回
-- 提交前校验：Scheme 必填字段 + department_id/owner_id 必须补全
-- 重构 `RequirementsReview/`：待我审批 / 待我评估 / 全部 页签
+### 4. 路由 + 侧边栏 + i18n
 
-### 阶段 4：生命周期 + 成本预估 + 版本管理
-- LinkedEntitiesTab：mock 关联工作空间 + 流程状态列表
-- CostEstimationTab：成本基线展示 + 月均节省工时/人天/金额计算（公式透明）
-- 状态聚合（mock）：基于关联流程状态自动算"开发中/已上线/已下线"
-- VersionHistoryDrawer：版本列表 + 只读切换 + 变更日志
-- 详情抽屉顶部加版本下拉，重新提交自动 version+1
+- `src/router/routes.tsx`：新增 `/requirements/scheme` → `RequirementsScheme/index.tsx`
+- `src/components/Layout/AppLayout`（或对应 Sidebar 配置）：需求中心菜单组下加"方案管理"子项（Lucide `Settings2` 图标）
+- `public/i18n/zh-CN.json` + `en.json`：新增 `requirements.scheme.*`、`requirements.status.*`(9 态)、`requirements.field_type.*`(13 类) 翻译
 
-## 四、关键技术要点
+## 三、关键实现要点
 
-- **DynamicSchemeForm**：基于 Semi UI Form，根据 `field.type` 分发到子组件；`depends_on` 用 useEffect 监听依赖字段控制显隐；`calculation` 字段实时执行 expression。
-- **assessmentEngine**：`evalExpression(expr, formData, sourceFields)` 安全四则运算（不用 eval，自实现 token 解析或用 mathjs 子集）；`matchTier(value, tiers)` 顺序匹配 condition。
-- **状态机**：在 `statusConfig.ts` 集中定义可执行操作（哪些状态可编辑/删除/提交/审批/评估/下线），抽屉操作按钮基于此动态渲染。
-- **版本快照**：mock 阶段在内存维护 `versions: RequirementItem[]`，编辑保存时 push 当前快照，主对象 `version+1`。
-- **YAML 解析**：使用 `js-yaml`（已在依赖中或新增），校验四个核心节点 + 不支持的审批人类型拦截。
-- **遵守项目规范**：900px 抽屉（DetailDrawerWrapper）、520px 模态、24px padding、Lucide 图标、Semi 原生表单校验、分页 size="small" + 外置 `.list-pagination`、归属字段顺序：标题→部门→归属人→描述。
+- **YAML 校验**：必须包含 `meta`、`custom_fields`、`assessment_models`、`approval_flow` 四节点；审批 `approver_type` 仅支持 `user/role/department`，其他拦截并提示行号。
+- **激活互斥**：mock 阶段在内存维护"当前激活 scheme_id"，激活新方案时把旧的置 inactive。
+- **预设保护**：`is_preset=true` 的方案禁止删除/编辑，仅可查看与基于其上传新版本。
+- **抽屉规范**：900px、`DetailDrawerWrapper`、maskless、Tab 持久化。
+- **空态**：方案管理空态用标准 EmptyState PNG + "上传方案"按钮。
 
-## 五、风险与开放问题
+## 四、风险与边界
 
-1. **工作量评估**：4 阶段约相当于 4 个独立 feature。建议每阶段交付后用户验证再继续。
-2. **YAML 编辑**：本期仅支持上传，不提供 GUI 编辑器（与 Story 一致）。
-3. **后端依赖**：项目/工作空间关联（FEAT-009）尚未实现，本期 LinkedEntities 用 mock 数据展示。
-4. **历史数据兼容**：旧 mock 数据将完全替换为新结构，无需迁移逻辑。
+- 阶段 1 不重构 `RequirementFormModal` 与 `RequirementDetailDrawer` 内容（避免一次改动过大）。旧字段缺失时显示 `-` 占位。
+- `RequirementsReview` 仅做状态映射兼容，不调整页签 KPI。
+- 阶段完成后用户可：浏览方案列表 / 上传 YAML / 查看预设方案配置 / 激活方案 / 查看版本，列表可看到新 9 态正确渲染。
+
+## 五、验收点
+
+1. 侧边栏「需求中心 → 方案管理」可访问 `/requirements/scheme`
+2. 默认看到 3 个预设方案，其中 1 个为激活状态
+3. 上传非法 YAML 显示错误行号；合法 YAML 创建新方案
+4. 激活新方案后旧激活自动失效
+5. 需求列表的状态列正确显示新 9 态颜色
+6. `RequirementsReview` 页签计数与跳转不报错
+
