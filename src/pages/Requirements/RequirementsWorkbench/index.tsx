@@ -15,7 +15,7 @@ import {
 } from '@douyinfe/semi-ui';
 import DepartmentSelect from '@/components/DepartmentSelect';
 import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
-import { Ellipsis, Eye, Pencil, Plus, Send, Trash2, Upload } from 'lucide-react';
+import { Ellipsis, Eye, Pencil, Plus, Send, Trash2, Upload, LayoutGrid, List as ListIcon } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
