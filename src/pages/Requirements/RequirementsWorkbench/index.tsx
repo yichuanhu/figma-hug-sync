@@ -417,6 +417,24 @@ const RequirementsWorkbench = () => {
           </Col>
           <Col>
             <Space>
+              <Button.Group>
+                <Button
+                  icon={<ListIcon size={14} strokeWidth={2} />}
+                  theme={viewMode === 'table' ? 'solid' : 'light'}
+                  type={viewMode === 'table' ? 'primary' : 'tertiary'}
+                  onClick={() => setViewMode('table')}
+                >
+                  {t('requirements.workbench.viewTable')}
+                </Button>
+                <Button
+                  icon={<LayoutGrid size={14} strokeWidth={2} />}
+                  theme={viewMode === 'board' ? 'solid' : 'light'}
+                  type={viewMode === 'board' ? 'primary' : 'tertiary'}
+                  onClick={() => setViewMode('board')}
+                >
+                  {t('requirements.workbench.viewBoard')}
+                </Button>
+              </Button.Group>
               <Button icon={<Upload size={14} strokeWidth={2} />} theme="light" type="tertiary">
                 {t('requirements.workbench.batchImport')}
               </Button>
