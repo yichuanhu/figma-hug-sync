@@ -1,11 +1,13 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Typography, Tag } from '@douyinfe/semi-ui';
+import { Workflow } from 'lucide-react';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import EmptyState from '@/components/EmptyState';
 import PriorityIndicator from '../PriorityIndicator';
 import ScoreBar from '../ScoreBar';
 import { statusConfigV2, statusOptionsV2, legacyStatusMap } from '../../statusConfig';
+import { aggregateLinkedStatus } from '../../utils/aggregateLinkedStatus';
 import type { RequirementItem, RequirementStatus } from '../../types';
 import './index.less';
 
@@ -102,6 +104,15 @@ const BoardView = ({ list, selectedId, onCardClick }: BoardViewProps) => {
                           role={item.creatorRole}
                           email={item.creatorEmail}
                         />
+                        {item.linkedProcesses && item.linkedProcesses.length > 0 && (() => {
+                          const agg = aggregateLinkedStatus(item.linkedProcesses);
+                          return (
+                            <Tag size="small" color={agg.color} type="light" className="req-board__card-link-chip">
+                              <Workflow size={12} strokeWidth={2} style={{ marginRight: 4 }} />
+                              {`${agg.online}/${agg.total}`}
+                            </Tag>
+                          );
+                        })()}
                       </div>
                     </div>
                   ))
