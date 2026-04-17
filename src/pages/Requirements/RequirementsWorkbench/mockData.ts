@@ -255,74 +255,32 @@ const generateMockDetailedAssessment = (status: RequirementStatus, idx: number):
 // ============= Story-010 成本预估自动计算 =============
 
 import type { JobLevel, RequirementBaselineFormData, SchemeCostConfig, RequirementScheme } from './types';
+import { getActiveScheme as getActiveSchemeFromStore, PRESET_SCHEMES } from './schemeConfig';
+import { resolveApprovers } from './utils/approverResolver';
 
-/** Mock 激活方案（第 2 批：Scheme 驱动动态表单） */
-const ACTIVE_SCHEME: RequirementScheme = {
-  id: 'scheme-rpa-pro',
-  code: 'RPA_PRO',
-  name: 'RPA Pro 标准方案',
-  version: '1.0.0',
-  description: '标准 RPA 自动化项目评估方案',
-  status: 'active',
-  is_preset: true,
-  custom_fields: [
-    {
-      key: 'frequency',
-      label: '执行频率',
-      type: 'number',
-      unit: '次/月',
-      required: true,
-      placeholder: '请输入月均执行次数',
-      validation: { min: 1, max: 10000, message: '频率范围 1-10000 次/月' },
-    },
-    {
-      key: 'durationMinutes',
-      label: '单次耗时',
-      type: 'number',
-      unit: '分钟',
-      required: true,
-      placeholder: '请输入单次执行耗时',
-      validation: { min: 1, max: 1440, message: '耗时范围 1-1440 分钟' },
-    },
-    {
-      key: 'automationRatio',
-      label: '可自动化比例',
-      type: 'percentage',
-      required: true,
-      placeholder: '请输入可自动化比例',
-      validation: { min: 0, max: 100 },
-    },
-    {
-      key: 'jobLevel',
-      label: '岗位级别',
-      type: 'select',
-      required: true,
-      placeholder: '请选择执行人员岗位级别',
-      options: [
-        { label: 'P4（初级）', value: 'P4' },
-        { label: 'P5（中级）', value: 'P5' },
-        { label: 'P6（高级）', value: 'P6' },
-        { label: 'P7（资深）', value: 'P7' },
-      ],
-    },
-  ],
-  approval_flow: { levels: [] },
-  cost_config: {
-    avg_hourly_cost: 200,
-    working_hours_per_day: 8,
-    working_days_per_month: 22,
-    rate_table: { P4: 800, P5: 1200, P6: 1800, P7: 2600 },
-  },
-  created_at: new Date(2026, 0, 1).toISOString(),
+/** 默认 cost 配置回退（当激活方案缺 cost_config 时使用） */
+const DEFAULT_COST_CONFIG = {
+  workingHoursPerDay: 8,
+  rateTable: { P4: 800, P5: 1200, P6: 1800, P7: 2600 } as Record<JobLevel, number>,
+  schemeName: 'RPA Pro 标准方案',
 };
 
-export const getActiveScheme = (): RequirementScheme => ACTIVE_SCHEME;
+/** 取当前激活方案；若无（如初始化阶段）则回落到首个预设方案 */
+const getEffectiveScheme = (): RequirementScheme =>
+  getActiveSchemeFromStore() ?? PRESET_SCHEMES[0];
 
-export const getActiveSchemeCostConfig = (): SchemeCostConfig => ({
-  workingHoursPerDay: ACTIVE_SCHEME.cost_config!.working_hours_per_day,
-  rateTable: ACTIVE_SCHEME.cost_config!.rate_table!,
-  schemeName: ACTIVE_SCHEME.name,
-});
+export const getActiveSchemeCostConfig = (): SchemeCostConfig => {
+  const scheme = getEffectiveScheme();
+  const cc = scheme.cost_config;
+  if (!cc?.rate_table) {
+    return { ...DEFAULT_COST_CONFIG, schemeName: scheme.name };
+  }
+  return {
+    workingHoursPerDay: cc.working_hours_per_day,
+    rateTable: cc.rate_table,
+    schemeName: scheme.name,
+  };
+};
 
 /** 基于基线表单数据自动计算成本节省 */
 export const computeCostEstimate = (
