@@ -5,6 +5,7 @@ import {
   Typography,
   Input,
   Button,
+  ButtonGroup,
   Table,
   Dropdown,
   Row,
@@ -15,7 +16,7 @@ import {
 } from '@douyinfe/semi-ui';
 import DepartmentSelect from '@/components/DepartmentSelect';
 import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
-import { Ellipsis, Eye, Pencil, Plus, Send, Trash2, Upload } from 'lucide-react';
+import { Ellipsis, Eye, Pencil, Plus, Send, Trash2, Upload, LayoutGrid, List as ListIcon } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
@@ -36,6 +37,7 @@ import StatusDot from './components/StatusDot';
 import ScoreBar from './components/ScoreBar';
 import TitleCell from './components/TitleCell';
 import RelativeTime from './components/RelativeTime';
+import BoardView from './components/BoardView';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -69,6 +71,7 @@ const RequirementsWorkbench = () => {
   const [editingRecord, setEditingRecord] = useState<RequirementItem | null>(null);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<RequirementItem | null>(null);
+  const [viewMode, setViewMode] = useState<'table' | 'board'>('table');
 
   // 列表数据
   const [listResponse, setListResponse] = useState<{
@@ -415,6 +418,24 @@ const RequirementsWorkbench = () => {
           </Col>
           <Col>
             <Space>
+              <Button.Group>
+                <Button
+                  icon={<ListIcon size={14} strokeWidth={2} />}
+                  theme={viewMode === 'table' ? 'solid' : 'light'}
+                  type={viewMode === 'table' ? 'primary' : 'tertiary'}
+                  onClick={() => setViewMode('table')}
+                >
+                  {t('requirements.workbench.viewTable')}
+                </Button>
+                <Button
+                  icon={<LayoutGrid size={14} strokeWidth={2} />}
+                  theme={viewMode === 'board' ? 'solid' : 'light'}
+                  type={viewMode === 'board' ? 'primary' : 'tertiary'}
+                  onClick={() => setViewMode('board')}
+                >
+                  {t('requirements.workbench.viewBoard')}
+                </Button>
+              </Button.Group>
               <Button icon={<Upload size={14} strokeWidth={2} />} theme="light" type="tertiary">
                 {t('requirements.workbench.batchImport')}
               </Button>
@@ -426,13 +447,22 @@ const RequirementsWorkbench = () => {
         </Row>
       </div>
 
-      {/* 表格区域 */}
+      {/* 内容区域：表格 / 看板 */}
       <div className="requirements-workbench-table">
         {isInitialLoad ? (
           <TableSkeleton
             rows={10}
             columns={7}
             columnWidths={['22%', '10%', '10%', '8%', '12%', '12%', '14%']}
+          />
+        ) : viewMode === 'board' ? (
+          <BoardView
+            list={list}
+            selectedId={detailDrawerVisible ? selectedRecord?.id : undefined}
+            onCardClick={(record) => {
+              setSelectedRecord(record);
+              if (!detailDrawerVisible) setDetailDrawerVisible(true);
+            }}
           />
         ) : (
           <Table

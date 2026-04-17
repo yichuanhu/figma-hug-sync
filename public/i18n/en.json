@@ -501,7 +501,9 @@
       "searchPlaceholder": "Search requirement title",
       "newRequirement": "New Requirement",
       "batchImport": "Batch Import",
-      "noData": "No Requirements"
+      "noData": "No Requirements",
+      "viewTable": "Table",
+      "viewBoard": "Board"
     },
     "fields": {
       "title": "Title",
