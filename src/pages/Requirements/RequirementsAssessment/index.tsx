@@ -42,6 +42,8 @@ const RequirementsAssessment = () => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<AssessTab>('pending');
   const [searchValue, setSearchValue] = useState('');
+  const [conclusionFilter, setConclusionFilter] = useState<string>('ALL');
+  const [sortKey, setSortKey] = useState<'default' | 'netScoreDesc' | 'netScoreAsc'>('default');
   const [loading, setLoading] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [allRequirements, setAllRequirements] = useState<RequirementItem[]>([]);
