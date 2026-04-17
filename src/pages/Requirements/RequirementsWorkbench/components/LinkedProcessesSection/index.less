@@ -1,0 +1,65 @@
+.linked-processes-section {
+  margin-bottom: 16px;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  &__title {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--semi-color-border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  &__row {
+    display: grid;
+    grid-template-columns: 12px 1fr auto auto;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    background: var(--semi-color-bg-0);
+
+    & + & {
+      border-top: 1px solid var(--semi-color-border);
+    }
+  }
+
+  &__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+
+    &--grey   { background: var(--semi-color-text-2); }
+    &--orange { background: var(--semi-color-warning); }
+    &--cyan   { background: #06b6d4; }
+    &--blue   { background: var(--semi-color-primary); }
+    &--green  { background: var(--semi-color-success); }
+    &--red    { background: var(--semi-color-danger); }
+  }
+
+  &__name {
+    min-width: 0;
+  }
+
+  &__owner {
+    min-width: 80px;
+    text-align: right;
+  }
+
+  &__empty {
+    padding: 16px 0;
+    transform: scale(0.85);
+    transform-origin: top center;
+  }
+}
