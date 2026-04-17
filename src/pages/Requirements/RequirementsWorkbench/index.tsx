@@ -469,7 +469,9 @@ const RequirementsWorkbench = () => {
             }}
           />
         ) : (
-          <Table
+          <>
+            <DepartmentSavingsSummary list={list} />
+            <Table
             size="small"
             columns={columns}
             dataSource={list}
