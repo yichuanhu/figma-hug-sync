@@ -1,73 +1,66 @@
+## 第 4 批需求范围（待审批）
 
+> 本批仅列范围，不写实现。请逐项勾选「✅ 通过 / ❌ 砍掉 / ✏️ 调整」后我再进入开发。
 
-## 第 3 批：多级会签审批进度条 + 关联流程聚合状态
+### 一、背景
 
-### 一、范围与需求来源
+第 3 批已交付：多级审批进度条（Story-006 只读展示） + 关联流程聚合状态（Story-009 只读展示）。
+以下 Story 在原需求文档中存在线索但**尚未实现**或**仅 mock 硬编码**，需用户确认是否纳入第 4 批。
 
-| 功能 | Story | 现状 |
-|---|---|---|
-| 多级审批进度条（Story-006） | ✅ 类型 `MultiLevelApprovalConfig` / `ApprovalFlowLevel` 已就位 | 无 mock 数据、无 UI |
-| 关联流程聚合状态（Story-009） | ✅ 类型 `LinkedProcess` + mock 数据已就位 | 详情抽屉未渲染 |
+---
 
-均在已确认范围内，本批属于"补 mock + 加 UI 渲染 + 接审批动作"。
+### 二、候选 Story 清单
 
-### 二、多级审批进度条
+#### Story-A：方案管理 · 多级审批流编辑器（关联 Story-006）
+**现状**：`schemeConfig.ts` 中有审批级别配置占位（角色/部门），但方案管理页 UI 暂不可视化编辑；`generateMockApprovalFlow` 仍走硬编码三级模板，编辑方案不会影响新建需求。
 
-**1. Mock 数据（`mockData.ts`）**
-- 新增 `generateMockApprovalFlow(status, idx): MultiLevelApprovalConfig | undefined`
-  - `DRAFT / WITHDRAWN` → undefined
-  - 其他状态 → 3 级流程：`部门主管(any_one)` → `业务审批(all 会签 2 人)` → `IT 复核(any_one)`
-  - 各级 approver 状态根据需求当前 status 推进：`PENDING_APPROVAL` 停在 currentLevel；`PENDING_ASSESSMENT` 及之后全 APPROVED；`REJECTED` 在某级 REJECTED
-- 写入 `requirementItem.approvalFlowConfig`
+**拟交付范围**：
+1. 方案管理详情/编辑页新增「审批流」Tab：可视化增删级、设节点名称、模式（任一/会签/多数）、审批人选择（OwnerSelect）
+2. 新建/激活方案时，方案的 `approvalFlow` 真正写入需求 `approvalFlowConfig`
+3. 已激活方案变更 → 仅影响**新建**需求，存量需求保持快照
+4. 列表展示 / 删除级别 / 拖拽排序
 
-**2. 新组件 `ApprovalFlowProgress/index.tsx`（详情抽屉左栏，Overview Tab 顶部）**
-- 横向 Steps 形态，每级一节点：
-  - 节点状态映射 → Semi `Steps` 的 `status`：全部 APPROVED → finish；任一 REJECTED → error；含 PENDING 且为 currentLevel → process；未到 → wait
-  - 节点标题：`L{level} {name}`
-  - 节点描述：`mode` 中文化（任一 / 会签 / 多数）+ approver 头像组（`UserNameWithCard` 紧凑模式 / 简化为 Avatar + Tooltip 名）
-- 每级下方展开区：approver 列表（姓名 / 状态 Tag / 评论 / 时间），用浅灰底卡片
-- 仅当 `data.approvalFlowConfig` 存在时渲染
+**取舍点**：① 是否要拖拽排序；② 审批人粒度（用户 / 角色 / 部门）任选其一还是三种都支持。
 
-**3. `ApprovalSection`（右栏审批动作）增强**
-- 当 `currentLevel` 的当前用户存在于 approvers 时显示「批准 / 驳回」（mock 当前用户固定 `user-001`，命中即可见）
-- 操作后：mock 函数推进当前级 approver 状态；若该级 mode 满足条件 → currentLevel++；末级满足 → 整体 status → `PENDING_ASSESSMENT`；任一 REJECTED → status → `REJECTED`
-- 抽屉刷新时进度条同步推进
+---
 
-### 三、关联流程聚合状态
+#### Story-B：关联流程管理（关联 Story-009 扩展）
+**现状**：详情抽屉关联流程列表只读展示。
 
-**1. 新组件 `LinkedProcessesSection/index.tsx`（Overview Tab，活动流上方）**
-- 标题行：`关联流程` + 聚合状态 Tag（见下）+ 数量徽标
-- 列表：每个流程一行
-  - 左：状态点（颜色对齐 statusConfig）+ 流程名（Typography ellipsis）
-  - 中：状态 Tag（DEVELOPING / TESTING / PENDING / ONLINE / FAILED 中文化）
-  - 右：负责人 `UserNameWithCard`
-- 空：复用 `EmptyState noData` + 文案"暂无关联流程"
+**拟交付范围**：
+1. 详情抽屉关联流程区块新增「管理」按钮 → 弹出 Modal
+2. Modal 内：搜索 + 多选项目内现有流程；已关联项可解除
+3. 流程名支持点击跳转 `/dev-center/automation-process` 详情
+4. mock 层提供 `addLinkedProcess` / `removeLinkedProcess` / `MOCK_PROCESS_POOL`
 
-**2. 聚合状态计算工具 `aggregateLinkedStatus(processes)`**
-- 优先级：任一 FAILED → `FAILED`；全部 ONLINE → `ONLINE`；任一 DEVELOPING/TESTING → `IN_PROGRESS`；其余 → `PENDING`
-- 输出 `{ key, label, color }` 供顶部 Tag 渲染
+**取舍点**：① 是否仅需求 owner 可管理，还是协作者也可以；② 是否要在 BoardView/列表上也允许快捷管理。
 
-**3. 列表页"关联流程"列（可选）**
-- 在 BoardView 卡片底部加一个小 chip：`{ONLINE icon} 2/3` 表示已上线流程数 / 总数
-- TableView 不动（避免列爆炸）
+---
 
-### 四、文件改动清单
+#### Story-C：审批流配置「角色 → 实际审批人」解析器
+**现状**：方案配置里写的是 `role-line-manager` / `dept-committee` 占位，运行期没有解析逻辑。
 
-1. `RequirementsWorkbench/mockData.ts` — 新增 `generateMockApprovalFlow`，写入需求；新增 `advanceApprovalFlow(id, action, comment)` 推进函数
-2. `RequirementsWorkbench/components/ApprovalFlowProgress/index.tsx` + `index.less`（新建，~120 行）
-3. `RequirementsWorkbench/components/LinkedProcessesSection/index.tsx` + `index.less`（新建，~80 行）
-4. `RequirementsWorkbench/utils/aggregateLinkedStatus.ts`（新建，~30 行）
-5. `RequirementsWorkbench/components/RequirementDetailDrawer/index.tsx` — Overview Tab 顶部插入 `ApprovalFlowProgress`、`ArtifactSection` 之前插入 `LinkedProcessesSection`
-6. `RequirementsWorkbench/components/RequirementDetailDrawer/ApprovalSection.tsx` — 改为基于 `approvalFlowConfig.currentLevel` 的当前用户判断 + 调 `advanceApprovalFlow`
-7. `RequirementsWorkbench/components/BoardView/index.tsx` — 卡片底部加流程进度 chip（仅当存在 linkedProcesses）
-8. `public/i18n/zh-CN.json` + `en.json` — 新增 `requirements.approvalFlow.* / requirements.linkedProcesses.*` 文案
+**拟交付范围**：
+1. 工具函数 `resolveApprovers(rolePlaceholder, requirement)` → 返回真实用户列表
+2. 解析规则：直属主管查需求提交人部门、委员会查指定部门、IT 查固定组
+3. 解析失败 fallback：使用方案中预填的兜底审批人
 
-### 五、设计规范遵循
+**取舍点**：是否本批就要做（Story-A 不做的话，本项也无意义）。
 
-- 进度条用 Semi `Steps`（type="basic" 或 "navigation"），不自造
-- 状态色对齐 `statusConfigV2` 已有色板（grey/orange/cyan/blue/green/red）
-- 头像组复用 `UserNameWithCard`；Tag size="small"，type="light"
-- 文案中文优先，i18n key 同步中英
-- Lucide 图标 stroke=2，行内 size=14，节点标题 size=16
-- 不引入新依赖
+---
 
+#### Story-D：审批历史与撤回
+**现状**：审批动作即时改写当前级状态，无历史轨迹；无撤回能力。
+
+**拟交付范围**：
+1. 详情抽屉「活动流」新增审批事件条目（谁、何时、批准/驳回、评论）
+2. 提交人可在 `PENDING_APPROVAL` 状态撤回需求 → 回到 `DRAFT`
+3. 驳回后允许提交人修改并「重新提交」→ 重置审批流到 L1
+
+**取舍点**：① 撤回是否要审批人确认；② 重新提交是否清空历史。
+
+---
+
+### 三、请用户裁定
+
+请回复每个 Story 的处理方式（A / B / C / D）。我会根据通过项重写 plan.md 第 4 批正式实施方案后再动代码。
