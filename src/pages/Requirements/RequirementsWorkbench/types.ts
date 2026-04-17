@@ -353,8 +353,8 @@ export interface RequirementItem {
 
   // ===== 旧字段（兼容旧弹窗与抽屉，新代码请勿使用） =====
   involvedTech?: ('UI_AUTOMATION' | 'ADP')[];
-  assessment?: unknown;
-  artifacts?: unknown[];
+  assessment?: TechnicalAssessment;
+  artifacts?: RequirementArtifact[];
 
   createdAt: string;
   updatedAt: string;
