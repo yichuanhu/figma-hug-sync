@@ -11,13 +11,45 @@
   overflow: hidden;
 }
 
-// 左侧面板
+// 左侧面板（含 Tab）
 .requirement-detail-left {
   flex: 6;
   min-width: 0;
-  overflow-y: auto;
-  padding: 20px 24px;
+  padding: 0 0 0 24px;
   border-right: 1px solid var(--semi-color-border);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.requirement-detail-tabs {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+
+  .semi-tabs-content {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .semi-tabs-pane {
+    height: 100%;
+    overflow-y: auto;
+    padding-right: 16px;
+  }
+}
+
+.requirement-detail-tab-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.requirement-detail-tab-content {
+  padding: 16px 0 24px;
   display: flex;
   flex-direction: column;
 }
