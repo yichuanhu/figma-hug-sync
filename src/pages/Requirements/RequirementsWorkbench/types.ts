@@ -336,6 +336,8 @@ export interface RequirementItem {
 
   /** 动态字段数据（Scheme 驱动） */
   form_data?: Record<string, unknown>;
+  /** 自动成本计算所需的基线数据（来自表单中的频率/时长/可自动化比例/岗位级别） */
+  baselineFormData?: import('./types').RequirementBaselineFormData;
 
   /** 价值/复杂度综合得分 */
   value_score?: number;
@@ -391,24 +393,50 @@ export interface DetailedAssessment {
   comment?: string;
 }
 
-// ============= Story-010 成本估算 =============
+// ============= Story-010 成本估算（自动计算，只读） =============
+export type JobLevel = 'P4' | 'P5' | 'P6' | 'P7';
+
+/** 需求表单基线数据（来自 form_data，自动化收益输入项） */
+export interface RequirementBaselineFormData {
+  /** 月均执行频率（次） */
+  frequency: number;
+  /** 单次耗时（分钟） */
+  durationMinutes: number;
+  /** 可自动化比例 0~1 */
+  automationRatio: number;
+  /** 执行人岗位级别 */
+  jobLevel: JobLevel;
+}
+
+/** Scheme.cost_config 中的费率与工时配置 */
+export interface SchemeCostConfig {
+  workingHoursPerDay: number;
+  rateTable: Record<JobLevel, number>;
+  schemeName?: string;
+}
+
+export interface CostEstimateData {
+  // 基线快照
+  frequency: number;
+  durationMinutes: number;
+  automationRatio: number;
+  jobLevel: JobLevel;
+  // 计算参数快照
+  workingHoursPerDay: number;
+  dailyRate: number;
+  schemeName?: string;
+  // 计算结果
+  monthlySavedHours: number;
+  monthlySavedPersonDays: number;
+  monthlySavedAmount: number;
+  computedAt: string;
+}
+
+/** @deprecated 旧手填模型保留供版本快照兼容读取 */
 export interface CostRoleItem {
   role: string;
   people: number;
   days: number;
-}
-export interface CostEstimateData {
-  roles: CostRoleItem[];
-  infra: number;
-  thirdParty: number;
-  other: number;
-  totalPersonDays: number;
-  laborCost: number;
-  nonLaborCost: number;
-  totalCost: number;
-  roiNote?: string;
-  updatedAt: string;
-  updatedBy: string;
 }
 
 // ============= Story-012 版本快照 =============
