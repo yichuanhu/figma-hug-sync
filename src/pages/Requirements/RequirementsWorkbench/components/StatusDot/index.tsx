@@ -11,8 +11,8 @@ interface StatusDotProps {
 const colorMap: Record<string, string> = {
   grey:   'var(--semi-color-text-2)',
   orange: 'var(--semi-color-warning)',
-  purple: 'rgb(var(--semi-purple-5))',
-  cyan:   'rgb(var(--semi-cyan-5))',
+  purple: '#a855f7',
+  cyan:   '#06b6d4',
   blue:   'var(--semi-color-primary)',
   green:  'var(--semi-color-success)',
   red:    'var(--semi-color-danger)',
