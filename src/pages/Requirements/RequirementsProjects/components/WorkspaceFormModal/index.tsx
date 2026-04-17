@@ -125,7 +125,6 @@ const WorkspaceFormModal = ({ visible, projectId, initialData, onClose, onSucces
           trigger={['blur', 'change']}
         />
         <Form.Slot
-          field="departmentId"
           label={{
             text: t('requirements.projects.fields.department'),
             required: true,
