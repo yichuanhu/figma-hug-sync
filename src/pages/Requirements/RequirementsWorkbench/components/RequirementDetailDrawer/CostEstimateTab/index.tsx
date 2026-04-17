@@ -16,13 +16,12 @@ import './index.less';
 
 const { Text, Title } = Typography;
 
+// TODO（第 2 批）：迁移至激活 Scheme.cost_config.dailyRateByRole
 const ROLE_DAILY_RATE: Record<string, number> = {
   product: 1500,
   backend: 1800,
   frontend: 1500,
   qa: 1200,
-  designer: 1400,
-  ops: 1600,
 };
 
 const ROLE_OPTIONS = Object.keys(ROLE_DAILY_RATE).map((k) => ({ value: k, label: k }));
@@ -55,12 +54,15 @@ interface Props {
 const CostEstimateTab = ({ data, onSaveCost }: Props) => {
   const { t } = useTranslation();
 
+  // 编辑权限：审批通过且未归档（PENDING_PROJECT / DEVELOPING）
   const editableStatuses: string[] = ['PENDING_PROJECT', 'DEVELOPING'];
+  const archivedStatuses: string[] = ['LAUNCHED', 'OFFLINE'];
   const editable = editableStatuses.includes(data.status);
-  const lockedReason =
-    !editable && !(['LAUNCHED', 'OFFLINE'] as string[]).includes(data.status)
-      ? t('requirements.costEstimate.lockedBeforeApproval')
-      : null;
+  const lockedReason = editable
+    ? null
+    : archivedStatuses.includes(data.status)
+      ? t('requirements.costEstimate.lockedAfterLaunch')
+      : t('requirements.costEstimate.lockedBeforeApproval');
 
   const initial: CostEstimateData = data.costEstimate ?? {
     roles: [],

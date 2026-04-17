@@ -615,13 +615,12 @@
       "saveSuccess": "成本估算已保存",
       "locked": "暂不可编辑",
       "lockedBeforeApproval": "需求审批通过后方可填写成本估算。",
+      "lockedAfterLaunch": "需求已上线/下线，成本估算仅供查看。",
       "role": {
         "product": "产品",
         "backend": "后端",
         "frontend": "前端",
-        "qa": "测试",
-        "designer": "设计",
-        "ops": "运维"
+        "qa": "测试"
       }
     },
     "versionHistory": {
