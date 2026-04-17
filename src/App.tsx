@@ -58,6 +58,7 @@ import PlatformOperations from "@/pages/Operations/PlatformOperations";
 import RequirementsWorkbench from "@/pages/Requirements/RequirementsWorkbench";
 import RequirementsReview from "@/pages/Requirements/RequirementsReview";
 import RequirementsTeam from "@/pages/Requirements/RequirementsTeam";
+import RequirementsScheme from "@/pages/Requirements/RequirementsScheme";
 // Maintenance
 import MaintenanceWorkbench from "@/pages/Maintenance/MaintenanceWorkbench";
 // Sharing Center
@@ -138,6 +139,7 @@ const App = () => {
           <Route path="/requirements/list" element={<RequirementsWorkbench />} />
           <Route path="/requirements/review" element={<RequirementsReview />} />
           <Route path="/requirements/team" element={<RequirementsTeam />} />
+          <Route path="/requirements/scheme" element={<RequirementsScheme />} />
           <Route path="/operations" element={<Navigate to="/operations/dashboard" replace />} />
           <Route path="/operations/dashboard" element={<OperationsDashboard />} />
           <Route path="/operations/roi-analysis" element={<ROIAnalysis />} />
