@@ -807,6 +807,7 @@
       "colType": "类型",
       "colName": "名称",
       "colContribution": "贡献度",
+      "colStatus": "状态",
       "colDescription": "说明",
       "typeProcess": "流程",
       "typeAdpApp": "文档处理应用",
