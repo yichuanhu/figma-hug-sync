@@ -1,95 +1,70 @@
 
-# 第 4 批正式实施方案
 
-按用户决定，A+B+C+D 全量实现。分三个小批交付，降低单次改动面。
+## 问题回顾
 
----
+### 1. 审批流卡片的展开/收起
+当前 `ApprovalFlowProgress`（详情抽屉「概览」Tab 顶部）始终展开显示：顶部 Steps 进度条 + 下方各级详情列表。用户希望默认只显示顶部进度条（紧凑预览），点击后才展开下方各级详情列表。
 
-## 批次 4.1：Story-A 审批流编辑器 + Story-C 角色解析器（强耦合）
+### 2. 添加评论功能与需求不符
+当前在概览 Tab 底部有「添加评论」输入框，提交后写入活动流（`type: 'comment'`）。回顾需求中心定位：
 
-**目标**：方案管理页可视化编辑审批流，新建需求时按方案 + 解析器生成真实审批人。
+- 需求中心是**结构化的需求生命周期管理**（草稿 → 审批 → 评估 → 开发 → 上线 → 复盘），关键交互是**审批意见**和**技术评估意见**，已分别承载在 ApprovalSection 的审批意见框和 AssessmentTab 中。
+- 自由评论会与活动流（系统留痕）混在一起，污染审计轨迹，且没有 @人、回复、解决等社交能力，价值薄弱。
 
-### 改动文件
-- `src/pages/Requirements/RequirementsScheme/components/SchemeEditDrawer/`（或现有编辑入口）新增「审批流」Tab
-  - 增删级、上下移序、节点名称、模式（任一/会签/多数）
-  - 审批人选择：支持 3 种粒度（用户 / 角色占位符 / 部门占位符）混选
-- `src/pages/Requirements/RequirementsWorkbench/types.ts`
-  - 恢复 `ApprovalLevelConfig.mode: 'any_one' | 'all' | 'majority'`
-  - `approver_type` 扩展为 `'user' | 'role' | 'department'`
-- `src/pages/Requirements/RequirementsWorkbench/utils/approverResolver.ts`（新建）
-  - `resolveApprovers(level, requirement)` → 真实用户列表
-  - 规则：`role-line-manager` 查提交人部门主管；`dept-committee` / `dept-it` 查指定部门成员
-  - 解析失败 fallback 到方案预填的兜底审批人
-- `src/pages/Requirements/RequirementsWorkbench/mockData.ts`
-  - `generateMockApprovalFlow(requirement)` 改为：读取激活方案的 `approval_flow` → 调 `resolveApprovers` → 生成快照
-  - 删除硬编码 `APPROVAL_LEVEL_TEMPLATES`
-  - 存量需求保持快照不变；仅**新建**需求受方案变更影响
-- `schemeConfig.ts`：保留角色占位符不变（已是角色形式）
+**结论：评论功能与需求不符，移除**。活动流仅保留系统行为（创建、状态变更、审批留痕、评估提交）。
 
-### 关键约束
-- 方案变更只影响新建，存量保留 `approvalFlowConfig` 快照
-- 模式语义：`any_one` 任一通过即推进 / `all` 全部通过 / `majority` 过半通过
+### 3. 「关联流程」与「关联流程/应用」重复
+
+现状：
+- **`LinkedProcessesSection`（关联流程）**：展示已关联的流程及上线状态，支持 owner 管理（添加 / 解除 / 跳转流程详情）。**强调"实施载体的上线状态"**。
+- **`ArtifactSection`（关联流程/应用）**：维护流程 / ADP 应用 / Agent / 人机协同，每条带"贡献度（百分比）"和"说明"，用于 **ROI 分摊计算**。
+
+两者数据模型和定位不同，但 UI 上确实并列出现造成"重复"观感。回顾需求文档：需求要支持"一个需求由多种交付物（流程 / 应用 / Agent / 协同）共同实现，按贡献度分摊 ROI"——这是 **ArtifactSection** 的核心价值。而 `LinkedProcessesSection` 实质是 ArtifactSection 中"流程类交付物"的状态视图特例。
+
+**结论：合并为一个「交付物」区块**，由 `ArtifactSection` 升级承担：
+- 列里展示**类型 / 名称 / 状态（仅流程类显示上线状态点 + Tag，其它类型隐藏或显示"-"） / 负责人 / 贡献度 / 说明**
+- 名称列对流程类型保留 Link 跳转 `/dev-center/automation-process?processId=xxx`
+- 顶部聚合状态徽章（如"1/2 已上线"）只统计流程类
+- 移除独立的 `LinkedProcessesSection`
 
 ---
 
-## 批次 4.2：Story-B 关联流程管理
+## 实施方案（一次提交）
 
-**目标**：详情抽屉关联流程区块支持手动添加/解除 + 跳转流程详情。
+### 改动 1：审批流卡片支持折叠（默认收起）
+- `ApprovalFlowProgress/index.tsx`：
+  - 新增 `expanded` state，默认 `false`
+  - Header 行加 Chevron 切换图标，点击切换
+  - 用 `Collapsible` 包裹下方"各级详情列表"区域；顶部 Steps 进度条始终可见
+  - 当前层级 Tag「当前 L4」保留在 header 右侧
 
-### 改动文件
-- `src/pages/Requirements/RequirementsWorkbench/components/ManageLinkedProcessesModal/`（重建）
-  - 搜索 + 多选项目内现有流程
-  - 已关联项展示解除按钮
-- `LinkedProcessesSection/index.tsx`
-  - 新增「管理」按钮（需求 owner 可见，协作者只读）
-  - 流程名变为 `Link` 跳转 `/dev-center/automation-process?processId=xxx`
-- `mockData.ts`
-  - 恢复 `MOCK_PROCESS_POOL`（项目内可关联流程候选池）
-  - 恢复 `addLinkedProcess(reqId, processId)` / `removeLinkedProcess(reqId, processId)`
-- `RequirementDetailDrawer/index.tsx`：把 `onChanged` 回调和 owner 判定回传给 Section
-- i18n：新增管理/搜索/解除/成功失败提示文案
+### 改动 2：移除评论功能
+- `RequirementDetailDrawer/index.tsx`：
+  - 删除 `commentText` state、`handleAddComment`、底部 `requirement-detail-comment-input` Input
+  - 活动流类型表移除 `comment`
+  - i18n 键 `requirements.detail.addComment` / `send` / `commentAdded` 保留但不再使用（可后续清理）
+- `mockData.ts`：`fetchActivities` mock 中如果有 `comment` 类型记录则移除（保持活动流纯净）
 
-### 权限约束
-- 仅需求 owner（`MOCK_CURRENT_USER_ID === requirement.ownerId`）可管理；协作者只读
-
----
-
-## 批次 4.3：Story-D 审批历史 + 撤回 + 重新提交
-
-**目标**：审批留痕 + 提交人撤回 / 驳回后重新提交。
-
-### 改动文件
-- `types.ts`：新增 `ApprovalHistoryEntry { level, approverId, action: 'approve'|'reject'|'withdraw'|'resubmit', comment?, timestamp }`，挂在 `RequirementItem.approvalHistory`
-- `mockData.ts`
-  - `advanceApprovalFlow` 每次调用 push 一条 history
-  - 新增 `withdrawRequirement(id)`：仅 `PENDING_APPROVAL` + 提交人可调；状态回 `DRAFT`，记录 history
-  - 新增 `resubmitRequirement(id)`：`REJECTED` → 重置 flow 到 L1、状态 `PENDING_APPROVAL`，**保留**历史（追加 resubmit 条目）
-- `RequirementDetailDrawer/ActivityFeed`（或现有活动流组件）
-  - 渲染 history 条目（图标 + 审批人 + 时间 + 评论）
-- `RequirementDetailDrawer/ApprovalSection.tsx`
-  - 提交人 + `PENDING_APPROVAL` → 显示「撤回」按钮（无需审批人确认，直接回 DRAFT）
-  - 提交人 + `REJECTED` → 显示「重新提交」按钮
-- i18n：撤回/重新提交/历史相关文案
-
-### 取舍落地
-- 撤回**无需**审批人确认（用户裁定取最简方案）
-- 重新提交**保留**历史轨迹（审计需要）
+### 改动 3：合并关联流程到交付物
+- 删除 `LinkedProcessesSection` 在 `RequirementDetailDrawer` 的引用（组件文件保留以便回滚）
+- 升级 `ArtifactSection`：
+  - 新增 `linkedProcesses` 数据透传，对 `PROCESS` 类型行渲染状态点 + Tag + Link
+  - 顶部 header 增加聚合徽章「N/M 已上线」（若包含流程类型）
+  - 新增/解除 `PROCESS` 类型时同步操作 `addLinkedProcesses` / `removeLinkedProcess`，复用现有 mock API
+  - 列顺序：类型 / 名称 / 状态 / 贡献度 / 说明 / 操作
+- i18n：`requirements.artifact.colStatus` 等少量补充
 
 ---
 
-## 交付顺序与验证
+## 影响面
 
-```text
-4.1 (A+C) → 自测：编辑方案审批流 → 新建需求 → 进度条按新配置生成
-   ↓
-4.2 (B)   → 自测：详情抽屉添加/解除流程 → 跳转流程详情
-   ↓
-4.3 (D)   → 自测：审批留痕 → 提交人撤回 → 驳回后重新提交
-```
+| 文件 | 改动 |
+|---|---|
+| `ApprovalFlowProgress/index.tsx` + `.less` | 加 Chevron 折叠交互 |
+| `RequirementDetailDrawer/index.tsx` | 移除评论输入；移除 LinkedProcessesSection 引用；活动流配置精简 |
+| `RequirementDetailDrawer/ArtifactSection.tsx` | 集成流程上线状态、跳转、聚合徽章；接 mock API |
+| `mockData.ts` | 清理评论类活动；保持 `addLinkedProcesses` / `removeLinkedProcess` 不变 |
+| `public/i18n/{zh-CN,en}.json` | 补 `colStatus` 等键 |
 
-每批完成后等用户确认再进下一批。
+`ManageLinkedProcessesModal` 暂保留，由 `ArtifactSection` 在添加流程类型时复用其搜索面板（或直接合并到统一新增弹窗，下个迭代再做）。
 
----
-
-## 待用户确认
-- 三批顺序与拆分是否 OK？若 OK，回复"开始 4.1"我即进入默认模式从批次 4.1 动手。
