@@ -125,7 +125,7 @@ const PropertyPanel = ({
         </>
       )}
 
-      <ApprovalSection data={data} onStatusChange={onStatusChange} />
+      <ApprovalSection data={data} onStatusChange={onStatusChange} onRefresh={onRefresh} />
     </div>
   );
 };
@@ -319,6 +319,7 @@ const RequirementDetailDrawer = ({
               itemKey="overview"
             >
               <div className="requirement-detail-tab-content">
+                {data.approvalFlowConfig && <ApprovalFlowProgress config={data.approvalFlowConfig} />}
                 <div className="requirement-detail-section">
                   <div
                     className="requirement-detail-section-header"
@@ -352,6 +353,8 @@ const RequirementDetailDrawer = ({
                     </Text>
                   </div>
                 )}
+
+                <LinkedProcessesSection processes={data.linkedProcesses} />
 
                 <ArtifactSection data={data} />
 
