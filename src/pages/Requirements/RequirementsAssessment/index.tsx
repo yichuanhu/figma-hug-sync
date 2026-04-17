@@ -200,7 +200,12 @@ const RequirementsAssessment = () => {
       title: t('requirements.assessment.netScoreCol'),
       dataIndex: 'netScore',
       key: 'netScore',
-      width: 100,
+      width: 120,
+      sorter: (a: RequirementItem, b: RequirementItem) => {
+        const sa = a.detailedAssessment?.netScore ?? Number.NEGATIVE_INFINITY;
+        const sb = b.detailedAssessment?.netScore ?? Number.NEGATIVE_INFINITY;
+        return sa - sb;
+      },
       render: (_: unknown, record: RequirementItem) => {
         const a = record.detailedAssessment;
         if (!a) return <Text type="tertiary">-</Text>;
