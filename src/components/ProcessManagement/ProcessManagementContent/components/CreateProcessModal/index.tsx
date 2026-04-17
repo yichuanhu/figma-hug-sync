@@ -161,7 +161,7 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
           />
         </Form.Slot>
 
-        <Form.Slot label={t('workspaceSelect.label')} required>
+        <Form.Slot label={{ text: t('workspaceSelect.label'), required: true }}>
           <WorkspaceSelect
             value={workspaceId}
             onChange={setWorkspaceId}
