@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Tag, Typography, Collapsible, Button, Input, Toast, Tooltip, Modal, Tabs, TabPane } from '@douyinfe/semi-ui';
+import { Tag, Typography, Collapsible, Button, Toast, Tooltip, Modal, Tabs, TabPane } from '@douyinfe/semi-ui';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
@@ -13,7 +13,6 @@ import AssessmentTab from './AssessmentTab';
 import CostEstimateTab from './CostEstimateTab';
 import VersionHistoryTab from './VersionHistoryTab';
 import ApprovalFlowProgress from '../ApprovalFlowProgress';
-import LinkedProcessesSection from '../LinkedProcessesSection';
 import './index.less';
 import { ChevronDown, ChevronRight, ClipboardCheck, FileText, History, Pencil, Send, Trash2, Wallet } from 'lucide-react';
 
@@ -26,7 +25,6 @@ const activityTypeConfig: Record<string, { color: string; label: string }> = {
   status_change: { color: 'var(--semi-color-primary)', label: 'Status Change' },
   approval: { color: 'var(--semi-color-success)', label: 'Approval' },
   assessment: { color: 'var(--semi-color-warning)', label: 'Assessment' },
-  comment: { color: 'var(--semi-color-tertiary)', label: 'Comment' },
 };
 
 // ============= 属性面板 =============
@@ -145,7 +143,7 @@ const ActivityStream = ({ activities, t }: { activities: ActivityRecord[]; t: (k
       </Text>
       <div className="requirement-detail-activity-list">
         {sorted.map((a) => {
-          const cfg = activityTypeConfig[a.type] || activityTypeConfig.comment;
+          const cfg = activityTypeConfig[a.type] || activityTypeConfig.status_change;
           return (
             <div key={a.id} className="requirement-detail-activity-item">
               <div className="requirement-detail-activity-dot" style={{ backgroundColor: cfg.color }} />
@@ -197,7 +195,6 @@ const RequirementDetailDrawer = ({
 }: RequirementDetailDrawerProps) => {
   const { t } = useTranslation();
   const [activities, setActivities] = useState<ActivityRecord[]>([]);
-  const [commentText, setCommentText] = useState('');
   const [descExpanded, setDescExpanded] = useState(true);
   const [activeTab, setActiveTab] = useState<string>('overview');
 
@@ -232,23 +229,6 @@ const RequirementDetailDrawer = ({
 
   const canEdit = data.status === 'DRAFT';
   const canDelete = data.status === 'DRAFT' || data.status === 'REJECTED';
-
-  const handleAddComment = () => {
-    if (!commentText.trim()) return;
-    setActivities((prev) => [
-      ...prev,
-      {
-        id: `comment-${Date.now()}`,
-        type: 'comment',
-        actorId: 'user-001',
-        actorName: 'John Smith',
-        content: commentText.trim(),
-        timestamp: new Date().toISOString(),
-      },
-    ]);
-    setCommentText('');
-    Toast.success(t('requirements.detail.commentAdded'));
-  };
 
   const handleSaveAssessment = async (id: string, assessment: DetailedAssessment) => {
     await updateRequirementAssessment(id, assessment);
@@ -377,35 +357,13 @@ const RequirementDetailDrawer = ({
                   </div>
                 )}
 
-                <LinkedProcessesSection
-                  processes={data.linkedProcesses}
-                  requirementId={data.id}
-                  canManage={data.creatorId === MOCK_CURRENT_USER_ID || data.owner_id === MOCK_CURRENT_USER_ID}
-                  onChanged={onRefresh}
+                <ArtifactSection
+                  data={data}
+                  canManageProcesses={data.creatorId === MOCK_CURRENT_USER_ID || data.owner_id === MOCK_CURRENT_USER_ID}
+                  onProcessesChanged={onRefresh}
                 />
 
-                <ArtifactSection data={data} />
-
                 <ActivityStream activities={activities} t={t} />
-
-                <div className="requirement-detail-comment-input">
-                  <Input
-                    placeholder={t('requirements.detail.addComment')}
-                    value={commentText}
-                    onChange={setCommentText}
-                    onEnterPress={handleAddComment}
-                    suffix={
-                      <Button
-                        theme="borderless"
-                        size="small"
-                        disabled={!commentText.trim()}
-                        onClick={handleAddComment}
-                      >
-                        {t('requirements.detail.send')}
-                      </Button>
-                    }
-                  />
-                </div>
               </div>
             </TabPane>
 
