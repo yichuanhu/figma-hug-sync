@@ -244,33 +244,56 @@ const generateMockDetailedAssessment = (status: RequirementStatus, idx: number):
   };
 };
 
-const generateMockCost = (status: RequirementStatus, idx: number): CostEstimateData | undefined => {
-  if (!(['DEVELOPING', 'LAUNCHED', 'OFFLINE'] as RequirementStatus[]).includes(status)) return undefined;
-  const roles = [
-    { role: 'product', people: 1, days: 5 + (idx % 3) },
-    { role: 'backend', people: 2, days: 8 + (idx % 5) },
-    { role: 'frontend', people: 1, days: 6 + (idx % 4) },
-  ];
-  const RATE: Record<string, number> = { product: 1500, backend: 1800, frontend: 1500, qa: 1200, designer: 1400, ops: 1600 };
-  const totalPersonDays = roles.reduce((s, r) => s + r.people * r.days, 0);
-  const laborCost = roles.reduce((s, r) => s + r.people * r.days * (RATE[r.role] ?? 0), 0);
-  const infra = 2000 + (idx % 3) * 500;
-  const thirdParty = idx % 4 === 0 ? 1500 : 0;
-  const other = 500;
-  const nonLaborCost = infra + thirdParty + other;
+// ============= Story-010 成本预估自动计算 =============
+
+import type { JobLevel, RequirementBaselineFormData, SchemeCostConfig } from './types';
+
+/** 默认 Scheme.cost_config（第 2 批将由激活方案动态注入） */
+export const DEFAULT_SCHEME_COST_CONFIG: SchemeCostConfig = {
+  workingHoursPerDay: 8,
+  rateTable: { P4: 800, P5: 1200, P6: 1800, P7: 2600 },
+  schemeName: 'RPA Pro 标准方案',
+};
+
+/** 基于基线表单数据自动计算成本节省 */
+export const computeCostEstimate = (
+  baseline: RequirementBaselineFormData,
+  config: SchemeCostConfig = DEFAULT_SCHEME_COST_CONFIG,
+): CostEstimateData => {
+  const dailyRate = config.rateTable[baseline.jobLevel] ?? 0;
+  const monthlySavedHours =
+    (baseline.frequency * baseline.durationMinutes * baseline.automationRatio) / 60;
+  const monthlySavedPersonDays =
+    config.workingHoursPerDay > 0 ? monthlySavedHours / config.workingHoursPerDay : 0;
+  const monthlySavedAmount = monthlySavedPersonDays * dailyRate;
   return {
-    roles,
-    infra,
-    thirdParty,
-    other,
-    totalPersonDays,
-    laborCost,
-    nonLaborCost,
-    totalCost: laborCost + nonLaborCost,
-    roiNote: 'Estimated payback within 4 months based on saved manual hours.',
-    updatedAt: new Date(2026, 2, 1 + (idx % 10)).toISOString(),
-    updatedBy: 'Angela Wu',
+    frequency: baseline.frequency,
+    durationMinutes: baseline.durationMinutes,
+    automationRatio: baseline.automationRatio,
+    jobLevel: baseline.jobLevel,
+    workingHoursPerDay: config.workingHoursPerDay,
+    dailyRate,
+    schemeName: config.schemeName,
+    monthlySavedHours,
+    monthlySavedPersonDays,
+    monthlySavedAmount,
+    computedAt: new Date().toISOString(),
   };
+};
+
+const JOB_LEVEL_POOL: JobLevel[] = ['P4', 'P5', 'P6', 'P7'];
+
+const generateMockBaseline = (idx: number): RequirementBaselineFormData => ({
+  frequency: 10 + (idx * 7) % 90,            // 10~99 次/月
+  durationMinutes: 15 + (idx * 11) % 105,    // 15~120 分钟
+  automationRatio: 0.4 + ((idx * 13) % 60) / 100, // 0.4~1.0
+  jobLevel: JOB_LEVEL_POOL[idx % JOB_LEVEL_POOL.length],
+});
+
+const generateMockCost = (status: RequirementStatus, idx: number): CostEstimateData | undefined => {
+  // 只要不是最早的草稿/撤回阶段，就有基线数据 → 自动算
+  if (status === 'DRAFT' || status === 'WITHDRAWN') return undefined;
+  return computeCostEstimate(generateMockBaseline(idx));
 };
 
 const generateMockVersions = (
@@ -537,33 +560,6 @@ export const updateRequirementAssessment = async (
   return mockRequirementData[index];
 };
 
-export const updateRequirementCost = async (
-  id: string,
-  cost: CostEstimateData,
-): Promise<RequirementItem | null> => {
-  await new Promise((resolve) => setTimeout(resolve, 300));
-  const index = mockRequirementData.findIndex((item) => item.id === id);
-  if (index === -1) return null;
-  const cur = mockRequirementData[index];
-  const newVersion: VersionSnapshot = {
-    version: (cur.historyVersions?.length ?? 0) + 1,
-    createdAt: new Date().toISOString(),
-    actorId: 'user-008',
-    actorName: cost.updatedBy,
-    summary: `Cost estimate updated (¥${cost.totalCost.toLocaleString()}).`,
-    snapshot: {
-      title: cur.title,
-      description: cur.description,
-      priority: cur.priority,
-      status: cur.status,
-      costEstimate: cost,
-    },
-  };
-  mockRequirementData[index] = {
-    ...cur,
-    costEstimate: cost,
-    historyVersions: [...(cur.historyVersions ?? []), newVersion],
-    updatedAt: new Date().toISOString(),
-  };
-  return mockRequirementData[index];
-};
+// 注：成本预估完全由 baselineFormData 自动计算，无对外编辑接口（STORY-010）。
+// 将来 Scheme.cost_config 变更时，可调用 computeCostEstimate 批量重算 mockRequirementData。
+

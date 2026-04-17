@@ -49,6 +49,10 @@
   grid-template-columns: repeat(4, 1fr);
   gap: 12px;
 
+  &-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
   @media (max-width: 720px) {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -64,5 +68,20 @@
 
   &-total {
     background: var(--semi-color-primary-light-default);
+  }
+}
+
+.cost-formula-block {
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+  background: var(--semi-color-fill-0);
+  padding: 12px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  line-height: 1.9;
+  color: var(--semi-color-text-1);
+
+  strong {
+    color: var(--semi-color-primary);
+    font-weight: 600;
   }
 }

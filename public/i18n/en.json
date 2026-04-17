@@ -704,34 +704,36 @@
       }
     },
     "costEstimate": {
-      "inputSection": "Estimate Inputs",
-      "resultSection": "Estimate Results",
-      "laborByRole": "Labor (by role)",
-      "addRole": "Add Role",
-      "noRoles": "No roles yet. Click \"Add Role\" to start.",
-      "selectRole": "Select role",
-      "selectRoleFirst": "Please select a role for each row",
-      "people": "ppl",
-      "days": "p-days",
-      "infra": "Infrastructure",
-      "thirdParty": "Third-party Services",
-      "other": "Other",
-      "totalPersonDays": "Total Person-Days",
-      "laborCost": "Labor Cost",
-      "nonLaborCost": "Non-Labor Cost",
-      "totalCost": "Total Cost",
-      "roiPlaceholder": "ROI note (optional)",
-      "save": "Save Estimate",
-      "saveSuccess": "Cost estimate saved",
-      "locked": "Not editable",
-      "lockedBeforeApproval": "Cost estimate becomes available after approval.",
-      "lockedAfterLaunch": "Requirement launched/offline. Estimate is read-only.",
-      "role": {
-        "product": "Product",
-        "backend": "Backend",
-        "frontend": "Frontend",
-        "qa": "QA"
-      }
+      "baselineSection": "Baseline Data",
+      "baselineDesc": "Sourced from the requirement form. Used to auto-compute automation savings.",
+      "baseline": {
+        "frequency": "Frequency",
+        "duration": "Duration per run",
+        "automationRatio": "Automation Ratio",
+        "jobLevel": "Job Level"
+      },
+      "unit": {
+        "timesPerMonth": "times/month",
+        "minutes": "minutes"
+      },
+      "savedSection": "Estimated Savings (auto)",
+      "savedSubtitle": "Based on active scheme {{scheme}} · {{jobLevel}} rate ¥{{dailyRate}}/d · {{hours}}h per day",
+      "defaultScheme": "Default Scheme",
+      "savedHours": "Monthly Saved Hours",
+      "savedPersonDays": "Monthly Saved Person-Days",
+      "savedAmount": "Monthly Saved Amount",
+      "formulaTitle": "Calculation Formula",
+      "formulaDesc": "Transparent breakdown of the calculation for this requirement.",
+      "noBaselineTitle": "No Baseline Data",
+      "noBaselineDesc": "Frequency, duration, automation ratio or job level have not been filled in this requirement.",
+      "departmentSummary": {
+        "title": "Estimated Savings by Department",
+        "requirements": "reqs",
+        "savedAmount": "Monthly Saved",
+        "savedDays": "Saved Person-Days",
+        "empty": "No cost data available yet"
+      },
+      "totalCost": "Monthly Saved Amount"
     },
     "versionHistory": {
       "timeline": "Version Timeline",

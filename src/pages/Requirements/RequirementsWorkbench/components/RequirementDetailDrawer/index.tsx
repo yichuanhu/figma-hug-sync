@@ -5,8 +5,8 @@ import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
-import type { RequirementItem, ActivityRecord, DetailedAssessment, CostEstimateData } from '../../types';
-import { statusConfig, priorityConfig, fetchActivities, updateRequirementAssessment, updateRequirementCost } from '../../mockData';
+import type { RequirementItem, ActivityRecord, DetailedAssessment } from '../../types';
+import { statusConfig, priorityConfig, fetchActivities, updateRequirementAssessment } from '../../mockData';
 import ApprovalSection from './ApprovalSection';
 import ArtifactSection from './ArtifactSection';
 import AssessmentTab from './AssessmentTab';
@@ -229,10 +229,8 @@ const RequirementDetailDrawer = ({
     await updateRequirementAssessment(id, assessment);
     onRefresh?.();
   };
-  const handleSaveCost = async (id: string, cost: CostEstimateData) => {
-    await updateRequirementCost(id, cost);
-    onRefresh?.();
-  };
+  // 成本预估完全由表单基线数据自动计算（STORY-010），无需保存回调
+
 
   return (
     <DetailDrawerWrapper<RequirementItem>
@@ -402,7 +400,7 @@ const RequirementDetailDrawer = ({
               itemKey="cost"
             >
               <div className="requirement-detail-tab-content">
-                <CostEstimateTab data={data} onSaveCost={handleSaveCost} />
+                <CostEstimateTab data={data} />
               </div>
             </TabPane>
 

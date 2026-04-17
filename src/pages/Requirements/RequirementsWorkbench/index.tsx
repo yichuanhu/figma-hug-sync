@@ -38,6 +38,7 @@ import ScoreBar from './components/ScoreBar';
 import TitleCell from './components/TitleCell';
 import RelativeTime from './components/RelativeTime';
 import BoardView from './components/BoardView';
+import DepartmentSavingsSummary from './components/DepartmentSavingsSummary';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -468,7 +469,9 @@ const RequirementsWorkbench = () => {
             }}
           />
         ) : (
-          <Table
+          <>
+            <DepartmentSavingsSummary list={list} />
+            <Table
             size="small"
             columns={columns}
             dataSource={list}
@@ -511,7 +514,8 @@ const RequirementsWorkbench = () => {
               showTotal: true,
             }}
             scroll={{ y: 'calc(100vh - 320px)', x: 1310 }}
-          />
+            />
+          </>
         )}
       </div>
 
