@@ -645,9 +645,16 @@ export const updateRequirementStatus = async (
   await new Promise((resolve) => setTimeout(resolve, 300));
   const index = mockRequirementData.findIndex((item) => item.id === id);
   if (index === -1) return null;
+  const cur = mockRequirementData[index];
+  // 进入审批 / 被驳回时按当前激活方案重新生成审批流，使方案管理页编辑后立即生效
+  const shouldRegenFlow = newStatus === 'PENDING_APPROVAL' || newStatus === 'REJECTED';
+  const nextFlow = shouldRegenFlow
+    ? generateMockApprovalFlow(newStatus as RequirementStatus)
+    : cur.approvalFlowConfig;
   mockRequirementData[index] = {
-    ...mockRequirementData[index],
+    ...cur,
     status: newStatus as RequirementStatus,
+    approvalFlowConfig: nextFlow,
     updatedAt: new Date().toISOString(),
   };
   return mockRequirementData[index];
