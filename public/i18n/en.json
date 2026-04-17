@@ -725,13 +725,12 @@
       "saveSuccess": "Cost estimate saved",
       "locked": "Not editable",
       "lockedBeforeApproval": "Cost estimate becomes available after approval.",
+      "lockedAfterLaunch": "Requirement launched/offline. Estimate is read-only.",
       "role": {
         "product": "Product",
         "backend": "Backend",
         "frontend": "Frontend",
-        "qa": "QA",
-        "designer": "Designer",
-        "ops": "Ops"
+        "qa": "QA"
       }
     },
     "versionHistory": {
