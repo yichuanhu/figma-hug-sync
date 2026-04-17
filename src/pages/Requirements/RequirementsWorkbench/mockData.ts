@@ -8,6 +8,10 @@ import type {
   ActivityRecord,
   TechnicalAssessment,
   RequirementArtifact,
+  DetailedAssessment,
+  CostEstimateData,
+  VersionSnapshot,
+  LinkedProcess,
 } from './types';
 import { statusConfigV2 } from './statusConfig';
 
