@@ -163,6 +163,11 @@ const RequirementsScheme = () => {
                           {t('requirements.scheme.versionHistory')}
                         </Dropdown.Item>
                         {!s.is_preset && (
+                          <Dropdown.Item icon={<Pencil size={14} />} onClick={(e) => { e.stopPropagation(); handleEditApprovalFlow(s); }}>
+                            {t('requirements.scheme.editor.entry')}
+                          </Dropdown.Item>
+                        )}
+                        {!s.is_preset && (
                           <Dropdown.Item icon={<Trash2 size={14} />} type="danger" onClick={(e) => { e.stopPropagation(); handleDelete(s); }}>
                             {t('common.delete')}
                           </Dropdown.Item>
@@ -227,6 +232,15 @@ const RequirementsScheme = () => {
         onNavigate={(s) => setDetailScheme(s)}
         onActivate={handleActivate}
         onDelete={(s) => { setDetailScheme(null); handleDelete(s); }}
+        onEditApprovalFlow={handleEditApprovalFlow}
+      />
+
+      {/* 审批流编辑弹窗 */}
+      <SchemeApprovalFlowEditor
+        visible={!!editingScheme}
+        scheme={editingScheme}
+        onClose={() => setEditingScheme(null)}
+        onSubmit={handleSaveApprovalFlow}
       />
     </div>
   );
