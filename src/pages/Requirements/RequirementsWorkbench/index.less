@@ -28,24 +28,23 @@
     overflow: hidden;
     min-height: 0;
 
-    // 行高与单元格内边距，对齐主流需求管理产品双行布局
-    .semi-table-tbody .semi-table-row {
-      .semi-table-row-cell {
-        padding-top: 10px;
-        padding-bottom: 10px;
-        vertical-align: middle;
-      }
+    // 所有单元格使用不透明背景，避免横向滚动时透出下方内容
+    // 全局表格背景被设为 transparent，需要在此页面重新提升优先级覆盖
+    .semi-table-tbody .semi-table-row .semi-table-row-cell {
+      padding-top: 10px;
+      padding-bottom: 10px;
+      vertical-align: middle;
+      background-color: var(--semi-color-bg-1);
     }
 
-    // 表头：弱化背景，清爽分隔
+    // 表头：使用不透明背景，避免横向滚动时透出下方内容
     .semi-table-thead .semi-table-row-head {
-      background-color: transparent;
+      background-color: var(--semi-color-bg-1);
       font-weight: 500;
       color: var(--semi-color-text-2);
     }
 
-    // 固定列：必须使用与页面卡片一致的不透明背景，避免横向滚动时透出下方内容
-    // 全局表格背景被设为 transparent，这里需要重新提升优先级覆盖
+    // 固定列必须使用不透明背景（最高优先级覆盖）
     .semi-table-row-cell-fixed-left,
     .semi-table-row-cell-fixed-right,
     .semi-table-thead .semi-table-row-head.semi-table-row-cell-fixed-left,
@@ -53,20 +52,14 @@
       background-color: var(--semi-color-bg-1) !important;
     }
 
-    // 选中行的固定列背景需匹配选中色
-    .semi-table-row.requirements-workbench-row-selected {
-      .semi-table-row-cell-fixed-left,
-      .semi-table-row-cell-fixed-right {
-        background-color: var(--semi-color-primary-light-default) !important;
-      }
+    // hover 行：所有单元格匹配 hover 色
+    .semi-table-tbody .semi-table-row-hover .semi-table-row-cell {
+      background-color: var(--semi-color-fill-0) !important;
     }
 
-    // hover 行的固定列背景需匹配 hover 色
-    .semi-table-tbody .semi-table-row-hover {
-      .semi-table-row-cell-fixed-left,
-      .semi-table-row-cell-fixed-right {
-        background-color: var(--semi-color-fill-0) !important;
-      }
+    // 选中行：所有单元格匹配选中色
+    .semi-table-row.requirements-workbench-row-selected .semi-table-row-cell {
+      background-color: var(--semi-color-primary-light-default) !important;
     }
   }
 
