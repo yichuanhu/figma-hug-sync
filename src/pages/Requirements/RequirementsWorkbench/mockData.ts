@@ -633,22 +633,42 @@ export const updateRequirementAssessment = async (
 // 注：成本预估完全由 baselineFormData 自动计算，无对外编辑接口（STORY-010）。
 // 将来 Scheme.cost_config 变更时，可调用 computeCostEstimate 批量重算 mockRequirementData。
 
-// ============= Story-006 多级审批 mock =============
+// ============= Story-006 多级审批 mock（方案驱动） =============
 
-const APPROVAL_LEVEL_TEMPLATES: Array<{ name: string; mode: ApprovalFlowLevel['mode']; approvers: Array<{ id: string; name: string }> }> = [
-  { name: '部门主管审批', mode: 'any_one', approvers: [{ id: 'user-001', name: 'John Smith' }, { id: 'user-007', name: 'Robert Xu' }] },
-  { name: '业务审批（会签）', mode: 'all',     approvers: [{ id: 'user-002', name: 'Emily Chen' }, { id: 'user-006', name: 'Jessica Liu' }] },
-  { name: 'IT 复核',         mode: 'any_one', approvers: [{ id: 'user-008', name: 'Angela Wu' }, { id: 'user-003', name: 'Michael Wang' }] },
-];
+/** 把 ApprovalLevelConfig.mode 兼容到运行时三态 */
+const resolveLevelMode = (cfgMode?: string, countSign?: boolean): ApprovalFlowLevel['mode'] => {
+  if (cfgMode === 'all' || cfgMode === 'any_one' || cfgMode === 'majority') return cfgMode;
+  return countSign ? 'all' : 'any_one';
+};
 
-/** 根据需求当前状态推导审批流的进度（mock） */
-export const generateMockApprovalFlow = (status: RequirementStatus): MultiLevelApprovalConfig | undefined => {
+/**
+ * 根据需求当前状态 + 当前激活方案的 approval_flow，生成多级审批运行时快照。
+ * - DRAFT/WITHDRAWN：无审批流
+ * - PENDING_APPROVAL：currentLevel=1，第一级 PENDING，其余 wait
+ * - REJECTED：currentLevel=1，第一级首位 REJECTED，其余 wait
+ * - 其它（已通过审批后）：全部 APPROVED
+ */
+export const generateMockApprovalFlow = (
+  status: RequirementStatus,
+  requirement?: Pick<RequirementItem, 'creatorId' | 'owning_department_id'>,
+): MultiLevelApprovalConfig | undefined => {
   if (status === 'DRAFT' || status === 'WITHDRAWN') return undefined;
 
+  const scheme = getEffectiveScheme();
+  const levelConfigs = scheme.approval_flow?.levels ?? [];
+  if (levelConfigs.length === 0) return undefined;
+
+  // 兜底 requirement（mockTemplate 初始化阶段可能未传完整对象）
+  const reqCtx = requirement ?? { creatorId: 'user-001', owning_department_id: 'dept-001' };
   const baseTime = new Date(2026, 1, 10).getTime();
-  const buildLevel = (idx: number, levelStatus: 'all_approved' | 'pending_here' | 'wait' | 'rejected_here'): ApprovalFlowLevel => {
-    const tpl = APPROVAL_LEVEL_TEMPLATES[idx];
-    const approvers: ApprovalFlowApprover[] = tpl.approvers.map((a, i) => {
+
+  const buildLevel = (
+    idx: number,
+    levelStatus: 'all_approved' | 'pending_here' | 'wait' | 'rejected_here',
+  ): ApprovalFlowLevel => {
+    const cfg = levelConfigs[idx];
+    const baseApprovers = resolveApprovers(cfg, reqCtx);
+    const approvers: ApprovalFlowApprover[] = baseApprovers.map((a, i) => {
       if (levelStatus === 'all_approved') {
         return { ...a, status: 'APPROVED', actedAt: new Date(baseTime + (idx * 2 + i) * 3600 * 1000).toISOString(), comment: '审核通过' };
       }
@@ -659,29 +679,23 @@ export const generateMockApprovalFlow = (status: RequirementStatus): MultiLevelA
       }
       return { ...a, status: 'PENDING' };
     });
-    return { level: idx + 1, name: tpl.name, mode: tpl.mode, approvers };
+    return {
+      level: idx + 1,
+      name: cfg.name,
+      mode: resolveLevelMode(cfg.mode, cfg.count_sign),
+      approvers,
+    };
   };
 
-  let currentLevel = 1;
-  const levels: ApprovalFlowLevel[] = [];
+  const levels: ApprovalFlowLevel[] = levelConfigs.map((_, i) => {
+    if (status === 'PENDING_APPROVAL') return buildLevel(i, i === 0 ? 'pending_here' : 'wait');
+    if (status === 'REJECTED') return buildLevel(i, i === 0 ? 'rejected_here' : 'wait');
+    return buildLevel(i, 'all_approved');
+  });
 
-  if (status === 'PENDING_APPROVAL') {
-    currentLevel = 1;
-    levels.push(buildLevel(0, 'pending_here'));
-    levels.push(buildLevel(1, 'wait'));
-    levels.push(buildLevel(2, 'wait'));
-  } else if (status === 'REJECTED') {
-    currentLevel = 1;
-    levels.push(buildLevel(0, 'rejected_here'));
-    levels.push(buildLevel(1, 'wait'));
-    levels.push(buildLevel(2, 'wait'));
-  } else {
-    // PENDING_ASSESSMENT / PENDING_PROJECT / DEVELOPING / LAUNCHED / OFFLINE → 全部通过
-    currentLevel = 4;
-    levels.push(buildLevel(0, 'all_approved'));
-    levels.push(buildLevel(1, 'all_approved'));
-    levels.push(buildLevel(2, 'all_approved'));
-  }
+  let currentLevel = 1;
+  if (status === 'PENDING_APPROVAL' || status === 'REJECTED') currentLevel = 1;
+  else currentLevel = levelConfigs.length + 1;
 
   return { levels, currentLevel };
 };
