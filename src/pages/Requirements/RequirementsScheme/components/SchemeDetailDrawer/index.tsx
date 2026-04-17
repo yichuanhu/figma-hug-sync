@@ -178,6 +178,7 @@ const SchemeDetailDrawer = ({
       onNavigate={onNavigate}
       extraActions={extraActions}
       deleteAction={deleteAction}
+      className="scheme-detail-drawer"
     >
       {scheme && (
         <Tabs activeKey={activeTab} onChange={setActiveTab} type="line" style={{ height: '100%' }}>
