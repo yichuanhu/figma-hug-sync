@@ -756,6 +756,9 @@
       "rejectModalTitle": "Reject Requirement",
       "approveReasonPlaceholder": "Enter approval comments (optional)",
       "rejectReasonPlaceholder": "Enter rejection reason"
+    },
+    "list": {
+      "subtitle": "{{department}} · {{creator}}"
     }
   },
   "development": {

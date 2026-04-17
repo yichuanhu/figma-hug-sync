@@ -646,6 +646,9 @@
       "rejectModalTitle": "审批拒绝",
       "approveReasonPlaceholder": "请输入通过意见（可选）",
       "rejectReasonPlaceholder": "请输入拒绝理由"
+    },
+    "list": {
+      "subtitle": "{{department}} · {{creator}}"
     }
   },
   "development": {

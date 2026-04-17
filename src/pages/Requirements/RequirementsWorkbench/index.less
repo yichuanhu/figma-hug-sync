@@ -27,6 +27,22 @@
     flex: 1;
     overflow: hidden;
     min-height: 0;
+
+    // 行高与单元格内边距，对齐主流需求管理产品双行布局
+    .semi-table-tbody .semi-table-row {
+      .semi-table-row-cell {
+        padding-top: 10px;
+        padding-bottom: 10px;
+        vertical-align: middle;
+      }
+    }
+
+    // 表头：弱化背景，清爽分隔
+    .semi-table-thead .semi-table-row-head {
+      background-color: transparent;
+      font-weight: 500;
+      color: var(--semi-color-text-2);
+    }
   }
 
   // 表格行选中状态

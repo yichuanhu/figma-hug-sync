@@ -6,35 +6,36 @@ import {
   Input,
   Button,
   Table,
-  Tag,
   Dropdown,
   Row,
   Col,
   Modal,
   Toast,
   Space,
-  Select,
 } from '@douyinfe/semi-ui';
 import DepartmentSelect from '@/components/DepartmentSelect';
 import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
 import { Ellipsis, Eye, Pencil, Plus, Send, Trash2, Upload } from 'lucide-react';
-import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
-import type { RequirementItem, RequirementQueryParams, RequirementStatus } from './types';
+import type { RequirementItem, RequirementQueryParams, RequirementStatus, RequirementPriority } from './types';
 import {
-  priorityConfig,
   fetchRequirementList,
   deleteRequirement,
   createRequirement,
   updateRequirement,
   updateRequirementStatus,
 } from './mockData';
-import { statusConfigV2, statusOptionsV2, legacyStatusMap } from './statusConfig';
+import { statusConfigV2, legacyStatusMap } from './statusConfig';
 import RequirementFormModal from './components/RequirementFormModal';
 import RequirementDetailDrawer from './components/RequirementDetailDrawer';
+import PriorityIndicator from './components/PriorityIndicator';
+import StatusDot from './components/StatusDot';
+import ScoreBar from './components/ScoreBar';
+import TitleCell from './components/TitleCell';
+import RelativeTime from './components/RelativeTime';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -192,72 +193,67 @@ const RequirementsWorkbench = () => {
   const normalizeStatus = (s: string): RequirementStatus =>
     (statusConfigV2[s as RequirementStatus] ? (s as RequirementStatus) : legacyStatusMap[s]) || 'DRAFT';
 
-  // 表格列
+  // 表格列（对齐 Linear / 飞书项目主流需求管理产品）
   const columns = [
+    {
+      title: '',
+      dataIndex: 'priority',
+      key: 'priority',
+      width: 44,
+      align: 'center' as const,
+      render: (p: RequirementPriority) => <PriorityIndicator priority={p} />,
+    },
     {
       title: t('requirements.fields.reqNo', '编号'),
       dataIndex: 'req_no',
       key: 'req_no',
-      width: 140,
+      width: 120,
       render: (v: string | undefined, r: RequirementItem) => (
-        <Text type="tertiary" size="small">{v || `REQ-${r.id.slice(0, 8)}`}</Text>
+        <Text type="tertiary" size="small" style={{ fontVariantNumeric: 'tabular-nums' }}>
+          {v || `REQ-${r.id.slice(0, 8)}`}
+        </Text>
       ),
     },
     {
       title: t('requirements.fields.title'),
       dataIndex: 'title',
       key: 'title',
-      width: 240,
       ellipsis: true,
       sorter: true,
       onHeaderCell: () => ({ onClick: () => handleSort('title') }),
-    },
-    {
-      title: t('common.owningDepartment'),
-      dataIndex: 'owning_department_name',
-      key: 'owning_department_name',
-      width: 130,
-      ellipsis: true,
+      render: (_: string, record: RequirementItem) => <TitleCell record={record} />,
     },
     {
       title: t('common.status'),
       dataIndex: 'status',
       key: 'status',
-      width: 110,
-      render: (status: string) => {
-        const ns = normalizeStatus(status);
-        const cfg = statusConfigV2[ns];
-        return (
-          <Tag color={cfg.color} type="light">{t(cfg.i18nKey)}</Tag>
-        );
-      },
+      width: 120,
+      render: (status: string) => <StatusDot status={normalizeStatus(status)} />,
     },
     {
       title: t('requirements.fields.valueScore', '价值得分'),
       dataIndex: 'value_score',
       key: 'value_score',
-      width: 100,
-      render: (v: number | undefined) =>
-        typeof v === 'number' ? <Tag color="cyan" type="light">{v.toFixed(1)}</Tag> : <Text type="tertiary">-</Text>,
+      width: 120,
+      render: (v: number | undefined) => <ScoreBar value={v} variant="value" />,
     },
     {
       title: t('requirements.fields.complexityScore', '复杂度得分'),
       dataIndex: 'complexity_score',
       key: 'complexity_score',
-      width: 110,
-      render: (v: number | undefined) =>
-        typeof v === 'number' ? <Tag color="purple" type="light">{v.toFixed(1)}</Tag> : <Text type="tertiary">-</Text>,
+      width: 120,
+      render: (v: number | undefined) => <ScoreBar value={v} variant="complexity" />,
     },
     {
-      title: t('common.creator'),
-      dataIndex: 'creatorId',
-      key: 'creatorId',
-      width: 120,
+      title: t('common.owner', t('common.creator') as string),
+      dataIndex: 'owner_name',
+      key: 'owner_name',
+      width: 140,
       ellipsis: true,
       render: (_: string, record: RequirementItem) => (
         <UserNameWithCard
-          name={record.creatorName}
-          userId={record.creatorId}
+          name={record.owner_name || record.creatorName}
+          userId={record.owner_id || record.creatorId}
           department={record.creatorDepartment}
           role={record.creatorRole}
           email={record.creatorEmail}
@@ -268,10 +264,10 @@ const RequirementsWorkbench = () => {
       title: t('common.createTime', '创建时间'),
       dataIndex: 'createdAt',
       key: 'createdAt',
-      width: 160,
+      width: 120,
       sorter: true,
       onHeaderCell: () => ({ onClick: () => handleSort('created_at') }),
-      render: (value: string | null) => (value ? value.replace('T', ' ').substring(0, 19) : '-'),
+      render: (value: string | null) => <RelativeTime value={value} />,
     },
     {
       title: t('common.actions'),
