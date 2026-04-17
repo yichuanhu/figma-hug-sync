@@ -706,10 +706,10 @@ const resolveLevelMode = (cfgMode?: string, countSign?: boolean): ApprovalFlowLe
  * - REJECTED：currentLevel=1，第一级首位 REJECTED，其余 wait
  * - 其它（已通过审批后）：全部 APPROVED
  */
-export const generateMockApprovalFlow = (
+export function generateMockApprovalFlow(
   status: RequirementStatus,
   requirement?: Pick<RequirementItem, 'creatorId' | 'owning_department_id'>,
-): MultiLevelApprovalConfig | undefined => {
+): MultiLevelApprovalConfig | undefined {
   if (status === 'DRAFT' || status === 'WITHDRAWN') return undefined;
 
   const scheme = getEffectiveScheme();
