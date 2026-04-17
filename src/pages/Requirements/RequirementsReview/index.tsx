@@ -24,31 +24,31 @@ import {
   priorityConfig,
   fetchRequirementList,
   updateRequirementStatus,
-  fetchActivities,
-  mockCreators,
+  advanceApprovalFlow,
+  withdrawRequirement,
+  MOCK_CURRENT_USER_ID,
 } from '../RequirementsWorkbench/mockData';
 import RequirementDetailDrawer from '../RequirementsWorkbench/components/RequirementDetailDrawer';
 import './index.less';
-import { CheckCircle, Ellipsis, Eye, XCircle } from 'lucide-react';
+import { CheckCircle, Ellipsis, Eye, Undo2, XCircle } from 'lucide-react';
 
 const { Title, Text } = Typography;
 
-// 模拟当前用户为审批人 Robert Xu (user-007)
-const CURRENT_REVIEWER_ID = 'user-007';
-const CURRENT_REVIEWER = mockCreators[CURRENT_REVIEWER_ID];
+// 判断当前用户是否为该需求当前级的待办审批人
+const isMyTurn = (r: RequirementItem): boolean => {
+  if (r.status !== 'PENDING_APPROVAL' || !r.approvalFlowConfig) return false;
+  const lv = r.approvalFlowConfig.levels.find((l) => l.level === r.approvalFlowConfig!.currentLevel);
+  return !!lv?.approvers.some((a) => a.id === MOCK_CURRENT_USER_ID && a.status === 'PENDING');
+};
 
-// 模拟审批记录
-interface ReviewRecord {
-  requirementId: string;
-  reviewerId: string;
-  action: 'approved' | 'rejected';
-  comment: string;
-  timestamp: string;
-}
-
-const mockReviewHistory: ReviewRecord[] = [];
+// 判断当前用户是否参与过该需求审批
+const reviewedByMe = (r: RequirementItem): boolean =>
+  (r.approvalHistory ?? []).some(
+    (h) => h.approverId === MOCK_CURRENT_USER_ID && (h.action === 'approve' || h.action === 'reject'),
+  );
 
 type ReviewTab = 'pending' | 'reviewed' | 'all';
+
 
 const RequirementsReview = () => {
   const { t } = useTranslation();
@@ -91,14 +91,21 @@ const RequirementsReview = () => {
     loadData();
   }, [loadData]);
 
-  // 统计数据
+  // 统计数据（基于真实数据 + approvalHistory）
   const stats = useMemo(() => {
-    const pendingCount = allRequirements.filter((r) => r.status === 'PENDING_APPROVAL').length;
-    const assessingCount = allRequirements.filter((r) => r.status === 'PENDING_ASSESSMENT').length;
-    const reviewedCount = mockReviewHistory.length;
-    const approvedCount = mockReviewHistory.filter((r) => r.action === 'approved').length;
-    const rejectedCount = mockReviewHistory.filter((r) => r.action === 'rejected').length;
-    return { pendingCount, assessingCount, reviewedCount, approvedCount, rejectedCount };
+    const pendingCount = allRequirements.filter(isMyTurn).length;
+    const reviewedSet = allRequirements.filter(reviewedByMe);
+    const reviewedCount = reviewedSet.length;
+    let approvedCount = 0;
+    let rejectedCount = 0;
+    allRequirements.forEach((r) => {
+      (r.approvalHistory ?? []).forEach((h) => {
+        if (h.approverId !== MOCK_CURRENT_USER_ID) return;
+        if (h.action === 'approve') approvedCount += 1;
+        if (h.action === 'reject') rejectedCount += 1;
+      });
+    });
+    return { pendingCount, reviewedCount, approvedCount, rejectedCount };
   }, [allRequirements]);
 
   // 按 tab 筛选数据
@@ -106,35 +113,31 @@ const RequirementsReview = () => {
     let data: RequirementItem[];
     switch (activeTab) {
       case 'pending':
-        // 待我审批：PENDING_APPROVAL 和 PENDING_ASSESSMENT 状态
-        data = allRequirements.filter((r) => r.status === 'PENDING_APPROVAL' || r.status === 'PENDING_ASSESSMENT');
+        data = allRequirements.filter(isMyTurn);
         break;
       case 'reviewed':
-        // 我已审批：通过审批记录匹配
-        const reviewedIds = new Set(mockReviewHistory.map((r) => r.requirementId));
-        data = allRequirements.filter((r) => reviewedIds.has(r.id));
+        data = allRequirements.filter(reviewedByMe);
         break;
       case 'all':
       default:
-        // 全部：排除 DRAFT
-        data = allRequirements.filter((r) => r.status !== 'DRAFT');
+        // 全部审批相关：仅 PENDING_APPROVAL / REJECTED / WITHDRAWN
+        data = allRequirements.filter(
+          (r) => r.status === 'PENDING_APPROVAL' || r.status === 'REJECTED' || r.status === 'WITHDRAWN',
+        );
         break;
     }
 
-    // 搜索
     if (searchValue.trim()) {
       const kw = searchValue.toLowerCase().trim();
       data = data.filter(
         (item) =>
-          item.title.toLowerCase().includes(kw) ||
-          item.description.toLowerCase().includes(kw),
+          item.title.toLowerCase().includes(kw) || item.description.toLowerCase().includes(kw),
       );
     }
-
     return data;
   }, [activeTab, allRequirements, searchValue]);
 
-  // 审批操作
+  // 审批操作（走多级审批引擎）
   const openApprovalModal = (record: RequirementItem, action: 'approve' | 'reject') => {
     setApprovalTarget(record);
     setApprovalAction(action);
@@ -148,32 +151,16 @@ const RequirementsReview = () => {
       Toast.warning(t('requirements.detail.rejectReasonRequired'));
       return;
     }
-
     setApprovalSubmitting(true);
     try {
-      const newStatus = approvalAction === 'approve' ? 'PENDING_ASSESSMENT' : 'REJECTED';
-      const comment = approvalReason.trim()
-        ? `${approvalAction === 'approve' ? 'Approved' : 'Rejected'}. ${approvalReason.trim()}`
-        : `${approvalAction === 'approve' ? 'Approved' : 'Rejected'} by ${CURRENT_REVIEWER.name}.`;
-
-      await updateRequirementStatus(approvalTarget.id, newStatus, comment);
-
-      // 记录审批历史
-      mockReviewHistory.push({
-        requirementId: approvalTarget.id,
-        reviewerId: CURRENT_REVIEWER_ID,
-        action: approvalAction === 'approve' ? 'approved' : 'rejected',
-        comment: approvalReason.trim(),
-        timestamp: new Date().toISOString(),
-      });
-
+      await advanceApprovalFlow(approvalTarget.id, approvalAction, approvalReason.trim() || undefined);
       Toast.success(
         approvalAction === 'approve'
           ? t('requirements.detail.approveSuccess')
           : t('requirements.detail.rejectSuccess'),
       );
       setApprovalModalVisible(false);
-      loadData();
+      await loadData();
     } catch {
       Toast.error(t('requirements.detail.actionFailed'));
     } finally {
@@ -181,22 +168,30 @@ const RequirementsReview = () => {
     }
   };
 
-  // 状态变更回调（用于详情抽屉）
+  // 撤回（提交人）
+  const handleWithdraw = (record: RequirementItem) => {
+    Modal.confirm({
+      title: t('requirements.review.withdrawConfirmTitle'),
+      content: t('requirements.review.withdrawConfirmContent'),
+      okText: t('requirements.review.withdraw'),
+      okButtonProps: { type: 'danger' },
+      cancelText: t('common.cancel'),
+      onOk: async () => {
+        try {
+          await withdrawRequirement(record.id);
+          Toast.success(t('requirements.review.withdrawSuccess'));
+          await loadData();
+        } catch (e) {
+          Toast.error((e as Error).message);
+        }
+      },
+    });
+  };
+
+  // 状态变更回调（用于详情抽屉的旧入口，例如从 DRAFT 提交）
   const handleStatusChange = async (id: string, newStatus: string, comment?: string) => {
     await updateRequirementStatus(id, newStatus, comment);
-
-    if (['PENDING_ASSESSMENT', 'REJECTED'].includes(newStatus)) {
-      mockReviewHistory.push({
-        requirementId: id,
-        reviewerId: CURRENT_REVIEWER_ID,
-        action: newStatus === 'PENDING_ASSESSMENT' ? 'approved' : 'rejected',
-        comment: comment || '',
-        timestamp: new Date().toISOString(),
-      });
-    }
-
-    loadData();
-    // 刷新选中记录
+    await loadData();
     const response = await fetchRequirementList({
       offset: 0,
       size: 200,
@@ -270,6 +265,27 @@ const RequirementsReview = () => {
         ),
       },
       {
+        title: t('requirements.review.currentLevelCol'),
+        dataIndex: 'currentLevel',
+        key: 'currentLevel',
+        width: 200,
+        ellipsis: true,
+        render: (_: unknown, record: RequirementItem) => {
+          const cfg = record.approvalFlowConfig;
+          if (!cfg || record.status !== 'PENDING_APPROVAL') return <Text type="tertiary">-</Text>;
+          const lv = cfg.levels.find((l) => l.level === cfg.currentLevel);
+          return (
+            <Text size="small">
+              {t('requirements.review.currentLevelValue', {
+                current: cfg.currentLevel,
+                total: cfg.levels.length,
+                name: lv?.name ?? '',
+              })}
+            </Text>
+          );
+        },
+      },
+      {
         title: t('common.updateTime'),
         dataIndex: 'updatedAt',
         key: 'updatedAt',
@@ -304,7 +320,7 @@ const RequirementsReview = () => {
                 >
                   {t('common.viewDetail')}
                 </Dropdown.Item>
-                {record.status === 'PENDING_APPROVAL' && (
+                {isMyTurn(record) && (
                   <>
                     <Dropdown.Item
                       icon={<CheckCircle size={16} strokeWidth={2} />}
@@ -327,16 +343,15 @@ const RequirementsReview = () => {
                     </Dropdown.Item>
                   </>
                 )}
-                {record.status === 'PENDING_ASSESSMENT' && (
+                {record.status === 'PENDING_APPROVAL' && record.creatorId === MOCK_CURRENT_USER_ID && (
                   <Dropdown.Item
-                    icon={<Eye size={16} strokeWidth={2} />}
+                    icon={<Undo2 size={16} strokeWidth={2} />}
                     onClick={(e) => {
                       e.stopPropagation();
-                      setSelectedRecord(record);
-                      setDetailDrawerVisible(true);
+                      handleWithdraw(record);
                     }}
                   >
-                    {t('requirements.review.startAssessment')}
+                    {t('requirements.review.withdraw')}
                   </Dropdown.Item>
                 )}
               </Dropdown.Menu>
@@ -392,7 +407,7 @@ const RequirementsReview = () => {
                 <path d="M9 10a1 1 0 012 0v4h4a1 1 0 010 2h-4.8a1.2 1.2 0 01-1.2-1.2V10z" fill="url(#rv_pending_fg_g)"/>
               </svg>
             )},
-            { label: t('requirements.review.assessingCount'), value: stats.assessingCount, icon: (
+            { label: t('requirements.review.reviewedCount'), value: stats.reviewedCount, icon: (
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                   <filter id="rv_assess_bg_i" x="8.9" y="1.09" width="14" height="15" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB"><feFlood floodOpacity="0" result="bg"/><feBlend in="SourceGraphic" in2="bg" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="ha"/><feOffset dy="1"/><feGaussianBlur stdDeviation="0.5"/><feComposite in2="ha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0"/><feBlend in2="shape" result="r"/></filter>
@@ -461,9 +476,9 @@ const RequirementsReview = () => {
             tab={
               <span>
                 {t('requirements.review.pendingMe')}
-                {stats.pendingCount + stats.assessingCount > 0 && (
+                {stats.pendingCount > 0 && (
                   <Tag size="small" color="orange" type="solid" style={{ marginLeft: 6 }}>
-                    {stats.pendingCount + stats.assessingCount}
+                    {stats.pendingCount}
                   </Tag>
                 )}
               </span>

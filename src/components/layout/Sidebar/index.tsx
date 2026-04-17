@@ -294,6 +294,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     { key: 'requirementsManagement', labelKey: 'sidebar.requirementsManagement', isGroupLabel: true },
     { key: 'requirementsList', labelKey: 'sidebar.requirementsList', icon: <ClipboardList size={18} strokeWidth={2} />, path: '/requirements/list' },
     { key: 'requirementsReview', labelKey: 'sidebar.requirementsReview', icon: <CheckSquare size={18} strokeWidth={2} />, path: '/requirements/review' },
+    { key: 'requirementsAssessment', labelKey: 'sidebar.requirementsAssessment', icon: <FolderCheck size={18} strokeWidth={2} />, path: '/requirements/assessment' },
     { key: 'requirementsScheme', labelKey: 'sidebar.requirementsScheme', icon: <Settings size={18} strokeWidth={2} />, path: '/requirements/scheme' },
     // 协作管理 - 分组标题
     { key: 'collaborationManagement', labelKey: 'sidebar.collaborationManagement', isGroupLabel: true },
@@ -384,6 +385,9 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     }
     if (pathname.startsWith('/requirements/review')) {
       return 'requirementsReview';
+    }
+    if (pathname.startsWith('/requirements/assessment')) {
+      return 'requirementsAssessment';
     }
     if (pathname.startsWith('/requirements/team')) {
       return 'teamMembers';

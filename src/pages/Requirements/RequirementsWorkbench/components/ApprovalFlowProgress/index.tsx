@@ -43,7 +43,11 @@ const ApprovalFlowProgress = ({ config }: Props) => {
           <Text strong>{t('requirements.approvalFlow.title')}</Text>
         </span>
         <Text type="tertiary" size="small">
-          {t('requirements.approvalFlow.currentLevel', { level: config.currentLevel })}
+          {t('requirements.approvalFlow.currentLevel', {
+            current: config.currentLevel,
+            total: config.levels.length,
+            name: config.levels.find((l) => l.level === config.currentLevel)?.name ?? '',
+          })}
         </Text>
       </button>
 
