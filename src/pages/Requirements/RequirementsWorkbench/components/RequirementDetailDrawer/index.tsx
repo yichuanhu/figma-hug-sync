@@ -35,10 +35,12 @@ const PropertyPanel = ({
   data,
   t,
   onStatusChange,
+  onRefresh,
 }: {
   data: RequirementItem;
   t: (key: string, options?: Record<string, unknown>) => string;
   onStatusChange: (id: string, newStatus: string, comment?: string) => Promise<void>;
+  onRefresh?: () => void;
 }) => {
   const sCfg = statusConfig[data.status];
   const pCfg = priorityConfig[data.priority];
