@@ -688,20 +688,37 @@ export const updateRequirementAssessment = async (
 
 // ============= Story-006 多级审批 mock =============
 
-const APPROVAL_LEVEL_TEMPLATES: Array<{ name: string; mode: ApprovalFlowLevel['mode']; approvers: Array<{ id: string; name: string }> }> = [
-  { name: '部门主管审批', mode: 'any_one', approvers: [{ id: 'user-001', name: 'John Smith' }, { id: 'user-007', name: 'Robert Xu' }] },
-  { name: '业务审批（会签）', mode: 'all',     approvers: [{ id: 'user-002', name: 'Emily Chen' }, { id: 'user-006', name: 'Jessica Liu' }] },
-  { name: 'IT 复核',         mode: 'any_one', approvers: [{ id: 'user-008', name: 'Angela Wu' }, { id: 'user-003', name: 'Michael Wang' }] },
-];
+import { getActiveScheme as getActiveSchemeFromStore } from './schemeConfig';
+import type { ApprovalLevelConfig, ApprovalFlowMode } from './types';
 
-/** 根据需求当前状态推导审批流的进度（mock） */
+/** 将 Scheme 的 ApprovalLevelConfig 适配为运行时 ApprovalFlowLevel（仅 user 类型支持具名审批人） */
+const adaptSchemeLevel = (lvl: ApprovalLevelConfig): {
+  name: string;
+  mode: ApprovalFlowMode;
+  approvers: Array<{ id: string; name: string }>;
+} => {
+  const mode: ApprovalFlowMode = lvl.mode ?? (lvl.count_sign ? 'all' : 'any_one');
+  // 仅 user 类型直接取具名审批人；role/department 兜底取占位审批人
+  const approvers: Array<{ id: string; name: string }> = lvl.approver_type === 'user'
+    ? lvl.approver_ids.map((uid) => ({ id: uid, name: mockCreators[uid]?.name ?? uid }))
+    : [{ id: 'user-007', name: mockCreators['user-007'].name }];
+  return { name: lvl.name, mode, approvers };
+};
+
+/** 根据需求当前状态推导审批流的进度（mock）— 接入激活方案 approval_flow */
 export const generateMockApprovalFlow = (status: RequirementStatus): MultiLevelApprovalConfig | undefined => {
   if (status === 'DRAFT' || status === 'WITHDRAWN') return undefined;
 
-  // 推导 currentLevel + 各级 approver 状态
+  const scheme = getActiveSchemeFromStore();
+  const schemeLevels = scheme?.approval_flow?.levels ?? [];
+  if (schemeLevels.length === 0) return undefined;
+
+  const sorted = [...schemeLevels].sort((a, b) => a.order - b.order);
+  const templates = sorted.map(adaptSchemeLevel);
+
   const baseTime = new Date(2026, 1, 10).getTime();
   const buildLevel = (idx: number, levelStatus: 'all_approved' | 'pending_here' | 'wait' | 'rejected_here'): ApprovalFlowLevel => {
-    const tpl = APPROVAL_LEVEL_TEMPLATES[idx];
+    const tpl = templates[idx];
     const approvers: ApprovalFlowApprover[] = tpl.approvers.map((a, i) => {
       if (levelStatus === 'all_approved') {
         return { ...a, status: 'APPROVED', actedAt: new Date(baseTime + (idx * 2 + i) * 3600 * 1000).toISOString(), comment: '审核通过' };
@@ -718,23 +735,18 @@ export const generateMockApprovalFlow = (status: RequirementStatus): MultiLevelA
 
   let currentLevel = 1;
   const levels: ApprovalFlowLevel[] = [];
+  const total = templates.length;
 
   if (status === 'PENDING_APPROVAL') {
     currentLevel = 1;
-    levels.push(buildLevel(0, 'pending_here'));
-    levels.push(buildLevel(1, 'wait'));
-    levels.push(buildLevel(2, 'wait'));
+    for (let i = 0; i < total; i++) levels.push(buildLevel(i, i === 0 ? 'pending_here' : 'wait'));
   } else if (status === 'REJECTED') {
     currentLevel = 1;
-    levels.push(buildLevel(0, 'rejected_here'));
-    levels.push(buildLevel(1, 'wait'));
-    levels.push(buildLevel(2, 'wait'));
+    for (let i = 0; i < total; i++) levels.push(buildLevel(i, i === 0 ? 'rejected_here' : 'wait'));
   } else {
-    // PENDING_ASSESSMENT / PENDING_PROJECT / DEVELOPING / LAUNCHED / OFFLINE → 全部通过
-    currentLevel = 4;
-    levels.push(buildLevel(0, 'all_approved'));
-    levels.push(buildLevel(1, 'all_approved'));
-    levels.push(buildLevel(2, 'all_approved'));
+    // PENDING_ASSESSMENT 及之后 → 全部通过
+    currentLevel = total + 1;
+    for (let i = 0; i < total; i++) levels.push(buildLevel(i, 'all_approved'));
   }
 
   return { levels, currentLevel };
