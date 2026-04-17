@@ -24,6 +24,50 @@ export type LegacyRequirementStatus =
 
 export type RequirementPriority = 'LOW' | 'MEDIUM' | 'HIGH';
 
+// ============= 旧版本兼容类型（保留供旧 detail drawer / wizard 读取，新代码勿用） =============
+
+export type ArtifactType = 'PROCESS' | 'ADP_APP' | 'AGENT' | 'HUMAN_COLLAB';
+export type AssessmentConclusion = 'PASSED' | 'CONDITIONAL' | 'FAILED';
+
+export interface RequirementArtifact {
+  id: string;
+  requirementId: string;
+  artifactType: ArtifactType;
+  artifactId: string;
+  artifactName: string;
+  contribution: number;
+  description?: string;
+  createdAt: string;
+}
+
+export interface TechnicalAssessment {
+  id: string;
+  requirementId: string;
+  assessorId: string;
+  assessorName: string;
+  generalScores: {
+    businessComplexity: number;
+    resourceAvailability: number;
+    externalDependency: number;
+    riskLevel: number;
+  };
+  uiAutomationScores?: {
+    systemStability: number;
+    elementIdentifiability: number;
+    processStandardization: number;
+  };
+  adpScores?: {
+    documentStandardization: number;
+    ocrAvailability: number;
+    fieldExtractionDifficulty: number;
+  };
+  totalScore: number;
+  maxScore: number;
+  conclusion: AssessmentConclusion;
+  comment?: string;
+  assessedAt: string;
+}
+
 // ============= Scheme 字段类型 =============
 
 export type SchemeFieldType =
