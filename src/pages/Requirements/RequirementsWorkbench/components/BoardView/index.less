@@ -68,17 +68,16 @@
     transform-origin: top center;
   }
 
+  // PingCode 风格卡片：左侧彩色边条 + 紧凑内容
   &__card {
+    position: relative;
     background-color: var(--semi-color-bg-0);
     border-radius: 6px;
-    padding: 10px 12px;
     cursor: pointer;
     border: 1px solid transparent;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
     transition: box-shadow 0.15s ease, border-color 0.15s ease;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+    overflow: hidden;
 
     &:hover {
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -89,15 +88,43 @@
     }
   }
 
-  &__card-top {
+  &__card-bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    border-radius: 6px 0 0 6px;
+  }
+
+  &__card-inner {
+    padding: 10px 12px 10px 14px;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: column;
     gap: 8px;
   }
 
+  &__card-top {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  &__card-icon {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
   &__card-no {
+    flex: 1;
     font-variant-numeric: tabular-nums;
+    font-size: 12px;
+    letter-spacing: 0.2px;
+  }
+
+  &__card-avatar {
+    flex-shrink: 0;
   }
 
   &__card-title {
@@ -107,45 +134,18 @@
     line-height: 18px;
   }
 
-  &__card-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-  }
-
-  &__card-scores {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  &__card-score {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    > .semi-typography {
-      flex: 0 0 48px;
-    }
-  }
-
   &__card-footer {
-    padding-top: 4px;
-    border-top: 1px dashed var(--semi-color-border);
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 8px;
-    font-size: 12px;
-
-    .semi-typography,
-    span {
-      font-size: 12px;
-    }
+    flex-wrap: wrap;
   }
 
-  &__card-link-chip {
+  &__card-date {
     display: inline-flex;
     align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--semi-color-text-2);
   }
 }
