@@ -119,6 +119,9 @@ const RequirementsAssessment = () => {
         (item) => item.title.toLowerCase().includes(kw) || item.description.toLowerCase().includes(kw),
       );
     }
+    if (departmentFilter.length > 0) {
+      data = data.filter((item) => departmentFilter.includes(item.owning_department_name));
+    }
     if (activeTab !== 'pending' && conclusionFilter !== 'ALL') {
       data = data.filter((item) => item.detailedAssessment?.conclusion === conclusionFilter);
     }
@@ -130,7 +133,7 @@ const RequirementsAssessment = () => {
       });
     }
     return data;
-  }, [activeTab, allRequirements, searchValue, conclusionFilter, sortKey]);
+  }, [activeTab, allRequirements, searchValue, departmentFilter, conclusionFilter, sortKey]);
 
   const handleStatusChange = async (id: string, newStatus: string, comment?: string) => {
     await updateRequirementStatus(id, newStatus, comment);
