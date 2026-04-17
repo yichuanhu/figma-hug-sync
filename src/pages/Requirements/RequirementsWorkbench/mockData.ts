@@ -176,6 +176,8 @@ const generateMockRequirements = (): RequirementItem[] => {
 
     const hasScores = tpl.status !== 'DRAFT' && tpl.status !== 'WITHDRAWN';
 
+    const { cost: costEstimate, baseline: baselineFormData } = generateMockCost(tpl.status, index);
+
     return {
       id,
       req_no: reqNo,
@@ -201,7 +203,9 @@ const generateMockRequirements = (): RequirementItem[] => {
       assessment: generateMockAssessment(id, tpl.status),
       artifacts: generateMockArtifacts(id, tpl.status),
       detailedAssessment: generateMockDetailedAssessment(tpl.status, index),
-      costEstimate: generateMockCost(tpl.status, index),
+      form_data: baselineFormData ? { ...baselineFormData } : undefined,
+      baselineFormData,
+      costEstimate,
       historyVersions: generateMockVersions(tpl.status, index, tpl.title, tpl.description, tpl.priority),
       linkedProcesses: generateMockLinkedProcesses(tpl.status, index),
       value_score: hasScores ? mockScore(index, 50, 50) : undefined,
@@ -246,19 +250,80 @@ const generateMockDetailedAssessment = (status: RequirementStatus, idx: number):
 
 // ============= Story-010 成本预估自动计算 =============
 
-import type { JobLevel, RequirementBaselineFormData, SchemeCostConfig } from './types';
+import type { JobLevel, RequirementBaselineFormData, SchemeCostConfig, RequirementScheme } from './types';
 
-/** 默认 Scheme.cost_config（第 2 批将由激活方案动态注入） */
-export const DEFAULT_SCHEME_COST_CONFIG: SchemeCostConfig = {
-  workingHoursPerDay: 8,
-  rateTable: { P4: 800, P5: 1200, P6: 1800, P7: 2600 },
-  schemeName: 'RPA Pro 标准方案',
+/** Mock 激活方案（第 2 批：Scheme 驱动动态表单） */
+const ACTIVE_SCHEME: RequirementScheme = {
+  id: 'scheme-rpa-pro',
+  code: 'RPA_PRO',
+  name: 'RPA Pro 标准方案',
+  version: '1.0.0',
+  description: '标准 RPA 自动化项目评估方案',
+  status: 'active',
+  is_preset: true,
+  custom_fields: [
+    {
+      key: 'frequency',
+      label: '执行频率',
+      type: 'number',
+      unit: '次/月',
+      required: true,
+      placeholder: '请输入月均执行次数',
+      validation: { min: 1, max: 10000, message: '频率范围 1-10000 次/月' },
+    },
+    {
+      key: 'durationMinutes',
+      label: '单次耗时',
+      type: 'number',
+      unit: '分钟',
+      required: true,
+      placeholder: '请输入单次执行耗时',
+      validation: { min: 1, max: 1440, message: '耗时范围 1-1440 分钟' },
+    },
+    {
+      key: 'automationRatio',
+      label: '可自动化比例',
+      type: 'percentage',
+      required: true,
+      placeholder: '请输入可自动化比例',
+      validation: { min: 0, max: 100 },
+    },
+    {
+      key: 'jobLevel',
+      label: '岗位级别',
+      type: 'select',
+      required: true,
+      placeholder: '请选择执行人员岗位级别',
+      options: [
+        { label: 'P4（初级）', value: 'P4' },
+        { label: 'P5（中级）', value: 'P5' },
+        { label: 'P6（高级）', value: 'P6' },
+        { label: 'P7（资深）', value: 'P7' },
+      ],
+    },
+  ],
+  approval_flow: { levels: [] },
+  cost_config: {
+    avg_hourly_cost: 200,
+    working_hours_per_day: 8,
+    working_days_per_month: 22,
+    rate_table: { P4: 800, P5: 1200, P6: 1800, P7: 2600 },
+  },
+  created_at: new Date(2026, 0, 1).toISOString(),
 };
+
+export const getActiveScheme = (): RequirementScheme => ACTIVE_SCHEME;
+
+export const getActiveSchemeCostConfig = (): SchemeCostConfig => ({
+  workingHoursPerDay: ACTIVE_SCHEME.cost_config!.working_hours_per_day,
+  rateTable: ACTIVE_SCHEME.cost_config!.rate_table!,
+  schemeName: ACTIVE_SCHEME.name,
+});
 
 /** 基于基线表单数据自动计算成本节省 */
 export const computeCostEstimate = (
   baseline: RequirementBaselineFormData,
-  config: SchemeCostConfig = DEFAULT_SCHEME_COST_CONFIG,
+  config: SchemeCostConfig = getActiveSchemeCostConfig(),
 ): CostEstimateData => {
   const dailyRate = config.rateTable[baseline.jobLevel] ?? 0;
   const monthlySavedHours =
@@ -290,10 +355,10 @@ const generateMockBaseline = (idx: number): RequirementBaselineFormData => ({
   jobLevel: JOB_LEVEL_POOL[idx % JOB_LEVEL_POOL.length],
 });
 
-const generateMockCost = (status: RequirementStatus, idx: number): CostEstimateData | undefined => {
-  // 只要不是最早的草稿/撤回阶段，就有基线数据 → 自动算
-  if (status === 'DRAFT' || status === 'WITHDRAWN') return undefined;
-  return computeCostEstimate(generateMockBaseline(idx));
+const generateMockCost = (status: RequirementStatus, idx: number): { cost?: CostEstimateData; baseline?: RequirementBaselineFormData } => {
+  if (status === 'DRAFT' || status === 'WITHDRAWN') return {};
+  const baseline = generateMockBaseline(idx);
+  return { cost: computeCostEstimate(baseline), baseline };
 };
 
 const generateMockVersions = (
@@ -403,13 +468,44 @@ export const deleteRequirement = async (id: string): Promise<void> => {
   mockRequirementData = mockRequirementData.filter((item) => item.id !== id);
 };
 
+/** 从 form_data 中提取基线四字段；齐全则计算节省 */
+const extractBaselineAndCost = (
+  formData: Record<string, unknown> | undefined,
+): { baseline?: RequirementBaselineFormData; cost?: CostEstimateData; form_data?: Record<string, unknown> } => {
+  if (!formData) return {};
+  const { frequency, durationMinutes, automationRatio, jobLevel } = formData as Record<string, unknown>;
+  const validLevels: JobLevel[] = ['P4', 'P5', 'P6', 'P7'];
+  // 表单中 percentage 字段为 0~100，统一归一化为 0~1
+  const ratioRaw = typeof automationRatio === 'number' ? automationRatio : NaN;
+  const ratioNormalized = ratioRaw > 1 ? ratioRaw / 100 : ratioRaw;
+  if (
+    typeof frequency === 'number' &&
+    typeof durationMinutes === 'number' &&
+    Number.isFinite(ratioNormalized) &&
+    typeof jobLevel === 'string' &&
+    (validLevels as string[]).includes(jobLevel)
+  ) {
+    const baseline: RequirementBaselineFormData = {
+      frequency,
+      durationMinutes,
+      automationRatio: ratioNormalized,
+      jobLevel: jobLevel as JobLevel,
+    };
+    return { baseline, cost: computeCostEstimate(baseline), form_data: { ...formData, automationRatio: ratioNormalized } };
+  }
+  return { form_data: formData };
+};
+
 export const createRequirement = async (values: Record<string, unknown>): Promise<RequirementItem> => {
   await new Promise((resolve) => setTimeout(resolve, 300));
   const now = new Date().toISOString();
   const creator = mockCreators['user-001'];
+  const { baseline, cost, form_data } = extractBaselineAndCost(values.form_data as Record<string, unknown> | undefined);
   const newItem: RequirementItem = {
     id: generateUUID(),
     req_no: `REQ-2026-${String(mockRequirementData.length + 1).padStart(4, '0')}`,
+    scheme_id: ACTIVE_SCHEME.id,
+    scheme_version: ACTIVE_SCHEME.version,
     title: values.title as string,
     description: (values.description as string) || '',
     owning_department_name: values.department as string,
@@ -427,6 +523,9 @@ export const createRequirement = async (values: Record<string, unknown>): Promis
     expectedLaunchDate: values.expectedLaunchDate
       ? (values.expectedLaunchDate as Date).toISOString()
       : undefined,
+    form_data,
+    baselineFormData: baseline,
+    costEstimate: cost,
     version: 1,
     createdAt: now,
     updatedAt: now,
@@ -439,16 +538,24 @@ export const updateRequirement = async (id: string, values: Record<string, unkno
   await new Promise((resolve) => setTimeout(resolve, 300));
   const index = mockRequirementData.findIndex((item) => item.id === id);
   if (index === -1) return null;
+  const cur = mockRequirementData[index];
+  const incomingFormData = values.form_data as Record<string, unknown> | undefined;
+  const { baseline, cost, form_data } = incomingFormData
+    ? extractBaselineAndCost(incomingFormData)
+    : { baseline: cur.baselineFormData, cost: cur.costEstimate, form_data: cur.form_data };
   mockRequirementData[index] = {
-    ...mockRequirementData[index],
+    ...cur,
     title: values.title as string,
-    description: (values.description as string) || mockRequirementData[index].description,
-    owning_department_name: (values.department as string) || mockRequirementData[index].owning_department_name,
-    priority: (values.priority as RequirementPriority) || mockRequirementData[index].priority,
+    description: (values.description as string) || cur.description,
+    owning_department_name: (values.department as string) || cur.owning_department_name,
+    priority: (values.priority as RequirementPriority) || cur.priority,
     contactInfo: (values.contactInfo as string) || '',
     expectedLaunchDate: values.expectedLaunchDate
       ? (values.expectedLaunchDate as Date).toISOString()
-      : mockRequirementData[index].expectedLaunchDate,
+      : cur.expectedLaunchDate,
+    form_data,
+    baselineFormData: baseline,
+    costEstimate: cost,
     updatedAt: new Date().toISOString(),
   };
   return mockRequirementData[index];

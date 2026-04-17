@@ -533,7 +533,9 @@
       "attachmentUpload": "点击上传",
       "attachmentHint": "最多5个文件，每个最大10MB",
       "attachmentExceed": "最多上传5个文件",
-      "attachmentSizeError": "文件大小不能超过10MB"
+      "attachmentSizeError": "文件大小不能超过10MB",
+      "baselineSection": "业务基线（自动化收益评估）",
+      "baselineHint": "由激活方案定义；填写后将自动计算节省收益"
     },
     "detail": {
       "activityStream": "活动记录",

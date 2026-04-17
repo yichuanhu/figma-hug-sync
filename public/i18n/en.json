@@ -631,7 +631,9 @@
       "attachmentUpload": "Click to Upload",
       "attachmentHint": "Up to 5 files, max 10MB each",
       "attachmentExceed": "Maximum 5 files allowed",
-      "attachmentSizeError": "File size cannot exceed 10MB"
+      "attachmentSizeError": "File size cannot exceed 10MB",
+      "baselineSection": "Business Baseline (Automation ROI)",
+      "baselineHint": "Defined by the active scheme; savings will be auto-calculated."
     },
     "detail": {
       "activityStream": "Activity",
