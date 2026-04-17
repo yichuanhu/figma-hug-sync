@@ -1,0 +1,35 @@
+.scheme-approval-flow-editor {
+  &__hint {
+    margin-bottom: 12px;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  &__row {
+    border: 1px solid var(--semi-color-border);
+    border-radius: 8px;
+    padding: 12px;
+    background: var(--semi-color-bg-1);
+
+    &-header {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 12px;
+    }
+
+    &-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    &-approvers {
+      margin-top: 12px;
+    }
+  }
+}
