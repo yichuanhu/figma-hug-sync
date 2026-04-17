@@ -594,34 +594,36 @@
       }
     },
     "costEstimate": {
-      "inputSection": "估算输入",
-      "resultSection": "估算结果",
-      "laborByRole": "人力（按角色）",
-      "addRole": "添加角色",
-      "noRoles": "暂无角色，请点击「添加角色」开始填写。",
-      "selectRole": "请选择角色",
-      "selectRoleFirst": "请先为每一行选择角色",
-      "people": "人",
-      "days": "人天",
-      "infra": "基础设施费用",
-      "thirdParty": "第三方服务费用",
-      "other": "其他费用",
-      "totalPersonDays": "总人天",
-      "laborCost": "总人力成本",
-      "nonLaborCost": "非人力成本",
-      "totalCost": "预估总成本",
-      "roiPlaceholder": "ROI 简评（可选）",
-      "save": "保存估算",
-      "saveSuccess": "成本估算已保存",
-      "locked": "暂不可编辑",
-      "lockedBeforeApproval": "需求审批通过后方可填写成本估算。",
-      "lockedAfterLaunch": "需求已上线/下线，成本估算仅供查看。",
-      "role": {
-        "product": "产品",
-        "backend": "后端",
-        "frontend": "前端",
-        "qa": "测试"
-      }
+      "baselineSection": "成本基线数据",
+      "baselineDesc": "以下数据来自需求表单，用于自动计算自动化收益。",
+      "baseline": {
+        "frequency": "执行频率",
+        "duration": "单次时长",
+        "automationRatio": "可自动化比例",
+        "jobLevel": "岗位级别"
+      },
+      "unit": {
+        "timesPerMonth": "次/月",
+        "minutes": "分钟"
+      },
+      "savedSection": "预估节省（自动计算）",
+      "savedSubtitle": "基于激活方案 {{scheme}} · 岗位 {{jobLevel}} 单价 ¥{{dailyRate}}/d · 每日 {{hours}}h",
+      "defaultScheme": "默认方案",
+      "savedHours": "月均节省工时",
+      "savedPersonDays": "月均节省人天",
+      "savedAmount": "月均节省金额",
+      "formulaTitle": "计算公式",
+      "formulaDesc": "透明展示当前需求的计算过程。",
+      "noBaselineTitle": "暂无基线数据",
+      "noBaselineDesc": "该需求尚未填写成本计算所需的频率、时长、可自动化比例或岗位级别。",
+      "departmentSummary": {
+        "title": "按部门预估节省汇总",
+        "requirements": "需求",
+        "savedAmount": "月均节省",
+        "savedDays": "月均节省人天",
+        "empty": "暂无可统计的成本数据"
+      },
+      "totalCost": "月均节省金额"
     },
     "versionHistory": {
       "timeline": "版本时间线",
