@@ -1,8 +1,14 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Typography, Button, Toast, TextArea, Tag } from '@douyinfe/semi-ui';
+import { Typography, Button, Toast, TextArea, Tag, Modal } from '@douyinfe/semi-ui';
+import { Undo2, RotateCcw } from 'lucide-react';
 import type { RequirementItem } from '../../types';
-import { advanceApprovalFlow, MOCK_CURRENT_USER_ID } from '../../mockData';
+import {
+  advanceApprovalFlow,
+  withdrawRequirement,
+  resubmitRequirement,
+  MOCK_CURRENT_USER_ID,
+} from '../../mockData';
 
 const { Text } = Typography;
 
@@ -15,7 +21,52 @@ interface ApprovalSectionProps {
 const ApprovalSection = ({ data, onStatusChange, onRefresh }: ApprovalSectionProps) => {
   const { t } = useTranslation();
   const [reason, setReason] = useState('');
-  const [submitting, setSubmitting] = useState<'approve' | 'reject' | null>(null);
+  const [submitting, setSubmitting] = useState<'approve' | 'reject' | 'withdraw' | 'resubmit' | null>(null);
+
+  const isCreator = data.creatorId === MOCK_CURRENT_USER_ID;
+
+  // ===== REJECTED：仅显示「重新提交」 =====
+  if (data.status === 'REJECTED') {
+    if (!isCreator) return null;
+    const handleResubmit = () => {
+      Modal.confirm({
+        title: t('requirements.detail.resubmitConfirmTitle'),
+        content: t('requirements.detail.resubmitConfirmContent'),
+        okText: t('requirements.detail.resubmit'),
+        cancelText: t('common.cancel'),
+        onOk: async () => {
+          setSubmitting('resubmit');
+          try {
+            await resubmitRequirement(data.id);
+            Toast.success(t('requirements.detail.resubmitSuccess'));
+            onRefresh?.();
+          } catch (e) {
+            Toast.error((e as Error).message);
+          } finally {
+            setSubmitting(null);
+          }
+        },
+      });
+    };
+    return (
+      <>
+        <div className="requirement-detail-property-divider" />
+        <div className="requirement-detail-property-group">
+          <Button
+            theme="solid"
+            type="primary"
+            size="small"
+            block
+            icon={<RotateCcw size={16} strokeWidth={2} />}
+            loading={submitting === 'resubmit'}
+            onClick={handleResubmit}
+          >
+            {t('requirements.detail.resubmit')}
+          </Button>
+        </div>
+      </>
+    );
+  }
 
   if (data.status !== 'PENDING_APPROVAL') return null;
 
@@ -33,7 +84,6 @@ const ApprovalSection = ({ data, onStatusChange, onRefresh }: ApprovalSectionPro
     setSubmitting(action);
     try {
       if (config && isApprover) {
-        // 多级审批：调推进函数；推进后 mockData 内已根据条件改写 status
         const updated = await advanceApprovalFlow(data.id, action, reason.trim() || undefined);
         Toast.success(
           action === 'approve'
@@ -41,14 +91,9 @@ const ApprovalSection = ({ data, onStatusChange, onRefresh }: ApprovalSectionPro
             : t('requirements.detail.rejectSuccess'),
         );
         setReason('');
-        // 若 status 未变（仍是 PENDING_APPROVAL，多人会签未满足），刷新即可；变了会通过 onRefresh 同步
-        if (updated && updated.status !== data.status) {
-          onRefresh?.();
-        } else {
-          onRefresh?.();
-        }
+        if (updated && updated.status !== data.status) onRefresh?.();
+        else onRefresh?.();
       } else {
-        // 兜底：无 flow 配置走旧逻辑
         const newStatus = action === 'approve' ? 'PENDING_ASSESSMENT' : 'REJECTED';
         await onStatusChange(data.id, newStatus, reason.trim() || undefined);
         Toast.success(
@@ -65,7 +110,46 @@ const ApprovalSection = ({ data, onStatusChange, onRefresh }: ApprovalSectionPro
     }
   };
 
-  // 有 flow 但当前用户不是审批人 → 仅展示提示，不显示按钮
+  const handleWithdraw = () => {
+    Modal.confirm({
+      title: t('requirements.detail.withdrawConfirmTitle'),
+      content: t('requirements.detail.withdrawConfirmContent'),
+      okText: t('requirements.detail.withdraw'),
+      okButtonProps: { type: 'danger' },
+      cancelText: t('common.cancel'),
+      onOk: async () => {
+        setSubmitting('withdraw');
+        try {
+          await withdrawRequirement(data.id);
+          Toast.success(t('requirements.detail.withdrawSuccess'));
+          onRefresh?.();
+        } catch (e) {
+          Toast.error((e as Error).message);
+        } finally {
+          setSubmitting(null);
+        }
+      },
+    });
+  };
+
+  // 提交人 + 待审批 → 撤回按钮（无论是否同时是审批人）
+  const withdrawBtn = isCreator ? (
+    <Button
+      theme="borderless"
+      type="tertiary"
+      size="small"
+      block
+      icon={<Undo2 size={14} strokeWidth={2} />}
+      loading={submitting === 'withdraw'}
+      disabled={!!submitting}
+      onClick={handleWithdraw}
+      style={{ marginTop: 8 }}
+    >
+      {t('requirements.detail.withdraw')}
+    </Button>
+  ) : null;
+
+  // 有 flow 但当前用户不是审批人 → 提示 + 可能的撤回按钮
   if (config && !isApprover) {
     return (
       <>
@@ -80,6 +164,7 @@ const ApprovalSection = ({ data, onStatusChange, onRefresh }: ApprovalSectionPro
               name: currentLevel?.name ?? '',
             })}
           </Tag>
+          {withdrawBtn}
         </div>
       </>
     );
@@ -130,6 +215,7 @@ const ApprovalSection = ({ data, onStatusChange, onRefresh }: ApprovalSectionPro
             {t('requirements.detail.reject')}
           </Button>
         </div>
+        {withdrawBtn}
       </div>
     </>
   );
