@@ -24,31 +24,31 @@ import {
   priorityConfig,
   fetchRequirementList,
   updateRequirementStatus,
-  fetchActivities,
-  mockCreators,
+  advanceApprovalFlow,
+  withdrawRequirement,
+  MOCK_CURRENT_USER_ID,
 } from '../RequirementsWorkbench/mockData';
 import RequirementDetailDrawer from '../RequirementsWorkbench/components/RequirementDetailDrawer';
 import './index.less';
-import { CheckCircle, Ellipsis, Eye, XCircle } from 'lucide-react';
+import { CheckCircle, Ellipsis, Eye, Undo2, XCircle } from 'lucide-react';
 
 const { Title, Text } = Typography;
 
-// 模拟当前用户为审批人 Robert Xu (user-007)
-const CURRENT_REVIEWER_ID = 'user-007';
-const CURRENT_REVIEWER = mockCreators[CURRENT_REVIEWER_ID];
+// 判断当前用户是否为该需求当前级的待办审批人
+const isMyTurn = (r: RequirementItem): boolean => {
+  if (r.status !== 'PENDING_APPROVAL' || !r.approvalFlowConfig) return false;
+  const lv = r.approvalFlowConfig.levels.find((l) => l.level === r.approvalFlowConfig!.currentLevel);
+  return !!lv?.approvers.some((a) => a.id === MOCK_CURRENT_USER_ID && a.status === 'PENDING');
+};
 
-// 模拟审批记录
-interface ReviewRecord {
-  requirementId: string;
-  reviewerId: string;
-  action: 'approved' | 'rejected';
-  comment: string;
-  timestamp: string;
-}
-
-const mockReviewHistory: ReviewRecord[] = [];
+// 判断当前用户是否参与过该需求审批
+const reviewedByMe = (r: RequirementItem): boolean =>
+  (r.approvalHistory ?? []).some(
+    (h) => h.approverId === MOCK_CURRENT_USER_ID && (h.action === 'approve' || h.action === 'reject'),
+  );
 
 type ReviewTab = 'pending' | 'reviewed' | 'all';
+
 
 const RequirementsReview = () => {
   const { t } = useTranslation();
