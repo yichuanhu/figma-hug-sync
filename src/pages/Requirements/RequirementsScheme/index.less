@@ -1,24 +1,29 @@
 .requirements-scheme {
-  padding: 24px;
-  height: 100%;
   display: flex;
   flex-direction: column;
+  height: 100%;
   overflow: hidden;
 
   &-header {
-    margin-bottom: 16px;
+    flex-shrink: 0;
+
     &-title {
-      .title { margin-bottom: 4px; }
+      margin-bottom: 20px;
+
+      .title {
+        margin-bottom: 8px;
+      }
     }
+
     &-toolbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 16px;
-      gap: 8px;
+      margin-bottom: 12px;
     }
   }
-  &-search { width: 320px; }
+
+  &-search-input {
+    width: 320px;
+    min-width: 320px;
+  }
 
   &-content {
     flex: 1;
