@@ -5,7 +5,7 @@ import {
   Typography,
   Input,
   Button,
-  ButtonGroup,
+  
   Table,
   Dropdown,
   Row,
@@ -439,26 +439,26 @@ const RequirementsWorkbench = () => {
               <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
                 {t('requirements.workbench.newRequirement')}
               </Button>
+              <div className="requirements-workbench-view-switcher">
+                <button
+                  type="button"
+                  className={`requirements-workbench-view-switcher-btn ${viewMode === 'table' ? 'active' : ''}`}
+                  onClick={() => setViewMode('table')}
+                  aria-label={t('requirements.workbench.viewTable')}
+                >
+                  <ListIcon size={16} strokeWidth={2} />
+                </button>
+                <button
+                  type="button"
+                  className={`requirements-workbench-view-switcher-btn ${viewMode === 'board' ? 'active' : ''}`}
+                  onClick={() => setViewMode('board')}
+                  aria-label={t('requirements.workbench.viewBoard')}
+                >
+                  <LayoutGrid size={16} strokeWidth={2} />
+                </button>
+              </div>
             </Space>
           </Col>
-        </Row>
-        <Row type="flex" justify="end" style={{ marginTop: 12 }}>
-          <ButtonGroup>
-            <Button
-              icon={<ListIcon size={14} strokeWidth={2} />}
-              theme={viewMode === 'table' ? 'solid' : 'light'}
-              type={viewMode === 'table' ? 'primary' : 'tertiary'}
-              onClick={() => setViewMode('table')}
-              aria-label={t('requirements.workbench.viewTable')}
-            />
-            <Button
-              icon={<LayoutGrid size={14} strokeWidth={2} />}
-              theme={viewMode === 'board' ? 'solid' : 'light'}
-              type={viewMode === 'board' ? 'primary' : 'tertiary'}
-              onClick={() => setViewMode('board')}
-              aria-label={t('requirements.workbench.viewBoard')}
-            />
-          </ButtonGroup>
         </Row>
       </div>
 
