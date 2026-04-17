@@ -481,6 +481,57 @@ const RequirementsReview = () => {
 
       {/* Tabs + 表格 */}
       <div className="requirements-review-content">
+        <Row
+          type="flex"
+          justify="space-between"
+          align="middle"
+          className="requirements-review-toolbar"
+        >
+          <Col>
+            <Space>
+              <Input
+                prefix={<IconSearchStroked />}
+                placeholder={t('requirements.review.searchPlaceholder')}
+                className="requirements-review-search-input"
+                value={searchValue}
+                onChange={setSearchValue}
+                showClear
+                maxLength={100}
+              />
+              <DepartmentSelect
+                placeholder={t('common.filterDepartment')}
+                value={departmentFilter}
+                onChange={(v) => setDepartmentFilter(v as string[])}
+                multiple
+                showClear
+                maxTagCount={1}
+                useNameAsValue
+                style={{ width: 'auto', minWidth: 150, maxWidth: 600 }}
+              />
+              <FilterPopover
+                visible={filterPopoverVisible}
+                onVisibleChange={setFilterPopoverVisible}
+                onConfirm={(values) => {
+                  setStatusFilter((values.status as string[]) || []);
+                }}
+                sections={[
+                  {
+                    key: 'status',
+                    label: t('common.status'),
+                    type: 'checkbox',
+                    options: [
+                      { label: t('requirements.status.pendingApproval'), value: 'PENDING_APPROVAL' },
+                      { label: t('requirements.status.rejected'), value: 'REJECTED' },
+                      { label: t('requirements.status.withdrawn'), value: 'WITHDRAWN' },
+                      { label: t('requirements.status.approved'), value: 'APPROVED' },
+                    ],
+                    value: statusFilter,
+                  },
+                ]}
+              />
+            </Space>
+          </Col>
+        </Row>
         <Tabs
           activeKey={activeTab}
           onChange={(key) => setActiveTab(key as ReviewTab)}
