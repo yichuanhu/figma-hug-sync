@@ -43,6 +43,31 @@
       font-weight: 500;
       color: var(--semi-color-text-2);
     }
+
+    // 固定列：必须使用与页面卡片一致的不透明背景，避免横向滚动时透出下方内容
+    // 全局表格背景被设为 transparent，这里需要重新提升优先级覆盖
+    .semi-table-row-cell-fixed-left,
+    .semi-table-row-cell-fixed-right,
+    .semi-table-thead .semi-table-row-head.semi-table-row-cell-fixed-left,
+    .semi-table-thead .semi-table-row-head.semi-table-row-cell-fixed-right {
+      background-color: var(--semi-color-bg-1) !important;
+    }
+
+    // 选中行的固定列背景需匹配选中色
+    .semi-table-row.requirements-workbench-row-selected {
+      .semi-table-row-cell-fixed-left,
+      .semi-table-row-cell-fixed-right {
+        background-color: var(--semi-color-primary-light-default) !important;
+      }
+    }
+
+    // hover 行的固定列背景需匹配 hover 色
+    .semi-table-tbody .semi-table-row-hover {
+      .semi-table-row-cell-fixed-left,
+      .semi-table-row-cell-fixed-right {
+        background-color: var(--semi-color-fill-0) !important;
+      }
+    }
   }
 
   // 表格行选中状态
