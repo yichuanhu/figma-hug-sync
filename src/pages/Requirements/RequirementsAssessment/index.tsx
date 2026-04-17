@@ -458,16 +458,6 @@ const RequirementsAssessment = () => {
             }
             itemKey="pending"
           >
-            <div className="requirements-assessment-toolbar">
-              <Input
-                prefix={<IconSearchStroked />}
-                placeholder={t('requirements.assessment.searchPlaceholder')}
-                className="requirements-assessment-search"
-                value={searchValue}
-                onChange={setSearchValue}
-                showClear
-              />
-            </div>
             {isInitialLoad ? (
               <TableSkeleton rows={6} columns={9} />
             ) : (
@@ -498,37 +488,6 @@ const RequirementsAssessment = () => {
           </TabPane>
 
           <TabPane tab={t('requirements.assessment.assessedByMe')} itemKey="assessed">
-            <div className="requirements-assessment-toolbar">
-              <Input
-                prefix={<IconSearchStroked />}
-                placeholder={t('requirements.assessment.searchPlaceholder')}
-                className="requirements-assessment-search"
-                value={searchValue}
-                onChange={setSearchValue}
-                showClear
-              />
-              <Select
-                value={conclusionFilter}
-                onChange={(v) => setConclusionFilter(v as string)}
-                style={{ width: 160 }}
-                prefix={t('requirements.assessment.filterConclusion')}
-              >
-                <Select.Option value="ALL">{t('requirements.assessment.filterConclusionAll')}</Select.Option>
-                <Select.Option value="RECOMMEND">{t('requirements.assessmentV2.conclusion.RECOMMEND')}</Select.Option>
-                <Select.Option value="CAUTION">{t('requirements.assessmentV2.conclusion.CAUTION')}</Select.Option>
-                <Select.Option value="REJECT">{t('requirements.assessmentV2.conclusion.REJECT')}</Select.Option>
-              </Select>
-              <Select
-                value={sortKey}
-                onChange={(v) => setSortKey(v as typeof sortKey)}
-                style={{ width: 220 }}
-                prefix={t('requirements.assessment.sortBy')}
-              >
-                <Select.Option value="default">{t('requirements.assessment.sortDefault')}</Select.Option>
-                <Select.Option value="netScoreDesc">{t('requirements.assessment.sortNetScoreDesc')}</Select.Option>
-                <Select.Option value="netScoreAsc">{t('requirements.assessment.sortNetScoreAsc')}</Select.Option>
-              </Select>
-            </div>
             {isInitialLoad ? (
               <TableSkeleton rows={6} columns={9} />
             ) : (
