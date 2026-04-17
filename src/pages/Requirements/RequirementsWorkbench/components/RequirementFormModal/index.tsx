@@ -240,6 +240,19 @@ const RequirementFormModal = ({
             className="requirement-form-modal-select-full"
           />
 
+          {/* 业务基线（自动化收益评估）— Scheme 驱动动态字段 */}
+          <div className="requirement-form-modal-section requirement-form-modal-section-divider">
+            <Text strong className="requirement-form-modal-section-title">
+              {t('requirements.form.baselineSection')}
+              <Text type="tertiary" size="small" style={{ marginLeft: 8, fontWeight: 400 }}>
+                {t('requirements.form.baselineHint')}
+              </Text>
+            </Text>
+          </div>
+          {activeScheme.custom_fields.map((f) => (
+            <SchemeFieldRenderer key={f.key} field={f} />
+          ))}
+
           {/* 附件区域 */}
           <Form.Slot label={`${t('requirements.form.attachmentLabel')}${t('requirements.form.optionalSuffix')}`}>
             <Upload
