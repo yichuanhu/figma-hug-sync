@@ -463,11 +463,12 @@ export const createRequirement = async (values: Record<string, unknown>): Promis
   const now = new Date().toISOString();
   const creator = mockCreators['user-001'];
   const { baseline, cost, form_data } = extractBaselineAndCost(values.form_data as Record<string, unknown> | undefined);
+  const activeScheme = getEffectiveScheme();
   const newItem: RequirementItem = {
     id: generateUUID(),
     req_no: `REQ-2026-${String(mockRequirementData.length + 1).padStart(4, '0')}`,
-    scheme_id: ACTIVE_SCHEME.id,
-    scheme_version: ACTIVE_SCHEME.version,
+    scheme_id: activeScheme.id,
+    scheme_version: activeScheme.version,
     title: values.title as string,
     description: (values.description as string) || '',
     owning_department_name: values.department as string,
