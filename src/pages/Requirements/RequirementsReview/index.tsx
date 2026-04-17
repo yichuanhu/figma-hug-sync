@@ -59,6 +59,9 @@ const RequirementsReview = () => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<ReviewTab>('pending');
   const [searchValue, setSearchValue] = useState('');
+  const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
+  const [statusFilter, setStatusFilter] = useState<string[]>([]);
+  const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [allRequirements, setAllRequirements] = useState<RequirementItem[]>([]);
