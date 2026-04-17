@@ -274,16 +274,6 @@ const RequirementsWorkbench = () => {
       render: (value: string | null) => (value ? value.replace('T', ' ').substring(0, 19) : '-'),
     },
     {
-      title: t('common.updateTime'),
-      dataIndex: 'updatedAt',
-      key: 'updatedAt',
-      width: 160,
-      ellipsis: true,
-      sorter: true,
-      onHeaderCell: () => ({ onClick: () => handleSort('updated_at') }),
-      render: (value: string | null) => (value ? value.replace('T', ' ').substring(0, 19) : '-'),
-    },
-    {
       title: t('common.actions'),
       dataIndex: 'action',
       key: 'action',
