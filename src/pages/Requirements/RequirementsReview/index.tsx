@@ -320,7 +320,7 @@ const RequirementsReview = () => {
                 >
                   {t('common.viewDetail')}
                 </Dropdown.Item>
-                {record.status === 'PENDING_APPROVAL' && (
+                {isMyTurn(record) && (
                   <>
                     <Dropdown.Item
                       icon={<CheckCircle size={16} strokeWidth={2} />}
@@ -343,16 +343,15 @@ const RequirementsReview = () => {
                     </Dropdown.Item>
                   </>
                 )}
-                {record.status === 'PENDING_ASSESSMENT' && (
+                {record.status === 'PENDING_APPROVAL' && record.creatorId === MOCK_CURRENT_USER_ID && (
                   <Dropdown.Item
-                    icon={<Eye size={16} strokeWidth={2} />}
+                    icon={<Undo2 size={16} strokeWidth={2} />}
                     onClick={(e) => {
                       e.stopPropagation();
-                      setSelectedRecord(record);
-                      setDetailDrawerVisible(true);
+                      handleWithdraw(record);
                     }}
                   >
-                    {t('requirements.review.startAssessment')}
+                    {t('requirements.review.withdraw')}
                   </Dropdown.Item>
                 )}
               </Dropdown.Menu>
@@ -408,7 +407,7 @@ const RequirementsReview = () => {
                 <path d="M9 10a1 1 0 012 0v4h4a1 1 0 010 2h-4.8a1.2 1.2 0 01-1.2-1.2V10z" fill="url(#rv_pending_fg_g)"/>
               </svg>
             )},
-            { label: t('requirements.review.assessingCount'), value: stats.assessingCount, icon: (
+            { label: t('requirements.review.reviewedCount'), value: stats.reviewedCount, icon: (
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                   <filter id="rv_assess_bg_i" x="8.9" y="1.09" width="14" height="15" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB"><feFlood floodOpacity="0" result="bg"/><feBlend in="SourceGraphic" in2="bg" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="ha"/><feOffset dy="1"/><feGaussianBlur stdDeviation="0.5"/><feComposite in2="ha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0"/><feBlend in2="shape" result="r"/></filter>
