@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Typography, Button, Input, Tag, Toast, Modal, Dropdown, Upload } from '@douyinfe/semi-ui';
+import { Typography, Button, Input, Tag, Toast, Modal, Dropdown, Upload, Row, Col, Space } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import type { FileItem } from '@douyinfe/semi-ui/lib/es/upload';
 import { Upload as UploadIcon, Ellipsis, CheckCircle, Eye, Trash2, History, Pencil, Inbox, File as FileIcon, X } from 'lucide-react';
@@ -150,19 +150,31 @@ const RequirementsScheme = () => {
           <Title heading={3} className="title">{t('requirements.scheme.title')}</Title>
           <Text type="tertiary">{t('requirements.scheme.description')}</Text>
         </div>
-        <div className="requirements-scheme-header-toolbar">
-          <Input
-            prefix={<IconSearchStroked />}
-            placeholder={t('requirements.scheme.searchPlaceholder')}
-            className="requirements-scheme-search"
-            value={keyword}
-            onChange={setKeyword}
-            showClear
-          />
-          <Button icon={<UploadIcon size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => setUploadVisible(true)}>
-            {t('requirements.scheme.upload')}
-          </Button>
-        </div>
+        <Row
+          type="flex"
+          justify="space-between"
+          align="middle"
+          className="requirements-scheme-header-toolbar"
+        >
+          <Col>
+            <Space>
+              <Input
+                prefix={<IconSearchStroked />}
+                placeholder={t('requirements.scheme.searchPlaceholder')}
+                className="requirements-scheme-search-input"
+                value={keyword}
+                onChange={setKeyword}
+                showClear
+                maxLength={100}
+              />
+            </Space>
+          </Col>
+          <Col>
+            <Button icon={<UploadIcon size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => setUploadVisible(true)}>
+              {t('requirements.scheme.upload')}
+            </Button>
+          </Col>
+        </Row>
       </div>
 
       <div className="requirements-scheme-content">
