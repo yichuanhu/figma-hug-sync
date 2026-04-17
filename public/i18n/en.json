@@ -676,6 +676,40 @@
         "versions": "Version History"
       }
     },
+    "approvalFlow": {
+      "title": "Approval Flow",
+      "currentLevel": "Current L{{level}}",
+      "notApprover": "You are not an approver of the current step (L{{level}} {{name}})",
+      "mode": {
+        "any_one": "Any one",
+        "all": "All (countersign)",
+        "majority": "Majority"
+      },
+      "approverStatus": {
+        "PENDING": "Pending",
+        "APPROVED": "Approved",
+        "REJECTED": "Rejected"
+      }
+    },
+    "linkedProcesses": {
+      "title": "Linked Processes",
+      "count": "{{online}} / {{total}} online",
+      "empty": "No linked processes",
+      "status": {
+        "PENDING": "Pending",
+        "DEVELOPING": "Developing",
+        "TESTING": "Testing",
+        "ONLINE": "Online",
+        "FAILED": "Failed"
+      },
+      "aggregated": {
+        "empty": "None",
+        "pending": "Pending",
+        "inProgress": "In Progress",
+        "online": "All Online",
+        "failed": "Has Failure"
+      }
+    },
     "assessmentV2": {
       "valueCard": "Business Value",
       "complexityCard": "Technical Complexity",

@@ -12,6 +12,8 @@ import ArtifactSection from './ArtifactSection';
 import AssessmentTab from './AssessmentTab';
 import CostEstimateTab from './CostEstimateTab';
 import VersionHistoryTab from './VersionHistoryTab';
+import ApprovalFlowProgress from '../ApprovalFlowProgress';
+import LinkedProcessesSection from '../LinkedProcessesSection';
 import './index.less';
 import { ChevronDown, ChevronRight, ClipboardCheck, FileText, History, Pencil, Send, Trash2, Wallet } from 'lucide-react';
 
@@ -33,10 +35,12 @@ const PropertyPanel = ({
   data,
   t,
   onStatusChange,
+  onRefresh,
 }: {
   data: RequirementItem;
   t: (key: string, options?: Record<string, unknown>) => string;
   onStatusChange: (id: string, newStatus: string, comment?: string) => Promise<void>;
+  onRefresh?: () => void;
 }) => {
   const sCfg = statusConfig[data.status];
   const pCfg = priorityConfig[data.priority];
@@ -123,7 +127,7 @@ const PropertyPanel = ({
         </>
       )}
 
-      <ApprovalSection data={data} onStatusChange={onStatusChange} />
+      <ApprovalSection data={data} onStatusChange={onStatusChange} onRefresh={onRefresh} />
     </div>
   );
 };
@@ -317,6 +321,7 @@ const RequirementDetailDrawer = ({
               itemKey="overview"
             >
               <div className="requirement-detail-tab-content">
+                {data.approvalFlowConfig && <ApprovalFlowProgress config={data.approvalFlowConfig} />}
                 <div className="requirement-detail-section">
                   <div
                     className="requirement-detail-section-header"
@@ -350,6 +355,8 @@ const RequirementDetailDrawer = ({
                     </Text>
                   </div>
                 )}
+
+                <LinkedProcessesSection processes={data.linkedProcesses} />
 
                 <ArtifactSection data={data} />
 
@@ -422,7 +429,7 @@ const RequirementDetailDrawer = ({
 
         {/* 右侧属性面板 */}
         <div className="requirement-detail-right">
-          <PropertyPanel data={data} t={t} onStatusChange={onStatusChange} />
+          <PropertyPanel data={data} t={t} onStatusChange={onStatusChange} onRefresh={onRefresh} />
         </div>
       </div>
     </DetailDrawerWrapper>

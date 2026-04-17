@@ -566,6 +566,40 @@
         "versions": "版本历史"
       }
     },
+    "approvalFlow": {
+      "title": "审批流程",
+      "currentLevel": "当前 L{{level}}",
+      "notApprover": "您不是当前节点（L{{level}} {{name}}）的审批人",
+      "mode": {
+        "any_one": "任一通过",
+        "all": "全员会签",
+        "majority": "多数通过"
+      },
+      "approverStatus": {
+        "PENDING": "待审批",
+        "APPROVED": "已通过",
+        "REJECTED": "已驳回"
+      }
+    },
+    "linkedProcesses": {
+      "title": "关联流程",
+      "count": "{{online}} / {{total}} 已上线",
+      "empty": "暂无关联流程",
+      "status": {
+        "PENDING": "待开发",
+        "DEVELOPING": "开发中",
+        "TESTING": "测试中",
+        "ONLINE": "已上线",
+        "FAILED": "异常"
+      },
+      "aggregated": {
+        "empty": "暂无",
+        "pending": "待开发",
+        "inProgress": "进行中",
+        "online": "全部上线",
+        "failed": "存在异常"
+      }
+    },
     "assessmentV2": {
       "valueCard": "业务价值",
       "complexityCard": "技术复杂度",

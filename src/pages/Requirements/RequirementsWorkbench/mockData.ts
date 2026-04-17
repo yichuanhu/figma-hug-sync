@@ -12,6 +12,9 @@ import type {
   CostEstimateData,
   VersionSnapshot,
   LinkedProcess,
+  MultiLevelApprovalConfig,
+  ApprovalFlowLevel,
+  ApprovalFlowApprover,
 } from './types';
 import { statusConfigV2 } from './statusConfig';
 
@@ -208,6 +211,7 @@ const generateMockRequirements = (): RequirementItem[] => {
       costEstimate,
       historyVersions: generateMockVersions(tpl.status, index, tpl.title, tpl.description, tpl.priority),
       linkedProcesses: generateMockLinkedProcesses(tpl.status, index),
+      approvalFlowConfig: generateMockApprovalFlow(tpl.status),
       value_score: hasScores ? mockScore(index, 50, 50) : undefined,
       complexity_score: hasScores ? mockScore(index + 7, 30, 60) : undefined,
       version: 1,
@@ -669,4 +673,124 @@ export const updateRequirementAssessment = async (
 
 // 注：成本预估完全由 baselineFormData 自动计算，无对外编辑接口（STORY-010）。
 // 将来 Scheme.cost_config 变更时，可调用 computeCostEstimate 批量重算 mockRequirementData。
+
+// ============= Story-006 多级审批 mock =============
+
+const APPROVAL_LEVEL_TEMPLATES: Array<{ name: string; mode: ApprovalFlowLevel['mode']; approvers: Array<{ id: string; name: string }> }> = [
+  { name: '部门主管审批', mode: 'any_one', approvers: [{ id: 'user-001', name: 'John Smith' }, { id: 'user-007', name: 'Robert Xu' }] },
+  { name: '业务审批（会签）', mode: 'all',     approvers: [{ id: 'user-002', name: 'Emily Chen' }, { id: 'user-006', name: 'Jessica Liu' }] },
+  { name: 'IT 复核',         mode: 'any_one', approvers: [{ id: 'user-008', name: 'Angela Wu' }, { id: 'user-003', name: 'Michael Wang' }] },
+];
+
+/** 根据需求当前状态推导审批流的进度（mock） */
+export const generateMockApprovalFlow = (status: RequirementStatus): MultiLevelApprovalConfig | undefined => {
+  if (status === 'DRAFT' || status === 'WITHDRAWN') return undefined;
+
+  // 推导 currentLevel + 各级 approver 状态
+  const baseTime = new Date(2026, 1, 10).getTime();
+  const buildLevel = (idx: number, levelStatus: 'all_approved' | 'pending_here' | 'wait' | 'rejected_here'): ApprovalFlowLevel => {
+    const tpl = APPROVAL_LEVEL_TEMPLATES[idx];
+    const approvers: ApprovalFlowApprover[] = tpl.approvers.map((a, i) => {
+      if (levelStatus === 'all_approved') {
+        return { ...a, status: 'APPROVED', actedAt: new Date(baseTime + (idx * 2 + i) * 3600 * 1000).toISOString(), comment: '审核通过' };
+      }
+      if (levelStatus === 'rejected_here') {
+        return i === 0
+          ? { ...a, status: 'REJECTED', actedAt: new Date(baseTime + idx * 3600 * 1000).toISOString(), comment: 'ROI 论证不充分，请补充材料后重新提交' }
+          : { ...a, status: 'PENDING' };
+      }
+      return { ...a, status: 'PENDING' };
+    });
+    return { level: idx + 1, name: tpl.name, mode: tpl.mode, approvers };
+  };
+
+  let currentLevel = 1;
+  const levels: ApprovalFlowLevel[] = [];
+
+  if (status === 'PENDING_APPROVAL') {
+    currentLevel = 1;
+    levels.push(buildLevel(0, 'pending_here'));
+    levels.push(buildLevel(1, 'wait'));
+    levels.push(buildLevel(2, 'wait'));
+  } else if (status === 'REJECTED') {
+    currentLevel = 1;
+    levels.push(buildLevel(0, 'rejected_here'));
+    levels.push(buildLevel(1, 'wait'));
+    levels.push(buildLevel(2, 'wait'));
+  } else {
+    // PENDING_ASSESSMENT / PENDING_PROJECT / DEVELOPING / LAUNCHED / OFFLINE → 全部通过
+    currentLevel = 4;
+    levels.push(buildLevel(0, 'all_approved'));
+    levels.push(buildLevel(1, 'all_approved'));
+    levels.push(buildLevel(2, 'all_approved'));
+  }
+
+  return { levels, currentLevel };
+};
+
+/** 当前 mock 用户 */
+export const MOCK_CURRENT_USER_ID = 'user-001';
+
+const isLevelSatisfied = (level: ApprovalFlowLevel): { passed: boolean; rejected: boolean } => {
+  const approved = level.approvers.filter((a) => a.status === 'APPROVED').length;
+  const rejected = level.approvers.filter((a) => a.status === 'REJECTED').length;
+  const total = level.approvers.length;
+  if (level.mode === 'all') {
+    return { passed: approved === total, rejected: rejected > 0 };
+  }
+  if (level.mode === 'any_one') {
+    return { passed: approved >= 1, rejected: rejected === total };
+  }
+  // majority
+  return { passed: approved * 2 > total, rejected: rejected * 2 >= total };
+};
+
+/** 推进审批流（mock）：当前级当前用户审批后，按 mode 判断是否进位 */
+export const advanceApprovalFlow = async (
+  id: string,
+  action: 'approve' | 'reject',
+  comment?: string,
+): Promise<RequirementItem | null> => {
+  await new Promise((resolve) => setTimeout(resolve, 200));
+  const index = mockRequirementData.findIndex((r) => r.id === id);
+  if (index === -1) return null;
+  const cur = mockRequirementData[index];
+  if (!cur.approvalFlowConfig) return cur;
+
+  const config = cur.approvalFlowConfig;
+  const levels = config.levels.map((lv) => ({ ...lv, approvers: lv.approvers.map((a) => ({ ...a })) }));
+  const currentIdx = config.currentLevel - 1;
+  const lv = levels[currentIdx];
+  if (!lv) return cur;
+
+  const me = lv.approvers.find((a) => a.id === MOCK_CURRENT_USER_ID && a.status === 'PENDING');
+  if (!me) return cur;
+
+  me.status = action === 'approve' ? 'APPROVED' : 'REJECTED';
+  me.comment = comment;
+  me.actedAt = new Date().toISOString();
+
+  const { passed, rejected } = isLevelSatisfied(lv);
+  let newStatus = cur.status;
+  let newCurrentLevel = config.currentLevel;
+
+  if (rejected) {
+    newStatus = 'REJECTED';
+  } else if (passed) {
+    if (currentIdx === levels.length - 1) {
+      newStatus = 'PENDING_ASSESSMENT';
+      newCurrentLevel = config.currentLevel + 1;
+    } else {
+      newCurrentLevel = config.currentLevel + 1;
+    }
+  }
+
+  mockRequirementData[index] = {
+    ...cur,
+    status: newStatus,
+    approvalFlowConfig: { levels, currentLevel: newCurrentLevel },
+    updatedAt: new Date().toISOString(),
+  };
+  return mockRequirementData[index];
+};
 
