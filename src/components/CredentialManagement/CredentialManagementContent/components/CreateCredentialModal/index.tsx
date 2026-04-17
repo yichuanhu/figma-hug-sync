@@ -4,6 +4,7 @@ import { Modal, Form, Button, Toast } from '@douyinfe/semi-ui';
 import type { CredentialType } from '@/api/index';
 import DepartmentSelect from '@/components/DepartmentSelect';
 import OwnerSelect from '@/components/OwnerSelect';
+import WorkspaceSelect from '@/components/WorkspaceSelect';
 import './index.less';
 import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 
@@ -26,6 +27,7 @@ const CreateCredentialModal = ({
   const [loading, setLoading] = useState(false);
   const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>(undefined);
   const [ownerId, setOwnerId] = useState<string>(MOCK_CURRENT_USER.id);
+  const [workspaceId, setWorkspaceId] = useState<string | undefined>(undefined);
 
   const handleSubmit = async (values: {
     credential_name: string;
@@ -36,6 +38,10 @@ const CreateCredentialModal = ({
   }) => {
     if (!owningDepartmentId) {
       Toast.warning(t('common.owningDepartmentRequired'));
+      return;
+    }
+    if (!workspaceId) {
+      Toast.warning(t('workspaceSelect.required'));
       return;
     }
     setLoading(true);
@@ -149,7 +155,24 @@ const CreateCredentialModal = ({
         <Form.Slot label={t('common.owningDepartment')}>
           <DepartmentSelect
             value={owningDepartmentId}
-            onChange={setOwningDepartmentId}
+            onChange={(v) => {
+              setOwningDepartmentId(v);
+              setWorkspaceId(undefined);
+            }}
+          />
+        </Form.Slot>
+
+        <Form.Slot label={{ text: t('workspaceSelect.label'), required: true }}>
+          <WorkspaceSelect
+            value={workspaceId}
+            onChange={setWorkspaceId}
+            departmentId={owningDepartmentId}
+            placeholder={
+              owningDepartmentId
+                ? t('workspaceSelect.placeholder')
+                : t('workspaceSelect.pickDeptFirst')
+            }
+            disabled={!owningDepartmentId}
           />
         </Form.Slot>
 
