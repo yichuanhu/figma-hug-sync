@@ -881,7 +881,10 @@
         "dateRange": "起止时间",
         "workspaceCount": "工作空间数",
         "requirementCount": "关联需求数",
-        "memberCount": "成员数"
+        "memberCount": "成员数",
+        "memberName": "成员",
+        "memberDept": "所属部门",
+        "memberRole": "角色"
       },
       "placeholders": {
         "name": "请输入项目名称",
@@ -905,7 +908,22 @@
         "workspaceDuplicate": "同一项目下工作空间名称不能重复",
         "projectHasWorkspaces": "项目下存在工作空间，无法删除。请先删除全部工作空间。",
         "workspaceInUse": "工作空间已绑定需求或存在已发布流程，无法删除。",
-        "cannotUnlinkPublished": "该工作空间已有发布的流程，禁止解除已关联需求。"
+        "cannotUnlinkPublished": "该工作空间已有发布的流程，禁止解除已关联需求。",
+        "mustKeepOneManager": "必须至少保留 1 个管理员，无法移除或降级。",
+        "pickAtLeastOneUser": "请至少选择 1 个用户"
+      },
+      "members": "成员",
+      "addMember": "添加成员",
+      "workspaceMembersTitle": "管理「{{name}}」的成员",
+      "noExplicitMembers": "暂无成员，点击「添加成员」开始添加",
+      "explicitMembersCount": "显式成员：{{count}} 人",
+      "inheritedManagersHint": "以下用户作为部门管理员自动继承本工作空间的「管理员」权限，无需重复添加：",
+      "inheritedTag": "自动继承",
+      "searchUserPlaceholder": "搜索用户姓名或部门",
+      "removeMemberConfirm": "确定移除成员「{{name}}」？",
+      "role": {
+        "MANAGER": "管理员",
+        "MEMBER": "成员"
       }
     }
   },

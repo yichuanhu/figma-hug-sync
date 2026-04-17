@@ -35,3 +35,22 @@ export interface Workspace {
   hasPublishedProcess: boolean;
   createdAt: string;
 }
+
+export type WorkspaceMemberRole = 'MANAGER' | 'MEMBER';
+
+/** 工作空间成员（不含部门管理员的自动继承） */
+export interface WorkspaceMember {
+  id: string;
+  workspaceId: string;
+  userId: string;
+  userName: string;
+  department: string;
+  role: WorkspaceMemberRole;
+  addedAt: string;
+}
+
+/** 渲染时使用的成员视图（带是否部门管理员继承的标记） */
+export interface WorkspaceMemberView extends WorkspaceMember {
+  /** true 表示由部门管理员身份自动继承，列表中不展示，仅添加弹窗中标记 */
+  inheritedAsDeptManager?: boolean;
+}

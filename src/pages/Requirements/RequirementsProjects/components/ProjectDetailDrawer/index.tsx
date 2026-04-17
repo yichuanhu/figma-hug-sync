@@ -2,13 +2,14 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tabs, TabPane, Typography, Tag, Table, Button, Modal, Toast, Empty } from '@douyinfe/semi-ui';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
-import { FileText, Folder, Plus, Pencil, Trash2, Link as LinkIcon } from 'lucide-react';
+import { FileText, Folder, Plus, Pencil, Trash2, Link as LinkIcon, Users } from 'lucide-react';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import type { Project, Workspace, ProjectAggregatedStatus } from '../../types';
 import { fetchWorkspacesByProject, deleteWorkspace } from '../../mockData';
 import WorkspaceFormModal from '../WorkspaceFormModal';
 import LinkRequirementsModal from '../LinkRequirementsModal';
+import WorkspaceMembersModal from '../WorkspaceMembersModal';
 
 const { Text, Title } = Typography;
 
@@ -49,6 +50,8 @@ const ProjectDetailDrawer = ({
   const [editingWs, setEditingWs] = useState<Workspace | null>(null);
   const [linkModalVisible, setLinkModalVisible] = useState(false);
   const [linkingWs, setLinkingWs] = useState<Workspace | null>(null);
+  const [membersModalVisible, setMembersModalVisible] = useState(false);
+  const [membersWs, setMembersWs] = useState<Workspace | null>(null);
 
   const reload = useMemo(
     () => () => {
@@ -121,7 +124,7 @@ const ProjectDetailDrawer = ({
     {
       title: t('common.actions'),
       key: 'actions',
-      width: 220,
+      width: 300,
       render: (_: unknown, record: Workspace) => (
         <div style={{ display: 'flex', gap: 4 }}>
           <Button
@@ -134,6 +137,17 @@ const ProjectDetailDrawer = ({
             }}
           >
             {t('requirements.projects.linkRequirements')}
+          </Button>
+          <Button
+            size="small"
+            theme="borderless"
+            icon={<Users size={14} />}
+            onClick={() => {
+              setMembersWs(record);
+              setMembersModalVisible(true);
+            }}
+          >
+            {t('requirements.projects.members')}
           </Button>
           <Button
             size="small"
@@ -291,6 +305,15 @@ const ProjectDetailDrawer = ({
         workspace={linkingWs}
         onClose={() => setLinkModalVisible(false)}
         onSuccess={() => {
+          reload();
+          onRefresh();
+        }}
+      />
+      <WorkspaceMembersModal
+        visible={membersModalVisible}
+        workspace={membersWs}
+        onClose={() => setMembersModalVisible(false)}
+        onChanged={() => {
           reload();
           onRefresh();
         }}
