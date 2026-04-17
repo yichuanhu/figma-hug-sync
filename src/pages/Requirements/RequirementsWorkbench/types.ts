@@ -192,6 +192,8 @@ export interface CostConfig {
   working_hours_per_day: number;
   /** 每月工作天数 */
   working_days_per_month: number;
+  /** 岗位级别 → 人天单价（元/人天） */
+  rate_table?: Record<JobLevel, number>;
   /** 自定义计算基准说明 */
   custom_basis?: string;
 }
