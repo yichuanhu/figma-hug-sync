@@ -545,7 +545,32 @@
       "deleteTitle": "Delete Scheme",
       "deleteContent": "Delete scheme \"{{name}}\"? This cannot be undone.",
       "versionHistory": "Version History",
-      "empty": "No schemes yet, please upload one"
+      "empty": "No schemes yet, please upload one",
+      "inactive": "Inactive",
+      "code": "Code",
+      "version": "Version",
+      "category": "Category",
+      "scenario": "Scenario",
+      "notConfigured": "Not configured",
+      "valueModel": "Value Assessment Model",
+      "complexityModel": "Complexity Assessment Model",
+      "dimensions": "Dimensions",
+      "weight": "Weight",
+      "tiers": "Tiers",
+      "level": "Level",
+      "approvers": "approver(s)",
+      "countSign": "Count-sign",
+      "avgHourlyCost": "Avg Hourly Cost",
+      "workingHoursPerDay": "Working Hours / Day",
+      "workingDaysPerMonth": "Working Days / Month",
+      "customBasis": "Custom Basis",
+      "tab": {
+        "basic": "Basic Info",
+        "fields": "Form Fields",
+        "assessment": "Assessment Models",
+        "approval": "Approval Flow",
+        "cost": "Cost Config"
+      }
     },
     "priority": {
       "high": "High",

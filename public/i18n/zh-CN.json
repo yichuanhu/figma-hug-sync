@@ -450,7 +450,32 @@
       "deleteTitle": "删除方案",
       "deleteContent": "确定删除方案「{{name}}」？删除后不可恢复。",
       "versionHistory": "版本历史",
-      "empty": "暂无方案，请先上传"
+      "empty": "暂无方案，请先上传",
+      "inactive": "未激活",
+      "code": "方案编码",
+      "version": "版本号",
+      "category": "分类",
+      "scenario": "适用场景",
+      "notConfigured": "未配置",
+      "valueModel": "价值评估模型",
+      "complexityModel": "复杂度评估模型",
+      "dimensions": "评估维度",
+      "weight": "权重",
+      "tiers": "档位划分",
+      "level": "第",
+      "approvers": "位审批人",
+      "countSign": "会签",
+      "avgHourlyCost": "平均时薪",
+      "workingHoursPerDay": "每日工时",
+      "workingDaysPerMonth": "每月工作日",
+      "customBasis": "自定义说明",
+      "tab": {
+        "basic": "基本信息",
+        "fields": "表单字段",
+        "assessment": "评估模型",
+        "approval": "审批流程",
+        "cost": "成本配置"
+      }
     },
     "priority": {
       "high": "高",
