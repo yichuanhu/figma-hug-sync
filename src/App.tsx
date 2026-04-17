@@ -61,6 +61,9 @@ import RequirementsTeam from "@/pages/Requirements/RequirementsTeam";
 import RequirementsScheme from "@/pages/Requirements/RequirementsScheme";
 // Maintenance
 import MaintenanceWorkbench from "@/pages/Maintenance/MaintenanceWorkbench";
+import MaintenanceConfig from "@/pages/Maintenance/ConfigManagement";
+import SystemMetricsPage from "@/pages/Maintenance/Dashboard/SystemMetricsPage";
+import MiddlewareStatusPage from "@/pages/Maintenance/Dashboard/MiddlewareStatusPage";
 // Sharing Center
 import CreatorComponents from "@/pages/Sharing/Components/CreatorComponents";
 import APASkills from "@/pages/Sharing/Skills/APASkills";

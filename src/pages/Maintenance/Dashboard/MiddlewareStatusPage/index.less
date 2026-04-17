@@ -1,0 +1,128 @@
+.mt-middleware-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  &-header {
+    flex-shrink: 0;
+    margin-bottom: 16px;
+    .title { margin-bottom: 8px; }
+  }
+
+  &-toolbar {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  &-stats {
+    flex-shrink: 0;
+    margin-bottom: 16px;
+  }
+
+  &-body {
+    flex: 1;
+    overflow: auto;
+    min-height: 0;
+  }
+
+  .stat-card {
+    background: var(--semi-color-bg-1);
+    border: 1px solid var(--semi-color-border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    &__label {
+      font-size: 12px;
+      color: var(--semi-color-text-2);
+    }
+
+    &__value {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--semi-color-text-0);
+    }
+
+    &--healthy &__value { color: #16a34a; }
+    &--unhealthy &__value { color: #dc2626; }
+  }
+
+  .mw-card {
+    background: var(--semi-color-bg-1);
+    border: 1px solid var(--semi-color-border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    &--unhealthy {
+      border-color: rgba(220, 38, 38, 0.3);
+      background: rgba(220, 38, 38, 0.02);
+    }
+
+    &__head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    &__title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    &__name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--semi-color-text-0);
+    }
+
+    &__status-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 4px;
+
+      &--healthy { background: rgba(22,163,74,0.1); color: #16a34a; }
+      &--unhealthy { background: rgba(220,38,38,0.1); color: #dc2626; }
+    }
+
+    &__row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    &__label {
+      color: var(--semi-color-text-2);
+    }
+
+    &__value {
+      color: var(--semi-color-text-0);
+      &.mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+    }
+
+    &__error {
+      background: rgba(220,38,38,0.08);
+      color: #dc2626;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+    }
+
+    &__actions {
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+}

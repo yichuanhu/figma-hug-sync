@@ -1,0 +1,38 @@
+.mt-system-metrics-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  &-header {
+    flex-shrink: 0;
+    margin-bottom: 16px;
+    .title { margin-bottom: 8px; }
+  }
+
+  &-toolbar {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  &-body {
+    flex: 1;
+    overflow: auto;
+    min-height: 0;
+  }
+
+  .metric-card {
+    background: var(--semi-color-bg-1);
+    border: 1px solid var(--semi-color-border);
+    border-radius: 10px;
+    padding: 16px 20px;
+
+    &__title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--semi-color-text-0);
+      margin-bottom: 8px;
+    }
+  }
+}

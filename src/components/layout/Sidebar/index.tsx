@@ -302,18 +302,17 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
 
   // 运维中心的详细菜单结构 - 使用分组标题样式
   const maintenanceCenterMenu: MenuItem[] = [
-    // 系统运维 - 分组标题
-    { key: 'systemMaintenance', labelKey: 'sidebar.systemMaintenance', isGroupLabel: true },
-    { key: 'systemConfig', labelKey: 'sidebar.systemConfig', icon: <Settings size={18} strokeWidth={2} /> },
-    { key: 'troubleshooting', labelKey: 'sidebar.troubleshooting', icon: <Wrench size={18} strokeWidth={2} /> },
-    // 监控告警 - 分组标题
-    { key: 'monitoringAlerts', labelKey: 'sidebar.monitoringAlerts', isGroupLabel: true },
-    { key: 'alertManagement', labelKey: 'sidebar.alertManagement', icon: <AlertTriangle size={18} strokeWidth={2} /> },
-    { key: 'systemMonitoring', labelKey: 'sidebar.systemMonitoring', icon: <Activity size={18} strokeWidth={2} /> },
-    // 数据管理 - 分组标题
-    { key: 'dataManagement', labelKey: 'sidebar.dataManagement', isGroupLabel: true },
-    { key: 'databaseManagement', labelKey: 'sidebar.databaseManagement', icon: <Database size={18} strokeWidth={2} /> },
-    { key: 'securityManagement', labelKey: 'sidebar.securityManagement', icon: <Shield size={18} strokeWidth={2} /> },
+    // 配置管理
+    { key: 'mtConfigManagement', labelKey: 'sidebar.mtConfigManagement', isGroupLabel: true },
+    { key: 'mtSystemParams', labelKey: 'sidebar.mtSystemParams', icon: <Settings size={18} strokeWidth={2} />, path: '/maintenance/config/system-params' },
+    { key: 'mtServiceParams', labelKey: 'sidebar.mtServiceParams', icon: <Wrench size={18} strokeWidth={2} />, path: '/maintenance/config/service-params' },
+    { key: 'mtInfrastructure', labelKey: 'sidebar.mtInfrastructure', icon: <Database size={18} strokeWidth={2} />, path: '/maintenance/config/infrastructure' },
+    { key: 'mtMonitoringConfig', labelKey: 'sidebar.mtMonitoringConfig', icon: <Activity size={18} strokeWidth={2} />, path: '/maintenance/config/monitoring' },
+    { key: 'mtLoggerConfig', labelKey: 'sidebar.mtLoggerConfig', icon: <ScrollText size={18} strokeWidth={2} />, path: '/maintenance/config/logger' },
+    // 数据大盘
+    { key: 'mtDataDashboard', labelKey: 'sidebar.mtDataDashboard', isGroupLabel: true },
+    { key: 'mtSystemMetrics', labelKey: 'sidebar.mtSystemMetrics', icon: <ChartSpline size={18} strokeWidth={2} />, path: '/maintenance/dashboard/system-metrics' },
+    { key: 'mtMiddlewareStatus', labelKey: 'sidebar.mtMiddlewareStatus', icon: <MonitorCheck size={18} strokeWidth={2} />, path: '/maintenance/dashboard/middleware-status' },
   ];
 
   // 共享中心的详细菜单结构
@@ -419,6 +418,13 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     if (pathname === '/sharing/showcases') {
       return 'showcasesList';
     }
+    if (pathname.startsWith('/maintenance/config/system-params')) return 'mtSystemParams';
+    if (pathname.startsWith('/maintenance/config/service-params')) return 'mtServiceParams';
+    if (pathname.startsWith('/maintenance/config/infrastructure')) return 'mtInfrastructure';
+    if (pathname.startsWith('/maintenance/config/monitoring')) return 'mtMonitoringConfig';
+    if (pathname.startsWith('/maintenance/config/logger')) return 'mtLoggerConfig';
+    if (pathname.startsWith('/maintenance/dashboard/system-metrics')) return 'mtSystemMetrics';
+    if (pathname.startsWith('/maintenance/dashboard/middleware-status')) return 'mtMiddlewareStatus';
     return '';
   };
 
