@@ -393,12 +393,24 @@ const generateMockVersions = (
   ];
 };
 
+/** Mock 流程候选池（供需求关联流程选择） */
+export const MOCK_PROCESS_POOL: LinkedProcess[] = [
+  { id: 'proc-001', name: 'Procurement Approval Process', status: 'ONLINE',     ownerName: 'Sarah Li' },
+  { id: 'proc-002', name: 'Invoice OCR Pipeline',         status: 'TESTING',    ownerName: 'Michael Wang' },
+  { id: 'proc-003', name: 'Vendor Notification Workflow', status: 'DEVELOPING', ownerName: 'Emily Chen' },
+  { id: 'proc-004', name: 'Customer Credit Assessment',   status: 'ONLINE',     ownerName: 'Jessica Liu' },
+  { id: 'proc-005', name: 'Payroll Data Validation',      status: 'PENDING',    ownerName: 'Emily Chen' },
+  { id: 'proc-006', name: 'Server Health Monitoring',     status: 'ONLINE',     ownerName: 'Angela Wu' },
+  { id: 'proc-007', name: 'Expense Report Processing',    status: 'TESTING',    ownerName: 'Robert Xu' },
+  { id: 'proc-008', name: 'Freight Cost Optimization',    status: 'FAILED',     ownerName: 'David Zhang' },
+];
+
 const generateMockLinkedProcesses = (status: RequirementStatus, idx: number): LinkedProcess[] | undefined => {
   if (!(['DEVELOPING', 'LAUNCHED', 'OFFLINE'] as RequirementStatus[]).includes(status)) return undefined;
   const pool: LinkedProcess[] = [
-    { id: 'proc-001', name: 'Procurement Approval Process', status: 'ONLINE', ownerName: 'Sarah Li' },
-    { id: 'proc-002', name: 'Invoice OCR Pipeline', status: 'TESTING', ownerName: 'Michael Wang' },
-    { id: 'proc-003', name: 'Vendor Notification Workflow', status: idx % 3 === 0 ? 'FAILED' : 'DEVELOPING', ownerName: 'Emily Chen' },
+    MOCK_PROCESS_POOL[0],
+    MOCK_PROCESS_POOL[1],
+    { ...MOCK_PROCESS_POOL[2], status: idx % 3 === 0 ? 'FAILED' : 'DEVELOPING' },
   ];
   return pool.slice(0, (idx % 3) + 1);
 };
