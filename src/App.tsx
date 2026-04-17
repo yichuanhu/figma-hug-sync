@@ -146,6 +146,7 @@ const App = () => {
           <Route path="/requirements/assessment" element={<RequirementsAssessment />} />
           <Route path="/requirements/team" element={<RequirementsTeam />} />
           <Route path="/requirements/scheme" element={<RequirementsScheme />} />
+          <Route path="/requirements/projects" element={<RequirementsProjects />} />
           <Route path="/operations" element={<Navigate to="/operations/dashboard" replace />} />
           <Route path="/operations/dashboard" element={<OperationsDashboard />} />
           <Route path="/operations/roi-analysis" element={<ROIAnalysis />} />
