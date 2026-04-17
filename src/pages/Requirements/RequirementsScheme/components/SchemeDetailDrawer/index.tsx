@@ -224,6 +224,19 @@ const SchemeDetailDrawer = ({
 
           <TabPane tab={`${t('requirements.scheme.tab.approval')} (${scheme.approval_flow.levels.length})`} itemKey="approval">
             <div className="scheme-detail-drawer-content">
+              {!scheme.is_preset && onEditApprovalFlow && (
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 12 }}>
+                  <Button
+                    icon={<Pencil size={14} strokeWidth={2} />}
+                    theme="light"
+                    type="primary"
+                    size="small"
+                    onClick={() => onEditApprovalFlow(scheme)}
+                  >
+                    {t('requirements.scheme.editor.entry')}
+                  </Button>
+                </div>
+              )}
               {scheme.approval_flow.levels.length === 0 ? (
                 <Empty description={t('common.noData')} />
               ) : (
