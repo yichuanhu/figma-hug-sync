@@ -265,6 +265,27 @@ const RequirementsReview = () => {
         ),
       },
       {
+        title: t('requirements.review.currentLevelCol'),
+        dataIndex: 'currentLevel',
+        key: 'currentLevel',
+        width: 200,
+        ellipsis: true,
+        render: (_: unknown, record: RequirementItem) => {
+          const cfg = record.approvalFlowConfig;
+          if (!cfg || record.status !== 'PENDING_APPROVAL') return <Text type="tertiary">-</Text>;
+          const lv = cfg.levels.find((l) => l.level === cfg.currentLevel);
+          return (
+            <Text size="small">
+              {t('requirements.review.currentLevelValue', {
+                current: cfg.currentLevel,
+                total: cfg.levels.length,
+                name: lv?.name ?? '',
+              })}
+            </Text>
+          );
+        },
+      },
+      {
         title: t('common.updateTime'),
         dataIndex: 'updatedAt',
         key: 'updatedAt',
