@@ -713,6 +713,20 @@
       "submitConfirmTitle": "Submit for Approval",
       "submitConfirmContent": "Once submitted, the requirement will enter the approval process. Continue?",
       "submitSuccess": "Requirement submitted for approval",
+      "withdraw": "Withdraw",
+      "withdrawConfirmTitle": "Withdraw Requirement",
+      "withdrawConfirmContent": "Withdrawing returns the requirement to draft and clears the current approval progress. Continue?",
+      "withdrawSuccess": "Requirement withdrawn to draft",
+      "resubmit": "Resubmit",
+      "resubmitConfirmTitle": "Resubmit Requirement",
+      "resubmitConfirmContent": "The requirement will re-enter the approval flow from level 1. Approval history is preserved. Continue?",
+      "resubmitSuccess": "Requirement resubmitted",
+      "history": {
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "withdrew": "Withdrew",
+        "resubmitted": "Resubmitted"
+      },
       "tab": {
         "overview": "Overview",
         "assessment": "Assessment",
