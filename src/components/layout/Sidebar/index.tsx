@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Avatar, Popover, Tooltip } from '@douyinfe/semi-ui';
 import { UserInfoDropdown } from '../UserInfoDropdown';
-import { Activity, Airplay, AlertTriangle, Bell, BookOpen, Bot, CalendarClock, ChartSpline, CheckSquare, ChevronDown, ChevronUp, ClipboardList, Cloud, CodeXml, Database, FileText, Folder, FolderCheck, Forward, GitBranch, History, Home, LayoutGrid, LibraryBig, ListStart, MonitorCheck, MonitorCog, Parentheses, Play, ScrollText, Settings, Shield, Target, TrendingUp, Users, Workflow, Wrench } from 'lucide-react';
+import { Activity, Airplay, AlertTriangle, Bell, BookOpen, Bot, CalendarClock, ChartSpline, CheckSquare, ChevronDown, ChevronUp, ClipboardList, Cloud, CodeXml, Database, FileText, Folder, FolderCheck, FolderKanban, Forward, GitBranch, History, Home, LayoutGrid, LibraryBig, ListStart, MonitorCheck, MonitorCog, Parentheses, Play, ScrollText, Settings, Shield, Target, TrendingUp, Users, Workflow, Wrench } from 'lucide-react';
 
 const LayoutIcon = () => (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -295,6 +295,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     { key: 'requirementsList', labelKey: 'sidebar.requirementsList', icon: <ClipboardList size={18} strokeWidth={2} />, path: '/requirements/list' },
     { key: 'requirementsReview', labelKey: 'sidebar.requirementsReview', icon: <CheckSquare size={18} strokeWidth={2} />, path: '/requirements/review' },
     { key: 'requirementsAssessment', labelKey: 'sidebar.requirementsAssessment', icon: <FolderCheck size={18} strokeWidth={2} />, path: '/requirements/assessment' },
+    { key: 'requirementsProjects', labelKey: 'sidebar.requirementsProjects', icon: <FolderKanban size={18} strokeWidth={2} />, path: '/requirements/projects' },
     { key: 'requirementsScheme', labelKey: 'sidebar.requirementsScheme', icon: <Settings size={18} strokeWidth={2} />, path: '/requirements/scheme' },
     // 协作管理 - 分组标题
     { key: 'collaborationManagement', labelKey: 'sidebar.collaborationManagement', isGroupLabel: true },
@@ -388,6 +389,12 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     }
     if (pathname.startsWith('/requirements/assessment')) {
       return 'requirementsAssessment';
+    }
+    if (pathname.startsWith('/requirements/projects')) {
+      return 'requirementsProjects';
+    }
+    if (pathname.startsWith('/requirements/scheme')) {
+      return 'requirementsScheme';
     }
     if (pathname.startsWith('/requirements/team')) {
       return 'teamMembers';

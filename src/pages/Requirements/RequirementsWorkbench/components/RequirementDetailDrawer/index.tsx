@@ -7,6 +7,7 @@ import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import type { RequirementItem, ActivityRecord, DetailedAssessment } from '../../types';
 import { statusConfig, priorityConfig, fetchActivities, updateRequirementAssessment, MOCK_CURRENT_USER_ID } from '../../mockData';
+import { findWorkspaceByRequirementId } from '../../../RequirementsProjects/mockData';
 import ApprovalSection from './ApprovalSection';
 import ArtifactSection from './ArtifactSection';
 import AssessmentTab from './AssessmentTab';
@@ -42,6 +43,7 @@ const PropertyPanel = ({
 }) => {
   const sCfg = statusConfig[data.status];
   const pCfg = priorityConfig[data.priority];
+  const wsBinding = findWorkspaceByRequirementId(data.id);
 
   return (
     <div className="requirement-detail-property-panel">
@@ -80,6 +82,14 @@ const PropertyPanel = ({
         <div className="requirement-detail-property-item">
           <Text type="tertiary" size="small">{t('requirements.fields.expectedLaunchDate')}</Text>
           <Text>{data.expectedLaunchDate ? data.expectedLaunchDate.substring(0, 10) : '-'}</Text>
+        </div>
+        <div className="requirement-detail-property-item">
+          <Text type="tertiary" size="small">{t('requirements.projects.belongsToProject')}</Text>
+          <Text>{wsBinding ? wsBinding.project.name : t('requirements.projects.unlinked')}</Text>
+        </div>
+        <div className="requirement-detail-property-item">
+          <Text type="tertiary" size="small">{t('requirements.projects.belongsToWorkspace')}</Text>
+          <Text>{wsBinding ? wsBinding.workspace.name : t('requirements.projects.unlinked')}</Text>
         </div>
       </div>
 
