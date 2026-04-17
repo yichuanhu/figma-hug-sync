@@ -739,7 +739,7 @@
     },
     "approvalFlow": {
       "title": "Approval Flow",
-      "currentLevel": "Current L{{level}}",
+      "currentLevel": "Stage {{current}}/{{total}} · {{name}}",
       "notApprover": "You are not an approver of the current step (L{{level}} {{name}})",
       "mode": {
         "any_one": "Any one",
