@@ -806,3 +806,41 @@ export const advanceApprovalFlow = async (
   return mockRequirementData[index];
 };
 
+// ============= Story-009 关联流程 增删 =============
+
+export const addLinkedProcess = async (
+  requirementId: string,
+  processId: string,
+): Promise<RequirementItem | null> => {
+  await new Promise((resolve) => setTimeout(resolve, 200));
+  const index = mockRequirementData.findIndex((r) => r.id === requirementId);
+  if (index === -1) return null;
+  const cur = mockRequirementData[index];
+  const exists = (cur.linkedProcesses ?? []).some((p) => p.id === processId);
+  if (exists) return cur;
+  const proc = MOCK_PROCESS_POOL.find((p) => p.id === processId);
+  if (!proc) return cur;
+  mockRequirementData[index] = {
+    ...cur,
+    linkedProcesses: [...(cur.linkedProcesses ?? []), { ...proc }],
+    updatedAt: new Date().toISOString(),
+  };
+  return mockRequirementData[index];
+};
+
+export const removeLinkedProcess = async (
+  requirementId: string,
+  processId: string,
+): Promise<RequirementItem | null> => {
+  await new Promise((resolve) => setTimeout(resolve, 200));
+  const index = mockRequirementData.findIndex((r) => r.id === requirementId);
+  if (index === -1) return null;
+  const cur = mockRequirementData[index];
+  mockRequirementData[index] = {
+    ...cur,
+    linkedProcesses: (cur.linkedProcesses ?? []).filter((p) => p.id !== processId),
+    updatedAt: new Date().toISOString(),
+  };
+  return mockRequirementData[index];
+};
+
