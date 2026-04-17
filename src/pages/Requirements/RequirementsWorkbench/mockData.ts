@@ -756,7 +756,7 @@ export function generateMockApprovalFlow(
   else currentLevel = levelConfigs.length + 1;
 
   return { levels, currentLevel };
-};
+}
 
 /** 当前 mock 用户 */
 export const MOCK_CURRENT_USER_ID = 'user-001';
