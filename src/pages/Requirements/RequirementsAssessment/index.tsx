@@ -112,8 +112,18 @@ const RequirementsAssessment = () => {
         (item) => item.title.toLowerCase().includes(kw) || item.description.toLowerCase().includes(kw),
       );
     }
+    if (activeTab !== 'pending' && conclusionFilter !== 'ALL') {
+      data = data.filter((item) => item.detailedAssessment?.conclusion === conclusionFilter);
+    }
+    if (activeTab !== 'pending' && sortKey !== 'default') {
+      data = [...data].sort((a, b) => {
+        const sa = a.detailedAssessment?.netScore ?? Number.NEGATIVE_INFINITY;
+        const sb = b.detailedAssessment?.netScore ?? Number.NEGATIVE_INFINITY;
+        return sortKey === 'netScoreDesc' ? sb - sa : sa - sb;
+      });
+    }
     return data;
-  }, [activeTab, allRequirements, searchValue]);
+  }, [activeTab, allRequirements, searchValue, conclusionFilter, sortKey]);
 
   const handleStatusChange = async (id: string, newStatus: string, comment?: string) => {
     await updateRequirementStatus(id, newStatus, comment);
