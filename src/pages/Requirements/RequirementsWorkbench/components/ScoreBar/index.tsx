@@ -7,7 +7,7 @@ interface ScoreBarProps {
   variant?: 'value' | 'complexity';
 }
 
-const ScoreBar = ({ value, max = 5, variant = 'value' }: ScoreBarProps) => {
+const ScoreBar = ({ value, max = 100, variant = 'value' }: ScoreBarProps) => {
   if (typeof value !== 'number') {
     return <Typography.Text type="tertiary">-</Typography.Text>;
   }
