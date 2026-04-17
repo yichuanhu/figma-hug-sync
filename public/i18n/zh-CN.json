@@ -876,7 +876,13 @@
       "viewAssessment": "查看评估",
       "assessorCol": "评估人",
       "netScoreCol": "净值得分",
-      "conclusionCol": "结论"
+      "conclusionCol": "结论",
+      "filterConclusion": "推荐结论",
+      "filterConclusionAll": "全部结论",
+      "sortBy": "排序",
+      "sortNetScoreDesc": "净值得分（高到低）",
+      "sortNetScoreAsc": "净值得分（低到高）",
+      "sortDefault": "默认（最近更新）"
     },
     "list": {
       "subtitle": "{{department}} · {{creator}}"

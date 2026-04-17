@@ -9,6 +9,7 @@ import {
   Button,
   Input,
   Dropdown,
+  Select,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
@@ -41,6 +42,8 @@ const RequirementsAssessment = () => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<AssessTab>('pending');
   const [searchValue, setSearchValue] = useState('');
+  const [conclusionFilter, setConclusionFilter] = useState<string>('ALL');
+  const [sortKey, setSortKey] = useState<'default' | 'netScoreDesc' | 'netScoreAsc'>('default');
   const [loading, setLoading] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [allRequirements, setAllRequirements] = useState<RequirementItem[]>([]);
@@ -109,8 +112,18 @@ const RequirementsAssessment = () => {
         (item) => item.title.toLowerCase().includes(kw) || item.description.toLowerCase().includes(kw),
       );
     }
+    if (activeTab !== 'pending' && conclusionFilter !== 'ALL') {
+      data = data.filter((item) => item.detailedAssessment?.conclusion === conclusionFilter);
+    }
+    if (activeTab !== 'pending' && sortKey !== 'default') {
+      data = [...data].sort((a, b) => {
+        const sa = a.detailedAssessment?.netScore ?? Number.NEGATIVE_INFINITY;
+        const sb = b.detailedAssessment?.netScore ?? Number.NEGATIVE_INFINITY;
+        return sortKey === 'netScoreDesc' ? sb - sa : sa - sb;
+      });
+    }
     return data;
-  }, [activeTab, allRequirements, searchValue]);
+  }, [activeTab, allRequirements, searchValue, conclusionFilter, sortKey]);
 
   const handleStatusChange = async (id: string, newStatus: string, comment?: string) => {
     await updateRequirementStatus(id, newStatus, comment);
@@ -419,6 +432,27 @@ const RequirementsAssessment = () => {
                 onChange={setSearchValue}
                 showClear
               />
+              <Select
+                value={conclusionFilter}
+                onChange={(v) => setConclusionFilter(v as string)}
+                style={{ width: 160 }}
+                prefix={t('requirements.assessment.filterConclusion')}
+              >
+                <Select.Option value="ALL">{t('requirements.assessment.filterConclusionAll')}</Select.Option>
+                <Select.Option value="RECOMMEND">{t('requirements.assessmentV2.conclusion.RECOMMEND')}</Select.Option>
+                <Select.Option value="CAUTION">{t('requirements.assessmentV2.conclusion.CAUTION')}</Select.Option>
+                <Select.Option value="REJECT">{t('requirements.assessmentV2.conclusion.REJECT')}</Select.Option>
+              </Select>
+              <Select
+                value={sortKey}
+                onChange={(v) => setSortKey(v as typeof sortKey)}
+                style={{ width: 220 }}
+                prefix={t('requirements.assessment.sortBy')}
+              >
+                <Select.Option value="default">{t('requirements.assessment.sortDefault')}</Select.Option>
+                <Select.Option value="netScoreDesc">{t('requirements.assessment.sortNetScoreDesc')}</Select.Option>
+                <Select.Option value="netScoreAsc">{t('requirements.assessment.sortNetScoreAsc')}</Select.Option>
+              </Select>
             </div>
             {isInitialLoad ? (
               <TableSkeleton rows={6} columns={9} />
@@ -455,6 +489,27 @@ const RequirementsAssessment = () => {
                 onChange={setSearchValue}
                 showClear
               />
+              <Select
+                value={conclusionFilter}
+                onChange={(v) => setConclusionFilter(v as string)}
+                style={{ width: 160 }}
+                prefix={t('requirements.assessment.filterConclusion')}
+              >
+                <Select.Option value="ALL">{t('requirements.assessment.filterConclusionAll')}</Select.Option>
+                <Select.Option value="RECOMMEND">{t('requirements.assessmentV2.conclusion.RECOMMEND')}</Select.Option>
+                <Select.Option value="CAUTION">{t('requirements.assessmentV2.conclusion.CAUTION')}</Select.Option>
+                <Select.Option value="REJECT">{t('requirements.assessmentV2.conclusion.REJECT')}</Select.Option>
+              </Select>
+              <Select
+                value={sortKey}
+                onChange={(v) => setSortKey(v as typeof sortKey)}
+                style={{ width: 220 }}
+                prefix={t('requirements.assessment.sortBy')}
+              >
+                <Select.Option value="default">{t('requirements.assessment.sortDefault')}</Select.Option>
+                <Select.Option value="netScoreDesc">{t('requirements.assessment.sortNetScoreDesc')}</Select.Option>
+                <Select.Option value="netScoreAsc">{t('requirements.assessment.sortNetScoreAsc')}</Select.Option>
+              </Select>
             </div>
             {isInitialLoad ? (
               <TableSkeleton rows={6} columns={9} />
