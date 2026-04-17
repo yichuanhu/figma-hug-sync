@@ -476,9 +476,9 @@ const RequirementsReview = () => {
             tab={
               <span>
                 {t('requirements.review.pendingMe')}
-                {stats.pendingCount + stats.assessingCount > 0 && (
+                {stats.pendingCount > 0 && (
                   <Tag size="small" color="orange" type="solid" style={{ marginLeft: 6 }}>
-                    {stats.pendingCount + stats.assessingCount}
+                    {stats.pendingCount}
                   </Tag>
                 )}
               </span>
