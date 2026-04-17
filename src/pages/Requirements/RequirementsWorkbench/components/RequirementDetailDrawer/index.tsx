@@ -6,7 +6,7 @@ import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import type { RequirementItem, ActivityRecord, DetailedAssessment } from '../../types';
-import { statusConfig, priorityConfig, fetchActivities, updateRequirementAssessment } from '../../mockData';
+import { statusConfig, priorityConfig, fetchActivities, updateRequirementAssessment, MOCK_CURRENT_USER_ID } from '../../mockData';
 import ApprovalSection from './ApprovalSection';
 import ArtifactSection from './ArtifactSection';
 import AssessmentTab from './AssessmentTab';
@@ -356,7 +356,12 @@ const RequirementDetailDrawer = ({
                   </div>
                 )}
 
-                <LinkedProcessesSection processes={data.linkedProcesses} />
+                <LinkedProcessesSection
+                  processes={data.linkedProcesses}
+                  requirementId={data.id}
+                  canManage={data.creatorId === MOCK_CURRENT_USER_ID || data.owner_id === MOCK_CURRENT_USER_ID}
+                  onChanged={onRefresh}
+                />
 
                 <ArtifactSection data={data} />
 

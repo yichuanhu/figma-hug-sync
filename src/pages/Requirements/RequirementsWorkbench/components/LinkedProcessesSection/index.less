@@ -15,6 +15,37 @@
     gap: 6px;
   }
 
+  &__right {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__name-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+    color: var(--semi-color-text-0);
+    text-decoration: none;
+    overflow: hidden;
+
+    &:hover {
+      color: var(--semi-color-primary);
+
+      .linked-processes-section__name-text {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  &__name-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+  }
+
   &__list {
     display: flex;
     flex-direction: column;
