@@ -49,6 +49,8 @@ const RequirementsAssessment = () => {
   const [searchValue, setSearchValue] = useState('');
   const [conclusionFilter, setConclusionFilter] = useState<string>('ALL');
   const [sortKey, setSortKey] = useState<'default' | 'netScoreDesc' | 'netScoreAsc'>('default');
+  const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
+  const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [allRequirements, setAllRequirements] = useState<RequirementItem[]>([]);
