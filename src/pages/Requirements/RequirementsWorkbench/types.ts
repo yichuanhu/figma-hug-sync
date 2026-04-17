@@ -175,7 +175,9 @@ export interface ApprovalLevelConfig {
   name: string;
   approver_type: ApproverType;
   approver_ids: string[];
-  /** 是否会签（全部通过才算通过） */
+  /** 审批模式：any_one 任一 / all 全员会签 / majority 多数。优先于 count_sign。 */
+  mode?: 'any_one' | 'all' | 'majority';
+  /** 是否会签（全部通过才算通过）。已废弃，保留兼容；推荐使用 mode。 */
   count_sign?: boolean;
 }
 
