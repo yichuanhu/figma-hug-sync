@@ -468,13 +468,44 @@ export const deleteRequirement = async (id: string): Promise<void> => {
   mockRequirementData = mockRequirementData.filter((item) => item.id !== id);
 };
 
+/** 从 form_data 中提取基线四字段；齐全则计算节省 */
+const extractBaselineAndCost = (
+  formData: Record<string, unknown> | undefined,
+): { baseline?: RequirementBaselineFormData; cost?: CostEstimateData; form_data?: Record<string, unknown> } => {
+  if (!formData) return {};
+  const { frequency, durationMinutes, automationRatio, jobLevel } = formData as Record<string, unknown>;
+  const validLevels: JobLevel[] = ['P4', 'P5', 'P6', 'P7'];
+  // 表单中 percentage 字段为 0~100，统一归一化为 0~1
+  const ratioRaw = typeof automationRatio === 'number' ? automationRatio : NaN;
+  const ratioNormalized = ratioRaw > 1 ? ratioRaw / 100 : ratioRaw;
+  if (
+    typeof frequency === 'number' &&
+    typeof durationMinutes === 'number' &&
+    Number.isFinite(ratioNormalized) &&
+    typeof jobLevel === 'string' &&
+    (validLevels as string[]).includes(jobLevel)
+  ) {
+    const baseline: RequirementBaselineFormData = {
+      frequency,
+      durationMinutes,
+      automationRatio: ratioNormalized,
+      jobLevel: jobLevel as JobLevel,
+    };
+    return { baseline, cost: computeCostEstimate(baseline), form_data: { ...formData, automationRatio: ratioNormalized } };
+  }
+  return { form_data: formData };
+};
+
 export const createRequirement = async (values: Record<string, unknown>): Promise<RequirementItem> => {
   await new Promise((resolve) => setTimeout(resolve, 300));
   const now = new Date().toISOString();
   const creator = mockCreators['user-001'];
+  const { baseline, cost, form_data } = extractBaselineAndCost(values.form_data as Record<string, unknown> | undefined);
   const newItem: RequirementItem = {
     id: generateUUID(),
     req_no: `REQ-2026-${String(mockRequirementData.length + 1).padStart(4, '0')}`,
+    scheme_id: ACTIVE_SCHEME.id,
+    scheme_version: ACTIVE_SCHEME.version,
     title: values.title as string,
     description: (values.description as string) || '',
     owning_department_name: values.department as string,
@@ -492,6 +523,9 @@ export const createRequirement = async (values: Record<string, unknown>): Promis
     expectedLaunchDate: values.expectedLaunchDate
       ? (values.expectedLaunchDate as Date).toISOString()
       : undefined,
+    form_data,
+    baselineFormData: baseline,
+    costEstimate: cost,
     version: 1,
     createdAt: now,
     updatedAt: now,
@@ -504,16 +538,24 @@ export const updateRequirement = async (id: string, values: Record<string, unkno
   await new Promise((resolve) => setTimeout(resolve, 300));
   const index = mockRequirementData.findIndex((item) => item.id === id);
   if (index === -1) return null;
+  const cur = mockRequirementData[index];
+  const incomingFormData = values.form_data as Record<string, unknown> | undefined;
+  const { baseline, cost, form_data } = incomingFormData
+    ? extractBaselineAndCost(incomingFormData)
+    : { baseline: cur.baselineFormData, cost: cur.costEstimate, form_data: cur.form_data };
   mockRequirementData[index] = {
-    ...mockRequirementData[index],
+    ...cur,
     title: values.title as string,
-    description: (values.description as string) || mockRequirementData[index].description,
-    owning_department_name: (values.department as string) || mockRequirementData[index].owning_department_name,
-    priority: (values.priority as RequirementPriority) || mockRequirementData[index].priority,
+    description: (values.description as string) || cur.description,
+    owning_department_name: (values.department as string) || cur.owning_department_name,
+    priority: (values.priority as RequirementPriority) || cur.priority,
     contactInfo: (values.contactInfo as string) || '',
     expectedLaunchDate: values.expectedLaunchDate
       ? (values.expectedLaunchDate as Date).toISOString()
-      : mockRequirementData[index].expectedLaunchDate,
+      : cur.expectedLaunchDate,
+    form_data,
+    baselineFormData: baseline,
+    costEstimate: cost,
     updatedAt: new Date().toISOString(),
   };
   return mockRequirementData[index];
