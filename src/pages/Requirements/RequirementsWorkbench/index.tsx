@@ -514,7 +514,8 @@ const RequirementsWorkbench = () => {
               showTotal: true,
             }}
             scroll={{ y: 'calc(100vh - 320px)', x: 1310 }}
-          />
+            />
+          </>
         )}
       </div>
 
