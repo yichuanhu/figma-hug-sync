@@ -917,6 +917,7 @@
       "colType": "Type",
       "colName": "Name",
       "colContribution": "Contribution",
+      "colStatus": "Status",
       "colDescription": "Description",
       "typeProcess": "Process",
       "typeAdpApp": "Doc Processing App",

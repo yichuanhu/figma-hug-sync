@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Steps, Typography, Tag, Tooltip, Avatar } from '@douyinfe/semi-ui';
+import { Steps, Typography, Tag, Tooltip, Avatar, Collapsible } from '@douyinfe/semi-ui';
 import { ChevronDown, ChevronRight, CheckCircle2, XCircle, Clock } from 'lucide-react';
 import type { ApprovalFlowLevel, MultiLevelApprovalConfig } from '../../types';
 import './index.less';
@@ -25,18 +25,27 @@ const computeLevelStatus = (level: ApprovalFlowLevel, currentLevel: number): Ste
 const ApprovalFlowProgress = ({ config }: Props) => {
   const { t } = useTranslation();
   const [openLevel, setOpenLevel] = useState<number | null>(config.currentLevel);
+  const [expanded, setExpanded] = useState(false);
 
   const modeLabel = (mode: ApprovalFlowLevel['mode']) =>
     t(`requirements.approvalFlow.mode.${mode}`);
 
   return (
     <div className="approval-flow-progress">
-      <div className="approval-flow-progress__header">
-        <Text strong>{t('requirements.approvalFlow.title')}</Text>
+      <button
+        type="button"
+        className="approval-flow-progress__header approval-flow-progress__header--toggle"
+        onClick={() => setExpanded((v) => !v)}
+        aria-expanded={expanded}
+      >
+        <span className="approval-flow-progress__header-left">
+          {expanded ? <ChevronDown size={14} strokeWidth={2} /> : <ChevronRight size={14} strokeWidth={2} />}
+          <Text strong>{t('requirements.approvalFlow.title')}</Text>
+        </span>
         <Text type="tertiary" size="small">
           {t('requirements.approvalFlow.currentLevel', { level: config.currentLevel })}
         </Text>
-      </div>
+      </button>
 
       <Steps type="basic" size="small" className="approval-flow-progress__steps">
         {config.levels.map((lv) => {
@@ -65,6 +74,7 @@ const ApprovalFlowProgress = ({ config }: Props) => {
         })}
       </Steps>
 
+      <Collapsible isOpen={expanded} keepDOM>
       <div className="approval-flow-progress__details">
         {config.levels.map((lv) => {
           const isOpen = openLevel === lv.level;
@@ -116,6 +126,7 @@ const ApprovalFlowProgress = ({ config }: Props) => {
           );
         })}
       </div>
+      </Collapsible>
     </div>
   );
 };
