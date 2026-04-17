@@ -183,19 +183,41 @@ body {
   }
 }
 
-// 全局表格背景透明（继承父容器背景）
+// 全局表格背景：与页面卡片背景一致，避免横向滚动时固定列透出底层内容
+// 抽屉内的表格在 .card-sidesheet 作用域里被单独覆盖为 --semi-color-default（其实同色，但语义区分）
 .semi-table,
 .semi-table-wrapper,
+.semi-table-container,
 .semi-table-body,
 .semi-table-thead,
 .semi-table-tbody,
 .semi-table-row,
 .semi-table-row-cell,
 .semi-table-thead .semi-table-row-head {
-  background-color: transparent !important;
+  background-color: var(--semi-color-default) !important;
 }
 
-// 选中行高亮需要用更高优先级覆盖上面的 transparent
-.semi-table-row[class*='-row-selected'] {
+// 固定列：实体背景 + 阴影强化横向滚动层次感
+.semi-table-row-cell-fixed-left,
+.semi-table-thead .semi-table-row-head.semi-table-row-cell-fixed-left {
+  background-color: var(--semi-color-default) !important;
+  box-shadow: 4px 0 8px -4px rgba(0, 0, 0, 0.08);
+  clip-path: inset(0 -12px 0 0);
+}
+
+.semi-table-row-cell-fixed-right,
+.semi-table-thead .semi-table-row-head.semi-table-row-cell-fixed-right {
+  background-color: var(--semi-color-default) !important;
+  box-shadow: -4px 0 8px -4px rgba(0, 0, 0, 0.08);
+  clip-path: inset(0 0 0 -12px);
+}
+
+// hover 行：所有单元格匹配 hover 色（含固定列）
+.semi-table-tbody .semi-table-row-hover .semi-table-row-cell {
+  background-color: var(--semi-color-fill-0) !important;
+}
+
+// 选中行：所有单元格匹配选中色（含固定列）
+.semi-table-row[class*='-row-selected'] .semi-table-row-cell {
   background-color: var(--semi-color-primary-light-default) !important;
 }
