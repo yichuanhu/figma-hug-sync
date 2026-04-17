@@ -582,6 +582,50 @@
         "assessment": "Assessment Models",
         "approval": "Approval Flow",
         "cost": "Cost Config"
+      },
+      "approverType": {
+        "user": "Specific Users",
+        "role": "Role",
+        "department": "Department"
+      },
+      "approvalMode": {
+        "anyOne": "Any One Approves",
+        "all": "All Must Approve",
+        "majority": "Majority Approves"
+      },
+      "role": {
+        "lineManager": "Submitter's Line Manager",
+        "deptHead": "Department Head",
+        "aiLead": "AI Team Lead",
+        "financeHead": "Finance Lead",
+        "itHead": "IT Lead"
+      },
+      "dept": {
+        "committee": "Requirements Committee",
+        "it": "IT Department",
+        "finance": "Finance",
+        "hr": "Human Resources",
+        "itDept": "IT Dept",
+        "procurement": "Procurement",
+        "logistics": "Logistics",
+        "sales": "Sales"
+      },
+      "editor": {
+        "entry": "Edit Approval Flow",
+        "title": "Edit Approval Flow",
+        "hint": "Adjust levels, order, names, modes and approvers. Changes apply only to new requirements; existing ones keep their snapshot.",
+        "emptyHint": "No levels yet, please add one.",
+        "namePlaceholder": "Enter level name",
+        "newLevelName": "Approval Level {{n}}",
+        "approverType": "Approver Type",
+        "mode": "Approval Mode",
+        "approvers": "Approvers",
+        "approversPlaceholder": "Select approvers",
+        "addLevel": "Add Level",
+        "errorNameRequired": "Level name is required",
+        "errorApproversRequired": "\"{{name}}\" must have at least one approver",
+        "saveSuccess": "Approval flow updated",
+        "presetNotEditable": "Preset schemes cannot be edited"
       }
     },
     "priority": {
