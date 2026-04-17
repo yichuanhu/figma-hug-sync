@@ -44,12 +44,19 @@
       color: var(--semi-color-text-2);
     }
 
-    // 固定列必须使用不透明背景（最高优先级覆盖）
+    // 固定列：不透明背景 + 阴影强化横向滚动层次感
     .semi-table-row-cell-fixed-left,
+    .semi-table-thead .semi-table-row-head.semi-table-row-cell-fixed-left {
+      background-color: var(--semi-color-bg-1) !important;
+      box-shadow: 4px 0 8px -4px rgba(0, 0, 0, 0.08);
+      clip-path: inset(0 -12px 0 0);
+    }
+
     .semi-table-row-cell-fixed-right,
-    .semi-table-thead .semi-table-row-head.semi-table-row-cell-fixed-left,
     .semi-table-thead .semi-table-row-head.semi-table-row-cell-fixed-right {
       background-color: var(--semi-color-bg-1) !important;
+      box-shadow: -4px 0 8px -4px rgba(0, 0, 0, 0.08);
+      clip-path: inset(0 0 0 -12px);
     }
 
     // hover 行：所有单元格匹配 hover 色
