@@ -183,17 +183,31 @@ const RequirementsWorkbench = () => {
   const pageSize = range?.size || 20;
   const total = range?.total || 0;
 
-  // 操作可见性
-  const canEdit = (status: string) => status === 'DRAFT';
-  const canDelete = (status: string) => status === 'DRAFT' || status === 'REJECTED';
+  // 操作可见性（兼容旧/新状态）
+  const canEdit = (status: string) => status === 'DRAFT' || status === 'WITHDRAWN';
+  const canDelete = (status: string) =>
+    status === 'DRAFT' || status === 'REJECTED' || status === 'WITHDRAWN';
+
+  // 兼容旧状态 → 新 9 状态映射
+  const normalizeStatus = (s: string): RequirementStatus =>
+    (statusConfigV2[s as RequirementStatus] ? (s as RequirementStatus) : legacyStatusMap[s]) || 'DRAFT';
 
   // 表格列
   const columns = [
     {
+      title: t('requirements.fields.reqNo', '编号'),
+      dataIndex: 'req_no',
+      key: 'req_no',
+      width: 140,
+      render: (v: string | undefined, r: RequirementItem) => (
+        <Text type="tertiary" size="small">{v || `REQ-${r.id.slice(0, 8)}`}</Text>
+      ),
+    },
+    {
       title: t('requirements.fields.title'),
       dataIndex: 'title',
       key: 'title',
-      width: 260,
+      width: 240,
       ellipsis: true,
       sorter: true,
       onHeaderCell: () => ({ onClick: () => handleSort('title') }),
@@ -202,7 +216,7 @@ const RequirementsWorkbench = () => {
       title: t('common.owningDepartment'),
       dataIndex: 'owning_department_name',
       key: 'owning_department_name',
-      width: 140,
+      width: 130,
       ellipsis: true,
     },
     {
@@ -211,33 +225,34 @@ const RequirementsWorkbench = () => {
       key: 'status',
       width: 110,
       render: (status: string) => {
-        const cfg = statusConfig[status as keyof typeof statusConfig];
+        const ns = normalizeStatus(status);
+        const cfg = statusConfigV2[ns];
         return (
-          <Tag color={cfg?.color || 'grey'} type="light">
-            {t(cfg?.i18nKey || 'requirements.status.draft')}
-          </Tag>
+          <Tag color={cfg.color} type="light">{t(cfg.i18nKey)}</Tag>
         );
       },
     },
     {
-      title: t('requirements.fields.priority'),
-      dataIndex: 'priority',
-      key: 'priority',
-      width: 90,
-      render: (priority: string) => {
-        const cfg = priorityConfig[priority as keyof typeof priorityConfig];
-        return (
-          <Tag color={cfg?.color || 'grey'} type="light">
-            {t(cfg?.i18nKey || 'requirements.priority.low')}
-          </Tag>
-        );
-      },
+      title: t('requirements.fields.valueScore', '价值得分'),
+      dataIndex: 'value_score',
+      key: 'value_score',
+      width: 100,
+      render: (v: number | undefined) =>
+        typeof v === 'number' ? <Tag color="cyan" type="light">{v.toFixed(1)}</Tag> : <Text type="tertiary">-</Text>,
+    },
+    {
+      title: t('requirements.fields.complexityScore', '复杂度得分'),
+      dataIndex: 'complexity_score',
+      key: 'complexity_score',
+      width: 110,
+      render: (v: number | undefined) =>
+        typeof v === 'number' ? <Tag color="purple" type="light">{v.toFixed(1)}</Tag> : <Text type="tertiary">-</Text>,
     },
     {
       title: t('common.creator'),
       dataIndex: 'creatorId',
       key: 'creatorId',
-      width: 130,
+      width: 120,
       ellipsis: true,
       render: (_: string, record: RequirementItem) => (
         <UserNameWithCard
@@ -250,12 +265,13 @@ const RequirementsWorkbench = () => {
       ),
     },
     {
-      title: t('requirements.fields.expectedLaunchDate'),
-      dataIndex: 'expectedLaunchDate',
-      key: 'expectedLaunchDate',
-      width: 130,
-      ellipsis: true,
-      render: (value: string | null) => (value ? value.substring(0, 10) : '-'),
+      title: t('common.createTime', '创建时间'),
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      width: 160,
+      sorter: true,
+      onHeaderCell: () => ({ onClick: () => handleSort('created_at') }),
+      render: (value: string | null) => (value ? value.replace('T', ' ').substring(0, 19) : '-'),
     },
     {
       title: t('common.updateTime'),
