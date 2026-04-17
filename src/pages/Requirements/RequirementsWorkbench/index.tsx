@@ -418,7 +418,7 @@ const RequirementsWorkbench = () => {
           </Col>
           <Col>
             <Space>
-              <Button.Group>
+              <ButtonGroup>
                 <Button
                   icon={<ListIcon size={14} strokeWidth={2} />}
                   theme={viewMode === 'table' ? 'solid' : 'light'}
@@ -435,7 +435,7 @@ const RequirementsWorkbench = () => {
                 >
                   {t('requirements.workbench.viewBoard')}
                 </Button>
-              </Button.Group>
+              </ButtonGroup>
               <Button icon={<Upload size={14} strokeWidth={2} />} theme="light" type="tertiary">
                 {t('requirements.workbench.batchImport')}
               </Button>
