@@ -990,7 +990,10 @@
         "dateRange": "Date Range",
         "workspaceCount": "Workspaces",
         "requirementCount": "Requirements",
-        "memberCount": "Members"
+        "memberCount": "Members",
+        "memberName": "Member",
+        "memberDept": "Department",
+        "memberRole": "Role"
       },
       "placeholders": {
         "name": "Enter project name",
@@ -1014,7 +1017,22 @@
         "workspaceDuplicate": "Workspace name must be unique within the project",
         "projectHasWorkspaces": "Cannot delete: this project still has workspaces.",
         "workspaceInUse": "Cannot delete: workspace has linked requirements or published processes.",
-        "cannotUnlinkPublished": "Cannot unlink: this workspace has published processes."
+        "cannotUnlinkPublished": "Cannot unlink: this workspace has published processes.",
+        "mustKeepOneManager": "At least 1 manager must remain; cannot remove or demote.",
+        "pickAtLeastOneUser": "Please select at least one user"
+      },
+      "members": "Members",
+      "addMember": "Add Member",
+      "workspaceMembersTitle": "Manage Members of \"{{name}}\"",
+      "noExplicitMembers": "No members yet. Click \"Add Member\" to start.",
+      "explicitMembersCount": "Explicit members: {{count}}",
+      "inheritedManagersHint": "These users automatically inherit Manager role from being department managers; no need to add them again:",
+      "inheritedTag": "Inherited",
+      "searchUserPlaceholder": "Search user name or department",
+      "removeMemberConfirm": "Remove member \"{{name}}\"?",
+      "role": {
+        "MANAGER": "Manager",
+        "MEMBER": "Member"
       }
     }
   },
