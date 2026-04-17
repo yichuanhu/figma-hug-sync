@@ -124,7 +124,7 @@ const ProjectDetailDrawer = ({
     {
       title: t('common.actions'),
       key: 'actions',
-      width: 220,
+      width: 300,
       render: (_: unknown, record: Workspace) => (
         <div style={{ display: 'flex', gap: 4 }}>
           <Button
@@ -137,6 +137,17 @@ const ProjectDetailDrawer = ({
             }}
           >
             {t('requirements.projects.linkRequirements')}
+          </Button>
+          <Button
+            size="small"
+            theme="borderless"
+            icon={<Users size={14} />}
+            onClick={() => {
+              setMembersWs(record);
+              setMembersModalVisible(true);
+            }}
+          >
+            {t('requirements.projects.members')}
           </Button>
           <Button
             size="small"
