@@ -36,6 +36,7 @@ import StatusDot from './components/StatusDot';
 import ScoreBar from './components/ScoreBar';
 import TitleCell from './components/TitleCell';
 import RelativeTime from './components/RelativeTime';
+import BoardView from './components/BoardView';
 import './index.less';
 
 const { Title, Text } = Typography;
