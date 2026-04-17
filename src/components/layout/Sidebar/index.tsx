@@ -418,6 +418,13 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     if (pathname === '/sharing/showcases') {
       return 'showcasesList';
     }
+    if (pathname.startsWith('/maintenance/config/system-params')) return 'mtSystemParams';
+    if (pathname.startsWith('/maintenance/config/service-params')) return 'mtServiceParams';
+    if (pathname.startsWith('/maintenance/config/infrastructure')) return 'mtInfrastructure';
+    if (pathname.startsWith('/maintenance/config/monitoring')) return 'mtMonitoringConfig';
+    if (pathname.startsWith('/maintenance/config/logger')) return 'mtLoggerConfig';
+    if (pathname.startsWith('/maintenance/dashboard/system-metrics')) return 'mtSystemMetrics';
+    if (pathname.startsWith('/maintenance/dashboard/middleware-status')) return 'mtMiddlewareStatus';
     return '';
   };
 
