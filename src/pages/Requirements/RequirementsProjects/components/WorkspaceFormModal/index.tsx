@@ -57,6 +57,10 @@ const WorkspaceFormModal = ({ visible, projectId, initialData, onClose, onSucces
     if (!formApiRef.current) return;
     try {
       const values = (await formApiRef.current.validate()) as FormValues;
+      if (!values.departmentId) {
+        Toast.error(t('requirements.projects.validation.departmentRequired'));
+        return;
+      }
       const departmentName = findDeptLabel(values.departmentId);
       try {
         if (initialData) {
