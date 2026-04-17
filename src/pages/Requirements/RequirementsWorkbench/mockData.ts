@@ -694,10 +694,10 @@ export const updateRequirementAssessment = async (
 // ============= Story-006 多级审批 mock（方案驱动） =============
 
 /** 把 ApprovalLevelConfig.mode 兼容到运行时三态 */
-const resolveLevelMode = (cfgMode?: string, countSign?: boolean): ApprovalFlowLevel['mode'] => {
+function resolveLevelMode(cfgMode?: string, countSign?: boolean): ApprovalFlowLevel['mode'] {
   if (cfgMode === 'all' || cfgMode === 'any_one' || cfgMode === 'majority') return cfgMode;
   return countSign ? 'all' : 'any_one';
-};
+}
 
 /**
  * 根据需求当前状态 + 当前激活方案的 approval_flow，生成多级审批运行时快照。
