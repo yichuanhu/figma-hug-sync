@@ -560,33 +560,6 @@ export const updateRequirementAssessment = async (
   return mockRequirementData[index];
 };
 
-export const updateRequirementCost = async (
-  id: string,
-  cost: CostEstimateData,
-): Promise<RequirementItem | null> => {
-  await new Promise((resolve) => setTimeout(resolve, 300));
-  const index = mockRequirementData.findIndex((item) => item.id === id);
-  if (index === -1) return null;
-  const cur = mockRequirementData[index];
-  const newVersion: VersionSnapshot = {
-    version: (cur.historyVersions?.length ?? 0) + 1,
-    createdAt: new Date().toISOString(),
-    actorId: 'user-008',
-    actorName: cost.updatedBy,
-    summary: `Cost estimate updated (¥${cost.totalCost.toLocaleString()}).`,
-    snapshot: {
-      title: cur.title,
-      description: cur.description,
-      priority: cur.priority,
-      status: cur.status,
-      costEstimate: cost,
-    },
-  };
-  mockRequirementData[index] = {
-    ...cur,
-    costEstimate: cost,
-    historyVersions: [...(cur.historyVersions ?? []), newVersion],
-    updatedAt: new Date().toISOString(),
-  };
-  return mockRequirementData[index];
-};
+// 注：成本预估完全由 baselineFormData 自动计算，无对外编辑接口（STORY-010）。
+// 将来 Scheme.cost_config 变更时，可调用 computeCostEstimate 批量重算 mockRequirementData。
+
