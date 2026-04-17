@@ -603,6 +603,20 @@
       "submitConfirmTitle": "提交审批确认",
       "submitConfirmContent": "提交后需求将进入审批流程，确定要提交吗？",
       "submitSuccess": "需求已提交审批",
+      "withdraw": "撤回",
+      "withdrawConfirmTitle": "撤回需求",
+      "withdrawConfirmContent": "撤回后需求将回到草稿状态，已收集的审批进度会被清空。确定撤回吗？",
+      "withdrawSuccess": "需求已撤回至草稿",
+      "resubmit": "重新提交",
+      "resubmitConfirmTitle": "重新提交需求",
+      "resubmitConfirmContent": "需求将重新进入审批流程（从第一级开始），历史审批轨迹会保留。确定重新提交吗？",
+      "resubmitSuccess": "需求已重新提交",
+      "history": {
+        "approved": "审批通过",
+        "rejected": "审批驳回",
+        "withdrew": "撤回需求",
+        "resubmitted": "重新提交需求"
+      },
       "tab": {
         "overview": "概览",
         "assessment": "技术评估",

@@ -375,6 +375,8 @@ export interface RequirementItem {
   approvalFlowConfig?: MultiLevelApprovalConfig;
   /** 关联流程（用于状态聚合） */
   linkedProcesses?: LinkedProcess[];
+  /** 审批历史留痕（approve/reject/withdraw/resubmit） */
+  approvalHistory?: ApprovalHistoryEntry[];
 
   createdAt: string;
   updatedAt: string;
@@ -482,7 +484,19 @@ export interface MultiLevelApprovalConfig {
   currentLevel: number;
 }
 
-// ============= Story-009 关联流程 =============
+// ============= 审批历史留痕 =============
+export type ApprovalHistoryAction = 'approve' | 'reject' | 'withdraw' | 'resubmit';
+export interface ApprovalHistoryEntry {
+  id: string;
+  /** 审批级（withdraw/resubmit 取当前级；approve/reject 取动作级） */
+  level: number;
+  levelName?: string;
+  approverId: string;
+  approverName: string;
+  action: ApprovalHistoryAction;
+  comment?: string;
+  timestamp: string;
+}
 export type LinkedProcessStatus = 'DEVELOPING' | 'TESTING' | 'PENDING' | 'ONLINE' | 'FAILED';
 export interface LinkedProcess {
   id: string;
