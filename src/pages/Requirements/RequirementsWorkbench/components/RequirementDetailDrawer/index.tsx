@@ -177,6 +177,7 @@ interface RequirementDetailDrawerProps {
   pagination: PaginationInfo;
   onPageChange?: (page: number, direction: 'prev' | 'next') => void;
   onScrollToRow?: (id: string) => void;
+  initialTab?: string;
 }
 
 const RequirementDetailDrawer = ({
@@ -192,11 +193,17 @@ const RequirementDetailDrawer = ({
   pagination,
   onPageChange,
   onScrollToRow,
+  initialTab = 'overview',
 }: RequirementDetailDrawerProps) => {
   const { t } = useTranslation();
   const [activities, setActivities] = useState<ActivityRecord[]>([]);
   const [descExpanded, setDescExpanded] = useState(true);
-  const [activeTab, setActiveTab] = useState<string>('overview');
+  const [activeTab, setActiveTab] = useState<string>(initialTab);
+
+  // 抽屉关闭后重置 tab；打开新数据时不重置（保持「上一条/下一条」时 tab 持久化）
+  useEffect(() => {
+    if (!visible) setActiveTab(initialTab);
+  }, [visible, initialTab]);
 
   useEffect(() => {
     if (visible && data) {
