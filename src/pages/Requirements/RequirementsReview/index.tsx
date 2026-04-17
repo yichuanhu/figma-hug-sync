@@ -91,14 +91,21 @@ const RequirementsReview = () => {
     loadData();
   }, [loadData]);
 
-  // 统计数据
+  // 统计数据（基于真实数据 + approvalHistory）
   const stats = useMemo(() => {
-    const pendingCount = allRequirements.filter((r) => r.status === 'PENDING_APPROVAL').length;
-    const assessingCount = allRequirements.filter((r) => r.status === 'PENDING_ASSESSMENT').length;
-    const reviewedCount = mockReviewHistory.length;
-    const approvedCount = mockReviewHistory.filter((r) => r.action === 'approved').length;
-    const rejectedCount = mockReviewHistory.filter((r) => r.action === 'rejected').length;
-    return { pendingCount, assessingCount, reviewedCount, approvedCount, rejectedCount };
+    const pendingCount = allRequirements.filter(isMyTurn).length;
+    const reviewedSet = allRequirements.filter(reviewedByMe);
+    const reviewedCount = reviewedSet.length;
+    let approvedCount = 0;
+    let rejectedCount = 0;
+    allRequirements.forEach((r) => {
+      (r.approvalHistory ?? []).forEach((h) => {
+        if (h.approverId !== MOCK_CURRENT_USER_ID) return;
+        if (h.action === 'approve') approvedCount += 1;
+        if (h.action === 'reject') rejectedCount += 1;
+      });
+    });
+    return { pendingCount, reviewedCount, approvedCount, rejectedCount };
   }, [allRequirements]);
 
   // 按 tab 筛选数据
@@ -106,35 +113,31 @@ const RequirementsReview = () => {
     let data: RequirementItem[];
     switch (activeTab) {
       case 'pending':
-        // 待我审批：PENDING_APPROVAL 和 PENDING_ASSESSMENT 状态
-        data = allRequirements.filter((r) => r.status === 'PENDING_APPROVAL' || r.status === 'PENDING_ASSESSMENT');
+        data = allRequirements.filter(isMyTurn);
         break;
       case 'reviewed':
-        // 我已审批：通过审批记录匹配
-        const reviewedIds = new Set(mockReviewHistory.map((r) => r.requirementId));
-        data = allRequirements.filter((r) => reviewedIds.has(r.id));
+        data = allRequirements.filter(reviewedByMe);
         break;
       case 'all':
       default:
-        // 全部：排除 DRAFT
-        data = allRequirements.filter((r) => r.status !== 'DRAFT');
+        // 全部审批相关：仅 PENDING_APPROVAL / REJECTED / WITHDRAWN
+        data = allRequirements.filter(
+          (r) => r.status === 'PENDING_APPROVAL' || r.status === 'REJECTED' || r.status === 'WITHDRAWN',
+        );
         break;
     }
 
-    // 搜索
     if (searchValue.trim()) {
       const kw = searchValue.toLowerCase().trim();
       data = data.filter(
         (item) =>
-          item.title.toLowerCase().includes(kw) ||
-          item.description.toLowerCase().includes(kw),
+          item.title.toLowerCase().includes(kw) || item.description.toLowerCase().includes(kw),
       );
     }
-
     return data;
   }, [activeTab, allRequirements, searchValue]);
 
-  // 审批操作
+  // 审批操作（走多级审批引擎）
   const openApprovalModal = (record: RequirementItem, action: 'approve' | 'reject') => {
     setApprovalTarget(record);
     setApprovalAction(action);
@@ -148,32 +151,16 @@ const RequirementsReview = () => {
       Toast.warning(t('requirements.detail.rejectReasonRequired'));
       return;
     }
-
     setApprovalSubmitting(true);
     try {
-      const newStatus = approvalAction === 'approve' ? 'PENDING_ASSESSMENT' : 'REJECTED';
-      const comment = approvalReason.trim()
-        ? `${approvalAction === 'approve' ? 'Approved' : 'Rejected'}. ${approvalReason.trim()}`
-        : `${approvalAction === 'approve' ? 'Approved' : 'Rejected'} by ${CURRENT_REVIEWER.name}.`;
-
-      await updateRequirementStatus(approvalTarget.id, newStatus, comment);
-
-      // 记录审批历史
-      mockReviewHistory.push({
-        requirementId: approvalTarget.id,
-        reviewerId: CURRENT_REVIEWER_ID,
-        action: approvalAction === 'approve' ? 'approved' : 'rejected',
-        comment: approvalReason.trim(),
-        timestamp: new Date().toISOString(),
-      });
-
+      await advanceApprovalFlow(approvalTarget.id, approvalAction, approvalReason.trim() || undefined);
       Toast.success(
         approvalAction === 'approve'
           ? t('requirements.detail.approveSuccess')
           : t('requirements.detail.rejectSuccess'),
       );
       setApprovalModalVisible(false);
-      loadData();
+      await loadData();
     } catch {
       Toast.error(t('requirements.detail.actionFailed'));
     } finally {
@@ -181,22 +168,30 @@ const RequirementsReview = () => {
     }
   };
 
-  // 状态变更回调（用于详情抽屉）
+  // 撤回（提交人）
+  const handleWithdraw = (record: RequirementItem) => {
+    Modal.confirm({
+      title: t('requirements.review.withdrawConfirmTitle'),
+      content: t('requirements.review.withdrawConfirmContent'),
+      okText: t('requirements.review.withdraw'),
+      okButtonProps: { type: 'danger' },
+      cancelText: t('common.cancel'),
+      onOk: async () => {
+        try {
+          await withdrawRequirement(record.id);
+          Toast.success(t('requirements.review.withdrawSuccess'));
+          await loadData();
+        } catch (e) {
+          Toast.error((e as Error).message);
+        }
+      },
+    });
+  };
+
+  // 状态变更回调（用于详情抽屉的旧入口，例如从 DRAFT 提交）
   const handleStatusChange = async (id: string, newStatus: string, comment?: string) => {
     await updateRequirementStatus(id, newStatus, comment);
-
-    if (['PENDING_ASSESSMENT', 'REJECTED'].includes(newStatus)) {
-      mockReviewHistory.push({
-        requirementId: id,
-        reviewerId: CURRENT_REVIEWER_ID,
-        action: newStatus === 'PENDING_ASSESSMENT' ? 'approved' : 'rejected',
-        comment: comment || '',
-        timestamp: new Date().toISOString(),
-      });
-    }
-
-    loadData();
-    // 刷新选中记录
+    await loadData();
     const response = await fetchRequirementList({
       offset: 0,
       size: 200,
