@@ -211,7 +211,7 @@ const generateMockRequirements = (): RequirementItem[] => {
       costEstimate,
       historyVersions: generateMockVersions(tpl.status, index, tpl.title, tpl.description, tpl.priority),
       linkedProcesses: generateMockLinkedProcesses(tpl.status, index),
-      approvalFlowConfig: generateMockApprovalFlow(tpl.status),
+      approvalFlowConfig: generateMockApprovalFlow(tpl.status, { creatorId: tpl.creatorId, owning_department_id: tpl.owning_department_id }),
       value_score: hasScores ? mockScore(index, 50, 50) : undefined,
       complexity_score: hasScores ? mockScore(index + 7, 30, 60) : undefined,
       version: 1,
