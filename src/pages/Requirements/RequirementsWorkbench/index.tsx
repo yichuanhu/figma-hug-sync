@@ -70,6 +70,7 @@ const RequirementsWorkbench = () => {
   const [editingRecord, setEditingRecord] = useState<RequirementItem | null>(null);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<RequirementItem | null>(null);
+  const [viewMode, setViewMode] = useState<'table' | 'board'>('table');
 
   // 列表数据
   const [listResponse, setListResponse] = useState<{
