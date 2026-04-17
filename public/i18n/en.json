@@ -666,7 +666,90 @@
       "submitForApproval": "Submit for Approval",
       "submitConfirmTitle": "Submit for Approval",
       "submitConfirmContent": "Once submitted, the requirement will enter the approval process. Continue?",
-      "submitSuccess": "Requirement submitted for approval"
+      "submitSuccess": "Requirement submitted for approval",
+      "tab": {
+        "overview": "Overview",
+        "assessment": "Assessment",
+        "cost": "Cost Estimate",
+        "versions": "Version History"
+      }
+    },
+    "assessmentV2": {
+      "valueCard": "Business Value",
+      "complexityCard": "Technical Complexity",
+      "subtotal": "Subtotal",
+      "netScore": "Net Score",
+      "recommendation": "Recommendation",
+      "submit": "Submit Assessment",
+      "submitSuccess": "Assessment submitted",
+      "commentPlaceholder": "Notes (optional, up to 500 chars)",
+      "commentLabel": "Notes",
+      "banner": {
+        "notStarted": "This requirement has not entered the assessment stage.",
+        "assessing": "Please score both Business Value and Technical Complexity dimensions.",
+        "completedBy": "Assessment completed by {{name}} at {{time}}"
+      },
+      "dim": {
+        "strategicAlignment": "Strategic Alignment",
+        "benefitScale": "Benefit Scale",
+        "urgency": "Urgency",
+        "implementationDifficulty": "Implementation Difficulty",
+        "dependencyComplexity": "Dependency Complexity",
+        "risk": "Risk Level"
+      },
+      "conclusion": {
+        "RECOMMEND": "Recommended",
+        "CAUTION": "Proceed with Caution",
+        "REJECT": "Not Recommended"
+      }
+    },
+    "costEstimate": {
+      "inputSection": "Estimate Inputs",
+      "resultSection": "Estimate Results",
+      "laborByRole": "Labor (by role)",
+      "addRole": "Add Role",
+      "noRoles": "No roles yet. Click \"Add Role\" to start.",
+      "selectRole": "Select role",
+      "selectRoleFirst": "Please select a role for each row",
+      "people": "ppl",
+      "days": "p-days",
+      "infra": "Infrastructure",
+      "thirdParty": "Third-party Services",
+      "other": "Other",
+      "totalPersonDays": "Total Person-Days",
+      "laborCost": "Labor Cost",
+      "nonLaborCost": "Non-Labor Cost",
+      "totalCost": "Total Cost",
+      "roiPlaceholder": "ROI note (optional)",
+      "save": "Save Estimate",
+      "saveSuccess": "Cost estimate saved",
+      "locked": "Not editable",
+      "lockedBeforeApproval": "Cost estimate becomes available after approval.",
+      "role": {
+        "product": "Product",
+        "backend": "Backend",
+        "frontend": "Frontend",
+        "qa": "QA",
+        "designer": "Designer",
+        "ops": "Ops"
+      }
+    },
+    "versionHistory": {
+      "timeline": "Version Timeline",
+      "empty": "No version history yet",
+      "emptyDesc": "Snapshots are created automatically after approval, assessment or resubmission.",
+      "snapshot": "Snapshot",
+      "current": "Current",
+      "compareCurrent": "Compare with current",
+      "exitCompare": "Exit compare",
+      "fields": {
+        "title": "Title",
+        "description": "Description",
+        "priority": "Priority",
+        "status": "Status",
+        "netScore": "Net Score",
+        "totalCost": "Total Cost"
+      }
     },
     "assessment": {
       "generalDimension": "General Dimensions",
