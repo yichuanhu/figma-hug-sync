@@ -1,0 +1,37 @@
+.req-score-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+
+  &__num {
+    font-size: 13px;
+    color: var(--semi-color-text-0);
+    min-width: 24px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__track {
+    flex: 1;
+    height: 4px;
+    background-color: var(--semi-color-fill-1);
+    border-radius: 2px;
+    overflow: hidden;
+    min-width: 32px;
+  }
+
+  &__fill {
+    display: block;
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.2s ease;
+  }
+
+  &--value &__fill {
+    background-color: var(--semi-color-primary);
+  }
+
+  &--complexity &__fill {
+    background-color: rgb(var(--semi-purple-5));
+  }
+}
