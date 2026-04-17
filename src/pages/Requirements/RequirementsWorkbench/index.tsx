@@ -18,23 +18,26 @@ import {
 import DepartmentSelect from '@/components/DepartmentSelect';
 import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
 import { Ellipsis, Eye, Pencil, Plus, Send, Trash2, Upload } from 'lucide-react';
-import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
-import type { RequirementItem, RequirementQueryParams, RequirementStatus } from './types';
+import type { RequirementItem, RequirementQueryParams, RequirementStatus, RequirementPriority } from './types';
 import {
-  priorityConfig,
   fetchRequirementList,
   deleteRequirement,
   createRequirement,
   updateRequirement,
   updateRequirementStatus,
 } from './mockData';
-import { statusConfigV2, statusOptionsV2, legacyStatusMap } from './statusConfig';
+import { statusConfigV2, legacyStatusMap } from './statusConfig';
 import RequirementFormModal from './components/RequirementFormModal';
 import RequirementDetailDrawer from './components/RequirementDetailDrawer';
+import PriorityIndicator from './components/PriorityIndicator';
+import StatusDot from './components/StatusDot';
+import ScoreBar from './components/ScoreBar';
+import TitleCell from './components/TitleCell';
+import RelativeTime from './components/RelativeTime';
 import './index.less';
 
 const { Title, Text } = Typography;
