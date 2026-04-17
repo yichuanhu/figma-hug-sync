@@ -393,12 +393,24 @@ const generateMockVersions = (
   ];
 };
 
+/** Mock 流程候选池（供需求关联流程选择） */
+export const MOCK_PROCESS_POOL: LinkedProcess[] = [
+  { id: 'proc-001', name: 'Procurement Approval Process', status: 'ONLINE',     ownerName: 'Sarah Li' },
+  { id: 'proc-002', name: 'Invoice OCR Pipeline',         status: 'TESTING',    ownerName: 'Michael Wang' },
+  { id: 'proc-003', name: 'Vendor Notification Workflow', status: 'DEVELOPING', ownerName: 'Emily Chen' },
+  { id: 'proc-004', name: 'Customer Credit Assessment',   status: 'ONLINE',     ownerName: 'Jessica Liu' },
+  { id: 'proc-005', name: 'Payroll Data Validation',      status: 'PENDING',    ownerName: 'Emily Chen' },
+  { id: 'proc-006', name: 'Server Health Monitoring',     status: 'ONLINE',     ownerName: 'Angela Wu' },
+  { id: 'proc-007', name: 'Expense Report Processing',    status: 'TESTING',    ownerName: 'Robert Xu' },
+  { id: 'proc-008', name: 'Freight Cost Optimization',    status: 'FAILED',     ownerName: 'David Zhang' },
+];
+
 const generateMockLinkedProcesses = (status: RequirementStatus, idx: number): LinkedProcess[] | undefined => {
   if (!(['DEVELOPING', 'LAUNCHED', 'OFFLINE'] as RequirementStatus[]).includes(status)) return undefined;
   const pool: LinkedProcess[] = [
-    { id: 'proc-001', name: 'Procurement Approval Process', status: 'ONLINE', ownerName: 'Sarah Li' },
-    { id: 'proc-002', name: 'Invoice OCR Pipeline', status: 'TESTING', ownerName: 'Michael Wang' },
-    { id: 'proc-003', name: 'Vendor Notification Workflow', status: idx % 3 === 0 ? 'FAILED' : 'DEVELOPING', ownerName: 'Emily Chen' },
+    MOCK_PROCESS_POOL[0],
+    MOCK_PROCESS_POOL[1],
+    { ...MOCK_PROCESS_POOL[2], status: idx % 3 === 0 ? 'FAILED' : 'DEVELOPING' },
   ];
   return pool.slice(0, (idx % 3) + 1);
 };
@@ -789,6 +801,44 @@ export const advanceApprovalFlow = async (
     ...cur,
     status: newStatus,
     approvalFlowConfig: { levels, currentLevel: newCurrentLevel },
+    updatedAt: new Date().toISOString(),
+  };
+  return mockRequirementData[index];
+};
+
+// ============= Story-009 关联流程 增删 =============
+
+export const addLinkedProcess = async (
+  requirementId: string,
+  processId: string,
+): Promise<RequirementItem | null> => {
+  await new Promise((resolve) => setTimeout(resolve, 200));
+  const index = mockRequirementData.findIndex((r) => r.id === requirementId);
+  if (index === -1) return null;
+  const cur = mockRequirementData[index];
+  const exists = (cur.linkedProcesses ?? []).some((p) => p.id === processId);
+  if (exists) return cur;
+  const proc = MOCK_PROCESS_POOL.find((p) => p.id === processId);
+  if (!proc) return cur;
+  mockRequirementData[index] = {
+    ...cur,
+    linkedProcesses: [...(cur.linkedProcesses ?? []), { ...proc }],
+    updatedAt: new Date().toISOString(),
+  };
+  return mockRequirementData[index];
+};
+
+export const removeLinkedProcess = async (
+  requirementId: string,
+  processId: string,
+): Promise<RequirementItem | null> => {
+  await new Promise((resolve) => setTimeout(resolve, 200));
+  const index = mockRequirementData.findIndex((r) => r.id === requirementId);
+  if (index === -1) return null;
+  const cur = mockRequirementData[index];
+  mockRequirementData[index] = {
+    ...cur,
+    linkedProcesses: (cur.linkedProcesses ?? []).filter((p) => p.id !== processId),
     updatedAt: new Date().toISOString(),
   };
   return mockRequirementData[index];
