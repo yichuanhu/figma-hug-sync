@@ -22,57 +22,22 @@
     }
   }
 
-  // 表格区域
+  // 表格区域：背景与固定列阴影由全局规则统一处理
   &-table {
     flex: 1;
     overflow: hidden;
     min-height: 0;
 
-    // 所有单元格使用不透明背景，避免横向滚动时透出下方内容
-    // 全局表格背景被设为 transparent，需要在此页面重新提升优先级覆盖
     .semi-table-tbody .semi-table-row .semi-table-row-cell {
       padding-top: 10px;
       padding-bottom: 10px;
       vertical-align: middle;
-      background-color: var(--semi-color-bg-1);
     }
 
-    // 表头：使用不透明背景，避免横向滚动时透出下方内容
     .semi-table-thead .semi-table-row-head {
-      background-color: var(--semi-color-bg-1);
       font-weight: 500;
       color: var(--semi-color-text-2);
     }
-
-    // 固定列：不透明背景 + 阴影强化横向滚动层次感
-    .semi-table-row-cell-fixed-left,
-    .semi-table-thead .semi-table-row-head.semi-table-row-cell-fixed-left {
-      background-color: var(--semi-color-bg-1) !important;
-      box-shadow: 4px 0 8px -4px rgba(0, 0, 0, 0.08);
-      clip-path: inset(0 -12px 0 0);
-    }
-
-    .semi-table-row-cell-fixed-right,
-    .semi-table-thead .semi-table-row-head.semi-table-row-cell-fixed-right {
-      background-color: var(--semi-color-bg-1) !important;
-      box-shadow: -4px 0 8px -4px rgba(0, 0, 0, 0.08);
-      clip-path: inset(0 0 0 -12px);
-    }
-
-    // hover 行：所有单元格匹配 hover 色
-    .semi-table-tbody .semi-table-row-hover .semi-table-row-cell {
-      background-color: var(--semi-color-fill-0) !important;
-    }
-
-    // 选中行：所有单元格匹配选中色
-    .semi-table-row.requirements-workbench-row-selected .semi-table-row-cell {
-      background-color: var(--semi-color-primary-light-default) !important;
-    }
-  }
-
-  // 表格行选中状态
-  .semi-table-row.requirements-workbench-row-selected {
-    background-color: var(--semi-color-fill-1);
   }
 
   &-search-input {
