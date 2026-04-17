@@ -12,6 +12,8 @@ import ArtifactSection from './ArtifactSection';
 import AssessmentTab from './AssessmentTab';
 import CostEstimateTab from './CostEstimateTab';
 import VersionHistoryTab from './VersionHistoryTab';
+import ApprovalFlowProgress from '../ApprovalFlowProgress';
+import LinkedProcessesSection from '../LinkedProcessesSection';
 import './index.less';
 import { ChevronDown, ChevronRight, ClipboardCheck, FileText, History, Pencil, Send, Trash2, Wallet } from 'lucide-react';
 
