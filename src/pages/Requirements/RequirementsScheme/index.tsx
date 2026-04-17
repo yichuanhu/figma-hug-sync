@@ -1,8 +1,9 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Typography, Button, Input, TextArea, Tag, Toast, Modal, Dropdown } from '@douyinfe/semi-ui';
+import { Typography, Button, Input, Tag, Toast, Modal, Dropdown, Upload } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
-import { Upload, Ellipsis, CheckCircle, Eye, Trash2, History, Pencil } from 'lucide-react';
+import type { FileItem } from '@douyinfe/semi-ui/lib/es/upload';
+import { Upload as UploadIcon, Ellipsis, CheckCircle, Eye, Trash2, History, Pencil, Inbox, File as FileIcon, X } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import {
   fetchSchemes,
