@@ -380,7 +380,7 @@ const RequirementsWorkbench = () => {
                 maxLength={100}
               />
               <DepartmentSelect
-                placeholder={t('requirements.fields.department')}
+                placeholder={t('common.filterDepartment')}
                 value={departmentFilter}
                 onChange={(v) => {
                   setDepartmentFilter(v);
