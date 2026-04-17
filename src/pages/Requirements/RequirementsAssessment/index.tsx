@@ -432,6 +432,27 @@ const RequirementsAssessment = () => {
                 onChange={setSearchValue}
                 showClear
               />
+              <Select
+                value={conclusionFilter}
+                onChange={(v) => setConclusionFilter(v as string)}
+                style={{ width: 160 }}
+                prefix={t('requirements.assessment.filterConclusion')}
+              >
+                <Select.Option value="ALL">{t('requirements.assessment.filterConclusionAll')}</Select.Option>
+                <Select.Option value="RECOMMEND">{t('requirements.assessmentV2.conclusion.RECOMMEND')}</Select.Option>
+                <Select.Option value="CAUTION">{t('requirements.assessmentV2.conclusion.CAUTION')}</Select.Option>
+                <Select.Option value="REJECT">{t('requirements.assessmentV2.conclusion.REJECT')}</Select.Option>
+              </Select>
+              <Select
+                value={sortKey}
+                onChange={(v) => setSortKey(v as typeof sortKey)}
+                style={{ width: 220 }}
+                prefix={t('requirements.assessment.sortBy')}
+              >
+                <Select.Option value="default">{t('requirements.assessment.sortDefault')}</Select.Option>
+                <Select.Option value="netScoreDesc">{t('requirements.assessment.sortNetScoreDesc')}</Select.Option>
+                <Select.Option value="netScoreAsc">{t('requirements.assessment.sortNetScoreAsc')}</Select.Option>
+              </Select>
             </div>
             {isInitialLoad ? (
               <TableSkeleton rows={6} columns={9} />
