@@ -142,8 +142,14 @@ const RequirementsReview = () => {
           item.title.toLowerCase().includes(kw) || item.description.toLowerCase().includes(kw),
       );
     }
+    if (departmentFilter.length > 0) {
+      data = data.filter((item) => departmentFilter.includes(item.owning_department_name));
+    }
+    if (statusFilter.length > 0) {
+      data = data.filter((item) => statusFilter.includes(item.status));
+    }
     return data;
-  }, [activeTab, allRequirements, searchValue]);
+  }, [activeTab, allRequirements, searchValue, departmentFilter, statusFilter]);
 
   // 审批操作（走多级审批引擎）
   const openApprovalModal = (record: RequirementItem, action: 'approve' | 'reject') => {
