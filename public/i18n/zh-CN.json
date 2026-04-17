@@ -406,7 +406,9 @@
       "searchPlaceholder": "搜索需求标题",
       "newRequirement": "新建需求",
       "batchImport": "批量导入",
-      "noData": "暂无需求"
+      "noData": "暂无需求",
+      "viewTable": "表格",
+      "viewBoard": "看板"
     },
     "fields": {
       "title": "需求标题",
