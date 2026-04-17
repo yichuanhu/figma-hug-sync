@@ -4,6 +4,7 @@ import { Modal, Form, Toast, Button } from '@douyinfe/semi-ui';
 import type { LYCreateProcessRequest, LYProcessResponse } from '@/api';
 import DepartmentSelect from '@/components/DepartmentSelect';
 import OwnerSelect from '@/components/OwnerSelect';
+import WorkspaceSelect from '@/components/WorkspaceSelect';
 import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 import './index.less';
 
