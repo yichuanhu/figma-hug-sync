@@ -21,6 +21,7 @@ import type {
 
 import './index.less';
 import { ArrowLeft } from 'lucide-react';
+import { fetchAllWorkspaces } from '@/pages/Requirements/RequirementsProjects/mockData';
 
 const { Title, Text } = Typography;
 
@@ -138,6 +139,14 @@ const CreateReleasePage: React.FC = () => {
   const handleSubmit = async () => {
     if (!description.trim()) {
       Toast.warning(t('release.create.validation.descriptionRequired'));
+      return;
+    }
+
+    // Story-005：发布前校验 — 工作空间必须存在同部门下的关联需求
+    const allWs = await fetchAllWorkspaces();
+    const validWs = allWs.filter((w) => w.linkedRequirementIds.length > 0);
+    if (validWs.length === 0) {
+      Toast.error(t('release.create.validation.noWorkspaceWithRequirement'));
       return;
     }
 
