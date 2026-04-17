@@ -283,6 +283,21 @@ export const deleteScheme = async (id: string): Promise<void> => {
   schemeStore = schemeStore.filter((s) => s.id !== id);
 };
 
+/** 更新方案的审批流配置（预设方案不可更新） */
+export const updateSchemeApprovalFlow = async (
+  id: string,
+  approval_flow: RequirementScheme['approval_flow'],
+): Promise<RequirementScheme> => {
+  await new Promise((r) => setTimeout(r, 200));
+  const target = schemeStore.find((s) => s.id === id);
+  if (!target) throw new Error('方案不存在');
+  if (target.is_preset) throw new Error('预设方案不可编辑');
+  schemeStore = schemeStore.map((s) =>
+    s.id === id ? { ...s, approval_flow, updated_at: new Date().toISOString() } : s,
+  );
+  return schemeStore.find((s) => s.id === id)!;
+};
+
 export const fetchSchemeVersions = async (code: string): Promise<RequirementScheme[]> => {
   await new Promise((r) => setTimeout(r, 200));
   // mock：相同 code 的视为同一方案的不同版本
