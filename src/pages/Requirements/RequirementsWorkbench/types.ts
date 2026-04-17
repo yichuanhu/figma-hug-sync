@@ -170,12 +170,16 @@ export interface AssessmentModel {
 
 export type ApproverType = 'user' | 'role' | 'department';
 
+export type ApprovalLevelMode = 'any_one' | 'all' | 'majority';
+
 export interface ApprovalLevelConfig {
   order: number;
   name: string;
   approver_type: ApproverType;
   approver_ids: string[];
-  /** 是否会签（全部通过才算通过） */
+  /** 审批模式：任一/会签/多数；缺省按 count_sign 兼容（true→all, false→any_one） */
+  mode?: ApprovalLevelMode;
+  /** @deprecated 旧字段，仅用于读取兼容；新代码请使用 mode */
   count_sign?: boolean;
 }
 

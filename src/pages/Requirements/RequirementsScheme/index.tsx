@@ -2,17 +2,19 @@ import { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Typography, Button, Input, TextArea, Tag, Toast, Modal, Dropdown } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
-import { Upload, Ellipsis, CheckCircle, Eye, Trash2, History } from 'lucide-react';
+import { Upload, Ellipsis, CheckCircle, Eye, Trash2, History, Pencil } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import {
   fetchSchemes,
   activateScheme,
   addScheme,
   deleteScheme,
+  updateSchemeApprovalFlow,
 } from '../RequirementsWorkbench/schemeConfig';
-import type { RequirementScheme } from '../RequirementsWorkbench/types';
+import type { RequirementScheme, ApprovalLevelConfig } from '../RequirementsWorkbench/types';
 import { parseSchemeYaml } from './schemeYamlParser';
 import SchemeDetailDrawer from './components/SchemeDetailDrawer';
+import SchemeApprovalFlowEditor from './components/SchemeApprovalFlowEditor';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -28,6 +30,24 @@ const RequirementsScheme = () => {
   const [parseErrors, setParseErrors] = useState<string[]>([]);
 
   const [detailScheme, setDetailScheme] = useState<RequirementScheme | null>(null);
+  const [editingScheme, setEditingScheme] = useState<RequirementScheme | null>(null);
+
+  const handleEditApprovalFlow = (s: RequirementScheme) => {
+    if (s.is_preset) {
+      Toast.warning(t('requirements.scheme.editor.presetNotEditable'));
+      return;
+    }
+    setEditingScheme(s);
+  };
+
+  const handleSaveApprovalFlow = async (levels: ApprovalLevelConfig[]) => {
+    if (!editingScheme) return;
+    const updated = await updateSchemeApprovalFlow(editingScheme.id, { levels });
+    setEditingScheme(null);
+    // 同步抽屉显示的最新方案
+    if (detailScheme?.id === updated.id) setDetailScheme(updated);
+    load();
+  };
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -143,6 +163,11 @@ const RequirementsScheme = () => {
                           {t('requirements.scheme.versionHistory')}
                         </Dropdown.Item>
                         {!s.is_preset && (
+                          <Dropdown.Item icon={<Pencil size={14} />} onClick={(e) => { e.stopPropagation(); handleEditApprovalFlow(s); }}>
+                            {t('requirements.scheme.editor.entry')}
+                          </Dropdown.Item>
+                        )}
+                        {!s.is_preset && (
                           <Dropdown.Item icon={<Trash2 size={14} />} type="danger" onClick={(e) => { e.stopPropagation(); handleDelete(s); }}>
                             {t('common.delete')}
                           </Dropdown.Item>
@@ -207,6 +232,15 @@ const RequirementsScheme = () => {
         onNavigate={(s) => setDetailScheme(s)}
         onActivate={handleActivate}
         onDelete={(s) => { setDetailScheme(null); handleDelete(s); }}
+        onEditApprovalFlow={handleEditApprovalFlow}
+      />
+
+      {/* 审批流编辑弹窗 */}
+      <SchemeApprovalFlowEditor
+        visible={!!editingScheme}
+        scheme={editingScheme}
+        onClose={() => setEditingScheme(null)}
+        onSubmit={handleSaveApprovalFlow}
       />
     </div>
   );

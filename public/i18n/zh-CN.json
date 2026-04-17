@@ -487,6 +487,50 @@
         "assessment": "评估模型",
         "approval": "审批流程",
         "cost": "成本配置"
+      },
+      "approverType": {
+        "user": "指定用户",
+        "role": "角色",
+        "department": "部门"
+      },
+      "approvalMode": {
+        "anyOne": "任一通过",
+        "all": "全部会签",
+        "majority": "多数通过"
+      },
+      "role": {
+        "lineManager": "提交人直属主管",
+        "deptHead": "部门负责人",
+        "aiLead": "AI 团队负责人",
+        "financeHead": "财务负责人",
+        "itHead": "IT 负责人"
+      },
+      "dept": {
+        "committee": "需求委员会",
+        "it": "IT 部门",
+        "finance": "财务部",
+        "hr": "人力资源部",
+        "itDept": "IT 部",
+        "procurement": "采购部",
+        "logistics": "物流部",
+        "sales": "销售部"
+      },
+      "editor": {
+        "entry": "编辑审批流",
+        "title": "编辑审批流",
+        "hint": "调整级数、顺序、节点名称、审批模式与审批人；保存后仅对新建需求生效，存量需求保留原快照。",
+        "emptyHint": "暂无审批级，请添加",
+        "namePlaceholder": "请输入节点名称",
+        "newLevelName": "第 {{n}} 级审批",
+        "approverType": "审批人类型",
+        "mode": "审批模式",
+        "approvers": "审批人",
+        "approversPlaceholder": "请选择审批人",
+        "addLevel": "新增一级",
+        "errorNameRequired": "节点名称不能为空",
+        "errorApproversRequired": "「{{name}}」必须至少选择一位审批人",
+        "saveSuccess": "审批流已更新",
+        "presetNotEditable": "预设方案不可编辑审批流"
       }
     },
     "priority": {

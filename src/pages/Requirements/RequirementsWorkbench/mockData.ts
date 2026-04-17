@@ -211,7 +211,7 @@ const generateMockRequirements = (): RequirementItem[] => {
       costEstimate,
       historyVersions: generateMockVersions(tpl.status, index, tpl.title, tpl.description, tpl.priority),
       linkedProcesses: generateMockLinkedProcesses(tpl.status, index),
-      approvalFlowConfig: generateMockApprovalFlow(tpl.status),
+      approvalFlowConfig: generateMockApprovalFlow(tpl.status, { creatorId: tpl.creatorId, owning_department_id: tpl.owning_department_id }),
       value_score: hasScores ? mockScore(index, 50, 50) : undefined,
       complexity_score: hasScores ? mockScore(index + 7, 30, 60) : undefined,
       version: 1,
@@ -255,74 +255,32 @@ const generateMockDetailedAssessment = (status: RequirementStatus, idx: number):
 // ============= Story-010 成本预估自动计算 =============
 
 import type { JobLevel, RequirementBaselineFormData, SchemeCostConfig, RequirementScheme } from './types';
+import { getActiveScheme as getActiveSchemeFromStore, PRESET_SCHEMES } from './schemeConfig';
+import { resolveApprovers } from './utils/approverResolver';
 
-/** Mock 激活方案（第 2 批：Scheme 驱动动态表单） */
-const ACTIVE_SCHEME: RequirementScheme = {
-  id: 'scheme-rpa-pro',
-  code: 'RPA_PRO',
-  name: 'RPA Pro 标准方案',
-  version: '1.0.0',
-  description: '标准 RPA 自动化项目评估方案',
-  status: 'active',
-  is_preset: true,
-  custom_fields: [
-    {
-      key: 'frequency',
-      label: '执行频率',
-      type: 'number',
-      unit: '次/月',
-      required: true,
-      placeholder: '请输入月均执行次数',
-      validation: { min: 1, max: 10000, message: '频率范围 1-10000 次/月' },
-    },
-    {
-      key: 'durationMinutes',
-      label: '单次耗时',
-      type: 'number',
-      unit: '分钟',
-      required: true,
-      placeholder: '请输入单次执行耗时',
-      validation: { min: 1, max: 1440, message: '耗时范围 1-1440 分钟' },
-    },
-    {
-      key: 'automationRatio',
-      label: '可自动化比例',
-      type: 'percentage',
-      required: true,
-      placeholder: '请输入可自动化比例',
-      validation: { min: 0, max: 100 },
-    },
-    {
-      key: 'jobLevel',
-      label: '岗位级别',
-      type: 'select',
-      required: true,
-      placeholder: '请选择执行人员岗位级别',
-      options: [
-        { label: 'P4（初级）', value: 'P4' },
-        { label: 'P5（中级）', value: 'P5' },
-        { label: 'P6（高级）', value: 'P6' },
-        { label: 'P7（资深）', value: 'P7' },
-      ],
-    },
-  ],
-  approval_flow: { levels: [] },
-  cost_config: {
-    avg_hourly_cost: 200,
-    working_hours_per_day: 8,
-    working_days_per_month: 22,
-    rate_table: { P4: 800, P5: 1200, P6: 1800, P7: 2600 },
-  },
-  created_at: new Date(2026, 0, 1).toISOString(),
+/** 默认 cost 配置回退（当激活方案缺 cost_config 时使用） */
+const DEFAULT_COST_CONFIG = {
+  workingHoursPerDay: 8,
+  rateTable: { P4: 800, P5: 1200, P6: 1800, P7: 2600 } as Record<JobLevel, number>,
+  schemeName: 'RPA Pro 标准方案',
 };
 
-export const getActiveScheme = (): RequirementScheme => ACTIVE_SCHEME;
+/** 取当前激活方案；若无（如初始化阶段）则回落到首个预设方案 */
+const getEffectiveScheme = (): RequirementScheme =>
+  getActiveSchemeFromStore() ?? PRESET_SCHEMES[0];
 
-export const getActiveSchemeCostConfig = (): SchemeCostConfig => ({
-  workingHoursPerDay: ACTIVE_SCHEME.cost_config!.working_hours_per_day,
-  rateTable: ACTIVE_SCHEME.cost_config!.rate_table!,
-  schemeName: ACTIVE_SCHEME.name,
-});
+export const getActiveSchemeCostConfig = (): SchemeCostConfig => {
+  const scheme = getEffectiveScheme();
+  const cc = scheme.cost_config;
+  if (!cc?.rate_table) {
+    return { ...DEFAULT_COST_CONFIG, schemeName: scheme.name };
+  }
+  return {
+    workingHoursPerDay: cc.working_hours_per_day,
+    rateTable: cc.rate_table,
+    schemeName: scheme.name,
+  };
+};
 
 /** 基于基线表单数据自动计算成本节省 */
 export const computeCostEstimate = (
@@ -505,11 +463,12 @@ export const createRequirement = async (values: Record<string, unknown>): Promis
   const now = new Date().toISOString();
   const creator = mockCreators['user-001'];
   const { baseline, cost, form_data } = extractBaselineAndCost(values.form_data as Record<string, unknown> | undefined);
+  const activeScheme = getEffectiveScheme();
   const newItem: RequirementItem = {
     id: generateUUID(),
     req_no: `REQ-2026-${String(mockRequirementData.length + 1).padStart(4, '0')}`,
-    scheme_id: ACTIVE_SCHEME.id,
-    scheme_version: ACTIVE_SCHEME.version,
+    scheme_id: activeScheme.id,
+    scheme_version: activeScheme.version,
     title: values.title as string,
     description: (values.description as string) || '',
     owning_department_name: values.department as string,
@@ -632,9 +591,22 @@ export const updateRequirementStatus = async (
   await new Promise((resolve) => setTimeout(resolve, 300));
   const index = mockRequirementData.findIndex((item) => item.id === id);
   if (index === -1) return null;
+  const cur = mockRequirementData[index];
+  const target = newStatus as RequirementStatus;
+
+  // 切到 PENDING_APPROVAL 时按方案生成审批流快照（无快照才生成，避免覆盖已有进度）
+  let nextFlow = cur.approvalFlowConfig;
+  if (target === 'PENDING_APPROVAL' && !nextFlow) {
+    nextFlow = generateMockApprovalFlow('PENDING_APPROVAL', {
+      creatorId: cur.creatorId,
+      owning_department_id: cur.owning_department_id,
+    });
+  }
+
   mockRequirementData[index] = {
-    ...mockRequirementData[index],
-    status: newStatus as RequirementStatus,
+    ...cur,
+    status: target,
+    approvalFlowConfig: nextFlow,
     updatedAt: new Date().toISOString(),
   };
   return mockRequirementData[index];
@@ -674,22 +646,42 @@ export const updateRequirementAssessment = async (
 // 注：成本预估完全由 baselineFormData 自动计算，无对外编辑接口（STORY-010）。
 // 将来 Scheme.cost_config 变更时，可调用 computeCostEstimate 批量重算 mockRequirementData。
 
-// ============= Story-006 多级审批 mock =============
+// ============= Story-006 多级审批 mock（方案驱动） =============
 
-const APPROVAL_LEVEL_TEMPLATES: Array<{ name: string; mode: ApprovalFlowLevel['mode']; approvers: Array<{ id: string; name: string }> }> = [
-  { name: '部门主管审批', mode: 'any_one', approvers: [{ id: 'user-001', name: 'John Smith' }, { id: 'user-007', name: 'Robert Xu' }] },
-  { name: '业务审批（会签）', mode: 'all',     approvers: [{ id: 'user-002', name: 'Emily Chen' }, { id: 'user-006', name: 'Jessica Liu' }] },
-  { name: 'IT 复核',         mode: 'any_one', approvers: [{ id: 'user-008', name: 'Angela Wu' }, { id: 'user-003', name: 'Michael Wang' }] },
-];
+/** 把 ApprovalLevelConfig.mode 兼容到运行时三态 */
+const resolveLevelMode = (cfgMode?: string, countSign?: boolean): ApprovalFlowLevel['mode'] => {
+  if (cfgMode === 'all' || cfgMode === 'any_one' || cfgMode === 'majority') return cfgMode;
+  return countSign ? 'all' : 'any_one';
+};
 
-/** 根据需求当前状态推导审批流的进度（mock） */
-export const generateMockApprovalFlow = (status: RequirementStatus): MultiLevelApprovalConfig | undefined => {
+/**
+ * 根据需求当前状态 + 当前激活方案的 approval_flow，生成多级审批运行时快照。
+ * - DRAFT/WITHDRAWN：无审批流
+ * - PENDING_APPROVAL：currentLevel=1，第一级 PENDING，其余 wait
+ * - REJECTED：currentLevel=1，第一级首位 REJECTED，其余 wait
+ * - 其它（已通过审批后）：全部 APPROVED
+ */
+export const generateMockApprovalFlow = (
+  status: RequirementStatus,
+  requirement?: Pick<RequirementItem, 'creatorId' | 'owning_department_id'>,
+): MultiLevelApprovalConfig | undefined => {
   if (status === 'DRAFT' || status === 'WITHDRAWN') return undefined;
 
+  const scheme = getEffectiveScheme();
+  const levelConfigs = scheme.approval_flow?.levels ?? [];
+  if (levelConfigs.length === 0) return undefined;
+
+  // 兜底 requirement（mockTemplate 初始化阶段可能未传完整对象）
+  const reqCtx = requirement ?? { creatorId: 'user-001', owning_department_id: 'dept-001' };
   const baseTime = new Date(2026, 1, 10).getTime();
-  const buildLevel = (idx: number, levelStatus: 'all_approved' | 'pending_here' | 'wait' | 'rejected_here'): ApprovalFlowLevel => {
-    const tpl = APPROVAL_LEVEL_TEMPLATES[idx];
-    const approvers: ApprovalFlowApprover[] = tpl.approvers.map((a, i) => {
+
+  const buildLevel = (
+    idx: number,
+    levelStatus: 'all_approved' | 'pending_here' | 'wait' | 'rejected_here',
+  ): ApprovalFlowLevel => {
+    const cfg = levelConfigs[idx];
+    const baseApprovers = resolveApprovers(cfg, reqCtx);
+    const approvers: ApprovalFlowApprover[] = baseApprovers.map((a, i) => {
       if (levelStatus === 'all_approved') {
         return { ...a, status: 'APPROVED', actedAt: new Date(baseTime + (idx * 2 + i) * 3600 * 1000).toISOString(), comment: '审核通过' };
       }
@@ -700,29 +692,23 @@ export const generateMockApprovalFlow = (status: RequirementStatus): MultiLevelA
       }
       return { ...a, status: 'PENDING' };
     });
-    return { level: idx + 1, name: tpl.name, mode: tpl.mode, approvers };
+    return {
+      level: idx + 1,
+      name: cfg.name,
+      mode: resolveLevelMode(cfg.mode, cfg.count_sign),
+      approvers,
+    };
   };
 
-  let currentLevel = 1;
-  const levels: ApprovalFlowLevel[] = [];
+  const levels: ApprovalFlowLevel[] = levelConfigs.map((_, i) => {
+    if (status === 'PENDING_APPROVAL') return buildLevel(i, i === 0 ? 'pending_here' : 'wait');
+    if (status === 'REJECTED') return buildLevel(i, i === 0 ? 'rejected_here' : 'wait');
+    return buildLevel(i, 'all_approved');
+  });
 
-  if (status === 'PENDING_APPROVAL') {
-    currentLevel = 1;
-    levels.push(buildLevel(0, 'pending_here'));
-    levels.push(buildLevel(1, 'wait'));
-    levels.push(buildLevel(2, 'wait'));
-  } else if (status === 'REJECTED') {
-    currentLevel = 1;
-    levels.push(buildLevel(0, 'rejected_here'));
-    levels.push(buildLevel(1, 'wait'));
-    levels.push(buildLevel(2, 'wait'));
-  } else {
-    // PENDING_ASSESSMENT / PENDING_PROJECT / DEVELOPING / LAUNCHED / OFFLINE → 全部通过
-    currentLevel = 4;
-    levels.push(buildLevel(0, 'all_approved'));
-    levels.push(buildLevel(1, 'all_approved'));
-    levels.push(buildLevel(2, 'all_approved'));
-  }
+  let currentLevel = 1;
+  if (status === 'PENDING_APPROVAL' || status === 'REJECTED') currentLevel = 1;
+  else currentLevel = levelConfigs.length + 1;
 
   return { levels, currentLevel };
 };
@@ -793,4 +779,6 @@ export const advanceApprovalFlow = async (
   return mockRequirementData[index];
 };
 
+/** 重新导出激活方案查询，供其它模块使用（保持原 import 路径不变） */
+export const getActiveScheme = getEffectiveScheme;
 
