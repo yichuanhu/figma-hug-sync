@@ -203,9 +203,30 @@ const RequirementDetailDrawer = ({
 
   useEffect(() => {
     if (visible && data) {
-      fetchActivities(data.id).then(setActivities);
+      fetchActivities(data.id).then((acts) => {
+        // 合并审批历史留痕
+        const historyEntries: ActivityRecord[] = (data.approvalHistory ?? []).map((h) => {
+          const actionLabel: Record<string, string> = {
+            approve: t('requirements.detail.history.approved'),
+            reject: t('requirements.detail.history.rejected'),
+            withdraw: t('requirements.detail.history.withdrew'),
+            resubmit: t('requirements.detail.history.resubmitted'),
+          };
+          const levelTag = h.levelName ? `[L${h.level} · ${h.levelName}] ` : '';
+          const cmt = h.comment ? `: ${h.comment}` : '';
+          return {
+            id: h.id,
+            type: h.action === 'approve' ? 'approval' : h.action === 'reject' ? 'approval' : 'status_change',
+            actorId: h.approverId,
+            actorName: h.approverName,
+            content: `${levelTag}${actionLabel[h.action]}${cmt}`,
+            timestamp: h.timestamp,
+          };
+        });
+        setActivities([...acts, ...historyEntries]);
+      });
     }
-  }, [visible, data?.id]);
+  }, [visible, data?.id, data?.approvalHistory, t]);
 
   if (!data) return null;
 
