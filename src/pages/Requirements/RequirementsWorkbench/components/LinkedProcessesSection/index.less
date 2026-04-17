@@ -6,12 +6,40 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: 8px;
+    gap: 12px;
   }
 
   &__title {
     display: inline-flex;
     align-items: center;
     gap: 6px;
+  }
+
+  &__header-right {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__name-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    min-width: 0;
+    color: var(--semi-color-primary);
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__name-icon {
+    flex-shrink: 0;
+    opacity: 0.7;
   }
 
   &__list {

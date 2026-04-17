@@ -1,22 +1,35 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Typography, Tag } from '@douyinfe/semi-ui';
-import { Workflow } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Typography, Tag, Button } from '@douyinfe/semi-ui';
+import { Workflow, Settings, ExternalLink } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import type { LinkedProcess } from '../../types';
 import { aggregateLinkedStatus, linkedProcessStatusConfig } from '../../utils/aggregateLinkedStatus';
+import ManageLinkedProcessesModal from '../ManageLinkedProcessesModal';
 import './index.less';
 
 const { Text } = Typography;
 
 interface Props {
+  requirementId: string;
   processes?: LinkedProcess[];
+  onChanged?: () => void;
 }
 
-const LinkedProcessesSection = ({ processes }: Props) => {
+const PROCESS_LIST_PATH = '/scheduling-center/execution-assets/automation-process';
+
+const LinkedProcessesSection = ({ requirementId, processes, onChanged }: Props) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [manageOpen, setManageOpen] = useState(false);
   const agg = aggregateLinkedStatus(processes);
   const list = processes ?? [];
+
+  const handleNavigate = (p: LinkedProcess) => {
+    navigate(`${PROCESS_LIST_PATH}?processId=${encodeURIComponent(p.id)}`);
+  };
 
   return (
     <div className="linked-processes-section">
@@ -30,11 +43,22 @@ const LinkedProcessesSection = ({ processes }: Props) => {
             </Text>
           )}
         </span>
-        {list.length > 0 && (
-          <Tag size="small" color={agg.color} type="light">
-            {t(agg.i18nKey)}
-          </Tag>
-        )}
+        <span className="linked-processes-section__header-right">
+          {list.length > 0 && (
+            <Tag size="small" color={agg.color} type="light">
+              {t(agg.i18nKey)}
+            </Tag>
+          )}
+          <Button
+            size="small"
+            theme="borderless"
+            type="tertiary"
+            icon={<Settings size={14} strokeWidth={2} />}
+            onClick={() => setManageOpen(true)}
+          >
+            {t('requirements.linkedProcesses.manage')}
+          </Button>
+        </span>
       </div>
 
       {list.length === 0 ? (
@@ -48,9 +72,17 @@ const LinkedProcessesSection = ({ processes }: Props) => {
             return (
               <div key={p.id} className="linked-processes-section__row">
                 <span className={`linked-processes-section__dot linked-processes-section__dot--${cfg.color}`} />
-                <Text className="linked-processes-section__name" ellipsis={{ showTooltip: true }}>
-                  {p.name}
-                </Text>
+                <button
+                  type="button"
+                  className="linked-processes-section__name-btn"
+                  onClick={() => handleNavigate(p)}
+                  title={t('requirements.linkedProcesses.openProcess')}
+                >
+                  <Text className="linked-processes-section__name" ellipsis={{ showTooltip: true }}>
+                    {p.name}
+                  </Text>
+                  <ExternalLink size={12} strokeWidth={2} className="linked-processes-section__name-icon" />
+                </button>
                 <Tag size="small" color={cfg.color} type="light">{t(cfg.i18nKey)}</Tag>
                 <span className="linked-processes-section__owner">
                   {p.ownerName ? <UserNameWithCard name={p.ownerName} /> : <Text type="tertiary" size="small">-</Text>}
@@ -60,6 +92,14 @@ const LinkedProcessesSection = ({ processes }: Props) => {
           })}
         </div>
       )}
+
+      <ManageLinkedProcessesModal
+        visible={manageOpen}
+        requirementId={requirementId}
+        linked={list}
+        onClose={() => setManageOpen(false)}
+        onChanged={() => onChanged?.()}
+      />
     </div>
   );
 };
