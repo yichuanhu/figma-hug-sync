@@ -351,14 +351,57 @@ const generateMockVersions = (
   ];
 };
 
+/** 项目内可关联的流程候选池（mock） */
+export const MOCK_PROCESS_POOL: LinkedProcess[] = [
+  { id: 'proc-001', name: 'Procurement Approval Process',  status: 'ONLINE',     ownerName: 'Sarah Li' },
+  { id: 'proc-002', name: 'Invoice OCR Pipeline',          status: 'TESTING',    ownerName: 'Michael Wang' },
+  { id: 'proc-003', name: 'Vendor Notification Workflow',  status: 'DEVELOPING', ownerName: 'Emily Chen' },
+  { id: 'proc-004', name: 'Expense Report Validation',     status: 'ONLINE',     ownerName: 'Robert Xu' },
+  { id: 'proc-005', name: 'Employee Onboarding Bot',       status: 'PENDING',    ownerName: 'Emily Chen' },
+  { id: 'proc-006', name: 'Inventory Reconciliation Flow', status: 'ONLINE',     ownerName: 'David Zhang' },
+  { id: 'proc-007', name: 'Customer Notification Workflow',status: 'FAILED',     ownerName: 'Jessica Liu' },
+  { id: 'proc-008', name: 'Tax Filing Data Compiler',      status: 'DEVELOPING', ownerName: 'John Smith' },
+  { id: 'proc-009', name: 'Sales Pipeline Sync',           status: 'TESTING',    ownerName: 'Jessica Liu' },
+  { id: 'proc-010', name: 'IT Patch Deployment Bot',       status: 'ONLINE',     ownerName: 'Angela Wu' },
+];
+
 const generateMockLinkedProcesses = (status: RequirementStatus, idx: number): LinkedProcess[] | undefined => {
   if (!(['DEVELOPING', 'LAUNCHED', 'OFFLINE'] as RequirementStatus[]).includes(status)) return undefined;
-  const pool: LinkedProcess[] = [
-    { id: 'proc-001', name: 'Procurement Approval Process', status: 'ONLINE',     ownerName: 'Sarah Li' },
-    { id: 'proc-002', name: 'Invoice OCR Pipeline',         status: 'TESTING',    ownerName: 'Michael Wang' },
-    { id: 'proc-003', name: 'Vendor Notification Workflow', status: idx % 3 === 0 ? 'FAILED' : 'DEVELOPING', ownerName: 'Emily Chen' },
-  ];
-  return pool.slice(0, (idx % 3) + 1);
+  return MOCK_PROCESS_POOL.slice(0, (idx % 3) + 1);
+};
+
+/** 关联流程到需求 */
+export const addLinkedProcesses = async (reqId: string, processIds: string[]): Promise<RequirementItem | null> => {
+  await new Promise((r) => setTimeout(r, 200));
+  const idx = mockRequirementData.findIndex((r) => r.id === reqId);
+  if (idx === -1) return null;
+  const cur = mockRequirementData[idx];
+  const existing = cur.linkedProcesses ?? [];
+  const existingIds = new Set(existing.map((p) => p.id));
+  const toAdd = processIds
+    .filter((id) => !existingIds.has(id))
+    .map((id) => MOCK_PROCESS_POOL.find((p) => p.id === id))
+    .filter((p): p is LinkedProcess => !!p);
+  mockRequirementData[idx] = {
+    ...cur,
+    linkedProcesses: [...existing, ...toAdd],
+    updatedAt: new Date().toISOString(),
+  };
+  return mockRequirementData[idx];
+};
+
+/** 解除关联 */
+export const removeLinkedProcess = async (reqId: string, processId: string): Promise<RequirementItem | null> => {
+  await new Promise((r) => setTimeout(r, 150));
+  const idx = mockRequirementData.findIndex((r) => r.id === reqId);
+  if (idx === -1) return null;
+  const cur = mockRequirementData[idx];
+  mockRequirementData[idx] = {
+    ...cur,
+    linkedProcesses: (cur.linkedProcesses ?? []).filter((p) => p.id !== processId),
+    updatedAt: new Date().toISOString(),
+  };
+  return mockRequirementData[idx];
 };
 
 let mockRequirementData = generateMockRequirements();
