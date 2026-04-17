@@ -1,7 +1,7 @@
 import { useMemo, useRef, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tabs, TabPane, Typography, Tag, Button, Empty } from '@douyinfe/semi-ui';
-import { CheckCircle, Trash2 } from 'lucide-react';
+import { CheckCircle, Trash2, Pencil } from 'lucide-react';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type {
   RequirementScheme,
@@ -21,6 +21,7 @@ interface Props {
   onNavigate: (s: RequirementScheme) => void;
   onActivate: (s: RequirementScheme) => void;
   onDelete: (s: RequirementScheme) => void;
+  onEditApprovalFlow?: (s: RequirementScheme) => void;
 }
 
 const SchemeDetailDrawer = ({
@@ -31,6 +32,7 @@ const SchemeDetailDrawer = ({
   onNavigate,
   onActivate,
   onDelete,
+  onEditApprovalFlow,
 }: Props) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('basic');
