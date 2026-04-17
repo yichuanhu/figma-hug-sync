@@ -390,6 +390,12 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     if (pathname.startsWith('/requirements/assessment')) {
       return 'requirementsAssessment';
     }
+    if (pathname.startsWith('/requirements/projects')) {
+      return 'requirementsProjects';
+    }
+    if (pathname.startsWith('/requirements/scheme')) {
+      return 'requirementsScheme';
+    }
     if (pathname.startsWith('/requirements/team')) {
       return 'teamMembers';
     }
