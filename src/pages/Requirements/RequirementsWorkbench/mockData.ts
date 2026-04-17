@@ -8,6 +8,10 @@ import type {
   ActivityRecord,
   TechnicalAssessment,
   RequirementArtifact,
+  DetailedAssessment,
+  CostEstimateData,
+  VersionSnapshot,
+  LinkedProcess,
 } from './types';
 import { statusConfigV2 } from './statusConfig';
 
@@ -196,6 +200,10 @@ const generateMockRequirements = (): RequirementItem[] => {
       involvedTech: index % 4 === 0 ? ['UI_AUTOMATION'] : index % 4 === 1 ? ['ADP'] : index % 4 === 2 ? ['UI_AUTOMATION', 'ADP'] : undefined,
       assessment: generateMockAssessment(id, tpl.status),
       artifacts: generateMockArtifacts(id, tpl.status),
+      detailedAssessment: generateMockDetailedAssessment(tpl.status, index),
+      costEstimate: generateMockCost(tpl.status, index),
+      historyVersions: generateMockVersions(tpl.status, index, tpl.title, tpl.description, tpl.priority),
+      linkedProcesses: generateMockLinkedProcesses(tpl.status, index),
       value_score: hasScores ? mockScore(index, 50, 50) : undefined,
       complexity_score: hasScores ? mockScore(index + 7, 30, 60) : undefined,
       version: 1,
@@ -203,6 +211,104 @@ const generateMockRequirements = (): RequirementItem[] => {
       updatedAt: updateDate.toISOString(),
     };
   });
+};
+
+const POST_ASSESS: RequirementStatus[] = ['PENDING_PROJECT', 'DEVELOPING', 'LAUNCHED', 'OFFLINE'];
+
+const generateMockDetailedAssessment = (status: RequirementStatus, idx: number): DetailedAssessment | undefined => {
+  if (!POST_ASSESS.includes(status)) return undefined;
+  const sv = (n: number) => (((idx + n) % 5) + 1) as 1 | 2 | 3 | 4 | 5;
+  const valueDimensions = [
+    { key: 'strategicAlignment', score: sv(1) },
+    { key: 'benefitScale', score: sv(2) },
+    { key: 'urgency', score: sv(3) },
+  ];
+  const complexityDimensions = [
+    { key: 'implementationDifficulty', score: sv(4) },
+    { key: 'dependencyComplexity', score: sv(5) },
+    { key: 'risk', score: sv(0) },
+  ];
+  const valueTotal = valueDimensions.reduce((s, d) => s + d.score, 0);
+  const complexityTotal = complexityDimensions.reduce((s, d) => s + d.score, 0);
+  const netScore = valueTotal - complexityTotal;
+  const conclusion = netScore >= 5 ? 'RECOMMEND' : netScore >= 0 ? 'CAUTION' : 'REJECT';
+  return {
+    valueDimensions,
+    complexityDimensions,
+    netScore,
+    conclusion,
+    assessorId: 'user-008',
+    assessorName: 'Angela Wu',
+    assessedAt: new Date(2026, 1, 15 + (idx % 10), 14, 0).toISOString(),
+    comment: 'Aligned with strategic priority. Resource plan to be confirmed.',
+  };
+};
+
+const generateMockCost = (status: RequirementStatus, idx: number): CostEstimateData | undefined => {
+  if (!(['DEVELOPING', 'LAUNCHED', 'OFFLINE'] as RequirementStatus[]).includes(status)) return undefined;
+  const roles = [
+    { role: 'product', people: 1, days: 5 + (idx % 3) },
+    { role: 'backend', people: 2, days: 8 + (idx % 5) },
+    { role: 'frontend', people: 1, days: 6 + (idx % 4) },
+  ];
+  const RATE: Record<string, number> = { product: 1500, backend: 1800, frontend: 1500, qa: 1200, designer: 1400, ops: 1600 };
+  const totalPersonDays = roles.reduce((s, r) => s + r.people * r.days, 0);
+  const laborCost = roles.reduce((s, r) => s + r.people * r.days * (RATE[r.role] ?? 0), 0);
+  const infra = 2000 + (idx % 3) * 500;
+  const thirdParty = idx % 4 === 0 ? 1500 : 0;
+  const other = 500;
+  const nonLaborCost = infra + thirdParty + other;
+  return {
+    roles,
+    infra,
+    thirdParty,
+    other,
+    totalPersonDays,
+    laborCost,
+    nonLaborCost,
+    totalCost: laborCost + nonLaborCost,
+    roiNote: 'Estimated payback within 4 months based on saved manual hours.',
+    updatedAt: new Date(2026, 2, 1 + (idx % 10)).toISOString(),
+    updatedBy: 'Angela Wu',
+  };
+};
+
+const generateMockVersions = (
+  status: RequirementStatus,
+  idx: number,
+  title: string,
+  description: string,
+  priority: RequirementPriority,
+): VersionSnapshot[] | undefined => {
+  if (!(['PENDING_PROJECT', 'DEVELOPING', 'LAUNCHED', 'OFFLINE'] as RequirementStatus[]).includes(status)) return undefined;
+  return [
+    {
+      version: 1,
+      createdAt: new Date(2026, 0, 10 + idx).toISOString(),
+      actorId: 'user-001',
+      actorName: 'John Smith',
+      summary: 'Initial draft submitted for approval.',
+      snapshot: { title, description: description.substring(0, 80) + '...', priority: 'MEDIUM', status: 'PENDING_APPROVAL' },
+    },
+    {
+      version: 2,
+      createdAt: new Date(2026, 1, 5 + idx).toISOString(),
+      actorId: 'user-007',
+      actorName: 'Robert Xu',
+      summary: 'Approved by business owner; adjusted priority.',
+      snapshot: { title, description, priority, status: 'PENDING_ASSESSMENT' },
+    },
+  ];
+};
+
+const generateMockLinkedProcesses = (status: RequirementStatus, idx: number): LinkedProcess[] | undefined => {
+  if (!(['DEVELOPING', 'LAUNCHED', 'OFFLINE'] as RequirementStatus[]).includes(status)) return undefined;
+  const pool: LinkedProcess[] = [
+    { id: 'proc-001', name: 'Procurement Approval Process', status: 'ONLINE', ownerName: 'Sarah Li' },
+    { id: 'proc-002', name: 'Invoice OCR Pipeline', status: 'TESTING', ownerName: 'Michael Wang' },
+    { id: 'proc-003', name: 'Vendor Notification Workflow', status: idx % 3 === 0 ? 'FAILED' : 'DEVELOPING', ownerName: 'Emily Chen' },
+  ];
+  return pool.slice(0, (idx % 3) + 1);
 };
 
 let mockRequirementData = generateMockRequirements();
@@ -395,6 +501,68 @@ export const updateRequirementStatus = async (
   mockRequirementData[index] = {
     ...mockRequirementData[index],
     status: newStatus as RequirementStatus,
+    updatedAt: new Date().toISOString(),
+  };
+  return mockRequirementData[index];
+};
+
+export const updateRequirementAssessment = async (
+  id: string,
+  assessment: DetailedAssessment,
+): Promise<RequirementItem | null> => {
+  await new Promise((resolve) => setTimeout(resolve, 300));
+  const index = mockRequirementData.findIndex((item) => item.id === id);
+  if (index === -1) return null;
+  const cur = mockRequirementData[index];
+  const newVersion: VersionSnapshot = {
+    version: (cur.historyVersions?.length ?? 0) + 1,
+    createdAt: new Date().toISOString(),
+    actorId: assessment.assessorId,
+    actorName: assessment.assessorName,
+    summary: `Assessment completed (net ${assessment.netScore}, ${assessment.conclusion}).`,
+    snapshot: {
+      title: cur.title,
+      description: cur.description,
+      priority: cur.priority,
+      status: cur.status,
+      detailedAssessment: assessment,
+    },
+  };
+  mockRequirementData[index] = {
+    ...cur,
+    detailedAssessment: assessment,
+    historyVersions: [...(cur.historyVersions ?? []), newVersion],
+    updatedAt: new Date().toISOString(),
+  };
+  return mockRequirementData[index];
+};
+
+export const updateRequirementCost = async (
+  id: string,
+  cost: CostEstimateData,
+): Promise<RequirementItem | null> => {
+  await new Promise((resolve) => setTimeout(resolve, 300));
+  const index = mockRequirementData.findIndex((item) => item.id === id);
+  if (index === -1) return null;
+  const cur = mockRequirementData[index];
+  const newVersion: VersionSnapshot = {
+    version: (cur.historyVersions?.length ?? 0) + 1,
+    createdAt: new Date().toISOString(),
+    actorId: 'user-008',
+    actorName: cost.updatedBy,
+    summary: `Cost estimate updated (¥${cost.totalCost.toLocaleString()}).`,
+    snapshot: {
+      title: cur.title,
+      description: cur.description,
+      priority: cur.priority,
+      status: cur.status,
+      costEstimate: cost,
+    },
+  };
+  mockRequirementData[index] = {
+    ...cur,
+    costEstimate: cost,
+    historyVersions: [...(cur.historyVersions ?? []), newVersion],
     updatedAt: new Date().toISOString(),
   };
   return mockRequirementData[index];

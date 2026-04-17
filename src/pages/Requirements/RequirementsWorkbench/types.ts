@@ -356,8 +356,105 @@ export interface RequirementItem {
   assessment?: TechnicalAssessment;
   artifacts?: RequirementArtifact[];
 
+  // ===== Story-007 / 010 / 012 / 006 / 009 新字段 =====
+  /** 详细评估（业务价值 + 技术复杂度） */
+  detailedAssessment?: DetailedAssessment;
+  /** 成本估算 */
+  costEstimate?: CostEstimateData;
+  /** 历史版本快照 */
+  historyVersions?: VersionSnapshot[];
+  /** 多级审批流配置 */
+  approvalFlowConfig?: MultiLevelApprovalConfig;
+  /** 关联流程（用于状态聚合） */
+  linkedProcesses?: LinkedProcess[];
+
   createdAt: string;
   updatedAt: string;
+}
+
+// ============= Story-007 详细评估 =============
+export type AssessmentScore = 1 | 2 | 3 | 4 | 5;
+export interface AssessmentDimensionScore {
+  key: string;
+  score: AssessmentScore;
+  note?: string;
+}
+export type AssessmentConclusionV2 = 'RECOMMEND' | 'CAUTION' | 'REJECT';
+export interface DetailedAssessment {
+  valueDimensions: AssessmentDimensionScore[];
+  complexityDimensions: AssessmentDimensionScore[];
+  netScore: number;
+  conclusion: AssessmentConclusionV2;
+  assessorId: string;
+  assessorName: string;
+  assessedAt: string;
+  comment?: string;
+}
+
+// ============= Story-010 成本估算 =============
+export interface CostRoleItem {
+  role: string;
+  people: number;
+  days: number;
+}
+export interface CostEstimateData {
+  roles: CostRoleItem[];
+  infra: number;
+  thirdParty: number;
+  other: number;
+  totalPersonDays: number;
+  laborCost: number;
+  nonLaborCost: number;
+  totalCost: number;
+  roiNote?: string;
+  updatedAt: string;
+  updatedBy: string;
+}
+
+// ============= Story-012 版本快照 =============
+export interface VersionSnapshot {
+  version: number;
+  createdAt: string;
+  actorId: string;
+  actorName: string;
+  summary: string;
+  snapshot: {
+    title?: string;
+    description?: string;
+    priority?: RequirementPriority;
+    status?: RequirementStatus;
+    detailedAssessment?: DetailedAssessment;
+    costEstimate?: CostEstimateData;
+  };
+}
+
+// ============= Story-006 多级审批 =============
+export type ApprovalFlowMode = 'any_one' | 'all' | 'majority';
+export interface ApprovalFlowApprover {
+  id: string;
+  name: string;
+  status: 'PENDING' | 'APPROVED' | 'REJECTED';
+  comment?: string;
+  actedAt?: string;
+}
+export interface ApprovalFlowLevel {
+  level: number;
+  name: string;
+  mode: ApprovalFlowMode;
+  approvers: ApprovalFlowApprover[];
+}
+export interface MultiLevelApprovalConfig {
+  levels: ApprovalFlowLevel[];
+  currentLevel: number;
+}
+
+// ============= Story-009 关联流程 =============
+export type LinkedProcessStatus = 'DEVELOPING' | 'TESTING' | 'PENDING' | 'ONLINE' | 'FAILED';
+export interface LinkedProcess {
+  id: string;
+  name: string;
+  status: LinkedProcessStatus;
+  ownerName?: string;
 }
 
 // ============= 活动记录（兼容旧组件） =============

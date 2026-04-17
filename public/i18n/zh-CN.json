@@ -556,7 +556,90 @@
       "submitForApproval": "提交审批",
       "submitConfirmTitle": "提交审批确认",
       "submitConfirmContent": "提交后需求将进入审批流程，确定要提交吗？",
-      "submitSuccess": "需求已提交审批"
+      "submitSuccess": "需求已提交审批",
+      "tab": {
+        "overview": "概览",
+        "assessment": "技术评估",
+        "cost": "成本预估",
+        "versions": "版本历史"
+      }
+    },
+    "assessmentV2": {
+      "valueCard": "业务价值",
+      "complexityCard": "技术复杂度",
+      "subtotal": "小计",
+      "netScore": "综合净值得分",
+      "recommendation": "推荐结论",
+      "submit": "提交评估结论",
+      "submitSuccess": "评估结论已提交",
+      "commentPlaceholder": "评估说明（可选，最多 500 字）",
+      "commentLabel": "评估说明",
+      "banner": {
+        "notStarted": "该需求暂未进入评估阶段。",
+        "assessing": "请完成业务价值和技术复杂度两组维度评分。",
+        "completedBy": "评估已完成 · 评估人 {{name}} · {{time}}"
+      },
+      "dim": {
+        "strategicAlignment": "战略契合度",
+        "benefitScale": "收益规模",
+        "urgency": "紧迫性",
+        "implementationDifficulty": "实现难度",
+        "dependencyComplexity": "依赖复杂度",
+        "risk": "风险等级"
+      },
+      "conclusion": {
+        "RECOMMEND": "推荐立项",
+        "CAUTION": "谨慎评估",
+        "REJECT": "不建议"
+      }
+    },
+    "costEstimate": {
+      "inputSection": "估算输入",
+      "resultSection": "估算结果",
+      "laborByRole": "人力（按角色）",
+      "addRole": "添加角色",
+      "noRoles": "暂无角色，请点击「添加角色」开始填写。",
+      "selectRole": "请选择角色",
+      "selectRoleFirst": "请先为每一行选择角色",
+      "people": "人",
+      "days": "人天",
+      "infra": "基础设施费用",
+      "thirdParty": "第三方服务费用",
+      "other": "其他费用",
+      "totalPersonDays": "总人天",
+      "laborCost": "总人力成本",
+      "nonLaborCost": "非人力成本",
+      "totalCost": "预估总成本",
+      "roiPlaceholder": "ROI 简评（可选）",
+      "save": "保存估算",
+      "saveSuccess": "成本估算已保存",
+      "locked": "暂不可编辑",
+      "lockedBeforeApproval": "需求审批通过后方可填写成本估算。",
+      "role": {
+        "product": "产品",
+        "backend": "后端",
+        "frontend": "前端",
+        "qa": "测试",
+        "designer": "设计",
+        "ops": "运维"
+      }
+    },
+    "versionHistory": {
+      "timeline": "版本时间线",
+      "empty": "暂无版本记录",
+      "emptyDesc": "需求经过审批通过、评估完成或重新提交后会自动生成快照。",
+      "snapshot": "快照",
+      "current": "当前",
+      "compareCurrent": "与当前版本对比",
+      "exitCompare": "退出对比",
+      "fields": {
+        "title": "标题",
+        "description": "描述",
+        "priority": "优先级",
+        "status": "状态",
+        "netScore": "评估净值得分",
+        "totalCost": "预估总成本"
+      }
     },
     "assessment": {
       "generalDimension": "通用维度",

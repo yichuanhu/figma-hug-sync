@@ -561,6 +561,13 @@ const RequirementsWorkbench = () => {
           const updated = (await fetchRequirementList({ ...queryParams, statusFilter, departmentFilter, priorityFilter })).list.find(r => r.id === id);
           if (updated) setSelectedRecord(updated);
         }}
+        onRefresh={async () => {
+          loadData();
+          if (selectedRecord) {
+            const updated = (await fetchRequirementList({ ...queryParams, statusFilter, departmentFilter, priorityFilter })).list.find(r => r.id === selectedRecord.id);
+            if (updated) setSelectedRecord(updated);
+          }
+        }}
         pagination={{
           currentPage,
           totalPages: Math.ceil(total / pageSize),
