@@ -47,7 +47,7 @@ const RequirementsAssessment = () => {
   const [activeTab, setActiveTab] = useState<AssessTab>('pending');
   const [searchValue, setSearchValue] = useState('');
   const [conclusionFilter, setConclusionFilter] = useState<string>('ALL');
-  const [sortKey, setSortKey] = useState<'default' | 'netScoreDesc' | 'netScoreAsc'>('default');
+  
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -124,15 +124,8 @@ const RequirementsAssessment = () => {
     if (activeTab !== 'pending' && conclusionFilter !== 'ALL') {
       data = data.filter((item) => item.detailedAssessment?.conclusion === conclusionFilter);
     }
-    if (activeTab !== 'pending' && sortKey !== 'default') {
-      data = [...data].sort((a, b) => {
-        const sa = a.detailedAssessment?.netScore ?? Number.NEGATIVE_INFINITY;
-        const sb = b.detailedAssessment?.netScore ?? Number.NEGATIVE_INFINITY;
-        return sortKey === 'netScoreDesc' ? sb - sa : sa - sb;
-      });
-    }
     return data;
-  }, [activeTab, allRequirements, searchValue, departmentFilter, conclusionFilter, sortKey]);
+  }, [activeTab, allRequirements, searchValue, departmentFilter, conclusionFilter]);
 
   const handleStatusChange = async (id: string, newStatus: string, comment?: string) => {
     await updateRequirementStatus(id, newStatus, comment);
@@ -200,7 +193,12 @@ const RequirementsAssessment = () => {
       title: t('requirements.assessment.netScoreCol'),
       dataIndex: 'netScore',
       key: 'netScore',
-      width: 100,
+      width: 120,
+      sorter: (a: RequirementItem, b: RequirementItem) => {
+        const sa = a.detailedAssessment?.netScore ?? Number.NEGATIVE_INFINITY;
+        const sb = b.detailedAssessment?.netScore ?? Number.NEGATIVE_INFINITY;
+        return sa - sb;
+      },
       render: (_: unknown, record: RequirementItem) => {
         const a = record.detailedAssessment;
         if (!a) return <Text type="tertiary">-</Text>;
@@ -411,7 +409,6 @@ const RequirementsAssessment = () => {
                   onVisibleChange={setFilterPopoverVisible}
                   onConfirm={(values) => {
                     setConclusionFilter((values.conclusion as string) || 'ALL');
-                    setSortKey((values.sort as 'default' | 'netScoreDesc' | 'netScoreAsc') || 'default');
                   }}
                   sections={[
                     {
@@ -425,17 +422,6 @@ const RequirementsAssessment = () => {
                         { label: t('requirements.assessmentV2.conclusion.REJECT'), value: 'REJECT' },
                       ],
                       value: conclusionFilter,
-                    },
-                    {
-                      key: 'sort',
-                      label: t('requirements.assessment.sortBy'),
-                      type: 'radio',
-                      options: [
-                        { label: t('requirements.assessment.sortDefault'), value: 'default' },
-                        { label: t('requirements.assessment.sortNetScoreDesc'), value: 'netScoreDesc' },
-                        { label: t('requirements.assessment.sortNetScoreAsc'), value: 'netScoreAsc' },
-                      ],
-                      value: sortKey,
                     },
                   ]}
                 />
