@@ -50,6 +50,8 @@ const ProjectDetailDrawer = ({
   const [editingWs, setEditingWs] = useState<Workspace | null>(null);
   const [linkModalVisible, setLinkModalVisible] = useState(false);
   const [linkingWs, setLinkingWs] = useState<Workspace | null>(null);
+  const [membersModalVisible, setMembersModalVisible] = useState(false);
+  const [membersWs, setMembersWs] = useState<Workspace | null>(null);
 
   const reload = useMemo(
     () => () => {
