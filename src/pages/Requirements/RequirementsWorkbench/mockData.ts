@@ -815,11 +815,93 @@ export const advanceApprovalFlow = async (
     }
   }
 
+  const historyEntry: ApprovalHistoryEntry = {
+    id: `hist-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    level: lv.level,
+    levelName: lv.name,
+    approverId: me.id,
+    approverName: me.name,
+    action,
+    comment,
+    timestamp: me.actedAt,
+  };
+
   mockRequirementData[index] = {
     ...cur,
     status: newStatus,
     approvalFlowConfig: { levels, currentLevel: newCurrentLevel },
+    approvalHistory: [...(cur.approvalHistory ?? []), historyEntry],
     updatedAt: new Date().toISOString(),
+  };
+  return mockRequirementData[index];
+};
+
+/** 撤回需求：仅 PENDING_APPROVAL + 提交人可调用，回到 DRAFT 并清空审批快照 */
+export const withdrawRequirement = async (id: string): Promise<RequirementItem | null> => {
+  await new Promise((r) => setTimeout(r, 200));
+  const index = mockRequirementData.findIndex((r) => r.id === id);
+  if (index === -1) return null;
+  const cur = mockRequirementData[index];
+  if (cur.status !== 'PENDING_APPROVAL') {
+    throw new Error('Only PENDING_APPROVAL requirements can be withdrawn');
+  }
+  if (cur.creatorId !== MOCK_CURRENT_USER_ID) {
+    throw new Error('Only the creator can withdraw the requirement');
+  }
+  const now = new Date().toISOString();
+  const submitter = mockCreators[cur.creatorId];
+  const entry: ApprovalHistoryEntry = {
+    id: `hist-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    level: cur.approvalFlowConfig?.currentLevel ?? 1,
+    levelName: cur.approvalFlowConfig?.levels.find((l) => l.level === cur.approvalFlowConfig?.currentLevel)?.name,
+    approverId: cur.creatorId,
+    approverName: submitter?.name ?? cur.creatorName,
+    action: 'withdraw',
+    timestamp: now,
+  };
+  mockRequirementData[index] = {
+    ...cur,
+    status: 'DRAFT',
+    approvalFlowConfig: undefined,
+    approvalHistory: [...(cur.approvalHistory ?? []), entry],
+    updatedAt: now,
+  };
+  return mockRequirementData[index];
+};
+
+/** 重新提交：REJECTED → PENDING_APPROVAL，重置 flow 到 L1，保留历史 */
+export const resubmitRequirement = async (id: string): Promise<RequirementItem | null> => {
+  await new Promise((r) => setTimeout(r, 200));
+  const index = mockRequirementData.findIndex((r) => r.id === id);
+  if (index === -1) return null;
+  const cur = mockRequirementData[index];
+  if (cur.status !== 'REJECTED') {
+    throw new Error('Only REJECTED requirements can be resubmitted');
+  }
+  if (cur.creatorId !== MOCK_CURRENT_USER_ID) {
+    throw new Error('Only the creator can resubmit the requirement');
+  }
+  const now = new Date().toISOString();
+  const submitter = mockCreators[cur.creatorId];
+  const newFlow = generateMockApprovalFlow('PENDING_APPROVAL', {
+    creatorId: cur.creatorId,
+    owning_department_id: cur.owning_department_id,
+  });
+  const entry: ApprovalHistoryEntry = {
+    id: `hist-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    level: 1,
+    levelName: newFlow?.levels[0]?.name,
+    approverId: cur.creatorId,
+    approverName: submitter?.name ?? cur.creatorName,
+    action: 'resubmit',
+    timestamp: now,
+  };
+  mockRequirementData[index] = {
+    ...cur,
+    status: 'PENDING_APPROVAL',
+    approvalFlowConfig: newFlow,
+    approvalHistory: [...(cur.approvalHistory ?? []), entry],
+    updatedAt: now,
   };
   return mockRequirementData[index];
 };
