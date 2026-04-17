@@ -309,6 +309,15 @@ const ProjectDetailDrawer = ({
           onRefresh();
         }}
       />
+      <WorkspaceMembersModal
+        visible={membersModalVisible}
+        workspace={membersWs}
+        onClose={() => setMembersModalVisible(false)}
+        onChanged={() => {
+          reload();
+          onRefresh();
+        }}
+      />
     </>
   );
 };
