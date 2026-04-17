@@ -337,7 +337,7 @@ export interface RequirementItem {
   /** 动态字段数据（Scheme 驱动） */
   form_data?: Record<string, unknown>;
   /** 自动成本计算所需的基线数据（来自表单中的频率/时长/可自动化比例/岗位级别） */
-  baselineFormData?: import('./types').RequirementBaselineFormData;
+  baselineFormData?: RequirementBaselineFormData;
 
   /** 价值/复杂度综合得分 */
   value_score?: number;
