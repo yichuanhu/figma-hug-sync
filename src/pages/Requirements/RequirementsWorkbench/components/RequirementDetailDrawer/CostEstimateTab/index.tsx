@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Descriptions, Empty, Tag, Typography } from '@douyinfe/semi-ui';
 import { Wallet } from 'lucide-react';
 import type { RequirementItem } from '../../../types';
-import { computeCostEstimate, DEFAULT_SCHEME_COST_CONFIG } from '../../../mockData';
+import { computeCostEstimate, getActiveSchemeCostConfig } from '../../../mockData';
 import './index.less';
 
 const { Text, Title } = Typography;
@@ -22,7 +22,7 @@ const CostEstimateTab = ({ data }: Props) => {
   const estimate = useMemo(() => {
     if (data.costEstimate) return data.costEstimate;
     if (data.baselineFormData) {
-      return computeCostEstimate(data.baselineFormData, DEFAULT_SCHEME_COST_CONFIG);
+      return computeCostEstimate(data.baselineFormData, getActiveSchemeCostConfig());
     }
     return null;
   }, [data.costEstimate, data.baselineFormData]);

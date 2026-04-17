@@ -351,10 +351,10 @@ const generateMockBaseline = (idx: number): RequirementBaselineFormData => ({
   jobLevel: JOB_LEVEL_POOL[idx % JOB_LEVEL_POOL.length],
 });
 
-const generateMockCost = (status: RequirementStatus, idx: number): CostEstimateData | undefined => {
-  // 只要不是最早的草稿/撤回阶段，就有基线数据 → 自动算
-  if (status === 'DRAFT' || status === 'WITHDRAWN') return undefined;
-  return computeCostEstimate(generateMockBaseline(idx));
+const generateMockCost = (status: RequirementStatus, idx: number): { cost?: CostEstimateData; baseline?: RequirementBaselineFormData } => {
+  if (status === 'DRAFT' || status === 'WITHDRAWN') return {};
+  const baseline = generateMockBaseline(idx);
+  return { cost: computeCostEstimate(baseline), baseline };
 };
 
 const generateMockVersions = (
