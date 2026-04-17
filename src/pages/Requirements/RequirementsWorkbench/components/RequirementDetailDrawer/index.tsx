@@ -238,8 +238,7 @@ const RequirementDetailDrawer = ({
     <DetailDrawerWrapper<RequirementItem>
       visible={visible}
       onClose={onClose}
-      title={data.title}
-      titlePrefix={data.req_no ? <Tag size="small" color="grey" type="light" style={{ marginRight: 8 }}>{data.req_no}</Tag> : null}
+      title={data.req_no ? `[${data.req_no}] ${data.title}` : data.title}
       dataList={dataList}
       currentId={data.id}
       onNavigate={onNavigate}
