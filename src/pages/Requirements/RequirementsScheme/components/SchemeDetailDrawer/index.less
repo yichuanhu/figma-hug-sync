@@ -1,4 +1,27 @@
 .scheme-detail-drawer {
+  // Tabs 容器：固定 tab 栏，内容滚动，左右留 24px
+  .semi-tabs {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .semi-tabs-bar {
+      flex-shrink: 0;
+      padding: 0 24px;
+    }
+
+    .semi-tabs-content {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .semi-tabs-pane {
+      height: 100%;
+      overflow-y: auto;
+    }
+  }
+
   &-content {
     padding: 16px 24px 24px;
   }
