@@ -196,21 +196,14 @@ const RequirementsWorkbench = () => {
   const normalizeStatus = (s: string): RequirementStatus =>
     (statusConfigV2[s as RequirementStatus] ? (s as RequirementStatus) : legacyStatusMap[s]) || 'DRAFT';
 
-  // 表格列（对齐 Linear / 飞书项目主流需求管理产品）
+  // 表格列（参考 PingCode：编号/标题左固定，操作右固定）
   const columns = [
-    {
-      title: '',
-      dataIndex: 'priority',
-      key: 'priority',
-      width: 80,
-      align: 'center' as const,
-      render: (p: RequirementPriority) => <PriorityIndicator priority={p} />,
-    },
     {
       title: t('requirements.fields.reqNo', '编号'),
       dataIndex: 'req_no',
       key: 'req_no',
-      width: 120,
+      width: 130,
+      fixed: 'left' as const,
       render: (v: string | undefined, r: RequirementItem) => (
         <Text type="tertiary" size="small" style={{ fontVariantNumeric: 'tabular-nums' }}>
           {v || `REQ-${r.id.slice(0, 8)}`}
@@ -221,10 +214,19 @@ const RequirementsWorkbench = () => {
       title: t('requirements.fields.title'),
       dataIndex: 'title',
       key: 'title',
+      width: 280,
+      fixed: 'left' as const,
       ellipsis: true,
       sorter: true,
       onHeaderCell: () => ({ onClick: () => handleSort('title') }),
       render: (_: string, record: RequirementItem) => <TitleCell record={record} />,
+    },
+    {
+      title: t('requirements.fields.priority'),
+      dataIndex: 'priority',
+      key: 'priority',
+      width: 90,
+      render: (p: RequirementPriority) => <PriorityIndicator priority={p} />,
     },
     {
       title: t('common.status'),
@@ -237,14 +239,14 @@ const RequirementsWorkbench = () => {
       title: t('requirements.fields.valueScore', '价值得分'),
       dataIndex: 'value_score',
       key: 'value_score',
-      width: 120,
+      width: 130,
       render: (v: number | undefined) => <ScoreBar value={v} variant="value" />,
     },
     {
       title: t('requirements.fields.complexityScore', '复杂度得分'),
       dataIndex: 'complexity_score',
       key: 'complexity_score',
-      width: 120,
+      width: 130,
       render: (v: number | undefined) => <ScoreBar value={v} variant="complexity" />,
     },
     {
@@ -267,7 +269,7 @@ const RequirementsWorkbench = () => {
       title: t('common.createTime', '创建时间'),
       dataIndex: 'createdAt',
       key: 'createdAt',
-      width: 120,
+      width: 130,
       sorter: true,
       onHeaderCell: () => ({ onClick: () => handleSort('created_at') }),
       render: (value: string | null) => <RelativeTime value={value} />,
@@ -277,6 +279,7 @@ const RequirementsWorkbench = () => {
       dataIndex: 'action',
       key: 'action',
       width: 60,
+      fixed: 'right' as const,
       render: (_: unknown, record: RequirementItem) => (
         <Dropdown
           trigger="click"
@@ -507,7 +510,7 @@ const RequirementsWorkbench = () => {
               showSizeChanger: true,
               showTotal: true,
             }}
-            scroll={{ y: 'calc(100vh - 320px)' }}
+            scroll={{ y: 'calc(100vh - 320px)', x: 1310 }}
           />
         )}
       </div>
