@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Typography, Button, Input, TextArea, Tag, Toast, Modal, Space, Dropdown } from '@douyinfe/semi-ui';
+import { Typography, Button, Input, TextArea, Tag, Toast, Modal, Dropdown } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import { Upload, Ellipsis, CheckCircle, Eye, Trash2, History } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
