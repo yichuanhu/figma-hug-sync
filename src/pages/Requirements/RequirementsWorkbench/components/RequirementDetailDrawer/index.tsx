@@ -50,11 +50,15 @@ const PropertyPanel = ({
       <div className="requirement-detail-property-group">
         <div className="requirement-detail-property-item">
           <Text type="tertiary" size="small">{t('common.status')}</Text>
-          <Tag color={sCfg?.color as TagColor} type="light" size="large">{t(sCfg?.i18nKey || '')}</Tag>
+          <div>
+            <Tag color={sCfg?.color as TagColor} type="light">{t(sCfg?.i18nKey || '')}</Tag>
+          </div>
         </div>
         <div className="requirement-detail-property-item">
           <Text type="tertiary" size="small">{t('requirements.fields.priority')}</Text>
-          <Tag color={pCfg?.color as TagColor} type="light" size="large">{t(pCfg?.i18nKey || '')}</Tag>
+          <div>
+            <Tag color={pCfg?.color as TagColor} type="light">{t(pCfg?.i18nKey || '')}</Tag>
+          </div>
         </div>
       </div>
 
