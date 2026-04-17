@@ -202,7 +202,7 @@ const RequirementsWorkbench = () => {
       title: '',
       dataIndex: 'priority',
       key: 'priority',
-      width: 44,
+      width: 80,
       align: 'center' as const,
       render: (p: RequirementPriority) => <PriorityIndicator priority={p} />,
     },
