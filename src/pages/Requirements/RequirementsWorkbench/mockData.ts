@@ -269,9 +269,10 @@ import { getActiveScheme as getActiveSchemeFromStore, PRESET_SCHEMES } from './s
 import { resolveApprovers } from './utils/approverResolver';
 
 /** 默认 cost 配置回退（当激活方案缺 cost_config 时使用） */
-const DEFAULT_COST_CONFIG = {
+const DEFAULT_COST_CONFIG: SchemeCostConfig = {
   workingHoursPerDay: 8,
-  rateTable: { P4: 800, P5: 1200, P6: 1800, P7: 2600 } as Record<JobLevel, number>,
+  rateTable: { junior: 300, middle: 500, senior: 700, manager: 900 },
+  levelLabels: { junior: '初级员工', middle: '中级员工', senior: '高级员工', manager: '管理层（经理及以上）' },
   schemeName: 'RPA Pro 标准方案',
 };
 
@@ -288,6 +289,7 @@ export const getActiveSchemeCostConfig = (): SchemeCostConfig => {
   return {
     workingHoursPerDay: cc.working_hours_per_day,
     rateTable: cc.rate_table,
+    levelLabels: cc.level_labels,
     schemeName: scheme.name,
   };
 };
@@ -318,7 +320,7 @@ export const computeCostEstimate = (
   };
 };
 
-const JOB_LEVEL_POOL: JobLevel[] = ['P4', 'P5', 'P6', 'P7'];
+const JOB_LEVEL_POOL: JobLevel[] = ['junior', 'middle', 'senior', 'manager'];
 
 const generateMockBaseline = (idx: number): RequirementBaselineFormData => ({
   frequency: 10 + (idx * 7) % 90,            // 10~99 次/月
