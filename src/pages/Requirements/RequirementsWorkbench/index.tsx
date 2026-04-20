@@ -342,6 +342,53 @@ const RequirementsWorkbench = () => {
                   {t('requirements.detail.submitForApproval')}
                 </Dropdown.Item>
               )}
+              {record.status === 'REJECTED' && record.creatorId === MOCK_CURRENT_USER_ID && (
+                <Dropdown.Item
+                  icon={<RotateCcw size={16} strokeWidth={2} />}
+                  onClick={(e: React.MouseEvent) => {
+                    e.stopPropagation();
+                    Modal.confirm({
+                      title: t('requirements.detail.resubmitConfirmTitle', '确认重新提交？'),
+                      content: t('requirements.detail.resubmitConfirmContent', '需求将重新进入审批流程（L1）。原审批历史会保留。'),
+                      okText: t('requirements.detail.resubmit', '重新提交'),
+                      cancelText: t('common.cancel'),
+                      onOk: async () => {
+                        try {
+                          await resubmitRequirement(record.id);
+                          loadData();
+                          Toast.success(t('requirements.detail.resubmitSuccess', '已重新提交审批'));
+                        } catch (err) {
+                          Toast.error((err as Error).message);
+                        }
+                      },
+                    });
+                  }}
+                >
+                  {t('requirements.detail.resubmit', '重新提交')}
+                </Dropdown.Item>
+              )}
+              {record.status === 'LAUNCHED' && (
+                <Dropdown.Item
+                  icon={<PowerOff size={16} strokeWidth={2} />}
+                  onClick={(e: React.MouseEvent) => {
+                    e.stopPropagation();
+                    Modal.confirm({
+                      title: t('requirements.detail.offlineConfirmTitle', '确认下线？'),
+                      content: t('requirements.detail.offlineConfirmContent', '下线后该需求将停止运行，关联流程不会自动停用，请知悉。'),
+                      okText: t('requirements.detail.offline', '下线'),
+                      cancelText: t('common.cancel'),
+                      type: 'warning',
+                      onOk: async () => {
+                        await updateRequirementStatus(record.id, 'OFFLINE', 'Taken offline.');
+                        loadData();
+                        Toast.success(t('requirements.detail.offlineSuccess', '已下线'));
+                      },
+                    });
+                  }}
+                >
+                  {t('requirements.detail.offline', '下线')}
+                </Dropdown.Item>
+              )}
               {canDelete(record.status) && (
                 <Dropdown.Item
                   icon={<Trash2 size={16} strokeWidth={2} />}
