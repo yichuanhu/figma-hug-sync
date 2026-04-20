@@ -283,13 +283,27 @@ export const findWorkspaceByRequirementId = (requirementId: string): { workspace
  * - 尚未绑定任何流程（linkedProcesses 为空）
  * 用于开发中心创建流程时的「关联需求」下拉。
  */
+export interface LinkableRequirementBrief {
+  id: string;
+  title: string;
+  req_no?: string;
+  workspaceId: string;
+  workspaceName: string;
+  projectId: string;
+  projectName: string;
+  owning_department_id: string;
+  owning_department_name: string;
+  owner_id?: string;
+  owner_name?: string;
+}
+
 export const fetchLinkableRequirementsByWorkspace = async (
   workspaceId: string,
-): Promise<Array<{ id: string; title: string; req_no?: string }>> => {
+): Promise<LinkableRequirementBrief[]> => {
   await delay(null);
   const ws = workspaces.find((w) => w.id === workspaceId);
   if (!ws || ws.linkedRequirementIds.length === 0) return [];
-  // 动态引入避免循环依赖
+  const proj = projects.find((p) => p.id === ws.projectId);
   const { fetchRequirementList } = await import('../RequirementsWorkbench/mockData');
   const res = await fetchRequirementList({
     offset: 0,
@@ -301,7 +315,60 @@ export const fetchLinkableRequirementsByWorkspace = async (
   return res.list
     .filter((r) => ws.linkedRequirementIds.includes(r.id))
     .filter((r) => !r.linkedProcesses || r.linkedProcesses.length === 0)
-    .map((r) => ({ id: r.id, title: r.title, req_no: r.req_no }));
+    .map((r) => ({
+      id: r.id,
+      title: r.title,
+      req_no: r.req_no,
+      workspaceId: ws.id,
+      workspaceName: ws.name,
+      projectId: ws.projectId,
+      projectName: proj?.name ?? '',
+      owning_department_id: r.owning_department_id,
+      owning_department_name: r.owning_department_name,
+      owner_id: r.owner_id,
+      owner_name: r.owner_name,
+    }));
+};
+
+/**
+ * 全局可关联需求：所有已绑定到工作空间且尚未绑定流程的需求。
+ * 用于开发中心创建流程时通过单一「关联需求」字段反查归属信息。
+ */
+export const fetchAllLinkableRequirements = async (): Promise<LinkableRequirementBrief[]> => {
+  await delay(null);
+  const wsByReqId = new Map<string, Workspace>();
+  workspaces.forEach((w) => {
+    w.linkedRequirementIds.forEach((rid) => wsByReqId.set(rid, w));
+  });
+  if (wsByReqId.size === 0) return [];
+  const { fetchRequirementList } = await import('../RequirementsWorkbench/mockData');
+  const res = await fetchRequirementList({
+    offset: 0,
+    size: 1000,
+    keyword: '',
+    sort_by: 'created_at',
+    sort_order: 'desc',
+  });
+  return res.list
+    .filter((r) => wsByReqId.has(r.id))
+    .filter((r) => !r.linkedProcesses || r.linkedProcesses.length === 0)
+    .map((r) => {
+      const ws = wsByReqId.get(r.id)!;
+      const proj = projects.find((p) => p.id === ws.projectId);
+      return {
+        id: r.id,
+        title: r.title,
+        req_no: r.req_no,
+        workspaceId: ws.id,
+        workspaceName: ws.name,
+        projectId: ws.projectId,
+        projectName: proj?.name ?? '',
+        owning_department_id: r.owning_department_id,
+        owning_department_name: r.owning_department_name,
+        owner_id: r.owner_id,
+        owner_name: r.owner_name,
+      };
+    });
 };
 
 /**
