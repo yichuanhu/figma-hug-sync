@@ -617,7 +617,7 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
             style={{ maxWidth: 180, cursor: 'pointer' }}
             onClick={(e) => {
               e.stopPropagation();
-              navigate('/requirements/workbench', { state: { openRequirementId: reqId } });
+              navigate('/requirements/list', { state: { openRequirementId: reqId } });
             }}
           >
             <Text
