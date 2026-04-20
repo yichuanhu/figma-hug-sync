@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Tabs, TabPane, Typography, Tag, Table, Button, Modal, Toast, Empty } from '@douyinfe/semi-ui';
+import { Tabs, TabPane, Typography, Tag, Table, Button, Modal, Toast, Empty, Dropdown } from '@douyinfe/semi-ui';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
-import { FileText, Folder, Plus, Pencil, Trash2, Link as LinkIcon, Users } from 'lucide-react';
+import { FileText, Folder, Plus, Pencil, Trash2, Link as LinkIcon, Users, Ellipsis } from 'lucide-react';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import type { Project, Workspace, ProjectAggregatedStatus } from '../../types';
@@ -124,48 +124,58 @@ const ProjectDetailDrawer = ({
     {
       title: t('common.actions'),
       key: 'actions',
-      width: 300,
+      width: 60,
       render: (_: unknown, record: Workspace) => (
-        <div style={{ display: 'flex', gap: 4 }}>
+        <Dropdown
+          trigger="click"
+          position="bottomRight"
+          stopPropagation
+          clickToHide
+          render={
+            <Dropdown.Menu>
+              <Dropdown.Item
+                icon={<LinkIcon size={16} strokeWidth={2} />}
+                onClick={() => {
+                  setLinkingWs(record);
+                  setLinkModalVisible(true);
+                }}
+              >
+                {t('requirements.projects.linkRequirements')}
+              </Dropdown.Item>
+              <Dropdown.Item
+                icon={<Users size={16} strokeWidth={2} />}
+                onClick={() => {
+                  setMembersWs(record);
+                  setMembersModalVisible(true);
+                }}
+              >
+                {t('requirements.projects.members')}
+              </Dropdown.Item>
+              <Dropdown.Item
+                icon={<Pencil size={16} strokeWidth={2} />}
+                onClick={() => {
+                  setEditingWs(record);
+                  setWsModalVisible(true);
+                }}
+              >
+                {t('common.edit')}
+              </Dropdown.Item>
+              <Dropdown.Item
+                icon={<Trash2 size={16} strokeWidth={2} />}
+                type="danger"
+                onClick={() => handleDeleteWs(record)}
+              >
+                {t('common.delete')}
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          }
+        >
           <Button
-            size="small"
+            icon={<Ellipsis size={16} strokeWidth={2} />}
             theme="borderless"
-            icon={<LinkIcon size={14} />}
-            onClick={() => {
-              setLinkingWs(record);
-              setLinkModalVisible(true);
-            }}
-          >
-            {t('requirements.projects.linkRequirements')}
-          </Button>
-          <Button
-            size="small"
-            theme="borderless"
-            icon={<Users size={14} />}
-            onClick={() => {
-              setMembersWs(record);
-              setMembersModalVisible(true);
-            }}
-          >
-            {t('requirements.projects.members')}
-          </Button>
-          <Button
-            size="small"
-            theme="borderless"
-            icon={<Pencil size={14} />}
-            onClick={() => {
-              setEditingWs(record);
-              setWsModalVisible(true);
-            }}
+            onClick={(e) => e.stopPropagation()}
           />
-          <Button
-            size="small"
-            theme="borderless"
-            type="danger"
-            icon={<Trash2 size={14} />}
-            onClick={() => handleDeleteWs(record)}
-          />
-        </div>
+        </Dropdown>
       ),
     },
   ];
