@@ -335,7 +335,7 @@ const TaskForm = (props: TaskFormProps) => {
           name: member.name,
           groupName,
           status: member.status,
-          label: `[${groupName}] ${member.name}`,
+          label: member.name,
         });
       });
     });
