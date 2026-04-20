@@ -27,79 +27,166 @@
     gap: 6px;
   }
 
-  &__steps {
-    margin-bottom: 12px;
+  /* 收起态：圆点进度 */
+  &__dots {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 4px 2px 0;
   }
 
-  &__step-desc {
+  .afp-dot-wrap {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
   }
 
-  &__avatars {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
+  .afp-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--semi-color-fill-2);
+    flex-shrink: 0;
+
+    &--finish { background: var(--semi-color-success); }
+    &--error  { background: var(--semi-color-danger); }
+    &--process {
+      background: var(--semi-color-primary);
+      box-shadow: 0 0 0 3px var(--semi-color-primary-light-default);
+    }
+    &--wait   { background: var(--semi-color-fill-2); }
   }
 
-  &__details {
+  .afp-dot-line {
+    display: inline-block;
+    width: 28px;
+    height: 2px;
+    background: var(--semi-color-fill-2);
+    margin: 0 4px;
+
+    &--finish { background: var(--semi-color-success); }
+    &--error  { background: var(--semi-color-danger); }
+  }
+
+  /* 展开态：飞书风格时间线 */
+  &__timeline {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    border-top: 1px dashed var(--semi-color-border);
-    padding-top: 8px;
+    margin-top: 12px;
   }
 
-  &__level {
-    background: var(--semi-color-fill-0);
-    border-radius: 6px;
-  }
-
-  &__level-toggle {
-    width: 100%;
+  .afp-node {
     display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 10px;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    text-align: left;
+    gap: 12px;
+    align-items: stretch;
 
-    &:hover {
-      background: var(--semi-color-fill-1);
+    &__rail {
+      position: relative;
+      width: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 6px;
+    }
+
+    &__line {
+      flex: 1;
+      width: 2px;
+      background: var(--semi-color-fill-2);
+      margin-top: 4px;
+      min-height: 16px;
+
+      &--finish { background: var(--semi-color-success); }
+      &--error  { background: var(--semi-color-danger); }
+    }
+
+    &__card {
+      flex: 1;
+      background: var(--semi-color-fill-0);
+      border-radius: 6px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      border-left: 3px solid transparent;
+
+      &--current {
+        background: var(--semi-color-primary-light-default);
+        border-left-color: var(--semi-color-primary);
+      }
+    }
+
+    &__head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    &__title {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    &__approvers {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
   }
 
-  &__approver-list {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    padding: 4px 12px 10px 28px;
-  }
-
-  &__approver {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-
-  &__approver-name {
+  /* 节点状态圆形图标 */
+  .afp-node-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    min-width: 100px;
+    justify-content: center;
+    color: #fff;
+    flex-shrink: 0;
+
+    &--finish  { background: var(--semi-color-success); }
+    &--error   { background: var(--semi-color-danger); }
+    &--process {
+      background: var(--semi-color-primary);
+      box-shadow: 0 0 0 3px var(--semi-color-primary-light-default);
+    }
+    &--wait {
+      background: var(--semi-color-bg-0);
+      color: var(--semi-color-text-2);
+      border: 1.5px solid var(--semi-color-border);
+    }
   }
 
-  &__approver-time {
-    font-variant-numeric: tabular-nums;
-  }
+  /* 审批人 */
+  .afp-approver {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 
-  &__approver-comment {
-    flex-basis: 100%;
-    padding-left: 22px;
+    &__row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    &__name {
+      min-width: 0;
+    }
+
+    &__time {
+      margin-left: auto;
+      font-variant-numeric: tabular-nums;
+    }
+
+    &__comment {
+      margin-left: 32px;
+      background: var(--semi-color-bg-0);
+      border-radius: 6px;
+      padding: 6px 10px;
+      border: 1px solid var(--semi-color-border);
+    }
   }
 }
