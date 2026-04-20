@@ -212,7 +212,7 @@ const ProjectDetailDrawer = ({
           />
         }
       >
-        <Tabs type="line" activeKey={activeTab} onChange={setActiveTab}>
+        <Tabs type="line" activeKey={activeTab} onChange={setActiveTab} className="project-detail-drawer-tabs">
           <TabPane
             itemKey="overview"
             tab={
