@@ -232,12 +232,9 @@ const TaskForm = (props: TaskFormProps) => {
         formApi.setValue('process_id', template.process_id);
         handleProcessChange(template.process_id);
       }
-      // 设置执行目标
-      if (template.execution_target_type === 'BOT_GROUP') {
-        setTargetType('worker_group');
-        formApi.setValue('worker_group_id', template.execution_target_id);
-      } else {
-        setTargetType('worker');
+      // 执行目标：仅支持单个机器人。模板若为机器人组类型则留空，由用户重新选择
+      if (template.execution_target_type !== 'BOT_GROUP' && template.execution_target_id) {
+        formApi.setValue('worker_id', template.execution_target_id);
       }
       // 设置执行设置
       formApi.setValue('priority', template.priority || Priority.MEDIUM);
