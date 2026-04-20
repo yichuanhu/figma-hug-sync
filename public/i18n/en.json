@@ -695,7 +695,8 @@
       "attachmentExceed": "Maximum 5 files allowed",
       "attachmentSizeError": "File size cannot exceed 10MB",
       "baselineSection": "Business Baseline (Automation ROI)",
-      "baselineHint": "Defined by the active scheme; savings will be auto-calculated."
+      "baselineHint": "Defined by the active scheme; savings will be auto-calculated.",
+      "sectionDetails": "Requirement Details"
     },
     "detail": {
       "activityStream": "Activity",
