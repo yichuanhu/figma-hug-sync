@@ -299,32 +299,30 @@ const TaskForm = (props: TaskFormProps) => {
     [t]
   );
 
-  // 将机器人组树形数据转换为 Cascader 格式
-  const workerTreeData = useMemo(() => {
+  // 扁平机器人选项：[组名] 机器人名
+  const workerFlatOptions = useMemo(() => {
     if (!workerGroupsTree) return [];
-
-    return workerGroupsTree.map(group => ({
-      label: <span className="bot-target-selector-worker-group-name">{group.group_name || t('template.fields.ungrouped')}</span>,
-      value: group.group_id || '0',
-      display: group.group_name || t('template.fields.ungrouped'),
-      children:
-        group.members?.map(member => {
-          const config = statusConfig[member.status];
-          return {
-            label: (
-              <div className="bot-target-selector-option">
-                <Text className="bot-target-selector-option-name">{member.name}</Text>
-                <Tag size="small" color={config.color as 'grey' | 'green' | 'blue' | 'red' | 'orange'} type="light">
-                  {config.text}
-                </Tag>
-              </div>
-            ),
-            value: member.worker_id,
-            display: member.name,
-            isLeaf: true,
-          };
-        }) || [],
-    }));
+    const ungroupedLabel = t('template.fields.ungrouped', { defaultValue: '未分组' });
+    const list: Array<{
+      value: string;
+      name: string;
+      groupName: string;
+      status: string;
+      label: string;
+    }> = [];
+    workerGroupsTree.forEach(group => {
+      const groupName = group.group_name || ungroupedLabel;
+      group.members?.forEach(member => {
+        list.push({
+          value: member.worker_id,
+          name: member.name,
+          groupName,
+          status: member.status,
+          label: `[${groupName}] ${member.name}`,
+        });
+      });
+    });
+    return list;
   }, [workerGroupsTree, t]);
 
   useEffect(() => {
