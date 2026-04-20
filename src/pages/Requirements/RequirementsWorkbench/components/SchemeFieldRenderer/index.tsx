@@ -37,7 +37,7 @@ const SchemeFieldRenderer = ({ field }: Props) => {
           {...commonProps}
           min={validation?.min}
           max={validation?.max}
-          suffix={unit ? <span style={{ paddingRight: 8, color: 'var(--semi-color-text-2)' }}>{unit}</span> : undefined}
+          suffix={unit ? <span style={{ paddingRight: 8, color: 'var(--semi-color-text-2)', whiteSpace: 'nowrap' }}>{unit}</span> : undefined}
           style={{ width: '100%' }}
         />
       );
