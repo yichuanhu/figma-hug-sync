@@ -176,7 +176,7 @@ const TaskForm = (props: TaskFormProps) => {
       for (const group of workerGroupsTree) {
         const member = group.members?.find(m => m.worker_id === workerId);
         if (member) {
-          formApi.setValue('worker_id', [group.group_id || '0', workerId]);
+          formApi.setValue('worker_id', workerId);
           break;
         }
       }
