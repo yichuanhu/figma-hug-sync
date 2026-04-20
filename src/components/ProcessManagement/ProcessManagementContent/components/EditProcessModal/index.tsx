@@ -5,6 +5,8 @@ import type { LYUpdateProcessRequest, LYProcessResponse } from '@/api';
 import DepartmentSelect from '@/components/DepartmentSelect';
 import OwnerSelect from '@/components/OwnerSelect';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
+import { getDependents, cascadeUpdateDepartment } from '@/mocks/processDependencies';
+import { getDepartmentName } from '@/mocks/departmentData';
 import './index.less';
 
 interface EditProcessModalProps {
@@ -50,29 +52,41 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
     return true;
   };
 
-  const handleSubmit = async (values: Record<string, unknown>) => {
+  const performSubmit = async (values: Record<string, unknown>, finalDeptId: string | undefined) => {
     if (!processData?.id) return;
-
     setLoading(true);
     try {
-      // 构建API请求参数 - 使用LYUpdateProcessRequest类型
+      const finalDeptName = finalDeptId ? getDepartmentName(finalDeptId) : processData.owning_department_name;
+
       const updateRequest: LYUpdateProcessRequest = {
         name: values.name as string,
         description: (values.description as string) || undefined,
       };
 
-      // 模拟API调用延迟
       await new Promise((resolve) => setTimeout(resolve, 300));
 
-      // 生成Mock响应 - 直接返回LYProcessResponse
+      // 若归属部门变更，同步级联更新依赖资源（mock）
+      const deptChanged = finalDeptId !== processData.owning_department_id;
+      let cascadedTotal = 0;
+      if (deptChanged && finalDeptId) {
+        const result = cascadeUpdateDepartment(processData.id, finalDeptId, finalDeptName || finalDeptId);
+        cascadedTotal = result.total;
+      }
+
       const updatedProcess: LYProcessResponse = {
         ...processData,
         name: updateRequest.name || processData.name,
         description: updateRequest.description || processData.description,
+        owning_department_id: finalDeptId ?? processData.owning_department_id,
+        owning_department_name: finalDeptName ?? processData.owning_department_name,
+        owner_id: ownerId ?? processData.owner_id,
         updated_at: new Date().toISOString(),
       };
 
       Toast.success(t('development.processDevelopment.editModal.success'));
+      if (cascadedTotal > 0) {
+        Toast.info(t('development.processDevelopment.editModal.cascadeSuccess', { total: cascadedTotal }));
+      }
       onSuccess?.(updatedProcess);
       onCancel();
     } catch (error) {
@@ -81,6 +95,31 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSubmit = async (values: Record<string, unknown>) => {
+    if (!processData?.id) return;
+
+    const deptChanged = owningDepartmentId !== processData.owning_department_id;
+    if (deptChanged) {
+      const dependents = getDependents(processData.id);
+      if (dependents.total > 0) {
+        Modal.confirm({
+          title: t('development.processDevelopment.editModal.cascadeConfirm.title'),
+          content: t('development.processDevelopment.editModal.cascadeConfirm.content', {
+            total: dependents.total,
+            triggers: dependents.triggers.length,
+            tasks: dependents.tasks.length,
+            templates: dependents.templates.length,
+          }),
+          okText: t('development.processDevelopment.editModal.cascadeConfirm.ok'),
+          cancelText: t('development.processDevelopment.editModal.cascadeConfirm.cancel'),
+          onOk: () => performSubmit(values, owningDepartmentId),
+        });
+        return;
+      }
+    }
+    performSubmit(values, owningDepartmentId);
   };
 
   return (

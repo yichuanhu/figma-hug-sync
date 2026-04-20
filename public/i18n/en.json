@@ -1184,7 +1184,14 @@
       "editModal": {
         "title": "Edit Process",
         "success": "Process updated!",
-        "error": "Update failed, please retry"
+        "error": "Update failed, please retry",
+        "cascadeConfirm": {
+          "title": "Confirm Owning Department Change",
+          "content": "This process is used by {{total}} downstream resource(s) (Triggers: {{triggers}}, Tasks: {{tasks}}, Templates: {{templates}}). Their owning department will be updated accordingly. Continue?",
+          "ok": "Continue",
+          "cancel": "Cancel"
+        },
+        "cascadeSuccess": "Synced owning department for {{total}} downstream resource(s)"
       },
       "openProcess": {
         "title": "Open Process",
