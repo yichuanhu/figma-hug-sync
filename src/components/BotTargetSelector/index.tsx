@@ -80,32 +80,25 @@ const BotTargetSelector = ({
     return perm ? !perm.canUse : false;
   };
 
-  // 分组选项（用于 BOT_IN_GROUP）
-  const groupedOptions = useMemo(() => {
-    if (targetType !== 'BOT_IN_GROUP') return [];
-    
-    const result: { label: string; children: { value: string; label: string; status: string; noPermission: boolean }[] }[] = [];
-    
-    botGroups.forEach((group) => {
-      const groupBots = bots
-        .filter((b) => b.groupId === group.id)
-        .map((bot) => ({
-          value: bot.id,
-          label: bot.name,
-          status: bot.status,
-          noPermission: isDisabled(bot.id),
-        }));
-      
-      if (groupBots.length > 0) {
-        result.push({
-          label: group.name,
-          children: groupBots,
-        });
-      }
-    });
+  // 扁平机器人选项（用于 BOT_IN_GROUP / UNGROUPED_BOT）
+  // 格式：[组名] 机器人名，未分组显示 [未分组]
+  const flatBotOptions = useMemo(() => {
+    if (targetType !== 'BOT_IN_GROUP' && targetType !== 'UNGROUPED_BOT') return [];
 
-    return result;
-  }, [targetType, botGroups, bots, permissions, enablePermissionCheck]);
+    const groupNameMap = new Map(botGroups.map((g) => [g.id, g.name]));
+    const ungroupedLabel = t('botSelector.ungrouped', { defaultValue: '未分组' });
+
+    return bots.map((bot) => {
+      const groupName = bot.groupId ? groupNameMap.get(bot.groupId) ?? ungroupedLabel : ungroupedLabel;
+      return {
+        value: bot.id,
+        name: bot.name,
+        groupName,
+        status: bot.status,
+        noPermission: isDisabled(bot.id),
+      };
+    });
+  }, [targetType, botGroups, bots, permissions, enablePermissionCheck, t]);
 
   // 渲染已选中值的标签
   const renderSelectedItem = (optionNode: Record<string, any>) => {
