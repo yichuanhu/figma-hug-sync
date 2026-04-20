@@ -65,3 +65,25 @@ PENDING_APPROVAL ──creator withdraw──▶ DRAFT/WITHDRAWN
 ## 历史：审批流飞书风格改造（已完成）
 
 （保留供回溯）将需求详情抽屉「概览」Tab 中的 `ApprovalFlowProgress` 改造为飞书审批流风格的垂直时间线，含收起/展开两态、节点状态图标与连接线、审批人列表与评论气泡、当前节点高亮。仅修改组件 `index.tsx` 与 `index.less`。
+
+---
+
+## 关联关系规则（Requirement ↔ Workspace ↔ Process）
+
+依据需求文档明确的关联方向，建立两个唯一入口：
+
+1. **需求 → 工作空间（FEAT-009 唯一入口）**
+   - 操作位置：工作空间详情页 →「管理关联需求」
+   - 约束：需求 N:1 工作空间；工作空间已有发布流程时禁止解除关联
+   - 联动：关联后需求自动从「待立项」转「开发中」（待后续完善）
+
+2. **流程 → 需求（开发中心，依赖上下文）**
+   - 操作位置：在工作空间上下文中创建流程时选择关联需求
+   - 约束：`process.workspace_id === requirement.linked_workspace_id`
+   - 不允许反向：不能在需求中心侧为已有流程指定需求
+
+### 需求中心侧的处置（本次落地）
+- 移除需求详情抽屉的「管理关联流程」按钮（`ManageLinkedProcessesModal` 调用点已断开，组件文件保留）。
+- 「新增交付物」弹窗中移除 `PROCESS` 类型选项；非流程类（ADP_APP / AGENT / HUMAN_COLLAB）保持可编辑。
+- 表格中流程行（`source==='process'`）操作列不再渲染删除按钮，作为只读回溯展示。
+- 空态/列表底部新增 `requirements.linkedProcesses.readonlyHint` 文案，引导到正确入口。
