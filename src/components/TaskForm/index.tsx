@@ -287,8 +287,8 @@ const TaskForm = (props: TaskFormProps) => {
     if (optionNode?.groupName && optionNode?.name) {
       return (
         <span className="bot-target-selector-selected-with-tag">
-          <span className="bot-target-selector-option-group-tag">{optionNode.groupName}</span>
           <span className="bot-target-selector-option-name">{optionNode.name}</span>
+          <span className="bot-target-selector-option-group-tag">{optionNode.groupName}</span>
         </span>
       );
     }
