@@ -445,21 +445,36 @@ const TaskForm = (props: TaskFormProps) => {
                     renderSelectedItem={renderSelectedItem}
                     dropdownStyle={{ '--select-option-max-width': showRightPanel ? '382px' : '460px' } as React.CSSProperties}
                     dropdownClassName="semi-select-option-ellipsis"
-                  >
-                    {workerFlatOptions.map(opt => {
-                      const config = statusConfig[opt.status];
+                    renderOptionItem={(renderProps: Record<string, unknown>) => {
+                      const { onClick, onMouseEnter, selected, disabled, focused, name, groupName, status } = renderProps as {
+                        onClick: (e: React.MouseEvent) => void;
+                        onMouseEnter: (e: React.MouseEvent) => void;
+                        selected: boolean;
+                        disabled: boolean;
+                        focused: boolean;
+                        name: string;
+                        groupName: string;
+                        status: string;
+                      };
+                      const config = statusConfig[status];
+                      const cls = [
+                        'semi-select-option',
+                        'bot-target-selector-option',
+                        selected ? 'semi-select-option-selected' : '',
+                        disabled ? 'semi-select-option-disabled' : '',
+                        focused ? 'semi-select-option-focused' : '',
+                      ].filter(Boolean).join(' ');
                       return (
-                        <Select.Option
-                          key={opt.value}
-                          value={opt.value}
-                          label={opt.label}
-                          {...({ name: opt.name, groupName: opt.groupName } as Record<string, unknown>)}
+                        <div
+                          className={cls}
+                          onClick={disabled ? undefined : onClick}
+                          onMouseEnter={onMouseEnter}
                         >
-                          <div className="bot-target-selector-option">
-                            <Text className="bot-target-selector-option-name">{opt.name}</Text>
-                            <Tag size="small" color="grey" type="light" className="bot-target-selector-option-group-tag">
-                              {opt.groupName}
-                            </Tag>
+                          <Text className="bot-target-selector-option-name">{name}</Text>
+                          <Tag size="small" color="grey" type="light" className="bot-target-selector-option-group-tag">
+                            {groupName}
+                          </Tag>
+                          {config && (
                             <Tag
                               size="small"
                               color={config.color as 'grey' | 'green' | 'blue' | 'red' | 'orange'}
@@ -468,10 +483,21 @@ const TaskForm = (props: TaskFormProps) => {
                             >
                               {config.text}
                             </Tag>
-                          </div>
-                        </Select.Option>
+                          )}
+                        </div>
                       );
-                    })}
+                    }}
+                  >
+                    {workerFlatOptions.map(opt => (
+                      <Select.Option
+                        key={opt.value}
+                        value={opt.value}
+                        label={opt.label}
+                        {...({ name: opt.name, groupName: opt.groupName, status: opt.status } as Record<string, unknown>)}
+                      >
+                        {opt.name}
+                      </Select.Option>
+                    ))}
                   </Form.Select>
                 </div>
               </div>
