@@ -274,7 +274,7 @@ const ProjectDetailDrawer = ({
                 <Button
                   theme="solid"
                   type="primary"
-                  size="small"
+                  style={{ height: 32 }}
                   icon={<Plus size={14} />}
                   onClick={() => {
                     setEditingWs(null);

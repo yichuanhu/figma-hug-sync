@@ -117,9 +117,9 @@ const PropertyPanel = ({
             <Button
               theme="solid"
               type="primary"
-              size="small"
               icon={<Send size={16} strokeWidth={2} />}
               block
+              style={{ height: 32 }}
               onClick={() => {
                 Modal.confirm({
                   title: t('requirements.detail.submitConfirmTitle'),
