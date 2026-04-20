@@ -101,3 +101,13 @@ PENDING_APPROVAL ──creator withdraw──▶ DRAFT/WITHDRAWN
 - 行为：未选工作空间时禁用并提示「请先选择所属工作空间」；空列表时提示「暂无可关联的需求」；切换工作空间自动清空已选需求。
 - 校验：提交时强制 `requirementId ∈ requirementOptions`，等价于 `process.workspace_id === requirement.linked_workspace_id`。
 - 字段为可选（允许后续在详情中关联），但选了即必须落到当前工作空间下。
+
+### 开发中心 · 流程列表「关联需求」列与多选筛选
+- 表格新增「关联需求」列（位于归属部门之后，width 200），值存在时渲染 Semi `Tag`（`color="blue" type="light"` + Lucide `Link2` 前缀图标，最大宽度 180），文字超出 ellipsis + Tooltip。
+- 点击 Tag：`stopPropagation` 后 `navigate('/requirements/workbench', { state: { openRequirementId } })`，由需求工作台 `useEffect` 监听 `location.state` 自动打开详情抽屉并清理 state。
+- 工具栏新增「关联需求」下拉多选筛选（与归属部门同层、宽度 240px），选项 = `fetchRequirementBriefByIds(所有 process.requirement_id)` 按 title 排序 + 顶部固定一项「未关联需求」（特殊 value `__UNLINKED__`）。
+- 筛选语义：
+  - 选中需求 id → 命中 `process.requirement_id ∈ 选中集合`
+  - 选中「未关联需求」→ 命中 `!process.requirement_id`
+  - 二者 OR 共存；全不选不过滤。
+- 实现层：在客户端用 `useMemo` 对当前页 `listResponse.list` 二次过滤为 `displayList`，避免改 mock API 签名；空态文案/`noResult` 也将 `requirementFilter` 计入条件判定。
