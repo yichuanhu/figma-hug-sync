@@ -33,7 +33,6 @@ import ProcessDetailDrawer from './components/ProcessDetailDrawer';
 import { useOpenProcess } from './hooks/useOpenProcess';
 import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
 import type { LYProcessResponse, LYProcessDependency, GetProcessesParams, LYListResponseLYProcessResponse } from '@/api';
-import { fetchRequirementBriefByIds } from '@/pages/Requirements/RequirementsProjects/mockData';
 import './index.less';
 
 const { Title, Text } = Typography;
