@@ -386,17 +386,6 @@ const ArtifactSection = ({
           }}
         </Form>
       </Modal>
-
-      {/* 流程批量管理弹窗 */}
-      {canManageProcesses && (
-        <ManageLinkedProcessesModal
-          visible={manageProcessesVisible}
-          requirementId={data.id}
-          linked={linkedProcesses}
-          onClose={() => setManageProcessesVisible(false)}
-          onChanged={() => onProcessesChanged?.()}
-        />
-      )}
     </div>
   );
 };
