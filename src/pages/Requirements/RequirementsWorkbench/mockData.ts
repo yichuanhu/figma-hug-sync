@@ -380,39 +380,8 @@ const generateMockLinkedProcesses = (status: RequirementStatus, idx: number): Li
   return MOCK_PROCESS_POOL.slice(0, (idx % 3) + 1);
 };
 
-/** 关联流程到需求 */
-export const addLinkedProcesses = async (reqId: string, processIds: string[]): Promise<RequirementItem | null> => {
-  await new Promise((r) => setTimeout(r, 200));
-  const idx = mockRequirementData.findIndex((r) => r.id === reqId);
-  if (idx === -1) return null;
-  const cur = mockRequirementData[idx];
-  const existing = cur.linkedProcesses ?? [];
-  const existingIds = new Set(existing.map((p) => p.id));
-  const toAdd = processIds
-    .filter((id) => !existingIds.has(id))
-    .map((id) => MOCK_PROCESS_POOL.find((p) => p.id === id))
-    .filter((p): p is LinkedProcess => !!p);
-  mockRequirementData[idx] = {
-    ...cur,
-    linkedProcesses: [...existing, ...toAdd],
-    updatedAt: new Date().toISOString(),
-  };
-  return mockRequirementData[idx];
-};
-
-/** 解除关联 */
-export const removeLinkedProcess = async (reqId: string, processId: string): Promise<RequirementItem | null> => {
-  await new Promise((r) => setTimeout(r, 150));
-  const idx = mockRequirementData.findIndex((r) => r.id === reqId);
-  if (idx === -1) return null;
-  const cur = mockRequirementData[idx];
-  mockRequirementData[idx] = {
-    ...cur,
-    linkedProcesses: (cur.linkedProcesses ?? []).filter((p) => p.id !== processId),
-    updatedAt: new Date().toISOString(),
-  };
-  return mockRequirementData[idx];
-};
+// 注：需求中心侧不再支持直接关联/解除流程，关联入口已收敛至工作空间与开发中心。
+// 原 addLinkedProcesses / removeLinkedProcess 已移除。
 
 let mockRequirementData = generateMockRequirements();
 
