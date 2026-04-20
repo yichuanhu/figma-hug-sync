@@ -3,6 +3,27 @@
  *
  * 兼容说明：保留旧 RequirementStatus / RequirementPriority / RequirementItem 旧字段，
  * 同时新增 Scheme 相关类型。阶段 1 列表与审批使用新 9 态，旧弹窗/旧抽屉仍可读取旧字段。
+ *
+ * ============================================================================
+ * 领域边界说明（Domain Boundary）
+ * ----------------------------------------------------------------------------
+ * 本文件中的类型在概念上分为两大类，实现/UI 时应清晰区分：
+ *
+ * 1) 需求内容（Requirement Content）—— 描述「需求是什么」
+ *    包含：基本信息（title/description/...）、归属（owning_department / owner）、
+ *    优先级与状态、动态表单数据（form_data / baselineFormData）、
+ *    评估结果（value_score / complexity_score / detailedAssessment）、
+ *    成本估算（cost_estimation / costEstimate）、关联实体（linked_entities / linkedProcesses）。
+ *    这些字段构成需求实体本身，是需求列表/详情概览的核心展示对象。
+ *
+ * 2) 活动记录（Activity / Audit Trail）—— 描述「谁在何时对需求做了什么」
+ *    包含：approvals / approvalHistory / assessments / versions / historyVersions /
+ *    ActivityRecord。这些不属于需求本体，而是围绕需求产生的操作日志/审计留痕，
+ *    仅用于追溯与时间线展示（例如详情抽屉的「动态/历史」侧栏）。
+ *
+ * 设计约束：UI 层应将「活动记录」与「需求内容」在视觉与信息架构上分离，避免
+ * 把审计数据（如审批/版本/评估历史）当作需求字段渲染到主表单或概览主区域。
+ * ============================================================================
  */
 
 // ============= 9 状态生命周期 =============
