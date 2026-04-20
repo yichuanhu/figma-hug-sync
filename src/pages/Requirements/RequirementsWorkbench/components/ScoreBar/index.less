@@ -14,10 +14,11 @@
   &__track {
     flex: 1;
     height: 4px;
-    background-color: var(--semi-color-fill-1);
+    background-color: var(--semi-color-fill-2);
     border-radius: 2px;
     overflow: hidden;
     min-width: 32px;
+    position: relative;
   }
 
   &__fill {
@@ -25,6 +26,7 @@
     height: 100%;
     border-radius: 2px;
     transition: width 0.2s ease;
+    max-width: 100%;
   }
 
   &--value &__fill {
