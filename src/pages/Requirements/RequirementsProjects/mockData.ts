@@ -377,6 +377,7 @@ export const fetchLinkableRequirementsByWorkspace = async (
  * 用于开发中心创建流程时通过单一「关联需求」字段反查归属信息。
  */
 export const fetchAllLinkableRequirements = async (): Promise<LinkableRequirementBrief[]> => {
+  await ensureDemoSeed();
   await delay(null);
   const wsByReqId = new Map<string, Workspace>();
   workspaces.forEach((w) => {
