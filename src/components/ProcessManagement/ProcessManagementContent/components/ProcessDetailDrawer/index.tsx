@@ -28,6 +28,10 @@ import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import './index.less';
 import { ExternalLink, HelpCircle, Link, Pencil, PlayCircle, Trash2, Upload } from 'lucide-react';
 import DependencyTab from './components/DependencyTab';
+import {
+  fetchAllLinkableRequirements,
+  type LinkableRequirementBrief,
+} from '@/pages/Requirements/RequirementsProjects/mockData';
 
 const { Title, Text } = Typography;
 
