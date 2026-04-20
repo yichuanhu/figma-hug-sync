@@ -5,11 +5,10 @@ import {
   Form,
   Toast,
   Button,
-  Upload,
   Typography,
+  useFormState,
 } from '@douyinfe/semi-ui';
-import { Upload as UploadIcon } from 'lucide-react';
-import type { RequirementItem } from '../../types';
+import type { RequirementItem, SchemeField, SchemeFieldDependsOn } from '../../types';
 import DepartmentSelect from '@/components/DepartmentSelect';
 import OwnerSelect from '@/components/OwnerSelect';
 import { MOCK_CURRENT_USER } from '@/mocks/departmentData';

@@ -1,4 +1,6 @@
-import { Form } from '@douyinfe/semi-ui';
+import { useEffect, useMemo } from 'react';
+import { Form, Upload, Button, Toast, useFormApi, useFormState } from '@douyinfe/semi-ui';
+import { Upload as UploadIcon } from 'lucide-react';
 import type { SchemeField } from '../../types';
 
 interface Props {
@@ -47,8 +49,21 @@ const SchemeFieldRenderer = ({ field }: Props) => {
           {...commonProps}
           min={validation?.min ?? 0}
           max={validation?.max ?? 100}
-          suffix={<span style={{ paddingRight: 8, color: 'var(--semi-color-text-2)' }}>%</span>}
+          suffix={<span style={{ paddingRight: 8, color: 'var(--semi-color-text-2)', whiteSpace: 'nowrap' }}>%</span>}
           style={{ width: '100%' }}
+        />
+      );
+    case 'calculation':
+      return <CalculationField field={field} />;
+    case 'file_upload':
+      return <FileUploadField field={field} commonProps={commonProps} />;
+    case 'rich_text':
+      return (
+        <Form.TextArea
+          {...commonProps}
+          autosize={{ minRows: 4, maxRows: 8 }}
+          maxCount={5000}
+          showClear
         />
       );
     case 'select':
@@ -92,6 +107,81 @@ const SchemeFieldRenderer = ({ field }: Props) => {
     default:
       return <Form.Input {...commonProps} maxLength={validation?.maxLength ?? 200} showClear />;
   }
+};
+
+/**
+ * 自动计算字段：根据 expression 与 source_fields 实时计算并写回表单值。
+ * 渲染为禁用的 InputNumber，不可编辑。
+ */
+const CalculationField = ({ field }: { field: SchemeField }) => {
+  const { key, label, unit, expression, source_fields, description } = field;
+  const formApi = useFormApi();
+  const formState = useFormState();
+  const values = formState.values ?? {};
+
+  const computed = useMemo(() => {
+    if (!expression) return undefined;
+    let expr = expression;
+    (source_fields ?? []).forEach((srcKey) => {
+      const v = Number(values[srcKey] ?? 0);
+      expr = expr.replace(new RegExp(`\\{${srcKey}\\}`, 'g'), String(Number.isFinite(v) ? v : 0));
+    });
+    try {
+      // 仅允许数字与四则运算字符
+      if (!/^[\d+\-*/(). ]+$/.test(expr)) return undefined;
+      // eslint-disable-next-line no-new-func
+      const result = Function(`"use strict"; return (${expr});`)();
+      if (typeof result !== 'number' || !Number.isFinite(result)) return undefined;
+      return Math.round(result * 100) / 100;
+    } catch {
+      return undefined;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [expression, JSON.stringify((source_fields ?? []).map((k) => values[k]))]);
+
+  useEffect(() => {
+    formApi.setValue(key, computed);
+  }, [computed, key, formApi]);
+
+  return (
+    <Form.InputNumber
+      field={key}
+      label={label}
+      disabled
+      extraText={description ?? '系统自动根据上方字段计算'}
+      suffix={unit ? <span style={{ paddingRight: 8, color: 'var(--semi-color-text-2)', whiteSpace: 'nowrap' }}>{unit}</span> : undefined}
+      style={{ width: '100%' }}
+    />
+  );
+};
+
+/**
+ * 文件上传字段：使用 Semi UI Upload，最多 5 个 / 单文件 10MB。
+ */
+const FileUploadField = ({
+  field,
+  commonProps,
+}: {
+  field: SchemeField;
+  commonProps: Record<string, unknown>;
+}) => {
+  return (
+    <Form.Upload
+      {...commonProps}
+      action=""
+      limit={5}
+      maxSize={10240}
+      draggable={false}
+      listType="list"
+      accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.png,.jpg,.jpeg,.gif,.zip,.rar,.txt,.csv"
+      onExceed={() => Toast.warning('最多上传 5 个文件')}
+      onSizeError={() => Toast.warning('文件大小不能超过 10MB')}
+    >
+      <Button icon={<UploadIcon size={14} strokeWidth={2} />} theme="light" type="tertiary">
+        点击上传
+      </Button>
+    </Form.Upload>
+  );
 };
 
 export default SchemeFieldRenderer;
