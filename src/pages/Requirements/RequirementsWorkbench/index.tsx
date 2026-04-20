@@ -377,7 +377,7 @@ const RequirementsWorkbench = () => {
                       content: t('requirements.detail.offlineConfirmContent', '下线后该需求将停止运行，关联流程不会自动停用，请知悉。'),
                       okText: t('requirements.detail.offline', '下线'),
                       cancelText: t('common.cancel'),
-                      type: 'warning',
+                      okType: 'warning',
                       onOk: async () => {
                         await updateRequirementStatus(record.id, 'OFFLINE', 'Taken offline.');
                         loadData();
