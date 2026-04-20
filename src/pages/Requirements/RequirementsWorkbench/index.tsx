@@ -82,19 +82,18 @@ const RequirementsWorkbench = () => {
     list: [],
   });
 
-  // 筛选选项
+  // 筛选选项（与 9 状态生命周期对齐）
   const statusOptions = useMemo(
     () => [
-      { value: 'DRAFT', label: t('requirements.status.draft') },
-      { value: 'PENDING', label: t('requirements.status.pending') },
-      { value: 'APPROVED', label: t('requirements.status.approved') },
-      { value: 'REJECTED', label: t('requirements.status.rejected') },
-      { value: 'ASSESSING', label: t('requirements.status.assessing') },
-      { value: 'DEVELOPING', label: t('requirements.status.developing') },
-      { value: 'DEVELOPED', label: t('requirements.status.developed') },
-      { value: 'RUNNING', label: t('requirements.status.running') },
-      { value: 'STOPPED', label: t('requirements.status.stopped') },
-      { value: 'ARCHIVED', label: t('requirements.status.archived') },
+      { value: 'DRAFT',              label: t('requirements.status.draft') },
+      { value: 'PENDING_APPROVAL',   label: t('requirements.status.pendingApproval') },
+      { value: 'PENDING_ASSESSMENT', label: t('requirements.status.pendingAssessment') },
+      { value: 'PENDING_PROJECT',    label: t('requirements.status.pendingProject') },
+      { value: 'DEVELOPING',         label: t('requirements.status.developing') },
+      { value: 'LAUNCHED',           label: t('requirements.status.launched') },
+      { value: 'OFFLINE',            label: t('requirements.status.offline') },
+      { value: 'REJECTED',           label: t('requirements.status.rejected') },
+      { value: 'WITHDRAWN',          label: t('requirements.status.withdrawn') },
     ],
     [t],
   );
