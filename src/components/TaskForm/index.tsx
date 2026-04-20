@@ -104,7 +104,6 @@ const TaskForm = (props: TaskFormProps) => {
       formApi.reset();
       if (params) {
         setLoading(true);
-        setTargetType(params.worker_id ? 'worker' : 'worker_group');
         formApi.setValues({
           task_num: 1,
           task_repeat: false,
@@ -118,7 +117,6 @@ const TaskForm = (props: TaskFormProps) => {
         setInputParameters([]);
         setOutputParameters([]);
         showParamsHandle(false);
-        setTargetType('worker');
         setPendingValidation(null);
         formApi.setValues({
           priority: Priority.MEDIUM,
