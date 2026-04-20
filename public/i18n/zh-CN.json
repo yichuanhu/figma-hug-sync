@@ -916,6 +916,10 @@
       "explicitMembersCount": "显式成员：{{count}} 人",
       "inheritedManagersHint": "以下用户作为部门管理员自动继承本工作空间的「管理员」权限，无需重复添加：",
       "inheritedTag": "自动继承",
+      "deptManagerInheritedTag": "部门管理员",
+      "manageMembersTitle": "管理成员",
+      "allAccessUsersTitle": "所有可访问此工作空间的用户",
+      "addFromOrg": "从组织架构添加",
       "searchUserPlaceholder": "搜索用户姓名或部门",
       "removeMemberConfirm": "确定移除成员「{{name}}」？",
       "role": {
