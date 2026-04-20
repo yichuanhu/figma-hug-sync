@@ -624,30 +624,35 @@ export const deleteRequirement = async (id: string): Promise<void> => {
   mockRequirementData = mockRequirementData.filter((item) => item.id !== id);
 };
 
-/** 从 form_data 中提取基线四字段；齐全则计算节省 */
+/** 从 form_data 中提取基线四字段；齐全则计算节省。
+ * 同时兼容新版 RPA-PRO 字段命名（frequency/duration/automation_ratio/job_level）
+ * 与旧版命名（frequency/durationMinutes/automationRatio/jobLevel）。
+ */
 const extractBaselineAndCost = (
   formData: Record<string, unknown> | undefined,
 ): { baseline?: RequirementBaselineFormData; cost?: CostEstimateData; form_data?: Record<string, unknown> } => {
   if (!formData) return {};
-  const { frequency, durationMinutes, automationRatio, jobLevel } = formData as Record<string, unknown>;
-  const validLevels: JobLevel[] = ['P4', 'P5', 'P6', 'P7'];
-  // 表单中 percentage 字段为 0~100，统一归一化为 0~1
-  const ratioRaw = typeof automationRatio === 'number' ? automationRatio : NaN;
+  // 新键优先；缺失则回退到旧键
+  const frequency = formData.frequency;
+  const durationVal = formData.duration ?? formData.durationMinutes;
+  const ratioVal = formData.automation_ratio ?? formData.automationRatio;
+  const jobLevelVal = formData.job_level ?? formData.jobLevel;
+  // percentage 字段为 0~100，统一归一化为 0~1
+  const ratioRaw = typeof ratioVal === 'number' ? ratioVal : NaN;
   const ratioNormalized = ratioRaw > 1 ? ratioRaw / 100 : ratioRaw;
   if (
     typeof frequency === 'number' &&
-    typeof durationMinutes === 'number' &&
+    typeof durationVal === 'number' &&
     Number.isFinite(ratioNormalized) &&
-    typeof jobLevel === 'string' &&
-    (validLevels as string[]).includes(jobLevel)
+    typeof jobLevelVal === 'string' && jobLevelVal.length > 0
   ) {
     const baseline: RequirementBaselineFormData = {
       frequency,
-      durationMinutes,
+      durationMinutes: durationVal,
       automationRatio: ratioNormalized,
-      jobLevel: jobLevel as JobLevel,
+      jobLevel: jobLevelVal,
     };
-    return { baseline, cost: computeCostEstimate(baseline), form_data: { ...formData, automationRatio: ratioNormalized } };
+    return { baseline, cost: computeCostEstimate(baseline), form_data: { ...formData, automation_ratio: ratioNormalized, automationRatio: ratioNormalized } };
   }
   return { form_data: formData };
 };
