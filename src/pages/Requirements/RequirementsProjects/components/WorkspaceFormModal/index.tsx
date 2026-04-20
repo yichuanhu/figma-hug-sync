@@ -153,19 +153,15 @@ const WorkspaceFormModal = ({ visible, projectId, initialData, onClose, onSucces
 };
 
 // 把 Form.Slot 包出来：DepartmentSelect 不是 Semi Form Field
-const DepartmentSelectField = ({
-  formApiRef,
-  t,
-}: {
-  formApiRef: React.MutableRefObject<FormApi | null>;
-  t: (k: string) => string;
-}) => {
-  const value = formApiRef.current?.getValue('departmentId');
+const DepartmentSelectField = ({ t }: { t: (k: string) => string }) => {
+  const formApi = useFormApi();
+  const formState = useFormState();
+  const value = formState.values?.departmentId;
   return (
     <DepartmentSelect
       value={value}
       onChange={(v: string) => {
-        formApiRef.current?.setValue('departmentId', v);
+        formApi.setValue('departmentId', v);
       }}
       placeholder={t('requirements.projects.placeholders.department')}
       style={{ width: '100%' }}
