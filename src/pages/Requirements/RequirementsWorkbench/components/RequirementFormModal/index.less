@@ -30,21 +30,17 @@
     border-top: 1px dashed var(--semi-color-border);
   }
 
-  // 两列 grid 容器：small/medium 字段并排，large/full 占满整行
+  // 单列布局：每个字段独占一行（对齐"新建流程"弹窗）
   &-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: 16px;
+    grid-template-columns: minmax(0, 1fr);
     row-gap: 0;
 
     > .scheme-field-w-full,
-    > .scheme-field-w-large {
+    > .scheme-field-w-large,
+    > .scheme-field-w-medium,
+    > .scheme-field-w-small {
       grid-column: 1 / -1;
-    }
-
-    > .scheme-field-w-small,
-    > .scheme-field-w-medium {
-      grid-column: span 1;
     }
 
     .semi-form-field {
