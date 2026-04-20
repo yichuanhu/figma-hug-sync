@@ -412,21 +412,49 @@ const TaskForm = (props: TaskFormProps) => {
                 </div>
                 {/* 机器人选择 */}
                 <div style={targetType === 'worker' ? undefined : { display: 'none' }}>
-                  <Form.Cascader
+                  <Form.Select
                     field="worker_id"
                     noLabel
                     placeholder={t('template.fields.workerPlaceholder')}
-                    treeData={workerTreeData}
-                    multiple={false}
-                    filterTreeNode
-                    treeNodeFilterProp="display"
+                    filter={(input: string, option: Record<string, unknown>) => {
+                      const kw = (input || '').toString().toLowerCase();
+                      return (
+                        String(option?.name || '').toLowerCase().includes(kw) ||
+                        String(option?.groupName || '').toLowerCase().includes(kw)
+                      );
+                    }}
                     className="task-template-select-full"
                     rules={targetType === 'worker' ? [{ required: true, message: t('template.validation.workerRequired') }] : []}
-                    displayProp="display"
-                    displayRender={selected => (Array.isArray(selected) ? selected.join(' - ') : '')}
-                    dropdownStyle={{ width: showRightPanel ? '382px' : '460px' } as React.CSSProperties}
-                    dropdownClassName="task-template-select-dropdown"
-                  />
+                    renderSelectedItem={renderSelectedItem}
+                    dropdownStyle={{ '--select-option-max-width': showRightPanel ? '382px' : '460px' } as React.CSSProperties}
+                    dropdownClassName="semi-select-option-ellipsis"
+                  >
+                    {workerFlatOptions.map(opt => {
+                      const config = statusConfig[opt.status];
+                      return (
+                        <Select.Option
+                          key={opt.value}
+                          value={opt.value}
+                          label={opt.label}
+                          {...({ name: opt.name, groupName: opt.groupName } as Record<string, unknown>)}
+                        >
+                          <div className="bot-target-selector-option">
+                            <Text className="bot-target-selector-option-name">
+                              [{opt.groupName}] {opt.name}
+                            </Text>
+                            <Tag
+                              size="small"
+                              color={config.color as 'grey' | 'green' | 'blue' | 'red' | 'orange'}
+                              type="light"
+                              className="bot-target-selector-option-status"
+                            >
+                              {config.text}
+                            </Tag>
+                          </div>
+                        </Select.Option>
+                      );
+                    })}
+                  </Form.Select>
                 </div>
               </div>
 
