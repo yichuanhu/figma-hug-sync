@@ -144,6 +144,41 @@ recomputeProjectAggregates();
 
 const delay = <T>(v: T, ms = 200) => new Promise<T>((r) => setTimeout(() => r(v), ms));
 
+// ---- 演示用：首次调用任意 API 前预先把部分需求关联到对应部门的工作空间，
+//      以便「新建流程」的关联需求下拉、项目聚合统计等场景有可见数据。 ----
+let demoSeedPromise: Promise<void> | null = null;
+const ensureDemoSeed = (): Promise<void> => {
+  if (demoSeedPromise) return demoSeedPromise;
+  demoSeedPromise = (async () => {
+    const { fetchRequirementList } = await import('../RequirementsWorkbench/mockData');
+    const res = await fetchRequirementList({
+      offset: 0,
+      size: 1000,
+      keyword: '',
+      sort_by: 'created_at',
+      sort_order: 'desc',
+    });
+    // 已经手动关联过 → 跳过
+    if (workspaces.some((w) => w.linkedRequirementIds.length > 0)) return;
+    // 候选状态：评估通过 / 待立项 / 开发中（保留尚未绑定流程的优先）
+    const candidateStatus = new Set(['PENDING_PROJECT', 'PENDING_ASSESSMENT', 'DEVELOPING', 'LAUNCHED']);
+    const byDept = new Map<string, string[]>();
+    res.list.forEach((r) => {
+      if (!candidateStatus.has(r.status)) return;
+      const arr = byDept.get(r.owning_department_id) ?? [];
+      if (arr.length < 4) arr.push(r.id);
+      byDept.set(r.owning_department_id, arr);
+    });
+    workspaces = workspaces.map((w) => {
+      const pool = byDept.get(w.departmentId) ?? [];
+      // 每个工作空间最多关联 2 个需求
+      return { ...w, linkedRequirementIds: pool.splice(0, 2) };
+    });
+    recomputeProjectAggregates();
+  })();
+  return demoSeedPromise;
+};
+
 export const fetchProjects = async (): Promise<Project[]> => {
   recomputeProjectAggregates();
   return delay([...projects]);
