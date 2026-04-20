@@ -1022,8 +1022,8 @@ export const resubmitRequirement = async (id: string): Promise<RequirementItem |
   const index = mockRequirementData.findIndex((r) => r.id === id);
   if (index === -1) return null;
   const cur = mockRequirementData[index];
-  if (cur.status !== 'REJECTED') {
-    throw new Error('Only REJECTED requirements can be resubmitted');
+  if (cur.status !== 'REJECTED' && cur.status !== 'WITHDRAWN') {
+    throw new Error('Only REJECTED or WITHDRAWN requirements can be resubmitted');
   }
   if (cur.creatorId !== MOCK_CURRENT_USER_ID) {
     throw new Error('Only the creator can resubmit the requirement');
