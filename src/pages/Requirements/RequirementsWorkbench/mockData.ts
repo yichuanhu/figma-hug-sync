@@ -1051,6 +1051,45 @@ export const resubmitRequirement = async (id: string): Promise<RequirementItem |
   return mockRequirementData[index];
 };
 
+/**
+ * 状态联动：当需求被关联到工作空间时，自动迁移到「开发中」并写入审批历史留痕。
+ * 仅当当前状态属于审批/评估/待立项阶段时迁移；其余状态保持不变。
+ */
+export const transitionToDeveloping = async (
+  requirementId: string,
+  workspace: { id: string; name: string },
+): Promise<RequirementItem | null> => {
+  await new Promise((r) => setTimeout(r, 0));
+  const index = mockRequirementData.findIndex((r) => r.id === requirementId);
+  if (index === -1) return null;
+  const cur = mockRequirementData[index];
+  const migratable: RequirementStatus[] = [
+    'PENDING_APPROVAL',
+    'APPROVED',
+    'ASSESSING',
+    'PENDING_ASSESSMENT',
+    'PENDING_PROJECT',
+  ];
+  if (!migratable.includes(cur.status)) return cur;
+  const now = new Date().toISOString();
+  const entry: ApprovalHistoryEntry = {
+    id: `hist-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    level: cur.approvalFlowConfig?.currentLevel ?? 1,
+    approverId: 'system',
+    approverName: '系统',
+    action: 'approve',
+    comment: `已关联至工作空间「${workspace.name}」，自动进入开发中`,
+    timestamp: now,
+  };
+  mockRequirementData[index] = {
+    ...cur,
+    status: 'DEVELOPING',
+    approvalHistory: [...(cur.approvalHistory ?? []), entry],
+    updatedAt: now,
+  };
+  return mockRequirementData[index];
+};
+
 /** 重新导出激活方案查询，供其它模块使用（保持原 import 路径不变） */
 export const getActiveScheme = getEffectiveScheme;
 
