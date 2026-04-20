@@ -397,6 +397,18 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
     { key: t('development.processDevelopment.fields.processName'), value: processData.name },
     { key: t('common.description'), value: <ExpandableText text={processData.description} maxLines={3} /> },
     { key: t('common.owningDepartment'), value: getDepartmentName(processData.owning_department_id) },
+    ...(linkedRequirement
+      ? [
+          {
+            key: t('development.processDevelopment.createModal.fields.requirementLabel'),
+            value: linkedRequirement.req_no
+              ? `[${linkedRequirement.req_no}] ${linkedRequirement.title}`
+              : linkedRequirement.title,
+          },
+          { key: t('common.owningProject'), value: linkedRequirement.projectName || '-' },
+          { key: t('workspaceSelect.label'), value: linkedRequirement.workspaceName || '-' },
+        ]
+      : []),
     { key: t('common.owner'), value: processData.owner_name ? <UserNameWithCard name={processData.owner_name} userId={processData.owner_id || ''} /> : '-' },
     { key: t('common.creator'), value: creatorInfo ? <UserNameWithCard name={creatorInfo.name} userId={processData.creator_id} department={creatorInfo.department} role={creatorInfo.role} email={creatorInfo.email} /> : '-' },
     { key: t('common.createTime'), value: formatDateTime(processData.created_at) },
