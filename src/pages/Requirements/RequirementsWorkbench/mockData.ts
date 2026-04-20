@@ -109,6 +109,14 @@ const mockTemplates: MockTemplate[] = [
   { title: 'Data Backup Verification', description: 'Automated backup integrity verification, restore testing, retention policy enforcement, and compliance reporting across all data stores.', owning_department_name: 'IT', owning_department_id: 'dept-003', creatorId: 'user-003', priority: 'HIGH', status: 'DEVELOPING' },
   { title: 'Cross-Border Shipping Compliance', description: 'Automated customs documentation preparation, tariff classification, restricted party screening, and export control compliance.', owning_department_name: 'Logistics', owning_department_id: 'dept-005', creatorId: 'user-005', priority: 'HIGH', status: 'PENDING_APPROVAL' },
   { title: 'Tax Filing Preparation', description: 'Automated tax data compilation, calculation verification, filing preparation, and submission tracking for multiple jurisdictions.', owning_department_name: 'Finance', owning_department_id: 'dept-001', creatorId: 'user-001', priority: 'HIGH', status: 'OFFLINE' },
+
+  // ===== 闭环演示数据：覆盖「待我审批 / 待我评估 / 被驳回 / 已撤回 / 历史版本」 =====
+  { title: 'Financial Report Auto-Aggregation', description: 'Aggregate monthly financial reports from ERP and CRM into a unified view with auto-distribution to executives.', owning_department_name: 'Finance', owning_department_id: 'dept-001', creatorId: 'user-007', priority: 'HIGH', status: 'PENDING_APPROVAL' },
+  { title: 'Customer Ticket Smart Classification', description: 'Use NLP to classify customer support tickets and route to the proper queue with SLA tracking.', owning_department_name: 'Sales', owning_department_id: 'dept-006', creatorId: 'user-006', priority: 'MEDIUM', status: 'PENDING_APPROVAL' },
+  { title: 'Invoice OCR Data Capture', description: 'Capture invoice fields via OCR, validate against PO and route exceptions for human review.', owning_department_name: 'Finance', owning_department_id: 'dept-001', creatorId: 'user-007', priority: 'HIGH', status: 'PENDING_ASSESSMENT' },
+  { title: 'Contract Approval Workflow', description: 'End-to-end contract approval workflow with legal review, e-signature integration and archival.', owning_department_name: 'Finance', owning_department_id: 'dept-001', creatorId: 'user-001', priority: 'MEDIUM', status: 'REJECTED' },
+  { title: 'Inventory Audit Robot', description: 'Daily inventory audit robot reconciling WMS and ERP with discrepancy escalation.', owning_department_name: 'Finance', owning_department_id: 'dept-001', creatorId: 'user-001', priority: 'MEDIUM', status: 'WITHDRAWN' },
+  { title: 'Month-End Reconciliation Automation', description: 'Automate month-end reconciliation across GL, AR, AP and bank statements with variance reporting.', owning_department_name: 'Finance', owning_department_id: 'dept-001', creatorId: 'user-001', priority: 'HIGH', status: 'LAUNCHED' },
 ];
 
 // 视为"开发中之后"的状态
