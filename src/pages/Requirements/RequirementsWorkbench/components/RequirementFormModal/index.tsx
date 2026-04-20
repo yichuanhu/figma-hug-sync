@@ -248,4 +248,39 @@ const RequirementFormModal = ({
   );
 };
 
+/**
+ * Scheme 字段批量渲染器：必须作为 Form 的子组件以使用 useFormState 读取依赖字段值。
+ * 根据 field.depends_on 决定是否渲染（不满足时整体卸载，避免脏值参与提交）。
+ */
+const SchemeFieldsRenderer = ({ fields }: { fields: SchemeField[] }) => {
+  const formState = useFormState();
+  const values = (formState.values ?? {}) as Record<string, unknown>;
+
+  const matchDep = (dep: SchemeFieldDependsOn): boolean => {
+    const current = values[dep.field];
+    const target = dep.value;
+    switch (dep.operator) {
+      case 'eq': return current === target;
+      case 'ne': return current !== target;
+      case 'in': return Array.isArray(target) && (target as Array<string | number>).includes(current as string | number);
+      case 'not_in': return Array.isArray(target) && !(target as Array<string | number>).includes(current as string | number);
+      case 'gt': return Number(current) > Number(target);
+      case 'lt': return Number(current) < Number(target);
+      case 'gte': return Number(current) >= Number(target);
+      case 'lte': return Number(current) <= Number(target);
+      default: return true;
+    }
+  };
+
+  return (
+    <>
+      {fields.map((f) => {
+        if (f.depends_on && !matchDep(f.depends_on)) return null;
+        return <SchemeFieldRenderer key={f.key} field={f} />;
+      })}
+    </>
+  );
+};
+
 export default RequirementFormModal;
+
