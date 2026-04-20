@@ -391,6 +391,8 @@ let mockRequirementData = generateMockRequirements();
 //  - approvalHistory（含 approve / reject / withdraw / resubmit）
 //  - historyVersions（演示版本演进）
 // 不修改 mockTemplates 字段，保持其它 mock 数据不受影响。
+// 注意：MOCK_CURRENT_USER_ID 在文件下方声明（export const），这里先内联以避免 TDZ。
+const __MOCK_CURRENT_USER_ID_FOR_CLOSURE__ = 'user-001';
 applyClosureDemoData();
 
 function applyClosureDemoData(): void {
