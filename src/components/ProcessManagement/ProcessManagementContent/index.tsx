@@ -372,11 +372,14 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       return;
     }
     let cancelled = false;
-    fetchRequirementBriefByIds(allIds).then((list) => {
-      if (cancelled) return;
-      const sorted = [...list].sort((a, b) => a.title.localeCompare(b.title));
-      setRequirementBriefList(sorted);
-    });
+    // 动态 import，避免在模块解析阶段拉起 RequirementsWorkbench/mockData 的顶层副作用导致循环初始化错误
+    import('@/pages/Requirements/RequirementsProjects/mockData').then(({ fetchRequirementBriefByIds }) =>
+      fetchRequirementBriefByIds(allIds).then((list) => {
+        if (cancelled) return;
+        const sorted = [...list].sort((a, b) => a.title.localeCompare(b.title));
+        setRequirementBriefList(sorted);
+      }),
+    );
     return () => {
       cancelled = true;
     };
