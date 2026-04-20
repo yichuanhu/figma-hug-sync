@@ -288,7 +288,9 @@ const TaskForm = (props: TaskFormProps) => {
       return (
         <span className="bot-target-selector-selected-with-tag">
           <span className="bot-target-selector-option-name">{optionNode.name}</span>
-          <span className="bot-target-selector-option-group-tag">{optionNode.groupName}</span>
+          <Tag size="small" color="grey" type="light" className="bot-target-selector-option-group-tag">
+            {optionNode.groupName}
+          </Tag>
         </span>
       );
     }
@@ -455,7 +457,9 @@ const TaskForm = (props: TaskFormProps) => {
                         >
                           <div className="bot-target-selector-option">
                             <Text className="bot-target-selector-option-name">{opt.name}</Text>
-                            <span className="bot-target-selector-option-group-tag">{opt.groupName}</span>
+                            <Tag size="small" color="grey" type="light" className="bot-target-selector-option-group-tag">
+                              {opt.groupName}
+                            </Tag>
                             <Tag
                               size="small"
                               color={config.color as 'grey' | 'green' | 'blue' | 'red' | 'orange'}
