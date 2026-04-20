@@ -920,6 +920,29 @@
       "removeConfirmContent": "Are you sure you want to remove this link?",
       "removeSuccess": "Link removed"
     },
+    "delivery": {
+      "title": "Linkage & Delivery",
+      "subtitle": "Status is auto-aggregated from project/workspace links and process status. Manual linking is not supported here.",
+      "linkedProject": "Linked Project",
+      "linkedWorkspace": "Linked Workspace",
+      "linkedBy": "Linked Via",
+      "linkedByValue": "Established from Project / Workspace side",
+      "emptyLink": "Not linked",
+      "processCount": "{{count}} attributed process(es)",
+      "bucketOnline": "Published {{count}}",
+      "bucketDeveloping": "Developing {{count}}",
+      "bucketStopped": "Stopped {{count}}",
+      "unboundHint": "{{count}} unattributed process(es) excluded from aggregation",
+      "offline": "Take Offline",
+      "offlineConfirm": {
+        "title": "Take Requirement Offline",
+        "reason": "Offline Reason",
+        "placeholder": "Please enter the offline reason (required)",
+        "ok": "Confirm Offline",
+        "cancel": "Cancel",
+        "success": "Offline request submitted"
+      }
+    },
     "review": {
       "title": "Requirement Approval",
       "description": "Process pending approval steps",

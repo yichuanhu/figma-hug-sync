@@ -811,6 +811,29 @@
       "removeConfirmContent": "确定要移除此关联吗？",
       "removeSuccess": "已移除关联"
     },
+    "delivery": {
+      "title": "关联与交付",
+      "subtitle": "状态由项目/工作空间关联结果与流程状态自动聚合，本页不支持手动关联",
+      "linkedProject": "关联项目",
+      "linkedWorkspace": "关联工作空间",
+      "linkedBy": "关联方式",
+      "linkedByValue": "由项目 / 工作空间管理侧建立",
+      "emptyLink": "暂未关联",
+      "processCount": "已归属流程 {{count}} 个",
+      "bucketOnline": "已发布 {{count}}",
+      "bucketDeveloping": "开发中 {{count}}",
+      "bucketStopped": "已停止 {{count}}",
+      "unboundHint": "存在 {{count}} 个未归属流程，未计入聚合",
+      "offline": "下线",
+      "offlineConfirm": {
+        "title": "下线需求",
+        "reason": "下线原因",
+        "placeholder": "请输入下线原因（必填）",
+        "ok": "确认下线",
+        "cancel": "取消",
+        "success": "已提交下线请求"
+      }
+    },
     "review": {
       "title": "需求审批",
       "description": "处理待审批的需求节点",
