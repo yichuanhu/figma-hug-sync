@@ -93,17 +93,22 @@ const TaskForm = (props: TaskFormProps) => {
           worker_name: null,
         };
       }
-      const [groupId, workerId] = values.worker_id as string[];
-      let group = workerGroupsTree.find(g => g.group_id === groupId);
-      if (!group) {
-        group = workerGroupsTree.find(g => !g.group_id);
+      const workerId = values.worker_id as string;
+      let foundGroup = null as (typeof workerGroupsTree)[number] | null;
+      let foundWorker = null as NonNullable<(typeof workerGroupsTree)[number]['members']>[number] | null;
+      for (const g of workerGroupsTree) {
+        const m = g.members?.find(x => x.worker_id === workerId);
+        if (m) {
+          foundGroup = g;
+          foundWorker = m;
+          break;
+        }
       }
-      const worker = group?.members?.find(m => m.worker_id === workerId);
       return {
-        worker_group_id: groupId === '0' ? null : groupId,
-        worker_group_name: group?.group_name || null,
+        worker_group_id: foundGroup?.group_id || null,
+        worker_group_name: foundGroup?.group_name || null,
         worker_id: workerId,
-        worker_name: worker?.name,
+        worker_name: foundWorker?.name,
       };
     },
     [targetType, workerGroupList, workerGroupsTree]
@@ -171,7 +176,7 @@ const TaskForm = (props: TaskFormProps) => {
       for (const group of workerGroupsTree) {
         const member = group.members?.find(m => m.worker_id === workerId);
         if (member) {
-          formApi.setValue('worker_id', [group.group_id || '0', workerId]);
+          formApi.setValue('worker_id', workerId);
           break;
         }
       }
@@ -294,32 +299,30 @@ const TaskForm = (props: TaskFormProps) => {
     [t]
   );
 
-  // 将机器人组树形数据转换为 Cascader 格式
-  const workerTreeData = useMemo(() => {
+  // 扁平机器人选项：[组名] 机器人名
+  const workerFlatOptions = useMemo(() => {
     if (!workerGroupsTree) return [];
-
-    return workerGroupsTree.map(group => ({
-      label: <span className="bot-target-selector-worker-group-name">{group.group_name || t('template.fields.ungrouped')}</span>,
-      value: group.group_id || '0',
-      display: group.group_name || t('template.fields.ungrouped'),
-      children:
-        group.members?.map(member => {
-          const config = statusConfig[member.status];
-          return {
-            label: (
-              <div className="bot-target-selector-option">
-                <Text className="bot-target-selector-option-name">{member.name}</Text>
-                <Tag size="small" color={config.color as 'grey' | 'green' | 'blue' | 'red' | 'orange'} type="light">
-                  {config.text}
-                </Tag>
-              </div>
-            ),
-            value: member.worker_id,
-            display: member.name,
-            isLeaf: true,
-          };
-        }) || [],
-    }));
+    const ungroupedLabel = t('template.fields.ungrouped', { defaultValue: '未分组' });
+    const list: Array<{
+      value: string;
+      name: string;
+      groupName: string;
+      status: string;
+      label: string;
+    }> = [];
+    workerGroupsTree.forEach(group => {
+      const groupName = group.group_name || ungroupedLabel;
+      group.members?.forEach(member => {
+        list.push({
+          value: member.worker_id,
+          name: member.name,
+          groupName,
+          status: member.status,
+          label: `[${groupName}] ${member.name}`,
+        });
+      });
+    });
+    return list;
   }, [workerGroupsTree, t]);
 
   useEffect(() => {
@@ -409,21 +412,49 @@ const TaskForm = (props: TaskFormProps) => {
                 </div>
                 {/* 机器人选择 */}
                 <div style={targetType === 'worker' ? undefined : { display: 'none' }}>
-                  <Form.Cascader
+                  <Form.Select
                     field="worker_id"
                     noLabel
                     placeholder={t('template.fields.workerPlaceholder')}
-                    treeData={workerTreeData}
-                    multiple={false}
-                    filterTreeNode
-                    treeNodeFilterProp="display"
+                    filter={(input: string, option: Record<string, unknown>) => {
+                      const kw = (input || '').toString().toLowerCase();
+                      return (
+                        String(option?.name || '').toLowerCase().includes(kw) ||
+                        String(option?.groupName || '').toLowerCase().includes(kw)
+                      );
+                    }}
                     className="task-template-select-full"
                     rules={targetType === 'worker' ? [{ required: true, message: t('template.validation.workerRequired') }] : []}
-                    displayProp="display"
-                    displayRender={selected => (Array.isArray(selected) ? selected.join(' - ') : '')}
-                    dropdownStyle={{ width: showRightPanel ? '382px' : '460px' } as React.CSSProperties}
-                    dropdownClassName="task-template-select-dropdown"
-                  />
+                    renderSelectedItem={renderSelectedItem}
+                    dropdownStyle={{ '--select-option-max-width': showRightPanel ? '382px' : '460px' } as React.CSSProperties}
+                    dropdownClassName="semi-select-option-ellipsis"
+                  >
+                    {workerFlatOptions.map(opt => {
+                      const config = statusConfig[opt.status];
+                      return (
+                        <Select.Option
+                          key={opt.value}
+                          value={opt.value}
+                          label={opt.label}
+                          {...({ name: opt.name, groupName: opt.groupName } as Record<string, unknown>)}
+                        >
+                          <div className="bot-target-selector-option">
+                            <Text className="bot-target-selector-option-name">
+                              [{opt.groupName}] {opt.name}
+                            </Text>
+                            <Tag
+                              size="small"
+                              color={config.color as 'grey' | 'green' | 'blue' | 'red' | 'orange'}
+                              type="light"
+                              className="bot-target-selector-option-status"
+                            >
+                              {config.text}
+                            </Tag>
+                          </div>
+                        </Select.Option>
+                      );
+                    })}
+                  </Form.Select>
                 </div>
               </div>
 
