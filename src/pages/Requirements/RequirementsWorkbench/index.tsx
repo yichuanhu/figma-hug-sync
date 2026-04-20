@@ -133,6 +133,19 @@ const RequirementsWorkbench = () => {
     loadData();
   }, [loadData]);
 
+  // 跨页跳转：来自流程列表「关联需求」Tag 的 navigate(state)
+  useEffect(() => {
+    const openId = (location.state as { openRequirementId?: string } | null)?.openRequirementId;
+    if (!openId) return;
+    const hit = listResponse.list.find((r) => r.id === openId);
+    if (hit) {
+      setSelectedRecord(hit);
+      setDetailDrawerVisible(true);
+      // 清理 state，避免重复触发
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state, location.pathname, listResponse.list, navigate]);
+
   // 搜索防抖
   const debouncedSearch = useMemo(
     () =>
