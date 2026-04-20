@@ -1,54 +1,67 @@
 
 
-## 目标
-新建项目时增加「关联需求」选择，根据所选需求按部门自动创建对应工作空间，实现一键完成「项目 + 工作空间 + 需求关联」三步。
+## 问题诊断
 
-## 交互设计
+激活方案 **RPA-PRO** 的字段定义存在 4 处问题，导致用户看到"莫名其妙"的字段：
 
-`ProjectFormModal`（新建模式专用，编辑模式保持原样）字段顺序：
+| # | 问题 | 原因 | 修复 |
+|---|---|---|---|
+| 1 | 「月均节省工时（自动计算）」要求填写 | `type: 'calculation'` 在 `SchemeFieldRenderer` 中没有匹配分支，落入 default → 渲染为可输入的 `Form.Input` | 新增 `case 'calculation'`：渲染只读展示，监听 `monthly_volume × avg_handle_time / 60` 实时计算 |
+| 2 | 「OCR 文档类型」始终显示，不受「是否涉及 OCR」控制 | 字段定义有 `depends_on: { field: 'has_ocr', operator: 'eq', value: 'yes' }`，但 `SchemeFieldRenderer` 完全没读取 `depends_on` | `RequirementFormModal` 改用 `Form.Slot`/`useFormState` 在外层根据依赖字段值条件渲染 |
+| 3 | 出现两个「附件」字段（一个上传、一个输入） | RPA-PRO 的 `attachments` (`type: 'file_upload'`) 没有匹配分支 → 落入 default 渲染成 `Form.Input`；同时 `RequirementFormModal` 表单底部还硬编码渲染了一个 `Upload`（附件区域） | a) 新增 `case 'file_upload'`：渲染 `Upload`；b) 移除 `RequirementFormModal` 中硬编码的附件区域（统一由 Scheme 字段驱动） |
+| 4 | 系统硬编码字段与 Scheme 字段重复 | Modal 顶部硬编码了「业务背景」`businessBackground`，而 RPA-PRO 又有 `business_background`（rich_text）+ `pain_points` + `expected_value`；硬编码的「期望上线日期」也与 Scheme 的 `expected_launch` 重复 | 移除 Modal 中硬编码的「业务背景」「期望上线日期」字段，全部交由 Scheme 渲染（保留：标题/描述/部门/负责人/联系方式/优先级 系统字段）|
 
-1. 项目名称（必填，原有）
-2. 项目周期（非必填，原有）
-3. 描述（非必填，原有）
-4. **关联需求**（新增，非必填，多选）
-   - 数据源：`fetchRequirementList` 中所有「未被任何工作空间关联」的需求（即可被新项目接管的候选需求）
-   - 展示：`[REQ-NO] 标题 · 部门名`，支持搜索过滤
-   - 提示文案："系统将按需求所属部门自动为本项目创建对应工作空间"
+## 改动文件
 
-### 自动建空间规则
-- 提交时按所选需求的 `owning_department_id` **分组**：
-  - 每个唯一部门 → 创建一个工作空间
-  - 工作空间命名：`{项目名} - {部门名}工作空间`（zh）/ `{Project} - {Dept} Workspace`（en）
-  - 工作空间 `departmentId` / `departmentName` = 该部门
-  - 该部门下所有所选需求自动 `linkRequirements` 到该工作空间
-- 提交流程（顺序）：
-  1. `addProject` 创建项目，拿到 `projectId`
-  2. 按部门分组循环：`addWorkspace` → 拿到 `wsId` → `linkRequirements(wsId, [需求id...])`
-  3. 全部成功后 Toast 成功并刷新列表
-- 任何一步失败：保留已创建数据（mock 简化），Toast 错误，不回滚
+**1. `src/pages/Requirements/RequirementsWorkbench/components/SchemeFieldRenderer/index.tsx`**
 
-### 编辑模式
-- 编辑现有项目时**不展示**「关联需求」字段（项目已有工作空间，需求关联在工作空间维度独立管理）。
+- 新增 `case 'calculation'`：通过 `useFormState` 读取 `source_fields`，按 `expression` 计算结果，渲染为只读 `InputNumber`（disabled），右侧显示 unit。值通过 `formApi.setValue(key, computed)` 同步回表单（用 `useFormApi` + `useEffect` 监听依赖变化）。
+- 新增 `case 'file_upload'`：渲染 `Form.Upload`（Semi UI 的 Form.Upload），限制 5 个、10MB、复用现有 accept 配置。
+- 新增 `case 'rich_text'`：暂用 `Form.TextArea`（autosize 4-8 行 + maxCount 5000）替代，保持 UI 简洁。
 
-## Mock 层改动（`mockData.ts`）
+**2. `src/pages/Requirements/RequirementsWorkbench/components/RequirementFormModal/index.tsx`**
 
-新增导出函数：
-```ts
-fetchUnlinkedRequirements(): Promise<LinkableRequirementBrief[]>
-// 返回所有未被任何 workspace 的 linkedRequirementIds 包含的需求
+- **删除**硬编码字段：`businessBackground`、`expectedLaunchDate`，以及底部硬编码的「附件」`Upload` 区域。
+- 保留系统字段：`title` / `description` / `department` / `owner` / `contactInfo` / `priority`。
+- Scheme 字段渲染处增加依赖判断：遍历 `activeScheme.custom_fields` 时读取 `depends_on`，通过 `useFormState` 拿到依赖字段值，不满足条件时跳过渲染（DOM 卸载，同时清空该字段值避免脏数据）。
+- 提交时移除已删除的 system key（`businessBackground`、`expectedLaunchDate`）。
+
+**3. i18n（`public/i18n/zh-CN.json` / `en.json`）**
+
+- 删除：`requirements.form.businessBackgroundLabel`/`Placeholder`、`requirements.form.expectedLaunchDateRequired`/`Placeholder`、`requirements.form.attachmentLabel`/`Upload`/`Hint`/`Exceed`/`SizeError`（如别处仍用则保留）。
+- 新增：`requirements.form.calculationReadonlyHint`（"系统自动根据上方字段计算"）。
+
+## 优化后表单顺序（RPA-PRO 激活时）
+
+```text
+[基本信息]
+- 标题 *
+- 简要描述 *
+- 所属部门 *
+- 需求负责人 *
+- 联系方式 *
+- 优先级
+
+[业务基线 — 由 Scheme 驱动]
+- 业务背景 *（textarea）
+- 业务痛点 *
+- 期望价值 *
+- 月均处理量 *（笔）
+- 单笔平均耗时 *（分钟）
+- 人工成本占比（%）
+- 月均节省工时（小时，只读·自动计算）  ← 修复
+- 涉及系统数量 *
+- 系统类型 *
+- 是否涉及 OCR *
+- OCR 文档类型 *  ← 仅当「是否涉及 OCR=是」时显示
+- 期望上线日期 *
+- 附件（上传，单一入口）  ← 修复
 ```
-（与现有 `fetchAllLinkableRequirements` 互补：后者返回「已绑定工作空间但未绑流程的」，前者返回「尚未绑定任何工作空间的」）
-
-## 涉及文件
-- `src/pages/Requirements/RequirementsProjects/mockData.ts`（新增 `fetchUnlinkedRequirements`）
-- `src/pages/Requirements/RequirementsProjects/components/ProjectFormModal/index.tsx`（仅新建模式新增字段 + 提交编排）
-- `src/pages/Requirements/RequirementsProjects/index.tsx`（新建成功后刷新已包含工作空间联动，无需大改）
-- `public/i18n/zh-CN.json` / `en.json`（新增 key：`linkedRequirementsOptional`、`autoCreateWorkspaceTip`、`autoWorkspaceNamePattern` 等，复用 `workspaceSelect.label` 等已有词）
 
 ## 验收
-- 新建项目弹窗多出「关联需求」多选框（非必填），编辑弹窗不展示该字段。
-- 不勾选任何需求时：仅创建空项目（行为同现状）。
-- 勾选 N 个分属 M 个部门的需求时：项目下自动出现 M 个工作空间，每个工作空间已自动关联对应部门的需求。
-- 已被其它工作空间关联的需求不出现在候选列表中。
-- 项目列表刷新后，工作空间数与需求数正确显示。
+
+1. 「月均节省工时」变成灰色只读，输入「月均处理量=1000、单笔平均耗时=6」时自动显示「100」小时。
+2. 「是否涉及 OCR」选择「否」时，「OCR 文档类型」字段隐藏；切到「是」时出现并必填。
+3. 弹窗底部不再有重复的「附件」输入框，仅保留 Scheme 的上传组件。
+4. 不再出现重复的「业务背景」「期望上线日期」字段。
 
