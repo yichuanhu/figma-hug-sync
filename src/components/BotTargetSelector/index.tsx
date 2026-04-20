@@ -178,7 +178,7 @@ const BotTargetSelector = ({
     return null;
   }
 
-  // BOT_IN_GROUP - 分组显示
+  // BOT_IN_GROUP - 扁平列表（[组名] 机器人名）
   if (targetType === 'BOT_IN_GROUP') {
     return (
       <Select
@@ -187,24 +187,31 @@ const BotTargetSelector = ({
         onChange={(v) => onChange?.(v as string)}
         placeholder={placeholder || t('botSelector.placeholder')}
         disabled={disabled}
-        filter
+        filter={(input: string, option: any) => {
+          const kw = (input || '').toLowerCase();
+          return (
+            String(option?.name || '').toLowerCase().includes(kw) ||
+            String(option?.groupName || '').toLowerCase().includes(kw)
+          );
+        }}
         style={{ width: '100%' }}
         renderSelectedItem={renderSelectedItem}
       >
-        {groupedOptions.map((group) => (
-          <Select.OptGroup key={group.label} label={group.label}>
-            {group.children.map((bot) => (
-              <Select.Option key={bot.value} value={bot.value} disabled={bot.noPermission}>
-                {renderOptionWithPermission(
-                  bot.label,
-                  <Tag size="small" color={bot.status === 'ONLINE' ? 'green' : 'grey'} className="bot-target-selector-option-status">
-                    {bot.status === 'ONLINE' ? t('botSelector.statusOnline') : t('botSelector.statusOffline')}
-                  </Tag>,
-                  bot.noPermission
-                )}
-              </Select.Option>
-            ))}
-          </Select.OptGroup>
+        {flatBotOptions.map((bot) => (
+          <Select.Option
+            key={bot.value}
+            value={bot.value}
+            disabled={bot.noPermission}
+            {...({ name: bot.name, groupName: bot.groupName } as any)}
+          >
+            {renderOptionWithPermission(
+              `[${bot.groupName}] ${bot.name}`,
+              <Tag size="small" color={bot.status === 'ONLINE' ? 'green' : 'grey'} className="bot-target-selector-option-status">
+                {bot.status === 'ONLINE' ? t('botSelector.statusOnline') : t('botSelector.statusOffline')}
+              </Tag>,
+              bot.noPermission
+            )}
+          </Select.Option>
         ))}
       </Select>
     );
