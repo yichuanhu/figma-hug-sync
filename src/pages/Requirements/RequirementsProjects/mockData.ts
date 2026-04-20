@@ -419,6 +419,7 @@ export const fetchAllLinkableRequirements = async (): Promise<LinkableRequiremen
  * 这些需求可被新项目的自动建空间流程接管。
  */
 export const fetchUnlinkedRequirements = async (): Promise<LinkableRequirementBrief[]> => {
+  await ensureDemoSeed();
   await delay(null);
   const linkedReqIds = new Set<string>();
   workspaces.forEach((w) => w.linkedRequirementIds.forEach((rid) => linkedReqIds.add(rid)));
