@@ -161,7 +161,8 @@ const ensureDemoSeed = (): Promise<void> => {
     // 已经手动关联过 → 跳过
     if (workspaces.some((w) => w.linkedRequirementIds.length > 0)) return;
     // 候选状态：评估通过 / 待立项 / 开发中（保留尚未绑定流程的优先）
-    const candidateStatus = new Set(['PENDING_PROJECT', 'PENDING_ASSESSMENT', 'DEVELOPING', 'LAUNCHED']);
+    // 仅取尚未绑定流程的状态（PENDING_PROJECT / PENDING_ASSESSMENT），保证「新建流程」下拉里有可选项
+    const candidateStatus = new Set(['PENDING_PROJECT', 'PENDING_ASSESSMENT']);
     const byDept = new Map<string, string[]>();
     res.list.forEach((r) => {
       if (!candidateStatus.has(r.status)) return;
