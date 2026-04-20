@@ -396,7 +396,7 @@ const __MOCK_CURRENT_USER_ID_FOR_CLOSURE__ = 'user-001';
 applyClosureDemoData();
 
 function applyClosureDemoData(): void {
-  const meId = MOCK_CURRENT_USER_ID;
+  const meId = __MOCK_CURRENT_USER_ID_FOR_CLOSURE__;
   const me = mockCreators[meId];
   if (!me) return;
 
