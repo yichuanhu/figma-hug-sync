@@ -1,12 +1,16 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Modal, Form, Toast, Button } from '@douyinfe/semi-ui';
+import { Modal, Form, Toast, Button, Select, Input } from '@douyinfe/semi-ui';
 import type { LYUpdateProcessRequest, LYProcessResponse } from '@/api';
 import DepartmentSelect from '@/components/DepartmentSelect';
 import OwnerSelect from '@/components/OwnerSelect';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import { getDependents, cascadeUpdateDepartment } from '@/mocks/processDependencies';
 import { getDepartmentName } from '@/mocks/departmentData';
+import {
+  fetchAllLinkableRequirements,
+  type LinkableRequirementBrief,
+} from '@/pages/Requirements/RequirementsProjects/mockData';
 import './index.less';
 
 interface EditProcessModalProps {
@@ -21,9 +25,55 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
   const [loading, setLoading] = useState(false);
   const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>(processData?.owning_department_id || undefined);
   const [ownerId, setOwnerId] = useState<string | undefined>(processData?.owner_id || undefined);
+  const [requirementId, setRequirementId] = useState<string | undefined>(processData?.requirement_id || undefined);
+  const [requirementOptions, setRequirementOptions] = useState<LinkableRequirementBrief[]>([]);
+  const [requirementLoading, setRequirementLoading] = useState(false);
   const { canManage } = useCollaboratorPermission('PROCESS', processData?.id);
 
   const existingProcessNames = ['订单自动处理流程', '财务报销审批流程', '人事入职流程'];
+
+  // 打开时同步初始值
+  useEffect(() => {
+    if (visible && processData) {
+      setOwningDepartmentId(processData.owning_department_id || undefined);
+      setOwnerId(processData.owner_id || undefined);
+      setRequirementId(processData.requirement_id || undefined);
+    }
+  }, [visible, processData]);
+
+  // 加载可关联需求
+  useEffect(() => {
+    if (!visible) return;
+    let cancelled = false;
+    setRequirementLoading(true);
+    fetchAllLinkableRequirements()
+      .then((list) => {
+        if (!cancelled) setRequirementOptions(list);
+      })
+      .finally(() => {
+        if (!cancelled) setRequirementLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [visible]);
+
+  const selectedRequirement = useMemo(
+    () => requirementOptions.find((r) => r.id === requirementId),
+    [requirementOptions, requirementId],
+  );
+  const hasRequirement = !!selectedRequirement;
+
+  // 关联需求变更时联动覆盖部门/归属者
+  const prevReqIdRef = useState<string | undefined>(processData?.requirement_id || undefined)[0];
+  useEffect(() => {
+    if (!visible) return;
+    if (selectedRequirement) {
+      setOwningDepartmentId(selectedRequirement.owning_department_id);
+      setOwnerId(selectedRequirement.owner_id ?? undefined);
+    }
+    // 取消关联（requirementId 由有变无）时不强制清空，保留用户当前手动值
+  }, [selectedRequirement, visible]);
 
   const validateProcessNameFormat = (rule: unknown, value: string, callback: (error?: string) => void) => {
     if (!value) {
@@ -65,7 +115,6 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
 
       await new Promise((resolve) => setTimeout(resolve, 300));
 
-      // 若归属部门变更，同步级联更新依赖资源（mock）
       const deptChanged = finalDeptId !== processData.owning_department_id;
       let cascadedTotal = 0;
       if (deptChanged && finalDeptId) {
@@ -80,6 +129,8 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
         owning_department_id: finalDeptId ?? processData.owning_department_id,
         owning_department_name: finalDeptName ?? processData.owning_department_name,
         owner_id: ownerId ?? processData.owner_id,
+        owner_name: hasRequirement ? (selectedRequirement!.owner_name ?? processData.owner_name) : processData.owner_name,
+        requirement_id: requirementId ?? null,
         updated_at: new Date().toISOString(),
       };
 
@@ -159,7 +210,6 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
             { required: true, message: t('development.processDevelopment.createModal.validation.nameRequired') },
             { max: 100, message: t('development.processDevelopment.createModal.validation.nameLengthError') },
             { validator: validateProcessNameFormat },
-            { max: 100, message: t('development.processDevelopment.createModal.validation.nameLengthError') },
             { validator: validateProcessNameUnique },
           ]}
         />
@@ -176,16 +226,57 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
           ]}
         />
 
-        <Form.Slot label={{ text: t('common.owningDepartment'), required: true }}>
-          <DepartmentSelect
-            value={owningDepartmentId}
-            onChange={setOwningDepartmentId}
-            disabled={!canManage}
+        <Form.Slot
+          label={{ text: t('development.processDevelopment.createModal.fields.requirementLabel') }}
+        >
+          <Select
+            value={requirementId}
+            onChange={(v) => setRequirementId(v as string | undefined)}
+            placeholder={
+              requirementLoading
+                ? t('common.loading')
+                : requirementOptions.length === 0
+                  ? t('development.processDevelopment.createModal.fields.requirementGlobalEmpty')
+                  : t('development.processDevelopment.createModal.fields.requirementPlaceholder')
+            }
+            disabled={!canManage || (requirementOptions.length === 0 && !requirementLoading)}
+            loading={requirementLoading}
+            showClear
+            filter
+            style={{ width: '100%' }}
+            optionList={requirementOptions.map((r) => ({
+              value: r.id,
+              label: r.req_no ? `[${r.req_no}] ${r.title}` : r.title,
+            }))}
           />
         </Form.Slot>
 
+        <Form.Slot label={{ text: t('common.owningDepartment'), required: true }}>
+          {hasRequirement ? (
+            <Input
+              value={selectedRequirement!.owning_department_name}
+              disabled
+              placeholder={t('development.processDevelopment.createModal.fields.autoFillPlaceholder')}
+            />
+          ) : (
+            <DepartmentSelect
+              value={owningDepartmentId}
+              onChange={setOwningDepartmentId}
+              disabled={!canManage}
+            />
+          )}
+        </Form.Slot>
+
         <Form.Slot label={{ text: t('common.owner'), required: true }}>
-          <OwnerSelect value={ownerId} onChange={setOwnerId} disabled={!canManage} />
+          {hasRequirement ? (
+            <Input
+              value={selectedRequirement!.owner_name ?? ''}
+              disabled
+              placeholder={t('development.processDevelopment.createModal.fields.autoFillPlaceholder')}
+            />
+          ) : (
+            <OwnerSelect value={ownerId} onChange={setOwnerId} disabled={!canManage} />
+          )}
         </Form.Slot>
 
         <div className="edit-process-modal-footer">
