@@ -974,6 +974,11 @@
       "belongsToWorkspace": "Workspace",
       "belongsToProject": "Project",
       "unlinked": "Unlinked",
+      "linkedRequirementsOptional": "Linked Requirements (Optional)",
+      "linkedRequirementsPlaceholder": "Workspaces will be auto-created per department",
+      "autoCreateWorkspaceTip": "Workspaces will be auto-created for each department of the selected requirements, with requirements automatically linked.",
+      "autoWorkspaceNamePattern": "{{project}} - {{dept}} Workspace",
+      "autoWorkspaceCreated": "Project created. {{count}} workspace(s) auto-created.",
       "fields": {
         "name": "Project Name",
         "workspaceName": "Workspace Name",
