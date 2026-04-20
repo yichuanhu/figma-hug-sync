@@ -22,7 +22,6 @@ const TaskForm = (props: TaskFormProps) => {
   const { taskRef, params, showParamsHandle, source, preFormItem, bottomFormItem, showRightPanel } = props;
   const [formApi, setFormApi] = useState<FormApi<ITaskInfo> | null>(null);
   const [selectedProcess, setSelectedProcess] = useState<LYProcessResponse | null>(null);
-  const [targetType, setTargetType] = useState<ExecutionTargetType>('worker');
   const [inputParameters, setInputParameters] = useState<LYInputParameterItem[]>([]);
   const [outputParameters, setOutputParameters] = useState<LYOutputParameterItem[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -38,14 +37,8 @@ const TaskForm = (props: TaskFormProps) => {
   // 获取流程版本详情
   const { data: versionDetail } = useGetProcessVersion(selectedProcess?.current_version_id || '', !!processData);
 
-  // 获取机器人组列表
-  const { data: workerGroupList, isLoading: isLoadingWorkerGroups } = useGetWorkerGroups(
-    { size: 100, offset: 0 },
-    targetType === 'worker_group'
-  );
-
-  // 获取机器人组树形结构
-  const { data: workerGroupsTree, isLoading: isLoadingWorkerTree } = useWorkerGroupsTree(targetType === 'worker');
+  // 获取机器人组树形结构（用于扁平机器人选择）
+  const { data: workerGroupsTree, isLoading: isLoadingWorkerTree } = useWorkerGroupsTree(true);
 
   // 整理输入参数值
   const getInputParameterValues = useCallback(
