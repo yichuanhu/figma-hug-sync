@@ -229,10 +229,6 @@ const RequirementFormModal = ({
           </div>
           <SchemeFieldsRenderer fields={activeScheme.custom_fields} />
 
-          {/* 底部提示 */}
-          <Text type="tertiary" size="small" className="requirement-form-modal-hint">
-            {t('requirements.form.requiredFieldsHint')}
-          </Text>
         </div>
 
         <div className="requirement-form-modal-footer">
