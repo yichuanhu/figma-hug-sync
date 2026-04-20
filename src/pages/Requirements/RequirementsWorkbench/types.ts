@@ -285,6 +285,7 @@ export interface ApprovalRecord {
   acted_at?: string;
 }
 
+/** [活动记录] 一次评估打分的留痕（含维度分、档位、总分），不属于需求本体。 */
 export interface AssessmentRecord {
   id: string;
   requirement_id: string;
