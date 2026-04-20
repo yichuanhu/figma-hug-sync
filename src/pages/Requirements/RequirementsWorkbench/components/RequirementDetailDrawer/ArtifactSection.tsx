@@ -303,6 +303,12 @@ const ArtifactSection = ({
         </Text>
       )}
 
+      {linkedProcesses.length === 0 && (
+        <Text type="tertiary" size="small" style={{ marginTop: 8, display: 'block' }}>
+          {t('requirements.linkedProcesses.readonlyHint')}
+        </Text>
+      )}
+
       {/* 关联弹窗 */}
       <Modal
         title={t('requirements.artifact.addTitle')}
