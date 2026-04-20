@@ -439,9 +439,8 @@ const TaskForm = (props: TaskFormProps) => {
                           {...({ name: opt.name, groupName: opt.groupName } as Record<string, unknown>)}
                         >
                           <div className="bot-target-selector-option">
-                            <Text className="bot-target-selector-option-name">
-                              [{opt.groupName}] {opt.name}
-                            </Text>
+                            <span className="bot-target-selector-option-group-tag">{opt.groupName}</span>
+                            <Text className="bot-target-selector-option-name">{opt.name}</Text>
                             <Tag
                               size="small"
                               color={config.color as 'grey' | 'green' | 'blue' | 'red' | 'orange'}
