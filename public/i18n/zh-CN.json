@@ -656,6 +656,7 @@
       "title": "关联流程",
       "count": "{{online}} / {{total}} 已上线",
       "empty": "暂无关联流程",
+      "readonlyHint": "关联流程由「工作空间 → 关联需求」或「开发中心创建流程时选择需求」反向建立，需求中心仅用于回溯展示。",
       "manage": "管理",
       "manageTitle": "管理关联流程",
       "linkedSection": "已关联（{{count}}）",

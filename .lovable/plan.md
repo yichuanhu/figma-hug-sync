@@ -1,48 +1,89 @@
 
-## 目标
-按需求文档明确的关联规则，**移除需求中心侧"直接关联已有流程"的能力**，统一收敛到「工作空间 → 需求」与「流程 → 需求」两个唯一入口；并在需求详情中把"关联流程"由可编辑入口改为只读的回溯展示。
+## 状态闭环（Status Lifecycle Closure）
 
-## 一、规则对齐结论（与代码现状对比）
+为让需求中心的 9 状态生命周期形成可演示的闭环，约定以下产品逻辑（与现有 mock/逻辑保持一致）：
 
-| 规则 | 文档要求 | 当前代码 | 处置 |
-|---|---|---|---|
-| 需求中心直接关联已有流程 | ❌ 禁止 | ✅ 存在 `ManageLinkedProcessesModal`，需求详情可增删流程 | **移除入口** |
-| 工作空间 → 关联需求 | ✅ 唯一入口 | ✅ `RequirementsProjects/LinkRequirementsModal` 已具备 | 保留 |
-| 流程创建时回填需求 | ✅ 在工作空间上下文创建流程时选关联需求 | 待确认（开发中心侧） | 本次不动，仅在文档中记录 |
-| 关联约束（需求 N:1 工作空间，已发布禁止解除） | 文档要求 | 已在 `linkRequirements` + `hasPublishedProcess` 中实现 | 保留 |
-| 状态联动（关联后需求转「开发中」） | 文档要求 | 待核对 | 文档化为后续动作，非本次范围 |
+### 1. 历史版本（historyVersions）的来源
+触发"快照入 historyVersions"的三类动作：
+- **重新提交（resubmit）**：`REJECTED → PENDING_APPROVAL`，旧版本入历史。
+- **审批通过后再次编辑发布**：`APPROVED/LAUNCHED` 状态下二次编辑形成新版本。
+- **撤回后重新发起**：`WITHDRAWN/DRAFT → PENDING_APPROVAL`，旧版本入历史。
 
-## 二、本次实现范围
+每条历史版本字段：`version` / `snapshot`（标题/描述/优先级/状态/评估/成本）/ `actorId` / `actorName` / `createdAt` / `summary`。
 
-### 1. 需求详情抽屉：移除「管理关联流程」入口
-- 删除/隐藏 `RequirementDetailDrawer` 中调用 `ManageLinkedProcessesModal` 的按钮（如「管理」「添加流程」等编辑入口）。
-- "关联流程"区域**保留为只读列表**，作为回溯展示（说明这些流程是从工作空间 / 开发中心侧反向关联进来的）。
-- 空态文案改为引导：`请在工作空间详情页关联需求，或在开发中心创建流程时选择本需求`，不再提供"立即关联"按钮。
+### 2. 被驳回（REJECTED）处置路径
+```
+PENDING_APPROVAL ──reject──▶ REJECTED
+                                │
+       creator 编辑 ────────────┤
+                                ├─▶ resubmit ──▶ PENDING_APPROVAL（旧版入 historyVersions）
+                                └─▶ 放弃（保持 REJECTED，可后续删除/归档）
+```
+- 仅 creator 可见「重新提交」按钮（`MOCK_CURRENT_USER_ID` 校验）。
+- 重新提交时审批流重置到 L1，原审批历史保留在 `approvalHistory`。
 
-### 2. 列表行操作：移除「关联流程」类操作（若有）
-- 检查 `RequirementsWorkbench/index.tsx` 行操作下拉，若存在"关联流程"类入口则移除。
+### 3. 撤回（WITHDRAWN）处置路径
+```
+PENDING_APPROVAL ──creator withdraw──▶ DRAFT/WITHDRAWN
+                                          │
+                       creator 编辑 ──────┤
+                                          ├─▶ 重新提交 ──▶ PENDING_APPROVAL
+                                          └─▶ 删除
+```
+- `withdrawRequirement` 仅 PENDING_APPROVAL + creator 可调用，写入 `approvalHistory.action='withdraw'`。
 
-### 3. 文件保留策略
-- `ManageLinkedProcessesModal/` 组件**暂不删除**，仅断开调用点，避免误删影响其它潜在引用；后续确认无引用后再清理。
-- `mockData.ts` 中 `MOCK_PROCESS_POOL` / `addLinkedProcesses` / `removeLinkedProcess` 同样保留（仍可能被开发中心侧逻辑使用）。
+### 4. 闭环演示数据（mockData.ts › applyClosureDemoData）
+为覆盖以下场景，在生成 mock 后做后处理（不破坏其它 mock）：
+| 标题 | 状态 | 用途 |
+|---|---|---|
+| Financial Report Auto-Aggregation | PENDING_APPROVAL | 「待我审批」L1 含当前用户 |
+| Customer Ticket Smart Classification | PENDING_APPROVAL | L1 已通过，L2 当前用户 |
+| Invoice OCR Data Capture | PENDING_ASSESSMENT | 「待我评估」可见 |
+| Contract Approval Workflow | REJECTED · creator=当前用户 | 可重新提交 + 1 条历史版本 |
+| Inventory Audit Robot | WITHDRAWN · creator=当前用户 | withdraw/resubmit/withdraw 闭环 + 2 条历史版本 |
+| Month-End Reconciliation Automation | LAUNCHED | 3 条历史版本演进 |
 
-### 4. 文档更新
-更新 `.lovable/plan.md`，新增「关联关系规则」小节，写入：
-- 唯一入口：工作空间 → 需求；流程创建时 → 需求
-- 需求中心侧只读展示
-- 关联约束与状态联动
+并将「需求中心列表」筛选项从旧 7 状态切换为新 9 状态（含 WITHDRAWN）。
 
-### 5. i18n
-- 调整 `requirements.linkedProcesses.*` 中描述空态/引导的文案（中英双语），不新增键，仅改文案。
+---
 
-## 三、不做的事
-- 不改 `RequirementsProjects` 工作空间侧的关联弹窗。
-- 不改开发中心侧流程创建逻辑。
-- 不删除现有 mock 与组件文件。
-- 不调整状态机（开发中状态联动留待后续）。
+## 领域边界说明（活动记录 vs 需求内容）
 
-## 涉及文件
-- `src/pages/Requirements/RequirementsWorkbench/components/RequirementDetailDrawer/`（移除调用入口，列表改只读）
-- `src/pages/Requirements/RequirementsWorkbench/index.tsx`（如有行内关联流程操作则移除）
-- `public/i18n/zh-CN.json` / `public/i18n/en.json`（空态引导文案）
-- `.lovable/plan.md`（追加「关联关系规则」小节）
+为后续「把活动统一收敛为独立 Tab」等改动建立共识基线，本次仅以文档/类型注释方式澄清边界，未改动任何运行时逻辑或 UI。
+
+### 边界
+- **需求内容（Requirement Content）**：描述需求"是什么"。包括基本信息、归属、优先级/状态、动态表单数据（form_data / baselineFormData）、评估结果（value_score / complexity_score / detailedAssessment）、成本估算（cost_estimation / costEstimate）、关联实体（linked_entities / linkedProcesses）。
+- **活动记录（Activity / Audit Trail）**：描述"谁在何时对需求做了什么"。包括 `approvals` / `approvalHistory` / `assessments` / `versions` / `historyVersions` / `ActivityRecord`。这些不属于需求本体，仅用于追溯与时间线展示。
+
+### 落地
+1. `types.ts` 文件头部新增「领域边界说明」注释块。
+2. 在以下类型/字段上追加 `[活动记录]` 前缀的 JSDoc：`ApprovalRecord` / `ApprovalHistoryEntry` / `AssessmentRecord` / `RequirementVersion` / `VersionSnapshot` / `ActivityRecord` / `ActivityType`，以及 `RequirementItem` 中对应的 5 个字段。
+3. UI 后续演进约束：活动记录类数据应承载在「动态/历史」类容器中，避免混入主表单或概览主区域。
+
+---
+
+## 历史：审批流飞书风格改造（已完成）
+
+（保留供回溯）将需求详情抽屉「概览」Tab 中的 `ApprovalFlowProgress` 改造为飞书审批流风格的垂直时间线，含收起/展开两态、节点状态图标与连接线、审批人列表与评论气泡、当前节点高亮。仅修改组件 `index.tsx` 与 `index.less`。
+
+---
+
+## 关联关系规则（Requirement ↔ Workspace ↔ Process）
+
+依据需求文档明确的关联方向，建立两个唯一入口：
+
+1. **需求 → 工作空间（FEAT-009 唯一入口）**
+   - 操作位置：工作空间详情页 →「管理关联需求」
+   - 约束：需求 N:1 工作空间；工作空间已有发布流程时禁止解除关联
+   - 联动：关联后需求自动从「待立项」转「开发中」（待后续完善）
+
+2. **流程 → 需求（开发中心，依赖上下文）**
+   - 操作位置：在工作空间上下文中创建流程时选择关联需求
+   - 约束：`process.workspace_id === requirement.linked_workspace_id`
+   - 不允许反向：不能在需求中心侧为已有流程指定需求
+
+### 需求中心侧的处置（本次落地）
+- 移除需求详情抽屉的「管理关联流程」按钮（`ManageLinkedProcessesModal` 调用点已断开，组件文件保留）。
+- 「新增交付物」弹窗中移除 `PROCESS` 类型选项；非流程类（ADP_APP / AGENT / HUMAN_COLLAB）保持可编辑。
+- 表格中流程行（`source==='process'`）操作列不再渲染删除按钮，作为只读回溯展示。
+- 空态/列表底部新增 `requirements.linkedProcesses.readonlyHint` 文案，引导到正确入口。

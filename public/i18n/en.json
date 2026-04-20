@@ -765,6 +765,7 @@
       "title": "Linked Processes",
       "count": "{{online}} / {{total}} online",
       "empty": "No linked processes",
+      "readonlyHint": "Linked processes are established from the workspace side (Workspace → Link Requirements) or when creating a process in the Dev Center. The Requirements Center only displays them for traceability.",
       "manage": "Manage",
       "manageTitle": "Manage Linked Processes",
       "linkedSection": "Linked ({{count}})",

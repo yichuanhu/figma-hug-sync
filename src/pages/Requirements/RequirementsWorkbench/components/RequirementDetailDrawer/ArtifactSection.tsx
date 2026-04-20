@@ -11,10 +11,9 @@ import {
 } from '@douyinfe/semi-ui';
 import { Link } from 'react-router-dom';
 import type { RequirementItem, RequirementArtifact, ArtifactType, LinkedProcess } from '../../types';
-import { Plus, Trash2, ExternalLink, Settings } from 'lucide-react';
-import { addLinkedProcesses, removeLinkedProcess, MOCK_PROCESS_POOL } from '../../mockData';
+import { Plus, Trash2, ExternalLink } from 'lucide-react';
+import { MOCK_PROCESS_POOL } from '../../mockData';
 import { aggregateLinkedStatus, linkedProcessStatusConfig } from '../../utils/aggregateLinkedStatus';
-import ManageLinkedProcessesModal from '../ManageLinkedProcessesModal';
 
 const { Text } = Typography;
 
@@ -64,7 +63,6 @@ const ArtifactSection = ({
 }: ArtifactSectionProps) => {
   const { t } = useTranslation();
   const [modalVisible, setModalVisible] = useState(false);
-  const [manageProcessesVisible, setManageProcessesVisible] = useState(false);
   const [artifacts, setArtifacts] = useState<RequirementArtifact[]>(data.artifacts || []);
 
   const linkedProcesses = data.linkedProcesses ?? [];
@@ -110,19 +108,8 @@ const ArtifactSection = ({
     const artifactId = values.artifactId as string;
 
     if (type === 'PROCESS') {
-      // 走流程关联通道
-      if (linkedProcesses.some((p) => p.id === artifactId)) {
-        Toast.warning(t('requirements.artifact.duplicateError'));
-        return;
-      }
-      try {
-        await addLinkedProcesses(data.id, [artifactId]);
-        Toast.success(t('requirements.artifact.addSuccess'));
-        setModalVisible(false);
-        onProcessesChanged?.();
-      } catch (e) {
-        Toast.error((e as Error).message);
-      }
+      // 需求中心侧禁止直接关联流程，统一收敛到「工作空间 → 需求」与「开发中心创建流程时选择需求」入口
+      Toast.warning(t('requirements.linkedProcesses.readonlyHint'));
       return;
     }
 
@@ -150,6 +137,10 @@ const ArtifactSection = ({
   };
 
   const handleRemove = (row: UnifiedRow) => {
+    if (row.source === 'process') {
+      Toast.warning(t('requirements.linkedProcesses.readonlyHint'));
+      return;
+    }
     Modal.confirm({
       title: t('requirements.artifact.removeConfirmTitle'),
       content: t('requirements.artifact.removeConfirmContent'),
@@ -157,26 +148,16 @@ const ArtifactSection = ({
       cancelText: t('common.cancel'),
       okButtonProps: { type: 'danger' },
       onOk: async () => {
-        if (row.source === 'process') {
-          try {
-            await removeLinkedProcess(data.id, row.artifactId);
-            Toast.success(t('requirements.artifact.removeSuccess'));
-            onProcessesChanged?.();
-          } catch (e) {
-            Toast.error((e as Error).message);
-          }
-        } else {
-          const updated = artifacts.filter((a) => a.id !== row.rawArtifact?.id);
-          setArtifacts(updated);
-          onArtifactsChange?.(updated);
-          Toast.success(t('requirements.artifact.removeSuccess'));
-        }
+        const updated = artifacts.filter((a) => a.id !== row.rawArtifact?.id);
+        setArtifacts(updated);
+        onArtifactsChange?.(updated);
+        Toast.success(t('requirements.artifact.removeSuccess'));
       },
     });
   };
 
   const typeOptions = [
-    { value: 'PROCESS', label: t('requirements.artifact.typeProcess') },
+    // PROCESS 类型已禁止在需求中心侧直接关联，按文档收敛到工作空间/开发中心入口
     { value: 'ADP_APP', label: t('requirements.artifact.typeAdpApp') },
     { value: 'AGENT', label: t('requirements.artifact.typeAgent') },
     { value: 'HUMAN_COLLAB', label: t('requirements.artifact.typeHumanCollab') },
@@ -256,9 +237,9 @@ const ArtifactSection = ({
             key: 'action',
             width: 60,
             render: (_: unknown, record: UnifiedRow) => {
-              const allow =
-                record.source === 'process' ? canManageProcesses : canEdit;
-              if (!allow) return null;
+              // 流程类（来自 linkedProcesses）只读，不允许在需求中心侧解除关联
+              if (record.source === 'process') return null;
+              if (!canEdit) return null;
               return (
                 <Button
                   icon={<Trash2 size={16} strokeWidth={2} />}
@@ -286,17 +267,7 @@ const ArtifactSection = ({
           )}
         </span>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-          {canManageProcesses && (
-            <Button
-              icon={<Settings size={14} strokeWidth={2} />}
-              theme="borderless"
-              size="small"
-              type="tertiary"
-              onClick={() => setManageProcessesVisible(true)}
-            >
-              {t('requirements.linkedProcesses.manage')}
-            </Button>
-          )}
+          {/* 「管理关联流程」入口已移除：流程关联仅在工作空间/开发中心侧建立 */}
           {(canEdit || canManageProcesses) && (
             <Button
               icon={<Plus size={16} strokeWidth={2} />}
@@ -329,6 +300,12 @@ const ArtifactSection = ({
       ) : (
         <Text type="tertiary" size="small" style={{ padding: '16px 0', display: 'block', textAlign: 'center' }}>
           {t('requirements.artifact.empty')}
+        </Text>
+      )}
+
+      {linkedProcesses.length === 0 && (
+        <Text type="tertiary" size="small" style={{ marginTop: 8, display: 'block' }}>
+          {t('requirements.linkedProcesses.readonlyHint')}
         </Text>
       )}
 
@@ -415,17 +392,6 @@ const ArtifactSection = ({
           }}
         </Form>
       </Modal>
-
-      {/* 流程批量管理弹窗 */}
-      {canManageProcesses && (
-        <ManageLinkedProcessesModal
-          visible={manageProcessesVisible}
-          requirementId={data.id}
-          linked={linkedProcesses}
-          onClose={() => setManageProcessesVisible(false)}
-          onChanged={() => onProcessesChanged?.()}
-        />
-      )}
     </div>
   );
 };
