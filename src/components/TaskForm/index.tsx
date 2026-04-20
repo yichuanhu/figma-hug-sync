@@ -134,7 +134,7 @@ const TaskForm = (props: TaskFormProps) => {
     if (!pendingValidation || !formApi) return;
 
     const isLoadingAny =
-      isLoadingProcess || (pendingValidation.worker_group_id && isLoadingWorkerGroups) || (pendingValidation.worker_id && isLoadingWorkerTree);
+      isLoadingProcess || (pendingValidation.worker_id && isLoadingWorkerTree);
 
     if (isLoadingAny) return;
 
@@ -145,12 +145,6 @@ const TaskForm = (props: TaskFormProps) => {
         if (source === TaskFormSource.Process) {
           handleProcessChange(pendingValidation.process_id);
         }
-      }
-    }
-    if (pendingValidation.worker_group_id && workerGroupList?.length) {
-      const groupExists = workerGroupList.some(g => g.id === pendingValidation.worker_group_id);
-      if (groupExists) {
-        formApi.setValue('worker_group_id', pendingValidation.worker_group_id);
       }
     }
     if (pendingValidation.worker_id && workerGroupsTree?.length) {
@@ -168,7 +162,7 @@ const TaskForm = (props: TaskFormProps) => {
     setLoading(false);
     setPendingValidation(null);
     showParamsHandle(!!pendingValidation.input_parameter_values?.length || !!pendingValidation.output_parameter_values?.length);
-  }, [pendingValidation, formApi, processData, workerGroupList, workerGroupsTree, isLoadingProcess, isLoadingWorkerGroups, isLoadingWorkerTree]);
+  }, [pendingValidation, formApi, processData, workerGroupsTree, isLoadingProcess, isLoadingWorkerTree]);
 
   // 提交表单
   const submitForm = useCallback(async (): Promise<ITaskInfo | null> => {
