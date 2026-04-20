@@ -63,7 +63,6 @@ const ArtifactSection = ({
 }: ArtifactSectionProps) => {
   const { t } = useTranslation();
   const [modalVisible, setModalVisible] = useState(false);
-  const [manageProcessesVisible, setManageProcessesVisible] = useState(false);
   const [artifacts, setArtifacts] = useState<RequirementArtifact[]>(data.artifacts || []);
 
   const linkedProcesses = data.linkedProcesses ?? [];
@@ -149,6 +148,10 @@ const ArtifactSection = ({
   };
 
   const handleRemove = (row: UnifiedRow) => {
+    if (row.source === 'process') {
+      Toast.warning(t('requirements.linkedProcesses.readonlyHint'));
+      return;
+    }
     Modal.confirm({
       title: t('requirements.artifact.removeConfirmTitle'),
       content: t('requirements.artifact.removeConfirmContent'),
@@ -156,26 +159,16 @@ const ArtifactSection = ({
       cancelText: t('common.cancel'),
       okButtonProps: { type: 'danger' },
       onOk: async () => {
-        if (row.source === 'process') {
-          try {
-            await removeLinkedProcess(data.id, row.artifactId);
-            Toast.success(t('requirements.artifact.removeSuccess'));
-            onProcessesChanged?.();
-          } catch (e) {
-            Toast.error((e as Error).message);
-          }
-        } else {
-          const updated = artifacts.filter((a) => a.id !== row.rawArtifact?.id);
-          setArtifacts(updated);
-          onArtifactsChange?.(updated);
-          Toast.success(t('requirements.artifact.removeSuccess'));
-        }
+        const updated = artifacts.filter((a) => a.id !== row.rawArtifact?.id);
+        setArtifacts(updated);
+        onArtifactsChange?.(updated);
+        Toast.success(t('requirements.artifact.removeSuccess'));
       },
     });
   };
 
   const typeOptions = [
-    { value: 'PROCESS', label: t('requirements.artifact.typeProcess') },
+    // PROCESS 类型已禁止在需求中心侧直接关联，按文档收敛到工作空间/开发中心入口
     { value: 'ADP_APP', label: t('requirements.artifact.typeAdpApp') },
     { value: 'AGENT', label: t('requirements.artifact.typeAgent') },
     { value: 'HUMAN_COLLAB', label: t('requirements.artifact.typeHumanCollab') },
@@ -255,9 +248,9 @@ const ArtifactSection = ({
             key: 'action',
             width: 60,
             render: (_: unknown, record: UnifiedRow) => {
-              const allow =
-                record.source === 'process' ? canManageProcesses : canEdit;
-              if (!allow) return null;
+              // 流程类（来自 linkedProcesses）只读，不允许在需求中心侧解除关联
+              if (record.source === 'process') return null;
+              if (!canEdit) return null;
               return (
                 <Button
                   icon={<Trash2 size={16} strokeWidth={2} />}
