@@ -93,17 +93,22 @@ const TaskForm = (props: TaskFormProps) => {
           worker_name: null,
         };
       }
-      const [groupId, workerId] = values.worker_id as string[];
-      let group = workerGroupsTree.find(g => g.group_id === groupId);
-      if (!group) {
-        group = workerGroupsTree.find(g => !g.group_id);
+      const workerId = values.worker_id as string;
+      let foundGroup = null as (typeof workerGroupsTree)[number] | null;
+      let foundWorker = null as NonNullable<(typeof workerGroupsTree)[number]['members']>[number] | null;
+      for (const g of workerGroupsTree) {
+        const m = g.members?.find(x => x.worker_id === workerId);
+        if (m) {
+          foundGroup = g;
+          foundWorker = m;
+          break;
+        }
       }
-      const worker = group?.members?.find(m => m.worker_id === workerId);
       return {
-        worker_group_id: groupId === '0' ? null : groupId,
-        worker_group_name: group?.group_name || null,
+        worker_group_id: foundGroup?.group_id || null,
+        worker_group_name: foundGroup?.group_name || null,
         worker_id: workerId,
-        worker_name: worker?.name,
+        worker_name: foundWorker?.name,
       };
     },
     [targetType, workerGroupList, workerGroupsTree]
