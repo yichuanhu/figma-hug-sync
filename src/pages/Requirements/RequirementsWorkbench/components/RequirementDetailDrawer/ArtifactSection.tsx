@@ -235,11 +235,6 @@ const ArtifactSection = ({
         </Text>
       )}
 
-      {linkedProcesses.length === 0 && (
-        <Text type="tertiary" size="small" style={{ marginTop: 8, display: 'block' }}>
-          {t('requirements.linkedProcesses.readonlyHint')}
-        </Text>
-      )}
     </div>
   );
 };
