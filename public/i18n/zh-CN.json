@@ -1016,7 +1016,14 @@
       "editModal": {
         "title": "编辑流程",
         "success": "流程更新成功！",
-        "error": "更新失败，请重试"
+        "error": "更新失败，请重试",
+        "cascadeConfirm": {
+          "title": "归属部门变更确认",
+          "content": "该流程被 {{total}} 个下游资源使用（触发器 {{triggers}}、任务 {{tasks}}、模板 {{templates}}）。修改归属部门后，这些资源将同步更新归属部门，是否继续？",
+          "ok": "继续修改",
+          "cancel": "取消"
+        },
+        "cascadeSuccess": "已同步更新 {{total}} 个下游资源的归属部门"
       },
       "openProcess": {
         "title": "打开流程",
