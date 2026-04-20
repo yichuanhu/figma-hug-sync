@@ -124,11 +124,14 @@ const BotTargetSelector = ({
     if (targetType === 'BOT_IN_GROUP' || targetType === 'UNGROUPED_BOT') {
       const bot = bots.find((b) => b.id === optionNode.value);
       if (bot) {
+        const groupName = bot.groupId
+          ? botGroups.find((g) => g.id === bot.groupId)?.name ?? t('botSelector.ungrouped', { defaultValue: '未分组' })
+          : t('botSelector.ungrouped', { defaultValue: '未分组' });
         return (
           <div className="bot-target-selector-selected">
-            <Text>{bot.name}</Text>
-            <Tag 
-              size="small" 
+            <Text>[{groupName}] {bot.name}</Text>
+            <Tag
+              size="small"
               color={bot.status === 'ONLINE' ? 'green' : 'grey'}
             >
               {bot.status === 'ONLINE' ? t('botSelector.statusOnline') : t('botSelector.statusOffline')}
