@@ -129,7 +129,8 @@ const BotTargetSelector = ({
           : t('botSelector.ungrouped', { defaultValue: '未分组' });
         return (
           <div className="bot-target-selector-selected">
-            <Text>[{groupName}] {bot.name}</Text>
+            <span className="bot-target-selector-option-group-tag">{groupName}</span>
+            <Text className="bot-target-selector-option-name">{bot.name}</Text>
             <Tag
               size="small"
               color={bot.status === 'ONLINE' ? 'green' : 'grey'}
