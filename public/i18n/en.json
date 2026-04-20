@@ -678,6 +678,7 @@
       "editSuccess": "Requirement updated successfully",
       "submitError": "Submit failed, please try again",
       "sectionBasicInfo": "Basic Information",
+      "requirementOwnerLabel": "Requirement Owner",
       "sectionClassification": "Classification & Priority",
       "sectionAdditional": "Additional Information",
       "descriptionMaxLength": "Description cannot exceed 2000 characters",
@@ -1022,7 +1023,8 @@
         "MANAGER": "Manager",
         "MEMBER": "Member"
       },
-      "selectedCount": "{{count}} selected"
+      "selectedCount": "{{count}} selected",
+      "selectedMembersTitle": "Selected members"
     }
   },
   "development": {
