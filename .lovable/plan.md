@@ -87,3 +87,10 @@ PENDING_APPROVAL ──creator withdraw──▶ DRAFT/WITHDRAWN
 - 「新增交付物」弹窗中移除 `PROCESS` 类型选项；非流程类（ADP_APP / AGENT / HUMAN_COLLAB）保持可编辑。
 - 表格中流程行（`source==='process'`）操作列不再渲染删除按钮，作为只读回溯展示。
 - 空态/列表底部新增 `requirements.linkedProcesses.readonlyHint` 文案，引导到正确入口。
+
+### 状态联动（关联工作空间 → 开发中）
+- 工作空间侧 `linkRequirements` 成功新增关联后，对每个新增需求 ID 调用 `transitionToDeveloping(reqId, { id, name })`。
+- 仅当需求当前 `status ∈ {PENDING_APPROVAL, PENDING_ASSESSMENT, PENDING_PROJECT}` 时迁移到 `DEVELOPING`；其它状态（DRAFT/REJECTED/WITHDRAWN/DEVELOPING/LAUNCHED/OFFLINE）保持不变，避免误降级或重复迁移。
+- 同步写入一条 `approvalHistory`：`approverId='system'` / `approverName='系统'` / `action='approve'` / `comment='已关联至工作空间「XXX」，自动进入开发中'`。
+- 解除关联**不**回退状态（避免破坏开发进度），仅在工作空间已发布流程时禁止解除（既有约束）。
+- i18n 占位键：`requirements.history.systemAutoToDeveloping`（中/英）。
