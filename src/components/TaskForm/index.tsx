@@ -321,8 +321,8 @@ const TaskForm = (props: TaskFormProps) => {
     const sortedGroups = [...workerGroupsTree].sort((a, b) => {
       const aUngrouped = !a.group_name;
       const bUngrouped = !b.group_name;
-      if (aUngrouped && !bUngrouped) return 1;
-      if (!aUngrouped && bUngrouped) return -1;
+      if (aUngrouped && !bUngrouped) return -1;
+      if (!aUngrouped && bUngrouped) return 1;
       return (a.group_name || '').localeCompare(b.group_name || '', 'zh-CN');
     });
     sortedGroups.forEach(group => {
