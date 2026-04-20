@@ -168,6 +168,7 @@ const FileUploadField = ({
   return (
     <Form.Upload
       {...commonProps}
+      field={field.key}
       action=""
       limit={5}
       maxSize={10240}

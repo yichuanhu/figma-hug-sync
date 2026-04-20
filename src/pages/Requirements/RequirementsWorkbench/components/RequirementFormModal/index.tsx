@@ -95,8 +95,7 @@ const RequirementFormModal = ({
       await new Promise((resolve) => setTimeout(resolve, 300));
       // 把动态字段拆分到 form_data，系统字段保留在顶层
       const systemKeys = new Set([
-        'title', 'description', 'businessBackground', 'department', 'priority',
-        'contactInfo', 'expectedLaunchDate',
+        'title', 'description', 'department', 'priority', 'contactInfo',
       ]);
       const form_data: Record<string, unknown> = {};
       activeScheme.custom_fields.forEach((f) => {
