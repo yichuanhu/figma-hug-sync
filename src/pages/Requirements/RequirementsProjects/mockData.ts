@@ -372,6 +372,39 @@ export const fetchAllLinkableRequirements = async (): Promise<LinkableRequiremen
 };
 
 /**
+ * 全局「未被任何工作空间关联」的需求列表，用于新建项目时的关联需求多选。
+ * 这些需求可被新项目的自动建空间流程接管。
+ */
+export const fetchUnlinkedRequirements = async (): Promise<LinkableRequirementBrief[]> => {
+  await delay(null);
+  const linkedReqIds = new Set<string>();
+  workspaces.forEach((w) => w.linkedRequirementIds.forEach((rid) => linkedReqIds.add(rid)));
+  const { fetchRequirementList } = await import('../RequirementsWorkbench/mockData');
+  const res = await fetchRequirementList({
+    offset: 0,
+    size: 1000,
+    keyword: '',
+    sort_by: 'created_at',
+    sort_order: 'desc',
+  });
+  return res.list
+    .filter((r) => !linkedReqIds.has(r.id))
+    .map((r) => ({
+      id: r.id,
+      title: r.title,
+      req_no: r.req_no,
+      workspaceId: '',
+      workspaceName: '',
+      projectId: '',
+      projectName: '',
+      owning_department_id: r.owning_department_id,
+      owning_department_name: r.owning_department_name,
+      owner_id: r.owner_id,
+      owner_name: r.owner_name,
+    }));
+};
+
+/**
  * 按 ID 列表批量查询需求 brief（id/name/req_no/status），用于流程列表「关联需求」列与筛选下拉。
  * 不在列表中的 id 会被忽略。
  */
