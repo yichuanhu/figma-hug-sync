@@ -912,7 +912,8 @@
       "role": {
         "MANAGER": "管理员",
         "MEMBER": "成员"
-      }
+      },
+      "selectedCount": "已选 {{count}} 人"
     }
   },
   "development": {
