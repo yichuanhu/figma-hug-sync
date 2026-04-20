@@ -6,7 +6,7 @@ import {
   Tag,
   Button,
   Modal,
-  Form,
+  TextArea,
   Toast,
 } from '@douyinfe/semi-ui';
 import { Link } from 'react-router-dom';
@@ -216,9 +216,11 @@ const ArtifactSection = ({ data }: ArtifactSectionProps) => {
         okButtonProps={{ type: 'danger' }}
         width={480}
       >
-        <Form labelPosition="top">
-          <Form.TextArea
-            label={t('requirements.delivery.offlineConfirm.reason')}
+        <div>
+          <Text size="small" style={{ display: 'block', marginBottom: 8 }}>
+            {t('requirements.delivery.offlineConfirm.reason')}
+          </Text>
+          <TextArea
             placeholder={t('requirements.delivery.offlineConfirm.placeholder')}
             value={offlineReason}
             onChange={(v) => setOfflineReason(v)}
@@ -226,7 +228,7 @@ const ArtifactSection = ({ data }: ArtifactSectionProps) => {
             showClear
             autosize={{ minRows: 3, maxRows: 6 }}
           />
-        </Form>
+        </div>
       </Modal>
     </div>
   );
