@@ -180,6 +180,7 @@ const ensureDemoSeed = (): Promise<void> => {
 };
 
 export const fetchProjects = async (): Promise<Project[]> => {
+  await ensureDemoSeed();
   recomputeProjectAggregates();
   return delay([...projects]);
 };
@@ -215,10 +216,14 @@ export const deleteProject = async (id: string): Promise<void> => {
 };
 
 export const fetchWorkspacesByProject = async (projectId: string): Promise<Workspace[]> => {
+  await ensureDemoSeed();
   return delay(workspaces.filter((w) => w.projectId === projectId));
 };
 
-export const fetchAllWorkspaces = async (): Promise<Workspace[]> => delay([...workspaces]);
+export const fetchAllWorkspaces = async (): Promise<Workspace[]> => {
+  await ensureDemoSeed();
+  return delay([...workspaces]);
+};
 
 export const addWorkspace = async (
   payload: Omit<Workspace, 'id' | 'createdAt' | 'memberCount' | 'linkedRequirementIds' | 'hasPublishedProcess'>,
