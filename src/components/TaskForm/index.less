@@ -134,9 +134,26 @@
   }
 }
 
+// 机器人下拉项容器（worker 单选下拉，由 renderOptionItem 渲染，作用于全局）
+.bot-target-selector-option {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  gap: 4px;
+
+  .bot-target-selector-option-name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
 // 机器人下拉项中的组名标签（Semi Tag），仅做视觉提示
 .bot-target-selector-option-group-tag {
-  margin-left: 8px;
+  margin-left: 0;
   margin-right: 0;
   flex-shrink: 0;
   max-width: 140px;
@@ -145,6 +162,7 @@
 .bot-target-selector-selected-with-tag {
   display: inline-flex;
   align-items: center;
+  gap: 4px;
   min-width: 0;
 
   .bot-target-selector-option-name {
