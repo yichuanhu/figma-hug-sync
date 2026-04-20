@@ -1,18 +1,21 @@
 import { useEffect, useMemo } from 'react';
-import { Form, Upload, Button, Toast, useFormApi, useFormState } from '@douyinfe/semi-ui';
+import { Form, Button, Toast, useFormApi, useFormState } from '@douyinfe/semi-ui';
 import { Upload as UploadIcon } from 'lucide-react';
-import type { SchemeField } from '../../types';
+import type { SchemeField, CostConfig } from '../../types';
 
 interface Props {
   field: SchemeField;
+  /** 激活方案的 cost_config，供 source='cost_config.rate_table' 与派生提示使用 */
+  costConfig?: CostConfig;
 }
 
 /**
  * Scheme 驱动的动态字段渲染器
  * 根据 SchemeField.type 渲染对应 Semi UI Form 控件，并装配校验规则。
+ * 支持 ui_width（small/medium/large/full）由父级 grid 控制列占比。
  */
-const SchemeFieldRenderer = ({ field }: Props) => {
-  const { key, label, type, required, placeholder, description, options, validation, unit, default: defaultValue } = field;
+const SchemeFieldRenderer = ({ field, costConfig }: Props) => {
+  const { key, label, type, required, placeholder, description, options, validation, unit, default: defaultValue, ui_width, source, format } = field;
 
   const rules: Array<Record<string, unknown>> = [];
   if (required) rules.push({ required: true, message: `请输入${label}` });
@@ -21,6 +24,8 @@ const SchemeFieldRenderer = ({ field }: Props) => {
   if (validation?.minLength !== undefined) rules.push({ min: validation.minLength, message: validation.message ?? `长度不能少于 ${validation.minLength}` });
   if (validation?.maxLength !== undefined) rules.push({ max: validation.maxLength, message: validation.message ?? `长度不能超过 ${validation.maxLength}` });
   if (validation?.pattern) rules.push({ pattern: new RegExp(validation.pattern), message: validation.message ?? '格式不正确' });
+
+  const widthClass = `scheme-field-w-${ui_width ?? 'full'}`;
 
   const commonProps = {
     field: key,
@@ -32,88 +37,108 @@ const SchemeFieldRenderer = ({ field }: Props) => {
     rules,
   };
 
-  switch (type) {
-    case 'number':
-      return (
-        <Form.InputNumber
-          {...commonProps}
-          min={validation?.min}
-          max={validation?.max}
-          suffix={unit ? <span style={{ paddingRight: 8, color: 'var(--semi-color-text-2)', whiteSpace: 'nowrap' }}>{unit}</span> : undefined}
-          style={{ width: '100%' }}
-        />
-      );
-    case 'percentage':
-      return (
-        <Form.InputNumber
-          {...commonProps}
-          min={validation?.min ?? 0}
-          max={validation?.max ?? 100}
-          suffix={<span style={{ paddingRight: 8, color: 'var(--semi-color-text-2)', whiteSpace: 'nowrap' }}>%</span>}
-          style={{ width: '100%' }}
-        />
-      );
-    case 'calculation':
-      return <CalculationField field={field} />;
-    case 'file_upload':
-      return <FileUploadField field={field} commonProps={commonProps} />;
-    case 'rich_text':
-      return (
-        <Form.TextArea
-          {...commonProps}
-          autosize={{ minRows: 4, maxRows: 8 }}
-          maxCount={5000}
-          showClear
-        />
-      );
-    case 'select':
-      return (
-        <Form.Select
-          {...commonProps}
-          optionList={(options ?? []).map((o) => ({ label: o.label, value: o.value }))}
-          style={{ width: '100%' }}
-        />
-      );
-    case 'multi_select':
-      return (
-        <Form.Select
-          {...commonProps}
-          multiple
-          optionList={(options ?? []).map((o) => ({ label: o.label, value: o.value }))}
-          style={{ width: '100%' }}
-        />
-      );
-    case 'radio':
-      return (
-        <Form.RadioGroup {...commonProps}>
-          {(options ?? []).map((o) => (
-            <Form.Radio key={String(o.value)} value={o.value}>{o.label}</Form.Radio>
-          ))}
-        </Form.RadioGroup>
-      );
-    case 'checkbox_group':
-      return (
-        <Form.CheckboxGroup {...commonProps}>
-          {(options ?? []).map((o) => (
-            <Form.Checkbox key={String(o.value)} value={o.value}>{o.label}</Form.Checkbox>
-          ))}
-        </Form.CheckboxGroup>
-      );
-    case 'date':
-      return <Form.DatePicker {...commonProps} type="date" style={{ width: '100%' }} />;
-    case 'textarea':
-      return <Form.TextArea {...commonProps} autosize={{ minRows: 2, maxRows: 4 }} maxCount={2000} showClear />;
-    case 'text':
-    default:
-      return <Form.Input {...commonProps} maxLength={validation?.maxLength ?? 200} showClear />;
+  const inner = (() => {
+    switch (type) {
+      case 'number':
+        return (
+          <Form.InputNumber
+            {...commonProps}
+            min={validation?.min}
+            max={validation?.max}
+            suffix={unit ? <span style={{ paddingRight: 8, color: 'var(--semi-color-text-2)', whiteSpace: 'nowrap' }}>{unit}</span> : undefined}
+            style={{ width: '100%' }}
+          />
+        );
+      case 'percentage':
+        return (
+          <Form.InputNumber
+            {...commonProps}
+            min={validation?.min ?? 0}
+            max={validation?.max ?? 100}
+            suffix={<span style={{ paddingRight: 8, color: 'var(--semi-color-text-2)', whiteSpace: 'nowrap' }}>%</span>}
+            style={{ width: '100%' }}
+          />
+        );
+      case 'calculation':
+        return <CalculationField field={field} costConfig={costConfig} precision={format?.precision ?? 2} />;
+      case 'file_upload':
+        return <FileUploadField field={field} commonProps={commonProps} />;
+      case 'rich_text':
+        return (
+          <Form.TextArea
+            {...commonProps}
+            autosize={{ minRows: 4, maxRows: 8 }}
+            maxCount={5000}
+            showClear
+          />
+        );
+      case 'select': {
+        const optionList = resolveSelectOptions(field, costConfig);
+        return (
+          <Form.Select
+            {...commonProps}
+            optionList={optionList}
+            style={{ width: '100%' }}
+          />
+        );
+      }
+      case 'multi_select':
+        return (
+          <Form.Select
+            {...commonProps}
+            multiple
+            optionList={(options ?? []).map((o) => ({ label: o.label, value: o.value }))}
+            style={{ width: '100%' }}
+          />
+        );
+      case 'radio':
+        return (
+          <Form.RadioGroup {...commonProps}>
+            {(options ?? []).map((o) => (
+              <Form.Radio key={String(o.value)} value={o.value}>{o.label}</Form.Radio>
+            ))}
+          </Form.RadioGroup>
+        );
+      case 'checkbox_group':
+        return (
+          <Form.CheckboxGroup {...commonProps}>
+            {(options ?? []).map((o) => (
+              <Form.Checkbox key={String(o.value)} value={o.value}>{o.label}</Form.Checkbox>
+            ))}
+          </Form.CheckboxGroup>
+        );
+      case 'date':
+        return <Form.DatePicker {...commonProps} type="date" style={{ width: '100%' }} />;
+      case 'textarea':
+        return <Form.TextArea {...commonProps} autosize={{ minRows: 4, maxRows: 10 }} maxCount={validation?.maxLength ?? 2000} showClear />;
+      case 'text':
+      default:
+        return <Form.Input {...commonProps} maxLength={validation?.maxLength ?? 200} showClear />;
+    }
+  })();
+
+  // 通过 div 包裹注入 ui_width class 供父级 grid 识别
+  return <div className={widthClass}>{inner}{source === 'cost_config.rate_table' ? <JobLevelDailyHint fieldKey={key} costConfig={costConfig} /> : null}</div>;
+};
+
+/** 根据 source / options 解析 select 候选项 */
+const resolveSelectOptions = (field: SchemeField, costConfig?: CostConfig) => {
+  if (field.source === 'cost_config.rate_table' && costConfig?.rate_table) {
+    return Object.keys(costConfig.rate_table).map((level) => ({
+      label: costConfig.level_labels?.[level] ?? level,
+      value: level,
+    }));
   }
+  return (field.options ?? []).map((o) => ({ label: o.label, value: o.value }));
 };
 
 /**
  * 自动计算字段：根据 expression 与 source_fields 实时计算并写回表单值。
- * 渲染为禁用的 InputNumber，不可编辑。
+ * 渲染为禁用的 InputNumber，不可编辑；按 precision 控制小数位。
+ * 当字段 key 为 monthly_saved_hours 且存在 cost_config 与 job_level 时，
+ * 在下方追加「预估月节省金额」派生提示。
  */
-const CalculationField = ({ field }: { field: SchemeField }) => {
+const CalculationField = ({ field, costConfig, precision }: { field: SchemeField; costConfig?: CostConfig; precision: number }) => {
   const { key, label, unit, expression, source_fields, description } = field;
   const formApi = useFormApi();
   const formState = useFormState();
@@ -127,12 +152,12 @@ const CalculationField = ({ field }: { field: SchemeField }) => {
       expr = expr.replace(new RegExp(`\\{${srcKey}\\}`, 'g'), String(Number.isFinite(v) ? v : 0));
     });
     try {
-      // 仅允许数字与四则运算字符
       if (!/^[\d+\-*/(). ]+$/.test(expr)) return undefined;
       // eslint-disable-next-line no-new-func
       const result = Function(`"use strict"; return (${expr});`)();
       if (typeof result !== 'number' || !Number.isFinite(result)) return undefined;
-      return Math.round(result * 100) / 100;
+      const factor = Math.pow(10, precision);
+      return Math.round(result * factor) / factor;
     } catch {
       return undefined;
     }
@@ -143,15 +168,47 @@ const CalculationField = ({ field }: { field: SchemeField }) => {
     formApi.setValue(key, computed);
   }, [computed, key, formApi]);
 
+  // 派生：预估月节省金额（仅 monthly_saved_hours）
+  const savedAmountHint = useMemo(() => {
+    if (key !== 'monthly_saved_hours' || !costConfig?.rate_table) return null;
+    const jobLevel = values.job_level as string | undefined;
+    if (!jobLevel) return null;
+    const dailyRate = costConfig.rate_table[jobLevel];
+    const wh = costConfig.working_hours_per_day || 8;
+    if (!dailyRate || !computed || computed <= 0) return null;
+    const amount = Math.round((computed / wh) * dailyRate);
+    return `预估月节省金额 ≈ ¥${amount.toLocaleString()} / 月`;
+  }, [key, computed, values.job_level, costConfig]);
+
   return (
-    <Form.InputNumber
-      field={key}
-      label={label}
-      disabled
-      extraText={description ?? '系统自动根据上方字段计算'}
-      suffix={unit ? <span style={{ paddingRight: 8, color: 'var(--semi-color-text-2)', whiteSpace: 'nowrap' }}>{unit}</span> : undefined}
-      style={{ width: '100%' }}
-    />
+    <>
+      <Form.InputNumber
+        field={key}
+        label={label}
+        disabled
+        extraText={description ?? '系统自动根据上方字段计算'}
+        suffix={unit ? <span style={{ paddingRight: 8, color: 'var(--semi-color-text-2)', whiteSpace: 'nowrap' }}>{unit}</span> : undefined}
+        style={{ width: '100%' }}
+      />
+      {savedAmountHint ? (
+        <div style={{ marginTop: -8, marginBottom: 12, fontSize: 12, color: 'var(--semi-color-success)' }}>{savedAmountHint}</div>
+      ) : null}
+    </>
+  );
+};
+
+/** 岗位级别选中后展示日单价提示 */
+const JobLevelDailyHint = ({ fieldKey, costConfig }: { fieldKey: string; costConfig?: CostConfig }) => {
+  const formState = useFormState();
+  const value = (formState.values ?? {})[fieldKey] as string | undefined;
+  if (!value || !costConfig?.rate_table) return null;
+  const rate = costConfig.rate_table[value];
+  const wh = costConfig.working_hours_per_day || 8;
+  if (!rate) return null;
+  return (
+    <div style={{ marginTop: -8, marginBottom: 12, fontSize: 12, color: 'var(--semi-color-text-2)' }}>
+      日成本 ¥{rate.toLocaleString()}/天 · {wh} 小时工作日
+    </div>
   );
 };
 
