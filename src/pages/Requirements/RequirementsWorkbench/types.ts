@@ -472,6 +472,7 @@ export interface CostRoleItem {
 }
 
 // ============= Story-012 版本快照 =============
+/** [活动记录] 版本快照（保存编辑前的关键字段，用于历史回看），不属于需求本体。 */
 export interface VersionSnapshot {
   version: number;
   createdAt: string;
