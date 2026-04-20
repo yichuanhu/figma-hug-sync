@@ -47,6 +47,8 @@ const { Title, Text } = Typography;
 
 const RequirementsWorkbench = () => {
   const { t } = useTranslation();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   // 搜索
   const [searchValue, setSearchValue] = useState('');
