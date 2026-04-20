@@ -737,7 +737,8 @@
         "approved": "Approved",
         "rejected": "Rejected",
         "withdrew": "Withdrew",
-        "resubmitted": "Resubmitted"
+        "resubmitted": "Resubmitted",
+        "systemAutoToDeveloping": "Linked to workspace \"{{name}}\", automatically moved to In Development"
       },
       "tab": {
         "overview": "Overview",

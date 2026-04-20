@@ -3,6 +3,7 @@
  */
 import type { Project, Workspace, ProjectAggregatedStatus, WorkspaceMember, WorkspaceMemberRole, WorkspaceMemberView } from './types';
 import { ALL_ORG_USERS } from '@/components/CollaboratorManager/mockData';
+import { transitionToDeveloping } from '../RequirementsWorkbench/mockData';
 
 const now = () => new Date().toISOString();
 
