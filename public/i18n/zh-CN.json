@@ -865,6 +865,11 @@
       "belongsToWorkspace": "所属工作空间",
       "belongsToProject": "所属项目",
       "unlinked": "未关联",
+      "linkedRequirementsOptional": "关联需求（可选）",
+      "linkedRequirementsPlaceholder": "选择需求后将自动按部门创建工作空间",
+      "autoCreateWorkspaceTip": "系统将按所选需求的归属部门自动为本项目创建对应工作空间，并完成需求关联。",
+      "autoWorkspaceNamePattern": "{{project}} - {{dept}}工作空间",
+      "autoWorkspaceCreated": "项目创建成功，已自动创建 {{count}} 个工作空间",
       "fields": {
         "name": "项目名称",
         "workspaceName": "工作空间名称",
