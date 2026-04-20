@@ -1,8 +1,8 @@
 import { useState, useCallback, useImperativeHandle, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Form, Radio, Select, Spin, Tag, Toast, Typography } from '@douyinfe/semi-ui';
+import { Form, Select, Spin, Tag, Toast, Typography } from '@douyinfe/semi-ui';
 import type { FormApi } from '@douyinfe/semi-ui/lib/es/form';
-import { useGetProcesses, useGetProcessVersion, useGetWorkerGroups, useWorkerGroupsTree, encrypt } from './hooks/useTaskFormData';
+import { useGetProcesses, useGetProcessVersion, useWorkerGroupsTree, encrypt } from './hooks/useTaskFormData';
 import ParameterInput from './components/ParameterInput';
 import {
   TaskFormSource,
@@ -12,7 +12,6 @@ import {
   type LYInputParameterItem,
   type LYOutputParameterItem,
   type LYProcessResponse,
-  type ExecutionTargetType,
 } from './types';
 import './index.less';
 
