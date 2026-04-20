@@ -283,7 +283,15 @@ const TaskForm = (props: TaskFormProps) => {
     [initForm, submitForm, fillTemplate]
   );
 
-  const renderSelectedItem = (optionNode: { label?: string; name?: string }) => {
+  const renderSelectedItem = (optionNode: { label?: string; name?: string; groupName?: string }) => {
+    if (optionNode?.groupName && optionNode?.name) {
+      return (
+        <span className="bot-target-selector-selected-with-tag">
+          <span className="bot-target-selector-option-group-tag">{optionNode.groupName}</span>
+          <span className="bot-target-selector-option-name">{optionNode.name}</span>
+        </span>
+      );
+    }
     return <>{optionNode.label}</>;
   };
 
@@ -439,9 +447,8 @@ const TaskForm = (props: TaskFormProps) => {
                           {...({ name: opt.name, groupName: opt.groupName } as Record<string, unknown>)}
                         >
                           <div className="bot-target-selector-option">
-                            <Text className="bot-target-selector-option-name">
-                              [{opt.groupName}] {opt.name}
-                            </Text>
+                            <span className="bot-target-selector-option-group-tag">{opt.groupName}</span>
+                            <Text className="bot-target-selector-option-name">{opt.name}</Text>
                             <Tag
                               size="small"
                               color={config.color as 'grey' | 'green' | 'blue' | 'red' | 'orange'}
