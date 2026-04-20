@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Modal, Form, Toast, Button, Select, Typography } from '@douyinfe/semi-ui';
+import { Modal, Form, Toast, Button, Select, Input, Typography } from '@douyinfe/semi-ui';
 import type { LYCreateProcessRequest, LYProcessResponse } from '@/api';
-import DepartmentSelect from '@/components/DepartmentSelect';
-import OwnerSelect from '@/components/OwnerSelect';
-import WorkspaceSelect from '@/components/WorkspaceSelect';
 import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
-import { fetchLinkableRequirementsByWorkspace } from '@/pages/Requirements/RequirementsProjects/mockData';
+import {
+  fetchAllLinkableRequirements,
+  type LinkableRequirementBrief,
+} from '@/pages/Requirements/RequirementsProjects/mockData';
 import './index.less';
 
 const { Text } = Typography;
@@ -20,9 +20,11 @@ const generateUUID = (): string => {
   });
 };
 
-// 生成Mock的LYProcessResponse
-const generateMockLYProcessResponse = (request: LYCreateProcessRequest, owningDepartmentId: string, owningDepartmentName: string): LYProcessResponse => {
-  const now = new Date().toISOString();
+const generateMockLYProcessResponse = (
+  request: LYCreateProcessRequest,
+  brief: LinkableRequirementBrief,
+): LYProcessResponse => {
+  const nowIso = new Date().toISOString();
   return {
     id: generateUUID(),
     name: request.name,
@@ -33,13 +35,13 @@ const generateMockLYProcessResponse = (request: LYCreateProcessRequest, owningDe
     status: 'DEVELOPING',
     current_version_id: null,
     creator_id: MOCK_CURRENT_USER.id,
-    requirement_id: request.requirement_id || null,
-    created_at: now,
-    updated_at: now,
-    owning_department_id: owningDepartmentId,
-    owning_department_name: owningDepartmentName,
-    owner_id: MOCK_CURRENT_USER.id,
-    owner_name: MOCK_CURRENT_USER.name,
+    requirement_id: brief.id,
+    created_at: nowIso,
+    updated_at: nowIso,
+    owning_department_id: brief.owning_department_id,
+    owning_department_name: brief.owning_department_name,
+    owner_id: brief.owner_id ?? MOCK_CURRENT_USER.id,
+    owner_name: brief.owner_name ?? MOCK_CURRENT_USER.name,
   };
 };
 
@@ -49,34 +51,21 @@ interface CreateProcessModalProps {
   onSuccess?: (processData: LYProcessResponse) => void;
 }
 
-interface RequirementOption {
-  id: string;
-  title: string;
-  req_no?: string;
-}
-
 const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModalProps) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
-  const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>(undefined);
-  const [ownerId, setOwnerId] = useState<string>(MOCK_CURRENT_USER.id);
-  const [workspaceId, setWorkspaceId] = useState<string | undefined>(undefined);
   const [requirementId, setRequirementId] = useState<string | undefined>(undefined);
-  const [requirementOptions, setRequirementOptions] = useState<RequirementOption[]>([]);
+  const [requirementOptions, setRequirementOptions] = useState<LinkableRequirementBrief[]>([]);
   const [requirementLoading, setRequirementLoading] = useState(false);
 
   const existingProcessNames = ['订单自动处理流程', '财务报销审批流程', '人事入职流程'];
 
-  // 工作空间变更 → 重新加载可关联需求
+  // 加载所有可关联需求
   useEffect(() => {
-    setRequirementId(undefined);
-    if (!workspaceId) {
-      setRequirementOptions([]);
-      return;
-    }
+    if (!visible) return;
     let cancelled = false;
     setRequirementLoading(true);
-    fetchLinkableRequirementsByWorkspace(workspaceId)
+    fetchAllLinkableRequirements()
       .then((list) => {
         if (!cancelled) setRequirementOptions(list);
       })
@@ -86,17 +75,19 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
     return () => {
       cancelled = true;
     };
-  }, [workspaceId]);
+  }, [visible]);
 
   // 关闭时重置
   useEffect(() => {
     if (!visible) {
-      setOwningDepartmentId(undefined);
-      setWorkspaceId(undefined);
       setRequirementId(undefined);
-      setRequirementOptions([]);
     }
   }, [visible]);
+
+  const selectedRequirement = useMemo(
+    () => requirementOptions.find((r) => r.id === requirementId),
+    [requirementOptions, requirementId],
+  );
 
   const validateProcessNameFormat = (rule: unknown, value: string, callback: (error?: string) => void) => {
     if (!value) {
@@ -124,20 +115,10 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
   const handleSubmit = async (values: Record<string, unknown>) => {
     setLoading(true);
     try {
-      if (!owningDepartmentId) {
-        Toast.warning(t('common.owningDepartmentRequired'));
-        setLoading(false);
-        return;
-      }
-      if (!workspaceId) {
-        Toast.warning(t('workspaceSelect.required'));
-        setLoading(false);
-        return;
-      }
-
-      // 校验：所选关联需求必须属于当前工作空间
-      if (requirementId && !requirementOptions.some((r) => r.id === requirementId)) {
-        Toast.error(t('development.processDevelopment.createModal.validation.requirementWorkspaceMismatch'));
+      if (!selectedRequirement) {
+        Toast.warning(
+          t('development.processDevelopment.createModal.validation.requirementRequired'),
+        );
         setLoading(false);
         return;
       }
@@ -145,14 +126,13 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
       const createRequest: LYCreateProcessRequest = {
         name: values.name as string,
         description: (values.description as string) || undefined,
-        owning_department_id: owningDepartmentId,
-        requirement_id: requirementId || null,
+        owning_department_id: selectedRequirement.owning_department_id,
+        requirement_id: selectedRequirement.id,
       };
 
       await new Promise((resolve) => setTimeout(resolve, 300));
 
-      const { getDepartmentName } = await import('@/mocks/departmentData');
-      const mockResponse = generateMockLYProcessResponse(createRequest, owningDepartmentId, getDepartmentName(owningDepartmentId));
+      const mockResponse = generateMockLYProcessResponse(createRequest, selectedRequirement);
 
       Toast.success(t('development.processDevelopment.createModal.success'));
       onCancel();
@@ -164,12 +144,6 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
       setLoading(false);
     }
   };
-
-  const requirementPlaceholder = !workspaceId
-    ? t('development.processDevelopment.createModal.fields.requirementPickWorkspaceFirst')
-    : requirementOptions.length === 0
-      ? t('development.processDevelopment.createModal.fields.requirementEmpty')
-      : t('development.processDevelopment.createModal.fields.requirementPlaceholder');
 
   return (
     <Modal
@@ -196,6 +170,65 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
           showClear
         />
 
+        <Form.Slot
+          label={{
+            text: t('development.processDevelopment.createModal.fields.requirementLabel'),
+            required: true,
+          }}
+        >
+          <Select
+            value={requirementId}
+            onChange={(v) => setRequirementId(v as string | undefined)}
+            placeholder={
+              requirementLoading
+                ? t('common.loading')
+                : requirementOptions.length === 0
+                  ? t('development.processDevelopment.createModal.fields.requirementGlobalEmpty')
+                  : t('development.processDevelopment.createModal.fields.requirementPlaceholder')
+            }
+            disabled={requirementOptions.length === 0 && !requirementLoading}
+            loading={requirementLoading}
+            showClear
+            filter
+            style={{ width: '100%' }}
+            optionList={requirementOptions.map((r) => ({
+              value: r.id,
+              label: r.req_no ? `[${r.req_no}] ${r.title}` : r.title,
+            }))}
+          />
+          <Text type="tertiary" size="small" style={{ marginTop: 4, display: 'block' }}>
+            {t('development.processDevelopment.createModal.fields.requirementAutoFillHelp')}
+          </Text>
+        </Form.Slot>
+
+        <Form.Slot label={{ text: t('common.owningDepartment'), required: true }}>
+          <Input
+            value={selectedRequirement?.owning_department_name ?? ''}
+            disabled
+            placeholder={t('development.processDevelopment.createModal.fields.autoFillPlaceholder')}
+          />
+        </Form.Slot>
+
+        <Form.Slot label={{ text: t('workspaceSelect.label'), required: true }}>
+          <Input
+            value={
+              selectedRequirement
+                ? `${selectedRequirement.projectName} / ${selectedRequirement.workspaceName}`
+                : ''
+            }
+            disabled
+            placeholder={t('development.processDevelopment.createModal.fields.autoFillPlaceholder')}
+          />
+        </Form.Slot>
+
+        <Form.Slot label={{ text: t('common.owner'), required: true }}>
+          <Input
+            value={selectedRequirement?.owner_name ?? ''}
+            disabled
+            placeholder={t('development.processDevelopment.createModal.fields.autoFillPlaceholder')}
+          />
+        </Form.Slot>
+
         <Form.TextArea
           field="description"
           label={t('common.description')}
@@ -208,58 +241,11 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
           ]}
         />
 
-        <Form.Slot label={t('common.owningDepartment')}>
-          <DepartmentSelect
-            value={owningDepartmentId}
-            onChange={(v) => {
-              setOwningDepartmentId(v);
-              setWorkspaceId(undefined);
-            }}
-          />
-        </Form.Slot>
-
-        <Form.Slot label={{ text: t('workspaceSelect.label'), required: true }}>
-          <WorkspaceSelect
-            value={workspaceId}
-            onChange={setWorkspaceId}
-            departmentId={owningDepartmentId}
-            placeholder={
-              owningDepartmentId
-                ? t('workspaceSelect.placeholder')
-                : t('workspaceSelect.pickDeptFirst')
-            }
-            disabled={!owningDepartmentId}
-          />
-        </Form.Slot>
-
-        <Form.Slot label={t('development.processDevelopment.createModal.fields.requirementLabel')}>
-          <Select
-            value={requirementId}
-            onChange={(v) => setRequirementId(v as string | undefined)}
-            placeholder={requirementPlaceholder}
-            disabled={!workspaceId || requirementOptions.length === 0}
-            loading={requirementLoading}
-            showClear
-            style={{ width: '100%' }}
-            optionList={requirementOptions.map((r) => ({
-              value: r.id,
-              label: r.req_no ? `[${r.req_no}] ${r.title}` : r.title,
-            }))}
-          />
-          <Text type="tertiary" size="small" style={{ marginTop: 4, display: 'block' }}>
-            {t('development.processDevelopment.createModal.fields.requirementHelp')}
-          </Text>
-        </Form.Slot>
-
-        <Form.Slot label={t('common.owner')}>
-          <OwnerSelect value={ownerId} onChange={setOwnerId} />
-        </Form.Slot>
-
         <div className="create-process-modal-footer">
           <Button theme="light" onClick={onCancel}>
             {t('common.cancel')}
           </Button>
-          <Button htmlType="submit" theme="solid" type="primary" loading={loading}>
+          <Button htmlType="submit" theme="solid" type="primary" loading={loading} disabled={!selectedRequirement}>
             {t('common.create')}
           </Button>
         </div>

@@ -587,6 +587,7 @@
       "businessBackgroundLabel": "业务背景",
       "businessBackgroundPlaceholder": "请描述业务背景和现状",
       "optionalSuffix": "（可选）",
+      "requirementOwnerLabel": "需求负责人",
       "requiredHint": "必填",
       "requiredFieldsHint": "提示：标题、描述、所属部门、联系人信息、期望上线时间为必填字段",
       "attachmentLabel": "附件",
@@ -913,7 +914,8 @@
         "MANAGER": "管理员",
         "MEMBER": "成员"
       },
-      "selectedCount": "已选 {{count}} 人"
+      "selectedCount": "已选 {{count}} 人",
+      "selectedMembersTitle": "已选成员"
     }
   },
   "development": {
@@ -997,10 +999,13 @@
           "namePlaceholder": "请输入流程名称",
           "descriptionPlaceholder": "请输入流程描述，例如：自动处理电商平台的订单，包括订单验证、库存检查、发货通知",
           "requirementLabel": "关联需求",
-          "requirementPlaceholder": "请选择关联需求（可选）",
+          "requirementPlaceholder": "请选择关联需求",
           "requirementPickWorkspaceFirst": "请先选择所属工作空间",
           "requirementEmpty": "当前工作空间下暂无可关联的需求",
-          "requirementHelp": "仅展示当前工作空间已关联且尚未绑定流程的需求"
+          "requirementGlobalEmpty": "暂无可关联的需求（需求需先在项目工作空间中关联且未绑定流程）",
+          "requirementHelp": "仅展示当前工作空间已关联且尚未绑定流程的需求",
+          "requirementAutoFillHelp": "选择需求后，归属部门、所属工作空间、归属者将自动填写",
+          "autoFillPlaceholder": "选择关联需求后自动填写"
         },
         "validation": {
           "nameRequired": "请输入流程名称",
@@ -1008,7 +1013,8 @@
           "nameFormatError": "名称中不能包含特殊符号(下划线除外)和空格,且不能以数字开头",
           "nameExists": "流程名称已存在,请使用其他名称",
           "descriptionLengthError": "流程描述长度必须在1-500字符之间",
-          "requirementWorkspaceMismatch": "所选需求不属于当前工作空间，请重新选择"
+          "requirementWorkspaceMismatch": "所选需求不属于当前工作空间，请重新选择",
+          "requirementRequired": "请选择关联需求"
         },
         "success": "流程创建成功！",
         "error": "创建失败，请重试"

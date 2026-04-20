@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Modal,
@@ -11,8 +11,10 @@ import {
   Input,
   Empty,
   Popconfirm,
+  Checkbox,
 } from '@douyinfe/semi-ui';
-import { Plus, Trash2, Search, Shield, ShieldCheck, ChevronLeft } from 'lucide-react';
+import { IconSearchStroked } from '@douyinfe/semi-icons';
+import { Plus, Trash2, Shield, ShieldCheck, ChevronLeft, User, X } from 'lucide-react';
 import {
   fetchWorkspaceMembers,
   fetchAllWorkspaceMembersIncludingInherited,
@@ -23,6 +25,7 @@ import {
 } from '../../mockData';
 import type { Workspace, WorkspaceMember, WorkspaceMemberRole } from '../../types';
 import { ALL_ORG_USERS } from '@/components/CollaboratorManager/mockData';
+import './index.less';
 
 const { Text } = Typography;
 
@@ -33,6 +36,13 @@ interface Props {
   onChanged?: () => void;
 }
 
+interface SelectedItem {
+  userId: string;
+  userName: string;
+  department: string;
+  role: WorkspaceMemberRole;
+}
+
 const WorkspaceMembersModal = ({ visible, workspace, onClose, onChanged }: Props) => {
   const { t } = useTranslation();
   const [members, setMembers] = useState<WorkspaceMember[]>([]);
@@ -40,9 +50,8 @@ const WorkspaceMembersModal = ({ visible, workspace, onClose, onChanged }: Props
   const [loading, setLoading] = useState(false);
 
   const [addOpen, setAddOpen] = useState(false);
-  const [addKeyword, setAddKeyword] = useState('');
-  const [addRole, setAddRole] = useState<WorkspaceMemberRole>('MEMBER');
-  const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
+  const [searchValue, setSearchValue] = useState('');
+  const [selected, setSelected] = useState<SelectedItem[]>([]);
 
   const reload = async () => {
     if (!workspace) return;
@@ -63,9 +72,8 @@ const WorkspaceMembersModal = ({ visible, workspace, onClose, onChanged }: Props
     if (visible && workspace) {
       reload();
       setAddOpen(false);
-      setSelectedUserIds([]);
-      setAddKeyword('');
-      setAddRole('MEMBER');
+      setSelected([]);
+      setSearchValue('');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible, workspace?.id]);
@@ -112,32 +120,60 @@ const WorkspaceMembersModal = ({ visible, workspace, onClose, onChanged }: Props
     }
   };
 
-  // Add panel: list of org users not yet a member; mark inherited as disabled
+  // Add panel: list candidates from org, exclude existing members, mark inherited as disabled
   const candidateUsers = useMemo(() => {
     const existing = new Set(members.map((m) => m.userId));
-    const k = addKeyword.trim().toLowerCase();
+    const k = searchValue.trim().toLowerCase();
     return ALL_ORG_USERS.filter((u) => !existing.has(u.id)).filter((u) =>
       !k ? true : u.name.toLowerCase().includes(k) || u.department.toLowerCase().includes(k),
     );
-  }, [members, addKeyword]);
+  }, [members, searchValue]);
+
+  const isSelected = useCallback(
+    (id: string) => selected.some((s) => s.userId === id),
+    [selected],
+  );
+
+  const toggleUser = useCallback(
+    (u: { id: string; name: string; department: string }, disabled: boolean) => {
+      if (disabled) return;
+      setSelected((prev) => {
+        const exists = prev.find((s) => s.userId === u.id);
+        if (exists) return prev.filter((s) => s.userId !== u.id);
+        return [
+          ...prev,
+          { userId: u.id, userName: u.name, department: u.department, role: 'MEMBER' },
+        ];
+      });
+    },
+    [],
+  );
+
+  const updateSelectedRole = useCallback((id: string, role: WorkspaceMemberRole) => {
+    setSelected((prev) => prev.map((s) => (s.userId === id ? { ...s, role } : s)));
+  }, []);
+
+  const removeSelected = useCallback((id: string) => {
+    setSelected((prev) => prev.filter((s) => s.userId !== id));
+  }, []);
 
   const handleSubmitAdd = async () => {
     if (!workspace) return;
-    if (selectedUserIds.length === 0) {
+    if (selected.length === 0) {
       Toast.warning(t('requirements.projects.validation.pickAtLeastOneUser'));
       return;
     }
-    const toAdd = selectedUserIds
-      .filter((uid) => !isInheritedDeptManager(workspace.id, uid))
-      .map((uid) => {
-        const u = ALL_ORG_USERS.find((x) => x.id === uid)!;
-        return { userId: u.id, userName: u.name, department: u.department, role: addRole };
-      });
+    const toAdd = selected.map((s) => ({
+      userId: s.userId,
+      userName: s.userName,
+      department: s.department,
+      role: s.role,
+    }));
     await addWorkspaceMembers(workspace.id, toAdd);
     Toast.success(t('common.createSuccess'));
     setAddOpen(false);
-    setSelectedUserIds([]);
-    setAddKeyword('');
+    setSelected([]);
+    setSearchValue('');
     reload();
     onChanged?.();
   };
@@ -201,36 +237,102 @@ const WorkspaceMembersModal = ({ visible, workspace, onClose, onChanged }: Props
     },
   ];
 
-  // 添加视图：候选用户列表列
-  const candidateColumns = [
-    {
-      title: t('requirements.projects.fields.memberName'),
-      dataIndex: 'name',
-      width: 220,
-      render: (v: string, r: { id: string }) => {
-        const inherited = workspace ? isInheritedDeptManager(workspace.id, r.id) : false;
-        return (
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-            <Text>{v}</Text>
-            {inherited && (
-              <Tag size="small" color="green" type="light">
-                {t('requirements.projects.inheritedTag')}
-              </Tag>
-            )}
-          </span>
-        );
-      },
-    },
-    {
-      title: t('requirements.projects.fields.memberDept'),
-      dataIndex: 'department',
-      render: (v: string) => (
-        <Text ellipsis={{ showTooltip: true }} style={{ maxWidth: 360 }}>
-          {v}
-        </Text>
-      ),
-    },
-  ];
+  const renderAddView = () => (
+    <div className="workspace-add-member-content">
+      {/* 左栏：候选用户 */}
+      <div className="workspace-add-member-left">
+        <div className="workspace-add-member-left-search">
+          <Input
+            prefix={<IconSearchStroked />}
+            placeholder={t('requirements.projects.searchUserPlaceholder')}
+            value={searchValue}
+            onChange={setSearchValue}
+            showClear
+          />
+        </div>
+        <div className="workspace-add-member-left-tree">
+          {candidateUsers.length === 0 ? (
+            <div className="workspace-add-member-left-empty">
+              {searchValue ? t('common.noSearchResults') : t('collaborator.addModal.emptyDept')}
+            </div>
+          ) : (
+            <div className="workspace-add-member-left-list">
+              {candidateUsers.map((u) => {
+                const inherited = workspace ? isInheritedDeptManager(workspace.id, u.id) : false;
+                const checked = isSelected(u.id);
+                return (
+                  <div
+                    key={u.id}
+                    className={`workspace-add-member-left-item${checked ? ' selected' : ''}${inherited ? ' disabled' : ''}`}
+                    onClick={() => toggleUser(u, inherited)}
+                  >
+                    <Checkbox checked={checked} disabled={inherited} />
+                    <User size={14} strokeWidth={2} className="workspace-add-member-left-item-icon" />
+                    <div className="workspace-add-member-left-item-info">
+                      <Text style={{ fontSize: 14 }}>{u.name}</Text>
+                      <span className="workspace-add-member-left-item-dept">{u.department}</span>
+                    </div>
+                    {inherited && (
+                      <Tag size="small" color="green" type="light">
+                        {t('requirements.projects.inheritedTag')}
+                      </Tag>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* 右栏：已选成员 */}
+      <div className="workspace-add-member-right">
+        <div className="workspace-add-member-right-header">
+          {t('requirements.projects.selectedMembersTitle')}：{selected.length}
+        </div>
+        {selected.length === 0 ? (
+          <div className="workspace-add-member-right-empty">
+            {t('collaborator.addModal.emptySelection')}
+          </div>
+        ) : (
+          <div className="workspace-add-member-right-list">
+            {selected.map((item) => (
+              <div key={item.userId} className="workspace-add-member-right-item">
+                <div className="workspace-add-member-right-item-info">
+                  <User size={14} strokeWidth={2} className="workspace-add-member-right-item-icon" />
+                  <Text style={{ fontSize: 14 }} ellipsis={{ showTooltip: true }}>
+                    {item.userName}
+                  </Text>
+                </div>
+                <div className="workspace-add-member-right-item-actions">
+                  <Select
+                    size="small"
+                    value={item.role}
+                    style={{ width: 96 }}
+                    onChange={(v) => updateSelectedRole(item.userId, v as WorkspaceMemberRole)}
+                  >
+                    <Select.Option value="MANAGER">
+                      {t('requirements.projects.role.MANAGER')}
+                    </Select.Option>
+                    <Select.Option value="MEMBER">
+                      {t('requirements.projects.role.MEMBER')}
+                    </Select.Option>
+                  </Select>
+                  <Button
+                    icon={<X size={16} strokeWidth={2} />}
+                    theme="borderless"
+                    size="small"
+                    className="workspace-add-member-right-item-remove"
+                    onClick={() => removeSelected(item.userId)}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
 
   return (
     <Modal
@@ -244,8 +346,8 @@ const WorkspaceMembersModal = ({ visible, workspace, onClose, onChanged }: Props
               size="small"
               onClick={() => {
                 setAddOpen(false);
-                setSelectedUserIds([]);
-                setAddKeyword('');
+                setSelected([]);
+                setSearchValue('');
               }}
             />
             {t('requirements.projects.addMember')}
@@ -260,75 +362,35 @@ const WorkspaceMembersModal = ({ visible, workspace, onClose, onChanged }: Props
       onCancel={onClose}
       footer={
         addOpen ? (
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Text type="tertiary" size="small">
-              {t('requirements.projects.selectedCount', { count: selectedUserIds.length })}
-            </Text>
-            <div style={{ display: 'flex', gap: 8 }}>
-              <Button
-                onClick={() => {
-                  setAddOpen(false);
-                  setSelectedUserIds([]);
-                  setAddKeyword('');
-                }}
-              >
-                {t('common.cancel')}
-              </Button>
-              <Button type="primary" theme="solid" onClick={handleSubmitAdd}>
-                {t('common.confirm')}
-              </Button>
-            </div>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+            <Button
+              theme="light"
+              onClick={() => {
+                setAddOpen(false);
+                setSelected([]);
+                setSearchValue('');
+              }}
+            >
+              {t('common.cancel')}
+            </Button>
+            <Button
+              theme="solid"
+              type="primary"
+              onClick={handleSubmitAdd}
+              disabled={selected.length === 0}
+            >
+              {t('common.confirm')}
+            </Button>
           </div>
         ) : null
       }
       width={900}
       centered
       maskClosable={false}
+      className={addOpen ? 'workspace-members-modal workspace-members-modal--add' : 'workspace-members-modal'}
     >
       {addOpen ? (
-        <div>
-          <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-            <Input
-              prefix={<Search size={14} />}
-              value={addKeyword}
-              onChange={setAddKeyword}
-              placeholder={t('requirements.projects.searchUserPlaceholder')}
-              style={{ flex: 1 }}
-              showClear
-            />
-            <Select
-              value={addRole}
-              onChange={(v) => setAddRole(v as WorkspaceMemberRole)}
-              style={{ width: 160 }}
-            >
-              <Select.Option value="MANAGER">
-                {t('requirements.projects.role.MANAGER')}
-              </Select.Option>
-              <Select.Option value="MEMBER">
-                {t('requirements.projects.role.MEMBER')}
-              </Select.Option>
-            </Select>
-          </div>
-          <div style={{ maxHeight: 420, overflow: 'auto' }}>
-            <Table
-              size="small"
-              dataSource={candidateUsers}
-              pagination={false}
-              rowKey="id"
-              rowSelection={{
-                selectedRowKeys: selectedUserIds,
-                onChange: (keys) => setSelectedUserIds((keys as string[]) ?? []),
-                getCheckboxProps: (record) => ({
-                  disabled: workspace
-                    ? isInheritedDeptManager(workspace.id, (record as { id: string }).id)
-                    : false,
-                }),
-              }}
-              columns={candidateColumns}
-              empty={<Empty description={t('common.noSearchResults')} style={{ padding: 24 }} />}
-            />
-          </div>
-        </div>
+        renderAddView()
       ) : (
         <>
           {/* 部门管理员继承提示 */}
