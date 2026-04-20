@@ -109,6 +109,14 @@ const mockTemplates: MockTemplate[] = [
   { title: 'Data Backup Verification', description: 'Automated backup integrity verification, restore testing, retention policy enforcement, and compliance reporting across all data stores.', owning_department_name: 'IT', owning_department_id: 'dept-003', creatorId: 'user-003', priority: 'HIGH', status: 'DEVELOPING' },
   { title: 'Cross-Border Shipping Compliance', description: 'Automated customs documentation preparation, tariff classification, restricted party screening, and export control compliance.', owning_department_name: 'Logistics', owning_department_id: 'dept-005', creatorId: 'user-005', priority: 'HIGH', status: 'PENDING_APPROVAL' },
   { title: 'Tax Filing Preparation', description: 'Automated tax data compilation, calculation verification, filing preparation, and submission tracking for multiple jurisdictions.', owning_department_name: 'Finance', owning_department_id: 'dept-001', creatorId: 'user-001', priority: 'HIGH', status: 'OFFLINE' },
+
+  // ===== 闭环演示数据：覆盖「待我审批 / 待我评估 / 被驳回 / 已撤回 / 历史版本」 =====
+  { title: 'Financial Report Auto-Aggregation', description: 'Aggregate monthly financial reports from ERP and CRM into a unified view with auto-distribution to executives.', owning_department_name: 'Finance', owning_department_id: 'dept-001', creatorId: 'user-007', priority: 'HIGH', status: 'PENDING_APPROVAL' },
+  { title: 'Customer Ticket Smart Classification', description: 'Use NLP to classify customer support tickets and route to the proper queue with SLA tracking.', owning_department_name: 'Sales', owning_department_id: 'dept-006', creatorId: 'user-006', priority: 'MEDIUM', status: 'PENDING_APPROVAL' },
+  { title: 'Invoice OCR Data Capture', description: 'Capture invoice fields via OCR, validate against PO and route exceptions for human review.', owning_department_name: 'Finance', owning_department_id: 'dept-001', creatorId: 'user-007', priority: 'HIGH', status: 'PENDING_ASSESSMENT' },
+  { title: 'Contract Approval Workflow', description: 'End-to-end contract approval workflow with legal review, e-signature integration and archival.', owning_department_name: 'Finance', owning_department_id: 'dept-001', creatorId: 'user-001', priority: 'MEDIUM', status: 'REJECTED' },
+  { title: 'Inventory Audit Robot', description: 'Daily inventory audit robot reconciling WMS and ERP with discrepancy escalation.', owning_department_name: 'Finance', owning_department_id: 'dept-001', creatorId: 'user-001', priority: 'MEDIUM', status: 'WITHDRAWN' },
+  { title: 'Month-End Reconciliation Automation', description: 'Automate month-end reconciliation across GL, AR, AP and bank statements with variance reporting.', owning_department_name: 'Finance', owning_department_id: 'dept-001', creatorId: 'user-001', priority: 'HIGH', status: 'LAUNCHED' },
 ];
 
 // 视为"开发中之后"的状态
@@ -407,6 +415,174 @@ export const removeLinkedProcess = async (reqId: string, processId: string): Pro
 };
 
 let mockRequirementData = generateMockRequirements();
+
+// ============= 闭环演示数据后处理 =============
+// 为「待我审批 / 待我评估 / 被驳回 / 已撤回 / 历史版本」场景注入：
+//  - 当前用户（user-001）作为当前审批节点的审批人
+//  - approvalHistory（含 approve / reject / withdraw / resubmit）
+//  - historyVersions（演示版本演进）
+// 不修改 mockTemplates 字段，保持其它 mock 数据不受影响。
+applyClosureDemoData();
+
+function applyClosureDemoData(): void {
+  const meId = MOCK_CURRENT_USER_ID;
+  const me = mockCreators[meId];
+  if (!me) return;
+
+  const findByTitle = (title: string) => mockRequirementData.find((r) => r.title === title);
+
+  // M1：待我审批 — 当前节点（L1）首位替换为当前用户
+  const m1 = findByTitle('Financial Report Auto-Aggregation');
+  if (m1?.approvalFlowConfig) {
+    const lv = m1.approvalFlowConfig.levels[0];
+    if (lv) {
+      lv.approvers = [
+        { id: meId, name: me.name, status: 'PENDING' },
+        ...lv.approvers.slice(1),
+      ];
+    }
+  }
+
+  // M2：多级流 — L1 已通过，L2 当前用户审批中
+  const m2 = findByTitle('Customer Ticket Smart Classification');
+  if (m2?.approvalFlowConfig && m2.approvalFlowConfig.levels.length >= 2) {
+    const flow = m2.approvalFlowConfig;
+    const ts1 = new Date(2026, 1, 11, 10, 30).toISOString();
+    flow.levels[0].approvers = flow.levels[0].approvers.map((a, i) =>
+      i === 0
+        ? { ...a, status: 'APPROVED', actedAt: ts1, comment: '业务价值清晰，同意推进。' }
+        : { ...a, status: 'APPROVED', actedAt: ts1 },
+    );
+    flow.levels[1].approvers = [
+      { id: meId, name: me.name, status: 'PENDING' },
+      ...flow.levels[1].approvers.slice(1),
+    ];
+    flow.currentLevel = 2;
+    m2.approvalHistory = [
+      {
+        id: 'hist-m2-1',
+        level: 1,
+        levelName: flow.levels[0].name,
+        approverId: flow.levels[0].approvers[0].id,
+        approverName: flow.levels[0].approvers[0].name,
+        action: 'approve',
+        comment: '业务价值清晰，同意推进。',
+        timestamp: ts1,
+      },
+    ];
+  }
+
+  // M4：被驳回 — creator 改为当前用户，附 approvalHistory + 1 条 historyVersion
+  const m4 = findByTitle('Contract Approval Workflow');
+  if (m4) {
+    m4.creatorId = meId;
+    m4.creatorName = me.name;
+    m4.creatorDepartment = me.department;
+    m4.creatorRole = me.role;
+    m4.creatorEmail = me.email;
+    m4.owner_id = meId;
+    m4.owner_name = me.name;
+    const tReject = new Date(2026, 1, 8, 16, 0).toISOString();
+    const rejecter = m4.approvalFlowConfig?.levels[0]?.approvers[0];
+    m4.approvalHistory = [
+      {
+        id: 'hist-m4-1',
+        level: 1,
+        levelName: m4.approvalFlowConfig?.levels[0]?.name,
+        approverId: rejecter?.id ?? 'user-007',
+        approverName: rejecter?.name ?? 'Robert Xu',
+        action: 'reject',
+        comment: 'ROI 论证不充分，请补充材料后重新提交。',
+        timestamp: tReject,
+      },
+    ];
+    m4.historyVersions = [
+      {
+        version: 1,
+        createdAt: new Date(2026, 1, 5, 10, 0).toISOString(),
+        actorId: meId,
+        actorName: me.name,
+        summary: '初始提交审批。',
+        snapshot: {
+          title: m4.title,
+          description: m4.description.substring(0, 60) + '...',
+          priority: 'LOW',
+          status: 'PENDING_APPROVAL',
+        },
+      },
+    ];
+  }
+
+  // M5：已撤回 — creator=当前用户，附 withdraw + resubmit + withdraw 历史，2 条 historyVersions
+  const m5 = findByTitle('Inventory Audit Robot');
+  if (m5) {
+    m5.creatorId = meId;
+    m5.creatorName = me.name;
+    m5.creatorDepartment = me.department;
+    m5.creatorRole = me.role;
+    m5.creatorEmail = me.email;
+    m5.owner_id = meId;
+    m5.owner_name = me.name;
+    const t1 = new Date(2026, 1, 6, 9, 0).toISOString();
+    const t2 = new Date(2026, 1, 7, 14, 0).toISOString();
+    const t3 = new Date(2026, 1, 9, 11, 0).toISOString();
+    m5.approvalHistory = [
+      { id: 'hist-m5-1', level: 1, approverId: meId, approverName: me.name, action: 'withdraw', comment: '需补充自动化比例数据后再提交。', timestamp: t1 },
+      { id: 'hist-m5-2', level: 1, approverId: meId, approverName: me.name, action: 'resubmit', comment: '已补充数据，重新提交审批。', timestamp: t2 },
+      { id: 'hist-m5-3', level: 1, approverId: meId, approverName: me.name, action: 'withdraw', comment: '业务方案调整，再次撤回。', timestamp: t3 },
+    ];
+    m5.historyVersions = [
+      {
+        version: 1,
+        createdAt: new Date(2026, 1, 5, 10, 0).toISOString(),
+        actorId: meId,
+        actorName: me.name,
+        summary: '首次提交。',
+        snapshot: { title: m5.title, description: m5.description.substring(0, 50) + '...', priority: 'LOW', status: 'PENDING_APPROVAL' },
+      },
+      {
+        version: 2,
+        createdAt: t2,
+        actorId: meId,
+        actorName: me.name,
+        summary: '补充自动化比例与频率数据后重新提交。',
+        snapshot: { title: m5.title, description: m5.description, priority: 'MEDIUM', status: 'PENDING_APPROVAL' },
+      },
+    ];
+  }
+
+  // M6：已上线 — 3 条 historyVersions 演示版本演进
+  const m6 = findByTitle('Month-End Reconciliation Automation');
+  if (m6) {
+    m6.historyVersions = [
+      {
+        version: 1,
+        createdAt: new Date(2026, 0, 15, 9, 0).toISOString(),
+        actorId: meId,
+        actorName: me.name,
+        summary: '初始草稿创建。',
+        snapshot: { title: m6.title, description: m6.description.substring(0, 60) + '...', priority: 'MEDIUM', status: 'DRAFT' },
+      },
+      {
+        version: 2,
+        createdAt: new Date(2026, 0, 22, 11, 30).toISOString(),
+        actorId: 'user-007',
+        actorName: 'Robert Xu',
+        summary: '审批通过，进入评估。',
+        snapshot: { title: m6.title, description: m6.description, priority: 'HIGH', status: 'PENDING_ASSESSMENT' },
+      },
+      {
+        version: 3,
+        createdAt: new Date(2026, 1, 18, 15, 0).toISOString(),
+        actorId: meId,
+        actorName: me.name,
+        summary: '上线后二次编辑：补充对账维度。',
+        snapshot: { title: m6.title, description: m6.description, priority: 'HIGH', status: 'LAUNCHED' },
+      },
+    ];
+  }
+}
+
 
 // ============= 模拟 API 函数 =============
 
