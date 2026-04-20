@@ -511,6 +511,7 @@ export interface MultiLevelApprovalConfig {
 
 // ============= 审批历史留痕 =============
 export type ApprovalHistoryAction = 'approve' | 'reject' | 'withdraw' | 'resubmit';
+/** [活动记录] 审批动作流水（approve/reject/withdraw/resubmit），不属于需求本体。 */
 export interface ApprovalHistoryEntry {
   id: string;
   /** 审批级（withdraw/resubmit 取当前级；approve/reject 取动作级） */
