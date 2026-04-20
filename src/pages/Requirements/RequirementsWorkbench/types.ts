@@ -272,6 +272,7 @@ export interface SchemeVersion {
 
 export type ApprovalActionStatus = 'pending' | 'approved' | 'rejected';
 
+/** [活动记录] 单条审批操作记录（按层级 × 审批人留痕，不属于需求本体）。 */
 export interface ApprovalRecord {
   id: string;
   requirement_id: string;
