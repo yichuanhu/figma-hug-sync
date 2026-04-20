@@ -301,6 +301,7 @@ export interface AssessmentRecord {
   acted_at: string;
 }
 
+/** [活动记录] 需求版本变更引用（指向 snapshot），不属于需求本体。 */
 export interface RequirementVersion {
   version: number;
   snapshot_id: string;
