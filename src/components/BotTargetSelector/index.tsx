@@ -149,10 +149,14 @@ const BotTargetSelector = ({
   const renderOptionWithPermission = (
     name: string,
     statusTag: React.ReactNode,
-    noPermission: boolean
+    noPermission: boolean,
+    groupName?: string
   ) => {
     const content = (
       <div className={`bot-target-selector-option ${noPermission ? 'bot-target-selector-option-disabled' : ''}`}>
+        {groupName && (
+          <span className="bot-target-selector-option-group-tag">{groupName}</span>
+        )}
         <Text className="bot-target-selector-option-name" style={noPermission ? { opacity: 0.45 } : undefined}>
           {name}
         </Text>
