@@ -340,9 +340,8 @@ export interface LinkableRequirementBrief {
 
 export const fetchLinkableRequirementsByWorkspace = async (
   workspaceId: string,
-): Promise<LinkableRequirementBrief[]> => {
+  await ensureDemoSeed();
   await delay(null);
-  const ws = workspaces.find((w) => w.id === workspaceId);
   if (!ws || ws.linkedRequirementIds.length === 0) return [];
   const proj = projects.find((p) => p.id === ws.projectId);
   const { fetchRequirementList } = await import('../RequirementsWorkbench/mockData');
