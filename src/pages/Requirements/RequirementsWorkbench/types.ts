@@ -3,6 +3,27 @@
  *
  * 兼容说明：保留旧 RequirementStatus / RequirementPriority / RequirementItem 旧字段，
  * 同时新增 Scheme 相关类型。阶段 1 列表与审批使用新 9 态，旧弹窗/旧抽屉仍可读取旧字段。
+ *
+ * ============================================================================
+ * 领域边界说明（Domain Boundary）
+ * ----------------------------------------------------------------------------
+ * 本文件中的类型在概念上分为两大类，实现/UI 时应清晰区分：
+ *
+ * 1) 需求内容（Requirement Content）—— 描述「需求是什么」
+ *    包含：基本信息（title/description/...）、归属（owning_department / owner）、
+ *    优先级与状态、动态表单数据（form_data / baselineFormData）、
+ *    评估结果（value_score / complexity_score / detailedAssessment）、
+ *    成本估算（cost_estimation / costEstimate）、关联实体（linked_entities / linkedProcesses）。
+ *    这些字段构成需求实体本身，是需求列表/详情概览的核心展示对象。
+ *
+ * 2) 活动记录（Activity / Audit Trail）—— 描述「谁在何时对需求做了什么」
+ *    包含：approvals / approvalHistory / assessments / versions / historyVersions /
+ *    ActivityRecord。这些不属于需求本体，而是围绕需求产生的操作日志/审计留痕，
+ *    仅用于追溯与时间线展示（例如详情抽屉的「动态/历史」侧栏）。
+ *
+ * 设计约束：UI 层应将「活动记录」与「需求内容」在视觉与信息架构上分离，避免
+ * 把审计数据（如审批/版本/评估历史）当作需求字段渲染到主表单或概览主区域。
+ * ============================================================================
  */
 
 // ============= 9 状态生命周期 =============
@@ -251,6 +272,7 @@ export interface SchemeVersion {
 
 export type ApprovalActionStatus = 'pending' | 'approved' | 'rejected';
 
+/** [活动记录] 单条审批操作记录（按层级 × 审批人留痕，不属于需求本体）。 */
 export interface ApprovalRecord {
   id: string;
   requirement_id: string;
@@ -263,6 +285,7 @@ export interface ApprovalRecord {
   acted_at?: string;
 }
 
+/** [活动记录] 一次评估打分的留痕（含维度分、档位、总分），不属于需求本体。 */
 export interface AssessmentRecord {
   id: string;
   requirement_id: string;
@@ -278,6 +301,7 @@ export interface AssessmentRecord {
   acted_at: string;
 }
 
+/** [活动记录] 需求版本变更引用（指向 snapshot），不属于需求本体。 */
 export interface RequirementVersion {
   version: number;
   snapshot_id: string;
@@ -349,10 +373,12 @@ export interface RequirementItem {
   value_score?: number;
   complexity_score?: number;
 
-  /** 审批 / 评估 / 关联 / 版本 */
+  /** [活动记录] 审批留痕集合（按层级 × 审批人，不属于需求本体）。 */
   approvals?: ApprovalRecord[];
+  /** [活动记录] 评估打分留痕集合（不属于需求本体）。 */
   assessments?: AssessmentRecord[];
   linked_entities?: LinkedEntity[];
+  /** [活动记录] 版本变更引用集合（不属于需求本体）。 */
   versions?: RequirementVersion[];
   cost_estimation?: CostEstimation;
 
@@ -369,13 +395,13 @@ export interface RequirementItem {
   detailedAssessment?: DetailedAssessment;
   /** 成本估算 */
   costEstimate?: CostEstimateData;
-  /** 历史版本快照 */
+  /** [活动记录] 历史版本快照集合（不属于需求本体，仅用于历史回看）。 */
   historyVersions?: VersionSnapshot[];
   /** 多级审批流配置 */
   approvalFlowConfig?: MultiLevelApprovalConfig;
   /** 关联流程（用于状态聚合） */
   linkedProcesses?: LinkedProcess[];
-  /** 审批历史留痕（approve/reject/withdraw/resubmit） */
+  /** [活动记录] 审批动作流水（approve/reject/withdraw/resubmit），不属于需求本体。 */
   approvalHistory?: ApprovalHistoryEntry[];
 
   createdAt: string;
@@ -448,6 +474,7 @@ export interface CostRoleItem {
 }
 
 // ============= Story-012 版本快照 =============
+/** [活动记录] 版本快照（保存编辑前的关键字段，用于历史回看），不属于需求本体。 */
 export interface VersionSnapshot {
   version: number;
   createdAt: string;
@@ -486,6 +513,7 @@ export interface MultiLevelApprovalConfig {
 
 // ============= 审批历史留痕 =============
 export type ApprovalHistoryAction = 'approve' | 'reject' | 'withdraw' | 'resubmit';
+/** [活动记录] 审批动作流水（approve/reject/withdraw/resubmit），不属于需求本体。 */
 export interface ApprovalHistoryEntry {
   id: string;
   /** 审批级（withdraw/resubmit 取当前级；approve/reject 取动作级） */
@@ -507,8 +535,10 @@ export interface LinkedProcess {
 
 // ============= 活动记录（兼容旧组件） =============
 
+/** [活动记录] 活动事件类型枚举（用于动态时间线聚合视图）。 */
 export type ActivityType = 'status_change' | 'approval' | 'assessment' | 'comment' | 'created';
 
+/** [活动记录] 聚合的活动事件（把审批/评估/状态变更/评论统一成一条时间线项），不属于需求本体。 */
 export interface ActivityRecord {
   id: string;
   type: ActivityType;

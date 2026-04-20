@@ -1,25 +1,19 @@
 
-## 目标
-在不改动任何运行时逻辑/UI 的前提下，仅通过**文档与类型注释**明确「需求内容」与「活动记录（审计/留痕）」的边界。
+## 领域边界说明（活动记录 vs 需求内容）
 
-## 实现方案
+为后续「把活动统一收敛为独立 Tab」等改动建立共识基线，本次仅以文档/类型注释方式澄清边界，未改动任何运行时逻辑或 UI。
 
-### 1. 在 `types.ts` 顶部新增分层注释块
-在文件头部 banner 注释下补充一段「**领域边界说明**」，明确：
-- **需求内容（Requirement Content）**：描述需求"是什么"的字段——基本信息、归属、表单数据、评估、成本、关联实体。
-- **活动记录（Activity / Audit Trail）**：围绕需求产生的"谁在何时做了什么"——`approvals` / `approvalHistory` / `assessments` / `versions` / `historyVersions` / `ActivityRecord`，不属于需求本体，仅用于追溯与展示。
+### 边界
+- **需求内容（Requirement Content）**：描述需求"是什么"。包括基本信息、归属、优先级/状态、动态表单数据（form_data / baselineFormData）、评估结果（value_score / complexity_score / detailedAssessment）、成本估算（cost_estimation / costEstimate）、关联实体（linked_entities / linkedProcesses）。
+- **活动记录（Activity / Audit Trail）**：描述"谁在何时对需求做了什么"。包括 `approvals` / `approvalHistory` / `assessments` / `versions` / `historyVersions` / `ActivityRecord`。这些不属于需求本体，仅用于追溯与时间线展示。
 
-### 2. 在相关类型上补充单行注释
-对以下类型/字段追加 `/** [活动记录] ... */` 标识，便于 IDE Hover 与代码检索：
-- `ApprovalRecord` / `ApprovalHistoryEntry`
-- `AssessmentRecord`
-- `RequirementVersion` / `VersionSnapshot`
-- `ActivityRecord` / `ActivityType`
-- `RequirementItem` 中对应的 5 个字段（`approvals` / `approvalHistory` / `assessments` / `versions` / `historyVersions`）
+### 落地
+1. `types.ts` 文件头部新增「领域边界说明」注释块。
+2. 在以下类型/字段上追加 `[活动记录]` 前缀的 JSDoc：`ApprovalRecord` / `ApprovalHistoryEntry` / `AssessmentRecord` / `RequirementVersion` / `VersionSnapshot` / `ActivityRecord` / `ActivityType`，以及 `RequirementItem` 中对应的 5 个字段。
+3. UI 后续演进约束：活动记录类数据应承载在「动态/历史」类容器中，避免混入主表单或概览主区域。
 
-### 3. 同步更新 `.lovable/plan.md`
-将本次「边界澄清」记录为一节，作为后续改动（如把活动统一收敛为独立 Tab）的依据。
+---
 
-## 涉及文件
-- `src/pages/Requirements/RequirementsWorkbench/types.ts`（仅注释，无类型变更）
-- `.lovable/plan.md`（追加一节"领域边界说明"）
+## 历史：审批流飞书风格改造（已完成）
+
+（保留供回溯）将需求详情抽屉「概览」Tab 中的 `ApprovalFlowProgress` 改造为飞书审批流风格的垂直时间线，含收起/展开两态、节点状态图标与连接线、审批人列表与评论气泡、当前节点高亮。仅修改组件 `index.tsx` 与 `index.less`。
