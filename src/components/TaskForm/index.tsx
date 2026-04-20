@@ -352,90 +352,51 @@ const TaskForm = (props: TaskFormProps) => {
                 />
               </div>
 
-              {/* 执行目标 */}
+              {/* 执行机器人 */}
               <div className="task-template-section">
                 <div className="task-template-section-title">{t('template.createModal.targetSection')}</div>
-                <div className="semi-form-field-label-text m-b-12 m-t-12 label-text-required">{t('template.fields.targetType')}</div>
-                <Radio.Group value={targetType} onChange={e => setTargetType(e.target.value as ExecutionTargetType)}>
-                  <Radio value="worker_group">{t('template.targetType.botGroup')}</Radio>
-                  <Radio value="worker">{t('template.targetType.botInGroup')}</Radio>
-                </Radio.Group>
-                {/* 机器人组选择 */}
-                <div style={targetType === 'worker_group' ? undefined : { display: 'none' }}>
-                  <Form.Select
-                    field="worker_group_id"
-                    noLabel
-                    placeholder={t('template.fields.workerGroupPlaceholder')}
-                    filter
-                    className="task-template-select-full"
-                    rules={targetType === 'worker_group' ? [{ required: true, message: t('template.validation.workerGroupRequired') }] : []}
-                    renderSelectedItem={renderSelectedItem}
-                    dropdownStyle={{ '--select-option-max-width': showRightPanel ? '382px' : '460px' } as React.CSSProperties}
-                    dropdownClassName="semi-select-option-ellipsis"
-                  >
-                    {workerGroupList.map(group => {
-                      return (
-                        <Select.Option value={group.id} key={group.id} label={group.name}>
-                          <div className="bot-target-selector-option">
-                            <Text className="bot-target-selector-option-name">{group.name}</Text>
-                            <Tag
-                              size="small"
-                              color={group.online_count > 0 ? 'green' : 'grey'}
-                              className="bot-target-selector-option-status"
-                            >
-                              {group.online_count} / {group.member_count} {t('botSelector.statusOnline')}
-                            </Tag>
-                          </div>
-                        </Select.Option>
-                      );
-                    })}
-                  </Form.Select>
-                </div>
-                {/* 机器人选择 */}
-                <div style={targetType === 'worker' ? undefined : { display: 'none' }}>
-                  <Form.Select
-                    field="worker_id"
-                    noLabel
-                    placeholder={t('template.fields.workerPlaceholder')}
-                    filter={(input: string, option: Record<string, unknown>) => {
-                      const kw = (input || '').toString().toLowerCase();
-                      return (
-                        String(option?.name || '').toLowerCase().includes(kw) ||
-                        String(option?.groupName || '').toLowerCase().includes(kw)
-                      );
-                    }}
-                    className="task-template-select-full"
-                    rules={targetType === 'worker' ? [{ required: true, message: t('template.validation.workerRequired') }] : []}
-                    renderSelectedItem={renderSelectedItem}
-                    dropdownStyle={{ '--select-option-max-width': showRightPanel ? '382px' : '460px' } as React.CSSProperties}
-                    dropdownClassName="semi-select-option-ellipsis"
-                  >
-                    {workerFlatOptions.map(opt => {
-                      const config = statusConfig[opt.status];
-                      return (
-                        <Select.Option
-                          key={opt.value}
-                          value={opt.value}
-                          label={opt.label}
-                          {...({ name: opt.name, groupName: opt.groupName } as Record<string, unknown>)}
-                        >
-                          <div className="bot-target-selector-option">
-                            <span className="bot-target-selector-option-group-tag">{opt.groupName}</span>
-                            <Text className="bot-target-selector-option-name">{opt.name}</Text>
-                            <Tag
-                              size="small"
-                              color={config.color as 'grey' | 'green' | 'blue' | 'red' | 'orange'}
-                              type="light"
-                              className="bot-target-selector-option-status"
-                            >
-                              {config.text}
-                            </Tag>
-                          </div>
-                        </Select.Option>
-                      );
-                    })}
-                  </Form.Select>
-                </div>
+                <Form.Select
+                  field="worker_id"
+                  label={t('template.fields.worker', { defaultValue: '执行机器人' })}
+                  placeholder={t('template.fields.workerPlaceholder')}
+                  filter={(input: string, option: Record<string, unknown>) => {
+                    const kw = (input || '').toString().toLowerCase();
+                    return (
+                      String(option?.name || '').toLowerCase().includes(kw) ||
+                      String(option?.groupName || '').toLowerCase().includes(kw)
+                    );
+                  }}
+                  className="task-template-select-full"
+                  rules={[{ required: true, message: t('template.validation.workerRequired') }]}
+                  renderSelectedItem={renderSelectedItem}
+                  dropdownStyle={{ '--select-option-max-width': showRightPanel ? '382px' : '460px' } as React.CSSProperties}
+                  dropdownClassName="semi-select-option-ellipsis"
+                >
+                  {workerFlatOptions.map(opt => {
+                    const config = statusConfig[opt.status];
+                    return (
+                      <Select.Option
+                        key={opt.value}
+                        value={opt.value}
+                        label={opt.label}
+                        {...({ name: opt.name, groupName: opt.groupName } as Record<string, unknown>)}
+                      >
+                        <div className="bot-target-selector-option">
+                          <span className="bot-target-selector-option-group-tag">{opt.groupName}</span>
+                          <Text className="bot-target-selector-option-name">{opt.name}</Text>
+                          <Tag
+                            size="small"
+                            color={config.color as 'grey' | 'green' | 'blue' | 'red' | 'orange'}
+                            type="light"
+                            className="bot-target-selector-option-status"
+                          >
+                            {config.text}
+                          </Tag>
+                        </div>
+                      </Select.Option>
+                    );
+                  })}
+                </Form.Select>
               </div>
 
               {/* 执行设置 */}
