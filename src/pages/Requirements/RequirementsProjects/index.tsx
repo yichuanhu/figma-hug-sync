@@ -126,16 +126,8 @@ const RequirementsProjects = () => {
       key: 'name',
       width: 240,
       ellipsis: true,
-      render: (v: string, record: Project) => (
-        <Text
-          link
-          ellipsis={{ showTooltip: true }}
-          style={{ maxWidth: 220, cursor: 'pointer' }}
-          onClick={() => {
-            setSelectedId(record.id);
-            setDrawerVisible(true);
-          }}
-        >
+      render: (v: string) => (
+        <Text ellipsis={{ showTooltip: true }} style={{ maxWidth: 220 }}>
           {v}
         </Text>
       ),
