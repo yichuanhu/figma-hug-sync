@@ -1009,7 +1009,7 @@
           "requirementPlaceholder": "请选择关联需求",
           "requirementPickWorkspaceFirst": "请先选择所属工作空间",
           "requirementEmpty": "当前工作空间下暂无可关联的需求",
-          "requirementGlobalEmpty": "暂无可关联的需求（需求需先在项目工作空间中关联且未绑定流程）",
+          "requirementGlobalEmpty": "暂无可关联的需求（仅能关联在项目中的需求）",
           "requirementHelp": "仅展示当前工作空间已关联且尚未绑定流程的需求",
           "requirementAutoFillHelp": "选择需求后，归属部门、所属工作空间、归属者将自动填写",
           "autoFillPlaceholder": "选择关联需求后自动填写"
