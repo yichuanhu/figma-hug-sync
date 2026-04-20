@@ -15,25 +15,27 @@ export interface DependentResource {
   owning_department_name: string;
 }
 
+// NOTE: process_id 与「自动化流程」列表中真实生成的 ID 对齐（process-1 ~ process-46）。
+// 当前为前 4 个流程预置了下游依赖，便于在 EditProcessModal 中演示级联更新部门交互。
 export const mockDependentTriggers: DependentResource[] = [
-  { id: 'trg-001', name: '订单数据每日同步触发器', process_id: 'proc-001', owning_department_id: 'dept-finance', owning_department_name: 'Finance Department' },
-  { id: 'trg-002', name: '订单异常队列触发器', process_id: 'proc-001', owning_department_id: 'dept-finance', owning_department_name: 'Finance Department' },
-  { id: 'trg-003', name: '客户报销月度触发器', process_id: 'proc-002', owning_department_id: 'dept-enterprise', owning_department_name: 'Enterprise Business Center' },
-  { id: 'trg-004', name: '入职提醒触发器', process_id: 'proc-003', owning_department_id: 'dept-hr', owning_department_name: 'Human Resources Department' },
-  { id: 'trg-005', name: '研发周报触发器', process_id: 'proc-004', owning_department_id: 'dept-rd', owning_department_name: 'R&D Center' },
+  { id: 'trg-001', name: '订单数据每日同步触发器', process_id: 'process-1', owning_department_id: 'dept-001', owning_department_name: 'Finance Department' },
+  { id: 'trg-002', name: '订单异常队列触发器', process_id: 'process-1', owning_department_id: 'dept-001', owning_department_name: 'Finance Department' },
+  { id: 'trg-003', name: '报销审批月度触发器', process_id: 'process-2', owning_department_id: 'dept-002', owning_department_name: 'Enterprise Business Center' },
+  { id: 'trg-004', name: '入职提醒触发器', process_id: 'process-3', owning_department_id: 'dept-003', owning_department_name: 'Human Resources Department' },
+  { id: 'trg-005', name: '采购申请触发器', process_id: 'process-4', owning_department_id: 'dept-004', owning_department_name: 'R&D Center' },
 ];
 
 export const mockDependentTasks: DependentResource[] = [
-  { id: 'task-001', name: '订单自动处理 - 日常任务', process_id: 'proc-001', owning_department_id: 'dept-finance', owning_department_name: 'Finance Department' },
-  { id: 'task-002', name: '财务报销批量审批任务', process_id: 'proc-002', owning_department_id: 'dept-enterprise', owning_department_name: 'Enterprise Business Center' },
-  { id: 'task-003', name: '新员工入职流程任务', process_id: 'proc-003', owning_department_id: 'dept-hr', owning_department_name: 'Human Resources Department' },
-  { id: 'task-004', name: '研发资源分配任务', process_id: 'proc-004', owning_department_id: 'dept-rd', owning_department_name: 'R&D Center' },
+  { id: 'task-001', name: '订单自动处理 - 日常任务', process_id: 'process-1', owning_department_id: 'dept-001', owning_department_name: 'Finance Department' },
+  { id: 'task-002', name: '财务报销批量审批任务', process_id: 'process-2', owning_department_id: 'dept-002', owning_department_name: 'Enterprise Business Center' },
+  { id: 'task-003', name: '新员工入职流程任务', process_id: 'process-3', owning_department_id: 'dept-003', owning_department_name: 'Human Resources Department' },
+  { id: 'task-004', name: '采购申请处理任务', process_id: 'process-4', owning_department_id: 'dept-004', owning_department_name: 'R&D Center' },
 ];
 
 export const mockDependentTemplates: DependentResource[] = [
-  { id: 'tpl-001', name: '订单处理执行模板', process_id: 'proc-001', owning_department_id: 'dept-finance', owning_department_name: 'Finance Department' },
-  { id: 'tpl-002', name: '报销审批执行模板', process_id: 'proc-002', owning_department_id: 'dept-enterprise', owning_department_name: 'Enterprise Business Center' },
-  { id: 'tpl-003', name: '入职流程执行模板', process_id: 'proc-003', owning_department_id: 'dept-hr', owning_department_name: 'Human Resources Department' },
+  { id: 'tpl-001', name: '订单处理执行模板', process_id: 'process-1', owning_department_id: 'dept-001', owning_department_name: 'Finance Department' },
+  { id: 'tpl-002', name: '报销审批执行模板', process_id: 'process-2', owning_department_id: 'dept-002', owning_department_name: 'Enterprise Business Center' },
+  { id: 'tpl-003', name: '入职流程执行模板', process_id: 'process-3', owning_department_id: 'dept-003', owning_department_name: 'Human Resources Department' },
 ];
 
 export interface DependentsSummary {
