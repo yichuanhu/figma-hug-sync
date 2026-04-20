@@ -287,8 +287,8 @@ const TaskForm = (props: TaskFormProps) => {
     if (optionNode?.groupName && optionNode?.name) {
       return (
         <span className="bot-target-selector-selected-with-tag">
-          <span className="bot-target-selector-option-group-tag">{optionNode.groupName}</span>
           <span className="bot-target-selector-option-name">{optionNode.name}</span>
+          <span className="bot-target-selector-option-group-tag">{optionNode.groupName}</span>
         </span>
       );
     }
@@ -321,8 +321,8 @@ const TaskForm = (props: TaskFormProps) => {
     const sortedGroups = [...workerGroupsTree].sort((a, b) => {
       const aUngrouped = !a.group_name;
       const bUngrouped = !b.group_name;
-      if (aUngrouped && !bUngrouped) return 1;
-      if (!aUngrouped && bUngrouped) return -1;
+      if (aUngrouped && !bUngrouped) return -1;
+      if (!aUngrouped && bUngrouped) return 1;
       return (a.group_name || '').localeCompare(b.group_name || '', 'zh-CN');
     });
     sortedGroups.forEach(group => {
@@ -454,8 +454,8 @@ const TaskForm = (props: TaskFormProps) => {
                           {...({ name: opt.name, groupName: opt.groupName } as Record<string, unknown>)}
                         >
                           <div className="bot-target-selector-option">
-                            <span className="bot-target-selector-option-group-tag">{opt.groupName}</span>
                             <Text className="bot-target-selector-option-name">{opt.name}</Text>
+                            <span className="bot-target-selector-option-group-tag">{opt.groupName}</span>
                             <Tag
                               size="small"
                               color={config.color as 'grey' | 'green' | 'blue' | 'red' | 'orange'}
