@@ -246,6 +246,8 @@ export const linkRequirements = async (
   if (removed.length > 0 && ws.hasPublishedProcess) {
     throw new Error('CANNOT_UNLINK_PUBLISHED');
   }
+  // 计算新增关联，用于触发跨模块状态联动
+  const added = targetRequirementIds.filter((id) => !ws.linkedRequirementIds.includes(id));
   // 从其他 workspace 中移除被这次接管的需求（N:1）
   workspaces = workspaces.map((w) => {
     if (w.id === workspaceId) {
@@ -257,6 +259,11 @@ export const linkRequirements = async (
     };
   });
   recomputeProjectAggregates();
+  // 跨模块状态联动：将新增关联的需求迁移到「开发中」并写入审批历史
+  if (added.length > 0) {
+    const wsSnapshot = { id: ws.id, name: ws.name };
+    await Promise.all(added.map((id) => transitionToDeveloping(id, wsSnapshot)));
+  }
   await delay(null);
 };
 

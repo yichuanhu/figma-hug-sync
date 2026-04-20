@@ -1065,8 +1065,6 @@ export const transitionToDeveloping = async (
   const cur = mockRequirementData[index];
   const migratable: RequirementStatus[] = [
     'PENDING_APPROVAL',
-    'APPROVED',
-    'ASSESSING',
     'PENDING_ASSESSMENT',
     'PENDING_PROJECT',
   ];
