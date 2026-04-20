@@ -1025,6 +1025,10 @@
       "explicitMembersCount": "Explicit members: {{count}}",
       "inheritedManagersHint": "These users automatically inherit Manager role from being department managers; no need to add them again:",
       "inheritedTag": "Inherited",
+      "deptManagerInheritedTag": "Dept Manager",
+      "manageMembersTitle": "Manage Members",
+      "allAccessUsersTitle": "All users with access to this workspace",
+      "addFromOrg": "Add from Organization",
       "searchUserPlaceholder": "Search user name or department",
       "removeMemberConfirm": "Remove member \"{{name}}\"?",
       "role": {
