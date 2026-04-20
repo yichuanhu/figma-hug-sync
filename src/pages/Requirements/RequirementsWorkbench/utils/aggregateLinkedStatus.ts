@@ -32,6 +32,28 @@ export const aggregateLinkedStatus = (
   return { key: 'PENDING', i18nKey: 'requirements.linkedProcesses.aggregated.pending', color: 'grey', total, online };
 };
 
+export interface LinkedProcessBuckets {
+  online: number;
+  developing: number;
+  stopped: number;
+  pending: number;
+  failed: number;
+}
+
+export const bucketLinkedProcesses = (processes?: LinkedProcess[]): LinkedProcessBuckets => {
+  const buckets: LinkedProcessBuckets = { online: 0, developing: 0, stopped: 0, pending: 0, failed: 0 };
+  (processes ?? []).forEach((p) => {
+    switch (p.status) {
+      case 'ONLINE': buckets.online++; break;
+      case 'DEVELOPING':
+      case 'TESTING': buckets.developing++; break;
+      case 'PENDING': buckets.pending++; break;
+      case 'FAILED': buckets.failed++; break;
+    }
+  });
+  return buckets;
+};
+
 export const linkedProcessStatusConfig: Record<LinkedProcessStatus, { color: 'grey' | 'orange' | 'cyan' | 'blue' | 'green' | 'red'; i18nKey: string }> = {
   PENDING:    { color: 'grey',   i18nKey: 'requirements.linkedProcesses.status.pending' },
   DEVELOPING: { color: 'blue',   i18nKey: 'requirements.linkedProcesses.status.developing' },
