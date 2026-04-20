@@ -135,7 +135,7 @@ const WorkspaceFormModal = ({ visible, projectId, initialData, onClose, onSucces
             required: true,
           }}
         >
-          <DepartmentSelectField formApiRef={formApiRef} t={t} />
+          <DepartmentSelectField t={t} />
         </Form.Slot>
         <Form.TextArea
           field="description"
