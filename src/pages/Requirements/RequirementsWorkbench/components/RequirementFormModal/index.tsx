@@ -87,6 +87,10 @@ const RequirementFormModal = ({
   };
 
   const handleSubmit = async (values: Record<string, unknown>) => {
+    if (!ownerId) {
+      Toast.warning(t('common.ownerRequired'));
+      return;
+    }
     setLoading(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 300));
@@ -187,7 +191,7 @@ const RequirementFormModal = ({
             showClear
           />
 
-          <Form.Slot label={t('common.owningDepartment')}>
+          <Form.Slot label={{ text: t('common.owningDepartment'), required: true }}>
             <Form.Input
               field="department"
               noLabel
@@ -202,7 +206,7 @@ const RequirementFormModal = ({
             />
           </Form.Slot>
 
-          <Form.Slot label={t('requirements.form.requirementOwnerLabel')}>
+          <Form.Slot label={{ text: t('requirements.form.requirementOwnerLabel'), required: true }}>
             <OwnerSelect value={ownerId} onChange={setOwnerId} />
           </Form.Slot>
 
