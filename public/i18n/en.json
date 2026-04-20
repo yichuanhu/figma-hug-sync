@@ -1170,7 +1170,12 @@
         "title": "New Process",
         "fields": {
           "namePlaceholder": "Enter process name",
-          "descriptionPlaceholder": "Enter process description"
+          "descriptionPlaceholder": "Enter process description",
+          "requirementLabel": "Linked Requirement",
+          "requirementPlaceholder": "Select a linked requirement (optional)",
+          "requirementPickWorkspaceFirst": "Please select a workspace first",
+          "requirementEmpty": "No linkable requirements in this workspace",
+          "requirementHelp": "Only shows requirements linked to this workspace and not yet bound to any process"
         },
         "validation": {
           "nameRequired": "Please enter process name",
@@ -1178,7 +1183,8 @@
           "nameFormatError": "No special characters (except underscore) or spaces, cannot start with number",
           "nameExists": "Process name already exists",
           "descriptionRequired": "Please enter description",
-          "descriptionLengthError": "Description must be 1-500 characters"
+          "descriptionLengthError": "Description must be 1-500 characters",
+          "requirementWorkspaceMismatch": "Selected requirement does not belong to this workspace"
         },
         "success": "Process created!",
         "error": "Creation failed, please retry"
