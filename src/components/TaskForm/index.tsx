@@ -283,7 +283,15 @@ const TaskForm = (props: TaskFormProps) => {
     [initForm, submitForm, fillTemplate]
   );
 
-  const renderSelectedItem = (optionNode: { label?: string; name?: string }) => {
+  const renderSelectedItem = (optionNode: { label?: string; name?: string; groupName?: string }) => {
+    if (optionNode?.groupName && optionNode?.name) {
+      return (
+        <span className="bot-target-selector-selected-with-tag">
+          <span className="bot-target-selector-option-group-tag">{optionNode.groupName}</span>
+          <span className="bot-target-selector-option-name">{optionNode.name}</span>
+        </span>
+      );
+    }
     return <>{optionNode.label}</>;
   };
 
