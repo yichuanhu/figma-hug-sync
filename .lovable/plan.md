@@ -1,21 +1,50 @@
 
 ## 目标
-彻底移除需求详情抽屉中「+ 新增关联」按钮及相关新增弹窗，将交付物表格变为只读视图。
+全系统所有「新建/编辑」弹窗中，「归属部门」与「归属者」字段统一标记为必填，并加入校验拦截。
 
-## 改动点
+## 现状梳理
+通过 `OwnerSelect` / `DepartmentSelect` 搜索定位到使用这两个字段的弹窗，大致包括：
 
-### `ArtifactSection.tsx`
-- 删除 header 右侧的「+ 新增关联」按钮（含 `canEdit || canManageProcesses` 分支）。
-- 删除 `Modal` 新增弹窗整段（含 `Form`、`typeOptions`、`mockNonProcessArtifacts` 选项渲染）。
-- 删除 `handleAdd`、`modalVisible` state、`mockNonProcessArtifacts` 常量、`MOCK_PROCESS_POOL` 引用、未使用的 i18n key 引用。
-- 保留：表格渲染、流程行的跳转链接、聚合状态 Tag、空态文案、只读提示。
-- `handleRemove`：保留（非流程类历史数据仍允许删除以便清理）。如希望完全只读，可一并移除删除按钮——见下方「可选」。
+- 凭据：`CreateCredentialModal`、`EditCredentialModal`
+- 队列：`CreateQueueModal`、`EditQueueModal`（如存在）
+- 文件：`CreateFileModal`、`EditFileModal`
+- 参数：`CreateParameterModal`、`EditParameterModal`
+- 流程：开发中心 `CreateProcessModal`（已重构为只读自动填充，跳过）
+- 触发器/任务/模板等其他业务资产弹窗
 
-### 可选（请在实现时确认）
-默认保留非流程交付物的删除按钮（仅清理用），如需**完全只读**（含删除也禁掉），实现时一并移除 `columns` 中的 action 列与 `handleRemove`。本次按「保留删除」执行。
+现状问题：
+1. `Form.Slot` 包裹的部门/归属者控件无 `required` 标记，UI 上看不出必填。
+2. 提交逻辑里部分有 `Toast.warning` 兜底，部分（编辑弹窗）允许置空提交。
+3. 编辑弹窗未做必填校验。
+
+## 改动方案
+
+### 统一规范
+- `Form.Slot label={{ text: t('common.owningDepartment'), required: true }}`
+- `Form.Slot label={{ text: t('common.owner'), required: true }}`
+- 提交前若 `owningDepartmentId` 或 `ownerId` 为空 → `Toast.warning` 拦截（沿用现有创建凭据弹窗的写法），并阻止提交。
+- 编辑弹窗：在保存前补齐同样的校验逻辑。
+- 已有 `MOCK_CURRENT_USER` 默认填充 `ownerId` 的弹窗保持不变，仅追加显式校验。
+
+### 涉及弹窗（实施时全量扫描，统一改造）
+1. `CreateCredentialModal` / `EditCredentialModal`
+2. `CreateQueueModal` / `EditQueueModal`
+3. `CreateFileModal` / `EditFileModal`
+4. `CreateParameterModal` / `EditParameterModal`
+5. 其他在 `code--search_files` 中匹配到 `OwnerSelect` + `DepartmentSelect` 同时存在的「新建/编辑」弹窗
+
+> 开发中心 `CreateProcessModal` 当前由「关联需求」自动填充并禁用，本身已是必填语义（关联需求已为必填），保留现状不再单独标记。
 
 ### i18n
-- 不新增 key。被删代码引用但其他地方未使用的 key（如 `requirements.artifact.addNew/addTitle/selectType/selectArtifact/typeRequired/artifactRequired/contributionLabel/contributionRequired/contributionDesc/descriptionLabel/descriptionPlaceholder/duplicateError/addSuccess/confirm`）暂不删除，避免影响其他模块；后续统一清理。
+- 复用既有 `common.owningDepartmentRequired`、`common.ownerRequired`（若不存在则补齐 zh-CN/en 两份）。
 
-## 涉及文件
-- `src/pages/Requirements/RequirementsWorkbench/components/RequirementDetailDrawer/ArtifactSection.tsx`
+## 涉及文件（预估）
+- `src/components/CredentialManagement/.../CreateCredentialModal/index.tsx`
+- `src/components/CredentialManagement/.../EditCredentialModal/index.tsx`
+- 队列/文件/参数等同类弹窗组件
+- `public/i18n/zh-CN.json`、`public/i18n/en.json`（按需补 key）
+
+## 验收标准
+- 所有相关「新建/编辑」弹窗中，「归属部门」「归属者」字段标签出现红色必填星号。
+- 留空保存时弹出 Toast 警告并阻止提交。
+- 已有自动填充默认值的字段（如归属者默认当前用户）行为不变。
