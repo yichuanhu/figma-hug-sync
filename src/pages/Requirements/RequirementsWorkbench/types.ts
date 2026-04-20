@@ -533,8 +533,10 @@ export interface LinkedProcess {
 
 // ============= 活动记录（兼容旧组件） =============
 
+/** [活动记录] 活动事件类型枚举（用于动态时间线聚合视图）。 */
 export type ActivityType = 'status_change' | 'approval' | 'assessment' | 'comment' | 'created';
 
+/** [活动记录] 聚合的活动事件（把审批/评估/状态变更/评论统一成一条时间线项），不属于需求本体。 */
 export interface ActivityRecord {
   id: string;
   type: ActivityType;
