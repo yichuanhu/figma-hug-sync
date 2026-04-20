@@ -1013,7 +1013,8 @@
           "nameFormatError": "名称中不能包含特殊符号(下划线除外)和空格,且不能以数字开头",
           "nameExists": "流程名称已存在,请使用其他名称",
           "descriptionLengthError": "流程描述长度必须在1-500字符之间",
-          "requirementWorkspaceMismatch": "所选需求不属于当前工作空间，请重新选择"
+          "requirementWorkspaceMismatch": "所选需求不属于当前工作空间，请重新选择",
+          "requirementRequired": "请选择关联需求"
         },
         "success": "流程创建成功！",
         "error": "创建失败，请重试"

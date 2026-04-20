@@ -1166,10 +1166,13 @@
           "namePlaceholder": "Enter process name",
           "descriptionPlaceholder": "Enter process description",
           "requirementLabel": "Linked Requirement",
-          "requirementPlaceholder": "Select a linked requirement (optional)",
+          "requirementPlaceholder": "Select a linked requirement",
           "requirementPickWorkspaceFirst": "Please select a workspace first",
           "requirementEmpty": "No linkable requirements in this workspace",
-          "requirementHelp": "Only shows requirements linked to this workspace and not yet bound to any process"
+          "requirementGlobalEmpty": "No linkable requirements (requirements must first be linked to a workspace and not bound to any process)",
+          "requirementHelp": "Only shows requirements linked to this workspace and not yet bound to any process",
+          "requirementAutoFillHelp": "After selecting a requirement, owning department, workspace and owner will be auto-filled",
+          "autoFillPlaceholder": "Auto-filled after selecting a linked requirement"
         },
         "validation": {
           "nameRequired": "Please enter process name",
@@ -1178,7 +1181,8 @@
           "nameExists": "Process name already exists",
           "descriptionRequired": "Please enter description",
           "descriptionLengthError": "Description must be 1-500 characters",
-          "requirementWorkspaceMismatch": "Selected requirement does not belong to this workspace"
+          "requirementWorkspaceMismatch": "Selected requirement does not belong to this workspace",
+          "requirementRequired": "Please select a linked requirement"
         },
         "success": "Process created!",
         "error": "Creation failed, please retry"
