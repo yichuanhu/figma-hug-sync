@@ -11,10 +11,9 @@ import {
 } from '@douyinfe/semi-ui';
 import { Link } from 'react-router-dom';
 import type { RequirementItem, RequirementArtifact, ArtifactType, LinkedProcess } from '../../types';
-import { Plus, Trash2, ExternalLink, Settings } from 'lucide-react';
-import { addLinkedProcesses, removeLinkedProcess, MOCK_PROCESS_POOL } from '../../mockData';
+import { Plus, Trash2, ExternalLink } from 'lucide-react';
+import { MOCK_PROCESS_POOL } from '../../mockData';
 import { aggregateLinkedStatus, linkedProcessStatusConfig } from '../../utils/aggregateLinkedStatus';
-import ManageLinkedProcessesModal from '../ManageLinkedProcessesModal';
 
 const { Text } = Typography;
 
