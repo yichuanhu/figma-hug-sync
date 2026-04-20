@@ -280,10 +280,17 @@ const TaskForm = (props: TaskFormProps) => {
     [t]
   );
 
-  // 扁平机器人选项：[组名] 机器人名
+  // 扁平机器人选项：按组名排序，未分组置于最后；每项 [组名] 机器人名
   const workerFlatOptions = useMemo(() => {
     if (!workerGroupsTree) return [];
     const ungroupedLabel = t('template.fields.ungrouped', { defaultValue: '未分组' });
+    const sortedGroups = [...workerGroupsTree].sort((a, b) => {
+      const aUngrouped = !a.group_name;
+      const bUngrouped = !b.group_name;
+      if (aUngrouped && !bUngrouped) return 1;
+      if (!aUngrouped && bUngrouped) return -1;
+      return (a.group_name || '').localeCompare(b.group_name || '', 'zh-Hans-CN');
+    });
     const list: Array<{
       value: string;
       name: string;
@@ -291,9 +298,12 @@ const TaskForm = (props: TaskFormProps) => {
       status: string;
       label: string;
     }> = [];
-    workerGroupsTree.forEach(group => {
+    sortedGroups.forEach(group => {
       const groupName = group.group_name || ungroupedLabel;
-      group.members?.forEach(member => {
+      const sortedMembers = [...(group.members || [])].sort((a, b) =>
+        (a.name || '').localeCompare(b.name || '', 'zh-Hans-CN')
+      );
+      sortedMembers.forEach(member => {
         list.push({
           value: member.worker_id,
           name: member.name,

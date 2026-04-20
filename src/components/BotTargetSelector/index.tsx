@@ -81,23 +81,32 @@ const BotTargetSelector = ({
   };
 
   // 扁平机器人选项（用于 BOT_IN_GROUP / UNGROUPED_BOT）
-  // 格式：[组名] 机器人名，未分组显示 [未分组]
+  // 按组名排序，未分组置于最后；格式：[组名] 机器人名
   const flatBotOptions = useMemo(() => {
     if (targetType !== 'BOT_IN_GROUP' && targetType !== 'UNGROUPED_BOT') return [];
 
     const groupNameMap = new Map(botGroups.map((g) => [g.id, g.name]));
     const ungroupedLabel = t('botSelector.ungrouped', { defaultValue: '未分组' });
 
-    return bots.map((bot) => {
-      const groupName = bot.groupId ? groupNameMap.get(bot.groupId) ?? ungroupedLabel : ungroupedLabel;
-      return {
-        value: bot.id,
-        name: bot.name,
-        groupName,
-        status: bot.status,
-        noPermission: isDisabled(bot.id),
-      };
-    });
+    return [...bots]
+      .map((bot) => {
+        const groupName = bot.groupId ? groupNameMap.get(bot.groupId) ?? ungroupedLabel : ungroupedLabel;
+        return {
+          value: bot.id,
+          name: bot.name,
+          groupName,
+          isUngrouped: !bot.groupId || !groupNameMap.has(bot.groupId),
+          status: bot.status,
+          noPermission: isDisabled(bot.id),
+        };
+      })
+      .sort((a, b) => {
+        if (a.isUngrouped && !b.isUngrouped) return 1;
+        if (!a.isUngrouped && b.isUngrouped) return -1;
+        const g = a.groupName.localeCompare(b.groupName, 'zh-Hans-CN');
+        if (g !== 0) return g;
+        return a.name.localeCompare(b.name, 'zh-Hans-CN');
+      });
   }, [targetType, botGroups, bots, permissions, enablePermissionCheck, t]);
 
   // 渲染已选中值的标签
