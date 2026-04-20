@@ -599,6 +599,37 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       render: (value: string | null) => value || '-',
     },
     {
+      title: t('development.processDevelopment.fields.linkedRequirement'),
+      dataIndex: 'requirement_id',
+      key: 'requirement_id',
+      width: 200,
+      render: (reqId: string | null) => {
+        if (!reqId) return <Text type="tertiary">-</Text>;
+        const brief = requirementBriefMap.get(reqId);
+        const label = brief ? (brief.req_no ? `[${brief.req_no}] ${brief.title}` : brief.title) : reqId;
+        return (
+          <Tag
+            color="blue"
+            type="light"
+            prefixIcon={<Link2 size={12} strokeWidth={2} />}
+            style={{ maxWidth: 180, cursor: 'pointer' }}
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate('/requirements/workbench', { state: { openRequirementId: reqId } });
+            }}
+          >
+            <Text
+              ellipsis={{ showTooltip: { opts: { content: label } } }}
+              size="small"
+              style={{ maxWidth: 150, color: 'inherit' }}
+            >
+              {label}
+            </Text>
+          </Tag>
+        );
+      },
+    },
+    {
       title: t('common.creator'),
       dataIndex: 'creator_id',
       key: 'creator_id',
