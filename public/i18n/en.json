@@ -59,6 +59,7 @@
     "owner": "Owner",
     "owningDepartmentPlaceholder": "Select owning department",
     "owningDepartmentRequired": "Please select owning department",
+    "ownerRequired": "Please select owner",
     "ownerPlaceholder": "Select owner",
     "filterProcess": "Filter Process",
     "filterStatus": "Filter Status",

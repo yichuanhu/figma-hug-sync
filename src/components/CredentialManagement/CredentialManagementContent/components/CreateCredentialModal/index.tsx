@@ -40,6 +40,10 @@ const CreateCredentialModal = ({
       Toast.warning(t('common.owningDepartmentRequired'));
       return;
     }
+    if (!ownerId) {
+      Toast.warning(t('common.ownerRequired'));
+      return;
+    }
     if (!workspaceId) {
       Toast.warning(t('workspaceSelect.required'));
       return;
@@ -152,7 +156,7 @@ const CreateCredentialModal = ({
         />
 
         
-        <Form.Slot label={t('common.owningDepartment')}>
+        <Form.Slot label={{ text: t('common.owningDepartment'), required: true }}>
           <DepartmentSelect
             value={owningDepartmentId}
             onChange={(v) => {
@@ -176,7 +180,7 @@ const CreateCredentialModal = ({
           />
         </Form.Slot>
 
-        <Form.Slot label={t('common.owner')}>
+        <Form.Slot label={{ text: t('common.owner'), required: true }}>
           <OwnerSelect value={ownerId} onChange={setOwnerId} />
         </Form.Slot>
 

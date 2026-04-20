@@ -130,6 +130,10 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
   };
 
   const handleSubmit = async () => {
+    if (!ownerId) {
+      Toast.warning(t('common.ownerRequired'));
+      return;
+    }
     setLoading(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 500));
@@ -174,7 +178,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
           showClear
           rows={3}
         />
-        <Form.Slot label={t('common.owner')}>
+        <Form.Slot label={{ text: t('common.owner'), required: true }}>
           <OwnerSelect value={ownerId} onChange={setOwnerId} />
         </Form.Slot>
       </Form>

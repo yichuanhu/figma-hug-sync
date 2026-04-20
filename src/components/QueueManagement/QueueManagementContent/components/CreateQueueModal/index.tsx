@@ -44,6 +44,10 @@ const CreateQueueModal = ({
       Toast.warning(t('common.owningDepartmentRequired'));
       return;
     }
+    if (!ownerId) {
+      Toast.warning(t('common.ownerRequired'));
+      return;
+    }
     setLoading(true);
     try {
       // 模拟API调用
@@ -101,14 +105,14 @@ const CreateQueueModal = ({
         />
 
         
-        <Form.Slot label={t('common.owningDepartment')}>
+        <Form.Slot label={{ text: t('common.owningDepartment'), required: true }}>
           <DepartmentSelect
             value={owningDepartmentId}
             onChange={setOwningDepartmentId}
           />
         </Form.Slot>
 
-        <Form.Slot label={t('common.owner')}>
+        <Form.Slot label={{ text: t('common.owner'), required: true }}>
           <OwnerSelect value={ownerId} onChange={setOwnerId} />
         </Form.Slot>
 

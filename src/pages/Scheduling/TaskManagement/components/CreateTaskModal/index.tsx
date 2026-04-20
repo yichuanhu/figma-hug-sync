@@ -51,6 +51,10 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
   // 提交
   const handleSubmit = useCallback(async () => {
     if (!taskRef.current) return;
+    if (!ownerId) {
+      Toast.warning(t('common.ownerRequired'));
+      return;
+    }
     setLoading(true);
     try {
       const result = await taskRef.current.submit();
@@ -68,7 +72,7 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
     } finally {
       setLoading(false);
     }
-  }, [t, onSuccess]);
+  }, [t, onSuccess, ownerId]);
 
   // 模板选择回调
   const handleTemplateChange = useCallback((templateId: string | null) => {
@@ -94,7 +98,7 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
         className="task-template-select-full"
         onChange={(v) => handleTemplateChange(v as string | null)}
       />
-      <Form.Slot label={t('common.owner')}>
+      <Form.Slot label={{ text: t('common.owner'), required: true }}>
         <OwnerSelect value={ownerId} onChange={setOwnerId} />
       </Form.Slot>
     </div>

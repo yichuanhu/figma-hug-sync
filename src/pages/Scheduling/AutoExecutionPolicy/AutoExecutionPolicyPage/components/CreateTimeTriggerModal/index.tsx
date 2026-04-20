@@ -196,6 +196,10 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
   };
 
   const handleSubmit = async () => {
+    if (!ownerId) {
+      Toast.warning(t('common.ownerRequired'));
+      return;
+    }
     if (ruleType === 'CRON' && !cronExpression.trim()) {
       Toast.warning(t('timeTrigger.validation.cronExpressionRequired'));
       return;
@@ -254,7 +258,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
           showClear
           rows={3}
         />
-        <Form.Slot label={t('common.owner')}>
+        <Form.Slot label={{ text: t('common.owner'), required: true }}>
           <OwnerSelect value={ownerId} onChange={setOwnerId} />
         </Form.Slot>
       </Form>

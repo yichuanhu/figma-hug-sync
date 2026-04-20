@@ -408,6 +408,14 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
 
   // Submit
   const handleSubmit = async () => {
+    if (!owningDepartmentId) {
+      Toast.warning(t('common.owningDepartmentRequired'));
+      return;
+    }
+    if (!ownerId) {
+      Toast.warning(t('common.ownerRequired'));
+      return;
+    }
     const isValid = await validateStep(currentStep);
     if (!isValid) return;
 
@@ -480,10 +488,10 @@ const EditQueueTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditQu
         showClear
         rows={3}
       />
-      <Form.Slot label={t('common.owningDepartment')}>
+      <Form.Slot label={{ text: t('common.owningDepartment'), required: true }}>
         <DepartmentSelect value={owningDepartmentId} onChange={setOwningDepartmentId} disabled={!canManage} />
       </Form.Slot>
-      <Form.Slot label={t('common.owner')}>
+      <Form.Slot label={{ text: t('common.owner'), required: true }}>
         <OwnerSelect value={ownerId} onChange={setOwnerId} disabled={!canManage} />
       </Form.Slot>
     </div>

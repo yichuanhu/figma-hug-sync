@@ -45,6 +45,14 @@ const EditCredentialModal = ({
     password: string;
     description?: string;
   }) => {
+    if (!owningDepartmentId) {
+      Toast.warning(t('common.owningDepartmentRequired'));
+      return;
+    }
+    if (!ownerId) {
+      Toast.warning(t('common.ownerRequired'));
+      return;
+    }
     // 二次确认
     Modal.confirm({
       title: t('credential.editModal.confirmTitle'),
@@ -166,7 +174,7 @@ const EditCredentialModal = ({
           autosize={{ minRows: 3, maxRows: 6 }}
         />
 
-        <Form.Slot label={t('common.owningDepartment')}>
+        <Form.Slot label={{ text: t('common.owningDepartment'), required: true }}>
           <DepartmentSelect
             value={owningDepartmentId}
             onChange={setOwningDepartmentId}
@@ -174,7 +182,7 @@ const EditCredentialModal = ({
           />
         </Form.Slot>
 
-        <Form.Slot label={t('common.owner')}>
+        <Form.Slot label={{ text: t('common.owner'), required: true }}>
           <OwnerSelect value={ownerId} onChange={setOwnerId} disabled={!canManage} />
         </Form.Slot>
 
