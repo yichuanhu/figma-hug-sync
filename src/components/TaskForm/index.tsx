@@ -1,8 +1,8 @@
 import { useState, useCallback, useImperativeHandle, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Form, Select, Spin, Tag, Toast, Typography } from '@douyinfe/semi-ui';
+import { Form, Radio, Select, Spin, Tag, Toast, Typography } from '@douyinfe/semi-ui';
 import type { FormApi } from '@douyinfe/semi-ui/lib/es/form';
-import { useGetProcesses, useGetProcessVersion, useWorkerGroupsTree, encrypt } from './hooks/useTaskFormData';
+import { useGetProcesses, useGetProcessVersion, useGetWorkerGroups, useWorkerGroupsTree, encrypt } from './hooks/useTaskFormData';
 import ParameterInput from './components/ParameterInput';
 import {
   TaskFormSource,
@@ -12,6 +12,7 @@ import {
   type LYInputParameterItem,
   type LYOutputParameterItem,
   type LYProcessResponse,
+  type ExecutionTargetType,
 } from './types';
 import './index.less';
 
@@ -22,6 +23,7 @@ const TaskForm = (props: TaskFormProps) => {
   const { taskRef, params, showParamsHandle, source, preFormItem, bottomFormItem, showRightPanel } = props;
   const [formApi, setFormApi] = useState<FormApi<ITaskInfo> | null>(null);
   const [selectedProcess, setSelectedProcess] = useState<LYProcessResponse | null>(null);
+  const [targetType, setTargetType] = useState<ExecutionTargetType>('worker');
   const [inputParameters, setInputParameters] = useState<LYInputParameterItem[]>([]);
   const [outputParameters, setOutputParameters] = useState<LYOutputParameterItem[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -37,8 +39,14 @@ const TaskForm = (props: TaskFormProps) => {
   // 获取流程版本详情
   const { data: versionDetail } = useGetProcessVersion(selectedProcess?.current_version_id || '', !!processData);
 
-  // 获取机器人组树形结构（用于扁平机器人选择）
-  const { data: workerGroupsTree, isLoading: isLoadingWorkerTree } = useWorkerGroupsTree(true);
+  // 获取机器人组列表
+  const { data: workerGroupList, isLoading: isLoadingWorkerGroups } = useGetWorkerGroups(
+    { size: 100, offset: 0 },
+    targetType === 'worker_group'
+  );
+
+  // 获取机器人组树形结构
+  const { data: workerGroupsTree, isLoading: isLoadingWorkerTree } = useWorkerGroupsTree(targetType === 'worker');
 
   // 整理输入参数值
   const getInputParameterValues = useCallback(
@@ -66,9 +74,17 @@ const TaskForm = (props: TaskFormProps) => {
     [inputParameters]
   );
 
-  // 整理 worker 相关值（仅扁平机器人选择）
+  // 整理 worker 相关值
   const getWorkerData = useCallback(
     (values: ITaskInfo) => {
+      if (targetType === 'worker_group') {
+        return {
+          worker_id: null,
+          worker_name: null,
+          worker_group_name: workerGroupList.find(x => x.id === values.worker_group_id)?.name || null,
+        };
+      }
+      // worker 模式
       if (!values.worker_id) {
         return {
           worker_group_id: null,
@@ -95,7 +111,7 @@ const TaskForm = (props: TaskFormProps) => {
         worker_name: foundWorker?.name,
       };
     },
-    [workerGroupsTree]
+    [targetType, workerGroupList, workerGroupsTree]
   );
 
   // 初始化表单
@@ -104,6 +120,7 @@ const TaskForm = (props: TaskFormProps) => {
       formApi.reset();
       if (params) {
         setLoading(true);
+        setTargetType(params.worker_id ? 'worker' : 'worker_group');
         formApi.setValues({
           task_num: 1,
           task_repeat: false,
@@ -117,6 +134,7 @@ const TaskForm = (props: TaskFormProps) => {
         setInputParameters([]);
         setOutputParameters([]);
         showParamsHandle(false);
+        setTargetType('worker');
         setPendingValidation(null);
         formApi.setValues({
           priority: Priority.MEDIUM,
@@ -134,7 +152,7 @@ const TaskForm = (props: TaskFormProps) => {
     if (!pendingValidation || !formApi) return;
 
     const isLoadingAny =
-      isLoadingProcess || (pendingValidation.worker_id && isLoadingWorkerTree);
+      isLoadingProcess || (pendingValidation.worker_group_id && isLoadingWorkerGroups) || (pendingValidation.worker_id && isLoadingWorkerTree);
 
     if (isLoadingAny) return;
 
@@ -145,6 +163,12 @@ const TaskForm = (props: TaskFormProps) => {
         if (source === TaskFormSource.Process) {
           handleProcessChange(pendingValidation.process_id);
         }
+      }
+    }
+    if (pendingValidation.worker_group_id && workerGroupList?.length) {
+      const groupExists = workerGroupList.some(g => g.id === pendingValidation.worker_group_id);
+      if (groupExists) {
+        formApi.setValue('worker_group_id', pendingValidation.worker_group_id);
       }
     }
     if (pendingValidation.worker_id && workerGroupsTree?.length) {
@@ -162,7 +186,7 @@ const TaskForm = (props: TaskFormProps) => {
     setLoading(false);
     setPendingValidation(null);
     showParamsHandle(!!pendingValidation.input_parameter_values?.length || !!pendingValidation.output_parameter_values?.length);
-  }, [pendingValidation, formApi, processData, workerGroupsTree, isLoadingProcess, isLoadingWorkerTree]);
+  }, [pendingValidation, formApi, processData, workerGroupList, workerGroupsTree, isLoadingProcess, isLoadingWorkerGroups, isLoadingWorkerTree]);
 
   // 提交表单
   const submitForm = useCallback(async (): Promise<ITaskInfo | null> => {
@@ -232,9 +256,12 @@ const TaskForm = (props: TaskFormProps) => {
         formApi.setValue('process_id', template.process_id);
         handleProcessChange(template.process_id);
       }
-      // 执行目标：仅支持单个机器人。模板若为机器人组类型则留空，由用户重新选择
-      if (template.execution_target_type !== 'BOT_GROUP' && template.execution_target_id) {
-        formApi.setValue('worker_id', template.execution_target_id);
+      // 设置执行目标
+      if (template.execution_target_type === 'BOT_GROUP') {
+        setTargetType('worker_group');
+        formApi.setValue('worker_group_id', template.execution_target_id);
+      } else {
+        setTargetType('worker');
       }
       // 设置执行设置
       formApi.setValue('priority', template.priority || Priority.MEDIUM);
@@ -280,17 +307,10 @@ const TaskForm = (props: TaskFormProps) => {
     [t]
   );
 
-  // 扁平机器人选项：按组名排序，未分组置于最后；每项 [组名] 机器人名
+  // 扁平机器人选项：[组名] 机器人名
   const workerFlatOptions = useMemo(() => {
     if (!workerGroupsTree) return [];
     const ungroupedLabel = t('template.fields.ungrouped', { defaultValue: '未分组' });
-    const sortedGroups = [...workerGroupsTree].sort((a, b) => {
-      const aUngrouped = !a.group_name;
-      const bUngrouped = !b.group_name;
-      if (aUngrouped && !bUngrouped) return 1;
-      if (!aUngrouped && bUngrouped) return -1;
-      return (a.group_name || '').localeCompare(b.group_name || '', 'zh-Hans-CN');
-    });
     const list: Array<{
       value: string;
       name: string;
@@ -298,12 +318,9 @@ const TaskForm = (props: TaskFormProps) => {
       status: string;
       label: string;
     }> = [];
-    sortedGroups.forEach(group => {
+    workerGroupsTree.forEach(group => {
       const groupName = group.group_name || ungroupedLabel;
-      const sortedMembers = [...(group.members || [])].sort((a, b) =>
-        (a.name || '').localeCompare(b.name || '', 'zh-Hans-CN')
-      );
-      sortedMembers.forEach(member => {
+      group.members?.forEach(member => {
         list.push({
           value: member.worker_id,
           name: member.name,
@@ -362,51 +379,90 @@ const TaskForm = (props: TaskFormProps) => {
                 />
               </div>
 
-              {/* 执行机器人 */}
+              {/* 执行目标 */}
               <div className="task-template-section">
                 <div className="task-template-section-title">{t('template.createModal.targetSection')}</div>
-                <Form.Select
-                  field="worker_id"
-                  label={t('template.fields.worker', { defaultValue: '执行机器人' })}
-                  placeholder={t('template.fields.workerPlaceholder')}
-                  filter={(input: string, option: Record<string, unknown>) => {
-                    const kw = (input || '').toString().toLowerCase();
-                    return (
-                      String(option?.name || '').toLowerCase().includes(kw) ||
-                      String(option?.groupName || '').toLowerCase().includes(kw)
-                    );
-                  }}
-                  className="task-template-select-full"
-                  rules={[{ required: true, message: t('template.validation.workerRequired') }]}
-                  renderSelectedItem={renderSelectedItem}
-                  dropdownStyle={{ '--select-option-max-width': showRightPanel ? '382px' : '460px' } as React.CSSProperties}
-                  dropdownClassName="semi-select-option-ellipsis"
-                >
-                  {workerFlatOptions.map(opt => {
-                    const config = statusConfig[opt.status];
-                    return (
-                      <Select.Option
-                        key={opt.value}
-                        value={opt.value}
-                        label={opt.label}
-                        {...({ name: opt.name, groupName: opt.groupName } as Record<string, unknown>)}
-                      >
-                        <div className="bot-target-selector-option">
-                          <span className="bot-target-selector-option-group-tag">{opt.groupName}</span>
-                          <Text className="bot-target-selector-option-name">{opt.name}</Text>
-                          <Tag
-                            size="small"
-                            color={config.color as 'grey' | 'green' | 'blue' | 'red' | 'orange'}
-                            type="light"
-                            className="bot-target-selector-option-status"
-                          >
-                            {config.text}
-                          </Tag>
-                        </div>
-                      </Select.Option>
-                    );
-                  })}
-                </Form.Select>
+                <div className="semi-form-field-label-text m-b-12 m-t-12 label-text-required">{t('template.fields.targetType')}</div>
+                <Radio.Group value={targetType} onChange={e => setTargetType(e.target.value as ExecutionTargetType)}>
+                  <Radio value="worker_group">{t('template.targetType.botGroup')}</Radio>
+                  <Radio value="worker">{t('template.targetType.botInGroup')}</Radio>
+                </Radio.Group>
+                {/* 机器人组选择 */}
+                <div style={targetType === 'worker_group' ? undefined : { display: 'none' }}>
+                  <Form.Select
+                    field="worker_group_id"
+                    noLabel
+                    placeholder={t('template.fields.workerGroupPlaceholder')}
+                    filter
+                    className="task-template-select-full"
+                    rules={targetType === 'worker_group' ? [{ required: true, message: t('template.validation.workerGroupRequired') }] : []}
+                    renderSelectedItem={renderSelectedItem}
+                    dropdownStyle={{ '--select-option-max-width': showRightPanel ? '382px' : '460px' } as React.CSSProperties}
+                    dropdownClassName="semi-select-option-ellipsis"
+                  >
+                    {workerGroupList.map(group => {
+                      return (
+                        <Select.Option value={group.id} key={group.id} label={group.name}>
+                          <div className="bot-target-selector-option">
+                            <Text className="bot-target-selector-option-name">{group.name}</Text>
+                            <Tag
+                              size="small"
+                              color={group.online_count > 0 ? 'green' : 'grey'}
+                              className="bot-target-selector-option-status"
+                            >
+                              {group.online_count} / {group.member_count} {t('botSelector.statusOnline')}
+                            </Tag>
+                          </div>
+                        </Select.Option>
+                      );
+                    })}
+                  </Form.Select>
+                </div>
+                {/* 机器人选择 */}
+                <div style={targetType === 'worker' ? undefined : { display: 'none' }}>
+                  <Form.Select
+                    field="worker_id"
+                    noLabel
+                    placeholder={t('template.fields.workerPlaceholder')}
+                    filter={(input: string, option: Record<string, unknown>) => {
+                      const kw = (input || '').toString().toLowerCase();
+                      return (
+                        String(option?.name || '').toLowerCase().includes(kw) ||
+                        String(option?.groupName || '').toLowerCase().includes(kw)
+                      );
+                    }}
+                    className="task-template-select-full"
+                    rules={targetType === 'worker' ? [{ required: true, message: t('template.validation.workerRequired') }] : []}
+                    renderSelectedItem={renderSelectedItem}
+                    dropdownStyle={{ '--select-option-max-width': showRightPanel ? '382px' : '460px' } as React.CSSProperties}
+                    dropdownClassName="semi-select-option-ellipsis"
+                  >
+                    {workerFlatOptions.map(opt => {
+                      const config = statusConfig[opt.status];
+                      return (
+                        <Select.Option
+                          key={opt.value}
+                          value={opt.value}
+                          label={opt.label}
+                          {...({ name: opt.name, groupName: opt.groupName } as Record<string, unknown>)}
+                        >
+                          <div className="bot-target-selector-option">
+                            <span className="bot-target-selector-option-group-tag">{opt.groupName}</span>
+                            <Text className="bot-target-selector-option-name">{opt.name}</Text>
+                            <Tag
+                              size="small"
+                              color={config.color as 'grey' | 'green' | 'blue' | 'red' | 'orange'}
+                              type="light"
+                              className="bot-target-selector-option-status"
+                            >
+                              {config.text}
+                            </Tag>
+                          </div>
+                        </Select.Option>
+                      );
+                    })}
+                  </Form.Select>
+                </div>
               </div>
 
               {/* 执行设置 */}
