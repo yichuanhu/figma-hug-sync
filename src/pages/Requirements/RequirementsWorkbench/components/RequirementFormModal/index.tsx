@@ -178,18 +178,7 @@ const RequirementFormModal = ({
             showClear
           />
 
-          <Form.TextArea
-            field="businessBackground"
-            label={`${t('requirements.form.businessBackgroundLabel')}${t('requirements.form.optionalSuffix')}`}
-            placeholder={t('requirements.form.businessBackgroundPlaceholder')}
-            autosize={{ minRows: 2, maxRows: 4 }}
-            maxCount={2000}
-            rules={[
-              { max: 2000, message: t('requirements.form.descriptionMaxLength') },
-            ]}
-            showClear
-          />
-
+          {/* 业务背景由 Scheme 字段统一渲染（如 RPA-PRO 的 business_background） */}
           <Form.Slot label={{ text: t('common.owningDepartment'), required: true }}>
             <Form.Input
               field="department"
@@ -221,20 +210,7 @@ const RequirementFormModal = ({
             showClear
           />
 
-          <Form.Slot label={t('requirements.fields.expectedLaunchDate')}>
-            <Form.DatePicker
-              field="expectedLaunchDate"
-              noLabel
-              trigger={['blur', 'change']}
-              rules={[
-                { required: true, message: t('requirements.form.expectedLaunchDateRequired') },
-              ]}
-              type="date"
-              style={{ width: '100%' }}
-              placeholder={t('requirements.form.expectedLaunchDatePlaceholder')}
-            />
-          </Form.Slot>
-
+          {/* 期望上线日期由 Scheme 字段统一渲染（如 RPA-PRO 的 expected_launch） */}
           <Form.Select
             field="priority"
             label={`${t('requirements.fields.priority')}${t('requirements.form.optionalSuffix')}`}
@@ -243,7 +219,7 @@ const RequirementFormModal = ({
             className="requirement-form-modal-select-full"
           />
 
-          {/* 业务基线（自动化收益评估）— Scheme 驱动动态字段 */}
+          {/* 业务基线（自动化收益评估）— Scheme 驱动动态字段（含附件） */}
           <div className="requirement-form-modal-section requirement-form-modal-section-divider">
             <Text strong className="requirement-form-modal-section-title">
               {t('requirements.form.baselineSection')}
@@ -252,30 +228,7 @@ const RequirementFormModal = ({
               </Text>
             </Text>
           </div>
-          {activeScheme.custom_fields.map((f) => (
-            <SchemeFieldRenderer key={f.key} field={f} />
-          ))}
-
-          {/* 附件区域 */}
-          <Form.Slot label={`${t('requirements.form.attachmentLabel')}${t('requirements.form.optionalSuffix')}`}>
-            <Upload
-              action=""
-              limit={5}
-              maxSize={10240}
-              draggable={false}
-              listType="list"
-              accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.png,.jpg,.jpeg,.gif,.zip,.rar,.txt,.csv"
-              onExceed={() => Toast.warning(t('requirements.form.attachmentExceed'))}
-              onSizeError={() => Toast.warning(t('requirements.form.attachmentSizeError'))}
-            >
-              <Button icon={<UploadIcon size={14} strokeWidth={2} />} theme="light" type="tertiary">
-                {t('requirements.form.attachmentUpload')}
-              </Button>
-            </Upload>
-            <Text type="tertiary" size="small" style={{ marginTop: 4 }}>
-              {t('requirements.form.attachmentHint')}
-            </Text>
-          </Form.Slot>
+          <SchemeFieldsRenderer fields={activeScheme.custom_fields} />
 
           {/* 底部提示 */}
           <Text type="tertiary" size="small" className="requirement-form-modal-hint">
