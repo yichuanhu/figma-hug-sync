@@ -56,6 +56,7 @@
     "days": "days",
     "selectAll": "Select All",
     "owningDepartment": "Owning Department",
+    "owningProject": "Project",
     "owner": "Owner",
     "owningDepartmentPlaceholder": "Select owning department",
     "owningDepartmentRequired": "Please select owning department",

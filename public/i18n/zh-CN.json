@@ -42,6 +42,7 @@
     "days": "天",
     "selectAll": "全选",
     "owningDepartment": "归属部门",
+    "owningProject": "所属项目",
     "owner": "归属者",
     "owningDepartmentPlaceholder": "请选择归属部门",
     "owningDepartmentRequired": "请选择归属部门",
