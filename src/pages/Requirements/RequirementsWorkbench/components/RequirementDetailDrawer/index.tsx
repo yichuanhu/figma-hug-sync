@@ -15,7 +15,7 @@ import CostEstimateTab from './CostEstimateTab';
 import VersionHistoryTab from './VersionHistoryTab';
 import ApprovalFlowProgress from '../ApprovalFlowProgress';
 import './index.less';
-import { ChevronDown, ChevronRight, ClipboardCheck, FileText, History, Pencil, Send, Trash2, Wallet } from 'lucide-react';
+import { ChevronDown, ChevronRight, ClipboardCheck, FileText, History, Pencil, PowerOff, RotateCcw, Send, Trash2, Wallet } from 'lucide-react';
 
 const { Text, Paragraph } = Typography;
 
@@ -117,9 +117,9 @@ const PropertyPanel = ({
             <Button
               theme="solid"
               type="primary"
-              size="small"
               icon={<Send size={16} strokeWidth={2} />}
               block
+              style={{ height: 32 }}
               onClick={() => {
                 Modal.confirm({
                   title: t('requirements.detail.submitConfirmTitle'),
@@ -187,6 +187,8 @@ interface RequirementDetailDrawerProps {
   onEdit: (record: RequirementItem) => void;
   onDelete: (record: RequirementItem) => void;
   onStatusChange: (id: string, newStatus: string, comment?: string) => Promise<void>;
+  onResubmit?: (record: RequirementItem) => void;
+  onOffline?: (record: RequirementItem) => void;
   onRefresh?: () => void;
   pagination: PaginationInfo;
   onPageChange?: (page: number, direction: 'prev' | 'next') => void;
@@ -203,6 +205,8 @@ const RequirementDetailDrawer = ({
   onEdit,
   onDelete,
   onStatusChange,
+  onResubmit,
+  onOffline,
   onRefresh,
   pagination,
   onPageChange,
@@ -249,7 +253,9 @@ const RequirementDetailDrawer = ({
   if (!data) return null;
 
   const canEdit = data.status === 'DRAFT';
-  const canDelete = data.status === 'DRAFT' || data.status === 'REJECTED';
+  const canDelete = data.status === 'DRAFT' || data.status === 'REJECTED' || data.status === 'WITHDRAWN';
+  const canResubmit = (data.status === 'REJECTED' || data.status === 'WITHDRAWN') && data.creatorId === MOCK_CURRENT_USER_ID;
+  const canOffline = data.status === 'LAUNCHED';
 
   const handleSaveAssessment = async (id: string, assessment: DetailedAssessment) => {
     await updateRequirementAssessment(id, assessment);
@@ -294,6 +300,28 @@ const RequirementDetailDrawer = ({
                     },
                   });
                 }}
+              />
+            </Tooltip>
+          )}
+          {canResubmit && onResubmit && (
+            <Tooltip content={t('requirements.detail.resubmit')}>
+              <Button
+                icon={<RotateCcw size={16} strokeWidth={2} />}
+                theme="borderless"
+                size="small"
+                type="tertiary"
+                onClick={() => onResubmit(data)}
+              />
+            </Tooltip>
+          )}
+          {canOffline && onOffline && (
+            <Tooltip content={t('requirements.detail.offline', '下线')}>
+              <Button
+                icon={<PowerOff size={16} strokeWidth={2} />}
+                theme="borderless"
+                size="small"
+                type="tertiary"
+                onClick={() => onOffline(data)}
               />
             </Tooltip>
           )}

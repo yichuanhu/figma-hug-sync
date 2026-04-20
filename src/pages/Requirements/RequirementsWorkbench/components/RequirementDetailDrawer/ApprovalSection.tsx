@@ -25,8 +25,8 @@ const ApprovalSection = ({ data, onStatusChange, onRefresh }: ApprovalSectionPro
 
   const isCreator = data.creatorId === MOCK_CURRENT_USER_ID;
 
-  // ===== REJECTED：仅显示「重新提交」 =====
-  if (data.status === 'REJECTED') {
+  // ===== REJECTED / WITHDRAWN：仅显示「重新提交」 =====
+  if (data.status === 'REJECTED' || data.status === 'WITHDRAWN') {
     if (!isCreator) return null;
     const handleResubmit = () => {
       Modal.confirm({
@@ -55,8 +55,8 @@ const ApprovalSection = ({ data, onStatusChange, onRefresh }: ApprovalSectionPro
           <Button
             theme="solid"
             type="primary"
-            size="small"
             block
+            style={{ height: 32 }}
             icon={<RotateCcw size={16} strokeWidth={2} />}
             loading={submitting === 'resubmit'}
             onClick={handleResubmit}
@@ -195,8 +195,7 @@ const ApprovalSection = ({ data, onStatusChange, onRefresh }: ApprovalSectionPro
           <Button
             theme="solid"
             type="primary"
-            size="small"
-            style={{ flex: 1 }}
+            style={{ flex: 1, height: 32 }}
             loading={submitting === 'approve'}
             disabled={!!submitting}
             onClick={() => handleAction('approve')}
@@ -206,8 +205,7 @@ const ApprovalSection = ({ data, onStatusChange, onRefresh }: ApprovalSectionPro
           <Button
             theme="solid"
             type="danger"
-            size="small"
-            style={{ flex: 1 }}
+            style={{ flex: 1, height: 32 }}
             loading={submitting === 'reject'}
             disabled={!!submitting}
             onClick={() => handleAction('reject')}
