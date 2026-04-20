@@ -177,7 +177,15 @@ const RequirementFormModal = ({
                 <OwnerSelect value={ownerId} onChange={setOwnerId} />
               </Form.Slot>
             </div>
+          </div>
 
+          {/* 需求详情 — 评估属性（优先级）+ Scheme 驱动动态字段 */}
+          <div className="requirement-form-modal-section requirement-form-modal-section-divider">
+            <Text strong className="requirement-form-modal-section-title">
+              {t('requirements.form.sectionDetails')}
+            </Text>
+          </div>
+          <div className="requirement-form-modal-grid">
             <div className="scheme-field-w-medium">
               <Form.Select
                 field="priority"
@@ -187,24 +195,13 @@ const RequirementFormModal = ({
                 style={{ width: '100%' }}
               />
             </div>
+            {activeScheme && activeScheme.custom_fields.length > 0 ? (
+              <SchemeFieldsRenderer
+                fields={activeScheme.custom_fields}
+                costConfig={activeScheme.cost_config}
+              />
+            ) : null}
           </div>
-
-          {/* 需求详情 — Scheme 驱动动态字段 */}
-          {activeScheme && activeScheme.custom_fields.length > 0 ? (
-            <>
-              <div className="requirement-form-modal-section requirement-form-modal-section-divider">
-                <Text strong className="requirement-form-modal-section-title">
-                  {t('requirements.form.sectionDetails')}
-                </Text>
-              </div>
-              <div className="requirement-form-modal-grid">
-                <SchemeFieldsRenderer
-                  fields={activeScheme.custom_fields}
-                  costConfig={activeScheme.cost_config}
-                />
-              </div>
-            </>
-          ) : null}
         </div>
 
         <div className="requirement-form-modal-footer">
