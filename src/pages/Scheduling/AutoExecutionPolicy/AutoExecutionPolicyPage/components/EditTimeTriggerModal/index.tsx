@@ -528,6 +528,14 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
   };
 
   const handleSubmit = async () => {
+    if (!owningDepartmentId) {
+      Toast.warning(t('common.owningDepartmentRequired'));
+      return;
+    }
+    if (!ownerId) {
+      Toast.warning(t('common.ownerRequired'));
+      return;
+    }
     if (ruleType === 'CRON' && !cronExpression.trim()) {
       Toast.warning(t('timeTrigger.validation.cronExpressionRequired'));
       return;
@@ -612,10 +620,10 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
         showClear
         rows={3}
       />
-      <Form.Slot label={t('common.owningDepartment')}>
+      <Form.Slot label={{ text: t('common.owningDepartment'), required: true }}>
         <DepartmentSelect value={owningDepartmentId} onChange={setOwningDepartmentId} disabled={!canManage} />
       </Form.Slot>
-      <Form.Slot label={t('common.owner')}>
+      <Form.Slot label={{ text: t('common.owner'), required: true }}>
         <OwnerSelect value={ownerId} onChange={setOwnerId} disabled={!canManage} />
       </Form.Slot>
     </div>
