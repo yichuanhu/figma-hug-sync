@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { debounce } from 'lodash';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Typography,
@@ -46,6 +47,8 @@ const { Title, Text } = Typography;
 
 const RequirementsWorkbench = () => {
   const { t } = useTranslation();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   // 搜索
   const [searchValue, setSearchValue] = useState('');
@@ -129,6 +132,19 @@ const RequirementsWorkbench = () => {
   useEffect(() => {
     loadData();
   }, [loadData]);
+
+  // 跨页跳转：来自流程列表「关联需求」Tag 的 navigate(state)
+  useEffect(() => {
+    const openId = (location.state as { openRequirementId?: string } | null)?.openRequirementId;
+    if (!openId) return;
+    const hit = listResponse.list.find((r) => r.id === openId);
+    if (hit) {
+      setSelectedRecord(hit);
+      setDetailDrawerVisible(true);
+      // 清理 state，避免重复触发
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state, location.pathname, listResponse.list, navigate]);
 
   // 搜索防抖
   const debouncedSearch = useMemo(

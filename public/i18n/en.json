@@ -1052,7 +1052,12 @@
       "createProcess": "New Process",
       "fields": {
         "processId": "Process ID",
-        "processName": "Process Name"
+        "processName": "Process Name",
+        "linkedRequirement": "Linked Requirement"
+      },
+      "filter": {
+        "requirementPlaceholder": "Filter by Linked Requirement",
+        "unlinked": "Unlinked"
       },
       "status": {
         "developing": "In Development",

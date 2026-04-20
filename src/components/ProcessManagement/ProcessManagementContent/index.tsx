@@ -17,6 +17,7 @@ import {
   Toast,
   Space,
   Pagination,
+  Select,
   
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
@@ -25,13 +26,14 @@ import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
 import DepartmentSelect from '@/components/DepartmentSelect';
-import { Ellipsis, ExternalLink, Pencil, PlayCircle, Plus, Trash2, UserPlus } from 'lucide-react';
+import { Ellipsis, ExternalLink, Link2, Pencil, PlayCircle, Plus, Trash2, UserPlus } from 'lucide-react';
 import CreateProcessModal from './components/CreateProcessModal';
 import EditProcessModal from './components/EditProcessModal';
 import ProcessDetailDrawer from './components/ProcessDetailDrawer';
 import { useOpenProcess } from './hooks/useOpenProcess';
 import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
 import type { LYProcessResponse, LYProcessDependency, GetProcessesParams, LYListResponseLYProcessResponse } from '@/api';
+import { fetchRequirementBriefByIds } from '@/pages/Requirements/RequirementsProjects/mockData';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -318,6 +320,9 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
   // 状态筛选 - 调度中心默认只显示已发布
   const [statusFilter, setStatusFilter] = useState<string[]>(isSchedulingContext ? ['PUBLISHED'] : []);
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
+  // 「关联需求」下拉多选筛选：值为需求 id 集合，包含特殊值 __UNLINKED__ 表示「未关联需求」
+  const [requirementFilter, setRequirementFilter] = useState<string[]>([]);
+  const [requirementBriefList, setRequirementBriefList] = useState<Array<{ id: string; title: string; req_no?: string }>>([]);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
 
   const [loading, setLoading] = useState(true);
@@ -357,6 +362,44 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       setIsInitialLoad(false);
     }
   }, [queryParams, statusFilter, departmentFilter]);
+
+  // 一次性加载所有「已被流程关联」的需求 brief，作为「关联需求」筛选下拉选项
+  useEffect(() => {
+    const allIds = Array.from(
+      new Set(mockProcessData.map((p) => p.requirement_id).filter((x): x is string => !!x)),
+    );
+    if (allIds.length === 0) {
+      setRequirementBriefList([]);
+      return;
+    }
+    let cancelled = false;
+    fetchRequirementBriefByIds(allIds).then((list) => {
+      if (cancelled) return;
+      const sorted = [...list].sort((a, b) => a.title.localeCompare(b.title));
+      setRequirementBriefList(sorted);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // 客户端再过滤：「关联需求」多选 (OR 关系)
+  const displayList = useMemo(() => {
+    if (!requirementFilter || requirementFilter.length === 0) return listResponse.list;
+    const wantUnlinked = requirementFilter.includes('__UNLINKED__');
+    const wantedIds = new Set(requirementFilter.filter((v) => v !== '__UNLINKED__'));
+    return listResponse.list.filter((p) => {
+      if (!p.requirement_id) return wantUnlinked;
+      return wantedIds.has(p.requirement_id);
+    });
+  }, [listResponse.list, requirementFilter]);
+
+  // 需求 id -> brief 查询字典（用于列渲染）
+  const requirementBriefMap = useMemo(() => {
+    const map = new Map<string, { id: string; title: string; req_no?: string }>();
+    requirementBriefList.forEach((r) => map.set(r.id, r));
+    return map;
+  }, [requirementBriefList]);
 
   // 翻页并返回新数据（用于抽屉导航时自动翻页）
   const handleDrawerPageChange = useCallback(async (page: number): Promise<LYProcessResponse[]> => {
@@ -556,6 +599,37 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
       render: (value: string | null) => value || '-',
     },
     {
+      title: t('development.processDevelopment.fields.linkedRequirement'),
+      dataIndex: 'requirement_id',
+      key: 'requirement_id',
+      width: 200,
+      render: (reqId: string | null) => {
+        if (!reqId) return <Text type="tertiary">-</Text>;
+        const brief = requirementBriefMap.get(reqId);
+        const label = brief ? (brief.req_no ? `[${brief.req_no}] ${brief.title}` : brief.title) : reqId;
+        return (
+          <Tag
+            color="blue"
+            type="light"
+            prefixIcon={<Link2 size={12} strokeWidth={2} />}
+            style={{ maxWidth: 180, cursor: 'pointer' }}
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate('/requirements/workbench', { state: { openRequirementId: reqId } });
+            }}
+          >
+            <Text
+              ellipsis={{ showTooltip: { opts: { content: label } } }}
+              size="small"
+              style={{ maxWidth: 150, color: 'inherit' }}
+            >
+              {label}
+            </Text>
+          </Tag>
+        );
+      },
+    },
+    {
       title: t('common.creator'),
       dataIndex: 'creator_id',
       key: 'creator_id',
@@ -701,6 +775,28 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
                 maxTagCount={1}
                 showClear
               />
+              {!isSchedulingContext && (
+                <Select
+                  multiple
+                  filter
+                  showClear
+                  maxTagCount={1}
+                  value={requirementFilter}
+                  onChange={(v) => setRequirementFilter((v as string[]) || [])}
+                  placeholder={t('development.processDevelopment.filter.requirementPlaceholder')}
+                  style={{ width: 240 }}
+                  optionList={[
+                    {
+                      value: '__UNLINKED__',
+                      label: t('development.processDevelopment.filter.unlinked'),
+                    },
+                    ...requirementBriefList.map((r) => ({
+                      value: r.id,
+                      label: r.req_no ? `[${r.req_no}] ${r.title}` : r.title,
+                    })),
+                  ]}
+                />
+              )}
               {/* 调度中心不显示筛选 */}
               {!isSchedulingContext && (
                 <FilterPopover
@@ -742,13 +838,13 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
           <Table
             size="small"
             columns={columns}
-            dataSource={list}
+            dataSource={displayList}
             loading={loading}
             rowKey="id"
             empty={
               <EmptyState 
-                variant={(queryParams.keyword || departmentFilter.length > 0 || statusFilter.length > 0) ? 'noResult' : 'noData'}
-                description={(queryParams.keyword || departmentFilter.length > 0 || statusFilter.length > 0) ? t('common.noResult') : t('development.processDevelopment.noData')} 
+                variant={(queryParams.keyword || departmentFilter.length > 0 || statusFilter.length > 0 || requirementFilter.length > 0) ? 'noResult' : 'noData'}
+                description={(queryParams.keyword || departmentFilter.length > 0 || statusFilter.length > 0 || requirementFilter.length > 0) ? t('common.noResult') : t('development.processDevelopment.noData')} 
               />
             }
             onRow={(record) => {

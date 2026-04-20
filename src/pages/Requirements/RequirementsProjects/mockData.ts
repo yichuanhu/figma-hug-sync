@@ -304,6 +304,29 @@ export const fetchLinkableRequirementsByWorkspace = async (
     .map((r) => ({ id: r.id, title: r.title, req_no: r.req_no }));
 };
 
+/**
+ * 按 ID 列表批量查询需求 brief（id/name/req_no/status），用于流程列表「关联需求」列与筛选下拉。
+ * 不在列表中的 id 会被忽略。
+ */
+export const fetchRequirementBriefByIds = async (
+  ids: string[],
+): Promise<Array<{ id: string; title: string; req_no?: string; status: string }>> => {
+  await delay(null);
+  if (!ids || ids.length === 0) return [];
+  const { fetchRequirementList } = await import('../RequirementsWorkbench/mockData');
+  const res = await fetchRequirementList({
+    offset: 0,
+    size: 1000,
+    keyword: '',
+    sort_by: 'created_at',
+    sort_order: 'desc',
+  });
+  const set = new Set(ids);
+  return res.list
+    .filter((r) => set.has(r.id))
+    .map((r) => ({ id: r.id, title: r.title, req_no: r.req_no, status: r.status }));
+};
+
 // ===================== 工作空间成员 =====================
 
 /**
