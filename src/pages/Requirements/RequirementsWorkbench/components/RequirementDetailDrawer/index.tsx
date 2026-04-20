@@ -253,7 +253,9 @@ const RequirementDetailDrawer = ({
   if (!data) return null;
 
   const canEdit = data.status === 'DRAFT';
-  const canDelete = data.status === 'DRAFT' || data.status === 'REJECTED';
+  const canDelete = data.status === 'DRAFT' || data.status === 'REJECTED' || data.status === 'WITHDRAWN';
+  const canResubmit = (data.status === 'REJECTED' || data.status === 'WITHDRAWN') && data.creatorId === MOCK_CURRENT_USER_ID;
+  const canOffline = data.status === 'LAUNCHED';
 
   const handleSaveAssessment = async (id: string, assessment: DetailedAssessment) => {
     await updateRequirementAssessment(id, assessment);
@@ -298,6 +300,28 @@ const RequirementDetailDrawer = ({
                     },
                   });
                 }}
+              />
+            </Tooltip>
+          )}
+          {canResubmit && onResubmit && (
+            <Tooltip content={t('requirements.detail.resubmit')}>
+              <Button
+                icon={<RotateCcw size={16} strokeWidth={2} />}
+                theme="borderless"
+                size="small"
+                type="tertiary"
+                onClick={() => onResubmit(data)}
+              />
+            </Tooltip>
+          )}
+          {canOffline && onOffline && (
+            <Tooltip content={t('requirements.detail.offline', '下线')}>
+              <Button
+                icon={<PowerOff size={16} strokeWidth={2} />}
+                theme="borderless"
+                size="small"
+                type="tertiary"
+                onClick={() => onOffline(data)}
               />
             </Tooltip>
           )}
