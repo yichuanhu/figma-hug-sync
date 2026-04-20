@@ -38,6 +38,10 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
 
   const handleSubmit = useCallback(async () => {
     if (!taskRef.current) return;
+    if (!ownerId) {
+      Toast.warning(t('common.ownerRequired'));
+      return;
+    }
     setLoading(true);
     try {
       const result = await taskRef.current.submit();
@@ -55,7 +59,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
     } finally {
       setLoading(false);
     }
-  }, [t, onSuccess]);
+  }, [t, onSuccess, ownerId]);
 
   const preFormItem = (
     <div className="task-template-section">
@@ -88,7 +92,7 @@ const CreateTemplateModal = ({ visible, onCancel, onSuccess }: CreateTemplateMod
         showClear
         rows={3}
       />
-      <Form.Slot label={t('common.owner')}>
+      <Form.Slot label={{ text: t('common.owner'), required: true }}>
         <OwnerSelect value={ownerId} onChange={setOwnerId} />
       </Form.Slot>
     </div>

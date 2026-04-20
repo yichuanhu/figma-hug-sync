@@ -290,6 +290,10 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
 
   // Submit
   const handleSubmit = async (values: Record<string, unknown>) => {
+    if (!ownerId) {
+      Toast.warning(t('common.ownerRequired'));
+      return;
+    }
     setLoading(true);
     try {
       // 提取参Number
@@ -380,7 +384,7 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
                   showClear
                   rows={3}
                 />
-                <Form.Slot label={t('common.owner')}>
+                <Form.Slot label={{ text: t('common.owner'), required: true }}>
                   <OwnerSelect value={ownerId} onChange={setOwnerId} disabled={!canManage} />
                 </Form.Slot>
               </div>
