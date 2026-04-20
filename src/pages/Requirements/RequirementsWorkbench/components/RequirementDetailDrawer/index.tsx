@@ -406,11 +406,7 @@ const RequirementDetailDrawer = ({
                   </div>
                 )}
 
-                <ArtifactSection
-                  data={data}
-                  canManageProcesses={data.creatorId === MOCK_CURRENT_USER_ID || data.owner_id === MOCK_CURRENT_USER_ID}
-                  onProcessesChanged={onRefresh}
-                />
+                <ArtifactSection data={data} />
 
                 <ActivityStream activities={activities} t={t} />
               </div>
