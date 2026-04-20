@@ -316,15 +316,6 @@ const RequirementsWorkbench = () => {
           clickToHide
           render={
             <Dropdown.Menu>
-              <Dropdown.Item
-                icon={<Eye size={16} strokeWidth={2} />}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  console.log('View requirement:', record.id);
-                }}
-              >
-                {t('common.viewDetail')}
-              </Dropdown.Item>
               {canEdit(record.status) && (
                 <Dropdown.Item
                   icon={<Pencil size={16} strokeWidth={2} />}
