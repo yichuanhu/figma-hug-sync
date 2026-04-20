@@ -363,6 +363,44 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
     }
   }, [queryParams, statusFilter, departmentFilter]);
 
+  // 一次性加载所有「已被流程关联」的需求 brief，作为「关联需求」筛选下拉选项
+  useEffect(() => {
+    const allIds = Array.from(
+      new Set(mockProcessData.map((p) => p.requirement_id).filter((x): x is string => !!x)),
+    );
+    if (allIds.length === 0) {
+      setRequirementBriefList([]);
+      return;
+    }
+    let cancelled = false;
+    fetchRequirementBriefByIds(allIds).then((list) => {
+      if (cancelled) return;
+      const sorted = [...list].sort((a, b) => a.title.localeCompare(b.title));
+      setRequirementBriefList(sorted);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // 客户端再过滤：「关联需求」多选 (OR 关系)
+  const displayList = useMemo(() => {
+    if (!requirementFilter || requirementFilter.length === 0) return listResponse.list;
+    const wantUnlinked = requirementFilter.includes('__UNLINKED__');
+    const wantedIds = new Set(requirementFilter.filter((v) => v !== '__UNLINKED__'));
+    return listResponse.list.filter((p) => {
+      if (!p.requirement_id) return wantUnlinked;
+      return wantedIds.has(p.requirement_id);
+    });
+  }, [listResponse.list, requirementFilter]);
+
+  // 需求 id -> brief 查询字典（用于列渲染）
+  const requirementBriefMap = useMemo(() => {
+    const map = new Map<string, { id: string; title: string; req_no?: string }>();
+    requirementBriefList.forEach((r) => map.set(r.id, r));
+    return map;
+  }, [requirementBriefList]);
+
   // 翻页并返回新数据（用于抽屉导航时自动翻页）
   const handleDrawerPageChange = useCallback(async (page: number): Promise<LYProcessResponse[]> => {
     const currentPageSize = listResponse.range?.size || 20;
