@@ -2,15 +2,12 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Typography,
-  Button,
-  Modal,
   Table,
   Tag,
-  Toast,
 } from '@douyinfe/semi-ui';
 import { Link } from 'react-router-dom';
 import type { RequirementItem, RequirementArtifact, ArtifactType, LinkedProcess } from '../../types';
-import { Trash2, ExternalLink } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import { aggregateLinkedStatus, linkedProcessStatusConfig } from '../../utils/aggregateLinkedStatus';
 
 const { Text } = Typography;
@@ -46,13 +43,11 @@ interface UnifiedRow {
 
 const ArtifactSection = ({
   data,
-  onArtifactsChange,
 }: ArtifactSectionProps) => {
   const { t } = useTranslation();
-  const [artifacts, setArtifacts] = useState<RequirementArtifact[]>(data.artifacts || []);
+  const [artifacts] = useState<RequirementArtifact[]>(data.artifacts || []);
 
   const linkedProcesses = data.linkedProcesses ?? [];
-  const canEdit = ['DEVELOPING', 'DEVELOPED', 'ASSESSING', 'APPROVED'].includes(data.status);
   const agg = aggregateLinkedStatus(linkedProcesses);
 
   // 合并：流程类来自 linkedProcesses；非流程来自 artifacts
@@ -88,26 +83,6 @@ const ArtifactSection = ({
       }));
     return [...processRows, ...otherRows];
   }, [linkedProcesses, artifacts]);
-
-  const handleRemove = (row: UnifiedRow) => {
-    if (row.source === 'process') {
-      Toast.warning(t('requirements.linkedProcesses.readonlyHint'));
-      return;
-    }
-    Modal.confirm({
-      title: t('requirements.artifact.removeConfirmTitle'),
-      content: t('requirements.artifact.removeConfirmContent'),
-      okText: t('common.delete'),
-      cancelText: t('common.cancel'),
-      okButtonProps: { type: 'danger' },
-      onOk: async () => {
-        const updated = artifacts.filter((a) => a.id !== row.rawArtifact?.id);
-        setArtifacts(updated);
-        onArtifactsChange?.(updated);
-        Toast.success(t('requirements.artifact.removeSuccess'));
-      },
-    });
-  };
 
   const columns = [
     {
@@ -160,44 +135,6 @@ const ArtifactSection = ({
         );
       },
     },
-    {
-      title: t('requirements.artifact.colContribution'),
-      dataIndex: 'contribution',
-      key: 'contribution',
-      width: 90,
-      render: (v: number | undefined) => (typeof v === 'number' ? `${Math.round(v * 100)}%` : '-'),
-    },
-    {
-      title: t('requirements.artifact.colDescription'),
-      dataIndex: 'description',
-      key: 'description',
-      ellipsis: true,
-      width: 160,
-      render: (v: string | undefined) => v || '-',
-    },
-    ...(canEdit
-      ? [
-          {
-            title: t('common.actions'),
-            dataIndex: 'action',
-            key: 'action',
-            width: 60,
-            render: (_: unknown, record: UnifiedRow) => {
-              // 流程类（来自 linkedProcesses）只读，不允许在需求中心侧解除关联
-              if (record.source === 'process') return null;
-              return (
-                <Button
-                  icon={<Trash2 size={16} strokeWidth={2} />}
-                  theme="borderless"
-                  size="small"
-                  type="danger"
-                  onClick={() => handleRemove(record)}
-                />
-              );
-            },
-          },
-        ]
-      : []),
   ];
 
   return (
@@ -225,9 +162,6 @@ const ArtifactSection = ({
             size="small"
             pagination={false}
           />
-          <Text type="tertiary" size="small" style={{ marginTop: 8, display: 'block' }}>
-            {t('requirements.artifact.contributionHint')}
-          </Text>
         </>
       ) : (
         <Text type="tertiary" size="small" style={{ padding: '16px 0', display: 'block', textAlign: 'center' }}>
