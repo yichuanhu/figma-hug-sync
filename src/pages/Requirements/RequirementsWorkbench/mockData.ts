@@ -221,6 +221,9 @@ const generateMockRequirements = (): RequirementItem[] => {
       costEstimate,
       historyVersions: generateMockVersions(tpl.status, index, tpl.title, tpl.description, tpl.priority),
       linkedProcesses: generateMockLinkedProcesses(tpl.status, index),
+      linkedProject: generateMockLinkedProject(tpl.status, index),
+      linkedWorkspace: generateMockLinkedWorkspace(tpl.status, index),
+      unboundProcessCount: generateMockUnboundCount(tpl.status, index),
       approvalFlowConfig: generateMockApprovalFlow(tpl.status, { creatorId: tpl.creatorId, owning_department_id: tpl.owning_department_id }),
       value_score: hasScores ? mockScore(index, 50, 50) : undefined,
       complexity_score: hasScores ? mockScore(index + 7, 30, 60) : undefined,
@@ -380,6 +383,33 @@ export const MOCK_PROCESS_POOL: LinkedProcess[] = [
 const generateMockLinkedProcesses = (status: RequirementStatus, idx: number): LinkedProcess[] | undefined => {
   if (!(['DEVELOPING', 'LAUNCHED', 'OFFLINE'] as RequirementStatus[]).includes(status)) return undefined;
   return MOCK_PROCESS_POOL.slice(0, (idx % 3) + 1);
+};
+
+const MOCK_PROJECT_POOL = [
+  { id: 'proj-001', name: '数字化转型项目' },
+  { id: 'proj-002', name: '财务智能化项目' },
+  { id: 'proj-003', name: '人力共享中心项目' },
+];
+
+const MOCK_WORKSPACE_POOL = [
+  { id: 'ws-001', name: '财务自动化一期' },
+  { id: 'ws-002', name: '采购自动化工作空间' },
+  { id: 'ws-003', name: '人事数据治理' },
+];
+
+const generateMockLinkedProject = (status: RequirementStatus, idx: number) => {
+  if (!(['PENDING_PROJECT', 'DEVELOPING', 'LAUNCHED', 'OFFLINE'] as RequirementStatus[]).includes(status)) return undefined;
+  return MOCK_PROJECT_POOL[idx % MOCK_PROJECT_POOL.length];
+};
+
+const generateMockLinkedWorkspace = (status: RequirementStatus, idx: number) => {
+  if (!(['DEVELOPING', 'LAUNCHED', 'OFFLINE'] as RequirementStatus[]).includes(status)) return undefined;
+  return MOCK_WORKSPACE_POOL[idx % MOCK_WORKSPACE_POOL.length];
+};
+
+const generateMockUnboundCount = (status: RequirementStatus, idx: number): number | undefined => {
+  if (!(['DEVELOPING', 'LAUNCHED'] as RequirementStatus[]).includes(status)) return undefined;
+  return idx % 5 === 0 ? 1 : undefined;
 };
 
 // 注：需求中心侧不再支持直接关联/解除流程，关联入口已收敛至工作空间与开发中心。

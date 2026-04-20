@@ -413,6 +413,12 @@ export interface RequirementItem {
   approvalFlowConfig?: MultiLevelApprovalConfig;
   /** 关联流程（用于状态聚合） */
   linkedProcesses?: LinkedProcess[];
+  /** 关联项目（由项目管理侧建立，需求中心只读展示） */
+  linkedProject?: { id: string; name: string };
+  /** 关联工作空间（由工作空间侧建立，需求中心只读展示） */
+  linkedWorkspace?: { id: string; name: string };
+  /** 未归属流程数量（异常提示用，不计入聚合） */
+  unboundProcessCount?: number;
   /** [活动记录] 审批动作流水（approve/reject/withdraw/resubmit），不属于需求本体。 */
   approvalHistory?: ApprovalHistoryEntry[];
 
