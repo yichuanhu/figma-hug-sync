@@ -373,10 +373,12 @@ export interface RequirementItem {
   value_score?: number;
   complexity_score?: number;
 
-  /** 审批 / 评估 / 关联 / 版本 */
+  /** [活动记录] 审批留痕集合（按层级 × 审批人，不属于需求本体）。 */
   approvals?: ApprovalRecord[];
+  /** [活动记录] 评估打分留痕集合（不属于需求本体）。 */
   assessments?: AssessmentRecord[];
   linked_entities?: LinkedEntity[];
+  /** [活动记录] 版本变更引用集合（不属于需求本体）。 */
   versions?: RequirementVersion[];
   cost_estimation?: CostEstimation;
 
@@ -393,13 +395,13 @@ export interface RequirementItem {
   detailedAssessment?: DetailedAssessment;
   /** 成本估算 */
   costEstimate?: CostEstimateData;
-  /** 历史版本快照 */
+  /** [活动记录] 历史版本快照集合（不属于需求本体，仅用于历史回看）。 */
   historyVersions?: VersionSnapshot[];
   /** 多级审批流配置 */
   approvalFlowConfig?: MultiLevelApprovalConfig;
   /** 关联流程（用于状态聚合） */
   linkedProcesses?: LinkedProcess[];
-  /** 审批历史留痕（approve/reject/withdraw/resubmit） */
+  /** [活动记录] 审批动作流水（approve/reject/withdraw/resubmit），不属于需求本体。 */
   approvalHistory?: ApprovalHistoryEntry[];
 
   createdAt: string;
