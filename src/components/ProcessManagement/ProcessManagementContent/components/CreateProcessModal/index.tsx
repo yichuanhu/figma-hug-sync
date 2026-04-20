@@ -1,12 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Modal, Form, Toast, Button } from '@douyinfe/semi-ui';
+import { Modal, Form, Toast, Button, Select, Typography } from '@douyinfe/semi-ui';
 import type { LYCreateProcessRequest, LYProcessResponse } from '@/api';
 import DepartmentSelect from '@/components/DepartmentSelect';
 import OwnerSelect from '@/components/OwnerSelect';
 import WorkspaceSelect from '@/components/WorkspaceSelect';
 import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
+import { fetchLinkableRequirementsByWorkspace } from '@/pages/Requirements/RequirementsProjects/mockData';
 import './index.less';
+
+const { Text } = Typography;
 
 // 生成UUID v4
 const generateUUID = (): string => {
@@ -46,14 +49,54 @@ interface CreateProcessModalProps {
   onSuccess?: (processData: LYProcessResponse) => void;
 }
 
+interface RequirementOption {
+  id: string;
+  title: string;
+  req_no?: string;
+}
+
 const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModalProps) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [owningDepartmentId, setOwningDepartmentId] = useState<string | undefined>(undefined);
   const [ownerId, setOwnerId] = useState<string>(MOCK_CURRENT_USER.id);
   const [workspaceId, setWorkspaceId] = useState<string | undefined>(undefined);
+  const [requirementId, setRequirementId] = useState<string | undefined>(undefined);
+  const [requirementOptions, setRequirementOptions] = useState<RequirementOption[]>([]);
+  const [requirementLoading, setRequirementLoading] = useState(false);
 
   const existingProcessNames = ['订单自动处理流程', '财务报销审批流程', '人事入职流程'];
+
+  // 工作空间变更 → 重新加载可关联需求
+  useEffect(() => {
+    setRequirementId(undefined);
+    if (!workspaceId) {
+      setRequirementOptions([]);
+      return;
+    }
+    let cancelled = false;
+    setRequirementLoading(true);
+    fetchLinkableRequirementsByWorkspace(workspaceId)
+      .then((list) => {
+        if (!cancelled) setRequirementOptions(list);
+      })
+      .finally(() => {
+        if (!cancelled) setRequirementLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [workspaceId]);
+
+  // 关闭时重置
+  useEffect(() => {
+    if (!visible) {
+      setOwningDepartmentId(undefined);
+      setWorkspaceId(undefined);
+      setRequirementId(undefined);
+      setRequirementOptions([]);
+    }
+  }, [visible]);
 
   const validateProcessNameFormat = (rule: unknown, value: string, callback: (error?: string) => void) => {
     if (!value) {
@@ -92,10 +135,18 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
         return;
       }
 
+      // 校验：所选关联需求必须属于当前工作空间
+      if (requirementId && !requirementOptions.some((r) => r.id === requirementId)) {
+        Toast.error(t('development.processDevelopment.createModal.validation.requirementWorkspaceMismatch'));
+        setLoading(false);
+        return;
+      }
+
       const createRequest: LYCreateProcessRequest = {
         name: values.name as string,
         description: (values.description as string) || undefined,
         owning_department_id: owningDepartmentId,
+        requirement_id: requirementId || null,
       };
 
       await new Promise((resolve) => setTimeout(resolve, 300));
@@ -113,6 +164,12 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
       setLoading(false);
     }
   };
+
+  const requirementPlaceholder = !workspaceId
+    ? t('development.processDevelopment.createModal.fields.requirementPickWorkspaceFirst')
+    : requirementOptions.length === 0
+      ? t('development.processDevelopment.createModal.fields.requirementEmpty')
+      : t('development.processDevelopment.createModal.fields.requirementPlaceholder');
 
   return (
     <Modal
@@ -173,6 +230,25 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
             }
             disabled={!owningDepartmentId}
           />
+        </Form.Slot>
+
+        <Form.Slot label={t('development.processDevelopment.createModal.fields.requirementLabel')}>
+          <Select
+            value={requirementId}
+            onChange={(v) => setRequirementId(v as string | undefined)}
+            placeholder={requirementPlaceholder}
+            disabled={!workspaceId || requirementOptions.length === 0}
+            loading={requirementLoading}
+            showClear
+            style={{ width: '100%' }}
+            optionList={requirementOptions.map((r) => ({
+              value: r.id,
+              label: r.req_no ? `[${r.req_no}] ${r.title}` : r.title,
+            }))}
+          />
+          <Text type="tertiary" size="small" style={{ marginTop: 4, display: 'block' }}>
+            {t('development.processDevelopment.createModal.fields.requirementHelp')}
+          </Text>
         </Form.Slot>
 
         <Form.Slot label={t('common.owner')}>

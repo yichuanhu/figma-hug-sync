@@ -277,6 +277,33 @@ export const findWorkspaceByRequirementId = (requirementId: string): { workspace
   return { workspace: w, project: p };
 };
 
+/**
+ * 查询某工作空间下「可关联到新流程」的需求：
+ * - 必须属于该工作空间的 linkedRequirementIds
+ * - 尚未绑定任何流程（linkedProcesses 为空）
+ * 用于开发中心创建流程时的「关联需求」下拉。
+ */
+export const fetchLinkableRequirementsByWorkspace = async (
+  workspaceId: string,
+): Promise<Array<{ id: string; title: string; req_no?: string }>> => {
+  await delay(null);
+  const ws = workspaces.find((w) => w.id === workspaceId);
+  if (!ws || ws.linkedRequirementIds.length === 0) return [];
+  // 动态引入避免循环依赖
+  const { fetchRequirementList } = await import('../RequirementsWorkbench/mockData');
+  const res = await fetchRequirementList({
+    offset: 0,
+    size: 500,
+    keyword: '',
+    sort_by: 'created_at',
+    sort_order: 'desc',
+  });
+  return res.list
+    .filter((r) => ws.linkedRequirementIds.includes(r.id))
+    .filter((r) => !r.linkedProcesses || r.linkedProcesses.length === 0)
+    .map((r) => ({ id: r.id, title: r.title, req_no: r.req_no }));
+};
+
 // ===================== 工作空间成员 =====================
 
 /**

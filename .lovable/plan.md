@@ -94,3 +94,10 @@ PENDING_APPROVAL ──creator withdraw──▶ DRAFT/WITHDRAWN
 - 同步写入一条 `approvalHistory`：`approverId='system'` / `approverName='系统'` / `action='approve'` / `comment='已关联至工作空间「XXX」，自动进入开发中'`。
 - 解除关联**不**回退状态（避免破坏开发进度），仅在工作空间已发布流程时禁止解除（既有约束）。
 - i18n 占位键：`requirements.history.systemAutoToDeveloping`（中/英）。
+
+### 开发中心 · 创建流程「关联需求」字段
+- 位置：`CreateProcessModal`，置于「所属工作空间」与「负责人」之间。
+- 数据源：`fetchLinkableRequirementsByWorkspace(workspaceId)`，仅返回 `workspace.linkedRequirementIds` 内且 `linkedProcesses` 为空的需求。
+- 行为：未选工作空间时禁用并提示「请先选择所属工作空间」；空列表时提示「暂无可关联的需求」；切换工作空间自动清空已选需求。
+- 校验：提交时强制 `requirementId ∈ requirementOptions`，等价于 `process.workspace_id === requirement.linked_workspace_id`。
+- 字段为可选（允许后续在详情中关联），但选了即必须落到当前工作空间下。
