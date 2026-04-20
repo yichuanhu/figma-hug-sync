@@ -144,7 +144,44 @@ recomputeProjectAggregates();
 
 const delay = <T>(v: T, ms = 200) => new Promise<T>((r) => setTimeout(() => r(v), ms));
 
+// ---- 演示用：首次调用任意 API 前预先把部分需求关联到对应部门的工作空间，
+//      以便「新建流程」的关联需求下拉、项目聚合统计等场景有可见数据。 ----
+let demoSeedPromise: Promise<void> | null = null;
+const ensureDemoSeed = (): Promise<void> => {
+  if (demoSeedPromise) return demoSeedPromise;
+  demoSeedPromise = (async () => {
+    const { fetchRequirementList } = await import('../RequirementsWorkbench/mockData');
+    const res = await fetchRequirementList({
+      offset: 0,
+      size: 1000,
+      keyword: '',
+      sort_by: 'created_at',
+      sort_order: 'desc',
+    });
+    // 已经手动关联过 → 跳过
+    if (workspaces.some((w) => w.linkedRequirementIds.length > 0)) return;
+    // 候选状态：评估通过 / 待立项 / 开发中（保留尚未绑定流程的优先）
+    // 仅取尚未绑定流程的状态（PENDING_PROJECT / PENDING_ASSESSMENT），保证「新建流程」下拉里有可选项
+    const candidateStatus = new Set(['PENDING_PROJECT', 'PENDING_ASSESSMENT']);
+    const byDept = new Map<string, string[]>();
+    res.list.forEach((r) => {
+      if (!candidateStatus.has(r.status)) return;
+      const arr = byDept.get(r.owning_department_id) ?? [];
+      if (arr.length < 4) arr.push(r.id);
+      byDept.set(r.owning_department_id, arr);
+    });
+    workspaces = workspaces.map((w) => {
+      const pool = byDept.get(w.departmentId) ?? [];
+      // 每个工作空间最多关联 2 个需求
+      return { ...w, linkedRequirementIds: pool.splice(0, 2) };
+    });
+    recomputeProjectAggregates();
+  })();
+  return demoSeedPromise;
+};
+
 export const fetchProjects = async (): Promise<Project[]> => {
+  await ensureDemoSeed();
   recomputeProjectAggregates();
   return delay([...projects]);
 };
@@ -180,10 +217,14 @@ export const deleteProject = async (id: string): Promise<void> => {
 };
 
 export const fetchWorkspacesByProject = async (projectId: string): Promise<Workspace[]> => {
+  await ensureDemoSeed();
   return delay(workspaces.filter((w) => w.projectId === projectId));
 };
 
-export const fetchAllWorkspaces = async (): Promise<Workspace[]> => delay([...workspaces]);
+export const fetchAllWorkspaces = async (): Promise<Workspace[]> => {
+  await ensureDemoSeed();
+  return delay([...workspaces]);
+};
 
 export const addWorkspace = async (
   payload: Omit<Workspace, 'id' | 'createdAt' | 'memberCount' | 'linkedRequirementIds' | 'hasPublishedProcess'>,
@@ -300,6 +341,7 @@ export interface LinkableRequirementBrief {
 export const fetchLinkableRequirementsByWorkspace = async (
   workspaceId: string,
 ): Promise<LinkableRequirementBrief[]> => {
+  await ensureDemoSeed();
   await delay(null);
   const ws = workspaces.find((w) => w.id === workspaceId);
   if (!ws || ws.linkedRequirementIds.length === 0) return [];
@@ -335,6 +377,7 @@ export const fetchLinkableRequirementsByWorkspace = async (
  * 用于开发中心创建流程时通过单一「关联需求」字段反查归属信息。
  */
 export const fetchAllLinkableRequirements = async (): Promise<LinkableRequirementBrief[]> => {
+  await ensureDemoSeed();
   await delay(null);
   const wsByReqId = new Map<string, Workspace>();
   workspaces.forEach((w) => {
@@ -376,6 +419,7 @@ export const fetchAllLinkableRequirements = async (): Promise<LinkableRequiremen
  * 这些需求可被新项目的自动建空间流程接管。
  */
 export const fetchUnlinkedRequirements = async (): Promise<LinkableRequirementBrief[]> => {
+  await ensureDemoSeed();
   await delay(null);
   const linkedReqIds = new Set<string>();
   workspaces.forEach((w) => w.linkedRequirementIds.forEach((rid) => linkedReqIds.add(rid)));
