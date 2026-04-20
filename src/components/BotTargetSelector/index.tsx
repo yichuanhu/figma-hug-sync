@@ -210,11 +210,12 @@ const BotTargetSelector = ({
             {...({ name: bot.name, groupName: bot.groupName } as any)}
           >
             {renderOptionWithPermission(
-              `[${bot.groupName}] ${bot.name}`,
+              bot.name,
               <Tag size="small" color={bot.status === 'ONLINE' ? 'green' : 'grey'} className="bot-target-selector-option-status">
                 {bot.status === 'ONLINE' ? t('botSelector.statusOnline') : t('botSelector.statusOffline')}
               </Tag>,
-              bot.noPermission
+              bot.noPermission,
+              bot.groupName
             )}
           </Select.Option>
         ))}
