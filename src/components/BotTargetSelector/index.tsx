@@ -129,7 +129,8 @@ const BotTargetSelector = ({
           : t('botSelector.ungrouped', { defaultValue: '未分组' });
         return (
           <div className="bot-target-selector-selected">
-            <Text>[{groupName}] {bot.name}</Text>
+            <span className="bot-target-selector-option-group-tag">{groupName}</span>
+            <Text className="bot-target-selector-option-name">{bot.name}</Text>
             <Tag
               size="small"
               color={bot.status === 'ONLINE' ? 'green' : 'grey'}
@@ -148,10 +149,14 @@ const BotTargetSelector = ({
   const renderOptionWithPermission = (
     name: string,
     statusTag: React.ReactNode,
-    noPermission: boolean
+    noPermission: boolean,
+    groupName?: string
   ) => {
     const content = (
       <div className={`bot-target-selector-option ${noPermission ? 'bot-target-selector-option-disabled' : ''}`}>
+        {groupName && (
+          <span className="bot-target-selector-option-group-tag">{groupName}</span>
+        )}
         <Text className="bot-target-selector-option-name" style={noPermission ? { opacity: 0.45 } : undefined}>
           {name}
         </Text>
@@ -205,11 +210,12 @@ const BotTargetSelector = ({
             {...({ name: bot.name, groupName: bot.groupName } as any)}
           >
             {renderOptionWithPermission(
-              `[${bot.groupName}] ${bot.name}`,
+              bot.name,
               <Tag size="small" color={bot.status === 'ONLINE' ? 'green' : 'grey'} className="bot-target-selector-option-status">
                 {bot.status === 'ONLINE' ? t('botSelector.statusOnline') : t('botSelector.statusOffline')}
               </Tag>,
-              bot.noPermission
+              bot.noPermission,
+              bot.groupName
             )}
           </Select.Option>
         ))}
