@@ -318,7 +318,14 @@ const TaskForm = (props: TaskFormProps) => {
       status: string;
       label: string;
     }> = [];
-    workerGroupsTree.forEach(group => {
+    const sortedGroups = [...workerGroupsTree].sort((a, b) => {
+      const aUngrouped = !a.group_name;
+      const bUngrouped = !b.group_name;
+      if (aUngrouped && !bUngrouped) return 1;
+      if (!aUngrouped && bUngrouped) return -1;
+      return (a.group_name || '').localeCompare(b.group_name || '', 'zh-CN');
+    });
+    sortedGroups.forEach(group => {
       const groupName = group.group_name || ungroupedLabel;
       group.members?.forEach(member => {
         list.push({
