@@ -150,6 +150,12 @@ export interface SchemeField {
   default?: unknown;
   /** 单位（数值/百分比） */
   unit?: string;
+  /** 字段宽度（用于在 Modal grid 容器中横向占比）；默认 full */
+  ui_width?: 'small' | 'medium' | 'large' | 'full';
+  /** 选项数据来源（如 'cost_config.rate_table'），select 类型时优先于 options */
+  source?: string;
+  /** 显示格式：精度等 */
+  format?: { precision?: number };
 }
 
 // ============= 评估模型 =============
@@ -211,14 +217,20 @@ export interface ApprovalFlowConfig {
 // ============= 成本配置 =============
 
 export interface CostConfig {
-  /** 平均时薪（元） */
-  avg_hourly_cost: number;
+  /** 平均时薪（元）— 兼容旧字段，不再强制使用 */
+  avg_hourly_cost?: number;
   /** 每天工作小时数 */
   working_hours_per_day: number;
-  /** 每月工作天数 */
-  working_days_per_month: number;
-  /** 岗位级别 → 人天单价（元/人天） */
-  rate_table?: Record<JobLevel, number>;
+  /** 每月工作天数（旧字段，可选） */
+  working_days_per_month?: number;
+  /** 默认日单价（元/人天） */
+  default_rate?: number;
+  /** 货币（如 'CNY'） */
+  currency?: string;
+  /** 岗位级别 → 人天单价（元/人天）。key 为级别 code，例如 'junior'/'middle'/'P5' */
+  rate_table?: Record<string, number>;
+  /** 岗位级别 code → 显示文案（中文标签）。与 rate_table key 对齐 */
+  level_labels?: Record<string, string>;
   /** 自定义计算基准说明 */
   custom_basis?: string;
 }
@@ -428,7 +440,8 @@ export interface DetailedAssessment {
 }
 
 // ============= Story-010 成本估算（自动计算，只读） =============
-export type JobLevel = 'P4' | 'P5' | 'P6' | 'P7';
+/** 岗位级别 code（开放字符串，由激活方案的 cost_config.rate_table 决定） */
+export type JobLevel = string;
 
 /** 需求表单基线数据（来自 form_data，自动化收益输入项） */
 export interface RequirementBaselineFormData {
@@ -445,7 +458,8 @@ export interface RequirementBaselineFormData {
 /** Scheme.cost_config 中的费率与工时配置 */
 export interface SchemeCostConfig {
   workingHoursPerDay: number;
-  rateTable: Record<JobLevel, number>;
+  rateTable: Record<string, number>;
+  levelLabels?: Record<string, string>;
   schemeName?: string;
 }
 

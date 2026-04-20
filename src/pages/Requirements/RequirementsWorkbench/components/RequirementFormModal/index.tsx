@@ -52,21 +52,15 @@ const RequirementFormModal = ({
   const initialValues = useMemo(() => {
     if (isEdit && editData) {
       const formData = (editData.form_data ?? {}) as Record<string, unknown>;
-      // 把 0~1 的 ratio 反向归一化为 0~100 显示
-      const ratio = formData.automationRatio;
+      // 把 0~1 的 ratio 反向归一化为 0~100 显示（兼容新旧 key）
+      const ratio = (formData.automation_ratio ?? formData.automationRatio) as number | undefined;
       const ratioDisplay = typeof ratio === 'number' && ratio <= 1 ? ratio * 100 : ratio;
       return {
         title: editData.title,
-        description: editData.description,
-        businessBackground: editData.businessBackground || '',
         department: editData.owning_department_name,
         priority: editData.priority,
-        contactInfo: editData.contactInfo || '',
-        expectedLaunchDate: editData.expectedLaunchDate
-          ? new Date(editData.expectedLaunchDate)
-          : undefined,
         ...formData,
-        automationRatio: ratioDisplay,
+        automation_ratio: ratioDisplay,
       };
     }
     return {
@@ -94,11 +88,9 @@ const RequirementFormModal = ({
     try {
       await new Promise((resolve) => setTimeout(resolve, 300));
       // 把动态字段拆分到 form_data，系统字段保留在顶层
-      const systemKeys = new Set([
-        'title', 'description', 'department', 'priority', 'contactInfo',
-      ]);
+      const systemKeys = new Set(['title', 'department', 'priority']);
       const form_data: Record<string, unknown> = {};
-      activeScheme.custom_fields.forEach((f) => {
+      activeScheme?.custom_fields.forEach((f) => {
         if (values[f.key] !== undefined) form_data[f.key] = values[f.key];
       });
       const submitValues = { ...values, form_data };
@@ -126,7 +118,7 @@ const RequirementFormModal = ({
       visible={visible}
       onCancel={onCancel}
       footer={null}
-      width={600}
+      width={720}
       centered
       closeOnEsc
       maskClosable={false}
@@ -140,95 +132,79 @@ const RequirementFormModal = ({
         getFormApi={setFormApi}
       >
         <div className="requirement-form-modal-content">
-          {/* 基本信息区块 */}
+          {/* 基本信息区块 — 系统字段（4 项） */}
           <div className="requirement-form-modal-section">
             <Text strong className="requirement-form-modal-section-title">
               {t('requirements.form.sectionBasicInfo')}
-              <Text type="tertiary" size="small" style={{ marginLeft: 8, fontWeight: 400 }}>
-                * {t('requirements.form.requiredHint')}
-              </Text>
             </Text>
           </div>
 
-          <Form.Input
-            field="title"
-            label={t('requirements.form.titleLabel')}
-            placeholder={t('requirements.form.titlePlaceholder')}
-            trigger={['blur', 'change']}
-            rules={[
-              { required: true, message: t('requirements.form.titleRequired') },
-              { max: 200, message: t('requirements.form.titleMaxLength') },
-            ]}
-            maxLength={200}
-            showClear
-          />
+          <div className="requirement-form-modal-grid">
+            <div className="scheme-field-w-full">
+              <Form.Input
+                field="title"
+                label={t('requirements.form.titleLabel')}
+                placeholder={t('requirements.form.titlePlaceholder')}
+                trigger={['blur', 'change']}
+                rules={[
+                  { required: true, message: t('requirements.form.titleRequired') },
+                  { max: 200, message: t('requirements.form.titleMaxLength') },
+                ]}
+                maxLength={200}
+                showClear
+              />
+            </div>
 
-          <Form.TextArea
-            field="description"
-            label={t('requirements.form.descriptionLabel')}
-            placeholder={t('requirements.form.descriptionPlaceholder')}
-            autosize={{ minRows: 3, maxRows: 6 }}
-            maxCount={2000}
-            trigger={['blur', 'change']}
-            rules={[
-              { required: true, message: t('requirements.form.descriptionRequired') },
-              { max: 2000, message: t('requirements.form.descriptionMaxLength') },
-            ]}
-            showClear
-          />
+            <div className="scheme-field-w-medium">
+              <Form.Slot label={{ text: t('common.owningDepartment'), required: true }}>
+                <Form.Input
+                  field="department"
+                  noLabel
+                  rules={[{ required: true, message: t('requirements.form.departmentRequired') }]}
+                  style={{ display: 'none' }}
+                />
+                <DepartmentSelect
+                  value={departmentValue}
+                  onChange={handleDepartmentChange}
+                  useNameAsValue
+                  placeholder={t('requirements.form.departmentPlaceholder')}
+                />
+              </Form.Slot>
+            </div>
 
-          {/* 业务背景由 Scheme 字段统一渲染（如 RPA-PRO 的 business_background） */}
-          <Form.Slot label={{ text: t('common.owningDepartment'), required: true }}>
-            <Form.Input
-              field="department"
-              noLabel
-              rules={[{ required: true, message: t('requirements.form.departmentRequired') }]}
-              style={{ display: 'none' }}
-            />
-            <DepartmentSelect
-              value={departmentValue}
-              onChange={handleDepartmentChange}
-              useNameAsValue
-              placeholder={t('requirements.form.departmentPlaceholder')}
-            />
-          </Form.Slot>
+            <div className="scheme-field-w-medium">
+              <Form.Slot label={{ text: t('requirements.form.requirementOwnerLabel'), required: true }}>
+                <OwnerSelect value={ownerId} onChange={setOwnerId} />
+              </Form.Slot>
+            </div>
 
-          <Form.Slot label={{ text: t('requirements.form.requirementOwnerLabel'), required: true }}>
-            <OwnerSelect value={ownerId} onChange={setOwnerId} />
-          </Form.Slot>
-
-          <Form.Input
-            field="contactInfo"
-            label={t('requirements.form.contactLabel')}
-            placeholder={t('requirements.form.contactPlaceholder')}
-            trigger={['blur', 'change']}
-            rules={[
-              { required: true, message: t('requirements.form.contactRequired') },
-            ]}
-            maxLength={100}
-            showClear
-          />
-
-          {/* 期望上线日期由 Scheme 字段统一渲染（如 RPA-PRO 的 expected_launch） */}
-          <Form.Select
-            field="priority"
-            label={`${t('requirements.fields.priority')}${t('requirements.form.optionalSuffix')}`}
-            placeholder={t('requirements.form.priorityPlaceholder')}
-            optionList={priorityOptions}
-            className="requirement-form-modal-select-full"
-          />
-
-          {/* 业务基线（自动化收益评估）— Scheme 驱动动态字段（含附件） */}
-          <div className="requirement-form-modal-section requirement-form-modal-section-divider">
-            <Text strong className="requirement-form-modal-section-title">
-              {t('requirements.form.baselineSection')}
-              <Text type="tertiary" size="small" style={{ marginLeft: 8, fontWeight: 400 }}>
-                {t('requirements.form.baselineHint')}
-              </Text>
-            </Text>
+            <div className="scheme-field-w-medium">
+              <Form.Select
+                field="priority"
+                label={`${t('requirements.fields.priority')}${t('requirements.form.optionalSuffix')}`}
+                placeholder={t('requirements.form.priorityPlaceholder')}
+                optionList={priorityOptions}
+                style={{ width: '100%' }}
+              />
+            </div>
           </div>
-          <SchemeFieldsRenderer fields={activeScheme.custom_fields} />
 
+          {/* 需求详情 — Scheme 驱动动态字段 */}
+          {activeScheme && activeScheme.custom_fields.length > 0 ? (
+            <>
+              <div className="requirement-form-modal-section requirement-form-modal-section-divider">
+                <Text strong className="requirement-form-modal-section-title">
+                  {t('requirements.form.sectionDetails')}
+                </Text>
+              </div>
+              <div className="requirement-form-modal-grid">
+                <SchemeFieldsRenderer
+                  fields={activeScheme.custom_fields}
+                  costConfig={activeScheme.cost_config}
+                />
+              </div>
+            </>
+          ) : null}
         </div>
 
         <div className="requirement-form-modal-footer">
@@ -248,7 +224,13 @@ const RequirementFormModal = ({
  * Scheme 字段批量渲染器：必须作为 Form 的子组件以使用 useFormState 读取依赖字段值。
  * 根据 field.depends_on 决定是否渲染（不满足时整体卸载，避免脏值参与提交）。
  */
-const SchemeFieldsRenderer = ({ fields }: { fields: SchemeField[] }) => {
+const SchemeFieldsRenderer = ({
+  fields,
+  costConfig,
+}: {
+  fields: SchemeField[];
+  costConfig?: import('../../types').CostConfig;
+}) => {
   const formState = useFormState();
   const values = (formState.values ?? {}) as Record<string, unknown>;
 
@@ -272,11 +254,10 @@ const SchemeFieldsRenderer = ({ fields }: { fields: SchemeField[] }) => {
     <>
       {fields.map((f) => {
         if (f.depends_on && !matchDep(f.depends_on)) return null;
-        return <SchemeFieldRenderer key={f.key} field={f} />;
+        return <SchemeFieldRenderer key={f.key} field={f} costConfig={costConfig} />;
       })}
     </>
   );
 };
 
 export default RequirementFormModal;
-
