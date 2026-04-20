@@ -118,7 +118,7 @@ const RequirementFormModal = ({
       visible={visible}
       onCancel={onCancel}
       footer={null}
-      width={720}
+      width={520}
       centered
       closeOnEsc
       maskClosable={false}
