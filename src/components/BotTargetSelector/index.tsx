@@ -80,32 +80,25 @@ const BotTargetSelector = ({
     return perm ? !perm.canUse : false;
   };
 
-  // 分组选项（用于 BOT_IN_GROUP）
-  const groupedOptions = useMemo(() => {
-    if (targetType !== 'BOT_IN_GROUP') return [];
-    
-    const result: { label: string; children: { value: string; label: string; status: string; noPermission: boolean }[] }[] = [];
-    
-    botGroups.forEach((group) => {
-      const groupBots = bots
-        .filter((b) => b.groupId === group.id)
-        .map((bot) => ({
-          value: bot.id,
-          label: bot.name,
-          status: bot.status,
-          noPermission: isDisabled(bot.id),
-        }));
-      
-      if (groupBots.length > 0) {
-        result.push({
-          label: group.name,
-          children: groupBots,
-        });
-      }
-    });
+  // 扁平机器人选项（用于 BOT_IN_GROUP / UNGROUPED_BOT）
+  // 格式：[组名] 机器人名，未分组显示 [未分组]
+  const flatBotOptions = useMemo(() => {
+    if (targetType !== 'BOT_IN_GROUP' && targetType !== 'UNGROUPED_BOT') return [];
 
-    return result;
-  }, [targetType, botGroups, bots, permissions, enablePermissionCheck]);
+    const groupNameMap = new Map(botGroups.map((g) => [g.id, g.name]));
+    const ungroupedLabel = t('botSelector.ungrouped', { defaultValue: '未分组' });
+
+    return bots.map((bot) => {
+      const groupName = bot.groupId ? groupNameMap.get(bot.groupId) ?? ungroupedLabel : ungroupedLabel;
+      return {
+        value: bot.id,
+        name: bot.name,
+        groupName,
+        status: bot.status,
+        noPermission: isDisabled(bot.id),
+      };
+    });
+  }, [targetType, botGroups, bots, permissions, enablePermissionCheck, t]);
 
   // 渲染已选中值的标签
   const renderSelectedItem = (optionNode: Record<string, any>) => {
@@ -131,11 +124,14 @@ const BotTargetSelector = ({
     if (targetType === 'BOT_IN_GROUP' || targetType === 'UNGROUPED_BOT') {
       const bot = bots.find((b) => b.id === optionNode.value);
       if (bot) {
+        const groupName = bot.groupId
+          ? botGroups.find((g) => g.id === bot.groupId)?.name ?? t('botSelector.ungrouped', { defaultValue: '未分组' })
+          : t('botSelector.ungrouped', { defaultValue: '未分组' });
         return (
           <div className="bot-target-selector-selected">
-            <Text>{bot.name}</Text>
-            <Tag 
-              size="small" 
+            <Text>[{groupName}] {bot.name}</Text>
+            <Tag
+              size="small"
               color={bot.status === 'ONLINE' ? 'green' : 'grey'}
             >
               {bot.status === 'ONLINE' ? t('botSelector.statusOnline') : t('botSelector.statusOffline')}
@@ -182,7 +178,7 @@ const BotTargetSelector = ({
     return null;
   }
 
-  // BOT_IN_GROUP - 分组显示
+  // BOT_IN_GROUP - 扁平列表（[组名] 机器人名）
   if (targetType === 'BOT_IN_GROUP') {
     return (
       <Select
@@ -191,24 +187,31 @@ const BotTargetSelector = ({
         onChange={(v) => onChange?.(v as string)}
         placeholder={placeholder || t('botSelector.placeholder')}
         disabled={disabled}
-        filter
+        filter={(input: string, option: any) => {
+          const kw = (input || '').toLowerCase();
+          return (
+            String(option?.name || '').toLowerCase().includes(kw) ||
+            String(option?.groupName || '').toLowerCase().includes(kw)
+          );
+        }}
         style={{ width: '100%' }}
         renderSelectedItem={renderSelectedItem}
       >
-        {groupedOptions.map((group) => (
-          <Select.OptGroup key={group.label} label={group.label}>
-            {group.children.map((bot) => (
-              <Select.Option key={bot.value} value={bot.value} disabled={bot.noPermission}>
-                {renderOptionWithPermission(
-                  bot.label,
-                  <Tag size="small" color={bot.status === 'ONLINE' ? 'green' : 'grey'} className="bot-target-selector-option-status">
-                    {bot.status === 'ONLINE' ? t('botSelector.statusOnline') : t('botSelector.statusOffline')}
-                  </Tag>,
-                  bot.noPermission
-                )}
-              </Select.Option>
-            ))}
-          </Select.OptGroup>
+        {flatBotOptions.map((bot) => (
+          <Select.Option
+            key={bot.value}
+            value={bot.value}
+            disabled={bot.noPermission}
+            {...({ name: bot.name, groupName: bot.groupName } as any)}
+          >
+            {renderOptionWithPermission(
+              `[${bot.groupName}] ${bot.name}`,
+              <Tag size="small" color={bot.status === 'ONLINE' ? 'green' : 'grey'} className="bot-target-selector-option-status">
+                {bot.status === 'ONLINE' ? t('botSelector.statusOnline') : t('botSelector.statusOffline')}
+              </Tag>,
+              bot.noPermission
+            )}
+          </Select.Option>
         ))}
       </Select>
     );
