@@ -87,6 +87,14 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
 
   const handleSubmit = async (values: Record<string, unknown>) => {
     if (!workerData?.id) return;
+    if (!owningDepartmentId) {
+      Toast.warning(t('common.owningDepartmentRequired'));
+      return;
+    }
+    if (!ownerId) {
+      Toast.warning(t('common.ownerRequired'));
+      return;
+    }
 
     setLoading(true);
     try {
@@ -165,7 +173,7 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
               showClear
             />
 
-            <Form.Slot label={t('common.owningDepartment')}>
+            <Form.Slot label={{ text: t('common.owningDepartment'), required: true }}>
               <DepartmentSelect
                 value={owningDepartmentId}
                 onChange={setOwningDepartmentId}
@@ -173,7 +181,7 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
               />
             </Form.Slot>
 
-            <Form.Slot label={t('common.owner')}>
+            <Form.Slot label={{ text: t('common.owner'), required: true }}>
               <OwnerSelect value={ownerId} onChange={setOwnerId} disabled={!canManage} />
             </Form.Slot>
 
