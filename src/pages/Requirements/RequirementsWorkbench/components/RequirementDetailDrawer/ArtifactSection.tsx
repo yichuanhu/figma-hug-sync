@@ -108,19 +108,8 @@ const ArtifactSection = ({
     const artifactId = values.artifactId as string;
 
     if (type === 'PROCESS') {
-      // 走流程关联通道
-      if (linkedProcesses.some((p) => p.id === artifactId)) {
-        Toast.warning(t('requirements.artifact.duplicateError'));
-        return;
-      }
-      try {
-        await addLinkedProcesses(data.id, [artifactId]);
-        Toast.success(t('requirements.artifact.addSuccess'));
-        setModalVisible(false);
-        onProcessesChanged?.();
-      } catch (e) {
-        Toast.error((e as Error).message);
-      }
+      // 需求中心侧禁止直接关联流程，统一收敛到「工作空间 → 需求」与「开发中心创建流程时选择需求」入口
+      Toast.warning(t('requirements.linkedProcesses.readonlyHint'));
       return;
     }
 
@@ -278,17 +267,7 @@ const ArtifactSection = ({
           )}
         </span>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-          {canManageProcesses && (
-            <Button
-              icon={<Settings size={14} strokeWidth={2} />}
-              theme="borderless"
-              size="small"
-              type="tertiary"
-              onClick={() => setManageProcessesVisible(true)}
-            >
-              {t('requirements.linkedProcesses.manage')}
-            </Button>
-          )}
+          {/* 「管理关联流程」入口已移除：流程关联仅在工作空间/开发中心侧建立 */}
           {(canEdit || canManageProcesses) && (
             <Button
               icon={<Plus size={16} strokeWidth={2} />}
