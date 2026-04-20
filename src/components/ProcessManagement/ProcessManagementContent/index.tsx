@@ -775,6 +775,28 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
                 maxTagCount={1}
                 showClear
               />
+              {!isSchedulingContext && (
+                <Select
+                  multiple
+                  filter
+                  showClear
+                  maxTagCount={1}
+                  value={requirementFilter}
+                  onChange={(v) => setRequirementFilter((v as string[]) || [])}
+                  placeholder={t('development.processDevelopment.filter.requirementPlaceholder')}
+                  style={{ width: 240 }}
+                  optionList={[
+                    {
+                      value: '__UNLINKED__',
+                      label: t('development.processDevelopment.filter.unlinked'),
+                    },
+                    ...requirementBriefList.map((r) => ({
+                      value: r.id,
+                      label: r.req_no ? `[${r.req_no}] ${r.title}` : r.title,
+                    })),
+                  ]}
+                />
+              )}
               {/* 调度中心不显示筛选 */}
               {!isSchedulingContext && (
                 <FilterPopover
