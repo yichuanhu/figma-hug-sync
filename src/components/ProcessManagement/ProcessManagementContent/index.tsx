@@ -320,6 +320,9 @@ const ProcessManagementContent = ({ context }: ProcessManagementContentProps) =>
   // 状态筛选 - 调度中心默认只显示已发布
   const [statusFilter, setStatusFilter] = useState<string[]>(isSchedulingContext ? ['PUBLISHED'] : []);
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
+  // 「关联需求」下拉多选筛选：值为需求 id 集合，包含特殊值 __UNLINKED__ 表示「未关联需求」
+  const [requirementFilter, setRequirementFilter] = useState<string[]>([]);
+  const [requirementBriefList, setRequirementBriefList] = useState<Array<{ id: string; title: string; req_no?: string }>>([]);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
 
   const [loading, setLoading] = useState(true);
