@@ -937,7 +937,12 @@
       "searchPlaceholder": "搜索流程名称",
       "createProcess": "新建流程",
       "fields": {
-        "processName": "流程名称"
+        "processName": "流程名称",
+        "linkedRequirement": "关联需求"
+      },
+      "filter": {
+        "requirementPlaceholder": "筛选关联需求",
+        "unlinked": "未关联需求"
       },
       "status": {
         "developing": "开发中",
