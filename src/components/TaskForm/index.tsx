@@ -66,17 +66,9 @@ const TaskForm = (props: TaskFormProps) => {
     [inputParameters]
   );
 
-  // 整理 worker 相关值
+  // 整理 worker 相关值（仅扁平机器人选择）
   const getWorkerData = useCallback(
     (values: ITaskInfo) => {
-      if (targetType === 'worker_group') {
-        return {
-          worker_id: null,
-          worker_name: null,
-          worker_group_name: workerGroupList.find(x => x.id === values.worker_group_id)?.name || null,
-        };
-      }
-      // worker 模式
       if (!values.worker_id) {
         return {
           worker_group_id: null,
@@ -103,7 +95,7 @@ const TaskForm = (props: TaskFormProps) => {
         worker_name: foundWorker?.name,
       };
     },
-    [targetType, workerGroupList, workerGroupsTree]
+    [workerGroupsTree]
   );
 
   // 初始化表单
