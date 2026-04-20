@@ -1021,7 +1021,8 @@
       "role": {
         "MANAGER": "Manager",
         "MEMBER": "Member"
-      }
+      },
+      "selectedCount": "{{count}} selected"
     }
   },
   "development": {

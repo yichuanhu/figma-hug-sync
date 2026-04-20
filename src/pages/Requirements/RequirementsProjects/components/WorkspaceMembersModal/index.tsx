@@ -12,7 +12,7 @@ import {
   Empty,
   Popconfirm,
 } from '@douyinfe/semi-ui';
-import { Plus, Trash2, Search, Shield, ShieldCheck } from 'lucide-react';
+import { Plus, Trash2, Search, Shield, ShieldCheck, ChevronLeft } from 'lucide-react';
 import {
   fetchWorkspaceMembers,
   fetchAllWorkspaceMembersIncludingInherited,
@@ -201,74 +201,93 @@ const WorkspaceMembersModal = ({ visible, workspace, onClose, onChanged }: Props
     },
   ];
 
+  // 添加视图：候选用户列表列
+  const candidateColumns = [
+    {
+      title: t('requirements.projects.fields.memberName'),
+      dataIndex: 'name',
+      width: 220,
+      render: (v: string, r: { id: string }) => {
+        const inherited = workspace ? isInheritedDeptManager(workspace.id, r.id) : false;
+        return (
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+            <Text>{v}</Text>
+            {inherited && (
+              <Tag size="small" color="green" type="light">
+                {t('requirements.projects.inheritedTag')}
+              </Tag>
+            )}
+          </span>
+        );
+      },
+    },
+    {
+      title: t('requirements.projects.fields.memberDept'),
+      dataIndex: 'department',
+      render: (v: string) => (
+        <Text ellipsis={{ showTooltip: true }} style={{ maxWidth: 360 }}>
+          {v}
+        </Text>
+      ),
+    },
+  ];
+
   return (
     <Modal
       title={
-        workspace
-          ? t('requirements.projects.workspaceMembersTitle', { name: workspace.name })
-          : ''
+        addOpen ? (
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+            <Button
+              icon={<ChevronLeft size={16} strokeWidth={2} />}
+              theme="borderless"
+              type="tertiary"
+              size="small"
+              onClick={() => {
+                setAddOpen(false);
+                setSelectedUserIds([]);
+                setAddKeyword('');
+              }}
+            />
+            {t('requirements.projects.addMember')}
+          </span>
+        ) : workspace ? (
+          t('requirements.projects.workspaceMembersTitle', { name: workspace.name })
+        ) : (
+          ''
+        )
       }
       visible={visible}
       onCancel={onClose}
-      footer={null}
+      footer={
+        addOpen ? (
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Text type="tertiary" size="small">
+              {t('requirements.projects.selectedCount', { count: selectedUserIds.length })}
+            </Text>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <Button
+                onClick={() => {
+                  setAddOpen(false);
+                  setSelectedUserIds([]);
+                  setAddKeyword('');
+                }}
+              >
+                {t('common.cancel')}
+              </Button>
+              <Button type="primary" theme="solid" onClick={handleSubmitAdd}>
+                {t('common.confirm')}
+              </Button>
+            </div>
+          </div>
+        ) : null
+      }
       width={900}
       centered
       maskClosable={false}
     >
-      {/* 部门管理员继承提示 */}
-      {inheritedRows.length > 0 && (
-        <div
-          style={{
-            background: 'var(--semi-color-fill-0)',
-            borderRadius: 6,
-            padding: '10px 12px',
-            marginBottom: 12,
-            display: 'flex',
-            gap: 8,
-            alignItems: 'flex-start',
-          }}
-        >
-          <ShieldCheck size={16} style={{ color: 'var(--semi-color-success)', marginTop: 2, flexShrink: 0 }} />
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <Text size="small" type="secondary">
-              {t('requirements.projects.inheritedManagersHint')}
-            </Text>
-            <div style={{ marginTop: 4, display: 'flex', flexWrap: 'wrap', gap: 4 }}>
-              {inheritedRows.map((u) => (
-                <Tag key={u.userId} type="light" color="green" prefixIcon={<Shield size={12} />}>
-                  {u.userName}
-                </Tag>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-        <Text type="tertiary" size="small">
-          {t('requirements.projects.explicitMembersCount', { count: members.length })}
-        </Text>
-        <Button
-          theme="solid"
-          type="primary"
-          size="small"
-          icon={<Plus size={14} />}
-          onClick={() => setAddOpen((v) => !v)}
-        >
-          {t('requirements.projects.addMember')}
-        </Button>
-      </div>
-
-      {addOpen && (
-        <div
-          style={{
-            border: '1px solid var(--semi-color-border)',
-            borderRadius: 8,
-            padding: 12,
-            marginBottom: 12,
-          }}
-        >
-          <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
+      {addOpen ? (
+        <div>
+          <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
             <Input
               prefix={<Search size={14} />}
               value={addKeyword}
@@ -280,7 +299,7 @@ const WorkspaceMembersModal = ({ visible, workspace, onClose, onChanged }: Props
             <Select
               value={addRole}
               onChange={(v) => setAddRole(v as WorkspaceMemberRole)}
-              style={{ width: 140 }}
+              style={{ width: 160 }}
             >
               <Select.Option value="MANAGER">
                 {t('requirements.projects.role.MANAGER')}
@@ -289,12 +308,8 @@ const WorkspaceMembersModal = ({ visible, workspace, onClose, onChanged }: Props
                 {t('requirements.projects.role.MEMBER')}
               </Select.Option>
             </Select>
-            <Button type="primary" theme="solid" onClick={handleSubmitAdd}>
-              {t('common.confirm')}
-            </Button>
-            <Button onClick={() => setAddOpen(false)}>{t('common.cancel')}</Button>
           </div>
-          <div style={{ maxHeight: 280, overflow: 'auto' }}>
+          <div style={{ maxHeight: 420, overflow: 'auto' }}>
             <Table
               size="small"
               dataSource={candidateUsers}
@@ -309,52 +324,83 @@ const WorkspaceMembersModal = ({ visible, workspace, onClose, onChanged }: Props
                     : false,
                 }),
               }}
-              columns={[
-                {
-                  title: t('requirements.projects.fields.memberName'),
-                  dataIndex: 'name',
-                  width: 200,
-                  render: (v: string, r: { id: string }) => {
-                    const inherited = workspace ? isInheritedDeptManager(workspace.id, r.id) : false;
-                    return (
-                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                        <Text>{v}</Text>
-                        {inherited && (
-                          <Tag size="small" color="green" type="light">
-                            {t('requirements.projects.inheritedTag')}
-                          </Tag>
-                        )}
-                      </span>
-                    );
-                  },
-                },
-                {
-                  title: t('requirements.projects.fields.memberDept'),
-                  dataIndex: 'department',
-                  render: (v: string) => (
-                    <Text ellipsis={{ showTooltip: true }} style={{ maxWidth: 360 }}>{v}</Text>
-                  ),
-                },
-              ]}
+              columns={candidateColumns}
+              empty={<Empty description={t('common.noSearchResults')} style={{ padding: 24 }} />}
             />
           </div>
         </div>
-      )}
-
-      {members.length === 0 ? (
-        <Empty
-          description={t('requirements.projects.noExplicitMembers')}
-          style={{ padding: 32 }}
-        />
       ) : (
-        <Table
-          size="small"
-          loading={loading}
-          dataSource={members}
-          columns={memberColumns}
-          rowKey="id"
-          pagination={false}
-        />
+        <>
+          {/* 部门管理员继承提示 */}
+          {inheritedRows.length > 0 && (
+            <div
+              style={{
+                background: 'var(--semi-color-fill-0)',
+                borderRadius: 6,
+                padding: '10px 12px',
+                marginBottom: 12,
+                display: 'flex',
+                gap: 8,
+                alignItems: 'flex-start',
+              }}
+            >
+              <ShieldCheck
+                size={16}
+                style={{ color: 'var(--semi-color-success)', marginTop: 2, flexShrink: 0 }}
+              />
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <Text size="small" type="secondary">
+                  {t('requirements.projects.inheritedManagersHint')}
+                </Text>
+                <div style={{ marginTop: 4, display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                  {inheritedRows.map((u) => (
+                    <Tag key={u.userId} type="light" color="green" prefixIcon={<Shield size={12} />}>
+                      {u.userName}
+                    </Tag>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: 12,
+            }}
+          >
+            <Text type="tertiary" size="small">
+              {t('requirements.projects.explicitMembersCount', { count: members.length })}
+            </Text>
+            <Button
+              theme="solid"
+              type="primary"
+              size="small"
+              icon={<Plus size={14} />}
+              onClick={() => setAddOpen(true)}
+            >
+              {t('requirements.projects.addMember')}
+            </Button>
+          </div>
+
+          {members.length === 0 ? (
+            <Empty
+              description={t('requirements.projects.noExplicitMembers')}
+              style={{ padding: 32 }}
+            />
+          ) : (
+            <Table
+              size="small"
+              loading={loading}
+              dataSource={members}
+              columns={memberColumns}
+              rowKey="id"
+              pagination={false}
+            />
+          )}
+        </>
       )}
     </Modal>
   );
