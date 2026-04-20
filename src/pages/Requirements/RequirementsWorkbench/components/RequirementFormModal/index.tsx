@@ -202,7 +202,7 @@ const RequirementFormModal = ({
             />
           </Form.Slot>
 
-          <Form.Slot label={t('common.owner')}>
+          <Form.Slot label={t('requirements.form.requirementOwnerLabel')}>
             <OwnerSelect value={ownerId} onChange={setOwnerId} />
           </Form.Slot>
 

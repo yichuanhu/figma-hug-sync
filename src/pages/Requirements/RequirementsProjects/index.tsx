@@ -11,10 +11,11 @@ import {
   Row,
   Col,
   Space,
+  Dropdown,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
-import { Plus, Pencil, Trash2, Eye } from 'lucide-react';
+import { Plus, Pencil, Trash2, Ellipsis } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
@@ -179,40 +180,40 @@ const RequirementsProjects = () => {
     {
       title: t('common.actions'),
       key: 'actions',
-      width: 140,
+      width: 60,
       render: (_: unknown, r: Project) => (
-        <div style={{ display: 'flex', gap: 4 }}>
+        <Dropdown
+          trigger="click"
+          position="bottomRight"
+          stopPropagation
+          clickToHide
+          render={
+            <Dropdown.Menu>
+              <Dropdown.Item
+                icon={<Pencil size={16} strokeWidth={2} />}
+                onClick={() => {
+                  setEditing(r);
+                  setFormVisible(true);
+                }}
+              >
+                {t('common.edit')}
+              </Dropdown.Item>
+              <Dropdown.Item
+                icon={<Trash2 size={16} strokeWidth={2} />}
+                type="danger"
+                onClick={() => handleDelete(r)}
+              >
+                {t('common.delete')}
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          }
+        >
           <Button
-            size="small"
+            icon={<Ellipsis size={16} strokeWidth={2} />}
             theme="borderless"
-            icon={<Eye size={14} strokeWidth={2} />}
-            onClick={(e) => {
-              e.stopPropagation();
-              setSelectedId(r.id);
-              setDrawerVisible(true);
-            }}
+            onClick={(e) => e.stopPropagation()}
           />
-          <Button
-            size="small"
-            theme="borderless"
-            icon={<Pencil size={14} strokeWidth={2} />}
-            onClick={(e) => {
-              e.stopPropagation();
-              setEditing(r);
-              setFormVisible(true);
-            }}
-          />
-          <Button
-            size="small"
-            theme="borderless"
-            type="danger"
-            icon={<Trash2 size={14} strokeWidth={2} />}
-            onClick={(e) => {
-              e.stopPropagation();
-              handleDelete(r);
-            }}
-          />
-        </div>
+        </Dropdown>
       ),
     },
   ];
