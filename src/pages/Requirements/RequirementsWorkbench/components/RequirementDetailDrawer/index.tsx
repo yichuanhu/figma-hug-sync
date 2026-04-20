@@ -15,7 +15,7 @@ import CostEstimateTab from './CostEstimateTab';
 import VersionHistoryTab from './VersionHistoryTab';
 import ApprovalFlowProgress from '../ApprovalFlowProgress';
 import './index.less';
-import { ChevronDown, ChevronRight, ClipboardCheck, FileText, History, Pencil, Send, Trash2, Wallet } from 'lucide-react';
+import { ChevronDown, ChevronRight, ClipboardCheck, FileText, History, Pencil, PowerOff, RotateCcw, Send, Trash2, Wallet } from 'lucide-react';
 
 const { Text, Paragraph } = Typography;
 
@@ -187,6 +187,8 @@ interface RequirementDetailDrawerProps {
   onEdit: (record: RequirementItem) => void;
   onDelete: (record: RequirementItem) => void;
   onStatusChange: (id: string, newStatus: string, comment?: string) => Promise<void>;
+  onResubmit?: (record: RequirementItem) => void;
+  onOffline?: (record: RequirementItem) => void;
   onRefresh?: () => void;
   pagination: PaginationInfo;
   onPageChange?: (page: number, direction: 'prev' | 'next') => void;
@@ -203,6 +205,8 @@ const RequirementDetailDrawer = ({
   onEdit,
   onDelete,
   onStatusChange,
+  onResubmit,
+  onOffline,
   onRefresh,
   pagination,
   onPageChange,
