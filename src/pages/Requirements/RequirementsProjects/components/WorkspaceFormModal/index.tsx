@@ -6,6 +6,7 @@ import DepartmentSelect from '@/components/DepartmentSelect';
 import type { Workspace } from '../../types';
 import { addWorkspace, updateWorkspace } from '../../mockData';
 import { departmentTree } from '@/mocks/departmentData';
+import { useFormApi, useFormState } from '@douyinfe/semi-ui';
 
 interface Props {
   visible: boolean;
@@ -134,7 +135,7 @@ const WorkspaceFormModal = ({ visible, projectId, initialData, onClose, onSucces
             required: true,
           }}
         >
-          <DepartmentSelectField formApiRef={formApiRef} t={t} />
+          <DepartmentSelectField t={t} />
         </Form.Slot>
         <Form.TextArea
           field="description"
@@ -152,19 +153,15 @@ const WorkspaceFormModal = ({ visible, projectId, initialData, onClose, onSucces
 };
 
 // 把 Form.Slot 包出来：DepartmentSelect 不是 Semi Form Field
-const DepartmentSelectField = ({
-  formApiRef,
-  t,
-}: {
-  formApiRef: React.MutableRefObject<FormApi | null>;
-  t: (k: string) => string;
-}) => {
-  const value = formApiRef.current?.getValue('departmentId');
+const DepartmentSelectField = ({ t }: { t: (k: string) => string }) => {
+  const formApi = useFormApi();
+  const formState = useFormState();
+  const value = formState.values?.departmentId;
   return (
     <DepartmentSelect
       value={value}
       onChange={(v: string) => {
-        formApiRef.current?.setValue('departmentId', v);
+        formApi.setValue('departmentId', v);
       }}
       placeholder={t('requirements.projects.placeholders.department')}
       style={{ width: '100%' }}
