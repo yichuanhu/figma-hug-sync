@@ -297,9 +297,6 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     { key: 'requirementsAssessment', labelKey: 'sidebar.requirementsAssessment', icon: <FolderCheck size={18} strokeWidth={2} />, path: '/requirements/assessment' },
     { key: 'requirementsProjects', labelKey: 'sidebar.requirementsProjects', icon: <FolderKanban size={18} strokeWidth={2} />, path: '/requirements/projects' },
     { key: 'requirementsScheme', labelKey: 'sidebar.requirementsScheme', icon: <Settings size={18} strokeWidth={2} />, path: '/requirements/scheme' },
-    // 协作管理 - 分组标题
-    { key: 'collaborationManagement', labelKey: 'sidebar.collaborationManagement', isGroupLabel: true },
-    { key: 'teamMembers', labelKey: 'sidebar.teamMembers', icon: <Users size={18} strokeWidth={2} />, path: '/requirements/team' },
   ];
 
   // 运维中心的详细菜单结构 - 使用分组标题样式
@@ -395,9 +392,6 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     }
     if (pathname.startsWith('/requirements/scheme')) {
       return 'requirementsScheme';
-    }
-    if (pathname.startsWith('/requirements/team')) {
-      return 'teamMembers';
     }
     if (pathname === '/operations/dashboard') {
       return 'opsDashboard';
