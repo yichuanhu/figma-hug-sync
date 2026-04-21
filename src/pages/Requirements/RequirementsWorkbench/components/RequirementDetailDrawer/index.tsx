@@ -1,21 +1,20 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Tag, Typography, Collapsible, Button, Toast, Tooltip, Modal, Tabs, TabPane } from '@douyinfe/semi-ui';
+import { Tag, Typography, Collapsible, Button, Toast, Tooltip, Modal, Tabs, TabPane, Select, Banner } from '@douyinfe/semi-ui';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
-import type { RequirementItem, ActivityRecord, DetailedAssessment } from '../../types';
+import type { RequirementItem, ActivityRecord, DetailedAssessment, SchemeField } from '../../types';
 import { statusConfig, priorityConfig, fetchActivities, updateRequirementAssessment, MOCK_CURRENT_USER_ID } from '../../mockData';
+import { PRESET_SCHEMES } from '../../schemeConfig';
 import { findWorkspaceByRequirementId } from '../../../RequirementsProjects/mockData';
 import ApprovalSection from './ApprovalSection';
-import ArtifactSection from './ArtifactSection';
 import AssessmentTab from './AssessmentTab';
 import CostEstimateTab from './CostEstimateTab';
-import VersionHistoryTab from './VersionHistoryTab';
 import ApprovalFlowProgress from '../ApprovalFlowProgress';
 import './index.less';
-import { ChevronDown, ChevronRight, ClipboardCheck, FileText, History, Pencil, PowerOff, RotateCcw, Send, Trash2, Wallet } from 'lucide-react';
+import { ChevronDown, ChevronRight, ClipboardCheck, FileText, Pencil, PowerOff, RotateCcw, Send, Trash2, Wallet } from 'lucide-react';
 
 const { Text, Paragraph } = Typography;
 
