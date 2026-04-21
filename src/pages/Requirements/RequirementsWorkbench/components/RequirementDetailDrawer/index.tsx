@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Tag, Typography, Collapsible, Button, Toast, Tooltip, Modal, Tabs, TabPane, Select, Banner } from '@douyinfe/semi-ui';
+import { Tag, Typography, Button, Toast, Tooltip, Modal, Tabs, TabPane, Select, Banner } from '@douyinfe/semi-ui';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
@@ -15,9 +15,9 @@ import CostEstimateTab from './CostEstimateTab';
 import ApprovalFlowProgress from '../ApprovalFlowProgress';
 import ReadonlySchemeFieldsRenderer from '../ReadonlySchemeFieldsRenderer';
 import './index.less';
-import { ChevronDown, ChevronRight, ClipboardCheck, FileText, Pencil, PowerOff, RotateCcw, Send, Trash2, Wallet } from 'lucide-react';
+import { ClipboardCheck, FileText, Pencil, PowerOff, RotateCcw, Send, Trash2, Wallet } from 'lucide-react';
 
-const { Text, Paragraph } = Typography;
+const { Text } = Typography;
 
 // ============= 活动类型图标/颜色 =============
 
@@ -86,10 +86,6 @@ const PropertyPanel = ({
             role={data.creatorRole}
             email={data.creatorEmail}
           />
-        </div>
-        <div className="requirement-detail-property-item">
-          <Text type="tertiary" size="small">{t('requirements.fields.expectedLaunchDate')}</Text>
-          <Text>{data.expectedLaunchDate ? data.expectedLaunchDate.substring(0, 10) : '-'}</Text>
         </div>
       </div>
 
@@ -176,21 +172,18 @@ const CustomFieldsSection = ({
   }, [data.scheme_id]);
 
   const fields = scheme?.custom_fields ?? [];
-  if (fields.length === 0) return null;
-
-  // 预先判断是否有任何已填写值，避免空区块标题孤立显示
   const formData = data.form_data ?? {};
-  const hasAny = fields.some(
-    (f) => formData[f.key] !== undefined && formData[f.key] !== null && formData[f.key] !== '',
-  );
-  if (!hasAny) return null;
 
   return (
     <div className="requirement-detail-section">
       <Text strong style={{ display: 'block', marginBottom: 12 }}>
         {t('requirements.detail.customFieldsTitle')}
       </Text>
-      <ReadonlySchemeFieldsRenderer fields={fields} formData={formData} />
+      {fields.length > 0 ? (
+        <ReadonlySchemeFieldsRenderer fields={fields} formData={formData} showEmpty />
+      ) : (
+        <Text type="tertiary">{t('requirements.detail.customFieldsEmpty')}</Text>
+      )}
     </div>
   );
 };
@@ -266,7 +259,6 @@ const RequirementDetailDrawer = ({
 }: RequirementDetailDrawerProps) => {
   const { t } = useTranslation();
   const [activities, setActivities] = useState<ActivityRecord[]>([]);
-  const [descExpanded, setDescExpanded] = useState(true);
   const [activeTab, setActiveTab] = useState<string>(initialTab);
   const [viewingVersion, setViewingVersion] = useState<'current' | number>('current');
 
@@ -490,42 +482,11 @@ const RequirementDetailDrawer = ({
               itemKey="overview"
             >
               <div className="requirement-detail-tab-content">
-                {effectiveData.approvalFlowConfig && !isHistoryMode && <ApprovalFlowProgress config={effectiveData.approvalFlowConfig} />}
-                <div className="requirement-detail-section">
-                  <div
-                    className="requirement-detail-section-header"
-                    onClick={() => setDescExpanded(!descExpanded)}
-                  >
-                    {descExpanded ? <ChevronDown size={16} strokeWidth={2} /> : <ChevronRight size={16} strokeWidth={2} />}
-                    <Text strong>{t('requirements.form.descriptionLabel')}</Text>
-                  </div>
-                  <Collapsible isOpen={descExpanded}>
-                    <Paragraph className="requirement-detail-description">
-                      {effectiveData.description || '-'}
-                    </Paragraph>
-                    {effectiveData.businessBackground && (
-                      <div style={{ marginTop: 12 }}>
-                        <Text type="tertiary" size="small" style={{ display: 'block', marginBottom: 4 }}>
-                          {t('requirements.form.businessBackgroundLabel')}
-                        </Text>
-                        <Paragraph className="requirement-detail-description">
-                          {effectiveData.businessBackground}
-                        </Paragraph>
-                      </div>
-                    )}
-                  </Collapsible>
-                </div>
-
-                {effectiveData.attachments && effectiveData.attachments.length > 0 && (
-                  <div className="requirement-detail-section">
-                    <Text strong>{t('requirements.detail.attachments')}</Text>
-                    <Text type="tertiary" size="small" style={{ marginTop: 8 }}>
-                      {effectiveData.attachments.length} {t('requirements.detail.files')}
-                    </Text>
-                  </div>
-                )}
-
                 <CustomFieldsSection data={effectiveData} t={t} />
+
+                {effectiveData.approvalFlowConfig && !isHistoryMode && (
+                  <ApprovalFlowProgress config={effectiveData.approvalFlowConfig} />
+                )}
 
                 {!isHistoryMode && <ActivityStream activities={activities} t={t} />}
               </div>

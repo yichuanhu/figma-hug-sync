@@ -216,7 +216,31 @@ const generateMockRequirements = (): RequirementItem[] => {
       assessment: generateMockAssessment(id, tpl.status),
       artifacts: generateMockArtifacts(id, tpl.status),
       detailedAssessment: generateMockDetailedAssessment(tpl.status, index),
-      form_data: baselineFormData ? { ...baselineFormData } : undefined,
+      form_data: (() => {
+        const base: Record<string, unknown> = baselineFormData ? { ...baselineFormData } : {};
+        // 富表单字段（覆盖各数据类型示例）
+        base.scenario_name = tpl.title;
+        base.category_l1 = ['tax', 'finance', 'hr', 'procurement', 'other'][index % 5];
+        base.category_l2 = '应付账款';
+        base.category_l3 = '发票核对';
+        base.operation_steps = '1. 登录 SAP 系统\n2. 导出当月发票明细\n3. 与银行回单逐笔核对\n4. 标记差异并生成报告\n5. 邮件发送给财务主管复核';
+        base.application_unit = `${tpl.owning_department_name} 业务组`;
+        base.contact_name = creator.name;
+        base.contact_phone = '13800138000';
+        base.business_context = '当前流程由财务专员每月手工处理，平均耗时 40 小时/月，错误率约 3%，存在月底加班严重、对账延迟等痛点。自动化后预计可释放人力 80%，并将差错率降至 0.1% 以下。';
+        base.expected_launch_date = launchDate.toISOString().substring(0, 10);
+        base.is_compliance_required = index % 2 === 0 ? 'yes' : 'no';
+        base.related_systems = index % 3 === 0 ? ['sap', 'excel', 'email'] : ['kingdee', 'excel'];
+        base.process_screenshot = [
+          { uid: `${id}-shot-1`, name: '当前流程截图.png', size: 245678 },
+          { uid: `${id}-shot-2`, name: '系统操作录屏.mp4', size: 8456123 },
+        ];
+        base.attachments = [
+          { uid: `${id}-att-1`, name: 'PRD-需求说明书.pdf', size: 1234567 },
+          { uid: `${id}-att-2`, name: '业务流程图.vsdx', size: 456789 },
+        ];
+        return base;
+      })(),
       baselineFormData,
       costEstimate,
       historyVersions: generateMockVersions(tpl.status, index, tpl.title, tpl.description, tpl.priority),
