@@ -160,6 +160,73 @@ const PropertyPanel = ({
   );
 };
 
+// ============= 自定义字段区（Schema 驱动只读展示） =============
+
+const formatFieldValue = (field: SchemeField, value: unknown): string => {
+  if (value === undefined || value === null || value === '') return '-';
+  if (Array.isArray(value)) {
+    if (field.options) {
+      return value
+        .map((v) => field.options?.find((o) => o.value === v)?.label ?? String(v))
+        .join('、');
+    }
+    return value.map((v) => String(v)).join('、');
+  }
+  if (field.options) {
+    const opt = field.options.find((o) => o.value === value);
+    if (opt) return opt.label;
+  }
+  if (field.type === 'percentage' && typeof value === 'number') {
+    return `${value}%`;
+  }
+  if (field.unit && (typeof value === 'number' || typeof value === 'string')) {
+    return `${value}${field.unit}`;
+  }
+  if (typeof value === 'boolean') return value ? '是' : '否';
+  return String(value);
+};
+
+const CustomFieldsSection = ({
+  data,
+  t,
+}: {
+  data: RequirementItem;
+  t: (k: string) => string;
+}) => {
+  const scheme = useMemo(() => {
+    if (!data.scheme_id) return undefined;
+    return PRESET_SCHEMES.find((s) => s.id === data.scheme_id || s.code === data.scheme_id);
+  }, [data.scheme_id]);
+
+  const fields = scheme?.custom_fields ?? [];
+  const formData = data.form_data ?? {};
+  const visible = fields.filter(
+    (f) => formData[f.key] !== undefined && formData[f.key] !== null && formData[f.key] !== '',
+  );
+
+  if (visible.length === 0) return null;
+
+  return (
+    <div className="requirement-detail-section">
+      <Text strong style={{ display: 'block', marginBottom: 12 }}>
+        {t('requirements.detail.customFieldsTitle')}
+      </Text>
+      <div className="requirement-detail-custom-fields">
+        {visible.map((f) => (
+          <div key={f.key} className="requirement-detail-custom-field-item">
+            <Text type="tertiary" size="small" className="requirement-detail-custom-field-label">
+              {f.label}
+            </Text>
+            <Text className="requirement-detail-custom-field-value">
+              {formatFieldValue(f, formData[f.key])}
+            </Text>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 // ============= 活动流 =============
 
 const ActivityStream = ({ activities, t }: { activities: ActivityRecord[]; t: (k: string) => string }) => {
