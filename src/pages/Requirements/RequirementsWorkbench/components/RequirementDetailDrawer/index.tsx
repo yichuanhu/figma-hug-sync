@@ -69,6 +69,14 @@ const PropertyPanel = ({
           <Text>{data.owning_department_name}</Text>
         </div>
         <div className="requirement-detail-property-item">
+          <Text type="tertiary" size="small">{t('requirements.fields.projectOwner')}</Text>
+          {data.owner_name ? (
+            <UserNameWithCard name={data.owner_name} userId={data.owner_id} />
+          ) : (
+            <Text type="tertiary">{t('requirements.detail.ownerUnassigned')}</Text>
+          )}
+        </div>
+        <div className="requirement-detail-property-item">
           <Text type="tertiary" size="small">{t('common.creator')}</Text>
           <UserNameWithCard
             name={data.creatorName}
@@ -79,20 +87,29 @@ const PropertyPanel = ({
           />
         </div>
         <div className="requirement-detail-property-item">
-          <Text type="tertiary" size="small">{t('requirements.form.contactLabel')}</Text>
-          <Text>{data.contactInfo || '-'}</Text>
-        </div>
-        <div className="requirement-detail-property-item">
           <Text type="tertiary" size="small">{t('requirements.fields.expectedLaunchDate')}</Text>
           <Text>{data.expectedLaunchDate ? data.expectedLaunchDate.substring(0, 10) : '-'}</Text>
         </div>
-        <div className="requirement-detail-property-item">
-          <Text type="tertiary" size="small">{t('requirements.projects.belongsToProject')}</Text>
-          <Text>{wsBinding ? wsBinding.project.name : t('requirements.projects.unlinked')}</Text>
-        </div>
+      </div>
+
+      <div className="requirement-detail-property-divider" />
+
+      <div className="requirement-detail-property-group">
         <div className="requirement-detail-property-item">
           <Text type="tertiary" size="small">{t('requirements.projects.belongsToWorkspace')}</Text>
-          <Text>{wsBinding ? wsBinding.workspace.name : t('requirements.projects.unlinked')}</Text>
+          {wsBinding ? (
+            <Text>{wsBinding.workspace.name}</Text>
+          ) : (
+            <Text type="tertiary">{t('requirements.projects.unlinked')}</Text>
+          )}
+        </div>
+        <div className="requirement-detail-property-item">
+          <Text type="tertiary" size="small">{t('requirements.projects.belongsToProject')}</Text>
+          {wsBinding ? (
+            <Text type="tertiary">{wsBinding.project.name}</Text>
+          ) : (
+            <Text type="tertiary">{t('requirements.projects.unlinked')}</Text>
+          )}
         </div>
       </div>
 
