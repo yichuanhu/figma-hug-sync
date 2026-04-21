@@ -121,21 +121,8 @@ const ArtifactSection = ({ data }: ArtifactSectionProps) => {
 
   return (
     <div className="requirement-detail-section">
-      <div className="requirement-detail-section-header" style={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-          <Text strong>{t('requirements.delivery.title')}</Text>
-        </div>
-        {isOnline && (
-          <Button
-            size="small"
-            type="danger"
-            theme="borderless"
-            icon={<PowerOff size={14} strokeWidth={2} />}
-            onClick={() => setOfflineOpen(true)}
-          >
-            {t('requirements.delivery.offline')}
-          </Button>
-        )}
+      <div className="requirement-detail-section-header">
+        <Text strong>{t('requirements.delivery.title')}</Text>
       </div>
 
       {/* 关联项目 / 工作空间 / 关联方式 */}
