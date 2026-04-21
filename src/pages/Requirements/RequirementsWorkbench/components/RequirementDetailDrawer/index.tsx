@@ -344,10 +344,30 @@ const RequirementDetailDrawer = ({
 
   if (!data) return null;
 
-  const canEdit = data.status === 'DRAFT';
-  const canDelete = data.status === 'DRAFT' || data.status === 'REJECTED' || data.status === 'WITHDRAWN';
-  const canResubmit = (data.status === 'REJECTED' || data.status === 'WITHDRAWN') && data.creatorId === MOCK_CURRENT_USER_ID;
-  const canOffline = data.status === 'LAUNCHED';
+  const sortedHistory = [...(data.historyVersions ?? [])].sort((a, b) => b.version - a.version);
+  const hasHistory = sortedHistory.length > 0;
+  const isHistoryMode = viewingVersion !== 'current';
+  const currentSnapshot = isHistoryMode
+    ? sortedHistory.find((v) => v.version === viewingVersion)
+    : undefined;
+
+  // 历史版本视图：将快照字段覆盖到 data 上，构造只读的 effectiveData
+  const effectiveData: RequirementItem = currentSnapshot
+    ? {
+        ...data,
+        title: currentSnapshot.snapshot.title ?? data.title,
+        description: currentSnapshot.snapshot.description ?? data.description,
+        priority: currentSnapshot.snapshot.priority ?? data.priority,
+        status: currentSnapshot.snapshot.status ?? data.status,
+        detailedAssessment: currentSnapshot.snapshot.detailedAssessment ?? data.detailedAssessment,
+        costEstimate: currentSnapshot.snapshot.costEstimate ?? data.costEstimate,
+      }
+    : data;
+
+  const canEdit = !isHistoryMode && effectiveData.status === 'DRAFT';
+  const canDelete = !isHistoryMode && (effectiveData.status === 'DRAFT' || effectiveData.status === 'REJECTED' || effectiveData.status === 'WITHDRAWN');
+  const canResubmit = !isHistoryMode && (effectiveData.status === 'REJECTED' || effectiveData.status === 'WITHDRAWN') && effectiveData.creatorId === MOCK_CURRENT_USER_ID;
+  const canOffline = !isHistoryMode && effectiveData.status === 'LAUNCHED';
 
   const handleSaveAssessment = async (id: string, assessment: DetailedAssessment) => {
     await updateRequirementAssessment(id, assessment);
