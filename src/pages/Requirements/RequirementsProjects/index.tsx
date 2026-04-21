@@ -15,6 +15,7 @@ import {
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
+import { Tooltip } from '@douyinfe/semi-ui';
 import { Plus, Pencil, Trash2, Ellipsis } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
