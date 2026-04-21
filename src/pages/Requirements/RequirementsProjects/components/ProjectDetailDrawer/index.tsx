@@ -203,13 +203,20 @@ const ProjectDetailDrawer = ({
           />
         }
         deleteAction={
-          <Button
-            theme="borderless"
-            type="tertiary"
-            size="small"
-            icon={<Trash2 size={16} color="var(--semi-color-danger)" />}
-            onClick={() => onDelete(data)}
-          />
+          <Tooltip
+            content={t('requirements.projects.validation.projectHasWorkspaces')}
+            trigger={data.workspaceCount > 0 ? 'hover' : 'custom'}
+            visible={data.workspaceCount > 0 ? undefined : false}
+          >
+            <Button
+              theme="borderless"
+              type="tertiary"
+              size="small"
+              disabled={data.workspaceCount > 0}
+              icon={<Trash2 size={16} color={data.workspaceCount > 0 ? undefined : 'var(--semi-color-danger)'} />}
+              onClick={() => data.workspaceCount === 0 && onDelete(data)}
+            />
+          </Tooltip>
         }
       >
         <Tabs type="line" activeKey={activeTab} onChange={setActiveTab} className="project-detail-drawer-tabs">
