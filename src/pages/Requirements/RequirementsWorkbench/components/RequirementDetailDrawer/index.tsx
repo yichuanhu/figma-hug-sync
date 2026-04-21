@@ -1,21 +1,20 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Tag, Typography, Collapsible, Button, Toast, Tooltip, Modal, Tabs, TabPane } from '@douyinfe/semi-ui';
+import { Tag, Typography, Collapsible, Button, Toast, Tooltip, Modal, Tabs, TabPane, Select, Banner } from '@douyinfe/semi-ui';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
-import type { RequirementItem, ActivityRecord, DetailedAssessment } from '../../types';
+import type { RequirementItem, ActivityRecord, DetailedAssessment, SchemeField } from '../../types';
 import { statusConfig, priorityConfig, fetchActivities, updateRequirementAssessment, MOCK_CURRENT_USER_ID } from '../../mockData';
+import { PRESET_SCHEMES } from '../../schemeConfig';
 import { findWorkspaceByRequirementId } from '../../../RequirementsProjects/mockData';
 import ApprovalSection from './ApprovalSection';
-import ArtifactSection from './ArtifactSection';
 import AssessmentTab from './AssessmentTab';
 import CostEstimateTab from './CostEstimateTab';
-import VersionHistoryTab from './VersionHistoryTab';
 import ApprovalFlowProgress from '../ApprovalFlowProgress';
 import './index.less';
-import { ChevronDown, ChevronRight, ClipboardCheck, FileText, History, Pencil, PowerOff, RotateCcw, Send, Trash2, Wallet } from 'lucide-react';
+import { ChevronDown, ChevronRight, ClipboardCheck, FileText, Pencil, PowerOff, RotateCcw, Send, Trash2, Wallet } from 'lucide-react';
 
 const { Text, Paragraph } = Typography;
 
@@ -70,6 +69,14 @@ const PropertyPanel = ({
           <Text>{data.owning_department_name}</Text>
         </div>
         <div className="requirement-detail-property-item">
+          <Text type="tertiary" size="small">{t('requirements.fields.projectOwner')}</Text>
+          {data.owner_name ? (
+            <UserNameWithCard name={data.owner_name} userId={data.owner_id} />
+          ) : (
+            <Text type="tertiary">{t('requirements.detail.ownerUnassigned')}</Text>
+          )}
+        </div>
+        <div className="requirement-detail-property-item">
           <Text type="tertiary" size="small">{t('common.creator')}</Text>
           <UserNameWithCard
             name={data.creatorName}
@@ -80,20 +87,29 @@ const PropertyPanel = ({
           />
         </div>
         <div className="requirement-detail-property-item">
-          <Text type="tertiary" size="small">{t('requirements.form.contactLabel')}</Text>
-          <Text>{data.contactInfo || '-'}</Text>
-        </div>
-        <div className="requirement-detail-property-item">
           <Text type="tertiary" size="small">{t('requirements.fields.expectedLaunchDate')}</Text>
           <Text>{data.expectedLaunchDate ? data.expectedLaunchDate.substring(0, 10) : '-'}</Text>
         </div>
-        <div className="requirement-detail-property-item">
-          <Text type="tertiary" size="small">{t('requirements.projects.belongsToProject')}</Text>
-          <Text>{wsBinding ? wsBinding.project.name : t('requirements.projects.unlinked')}</Text>
-        </div>
+      </div>
+
+      <div className="requirement-detail-property-divider" />
+
+      <div className="requirement-detail-property-group">
         <div className="requirement-detail-property-item">
           <Text type="tertiary" size="small">{t('requirements.projects.belongsToWorkspace')}</Text>
-          <Text>{wsBinding ? wsBinding.workspace.name : t('requirements.projects.unlinked')}</Text>
+          {wsBinding ? (
+            <Text>{wsBinding.workspace.name}</Text>
+          ) : (
+            <Text type="tertiary">{t('requirements.projects.unlinked')}</Text>
+          )}
+        </div>
+        <div className="requirement-detail-property-item">
+          <Text type="tertiary" size="small">{t('requirements.projects.belongsToProject')}</Text>
+          {wsBinding ? (
+            <Text type="tertiary">{wsBinding.project.name}</Text>
+          ) : (
+            <Text type="tertiary">{t('requirements.projects.unlinked')}</Text>
+          )}
         </div>
       </div>
 
@@ -140,6 +156,73 @@ const PropertyPanel = ({
       )}
 
       <ApprovalSection data={data} onStatusChange={onStatusChange} onRefresh={onRefresh} />
+    </div>
+  );
+};
+
+// ============= 自定义字段区（Schema 驱动只读展示） =============
+
+const formatFieldValue = (field: SchemeField, value: unknown): string => {
+  if (value === undefined || value === null || value === '') return '-';
+  if (Array.isArray(value)) {
+    if (field.options) {
+      return value
+        .map((v) => field.options?.find((o) => o.value === v)?.label ?? String(v))
+        .join('、');
+    }
+    return value.map((v) => String(v)).join('、');
+  }
+  if (field.options) {
+    const opt = field.options.find((o) => o.value === value);
+    if (opt) return opt.label;
+  }
+  if (field.type === 'percentage' && typeof value === 'number') {
+    return `${value}%`;
+  }
+  if (field.unit && (typeof value === 'number' || typeof value === 'string')) {
+    return `${value}${field.unit}`;
+  }
+  if (typeof value === 'boolean') return value ? '是' : '否';
+  return String(value);
+};
+
+const CustomFieldsSection = ({
+  data,
+  t,
+}: {
+  data: RequirementItem;
+  t: (k: string) => string;
+}) => {
+  const scheme = useMemo(() => {
+    if (!data.scheme_id) return undefined;
+    return PRESET_SCHEMES.find((s) => s.id === data.scheme_id || s.code === data.scheme_id);
+  }, [data.scheme_id]);
+
+  const fields = scheme?.custom_fields ?? [];
+  const formData = data.form_data ?? {};
+  const visible = fields.filter(
+    (f) => formData[f.key] !== undefined && formData[f.key] !== null && formData[f.key] !== '',
+  );
+
+  if (visible.length === 0) return null;
+
+  return (
+    <div className="requirement-detail-section">
+      <Text strong style={{ display: 'block', marginBottom: 12 }}>
+        {t('requirements.detail.customFieldsTitle')}
+      </Text>
+      <div className="requirement-detail-custom-fields">
+        {visible.map((f) => (
+          <div key={f.key} className="requirement-detail-custom-field-item">
+            <Text type="tertiary" size="small" className="requirement-detail-custom-field-label">
+              {f.label}
+            </Text>
+            <Text className="requirement-detail-custom-field-value">
+              {formatFieldValue(f, formData[f.key])}
+            </Text>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
@@ -217,11 +300,20 @@ const RequirementDetailDrawer = ({
   const [activities, setActivities] = useState<ActivityRecord[]>([]);
   const [descExpanded, setDescExpanded] = useState(true);
   const [activeTab, setActiveTab] = useState<string>(initialTab);
+  const [viewingVersion, setViewingVersion] = useState<'current' | number>('current');
 
-  // 抽屉关闭后重置 tab；打开新数据时不重置（保持「上一条/下一条」时 tab 持久化）
+  // 抽屉关闭后重置 tab/版本视图；打开新数据时不重置 tab
   useEffect(() => {
-    if (!visible) setActiveTab(initialTab);
+    if (!visible) {
+      setActiveTab(initialTab);
+      setViewingVersion('current');
+    }
   }, [visible, initialTab]);
+
+  // 切换到不同需求时重置版本视图为最新
+  useEffect(() => {
+    setViewingVersion('current');
+  }, [data?.id]);
 
   useEffect(() => {
     if (visible && data) {
@@ -252,10 +344,30 @@ const RequirementDetailDrawer = ({
 
   if (!data) return null;
 
-  const canEdit = data.status === 'DRAFT';
-  const canDelete = data.status === 'DRAFT' || data.status === 'REJECTED' || data.status === 'WITHDRAWN';
-  const canResubmit = (data.status === 'REJECTED' || data.status === 'WITHDRAWN') && data.creatorId === MOCK_CURRENT_USER_ID;
-  const canOffline = data.status === 'LAUNCHED';
+  const sortedHistory = [...(data.historyVersions ?? [])].sort((a, b) => b.version - a.version);
+  const hasHistory = sortedHistory.length > 0;
+  const isHistoryMode = viewingVersion !== 'current';
+  const currentSnapshot = isHistoryMode
+    ? sortedHistory.find((v) => v.version === viewingVersion)
+    : undefined;
+
+  // 历史版本视图：将快照字段覆盖到 data 上，构造只读的 effectiveData
+  const effectiveData: RequirementItem = currentSnapshot
+    ? {
+        ...data,
+        title: currentSnapshot.snapshot.title ?? data.title,
+        description: currentSnapshot.snapshot.description ?? data.description,
+        priority: currentSnapshot.snapshot.priority ?? data.priority,
+        status: currentSnapshot.snapshot.status ?? data.status,
+        detailedAssessment: currentSnapshot.snapshot.detailedAssessment ?? data.detailedAssessment,
+        costEstimate: currentSnapshot.snapshot.costEstimate ?? data.costEstimate,
+      }
+    : data;
+
+  const canEdit = !isHistoryMode && effectiveData.status === 'DRAFT';
+  const canDelete = !isHistoryMode && (effectiveData.status === 'DRAFT' || effectiveData.status === 'REJECTED' || effectiveData.status === 'WITHDRAWN');
+  const canResubmit = !isHistoryMode && (effectiveData.status === 'REJECTED' || effectiveData.status === 'WITHDRAWN') && effectiveData.creatorId === MOCK_CURRENT_USER_ID;
+  const canOffline = !isHistoryMode && effectiveData.status === 'LAUNCHED';
 
   const handleSaveAssessment = async (id: string, assessment: DetailedAssessment) => {
     await updateRequirementAssessment(id, assessment);
@@ -352,6 +464,45 @@ const RequirementDetailDrawer = ({
         ) : null
       }
     >
+      {(hasHistory || isHistoryMode) && (
+        <div className="requirement-detail-version-bar">
+          <Text type="tertiary" size="small" style={{ marginRight: 8 }}>
+            {t('requirements.detail.versionLabel')}:
+          </Text>
+          <Select
+            size="small"
+            value={viewingVersion}
+            style={{ width: 180 }}
+            onChange={(v) => setViewingVersion(v as 'current' | number)}
+          >
+            <Select.Option value="current">
+              {t('requirements.detail.versionLatest')}
+              {data.version ? ` (v${data.version})` : ''}
+            </Select.Option>
+            {sortedHistory.map((v) => (
+              <Select.Option key={v.version} value={v.version}>
+                {`v${v.version} · ${v.createdAt.replace('T', ' ').substring(0, 16)}`}
+              </Select.Option>
+            ))}
+          </Select>
+        </div>
+      )}
+      {isHistoryMode && currentSnapshot && (
+        <Banner
+          type="warning"
+          fullMode={false}
+          closeIcon={null}
+          description={
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+              <span>{t('requirements.detail.viewingHistoryBanner', { version: currentSnapshot.version })}</span>
+              <Button size="small" theme="borderless" onClick={() => setViewingVersion('current')}>
+                {t('requirements.detail.backToLatest')}
+              </Button>
+            </div>
+          }
+          style={{ margin: '0 0 12px' }}
+        />
+      )}
       <div className="requirement-detail-layout">
         {/* 左侧 Tab 区域 */}
         <div className="requirement-detail-left">
@@ -371,7 +522,7 @@ const RequirementDetailDrawer = ({
               itemKey="overview"
             >
               <div className="requirement-detail-tab-content">
-                {data.approvalFlowConfig && <ApprovalFlowProgress config={data.approvalFlowConfig} />}
+                {effectiveData.approvalFlowConfig && !isHistoryMode && <ApprovalFlowProgress config={effectiveData.approvalFlowConfig} />}
                 <div className="requirement-detail-section">
                   <div
                     className="requirement-detail-section-header"
@@ -382,35 +533,33 @@ const RequirementDetailDrawer = ({
                   </div>
                   <Collapsible isOpen={descExpanded}>
                     <Paragraph className="requirement-detail-description">
-                      {data.description || '-'}
+                      {effectiveData.description || '-'}
                     </Paragraph>
-                    {data.businessBackground && (
+                    {effectiveData.businessBackground && (
                       <div style={{ marginTop: 12 }}>
                         <Text type="tertiary" size="small" style={{ display: 'block', marginBottom: 4 }}>
                           {t('requirements.form.businessBackgroundLabel')}
                         </Text>
                         <Paragraph className="requirement-detail-description">
-                          {data.businessBackground}
+                          {effectiveData.businessBackground}
                         </Paragraph>
                       </div>
                     )}
                   </Collapsible>
                 </div>
 
-                {data.attachments && data.attachments.length > 0 && (
+                {effectiveData.attachments && effectiveData.attachments.length > 0 && (
                   <div className="requirement-detail-section">
                     <Text strong>{t('requirements.detail.attachments')}</Text>
                     <Text type="tertiary" size="small" style={{ marginTop: 8 }}>
-                      {data.attachments.length} {t('requirements.detail.files')}
+                      {effectiveData.attachments.length} {t('requirements.detail.files')}
                     </Text>
                   </div>
                 )}
 
-                {(['DEVELOPING', 'LAUNCHED', 'OFFLINE'] as const).includes(data.status as any) && (
-                  <ArtifactSection data={data} />
-                )}
+                <CustomFieldsSection data={effectiveData} t={t} />
 
-                <ActivityStream activities={activities} t={t} />
+                {!isHistoryMode && <ActivityStream activities={activities} t={t} />}
               </div>
             </TabPane>
 
@@ -424,7 +573,7 @@ const RequirementDetailDrawer = ({
               itemKey="assessment"
             >
               <div className="requirement-detail-tab-content">
-                <AssessmentTab data={data} onSaveAssessment={handleSaveAssessment} />
+                <AssessmentTab data={effectiveData} onSaveAssessment={handleSaveAssessment} />
               </div>
             </TabPane>
 
@@ -438,21 +587,7 @@ const RequirementDetailDrawer = ({
               itemKey="cost"
             >
               <div className="requirement-detail-tab-content">
-                <CostEstimateTab data={data} />
-              </div>
-            </TabPane>
-
-            <TabPane
-              tab={
-                <span className="requirement-detail-tab-label">
-                  <History size={14} strokeWidth={2} />
-                  {t('requirements.detail.tab.versions')}
-                </span>
-              }
-              itemKey="versions"
-            >
-              <div className="requirement-detail-tab-content">
-                <VersionHistoryTab data={data} />
+                <CostEstimateTab data={effectiveData} />
               </div>
             </TabPane>
           </Tabs>
@@ -460,7 +595,7 @@ const RequirementDetailDrawer = ({
 
         {/* 右侧属性面板 */}
         <div className="requirement-detail-right">
-          <PropertyPanel data={data} t={t} onStatusChange={onStatusChange} onRefresh={onRefresh} />
+          <PropertyPanel data={effectiveData} t={t} onStatusChange={onStatusChange} onRefresh={onRefresh} />
         </div>
       </div>
     </DetailDrawerWrapper>

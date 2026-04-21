@@ -531,7 +531,8 @@
       "title": "Title",
       "department": "Department",
       "priority": "Priority",
-      "expectedLaunchDate": "Expected Launch Date"
+      "expectedLaunchDate": "Expected Launch Date",
+      "projectOwner": "Project Owner"
     },
     "status": {
       "draft": "Draft",
@@ -749,7 +750,13 @@
         "assessment": "Assessment",
         "cost": "Cost Estimate",
         "versions": "Version History"
-      }
+      },
+      "ownerUnassigned": "Unassigned",
+      "customFieldsTitle": "Custom Fields",
+      "versionLabel": "Version",
+      "versionLatest": "Latest",
+      "viewingHistoryBanner": "Viewing historical version v{{version}} (read-only)",
+      "backToLatest": "Back to Latest"
     },
     "approvalFlow": {
       "title": "Approval Flow",

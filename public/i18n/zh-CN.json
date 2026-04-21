@@ -437,7 +437,8 @@
       "title": "需求标题",
       "department": "部门",
       "priority": "优先级",
-      "expectedLaunchDate": "期望上线日期"
+      "expectedLaunchDate": "期望上线日期",
+      "projectOwner": "项目负责人"
     },
     "status": {
       "draft": "草稿",
@@ -640,7 +641,13 @@
         "assessment": "技术评估",
         "cost": "成本预估",
         "versions": "版本历史"
-      }
+      },
+      "ownerUnassigned": "未指派",
+      "customFieldsTitle": "自定义字段",
+      "versionLabel": "版本",
+      "versionLatest": "最新版本",
+      "viewingHistoryBanner": "当前查看历史版本 v{{version}}，仅供回看（只读）",
+      "backToLatest": "返回最新版本"
     },
     "approvalFlow": {
       "title": "审批流程",
