@@ -300,11 +300,20 @@ const RequirementDetailDrawer = ({
   const [activities, setActivities] = useState<ActivityRecord[]>([]);
   const [descExpanded, setDescExpanded] = useState(true);
   const [activeTab, setActiveTab] = useState<string>(initialTab);
+  const [viewingVersion, setViewingVersion] = useState<'current' | number>('current');
 
-  // 抽屉关闭后重置 tab；打开新数据时不重置（保持「上一条/下一条」时 tab 持久化）
+  // 抽屉关闭后重置 tab/版本视图；打开新数据时不重置 tab
   useEffect(() => {
-    if (!visible) setActiveTab(initialTab);
+    if (!visible) {
+      setActiveTab(initialTab);
+      setViewingVersion('current');
+    }
   }, [visible, initialTab]);
+
+  // 切换到不同需求时重置版本视图为最新
+  useEffect(() => {
+    setViewingVersion('current');
+  }, [data?.id]);
 
   useEffect(() => {
     if (visible && data) {
