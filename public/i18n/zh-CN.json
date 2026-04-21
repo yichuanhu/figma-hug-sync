@@ -644,7 +644,8 @@
         "versions": "版本历史"
       },
       "ownerUnassigned": "未指派",
-      "customFieldsTitle": "自定义字段",
+      "customFieldsTitle": "需求详情",
+      "customFieldsEmpty": "暂无需求详情",
       "versionLabel": "版本",
       "versionLatest": "最新版本",
       "viewingHistoryBanner": "当前查看历史版本 v{{version}}，仅供回看（只读）",
