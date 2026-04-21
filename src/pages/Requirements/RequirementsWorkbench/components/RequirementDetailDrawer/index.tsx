@@ -483,42 +483,11 @@ const RequirementDetailDrawer = ({
               itemKey="overview"
             >
               <div className="requirement-detail-tab-content">
-                {effectiveData.approvalFlowConfig && !isHistoryMode && <ApprovalFlowProgress config={effectiveData.approvalFlowConfig} />}
-                <div className="requirement-detail-section">
-                  <div
-                    className="requirement-detail-section-header"
-                    onClick={() => setDescExpanded(!descExpanded)}
-                  >
-                    {descExpanded ? <ChevronDown size={16} strokeWidth={2} /> : <ChevronRight size={16} strokeWidth={2} />}
-                    <Text strong>{t('requirements.form.descriptionLabel')}</Text>
-                  </div>
-                  <Collapsible isOpen={descExpanded}>
-                    <Paragraph className="requirement-detail-description">
-                      {effectiveData.description || '-'}
-                    </Paragraph>
-                    {effectiveData.businessBackground && (
-                      <div style={{ marginTop: 12 }}>
-                        <Text type="tertiary" size="small" style={{ display: 'block', marginBottom: 4 }}>
-                          {t('requirements.form.businessBackgroundLabel')}
-                        </Text>
-                        <Paragraph className="requirement-detail-description">
-                          {effectiveData.businessBackground}
-                        </Paragraph>
-                      </div>
-                    )}
-                  </Collapsible>
-                </div>
-
-                {effectiveData.attachments && effectiveData.attachments.length > 0 && (
-                  <div className="requirement-detail-section">
-                    <Text strong>{t('requirements.detail.attachments')}</Text>
-                    <Text type="tertiary" size="small" style={{ marginTop: 8 }}>
-                      {effectiveData.attachments.length} {t('requirements.detail.files')}
-                    </Text>
-                  </div>
-                )}
-
                 <CustomFieldsSection data={effectiveData} t={t} />
+
+                {effectiveData.approvalFlowConfig && !isHistoryMode && (
+                  <ApprovalFlowProgress config={effectiveData.approvalFlowConfig} />
+                )}
 
                 {!isHistoryMode && <ActivityStream activities={activities} t={t} />}
               </div>
