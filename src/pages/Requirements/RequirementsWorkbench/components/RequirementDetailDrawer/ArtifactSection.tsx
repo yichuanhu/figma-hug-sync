@@ -144,7 +144,6 @@ const ArtifactSection = ({ data }: ArtifactSectionProps) => {
       <div className="requirement-detail-section-header" style={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
           <Text strong>{t('requirements.delivery.title')}</Text>
-          <Text type="tertiary" size="small">{t('requirements.delivery.subtitle')}</Text>
         </div>
         {isOnline && (
           <Button
@@ -163,12 +162,6 @@ const ArtifactSection = ({ data }: ArtifactSectionProps) => {
       <div style={{ marginBottom: 16 }}>
         {renderLinkRow(t('requirements.delivery.linkedProject'), data.linkedProject, PROJECT_DETAIL_BASE)}
         {renderLinkRow(t('requirements.delivery.linkedWorkspace'), data.linkedWorkspace, WORKSPACE_DETAIL_BASE)}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '6px 0', minHeight: 28 }}>
-          <Text type="tertiary" size="small" style={{ width: 96, flexShrink: 0 }}>
-            {t('requirements.delivery.linkedBy')}
-          </Text>
-          <Text size="small">{t('requirements.delivery.linkedByValue')}</Text>
-        </div>
       </div>
 
       {/* 聚合摘要 chip 行 */}
