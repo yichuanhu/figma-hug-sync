@@ -9,14 +9,40 @@
  * - showEmpty=true：始终渲染所有字段（无值显示 "-"），用于方案预览/需求详情
  */
 
-import { Typography } from '@douyinfe/semi-ui';
-import { Paperclip } from 'lucide-react';
+import { useState } from 'react';
+import { Typography, Button, ImagePreview } from '@douyinfe/semi-ui';
+import { Paperclip, Download, Eye } from 'lucide-react';
 import dayjs from 'dayjs';
 import ExpandableText from '@/components/ExpandableText';
 import type { SchemeField } from '../../types';
 import './index.less';
 
 const { Text } = Typography;
+
+const IMAGE_EXT = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp', 'svg'];
+const isImageFile = (name: string) => {
+  const ext = name.split('.').pop()?.toLowerCase() ?? '';
+  return IMAGE_EXT.includes(ext);
+};
+
+interface AttachmentFile {
+  name: string;
+  size?: number;
+  uid?: string;
+  url?: string;
+}
+
+const triggerDownload = (file: AttachmentFile) => {
+  const url = file.url ?? '#';
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = file.name;
+  a.target = '_blank';
+  a.rel = 'noopener noreferrer';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+};
 
 const LONG_TEXT_TYPES = new Set(['textarea', 'rich_text', 'file_upload']);
 
@@ -49,9 +75,6 @@ const formatScalar = (field: SchemeField, value: unknown): string => {
   return String(value);
 };
 
-const isFileList = (value: unknown): value is Array<{ name: string; size?: number; uid?: string; url?: string }> =>
-  Array.isArray(value) && value.length > 0 && value.every((v) => v && typeof v === 'object' && 'name' in v);
-
 const formatFileSize = (size?: number) => {
   if (!size && size !== 0) return '';
   if (size < 1024) return `${size}B`;
@@ -59,25 +82,79 @@ const formatFileSize = (size?: number) => {
   return `${(size / 1024 / 1024).toFixed(1)}MB`;
 };
 
-const renderValue = (field: SchemeField, value: unknown) => {
-  // 文件上传
-  if (field.type === 'file_upload') {
-    if (!isFileList(value)) return <Text>-</Text>;
-    return (
-      <div className="readonly-scheme-fields-files">
-        {value.map((f, idx) => (
+const isFileList = (value: unknown): value is AttachmentFile[] =>
+  Array.isArray(value) && value.length > 0 && value.every((v) => v && typeof v === 'object' && 'name' in v);
+
+const FileListRenderer = ({ files }: { files: AttachmentFile[] }) => {
+  const [previewVisible, setPreviewVisible] = useState(false);
+  const [previewIndex, setPreviewIndex] = useState(0);
+
+  const imageFiles = files.filter((f) => isImageFile(f.name) && f.url);
+  const imageUrls = imageFiles.map((f) => f.url as string);
+
+  const handlePreview = (file: AttachmentFile) => {
+    const idx = imageFiles.findIndex((f) => (f.uid ?? f.name) === (file.uid ?? file.name));
+    if (idx >= 0) {
+      setPreviewIndex(idx);
+      setPreviewVisible(true);
+    }
+  };
+
+  return (
+    <div className="readonly-scheme-fields-files">
+      {files.map((f, idx) => {
+        const canPreview = isImageFile(f.name) && !!f.url;
+        return (
           <div key={f.uid ?? `${f.name}-${idx}`} className="readonly-scheme-fields-file-item">
             <Paperclip size={14} strokeWidth={2} />
-            <Text>{f.name}</Text>
+            <Text className="readonly-scheme-fields-file-name" ellipsis={{ showTooltip: true }}>
+              {f.name}
+            </Text>
             {f.size !== undefined && (
               <Text type="tertiary" size="small">
                 {formatFileSize(f.size)}
               </Text>
             )}
+            <div className="readonly-scheme-fields-file-actions">
+              {canPreview && (
+                <Button
+                  size="small"
+                  theme="borderless"
+                  type="tertiary"
+                  icon={<Eye size={14} strokeWidth={2} />}
+                  onClick={() => handlePreview(f)}
+                />
+              )}
+              <Button
+                size="small"
+                theme="borderless"
+                type="tertiary"
+                icon={<Download size={14} strokeWidth={2} />}
+                onClick={() => triggerDownload(f)}
+                disabled={!f.url}
+              />
+            </div>
           </div>
-        ))}
-      </div>
-    );
+        );
+      })}
+      {imageUrls.length > 0 && (
+        <ImagePreview
+          src={imageUrls}
+          currentIndex={previewIndex}
+          onChange={setPreviewIndex}
+          visible={previewVisible}
+          onVisibleChange={setPreviewVisible}
+        />
+      )}
+    </div>
+  );
+};
+
+const renderValue = (field: SchemeField, value: unknown) => {
+  // 文件上传
+  if (field.type === 'file_upload') {
+    if (!isFileList(value)) return <Text>-</Text>;
+    return <FileListRenderer files={value} />;
   }
 
   // 长文本：textarea / rich_text，超长可展开
