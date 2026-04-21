@@ -97,15 +97,6 @@ const ArtifactSection = ({ data }: ArtifactSectionProps) => {
     },
   ];
 
-  const handleOfflineConfirm = () => {
-    if (!offlineReason.trim()) {
-      Toast.warning(t('requirements.delivery.offlineConfirm.placeholder'));
-      return;
-    }
-    Toast.success(t('requirements.delivery.offlineConfirm.success'));
-    setOfflineOpen(false);
-    setOfflineReason('');
-  };
 
   const renderLinkRow = (
     label: string,
