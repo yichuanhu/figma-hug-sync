@@ -33,13 +33,10 @@ interface ProcessRow {
 
 const ArtifactSection = ({ data }: ArtifactSectionProps) => {
   const { t } = useTranslation();
-  const [offlineOpen, setOfflineOpen] = useState(false);
-  const [offlineReason, setOfflineReason] = useState('');
 
   const linkedProcesses = data.linkedProcesses ?? [];
   const buckets = bucketLinkedProcesses(linkedProcesses);
   const totalAttributed = linkedProcesses.length;
-  const isOnline = data.status === 'LAUNCHED';
 
   const rows: ProcessRow[] = useMemo(
     () =>
