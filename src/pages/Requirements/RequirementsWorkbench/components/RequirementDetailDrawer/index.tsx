@@ -406,7 +406,9 @@ const RequirementDetailDrawer = ({
                   </div>
                 )}
 
-                <ArtifactSection data={data} />
+                {(['DEVELOPING', 'LAUNCHED', 'OFFLINE'] as const).includes(data.status as any) && (
+                  <ArtifactSection data={data} />
+                )}
 
                 <ActivityStream activities={activities} t={t} />
               </div>
