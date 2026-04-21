@@ -507,6 +507,7 @@
         "approval": "审批流程",
         "cost": "成本配置"
       },
+      "fieldsPreview": "字段预览（只读）",
       "approverType": {
         "user": "指定用户",
         "role": "角色",

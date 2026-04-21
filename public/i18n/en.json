@@ -601,6 +601,7 @@
         "approval": "Approval Flow",
         "cost": "Cost Config"
       },
+      "fieldsPreview": "Fields Preview (Read-only)",
       "approverType": {
         "user": "Specific Users",
         "role": "Role",
