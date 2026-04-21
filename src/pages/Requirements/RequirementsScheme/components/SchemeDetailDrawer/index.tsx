@@ -211,15 +211,25 @@ const SchemeDetailDrawer = ({
               {scheme.custom_fields.length === 0 ? (
                 <Empty description={t('common.noData')} />
               ) : (
-                <>
-                  {scheme.custom_fields.map(renderField)}
-                  <div style={{ marginTop: 24 }}>
-                    <Text strong style={{ display: 'block', marginBottom: 12 }}>
-                      {t('requirements.scheme.fieldsPreview')}
-                    </Text>
-                    <ReadonlySchemeFieldsRenderer fields={scheme.custom_fields} showEmpty />
-                  </div>
-                </>
+                <div className="scheme-detail-drawer-form-preview">
+                  <Text type="tertiary" size="small" style={{ display: 'block', marginBottom: 12 }}>
+                    {t('requirements.scheme.fieldsPreview')}
+                  </Text>
+                  <Form
+                    initValues={buildPreviewValues(scheme.custom_fields)}
+                    disabled
+                    labelPosition="top"
+                    className="scheme-detail-drawer-preview-form"
+                  >
+                    {scheme.custom_fields.map((f) => (
+                      <SchemeFieldRenderer
+                        key={f.key}
+                        field={f}
+                        costConfig={scheme.cost_config}
+                      />
+                    ))}
+                  </Form>
+                </div>
               )}
             </div>
           </TabPane>
