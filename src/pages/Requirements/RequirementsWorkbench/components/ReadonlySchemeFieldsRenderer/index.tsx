@@ -9,14 +9,40 @@
  * - showEmpty=true：始终渲染所有字段（无值显示 "-"），用于方案预览/需求详情
  */
 
-import { Typography } from '@douyinfe/semi-ui';
-import { Paperclip } from 'lucide-react';
+import { useState } from 'react';
+import { Typography, Button, ImagePreview } from '@douyinfe/semi-ui';
+import { Paperclip, Download, Eye } from 'lucide-react';
 import dayjs from 'dayjs';
 import ExpandableText from '@/components/ExpandableText';
 import type { SchemeField } from '../../types';
 import './index.less';
 
 const { Text } = Typography;
+
+const IMAGE_EXT = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp', 'svg'];
+const isImageFile = (name: string) => {
+  const ext = name.split('.').pop()?.toLowerCase() ?? '';
+  return IMAGE_EXT.includes(ext);
+};
+
+interface AttachmentFile {
+  name: string;
+  size?: number;
+  uid?: string;
+  url?: string;
+}
+
+const triggerDownload = (file: AttachmentFile) => {
+  const url = file.url ?? '#';
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = file.name;
+  a.target = '_blank';
+  a.rel = 'noopener noreferrer';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+};
 
 const LONG_TEXT_TYPES = new Set(['textarea', 'rich_text', 'file_upload']);
 
