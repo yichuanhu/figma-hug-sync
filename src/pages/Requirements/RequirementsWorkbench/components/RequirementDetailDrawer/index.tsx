@@ -5,7 +5,7 @@ import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
-import type { RequirementItem, ActivityRecord, DetailedAssessment, SchemeField } from '../../types';
+import type { RequirementItem, ActivityRecord, DetailedAssessment } from '../../types';
 import { statusConfig, priorityConfig, fetchActivities, updateRequirementAssessment, MOCK_CURRENT_USER_ID } from '../../mockData';
 import { PRESET_SCHEMES } from '../../schemeConfig';
 import { findWorkspaceByRequirementId } from '../../../RequirementsProjects/mockData';
@@ -13,6 +13,7 @@ import ApprovalSection from './ApprovalSection';
 import AssessmentTab from './AssessmentTab';
 import CostEstimateTab from './CostEstimateTab';
 import ApprovalFlowProgress from '../ApprovalFlowProgress';
+import ReadonlySchemeFieldsRenderer from '../ReadonlySchemeFieldsRenderer';
 import './index.less';
 import { ChevronDown, ChevronRight, ClipboardCheck, FileText, Pencil, PowerOff, RotateCcw, Send, Trash2, Wallet } from 'lucide-react';
 
