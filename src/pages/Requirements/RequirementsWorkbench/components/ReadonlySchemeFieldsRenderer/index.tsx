@@ -141,7 +141,7 @@ const FileListRenderer = ({ files }: { files: AttachmentFile[] }) => {
         <ImagePreview
           src={imageUrls}
           currentIndex={previewIndex}
-          onIndexChange={setPreviewIndex}
+          onChange={setPreviewIndex}
           visible={previewVisible}
           onVisibleChange={setPreviewVisible}
         />
