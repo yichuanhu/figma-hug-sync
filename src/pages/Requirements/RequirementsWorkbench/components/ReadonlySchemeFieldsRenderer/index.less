@@ -1,0 +1,27 @@
+.readonly-scheme-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.readonly-scheme-fields-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--semi-color-border);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.readonly-scheme-fields-label {
+  flex: 0 0 140px;
+  padding-top: 2px;
+}
+
+.readonly-scheme-fields-value {
+  flex: 1;
+  word-break: break-word;
+}

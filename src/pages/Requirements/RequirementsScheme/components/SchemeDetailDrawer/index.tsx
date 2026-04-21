@@ -9,6 +9,7 @@ import type {
   SchemeField,
   ApprovalLevelConfig,
 } from '@/pages/Requirements/RequirementsWorkbench/types';
+import ReadonlySchemeFieldsRenderer from '@/pages/Requirements/RequirementsWorkbench/components/ReadonlySchemeFieldsRenderer';
 import './index.less';
 
 const { Text, Title } = Typography;
@@ -210,7 +211,15 @@ const SchemeDetailDrawer = ({
               {scheme.custom_fields.length === 0 ? (
                 <Empty description={t('common.noData')} />
               ) : (
-                scheme.custom_fields.map(renderField)
+                <>
+                  {scheme.custom_fields.map(renderField)}
+                  <div style={{ marginTop: 24 }}>
+                    <Text strong style={{ display: 'block', marginBottom: 12 }}>
+                      {t('requirements.scheme.fieldsPreview')}
+                    </Text>
+                    <ReadonlySchemeFieldsRenderer fields={scheme.custom_fields} showEmpty />
+                  </div>
+                </>
               )}
             </div>
           </TabPane>

@@ -5,7 +5,7 @@ import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
-import type { RequirementItem, ActivityRecord, DetailedAssessment, SchemeField } from '../../types';
+import type { RequirementItem, ActivityRecord, DetailedAssessment } from '../../types';
 import { statusConfig, priorityConfig, fetchActivities, updateRequirementAssessment, MOCK_CURRENT_USER_ID } from '../../mockData';
 import { PRESET_SCHEMES } from '../../schemeConfig';
 import { findWorkspaceByRequirementId } from '../../../RequirementsProjects/mockData';
@@ -13,6 +13,7 @@ import ApprovalSection from './ApprovalSection';
 import AssessmentTab from './AssessmentTab';
 import CostEstimateTab from './CostEstimateTab';
 import ApprovalFlowProgress from '../ApprovalFlowProgress';
+import ReadonlySchemeFieldsRenderer from '../ReadonlySchemeFieldsRenderer';
 import './index.less';
 import { ChevronDown, ChevronRight, ClipboardCheck, FileText, Pencil, PowerOff, RotateCcw, Send, Trash2, Wallet } from 'lucide-react';
 
@@ -162,30 +163,6 @@ const PropertyPanel = ({
 
 // ============= 自定义字段区（Schema 驱动只读展示） =============
 
-const formatFieldValue = (field: SchemeField, value: unknown): string => {
-  if (value === undefined || value === null || value === '') return '-';
-  if (Array.isArray(value)) {
-    if (field.options) {
-      return value
-        .map((v) => field.options?.find((o) => o.value === v)?.label ?? String(v))
-        .join('、');
-    }
-    return value.map((v) => String(v)).join('、');
-  }
-  if (field.options) {
-    const opt = field.options.find((o) => o.value === value);
-    if (opt) return opt.label;
-  }
-  if (field.type === 'percentage' && typeof value === 'number') {
-    return `${value}%`;
-  }
-  if (field.unit && (typeof value === 'number' || typeof value === 'string')) {
-    return `${value}${field.unit}`;
-  }
-  if (typeof value === 'boolean') return value ? '是' : '否';
-  return String(value);
-};
-
 const CustomFieldsSection = ({
   data,
   t,
@@ -199,30 +176,21 @@ const CustomFieldsSection = ({
   }, [data.scheme_id]);
 
   const fields = scheme?.custom_fields ?? [];
+  if (fields.length === 0) return null;
+
+  // 预先判断是否有任何已填写值，避免空区块标题孤立显示
   const formData = data.form_data ?? {};
-  const visible = fields.filter(
+  const hasAny = fields.some(
     (f) => formData[f.key] !== undefined && formData[f.key] !== null && formData[f.key] !== '',
   );
-
-  if (visible.length === 0) return null;
+  if (!hasAny) return null;
 
   return (
     <div className="requirement-detail-section">
       <Text strong style={{ display: 'block', marginBottom: 12 }}>
         {t('requirements.detail.customFieldsTitle')}
       </Text>
-      <div className="requirement-detail-custom-fields">
-        {visible.map((f) => (
-          <div key={f.key} className="requirement-detail-custom-field-item">
-            <Text type="tertiary" size="small" className="requirement-detail-custom-field-label">
-              {f.label}
-            </Text>
-            <Text className="requirement-detail-custom-field-value">
-              {formatFieldValue(f, formData[f.key])}
-            </Text>
-          </div>
-        ))}
-      </div>
+      <ReadonlySchemeFieldsRenderer fields={fields} formData={formData} />
     </div>
   );
 };
