@@ -193,7 +193,7 @@ const RequirementsProjects = () => {
               </Dropdown.Item>
               <Tooltip
                 content={t('requirements.projects.validation.projectHasWorkspaces')}
-                trigger={r.workspaceCount > 0 ? 'mouseenter' : 'custom'}
+                trigger={r.workspaceCount > 0 ? 'hover' : 'custom'}
                 visible={r.workspaceCount > 0 ? undefined : false}
                 position="left"
               >
