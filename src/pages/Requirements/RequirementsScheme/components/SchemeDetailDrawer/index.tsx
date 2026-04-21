@@ -9,6 +9,7 @@ import type {
   SchemeField,
   ApprovalLevelConfig,
 } from '@/pages/Requirements/RequirementsWorkbench/types';
+import ReadonlySchemeFieldsRenderer from '@/pages/Requirements/RequirementsWorkbench/components/ReadonlySchemeFieldsRenderer';
 import './index.less';
 
 const { Text, Title } = Typography;
