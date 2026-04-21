@@ -51,6 +51,20 @@ export const PRESET_SCHEMES: RequirementScheme[] = [
       { key: 'contact_phone', label: '联系方式', type: 'text', required: true, validation: { pattern: '^1[3-9]\\d{9}$', message: '请输入有效的手机号码' }, ui_width: 'medium' },
       { key: 'job_level', label: '执行该业务的岗位级别', type: 'select', required: true, source: 'cost_config.rate_table', ui_width: 'medium', description: '用于估算节省金额，费率由方案 cost_config 提供' },
       { key: 'process_screenshot', label: '流程截图', type: 'file_upload', required: false, ui_width: 'full', description: '上传当前操作流程的截图或文档（PNG/JPG/PDF，最多 5 个，单个 ≤10MB）' },
+      { key: 'business_context', label: '业务背景', type: 'textarea', required: false, validation: { maxLength: 2000 }, ui_width: 'full', description: '描述业务现状与痛点' },
+      { key: 'expected_launch_date', label: '期望上线日期', type: 'date', required: false, ui_width: 'medium' },
+      { key: 'is_compliance_required', label: '是否涉及合规审计', type: 'radio', required: false, ui_width: 'medium', options: [
+        { label: '是', value: 'yes' },
+        { label: '否', value: 'no' },
+      ] },
+      { key: 'related_systems', label: '涉及系统', type: 'multi_select', required: false, ui_width: 'full', options: [
+        { label: 'SAP', value: 'sap' },
+        { label: '金蝶', value: 'kingdee' },
+        { label: '用友', value: 'yonyou' },
+        { label: 'Excel', value: 'excel' },
+        { label: '邮件系统', value: 'email' },
+      ] },
+      { key: 'attachments', label: '需求附件', type: 'file_upload', required: false, ui_width: 'full', description: 'PRD / 流程文档 / 参考资料' },
     ],
     value_assessment_model: {
       key: 'rpa-pro-value',
