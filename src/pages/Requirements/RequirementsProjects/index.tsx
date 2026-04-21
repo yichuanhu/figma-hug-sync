@@ -191,13 +191,21 @@ const RequirementsProjects = () => {
               >
                 {t('common.edit')}
               </Dropdown.Item>
-              <Dropdown.Item
-                icon={<Trash2 size={16} strokeWidth={2} />}
-                type="danger"
-                onClick={() => handleDelete(r)}
+              <Tooltip
+                content={t('requirements.projects.validation.projectHasWorkspaces')}
+                trigger={r.workspaceCount > 0 ? 'mouseenter' : 'custom'}
+                visible={r.workspaceCount > 0 ? undefined : false}
+                position="left"
               >
-                {t('common.delete')}
-              </Dropdown.Item>
+                <Dropdown.Item
+                  icon={<Trash2 size={16} strokeWidth={2} />}
+                  type="danger"
+                  disabled={r.workspaceCount > 0}
+                  onClick={() => r.workspaceCount === 0 && handleDelete(r)}
+                >
+                  {t('common.delete')}
+                </Dropdown.Item>
+              </Tooltip>
             </Dropdown.Menu>
           }
         >
