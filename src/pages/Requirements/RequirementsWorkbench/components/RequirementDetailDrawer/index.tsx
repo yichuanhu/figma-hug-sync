@@ -422,9 +422,7 @@ const RequirementDetailDrawer = ({
                   </div>
                 )}
 
-                {(['DEVELOPING', 'LAUNCHED', 'OFFLINE'] as const).includes(data.status as any) && (
-                  <ArtifactSection data={data} />
-                )}
+                <CustomFieldsSection data={data} t={t} />
 
                 <ActivityStream activities={activities} t={t} />
               </div>
@@ -455,20 +453,6 @@ const RequirementDetailDrawer = ({
             >
               <div className="requirement-detail-tab-content">
                 <CostEstimateTab data={data} />
-              </div>
-            </TabPane>
-
-            <TabPane
-              tab={
-                <span className="requirement-detail-tab-label">
-                  <History size={14} strokeWidth={2} />
-                  {t('requirements.detail.tab.versions')}
-                </span>
-              }
-              itemKey="versions"
-            >
-              <div className="requirement-detail-tab-content">
-                <VersionHistoryTab data={data} />
               </div>
             </TabPane>
           </Tabs>
