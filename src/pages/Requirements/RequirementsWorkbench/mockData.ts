@@ -232,12 +232,12 @@ const generateMockRequirements = (): RequirementItem[] => {
         base.is_compliance_required = index % 2 === 0 ? 'yes' : 'no';
         base.related_systems = index % 3 === 0 ? ['sap', 'excel', 'email'] : ['kingdee', 'excel'];
         base.process_screenshot = [
-          { uid: `${id}-shot-1`, name: '当前流程截图.png', size: 245678 },
-          { uid: `${id}-shot-2`, name: '系统操作录屏.mp4', size: 8456123 },
+          { uid: `${id}-shot-1`, name: '当前流程截图.png', size: 245678, url: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=80' },
+          { uid: `${id}-shot-2`, name: '系统操作录屏.mp4', size: 8456123, url: 'https://www.w3schools.com/html/mov_bbb.mp4' },
         ];
         base.attachments = [
-          { uid: `${id}-att-1`, name: 'PRD-需求说明书.pdf', size: 1234567 },
-          { uid: `${id}-att-2`, name: '业务流程图.vsdx', size: 456789 },
+          { uid: `${id}-att-1`, name: 'PRD-需求说明书.pdf', size: 1234567, url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' },
+          { uid: `${id}-att-2`, name: '业务流程图.vsdx', size: 456789, url: 'https://file-examples.com/storage/fe5947fd2362fc197a3c2df/2017/02/file_example_XLSX_10.xlsx' },
         ];
         return base;
       })(),
