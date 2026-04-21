@@ -1,17 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Typography,
-  Table,
-  Tag,
-  Button,
-  Modal,
-  TextArea,
-  Toast,
-} from '@douyinfe/semi-ui';
+import { Typography, Table, Tag } from '@douyinfe/semi-ui';
 import { Link } from 'react-router-dom';
 import type { RequirementItem, ArtifactType, LinkedProcess } from '../../types';
-import { ExternalLink, PowerOff } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import { bucketLinkedProcesses, linkedProcessStatusConfig } from '../../utils/aggregateLinkedStatus';
 
 const { Text } = Typography;
