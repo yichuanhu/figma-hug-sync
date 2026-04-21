@@ -75,6 +75,13 @@ const formatScalar = (field: SchemeField, value: unknown): string => {
   return String(value);
 };
 
+const formatFileSize = (size?: number) => {
+  if (!size && size !== 0) return '';
+  if (size < 1024) return `${size}B`;
+  if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)}KB`;
+  return `${(size / 1024 / 1024).toFixed(1)}MB`;
+};
+
 const isFileList = (value: unknown): value is AttachmentFile[] =>
   Array.isArray(value) && value.length > 0 && value.every((v) => v && typeof v === 'object' && 'name' in v);
 
