@@ -1,82 +1,65 @@
 
 
-## 计划：概览 Tab 重排 + 右侧属性面板精简（修订版）
+## 计划：重写《资源依赖前置 — 流程级别管理》需求文档
 
-### 背景澄清
-「业务背景」「附件」均属于 scheme 定义的自定义字段（`business_context` / `attachments` 等 key），不再作为独立硬编码区块；统一由「需求详情」区块通过 `ReadonlySchemeFieldsRenderer` 按 scheme 顺序渲染。
+依据现有代码实现，对文档进行同步更新。重点补充原文档缺失的「依赖失效（MISSING）」相关交互与逻辑。
 
-### A. 概览 Tab 内容重排
+### 主要变化点（相对旧文档）
 
-**新顺序（自上而下）：**
+1. **数据模型新增 `status` 字段**：`'ACTIVE' | 'MISSING'`，标记资源是否仍在业务资产表中存在
+2. **新增「失效依赖」交互**：
+   - DependencyTab 顶部出现警示 Banner（X 项资源已失效）
+   - 失效项卡片置灰、不可跳转，显示「前往创建」按钮（携带 defaultName 跳转到对应资源管理页打开创建弹窗）
+   - 手动添加按钮（删除）对失效项隐藏
+3. **上传版本后失效依赖告警**：新依赖中如有 MISSING，弹出 Modal 列出失效资源名称 + 「前往处理」按钮跳转到资源依赖 Tab；纯新增则 Toast「自动解析出 N 项新资源依赖」
+4. **创建发布时阻断**：聚合资源列表中存在 MISSING 时不允许进入下一步，并提供跳转到该流程依赖 Tab 的入口
+5. **资源跳转支持双上下文**：`development` → `/dev-center/business-assets/...`；`scheduling` → `/scheduling-center/business-assets/...`
+6. **资源值展示规则细化**：
+   - PARAMETER：development 显示「测试值」、scheduling 显示「生产值」
+   - CREDENTIAL：显示「用户名/账号」字段（不是统一掩码）
+   - QUEUE / FILE：仅显示资源名 + 来源标签
+
+### 文档新版结构
+
 ```text
-1. 需求详情（Schema 自定义字段渲染区，含业务背景/附件等所有 scheme 字段）
-2. 审批流程
-3. 活动记录
+一、需求背景与目标
+  1.1 现状（发布时实时解析）
+  1.2 变更目标（前置到流程维度）
+  1.3 变更驱动（前端 UI 优化驱动）
+
+二、核心设计
+  - ASCII 示意图
+  - 关键规则：增量合并 / 手动永久 / resource_id 去重
+  - 新增：失效检测规则（每次读取时与业务资产表比对，标记 status）
+
+三、数据模型
+  3.1 LYProcessDependency（含 status 字段）
+  3.2 LYProcessResponse / LYPublishableProcessResponse 扩展
+
+四、前端实现说明
+  4.1 流程详情抽屉「资源依赖」Tab
+      - 分组、卡片、跳转、删除规则
+      - 失效 Banner + 失效卡片 + 前往创建
+      - context: development / scheduling 行为差异
+  4.2 上传版本交互
+      - 增量合并 + Toast / Modal 告警
+  4.3 创建发布
+      - 聚合 dependencies、移除 detectDependencies
+      - MISSING 阻断 + 跳转处理
+
+五、后端变更需求
+  5.1 上传后自动解析 + 增量合并
+  5.2 流程依赖 CRUD 接口
+  5.3 流程详情接口扩展（含 status 计算）
+  5.4 发布列表接口适配
+  5.5 资源失效状态计算（每次响应时与业务资产表 LEFT JOIN，缺失则 status=MISSING）
+
+六、前后端对接要点（表格，新增失效场景行）
+
+七、实施顺序建议
 ```
 
-**变更要点：**
-- **删除「描述」区块**
-- **删除独立的「业务背景」区块**（迁入需求详情）
-- **删除独立的「附件」区块**（迁入需求详情）
-- **「需求详情」置顶**：复用 `ReadonlySchemeFieldsRenderer`，传 `showEmpty={true}` 完整呈现 scheme 结构
-  - 标题文案：「需求详情」/「Requirement Details」
-  - 无 scheme 或字段为空时显示空状态「暂无需求详情」
-- **「审批流程」紧接其后**，位于活动记录之前
+### 输出
 
-### B. ReadonlySchemeFieldsRenderer 增强
-
-为支持业务背景（长文本）、附件（文件列表）等字段类型在只读视图中正确渲染，需补充：
-- `textarea` / `rich_text`：多行展示，保留换行；超长时使用 `ExpandableText` 截断 3 行
-- `file_upload` / `attachments`：文件列表展示（文件名 + 大小 + 下载链接，使用 Lucide `Paperclip` 图标）
-- `date` / `date-range`：按当前 locale 格式化（dayjs）
-- 现有 text/number/percentage/select/multi-select/radio/checkbox/boolean 保持不变
-- 长文本字段（textarea/rich_text/attachments）单独占整行宽度，不与短字段并排
-
-### C. Mock 数据补强
-
-调整 2-3 个代表性 mock 需求（如 `REQ-2026-0038`）的 `form_data` + 对应 `PRESET_SCHEMES` 定义：
-- 将原硬编码的 `business_context`、`attachments` 数据迁移到 scheme 的 `custom_fields` 中
-- 补全字段类型样例：text / textarea / number / percentage / select / multi-select / radio / checkbox / date / boolean / file_upload，确保「需求详情」可视化覆盖所有类型
-
-### D. 右侧属性面板调整
-
-- **删除「期望上线日期」字段行**（非 §4.1 系统固定字段）
-- 删除后字段顺序：
-```text
-[ 状态 ]   [ 优先级 ]
-─────────────────────────
-归属部门         Finance
-项目负责人        张三 (UserNameWithCard)
-创建者           John Smith (UserNameWithCard)
-─────────────────────────
-关联工作空间      财务自动化空间（只读）
-所属项目         数字化项目（灰字，继承）
-─────────────────────────
-创建时间 / 更新时间
-─────────────────────────
-[草稿态：提交审批] / [审批进度区]
-```
-- 编辑/创建表单保持不变，仅详情属性面板隐藏「期望上线日期」
-
-### 改动文件
-- `RequirementDetailDrawer/index.tsx`
-  - overview Tab：删除「描述」「业务背景」「附件」三个独立区块；将「需求详情」置顶并 `showEmpty={true}`；审批流程 → 活动记录
-  - PropertyPanel：删除「期望上线日期」行
-- `ReadonlySchemeFieldsRenderer/index.tsx` + `index.less`
-  - 补充 textarea/rich_text/file_upload/date 的格式化与样式
-  - 长文本类字段强制占整行
-- `mockData.ts` + `PRESET_SCHEMES`
-  - 将 business_context/attachments 迁入 scheme custom_fields
-  - 扩充字段类型样例覆盖
-- `public/i18n/zh-CN.json` / `en.json`
-  - `customFieldsTitle` 文案改为「需求详情」/「Requirement Details」
-  - 新增空态文案 `customFieldsEmpty`
-
-### 验收
-1. 概览 Tab 自上而下顺序为：需求详情 → 审批流程 → 活动记录（仅 3 大区块）
-2. 「描述」「业务背景」「附件」不再作为独立区块；业务背景与附件作为 scheme 字段在「需求详情」中按定义顺序展示
-3. 「需求详情」覆盖所有字段类型样例（含长文本与文件列表，渲染正确）
-4. 右侧属性面板不再显示「期望上线日期」
-5. 历史版本只读模式下，上述顺序与字段隐藏逻辑同样生效
-6. 方案预览（SchemeDetailDrawer 字段预览 Tab）继续复用增强后的 Renderer，无回归
+将重写后的文档写入 `/mnt/documents/资源依赖前置_流程级别管理_需求文档.md`（覆盖原文件），并以 `presentation-artifact` 形式呈现给用户。文档全程使用中文。
 
