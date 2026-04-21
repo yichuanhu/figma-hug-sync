@@ -15,6 +15,7 @@ import {
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
+import { Tooltip } from '@douyinfe/semi-ui';
 import { Plus, Pencil, Trash2, Ellipsis } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
@@ -190,13 +191,21 @@ const RequirementsProjects = () => {
               >
                 {t('common.edit')}
               </Dropdown.Item>
-              <Dropdown.Item
-                icon={<Trash2 size={16} strokeWidth={2} />}
-                type="danger"
-                onClick={() => handleDelete(r)}
+              <Tooltip
+                content={t('requirements.projects.validation.projectHasWorkspaces')}
+                trigger={r.workspaceCount > 0 ? 'hover' : 'custom'}
+                visible={r.workspaceCount > 0 ? undefined : false}
+                position="left"
               >
-                {t('common.delete')}
-              </Dropdown.Item>
+                <Dropdown.Item
+                  icon={<Trash2 size={16} strokeWidth={2} />}
+                  type="danger"
+                  disabled={r.workspaceCount > 0}
+                  onClick={() => r.workspaceCount === 0 && handleDelete(r)}
+                >
+                  {t('common.delete')}
+                </Dropdown.Item>
+              </Tooltip>
             </Dropdown.Menu>
           }
         >
