@@ -1,17 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Typography,
-  Table,
-  Tag,
-  Button,
-  Modal,
-  TextArea,
-  Toast,
-} from '@douyinfe/semi-ui';
+import { Typography, Table, Tag } from '@douyinfe/semi-ui';
 import { Link } from 'react-router-dom';
 import type { RequirementItem, ArtifactType, LinkedProcess } from '../../types';
-import { ExternalLink, PowerOff } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import { bucketLinkedProcesses, linkedProcessStatusConfig } from '../../utils/aggregateLinkedStatus';
 
 const { Text } = Typography;
@@ -41,13 +33,10 @@ interface ProcessRow {
 
 const ArtifactSection = ({ data }: ArtifactSectionProps) => {
   const { t } = useTranslation();
-  const [offlineOpen, setOfflineOpen] = useState(false);
-  const [offlineReason, setOfflineReason] = useState('');
 
   const linkedProcesses = data.linkedProcesses ?? [];
   const buckets = bucketLinkedProcesses(linkedProcesses);
   const totalAttributed = linkedProcesses.length;
-  const isOnline = data.status === 'LAUNCHED';
 
   const rows: ProcessRow[] = useMemo(
     () =>
@@ -108,15 +97,6 @@ const ArtifactSection = ({ data }: ArtifactSectionProps) => {
     },
   ];
 
-  const handleOfflineConfirm = () => {
-    if (!offlineReason.trim()) {
-      Toast.warning(t('requirements.delivery.offlineConfirm.placeholder'));
-      return;
-    }
-    Toast.success(t('requirements.delivery.offlineConfirm.success'));
-    setOfflineOpen(false);
-    setOfflineReason('');
-  };
 
   const renderLinkRow = (
     label: string,
@@ -141,21 +121,8 @@ const ArtifactSection = ({ data }: ArtifactSectionProps) => {
 
   return (
     <div className="requirement-detail-section">
-      <div className="requirement-detail-section-header" style={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-          <Text strong>{t('requirements.delivery.title')}</Text>
-        </div>
-        {isOnline && (
-          <Button
-            size="small"
-            type="danger"
-            theme="borderless"
-            icon={<PowerOff size={14} strokeWidth={2} />}
-            onClick={() => setOfflineOpen(true)}
-          >
-            {t('requirements.delivery.offline')}
-          </Button>
-        )}
+      <div className="requirement-detail-section-header">
+        <Text strong>{t('requirements.delivery.title')}</Text>
       </div>
 
       {/* 关联项目 / 工作空间 / 关联方式 */}
@@ -199,30 +166,6 @@ const ArtifactSection = ({ data }: ArtifactSectionProps) => {
         </Text>
       )}
 
-      <Modal
-        title={t('requirements.delivery.offlineConfirm.title')}
-        visible={offlineOpen}
-        onCancel={() => setOfflineOpen(false)}
-        onOk={handleOfflineConfirm}
-        okText={t('requirements.delivery.offlineConfirm.ok')}
-        cancelText={t('requirements.delivery.offlineConfirm.cancel')}
-        okButtonProps={{ type: 'danger' }}
-        width={480}
-      >
-        <div>
-          <Text size="small" style={{ display: 'block', marginBottom: 8 }}>
-            {t('requirements.delivery.offlineConfirm.reason')}
-          </Text>
-          <TextArea
-            placeholder={t('requirements.delivery.offlineConfirm.placeholder')}
-            value={offlineReason}
-            onChange={(v) => setOfflineReason(v)}
-            maxCount={500}
-            showClear
-            autosize={{ minRows: 3, maxRows: 6 }}
-          />
-        </div>
-      </Modal>
     </div>
   );
 };
