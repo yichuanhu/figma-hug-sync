@@ -573,7 +573,7 @@ const RequirementDetailDrawer = ({
               itemKey="assessment"
             >
               <div className="requirement-detail-tab-content">
-                <AssessmentTab data={effectiveData} onSaveAssessment={isHistoryMode ? undefined as any : handleSaveAssessment} />
+                <AssessmentTab data={effectiveData} onSaveAssessment={handleSaveAssessment} />
               </div>
             </TabPane>
 
