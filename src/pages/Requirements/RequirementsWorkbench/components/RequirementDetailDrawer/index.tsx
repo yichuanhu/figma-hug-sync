@@ -87,10 +87,6 @@ const PropertyPanel = ({
             email={data.creatorEmail}
           />
         </div>
-        <div className="requirement-detail-property-item">
-          <Text type="tertiary" size="small">{t('requirements.fields.expectedLaunchDate')}</Text>
-          <Text>{data.expectedLaunchDate ? data.expectedLaunchDate.substring(0, 10) : '-'}</Text>
-        </div>
       </div>
 
       <div className="requirement-detail-property-divider" />
@@ -176,21 +172,18 @@ const CustomFieldsSection = ({
   }, [data.scheme_id]);
 
   const fields = scheme?.custom_fields ?? [];
-  if (fields.length === 0) return null;
-
-  // 预先判断是否有任何已填写值，避免空区块标题孤立显示
   const formData = data.form_data ?? {};
-  const hasAny = fields.some(
-    (f) => formData[f.key] !== undefined && formData[f.key] !== null && formData[f.key] !== '',
-  );
-  if (!hasAny) return null;
 
   return (
     <div className="requirement-detail-section">
       <Text strong style={{ display: 'block', marginBottom: 12 }}>
         {t('requirements.detail.customFieldsTitle')}
       </Text>
-      <ReadonlySchemeFieldsRenderer fields={fields} formData={formData} />
+      {fields.length > 0 ? (
+        <ReadonlySchemeFieldsRenderer fields={fields} formData={formData} showEmpty />
+      ) : (
+        <Text type="tertiary">{t('requirements.detail.customFieldsEmpty')}</Text>
+      )}
     </div>
   );
 };
