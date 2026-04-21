@@ -166,30 +166,6 @@ const ArtifactSection = ({ data }: ArtifactSectionProps) => {
         </Text>
       )}
 
-      <Modal
-        title={t('requirements.delivery.offlineConfirm.title')}
-        visible={offlineOpen}
-        onCancel={() => setOfflineOpen(false)}
-        onOk={handleOfflineConfirm}
-        okText={t('requirements.delivery.offlineConfirm.ok')}
-        cancelText={t('requirements.delivery.offlineConfirm.cancel')}
-        okButtonProps={{ type: 'danger' }}
-        width={480}
-      >
-        <div>
-          <Text size="small" style={{ display: 'block', marginBottom: 8 }}>
-            {t('requirements.delivery.offlineConfirm.reason')}
-          </Text>
-          <TextArea
-            placeholder={t('requirements.delivery.offlineConfirm.placeholder')}
-            value={offlineReason}
-            onChange={(v) => setOfflineReason(v)}
-            maxCount={500}
-            showClear
-            autosize={{ minRows: 3, maxRows: 6 }}
-          />
-        </div>
-      </Modal>
     </div>
   );
 };
