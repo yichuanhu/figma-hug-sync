@@ -1,6 +1,6 @@
 import { useMemo, useRef, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Tabs, TabPane, Typography, Tag, Button, Empty } from '@douyinfe/semi-ui';
+import { Tabs, TabPane, Typography, Tag, Button, Empty, Form } from '@douyinfe/semi-ui';
 import { CheckCircle, Trash2, Pencil } from 'lucide-react';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type {
@@ -9,7 +9,7 @@ import type {
   SchemeField,
   ApprovalLevelConfig,
 } from '@/pages/Requirements/RequirementsWorkbench/types';
-import ReadonlySchemeFieldsRenderer from '@/pages/Requirements/RequirementsWorkbench/components/ReadonlySchemeFieldsRenderer';
+import SchemeFieldRenderer from '@/pages/Requirements/RequirementsWorkbench/components/SchemeFieldRenderer';
 import './index.less';
 
 const { Text, Title } = Typography;
