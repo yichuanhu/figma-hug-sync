@@ -136,21 +136,47 @@ const SchemeDetailDrawer = ({
     );
   };
 
-  const renderField = (f: SchemeField) => (
-    <div key={f.key} className="scheme-detail-drawer-field-row">
-      <Tag size="small" color="blue" type="light">{f.type}</Tag>
-      <div className="field-label">
-        <Text strong>{f.label}</Text>
-        {f.required && <Text type="danger" style={{ marginLeft: 4 }}>*</Text>}
-        {f.description && (
-          <div>
-            <Text type="tertiary" size="small">{f.description}</Text>
-          </div>
-        )}
-      </div>
-      <span className="field-key">{f.key}</span>
-    </div>
-  );
+  // 「表单字段」Tab 的预览初始值：按字段类型生成示例数据，让禁用表单看起来像真实填写后的样子
+  const buildPreviewValues = (fields: SchemeField[]): Record<string, unknown> => {
+    const values: Record<string, unknown> = {};
+    fields.forEach((f) => {
+      if (f.default !== undefined) {
+        values[f.key] = f.default;
+        return;
+      }
+      switch (f.type) {
+        case 'number':
+          values[f.key] = f.validation?.min ?? 12;
+          break;
+        case 'percentage':
+          values[f.key] = 80;
+          break;
+        case 'select':
+        case 'radio':
+          values[f.key] = f.options?.[0]?.value;
+          break;
+        case 'multi_select':
+        case 'checkbox_group':
+          values[f.key] = f.options?.slice(0, 2).map((o) => o.value) ?? [];
+          break;
+        case 'date':
+          values[f.key] = new Date();
+          break;
+        case 'textarea':
+        case 'rich_text':
+          values[f.key] = `${f.label} 示例内容`;
+          break;
+        case 'text':
+          values[f.key] = `${f.label} 示例`;
+          break;
+        case 'calculation':
+        case 'file_upload':
+        default:
+          break;
+      }
+    });
+    return values;
+  };
 
   const renderLevel = (l: ApprovalLevelConfig) => (
     <div key={l.order} className="scheme-detail-drawer-level-row">
