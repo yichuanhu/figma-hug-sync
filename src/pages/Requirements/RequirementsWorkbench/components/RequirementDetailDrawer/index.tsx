@@ -464,6 +464,45 @@ const RequirementDetailDrawer = ({
         ) : null
       }
     >
+      {(hasHistory || isHistoryMode) && (
+        <div className="requirement-detail-version-bar">
+          <Text type="tertiary" size="small" style={{ marginRight: 8 }}>
+            {t('requirements.detail.versionLabel')}:
+          </Text>
+          <Select
+            size="small"
+            value={viewingVersion}
+            style={{ width: 180 }}
+            onChange={(v) => setViewingVersion(v as 'current' | number)}
+          >
+            <Select.Option value="current">
+              {t('requirements.detail.versionLatest')}
+              {data.version ? ` (v${data.version})` : ''}
+            </Select.Option>
+            {sortedHistory.map((v) => (
+              <Select.Option key={v.version} value={v.version}>
+                {`v${v.version} · ${v.createdAt.replace('T', ' ').substring(0, 16)}`}
+              </Select.Option>
+            ))}
+          </Select>
+        </div>
+      )}
+      {isHistoryMode && currentSnapshot && (
+        <Banner
+          type="warning"
+          fullMode={false}
+          closeIcon={null}
+          description={
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+              <span>{t('requirements.detail.viewingHistoryBanner', { version: currentSnapshot.version })}</span>
+              <Button size="small" theme="borderless" onClick={() => setViewingVersion('current')}>
+                {t('requirements.detail.backToLatest')}
+              </Button>
+            </div>
+          }
+          style={{ margin: '0 0 12px' }}
+        />
+      )}
       <div className="requirement-detail-layout">
         {/* 左侧 Tab 区域 */}
         <div className="requirement-detail-left">
@@ -483,7 +522,7 @@ const RequirementDetailDrawer = ({
               itemKey="overview"
             >
               <div className="requirement-detail-tab-content">
-                {data.approvalFlowConfig && <ApprovalFlowProgress config={data.approvalFlowConfig} />}
+                {effectiveData.approvalFlowConfig && !isHistoryMode && <ApprovalFlowProgress config={effectiveData.approvalFlowConfig} />}
                 <div className="requirement-detail-section">
                   <div
                     className="requirement-detail-section-header"
@@ -494,33 +533,33 @@ const RequirementDetailDrawer = ({
                   </div>
                   <Collapsible isOpen={descExpanded}>
                     <Paragraph className="requirement-detail-description">
-                      {data.description || '-'}
+                      {effectiveData.description || '-'}
                     </Paragraph>
-                    {data.businessBackground && (
+                    {effectiveData.businessBackground && (
                       <div style={{ marginTop: 12 }}>
                         <Text type="tertiary" size="small" style={{ display: 'block', marginBottom: 4 }}>
                           {t('requirements.form.businessBackgroundLabel')}
                         </Text>
                         <Paragraph className="requirement-detail-description">
-                          {data.businessBackground}
+                          {effectiveData.businessBackground}
                         </Paragraph>
                       </div>
                     )}
                   </Collapsible>
                 </div>
 
-                {data.attachments && data.attachments.length > 0 && (
+                {effectiveData.attachments && effectiveData.attachments.length > 0 && (
                   <div className="requirement-detail-section">
                     <Text strong>{t('requirements.detail.attachments')}</Text>
                     <Text type="tertiary" size="small" style={{ marginTop: 8 }}>
-                      {data.attachments.length} {t('requirements.detail.files')}
+                      {effectiveData.attachments.length} {t('requirements.detail.files')}
                     </Text>
                   </div>
                 )}
 
-                <CustomFieldsSection data={data} t={t} />
+                <CustomFieldsSection data={effectiveData} t={t} />
 
-                <ActivityStream activities={activities} t={t} />
+                {!isHistoryMode && <ActivityStream activities={activities} t={t} />}
               </div>
             </TabPane>
 
@@ -534,7 +573,7 @@ const RequirementDetailDrawer = ({
               itemKey="assessment"
             >
               <div className="requirement-detail-tab-content">
-                <AssessmentTab data={data} onSaveAssessment={handleSaveAssessment} />
+                <AssessmentTab data={effectiveData} onSaveAssessment={isHistoryMode ? undefined as any : handleSaveAssessment} />
               </div>
             </TabPane>
 
@@ -548,7 +587,7 @@ const RequirementDetailDrawer = ({
               itemKey="cost"
             >
               <div className="requirement-detail-tab-content">
-                <CostEstimateTab data={data} />
+                <CostEstimateTab data={effectiveData} />
               </div>
             </TabPane>
           </Tabs>
@@ -556,7 +595,7 @@ const RequirementDetailDrawer = ({
 
         {/* 右侧属性面板 */}
         <div className="requirement-detail-right">
-          <PropertyPanel data={data} t={t} onStatusChange={onStatusChange} onRefresh={onRefresh} />
+          <PropertyPanel data={effectiveData} t={t} onStatusChange={onStatusChange} onRefresh={onRefresh} />
         </div>
       </div>
     </DetailDrawerWrapper>
