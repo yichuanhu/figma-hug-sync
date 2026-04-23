@@ -1294,15 +1294,15 @@
       },
       "modal": {
         "title": "升级客户端版本",
-        "summary": "即将预约升级 {{deviceCount}} 个客户端（共影响 {{robotCount}} 台机器人）",
+        "summary": "即将升级 {{deviceCount}} 个客户端（共影响 {{robotCount}} 台机器人）",
         "targetVersion": "目标版本",
         "currentVersion": "当前版本",
         "affectedRobots": "关联机器人（{{count}}）",
-        "allOfflineTip": "关联机器人均离线，将在重新上线后自动升级",
-        "busyTip": "{{count}} 台机器人正在执行任务，将在任务完成后升级",
-        "idleTip": "机器人均空闲，可立即升级",
-        "queueExplain": "升级会等待关联机器人全部空闲后自动执行，期间可继续接收新任务",
-        "confirm": "确认预约升级",
+        "receivingTasksTip": "建议在升级前关闭关联机器人的「接收任务」开关，避免升级期间有新任务被分发。如不关闭，已在执行的任务可能因客户端重启而中断。",
+        "busyTip": "{{count}} 台机器人正在执行任务，升级期间任务可能会被中断",
+        "idleTip": "机器人均空闲，可直接升级",
+        "allOfflineTip": "关联机器人均离线，升级指令将在客户端恢复连接后下发",
+        "confirm": "确认升级",
         "allLatest": "所选客户端均已是最新版本"
       },
       "popover": {
