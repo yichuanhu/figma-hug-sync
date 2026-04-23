@@ -1282,17 +1282,17 @@
         "success": "已取消升级预约"
       },
       "modal": {
-        "title": "升级设备客户端",
-        "summary": "即将预约升级 {{deviceCount}} 台设备（共影响 {{robotCount}} 台机器人）",
+        "title": "升级客户端版本",
+        "summary": "即将预约升级 {{deviceCount}} 个客户端（共影响 {{robotCount}} 台机器人）",
         "targetVersion": "目标版本",
         "currentVersion": "当前版本",
-        "affectedRobots": "影响机器人（{{count}}）",
-        "allOfflineTip": "设备所有机器人均离线，将在重新上线后自动升级",
-        "busyTip": "{{count}} 台正在执行任务，将在任务完成后升级",
-        "idleTip": "设备空闲，可立即升级",
-        "queueExplain": "升级会等待设备下所有机器人空闲后自动执行，期间设备可继续接收新任务",
+        "affectedRobots": "关联机器人（{{count}}）",
+        "allOfflineTip": "关联机器人均离线，将在重新上线后自动升级",
+        "busyTip": "{{count}} 台机器人正在执行任务，将在任务完成后升级",
+        "idleTip": "机器人均空闲，可立即升级",
+        "queueExplain": "升级会等待关联机器人全部空闲后自动执行，期间可继续接收新任务",
         "confirm": "确认预约升级",
-        "allLatest": "所选设备均已是最新版本"
+        "allLatest": "所选客户端均已是最新版本"
       },
       "popover": {
         "title": "客户端版本可升级",

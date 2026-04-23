@@ -1648,17 +1648,17 @@
         "success": "Scheduled upgrade cancelled"
       },
       "modal": {
-        "title": "Upgrade Device Client",
-        "summary": "Schedule upgrade for {{deviceCount}} device(s), affecting {{robotCount}} robot(s)",
+        "title": "Upgrade Client Version",
+        "summary": "Schedule upgrade for {{deviceCount}} client(s), affecting {{robotCount}} robot(s)",
         "targetVersion": "Target version",
         "currentVersion": "Current version",
-        "affectedRobots": "Affected robots ({{count}})",
-        "allOfflineTip": "All robots on this device are offline; upgrade will run after they reconnect",
+        "affectedRobots": "Linked robots ({{count}})",
+        "allOfflineTip": "All linked robots are offline; upgrade will run after they reconnect",
         "busyTip": "{{count}} robot(s) running tasks; upgrade will run after tasks finish",
-        "idleTip": "Device is idle; can upgrade immediately",
-        "queueExplain": "The upgrade waits until all robots on the device are idle; the device can keep accepting new tasks meanwhile",
+        "idleTip": "All robots are idle; can upgrade immediately",
+        "queueExplain": "The upgrade waits until all linked robots are idle; new tasks can still be accepted meanwhile",
         "confirm": "Schedule Upgrade",
-        "allLatest": "Selected devices are already on the latest version"
+        "allLatest": "Selected clients are already on the latest version"
       },
       "popover": {
         "title": "Client upgrade available",
