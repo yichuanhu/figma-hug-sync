@@ -1301,6 +1301,9 @@
         "affectedRobots": "将影响该设备下 {{count}} 台机器人",
         "button": "升级客户端版本"
       }
+    }
+  },
+  "personalCenter": {
     "title": "个人中心",
     "tabs": {
       "personalCredentials": "个人凭据管理",
