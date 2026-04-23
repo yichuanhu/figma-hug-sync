@@ -517,7 +517,7 @@ const mockWorkers: WorkerWithUpgrade[] = [
     upgrade_target_version: 'v6.8.0',
     upgrade_failed_reason: '网络超时：升级包下载失败，请检查客户端网络连接',
   },
-  // ===== 设备 6: DESKTOP-K1L2 - QUEUED 全离线 =====
+  // ===== 设备 6: DESKTOP-K1L2 - 全离线，可点击升级按钮（弹窗会提示离线无法执行）=====
   {
     id: '550e8400-e29b-41d4-a716-446655440006',
     name: 'Finance Bot-Off-01',
@@ -547,8 +547,7 @@ const mockWorkers: WorkerWithUpgrade[] = [
     owning_department_name: 'Finance Department',
     created_at: '2025-01-03 15:45:00',
     creator_id: 'admin',
-    upgrade_status: 'QUEUED',
-    upgrade_target_version: 'v6.8.0',
+    upgrade_status: 'NONE',
   },
   {
     id: '550e8400-e29b-41d4-a716-446655440061',
@@ -579,8 +578,7 @@ const mockWorkers: WorkerWithUpgrade[] = [
     owning_department_name: 'Finance Department',
     created_at: '2025-01-03 15:46:00',
     creator_id: 'admin',
-    upgrade_status: 'QUEUED',
-    upgrade_target_version: 'v6.8.0',
+    upgrade_status: 'NONE',
   },
   {
     id: '550e8400-e29b-41d4-a716-446655440062',
@@ -611,8 +609,7 @@ const mockWorkers: WorkerWithUpgrade[] = [
     owning_department_name: 'Finance Department',
     created_at: '2025-01-03 15:47:00',
     creator_id: 'admin',
-    upgrade_status: 'QUEUED',
-    upgrade_target_version: 'v6.8.0',
+    upgrade_status: 'NONE',
   },
   // ===== 设备 7: DESKTOP-LATEST - 已是最新 (对照组) =====
   {
