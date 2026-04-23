@@ -57,7 +57,7 @@ const mockWorkerGroups = [
 ];
 
 // MockData - usingAPIType
-const mockWorkers: LYWorkerResponse[] = [
+const mockWorkers: WorkerWithUpgrade[] = [
   {
     id: '550e8400-e29b-41d4-a716-446655440001',
     name: 'Finance Bot-01',
