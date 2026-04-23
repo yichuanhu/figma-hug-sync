@@ -117,7 +117,7 @@ const UpgradeDeviceModal = ({ visible, onCancel, onOk, devices }: UpgradeDeviceM
             {list[0].target?.releaseNotes && (
               <Paragraph
                 className="upgrade-device-modal-release-notes"
-                ellipsis={{ rows: 2, showTooltip: true, expandable: true, expandText: t('common.expand'), collapseText: t('common.collapse') }}
+                ellipsis={{ rows: 2, expandable: true, collapsible: true, expandText: t('common.expand'), collapseText: t('common.collapse') }}
               >
                 {list[0].target.releaseNotes}
               </Paragraph>
