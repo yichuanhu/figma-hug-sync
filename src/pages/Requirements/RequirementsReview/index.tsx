@@ -538,16 +538,7 @@ const RequirementsReview = () => {
           keepDOM={false}
         >
           <TabPane
-            tab={
-              <span>
-                {t('requirements.review.pendingMe')}
-                {stats.pendingCount > 0 && (
-                  <Tag size="small" color="orange" type="solid" style={{ marginLeft: 6 }}>
-                    {stats.pendingCount}
-                  </Tag>
-                )}
-              </span>
-            }
+            tab={t('requirements.review.pendingMe')}
             itemKey="pending"
           >
             {isInitialLoad ? (
