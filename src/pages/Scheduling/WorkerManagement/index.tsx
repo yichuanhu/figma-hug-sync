@@ -1163,91 +1163,26 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
 
   const handleConfirmUpgrade = useCallback(
     (machineCodes: string[]) => {
-      // 按设备判定：全部空闲则直接 UPGRADING；存在 BUSY/MAINTENANCE/全离线则 QUEUED
-      let upgradingCount = 0;
-      let queuedCount = 0;
-      setListResponse((prev) => {
-        // 先按 machine_code 聚合一次，便于判定每台设备状态
-        const peersByCode = new Map<string, WorkerWithUpgrade[]>();
-        prev.list.forEach((w) => {
+      // 简化：所有勾选客户端直接进入 UPGRADING 状态（已移除预约升级）
+      setListResponse((prev) => ({
+        ...prev,
+        list: prev.list.map((w) => {
           const code = (w as WorkerWithUpgrade).machine_code || w.id;
-          if (!peersByCode.has(code)) peersByCode.set(code, []);
-          peersByCode.get(code)!.push(w as WorkerWithUpgrade);
-        });
-        const deviceNextStatus = new Map<string, 'UPGRADING' | 'QUEUED'>();
-        machineCodes.forEach((code) => {
-          const peers = peersByCode.get(code) || [];
-          const allIdleOnline = peers.length > 0 && peers.every((p) => p.status === 'IDLE');
-          if (allIdleOnline) {
-            deviceNextStatus.set(code, 'UPGRADING');
-            upgradingCount += 1;
-          } else {
-            deviceNextStatus.set(code, 'QUEUED');
-            queuedCount += 1;
-          }
-        });
-        return {
-          ...prev,
-          list: prev.list.map((w) => {
-            const code = (w as WorkerWithUpgrade).machine_code || w.id;
-            const next = deviceNextStatus.get(code);
-            if (!next) return w;
-            const target = getEnabledVersion(w.desktop_type);
-            return {
-              ...w,
-              upgrade_status: next,
-              upgrade_target_version: target?.version || null,
-              upgrade_failed_reason: null,
-            } as WorkerWithUpgrade;
-          }),
-        };
-      });
+          if (!machineCodes.includes(code)) return w;
+          const target = getEnabledVersion(w.desktop_type);
+          return {
+            ...w,
+            upgrade_status: 'UPGRADING',
+            upgrade_target_version: target?.version || null,
+            upgrade_failed_reason: null,
+          } as WorkerWithUpgrade;
+        }),
+      }));
       setUpgradeModalVisible(false);
       setSelectedRowKeys([]);
-      if (upgradingCount > 0 && queuedCount === 0) {
-        Toast.success(t('worker.upgrade.upgradingStarted', { count: upgradingCount }));
-      } else if (upgradingCount === 0 && queuedCount > 0) {
-        Toast.success(t('worker.upgrade.queuedSuccess', { count: queuedCount }));
-      } else {
-        Toast.success(
-          t('worker.upgrade.mixedSuccess', { upgrading: upgradingCount, queued: queuedCount })
-        );
-      }
+      Toast.success(t('worker.upgrade.upgradingStarted', { count: machineCodes.length }));
     },
     [t]
-  );
-
-  const handleCancelUpgrade = useCallback(
-    (record: WorkerWithUpgrade) => {
-      const machineCode = record.machine_code || record.id;
-      Modal.confirm({
-        title: t('worker.upgrade.cancel.title'),
-        content: t('worker.upgrade.cancel.confirmMessage'),
-        okText: t('worker.upgrade.cancel.confirm'),
-        cancelText: t('common.cancel'),
-        onOk: async () => {
-          setListResponse((prev) => ({
-            ...prev,
-            list: prev.list.map((w) => {
-              const code = (w as WorkerWithUpgrade).machine_code || w.id;
-              if (code !== machineCode) return w;
-              return {
-                ...w,
-                upgrade_status: 'NONE',
-                upgrade_target_version: null,
-              } as WorkerWithUpgrade;
-            }),
-          }));
-          if (selectedWorker?.machine_code === machineCode) {
-            setSelectedWorker((prev) =>
-              prev ? ({ ...prev, upgrade_status: 'NONE', upgrade_target_version: null } as any) : null
-            );
-          }
-          Toast.success(t('worker.upgrade.cancel.success'));
-        },
-      });
-    },
-    [t, selectedWorker]
   );
 
 
