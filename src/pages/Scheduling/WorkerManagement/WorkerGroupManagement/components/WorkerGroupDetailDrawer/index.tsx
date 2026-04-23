@@ -345,7 +345,7 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
                 block
                 onClick={() => triggerUpgrade([w.id])}
               >
-                {t('worker.upgrade.popover.upgrade')}
+                {t('worker.upgrade.popover.button')}
               </Button>
             </div>
           );
@@ -376,7 +376,7 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
             if (deviceStatus !== 'UPGRADING' && upgradable) {
               return (
                 <Dropdown.Item icon={<ArrowUpCircle size={16} strokeWidth={2} />} onClick={() => triggerUpgrade([record.id])}>
-                  {t('worker.upgrade.popover.upgrade')}
+                  {t('worker.upgrade.menu')}
                 </Dropdown.Item>
               );
             }
