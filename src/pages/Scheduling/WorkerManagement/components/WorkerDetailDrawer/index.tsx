@@ -118,10 +118,41 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
     }
     if (upgradeStatus === 'UPGRADING') {
       return (
-        <Space spacing={8}>
-          <span>{workerData.client_version}</span>
-          <Tag color="blue" type="solid" size="small">{t('worker.upgrade.upgrading.tag')}</Tag>
-        </Space>
+        <div>
+          <Space spacing={8}>
+            <span>{workerData.client_version}</span>
+            <Tag color="blue" type="solid" size="small">{t('worker.upgrade.upgrading.tag')}</Tag>
+          </Space>
+          <div style={{ marginTop: 4 }}>
+            <Text type="tertiary" size="small" style={{ color: 'var(--semi-color-primary)' }}>
+              {t('worker.upgrade.upgrading.tooltip', { version: wd.upgrade_target_version || upgradeTarget?.version || '' })}
+            </Text>
+          </div>
+        </div>
+      );
+    }
+    if (upgradeStatus === 'FAILED') {
+      return (
+        <div>
+          <Space spacing={8}>
+            <span>{workerData.client_version}</span>
+            <Tag color="red" type="light" size="small">{t('worker.upgrade.failed.tag')}</Tag>
+          </Space>
+          <div style={{ marginTop: 4 }}>
+            <Text type="danger" size="small">
+              {t('worker.upgrade.failed.reasonLabel')}：{wd.upgrade_failed_reason || t('worker.upgrade.failed.defaultReason')}
+            </Text>
+            <Button
+              theme="borderless"
+              type="primary"
+              size="small"
+              onClick={() => onUpgradeDevice?.(workerData)}
+              style={{ marginLeft: 8 }}
+            >
+              {t('worker.upgrade.failed.retry')}
+            </Button>
+          </div>
+        </div>
       );
     }
     if (upgradable && upgradeTarget) {
@@ -132,7 +163,7 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
             {t('worker.upgrade.badge.tag', { version: upgradeTarget.version })}
           </Tag>
           <Button theme="borderless" type="primary" size="small" onClick={() => onUpgradeDevice?.(workerData)}>
-            {t('worker.upgrade.menu')}
+            {t('worker.upgrade.popover.button')}
           </Button>
         </Space>
       );
@@ -184,8 +215,18 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
             disabled
           />
         </Tooltip>
+      ) : upgradeStatus === 'FAILED' ? (
+        <Tooltip content={t('worker.upgrade.failed.retry')}>
+          <Button
+            icon={<ArrowUpCircle size={16} strokeWidth={2} color="var(--semi-color-danger)" />}
+            theme="borderless"
+            type="tertiary"
+            size="small"
+            onClick={() => onUpgradeDevice?.(workerData)}
+          />
+        </Tooltip>
       ) : upgradable ? (
-        <Tooltip content={t('worker.upgrade.menu')}>
+        <Tooltip content={t('worker.upgrade.popover.button')}>
           <Button
             icon={<ArrowUpCircle size={16} strokeWidth={2} color="var(--semi-color-warning)" />}
             theme="borderless"
