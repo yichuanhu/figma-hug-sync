@@ -127,6 +127,11 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
   const [statusFilter, setStatusFilter] = useState<WorkerStatus[]>([]);
   const [addMembersVisible, setAddMembersVisible] = useState(false);
 
+  // 升级相关 state
+  const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
+  const [upgradeModalVisible, setUpgradeModalVisible] = useState(false);
+  const [upgradeDevices, setUpgradeDevices] = useState<{ machineCode: string; workers: WorkerWithUpgrade[] }[]>([]);
+
   type WorkerStatus = 'OFFLINE' | 'IDLE' | 'BUSY' | 'FAULT' | 'MAINTENANCE';
 
   const statusOptions = useMemo(() => [
@@ -207,6 +212,46 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
   const currentPage = Math.floor((range?.offset || 0) / (range?.size || 20)) + 1;
   const pageSize = range?.size || 20;
   const total = range?.total || 0;
+
+  // 设备维度聚合
+  const workerList = list as unknown as WorkerWithUpgrade[];
+  const deviceMap = groupWorkersByDevice(workerList);
+  const getDevicePeers = (record: WorkerWithUpgrade) =>
+    deviceMap.get(record.machine_code || record.id) || [record];
+
+  const triggerUpgrade = (workerIds: string[]) => {
+    const enabled = workerIds.some((id) => {
+      const w = workerList.find((x) => x.id === id);
+      return w && getEnabledVersion(w.desktop_type);
+    });
+    if (!enabled) {
+      Toast.warning(t('worker.upgrade.noEnabledVersion'));
+      return;
+    }
+    const devices = aggregateSelectedDevices(workerList, workerIds);
+    setUpgradeDevices(devices);
+    setUpgradeModalVisible(true);
+  };
+
+  const handleConfirmUpgrade = (machineCodes: string[]) => {
+    setMembersResponse((prev) => ({
+      ...prev,
+      list: prev.list.map((w) => {
+        const code = (w as WorkerWithUpgrade).machine_code || w.id;
+        if (!machineCodes.includes(code)) return w;
+        const target = getEnabledVersion(w.desktop_type);
+        return {
+          ...w,
+          upgrade_status: 'UPGRADING',
+          upgrade_target_version: target?.version || null,
+          upgrade_failed_reason: null,
+        } as LYWorkerGroupMemberResponse;
+      }),
+    }));
+    setUpgradeModalVisible(false);
+    setSelectedRowKeys([]);
+    Toast.success(t('worker.upgrade.upgradingStarted', { count: machineCodes.length }));
+  };
 
   const memberColumns = [
     { title: t('worker.table.workerName'), dataIndex: 'name', key: 'name', width: 180, ellipsis: true, render: (name: string, record: LYWorkerGroupMemberResponse) => (<div><div>{name}</div><div>{record.username || '-'}</div></div>) },
