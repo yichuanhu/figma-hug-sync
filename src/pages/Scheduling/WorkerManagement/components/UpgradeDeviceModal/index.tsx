@@ -70,6 +70,16 @@ const UpgradeDeviceModal = ({ visible, onCancel, onOk, devices }: UpgradeDeviceM
       className="upgrade-device-modal"
       centered
     >
+      {upgradableDevices.length > 0 && (
+        <Banner
+          type="warning"
+          fullMode={false}
+          closeIcon={null}
+          description={t('worker.upgrade.modal.receivingTasksTip')}
+          style={{ marginBottom: 16 }}
+        />
+      )}
+
       <div className="upgrade-device-modal-summary">
         <ArrowUpCircle size={18} className="upgrade-device-modal-summary-icon" strokeWidth={2} />
         <Text>
@@ -90,23 +100,12 @@ const UpgradeDeviceModal = ({ visible, onCancel, onOk, devices }: UpgradeDeviceM
         />
       )}
 
-      {upgradableDevices.length > 0 && (
-        <Banner
-          type="warning"
-          fullMode={false}
-          closeIcon={null}
-          description={t('worker.upgrade.modal.receivingTasksTip')}
-          style={{ marginBottom: 12 }}
-        />
-      )}
-
       {validDevices.length === 0 ? (
         <Empty description={t('worker.upgrade.modal.allLatest')} style={{ padding: '24px 0' }} />
       ) : (
         grouped.map(([clientType, list]) => (
           <div key={clientType} className="upgrade-device-modal-group">
             <div className="upgrade-device-modal-group-header">
-              <Tag color="blue" type="light">{clientType}</Tag>
               <Text strong>
                 {t('worker.upgrade.modal.targetVersion')}：{list[0].target?.version}
               </Text>
