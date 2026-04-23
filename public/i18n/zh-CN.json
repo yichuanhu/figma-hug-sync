@@ -1265,11 +1265,20 @@
         "more": "等 {{count}} 台",
         "detailDescription": "已预约升级到 {{version}}，将在该设备所有机器人空闲后自动执行"
       },
+      "queuedOffline": {
+        "tag": "重新上线后自动升级",
+        "tooltip": "客户端离线，恢复连接后将自动执行升级"
+      },
       "upgrading": {
         "tag": "升级中",
+        "tooltip": "正在升级到 {{version}}，预计 1-2 分钟",
         "cannotCancel": "升级已开始，无法取消"
       },
       "failed": {
+        "tag": "升级失败",
+        "title": "客户端升级失败",
+        "reasonLabel": "失败原因",
+        "retry": "重试升级",
         "defaultReason": "升级失败"
       },
       "cancel": {

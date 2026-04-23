@@ -1631,11 +1631,20 @@
         "more": " and {{count}} more",
         "detailDescription": "Upgrade to {{version}} scheduled; will run automatically when all robots on this device are idle"
       },
+      "queuedOffline": {
+        "tag": "Auto-upgrade when back online",
+        "tooltip": "Client is offline; upgrade will run automatically once it reconnects"
+      },
       "upgrading": {
         "tag": "Upgrading",
+        "tooltip": "Upgrading to {{version}}, takes about 1-2 minutes",
         "cannotCancel": "Upgrade has started; cannot cancel"
       },
       "failed": {
+        "tag": "Upgrade failed",
+        "title": "Client upgrade failed",
+        "reasonLabel": "Reason",
+        "retry": "Retry upgrade",
         "defaultReason": "Upgrade failed"
       },
       "cancel": {
