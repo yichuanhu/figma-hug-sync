@@ -1301,10 +1301,10 @@
         "receivingTasksTip": "建议在升级前关闭关联机器人的「接收任务」开关，避免升级期间有新任务被分发。",
         "busyTip": "{{count}} 台机器人正在执行任务，升级将等待当前任务完成后自动开始",
         "idleTip": "机器人均空闲，可直接升级",
-        "allOfflineTip": "关联机器人均离线，无法升级，请待客户端恢复连接后重试",
-        "cannotUpgradeTag": "无法升级",
+        "allOfflineTip": "客户端离线，请待客户端恢复连接后重试",
+        "cannotUpgradeTag": "客户端离线",
         "waitBusyBannerTip": "其中 {{count}} 个客户端有机器人正在执行任务，升级将进入等待队列，待任务完成后自动执行。",
-        "offlineBlockedTip": "其中 {{count}} 个客户端因关联机器人均离线而无法升级，将自动跳过。",
+        "offlineBlockedTip": "其中 {{count}} 个客户端离线，无法执行升级，将自动跳过。",
         "confirm": "确认升级",
         "allLatest": "所选客户端均已是最新版本"
       },
