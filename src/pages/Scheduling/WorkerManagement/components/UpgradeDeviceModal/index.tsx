@@ -40,6 +40,7 @@ const UpgradeDeviceModal = ({ visible, onCancel, onOk, devices }: UpgradeDeviceM
   // 可执行升级的客户端：必须有可用升级版本，且不能全部离线
   const upgradableDevices = validDevices.filter((d) => !d.allOffline);
   const offlineDevices = validDevices.filter((d) => d.allOffline);
+  const busyDevices = upgradableDevices.filter((d) => d.blocking.length > 0);
   const totalRobots = upgradableDevices.reduce((s, d) => s + d.workers.length, 0);
 
   // 按 clientType 分组（Console / NotConsole）
@@ -89,6 +90,16 @@ const UpgradeDeviceModal = ({ visible, onCancel, onOk, devices }: UpgradeDeviceM
           })}
         </Text>
       </div>
+
+      {busyDevices.length > 0 && (
+        <Banner
+          type="info"
+          fullMode={false}
+          closeIcon={null}
+          description={t('worker.upgrade.modal.waitBusyBannerTip', { count: busyDevices.length })}
+          style={{ marginBottom: 12 }}
+        />
+      )}
 
       {offlineDevices.length > 0 && (
         <Banner
