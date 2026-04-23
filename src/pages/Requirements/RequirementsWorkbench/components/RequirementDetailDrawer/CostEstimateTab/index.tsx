@@ -69,7 +69,7 @@ const CostEstimateTab = ({ data }: Props) => {
             <Text type="tertiary" size="small">
               {t('requirements.costEstimate.baseline.frequency')}
             </Text>
-            <Title className="cost-baseline-value" heading={4} style={{ margin: 0, fontSize: 14 }}>
+            <Title className="cost-baseline-value" heading={4} style={{ margin: 0, fontSize: 16 }}>
               {frequency} {t('requirements.costEstimate.unit.timesPerMonth')}
             </Title>
           </div>
@@ -77,7 +77,7 @@ const CostEstimateTab = ({ data }: Props) => {
             <Text type="tertiary" size="small">
               {t('requirements.costEstimate.baseline.duration')}
             </Text>
-            <Title className="cost-baseline-value" heading={4} style={{ margin: 0, fontSize: 14 }}>
+            <Title className="cost-baseline-value" heading={4} style={{ margin: 0, fontSize: 16 }}>
               {durationMinutes} {t('requirements.costEstimate.unit.minutes')}
             </Title>
           </div>
@@ -85,7 +85,7 @@ const CostEstimateTab = ({ data }: Props) => {
             <Text type="tertiary" size="small">
               {t('requirements.costEstimate.baseline.automationRatio')}
             </Text>
-            <Title className="cost-baseline-value" heading={4} style={{ margin: 0, fontSize: 14 }}>
+            <Title className="cost-baseline-value" heading={4} style={{ margin: 0, fontSize: 16 }}>
               {Math.round(automationRatio * 100)}%
             </Title>
           </div>
@@ -118,15 +118,15 @@ const CostEstimateTab = ({ data }: Props) => {
         <div className="cost-result-grid cost-result-grid-3">
           <div className="cost-result-cell">
             <Text type="tertiary" size="small">{t('requirements.costEstimate.savedHours')}</Text>
-            <Title heading={4} style={{ margin: 0, fontSize: 14 }}>{fmtNum(monthlySavedHours)} h</Title>
+            <Title heading={4} style={{ margin: 0, fontSize: 16 }}>{fmtNum(monthlySavedHours)} h</Title>
           </div>
           <div className="cost-result-cell">
             <Text type="tertiary" size="small">{t('requirements.costEstimate.savedPersonDays')}</Text>
-            <Title heading={4} style={{ margin: 0, fontSize: 14 }}>{fmtNum(monthlySavedPersonDays)} d</Title>
+            <Title heading={4} style={{ margin: 0, fontSize: 16 }}>{fmtNum(monthlySavedPersonDays)} d</Title>
           </div>
           <div className="cost-result-cell cost-result-cell-total">
             <Text type="tertiary" size="small">{t('requirements.costEstimate.savedAmount')}</Text>
-            <Title heading={4} style={{ margin: 0, fontSize: 14, color: 'var(--semi-color-primary)' }}>
+            <Title heading={4} style={{ margin: 0, fontSize: 16, color: 'var(--semi-color-primary)' }}>
               ¥{Math.round(monthlySavedAmount).toLocaleString()}
             </Title>
           </div>
