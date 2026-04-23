@@ -448,11 +448,47 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
                   </Space>
                 </Col>
                 <Col>
-                  <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => setAddMembersVisible(true)}>{t('workerGroup.detail.addMember')}</Button>
+                  <Space>
+                    {selectedRowKeys.length > 0 && (() => {
+                      const selectedDevices = aggregateSelectedDevices(workerList, selectedRowKeys);
+                      const hasUpgradable = selectedDevices.some((d) =>
+                        d.workers.some(isUpgradeAvailable) && !d.workers.some((w) => w.upgrade_status === 'UPGRADING')
+                      );
+                      return (
+                        <>
+                          <Text type="tertiary" size="small">
+                            {t('worker.upgrade.batchSelected', { count: selectedRowKeys.length })}
+                          </Text>
+                          {hasUpgradable && (
+                            <Button
+                              icon={<ArrowUpCircle size={16} strokeWidth={2} />}
+                              onClick={() => triggerUpgrade(selectedRowKeys)}
+                            >
+                              {t('worker.upgrade.batchButton')}
+                            </Button>
+                          )}
+                        </>
+                      );
+                    })()}
+                    <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => setAddMembersVisible(true)}>{t('workerGroup.detail.addMember')}</Button>
+                  </Space>
                 </Col>
               </Row>
               <div className="worker-group-detail-drawer-members-table">
-                <Table size="small" columns={memberColumns} dataSource={list} loading={membersLoading} rowKey="id" empty={<EmptyState variant={queryParams.keyword ? 'noResult' : 'noData'} description={queryParams.keyword ? t('common.noResult') : t('workerGroup.detail.noMembers')} />} pagination={false} scroll={{ y: 'calc(100vh - 400px)' }} />
+                <Table
+                  size="small"
+                  columns={memberColumns}
+                  dataSource={list}
+                  loading={membersLoading}
+                  rowKey="id"
+                  empty={<EmptyState variant={queryParams.keyword ? 'noResult' : 'noData'} description={queryParams.keyword ? t('common.noResult') : t('workerGroup.detail.noMembers')} />}
+                  pagination={false}
+                  scroll={{ y: 'calc(100vh - 400px)' }}
+                  rowSelection={{
+                    selectedRowKeys,
+                    onChange: (keys) => setSelectedRowKeys((keys || []) as string[]),
+                  }}
+                />
                 {total > pageSize * 2 && (
                   <div style={{ paddingTop: 8, display: 'flex', justifyContent: 'flex-end' }}>
                     <Pagination
@@ -473,6 +509,12 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
         </TabPane>
       </Tabs>
       <AddMembersModal visible={addMembersVisible} onCancel={() => setAddMembersVisible(false)} groupId={groupData.id} groupName={groupData.name} onSuccess={handleAddMembersSuccess} />
+      <UpgradeDeviceModal
+        visible={upgradeModalVisible}
+        onCancel={() => setUpgradeModalVisible(false)}
+        onOk={handleConfirmUpgrade}
+        devices={upgradeDevices}
+      />
     </DetailDrawerWrapper>
   );
 };
