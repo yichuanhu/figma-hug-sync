@@ -1085,16 +1085,6 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
                     </Tooltip>
                   );
                 }
-                if (upgradable) {
-                  return (
-                    <Dropdown.Item
-                      icon={<ArrowUpCircle size={16} strokeWidth={2} />}
-                      onClick={() => triggerUpgrade([record.id])}
-                    >
-                      {t('worker.upgrade.menu')}
-                    </Dropdown.Item>
-                  );
-                }
                 return null;
               })()}
               <Dropdown.Item
