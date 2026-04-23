@@ -28,12 +28,16 @@
     flex-direction: column;
     min-height: 0;
     overflow: hidden;
+    height: 0;
 
     > .semi-tabs-content,
     > .semi-tabs-content-top {
       flex: 1;
       min-height: 0;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 0;
     }
 
     .semi-tabs-bar {
@@ -44,13 +48,25 @@
       flex: 1;
       min-height: 0;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
 
     .semi-tabs-pane {
+      flex: 1;
       height: 100%;
+      min-height: 0;
       display: flex;
       flex-direction: column;
       overflow: hidden;
+    }
+
+    .semi-tabs-pane-motion-overlay {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
   }
 }
