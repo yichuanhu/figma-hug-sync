@@ -189,7 +189,7 @@ const mockWorkers: WorkerWithUpgrade[] = [
     owning_department_name: 'Finance Department',
     created_at: '2025-01-06 09:15:00',
     creator_id: 'admin',
-    upgrade_status: 'QUEUED',
+    upgrade_status: 'UPGRADING',
     upgrade_target_version: 'v6.8.0',
   },
   {
@@ -221,7 +221,7 @@ const mockWorkers: WorkerWithUpgrade[] = [
     owning_department_name: 'Finance Department',
     created_at: '2025-01-06 09:16:00',
     creator_id: 'admin',
-    upgrade_status: 'QUEUED',
+    upgrade_status: 'UPGRADING',
     upgrade_target_version: 'v6.8.0',
   },
   {
@@ -253,7 +253,7 @@ const mockWorkers: WorkerWithUpgrade[] = [
     owning_department_name: 'Finance Department',
     created_at: '2025-01-06 09:17:00',
     creator_id: 'admin',
-    upgrade_status: 'QUEUED',
+    upgrade_status: 'UPGRADING',
     upgrade_target_version: 'v6.8.0',
   },
   // ===== 设备 3: DESKTOP-E5F6 - QUEUED 多机器人阻塞 =====
@@ -286,7 +286,7 @@ const mockWorkers: WorkerWithUpgrade[] = [
     owning_department_name: 'Human Resources Department',
     created_at: '2025-01-04 11:20:00',
     creator_id: 'hr_admin',
-    upgrade_status: 'QUEUED',
+    upgrade_status: 'UPGRADING',
     upgrade_target_version: 'v6.8.0',
   },
   {
@@ -318,7 +318,7 @@ const mockWorkers: WorkerWithUpgrade[] = [
     owning_department_name: 'Human Resources Department',
     created_at: '2025-01-04 11:21:00',
     creator_id: 'hr_admin',
-    upgrade_status: 'QUEUED',
+    upgrade_status: 'UPGRADING',
     upgrade_target_version: 'v6.8.0',
   },
   {
@@ -350,7 +350,7 @@ const mockWorkers: WorkerWithUpgrade[] = [
     owning_department_name: 'Human Resources Department',
     created_at: '2025-01-04 11:22:00',
     creator_id: 'hr_admin',
-    upgrade_status: 'QUEUED',
+    upgrade_status: 'UPGRADING',
     upgrade_target_version: 'v6.8.0',
   },
   {
@@ -382,7 +382,7 @@ const mockWorkers: WorkerWithUpgrade[] = [
     owning_department_name: 'Human Resources Department',
     created_at: '2025-01-04 11:23:00',
     creator_id: 'hr_admin',
-    upgrade_status: 'QUEUED',
+    upgrade_status: 'UPGRADING',
     upgrade_target_version: 'v6.8.0',
   },
   // ===== 设备 4: DESKTOP-G7H8 - UPGRADING 升级中 =====
@@ -547,7 +547,7 @@ const mockWorkers: WorkerWithUpgrade[] = [
     owning_department_name: 'Finance Department',
     created_at: '2025-01-03 15:45:00',
     creator_id: 'admin',
-    upgrade_status: 'QUEUED',
+    upgrade_status: 'UPGRADING',
     upgrade_target_version: 'v6.8.0',
   },
   {
@@ -579,7 +579,7 @@ const mockWorkers: WorkerWithUpgrade[] = [
     owning_department_name: 'Finance Department',
     created_at: '2025-01-03 15:46:00',
     creator_id: 'admin',
-    upgrade_status: 'QUEUED',
+    upgrade_status: 'UPGRADING',
     upgrade_target_version: 'v6.8.0',
   },
   {
@@ -611,7 +611,7 @@ const mockWorkers: WorkerWithUpgrade[] = [
     owning_department_name: 'Finance Department',
     created_at: '2025-01-03 15:47:00',
     creator_id: 'admin',
-    upgrade_status: 'QUEUED',
+    upgrade_status: 'UPGRADING',
     upgrade_target_version: 'v6.8.0',
   },
   // ===== 设备 7: DESKTOP-LATEST - 已是最新 (对照组) =====
