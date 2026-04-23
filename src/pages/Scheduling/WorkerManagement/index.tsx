@@ -42,7 +42,7 @@ import {
   groupWorkersByDevice,
 } from './utils/upgrade';
 import { getEnabledVersion } from '@/mocks/clientVersionData';
-import { ArrowUpCircle, AlertCircle, Tooltip as TooltipIconLucide } from 'lucide-react';
+import { ArrowUpCircle, AlertCircle } from 'lucide-react';
 import { Tooltip } from '@douyinfe/semi-ui';
 import './index.less';
 
