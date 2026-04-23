@@ -173,6 +173,9 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     if (pathname.startsWith('/personal-center')) {
       return 'personalCenter';
     }
+    if (pathname.startsWith('/notification-center')) {
+      return '';
+    }
     return 'developmentCenter';
   };
 
