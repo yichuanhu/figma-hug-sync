@@ -42,7 +42,7 @@ import {
   groupWorkersByDevice,
 } from './utils/upgrade';
 import { getEnabledVersion } from '@/mocks/clientVersionData';
-import { ArrowUpCircle, AlertCircle, Loader2, Clock } from 'lucide-react';
+import { ArrowUpCircle, AlertCircle, Loader2, Clock, WifiOff } from 'lucide-react';
 import { Tooltip } from '@douyinfe/semi-ui';
 import './index.less';
 
@@ -1323,6 +1323,43 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
               <Popover content={failedPopover} trigger="hover" position="top" showArrow>
                 <Tag color="red" type="light" size="small" prefixIcon={<AlertCircle size={12} strokeWidth={2} />} style={{ cursor: 'pointer' }}>
                   {t('worker.upgrade.failed.tag')}
+                </Tag>
+              </Popover>
+            </div>
+          );
+        }
+        // 客户端离线：与升级失败保持一致样式 —— 红色 Tag + Popover，并提供升级按钮（点击会进入升级弹窗，由弹窗提示客户端离线）
+        const deviceOffline = peers.some((p) => p.device_online === false);
+        if (deviceOffline && upgradable && target) {
+          const offlinePopover = (
+            <div style={{ padding: 12, width: 280 }} onClick={(e) => e.stopPropagation()}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                <WifiOff size={14} strokeWidth={2} color="var(--semi-color-danger)" />
+                <Text strong>{t('worker.upgrade.offline.title')}</Text>
+              </div>
+              <div style={{ marginBottom: 10 }}>
+                <Text type="tertiary" size="small">
+                  {t('worker.upgrade.offline.description')}
+                </Text>
+              </div>
+              <Button
+                theme="solid"
+                type="primary"
+                size="small"
+                icon={<ArrowUpCircle size={14} strokeWidth={2} />}
+                block
+                onClick={() => triggerUpgrade([record.id])}
+              >
+                {t('worker.upgrade.offline.retry')}
+              </Button>
+            </div>
+          );
+          return (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={(e) => e.stopPropagation()}>
+              <span>{version}</span>
+              <Popover content={offlinePopover} trigger="hover" position="top" showArrow>
+                <Tag color="red" type="light" size="small" prefixIcon={<WifiOff size={12} strokeWidth={2} />} style={{ cursor: 'pointer' }}>
+                  {t('worker.upgrade.offline.tag')}
                 </Tag>
               </Popover>
             </div>
