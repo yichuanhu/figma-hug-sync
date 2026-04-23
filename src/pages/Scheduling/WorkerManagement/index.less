@@ -82,11 +82,15 @@
     min-height: 0;
     overflow: hidden;
 
-    > .semi-table,
-    > .semi-table-wrapper {
+    > .worker-management-table-content {
       flex: 1;
       min-height: 0;
       overflow: auto;
+
+      > .semi-table,
+      > .semi-table-wrapper {
+        min-height: 0;
+      }
     }
 
     > .list-pagination {
