@@ -67,7 +67,11 @@ interface WorkerGroupDetailDrawerProps {
 }
 
 // Mock成员Data
-const mockMembers: LYWorkerGroupMemberResponse[] = [
+const mockMembers: (LYWorkerGroupMemberResponse & {
+  upgrade_status?: 'NONE' | 'UPGRADING' | 'FAILED';
+  upgrade_target_version?: string | null;
+  upgrade_failed_reason?: string | null;
+})[] = [
   {
     id: '550e8400-e29b-41d4-a716-446655440001', name: 'Finance Bot-01', description: 'Bot for financial process automation',
     status: 'IDLE', sync_status: 'SYNCED', ip_address: '10.0.1.100', priority: 'HIGH', client_version: 'v6.7.0',
@@ -75,7 +79,7 @@ const mockMembers: LYWorkerGroupMemberResponse[] = [
     enable_auto_unlock: true, force_login: false, device_token: 'abc123xyz789', machine_code: 'F11FD4447A215F380A40',
     host_name: 'WIN-SERVER-01', os: 'Windows Server 2019', arch: 'x64', cpu_model: 'Intel Xeon', cpu_cores: 8,
     memory_capacity: '32 GB', robot_count: 1, created_at: '2025-01-05 14:30:00', creator_id: 'admin',
-    group_id: 'group-001', joined_at: '2025-01-06 10:00:00',
+    group_id: 'group-001', joined_at: '2025-01-06 10:00:00', upgrade_status: 'NONE',
   },
   {
     id: '550e8400-e29b-41d4-a716-446655440002', name: 'Finance Bot-02', description: 'Bot for financial report automation',
@@ -85,6 +89,7 @@ const mockMembers: LYWorkerGroupMemberResponse[] = [
     host_name: 'WIN-SERVER-02', os: 'Windows Server 2019', arch: 'x64', cpu_model: 'Intel Xeon', cpu_cores: 8,
     memory_capacity: '16 GB', robot_count: 2, created_at: '2025-01-06 09:15:00', creator_id: 'admin',
     group_id: 'group-001', joined_at: '2025-01-06 11:00:00',
+    upgrade_status: 'UPGRADING', upgrade_target_version: 'v6.8.0',
   },
 ];
 
