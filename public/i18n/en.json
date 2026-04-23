@@ -1667,7 +1667,9 @@
         "receivingTasksTip": "Tip: turn off \"Receive Tasks\" for the linked robots before upgrading to avoid new tasks being dispatched. Running tasks may be interrupted when the client restarts.",
         "busyTip": "{{count}} robot(s) running tasks; tasks may be interrupted during upgrade",
         "idleTip": "All robots are idle; ready to upgrade",
-        "allOfflineTip": "All linked robots are offline; the upgrade command will be sent once they reconnect",
+        "allOfflineTip": "All linked robots are offline; upgrade is not available until the client reconnects",
+        "cannotUpgradeTag": "Cannot upgrade",
+        "offlineBlockedTip": "{{count}} client(s) cannot be upgraded because all linked robots are offline; they will be skipped.",
         "confirm": "Upgrade",
         "allLatest": "Selected clients are already on the latest version"
       },
