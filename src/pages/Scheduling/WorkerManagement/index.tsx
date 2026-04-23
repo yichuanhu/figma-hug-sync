@@ -1562,9 +1562,8 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
             <Space>
               {selectedRowKeys.length > 0 && (() => {
                 const selectedDevices = aggregateSelectedDevices(list as WorkerWithUpgrade[], selectedRowKeys);
-                const hasQueued = selectedDevices.some((d) => d.workers.some((w) => w.upgrade_status === 'QUEUED'));
                 const hasUpgradable = selectedDevices.some((d) =>
-                  d.workers.some(isUpgradeAvailable) && !d.workers.some((w) => w.upgrade_status === 'QUEUED' || w.upgrade_status === 'UPGRADING')
+                  d.workers.some(isUpgradeAvailable) && !d.workers.some((w) => w.upgrade_status === 'UPGRADING')
                 );
                 return (
                   <>
@@ -1577,42 +1576,6 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
                         onClick={() => triggerUpgrade(selectedRowKeys)}
                       >
                         {t('worker.upgrade.batchButton')}
-                      </Button>
-                    )}
-                    {hasQueued && (
-                      <Button
-                        icon={<ArrowUpCircle size={16} strokeWidth={2} />}
-                        onClick={() => {
-                          // 取消已选中行所属设备的预约
-                          const queuedDevices = selectedDevices.filter((d) =>
-                            d.workers.some((w) => w.upgrade_status === 'QUEUED')
-                          );
-                          Modal.confirm({
-                            title: t('worker.upgrade.cancel.title'),
-                            content: t('worker.upgrade.cancel.batchConfirmMessage', { count: queuedDevices.length }),
-                            okText: t('worker.upgrade.cancel.confirm'),
-                            cancelText: t('common.cancel'),
-                            onOk: async () => {
-                              const machineCodes = queuedDevices.map((d) => d.machineCode);
-                              setListResponse((prev) => ({
-                                ...prev,
-                                list: prev.list.map((w) => {
-                                  const code = (w as WorkerWithUpgrade).machine_code || w.id;
-                                  if (!machineCodes.includes(code)) return w;
-                                  return {
-                                    ...w,
-                                    upgrade_status: 'NONE',
-                                    upgrade_target_version: null,
-                                  } as WorkerWithUpgrade;
-                                }),
-                              }));
-                              setSelectedRowKeys([]);
-                              Toast.success(t('worker.upgrade.cancel.success'));
-                            },
-                          });
-                        }}
-                      >
-                        {t('worker.upgrade.cancel.batchButton')}
                       </Button>
                     )}
                   </>
@@ -1732,7 +1695,6 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
           row?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }}
         onUpgradeDevice={(worker) => triggerUpgrade([worker.id])}
-        onCancelUpgrade={(worker) => handleCancelUpgrade(worker as WorkerWithUpgrade)}
       />
 
       {/* Modal */}
