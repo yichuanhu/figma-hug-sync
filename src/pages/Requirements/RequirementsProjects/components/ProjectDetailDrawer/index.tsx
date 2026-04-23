@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tabs, TabPane, Typography, Tag, Table, Button, Modal, Toast, Empty, Dropdown, Tooltip } from '@douyinfe/semi-ui';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
-import { FileText, Folder, Plus, Pencil, Trash2, Link as LinkIcon, Users, Ellipsis } from 'lucide-react';
+import { Plus, Pencil, Trash2, Link as LinkIcon, Users, Ellipsis } from 'lucide-react';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import type { Project, Workspace, ProjectAggregatedStatus } from '../../types';
