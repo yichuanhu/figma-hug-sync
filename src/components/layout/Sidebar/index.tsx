@@ -782,6 +782,12 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
           <div className="sidebar-detail-list">{currentCenterMenu.map((item) => renderDetailMenuItem(item))}</div>
         </div>
       )}
+
+      {/* 通知抽屉 */}
+      <NotificationDrawer
+        visible={notificationDrawerVisible}
+        onClose={() => setNotificationDrawerVisible(false)}
+      />
     </div>
   );
 };
