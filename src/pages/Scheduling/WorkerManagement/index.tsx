@@ -963,19 +963,9 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
               </div>
               <div style={{ marginBottom: 10 }}>
                 <Text type="tertiary" size="small">
-                  {t('worker.upgrade.popover.affectedRobots', { count: peers.length })}
+                  {t('worker.upgrade.popover.description')}
                 </Text>
               </div>
-              {target.releaseNotes && (
-                <Typography.Paragraph
-                  size="small"
-                  type="tertiary"
-                  ellipsis={{ rows: 2, showTooltip: true }}
-                  style={{ marginBottom: 10 }}
-                >
-                  {target.releaseNotes}
-                </Typography.Paragraph>
-              )}
               <Button
                 theme="solid"
                 type="primary"

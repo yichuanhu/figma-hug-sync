@@ -1298,7 +1298,7 @@
         "title": "客户端版本可升级",
         "targetVersion": "目标版本",
         "currentVersion": "当前版本",
-        "affectedRobots": "将影响该设备下 {{count}} 台机器人",
+        "description": "当前机器人对应的客户端版本需要升级",
         "button": "升级客户端版本"
       }
     }
