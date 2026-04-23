@@ -65,17 +65,19 @@ export const aggregateSelectedDevices = (
   return result;
 };
 
-/** 设备是否空闲（所有机器人 IDLE 或 OFFLINE/FAULT） */
+/** 设备是否空闲（所有机器人均为 IDLE 才视为空闲，OFFLINE / FAULT 需先恢复在线） */
 export const isDeviceIdle = (workers: WorkerWithUpgrade[]): boolean => {
-  return workers.every((w) => w.status === 'IDLE' || w.status === 'OFFLINE' || w.status === 'FAULT');
+  return workers.length > 0 && workers.every((w) => w.status === 'IDLE');
 };
 
-/** 阻塞升级的机器人（BUSY 或 MAINTENANCE） */
+/** 阻塞升级的机器人（BUSY / MAINTENANCE / OFFLINE / FAULT 均需等待恢复在线空闲） */
 export const getDeviceBlockingWorkers = (workers: WorkerWithUpgrade[]): WorkerWithUpgrade[] => {
-  return workers.filter((w) => w.status === 'BUSY' || w.status === 'MAINTENANCE');
+  return workers.filter(
+    (w) => w.status === 'BUSY' || w.status === 'MAINTENANCE' || w.status === 'OFFLINE' || w.status === 'FAULT'
+  );
 };
 
 /** 设备是否完全离线（无可立即升级的在线机器人） */
 export const isDeviceAllOffline = (workers: WorkerWithUpgrade[]): boolean => {
-  return workers.every((w) => w.status === 'OFFLINE' || w.status === 'FAULT');
+  return workers.length > 0 && workers.every((w) => w.status === 'OFFLINE' || w.status === 'FAULT');
 };
