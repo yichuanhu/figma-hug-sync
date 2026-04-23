@@ -5,6 +5,7 @@ import type { Notification } from '@/pages/NotificationCenter/types';
 /**
  * 后端通知服务统一返回平台相对路径（/scheduling/tasks/{id} 等），
  * 前端按 APA Commander 实际路由进行映射跳转。
+ * 所有跳转均会携带资源 ID 作为 URL 参数，目标页面读取后自动打开对应详情抽屉。
  */
 const TASK_RE = /^\/scheduling\/tasks\/([^/?#]+)/;
 const ROBOT_RE = /^\/scheduling\/robots\/([^/?#]+)/;
@@ -20,7 +21,13 @@ export interface ResolvedLink {
   fallbackMessage?: string;
 }
 
-export const resolveNotificationLink = (linkUrl: string): ResolvedLink => {
+/**
+ * 解析通知跳转链接。可选传入 notification 用于辅助判断（如触发器类型）。
+ */
+export const resolveNotificationLink = (
+  linkUrl: string,
+  notification?: Notification,
+): ResolvedLink => {
   if (!linkUrl) return { internal: false, fallbackMessage: '该通知暂无可跳转的详情页' };
 
   let m = linkUrl.match(TASK_RE);
@@ -39,16 +46,21 @@ export const resolveNotificationLink = (linkUrl: string): ResolvedLink => {
   }
   m = linkUrl.match(TRIGGER_RE);
   if (m) {
+    // 通过 templateId 判断是时间触发器还是队列触发器
+    const tplId = notification?.templateId || '';
+    const tab = tplId.includes('queue') ? 'queueTrigger' : 'timeTrigger';
     return {
-      internal: false,
-      fallbackMessage: '触发器详情页正在开发中，敬请期待',
+      internal: true,
+      path: `/scheduling-center/task-execution/auto-execution-policy?tab=${tab}&triggerId=${encodeURIComponent(
+        m[1],
+      )}`,
     };
   }
   m = linkUrl.match(LICENSE_RE);
   if (m) {
     return {
       internal: false,
-      fallbackMessage: '授权详情属于管理后台范围，请前往管理控制台查看',
+      fallbackMessage: '授权管理属于管理控制台范围，请前往管理后台查看授权详情',
     };
   }
   return { internal: false, fallbackMessage: '未识别的通知链接' };
@@ -63,7 +75,7 @@ export const openNotification = (
   onMarkRead?: (id: string) => void,
 ) => {
   if (!notification.read) onMarkRead?.(notification.id);
-  const resolved = resolveNotificationLink(notification.linkUrl);
+  const resolved = resolveNotificationLink(notification.linkUrl, notification);
   if (resolved.internal && resolved.path) {
     navigate(resolved.path);
   } else {

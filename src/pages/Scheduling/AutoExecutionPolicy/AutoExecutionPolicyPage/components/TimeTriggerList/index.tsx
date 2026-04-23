@@ -132,7 +132,12 @@ interface GetTriggersParams {
 
 // ============= 组件 =============
 
-const TimeTriggerList = () => {
+interface TimeTriggerListProps {
+  pendingTriggerId?: string | null;
+  onPendingHandled?: () => void;
+}
+
+const TimeTriggerList = ({ pendingTriggerId, onPendingHandled }: TimeTriggerListProps = {}) => {
   const { t } = useTranslation();
 
   // ListDataStatus
@@ -222,6 +227,19 @@ const TimeTriggerList = () => {
   useEffect(() => {
     loadData(queryParams);
   }, [queryParams, loadData]);
+
+  // 通知中心跳转：自动打开对应触发器抽屉（mock 环境下未命中则演示用打开第一条）
+  useEffect(() => {
+    if (!pendingTriggerId) return;
+    const target =
+      allMockTriggers.find((tr) => tr.trigger_id === pendingTriggerId) || allMockTriggers[0];
+    if (target) {
+      setSelectedTrigger(target);
+      setDetailInitialTab('basic');
+      setDrawerVisible(true);
+    }
+    onPendingHandled?.();
+  }, [pendingTriggerId, onPendingHandled]);
 
   // Searchdebounced
   const handleSearch = useMemo(
