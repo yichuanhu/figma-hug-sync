@@ -50,25 +50,22 @@
 .cost-baseline-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0;
+  gap: 12px;
   background: transparent;
 
   @media (max-width: 720px) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    row-gap: 12px;
   }
 }
 
 .cost-baseline-item {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
   min-width: 0;
-  padding: 0 16px 0 0;
-
-  @media (max-width: 720px) {
-    padding-right: 8px;
-  }
+  background: var(--semi-color-bg-1);
+  border-radius: 6px;
+  padding: 12px;
 }
 
 .cost-baseline-label {
