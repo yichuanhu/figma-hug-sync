@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { SideSheet, Tabs, TabPane, Button, Tooltip, Typography, Toast } from '@douyinfe/semi-ui';
-import { ArrowRight, CheckCheck, Settings, X, Check } from 'lucide-react';
+import { ArrowRight, CheckCheck, X, Check } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import RelativeTime from '@/pages/Requirements/RequirementsWorkbench/components/RelativeTime';
 import SeverityTag from '@/pages/NotificationCenter/components/SeverityTag';
@@ -83,15 +83,6 @@ const NotificationDrawer = ({ visible, onClose }: Props) => {
               disabled={unreadCount === 0}
               icon={<CheckCheck size={16} strokeWidth={2} />}
               onClick={handleMarkAllRead}
-            />
-          </Tooltip>
-          <Tooltip content={t('notificationCenter.drawer.settings')}>
-            <Button
-              theme="borderless"
-              type="tertiary"
-              size="small"
-              icon={<Settings size={16} strokeWidth={2} />}
-              onClick={() => Toast.info(t('notificationCenter.drawer.settingsComingSoon'))}
             />
           </Tooltip>
           <Button
