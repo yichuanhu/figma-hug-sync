@@ -1596,46 +1596,48 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
 
       {/* Table area */}
       <div className="worker-management-table">
-        {isInitialLoad ? (
-          <TableSkeleton rows={10} columns={7} columnWidths={['18%', '10%', '15%', '12%', '10%', '15%', '10%']} />
-        ) : (
-          <Table 
-            size="small"
-            columns={columns} 
-            dataSource={list}
-            loading={loading}
-            rowKey="id"
-            empty={
-              <EmptyState 
-                variant={queryParams.keyword || departmentFilter.length > 0 || hasActiveFilters ? 'noResult' : 'noData'}
-                description={queryParams.keyword || departmentFilter.length > 0 || hasActiveFilters ? t('common.noResult') : t('worker.noData')} 
-              />
-            }
-            onRow={(record) => {
-              const isSelected = selectedWorker?.id === record?.id && detailDrawerVisible;
-              return {
-                id: `worker-row-${record?.id}`,
-                onClick: () => openDetail(record as LYWorkerResponse),
-                className: isSelected ? 'worker-management-row-selected' : undefined,
-                style: { cursor: 'pointer' },
-              };
-            }}
-            onChange={({ sorter }) => {
-              if (sorter) {
-                const { dataIndex, sortOrder } = sorter as { dataIndex?: string; sortOrder?: 'ascend' | 'descend' };
-                setSortState({
-                  sortBy: sortOrder ? dataIndex : undefined,
-                  sortOrder: sortOrder || undefined,
-                });
+        <div className="worker-management-table-content">
+          {isInitialLoad ? (
+            <TableSkeleton rows={10} columns={7} columnWidths={['18%', '10%', '15%', '12%', '10%', '15%', '10%']} />
+          ) : (
+            <Table 
+              size="small"
+              columns={columns} 
+              dataSource={list}
+              loading={loading}
+              rowKey="id"
+              empty={
+                <EmptyState 
+                  variant={queryParams.keyword || departmentFilter.length > 0 || hasActiveFilters ? 'noResult' : 'noData'}
+                  description={queryParams.keyword || departmentFilter.length > 0 || hasActiveFilters ? t('common.noResult') : t('worker.noData')} 
+                />
               }
-            }}
-            pagination={false}
-            rowSelection={{
-              selectedRowKeys,
-              onChange: (keys) => setSelectedRowKeys((keys || []) as string[]),
-            }}
-          />
-        )}
+              onRow={(record) => {
+                const isSelected = selectedWorker?.id === record?.id && detailDrawerVisible;
+                return {
+                  id: `worker-row-${record?.id}`,
+                  onClick: () => openDetail(record as LYWorkerResponse),
+                  className: isSelected ? 'worker-management-row-selected' : undefined,
+                  style: { cursor: 'pointer' },
+                };
+              }}
+              onChange={({ sorter }) => {
+                if (sorter) {
+                  const { dataIndex, sortOrder } = sorter as { dataIndex?: string; sortOrder?: 'ascend' | 'descend' };
+                  setSortState({
+                    sortBy: sortOrder ? dataIndex : undefined,
+                    sortOrder: sortOrder || undefined,
+                  });
+                }
+              }}
+              pagination={false}
+              rowSelection={{
+                selectedRowKeys,
+                onChange: (keys) => setSelectedRowKeys((keys || []) as string[]),
+              }}
+            />
+          )}
+        </div>
         {total > 0 && (
           <div className="list-pagination">
             <Text type="tertiary">
