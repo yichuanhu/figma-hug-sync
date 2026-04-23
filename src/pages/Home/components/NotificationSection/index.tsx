@@ -45,7 +45,6 @@ const NotificationSection = () => {
             const pConfig = priorityConfig[item.priority] || priorityConfig.NORMAL;
             return (
               <div key={item.id} className="notification-item">
-                <div className={`notification-item-dot ${item.read ? 'read' : 'unread'}`} />
                 <div className="notification-item-content">
                   <div className="notification-item-title-row">
                     <Tag size="small" color={pConfig.color as any}>{pConfig.label}</Tag>
@@ -53,6 +52,7 @@ const NotificationSection = () => {
                   </div>
                   <div className="notification-item-time">{item.time}</div>
                 </div>
+                <span className={`notification-item-dot ${item.read ? 'read' : 'unread'}`} />
               </div>
             );
           })}
