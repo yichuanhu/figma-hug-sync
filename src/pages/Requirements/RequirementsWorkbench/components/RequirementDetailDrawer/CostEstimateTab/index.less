@@ -50,8 +50,9 @@
 .cost-baseline-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
-  background: transparent;
+  background: var(--semi-color-bg-1);
+  border-radius: 6px;
+  overflow: hidden;
 
   @media (max-width: 720px) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -63,9 +64,24 @@
   flex-direction: column;
   gap: 4px;
   min-width: 0;
-  background: var(--semi-color-bg-1);
-  border-radius: 6px;
-  padding: 12px;
+  padding: 12px 16px;
+  position: relative;
+
+  & + .cost-baseline-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 12px;
+    bottom: 12px;
+    width: 1px;
+    background: var(--semi-color-border);
+  }
+
+  @media (max-width: 720px) {
+    &:nth-child(odd)::before {
+      display: none;
+    }
+  }
 }
 
 .cost-baseline-label {
