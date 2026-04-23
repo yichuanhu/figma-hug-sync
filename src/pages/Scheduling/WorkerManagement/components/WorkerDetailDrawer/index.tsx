@@ -85,6 +85,61 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
 
   const isRemoteDesktop = workerData.desktop_type === 'NotConsole';
 
+  // 升级状态展示
+  const wd = workerData as WorkerWithUpgrade;
+  const upgradeTarget = getEnabledVersion(workerData.desktop_type);
+  const upgradable = isUpgradeAvailable(workerData);
+  const upgradeStatus = wd.upgrade_status;
+
+  const renderClientVersion = () => {
+    if (upgradeStatus === 'QUEUED') {
+      return (
+        <div>
+          <Space spacing={8}>
+            <span>{workerData.client_version}</span>
+            <Tag color="blue" type="light" size="small">{t('worker.upgrade.queued.tag')}</Tag>
+          </Space>
+          <div style={{ marginTop: 4 }}>
+            <Text type="tertiary" size="small">
+              {t('worker.upgrade.queued.detailDescription', { version: wd.upgrade_target_version || upgradeTarget?.version || '' })}
+            </Text>
+            <Button
+              theme="borderless"
+              type="danger"
+              size="small"
+              onClick={() => onCancelUpgrade?.(workerData)}
+              style={{ marginLeft: 8 }}
+            >
+              {t('worker.upgrade.cancel.menu')}
+            </Button>
+          </div>
+        </div>
+      );
+    }
+    if (upgradeStatus === 'UPGRADING') {
+      return (
+        <Space spacing={8}>
+          <span>{workerData.client_version}</span>
+          <Tag color="blue" type="solid" size="small">{t('worker.upgrade.upgrading.tag')}</Tag>
+        </Space>
+      );
+    }
+    if (upgradable && upgradeTarget) {
+      return (
+        <Space spacing={8}>
+          <span>{workerData.client_version}</span>
+          <Tag color="orange" type="light" size="small">
+            {t('worker.upgrade.badge.tag', { version: upgradeTarget.version })}
+          </Tag>
+          <Button theme="borderless" type="primary" size="small" onClick={() => onUpgradeDevice?.(workerData)}>
+            {t('worker.upgrade.menu')}
+          </Button>
+        </Space>
+      );
+    }
+    return workerData.client_version;
+  };
+
   const detailInfoData = [
     { key: t('worker.detail.fields.desktopType'), value: workerData.desktop_type === 'Console' ? t('worker.detail.desktopTypes.console') : t('worker.detail.desktopTypes.notConsole') },
     { key: t('worker.detail.fields.account'), value: workerData.username },
