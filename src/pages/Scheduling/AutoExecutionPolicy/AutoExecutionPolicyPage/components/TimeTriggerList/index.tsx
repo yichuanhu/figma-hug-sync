@@ -132,7 +132,12 @@ interface GetTriggersParams {
 
 // ============= 组件 =============
 
-const TimeTriggerList = () => {
+interface TimeTriggerListProps {
+  pendingTriggerId?: string | null;
+  onPendingHandled?: () => void;
+}
+
+const TimeTriggerList = ({ pendingTriggerId, onPendingHandled }: TimeTriggerListProps = {}) => {
   const { t } = useTranslation();
 
   // ListDataStatus
@@ -222,6 +227,20 @@ const TimeTriggerList = () => {
   useEffect(() => {
     loadData(queryParams);
   }, [queryParams, loadData]);
+
+  // 通知中心跳转：自动打开对应触发器抽屉
+  useEffect(() => {
+    if (!pendingTriggerId) return;
+    const target = allMockTriggers.find((t) => t.trigger_id === pendingTriggerId);
+    if (target) {
+      setSelectedTrigger(target);
+      setDetailInitialTab('basic');
+      setDrawerVisible(true);
+    } else {
+      Toast.warning(t('common.notFound') || '未找到对应触发器');
+    }
+    onPendingHandled?.();
+  }, [pendingTriggerId, onPendingHandled, t]);
 
   // Searchdebounced
   const handleSearch = useMemo(
