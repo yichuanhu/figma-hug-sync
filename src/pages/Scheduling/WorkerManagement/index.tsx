@@ -1163,23 +1163,56 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
 
   const handleConfirmUpgrade = useCallback(
     (machineCodes: string[]) => {
-      // 将这些设备下所有 worker 的 upgrade_status 置为 QUEUED
-      setListResponse((prev) => ({
-        ...prev,
-        list: prev.list.map((w) => {
+      // 按设备判定：全部空闲则直接 UPGRADING；存在 BUSY/MAINTENANCE/全离线则 QUEUED
+      let upgradingCount = 0;
+      let queuedCount = 0;
+      setListResponse((prev) => {
+        // 先按 machine_code 聚合一次，便于判定每台设备状态
+        const peersByCode = new Map<string, WorkerWithUpgrade[]>();
+        prev.list.forEach((w) => {
           const code = (w as WorkerWithUpgrade).machine_code || w.id;
-          if (!machineCodes.includes(code)) return w;
-          const target = getEnabledVersion(w.desktop_type);
-          return {
-            ...w,
-            upgrade_status: 'QUEUED',
-            upgrade_target_version: target?.version || null,
-          } as WorkerWithUpgrade;
-        }),
-      }));
+          if (!peersByCode.has(code)) peersByCode.set(code, []);
+          peersByCode.get(code)!.push(w as WorkerWithUpgrade);
+        });
+        const deviceNextStatus = new Map<string, 'UPGRADING' | 'QUEUED'>();
+        machineCodes.forEach((code) => {
+          const peers = peersByCode.get(code) || [];
+          const allIdleOnline = peers.length > 0 && peers.every((p) => p.status === 'IDLE');
+          if (allIdleOnline) {
+            deviceNextStatus.set(code, 'UPGRADING');
+            upgradingCount += 1;
+          } else {
+            deviceNextStatus.set(code, 'QUEUED');
+            queuedCount += 1;
+          }
+        });
+        return {
+          ...prev,
+          list: prev.list.map((w) => {
+            const code = (w as WorkerWithUpgrade).machine_code || w.id;
+            const next = deviceNextStatus.get(code);
+            if (!next) return w;
+            const target = getEnabledVersion(w.desktop_type);
+            return {
+              ...w,
+              upgrade_status: next,
+              upgrade_target_version: target?.version || null,
+              upgrade_failed_reason: null,
+            } as WorkerWithUpgrade;
+          }),
+        };
+      });
       setUpgradeModalVisible(false);
       setSelectedRowKeys([]);
-      Toast.success(t('worker.upgrade.queuedSuccess', { count: machineCodes.length }));
+      if (upgradingCount > 0 && queuedCount === 0) {
+        Toast.success(t('worker.upgrade.upgradingStarted', { count: upgradingCount }));
+      } else if (upgradingCount === 0 && queuedCount > 0) {
+        Toast.success(t('worker.upgrade.queuedSuccess', { count: queuedCount }));
+      } else {
+        Toast.success(
+          t('worker.upgrade.mixedSuccess', { upgrading: upgradingCount, queued: queuedCount })
+        );
+      }
     },
     [t]
   );

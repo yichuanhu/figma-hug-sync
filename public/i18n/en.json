@@ -1619,7 +1619,9 @@
       "batchButton": "Upgrade Device",
       "batchSelected": "{{count}} selected",
       "noEnabledVersion": "Administrator has not published any upgrade version",
-      "queuedSuccess": "Scheduled upgrade for {{count}} device(s); will run automatically when idle",
+      "queuedSuccess": "Scheduled upgrade for {{count}} client(s); will run automatically when linked robots are idle",
+      "upgradingStarted": "Started upgrading {{count}} client(s)",
+      "mixedSuccess": "{{upgrading}} client(s) upgrading, {{queued}} scheduled (waiting for robots to be idle)",
       "badge": {
         "tag": "Upgradeable → {{version}}",
         "tooltip": "This device can upgrade to {{version}}, affecting {{count}} robot(s)"
