@@ -56,13 +56,13 @@ const mockWorkerGroups = [
   { id: 'group-003', name: 'Ops Inspection Bot Group' },
 ];
 
-// MockData - 覆盖升级状态全分支演示场景
+// MockData - 覆盖升级状态分支演示场景
 // 设备 1: DESKTOP-A1B2 - NONE + 可升级 (3 IDLE, v6.7.0 Console)
-// 设备 2: DESKTOP-C3D4 - QUEUED 等待空闲 (1 BUSY + 2 IDLE, v6.7.0 Console)
-// 设备 3: DESKTOP-E5F6 - QUEUED 多机器人阻塞 (3 BUSY + 1 IDLE, v6.7.2 NotConsole)
+// 设备 2: DESKTOP-C3D4 - UPGRADING 升级中 (1 BUSY + 2 IDLE, v6.7.0 Console)
+// 设备 3: DESKTOP-E5F6 - UPGRADING 升级中 (3 BUSY + 1 IDLE, v6.7.2 NotConsole)
 // 设备 4: DESKTOP-G7H8 - UPGRADING 升级中 (2 IDLE, v6.7.0 Console)
 // 设备 5: DESKTOP-I9J0 - FAILED 升级失败 (2 IDLE, v6.6.5 Console)
-// 设备 6: DESKTOP-K1L2 - QUEUED 全离线 (2 OFFLINE + 1 FAULT, v6.7.0 Console)
+// 设备 6: DESKTOP-K1L2 - UPGRADING 升级中（离线场景，等设备恢复后会继续）
 // 设备 7: DESKTOP-LATEST - 已是最新 (1 IDLE, v6.8.0 Console) 对照组
 const mockWorkers: WorkerWithUpgrade[] = [
   // ===== 设备 1: DESKTOP-A1B2 - NONE + 可升级 =====
