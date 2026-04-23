@@ -232,14 +232,7 @@ const ProjectDetailDrawer = ({
         }
       >
         <Tabs type="line" activeKey={activeTab} onChange={setActiveTab} className="project-detail-drawer-tabs">
-          <TabPane
-            itemKey="overview"
-            tab={
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                <FileText size={14} /> {t('common.overview')}
-              </span>
-            }
-          >
+          <TabPane itemKey="overview" tab={t('common.overview')}>
             <div className="project-detail-overview">
               <div className="project-detail-overview-meta">
                 <div className="project-detail-overview-meta-item">
