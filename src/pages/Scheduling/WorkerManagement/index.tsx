@@ -249,6 +249,8 @@ const mockWorkers: WorkerWithUpgrade[] = [
     creator_id: 'admin',
     upgrade_status: 'QUEUED',
     upgrade_target_version: 'v6.8.0',
+  },
+  // ===== 设备 3: DESKTOP-E5F6 - QUEUED 多机器人阻塞 =====
   {
     id: '550e8400-e29b-41d4-a716-446655440003',
     name: 'HR Bot-01',
@@ -367,6 +369,8 @@ const mockWorkers: WorkerWithUpgrade[] = [
     creator_id: 'hr_admin',
     upgrade_status: 'QUEUED',
     upgrade_target_version: 'v6.8.0',
+  },
+  // ===== 设备 4: DESKTOP-G7H8 - UPGRADING 升级中 =====
   {
     id: '550e8400-e29b-41d4-a716-446655440004',
     name: 'Ops Bot-01',
@@ -588,6 +592,8 @@ const mockWorkers: WorkerWithUpgrade[] = [
     creator_id: 'admin',
     upgrade_status: 'QUEUED',
     upgrade_target_version: 'v6.8.0',
+  },
+  // ===== 设备 7: DESKTOP-LATEST - 已是最新 (对照组) =====
   {
     id: '550e8400-e29b-41d4-a716-446655440007',
     name: 'Latest Bot-01',
