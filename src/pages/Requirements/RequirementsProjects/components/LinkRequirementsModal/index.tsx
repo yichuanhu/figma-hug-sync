@@ -29,7 +29,6 @@ const LinkRequirementsModal = ({ visible, workspace, onClose, onSuccess }: Props
     if (visible && workspace) {
       setSelectedIds([...workspace.linkedRequirementIds]);
       setKeyword('');
-      setCrossDept(false);
       Promise.all([
         fetchRequirementList({ offset: 0, size: 500, keyword: '', sort_by: 'created_at', sort_order: 'desc' }),
         fetchAllWorkspaces(),
