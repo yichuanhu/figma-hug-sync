@@ -1291,6 +1291,10 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
               }
             }}
             pagination={false}
+            rowSelection={{
+              selectedRowKeys,
+              onChange: (keys) => setSelectedRowKeys((keys || []) as string[]),
+            }}
           />
         )}
         {total > 0 && (
