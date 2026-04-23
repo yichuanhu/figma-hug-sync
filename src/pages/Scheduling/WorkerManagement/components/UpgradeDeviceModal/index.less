@@ -49,6 +49,11 @@
       margin-bottom: 0;
     }
 
+    &.disabled {
+      background: var(--semi-color-fill-0);
+      opacity: 0.85;
+    }
+
     &-header {
       display: flex;
       align-items: center;
@@ -84,6 +89,9 @@
       }
       &.success {
         background: var(--semi-color-success-light-default);
+      }
+      &.danger {
+        background: var(--semi-color-danger-light-default);
       }
     }
   }

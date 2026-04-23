@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Modal, Typography, Tag, Empty, Banner } from '@douyinfe/semi-ui';
 import { useTranslation } from 'react-i18next';
-import { ArrowUpCircle, Clock, Monitor, Wifi, WifiOff } from 'lucide-react';
+import { AlertCircle, ArrowUpCircle, Clock, Monitor, Wifi } from 'lucide-react';
 import {
   WorkerWithUpgrade,
   isUpgradeAvailable,
@@ -37,7 +37,10 @@ const UpgradeDeviceModal = ({ visible, onCancel, onOk, devices }: UpgradeDeviceM
   }, [devices]);
 
   const validDevices = enriched.filter((d) => d.upgradable);
-  const totalRobots = validDevices.reduce((s, d) => s + d.workers.length, 0);
+  // 可执行升级的客户端：必须有可用升级版本，且不能全部离线
+  const upgradableDevices = validDevices.filter((d) => !d.allOffline);
+  const offlineDevices = validDevices.filter((d) => d.allOffline);
+  const totalRobots = upgradableDevices.reduce((s, d) => s + d.workers.length, 0);
 
   // 按 clientType 分组（Console / NotConsole）
   const grouped = useMemo(() => {
@@ -51,7 +54,7 @@ const UpgradeDeviceModal = ({ visible, onCancel, onOk, devices }: UpgradeDeviceM
   }, [validDevices]);
 
   const handleOk = () => {
-    onOk(validDevices.map((d) => d.machineCode));
+    onOk(upgradableDevices.map((d) => d.machineCode));
   };
 
   return (
@@ -63,7 +66,7 @@ const UpgradeDeviceModal = ({ visible, onCancel, onOk, devices }: UpgradeDeviceM
       okText={t('worker.upgrade.modal.confirm')}
       cancelText={t('common.cancel')}
       width={560}
-      okButtonProps={{ disabled: validDevices.length === 0 }}
+      okButtonProps={{ disabled: upgradableDevices.length === 0 }}
       className="upgrade-device-modal"
       centered
     >
@@ -71,13 +74,23 @@ const UpgradeDeviceModal = ({ visible, onCancel, onOk, devices }: UpgradeDeviceM
         <ArrowUpCircle size={18} className="upgrade-device-modal-summary-icon" strokeWidth={2} />
         <Text>
           {t('worker.upgrade.modal.summary', {
-            deviceCount: validDevices.length,
+            deviceCount: upgradableDevices.length,
             robotCount: totalRobots,
           })}
         </Text>
       </div>
 
-      {validDevices.length > 0 && (
+      {offlineDevices.length > 0 && (
+        <Banner
+          type="danger"
+          fullMode={false}
+          closeIcon={null}
+          description={t('worker.upgrade.modal.offlineBlockedTip', { count: offlineDevices.length })}
+          style={{ marginBottom: 12 }}
+        />
+      )}
+
+      {upgradableDevices.length > 0 && (
         <Banner
           type="warning"
           fullMode={false}
@@ -112,11 +125,16 @@ const UpgradeDeviceModal = ({ visible, onCancel, onOk, devices }: UpgradeDeviceM
             )}
 
             {list.map((d) => (
-              <div key={d.machineCode} className="upgrade-device-modal-card">
+              <div key={d.machineCode} className={`upgrade-device-modal-card${d.allOffline ? ' disabled' : ''}`}>
                 <div className="upgrade-device-modal-card-header">
                   <Monitor size={14} strokeWidth={2} />
                   <Text strong>{d.sample?.host_name || d.machineCode}</Text>
                   <Text type="tertiary" size="small">{d.sample?.ip_address}</Text>
+                  {d.allOffline && (
+                    <Tag color="red" type="light" size="small" style={{ marginLeft: 'auto' }}>
+                      {t('worker.upgrade.modal.cannotUpgradeTag')}
+                    </Tag>
+                  )}
                 </div>
                 <div className="upgrade-device-modal-card-version">
                   <Text type="tertiary" size="small">{t('worker.upgrade.modal.currentVersion')}：</Text>
@@ -133,9 +151,9 @@ const UpgradeDeviceModal = ({ visible, onCancel, onOk, devices }: UpgradeDeviceM
                   </Text>
                 </div>
                 {d.allOffline ? (
-                  <div className="upgrade-device-modal-card-tip warning">
-                    <WifiOff size={12} strokeWidth={2} />
-                    <Text size="small" type="warning">
+                  <div className="upgrade-device-modal-card-tip danger">
+                    <AlertCircle size={12} strokeWidth={2} />
+                    <Text size="small" type="danger">
                       {t('worker.upgrade.modal.allOfflineTip')}
                     </Text>
                   </div>
