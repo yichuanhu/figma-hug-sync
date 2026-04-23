@@ -1613,6 +1613,53 @@
         "unlockScreen": "Unlock Screen"
       },
       "success": "Saved successfully"
+    },
+    "upgrade": {
+      "menu": "Upgrade Device",
+      "batchButton": "Upgrade Device",
+      "batchSelected": "{{count}} selected",
+      "noEnabledVersion": "Administrator has not published any upgrade version",
+      "queuedSuccess": "Scheduled upgrade for {{count}} device(s); will run automatically when idle",
+      "badge": {
+        "tag": "Upgradeable → {{version}}",
+        "tooltip": "This device can upgrade to {{version}}, affecting {{count}} robot(s)"
+      },
+      "queued": {
+        "tag": "Waiting for idle",
+        "tooltip": "Waiting for {{names}}{{more}} to finish tasks",
+        "tooltipReady": "Upgrade scheduled, waiting to dispatch",
+        "more": " and {{count}} more",
+        "detailDescription": "Upgrade to {{version}} scheduled; will run automatically when all robots on this device are idle"
+      },
+      "upgrading": {
+        "tag": "Upgrading",
+        "cannotCancel": "Upgrade has started; cannot cancel"
+      },
+      "failed": {
+        "defaultReason": "Upgrade failed"
+      },
+      "cancel": {
+        "menu": "Cancel Scheduled Upgrade",
+        "title": "Cancel Scheduled Upgrade",
+        "confirmMessage": "Cancel the scheduled upgrade for this device?",
+        "batchConfirmMessage": "Cancel scheduled upgrade for the selected {{count}} device(s)?",
+        "batchButton": "Cancel Schedule",
+        "confirm": "Confirm",
+        "success": "Scheduled upgrade cancelled"
+      },
+      "modal": {
+        "title": "Upgrade Device Client",
+        "summary": "Schedule upgrade for {{deviceCount}} device(s), affecting {{robotCount}} robot(s)",
+        "targetVersion": "Target version",
+        "currentVersion": "Current version",
+        "affectedRobots": "Affected robots ({{count}})",
+        "allOfflineTip": "All robots on this device are offline; upgrade will run after they reconnect",
+        "busyTip": "{{count}} robot(s) running tasks; upgrade will run after tasks finish",
+        "idleTip": "Device is idle; can upgrade immediately",
+        "queueExplain": "The upgrade waits until all robots on the device are idle; the device can keep accepting new tasks meanwhile",
+        "confirm": "Schedule Upgrade",
+        "allLatest": "Selected devices are already on the latest version"
+      }
     }
   },
   "personalCenter": {
