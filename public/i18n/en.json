@@ -1681,6 +1681,12 @@
         "affectedRobots": "All robots on this client will be upgraded together ({{count}})",
         "current": "current",
         "button": "Upgrade Client Version"
+      },
+      "offline": {
+        "tag": "Client offline",
+        "title": "Client offline",
+        "description": "This client is offline and cannot be upgraded. Please wait for the client to come back online and click the upgrade button again.",
+        "retry": "Retry upgrade"
       }
     }
   },
