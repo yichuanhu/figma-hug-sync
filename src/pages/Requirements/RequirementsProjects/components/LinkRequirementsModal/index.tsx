@@ -23,7 +23,6 @@ const LinkRequirementsModal = ({ visible, workspace, onClose, onSuccess }: Props
   const [allWorkspaces, setAllWorkspaces] = useState<Workspace[]>([]);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [keyword, setKeyword] = useState('');
-  const [crossDept, setCrossDept] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
