@@ -2,7 +2,6 @@ import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Typography, Pagination, Toast } from '@douyinfe/semi-ui';
-import NotificationStatsCards from './components/NotificationStatsCards';
 import NotificationFilterBar, { FilterValues } from './components/NotificationFilterBar';
 import NotificationTable from './components/NotificationTable';
 import { mockNotifications } from './mockData';
