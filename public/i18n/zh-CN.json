@@ -1298,7 +1298,8 @@
         "title": "客户端版本可升级",
         "targetVersion": "目标版本",
         "currentVersion": "当前版本",
-        "description": "当前机器人对应的客户端版本需要升级",
+        "affectedRobots": "该客户端下的机器人（{{count}}）",
+        "current": "当前",
         "button": "升级客户端版本"
       }
     }
