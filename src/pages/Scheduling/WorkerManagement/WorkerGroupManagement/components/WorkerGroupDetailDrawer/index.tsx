@@ -18,6 +18,7 @@ import {
   Tabs,
   TabPane,
   Pagination,
+  Popover,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import EmptyState from '@/components/EmptyState';
@@ -28,6 +29,14 @@ import { getDepartmentName } from '@/mocks/departmentData';
 import { useTranslation } from 'react-i18next';
 import { debounce } from 'lodash';
 import AddMembersModal from '../AddMembersModal';
+import UpgradeDeviceModal from '../../../components/UpgradeDeviceModal';
+import {
+  WorkerWithUpgrade,
+  isUpgradeAvailable,
+  aggregateSelectedDevices,
+  groupWorkersByDevice,
+} from '../../../utils/upgrade';
+import { getEnabledVersion } from '@/mocks/clientVersionData';
 import type {
   LYWorkerGroupResponse,
   LYWorkerGroupMemberResponse,
@@ -37,7 +46,7 @@ import type {
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import './index.less';
-import { Ellipsis, Eye, MinusCircle, Pencil, Plus, Trash2 } from 'lucide-react';
+import { Ellipsis, Eye, MinusCircle, Pencil, Plus, Trash2, ArrowUpCircle, AlertCircle, Loader2 } from 'lucide-react';
 
 const { Text } = Typography;
 
