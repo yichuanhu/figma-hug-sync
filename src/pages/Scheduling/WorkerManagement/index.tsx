@@ -901,7 +901,63 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       title: t('worker.table.clientVersion'),
       dataIndex: 'client_version',
       key: 'client_version',
-      width: 100,
+      width: 180,
+      render: (version: string | null, record: WorkerWithUpgrade) => {
+        const peers = getDevicePeers(record);
+        // 取设备维度的升级状态（同一设备同步）
+        const deviceStatus = peers.find((p) => p.upgrade_status && p.upgrade_status !== 'NONE')?.upgrade_status;
+        const target = getEnabledVersion(record.desktop_type);
+        const upgradable = isUpgradeAvailable(record);
+
+        if (deviceStatus === 'QUEUED') {
+          const blocking = peers.filter((p) => p.status === 'BUSY' || p.status === 'MAINTENANCE');
+          const tooltipContent = blocking.length > 0
+            ? t('worker.upgrade.queued.tooltip', {
+                names: blocking.slice(0, 3).map((b) => b.name).join('、'),
+                more: blocking.length > 3 ? t('worker.upgrade.queued.more', { count: blocking.length - 3 }) : '',
+              })
+            : t('worker.upgrade.queued.tooltipReady');
+          return (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={(e) => e.stopPropagation()}>
+              <span>{version}</span>
+              <Tooltip content={tooltipContent}>
+                <Tag color="blue" type="light" size="small">
+                  {t('worker.upgrade.queued.tag')}
+                </Tag>
+              </Tooltip>
+            </div>
+          );
+        }
+        if (deviceStatus === 'UPGRADING') {
+          return (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={(e) => e.stopPropagation()}>
+              <span>{version}</span>
+              <Tag color="blue" type="solid" size="small">{t('worker.upgrade.upgrading.tag')}</Tag>
+            </div>
+          );
+        }
+        if (deviceStatus === 'FAILED') {
+          return (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={(e) => e.stopPropagation()}>
+              <span>{version}</span>
+              <Tooltip content={record.upgrade_failed_reason || t('worker.upgrade.failed.defaultReason')}>
+                <AlertCircle size={14} strokeWidth={2} color="var(--semi-color-danger)" />
+              </Tooltip>
+            </div>
+          );
+        }
+        if (upgradable && target) {
+          return (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={(e) => e.stopPropagation()}>
+              <span>{version}</span>
+              <Tooltip content={t('worker.upgrade.badge.tooltip', { version: target.version, count: peers.length })}>
+                <ArrowUpCircle size={14} strokeWidth={2} color="var(--semi-color-warning)" />
+              </Tooltip>
+            </div>
+          );
+        }
+        return version;
+      },
     },
     {
       title: t('worker.table.lastHeartbeat'),
