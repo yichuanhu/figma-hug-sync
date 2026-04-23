@@ -77,6 +77,16 @@ const UpgradeDeviceModal = ({ visible, onCancel, onOk, devices }: UpgradeDeviceM
         </Text>
       </div>
 
+      {validDevices.length > 0 && (
+        <Banner
+          type="warning"
+          fullMode={false}
+          closeIcon={null}
+          description={t('worker.upgrade.modal.receivingTasksTip')}
+          style={{ marginBottom: 12 }}
+        />
+      )}
+
       {validDevices.length === 0 ? (
         <Empty description={t('worker.upgrade.modal.allLatest')} style={{ padding: '24px 0' }} />
       ) : (
