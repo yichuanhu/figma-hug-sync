@@ -1251,24 +1251,10 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
         const target = getEnabledVersion(record.desktop_type);
         const upgradable = isUpgradeAvailable(record);
 
-        // QUEUED：等待空闲（有 BUSY 机器人）或离线场景
+        // QUEUED：等待当前任务完成后自动升级（仅适用于有 BUSY/MAINTENANCE 场景）
         if (deviceStatus === 'QUEUED') {
           const targetVersion = peers.find((p) => p.upgrade_target_version)?.upgrade_target_version || target?.version;
           const busyPeers = peers.filter((p) => p.status === 'BUSY' || p.status === 'MAINTENANCE');
-          const allOffline = peers.every((p) => p.status === 'OFFLINE' || p.status === 'FAULT');
-
-          if (allOffline) {
-            return (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={(e) => e.stopPropagation()}>
-                <span>{version}</span>
-                <Tooltip content={t('worker.upgrade.queuedOffline.tooltip')}>
-                  <Tag color="grey" type="light" size="small" prefixIcon={<WifiOff size={12} strokeWidth={2} />}>
-                    {t('worker.upgrade.queuedOffline.tag')}
-                  </Tag>
-                </Tooltip>
-              </div>
-            );
-          }
 
           const names = busyPeers.slice(0, 3).map((p) => p.name).join('、');
           const more = busyPeers.length > 3 ? t('worker.upgrade.queued.more', { count: busyPeers.length - 3 }) : '';
