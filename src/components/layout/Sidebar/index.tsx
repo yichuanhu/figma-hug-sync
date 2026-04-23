@@ -65,6 +65,8 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
   const [floatingExpandedKeys, setFloatingExpandedKeys] = useState<string[]>(initialExpandedKeys);
   const [isDragging, setIsDragging] = useState(false);
   const [noTransition, setNoTransition] = useState(false);
+  const [notificationDrawerVisible, setNotificationDrawerVisible] = useState(false);
+  const unreadNotificationCount = mockNotifications.filter((n) => !n.read).length;
   const dragStartX = useRef<number>(0);
   const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -739,8 +741,19 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
             {/* 消息铃铛 */}
             <div className="sidebar-bottom-bell">
               <Tooltip content={t('sidebar.notifications')} position="right" disabled={!collapsed}>
-                <div className="sidebar-icon-btn-small" style={{ cursor: 'pointer' }}>
-                  <Bell size={16} strokeWidth={2} />
+                <div
+                  className="sidebar-icon-btn-small"
+                  style={{ cursor: 'pointer', position: 'relative' }}
+                  onClick={() => setNotificationDrawerVisible(true)}
+                >
+                  <Badge
+                    count={unreadNotificationCount}
+                    overflowCount={99}
+                    type="danger"
+                    style={unreadNotificationCount > 0 ? { position: 'absolute', top: -2, right: -2 } : undefined}
+                  >
+                    <Bell size={16} strokeWidth={2} />
+                  </Badge>
                 </div>
               </Tooltip>
             </div>
