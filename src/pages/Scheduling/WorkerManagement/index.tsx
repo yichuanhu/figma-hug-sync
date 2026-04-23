@@ -1251,39 +1251,8 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
         const target = getEnabledVersion(record.desktop_type);
         const upgradable = isUpgradeAvailable(record);
 
-        if (deviceStatus === 'QUEUED') {
-          const blocking = peers.filter((p) => p.status === 'BUSY' || p.status === 'MAINTENANCE');
-          const allOffline = peers.every((p) => p.status === 'OFFLINE' || p.status === 'FAULT');
-          if (allOffline) {
-            return (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={(e) => e.stopPropagation()}>
-                <span>{version}</span>
-                <Tooltip content={t('worker.upgrade.queuedOffline.tooltip')}>
-                  <Tag color="grey" type="light" size="small" prefixIcon={<WifiOff size={12} strokeWidth={2} />}>
-                    {t('worker.upgrade.queuedOffline.tag')}
-                  </Tag>
-                </Tooltip>
-              </div>
-            );
-          }
-          const tooltipContent = blocking.length > 0
-            ? t('worker.upgrade.queued.tooltip', {
-                names: blocking.slice(0, 3).map((b) => b.name).join('、'),
-                more: blocking.length > 3 ? t('worker.upgrade.queued.more', { count: blocking.length - 3 }) : '',
-              })
-            : t('worker.upgrade.queued.tooltipReady');
-          return (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={(e) => e.stopPropagation()}>
-              <span>{version}</span>
-              <Tooltip content={tooltipContent}>
-                <Tag color="blue" type="light" size="small" prefixIcon={<Clock size={12} strokeWidth={2} />}>
-                  {t('worker.upgrade.queued.tag')}
-                </Tag>
-              </Tooltip>
-            </div>
-          );
-        }
-        if (deviceStatus === 'UPGRADING') {
+        // 已移除 QUEUED 预约升级逻辑
+
           const targetVersion = peers.find((p) => p.upgrade_target_version)?.upgrade_target_version || target?.version;
           return (
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={(e) => e.stopPropagation()}>
