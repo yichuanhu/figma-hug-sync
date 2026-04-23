@@ -2,7 +2,6 @@ import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Typography, Pagination, Toast } from '@douyinfe/semi-ui';
-import NotificationStatsCards from './components/NotificationStatsCards';
 import NotificationFilterBar, { FilterValues } from './components/NotificationFilterBar';
 import NotificationTable from './components/NotificationTable';
 import { mockNotifications } from './mockData';
@@ -92,8 +91,6 @@ const NotificationCenter = () => {
         <Title heading={3} className="title">{t('notificationCenter.title')}</Title>
         <Text type="tertiary" className="subtitle">{t('notificationCenter.subtitle')}</Text>
       </div>
-
-      <NotificationStatsCards stats={stats} />
 
       <NotificationFilterBar
         values={filters}
