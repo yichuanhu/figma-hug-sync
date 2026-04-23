@@ -1285,6 +1285,19 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
 
         if (deviceStatus === 'QUEUED') {
           const blocking = peers.filter((p) => p.status === 'BUSY' || p.status === 'MAINTENANCE');
+          const allOffline = peers.every((p) => p.status === 'OFFLINE' || p.status === 'FAULT');
+          if (allOffline) {
+            return (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={(e) => e.stopPropagation()}>
+                <span>{version}</span>
+                <Tooltip content={t('worker.upgrade.queuedOffline.tooltip')}>
+                  <Tag color="grey" type="light" size="small" prefixIcon={<WifiOff size={12} strokeWidth={2} />}>
+                    {t('worker.upgrade.queuedOffline.tag')}
+                  </Tag>
+                </Tooltip>
+              </div>
+            );
+          }
           const tooltipContent = blocking.length > 0
             ? t('worker.upgrade.queued.tooltip', {
                 names: blocking.slice(0, 3).map((b) => b.name).join('、'),
@@ -1295,7 +1308,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={(e) => e.stopPropagation()}>
               <span>{version}</span>
               <Tooltip content={tooltipContent}>
-                <Tag color="blue" type="light" size="small">
+                <Tag color="blue" type="light" size="small" prefixIcon={<Clock size={12} strokeWidth={2} />}>
                   {t('worker.upgrade.queued.tag')}
                 </Tag>
               </Tooltip>
@@ -1303,20 +1316,59 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
           );
         }
         if (deviceStatus === 'UPGRADING') {
+          const targetVersion = peers.find((p) => p.upgrade_target_version)?.upgrade_target_version || target?.version;
           return (
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={(e) => e.stopPropagation()}>
               <span>{version}</span>
-              <Tag color="blue" type="solid" size="small">{t('worker.upgrade.upgrading.tag')}</Tag>
+              <Tooltip content={t('worker.upgrade.upgrading.tooltip', { version: targetVersion })}>
+                <Tag
+                  color="blue"
+                  type="solid"
+                  size="small"
+                  prefixIcon={<Loader2 size={12} strokeWidth={2} className="upgrade-spin" />}
+                >
+                  {t('worker.upgrade.upgrading.tag')}
+                </Tag>
+              </Tooltip>
             </div>
           );
         }
         if (deviceStatus === 'FAILED') {
+          const failedReason = peers.find((p) => p.upgrade_failed_reason)?.upgrade_failed_reason
+            || record.upgrade_failed_reason
+            || t('worker.upgrade.failed.defaultReason');
+          const failedPopover = (
+            <div style={{ padding: 12, width: 280 }} onClick={(e) => e.stopPropagation()}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                <AlertCircle size={14} strokeWidth={2} color="var(--semi-color-danger)" />
+                <Text strong>{t('worker.upgrade.failed.title')}</Text>
+              </div>
+              <div style={{ marginBottom: 10 }}>
+                <Text type="tertiary" size="small">{t('worker.upgrade.failed.reasonLabel')}：</Text>
+                <div style={{ marginTop: 4 }}>
+                  <Text size="small">{failedReason}</Text>
+                </div>
+              </div>
+              <Button
+                theme="solid"
+                type="primary"
+                size="small"
+                icon={<ArrowUpCircle size={14} strokeWidth={2} />}
+                block
+                onClick={() => triggerUpgrade([record.id])}
+              >
+                {t('worker.upgrade.failed.retry')}
+              </Button>
+            </div>
+          );
           return (
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={(e) => e.stopPropagation()}>
               <span>{version}</span>
-              <Tooltip content={record.upgrade_failed_reason || t('worker.upgrade.failed.defaultReason')}>
-                <AlertCircle size={14} strokeWidth={2} color="var(--semi-color-danger)" />
-              </Tooltip>
+              <Popover content={failedPopover} trigger="hover" position="top" showArrow>
+                <Tag color="red" type="light" size="small" prefixIcon={<AlertCircle size={12} strokeWidth={2} />} style={{ cursor: 'pointer' }}>
+                  {t('worker.upgrade.failed.tag')}
+                </Tag>
+              </Popover>
             </div>
           );
         }
