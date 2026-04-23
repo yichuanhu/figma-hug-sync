@@ -7,8 +7,10 @@ import ExpandableText from '@/components/ExpandableText';
 import { getDepartmentName } from '@/mocks/departmentData';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
+import { isUpgradeAvailable, type WorkerWithUpgrade } from '../../utils/upgrade';
+import { getEnabledVersion } from '@/mocks/clientVersionData';
 import './index.less';
-import { Key, MinusCircle, Pencil, Trash2, Users } from 'lucide-react';
+import { ArrowUpCircle, Key, MinusCircle, Pencil, Trash2, Users } from 'lucide-react';
 
 const { Text } = Typography;
 
