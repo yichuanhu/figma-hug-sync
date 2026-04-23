@@ -164,6 +164,37 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
 
   const extraActions = (
     <>
+      {upgradeStatus === 'QUEUED' ? (
+        <Tooltip content={t('worker.upgrade.cancel.menu')}>
+          <Button
+            icon={<ArrowUpCircle size={16} strokeWidth={2} color="var(--semi-color-danger)" />}
+            theme="borderless"
+            type="tertiary"
+            size="small"
+            onClick={() => onCancelUpgrade?.(workerData)}
+          />
+        </Tooltip>
+      ) : upgradeStatus === 'UPGRADING' ? (
+        <Tooltip content={t('worker.upgrade.upgrading.cannotCancel')}>
+          <Button
+            icon={<ArrowUpCircle size={16} strokeWidth={2} />}
+            theme="borderless"
+            type="tertiary"
+            size="small"
+            disabled
+          />
+        </Tooltip>
+      ) : upgradable ? (
+        <Tooltip content={t('worker.upgrade.menu')}>
+          <Button
+            icon={<ArrowUpCircle size={16} strokeWidth={2} color="var(--semi-color-warning)" />}
+            theme="borderless"
+            type="tertiary"
+            size="small"
+            onClick={() => onUpgradeDevice?.(workerData)}
+          />
+        </Tooltip>
+      ) : null}
       <Tooltip content={t('common.edit')}>
         <Button icon={<Pencil size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={onEdit} />
       </Tooltip>
