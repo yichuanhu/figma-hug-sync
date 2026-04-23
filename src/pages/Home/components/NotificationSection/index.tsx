@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Badge, Tag } from '@douyinfe/semi-ui';
 import { ChevronUp, ChevronDown, ChevronRight } from 'lucide-react';
@@ -13,6 +14,7 @@ const priorityConfig: Record<string, { color: string; label: string }> = {
 
 const NotificationSection = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
   const unreadCount = notifications.filter((n) => !n.read).length;
 
@@ -31,7 +33,7 @@ const NotificationSection = () => {
             <span>{collapsed ? t('homepage.notifications.expand') : t('homepage.notifications.collapse')}</span>
             {collapsed ? <ChevronDown size={14} strokeWidth={2} /> : <ChevronUp size={14} strokeWidth={2} />}
           </button>
-          <button className="notification-more-btn">
+          <button className="notification-more-btn" onClick={() => navigate('/notification-center')}>
             <span>{t('homepage.notifications.more')}</span>
             <ChevronRight size={14} strokeWidth={2} />
           </button>

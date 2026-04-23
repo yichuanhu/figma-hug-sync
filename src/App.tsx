@@ -71,6 +71,8 @@ import CreatorComponents from "@/pages/Sharing/Components/CreatorComponents";
 import APASkills from "@/pages/Sharing/Skills/APASkills";
 import ACPSkills from "@/pages/Sharing/Skills/ACPSkills";
 import Showcases from "@/pages/Sharing/Showcases";
+// Notification Center
+import NotificationCenter from "@/pages/NotificationCenter";
 
 const queryClient = new QueryClient();
 
@@ -169,6 +171,8 @@ const App = () => {
           <Route path="/sharing/skills/apa" element={<APASkills />} />
           <Route path="/sharing/skills/acp" element={<ACPSkills />} />
           <Route path="/sharing/showcases" element={<Showcases />} />
+          {/* 通知中心 */}
+          <Route path="/notification-center" element={<NotificationCenter />} />
         </Route>
 
         {/* 无布局页面 */}

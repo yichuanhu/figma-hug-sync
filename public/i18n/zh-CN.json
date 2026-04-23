@@ -2784,6 +2784,28 @@
       "title": "资源获取"
     }
   },
+  "notificationCenter": {
+    "title": "通知中心",
+    "subtitle": "集中查看 APA 平台的任务、机器人、触发器与授权通知",
+    "empty": "暂无通知",
+    "tabs": { "all": "全部", "unread": "未读", "read": "已读" },
+    "stats": { "unread": "未读通知", "task": "任务通知", "robot": "机器人通知", "license": "授权通知" },
+    "category": { "all": "全部", "task": "任务", "robot": "机器人", "trigger": "触发器", "license": "授权" },
+    "severity": { "high": "高", "medium": "中", "low": "低" },
+    "filter": {
+      "searchPlaceholder": "搜索通知标题或内容",
+      "category": "分类",
+      "severity": "严重度",
+      "dateRange": "时间范围",
+      "today": "今天",
+      "last7": "最近 7 天",
+      "last30": "最近 30 天"
+    },
+    "table": { "severity": "严重度", "category": "分类", "content": "通知内容", "time": "时间" },
+    "actions": { "markRead": "标记为已读", "markAllRead": "全部标记为已读", "view": "查看" },
+    "drawer": { "viewAll": "查看全部通知", "settings": "通知设置", "settingsComingSoon": "通知偏好设置即将上线" },
+    "toast": { "allRead": "已将全部通知标记为已读" }
+  },
   "operations": {
     "comingSoon": "功能开发中，敬请期待",
     "dashboard": {

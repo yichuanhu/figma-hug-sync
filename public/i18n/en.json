@@ -3416,6 +3416,28 @@
       "title": "Resources"
     }
   },
+  "notificationCenter": {
+    "title": "Notification Center",
+    "subtitle": "Centrally view APA platform task, robot, trigger and license notifications",
+    "empty": "No notifications",
+    "tabs": { "all": "All", "unread": "Unread", "read": "Read" },
+    "stats": { "unread": "Unread", "task": "Tasks", "robot": "Robots", "license": "Licenses" },
+    "category": { "all": "All", "task": "Task", "robot": "Robot", "trigger": "Trigger", "license": "License" },
+    "severity": { "high": "High", "medium": "Medium", "low": "Low" },
+    "filter": {
+      "searchPlaceholder": "Search title or content",
+      "category": "Category",
+      "severity": "Severity",
+      "dateRange": "Date range",
+      "today": "Today",
+      "last7": "Last 7 days",
+      "last30": "Last 30 days"
+    },
+    "table": { "severity": "Severity", "category": "Category", "content": "Content", "time": "Time" },
+    "actions": { "markRead": "Mark as read", "markAllRead": "Mark all as read", "view": "View" },
+    "drawer": { "viewAll": "View all notifications", "settings": "Notification settings", "settingsComingSoon": "Notification preferences coming soon" },
+    "toast": { "allRead": "All notifications marked as read" }
+  },
   "operations": {
     "comingSoon": "Coming soon, stay tuned",
     "dashboard": {

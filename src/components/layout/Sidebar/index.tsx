@@ -2,8 +2,10 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Avatar, Popover, Tooltip } from '@douyinfe/semi-ui';
+import { Avatar, Badge, Popover, Tooltip } from '@douyinfe/semi-ui';
 import { UserInfoDropdown } from '../UserInfoDropdown';
+import NotificationDrawer from '../NotificationDrawer';
+import { mockNotifications } from '@/pages/NotificationCenter/mockData';
 import { Activity, Airplay, AlertTriangle, Bell, BookOpen, Bot, CalendarClock, ChartSpline, CheckSquare, ChevronDown, ChevronUp, ClipboardList, Cloud, CodeXml, Database, FileText, Folder, FolderCheck, FolderKanban, Forward, GitBranch, History, Home, LayoutGrid, LibraryBig, ListStart, MonitorCheck, MonitorCog, Parentheses, Play, ScrollText, Settings, Shield, Target, TrendingUp, Users, Workflow, Wrench } from 'lucide-react';
 
 const LayoutIcon = () => (
@@ -63,6 +65,8 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
   const [floatingExpandedKeys, setFloatingExpandedKeys] = useState<string[]>(initialExpandedKeys);
   const [isDragging, setIsDragging] = useState(false);
   const [noTransition, setNoTransition] = useState(false);
+  const [notificationDrawerVisible, setNotificationDrawerVisible] = useState(false);
+  const unreadNotificationCount = mockNotifications.filter((n) => !n.read).length;
   const dragStartX = useRef<number>(0);
   const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -737,8 +741,19 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
             {/* 消息铃铛 */}
             <div className="sidebar-bottom-bell">
               <Tooltip content={t('sidebar.notifications')} position="right" disabled={!collapsed}>
-                <div className="sidebar-icon-btn-small" style={{ cursor: 'pointer' }}>
-                  <Bell size={16} strokeWidth={2} />
+                <div
+                  className="sidebar-icon-btn-small"
+                  style={{ cursor: 'pointer', position: 'relative' }}
+                  onClick={() => setNotificationDrawerVisible(true)}
+                >
+                  <Badge
+                    count={unreadNotificationCount}
+                    overflowCount={99}
+                    type="danger"
+                    style={unreadNotificationCount > 0 ? { position: 'absolute', top: -2, right: -2 } : undefined}
+                  >
+                    <Bell size={16} strokeWidth={2} />
+                  </Badge>
                 </div>
               </Tooltip>
             </div>
@@ -767,6 +782,12 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
           <div className="sidebar-detail-list">{currentCenterMenu.map((item) => renderDetailMenuItem(item))}</div>
         </div>
       )}
+
+      {/* 通知抽屉 */}
+      <NotificationDrawer
+        visible={notificationDrawerVisible}
+        onClose={() => setNotificationDrawerVisible(false)}
+      />
     </div>
   );
 };
