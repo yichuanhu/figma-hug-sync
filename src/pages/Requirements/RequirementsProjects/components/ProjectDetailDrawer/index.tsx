@@ -234,39 +234,42 @@ const ProjectDetailDrawer = ({
         <Tabs type="line" activeKey={activeTab} onChange={setActiveTab} className="project-detail-drawer-tabs">
           <TabPane itemKey="overview" tab={t('common.overview')}>
             <div className="project-detail-overview">
-              <div className="project-detail-overview-meta">
-                <div className="project-detail-overview-meta-item">
-                  <Text type="tertiary" size="small">{t('common.status')}</Text>
-                  <div>
-                    <Tag color={statusTagColor[data.aggregatedStatus]} type="light" size="large">
-                      {t(`requirements.projects.status.${data.aggregatedStatus}`)}
-                    </Tag>
-                  </div>
-                </div>
-                <div className="project-detail-overview-meta-item">
-                  <Text type="tertiary" size="small">{t('requirements.projects.fields.dateRange')}</Text>
-                  <Text>
-                    {data.startDate && data.endDate
-                      ? `${data.startDate} ~ ${data.endDate}`
-                      : '-'}
-                  </Text>
-                </div>
-                <div className="project-detail-overview-meta-item">
-                  <Text type="tertiary" size="small">{t('requirements.projects.fields.workspaceCount')}</Text>
-                  <Text>{data.workspaceCount}</Text>
-                </div>
-                <div className="project-detail-overview-meta-item">
-                  <Text type="tertiary" size="small">{t('requirements.projects.fields.requirementCount')}</Text>
-                  <Text>{data.requirementCount}</Text>
-                </div>
-                <div className="project-detail-overview-meta-item">
-                  <Text type="tertiary" size="small">{t('common.createTime')}</Text>
-                  <Text>{data.createdAt.replace('T', ' ').substring(0, 19)}</Text>
-                </div>
-              </div>
-              {data.description && (
-                <div className="project-detail-overview-description">{data.description}</div>
-              )}
+              <Descriptions
+                align="left"
+                data={[
+                  {
+                    key: t('common.status'),
+                    value: (
+                      <Tag color={statusTagColor[data.aggregatedStatus]} type="light">
+                        {t(`requirements.projects.status.${data.aggregatedStatus}`)}
+                      </Tag>
+                    ),
+                  },
+                  {
+                    key: t('requirements.projects.fields.dateRange'),
+                    value:
+                      data.startDate && data.endDate
+                        ? `${data.startDate} ~ ${data.endDate}`
+                        : '-',
+                  },
+                  {
+                    key: t('requirements.projects.fields.workspaceCount'),
+                    value: data.workspaceCount,
+                  },
+                  {
+                    key: t('requirements.projects.fields.requirementCount'),
+                    value: data.requirementCount,
+                  },
+                  {
+                    key: t('common.createTime'),
+                    value: data.createdAt.replace('T', ' ').substring(0, 19),
+                  },
+                  {
+                    key: t('common.description'),
+                    value: <ExpandableText text={data.description || '-'} maxLines={3} />,
+                  },
+                ]}
+              />
             </div>
           </TabPane>
 
