@@ -92,30 +92,7 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
   const upgradeStatus = wd.upgrade_status;
 
   const renderClientVersion = () => {
-    if (upgradeStatus === 'QUEUED') {
-      return (
-        <div>
-          <Space spacing={8}>
-            <span>{workerData.client_version}</span>
-            <Tag color="blue" type="light" size="small">{t('worker.upgrade.queued.tag')}</Tag>
-          </Space>
-          <div style={{ marginTop: 4 }}>
-            <Text type="tertiary" size="small">
-              {t('worker.upgrade.queued.detailDescription', { version: wd.upgrade_target_version || upgradeTarget?.version || '' })}
-            </Text>
-            <Button
-              theme="borderless"
-              type="danger"
-              size="small"
-              onClick={() => onCancelUpgrade?.(workerData)}
-              style={{ marginLeft: 8 }}
-            >
-              {t('worker.upgrade.cancel.menu')}
-            </Button>
-          </div>
-        </div>
-      );
-    }
+    // 已移除 QUEUED 预约升级状态
     if (upgradeStatus === 'UPGRADING') {
       return (
         <div>
@@ -195,17 +172,7 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
 
   const extraActions = (
     <>
-      {upgradeStatus === 'QUEUED' ? (
-        <Tooltip content={t('worker.upgrade.cancel.menu')}>
-          <Button
-            icon={<ArrowUpCircle size={16} strokeWidth={2} color="var(--semi-color-danger)" />}
-            theme="borderless"
-            type="tertiary"
-            size="small"
-            onClick={() => onCancelUpgrade?.(workerData)}
-          />
-        </Tooltip>
-      ) : upgradeStatus === 'UPGRADING' ? (
+      {upgradeStatus === 'UPGRADING' ? (
         <Tooltip content={t('worker.upgrade.upgrading.cannotCancel')}>
           <Button
             icon={<ArrowUpCircle size={16} strokeWidth={2} />}
