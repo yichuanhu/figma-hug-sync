@@ -42,7 +42,7 @@ import {
   groupWorkersByDevice,
 } from './utils/upgrade';
 import { getEnabledVersion } from '@/mocks/clientVersionData';
-import { ArrowUpCircle, AlertCircle, Loader2, Clock, WifiOff } from 'lucide-react';
+import { ArrowUpCircle, AlertCircle, Loader2, Clock } from 'lucide-react';
 import { Tooltip } from '@douyinfe/semi-ui';
 import './index.less';
 
@@ -517,7 +517,7 @@ const mockWorkers: WorkerWithUpgrade[] = [
     upgrade_target_version: 'v6.8.0',
     upgrade_failed_reason: '网络超时：升级包下载失败，请检查客户端网络连接',
   },
-  // ===== 设备 6: DESKTOP-K1L2 - QUEUED 全离线 =====
+  // ===== 设备 6: DESKTOP-K1L2 - 全离线，可点击升级按钮（弹窗会提示离线无法执行）=====
   {
     id: '550e8400-e29b-41d4-a716-446655440006',
     name: 'Finance Bot-Off-01',
@@ -547,8 +547,7 @@ const mockWorkers: WorkerWithUpgrade[] = [
     owning_department_name: 'Finance Department',
     created_at: '2025-01-03 15:45:00',
     creator_id: 'admin',
-    upgrade_status: 'QUEUED',
-    upgrade_target_version: 'v6.8.0',
+    upgrade_status: 'NONE',
   },
   {
     id: '550e8400-e29b-41d4-a716-446655440061',
@@ -579,8 +578,7 @@ const mockWorkers: WorkerWithUpgrade[] = [
     owning_department_name: 'Finance Department',
     created_at: '2025-01-03 15:46:00',
     creator_id: 'admin',
-    upgrade_status: 'QUEUED',
-    upgrade_target_version: 'v6.8.0',
+    upgrade_status: 'NONE',
   },
   {
     id: '550e8400-e29b-41d4-a716-446655440062',
@@ -611,8 +609,7 @@ const mockWorkers: WorkerWithUpgrade[] = [
     owning_department_name: 'Finance Department',
     created_at: '2025-01-03 15:47:00',
     creator_id: 'admin',
-    upgrade_status: 'QUEUED',
-    upgrade_target_version: 'v6.8.0',
+    upgrade_status: 'NONE',
   },
   // ===== 设备 7: DESKTOP-LATEST - 已是最新 (对照组) =====
   {
@@ -1251,24 +1248,10 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
         const target = getEnabledVersion(record.desktop_type);
         const upgradable = isUpgradeAvailable(record);
 
-        // QUEUED：等待空闲（有 BUSY 机器人）或离线场景
+        // QUEUED：等待当前任务完成后自动升级（仅适用于有 BUSY/MAINTENANCE 场景）
         if (deviceStatus === 'QUEUED') {
           const targetVersion = peers.find((p) => p.upgrade_target_version)?.upgrade_target_version || target?.version;
           const busyPeers = peers.filter((p) => p.status === 'BUSY' || p.status === 'MAINTENANCE');
-          const allOffline = peers.every((p) => p.status === 'OFFLINE' || p.status === 'FAULT');
-
-          if (allOffline) {
-            return (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={(e) => e.stopPropagation()}>
-                <span>{version}</span>
-                <Tooltip content={t('worker.upgrade.queuedOffline.tooltip')}>
-                  <Tag color="grey" type="light" size="small" prefixIcon={<WifiOff size={12} strokeWidth={2} />}>
-                    {t('worker.upgrade.queuedOffline.tag')}
-                  </Tag>
-                </Tooltip>
-              </div>
-            );
-          }
 
           const names = busyPeers.slice(0, 3).map((p) => p.name).join('、');
           const more = busyPeers.length > 3 ? t('worker.upgrade.queued.more', { count: busyPeers.length - 3 }) : '';
