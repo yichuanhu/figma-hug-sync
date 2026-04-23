@@ -1,18 +1,17 @@
 import { useMemo } from 'react';
-import { Modal, Typography, Tag, Empty } from '@douyinfe/semi-ui';
+import { Modal, Typography, Tag, Empty, Banner } from '@douyinfe/semi-ui';
 import { useTranslation } from 'react-i18next';
-import { ArrowUpCircle, Clock, Info, Monitor, Wifi, WifiOff } from 'lucide-react';
+import { ArrowUpCircle, Clock, Monitor, Wifi, WifiOff } from 'lucide-react';
 import {
   WorkerWithUpgrade,
   isUpgradeAvailable,
   isDeviceAllOffline,
   getDeviceBlockingWorkers,
-  compareVersion,
 } from '../../utils/upgrade';
 import { getEnabledVersion } from '@/mocks/clientVersionData';
 import './index.less';
 
-const { Text, Title, Paragraph } = Typography;
+const { Text, Paragraph } = Typography;
 
 interface UpgradeDeviceModalProps {
   visible: boolean;
