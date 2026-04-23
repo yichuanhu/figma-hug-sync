@@ -1,75 +1,69 @@
 
 
-## 需求规划补丁：升级触发后的「等待无任务执行」机制
+## 规划：丰富升级状态的 Mock 数据与可视化呈现
 
-在已批准的「设备维度升级」规划基础上，增加一项核心约束：**点击「确认升级」后不立即执行，先等待该设备下所有机器人空闲（无任务执行）后再下发升级指令。**
+### 一、目标
 
-### 一、行为变更
+让升级流程的所有中间态在 Demo 中"可见、可点、可感知"。当前 mock 中绝大多数 worker 处于 `NONE` 状态，看不到「等待空闲」「升级中」「升级失败」等关键场景。本次扩充覆盖全部状态机分支，并补齐对应的 UI 表现。
 
-确认升级 = **预约升级**。提交后系统将该设备置入「待升级队列」，由后端轮询：当设备下**所有机器人**状态均为 `IDLE` 或 `OFFLINE`（且无排队任务）时，才真正下发升级指令并触发重启。
+### 二、Mock 数据扩充（按设备分组，同 `machine_code` 共享）
 
-### 二、状态机扩展
+在 `src/pages/Scheduling/WorkerManagement/index.tsx` 的 mock 数据中规划 6 类典型设备样本：
 
-设备升级状态新增三个阶段（替代原单一「升级中」）：
+| # | 设备（machine_code） | 机器人构成 | upgrade_status | 演示场景 |
+|---|---|---|---|---|
+| 1 | DESKTOP-A1B2 | 3 台，全部 IDLE，版本 v6.7.0 | `NONE` + 有可用升级 | 标准"可立即升级"——Popover 显示升级按钮 |
+| 2 | DESKTOP-C3D4 | 3 台：1 BUSY + 2 IDLE，版本 v6.7.0 | `QUEUED`，target v6.8.0 | 等待空闲——蓝色 Tag「等待空闲后升级」+ Tooltip 列出 BUSY 机器人 |
+| 3 | DESKTOP-E5F6 | 4 台：3 BUSY + 1 IDLE，版本 v6.7.2 | `QUEUED`，target v6.8.0 | 多机器人阻塞——Tooltip 显示「3 台正在执行任务」 |
+| 4 | DESKTOP-G7H8 | 2 台，全部 IDLE，版本 v6.7.0 | `UPGRADING`，target v6.8.0 | 升级指令已下发——蓝色 Tag「升级中」带 Spin 图标，操作不可取消 |
+| 5 | DESKTOP-I9J0 | 2 台 IDLE，版本 v6.6.5 | `FAILED`，target v6.8.0，failed_reason="网络超时" | 升级失败——红色 AlertCircle 图标，hover 显示失败原因 + "重试"入口 |
+| 6 | DESKTOP-K1L2 | 3 台：2 OFFLINE + 1 FAULT，版本 v6.7.0 | `QUEUED`（OFFLINE 自动排队） | 全离线设备——灰色 Tag「重新上线后自动升级」 |
 
-| 状态 | 触发条件 | UI 表现 |
+另保留若干已是最新版（v6.8.0）的设备作为对照组，确保升级徽标只出现在低版本上。
+
+### 三、UI 状态呈现规范
+
+**客户端版本列**（每行右侧根据 `upgrade_status` 渲染对应标识）：
+
+| 状态 | 视觉 | 交互 |
 |---|---|---|
-| `UPGRADE_QUEUED`（待升级） | 用户确认后，设备下存在 BUSY 机器人或待执行任务 | 客户端版本列显示蓝色 Tag「等待空闲后升级」+ Tooltip 说明正在等待哪些机器人完成任务 |
-| `UPGRADING`（升级中） | 设备所有机器人空闲，指令已下发 | 蓝色 Tag「升级中」 |
-| `UPGRADE_FAILED` / 完成 | 同原方案 | 红色 AlertCircle / 自动刷新版本号 |
+| `NONE` + 有升级 | 主色 `ArrowUpCircle` 徽标 | hover Popover：当前→目标版本、关联机器人列表、「升级客户端版本」按钮 |
+| `QUEUED`（有 BUSY） | 蓝色 Tag「等待空闲后升级」+ 时钟图标 | Tooltip：「正在等待 X 完成任务」最多 3 条 + 「等 N 台」 |
+| `QUEUED`（全 OFFLINE） | 灰色 Tag「重新上线后自动升级」 | Tooltip：「设备离线，恢复连接后自动执行」 |
+| `UPGRADING` | 蓝色 Tag「升级中」+ 旋转 `Loader2` 图标 | Tooltip：「正在升级到 vX.Y.Z，预计 1-2 分钟」 |
+| `FAILED` | 红色 `AlertCircle` 图标 + 红色文字「升级失败」 | Popover：失败原因 + 主色「重试升级」按钮 |
+| 已是最新 | 不展示徽标 | — |
 
-升级排队期间：
-- 该设备**仍可正常接收新任务**（不阻断业务），但每完成一个任务就重新检查一次空闲条件
-- 详情抽屉「主机信息」分区版本号下方追加灰色描述：「已预约升级到 vX.Y.Z，将在该设备所有机器人空闲后自动执行」+ 「取消预约」文字按钮
+**详情抽屉「主机信息」分区**：版本号下追加状态描述行——
+- `QUEUED`：灰色文字「已预约升级到 v6.8.0，将在该客户端关联机器人全部空闲后自动执行」+ 「取消预约」文字按钮
+- `UPGRADING`：蓝色文字「正在升级到 v6.8.0…」+ Spin
+- `FAILED`：红色文字「升级失败：{reason}」+ 「重试」文字按钮
 
-### 三、确认弹窗文案调整
+**详情抽屉头部按钮**联动：
+- `NONE` + 可升级 → 「升级客户端版本」（主色）
+- `QUEUED` → 「取消预约」（红色文字）
+- `UPGRADING` → 「升级中…」（置灰禁用）
+- `FAILED` → 「重试升级」（主色）
 
-```text
-┌─ 升级设备客户端 ──────────────────────────────┐
-│  即将预约升级 N 台设备（共影响 M 台机器人）        │
-│                                              │
-│  目标版本：v6.8.0 (Console)                  │
-│                                              │
-│  ┌─ 设备 1：DESKTOP-A1B2 ────────────────┐   │
-│  │  当前版本 v6.7.0 → v6.8.0             │   │
-│  │  影响机器人（3）：Finance Bot-01 …     │   │
-│  │  ⏱ 2 台正在执行任务，将在任务完成后升级 │   │
-│  └────────────────────────────────────────┘   │
-│                                              │
-│  ℹ 升级会等待设备下所有机器人空闲后自动执行，   │
-│    期间设备可继续接收新任务                    │
-│                                              │
-│            [取消]    [确认预约升级]            │
-└──────────────────────────────────────────────┘
-```
+**批量 Action Bar** 按勾选行的状态聚合：
+- 包含可升级 → 显示「升级客户端版本」
+- 包含 QUEUED → 追加「取消预约」
+- 全为 UPGRADING → 全部按钮置灰，提示「升级进行中无法操作」
 
-按钮主文案由「确认升级」改为「确认预约升级」。提交后 Toast 提示：「已预约升级 N 台设备，将在空闲后自动执行」。
+### 四、技术要点
 
-### 四、取消预约
+- 在 `src/mocks/clientVersionData.ts` 旁新增/扩充 `mockUpgradeStates` 用于演示，按 `machine_code` 写入 `upgrade_status` / `upgrade_target_version` / `upgrade_failed_reason`
+- 列表 mock（`WorkerManagement/index.tsx`）调整若干现有条目的 `machine_code` 与 `client_version`，与上述 6 组场景对齐
+- `utils/upgrade.ts` 增补：
+  - `getUpgradeBadgeMeta(worker, peers)` 返回 `{ kind, color, icon, label, tooltip }` 供列表与抽屉复用
+  - `isCancelable(status)`：仅 `QUEUED` 可取消
+- 新增组件 `UpgradeStatusBadge`（位于 `WorkerManagement/components/UpgradeStatusBadge/`）封装上述六态渲染，保证列表/抽屉/批量栏视觉一致
+- i18n key 扩充：`worker.upgrade.status.queued` / `queuedOffline` / `upgrading` / `failed` / `retry` / `cancelTooltip` 等
+- "重试升级"复用现有 `UpgradeDeviceModal`，预填该客户端
 
-- 入口 1：详情抽屉「主机信息」版本号旁「取消预约」文字按钮
-- 入口 2：列表行操作菜单中，当设备处于 `UPGRADE_QUEUED` 状态时，「升级设备」菜单项替换为「取消升级预约」
-- 入口 3：批量 Action Bar 中，勾选包含已预约设备的行时，按钮组追加「取消预约」
-- `UPGRADING` 状态（指令已下发）不可取消，菜单项置灰 + Tooltip「升级已开始，无法取消」
+### 五、不变项
 
-### 五、可视化提示增强
-
-- Worker 列表客户端版本列：`UPGRADE_QUEUED` 设备的所有机器人行显示蓝色 Tag「等待空闲后升级」，hover Tooltip 列出阻塞中的机器人名称（最多展示 3 条 + 「等 N 台」）
-- 详情抽屉头部「升级设备」按钮在 `UPGRADE_QUEUED` 状态下变为「取消预约」（红色文字按钮）
-
-### 六、技术要点
-
-- Mock 数据扩展：Worker 增加 `upgrade_status: 'NONE' | 'QUEUED' | 'UPGRADING' | 'FAILED'` 与 `upgrade_target_version` 字段（按设备维度同步，同 `machine_code` 共享）
-- 工具函数新增：
-  - `isDeviceIdle(workers)` 判断设备下所有机器人是否空闲（IDLE / OFFLINE 且无待执行任务）
-  - `getDeviceBlockingWorkers(workers)` 返回阻塞升级的机器人列表
-- `UpgradeDeviceModal` 设备卡新增「正在执行任务」⏱ 行
-- 列表与详情抽屉的状态展示按 `upgrade_status` 渲染对应 Tag 与操作按钮
-- i18n key：`worker.upgrade.queued.*` / `worker.upgrade.cancel.*`
-
-### 七、不变项
-
-- 入口位置（列表徽标 / 行菜单 / 批量 / 详情抽屉头部）保持原规划不变
-- 设备维度聚合逻辑、Admin Hub 启用版本读取、Console / NotConsole 分组逻辑保持不变
-- OFFLINE / FAULT 设备仍按「重新上线后自动升级」处理（与「等待空闲」逻辑天然一致）
+- 设备聚合规则、Admin Hub 启用版本读取、Console / NotConsole 分组、确认弹窗的「预约升级」逻辑保持不变
+- 不引入新的菜单入口；操作仍集中在 Popover、批量栏、详情抽屉头部三处
+- 术语继续遵循"客户端 / 关联机器人"，不再出现"设备"
 
