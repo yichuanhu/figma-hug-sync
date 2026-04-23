@@ -123,21 +123,10 @@ const LinkRequirementsModal = ({ visible, workspace, onClose, onSuccess }: Props
         <div className="link-column">
           <div className="link-column-header">
             <Text strong>{t('requirements.projects.candidateRequirements')}</Text>
-            <Text
-              type={crossDept ? 'primary' : 'tertiary'}
-              size="small"
-              link
-              onClick={() => setCrossDept((v) => !v)}
-              style={{ cursor: 'pointer' }}
-            >
-              {crossDept
-                ? t('requirements.projects.showSameDept')
-                : t('requirements.projects.showAllDept')}
-            </Text>
           </div>
           <div className="link-column-search">
             <Input
-              prefix={<Search size={14} />}
+              prefix={<IconSearch />}
               placeholder={t('requirements.projects.searchRequirement')}
               value={keyword}
               onChange={setKeyword}
