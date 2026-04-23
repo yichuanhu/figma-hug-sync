@@ -191,6 +191,9 @@ const mockWorkers: WorkerWithUpgrade[] = [
     creator_id: 'admin',
     upgrade_status: 'QUEUED',
     upgrade_target_version: 'v6.8.0',
+  },
+  {
+    id: '550e8400-e29b-41d4-a716-446655440021',
     name: 'Finance Bot-02B',
     description: '同设备机器人',
     status: 'IDLE',
@@ -220,6 +223,9 @@ const mockWorkers: WorkerWithUpgrade[] = [
     creator_id: 'admin',
     upgrade_status: 'QUEUED',
     upgrade_target_version: 'v6.8.0',
+  },
+  {
+    id: '550e8400-e29b-41d4-a716-446655440022',
     name: 'Finance Bot-02C',
     description: '同设备机器人',
     status: 'IDLE',
