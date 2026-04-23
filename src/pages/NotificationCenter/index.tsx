@@ -92,8 +92,6 @@ const NotificationCenter = () => {
         <Text type="tertiary" className="subtitle">{t('notificationCenter.subtitle')}</Text>
       </div>
 
-      <NotificationStatsCards stats={stats} />
-
       <NotificationFilterBar
         values={filters}
         unreadCount={stats.unread}
