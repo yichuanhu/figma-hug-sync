@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Input, Tag, Toast, Typography, Empty } from '@douyinfe/semi-ui';
-import { Search, X, ArrowRight } from 'lucide-react';
+import { IconSearch } from '@douyinfe/semi-icons';
+import { X, ArrowRight } from 'lucide-react';
 import type { Workspace } from '../../types';
 import { linkRequirements, fetchAllWorkspaces } from '../../mockData';
 import { fetchRequirementList } from '../../../RequirementsWorkbench/mockData';
@@ -22,14 +23,12 @@ const LinkRequirementsModal = ({ visible, workspace, onClose, onSuccess }: Props
   const [allWorkspaces, setAllWorkspaces] = useState<Workspace[]>([]);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [keyword, setKeyword] = useState('');
-  const [crossDept, setCrossDept] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (visible && workspace) {
       setSelectedIds([...workspace.linkedRequirementIds]);
       setKeyword('');
-      setCrossDept(false);
       Promise.all([
         fetchRequirementList({ offset: 0, size: 500, keyword: '', sort_by: 'created_at', sort_order: 'desc' }),
         fetchAllWorkspaces(),
@@ -53,10 +52,8 @@ const LinkRequirementsModal = ({ visible, workspace, onClose, onSuccess }: Props
 
   const filteredCandidates = useMemo(() => {
     if (!workspace) return [];
-    let list = requirements;
-    if (!crossDept) {
-      list = list.filter((r) => r.owning_department_id === workspace.departmentId);
-    }
+    // 仅展示与该工作空间所属部门一致的需求，不支持跨部门关联
+    let list = requirements.filter((r) => r.owning_department_id === workspace.departmentId);
     if (keyword.trim()) {
       const k = keyword.trim().toLowerCase();
       list = list.filter(
@@ -67,7 +64,7 @@ const LinkRequirementsModal = ({ visible, workspace, onClose, onSuccess }: Props
     }
     // 排除已选
     return list.filter((r) => !selectedIds.includes(r.id));
-  }, [requirements, workspace, crossDept, keyword, selectedIds]);
+  }, [requirements, workspace, keyword, selectedIds]);
 
   const selectedItems = useMemo(
     () => requirements.filter((r) => selectedIds.includes(r.id)),
@@ -126,21 +123,10 @@ const LinkRequirementsModal = ({ visible, workspace, onClose, onSuccess }: Props
         <div className="link-column">
           <div className="link-column-header">
             <Text strong>{t('requirements.projects.candidateRequirements')}</Text>
-            <Text
-              type={crossDept ? 'primary' : 'tertiary'}
-              size="small"
-              link
-              onClick={() => setCrossDept((v) => !v)}
-              style={{ cursor: 'pointer' }}
-            >
-              {crossDept
-                ? t('requirements.projects.showSameDept')
-                : t('requirements.projects.showAllDept')}
-            </Text>
           </div>
           <div className="link-column-search">
             <Input
-              prefix={<Search size={14} />}
+              prefix={<IconSearch />}
               placeholder={t('requirements.projects.searchRequirement')}
               value={keyword}
               onChange={setKeyword}
