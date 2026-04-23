@@ -7,8 +7,10 @@ import ExpandableText from '@/components/ExpandableText';
 import { getDepartmentName } from '@/mocks/departmentData';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
+import { isUpgradeAvailable, type WorkerWithUpgrade } from '../../utils/upgrade';
+import { getEnabledVersion } from '@/mocks/clientVersionData';
 import './index.less';
-import { Key, MinusCircle, Pencil, Trash2, Users } from 'lucide-react';
+import { ArrowUpCircle, Key, MinusCircle, Pencil, Trash2, Users } from 'lucide-react';
 
 const { Text } = Typography;
 
@@ -22,6 +24,8 @@ interface WorkerDetailDrawerProps {
   onToggleReceiveTasks?: (worker: LYWorkerResponse, checked: boolean) => void;
   onAddToGroup?: (worker: LYWorkerResponse) => void;
   onRemoveFromGroup?: (worker: LYWorkerResponse) => void;
+  onUpgradeDevice?: (worker: LYWorkerResponse) => void;
+  onCancelUpgrade?: (worker: LYWorkerResponse) => void;
   dataList?: LYWorkerResponse[];
   onNavigate?: (worker: LYWorkerResponse) => void;
   pagination?: PaginationInfo;
@@ -30,7 +34,7 @@ interface WorkerDetailDrawerProps {
   
 }
 
-const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, onDelete, onToggleReceiveTasks, onAddToGroup, onRemoveFromGroup, dataList = [], onNavigate, pagination, onPageChange, onScrollToRow }: WorkerDetailDrawerProps) => {
+const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, onDelete, onToggleReceiveTasks, onAddToGroup, onRemoveFromGroup, onUpgradeDevice, onCancelUpgrade, dataList = [], onNavigate, pagination, onPageChange, onScrollToRow }: WorkerDetailDrawerProps) => {
   const { t } = useTranslation();
 
   if (!workerData) return null;
@@ -81,13 +85,68 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
 
   const isRemoteDesktop = workerData.desktop_type === 'NotConsole';
 
+  // 升级状态展示
+  const wd = workerData as WorkerWithUpgrade;
+  const upgradeTarget = getEnabledVersion(workerData.desktop_type);
+  const upgradable = isUpgradeAvailable(workerData);
+  const upgradeStatus = wd.upgrade_status;
+
+  const renderClientVersion = () => {
+    if (upgradeStatus === 'QUEUED') {
+      return (
+        <div>
+          <Space spacing={8}>
+            <span>{workerData.client_version}</span>
+            <Tag color="blue" type="light" size="small">{t('worker.upgrade.queued.tag')}</Tag>
+          </Space>
+          <div style={{ marginTop: 4 }}>
+            <Text type="tertiary" size="small">
+              {t('worker.upgrade.queued.detailDescription', { version: wd.upgrade_target_version || upgradeTarget?.version || '' })}
+            </Text>
+            <Button
+              theme="borderless"
+              type="danger"
+              size="small"
+              onClick={() => onCancelUpgrade?.(workerData)}
+              style={{ marginLeft: 8 }}
+            >
+              {t('worker.upgrade.cancel.menu')}
+            </Button>
+          </div>
+        </div>
+      );
+    }
+    if (upgradeStatus === 'UPGRADING') {
+      return (
+        <Space spacing={8}>
+          <span>{workerData.client_version}</span>
+          <Tag color="blue" type="solid" size="small">{t('worker.upgrade.upgrading.tag')}</Tag>
+        </Space>
+      );
+    }
+    if (upgradable && upgradeTarget) {
+      return (
+        <Space spacing={8}>
+          <span>{workerData.client_version}</span>
+          <Tag color="orange" type="light" size="small">
+            {t('worker.upgrade.badge.tag', { version: upgradeTarget.version })}
+          </Tag>
+          <Button theme="borderless" type="primary" size="small" onClick={() => onUpgradeDevice?.(workerData)}>
+            {t('worker.upgrade.menu')}
+          </Button>
+        </Space>
+      );
+    }
+    return workerData.client_version;
+  };
+
   const detailInfoData = [
     { key: t('worker.detail.fields.desktopType'), value: workerData.desktop_type === 'Console' ? t('worker.detail.desktopTypes.console') : t('worker.detail.desktopTypes.notConsole') },
     { key: t('worker.detail.fields.account'), value: workerData.username },
     { key: t('worker.detail.fields.passwordSyncStatus'), value: <Tag color={workerData.sync_status === 'SYNCED' ? 'green' : 'orange'} type="light">{workerData.sync_status === 'SYNCED' ? t('worker.syncStatus.synced') : t('worker.syncStatus.pending')}</Tag> },
     ...(isRemoteDesktop ? [{ key: t('worker.detail.fields.forceLogin'), value: <Tag color={workerData.force_login ? 'green' : 'grey'} type="light">{workerData.force_login ? t('common.yes') : t('common.no')}</Tag> }] : []),
     ...(isRemoteDesktop ? [{ key: t('worker.detail.fields.resolution'), value: workerData.display_size || '-' }] : []),
-    { key: t('worker.detail.fields.clientVersion'), value: workerData.client_version },
+    { key: t('worker.detail.fields.clientVersion'), value: renderClientVersion() },
     { key: t('worker.detail.fields.lastHeartbeat'), value: workerData.last_heartbeat_time },
   ];
 
@@ -105,6 +164,37 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
 
   const extraActions = (
     <>
+      {upgradeStatus === 'QUEUED' ? (
+        <Tooltip content={t('worker.upgrade.cancel.menu')}>
+          <Button
+            icon={<ArrowUpCircle size={16} strokeWidth={2} color="var(--semi-color-danger)" />}
+            theme="borderless"
+            type="tertiary"
+            size="small"
+            onClick={() => onCancelUpgrade?.(workerData)}
+          />
+        </Tooltip>
+      ) : upgradeStatus === 'UPGRADING' ? (
+        <Tooltip content={t('worker.upgrade.upgrading.cannotCancel')}>
+          <Button
+            icon={<ArrowUpCircle size={16} strokeWidth={2} />}
+            theme="borderless"
+            type="tertiary"
+            size="small"
+            disabled
+          />
+        </Tooltip>
+      ) : upgradable ? (
+        <Tooltip content={t('worker.upgrade.menu')}>
+          <Button
+            icon={<ArrowUpCircle size={16} strokeWidth={2} color="var(--semi-color-warning)" />}
+            theme="borderless"
+            type="tertiary"
+            size="small"
+            onClick={() => onUpgradeDevice?.(workerData)}
+          />
+        </Tooltip>
+      ) : null}
       <Tooltip content={t('common.edit')}>
         <Button icon={<Pencil size={16} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={onEdit} />
       </Tooltip>

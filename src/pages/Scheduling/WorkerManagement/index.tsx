@@ -32,8 +32,18 @@ import WorkerKeyModal from './components/WorkerKeyModal';
 import CreateWorkerModal from './components/CreateWorkerModal';
 import EditWorkerModal from './components/EditWorkerModal';
 import AddToGroupModal from './components/AddToGroupModal';
+import UpgradeDeviceModal from './components/UpgradeDeviceModal';
 import type { LYWorkerResponse, LYListResponseLYWorkerResponse, GetWorkersParams } from '@/api';
 import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
+import {
+  WorkerWithUpgrade,
+  isUpgradeAvailable,
+  aggregateSelectedDevices,
+  groupWorkersByDevice,
+} from './utils/upgrade';
+import { getEnabledVersion } from '@/mocks/clientVersionData';
+import { ArrowUpCircle, AlertCircle } from 'lucide-react';
+import { Tooltip } from '@douyinfe/semi-ui';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -47,7 +57,7 @@ const mockWorkerGroups = [
 ];
 
 // MockData - usingAPIType
-const mockWorkers: LYWorkerResponse[] = [
+const mockWorkers: WorkerWithUpgrade[] = [
   {
     id: '550e8400-e29b-41d4-a716-446655440001',
     name: 'Finance Bot-01',
@@ -131,12 +141,46 @@ const mockWorkers: LYWorkerResponse[] = [
     cpu_model: 'Intel(R) Core(TM) i7-8700 @ 3.20GHz',
     cpu_cores: 6,
     memory_capacity: '16 GB',
-    robot_count: 1,
+    robot_count: 2,
     group_id: null,
     group_name: null,
     owning_department_name: 'R&D Center',
     created_at: '2025-01-04 11:20:00',
     creator_id: 'admin',
+    upgrade_status: 'QUEUED',
+    upgrade_target_version: 'v6.8.0',
+  },
+  {
+    id: '550e8400-e29b-41d4-a716-446655440031',
+    name: 'Finance Bot-03B',
+    description: 'Sibling bot on same device as Finance Bot-03',
+    status: 'BUSY',
+    sync_status: 'SYNCED',
+    ip_address: '10.0.1.102',
+    priority: 'HIGH',
+    client_version: 'v6.6.0',
+    last_heartbeat_time: '2025-01-08 10:25:00',
+    receive_tasks: true,
+    username: 'DOMAIN\\robot03b',
+    desktop_type: 'Console',
+    enable_auto_unlock: false,
+    force_login: false,
+    device_token: 'sibling-token-001',
+    machine_code: 'B33HF6669C437H502C62',
+    host_name: 'WIN-SERVER-03',
+    os: 'Windows 10 Pro 64-bit',
+    arch: 'x64',
+    cpu_model: 'Intel(R) Core(TM) i7-8700 @ 3.20GHz',
+    cpu_cores: 6,
+    memory_capacity: '16 GB',
+    robot_count: 2,
+    group_id: null,
+    group_name: null,
+    owning_department_name: 'R&D Center',
+    created_at: '2025-01-04 11:25:00',
+    creator_id: 'admin',
+    upgrade_status: 'QUEUED',
+    upgrade_target_version: 'v6.8.0',
   },
   {
     id: '550e8400-e29b-41d4-a716-446655440004',
@@ -391,6 +435,11 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
   const [editingWorker, setEditingWorker] = useState<LYWorkerResponse | null>(null);
   const [addToGroupModalVisible, setAddToGroupModalVisible] = useState(false);
   const [addToGroupWorker, setAddToGroupWorker] = useState<LYWorkerResponse | null>(null);
+
+  // 升级相关 state
+  const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
+  const [upgradeModalVisible, setUpgradeModalVisible] = useState(false);
+  const [upgradeDevices, setUpgradeDevices] = useState<{ machineCode: string; workers: WorkerWithUpgrade[] }[]>([]);
 
   // StatusConfig
   type WorkerStatus = LYWorkerResponse['status'];
@@ -712,6 +761,89 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
   const pageSize = range?.size || 20;
   const total = range?.total || 0;
 
+  // 设备维度聚合（同 machine_code 视为同一设备）
+  const deviceMap = useMemo(() => groupWorkersByDevice(list as WorkerWithUpgrade[]), [list]);
+
+  const getDevicePeers = useCallback(
+    (record: WorkerWithUpgrade) => deviceMap.get(record.machine_code || record.id) || [record],
+    [deviceMap]
+  );
+
+  // 行 / 批量 升级触发
+  const triggerUpgrade = useCallback(
+    (workerIds: string[]) => {
+      const enabled = workerIds.some((id) => {
+        const w = (list as WorkerWithUpgrade[]).find((x) => x.id === id);
+        return w && getEnabledVersion(w.desktop_type);
+      });
+      if (!enabled) {
+        Toast.warning(t('worker.upgrade.noEnabledVersion'));
+        return;
+      }
+      const devices = aggregateSelectedDevices(list as WorkerWithUpgrade[], workerIds);
+      setUpgradeDevices(devices);
+      setUpgradeModalVisible(true);
+    },
+    [list, t]
+  );
+
+  const handleConfirmUpgrade = useCallback(
+    (machineCodes: string[]) => {
+      // 将这些设备下所有 worker 的 upgrade_status 置为 QUEUED
+      setListResponse((prev) => ({
+        ...prev,
+        list: prev.list.map((w) => {
+          const code = (w as WorkerWithUpgrade).machine_code || w.id;
+          if (!machineCodes.includes(code)) return w;
+          const target = getEnabledVersion(w.desktop_type);
+          return {
+            ...w,
+            upgrade_status: 'QUEUED',
+            upgrade_target_version: target?.version || null,
+          } as WorkerWithUpgrade;
+        }),
+      }));
+      setUpgradeModalVisible(false);
+      setSelectedRowKeys([]);
+      Toast.success(t('worker.upgrade.queuedSuccess', { count: machineCodes.length }));
+    },
+    [t]
+  );
+
+  const handleCancelUpgrade = useCallback(
+    (record: WorkerWithUpgrade) => {
+      const machineCode = record.machine_code || record.id;
+      Modal.confirm({
+        title: t('worker.upgrade.cancel.title'),
+        content: t('worker.upgrade.cancel.confirmMessage'),
+        okText: t('worker.upgrade.cancel.confirm'),
+        cancelText: t('common.cancel'),
+        onOk: async () => {
+          setListResponse((prev) => ({
+            ...prev,
+            list: prev.list.map((w) => {
+              const code = (w as WorkerWithUpgrade).machine_code || w.id;
+              if (code !== machineCode) return w;
+              return {
+                ...w,
+                upgrade_status: 'NONE',
+                upgrade_target_version: null,
+              } as WorkerWithUpgrade;
+            }),
+          }));
+          if (selectedWorker?.machine_code === machineCode) {
+            setSelectedWorker((prev) =>
+              prev ? ({ ...prev, upgrade_status: 'NONE', upgrade_target_version: null } as any) : null
+            );
+          }
+          Toast.success(t('worker.upgrade.cancel.success'));
+        },
+      });
+    },
+    [t, selectedWorker]
+  );
+
+
   const columns = [
     {
       title: t('worker.table.workerName'),
@@ -769,7 +901,63 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
       title: t('worker.table.clientVersion'),
       dataIndex: 'client_version',
       key: 'client_version',
-      width: 100,
+      width: 180,
+      render: (version: string | null, record: WorkerWithUpgrade) => {
+        const peers = getDevicePeers(record);
+        // 取设备维度的升级状态（同一设备同步）
+        const deviceStatus = peers.find((p) => p.upgrade_status && p.upgrade_status !== 'NONE')?.upgrade_status;
+        const target = getEnabledVersion(record.desktop_type);
+        const upgradable = isUpgradeAvailable(record);
+
+        if (deviceStatus === 'QUEUED') {
+          const blocking = peers.filter((p) => p.status === 'BUSY' || p.status === 'MAINTENANCE');
+          const tooltipContent = blocking.length > 0
+            ? t('worker.upgrade.queued.tooltip', {
+                names: blocking.slice(0, 3).map((b) => b.name).join('、'),
+                more: blocking.length > 3 ? t('worker.upgrade.queued.more', { count: blocking.length - 3 }) : '',
+              })
+            : t('worker.upgrade.queued.tooltipReady');
+          return (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={(e) => e.stopPropagation()}>
+              <span>{version}</span>
+              <Tooltip content={tooltipContent}>
+                <Tag color="blue" type="light" size="small">
+                  {t('worker.upgrade.queued.tag')}
+                </Tag>
+              </Tooltip>
+            </div>
+          );
+        }
+        if (deviceStatus === 'UPGRADING') {
+          return (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={(e) => e.stopPropagation()}>
+              <span>{version}</span>
+              <Tag color="blue" type="solid" size="small">{t('worker.upgrade.upgrading.tag')}</Tag>
+            </div>
+          );
+        }
+        if (deviceStatus === 'FAILED') {
+          return (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={(e) => e.stopPropagation()}>
+              <span>{version}</span>
+              <Tooltip content={record.upgrade_failed_reason || t('worker.upgrade.failed.defaultReason')}>
+                <AlertCircle size={14} strokeWidth={2} color="var(--semi-color-danger)" />
+              </Tooltip>
+            </div>
+          );
+        }
+        if (upgradable && target) {
+          return (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={(e) => e.stopPropagation()}>
+              <span>{version}</span>
+              <Tooltip content={t('worker.upgrade.badge.tooltip', { version: target.version, count: peers.length })}>
+                <ArrowUpCircle size={14} strokeWidth={2} color="var(--semi-color-warning)" />
+              </Tooltip>
+            </div>
+          );
+        }
+        return version;
+      },
     },
     {
       title: t('worker.table.lastHeartbeat'),
@@ -865,7 +1053,42 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
                   {t('worker.actions.removeFromGroup')}
                 </Dropdown.Item>
               )}
-              <Dropdown.Item 
+              {(() => {
+                const peers = getDevicePeers(record);
+                const deviceStatus = peers.find((p) => p.upgrade_status && p.upgrade_status !== 'NONE')?.upgrade_status;
+                const upgradable = isUpgradeAvailable(record);
+                if (deviceStatus === 'QUEUED') {
+                  return (
+                    <Dropdown.Item
+                      icon={<ArrowUpCircle size={16} strokeWidth={2} />}
+                      onClick={() => handleCancelUpgrade(record)}
+                    >
+                      {t('worker.upgrade.cancel.menu')}
+                    </Dropdown.Item>
+                  );
+                }
+                if (deviceStatus === 'UPGRADING') {
+                  return (
+                    <Tooltip content={t('worker.upgrade.upgrading.cannotCancel')}>
+                      <Dropdown.Item icon={<ArrowUpCircle size={16} strokeWidth={2} />} disabled>
+                        {t('worker.upgrade.cancel.menu')}
+                      </Dropdown.Item>
+                    </Tooltip>
+                  );
+                }
+                if (upgradable) {
+                  return (
+                    <Dropdown.Item
+                      icon={<ArrowUpCircle size={16} strokeWidth={2} />}
+                      onClick={() => triggerUpgrade([record.id])}
+                    >
+                      {t('worker.upgrade.menu')}
+                    </Dropdown.Item>
+                  );
+                }
+                return null;
+              })()}
+              <Dropdown.Item
                 icon={<UserPlus size={14} strokeWidth={2} />}
                 onClick={() => {
                   openCollaborator(record.id);
@@ -960,14 +1183,74 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
             </Space>
           </Col>
           <Col>
-            <Button 
-              icon={<Plus size={16} strokeWidth={2} />} 
-              theme="solid" 
-              type="primary"
-              onClick={() => setCreateModalVisible(true)}
-            >
-              {t('worker.createWorker')}
-            </Button>
+            <Space>
+              {selectedRowKeys.length > 0 && (() => {
+                const selectedDevices = aggregateSelectedDevices(list as WorkerWithUpgrade[], selectedRowKeys);
+                const hasQueued = selectedDevices.some((d) => d.workers.some((w) => w.upgrade_status === 'QUEUED'));
+                const hasUpgradable = selectedDevices.some((d) =>
+                  d.workers.some(isUpgradeAvailable) && !d.workers.some((w) => w.upgrade_status === 'QUEUED' || w.upgrade_status === 'UPGRADING')
+                );
+                return (
+                  <>
+                    <Text type="tertiary" size="small">
+                      {t('worker.upgrade.batchSelected', { count: selectedRowKeys.length })}
+                    </Text>
+                    {hasUpgradable && (
+                      <Button
+                        icon={<ArrowUpCircle size={16} strokeWidth={2} />}
+                        onClick={() => triggerUpgrade(selectedRowKeys)}
+                      >
+                        {t('worker.upgrade.batchButton')}
+                      </Button>
+                    )}
+                    {hasQueued && (
+                      <Button
+                        icon={<ArrowUpCircle size={16} strokeWidth={2} />}
+                        onClick={() => {
+                          // 取消已选中行所属设备的预约
+                          const queuedDevices = selectedDevices.filter((d) =>
+                            d.workers.some((w) => w.upgrade_status === 'QUEUED')
+                          );
+                          Modal.confirm({
+                            title: t('worker.upgrade.cancel.title'),
+                            content: t('worker.upgrade.cancel.batchConfirmMessage', { count: queuedDevices.length }),
+                            okText: t('worker.upgrade.cancel.confirm'),
+                            cancelText: t('common.cancel'),
+                            onOk: async () => {
+                              const machineCodes = queuedDevices.map((d) => d.machineCode);
+                              setListResponse((prev) => ({
+                                ...prev,
+                                list: prev.list.map((w) => {
+                                  const code = (w as WorkerWithUpgrade).machine_code || w.id;
+                                  if (!machineCodes.includes(code)) return w;
+                                  return {
+                                    ...w,
+                                    upgrade_status: 'NONE',
+                                    upgrade_target_version: null,
+                                  } as WorkerWithUpgrade;
+                                }),
+                              }));
+                              setSelectedRowKeys([]);
+                              Toast.success(t('worker.upgrade.cancel.success'));
+                            },
+                          });
+                        }}
+                      >
+                        {t('worker.upgrade.cancel.batchButton')}
+                      </Button>
+                    )}
+                  </>
+                );
+              })()}
+              <Button
+                icon={<Plus size={16} strokeWidth={2} />}
+                theme="solid"
+                type="primary"
+                onClick={() => setCreateModalVisible(true)}
+              >
+                {t('worker.createWorker')}
+              </Button>
+            </Space>
           </Col>
         </Row>
       </div>
@@ -1008,6 +1291,10 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
               }
             }}
             pagination={false}
+            rowSelection={{
+              selectedRowKeys,
+              onChange: (keys) => setSelectedRowKeys((keys || []) as string[]),
+            }}
           />
         )}
         {total > 0 && (
@@ -1068,7 +1355,8 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
           const row = document.getElementById(`worker-row-${id}`);
           row?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }}
-        
+        onUpgradeDevice={(worker) => triggerUpgrade([worker.id])}
+        onCancelUpgrade={(worker) => handleCancelUpgrade(worker as WorkerWithUpgrade)}
       />
 
       {/* Modal */}
@@ -1099,6 +1387,13 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
         onCancel={() => setAddToGroupModalVisible(false)}
         workerData={addToGroupWorker}
         onSuccess={handleAddToGroupSuccess}
+      />
+
+      <UpgradeDeviceModal
+        visible={upgradeModalVisible}
+        onCancel={() => setUpgradeModalVisible(false)}
+        onOk={handleConfirmUpgrade}
+        devices={upgradeDevices}
       />
 
       {renderCollaboratorPanel('WORKER', 'scheduling')}

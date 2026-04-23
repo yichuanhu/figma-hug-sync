@@ -1247,6 +1247,53 @@
       },
       "success": "保存成功",
       "configChangeWarning": "请注意，编辑后的更改不会立即生效。为确保任务正常运行，流程机器人将在空闲状态下进行属性修改。你可以在流程机器人列表中查看待同步修改标记，以了解同步状态。"
+    },
+    "upgrade": {
+      "menu": "升级设备",
+      "batchButton": "升级设备",
+      "batchSelected": "已选 {{count}} 项",
+      "noEnabledVersion": "管理员尚未发布升级版本",
+      "queuedSuccess": "已预约升级 {{count}} 台设备，将在空闲后自动执行",
+      "badge": {
+        "tag": "可升级 → {{version}}",
+        "tooltip": "该设备可升级到 {{version}}，将影响 {{count}} 台机器人"
+      },
+      "queued": {
+        "tag": "等待空闲后升级",
+        "tooltip": "正在等待 {{names}}{{more}} 完成任务",
+        "tooltipReady": "已预约升级，等待下发指令",
+        "more": "等 {{count}} 台",
+        "detailDescription": "已预约升级到 {{version}}，将在该设备所有机器人空闲后自动执行"
+      },
+      "upgrading": {
+        "tag": "升级中",
+        "cannotCancel": "升级已开始，无法取消"
+      },
+      "failed": {
+        "defaultReason": "升级失败"
+      },
+      "cancel": {
+        "menu": "取消升级预约",
+        "title": "取消升级预约",
+        "confirmMessage": "确定要取消该设备的升级预约吗？",
+        "batchConfirmMessage": "确定要取消所选 {{count}} 台设备的升级预约吗？",
+        "batchButton": "取消预约",
+        "confirm": "确认取消",
+        "success": "已取消升级预约"
+      },
+      "modal": {
+        "title": "升级设备客户端",
+        "summary": "即将预约升级 {{deviceCount}} 台设备（共影响 {{robotCount}} 台机器人）",
+        "targetVersion": "目标版本",
+        "currentVersion": "当前版本",
+        "affectedRobots": "影响机器人（{{count}}）",
+        "allOfflineTip": "设备所有机器人均离线，将在重新上线后自动升级",
+        "busyTip": "{{count}} 台正在执行任务，将在任务完成后升级",
+        "idleTip": "设备空闲，可立即升级",
+        "queueExplain": "升级会等待设备下所有机器人空闲后自动执行，期间设备可继续接收新任务",
+        "confirm": "确认预约升级",
+        "allLatest": "所选设备均已是最新版本"
+      }
     }
   },
   "personalCenter": {
