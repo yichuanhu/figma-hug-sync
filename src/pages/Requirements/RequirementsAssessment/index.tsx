@@ -431,16 +431,7 @@ const RequirementsAssessment = () => {
         </Row>
         <Tabs activeKey={activeTab} onChange={(k) => setActiveTab(k as AssessTab)} keepDOM={false}>
           <TabPane
-            tab={
-              <span>
-                {t('requirements.assessment.pendingMe')}
-                {stats.pendingCount > 0 && (
-                  <Tag size="small" color="orange" type="solid" style={{ marginLeft: 6 }}>
-                    {stats.pendingCount}
-                  </Tag>
-                )}
-              </span>
-            }
+            tab={t('requirements.assessment.pendingMe')}
             itemKey="pending"
           >
             {isInitialLoad ? (
