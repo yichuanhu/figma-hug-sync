@@ -150,12 +150,6 @@ const UpgradeDeviceModal = ({ visible, onCancel, onOk, devices }: UpgradeDeviceM
         ))
       )}
 
-      {validDevices.length > 0 && (
-        <div className="upgrade-device-modal-footer-tip">
-          <Info size={14} strokeWidth={2} />
-          <Text size="small" type="tertiary">{t('worker.upgrade.modal.queueExplain')}</Text>
-        </div>
-      )}
     </Modal>
   );
 };
