@@ -288,6 +288,9 @@ const mockWorkers: WorkerWithUpgrade[] = [
     creator_id: 'hr_admin',
     upgrade_status: 'QUEUED',
     upgrade_target_version: 'v6.8.0',
+  },
+  {
+    id: '550e8400-e29b-41d4-a716-446655440031',
     name: 'HR Bot-02',
     description: '同设备机器人',
     status: 'BUSY',
@@ -317,6 +320,9 @@ const mockWorkers: WorkerWithUpgrade[] = [
     creator_id: 'hr_admin',
     upgrade_status: 'QUEUED',
     upgrade_target_version: 'v6.8.0',
+  },
+  {
+    id: '550e8400-e29b-41d4-a716-446655440032',
     name: 'HR Bot-03',
     description: '同设备机器人',
     status: 'BUSY',
@@ -346,6 +352,9 @@ const mockWorkers: WorkerWithUpgrade[] = [
     creator_id: 'hr_admin',
     upgrade_status: 'QUEUED',
     upgrade_target_version: 'v6.8.0',
+  },
+  {
+    id: '550e8400-e29b-41d4-a716-446655440033',
     name: 'HR Bot-04',
     description: '同设备机器人',
     status: 'IDLE',
@@ -540,6 +549,9 @@ const mockWorkers: WorkerWithUpgrade[] = [
     creator_id: 'admin',
     upgrade_status: 'QUEUED',
     upgrade_target_version: 'v6.8.0',
+  },
+  {
+    id: '550e8400-e29b-41d4-a716-446655440061',
     name: 'Finance Bot-Off-02',
     description: '同设备机器人',
     status: 'OFFLINE',
@@ -569,6 +581,9 @@ const mockWorkers: WorkerWithUpgrade[] = [
     creator_id: 'admin',
     upgrade_status: 'QUEUED',
     upgrade_target_version: 'v6.8.0',
+  },
+  {
+    id: '550e8400-e29b-41d4-a716-446655440062',
     name: 'Finance Bot-Off-03',
     description: '同设备机器人',
     status: 'FAULT',
