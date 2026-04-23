@@ -761,6 +761,89 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
   const pageSize = range?.size || 20;
   const total = range?.total || 0;
 
+  // 设备维度聚合（同 machine_code 视为同一设备）
+  const deviceMap = useMemo(() => groupWorkersByDevice(list as WorkerWithUpgrade[]), [list]);
+
+  const getDevicePeers = useCallback(
+    (record: WorkerWithUpgrade) => deviceMap.get(record.machine_code || record.id) || [record],
+    [deviceMap]
+  );
+
+  // 行 / 批量 升级触发
+  const triggerUpgrade = useCallback(
+    (workerIds: string[]) => {
+      const enabled = workerIds.some((id) => {
+        const w = (list as WorkerWithUpgrade[]).find((x) => x.id === id);
+        return w && getEnabledVersion(w.desktop_type);
+      });
+      if (!enabled) {
+        Toast.warning(t('worker.upgrade.noEnabledVersion'));
+        return;
+      }
+      const devices = aggregateSelectedDevices(list as WorkerWithUpgrade[], workerIds);
+      setUpgradeDevices(devices);
+      setUpgradeModalVisible(true);
+    },
+    [list, t]
+  );
+
+  const handleConfirmUpgrade = useCallback(
+    (machineCodes: string[]) => {
+      // 将这些设备下所有 worker 的 upgrade_status 置为 QUEUED
+      setListResponse((prev) => ({
+        ...prev,
+        list: prev.list.map((w) => {
+          const code = (w as WorkerWithUpgrade).machine_code || w.id;
+          if (!machineCodes.includes(code)) return w;
+          const target = getEnabledVersion(w.desktop_type);
+          return {
+            ...w,
+            upgrade_status: 'QUEUED',
+            upgrade_target_version: target?.version || null,
+          } as WorkerWithUpgrade;
+        }),
+      }));
+      setUpgradeModalVisible(false);
+      setSelectedRowKeys([]);
+      Toast.success(t('worker.upgrade.queuedSuccess', { count: machineCodes.length }));
+    },
+    [t]
+  );
+
+  const handleCancelUpgrade = useCallback(
+    (record: WorkerWithUpgrade) => {
+      const machineCode = record.machine_code || record.id;
+      Modal.confirm({
+        title: t('worker.upgrade.cancel.title'),
+        content: t('worker.upgrade.cancel.confirmMessage'),
+        okText: t('worker.upgrade.cancel.confirm'),
+        cancelText: t('common.cancel'),
+        onOk: async () => {
+          setListResponse((prev) => ({
+            ...prev,
+            list: prev.list.map((w) => {
+              const code = (w as WorkerWithUpgrade).machine_code || w.id;
+              if (code !== machineCode) return w;
+              return {
+                ...w,
+                upgrade_status: 'NONE',
+                upgrade_target_version: null,
+              } as WorkerWithUpgrade;
+            }),
+          }));
+          if (selectedWorker?.machine_code === machineCode) {
+            setSelectedWorker((prev) =>
+              prev ? ({ ...prev, upgrade_status: 'NONE', upgrade_target_version: null } as any) : null
+            );
+          }
+          Toast.success(t('worker.upgrade.cancel.success'));
+        },
+      });
+    },
+    [t, selectedWorker]
+  );
+
+
   const columns = [
     {
       title: t('worker.table.workerName'),
