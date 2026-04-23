@@ -91,6 +91,16 @@ const UpgradeDeviceModal = ({ visible, onCancel, onOk, devices }: UpgradeDeviceM
         </Text>
       </div>
 
+      {busyDevices.length > 0 && (
+        <Banner
+          type="info"
+          fullMode={false}
+          closeIcon={null}
+          description={t('worker.upgrade.modal.waitBusyBannerTip', { count: busyDevices.length })}
+          style={{ marginBottom: 12 }}
+        />
+      )}
+
       {offlineDevices.length > 0 && (
         <Banner
           type="danger"
