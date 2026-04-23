@@ -1309,7 +1309,7 @@
         "title": "客户端版本可升级",
         "targetVersion": "目标版本",
         "currentVersion": "当前版本",
-        "affectedRobots": "该客户端下的机器人（{{count}}）",
+        "affectedRobots": "会同步升级该客户端下的机器人（{{count}}）",
         "current": "当前",
         "button": "升级客户端版本"
       }
