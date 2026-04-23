@@ -85,15 +85,6 @@ const NotificationDrawer = ({ visible, onClose }: Props) => {
               onClick={handleMarkAllRead}
             />
           </Tooltip>
-          <Tooltip content={t('notificationCenter.drawer.settings')}>
-            <Button
-              theme="borderless"
-              type="tertiary"
-              size="small"
-              icon={<Settings size={16} strokeWidth={2} />}
-              onClick={() => Toast.info(t('notificationCenter.drawer.settingsComingSoon'))}
-            />
-          </Tooltip>
           <Button
             theme="borderless"
             type="tertiary"
