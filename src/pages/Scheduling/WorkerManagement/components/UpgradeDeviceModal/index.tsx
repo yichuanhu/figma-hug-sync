@@ -91,16 +91,6 @@ const UpgradeDeviceModal = ({ visible, onCancel, onOk, devices }: UpgradeDeviceM
         </Text>
       </div>
 
-      {busyDevices.length > 0 && (
-        <Banner
-          type="info"
-          fullMode={false}
-          closeIcon={null}
-          description={t('worker.upgrade.modal.waitBusyBannerTip', { count: busyDevices.length })}
-          style={{ marginBottom: 12 }}
-        />
-      )}
-
       {offlineDevices.length > 0 && (
         <Banner
           type="danger"
@@ -168,9 +158,9 @@ const UpgradeDeviceModal = ({ visible, onCancel, onOk, devices }: UpgradeDeviceM
                     </Text>
                   </div>
                 ) : d.blocking.length > 0 ? (
-                  <div className="upgrade-device-modal-card-tip info">
+                  <div className="upgrade-device-modal-card-tip warning">
                     <Clock size={12} strokeWidth={2} />
-                    <Text size="small">
+                    <Text size="small" style={{ color: 'var(--semi-color-warning)' }}>
                       {t('worker.upgrade.modal.busyTip', { count: d.blocking.length })}
                     </Text>
                   </div>
