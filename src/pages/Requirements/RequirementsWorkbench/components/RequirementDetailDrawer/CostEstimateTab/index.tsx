@@ -126,7 +126,7 @@ const CostEstimateTab = ({ data }: Props) => {
           </div>
           <div className="cost-result-cell cost-result-cell-total">
             <Text type="tertiary" size="small">{t('requirements.costEstimate.savedAmount')}</Text>
-            <Title heading={4} style={{ margin: 0, color: 'var(--semi-color-primary)' }}>
+            <Title heading={5} style={{ margin: 0, color: 'var(--semi-color-primary)' }}>
               ¥{Math.round(monthlySavedAmount).toLocaleString()}
             </Title>
           </div>
