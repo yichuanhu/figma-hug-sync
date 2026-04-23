@@ -86,6 +86,7 @@
     "goBack": "Go Back"
   },
   "sidebar": {
+    "notifications": "Notification Center",
     "home": "Home",
     "homeShort": "Home",
     "developmentCenter": "Development Center",
