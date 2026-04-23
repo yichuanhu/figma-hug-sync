@@ -71,10 +71,6 @@ const ProjectDetailDrawer = ({
   if (!data) return null;
 
   const handleDeleteWs = (ws: Workspace) => {
-    if (ws.hasPublishedProcess || ws.linkedRequirementIds.length > 0) {
-      Toast.warning(t('requirements.projects.validation.workspaceInUse'));
-      return;
-    }
     Modal.confirm({
       title: t('requirements.projects.deleteWorkspace'),
       content: t('requirements.projects.deleteWorkspaceConfirm', { name: ws.name }),
@@ -160,13 +156,29 @@ const ProjectDetailDrawer = ({
               >
                 {t('common.edit')}
               </Dropdown.Item>
-              <Dropdown.Item
-                icon={<Trash2 size={16} strokeWidth={2} />}
-                type="danger"
-                onClick={() => handleDeleteWs(record)}
-              >
-                {t('common.delete')}
-              </Dropdown.Item>
+              {(() => {
+                const wsInUse = record.hasPublishedProcess || record.linkedRequirementIds.length > 0;
+                const deleteItem = (
+                  <Dropdown.Item
+                    icon={<Trash2 size={16} strokeWidth={2} />}
+                    type="danger"
+                    disabled={wsInUse}
+                    onClick={() => !wsInUse && handleDeleteWs(record)}
+                  >
+                    {t('common.delete')}
+                  </Dropdown.Item>
+                );
+                return wsInUse ? (
+                  <Tooltip
+                    content={t('requirements.projects.validation.workspaceInUse')}
+                    position="left"
+                  >
+                    <div>{deleteItem}</div>
+                  </Tooltip>
+                ) : (
+                  deleteItem
+                );
+              })()}
             </Dropdown.Menu>
           }
         >
