@@ -5,7 +5,7 @@ import { AlertCircle, ArrowUpCircle, Clock, Monitor, Wifi } from 'lucide-react';
 import {
   WorkerWithUpgrade,
   isUpgradeAvailable,
-  isDeviceAllOffline,
+  isDeviceOffline,
   getDeviceBlockingWorkers,
 } from '../../utils/upgrade';
 import { getEnabledVersion } from '@/mocks/clientVersionData';
@@ -30,7 +30,7 @@ const UpgradeDeviceModal = ({ visible, onCancel, onOk, devices }: UpgradeDeviceM
       const sample = d.workers[0];
       const target = getEnabledVersion(sample?.desktop_type);
       const upgradable = !!target && d.workers.some(isUpgradeAvailable);
-      const allOffline = isDeviceAllOffline(d.workers);
+      const allOffline = isDeviceOffline(d.workers);
       const blocking = getDeviceBlockingWorkers(d.workers);
       return { ...d, sample, target, upgradable, allOffline, blocking };
     });

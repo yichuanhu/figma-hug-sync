@@ -9,6 +9,8 @@ export interface WorkerWithUpgrade extends LYWorkerResponse {
   upgrade_status?: UpgradeStatus;
   upgrade_target_version?: string | null;
   upgrade_failed_reason?: string | null;
+  /** 客户端（设备）是否在线，由后端返回。与机器人状态无关。 */
+  device_online?: boolean;
 }
 
 /** 语义化版本对比：a < b 返回 -1，相等 0，a > b 返回 1 */
@@ -75,7 +77,8 @@ export const getDeviceBlockingWorkers = (workers: WorkerWithUpgrade[]): WorkerWi
   return workers.filter((w) => w.status === 'BUSY' || w.status === 'MAINTENANCE');
 };
 
-/** 设备是否完全离线（无可立即升级的在线机器人） */
-export const isDeviceAllOffline = (workers: WorkerWithUpgrade[]): boolean => {
-  return workers.every((w) => w.status === 'OFFLINE' || w.status === 'FAULT');
+/** 客户端（设备）是否离线 —— 由后端推送的设备级字段决定，与机器人状态无关 */
+export const isDeviceOffline = (workers: WorkerWithUpgrade[]): boolean => {
+  // 同一 machine_code 下任一记录标记为离线即视为客户端离线
+  return workers.some((w) => w.device_online === false);
 };

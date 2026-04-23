@@ -42,7 +42,7 @@ import {
   groupWorkersByDevice,
 } from './utils/upgrade';
 import { getEnabledVersion } from '@/mocks/clientVersionData';
-import { ArrowUpCircle, AlertCircle, Loader2, Clock } from 'lucide-react';
+import { ArrowUpCircle, AlertCircle, Loader2, Clock, WifiOff } from 'lucide-react';
 import { Tooltip } from '@douyinfe/semi-ui';
 import './index.less';
 
@@ -62,7 +62,7 @@ const mockWorkerGroups = [
 // 设备 3: DESKTOP-E5F6 - QUEUED 多机器人阻塞 (3 BUSY + 1 IDLE, v6.7.2 NotConsole)
 // 设备 4: DESKTOP-G7H8 - UPGRADING 升级中 (2 IDLE, v6.7.0 Console)
 // 设备 5: DESKTOP-I9J0 - FAILED 升级失败 (2 IDLE, v6.6.5 Console) + 失败原因
-// 设备 6: DESKTOP-K1L2 - QUEUED 全离线 (2 OFFLINE + 1 FAULT, v6.7.0 Console) → 等待重连
+// 设备 6: DESKTOP-K1L2 - 客户端离线 device_online=false (机器人状态正常, v6.7.0 Console)
 // 设备 7: DESKTOP-LATEST - 已是最新 (1 IDLE, v6.8.0 Console) 对照组
 const mockWorkers: WorkerWithUpgrade[] = [
   // ===== 设备 1: DESKTOP-A1B2 - NONE + 可升级 =====
@@ -517,12 +517,12 @@ const mockWorkers: WorkerWithUpgrade[] = [
     upgrade_target_version: 'v6.8.0',
     upgrade_failed_reason: '网络超时：升级包下载失败，请检查客户端网络连接',
   },
-  // ===== 设备 6: DESKTOP-K1L2 - 全离线，可点击升级按钮（弹窗会提示离线无法执行）=====
+  // ===== 设备 6: DESKTOP-K1L2 - 客户端离线（device_online=false），与机器人状态无关 =====
   {
     id: '550e8400-e29b-41d4-a716-446655440006',
     name: 'Finance Bot-Off-01',
     description: '离线财务机器人',
-    status: 'OFFLINE',
+    status: 'IDLE',
     sync_status: 'SYNCED',
     ip_address: '10.0.4.20',
     priority: 'MEDIUM',
@@ -548,12 +548,13 @@ const mockWorkers: WorkerWithUpgrade[] = [
     created_at: '2025-01-03 15:45:00',
     creator_id: 'admin',
     upgrade_status: 'NONE',
+    device_online: false,
   },
   {
     id: '550e8400-e29b-41d4-a716-446655440061',
     name: 'Finance Bot-Off-02',
     description: '同设备机器人',
-    status: 'OFFLINE',
+    status: 'BUSY',
     sync_status: 'SYNCED',
     ip_address: '10.0.4.20',
     priority: 'LOW',
@@ -579,12 +580,13 @@ const mockWorkers: WorkerWithUpgrade[] = [
     created_at: '2025-01-03 15:46:00',
     creator_id: 'admin',
     upgrade_status: 'NONE',
+    device_online: false,
   },
   {
     id: '550e8400-e29b-41d4-a716-446655440062',
     name: 'Finance Bot-Off-03',
     description: '同设备机器人',
-    status: 'FAULT',
+    status: 'IDLE',
     sync_status: 'SYNCED',
     ip_address: '10.0.4.20',
     priority: 'LOW',
@@ -610,6 +612,7 @@ const mockWorkers: WorkerWithUpgrade[] = [
     created_at: '2025-01-03 15:47:00',
     creator_id: 'admin',
     upgrade_status: 'NONE',
+    device_online: false,
   },
   // ===== 设备 7: DESKTOP-LATEST - 已是最新 (对照组) =====
   {
@@ -1323,6 +1326,43 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
               <Popover content={failedPopover} trigger="hover" position="top" showArrow>
                 <Tag color="red" type="light" size="small" prefixIcon={<AlertCircle size={12} strokeWidth={2} />} style={{ cursor: 'pointer' }}>
                   {t('worker.upgrade.failed.tag')}
+                </Tag>
+              </Popover>
+            </div>
+          );
+        }
+        // 客户端离线：与升级失败保持一致样式 —— 红色 Tag + Popover，并提供升级按钮（点击会进入升级弹窗，由弹窗提示客户端离线）
+        const deviceOffline = peers.some((p) => p.device_online === false);
+        if (deviceOffline && upgradable && target) {
+          const offlinePopover = (
+            <div style={{ padding: 12, width: 280 }} onClick={(e) => e.stopPropagation()}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                <WifiOff size={14} strokeWidth={2} color="var(--semi-color-danger)" />
+                <Text strong>{t('worker.upgrade.offline.title')}</Text>
+              </div>
+              <div style={{ marginBottom: 10 }}>
+                <Text type="tertiary" size="small">
+                  {t('worker.upgrade.offline.description')}
+                </Text>
+              </div>
+              <Button
+                theme="solid"
+                type="primary"
+                size="small"
+                icon={<ArrowUpCircle size={14} strokeWidth={2} />}
+                block
+                onClick={() => triggerUpgrade([record.id])}
+              >
+                {t('worker.upgrade.offline.retry')}
+              </Button>
+            </div>
+          );
+          return (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={(e) => e.stopPropagation()}>
+              <span>{version}</span>
+              <Popover content={offlinePopover} trigger="hover" position="top" showArrow>
+                <Tag color="red" type="light" size="small" prefixIcon={<WifiOff size={12} strokeWidth={2} />} style={{ cursor: 'pointer' }}>
+                  {t('worker.upgrade.offline.tag')}
                 </Tag>
               </Popover>
             </div>
