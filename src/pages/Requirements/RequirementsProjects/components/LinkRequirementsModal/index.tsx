@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Input, Tag, Toast, Typography, Empty } from '@douyinfe/semi-ui';
-import { Search, X, ArrowRight } from 'lucide-react';
+import { IconSearch } from '@douyinfe/semi-icons';
+import { X, ArrowRight } from 'lucide-react';
 import type { Workspace } from '../../types';
 import { linkRequirements, fetchAllWorkspaces } from '../../mockData';
 import { fetchRequirementList } from '../../../RequirementsWorkbench/mockData';
