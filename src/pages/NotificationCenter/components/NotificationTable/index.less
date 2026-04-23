@@ -31,10 +31,6 @@
 
     &:hover {
       background-color: var(--semi-color-fill-0);
-
-      .notification-list-item-actions {
-        opacity: 1;
-      }
     }
 
     &.unread {
@@ -84,20 +80,24 @@
       gap: 6px;
       font-size: 12px;
       color: var(--semi-color-text-2);
-      margin-top: 2px;
+      margin-top: 4px;
 
-      &-dot {
-        color: var(--semi-color-text-3);
+      &-time {
+        color: var(--semi-color-text-2);
+        margin-left: 2px;
       }
     }
 
     &-side {
       display: flex;
       align-items: center;
-      gap: 8px;
+      justify-content: center;
       flex-shrink: 0;
       align-self: flex-start;
-      padding-top: 12px;
+      padding-top: 14px;
+      width: 20px;
+      height: 20px;
+      box-sizing: content-box;
     }
 
     &-dot {
@@ -106,20 +106,50 @@
       border-radius: 50%;
       flex-shrink: 0;
 
-      &.unread {
-        background: var(--semi-color-danger);
-      }
       &.read {
         background: transparent;
       }
     }
 
-    &-actions {
+    &-read-btn {
+      position: relative;
+      width: 20px;
+      height: 20px;
+      padding: 0;
+      border: none;
+      background: transparent;
+      cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 2px;
-      opacity: 0;
-      transition: opacity 0.15s ease;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background-color 0.15s ease;
+
+      &-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--semi-color-danger);
+        transition: opacity 0.15s ease;
+      }
+
+      &-icon {
+        position: absolute;
+        opacity: 0;
+        color: var(--semi-color-primary);
+        transition: opacity 0.15s ease;
+      }
+
+      &:hover {
+        background-color: var(--semi-color-primary-light-default);
+
+        .notification-list-item-read-btn-dot {
+          opacity: 0;
+        }
+        .notification-list-item-read-btn-icon {
+          opacity: 1;
+        }
+      }
     }
   }
 }
