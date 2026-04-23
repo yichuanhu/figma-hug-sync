@@ -257,12 +257,131 @@ const WorkerGroupDetailDrawer: React.FC<WorkerGroupDetailDrawerProps> = ({
     { title: t('worker.table.workerName'), dataIndex: 'name', key: 'name', width: 180, ellipsis: true, render: (name: string, record: LYWorkerGroupMemberResponse) => (<div><div>{name}</div><div>{record.username || '-'}</div></div>) },
     { title: t('worker.table.status'), dataIndex: 'status', key: 'status', width: 90, render: (status: WorkerStatus | undefined) => { if (!status) return null; const config = statusConfig[status]; return <Tag color={config.color as any} type="light">{config.text}</Tag>; } },
     { title: t('worker.table.ipAddress'), dataIndex: 'ip_address', key: 'ip_address', width: 120 },
-    { title: t('worker.table.clientVersion'), dataIndex: 'client_version', key: 'client_version', width: 100 },
+    {
+      title: t('worker.table.clientVersion'),
+      dataIndex: 'client_version',
+      key: 'client_version',
+      width: 180,
+      render: (version: string | null, record: LYWorkerGroupMemberResponse) => {
+        const w = record as unknown as WorkerWithUpgrade;
+        const peers = getDevicePeers(w);
+        const deviceStatus = peers.find((p) => p.upgrade_status && p.upgrade_status !== 'NONE')?.upgrade_status;
+        const target = getEnabledVersion(w.desktop_type);
+        const upgradable = isUpgradeAvailable(w);
+
+        if (deviceStatus === 'UPGRADING') {
+          const targetVersion = peers.find((p) => p.upgrade_target_version)?.upgrade_target_version || target?.version;
+          return (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={(e) => e.stopPropagation()}>
+              <span>{version}</span>
+              <Tooltip content={t('worker.upgrade.upgrading.tooltip', { version: targetVersion })}>
+                <Tag
+                  color="blue"
+                  type="solid"
+                  size="small"
+                  prefixIcon={<Loader2 size={12} strokeWidth={2} className="upgrade-spin" />}
+                >
+                  {t('worker.upgrade.upgrading.tag')}
+                </Tag>
+              </Tooltip>
+            </div>
+          );
+        }
+        if (deviceStatus === 'FAILED') {
+          const failedReason = peers.find((p) => p.upgrade_failed_reason)?.upgrade_failed_reason
+            || w.upgrade_failed_reason
+            || t('worker.upgrade.failed.defaultReason');
+          const failedPopover = (
+            <div style={{ padding: 12, width: 280 }} onClick={(e) => e.stopPropagation()}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                <AlertCircle size={14} strokeWidth={2} color="var(--semi-color-danger)" />
+                <Text strong>{t('worker.upgrade.failed.title')}</Text>
+              </div>
+              <div style={{ marginBottom: 10 }}>
+                <Text type="tertiary" size="small">{t('worker.upgrade.failed.reasonLabel')}：</Text>
+                <div style={{ marginTop: 4 }}>
+                  <Text size="small">{failedReason}</Text>
+                </div>
+              </div>
+              <Button
+                theme="solid"
+                type="primary"
+                size="small"
+                icon={<ArrowUpCircle size={14} strokeWidth={2} />}
+                block
+                onClick={() => triggerUpgrade([w.id])}
+              >
+                {t('worker.upgrade.failed.retry')}
+              </Button>
+            </div>
+          );
+          return (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={(e) => e.stopPropagation()}>
+              <span>{version}</span>
+              <Popover content={failedPopover} trigger="hover" position="top" showArrow>
+                <Tag color="red" type="light" size="small" prefixIcon={<AlertCircle size={12} strokeWidth={2} />} style={{ cursor: 'pointer' }}>
+                  {t('worker.upgrade.failed.tag')}
+                </Tag>
+              </Popover>
+            </div>
+          );
+        }
+        if (upgradable && target) {
+          const popoverContent = (
+            <div style={{ padding: 12, width: 280 }} onClick={(e) => e.stopPropagation()}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                <ArrowUpCircle size={14} strokeWidth={2} color="var(--semi-color-warning)" />
+                <Text strong>{t('worker.upgrade.popover.title')}</Text>
+              </div>
+              <div style={{ marginBottom: 6 }}>
+                <Text type="tertiary" size="small">{t('worker.upgrade.popover.targetVersion')}：</Text>
+                <Text size="small" strong style={{ marginLeft: 4 }}>{target.version}</Text>
+              </div>
+              <Button
+                theme="solid"
+                type="primary"
+                size="small"
+                icon={<ArrowUpCircle size={14} strokeWidth={2} />}
+                block
+                onClick={() => triggerUpgrade([w.id])}
+              >
+                {t('worker.upgrade.popover.upgrade')}
+              </Button>
+            </div>
+          );
+          return (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={(e) => e.stopPropagation()}>
+              <span>{version}</span>
+              <Popover content={popoverContent} trigger="hover" position="top" showArrow>
+                <Tag color="orange" type="light" size="small" prefixIcon={<ArrowUpCircle size={12} strokeWidth={2} />} style={{ cursor: 'pointer' }}>
+                  {t('worker.upgrade.upgradable.tag')}
+                </Tag>
+              </Popover>
+            </div>
+          );
+        }
+        return <span>{version}</span>;
+      },
+    },
     { title: t('worker.table.lastHeartbeat'), dataIndex: 'last_heartbeat_time', key: 'last_heartbeat_time', width: 160 },
     { title: t('common.actions'), dataIndex: 'action', key: 'action', width: 60, render: (_: unknown, record: LYWorkerGroupMemberResponse) => (
       <Dropdown trigger="click" position="bottomRight" stopPropagation clickToHide render={
         <Dropdown.Menu>
           <Dropdown.Item icon={<Eye size={16} strokeWidth={2} />} onClick={() => { if (onNavigateToWorkerDetail) { onClose(); onNavigateToWorkerDetail(record.id); } }}>{t('workerGroup.actions.viewDetail')}</Dropdown.Item>
+          {(() => {
+            const w = record as unknown as WorkerWithUpgrade;
+            const peers = getDevicePeers(w);
+            const deviceStatus = peers.find((p) => p.upgrade_status && p.upgrade_status !== 'NONE')?.upgrade_status;
+            const upgradable = isUpgradeAvailable(w);
+            if (deviceStatus !== 'UPGRADING' && upgradable) {
+              return (
+                <Dropdown.Item icon={<ArrowUpCircle size={16} strokeWidth={2} />} onClick={() => triggerUpgrade([record.id])}>
+                  {t('worker.upgrade.popover.upgrade')}
+                </Dropdown.Item>
+              );
+            }
+            return null;
+          })()}
           <Dropdown.Item icon={<MinusCircle size={16} strokeWidth={2} />} type="warning" onClick={() => { handleRemoveMember(record); }}>{t('workerGroup.actions.removeFromGroup')}</Dropdown.Item>
         </Dropdown.Menu>
       }><Button icon={<Ellipsis size={16} strokeWidth={2} />} theme="borderless" onClick={(e) => e.stopPropagation()} /></Dropdown>
