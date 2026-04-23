@@ -951,7 +951,16 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={(e) => e.stopPropagation()}>
               <span>{version}</span>
               <Tooltip content={t('worker.upgrade.badge.tooltip', { version: target.version, count: peers.length })}>
-                <ArrowUpCircle size={14} strokeWidth={2} color="var(--semi-color-warning)" />
+                <Button
+                  theme="borderless"
+                  type="primary"
+                  size="small"
+                  icon={<ArrowUpCircle size={14} strokeWidth={2} />}
+                  onClick={() => triggerUpgrade([record.id])}
+                  style={{ padding: '0 4px', height: 22 }}
+                >
+                  {t('worker.upgrade.menu')}
+                </Button>
               </Tooltip>
             </div>
           );
@@ -1074,16 +1083,6 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
                         {t('worker.upgrade.cancel.menu')}
                       </Dropdown.Item>
                     </Tooltip>
-                  );
-                }
-                if (upgradable) {
-                  return (
-                    <Dropdown.Item
-                      icon={<ArrowUpCircle size={16} strokeWidth={2} />}
-                      onClick={() => triggerUpgrade([record.id])}
-                    >
-                      {t('worker.upgrade.menu')}
-                    </Dropdown.Item>
                   );
                 }
                 return null;
