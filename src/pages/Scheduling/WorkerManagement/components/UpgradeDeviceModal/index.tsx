@@ -1,18 +1,17 @@
 import { useMemo } from 'react';
-import { Modal, Typography, Tag, Empty } from '@douyinfe/semi-ui';
+import { Modal, Typography, Tag, Empty, Banner } from '@douyinfe/semi-ui';
 import { useTranslation } from 'react-i18next';
-import { ArrowUpCircle, Clock, Info, Monitor, Wifi, WifiOff } from 'lucide-react';
+import { ArrowUpCircle, Clock, Monitor, Wifi, WifiOff } from 'lucide-react';
 import {
   WorkerWithUpgrade,
   isUpgradeAvailable,
   isDeviceAllOffline,
   getDeviceBlockingWorkers,
-  compareVersion,
 } from '../../utils/upgrade';
 import { getEnabledVersion } from '@/mocks/clientVersionData';
 import './index.less';
 
-const { Text, Title, Paragraph } = Typography;
+const { Text, Paragraph } = Typography;
 
 interface UpgradeDeviceModalProps {
   visible: boolean;
@@ -77,6 +76,16 @@ const UpgradeDeviceModal = ({ visible, onCancel, onOk, devices }: UpgradeDeviceM
           })}
         </Text>
       </div>
+
+      {validDevices.length > 0 && (
+        <Banner
+          type="warning"
+          fullMode={false}
+          closeIcon={null}
+          description={t('worker.upgrade.modal.receivingTasksTip')}
+          style={{ marginBottom: 12 }}
+        />
+      )}
 
       {validDevices.length === 0 ? (
         <Empty description={t('worker.upgrade.modal.allLatest')} style={{ padding: '24px 0' }} />
@@ -151,12 +160,6 @@ const UpgradeDeviceModal = ({ visible, onCancel, onOk, devices }: UpgradeDeviceM
         ))
       )}
 
-      {validDevices.length > 0 && (
-        <div className="upgrade-device-modal-footer-tip">
-          <Info size={14} strokeWidth={2} />
-          <Text size="small" type="tertiary">{t('worker.upgrade.modal.queueExplain')}</Text>
-        </div>
-      )}
     </Modal>
   );
 };

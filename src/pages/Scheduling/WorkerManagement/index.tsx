@@ -56,13 +56,13 @@ const mockWorkerGroups = [
   { id: 'group-003', name: 'Ops Inspection Bot Group' },
 ];
 
-// MockData - 覆盖升级状态全分支演示场景
+// MockData - 覆盖升级状态分支演示场景
 // 设备 1: DESKTOP-A1B2 - NONE + 可升级 (3 IDLE, v6.7.0 Console)
-// 设备 2: DESKTOP-C3D4 - QUEUED 等待空闲 (1 BUSY + 2 IDLE, v6.7.0 Console)
-// 设备 3: DESKTOP-E5F6 - QUEUED 多机器人阻塞 (3 BUSY + 1 IDLE, v6.7.2 NotConsole)
+// 设备 2: DESKTOP-C3D4 - UPGRADING 升级中 (1 BUSY + 2 IDLE, v6.7.0 Console)
+// 设备 3: DESKTOP-E5F6 - UPGRADING 升级中 (3 BUSY + 1 IDLE, v6.7.2 NotConsole)
 // 设备 4: DESKTOP-G7H8 - UPGRADING 升级中 (2 IDLE, v6.7.0 Console)
 // 设备 5: DESKTOP-I9J0 - FAILED 升级失败 (2 IDLE, v6.6.5 Console)
-// 设备 6: DESKTOP-K1L2 - QUEUED 全离线 (2 OFFLINE + 1 FAULT, v6.7.0 Console)
+// 设备 6: DESKTOP-K1L2 - UPGRADING 升级中（离线场景，等设备恢复后会继续）
 // 设备 7: DESKTOP-LATEST - 已是最新 (1 IDLE, v6.8.0 Console) 对照组
 const mockWorkers: WorkerWithUpgrade[] = [
   // ===== 设备 1: DESKTOP-A1B2 - NONE + 可升级 =====
@@ -189,7 +189,7 @@ const mockWorkers: WorkerWithUpgrade[] = [
     owning_department_name: 'Finance Department',
     created_at: '2025-01-06 09:15:00',
     creator_id: 'admin',
-    upgrade_status: 'QUEUED',
+    upgrade_status: 'UPGRADING',
     upgrade_target_version: 'v6.8.0',
   },
   {
@@ -221,7 +221,7 @@ const mockWorkers: WorkerWithUpgrade[] = [
     owning_department_name: 'Finance Department',
     created_at: '2025-01-06 09:16:00',
     creator_id: 'admin',
-    upgrade_status: 'QUEUED',
+    upgrade_status: 'UPGRADING',
     upgrade_target_version: 'v6.8.0',
   },
   {
@@ -253,7 +253,7 @@ const mockWorkers: WorkerWithUpgrade[] = [
     owning_department_name: 'Finance Department',
     created_at: '2025-01-06 09:17:00',
     creator_id: 'admin',
-    upgrade_status: 'QUEUED',
+    upgrade_status: 'UPGRADING',
     upgrade_target_version: 'v6.8.0',
   },
   // ===== 设备 3: DESKTOP-E5F6 - QUEUED 多机器人阻塞 =====
@@ -286,7 +286,7 @@ const mockWorkers: WorkerWithUpgrade[] = [
     owning_department_name: 'Human Resources Department',
     created_at: '2025-01-04 11:20:00',
     creator_id: 'hr_admin',
-    upgrade_status: 'QUEUED',
+    upgrade_status: 'UPGRADING',
     upgrade_target_version: 'v6.8.0',
   },
   {
@@ -318,7 +318,7 @@ const mockWorkers: WorkerWithUpgrade[] = [
     owning_department_name: 'Human Resources Department',
     created_at: '2025-01-04 11:21:00',
     creator_id: 'hr_admin',
-    upgrade_status: 'QUEUED',
+    upgrade_status: 'UPGRADING',
     upgrade_target_version: 'v6.8.0',
   },
   {
@@ -350,7 +350,7 @@ const mockWorkers: WorkerWithUpgrade[] = [
     owning_department_name: 'Human Resources Department',
     created_at: '2025-01-04 11:22:00',
     creator_id: 'hr_admin',
-    upgrade_status: 'QUEUED',
+    upgrade_status: 'UPGRADING',
     upgrade_target_version: 'v6.8.0',
   },
   {
@@ -382,7 +382,7 @@ const mockWorkers: WorkerWithUpgrade[] = [
     owning_department_name: 'Human Resources Department',
     created_at: '2025-01-04 11:23:00',
     creator_id: 'hr_admin',
-    upgrade_status: 'QUEUED',
+    upgrade_status: 'UPGRADING',
     upgrade_target_version: 'v6.8.0',
   },
   // ===== 设备 4: DESKTOP-G7H8 - UPGRADING 升级中 =====
@@ -547,7 +547,7 @@ const mockWorkers: WorkerWithUpgrade[] = [
     owning_department_name: 'Finance Department',
     created_at: '2025-01-03 15:45:00',
     creator_id: 'admin',
-    upgrade_status: 'QUEUED',
+    upgrade_status: 'UPGRADING',
     upgrade_target_version: 'v6.8.0',
   },
   {
@@ -579,7 +579,7 @@ const mockWorkers: WorkerWithUpgrade[] = [
     owning_department_name: 'Finance Department',
     created_at: '2025-01-03 15:46:00',
     creator_id: 'admin',
-    upgrade_status: 'QUEUED',
+    upgrade_status: 'UPGRADING',
     upgrade_target_version: 'v6.8.0',
   },
   {
@@ -611,7 +611,7 @@ const mockWorkers: WorkerWithUpgrade[] = [
     owning_department_name: 'Finance Department',
     created_at: '2025-01-03 15:47:00',
     creator_id: 'admin',
-    upgrade_status: 'QUEUED',
+    upgrade_status: 'UPGRADING',
     upgrade_target_version: 'v6.8.0',
   },
   // ===== 设备 7: DESKTOP-LATEST - 已是最新 (对照组) =====
@@ -1163,91 +1163,26 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
 
   const handleConfirmUpgrade = useCallback(
     (machineCodes: string[]) => {
-      // 按设备判定：全部空闲则直接 UPGRADING；存在 BUSY/MAINTENANCE/全离线则 QUEUED
-      let upgradingCount = 0;
-      let queuedCount = 0;
-      setListResponse((prev) => {
-        // 先按 machine_code 聚合一次，便于判定每台设备状态
-        const peersByCode = new Map<string, WorkerWithUpgrade[]>();
-        prev.list.forEach((w) => {
+      // 简化：所有勾选客户端直接进入 UPGRADING 状态（已移除预约升级）
+      setListResponse((prev) => ({
+        ...prev,
+        list: prev.list.map((w) => {
           const code = (w as WorkerWithUpgrade).machine_code || w.id;
-          if (!peersByCode.has(code)) peersByCode.set(code, []);
-          peersByCode.get(code)!.push(w as WorkerWithUpgrade);
-        });
-        const deviceNextStatus = new Map<string, 'UPGRADING' | 'QUEUED'>();
-        machineCodes.forEach((code) => {
-          const peers = peersByCode.get(code) || [];
-          const allIdleOnline = peers.length > 0 && peers.every((p) => p.status === 'IDLE');
-          if (allIdleOnline) {
-            deviceNextStatus.set(code, 'UPGRADING');
-            upgradingCount += 1;
-          } else {
-            deviceNextStatus.set(code, 'QUEUED');
-            queuedCount += 1;
-          }
-        });
-        return {
-          ...prev,
-          list: prev.list.map((w) => {
-            const code = (w as WorkerWithUpgrade).machine_code || w.id;
-            const next = deviceNextStatus.get(code);
-            if (!next) return w;
-            const target = getEnabledVersion(w.desktop_type);
-            return {
-              ...w,
-              upgrade_status: next,
-              upgrade_target_version: target?.version || null,
-              upgrade_failed_reason: null,
-            } as WorkerWithUpgrade;
-          }),
-        };
-      });
+          if (!machineCodes.includes(code)) return w;
+          const target = getEnabledVersion(w.desktop_type);
+          return {
+            ...w,
+            upgrade_status: 'UPGRADING',
+            upgrade_target_version: target?.version || null,
+            upgrade_failed_reason: null,
+          } as WorkerWithUpgrade;
+        }),
+      }));
       setUpgradeModalVisible(false);
       setSelectedRowKeys([]);
-      if (upgradingCount > 0 && queuedCount === 0) {
-        Toast.success(t('worker.upgrade.upgradingStarted', { count: upgradingCount }));
-      } else if (upgradingCount === 0 && queuedCount > 0) {
-        Toast.success(t('worker.upgrade.queuedSuccess', { count: queuedCount }));
-      } else {
-        Toast.success(
-          t('worker.upgrade.mixedSuccess', { upgrading: upgradingCount, queued: queuedCount })
-        );
-      }
+      Toast.success(t('worker.upgrade.upgradingStarted', { count: machineCodes.length }));
     },
     [t]
-  );
-
-  const handleCancelUpgrade = useCallback(
-    (record: WorkerWithUpgrade) => {
-      const machineCode = record.machine_code || record.id;
-      Modal.confirm({
-        title: t('worker.upgrade.cancel.title'),
-        content: t('worker.upgrade.cancel.confirmMessage'),
-        okText: t('worker.upgrade.cancel.confirm'),
-        cancelText: t('common.cancel'),
-        onOk: async () => {
-          setListResponse((prev) => ({
-            ...prev,
-            list: prev.list.map((w) => {
-              const code = (w as WorkerWithUpgrade).machine_code || w.id;
-              if (code !== machineCode) return w;
-              return {
-                ...w,
-                upgrade_status: 'NONE',
-                upgrade_target_version: null,
-              } as WorkerWithUpgrade;
-            }),
-          }));
-          if (selectedWorker?.machine_code === machineCode) {
-            setSelectedWorker((prev) =>
-              prev ? ({ ...prev, upgrade_status: 'NONE', upgrade_target_version: null } as any) : null
-            );
-          }
-          Toast.success(t('worker.upgrade.cancel.success'));
-        },
-      });
-    },
-    [t, selectedWorker]
   );
 
 
@@ -1316,38 +1251,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
         const target = getEnabledVersion(record.desktop_type);
         const upgradable = isUpgradeAvailable(record);
 
-        if (deviceStatus === 'QUEUED') {
-          const blocking = peers.filter((p) => p.status === 'BUSY' || p.status === 'MAINTENANCE');
-          const allOffline = peers.every((p) => p.status === 'OFFLINE' || p.status === 'FAULT');
-          if (allOffline) {
-            return (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={(e) => e.stopPropagation()}>
-                <span>{version}</span>
-                <Tooltip content={t('worker.upgrade.queuedOffline.tooltip')}>
-                  <Tag color="grey" type="light" size="small" prefixIcon={<WifiOff size={12} strokeWidth={2} />}>
-                    {t('worker.upgrade.queuedOffline.tag')}
-                  </Tag>
-                </Tooltip>
-              </div>
-            );
-          }
-          const tooltipContent = blocking.length > 0
-            ? t('worker.upgrade.queued.tooltip', {
-                names: blocking.slice(0, 3).map((b) => b.name).join('、'),
-                more: blocking.length > 3 ? t('worker.upgrade.queued.more', { count: blocking.length - 3 }) : '',
-              })
-            : t('worker.upgrade.queued.tooltipReady');
-          return (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={(e) => e.stopPropagation()}>
-              <span>{version}</span>
-              <Tooltip content={tooltipContent}>
-                <Tag color="blue" type="light" size="small" prefixIcon={<Clock size={12} strokeWidth={2} />}>
-                  {t('worker.upgrade.queued.tag')}
-                </Tag>
-              </Tooltip>
-            </div>
-          );
-        }
+        // 已移除 QUEUED 预约升级逻辑
         if (deviceStatus === 'UPGRADING') {
           const targetVersion = peers.find((p) => p.upgrade_target_version)?.upgrade_target_version || target?.version;
           return (
@@ -1658,9 +1562,8 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
             <Space>
               {selectedRowKeys.length > 0 && (() => {
                 const selectedDevices = aggregateSelectedDevices(list as WorkerWithUpgrade[], selectedRowKeys);
-                const hasQueued = selectedDevices.some((d) => d.workers.some((w) => w.upgrade_status === 'QUEUED'));
                 const hasUpgradable = selectedDevices.some((d) =>
-                  d.workers.some(isUpgradeAvailable) && !d.workers.some((w) => w.upgrade_status === 'QUEUED' || w.upgrade_status === 'UPGRADING')
+                  d.workers.some(isUpgradeAvailable) && !d.workers.some((w) => w.upgrade_status === 'UPGRADING')
                 );
                 return (
                   <>
@@ -1673,42 +1576,6 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
                         onClick={() => triggerUpgrade(selectedRowKeys)}
                       >
                         {t('worker.upgrade.batchButton')}
-                      </Button>
-                    )}
-                    {hasQueued && (
-                      <Button
-                        icon={<ArrowUpCircle size={16} strokeWidth={2} />}
-                        onClick={() => {
-                          // 取消已选中行所属设备的预约
-                          const queuedDevices = selectedDevices.filter((d) =>
-                            d.workers.some((w) => w.upgrade_status === 'QUEUED')
-                          );
-                          Modal.confirm({
-                            title: t('worker.upgrade.cancel.title'),
-                            content: t('worker.upgrade.cancel.batchConfirmMessage', { count: queuedDevices.length }),
-                            okText: t('worker.upgrade.cancel.confirm'),
-                            cancelText: t('common.cancel'),
-                            onOk: async () => {
-                              const machineCodes = queuedDevices.map((d) => d.machineCode);
-                              setListResponse((prev) => ({
-                                ...prev,
-                                list: prev.list.map((w) => {
-                                  const code = (w as WorkerWithUpgrade).machine_code || w.id;
-                                  if (!machineCodes.includes(code)) return w;
-                                  return {
-                                    ...w,
-                                    upgrade_status: 'NONE',
-                                    upgrade_target_version: null,
-                                  } as WorkerWithUpgrade;
-                                }),
-                              }));
-                              setSelectedRowKeys([]);
-                              Toast.success(t('worker.upgrade.cancel.success'));
-                            },
-                          });
-                        }}
-                      >
-                        {t('worker.upgrade.cancel.batchButton')}
                       </Button>
                     )}
                   </>
@@ -1828,7 +1695,6 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
           row?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }}
         onUpgradeDevice={(worker) => triggerUpgrade([worker.id])}
-        onCancelUpgrade={(worker) => handleCancelUpgrade(worker as WorkerWithUpgrade)}
       />
 
       {/* Modal */}
