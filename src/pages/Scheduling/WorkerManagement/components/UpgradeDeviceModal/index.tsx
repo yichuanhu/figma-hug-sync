@@ -159,7 +159,7 @@ const UpgradeDeviceModal = ({ visible, onCancel, onOk, devices }: UpgradeDeviceM
                   </div>
                 ) : d.blocking.length > 0 ? (
                   <div className="upgrade-device-modal-card-tip warning">
-                    <Clock size={12} strokeWidth={2} />
+                    <Clock size={12} strokeWidth={2} color="var(--semi-color-warning)" />
                     <Text size="small" style={{ color: 'var(--semi-color-warning)' }}>
                       {t('worker.upgrade.modal.busyTip', { count: d.blocking.length })}
                     </Text>
