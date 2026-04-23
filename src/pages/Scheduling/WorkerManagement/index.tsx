@@ -436,6 +436,11 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
   const [addToGroupModalVisible, setAddToGroupModalVisible] = useState(false);
   const [addToGroupWorker, setAddToGroupWorker] = useState<LYWorkerResponse | null>(null);
 
+  // 升级相关 state
+  const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
+  const [upgradeModalVisible, setUpgradeModalVisible] = useState(false);
+  const [upgradeDevices, setUpgradeDevices] = useState<{ machineCode: string; workers: WorkerWithUpgrade[] }[]>([]);
+
   // StatusConfig
   type WorkerStatus = LYWorkerResponse['status'];
   
