@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tabs, TabPane, Typography, Tag, Table, Button, Modal, Toast, Empty, Dropdown, Tooltip } from '@douyinfe/semi-ui';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
-import { FileText, Folder, Plus, Pencil, Trash2, Link as LinkIcon, Users, Ellipsis } from 'lucide-react';
+import { Plus, Pencil, Trash2, Link as LinkIcon, Users, Ellipsis } from 'lucide-react';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import type { Project, Workspace, ProjectAggregatedStatus } from '../../types';
@@ -232,14 +232,7 @@ const ProjectDetailDrawer = ({
         }
       >
         <Tabs type="line" activeKey={activeTab} onChange={setActiveTab} className="project-detail-drawer-tabs">
-          <TabPane
-            itemKey="overview"
-            tab={
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                <FileText size={14} /> {t('common.overview')}
-              </span>
-            }
-          >
+          <TabPane itemKey="overview" tab={t('common.overview')}>
             <div className="project-detail-overview">
               <div className="project-detail-overview-meta">
                 <div className="project-detail-overview-meta-item">
@@ -279,11 +272,7 @@ const ProjectDetailDrawer = ({
 
           <TabPane
             itemKey="workspaces"
-            tab={
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                <Folder size={14} /> {t('requirements.projects.workspaces')} ({workspaces.length})
-              </span>
-            }
+            tab={`${t('requirements.projects.workspaces')} (${workspaces.length})`}
           >
             <div className="project-workspaces-tab">
               <div className="project-workspaces-tab-toolbar">
