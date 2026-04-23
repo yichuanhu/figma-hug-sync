@@ -24,6 +24,8 @@ interface WorkerDetailDrawerProps {
   onToggleReceiveTasks?: (worker: LYWorkerResponse, checked: boolean) => void;
   onAddToGroup?: (worker: LYWorkerResponse) => void;
   onRemoveFromGroup?: (worker: LYWorkerResponse) => void;
+  onUpgradeDevice?: (worker: LYWorkerResponse) => void;
+  onCancelUpgrade?: (worker: LYWorkerResponse) => void;
   dataList?: LYWorkerResponse[];
   onNavigate?: (worker: LYWorkerResponse) => void;
   pagination?: PaginationInfo;
@@ -32,7 +34,7 @@ interface WorkerDetailDrawerProps {
   
 }
 
-const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, onDelete, onToggleReceiveTasks, onAddToGroup, onRemoveFromGroup, dataList = [], onNavigate, pagination, onPageChange, onScrollToRow }: WorkerDetailDrawerProps) => {
+const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, onDelete, onToggleReceiveTasks, onAddToGroup, onRemoveFromGroup, onUpgradeDevice, onCancelUpgrade, dataList = [], onNavigate, pagination, onPageChange, onScrollToRow }: WorkerDetailDrawerProps) => {
   const { t } = useTranslation();
 
   if (!workerData) return null;
