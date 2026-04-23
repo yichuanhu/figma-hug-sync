@@ -52,10 +52,8 @@ const LinkRequirementsModal = ({ visible, workspace, onClose, onSuccess }: Props
 
   const filteredCandidates = useMemo(() => {
     if (!workspace) return [];
-    let list = requirements;
-    if (!crossDept) {
-      list = list.filter((r) => r.owning_department_id === workspace.departmentId);
-    }
+    // 仅展示与该工作空间所属部门一致的需求，不支持跨部门关联
+    let list = requirements.filter((r) => r.owning_department_id === workspace.departmentId);
     if (keyword.trim()) {
       const k = keyword.trim().toLowerCase();
       list = list.filter(
@@ -66,7 +64,7 @@ const LinkRequirementsModal = ({ visible, workspace, onClose, onSuccess }: Props
     }
     // 排除已选
     return list.filter((r) => !selectedIds.includes(r.id));
-  }, [requirements, workspace, crossDept, keyword, selectedIds]);
+  }, [requirements, workspace, keyword, selectedIds]);
 
   const selectedItems = useMemo(
     () => requirements.filter((r) => selectedIds.includes(r.id)),
