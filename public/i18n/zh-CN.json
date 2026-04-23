@@ -1253,7 +1253,9 @@
       "batchButton": "升级设备",
       "batchSelected": "已选 {{count}} 项",
       "noEnabledVersion": "管理员尚未发布升级版本",
-      "queuedSuccess": "已预约升级 {{count}} 台设备，将在空闲后自动执行",
+      "queuedSuccess": "已预约升级 {{count}} 个客户端，将在关联机器人空闲后自动执行",
+      "upgradingStarted": "已开始升级 {{count}} 个客户端",
+      "mixedSuccess": "{{upgrading}} 个客户端开始升级，{{queued}} 个已预约（等待机器人空闲）",
       "badge": {
         "tag": "可升级 → {{version}}",
         "tooltip": "该设备可升级到 {{version}}，将影响 {{count}} 台机器人"
