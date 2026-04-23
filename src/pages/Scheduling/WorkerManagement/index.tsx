@@ -1252,7 +1252,7 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
         const upgradable = isUpgradeAvailable(record);
 
         // 已移除 QUEUED 预约升级逻辑
-
+        if (deviceStatus === 'UPGRADING') {
           const targetVersion = peers.find((p) => p.upgrade_target_version)?.upgrade_target_version || target?.version;
           return (
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={(e) => e.stopPropagation()}>
