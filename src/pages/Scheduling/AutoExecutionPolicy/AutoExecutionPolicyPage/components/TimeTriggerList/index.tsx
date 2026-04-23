@@ -228,19 +228,18 @@ const TimeTriggerList = ({ pendingTriggerId, onPendingHandled }: TimeTriggerList
     loadData(queryParams);
   }, [queryParams, loadData]);
 
-  // 通知中心跳转：自动打开对应触发器抽屉
+  // 通知中心跳转：自动打开对应触发器抽屉（mock 环境下未命中则演示用打开第一条）
   useEffect(() => {
     if (!pendingTriggerId) return;
-    const target = allMockTriggers.find((t) => t.trigger_id === pendingTriggerId);
+    const target =
+      allMockTriggers.find((tr) => tr.trigger_id === pendingTriggerId) || allMockTriggers[0];
     if (target) {
       setSelectedTrigger(target);
       setDetailInitialTab('basic');
       setDrawerVisible(true);
-    } else {
-      Toast.warning(t('common.notFound') || '未找到对应触发器');
     }
     onPendingHandled?.();
-  }, [pendingTriggerId, onPendingHandled, t]);
+  }, [pendingTriggerId, onPendingHandled]);
 
   // Searchdebounced
   const handleSearch = useMemo(
