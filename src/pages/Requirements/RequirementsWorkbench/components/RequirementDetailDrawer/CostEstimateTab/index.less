@@ -47,6 +47,44 @@
   }
 }
 
+.cost-baseline-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+  background: transparent;
+
+  @media (max-width: 720px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 12px;
+  }
+}
+
+.cost-baseline-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  padding: 0 16px 0 0;
+
+  @media (max-width: 720px) {
+    padding-right: 8px;
+  }
+}
+
+.cost-baseline-label {
+  display: block;
+}
+
+.cost-baseline-value {
+  white-space: nowrap;
+}
+
+.cost-baseline-tag-wrap {
+  display: flex;
+  align-items: center;
+  min-height: 32px;
+}
+
 .cost-role-row {
   display: flex;
   gap: 8px;
