@@ -1664,7 +1664,8 @@
         "title": "Client upgrade available",
         "targetVersion": "Target version",
         "currentVersion": "Current version",
-        "description": "The client version of the current robot needs to be upgraded",
+        "affectedRobots": "Robots on this client ({{count}})",
+        "current": "current",
         "button": "Upgrade Client Version"
       }
     }

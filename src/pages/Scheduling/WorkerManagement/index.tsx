@@ -963,8 +963,25 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
               </div>
               <div style={{ marginBottom: 10 }}>
                 <Text type="tertiary" size="small">
-                  {t('worker.upgrade.popover.description')}
+                  {t('worker.upgrade.popover.affectedRobots', { count: peers.length })}
                 </Text>
+                <div style={{ marginTop: 4, display: 'flex', flexDirection: 'column', gap: 2, maxHeight: 96, overflowY: 'auto' }}>
+                  {peers.map((p) => (
+                    <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <span style={{
+                        width: 6, height: 6, borderRadius: '50%',
+                        background: p.id === record.id ? 'var(--semi-color-primary)' : 'var(--semi-color-fill-2)',
+                        flexShrink: 0,
+                      }} />
+                      <Text size="small" ellipsis={{ showTooltip: true }} style={{ maxWidth: 180 }}>
+                        {p.name}
+                      </Text>
+                      {p.id === record.id && (
+                        <Text size="small" type="tertiary">({t('worker.upgrade.popover.current')})</Text>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
               <Button
                 theme="solid"
