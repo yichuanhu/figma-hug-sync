@@ -66,7 +66,7 @@ const CostEstimateTab = ({ data }: Props) => {
         </div>
         <div className="cost-baseline-grid">
           <div className="cost-baseline-item">
-            <Text className="cost-baseline-label" type="tertiary">
+            <Text type="tertiary" size="small">
               {t('requirements.costEstimate.baseline.frequency')}
             </Text>
             <Title className="cost-baseline-value" heading={5} style={{ margin: 0 }}>
@@ -74,7 +74,7 @@ const CostEstimateTab = ({ data }: Props) => {
             </Title>
           </div>
           <div className="cost-baseline-item">
-            <Text className="cost-baseline-label" type="tertiary">
+            <Text type="tertiary" size="small">
               {t('requirements.costEstimate.baseline.duration')}
             </Text>
             <Title className="cost-baseline-value" heading={5} style={{ margin: 0 }}>
@@ -82,7 +82,7 @@ const CostEstimateTab = ({ data }: Props) => {
             </Title>
           </div>
           <div className="cost-baseline-item">
-            <Text className="cost-baseline-label" type="tertiary">
+            <Text type="tertiary" size="small">
               {t('requirements.costEstimate.baseline.automationRatio')}
             </Text>
             <Title className="cost-baseline-value" heading={5} style={{ margin: 0 }}>
@@ -90,7 +90,7 @@ const CostEstimateTab = ({ data }: Props) => {
             </Title>
           </div>
           <div className="cost-baseline-item">
-            <Text className="cost-baseline-label" type="tertiary">
+            <Text type="tertiary" size="small">
               {t('requirements.costEstimate.baseline.jobLevel')}
             </Text>
             <div className="cost-baseline-tag-wrap">
