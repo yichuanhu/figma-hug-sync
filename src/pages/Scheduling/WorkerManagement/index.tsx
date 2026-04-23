@@ -1053,7 +1053,42 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
                   {t('worker.actions.removeFromGroup')}
                 </Dropdown.Item>
               )}
-              <Dropdown.Item 
+              {(() => {
+                const peers = getDevicePeers(record);
+                const deviceStatus = peers.find((p) => p.upgrade_status && p.upgrade_status !== 'NONE')?.upgrade_status;
+                const upgradable = isUpgradeAvailable(record);
+                if (deviceStatus === 'QUEUED') {
+                  return (
+                    <Dropdown.Item
+                      icon={<ArrowUpCircle size={16} strokeWidth={2} />}
+                      onClick={() => handleCancelUpgrade(record)}
+                    >
+                      {t('worker.upgrade.cancel.menu')}
+                    </Dropdown.Item>
+                  );
+                }
+                if (deviceStatus === 'UPGRADING') {
+                  return (
+                    <Tooltip content={t('worker.upgrade.upgrading.cannotCancel')}>
+                      <Dropdown.Item icon={<ArrowUpCircle size={16} strokeWidth={2} />} disabled>
+                        {t('worker.upgrade.cancel.menu')}
+                      </Dropdown.Item>
+                    </Tooltip>
+                  );
+                }
+                if (upgradable) {
+                  return (
+                    <Dropdown.Item
+                      icon={<ArrowUpCircle size={16} strokeWidth={2} />}
+                      onClick={() => triggerUpgrade([record.id])}
+                    >
+                      {t('worker.upgrade.menu')}
+                    </Dropdown.Item>
+                  );
+                }
+                return null;
+              })()}
+              <Dropdown.Item
                 icon={<UserPlus size={14} strokeWidth={2} />}
                 onClick={() => {
                   openCollaborator(record.id);
