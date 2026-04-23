@@ -947,12 +947,53 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
           );
         }
         if (upgradable && target) {
+          const popoverContent = (
+            <div style={{ padding: 12, width: 280 }} onClick={(e) => e.stopPropagation()}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                <ArrowUpCircle size={14} strokeWidth={2} color="var(--semi-color-warning)" />
+                <Text strong>{t('worker.upgrade.popover.title')}</Text>
+              </div>
+              <div style={{ marginBottom: 6 }}>
+                <Text type="tertiary" size="small">{t('worker.upgrade.popover.targetVersion')}：</Text>
+                <Text size="small" strong>{target.version}</Text>
+              </div>
+              <div style={{ marginBottom: 6 }}>
+                <Text type="tertiary" size="small">{t('worker.upgrade.popover.currentVersion')}：</Text>
+                <Text size="small">{version}</Text>
+              </div>
+              <div style={{ marginBottom: 10 }}>
+                <Text type="tertiary" size="small">
+                  {t('worker.upgrade.popover.affectedRobots', { count: peers.length })}
+                </Text>
+              </div>
+              {target.releaseNotes && (
+                <Typography.Paragraph
+                  size="small"
+                  type="tertiary"
+                  ellipsis={{ rows: 2, showTooltip: true }}
+                  style={{ marginBottom: 10 }}
+                >
+                  {target.releaseNotes}
+                </Typography.Paragraph>
+              )}
+              <Button
+                theme="solid"
+                type="primary"
+                size="small"
+                icon={<ArrowUpCircle size={14} strokeWidth={2} />}
+                block
+                onClick={() => triggerUpgrade([record.id])}
+              >
+                {t('worker.upgrade.popover.button')}
+              </Button>
+            </div>
+          );
           return (
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={(e) => e.stopPropagation()}>
               <span>{version}</span>
-              <Tooltip content={t('worker.upgrade.badge.tooltip', { version: target.version, count: peers.length })}>
-                <ArrowUpCircle size={14} strokeWidth={2} color="var(--semi-color-warning)" />
-              </Tooltip>
+              <Popover content={popoverContent} trigger="hover" position="top" showArrow>
+                <ArrowUpCircle size={14} strokeWidth={2} color="var(--semi-color-warning)" style={{ cursor: 'pointer' }} />
+              </Popover>
             </div>
           );
         }
