@@ -1,0 +1,30 @@
+.notification-table {
+  &-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+
+    &.unread {
+      background: var(--semi-color-danger);
+    }
+    &.read {
+      background: var(--semi-color-fill-1);
+    }
+  }
+
+  &-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  &-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    justify-content: flex-end;
+  }
+}
