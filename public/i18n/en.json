@@ -1664,7 +1664,7 @@
         "targetVersion": "Target version",
         "currentVersion": "Current version",
         "affectedRobots": "Linked robots ({{count}})",
-        "receivingTasksTip": "Tip: turn off \"Receive Tasks\" for the linked robots before upgrading to avoid new tasks being dispatched. Running tasks may be interrupted when the client restarts.",
+        "receivingTasksTip": "Tip: turn off \"Receive Tasks\" for the linked robots before upgrading to avoid new tasks being dispatched.",
         "busyTip": "{{count}} robot(s) running tasks; tasks may be interrupted during upgrade",
         "idleTip": "All robots are idle; ready to upgrade",
         "allOfflineTip": "All linked robots are offline; upgrade is not available until the client reconnects",
