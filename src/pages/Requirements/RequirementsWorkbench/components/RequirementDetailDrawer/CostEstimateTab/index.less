@@ -14,6 +14,10 @@
     margin-bottom: 12px;
   }
 
+  // 反覆盖 src/styles/app.less 中对 .semi-descriptions / .semi-descriptions-item
+  // 强制设置 var(--semi-color-default) 白底的全局规则。需提高选择器特异性。
+  &.cost-section .semi-descriptions,
+  &.cost-section .semi-descriptions-item,
   .semi-descriptions,
   .semi-descriptions *,
   table,
