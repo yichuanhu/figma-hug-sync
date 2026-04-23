@@ -1,9 +1,10 @@
 import { useTranslation } from 'react-i18next';
-import { Typography, Button, Tooltip } from '@douyinfe/semi-ui';
-import { ArrowUpRight, Bot, CalendarClock, Check, CheckSquare, Shield } from 'lucide-react';
+import { Typography, Tooltip } from '@douyinfe/semi-ui';
+import { Bot, CalendarClock, Check, CheckSquare, Shield } from 'lucide-react';
 import RelativeTime from '@/pages/Requirements/RequirementsWorkbench/components/RelativeTime';
 import EmptyState from '@/components/EmptyState';
 import SeverityTag from '../SeverityTag';
+import CategoryBadge from '../CategoryBadge';
 import type { Notification, NotificationCategory } from '@/pages/NotificationCenter/types';
 import './index.less';
 
@@ -67,7 +68,6 @@ const NotificationTable = ({ data, onOpen, onMarkRead, hasFilters }: Props) => {
                 >
                   {n.title}
                 </Typography.Text>
-                <SeverityTag severity={n.severity} />
               </div>
 
               <Typography.Text
@@ -80,38 +80,30 @@ const NotificationTable = ({ data, onOpen, onMarkRead, hasFilters }: Props) => {
               </Typography.Text>
 
               <div className="notification-list-item-meta">
-                <RelativeTime value={n.createdAt} />
-                <span className="notification-list-item-meta-dot">·</span>
-                <span>{t(`notificationCenter.category.${n.category}`)}</span>
-                <span className="notification-list-item-meta-dot">·</span>
-                <span>APA</span>
+                <SeverityTag severity={n.severity} />
+                <CategoryBadge category={n.category} />
+                <span className="notification-list-item-meta-time">
+                  <RelativeTime value={n.createdAt} />
+                </span>
               </div>
             </div>
 
             <div className="notification-list-item-side" onClick={(e) => e.stopPropagation()}>
-              <span className={`notification-list-item-dot ${n.read ? 'read' : 'unread'}`} />
-              <div className="notification-list-item-actions">
-                {!n.read && (
-                  <Tooltip content={t('notificationCenter.actions.markRead')}>
-                    <Button
-                      theme="borderless"
-                      type="tertiary"
-                      size="small"
-                      icon={<Check size={14} strokeWidth={2} />}
-                      onClick={() => onMarkRead(n.id)}
-                    />
-                  </Tooltip>
-                )}
-                <Tooltip content={t('notificationCenter.actions.view')}>
-                  <Button
-                    theme="borderless"
-                    type="primary"
-                    size="small"
-                    icon={<ArrowUpRight size={14} strokeWidth={2} />}
-                    onClick={() => onOpen(n)}
-                  />
+              {!n.read ? (
+                <Tooltip content={t('notificationCenter.actions.markRead')}>
+                  <button
+                    type="button"
+                    className="notification-list-item-read-btn"
+                    onClick={() => onMarkRead(n.id)}
+                    aria-label={t('notificationCenter.actions.markRead')}
+                  >
+                    <span className="notification-list-item-read-btn-dot" />
+                    <Check className="notification-list-item-read-btn-icon" size={14} strokeWidth={2.5} />
+                  </button>
                 </Tooltip>
-              </div>
+              ) : (
+                <span className="notification-list-item-dot read" />
+              )}
             </div>
           </li>
         );
