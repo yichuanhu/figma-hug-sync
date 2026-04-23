@@ -32,8 +32,18 @@ import WorkerKeyModal from './components/WorkerKeyModal';
 import CreateWorkerModal from './components/CreateWorkerModal';
 import EditWorkerModal from './components/EditWorkerModal';
 import AddToGroupModal from './components/AddToGroupModal';
+import UpgradeDeviceModal from './components/UpgradeDeviceModal';
 import type { LYWorkerResponse, LYListResponseLYWorkerResponse, GetWorkersParams } from '@/api';
 import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
+import {
+  WorkerWithUpgrade,
+  isUpgradeAvailable,
+  aggregateSelectedDevices,
+  groupWorkersByDevice,
+} from './utils/upgrade';
+import { getEnabledVersion } from '@/mocks/clientVersionData';
+import { ArrowUpCircle, AlertCircle, Tooltip as TooltipIconLucide } from 'lucide-react';
+import { Tooltip } from '@douyinfe/semi-ui';
 import './index.less';
 
 const { Title, Text } = Typography;
