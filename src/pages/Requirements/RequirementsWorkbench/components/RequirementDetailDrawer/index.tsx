@@ -15,7 +15,7 @@ import CostEstimateTab from './CostEstimateTab';
 import ApprovalFlowProgress from '../ApprovalFlowProgress';
 import ReadonlySchemeFieldsRenderer from '../ReadonlySchemeFieldsRenderer';
 import './index.less';
-import { ClipboardCheck, FileText, Pencil, PowerOff, RotateCcw, Send, Trash2, Wallet } from 'lucide-react';
+import { Pencil, PowerOff, RotateCcw, Send, Trash2 } from 'lucide-react';
 
 const { Text } = Typography;
 
@@ -475,12 +475,7 @@ const RequirementDetailDrawer = ({
             }
           >
             <TabPane
-              tab={
-                <span className="requirement-detail-tab-label">
-                  <FileText size={14} strokeWidth={2} />
-                  {t('requirements.detail.tab.overview')}
-                </span>
-              }
+              tab={t('requirements.detail.tab.overview')}
               itemKey="overview"
             >
               <div className="requirement-detail-tab-content">
@@ -495,12 +490,7 @@ const RequirementDetailDrawer = ({
             </TabPane>
 
             <TabPane
-              tab={
-                <span className="requirement-detail-tab-label">
-                  <ClipboardCheck size={14} strokeWidth={2} />
-                  {t('requirements.detail.tab.assessment')}
-                </span>
-              }
+              tab={t('requirements.detail.tab.assessment')}
               itemKey="assessment"
             >
               <div className="requirement-detail-tab-content">
@@ -509,12 +499,7 @@ const RequirementDetailDrawer = ({
             </TabPane>
 
             <TabPane
-              tab={
-                <span className="requirement-detail-tab-label">
-                  <Wallet size={14} strokeWidth={2} />
-                  {t('requirements.detail.tab.cost')}
-                </span>
-              }
+              tab={t('requirements.detail.tab.cost')}
               itemKey="cost"
             >
               <div className="requirement-detail-tab-content">
