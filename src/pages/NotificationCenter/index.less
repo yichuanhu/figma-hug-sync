@@ -2,7 +2,8 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow-y: auto;
+  min-height: 0;
+  overflow: hidden;
 
   .notification-center-header {
     flex-shrink: 0;
@@ -16,5 +17,10 @@
   .notification-center-table-wrap {
     flex: 1;
     min-height: 0;
+    overflow-y: auto;
+  }
+
+  .list-pagination {
+    flex-shrink: 0;
   }
 }
