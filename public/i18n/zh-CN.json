@@ -73,6 +73,7 @@
     "goBack": "返回上一页"
   },
   "sidebar": {
+    "notifications": "通知中心",
     "home": "首页",
     "developmentCenter": "开发中心",
     "schedulingCenter": "调度中心",
