@@ -215,8 +215,18 @@ const WorkerDetailDrawer = ({ visible, onClose, workerData, onEdit, onViewKey, o
             disabled
           />
         </Tooltip>
+      ) : upgradeStatus === 'FAILED' ? (
+        <Tooltip content={t('worker.upgrade.failed.retry')}>
+          <Button
+            icon={<ArrowUpCircle size={16} strokeWidth={2} color="var(--semi-color-danger)" />}
+            theme="borderless"
+            type="tertiary"
+            size="small"
+            onClick={() => onUpgradeDevice?.(workerData)}
+          />
+        </Tooltip>
       ) : upgradable ? (
-        <Tooltip content={t('worker.upgrade.menu')}>
+        <Tooltip content={t('worker.upgrade.popover.button')}>
           <Button
             icon={<ArrowUpCircle size={16} strokeWidth={2} color="var(--semi-color-warning)" />}
             theme="borderless"
