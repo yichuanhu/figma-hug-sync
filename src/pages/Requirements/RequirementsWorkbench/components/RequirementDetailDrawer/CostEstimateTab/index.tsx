@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Descriptions, Empty, Tag, Typography } from '@douyinfe/semi-ui';
+import { Empty, Tag, Typography } from '@douyinfe/semi-ui';
 import { Wallet } from 'lucide-react';
 import type { RequirementItem } from '../../../types';
 import { computeCostEstimate, getActiveSchemeCostConfig } from '../../../mockData';
@@ -64,28 +64,40 @@ const CostEstimateTab = ({ data }: Props) => {
             {t('requirements.costEstimate.baselineDesc')}
           </Text>
         </div>
-        <Descriptions
-          row
-          size="small"
-          data={[
-            {
-              key: t('requirements.costEstimate.baseline.frequency'),
-              value: `${frequency} ${t('requirements.costEstimate.unit.timesPerMonth')}`,
-            },
-            {
-              key: t('requirements.costEstimate.baseline.duration'),
-              value: `${durationMinutes} ${t('requirements.costEstimate.unit.minutes')}`,
-            },
-            {
-              key: t('requirements.costEstimate.baseline.automationRatio'),
-              value: `${Math.round(automationRatio * 100)}%`,
-            },
-            {
-              key: t('requirements.costEstimate.baseline.jobLevel'),
-              value: <Tag color="blue" type="light">{jobLevel}</Tag>,
-            },
-          ]}
-        />
+        <div className="cost-baseline-grid">
+          <div className="cost-baseline-item">
+            <Text className="cost-baseline-label" type="tertiary">
+              {t('requirements.costEstimate.baseline.frequency')}
+            </Text>
+            <Title className="cost-baseline-value" heading={4} style={{ margin: 0 }}>
+              {frequency} {t('requirements.costEstimate.unit.timesPerMonth')}
+            </Title>
+          </div>
+          <div className="cost-baseline-item">
+            <Text className="cost-baseline-label" type="tertiary">
+              {t('requirements.costEstimate.baseline.duration')}
+            </Text>
+            <Title className="cost-baseline-value" heading={4} style={{ margin: 0 }}>
+              {durationMinutes} {t('requirements.costEstimate.unit.minutes')}
+            </Title>
+          </div>
+          <div className="cost-baseline-item">
+            <Text className="cost-baseline-label" type="tertiary">
+              {t('requirements.costEstimate.baseline.automationRatio')}
+            </Text>
+            <Title className="cost-baseline-value" heading={4} style={{ margin: 0 }}>
+              {Math.round(automationRatio * 100)}%
+            </Title>
+          </div>
+          <div className="cost-baseline-item">
+            <Text className="cost-baseline-label" type="tertiary">
+              {t('requirements.costEstimate.baseline.jobLevel')}
+            </Text>
+            <div className="cost-baseline-tag-wrap">
+              <Tag color="blue" type="light">{jobLevel}</Tag>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* 第 2 段：预估节省 */}
