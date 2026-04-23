@@ -1389,6 +1389,13 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
         onSuccess={handleAddToGroupSuccess}
       />
 
+      <UpgradeDeviceModal
+        visible={upgradeModalVisible}
+        onCancel={() => setUpgradeModalVisible(false)}
+        onOk={handleConfirmUpgrade}
+        devices={upgradeDevices}
+      />
+
       {renderCollaboratorPanel('WORKER', 'scheduling')}
     </div>
   );
