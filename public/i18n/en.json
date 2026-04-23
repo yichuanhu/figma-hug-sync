@@ -1659,6 +1659,13 @@
         "queueExplain": "The upgrade waits until all robots on the device are idle; the device can keep accepting new tasks meanwhile",
         "confirm": "Schedule Upgrade",
         "allLatest": "Selected devices are already on the latest version"
+      },
+      "popover": {
+        "title": "Client upgrade available",
+        "targetVersion": "Target version",
+        "currentVersion": "Current version",
+        "affectedRobots": "Will affect {{count}} robot(s) on this device",
+        "button": "Upgrade Client Version"
       }
     }
   },
