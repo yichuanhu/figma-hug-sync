@@ -17,6 +17,7 @@ import {
   Toast,
   Select,
   Pagination,
+  Popover,
   
 } from '@douyinfe/semi-ui';
 import DepartmentSelect from '@/components/DepartmentSelect';
@@ -947,21 +948,46 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
           );
         }
         if (upgradable && target) {
+          const popoverContent = (
+            <div style={{ padding: 12, width: 260 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                <ArrowUpCircle size={14} strokeWidth={2} color="var(--semi-color-warning)" />
+                <Text strong>{t('worker.upgrade.popover.title', { version: target.version })}</Text>
+              </div>
+              <div style={{ marginBottom: 6 }}>
+                <Text type="tertiary" size="small">{t('worker.upgrade.popover.currentVersion')}：</Text>
+                <Text size="small">{version}</Text>
+                <Text type="tertiary" size="small"> → </Text>
+                <Text strong size="small">{target.version}</Text>
+              </div>
+              <div style={{ marginBottom: 6 }}>
+                <Text type="tertiary" size="small">{t('worker.upgrade.popover.affected', { count: peers.length })}：</Text>
+                <Text size="small">{peers.map((p) => p.name).join('、')}</Text>
+              </div>
+              <div style={{ marginBottom: 10 }}>
+                <Text type="tertiary" size="small">{t('worker.upgrade.popover.packageSize')}：</Text>
+                <Text size="small">{target.packageSize}</Text>
+              </div>
+              <Button
+                theme="solid"
+                type="primary"
+                size="small"
+                block
+                icon={<ArrowUpCircle size={14} strokeWidth={2} />}
+                onClick={() => triggerUpgrade([record.id])}
+              >
+                {t('worker.upgrade.menu')}
+              </Button>
+            </div>
+          );
           return (
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={(e) => e.stopPropagation()}>
               <span>{version}</span>
-              <Tooltip content={t('worker.upgrade.badge.tooltip', { version: target.version, count: peers.length })}>
-                <Button
-                  theme="borderless"
-                  type="primary"
-                  size="small"
-                  icon={<ArrowUpCircle size={14} strokeWidth={2} />}
-                  onClick={() => triggerUpgrade([record.id])}
-                  style={{ padding: '0 4px', height: 22 }}
-                >
-                  {t('worker.upgrade.menu')}
-                </Button>
-              </Tooltip>
+              <Popover content={popoverContent} trigger="hover" position="top" showArrow>
+                <Tag color="orange" type="light" size="small" style={{ cursor: 'pointer' }}>
+                  {t('worker.upgrade.badge.tag', { version: target.version })}
+                </Tag>
+              </Popover>
             </div>
           );
         }
