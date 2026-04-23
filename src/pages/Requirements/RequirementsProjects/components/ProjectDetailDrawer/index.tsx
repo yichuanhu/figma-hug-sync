@@ -272,11 +272,7 @@ const ProjectDetailDrawer = ({
 
           <TabPane
             itemKey="workspaces"
-            tab={
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                <Folder size={14} /> {t('requirements.projects.workspaces')} ({workspaces.length})
-              </span>
-            }
+            tab={`${t('requirements.projects.workspaces')} (${workspaces.length})`}
           >
             <div className="project-workspaces-tab">
               <div className="project-workspaces-tab-toolbar">
