@@ -2,8 +2,10 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Avatar, Popover, Tooltip } from '@douyinfe/semi-ui';
+import { Avatar, Badge, Popover, Tooltip } from '@douyinfe/semi-ui';
 import { UserInfoDropdown } from '../UserInfoDropdown';
+import NotificationDrawer from '../NotificationDrawer';
+import { mockNotifications } from '@/pages/NotificationCenter/mockData';
 import { Activity, Airplay, AlertTriangle, Bell, BookOpen, Bot, CalendarClock, ChartSpline, CheckSquare, ChevronDown, ChevronUp, ClipboardList, Cloud, CodeXml, Database, FileText, Folder, FolderCheck, FolderKanban, Forward, GitBranch, History, Home, LayoutGrid, LibraryBig, ListStart, MonitorCheck, MonitorCog, Parentheses, Play, ScrollText, Settings, Shield, Target, TrendingUp, Users, Workflow, Wrench } from 'lucide-react';
 
 const LayoutIcon = () => (
