@@ -2803,7 +2803,7 @@
       "severity": "严重度"
     },
     "table": { "severity": "严重度", "category": "分类", "content": "通知内容", "time": "时间" },
-    "actions": { "markRead": "标记为已读", "markAllRead": "全部标记为已读", "view": "查看", "clearRead": "清空已读" },
+    "actions": { "markRead": "标记为已读", "markAllRead": "全部标记为已读", "view": "查看", "clearRead": "删除全部已读消息" },
     "drawer": { "viewAll": "查看全部通知", "settings": "通知设置", "settingsComingSoon": "通知偏好设置即将上线" },
     "toast": { "allRead": "已将全部通知标记为已读", "clearedRead": "已清空已读通知" },
     "confirm": { "clearReadTitle": "清空已读通知", "clearReadContent": "确定清空全部已读通知？删除后不可恢复。" }
