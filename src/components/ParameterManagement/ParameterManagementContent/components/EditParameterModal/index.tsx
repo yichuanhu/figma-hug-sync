@@ -191,7 +191,7 @@ const EditParameterModal = ({
           />
 
           <Form.Slot label={{ text: t('common.owningDepartment'), required: true }}>
-            <DepartmentSelect
+            <DepartmentSearchSelect
               value={owningDepartmentId}
               onChange={setOwningDepartmentId}
               disabled={!canManage}

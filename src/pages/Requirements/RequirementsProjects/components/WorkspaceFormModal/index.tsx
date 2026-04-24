@@ -158,7 +158,7 @@ const DepartmentSelectField = ({ t }: { t: (k: string) => string }) => {
   const formState = useFormState();
   const value = formState.values?.departmentId;
   return (
-    <DepartmentSelect
+    <DepartmentSearchSelect
       value={value}
       onChange={(v: string) => {
         formApi.setValue('departmentId', v);
