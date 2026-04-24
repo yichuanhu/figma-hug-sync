@@ -91,6 +91,7 @@ const DepartmentSearchSelect = ({
       }}
       style={{ width: '100%', ...style }}
       className={className}
+      dropdownMatchSelectWidth
       dropdownStyle={{ maxHeight: 320, overflow: 'auto' }}
       optionList={optionList}
       renderSelectedItem={(option) => {
@@ -119,7 +120,12 @@ const DepartmentSearchSelect = ({
           style?: React.CSSProperties;
           className?: string;
         };
-        const path = parentPath ? `${parentPath} / ${label}` : label;
+        const fullPathStr = parentPath ? `${parentPath} / ${label}` : label;
+        const segments = fullPathStr.split(' / ');
+        const path =
+          segments.length > 3
+            ? `${segments[0]} / ... / ${segments[segments.length - 1]}`
+            : fullPathStr;
         return (
           <div
             className={`${optClass || ''} ${selected ? 'semi-select-option-selected' : ''}`}
