@@ -120,7 +120,7 @@ const OwnerSearchSelect = ({
                 ellipsis={{ showTooltip: true }}
                 style={{ margin: 0, fontSize: 12, color: 'var(--semi-color-text-2)' }}
               >
-                {department}
+                {deptDisplay}
               </Text>
             </div>
           </div>
