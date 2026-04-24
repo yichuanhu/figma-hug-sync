@@ -92,13 +92,38 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      gap: 4px;
       flex-shrink: 0;
       align-self: flex-start;
       padding-top: 14px;
-      width: 20px;
-      height: 20px;
       box-sizing: content-box;
     }
+
+    &-delete-btn {
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      color: var(--semi-color-text-2);
+      opacity: 0;
+      transition: opacity 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+
+      &:hover {
+        background-color: var(--semi-color-danger-light-default);
+        color: var(--semi-color-danger);
+      }
+    }
+  }
+
+  &-item:hover &-item-delete-btn {
+    opacity: 1;
+  }
 
     &-dot {
       width: 8px;
