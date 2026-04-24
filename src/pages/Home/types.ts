@@ -30,6 +30,7 @@ export interface NotificationItem {
   read: boolean;
   type: 'error' | 'warning' | 'info' | 'success';
   priority: 'URGENT' | 'IMPORTANT' | 'NORMAL';
+  category: 'task' | 'robot' | 'trigger' | 'license';
 }
 
 export interface AnnouncementItem {
