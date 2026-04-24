@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Typography, Tooltip } from '@douyinfe/semi-ui';
-import { Check } from 'lucide-react';
+import { Check, Trash2 } from 'lucide-react';
 import RelativeTime from '@/pages/Requirements/RequirementsWorkbench/components/RelativeTime';
 import EmptyState from '@/components/EmptyState';
 import SeverityTag from '../SeverityTag';
@@ -12,10 +12,11 @@ interface Props {
   data: Notification[];
   onOpen: (n: Notification) => void;
   onMarkRead: (id: string) => void;
+  onDelete: (id: string) => void;
   hasFilters: boolean;
 }
 
-const NotificationTable = ({ data, onOpen, onMarkRead, hasFilters }: Props) => {
+const NotificationTable = ({ data, onOpen, onMarkRead, onDelete, hasFilters }: Props) => {
   const { t } = useTranslation();
 
   if (data.length === 0) {
@@ -80,6 +81,16 @@ const NotificationTable = ({ data, onOpen, onMarkRead, hasFilters }: Props) => {
             ) : (
               <span className="nc-list-item-dot read" />
             )}
+            <Tooltip content={t('notificationCenter.actions.delete')}>
+              <button
+                type="button"
+                className="nc-list-item-delete-btn"
+                onClick={() => onDelete(n.id)}
+                aria-label={t('notificationCenter.actions.delete')}
+              >
+                <Trash2 size={14} strokeWidth={2} />
+              </button>
+            </Tooltip>
           </div>
         </li>
       ))}

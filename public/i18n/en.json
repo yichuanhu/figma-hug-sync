@@ -3435,9 +3435,10 @@
       "last30": "Last 30 days"
     },
     "table": { "severity": "Severity", "category": "Category", "content": "Content", "time": "Time" },
-    "actions": { "markRead": "Mark as read", "markAllRead": "Mark all as read", "view": "View" },
+    "actions": { "markRead": "Mark as read", "markAllRead": "Mark all as read", "view": "View", "delete": "Delete", "clearRead": "Clear read" },
     "drawer": { "viewAll": "View all notifications", "settings": "Notification settings", "settingsComingSoon": "Notification preferences coming soon" },
-    "toast": { "allRead": "All notifications marked as read" }
+    "toast": { "allRead": "All notifications marked as read", "deleted": "Notification deleted", "clearedRead": "Read notifications cleared" },
+    "confirm": { "deleteTitle": "Delete notification", "deleteContent": "Delete this notification? This cannot be undone.", "clearReadTitle": "Clear read notifications", "clearReadContent": "Clear all read notifications? This cannot be undone." }
   },
   "operations": {
     "comingSoon": "Coming soon, stay tuned",

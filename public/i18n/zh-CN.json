@@ -2803,9 +2803,10 @@
       "last30": "最近 30 天"
     },
     "table": { "severity": "严重度", "category": "分类", "content": "通知内容", "time": "时间" },
-    "actions": { "markRead": "标记为已读", "markAllRead": "全部标记为已读", "view": "查看" },
+    "actions": { "markRead": "标记为已读", "markAllRead": "全部标记为已读", "view": "查看", "delete": "删除", "clearRead": "清空已读" },
     "drawer": { "viewAll": "查看全部通知", "settings": "通知设置", "settingsComingSoon": "通知偏好设置即将上线" },
-    "toast": { "allRead": "已将全部通知标记为已读" }
+    "toast": { "allRead": "已将全部通知标记为已读", "deleted": "通知已删除", "clearedRead": "已清空已读通知" },
+    "confirm": { "deleteTitle": "删除通知", "deleteContent": "确定删除该通知？删除后不可恢复。", "clearReadTitle": "清空已读通知", "clearReadContent": "确定清空全部已读通知？删除后不可恢复。" }
   },
   "operations": {
     "comingSoon": "功能开发中，敬请期待",
