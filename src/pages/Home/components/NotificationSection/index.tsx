@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Badge, Tag } from '@douyinfe/semi-ui';
 import { ChevronUp, ChevronDown, ChevronRight } from 'lucide-react';
+import CategoryBadge from '@/pages/NotificationCenter/components/CategoryBadge';
 import { notifications } from '../../mockData';
 import './index.less';
 
