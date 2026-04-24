@@ -2,7 +2,7 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 import { Modal, Form, Button, Toast } from '@douyinfe/semi-ui';
-import OwnerSelect from '@/components/OwnerSelect';
+import OwnerSearchSelect from '@/components/OwnerSearchSelect';
 import TaskForm, { TaskFormSource } from '@/components/TaskForm';
 import type { TaskFormRef } from '@/components/TaskForm';
 import type { LYExecutionTemplateResponse } from '@/api';
@@ -99,7 +99,7 @@ const CreateTaskModal = ({ visible, onCancel, onSuccess, initialTemplate }: Crea
         onChange={(v) => handleTemplateChange(v as string | null)}
       />
       <Form.Slot label={{ text: t('common.owner'), required: true }}>
-        <OwnerSelect value={ownerId} onChange={setOwnerId} />
+        <OwnerSearchSelect value={ownerId} onChange={setOwnerId} />
       </Form.Slot>
     </div>
   );

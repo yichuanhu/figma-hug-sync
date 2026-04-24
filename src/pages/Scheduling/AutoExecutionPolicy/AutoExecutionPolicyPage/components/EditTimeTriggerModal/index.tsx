@@ -23,8 +23,8 @@ import type {
   BasicFrequencyType,
 } from '@/api';
 import './index.less';
-import DepartmentSelect from '@/components/DepartmentSelect';
-import OwnerSelect from '@/components/OwnerSelect';
+import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
+import OwnerSearchSelect from '@/components/OwnerSearchSelect';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 import { HelpCircle, Inbox } from 'lucide-react';
@@ -621,10 +621,10 @@ const EditTimeTriggerModal = ({ visible, trigger, onCancel, onSuccess }: EditTim
         rows={3}
       />
       <Form.Slot label={{ text: t('common.owningDepartment'), required: true }}>
-        <DepartmentSelect value={owningDepartmentId} onChange={setOwningDepartmentId} disabled={!canManage} />
+        <DepartmentSearchSelect value={owningDepartmentId} onChange={setOwningDepartmentId} disabled={!canManage} />
       </Form.Slot>
       <Form.Slot label={{ text: t('common.owner'), required: true }}>
-        <OwnerSelect value={ownerId} onChange={setOwnerId} disabled={!canManage} />
+        <OwnerSearchSelect value={ownerId} onChange={setOwnerId} disabled={!canManage} />
       </Form.Slot>
     </div>
   );

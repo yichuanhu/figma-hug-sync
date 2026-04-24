@@ -2,8 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Form, Toast, Button, Select, Input } from '@douyinfe/semi-ui';
 import type { LYUpdateProcessRequest, LYProcessResponse } from '@/api';
-import DepartmentSelect from '@/components/DepartmentSelect';
-import OwnerSelect from '@/components/OwnerSelect';
+import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
+import OwnerSearchSelect from '@/components/OwnerSearchSelect';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import { getDependents, cascadeUpdateDepartment } from '@/mocks/processDependencies';
 import { getDepartmentName } from '@/mocks/departmentData';
@@ -275,7 +275,7 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
               placeholder={t('development.processDevelopment.createModal.fields.autoFillPlaceholder')}
             />
           ) : (
-            <OwnerSelect value={ownerId} onChange={setOwnerId} disabled={!canManage} />
+            <OwnerSearchSelect value={ownerId} onChange={setOwnerId} disabled={!canManage} />
           )}
         </Form.Slot>
 

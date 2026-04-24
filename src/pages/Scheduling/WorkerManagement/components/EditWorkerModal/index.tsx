@@ -9,8 +9,8 @@ import {
   Banner,
 } from '@douyinfe/semi-ui';
 import type { LYWorkerResponse } from '@/api';
-import DepartmentSelect from '@/components/DepartmentSelect';
-import OwnerSelect from '@/components/OwnerSelect';
+import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
+import OwnerSearchSelect from '@/components/OwnerSearchSelect';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import './index.less';
 
@@ -182,7 +182,7 @@ const EditWorkerModal = ({ visible, onCancel, workerData, onSuccess }: EditWorke
             </Form.Slot>
 
             <Form.Slot label={{ text: t('common.owner'), required: true }}>
-              <OwnerSelect value={ownerId} onChange={setOwnerId} disabled={!canManage} />
+              <OwnerSearchSelect value={ownerId} onChange={setOwnerId} disabled={!canManage} />
             </Form.Slot>
 
             <Form.TextArea

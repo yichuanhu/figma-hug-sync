@@ -12,7 +12,7 @@ import {
   Input,
 } from '@douyinfe/semi-ui';
 import { AlertCircle, File as FileIcon, Inbox, X } from 'lucide-react';
-import DepartmentSelect from '@/components/DepartmentSelect';
+import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
 import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 import type { FileItem } from '@douyinfe/semi-ui/lib/es/upload';
 
@@ -367,7 +367,7 @@ const UploadFileModal = ({
               <Text>{t('common.owningDepartment')}</Text>
               <Text type="danger"> *</Text>
             </div>
-            <DepartmentSelect value={owningDepartmentId} onChange={setOwningDepartmentId} />
+            <DepartmentSearchSelect value={owningDepartmentId} onChange={setOwningDepartmentId} />
           </div>
           <div className="upload-file-modal-display-name">
             <div className="upload-file-modal-display-name-label">

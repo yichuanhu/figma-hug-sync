@@ -7,8 +7,8 @@ import {
   fetchAllLinkableRequirements,
   type LinkableRequirementBrief,
 } from '@/pages/Requirements/RequirementsProjects/mockData';
-import DepartmentSelect from '@/components/DepartmentSelect';
-import OwnerSelect from '@/components/OwnerSelect';
+import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
+import OwnerSearchSelect from '@/components/OwnerSearchSelect';
 import './index.less';
 
 // 生成UUID v4

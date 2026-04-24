@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Form, Button, Toast } from '@douyinfe/semi-ui';
-import DepartmentSelect from '@/components/DepartmentSelect';
-import OwnerSelect from '@/components/OwnerSelect';
+import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
+import OwnerSearchSelect from '@/components/OwnerSearchSelect';
 import './index.less';
 import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 
@@ -113,7 +113,7 @@ const CreateQueueModal = ({
         </Form.Slot>
 
         <Form.Slot label={{ text: t('common.owner'), required: true }}>
-          <OwnerSelect value={ownerId} onChange={setOwnerId} />
+          <OwnerSearchSelect value={ownerId} onChange={setOwnerId} />
         </Form.Slot>
 
         <div className="create-queue-modal-footer">

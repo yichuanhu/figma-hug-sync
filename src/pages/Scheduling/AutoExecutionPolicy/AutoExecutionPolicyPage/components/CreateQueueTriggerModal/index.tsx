@@ -11,7 +11,7 @@ import {
   Banner,
   Tag,
 } from '@douyinfe/semi-ui';
-import OwnerSelect from '@/components/OwnerSelect';
+import OwnerSearchSelect from '@/components/OwnerSearchSelect';
 import TaskForm, { TaskFormSource } from '@/components/TaskForm';
 import type { TaskFormRef } from '@/components/TaskForm';
 import type { LYExecutionTemplateResponse } from '@/api';
@@ -179,7 +179,7 @@ const CreateQueueTriggerModal = ({ visible, onCancel, onSuccess }: CreateQueueTr
           rows={3}
         />
         <Form.Slot label={{ text: t('common.owner'), required: true }}>
-          <OwnerSelect value={ownerId} onChange={setOwnerId} />
+          <OwnerSearchSelect value={ownerId} onChange={setOwnerId} />
         </Form.Slot>
       </Form>
     </div>

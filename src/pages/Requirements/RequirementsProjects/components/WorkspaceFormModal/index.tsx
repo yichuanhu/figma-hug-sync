@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Form, Toast } from '@douyinfe/semi-ui';
 import type { FormApi } from '@douyinfe/semi-ui/lib/es/form';
-import DepartmentSelect from '@/components/DepartmentSelect';
+import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
 import type { Workspace } from '../../types';
 import { addWorkspace, updateWorkspace } from '../../mockData';
 import { departmentTree } from '@/mocks/departmentData';

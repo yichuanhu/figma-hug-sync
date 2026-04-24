@@ -9,8 +9,8 @@ import {
   useFormState,
 } from '@douyinfe/semi-ui';
 import type { RequirementItem, SchemeField, SchemeFieldDependsOn } from '../../types';
-import DepartmentSelect from '@/components/DepartmentSelect';
-import OwnerSelect from '@/components/OwnerSelect';
+import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
+import OwnerSearchSelect from '@/components/OwnerSearchSelect';
 import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 import { getActiveScheme } from '../../mockData';
 import SchemeFieldRenderer from '../SchemeFieldRenderer';
@@ -174,7 +174,7 @@ const RequirementFormModal = ({
 
             <div className="scheme-field-w-medium">
               <Form.Slot label={{ text: t('requirements.form.requirementOwnerLabel'), required: true }}>
-                <OwnerSelect value={ownerId} onChange={setOwnerId} />
+                <OwnerSearchSelect value={ownerId} onChange={setOwnerId} />
               </Form.Slot>
             </div>
           </div>

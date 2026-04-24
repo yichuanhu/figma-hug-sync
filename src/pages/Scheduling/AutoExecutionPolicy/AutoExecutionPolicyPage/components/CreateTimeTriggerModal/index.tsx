@@ -8,7 +8,7 @@ import {
   Toast,
   Steps,
 } from '@douyinfe/semi-ui';
-import OwnerSelect from '@/components/OwnerSelect';
+import OwnerSearchSelect from '@/components/OwnerSearchSelect';
 import TriggerRuleConfig from '@/components/TriggerRuleConfig';
 import TaskForm, { TaskFormSource } from '@/components/TaskForm';
 import type { TaskFormRef } from '@/components/TaskForm';
@@ -259,7 +259,7 @@ const CreateTimeTriggerModal = ({ visible, onCancel, onSuccess }: CreateTimeTrig
           rows={3}
         />
         <Form.Slot label={{ text: t('common.owner'), required: true }}>
-          <OwnerSelect value={ownerId} onChange={setOwnerId} />
+          <OwnerSearchSelect value={ownerId} onChange={setOwnerId} />
         </Form.Slot>
       </Form>
     </div>
