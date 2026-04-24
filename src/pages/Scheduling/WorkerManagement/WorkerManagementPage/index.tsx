@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { Tabs, Typography } from '@douyinfe/semi-ui';
 import { useTranslation } from 'react-i18next';
 import WorkerManagement from '../index';
@@ -12,6 +12,7 @@ const { Title, Text } = Typography;
 const WorkerManagementPage = () => {
   const { t } = useTranslation();
   const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState('workers');
   const [pendingWorkerId, setPendingWorkerId] = useState<string | null>(null);
   const [openCreateWorker, setOpenCreateWorker] = useState(false);
@@ -23,6 +24,16 @@ const WorkerManagementPage = () => {
       window.history.replaceState({}, document.title);
     }
   }, [location.state]);
+
+  // 通知中心跳转：从 URL Parameter 自动打开对应 worker 详情抽屉
+  useEffect(() => {
+    const workerIdFromUrl = searchParams.get('workerId');
+    if (workerIdFromUrl) {
+      setPendingWorkerId(workerIdFromUrl);
+      setActiveTab('workers');
+      setSearchParams({}, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   const handleNavigateToWorkerDetail = useCallback((workerId: string) => {
     setPendingWorkerId(workerId);
