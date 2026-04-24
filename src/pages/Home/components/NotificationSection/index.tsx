@@ -52,7 +52,7 @@ const NotificationSection = () => {
                 <div className="notification-item-content">
                   <div className="notification-item-title-row">
                     <Tag size="small" color={sConfig.color as any}>{sConfig.label}</Tag>
-                    <span className="notification-item-title">{item.title}</span>
+                    <span className={`notification-item-title ${item.read ? '' : 'unread'}`}>{item.title}</span>
                   </div>
                   <div className="notification-item-time">
                     <RelativeTime value={item.createdAt} />
