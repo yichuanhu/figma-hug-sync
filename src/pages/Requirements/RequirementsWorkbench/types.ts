@@ -581,6 +581,7 @@ export interface RequirementQueryParams {
   statusFilter?: string[];
   departmentFilter?: string[];
   priorityFilter?: string[];
+  projectFilter?: string[];
 }
 
 export interface RequirementListResponse {
