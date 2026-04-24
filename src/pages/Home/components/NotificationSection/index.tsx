@@ -5,7 +5,8 @@ import { Badge, Tag } from '@douyinfe/semi-ui';
 import { ChevronUp, ChevronDown, ChevronRight } from 'lucide-react';
 import RelativeTime from '@/pages/Requirements/RequirementsWorkbench/components/RelativeTime';
 import { mockNotifications } from '@/pages/NotificationCenter/mockData';
-import type { NotificationSeverity } from '@/pages/NotificationCenter/types';
+import type { Notification, NotificationSeverity } from '@/pages/NotificationCenter/types';
+import { openNotification } from '@/utils/notificationLink';
 import './index.less';
 
 const severityConfig: Record<NotificationSeverity, { color: string; label: string }> = {
@@ -18,8 +19,17 @@ const NotificationSection = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
-  const items = mockNotifications.slice(0, 5);
-  const unreadCount = mockNotifications.filter((n) => !n.read).length;
+  const [list, setList] = useState<Notification[]>(mockNotifications);
+  const items = list.slice(0, 5);
+  const unreadCount = list.filter((n) => !n.read).length;
+
+  const handleMarkRead = (id: string) => {
+    setList((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
+  };
+
+  const handleOpen = (n: Notification) => {
+    openNotification(n, navigate, handleMarkRead);
+  };
 
   return (
     <div className={`home-card notification-section ${collapsed ? 'is-collapsed' : ''}`}>
@@ -47,7 +57,19 @@ const NotificationSection = () => {
           {items.map((item) => {
             const sConfig = severityConfig[item.severity];
             return (
-              <div key={item.id} className="notification-item">
+              <div
+                key={item.id}
+                className="notification-item"
+                role="button"
+                tabIndex={0}
+                onClick={() => handleOpen(item)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleOpen(item);
+                  }
+                }}
+              >
                 <div className={`notification-item-dot ${item.read ? 'read' : 'unread'}`} />
                 <div className="notification-item-content">
                   <div className="notification-item-title-row">
