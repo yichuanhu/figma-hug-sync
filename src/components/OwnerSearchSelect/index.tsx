@@ -70,7 +70,12 @@ const OwnerSearchSelect = ({
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
             <Avatar
               size="extra-small"
-              style={{ backgroundColor: 'var(--semi-color-fill-2)', color: 'var(--semi-color-text-0)', flexShrink: 0 }}
+              style={{
+                backgroundColor: 'var(--semi-color-text-0)',
+                color: 'var(--semi-color-bg-0)',
+                flexShrink: 0,
+                fontSize: 12,
+              }}
             >
               {opt.label.charAt(0).toUpperCase()}
             </Avatar>
