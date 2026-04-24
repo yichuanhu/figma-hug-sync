@@ -42,6 +42,7 @@ const NotificationTable = ({ data, onOpen, onMarkRead, hasFilters }: Props) => {
               <SeverityTag severity={n.severity} />
               <CategoryBadge category={n.category} />
               <Typography.Text
+                strong={!n.read}
                 ellipsis={{ showTooltip: { opts: { content: n.title } } }}
                 className="notification-list-item-title"
               >
