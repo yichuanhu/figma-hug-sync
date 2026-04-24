@@ -2,21 +2,13 @@ import { useState } from 'react';
 import { Typography, Tabs, TabPane, Switch, Button, Toast, Space, Modal, Tag } from '@douyinfe/semi-ui';
 import { Save, Copy } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import SystemParamsTab from './components/SystemParamsTab';
 import ServiceParamsTab from './components/ServiceParamsTab';
 import InfrastructureTab from './components/InfrastructureTab';
 import MonitoringConfigTab from './components/MonitoringConfigTab';
 import LoggerConfigTab from './components/LoggerConfigTab';
 import './index.less';
-
-const TAB_ROUTES: Record<string, string> = {
-  system: '/maintenance/config/system-params',
-  service: '/maintenance/config/service-params',
-  infrastructure: '/maintenance/config/infrastructure',
-  monitoring: '/maintenance/config/monitoring',
-  logger: '/maintenance/config/logger',
-};
 
 const PATH_TO_TAB: Record<string, string> = {
   '/maintenance/config/system-params': 'system',
@@ -49,13 +41,12 @@ const mockSaveConfig = (tab: string): Promise<SaveResult> => {
 
 const ConfigManagement = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const location = useLocation();
   const [advanced, setAdvanced] = useState(false);
   const [saving, setSaving] = useState(false);
   const [resultVisible, setResultVisible] = useState(false);
   const [saveResult, setSaveResult] = useState<SaveResult | null>(null);
-  const activeKey = PATH_TO_TAB[location.pathname] || 'system';
+  const [activeKey, setActiveKey] = useState<string>(PATH_TO_TAB[location.pathname] || 'system');
 
   const handleCopy = async (text: string) => {
     try {
@@ -148,7 +139,7 @@ const ConfigManagement = () => {
       </div>
 
       <div className="maintenance-config-page-body">
-        <Tabs activeKey={activeKey} onChange={(k) => navigate(TAB_ROUTES[k])} type="line" keepDOM={false}>
+        <Tabs activeKey={activeKey} onChange={setActiveKey} type="line" keepDOM={false}>
           <TabPane tab={t('maintenance.config.system.title')} itemKey="system">
             <SystemParamsTab advanced={advanced} />
           </TabPane>

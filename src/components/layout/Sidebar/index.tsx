@@ -308,13 +308,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
 
   // 运维中心的详细菜单结构 - 使用分组标题样式
   const maintenanceCenterMenu: MenuItem[] = [
-    // 配置管理
-    { key: 'mtConfigManagement', labelKey: 'sidebar.mtConfigManagement', isGroupLabel: true },
-    { key: 'mtSystemParams', labelKey: 'sidebar.mtSystemParams', icon: <Settings size={18} strokeWidth={2} />, path: '/maintenance/config/system-params' },
-    { key: 'mtServiceParams', labelKey: 'sidebar.mtServiceParams', icon: <Wrench size={18} strokeWidth={2} />, path: '/maintenance/config/service-params' },
-    { key: 'mtInfrastructure', labelKey: 'sidebar.mtInfrastructure', icon: <Database size={18} strokeWidth={2} />, path: '/maintenance/config/infrastructure' },
-    { key: 'mtMonitoringConfig', labelKey: 'sidebar.mtMonitoringConfig', icon: <Activity size={18} strokeWidth={2} />, path: '/maintenance/config/monitoring' },
-    { key: 'mtLoggerConfig', labelKey: 'sidebar.mtLoggerConfig', icon: <ScrollText size={18} strokeWidth={2} />, path: '/maintenance/config/logger' },
+    { key: 'mtConfigManagement', labelKey: 'sidebar.mtConfigManagement', icon: <Settings size={18} strokeWidth={2} />, path: '/maintenance/config' },
     // 数据大盘
     { key: 'mtDataDashboard', labelKey: 'sidebar.mtDataDashboard', isGroupLabel: true },
     { key: 'mtSystemMetrics', labelKey: 'sidebar.mtSystemMetrics', icon: <ChartSpline size={18} strokeWidth={2} />, path: '/maintenance/dashboard/system-metrics' },
@@ -430,11 +424,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     if (pathname === '/sharing/showcases') {
       return 'showcasesList';
     }
-    if (pathname.startsWith('/maintenance/config/system-params')) return 'mtSystemParams';
-    if (pathname.startsWith('/maintenance/config/service-params')) return 'mtServiceParams';
-    if (pathname.startsWith('/maintenance/config/infrastructure')) return 'mtInfrastructure';
-    if (pathname.startsWith('/maintenance/config/monitoring')) return 'mtMonitoringConfig';
-    if (pathname.startsWith('/maintenance/config/logger')) return 'mtLoggerConfig';
+    if (pathname.startsWith('/maintenance/config')) return 'mtConfigManagement';
     if (pathname.startsWith('/maintenance/dashboard/system-metrics')) return 'mtSystemMetrics';
     if (pathname.startsWith('/maintenance/dashboard/middleware-status')) return 'mtMiddlewareStatus';
     return '';
