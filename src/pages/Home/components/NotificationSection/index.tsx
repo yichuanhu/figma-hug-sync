@@ -6,6 +6,7 @@ import { ChevronUp, ChevronDown, ChevronRight } from 'lucide-react';
 import SeverityTag from '@/pages/NotificationCenter/components/SeverityTag';
 import RelativeTime from '@/pages/Requirements/RequirementsWorkbench/components/RelativeTime';
 import { mockNotifications } from '@/pages/NotificationCenter/mockData';
+import { openNotification } from '@/utils/notificationLink';
 import './index.less';
 
 const NotificationSection = () => {
@@ -38,7 +39,11 @@ const NotificationSection = () => {
       {!collapsed && (
         <div className="notification-list">
           {mockNotifications.slice(0, 5).map((item) => (
-            <div key={item.id} className="notification-item">
+            <div
+              key={item.id}
+              className="notification-item"
+              onClick={() => openNotification(item, navigate)}
+            >
               <div className="notification-item-content">
                 <div className="notification-item-title-row">
                   <SeverityTag severity={item.severity} />
