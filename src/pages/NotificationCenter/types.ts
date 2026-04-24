@@ -31,4 +31,4 @@ export interface Notification {
   variables?: Record<string, string>;
 }
 
-export type NotificationReadFilter = 'all' | 'unread' | 'read';
+export type NotificationReadFilter = 'all' | 'unread';

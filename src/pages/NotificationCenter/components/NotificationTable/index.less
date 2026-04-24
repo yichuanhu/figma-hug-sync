@@ -119,11 +119,6 @@
         color: var(--semi-color-danger);
       }
     }
-  }
-
-  &-item:hover &-item-delete-btn {
-    opacity: 1;
-  }
 
     &-dot {
       width: 8px;
@@ -175,6 +170,10 @@
           opacity: 1;
         }
       }
+    }
+
+    &:hover .nc-list-item-delete-btn {
+      opacity: 1;
     }
   }
 }

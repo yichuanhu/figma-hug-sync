@@ -41,7 +41,6 @@ const NotificationCenter = () => {
     const kw = filters.search.trim().toLowerCase();
     return list.filter((n) => {
       if (filters.readFilter === 'unread' && n.read) return false;
-      if (filters.readFilter === 'read' && !n.read) return false;
       if (filters.categories.length && !filters.categories.includes(n.category)) return false;
       if (filters.severities.length && !filters.severities.includes(n.severity)) return false;
       if (filters.dateRange) {
@@ -71,13 +70,23 @@ const NotificationCenter = () => {
     setList((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
   };
 
+  const filteredUnreadIds = useMemo(
+    () => new Set(filtered.filter((n) => !n.read).map((n) => n.id)),
+    [filtered],
+  );
+  const filteredReadIds = useMemo(
+    () => new Set(filtered.filter((n) => n.read).map((n) => n.id)),
+    [filtered],
+  );
+
   const handleMarkAllRead = () => {
-    setList((prev) => prev.map((n) => ({ ...n, read: true })));
+    if (filteredUnreadIds.size === 0) return;
+    setList((prev) => prev.map((n) => (filteredUnreadIds.has(n.id) ? { ...n, read: true } : n)));
     Toast.success(t('notificationCenter.toast.allRead'));
   };
 
   const handleOpen = (n: Notification) => {
-    openNotification(n, navigate, handleMarkRead);
+    openNotification(n, navigate, n.read ? () => {} : handleMarkRead);
   };
 
   const handleDelete = (id: string) => {
@@ -90,6 +99,21 @@ const NotificationCenter = () => {
       onOk: () => {
         setList((prev) => prev.filter((n) => n.id !== id));
         Toast.success(t('notificationCenter.toast.deleted'));
+      },
+    });
+  };
+
+  const handleClearRead = () => {
+    if (filteredReadIds.size === 0) return;
+    Modal.confirm({
+      title: t('notificationCenter.confirm.clearReadTitle'),
+      content: t('notificationCenter.confirm.clearReadContent'),
+      okText: t('common.confirm'),
+      cancelText: t('common.cancel'),
+      okButtonProps: { type: 'danger' },
+      onOk: () => {
+        setList((prev) => prev.filter((n) => !filteredReadIds.has(n.id)));
+        Toast.success(t('notificationCenter.toast.clearedRead'));
       },
     });
   };
@@ -112,7 +136,9 @@ const NotificationCenter = () => {
         totalCount={list.length}
         onChange={handleFilterChange}
         onMarkAllRead={handleMarkAllRead}
-        hasUnread={stats.unread > 0}
+        onClearRead={handleClearRead}
+        hasUnread={filteredUnreadIds.size > 0}
+        hasRead={filteredReadIds.size > 0}
       />
 
       <div className="notification-center-table-wrap">
