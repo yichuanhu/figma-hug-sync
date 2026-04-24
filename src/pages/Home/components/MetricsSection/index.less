@@ -1,11 +1,11 @@
 .metrics-section {
   .metrics-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(max(200px, 25%), 1fr));
+    grid-template-columns: repeat(3, 1fr);
 
-    // Hide dividers for last item in each row dynamically
-    // We handle divider visibility via JS-free approach:
-    // Every card gets a divider, last-child never gets one
+    @media (max-width: 720px) {
+      grid-template-columns: 1fr;
+    }
   }
 
   .metric-card {
