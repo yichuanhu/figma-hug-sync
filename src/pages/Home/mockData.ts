@@ -81,7 +81,7 @@ export const announcements: AnnouncementItem[] = [
 ];
 
 export const resources: ResourceItem[] = [
-  { id: '1', titleKey: '', title: '下载客户端', descKey: '', desc: '流程设计器 Creator 客户端', icon: 'Telescope', iconColor: '#3370FF', iconBgColor: '#EEF3FF', url: '#' },
+  { id: '1', titleKey: '', title: '下载客户端', descKey: '', desc: '', icon: 'Download', iconColor: '#3370FF', iconBgColor: '#EEF3FF', url: '#' },
 ];
 
 export const recentActivities: ActivityItem[] = [
