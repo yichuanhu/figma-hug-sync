@@ -39,7 +39,11 @@ const NotificationSection = () => {
       {!collapsed && (
         <div className="notification-list">
           {mockNotifications.slice(0, 5).map((item) => (
-            <div key={item.id} className="notification-item">
+            <div
+              key={item.id}
+              className="notification-item"
+              onClick={() => openNotification(item, navigate)}
+            >
               <div className="notification-item-content">
                 <div className="notification-item-title-row">
                   <SeverityTag severity={item.severity} />
