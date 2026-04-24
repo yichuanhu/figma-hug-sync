@@ -1,62 +1,65 @@
 
 
-# 通知中心需求对齐：删除与筛选（修订版）
+# 运维中心配置管理菜单简化计划
 
-## 一、调整说明
+## 一、问题
 
-根据用户反馈，**保留"按严重性筛选"**，其余对齐策略不变。
+侧边栏"配置管理"分组下有 5 个子菜单（系统参数 / 服务参数 / 基础设施 / 监控配置 / 日志配置），与页面内的 5 个 Tab 完全一一对应，造成**菜单与内容 Tab 重叠**的双层导航，体验冗余。
 
-## 二、最终对齐方案
+## 二、目标
 
-| 项 | 处理 |
-|---|---|
-| 单条删除按钮（Trash2） | **移除**（需求未提供单条删除入口，避免误删未读） |
-| 分类筛选 | 保留 |
-| 严重性筛选 | **保留**（按用户要求） |
-| 时间范围筛选 | **移除**（§3.5 范围外） |
-| 关键字搜索 | 保留 |
-| 全部已读（限定 filtered） | 保留 |
-| 清除已读（二次确认） | 保留 |
+- 侧边栏"配置管理"只保留**一个入口**：「配置管理」。
+- 页面内继续以 Tab 方式切换 5 个配置子模块。
+- 数据大盘分组保持不变。
 
 ## 三、修改方案
 
-### 1. 移除单条删除入口
+### 1. 侧边栏菜单（`src/components/layout/Sidebar/index.tsx`）
 
-`NotificationTable/index.tsx`：删除 `Trash2` 按钮、`onDelete` prop。已读项保留小灰点占位，未读项保留"标记已读"按钮。
+将 L312–L317 的 6 条（1 个分组标题 + 5 个子项）合并为单个菜单项：
 
-`NotificationTable/index.less`：移除 `.nc-list-item-delete-btn` 及关联 hover 样式。
+```ts
+{ key: 'mtConfigManagement', labelKey: 'sidebar.mtConfigManagement',
+  icon: <Settings size={18} strokeWidth={2} />, path: '/maintenance/config' },
+```
 
-`NotificationCenter/index.tsx`：移除 `handleDelete`，`<NotificationTable>` 不再传 `onDelete`。
+> 不再作为 `isGroupLabel`，而是直接作为可点击的导航项。"数据大盘"分组及其下两项保持原样。
 
-i18n 清理（zh-CN + en）：移除 `notificationCenter.actions.delete`、`confirm.deleteTitle`、`confirm.deleteContent`、`toast.deleted`。
+L433–L437 的路由匹配收敛为：
 
-### 2. 收窄筛选范围（保留 categories + severities）
+```ts
+if (pathname.startsWith('/maintenance/config')) return 'mtConfigManagement';
+```
 
-`NotificationFilterBar/index.tsx`：
-- `sections` 保留 `categories` 与 `severities`，删除 `dateRange` 与 `datePresets` `useMemo`。
-- `FilterValues` 收窄为 `{ readFilter; search; categories; severities; }`。
-- `FilterPopover` 的 `onConfirm` 仅回写 `categories` 与 `severities`。
+### 2. 路由（`src/App.tsx`）
 
-`NotificationCenter/index.tsx`：
-- `initialFilters` 删除 `dateRange`。
-- `filtered` useMemo 删除日期范围过滤分支，保留严重性过滤。
-- `hasFilters` 去掉 `dateRange`。
+- 新增统一入口：`<Route path="/maintenance/config" element={<MaintenanceConfig />} />`
+- 保留现有 5 条子路径以兼容旧链接（仍渲染同一个 `MaintenanceConfig`）。
+- L159 的兜底重定向改为 `/maintenance/config`。
 
-i18n 清理：移除 `notificationCenter.filter.dateRange`、`today`、`last7`、`last30`（如未在他处复用）。`severity.high/medium/low` 与 `filter.severity` **保留**。
+### 3. 配置管理页面（`src/pages/Maintenance/ConfigManagement/index.tsx`）
 
-### 3. 类型与视觉
+Tab 不再驱动路由切换，改为本地 `useState` 控制：
 
-`SeverityTag` 通知行视觉徽章保留，与筛选条件呼应。
+- 移除 `TAB_ROUTES` / `PATH_TO_TAB` / `useNavigate` / `useLocation`。
+- `const [activeKey, setActiveKey] = useState('system');`
+- `<Tabs activeKey={activeKey} onChange={setActiveKey} ... />`
+- 兼容旧链接：若 `location.pathname` 命中旧的 `/maintenance/config/<sub>`，初始化时根据 path 选中对应 Tab（一次性 `useEffect`），但不再随 Tab 切换 push 路由。
+
+### 4. i18n
+
+`sidebar.mtConfigManagement` 文案已存在（"配置管理"），保留即可；本次不新增 key。可在后续清理中移除不再使用的 `mtSystemParams / mtServiceParams / mtInfrastructure / mtMonitoringConfig / mtLoggerConfig` 五个 sidebar key（页面 Tab 标题仍由 `maintenance.config.*.title` 提供，不受影响）。
 
 ## 四、文件改动清单
 
-- `src/pages/NotificationCenter/components/NotificationTable/index.tsx` — 移除删除按钮与 `onDelete`
-- `src/pages/NotificationCenter/components/NotificationTable/index.less` — 移除删除按钮样式
-- `src/pages/NotificationCenter/components/NotificationFilterBar/index.tsx` — 移除时间范围筛选
-- `src/pages/NotificationCenter/index.tsx` — 移除 handleDelete、收窄 filters（去 dateRange）
-- `public/i18n/zh-CN.json`、`public/i18n/en.json` — 清理 delete 与 dateRange 文案
+- `src/components/layout/Sidebar/index.tsx` — 合并 5 项为 1 项；简化路径匹配
+- `src/App.tsx` — 新增 `/maintenance/config` 路由，调整兜底跳转
+- `src/pages/Maintenance/ConfigManagement/index.tsx` — Tab 改本地 state，去除路由驱动
+- `public/i18n/zh-CN.json`、`public/i18n/en.json` — 移除 5 个不再使用的侧边栏 key（可选清理）
 
-## 五、不在范围内
+## 五、不在范围
 
-通知偏好、产品来源筛选、`groupBy` 分组（§3.5 范围外）维持不实现。
+- 不修改 5 个 Tab 内部组件（SystemParamsTab 等）
+- 不调整"数据大盘"分组
+- 不改动保存/高级模式等现有交互
 
