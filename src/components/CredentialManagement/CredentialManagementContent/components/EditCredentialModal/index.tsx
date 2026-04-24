@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Form, Button, Toast } from '@douyinfe/semi-ui';
 import type { LYCredentialResponse } from '@/api/index';
-import DepartmentSelect from '@/components/DepartmentSelect';
-import OwnerSelect from '@/components/OwnerSelect';
+import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
+import OwnerSearchSelect from '@/components/OwnerSearchSelect';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 
 import './index.less';
@@ -183,7 +183,7 @@ const EditCredentialModal = ({
         </Form.Slot>
 
         <Form.Slot label={{ text: t('common.owner'), required: true }}>
-          <OwnerSelect value={ownerId} onChange={setOwnerId} disabled={!canManage} />
+          <OwnerSearchSelect value={ownerId} onChange={setOwnerId} disabled={!canManage} />
         </Form.Slot>
 
         <div className="edit-credential-modal-footer">

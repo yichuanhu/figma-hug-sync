@@ -18,7 +18,7 @@ import type {
   TaskPriority,
 } from '@/api';
 import './index.less';
-import OwnerSelect from '@/components/OwnerSelect';
+import OwnerSearchSelect from '@/components/OwnerSearchSelect';
 import { useCollaboratorPermission } from '@/hooks/useCollaboratorPermission';
 import { HelpCircle } from 'lucide-react';
 
@@ -385,7 +385,7 @@ const EditTemplateModal = ({ visible, template, onCancel, onSuccess }: EditTempl
                   rows={3}
                 />
                 <Form.Slot label={{ text: t('common.owner'), required: true }}>
-                  <OwnerSelect value={ownerId} onChange={setOwnerId} disabled={!canManage} />
+                  <OwnerSearchSelect value={ownerId} onChange={setOwnerId} disabled={!canManage} />
                 </Form.Slot>
               </div>
 

@@ -11,8 +11,8 @@ import {
   Banner,
 } from '@douyinfe/semi-ui';
 import type { LYWorkerResponse } from '@/api';
-import DepartmentSelect from '@/components/DepartmentSelect';
-import OwnerSelect from '@/components/OwnerSelect';
+import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
+import OwnerSearchSelect from '@/components/OwnerSearchSelect';
 import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 import './index.less';
 
@@ -178,10 +178,10 @@ const CreateWorkerModal = ({ visible, onCancel, onSuccess }: CreateWorkerModalPr
               showClear
             />
             <Form.Slot label={{ text: t('common.owningDepartment'), required: true }}>
-              <DepartmentSelect value={owningDepartmentId} onChange={setOwningDepartmentId} />
+              <DepartmentSearchSelect value={owningDepartmentId} onChange={setOwningDepartmentId} />
             </Form.Slot>
             <Form.Slot label={{ text: t('common.owner'), required: true }}>
-              <OwnerSelect value={ownerId} onChange={setOwnerId} />
+              <OwnerSearchSelect value={ownerId} onChange={setOwnerId} />
             </Form.Slot>
             <Form.TextArea
               field="description"
