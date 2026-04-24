@@ -26,6 +26,8 @@
       background-color: var(--semi-color-border);
     }
 
+    // 每行最后一个（3 列布局）以及最后一个不显示分隔线
+    &:nth-child(3n)::after,
     &:last-child::after {
       display: none;
     }
