@@ -51,14 +51,6 @@ const NotificationDrawer = ({ visible, onClose }: Props) => {
     navigate('/notification-center');
   };
 
-  const cats: { key: CatKey; label: string }[] = [
-    { key: 'all', label: t('notificationCenter.category.all') },
-    { key: 'task', label: t('notificationCenter.category.task') },
-    { key: 'robot', label: t('notificationCenter.category.robot') },
-    { key: 'trigger', label: t('notificationCenter.category.trigger') },
-    { key: 'license', label: t('notificationCenter.category.license') },
-  ];
-
   return (
     <SideSheet
       visible={visible}
