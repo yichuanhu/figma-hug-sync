@@ -95,17 +95,6 @@ const NotificationDrawer = ({ visible, onClose }: Props) => {
         <TabPane itemKey="unread" tab={`${t('notificationCenter.tabs.unread')} (${unreadCount > 99 ? '99+' : unreadCount})`} />
       </Tabs>
 
-      <div className="notification-drawer-cats">
-        {cats.map((c) => (
-          <button
-            key={c.key}
-            className={`notification-drawer-cat ${cat === c.key ? 'active' : ''}`}
-            onClick={() => setCat(c.key)}
-          >
-            {c.label}
-          </button>
-        ))}
-      </div>
 
       <div className="notification-drawer-list">
         {filtered.length === 0 ? (
