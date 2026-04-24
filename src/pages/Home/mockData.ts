@@ -44,12 +44,12 @@ export const metrics: MetricItem[] = [
 ];
 
 export const notifications: NotificationItem[] = [
-  { id: '1', titleKey: '', title: 'Process "Monthly Financial Report" execution failed', time: '10 min ago', read: false, type: 'error', priority: 'URGENT', category: 'task' },
-  { id: '2', titleKey: '', title: 'Pending approval: Publish process "Data Sync"', time: '30 min ago', read: false, type: 'warning', priority: 'IMPORTANT', category: 'task' },
-  { id: '3', titleKey: '', title: 'Robot "RPA-Worker-03" is offline', time: '1 hour ago', read: false, type: 'error', priority: 'URGENT', category: 'robot' },
-  { id: '4', titleKey: '', title: 'Process "Customer Data Cleansing" published successfully', time: '2 hours ago', read: true, type: 'success', priority: 'NORMAL', category: 'task' },
-  { id: '5', titleKey: '', title: 'New version Creator v3.2.0 released', time: '3 hours ago', read: false, type: 'info', priority: 'NORMAL', category: 'license' },
-  { id: '6', titleKey: '', title: 'Queue "Order Processing" message backlog alert', time: '4 hours ago', read: true, type: 'warning', priority: 'IMPORTANT', category: 'trigger' },
+  { id: 'notif-001', titleKey: '', title: '任务"每日财务对账"执行失败', time: '8 分钟前', read: false, type: 'error', priority: 'URGENT', category: 'task' },
+  { id: 'notif-002', titleKey: '', title: '机器人 robot-fin-02 已离线', time: '28 分钟前', read: false, type: 'error', priority: 'URGENT', category: 'robot' },
+  { id: 'notif-003', titleKey: '', title: '任务"客户数据同步"执行超时', time: '45 分钟前', read: false, type: 'warning', priority: 'IMPORTANT', category: 'task' },
+  { id: 'notif-004', titleKey: '', title: '授权将于 15 天后过期', time: '2 小时前', read: false, type: 'warning', priority: 'IMPORTANT', category: 'license' },
+  { id: 'notif-005', titleKey: '', title: '任务"月度报表生成"已永久失败', time: '3 小时前', read: false, type: 'error', priority: 'URGENT', category: 'task' },
+  { id: 'notif-006', titleKey: '', title: '时间触发器"每日 9 点报表"触发失败', time: '4 小时前', read: false, type: 'warning', priority: 'IMPORTANT', category: 'trigger' },
 ];
 
 export const banners: BannerItem[] = [
