@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Typography, Pagination, Toast } from '@douyinfe/semi-ui';
+import { Typography, Pagination, Toast, Modal } from '@douyinfe/semi-ui';
 import NotificationFilterBar, { FilterValues } from './components/NotificationFilterBar';
 import NotificationTable from './components/NotificationTable';
 import { mockNotifications } from './mockData';
@@ -80,6 +80,20 @@ const NotificationCenter = () => {
     openNotification(n, navigate, handleMarkRead);
   };
 
+  const handleDelete = (id: string) => {
+    Modal.confirm({
+      title: t('notificationCenter.confirm.deleteTitle'),
+      content: t('notificationCenter.confirm.deleteContent'),
+      okText: t('common.confirm'),
+      cancelText: t('common.cancel'),
+      okButtonProps: { type: 'danger' },
+      onOk: () => {
+        setList((prev) => prev.filter((n) => n.id !== id));
+        Toast.success(t('notificationCenter.toast.deleted'));
+      },
+    });
+  };
+
   const handleFilterChange = (next: FilterValues) => {
     setFilters(next);
     setCurrentPage(1);
@@ -106,6 +120,7 @@ const NotificationCenter = () => {
           data={pageData}
           onOpen={handleOpen}
           onMarkRead={handleMarkRead}
+          onDelete={handleDelete}
           hasFilters={hasFilters}
         />
       </div>
