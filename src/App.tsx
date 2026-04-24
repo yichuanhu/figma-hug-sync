@@ -156,8 +156,9 @@ const App = () => {
           <Route path="/operations/business-outcomes" element={<BusinessOutcomes />} />
           <Route path="/operations/cost-management" element={<CostManagement />} />
           <Route path="/operations/platform-operations" element={<PlatformOperations />} />
-          <Route path="/maintenance" element={<Navigate to="/maintenance/config/system-params" replace />} />
+          <Route path="/maintenance" element={<Navigate to="/maintenance/config" replace />} />
           <Route path="/maintenance/workbench" element={<MaintenanceWorkbench />} />
+          <Route path="/maintenance/config" element={<MaintenanceConfig />} />
           <Route path="/maintenance/config/system-params" element={<MaintenanceConfig />} />
           <Route path="/maintenance/config/service-params" element={<MaintenanceConfig />} />
           <Route path="/maintenance/config/infrastructure" element={<MaintenanceConfig />} />
