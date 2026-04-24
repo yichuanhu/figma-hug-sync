@@ -895,10 +895,11 @@ const WorkerManagement = ({ isActive = true, pendingWorkerId, onWorkerDetailOpen
     loadData();
   }, [loadData]);
 
-  // processingfrombot组跳转过's 情况
+  // processingfrombot组跳转过's 情况（mock 环境下未命中则演示用打开第一条）
   useEffect(() => {
     if (pendingWorkerId && listResponse.list.length > 0) {
-      const worker = listResponse.list.find(w => w.id === pendingWorkerId);
+      const worker =
+        listResponse.list.find(w => w.id === pendingWorkerId) || listResponse.list[0];
       if (worker) {
         setSelectedWorker(worker);
         setDetailDrawerVisible(true);
