@@ -8,7 +8,7 @@ import RelativeTime from '@/pages/Requirements/RequirementsWorkbench/components/
 import SeverityTag from '@/pages/NotificationCenter/components/SeverityTag';
 import CategoryBadge from '@/pages/NotificationCenter/components/CategoryBadge';
 import { mockNotifications } from '@/pages/NotificationCenter/mockData';
-import type { Notification, NotificationCategory } from '@/pages/NotificationCenter/types';
+import type { Notification } from '@/pages/NotificationCenter/types';
 import { openNotification } from '@/utils/notificationLink';
 import './index.less';
 
