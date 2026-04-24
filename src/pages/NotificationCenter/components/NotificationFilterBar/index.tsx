@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Input, Tabs, TabPane, Button, Badge } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
-import { CheckCheck, Eraser } from 'lucide-react';
+import { CheckCheck, Trash2 } from 'lucide-react';
 import FilterPopover, { FilterSection } from '@/components/FilterPopover';
 import type { NotificationCategory, NotificationReadFilter, NotificationSeverity } from '@/pages/NotificationCenter/types';
 import './index.less';
