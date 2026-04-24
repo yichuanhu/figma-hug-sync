@@ -4,7 +4,6 @@ import { Check } from 'lucide-react';
 import RelativeTime from '@/pages/Requirements/RequirementsWorkbench/components/RelativeTime';
 import EmptyState from '@/components/EmptyState';
 import SeverityTag from '../SeverityTag';
-import CategoryBadge from '../CategoryBadge';
 import type { Notification, NotificationReadFilter } from '@/pages/NotificationCenter/types';
 import './index.less';
 

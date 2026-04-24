@@ -6,7 +6,6 @@ import { ArrowRight, CheckCheck, X, Check } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import RelativeTime from '@/pages/Requirements/RequirementsWorkbench/components/RelativeTime';
 import SeverityTag from '@/pages/NotificationCenter/components/SeverityTag';
-import CategoryBadge from '@/pages/NotificationCenter/components/CategoryBadge';
 import { mockNotifications } from '@/pages/NotificationCenter/mockData';
 import type { Notification } from '@/pages/NotificationCenter/types';
 import { openNotification } from '@/utils/notificationLink';
