@@ -108,7 +108,6 @@ const NotificationCenter = () => {
     <div className="notification-center-page">
       <div className="notification-center-header">
         <Title heading={3} className="title">{t('notificationCenter.title')}</Title>
-        <Text type="tertiary" className="subtitle">{t('notificationCenter.subtitle')}</Text>
       </div>
 
       <NotificationFilterBar
