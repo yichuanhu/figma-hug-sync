@@ -14,9 +14,6 @@ const { Title, Text } = Typography;
 
 const initialFilters: FilterValues = {
   readFilter: 'all',
-  search: '',
-  categories: [],
-  severities: [],
 };
 
 const NotificationCenter = () => {
