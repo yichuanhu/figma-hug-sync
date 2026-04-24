@@ -3421,6 +3421,7 @@
     "title": "Notification Center",
     "subtitle": "Centrally view APA platform task, robot, trigger and license notifications",
     "empty": "No notifications",
+    "emptyUnread": "No unread notifications",
     "tabs": { "all": "All", "unread": "Unread" },
     "stats": { "unread": "Unread", "task": "Tasks", "robot": "Robots", "license": "Licenses" },
     "category": { "all": "All", "task": "Task", "robot": "Robot", "trigger": "Trigger", "license": "License" },
