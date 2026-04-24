@@ -308,6 +308,8 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
 
   // 运维中心的详细菜单结构 - 使用分组标题样式
   const maintenanceCenterMenu: MenuItem[] = [
+    // 配置管理
+    { key: 'mtConfigGroup', labelKey: 'sidebar.mtConfigGroup', isGroupLabel: true },
     { key: 'mtConfigManagement', labelKey: 'sidebar.mtConfigManagement', icon: <Settings size={18} strokeWidth={2} />, path: '/maintenance/config' },
     // 数据大盘
     { key: 'mtDataDashboard', labelKey: 'sidebar.mtDataDashboard', isGroupLabel: true },
