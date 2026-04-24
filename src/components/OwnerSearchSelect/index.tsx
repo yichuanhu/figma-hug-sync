@@ -81,6 +81,11 @@ const OwnerSearchSelect = ({
           style?: React.CSSProperties;
           className?: string;
         };
+        const deptSegments = (department || '').split(' / ');
+        const deptDisplay =
+          deptSegments.length > 3
+            ? `${deptSegments[0]} / ... / ${deptSegments[deptSegments.length - 1]}`
+            : department;
         return (
           <div
             className={`${optClass || ''} ${selected ? 'semi-select-option-selected' : ''}`}
