@@ -8,7 +8,7 @@ import RelativeTime from '@/pages/Requirements/RequirementsWorkbench/components/
 import SeverityTag from '@/pages/NotificationCenter/components/SeverityTag';
 import CategoryBadge from '@/pages/NotificationCenter/components/CategoryBadge';
 import { mockNotifications } from '@/pages/NotificationCenter/mockData';
-import type { Notification, NotificationCategory } from '@/pages/NotificationCenter/types';
+import type { Notification } from '@/pages/NotificationCenter/types';
 import { openNotification } from '@/utils/notificationLink';
 import './index.less';
 
@@ -18,22 +18,19 @@ interface Props {
 }
 
 type TabKey = 'all' | 'unread';
-type CatKey = 'all' | NotificationCategory;
 
 const NotificationDrawer = ({ visible, onClose }: Props) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [list, setList] = useState<Notification[]>(mockNotifications);
   const [tab, setTab] = useState<TabKey>('all');
-  const [cat, setCat] = useState<CatKey>('all');
 
   const unreadCount = useMemo(() => list.filter((n) => !n.read).length, [list]);
   const filtered = useMemo(() => {
     return list
       .filter((n) => (tab === 'unread' ? !n.read : true))
-      .filter((n) => (cat === 'all' ? true : n.category === cat))
       .slice(0, 20);
-  }, [list, tab, cat]);
+  }, [list, tab]);
 
   const handleMarkRead = (id: string) => {
     setList((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
@@ -53,14 +50,6 @@ const NotificationDrawer = ({ visible, onClose }: Props) => {
     onClose();
     navigate('/notification-center');
   };
-
-  const cats: { key: CatKey; label: string }[] = [
-    { key: 'all', label: t('notificationCenter.category.all') },
-    { key: 'task', label: t('notificationCenter.category.task') },
-    { key: 'robot', label: t('notificationCenter.category.robot') },
-    { key: 'trigger', label: t('notificationCenter.category.trigger') },
-    { key: 'license', label: t('notificationCenter.category.license') },
-  ];
 
   return (
     <SideSheet
@@ -106,17 +95,6 @@ const NotificationDrawer = ({ visible, onClose }: Props) => {
         <TabPane itemKey="unread" tab={`${t('notificationCenter.tabs.unread')} (${unreadCount > 99 ? '99+' : unreadCount})`} />
       </Tabs>
 
-      <div className="notification-drawer-cats">
-        {cats.map((c) => (
-          <button
-            key={c.key}
-            className={`notification-drawer-cat ${cat === c.key ? 'active' : ''}`}
-            onClick={() => setCat(c.key)}
-          >
-            {c.label}
-          </button>
-        ))}
-      </div>
 
       <div className="notification-drawer-list">
         {filtered.length === 0 ? (
