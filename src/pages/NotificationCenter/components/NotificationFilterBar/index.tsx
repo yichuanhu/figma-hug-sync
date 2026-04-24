@@ -92,7 +92,7 @@ const NotificationFilterBar = ({ values, unreadCount, totalCount, onChange, onMa
         <Button
           theme="light"
           type="tertiary"
-          icon={<Eraser size={16} strokeWidth={2} />}
+          icon={<Trash2 size={16} strokeWidth={2} />}
           disabled={!hasRead}
           onClick={onClearRead}
         >
