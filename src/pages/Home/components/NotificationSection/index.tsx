@@ -49,6 +49,7 @@ const NotificationSection = () => {
                 <div className="notification-item-content">
                   <div className="notification-item-title-row">
                     <Tag size="small" color={pConfig.color as any}>{pConfig.label}</Tag>
+                    <CategoryBadge category={item.category} />
                     <span className={`notification-item-title ${item.read ? '' : 'unread'}`}>{item.title}</span>
                   </div>
                   <div className="notification-item-time">{item.time}</div>
