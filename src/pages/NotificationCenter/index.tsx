@@ -84,11 +84,12 @@ const NotificationCenter = () => {
 
   const handleClearRead = () => {
     if (filteredReadIds.size === 0) return;
-    Modal.confirm({
+    Modal.warning({
       title: t('notificationCenter.confirm.clearReadTitle'),
       content: t('notificationCenter.confirm.clearReadContent'),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
+      hasCancel: true,
       okButtonProps: { type: 'danger' },
       onOk: () => {
         setList((prev) => prev.filter((n) => !filteredReadIds.has(n.id)));
