@@ -3435,7 +3435,7 @@
       "severity": "Severity"
     },
     "table": { "severity": "Severity", "category": "Category", "content": "Content", "time": "Time" },
-    "actions": { "markRead": "Mark as read", "markAllRead": "Mark all as read", "view": "View", "clearRead": "Clear read" },
+    "actions": { "markRead": "Mark as read", "markAllRead": "Mark all as read", "view": "View", "clearRead": "Delete all read messages" },
     "drawer": { "viewAll": "View all notifications", "settings": "Notification settings", "settingsComingSoon": "Notification preferences coming soon" },
     "toast": { "allRead": "All notifications marked as read", "clearedRead": "Read notifications cleared" },
     "confirm": { "clearReadTitle": "Clear read notifications", "clearReadContent": "Clear all read notifications? This cannot be undone." }
