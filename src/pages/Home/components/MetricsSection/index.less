@@ -1,7 +1,11 @@
 .metrics-section {
+  display: flex;
+  flex-direction: column;
+
   .metrics-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
+    flex: 1;
 
     @media (max-width: 720px) {
       grid-template-columns: 1fr;
@@ -10,7 +14,7 @@
 
   .metric-card {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 12px;
     padding: 16px 20px;
     position: relative;
