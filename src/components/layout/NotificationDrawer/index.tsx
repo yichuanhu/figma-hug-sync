@@ -18,22 +18,19 @@ interface Props {
 }
 
 type TabKey = 'all' | 'unread';
-type CatKey = 'all' | NotificationCategory;
 
 const NotificationDrawer = ({ visible, onClose }: Props) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [list, setList] = useState<Notification[]>(mockNotifications);
   const [tab, setTab] = useState<TabKey>('all');
-  const [cat, setCat] = useState<CatKey>('all');
 
   const unreadCount = useMemo(() => list.filter((n) => !n.read).length, [list]);
   const filtered = useMemo(() => {
     return list
       .filter((n) => (tab === 'unread' ? !n.read : true))
-      .filter((n) => (cat === 'all' ? true : n.category === cat))
       .slice(0, 20);
-  }, [list, tab, cat]);
+  }, [list, tab]);
 
   const handleMarkRead = (id: string) => {
     setList((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
