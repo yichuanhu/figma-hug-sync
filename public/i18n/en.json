@@ -535,7 +535,8 @@
       "department": "Department",
       "priority": "Priority",
       "expectedLaunchDate": "Expected Launch Date",
-      "projectOwner": "Project Owner"
+      "projectOwner": "Project Owner",
+      "linkedProject": "Project"
     },
     "status": {
       "draft": "Draft",
