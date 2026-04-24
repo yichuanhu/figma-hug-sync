@@ -54,6 +54,7 @@ const OwnerSearchSelect = ({
       }}
       style={{ width: '100%', ...style }}
       className={className}
+      dropdownMatchSelectWidth
       dropdownStyle={{ maxHeight: 320, overflow: 'auto' }}
       optionList={options}
       renderSelectedItem={(option) => {
