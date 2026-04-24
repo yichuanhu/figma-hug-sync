@@ -20,7 +20,7 @@ const NotificationTable = ({ data, onOpen, onMarkRead, hasFilters }: Props) => {
 
   if (data.length === 0) {
     return (
-      <div className="notification-list-empty">
+      <div className="nc-list-empty">
         <EmptyState
           variant={hasFilters ? 'noResult' : 'noData'}
           description={hasFilters ? t('common.noResult') : t('notificationCenter.empty')}
@@ -30,21 +30,21 @@ const NotificationTable = ({ data, onOpen, onMarkRead, hasFilters }: Props) => {
   }
 
   return (
-    <ul className="notification-list">
+    <ul className="nc-list">
       {data.map((n) => (
         <li
           key={n.id}
-          className={`notification-list-item ${n.read ? 'read' : 'unread'}`}
+          className={`nc-list-item ${n.read ? 'read' : 'unread'}`}
           onClick={() => onOpen(n)}
         >
-          <div className="notification-list-item-main">
-            <div className="notification-list-item-title-row">
+          <div className="nc-list-item-main">
+            <div className="nc-list-item-title-row">
               <SeverityTag severity={n.severity} />
               <CategoryBadge category={n.category} />
               <Typography.Text
                 strong={!n.read}
                 ellipsis={{ showTooltip: { opts: { content: n.title } } }}
-                className="notification-list-item-title"
+                className="nc-list-item-title"
               >
                 {n.title}
               </Typography.Text>
@@ -54,31 +54,31 @@ const NotificationTable = ({ data, onOpen, onMarkRead, hasFilters }: Props) => {
               type="tertiary"
               size="small"
               ellipsis={{ showTooltip: { opts: { content: n.description } } }}
-              className="notification-list-item-desc"
+              className="nc-list-item-desc"
             >
               {n.description}
             </Typography.Text>
 
-            <div className="notification-list-item-meta">
+            <div className="nc-list-item-meta">
               <RelativeTime value={n.createdAt} />
             </div>
           </div>
 
-          <div className="notification-list-item-side" onClick={(e) => e.stopPropagation()}>
+          <div className="nc-list-item-side" onClick={(e) => e.stopPropagation()}>
             {!n.read ? (
               <Tooltip content={t('notificationCenter.actions.markRead')}>
                 <button
                   type="button"
-                  className="notification-list-item-read-btn"
+                  className="nc-list-item-read-btn"
                   onClick={() => onMarkRead(n.id)}
                   aria-label={t('notificationCenter.actions.markRead')}
                 >
-                  <span className="notification-list-item-read-btn-dot" />
-                  <Check className="notification-list-item-read-btn-icon" size={14} strokeWidth={2.5} />
+                  <span className="nc-list-item-read-btn-dot" />
+                  <Check className="nc-list-item-read-btn-icon" size={14} strokeWidth={2.5} />
                 </button>
               </Tooltip>
             ) : (
-              <span className="notification-list-item-dot read" />
+              <span className="nc-list-item-dot read" />
             )}
           </div>
         </li>
