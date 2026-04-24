@@ -57,8 +57,7 @@ const NotificationCenter = () => {
   const hasFilters =
     !!filters.search ||
     filters.categories.length > 0 ||
-    filters.severities.length > 0 ||
-    filters.readFilter !== 'all';
+    filters.severities.length > 0;
 
   const handleMarkRead = (id: string) => {
     setList((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
@@ -129,6 +128,7 @@ const NotificationCenter = () => {
           onOpen={handleOpen}
           onMarkRead={handleMarkRead}
           hasFilters={hasFilters}
+          readFilter={filters.readFilter}
         />
       </div>
 

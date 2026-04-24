@@ -2789,6 +2789,7 @@
     "title": "通知中心",
     "subtitle": "集中查看 APA 平台的任务、机器人、触发器与授权通知",
     "empty": "暂无通知",
+    "emptyUnread": "暂无未读通知",
     "tabs": { "all": "全部", "unread": "未读" },
     "stats": { "unread": "未读通知", "task": "任务通知", "robot": "机器人通知", "license": "授权通知" },
     "category": { "all": "全部", "task": "任务", "robot": "机器人", "trigger": "触发器", "license": "授权" },

@@ -5,7 +5,7 @@ import RelativeTime from '@/pages/Requirements/RequirementsWorkbench/components/
 import EmptyState from '@/components/EmptyState';
 import SeverityTag from '../SeverityTag';
 import CategoryBadge from '../CategoryBadge';
-import type { Notification } from '@/pages/NotificationCenter/types';
+import type { Notification, NotificationReadFilter } from '@/pages/NotificationCenter/types';
 import './index.less';
 
 interface Props {
@@ -13,17 +13,25 @@ interface Props {
   onOpen: (n: Notification) => void;
   onMarkRead: (id: string) => void;
   hasFilters: boolean;
+  readFilter: NotificationReadFilter;
 }
 
-const NotificationTable = ({ data, onOpen, onMarkRead, hasFilters }: Props) => {
+const NotificationTable = ({ data, onOpen, onMarkRead, hasFilters, readFilter }: Props) => {
   const { t } = useTranslation();
 
   if (data.length === 0) {
+    const isUnreadEmpty = !hasFilters && readFilter === 'unread';
     return (
       <div className="nc-list-empty">
         <EmptyState
           variant={hasFilters ? 'noResult' : 'noData'}
-          description={hasFilters ? t('common.noResult') : t('notificationCenter.empty')}
+          description={
+            hasFilters
+              ? t('common.noResult')
+              : isUnreadEmpty
+                ? t('notificationCenter.emptyUnread')
+                : t('notificationCenter.empty')
+          }
         />
       </div>
     );
