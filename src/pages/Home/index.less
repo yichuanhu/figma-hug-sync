@@ -89,24 +89,28 @@
     grid-template-columns: 1.5fr 1fr;
     gap: 24px;
     min-height: 0;
+    align-items: start;
+
+    @media (max-width: 1200px) {
+      grid-template-columns: 1.3fr 1fr;
+    }
 
     @media (max-width: 960px) {
       grid-template-columns: 1fr;
     }
   }
 
-  .home-left-column {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    min-width: 0;
-  }
-
+  .home-left-column,
   .home-right-column {
     display: flex;
     flex-direction: column;
     gap: 24px;
     min-width: 0;
+
+    // 子模块自适应填充，避免单模块时出现底部空白错位
+    > * {
+      flex-shrink: 0;
+    }
   }
 
   // Section titles used directly (no card wrapper)
