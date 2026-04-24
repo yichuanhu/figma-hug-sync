@@ -128,6 +128,7 @@ const NotificationCenter = () => {
           onOpen={handleOpen}
           onMarkRead={handleMarkRead}
           hasFilters={hasFilters}
+          readFilter={filters.readFilter}
         />
       </div>
 
