@@ -1,11 +1,13 @@
 import { useTranslation } from 'react-i18next';
-import { Tabs, TabPane, Button, Badge } from '@douyinfe/semi-ui';
+import { Input, Tabs, TabPane, Button, Badge } from '@douyinfe/semi-ui';
+import { IconSearchStroked } from '@douyinfe/semi-icons';
 import { CheckCheck, Trash2 } from 'lucide-react';
 import type { NotificationReadFilter } from '@/pages/NotificationCenter/types';
 import './index.less';
 
 export interface FilterValues {
   readFilter: NotificationReadFilter;
+  search: string;
 }
 
 interface Props {
@@ -35,6 +37,14 @@ const NotificationFilterBar = ({ values, unreadCount, totalCount, onChange, onMa
       </Tabs>
 
       <div className="notification-filter-bar-row">
+        <Input
+          prefix={<IconSearchStroked />}
+          placeholder={t('notificationCenter.filter.searchPlaceholder')}
+          value={values.search}
+          onChange={(v) => onChange({ ...values, search: v })}
+          style={{ width: 320 }}
+          showClear
+        />
         <div className="notification-filter-bar-spacer" />
         <Button
           theme="light"

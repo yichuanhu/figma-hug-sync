@@ -14,6 +14,7 @@ const { Title, Text } = Typography;
 
 const initialFilters: FilterValues = {
   readFilter: 'all',
+  search: '',
 };
 
 const NotificationCenter = () => {
@@ -35,8 +36,13 @@ const NotificationCenter = () => {
   );
 
   const filtered = useMemo(() => {
+    const kw = filters.search.trim().toLowerCase();
     return list.filter((n) => {
       if (filters.readFilter === 'unread' && n.read) return false;
+      if (kw) {
+        const txt = `${n.title} ${n.description}`.toLowerCase();
+        if (!txt.includes(kw)) return false;
+      }
       return true;
     });
   }, [list, filters]);
@@ -44,7 +50,7 @@ const NotificationCenter = () => {
   const total = filtered.length;
   const pageData = filtered.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
-  const hasFilters = false;
+  const hasFilters = !!filters.search;
   const handleMarkRead = (id: string) => {
     setList((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
   };
