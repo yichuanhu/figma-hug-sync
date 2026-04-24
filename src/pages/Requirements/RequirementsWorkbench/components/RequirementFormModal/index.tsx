@@ -163,7 +163,7 @@ const RequirementFormModal = ({
                   rules={[{ required: true, message: t('requirements.form.departmentRequired') }]}
                   style={{ display: 'none' }}
                 />
-                <DepartmentSelect
+                <DepartmentSearchSelect
                   value={departmentValue}
                   onChange={handleDepartmentChange}
                   useNameAsValue

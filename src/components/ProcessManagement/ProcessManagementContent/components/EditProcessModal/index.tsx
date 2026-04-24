@@ -259,7 +259,7 @@ const EditProcessModal = ({ visible, onCancel, processData, onSuccess }: EditPro
               placeholder={t('development.processDevelopment.createModal.fields.autoFillPlaceholder')}
             />
           ) : (
-            <DepartmentSelect
+            <DepartmentSearchSelect
               value={owningDepartmentId}
               onChange={setOwningDepartmentId}
               disabled={!canManage}

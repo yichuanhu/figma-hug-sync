@@ -255,7 +255,7 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
               placeholder={t('development.processDevelopment.createModal.fields.autoFillPlaceholder')}
             />
           ) : (
-            <DepartmentSelect
+            <DepartmentSearchSelect
               value={manualDepartmentId}
               onChange={(v) => setManualDepartmentId(v)}
               placeholder={t('common.owningDepartmentRequired')}
@@ -272,7 +272,7 @@ const CreateProcessModal = ({ visible, onCancel, onSuccess }: CreateProcessModal
               placeholder={t('development.processDevelopment.createModal.fields.autoFillPlaceholder')}
             />
           ) : (
-            <OwnerSelect
+            <OwnerSearchSelect
               value={manualOwnerId}
               onChange={(v) => setManualOwnerId(v)}
               placeholder={t('common.ownerRequired')}

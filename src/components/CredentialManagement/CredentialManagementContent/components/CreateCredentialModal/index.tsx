@@ -157,7 +157,7 @@ const CreateCredentialModal = ({
 
         
         <Form.Slot label={{ text: t('common.owningDepartment'), required: true }}>
-          <DepartmentSelect
+          <DepartmentSearchSelect
             value={owningDepartmentId}
             onChange={(v) => {
               setOwningDepartmentId(v);
