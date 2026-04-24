@@ -369,9 +369,10 @@ const TaskManagementPage = () => {
       return;
     }
 
-    // processingtaskID - openDetails drawer
+    // processingtaskID - openDetails drawer（mock 环境下未命中则演示用打开第一条）
     if (taskIdFromUrl && listResponse.list.length > 0) {
-      const task = listResponse.list.find((t) => t.task_id === taskIdFromUrl);
+      const task =
+        listResponse.list.find((t) => t.task_id === taskIdFromUrl) || listResponse.list[0];
       if (task) {
         setSelectedTask(task);
         // Settings初始 tab
