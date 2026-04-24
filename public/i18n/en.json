@@ -165,6 +165,7 @@
     "dataManagement": "Data Management",
     "databaseManagement": "Database Management",
     "securityManagement": "Security Management",
+    "mtConfigGroup": "Configuration",
     "mtConfigManagement": "Config Management",
     "mtSystemParams": "System Params",
     "mtServiceParams": "Service Params",
