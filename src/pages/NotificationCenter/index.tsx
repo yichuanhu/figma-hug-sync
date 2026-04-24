@@ -88,6 +88,7 @@ const NotificationCenter = () => {
     Modal.warning({
       title: t('notificationCenter.confirm.clearReadTitle'),
       content: t('notificationCenter.confirm.clearReadContent'),
+      icon: <Trash2 size={20} color="hsl(var(--destructive))" />,
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
       hasCancel: true,
