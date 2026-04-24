@@ -35,15 +35,8 @@ const NotificationCenter = () => {
   );
 
   const filtered = useMemo(() => {
-    const kw = filters.search.trim().toLowerCase();
     return list.filter((n) => {
       if (filters.readFilter === 'unread' && n.read) return false;
-      if (filters.categories.length && !filters.categories.includes(n.category)) return false;
-      if (filters.severities.length && !filters.severities.includes(n.severity)) return false;
-      if (kw) {
-        const txt = `${n.title} ${n.description}`.toLowerCase();
-        if (!txt.includes(kw)) return false;
-      }
       return true;
     });
   }, [list, filters]);
@@ -51,11 +44,7 @@ const NotificationCenter = () => {
   const total = filtered.length;
   const pageData = filtered.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
-  const hasFilters =
-    !!filters.search ||
-    filters.categories.length > 0 ||
-    filters.severities.length > 0;
-
+  const hasFilters = false;
   const handleMarkRead = (id: string) => {
     setList((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
   };
