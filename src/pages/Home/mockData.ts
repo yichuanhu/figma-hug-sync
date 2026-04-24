@@ -81,9 +81,7 @@ export const announcements: AnnouncementItem[] = [
 ];
 
 export const resources: ResourceItem[] = [
-  { id: '1', titleKey: '', title: 'Creator Download', descKey: '', desc: 'Process Designer Client', icon: 'Telescope', iconColor: '#3370FF', iconBgColor: '#EEF3FF', url: '#' },
-  { id: '2', titleKey: '', title: 'User Manual', descKey: '', desc: 'Platform User Guide', icon: 'BookOpen', iconColor: '#7C3AED', iconBgColor: '#F3EEFF', url: '#' },
-  { id: '3', titleKey: '', title: 'API Documentation', descKey: '', desc: 'Developer API Reference', icon: 'FileCode', iconColor: '#0FC6C2', iconBgColor: '#E8FFFE', url: '#' },
+  { id: '1', titleKey: '', title: '下载客户端', descKey: '', desc: '流程设计器 Creator 客户端', icon: 'Telescope', iconColor: '#3370FF', iconBgColor: '#EEF3FF', url: '#' },
 ];
 
 export const recentActivities: ActivityItem[] = [
