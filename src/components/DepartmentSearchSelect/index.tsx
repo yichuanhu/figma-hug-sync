@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Select, Typography } from '@douyinfe/semi-ui';
+import { Select, Typography, Avatar } from '@douyinfe/semi-ui';
+import { Network } from 'lucide-react';
 import { departmentTree, DeptTreeNode } from '@/mocks/departmentData';
 
 interface DepartmentSearchSelectProps {
@@ -19,6 +20,7 @@ interface FlatDeptOption {
   value: string;
   label: string;
   parentPath: string;
+  fullPath: string;
   searchText: string;
 }
 
@@ -31,10 +33,12 @@ const flattenDepartments = (
 ): FlatDeptOption[] => {
   for (const node of nodes) {
     const path = parentPath.join(' / ');
+    const fullPath = [...parentPath, node.label].join(' / ');
     result.push({
       value: useNameAsValue ? node.label : node.value,
       label: node.label,
       parentPath: path,
+      fullPath,
       searchText: `${node.label} ${path}`.toLowerCase(),
     });
     if (node.children && node.children.length > 0) {
@@ -87,20 +91,30 @@ const DepartmentSearchSelect = ({
           key={opt.value}
           value={opt.value}
           label={opt.label}
-          {...({ parentPath: opt.parentPath, searchText: opt.searchText } as Record<string, unknown>)}
+          {...({ parentPath: opt.parentPath, fullPath: opt.fullPath, searchText: opt.searchText } as Record<string, unknown>)}
         >
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0 }}>
-            <Text ellipsis={{ showTooltip: true }} style={{ margin: 0, fontSize: 14 }}>
-              {opt.label}
-            </Text>
-            {opt.parentPath && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+            <Avatar
+              size="extra-small"
+              style={{
+                backgroundColor: 'var(--semi-color-fill-1)',
+                color: 'var(--semi-color-text-0)',
+                flexShrink: 0,
+              }}
+            >
+              <Network size={14} strokeWidth={2} />
+            </Avatar>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0, flex: 1 }}>
+              <Text ellipsis={{ showTooltip: true }} style={{ margin: 0, fontSize: 14 }}>
+                {opt.label}
+              </Text>
               <Text
                 ellipsis={{ showTooltip: true }}
                 style={{ margin: 0, fontSize: 12, color: 'var(--semi-color-text-2)' }}
               >
-                {opt.parentPath}
+                {opt.parentPath ? `${opt.parentPath} / ${opt.label}` : opt.label}
               </Text>
-            )}
+            </div>
           </div>
         </Select.Option>
       ))}
