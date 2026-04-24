@@ -409,7 +409,7 @@ const generateMockLinkedProcesses = (status: RequirementStatus, idx: number): Li
   return MOCK_PROCESS_POOL.slice(0, (idx % 3) + 1);
 };
 
-const MOCK_PROJECT_POOL = [
+export const MOCK_PROJECT_POOL = [
   { id: 'proj-001', name: '数字化转型项目' },
   { id: 'proj-002', name: '财务智能化项目' },
   { id: 'proj-003', name: '人力共享中心项目' },
@@ -638,6 +638,12 @@ export const fetchRequirementList = async (params: RequirementQueryParams): Prom
 
   if (params.priorityFilter && params.priorityFilter.length > 0) {
     filtered = filtered.filter((item) => params.priorityFilter!.includes(item.priority));
+  }
+
+  if (params.projectFilter && params.projectFilter.length > 0) {
+    filtered = filtered.filter(
+      (item) => item.linkedProject?.id && params.projectFilter!.includes(item.linkedProject.id),
+    );
   }
 
   filtered.sort((a, b) => {

@@ -14,6 +14,7 @@ import {
   Modal,
   Toast,
   Space,
+  Select,
 } from '@douyinfe/semi-ui';
 import DepartmentSelect from '@/components/DepartmentSelect';
 import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
@@ -31,6 +32,7 @@ import {
   updateRequirementStatus,
   resubmitRequirement,
   MOCK_CURRENT_USER_ID,
+  MOCK_PROJECT_POOL,
 } from './mockData';
 import { statusConfigV2, legacyStatusMap } from './statusConfig';
 import RequirementFormModal from './components/RequirementFormModal';
@@ -66,6 +68,7 @@ const RequirementsWorkbench = () => {
   const [statusFilter, setStatusFilter] = useState<string[]>([]);
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
   const [priorityFilter, setPriorityFilter] = useState<string[]>([]);
+  const [projectFilter, setProjectFilter] = useState<string[]>([]);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
 
   // 状态
@@ -121,13 +124,14 @@ const RequirementsWorkbench = () => {
         statusFilter,
         departmentFilter,
         priorityFilter,
+        projectFilter,
       });
       setListResponse(response);
     } finally {
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, statusFilter, departmentFilter, priorityFilter]);
+  }, [queryParams, statusFilter, departmentFilter, priorityFilter, projectFilter]);
 
   useEffect(() => {
     loadData();
@@ -469,6 +473,19 @@ const RequirementsWorkbench = () => {
                 useNameAsValue
                 style={{ width: 'auto', minWidth: 150, maxWidth: 600 }}
               />
+              <Select
+                placeholder={t('common.filterProject')}
+                value={projectFilter}
+                onChange={(v) => {
+                  setProjectFilter((v as string[]) || []);
+                  setQueryParams((prev) => ({ ...prev, offset: 0 }));
+                }}
+                multiple
+                showClear
+                maxTagCount={1}
+                style={{ width: 'auto', minWidth: 150, maxWidth: 600 }}
+                optionList={MOCK_PROJECT_POOL.map((p) => ({ label: p.name, value: p.id }))}
+              />
               <FilterPopover
                 visible={filterPopoverVisible}
                 onVisibleChange={setFilterPopoverVisible}
@@ -637,13 +654,13 @@ const RequirementsWorkbench = () => {
           await updateRequirementStatus(id, newStatus, comment);
           loadData();
           // Refresh the selected record
-          const updated = (await fetchRequirementList({ ...queryParams, statusFilter, departmentFilter, priorityFilter })).list.find(r => r.id === id);
+          const updated = (await fetchRequirementList({ ...queryParams, statusFilter, departmentFilter, priorityFilter, projectFilter })).list.find(r => r.id === id);
           if (updated) setSelectedRecord(updated);
         }}
         onRefresh={async () => {
           loadData();
           if (selectedRecord) {
-            const updated = (await fetchRequirementList({ ...queryParams, statusFilter, departmentFilter, priorityFilter })).list.find(r => r.id === selectedRecord.id);
+            const updated = (await fetchRequirementList({ ...queryParams, statusFilter, departmentFilter, priorityFilter, projectFilter })).list.find(r => r.id === selectedRecord.id);
             if (updated) setSelectedRecord(updated);
           }
         }}
