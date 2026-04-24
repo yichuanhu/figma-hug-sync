@@ -441,7 +441,8 @@
       "department": "部门",
       "priority": "优先级",
       "expectedLaunchDate": "期望上线日期",
-      "projectOwner": "项目负责人"
+      "projectOwner": "项目负责人",
+      "linkedProject": "所属项目"
     },
     "status": {
       "draft": "草稿",
