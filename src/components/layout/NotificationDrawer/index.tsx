@@ -108,19 +108,18 @@ const NotificationDrawer = ({ visible, onClose }: Props) => {
               className={`notification-drawer-item ${n.read ? 'read' : 'unread'}`}
               onClick={() => handleOpen(n)}
             >
-              <span className={`notification-drawer-item-dot ${n.read ? 'read' : 'unread'}`} />
               <div className="notification-drawer-item-content">
-                <div className="notification-drawer-item-meta">
+                <div className="notification-drawer-item-title-row">
+                  {!n.read && <span className="notification-drawer-item-dot unread" />}
                   <SeverityTag severity={n.severity} />
-                  <CategoryBadge category={n.category} />
+                  <Typography.Text
+                    strong={!n.read}
+                    className="notification-drawer-item-title"
+                    ellipsis={{ rows: 2, showTooltip: { opts: { content: n.title } } }}
+                  >
+                    {n.title}
+                  </Typography.Text>
                 </div>
-                <Typography.Text
-                  strong={!n.read}
-                  className="notification-drawer-item-title"
-                  ellipsis={{ rows: 2, showTooltip: { opts: { content: n.title } } }}
-                >
-                  {n.title}
-                </Typography.Text>
                 <Typography.Text
                   type="tertiary"
                   size="small"
