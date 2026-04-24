@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Input, Tabs, TabPane, Button, Badge } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
@@ -12,7 +12,6 @@ export interface FilterValues {
   search: string;
   categories: NotificationCategory[];
   severities: NotificationSeverity[];
-  dateRange: [Date, Date] | null;
 }
 
 interface Props {
@@ -29,21 +28,6 @@ interface Props {
 const NotificationFilterBar = ({ values, unreadCount, totalCount, onChange, onMarkAllRead, onClearRead, hasUnread, hasRead }: Props) => {
   const { t } = useTranslation();
   const [filterVisible, setFilterVisible] = useState(false);
-
-  const datePresets = useMemo(
-    () => {
-      const today = new Date();
-      const startToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-      const end = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
-      const days = (n: number) => new Date(Date.now() - n * 86400_000);
-      return [
-        { text: t('notificationCenter.filter.today'), start: startToday, end },
-        { text: t('notificationCenter.filter.last7'), start: days(7), end },
-        { text: t('notificationCenter.filter.last30'), start: days(30), end },
-      ];
-    },
-    [t],
-  );
 
   const sections: FilterSection[] = [
     {
@@ -68,13 +52,6 @@ const NotificationFilterBar = ({ values, unreadCount, totalCount, onChange, onMa
         { value: 'MEDIUM', label: t('notificationCenter.severity.medium') },
         { value: 'LOW', label: t('notificationCenter.severity.low') },
       ],
-    },
-    {
-      key: 'dateRange',
-      label: t('notificationCenter.filter.dateRange'),
-      type: 'dateRange',
-      value: values.dateRange,
-      datePresets,
     },
   ];
 
@@ -108,7 +85,6 @@ const NotificationFilterBar = ({ values, unreadCount, totalCount, onChange, onMa
               ...values,
               categories: (next.categories as NotificationCategory[]) || [],
               severities: (next.severities as NotificationSeverity[]) || [],
-              dateRange: (next.dateRange as [Date, Date] | null) ?? null,
             })
           }
         />
