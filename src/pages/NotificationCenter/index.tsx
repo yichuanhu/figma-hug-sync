@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Typography, Pagination, Toast, Modal } from '@douyinfe/semi-ui';
+import { Trash2 } from 'lucide-react';
 import NotificationFilterBar, { FilterValues } from './components/NotificationFilterBar';
 import NotificationTable from './components/NotificationTable';
 import { mockNotifications } from './mockData';
@@ -87,6 +88,7 @@ const NotificationCenter = () => {
     Modal.warning({
       title: t('notificationCenter.confirm.clearReadTitle'),
       content: t('notificationCenter.confirm.clearReadContent'),
+      icon: <Trash2 size={20} color="hsl(var(--destructive))" />,
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
       hasCancel: true,
