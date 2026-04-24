@@ -1,19 +1,22 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Badge } from '@douyinfe/semi-ui';
+import { Badge, Tag } from '@douyinfe/semi-ui';
 import { ChevronUp, ChevronDown, ChevronRight } from 'lucide-react';
-import SeverityTag from '@/pages/NotificationCenter/components/SeverityTag';
-import RelativeTime from '@/pages/Requirements/RequirementsWorkbench/components/RelativeTime';
-import { mockNotifications } from '@/pages/NotificationCenter/mockData';
-import { openNotification } from '@/utils/notificationLink';
+import { notifications } from '../../mockData';
 import './index.less';
+
+const priorityConfig: Record<string, { color: string; label: string }> = {
+  URGENT: { color: 'red', label: 'Urgent' },
+  IMPORTANT: { color: 'orange', label: 'Important' },
+  NORMAL: { color: 'grey', label: 'Normal' },
+};
 
 const NotificationSection = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
-  const unreadCount = mockNotifications.filter((n) => !n.read).length;
+  const unreadCount = notifications.filter((n) => !n.read).length;
 
   return (
     <div className={`home-card notification-section ${collapsed ? 'is-collapsed' : ''}`}>
@@ -38,24 +41,21 @@ const NotificationSection = () => {
       </div>
       {!collapsed && (
         <div className="notification-list">
-          {mockNotifications.slice(0, 5).map((item) => (
-            <div
-              key={item.id}
-              className="notification-item"
-              onClick={() => openNotification(item, navigate)}
-            >
-              <div className="notification-item-content">
-                <div className="notification-item-title-row">
-                  <SeverityTag severity={item.severity} />
-                  <span className={`notification-item-title ${item.read ? '' : 'unread'}`}>{item.title}</span>
-                </div>
-                <div className="notification-item-time">
-                  <RelativeTime value={item.createdAt} />
+          {notifications.slice(0, 5).map((item) => {
+            const pConfig = priorityConfig[item.priority] || priorityConfig.NORMAL;
+            return (
+              <div key={item.id} className="notification-item">
+                <div className={`notification-item-dot ${item.read ? 'read' : 'unread'}`} />
+                <div className="notification-item-content">
+                  <div className="notification-item-title-row">
+                    <Tag size="small" color={pConfig.color as any}>{pConfig.label}</Tag>
+                    <span className="notification-item-title">{item.title}</span>
+                  </div>
+                  <div className="notification-item-time">{item.time}</div>
                 </div>
               </div>
-              <span className={`notification-item-dot ${item.read ? 'read' : 'unread'}`} />
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
