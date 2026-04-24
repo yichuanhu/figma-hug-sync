@@ -54,6 +54,7 @@ const OwnerSearchSelect = ({
       }}
       style={{ width: '100%', ...style }}
       className={className}
+      dropdownMatchSelectWidth
       dropdownStyle={{ maxHeight: 320, overflow: 'auto' }}
       optionList={options}
       renderSelectedItem={(option) => {
@@ -80,6 +81,11 @@ const OwnerSearchSelect = ({
           style?: React.CSSProperties;
           className?: string;
         };
+        const deptSegments = (department || '').split(' / ');
+        const deptDisplay =
+          deptSegments.length > 3
+            ? `${deptSegments[0]} / ... / ${deptSegments[deptSegments.length - 1]}`
+            : department;
         return (
           <div
             className={`${optClass || ''} ${selected ? 'semi-select-option-selected' : ''}`}
@@ -114,7 +120,7 @@ const OwnerSearchSelect = ({
                 ellipsis={{ showTooltip: true }}
                 style={{ margin: 0, fontSize: 12, color: 'var(--semi-color-text-2)' }}
               >
-                {department}
+                {deptDisplay}
               </Text>
             </div>
           </div>
