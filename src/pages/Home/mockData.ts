@@ -44,12 +44,12 @@ export const metrics: MetricItem[] = [
 ];
 
 export const notifications: NotificationItem[] = [
-  { id: '1', titleKey: '', title: 'Process "Monthly Financial Report" execution failed', time: '10 min ago', read: false, type: 'error', priority: 'URGENT' },
-  { id: '2', titleKey: '', title: 'Pending approval: Publish process "Data Sync"', time: '30 min ago', read: false, type: 'warning', priority: 'IMPORTANT' },
-  { id: '3', titleKey: '', title: 'Robot "RPA-Worker-03" is offline', time: '1 hour ago', read: false, type: 'error', priority: 'URGENT' },
-  { id: '4', titleKey: '', title: 'Process "Customer Data Cleansing" published successfully', time: '2 hours ago', read: true, type: 'success', priority: 'NORMAL' },
-  { id: '5', titleKey: '', title: 'New version Creator v3.2.0 released', time: '3 hours ago', read: false, type: 'info', priority: 'NORMAL' },
-  { id: '6', titleKey: '', title: 'Queue "Order Processing" message backlog alert', time: '4 hours ago', read: true, type: 'warning', priority: 'IMPORTANT' },
+  { id: '1', titleKey: '', title: 'Process "Monthly Financial Report" execution failed', time: '10 min ago', read: false, type: 'error', priority: 'URGENT', category: 'task' },
+  { id: '2', titleKey: '', title: 'Pending approval: Publish process "Data Sync"', time: '30 min ago', read: false, type: 'warning', priority: 'IMPORTANT', category: 'task' },
+  { id: '3', titleKey: '', title: 'Robot "RPA-Worker-03" is offline', time: '1 hour ago', read: false, type: 'error', priority: 'URGENT', category: 'robot' },
+  { id: '4', titleKey: '', title: 'Process "Customer Data Cleansing" published successfully', time: '2 hours ago', read: true, type: 'success', priority: 'NORMAL', category: 'task' },
+  { id: '5', titleKey: '', title: 'New version Creator v3.2.0 released', time: '3 hours ago', read: false, type: 'info', priority: 'NORMAL', category: 'license' },
+  { id: '6', titleKey: '', title: 'Queue "Order Processing" message backlog alert', time: '4 hours ago', read: true, type: 'warning', priority: 'IMPORTANT', category: 'trigger' },
 ];
 
 export const banners: BannerItem[] = [

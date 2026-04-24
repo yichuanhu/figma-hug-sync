@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Badge, Tag } from '@douyinfe/semi-ui';
 import { ChevronUp, ChevronDown, ChevronRight } from 'lucide-react';
+import CategoryBadge from '@/pages/NotificationCenter/components/CategoryBadge';
 import { notifications } from '../../mockData';
 import './index.less';
 
@@ -48,6 +49,7 @@ const NotificationSection = () => {
                 <div className="notification-item-content">
                   <div className="notification-item-title-row">
                     <Tag size="small" color={pConfig.color as any}>{pConfig.label}</Tag>
+                    <CategoryBadge category={item.category} />
                     <span className={`notification-item-title ${item.read ? '' : 'unread'}`}>{item.title}</span>
                   </div>
                   <div className="notification-item-time">{item.time}</div>
