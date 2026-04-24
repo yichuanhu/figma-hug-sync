@@ -16,7 +16,6 @@ const initialFilters: FilterValues = {
   search: '',
   categories: [],
   severities: [],
-  dateRange: null,
 };
 
 const NotificationCenter = () => {
@@ -43,11 +42,6 @@ const NotificationCenter = () => {
       if (filters.readFilter === 'unread' && n.read) return false;
       if (filters.categories.length && !filters.categories.includes(n.category)) return false;
       if (filters.severities.length && !filters.severities.includes(n.severity)) return false;
-      if (filters.dateRange) {
-        const [s, e] = filters.dateRange;
-        const t = new Date(n.createdAt).getTime();
-        if (t < s.getTime() || t > e.getTime()) return false;
-      }
       if (kw) {
         const txt = `${n.title} ${n.description}`.toLowerCase();
         if (!txt.includes(kw)) return false;
@@ -63,7 +57,6 @@ const NotificationCenter = () => {
     !!filters.search ||
     filters.categories.length > 0 ||
     filters.severities.length > 0 ||
-    !!filters.dateRange ||
     filters.readFilter !== 'all';
 
   const handleMarkRead = (id: string) => {
@@ -87,20 +80,6 @@ const NotificationCenter = () => {
 
   const handleOpen = (n: Notification) => {
     openNotification(n, navigate, n.read ? () => {} : handleMarkRead);
-  };
-
-  const handleDelete = (id: string) => {
-    Modal.confirm({
-      title: t('notificationCenter.confirm.deleteTitle'),
-      content: t('notificationCenter.confirm.deleteContent'),
-      okText: t('common.confirm'),
-      cancelText: t('common.cancel'),
-      okButtonProps: { type: 'danger' },
-      onOk: () => {
-        setList((prev) => prev.filter((n) => n.id !== id));
-        Toast.success(t('notificationCenter.toast.deleted'));
-      },
-    });
   };
 
   const handleClearRead = () => {
@@ -146,7 +125,6 @@ const NotificationCenter = () => {
           data={pageData}
           onOpen={handleOpen}
           onMarkRead={handleMarkRead}
-          onDelete={handleDelete}
           hasFilters={hasFilters}
         />
       </div>
