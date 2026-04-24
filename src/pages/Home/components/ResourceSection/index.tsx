@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Telescope, BookOpen, FileCode } from 'lucide-react';
+import { Telescope, BookOpen, FileCode, Download } from 'lucide-react';
 import { resources } from '../../mockData';
 import './index.less';
 
@@ -7,6 +7,7 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   Telescope,
   BookOpen,
   FileCode,
+  Download,
 };
 
 const ResourceSection = () => {
