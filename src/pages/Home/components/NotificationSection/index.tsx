@@ -6,6 +6,7 @@ import { ChevronUp, ChevronDown, ChevronRight } from 'lucide-react';
 import SeverityTag from '@/pages/NotificationCenter/components/SeverityTag';
 import RelativeTime from '@/pages/Requirements/RequirementsWorkbench/components/RelativeTime';
 import { mockNotifications } from '@/pages/NotificationCenter/mockData';
+import { openNotification } from '@/utils/notificationLink';
 import './index.less';
 
 const NotificationSection = () => {
