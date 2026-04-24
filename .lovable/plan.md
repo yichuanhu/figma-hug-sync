@@ -1,48 +1,52 @@
 
 
-# 首页核心指标卡片与资源获取卡片底部对齐
+# 需求列表新增「所属项目」列
 
-## 一、问题
+## 一、需求
 
-首页采用左右两列 grid 布局：
-- 左列：快速开始（Shortcuts）+ 核心指标（Metrics）
-- 右列：个人通知（Notification）+ 资源获取（Resource）
+在需求中心需求列表表格中新增一列「所属项目」，展示需求关联的项目名称。
 
-由于 `.home-content` 配置了 `align-items: start`，且左右栏是 `flex-direction: column` + `gap: 24px`，两列高度由各自内容决定。当前右列内容比左列高，导致左列底部留白，**核心指标卡底部高于资源获取卡底部**。
+## 二、修改方案
 
-## 二、目标
+### 1. 表格列新增（`src/pages/Requirements/RequirementsWorkbench/index.tsx`）
 
-让左列「核心指标」卡的底部与右列「资源获取」卡的底部水平对齐：增加核心指标卡片高度，撑满右列剩余高度。
+在「所属部门（owning_department_name）」列之后插入新列：
 
-## 三、修改方案（仅样式，不动结构）
+```tsx
+{
+  title: t('requirements.fields.linkedProject', '所属项目'),
+  dataIndex: 'linkedProject',
+  key: 'linkedProject',
+  width: 160,
+  ellipsis: { showTitle: false },
+  render: (_: unknown, record: RequirementItem) =>
+    record.linkedProject ? (
+      <Text ellipsis={{ showTooltip: true }} style={{ maxWidth: 140 }}>
+        {record.linkedProject.name}
+      </Text>
+    ) : (
+      <Text type="tertiary">-</Text>
+    ),
+}
+```
 
-**文件：`src/pages/Home/index.less`**
+字段已在 `RequirementItem.linkedProject` 中存在，mockData 已生成数据，无需额外接口与数据改动。
 
-1. `.home-content`：移除 `align-items: start`（或改为 `stretch`，grid 默认即 `stretch`），让左右列高度相等。
-2. `.home-left-column` / `.home-right-column`：保持 `display: flex; flex-direction: column; gap: 24px;`，并显式 `height: 100%`，使列容器与 grid track 同高。
-3. 左列内子模块策略：
-   - `ShortcutsSection`（`.home-card`）保持自适应内容高度（`flex-shrink: 0`）。
-   - `MetricsSection`（`.home-card.metrics-section`）追加 `flex: 1 1 auto`，吸收剩余空间，从而底部对齐右列底部。
+### 2. i18n 文案补充
 
-**文件：`src/pages/Home/components/MetricsSection/index.less`**
+- `public/i18n/zh-CN.json`：新增 `requirements.fields.linkedProject = "所属项目"`
+- `public/i18n/en.json`：新增 `requirements.fields.linkedProject = "Project"`
 
-4. `.metrics-section`：让卡片成为列方向 flex 容器，`.metrics-grid` 设置 `flex: 1`，使内部网格垂直撑开。
-5. `.metric-card`：将 `align-items: flex-start` 调整为 `align-items: center`（或保持 flex-start 但允许内容垂直居中分布），让指标在更高的卡片中视觉居中、不下沉到顶部。
+（若键已存在则复用。）
 
-## 四、影响范围
+## 三、文件改动清单
 
-- 仅影响首页左右两列的高度对齐与核心指标内部留白。
-- 当右列只有 1 个模块（极端隐藏场景）或左列被替换为 `ColumnEmpty` 时，由于 `ColumnEmpty` 已具最小高度，行为保持稳定。
-- 响应式断点 `≤960px` 下变为单列布局，`flex: 1` 不会造成异常拉伸。
+- `src/pages/Requirements/RequirementsWorkbench/index.tsx` — 在 columns 中新增「所属项目」列
+- `public/i18n/zh-CN.json`、`public/i18n/en.json` — 新增 `requirements.fields.linkedProject`
 
-## 五、文件改动清单
+## 四、不在范围
 
-- `src/pages/Home/index.less` — `.home-content` 去掉 `align-items: start`；左右列加 `height: 100%`；`.metrics-section` 追加 `flex: 1`
-- `src/pages/Home/components/MetricsSection/index.less` — `.metrics-section` 改为 `display: flex; flex-direction: column;`，`.metrics-grid` 加 `flex: 1`，`.metric-card` 垂直居中
-
-## 六、不在范围
-
-- 不调整核心指标的字段、图标、列数与配色
-- 不修改右列资源获取卡片
-- 不调整响应式断点阈值
+- 不修改看板视图（BoardView）
+- 不修改抽屉中的项目展示
+- 不修改 mock 数据与筛选逻辑（已在上一轮完成）
 
