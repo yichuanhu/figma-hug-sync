@@ -10,7 +10,7 @@ import type { Notification } from './types';
 import { openNotification } from '@/utils/notificationLink';
 import './index.less';
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
 const initialFilters: FilterValues = {
   readFilter: 'all',
