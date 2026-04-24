@@ -124,6 +124,7 @@
     "dataManagement": "数据管理",
     "databaseManagement": "数据库管理",
     "securityManagement": "安全管理",
+    "mtConfigGroup": "配置管理",
     "mtConfigManagement": "配置管理",
     "mtSystemParams": "系统参数",
     "mtServiceParams": "服务参数",
