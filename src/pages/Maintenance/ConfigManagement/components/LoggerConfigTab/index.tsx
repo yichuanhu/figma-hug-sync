@@ -34,7 +34,7 @@ const LoggerConfigTab = ({ advanced }: Props) => {
         {Object.entries(data.handlers).map(([key, h]) => (
           <div key={key} className="config-section__full" style={{ marginBottom: 12 }}>
             <div style={{ fontWeight: 500, marginBottom: 8, display: 'flex', alignItems: 'center', gap: 8 }}>
-              {key} <Tag size="small" color="blue">{h.class}</Tag>
+              {key} <Tag size="small" color="blue" style={{ whiteSpace: 'nowrap', fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace' }}>{h.class}</Tag>
             </div>
             <div className="config-section__grid">
               <Field label={t('maintenance.config.logger.level')}>
