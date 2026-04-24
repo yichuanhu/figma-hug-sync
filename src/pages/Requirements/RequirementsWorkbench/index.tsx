@@ -14,6 +14,7 @@ import {
   Modal,
   Toast,
   Space,
+  Select,
 } from '@douyinfe/semi-ui';
 import DepartmentSelect from '@/components/DepartmentSelect';
 import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
@@ -31,6 +32,7 @@ import {
   updateRequirementStatus,
   resubmitRequirement,
   MOCK_CURRENT_USER_ID,
+  MOCK_PROJECT_POOL,
 } from './mockData';
 import { statusConfigV2, legacyStatusMap } from './statusConfig';
 import RequirementFormModal from './components/RequirementFormModal';
@@ -66,6 +68,7 @@ const RequirementsWorkbench = () => {
   const [statusFilter, setStatusFilter] = useState<string[]>([]);
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
   const [priorityFilter, setPriorityFilter] = useState<string[]>([]);
+  const [projectFilter, setProjectFilter] = useState<string[]>([]);
   const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
 
   // 状态
@@ -121,13 +124,14 @@ const RequirementsWorkbench = () => {
         statusFilter,
         departmentFilter,
         priorityFilter,
+        projectFilter,
       });
       setListResponse(response);
     } finally {
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, statusFilter, departmentFilter, priorityFilter]);
+  }, [queryParams, statusFilter, departmentFilter, priorityFilter, projectFilter]);
 
   useEffect(() => {
     loadData();
