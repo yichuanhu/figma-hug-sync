@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Select, Typography, Avatar } from '@douyinfe/semi-ui';
 import { ALL_ORG_USERS, OrgUser } from '@/components/CollaboratorManager/mockData';
+import { departmentTree, DeptTreeNode } from '@/mocks/departmentData';
 
 interface OwnerSearchSelectProps {
   value?: string;
@@ -16,16 +17,56 @@ interface UserOption {
   value: string;
   label: string;
   department: string;
+  departmentPath: string;
   searchText: string;
 }
 
-const buildOptions = (users: OrgUser[]): UserOption[] =>
-  users.map((u) => ({
-    value: u.id,
-    label: u.name,
-    department: u.department,
-    searchText: `${u.name} ${u.department}`.toLowerCase(),
-  }));
+/** Build map: leaf department label -> full path segments */
+const buildDeptPathMap = (
+  nodes: DeptTreeNode[],
+  parents: string[] = [],
+  map: Map<string, string[]> = new Map(),
+): Map<string, string[]> => {
+  for (const node of nodes) {
+    const path = [...parents, node.label];
+    map.set(node.label, path);
+    if (node.children?.length) {
+      buildDeptPathMap(node.children, path, map);
+    }
+  }
+  return map;
+};
+
+/** Parse department string to segments, supports '-' and '/' separators, and resolves leaf names */
+const resolveDeptPath = (department: string, deptMap: Map<string, string[]>): string[] => {
+  if (!department) return [];
+  // If contains a path separator, split directly
+  if (department.includes('/') || department.includes('-')) {
+    const sep = department.includes('/') ? '/' : '-';
+    return department.split(sep).map((s) => s.trim()).filter(Boolean);
+  }
+  // Otherwise treat as leaf label and look up full path
+  const path = deptMap.get(department);
+  return path ? path : [department];
+};
+
+/** Truncate path: keep first + last two when more than 3 segments */
+const formatDeptPath = (segments: string[]): string => {
+  if (segments.length <= 3) return segments.join(' / ');
+  return `${segments[0]} / ... / ${segments[segments.length - 2]} / ${segments[segments.length - 1]}`;
+};
+
+const buildOptions = (users: OrgUser[], deptMap: Map<string, string[]>): UserOption[] =>
+  users.map((u) => {
+    const segments = resolveDeptPath(u.department, deptMap);
+    return {
+      value: u.id,
+      label: u.name,
+      department: u.department,
+      departmentPath: formatDeptPath(segments),
+      searchText: `${u.name} ${u.department} ${segments.join(' ')}`.toLowerCase(),
+    };
+  });
 
 const { Text } = Typography;
 
@@ -39,7 +80,8 @@ const OwnerSearchSelect = ({
 }: OwnerSearchSelectProps) => {
   const { t } = useTranslation();
 
-  const options = useMemo(() => buildOptions(ALL_ORG_USERS), []);
+  const deptMap = useMemo(() => buildDeptPathMap(departmentTree), []);
+  const options = useMemo(() => buildOptions(ALL_ORG_USERS, deptMap), [deptMap]);
 
   return (
     <Select
@@ -66,7 +108,7 @@ const OwnerSearchSelect = ({
           disabled: optDisabled,
           selected,
           label,
-          department,
+          departmentPath,
           onMouseEnter,
           onClick,
           style: optStyle,
@@ -75,17 +117,12 @@ const OwnerSearchSelect = ({
           disabled?: boolean;
           selected?: boolean;
           label: string;
-          department: string;
+          departmentPath: string;
           onMouseEnter?: (e: React.MouseEvent) => void;
           onClick?: (e: React.MouseEvent) => void;
           style?: React.CSSProperties;
           className?: string;
         };
-        const deptSegments = (department || '').split(' / ');
-        const deptDisplay =
-          deptSegments.length > 3
-            ? `${deptSegments[0]} / ... / ${deptSegments[deptSegments.length - 1]}`
-            : department;
         return (
           <div
             className={`${optClass || ''} ${selected ? 'semi-select-option-selected' : ''}`}
@@ -120,7 +157,7 @@ const OwnerSearchSelect = ({
                 ellipsis={{ showTooltip: true }}
                 style={{ margin: 0, fontSize: 12, color: 'var(--semi-color-text-2)' }}
               >
-                {deptDisplay}
+                {departmentPath}
               </Text>
             </div>
           </div>

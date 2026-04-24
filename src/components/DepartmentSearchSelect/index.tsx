@@ -124,7 +124,7 @@ const DepartmentSearchSelect = ({
         const segments = fullPathStr.split(' / ');
         const path =
           segments.length > 3
-            ? `${segments[0]} / ... / ${segments[segments.length - 1]}`
+            ? `${segments[0]} / ... / ${segments[segments.length - 2]} / ${segments[segments.length - 1]}`
             : fullPathStr;
         return (
           <div
