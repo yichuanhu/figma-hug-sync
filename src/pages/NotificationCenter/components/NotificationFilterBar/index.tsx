@@ -1,17 +1,11 @@
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Input, Tabs, TabPane, Button, Badge } from '@douyinfe/semi-ui';
-import { IconSearchStroked } from '@douyinfe/semi-icons';
+import { Tabs, TabPane, Button, Badge } from '@douyinfe/semi-ui';
 import { CheckCheck, Trash2 } from 'lucide-react';
-import FilterPopover, { FilterSection } from '@/components/FilterPopover';
-import type { NotificationCategory, NotificationReadFilter, NotificationSeverity } from '@/pages/NotificationCenter/types';
+import type { NotificationReadFilter } from '@/pages/NotificationCenter/types';
 import './index.less';
 
 export interface FilterValues {
   readFilter: NotificationReadFilter;
-  search: string;
-  categories: NotificationCategory[];
-  severities: NotificationSeverity[];
 }
 
 interface Props {
