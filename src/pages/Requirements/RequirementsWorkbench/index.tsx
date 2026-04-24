@@ -473,6 +473,19 @@ const RequirementsWorkbench = () => {
                 useNameAsValue
                 style={{ width: 'auto', minWidth: 150, maxWidth: 600 }}
               />
+              <Select
+                placeholder={t('common.filterProject')}
+                value={projectFilter}
+                onChange={(v) => {
+                  setProjectFilter((v as string[]) || []);
+                  setQueryParams((prev) => ({ ...prev, offset: 0 }));
+                }}
+                multiple
+                showClear
+                maxTagCount={1}
+                style={{ width: 'auto', minWidth: 150, maxWidth: 600 }}
+                optionList={MOCK_PROJECT_POOL.map((p) => ({ label: p.name, value: p.id }))}
+              />
               <FilterPopover
                 visible={filterPopoverVisible}
                 onVisibleChange={setFilterPopoverVisible}
