@@ -4,7 +4,6 @@ import { Check } from 'lucide-react';
 import RelativeTime from '@/pages/Requirements/RequirementsWorkbench/components/RelativeTime';
 import EmptyState from '@/components/EmptyState';
 import SeverityTag from '../SeverityTag';
-import CategoryBadge from '../CategoryBadge';
 import type { Notification, NotificationReadFilter } from '@/pages/NotificationCenter/types';
 import './index.less';
 
@@ -48,7 +47,6 @@ const NotificationTable = ({ data, onOpen, onMarkRead, hasFilters, readFilter }:
           <div className="nc-list-item-main">
             <div className="nc-list-item-title-row">
               <SeverityTag severity={n.severity} />
-              <CategoryBadge category={n.category} />
               <Typography.Text
                 strong={!n.read}
                 ellipsis={{ showTooltip: { opts: { content: n.title } } }}

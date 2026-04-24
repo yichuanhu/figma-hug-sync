@@ -6,7 +6,6 @@ import { ArrowRight, CheckCheck, X, Check } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import RelativeTime from '@/pages/Requirements/RequirementsWorkbench/components/RelativeTime';
 import SeverityTag from '@/pages/NotificationCenter/components/SeverityTag';
-import CategoryBadge from '@/pages/NotificationCenter/components/CategoryBadge';
 import { mockNotifications } from '@/pages/NotificationCenter/mockData';
 import type { Notification } from '@/pages/NotificationCenter/types';
 import { openNotification } from '@/utils/notificationLink';
@@ -108,19 +107,18 @@ const NotificationDrawer = ({ visible, onClose }: Props) => {
               className={`notification-drawer-item ${n.read ? 'read' : 'unread'}`}
               onClick={() => handleOpen(n)}
             >
-              <span className={`notification-drawer-item-dot ${n.read ? 'read' : 'unread'}`} />
               <div className="notification-drawer-item-content">
-                <div className="notification-drawer-item-meta">
+                <div className="notification-drawer-item-title-row">
+                  {!n.read && <span className="notification-drawer-item-dot unread" />}
                   <SeverityTag severity={n.severity} />
-                  <CategoryBadge category={n.category} />
+                  <Typography.Text
+                    strong={!n.read}
+                    className="notification-drawer-item-title"
+                    ellipsis={{ rows: 2, showTooltip: { opts: { content: n.title } } }}
+                  >
+                    {n.title}
+                  </Typography.Text>
                 </div>
-                <Typography.Text
-                  strong={!n.read}
-                  className="notification-drawer-item-title"
-                  ellipsis={{ rows: 2, showTooltip: { opts: { content: n.title } } }}
-                >
-                  {n.title}
-                </Typography.Text>
                 <Typography.Text
                   type="tertiary"
                   size="small"
