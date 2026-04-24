@@ -24,7 +24,6 @@ interface FlatDeptOption {
   searchText: string;
 }
 
-/** Flatten the department tree into a flat options list with parent path info */
 const flattenDepartments = (
   nodes: DeptTreeNode[],
   useNameAsValue: boolean,
@@ -67,6 +66,18 @@ const DepartmentSearchSelect = ({
     [useNameAsValue],
   );
 
+  const optionList = useMemo(
+    () =>
+      options.map((opt) => ({
+        value: opt.value,
+        label: opt.label,
+        parentPath: opt.parentPath,
+        fullPath: opt.fullPath,
+        searchText: opt.searchText,
+      })),
+    [options],
+  );
+
   return (
     <Select
       value={value}
@@ -76,24 +87,54 @@ const DepartmentSearchSelect = ({
       showClear={showClear}
       filter={(input, option) => {
         const opt = option as unknown as FlatDeptOption;
-        return opt.searchText.includes(input.toLowerCase());
+        return (opt.searchText || '').includes((input || '').toLowerCase());
       }}
       style={{ width: '100%', ...style }}
       className={className}
       dropdownStyle={{ maxHeight: 320, overflow: 'auto' }}
+      optionList={optionList}
       renderSelectedItem={(option) => {
         const opt = option as unknown as FlatDeptOption;
         return <span>{opt.label}</span>;
       }}
-    >
-      {options.map((opt) => (
-        <Select.Option
-          key={opt.value}
-          value={opt.value}
-          label={opt.label}
-          {...({ parentPath: opt.parentPath, fullPath: opt.fullPath, searchText: opt.searchText } as Record<string, unknown>)}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+      renderOptionItem={(props: Record<string, unknown>) => {
+        const {
+          disabled: optDisabled,
+          selected,
+          label,
+          fullPath,
+          parentPath,
+          onMouseEnter,
+          onClick,
+          style: optStyle,
+          className: optClass,
+        } = props as {
+          disabled?: boolean;
+          selected?: boolean;
+          label: string;
+          fullPath: string;
+          parentPath: string;
+          onMouseEnter?: (e: React.MouseEvent) => void;
+          onClick?: (e: React.MouseEvent) => void;
+          style?: React.CSSProperties;
+          className?: string;
+        };
+        const path = parentPath ? `${parentPath} / ${label}` : label;
+        return (
+          <div
+            className={`${optClass || ''} ${selected ? 'semi-select-option-selected' : ''}`}
+            style={{
+              ...optStyle,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              padding: '8px 12px',
+              cursor: optDisabled ? 'not-allowed' : 'pointer',
+              minWidth: 0,
+            }}
+            onClick={optDisabled ? undefined : onClick}
+            onMouseEnter={onMouseEnter}
+          >
             <Avatar
               size="extra-small"
               style={{
@@ -106,19 +147,19 @@ const DepartmentSearchSelect = ({
             </Avatar>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0, flex: 1 }}>
               <Text ellipsis={{ showTooltip: true }} style={{ margin: 0, fontSize: 14 }}>
-                {opt.label}
+                {label}
               </Text>
               <Text
                 ellipsis={{ showTooltip: true }}
                 style={{ margin: 0, fontSize: 12, color: 'var(--semi-color-text-2)' }}
               >
-                {opt.parentPath ? `${opt.parentPath} / ${opt.label}` : opt.label}
+                {path}
               </Text>
             </div>
           </div>
-        </Select.Option>
-      ))}
-    </Select>
+        );
+      }}
+    />
   );
 };
 
