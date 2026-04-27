@@ -72,6 +72,25 @@ const RequirementsProjects = () => {
     reload();
   }, [reload]);
 
+  // 从需求中心引导跳转：自动打开新建项目弹窗并预选需求
+  useEffect(() => {
+    if (handledLocationStateRef.current) return;
+    const state = (location.state ?? null) as {
+      openCreate?: boolean;
+      prefilledRequirementId?: string;
+    } | null;
+    if (state?.openCreate) {
+      handledLocationStateRef.current = true;
+      setEditing(null);
+      setPrefilledRequirementIds(
+        state.prefilledRequirementId ? [state.prefilledRequirementId] : undefined,
+      );
+      setFormVisible(true);
+      // 清理 history.state，避免刷新后重复触发
+      navigate(location.pathname, { replace: true, state: null });
+    }
+  }, [location, navigate]);
+
   const filtered = useMemo(() => {
     let list = projects;
     if (statusFilter.length > 0) {
@@ -330,7 +349,11 @@ const RequirementsProjects = () => {
       <ProjectFormModal
         visible={formVisible}
         initialData={editing}
-        onClose={() => setFormVisible(false)}
+        prefilledRequirementIds={prefilledRequirementIds}
+        onClose={() => {
+          setFormVisible(false);
+          setPrefilledRequirementIds(undefined);
+        }}
         onSuccess={reload}
       />
 
