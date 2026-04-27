@@ -125,7 +125,6 @@ const PropertyPanel = ({
       </div>
 
       {data.status === 'DRAFT' && (() => {
-        const hasApproval = schemeHasApproval();
         const submitLabel = hasApproval
           ? t('requirements.detail.submitForApproval')
           : t('requirements.detail.submitRequirement');
