@@ -398,9 +398,7 @@ const RequirementsWorkbench = () => {
                         title: hasApproval
                           ? t('requirements.detail.submitConfirmTitle')
                           : t('requirements.detail.submitDirectConfirmTitle'),
-                        content: hasApproval
-                          ? t('requirements.detail.submitConfirmContent')
-                          : t('requirements.detail.submitDirectConfirmContent'),
+                        content: buildSubmitConfirmContent(hasApproval, hasAssessment, t),
                         okText: submitLabel,
                         cancelText: t('common.cancel'),
                         onOk: async () => {
