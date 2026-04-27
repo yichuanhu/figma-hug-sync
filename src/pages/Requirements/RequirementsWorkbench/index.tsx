@@ -50,7 +50,7 @@ const { Title, Text } = Typography;
 
 const RequirementsWorkbench = () => {
   const { t } = useTranslation();
-  const { hasApproval, submittedStatus } = useSchemeFlags();
+  const { hasApproval, hasAssessment, submittedStatus } = useSchemeFlags();
   const location = useLocation();
   const navigate = useNavigate();
 
