@@ -513,7 +513,7 @@ const RequirementDetailDrawer = ({
               <div className="requirement-detail-tab-content">
                 <CustomFieldsSection data={effectiveData} t={t} />
 
-                {effectiveData.approvalFlowConfig && !isHistoryMode && (
+                {hasApproval && effectiveData.approvalFlowConfig && !isHistoryMode && (
                   <ApprovalFlowProgress config={effectiveData.approvalFlowConfig} />
                 )}
 
@@ -521,23 +521,27 @@ const RequirementDetailDrawer = ({
               </div>
             </TabPane>
 
-            <TabPane
-              tab={t('requirements.detail.tab.assessment')}
-              itemKey="assessment"
-            >
-              <div className="requirement-detail-tab-content">
-                <AssessmentTab data={effectiveData} onSaveAssessment={handleSaveAssessment} />
-              </div>
-            </TabPane>
+            {hasAssessment && (
+              <TabPane
+                tab={t('requirements.detail.tab.assessment')}
+                itemKey="assessment"
+              >
+                <div className="requirement-detail-tab-content">
+                  <AssessmentTab data={effectiveData} onSaveAssessment={handleSaveAssessment} />
+                </div>
+              </TabPane>
+            )}
 
-            <TabPane
-              tab={t('requirements.detail.tab.cost')}
-              itemKey="cost"
-            >
-              <div className="requirement-detail-tab-content">
-                <CostEstimateTab data={effectiveData} />
-              </div>
-            </TabPane>
+            {hasAssessment && (
+              <TabPane
+                tab={t('requirements.detail.tab.cost')}
+                itemKey="cost"
+              >
+                <div className="requirement-detail-tab-content">
+                  <CostEstimateTab data={effectiveData} />
+                </div>
+              </TabPane>
+            )}
           </Tabs>
         </div>
 
