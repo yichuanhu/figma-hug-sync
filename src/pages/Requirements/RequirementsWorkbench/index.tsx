@@ -385,7 +385,6 @@ const RequirementsWorkbench = () => {
                 </Dropdown.Item>
               )}
               {canEdit(record.status) && (() => {
-                const hasApproval = schemeHasApproval();
                 const submitLabel = hasApproval
                   ? t('requirements.detail.submitForApproval')
                   : t('requirements.detail.submitRequirement');
@@ -404,7 +403,7 @@ const RequirementsWorkbench = () => {
                         okText: submitLabel,
                         cancelText: t('common.cancel'),
                         onOk: async () => {
-                          await updateRequirementStatus(record.id, resolveSubmittedStatus(), 'Submitted.');
+                          await updateRequirementStatus(record.id, submittedStatus, 'Submitted.');
                           loadData();
                           Toast.success(
                             hasApproval
