@@ -21,7 +21,7 @@ import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
 import { Ellipsis, Pencil, Plus, Send, Trash2, Upload, LayoutGrid, List as ListIcon, RotateCcw, PowerOff } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
-import FilterPopover from '@/components/FilterPopover';
+
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import type { RequirementItem, RequirementQueryParams, RequirementStatus } from './types';
 import {
