@@ -23,7 +23,7 @@ import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
-import type { RequirementItem, RequirementQueryParams, RequirementStatus, RequirementPriority } from './types';
+import type { RequirementItem, RequirementQueryParams, RequirementStatus } from './types';
 import {
   fetchRequirementList,
   deleteRequirement,
@@ -38,9 +38,7 @@ import {
 import { statusConfigV2, legacyStatusMap } from './statusConfig';
 import RequirementFormModal from './components/RequirementFormModal';
 import RequirementDetailDrawer from './components/RequirementDetailDrawer';
-import PriorityIndicator from './components/PriorityIndicator';
 import StatusDot from './components/StatusDot';
-import ScoreBar from './components/ScoreBar';
 import TitleCell from './components/TitleCell';
 import RelativeTime from './components/RelativeTime';
 import BoardView from './components/BoardView';
@@ -68,11 +66,8 @@ const RequirementsWorkbench = () => {
   });
 
   // 筛选
-  const [statusFilter, setStatusFilter] = useState<string[]>([]);
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
-  const [priorityFilter, setPriorityFilter] = useState<string[]>([]);
   const [projectFilter, setProjectFilter] = useState<string[]>([]);
-  const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
 
   // 状态
   const [loading, setLoading] = useState(true);
@@ -93,40 +88,13 @@ const RequirementsWorkbench = () => {
     list: [],
   });
 
-  // 筛选选项（与 9 状态生命周期对齐）
-  const statusOptions = useMemo(
-    () => [
-      { value: 'DRAFT',              label: t('requirements.status.draft') },
-      { value: 'PENDING_APPROVAL',   label: t('requirements.status.pendingApproval') },
-      { value: 'PENDING_ASSESSMENT', label: t('requirements.status.pendingAssessment') },
-      { value: 'PENDING_PROJECT',    label: t('requirements.status.pendingProject') },
-      { value: 'DEVELOPING',         label: t('requirements.status.developing') },
-      { value: 'LAUNCHED',           label: t('requirements.status.launched') },
-      { value: 'OFFLINE',            label: t('requirements.status.offline') },
-      { value: 'REJECTED',           label: t('requirements.status.rejected') },
-      { value: 'WITHDRAWN',          label: t('requirements.status.withdrawn') },
-    ],
-    [t],
-  );
-
-  const priorityOptions = useMemo(
-    () => [
-      { value: 'HIGH', label: t('requirements.priority.high') },
-      { value: 'MEDIUM', label: t('requirements.priority.medium') },
-      { value: 'LOW', label: t('requirements.priority.low') },
-    ],
-    [t],
-  );
-
   // 加载数据
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetchRequirementList({
         ...queryParams,
-        statusFilter,
         departmentFilter,
-        priorityFilter,
         projectFilter,
       });
       setListResponse(response);
@@ -134,7 +102,7 @@ const RequirementsWorkbench = () => {
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, statusFilter, departmentFilter, priorityFilter, projectFilter]);
+  }, [queryParams, departmentFilter, projectFilter]);
 
   useEffect(() => {
     loadData();
