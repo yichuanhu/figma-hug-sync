@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Typography,
@@ -39,6 +40,8 @@ const STATUS_OPTIONS: ProjectAggregatedStatus[] = ['EMPTY', 'IN_PROGRESS', 'DEVE
 
 const RequirementsProjects = () => {
   const { t } = useTranslation();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [isInitial, setIsInitial] = useState(true);
   const [projects, setProjects] = useState<Project[]>([]);
@@ -48,9 +51,11 @@ const RequirementsProjects = () => {
 
   const [formVisible, setFormVisible] = useState(false);
   const [editing, setEditing] = useState<Project | null>(null);
+  const [prefilledRequirementIds, setPrefilledRequirementIds] = useState<string[] | undefined>(undefined);
 
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const handledLocationStateRef = useRef(false);
 
   const reload = useCallback(async () => {
     setLoading(true);
