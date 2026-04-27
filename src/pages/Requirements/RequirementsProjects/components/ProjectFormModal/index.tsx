@@ -15,6 +15,8 @@ import {
 interface Props {
   visible: boolean;
   initialData?: Project | null;
+  /** 预选的关联需求 ID（来自需求中心待立项引导） */
+  prefilledRequirementIds?: string[];
   onClose: () => void;
   onSuccess: () => void;
 }
@@ -26,7 +28,13 @@ interface FormValues {
   linkedRequirementIds?: string[];
 }
 
-const ProjectFormModal = ({ visible, initialData, onClose, onSuccess }: Props) => {
+const ProjectFormModal = ({
+  visible,
+  initialData,
+  prefilledRequirementIds,
+  onClose,
+  onSuccess,
+}: Props) => {
   const { t } = useTranslation();
   const formApiRef = useRef<FormApi | null>(null);
   const isEdit = !!initialData;
@@ -44,12 +52,16 @@ const ProjectFormModal = ({ visible, initialData, onClose, onSuccess }: Props) =
               : undefined,
           description: initialData.description,
         });
+      } else if (prefilledRequirementIds && prefilledRequirementIds.length > 0) {
+        formApiRef.current.setValues({
+          linkedRequirementIds: prefilledRequirementIds,
+        });
       }
     }
     if (visible && !isEdit) {
       fetchUnlinkedRequirements().then(setCandidateReqs);
     }
-  }, [visible, initialData, isEdit]);
+  }, [visible, initialData, isEdit, prefilledRequirementIds]);
 
   const handleOk = async () => {
     if (!formApiRef.current) return;

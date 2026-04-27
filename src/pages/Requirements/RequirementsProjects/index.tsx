@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Typography,
@@ -39,6 +40,8 @@ const STATUS_OPTIONS: ProjectAggregatedStatus[] = ['EMPTY', 'IN_PROGRESS', 'DEVE
 
 const RequirementsProjects = () => {
   const { t } = useTranslation();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [isInitial, setIsInitial] = useState(true);
   const [projects, setProjects] = useState<Project[]>([]);
@@ -48,9 +51,11 @@ const RequirementsProjects = () => {
 
   const [formVisible, setFormVisible] = useState(false);
   const [editing, setEditing] = useState<Project | null>(null);
+  const [prefilledRequirementIds, setPrefilledRequirementIds] = useState<string[] | undefined>(undefined);
 
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const handledLocationStateRef = useRef(false);
 
   const reload = useCallback(async () => {
     setLoading(true);
@@ -66,6 +71,25 @@ const RequirementsProjects = () => {
   useEffect(() => {
     reload();
   }, [reload]);
+
+  // 从需求中心引导跳转：自动打开新建项目弹窗并预选需求
+  useEffect(() => {
+    if (handledLocationStateRef.current) return;
+    const state = (location.state ?? null) as {
+      openCreate?: boolean;
+      prefilledRequirementId?: string;
+    } | null;
+    if (state?.openCreate) {
+      handledLocationStateRef.current = true;
+      setEditing(null);
+      setPrefilledRequirementIds(
+        state.prefilledRequirementId ? [state.prefilledRequirementId] : undefined,
+      );
+      setFormVisible(true);
+      // 清理 history.state，避免刷新后重复触发
+      navigate(location.pathname, { replace: true, state: null });
+    }
+  }, [location, navigate]);
 
   const filtered = useMemo(() => {
     let list = projects;
@@ -325,7 +349,11 @@ const RequirementsProjects = () => {
       <ProjectFormModal
         visible={formVisible}
         initialData={editing}
-        onClose={() => setFormVisible(false)}
+        prefilledRequirementIds={prefilledRequirementIds}
+        onClose={() => {
+          setFormVisible(false);
+          setPrefilledRequirementIds(undefined);
+        }}
         onSuccess={reload}
       />
 

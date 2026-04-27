@@ -16,7 +16,9 @@ import ApprovalFlowProgress from '../ApprovalFlowProgress';
 import ReadonlySchemeFieldsRenderer from '../ReadonlySchemeFieldsRenderer';
 import { buildSubmitConfirmContent } from '../../utils/submitConfirm';
 import './index.less';
-import { Pencil, PowerOff, RotateCcw, Send, Trash2 } from 'lucide-react';
+import { Lightbulb, Pencil, PowerOff, RotateCcw, Send, Trash2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import WorkspacePickerModal from './WorkspacePickerModal';
 
 const { Text } = Typography;
 
@@ -273,10 +275,12 @@ const RequirementDetailDrawer = ({
   initialTab = 'overview',
 }: RequirementDetailDrawerProps) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { hasApproval, hasAssessment, submittedStatus } = useSchemeFlags();
   const [activities, setActivities] = useState<ActivityRecord[]>([]);
   const [activeTab, setActiveTab] = useState<string>(initialTab);
   const [viewingVersion, setViewingVersion] = useState<'current' | number>('current');
+  const [pickerVisible, setPickerVisible] = useState(false);
 
   // 抽屉关闭后重置 tab/版本视图；打开新数据时不重置 tab
   useEffect(() => {
@@ -360,6 +364,7 @@ const RequirementDetailDrawer = ({
 
 
   return (
+    <>
     <DetailDrawerWrapper<RequirementItem>
       visible={visible}
       onClose={onClose}
@@ -513,6 +518,55 @@ const RequirementDetailDrawer = ({
               itemKey="overview"
             >
               <div className="requirement-detail-tab-content">
+                {!isHistoryMode &&
+                  effectiveData.status === 'PENDING_PROJECT' &&
+                  !findWorkspaceByRequirementId(effectiveData.id) && (
+                    <div style={{ marginBottom: 16 }}>
+                      <Banner
+                        type="info"
+                        fullMode={false}
+                        closeIcon={null}
+                        icon={<Lightbulb size={20} strokeWidth={2} style={{ color: 'var(--semi-color-info)' }} />}
+                        title={
+                          <span style={{ fontWeight: 600 }}>
+                            {t('requirements.detail.pendingProject.title')}
+                          </span>
+                        }
+                        description={
+                          <div>
+                            <div style={{ marginBottom: 12 }}>
+                              {t('requirements.detail.pendingProject.description')}
+                            </div>
+                            <div style={{ display: 'flex', gap: 8 }}>
+                              <Button
+                                theme="solid"
+                                type="primary"
+                                size="small"
+                                onClick={() => setPickerVisible(true)}
+                              >
+                                {t('requirements.detail.pendingProject.linkExisting')}
+                              </Button>
+                              <Button
+                                theme="light"
+                                size="small"
+                                onClick={() =>
+                                  navigate('/requirements/projects', {
+                                    state: {
+                                      openCreate: true,
+                                      prefilledRequirementId: effectiveData.id,
+                                    },
+                                  })
+                                }
+                              >
+                                {t('requirements.detail.pendingProject.createProject')}
+                              </Button>
+                            </div>
+                          </div>
+                        }
+                      />
+                    </div>
+                  )}
+
                 <CustomFieldsSection data={effectiveData} t={t} />
 
                 {hasApproval && effectiveData.approvalFlowConfig && !isHistoryMode && (
@@ -553,6 +607,14 @@ const RequirementDetailDrawer = ({
         </div>
       </div>
     </DetailDrawerWrapper>
+    <WorkspacePickerModal
+      visible={pickerVisible}
+      requirementId={data.id}
+      departmentId={data.owning_department_id}
+      onClose={() => setPickerVisible(false)}
+      onSuccess={() => onRefresh?.()}
+    />
+    </>
   );
 };
 

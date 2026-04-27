@@ -659,7 +659,17 @@
       "versionLabel": "版本",
       "versionLatest": "最新版本",
       "viewingHistoryBanner": "当前查看历史版本 v{{version}}，仅供回看（只读）",
-      "backToLatest": "返回最新版本"
+      "backToLatest": "返回最新版本",
+      "pendingProject": {
+        "title": "待立项引导",
+        "description": "该需求等待立项中，请将其关联到一个项目下的工作空间，以启动开发。",
+        "linkExisting": "关联到已有工作空间",
+        "createProject": "新建项目并关联",
+        "modalTitle": "关联到工作空间",
+        "modalTip": "选择一个工作空间，将当前需求纳入其中以启动开发。",
+        "linkSuccess": "已关联到工作空间「{{name}}」",
+        "selectPlaceholder": "请选择工作空间"
+      }
     },
     "approvalFlow": {
       "title": "审批流程",
