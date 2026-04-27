@@ -272,6 +272,7 @@ const RequirementDetailDrawer = ({
   initialTab = 'overview',
 }: RequirementDetailDrawerProps) => {
   const { t } = useTranslation();
+  const { hasApproval, submittedStatus } = useSchemeFlags();
   const [activities, setActivities] = useState<ActivityRecord[]>([]);
   const [activeTab, setActiveTab] = useState<string>(initialTab);
   const [viewingVersion, setViewingVersion] = useState<'current' | number>('current');
