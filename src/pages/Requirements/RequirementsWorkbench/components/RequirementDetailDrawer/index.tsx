@@ -123,34 +123,48 @@ const PropertyPanel = ({
         </div>
       </div>
 
-      {data.status === 'DRAFT' && (
-        <>
-          <div className="requirement-detail-property-divider" />
-          <div className="requirement-detail-property-group">
-            <Button
-              theme="solid"
-              type="primary"
-              icon={<Send size={16} strokeWidth={2} />}
-              block
-              style={{ height: 32 }}
-              onClick={() => {
-                Modal.confirm({
-                  title: t('requirements.detail.submitConfirmTitle'),
-                  content: t('requirements.detail.submitConfirmContent'),
-                  okText: t('requirements.detail.submitForApproval'),
-                  cancelText: t('common.cancel'),
-                  onOk: async () => {
-                    await onStatusChange(data.id, 'PENDING_APPROVAL', 'Submitted for approval.');
-                    Toast.success(t('requirements.detail.submitSuccess'));
-                  },
-                });
-              }}
-            >
-              {t('requirements.detail.submitForApproval')}
-            </Button>
-          </div>
-        </>
-      )}
+      {data.status === 'DRAFT' && (() => {
+        const hasApproval = schemeHasApproval();
+        const submitLabel = hasApproval
+          ? t('requirements.detail.submitForApproval')
+          : t('requirements.detail.submitRequirement');
+        return (
+          <>
+            <div className="requirement-detail-property-divider" />
+            <div className="requirement-detail-property-group">
+              <Button
+                theme="solid"
+                type="primary"
+                icon={<Send size={16} strokeWidth={2} />}
+                block
+                style={{ height: 32 }}
+                onClick={() => {
+                  Modal.confirm({
+                    title: hasApproval
+                      ? t('requirements.detail.submitConfirmTitle')
+                      : t('requirements.detail.submitDirectConfirmTitle'),
+                    content: hasApproval
+                      ? t('requirements.detail.submitConfirmContent')
+                      : t('requirements.detail.submitDirectConfirmContent'),
+                    okText: submitLabel,
+                    cancelText: t('common.cancel'),
+                    onOk: async () => {
+                      await onStatusChange(data.id, resolveSubmittedStatus(), 'Submitted.');
+                      Toast.success(
+                        hasApproval
+                          ? t('requirements.detail.submitSuccess')
+                          : t('requirements.detail.submitDirectSuccess'),
+                      );
+                    },
+                  });
+                }}
+              >
+                {submitLabel}
+              </Button>
+            </div>
+          </>
+        );
+      })()}
 
       <ApprovalSection data={data} onStatusChange={onStatusChange} onRefresh={onRefresh} />
     </div>
