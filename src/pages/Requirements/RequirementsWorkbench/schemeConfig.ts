@@ -317,11 +317,13 @@ export const activateScheme = async (id: string): Promise<void> => {
     ...s,
     status: s.id === id ? 'active' : 'inactive',
   }));
+  bumpSchemeVersion();
 };
 
 export const addScheme = async (scheme: RequirementScheme): Promise<RequirementScheme> => {
   await new Promise((r) => setTimeout(r, 200));
   schemeStore = [scheme, ...schemeStore];
+  bumpSchemeVersion();
   return scheme;
 };
 
@@ -330,6 +332,7 @@ export const deleteScheme = async (id: string): Promise<void> => {
   const target = schemeStore.find((s) => s.id === id);
   if (target?.is_preset) throw new Error('预设方案不可删除');
   schemeStore = schemeStore.filter((s) => s.id !== id);
+  bumpSchemeVersion();
 };
 
 /** 更新方案的审批流配置（预设方案不可更新） */
@@ -344,6 +347,7 @@ export const updateSchemeApprovalFlow = async (
   schemeStore = schemeStore.map((s) =>
     s.id === id ? { ...s, approval_flow, updated_at: new Date().toISOString() } : s,
   );
+  bumpSchemeVersion();
   return schemeStore.find((s) => s.id === id)!;
 };
 
