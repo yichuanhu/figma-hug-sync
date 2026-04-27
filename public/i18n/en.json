@@ -768,7 +768,17 @@
       "versionLabel": "Version",
       "versionLatest": "Latest",
       "viewingHistoryBanner": "Viewing historical version v{{version}} (read-only)",
-      "backToLatest": "Back to Latest"
+      "backToLatest": "Back to Latest",
+      "pendingProject": {
+        "title": "Pending Initiation",
+        "description": "This requirement is waiting to be initiated. Link it to a workspace under a project to start development.",
+        "linkExisting": "Link to Existing Workspace",
+        "createProject": "Create Project and Link",
+        "modalTitle": "Link to Workspace",
+        "modalTip": "Select a workspace to include this requirement and start development.",
+        "linkSuccess": "Linked to workspace \"{{name}}\"",
+        "selectPlaceholder": "Select a workspace"
+      }
     },
     "approvalFlow": {
       "title": "Approval Flow",
