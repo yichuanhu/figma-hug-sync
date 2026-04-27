@@ -1,8 +1,8 @@
 import { useEffect, useMemo } from 'react';
 import { Form, Button, Toast, useFormApi, useFormState } from '@douyinfe/semi-ui';
 import { Upload as UploadIcon } from 'lucide-react';
-import OwnerSelect from '@/components/OwnerSelect';
-import DepartmentSelect from '@/components/DepartmentSelect';
+import OwnerSearchSelect from '@/components/OwnerSearchSelect';
+import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
 import type { SchemeField, CostConfig } from '../../types';
 
 interface Props {
@@ -276,9 +276,9 @@ const FormBoundSelect = ({
   return (
     <Form.Slot {...commonProps} label={{ text: label, required: Boolean((commonProps as { rules?: Array<{ required?: boolean }> }).rules?.some((r) => r.required)) }}>
       {variant === 'user' ? (
-        <OwnerSelect value={value} onChange={handleChange} placeholder={placeholder} style={{ width: '100%' }} />
+        <OwnerSearchSelect value={value} onChange={handleChange} placeholder={placeholder} style={{ width: '100%' }} />
       ) : (
-        <DepartmentSelect value={value} onChange={handleChange} placeholder={placeholder} style={{ width: '100%' }} />
+        <DepartmentSearchSelect value={value} onChange={handleChange} useNameAsValue placeholder={placeholder} style={{ width: '100%' }} />
       )}
     </Form.Slot>
   );
