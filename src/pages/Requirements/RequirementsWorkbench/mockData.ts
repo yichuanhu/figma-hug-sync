@@ -307,6 +307,30 @@ const DEFAULT_COST_CONFIG: SchemeCostConfig = {
 const getEffectiveScheme = (): RequirementScheme =>
   getActiveSchemeFromStore() ?? PRESET_SCHEMES[0];
 
+/** 当前激活方案是否启用了审批流（至少 1 级） */
+export const schemeHasApproval = (): boolean => {
+  const s = getEffectiveScheme();
+  return (s.approval_flow?.levels?.length ?? 0) > 0;
+};
+
+/** 当前激活方案是否启用了评估模型（价值 / 复杂度任一存在即视为启用） */
+export const schemeHasAssessment = (): boolean => {
+  const s = getEffectiveScheme();
+  return !!(s.value_assessment_model || s.complexity_assessment_model);
+};
+
+/** DRAFT 提交后的目标状态：依据方案是否含审批/评估，跳过对应阶段 */
+export const resolveSubmittedStatus = (): RequirementStatus => {
+  if (schemeHasApproval()) return 'PENDING_APPROVAL';
+  if (schemeHasAssessment()) return 'PENDING_ASSESSMENT';
+  return 'PENDING_PROJECT';
+};
+
+/** 审批通过后的目标状态：无评估则跳过 PENDING_ASSESSMENT */
+export const resolvePostApprovalStatus = (): RequirementStatus => {
+  return schemeHasAssessment() ? 'PENDING_ASSESSMENT' : 'PENDING_PROJECT';
+};
+
 export const getActiveSchemeCostConfig = (): SchemeCostConfig => {
   const scheme = getEffectiveScheme();
   const cc = scheme.cost_config;
