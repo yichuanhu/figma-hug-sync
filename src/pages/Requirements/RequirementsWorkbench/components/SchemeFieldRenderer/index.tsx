@@ -113,6 +113,18 @@ const SchemeFieldRenderer = ({ field, costConfig }: Props) => {
         return <Form.DatePicker {...commonProps} type="date" style={{ width: '100%' }} />;
       case 'textarea':
         return <Form.TextArea {...commonProps} autosize={{ minRows: 4, maxRows: 10 }} maxCount={validation?.maxLength ?? 2000} showClear />;
+      case 'user_select':
+        return (
+          <Form.Slot {...commonProps}>
+            <OwnerSelect placeholder={placeholder ?? `请选择${label}`} style={{ width: '100%' }} />
+          </Form.Slot>
+        );
+      case 'department_select':
+        return (
+          <Form.Slot {...commonProps}>
+            <DepartmentSelect placeholder={placeholder ?? `请选择${label}`} style={{ width: '100%' }} />
+          </Form.Slot>
+        );
       case 'text':
       default:
         return <Form.Input {...commonProps} maxLength={validation?.maxLength ?? 200} showClear />;
