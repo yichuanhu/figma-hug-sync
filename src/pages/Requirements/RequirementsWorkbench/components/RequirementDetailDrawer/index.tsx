@@ -165,7 +165,9 @@ const PropertyPanel = ({
         );
       })()}
 
-      <ApprovalSection data={data} onStatusChange={onStatusChange} onRefresh={onRefresh} />
+      {hasApproval && (
+        <ApprovalSection data={data} onStatusChange={onStatusChange} onRefresh={onRefresh} />
+      )}
     </div>
   );
 };
