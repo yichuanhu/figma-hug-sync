@@ -157,12 +157,6 @@ const RequirementFormModal = ({
 
             <div className="scheme-field-w-medium">
               <Form.Slot label={{ text: t('common.owningDepartment'), required: true }}>
-                <Form.Input
-                  field="department"
-                  noLabel
-                  rules={[{ required: true, message: t('requirements.form.departmentRequired') }]}
-                  style={{ display: 'none' }}
-                />
                 <DepartmentSearchSelect
                   value={departmentValue}
                   onChange={handleDepartmentChange}
