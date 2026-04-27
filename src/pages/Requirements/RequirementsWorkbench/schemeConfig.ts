@@ -202,7 +202,8 @@ export const PRESET_SCHEMES: RequirementScheme[] = [
     },
     custom_fields: [
       { key: 'requirement_description', label: '需求描述', type: 'textarea', required: true, validation: { maxLength: 2000 }, ui_width: 'full', description: '描述需求背景、目标与范围' },
-      { key: 'requirement_analyst', label: '需求分析师', type: 'text', required: false, validation: { maxLength: 50 }, ui_width: 'medium', description: '由 Excel 提供的分析师，与系统“需求负责人”区分' },
+      { key: 'requirement_analyst', label: '需求分析师', type: 'user_select', required: false, ui_width: 'medium', description: '从用户列表中选择需求分析师' },
+      { key: 'proposing_department', label: '需求提出单位及部门', type: 'department_select', required: false, ui_width: 'medium', description: '从部门列表中选择需求提出方' },
       { key: 'operation_type', label: '操作类型', type: 'select', required: true, ui_width: 'medium', options: [
         { label: '业务操作', value: 'business_operation' },
         { label: '数据处理', value: 'data_processing' },
@@ -213,7 +214,14 @@ export const PRESET_SCHEMES: RequirementScheme[] = [
         { label: '凭证审核', value: 'voucher_review' },
         { label: '其他', value: 'other' },
       ] },
-      { key: 'involved_systems', label: '涉及的办公系统或软件', type: 'textarea', required: false, validation: { maxLength: 500 }, ui_width: 'full', description: '例：FMIS、SAP、SSF、Excel、Chrome' },
+      { key: 'involved_systems', label: '涉及的办公系统或软件', type: 'multi_select', required: false, ui_width: 'full', options: [
+        { label: 'FMIS', value: 'FMIS' },
+        { label: 'SAP', value: 'SAP' },
+        { label: 'SSF', value: 'SSF' },
+        { label: 'Excel', value: 'Excel' },
+        { label: 'Chrome', value: 'Chrome' },
+        { label: 'Edge', value: 'Edge' },
+      ] },
       { key: 'business_coverage_unit', label: '业务覆盖范围（单位）', type: 'text', required: false, validation: { maxLength: 100 }, ui_width: 'medium', description: '例：湖北销售' },
       { key: 'per_capita_frequency', label: '人均处理频率', type: 'number', required: false, unit: '次/月', validation: { min: 0 }, ui_width: 'small' },
       { key: 'per_capita_duration', label: '人均处理时长', type: 'number', required: false, unit: '分钟/月', validation: { min: 0 }, ui_width: 'small' },
@@ -222,9 +230,8 @@ export const PRESET_SCHEMES: RequirementScheme[] = [
         { label: '服务企业', value: 'service_enterprise' },
         { label: '其他', value: 'other' },
       ] },
-      { key: 'using_department', label: '使用单位及部门', type: 'text', required: false, validation: { maxLength: 100 }, ui_width: 'medium', description: '例：成都中心-销售收款部' },
       { key: 'business_contact', label: '业务联系人相关信息', type: 'textarea', required: false, validation: { maxLength: 200 }, ui_width: 'full', description: '姓名 + 电话' },
-      { key: 'attachments_desc', label: '附件', type: 'textarea', required: false, validation: { maxLength: 500 }, ui_width: 'full', description: '描述附件清单（需求文档、业务视频等）' },
+      { key: 'attachments', label: '附件', type: 'file_upload', required: false, ui_width: 'full', description: '上传需求文档、业务视频等（最多 5 个，单个 ≤10MB）' },
       { key: 'expected_complete_date', label: '需求完成时间', type: 'date', required: false, ui_width: 'medium', description: '期望完成日期' },
     ],
     approval_flow: {

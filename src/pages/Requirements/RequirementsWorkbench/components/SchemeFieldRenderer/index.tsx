@@ -1,6 +1,8 @@
 import { useEffect, useMemo } from 'react';
 import { Form, Button, Toast, useFormApi, useFormState } from '@douyinfe/semi-ui';
 import { Upload as UploadIcon } from 'lucide-react';
+import OwnerSelect from '@/components/OwnerSelect';
+import DepartmentSelect from '@/components/DepartmentSelect';
 import type { SchemeField, CostConfig } from '../../types';
 
 interface Props {
@@ -111,6 +113,10 @@ const SchemeFieldRenderer = ({ field, costConfig }: Props) => {
         return <Form.DatePicker {...commonProps} type="date" style={{ width: '100%' }} />;
       case 'textarea':
         return <Form.TextArea {...commonProps} autosize={{ minRows: 4, maxRows: 10 }} maxCount={validation?.maxLength ?? 2000} showClear />;
+      case 'user_select':
+        return <FormBoundSelect commonProps={commonProps} fieldKey={key} label={label} placeholder={placeholder ?? `请选择${label}`} variant="user" />;
+      case 'department_select':
+        return <FormBoundSelect commonProps={commonProps} fieldKey={key} label={label} placeholder={placeholder ?? `请选择${label}`} variant="department" />;
       case 'text':
       default:
         return <Form.Input {...commonProps} maxLength={validation?.maxLength ?? 200} showClear />;
@@ -239,6 +245,42 @@ const FileUploadField = ({
         点击上传
       </Button>
     </Form.Upload>
+  );
+};
+
+/**
+ * 表单绑定的用户/部门选择器：
+ * 通过 Form.Slot 承载 label/extraText/rules 并显示校验，内部使用 useFormApi 写值，
+ * useFormState 读值，以复用 OwnerSelect / DepartmentSelect 现有组件样式。
+ */
+const FormBoundSelect = ({
+  commonProps,
+  fieldKey,
+  label,
+  placeholder,
+  variant,
+}: {
+  commonProps: Record<string, unknown>;
+  fieldKey: string;
+  label: string;
+  placeholder: string;
+  variant: 'user' | 'department';
+}) => {
+  const formApi = useFormApi();
+  const formState = useFormState();
+  const value = (formState.values ?? {})[fieldKey] as string | undefined;
+  const handleChange = (v: string) => {
+    formApi.setValue(fieldKey, v);
+    formApi.validate([fieldKey]).catch(() => undefined);
+  };
+  return (
+    <Form.Slot {...commonProps} label={{ text: label, required: Boolean((commonProps as { rules?: Array<{ required?: boolean }> }).rules?.some((r) => r.required)) }}>
+      {variant === 'user' ? (
+        <OwnerSelect value={value} onChange={handleChange} placeholder={placeholder} style={{ width: '100%' }} />
+      ) : (
+        <DepartmentSelect value={value} onChange={handleChange} placeholder={placeholder} style={{ width: '100%' }} />
+      )}
+    </Form.Slot>
   );
 };
 
