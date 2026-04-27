@@ -275,10 +275,12 @@ const RequirementDetailDrawer = ({
   initialTab = 'overview',
 }: RequirementDetailDrawerProps) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { hasApproval, hasAssessment, submittedStatus } = useSchemeFlags();
   const [activities, setActivities] = useState<ActivityRecord[]>([]);
   const [activeTab, setActiveTab] = useState<string>(initialTab);
   const [viewingVersion, setViewingVersion] = useState<'current' | number>('current');
+  const [pickerVisible, setPickerVisible] = useState(false);
 
   // 抽屉关闭后重置 tab/版本视图；打开新数据时不重置 tab
   useEffect(() => {
