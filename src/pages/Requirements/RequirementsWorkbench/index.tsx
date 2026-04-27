@@ -31,6 +31,8 @@ import {
   updateRequirement,
   updateRequirementStatus,
   resubmitRequirement,
+  schemeHasApproval,
+  resolveSubmittedStatus,
   MOCK_CURRENT_USER_ID,
   MOCK_PROJECT_POOL,
 } from './mockData';
