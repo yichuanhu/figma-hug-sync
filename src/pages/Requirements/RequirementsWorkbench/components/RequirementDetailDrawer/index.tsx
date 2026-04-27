@@ -38,19 +38,57 @@ const PropertyPanel = ({
   t,
   onStatusChange,
   onRefresh,
+  isHistoryMode,
+  onOpenPicker,
+  onCreateProject,
 }: {
   data: RequirementItem;
   t: (key: string, options?: Record<string, unknown>) => string;
   onStatusChange: (id: string, newStatus: string, comment?: string) => Promise<void>;
   onRefresh?: () => void;
+  isHistoryMode: boolean;
+  onOpenPicker: () => void;
+  onCreateProject: () => void;
 }) => {
   const sCfg = statusConfig[data.status];
   const pCfg = priorityConfig[data.priority];
   const wsBinding = findWorkspaceByRequirementId(data.id);
   const { hasApproval, hasAssessment, submittedStatus } = useSchemeFlags();
+  const showPendingGuide =
+    !isHistoryMode && data.status === 'PENDING_PROJECT' && !wsBinding;
 
   return (
     <div className="requirement-detail-property-panel">
+      {showPendingGuide && (
+        <div style={{ marginBottom: 16 }}>
+          <Banner
+            type="info"
+            fullMode={false}
+            closeIcon={null}
+            icon={<Lightbulb size={20} strokeWidth={2} style={{ color: 'var(--semi-color-info)' }} />}
+            title={
+              <span style={{ fontWeight: 600 }}>
+                {t('requirements.detail.pendingProject.title')}
+              </span>
+            }
+            description={
+              <div>
+                <div style={{ marginBottom: 12 }}>
+                  {t('requirements.detail.pendingProject.description')}
+                </div>
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  <Button theme="solid" type="primary" size="small" onClick={onOpenPicker}>
+                    {t('requirements.detail.pendingProject.linkExisting')}
+                  </Button>
+                  <Button theme="light" size="small" onClick={onCreateProject}>
+                    {t('requirements.detail.pendingProject.createProject')}
+                  </Button>
+                </div>
+              </div>
+            }
+          />
+        </div>
+      )}
       <div className="requirement-detail-property-group">
         <div className="requirement-detail-property-item">
           <Text type="tertiary" size="small">{t('common.status')}</Text>
