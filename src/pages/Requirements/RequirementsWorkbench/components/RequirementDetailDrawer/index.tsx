@@ -369,7 +369,6 @@ const RequirementDetailDrawer = ({
       extraActions={
         <>
           {canEdit && (() => {
-            const hasApproval = schemeHasApproval();
             const submitLabel = hasApproval
               ? t('requirements.detail.submitForApproval')
               : t('requirements.detail.submitRequirement');
@@ -391,7 +390,7 @@ const RequirementDetailDrawer = ({
                       okText: submitLabel,
                       cancelText: t('common.cancel'),
                       onOk: async () => {
-                        await onStatusChange(data.id, resolveSubmittedStatus(), 'Submitted.');
+                        await onStatusChange(data.id, submittedStatus, 'Submitted.');
                         Toast.success(
                           hasApproval
                             ? t('requirements.detail.submitSuccess')
