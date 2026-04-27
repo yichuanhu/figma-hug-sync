@@ -45,7 +45,7 @@ const PropertyPanel = ({
   const sCfg = statusConfig[data.status];
   const pCfg = priorityConfig[data.priority];
   const wsBinding = findWorkspaceByRequirementId(data.id);
-  const { hasApproval, submittedStatus } = useSchemeFlags();
+  const { hasApproval, hasAssessment, submittedStatus } = useSchemeFlags();
 
   return (
     <div className="requirement-detail-property-panel">
