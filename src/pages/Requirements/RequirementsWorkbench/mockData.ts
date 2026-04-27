@@ -332,6 +332,26 @@ export const resolvePostApprovalStatus = (): RequirementStatus => {
   return schemeHasAssessment() ? 'PENDING_ASSESSMENT' : 'PENDING_PROJECT';
 };
 
+/**
+ * React Hook：订阅当前激活方案的关键标志位（hasApproval/hasAssessment）。
+ * 当用户在「需求方案」页切换激活方案时，所有使用此 hook 的组件会自动重渲染，
+ * 按钮文案、确认弹窗内容与提交目标状态保持一致。
+ */
+export const useSchemeFlags = (): {
+  hasApproval: boolean;
+  hasAssessment: boolean;
+  submittedStatus: RequirementStatus;
+  postApprovalStatus: RequirementStatus;
+} => {
+  useSyncExternalStore(subscribeSchemeChange, getSchemeVersion, getSchemeVersion);
+  return {
+    hasApproval: schemeHasApproval(),
+    hasAssessment: schemeHasAssessment(),
+    submittedStatus: resolveSubmittedStatus(),
+    postApprovalStatus: resolvePostApprovalStatus(),
+  };
+};
+
 export const getActiveSchemeCostConfig = (): SchemeCostConfig => {
   const scheme = getEffectiveScheme();
   const cc = scheme.cost_config;
