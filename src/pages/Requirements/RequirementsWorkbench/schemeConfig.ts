@@ -271,6 +271,28 @@ export const PRESET_SCHEMES: RequirementScheme[] = [
 
 let schemeStore: RequirementScheme[] = [...PRESET_SCHEMES];
 
+// ----- 订阅机制：方案变更时通知所有订阅者（用于 React 重渲染） -----
+const schemeSubscribers = new Set<() => void>();
+
+export const subscribeSchemeChange = (cb: () => void): (() => void) => {
+  schemeSubscribers.add(cb);
+  return () => schemeSubscribers.delete(cb);
+};
+
+const notifySchemeChange = (): void => {
+  schemeSubscribers.forEach((cb) => {
+    try { cb(); } catch { /* ignore subscriber errors */ }
+  });
+};
+
+/** 当前方案存储版本号（每次变更自增），用于 useSyncExternalStore 快照对比 */
+let schemeVersion = 0;
+export const getSchemeVersion = (): number => schemeVersion;
+const bumpSchemeVersion = (): void => {
+  schemeVersion += 1;
+  notifySchemeChange();
+};
+
 export const fetchSchemes = async (keyword?: string): Promise<RequirementScheme[]> => {
   await new Promise((r) => setTimeout(r, 200));
   let list = [...schemeStore];
