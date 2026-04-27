@@ -517,6 +517,55 @@ const RequirementDetailDrawer = ({
               itemKey="overview"
             >
               <div className="requirement-detail-tab-content">
+                {!isHistoryMode &&
+                  effectiveData.status === 'PENDING_PROJECT' &&
+                  !findWorkspaceByRequirementId(effectiveData.id) && (
+                    <div style={{ marginBottom: 16 }}>
+                      <Banner
+                        type="info"
+                        fullMode={false}
+                        closeIcon={null}
+                        icon={<Lightbulb size={20} strokeWidth={2} style={{ color: 'var(--semi-color-info)' }} />}
+                        title={
+                          <span style={{ fontWeight: 600 }}>
+                            {t('requirements.detail.pendingProject.title')}
+                          </span>
+                        }
+                        description={
+                          <div>
+                            <div style={{ marginBottom: 12 }}>
+                              {t('requirements.detail.pendingProject.description')}
+                            </div>
+                            <div style={{ display: 'flex', gap: 8 }}>
+                              <Button
+                                theme="solid"
+                                type="primary"
+                                size="small"
+                                onClick={() => setPickerVisible(true)}
+                              >
+                                {t('requirements.detail.pendingProject.linkExisting')}
+                              </Button>
+                              <Button
+                                theme="light"
+                                size="small"
+                                onClick={() =>
+                                  navigate('/requirements/projects', {
+                                    state: {
+                                      openCreate: true,
+                                      prefilledRequirementId: effectiveData.id,
+                                    },
+                                  })
+                                }
+                              >
+                                {t('requirements.detail.pendingProject.createProject')}
+                              </Button>
+                            </div>
+                          </div>
+                        }
+                      />
+                    </div>
+                  )}
+
                 <CustomFieldsSection data={effectiveData} t={t} />
 
                 {hasApproval && effectiveData.approvalFlowConfig && !isHistoryMode && (
