@@ -276,9 +276,9 @@ const FormBoundSelect = ({
   return (
     <Form.Slot {...commonProps} label={{ text: label, required: Boolean((commonProps as { rules?: Array<{ required?: boolean }> }).rules?.some((r) => r.required)) }}>
       {variant === 'user' ? (
-        <OwnerSelect value={value} onChange={handleChange} placeholder={placeholder} style={{ width: '100%' }} />
+        <OwnerSearchSelect value={value} onChange={handleChange} placeholder={placeholder} style={{ width: '100%' }} />
       ) : (
-        <DepartmentSelect value={value} onChange={handleChange} placeholder={placeholder} style={{ width: '100%' }} />
+        <DepartmentSearchSelect value={value} onChange={handleChange} useNameAsValue placeholder={placeholder} style={{ width: '100%' }} />
       )}
     </Form.Slot>
   );
