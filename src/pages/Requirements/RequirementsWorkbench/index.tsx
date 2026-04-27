@@ -44,13 +44,14 @@ import ScoreBar from './components/ScoreBar';
 import TitleCell from './components/TitleCell';
 import RelativeTime from './components/RelativeTime';
 import BoardView from './components/BoardView';
+import { buildSubmitConfirmContent } from './utils/submitConfirm';
 import './index.less';
 
 const { Title, Text } = Typography;
 
 const RequirementsWorkbench = () => {
   const { t } = useTranslation();
-  const { hasApproval, submittedStatus } = useSchemeFlags();
+  const { hasApproval, hasAssessment, submittedStatus } = useSchemeFlags();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -397,9 +398,7 @@ const RequirementsWorkbench = () => {
                         title: hasApproval
                           ? t('requirements.detail.submitConfirmTitle')
                           : t('requirements.detail.submitDirectConfirmTitle'),
-                        content: hasApproval
-                          ? t('requirements.detail.submitConfirmContent')
-                          : t('requirements.detail.submitDirectConfirmContent'),
+                        content: buildSubmitConfirmContent(hasApproval, hasAssessment, t),
                         okText: submitLabel,
                         cancelText: t('common.cancel'),
                         onOk: async () => {

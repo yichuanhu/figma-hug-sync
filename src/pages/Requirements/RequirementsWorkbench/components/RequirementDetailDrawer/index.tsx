@@ -14,6 +14,7 @@ import AssessmentTab from './AssessmentTab';
 import CostEstimateTab from './CostEstimateTab';
 import ApprovalFlowProgress from '../ApprovalFlowProgress';
 import ReadonlySchemeFieldsRenderer from '../ReadonlySchemeFieldsRenderer';
+import { buildSubmitConfirmContent } from '../../utils/submitConfirm';
 import './index.less';
 import { Pencil, PowerOff, RotateCcw, Send, Trash2 } from 'lucide-react';
 
@@ -44,7 +45,7 @@ const PropertyPanel = ({
   const sCfg = statusConfig[data.status];
   const pCfg = priorityConfig[data.priority];
   const wsBinding = findWorkspaceByRequirementId(data.id);
-  const { hasApproval, submittedStatus } = useSchemeFlags();
+  const { hasApproval, hasAssessment, submittedStatus } = useSchemeFlags();
 
   return (
     <div className="requirement-detail-property-panel">
@@ -143,9 +144,7 @@ const PropertyPanel = ({
                     title: hasApproval
                       ? t('requirements.detail.submitConfirmTitle')
                       : t('requirements.detail.submitDirectConfirmTitle'),
-                    content: hasApproval
-                      ? t('requirements.detail.submitConfirmContent')
-                      : t('requirements.detail.submitDirectConfirmContent'),
+                    content: buildSubmitConfirmContent(hasApproval, hasAssessment, t),
                     okText: submitLabel,
                     cancelText: t('common.cancel'),
                     onOk: async () => {
@@ -272,7 +271,7 @@ const RequirementDetailDrawer = ({
   initialTab = 'overview',
 }: RequirementDetailDrawerProps) => {
   const { t } = useTranslation();
-  const { hasApproval, submittedStatus } = useSchemeFlags();
+  const { hasApproval, hasAssessment, submittedStatus } = useSchemeFlags();
   const [activities, setActivities] = useState<ActivityRecord[]>([]);
   const [activeTab, setActiveTab] = useState<string>(initialTab);
   const [viewingVersion, setViewingVersion] = useState<'current' | number>('current');
@@ -384,9 +383,7 @@ const RequirementDetailDrawer = ({
                       title: hasApproval
                         ? t('requirements.detail.submitConfirmTitle')
                         : t('requirements.detail.submitDirectConfirmTitle'),
-                      content: hasApproval
-                        ? t('requirements.detail.submitConfirmContent')
-                        : t('requirements.detail.submitDirectConfirmContent'),
+                      content: buildSubmitConfirmContent(hasApproval, hasAssessment, t),
                       okText: submitLabel,
                       cancelText: t('common.cancel'),
                       onOk: async () => {
