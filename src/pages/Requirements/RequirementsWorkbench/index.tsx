@@ -249,13 +249,6 @@ const RequirementsWorkbench = () => {
       render: (_: string, record: RequirementItem) => <TitleCell record={record} />,
     },
     {
-      title: t('requirements.fields.priority'),
-      dataIndex: 'priority',
-      key: 'priority',
-      width: 90,
-      render: (p: RequirementPriority) => <PriorityIndicator priority={p} />,
-    },
-    {
       title: t('common.status'),
       dataIndex: 'status',
       key: 'status',
@@ -290,18 +283,24 @@ const RequirementsWorkbench = () => {
         ),
     },
     {
-      title: t('requirements.fields.valueScore', '价值得分'),
-      dataIndex: 'value_score',
-      key: 'value_score',
-      width: 130,
-      render: (v: number | undefined) => <ScoreBar value={v} variant="value" />,
-    },
-    {
-      title: t('requirements.fields.complexityScore', '复杂度得分'),
-      dataIndex: 'complexity_score',
-      key: 'complexity_score',
-      width: 130,
-      render: (v: number | undefined) => <ScoreBar value={v} variant="complexity" />,
+      title: t('requirements.fields.operationType', '操作类型'),
+      dataIndex: 'operation_type',
+      key: 'operation_type',
+      width: 120,
+      render: (_: unknown, record: RequirementItem) => {
+        const v = record.form_data?.operation_type as string | undefined;
+        const map: Record<string, string> = {
+          business_operation: '业务操作',
+          data_processing: '数据处理',
+          audit_check: '稽核检查',
+          monitor_alert: '监控预警',
+          interactive_response: '交互应答',
+          voucher_creation: '凭证制证',
+          voucher_review: '凭证审核',
+          other: '其他',
+        };
+        return v ? <Text>{map[v] || v}</Text> : <Text type="tertiary">-</Text>;
+      },
     },
     {
       title: t('common.owner', t('common.creator') as string),
@@ -482,31 +481,6 @@ const RequirementsWorkbench = () => {
                 maxTagCount={1}
                 style={{ width: 'auto', minWidth: 150, maxWidth: 600 }}
                 optionList={MOCK_PROJECT_POOL.map((p) => ({ label: p.name, value: p.id }))}
-              />
-              <FilterPopover
-                visible={filterPopoverVisible}
-                onVisibleChange={setFilterPopoverVisible}
-                onConfirm={(values) => {
-                  setStatusFilter((values.status as string[]) || []);
-                  setPriorityFilter((values.priority as string[]) || []);
-                  setQueryParams((prev) => ({ ...prev, offset: 0 }));
-                }}
-                sections={[
-                  {
-                    key: 'status',
-                    label: t('common.status'),
-                    type: 'checkbox',
-                    options: statusOptions,
-                    value: statusFilter,
-                  },
-                  {
-                    key: 'priority',
-                    label: t('requirements.fields.priority'),
-                    type: 'checkbox',
-                    options: priorityOptions,
-                    value: priorityFilter,
-                  },
-                ]}
               />
             </Space>
           </Col>
