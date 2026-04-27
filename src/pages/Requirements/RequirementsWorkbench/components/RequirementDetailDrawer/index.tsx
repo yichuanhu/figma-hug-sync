@@ -149,7 +149,7 @@ const PropertyPanel = ({
                     okText: submitLabel,
                     cancelText: t('common.cancel'),
                     onOk: async () => {
-                      await onStatusChange(data.id, resolveSubmittedStatus(), 'Submitted.');
+                      await onStatusChange(data.id, submittedStatus, 'Submitted.');
                       Toast.success(
                         hasApproval
                           ? t('requirements.detail.submitSuccess')
