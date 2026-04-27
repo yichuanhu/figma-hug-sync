@@ -283,26 +283,6 @@ const RequirementsWorkbench = () => {
         ),
     },
     {
-      title: t('requirements.fields.operationType', '操作类型'),
-      dataIndex: 'operation_type',
-      key: 'operation_type',
-      width: 120,
-      render: (_: unknown, record: RequirementItem) => {
-        const v = record.form_data?.operation_type as string | undefined;
-        const map: Record<string, string> = {
-          business_operation: '业务操作',
-          data_processing: '数据处理',
-          audit_check: '稽核检查',
-          monitor_alert: '监控预警',
-          interactive_response: '交互应答',
-          voucher_creation: '凭证制证',
-          voucher_review: '凭证审核',
-          other: '其他',
-        };
-        return v ? <Text>{map[v] || v}</Text> : <Text type="tertiary">-</Text>;
-      },
-    },
-    {
       title: t('common.owner', t('common.creator') as string),
       dataIndex: 'owner_name',
       key: 'owner_name',
