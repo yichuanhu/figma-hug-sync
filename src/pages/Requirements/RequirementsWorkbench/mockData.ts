@@ -1121,10 +1121,14 @@ export const resubmitRequirement = async (id: string): Promise<RequirementItem |
   }
   const now = new Date().toISOString();
   const submitter = mockCreators[cur.creatorId];
-  const newFlow = generateMockApprovalFlow('PENDING_APPROVAL', {
-    creatorId: cur.creatorId,
-    owning_department_id: cur.owning_department_id,
-  });
+  const targetStatus = resolveSubmittedStatus();
+  const newFlow =
+    targetStatus === 'PENDING_APPROVAL'
+      ? generateMockApprovalFlow('PENDING_APPROVAL', {
+          creatorId: cur.creatorId,
+          owning_department_id: cur.owning_department_id,
+        })
+      : undefined;
   const entry: ApprovalHistoryEntry = {
     id: `hist-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
     level: 1,
@@ -1136,7 +1140,7 @@ export const resubmitRequirement = async (id: string): Promise<RequirementItem |
   };
   mockRequirementData[index] = {
     ...cur,
-    status: 'PENDING_APPROVAL',
+    status: targetStatus,
     approvalFlowConfig: newFlow,
     approvalHistory: [...(cur.approvalHistory ?? []), entry],
     updatedAt: now,
