@@ -165,7 +165,9 @@ const PropertyPanel = ({
         );
       })()}
 
-      <ApprovalSection data={data} onStatusChange={onStatusChange} onRefresh={onRefresh} />
+      {hasApproval && (
+        <ApprovalSection data={data} onStatusChange={onStatusChange} onRefresh={onRefresh} />
+      )}
     </div>
   );
 };
@@ -288,6 +290,13 @@ const RequirementDetailDrawer = ({
   useEffect(() => {
     setViewingVersion('current');
   }, [data?.id]);
+
+  // 当方案不含评估时，自动从已隐藏的 tab 回退到 overview
+  useEffect(() => {
+    if (!hasAssessment && (activeTab === 'assessment' || activeTab === 'cost')) {
+      setActiveTab('overview');
+    }
+  }, [hasAssessment, activeTab]);
 
   useEffect(() => {
     if (visible && data) {
@@ -506,7 +515,7 @@ const RequirementDetailDrawer = ({
               <div className="requirement-detail-tab-content">
                 <CustomFieldsSection data={effectiveData} t={t} />
 
-                {effectiveData.approvalFlowConfig && !isHistoryMode && (
+                {hasApproval && effectiveData.approvalFlowConfig && !isHistoryMode && (
                   <ApprovalFlowProgress config={effectiveData.approvalFlowConfig} />
                 )}
 
@@ -514,23 +523,27 @@ const RequirementDetailDrawer = ({
               </div>
             </TabPane>
 
-            <TabPane
-              tab={t('requirements.detail.tab.assessment')}
-              itemKey="assessment"
-            >
-              <div className="requirement-detail-tab-content">
-                <AssessmentTab data={effectiveData} onSaveAssessment={handleSaveAssessment} />
-              </div>
-            </TabPane>
+            {hasAssessment && (
+              <TabPane
+                tab={t('requirements.detail.tab.assessment')}
+                itemKey="assessment"
+              >
+                <div className="requirement-detail-tab-content">
+                  <AssessmentTab data={effectiveData} onSaveAssessment={handleSaveAssessment} />
+                </div>
+              </TabPane>
+            )}
 
-            <TabPane
-              tab={t('requirements.detail.tab.cost')}
-              itemKey="cost"
-            >
-              <div className="requirement-detail-tab-content">
-                <CostEstimateTab data={effectiveData} />
-              </div>
-            </TabPane>
+            {hasAssessment && (
+              <TabPane
+                tab={t('requirements.detail.tab.cost')}
+                itemKey="cost"
+              >
+                <div className="requirement-detail-tab-content">
+                  <CostEstimateTab data={effectiveData} />
+                </div>
+              </TabPane>
+            )}
           </Tabs>
         </div>
 
