@@ -104,7 +104,9 @@ export type SchemeFieldType =
   | 'date'
   | 'file_upload'
   | 'rich_text'
-  | 'calculation';
+  | 'calculation'
+  | 'user_select'
+  | 'department_select';
 
 export interface SchemeFieldOption {
   label: string;
