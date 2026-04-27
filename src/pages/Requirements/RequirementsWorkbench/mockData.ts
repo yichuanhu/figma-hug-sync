@@ -1046,7 +1046,7 @@ export const advanceApprovalFlow = async (
     newStatus = 'REJECTED';
   } else if (passed) {
     if (currentIdx === levels.length - 1) {
-      newStatus = 'PENDING_ASSESSMENT';
+      newStatus = resolvePostApprovalStatus();
       newCurrentLevel = config.currentLevel + 1;
     } else {
       newCurrentLevel = config.currentLevel + 1;
