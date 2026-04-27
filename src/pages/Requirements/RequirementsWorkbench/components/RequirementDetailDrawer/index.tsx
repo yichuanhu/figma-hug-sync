@@ -364,6 +364,7 @@ const RequirementDetailDrawer = ({
 
 
   return (
+    <>
     <DetailDrawerWrapper<RequirementItem>
       visible={visible}
       onClose={onClose}
@@ -606,6 +607,14 @@ const RequirementDetailDrawer = ({
         </div>
       </div>
     </DetailDrawerWrapper>
+    <WorkspacePickerModal
+      visible={pickerVisible}
+      requirementId={data.id}
+      departmentId={data.owning_department_id}
+      onClose={() => setPickerVisible(false)}
+      onSuccess={() => onRefresh?.()}
+    />
+    </>
   );
 };
 
