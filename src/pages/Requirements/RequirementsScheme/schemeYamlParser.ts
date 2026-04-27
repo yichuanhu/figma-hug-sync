@@ -13,7 +13,7 @@ export interface SchemeParseResult {
   raw: string;
 }
 
-const REQUIRED_NODES = ['meta', 'custom_fields', 'assessment_models', 'approval_flow'];
+const REQUIRED_NODES = ['meta', 'custom_fields'];
 const ALLOWED_APPROVER_TYPES = ['user', 'role', 'department'];
 
 export function parseSchemeYaml(raw: string): SchemeParseResult {

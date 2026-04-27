@@ -6,7 +6,7 @@ import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import type { RequirementItem, ActivityRecord, DetailedAssessment } from '../../types';
-import { statusConfig, priorityConfig, fetchActivities, updateRequirementAssessment, MOCK_CURRENT_USER_ID } from '../../mockData';
+import { statusConfig, priorityConfig, fetchActivities, updateRequirementAssessment, MOCK_CURRENT_USER_ID, schemeHasApproval, resolveSubmittedStatus } from '../../mockData';
 import { PRESET_SCHEMES } from '../../schemeConfig';
 import { findWorkspaceByRequirementId } from '../../../RequirementsProjects/mockData';
 import ApprovalSection from './ApprovalSection';
@@ -123,34 +123,48 @@ const PropertyPanel = ({
         </div>
       </div>
 
-      {data.status === 'DRAFT' && (
-        <>
-          <div className="requirement-detail-property-divider" />
-          <div className="requirement-detail-property-group">
-            <Button
-              theme="solid"
-              type="primary"
-              icon={<Send size={16} strokeWidth={2} />}
-              block
-              style={{ height: 32 }}
-              onClick={() => {
-                Modal.confirm({
-                  title: t('requirements.detail.submitConfirmTitle'),
-                  content: t('requirements.detail.submitConfirmContent'),
-                  okText: t('requirements.detail.submitForApproval'),
-                  cancelText: t('common.cancel'),
-                  onOk: async () => {
-                    await onStatusChange(data.id, 'PENDING_APPROVAL', 'Submitted for approval.');
-                    Toast.success(t('requirements.detail.submitSuccess'));
-                  },
-                });
-              }}
-            >
-              {t('requirements.detail.submitForApproval')}
-            </Button>
-          </div>
-        </>
-      )}
+      {data.status === 'DRAFT' && (() => {
+        const hasApproval = schemeHasApproval();
+        const submitLabel = hasApproval
+          ? t('requirements.detail.submitForApproval')
+          : t('requirements.detail.submitRequirement');
+        return (
+          <>
+            <div className="requirement-detail-property-divider" />
+            <div className="requirement-detail-property-group">
+              <Button
+                theme="solid"
+                type="primary"
+                icon={<Send size={16} strokeWidth={2} />}
+                block
+                style={{ height: 32 }}
+                onClick={() => {
+                  Modal.confirm({
+                    title: hasApproval
+                      ? t('requirements.detail.submitConfirmTitle')
+                      : t('requirements.detail.submitDirectConfirmTitle'),
+                    content: hasApproval
+                      ? t('requirements.detail.submitConfirmContent')
+                      : t('requirements.detail.submitDirectConfirmContent'),
+                    okText: submitLabel,
+                    cancelText: t('common.cancel'),
+                    onOk: async () => {
+                      await onStatusChange(data.id, resolveSubmittedStatus(), 'Submitted.');
+                      Toast.success(
+                        hasApproval
+                          ? t('requirements.detail.submitSuccess')
+                          : t('requirements.detail.submitDirectSuccess'),
+                      );
+                    },
+                  });
+                }}
+              >
+                {submitLabel}
+              </Button>
+            </div>
+          </>
+        );
+      })()}
 
       <ApprovalSection data={data} onStatusChange={onStatusChange} onRefresh={onRefresh} />
     </div>
@@ -353,28 +367,42 @@ const RequirementDetailDrawer = ({
       className="requirement-detail-drawer"
       extraActions={
         <>
-          {canEdit && (
-            <Tooltip content={t('requirements.detail.submitForApproval')}>
-              <Button
-                icon={<Send size={16} strokeWidth={2} />}
-                theme="borderless"
-                size="small"
-                type="tertiary"
-                onClick={() => {
-                  Modal.confirm({
-                    title: t('requirements.detail.submitConfirmTitle'),
-                    content: t('requirements.detail.submitConfirmContent'),
-                    okText: t('requirements.detail.submitForApproval'),
-                    cancelText: t('common.cancel'),
-                    onOk: async () => {
-                      await onStatusChange(data.id, 'PENDING_APPROVAL', 'Submitted for approval.');
-                      Toast.success(t('requirements.detail.submitSuccess'));
-                    },
-                  });
-                }}
-              />
-            </Tooltip>
-          )}
+          {canEdit && (() => {
+            const hasApproval = schemeHasApproval();
+            const submitLabel = hasApproval
+              ? t('requirements.detail.submitForApproval')
+              : t('requirements.detail.submitRequirement');
+            return (
+              <Tooltip content={submitLabel}>
+                <Button
+                  icon={<Send size={16} strokeWidth={2} />}
+                  theme="borderless"
+                  size="small"
+                  type="tertiary"
+                  onClick={() => {
+                    Modal.confirm({
+                      title: hasApproval
+                        ? t('requirements.detail.submitConfirmTitle')
+                        : t('requirements.detail.submitDirectConfirmTitle'),
+                      content: hasApproval
+                        ? t('requirements.detail.submitConfirmContent')
+                        : t('requirements.detail.submitDirectConfirmContent'),
+                      okText: submitLabel,
+                      cancelText: t('common.cancel'),
+                      onOk: async () => {
+                        await onStatusChange(data.id, resolveSubmittedStatus(), 'Submitted.');
+                        Toast.success(
+                          hasApproval
+                            ? t('requirements.detail.submitSuccess')
+                            : t('requirements.detail.submitDirectSuccess'),
+                        );
+                      },
+                    });
+                  }}
+                />
+              </Tooltip>
+            );
+          })()}
           {canResubmit && onResubmit && (
             <Tooltip content={t('requirements.detail.resubmit')}>
               <Button

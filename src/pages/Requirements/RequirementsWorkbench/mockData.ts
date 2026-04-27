@@ -307,6 +307,30 @@ const DEFAULT_COST_CONFIG: SchemeCostConfig = {
 const getEffectiveScheme = (): RequirementScheme =>
   getActiveSchemeFromStore() ?? PRESET_SCHEMES[0];
 
+/** 当前激活方案是否启用了审批流（至少 1 级） */
+export const schemeHasApproval = (): boolean => {
+  const s = getEffectiveScheme();
+  return (s.approval_flow?.levels?.length ?? 0) > 0;
+};
+
+/** 当前激活方案是否启用了评估模型（价值 / 复杂度任一存在即视为启用） */
+export const schemeHasAssessment = (): boolean => {
+  const s = getEffectiveScheme();
+  return !!(s.value_assessment_model || s.complexity_assessment_model);
+};
+
+/** DRAFT 提交后的目标状态：依据方案是否含审批/评估，跳过对应阶段 */
+export const resolveSubmittedStatus = (): RequirementStatus => {
+  if (schemeHasApproval()) return 'PENDING_APPROVAL';
+  if (schemeHasAssessment()) return 'PENDING_ASSESSMENT';
+  return 'PENDING_PROJECT';
+};
+
+/** 审批通过后的目标状态：无评估则跳过 PENDING_ASSESSMENT */
+export const resolvePostApprovalStatus = (): RequirementStatus => {
+  return schemeHasAssessment() ? 'PENDING_ASSESSMENT' : 'PENDING_PROJECT';
+};
+
 export const getActiveSchemeCostConfig = (): SchemeCostConfig => {
   const scheme = getEffectiveScheme();
   const cc = scheme.cost_config;
@@ -1022,7 +1046,7 @@ export const advanceApprovalFlow = async (
     newStatus = 'REJECTED';
   } else if (passed) {
     if (currentIdx === levels.length - 1) {
-      newStatus = 'PENDING_ASSESSMENT';
+      newStatus = resolvePostApprovalStatus();
       newCurrentLevel = config.currentLevel + 1;
     } else {
       newCurrentLevel = config.currentLevel + 1;
@@ -1097,10 +1121,14 @@ export const resubmitRequirement = async (id: string): Promise<RequirementItem |
   }
   const now = new Date().toISOString();
   const submitter = mockCreators[cur.creatorId];
-  const newFlow = generateMockApprovalFlow('PENDING_APPROVAL', {
-    creatorId: cur.creatorId,
-    owning_department_id: cur.owning_department_id,
-  });
+  const targetStatus = resolveSubmittedStatus();
+  const newFlow =
+    targetStatus === 'PENDING_APPROVAL'
+      ? generateMockApprovalFlow('PENDING_APPROVAL', {
+          creatorId: cur.creatorId,
+          owning_department_id: cur.owning_department_id,
+        })
+      : undefined;
   const entry: ApprovalHistoryEntry = {
     id: `hist-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
     level: 1,
@@ -1112,7 +1140,7 @@ export const resubmitRequirement = async (id: string): Promise<RequirementItem |
   };
   mockRequirementData[index] = {
     ...cur,
-    status: 'PENDING_APPROVAL',
+    status: targetStatus,
     approvalFlowConfig: newFlow,
     approvalHistory: [...(cur.approvalHistory ?? []), entry],
     updatedAt: now,

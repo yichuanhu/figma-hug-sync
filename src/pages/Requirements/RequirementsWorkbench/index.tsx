@@ -31,6 +31,8 @@ import {
   updateRequirement,
   updateRequirementStatus,
   resubmitRequirement,
+  schemeHasApproval,
+  resolveSubmittedStatus,
   MOCK_CURRENT_USER_ID,
   MOCK_PROJECT_POOL,
 } from './mockData';
@@ -382,27 +384,41 @@ const RequirementsWorkbench = () => {
                   {t('common.edit')}
                 </Dropdown.Item>
               )}
-              {canEdit(record.status) && (
-                <Dropdown.Item
-                  icon={<Send size={16} strokeWidth={2} />}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    Modal.confirm({
-                      title: t('requirements.detail.submitConfirmTitle'),
-                      content: t('requirements.detail.submitConfirmContent'),
-                      okText: t('requirements.detail.submitForApproval'),
-                      cancelText: t('common.cancel'),
-                      onOk: async () => {
-                        await updateRequirementStatus(record.id, 'PENDING', 'Submitted for approval.');
-                        loadData();
-                        Toast.success(t('requirements.detail.submitSuccess'));
-                      },
-                    });
-                  }}
-                >
-                  {t('requirements.detail.submitForApproval')}
-                </Dropdown.Item>
-              )}
+              {canEdit(record.status) && (() => {
+                const hasApproval = schemeHasApproval();
+                const submitLabel = hasApproval
+                  ? t('requirements.detail.submitForApproval')
+                  : t('requirements.detail.submitRequirement');
+                return (
+                  <Dropdown.Item
+                    icon={<Send size={16} strokeWidth={2} />}
+                    onClick={(e: React.MouseEvent) => {
+                      e.stopPropagation();
+                      Modal.confirm({
+                        title: hasApproval
+                          ? t('requirements.detail.submitConfirmTitle')
+                          : t('requirements.detail.submitDirectConfirmTitle'),
+                        content: hasApproval
+                          ? t('requirements.detail.submitConfirmContent')
+                          : t('requirements.detail.submitDirectConfirmContent'),
+                        okText: submitLabel,
+                        cancelText: t('common.cancel'),
+                        onOk: async () => {
+                          await updateRequirementStatus(record.id, resolveSubmittedStatus(), 'Submitted.');
+                          loadData();
+                          Toast.success(
+                            hasApproval
+                              ? t('requirements.detail.submitSuccess')
+                              : t('requirements.detail.submitDirectSuccess'),
+                          );
+                        },
+                      });
+                    }}
+                  >
+                    {submitLabel}
+                  </Dropdown.Item>
+                );
+              })()}
               {(record.status === 'REJECTED' || record.status === 'WITHDRAWN') && record.creatorId === MOCK_CURRENT_USER_ID && (
                 <Dropdown.Item
                   icon={<RotateCcw size={16} strokeWidth={2} />}
