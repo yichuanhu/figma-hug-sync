@@ -14,6 +14,7 @@ import AssessmentTab from './AssessmentTab';
 import CostEstimateTab from './CostEstimateTab';
 import ApprovalFlowProgress from '../ApprovalFlowProgress';
 import ReadonlySchemeFieldsRenderer from '../ReadonlySchemeFieldsRenderer';
+import { buildSubmitConfirmContent } from '../../utils/submitConfirm';
 import './index.less';
 import { Pencil, PowerOff, RotateCcw, Send, Trash2 } from 'lucide-react';
 
