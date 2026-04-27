@@ -184,6 +184,57 @@ export const PRESET_SCHEMES: RequirementScheme[] = [
     created_by: 'system',
   },
 
+  // ===================== 4. RPA 统计表标准方案（无审批 / 无评估） =====================
+  {
+    id: 'scheme-rpa-stat',
+    code: 'RPA-STAT',
+    name: 'RPA 统计表标准方案',
+    version: '1.0.0',
+    description: '基于《RPA 统计表》模板设计的标准化需求采集方案，提交后跳过审批与评估，直接进入待立项状态。',
+    status: 'inactive',
+    is_preset: true,
+    meta: {
+      code: 'RPA-STAT',
+      name: 'RPA 统计表标准方案',
+      category: 'RPA',
+      scenario: '集团 RPA 需求统一采集',
+      description: '对齐《RPA 统计表》字段；无审批、无评估，提交即进入待立项',
+    },
+    custom_fields: [
+      { key: 'requirement_description', label: '需求描述', type: 'textarea', required: true, validation: { maxLength: 2000 }, ui_width: 'full', description: '描述需求背景、目标与范围' },
+      { key: 'requirement_analyst', label: '需求分析师', type: 'text', required: false, validation: { maxLength: 50 }, ui_width: 'medium', description: '由 Excel 提供的分析师，与系统“需求负责人”区分' },
+      { key: 'operation_type', label: '操作类型', type: 'select', required: true, ui_width: 'medium', options: [
+        { label: '业务操作', value: 'business_operation' },
+        { label: '数据处理', value: 'data_processing' },
+        { label: '稽核检查', value: 'audit_check' },
+        { label: '监控预警', value: 'monitor_alert' },
+        { label: '交互应答', value: 'interactive_response' },
+        { label: '凭证制证', value: 'voucher_creation' },
+        { label: '凭证审核', value: 'voucher_review' },
+        { label: '其他', value: 'other' },
+      ] },
+      { key: 'involved_systems', label: '涉及的办公系统或软件', type: 'textarea', required: false, validation: { maxLength: 500 }, ui_width: 'full', description: '例：FMIS、SAP、SSF、Excel、Chrome' },
+      { key: 'business_coverage_unit', label: '业务覆盖范围（单位）', type: 'text', required: false, validation: { maxLength: 100 }, ui_width: 'medium', description: '例：湖北销售' },
+      { key: 'per_capita_frequency', label: '人均处理频率', type: 'number', required: false, unit: '次/月', validation: { min: 0 }, ui_width: 'small' },
+      { key: 'per_capita_duration', label: '人均处理时长', type: 'number', required: false, unit: '分钟/月', validation: { min: 0 }, ui_width: 'small' },
+      { key: 'application_target', label: '应用对象', type: 'select', required: false, ui_width: 'medium', options: [
+        { label: '共享内部', value: 'internal_shared' },
+        { label: '服务企业', value: 'service_enterprise' },
+        { label: '其他', value: 'other' },
+      ] },
+      { key: 'using_department', label: '使用单位及部门', type: 'text', required: false, validation: { maxLength: 100 }, ui_width: 'medium', description: '例：成都中心-销售收款部' },
+      { key: 'business_contact', label: '业务联系人相关信息', type: 'textarea', required: false, validation: { maxLength: 200 }, ui_width: 'full', description: '姓名 + 电话' },
+      { key: 'attachments_desc', label: '附件', type: 'textarea', required: false, validation: { maxLength: 500 }, ui_width: 'full', description: '描述附件清单（需求文档、业务视频等）' },
+      { key: 'expected_complete_date', label: '需求完成时间', type: 'date', required: false, ui_width: 'medium', description: '期望完成日期' },
+    ],
+    approval_flow: {
+      levels: [],
+    },
+    raw_yaml: '# RPA 统计表标准方案（无审批 / 无评估）\nmeta:\n  code: RPA-STAT\n  name: RPA 统计表标准方案\napproval_flow:\n  levels: []\n# value_assessment_model / complexity_assessment_model 未配置 → 跳过评估',
+    created_at: NOW,
+    created_by: 'system',
+  },
+
   // ===================== 3. AI 文档处理 =====================
   {
     id: 'scheme-adp-doc',
