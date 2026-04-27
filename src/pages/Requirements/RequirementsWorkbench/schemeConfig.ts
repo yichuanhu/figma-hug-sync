@@ -17,7 +17,7 @@ export const PRESET_SCHEMES: RequirementScheme[] = [
     name: 'RPA 专业版方案',
     version: '1.0.0',
     description: '面向中大型企业的完整 RPA 需求评估方案，包含价值评估、复杂度评估及 3 级审批流。',
-    status: 'active',
+    status: 'inactive',
     is_preset: true,
     meta: {
       code: 'RPA-PRO',
@@ -191,7 +191,7 @@ export const PRESET_SCHEMES: RequirementScheme[] = [
     name: 'RPA 统计表标准方案',
     version: '1.0.0',
     description: '基于《RPA 统计表》模板设计的标准化需求采集方案，提交后跳过审批与评估，直接进入待立项状态。',
-    status: 'inactive',
+    status: 'active',
     is_preset: true,
     meta: {
       code: 'RPA-STAT',
