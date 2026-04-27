@@ -248,4 +248,40 @@ const FileUploadField = ({
   );
 };
 
+/**
+ * 表单绑定的用户/部门选择器：
+ * 通过 Form.Slot 承载 label/extraText/rules 并显示校验，内部使用 useFormApi 写值，
+ * useFormState 读值，以复用 OwnerSelect / DepartmentSelect 现有组件样式。
+ */
+const FormBoundSelect = ({
+  commonProps,
+  fieldKey,
+  label,
+  placeholder,
+  variant,
+}: {
+  commonProps: Record<string, unknown>;
+  fieldKey: string;
+  label: string;
+  placeholder: string;
+  variant: 'user' | 'department';
+}) => {
+  const formApi = useFormApi();
+  const formState = useFormState();
+  const value = (formState.values ?? {})[fieldKey] as string | undefined;
+  const handleChange = (v: string) => {
+    formApi.setValue(fieldKey, v);
+    formApi.validate([fieldKey]).catch(() => undefined);
+  };
+  return (
+    <Form.Slot {...commonProps} label={{ text: label, required: Boolean((commonProps as { rules?: Array<{ required?: boolean }> }).rules?.some((r) => r.required)) }}>
+      {variant === 'user' ? (
+        <OwnerSelect value={value} onChange={handleChange} placeholder={placeholder} style={{ width: '100%' }} />
+      ) : (
+        <DepartmentSelect value={value} onChange={handleChange} placeholder={placeholder} style={{ width: '100%' }} />
+      )}
+    </Form.Slot>
+  );
+};
+
 export default SchemeFieldRenderer;
