@@ -239,6 +239,18 @@ const generateMockRequirements = (): RequirementItem[] => {
           { uid: `${id}-att-1`, name: 'PRD-需求说明书.pdf', size: 1234567, url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' },
           { uid: `${id}-att-2`, name: '业务流程图.vsdx', size: 456789, url: 'https://file-examples.com/storage/fe5947fd2362fc197a3c2df/2017/02/file_example_XLSX_10.xlsx' },
         ];
+        // RPA 统计表标准方案字段（让列表的"操作类型"等列有数据展示）
+        const opTypes = ['business_operation', 'data_processing', 'audit_check', 'monitor_alert', 'interactive_response', 'voucher_creation', 'voucher_review', 'other'];
+        base.operation_type = opTypes[index % opTypes.length];
+        base.requirement_description = tpl.description;
+        base.requirement_analyst = creator.name;
+        base.involved_systems = index % 3 === 0 ? ['FMIS', 'Excel'] : index % 3 === 1 ? ['SAP', 'Chrome'] : ['SSF', 'Excel', 'Edge'];
+        base.business_coverage_unit = `${tpl.owning_department_name} 业务组`;
+        base.per_capita_frequency = 20 + (index * 5) % 80;
+        base.per_capita_duration = 30 + (index * 7) % 120;
+        base.application_target = ['internal_shared', 'service_enterprise', 'other'][index % 3];
+        base.business_contact = `${creator.name} 13800138000`;
+        base.expected_complete_date = launchDate.toISOString().substring(0, 10);
         return base;
       })(),
       baselineFormData,

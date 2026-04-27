@@ -21,9 +21,9 @@ import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
 import { Ellipsis, Pencil, Plus, Send, Trash2, Upload, LayoutGrid, List as ListIcon, RotateCcw, PowerOff } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
-import FilterPopover from '@/components/FilterPopover';
+
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
-import type { RequirementItem, RequirementQueryParams, RequirementStatus, RequirementPriority } from './types';
+import type { RequirementItem, RequirementQueryParams, RequirementStatus } from './types';
 import {
   fetchRequirementList,
   deleteRequirement,
@@ -38,9 +38,7 @@ import {
 import { statusConfigV2, legacyStatusMap } from './statusConfig';
 import RequirementFormModal from './components/RequirementFormModal';
 import RequirementDetailDrawer from './components/RequirementDetailDrawer';
-import PriorityIndicator from './components/PriorityIndicator';
 import StatusDot from './components/StatusDot';
-import ScoreBar from './components/ScoreBar';
 import TitleCell from './components/TitleCell';
 import RelativeTime from './components/RelativeTime';
 import BoardView from './components/BoardView';
@@ -68,11 +66,8 @@ const RequirementsWorkbench = () => {
   });
 
   // 筛选
-  const [statusFilter, setStatusFilter] = useState<string[]>([]);
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
-  const [priorityFilter, setPriorityFilter] = useState<string[]>([]);
   const [projectFilter, setProjectFilter] = useState<string[]>([]);
-  const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
 
   // 状态
   const [loading, setLoading] = useState(true);
@@ -93,40 +88,13 @@ const RequirementsWorkbench = () => {
     list: [],
   });
 
-  // 筛选选项（与 9 状态生命周期对齐）
-  const statusOptions = useMemo(
-    () => [
-      { value: 'DRAFT',              label: t('requirements.status.draft') },
-      { value: 'PENDING_APPROVAL',   label: t('requirements.status.pendingApproval') },
-      { value: 'PENDING_ASSESSMENT', label: t('requirements.status.pendingAssessment') },
-      { value: 'PENDING_PROJECT',    label: t('requirements.status.pendingProject') },
-      { value: 'DEVELOPING',         label: t('requirements.status.developing') },
-      { value: 'LAUNCHED',           label: t('requirements.status.launched') },
-      { value: 'OFFLINE',            label: t('requirements.status.offline') },
-      { value: 'REJECTED',           label: t('requirements.status.rejected') },
-      { value: 'WITHDRAWN',          label: t('requirements.status.withdrawn') },
-    ],
-    [t],
-  );
-
-  const priorityOptions = useMemo(
-    () => [
-      { value: 'HIGH', label: t('requirements.priority.high') },
-      { value: 'MEDIUM', label: t('requirements.priority.medium') },
-      { value: 'LOW', label: t('requirements.priority.low') },
-    ],
-    [t],
-  );
-
   // 加载数据
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetchRequirementList({
         ...queryParams,
-        statusFilter,
         departmentFilter,
-        priorityFilter,
         projectFilter,
       });
       setListResponse(response);
@@ -134,7 +102,7 @@ const RequirementsWorkbench = () => {
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, statusFilter, departmentFilter, priorityFilter, projectFilter]);
+  }, [queryParams, departmentFilter, projectFilter]);
 
   useEffect(() => {
     loadData();
@@ -281,13 +249,6 @@ const RequirementsWorkbench = () => {
       render: (_: string, record: RequirementItem) => <TitleCell record={record} />,
     },
     {
-      title: t('requirements.fields.priority'),
-      dataIndex: 'priority',
-      key: 'priority',
-      width: 90,
-      render: (p: RequirementPriority) => <PriorityIndicator priority={p} />,
-    },
-    {
       title: t('common.status'),
       dataIndex: 'status',
       key: 'status',
@@ -322,18 +283,24 @@ const RequirementsWorkbench = () => {
         ),
     },
     {
-      title: t('requirements.fields.valueScore', '价值得分'),
-      dataIndex: 'value_score',
-      key: 'value_score',
-      width: 130,
-      render: (v: number | undefined) => <ScoreBar value={v} variant="value" />,
-    },
-    {
-      title: t('requirements.fields.complexityScore', '复杂度得分'),
-      dataIndex: 'complexity_score',
-      key: 'complexity_score',
-      width: 130,
-      render: (v: number | undefined) => <ScoreBar value={v} variant="complexity" />,
+      title: t('requirements.fields.operationType', '操作类型'),
+      dataIndex: 'operation_type',
+      key: 'operation_type',
+      width: 120,
+      render: (_: unknown, record: RequirementItem) => {
+        const v = record.form_data?.operation_type as string | undefined;
+        const map: Record<string, string> = {
+          business_operation: '业务操作',
+          data_processing: '数据处理',
+          audit_check: '稽核检查',
+          monitor_alert: '监控预警',
+          interactive_response: '交互应答',
+          voucher_creation: '凭证制证',
+          voucher_review: '凭证审核',
+          other: '其他',
+        };
+        return v ? <Text>{map[v] || v}</Text> : <Text type="tertiary">-</Text>;
+      },
     },
     {
       title: t('common.owner', t('common.creator') as string),
@@ -515,31 +482,6 @@ const RequirementsWorkbench = () => {
                 style={{ width: 'auto', minWidth: 150, maxWidth: 600 }}
                 optionList={MOCK_PROJECT_POOL.map((p) => ({ label: p.name, value: p.id }))}
               />
-              <FilterPopover
-                visible={filterPopoverVisible}
-                onVisibleChange={setFilterPopoverVisible}
-                onConfirm={(values) => {
-                  setStatusFilter((values.status as string[]) || []);
-                  setPriorityFilter((values.priority as string[]) || []);
-                  setQueryParams((prev) => ({ ...prev, offset: 0 }));
-                }}
-                sections={[
-                  {
-                    key: 'status',
-                    label: t('common.status'),
-                    type: 'checkbox',
-                    options: statusOptions,
-                    value: statusFilter,
-                  },
-                  {
-                    key: 'priority',
-                    label: t('requirements.fields.priority'),
-                    type: 'checkbox',
-                    options: priorityOptions,
-                    value: priorityFilter,
-                  },
-                ]}
-              />
             </Space>
           </Col>
           <Col>
@@ -683,13 +625,13 @@ const RequirementsWorkbench = () => {
           await updateRequirementStatus(id, newStatus, comment);
           loadData();
           // Refresh the selected record
-          const updated = (await fetchRequirementList({ ...queryParams, statusFilter, departmentFilter, priorityFilter, projectFilter })).list.find(r => r.id === id);
+          const updated = (await fetchRequirementList({ ...queryParams, departmentFilter, projectFilter })).list.find(r => r.id === id);
           if (updated) setSelectedRecord(updated);
         }}
         onRefresh={async () => {
           loadData();
           if (selectedRecord) {
-            const updated = (await fetchRequirementList({ ...queryParams, statusFilter, departmentFilter, priorityFilter, projectFilter })).list.find(r => r.id === selectedRecord.id);
+            const updated = (await fetchRequirementList({ ...queryParams, departmentFilter, projectFilter })).list.find(r => r.id === selectedRecord.id);
             if (updated) setSelectedRecord(updated);
           }
         }}

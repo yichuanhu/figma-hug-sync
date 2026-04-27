@@ -4,8 +4,6 @@ import { Typography, Tag } from '@douyinfe/semi-ui';
 import { Workflow } from 'lucide-react';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import EmptyState from '@/components/EmptyState';
-import PriorityIndicator from '../PriorityIndicator';
-import ScoreBar from '../ScoreBar';
 import { statusConfigV2, statusOptionsV2, legacyStatusMap } from '../../statusConfig';
 import { aggregateLinkedStatus } from '../../utils/aggregateLinkedStatus';
 import type { RequirementItem, RequirementStatus } from '../../types';
@@ -71,7 +69,6 @@ const BoardView = ({ list, selectedId, onCardClick }: BoardViewProps) => {
                       onClick={() => onCardClick(item)}
                     >
                       <div className="req-board__card-top">
-                        <PriorityIndicator priority={item.priority} />
                         <Typography.Text type="tertiary" size="small" className="req-board__card-no">
                           {item.req_no || `REQ-${item.id.slice(0, 8)}`}
                         </Typography.Text>
@@ -81,20 +78,6 @@ const BoardView = ({ list, selectedId, onCardClick }: BoardViewProps) => {
                       </Typography.Text>
                       <div className="req-board__card-meta">
                         <Tag size="small" color="white" type="light">{item.owning_department_name}</Tag>
-                      </div>
-                      <div className="req-board__card-scores">
-                        <div className="req-board__card-score">
-                          <Typography.Text type="tertiary" size="small">
-                            {t('requirements.fields.valueScore', '价值')}
-                          </Typography.Text>
-                          <ScoreBar value={item.value_score} variant="value" />
-                        </div>
-                        <div className="req-board__card-score">
-                          <Typography.Text type="tertiary" size="small">
-                            {t('requirements.fields.complexityScore', '复杂度')}
-                          </Typography.Text>
-                          <ScoreBar value={item.complexity_score} variant="complexity" />
-                        </div>
                       </div>
                       <div className="req-board__card-footer">
                         <UserNameWithCard
