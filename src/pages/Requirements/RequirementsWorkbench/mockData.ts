@@ -292,7 +292,8 @@ const generateMockDetailedAssessment = (status: RequirementStatus, idx: number):
 // ============= Story-010 成本预估自动计算 =============
 
 import type { JobLevel, RequirementBaselineFormData, SchemeCostConfig, RequirementScheme } from './types';
-import { getActiveScheme as getActiveSchemeFromStore, PRESET_SCHEMES } from './schemeConfig';
+import { getActiveScheme as getActiveSchemeFromStore, PRESET_SCHEMES, subscribeSchemeChange, getSchemeVersion } from './schemeConfig';
+import { useSyncExternalStore } from 'react';
 import { resolveApprovers } from './utils/approverResolver';
 
 /** 默认 cost 配置回退（当激活方案缺 cost_config 时使用） */
@@ -329,6 +330,26 @@ export const resolveSubmittedStatus = (): RequirementStatus => {
 /** 审批通过后的目标状态：无评估则跳过 PENDING_ASSESSMENT */
 export const resolvePostApprovalStatus = (): RequirementStatus => {
   return schemeHasAssessment() ? 'PENDING_ASSESSMENT' : 'PENDING_PROJECT';
+};
+
+/**
+ * React Hook：订阅当前激活方案的关键标志位（hasApproval/hasAssessment）。
+ * 当用户在「需求方案」页切换激活方案时，所有使用此 hook 的组件会自动重渲染，
+ * 按钮文案、确认弹窗内容与提交目标状态保持一致。
+ */
+export const useSchemeFlags = (): {
+  hasApproval: boolean;
+  hasAssessment: boolean;
+  submittedStatus: RequirementStatus;
+  postApprovalStatus: RequirementStatus;
+} => {
+  useSyncExternalStore(subscribeSchemeChange, getSchemeVersion, getSchemeVersion);
+  return {
+    hasApproval: schemeHasApproval(),
+    hasAssessment: schemeHasAssessment(),
+    submittedStatus: resolveSubmittedStatus(),
+    postApprovalStatus: resolvePostApprovalStatus(),
+  };
 };
 
 export const getActiveSchemeCostConfig = (): SchemeCostConfig => {

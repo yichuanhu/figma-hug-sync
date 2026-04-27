@@ -6,7 +6,7 @@ import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import type { RequirementItem, ActivityRecord, DetailedAssessment } from '../../types';
-import { statusConfig, priorityConfig, fetchActivities, updateRequirementAssessment, MOCK_CURRENT_USER_ID, schemeHasApproval, resolveSubmittedStatus } from '../../mockData';
+import { statusConfig, priorityConfig, fetchActivities, updateRequirementAssessment, MOCK_CURRENT_USER_ID, useSchemeFlags } from '../../mockData';
 import { PRESET_SCHEMES } from '../../schemeConfig';
 import { findWorkspaceByRequirementId } from '../../../RequirementsProjects/mockData';
 import ApprovalSection from './ApprovalSection';
@@ -44,6 +44,7 @@ const PropertyPanel = ({
   const sCfg = statusConfig[data.status];
   const pCfg = priorityConfig[data.priority];
   const wsBinding = findWorkspaceByRequirementId(data.id);
+  const { hasApproval, submittedStatus } = useSchemeFlags();
 
   return (
     <div className="requirement-detail-property-panel">
@@ -124,7 +125,6 @@ const PropertyPanel = ({
       </div>
 
       {data.status === 'DRAFT' && (() => {
-        const hasApproval = schemeHasApproval();
         const submitLabel = hasApproval
           ? t('requirements.detail.submitForApproval')
           : t('requirements.detail.submitRequirement');
@@ -149,7 +149,7 @@ const PropertyPanel = ({
                     okText: submitLabel,
                     cancelText: t('common.cancel'),
                     onOk: async () => {
-                      await onStatusChange(data.id, resolveSubmittedStatus(), 'Submitted.');
+                      await onStatusChange(data.id, submittedStatus, 'Submitted.');
                       Toast.success(
                         hasApproval
                           ? t('requirements.detail.submitSuccess')
@@ -272,6 +272,7 @@ const RequirementDetailDrawer = ({
   initialTab = 'overview',
 }: RequirementDetailDrawerProps) => {
   const { t } = useTranslation();
+  const { hasApproval, submittedStatus } = useSchemeFlags();
   const [activities, setActivities] = useState<ActivityRecord[]>([]);
   const [activeTab, setActiveTab] = useState<string>(initialTab);
   const [viewingVersion, setViewingVersion] = useState<'current' | number>('current');
@@ -368,7 +369,6 @@ const RequirementDetailDrawer = ({
       extraActions={
         <>
           {canEdit && (() => {
-            const hasApproval = schemeHasApproval();
             const submitLabel = hasApproval
               ? t('requirements.detail.submitForApproval')
               : t('requirements.detail.submitRequirement');
@@ -390,7 +390,7 @@ const RequirementDetailDrawer = ({
                       okText: submitLabel,
                       cancelText: t('common.cancel'),
                       onOk: async () => {
-                        await onStatusChange(data.id, resolveSubmittedStatus(), 'Submitted.');
+                        await onStatusChange(data.id, submittedStatus, 'Submitted.');
                         Toast.success(
                           hasApproval
                             ? t('requirements.detail.submitSuccess')

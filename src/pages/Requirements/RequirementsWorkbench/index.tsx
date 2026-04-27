@@ -31,8 +31,7 @@ import {
   updateRequirement,
   updateRequirementStatus,
   resubmitRequirement,
-  schemeHasApproval,
-  resolveSubmittedStatus,
+  useSchemeFlags,
   MOCK_CURRENT_USER_ID,
   MOCK_PROJECT_POOL,
 } from './mockData';
@@ -51,6 +50,7 @@ const { Title, Text } = Typography;
 
 const RequirementsWorkbench = () => {
   const { t } = useTranslation();
+  const { hasApproval, submittedStatus } = useSchemeFlags();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -385,7 +385,6 @@ const RequirementsWorkbench = () => {
                 </Dropdown.Item>
               )}
               {canEdit(record.status) && (() => {
-                const hasApproval = schemeHasApproval();
                 const submitLabel = hasApproval
                   ? t('requirements.detail.submitForApproval')
                   : t('requirements.detail.submitRequirement');
@@ -404,7 +403,7 @@ const RequirementsWorkbench = () => {
                         okText: submitLabel,
                         cancelText: t('common.cancel'),
                         onOk: async () => {
-                          await updateRequirementStatus(record.id, resolveSubmittedStatus(), 'Submitted.');
+                          await updateRequirementStatus(record.id, submittedStatus, 'Submitted.');
                           loadData();
                           Toast.success(
                             hasApproval

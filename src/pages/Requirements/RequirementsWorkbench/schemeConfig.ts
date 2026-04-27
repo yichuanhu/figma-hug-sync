@@ -271,6 +271,28 @@ export const PRESET_SCHEMES: RequirementScheme[] = [
 
 let schemeStore: RequirementScheme[] = [...PRESET_SCHEMES];
 
+// ----- 订阅机制：方案变更时通知所有订阅者（用于 React 重渲染） -----
+const schemeSubscribers = new Set<() => void>();
+
+export const subscribeSchemeChange = (cb: () => void): (() => void) => {
+  schemeSubscribers.add(cb);
+  return () => schemeSubscribers.delete(cb);
+};
+
+const notifySchemeChange = (): void => {
+  schemeSubscribers.forEach((cb) => {
+    try { cb(); } catch { /* ignore subscriber errors */ }
+  });
+};
+
+/** 当前方案存储版本号（每次变更自增），用于 useSyncExternalStore 快照对比 */
+let schemeVersion = 0;
+export const getSchemeVersion = (): number => schemeVersion;
+const bumpSchemeVersion = (): void => {
+  schemeVersion += 1;
+  notifySchemeChange();
+};
+
 export const fetchSchemes = async (keyword?: string): Promise<RequirementScheme[]> => {
   await new Promise((r) => setTimeout(r, 200));
   let list = [...schemeStore];
@@ -295,11 +317,13 @@ export const activateScheme = async (id: string): Promise<void> => {
     ...s,
     status: s.id === id ? 'active' : 'inactive',
   }));
+  bumpSchemeVersion();
 };
 
 export const addScheme = async (scheme: RequirementScheme): Promise<RequirementScheme> => {
   await new Promise((r) => setTimeout(r, 200));
   schemeStore = [scheme, ...schemeStore];
+  bumpSchemeVersion();
   return scheme;
 };
 
@@ -308,6 +332,7 @@ export const deleteScheme = async (id: string): Promise<void> => {
   const target = schemeStore.find((s) => s.id === id);
   if (target?.is_preset) throw new Error('预设方案不可删除');
   schemeStore = schemeStore.filter((s) => s.id !== id);
+  bumpSchemeVersion();
 };
 
 /** 更新方案的审批流配置（预设方案不可更新） */
@@ -322,6 +347,7 @@ export const updateSchemeApprovalFlow = async (
   schemeStore = schemeStore.map((s) =>
     s.id === id ? { ...s, approval_flow, updated_at: new Date().toISOString() } : s,
   );
+  bumpSchemeVersion();
   return schemeStore.find((s) => s.id === id)!;
 };
 
