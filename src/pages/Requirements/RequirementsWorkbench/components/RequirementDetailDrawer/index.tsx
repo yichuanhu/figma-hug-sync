@@ -38,19 +38,57 @@ const PropertyPanel = ({
   t,
   onStatusChange,
   onRefresh,
+  isHistoryMode,
+  onOpenPicker,
+  onCreateProject,
 }: {
   data: RequirementItem;
   t: (key: string, options?: Record<string, unknown>) => string;
   onStatusChange: (id: string, newStatus: string, comment?: string) => Promise<void>;
   onRefresh?: () => void;
+  isHistoryMode: boolean;
+  onOpenPicker: () => void;
+  onCreateProject: () => void;
 }) => {
   const sCfg = statusConfig[data.status];
   const pCfg = priorityConfig[data.priority];
   const wsBinding = findWorkspaceByRequirementId(data.id);
   const { hasApproval, hasAssessment, submittedStatus } = useSchemeFlags();
+  const showPendingGuide =
+    !isHistoryMode && data.status === 'PENDING_PROJECT' && !wsBinding;
 
   return (
     <div className="requirement-detail-property-panel">
+      {showPendingGuide && (
+        <div style={{ marginBottom: 16 }}>
+          <Banner
+            type="info"
+            fullMode={false}
+            closeIcon={null}
+            icon={<Lightbulb size={20} strokeWidth={2} style={{ color: 'var(--semi-color-info)' }} />}
+            title={
+              <span style={{ fontWeight: 600 }}>
+                {t('requirements.detail.pendingProject.title')}
+              </span>
+            }
+            description={
+              <div>
+                <div style={{ marginBottom: 12 }}>
+                  {t('requirements.detail.pendingProject.description')}
+                </div>
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  <Button theme="solid" type="primary" size="small" onClick={onOpenPicker}>
+                    {t('requirements.detail.pendingProject.linkExisting')}
+                  </Button>
+                  <Button theme="light" size="small" onClick={onCreateProject}>
+                    {t('requirements.detail.pendingProject.createProject')}
+                  </Button>
+                </div>
+              </div>
+            }
+          />
+        </div>
+      )}
       <div className="requirement-detail-property-group">
         <div className="requirement-detail-property-item">
           <Text type="tertiary" size="small">{t('common.status')}</Text>
@@ -518,55 +556,6 @@ const RequirementDetailDrawer = ({
               itemKey="overview"
             >
               <div className="requirement-detail-tab-content">
-                {!isHistoryMode &&
-                  effectiveData.status === 'PENDING_PROJECT' &&
-                  !findWorkspaceByRequirementId(effectiveData.id) && (
-                    <div style={{ marginBottom: 16 }}>
-                      <Banner
-                        type="info"
-                        fullMode={false}
-                        closeIcon={null}
-                        icon={<Lightbulb size={20} strokeWidth={2} style={{ color: 'var(--semi-color-info)' }} />}
-                        title={
-                          <span style={{ fontWeight: 600 }}>
-                            {t('requirements.detail.pendingProject.title')}
-                          </span>
-                        }
-                        description={
-                          <div>
-                            <div style={{ marginBottom: 12 }}>
-                              {t('requirements.detail.pendingProject.description')}
-                            </div>
-                            <div style={{ display: 'flex', gap: 8 }}>
-                              <Button
-                                theme="solid"
-                                type="primary"
-                                size="small"
-                                onClick={() => setPickerVisible(true)}
-                              >
-                                {t('requirements.detail.pendingProject.linkExisting')}
-                              </Button>
-                              <Button
-                                theme="light"
-                                size="small"
-                                onClick={() =>
-                                  navigate('/requirements/projects', {
-                                    state: {
-                                      openCreate: true,
-                                      prefilledRequirementId: effectiveData.id,
-                                    },
-                                  })
-                                }
-                              >
-                                {t('requirements.detail.pendingProject.createProject')}
-                              </Button>
-                            </div>
-                          </div>
-                        }
-                      />
-                    </div>
-                  )}
-
                 <CustomFieldsSection data={effectiveData} t={t} />
 
                 {hasApproval && effectiveData.approvalFlowConfig && !isHistoryMode && (
@@ -603,7 +592,22 @@ const RequirementDetailDrawer = ({
 
         {/* 右侧属性面板 */}
         <div className="requirement-detail-right">
-          <PropertyPanel data={effectiveData} t={t} onStatusChange={onStatusChange} onRefresh={onRefresh} />
+          <PropertyPanel
+            data={effectiveData}
+            t={t}
+            onStatusChange={onStatusChange}
+            onRefresh={onRefresh}
+            isHistoryMode={isHistoryMode}
+            onOpenPicker={() => setPickerVisible(true)}
+            onCreateProject={() =>
+              navigate('/requirements/projects', {
+                state: {
+                  openCreate: true,
+                  prefilledRequirementId: effectiveData.id,
+                },
+              })
+            }
+          />
         </div>
       </div>
     </DetailDrawerWrapper>
