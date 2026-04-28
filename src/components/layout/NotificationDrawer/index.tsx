@@ -90,8 +90,8 @@ const NotificationDrawer = ({ visible, onClose }: Props) => {
         onChange={(k) => setTab(k as TabKey)}
         className="notification-drawer-tabs"
       >
-        <TabPane itemKey="all" tab={`${t('notificationCenter.tabs.all')} (${list.length > 99 ? '99+' : list.length})`} />
-        <TabPane itemKey="unread" tab={`${t('notificationCenter.tabs.unread')} (${unreadCount > 99 ? '99+' : unreadCount})`} />
+        <TabPane itemKey="all" tab={t('notificationCenter.tabs.all')} />
+        <TabPane itemKey="unread" tab={<span className="notification-tab-with-count">{t('notificationCenter.tabs.unread')}{unreadCount > 0 && <Badge count={unreadCount} type="danger" />}</span>} />
       </Tabs>
 
 
