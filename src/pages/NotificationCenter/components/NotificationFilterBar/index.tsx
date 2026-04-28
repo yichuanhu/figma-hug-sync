@@ -33,7 +33,7 @@ const NotificationFilterBar = ({ values, unreadCount, totalCount, onChange, onMa
         onChange={(k) => onChange({ ...values, readFilter: k as NotificationReadFilter })}
       >
         <TabPane itemKey="all" tab={t('notificationCenter.tabs.all')} />
-        <TabPane itemKey="unread" tab={<span className="notification-tab-with-count">{t('notificationCenter.tabs.unread')}{unreadCount > 0 && <Badge count={unreadCount} type="danger" />}</span>} />
+        <TabPane itemKey="unread" tab={<span className="notification-tab-with-count">{t('notificationCenter.tabs.unread')}{unreadCount > 0 && <Badge count={unreadCount} overflowCount={99} type="danger" />}</span>} />
       </Tabs>
 
       <div className="notification-filter-bar-row">
