@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { SideSheet, Tabs, TabPane, Button, Tooltip, Typography, Toast } from '@douyinfe/semi-ui';
+import { SideSheet, Tabs, TabPane, Button, Tooltip, Typography, Toast, Badge } from '@douyinfe/semi-ui';
 import { ArrowRight, CheckCheck, X, Check } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import RelativeTime from '@/pages/Requirements/RequirementsWorkbench/components/RelativeTime';
