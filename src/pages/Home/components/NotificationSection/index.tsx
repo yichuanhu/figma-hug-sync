@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Badge, Tag } from '@douyinfe/semi-ui';
+import { Badge, Tag, Button } from '@douyinfe/semi-ui';
 import { ChevronUp, ChevronDown, ChevronRight } from 'lucide-react';
 import RelativeTime from '@/pages/Requirements/RequirementsWorkbench/components/RelativeTime';
+import EmptyState from '@/components/EmptyState';
 import { mockNotifications } from '@/pages/NotificationCenter/mockData';
 import type { Notification, NotificationSeverity } from '@/pages/NotificationCenter/types';
 import { openNotification } from '@/utils/notificationLink';
