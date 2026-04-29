@@ -1,4 +1,10 @@
 .notification-section {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+
   &.is-collapsed .home-card-header {
     margin-bottom: 0;
   }
@@ -56,6 +62,11 @@
   .notification-list {
     display: flex;
     flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    margin: 0 -8px;
+    padding: 0 8px;
   }
 
   .notification-item {
