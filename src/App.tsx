@@ -5,6 +5,7 @@ import en_US from '@douyinfe/semi-ui/lib/es/locale/source/en_US';
 import zh_CN from '@douyinfe/semi-ui/lib/es/locale/source/zh_CN';
 import { useTranslation } from 'react-i18next';
 import AppLayout from "@/components/layout/AppLayout";
+import { LicenseProvider } from "@/contexts/LicenseContext";
 import Home from "@/pages/Home";
 import NotFound from "@/pages/NotFound";
 // Development
@@ -88,6 +89,7 @@ const App = () => {
 
   return (
   <LocaleProvider locale={semiLocale}>
+  <LicenseProvider>
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <Routes>
@@ -181,6 +183,7 @@ const App = () => {
       </Routes>
     </BrowserRouter>
   </QueryClientProvider>
+  </LicenseProvider>
   </LocaleProvider>
   );
 };

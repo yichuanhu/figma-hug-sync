@@ -1,5 +1,15 @@
 {
   "_version": "2026-04-23-notification-center",
+  "noLicense": {
+    "titleInvalid": "Not Licensed",
+    "titleExpired": "License Expired",
+    "descInvalid": "No active license is available for this tenant. Please contact your system administrator to activate a license.",
+    "descExpired": "Your license expired on {{date}}. Please contact your administrator to renew it.",
+    "refresh": "Re-check",
+    "contactAdmin": "Contact Admin",
+    "goHome": "Back to Home",
+    "copySuccess": "Admin email copied to clipboard"
+  },
   "common": {
     "title": "APA",
     "home": "Home",
