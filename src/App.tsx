@@ -89,6 +89,7 @@ const App = () => {
 
   return (
   <LocaleProvider locale={semiLocale}>
+  <LicenseProvider>
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <Routes>
