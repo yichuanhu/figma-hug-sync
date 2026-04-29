@@ -18,6 +18,20 @@ const LicenseContext = createContext<LicenseState>({
 
 const readMockLicense = (): { status: LicenseStatus; expireAt?: string } => {
   try {
+    // 支持通过 URL 参数快速预览：?license=invalid | expired&expireAt=2026-05-01
+    const params = new URLSearchParams(window.location.search);
+    const urlStatus = params.get('license');
+    const urlExpire = params.get('expireAt') || undefined;
+    if (urlStatus === 'invalid') {
+      localStorage.setItem(STORAGE_KEY, 'invalid');
+    } else if (urlStatus === 'expired') {
+      localStorage.setItem(STORAGE_KEY, 'expired');
+      if (urlExpire) localStorage.setItem(STORAGE_EXPIRE_KEY, urlExpire);
+    } else if (urlStatus === 'valid') {
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(STORAGE_EXPIRE_KEY);
+    }
+
     const raw = localStorage.getItem(STORAGE_KEY);
     const expireAt = localStorage.getItem(STORAGE_EXPIRE_KEY) || undefined;
     if (raw === 'invalid') return { status: 'invalid' };
