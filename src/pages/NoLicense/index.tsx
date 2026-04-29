@@ -32,7 +32,7 @@ const NoLicensePage = () => {
     <div className="no-license-page">
       <EmptyState
         variant="noAccess"
-        size={180}
+        size={150}
         description=""
         footer={
           <div className="no-license-content">

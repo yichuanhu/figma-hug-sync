@@ -1,14 +1,14 @@
 {
   "_version": "2026-04-23-notification-center",
   "noLicense": {
-    "titleInvalid": "系统未授权",
-    "titleExpired": "授权已过期",
-    "descInvalid": "当前租户无可用 License，请联系系统管理员开通授权后再使用。",
-    "descExpired": "您的 License 已于 {{date}} 到期，请联系管理员续期。",
-    "refresh": "重新检测",
-    "contactAdmin": "联系管理员",
+    "titleInvalid": "暂无访问权限",
+    "titleExpired": "授权已到期",
+    "descInvalid": "当前环境尚未激活 License，平台功能暂不可用。请联系系统管理员开通授权后重新进入。",
+    "descExpired": "您的 License 已于 {{date}} 到期，为不影响业务正常运行，请尽快联系管理员完成续期。",
+    "refresh": "重新检测授权",
+    "contactAdmin": "复制管理员邮箱",
     "goHome": "返回首页",
-    "copySuccess": "管理员邮箱已复制到剪贴板"
+    "copySuccess": "管理员邮箱已复制到剪贴板，请尽快联系处理"
   },
   "common": {
     "cancel": "取消",
