@@ -4,7 +4,7 @@
 
   .metrics-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
 
     @media (max-width: 720px) {
       grid-template-columns: 1fr;
@@ -29,8 +29,8 @@
       background-color: var(--semi-color-border);
     }
 
-    // 每行最后一个（3 列布局）以及最后一个不显示分隔线
-    &:nth-child(3n)::after,
+    // 每行最后一个（2 列布局）以及最后一个不显示分隔线
+    &:nth-child(2n)::after,
     &:last-child::after {
       display: none;
     }

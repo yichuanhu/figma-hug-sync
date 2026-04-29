@@ -1,19 +1,16 @@
 import { useNavigate } from 'react-router-dom';
-import { Bell, Sparkles } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import WelcomeSection from './components/WelcomeSection';
 import ShortcutsSection from './components/ShortcutsSection';
 import MetricsSection from './components/MetricsSection';
 import NotificationSection from './components/NotificationSection';
-import ResourceSection from './components/ResourceSection';
 import ColumnEmpty from './components/ColumnEmpty';
 import './index.less';
 
 const Home = () => {
   const navigate = useNavigate();
 
-  // 当对应栏内的所有模块都被隐藏时，渲染空状态
   const leftModules = [<ShortcutsSection key="s" />, <MetricsSection key="m" />].filter(Boolean);
-  const rightModules = [<NotificationSection key="n" />, <ResourceSection key="r" />].filter(Boolean);
 
   return (
     <div className="home-page">
@@ -33,17 +30,7 @@ const Home = () => {
           )}
         </div>
         <div className="home-right-column">
-          {rightModules.length > 0 ? (
-            rightModules
-          ) : (
-            <ColumnEmpty
-              icon={<Bell size={22} strokeWidth={2} />}
-              title="暂无通知与资源"
-              description="个人通知与资源获取模块均已隐藏，开启后可在此快速查看动态。"
-              actionText="查看通知中心"
-              onAction={() => navigate('/notifications')}
-            />
-          )}
+          <NotificationSection />
         </div>
       </div>
     </div>
