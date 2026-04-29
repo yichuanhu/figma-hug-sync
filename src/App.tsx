@@ -183,6 +183,7 @@ const App = () => {
       </Routes>
     </BrowserRouter>
   </QueryClientProvider>
+  </LicenseProvider>
   </LocaleProvider>
   );
 };
