@@ -54,40 +54,55 @@ const NotificationSection = () => {
         </div>
       </div>
       {!collapsed && (
-        <div className="notification-list">
-          {items.map((item) => {
-            const sConfig = severityConfig[item.severity];
-            return (
-              <div
-                key={item.id}
-                className="notification-item"
-                role="button"
-                tabIndex={0}
-                onClick={() => handleOpen(item)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    handleOpen(item);
-                  }
-                }}
-              >
-                <div className={`notification-item-dot ${item.read ? 'read' : 'unread'}`} />
-                <div className="notification-item-content">
-                  <div className="notification-item-title-row">
-                    <Tag size="small" color={sConfig.color as any}>{sConfig.label}</Tag>
-                    <span className={`notification-item-title ${item.read ? '' : 'unread'}`}>{item.title}</span>
-                  </div>
-                  {item.description && (
-                    <div className="notification-item-desc">{item.description}</div>
-                  )}
-                  <div className="notification-item-time">
-                    <RelativeTime value={item.createdAt} />
+        items.length === 0 ? (
+          <div className="notification-empty">
+            <EmptyState
+              variant="noData"
+              size={120}
+              description={t('homepage.notifications.empty', '暂无通知')}
+              footer={
+                <Button theme="light" type="primary" onClick={() => navigate('/notification-center')}>
+                  {t('homepage.notifications.goView', '去查看')}
+                </Button>
+              }
+            />
+          </div>
+        ) : (
+          <div className="notification-list">
+            {items.map((item) => {
+              const sConfig = severityConfig[item.severity];
+              return (
+                <div
+                  key={item.id}
+                  className="notification-item"
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => handleOpen(item)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleOpen(item);
+                    }
+                  }}
+                >
+                  <div className={`notification-item-dot ${item.read ? 'read' : 'unread'}`} />
+                  <div className="notification-item-content">
+                    <div className="notification-item-title-row">
+                      <Tag size="small" color={sConfig.color as any}>{sConfig.label}</Tag>
+                      <span className={`notification-item-title ${item.read ? '' : 'unread'}`}>{item.title}</span>
+                    </div>
+                    {item.description && (
+                      <div className="notification-item-desc">{item.description}</div>
+                    )}
+                    <div className="notification-item-time">
+                      <RelativeTime value={item.createdAt} />
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )
       )}
     </div>
   );
