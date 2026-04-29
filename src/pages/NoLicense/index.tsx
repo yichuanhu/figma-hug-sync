@@ -33,42 +33,41 @@ const NoLicensePage = () => {
       <EmptyState
         variant="noAccess"
         size={180}
-        description={
-          <div className="no-license-text">
+        description=""
+        footer={
+          <div className="no-license-content">
             <Typography.Title heading={4} className="no-license-title">
               {title}
             </Typography.Title>
             <Typography.Text type="tertiary" className="no-license-desc">
               {description}
             </Typography.Text>
-          </div>
-        }
-        footer={
-          <div className="no-license-actions">
-            <Button
-              theme="solid"
-              type="primary"
-              icon={<RefreshCw size={16} strokeWidth={2} />}
-              onClick={refresh}
-            >
-              {t('noLicense.refresh')}
-            </Button>
-            <Button
-              theme="light"
-              type="primary"
-              icon={<Mail size={16} strokeWidth={2} />}
-              onClick={handleContact}
-            >
-              {t('noLicense.contactAdmin')}
-            </Button>
-            <Button
-              theme="borderless"
-              type="tertiary"
-              icon={<Home size={16} strokeWidth={2} />}
-              onClick={() => navigate('/')}
-            >
-              {t('noLicense.goHome')}
-            </Button>
+            <div className="no-license-actions">
+              <Button
+                theme="solid"
+                type="primary"
+                icon={<RefreshCw size={16} strokeWidth={2} />}
+                onClick={refresh}
+              >
+                {t('noLicense.refresh')}
+              </Button>
+              <Button
+                theme="light"
+                type="primary"
+                icon={<Mail size={16} strokeWidth={2} />}
+                onClick={handleContact}
+              >
+                {t('noLicense.contactAdmin')}
+              </Button>
+              <Button
+                theme="borderless"
+                type="tertiary"
+                icon={<Home size={16} strokeWidth={2} />}
+                onClick={() => navigate('/')}
+              >
+                {t('noLicense.goHome')}
+              </Button>
+            </div>
           </div>
         }
       />
