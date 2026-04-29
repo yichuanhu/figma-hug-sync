@@ -20,7 +20,7 @@ const NotificationSection = () => {
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
   const [list, setList] = useState<Notification[]>(mockNotifications);
-  const items = list.slice(0, 5);
+  const items = list.slice(0, 10);
   const unreadCount = list.filter((n) => !n.read).length;
 
   const handleMarkRead = (id: string) => {
