@@ -6,7 +6,7 @@ import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import type { RequirementItem, ActivityRecord, DetailedAssessment } from '../../types';
-import { statusConfig, priorityConfig, fetchActivities, updateRequirementAssessment, MOCK_CURRENT_USER_ID, useSchemeFlags } from '../../mockData';
+import { statusConfig, priorityConfig, fetchActivities, updateRequirementAssessment, withdrawRequirement, MOCK_CURRENT_USER_ID, useSchemeFlags } from '../../mockData';
 import { PRESET_SCHEMES } from '../../schemeConfig';
 import { findWorkspaceByRequirementId } from '../../../RequirementsProjects/mockData';
 import ApprovalSection from './ApprovalSection';
@@ -16,7 +16,7 @@ import ApprovalFlowProgress from '../ApprovalFlowProgress';
 import ReadonlySchemeFieldsRenderer from '../ReadonlySchemeFieldsRenderer';
 import { buildSubmitConfirmContent } from '../../utils/submitConfirm';
 import './index.less';
-import { Lightbulb, Pencil, PowerOff, RotateCcw, Send, Trash2 } from 'lucide-react';
+import { Lightbulb, Pencil, PowerOff, RotateCcw, Send, Trash2, Undo2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import WorkspacePickerModal from './WorkspacePickerModal';
 
@@ -393,6 +393,7 @@ const RequirementDetailDrawer = ({
   const canDelete = !isHistoryMode && (effectiveData.status === 'DRAFT' || effectiveData.status === 'REJECTED' || effectiveData.status === 'WITHDRAWN');
   const canResubmit = !isHistoryMode && (effectiveData.status === 'REJECTED' || effectiveData.status === 'WITHDRAWN') && effectiveData.creatorId === MOCK_CURRENT_USER_ID;
   const canOffline = !isHistoryMode && effectiveData.status === 'LAUNCHED';
+  const canWithdraw = !isHistoryMode && effectiveData.status === 'PENDING_APPROVAL' && effectiveData.creatorId === MOCK_CURRENT_USER_ID;
 
   const handleSaveAssessment = async (id: string, assessment: DetailedAssessment) => {
     await updateRequirementAssessment(id, assessment);
@@ -452,6 +453,34 @@ const RequirementDetailDrawer = ({
               </Tooltip>
             );
           })()}
+          {canWithdraw && (
+            <Tooltip content={t('requirements.detail.withdraw')}>
+              <Button
+                icon={<Undo2 size={16} strokeWidth={2} />}
+                theme="borderless"
+                size="small"
+                type="tertiary"
+                onClick={() => {
+                  Modal.confirm({
+                    title: t('requirements.detail.withdrawConfirmTitle'),
+                    content: t('requirements.detail.withdrawConfirmContent'),
+                    okText: t('requirements.detail.withdraw'),
+                    okButtonProps: { type: 'danger' },
+                    cancelText: t('common.cancel'),
+                    onOk: async () => {
+                      try {
+                        await withdrawRequirement(data.id);
+                        Toast.success(t('requirements.detail.withdrawSuccess'));
+                        onRefresh?.();
+                      } catch (e) {
+                        Toast.error((e as Error).message);
+                      }
+                    },
+                  });
+                }}
+              />
+            </Tooltip>
+          )}
           {canResubmit && onResubmit && (
             <Tooltip content={t('requirements.detail.resubmit')}>
               <Button

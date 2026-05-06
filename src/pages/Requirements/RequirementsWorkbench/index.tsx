@@ -18,7 +18,7 @@ import {
 } from '@douyinfe/semi-ui';
 import DepartmentSelect from '@/components/DepartmentSelect';
 import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
-import { Ellipsis, Pencil, Plus, Send, Trash2, Upload, LayoutGrid, List as ListIcon, RotateCcw, PowerOff } from 'lucide-react';
+import { Ellipsis, Pencil, Plus, Send, Trash2, Upload, LayoutGrid, List as ListIcon, RotateCcw, PowerOff, Undo2 } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 
@@ -31,6 +31,7 @@ import {
   updateRequirement,
   updateRequirementStatus,
   resubmitRequirement,
+  withdrawRequirement,
   useSchemeFlags,
   MOCK_CURRENT_USER_ID,
   MOCK_PROJECT_POOL,
@@ -194,6 +195,26 @@ const RequirementsWorkbench = () => {
               ? t('requirements.detail.resubmitSuccess')
               : t('requirements.detail.submitDirectSuccess'),
           );
+        } catch (err) {
+          Toast.error((err as Error).message);
+        }
+      },
+    });
+  };
+
+  // 撤回（PENDING_APPROVAL + 提交人）
+  const handleWithdraw = (record: RequirementItem) => {
+    Modal.confirm({
+      title: t('requirements.detail.withdrawConfirmTitle'),
+      content: t('requirements.detail.withdrawConfirmContent'),
+      okText: t('requirements.detail.withdraw'),
+      okButtonProps: { type: 'danger' },
+      cancelText: t('common.cancel'),
+      onOk: async () => {
+        try {
+          await withdrawRequirement(record.id);
+          loadData();
+          Toast.success(t('requirements.detail.withdrawSuccess'));
         } catch (err) {
           Toast.error((err as Error).message);
         }
@@ -391,6 +412,17 @@ const RequirementsWorkbench = () => {
                   </Dropdown.Item>
                 );
               })()}
+              {record.status === 'PENDING_APPROVAL' && record.creatorId === MOCK_CURRENT_USER_ID && (
+                <Dropdown.Item
+                  icon={<Undo2 size={16} strokeWidth={2} />}
+                  onClick={(e: React.MouseEvent) => {
+                    e.stopPropagation();
+                    handleWithdraw(record);
+                  }}
+                >
+                  {t('requirements.detail.withdraw')}
+                </Dropdown.Item>
+              )}
               {record.status === 'LAUNCHED' && (
                 <Dropdown.Item
                   icon={<PowerOff size={16} strokeWidth={2} />}
