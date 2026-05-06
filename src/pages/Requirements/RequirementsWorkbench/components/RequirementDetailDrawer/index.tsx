@@ -54,8 +54,28 @@ const PropertyPanel = ({
   const pCfg = priorityConfig[data.priority];
   const wsBinding = findWorkspaceByRequirementId(data.id);
   const { hasApproval, hasAssessment, submittedStatus } = useSchemeFlags();
+  const [guideDismissed, setGuideDismissed] = useState<boolean>(() => {
+    try {
+      const raw = localStorage.getItem('requirementPendingGuideDismissed');
+      const set = raw ? (JSON.parse(raw) as string[]) : [];
+      return set.includes(data.id);
+    } catch {
+      return false;
+    }
+  });
+  const dismissGuide = () => {
+    setGuideDismissed(true);
+    try {
+      const raw = localStorage.getItem('requirementPendingGuideDismissed');
+      const set = raw ? (JSON.parse(raw) as string[]) : [];
+      if (!set.includes(data.id)) {
+        set.push(data.id);
+        localStorage.setItem('requirementPendingGuideDismissed', JSON.stringify(set));
+      }
+    } catch { /* ignore */ }
+  };
   const showPendingGuide =
-    !isHistoryMode && data.status === 'PENDING_PROJECT' && !wsBinding;
+    !isHistoryMode && data.status === 'PENDING_PROJECT' && !wsBinding && !guideDismissed;
 
   return (
     <div className="requirement-detail-property-panel">
@@ -64,7 +84,8 @@ const PropertyPanel = ({
           <Banner
             type="info"
             fullMode={false}
-            closeIcon={null}
+            closeIcon={<X size={14} strokeWidth={2} />}
+            onClose={dismissGuide}
             icon={<Lightbulb size={20} strokeWidth={2} style={{ color: 'var(--semi-color-info)' }} />}
             title={
               <span style={{ fontWeight: 600 }}>
