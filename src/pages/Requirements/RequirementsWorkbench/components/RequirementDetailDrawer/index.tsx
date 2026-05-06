@@ -525,7 +525,32 @@ const RequirementDetailDrawer = ({
               />
             </Tooltip>
           )}
-          {canEdit && (
+          {canLinkProject && (
+            <>
+              <Tooltip content={t('requirements.detail.pendingProject.linkExisting')}>
+                <Button
+                  icon={<Link2 size={16} strokeWidth={2} />}
+                  theme="borderless"
+                  size="small"
+                  type="tertiary"
+                  onClick={() => setPickerVisible(true)}
+                />
+              </Tooltip>
+              <Tooltip content={t('requirements.detail.pendingProject.createProject')}>
+                <Button
+                  icon={<FolderPlus size={16} strokeWidth={2} />}
+                  theme="borderless"
+                  size="small"
+                  type="tertiary"
+                  onClick={() =>
+                    navigate('/requirements/projects', {
+                      state: { openCreate: true, prefilledRequirementId: data.id },
+                    })
+                  }
+                />
+              </Tooltip>
+            </>
+          )}
             <Tooltip content={t('common.edit')}>
               <Button
                 icon={<Pencil size={16} strokeWidth={2} />}
