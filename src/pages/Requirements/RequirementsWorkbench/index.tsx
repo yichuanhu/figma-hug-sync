@@ -173,18 +173,27 @@ const RequirementsWorkbench = () => {
     });
   };
 
-  // 重新提交（REJECTED / WITHDRAWN）
+  // 重新提交（REJECTED / WITHDRAWN）—— 文案与目标状态由当前方案标志驱动
   const handleResubmit = (record: RequirementItem) => {
+    const resubmitLabel = t('requirements.detail.resubmit');
     Modal.confirm({
-      title: t('requirements.detail.resubmitConfirmTitle', '确认重新提交？'),
-      content: t('requirements.detail.resubmitConfirmContent', '需求将重新进入审批流程（L1）。原审批历史会保留。'),
-      okText: t('requirements.detail.resubmit', '重新提交'),
+      title: hasApproval
+        ? t('requirements.detail.resubmitConfirmTitle')
+        : t('requirements.detail.submitDirectConfirmTitle'),
+      content: hasApproval
+        ? t('requirements.detail.resubmitConfirmContent')
+        : buildSubmitConfirmContent(false, hasAssessment, t),
+      okText: resubmitLabel,
       cancelText: t('common.cancel'),
       onOk: async () => {
         try {
           await resubmitRequirement(record.id);
           loadData();
-          Toast.success(t('requirements.detail.resubmitSuccess', '已重新提交审批'));
+          Toast.success(
+            hasApproval
+              ? t('requirements.detail.resubmitSuccess')
+              : t('requirements.detail.submitDirectSuccess'),
+          );
         } catch (err) {
           Toast.error((err as Error).message);
         }
