@@ -68,7 +68,7 @@ const ApprovalSection = ({ data, onStatusChange, onRefresh }: ApprovalSectionPro
             type="primary"
             block
             style={{ height: 32 }}
-            icon={<RotateCcw size={16} strokeWidth={2} />}
+            icon={<Send size={16} strokeWidth={2} />}
             loading={submitting === 'resubmit'}
             onClick={handleResubmit}
           >
