@@ -18,7 +18,7 @@ import {
 } from '@douyinfe/semi-ui';
 import DepartmentSelect from '@/components/DepartmentSelect';
 import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
-import { Ellipsis, Pencil, Plus, Send, Trash2, Upload, LayoutGrid, List as ListIcon, RotateCcw, PowerOff, Undo2 } from 'lucide-react';
+import { Ellipsis, Pencil, Plus, Send, Trash2, Upload, LayoutGrid, List as ListIcon, RotateCcw, PowerOff, Undo2, Link2, FolderPlus } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 
@@ -39,6 +39,8 @@ import {
 import { statusConfigV2, legacyStatusMap } from './statusConfig';
 import RequirementFormModal from './components/RequirementFormModal';
 import RequirementDetailDrawer from './components/RequirementDetailDrawer';
+import WorkspacePickerModal from './components/RequirementDetailDrawer/WorkspacePickerModal';
+import { findWorkspaceByRequirementId } from '../RequirementsProjects/mockData';
 import StatusDot from './components/StatusDot';
 import TitleCell from './components/TitleCell';
 import RelativeTime from './components/RelativeTime';
@@ -79,6 +81,7 @@ const RequirementsWorkbench = () => {
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<RequirementItem | null>(null);
   const [viewMode, setViewMode] = useState<'table' | 'board'>('table');
+  const [pickerRecord, setPickerRecord] = useState<RequirementItem | null>(null);
 
   // 列表数据
   const [listResponse, setListResponse] = useState<{
@@ -423,6 +426,30 @@ const RequirementsWorkbench = () => {
                   {t('requirements.detail.withdraw')}
                 </Dropdown.Item>
               )}
+              {record.status === 'PENDING_PROJECT' && !findWorkspaceByRequirementId(record.id) && (
+                <>
+                  <Dropdown.Item
+                    icon={<Link2 size={16} strokeWidth={2} />}
+                    onClick={(e: React.MouseEvent) => {
+                      e.stopPropagation();
+                      setPickerRecord(record);
+                    }}
+                  >
+                    {t('requirements.detail.pendingProject.linkExisting')}
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    icon={<FolderPlus size={16} strokeWidth={2} />}
+                    onClick={(e: React.MouseEvent) => {
+                      e.stopPropagation();
+                      navigate('/requirements/projects', {
+                        state: { openCreate: true, prefilledRequirementId: record.id },
+                      });
+                    }}
+                  >
+                    {t('requirements.detail.pendingProject.createProject')}
+                  </Dropdown.Item>
+                </>
+              )}
               {record.status === 'LAUNCHED' && (
                 <Dropdown.Item
                   icon={<PowerOff size={16} strokeWidth={2} />}
@@ -672,6 +699,18 @@ const RequirementsWorkbench = () => {
         onScrollToRow={(id) => {
           const row = document.getElementById(`requirement-row-${id}`);
           row?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }}
+      />
+
+      {/* 关联到已有工作空间 */}
+      <WorkspacePickerModal
+        visible={!!pickerRecord}
+        requirementId={pickerRecord?.id ?? ''}
+        departmentId={pickerRecord?.owning_department_id ?? ''}
+        onClose={() => setPickerRecord(null)}
+        onSuccess={() => {
+          setPickerRecord(null);
+          loadData();
         }}
       />
     </div>

@@ -16,7 +16,7 @@ import ApprovalFlowProgress from '../ApprovalFlowProgress';
 import ReadonlySchemeFieldsRenderer from '../ReadonlySchemeFieldsRenderer';
 import { buildSubmitConfirmContent } from '../../utils/submitConfirm';
 import './index.less';
-import { Lightbulb, Pencil, PowerOff, RotateCcw, Send, Trash2, Undo2 } from 'lucide-react';
+import { Lightbulb, Pencil, PowerOff, RotateCcw, Send, Trash2, Undo2, Link2, FolderPlus, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import WorkspacePickerModal from './WorkspacePickerModal';
 
@@ -54,8 +54,28 @@ const PropertyPanel = ({
   const pCfg = priorityConfig[data.priority];
   const wsBinding = findWorkspaceByRequirementId(data.id);
   const { hasApproval, hasAssessment, submittedStatus } = useSchemeFlags();
+  const [guideDismissed, setGuideDismissed] = useState<boolean>(() => {
+    try {
+      const raw = localStorage.getItem('requirementPendingGuideDismissed');
+      const set = raw ? (JSON.parse(raw) as string[]) : [];
+      return set.includes(data.id);
+    } catch {
+      return false;
+    }
+  });
+  const dismissGuide = () => {
+    setGuideDismissed(true);
+    try {
+      const raw = localStorage.getItem('requirementPendingGuideDismissed');
+      const set = raw ? (JSON.parse(raw) as string[]) : [];
+      if (!set.includes(data.id)) {
+        set.push(data.id);
+        localStorage.setItem('requirementPendingGuideDismissed', JSON.stringify(set));
+      }
+    } catch { /* ignore */ }
+  };
   const showPendingGuide =
-    !isHistoryMode && data.status === 'PENDING_PROJECT' && !wsBinding;
+    !isHistoryMode && data.status === 'PENDING_PROJECT' && !wsBinding && !guideDismissed;
 
   return (
     <div className="requirement-detail-property-panel">
@@ -64,7 +84,8 @@ const PropertyPanel = ({
           <Banner
             type="info"
             fullMode={false}
-            closeIcon={null}
+            closeIcon={<X size={14} strokeWidth={2} />}
+            onClose={dismissGuide}
             icon={<Lightbulb size={20} strokeWidth={2} style={{ color: 'var(--semi-color-info)' }} />}
             title={
               <span style={{ fontWeight: 600 }}>
@@ -394,6 +415,7 @@ const RequirementDetailDrawer = ({
   const canResubmit = !isHistoryMode && (effectiveData.status === 'REJECTED' || effectiveData.status === 'WITHDRAWN') && effectiveData.creatorId === MOCK_CURRENT_USER_ID;
   const canOffline = !isHistoryMode && effectiveData.status === 'LAUNCHED';
   const canWithdraw = !isHistoryMode && effectiveData.status === 'PENDING_APPROVAL' && effectiveData.creatorId === MOCK_CURRENT_USER_ID;
+  const canLinkProject = !isHistoryMode && effectiveData.status === 'PENDING_PROJECT' && !findWorkspaceByRequirementId(effectiveData.id);
 
   const handleSaveAssessment = async (id: string, assessment: DetailedAssessment) => {
     await updateRequirementAssessment(id, assessment);
@@ -502,6 +524,32 @@ const RequirementDetailDrawer = ({
                 onClick={() => onOffline(data)}
               />
             </Tooltip>
+          )}
+          {canLinkProject && (
+            <>
+              <Tooltip content={t('requirements.detail.pendingProject.linkExisting')}>
+                <Button
+                  icon={<Link2 size={16} strokeWidth={2} />}
+                  theme="borderless"
+                  size="small"
+                  type="tertiary"
+                  onClick={() => setPickerVisible(true)}
+                />
+              </Tooltip>
+              <Tooltip content={t('requirements.detail.pendingProject.createProject')}>
+                <Button
+                  icon={<FolderPlus size={16} strokeWidth={2} />}
+                  theme="borderless"
+                  size="small"
+                  type="tertiary"
+                  onClick={() =>
+                    navigate('/requirements/projects', {
+                      state: { openCreate: true, prefilledRequirementId: data.id },
+                    })
+                  }
+                />
+              </Tooltip>
+            </>
           )}
           {canEdit && (
             <Tooltip content={t('common.edit')}>
