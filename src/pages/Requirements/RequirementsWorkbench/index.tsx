@@ -412,7 +412,17 @@ const RequirementsWorkbench = () => {
                   </Dropdown.Item>
                 );
               })()}
-              {record.status === 'LAUNCHED' && (
+              {record.status === 'PENDING_APPROVAL' && record.creatorId === MOCK_CURRENT_USER_ID && (
+                <Dropdown.Item
+                  icon={<Undo2 size={16} strokeWidth={2} />}
+                  onClick={(e: React.MouseEvent) => {
+                    e.stopPropagation();
+                    handleWithdraw(record);
+                  }}
+                >
+                  {t('requirements.detail.withdraw')}
+                </Dropdown.Item>
+              )}
                 <Dropdown.Item
                   icon={<PowerOff size={16} strokeWidth={2} />}
                   onClick={(e: React.MouseEvent) => {
