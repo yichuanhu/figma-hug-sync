@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Typography, Button, Toast, TextArea, Tag, Modal } from '@douyinfe/semi-ui';
-import { Undo2, RotateCcw } from 'lucide-react';
+import { Undo2, Send } from 'lucide-react';
 import type { RequirementItem } from '../../types';
 import {
   advanceApprovalFlow,
@@ -68,7 +68,7 @@ const ApprovalSection = ({ data, onStatusChange, onRefresh }: ApprovalSectionPro
             type="primary"
             block
             style={{ height: 32 }}
-            icon={<RotateCcw size={16} strokeWidth={2} />}
+            icon={<Send size={16} strokeWidth={2} />}
             loading={submitting === 'resubmit'}
             onClick={handleResubmit}
           >
