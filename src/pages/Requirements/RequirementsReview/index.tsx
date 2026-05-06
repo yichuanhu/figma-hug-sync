@@ -416,9 +416,7 @@ const RequirementsReview = () => {
             { label: t('requirements.review.rejectedCount'), value: stats.rejectedCount, icon: rejectedIcon },
           ].map((item, idx, arr) => (
             <div key={idx} className="requirements-review-metric-card">
-              <div className="requirements-review-metric-icon">
-                <img src={item.icon} alt="" />
-              </div>
+              <div className="requirements-review-metric-icon" aria-hidden="true" dangerouslySetInnerHTML={{ __html: item.icon }} />
               <div className="requirements-review-metric-info">
                 <div className="requirements-review-metric-label">{item.label}</div>
                 <div className="requirements-review-metric-value">{item.value}</div>
