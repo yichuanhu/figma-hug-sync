@@ -423,6 +423,7 @@ const RequirementsWorkbench = () => {
                   {t('requirements.detail.withdraw')}
                 </Dropdown.Item>
               )}
+              {record.status === 'LAUNCHED' && (
                 <Dropdown.Item
                   icon={<PowerOff size={16} strokeWidth={2} />}
                   onClick={(e: React.MouseEvent) => {
