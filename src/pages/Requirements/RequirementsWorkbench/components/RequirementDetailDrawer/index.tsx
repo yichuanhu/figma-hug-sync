@@ -551,6 +551,7 @@ const RequirementDetailDrawer = ({
               </Tooltip>
             </>
           )}
+          {canEdit && (
             <Tooltip content={t('common.edit')}>
               <Button
                 icon={<Pencil size={16} strokeWidth={2} />}
