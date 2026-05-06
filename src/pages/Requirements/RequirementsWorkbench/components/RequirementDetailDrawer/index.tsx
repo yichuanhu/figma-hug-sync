@@ -98,10 +98,10 @@ const PropertyPanel = ({
                   {t('requirements.detail.pendingProject.description')}
                 </div>
                 <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                  <Button theme="solid" type="primary" size="small" onClick={onOpenPicker}>
+                  <Button theme="solid" type="primary" size="small" icon={<Link2 size={14} strokeWidth={2} />} onClick={onOpenPicker}>
                     {t('requirements.detail.pendingProject.linkExisting')}
                   </Button>
-                  <Button theme="light" size="small" onClick={onCreateProject}>
+                  <Button theme="light" size="small" icon={<FolderPlus size={14} strokeWidth={2} />} onClick={onCreateProject}>
                     {t('requirements.detail.pendingProject.createProject')}
                   </Button>
                 </div>
