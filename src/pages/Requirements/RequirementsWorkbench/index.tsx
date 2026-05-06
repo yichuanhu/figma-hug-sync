@@ -81,6 +81,7 @@ const RequirementsWorkbench = () => {
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<RequirementItem | null>(null);
   const [viewMode, setViewMode] = useState<'table' | 'board'>('table');
+  const [pickerRecord, setPickerRecord] = useState<RequirementItem | null>(null);
 
   // 列表数据
   const [listResponse, setListResponse] = useState<{
