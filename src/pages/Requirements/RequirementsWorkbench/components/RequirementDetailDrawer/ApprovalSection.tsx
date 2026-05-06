@@ -7,8 +7,10 @@ import {
   advanceApprovalFlow,
   withdrawRequirement,
   resubmitRequirement,
+  useSchemeFlags,
   MOCK_CURRENT_USER_ID,
 } from '../../mockData';
+import { buildSubmitConfirmContent } from '../../utils/submitConfirm';
 
 const { Text } = Typography;
 
