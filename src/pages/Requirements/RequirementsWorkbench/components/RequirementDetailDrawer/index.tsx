@@ -16,7 +16,7 @@ import ApprovalFlowProgress from '../ApprovalFlowProgress';
 import ReadonlySchemeFieldsRenderer from '../ReadonlySchemeFieldsRenderer';
 import { buildSubmitConfirmContent } from '../../utils/submitConfirm';
 import './index.less';
-import { Lightbulb, Pencil, PowerOff, RotateCcw, Send, Trash2 } from 'lucide-react';
+import { Lightbulb, Pencil, PowerOff, RotateCcw, Send, Trash2, Undo2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import WorkspacePickerModal from './WorkspacePickerModal';
 
