@@ -51,6 +51,16 @@ export const LicenseProvider = ({ children }: ProviderProps) => {
 
   const load = useCallback(() => {
     setState({ status: 'loading' });
+    // 默认清除历史预览状态，避免残留导致始终看到“未授权”页面
+    try {
+      const params = new URLSearchParams(window.location.search);
+      if (!params.get('license')) {
+        localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem(STORAGE_EXPIRE_KEY);
+      }
+    } catch {
+      // ignore
+    }
     // 模拟异步：真实接入时替换为 API 调用
     setTimeout(() => {
       setState(readMockLicense());
