@@ -54,6 +54,14 @@ const NoLicensePage = () => {
               >
                 {t('noLicense.goHome')}
               </Button>
+              <Button
+                theme="light"
+                type="tertiary"
+                icon={<RefreshCw size={16} strokeWidth={2} />}
+                onClick={handleResetLicense}
+              >
+                重置授权状态（仅预览）
+              </Button>
             </div>
           </div>
         }
