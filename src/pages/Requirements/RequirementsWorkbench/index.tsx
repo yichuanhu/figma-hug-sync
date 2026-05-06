@@ -701,6 +701,18 @@ const RequirementsWorkbench = () => {
           row?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }}
       />
+
+      {/* 关联到已有工作空间 */}
+      <WorkspacePickerModal
+        visible={!!pickerRecord}
+        requirementId={pickerRecord?.id ?? ''}
+        departmentId={pickerRecord?.owning_department_id ?? ''}
+        onClose={() => setPickerRecord(null)}
+        onSuccess={() => {
+          setPickerRecord(null);
+          loadData();
+        }}
+      />
     </div>
   );
 };
