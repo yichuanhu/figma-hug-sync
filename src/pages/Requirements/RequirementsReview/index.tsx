@@ -36,6 +36,10 @@ import {
 import RequirementDetailDrawer from '../RequirementsWorkbench/components/RequirementDetailDrawer';
 import './index.less';
 import { CheckCircle, Ellipsis, Eye, Undo2, XCircle } from 'lucide-react';
+import pendingIcon from '@/assets/review-stats/pending.svg';
+import reviewedIcon from '@/assets/review-stats/reviewed.svg';
+import approvedIcon from '@/assets/review-stats/approved.svg';
+import rejectedIcon from '@/assets/review-stats/rejected.svg';
 
 const { Title, Text } = Typography;
 
