@@ -332,7 +332,25 @@ const RequirementsWorkbench = () => {
                   {t('common.edit')}
                 </Dropdown.Item>
               )}
-              {canEdit(record.status) && (() => {
+              {(() => {
+                const isResubmit =
+                  (record.status === 'REJECTED' || record.status === 'WITHDRAWN') &&
+                  record.creatorId === MOCK_CURRENT_USER_ID;
+                const canSubmit = canEdit(record.status) || record.status === 'REJECTED';
+                if (!canSubmit && !isResubmit) return null;
+                if (isResubmit) {
+                  return (
+                    <Dropdown.Item
+                      icon={<RotateCcw size={16} strokeWidth={2} />}
+                      onClick={(e: React.MouseEvent) => {
+                        e.stopPropagation();
+                        handleResubmit(record);
+                      }}
+                    >
+                      {t('requirements.detail.resubmit', '重新提交')}
+                    </Dropdown.Item>
+                  );
+                }
                 const submitLabel = hasApproval
                   ? t('requirements.detail.submitForApproval')
                   : t('requirements.detail.submitRequirement');
@@ -364,17 +382,6 @@ const RequirementsWorkbench = () => {
                   </Dropdown.Item>
                 );
               })()}
-              {(record.status === 'REJECTED' || record.status === 'WITHDRAWN') && record.creatorId === MOCK_CURRENT_USER_ID && (
-                <Dropdown.Item
-                  icon={<RotateCcw size={16} strokeWidth={2} />}
-                  onClick={(e: React.MouseEvent) => {
-                    e.stopPropagation();
-                    handleResubmit(record);
-                  }}
-                >
-                  {t('requirements.detail.resubmit', '重新提交')}
-                </Dropdown.Item>
-              )}
               {record.status === 'LAUNCHED' && (
                 <Dropdown.Item
                   icon={<PowerOff size={16} strokeWidth={2} />}
