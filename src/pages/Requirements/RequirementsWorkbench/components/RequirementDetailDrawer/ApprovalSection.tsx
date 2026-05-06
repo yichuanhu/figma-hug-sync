@@ -7,8 +7,10 @@ import {
   advanceApprovalFlow,
   withdrawRequirement,
   resubmitRequirement,
+  useSchemeFlags,
   MOCK_CURRENT_USER_ID,
 } from '../../mockData';
+import { buildSubmitConfirmContent } from '../../utils/submitConfirm';
 
 const { Text } = Typography;
 
@@ -20,6 +22,7 @@ interface ApprovalSectionProps {
 
 const ApprovalSection = ({ data, onStatusChange, onRefresh }: ApprovalSectionProps) => {
   const { t } = useTranslation();
+  const { hasApproval, hasAssessment } = useSchemeFlags();
   const [reason, setReason] = useState('');
   const [submitting, setSubmitting] = useState<'approve' | 'reject' | 'withdraw' | 'resubmit' | null>(null);
 
@@ -30,15 +33,23 @@ const ApprovalSection = ({ data, onStatusChange, onRefresh }: ApprovalSectionPro
     if (!isCreator) return null;
     const handleResubmit = () => {
       Modal.confirm({
-        title: t('requirements.detail.resubmitConfirmTitle'),
-        content: t('requirements.detail.resubmitConfirmContent'),
+        title: hasApproval
+          ? t('requirements.detail.resubmitConfirmTitle')
+          : t('requirements.detail.submitDirectConfirmTitle'),
+        content: hasApproval
+          ? t('requirements.detail.resubmitConfirmContent')
+          : buildSubmitConfirmContent(false, hasAssessment, t),
         okText: t('requirements.detail.resubmit'),
         cancelText: t('common.cancel'),
         onOk: async () => {
           setSubmitting('resubmit');
           try {
             await resubmitRequirement(data.id);
-            Toast.success(t('requirements.detail.resubmitSuccess'));
+            Toast.success(
+              hasApproval
+                ? t('requirements.detail.resubmitSuccess')
+                : t('requirements.detail.submitDirectSuccess'),
+            );
             onRefresh?.();
           } catch (e) {
             Toast.error((e as Error).message);

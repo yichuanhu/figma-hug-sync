@@ -1132,7 +1132,8 @@ export const withdrawRequirement = async (id: string): Promise<RequirementItem |
   };
   mockRequirementData[index] = {
     ...cur,
-    status: 'DRAFT',
+    // 撤回后保持「已撤回」语义状态，与 statusConfig/列表按钮联调一致
+    status: 'WITHDRAWN',
     approvalFlowConfig: undefined,
     approvalHistory: [...(cur.approvalHistory ?? []), entry],
     updatedAt: now,
@@ -1140,7 +1141,7 @@ export const withdrawRequirement = async (id: string): Promise<RequirementItem |
   return mockRequirementData[index];
 };
 
-/** 重新提交：REJECTED → PENDING_APPROVAL，重置 flow 到 L1，保留历史 */
+/** 重新提交：REJECTED/WITHDRAWN → 由当前方案决定目标状态（PENDING_APPROVAL / PENDING_ASSESSMENT / PENDING_PROJECT），保留历史 */
 export const resubmitRequirement = async (id: string): Promise<RequirementItem | null> => {
   await new Promise((r) => setTimeout(r, 200));
   const index = mockRequirementData.findIndex((r) => r.id === id);
