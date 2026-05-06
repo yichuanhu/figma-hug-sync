@@ -371,7 +371,7 @@ const RequirementsWorkbench = () => {
                 if (isResubmit) {
                   return (
                     <Dropdown.Item
-                      icon={<RotateCcw size={16} strokeWidth={2} />}
+                      icon={<Send size={16} strokeWidth={2} />}
                       onClick={(e: React.MouseEvent) => {
                         e.stopPropagation();
                         handleResubmit(record);
