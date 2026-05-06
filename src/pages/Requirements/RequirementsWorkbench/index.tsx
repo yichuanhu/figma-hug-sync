@@ -426,6 +426,30 @@ const RequirementsWorkbench = () => {
                   {t('requirements.detail.withdraw')}
                 </Dropdown.Item>
               )}
+              {record.status === 'PENDING_PROJECT' && !findWorkspaceByRequirementId(record.id) && (
+                <>
+                  <Dropdown.Item
+                    icon={<Link2 size={16} strokeWidth={2} />}
+                    onClick={(e: React.MouseEvent) => {
+                      e.stopPropagation();
+                      setPickerRecord(record);
+                    }}
+                  >
+                    {t('requirements.detail.pendingProject.linkExisting')}
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    icon={<FolderPlus size={16} strokeWidth={2} />}
+                    onClick={(e: React.MouseEvent) => {
+                      e.stopPropagation();
+                      navigate('/requirements/projects', {
+                        state: { openCreate: true, prefilledRequirementId: record.id },
+                      });
+                    }}
+                  >
+                    {t('requirements.detail.pendingProject.createProject')}
+                  </Dropdown.Item>
+                </>
+              )}
               {record.status === 'LAUNCHED' && (
                 <Dropdown.Item
                   icon={<PowerOff size={16} strokeWidth={2} />}
