@@ -453,6 +453,34 @@ const RequirementDetailDrawer = ({
               </Tooltip>
             );
           })()}
+          {canWithdraw && (
+            <Tooltip content={t('requirements.detail.withdraw')}>
+              <Button
+                icon={<Undo2 size={16} strokeWidth={2} />}
+                theme="borderless"
+                size="small"
+                type="tertiary"
+                onClick={() => {
+                  Modal.confirm({
+                    title: t('requirements.detail.withdrawConfirmTitle'),
+                    content: t('requirements.detail.withdrawConfirmContent'),
+                    okText: t('requirements.detail.withdraw'),
+                    okButtonProps: { type: 'danger' },
+                    cancelText: t('common.cancel'),
+                    onOk: async () => {
+                      try {
+                        await withdrawRequirement(data.id);
+                        Toast.success(t('requirements.detail.withdrawSuccess'));
+                        onRefresh?.();
+                      } catch (e) {
+                        Toast.error((e as Error).message);
+                      }
+                    },
+                  });
+                }}
+              />
+            </Tooltip>
+          )}
           {canResubmit && onResubmit && (
             <Tooltip content={t('requirements.detail.resubmit')}>
               <Button
