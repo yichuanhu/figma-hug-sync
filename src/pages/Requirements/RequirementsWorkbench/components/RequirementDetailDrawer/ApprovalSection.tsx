@@ -22,6 +22,7 @@ interface ApprovalSectionProps {
 
 const ApprovalSection = ({ data, onStatusChange, onRefresh }: ApprovalSectionProps) => {
   const { t } = useTranslation();
+  const { hasApproval, hasAssessment } = useSchemeFlags();
   const [reason, setReason] = useState('');
   const [submitting, setSubmitting] = useState<'approve' | 'reject' | 'withdraw' | 'resubmit' | null>(null);
 
