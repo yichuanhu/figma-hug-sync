@@ -202,6 +202,26 @@ const RequirementsWorkbench = () => {
     });
   };
 
+  // 撤回（PENDING_APPROVAL + 提交人）
+  const handleWithdraw = (record: RequirementItem) => {
+    Modal.confirm({
+      title: t('requirements.detail.withdrawConfirmTitle'),
+      content: t('requirements.detail.withdrawConfirmContent'),
+      okText: t('requirements.detail.withdraw'),
+      okButtonProps: { type: 'danger' },
+      cancelText: t('common.cancel'),
+      onOk: async () => {
+        try {
+          await withdrawRequirement(record.id);
+          loadData();
+          Toast.success(t('requirements.detail.withdrawSuccess'));
+        } catch (err) {
+          Toast.error((err as Error).message);
+        }
+      },
+    });
+  };
+
   // 下线（LAUNCHED）
   const handleOffline = (record: RequirementItem) => {
     Modal.confirm({
