@@ -484,7 +484,7 @@ const RequirementDetailDrawer = ({
           {canResubmit && onResubmit && (
             <Tooltip content={t('requirements.detail.resubmit')}>
               <Button
-                icon={<RotateCcw size={16} strokeWidth={2} />}
+                icon={<Send size={16} strokeWidth={2} />}
                 theme="borderless"
                 size="small"
                 type="tertiary"
