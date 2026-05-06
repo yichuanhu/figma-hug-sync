@@ -39,6 +39,8 @@ import {
 import { statusConfigV2, legacyStatusMap } from './statusConfig';
 import RequirementFormModal from './components/RequirementFormModal';
 import RequirementDetailDrawer from './components/RequirementDetailDrawer';
+import WorkspacePickerModal from './components/RequirementDetailDrawer/WorkspacePickerModal';
+import { findWorkspaceByRequirementId } from '../RequirementsProjects/mockData';
 import StatusDot from './components/StatusDot';
 import TitleCell from './components/TitleCell';
 import RelativeTime from './components/RelativeTime';
