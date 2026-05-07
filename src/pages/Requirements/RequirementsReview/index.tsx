@@ -36,10 +36,10 @@ import {
 import RequirementDetailDrawer from '../RequirementsWorkbench/components/RequirementDetailDrawer';
 import './index.less';
 import { CheckCircle, Ellipsis, Eye, Undo2, XCircle } from 'lucide-react';
-import pendingIcon from '@/assets/review-stats/pending.svg?raw';
-import reviewedIcon from '@/assets/review-stats/reviewed.svg?raw';
-import approvedIcon from '@/assets/review-stats/approved.svg?raw';
-import rejectedIcon from '@/assets/review-stats/rejected.svg?raw';
+import pendingIcon from '@/assets/review-stats/pending.png';
+import reviewedIcon from '@/assets/review-stats/reviewed.png';
+import approvedIcon from '@/assets/review-stats/approved.png';
+import rejectedIcon from '@/assets/review-stats/rejected.png';
 
 const { Title, Text } = Typography;
 
@@ -416,7 +416,9 @@ const RequirementsReview = () => {
             { label: t('requirements.review.rejectedCount'), value: stats.rejectedCount, icon: rejectedIcon },
           ].map((item, idx, arr) => (
             <div key={idx} className="requirements-review-metric-card">
-              <div className="requirements-review-metric-icon" aria-hidden="true" dangerouslySetInnerHTML={{ __html: item.icon }} />
+              <div className="requirements-review-metric-icon" aria-hidden="true">
+                <img src={item.icon} alt="" />
+              </div>
               <div className="requirements-review-metric-info">
                 <div className="requirements-review-metric-label">{item.label}</div>
                 <div className="requirements-review-metric-value">{item.value}</div>
