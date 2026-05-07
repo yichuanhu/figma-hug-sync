@@ -463,6 +463,28 @@ export const MOCK_PROCESS_POOL: LinkedProcess[] = [
 
 const generateMockLinkedProcesses = (status: RequirementStatus, idx: number): LinkedProcess[] | undefined => {
   if (!(['DEVELOPING', 'LAUNCHED', 'OFFLINE'] as RequirementStatus[]).includes(status)) return undefined;
+  // 开发中：偏多关联流程（3-4 个），且包含开发中/测试中等进行中状态，更贴近真实开发阶段
+  if (status === 'DEVELOPING') {
+    const developingMix: LinkedProcess[][] = [
+      [
+        { id: 'proc-002', name: 'Invoice OCR Pipeline',           status: 'TESTING',    ownerName: 'Michael Wang' },
+        { id: 'proc-003', name: 'Vendor Notification Workflow',   status: 'DEVELOPING', ownerName: 'Emily Chen' },
+        { id: 'proc-008', name: 'Tax Filing Data Compiler',       status: 'DEVELOPING', ownerName: 'John Smith' },
+      ],
+      [
+        { id: 'proc-005', name: 'Employee Onboarding Bot',        status: 'PENDING',    ownerName: 'Emily Chen' },
+        { id: 'proc-009', name: 'Sales Pipeline Sync',            status: 'TESTING',    ownerName: 'Jessica Liu' },
+        { id: 'proc-003', name: 'Vendor Notification Workflow',   status: 'DEVELOPING', ownerName: 'Emily Chen' },
+        { id: 'proc-010', name: 'IT Patch Deployment Bot',        status: 'DEVELOPING', ownerName: 'Angela Wu' },
+      ],
+      [
+        { id: 'proc-008', name: 'Tax Filing Data Compiler',       status: 'DEVELOPING', ownerName: 'John Smith' },
+        { id: 'proc-002', name: 'Invoice OCR Pipeline',           status: 'TESTING',    ownerName: 'Michael Wang' },
+        { id: 'proc-006', name: 'Inventory Reconciliation Flow',  status: 'DEVELOPING', ownerName: 'David Zhang' },
+      ],
+    ];
+    return developingMix[idx % developingMix.length];
+  }
   return MOCK_PROCESS_POOL.slice(0, (idx % 3) + 1);
 };
 
@@ -470,12 +492,16 @@ export const MOCK_PROJECT_POOL = [
   { id: 'proj-001', name: '数字化转型项目' },
   { id: 'proj-002', name: '财务智能化项目' },
   { id: 'proj-003', name: '人力共享中心项目' },
+  { id: 'proj-004', name: 'IT 运维提效项目' },
+  { id: 'proj-005', name: '采购供应链优化项目' },
 ];
 
 const MOCK_WORKSPACE_POOL = [
   { id: 'ws-001', name: '财务自动化一期' },
   { id: 'ws-002', name: '采购自动化工作空间' },
   { id: 'ws-003', name: '人事数据治理' },
+  { id: 'ws-004', name: 'IT 运维机器人空间' },
+  { id: 'ws-005', name: '销售运营自动化' },
 ];
 
 const generateMockLinkedProject = (status: RequirementStatus, idx: number) => {
