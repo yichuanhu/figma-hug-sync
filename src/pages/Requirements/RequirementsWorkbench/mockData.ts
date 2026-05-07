@@ -485,6 +485,28 @@ const generateMockLinkedProcesses = (status: RequirementStatus, idx: number): Li
     ];
     return developingMix[idx % developingMix.length];
   }
+  // 已上线：3-4 个流程,以 ONLINE 为主，偶尔混入 1 个 TESTING（小版本迭代场景）
+  if (status === 'LAUNCHED') {
+    const launchedMix: LinkedProcess[][] = [
+      [
+        { id: 'proc-001', name: 'Procurement Approval Process',   status: 'ONLINE',     ownerName: 'Sarah Li' },
+        { id: 'proc-004', name: 'Expense Report Validation',      status: 'ONLINE',     ownerName: 'Robert Xu' },
+        { id: 'proc-010', name: 'IT Patch Deployment Bot',        status: 'ONLINE',     ownerName: 'Angela Wu' },
+      ],
+      [
+        { id: 'proc-006', name: 'Inventory Reconciliation Flow',  status: 'ONLINE',     ownerName: 'David Zhang' },
+        { id: 'proc-001', name: 'Procurement Approval Process',   status: 'ONLINE',     ownerName: 'Sarah Li' },
+        { id: 'proc-002', name: 'Invoice OCR Pipeline',           status: 'TESTING',    ownerName: 'Michael Wang' },
+        { id: 'proc-004', name: 'Expense Report Validation',      status: 'ONLINE',     ownerName: 'Robert Xu' },
+      ],
+      [
+        { id: 'proc-010', name: 'IT Patch Deployment Bot',        status: 'ONLINE',     ownerName: 'Angela Wu' },
+        { id: 'proc-006', name: 'Inventory Reconciliation Flow',  status: 'ONLINE',     ownerName: 'David Zhang' },
+        { id: 'proc-001', name: 'Procurement Approval Process',   status: 'ONLINE',     ownerName: 'Sarah Li' },
+      ],
+    ];
+    return launchedMix[idx % launchedMix.length];
+  }
   return MOCK_PROCESS_POOL.slice(0, (idx % 3) + 1);
 };
 
