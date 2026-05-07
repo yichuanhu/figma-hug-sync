@@ -29,7 +29,11 @@ import {
   MOCK_CURRENT_USER_ID,
 } from '../RequirementsWorkbench/mockData';
 import RequirementDetailDrawer from '../RequirementsWorkbench/components/RequirementDetailDrawer';
-import { ClipboardCheck, ClipboardList, Ellipsis, Eye, ThumbsDown, ThumbsUp } from 'lucide-react';
+import { ClipboardCheck, ClipboardList, Ellipsis, Eye } from 'lucide-react';
+import iconPending from '@/assets/assessment-stats/pending.png';
+import iconAssessed from '@/assets/assessment-stats/assessed.png';
+import iconRecommend from '@/assets/assessment-stats/recommend.png';
+import iconReject from '@/assets/assessment-stats/reject.png';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -324,26 +328,22 @@ const RequirementsAssessment = () => {
     {
       label: t('requirements.assessment.pendingCount'),
       value: stats.pendingCount,
-      icon: <ClipboardList size={20} strokeWidth={2} color="hsl(25 90% 55%)" />,
-      bg: 'hsl(25 100% 96%)',
+      icon: iconPending,
     },
     {
       label: t('requirements.assessment.assessedCount'),
       value: stats.assessedCount,
-      icon: <ClipboardCheck size={20} strokeWidth={2} color="hsl(220 90% 55%)" />,
-      bg: 'hsl(220 100% 96%)',
+      icon: iconAssessed,
     },
     {
       label: t('requirements.assessment.recommendCount'),
       value: stats.recommendCount,
-      icon: <ThumbsUp size={20} strokeWidth={2} color="hsl(140 65% 40%)" />,
-      bg: 'hsl(140 60% 95%)',
+      icon: iconRecommend,
     },
     {
       label: t('requirements.assessment.rejectCount'),
       value: stats.rejectCount,
-      icon: <ThumbsDown size={20} strokeWidth={2} color="hsl(0 75% 55%)" />,
-      bg: 'hsl(0 80% 96%)',
+      icon: iconReject,
     },
   ];
 
@@ -362,8 +362,8 @@ const RequirementsAssessment = () => {
         <div className="requirements-assessment-stats-grid">
           {metricCards.map((item, idx, arr) => (
             <div key={idx} className="requirements-assessment-metric-card">
-              <div className="requirements-assessment-metric-icon" style={{ background: item.bg }}>
-                {item.icon}
+              <div className="requirements-assessment-metric-icon">
+                <img src={item.icon} alt="" />
               </div>
               <div className="requirements-assessment-metric-info">
                 <div className="requirements-assessment-metric-label">{item.label}</div>
