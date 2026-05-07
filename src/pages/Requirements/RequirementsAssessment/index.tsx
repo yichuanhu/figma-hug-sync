@@ -362,8 +362,8 @@ const RequirementsAssessment = () => {
         <div className="requirements-assessment-stats-grid">
           {metricCards.map((item, idx, arr) => (
             <div key={idx} className="requirements-assessment-metric-card">
-              <div className="requirements-assessment-metric-icon" style={{ background: item.bg }}>
-                {item.icon}
+              <div className="requirements-assessment-metric-icon">
+                <img src={item.icon} alt="" />
               </div>
               <div className="requirements-assessment-metric-info">
                 <div className="requirements-assessment-metric-label">{item.label}</div>
