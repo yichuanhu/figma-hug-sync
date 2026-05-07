@@ -527,6 +527,27 @@ function applyClosureDemoData(): void {
     }
   }
 
+  // M1.x：追加更多「待我审批」mock — 当前节点（L1）首位替换为当前用户
+  const extraPendingTitles = [
+    'Vendor Registration Portal',
+    'Sales Commission Calculation',
+    'Customer Credit Assessment',
+    'Security Patch Deployment',
+    'Cross-Border Shipping Compliance',
+  ];
+  extraPendingTitles.forEach((title) => {
+    const r = findByTitle(title);
+    if (r?.approvalFlowConfig) {
+      const lv0 = r.approvalFlowConfig.levels[0];
+      if (lv0) {
+        lv0.approvers = [
+          { id: meId, name: me.name, status: 'PENDING' },
+          ...lv0.approvers.slice(1),
+        ];
+      }
+    }
+  });
+
   // M2：多级流 — L1 已通过，L2 当前用户审批中
   const m2 = findByTitle('Customer Ticket Smart Classification');
   if (m2?.approvalFlowConfig && m2.approvalFlowConfig.levels.length >= 2) {
