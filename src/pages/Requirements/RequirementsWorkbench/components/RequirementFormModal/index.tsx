@@ -85,24 +85,35 @@ const RequirementFormModal = ({
   };
 
   const handleSubmit = async (values: Record<string, unknown>) => {
-    if (!ownerId) {
+    if (!isPostProjectEdit && !ownerId) {
       Toast.warning(t('common.ownerRequired'));
       return;
     }
+    const systemKeys = new Set(['title', 'department', 'priority']);
+    const form_data: Record<string, unknown> = {};
+    activeScheme?.custom_fields.forEach((f) => {
+      if (values[f.key] !== undefined) form_data[f.key] = values[f.key];
+    });
+    const submitValues = { ...values, form_data };
+    Object.keys(form_data).forEach((k) => {
+      if (!systemKeys.has(k)) delete (submitValues as Record<string, unknown>)[k];
+    });
+
+    // 立项后:走「发布变更」流程,而不是直接保存
+    if (isPostProjectEdit && editData) {
+      const patch: RequirementDraft['patch'] = {
+        title: values.title as string | undefined,
+        priority: values.priority as RequirementItem['priority'] | undefined,
+        form_data,
+      };
+      setPendingPatch(patch);
+      setPublishVisible(true);
+      return;
+    }
+
     setLoading(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 300));
-      // 把动态字段拆分到 form_data，系统字段保留在顶层
-      const systemKeys = new Set(['title', 'department', 'priority']);
-      const form_data: Record<string, unknown> = {};
-      activeScheme?.custom_fields.forEach((f) => {
-        if (values[f.key] !== undefined) form_data[f.key] = values[f.key];
-      });
-      const submitValues = { ...values, form_data };
-      // 移除已抽到 form_data 的 key（防止系统字段被污染）
-      Object.keys(form_data).forEach((k) => {
-        if (!systemKeys.has(k)) delete (submitValues as Record<string, unknown>)[k];
-      });
       onSuccess(submitValues);
       Toast.success(
         isEdit
