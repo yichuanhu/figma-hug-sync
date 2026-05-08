@@ -7,6 +7,13 @@ import ExpandableText from '@/components/ExpandableText';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import type { Project, Workspace } from '../../types';
 import { fetchWorkspacesByProject, deleteWorkspace } from '../../mockData';
+import {
+  countUnackedByWorkspace,
+  countUnackedByWorkspaces,
+  firstPendingChangeByWorkspace,
+  firstPendingChangeByWorkspaces,
+} from '../../../RequirementsWorkbench/mockData';
+import UnackedBadge from '@/components/UnackedBadge';
 import WorkspaceFormModal from '../WorkspaceFormModal';
 import LinkRequirementsModal from '../LinkRequirementsModal';
 import WorkspaceMembersModal from '../WorkspaceMembersModal';
