@@ -407,6 +407,29 @@ const RequirementDetailDrawer = ({
     }
   }, [visible, data?.id, data?.approvalHistory, t]);
 
+  // 加载待响应变更日志（用于 Banner + Panel）
+  useEffect(() => {
+    if (!visible || !data) return;
+    listChangeLogs(data.id).then((list) => {
+      setPendingLogs(list.filter((c) => c.needsDevResponse && c.status === 'PENDING'));
+    });
+  }, [visible, data?.id, changeLogRefreshKey]);
+
+  // URL ?openDevResponse=1 → 自动弹出响应面板（取最早一条 PENDING）
+  useEffect(() => {
+    if (!visible) return;
+    const params = new URLSearchParams(location.search);
+    if (params.get('openDevResponse') === '1' && pendingLogs.length > 0 && !respondingLog) {
+      const targetId = params.get('changeLogId');
+      const target =
+        (targetId && pendingLogs.find((p) => p.id === targetId)) ||
+        [...pendingLogs].sort(
+          (a, b) => new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime(),
+        )[0];
+      if (target) setRespondingLog(target);
+    }
+  }, [visible, location.search, pendingLogs, respondingLog]);
+
   if (!data) return null;
 
   const sortedHistory = [...(data.historyVersions ?? [])].sort((a, b) => b.version - a.version);
