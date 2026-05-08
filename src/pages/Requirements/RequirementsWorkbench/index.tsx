@@ -537,6 +537,7 @@ const RequirementsWorkbench = () => {
                 maxTagCount={1}
                 style={{ width: 'auto', minWidth: 150, maxWidth: 600 }}
                 optionList={MOCK_PROJECT_POOL.map((p) => ({ label: p.name, value: p.id }))}
+              />
               <Select
                 placeholder={t('common.status')}
                 value={statusFilter}
