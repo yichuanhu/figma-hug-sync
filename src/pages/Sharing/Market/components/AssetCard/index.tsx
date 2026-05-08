@@ -102,6 +102,7 @@ const AssetCard = ({ asset, onReused }: Props) => {
         </Space>
       </div>
     </Card>
+    </div>
   );
 };
 
