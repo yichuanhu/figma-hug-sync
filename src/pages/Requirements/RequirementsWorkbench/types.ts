@@ -181,6 +181,12 @@ export interface AssessmentDimension {
   /** 表达式（可选，用于计算多个字段聚合） */
   expression?: string;
   description?: string;
+  /** 维度类型：自动计算 / 手动打分（builder 增量字段） */
+  dimension_type?: 'auto_calculated' | 'manual_score';
+  /** 自动计算时引用的源字段映射（builder 增量字段） */
+  source_fields?: Record<string, string>;
+  /** 该维度的得分档位（builder 增量字段，可选） */
+  tiers?: AssessmentTier[];
 }
 
 export interface AssessmentModel {
