@@ -1,5 +1,10 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useParams } from "react-router-dom";
+
+const LegacyAssetDetailRedirect = () => {
+  const { type, id } = useParams();
+  return <Navigate to={`/sharing-center/market/${type}/${id}`} replace />;
+};
 import { LocaleProvider } from '@douyinfe/semi-ui';
 import en_US from '@douyinfe/semi-ui/lib/es/locale/source/en_US';
 import zh_CN from '@douyinfe/semi-ui/lib/es/locale/source/zh_CN';
@@ -198,7 +203,7 @@ const App = () => {
           <Route path="/sharing/market/snippet" element={<Navigate to="/sharing-center/market/snippet" replace />} />
           <Route path="/sharing/market/knowledge" element={<Navigate to="/sharing-center/market/knowledge" replace />} />
           <Route path="/sharing/market/skill" element={<Navigate to="/sharing-center/market/skill" replace />} />
-          <Route path="/sharing/market/:type/:id" element={<AssetDetail />} />
+          <Route path="/sharing/market/:type/:id" element={<LegacyAssetDetailRedirect />} />
           <Route path="/sharing/components/creator" element={<Navigate to="/sharing-center/market/snippet" replace />} />
           <Route path="/sharing/skills/apa" element={<Navigate to="/sharing-center/market/skill" replace />} />
           <Route path="/sharing/skills/acp" element={<Navigate to="/sharing-center/market/skill" replace />} />
