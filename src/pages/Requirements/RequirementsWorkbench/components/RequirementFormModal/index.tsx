@@ -39,6 +39,9 @@ const RequirementFormModal = ({
   const [departmentValue, setDepartmentValue] = useState<string | undefined>(undefined);
   const [ownerId, setOwnerId] = useState<string>(MOCK_CURRENT_USER.id);
   const isEdit = !!editData;
+  const isPostProjectEdit = !!editData && isPostProjectStatus(editData.status);
+  const [publishVisible, setPublishVisible] = useState(false);
+  const [pendingPatch, setPendingPatch] = useState<RequirementDraft['patch']>({});
 
   const priorityOptions = useMemo(
     () => [
