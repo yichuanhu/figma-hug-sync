@@ -36,7 +36,7 @@ import {
   MOCK_CURRENT_USER_ID,
   MOCK_PROJECT_POOL,
 } from './mockData';
-import { statusConfigV2, legacyStatusMap } from './statusConfig';
+import { statusConfigV2, legacyStatusMap, statusOptionsV2 } from './statusConfig';
 import RequirementFormModal from './components/RequirementFormModal';
 import RequirementDetailDrawer from './components/RequirementDetailDrawer';
 import WorkspacePickerModal from './components/RequirementDetailDrawer/WorkspacePickerModal';
@@ -44,7 +44,6 @@ import { findWorkspaceByRequirementId } from '../RequirementsProjects/mockData';
 import StatusDot from './components/StatusDot';
 import TitleCell from './components/TitleCell';
 import RelativeTime from './components/RelativeTime';
-import BoardView from './components/BoardView';
 import { buildSubmitConfirmContent } from './utils/submitConfirm';
 import './index.less';
 
