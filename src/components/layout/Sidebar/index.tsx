@@ -423,7 +423,8 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     }
     if (pathname.startsWith('/sharing-center/my-shared')) return 'mySharedAssets';
     if (pathname.startsWith('/sharing-center/approvals')) return 'sharingApprovals';
-    if (pathname.startsWith('/sharing-center/admin/approval-levels')) return 'sharingApprovals';
+    if (pathname.startsWith('/sharing-center/admin/approval-levels')) return 'sharingApprovalLevels';
+    if (pathname.startsWith('/sharing-center/admin/permissions')) return 'sharingPermissions';
     if (pathname.startsWith('/maintenance/config')) return 'mtConfigManagement';
     if (pathname.startsWith('/maintenance/dashboard/system-metrics')) return 'mtSystemMetrics';
     if (pathname.startsWith('/maintenance/dashboard/middleware-status')) return 'mtMiddlewareStatus';
