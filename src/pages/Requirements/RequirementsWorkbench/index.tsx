@@ -252,7 +252,14 @@ const RequirementsWorkbench = () => {
 
   // 操作可见性（兼容旧/新状态）
   const canEdit = (status: string) =>
-    status === 'DRAFT' || status === 'WITHDRAWN' || status === 'REJECTED';
+    status === 'DRAFT' ||
+    status === 'WITHDRAWN' ||
+    status === 'REJECTED' ||
+    // STORY-014: 立项后阶段也允许编辑（走草稿 + 发布变更流程）
+    status === 'PENDING_PROJECT' ||
+    status === 'DEVELOPING' ||
+    status === 'LAUNCHED' ||
+    status === 'OFFLINE';
   const canDelete = (status: string) =>
     status === 'DRAFT' || status === 'REJECTED' || status === 'WITHDRAWN';
 
