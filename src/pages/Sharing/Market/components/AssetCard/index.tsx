@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Asset } from '../../types';
 import { useCollections } from '../../hooks/useCollections';
 import AssetTypeIcon from '../AssetTypeIcon';
-import SourceBadge from '../SourceBadge';
+
 import './index.less';
 
 const { Text, Paragraph } = Typography;
