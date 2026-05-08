@@ -645,6 +645,7 @@ const RequirementsReview = () => {
         onStatusChange={handleStatusChange}
         pagination={pagination}
         onScrollToRow={() => {}}
+        context="approval"
       />
     </div>
   );

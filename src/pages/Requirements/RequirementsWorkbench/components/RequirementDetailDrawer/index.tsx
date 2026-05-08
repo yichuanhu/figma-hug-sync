@@ -41,6 +41,7 @@ const PropertyPanel = ({
   isHistoryMode,
   onOpenPicker,
   onCreateProject,
+  showApprovalSection,
 }: {
   data: RequirementItem;
   t: (key: string, options?: Record<string, unknown>) => string;
@@ -49,6 +50,7 @@ const PropertyPanel = ({
   isHistoryMode: boolean;
   onOpenPicker: () => void;
   onCreateProject: () => void;
+  showApprovalSection: boolean;
 }) => {
   const sCfg = statusConfig[data.status];
   const pCfg = priorityConfig[data.priority];
@@ -226,7 +228,7 @@ const PropertyPanel = ({
         );
       })()}
 
-      {hasApproval && (
+      {hasApproval && showApprovalSection && (
         <ApprovalSection data={data} onStatusChange={onStatusChange} onRefresh={onRefresh} />
       )}
     </div>
@@ -314,6 +316,13 @@ interface RequirementDetailDrawerProps {
   onPageChange?: (page: number, direction: 'prev' | 'next') => void;
   onScrollToRow?: (id: string) => void;
   initialTab?: string;
+  /**
+   * 入口上下文：
+   * - 'list'（默认）：需求列表打开，隐藏审批操作区，评估tab只读
+   * - 'approval'：需求审批菜单打开，展示审批操作
+   * - 'assessment'：需求评估菜单打开，展示评估编辑
+   */
+  context?: 'list' | 'approval' | 'assessment';
 }
 
 const RequirementDetailDrawer = ({
@@ -332,6 +341,7 @@ const RequirementDetailDrawer = ({
   onPageChange,
   onScrollToRow,
   initialTab = 'overview',
+  context = 'list',
 }: RequirementDetailDrawerProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -340,6 +350,8 @@ const RequirementDetailDrawer = ({
   const [activeTab, setActiveTab] = useState<string>(initialTab);
   const [viewingVersion, setViewingVersion] = useState<'current' | number>('current');
   const [pickerVisible, setPickerVisible] = useState(false);
+  const showApprovalSection = context === 'approval';
+  const assessmentReadonly = context !== 'assessment';
 
   // 抽屉关闭后重置 tab/版本视图；打开新数据时不重置 tab
   useEffect(() => {
@@ -629,7 +641,7 @@ const RequirementDetailDrawer = ({
                 itemKey="assessment"
               >
                 <div className="requirement-detail-tab-content">
-                  <AssessmentTab data={effectiveData} onSaveAssessment={handleSaveAssessment} />
+                  <AssessmentTab data={effectiveData} onSaveAssessment={handleSaveAssessment} forceReadonly={assessmentReadonly} />
                 </div>
               </TabPane>
             )}
@@ -664,6 +676,7 @@ const RequirementDetailDrawer = ({
                 },
               })
             }
+            showApprovalSection={showApprovalSection}
           />
         </div>
       </div>
