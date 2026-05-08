@@ -419,7 +419,7 @@ const RequirementsWorkbench = () => {
                   </Dropdown.Item>
                 );
               })()}
-              {(record.status === 'PENDING_APPROVAL' || record.status === 'PENDING_ASSESSMENT') && (
+              {(record.status === 'PENDING_APPROVAL' || record.status === 'PENDING_ASSESSMENT') && record.creatorId === MOCK_CURRENT_USER_ID && (
                 <Dropdown.Item
                   icon={<Undo2 size={16} strokeWidth={2} />}
                   onClick={(e: React.MouseEvent) => {
