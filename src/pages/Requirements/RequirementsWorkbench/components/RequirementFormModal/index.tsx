@@ -33,6 +33,7 @@ const RequirementFormModal = ({
   visible,
   onCancel,
   onSuccess,
+  onPublished,
   editData,
 }: RequirementFormModalProps) => {
   const { t } = useTranslation();
