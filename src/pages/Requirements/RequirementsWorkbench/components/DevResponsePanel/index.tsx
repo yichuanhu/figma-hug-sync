@@ -87,24 +87,24 @@ const DevResponsePanel = ({ visible, log, onCancel, onSuccess }: Props) => {
             <div className="dev-response-panel-reason">{log.reason}</div>
           </div>
 
-          <Form labelPosition="top">
-            <Form.Slot label={t('requirements.detail.devResponse.actionLabel')} required>
-              <RadioGroup value={action} onChange={(e) => setAction(e.target.value)}>
-                <Radio value="ACK">
-                  {t('requirements.detail.changeLog.response.ACK')}
-                </Radio>
-                <Radio value="ADJUSTED">
-                  {t('requirements.detail.changeLog.response.ADJUSTED')}
-                </Radio>
-                <Radio value="REJECTED">
-                  {t('requirements.detail.changeLog.response.REJECTED')}
-                </Radio>
-              </RadioGroup>
-            </Form.Slot>
+          <div className="dev-response-panel-field">
+            <div className="dev-response-panel-field-label">
+              <span className="dev-response-panel-field-required">*</span>
+              {t('requirements.detail.devResponse.actionLabel')}
+            </div>
+            <RadioGroup value={action} onChange={(e) => setAction(e.target.value)}>
+              <Radio value="ACK">{t('requirements.detail.changeLog.response.ACK')}</Radio>
+              <Radio value="ADJUSTED">{t('requirements.detail.changeLog.response.ADJUSTED')}</Radio>
+              <Radio value="REJECTED">{t('requirements.detail.changeLog.response.REJECTED')}</Radio>
+            </RadioGroup>
+          </div>
 
-            <Form.TextArea
-              field="comment"
-              label={t('requirements.detail.devResponse.commentLabel')}
+          <div className="dev-response-panel-field">
+            <div className="dev-response-panel-field-label">
+              {commentRequired && <span className="dev-response-panel-field-required">*</span>}
+              {t('requirements.detail.devResponse.commentLabel')}
+            </div>
+            <TextArea
               placeholder={
                 commentRequired
                   ? t('requirements.detail.devResponse.commentRejectedPlaceholder')
@@ -113,13 +113,11 @@ const DevResponsePanel = ({ visible, log, onCancel, onSuccess }: Props) => {
               maxCount={500}
               maxLength={500}
               rows={4}
-              noLabel={false}
-              required={commentRequired}
               value={comment}
               onChange={(v) => setComment(String(v ?? ''))}
               validateStatus={commentInvalid ? 'error' : 'default'}
             />
-          </Form>
+          </div>
         </div>
       )}
     </Modal>
