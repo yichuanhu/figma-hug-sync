@@ -414,3 +414,275 @@ export const fetchSchemeVersions = async (code: string): Promise<RequirementSche
   // mock：相同 code 的视为同一方案的不同版本
   return schemeStore.filter((s) => s.code === code).sort((a, b) => b.version.localeCompare(a.version));
 };
+
+// ============= Builder API（Story 13） =============
+import type { WorkflowConfig, CostConfig } from './types';
+
+/** 创建空白方案草稿 */
+export const createSchemeDraft = async (meta: { name: string; description?: string; version?: string }): Promise<RequirementScheme> => {
+  await new Promise((r) => setTimeout(r, 200));
+  const id = `scheme-draft-${Date.now()}`;
+  const code = `CUSTOM-${Date.now().toString(36).toUpperCase()}`;
+  const draft: RequirementScheme = {
+    id,
+    code,
+    name: meta.name,
+    version: meta.version ?? '1.0.0',
+    description: meta.description,
+    status: 'inactive',
+    is_preset: false,
+    is_draft: true,
+    custom_fields: [],
+    approval_flow: { levels: [] },
+    workflow_config: { template: 'simple', states: [], approvers: [], assessors: [] },
+    cost_config: { working_hours_per_day: 8, currency: 'CNY', default_rate: 500, rate_table_v2: [] },
+    created_at: new Date().toISOString(),
+    created_by: 'current-user',
+  };
+  schemeStore = [draft, ...schemeStore];
+  bumpSchemeVersion();
+  return draft;
+};
+
+/** 基于已有方案克隆为草稿 */
+export const cloneSchemeAsDraft = async (sourceId: string, opts?: { name?: string; bumpVersion?: boolean }): Promise<RequirementScheme> => {
+  await new Promise((r) => setTimeout(r, 200));
+  const src = schemeStore.find((s) => s.id === sourceId);
+  if (!src) throw new Error('源方案不存在');
+  const id = `scheme-draft-${Date.now()}`;
+  const nextVersion = opts?.bumpVersion
+    ? bumpVersionString(src.version)
+    : src.version;
+  const draft: RequirementScheme = {
+    ...src,
+    id,
+    code: opts?.bumpVersion ? src.code : `${src.code}-COPY-${Date.now().toString(36).slice(-4).toUpperCase()}`,
+    name: opts?.name ?? `${src.name}（副本）`,
+    version: nextVersion,
+    status: 'inactive',
+    is_preset: false,
+    is_draft: true,
+    parent_id: src.id,
+    created_at: new Date().toISOString(),
+    updated_at: undefined,
+  };
+  schemeStore = [draft, ...schemeStore];
+  bumpSchemeVersion();
+  return draft;
+};
+
+/** AF2: 编辑已激活方案 → 自动派生新版本 */
+export const forkActiveScheme = async (sourceId: string): Promise<RequirementScheme> => {
+  return cloneSchemeAsDraft(sourceId, { bumpVersion: true });
+};
+
+const bumpVersionString = (v: string): string => {
+  const parts = v.split('.').map((n) => parseInt(n, 10) || 0);
+  while (parts.length < 3) parts.push(0);
+  parts[parts.length - 1] += 1;
+  return parts.join('.');
+};
+
+/** Builder 分模块更新 */
+export const updateSchemeBuilder = async (
+  id: string,
+  patch: Partial<Pick<RequirementScheme,
+    'name' | 'description' | 'version' | 'custom_fields' |
+    'value_assessment_model' | 'complexity_assessment_model' |
+    'workflow_config' | 'cost_config' | 'approval_flow'
+  >>,
+): Promise<RequirementScheme> => {
+  await new Promise((r) => setTimeout(r, 150));
+  const target = schemeStore.find((s) => s.id === id);
+  if (!target) throw new Error('方案不存在');
+  if (target.is_preset) throw new Error('预设方案不可编辑');
+  schemeStore = schemeStore.map((s) =>
+    s.id === id ? { ...s, ...patch, updated_at: new Date().toISOString() } : s,
+  );
+  bumpSchemeVersion();
+  return schemeStore.find((s) => s.id === id)!;
+};
+
+/** 通过 id 读取方案 */
+export const getSchemeById = (id: string): RequirementScheme | undefined =>
+  schemeStore.find((s) => s.id === id);
+
+/** 完整性校验 */
+export interface SchemeValidationResult {
+  ok: boolean;
+  missing: Array<'form' | 'assessment' | 'workflow' | 'cost'>;
+  errors: string[];
+}
+
+export const validateScheme = (id: string): SchemeValidationResult => {
+  const s = schemeStore.find((x) => x.id === id);
+  const missing: SchemeValidationResult['missing'] = [];
+  const errors: string[] = [];
+  if (!s) return { ok: false, missing: [], errors: ['方案不存在'] };
+
+  // Form
+  if (!s.custom_fields || s.custom_fields.length === 0) {
+    missing.push('form');
+    errors.push('表单至少需要 1 个自定义字段');
+  } else {
+    const keys = s.custom_fields.map((f) => f.key);
+    const dup = keys.find((k, i) => keys.indexOf(k) !== i);
+    if (dup) errors.push(`字段名称重复：${dup}`);
+  }
+
+  // Assessment
+  if (!s.value_assessment_model && !s.complexity_assessment_model) {
+    missing.push('assessment');
+    errors.push('至少配置一个评估模型');
+  } else {
+    [s.value_assessment_model, s.complexity_assessment_model].forEach((m) => {
+      if (m && (!m.dimensions || m.dimensions.length === 0)) {
+        errors.push(`评估模型「${m.label}」必须至少包含一个维度`);
+      }
+    });
+  }
+
+  // Workflow
+  const wf = s.workflow_config;
+  if (!wf || !wf.states || wf.states.length === 0) {
+    missing.push('workflow');
+    errors.push('工作流必须至少包含「草稿」和「待审批」状态');
+  } else {
+    const names = wf.states.map((st) => st.name);
+    if (!names.includes('草稿') || !names.includes('待审批')) {
+      errors.push('工作流必须至少包含「草稿」和「待审批」状态');
+    }
+  }
+
+  // Cost
+  if (!s.cost_config || !s.cost_config.working_hours_per_day) {
+    missing.push('cost');
+    errors.push('成本配置必填');
+  } else {
+    const list = s.cost_config.rate_table_v2 ?? [];
+    const ls = list.map((x) => x.level);
+    const dupL = ls.find((x, i) => ls.indexOf(x) !== i);
+    if (dupL) errors.push(`费率表岗位级别名称重复：${dupL}`);
+  }
+
+  return { ok: missing.length === 0 && errors.length === 0, missing, errors };
+};
+
+/** 同步 cost_config v2 -> 旧字段 */
+export const syncCostConfigCompat = (cc: CostConfig): CostConfig => {
+  const list = cc.rate_table_v2 ?? [];
+  const rate_table: Record<string, number> = {};
+  const level_labels: Record<string, string> = {};
+  list.forEach((it) => {
+    rate_table[it.level] = it.daily_rate;
+    level_labels[it.level] = it.label;
+  });
+  return { ...cc, rate_table, level_labels };
+};
+
+/** 同步 workflow_config -> approval_flow.levels（保持执行兼容） */
+export const syncApprovalFlowFromWorkflow = (wf: WorkflowConfig): ApprovalLevelConfig[] => {
+  const typeMap: Record<WorkflowConfig['approvers'][number]['type'], 'user' | 'role' | 'department'> = {
+    department_leader: 'department',
+    specific_users: 'user',
+    role: 'role',
+  } as const;
+  return [...wf.approvers]
+    .sort((a, b) => a.priority - b.priority)
+    .map((a, idx) => ({
+      order: idx + 1,
+      name: a.name,
+      approver_type: typeMap[a.type],
+      approver_ids: a.target_ids ?? [],
+      mode: a.approval_mode ?? 'any_one',
+    }));
+};
+
+import type { ApprovalLevelConfig } from './types';
+
+/** 激活方案（带校验） */
+export const activateSchemeBuilder = async (id: string): Promise<RequirementScheme> => {
+  const v = validateScheme(id);
+  if (!v.ok) {
+    const err = new Error(v.errors.join('；'));
+    (err as Error & { missing?: string[] }).missing = v.missing;
+    throw err;
+  }
+  // 同步 cost & workflow → 旧字段
+  const target = schemeStore.find((s) => s.id === id);
+  if (!target) throw new Error('方案不存在');
+  const patch: Partial<RequirementScheme> = {};
+  if (target.cost_config) patch.cost_config = syncCostConfigCompat(target.cost_config);
+  if (target.workflow_config) patch.approval_flow = { levels: syncApprovalFlowFromWorkflow(target.workflow_config) };
+  schemeStore = schemeStore.map((s) =>
+    s.id === id
+      ? { ...s, ...patch, status: 'active', is_draft: false, updated_at: new Date().toISOString() }
+      : { ...s, status: 'inactive' },
+  );
+  bumpSchemeVersion();
+  return schemeStore.find((s) => s.id === id)!;
+};
+
+/** Workflow 模板生成器 */
+export const buildWorkflowFromTemplate = (template: string): WorkflowConfig => {
+  const draftState = { id: 's-draft', name: '草稿', initial: true, role: 'normal' as const, transitions: [{ id: 't1', to: 's-pending', action: 'submit', label: '提交审批', auto_assign: true }] };
+  const cancelledState = { id: 's-cancelled', name: '已撤销', role: 'normal' as const, transitions: [] };
+  const rejectedState = { id: 's-rejected', name: '已拒绝', role: 'normal' as const, transitions: [] };
+  const approvedState = { id: 's-approved', name: '已通过', role: 'normal' as const, transitions: [] };
+
+  if (template === 'simple') {
+    return {
+      template,
+      states: [
+        draftState,
+        { id: 's-pending', name: '待审批', role: 'approval', transitions: [{ id: 't2', to: 's-approved', action: 'approve', label: '通过' }, { id: 't3', to: 's-rejected', action: 'reject', label: '拒绝' }] },
+        approvedState, rejectedState, cancelledState,
+      ],
+      approvers: [{ id: 'a1', name: '部门领导审批', type: 'department_leader', priority: 1, required: true, approval_mode: 'any_one', timeout_days: 7 }],
+      assessors: [],
+    };
+  }
+  if (template === 'multi-approval') {
+    return {
+      template,
+      states: [
+        draftState,
+        { id: 's-pending', name: '待审批', role: 'approval', transitions: [{ id: 't2', to: 's-approved', action: 'approve', label: '通过' }, { id: 't3', to: 's-rejected', action: 'reject', label: '拒绝' }] },
+        approvedState, rejectedState, cancelledState,
+      ],
+      approvers: [
+        { id: 'a1', name: '直属主管', type: 'department_leader', priority: 1, required: true, approval_mode: 'any_one', timeout_days: 3 },
+        { id: 'a2', name: '部门负责人', type: 'role', priority: 2, required: true, approval_mode: 'any_one', target_ids: ['role-dept-head'], timeout_days: 5 },
+      ],
+      assessors: [],
+    };
+  }
+  if (template === 'assess-first') {
+    return {
+      template,
+      states: [
+        draftState,
+        { id: 's-assessing', name: '待评估', role: 'assessment', transitions: [{ id: 't2', to: 's-approved', action: 'pass', label: '评估通过' }, { id: 't3', to: 's-rejected', action: 'reject', label: '评估拒绝' }] },
+        { id: 's-pending', name: '待审批', role: 'approval', transitions: [] },
+        approvedState, rejectedState, cancelledState,
+      ],
+      approvers: [],
+      assessors: [{ id: 'as1', name: '技术负责人评估', type: 'specific_users', priority: 1, required: true, target_ids: [] }],
+    };
+  }
+  // multi-approval-assess
+  return {
+    template: 'multi-approval-assess',
+    states: [
+      draftState,
+      { id: 's-pending', name: '待审批', role: 'approval', transitions: [{ id: 't2', to: 's-assessing', action: 'approve', label: '审批通过' }, { id: 't3', to: 's-rejected', action: 'reject', label: '拒绝' }] },
+      { id: 's-assessing', name: '待评估', role: 'assessment', transitions: [{ id: 't4', to: 's-approved', action: 'pass', label: '评估通过' }, { id: 't5', to: 's-rejected', action: 'reject', label: '评估拒绝' }] },
+      approvedState, rejectedState, cancelledState,
+    ],
+    approvers: [
+      { id: 'a1', name: '直属主管', type: 'department_leader', priority: 1, required: true, approval_mode: 'any_one', timeout_days: 3 },
+      { id: 'a2', name: '指定审批人', type: 'specific_users', priority: 2, required: false, approval_mode: 'any_one', target_ids: [], timeout_days: 5 },
+    ],
+    assessors: [{ id: 'as1', name: '技术负责人评估', type: 'specific_users', priority: 1, required: true, target_ids: [] }],
+  };
+};
