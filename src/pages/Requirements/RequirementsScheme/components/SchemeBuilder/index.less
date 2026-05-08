@@ -231,19 +231,31 @@
 
 // ============= WorkflowBuilder =============
 .workflow-builder {
-  display: grid;
-  grid-template-columns: 1fr 360px;
+  display: flex;
+  flex-direction: column;
   gap: 16px;
-  align-items: flex-start;
 
-  .workflow-canvas {
-    height: 480px;
-    background: var(--semi-color-fill-0);
+  .workflow-preview-card {
+    background: var(--semi-color-bg-0);
+    border: 1px solid var(--semi-color-border);
     border-radius: 8px;
-    overflow: hidden;
+    padding: 16px;
+
+    .workflow-canvas {
+      height: 360px;
+      background: var(--semi-color-fill-0);
+      border-radius: 6px;
+      overflow: hidden;
+    }
   }
 
-  .workflow-side {
+  .workflow-config-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .workflow-section {
     background: var(--semi-color-bg-0);
     border: 1px solid var(--semi-color-border);
     border-radius: 8px;

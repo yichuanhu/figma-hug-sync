@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Select, Typography, Empty, Input, InputNumber, Switch, Tag, Toast } from '@douyinfe/semi-ui';
-import { Plus, Trash2, ArrowUp, ArrowDown } from 'lucide-react';
+import { Button, Select, Typography, Empty, Input, Switch, Tag, Toast } from '@douyinfe/semi-ui';
+import { Plus, Trash2, ArrowUp, ArrowDown, Workflow as WorkflowIcon } from 'lucide-react';
 import ReactFlow, {
   Background,
   Controls,
@@ -59,9 +59,8 @@ const ROLE_OPTIONS = [
   { value: 'role-committee', label: '委员会' },
 ];
 
-// 状态名 -> 节点位置（按层级布局）
-const layoutStates = (states: WorkflowState[]): Node[] => {
-  return states.map((s, i) => ({
+const layoutStates = (states: WorkflowState[]): Node[] =>
+  states.map((s, i) => ({
     id: s.id,
     data: { label: s.name + (s.initial ? ' (起)' : '') },
     position: { x: 60 + (i % 4) * 180, y: 60 + Math.floor(i / 4) * 120 },
@@ -73,7 +72,6 @@ const layoutStates = (states: WorkflowState[]): Node[] => {
       fontSize: 12,
     },
   }));
-};
 
 const buildEdges = (states: WorkflowState[]): Edge[] => {
   const edges: Edge[] = [];
@@ -95,10 +93,12 @@ const buildEdges = (states: WorkflowState[]): Edge[] => {
 
 const ApproverList = ({
   title,
+  emptyHint,
   list,
   onChange,
 }: {
   title: string;
+  emptyHint: string;
   list: WorkflowApprover[];
   onChange: (next: WorkflowApprover[]) => void;
 }) => {
@@ -128,89 +128,41 @@ const ApproverList = ({
   };
 
   return (
-    <div style={{ marginTop: 12 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-        <Text strong style={{ fontSize: 12 }}>{title}</Text>
-        <Button icon={<Plus size={12} strokeWidth={2} />} size="small" theme="borderless" onClick={add}>添加</Button>
+    <div className="workflow-section">
+      <div className="scheme-builder-section-title">
+        <span className="title">{title}</span>
+        <Button icon={<Plus size={14} strokeWidth={2} />} size="small" onClick={add}>添加</Button>
       </div>
-      {list.length === 0 && <Text type="tertiary" size="small">暂无配置</Text>}
-      {list.map((a, idx) => (
-        <div key={a.id} className="approver-row">
-          <Tag color="blue" type="light" size="small">P{a.priority}</Tag>
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
-            <Input value={a.name} onChange={(v) => update(idx, { ...a, name: v })} placeholder="名称" size="small" />
-            <div style={{ display: 'flex', gap: 6 }}>
-              <Select value={a.type} onChange={(v) => update(idx, { ...a, type: v as WorkflowApproverType })}
-                optionList={APPROVER_TYPE_OPTIONS} size="small" style={{ width: 120 }} />
-              <Select value={a.approval_mode ?? 'any_one'} onChange={(v) => update(idx, { ...a, approval_mode: v as WorkflowApprovalMode })}
-                optionList={MODE_OPTIONS} size="small" style={{ width: 120 }} />
-              <Switch checked={a.required} onChange={(v) => update(idx, { ...a, required: v })} size="small" />
-              <Text size="small" type="tertiary">必需</Text>
+      {list.length === 0 ? (
+        <Empty description={emptyHint} style={{ padding: '24px 0' }} />
+      ) : (
+        list.map((a, idx) => (
+          <div key={a.id} className="approver-row">
+            <Tag color="blue" type="light" size="small">P{a.priority}</Tag>
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <Input value={a.name} onChange={(v) => update(idx, { ...a, name: v })} placeholder="名称" size="small" />
+              <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                <Select value={a.type} onChange={(v) => update(idx, { ...a, type: v as WorkflowApproverType })}
+                  optionList={APPROVER_TYPE_OPTIONS} size="small" style={{ width: 120 }} />
+                <Select value={a.approval_mode ?? 'any_one'} onChange={(v) => update(idx, { ...a, approval_mode: v as WorkflowApprovalMode })}
+                  optionList={MODE_OPTIONS} size="small" style={{ width: 120 }} />
+                <Switch checked={a.required} onChange={(v) => update(idx, { ...a, required: v })} size="small" />
+                <Text size="small" type="tertiary">必需</Text>
+              </div>
+              {(a.type === 'specific_users' || a.type === 'role') && (
+                <Select multiple value={a.target_ids ?? []} onChange={(v) => update(idx, { ...a, target_ids: v as string[] })}
+                  optionList={a.type === 'specific_users' ? USER_OPTIONS : ROLE_OPTIONS}
+                  size="small" placeholder={a.type === 'specific_users' ? '选择用户' : '选择角色'} />
+              )}
             </div>
-            {(a.type === 'specific_users' || a.type === 'role') && (
-              <Select multiple value={a.target_ids ?? []} onChange={(v) => update(idx, { ...a, target_ids: v as string[] })}
-                optionList={a.type === 'specific_users' ? USER_OPTIONS : ROLE_OPTIONS}
-                size="small" placeholder={a.type === 'specific_users' ? '选择用户' : '选择角色'} />
-            )}
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <Button icon={<ArrowUp size={12} strokeWidth={2} />} theme="borderless" size="small" disabled={idx === 0} onClick={() => move(idx, -1)} />
+              <Button icon={<ArrowDown size={12} strokeWidth={2} />} theme="borderless" size="small" disabled={idx === list.length - 1} onClick={() => move(idx, 1)} />
+            </div>
+            <Button icon={<Trash2 size={14} strokeWidth={2} />} theme="borderless" type="danger" size="small" onClick={() => remove(idx)} />
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <Button icon={<ArrowUp size={12} strokeWidth={2} />} theme="borderless" size="small" disabled={idx === 0} onClick={() => move(idx, -1)} />
-            <Button icon={<ArrowDown size={12} strokeWidth={2} />} theme="borderless" size="small" disabled={idx === list.length - 1} onClick={() => move(idx, 1)} />
-          </div>
-          <Button icon={<Trash2 size={14} strokeWidth={2} />} theme="borderless" type="danger" size="small" onClick={() => remove(idx)} />
-        </div>
-      ))}
-    </div>
-  );
-};
-
-const StateEditor = ({
-  state,
-  allStates,
-  onChange,
-  onDelete,
-}: {
-  state: WorkflowState;
-  allStates: WorkflowState[];
-  onChange: (s: WorkflowState) => void;
-  onDelete: () => void;
-}) => {
-  const updateTr = (idx: number, p: { to: string; action: string; label: string; auto_assign?: boolean }) => {
-    onChange({ ...state, transitions: state.transitions.map((x, i) => i === idx ? { ...x, ...p } : x) });
-  };
-  const removeTr = (idx: number) => onChange({ ...state, transitions: state.transitions.filter((_, i) => i !== idx) });
-  const addTr = () => {
-    onChange({
-      ...state,
-      transitions: [...state.transitions, { id: `tr-${Date.now().toString(36).slice(-3)}`, to: allStates[0]?.id ?? '', action: 'next', label: '下一步' }],
-    });
-  };
-
-  return (
-    <div style={{ background: 'var(--semi-color-fill-0)', borderRadius: 6, padding: 12, marginBottom: 8 }}>
-      <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-        <Input value={state.name} onChange={(v) => onChange({ ...state, name: v })} size="small" style={{ flex: 1 }} />
-        <Select value={state.role ?? 'normal'} onChange={(v) => onChange({ ...state, role: v as WorkflowState['role'] })}
-          optionList={[{ label: '普通', value: 'normal' }, { label: '审批', value: 'approval' }, { label: '评估', value: 'assessment' }]}
-          size="small" style={{ width: 90 }} />
-        <Switch checked={!!state.initial} onChange={(v) => onChange({ ...state, initial: v })} size="small" />
-        <Text size="small" type="tertiary">起</Text>
-        <Button icon={<Trash2 size={14} strokeWidth={2} />} theme="borderless" type="danger" size="small" onClick={onDelete} />
-      </div>
-      <div style={{ marginTop: 8 }}>
-        <Text type="tertiary" size="small">迁移：</Text>
-        {state.transitions.map((tr, i) => (
-          <div key={tr.id} style={{ display: 'flex', gap: 4, marginTop: 4 }}>
-            <Select value={tr.to} onChange={(v) => updateTr(i, { ...tr, to: v as string })}
-              optionList={allStates.filter((s) => s.id !== state.id).map((s) => ({ label: s.name, value: s.id }))}
-              size="small" style={{ width: 110 }} />
-            <Input value={tr.action} onChange={(v) => updateTr(i, { ...tr, action: v })} placeholder="action" size="small" style={{ width: 90 }} />
-            <Input value={tr.label} onChange={(v) => updateTr(i, { ...tr, label: v })} placeholder="标签" size="small" style={{ flex: 1 }} />
-            <Button icon={<Trash2 size={12} strokeWidth={2} />} theme="borderless" type="danger" size="small" onClick={() => removeTr(i)} />
-          </div>
-        ))}
-        <Button icon={<Plus size={12} strokeWidth={2} />} theme="borderless" size="small" onClick={addTr} style={{ marginTop: 4 }}>添加迁移</Button>
-      </div>
+        ))
+      )}
     </div>
   );
 };
@@ -231,16 +183,18 @@ const WorkflowBuilder = ({ workflow, onChange }: Props) => {
     Toast.success('已加载模板');
   };
 
-  const updateState = (idx: number, s: WorkflowState) => {
-    onChange({ ...wf, states: wf.states.map((x, i) => i === idx ? s : x) });
-  };
-
   return (
     <div className="workflow-builder">
-      <div>
+      {/* 顶部：模板选择 + 状态流转预览 */}
+      <div className="workflow-preview-card">
         <div className="scheme-builder-section-title">
-          <span className="title">{t('requirements.scheme.builder.workflow.title')}</span>
-          <div style={{ display: 'flex', gap: 8 }}>
+          <span className="title">
+            <WorkflowIcon size={14} strokeWidth={2} style={{ verticalAlign: -2, marginRight: 6 }} />
+            {t('requirements.scheme.builder.workflow.title')}
+            <Tag color="grey" type="light" size="small" style={{ marginLeft: 8 }}>预览</Tag>
+          </span>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <Text type="tertiary" size="small">工作流模板</Text>
             <Select value={wf.template} onChange={(v) => handleApplyTemplate(v as string)}
               placeholder="选择模板" optionList={TEMPLATES} style={{ width: 200 }} />
           </div>
@@ -256,6 +210,9 @@ const WorkflowBuilder = ({ workflow, onChange }: Props) => {
               onNodesChange={onNodesChange}
               onEdgesChange={onEdgesChange}
               fitView
+              nodesDraggable={false}
+              nodesConnectable={false}
+              elementsSelectable={false}
               proOptions={{ hideAttribution: true }}
             >
               <Background />
@@ -264,27 +221,25 @@ const WorkflowBuilder = ({ workflow, onChange }: Props) => {
             </ReactFlow>
           )}
         </div>
-
-        {/* 状态列表编辑 */}
-        <div style={{ marginTop: 16 }}>
-          <div className="scheme-builder-section-title">
-            <span className="title">状态与迁移</span>
-            <Button icon={<Plus size={14} strokeWidth={2} />} size="small"
-              onClick={() => onChange({ ...wf, states: [...wf.states, { id: `s-${Date.now().toString(36).slice(-3)}`, name: '新状态', role: 'normal', transitions: [] }] })}>
-              添加状态
-            </Button>
-          </div>
-          {wf.states.map((s, i) => (
-            <StateEditor key={s.id} state={s} allStates={wf.states}
-              onChange={(ns) => updateState(i, ns)}
-              onDelete={() => onChange({ ...wf, states: wf.states.filter((_, idx) => idx !== i) })} />
-          ))}
-        </div>
+        <Text type="tertiary" size="small" style={{ marginTop: 8, display: 'block' }}>
+          状态流转由所选模板决定，仅用于预览。如需调整流程，请切换模板。
+        </Text>
       </div>
 
-      <div className="workflow-side">
-        <ApproverList title="审批人配置" list={wf.approvers} onChange={(list) => onChange({ ...wf, approvers: list })} />
-        <ApproverList title="评估人配置" list={wf.assessors} onChange={(list) => onChange({ ...wf, assessors: list })} />
+      {/* 底部：审批人 / 评估人配置 双列 */}
+      <div className="workflow-config-grid">
+        <ApproverList
+          title="审批人配置"
+          emptyHint="暂无审批级，点击右上角添加"
+          list={wf.approvers}
+          onChange={(list) => onChange({ ...wf, approvers: list })}
+        />
+        <ApproverList
+          title="评估人配置"
+          emptyHint="暂无评估级，点击右上角添加"
+          list={wf.assessors}
+          onChange={(list) => onChange({ ...wf, assessors: list })}
+        />
       </div>
     </div>
   );
