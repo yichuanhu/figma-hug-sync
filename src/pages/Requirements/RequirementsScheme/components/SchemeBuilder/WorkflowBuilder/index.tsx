@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Select, Typography, Empty, Input, Switch, Tag, Toast } from '@douyinfe/semi-ui';
-import { Plus, Trash2, ArrowUp, ArrowDown, Workflow as WorkflowIcon } from 'lucide-react';
+import { Button, Select, Typography, Empty, Input, Switch, Tag, Toast, Modal } from '@douyinfe/semi-ui';
+import { Plus, Trash2, ArrowUp, ArrowDown, Workflow as WorkflowIcon, PowerOff } from 'lucide-react';
 import ReactFlow, {
   Background,
   Controls,
@@ -21,11 +21,13 @@ import type {
   WorkflowState,
 } from '@/pages/Requirements/RequirementsWorkbench/types';
 
-const { Text } = Typography;
+const { Text, Title } = Typography;
 
 interface Props {
   workflow?: WorkflowConfig;
   onChange: (wf: WorkflowConfig) => void;
+  /** 关闭审批流时同步清空评估模型 */
+  onClearAssessment?: () => void;
 }
 
 const TEMPLATES = [
@@ -58,6 +60,8 @@ const ROLE_OPTIONS = [
   { value: 'role-dept-head', label: '部门负责人' },
   { value: 'role-committee', label: '委员会' },
 ];
+
+const DISABLED_WORKFLOW: WorkflowConfig = { template: 'none', states: [], approvers: [], assessors: [] };
 
 const layoutStates = (states: WorkflowState[]): Node[] =>
   states.map((s, i) => ({
@@ -167,9 +171,10 @@ const ApproverList = ({
   );
 };
 
-const WorkflowBuilder = ({ workflow, onChange }: Props) => {
+const WorkflowBuilder = ({ workflow, onChange, onClearAssessment }: Props) => {
   const { t } = useTranslation();
   const wf: WorkflowConfig = workflow ?? { template: 'simple', states: [], approvers: [], assessors: [] };
+  const disabled = wf.template === 'none';
 
   const nodes = useMemo(() => layoutStates(wf.states), [wf.states]);
   const edges = useMemo(() => buildEdges(wf.states), [wf.states]);
@@ -183,64 +188,111 @@ const WorkflowBuilder = ({ workflow, onChange }: Props) => {
     Toast.success('已加载模板');
   };
 
+  const handleToggle = (next: boolean) => {
+    if (next) {
+      // 启用：加载默认模板
+      onChange(buildWorkflowFromTemplate('simple'));
+      Toast.success('已启用审批流');
+      return;
+    }
+    // 关闭前确认
+    Modal.confirm({
+      title: '关闭审批流',
+      content: '关闭后将清空已配置的审批人、评估人与评估模型。提交此方案的需求将跳过审批与评估，直接进入「待立项」。是否继续？',
+      okText: '关闭审批流',
+      cancelText: '取消',
+      okButtonProps: { type: 'danger' },
+      onOk: () => {
+        onChange(DISABLED_WORKFLOW);
+        onClearAssessment?.();
+        Toast.success('已关闭审批流');
+      },
+    });
+  };
+
   return (
     <div className="workflow-builder">
-      {/* 顶部：模板选择 + 状态流转预览 */}
       <div className="workflow-preview-card">
         <div className="scheme-builder-section-title">
           <span className="title">
             <WorkflowIcon size={14} strokeWidth={2} style={{ verticalAlign: -2, marginRight: 6 }} />
             {t('requirements.scheme.builder.workflow.title')}
-            <Tag color="grey" type="light" size="small" style={{ marginLeft: 8 }}>预览</Tag>
+            {disabled
+              ? <Tag color="orange" type="light" size="small" style={{ marginLeft: 8 }}>无审批流</Tag>
+              : <Tag color="grey" type="light" size="small" style={{ marginLeft: 8 }}>预览</Tag>}
           </span>
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            <Text type="tertiary" size="small">工作流模板</Text>
-            <Select value={wf.template} onChange={(v) => handleApplyTemplate(v as string)}
-              placeholder="选择模板" optionList={TEMPLATES} style={{ width: 200 }} />
+          <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+            {!disabled && (
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                <Text type="tertiary" size="small">工作流模板</Text>
+                <Select value={wf.template} onChange={(v) => handleApplyTemplate(v as string)}
+                  placeholder="选择模板" optionList={TEMPLATES} style={{ width: 200 }} />
+              </div>
+            )}
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+              <Text type="tertiary" size="small">启用审批流</Text>
+              <Switch checked={!disabled} onChange={handleToggle} />
+            </div>
           </div>
         </div>
 
-        <div className="workflow-canvas">
-          {wf.states.length === 0 ? (
-            <Empty description="请先选择模板加载工作流" style={{ paddingTop: 100 }} />
-          ) : (
-            <ReactFlow
-              nodes={rfNodes}
-              edges={rfEdges}
-              onNodesChange={onNodesChange}
-              onEdgesChange={onEdgesChange}
-              fitView
-              nodesDraggable={false}
-              nodesConnectable={false}
-              elementsSelectable={false}
-              proOptions={{ hideAttribution: true }}
-            >
-              <Background />
-              <Controls showInteractive={false} />
-              <MiniMap pannable />
-            </ReactFlow>
-          )}
-        </div>
-        <Text type="tertiary" size="small" style={{ marginTop: 8, display: 'block' }}>
-          状态流转由所选模板决定，仅用于预览。如需调整流程，请切换模板。
-        </Text>
+        {disabled ? (
+          <div className="workflow-disabled-empty">
+            <div className="icon-wrap">
+              <PowerOff size={28} strokeWidth={1.5} />
+            </div>
+            <Title heading={6} style={{ margin: 0 }}>已关闭审批流</Title>
+            <Text type="tertiary" style={{ textAlign: 'center', maxWidth: 480 }}>
+              使用此方案提交的需求将跳过审批与评估环节，直接进入「待立项」状态。
+              如需恢复审批流程，请打开右上角「启用审批流」开关。
+            </Text>
+          </div>
+        ) : (
+          <>
+            <div className="workflow-canvas">
+              {wf.states.length === 0 ? (
+                <Empty description="请先选择模板加载工作流" style={{ paddingTop: 100 }} />
+              ) : (
+                <ReactFlow
+                  nodes={rfNodes}
+                  edges={rfEdges}
+                  onNodesChange={onNodesChange}
+                  onEdgesChange={onEdgesChange}
+                  fitView
+                  nodesDraggable={false}
+                  nodesConnectable={false}
+                  elementsSelectable={false}
+                  proOptions={{ hideAttribution: true }}
+                >
+                  <Background />
+                  <Controls showInteractive={false} />
+                  <MiniMap pannable />
+                </ReactFlow>
+              )}
+            </div>
+            <Text type="tertiary" size="small" style={{ marginTop: 8, display: 'block' }}>
+              状态流转由所选模板决定，仅用于预览。如需调整流程，请切换模板。
+            </Text>
+          </>
+        )}
       </div>
 
-      {/* 底部：审批人 / 评估人配置 双列 */}
-      <div className="workflow-config-grid">
-        <ApproverList
-          title="审批人配置"
-          emptyHint="暂无审批级，点击右上角添加"
-          list={wf.approvers}
-          onChange={(list) => onChange({ ...wf, approvers: list })}
-        />
-        <ApproverList
-          title="评估人配置"
-          emptyHint="暂无评估级，点击右上角添加"
-          list={wf.assessors}
-          onChange={(list) => onChange({ ...wf, assessors: list })}
-        />
-      </div>
+      {!disabled && (
+        <div className="workflow-config-grid">
+          <ApproverList
+            title="审批人配置"
+            emptyHint="暂无审批级，点击右上角添加"
+            list={wf.approvers}
+            onChange={(list) => onChange({ ...wf, approvers: list })}
+          />
+          <ApproverList
+            title="评估人配置"
+            emptyHint="暂无评估级，点击右上角添加"
+            list={wf.assessors}
+            onChange={(list) => onChange({ ...wf, assessors: list })}
+          />
+        </div>
+      )}
     </div>
   );
 };
