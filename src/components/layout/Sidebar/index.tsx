@@ -317,18 +317,14 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     { key: 'mtMiddlewareStatus', labelKey: 'sidebar.mtMiddlewareStatus', icon: <MonitorCheck size={18} strokeWidth={2} />, path: '/maintenance/dashboard/middleware-status' },
   ];
 
-  // 共享中心的详细菜单结构
+  // 共享中心 - 资产市场
   const sharingCenterMenu: MenuItem[] = [
-    // 可执行组件 - 分组标题
-    { key: 'executableComponents', labelKey: 'sidebar.executableComponents', isGroupLabel: true },
-    { key: 'creatorComponents', labelKey: 'sidebar.creatorComponents', icon: <LayoutGrid size={16} strokeWidth={2} />, path: '/sharing/components/creator' },
-    // AI Skills - 分组标题
-    { key: 'aiSkills', labelKey: 'sidebar.aiSkills', isGroupLabel: true },
-    { key: 'apaSkills', labelKey: 'sidebar.apaSkills', icon: <Bot size={18} strokeWidth={2} />, path: '/sharing/skills/apa' },
-    { key: 'acpSkills', labelKey: 'sidebar.acpSkills', icon: <Workflow size={18} strokeWidth={2} />, path: '/sharing/skills/acp' },
-    // 案例展示 - 分组标题
-    { key: 'showcasesGroup', labelKey: 'sidebar.showcasesGroup', isGroupLabel: true },
-    { key: 'showcasesList', labelKey: 'sidebar.showcasesList', icon: <BookOpen size={16} strokeWidth={2} />, path: '/sharing/showcases' },
+    { key: 'assetMarket', labelKey: 'sidebar.assetMarket', isGroupLabel: true },
+    { key: 'marketAll', labelKey: 'sidebar.marketAll', icon: <Boxes size={18} strokeWidth={2} />, path: '/sharing/market' },
+    { key: 'marketWorkflow', labelKey: 'sidebar.marketWorkflow', icon: <Workflow size={18} strokeWidth={2} />, path: '/sharing/market/workflow' },
+    { key: 'marketKnowledge', labelKey: 'sidebar.marketKnowledge', icon: <BookOpen size={18} strokeWidth={2} />, path: '/sharing/market/knowledge' },
+    { key: 'marketSkill', labelKey: 'sidebar.marketSkill', icon: <Sparkles size={18} strokeWidth={2} />, path: '/sharing/market/skill' },
+    { key: 'marketSnippet', labelKey: 'sidebar.marketSnippet', icon: <Component size={18} strokeWidth={2} />, path: '/sharing/market/snippet' },
   ];
 
   // 根据当前路由获取选中的菜单key
