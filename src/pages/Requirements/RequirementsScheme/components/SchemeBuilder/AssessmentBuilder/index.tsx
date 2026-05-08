@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Button, Input, InputNumber, Select, Typography, Tag, Empty } from '@douyinfe/semi-ui';
-import { Plus, Trash2, ArrowUp, ArrowDown } from 'lucide-react';
+import { Plus, Trash2, ArrowUp, ArrowDown, PowerOff, ArrowRight } from 'lucide-react';
 import type {
   AssessmentModel,
   AssessmentDimension,
@@ -8,13 +8,17 @@ import type {
   SchemeField,
 } from '@/pages/Requirements/RequirementsWorkbench/types';
 
-const { Text } = Typography;
+const { Text, Title } = Typography;
 
 interface Props {
   valueModel?: AssessmentModel;
   complexityModel?: AssessmentModel;
   fields: SchemeField[];
   onChange: (value?: AssessmentModel, complexity?: AssessmentModel) => void;
+  /** 工作流是否已关闭审批；为 true 时本页禁用并展示空态 */
+  disabled?: boolean;
+  /** 点击空态按钮跳转到工作流配置 */
+  onJumpToWorkflow?: () => void;
 }
 
 const newDimension = (): AssessmentDimension => ({
@@ -126,7 +130,7 @@ const ModelCard = ({
   );
 };
 
-const AssessmentBuilder = ({ valueModel, complexityModel, fields, onChange }: Props) => {
+const AssessmentBuilder = ({ valueModel, complexityModel, fields, onChange, disabled, onJumpToWorkflow }: Props) => {
   const { t } = useTranslation();
 
   const addModel = (type: 'value' | 'complexity') => {
@@ -145,6 +149,32 @@ const AssessmentBuilder = ({ valueModel, complexityModel, fields, onChange }: Pr
     if (type === 'value') onChange(m, complexityModel);
     else onChange(valueModel, m);
   };
+
+  if (disabled) {
+    return (
+      <div className="assessment-builder scheme-builder-pane">
+        <div className="assessment-disabled-empty">
+          <div className="icon-wrap">
+            <PowerOff size={28} strokeWidth={1.5} />
+          </div>
+          <Title heading={6} style={{ margin: 0 }}>评估配置不可用</Title>
+          <Text type="tertiary" style={{ textAlign: 'center', maxWidth: 480 }}>
+            当前方案已关闭审批流，使用此方案提交的需求将跳过审批与评估。
+            如需配置评估模型，请先在「工作流」中开启审批流。
+          </Text>
+          <Button
+            theme="solid"
+            type="primary"
+            icon={<ArrowRight size={14} strokeWidth={2} />}
+            iconPosition="right"
+            onClick={onJumpToWorkflow}
+          >
+            前往工作流配置
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="assessment-builder scheme-builder-pane">
