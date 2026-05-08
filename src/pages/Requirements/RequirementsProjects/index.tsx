@@ -15,28 +15,17 @@ import {
   Dropdown,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
-import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import { Tooltip } from '@douyinfe/semi-ui';
 import { Plus, Pencil, Trash2, Ellipsis } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
-import FilterPopover from '@/components/FilterPopover';
-import type { Project, ProjectAggregatedStatus } from './types';
+import type { Project } from './types';
 import { fetchProjects, deleteProject } from './mockData';
 import ProjectFormModal from './components/ProjectFormModal';
 import ProjectDetailDrawer from './components/ProjectDetailDrawer';
 import './index.less';
 
 const { Title, Text } = Typography;
-
-const statusTagColor: Record<ProjectAggregatedStatus, TagColor> = {
-  EMPTY: 'grey',
-  IN_PROGRESS: 'blue',
-  DEVELOPING: 'orange',
-  COMPLETED: 'green',
-};
-
-const STATUS_OPTIONS: ProjectAggregatedStatus[] = ['EMPTY', 'IN_PROGRESS', 'DEVELOPING', 'COMPLETED'];
 
 const RequirementsProjects = () => {
   const { t } = useTranslation();
@@ -46,8 +35,6 @@ const RequirementsProjects = () => {
   const [isInitial, setIsInitial] = useState(true);
   const [projects, setProjects] = useState<Project[]>([]);
   const [keyword, setKeyword] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string[]>([]);
-  const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
 
   const [formVisible, setFormVisible] = useState(false);
   const [editing, setEditing] = useState<Project | null>(null);
