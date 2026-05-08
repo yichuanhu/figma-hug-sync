@@ -436,6 +436,9 @@
     }
   },
   "requirements": {
+    "unacked": {
+      "tooltip": "{{count}} 项变更待响应，点击前往处理"
+    },
     "workbench": {
       "title": "需求列表",
       "description": "管理和跟踪自动化需求的全生命周期",
