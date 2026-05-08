@@ -410,18 +410,13 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     if (pathname === '/operations/platform-operations') {
       return 'platformOperations';
     }
-    if (pathname === '/sharing/components/creator') {
-      return 'creatorComponents';
+    if (pathname === '/sharing/market' || pathname === '/sharing') {
+      return 'marketAll';
     }
-    if (pathname === '/sharing/skills/apa') {
-      return 'apaSkills';
-    }
-    if (pathname === '/sharing/skills/acp') {
-      return 'acpSkills';
-    }
-    if (pathname === '/sharing/showcases') {
-      return 'showcasesList';
-    }
+    if (pathname.startsWith('/sharing/market/workflow')) return 'marketWorkflow';
+    if (pathname.startsWith('/sharing/market/knowledge')) return 'marketKnowledge';
+    if (pathname.startsWith('/sharing/market/skill')) return 'marketSkill';
+    if (pathname.startsWith('/sharing/market/snippet')) return 'marketSnippet';
     if (pathname.startsWith('/maintenance/config')) return 'mtConfigManagement';
     if (pathname.startsWith('/maintenance/dashboard/system-metrics')) return 'mtSystemMetrics';
     if (pathname.startsWith('/maintenance/dashboard/middleware-status')) return 'mtMiddlewareStatus';
