@@ -119,15 +119,6 @@ const RequirementsProjects = () => {
     });
   };
 
-  const statusOptions = useMemo(
-    () =>
-      STATUS_OPTIONS.map((s) => ({
-        label: t(`requirements.projects.status.${s}`),
-        value: s,
-      })),
-    [t],
-  );
-
   const columns = [
     {
       title: t('requirements.projects.fields.name'),
