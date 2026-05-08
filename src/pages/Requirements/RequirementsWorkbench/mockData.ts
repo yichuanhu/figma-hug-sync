@@ -1313,14 +1313,13 @@ const draftKey = (rid: string, uid: string) => `${rid}::${uid}`;
 
 let changeLogStore: RequirementChangeLog[] = [];
 
-const seedChangeLogs = () => {
+const seedChangeLogs = async () => {
   if (changeLogStore.length > 0) return;
   const dev = mockRequirementData.find((r) => r.status === 'DEVELOPING');
   if (!dev) return;
   let wsBinding: { workspace: { id: string; name: string } } | null = null;
   try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-    const m = require('../RequirementsProjects/mockData');
+    const m = await import('../RequirementsProjects/mockData');
     wsBinding = m.findWorkspaceByRequirementId?.(dev.id) ?? null;
   } catch {
     wsBinding = null;
@@ -1342,9 +1341,15 @@ const seedChangeLogs = () => {
   });
 };
 let seeded = false;
-const ensureSeeded = () => {
-  if (!seeded) { seedChangeLogs(); seeded = true; }
+let seedingPromise: Promise<void> | null = null;
+const ensureSeeded = (): Promise<void> => {
+  if (seeded) return Promise.resolve();
+  if (!seedingPromise) {
+    seedingPromise = seedChangeLogs().then(() => { seeded = true; });
+  }
+  return seedingPromise;
 };
+
 
 export const getDraft = async (
   requirementId: string,
