@@ -282,7 +282,23 @@ const ProjectDetailDrawer = ({
 
           <TabPane
             itemKey="workspaces"
-            tab={`${t('requirements.projects.workspaces')} (${workspaces.length})`}
+            tab={(() => {
+              const wsIds = workspaces.map((w) => w.id);
+              const unacked = countUnackedByWorkspaces(wsIds);
+              const target = unacked > 0 ? firstPendingChangeByWorkspaces(wsIds) : null;
+              return (
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                  {`${t('requirements.projects.workspaces')} (${workspaces.length})`}
+                  {target && (
+                    <UnackedBadge
+                      count={unacked}
+                      requirementId={target.requirementId}
+                      changeLogId={target.changeLogId}
+                    />
+                  )}
+                </span>
+              );
+            })()}
           >
             <div className="project-workspaces-tab">
               <div className="project-workspaces-tab-toolbar">
