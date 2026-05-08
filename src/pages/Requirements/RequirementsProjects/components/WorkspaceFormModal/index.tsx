@@ -135,7 +135,7 @@ const WorkspaceFormModal = ({ visible, projectId, initialData, onClose, onSucces
             required: true,
           }}
         >
-          <DepartmentSelectField t={t} />
+          <DepartmentSelectField t={t} disabled={!!initialData && (initialData.linkedRequirementIds?.length ?? 0) > 0} />
         </Form.Slot>
         <Form.TextArea
           field="description"
@@ -153,11 +153,11 @@ const WorkspaceFormModal = ({ visible, projectId, initialData, onClose, onSucces
 };
 
 // 把 Form.Slot 包出来：DepartmentSelect 不是 Semi Form Field
-const DepartmentSelectField = ({ t }: { t: (k: string) => string }) => {
+const DepartmentSelectField = ({ t, disabled }: { t: (k: string) => string; disabled?: boolean }) => {
   const formApi = useFormApi();
   const formState = useFormState();
   const value = formState.values?.departmentId;
-  return (
+  const select = (
     <DepartmentSearchSelect
       value={value}
       onChange={(v: string) => {
@@ -165,7 +165,15 @@ const DepartmentSelectField = ({ t }: { t: (k: string) => string }) => {
       }}
       placeholder={t('requirements.projects.placeholders.department')}
       style={{ width: '100%' }}
+      disabled={disabled}
     />
+  );
+  return disabled ? (
+    <Tooltip content={t('requirements.projects.validation.departmentLockedByRequirements')}>
+      <div>{select}</div>
+    </Tooltip>
+  ) : (
+    select
   );
 };
 
