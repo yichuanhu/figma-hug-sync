@@ -1430,8 +1430,7 @@ export const publishChange = async (
 
   let wsBinding: { workspace: { id: string; name: string } } | null = null;
   try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-    const m = require('../RequirementsProjects/mockData');
+    const m = await import('../RequirementsProjects/mockData');
     wsBinding = m.findWorkspaceByRequirementId?.(input.requirementId) ?? null;
   } catch { wsBinding = null; }
   const needsDevResponse = type === 'DEV_IMPACT' && !!wsBinding;
