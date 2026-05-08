@@ -1,0 +1,37 @@
+.unacked-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: var(--semi-color-danger);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  vertical-align: middle;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 0 0 2px var(--semi-color-bg-0);
+  user-select: none;
+
+  &:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 0 2px var(--semi-color-bg-0), 0 2px 6px rgba(255, 77, 79, 0.4);
+  }
+
+  &.unacked-badge-dot {
+    min-width: 8px;
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border-radius: 50%;
+  }
+
+  .unacked-badge-count {
+    display: inline-block;
+    line-height: 1;
+  }
+}
