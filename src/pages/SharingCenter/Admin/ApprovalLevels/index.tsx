@@ -1,80 +1,110 @@
-import { useState, useEffect } from 'react';
-import { Typography, Card, Select, Button, Toast, Banner } from '@douyinfe/semi-ui';
+import { useEffect, useState } from 'react';
+import { Typography, Table, Select, Button, Toast, Banner, Modal, Space } from '@douyinfe/semi-ui';
 import { useTranslation } from 'react-i18next';
+import {
+  type AssetTypeKey, type ApprovalLevel, type ApprovalConfig,
+  DEFAULT_APPROVAL_CONFIG, getApprovalConfig, saveApprovalConfig, resetApprovalConfig,
+} from '@/pages/SharingCenter/shared/approvalConfig';
 import './index.less';
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
-type AssetTypeKey = 'SNIPPET' | 'WORKFLOW' | 'KNOWLEDGE' | 'SKILL';
-type Level = 'NONE' | 'SINGLE';
-
-const STORAGE_KEY = 'sharing-center.approval-levels';
-const DEFAULT: Record<AssetTypeKey, Level> = {
-  SNIPPET: 'SINGLE',
-  WORKFLOW: 'SINGLE',
-  KNOWLEDGE: 'SINGLE',
-  SKILL: 'SINGLE',
-};
+type Row = { type: AssetTypeKey; level: ApprovalLevel };
 
 const ApprovalLevelsPage = () => {
   const { t } = useTranslation();
-  const [config, setConfig] = useState<Record<AssetTypeKey, Level>>(DEFAULT);
+  const [config, setConfig] = useState<ApprovalConfig>(() => getApprovalConfig());
+  const [dirty, setDirty] = useState(false);
 
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) setConfig({ ...DEFAULT, ...JSON.parse(raw) });
-    } catch {}
-  }, []);
+  useEffect(() => { setConfig(getApprovalConfig()); }, []);
 
-  const handleChange = (k: AssetTypeKey) => (v: unknown) => {
-    setConfig((prev) => ({ ...prev, [k]: v as Level }));
+  const handleChange = (k: AssetTypeKey, v: ApprovalLevel) => {
+    setConfig((prev) => ({ ...prev, [k]: v }));
+    setDirty(true);
   };
 
   const handleSave = () => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
-    Toast.success(t('sharing.admin.approvalLevels.toast.saved'));
+    Modal.confirm({
+      title: t('sharing.admin.approvalLevels.confirmSaveTitle'),
+      content: t('sharing.admin.approvalLevels.confirmSaveContent'),
+      onOk: () => {
+        saveApprovalConfig(config);
+        setDirty(false);
+        Toast.success(t('sharing.admin.approvalLevels.toast.saved'));
+      },
+    });
+  };
+
+  const handleReset = () => {
+    setConfig({ ...DEFAULT_APPROVAL_CONFIG });
+    resetApprovalConfig();
+    setDirty(false);
+    Toast.success(t('sharing.admin.approvalLevels.toast.reset'));
   };
 
   const types: AssetTypeKey[] = ['SNIPPET', 'WORKFLOW', 'KNOWLEDGE', 'SKILL'];
+  const dataSource: Row[] = types.map((k) => ({ type: k, level: config[k] }));
+
+  const levelLabel = (lv: ApprovalLevel) => t(`sharing.admin.approvalLevels.levels.${lv}`);
+
+  const columns = [
+    {
+      title: t('sharing.admin.approvalLevels.col.type'),
+      dataIndex: 'type',
+      width: 200,
+      render: (v: AssetTypeKey) => t(`sharing.market.tabs.${v}`),
+    },
+    {
+      title: t('sharing.admin.approvalLevels.col.current'),
+      dataIndex: 'level',
+      width: 200,
+      render: (v: ApprovalLevel) => levelLabel(v),
+    },
+    {
+      title: t('sharing.admin.approvalLevels.col.choose'),
+      width: 240,
+      render: (_: unknown, row: Row) => (
+        <Select
+          value={row.level}
+          onChange={(v) => handleChange(row.type, v as ApprovalLevel)}
+          style={{ width: 200 }}
+          optionList={[
+            { label: levelLabel('NONE'), value: 'NONE' },
+            { label: levelLabel('SINGLE'), value: 'SINGLE' },
+          ]}
+        />
+      ),
+    },
+    {
+      title: t('sharing.admin.approvalLevels.col.desc'),
+      render: (_: unknown, row: Row) => t(`sharing.admin.approvalLevels.desc.${row.type}`),
+    },
+  ];
 
   return (
-    <div className="approval-levels-page">
+    <div className="approval-levels-page app-layout-content-card">
       <div className="page-header">
         <Title heading={3} className="title">{t('sharing.admin.approvalLevels.pageTitle')}</Title>
       </div>
 
-      <Banner
-        type="info"
-        description={t('sharing.admin.approvalLevels.notice')}
-        closeIcon={null}
+      <Banner type="info" closeIcon={null} description={t('sharing.admin.approvalLevels.notice')} />
+
+      <Table
+        size="small"
+        columns={columns}
+        dataSource={dataSource}
+        rowKey="type"
+        pagination={false}
       />
 
-      <Card className="config-card" bodyStyle={{ padding: 24 }}>
-        {types.map((k) => (
-          <div key={k} className="config-row">
-            <div className="config-label">
-              <Text strong>{t(`sharing.market.tabs.${k}`)}</Text>
-              <Text type="tertiary" size="small">{t(`sharing.admin.approvalLevels.desc.${k}`)}</Text>
-            </div>
-            <Select
-              value={config[k]}
-              onChange={handleChange(k)}
-              style={{ width: 200 }}
-              optionList={[
-                { label: t('sharing.admin.approvalLevels.levels.NONE'), value: 'NONE' },
-                { label: t('sharing.admin.approvalLevels.levels.SINGLE'), value: 'SINGLE' },
-              ]}
-            />
-          </div>
-        ))}
-
-        <div className="config-footer">
-          <Button theme="solid" type="primary" onClick={handleSave}>
+      <div className="page-footer">
+        <Space spacing={8}>
+          <Button onClick={handleReset}>{t('sharing.admin.approvalLevels.reset')}</Button>
+          <Button theme="solid" type="primary" disabled={!dirty} onClick={handleSave}>
             {t('common.save')}
           </Button>
-        </div>
-      </Card>
+        </Space>
+      </div>
     </div>
   );
 };
