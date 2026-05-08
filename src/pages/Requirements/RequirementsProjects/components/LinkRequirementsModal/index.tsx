@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Input, Tag, Toast, Typography, Empty } from '@douyinfe/semi-ui';
-import { IconSearch } from '@douyinfe/semi-icons';
+import { IconSearchStroked } from '@douyinfe/semi-icons';
 import { X, ArrowRight } from 'lucide-react';
 import type { Workspace } from '../../types';
 import { linkRequirements, fetchAllWorkspaces } from '../../mockData';
@@ -126,7 +126,7 @@ const LinkRequirementsModal = ({ visible, workspace, onClose, onSuccess }: Props
           </div>
           <div className="link-column-search">
             <Input
-              prefix={<IconSearch />}
+              prefix={<IconSearchStroked />}
               placeholder={t('requirements.projects.searchRequirement')}
               value={keyword}
               onChange={setKeyword}
