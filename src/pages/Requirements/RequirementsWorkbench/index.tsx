@@ -371,7 +371,7 @@ const RequirementsWorkbench = () => {
                 const isResubmit =
                   (record.status === 'REJECTED' || record.status === 'WITHDRAWN') &&
                   record.creatorId === MOCK_CURRENT_USER_ID;
-                const canSubmit = canEdit(record.status) || record.status === 'REJECTED';
+                const canSubmit = canEdit(record.status);
                 if (!canSubmit && !isResubmit) return null;
                 if (isResubmit) {
                   return (
