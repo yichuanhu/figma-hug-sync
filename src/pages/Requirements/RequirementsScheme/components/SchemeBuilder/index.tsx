@@ -278,6 +278,8 @@ const SchemeBuilderPage = () => {
               valueModel={draftScheme.value_assessment_model}
               complexityModel={draftScheme.complexity_assessment_model}
               fields={draftScheme.custom_fields}
+              disabled={draftScheme.workflow_config?.template === 'none'}
+              onJumpToWorkflow={() => setActiveTab('workflow')}
               onChange={(value, complexity) => patch({ value_assessment_model: value, complexity_assessment_model: complexity })}
             />
           </TabPane>
@@ -288,6 +290,7 @@ const SchemeBuilderPage = () => {
             <WorkflowBuilder
               workflow={draftScheme.workflow_config}
               onChange={(wf) => patch({ workflow_config: wf })}
+              onClearAssessment={() => patch({ value_assessment_model: undefined, complexity_assessment_model: undefined })}
             />
           </TabPane>
           <TabPane
