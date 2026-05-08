@@ -15,11 +15,12 @@ import AssessmentTab from './AssessmentTab';
 import CostEstimateTab from './CostEstimateTab';
 import ApprovalFlowProgress from '../ApprovalFlowProgress';
 import ChangeLogTab from '../ChangeLogTab';
+import DevResponsePanel from '../DevResponsePanel';
 import ReadonlySchemeFieldsRenderer from '../ReadonlySchemeFieldsRenderer';
 import { buildSubmitConfirmContent } from '../../utils/submitConfirm';
 import './index.less';
-import { Lightbulb, Pencil, PowerOff, RotateCcw, Send, Trash2, Undo2, Link2, FolderPlus, X } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Lightbulb, Pencil, PowerOff, RotateCcw, Send, Trash2, Undo2, Link2, FolderPlus, X, AlertTriangle } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import WorkspacePickerModal from './WorkspacePickerModal';
 
 const { Text } = Typography;
