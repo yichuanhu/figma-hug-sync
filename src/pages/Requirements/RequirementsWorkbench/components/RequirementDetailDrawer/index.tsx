@@ -410,7 +410,7 @@ const RequirementDetailDrawer = ({
       }
     : data;
 
-  const canEdit = !isHistoryMode && effectiveData.status === 'DRAFT';
+  const canEdit = !isHistoryMode && (effectiveData.status === 'DRAFT' || effectiveData.status === 'REJECTED' || effectiveData.status === 'WITHDRAWN');
   const canDelete = !isHistoryMode && (effectiveData.status === 'DRAFT' || effectiveData.status === 'REJECTED' || effectiveData.status === 'WITHDRAWN');
   const canResubmit = !isHistoryMode && (effectiveData.status === 'REJECTED' || effectiveData.status === 'WITHDRAWN') && effectiveData.creatorId === MOCK_CURRENT_USER_ID;
   const canOffline = !isHistoryMode && effectiveData.status === 'LAUNCHED';
