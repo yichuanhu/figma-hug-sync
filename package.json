@@ -74,6 +74,7 @@
     "react-i18next": "^16.5.3",
     "react-resizable-panels": "^2.1.9",
     "react-router-dom": "^6.30.1",
+    "reactflow": "^11.11.4",
     "recharts": "^2.15.4",
     "sass": "^1.97.2",
     "semi-theme-vite-plugin": "^1.0.0",
