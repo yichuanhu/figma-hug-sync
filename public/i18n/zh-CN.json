@@ -3120,7 +3120,7 @@
   "sharing": {
     "common": {
       "source": { "native": "原生", "devCenter": "开发中心" },
-      "status": { "draft": "草稿", "pending": "待审批", "published": "已发布", "rejected": "已拒绝" }
+      "status": { "draft": "草稿", "pending": "待审批", "published": "已发布", "rejected": "已拒绝", "archived": "已归档", "unlisted": "已下架" }
     },
     "semver": {
       "title": "发布新版本",
@@ -3138,14 +3138,156 @@
         "published": "已发布",
         "draft": "草稿",
         "pending_approval": "待审批",
-        "rejected": "已拒绝"
+        "rejected": "已拒绝",
+        "archived": "已归档"
+      },
+      "filters": {
+        "searchPlaceholder": "搜索名称/描述/标签",
+        "type": "类型",
+        "source": "来源",
+        "allType": "全部类型",
+        "allSource": "全部来源",
+        "clear": "清空筛选"
+      },
+      "newAsset": {
+        "label": "新建资产",
+        "knowledge": "知识",
+        "skill": "技能",
+        "snippet": "流程块",
+        "workflow": "流程",
+        "disabledHint": "请在开发中心创建"
+      },
+      "actions": {
+        "view": "查看详情",
+        "edit": "编辑",
+        "editMeta": "编辑展示信息",
+        "publish": "发布",
+        "archive": "归档",
+        "recover": "恢复",
+        "delete": "删除",
+        "unlist": "下架",
+        "openInDevCenter": "在开发中心打开",
+        "versions": "版本历史"
+      },
+      "batch": {
+        "selected": "已选 {{count}} 项",
+        "archive": "批量归档",
+        "unlist": "批量下架",
+        "delete": "批量删除",
+        "cancel": "取消选择",
+        "mixedHint": "不能同时选择不同来源的资产"
+      },
+      "confirm": {
+        "archiveTitle": "确定归档该资产？",
+        "archiveContent": "归档后可在「已归档」Tab 中恢复。",
+        "recoverTitle": "确定恢复该资产？",
+        "recoverContent": "资产将恢复为已发布状态，无需审批。",
+        "unlistTitle": "确定下架该资产？",
+        "unlistContent": "下架后资产将从市场隐藏。",
+        "deleteTitle": "确定删除该资产？",
+        "deleteContent": "删除后不可恢复。"
+      },
+      "toast": {
+        "archived": "已归档",
+        "recovered": "已恢复",
+        "unlisted": "已下架",
+        "deleted": "已删除",
+        "saved": "已保存",
+        "published": "已发布"
       },
       "empty": {
         "title": "暂无内容",
-        "description": "你还没有共享任何资产，去资产市场创建吧"
+        "published": "暂无已发布资产",
+        "draft": "暂无草稿",
+        "pending_approval": "暂无待审批资产",
+        "rejected": "暂无被拒绝资产",
+        "archived": "暂无已归档资产",
+        "noResult": "未找到匹配的资产，请调整筛选条件",
+        "createCta": "去新建资产"
       },
       "col": { "version": "版本" },
-      "actions": { "view": "查看" }
+      "create": {
+        "knowledgeTitle": "新建知识",
+        "skillTitle": "新建技能",
+        "fields": {
+          "name": "名称",
+          "namePh": "请输入名称（2-100 字符）",
+          "description": "描述",
+          "descPh": "请输入描述（10-500 字符）",
+          "tags": "标签",
+          "tagsPh": "回车添加标签",
+          "knowledgeType": "知识类型",
+          "category": "分类",
+          "categoryPh": "如：财务、HR、研发",
+          "content": "内容",
+          "attachments": "附件",
+          "attachmentsHint": "支持 PDF / Excel / Word / 图片，单文件 ≤ 10MB",
+          "skillType": "技能类型",
+          "inputParams": "输入参数",
+          "outputParams": "输出参数",
+          "noParams": "无参数",
+          "addParam": "添加参数",
+          "paramName": "参数名",
+          "paramType": "类型",
+          "paramRequired": "必填",
+          "paramDesc": "描述",
+          "paramDefault": "默认值",
+          "timeout": "超时（秒）",
+          "retry": "重试策略",
+          "callExample": "调用示例"
+        },
+        "knowledgeTypes": {
+          "manual": "操作手册",
+          "errorCode": "错误码",
+          "bestPractice": "最佳实践",
+          "faq": "FAQ"
+        },
+        "skillTypes": {
+          "document": "文档处理",
+          "data": "数据分析",
+          "content": "内容生成",
+          "retrieval": "知识检索",
+          "tool": "工具调用",
+          "other": "其他"
+        },
+        "retry": {
+          "none": "不重试",
+          "fixed": "固定间隔",
+          "exponential": "指数退避"
+        },
+        "saveDraft": "保存草稿",
+        "publish": "发布"
+      },
+      "edit": {
+        "devCenterTitle": "编辑展示信息",
+        "nativeTitle": "编辑资产",
+        "readonlyHint": "内容由开发中心同步，仅可编辑展示字段（名称/描述/标签）。",
+        "openInDevCenter": "在开发中心编辑内容",
+        "save": "保存",
+        "publishNew": "发布新版本",
+        "noPermission": "你不是该资产的创建者，无法编辑"
+      },
+      "version": {
+        "title": "版本历史",
+        "snapshot": "快照",
+        "latest": "最新",
+        "publishedBy": "发布者",
+        "publishedAt": "发布时间",
+        "openInDevCenter": "在开发中心查看",
+        "noChangeLog": "无变更说明"
+      },
+      "semver": {
+        "title": "发布新版本",
+        "firstTitle": "首次发布",
+        "currentToNext": "{{current}} → {{next}}",
+        "firstVersionHint": "首发版本号固定为 v1.0.0，发布后进入待审批状态。",
+        "bumpType": "版本类型",
+        "patch": "PATCH（向后兼容修复）",
+        "minor": "MINOR（向后兼容新功能）",
+        "major": "MAJOR（不兼容变更）",
+        "changeLog": "变更说明",
+        "changeLogPh": "请填写本次变更说明（5-200 字符）"
+      }
     },
     "approvals": {
       "pageTitle": "审批管理",
