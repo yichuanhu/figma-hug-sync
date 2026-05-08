@@ -233,22 +233,6 @@ const RequirementsProjects = () => {
                 showClear
                 maxLength={100}
               />
-              <FilterPopover
-                visible={filterPopoverVisible}
-                onVisibleChange={setFilterPopoverVisible}
-                onConfirm={(values) => {
-                  setStatusFilter((values.status as string[]) || []);
-                }}
-                sections={[
-                  {
-                    key: 'status',
-                    label: t('common.status'),
-                    type: 'checkbox',
-                    options: statusOptions,
-                    value: statusFilter,
-                  },
-                ]}
-              />
             </Space>
           </Col>
           <Col>
