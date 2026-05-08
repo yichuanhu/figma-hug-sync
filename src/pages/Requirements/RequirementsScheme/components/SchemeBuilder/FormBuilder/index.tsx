@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Tag, Typography, Toast, Tooltip } from '@douyinfe/semi-ui';
 import { Lock, Settings2, Trash2, ArrowUp, ArrowDown, Plus } from 'lucide-react';
 import type { SchemeField, SchemeFieldType } from '@/pages/Requirements/RequirementsWorkbench/types';
-import FieldConfigModal from './FieldConfigModal';
+import FieldConfigPanel from './FieldConfigPanel';
 
 const { Text } = Typography;
 
@@ -12,7 +12,6 @@ interface Props {
   onChange: (fields: SchemeField[]) => void;
 }
 
-// 系统字段（R-02），仅展示不可编辑
 const SYSTEM_FIELDS: Array<{ key: string; label: string; type: string }> = [
   { key: 'title', label: '标题', type: 'text' },
   { key: 'number', label: '编号', type: '自动生成' },
@@ -39,7 +38,7 @@ const FIELD_TYPES: Array<{ type: SchemeFieldType; labelKey: string }> = [
 
 const FormBuilder = ({ fields, onChange }: Props) => {
   const { t } = useTranslation();
-  const [editing, setEditing] = useState<{ field: SchemeField; index: number } | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   const addField = (type: SchemeFieldType) => {
     const baseKey = `field_${type}_${Date.now().toString(36).slice(-4)}`;
@@ -55,7 +54,7 @@ const FormBuilder = ({ fields, onChange }: Props) => {
     }
     const next = [...fields, newField];
     onChange(next);
-    setEditing({ field: newField, index: next.length - 1 });
+    setSelectedIndex(next.length - 1);
   };
 
   const moveField = (index: number, dir: -1 | 1) => {
@@ -64,25 +63,30 @@ const FormBuilder = ({ fields, onChange }: Props) => {
     if (target < 0 || target >= next.length) return;
     [next[index], next[target]] = [next[target], next[index]];
     onChange(next);
+    if (selectedIndex === index) setSelectedIndex(target);
+    else if (selectedIndex === target) setSelectedIndex(index);
   };
 
   const removeField = (index: number) => {
     onChange(fields.filter((_, i) => i !== index));
+    if (selectedIndex === index) setSelectedIndex(null);
+    else if (selectedIndex !== null && selectedIndex > index) setSelectedIndex(selectedIndex - 1);
   };
 
   const updateField = (index: number, patch: SchemeField) => {
-    // 重名校验（R-03）
     if (fields.some((f, i) => i !== index && f.key === patch.key)) {
       Toast.error(t('requirements.scheme.builder.errors.fieldKeyDuplicate'));
       return;
     }
     onChange(fields.map((f, i) => (i === index ? patch : f)));
-    setEditing(null);
+    Toast.success(t('common.saved') as string);
   };
+
+  const selectedField = selectedIndex !== null ? fields[selectedIndex] ?? null : null;
 
   return (
     <div className="form-builder scheme-builder-pane" style={{ padding: 16 }}>
-      {/* 左侧组件库 */}
+      {/* 左：字段类型库 */}
       <div className="field-palette">
         <div className="palette-title">{t('requirements.scheme.builder.fieldType.paletteTitle')}</div>
         {FIELD_TYPES.map((ft) => (
@@ -99,9 +103,8 @@ const FormBuilder = ({ fields, onChange }: Props) => {
         ))}
       </div>
 
-      {/* 中央表单区 */}
+      {/* 中：表单画布 */}
       <div className="form-canvas">
-        {/* 系统字段 - 锁定 */}
         <div className="canvas-section">
           <div className="canvas-section-title">{t('requirements.scheme.builder.systemFields')}</div>
           {SYSTEM_FIELDS.map((sf) => (
@@ -116,7 +119,6 @@ const FormBuilder = ({ fields, onChange }: Props) => {
           ))}
         </div>
 
-        {/* 自定义字段 */}
         <div className="canvas-section">
           <div className="canvas-section-title">
             {t('requirements.scheme.builder.customFields')} ({fields.length})
@@ -125,7 +127,12 @@ const FormBuilder = ({ fields, onChange }: Props) => {
             <Text type="tertiary" size="small">{t('requirements.scheme.builder.emptyFields')}</Text>
           )}
           {fields.map((f, idx) => (
-            <div key={`${f.key}-${idx}`} className="field-row">
+            <div
+              key={`${f.key}-${idx}`}
+              className={`field-row${selectedIndex === idx ? ' selected' : ''}`}
+              onClick={() => setSelectedIndex(idx)}
+              style={{ cursor: 'pointer' }}
+            >
               <div className="row-main">
                 <span className="row-label">{f.label}</span>
                 <Text type="tertiary" size="small">({f.key})</Text>
@@ -134,24 +141,29 @@ const FormBuilder = ({ fields, onChange }: Props) => {
                 {f.depends_on && <Tag color="purple" type="light" size="small">依赖</Tag>}
               </div>
               <Tooltip content={t('common.moveUp')}>
-                <Button icon={<ArrowUp size={14} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" disabled={idx === 0} onClick={() => moveField(idx, -1)} />
+                <Button icon={<ArrowUp size={14} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" disabled={idx === 0}
+                  onClick={(e) => { e.stopPropagation(); moveField(idx, -1); }} />
               </Tooltip>
               <Tooltip content={t('common.moveDown')}>
-                <Button icon={<ArrowDown size={14} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" disabled={idx === fields.length - 1} onClick={() => moveField(idx, 1)} />
+                <Button icon={<ArrowDown size={14} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" disabled={idx === fields.length - 1}
+                  onClick={(e) => { e.stopPropagation(); moveField(idx, 1); }} />
               </Tooltip>
-              <Button icon={<Settings2 size={14} strokeWidth={2} />} theme="borderless" type="tertiary" size="small" onClick={() => setEditing({ field: f, index: idx })} />
-              <Button icon={<Trash2 size={14} strokeWidth={2} />} theme="borderless" type="danger" size="small" onClick={() => removeField(idx)} />
+              <Button icon={<Settings2 size={14} strokeWidth={2} />} theme="borderless" type="tertiary" size="small"
+                onClick={(e) => { e.stopPropagation(); setSelectedIndex(idx); }} />
+              <Button icon={<Trash2 size={14} strokeWidth={2} />} theme="borderless" type="danger" size="small"
+                onClick={(e) => { e.stopPropagation(); removeField(idx); }} />
             </div>
           ))}
         </div>
       </div>
 
-      <FieldConfigModal
-        visible={!!editing}
-        field={editing?.field ?? null}
+      {/* 右：字段配置面板 */}
+      <FieldConfigPanel
+        field={selectedField}
+        index={selectedIndex ?? -1}
         allFields={fields}
-        onClose={() => setEditing(null)}
-        onSubmit={(updated) => editing && updateField(editing.index, updated)}
+        onSubmit={(updated) => selectedIndex !== null && updateField(selectedIndex, updated)}
+        onCancel={() => setSelectedIndex(null)}
       />
     </div>
   );
