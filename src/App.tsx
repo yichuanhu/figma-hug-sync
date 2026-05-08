@@ -68,11 +68,13 @@ import MaintenanceWorkbench from "@/pages/Maintenance/MaintenanceWorkbench";
 import MaintenanceConfig from "@/pages/Maintenance/ConfigManagement";
 import SystemMetricsPage from "@/pages/Maintenance/Dashboard/SystemMetricsPage";
 import MiddlewareStatusPage from "@/pages/Maintenance/Dashboard/MiddlewareStatusPage";
-// Sharing Center
-import CreatorComponents from "@/pages/Sharing/Components/CreatorComponents";
-import APASkills from "@/pages/Sharing/Skills/APASkills";
-import ACPSkills from "@/pages/Sharing/Skills/ACPSkills";
-import Showcases from "@/pages/Sharing/Showcases";
+// Sharing Center - Asset Market
+import MarketHome from "@/pages/Sharing/Market/MarketHome";
+import WorkflowMarket from "@/pages/Sharing/Market/WorkflowMarket";
+import SnippetMarket from "@/pages/Sharing/Market/SnippetMarket";
+import KnowledgeMarket from "@/pages/Sharing/Market/KnowledgeMarket";
+import SkillMarket from "@/pages/Sharing/Market/SkillMarket";
+import AssetDetail from "@/pages/Sharing/Market/AssetDetail";
 // Notification Center
 import NotificationCenter from "@/pages/NotificationCenter";
 
