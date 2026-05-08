@@ -53,7 +53,6 @@ const AssetCard = ({ asset, onReused }: Props) => {
           <Text strong ellipsis={{ showTooltip: true }} className="asset-card-name">
             {asset.name}
           </Text>
-          <SourceBadge source={asset.source} />
         </div>
       </div>
       <Paragraph ellipsis={{ rows: 2 }} type="tertiary" size="small" className="asset-card-desc">
