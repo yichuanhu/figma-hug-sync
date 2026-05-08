@@ -9,10 +9,12 @@ import type { RequirementItem, ActivityRecord, DetailedAssessment } from '../../
 import { statusConfig, priorityConfig, fetchActivities, updateRequirementAssessment, withdrawRequirement, MOCK_CURRENT_USER_ID, useSchemeFlags } from '../../mockData';
 import { PRESET_SCHEMES } from '../../schemeConfig';
 import { findWorkspaceByRequirementId } from '../../../RequirementsProjects/mockData';
+import { isPostProjectStatus } from '../../utils/fieldEditability';
 import ApprovalSection from './ApprovalSection';
 import AssessmentTab from './AssessmentTab';
 import CostEstimateTab from './CostEstimateTab';
 import ApprovalFlowProgress from '../ApprovalFlowProgress';
+import ChangeLogTab from '../ChangeLogTab';
 import ReadonlySchemeFieldsRenderer from '../ReadonlySchemeFieldsRenderer';
 import { buildSubmitConfirmContent } from '../../utils/submitConfirm';
 import './index.less';
@@ -665,6 +667,20 @@ const RequirementDetailDrawer = ({
               >
                 <div className="requirement-detail-tab-content">
                   <CostEstimateTab data={effectiveData} />
+                </div>
+              </TabPane>
+            )}
+
+            {!isHistoryMode && isPostProjectStatus(effectiveData.status) && (
+              <TabPane
+                tab={t('requirements.detail.tab.changeLog')}
+                itemKey="changeLog"
+              >
+                <div className="requirement-detail-tab-content">
+                  <ChangeLogTab
+                    requirementId={effectiveData.id}
+                    refreshKey={new Date(effectiveData.updatedAt).getTime()}
+                  />
                 </div>
               </TabPane>
             )}

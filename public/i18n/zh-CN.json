@@ -662,7 +662,34 @@
         "approval": "审批流程",
         "assessment": "技术评估",
         "cost": "成本预估",
-        "versions": "版本历史"
+        "versions": "版本历史",
+        "changeLog": "变更日志"
+      },
+      "changeLog": {
+        "empty": "暂无变更记录",
+        "type": {
+          "CONTENT": "内容变更",
+          "DEV_IMPACT": "影响开发",
+          "SYSTEM": "系统变更"
+        },
+        "status": {
+          "PENDING": "待响应",
+          "RESOLVED": "已响应",
+          "NONE": "无需响应"
+        },
+        "response": {
+          "ACK": "已知悉",
+          "ADJUSTED": "已调整",
+          "REJECTED": "已驳回"
+        },
+        "overdue": "超时未响应（已超过 {{days}} 天）",
+        "publishedBy": "{{name}} 发布于 {{time}}",
+        "respondedBy": "{{name}} {{time}} 响应",
+        "linkedWorkspace": "关联工作空间：{{name}}",
+        "diffTitle": "字段变更",
+        "before": "原值",
+        "after": "新值",
+        "reasonTitle": "变更说明"
       },
       "ownerUnassigned": "未指派",
       "customFieldsTitle": "需求详情",

@@ -771,7 +771,34 @@
         "approval": "Approval Flow",
         "assessment": "Assessment",
         "cost": "Cost Estimate",
-        "versions": "Version History"
+        "versions": "Version History",
+        "changeLog": "Change Log"
+      },
+      "changeLog": {
+        "empty": "No change records",
+        "type": {
+          "CONTENT": "Content Change",
+          "DEV_IMPACT": "Dev Impact",
+          "SYSTEM": "System Change"
+        },
+        "status": {
+          "PENDING": "Pending",
+          "RESOLVED": "Resolved",
+          "NONE": "No Response Needed"
+        },
+        "response": {
+          "ACK": "Acknowledged",
+          "ADJUSTED": "Adjusted",
+          "REJECTED": "Rejected"
+        },
+        "overdue": "Overdue (>{{days}} days)",
+        "publishedBy": "Published by {{name}} at {{time}}",
+        "respondedBy": "Responded by {{name}} at {{time}}",
+        "linkedWorkspace": "Workspace: {{name}}",
+        "diffTitle": "Field Changes",
+        "before": "Before",
+        "after": "After",
+        "reasonTitle": "Reason"
       },
       "ownerUnassigned": "Unassigned",
       "customFieldsTitle": "Requirement Details",
