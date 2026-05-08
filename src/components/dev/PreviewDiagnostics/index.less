@@ -1,0 +1,92 @@
+.pd-toggle {
+  position: fixed;
+  right: 12px;
+  bottom: 12px;
+  z-index: 99999;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 1px solid var(--semi-color-border);
+  background: var(--semi-color-bg-0);
+  color: var(--semi-color-text-1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  opacity: 0.6;
+  transition: opacity 0.2s;
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.pd-panel {
+  position: fixed;
+  right: 12px;
+  bottom: 48px;
+  z-index: 99999;
+  width: 360px;
+  max-height: 70vh;
+  overflow: auto;
+  background: var(--semi-color-bg-0);
+  border: 1px solid var(--semi-color-border);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  font-size: 12px;
+
+  .pd-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--semi-color-border);
+    font-weight: 600;
+    color: var(--semi-color-text-0);
+  }
+  .pd-close {
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    color: var(--semi-color-text-2);
+    display: flex;
+    align-items: center;
+  }
+  .pd-body {
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .pd-row {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 8px;
+    align-items: baseline;
+  }
+  .pd-label {
+    color: var(--semi-color-text-2);
+  }
+  .pd-value {
+    color: var(--semi-color-text-0);
+    word-break: break-all;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    &.mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+  }
+  .pd-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    &.ok {
+      background: var(--semi-color-success);
+    }
+    &.bad {
+      background: var(--semi-color-danger);
+    }
+  }
+}
