@@ -130,7 +130,7 @@ const ModelCard = ({
   );
 };
 
-const AssessmentBuilder = ({ valueModel, complexityModel, fields, onChange }: Props) => {
+const AssessmentBuilder = ({ valueModel, complexityModel, fields, onChange, disabled, onJumpToWorkflow }: Props) => {
   const { t } = useTranslation();
 
   const addModel = (type: 'value' | 'complexity') => {
