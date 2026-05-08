@@ -1622,3 +1622,25 @@ export const firstPendingChangeByWorkspace = (
   return { requirementId: log.requirementId, changeLogId: log.id };
 };
 
+export const countUnackedByWorkspaces = (workspaceIds: string[]): number => {
+  ensureSeeded();
+  if (!workspaceIds || workspaceIds.length === 0) return 0;
+  const set = new Set(workspaceIds);
+  return changeLogStore.filter(
+    (c) => c.workspaceId && set.has(c.workspaceId) && c.status === 'PENDING',
+  ).length;
+};
+
+export const firstPendingChangeByWorkspaces = (
+  workspaceIds: string[],
+): { requirementId: string; changeLogId: string } | null => {
+  ensureSeeded();
+  if (!workspaceIds || workspaceIds.length === 0) return null;
+  const set = new Set(workspaceIds);
+  const log = changeLogStore
+    .filter((c) => c.workspaceId && set.has(c.workspaceId) && c.status === 'PENDING')
+    .sort((a, b) => new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime())[0];
+  if (!log) return null;
+  return { requirementId: log.requirementId, changeLogId: log.id };
+};
+

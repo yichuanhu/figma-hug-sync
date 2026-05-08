@@ -7,6 +7,13 @@ import ExpandableText from '@/components/ExpandableText';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import type { Project, Workspace } from '../../types';
 import { fetchWorkspacesByProject, deleteWorkspace } from '../../mockData';
+import {
+  countUnackedByWorkspace,
+  countUnackedByWorkspaces,
+  firstPendingChangeByWorkspace,
+  firstPendingChangeByWorkspaces,
+} from '../../../RequirementsWorkbench/mockData';
+import UnackedBadge from '@/components/UnackedBadge';
 import WorkspaceFormModal from '../WorkspaceFormModal';
 import LinkRequirementsModal from '../LinkRequirementsModal';
 import WorkspaceMembersModal from '../WorkspaceMembersModal';
@@ -92,7 +99,22 @@ const ProjectDetailDrawer = ({
       title: t('requirements.projects.fields.workspaceName'),
       dataIndex: 'name',
       width: 220,
-      render: (v: string) => <Text ellipsis={{ showTooltip: true }} style={{ maxWidth: 200 }}>{v}</Text>,
+      render: (v: string, record: Workspace) => {
+        const unacked = countUnackedByWorkspace(record.id);
+        const target = unacked > 0 ? firstPendingChangeByWorkspace(record.id) : null;
+        return (
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, maxWidth: 200 }}>
+            <Text ellipsis={{ showTooltip: true }} style={{ maxWidth: 160 }}>{v}</Text>
+            {target && (
+              <UnackedBadge
+                count={unacked}
+                requirementId={target.requirementId}
+                changeLogId={target.changeLogId}
+              />
+            )}
+          </span>
+        );
+      },
     },
     {
       title: t('requirements.projects.fields.department'),
@@ -260,7 +282,23 @@ const ProjectDetailDrawer = ({
 
           <TabPane
             itemKey="workspaces"
-            tab={`${t('requirements.projects.workspaces')} (${workspaces.length})`}
+            tab={(() => {
+              const wsIds = workspaces.map((w) => w.id);
+              const unacked = countUnackedByWorkspaces(wsIds);
+              const target = unacked > 0 ? firstPendingChangeByWorkspaces(wsIds) : null;
+              return (
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                  {`${t('requirements.projects.workspaces')} (${workspaces.length})`}
+                  {target && (
+                    <UnackedBadge
+                      count={unacked}
+                      requirementId={target.requirementId}
+                      changeLogId={target.changeLogId}
+                    />
+                  )}
+                </span>
+              );
+            })()}
           >
             <div className="project-workspaces-tab">
               <div className="project-workspaces-tab-toolbar">

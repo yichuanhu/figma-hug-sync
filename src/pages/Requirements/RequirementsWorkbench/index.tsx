@@ -128,6 +128,21 @@ const RequirementsWorkbench = () => {
     }
   }, [location.state, location.pathname, listResponse.list, navigate]);
 
+  // URL 直达：?openDevResponse=1&requirementId=xxx[&changeLogId=xxx]
+  // 由项目模块的红点跳转过来，自动打开对应需求抽屉，
+  // 抽屉内的 effect 会进一步弹出响应面板（已有逻辑）。
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('openDevResponse') !== '1') return;
+    const reqId = params.get('requirementId');
+    if (!reqId) return;
+    const hit = listResponse.list.find((r) => r.id === reqId);
+    if (hit) {
+      setSelectedRecord(hit);
+      setDetailDrawerVisible(true);
+    }
+  }, [location.search, listResponse.list]);
+
   // 搜索防抖
   const debouncedSearch = useMemo(
     () =>

@@ -616,3 +616,8 @@ export const removeWorkspaceMember = async (memberId: string): Promise<void> => 
 
 workspaces.forEach((w) => syncMemberCount(w.id));
 
+/** 取项目下所有工作空间 ID（同步只读，给红点等需要立刻渲染的场景使用） */
+export const getWorkspaceIdsByProject = (projectId: string): string[] =>
+  workspaces.filter((w) => w.projectId === projectId).map((w) => w.id);
+
+

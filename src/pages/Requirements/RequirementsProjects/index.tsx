@@ -20,7 +20,12 @@ import { Plus, Pencil, Trash2, Ellipsis } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import type { Project } from './types';
-import { fetchProjects, deleteProject } from './mockData';
+import { fetchProjects, deleteProject, getWorkspaceIdsByProject } from './mockData';
+import {
+  countUnackedByWorkspaces,
+  firstPendingChangeByWorkspaces,
+} from '../RequirementsWorkbench/mockData';
+import UnackedBadge from '@/components/UnackedBadge';
 import ProjectFormModal from './components/ProjectFormModal';
 import ProjectDetailDrawer from './components/ProjectDetailDrawer';
 import './index.less';
@@ -126,11 +131,25 @@ const RequirementsProjects = () => {
       key: 'name',
       width: 240,
       ellipsis: true,
-      render: (v: string) => (
-        <Text ellipsis={{ showTooltip: true }} style={{ maxWidth: 220 }}>
-          {v}
-        </Text>
-      ),
+      render: (v: string, r: Project) => {
+        const wsIds = getWorkspaceIdsByProject(r.id);
+        const unacked = countUnackedByWorkspaces(wsIds);
+        const target = unacked > 0 ? firstPendingChangeByWorkspaces(wsIds) : null;
+        return (
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, maxWidth: 220 }}>
+            <Text ellipsis={{ showTooltip: true }} style={{ maxWidth: 180 }}>
+              {v}
+            </Text>
+            {target && (
+              <UnackedBadge
+                count={unacked}
+                requirementId={target.requirementId}
+                changeLogId={target.changeLogId}
+              />
+            )}
+          </span>
+        );
+      },
     },
     {
       title: t('requirements.projects.fields.dateRange'),
