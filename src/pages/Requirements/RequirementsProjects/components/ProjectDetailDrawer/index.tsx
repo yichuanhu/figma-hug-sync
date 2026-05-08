@@ -231,14 +231,6 @@ const ProjectDetailDrawer = ({
                 align="left"
                 data={[
                   {
-                    key: t('common.status'),
-                    value: (
-                      <Tag color={statusTagColor[data.aggregatedStatus]} type="light">
-                        {t(`requirements.projects.status.${data.aggregatedStatus}`)}
-                      </Tag>
-                    ),
-                  },
-                  {
                     key: t('requirements.projects.fields.dateRange'),
                     value:
                       data.startDate && data.endDate
