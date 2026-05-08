@@ -13,11 +13,9 @@
     .title { margin: 0; }
   }
 
-  .my-shared-tabs {
-    margin-bottom: 12px;
-  }
+  .my-shared-tabs { margin-bottom: 12px; }
 
-  .my-shared-filters {
+  .my-shared-toolbar {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -30,10 +28,10 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    padding: 10px 16px;
+    padding: 8px 16px;
     margin-bottom: 12px;
     background: var(--semi-color-primary-light-default);
-    border-radius: 8px;
+    border-radius: 6px;
     .count { color: var(--semi-color-primary); font-weight: 500; font-size: 13px; }
     .actions { display: flex; gap: 4px; }
   }
@@ -44,78 +42,36 @@
     overflow: auto;
   }
 
-  .my-shared-empty {
+  .cell-name {
     display: flex;
     align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .cell-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .my-shared-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
-    padding: 64px 0;
-  }
-
-  .my-shared-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 16px;
-    align-items: start;
-  }
-
-  .my-shared-card-wrapper {
-    cursor: pointer;
-    border-radius: 12px;
-    transition: box-shadow 0.2s ease;
-    &.selected .my-shared-card { border-color: var(--semi-color-primary); box-shadow: 0 0 0 2px var(--semi-color-primary-light-default); }
-  }
-  .my-shared-card {
-    cursor: pointer;
-    border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    transition: box-shadow 0.2s ease, transform 0.2s ease;
-    &:hover {
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-      transform: translateY(-2px);
-    }
-
-    .card-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 4px;
-    }
-
-    .card-head {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
-      .card-name { flex: 1; min-width: 0; font-size: 14px; }
-    }
-
-    .card-badges {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 8px;
-    }
-
-    .card-desc { margin: 0 0 8px; min-height: 36px; }
-
-    .card-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-      margin-bottom: 12px;
-      min-height: 22px;
-    }
-
-    .card-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
+    padding: 42px 0 24px;
+    img { width: 120px; height: 120px; }
+    .empty-title {
+      margin-top: 8px;
+      color: var(--semi-color-text-2);
+      font-size: 13px;
     }
   }
 
   .list-pagination {
     display: flex;
     justify-content: flex-end;
-    padding: 16px 0 0;
+    padding: 12px 0 0;
   }
 }
