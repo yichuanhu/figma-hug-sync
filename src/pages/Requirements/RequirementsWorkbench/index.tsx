@@ -541,18 +541,25 @@ const RequirementsWorkbench = () => {
                 style={{ width: 'auto', minWidth: 150, maxWidth: 600 }}
                 optionList={MOCK_PROJECT_POOL.map((p) => ({ label: p.name, value: p.id }))}
               />
-              <Select
-                placeholder={t('common.status')}
-                value={statusFilter}
-                onChange={(v) => {
-                  setStatusFilter((v as RequirementStatus[]) || []);
+              <FilterPopover
+                visible={statusFilterVisible}
+                onVisibleChange={setStatusFilterVisible}
+                sections={[
+                  {
+                    key: 'status',
+                    label: t('common.status'),
+                    type: 'checkbox',
+                    options: statusOptionsV2.map((s) => ({
+                      label: t(s.i18nKey),
+                      value: s.value,
+                    })),
+                    value: statusFilter,
+                  },
+                ]}
+                onConfirm={(values) => {
+                  setStatusFilter((values.status as RequirementStatus[]) || []);
                   setQueryParams((prev) => ({ ...prev, offset: 0 }));
                 }}
-                multiple
-                showClear
-                maxTagCount={1}
-                style={{ width: 'auto', minWidth: 150, maxWidth: 600 }}
-                optionList={statusOptionsV2.map((s) => ({ label: t(s.i18nKey), value: s.value }))}
               />
             </Space>
           </Col>
