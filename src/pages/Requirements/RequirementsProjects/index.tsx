@@ -140,17 +140,6 @@ const RequirementsProjects = () => {
         r.startDate && r.endDate ? `${r.startDate} ~ ${r.endDate}` : '-',
     },
     {
-      title: t('common.status'),
-      dataIndex: 'aggregatedStatus',
-      key: 'status',
-      width: 110,
-      render: (s: ProjectAggregatedStatus) => (
-        <Tag color={statusTagColor[s]} type="light">
-          {t(`requirements.projects.status.${s}`)}
-        </Tag>
-      ),
-    },
-    {
       title: t('requirements.projects.fields.workspaceCount'),
       dataIndex: 'workspaceCount',
       key: 'workspaceCount',
