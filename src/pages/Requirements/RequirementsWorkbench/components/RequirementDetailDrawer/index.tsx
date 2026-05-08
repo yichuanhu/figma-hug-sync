@@ -41,6 +41,7 @@ const PropertyPanel = ({
   isHistoryMode,
   onOpenPicker,
   onCreateProject,
+  showApprovalSection,
 }: {
   data: RequirementItem;
   t: (key: string, options?: Record<string, unknown>) => string;
@@ -49,6 +50,7 @@ const PropertyPanel = ({
   isHistoryMode: boolean;
   onOpenPicker: () => void;
   onCreateProject: () => void;
+  showApprovalSection: boolean;
 }) => {
   const sCfg = statusConfig[data.status];
   const pCfg = priorityConfig[data.priority];
@@ -226,7 +228,7 @@ const PropertyPanel = ({
         );
       })()}
 
-      {hasApproval && (
+      {hasApproval && showApprovalSection && (
         <ApprovalSection data={data} onStatusChange={onStatusChange} onRefresh={onRefresh} />
       )}
     </div>
