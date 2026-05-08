@@ -8,12 +8,14 @@ import {
   Typography,
   useFormState,
 } from '@douyinfe/semi-ui';
-import type { RequirementItem, SchemeField, SchemeFieldDependsOn } from '../../types';
+import type { RequirementItem, SchemeField, SchemeFieldDependsOn, RequirementDraft } from '../../types';
 import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
 import OwnerSearchSelect from '@/components/OwnerSearchSelect';
 import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 import { getActiveScheme } from '../../mockData';
 import SchemeFieldRenderer from '../SchemeFieldRenderer';
+import { isPostProjectStatus } from '../../utils/fieldEditability';
+import PublishChangeModal from '../PublishChangeModal';
 import './index.less';
 
 const { Text } = Typography;
@@ -22,6 +24,8 @@ interface RequirementFormModalProps {
   visible: boolean;
   onCancel: () => void;
   onSuccess: (values: Record<string, unknown>) => void;
+  /** 立项后通过「发布变更」流程提交时触发(代替 onSuccess) */
+  onPublished?: () => void;
   editData?: RequirementItem | null;
 }
 
@@ -29,6 +33,7 @@ const RequirementFormModal = ({
   visible,
   onCancel,
   onSuccess,
+  onPublished,
   editData,
 }: RequirementFormModalProps) => {
   const { t } = useTranslation();
@@ -37,6 +42,9 @@ const RequirementFormModal = ({
   const [departmentValue, setDepartmentValue] = useState<string | undefined>(undefined);
   const [ownerId, setOwnerId] = useState<string>(MOCK_CURRENT_USER.id);
   const isEdit = !!editData;
+  const isPostProjectEdit = !!editData && isPostProjectStatus(editData.status);
+  const [publishVisible, setPublishVisible] = useState(false);
+  const [pendingPatch, setPendingPatch] = useState<RequirementDraft['patch']>({});
 
   const priorityOptions = useMemo(
     () => [
@@ -80,24 +88,35 @@ const RequirementFormModal = ({
   };
 
   const handleSubmit = async (values: Record<string, unknown>) => {
-    if (!ownerId) {
+    if (!isPostProjectEdit && !ownerId) {
       Toast.warning(t('common.ownerRequired'));
       return;
     }
+    const systemKeys = new Set(['title', 'department', 'priority']);
+    const form_data: Record<string, unknown> = {};
+    activeScheme?.custom_fields.forEach((f) => {
+      if (values[f.key] !== undefined) form_data[f.key] = values[f.key];
+    });
+    const submitValues = { ...values, form_data };
+    Object.keys(form_data).forEach((k) => {
+      if (!systemKeys.has(k)) delete (submitValues as Record<string, unknown>)[k];
+    });
+
+    // 立项后:走「发布变更」流程,而不是直接保存
+    if (isPostProjectEdit && editData) {
+      const patch: RequirementDraft['patch'] = {
+        title: values.title as string | undefined,
+        priority: values.priority as RequirementItem['priority'] | undefined,
+        form_data,
+      };
+      setPendingPatch(patch);
+      setPublishVisible(true);
+      return;
+    }
+
     setLoading(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 300));
-      // 把动态字段拆分到 form_data，系统字段保留在顶层
-      const systemKeys = new Set(['title', 'department', 'priority']);
-      const form_data: Record<string, unknown> = {};
-      activeScheme?.custom_fields.forEach((f) => {
-        if (values[f.key] !== undefined) form_data[f.key] = values[f.key];
-      });
-      const submitValues = { ...values, form_data };
-      // 移除已抽到 form_data 的 key（防止系统字段被污染）
-      Object.keys(form_data).forEach((k) => {
-        if (!systemKeys.has(k)) delete (submitValues as Record<string, unknown>)[k];
-      });
       onSuccess(submitValues);
       Toast.success(
         isEdit
@@ -113,8 +132,9 @@ const RequirementFormModal = ({
   };
 
   return (
+    <>
     <Modal
-      title={isEdit ? t('requirements.form.editTitle') : t('requirements.form.createTitle')}
+      title={isEdit ? (isPostProjectEdit ? '编辑需求(立项后)' : t('requirements.form.editTitle')) : t('requirements.form.createTitle')}
       visible={visible}
       onCancel={onCancel}
       footer={null}
@@ -132,7 +152,13 @@ const RequirementFormModal = ({
         getFormApi={setFormApi}
       >
         <div className="requirement-form-modal-content">
-          {/* 基本信息区块 — 系统字段（4 项） */}
+          {isPostProjectEdit && (
+            <div style={{ marginBottom: 12 }}>
+              <Text type="warning" size="small">
+                立项后部门、归属人等系统字段已锁定;保存将以「发布变更」形式提交,需要填写变更说明。
+              </Text>
+            </div>
+          )}
           <div className="requirement-form-modal-section">
             <Text strong className="requirement-form-modal-section-title">
               {t('requirements.form.sectionBasicInfo')}
@@ -162,18 +188,18 @@ const RequirementFormModal = ({
                   onChange={handleDepartmentChange}
                   useNameAsValue
                   placeholder={t('requirements.form.departmentPlaceholder')}
+                  disabled={isPostProjectEdit}
                 />
               </Form.Slot>
             </div>
 
             <div className="scheme-field-w-medium">
               <Form.Slot label={{ text: t('requirements.form.requirementOwnerLabel'), required: true }}>
-                <OwnerSearchSelect value={ownerId} onChange={setOwnerId} />
+                <OwnerSearchSelect value={ownerId} onChange={setOwnerId} disabled={isPostProjectEdit} />
               </Form.Slot>
             </div>
           </div>
 
-          {/* 需求详情 — 评估属性（优先级）+ Scheme 驱动动态字段 */}
           <div className="requirement-form-modal-section requirement-form-modal-section-divider">
             <Text strong className="requirement-form-modal-section-title">
               {t('requirements.form.sectionDetails')}
@@ -203,11 +229,25 @@ const RequirementFormModal = ({
             {t('common.cancel')}
           </Button>
           <Button htmlType="submit" theme="solid" type="primary" loading={loading}>
-            {isEdit ? t('common.save') : t('common.create')}
+            {isPostProjectEdit ? '下一步:发布变更' : (isEdit ? t('common.save') : t('common.create'))}
           </Button>
         </div>
       </Form>
     </Modal>
+    {editData && (
+      <PublishChangeModal
+        visible={publishVisible}
+        requirementId={editData.id}
+        patch={pendingPatch}
+        onCancel={() => setPublishVisible(false)}
+        onPublished={() => {
+          setPublishVisible(false);
+          onPublished?.();
+          onCancel();
+        }}
+      />
+    )}
+    </>
   );
 };
 

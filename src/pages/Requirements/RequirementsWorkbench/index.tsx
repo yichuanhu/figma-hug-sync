@@ -652,6 +652,10 @@ const RequirementsWorkbench = () => {
           }
           setEditingRecord(null);
         }}
+        onPublished={() => {
+          loadData();
+          setEditingRecord(null);
+        }}
       />
 
       {/* 需求详情抽屉 */}
