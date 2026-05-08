@@ -234,6 +234,7 @@ const SchemeBuilderPage = () => {
           <Text type="tertiary">v{draftScheme.version}</Text>
           {draftScheme.is_draft && <Tag color="orange" type="light" size="small">{t('requirements.scheme.builder.draftBadge')}</Tag>}
           {draftScheme.parent_id && <Tag color="blue" type="light" size="small">{t('requirements.scheme.builder.newVersionBadge')}</Tag>}
+          {draftScheme.workflow_config?.template === 'none' && <Tag color="grey" type="light" size="small">无审批流</Tag>}
           {dirty && <Tag color="red" type="light" size="small">{t('requirements.scheme.builder.unsaved')}</Tag>}
         </div>
         <Space>
