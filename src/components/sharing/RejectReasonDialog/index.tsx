@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Modal, Form } from '@douyinfe/semi-ui';
+import { Modal, TextArea } from '@douyinfe/semi-ui';
 import { useTranslation } from 'react-i18next';
 
 interface Props {
@@ -42,10 +42,11 @@ const RejectReasonDialog = ({ visible, assetName, onSubmit, onCancel }: Props) =
           <strong>{assetName}</strong>
         </div>
       )}
-      <Form labelPosition="top">
-        <Form.TextArea
-          field="reason"
-          label={t('sharing.approvals.rejectDialog.reason')}
+      <div>
+        <div style={{ marginBottom: 6, color: 'var(--semi-color-text-2)' }}>
+          {t('sharing.approvals.rejectDialog.reason')}
+        </div>
+        <TextArea
           placeholder={t('sharing.approvals.rejectDialog.placeholder')}
           rows={5}
           maxCount={500}
@@ -54,7 +55,7 @@ const RejectReasonDialog = ({ visible, assetName, onSubmit, onCancel }: Props) =
           onChange={(v) => setReason(v)}
           showClear
         />
-      </Form>
+      </div>
     </Modal>
   );
 };

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Modal, Form, Radio, Typography } from '@douyinfe/semi-ui';
+import { Modal, Form, Radio, Typography, TextArea } from '@douyinfe/semi-ui';
 import { useTranslation } from 'react-i18next';
 
 interface Props {
@@ -69,10 +69,11 @@ const SemVerDialog = ({ visible, currentVersion, isFirstVersion = false, onSubmi
           </Form.Slot>
         </Form>
       )}
-      <Form labelPosition="top">
-        <Form.TextArea
-          field="changeLog"
-          label={t('sharing.semver.changeLog')}
+      <div>
+        <div style={{ marginBottom: 6, color: 'var(--semi-color-text-2)' }}>
+          {t('sharing.semver.changeLog')}
+        </div>
+        <TextArea
           placeholder={t('sharing.semver.changeLogPlaceholder')}
           maxCount={200}
           maxLength={200}
@@ -81,7 +82,7 @@ const SemVerDialog = ({ visible, currentVersion, isFirstVersion = false, onSubmi
           onChange={(v) => setChangeLog(v)}
           showClear
         />
-      </Form>
+      </div>
     </Modal>
   );
 };
