@@ -18,7 +18,7 @@ import {
 } from '@douyinfe/semi-ui';
 import DepartmentSelect from '@/components/DepartmentSelect';
 import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
-import { Ellipsis, Pencil, Plus, Send, Trash2, Upload, LayoutGrid, List as ListIcon, RotateCcw, PowerOff, Undo2, Link2, FolderPlus } from 'lucide-react';
+import { Ellipsis, Pencil, Plus, Send, Trash2, RotateCcw, PowerOff, Undo2, Link2, FolderPlus } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 
@@ -36,7 +36,7 @@ import {
   MOCK_CURRENT_USER_ID,
   MOCK_PROJECT_POOL,
 } from './mockData';
-import { statusConfigV2, legacyStatusMap } from './statusConfig';
+import { statusConfigV2, legacyStatusMap, statusOptionsV2 } from './statusConfig';
 import RequirementFormModal from './components/RequirementFormModal';
 import RequirementDetailDrawer from './components/RequirementDetailDrawer';
 import WorkspacePickerModal from './components/RequirementDetailDrawer/WorkspacePickerModal';
@@ -44,7 +44,6 @@ import { findWorkspaceByRequirementId } from '../RequirementsProjects/mockData';
 import StatusDot from './components/StatusDot';
 import TitleCell from './components/TitleCell';
 import RelativeTime from './components/RelativeTime';
-import BoardView from './components/BoardView';
 import { buildSubmitConfirmContent } from './utils/submitConfirm';
 import './index.less';
 
@@ -71,6 +70,7 @@ const RequirementsWorkbench = () => {
   // 筛选
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
   const [projectFilter, setProjectFilter] = useState<string[]>([]);
+  const [statusFilter, setStatusFilter] = useState<RequirementStatus[]>([]);
 
   // 状态
   const [loading, setLoading] = useState(true);
@@ -80,7 +80,7 @@ const RequirementsWorkbench = () => {
   const [editingRecord, setEditingRecord] = useState<RequirementItem | null>(null);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<RequirementItem | null>(null);
-  const [viewMode, setViewMode] = useState<'table' | 'board'>('table');
+  
   const [pickerRecord, setPickerRecord] = useState<RequirementItem | null>(null);
 
   // 列表数据
@@ -100,13 +100,14 @@ const RequirementsWorkbench = () => {
         ...queryParams,
         departmentFilter,
         projectFilter,
+        statusFilter,
       });
       setListResponse(response);
     } finally {
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, departmentFilter, projectFilter]);
+  }, [queryParams, departmentFilter, projectFilter, statusFilter]);
 
   useEffect(() => {
     loadData();
@@ -537,55 +538,36 @@ const RequirementsWorkbench = () => {
                 style={{ width: 'auto', minWidth: 150, maxWidth: 600 }}
                 optionList={MOCK_PROJECT_POOL.map((p) => ({ label: p.name, value: p.id }))}
               />
+              <Select
+                placeholder={t('common.status')}
+                value={statusFilter}
+                onChange={(v) => {
+                  setStatusFilter((v as RequirementStatus[]) || []);
+                  setQueryParams((prev) => ({ ...prev, offset: 0 }));
+                }}
+                multiple
+                showClear
+                maxTagCount={1}
+                style={{ width: 'auto', minWidth: 150, maxWidth: 600 }}
+                optionList={statusOptionsV2.map((s) => ({ label: t(s.i18nKey), value: s.value }))}
+              />
             </Space>
           </Col>
           <Col>
-            <Space>
-              <Button icon={<Upload size={14} strokeWidth={2} />} theme="light" type="tertiary">
-                {t('requirements.workbench.batchImport')}
-              </Button>
-              <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
-                {t('requirements.workbench.newRequirement')}
-              </Button>
-              <div className="requirements-workbench-view-switcher">
-                <button
-                  type="button"
-                  className={`requirements-workbench-view-switcher-btn ${viewMode === 'table' ? 'active' : ''}`}
-                  onClick={() => setViewMode('table')}
-                  aria-label={t('requirements.workbench.viewTable')}
-                >
-                  <ListIcon size={16} strokeWidth={2} />
-                </button>
-                <button
-                  type="button"
-                  className={`requirements-workbench-view-switcher-btn ${viewMode === 'board' ? 'active' : ''}`}
-                  onClick={() => setViewMode('board')}
-                  aria-label={t('requirements.workbench.viewBoard')}
-                >
-                  <LayoutGrid size={16} strokeWidth={2} />
-                </button>
-              </div>
-            </Space>
+            <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
+              {t('requirements.workbench.newRequirement')}
+            </Button>
           </Col>
         </Row>
       </div>
 
-      {/* 内容区域：表格 / 看板 */}
+      {/* 内容区域 */}
       <div className="requirements-workbench-table">
         {isInitialLoad ? (
           <TableSkeleton
             rows={10}
             columns={7}
             columnWidths={['22%', '10%', '10%', '8%', '12%', '12%', '14%']}
-          />
-        ) : viewMode === 'board' ? (
-          <BoardView
-            list={list}
-            selectedId={detailDrawerVisible ? selectedRecord?.id : undefined}
-            onCardClick={(record) => {
-              setSelectedRecord(record);
-              if (!detailDrawerVisible) setDetailDrawerVisible(true);
-            }}
           />
         ) : (
           <Table
