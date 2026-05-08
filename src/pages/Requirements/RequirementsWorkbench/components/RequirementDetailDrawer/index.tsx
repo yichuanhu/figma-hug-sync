@@ -442,7 +442,7 @@ const RequirementDetailDrawer = ({
       className="requirement-detail-drawer"
       extraActions={
         <>
-          {canEdit && (() => {
+          {!isHistoryMode && effectiveData.status === 'DRAFT' && (() => {
             const submitLabel = hasApproval
               ? t('requirements.detail.submitForApproval')
               : t('requirements.detail.submitRequirement');
