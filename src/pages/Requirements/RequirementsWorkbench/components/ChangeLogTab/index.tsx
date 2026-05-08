@@ -20,10 +20,10 @@ const typeColorMap: Record<ChangeType, TagColor> = {
 };
 
 /** 时间线节点颜色 — 与 Tag 色调对齐 */
-const dotColorMap: Record<ChangeType, 'blue' | 'warning' | 'grey'> = {
-  CONTENT: 'blue',
+const dotColorMap: Record<ChangeType, 'default' | 'warning' | 'ongoing'> = {
+  CONTENT: 'ongoing',
   DEV_IMPACT: 'warning',
-  SYSTEM: 'grey',
+  SYSTEM: 'default',
 };
 
 const formatTime = (iso: string) => iso.replace('T', ' ').substring(0, 19);
