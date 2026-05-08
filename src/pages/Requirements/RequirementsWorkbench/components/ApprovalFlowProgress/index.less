@@ -1,77 +1,8 @@
 .approval-flow-progress {
-  background: var(--semi-color-bg-0);
-  border: 1px solid var(--semi-color-border);
-  border-radius: 8px;
-  padding: 16px;
-  margin-bottom: 16px;
-
-  &__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 12px;
-  }
-
-  &__header--toggle {
-    width: 100%;
-    background: transparent;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    text-align: left;
-  }
-
-  &__header-left {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  /* 收起态：圆点进度 */
-  &__dots {
-    display: flex;
-    align-items: center;
-    gap: 0;
-    padding: 4px 2px 0;
-  }
-
-  .afp-dot-wrap {
-    display: inline-flex;
-    align-items: center;
-  }
-
-  .afp-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--semi-color-fill-2);
-    flex-shrink: 0;
-
-    &--finish { background: var(--semi-color-success); }
-    &--error  { background: var(--semi-color-danger); }
-    &--process {
-      background: var(--semi-color-primary);
-      box-shadow: 0 0 0 3px var(--semi-color-primary-light-default);
-    }
-    &--wait   { background: var(--semi-color-fill-2); }
-  }
-
-  .afp-dot-line {
-    display: inline-block;
-    width: 28px;
-    height: 2px;
-    background: var(--semi-color-fill-2);
-    margin: 0 4px;
-
-    &--finish { background: var(--semi-color-success); }
-    &--error  { background: var(--semi-color-danger); }
-  }
-
-  /* 展开态：飞书风格时间线 */
   &__timeline {
     display: flex;
     flex-direction: column;
-    margin-top: 12px;
+    margin-top: 8px;
   }
 
   .afp-node {
@@ -99,17 +30,21 @@
       &--error  { background: var(--semi-color-danger); }
     }
 
-    &__card {
+    &__content {
       flex: 1;
-      background: var(--semi-color-fill-0);
-      border-radius: 6px;
-      padding: 10px 12px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--semi-color-border);
       margin-bottom: 12px;
-      border-left: 3px solid transparent;
+
+      &:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+      }
 
       &--current {
-        background: var(--semi-color-primary-light-default);
-        border-left-color: var(--semi-color-primary);
+        .afp-node__head {
+          color: var(--semi-color-primary);
+        }
       }
     }
 
@@ -182,7 +117,7 @@
     }
 
     &__comment {
-      margin-left: 32px;
+      margin-left: 0;
       background: var(--semi-color-bg-0);
       border-radius: 6px;
       padding: 6px 10px;
