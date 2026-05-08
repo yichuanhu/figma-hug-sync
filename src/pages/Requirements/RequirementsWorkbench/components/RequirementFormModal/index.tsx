@@ -129,8 +129,9 @@ const RequirementFormModal = ({
   };
 
   return (
+    <>
     <Modal
-      title={isEdit ? t('requirements.form.editTitle') : t('requirements.form.createTitle')}
+      title={isEdit ? (isPostProjectEdit ? '编辑需求(立项后)' : t('requirements.form.editTitle')) : t('requirements.form.createTitle')}
       visible={visible}
       onCancel={onCancel}
       footer={null}
@@ -148,7 +149,13 @@ const RequirementFormModal = ({
         getFormApi={setFormApi}
       >
         <div className="requirement-form-modal-content">
-          {/* 基本信息区块 — 系统字段（4 项） */}
+          {isPostProjectEdit && (
+            <div style={{ marginBottom: 12 }}>
+              <Text type="warning" size="small">
+                立项后部门、归属人等系统字段已锁定;保存将以「发布变更」形式提交,需要填写变更说明。
+              </Text>
+            </div>
+          )}
           <div className="requirement-form-modal-section">
             <Text strong className="requirement-form-modal-section-title">
               {t('requirements.form.sectionBasicInfo')}
@@ -178,18 +185,18 @@ const RequirementFormModal = ({
                   onChange={handleDepartmentChange}
                   useNameAsValue
                   placeholder={t('requirements.form.departmentPlaceholder')}
+                  disabled={isPostProjectEdit}
                 />
               </Form.Slot>
             </div>
 
             <div className="scheme-field-w-medium">
               <Form.Slot label={{ text: t('requirements.form.requirementOwnerLabel'), required: true }}>
-                <OwnerSearchSelect value={ownerId} onChange={setOwnerId} />
+                <OwnerSearchSelect value={ownerId} onChange={setOwnerId} disabled={isPostProjectEdit} />
               </Form.Slot>
             </div>
           </div>
 
-          {/* 需求详情 — 评估属性（优先级）+ Scheme 驱动动态字段 */}
           <div className="requirement-form-modal-section requirement-form-modal-section-divider">
             <Text strong className="requirement-form-modal-section-title">
               {t('requirements.form.sectionDetails')}
@@ -219,11 +226,25 @@ const RequirementFormModal = ({
             {t('common.cancel')}
           </Button>
           <Button htmlType="submit" theme="solid" type="primary" loading={loading}>
-            {isEdit ? t('common.save') : t('common.create')}
+            {isPostProjectEdit ? '下一步:发布变更' : (isEdit ? t('common.save') : t('common.create'))}
           </Button>
         </div>
       </Form>
     </Modal>
+    {editData && (
+      <PublishChangeModal
+        visible={publishVisible}
+        requirementId={editData.id}
+        patch={pendingPatch}
+        onCancel={() => setPublishVisible(false)}
+        onPublished={() => {
+          setPublishVisible(false);
+          onSuccess({ __published: true });
+          onCancel();
+        }}
+      />
+    )}
+    </>
   );
 };
 
