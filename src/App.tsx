@@ -1,5 +1,10 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useParams } from "react-router-dom";
+
+const LegacyAssetDetailRedirect = () => {
+  const { type, id } = useParams();
+  return <Navigate to={`/sharing-center/market/${type}/${id}`} replace />;
+};
 import { LocaleProvider } from '@douyinfe/semi-ui';
 import en_US from '@douyinfe/semi-ui/lib/es/locale/source/en_US';
 import zh_CN from '@douyinfe/semi-ui/lib/es/locale/source/zh_CN';
