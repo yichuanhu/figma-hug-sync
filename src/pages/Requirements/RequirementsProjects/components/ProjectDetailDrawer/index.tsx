@@ -99,7 +99,22 @@ const ProjectDetailDrawer = ({
       title: t('requirements.projects.fields.workspaceName'),
       dataIndex: 'name',
       width: 220,
-      render: (v: string) => <Text ellipsis={{ showTooltip: true }} style={{ maxWidth: 200 }}>{v}</Text>,
+      render: (v: string, record: Workspace) => {
+        const unacked = countUnackedByWorkspace(record.id);
+        const target = unacked > 0 ? firstPendingChangeByWorkspace(record.id) : null;
+        return (
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, maxWidth: 200 }}>
+            <Text ellipsis={{ showTooltip: true }} style={{ maxWidth: 160 }}>{v}</Text>
+            {target && (
+              <UnackedBadge
+                count={unacked}
+                requirementId={target.requirementId}
+                changeLogId={target.changeLogId}
+              />
+            )}
+          </span>
+        );
+      },
     },
     {
       title: t('requirements.projects.fields.department'),
