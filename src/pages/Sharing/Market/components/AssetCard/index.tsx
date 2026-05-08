@@ -45,7 +45,8 @@ const AssetCard = ({ asset, onReused }: Props) => {
   const isSkill = asset.type === 'SKILL' && asset.skill;
 
   return (
-    <Card className="asset-card" onClick={handleClick} bodyStyle={{ padding: 16 }}>
+    <div className="asset-card-wrapper" onClick={handleClick}>
+    <Card className="asset-card" bodyStyle={{ padding: 16 }}>
       <div className="asset-card-head">
         <AssetTypeIcon type={asset.type} />
         <div className="asset-card-title">

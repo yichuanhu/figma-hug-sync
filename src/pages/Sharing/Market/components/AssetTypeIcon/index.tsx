@@ -2,11 +2,11 @@ import { FileBox, Workflow as WorkflowIcon, BookOpen, Sparkles } from 'lucide-re
 import { AssetType } from '../../types';
 import './index.less';
 
-const config: Record<AssetType, { icon: React.ComponentType<{ size?: number; strokeWidth?: number }>; cls: string }> = {
-  SNIPPET: { icon: FileBox, cls: 'snippet' },
-  WORKFLOW: { icon: WorkflowIcon, cls: 'workflow' },
-  KNOWLEDGE: { icon: BookOpen, cls: 'knowledge' },
-  SKILL: { icon: Sparkles, cls: 'skill' },
+const config: Record<AssetType, { Icon: typeof FileBox; cls: string }> = {
+  SNIPPET: { Icon: FileBox, cls: 'snippet' },
+  WORKFLOW: { Icon: WorkflowIcon, cls: 'workflow' },
+  KNOWLEDGE: { Icon: BookOpen, cls: 'knowledge' },
+  SKILL: { Icon: Sparkles, cls: 'skill' },
 };
 
 interface Props {
@@ -15,7 +15,7 @@ interface Props {
 }
 
 const AssetTypeIcon = ({ type, size = 18 }: Props) => {
-  const { icon: Icon, cls } = config[type];
+  const { Icon, cls } = config[type];
   return (
     <span className={`asset-type-icon asset-type-icon--${cls}`} style={{ width: size + 16, height: size + 16 }}>
       <Icon size={size} strokeWidth={2} />
