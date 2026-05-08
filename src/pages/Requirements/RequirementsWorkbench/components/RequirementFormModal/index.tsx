@@ -242,7 +242,7 @@ const RequirementFormModal = ({
         onCancel={() => setPublishVisible(false)}
         onPublished={() => {
           setPublishVisible(false);
-          onSuccess({ __published: true });
+          onPublished?.();
           onCancel();
         }}
       />
