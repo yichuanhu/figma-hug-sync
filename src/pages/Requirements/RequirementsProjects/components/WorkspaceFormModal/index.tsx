@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Modal, Form, Toast } from '@douyinfe/semi-ui';
+import { Modal, Form, Toast, Tooltip } from '@douyinfe/semi-ui';
 import type { FormApi } from '@douyinfe/semi-ui/lib/es/form';
 import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
 import type { Workspace } from '../../types';
