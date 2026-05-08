@@ -6,7 +6,7 @@ import { Avatar, Badge, Popover, Tooltip } from '@douyinfe/semi-ui';
 import { UserInfoDropdown } from '../UserInfoDropdown';
 import NotificationDrawer from '../NotificationDrawer';
 import { mockNotifications } from '@/pages/NotificationCenter/mockData';
-import { pendingCount as sharingPending } from '@/pages/SharingCenter/shared/mockData';
+import { useApprovalPendingCount } from '@/pages/SharingCenter/shared/useApprovalPendingCount';
 import { Activity, Airplay, AlertTriangle, Bell, BookOpen, Bot, Boxes, CalendarClock, ChartSpline, CheckSquare, ChevronDown, ChevronUp, ClipboardList, Cloud, CodeXml, Component, Database, FileText, Folder, FolderCheck, FolderKanban, Forward, GitBranch, History, Home, LayoutGrid, LibraryBig, ListStart, MonitorCheck, MonitorCog, Parentheses, Play, ScrollText, Settings, Shield, Sparkles, Target, TrendingUp, Users, Workflow, Wrench } from 'lucide-react';
 
 const LayoutIcon = () => (
@@ -319,9 +319,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
   ];
 
   // 共享中心 - 资产市场 / 我的共享 / 审批管理
-  const sharingPendingCount = (() => {
-    try { return sharingPending(); } catch { return 0; }
-  })();
+  const sharingPendingCount = useApprovalPendingCount();
   const sharingCenterMenu: MenuItem[] = [
     { key: 'assetMarket', labelKey: 'sidebar.assetMarket', icon: <Boxes size={18} strokeWidth={2} />, path: '/sharing-center/market' },
     { key: 'mySharedAssets', labelKey: 'sidebar.mySharedAssets', icon: <Forward size={18} strokeWidth={2} />, path: '/sharing-center/my-shared' },
@@ -625,6 +623,11 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
             <span className={`sidebar-menu-text ${hasChildren ? 'parent' : ''} ${isSelected ? 'selected' : ''}`}>
               {label}
             </span>
+
+            {/* 数字徽标 */}
+            {!hasChildren && typeof item.badge === 'number' && item.badge > 0 && (
+              <span className="sidebar-menu-badge">{item.badge > 99 ? '99+' : item.badge}</span>
+            )}
 
             {/* 展开箭头 */}
             {hasChildren && (
