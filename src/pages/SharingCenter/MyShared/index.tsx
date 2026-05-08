@@ -72,12 +72,8 @@ const MySharedPage = () => {
           <>
             <div className="my-shared-grid">
               {paged.map((a) => (
-                <Card
-                  key={a.id}
-                  className="my-shared-card"
-                  bodyStyle={{ padding: 16 }}
-                  onClick={() => goDetail(a)}
-                >
+                <div key={a.id} className="my-shared-card-wrapper" onClick={() => goDetail(a)}>
+                <Card className="my-shared-card" bodyStyle={{ padding: 16 }}>
                   <div className="card-head">
                     <AssetTypeIcon type={a.type} />
                     <Text strong ellipsis={{ showTooltip: true }} className="card-name">{a.name}</Text>
@@ -98,23 +94,26 @@ const MySharedPage = () => {
                     <Text size="small" type="tertiary">
                       {t('sharing.myShared.col.version')}: {a.currentVersion} · {a.updatedAt}
                     </Text>
-                    <Space spacing={4} onClick={(e) => e.stopPropagation()}>
-                      {a.shareStatus === 'DRAFT' && a.source === 'NATIVE' && (
-                        <Button size="small" theme="borderless" type="danger">
-                          {t('common.delete')}
+                    <div className="card-actions" onClick={(e) => e.stopPropagation()}>
+                      <Space spacing={4}>
+                        {a.shareStatus === 'DRAFT' && a.source === 'NATIVE' && (
+                          <Button size="small" theme="borderless" type="danger">
+                            {t('common.delete')}
+                          </Button>
+                        )}
+                        {(a.shareStatus === 'DRAFT' || a.shareStatus === 'REJECTED') && a.source === 'NATIVE' && (
+                          <Button size="small" theme="light" type="primary">
+                            {t('common.edit')}
+                          </Button>
+                        )}
+                        <Button size="small" theme="borderless" type="tertiary" onClick={() => goDetail(a)}>
+                          {t('sharing.myShared.actions.view')}
                         </Button>
-                      )}
-                      {(a.shareStatus === 'DRAFT' || a.shareStatus === 'REJECTED') && a.source === 'NATIVE' && (
-                        <Button size="small" theme="light" type="primary">
-                          {t('common.edit')}
-                        </Button>
-                      )}
-                      <Button size="small" theme="borderless" type="tertiary" onClick={() => goDetail(a)}>
-                        {t('sharing.myShared.actions.view')}
-                      </Button>
-                    </Space>
+                      </Space>
+                    </div>
                   </div>
                 </Card>
+                </div>
               ))}
             </div>
             <div className="list-pagination">
