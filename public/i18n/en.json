@@ -530,6 +530,9 @@
     }
   },
   "requirements": {
+    "unacked": {
+      "tooltip": "{{count}} change(s) awaiting response — click to handle"
+    },
     "workbench": {
       "title": "Requirements List",
       "description": "Manage and track the full lifecycle of automation requirements",
