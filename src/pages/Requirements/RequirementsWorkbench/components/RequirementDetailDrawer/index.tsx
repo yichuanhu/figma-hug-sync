@@ -641,7 +641,7 @@ const RequirementDetailDrawer = ({
                 itemKey="assessment"
               >
                 <div className="requirement-detail-tab-content">
-                  <AssessmentTab data={effectiveData} onSaveAssessment={handleSaveAssessment} />
+                  <AssessmentTab data={effectiveData} onSaveAssessment={handleSaveAssessment} forceReadonly={assessmentReadonly} />
                 </div>
               </TabPane>
             )}
@@ -676,6 +676,7 @@ const RequirementDetailDrawer = ({
                 },
               })
             }
+            showApprovalSection={showApprovalSection}
           />
         </div>
       </div>
