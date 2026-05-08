@@ -324,6 +324,9 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     { key: 'assetMarket', labelKey: 'sidebar.assetMarket', icon: <Boxes size={18} strokeWidth={2} />, path: '/sharing-center/market' },
     { key: 'mySharedAssets', labelKey: 'sidebar.mySharedAssets', icon: <Forward size={18} strokeWidth={2} />, path: '/sharing-center/my-shared' },
     { key: 'sharingApprovals', labelKey: 'sidebar.sharingApprovals', icon: <CheckSquare size={18} strokeWidth={2} />, path: '/sharing-center/approvals', badge: sharingPendingCount },
+    { key: 'sharingAdmin', labelKey: 'sidebar.sharingAdmin', isGroupLabel: true },
+    { key: 'sharingApprovalLevels', labelKey: 'sidebar.sharingApprovalLevels', icon: <Settings size={18} strokeWidth={2} />, path: '/sharing-center/admin/approval-levels' },
+    { key: 'sharingPermissions', labelKey: 'sidebar.sharingPermissions', icon: <Shield size={18} strokeWidth={2} />, path: '/sharing-center/admin/permissions' },
   ];
 
   // 根据当前路由获取选中的菜单key
