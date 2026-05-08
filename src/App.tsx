@@ -198,7 +198,7 @@ const App = () => {
           <Route path="/sharing/market/snippet" element={<Navigate to="/sharing-center/market/snippet" replace />} />
           <Route path="/sharing/market/knowledge" element={<Navigate to="/sharing-center/market/knowledge" replace />} />
           <Route path="/sharing/market/skill" element={<Navigate to="/sharing-center/market/skill" replace />} />
-          <Route path="/sharing/market/:type/:id" element={<AssetDetail />} />
+          <Route path="/sharing/market/:type/:id" element={<LegacyAssetDetailRedirect />} />
           <Route path="/sharing/components/creator" element={<Navigate to="/sharing-center/market/snippet" replace />} />
           <Route path="/sharing/skills/apa" element={<Navigate to="/sharing-center/market/skill" replace />} />
           <Route path="/sharing/skills/acp" element={<Navigate to="/sharing-center/market/skill" replace />} />
