@@ -283,15 +283,71 @@ export function publishNewVersion(id: string, params: { bump?: BumpType; changeL
   };
   const versions = a.versions.map((v) => ({ ...v, isLatest: false }));
   versions.unshift(newVer);
-  const nextStatus: ShareStatus = isFirst ? 'PENDING_APPROVAL' : 'PUBLISHED';
+  const requireApproval = getApprovalLevel(a.type as AssetTypeKey) === 'SINGLE';
+  const nextStatus: ShareStatus = isFirst
+    ? (requireApproval ? 'PENDING_APPROVAL' : 'PUBLISHED')
+    : 'PUBLISHED';
+  const events: ApprovalEvent[] = [
+    { type: 'SUBMITTED', actorName: ME, at: when, comment: '提交审批' },
+  ];
+  if (nextStatus === 'PUBLISHED' && isFirst) {
+    events.push({ type: 'APPROVED', actorName: '系统', at: when, comment: '免审批，自动通过' });
+  }
   patchAsset(id, {
     currentVersion: newVersion,
     currentVersionId: newVer.id,
     versions,
     shareStatus: nextStatus,
     submittedAt: when,
-    approvalEvents: buildEvents(nextStatus, ME, when),
+    approvalEvents: isFirst ? events : buildEvents(nextStatus, ME, when),
   });
+}
+
+// ============ 审批操作 ============
+const NOW_USER = CURRENT_USER_NAME;
+
+export function approveAsset(id: string, comment = '审核通过'): { ok: boolean; reason?: 'NOT_PENDING' | 'NOT_FOUND' } {
+  const a = findAsset(id);
+  if (!a) return { ok: false, reason: 'NOT_FOUND' };
+  if (a.shareStatus !== 'PENDING_APPROVAL') return { ok: false, reason: 'NOT_PENDING' };
+  const when = todayStr();
+  patchAsset(id, {
+    shareStatus: 'PUBLISHED',
+    approvalEvents: [...a.approvalEvents, { type: 'APPROVED', actorName: NOW_USER, at: when, comment }],
+  });
+  return { ok: true };
+}
+
+export function rejectAsset(id: string, reason: string): { ok: boolean; reason?: 'NOT_PENDING' | 'NOT_FOUND' } {
+  const a = findAsset(id);
+  if (!a) return { ok: false, reason: 'NOT_FOUND' };
+  if (a.shareStatus !== 'PENDING_APPROVAL') return { ok: false, reason: 'NOT_PENDING' };
+  const when = todayStr();
+  patchAsset(id, {
+    shareStatus: 'REJECTED',
+    rejectedReason: reason,
+    approvalEvents: [...a.approvalEvents, { type: 'REJECTED', actorName: NOW_USER, at: when, comment: reason }],
+  });
+  return { ok: true };
+}
+
+export function batchApprove(ids: string[]): { approved: number; skipped: number } {
+  let approved = 0;
+  let skipped = 0;
+  const when = todayStr();
+  ids.forEach((id) => {
+    const a = assets.find((x) => x.id === id);
+    if (!a || a.shareStatus !== 'PENDING_APPROVAL') { skipped += 1; return; }
+    assets = assets.map((x) => x.id === id ? {
+      ...x,
+      shareStatus: 'PUBLISHED' as ShareStatus,
+      updatedAt: when,
+      approvalEvents: [...x.approvalEvents, { type: 'APPROVED' as const, actorName: NOW_USER, at: when, comment: '批量通过' }],
+    } : x);
+    approved += 1;
+  });
+  if (approved > 0) notify();
+  return { approved, skipped };
 }
 
 export function buildAssetId(prefix: string) {
