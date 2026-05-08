@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Button, Input, InputNumber, Select, Typography, Tag, Empty } from '@douyinfe/semi-ui';
-import { Plus, Trash2, ArrowUp, ArrowDown } from 'lucide-react';
+import { Plus, Trash2, ArrowUp, ArrowDown, PowerOff, ArrowRight } from 'lucide-react';
 import type {
   AssessmentModel,
   AssessmentDimension,
@@ -8,13 +8,17 @@ import type {
   SchemeField,
 } from '@/pages/Requirements/RequirementsWorkbench/types';
 
-const { Text } = Typography;
+const { Text, Title } = Typography;
 
 interface Props {
   valueModel?: AssessmentModel;
   complexityModel?: AssessmentModel;
   fields: SchemeField[];
   onChange: (value?: AssessmentModel, complexity?: AssessmentModel) => void;
+  /** 工作流是否已关闭审批；为 true 时本页禁用并展示空态 */
+  disabled?: boolean;
+  /** 点击空态按钮跳转到工作流配置 */
+  onJumpToWorkflow?: () => void;
 }
 
 const newDimension = (): AssessmentDimension => ({
