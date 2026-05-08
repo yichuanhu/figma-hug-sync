@@ -126,7 +126,7 @@ const LinkRequirementsModal = ({ visible, workspace, onClose, onSuccess }: Props
           </div>
           <div className="link-column-search">
             <Input
-              prefix={<IconSearch />}
+              prefix={<IconSearchStroked />}
               placeholder={t('requirements.projects.searchRequirement')}
               value={keyword}
               onChange={setKeyword}
