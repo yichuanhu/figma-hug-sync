@@ -167,7 +167,7 @@ const ApprovalsListPage = () => {
       width: 200,
       fixed: 'right' as const,
       render: (_: unknown, row: ShareAsset) => (
-        <Space spacing={4} onClick={(e) => e.stopPropagation()}>
+        <div onClick={(e) => e.stopPropagation()} style={{ display: 'inline-flex', gap: 4 }}>
           <Button size="small" theme="borderless" type="primary" onClick={() => goDetail(row)}>
             {t('sharing.approvals.actions.view')}
           </Button>
@@ -177,7 +177,7 @@ const ApprovalsListPage = () => {
           <Button size="small" theme="borderless" type="danger" onClick={() => setRejectTarget(row)}>
             {t('sharing.approvals.actions.reject')}
           </Button>
-        </Space>
+        </div>
       ),
     },
   ];
