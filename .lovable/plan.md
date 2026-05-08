@@ -1,99 +1,156 @@
+# 「我的共享」FEAT-107 实施方案
 
-# 共享中心 P1 第一批落地计划（骨架对齐）
+覆盖 STORY-001 ~ 007 共 7 个 Story，路由保持 `/sharing-center/my-shared`，新增 ARCHIVED Tab，扩充 mock。分 4 个阶段交付，每阶段完成后可独立预览。
 
-依据 `sharing-center-P1-module-v1.0.0.md`，本批只做"骨架对齐"，不重构现有市场/详情/创建/编辑页。后续批次再细化。
+---
 
-## 范围
+## 一、整体架构与目录
 
-1. **路由迁移**：`/sharing/*` → `/sharing-center/*`，旧路径全部用 `<Navigate replace>` 兜底，外链不破坏。
-2. **侧边栏重构**：共享中心分组改为 3 项：资产市场 / 我的共享 / 审批管理（带待审批数量徽标）。原 4 个子市场入口移除（通过资产市场顶部 5 Tab 进入）。
-3. **新增 3 个页面**：我的共享、审批管理（双 Tab + 详情）、审批层级配置。
-4. **新增 4 个共享组件**：SourceBadge、StatusTag、SemVerDialog、RejectReasonDialog（StatusTag/SemVerDialog/RejectReasonDialog 本批仅在新页面使用）。
-5. **角色**：暂不做角色切换，所有按钮按管理员视角全开（按设计文档 §6.4 管理员列）。
-
-## 路由结构（最终）
-
-```
-/sharing-center                       → Navigate 到 /sharing-center/market
-/sharing-center/market                → 现 MarketHome（默认 Tab=全部）
-/sharing-center/market/:type          → 现 SubMarketPage
-/sharing-center/market/:type/:id      → 现 AssetDetail
-/sharing-center/my-shared             → 新增（4 Tab：已发布/草稿/待审批/已拒绝）
-/sharing-center/approvals             → 新增（双 Tab：待审批 / 审批历史）
-/sharing-center/approvals/:id         → 新增（审批详情）
-/sharing-center/admin/approval-levels → 新增（审批层级配置）
-
-/sharing/*                            → <Navigate to="/sharing-center/*" replace>
-```
-
-## 新页面骨架要点
-
-### 我的共享 `MySharedPage`
-- 布局复用 MarketHome：标题 + Tabs（已发布/草稿/待审批/已拒绝）+ 工具栏（搜索/类型/排序）+ AssetCardGrid + Pagination。
-- 数据从 `Market/mockData` 派生，按 status 过滤；新增 `creatorId === 'me'` 标识。
-- 卡片操作：编辑（NATIVE）、删除（DRAFT）、查看详情。
-
-### 审批管理 `ApprovalPage`
-- Tabs：待审批（FIFO 升序，徽标显示 count）/ 审批历史（降序）。
-- 工具栏：来源筛选 + 资产类型筛选 + 时间范围 + 批量通过。
-- 列表用 Semi `Table` size=small，行内操作：查看 / 通过 / 拒绝（弹 RejectReasonDialog）。
-- 详情页 `ApprovalDetailPage`：复用 AssetDetail 内容区 + 审批历史时间线（ApprovalTimeline 组件）+ 底部通过/拒绝按钮。
-
-### 审批层级配置 `ApprovalLevelConfigPage`
-- 4 行 Form.Select：流程块 / 流程 / 知识 / 技能；每行选项 `0级(NONE) / 1级(SINGLE)`。默认 1 级。
-- 底部 [保存] 按钮，Toast 反馈，localStorage 持久化。
-
-### 共享组件（新增）
-- `src/components/sharing/SourceBadge/` — 🏠 原生 / 🔗 开发中心，semi color token。
-- `src/components/sharing/StatusTag/` — 4 状态映射颜色+图标（IconClock/IconTickCircle/IconEditStroked/IconCrossCircleStroked）。
-- `src/components/sharing/SemVerDialog/` — 520px Modal，递增方式（patch/minor/major）+ changeLog（5-200）。
-- `src/components/sharing/RejectReasonDialog/` — 520px Modal，理由必填 TextArea。
-- `src/components/sharing/ApprovalTimeline/` — 时间线展示提交/审批节点。
-
-## 侧边栏改动
+新建子目录（component-as-folder，无 barrel）：
 
 ```text
-共享中心
-├── 资产市场     /sharing-center/market         IconShop (Lucide Store)
-├── 我的共享     /sharing-center/my-shared      Lucide Share2
-└── 审批管理 🔴N /sharing-center/approvals      Lucide ClipboardCheck
+src/pages/SharingCenter/MyShared/
+  index.tsx                     // 列表页（升级）
+  index.less
+  components/
+    AssetActionsMenu/           // 行操作菜单（来源+状态差异化）
+    NewAssetDropdown/           // [+ 新建资产] 下拉
+    BatchActionBar/             // 批量操作工具栏
+    SemverDialog/               // SemVer 发版对话框（PATCH/MINOR/MAJOR + changeLog）
+    VersionHistoryList/         // 版本历史列表（NATIVE & DEV_CENTER 复用，readonly 切换）
+
+src/pages/SharingCenter/MyShared/Create/
+  Knowledge/index.tsx           // STORY-002 知识创建
+  Skill/index.tsx               // STORY-003 技能创建
+
+src/pages/SharingCenter/MyShared/Edit/
+  DevCenter/index.tsx           // STORY-004 DEV_CENTER 展示字段编辑
+  Native/index.tsx              // STORY-005 NATIVE 全字段编辑 + 发版
 ```
 
-- 移除 marketWorkflow / marketKnowledge / marketSkill / marketSnippet 4 个子项（通过 Tab 进入）。
-- 审批管理徽标：从 mockData 计算 `pendingCount`，>0 时显示红点+数字。
-- 同步更新 i18n key：`sidebar.assetMarket / sidebar.mySharedAssets / sidebar.approvals`。
+新增路由（在 `src/App.tsx`）：
 
-## i18n
+- `/sharing-center/my-shared/create/knowledge` → 知识创建
+- `/sharing-center/my-shared/create/skill` → 技能创建
+- `/sharing-center/my-shared/edit/:id` → 根据资产 source 自动渲染 DevCenter / Native 编辑器
+- `/sharing-center/my-shared/:id/versions` → 版本历史 Tab（也作为详情页子 Tab 入口）
 
-新增命名空间：
-- `sharing.myShared.*`（4 Tab 名 + 空状态）
-- `sharing.approvals.*`（双 Tab、操作、拒绝弹窗、时间线、详情）
-- `sharing.admin.approvalLevels.*`（标题、4 类型、级别枚举、保存提示）
-- `sharing.common.source.native / source.devCenter / status.draft|pending|published|rejected`
+---
 
-zh-CN 与 en 同步补齐，沿用 `scripts/check-i18n-market.mjs` 模式新增 `check-i18n-sharing.mjs`（可选，本批先不强制）。
+## 二、Mock 数据扩充（`src/pages/SharingCenter/shared/mockData.ts`）
 
-## 文件改动清单
+- `ShareAsset` 增加：`originUrl?`、`ownerId`、`creatorId`、`archivedAt?`
+- 新增 `ShareStatus` 值：`'ARCHIVED'`、`'UNLISTED'`（UNLISTED 不进入任何 Tab，仅用于状态机演示）
+- 新增 `AssetVersion` 类型：`{ id, assetId, version, changeLog, isLatest, publisher, publishedAt, content? }`
+- 新增 `getVersions(assetId)` mock 生成器：NATIVE 用 SemVer 序列（1.0.0 / 1.0.1 / 1.1.0 / 2.0.0），DEV_CENTER 透传开发中心版本号 + 同步快照
+- 至少补齐每种 (source × status) 组合 1~2 条数据，含中英 tag、富文本内容片段、技能 inputParams 示例
 
-- 编辑 `src/App.tsx`：新增 4 条路由 + 旧路径 `<Navigate>` 重定向。
-- 编辑 `src/components/layout/Sidebar/index.tsx`：重构 `sharingCenterMenu` + `getSelectedKeyByPath`。
-- 新增 `src/pages/SharingCenter/MyShared/{index.tsx,index.less}`。
-- 新增 `src/pages/SharingCenter/Approvals/{List,Detail}/{index.tsx,index.less}`。
-- 新增 `src/pages/SharingCenter/Admin/ApprovalLevels/{index.tsx,index.less}`。
-- 新增 `src/components/sharing/{SourceBadge,StatusTag,SemVerDialog,RejectReasonDialog,ApprovalTimeline}/{index.tsx,index.less}`。
-- 编辑 `public/i18n/zh-CN.json` 和 `public/i18n/en.json`。
-- 复用 `src/pages/Sharing/Market/mockData.ts` 与 `types.ts`，按需扩展状态/创建者字段。
+---
 
-## 验收
+## 三、阶段一：列表页 STORY-001（核心骨架）
 
-- 旧链接 `/sharing/market`、`/sharing/market/knowledge` 自动跳到 `/sharing-center/...`，不报 404。
-- 侧边栏共享中心展示 3 项，审批管理徽标可见。
-- 新 3 个页面可访问、有数据、空状态正常、无控制台报错。
-- i18n 不再出现原始 key 字符串。
+升级 `MyShared/index.tsx`：
 
-## 不在本批
+1. **Tabs**：5 个 Tab — 已发布 / 草稿 / 待审批 / 已拒绝 / 已归档；`tab=${name}(${count})`，`keepDOM=false`
+2. **筛选行**：搜索框（320px、≥2 字符、300ms 防抖、IconSearch 前缀）+ 类型 Select（全部/流程块/流程/知识/技能）+ 来源 Select（全部/原生/开发中心）+「清空筛选」
+3. **列表**：保持卡片网格（与现有视觉一致，Card 含 SourceBadge + StatusTag + tags + 更新时间），分页 12/页，外置 `.list-pagination`
+4. **批量选择**：卡片左上勾选框 → 选中态高亮 → 顶部 BatchActionBar 出现，操作按钮按已选集合的来源动态启用/禁用；混选 NATIVE+DEV_CENTER 时禁用并 Tooltip 提示
+5. **行操作菜单** AssetActionsMenu（按来源 × 状态映射，查看 Story-001 §6.2）：
+  - NATIVE PUBLISHED → 查看 / 编辑 / 归档
+  - NATIVE DRAFT → 编辑 / 删除 / 发布
+  - NATIVE PENDING → 查看
+  - NATIVE REJECTED → 查看 / 编辑（修改重提）
+  - NATIVE ARCHIVED → 查看 / 恢复 / 删除
+  - DEV_CENTER PUBLISHED → 查看 / 编辑展示信息 / 下架 / 在开发中心打开
+  - DEV_CENTER PENDING/REJECTED → 查看
+  - 删除/归档/恢复/下架使用 `Modal.confirm` 二次确认；操作后本地 mock 状态变更并刷新计数
+6. **NewAssetDropdown**：知识/技能可点跳创建页；流程块/流程置灰 + Tooltip「请在开发中心创建」
+7. **空状态**：每个 Tab 独立文案 + 引导 CTA（已发布/草稿展示「去新建资产」按钮）；筛选无结果展示统一空状态
 
-- `/sharing-center/market/:type/create` 和 `/:id/edit`（创建/编辑页全量重写）
-- AssetDetail 改造为 Drawer + 版本历史/复用记录 Tab
-- AssetCard 全面统一 SourceBadge/StatusTag（仅在新页面使用）
-- 角色感知 UI、收藏功能、审批人员配置
+---
+
+## 四、阶段二：NATIVE 创建 STORY-002 / 003
+
+子页统一头部：`IconChevronLeft` 返回 + `Title heading={3}`；底部固定操作条「保存草稿」/「发布」。
+
+### Knowledge 创建（STORY-002）
+
+- 表单字段：名称（2-100）→ 知识类型（操作手册/错误码/最佳实践/FAQ）→ 分类 → 标签（TagInput）→ 描述（10-500）
+- 富文本：先用轻量自研封装（`contentEditable` + 工具条按钮：B/I/U、列表、链接、代码块、引用、表格简版）。Toolbar 占位预留 Tiptap 接入点
+- 附件上传：Semi `Upload`（自定义渲染，单文件 ≤10MB，支持 PDF/Excel/Word/图片）
+- 校验：Semi UI 原生 trigger=['blur','change']
+- 「保存草稿」→ 写入 mock，状态 DRAFT；「发布」→ PENDING_APPROVAL，版本 1.0.0
+
+### Skill 创建（STORY-003）
+
+- 表单字段：名称 → 技能类型（6 种）→ 标签 → 描述
+- 输入参数表（TableEditable）：参数名 / 类型(string|number|boolean|object|array) / 必填 / 描述 / 默认值
+- 输出参数表
+- 执行配置：超时（默认 30s）+ 重试策略 RadioGroup（none/fixed/exponential）
+- 调用示例：代码编辑（先用 `<textarea>` + 等宽字体；预留 Monaco 接入点），Tab 切换 JSON/curl/Python
+- 校验：至少 1 个输入参数 OR 勾选「无参数」
+
+---
+
+## 五、阶段三：编辑 STORY-004 / 005 + 发版 STORY-007
+
+### DevCenter 编辑页（STORY-004）
+
+- 仅展示字段可编辑：名称/描述/标签
+- 内容区域只读卡片（流程块代码 / 流程定义文本预览），顶部按钮「在开发中心编辑内容」打开 originUrl
+- 「保存」直接更新 Asset 元数据，不创建新版本，不进入审批
+
+### Native 编辑页（STORY-005）
+
+- 复用阶段二的 Knowledge/Skill 表单，按资产类型动态渲染
+- 「保存」→ 仅 DRAFT 状态生效（继续编辑草稿）
+- 「发布新版本」→ 弹 SemverDialog
+
+### SemverDialog（STORY-007）
+
+- 首发（DRAFT→PUBLISHED）：跳过增量选择，仅收集 changeLog（5-200 字符），版本固定 1.0.0；提交 → PENDING_APPROVAL
+- 后续（PUBLISHED→PUBLISHED）：RadioGroup MAJOR/MINOR/PATCH（PATCH 默认 + 当前版本预览，例如「当前 1.2.3 → 1.2.4」），changeLog 必填；提交 → 创建新 AssetVersion，旧版本 isLatest=false，新版本 isLatest=true，状态保持 PUBLISHED（免审批）
+
+### 路由守卫
+
+- `/edit/:id` 页加载时检查 `currentUser.id === asset.creatorId`，否则 `Toast.warning + navigate('/sharing-center/my-shared')`
+
+---
+
+## 六、阶段四：版本历史 STORY-006 / 007
+
+新增 VersionHistoryList 组件，作为 `/sharing-center/my-shared/:id/versions` 页面的主体（也通过资产详情页 Tab 复用）：
+
+- **NATIVE**：列表项显示 `v1.2.3 · [latest 徽标] · changeLog · 发布者头像/昵称 · 发布时间`，按 createdAt 降序；latest 高亮
+- **DEV_CENTER**：列表项显示 `v原样版本号 · 快照徽标 · 同步时间`，顶部「在开发中心查看」按钮打开 originUrl；只读，无操作
+- 切换路径：列表页行操作菜单/详情页 Tab → 该页面
+
+---
+
+## 七、技术细节
+
+- **状态管理**：本期纯 mock，使用 `useReducer` + 本模块单例 store（`MyShared/store.ts`），所有变更走 reducer 派发，便于跨页面（编辑→列表）同步
+- **i18n**：在 `public/i18n/zh-CN.json` 和 `en.json` 的 `sharing.myShared` 节点下新增 keys（tabs.archived、filters.*、actions.*、newAsset.*、batch.*、empty.* 子节点、create/edit/version 命名空间）。中文必须使用「流程块」、「原生」、「开发中心」等已有词汇
+- **图标**：Lucide React（IconSearch 例外用 Semi 给输入框前缀）；NewAssetDropdown 用 Plus + ChevronDown
+- **Toast**：`theme: 'light'`；删除/归档/下架成功后给短确认
+- **空状态插画**：复用 `src/assets/empty-state` 现有 PNG
+- **样式**：所有新页面置于 `.app-layout-content-card`，flex 列布局；24px 全局内边距；卡片 12px 圆角、`0 1px 3px` 基础阴影
+
+---
+
+## 八、验收清单
+
+- 5 Tab + 实时计数徽标
+- 类型/来源/关键词组合筛选；关键词≥2 字符 300ms 防抖
+- 分页 12/页，外置分页条
+- 新建下拉：知识/技能跳页，流程块/流程置灰 Tooltip
+- 行操作按 source × status 差异化（10 种组合全覆盖）
+- 批量选择按来源分组，混选阻止
+- NATIVE 知识创建：富文本 + 附件 + 草稿/发布
+- NATIVE 技能创建：参数表 + 执行配置 + 示例
+- DEV_CENTER 编辑：仅展示字段，内容只读 + 跳转
+- NATIVE 编辑 + SemVer 发版：首发 1.0.0 跳过增量，后续 PATCH 默认；isLatest 自动迁移
+- 版本历史：NATIVE 含 changeLog/latest 徽标；DEV_CENTER 只读快照
+- 路由守卫：非创建者无法进入编辑页
+- 物理删除二次确认（仅 NATIVE DRAFT/ARCHIVED）
+- mock 含 ARCHIVED/UNLISTED 各类资产，覆盖演示

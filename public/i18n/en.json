@@ -3752,7 +3752,7 @@
   "sharing": {
     "common": {
       "source": { "native": "Native", "devCenter": "Dev Center" },
-      "status": { "draft": "Draft", "pending": "Pending", "published": "Published", "rejected": "Rejected" }
+      "status": { "draft": "Draft", "pending": "Pending", "published": "Published", "rejected": "Rejected", "archived": "Archived", "unlisted": "Unlisted" }
     },
     "semver": {
       "title": "Publish New Version",
@@ -3770,14 +3770,156 @@
         "published": "Published",
         "draft": "Draft",
         "pending_approval": "Pending",
-        "rejected": "Rejected"
+        "rejected": "Rejected",
+        "archived": "Archived"
+      },
+      "filters": {
+        "searchPlaceholder": "Search name / description / tags",
+        "type": "Type",
+        "source": "Source",
+        "allType": "All Types",
+        "allSource": "All Sources",
+        "clear": "Clear filters"
+      },
+      "newAsset": {
+        "label": "New Asset",
+        "knowledge": "Knowledge",
+        "skill": "Skill",
+        "snippet": "Snippet",
+        "workflow": "Workflow",
+        "disabledHint": "Please create in Dev Center"
+      },
+      "actions": {
+        "view": "View",
+        "edit": "Edit",
+        "editMeta": "Edit display info",
+        "publish": "Publish",
+        "archive": "Archive",
+        "recover": "Recover",
+        "delete": "Delete",
+        "unlist": "Unlist",
+        "openInDevCenter": "Open in Dev Center",
+        "versions": "Version history"
+      },
+      "batch": {
+        "selected": "{{count}} selected",
+        "archive": "Batch archive",
+        "unlist": "Batch unlist",
+        "delete": "Batch delete",
+        "cancel": "Cancel selection",
+        "mixedHint": "Cannot mix assets from different sources"
+      },
+      "confirm": {
+        "archiveTitle": "Archive this asset?",
+        "archiveContent": "You can recover it from the Archived tab.",
+        "recoverTitle": "Recover this asset?",
+        "recoverContent": "It will be restored to Published, no approval needed.",
+        "unlistTitle": "Unlist this asset?",
+        "unlistContent": "The asset will be hidden from the market.",
+        "deleteTitle": "Delete this asset?",
+        "deleteContent": "This action cannot be undone."
+      },
+      "toast": {
+        "archived": "Archived",
+        "recovered": "Recovered",
+        "unlisted": "Unlisted",
+        "deleted": "Deleted",
+        "saved": "Saved",
+        "published": "Published"
       },
       "empty": {
-        "title": "Nothing here yet",
-        "description": "You haven't shared any assets. Create one in the Asset Market."
+        "title": "Nothing here",
+        "published": "No published assets",
+        "draft": "No drafts",
+        "pending_approval": "No pending approvals",
+        "rejected": "No rejected assets",
+        "archived": "No archived assets",
+        "noResult": "No results, try adjusting filters",
+        "createCta": "Create asset"
       },
       "col": { "version": "Version" },
-      "actions": { "view": "View" }
+      "create": {
+        "knowledgeTitle": "New Knowledge",
+        "skillTitle": "New Skill",
+        "fields": {
+          "name": "Name",
+          "namePh": "Enter a name (2-100 chars)",
+          "description": "Description",
+          "descPh": "Enter description (10-500 chars)",
+          "tags": "Tags",
+          "tagsPh": "Press Enter to add tag",
+          "knowledgeType": "Knowledge Type",
+          "category": "Category",
+          "categoryPh": "e.g. Finance, HR, R&D",
+          "content": "Content",
+          "attachments": "Attachments",
+          "attachmentsHint": "PDF / Excel / Word / Image, ≤ 10MB each",
+          "skillType": "Skill Type",
+          "inputParams": "Input Parameters",
+          "outputParams": "Output Parameters",
+          "noParams": "No parameters",
+          "addParam": "Add parameter",
+          "paramName": "Name",
+          "paramType": "Type",
+          "paramRequired": "Required",
+          "paramDesc": "Description",
+          "paramDefault": "Default",
+          "timeout": "Timeout (s)",
+          "retry": "Retry Policy",
+          "callExample": "Call Example"
+        },
+        "knowledgeTypes": {
+          "manual": "Manual",
+          "errorCode": "Error Code",
+          "bestPractice": "Best Practice",
+          "faq": "FAQ"
+        },
+        "skillTypes": {
+          "document": "Document",
+          "data": "Data",
+          "content": "Content",
+          "retrieval": "Retrieval",
+          "tool": "Tool",
+          "other": "Other"
+        },
+        "retry": {
+          "none": "None",
+          "fixed": "Fixed",
+          "exponential": "Exponential"
+        },
+        "saveDraft": "Save Draft",
+        "publish": "Publish"
+      },
+      "edit": {
+        "devCenterTitle": "Edit Display Info",
+        "nativeTitle": "Edit Asset",
+        "readonlyHint": "Content is synced from Dev Center. Only display fields are editable.",
+        "openInDevCenter": "Edit content in Dev Center",
+        "save": "Save",
+        "publishNew": "Publish New Version",
+        "noPermission": "You are not the creator of this asset"
+      },
+      "version": {
+        "title": "Version History",
+        "snapshot": "Snapshot",
+        "latest": "Latest",
+        "publishedBy": "Publisher",
+        "publishedAt": "Published at",
+        "openInDevCenter": "View in Dev Center",
+        "noChangeLog": "No change log"
+      },
+      "semver": {
+        "title": "Publish New Version",
+        "firstTitle": "First Release",
+        "currentToNext": "{{current}} → {{next}}",
+        "firstVersionHint": "First version is fixed at v1.0.0 and requires approval.",
+        "bumpType": "Bump Type",
+        "patch": "PATCH (backward-compatible fixes)",
+        "minor": "MINOR (backward-compatible features)",
+        "major": "MAJOR (breaking changes)",
+        "changeLog": "Change Log",
+        "changeLogPh": "Describe the changes (5-200 chars)"
+      }
     },
     "approvals": {
       "pageTitle": "Approvals",

@@ -6,12 +6,36 @@
   padding: 24px;
 
   .my-shared-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     margin-bottom: 12px;
     .title { margin: 0; }
   }
 
   .my-shared-tabs {
     margin-bottom: 12px;
+  }
+
+  .my-shared-filters {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+
+  .my-shared-batch-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 16px;
+    margin-bottom: 12px;
+    background: var(--semi-color-primary-light-default);
+    border-radius: 8px;
+    .count { color: var(--semi-color-primary); font-weight: 500; font-size: 13px; }
+    .actions { display: flex; gap: 4px; }
   }
 
   .my-shared-body {
@@ -34,13 +58,27 @@
     align-items: start;
   }
 
-  .my-shared-card-wrapper { cursor: pointer; }
+  .my-shared-card-wrapper {
+    cursor: pointer;
+    border-radius: 12px;
+    transition: box-shadow 0.2s ease;
+    &.selected .my-shared-card { border-color: var(--semi-color-primary); box-shadow: 0 0 0 2px var(--semi-color-primary-light-default); }
+  }
   .my-shared-card {
     cursor: pointer;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     transition: box-shadow 0.2s ease, transform 0.2s ease;
     &:hover {
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
       transform: translateY(-2px);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 4px;
     }
 
     .card-head {
