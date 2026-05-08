@@ -6,6 +6,7 @@ import { Avatar, Badge, Popover, Tooltip } from '@douyinfe/semi-ui';
 import { UserInfoDropdown } from '../UserInfoDropdown';
 import NotificationDrawer from '../NotificationDrawer';
 import { mockNotifications } from '@/pages/NotificationCenter/mockData';
+import { pendingCount as sharingPending } from '@/pages/SharingCenter/shared/mockData';
 import { Activity, Airplay, AlertTriangle, Bell, BookOpen, Bot, Boxes, CalendarClock, ChartSpline, CheckSquare, ChevronDown, ChevronUp, ClipboardList, Cloud, CodeXml, Component, Database, FileText, Folder, FolderCheck, FolderKanban, Forward, GitBranch, History, Home, LayoutGrid, LibraryBig, ListStart, MonitorCheck, MonitorCog, Parentheses, Play, ScrollText, Settings, Shield, Sparkles, Target, TrendingUp, Users, Workflow, Wrench } from 'lucide-react';
 
 const LayoutIcon = () => (
@@ -319,14 +320,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
 
   // 共享中心 - 资产市场 / 我的共享 / 审批管理
   const sharingPendingCount = (() => {
-    try {
-      // 动态读取，避免循环依赖
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const mod = require('@/pages/SharingCenter/shared/mockData');
-      return typeof mod.pendingCount === 'function' ? mod.pendingCount() : 0;
-    } catch {
-      return 0;
-    }
+    try { return sharingPending(); } catch { return 0; }
   })();
   const sharingCenterMenu: MenuItem[] = [
     { key: 'assetMarket', labelKey: 'sidebar.assetMarket', icon: <Boxes size={18} strokeWidth={2} />, path: '/sharing-center/market' },
