@@ -353,6 +353,10 @@ const RequirementDetailDrawer = ({
   const [activeTab, setActiveTab] = useState<string>(initialTab);
   const [viewingVersion, setViewingVersion] = useState<'current' | number>('current');
   const [pickerVisible, setPickerVisible] = useState(false);
+  const [pendingLogs, setPendingLogs] = useState<RequirementChangeLog[]>([]);
+  const [respondingLog, setRespondingLog] = useState<RequirementChangeLog | null>(null);
+  const [changeLogRefreshKey, setChangeLogRefreshKey] = useState(0);
+  const location = useLocation();
   const showApprovalSection = context === 'approval';
   const assessmentReadonly = context !== 'assessment';
 
