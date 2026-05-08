@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Asset } from '../../types';
 import { useCollections } from '../../hooks/useCollections';
 import AssetTypeIcon from '../AssetTypeIcon';
-import SourceBadge from '../SourceBadge';
+
 import './index.less';
 
 const { Text, Paragraph } = Typography;
@@ -53,7 +53,6 @@ const AssetCard = ({ asset, onReused }: Props) => {
           <Text strong ellipsis={{ showTooltip: true }} className="asset-card-name">
             {asset.name}
           </Text>
-          <SourceBadge source={asset.source} />
         </div>
       </div>
       <Paragraph ellipsis={{ rows: 2 }} type="tertiary" size="small" className="asset-card-desc">
