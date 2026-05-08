@@ -6,7 +6,7 @@ import { Avatar, Badge, Popover, Tooltip } from '@douyinfe/semi-ui';
 import { UserInfoDropdown } from '../UserInfoDropdown';
 import NotificationDrawer from '../NotificationDrawer';
 import { mockNotifications } from '@/pages/NotificationCenter/mockData';
-import { Activity, Airplay, AlertTriangle, Bell, BookOpen, Bot, CalendarClock, ChartSpline, CheckSquare, ChevronDown, ChevronUp, ClipboardList, Cloud, CodeXml, Database, FileText, Folder, FolderCheck, FolderKanban, Forward, GitBranch, History, Home, LayoutGrid, LibraryBig, ListStart, MonitorCheck, MonitorCog, Parentheses, Play, ScrollText, Settings, Shield, Target, TrendingUp, Users, Workflow, Wrench } from 'lucide-react';
+import { Activity, Airplay, AlertTriangle, Bell, BookOpen, Bot, Boxes, CalendarClock, ChartSpline, CheckSquare, ChevronDown, ChevronUp, ClipboardList, Cloud, CodeXml, Component, Database, FileText, Folder, FolderCheck, FolderKanban, Forward, GitBranch, History, Home, LayoutGrid, LibraryBig, ListStart, MonitorCheck, MonitorCog, Parentheses, Play, ScrollText, Settings, Shield, Sparkles, Target, TrendingUp, Users, Workflow, Wrench } from 'lucide-react';
 
 const LayoutIcon = () => (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -317,18 +317,14 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     { key: 'mtMiddlewareStatus', labelKey: 'sidebar.mtMiddlewareStatus', icon: <MonitorCheck size={18} strokeWidth={2} />, path: '/maintenance/dashboard/middleware-status' },
   ];
 
-  // 共享中心的详细菜单结构
+  // 共享中心 - 资产市场
   const sharingCenterMenu: MenuItem[] = [
-    // 可执行组件 - 分组标题
-    { key: 'executableComponents', labelKey: 'sidebar.executableComponents', isGroupLabel: true },
-    { key: 'creatorComponents', labelKey: 'sidebar.creatorComponents', icon: <LayoutGrid size={16} strokeWidth={2} />, path: '/sharing/components/creator' },
-    // AI Skills - 分组标题
-    { key: 'aiSkills', labelKey: 'sidebar.aiSkills', isGroupLabel: true },
-    { key: 'apaSkills', labelKey: 'sidebar.apaSkills', icon: <Bot size={18} strokeWidth={2} />, path: '/sharing/skills/apa' },
-    { key: 'acpSkills', labelKey: 'sidebar.acpSkills', icon: <Workflow size={18} strokeWidth={2} />, path: '/sharing/skills/acp' },
-    // 案例展示 - 分组标题
-    { key: 'showcasesGroup', labelKey: 'sidebar.showcasesGroup', isGroupLabel: true },
-    { key: 'showcasesList', labelKey: 'sidebar.showcasesList', icon: <BookOpen size={16} strokeWidth={2} />, path: '/sharing/showcases' },
+    { key: 'assetMarket', labelKey: 'sidebar.assetMarket', isGroupLabel: true },
+    { key: 'marketAll', labelKey: 'sidebar.marketAll', icon: <Boxes size={18} strokeWidth={2} />, path: '/sharing/market' },
+    { key: 'marketWorkflow', labelKey: 'sidebar.marketWorkflow', icon: <Workflow size={18} strokeWidth={2} />, path: '/sharing/market/workflow' },
+    { key: 'marketKnowledge', labelKey: 'sidebar.marketKnowledge', icon: <BookOpen size={18} strokeWidth={2} />, path: '/sharing/market/knowledge' },
+    { key: 'marketSkill', labelKey: 'sidebar.marketSkill', icon: <Sparkles size={18} strokeWidth={2} />, path: '/sharing/market/skill' },
+    { key: 'marketSnippet', labelKey: 'sidebar.marketSnippet', icon: <Component size={18} strokeWidth={2} />, path: '/sharing/market/snippet' },
   ];
 
   // 根据当前路由获取选中的菜单key
@@ -414,18 +410,13 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     if (pathname === '/operations/platform-operations') {
       return 'platformOperations';
     }
-    if (pathname === '/sharing/components/creator') {
-      return 'creatorComponents';
+    if (pathname === '/sharing/market' || pathname === '/sharing') {
+      return 'marketAll';
     }
-    if (pathname === '/sharing/skills/apa') {
-      return 'apaSkills';
-    }
-    if (pathname === '/sharing/skills/acp') {
-      return 'acpSkills';
-    }
-    if (pathname === '/sharing/showcases') {
-      return 'showcasesList';
-    }
+    if (pathname.startsWith('/sharing/market/workflow')) return 'marketWorkflow';
+    if (pathname.startsWith('/sharing/market/knowledge')) return 'marketKnowledge';
+    if (pathname.startsWith('/sharing/market/skill')) return 'marketSkill';
+    if (pathname.startsWith('/sharing/market/snippet')) return 'marketSnippet';
     if (pathname.startsWith('/maintenance/config')) return 'mtConfigManagement';
     if (pathname.startsWith('/maintenance/dashboard/system-metrics')) return 'mtSystemMetrics';
     if (pathname.startsWith('/maintenance/dashboard/middleware-status')) return 'mtMiddlewareStatus';
