@@ -768,6 +768,7 @@
       },
       "tab": {
         "overview": "Overview",
+        "approval": "Approval Flow",
         "assessment": "Assessment",
         "cost": "Cost Estimate",
         "versions": "Version History"

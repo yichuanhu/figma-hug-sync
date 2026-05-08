@@ -249,7 +249,8 @@ const RequirementsWorkbench = () => {
   const total = range?.total || 0;
 
   // 操作可见性（兼容旧/新状态）
-  const canEdit = (status: string) => status === 'DRAFT' || status === 'WITHDRAWN';
+  const canEdit = (status: string) =>
+    status === 'DRAFT' || status === 'WITHDRAWN' || status === 'REJECTED';
   const canDelete = (status: string) =>
     status === 'DRAFT' || status === 'REJECTED' || status === 'WITHDRAWN';
 
@@ -370,7 +371,7 @@ const RequirementsWorkbench = () => {
                 const isResubmit =
                   (record.status === 'REJECTED' || record.status === 'WITHDRAWN') &&
                   record.creatorId === MOCK_CURRENT_USER_ID;
-                const canSubmit = canEdit(record.status) || record.status === 'REJECTED';
+                const canSubmit = canEdit(record.status);
                 if (!canSubmit && !isResubmit) return null;
                 if (isResubmit) {
                   return (

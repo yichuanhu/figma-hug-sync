@@ -659,6 +659,7 @@
       },
       "tab": {
         "overview": "概览",
+        "approval": "审批流程",
         "assessment": "技术评估",
         "cost": "成本预估",
         "versions": "版本历史"
