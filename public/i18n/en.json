@@ -1077,6 +1077,7 @@
         "workspaceDuplicate": "Workspace name must be unique within the project",
         "projectHasWorkspaces": "Cannot delete: this project still has workspaces.",
         "workspaceInUse": "Cannot delete: workspace has linked requirements or published processes.",
+        "departmentLockedByRequirements": "Department cannot be changed because the workspace has linked requirements.",
         "cannotUnlinkPublished": "Cannot unlink: this workspace has published processes.",
         "mustKeepOneManager": "At least 1 manager must remain; cannot remove or demote.",
         "pickAtLeastOneUser": "Please select at least one user"

@@ -968,6 +968,7 @@
         "workspaceDuplicate": "同一项目下工作空间名称不能重复",
         "projectHasWorkspaces": "项目下存在工作空间，无法删除。请先删除全部工作空间。",
         "workspaceInUse": "工作空间已绑定需求或存在已发布流程，无法删除。",
+        "departmentLockedByRequirements": "工作空间已关联需求，无法更改所属部门。",
         "cannotUnlinkPublished": "该工作空间已有发布的流程，禁止解除已关联需求。",
         "mustKeepOneManager": "必须至少保留 1 个管理员，无法移除或降级。",
         "pickAtLeastOneUser": "请至少选择 1 个用户"
