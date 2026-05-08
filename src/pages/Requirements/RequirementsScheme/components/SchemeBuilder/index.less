@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: var(--semi-color-bg-1);
+  min-height: 0;
 
   &-loading {
     height: 100%;
@@ -11,38 +11,60 @@
     justify-content: center;
   }
 
+  // 顶部标题行（与录屏回放/执行模板等页面一致：无卡片背景、无下边框）
   &-header {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 12px;
-    padding: 16px 24px;
-    background: var(--semi-color-bg-0);
-    border-bottom: 1px solid var(--semi-color-border);
+    margin-bottom: 16px;
+    flex-shrink: 0;
 
-    &-main {
+    &-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       flex: 1;
       min-width: 0;
     }
+
+    &-title {
+      margin: 0 !important;
+    }
   }
 
+  // Tabs + 内容滚动区
   &-body {
     flex: 1;
     min-height: 0;
-    overflow: auto;
-    padding: 16px 24px 24px;
+    display: flex;
+    flex-direction: column;
+
+    .semi-tabs {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
 
     .semi-tabs-bar {
       background: transparent;
+      flex-shrink: 0;
+    }
+
+    .semi-tabs-content {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      padding-top: 16px;
     }
   }
 }
 
-// ============= 通用 builder 子模块容器 =============
+// ============= 通用 builder 子模块容器（无独立卡片，融于页面卡片中） =============
 .scheme-builder-pane {
-  background: var(--semi-color-bg-0);
-  border-radius: 8px;
-  padding: 20px;
-  min-height: calc(100vh - 240px);
+  background: transparent;
+  padding: 0;
 }
 
 .scheme-builder-section-title {

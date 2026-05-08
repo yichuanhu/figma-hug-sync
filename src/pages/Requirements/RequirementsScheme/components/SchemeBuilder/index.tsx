@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Typography, Button, Tabs, TabPane, Toast, Modal, Space, Tag, Spin } from '@douyinfe/semi-ui';
+import { Typography, Button, Tabs, TabPane, Toast, Modal, Space, Tag, Spin, Tooltip } from '@douyinfe/semi-ui';
 import { ChevronLeft, Save, Play, CheckCircle, AlertCircle, Clock } from 'lucide-react';
 import {
   getSchemeById,
@@ -201,15 +201,7 @@ const SchemeBuilderPage = () => {
     ? <AlertCircle size={14} style={{ color: 'var(--semi-color-danger)', marginLeft: 4 }} />
     : null;
 
-  const headerInfo = useMemo(() => draftScheme && (
-    <Space>
-      <Title heading={3} style={{ margin: 0 }}>{draftScheme.name}</Title>
-      <Text type="tertiary">v{draftScheme.version}</Text>
-      {draftScheme.is_draft && <Tag color="orange" type="light" size="small">{t('requirements.scheme.builder.draftBadge')}</Tag>}
-      {draftScheme.parent_id && <Tag color="blue" type="light" size="small">{t('requirements.scheme.builder.newVersionBadge')}</Tag>}
-      {dirty && <Tag color="red" type="light" size="small">{t('requirements.scheme.builder.unsaved')}</Tag>}
-    </Space>
-  ), [draftScheme, dirty, t]);
+
 
   const savedHint = useMemo(() => (
     <Space spacing={4} align="center" style={{ color: 'var(--semi-color-text-2)', fontSize: 12 }}>
@@ -229,24 +221,28 @@ const SchemeBuilderPage = () => {
   return (
     <div className="scheme-builder">
       <div className="scheme-builder-header">
-        <Button
-          icon={<ChevronLeft size={16} strokeWidth={2} />}
-          theme="borderless"
-          type="tertiary"
-          onClick={() => guardedNavigate('/requirements/scheme')}
-        >
-          {t('common.back')}
-        </Button>
-        <div className="scheme-builder-header-main">
-          {headerInfo}
+        <div className="scheme-builder-header-left">
+          <Tooltip content={t('common.back')} position="bottom">
+            <Button
+              icon={<ChevronLeft size={16} strokeWidth={2} />}
+              theme="borderless"
+              type="tertiary"
+              onClick={() => guardedNavigate('/requirements/scheme')}
+            />
+          </Tooltip>
+          <Title heading={3} className="scheme-builder-header-title">{draftScheme.name}</Title>
+          <Text type="tertiary">v{draftScheme.version}</Text>
+          {draftScheme.is_draft && <Tag color="orange" type="light" size="small">{t('requirements.scheme.builder.draftBadge')}</Tag>}
+          {draftScheme.parent_id && <Tag color="blue" type="light" size="small">{t('requirements.scheme.builder.newVersionBadge')}</Tag>}
+          {dirty && <Tag color="red" type="light" size="small">{t('requirements.scheme.builder.unsaved')}</Tag>}
         </div>
         <Space>
           {savedHint}
-          <Button icon={<Play size={14} strokeWidth={2} />} onClick={() => setTestDriveVisible(true)}>
+          <Button icon={<Play size={16} strokeWidth={2} />} onClick={() => setTestDriveVisible(true)}>
             {t('requirements.scheme.builder.testDrive')}
           </Button>
           <Button
-            icon={<Save size={14} strokeWidth={2} />}
+            icon={<Save size={16} strokeWidth={2} />}
             theme={dirty ? 'solid' : 'light'}
             type={dirty ? 'primary' : 'tertiary'}
             onClick={handleSaveDraft}
@@ -254,7 +250,7 @@ const SchemeBuilderPage = () => {
           >
             {t('requirements.scheme.builder.saveDraft')}
           </Button>
-          <Button icon={<CheckCircle size={14} strokeWidth={2} />} theme="solid" type="primary" onClick={handleActivate}>
+          <Button icon={<CheckCircle size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={handleActivate}>
             {t('requirements.scheme.activate')}
           </Button>
         </Space>
