@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Modal,
@@ -6,13 +6,14 @@ import {
   Toast,
   Button,
   Typography,
+  Tag,
   useFormState,
 } from '@douyinfe/semi-ui';
 import type { RequirementItem, SchemeField, SchemeFieldDependsOn, RequirementDraft } from '../../types';
 import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
 import OwnerSearchSelect from '@/components/OwnerSearchSelect';
 import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
-import { getActiveScheme } from '../../mockData';
+import { getActiveScheme, getDraft, saveDraft, discardDraft } from '../../mockData';
 import SchemeFieldRenderer from '../SchemeFieldRenderer';
 import { isPostProjectStatus } from '../../utils/fieldEditability';
 import PublishChangeModal from '../PublishChangeModal';
@@ -38,6 +39,7 @@ const RequirementFormModal = ({
 }: RequirementFormModalProps) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
+  const [savingDraft, setSavingDraft] = useState(false);
   const [formApi, setFormApi] = useState<any>(null);
   const [departmentValue, setDepartmentValue] = useState<string | undefined>(undefined);
   const [ownerId, setOwnerId] = useState<string>(MOCK_CURRENT_USER.id);
@@ -45,6 +47,12 @@ const RequirementFormModal = ({
   const isPostProjectEdit = !!editData && isPostProjectStatus(editData.status);
   const [publishVisible, setPublishVisible] = useState(false);
   const [pendingPatch, setPendingPatch] = useState<RequirementDraft['patch']>({});
+
+  // 草稿态：仅在立项后编辑模式下使用
+  const [hasDraft, setHasDraft] = useState(false);
+  const [draftLoadedAt, setDraftLoadedAt] = useState<string | null>(null);
+  // 用于判定是否「有未保存改动」：每次打开重置为 false，任何字段变化置 true
+  const dirtyRef = useRef(false);
 
   const priorityOptions = useMemo(
     () => [
@@ -57,10 +65,9 @@ const RequirementFormModal = ({
 
   const activeScheme = useMemo(() => getActiveScheme(), []);
 
-  const initialValues = useMemo(() => {
+  const baseInitialValues = useMemo(() => {
     if (isEdit && editData) {
       const formData = (editData.form_data ?? {}) as Record<string, unknown>;
-      // 把 0~1 的 ratio 反向归一化为 0~100 显示（兼容新旧 key）
       const ratio = (formData.automation_ratio ?? formData.automationRatio) as number | undefined;
       const ratioDisplay = typeof ratio === 'number' && ratio <= 1 ? ratio * 100 : ratio;
       return {
@@ -71,10 +78,39 @@ const RequirementFormModal = ({
         automation_ratio: ratioDisplay,
       };
     }
-    return {
-      priority: 'MEDIUM',
-    };
+    return { priority: 'MEDIUM' as const };
   }, [isEdit, editData]);
+
+  // 立项后模式：弹窗打开时尝试读取该用户的草稿并合并
+  useEffect(() => {
+    if (!visible) {
+      // 关闭时重置脏标记与草稿态
+      dirtyRef.current = false;
+      setHasDraft(false);
+      setDraftLoadedAt(null);
+      return;
+    }
+    if (!isPostProjectEdit || !editData) return;
+    let cancelled = false;
+    getDraft(editData.id).then((draft) => {
+      if (cancelled || !draft) return;
+      // 合并草稿到表单
+      const patch = draft.patch ?? {};
+      const merged: Record<string, unknown> = {};
+      if (patch.title !== undefined) merged.title = patch.title;
+      if (patch.priority !== undefined) merged.priority = patch.priority;
+      if (patch.form_data) Object.assign(merged, patch.form_data);
+      // 等 formApi 就绪
+      Object.entries(merged).forEach(([k, v]) => formApi?.setValue?.(k, v));
+      setHasDraft(true);
+      setDraftLoadedAt(draft.updatedAt);
+      // 草稿回填不算作脏改动
+      dirtyRef.current = false;
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [visible, isPostProjectEdit, editData, formApi]);
 
   useEffect(() => {
     const nextDepartment = editData?.owning_department_name || undefined;
@@ -85,6 +121,80 @@ const RequirementFormModal = ({
   const handleDepartmentChange = (value: string) => {
     setDepartmentValue(value);
     formApi?.setValue?.('department', value);
+    dirtyRef.current = true;
+  };
+
+  /** 收集当前表单值并构造 patch（立项后用） */
+  const buildPatchFromValues = (values: Record<string, unknown>): RequirementDraft['patch'] => {
+    const form_data: Record<string, unknown> = {};
+    activeScheme?.custom_fields.forEach((f) => {
+      if (values[f.key] !== undefined) form_data[f.key] = values[f.key];
+    });
+    return {
+      title: values.title as string | undefined,
+      priority: values.priority as RequirementItem['priority'] | undefined,
+      form_data,
+    };
+  };
+
+  const handleSaveDraft = async () => {
+    if (!editData || !isPostProjectEdit) return;
+    try {
+      const values = (formApi?.getValues?.() ?? {}) as Record<string, unknown>;
+      setSavingDraft(true);
+      const patch = buildPatchFromValues(values);
+      await saveDraft(editData.id, patch);
+      Toast.success('草稿已保存');
+      dirtyRef.current = false;
+      setHasDraft(true);
+      setDraftLoadedAt(new Date().toISOString());
+      onCancel();
+    } catch {
+      Toast.error('草稿保存失败');
+    } finally {
+      setSavingDraft(false);
+    }
+  };
+
+  const handleDiscardAndClose = async () => {
+    if (!editData) {
+      onCancel();
+      return;
+    }
+    try {
+      await discardDraft(editData.id);
+      setHasDraft(false);
+      setDraftLoadedAt(null);
+    } finally {
+      dirtyRef.current = false;
+      onCancel();
+    }
+  };
+
+  /** 关闭弹窗：立项后模式且有改动时弹出三选确认 */
+  const handleClose = () => {
+    if (isPostProjectEdit && (dirtyRef.current || hasDraft)) {
+      const hasChange = dirtyRef.current;
+      Modal.confirm({
+        title: '关闭后修改将丢失',
+        content: hasChange
+          ? '您有未保存的改动，是否将其保存为草稿？保存后下次打开会自动恢复。'
+          : '是否丢弃当前已加载的草稿？',
+        okText: hasChange ? '保存草稿' : '继续编辑',
+        cancelText: hasChange ? '丢弃修改' : '丢弃草稿',
+        onOk: async () => {
+          if (hasChange) {
+            await handleSaveDraft();
+          }
+          // 「继续编辑」分支：什么都不做（关闭对话框即可）
+        },
+        onCancel: async () => {
+          await handleDiscardAndClose();
+        },
+      });
+      return;
+    }
+    onCancel();
   };
 
   const handleSubmit = async (values: Record<string, unknown>) => {
@@ -104,11 +214,14 @@ const RequirementFormModal = ({
 
     // 立项后:走「发布变更」流程,而不是直接保存
     if (isPostProjectEdit && editData) {
-      const patch: RequirementDraft['patch'] = {
-        title: values.title as string | undefined,
-        priority: values.priority as RequirementItem['priority'] | undefined,
-        form_data,
-      };
+      const patch = buildPatchFromValues(values);
+      // 进入发布前先把当前状态保存为草稿，避免发布失败时丢失
+      try {
+        await saveDraft(editData.id, patch);
+        setHasDraft(true);
+      } catch {
+        // 草稿保存失败不阻断发布流程
+      }
       setPendingPatch(patch);
       setPublishVisible(true);
       return;
@@ -131,12 +244,25 @@ const RequirementFormModal = ({
     }
   };
 
+  const draftHintTime = draftLoadedAt
+    ? draftLoadedAt.replace('T', ' ').substring(5, 16)
+    : '';
+
   return (
     <>
     <Modal
-      title={isEdit ? (isPostProjectEdit ? '编辑需求(立项后)' : t('requirements.form.editTitle')) : t('requirements.form.createTitle')}
+      title={
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+          {isEdit ? (isPostProjectEdit ? '编辑需求(立项后)' : t('requirements.form.editTitle')) : t('requirements.form.createTitle')}
+          {isPostProjectEdit && hasDraft && (
+            <Tag size="small" color="orange">
+              {`已加载草稿${draftHintTime ? ` · ${draftHintTime}` : ''}`}
+            </Tag>
+          )}
+        </span>
+      }
       visible={visible}
-      onCancel={onCancel}
+      onCancel={handleClose}
       footer={null}
       width={520}
       centered
@@ -147,9 +273,12 @@ const RequirementFormModal = ({
         onSubmit={handleSubmit}
         labelPosition="top"
         className="requirement-form-modal-form"
-        initValues={initialValues}
+        initValues={baseInitialValues}
         key={editData?.id || 'create'}
         getFormApi={setFormApi}
+        onValueChange={() => {
+          dirtyRef.current = true;
+        }}
       >
         <div className="requirement-form-modal-content">
           {isPostProjectEdit && (
@@ -195,7 +324,14 @@ const RequirementFormModal = ({
 
             <div className="scheme-field-w-medium">
               <Form.Slot label={{ text: t('requirements.form.requirementOwnerLabel'), required: true }}>
-                <OwnerSearchSelect value={ownerId} onChange={setOwnerId} disabled={isPostProjectEdit} />
+                <OwnerSearchSelect
+                  value={ownerId}
+                  onChange={(v) => {
+                    setOwnerId(v);
+                    dirtyRef.current = true;
+                  }}
+                  disabled={isPostProjectEdit}
+                />
               </Form.Slot>
             </div>
           </div>
@@ -224,13 +360,30 @@ const RequirementFormModal = ({
           </div>
         </div>
 
-        <div className="requirement-form-modal-footer">
-          <Button theme="light" onClick={onCancel}>
-            {t('common.cancel')}
-          </Button>
-          <Button htmlType="submit" theme="solid" type="primary" loading={loading}>
-            {isPostProjectEdit ? '下一步:发布变更' : (isEdit ? t('common.save') : t('common.create'))}
-          </Button>
+        <div
+          className="requirement-form-modal-footer"
+          style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}
+        >
+          <div>
+            {isPostProjectEdit && (
+              <Button
+                theme="borderless"
+                type="tertiary"
+                loading={savingDraft}
+                onClick={handleSaveDraft}
+              >
+                保存草稿
+              </Button>
+            )}
+          </div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <Button theme="light" onClick={handleClose}>
+              {t('common.cancel')}
+            </Button>
+            <Button htmlType="submit" theme="solid" type="primary" loading={loading}>
+              {isPostProjectEdit ? '下一步:发布变更' : (isEdit ? t('common.save') : t('common.create'))}
+            </Button>
+          </div>
         </div>
       </Form>
     </Modal>
@@ -242,6 +395,10 @@ const RequirementFormModal = ({
         onCancel={() => setPublishVisible(false)}
         onPublished={() => {
           setPublishVisible(false);
+          // publishChange 内部会清掉草稿
+          setHasDraft(false);
+          setDraftLoadedAt(null);
+          dirtyRef.current = false;
           onPublished?.();
           onCancel();
         }}
@@ -253,7 +410,6 @@ const RequirementFormModal = ({
 
 /**
  * Scheme 字段批量渲染器：必须作为 Form 的子组件以使用 useFormState 读取依赖字段值。
- * 根据 field.depends_on 决定是否渲染（不满足时整体卸载，避免脏值参与提交）。
  */
 const SchemeFieldsRenderer = ({
   fields,
