@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
-import { Typography, Tabs, Empty, Pagination, Card, Space, Button, Tag, Input, Select, Checkbox } from '@douyinfe/semi-ui';
+import {
+  Typography, Tabs, Table, Button, Input, Select, Pagination, Tag, Space, Tooltip,
+} from '@douyinfe/semi-ui';
 import { IconSearch } from '@douyinfe/semi-icons';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -7,33 +9,30 @@ import { MoreHorizontal } from 'lucide-react';
 import StatusTag, { type ShareStatus } from '@/components/sharing/StatusTag';
 import SourceBadge from '@/components/sharing/SourceBadge';
 import AssetTypeIcon from '@/pages/Sharing/Market/components/AssetTypeIcon';
-import { IllustrationNoResult } from '@douyinfe/semi-illustrations';
 import emptyImg from '@/assets/empty-state/no-data.png';
-import {
-  type ShareAsset, getMine, subscribe,
-} from './store';
+import { type ShareAsset, getMine, subscribe } from './store';
 import NewAssetDropdown from './components/NewAssetDropdown';
 import AssetActionsMenu from './components/AssetActionsMenu';
 import BatchActionBar from './components/BatchActionBar';
 import './index.less';
 
-const { Title, Text, Paragraph } = Typography;
+const { Title, Text } = Typography;
 const TabPane = Tabs.TabPane;
 
 const TABS: ShareStatus[] = ['PUBLISHED', 'DRAFT', 'PENDING_APPROVAL', 'REJECTED', 'ARCHIVED'];
-const PAGE_SIZE = 12;
+const PAGE_SIZE = 10;
 
 type TypeFilter = 'ALL' | 'SNIPPET' | 'WORKFLOW' | 'KNOWLEDGE' | 'SKILL';
 type SourceFilter = 'ALL' | 'NATIVE' | 'DEV_CENTER';
 
 const typeRoute: Record<string, string> = { SNIPPET: 'snippet', WORKFLOW: 'workflow', KNOWLEDGE: 'knowledge', SKILL: 'skill' };
 
-const useStore = () => useSyncExternalStore(subscribe, () => getMine().length);
+const useStoreVersion = () => useSyncExternalStore(subscribe, () => getMine().length);
 
 const MySharedPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  useStore(); // 触发订阅
+  useStoreVersion();
   const all = getMine();
 
   const [tab, setTab] = useState<ShareStatus>('PUBLISHED');
@@ -42,12 +41,11 @@ const MySharedPage = () => {
   const [debounced, setDebounced] = useState('');
   const [typeF, setTypeF] = useState<TypeFilter>('ALL');
   const [sourceF, setSourceF] = useState<SourceFilter>('ALL');
-  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
 
-  // 关键词 ≥2 字符 + 300ms 防抖
   useEffect(() => {
     const k = keyword.trim();
-    const timer = setTimeout(() => setDebounced(k.length >= 2 ? k : ''), 300);
+    const timer = setTimeout(() => setDebounced(k), 300);
     return () => clearTimeout(timer);
   }, [keyword]);
 
@@ -82,16 +80,91 @@ const MySharedPage = () => {
 
   const goDetail = (a: ShareAsset) => navigate(`/sharing-center/market/${typeRoute[a.type]}/${a.id}`);
 
-  const toggleSelect = (id: string) => {
-    setSelected((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id); else next.add(id);
-      return next;
-    });
-  };
-  const selectedAssets = paged.filter((a) => selected.has(a.id));
+  const selectedAssets = list.filter((a) => selectedKeys.includes(a.id));
 
-  const emptyTitle = filtered ? t('sharing.myShared.empty.noResult') : t(`sharing.myShared.empty.${tab.toLowerCase()}`);
+  const columns = [
+    {
+      title: t('sharing.myShared.col.name'),
+      dataIndex: 'name',
+      ellipsis: { showTitle: false },
+      render: (_: string, row: ShareAsset) => (
+        <div className="cell-name">
+          <AssetTypeIcon type={row.type} />
+          <Button
+            theme="borderless"
+            type="primary"
+            onClick={() => goDetail(row)}
+            style={{ padding: 0, height: 'auto', maxWidth: '100%' }}
+          >
+            <Text ellipsis={{ showTooltip: true }} style={{ maxWidth: 280 }}>{row.name}</Text>
+          </Button>
+        </div>
+      ),
+    },
+    {
+      title: t('sharing.myShared.col.type'),
+      dataIndex: 'type',
+      width: 100,
+      render: (v: string) => t(`sharing.market.tabs.${v}`),
+    },
+    {
+      title: t('sharing.myShared.col.source'),
+      dataIndex: 'source',
+      width: 110,
+      render: (v: 'NATIVE' | 'DEV_CENTER') => <SourceBadge source={v} />,
+    },
+    {
+      title: t('sharing.myShared.col.status'),
+      dataIndex: 'shareStatus',
+      width: 100,
+      render: (v: ShareStatus) => <StatusTag status={v} />,
+    },
+    {
+      title: t('sharing.myShared.col.version'),
+      dataIndex: 'currentVersion',
+      width: 100,
+    },
+    {
+      title: t('sharing.myShared.col.tags'),
+      dataIndex: 'tags',
+      width: 200,
+      render: (tags: string[]) => (
+        <Space spacing={4} wrap>
+          {tags.slice(0, 2).map((tag) => (
+            <Tag key={tag} size="small" color="grey" type="light">{tag}</Tag>
+          ))}
+          {tags.length > 2 && (
+            <Tooltip content={tags.slice(2).join('、')}>
+              <Tag size="small" color="grey" type="light">+{tags.length - 2}</Tag>
+            </Tooltip>
+          )}
+        </Space>
+      ),
+    },
+    {
+      title: t('sharing.myShared.col.updatedAt'),
+      dataIndex: 'updatedAt',
+      width: 120,
+    },
+    {
+      title: t('sharing.myShared.col.action'),
+      width: 130,
+      fixed: 'right' as const,
+      render: (_: unknown, row: ShareAsset) => (
+        <div className="cell-actions" onClick={(e) => e.stopPropagation()}>
+          <Button size="small" theme="borderless" type="primary" onClick={() => goDetail(row)}>
+            {t('sharing.myShared.actions.view')}
+          </Button>
+          <AssetActionsMenu
+            asset={row}
+            trigger={
+              <Button size="small" theme="borderless" type="tertiary" icon={<MoreHorizontal size={14} strokeWidth={2} />} />
+            }
+          />
+        </div>
+      ),
+    },
+  ];
 
   return (
     <div className="my-shared-page">
@@ -102,7 +175,7 @@ const MySharedPage = () => {
 
       <Tabs
         activeKey={tab}
-        onChange={(k) => { setTab(k as ShareStatus); setPage(1); setSelected(new Set()); }}
+        onChange={(k) => { setTab(k as ShareStatus); setPage(1); setSelectedKeys([]); }}
         className="my-shared-tabs"
         keepDOM={false}
       >
@@ -111,18 +184,18 @@ const MySharedPage = () => {
         ))}
       </Tabs>
 
-      <div className="my-shared-filters">
+      <div className="my-shared-toolbar">
         <Input
           prefix={<IconSearch />}
           value={keyword}
-          onChange={setKeyword}
+          onChange={(v) => { setKeyword(v); setPage(1); }}
           placeholder={t('sharing.myShared.filters.searchPlaceholder')}
           showClear
           style={{ width: 320 }}
         />
         <Select
           value={typeF}
-          onChange={(v) => setTypeF(v as TypeFilter)}
+          onChange={(v) => { setTypeF(v as TypeFilter); setPage(1); }}
           style={{ width: 140 }}
           insetLabel={t('sharing.myShared.filters.type')}
           optionList={[
@@ -135,7 +208,7 @@ const MySharedPage = () => {
         />
         <Select
           value={sourceF}
-          onChange={(v) => setSourceF(v as SourceFilter)}
+          onChange={(v) => { setSourceF(v as SourceFilter); setPage(1); }}
           style={{ width: 160 }}
           insetLabel={t('sharing.myShared.filters.source')}
           optionList={[
@@ -151,79 +224,53 @@ const MySharedPage = () => {
         )}
       </div>
 
-      <BatchActionBar selected={selectedAssets} onClear={() => setSelected(new Set())} />
+      <BatchActionBar selected={selectedAssets} onClear={() => setSelectedKeys([])} />
 
       <div className="my-shared-body">
-        {list.length === 0 ? (
-          <div className="my-shared-empty">
-            <Empty
-              image={filtered
-                ? <IllustrationNoResult style={{ width: 120, height: 120 }} />
-                : <img src={emptyImg} alt="empty" style={{ width: 120, height: 120 }} />}
-              title={emptyTitle}
-              description={!filtered && (tab === 'PUBLISHED' || tab === 'DRAFT')
-                ? <Button theme="solid" type="primary" onClick={() => navigate('/sharing-center/my-shared/create/knowledge')}>
-                    {t('sharing.myShared.empty.createCta')}
-                  </Button>
-                : null}
-            />
-          </div>
-        ) : (
-          <>
-            <div className="my-shared-grid">
-              {paged.map((a) => {
-                const isSel = selected.has(a.id);
-                return (
-                  <div
-                    key={a.id}
-                    className={`my-shared-card-wrapper${isSel ? ' selected' : ''}`}
-                    onClick={() => goDetail(a)}
-                  >
-                    <Card className="my-shared-card" bodyStyle={{ padding: 16 }}>
-                      <div className="card-top" onClick={(e) => e.stopPropagation()}>
-                        <Checkbox checked={isSel} onChange={() => toggleSelect(a.id)} />
-                        <AssetActionsMenu asset={a} trigger={
-                          <Button size="small" theme="borderless" type="tertiary" icon={<MoreHorizontal size={16} strokeWidth={2} />} />
-                        } />
-                      </div>
-                      <div className="card-head">
-                        <AssetTypeIcon type={a.type} />
-                        <Text strong ellipsis={{ showTooltip: true }} className="card-name">{a.name}</Text>
-                      </div>
-                      <div className="card-badges">
-                        <SourceBadge source={a.source} />
-                        <StatusTag status={a.shareStatus} />
-                      </div>
-                      <Paragraph ellipsis={{ rows: 2 }} type="tertiary" size="small" className="card-desc">
-                        {a.description}
-                      </Paragraph>
-                      <div className="card-tags">
-                        {a.tags.slice(0, 3).map((tag) => (
-                          <Tag key={tag} size="small" color="grey" type="light">{tag}</Tag>
-                        ))}
-                      </div>
-                      <div className="card-footer">
-                        <Text size="small" type="tertiary" ellipsis={{ showTooltip: true }}>
-                          {t('sharing.myShared.col.version')}: {a.currentVersion} · {a.updatedAt}
-                        </Text>
-                      </div>
-                    </Card>
-                  </div>
-                );
-              })}
+        <Table
+          size="small"
+          columns={columns}
+          dataSource={paged}
+          rowKey="id"
+          pagination={false}
+          rowSelection={{
+            selectedRowKeys: selectedKeys,
+            onChange: (keys) => setSelectedKeys((keys ?? []) as string[]),
+          }}
+          empty={
+            <div className="my-shared-empty">
+              <img src={emptyImg} alt="empty" />
+              <div className="empty-title">
+                {filtered
+                  ? t('sharing.myShared.empty.noResult')
+                  : t(`sharing.myShared.empty.${tab.toLowerCase()}`)}
+              </div>
+              {!filtered && (tab === 'PUBLISHED' || tab === 'DRAFT') && (
+                <Button
+                  theme="solid"
+                  type="primary"
+                  onClick={() => navigate('/sharing-center/my-shared/create/knowledge')}
+                  style={{ marginTop: 12 }}
+                >
+                  {t('sharing.myShared.empty.createCta')}
+                </Button>
+              )}
             </div>
-            <div className="list-pagination">
-              <Pagination
-                total={list.length}
-                pageSize={PAGE_SIZE}
-                currentPage={page}
-                onPageChange={setPage}
-                showTotal
-              />
-            </div>
-          </>
-        )}
+          }
+        />
       </div>
+
+      {list.length > 0 && (
+        <div className="list-pagination">
+          <Pagination
+            total={list.length}
+            pageSize={PAGE_SIZE}
+            currentPage={page}
+            onPageChange={setPage}
+            showTotal
+          />
+        </div>
+      )}
     </div>
   );
 };

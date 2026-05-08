@@ -3119,8 +3119,18 @@
   },
   "sharing": {
     "common": {
-      "source": { "native": "原生", "devCenter": "开发中心" },
-      "status": { "draft": "草稿", "pending": "待审批", "published": "已发布", "rejected": "已拒绝", "archived": "已归档", "unlisted": "已下架" }
+      "source": {
+        "native": "原生",
+        "devCenter": "开发中心"
+      },
+      "status": {
+        "draft": "草稿",
+        "pending": "待审批",
+        "published": "已发布",
+        "rejected": "已拒绝",
+        "archived": "已归档",
+        "unlisted": "已下架"
+      }
     },
     "semver": {
       "title": "发布新版本",
@@ -3205,7 +3215,16 @@
         "noResult": "未找到匹配的资产，请调整筛选条件",
         "createCta": "去新建资产"
       },
-      "col": { "version": "版本" },
+      "col": {
+        "version": "版本",
+        "name": "名称",
+        "type": "类型",
+        "source": "来源",
+        "status": "状态",
+        "tags": "标签",
+        "updatedAt": "更新时间",
+        "action": "操作"
+      },
       "create": {
         "knowledgeTitle": "新建知识",
         "skillTitle": "新建技能",
@@ -3291,7 +3310,10 @@
     },
     "approvals": {
       "pageTitle": "审批管理",
-      "tabs": { "pending": "待审批", "history": "审批历史" },
+      "tabs": {
+        "pending": "待审批",
+        "history": "审批历史"
+      },
       "col": {
         "assetType": "资产类型",
         "name": "资产名称",
@@ -3301,11 +3323,21 @@
         "result": "结果",
         "action": "操作"
       },
-      "actions": { "view": "查看", "approve": "通过", "reject": "拒绝" },
-      "empty": { "pending": "暂无待审批资产", "history": "暂无审批历史" },
+      "actions": {
+        "view": "查看",
+        "approve": "通过",
+        "reject": "拒绝"
+      },
+      "empty": {
+        "pending": "暂无待审批资产",
+        "history": "暂无审批历史"
+      },
       "confirmApproveTitle": "确认通过审批？",
       "confirmApproveContent": "确认通过「{{name}}」的发布申请？",
-      "toast": { "approved": "已通过", "rejected": "已拒绝" },
+      "toast": {
+        "approved": "已通过",
+        "rejected": "已拒绝"
+      },
       "rejectDialog": {
         "title": "拒绝发布申请",
         "target": "申请资产",
@@ -3332,14 +3364,19 @@
       "approvalLevels": {
         "pageTitle": "审批层级配置",
         "notice": "配置仅对修改后新提交的发布申请生效，不影响已在审批队列中的资产。",
-        "levels": { "NONE": "0 级 (NONE) - 免审批", "SINGLE": "1 级 (SINGLE) - 单级审批" },
+        "levels": {
+          "NONE": "0 级 (NONE) - 免审批",
+          "SINGLE": "1 级 (SINGLE) - 单级审批"
+        },
         "desc": {
           "SNIPPET": "流程块发布默认走 1 级审批",
           "WORKFLOW": "工作流发布默认走 1 级审批",
           "KNOWLEDGE": "知识库发布默认走 1 级审批",
           "SKILL": "技能发布默认走 1 级审批"
         },
-        "toast": { "saved": "审批层级已保存" }
+        "toast": {
+          "saved": "审批层级已保存"
+        }
       }
     },
     "creatorComponents": {
