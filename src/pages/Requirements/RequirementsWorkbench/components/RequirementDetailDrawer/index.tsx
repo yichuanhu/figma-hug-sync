@@ -736,7 +736,7 @@ const RequirementDetailDrawer = ({
                 <div className="requirement-detail-tab-content">
                   <ChangeLogTab
                     requirementId={effectiveData.id}
-                    refreshKey={new Date(effectiveData.updatedAt).getTime()}
+                    refreshKey={new Date(effectiveData.updatedAt).getTime() + changeLogRefreshKey}
                   />
                 </div>
               </TabPane>
