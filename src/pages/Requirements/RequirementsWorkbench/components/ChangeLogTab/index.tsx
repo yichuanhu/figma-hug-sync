@@ -73,7 +73,7 @@ const ChangeLogTab = ({ requirementId, refreshKey }: Props) => {
   }
 
   if (logs.length === 0) {
-    return <EmptyState variant="noData" description={t('requirements.changeLog.empty')} />;
+    return <EmptyState variant="noData" description={t('requirements.detail.changeLog.empty')} />;
   }
 
   return (
@@ -93,7 +93,7 @@ const ChangeLogTab = ({ requirementId, refreshKey }: Props) => {
               <div className="change-log-item">
                 <div className="change-log-item-header">
                   <Tag color={typeColorMap[log.changeType]} size="small">
-                    {t(`requirements.changeLog.type.${log.changeType}`)}
+                    {t(`requirements.detail.changeLog.type.${log.changeType}`)}
                   </Tag>
                   {log.needsDevResponse && (
                     <Tag
@@ -101,20 +101,20 @@ const ChangeLogTab = ({ requirementId, refreshKey }: Props) => {
                       size="small"
                       type="light"
                     >
-                      {t(`requirements.changeLog.status.${log.status}`)}
+                      {t(`requirements.detail.changeLog.status.${log.status}`)}
                     </Tag>
                   )}
                   {overdue && (
                     <span className="change-log-overdue">
                       <AlertTriangle size={14} strokeWidth={2} />
-                      {t('requirements.changeLog.overdue', { days: OVERDUE_DAYS })}
+                      {t('requirements.detail.changeLog.overdue', { days: OVERDUE_DAYS })}
                     </span>
                   )}
                 </div>
 
                 <div className="change-log-item-meta">
                   <Text type="tertiary" size="small">
-                    {t('requirements.changeLog.publishedBy', {
+                    {t('requirements.detail.changeLog.publishedBy', {
                       name: log.publisherName,
                       time: formatTime(log.publishedAt),
                     })}
@@ -122,7 +122,7 @@ const ChangeLogTab = ({ requirementId, refreshKey }: Props) => {
                   {log.workspaceName && (
                     <Text type="tertiary" size="small">
                       ·{' '}
-                      {t('requirements.changeLog.linkedWorkspace', {
+                      {t('requirements.detail.changeLog.linkedWorkspace', {
                         name: log.workspaceName,
                       })}
                     </Text>
@@ -131,7 +131,7 @@ const ChangeLogTab = ({ requirementId, refreshKey }: Props) => {
 
                 <div className="change-log-item-section">
                   <div className="change-log-item-section-title">
-                    {t('requirements.changeLog.reasonTitle')}
+                    {t('requirements.detail.changeLog.reasonTitle')}
                   </div>
                   <div className="change-log-item-reason">{log.reason}</div>
                 </div>
@@ -139,7 +139,7 @@ const ChangeLogTab = ({ requirementId, refreshKey }: Props) => {
                 {log.diffs.length > 0 && (
                   <div className="change-log-item-section">
                     <div className="change-log-item-section-title">
-                      {t('requirements.changeLog.diffTitle')}
+                      {t('requirements.detail.changeLog.diffTitle')}
                     </div>
                     <ul className="change-log-diffs">
                       {log.diffs.map((d) => (
@@ -160,10 +160,10 @@ const ChangeLogTab = ({ requirementId, refreshKey }: Props) => {
                       color={log.response.action === 'REJECTED' ? 'red' : 'green'}
                       size="small"
                     >
-                      {t(`requirements.changeLog.response.${log.response.action}`)}
+                      {t(`requirements.detail.changeLog.response.${log.response.action}`)}
                     </Tag>
                     <Text type="tertiary" size="small">
-                      {t('requirements.changeLog.respondedBy', {
+                      {t('requirements.detail.changeLog.respondedBy', {
                         name: log.response.responderName,
                         time: formatTime(log.response.respondedAt),
                       })}
