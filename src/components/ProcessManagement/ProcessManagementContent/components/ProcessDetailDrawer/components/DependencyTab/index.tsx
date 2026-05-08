@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Typography, Tag, Button, Modal, Toast, Banner } from '@douyinfe/semi-ui';
-import { IconDeleteStroked } from '@douyinfe/semi-icons';
 import { AlertCircle, ArrowRight, ExternalLink, Minus, Plus } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import type { LYProcessDependency, ResourceType } from '@/api';
