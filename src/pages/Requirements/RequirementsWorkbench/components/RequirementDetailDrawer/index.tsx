@@ -422,7 +422,16 @@ const RequirementDetailDrawer = ({
       }
     : data;
 
-  const canEdit = !isHistoryMode && (effectiveData.status === 'DRAFT' || effectiveData.status === 'REJECTED' || effectiveData.status === 'WITHDRAWN');
+  const canEdit = !isHistoryMode && (
+    effectiveData.status === 'DRAFT' ||
+    effectiveData.status === 'REJECTED' ||
+    effectiveData.status === 'WITHDRAWN' ||
+    // STORY-014：立项后阶段允许编辑（走草稿 + 发布变更流程）
+    effectiveData.status === 'PENDING_PROJECT' ||
+    effectiveData.status === 'DEVELOPING' ||
+    effectiveData.status === 'LAUNCHED' ||
+    effectiveData.status === 'OFFLINE'
+  );
   const canDelete = !isHistoryMode && (effectiveData.status === 'DRAFT' || effectiveData.status === 'REJECTED' || effectiveData.status === 'WITHDRAWN');
   const canResubmit = !isHistoryMode && (effectiveData.status === 'REJECTED' || effectiveData.status === 'WITHDRAWN') && effectiveData.creatorId === MOCK_CURRENT_USER_ID;
   const canOffline = !isHistoryMode && effectiveData.status === 'LAUNCHED';
