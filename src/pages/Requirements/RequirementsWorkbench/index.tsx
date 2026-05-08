@@ -71,6 +71,7 @@ const RequirementsWorkbench = () => {
   // 筛选
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
   const [projectFilter, setProjectFilter] = useState<string[]>([]);
+  const [statusFilter, setStatusFilter] = useState<RequirementStatus[]>([]);
 
   // 状态
   const [loading, setLoading] = useState(true);
