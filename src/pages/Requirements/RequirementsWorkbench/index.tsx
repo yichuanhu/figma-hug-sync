@@ -101,13 +101,14 @@ const RequirementsWorkbench = () => {
         ...queryParams,
         departmentFilter,
         projectFilter,
+        statusFilter,
       });
       setListResponse(response);
     } finally {
       setLoading(false);
       setIsInitialLoad(false);
     }
-  }, [queryParams, departmentFilter, projectFilter]);
+  }, [queryParams, departmentFilter, projectFilter, statusFilter]);
 
   useEffect(() => {
     loadData();
