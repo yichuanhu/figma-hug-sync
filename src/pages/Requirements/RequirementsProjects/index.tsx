@@ -20,7 +20,12 @@ import { Plus, Pencil, Trash2, Ellipsis } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import type { Project } from './types';
-import { fetchProjects, deleteProject } from './mockData';
+import { fetchProjects, deleteProject, getWorkspaceIdsByProject } from './mockData';
+import {
+  countUnackedByWorkspaces,
+  firstPendingChangeByWorkspaces,
+} from '../RequirementsWorkbench/mockData';
+import UnackedBadge from '@/components/UnackedBadge';
 import ProjectFormModal from './components/ProjectFormModal';
 import ProjectDetailDrawer from './components/ProjectDetailDrawer';
 import './index.less';
