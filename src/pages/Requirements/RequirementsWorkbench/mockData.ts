@@ -1315,29 +1315,117 @@ let changeLogStore: RequirementChangeLog[] = [];
 
 const seedChangeLogs = async () => {
   if (changeLogStore.length > 0) return;
-  const dev = mockRequirementData.find((r) => r.status === 'DEVELOPING');
-  if (!dev) return;
-  let wsBinding: { workspace: { id: string; name: string } } | null = null;
+  // 为所有「立项后」状态的需求各 mock 几条变更日志，覆盖三种类型与三种响应状态
+  const targets = mockRequirementData.filter((r) =>
+    ['PENDING_PROJECT', 'DEVELOPING', 'LAUNCHED', 'OFFLINE'].includes(r.status),
+  );
+  if (targets.length === 0) return;
+
+  let resolveWs: ((id: string) => { workspace: { id: string; name: string } } | null) | null = null;
   try {
     const m = await import('../RequirementsProjects/mockData');
-    wsBinding = m.findWorkspaceByRequirementId?.(dev.id) ?? null;
+    resolveWs = (id: string) => m.findWorkspaceByRequirementId?.(id) ?? null;
   } catch {
-    wsBinding = null;
+    resolveWs = null;
   }
-  const tenDaysAgo = new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString();
-  changeLogStore.push({
-    id: `chg-seed-${dev.id}`,
-    requirementId: dev.id,
-    workspaceId: wsBinding?.workspace?.id,
-    workspaceName: wsBinding?.workspace?.name,
-    changeType: 'DEV_IMPACT',
-    reason: '将优先级由中调整为高，请评估排期是否需要前置。',
-    diffs: [{ key: 'priority', before: 'MEDIUM', after: 'HIGH' }],
-    publisherId: MOCK_CURRENT_USER_ID,
-    publisherName: mockCreators[MOCK_CURRENT_USER_ID]?.name ?? '系统',
-    publishedAt: tenDaysAgo,
-    needsDevResponse: !!wsBinding,
-    status: wsBinding ? 'PENDING' : 'NONE',
+
+  const now = Date.now();
+  const daysAgo = (n: number) => new Date(now - n * 24 * 60 * 60 * 1000).toISOString();
+  const publisher = mockCreators[MOCK_CURRENT_USER_ID]?.name ?? '系统';
+  const responder = mockCreators['user-002']?.name ?? '李工';
+
+  targets.forEach((req, idx) => {
+    const ws = resolveWs?.(req.id) ?? null;
+    const baseId = req.id;
+
+    // 1) CONTENT — 已发布无需响应（5 天前）
+    changeLogStore.push({
+      id: `chg-${baseId}-content`,
+      requirementId: req.id,
+      workspaceId: ws?.workspace?.id,
+      workspaceName: ws?.workspace?.name,
+      changeType: 'CONTENT',
+      reason: '完善需求背景描述，补充上下游业务依赖说明，便于开发理解。',
+      diffs: [
+        { key: 'description', label: '需求描述', before: '原描述（节选）...', after: '更新后的描述（包含背景、目标、依赖）...' },
+      ],
+      publisherId: MOCK_CURRENT_USER_ID,
+      publisherName: publisher,
+      publishedAt: daysAgo(5),
+      needsDevResponse: false,
+      status: 'NONE',
+    });
+
+    // 2) DEV_IMPACT — 已响应（ACK / ADJUSTED / REJECTED 轮转）
+    if (ws) {
+      const respCycle: Array<'ACK' | 'ADJUSTED' | 'REJECTED'> = ['ACK', 'ADJUSTED', 'REJECTED'];
+      const action = respCycle[idx % 3];
+      changeLogStore.push({
+        id: `chg-${baseId}-resolved`,
+        requirementId: req.id,
+        workspaceId: ws.workspace.id,
+        workspaceName: ws.workspace.name,
+        changeType: 'DEV_IMPACT',
+        reason: '调整自动化比例由 60% 提升至 80%，预期收益翻倍，请评估技术可行性。',
+        diffs: [
+          { key: 'form.automation_ratio', label: '可自动化比例', before: '60%', after: '80%' },
+        ],
+        publisherId: MOCK_CURRENT_USER_ID,
+        publisherName: publisher,
+        publishedAt: daysAgo(3),
+        needsDevResponse: true,
+        status: 'RESOLVED',
+        response: {
+          id: `resp-${baseId}-1`,
+          action,
+          comment:
+            action === 'REJECTED'
+              ? '当前阶段无法支持，建议下一迭代评估，或拆分为独立子需求。'
+              : action === 'ADJUSTED'
+                ? '已按新比例调整排期，预计延后 2 天上线。'
+                : undefined,
+          responderId: 'user-002',
+          responderName: responder,
+          respondedAt: daysAgo(2),
+        },
+      });
+    }
+
+    // 3) DEV_IMPACT — 待响应且超时（>7 天，触发 ⚠️）
+    if (ws) {
+      changeLogStore.push({
+        id: `chg-${baseId}-overdue`,
+        requirementId: req.id,
+        workspaceId: ws.workspace.id,
+        workspaceName: ws.workspace.name,
+        changeType: 'DEV_IMPACT',
+        reason: '将优先级由中调整为高，请评估排期是否需要前置。',
+        diffs: [{ key: 'priority', label: '优先级', before: 'MEDIUM', after: 'HIGH' }],
+        publisherId: MOCK_CURRENT_USER_ID,
+        publisherName: publisher,
+        publishedAt: daysAgo(10),
+        needsDevResponse: true,
+        status: 'PENDING',
+      });
+    }
+
+    // 4) SYSTEM — 系统自动变更（1 天前）
+    changeLogStore.push({
+      id: `chg-${baseId}-system`,
+      requirementId: req.id,
+      workspaceId: ws?.workspace?.id,
+      workspaceName: ws?.workspace?.name,
+      changeType: 'SYSTEM',
+      reason: '系统根据立项流程自动同步关联工作空间。',
+      diffs: [
+        { key: 'linkedWorkspace', label: '关联工作空间', before: '-', after: ws?.workspace?.name ?? '-' },
+      ],
+      publisherId: 'system',
+      publisherName: '系统',
+      publishedAt: daysAgo(1),
+      needsDevResponse: false,
+      status: 'NONE',
+    });
   });
 };
 let seeded = false;
