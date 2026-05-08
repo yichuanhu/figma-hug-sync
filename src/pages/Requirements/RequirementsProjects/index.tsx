@@ -80,9 +80,6 @@ const RequirementsProjects = () => {
 
   const filtered = useMemo(() => {
     let list = projects;
-    if (statusFilter.length > 0) {
-      list = list.filter((p) => statusFilter.includes(p.aggregatedStatus));
-    }
     if (keyword.trim()) {
       const k = keyword.trim().toLowerCase();
       list = list.filter(
@@ -92,7 +89,7 @@ const RequirementsProjects = () => {
       );
     }
     return list;
-  }, [projects, keyword, statusFilter]);
+  }, [projects, keyword]);
 
   const selected = useMemo(
     () => projects.find((p) => p.id === selectedId) ?? null,
