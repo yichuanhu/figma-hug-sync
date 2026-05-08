@@ -9,6 +9,7 @@ import { allAssets } from '@/pages/Sharing/Market/mockData';
 import type { Asset, AssetVersion, AssetSource, AssetType, KnowledgeExtension, SkillExtension } from '@/pages/Sharing/Market/types';
 import type { ShareStatus } from '@/components/sharing/StatusTag';
 import type { ApprovalEvent } from '@/components/sharing/ApprovalTimeline';
+import { getApprovalLevel, type AssetTypeKey } from '@/pages/SharingCenter/shared/approvalConfig';
 
 export const CURRENT_USER_ID = 'me';
 export const CURRENT_USER_NAME = '当前用户';
