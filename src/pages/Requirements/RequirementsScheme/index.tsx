@@ -33,23 +33,22 @@ const RequirementsScheme = () => {
   const [parseErrors, setParseErrors] = useState<string[]>([]);
 
   const [detailScheme, setDetailScheme] = useState<RequirementScheme | null>(null);
-  const [editingScheme, setEditingScheme] = useState<RequirementScheme | null>(null);
+  const [presetPickerVisible, setPresetPickerVisible] = useState(false);
+  const navigate = useNavigate();
 
-  const handleEditApprovalFlow = (s: RequirementScheme) => {
-    if (s.is_preset) {
-      Toast.warning(t('requirements.scheme.editor.presetNotEditable'));
-      return;
-    }
-    setEditingScheme(s);
+  const goEdit = (s: RequirementScheme) => {
+    navigate(`/requirements/scheme/builder/${s.id}`);
   };
 
-  const handleSaveApprovalFlow = async (levels: ApprovalLevelConfig[]) => {
-    if (!editingScheme) return;
-    const updated = await updateSchemeApprovalFlow(editingScheme.id, { levels });
-    setEditingScheme(null);
-    // 同步抽屉显示的最新方案
-    if (detailScheme?.id === updated.id) setDetailScheme(updated);
-    load();
+  const handleCreateNew = async () => {
+    const draft = await createSchemeDraft({ name: '未命名方案', version: '1.0.0' });
+    navigate(`/requirements/scheme/builder/${draft.id}`);
+  };
+
+  const handleCloneFromPreset = async (sourceId: string) => {
+    const draft = await cloneSchemeAsDraft(sourceId);
+    setPresetPickerVisible(false);
+    navigate(`/requirements/scheme/builder/${draft.id}`);
   };
 
   const load = useCallback(async () => {
