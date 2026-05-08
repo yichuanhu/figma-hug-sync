@@ -314,6 +314,13 @@ interface RequirementDetailDrawerProps {
   onPageChange?: (page: number, direction: 'prev' | 'next') => void;
   onScrollToRow?: (id: string) => void;
   initialTab?: string;
+  /**
+   * 入口上下文：
+   * - 'list'（默认）：需求列表打开，隐藏审批操作区，评估tab只读
+   * - 'approval'：需求审批菜单打开，展示审批操作
+   * - 'assessment'：需求评估菜单打开，展示评估编辑
+   */
+  context?: 'list' | 'approval' | 'assessment';
 }
 
 const RequirementDetailDrawer = ({

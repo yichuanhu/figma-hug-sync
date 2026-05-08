@@ -42,12 +42,14 @@ const conclusionTagColor: Record<AssessmentConclusionV2, 'green' | 'orange' | 'r
 interface Props {
   data: RequirementItem;
   onSaveAssessment: (id: string, assessment: DetailedAssessment) => Promise<void>;
+  forceReadonly?: boolean;
 }
 
-const AssessmentTab = ({ data, onSaveAssessment }: Props) => {
+const AssessmentTab = ({ data, onSaveAssessment, forceReadonly }: Props) => {
   const { t } = useTranslation();
   const existing = data.detailedAssessment;
   const readonly =
+    !!forceReadonly ||
     !!existing ||
     !(['PENDING_ASSESSMENT'] as string[]).includes(data.status);
 
