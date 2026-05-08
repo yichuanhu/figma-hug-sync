@@ -153,7 +153,7 @@
     "marketWorkflow": "工作流",
     "marketKnowledge": "知识库",
     "marketSkill": "技能",
-    "marketSnippet": "代码片段",
+    "marketSnippet": "流程块",
     "userMenu": {
       "adminConsole": "管理后台",
       "personalCenter": "个人中心",
@@ -3192,7 +3192,7 @@
         "notice": "配置仅对修改后新提交的发布申请生效，不影响已在审批队列中的资产。",
         "levels": { "NONE": "0 级 (NONE) - 免审批", "SINGLE": "1 级 (SINGLE) - 单级审批" },
         "desc": {
-          "SNIPPET": "代码片段发布默认走 1 级审批",
+          "SNIPPET": "流程块发布默认走 1 级审批",
           "WORKFLOW": "工作流发布默认走 1 级审批",
           "KNOWLEDGE": "知识库发布默认走 1 级审批",
           "SKILL": "技能发布默认走 1 级审批"
@@ -3255,20 +3255,20 @@
         "WORKFLOW": "工作流",
         "KNOWLEDGE": "知识库",
         "SKILL": "技能",
-        "SNIPPET": "代码片段"
+        "SNIPPET": "流程块"
       },
       "subTitles": {
         "workflow": "工作流市场",
         "knowledge": "知识库市场",
         "skill": "技能市场",
-        "snippet": "代码片段市场"
+        "snippet": "流程块市场"
       },
       "empty": {
         "default": "暂无资产",
         "workflow": "暂无工作流",
         "knowledge": "暂无知识库",
         "skill": "暂无技能",
-        "snippet": "暂无代码片段"
+        "snippet": "暂无流程块"
       },
       "filter": {
         "sort": "排序",
