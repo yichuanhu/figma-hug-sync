@@ -151,7 +151,7 @@ const MySharedPage = () => {
       width: 130,
       fixed: 'right' as const,
       render: (_: unknown, row: ShareAsset) => (
-        <Space spacing={4} onClick={(e) => e.stopPropagation()}>
+        <div className="cell-actions" onClick={(e) => e.stopPropagation()}>
           <Button size="small" theme="borderless" type="primary" onClick={() => goDetail(row)}>
             {t('sharing.myShared.actions.view')}
           </Button>
@@ -161,7 +161,7 @@ const MySharedPage = () => {
               <Button size="small" theme="borderless" type="tertiary" icon={<MoreHorizontal size={14} strokeWidth={2} />} />
             }
           />
-        </Space>
+        </div>
       ),
     },
   ];
