@@ -339,6 +339,7 @@ const RequirementDetailDrawer = ({
   onPageChange,
   onScrollToRow,
   initialTab = 'overview',
+  context = 'list',
 }: RequirementDetailDrawerProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -347,6 +348,8 @@ const RequirementDetailDrawer = ({
   const [activeTab, setActiveTab] = useState<string>(initialTab);
   const [viewingVersion, setViewingVersion] = useState<'current' | number>('current');
   const [pickerVisible, setPickerVisible] = useState(false);
+  const showApprovalSection = context === 'approval';
+  const assessmentReadonly = context !== 'assessment';
 
   // 抽屉关闭后重置 tab/版本视图；打开新数据时不重置 tab
   useEffect(() => {
