@@ -193,6 +193,7 @@ const App = () => {
         {/* 无布局页面 */}
         <Route path="*" element={<NotFound />} />
       </Routes>
+      <PreviewDiagnostics />
     </BrowserRouter>
   </QueryClientProvider>
   </LicenseProvider>
