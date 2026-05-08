@@ -1182,8 +1182,8 @@ export const withdrawRequirement = async (id: string): Promise<RequirementItem |
   const index = mockRequirementData.findIndex((r) => r.id === id);
   if (index === -1) return null;
   const cur = mockRequirementData[index];
-  if (cur.status !== 'PENDING_APPROVAL') {
-    throw new Error('Only PENDING_APPROVAL requirements can be withdrawn');
+  if (cur.status !== 'PENDING_APPROVAL' && cur.status !== 'PENDING_ASSESSMENT') {
+    throw new Error('Only PENDING_APPROVAL or PENDING_ASSESSMENT requirements can be withdrawn');
   }
   if (cur.creatorId !== MOCK_CURRENT_USER_ID) {
     throw new Error('Only the creator can withdraw the requirement');
