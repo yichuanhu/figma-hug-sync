@@ -568,6 +568,75 @@
         "errorApproversRequired": "「{{name}}」必须至少选择一位审批人",
         "saveSuccess": "审批流已更新",
         "presetNotEditable": "预设方案不可编辑审批流"
+      },
+      "createNew": "创建新方案",
+      "createBasedOnPreset": "基于预设创建",
+      "edit": "编辑方案",
+      "builder": {
+        "notFound": "方案不存在",
+        "saveDraft": "保存草稿",
+        "savedDraft": "草稿已保存",
+        "testDrive": "Test Drive",
+        "testDriveTitle": "Test Drive：预览并测试表单",
+        "testDriveHint": "这是业务人员看到的表单效果，您可以填写测试数据以体验",
+        "testDriveSubmitted": "模拟提交成功（仅预览，未持久化）",
+        "draftBadge": "草稿",
+        "newVersionBadge": "新版本",
+        "incompleteTitle": "方案不完整",
+        "incompleteHint": "请完成以下缺失项后再保存：",
+        "activateTitle": "激活方案",
+        "activateContent": "确定将方案「{{name}}」设为激活状态？同租户下其他方案将自动失效。",
+        "forkTitle": "创建新版本",
+        "forkActiveContent": "「{{name}}」已激活，编辑将创建新版本草稿（原版本保持激活）。",
+        "forkPresetContent": "「{{name}}」为预设方案，编辑将基于其创建新草稿。",
+        "tabs": {
+          "form": "表单",
+          "assessment": "评估",
+          "workflow": "工作流",
+          "cost": "成本"
+        },
+        "fieldType": {
+          "paletteTitle": "字段类型",
+          "text": "单行文本",
+          "textarea": "多行文本",
+          "number": "数字",
+          "percentage": "百分比",
+          "select": "单选下拉",
+          "multi_select": "多选下拉",
+          "radio": "单选按钮",
+          "checkbox": "复选框",
+          "checkbox_group": "复选框组",
+          "date": "日期",
+          "file_upload": "文件上传",
+          "rich_text": "富文本",
+          "calculation": "自动计算"
+        },
+        "systemFields": "系统字段（锁定）",
+        "customFields": "自定义字段",
+        "emptyFields": "暂无自定义字段，从左侧组件库添加",
+        "fieldConfig": {
+          "title": "配置字段：{{name}}",
+          "basic": "基本信息",
+          "validation": "验证规则",
+          "ui": "UI 配置",
+          "default": "默认值",
+          "depends": "依赖关系"
+        },
+        "errors": {
+          "fieldKeyDuplicate": "字段名称必须唯一",
+          "minGtMax": "最小值不能大于最大值",
+          "minLenGtMaxLen": "最小长度不能大于最大长度",
+          "keyRequired": "字段名称必填",
+          "labelRequired": "显示标签必填",
+          "levelDuplicate": "该岗位级别已存在"
+        },
+        "assessment": {
+          "title": "评估模型",
+          "empty": "暂无评估模型，请添加价值评估或复杂度评估"
+        },
+        "workflow": {
+          "title": "工作流"
+        }
       }
     },
     "priority": {

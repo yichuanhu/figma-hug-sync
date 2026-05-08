@@ -181,6 +181,12 @@ export interface AssessmentDimension {
   /** 表达式（可选，用于计算多个字段聚合） */
   expression?: string;
   description?: string;
+  /** 维度类型：自动计算 / 手动打分（builder 增量字段） */
+  dimension_type?: 'auto_calculated' | 'manual_score';
+  /** 自动计算时引用的源字段映射（builder 增量字段） */
+  source_fields?: Record<string, string>;
+  /** 该维度的得分档位（builder 增量字段，可选） */
+  tiers?: AssessmentTier[];
 }
 
 export interface AssessmentModel {
@@ -218,6 +224,13 @@ export interface ApprovalFlowConfig {
 
 // ============= 成本配置 =============
 
+/** Builder 用费率表条目（数组形式，保持顺序与显示标签）。 */
+export interface CostRateEntry {
+  level: string;
+  label: string;
+  daily_rate: number;
+}
+
 export interface CostConfig {
   /** 平均时薪（元）— 兼容旧字段，不再强制使用 */
   avg_hourly_cost?: number;
@@ -233,8 +246,57 @@ export interface CostConfig {
   rate_table?: Record<string, number>;
   /** 岗位级别 code → 显示文案（中文标签）。与 rate_table key 对齐 */
   level_labels?: Record<string, string>;
+  /** Builder 用费率表数组（带顺序，权威源）。保存时同步映射回 rate_table / level_labels */
+  rate_table_v2?: CostRateEntry[];
   /** 自定义计算基准说明 */
   custom_basis?: string;
+}
+
+// ============= 工作流配置（Builder 用） =============
+
+/** 第一期允许的审批人/评估人类型 */
+export type WorkflowApproverType = 'department_leader' | 'specific_users' | 'role';
+export type WorkflowApprovalMode = 'any_one' | 'all' | 'majority';
+
+export interface WorkflowApprover {
+  id: string;
+  /** 显示名称（如「部门领导审批」） */
+  name: string;
+  type: WorkflowApproverType;
+  priority: number;
+  required: boolean;
+  /** 审批模式 */
+  approval_mode?: WorkflowApprovalMode;
+  /** specific_users / role 时的目标 ID 列表 */
+  target_ids?: string[];
+  /** 超时天数 */
+  timeout_days?: number;
+}
+
+export interface WorkflowTransition {
+  id: string;
+  to: string;
+  action: string;
+  label: string;
+  auto_assign?: boolean;
+}
+
+export interface WorkflowState {
+  id: string;
+  name: string;
+  initial?: boolean;
+  /** 是否绑定审批人/评估人配置 */
+  role?: 'approval' | 'assessment' | 'normal';
+  transitions: WorkflowTransition[];
+}
+
+export interface WorkflowConfig {
+  template?: string;
+  states: WorkflowState[];
+  /** 审批人多级（priority 升序） */
+  approvers: WorkflowApprover[];
+  /** 评估人多级（priority 升序） */
+  assessors: WorkflowApprover[];
 }
 
 // ============= Scheme（方案）主结构 =============
@@ -259,12 +321,18 @@ export interface RequirementScheme {
   status: SchemeStatus;
   /** 是否为内置预设（不可删除/编辑） */
   is_preset: boolean;
+  /** 是否为草稿（builder 增量字段） */
+  is_draft?: boolean;
+  /** 父方案 ID（AF2 复制激活方案时记录） */
+  parent_id?: string;
   meta?: SchemeMeta;
   custom_fields: SchemeField[];
   value_assessment_model?: AssessmentModel;
   complexity_assessment_model?: AssessmentModel;
   approval_flow: ApprovalFlowConfig;
   cost_config?: CostConfig;
+  /** 工作流配置（builder 增量字段） */
+  workflow_config?: WorkflowConfig;
   /** 原始 YAML 内容（用于查看） */
   raw_yaml?: string;
   created_at: string;

@@ -1,21 +1,22 @@
 import { useEffect, useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Typography, Button, Input, Tag, Toast, Modal, Dropdown, Upload, Row, Col, Space } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
 import type { FileItem } from '@douyinfe/semi-ui/lib/es/upload';
-import { Upload as UploadIcon, Ellipsis, CheckCircle, Eye, Trash2, History, Pencil, Inbox, File as FileIcon, X } from 'lucide-react';
+import { Upload as UploadIcon, Ellipsis, CheckCircle, Eye, Trash2, History, Pencil, Inbox, File as FileIcon, X, Plus, Copy } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import {
   fetchSchemes,
   activateScheme,
   addScheme,
   deleteScheme,
-  updateSchemeApprovalFlow,
+  createSchemeDraft,
+  cloneSchemeAsDraft,
 } from '../RequirementsWorkbench/schemeConfig';
-import type { RequirementScheme, ApprovalLevelConfig } from '../RequirementsWorkbench/types';
+import type { RequirementScheme } from '../RequirementsWorkbench/types';
 import { parseSchemeYaml } from './schemeYamlParser';
 import SchemeDetailDrawer from './components/SchemeDetailDrawer';
-import SchemeApprovalFlowEditor from './components/SchemeApprovalFlowEditor';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -32,23 +33,22 @@ const RequirementsScheme = () => {
   const [parseErrors, setParseErrors] = useState<string[]>([]);
 
   const [detailScheme, setDetailScheme] = useState<RequirementScheme | null>(null);
-  const [editingScheme, setEditingScheme] = useState<RequirementScheme | null>(null);
+  const [presetPickerVisible, setPresetPickerVisible] = useState(false);
+  const navigate = useNavigate();
 
-  const handleEditApprovalFlow = (s: RequirementScheme) => {
-    if (s.is_preset) {
-      Toast.warning(t('requirements.scheme.editor.presetNotEditable'));
-      return;
-    }
-    setEditingScheme(s);
+  const goEdit = (s: RequirementScheme) => {
+    navigate(`/requirements/scheme/builder/${s.id}`);
   };
 
-  const handleSaveApprovalFlow = async (levels: ApprovalLevelConfig[]) => {
-    if (!editingScheme) return;
-    const updated = await updateSchemeApprovalFlow(editingScheme.id, { levels });
-    setEditingScheme(null);
-    // 同步抽屉显示的最新方案
-    if (detailScheme?.id === updated.id) setDetailScheme(updated);
-    load();
+  const handleCreateNew = async () => {
+    const draft = await createSchemeDraft({ name: '未命名方案', version: '1.0.0' });
+    navigate(`/requirements/scheme/builder/${draft.id}`);
+  };
+
+  const handleCloneFromPreset = async (sourceId: string) => {
+    const draft = await cloneSchemeAsDraft(sourceId);
+    setPresetPickerVisible(false);
+    navigate(`/requirements/scheme/builder/${draft.id}`);
   };
 
   const load = useCallback(async () => {
@@ -170,9 +170,17 @@ const RequirementsScheme = () => {
             </Space>
           </Col>
           <Col>
-            <Button icon={<UploadIcon size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => setUploadVisible(true)}>
-              {t('requirements.scheme.upload')}
-            </Button>
+            <Space>
+              <Button icon={<UploadIcon size={16} strokeWidth={2} />} onClick={() => setUploadVisible(true)}>
+                {t('requirements.scheme.upload')}
+              </Button>
+              <Button icon={<Copy size={16} strokeWidth={2} />} onClick={() => setPresetPickerVisible(true)}>
+                {t('requirements.scheme.createBasedOnPreset')}
+              </Button>
+              <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={handleCreateNew}>
+                {t('requirements.scheme.createNew')}
+              </Button>
+            </Space>
           </Col>
         </Row>
       </div>
@@ -211,10 +219,13 @@ const RequirementsScheme = () => {
                           {t('requirements.scheme.versionHistory')}
                         </Dropdown.Item>
                         {!s.is_preset && (
-                          <Dropdown.Item icon={<Pencil size={14} />} onClick={(e) => { e.stopPropagation(); handleEditApprovalFlow(s); }}>
-                            {t('requirements.scheme.editor.entry')}
+                          <Dropdown.Item icon={<Pencil size={14} />} onClick={(e) => { e.stopPropagation(); goEdit(s); }}>
+                            {t('requirements.scheme.edit')}
                           </Dropdown.Item>
                         )}
+                        <Dropdown.Item icon={<Copy size={14} />} onClick={(e) => { e.stopPropagation(); goEdit(s); }}>
+                          基于此创建副本
+                        </Dropdown.Item>
                         {!s.is_preset && (
                           <Dropdown.Item icon={<Trash2 size={14} />} type="danger" onClick={(e) => { e.stopPropagation(); handleDelete(s); }}>
                             {t('common.delete')}
@@ -311,16 +322,31 @@ const RequirementsScheme = () => {
         onNavigate={(s) => setDetailScheme(s)}
         onActivate={handleActivate}
         onDelete={(s) => { setDetailScheme(null); handleDelete(s); }}
-        onEditApprovalFlow={handleEditApprovalFlow}
+        onEditApprovalFlow={goEdit}
       />
 
-      {/* 审批流编辑弹窗 */}
-      <SchemeApprovalFlowEditor
-        visible={!!editingScheme}
-        scheme={editingScheme}
-        onClose={() => setEditingScheme(null)}
-        onSubmit={handleSaveApprovalFlow}
-      />
+      {/* 基于预设创建 */}
+      <Modal
+        title={t('requirements.scheme.createBasedOnPreset')}
+        visible={presetPickerVisible}
+        onCancel={() => setPresetPickerVisible(false)}
+        footer={null}
+        width={520}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {schemes.filter((s) => s.is_preset).map((s) => (
+            <div
+              key={s.id}
+              onClick={() => handleCloneFromPreset(s.id)}
+              style={{ padding: 12, border: '1px solid var(--semi-color-border)', borderRadius: 6, cursor: 'pointer' }}
+            >
+              <div style={{ fontWeight: 500 }}>{s.name}</div>
+              <Text type="tertiary" size="small">{s.code} · v{s.version}</Text>
+              <div style={{ marginTop: 4 }}><Text size="small" type="secondary">{s.description}</Text></div>
+            </div>
+          ))}
+        </div>
+      </Modal>
     </div>
   );
 };

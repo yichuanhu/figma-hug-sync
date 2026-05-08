@@ -662,6 +662,75 @@
         "errorApproversRequired": "\"{{name}}\" must have at least one approver",
         "saveSuccess": "Approval flow updated",
         "presetNotEditable": "Preset schemes cannot be edited"
+      },
+      "createNew": "Create New Scheme",
+      "createBasedOnPreset": "Create from Preset",
+      "edit": "Edit Scheme",
+      "builder": {
+        "notFound": "Scheme not found",
+        "saveDraft": "Save Draft",
+        "savedDraft": "Draft saved",
+        "testDrive": "Test Drive",
+        "testDriveTitle": "Test Drive: Preview Form",
+        "testDriveHint": "This is what business users will see. Fill in test data to experience the form.",
+        "testDriveSubmitted": "Mock submission successful (preview only, not persisted)",
+        "draftBadge": "Draft",
+        "newVersionBadge": "New Version",
+        "incompleteTitle": "Scheme Incomplete",
+        "incompleteHint": "Please complete the missing items below:",
+        "activateTitle": "Activate Scheme",
+        "activateContent": "Activate scheme \"{{name}}\"? Other schemes in this tenant will be deactivated.",
+        "forkTitle": "Create New Version",
+        "forkActiveContent": "\"{{name}}\" is active. Editing will create a new draft version (original stays active).",
+        "forkPresetContent": "\"{{name}}\" is a preset. Editing will create a new draft based on it.",
+        "tabs": {
+          "form": "Form",
+          "assessment": "Assessment",
+          "workflow": "Workflow",
+          "cost": "Cost"
+        },
+        "fieldType": {
+          "paletteTitle": "Field Types",
+          "text": "Single-line Text",
+          "textarea": "Multi-line Text",
+          "number": "Number",
+          "percentage": "Percentage",
+          "select": "Single Select",
+          "multi_select": "Multi Select",
+          "radio": "Radio",
+          "checkbox": "Checkbox",
+          "checkbox_group": "Checkbox Group",
+          "date": "Date",
+          "file_upload": "File Upload",
+          "rich_text": "Rich Text",
+          "calculation": "Auto Calculation"
+        },
+        "systemFields": "System Fields (Locked)",
+        "customFields": "Custom Fields",
+        "emptyFields": "No custom fields. Add from the palette on the left.",
+        "fieldConfig": {
+          "title": "Configure Field: {{name}}",
+          "basic": "Basic",
+          "validation": "Validation",
+          "ui": "UI Config",
+          "default": "Default",
+          "depends": "Dependencies"
+        },
+        "errors": {
+          "fieldKeyDuplicate": "Field name must be unique",
+          "minGtMax": "Min cannot be greater than Max",
+          "minLenGtMaxLen": "Min length cannot exceed max length",
+          "keyRequired": "Field name is required",
+          "labelRequired": "Label is required",
+          "levelDuplicate": "Level name already exists"
+        },
+        "assessment": {
+          "title": "Assessment Models",
+          "empty": "No assessment models. Add value or complexity assessment."
+        },
+        "workflow": {
+          "title": "Workflow"
+        }
       }
     },
     "priority": {

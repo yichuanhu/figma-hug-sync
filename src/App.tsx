@@ -61,6 +61,7 @@ import RequirementsReview from "@/pages/Requirements/RequirementsReview";
 import RequirementsAssessment from "@/pages/Requirements/RequirementsAssessment";
 
 import RequirementsScheme from "@/pages/Requirements/RequirementsScheme";
+import SchemeBuilderPage from "@/pages/Requirements/RequirementsScheme/components/SchemeBuilder";
 import RequirementsProjects from "@/pages/Requirements/RequirementsProjects";
 // Maintenance
 import MaintenanceWorkbench from "@/pages/Maintenance/MaintenanceWorkbench";
@@ -150,6 +151,7 @@ const App = () => {
           <Route path="/requirements/assessment" element={<RequirementsAssessment />} />
           
           <Route path="/requirements/scheme" element={<RequirementsScheme />} />
+          <Route path="/requirements/scheme/builder/:id" element={<SchemeBuilderPage />} />
           <Route path="/requirements/projects" element={<RequirementsProjects />} />
           <Route path="/operations" element={<Navigate to="/operations/dashboard" replace />} />
           <Route path="/operations/dashboard" element={<OperationsDashboard />} />
