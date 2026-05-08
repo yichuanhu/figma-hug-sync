@@ -60,7 +60,7 @@
 // ============= FormBuilder =============
 .form-builder {
   display: grid;
-  grid-template-columns: 240px 1fr;
+  grid-template-columns: 220px 1fr 380px;
   gap: 16px;
   align-items: flex-start;
 
@@ -85,6 +85,8 @@
   }
 
   .form-canvas {
+    min-width: 0;
+
     .canvas-section {
       margin-bottom: 20px;
 
@@ -103,10 +105,20 @@
         border: 1px solid var(--semi-color-border);
         border-radius: 6px;
         margin-bottom: 6px;
+        transition: border-color 0.15s, box-shadow 0.15s;
 
         &.system {
           background: var(--semi-color-fill-0);
           opacity: 0.85;
+        }
+
+        &:hover:not(.system) {
+          border-color: var(--semi-color-primary-light-active);
+        }
+
+        &.selected {
+          border-color: var(--semi-color-primary);
+          box-shadow: 0 0 0 2px var(--semi-color-primary-light-default);
         }
 
         .row-main {
@@ -121,6 +133,60 @@
           }
         }
       }
+    }
+  }
+
+  .field-config-panel {
+    background: var(--semi-color-bg-0);
+    border: 1px solid var(--semi-color-border);
+    border-radius: 8px;
+    position: sticky;
+    top: 0;
+    max-height: calc(100vh - 220px);
+    display: flex;
+    flex-direction: column;
+
+    &.empty {
+      align-items: center;
+      justify-content: center;
+      padding: 40px 16px;
+      min-height: 320px;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--semi-color-border);
+
+      .panel-title {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .panel-actions {
+        display: flex;
+        gap: 4px;
+        flex-shrink: 0;
+      }
+    }
+
+    .panel-error {
+      background: var(--semi-color-danger-light-default);
+      color: var(--semi-color-danger);
+      padding: 6px 16px;
+      font-size: 12px;
+    }
+
+    .panel-body {
+      flex: 1;
+      overflow: auto;
+      padding: 8px 16px 16px;
     }
   }
 }
