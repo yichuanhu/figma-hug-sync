@@ -537,36 +537,25 @@ const RequirementsWorkbench = () => {
                 maxTagCount={1}
                 style={{ width: 'auto', minWidth: 150, maxWidth: 600 }}
                 optionList={MOCK_PROJECT_POOL.map((p) => ({ label: p.name, value: p.id }))}
+              <Select
+                placeholder={t('common.status')}
+                value={statusFilter}
+                onChange={(v) => {
+                  setStatusFilter((v as RequirementStatus[]) || []);
+                  setQueryParams((prev) => ({ ...prev, offset: 0 }));
+                }}
+                multiple
+                showClear
+                maxTagCount={1}
+                style={{ width: 'auto', minWidth: 150, maxWidth: 600 }}
+                optionList={statusOptionsV2.map((s) => ({ label: t(s.i18nKey), value: s.value }))}
               />
             </Space>
           </Col>
           <Col>
-            <Space>
-              <Button icon={<Upload size={14} strokeWidth={2} />} theme="light" type="tertiary">
-                {t('requirements.workbench.batchImport')}
-              </Button>
-              <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
-                {t('requirements.workbench.newRequirement')}
-              </Button>
-              <div className="requirements-workbench-view-switcher">
-                <button
-                  type="button"
-                  className={`requirements-workbench-view-switcher-btn ${viewMode === 'table' ? 'active' : ''}`}
-                  onClick={() => setViewMode('table')}
-                  aria-label={t('requirements.workbench.viewTable')}
-                >
-                  <ListIcon size={16} strokeWidth={2} />
-                </button>
-                <button
-                  type="button"
-                  className={`requirements-workbench-view-switcher-btn ${viewMode === 'board' ? 'active' : ''}`}
-                  onClick={() => setViewMode('board')}
-                  aria-label={t('requirements.workbench.viewBoard')}
-                >
-                  <LayoutGrid size={16} strokeWidth={2} />
-                </button>
-              </div>
-            </Space>
+            <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
+              {t('requirements.workbench.newRequirement')}
+            </Button>
           </Col>
         </Row>
       </div>
