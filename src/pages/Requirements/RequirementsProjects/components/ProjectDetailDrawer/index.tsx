@@ -1,25 +1,17 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Tabs, TabPane, Typography, Tag, Table, Button, Modal, Toast, Empty, Dropdown, Tooltip, Descriptions } from '@douyinfe/semi-ui';
-import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
+import { Tabs, TabPane, Typography, Table, Button, Modal, Toast, Empty, Dropdown, Tooltip, Descriptions } from '@douyinfe/semi-ui';
 import { Plus, Pencil, Trash2, Link as LinkIcon, Users, Ellipsis } from 'lucide-react';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import ExpandableText from '@/components/ExpandableText';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
-import type { Project, Workspace, ProjectAggregatedStatus } from '../../types';
+import type { Project, Workspace } from '../../types';
 import { fetchWorkspacesByProject, deleteWorkspace } from '../../mockData';
 import WorkspaceFormModal from '../WorkspaceFormModal';
 import LinkRequirementsModal from '../LinkRequirementsModal';
 import WorkspaceMembersModal from '../WorkspaceMembersModal';
 
 const { Text, Title } = Typography;
-
-const statusTagColor: Record<ProjectAggregatedStatus, TagColor> = {
-  EMPTY: 'grey',
-  IN_PROGRESS: 'blue',
-  DEVELOPING: 'orange',
-  COMPLETED: 'green',
-};
 
 interface Props {
   visible: boolean;
@@ -238,14 +230,6 @@ const ProjectDetailDrawer = ({
               <Descriptions
                 align="left"
                 data={[
-                  {
-                    key: t('common.status'),
-                    value: (
-                      <Tag color={statusTagColor[data.aggregatedStatus]} type="light">
-                        {t(`requirements.projects.status.${data.aggregatedStatus}`)}
-                      </Tag>
-                    ),
-                  },
                   {
                     key: t('requirements.projects.fields.dateRange'),
                     value:

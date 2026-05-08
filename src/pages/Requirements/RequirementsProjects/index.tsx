@@ -15,28 +15,17 @@ import {
   Dropdown,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
-import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import { Tooltip } from '@douyinfe/semi-ui';
 import { Plus, Pencil, Trash2, Ellipsis } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
-import FilterPopover from '@/components/FilterPopover';
-import type { Project, ProjectAggregatedStatus } from './types';
+import type { Project } from './types';
 import { fetchProjects, deleteProject } from './mockData';
 import ProjectFormModal from './components/ProjectFormModal';
 import ProjectDetailDrawer from './components/ProjectDetailDrawer';
 import './index.less';
 
 const { Title, Text } = Typography;
-
-const statusTagColor: Record<ProjectAggregatedStatus, TagColor> = {
-  EMPTY: 'grey',
-  IN_PROGRESS: 'blue',
-  DEVELOPING: 'orange',
-  COMPLETED: 'green',
-};
-
-const STATUS_OPTIONS: ProjectAggregatedStatus[] = ['EMPTY', 'IN_PROGRESS', 'DEVELOPING', 'COMPLETED'];
 
 const RequirementsProjects = () => {
   const { t } = useTranslation();
@@ -46,8 +35,6 @@ const RequirementsProjects = () => {
   const [isInitial, setIsInitial] = useState(true);
   const [projects, setProjects] = useState<Project[]>([]);
   const [keyword, setKeyword] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string[]>([]);
-  const [filterPopoverVisible, setFilterPopoverVisible] = useState(false);
 
   const [formVisible, setFormVisible] = useState(false);
   const [editing, setEditing] = useState<Project | null>(null);
@@ -93,9 +80,6 @@ const RequirementsProjects = () => {
 
   const filtered = useMemo(() => {
     let list = projects;
-    if (statusFilter.length > 0) {
-      list = list.filter((p) => statusFilter.includes(p.aggregatedStatus));
-    }
     if (keyword.trim()) {
       const k = keyword.trim().toLowerCase();
       list = list.filter(
@@ -105,7 +89,7 @@ const RequirementsProjects = () => {
       );
     }
     return list;
-  }, [projects, keyword, statusFilter]);
+  }, [projects, keyword]);
 
   const selected = useMemo(
     () => projects.find((p) => p.id === selectedId) ?? null,
@@ -135,15 +119,6 @@ const RequirementsProjects = () => {
     });
   };
 
-  const statusOptions = useMemo(
-    () =>
-      STATUS_OPTIONS.map((s) => ({
-        label: t(`requirements.projects.status.${s}`),
-        value: s,
-      })),
-    [t],
-  );
-
   const columns = [
     {
       title: t('requirements.projects.fields.name'),
@@ -163,17 +138,6 @@ const RequirementsProjects = () => {
       width: 220,
       render: (_: unknown, r: Project) =>
         r.startDate && r.endDate ? `${r.startDate} ~ ${r.endDate}` : '-',
-    },
-    {
-      title: t('common.status'),
-      dataIndex: 'aggregatedStatus',
-      key: 'status',
-      width: 110,
-      render: (s: ProjectAggregatedStatus) => (
-        <Tag color={statusTagColor[s]} type="light">
-          {t(`requirements.projects.status.${s}`)}
-        </Tag>
-      ),
     },
     {
       title: t('requirements.projects.fields.workspaceCount'),
@@ -269,22 +233,6 @@ const RequirementsProjects = () => {
                 showClear
                 maxLength={100}
               />
-              <FilterPopover
-                visible={filterPopoverVisible}
-                onVisibleChange={setFilterPopoverVisible}
-                onConfirm={(values) => {
-                  setStatusFilter((values.status as string[]) || []);
-                }}
-                sections={[
-                  {
-                    key: 'status',
-                    label: t('common.status'),
-                    type: 'checkbox',
-                    options: statusOptions,
-                    value: statusFilter,
-                  },
-                ]}
-              />
             </Space>
           </Col>
           <Col>
@@ -319,9 +267,9 @@ const RequirementsProjects = () => {
             rowKey="id"
             empty={
               <EmptyState
-                variant={keyword || statusFilter.length > 0 ? 'noResult' : 'noData'}
+                variant={keyword ? 'noResult' : 'noData'}
                 description={
-                  keyword || statusFilter.length > 0
+                  keyword
                     ? t('common.noSearchResults')
                     : t('requirements.projects.noData')
                 }
