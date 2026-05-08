@@ -13,13 +13,6 @@ import WorkspaceMembersModal from '../WorkspaceMembersModal';
 
 const { Text, Title } = Typography;
 
-const statusTagColor: Record<ProjectAggregatedStatus, TagColor> = {
-  EMPTY: 'grey',
-  IN_PROGRESS: 'blue',
-  DEVELOPING: 'orange',
-  COMPLETED: 'green',
-};
-
 interface Props {
   visible: boolean;
   data: Project | null;
