@@ -1,130 +1,99 @@
-## 一、目标与定位
 
-依照 `story-map-3` 与 8 个 Story 文档，将现有共享中心（Showcases / APA Skills / ACP Skills / CreatorComponents）**全部废弃**，重构为统一的「**资产市场**」：
+# 共享中心 P1 第一批落地计划（骨架对齐）
 
-- 4 类资产：**流程块（SNIPPET）/ 流程（WORKFLOW）/ 知识（KNOWLEDGE）/ 技能（SKILL）**
-- 2 类来源：**🏠 NATIVE（原生，知识/技能）/ 🔗 DEV_CENTER（开发中心，流程/流程块）**
-- 用户角色：**使用者**（浏览/复用/收藏）+ **创建者**（仅可新建知识/技能）
+依据 `sharing-center-P1-module-v1.0.0.md`，本批只做"骨架对齐"，不重构现有市场/详情/创建/编辑页。后续批次再细化。
 
-## 二、信息架构与路由
+## 范围
 
-侧边栏「共享中心」二级菜单替换为：
+1. **路由迁移**：`/sharing/*` → `/sharing-center/*`，旧路径全部用 `<Navigate replace>` 兜底，外链不破坏。
+2. **侧边栏重构**：共享中心分组改为 3 项：资产市场 / 我的共享 / 审批管理（带待审批数量徽标）。原 4 个子市场入口移除（通过资产市场顶部 5 Tab 进入）。
+3. **新增 3 个页面**：我的共享、审批管理（双 Tab + 详情）、审批层级配置。
+4. **新增 4 个共享组件**：SourceBadge、StatusTag、SemVerDialog、RejectReasonDialog（StatusTag/SemVerDialog/RejectReasonDialog 本批仅在新页面使用）。
+5. **角色**：暂不做角色切换，所有按钮按管理员视角全开（按设计文档 §6.4 管理员列）。
 
-
-| 菜单项      | 路由                          |
-| -------- | --------------------------- |
-| 资产市场（聚合） | `/sharing/market`           |
-| 流程块库     | `/sharing/market/snippet`   |
-| 流程库      | `/sharing/market/workflow`  |
-| 知识中心     | `/sharing/market/knowledge` |
-| 技能库      | `/sharing/market/skill`     |
-
-
-详情页：`/sharing/market/:type/:id`（4 类共用通用框架）
-创建页（仅 NATIVE）：`/sharing/market/knowledge/create`、`/sharing/market/skill/create`（本期占位）
-
-旧路由 `/sharing/components/creator`、`/sharing/skills/apa`、`/sharing/skills/acp`、`/sharing/showcases` 全部删除并 Redirect 到 `/sharing/market`。
-
-## 三、页面与组件设计
-
-### 1. 资产市场聚合页 `MarketHome`
-
-页头：标题「资产市场」+ 搜索框（320px，≥2 字符 / 300ms 防抖，搜名称/描述/标签）+ 「+ 新建资产 ▼」Dropdown（创建知识 / 创建技能）。
-
-工具栏：5 Tab `[全部(N)] [流程块(N)] [流程(N)] [知识(N)] [技能(N)]`，下方 `来源筛选 [全部/原生/开发中心]` + `排序 [复用次数/最新发布]`。
-
-主体：响应式资产卡片网格（auto-fill min 300px），每页 12，独立 `.list-pagination` 分页栏。
-
-空状态：`EmptyState` + 「暂无可用资产」/「暂无 X 资产」。
-
-### 2. 子市场页（4 个）
-
-复用聚合页布局，但锁定单一 assetType，去掉 5 Tab，保留搜索 + 来源筛选 + 排序。
-
-- **技能库**特殊：在搜索行下增加「类型」横向标签筛选（文档处理/数据分析/内容生成/知识检索/工具调用/其他）+ 卡片显示调用次数 / 成功率 / 评分（替代复用次数/版本号）。
-- **流程库 / 流程块库**：来源固定为 DEV_CENTER（隐藏来源筛选），显示版本号。
-- **知识中心**：来源固定为 NATIVE。
-  &nbsp;
-  注意：4类资产的优先级为 流程 > 知识 > 技能 > 流程块
-
-### 3. 通用资产详情页 `AssetDetail`
-
-整页布局（非 Drawer），结构：
+## 路由结构（最终）
 
 ```
-← 返回
-┌ 资产基本信息卡 ────────────────────────┐
-│ 名称   [来源徽标]      [☆ 收藏] [📋 复用] │
-│ 描述                                    │
-│ 创建者 / 创建时间 / 复用次数 / 当前版本    │
-│ 标签                                    │
-└─────────────────────────────────────┘
-Tabs（懒加载）：[内容] [版本历史(N)] [复用记录(N)]
-（技能多 2 个 Tab：参数定义 / 执行配置）
+/sharing-center                       → Navigate 到 /sharing-center/market
+/sharing-center/market                → 现 MarketHome（默认 Tab=全部）
+/sharing-center/market/:type          → 现 SubMarketPage
+/sharing-center/market/:type/:id      → 现 AssetDetail
+/sharing-center/my-shared             → 新增（4 Tab：已发布/草稿/待审批/已拒绝）
+/sharing-center/approvals             → 新增（双 Tab：待审批 / 审批历史）
+/sharing-center/approvals/:id         → 新增（审批详情）
+/sharing-center/admin/approval-levels → 新增（审批层级配置）
+
+/sharing/*                            → <Navigate to="/sharing-center/*" replace>
 ```
 
-- 内容渲染区按类型切换：流程/流程块只读 YAML/JSON 预览块；知识富文本 + 附件下载列表；技能由参数 Tab 与执行配置 Tab 接管。
-- 版本历史 `Table`：版本号 / 变更说明 / 创建者 / 创建时间 / [查看] → 弹窗只读快照；点 [复用] 可基于历史版本复用。
-- 复用记录 `Table`：复用者（UserNameWithCard）/ 版本 / 复用类型 / 复用时间 / 适配说明。
+## 新页面骨架要点
 
-### 4. 共用组件
+### 我的共享 `MySharedPage`
+- 布局复用 MarketHome：标题 + Tabs（已发布/草稿/待审批/已拒绝）+ 工具栏（搜索/类型/排序）+ AssetCardGrid + Pagination。
+- 数据从 `Market/mockData` 派生，按 status 过滤；新增 `creatorId === 'me'` 标识。
+- 卡片操作：编辑（NATIVE）、删除（DRAFT）、查看详情。
 
-`src/pages/Sharing/Market/components/`
+### 审批管理 `ApprovalPage`
+- Tabs：待审批（FIFO 升序，徽标显示 count）/ 审批历史（降序）。
+- 工具栏：来源筛选 + 资产类型筛选 + 时间范围 + 批量通过。
+- 列表用 Semi `Table` size=small，行内操作：查看 / 通过 / 拒绝（弹 RejectReasonDialog）。
+- 详情页 `ApprovalDetailPage`：复用 AssetDetail 内容区 + 审批历史时间线（ApprovalTimeline 组件）+ 底部通过/拒绝按钮。
 
-- `AssetCard`：统一卡片，显示类型图标（4 色 Lucide）+ 名称 + 描述（2 行截断）+ 标签 + 来源徽标 + 度量信息（reuseCount 或技能特有指标）+ ⭐收藏 + 📋复用按钮，停止冒泡。
-- `SourceBadge`：`<Tag>` 组件，NATIVE → blue「🏠 原生」，DEV_CENTER → violet「🔗 开发中心」。
-- `AssetTypeIcon`：FileBox/Workflow/BookOpen/Sparkles + 4 色背景。
-- `MarketToolbar`：搜索 + 来源筛选 + 排序的复合行。
-- `CreateAssetDropdown`：「+ 新建资产」按钮。
-- `AssetListGrid`：网格 + 分页 + 空态 + 加载骨架。
+### 审批层级配置 `ApprovalLevelConfigPage`
+- 4 行 Form.Select：流程块 / 流程 / 知识 / 技能；每行选项 `0级(NONE) / 1级(SINGLE)`。默认 1 级。
+- 底部 [保存] 按钮，Toast 反馈，localStorage 持久化。
 
-### 5. 数据与 Mock
+### 共享组件（新增）
+- `src/components/sharing/SourceBadge/` — 🏠 原生 / 🔗 开发中心，semi color token。
+- `src/components/sharing/StatusTag/` — 4 状态映射颜色+图标（IconClock/IconTickCircle/IconEditStroked/IconCrossCircleStroked）。
+- `src/components/sharing/SemVerDialog/` — 520px Modal，递增方式（patch/minor/major）+ changeLog（5-200）。
+- `src/components/sharing/RejectReasonDialog/` — 520px Modal，理由必填 TextArea。
+- `src/components/sharing/ApprovalTimeline/` — 时间线展示提交/审批节点。
 
-新增 `src/pages/Sharing/Market/mockData.ts` 与 `types.ts`：
+## 侧边栏改动
 
-- `Asset`、`AssetVersion`、`ReuseRecord`、`Collection`、`SkillAsset`（参数/执行配置/调用示例）
-- 至少：4 类各 6–10 条 PUBLISHED 资产，每条 2–4 个版本，3–5 条复用记录。
-- 收藏状态 per-user，先用 `useState` 持久化到 `localStorage`（key: `sharing.collections`）。
+```text
+共享中心
+├── 资产市场     /sharing-center/market         IconShop (Lucide Store)
+├── 我的共享     /sharing-center/my-shared      Lucide Share2
+└── 审批管理 🔴N /sharing-center/approvals      Lucide ClipboardCheck
+```
 
-### 6. i18n
+- 移除 marketWorkflow / marketKnowledge / marketSkill / marketSnippet 4 个子项（通过 Tab 进入）。
+- 审批管理徽标：从 mockData 计算 `pendingCount`，>0 时显示红点+数字。
+- 同步更新 i18n key：`sidebar.assetMarket / sidebar.mySharedAssets / sidebar.approvals`。
 
-`public/i18n/zh-CN.json` 与 `en.json` 新增 `sharing.market.*` 与 `sidebar.market*` 全套词条；删除 `sharing.creatorComponents.*`、`sharing.skills.*`、`sharing.showcases.*`。
+## i18n
 
-### 7. 删除清单
+新增命名空间：
+- `sharing.myShared.*`（4 Tab 名 + 空状态）
+- `sharing.approvals.*`（双 Tab、操作、拒绝弹窗、时间线、详情）
+- `sharing.admin.approvalLevels.*`（标题、4 类型、级别枚举、保存提示）
+- `sharing.common.source.native / source.devCenter / status.draft|pending|published|rejected`
 
-- `src/pages/Sharing/Components/`、`Skills/`、`Showcases/` 整目录
-- `App.tsx` 旧路由与对应 import
-- Sidebar `sharingCenterMenu` 替换为新 5 项
+zh-CN 与 en 同步补齐，沿用 `scripts/check-i18n-market.mjs` 模式新增 `check-i18n-sharing.mjs`（可选，本批先不强制）。
 
-## 四、技术细节
+## 文件改动清单
 
-- 卡片网格：`grid-template-columns: repeat(auto-fill, minmax(300px, 1fr))`，align-content/items: start。
-- 列表容器遵循 `app-layout-content-card` + `flex: 1; overflow: auto`。
-- 分页：Semi `Pagination`，`size="small"`，固定 `pageSize=12`，独立 `.list-pagination` 行。
-- Tabs：`keepDOM={false}`，子市场不需要 keepDOM。
-- 详情页 Tab 数据**懒加载**：进入 Tab 时再请求/读取 mock。
-- 复用：`Modal.confirm` 跳过，直接调用 → `Toast.success('复用成功')`，本地 `reuseCount + 1`、卡片/详情同步刷新。
-- 收藏：乐观更新 + 切换星形图标（Lucide Star，filled/outline）。
-- 历史版本「查看」用 520px Modal 展示只读 `<pre>` 内容。
-- 错误态：列表加载失败 EmptyState `error` + 重试按钮；详情 404 → EmptyState `not-found` + 返回链接。
+- 编辑 `src/App.tsx`：新增 4 条路由 + 旧路径 `<Navigate>` 重定向。
+- 编辑 `src/components/layout/Sidebar/index.tsx`：重构 `sharingCenterMenu` + `getSelectedKeyByPath`。
+- 新增 `src/pages/SharingCenter/MyShared/{index.tsx,index.less}`。
+- 新增 `src/pages/SharingCenter/Approvals/{List,Detail}/{index.tsx,index.less}`。
+- 新增 `src/pages/SharingCenter/Admin/ApprovalLevels/{index.tsx,index.less}`。
+- 新增 `src/components/sharing/{SourceBadge,StatusTag,SemVerDialog,RejectReasonDialog,ApprovalTimeline}/{index.tsx,index.less}`。
+- 编辑 `public/i18n/zh-CN.json` 和 `public/i18n/en.json`。
+- 复用 `src/pages/Sharing/Market/mockData.ts` 与 `types.ts`，按需扩展状态/创建者字段。
 
-## 五、本期不做（明确移出范围）
+## 验收
 
-- 真实后端接入（继续 mock）
-- 创建知识 / 创建技能的完整表单页（仅占位路由 + Toast「即将上线」）
-- 收藏夹独立管理页
-- 适配复用（reuseType=ADAPTATION）
-- 我的共享 / 审批管理 / 资产管理 CRUD（属于 FEAT-107/108）
-- 资产比较、缩略图、搜索建议、跨类型混合排序之外的高级排序
+- 旧链接 `/sharing/market`、`/sharing/market/knowledge` 自动跳到 `/sharing-center/...`，不报 404。
+- 侧边栏共享中心展示 3 项，审批管理徽标可见。
+- 新 3 个页面可访问、有数据、空状态正常、无控制台报错。
+- i18n 不再出现原始 key 字符串。
 
-## 六、交付步骤
+## 不在本批
 
-1. 新增类型与 mock；建立 `Sharing/Market/` 目录骨架。
-2. 实现 `AssetCard` / `SourceBadge` / 工具栏 / 网格组件。
-3. 实现聚合页 `MarketHome`（5 Tab + 搜索 + 筛选 + 分页）。
-4. 实现 4 个子市场页（复用聚合页核心逻辑，技能库扩展）。
-5. 实现通用 `AssetDetail` + 内容/版本/复用 Tab + 技能扩展 Tab。
-6. 接入收藏/复用动作 + Toast。
-7. 改 Sidebar 菜单与 App 路由（含旧路由 Redirect）。
-8. 删除旧目录与对应 i18n / 新增词条。
-9. 整体走查：空态 / 加载 / 404 / 响应式 / 暗色模式。
+- `/sharing-center/market/:type/create` 和 `/:id/edit`（创建/编辑页全量重写）
+- AssetDetail 改造为 Drawer + 版本历史/复用记录 Tab
+- AssetCard 全面统一 SourceBadge/StatusTag（仅在新页面使用）
+- 角色感知 UI、收藏功能、审批人员配置

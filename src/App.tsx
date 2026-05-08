@@ -75,6 +75,11 @@ import SnippetMarket from "@/pages/Sharing/Market/SnippetMarket";
 import KnowledgeMarket from "@/pages/Sharing/Market/KnowledgeMarket";
 import SkillMarket from "@/pages/Sharing/Market/SkillMarket";
 import AssetDetail from "@/pages/Sharing/Market/AssetDetail";
+// Sharing Center - 我的共享 / 审批 / 配置
+import MySharedPage from "@/pages/SharingCenter/MyShared";
+import ApprovalsListPage from "@/pages/SharingCenter/Approvals/List";
+import ApprovalDetailPage from "@/pages/SharingCenter/Approvals/Detail";
+import ApprovalLevelsPage from "@/pages/SharingCenter/Admin/ApprovalLevels";
 // Notification Center
 import NotificationCenter from "@/pages/NotificationCenter";
 import PreviewDiagnostics from "@/components/dev/PreviewDiagnostics";
@@ -173,19 +178,31 @@ const App = () => {
           <Route path="/maintenance/config/logger" element={<MaintenanceConfig />} />
           <Route path="/maintenance/dashboard/system-metrics" element={<SystemMetricsPage />} />
           <Route path="/maintenance/dashboard/middleware-status" element={<MiddlewareStatusPage />} />
-          {/* 共享中心 - 资产市场 */}
-          <Route path="/sharing" element={<Navigate to="/sharing/market" replace />} />
-          <Route path="/sharing/market" element={<MarketHome />} />
-          <Route path="/sharing/market/workflow" element={<WorkflowMarket />} />
-          <Route path="/sharing/market/snippet" element={<SnippetMarket />} />
-          <Route path="/sharing/market/knowledge" element={<KnowledgeMarket />} />
-          <Route path="/sharing/market/skill" element={<SkillMarket />} />
+          {/* 共享中心 - 新路由 /sharing-center */}
+          <Route path="/sharing-center" element={<Navigate to="/sharing-center/market" replace />} />
+          <Route path="/sharing-center/market" element={<MarketHome />} />
+          <Route path="/sharing-center/market/workflow" element={<WorkflowMarket />} />
+          <Route path="/sharing-center/market/snippet" element={<SnippetMarket />} />
+          <Route path="/sharing-center/market/knowledge" element={<KnowledgeMarket />} />
+          <Route path="/sharing-center/market/skill" element={<SkillMarket />} />
+          <Route path="/sharing-center/market/:type/:id" element={<AssetDetail />} />
+          <Route path="/sharing-center/my-shared" element={<MySharedPage />} />
+          <Route path="/sharing-center/approvals" element={<ApprovalsListPage />} />
+          <Route path="/sharing-center/approvals/:id" element={<ApprovalDetailPage />} />
+          <Route path="/sharing-center/admin/approval-levels" element={<ApprovalLevelsPage />} />
+
+          {/* 旧 /sharing 路径 → 新 /sharing-center 兜底 */}
+          <Route path="/sharing" element={<Navigate to="/sharing-center/market" replace />} />
+          <Route path="/sharing/market" element={<Navigate to="/sharing-center/market" replace />} />
+          <Route path="/sharing/market/workflow" element={<Navigate to="/sharing-center/market/workflow" replace />} />
+          <Route path="/sharing/market/snippet" element={<Navigate to="/sharing-center/market/snippet" replace />} />
+          <Route path="/sharing/market/knowledge" element={<Navigate to="/sharing-center/market/knowledge" replace />} />
+          <Route path="/sharing/market/skill" element={<Navigate to="/sharing-center/market/skill" replace />} />
           <Route path="/sharing/market/:type/:id" element={<AssetDetail />} />
-          {/* 旧路由重定向 */}
-          <Route path="/sharing/components/creator" element={<Navigate to="/sharing/market/snippet" replace />} />
-          <Route path="/sharing/skills/apa" element={<Navigate to="/sharing/market/skill" replace />} />
-          <Route path="/sharing/skills/acp" element={<Navigate to="/sharing/market/skill" replace />} />
-          <Route path="/sharing/showcases" element={<Navigate to="/sharing/market" replace />} />
+          <Route path="/sharing/components/creator" element={<Navigate to="/sharing-center/market/snippet" replace />} />
+          <Route path="/sharing/skills/apa" element={<Navigate to="/sharing-center/market/skill" replace />} />
+          <Route path="/sharing/skills/acp" element={<Navigate to="/sharing-center/market/skill" replace />} />
+          <Route path="/sharing/showcases" element={<Navigate to="/sharing-center/market" replace />} />
           {/* 通知中心 */}
           <Route path="/notification-center" element={<NotificationCenter />} />
         </Route>

@@ -6,6 +6,7 @@ import { Avatar, Badge, Popover, Tooltip } from '@douyinfe/semi-ui';
 import { UserInfoDropdown } from '../UserInfoDropdown';
 import NotificationDrawer from '../NotificationDrawer';
 import { mockNotifications } from '@/pages/NotificationCenter/mockData';
+import { pendingCount as sharingPending } from '@/pages/SharingCenter/shared/mockData';
 import { Activity, Airplay, AlertTriangle, Bell, BookOpen, Bot, Boxes, CalendarClock, ChartSpline, CheckSquare, ChevronDown, ChevronUp, ClipboardList, Cloud, CodeXml, Component, Database, FileText, Folder, FolderCheck, FolderKanban, Forward, GitBranch, History, Home, LayoutGrid, LibraryBig, ListStart, MonitorCheck, MonitorCog, Parentheses, Play, ScrollText, Settings, Shield, Sparkles, Target, TrendingUp, Users, Workflow, Wrench } from 'lucide-react';
 
 const LayoutIcon = () => (
@@ -317,14 +318,14 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     { key: 'mtMiddlewareStatus', labelKey: 'sidebar.mtMiddlewareStatus', icon: <MonitorCheck size={18} strokeWidth={2} />, path: '/maintenance/dashboard/middleware-status' },
   ];
 
-  // 共享中心 - 资产市场
+  // 共享中心 - 资产市场 / 我的共享 / 审批管理
+  const sharingPendingCount = (() => {
+    try { return sharingPending(); } catch { return 0; }
+  })();
   const sharingCenterMenu: MenuItem[] = [
-    { key: 'assetMarket', labelKey: 'sidebar.assetMarket', isGroupLabel: true },
-    { key: 'marketAll', labelKey: 'sidebar.marketAll', icon: <Boxes size={18} strokeWidth={2} />, path: '/sharing/market' },
-    { key: 'marketWorkflow', labelKey: 'sidebar.marketWorkflow', icon: <Workflow size={18} strokeWidth={2} />, path: '/sharing/market/workflow' },
-    { key: 'marketKnowledge', labelKey: 'sidebar.marketKnowledge', icon: <BookOpen size={18} strokeWidth={2} />, path: '/sharing/market/knowledge' },
-    { key: 'marketSkill', labelKey: 'sidebar.marketSkill', icon: <Sparkles size={18} strokeWidth={2} />, path: '/sharing/market/skill' },
-    { key: 'marketSnippet', labelKey: 'sidebar.marketSnippet', icon: <Component size={18} strokeWidth={2} />, path: '/sharing/market/snippet' },
+    { key: 'assetMarket', labelKey: 'sidebar.assetMarket', icon: <Boxes size={18} strokeWidth={2} />, path: '/sharing-center/market' },
+    { key: 'mySharedAssets', labelKey: 'sidebar.mySharedAssets', icon: <Forward size={18} strokeWidth={2} />, path: '/sharing-center/my-shared' },
+    { key: 'sharingApprovals', labelKey: 'sidebar.sharingApprovals', icon: <CheckSquare size={18} strokeWidth={2} />, path: '/sharing-center/approvals', badge: sharingPendingCount },
   ];
 
   // 根据当前路由获取选中的菜单key
@@ -410,13 +411,18 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     if (pathname === '/operations/platform-operations') {
       return 'platformOperations';
     }
-    if (pathname === '/sharing/market' || pathname === '/sharing') {
-      return 'marketAll';
+    if (
+      pathname === '/sharing-center' ||
+      pathname === '/sharing-center/market' ||
+      pathname.startsWith('/sharing-center/market/') ||
+      pathname === '/sharing' ||
+      pathname.startsWith('/sharing/market')
+    ) {
+      return 'assetMarket';
     }
-    if (pathname.startsWith('/sharing/market/workflow')) return 'marketWorkflow';
-    if (pathname.startsWith('/sharing/market/knowledge')) return 'marketKnowledge';
-    if (pathname.startsWith('/sharing/market/skill')) return 'marketSkill';
-    if (pathname.startsWith('/sharing/market/snippet')) return 'marketSnippet';
+    if (pathname.startsWith('/sharing-center/my-shared')) return 'mySharedAssets';
+    if (pathname.startsWith('/sharing-center/approvals')) return 'sharingApprovals';
+    if (pathname.startsWith('/sharing-center/admin/approval-levels')) return 'sharingApprovals';
     if (pathname.startsWith('/maintenance/config')) return 'mtConfigManagement';
     if (pathname.startsWith('/maintenance/dashboard/system-metrics')) return 'mtSystemMetrics';
     if (pathname.startsWith('/maintenance/dashboard/middleware-status')) return 'mtMiddlewareStatus';
