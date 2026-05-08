@@ -773,6 +773,16 @@ const RequirementDetailDrawer = ({
       onClose={() => setPickerVisible(false)}
       onSuccess={() => onRefresh?.()}
     />
+    <DevResponsePanel
+      visible={!!respondingLog}
+      log={respondingLog}
+      onCancel={() => setRespondingLog(null)}
+      onSuccess={() => {
+        setRespondingLog(null);
+        setChangeLogRefreshKey((k) => k + 1);
+        setActiveTab('changeLog');
+      }}
+    />
     </>
   );
 };
