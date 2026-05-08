@@ -201,15 +201,7 @@ const SchemeBuilderPage = () => {
     ? <AlertCircle size={14} style={{ color: 'var(--semi-color-danger)', marginLeft: 4 }} />
     : null;
 
-  const headerInfo = useMemo(() => draftScheme && (
-    <Space>
-      <Title heading={3} style={{ margin: 0 }}>{draftScheme.name}</Title>
-      <Text type="tertiary">v{draftScheme.version}</Text>
-      {draftScheme.is_draft && <Tag color="orange" type="light" size="small">{t('requirements.scheme.builder.draftBadge')}</Tag>}
-      {draftScheme.parent_id && <Tag color="blue" type="light" size="small">{t('requirements.scheme.builder.newVersionBadge')}</Tag>}
-      {dirty && <Tag color="red" type="light" size="small">{t('requirements.scheme.builder.unsaved')}</Tag>}
-    </Space>
-  ), [draftScheme, dirty, t]);
+
 
   const savedHint = useMemo(() => (
     <Space spacing={4} align="center" style={{ color: 'var(--semi-color-text-2)', fontSize: 12 }}>
