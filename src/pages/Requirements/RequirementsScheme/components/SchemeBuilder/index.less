@@ -1,0 +1,222 @@
+.scheme-builder {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--semi-color-bg-1);
+
+  &-loading {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 24px;
+    background: var(--semi-color-bg-0);
+    border-bottom: 1px solid var(--semi-color-border);
+
+    &-main {
+      flex: 1;
+      min-width: 0;
+    }
+  }
+
+  &-body {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    padding: 16px 24px 24px;
+
+    .semi-tabs-bar {
+      background: transparent;
+    }
+  }
+}
+
+// ============= 通用 builder 子模块容器 =============
+.scheme-builder-pane {
+  background: var(--semi-color-bg-0);
+  border-radius: 8px;
+  padding: 20px;
+  min-height: calc(100vh - 240px);
+}
+
+.scheme-builder-section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+
+  .title {
+    font-size: 14px;
+    font-weight: 600;
+  }
+}
+
+// ============= FormBuilder =============
+.form-builder {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 16px;
+  align-items: flex-start;
+
+  .field-palette {
+    background: var(--semi-color-fill-0);
+    border-radius: 8px;
+    padding: 12px;
+    position: sticky;
+    top: 0;
+
+    .palette-title {
+      font-size: 12px;
+      color: var(--semi-color-text-2);
+      margin-bottom: 8px;
+    }
+
+    .palette-item {
+      width: 100%;
+      justify-content: flex-start;
+      margin-bottom: 6px;
+    }
+  }
+
+  .form-canvas {
+    .canvas-section {
+      margin-bottom: 20px;
+
+      .canvas-section-title {
+        font-size: 12px;
+        color: var(--semi-color-text-2);
+        margin-bottom: 8px;
+      }
+
+      .field-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 12px;
+        background: var(--semi-color-bg-0);
+        border: 1px solid var(--semi-color-border);
+        border-radius: 6px;
+        margin-bottom: 6px;
+
+        &.system {
+          background: var(--semi-color-fill-0);
+          opacity: 0.85;
+        }
+
+        .row-main {
+          flex: 1;
+          min-width: 0;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+
+          .row-label {
+            font-weight: 500;
+          }
+        }
+      }
+    }
+  }
+}
+
+// ============= AssessmentBuilder =============
+.assessment-builder {
+  .model-card {
+    background: var(--semi-color-bg-0);
+    border: 1px solid var(--semi-color-border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+
+    .model-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .dimension-card {
+      background: var(--semi-color-fill-0);
+      border-radius: 6px;
+      padding: 12px;
+      margin-top: 8px;
+
+      .dim-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+
+      .tier-list {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+    }
+  }
+}
+
+// ============= WorkflowBuilder =============
+.workflow-builder {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 16px;
+  align-items: flex-start;
+
+  .workflow-canvas {
+    height: 480px;
+    background: var(--semi-color-fill-0);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .workflow-side {
+    background: var(--semi-color-bg-0);
+    border: 1px solid var(--semi-color-border);
+    border-radius: 8px;
+    padding: 16px;
+
+    .approver-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px;
+      background: var(--semi-color-fill-0);
+      border-radius: 6px;
+      margin-bottom: 6px;
+    }
+  }
+}
+
+// ============= CostBuilder =============
+.cost-builder {
+  .cost-section {
+    background: var(--semi-color-fill-0);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+}
+
+// ============= TestDriveModal =============
+.test-drive-modal {
+  .semi-modal-content {
+    padding: 24px 32px !important;
+  }
+
+  .test-drive-hint {
+    background: var(--semi-color-info-light-default);
+    color: var(--semi-color-info);
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    font-size: 13px;
+  }
+}
