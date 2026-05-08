@@ -172,12 +172,19 @@ const App = () => {
           <Route path="/maintenance/config/logger" element={<MaintenanceConfig />} />
           <Route path="/maintenance/dashboard/system-metrics" element={<SystemMetricsPage />} />
           <Route path="/maintenance/dashboard/middleware-status" element={<MiddlewareStatusPage />} />
-          {/* 共享中心 */}
-          <Route path="/sharing" element={<Navigate to="/sharing/components/creator" replace />} />
-          <Route path="/sharing/components/creator" element={<CreatorComponents />} />
-          <Route path="/sharing/skills/apa" element={<APASkills />} />
-          <Route path="/sharing/skills/acp" element={<ACPSkills />} />
-          <Route path="/sharing/showcases" element={<Showcases />} />
+          {/* 共享中心 - 资产市场 */}
+          <Route path="/sharing" element={<Navigate to="/sharing/market" replace />} />
+          <Route path="/sharing/market" element={<MarketHome />} />
+          <Route path="/sharing/market/workflow" element={<WorkflowMarket />} />
+          <Route path="/sharing/market/snippet" element={<SnippetMarket />} />
+          <Route path="/sharing/market/knowledge" element={<KnowledgeMarket />} />
+          <Route path="/sharing/market/skill" element={<SkillMarket />} />
+          <Route path="/sharing/market/:type/:id" element={<AssetDetail />} />
+          {/* 旧路由重定向 */}
+          <Route path="/sharing/components/creator" element={<Navigate to="/sharing/market/snippet" replace />} />
+          <Route path="/sharing/skills/apa" element={<Navigate to="/sharing/market/skill" replace />} />
+          <Route path="/sharing/skills/acp" element={<Navigate to="/sharing/market/skill" replace />} />
+          <Route path="/sharing/showcases" element={<Navigate to="/sharing/market" replace />} />
           {/* 通知中心 */}
           <Route path="/notification-center" element={<NotificationCenter />} />
         </Route>
