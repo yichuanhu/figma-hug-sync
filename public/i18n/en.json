@@ -3577,20 +3577,58 @@
     "subtitle": "Centrally view APA platform task, robot, trigger and license notifications",
     "empty": "No notifications",
     "emptyUnread": "No unread notifications",
-    "tabs": { "all": "All", "unread": "Unread" },
-    "stats": { "unread": "Unread", "task": "Tasks", "robot": "Robots", "license": "Licenses" },
-    "category": { "all": "All", "task": "Task", "robot": "Robot", "trigger": "Trigger", "license": "License" },
-    "severity": { "high": "High", "medium": "Medium", "low": "Low" },
+    "tabs": {
+      "all": "All",
+      "unread": "Unread"
+    },
+    "stats": {
+      "unread": "Unread",
+      "task": "Tasks",
+      "robot": "Robots",
+      "license": "Licenses"
+    },
+    "category": {
+      "all": "All",
+      "task": "Task",
+      "robot": "Robot",
+      "trigger": "Trigger",
+      "license": "License"
+    },
+    "severity": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
     "filter": {
       "searchPlaceholder": "Search title or content",
       "category": "Category",
       "severity": "Severity"
     },
-    "table": { "severity": "Severity", "category": "Category", "content": "Content", "time": "Time" },
-    "actions": { "markRead": "Mark as read", "markAllRead": "Mark all as read", "view": "View", "clearRead": "Delete all read messages" },
-    "drawer": { "viewAll": "View all notifications", "settings": "Notification settings", "settingsComingSoon": "Notification preferences coming soon" },
-    "toast": { "allRead": "All notifications marked as read", "clearedRead": "Read notifications cleared" },
-    "confirm": { "clearReadTitle": "Clear read notifications", "clearReadContent": "Clear all read notifications? This cannot be undone." }
+    "table": {
+      "severity": "Severity",
+      "category": "Category",
+      "content": "Content",
+      "time": "Time"
+    },
+    "actions": {
+      "markRead": "Mark as read",
+      "markAllRead": "Mark all as read",
+      "view": "View",
+      "clearRead": "Delete all read messages"
+    },
+    "drawer": {
+      "viewAll": "View all notifications",
+      "settings": "Notification settings",
+      "settingsComingSoon": "Notification preferences coming soon"
+    },
+    "toast": {
+      "allRead": "All notifications marked as read",
+      "clearedRead": "Read notifications cleared"
+    },
+    "confirm": {
+      "clearReadTitle": "Clear read notifications",
+      "clearReadContent": "Clear all read notifications? This cannot be undone."
+    }
   },
   "operations": {
     "comingSoon": "Coming soon, stay tuned",
@@ -3757,6 +3795,126 @@
       "category": "Category",
       "department": "Department",
       "author": "Author"
+    },
+    "market": {
+      "pageTitle": "Asset Market",
+      "searchPlaceholder": "Search by name, description or author",
+      "tabs": {
+        "ALL": "All",
+        "WORKFLOW": "Workflow",
+        "KNOWLEDGE": "Knowledge",
+        "SKILL": "Skill",
+        "SNIPPET": "Snippet"
+      },
+      "subTitles": {
+        "workflow": "Workflow Market",
+        "knowledge": "Knowledge Market",
+        "skill": "Skill Market",
+        "snippet": "Snippet Market"
+      },
+      "empty": {
+        "default": "No assets",
+        "workflow": "No workflows",
+        "knowledge": "No knowledge",
+        "skill": "No skills",
+        "snippet": "No snippets"
+      },
+      "filter": {
+        "sort": "Sort",
+        "source": "Source"
+      },
+      "sort": {
+        "createdAt": "Latest",
+        "reuseCount": "Most reused"
+      },
+      "source": {
+        "all": "All sources",
+        "devCenter": "Dev Center",
+        "native": "Native Market"
+      },
+      "metric": {
+        "callCount": "Calls",
+        "rating": "Rating",
+        "reuseCount": "Reuses",
+        "successRate": "Success rate",
+        "version": "Version"
+      },
+      "action": {
+        "reuse": "Reuse",
+        "collect": "Favorite",
+        "uncollect": "Unfavorite"
+      },
+      "toast": {
+        "collected": "Added to favorites",
+        "uncollected": "Removed from favorites",
+        "copied": "Copied",
+        "copyFailed": "Copy failed",
+        "reuseSuccess": "Reused successfully"
+      },
+      "create": {
+        "button": "Create",
+        "knowledge": "New Knowledge",
+        "skill": "New Skill",
+        "comingSoon": {
+          "knowledge": "Knowledge creation coming soon",
+          "skill": "Skill creation coming soon"
+        }
+      },
+      "detail": {
+        "back": "Back",
+        "notFound": "Asset not found",
+        "noContent": "No content",
+        "noReuse": "No reuse records",
+        "creator": "Creator",
+        "createdAt": "Created at",
+        "latest": "Latest",
+        "view": "View",
+        "versionPreview": "Version preview",
+        "attachments": "Attachments",
+        "reuseDirect": "Direct reuse",
+        "reuseAdaptation": "Adapted reuse",
+        "tabs": {
+          "content": "Content",
+          "exec": "Execution",
+          "params": "Parameters",
+          "reuses": "Reuses",
+          "versions": "Versions"
+        },
+        "col": {
+          "version": "Version",
+          "date": "Date",
+          "author": "Author",
+          "changeLog": "Change log",
+          "action": "Actions",
+          "reuser": "Reuser",
+          "reuseType": "Reuse type",
+          "note": "Note"
+        }
+      },
+      "skill": {
+        "category": "Category",
+        "categories": {
+          "all": "All",
+          "document": "Document",
+          "data": "Data",
+          "content": "Content",
+          "retrieval": "Retrieval",
+          "tool": "Tool",
+          "other": "Other"
+        },
+        "inputParams": "Input parameters",
+        "outputParams": "Output parameters",
+        "callExample": "Call example",
+        "timeout": "Timeout",
+        "retry": "Retries",
+        "col": {
+          "name": "Name",
+          "type": "Type",
+          "required": "Required",
+          "default": "Default",
+          "desc": "Description"
+        }
+      }
     }
   },
   "collaborator": {

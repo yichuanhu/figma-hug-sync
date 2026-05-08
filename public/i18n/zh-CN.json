@@ -2945,20 +2945,58 @@
     "subtitle": "集中查看 APA 平台的任务、机器人、触发器与授权通知",
     "empty": "暂无通知",
     "emptyUnread": "暂无未读通知",
-    "tabs": { "all": "全部", "unread": "未读" },
-    "stats": { "unread": "未读通知", "task": "任务通知", "robot": "机器人通知", "license": "授权通知" },
-    "category": { "all": "全部", "task": "任务", "robot": "机器人", "trigger": "触发器", "license": "授权" },
-    "severity": { "high": "高", "medium": "中", "low": "低" },
+    "tabs": {
+      "all": "全部",
+      "unread": "未读"
+    },
+    "stats": {
+      "unread": "未读通知",
+      "task": "任务通知",
+      "robot": "机器人通知",
+      "license": "授权通知"
+    },
+    "category": {
+      "all": "全部",
+      "task": "任务",
+      "robot": "机器人",
+      "trigger": "触发器",
+      "license": "授权"
+    },
+    "severity": {
+      "high": "高",
+      "medium": "中",
+      "low": "低"
+    },
     "filter": {
       "searchPlaceholder": "搜索通知标题或内容",
       "category": "分类",
       "severity": "严重度"
     },
-    "table": { "severity": "严重度", "category": "分类", "content": "通知内容", "time": "时间" },
-    "actions": { "markRead": "标记为已读", "markAllRead": "全部标记为已读", "view": "查看", "clearRead": "删除全部已读消息" },
-    "drawer": { "viewAll": "查看全部通知", "settings": "通知设置", "settingsComingSoon": "通知偏好设置即将上线" },
-    "toast": { "allRead": "已将全部通知标记为已读", "clearedRead": "已清空已读通知" },
-    "confirm": { "clearReadTitle": "清空已读通知", "clearReadContent": "确定清空全部已读通知？删除后不可恢复。" }
+    "table": {
+      "severity": "严重度",
+      "category": "分类",
+      "content": "通知内容",
+      "time": "时间"
+    },
+    "actions": {
+      "markRead": "标记为已读",
+      "markAllRead": "全部标记为已读",
+      "view": "查看",
+      "clearRead": "删除全部已读消息"
+    },
+    "drawer": {
+      "viewAll": "查看全部通知",
+      "settings": "通知设置",
+      "settingsComingSoon": "通知偏好设置即将上线"
+    },
+    "toast": {
+      "allRead": "已将全部通知标记为已读",
+      "clearedRead": "已清空已读通知"
+    },
+    "confirm": {
+      "clearReadTitle": "清空已读通知",
+      "clearReadContent": "确定清空全部已读通知？删除后不可恢复。"
+    }
   },
   "operations": {
     "comingSoon": "功能开发中，敬请期待",
@@ -3124,6 +3162,126 @@
       "tags": "标签",
       "category": "类别",
       "department": "部门"
+    },
+    "market": {
+      "pageTitle": "资产市场",
+      "searchPlaceholder": "搜索资产名称、描述或作者",
+      "tabs": {
+        "ALL": "全部",
+        "WORKFLOW": "工作流",
+        "KNOWLEDGE": "知识库",
+        "SKILL": "技能",
+        "SNIPPET": "代码片段"
+      },
+      "subTitles": {
+        "workflow": "工作流市场",
+        "knowledge": "知识库市场",
+        "skill": "技能市场",
+        "snippet": "代码片段市场"
+      },
+      "empty": {
+        "default": "暂无资产",
+        "workflow": "暂无工作流",
+        "knowledge": "暂无知识库",
+        "skill": "暂无技能",
+        "snippet": "暂无代码片段"
+      },
+      "filter": {
+        "sort": "排序",
+        "source": "来源"
+      },
+      "sort": {
+        "createdAt": "最新发布",
+        "reuseCount": "复用最多"
+      },
+      "source": {
+        "all": "全部来源",
+        "devCenter": "开发中心",
+        "native": "原生市场"
+      },
+      "metric": {
+        "callCount": "调用次数",
+        "rating": "评分",
+        "reuseCount": "复用次数",
+        "successRate": "成功率",
+        "version": "版本"
+      },
+      "action": {
+        "reuse": "复用",
+        "collect": "收藏",
+        "uncollect": "取消收藏"
+      },
+      "toast": {
+        "collected": "已收藏",
+        "uncollected": "已取消收藏",
+        "copied": "已复制",
+        "copyFailed": "复制失败",
+        "reuseSuccess": "复用成功"
+      },
+      "create": {
+        "button": "新建",
+        "knowledge": "新建知识库",
+        "skill": "新建技能",
+        "comingSoon": {
+          "knowledge": "知识库创建即将上线",
+          "skill": "技能创建即将上线"
+        }
+      },
+      "detail": {
+        "back": "返回",
+        "notFound": "资产不存在",
+        "noContent": "暂无内容",
+        "noReuse": "暂无复用记录",
+        "creator": "创建者",
+        "createdAt": "创建时间",
+        "latest": "最新版本",
+        "view": "查看",
+        "versionPreview": "版本预览",
+        "attachments": "附件",
+        "reuseDirect": "直接复用",
+        "reuseAdaptation": "改编复用",
+        "tabs": {
+          "content": "内容",
+          "exec": "执行",
+          "params": "参数",
+          "reuses": "复用记录",
+          "versions": "版本历史"
+        },
+        "col": {
+          "version": "版本",
+          "date": "时间",
+          "author": "发布者",
+          "changeLog": "变更说明",
+          "action": "操作",
+          "reuser": "复用者",
+          "reuseType": "复用方式",
+          "note": "备注"
+        }
+      },
+      "skill": {
+        "category": "分类",
+        "categories": {
+          "all": "全部",
+          "document": "文档处理",
+          "data": "数据处理",
+          "content": "内容生成",
+          "retrieval": "检索",
+          "tool": "工具",
+          "other": "其他"
+        },
+        "inputParams": "输入参数",
+        "outputParams": "输出参数",
+        "callExample": "调用示例",
+        "timeout": "超时时间",
+        "retry": "重试次数",
+        "col": {
+          "name": "名称",
+          "type": "类型",
+          "required": "必填",
+          "default": "默认值",
+          "desc": "说明"
+        }
+      }
     }
   },
   "collaborator": {
