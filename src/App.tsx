@@ -68,11 +68,13 @@ import MaintenanceWorkbench from "@/pages/Maintenance/MaintenanceWorkbench";
 import MaintenanceConfig from "@/pages/Maintenance/ConfigManagement";
 import SystemMetricsPage from "@/pages/Maintenance/Dashboard/SystemMetricsPage";
 import MiddlewareStatusPage from "@/pages/Maintenance/Dashboard/MiddlewareStatusPage";
-// Sharing Center
-import CreatorComponents from "@/pages/Sharing/Components/CreatorComponents";
-import APASkills from "@/pages/Sharing/Skills/APASkills";
-import ACPSkills from "@/pages/Sharing/Skills/ACPSkills";
-import Showcases from "@/pages/Sharing/Showcases";
+// Sharing Center - Asset Market
+import MarketHome from "@/pages/Sharing/Market/MarketHome";
+import WorkflowMarket from "@/pages/Sharing/Market/WorkflowMarket";
+import SnippetMarket from "@/pages/Sharing/Market/SnippetMarket";
+import KnowledgeMarket from "@/pages/Sharing/Market/KnowledgeMarket";
+import SkillMarket from "@/pages/Sharing/Market/SkillMarket";
+import AssetDetail from "@/pages/Sharing/Market/AssetDetail";
 // Notification Center
 import NotificationCenter from "@/pages/NotificationCenter";
 
@@ -170,12 +172,19 @@ const App = () => {
           <Route path="/maintenance/config/logger" element={<MaintenanceConfig />} />
           <Route path="/maintenance/dashboard/system-metrics" element={<SystemMetricsPage />} />
           <Route path="/maintenance/dashboard/middleware-status" element={<MiddlewareStatusPage />} />
-          {/* 共享中心 */}
-          <Route path="/sharing" element={<Navigate to="/sharing/components/creator" replace />} />
-          <Route path="/sharing/components/creator" element={<CreatorComponents />} />
-          <Route path="/sharing/skills/apa" element={<APASkills />} />
-          <Route path="/sharing/skills/acp" element={<ACPSkills />} />
-          <Route path="/sharing/showcases" element={<Showcases />} />
+          {/* 共享中心 - 资产市场 */}
+          <Route path="/sharing" element={<Navigate to="/sharing/market" replace />} />
+          <Route path="/sharing/market" element={<MarketHome />} />
+          <Route path="/sharing/market/workflow" element={<WorkflowMarket />} />
+          <Route path="/sharing/market/snippet" element={<SnippetMarket />} />
+          <Route path="/sharing/market/knowledge" element={<KnowledgeMarket />} />
+          <Route path="/sharing/market/skill" element={<SkillMarket />} />
+          <Route path="/sharing/market/:type/:id" element={<AssetDetail />} />
+          {/* 旧路由重定向 */}
+          <Route path="/sharing/components/creator" element={<Navigate to="/sharing/market/snippet" replace />} />
+          <Route path="/sharing/skills/apa" element={<Navigate to="/sharing/market/skill" replace />} />
+          <Route path="/sharing/skills/acp" element={<Navigate to="/sharing/market/skill" replace />} />
+          <Route path="/sharing/showcases" element={<Navigate to="/sharing/market" replace />} />
           {/* 通知中心 */}
           <Route path="/notification-center" element={<NotificationCenter />} />
         </Route>
