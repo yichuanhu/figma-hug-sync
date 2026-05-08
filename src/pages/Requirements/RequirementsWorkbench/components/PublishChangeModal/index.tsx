@@ -184,23 +184,28 @@ const PublishChangeModal = ({
               />
             )}
 
-            <Form labelPosition="top" className="publish-change-modal-form">
-              <Form.TextArea
-                field="reason"
-                label={{ text: '变更说明', required: true }}
-                placeholder="请说明本次变更的原因和影响范围,至少 10 个字符"
-                value={reason}
-                onChange={(v) => setReason(v ?? '')}
-                rows={4}
-                maxCount={500}
-                showClear={false}
-              />
-              {!reasonValid && reason.length > 0 && (
-                <Text size="small" type="danger">
-                  变更说明至少 10 个字符,当前 {reasonTrim.length}
-                </Text>
-              )}
-            </Form>
+            <div className="publish-change-modal-form">
+              <div className="semi-form-field">
+                <label className="semi-form-field-label">
+                  <span className="semi-form-field-label-text">
+                    <span style={{ color: 'var(--semi-color-danger)', marginRight: 4 }}>*</span>
+                    变更说明
+                  </span>
+                </label>
+                <TextArea
+                  placeholder="请说明本次变更的原因和影响范围,至少 10 个字符"
+                  value={reason}
+                  onChange={(v) => setReason(v ?? '')}
+                  rows={4}
+                  maxCount={500}
+                />
+                {!reasonValid && reason.length > 0 && (
+                  <Text size="small" type="danger">
+                    变更说明至少 10 个字符,当前 {reasonTrim.length}
+                  </Text>
+                )}
+              </div>
+            </div>
 
             {isDevImpact && diffs.length > 0 && (
               <label className="publish-change-modal-confirm">
