@@ -317,14 +317,21 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     { key: 'mtMiddlewareStatus', labelKey: 'sidebar.mtMiddlewareStatus', icon: <MonitorCheck size={18} strokeWidth={2} />, path: '/maintenance/dashboard/middleware-status' },
   ];
 
-  // 共享中心 - 资产市场
+  // 共享中心 - 资产市场 / 我的共享 / 审批管理
+  const sharingPendingCount = (() => {
+    try {
+      // 动态读取，避免循环依赖
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const mod = require('@/pages/SharingCenter/shared/mockData');
+      return typeof mod.pendingCount === 'function' ? mod.pendingCount() : 0;
+    } catch {
+      return 0;
+    }
+  })();
   const sharingCenterMenu: MenuItem[] = [
-    { key: 'assetMarket', labelKey: 'sidebar.assetMarket', isGroupLabel: true },
-    { key: 'marketAll', labelKey: 'sidebar.marketAll', icon: <Boxes size={18} strokeWidth={2} />, path: '/sharing/market' },
-    { key: 'marketWorkflow', labelKey: 'sidebar.marketWorkflow', icon: <Workflow size={18} strokeWidth={2} />, path: '/sharing/market/workflow' },
-    { key: 'marketKnowledge', labelKey: 'sidebar.marketKnowledge', icon: <BookOpen size={18} strokeWidth={2} />, path: '/sharing/market/knowledge' },
-    { key: 'marketSkill', labelKey: 'sidebar.marketSkill', icon: <Sparkles size={18} strokeWidth={2} />, path: '/sharing/market/skill' },
-    { key: 'marketSnippet', labelKey: 'sidebar.marketSnippet', icon: <Component size={18} strokeWidth={2} />, path: '/sharing/market/snippet' },
+    { key: 'assetMarket', labelKey: 'sidebar.assetMarket', icon: <Boxes size={18} strokeWidth={2} />, path: '/sharing-center/market' },
+    { key: 'mySharedAssets', labelKey: 'sidebar.mySharedAssets', icon: <Forward size={18} strokeWidth={2} />, path: '/sharing-center/my-shared' },
+    { key: 'sharingApprovals', labelKey: 'sidebar.sharingApprovals', icon: <CheckSquare size={18} strokeWidth={2} />, path: '/sharing-center/approvals', badge: sharingPendingCount },
   ];
 
   // 根据当前路由获取选中的菜单key
@@ -410,13 +417,18 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     if (pathname === '/operations/platform-operations') {
       return 'platformOperations';
     }
-    if (pathname === '/sharing/market' || pathname === '/sharing') {
-      return 'marketAll';
+    if (
+      pathname === '/sharing-center' ||
+      pathname === '/sharing-center/market' ||
+      pathname.startsWith('/sharing-center/market/') ||
+      pathname === '/sharing' ||
+      pathname.startsWith('/sharing/market')
+    ) {
+      return 'assetMarket';
     }
-    if (pathname.startsWith('/sharing/market/workflow')) return 'marketWorkflow';
-    if (pathname.startsWith('/sharing/market/knowledge')) return 'marketKnowledge';
-    if (pathname.startsWith('/sharing/market/skill')) return 'marketSkill';
-    if (pathname.startsWith('/sharing/market/snippet')) return 'marketSnippet';
+    if (pathname.startsWith('/sharing-center/my-shared')) return 'mySharedAssets';
+    if (pathname.startsWith('/sharing-center/approvals')) return 'sharingApprovals';
+    if (pathname.startsWith('/sharing-center/admin/approval-levels')) return 'sharingApprovals';
     if (pathname.startsWith('/maintenance/config')) return 'mtConfigManagement';
     if (pathname.startsWith('/maintenance/dashboard/system-metrics')) return 'mtSystemMetrics';
     if (pathname.startsWith('/maintenance/dashboard/middleware-status')) return 'mtMiddlewareStatus';
