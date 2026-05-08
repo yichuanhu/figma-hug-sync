@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Form, Toast, Typography, Space, Input, Select, Switch, Tabs } from '@douyinfe/semi-ui';
+import { Button, Form, Toast, Typography, Space, Input, Select, Switch, Tabs, TagInput } from '@douyinfe/semi-ui';
 import { IconChevronLeft, IconPlusCircle, IconDelete } from '@douyinfe/semi-icons';
 import { useTranslation } from 'react-i18next';
 import {
@@ -111,7 +111,7 @@ const SkillCreatePage = () => {
               }))} />
           </Form.Slot>
           <Form.Slot label={t('sharing.myShared.create.fields.tags')}>
-            <Form.TagInput field="_t" noLabel value={tags} onChange={setTags as any} placeholder={t('sharing.myShared.create.fields.tagsPh')} />
+            <TagInput value={tags} onChange={setTags as any} placeholder={t('sharing.myShared.create.fields.tagsPh')} />
           </Form.Slot>
           <Form.Slot label={t('sharing.myShared.create.fields.description')}>
             <Input value={description} onChange={setDescription} placeholder={t('sharing.myShared.create.fields.descPh')} />

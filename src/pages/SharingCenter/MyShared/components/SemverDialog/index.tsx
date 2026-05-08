@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Form, Modal, Radio, RadioGroup } from '@douyinfe/semi-ui';
+import { Form, Modal, Radio, RadioGroup, TextArea } from '@douyinfe/semi-ui';
 import { useEffect, useState } from 'react';
 import { bumpVersion, type BumpType } from '@/pages/SharingCenter/MyShared/store';
 
@@ -62,9 +62,7 @@ const SemverDialog = ({ visible, onCancel, onOk, currentVersion, isFirstRelease 
           </div>
         )}
         <Form.Slot label={t('sharing.myShared.semver.changeLog')}>
-          <Form.TextArea
-            field="changeLog"
-            noLabel
+          <TextArea
             value={changeLog}
             onChange={(v) => { setChangeLog(v); setErr(''); }}
             placeholder={t('sharing.myShared.semver.changeLogPh')}
