@@ -267,9 +267,9 @@ const RequirementsProjects = () => {
             rowKey="id"
             empty={
               <EmptyState
-                variant={keyword || statusFilter.length > 0 ? 'noResult' : 'noData'}
+                variant={keyword ? 'noResult' : 'noData'}
                 description={
-                  keyword || statusFilter.length > 0
+                  keyword
                     ? t('common.noSearchResults')
                     : t('requirements.projects.noData')
                 }
