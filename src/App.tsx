@@ -89,6 +89,7 @@ import MySharedVersionsPage from "@/pages/SharingCenter/MyShared/Versions";
 import ApprovalsListPage from "@/pages/SharingCenter/Approvals/List";
 import ApprovalDetailPage from "@/pages/SharingCenter/Approvals/Detail";
 import ApprovalLevelsPage from "@/pages/SharingCenter/Admin/ApprovalLevels";
+import PermissionsPage from "@/pages/SharingCenter/Admin/Permissions";
 // Notification Center
 import NotificationCenter from "@/pages/NotificationCenter";
 import PreviewDiagnostics from "@/components/dev/PreviewDiagnostics";
@@ -203,6 +204,7 @@ const App = () => {
           <Route path="/sharing-center/approvals" element={<ApprovalsListPage />} />
           <Route path="/sharing-center/approvals/:id" element={<ApprovalDetailPage />} />
           <Route path="/sharing-center/admin/approval-levels" element={<ApprovalLevelsPage />} />
+          <Route path="/sharing-center/admin/permissions" element={<PermissionsPage />} />
 
           {/* 旧 /sharing 路径 → 新 /sharing-center 兜底 */}
           <Route path="/sharing" element={<Navigate to="/sharing-center/market" replace />} />

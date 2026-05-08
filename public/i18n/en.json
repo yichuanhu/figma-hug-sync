@@ -205,7 +205,10 @@
       "languageZh": "中文",
       "languageEn": "English"
     },
-    "requirementsProjects": "Projects & Workspaces"
+    "requirementsProjects": "Projects & Workspaces",
+    "sharingAdmin": "Sharing Center Config",
+    "sharingApprovalLevels": "Approval Levels",
+    "sharingPermissions": "Permissions & Roles"
   },
   "credential": {
     "title": "Credential Management",
@@ -3953,7 +3956,9 @@
         "creator": "Creator",
         "submittedAt": "Submitted",
         "result": "Result",
-        "action": "Action"
+        "action": "Action",
+        "comment": "Comment",
+        "decidedAt": "Decided At"
       },
       "actions": {
         "view": "View",
@@ -3962,13 +3967,16 @@
       },
       "empty": {
         "pending": "No pending approvals",
-        "history": "No approval history"
+        "history": "No approval history",
+        "noResult": "No matching records"
       },
       "confirmApproveTitle": "Approve this submission?",
       "confirmApproveContent": "Approve publication of \"{{name}}\"?",
       "toast": {
         "approved": "Approved",
-        "rejected": "Rejected"
+        "rejected": "Rejected",
+        "conflict": "This item has already been processed by another approver",
+        "batchApproved": "Batch approved {{n}} items"
       },
       "rejectDialog": {
         "title": "Reject Submission",
@@ -3990,12 +3998,29 @@
         "version": "Version",
         "tags": "Tags",
         "description": "Description"
+      },
+      "filter": {
+        "search": "Search asset name",
+        "sourceAll": "All sources",
+        "sourceNative": "Native",
+        "sourceDev": "Dev Center",
+        "result": "Result:",
+        "type": "Type:",
+        "source": "Source:",
+        "clear": "Clear"
+      },
+      "batch": {
+        "selected": "{{n}} selected",
+        "clear": "Clear",
+        "approve": "Batch Approve",
+        "confirmTitle": "Confirm Batch Approve",
+        "confirmContent": "You are about to approve the following {{n}} assets:"
       }
     },
     "admin": {
       "approvalLevels": {
         "pageTitle": "Approval Levels",
-        "notice": "Changes only affect newly submitted requests; they do not impact items already in the approval queue.",
+        "notice": "NONE: skip approval and publish directly. SINGLE: any admin approval completes the request. Configuration applies to newly submitted assets only; DEV_CENTER assets always require approval per sync.",
         "levels": {
           "NONE": "Level 0 (NONE) - No approval",
           "SINGLE": "Level 1 (SINGLE) - Single approval"
@@ -4007,8 +4032,43 @@
           "SKILL": "Skill publishing requires single-level approval by default"
         },
         "toast": {
-          "saved": "Approval levels saved"
-        }
+          "saved": "Saved",
+          "reset": "Reset to default"
+        },
+        "col": {
+          "type": "Asset Type",
+          "current": "Current Level",
+          "choose": "Select Level",
+          "desc": "Notes"
+        },
+        "reset": "Reset to Default",
+        "confirmSaveTitle": "Save approval level configuration?",
+        "confirmSaveContent": "Changes take effect for newly submitted assets only."
+      },
+      "permissions": {
+        "col": {
+          "role": "Business Role",
+          "apa": "APA Built-in Role",
+          "permissions": "Sharing Center Permissions"
+        },
+        "entities": {
+          "asset": "Asset",
+          "assetMarket": "Asset Market",
+          "category": "Category",
+          "approvalRule": "Approval Rule",
+          "assetApproval": "Asset Approval"
+        },
+        "roles": {
+          "creator": "Creator",
+          "consumer": "Consumer",
+          "approver": "Approver",
+          "admin": "Administrator"
+        },
+        "pageTitle": "Permissions & Roles",
+        "notice": "19 permissions registered to APA permission engine, following {entityCode}.{actionCode} format.",
+        "entityTitle": "Permissions (by entity)",
+        "roleTitle": "Role Mapping",
+        "allPermissions": "All 19 permissions"
       }
     },
     "creatorComponents": {
@@ -4178,6 +4238,10 @@
           "desc": "Description"
         }
       }
+    },
+    "status": {
+      "PUBLISHED": "Approved",
+      "REJECTED": "Rejected"
     }
   },
   "collaborator": {

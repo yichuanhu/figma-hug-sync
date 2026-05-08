@@ -1,9 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Typography, Button, Space, Empty, Card, Toast, Tag } from '@douyinfe/semi-ui';
 import { ChevronLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { findShareAsset } from '../../shared/mockData';
+import { approveAsset, rejectAsset, subscribe } from '@/pages/SharingCenter/MyShared/store';
 import SourceBadge from '@/components/sharing/SourceBadge';
 import StatusTag from '@/components/sharing/StatusTag';
 import ApprovalTimeline from '@/components/sharing/ApprovalTimeline';
@@ -16,9 +17,11 @@ const ApprovalDetailPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const initial = useMemo(() => (id ? findShareAsset(id) : undefined), [id]);
-  const [asset, setAsset] = useState(initial);
+  const [asset, setAsset] = useState(() => (id ? findShareAsset(id) : undefined));
   const [rejectVisible, setRejectVisible] = useState(false);
+
+  // 订阅 store 变更，保持详情同步
+  useEffect(() => subscribe(() => setAsset(id ? findShareAsset(id) : undefined)), [id]);
 
   if (!asset) {
     return (
@@ -31,28 +34,15 @@ const ApprovalDetailPage = () => {
   const isPending = asset.shareStatus === 'PENDING_APPROVAL';
 
   const handleApprove = () => {
-    setAsset({
-      ...asset,
-      shareStatus: 'PUBLISHED',
-      approvalEvents: [
-        ...asset.approvalEvents,
-        { type: 'APPROVED', actorName: '当前用户', at: new Date().toISOString().slice(0, 10), comment: '审核通过' },
-      ],
-    });
-    Toast.success(t('sharing.approvals.toast.approved'));
+    const r = approveAsset(asset.id);
+    if (!r.ok) Toast.warning(t('sharing.approvals.toast.conflict'));
+    else Toast.success(t('sharing.approvals.toast.approved'));
   };
 
   const handleReject = (reason: string) => {
-    setAsset({
-      ...asset,
-      shareStatus: 'REJECTED',
-      rejectedReason: reason,
-      approvalEvents: [
-        ...asset.approvalEvents,
-        { type: 'REJECTED', actorName: '当前用户', at: new Date().toISOString().slice(0, 10), comment: reason },
-      ],
-    });
-    Toast.success(t('sharing.approvals.toast.rejected'));
+    const r = rejectAsset(asset.id, reason);
+    if (!r.ok) Toast.warning(t('sharing.approvals.toast.conflict'));
+    else Toast.success(t('sharing.approvals.toast.rejected'));
     setRejectVisible(false);
   };
 

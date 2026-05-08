@@ -160,7 +160,10 @@
       "logout": "退出登录",
       "language": "语言"
     },
-    "requirementsProjects": "项目与工作空间"
+    "requirementsProjects": "项目与工作空间",
+    "sharingAdmin": "共享中心配置",
+    "sharingApprovalLevels": "审批层级配置",
+    "sharingPermissions": "权限点与角色"
   },
   "credential": {
     "title": "凭据管理",
@@ -3321,7 +3324,9 @@
         "creator": "创建者",
         "submittedAt": "提交时间",
         "result": "结果",
-        "action": "操作"
+        "action": "操作",
+        "comment": "审批意见",
+        "decidedAt": "审批时间"
       },
       "actions": {
         "view": "查看",
@@ -3330,13 +3335,16 @@
       },
       "empty": {
         "pending": "暂无待审批资产",
-        "history": "暂无审批历史"
+        "history": "暂无审批历史",
+        "noResult": "未找到匹配的审批记录"
       },
       "confirmApproveTitle": "确认通过审批？",
       "confirmApproveContent": "确认通过「{{name}}」的发布申请？",
       "toast": {
         "approved": "已通过",
-        "rejected": "已拒绝"
+        "rejected": "已拒绝",
+        "conflict": "该条目已被其他审批者处理",
+        "batchApproved": "已批量通过 {{n}} 条"
       },
       "rejectDialog": {
         "title": "拒绝发布申请",
@@ -3358,12 +3366,29 @@
         "version": "版本",
         "tags": "标签",
         "description": "描述"
+      },
+      "filter": {
+        "search": "搜索资产名称",
+        "sourceAll": "全部来源",
+        "sourceNative": "原生",
+        "sourceDev": "开发中心",
+        "result": "结果：",
+        "type": "类型：",
+        "source": "来源：",
+        "clear": "清空筛选"
+      },
+      "batch": {
+        "selected": "已选 {{n}} 项",
+        "clear": "取消选择",
+        "approve": "批量通过",
+        "confirmTitle": "确认批量通过？",
+        "confirmContent": "将对以下 {{n}} 个待审批资产执行批量通过操作："
       }
     },
     "admin": {
       "approvalLevels": {
         "pageTitle": "审批层级配置",
-        "notice": "配置仅对修改后新提交的发布申请生效，不影响已在审批队列中的资产。",
+        "notice": "NONE：免审批，发布后直接 PUBLISHED；SINGLE：1 级审批，任一管理员通过即完成。配置仅对修改后新提交的资产生效；DEV_CENTER 资产每次同步均需审批，不受此配置影响。",
         "levels": {
           "NONE": "0 级 (NONE) - 免审批",
           "SINGLE": "1 级 (SINGLE) - 单级审批"
@@ -3375,8 +3400,43 @@
           "SKILL": "技能发布默认走 1 级审批"
         },
         "toast": {
-          "saved": "审批层级已保存"
-        }
+          "saved": "审批层级已保存",
+          "reset": "已恢复默认配置"
+        },
+        "col": {
+          "type": "资产类型",
+          "current": "当前层级",
+          "choose": "可选层级",
+          "desc": "说明"
+        },
+        "reset": "恢复默认",
+        "confirmSaveTitle": "确认保存审批层级配置？",
+        "confirmSaveContent": "保存后立即对新提交的资产生效，已在审批队列中的资产不受影响。"
+      },
+      "permissions": {
+        "col": {
+          "role": "业务角色",
+          "apa": "APA 预置角色",
+          "permissions": "共享中心特有权限"
+        },
+        "entities": {
+          "asset": "资产",
+          "assetMarket": "资产市场",
+          "category": "分类",
+          "approvalRule": "审批规则",
+          "assetApproval": "资产审批"
+        },
+        "roles": {
+          "creator": "创建者",
+          "consumer": "使用者",
+          "approver": "审批者",
+          "admin": "管理员"
+        },
+        "pageTitle": "权限点与角色",
+        "notice": "共享中心 19 个权限点已注册到 APA 统一权限引擎，遵循 {entityCode}.{actionCode} 格式。",
+        "entityTitle": "权限点（按实体）",
+        "roleTitle": "角色映射",
+        "allPermissions": "全部 19 个权限点"
       }
     },
     "creatorComponents": {
@@ -3545,6 +3605,10 @@
           "desc": "说明"
         }
       }
+    },
+    "status": {
+      "PUBLISHED": "已通过",
+      "REJECTED": "已拒绝"
     }
   },
   "collaborator": {
