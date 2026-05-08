@@ -3750,6 +3750,88 @@
     "email": "Email"
   },
   "sharing": {
+    "common": {
+      "source": { "native": "Native", "devCenter": "Dev Center" },
+      "status": { "draft": "Draft", "pending": "Pending", "published": "Published", "rejected": "Rejected" }
+    },
+    "semver": {
+      "title": "Publish New Version",
+      "currentVersion": "Current Version",
+      "bumpType": "Bump Type",
+      "patch": "Patch",
+      "minor": "Minor",
+      "major": "Major",
+      "changeLog": "Change Log",
+      "changeLogPlaceholder": "Describe the changes (5-200 chars)"
+    },
+    "myShared": {
+      "pageTitle": "My Shared",
+      "tabs": {
+        "published": "Published",
+        "draft": "Draft",
+        "pending_approval": "Pending",
+        "rejected": "Rejected"
+      },
+      "empty": {
+        "title": "Nothing here yet",
+        "description": "You haven't shared any assets. Create one in the Asset Market."
+      },
+      "col": { "version": "Version" },
+      "actions": { "view": "View" }
+    },
+    "approvals": {
+      "pageTitle": "Approvals",
+      "tabs": { "pending": "Pending", "history": "History" },
+      "col": {
+        "assetType": "Type",
+        "name": "Asset",
+        "source": "Source",
+        "creator": "Creator",
+        "submittedAt": "Submitted",
+        "result": "Result",
+        "action": "Action"
+      },
+      "actions": { "view": "View", "approve": "Approve", "reject": "Reject" },
+      "empty": { "pending": "No pending approvals", "history": "No approval history" },
+      "confirmApproveTitle": "Approve this submission?",
+      "confirmApproveContent": "Approve publication of \"{{name}}\"?",
+      "toast": { "approved": "Approved", "rejected": "Rejected" },
+      "rejectDialog": {
+        "title": "Reject Submission",
+        "target": "Asset",
+        "reason": "Reason",
+        "placeholder": "Enter rejection reason (5-500 chars)",
+        "confirm": "Reject"
+      },
+      "timeline": {
+        "submitted": "submitted the request",
+        "approved": "approved the request",
+        "rejected": "rejected the request",
+        "withdrawn": "withdrew the request"
+      },
+      "detail": {
+        "notFound": "Approval record not found",
+        "basicInfo": "Basic Info",
+        "timeline": "Approval History",
+        "version": "Version",
+        "tags": "Tags",
+        "description": "Description"
+      }
+    },
+    "admin": {
+      "approvalLevels": {
+        "pageTitle": "Approval Levels",
+        "notice": "Changes only affect newly submitted requests; they do not impact items already in the approval queue.",
+        "levels": { "NONE": "Level 0 (NONE) - No approval", "SINGLE": "Level 1 (SINGLE) - Single approval" },
+        "desc": {
+          "SNIPPET": "Snippet publishing requires single-level approval by default",
+          "WORKFLOW": "Workflow publishing requires single-level approval by default",
+          "KNOWLEDGE": "Knowledge publishing requires single-level approval by default",
+          "SKILL": "Skill publishing requires single-level approval by default"
+        },
+        "toast": { "saved": "Approval levels saved" }
+      }
+    },
     "creatorComponents": {
       "pageTitle": "Creator Components",
       "tabs": {

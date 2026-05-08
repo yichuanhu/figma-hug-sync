@@ -3118,6 +3118,88 @@
     "email": "邮箱"
   },
   "sharing": {
+    "common": {
+      "source": { "native": "原生", "devCenter": "开发中心" },
+      "status": { "draft": "草稿", "pending": "待审批", "published": "已发布", "rejected": "已拒绝" }
+    },
+    "semver": {
+      "title": "发布新版本",
+      "currentVersion": "当前版本",
+      "bumpType": "递增方式",
+      "patch": "修订号 (patch)",
+      "minor": "次版本 (minor)",
+      "major": "主版本 (major)",
+      "changeLog": "变更说明",
+      "changeLogPlaceholder": "请填写本次变更的说明（5-200 字）"
+    },
+    "myShared": {
+      "pageTitle": "我的共享",
+      "tabs": {
+        "published": "已发布",
+        "draft": "草稿",
+        "pending_approval": "待审批",
+        "rejected": "已拒绝"
+      },
+      "empty": {
+        "title": "暂无内容",
+        "description": "你还没有共享任何资产，去资产市场创建吧"
+      },
+      "col": { "version": "版本" },
+      "actions": { "view": "查看" }
+    },
+    "approvals": {
+      "pageTitle": "审批管理",
+      "tabs": { "pending": "待审批", "history": "审批历史" },
+      "col": {
+        "assetType": "资产类型",
+        "name": "资产名称",
+        "source": "来源",
+        "creator": "创建者",
+        "submittedAt": "提交时间",
+        "result": "结果",
+        "action": "操作"
+      },
+      "actions": { "view": "查看", "approve": "通过", "reject": "拒绝" },
+      "empty": { "pending": "暂无待审批资产", "history": "暂无审批历史" },
+      "confirmApproveTitle": "确认通过审批？",
+      "confirmApproveContent": "确认通过「{{name}}」的发布申请？",
+      "toast": { "approved": "已通过", "rejected": "已拒绝" },
+      "rejectDialog": {
+        "title": "拒绝发布申请",
+        "target": "申请资产",
+        "reason": "拒绝理由",
+        "placeholder": "请填写拒绝理由（至少 5 字，最多 500 字）",
+        "confirm": "确认拒绝"
+      },
+      "timeline": {
+        "submitted": "提交了发布申请",
+        "approved": "通过了申请",
+        "rejected": "拒绝了申请",
+        "withdrawn": "撤回了申请"
+      },
+      "detail": {
+        "notFound": "审批记录不存在",
+        "basicInfo": "基本信息",
+        "timeline": "审批历史",
+        "version": "版本",
+        "tags": "标签",
+        "description": "描述"
+      }
+    },
+    "admin": {
+      "approvalLevels": {
+        "pageTitle": "审批层级配置",
+        "notice": "配置仅对修改后新提交的发布申请生效，不影响已在审批队列中的资产。",
+        "levels": { "NONE": "0 级 (NONE) - 免审批", "SINGLE": "1 级 (SINGLE) - 单级审批" },
+        "desc": {
+          "SNIPPET": "代码片段发布默认走 1 级审批",
+          "WORKFLOW": "工作流发布默认走 1 级审批",
+          "KNOWLEDGE": "知识库发布默认走 1 级审批",
+          "SKILL": "技能发布默认走 1 级审批"
+        },
+        "toast": { "saved": "审批层级已保存" }
+      }
+    },
     "creatorComponents": {
       "pageTitle": "Creator组件",
       "tabs": {
