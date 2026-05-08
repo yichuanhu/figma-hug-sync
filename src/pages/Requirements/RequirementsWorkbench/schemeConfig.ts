@@ -619,7 +619,15 @@ export const activateSchemeBuilder = async (id: string): Promise<RequirementSche
   if (!target) throw new Error('方案不存在');
   const patch: Partial<RequirementScheme> = {};
   if (target.cost_config) patch.cost_config = syncCostConfigCompat(target.cost_config);
-  if (target.workflow_config) patch.approval_flow = { levels: syncApprovalFlowFromWorkflow(target.workflow_config) };
+  const wfDisabled = target.workflow_config?.template === 'none';
+  if (wfDisabled) {
+    // 无审批流：清空审批层级与评估模型，对齐 RPA-STAT 行为
+    patch.approval_flow = { levels: [] };
+    patch.value_assessment_model = undefined;
+    patch.complexity_assessment_model = undefined;
+  } else if (target.workflow_config) {
+    patch.approval_flow = { levels: syncApprovalFlowFromWorkflow(target.workflow_config) };
+  }
   schemeStore = schemeStore.map((s) =>
     s.id === id
       ? { ...s, ...patch, status: 'active', is_draft: false, updated_at: new Date().toISOString() }
