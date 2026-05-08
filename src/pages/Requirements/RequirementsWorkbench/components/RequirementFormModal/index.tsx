@@ -24,6 +24,8 @@ interface RequirementFormModalProps {
   visible: boolean;
   onCancel: () => void;
   onSuccess: (values: Record<string, unknown>) => void;
+  /** 立项后通过「发布变更」流程提交时触发(代替 onSuccess) */
+  onPublished?: () => void;
   editData?: RequirementItem | null;
 }
 
