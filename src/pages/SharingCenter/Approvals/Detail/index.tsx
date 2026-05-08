@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Typography, Button, Space, Empty, Card, Toast, Tag } from '@douyinfe/semi-ui';
 import { ChevronLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
