@@ -7,7 +7,7 @@ import type { ShareStatus } from '@/components/sharing/StatusTag';
 import StatusTag from '@/components/sharing/StatusTag';
 import SourceBadge from '@/components/sharing/SourceBadge';
 import AssetTypeIcon from '@/pages/Sharing/Market/components/AssetTypeIcon';
-import emptyImg from '@/assets/empty-state/empty-list.png';
+import { IllustrationNoResult } from '@douyinfe/semi-illustrations';
 import './index.less';
 
 const { Title, Text, Paragraph } = Typography;
@@ -63,7 +63,7 @@ const MySharedPage = () => {
         {list.length === 0 ? (
           <div className="my-shared-empty">
             <Empty
-              image={<img src={emptyImg} alt="empty" style={{ width: 120 }} />}
+              image={<IllustrationNoResult style={{ width: 120, height: 120 }} />}
               title={t('sharing.myShared.empty.title')}
               description={t('sharing.myShared.empty.description')}
             />
