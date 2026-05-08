@@ -1,24 +1,14 @@
 .approval-flow-progress {
-  padding: 4px 0;
-
   &__timeline {
     display: flex;
     flex-direction: column;
+    margin-top: 8px;
   }
 
   .afp-node {
     display: flex;
-    gap: 16px;
+    gap: 12px;
     align-items: stretch;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--semi-color-border);
-    margin-bottom: 20px;
-
-    &:last-child {
-      border-bottom: none;
-      margin-bottom: 0;
-      padding-bottom: 0;
-    }
 
     &__rail {
       position: relative;
@@ -26,16 +16,15 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding-top: 2px;
-      flex-shrink: 0;
+      padding-top: 6px;
     }
 
     &__line {
       flex: 1;
       width: 2px;
       background: var(--semi-color-fill-2);
-      margin-top: 6px;
-      min-height: 20px;
+      margin-top: 4px;
+      min-height: 16px;
 
       &--finish { background: var(--semi-color-success); }
       &--error  { background: var(--semi-color-danger); }
@@ -43,7 +32,14 @@
 
     &__content {
       flex: 1;
-      min-width: 0;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--semi-color-border);
+      margin-bottom: 12px;
+
+      &:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+      }
 
       &--current {
         .afp-node__head {
@@ -57,8 +53,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      margin-bottom: 10px;
-      flex-wrap: wrap;
+      margin-bottom: 8px;
     }
 
     &__title {
@@ -71,7 +66,7 @@
     &__approvers {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
     }
   }
 
@@ -110,64 +105,23 @@
       align-items: center;
       gap: 8px;
       flex-wrap: wrap;
-      row-gap: 4px;
     }
 
     &__name {
       min-width: 0;
-      flex-shrink: 0;
     }
 
     &__time {
       margin-left: auto;
       font-variant-numeric: tabular-nums;
-      flex-shrink: 0;
     }
 
     &__comment {
       margin-left: 0;
-      background: var(--semi-color-fill-0);
+      background: var(--semi-color-bg-0);
       border-radius: 6px;
-      padding: 8px 12px;
+      padding: 6px 10px;
       border: 1px solid var(--semi-color-border);
-      word-break: break-word;
-    }
-  }
-}
-
-/* 响应式：小屏幕优化 */
-@media (max-width: 576px) {
-  .approval-flow-progress {
-    .afp-node {
-      gap: 12px;
-      padding-bottom: 16px;
-      margin-bottom: 16px;
-
-      &__head {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 4px;
-        margin-bottom: 8px;
-      }
-
-      &__title {
-        gap: 6px;
-      }
-    }
-
-    .afp-approver {
-      &__row {
-        gap: 6px;
-      }
-
-      &__time {
-        margin-left: 0;
-        width: 100%;
-      }
-
-      &__comment {
-        padding: 6px 10px;
-      }
     }
   }
 }
