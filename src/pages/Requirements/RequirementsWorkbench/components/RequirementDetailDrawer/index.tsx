@@ -670,6 +670,20 @@ const RequirementDetailDrawer = ({
                 </div>
               </TabPane>
             )}
+
+            {!isHistoryMode && isPostProjectStatus(effectiveData.status) && (
+              <TabPane
+                tab={t('requirements.detail.tab.changeLog')}
+                itemKey="changeLog"
+              >
+                <div className="requirement-detail-tab-content">
+                  <ChangeLogTab
+                    requirementId={effectiveData.id}
+                    refreshKey={new Date(effectiveData.updatedAt).getTime()}
+                  />
+                </div>
+              </TabPane>
+            )}
           </Tabs>
         </div>
 
