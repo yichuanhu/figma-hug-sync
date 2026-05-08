@@ -602,31 +602,6 @@ const RequirementDetailDrawer = ({
             activeKey={activeTab}
             onChange={setActiveTab}
             className="requirement-detail-tabs"
-            tabBarExtraContent={
-              (hasHistory || isHistoryMode) ? (
-                <div className="requirement-detail-version-bar">
-                  <Text type="tertiary" size="small" style={{ marginRight: 8 }}>
-                    {t('requirements.detail.versionLabel')}:
-                  </Text>
-                  <Select
-                    size="small"
-                    value={viewingVersion}
-                    style={{ width: 180 }}
-                    onChange={(v) => setViewingVersion(v as 'current' | number)}
-                  >
-                    <Select.Option value="current">
-                      {t('requirements.detail.versionLatest')}
-                      {data.version ? ` (v${data.version})` : ''}
-                    </Select.Option>
-                    {sortedHistory.map((v) => (
-                      <Select.Option key={v.version} value={v.version}>
-                        {`v${v.version} · ${v.createdAt.replace('T', ' ').substring(0, 16)}`}
-                      </Select.Option>
-                    ))}
-                  </Select>
-                </div>
-              ) : null
-            }
           >
             <TabPane
               tab={t('requirements.detail.tab.overview')}
@@ -634,14 +609,19 @@ const RequirementDetailDrawer = ({
             >
               <div className="requirement-detail-tab-content">
                 <CustomFieldsSection data={effectiveData} t={t} />
-
-                {hasApproval && effectiveData.approvalFlowConfig && !isHistoryMode && (
-                  <ApprovalFlowProgress config={effectiveData.approvalFlowConfig} />
-                )}
-
-                {!isHistoryMode && <ActivityStream activities={activities} t={t} />}
               </div>
             </TabPane>
+
+            {hasApproval && effectiveData.approvalFlowConfig && !isHistoryMode && (
+              <TabPane
+                tab={t('requirements.detail.tab.approval')}
+                itemKey="approval"
+              >
+                <div className="requirement-detail-tab-content">
+                  <ApprovalFlowProgress config={effectiveData.approvalFlowConfig} />
+                </div>
+              </TabPane>
+            )}
 
             {hasAssessment && (
               <TabPane
