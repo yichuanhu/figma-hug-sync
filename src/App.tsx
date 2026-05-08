@@ -77,6 +77,7 @@ import SkillMarket from "@/pages/Sharing/Market/SkillMarket";
 import AssetDetail from "@/pages/Sharing/Market/AssetDetail";
 // Notification Center
 import NotificationCenter from "@/pages/NotificationCenter";
+import PreviewDiagnostics from "@/components/dev/PreviewDiagnostics";
 
 const queryClient = new QueryClient();
 
