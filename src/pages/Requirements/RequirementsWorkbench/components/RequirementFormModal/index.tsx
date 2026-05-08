@@ -8,12 +8,14 @@ import {
   Typography,
   useFormState,
 } from '@douyinfe/semi-ui';
-import type { RequirementItem, SchemeField, SchemeFieldDependsOn } from '../../types';
+import type { RequirementItem, SchemeField, SchemeFieldDependsOn, RequirementDraft } from '../../types';
 import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
 import OwnerSearchSelect from '@/components/OwnerSearchSelect';
 import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 import { getActiveScheme } from '../../mockData';
 import SchemeFieldRenderer from '../SchemeFieldRenderer';
+import { isPostProjectStatus } from '../../utils/fieldEditability';
+import PublishChangeModal from '../PublishChangeModal';
 import './index.less';
 
 const { Text } = Typography;
