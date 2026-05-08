@@ -529,6 +529,7 @@ const RequirementsAssessment = () => {
         pagination={pagination}
         onScrollToRow={() => {}}
         initialTab="assessment"
+        context="assessment"
       />
     </div>
   );
