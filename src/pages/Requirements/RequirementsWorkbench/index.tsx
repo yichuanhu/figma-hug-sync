@@ -72,6 +72,7 @@ const RequirementsWorkbench = () => {
   const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
   const [projectFilter, setProjectFilter] = useState<string[]>([]);
   const [statusFilter, setStatusFilter] = useState<RequirementStatus[]>([]);
+  const [statusFilterVisible, setStatusFilterVisible] = useState(false);
 
   // 状态
   const [loading, setLoading] = useState(true);
