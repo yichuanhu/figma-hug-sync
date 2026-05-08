@@ -5,8 +5,8 @@ import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
-import type { RequirementItem, ActivityRecord, DetailedAssessment } from '../../types';
-import { statusConfig, priorityConfig, fetchActivities, updateRequirementAssessment, withdrawRequirement, MOCK_CURRENT_USER_ID, useSchemeFlags } from '../../mockData';
+import type { RequirementItem, ActivityRecord, DetailedAssessment, RequirementChangeLog } from '../../types';
+import { statusConfig, priorityConfig, fetchActivities, updateRequirementAssessment, withdrawRequirement, MOCK_CURRENT_USER_ID, useSchemeFlags, listChangeLogs } from '../../mockData';
 import { PRESET_SCHEMES } from '../../schemeConfig';
 import { findWorkspaceByRequirementId } from '../../../RequirementsProjects/mockData';
 import { isPostProjectStatus } from '../../utils/fieldEditability';
@@ -15,11 +15,12 @@ import AssessmentTab from './AssessmentTab';
 import CostEstimateTab from './CostEstimateTab';
 import ApprovalFlowProgress from '../ApprovalFlowProgress';
 import ChangeLogTab from '../ChangeLogTab';
+import DevResponsePanel from '../DevResponsePanel';
 import ReadonlySchemeFieldsRenderer from '../ReadonlySchemeFieldsRenderer';
 import { buildSubmitConfirmContent } from '../../utils/submitConfirm';
 import './index.less';
-import { Lightbulb, Pencil, PowerOff, RotateCcw, Send, Trash2, Undo2, Link2, FolderPlus, X } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Lightbulb, Pencil, PowerOff, RotateCcw, Send, Trash2, Undo2, Link2, FolderPlus, X, AlertTriangle } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import WorkspacePickerModal from './WorkspacePickerModal';
 
 const { Text } = Typography;
@@ -352,6 +353,10 @@ const RequirementDetailDrawer = ({
   const [activeTab, setActiveTab] = useState<string>(initialTab);
   const [viewingVersion, setViewingVersion] = useState<'current' | number>('current');
   const [pickerVisible, setPickerVisible] = useState(false);
+  const [pendingLogs, setPendingLogs] = useState<RequirementChangeLog[]>([]);
+  const [respondingLog, setRespondingLog] = useState<RequirementChangeLog | null>(null);
+  const [changeLogRefreshKey, setChangeLogRefreshKey] = useState(0);
+  const location = useLocation();
   const showApprovalSection = context === 'approval';
   const assessmentReadonly = context !== 'assessment';
 
@@ -401,6 +406,29 @@ const RequirementDetailDrawer = ({
       });
     }
   }, [visible, data?.id, data?.approvalHistory, t]);
+
+  // 加载待响应变更日志（用于 Banner + Panel）
+  useEffect(() => {
+    if (!visible || !data) return;
+    listChangeLogs(data.id).then((list) => {
+      setPendingLogs(list.filter((c) => c.needsDevResponse && c.status === 'PENDING'));
+    });
+  }, [visible, data?.id, changeLogRefreshKey]);
+
+  // URL ?openDevResponse=1 → 自动弹出响应面板（取最早一条 PENDING）
+  useEffect(() => {
+    if (!visible) return;
+    const params = new URLSearchParams(location.search);
+    if (params.get('openDevResponse') === '1' && pendingLogs.length > 0 && !respondingLog) {
+      const targetId = params.get('changeLogId');
+      const target =
+        (targetId && pendingLogs.find((p) => p.id === targetId)) ||
+        [...pendingLogs].sort(
+          (a, b) => new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime(),
+        )[0];
+      if (target) setRespondingLog(target);
+    }
+  }, [visible, location.search, pendingLogs, respondingLog]);
 
   if (!data) return null;
 
@@ -620,6 +648,35 @@ const RequirementDetailDrawer = ({
           style={{ margin: '0 0 12px' }}
         />
       )}
+      {!isHistoryMode && pendingLogs.length > 0 && (() => {
+        const overdueCount = pendingLogs.filter(
+          (p) => Date.now() - new Date(p.publishedAt).getTime() > 7 * 24 * 60 * 60 * 1000,
+        ).length;
+        const earliest = [...pendingLogs].sort(
+          (a, b) => new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime(),
+        )[0];
+        return (
+          <Banner
+            type={overdueCount > 0 ? 'danger' : 'warning'}
+            fullMode={false}
+            closeIcon={null}
+            icon={<AlertTriangle size={16} strokeWidth={2} />}
+            description={
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                <span>
+                  {t('requirements.detail.devResponse.bannerTitle', { count: pendingLogs.length })}
+                  {overdueCount > 0 &&
+                    t('requirements.detail.devResponse.bannerOverdue', { count: overdueCount })}
+                </span>
+                <Button size="small" theme="solid" type="warning" onClick={() => setRespondingLog(earliest)}>
+                  {t('requirements.detail.devResponse.bannerAction')}
+                </Button>
+              </div>
+            }
+            style={{ margin: '0 0 12px' }}
+          />
+        );
+      })()}
       <div className="requirement-detail-layout">
         {/* 左侧 Tab 区域 */}
         <div className="requirement-detail-left">
@@ -679,7 +736,7 @@ const RequirementDetailDrawer = ({
                 <div className="requirement-detail-tab-content">
                   <ChangeLogTab
                     requirementId={effectiveData.id}
-                    refreshKey={new Date(effectiveData.updatedAt).getTime()}
+                    refreshKey={new Date(effectiveData.updatedAt).getTime() + changeLogRefreshKey}
                   />
                 </div>
               </TabPane>
@@ -715,6 +772,16 @@ const RequirementDetailDrawer = ({
       departmentId={data.owning_department_id}
       onClose={() => setPickerVisible(false)}
       onSuccess={() => onRefresh?.()}
+    />
+    <DevResponsePanel
+      visible={!!respondingLog}
+      log={respondingLog}
+      onCancel={() => setRespondingLog(null)}
+      onSuccess={() => {
+        setRespondingLog(null);
+        setChangeLogRefreshKey((k) => k + 1);
+        setActiveTab('changeLog');
+      }}
     />
     </>
   );

@@ -707,6 +707,23 @@
         "modalTip": "选择一个工作空间，将当前需求纳入其中以启动开发。",
         "linkSuccess": "已关联到工作空间「{{name}}」",
         "selectPlaceholder": "请选择工作空间"
+      },
+      "devResponse": {
+        "bannerTitle": "存在 {{count}} 条待响应的开发影响变更",
+        "bannerOverdue": "（其中 {{count}} 条已超时）",
+        "bannerAction": "去响应",
+        "modalTitle": "响应变更",
+        "actionLabel": "响应方式",
+        "commentLabel": "响应说明",
+        "commentPlaceholder": "请输入响应说明",
+        "commentRejectedPlaceholder": "请说明驳回理由（≥10 字）",
+        "commentRequired": "驳回时需填写至少 10 字理由",
+        "submit": "提交响应",
+        "successAck": "已确认知悉",
+        "successAdjusted": "已记录调整",
+        "successRejected": "已记录驳回",
+        "errorAlreadyResponded": "该变更已被响应",
+        "errorRejectTooShort": "驳回理由至少 10 字"
       }
     },
     "approvalFlow": {
