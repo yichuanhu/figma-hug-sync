@@ -414,7 +414,7 @@ const RequirementDetailDrawer = ({
   const canDelete = !isHistoryMode && (effectiveData.status === 'DRAFT' || effectiveData.status === 'REJECTED' || effectiveData.status === 'WITHDRAWN');
   const canResubmit = !isHistoryMode && (effectiveData.status === 'REJECTED' || effectiveData.status === 'WITHDRAWN') && effectiveData.creatorId === MOCK_CURRENT_USER_ID;
   const canOffline = !isHistoryMode && effectiveData.status === 'LAUNCHED';
-  const canWithdraw = !isHistoryMode && effectiveData.status === 'PENDING_APPROVAL' && effectiveData.creatorId === MOCK_CURRENT_USER_ID;
+  const canWithdraw = !isHistoryMode && effectiveData.status === 'PENDING_APPROVAL';
   const canLinkProject = !isHistoryMode && effectiveData.status === 'PENDING_PROJECT' && !findWorkspaceByRequirementId(effectiveData.id);
 
   const handleSaveAssessment = async (id: string, assessment: DetailedAssessment) => {
