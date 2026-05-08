@@ -170,9 +170,17 @@ const RequirementsScheme = () => {
             </Space>
           </Col>
           <Col>
-            <Button icon={<UploadIcon size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => setUploadVisible(true)}>
-              {t('requirements.scheme.upload')}
-            </Button>
+            <Space>
+              <Button icon={<UploadIcon size={16} strokeWidth={2} />} onClick={() => setUploadVisible(true)}>
+                {t('requirements.scheme.upload')}
+              </Button>
+              <Button icon={<Copy size={16} strokeWidth={2} />} onClick={() => setPresetPickerVisible(true)}>
+                {t('requirements.scheme.createBasedOnPreset')}
+              </Button>
+              <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={handleCreateNew}>
+                {t('requirements.scheme.createNew')}
+              </Button>
+            </Space>
           </Col>
         </Row>
       </div>
@@ -211,10 +219,13 @@ const RequirementsScheme = () => {
                           {t('requirements.scheme.versionHistory')}
                         </Dropdown.Item>
                         {!s.is_preset && (
-                          <Dropdown.Item icon={<Pencil size={14} />} onClick={(e) => { e.stopPropagation(); handleEditApprovalFlow(s); }}>
-                            {t('requirements.scheme.editor.entry')}
+                          <Dropdown.Item icon={<Pencil size={14} />} onClick={(e) => { e.stopPropagation(); goEdit(s); }}>
+                            {t('requirements.scheme.edit')}
                           </Dropdown.Item>
                         )}
+                        <Dropdown.Item icon={<Copy size={14} />} onClick={(e) => { e.stopPropagation(); goEdit(s); }}>
+                          基于此创建副本
+                        </Dropdown.Item>
                         {!s.is_preset && (
                           <Dropdown.Item icon={<Trash2 size={14} />} type="danger" onClick={(e) => { e.stopPropagation(); handleDelete(s); }}>
                             {t('common.delete')}
@@ -311,16 +322,31 @@ const RequirementsScheme = () => {
         onNavigate={(s) => setDetailScheme(s)}
         onActivate={handleActivate}
         onDelete={(s) => { setDetailScheme(null); handleDelete(s); }}
-        onEditApprovalFlow={handleEditApprovalFlow}
+        onEditApprovalFlow={goEdit}
       />
 
-      {/* 审批流编辑弹窗 */}
-      <SchemeApprovalFlowEditor
-        visible={!!editingScheme}
-        scheme={editingScheme}
-        onClose={() => setEditingScheme(null)}
-        onSubmit={handleSaveApprovalFlow}
-      />
+      {/* 基于预设创建 */}
+      <Modal
+        title={t('requirements.scheme.createBasedOnPreset')}
+        visible={presetPickerVisible}
+        onCancel={() => setPresetPickerVisible(false)}
+        footer={null}
+        width={520}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {schemes.filter((s) => s.is_preset).map((s) => (
+            <div
+              key={s.id}
+              onClick={() => handleCloneFromPreset(s.id)}
+              style={{ padding: 12, border: '1px solid var(--semi-color-border)', borderRadius: 6, cursor: 'pointer' }}
+            >
+              <div style={{ fontWeight: 500 }}>{s.name}</div>
+              <Text type="tertiary" size="small">{s.code} · v{s.version}</Text>
+              <div style={{ marginTop: 4 }}><Text size="small" type="secondary">{s.description}</Text></div>
+            </div>
+          ))}
+        </div>
+      </Modal>
     </div>
   );
 };
