@@ -86,6 +86,7 @@ const EditCredentialModal = ({
   const typeOptions = [
     { value: 'FIXED_VALUE', label: t('credential.type.fixedValue') },
     { value: 'PERSONAL_REF', label: t('credential.type.personalRef') },
+    { value: 'ASSIGNED_VALUE', label: t('credential.type.assignedValue') },
   ];
 
   const currentValue = getCurrentValue();
