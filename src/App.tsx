@@ -83,7 +83,6 @@ import AssetDetail from "@/pages/Sharing/Market/AssetDetail";
 // Sharing Center - 我的共享 / 审批 / 配置
 import MySharedPage from "@/pages/SharingCenter/MyShared";
 import KnowledgeCreatePage from "@/pages/SharingCenter/MyShared/Create/Knowledge";
-import PublishProcessPage from "@/pages/SharingCenter/MyShared/PublishProcess";
 import SkillCreatePage from "@/pages/SharingCenter/MyShared/Create/Skill";
 import MySharedEditPage from "@/pages/SharingCenter/MyShared/Edit";
 import MySharedVersionsPage from "@/pages/SharingCenter/MyShared/Versions";
