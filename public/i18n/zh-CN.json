@@ -2385,7 +2385,7 @@
       },
       "alreadyPublished": "已发布",
       "manuallyAdded": "手动添加",
-      "assignedValueNotice": "该凭据为「分配值」类型，发布完成后请前往「凭据管理」为其上传分配值名单，否则关联流程在生产环境运行时将无可用账号。",
+      "assignedValueNotice": "该凭据为「分配值」类型，发布完成后请前往「凭据管理」为其上传分配值名单；若未上传分配值，关联流程在生产环境运行时将默认使用该凭据的生产值。",
       "usedBy": "来自",
       "testValue": "开发值",
       "productionValue": "生产值",
