@@ -1,9 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useSyncExternalStore } from 'react';
 import { Typography, Tooltip, Button } from '@douyinfe/semi-ui';
 import { ChevronLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { allAssets } from '../mockData';
+import { getMarketAssets, subscribe } from '@/pages/SharingCenter/MyShared/store';
+import type { Asset } from '../types';
 import { AssetType, SortKey, SourceFilter } from '../types';
 import { filterAndSort, paginate, PAGE_SIZE } from '../utils';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
