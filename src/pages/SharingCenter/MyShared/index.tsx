@@ -169,7 +169,7 @@ const MySharedPage = () => {
     <div className="my-shared-page">
       <div className="my-shared-header">
         <Title heading={3} className="title">{t('sharing.myShared.pageTitle')}</Title>
-        <NewAssetDropdown />
+        <NewAssetDropdown onPublishWorkflow={() => setPublishVisible(true)} />
       </div>
 
       <Tabs
