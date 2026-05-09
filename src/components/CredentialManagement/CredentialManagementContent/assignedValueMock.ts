@@ -99,21 +99,10 @@ export interface ValidationResult {
 export const validateImportRows = (rawRows: ParsedRow[]): ValidationResult => {
   const errors: ImportRowError[] = [];
   const totalParsed = rawRows.length;
-  const exceededLimit = totalParsed > IMPORT_ROW_LIMIT;
-
-  if (exceededLimit) {
-    errors.push({
-      row_number: null,
-      type: 'EXCEED_LIMIT',
-      reason: `单次导入上限 ${IMPORT_ROW_LIMIT} 行，已超出 ${totalParsed - IMPORT_ROW_LIMIT} 行（仅前 ${IMPORT_ROW_LIMIT} 行参与校验）`,
-    });
-  }
-
-  const candidate = exceededLimit ? rawRows.slice(0, IMPORT_ROW_LIMIT) : rawRows;
 
   // 1) 空字段
   const fieldOkRows: ParsedRow[] = [];
-  candidate.forEach((r) => {
+  rawRows.forEach((r) => {
     const missing: string[] = [];
     if (!r.username) missing.push('username');
     if (!r.account) missing.push('account');
