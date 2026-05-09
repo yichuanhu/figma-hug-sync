@@ -7,7 +7,7 @@ import type { SchemeField, CostConfig } from '../../types';
 
 interface Props {
   field: SchemeField;
-  /** 激活方案的 cost_config，供 source='cost_config.rate_table' 与派生提示使用 */
+  /** 激活模版的 cost_config，供 source='cost_config.rate_table' 与派生提示使用 */
   costConfig?: CostConfig;
 }
 

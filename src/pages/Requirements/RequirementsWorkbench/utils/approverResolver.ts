@@ -6,7 +6,7 @@
  * 2. approver_type === 'role'        → 按角色键解析（line-manager 取提交人部门主管；其它按角色映射表）
  * 3. approver_type === 'department'  → 取该部门下默认审批代表
  *
- * 解析失败时回退到方案预填的 approver_ids（视为 user_id）；仍解析不到则返回空数组（调用方需兜底）。
+ * 解析失败时回退到模版预填的 approver_ids（视为 user_id）；仍解析不到则返回空数组（调用方需兜底）。
  */
 
 import type { ApprovalLevelConfig, RequirementItem, ApprovalFlowApprover } from '../types';

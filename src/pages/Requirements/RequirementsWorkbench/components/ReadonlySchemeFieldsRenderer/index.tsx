@@ -6,7 +6,7 @@
  *   <ReadonlySchemeFieldsRenderer fields={scheme.custom_fields} formData={req.form_data} />
  *
  * - showEmpty=false（默认）：仅渲染有值字段；全部为空时返回 null
- * - showEmpty=true：始终渲染所有字段（无值显示 "-"），用于方案预览/需求详情
+ * - showEmpty=true：始终渲染所有字段（无值显示 "-"），用于模版预览/需求详情
  */
 
 import { useState } from 'react';
@@ -168,7 +168,7 @@ const renderValue = (field: SchemeField, value: unknown) => {
 interface Props {
   fields: SchemeField[];
   formData?: Record<string, unknown>;
-  /** 是否渲染无值字段（true 用于方案预览 / 需求详情；默认 false 仅渲染有值字段） */
+  /** 是否渲染无值字段（true 用于模版预览 / 需求详情；默认 false 仅渲染有值字段） */
   showEmpty?: boolean;
   className?: string;
 }

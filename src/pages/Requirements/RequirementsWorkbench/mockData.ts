@@ -239,7 +239,7 @@ const generateMockRequirements = (): RequirementItem[] => {
           { uid: `${id}-att-1`, name: 'PRD-需求说明书.pdf', size: 1234567, url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' },
           { uid: `${id}-att-2`, name: '业务流程图.vsdx', size: 456789, url: 'https://file-examples.com/storage/fe5947fd2362fc197a3c2df/2017/02/file_example_XLSX_10.xlsx' },
         ];
-        // RPA 统计表标准方案字段（让列表的"操作类型"等列有数据展示）
+        // RPA 统计表标准模版字段（让列表的"操作类型"等列有数据展示）
         const opTypes = ['business_operation', 'data_processing', 'audit_check', 'monitor_alert', 'interactive_response', 'voucher_creation', 'voucher_review', 'other'];
         base.operation_type = opTypes[index % opTypes.length];
         base.requirement_description = tpl.description;
@@ -308,31 +308,31 @@ import { getActiveScheme as getActiveSchemeFromStore, PRESET_SCHEMES, subscribeS
 import { useSyncExternalStore } from 'react';
 import { resolveApprovers } from './utils/approverResolver';
 
-/** 默认 cost 配置回退（当激活方案缺 cost_config 时使用） */
+/** 默认 cost 配置回退（当激活模版缺 cost_config 时使用） */
 const DEFAULT_COST_CONFIG: SchemeCostConfig = {
   workingHoursPerDay: 8,
   rateTable: { junior: 300, middle: 500, senior: 700, manager: 900 },
   levelLabels: { junior: '初级员工', middle: '中级员工', senior: '高级员工', manager: '管理层（经理及以上）' },
-  schemeName: 'RPA Pro 标准方案',
+  schemeName: 'RPA Pro 标准模版',
 };
 
-/** 取当前激活方案；若无（如初始化阶段）则回落到首个预设方案 */
+/** 取当前激活模版；若无（如初始化阶段）则回落到首个预设模版 */
 const getEffectiveScheme = (): RequirementScheme =>
   getActiveSchemeFromStore() ?? PRESET_SCHEMES[0];
 
-/** 当前激活方案是否启用了审批流（至少 1 级） */
+/** 当前激活模版是否启用了审批流（至少 1 级） */
 export const schemeHasApproval = (): boolean => {
   const s = getEffectiveScheme();
   return (s.approval_flow?.levels?.length ?? 0) > 0;
 };
 
-/** 当前激活方案是否启用了评估模型（价值 / 复杂度任一存在即视为启用） */
+/** 当前激活模版是否启用了评估模型（价值 / 复杂度任一存在即视为启用） */
 export const schemeHasAssessment = (): boolean => {
   const s = getEffectiveScheme();
   return !!(s.value_assessment_model || s.complexity_assessment_model);
 };
 
-/** DRAFT 提交后的目标状态：依据方案是否含审批/评估，跳过对应阶段 */
+/** DRAFT 提交后的目标状态：依据模版是否含审批/评估，跳过对应阶段 */
 export const resolveSubmittedStatus = (): RequirementStatus => {
   if (schemeHasApproval()) return 'PENDING_APPROVAL';
   if (schemeHasAssessment()) return 'PENDING_ASSESSMENT';
@@ -345,8 +345,8 @@ export const resolvePostApprovalStatus = (): RequirementStatus => {
 };
 
 /**
- * React Hook：订阅当前激活方案的关键标志位（hasApproval/hasAssessment）。
- * 当用户在「需求方案」页切换激活方案时，所有使用此 hook 的组件会自动重渲染，
+ * React Hook：订阅当前激活模版的关键标志位（hasApproval/hasAssessment）。
+ * 当用户在「需求模版」页切换激活模版时，所有使用此 hook 的组件会自动重渲染，
  * 按钮文案、确认弹窗内容与提交目标状态保持一致。
  */
 export const useSchemeFlags = (): {
@@ -685,7 +685,7 @@ function applyClosureDemoData(): void {
     m5.approvalHistory = [
       { id: 'hist-m5-1', level: 1, approverId: meId, approverName: me.name, action: 'withdraw', comment: '需补充自动化比例数据后再提交。', timestamp: t1 },
       { id: 'hist-m5-2', level: 1, approverId: meId, approverName: me.name, action: 'resubmit', comment: '已补充数据，重新提交审批。', timestamp: t2 },
-      { id: 'hist-m5-3', level: 1, approverId: meId, approverName: me.name, action: 'withdraw', comment: '业务方案调整，再次撤回。', timestamp: t3 },
+      { id: 'hist-m5-3', level: 1, approverId: meId, approverName: me.name, action: 'withdraw', comment: '业务模版调整，再次撤回。', timestamp: t3 },
     ];
     m5.historyVersions = [
       {
@@ -989,7 +989,7 @@ export const updateRequirementStatus = async (
   const cur = mockRequirementData[index];
   const target = newStatus as RequirementStatus;
 
-  // 切到 PENDING_APPROVAL 时按方案生成审批流快照（无快照才生成，避免覆盖已有进度）
+  // 切到 PENDING_APPROVAL 时按模版生成审批流快照（无快照才生成，避免覆盖已有进度）
   let nextFlow = cur.approvalFlowConfig;
   if (target === 'PENDING_APPROVAL' && !nextFlow) {
     nextFlow = generateMockApprovalFlow('PENDING_APPROVAL', {
@@ -1041,7 +1041,7 @@ export const updateRequirementAssessment = async (
 // 注：成本预估完全由 baselineFormData 自动计算，无对外编辑接口（STORY-010）。
 // 将来 Scheme.cost_config 变更时，可调用 computeCostEstimate 批量重算 mockRequirementData。
 
-// ============= Story-006 多级审批 mock（方案驱动） =============
+// ============= Story-006 多级审批 mock（模版驱动） =============
 
 /** 把 ApprovalLevelConfig.mode 兼容到运行时三态 */
 function resolveLevelMode(cfgMode?: string, countSign?: boolean): ApprovalFlowLevel['mode'] {
@@ -1050,7 +1050,7 @@ function resolveLevelMode(cfgMode?: string, countSign?: boolean): ApprovalFlowLe
 }
 
 /**
- * 根据需求当前状态 + 当前激活方案的 approval_flow，生成多级审批运行时快照。
+ * 根据需求当前状态 + 当前激活模版的 approval_flow，生成多级审批运行时快照。
  * - DRAFT/WITHDRAWN：无审批流
  * - PENDING_APPROVAL：currentLevel=1，第一级 PENDING，其余 wait
  * - REJECTED：currentLevel=1，第一级首位 REJECTED，其余 wait
@@ -1220,7 +1220,7 @@ export const withdrawRequirement = async (id: string): Promise<RequirementItem |
   return mockRequirementData[index];
 };
 
-/** 重新提交：REJECTED/WITHDRAWN → 由当前方案决定目标状态（PENDING_APPROVAL / PENDING_ASSESSMENT / PENDING_PROJECT），保留历史 */
+/** 重新提交：REJECTED/WITHDRAWN → 由当前模版决定目标状态（PENDING_APPROVAL / PENDING_ASSESSMENT / PENDING_PROJECT），保留历史 */
 export const resubmitRequirement = async (id: string): Promise<RequirementItem | null> => {
   await new Promise((r) => setTimeout(r, 200));
   const index = mockRequirementData.findIndex((r) => r.id === id);
@@ -1298,7 +1298,7 @@ export const transitionToDeveloping = async (
   return mockRequirementData[index];
 };
 
-/** 重新导出激活方案查询，供其它模块使用（保持原 import 路径不变） */
+/** 重新导出激活模版查询，供其它模块使用（保持原 import 路径不变） */
 export const getActiveScheme = getEffectiveScheme;
 
 // ============================================================================

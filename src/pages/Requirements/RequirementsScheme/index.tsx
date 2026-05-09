@@ -33,7 +33,7 @@ const RequirementsScheme = () => {
   };
 
   const handleCreateNew = async () => {
-    const draft = await createSchemeDraft({ name: '未命名方案', version: '1.0.0' });
+    const draft = await createSchemeDraft({ name: '未命名模版', version: '1.0.0' });
     navigate(`/requirements/scheme/builder/${draft.id}`);
   };
 

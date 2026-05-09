@@ -299,7 +299,7 @@ export interface WorkflowConfig {
   assessors: WorkflowApprover[];
 }
 
-// ============= Scheme（方案）主结构 =============
+// ============= Scheme（模版）主结构 =============
 
 export type SchemeStatus = 'active' | 'inactive';
 
@@ -323,7 +323,7 @@ export interface RequirementScheme {
   is_preset: boolean;
   /** 是否为草稿（builder 增量字段） */
   is_draft?: boolean;
-  /** 父方案 ID（AF2 复制激活方案时记录） */
+  /** 父模版 ID（AF2 复制激活模版时记录） */
   parent_id?: string;
   meta?: SchemeMeta;
   custom_fields: SchemeField[];
@@ -340,7 +340,7 @@ export interface RequirementScheme {
   updated_at?: string;
 }
 
-// ============= 方案版本历史 =============
+// ============= 模版版本历史 =============
 
 export interface SchemeVersion {
   version: string;
@@ -420,7 +420,7 @@ export interface RequirementItem {
   id: string;
   /** 需求编号 REQ-YYYY-NNNN */
   req_no?: string;
-  /** 关联方案 */
+  /** 关联模版 */
   scheme_id?: string;
   scheme_version?: string;
 
@@ -516,7 +516,7 @@ export interface DetailedAssessment {
 }
 
 // ============= Story-010 成本估算（自动计算，只读） =============
-/** 岗位级别 code（开放字符串，由激活方案的 cost_config.rate_table 决定） */
+/** 岗位级别 code（开放字符串，由激活模版的 cost_config.rate_table 决定） */
 export type JobLevel = string;
 
 /** 需求表单基线数据（来自 form_data，自动化收益输入项） */
