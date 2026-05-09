@@ -168,7 +168,6 @@ let workspaces: Workspace[] = [
 // - 全部关联需求 ∈ {LAUNCHED,OFFLINE} → COMPLETED
 // - 其它                           → DEVELOPING
 
-const recomputeProjectAggregates = () => {
 // 由 ensureDemoSeed / 状态变更 API 维护的需求状态缓存（id -> status），用于聚合 COMPLETED 判定。
 const cachedReqStatus = new Map<string, string>();
 
