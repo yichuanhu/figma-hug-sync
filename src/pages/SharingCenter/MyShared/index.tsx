@@ -43,6 +43,26 @@ const MySharedPage = () => {
   const [typeF, setTypeF] = useState<TypeFilter>('ALL');
   const [sourceF, setSourceF] = useState<SourceFilter>('ALL');
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
+  const [publishVisible, setPublishVisible] = useState(false);
+  const [highlightId, setHighlightId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!highlightId) return;
+    const timer = window.setTimeout(() => setHighlightId(null), 2500);
+    const raf = window.requestAnimationFrame(() => {
+      const el = document.querySelector(`tr[data-row-key="${highlightId}"]`);
+      el?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    });
+    return () => { window.clearTimeout(timer); window.cancelAnimationFrame(raf); };
+  }, [highlightId]);
+
+  const handlePublishSuccess = (assetId: string) => {
+    setPublishVisible(false);
+    setTab('PENDING_APPROVAL');
+    setPage(1);
+    setSelectedKeys([]);
+    setHighlightId(assetId);
+  };
 
   useEffect(() => {
     const k = keyword.trim();
