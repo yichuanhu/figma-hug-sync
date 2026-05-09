@@ -44,9 +44,13 @@ interface Props {
   requirementId: string;
   /** 父级触发刷新的版本号（变更后递增即可重新拉取） */
   refreshKey?: number;
+  /** 触发处理弹窗的回调 */
+  onRespond?: (log: RequirementChangeLog) => void;
+  /** 需要高亮的变更日志 ID（短暂背景闪烁） */
+  highlightLogId?: string;
 }
 
-const ChangeLogTab = ({ requirementId, refreshKey }: Props) => {
+const ChangeLogTab = ({ requirementId, refreshKey, onRespond, highlightLogId }: Props) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [logs, setLogs] = useState<RequirementChangeLog[]>([]);
