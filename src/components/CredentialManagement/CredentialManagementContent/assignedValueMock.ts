@@ -65,6 +65,107 @@ export const deleteAssignedValue = (credentialId: string, valueId: string): void
   STORE.set(credentialId, list);
 };
 
+// ============= 前端解析 / 校验 =============
+
+export const IMPORT_ROW_LIMIT = 500;
+
+export interface ParsedRow {
+  row_number: number; // 数据行号（从 2 开始，1 是表头）
+  username: string;
+  account: string;
+  password: string;
+  description?: string;
+}
+
+export type ImportErrorType =
+  | 'EMPTY_FIELD'
+  | 'DUPLICATE_USERNAME'
+  | 'EXCEED_LIMIT';
+
+export interface ImportRowError {
+  row_number: number | null; // 行号；EXCEED_LIMIT 不指向具体行
+  username?: string;
+  type: ImportErrorType;
+  reason: string;
+}
+
+export interface ValidationResult {
+  total_parsed: number; // 解析出的数据行总数（含错误）
+  valid_rows: ParsedRow[];
+  errors: ImportRowError[];
+  exceeded_limit: boolean;
+}
+
+export const validateImportRows = (rawRows: ParsedRow[]): ValidationResult => {
+  const errors: ImportRowError[] = [];
+  const totalParsed = rawRows.length;
+  const exceededLimit = totalParsed > IMPORT_ROW_LIMIT;
+
+  if (exceededLimit) {
+    errors.push({
+      row_number: null,
+      type: 'EXCEED_LIMIT',
+      reason: `单次导入上限 ${IMPORT_ROW_LIMIT} 行，已超出 ${totalParsed - IMPORT_ROW_LIMIT} 行（仅前 ${IMPORT_ROW_LIMIT} 行参与校验）`,
+    });
+  }
+
+  const candidate = exceededLimit ? rawRows.slice(0, IMPORT_ROW_LIMIT) : rawRows;
+
+  // 1) 空字段
+  const fieldOkRows: ParsedRow[] = [];
+  candidate.forEach((r) => {
+    const missing: string[] = [];
+    if (!r.username) missing.push('username');
+    if (!r.account) missing.push('account');
+    if (!r.password) missing.push('password');
+    if (missing.length > 0) {
+      errors.push({
+        row_number: r.row_number,
+        username: r.username || undefined,
+        type: 'EMPTY_FIELD',
+        reason: `必填字段为空：${missing.join('、')}`,
+      });
+    } else {
+      fieldOkRows.push(r);
+    }
+  });
+
+  // 2) 用户名重复（在所有非空 username 中检测）
+  const seen = new Map<string, number[]>(); // username -> row_numbers
+  fieldOkRows.forEach((r) => {
+    const key = r.username.trim().toLowerCase();
+    if (!seen.has(key)) seen.set(key, []);
+    seen.get(key)!.push(r.row_number);
+  });
+
+  const duplicateRowNumbers = new Set<number>();
+  seen.forEach((rows, name) => {
+    if (rows.length > 1) {
+      // 第一行保留，其余标记为重复
+      rows.slice(1).forEach((rn) => {
+        duplicateRowNumbers.add(rn);
+        errors.push({
+          row_number: rn,
+          username: name,
+          type: 'DUPLICATE_USERNAME',
+          reason: `用户名「${name}」在文件内重复`,
+        });
+      });
+    }
+  });
+
+  const validRows = fieldOkRows.filter((r) => !duplicateRowNumbers.has(r.row_number));
+
+  return {
+    total_parsed: totalParsed,
+    valid_rows: validRows,
+    errors,
+    exceeded_limit: exceededLimit,
+  };
+};
+
+// ============= Mock 后端导入结果（仅处理前端过滤后的有效行）=============
+
 export interface ImportRowResult {
   row_number: number;
   username: string;
@@ -83,71 +184,79 @@ export interface ImportSummary {
   details: ImportRowResult[];
 }
 
-/** Mock 导入：随机生成结果并写入 store */
-export const mockImport = (credentialId: string, fileName: string): ImportSummary => {
+/** Mock 导入：基于已通过前端校验的行，生成结果并写入 store */
+export const mockImport = (
+  credentialId: string,
+  fileName: string,
+  validRows: ParsedRow[],
+): ImportSummary => {
   const existing = listAssignedValues(credentialId);
   const existingUserIds = new Set(existing.map((v) => v.user_id));
-  const total = 30;
+
   const details: ImportRowResult[] = [];
   let created = 0, updated = 0, skipped = 0, failed = 0;
-  const usedUsers = new Set<string>();
+  const usedUserIds = new Set<string>();
 
-  for (let i = 1; i <= total; i++) {
-    const u = ALL_ORG_USERS[(i - 1) % ALL_ORG_USERS.length];
-    const username = u.name.toLowerCase().replace(/\s+/g, '_');
-    // 模拟少量异常
-    if (i === 3) {
-      details.push({ row_number: i, username: '', status: 'FAILED', reason: '必填字段为空(username)' });
+  validRows.forEach((r) => {
+    const matched = ALL_ORG_USERS.find(
+      (u) => u.name.toLowerCase().replace(/\s+/g, '_') === r.username.toLowerCase()
+        || u.name.toLowerCase() === r.username.toLowerCase()
+        || u.id === r.username,
+    );
+
+    if (!matched) {
       failed++;
-      continue;
-    }
-    if (i === 5) {
-      details.push({ row_number: i, username: 'notexist_user', status: 'FAILED', reason: '用户名未匹配到站内用户' });
-      failed++;
-      continue;
-    }
-    if (i === 8 || i === 12) {
-      details.push({ row_number: i, username, status: 'SKIPPED', reason: '数据行重复' });
-      skipped++;
-      continue;
-    }
-    if (existingUserIds.has(u.id) || usedUsers.has(u.id)) {
-      // 覆盖更新
-      details.push({ row_number: i, username, status: 'SUCCESS', sub_status: 'UPDATED', reason: '用户已存在分配值，已覆盖更新' });
-      updated++;
-      // 写入 store（更新）
-      const list = STORE.get(credentialId) || [];
-      const idx = list.findIndex((v) => v.user_id === u.id);
-      if (idx >= 0) {
-        list[idx] = { ...list[idx], account: `imported_${username}_${i}` };
-      } else {
-        list.unshift({
-          id: `av-${credentialId}-imp-${i}`,
-          user_id: u.id, user_name: u.name,
-          account: `imported_${username}_${i}`, password_display: '******',
-          description: `批量导入 - ${fileName}`,
-        });
-      }
-      STORE.set(credentialId, list);
-    } else {
-      details.push({ row_number: i, username, status: 'SUCCESS', sub_status: 'CREATED' });
-      created++;
-      const list = STORE.get(credentialId) || [];
-      list.unshift({
-        id: `av-${credentialId}-imp-${i}`,
-        user_id: u.id, user_name: u.name,
-        account: `imported_${username}_${i}`, password_display: '******',
-        description: `批量导入 - ${fileName}`,
+      details.push({
+        row_number: r.row_number,
+        username: r.username,
+        status: 'FAILED',
+        reason: '用户名未匹配到站内用户',
       });
-      STORE.set(credentialId, list);
+      return;
     }
-    usedUsers.add(u.id);
-  }
+
+    const list = STORE.get(credentialId) || [];
+    if (existingUserIds.has(matched.id) || usedUserIds.has(matched.id)) {
+      updated++;
+      details.push({
+        row_number: r.row_number,
+        username: r.username,
+        status: 'SUCCESS',
+        sub_status: 'UPDATED',
+        reason: '用户已存在分配值，已覆盖更新',
+      });
+      const idx = list.findIndex((v) => v.user_id === matched.id);
+      if (idx >= 0) {
+        list[idx] = { ...list[idx], account: r.account, description: r.description || list[idx].description };
+      }
+    } else {
+      created++;
+      details.push({
+        row_number: r.row_number,
+        username: r.username,
+        status: 'SUCCESS',
+        sub_status: 'CREATED',
+      });
+      list.unshift({
+        id: `av-${credentialId}-imp-${Date.now()}-${r.row_number}`,
+        user_id: matched.id,
+        user_name: matched.name,
+        account: r.account,
+        password_display: '******',
+        description: r.description || `批量导入 - ${fileName}`,
+      });
+    }
+    usedUserIds.add(matched.id);
+    STORE.set(credentialId, list);
+  });
 
   return {
-    total,
+    total: validRows.length,
     success: created + updated,
-    created, updated, skipped, failed,
+    created,
+    updated,
+    skipped,
+    failed,
     details,
   };
 };
