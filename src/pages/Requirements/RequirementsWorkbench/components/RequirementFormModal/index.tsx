@@ -90,10 +90,16 @@ const RequirementFormModal = ({
   // 立项后模式：弹窗打开时尝试读取该用户的草稿并合并
   useEffect(() => {
     if (!visible) {
-      // 关闭时重置脏标记与草稿态
+      // 关闭时重置脏标记、草稿态、步骤与发布信息
       dirtyRef.current = false;
       setHasDraft(false);
       setDraftLoadedAt(null);
+      setStep('edit');
+      setPublishReason('');
+      setPublishDevImpact(false);
+      setPublishDiffs([]);
+      setPublishPreviewing(false);
+      setPendingPatch({});
       return;
     }
     if (!isPostProjectEdit || !editData) return;
