@@ -154,6 +154,9 @@ const generateMockProcessList = (): LYProcessResponse[] => {
 // Mock数据存储
 let mockProcessData = generateMockProcessList();
 
+/** 对外只读访问已 mock 出来的流程数据（如「发布到共享中心」弹窗使用）。 */
+export const getAllMockProcesses = (): LYProcessResponse[] => mockProcessData;
+
 // 模拟创建者ID到详细信息的映射
 const mockCreatorInfoMap: Record<string, { name: string; department?: string; role?: string; email?: string }> = {
   'user-001': { name: 'John Smith', department: 'R&D Dept', role: 'Senior Engineer', email: 'john.smith@example.com' },
