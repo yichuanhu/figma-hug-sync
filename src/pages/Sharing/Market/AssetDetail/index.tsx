@@ -259,7 +259,9 @@ const AssetDetail = () => {
         visible={!!previewVersion}
         title={`${t('sharing.market.detail.versionPreview')} · ${previewVersion?.version ?? ''}`}
         onCancel={() => setPreviewVersion(null)}
-        footer={null}
+        onOk={() => { handleReuse(); setPreviewVersion(null); }}
+        okText={t('sharing.market.detail.reuseThisVersion')}
+        cancelText={t('common.close')}
         width={520}
       >
         <pre className="asset-detail-yaml">{previewVersion?.content}</pre>
