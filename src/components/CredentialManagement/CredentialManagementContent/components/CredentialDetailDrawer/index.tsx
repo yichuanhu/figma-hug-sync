@@ -33,6 +33,7 @@ import { useUsageRecordFilter } from '@/hooks/useUsageRecordFilter';
 import DetailDrawerWrapper from '@/components/DetailDrawerWrapper';
 import type { PaginationInfo } from '@/components/DetailDrawerWrapper';
 
+import AssignedValuesTab from './AssignedValuesTab';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -120,7 +121,7 @@ interface CredentialDetailDrawerProps {
   onNavigate?: (credential: LYCredentialResponse) => void;
   pagination?: PaginationInfo;
   onPageChange?: (page: number, direction: 'prev' | 'next') => void;
-  initialTab?: 'basic' | 'usage';
+  initialTab?: 'basic' | 'usage' | 'assigned';
   onScrollToRow?: (id: string) => void;
 }
 
@@ -139,7 +140,7 @@ const CredentialDetailDrawer = ({
   onScrollToRow,
 }: CredentialDetailDrawerProps) => {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState(initialTab);
+  const [activeTab, setActiveTab] = useState<'basic' | 'usage' | 'assigned'>(initialTab);
   const { canManage } = useCollaboratorPermission('CREDENTIAL', credential?.credential_id);
 
   const [usageLoading, setUsageLoading] = useState(false);
@@ -308,12 +309,18 @@ const CredentialDetailDrawer = ({
       storageKey="credentialDetailDrawerWidth"
       className="credential-detail-drawer"
     >
-      <Tabs activeKey={activeTab} onChange={(key) => setActiveTab(key as 'basic' | 'usage')} className="credential-detail-drawer-tabs">
+      <Tabs activeKey={activeTab} onChange={(key) => setActiveTab(key as 'basic' | 'usage' | 'assigned')} className="credential-detail-drawer-tabs">
         <TabPane tab={t('credential.detail.tabs.basicInfo')} itemKey="basic">
           <div className="credential-detail-drawer-content">
             <Descriptions data={descriptionData} align="left" />
           </div>
         </TabPane>
+
+        {context === 'scheduling' && credential.credential_type === 'ASSIGNED_VALUE' && (
+          <TabPane tab={t('credential.assignedValue.tabTitle')} itemKey="assigned">
+            <AssignedValuesTab credentialId={credential.credential_id} />
+          </TabPane>
+        )}
 
         <TabPane tab={t('credential.detail.tabs.usageRecords')} itemKey="usage">
           <div className="credential-detail-drawer-usage">
