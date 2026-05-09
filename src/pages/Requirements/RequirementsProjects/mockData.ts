@@ -161,8 +161,28 @@ let workspaces: Workspace[] = [
 ];
 
 // ---- Aggregation ----
+//
+// 状态聚合规则（取代旧「保留 COMPLETED」逻辑，完全由关联需求状态推导）：
+// - 无工作空间                     → EMPTY
+// - 有工作空间但无关联需求          → IN_PROGRESS
+// - 全部关联需求 ∈ {LAUNCHED,OFFLINE} → COMPLETED
+// - 其它                           → DEVELOPING
 
 const recomputeProjectAggregates = () => {
+  // 同步快照读取需求当前状态（不走 fetch，避免循环依赖）
+  let snapshot: { id: string; status: string }[] = [];
+  try {
+    // 静态导入循环安全：require 解析时如果对侧已就绪即返回最新模块
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const m = require('../RequirementsWorkbench/mockData') as {
+      getMockRequirementsSnapshot?: () => { id: string; status: string }[];
+    };
+    snapshot = m.getMockRequirementsSnapshot?.() ?? [];
+  } catch {
+    snapshot = [];
+  }
+  const reqStatus = new Map(snapshot.map((r) => [r.id, r.status]));
+
   projects = projects.map((p) => {
     const wsList = workspaces.filter((w) => w.projectId === p.id);
     const reqIds = new Set<string>();
@@ -170,7 +190,11 @@ const recomputeProjectAggregates = () => {
     let status: ProjectAggregatedStatus;
     if (wsList.length === 0) status = 'EMPTY';
     else if (reqIds.size === 0) status = 'IN_PROGRESS';
-    else status = p.aggregatedStatus === 'COMPLETED' ? 'COMPLETED' : 'DEVELOPING';
+    else {
+      const statuses = Array.from(reqIds).map((id) => reqStatus.get(id));
+      const allDone = statuses.length > 0 && statuses.every((s) => s === 'LAUNCHED' || s === 'OFFLINE');
+      status = allDone ? 'COMPLETED' : 'DEVELOPING';
+    }
     return {
       ...p,
       workspaceCount: wsList.length,
@@ -185,37 +209,61 @@ recomputeProjectAggregates();
 
 const delay = <T>(v: T, ms = 200) => new Promise<T>((r) => setTimeout(() => r(v), ms));
 
-// ---- 演示用：首次调用任意 API 前预先把部分需求关联到对应部门的工作空间，
-//      以便「新建流程」的关联需求下拉、项目聚合统计等场景有可见数据。 ----
+// ---- 演示种子：把「立项后」生命周期需求按部门确定性分配到对应工作空间，
+//      并回写 linkedProject / linkedWorkspace 到需求侧，确保两侧完全联动。 ----
 let demoSeedPromise: Promise<void> | null = null;
-const ensureDemoSeed = (): Promise<void> => {
+export const ensureDemoSeed = (): Promise<void> => {
   if (demoSeedPromise) return demoSeedPromise;
   demoSeedPromise = (async () => {
-    const { fetchRequirementList } = await import('../RequirementsWorkbench/mockData');
-    const res = await fetchRequirementList({
-      offset: 0,
-      size: 1000,
-      keyword: '',
-      sort_by: 'created_at',
-      sort_order: 'desc',
-    });
-    // 已经手动关联过 → 跳过
-    if (workspaces.some((w) => w.linkedRequirementIds.length > 0)) return;
-    // 候选状态：评估通过 / 待立项 / 开发中（保留尚未绑定流程的优先）
-    // 仅取尚未绑定流程的状态（PENDING_PROJECT / PENDING_ASSESSMENT），保证「新建流程」下拉里有可选项
-    const candidateStatus = new Set(['PENDING_PROJECT', 'PENDING_ASSESSMENT']);
+    if (workspaces.some((w) => w.linkedRequirementIds.length > 0)) {
+      recomputeProjectAggregates();
+      return;
+    }
+    const wb = await import('../RequirementsWorkbench/mockData');
+    const reqs = wb.getMockRequirementsSnapshot();
+    const POST_PROJECT = new Set(['PENDING_PROJECT', 'DEVELOPING', 'LAUNCHED', 'OFFLINE']);
+    // 按部门收集候选需求
     const byDept = new Map<string, string[]>();
-    res.list.forEach((r) => {
-      if (!candidateStatus.has(r.status)) return;
+    reqs.forEach((r) => {
+      if (!POST_PROJECT.has(r.status)) return;
       const arr = byDept.get(r.owning_department_id) ?? [];
-      if (arr.length < 4) arr.push(r.id);
+      arr.push(r.id);
       byDept.set(r.owning_department_id, arr);
     });
-    workspaces = workspaces.map((w) => {
-      const pool = byDept.get(w.departmentId) ?? [];
-      // 每个工作空间最多关联 2 个需求
-      return { ...w, linkedRequirementIds: pool.splice(0, 2) };
+    // 同部门多个工作空间时 round-robin 分配
+    const wsByDept = new Map<string, Workspace[]>();
+    workspaces.forEach((w) => {
+      const arr = wsByDept.get(w.departmentId) ?? [];
+      arr.push(w);
+      wsByDept.set(w.departmentId, arr);
     });
+    const wsAssign = new Map<string, string[]>();
+    workspaces.forEach((w) => wsAssign.set(w.id, []));
+    byDept.forEach((reqIds, deptId) => {
+      const wsList = wsByDept.get(deptId) ?? [];
+      if (wsList.length === 0) return;
+      reqIds.forEach((rid, i) => {
+        const ws = wsList[i % wsList.length];
+        wsAssign.get(ws.id)!.push(rid);
+      });
+    });
+    workspaces = workspaces.map((w) => ({
+      ...w,
+      linkedRequirementIds: wsAssign.get(w.id) ?? [],
+    }));
+    // 回写 linkedProject / linkedWorkspace 到需求侧
+    const linkMap = new Map<string, { project: { id: string; name: string }; workspace: { id: string; name: string } }>();
+    workspaces.forEach((w) => {
+      const proj = projects.find((p) => p.id === w.projectId);
+      if (!proj) return;
+      w.linkedRequirementIds.forEach((rid) => {
+        linkMap.set(rid, {
+          project: { id: proj.id, name: proj.name },
+          workspace: { id: w.id, name: w.name },
+        });
+      });
+    });
+    wb.patchRequirementLinks(linkMap);
     recomputeProjectAggregates();
   })();
   return demoSeedPromise;
