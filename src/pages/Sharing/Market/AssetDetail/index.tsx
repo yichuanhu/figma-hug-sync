@@ -245,8 +245,6 @@ const AssetDetail = () => {
               columns={[
                 { title: t('sharing.market.detail.col.reuser'), dataIndex: 'reuserName', width: 120 },
                 { title: t('sharing.market.detail.col.version'), dataIndex: 'versionNumber', width: 120 },
-                { title: t('sharing.market.detail.col.reuseType'), dataIndex: 'reuseType', width: 120,
-                  render: (v: string) => v === 'DIRECT' ? <Tag size="small" color="blue">{t('sharing.market.detail.reuseDirect')}</Tag> : <Tag size="small" color="violet">{t('sharing.market.detail.reuseAdaptation')}</Tag> },
                 { title: t('sharing.market.detail.col.date'), dataIndex: 'reusedAt', width: 140 },
                 { title: t('sharing.market.detail.col.note'), dataIndex: 'adaptationNote', render: (v) => v ?? '—' },
               ]}
