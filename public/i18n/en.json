@@ -4634,57 +4634,20 @@
     "required": "Please select a workspace"
   },
   "publishToSharing": {
-    "pageTitle": "Publish Process to Sharing Center",
-    "searchPh": "Search process name",
-    "departmentPh": "Department",
-    "tabs": {
-      "all": "All",
-      "unpublished": "Unpublished",
-      "pending_approval": "In Review",
-      "published": "Synced",
-      "rejected": "Rejected"
-    },
-    "col": {
-      "processName": "Process",
-      "shareStatus": "Share Status",
-      "version": "Version",
-      "department": "Department",
-      "publisher": "Publisher",
-      "publishTime": "Publish Time",
-      "action": "Action"
-    },
-    "actions": {
-      "publish": "Publish",
-      "viewDetail": "View Details"
-    },
-    "detail": {
-      "processInfo": "Process Info",
-      "description": "Description",
-      "releaseId": "Release ID",
-      "assetId": "Sharing Center Asset ID",
-      "publishVersion": "Publish {{version}} to Sharing Center"
-    },
-    "banner": {
-      "pending": "Submitted to Sharing Center for review. Asset ID: {{assetId}}",
-      "published": "Synced to Sharing Center marketplace. Asset ID: {{assetId}}",
-      "rejected": "Rejected by Sharing Center: {{reason}}"
-    },
-    "modal": {
-      "title": "Publish to Sharing Center",
-      "noteLabel": "Release Note (optional)",
-      "notePh": "5-200 characters",
-      "noteOverLimit": "Release note must be at most 200 characters",
-      "noteMin": "Release note must be at least 5 characters",
-      "confirm": "Confirm Publish"
-    },
-    "toast": {
-      "success": "Published successfully, awaiting review",
-      "duplicate": "This version has already been published",
-      "apiError": "Sharing Center unavailable, please retry later"
-    },
-    "empty": {
-      "noProcess": "No process available. Please publish a process from Development Center first.",
-      "noResult": "No matching process. Please adjust filters."
-    }
+    "modalTitle": "Publish Process to Sharing Center",
+    "processLabel": "Process",
+    "processPlaceholder": "Select a published process from Development Center",
+    "processRequired": "Please select a process",
+    "versionLabel": "Version",
+    "deptLabel": "Department",
+    "noteLabel": "Release Note",
+    "notePlaceholder": "5-200 characters",
+    "noteRequired": "Please enter a release note",
+    "noteMin": "At least 5 characters",
+    "noteMax": "At most 200 characters",
+    "alreadyPending": "In Review",
+    "alreadyPublished": "Published",
+    "confirmBtn": "Confirm Publish",
+    "successToast": "Submitted, awaiting Sharing Center approval"
   }
 }
