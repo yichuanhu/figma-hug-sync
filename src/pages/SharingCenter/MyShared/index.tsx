@@ -211,6 +211,7 @@ const MySharedPage = () => {
           dataSource={paged}
           rowKey="id"
           pagination={false}
+          scroll={{ x: 900 }}
           rowSelection={{
             selectedRowKeys: selectedKeys,
             onChange: (keys) => setSelectedKeys((keys ?? []) as string[]),
