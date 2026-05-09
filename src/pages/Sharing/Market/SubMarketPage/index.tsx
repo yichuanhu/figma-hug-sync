@@ -37,6 +37,8 @@ const SubMarketPage = ({ type, titleKey, lockedSource, toolbarExtra, extraFilter
 
   const debouncedSearch = useDebouncedValue(search, 300);
 
+  const allAssets = useSyncExternalStore(subscribe, getMarketAssets, getMarketAssets);
+
   const list = useMemo(() => {
     let base = allAssets.filter((a) => a.type === type);
     if (extraFilter) base = extraFilter(base);
@@ -46,7 +48,7 @@ const SubMarketPage = ({ type, titleKey, lockedSource, toolbarExtra, extraFilter
       source: lockedSource ?? sourceFilter,
       sortBy,
     });
-  }, [type, debouncedSearch, sourceFilter, sortBy, lockedSource, extraFilter]);
+  }, [allAssets, type, debouncedSearch, sourceFilter, sortBy, lockedSource, extraFilter]);
 
   const paged = paginate(list, page, PAGE_SIZE);
 
