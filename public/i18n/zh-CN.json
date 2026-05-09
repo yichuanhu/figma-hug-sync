@@ -4003,7 +4003,7 @@
   "publishToSharing": {
     "modalTitle": "发布流程到共享中心",
     "processLabel": "选择流程",
-    "processPlaceholder": "请选择开发中心已发布的流程",
+    "processPlaceholder": "请选择",
     "processRequired": "请选择要发布的流程",
     "versionLabel": "版本",
     "deptLabel": "所属部门",
