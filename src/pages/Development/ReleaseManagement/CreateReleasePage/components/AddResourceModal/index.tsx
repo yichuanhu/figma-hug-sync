@@ -25,6 +25,7 @@ interface AvailableResource {
   test_value?: string;
   is_published?: boolean;
   original_name?: string;
+  credential_type?: 'FIXED_VALUE' | 'PERSONAL_REF' | 'ASSIGNED_VALUE';
 }
 
 interface AddResourceModalProps {
