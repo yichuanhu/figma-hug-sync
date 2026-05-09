@@ -40,7 +40,7 @@ const NewAssetDropdown = ({ onPublishWorkflow }: Props = {}) => {
       <Item icon={<Box size={14} strokeWidth={2} />} label={t('sharing.myShared.newAsset.snippet')}
         hint={t('sharing.myShared.newAsset.disabledHint')} disabled />
       <Item icon={<GitBranch size={14} strokeWidth={2} />} label={t('sharing.myShared.newAsset.workflow')}
-        onClick={() => navigate('/sharing-center/my-shared/publish-process')} />
+        onClick={() => onPublishWorkflow?.()} />
     </Dropdown.Menu>
   );
 
