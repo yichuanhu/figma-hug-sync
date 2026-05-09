@@ -1118,7 +1118,7 @@ export interface GetWorkersParams {
  * FIXED_VALUE - 固定值凭据
  * PERSONAL_REF - 关联个人凭据
  */
-export type CredentialType = 'FIXED_VALUE' | 'PERSONAL_REF';
+export type CredentialType = 'FIXED_VALUE' | 'PERSONAL_REF' | 'ASSIGNED_VALUE';
 
 /**
  * 凭据值结构
