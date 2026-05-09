@@ -274,6 +274,7 @@ const ApprovalsListPage = () => {
               dataSource={pendingPage}
               rowKey="id"
               pagination={false}
+              scroll={{ x: 1000 }}
               rowSelection={{
                 selectedRowKeys: selectedKeys,
                 onChange: (keys) => setSelectedKeys((keys as string[]) || []),
