@@ -4636,7 +4636,7 @@
   "publishToSharing": {
     "modalTitle": "Publish Process to Sharing Center",
     "processLabel": "Process",
-    "processPlaceholder": "Select a published process from Development Center",
+    "processPlaceholder": "Please select",
     "processRequired": "Please select a process",
     "versionLabel": "Version",
     "deptLabel": "Department",
