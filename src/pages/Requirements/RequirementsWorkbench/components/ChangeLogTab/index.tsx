@@ -99,13 +99,19 @@ const ChangeLogTab = ({ requirementId, refreshKey, onRespond, highlightLogId }: 
             log.changeType === 'DEV_IMPACT' &&
             log.status === 'PENDING' &&
             Date.now() - new Date(log.publishedAt).getTime() > OVERDUE_MS;
+          const canRespond = !!onRespond && log.needsDevResponse && log.status === 'PENDING';
           return (
             <Timeline.Item
               key={log.id}
               type={dotColorMap[log.changeType]}
               time={formatTime(log.publishedAt)}
             >
-              <div className="change-log-item">
+              <div
+                className="change-log-item"
+                ref={(el) => {
+                  itemRefs.current[log.id] = el;
+                }}
+              >
                 <div className="change-log-item-header">
                   <Tag color={typeColorMap[log.changeType]} size="small">
                     {t(`requirements.detail.changeLog.type.${log.changeType}`)}
@@ -124,6 +130,18 @@ const ChangeLogTab = ({ requirementId, refreshKey, onRespond, highlightLogId }: 
                       <AlertTriangle size={14} strokeWidth={2} />
                       {t('requirements.detail.changeLog.overdue', { days: OVERDUE_DAYS })}
                     </span>
+                  )}
+                  {canRespond && (
+                    <Button
+                      size="small"
+                      theme="solid"
+                      type="primary"
+                      icon={<CheckSquare size={14} strokeWidth={2} />}
+                      style={{ marginLeft: 'auto' }}
+                      onClick={() => onRespond?.(log)}
+                    >
+                      处理
+                    </Button>
                   )}
                 </div>
 
