@@ -126,25 +126,11 @@ const RequirementsProjects = () => {
       key: 'name',
       width: 240,
       ellipsis: true,
-      render: (v: string, r: Project) => {
-        const wsIds = getWorkspaceIdsByProject(r.id);
-        const unacked = countUnackedByWorkspaces(wsIds);
-        const target = unacked > 0 ? firstPendingChangeByWorkspaces(wsIds) : null;
-        return (
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, maxWidth: 220 }}>
-            <Text ellipsis={{ showTooltip: true }} style={{ maxWidth: 180 }}>
-              {v}
-            </Text>
-            {target && (
-              <UnackedBadge
-                count={unacked}
-                requirementId={target.requirementId}
-                changeLogId={target.changeLogId}
-              />
-            )}
-          </span>
-        );
-      },
+      render: (v: string) => (
+        <Text ellipsis={{ showTooltip: true }} style={{ maxWidth: 220 }}>
+          {v}
+        </Text>
+      ),
     },
     {
       title: t('requirements.projects.fields.dateRange'),
