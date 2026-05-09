@@ -21,7 +21,6 @@ const ImportResultModal = ({ visible, result, onClose }: ImportResultModalProps)
     { key: 'success', label: t('credential.import.summary.success'), value: result.success, color: 'var(--semi-color-success)' },
     { key: 'created', label: t('credential.import.summary.created'), value: result.created, color: 'var(--semi-color-primary)' },
     { key: 'updated', label: t('credential.import.summary.updated'), value: result.updated, color: 'var(--semi-color-warning)' },
-    { key: 'skipped', label: t('credential.import.summary.skipped'), value: result.skipped, color: 'var(--semi-color-text-2)' },
     { key: 'failed', label: t('credential.import.summary.failed'), value: result.failed, color: 'var(--semi-color-danger)' },
   ];
 
