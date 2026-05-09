@@ -8,6 +8,9 @@ i18n
   .init({
     lng: 'zh-CN',
     fallbackLng: 'zh-CN',
+    supportedLngs: ['zh-CN', 'en'],
+    nonExplicitSupportedLngs: false,
+    load: 'currentOnly',
     interpolation: {
       escapeValue: false,
     },
