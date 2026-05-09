@@ -45,7 +45,7 @@ const SchemeBuilderPage = () => {
   const dirtyRef = useRef(false);
   dirtyRef.current = dirty;
 
-  // 进入页面：若是已激活方案/预设，先派生新版本
+  // 进入页面：若是已激活模版/预设，先派生新版本
   useEffect(() => {
     if (!id) return;
     (async () => {

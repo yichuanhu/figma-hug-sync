@@ -1,7 +1,7 @@
 import type { RequirementScheme } from './types';
 
 /**
- * 内置预设方案 — 阶段 1 提供 3 个预设方案
+ * 内置预设模版 — 阶段 1 提供 3 个预设模版
  * - RPA-PRO：RPA 专业版（完整字段 + 价值&复杂度双评估 + 3 级审批）
  * - RPA-LITE：RPA 轻量版（精简字段 + 单评估 + 1 级审批）
  * - ADP-DOC：AI 文档处理（含 OCR 维度）
@@ -14,14 +14,14 @@ export const PRESET_SCHEMES: RequirementScheme[] = [
   {
     id: 'scheme-rpa-pro',
     code: 'RPA-PRO',
-    name: 'RPA 专业版方案',
+    name: 'RPA 专业版模版',
     version: '1.0.0',
-    description: '面向中大型企业的完整 RPA 需求评估方案，包含价值评估、复杂度评估及 3 级审批流。',
+    description: '面向中大型企业的完整 RPA 需求评估模版，包含价值评估、复杂度评估及 3 级审批流。',
     status: 'active',
     is_preset: true,
     meta: {
       code: 'RPA-PRO',
-      name: 'RPA 专业版方案',
+      name: 'RPA 专业版模版',
       category: 'RPA',
       scenario: '中大型企业 RPA 项目',
       description: '完整字段 + 价值&复杂度双评估 + 3 级审批',
@@ -49,7 +49,7 @@ export const PRESET_SCHEMES: RequirementScheme[] = [
         description: '系统自动计算 = 频率 × 单次时长 × 可自动化比例 ÷ 60' },
       { key: 'contact_name', label: '需求联系人', type: 'text', required: true, validation: { maxLength: 50 }, ui_width: 'medium' },
       { key: 'contact_phone', label: '联系方式', type: 'text', required: true, validation: { pattern: '^1[3-9]\\d{9}$', message: '请输入有效的手机号码' }, ui_width: 'medium' },
-      { key: 'job_level', label: '执行该业务的岗位级别', type: 'select', required: true, source: 'cost_config.rate_table', ui_width: 'medium', description: '用于估算节省金额，费率由方案 cost_config 提供' },
+      { key: 'job_level', label: '执行该业务的岗位级别', type: 'select', required: true, source: 'cost_config.rate_table', ui_width: 'medium', description: '用于估算节省金额，费率由模版 cost_config 提供' },
       { key: 'process_screenshot', label: '流程截图', type: 'file_upload', required: false, ui_width: 'full', description: '上传当前操作流程的截图或文档（PNG/JPG/PDF，最多 5 个，单个 ≤10MB）' },
       { key: 'business_context', label: '业务背景', type: 'textarea', required: false, validation: { maxLength: 2000 }, ui_width: 'full', description: '描述业务现状与痛点' },
       { key: 'expected_launch_date', label: '期望上线日期', type: 'date', required: false, ui_width: 'medium' },
@@ -124,7 +124,7 @@ export const PRESET_SCHEMES: RequirementScheme[] = [
       },
       custom_basis: '按二线城市平均人力成本计算',
     },
-    raw_yaml: '# RPA 专业版预设方案（内置不可编辑）\nmeta:\n  code: RPA-PRO\n  name: RPA 专业版方案\n# ... 完整 YAML 见原始上传文件',
+    raw_yaml: '# RPA 专业版预设模版（内置不可编辑）\nmeta:\n  code: RPA-PRO\n  name: RPA 专业版模版\n# ... 完整 YAML 见原始上传文件',
     created_at: NOW,
     created_by: 'system',
   },
@@ -133,14 +133,14 @@ export const PRESET_SCHEMES: RequirementScheme[] = [
   {
     id: 'scheme-rpa-lite',
     code: 'RPA-LITE',
-    name: 'RPA 轻量版方案',
+    name: 'RPA 轻量版模版',
     version: '1.0.0',
-    description: '适合中小型团队的精简 RPA 评估方案，仅 6 个核心字段、单一评估模型与单级审批。',
+    description: '适合中小型团队的精简 RPA 评估模版，仅 6 个核心字段、单一评估模型与单级审批。',
     status: 'inactive',
     is_preset: true,
     meta: {
       code: 'RPA-LITE',
-      name: 'RPA 轻量版方案',
+      name: 'RPA 轻量版模版',
       category: 'RPA',
       scenario: '中小型团队快速立项',
     },
@@ -179,23 +179,23 @@ export const PRESET_SCHEMES: RequirementScheme[] = [
       working_hours_per_day: 8,
       working_days_per_month: 21,
     },
-    raw_yaml: '# RPA 轻量版预设方案\nmeta:\n  code: RPA-LITE\n# ...',
+    raw_yaml: '# RPA 轻量版预设模版\nmeta:\n  code: RPA-LITE\n# ...',
     created_at: NOW,
     created_by: 'system',
   },
 
-  // ===================== 4. RPA 统计表标准方案（无审批 / 无评估） =====================
+  // ===================== 4. RPA 统计表标准模版（无审批 / 无评估） =====================
   {
     id: 'scheme-rpa-stat',
     code: 'RPA-STAT',
-    name: 'RPA 统计表标准方案',
+    name: 'RPA 统计表标准模版',
     version: '1.0.0',
-    description: '基于《RPA 统计表》模板设计的标准化需求采集方案，提交后跳过审批与评估，直接进入待立项状态。',
+    description: '基于《RPA 统计表》模板设计的标准化需求采集模版，提交后跳过审批与评估，直接进入待立项状态。',
     status: 'inactive',
     is_preset: true,
     meta: {
       code: 'RPA-STAT',
-      name: 'RPA 统计表标准方案',
+      name: 'RPA 统计表标准模版',
       category: 'RPA',
       scenario: '集团 RPA 需求统一采集',
       description: '对齐《RPA 统计表》字段；无审批、无评估，提交即进入待立项',
@@ -237,7 +237,7 @@ export const PRESET_SCHEMES: RequirementScheme[] = [
     approval_flow: {
       levels: [],
     },
-    raw_yaml: '# RPA 统计表标准方案（无审批 / 无评估）\nmeta:\n  code: RPA-STAT\n  name: RPA 统计表标准方案\napproval_flow:\n  levels: []\n# value_assessment_model / complexity_assessment_model 未配置 → 跳过评估',
+    raw_yaml: '# RPA 统计表标准模版（无审批 / 无评估）\nmeta:\n  code: RPA-STAT\n  name: RPA 统计表标准模版\napproval_flow:\n  levels: []\n# value_assessment_model / complexity_assessment_model 未配置 → 跳过评估',
     created_at: NOW,
     created_by: 'system',
   },
@@ -246,14 +246,14 @@ export const PRESET_SCHEMES: RequirementScheme[] = [
   {
     id: 'scheme-adp-doc',
     code: 'ADP-DOC',
-    name: 'AI 文档处理方案',
+    name: 'AI 文档处理模版',
     version: '1.0.0',
-    description: '专门针对 OCR/文档智能处理（ADP）类需求设计的方案，包含文档识别相关维度。',
+    description: '专门针对 OCR/文档智能处理（ADP）类需求设计的模版，包含文档识别相关维度。',
     status: 'inactive',
     is_preset: true,
     meta: {
       code: 'ADP-DOC',
-      name: 'AI 文档处理方案',
+      name: 'AI 文档处理模版',
       category: 'ADP',
       scenario: '票据 / 合同 / 表单类智能处理',
     },
@@ -319,17 +319,17 @@ export const PRESET_SCHEMES: RequirementScheme[] = [
       working_hours_per_day: 8,
       working_days_per_month: 21,
     },
-    raw_yaml: '# AI 文档处理方案\nmeta:\n  code: ADP-DOC\n# ...',
+    raw_yaml: '# AI 文档处理模版\nmeta:\n  code: ADP-DOC\n# ...',
     created_at: NOW,
     created_by: 'system',
   },
 ];
 
-// ============= 内存方案存储（mock） =============
+// ============= 内存模版存储（mock） =============
 
 let schemeStore: RequirementScheme[] = [...PRESET_SCHEMES];
 
-// ----- 订阅机制：方案变更时通知所有订阅者（用于 React 重渲染） -----
+// ----- 订阅机制：模版变更时通知所有订阅者（用于 React 重渲染） -----
 const schemeSubscribers = new Set<() => void>();
 
 export const subscribeSchemeChange = (cb: () => void): (() => void) => {
@@ -343,7 +343,7 @@ const notifySchemeChange = (): void => {
   });
 };
 
-/** 当前方案存储版本号（每次变更自增），用于 useSyncExternalStore 快照对比 */
+/** 当前模版存储版本号（每次变更自增），用于 useSyncExternalStore 快照对比 */
 let schemeVersion = 0;
 export const getSchemeVersion = (): number => schemeVersion;
 const bumpSchemeVersion = (): void => {
@@ -388,20 +388,20 @@ export const addScheme = async (scheme: RequirementScheme): Promise<RequirementS
 export const deleteScheme = async (id: string): Promise<void> => {
   await new Promise((r) => setTimeout(r, 200));
   const target = schemeStore.find((s) => s.id === id);
-  if (target?.is_preset) throw new Error('预设方案不可删除');
+  if (target?.is_preset) throw new Error('预设模版不可删除');
   schemeStore = schemeStore.filter((s) => s.id !== id);
   bumpSchemeVersion();
 };
 
-/** 更新方案的审批流配置（预设方案不可更新） */
+/** 更新模版的审批流配置（预设模版不可更新） */
 export const updateSchemeApprovalFlow = async (
   id: string,
   approval_flow: RequirementScheme['approval_flow'],
 ): Promise<RequirementScheme> => {
   await new Promise((r) => setTimeout(r, 200));
   const target = schemeStore.find((s) => s.id === id);
-  if (!target) throw new Error('方案不存在');
-  if (target.is_preset) throw new Error('预设方案不可编辑');
+  if (!target) throw new Error('模版不存在');
+  if (target.is_preset) throw new Error('预设模版不可编辑');
   schemeStore = schemeStore.map((s) =>
     s.id === id ? { ...s, approval_flow, updated_at: new Date().toISOString() } : s,
   );
@@ -411,14 +411,14 @@ export const updateSchemeApprovalFlow = async (
 
 export const fetchSchemeVersions = async (code: string): Promise<RequirementScheme[]> => {
   await new Promise((r) => setTimeout(r, 200));
-  // mock：相同 code 的视为同一方案的不同版本
+  // mock：相同 code 的视为同一模版的不同版本
   return schemeStore.filter((s) => s.code === code).sort((a, b) => b.version.localeCompare(a.version));
 };
 
 // ============= Builder API（Story 13） =============
 import type { WorkflowConfig, CostConfig } from './types';
 
-/** 创建空白方案草稿 */
+/** 创建空白模版草稿 */
 export const createSchemeDraft = async (meta: { name: string; description?: string; version?: string }): Promise<RequirementScheme> => {
   await new Promise((r) => setTimeout(r, 200));
   const id = `scheme-draft-${Date.now()}`;
@@ -444,11 +444,11 @@ export const createSchemeDraft = async (meta: { name: string; description?: stri
   return draft;
 };
 
-/** 基于已有方案克隆为草稿 */
+/** 基于已有模版克隆为草稿 */
 export const cloneSchemeAsDraft = async (sourceId: string, opts?: { name?: string; bumpVersion?: boolean }): Promise<RequirementScheme> => {
   await new Promise((r) => setTimeout(r, 200));
   const src = schemeStore.find((s) => s.id === sourceId);
-  if (!src) throw new Error('源方案不存在');
+  if (!src) throw new Error('源模版不存在');
   const id = `scheme-draft-${Date.now()}`;
   const nextVersion = opts?.bumpVersion
     ? bumpVersionString(src.version)
@@ -471,7 +471,7 @@ export const cloneSchemeAsDraft = async (sourceId: string, opts?: { name?: strin
   return draft;
 };
 
-/** AF2: 编辑已激活方案 → 自动派生新版本 */
+/** AF2: 编辑已激活模版 → 自动派生新版本 */
 export const forkActiveScheme = async (sourceId: string): Promise<RequirementScheme> => {
   return cloneSchemeAsDraft(sourceId, { bumpVersion: true });
 };
@@ -494,8 +494,8 @@ export const updateSchemeBuilder = async (
 ): Promise<RequirementScheme> => {
   await new Promise((r) => setTimeout(r, 150));
   const target = schemeStore.find((s) => s.id === id);
-  if (!target) throw new Error('方案不存在');
-  if (target.is_preset) throw new Error('预设方案不可编辑');
+  if (!target) throw new Error('模版不存在');
+  if (target.is_preset) throw new Error('预设模版不可编辑');
   schemeStore = schemeStore.map((s) =>
     s.id === id ? { ...s, ...patch, updated_at: new Date().toISOString() } : s,
   );
@@ -503,7 +503,7 @@ export const updateSchemeBuilder = async (
   return schemeStore.find((s) => s.id === id)!;
 };
 
-/** 通过 id 读取方案 */
+/** 通过 id 读取模版 */
 export const getSchemeById = (id: string): RequirementScheme | undefined =>
   schemeStore.find((s) => s.id === id);
 
@@ -518,7 +518,7 @@ export const validateScheme = (id: string): SchemeValidationResult => {
   const s = schemeStore.find((x) => x.id === id);
   const missing: SchemeValidationResult['missing'] = [];
   const errors: string[] = [];
-  if (!s) return { ok: false, missing: [], errors: ['方案不存在'] };
+  if (!s) return { ok: false, missing: [], errors: ['模版不存在'] };
 
   // Form
   if (!s.custom_fields || s.custom_fields.length === 0) {
@@ -606,7 +606,7 @@ export const syncApprovalFlowFromWorkflow = (wf: WorkflowConfig): ApprovalLevelC
 
 import type { ApprovalLevelConfig } from './types';
 
-/** 激活方案（带校验） */
+/** 激活模版（带校验） */
 export const activateSchemeBuilder = async (id: string): Promise<RequirementScheme> => {
   const v = validateScheme(id);
   if (!v.ok) {
@@ -616,7 +616,7 @@ export const activateSchemeBuilder = async (id: string): Promise<RequirementSche
   }
   // 同步 cost & workflow → 旧字段
   const target = schemeStore.find((s) => s.id === id);
-  if (!target) throw new Error('方案不存在');
+  if (!target) throw new Error('模版不存在');
   const patch: Partial<RequirementScheme> = {};
   if (target.cost_config) patch.cost_config = syncCostConfigCompat(target.cost_config);
   const wfDisabled = target.workflow_config?.template === 'none';

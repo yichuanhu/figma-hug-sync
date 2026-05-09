@@ -195,7 +195,7 @@ const RequirementsWorkbench = () => {
     });
   };
 
-  // 重新提交（REJECTED / WITHDRAWN）—— 文案与目标状态由当前方案标志驱动
+  // 重新提交（REJECTED / WITHDRAWN）—— 文案与目标状态由当前模版标志驱动
   const handleResubmit = (record: RequirementItem) => {
     const resubmitLabel = t('requirements.detail.resubmit');
     Modal.confirm({
