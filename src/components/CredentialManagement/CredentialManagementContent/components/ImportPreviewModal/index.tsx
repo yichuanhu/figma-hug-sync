@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import { Modal, Button, Table, Tag, Typography } from '@douyinfe/semi-ui';
+import { Modal, Button, Table, Tag, Tabs, TabPane, Typography } from '@douyinfe/semi-ui';
 import { AlertTriangle } from 'lucide-react';
-import type { ValidationResult, ImportRowError } from '../../assignedValueMock';
+import type { ValidationResult, ImportRowError, ParsedRow } from '../../assignedValueMock';
 import './index.less';
 
 const { Text } = Typography;
@@ -48,11 +48,19 @@ const ImportPreviewModal = ({
 
   const rowErrors = validation.errors.filter((e) => e.row_number !== null);
 
-  const columns = [
+  const errorColumns = [
     { title: t('credential.import.cols.row'), dataIndex: 'row_number', key: 'row_number', width: 70 },
     { title: t('credential.import.cols.username'), dataIndex: 'username', key: 'username', width: 160, render: (v?: string) => v || '-' },
     { title: t('credential.import.preview.errorTypeCol'), key: 'type', width: 100, render: (_: unknown, row: ImportRowError) => typeTag(row) },
     { title: t('credential.import.cols.reason'), dataIndex: 'reason', key: 'reason', ellipsis: { showTitle: true } },
+  ];
+
+  const validColumns = [
+    { title: t('credential.import.cols.row'), dataIndex: 'row_number', key: 'row_number', width: 70 },
+    { title: t('credential.import.cols.username'), dataIndex: 'username', key: 'username', width: 140, ellipsis: { showTitle: true } },
+    { title: t('credential.import.preview.cols.account'), dataIndex: 'account', key: 'account', width: 160, ellipsis: { showTitle: true } },
+    { title: t('credential.import.preview.cols.password'), key: 'password', width: 90, render: () => '******' },
+    { title: t('common.description'), dataIndex: 'description', key: 'description', ellipsis: { showTitle: true }, render: (v?: string) => v || '-' },
   ];
 
   return (
@@ -63,7 +71,7 @@ const ImportPreviewModal = ({
       footer={null}
       closeOnEsc
       maskClosable={false}
-      width={680}
+      width={760}
     >
       <div className="import-preview-modal-body">
         <Text type="tertiary">{t('credential.import.preview.fileLabel')}：{fileName}</Text>
@@ -88,21 +96,36 @@ const ImportPreviewModal = ({
           </div>
         )}
 
-        {rowErrors.length > 0 ? (
-          <div className="import-preview-modal-error-section">
-            <Text strong>{t('credential.import.preview.errorListTitle', { count: rowErrors.length })}</Text>
+        <Tabs type="line" defaultActiveKey={errorCount > 0 ? 'error' : 'valid'}>
+          <TabPane
+            tab={`${t('credential.import.preview.tabs.valid')} (${validCount})`}
+            itemKey="valid"
+          >
             <Table
               size="small"
-              columns={columns}
+              columns={validColumns}
+              dataSource={validation.valid_rows}
+              rowKey={(r: ParsedRow) => `valid-${r.row_number}`}
+              pagination={false}
+              scroll={{ y: 280 }}
+              empty={<Text type="tertiary">{t('credential.import.preview.noValidRows')}</Text>}
+            />
+          </TabPane>
+          <TabPane
+            tab={`${t('credential.import.preview.tabs.error')} (${errorCount})`}
+            itemKey="error"
+          >
+            <Table
+              size="small"
+              columns={errorColumns}
               dataSource={rowErrors}
               rowKey={(r: ImportRowError) => `${r.row_number}-${r.type}`}
               pagination={false}
               scroll={{ y: 280 }}
+              empty={<Text type="success">{t('credential.import.preview.allValid')}</Text>}
             />
-          </div>
-        ) : (
-          <Text type="success">{t('credential.import.preview.allValid')}</Text>
-        )}
+          </TabPane>
+        </Tabs>
 
         <div className="import-preview-modal-footer">
           <Button theme="light" onClick={onCancel}>{t('common.cancel')}</Button>
