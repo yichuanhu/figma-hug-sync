@@ -86,7 +86,7 @@ const MySharedPage = () => {
     {
       title: t('sharing.myShared.col.name'),
       dataIndex: 'name',
-      minWidth: 240,
+      width: 280,
       ellipsis: { showTitle: false },
       render: (_: string, row: ShareAsset) => (
         <div className="cell-name">
