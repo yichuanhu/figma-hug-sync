@@ -23,7 +23,7 @@ import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
 import DepartmentSelect from '@/components/DepartmentSelect';
-import { Ellipsis, History, Link, Pencil, Plus, Trash2, Unlink, UserPlus } from 'lucide-react';
+import { Ellipsis, History, Link, Pencil, Plus, Trash2, Unlink, Upload, UserPlus } from 'lucide-react';
 import { debounce } from 'lodash';
 import type {
   LYCredentialResponse,
@@ -35,6 +35,7 @@ import CreateCredentialModal from './components/CreateCredentialModal';
 import EditCredentialModal from './components/EditCredentialModal';
 import CredentialDetailDrawer from './components/CredentialDetailDrawer';
 import LinkPersonalCredentialModal from './components/LinkPersonalCredentialModal';
+import ImportAssignedValueModal from './components/ImportAssignedValueModal';
 import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
 
 import './index.less';
@@ -233,7 +234,8 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
   }, [location.state]);
   const [linkPersonalModalVisible, setLinkPersonalModalVisible] = useState(false);
   const [linkingCredential, setLinkingCredential] = useState<LYCredentialResponse | null>(null);
-  const [initialDetailTab, setInitialDetailTab] = useState<'basic' | 'usage'>('basic');
+  const [initialDetailTab, setInitialDetailTab] = useState<'basic' | 'usage' | 'assigned'>('basic');
+  const [importTarget, setImportTarget] = useState<LYCredentialResponse | null>(null);
   const { openCollaborator, renderCollaboratorPanel } = useCollaboratorAction();
 
   // 加载数据
