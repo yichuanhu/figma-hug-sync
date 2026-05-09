@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Timeline, Tag, Typography, Spin } from '@douyinfe/semi-ui';
+import { Timeline, Tag, Typography, Spin, Button } from '@douyinfe/semi-ui';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, CheckSquare } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import type { ChangeType, RequirementChangeLog } from '../../types';
 import { listChangeLogs } from '../../mockData';
