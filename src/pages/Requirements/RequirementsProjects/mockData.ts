@@ -210,6 +210,7 @@ export const ensureDemoSeed = (): Promise<void> => {
     }
     const wb = await import('../RequirementsWorkbench/mockData');
     const reqs = wb.getMockRequirementsSnapshot();
+    reqs.forEach((r) => cachedReqStatus.set(r.id, r.status));
     const POST_PROJECT = new Set(['PENDING_PROJECT', 'DEVELOPING', 'LAUNCHED', 'OFFLINE']);
     // 按部门收集候选需求
     const byDept = new Map<string, string[]>();
