@@ -143,7 +143,19 @@ export const validateImportRows = (rawRows: ParsedRow[]): ValidationResult => {
     }
   });
 
-  const validRows = fieldOkRows.filter((r) => !duplicateRowNumbers.has(r.row_number));
+  const allValidRows = fieldOkRows.filter((r) => !duplicateRowNumbers.has(r.row_number));
+
+  // 仅对"有效数据"应用 500 行上限：超出部分截断，但提示用户
+  const exceededLimit = allValidRows.length > IMPORT_ROW_LIMIT;
+  const validRows = exceededLimit ? allValidRows.slice(0, IMPORT_ROW_LIMIT) : allValidRows;
+
+  if (exceededLimit) {
+    errors.push({
+      row_number: null,
+      type: 'EXCEED_LIMIT',
+      reason: `单次导入有效数据上限 ${IMPORT_ROW_LIMIT} 行，已截断 ${allValidRows.length - IMPORT_ROW_LIMIT} 行（仅前 ${IMPORT_ROW_LIMIT} 行有效数据将被导入）`,
+    });
+  }
 
   return {
     total_parsed: totalParsed,
