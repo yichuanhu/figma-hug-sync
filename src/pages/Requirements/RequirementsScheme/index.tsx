@@ -115,9 +115,6 @@ const RequirementsScheme = () => {
           </Col>
           <Col>
             <Space>
-              <Button icon={<UploadIcon size={16} strokeWidth={2} />} onClick={() => setUploadVisible(true)}>
-                {t('requirements.scheme.upload')}
-              </Button>
               <Button icon={<Copy size={16} strokeWidth={2} />} onClick={() => setPresetPickerVisible(true)}>
                 {t('requirements.scheme.createBasedOnPreset')}
               </Button>
