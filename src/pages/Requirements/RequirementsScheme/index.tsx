@@ -1,21 +1,18 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Typography, Button, Input, Tag, Toast, Modal, Dropdown, Upload, Row, Col, Space } from '@douyinfe/semi-ui';
+import { Typography, Button, Input, Tag, Toast, Modal, Dropdown, Row, Col, Space } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
-import type { FileItem } from '@douyinfe/semi-ui/lib/es/upload';
-import { Upload as UploadIcon, Ellipsis, CheckCircle, Eye, Trash2, History, Pencil, Inbox, File as FileIcon, X, Plus, Copy } from 'lucide-react';
+import { Ellipsis, CheckCircle, Eye, Trash2, History, Pencil, Plus, Copy } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import {
   fetchSchemes,
   activateScheme,
-  addScheme,
   deleteScheme,
   createSchemeDraft,
   cloneSchemeAsDraft,
 } from '../RequirementsWorkbench/schemeConfig';
 import type { RequirementScheme } from '../RequirementsWorkbench/types';
-import { parseSchemeYaml } from './schemeYamlParser';
 import SchemeDetailDrawer from './components/SchemeDetailDrawer';
 import './index.less';
 
