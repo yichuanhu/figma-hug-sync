@@ -510,35 +510,38 @@ const generateMockLinkedProcesses = (status: RequirementStatus, idx: number): Li
   return MOCK_PROCESS_POOL.slice(0, (idx % 3) + 1);
 };
 
+// 与 RequirementsProjects/mockData.ts 中的 projects 数组一一对应（id/name），用于列表筛选下拉。
 export const MOCK_PROJECT_POOL = [
-  { id: 'proj-001', name: '数字化转型项目' },
-  { id: 'proj-002', name: '财务智能化项目' },
-  { id: 'proj-003', name: '人力共享中心项目' },
-  { id: 'proj-004', name: 'IT 运维提效项目' },
-  { id: 'proj-005', name: '采购供应链优化项目' },
+  { id: 'proj-001', name: 'Finance Automation 2026' },
+  { id: 'proj-002', name: 'HR Digital Transformation' },
+  { id: 'proj-003', name: 'IT Operations Excellence' },
+  { id: 'proj-004', name: 'Procurement & Supply Chain' },
+  { id: 'proj-005', name: 'Sales Enablement Platform' },
 ];
 
-const MOCK_WORKSPACE_POOL = [
-  { id: 'ws-001', name: '财务自动化一期' },
-  { id: 'ws-002', name: '采购自动化工作空间' },
-  { id: 'ws-003', name: '人事数据治理' },
-  { id: 'ws-004', name: 'IT 运维机器人空间' },
-  { id: 'ws-005', name: '销售运营自动化' },
-];
-
-const generateMockLinkedProject = (status: RequirementStatus, idx: number) => {
-  if (!(['PENDING_PROJECT', 'DEVELOPING', 'LAUNCHED', 'OFFLINE'] as RequirementStatus[]).includes(status)) return undefined;
-  return MOCK_PROJECT_POOL[idx % MOCK_PROJECT_POOL.length];
-};
-
-const generateMockLinkedWorkspace = (status: RequirementStatus, idx: number) => {
-  if (!(['DEVELOPING', 'LAUNCHED', 'OFFLINE'] as RequirementStatus[]).includes(status)) return undefined;
-  return MOCK_WORKSPACE_POOL[idx % MOCK_WORKSPACE_POOL.length];
-};
+// 注：linkedProject / linkedWorkspace 不再在此本地随机赋值，统一由
+// RequirementsProjects/mockData.ts 的 ensureDemoSeed 按部门确定性地写回。
+const generateMockLinkedProject = (_status: RequirementStatus, _idx: number) => undefined as { id: string; name: string } | undefined;
+const generateMockLinkedWorkspace = (_status: RequirementStatus, _idx: number) => undefined as { id: string; name: string } | undefined;
 
 const generateMockUnboundCount = (status: RequirementStatus, idx: number): number | undefined => {
   if (!(['DEVELOPING', 'LAUNCHED'] as RequirementStatus[]).includes(status)) return undefined;
   return idx % 5 === 0 ? 1 : undefined;
+};
+
+/** 同步快照：供 RequirementsProjects 模块按部门绑定需求时使用，避免循环 fetch。 */
+export const getMockRequirementsSnapshot = (): { id: string; status: string; owning_department_id: string }[] =>
+  mockRequirementData.map((r) => ({ id: r.id, status: r.status, owning_department_id: r.owning_department_id }));
+
+/** 由 RequirementsProjects/ensureDemoSeed 调用，回写 linkedProject / linkedWorkspace 到需求侧。 */
+export const patchRequirementLinks = (
+  links: Map<string, { project: { id: string; name: string }; workspace: { id: string; name: string } }>,
+): void => {
+  mockRequirementData = mockRequirementData.map((r) => {
+    const link = links.get(r.id);
+    if (!link) return r;
+    return { ...r, linkedProject: link.project, linkedWorkspace: link.workspace };
+  });
 };
 
 // 注：需求中心侧不再支持直接关联/解除流程，关联入口已收敛至工作空间与开发中心。
@@ -740,6 +743,13 @@ function applyClosureDemoData(): void {
 // ============= 模拟 API 函数 =============
 
 export const fetchRequirementList = async (params: RequirementQueryParams): Promise<RequirementListResponse> => {
+  // 触发并等待项目侧种子，让 linkedProject / linkedWorkspace 已被回写
+  try {
+    const m = await import('../RequirementsProjects/mockData');
+    await m.ensureDemoSeed();
+  } catch {
+    // 忽略：种子失败不应阻塞列表
+  }
   await new Promise((resolve) => setTimeout(resolve, 300));
 
   let filtered = [...mockRequirementData];
