@@ -193,7 +193,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
               closeIcon={null}
               description={t(
                 'release.create.assignedValueNotice',
-                '该凭据为「分配值」类型，发布完成后请前往「凭据管理」为其上传分配值名单；若未上传分配值，关联流程在生产环境运行时将默认使用该凭据的生产值。',
+                '该凭据为「分配值」类型，发布完成后请前往「调度中心-业务资产配置-凭据」为其上传分配值名单；若未上传分配值，关联流程在生产环境运行时将默认使用该凭据的生产值。',
               )}
             />
           </div>
