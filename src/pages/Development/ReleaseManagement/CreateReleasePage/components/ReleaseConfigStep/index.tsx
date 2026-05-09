@@ -18,6 +18,7 @@ import {
   Row,
   Col,
   Space,
+  Banner,
 } from '@douyinfe/semi-ui';
 import type { ReleaseType, ResourceType } from '@/api';
 import type { SelectedProcess, ResourceConfig } from '../../index';
