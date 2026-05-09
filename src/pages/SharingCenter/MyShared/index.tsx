@@ -120,23 +120,6 @@ const MySharedPage = () => {
       width: 100,
     },
     {
-      title: t('sharing.myShared.col.tags'),
-      dataIndex: 'tags',
-      width: 200,
-      render: (tags: string[]) => (
-        <Space spacing={4} wrap>
-          {tags.slice(0, 2).map((tag) => (
-            <Tag key={tag} size="small" color="grey" type="light">{tag}</Tag>
-          ))}
-          {tags.length > 2 && (
-            <Tooltip content={tags.slice(2).join('、')}>
-              <Tag size="small" color="grey" type="light">+{tags.length - 2}</Tag>
-            </Tooltip>
-          )}
-        </Space>
-      ),
-    },
-    {
       title: t('sharing.myShared.col.updatedAt'),
       dataIndex: 'updatedAt',
       width: 120,
