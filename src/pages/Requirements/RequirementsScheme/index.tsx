@@ -196,63 +196,6 @@ const RequirementsScheme = () => {
         )}
       </div>
 
-      {/* 上传弹窗 */}
-      <Modal
-        title={t('requirements.scheme.uploadTitle')}
-        visible={uploadVisible}
-        onCancel={closeUploadModal}
-        onOk={handleUpload}
-        okText={t('requirements.scheme.parseAndCreate')}
-        cancelText={t('common.cancel')}
-        okButtonProps={{ disabled: !yamlText }}
-        width={600}
-        className="scheme-upload-modal"
-        maskClosable={false}
-      >
-        <Text type="tertiary" size="small">{t('requirements.scheme.uploadHint')}</Text>
-        <div style={{ marginTop: 12 }}>
-          <Upload
-            action=""
-            customRequest={() => ({ abort: () => {} })}
-            accept=".yaml,.yml"
-            limit={1}
-            draggable
-            dragIcon={<Inbox size={36} strokeWidth={2} />}
-            dragMainText={t('requirements.scheme.uploadDragHint')}
-            dragSubText={t('requirements.scheme.uploadFileTypeHint')}
-            beforeUpload={beforeUpload}
-            onChange={handleFileChange}
-            onRemove={() => { setFileList([]); setYamlText(''); setParseErrors([]); return true; }}
-            fileList={fileList}
-            className="scheme-upload-uploader"
-          />
-          {fileList.length > 0 && fileList[0].fileInstance && (
-            <div className="scheme-upload-file-info">
-              <div className="file-info-left">
-                <FileIcon size={16} strokeWidth={2} />
-                <span className="file-name">{fileList[0].fileInstance.name}</span>
-                <span className="file-size">
-                  {(fileList[0].fileInstance.size / 1024).toFixed(1)} KB
-                </span>
-              </div>
-              <Button
-                icon={<X size={14} strokeWidth={2} />}
-                type="tertiary"
-                theme="borderless"
-                size="small"
-                onClick={() => { setFileList([]); setYamlText(''); setParseErrors([]); }}
-              />
-            </div>
-          )}
-        </div>
-        {parseErrors.length > 0 && (
-          <div style={{ marginTop: 12, padding: 12, background: 'var(--semi-color-danger-light-default)', borderRadius: 4 }}>
-            {parseErrors.map((e, i) => (
-              <div key={i} style={{ color: 'var(--semi-color-danger)', fontSize: 12 }}>• {e}</div>
-            ))}
-          </div>
-        )}
-      </Modal>
 
       {/* 详情抽屉 */}
       <SchemeDetailDrawer
