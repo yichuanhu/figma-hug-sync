@@ -796,7 +796,7 @@
       "attachmentExceed": "Maximum 5 files allowed",
       "attachmentSizeError": "File size cannot exceed 10MB",
       "baselineSection": "Business Baseline (Automation ROI)",
-      "baselineHint": "Defined by the active scheme; savings will be auto-calculated.",
+      "baselineHint": "Defined by the active template; savings will be auto-calculated.",
       "sectionDetails": "Requirement Details"
     },
     "detail": {
@@ -831,8 +831,8 @@
       "submitConfirmTitle": "Submit for Approval",
       "submitConfirmContent": "Once submitted, the requirement will enter the approval process. Continue?",
       "submitDirectConfirmTitle": "Submit Requirement",
-      "submitDirectConfirmContent": "The active scheme has no approval flow. Approval will be skipped and the requirement will move directly to the Assessment stage. To enable approval, configure approval_flow in the Requirement Scheme.",
-      "submitDirectNoAssessmentContent": "The active scheme has neither an approval flow nor an assessment model. Both stages will be skipped and the requirement will move directly to the Pending Project stage. Configure approval_flow / assessment_models in the Requirement Scheme to enable them.",
+      "submitDirectConfirmContent": "The active template has no approval flow. Approval will be skipped and the requirement will move directly to the Assessment stage. To enable approval, configure approval_flow in the Requirement Template.",
+      "submitDirectNoAssessmentContent": "The active template has neither an approval flow nor an assessment model. Both stages will be skipped and the requirement will move directly to the Pending Project stage. Configure approval_flow / assessment_models in the Requirement Template to enable them.",
       "submitSkipNotice": "Approval will be skipped — the requirement will advance to the next stage directly.",
       "submitSuccess": "Requirement submitted for approval",
       "submitDirectSuccess": "Requirement submitted and auto-approved (approval skipped)",
@@ -1010,8 +1010,8 @@
         "minutes": "minutes"
       },
       "savedSection": "Estimated Savings (auto)",
-      "savedSubtitle": "Based on active scheme {{scheme}} · {{jobLevel}} rate ¥{{dailyRate}}/d · {{hours}}h per day",
-      "defaultScheme": "Default Scheme",
+      "savedSubtitle": "Based on active template {{scheme}} · {{jobLevel}} rate ¥{{dailyRate}}/d · {{hours}}h per day",
+      "defaultScheme": "Default Template",
       "savedHours": "Monthly Saved Hours",
       "savedPersonDays": "Monthly Saved Person-Days",
       "savedAmount": "Monthly Saved Amount",
