@@ -743,6 +743,13 @@ function applyClosureDemoData(): void {
 // ============= 模拟 API 函数 =============
 
 export const fetchRequirementList = async (params: RequirementQueryParams): Promise<RequirementListResponse> => {
+  // 触发并等待项目侧种子，让 linkedProject / linkedWorkspace 已被回写
+  try {
+    const m = await import('../RequirementsProjects/mockData');
+    await m.ensureDemoSeed();
+  } catch {
+    // 忽略：种子失败不应阻塞列表
+  }
   await new Promise((resolve) => setTimeout(resolve, 300));
 
   let filtered = [...mockRequirementData];
