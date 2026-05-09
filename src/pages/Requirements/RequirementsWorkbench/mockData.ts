@@ -526,19 +526,29 @@ const MOCK_WORKSPACE_POOL = [
   { id: 'ws-005', name: '销售运营自动化' },
 ];
 
-const generateMockLinkedProject = (status: RequirementStatus, idx: number) => {
-  if (!(['PENDING_PROJECT', 'DEVELOPING', 'LAUNCHED', 'OFFLINE'] as RequirementStatus[]).includes(status)) return undefined;
-  return MOCK_PROJECT_POOL[idx % MOCK_PROJECT_POOL.length];
-};
-
-const generateMockLinkedWorkspace = (status: RequirementStatus, idx: number) => {
-  if (!(['DEVELOPING', 'LAUNCHED', 'OFFLINE'] as RequirementStatus[]).includes(status)) return undefined;
-  return MOCK_WORKSPACE_POOL[idx % MOCK_WORKSPACE_POOL.length];
-};
+// 注：linkedProject / linkedWorkspace 不再在此本地随机赋值，统一由
+// RequirementsProjects/mockData.ts 的 ensureDemoSeed 按部门确定性地写回。
+const generateMockLinkedProject = (_status: RequirementStatus, _idx: number) => undefined as { id: string; name: string } | undefined;
+const generateMockLinkedWorkspace = (_status: RequirementStatus, _idx: number) => undefined as { id: string; name: string } | undefined;
 
 const generateMockUnboundCount = (status: RequirementStatus, idx: number): number | undefined => {
   if (!(['DEVELOPING', 'LAUNCHED'] as RequirementStatus[]).includes(status)) return undefined;
   return idx % 5 === 0 ? 1 : undefined;
+};
+
+/** 同步快照：供 RequirementsProjects 模块按部门绑定需求时使用，避免循环 fetch。 */
+export const getMockRequirementsSnapshot = (): { id: string; status: string; owning_department_id: string }[] =>
+  mockRequirementData.map((r) => ({ id: r.id, status: r.status, owning_department_id: r.owning_department_id }));
+
+/** 由 RequirementsProjects/ensureDemoSeed 调用，回写 linkedProject / linkedWorkspace 到需求侧。 */
+export const patchRequirementLinks = (
+  links: Map<string, { project: { id: string; name: string }; workspace: { id: string; name: string } }>,
+): void => {
+  mockRequirementData = mockRequirementData.map((r) => {
+    const link = links.get(r.id);
+    if (!link) return r;
+    return { ...r, linkedProject: link.project, linkedWorkspace: link.workspace };
+  });
 };
 
 // 注：需求中心侧不再支持直接关联/解除流程，关联入口已收敛至工作空间与开发中心。
