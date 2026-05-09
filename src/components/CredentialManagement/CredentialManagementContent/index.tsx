@@ -23,7 +23,7 @@ import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 import FilterPopover from '@/components/FilterPopover';
 import DepartmentSelect from '@/components/DepartmentSelect';
-import { Ellipsis, History, Link, Pencil, Plus, Trash2, Unlink, UserPlus } from 'lucide-react';
+import { Ellipsis, History, Link, Pencil, Plus, Trash2, Unlink, Upload, UserPlus } from 'lucide-react';
 import { debounce } from 'lodash';
 import type {
   LYCredentialResponse,
@@ -35,6 +35,7 @@ import CreateCredentialModal from './components/CreateCredentialModal';
 import EditCredentialModal from './components/EditCredentialModal';
 import CredentialDetailDrawer from './components/CredentialDetailDrawer';
 import LinkPersonalCredentialModal from './components/LinkPersonalCredentialModal';
+import ImportAssignedValueModal from './components/ImportAssignedValueModal';
 import { useCollaboratorAction } from '@/hooks/useCollaboratorAction';
 
 import './index.less';
@@ -51,8 +52,8 @@ const generateUUID = (): string => {
 const mockCredentialIds = Array.from({ length: 15 }, (_, index) => `cred-${index + 1}`);
 
 const generateMockCredential = (index: number): LYCredentialResponse => {
-  const types: CredentialType[] = ['FIXED_VALUE', 'PERSONAL_REF'];
-  const type = types[index % 2];
+  const types: CredentialType[] = ['FIXED_VALUE', 'PERSONAL_REF', 'ASSIGNED_VALUE'];
+  const type = types[index % 3];
   const names = [
     'Enterprise Email Credential',
     'Database Connection Credential',
@@ -167,9 +168,10 @@ const fetchCredentialList = async (
 };
 
 // 凭据类型配置
-const typeConfig: Record<CredentialType, { color: 'blue' | 'green'; i18nKey: string }> = {
+const typeConfig: Record<CredentialType, { color: 'blue' | 'green' | 'orange'; i18nKey: string }> = {
   FIXED_VALUE: { color: 'blue', i18nKey: 'credential.type.fixedValue' },
   PERSONAL_REF: { color: 'green', i18nKey: 'credential.type.personalRef' },
+  ASSIGNED_VALUE: { color: 'orange', i18nKey: 'credential.type.assignedValue' },
 };
 
 interface QueryParams {
@@ -232,7 +234,8 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
   }, [location.state]);
   const [linkPersonalModalVisible, setLinkPersonalModalVisible] = useState(false);
   const [linkingCredential, setLinkingCredential] = useState<LYCredentialResponse | null>(null);
-  const [initialDetailTab, setInitialDetailTab] = useState<'basic' | 'usage'>('basic');
+  const [initialDetailTab, setInitialDetailTab] = useState<'basic' | 'usage' | 'assigned'>('basic');
+  const [importTarget, setImportTarget] = useState<LYCredentialResponse | null>(null);
   const { openCollaborator, renderCollaboratorPanel } = useCollaboratorAction();
 
   // 加载数据
@@ -357,6 +360,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
   const typeFilterOptions = [
     { value: 'FIXED_VALUE', label: t('credential.type.fixedValue') },
     { value: 'PERSONAL_REF', label: t('credential.type.personalRef') },
+    { value: 'ASSIGNED_VALUE', label: t('credential.type.assignedValue') },
   ];
 
   // 点击行查看详情
@@ -518,6 +522,11 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
                 <Dropdown.Item icon={<Pencil size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>
                   {t('common.edit')}
                 </Dropdown.Item>
+                {context === 'scheduling' && record.credential_type === 'ASSIGNED_VALUE' && (
+                  <Dropdown.Item icon={<Upload size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); setImportTarget(record); }}>
+                    {t('credential.actions.import')}
+                  </Dropdown.Item>
+                )}
                 {record.credential_type === 'PERSONAL_REF' && (
                   hasLinkedPersonalCredential(record) ? (
                     <Dropdown.Item icon={<Unlink size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleUnlinkPersonal(record); }}>
@@ -624,11 +633,9 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
               >
                 {t('credential.personalCredentialManagement')}
               </Button>
-              {context === 'development' && (
-                <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
-                  {t('credential.createCredential')}
-                </Button>
-              )}
+              <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
+                {t('credential.createCredential')}
+              </Button>
             </Space>
           </Col>
         </Row>
@@ -763,6 +770,13 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
           setLinkingCredential(null);
           loadData();
         }}
+      />
+
+      <ImportAssignedValueModal
+        visible={!!importTarget}
+        credentialId={importTarget?.credential_id || ''}
+        onCancel={() => setImportTarget(null)}
+        onComplete={() => setImportTarget(null)}
       />
 
       {renderCollaboratorPanel('CREDENTIAL', context)}

@@ -1,0 +1,55 @@
+.import-assigned-value-modal {
+  &-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  &-section { display: flex; flex-direction: column; }
+
+  &-tips {
+    background: var(--semi-color-fill-0);
+    border-radius: 6px;
+    padding: 12px 14px;
+    font-size: 12px;
+    color: var(--semi-color-text-1);
+
+    ol { margin: 0; padding-left: 18px; line-height: 1.8; }
+  }
+
+  &-dropzone {
+    border: 1px dashed var(--semi-color-border);
+    border-radius: 8px;
+    padding: 28px 16px;
+    text-align: center;
+    cursor: pointer;
+    color: var(--semi-color-text-2);
+    transition: border-color .2s, background .2s;
+
+    &:hover, &.is-drag-over {
+      border-color: var(--semi-color-primary);
+      background: var(--semi-color-primary-light-default);
+    }
+
+    &-hint {
+      margin-top: 8px;
+      font-size: 13px;
+    }
+  }
+
+  &-file {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--semi-color-fill-0);
+    border-radius: 6px;
+  }
+
+  &-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding-top: 4px;
+  }
+}

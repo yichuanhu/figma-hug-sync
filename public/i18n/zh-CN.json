@@ -180,7 +180,8 @@
     },
     "type": {
       "fixedValue": "固定值",
-      "personalRef": "关联个人凭据"
+      "personalRef": "关联个人凭据",
+      "assignedValue": "分配值"
     },
     "filter": {
       "type": "类型"
@@ -246,7 +247,8 @@
     },
     "actions": {
       "viewUsage": "查看使用记录",
-      "linkPersonal": "关联个人凭据"
+      "linkPersonal": "关联个人凭据",
+      "import": "导入"
     },
     "linkPersonal": {
       "title": "关联个人凭据",
@@ -282,6 +284,81 @@
         "task": "任务"
       },
       "empty": "暂无使用记录"
+    },
+    "assignedValue": {
+      "tabTitle": "分配值",
+      "create": "新增",
+      "createTitle": "新增分配值",
+      "editTitle": "编辑分配值",
+      "createSuccess": "新增成功",
+      "editSuccess": "更新成功",
+      "deleteSuccess": "删除成功",
+      "deleteConfirmTitle": "删除分配值",
+      "deleteConfirmContent": "确定删除「{{name}}」的分配值？此操作不可恢复。",
+      "totalCount": "共 {{count}} 条分配值",
+      "empty": "暂无分配值，请新增或批量导入",
+      "fields": {
+        "user": "用户",
+        "userPlaceholder": "请选择站内用户",
+        "account": "账号",
+        "accountPlaceholder": "请输入账号",
+        "password": "密码",
+        "passwordPlaceholder": "请输入密码",
+        "passwordEditPlaceholder": "留空表示保持原值",
+        "descriptionPlaceholder": "请输入描述（选填）"
+      },
+      "validation": {
+        "userRequired": "请选择用户",
+        "accountRequired": "请输入账号",
+        "passwordRequired": "请输入密码"
+      },
+      "columns": {
+        "user": "用户",
+        "account": "账号",
+        "password": "密码"
+      }
+    },
+    "import": {
+      "title": "批量导入 - 分配值",
+      "resultTitle": "导入结果",
+      "downloadSection": "下载模板",
+      "downloadTemplate": "下载分配值批量导入模板",
+      "tipsTitle": "提示：",
+      "tip1": "请按模板格式填写，勿修改表头",
+      "tip2": "username 必须为站内有效用户的登录名",
+      "tip3": "同一用户重复导入将覆盖更新已有分配值",
+      "tip4": "单次导入上限 500 行",
+      "tip5": "密码以明文填写，导入时由后端加密存储",
+      "dropzoneHint": "将 .xlsx 文件拖拽到此处，或点击选择",
+      "importButton": "导入",
+      "errors": {
+        "format": "仅支持 .xlsx 格式文件",
+        "size": "文件大小不能超过 5MB"
+      },
+      "summary": {
+        "total": "导入总数",
+        "success": "成功",
+        "created": "新建",
+        "updated": "更新",
+        "skipped": "跳过",
+        "failed": "解析失败"
+      },
+      "status": {
+        "success": "成功",
+        "failed": "失败",
+        "skipped": "跳过"
+      },
+      "subStatus": {
+        "created": "新建",
+        "updated": "更新"
+      },
+      "cols": {
+        "row": "行号",
+        "username": "用户名",
+        "status": "状态",
+        "subStatus": "子状态",
+        "reason": "原因"
+      }
     }
   },
   "parameter": {

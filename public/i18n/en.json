@@ -231,7 +231,8 @@
     },
     "type": {
       "fixedValue": "Fixed Value",
-      "personalRef": "Personal Credential Ref"
+      "personalRef": "Personal Credential Ref",
+      "assignedValue": "Assigned Value"
     },
     "filter": {
       "type": "Type",
@@ -302,7 +303,8 @@
     },
     "actions": {
       "viewUsage": "View Usage",
-      "linkPersonal": "Link Personal Credential"
+      "linkPersonal": "Link Personal Credential",
+      "import": "Import"
     },
     "linkPersonal": {
       "title": "Link Personal Credential",
@@ -351,6 +353,81 @@
         "task": "Task"
       },
       "empty": "No usage records"
+    },
+    "assignedValue": {
+      "tabTitle": "Assigned Values",
+      "create": "Add",
+      "createTitle": "Add Assigned Value",
+      "editTitle": "Edit Assigned Value",
+      "createSuccess": "Created successfully",
+      "editSuccess": "Updated successfully",
+      "deleteSuccess": "Deleted successfully",
+      "deleteConfirmTitle": "Delete Assigned Value",
+      "deleteConfirmContent": "Delete the assigned value for \"{{name}}\"? This action cannot be undone.",
+      "totalCount": "{{count}} assigned values in total",
+      "empty": "No assigned values yet. Please add or import.",
+      "fields": {
+        "user": "User",
+        "userPlaceholder": "Select an internal user",
+        "account": "Account",
+        "accountPlaceholder": "Enter account",
+        "password": "Password",
+        "passwordPlaceholder": "Enter password",
+        "passwordEditPlaceholder": "Leave blank to keep current",
+        "descriptionPlaceholder": "Optional description"
+      },
+      "validation": {
+        "userRequired": "Please select a user",
+        "accountRequired": "Account is required",
+        "passwordRequired": "Password is required"
+      },
+      "columns": {
+        "user": "User",
+        "account": "Account",
+        "password": "Password"
+      }
+    },
+    "import": {
+      "title": "Batch Import - Assigned Values",
+      "resultTitle": "Import Result",
+      "downloadSection": "Download Template",
+      "downloadTemplate": "Download Assigned Value Import Template",
+      "tipsTitle": "Tips:",
+      "tip1": "Fill in following the template format, do not modify headers",
+      "tip2": "username must be a valid internal user login name",
+      "tip3": "Existing assigned values for duplicate users will be overwritten",
+      "tip4": "Up to 500 rows per import",
+      "tip5": "Passwords are filled in plain text and encrypted on the backend",
+      "dropzoneHint": "Drop .xlsx file here, or click to choose",
+      "importButton": "Import",
+      "errors": {
+        "format": "Only .xlsx files are supported",
+        "size": "File size cannot exceed 5MB"
+      },
+      "summary": {
+        "total": "Total",
+        "success": "Success",
+        "created": "Created",
+        "updated": "Updated",
+        "skipped": "Skipped",
+        "failed": "Failed"
+      },
+      "status": {
+        "success": "Success",
+        "failed": "Failed",
+        "skipped": "Skipped"
+      },
+      "subStatus": {
+        "created": "Created",
+        "updated": "Updated"
+      },
+      "cols": {
+        "row": "#",
+        "username": "Username",
+        "status": "Status",
+        "subStatus": "Sub-status",
+        "reason": "Reason"
+      }
     }
   },
   "parameter": {
