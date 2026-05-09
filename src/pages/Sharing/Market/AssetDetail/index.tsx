@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Typography, Tabs, Button, Space, Tag, Toast, Table, Modal, Tooltip } from '@douyinfe/semi-ui';
+import { Typography, Tabs, Button, Space, Tag, Toast, Table, Modal, Tooltip, Banner, Descriptions } from '@douyinfe/semi-ui';
 import { ChevronLeft, Star, Repeat2, Copy } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { findAssetById } from '../mockData';
