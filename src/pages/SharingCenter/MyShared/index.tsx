@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { MoreHorizontal } from 'lucide-react';
 import StatusTag, { type ShareStatus } from '@/components/sharing/StatusTag';
-import SourceBadge from '@/components/sharing/SourceBadge';
+
 import AssetTypeIcon from '@/pages/Sharing/Market/components/AssetTypeIcon';
 import emptyImg from '@/assets/empty-state/no-data.png';
 import { type ShareAsset, getMine, subscribe } from './store';
