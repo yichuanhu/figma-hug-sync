@@ -233,10 +233,15 @@ const MySharedPage = () => {
           rowKey="id"
           pagination={false}
           scroll={{ x: 900 }}
+          rowKey="id"
           rowSelection={{
             selectedRowKeys: selectedKeys,
             onChange: (keys) => setSelectedKeys((keys ?? []) as string[]),
           }}
+          onRow={(row) => ({
+            'data-row-key': row?.id,
+            className: row?.id === highlightId ? 'row-highlighted' : '',
+          })}
           empty={
             <div className="my-shared-empty">
               <img src={emptyImg} alt="empty" />
