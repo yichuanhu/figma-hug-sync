@@ -230,7 +230,6 @@ const MySharedPage = () => {
           size="small"
           columns={columns}
           dataSource={paged}
-          rowKey="id"
           pagination={false}
           scroll={{ x: 900 }}
           rowKey="id"
