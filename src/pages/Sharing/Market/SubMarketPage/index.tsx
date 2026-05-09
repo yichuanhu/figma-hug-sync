@@ -22,7 +22,7 @@ interface Props {
   /** 自定义工具栏左侧扩展（如技能类型筛选） */
   toolbarExtra?: React.ReactNode;
   /** 数据进一步过滤（如技能类型） */
-  extraFilter?: (assets: typeof allAssets) => typeof allAssets;
+  extraFilter?: (assets: Asset[]) => Asset[];
   emptyKey?: string;
 }
 
