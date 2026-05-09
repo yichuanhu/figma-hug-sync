@@ -3,7 +3,11 @@ import { Plus, ChevronDown, BookOpen, Wrench, Box, GitBranch, Lock } from 'lucid
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-const NewAssetDropdown = () => {
+interface Props {
+  onPublishWorkflow?: () => void;
+}
+
+const NewAssetDropdown = ({ onPublishWorkflow }: Props = {}) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
