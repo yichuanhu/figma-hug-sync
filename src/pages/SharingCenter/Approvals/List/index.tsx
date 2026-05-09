@@ -358,6 +358,7 @@ const ApprovalsListPage = () => {
               dataSource={historyPage}
               rowKey="id"
               pagination={false}
+              scroll={{ x: 1140 }}
               empty={
                 <Empty
                   image={<img src={hasHistoryFilter ? noResultImg : noDataImg} alt="" style={{ width: 96 }} />}
