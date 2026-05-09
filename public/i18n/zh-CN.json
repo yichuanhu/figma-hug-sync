@@ -3123,7 +3123,7 @@
   "sharing": {
     "common": {
       "source": {
-        "native": "原生",
+        "native": "共享中心",
         "devCenter": "开发中心"
       },
       "status": {
@@ -3370,7 +3370,7 @@
       "filter": {
         "search": "搜索资产名称",
         "sourceAll": "全部来源",
-        "sourceNative": "原生",
+        "sourceNative": "共享中心",
         "sourceDev": "开发中心",
         "result": "结果：",
         "type": "类型：",
@@ -3520,7 +3520,7 @@
       "source": {
         "all": "全部来源",
         "devCenter": "开发中心",
-        "native": "原生市场"
+        "native": "共享中心"
       },
       "metric": {
         "callCount": "调用次数",

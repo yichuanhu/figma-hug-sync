@@ -3755,7 +3755,7 @@
   "sharing": {
     "common": {
       "source": {
-        "native": "Native",
+        "native": "Sharing Center",
         "devCenter": "Dev Center"
       },
       "status": {
@@ -4002,7 +4002,7 @@
       "filter": {
         "search": "Search asset name",
         "sourceAll": "All sources",
-        "sourceNative": "Native",
+        "sourceNative": "Sharing Center",
         "sourceDev": "Dev Center",
         "result": "Result:",
         "type": "Type:",
@@ -4153,7 +4153,7 @@
       "source": {
         "all": "All sources",
         "devCenter": "Dev Center",
-        "native": "Native Market"
+        "native": "Sharing Center"
       },
       "metric": {
         "callCount": "Calls",
