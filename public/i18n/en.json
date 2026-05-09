@@ -4185,6 +4185,7 @@
       },
       "detail": {
         "back": "Back",
+        "backWorkflow": "Back to Workflow Library",
         "notFound": "Asset not found",
         "noContent": "No content",
         "noReuse": "No reuse records",
@@ -4193,11 +4194,18 @@
         "latest": "Latest",
         "view": "View",
         "versionPreview": "Version preview",
+        "reuseThisVersion": "Reuse this version",
         "attachments": "Attachments",
         "reuseDirect": "Direct reuse",
         "reuseAdaptation": "Adapted reuse",
+        "workflow": {
+          "name": "Workflow name",
+          "description": "Description",
+          "readOnlyTip": "This content is provided by the Development Center and cannot be edited in the Sharing Center."
+        },
         "tabs": {
           "content": "Content",
+          "contentReadonly": "Content (Read-only)",
           "exec": "Execution",
           "params": "Parameters",
           "reuses": "Reuses",
