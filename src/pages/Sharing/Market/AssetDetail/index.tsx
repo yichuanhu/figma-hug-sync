@@ -212,7 +212,7 @@ const AssetDetail = () => {
           </TabPane>
         )}
         {!isSkill && (
-          <TabPane itemKey="content" tab={t('sharing.market.detail.tabs.content')}>
+          <TabPane itemKey="content" tab={asset.type === 'WORKFLOW' ? t('sharing.market.detail.tabs.contentReadonly') : t('sharing.market.detail.tabs.content')}>
             {renderContentTab()}
           </TabPane>
         )}
