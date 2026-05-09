@@ -112,7 +112,7 @@ const generateMockProcess = (index: number): ProcessWithVersions => {
 
   mockDeps.push(
     { resource_id: `param-${(index % 8) + 1}`, resource_name: paramNames[index % 8], resource_type: 'PARAMETER', source: 'AUTO_DETECTED', param_type: 'TEXT', resource_value: 'https://erp.example.com/api/v2', status: 'ACTIVE' },
-    { resource_id: `cred-${(index % 8) + 1}`, resource_name: credNames[index % 8], resource_type: 'CREDENTIAL', source: 'AUTO_DETECTED', resource_value: '••••••••', status: 'ACTIVE' },
+    { resource_id: `cred-${(index % 8) + 1}`, resource_name: credNames[index % 8], resource_type: 'CREDENTIAL', source: 'AUTO_DETECTED', resource_value: '••••••••', status: 'ACTIVE', credential_type: ([2, 6].includes(index % 8) ? 'ASSIGNED_VALUE' : (index % 8 === 4 ? 'PERSONAL_REF' : 'FIXED_VALUE')) },
     { resource_id: `queue-${(index % 8) + 1}`, resource_name: queueNames[index % 8], resource_type: 'QUEUE', source: 'AUTO_DETECTED', status: 'ACTIVE' },
     { resource_id: `file-${(index % 8) + 1}`, resource_name: fileNames[index % 8], resource_type: 'FILE', source: 'AUTO_DETECTED', original_name: 'config.json', status: 'ACTIVE' },
   );
