@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Typography, Tabs, Button, Space, Tag, Toast, Table, Modal, Tooltip, Banner, Descriptions } from '@douyinfe/semi-ui';
 import { ChevronLeft, Star, Repeat2, Copy } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { findMarketAsset, subscribe } from '@/pages/SharingCenter/MyShared/store';
+import { findMarketAsset, getMarketAssets, subscribe } from '@/pages/SharingCenter/MyShared/store';
 import { useCollections } from '../hooks/useCollections';
 import AssetTypeIcon from '../components/AssetTypeIcon';
 import SourceBadge from '../components/SourceBadge';
