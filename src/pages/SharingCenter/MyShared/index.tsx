@@ -14,6 +14,7 @@ import { type ShareAsset, getMine, subscribe } from './store';
 import NewAssetDropdown from './components/NewAssetDropdown';
 import AssetActionsMenu from './components/AssetActionsMenu';
 import BatchActionBar from './components/BatchActionBar';
+import PublishWorkflowModal from './components/PublishWorkflowModal';
 import './index.less';
 
 const { Title, Text } = Typography;
