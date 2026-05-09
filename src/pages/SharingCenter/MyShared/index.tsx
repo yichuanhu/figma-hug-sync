@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { MoreHorizontal } from 'lucide-react';
 import StatusTag, { type ShareStatus } from '@/components/sharing/StatusTag';
-import SourceBadge from '@/components/sharing/SourceBadge';
+
 import AssetTypeIcon from '@/pages/Sharing/Market/components/AssetTypeIcon';
 import emptyImg from '@/assets/empty-state/no-data.png';
 import { type ShareAsset, getMine, subscribe } from './store';
@@ -107,12 +107,6 @@ const MySharedPage = () => {
       dataIndex: 'type',
       width: 100,
       render: (v: string) => t(`sharing.market.tabs.${v}`),
-    },
-    {
-      title: t('sharing.myShared.col.source'),
-      dataIndex: 'source',
-      width: 110,
-      render: (v: 'NATIVE' | 'DEV_CENTER') => <SourceBadge source={v} />,
     },
     {
       title: t('sharing.myShared.col.status'),
