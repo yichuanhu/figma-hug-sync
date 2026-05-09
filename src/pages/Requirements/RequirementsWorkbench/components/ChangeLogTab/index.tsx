@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Timeline, Tag, Typography, Spin } from '@douyinfe/semi-ui';
+import { Timeline, Tag, Typography, Spin, Button } from '@douyinfe/semi-ui';
 import type { TagColor } from '@douyinfe/semi-ui/lib/es/tag/interface';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, CheckSquare } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import type { ChangeType, RequirementChangeLog } from '../../types';
 import { listChangeLogs } from '../../mockData';
@@ -44,12 +44,27 @@ interface Props {
   requirementId: string;
   /** 父级触发刷新的版本号（变更后递增即可重新拉取） */
   refreshKey?: number;
+  /** 触发处理弹窗的回调 */
+  onRespond?: (log: RequirementChangeLog) => void;
+  /** 需要高亮的变更日志 ID（短暂背景闪烁） */
+  highlightLogId?: string;
 }
 
-const ChangeLogTab = ({ requirementId, refreshKey }: Props) => {
+const ChangeLogTab = ({ requirementId, refreshKey, onRespond, highlightLogId }: Props) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [logs, setLogs] = useState<RequirementChangeLog[]>([]);
+  const itemRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+  useEffect(() => {
+    if (!highlightLogId || loading) return;
+    const node = itemRefs.current[highlightLogId];
+    if (!node) return;
+    node.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    node.classList.add('change-log-item-highlight');
+    const timer = setTimeout(() => node.classList.remove('change-log-item-highlight'), 2200);
+    return () => clearTimeout(timer);
+  }, [highlightLogId, loading, logs]);
 
   useEffect(() => {
     let alive = true;
@@ -84,13 +99,19 @@ const ChangeLogTab = ({ requirementId, refreshKey }: Props) => {
             log.changeType === 'DEV_IMPACT' &&
             log.status === 'PENDING' &&
             Date.now() - new Date(log.publishedAt).getTime() > OVERDUE_MS;
+          const canRespond = !!onRespond && log.needsDevResponse && log.status === 'PENDING';
           return (
             <Timeline.Item
               key={log.id}
               type={dotColorMap[log.changeType]}
               time={formatTime(log.publishedAt)}
             >
-              <div className="change-log-item">
+              <div
+                className="change-log-item"
+                ref={(el) => {
+                  itemRefs.current[log.id] = el;
+                }}
+              >
                 <div className="change-log-item-header">
                   <Tag color={typeColorMap[log.changeType]} size="small">
                     {t(`requirements.detail.changeLog.type.${log.changeType}`)}
@@ -109,6 +130,18 @@ const ChangeLogTab = ({ requirementId, refreshKey }: Props) => {
                       <AlertTriangle size={14} strokeWidth={2} />
                       {t('requirements.detail.changeLog.overdue', { days: OVERDUE_DAYS })}
                     </span>
+                  )}
+                  {canRespond && (
+                    <Button
+                      size="small"
+                      theme="solid"
+                      type="primary"
+                      icon={<CheckSquare size={14} strokeWidth={2} />}
+                      style={{ marginLeft: 'auto' }}
+                      onClick={() => onRespond?.(log)}
+                    >
+                      处理
+                    </Button>
                   )}
                 </div>
 

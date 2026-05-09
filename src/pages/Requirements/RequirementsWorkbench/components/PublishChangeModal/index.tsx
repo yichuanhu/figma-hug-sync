@@ -23,12 +23,6 @@ interface PublishChangeModalProps {
   onPublished: () => void;
 }
 
-const TYPE_TAG: Record<ChangeType, { color: 'blue' | 'red' | 'grey'; label: string }> = {
-  CONTENT: { color: 'blue', label: '内容变更' },
-  DEV_IMPACT: { color: 'red', label: '影响开发' },
-  SYSTEM: { color: 'grey', label: '系统变更' },
-};
-
 const FIELD_LABELS: Record<string, string> = {
   title: '标题',
   description: '描述',
@@ -66,16 +60,14 @@ const PublishChangeModal = ({
   const [loading, setLoading] = useState(false);
   const [previewing, setPreviewing] = useState(false);
   const [diffs, setDiffs] = useState<ChangedFieldDiff[]>([]);
-  const [changeType, setChangeType] = useState<ChangeType>('CONTENT');
   const [reason, setReason] = useState('');
-  const [confirmedDevImpact, setConfirmedDevImpact] = useState(false);
+  const [devImpact, setDevImpact] = useState(false);
 
   useEffect(() => {
     if (!visible) {
       setReason('');
       setDiffs([]);
-      setChangeType('CONTENT');
-      setConfirmedDevImpact(false);
+      setDevImpact(false);
       return;
     }
     let cancelled = false;
@@ -84,7 +76,6 @@ const PublishChangeModal = ({
       .then((res) => {
         if (cancelled) return;
         setDiffs(res.diffs);
-        setChangeType(res.type);
       })
       .catch(() => {
         if (cancelled) return;
@@ -100,17 +91,17 @@ const PublishChangeModal = ({
 
   const reasonTrim = reason.trim();
   const reasonValid = reasonTrim.length >= 10;
-  const isDevImpact = changeType === 'DEV_IMPACT';
+  const changeType: ChangeType = devImpact ? 'DEV_IMPACT' : 'CONTENT';
   const canSubmit = useMemo(
-    () => diffs.length > 0 && reasonValid && (!isDevImpact || confirmedDevImpact),
-    [diffs.length, reasonValid, isDevImpact, confirmedDevImpact],
+    () => diffs.length > 0 && reasonValid,
+    [diffs.length, reasonValid],
   );
 
   const handlePublish = async () => {
     setLoading(true);
     try {
-      await publishChange({ requirementId, patch, reason: reasonTrim });
-      Toast.success(isDevImpact ? '变更已发布,开发侧需在 7 日内响应' : '变更已发布');
+      await publishChange({ requirementId, patch, reason: reasonTrim, changeType });
+      Toast.success(devImpact ? '变更已发布,开发侧需在 7 日内响应' : '变更已发布');
       onPublished();
     } catch (e) {
       const code = (e as Error)?.message ?? '';
@@ -141,7 +132,9 @@ const PublishChangeModal = ({
           <>
             <div className="publish-change-modal-row">
               <Text type="tertiary">变更类型</Text>
-              <Tag color={TYPE_TAG[changeType].color}>{TYPE_TAG[changeType].label}</Tag>
+              <Tag color={devImpact ? 'red' : 'blue'}>
+                {devImpact ? '影响开发' : '内容变更'}
+              </Tag>
             </div>
 
             {diffs.length === 0 ? (
@@ -175,15 +168,6 @@ const PublishChangeModal = ({
               </div>
             )}
 
-            {isDevImpact && diffs.length > 0 && (
-              <Banner
-                type="warning"
-                fullMode={false}
-                closeIcon={null}
-                description="本次变更将影响开发,发布后会通知关联工作空间,请开发侧在 7 日内响应。"
-              />
-            )}
-
             <div className="publish-change-modal-form">
               <div className="semi-form-field">
                 <label className="semi-form-field-label">
@@ -207,15 +191,24 @@ const PublishChangeModal = ({
               </div>
             </div>
 
-            {isDevImpact && diffs.length > 0 && (
+            {diffs.length > 0 && (
               <label className="publish-change-modal-confirm">
                 <input
                   type="checkbox"
-                  checked={confirmedDevImpact}
-                  onChange={(e) => setConfirmedDevImpact(e.target.checked)}
+                  checked={devImpact}
+                  onChange={(e) => setDevImpact(e.target.checked)}
                 />
-                <Text>我已知悉此为「影响开发」的变更,需要开发侧响应。</Text>
+                <Text>本次变更影响开发,需要开发侧响应（7 日内）</Text>
               </label>
+            )}
+
+            {devImpact && diffs.length > 0 && (
+              <Banner
+                type="warning"
+                fullMode={false}
+                closeIcon={null}
+                description="发布后将通知关联工作空间,请开发侧在 7 日内响应。"
+              />
             )}
           </>
         )}
@@ -232,7 +225,7 @@ const PublishChangeModal = ({
           disabled={!canSubmit || previewing}
           onClick={handlePublish}
         >
-          {isDevImpact ? '确认并发布变更' : '发布变更'}
+          {devImpact ? '确认并发布变更' : '发布变更'}
         </Button>
       </div>
     </Modal>
