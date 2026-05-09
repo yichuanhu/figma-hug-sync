@@ -73,7 +73,26 @@ const AssetDetail = () => {
         </div>
       );
     }
-    const yaml = asset.workflow?.yaml ?? asset.snippet?.yaml ?? '';
+    if (asset.type === 'WORKFLOW') {
+      return (
+        <div className="asset-detail-workflow-readonly">
+          <Descriptions
+            data={[
+              { key: t('sharing.market.detail.workflow.name'), value: asset.name },
+              { key: t('sharing.market.detail.workflow.description'), value: asset.description },
+            ]}
+          />
+          <Banner
+            type="info"
+            fullMode={false}
+            closeIcon={null}
+            description={t('sharing.market.detail.workflow.readOnlyTip')}
+            style={{ marginTop: 16 }}
+          />
+        </div>
+      );
+    }
+    const yaml = asset.snippet?.yaml ?? '';
     return <pre className="asset-detail-yaml">{yaml || t('sharing.market.detail.noContent')}</pre>;
   };
 
