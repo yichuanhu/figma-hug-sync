@@ -123,6 +123,8 @@ const PublishProcessPage = () => {
 
     const targetId = publishRecord.id;
     const submitTime = Date.now();
+    const assetId = publishRecord.assetId || `wf-shared-${Date.now().toString(36)}`;
+    const todayStr = new Date().toISOString().slice(0, 10);
 
     setRecords((prev) => prev.map((r) => (
       r.id === targetId
@@ -130,11 +132,51 @@ const PublishProcessPage = () => {
           ...r,
           shareStatus: 'PENDING_APPROVAL',
           submitTime,
-          assetId: r.assetId || `ASSET-${String(Math.floor(Math.random() * 9000) + 1000)}`,
+          assetId,
           publishNote,
         }
         : r
     )));
+
+    // 同步写入「我的共享」Store，使其在我的共享列表（审批中 Tab）可见
+    if (!findAsset(assetId)) {
+      const newAsset: ShareAsset = {
+        id: assetId,
+        name: publishRecord.processName,
+        type: 'WORKFLOW',
+        source: 'DEV_CENTER',
+        status: 'PUBLISHED',
+        description: publishRecord.description || publishNote,
+        creatorName: CURRENT_USER_NAME,
+        departmentName: CURRENT_USER_DEPT,
+        reuseCount: 0,
+        tags: ['流程', '共享'],
+        currentVersion: publishRecord.version,
+        currentVersionId: `${assetId}-${publishRecord.version}`,
+        createdAt: todayStr,
+        updatedAt: todayStr,
+        workflow: { yaml: `workflow:\n  name: ${publishRecord.processName}`, nodeCount: 0 },
+        versions: [{
+          id: `${assetId}-${publishRecord.version}`,
+          assetId,
+          version: publishRecord.version,
+          changeLog: publishNote,
+          content: '',
+          isLatest: true,
+          createdBy: CURRENT_USER_NAME,
+          createdAt: todayStr,
+        }],
+        reuseRecords: [],
+        isMine: true,
+        shareStatus: 'PENDING_APPROVAL',
+        ownerId: CURRENT_USER_ID,
+        creatorId: CURRENT_USER_ID,
+        originUrl: `https://dev-center.example.com/processes/${publishRecord.processId}`,
+        submittedAt: todayStr,
+        approvalEvents: [{ type: 'SUBMITTED', actorName: CURRENT_USER_NAME, at: todayStr, comment: publishNote }],
+      };
+      addAsset(newAsset);
+    }
 
     setModalVisible(false);
     setDrawerVisible(false);
