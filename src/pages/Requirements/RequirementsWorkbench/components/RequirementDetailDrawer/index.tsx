@@ -733,6 +733,8 @@ const RequirementDetailDrawer = ({
                   <ChangeLogTab
                     requirementId={effectiveData.id}
                     refreshKey={new Date(effectiveData.updatedAt).getTime() + changeLogRefreshKey}
+                    onRespond={(log) => setRespondingLog(log)}
+                    highlightLogId={highlightLogId}
                   />
                 </div>
               </TabPane>
