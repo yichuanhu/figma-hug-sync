@@ -235,7 +235,7 @@ const RequirementFormModal = ({
         // 草稿保存失败不阻断发布流程
       }
       setPendingPatch(patch);
-      setPublishVisible(true);
+      setStep('publish');
       return;
     }
 
