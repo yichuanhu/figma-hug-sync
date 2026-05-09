@@ -185,7 +185,19 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
           </div>
         </div>
 
-        {isFile ? null : !isQueue && (
+        {isAssignedValueCred ? (
+          <div className="release-config-step-resource-card-body">
+            <Banner
+              type="info"
+              fullMode={false}
+              closeIcon={null}
+              description={t(
+                'release.create.assignedValueNotice',
+                '该凭据为「分配值」类型，发布后请前往「凭据管理」为该凭据上传分配值名单，否则关联流程的运行账号将无法分发。',
+              )}
+            />
+          </div>
+        ) : isFile ? null : !isQueue && (
           <div className="release-config-step-resource-card-body">
             <Row gutter={16}>
               <Col span={12}>
