@@ -400,9 +400,28 @@
       "tip5": "Passwords are filled in plain text and encrypted on the backend",
       "dropzoneHint": "Drop .xlsx file here, or click to choose",
       "importButton": "Import",
+      "nextButton": "Next: Validate Data",
       "errors": {
         "format": "Only .xlsx files are supported",
-        "size": "File size cannot exceed 5MB"
+        "size": "File size cannot exceed 5MB",
+        "empty": "No data rows parsed. Please check the file.",
+        "parse": "Failed to parse file. Please check the template format."
+      },
+      "preview": {
+        "title": "Import Preview - Validation",
+        "fileLabel": "File",
+        "totalParsed": "Rows Parsed",
+        "validCount": "Valid Rows",
+        "errorCount": "Error Rows",
+        "errorListTitle": "Error Details ({{count}})",
+        "errorTypeCol": "Error Type",
+        "errorType": {
+          "emptyField": "Empty Field",
+          "duplicate": "Duplicate Username",
+          "exceedLimit": "Exceeds Limit"
+        },
+        "allValid": "All rows passed validation. Ready to import.",
+        "confirm": "Confirm Import ({{count}})"
       },
       "summary": {
         "total": "Total",
