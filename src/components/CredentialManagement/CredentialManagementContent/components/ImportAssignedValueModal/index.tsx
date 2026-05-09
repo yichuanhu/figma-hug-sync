@@ -3,7 +3,14 @@ import { useTranslation } from 'react-i18next';
 import { Modal, Button, Toast, Typography } from '@douyinfe/semi-ui';
 import { Inbox, Download, FileText, X } from 'lucide-react';
 import * as XLSX from 'xlsx';
-import { mockImport, type ImportSummary } from '../../assignedValueMock';
+import {
+  mockImport,
+  validateImportRows,
+  type ImportSummary,
+  type ParsedRow,
+  type ValidationResult,
+} from '../../assignedValueMock';
+import ImportPreviewModal from '../ImportPreviewModal';
 import ImportResultModal from '../ImportResultModal';
 import './index.less';
 
@@ -26,12 +33,19 @@ const ImportAssignedValueModal = ({
 }: ImportAssignedValueModalProps) => {
   const { t } = useTranslation();
   const [file, setFile] = useState<File | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [parsing, setParsing] = useState(false);
+  const [importing, setImporting] = useState(false);
+  const [validation, setValidation] = useState<ValidationResult | null>(null);
   const [result, setResult] = useState<ImportSummary | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragOver, setDragOver] = useState(false);
 
-  const reset = () => { setFile(null); setLoading(false); };
+  const reset = () => {
+    setFile(null);
+    setParsing(false);
+    setImporting(false);
+    setValidation(null);
+  };
 
   const handleClose = () => { reset(); onCancel(); };
 
@@ -63,12 +77,69 @@ const ImportAssignedValueModal = ({
     if (validateFile(f)) setFile(f);
   };
 
-  const handleImport = async () => {
+  const parseFile = async (f: File): Promise<ParsedRow[]> => {
+    const buf = await f.arrayBuffer();
+    const wb = XLSX.read(buf, { type: 'array' });
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    if (!ws) return [];
+    const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(ws, {
+      defval: '',
+      raw: false,
+    });
+    // 跳过模板示例提示行（第一行如果是中文说明，header 名为 "用户名（站内登录名，必填）" 这种则跳过）
+    const parsed: ParsedRow[] = [];
+    rows.forEach((row, idx) => {
+      const username = String(row['username'] ?? '').trim();
+      const account = String(row['account'] ?? '').trim();
+      const password = String(row['password'] ?? '').trim();
+      const description = String(row['description'] ?? '').trim();
+      // 跳过纯说明行（包含中文括号的占位文本）
+      if (
+        username.includes('（') ||
+        account.includes('（') ||
+        password.includes('（')
+      ) {
+        return;
+      }
+      // 整行全空则跳过
+      if (!username && !account && !password && !description) return;
+      parsed.push({
+        row_number: idx + 2, // Excel 行号：表头是 1
+        username,
+        account,
+        password,
+        description: description || undefined,
+      });
+    });
+    return parsed;
+  };
+
+  const handlePreview = async () => {
     if (!file) return;
-    setLoading(true);
+    setParsing(true);
+    try {
+      const rawRows = await parseFile(file);
+      if (rawRows.length === 0) {
+        Toast.warning(t('credential.import.errors.empty'));
+        setParsing(false);
+        return;
+      }
+      const v = validateImportRows(rawRows);
+      setValidation(v);
+    } catch {
+      Toast.error(t('credential.import.errors.parse'));
+    } finally {
+      setParsing(false);
+    }
+  };
+
+  const handleConfirmImport = async () => {
+    if (!validation || !file) return;
+    setImporting(true);
     await new Promise((r) => setTimeout(r, 600));
-    const summary = mockImport(credentialId, file.name);
-    setLoading(false);
+    const summary = mockImport(credentialId, file.name, validation.valid_rows);
+    setImporting(false);
+    setValidation(null);
     setResult(summary);
   };
 
@@ -76,7 +147,7 @@ const ImportAssignedValueModal = ({
     <>
       <Modal
         title={t('credential.import.title')}
-        visible={visible && !result}
+        visible={visible && !validation && !result}
         onCancel={handleClose}
         footer={null}
         closeOnEsc
@@ -156,14 +227,23 @@ const ImportAssignedValueModal = ({
               theme="solid"
               type="primary"
               disabled={!file}
-              loading={loading}
-              onClick={handleImport}
+              loading={parsing}
+              onClick={handlePreview}
             >
-              {t('credential.import.importButton')}
+              {t('credential.import.nextButton')}
             </Button>
           </div>
         </div>
       </Modal>
+
+      <ImportPreviewModal
+        visible={!!validation}
+        fileName={file?.name || ''}
+        validation={validation}
+        loading={importing}
+        onCancel={() => setValidation(null)}
+        onConfirm={handleConfirmImport}
+      />
 
       <ImportResultModal
         visible={!!result}
