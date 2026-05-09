@@ -414,6 +414,9 @@
         "validCount": "Valid Rows",
         "errorCount": "Error Rows",
         "errorListTitle": "Error Details ({{count}})",
+        "tabs": { "valid": "Valid Rows", "error": "Errors" },
+        "cols": { "account": "Account", "password": "Password" },
+        "noValidRows": "No valid rows. Please fix errors and re-upload.",
         "errorTypeCol": "Error Type",
         "errorType": {
           "emptyField": "Empty Field",
