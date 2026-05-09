@@ -48,6 +48,7 @@ export interface ResourceConfig {
   original_name?: string;
   param_type?: 'TEXT' | 'BOOLEAN' | 'NUMBER';
   status?: 'ACTIVE' | 'MISSING';
+  credential_type?: 'FIXED_VALUE' | 'PERSONAL_REF' | 'ASSIGNED_VALUE';
 }
 
 const CreateReleasePage: React.FC = () => {
