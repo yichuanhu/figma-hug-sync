@@ -1488,6 +1488,8 @@ export interface PublishChangeInput {
   requirementId: string;
   patch: RequirementDraft['patch'];
   reason: string;
+  /** 用户主动声明的变更类型；若未提供则按字段自动分类（兼容旧调用） */
+  changeType?: ChangeType;
 }
 
 export const previewChange = async (
@@ -1514,7 +1516,7 @@ export const publishChange = async (
   if (!input.reason || input.reason.trim().length < 10) throw new Error('CHANGE_REASON_TOO_SHORT');
   const diffs = computeFieldDiffs(cur, input.patch);
   if (diffs.length === 0) throw new Error('NO_CHANGES');
-  const type = classifyChangeType(diffs);
+  const type: ChangeType = input.changeType ?? classifyChangeType(diffs);
 
   if (type === 'DEV_IMPACT') {
     const concurrent = changeLogStore.find(
