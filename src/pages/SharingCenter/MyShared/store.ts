@@ -404,14 +404,24 @@ export function publishWorkflowToShare(sourceAsset: Asset, note: string): string
   return newId;
 }
 
-/** 资产市场可见数据：基础 mock + store 中已 PUBLISHED 的新增资产（按 id 去重）。 */
+/** 资产市场可见数据：基础 mock + store 中已 PUBLISHED 的新增资产（按 id 去重）。缓存以满足 useSyncExternalStore 的稳定快照要求。 */
+let marketAssetsCache: Asset[] | null = null;
+let marketAssetsCacheVersion = -1;
+let storeVersion = 0;
+const bumpStoreVersion = () => { storeVersion += 1; marketAssetsCache = null; };
+listeners.add(bumpStoreVersion);
+
 export function getMarketAssets(): Asset[] {
   init();
+  if (marketAssetsCache && marketAssetsCacheVersion === storeVersion) return marketAssetsCache;
   const baseIds = new Set(allAssets.map((a) => a.id));
   const extras = assets.filter((a) => a.shareStatus === 'PUBLISHED' && !baseIds.has(a.id));
-  return [...allAssets, ...extras];
+  marketAssetsCache = [...allAssets, ...extras];
+  marketAssetsCacheVersion = storeVersion;
+  return marketAssetsCache;
 }
 
 export function findMarketAsset(id: string): Asset | undefined {
   return getMarketAssets().find((a) => a.id === id);
 }
+
