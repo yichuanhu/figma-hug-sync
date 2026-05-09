@@ -400,6 +400,8 @@ export interface LYProcessDependency {
   resource_value?: string;
   /** 资源状态：正常 / 已失效（业务资源表中已删除） */
   status?: 'ACTIVE' | 'MISSING';
+  /** 凭据类型（仅 CREDENTIAL）：固定值 / 个人引用 / 分配值 */
+  credential_type?: CredentialType;
 }
 
 /**
