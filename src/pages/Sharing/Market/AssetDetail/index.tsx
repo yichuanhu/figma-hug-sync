@@ -1,9 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useSyncExternalStore } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Typography, Tabs, Button, Space, Tag, Toast, Table, Modal, Tooltip, Banner, Descriptions } from '@douyinfe/semi-ui';
 import { ChevronLeft, Star, Repeat2, Copy } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { findAssetById } from '../mockData';
+import { findMarketAsset, subscribe } from '@/pages/SharingCenter/MyShared/store';
 import { useCollections } from '../hooks/useCollections';
 import AssetTypeIcon from '../components/AssetTypeIcon';
 import SourceBadge from '../components/SourceBadge';
