@@ -56,7 +56,7 @@ const AssignedValueFormModal = ({
           account: values.account,
           description: values.description,
         });
-        if (!r.ok) {
+        if (r.ok === false) {
           Toast.error(r.reason);
           setLoading(false);
           return;

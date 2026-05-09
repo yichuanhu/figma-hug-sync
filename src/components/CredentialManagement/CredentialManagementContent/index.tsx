@@ -167,9 +167,10 @@ const fetchCredentialList = async (
 };
 
 // 凭据类型配置
-const typeConfig: Record<CredentialType, { color: 'blue' | 'green'; i18nKey: string }> = {
+const typeConfig: Record<CredentialType, { color: 'blue' | 'green' | 'orange'; i18nKey: string }> = {
   FIXED_VALUE: { color: 'blue', i18nKey: 'credential.type.fixedValue' },
   PERSONAL_REF: { color: 'green', i18nKey: 'credential.type.personalRef' },
+  ASSIGNED_VALUE: { color: 'orange', i18nKey: 'credential.type.assignedValue' },
 };
 
 interface QueryParams {
