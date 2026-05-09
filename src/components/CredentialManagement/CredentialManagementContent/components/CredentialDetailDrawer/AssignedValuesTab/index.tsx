@@ -41,7 +41,6 @@ const AssignedValuesTab = ({ credentialId }: AssignedValuesTabProps) => {
       content: t('credential.assignedValue.deleteConfirmContent', { name: record.user_name }),
       okText: t('common.delete'),
       cancelText: t('common.cancel'),
-      type: 'warning',
       icon: <Trash2 size={20} strokeWidth={2} color="var(--semi-color-danger)" />,
       okButtonProps: { type: 'danger', theme: 'solid' },
       onOk: () => {
