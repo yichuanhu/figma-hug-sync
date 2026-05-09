@@ -415,20 +415,16 @@ const RequirementDetailDrawer = ({
     });
   }, [visible, data?.id, changeLogRefreshKey]);
 
-  // URL ?openDevResponse=1 → 自动弹出响应面板（取最早一条 PENDING）
+  // URL ?openDevResponse=1 → 切到「变更记录」Tab 并高亮目标记录（不自动弹处理弹窗）
+  const [highlightLogId, setHighlightLogId] = useState<string | undefined>(undefined);
   useEffect(() => {
-    if (!visible) return;
+    if (!visible || !data) return;
     const params = new URLSearchParams(location.search);
-    if (params.get('openDevResponse') === '1' && pendingLogs.length > 0 && !respondingLog) {
-      const targetId = params.get('changeLogId');
-      const target =
-        (targetId && pendingLogs.find((p) => p.id === targetId)) ||
-        [...pendingLogs].sort(
-          (a, b) => new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime(),
-        )[0];
-      if (target) setRespondingLog(target);
-    }
-  }, [visible, location.search, pendingLogs, respondingLog]);
+    if (params.get('openDevResponse') !== '1') return;
+    setActiveTab('changeLog');
+    const targetId = params.get('changeLogId') ?? undefined;
+    if (targetId) setHighlightLogId(targetId);
+  }, [visible, data?.id, location.search]);
 
   if (!data) return null;
 
