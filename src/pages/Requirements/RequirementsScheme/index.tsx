@@ -24,11 +24,6 @@ const RequirementsScheme = () => {
   const [schemes, setSchemes] = useState<RequirementScheme[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const [uploadVisible, setUploadVisible] = useState(false);
-  const [fileList, setFileList] = useState<FileItem[]>([]);
-  const [yamlText, setYamlText] = useState('');
-  const [parseErrors, setParseErrors] = useState<string[]>([]);
-
   const [detailScheme, setDetailScheme] = useState<RequirementScheme | null>(null);
   const [presetPickerVisible, setPresetPickerVisible] = useState(false);
   const navigate = useNavigate();
