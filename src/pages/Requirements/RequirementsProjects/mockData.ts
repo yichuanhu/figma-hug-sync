@@ -169,20 +169,10 @@ let workspaces: Workspace[] = [
 // - 其它                           → DEVELOPING
 
 const recomputeProjectAggregates = () => {
-  // 同步快照读取需求当前状态（不走 fetch，避免循环依赖）
-  let snapshot: { id: string; status: string }[] = [];
-  try {
-    // 静态导入循环安全：require 解析时如果对侧已就绪即返回最新模块
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const m = require('../RequirementsWorkbench/mockData') as {
-      getMockRequirementsSnapshot?: () => { id: string; status: string }[];
-    };
-    snapshot = m.getMockRequirementsSnapshot?.() ?? [];
-  } catch {
-    snapshot = [];
-  }
-  const reqStatus = new Map(snapshot.map((r) => [r.id, r.status]));
+// 由 ensureDemoSeed / 状态变更 API 维护的需求状态缓存（id -> status），用于聚合 COMPLETED 判定。
+const cachedReqStatus = new Map<string, string>();
 
+const recomputeProjectAggregates = () => {
   projects = projects.map((p) => {
     const wsList = workspaces.filter((w) => w.projectId === p.id);
     const reqIds = new Set<string>();
@@ -191,7 +181,7 @@ const recomputeProjectAggregates = () => {
     if (wsList.length === 0) status = 'EMPTY';
     else if (reqIds.size === 0) status = 'IN_PROGRESS';
     else {
-      const statuses = Array.from(reqIds).map((id) => reqStatus.get(id));
+      const statuses = Array.from(reqIds).map((id) => cachedReqStatus.get(id));
       const allDone = statuses.length > 0 && statuses.every((s) => s === 'LAUNCHED' || s === 'OFFLINE');
       status = allDone ? 'COMPLETED' : 'DEVELOPING';
     }
