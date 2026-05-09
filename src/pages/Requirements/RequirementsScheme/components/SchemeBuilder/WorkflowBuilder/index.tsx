@@ -198,7 +198,7 @@ const WorkflowBuilder = ({ workflow, onChange, onClearAssessment }: Props) => {
     // 关闭前确认
     Modal.confirm({
       title: '关闭审批流',
-      content: '关闭后将清空已配置的审批人、评估人与评估模型。提交此方案的需求将跳过审批与评估，直接进入「待立项」。是否继续？',
+      content: '关闭后将清空已配置的审批人、评估人与评估模型。提交此模版的需求将跳过审批与评估，直接进入「待立项」。是否继续？',
       okText: '关闭审批流',
       cancelText: '取消',
       okButtonProps: { type: 'danger' },
@@ -243,7 +243,7 @@ const WorkflowBuilder = ({ workflow, onChange, onClearAssessment }: Props) => {
             </div>
             <Title heading={6} style={{ margin: 0 }}>已关闭审批流</Title>
             <Text type="tertiary" style={{ textAlign: 'center', maxWidth: 480 }}>
-              使用此方案提交的需求将跳过审批与评估环节，直接进入「待立项」状态。
+              使用此模版提交的需求将跳过审批与评估环节，直接进入「待立项」状态。
               如需恢复审批流程，请打开右上角「启用审批流」开关。
             </Text>
           </div>

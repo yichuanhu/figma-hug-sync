@@ -373,7 +373,7 @@ const RequirementDetailDrawer = ({
     setViewingVersion('current');
   }, [data?.id]);
 
-  // 当方案不含评估时，自动从已隐藏的 tab 回退到 overview
+  // 当模版不含评估时，自动从已隐藏的 tab 回退到 overview
   useEffect(() => {
     if (!hasAssessment && (activeTab === 'assessment' || activeTab === 'cost')) {
       setActiveTab('overview');
