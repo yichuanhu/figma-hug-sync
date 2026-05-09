@@ -52,7 +52,7 @@ const PublishWorkflowModal = ({ visible, onCancel, onSuccess }: Props) => {
   const optionList = candidates.map((a) => {
     const shared = sharedStatusMap.get(a.id);
     const suffix = shared
-      ? ` · ${t(shared === 'PUBLISHED' ? 'sharing.publish.alreadyPublished' : 'sharing.publish.alreadyPending')}`
+      ? ` · ${t(shared === 'PUBLISHED' ? 'publishToSharing.alreadyPublished' : 'publishToSharing.alreadyPending')}`
       : '';
     return { value: a.id, label: `${a.name}${suffix}` };
   });
