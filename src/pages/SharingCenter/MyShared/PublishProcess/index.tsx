@@ -10,6 +10,7 @@ import EmptyState from '@/components/EmptyState';
 import StatusTag, { type ShareStatus } from '@/components/sharing/StatusTag';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import { generateMockRecords } from './mockData';
+import { addAsset, findAsset, CURRENT_USER_ID, CURRENT_USER_NAME, CURRENT_USER_DEPT, type ShareAsset } from '../store';
 import type { PublishProcessRecord, PublishShareStatus } from './types';
 import ProcessDetailDrawer from './components/ProcessDetailDrawer';
 import PublishFormModal from './components/PublishFormModal';
