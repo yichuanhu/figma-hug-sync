@@ -75,6 +75,9 @@ const CreateCredentialModal = ({
   const typeOptions = [
     { value: 'FIXED_VALUE', label: t('credential.type.fixedValue') },
     { value: 'PERSONAL_REF', label: t('credential.type.personalRef') },
+    ...(context === 'scheduling'
+      ? [{ value: 'ASSIGNED_VALUE', label: t('credential.type.assignedValue') }]
+      : []),
   ];
 
   return (
