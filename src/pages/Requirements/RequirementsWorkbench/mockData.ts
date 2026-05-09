@@ -510,20 +510,13 @@ const generateMockLinkedProcesses = (status: RequirementStatus, idx: number): Li
   return MOCK_PROCESS_POOL.slice(0, (idx % 3) + 1);
 };
 
+// 与 RequirementsProjects/mockData.ts 中的 projects 数组一一对应（id/name），用于列表筛选下拉。
 export const MOCK_PROJECT_POOL = [
-  { id: 'proj-001', name: '数字化转型项目' },
-  { id: 'proj-002', name: '财务智能化项目' },
-  { id: 'proj-003', name: '人力共享中心项目' },
-  { id: 'proj-004', name: 'IT 运维提效项目' },
-  { id: 'proj-005', name: '采购供应链优化项目' },
-];
-
-const MOCK_WORKSPACE_POOL = [
-  { id: 'ws-001', name: '财务自动化一期' },
-  { id: 'ws-002', name: '采购自动化工作空间' },
-  { id: 'ws-003', name: '人事数据治理' },
-  { id: 'ws-004', name: 'IT 运维机器人空间' },
-  { id: 'ws-005', name: '销售运营自动化' },
+  { id: 'proj-001', name: 'Finance Automation 2026' },
+  { id: 'proj-002', name: 'HR Digital Transformation' },
+  { id: 'proj-003', name: 'IT Operations Excellence' },
+  { id: 'proj-004', name: 'Procurement & Supply Chain' },
+  { id: 'proj-005', name: 'Sales Enablement Platform' },
 ];
 
 // 注：linkedProject / linkedWorkspace 不再在此本地随机赋值，统一由
