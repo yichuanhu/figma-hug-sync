@@ -39,9 +39,11 @@ const AssignedValuesTab = ({ credentialId }: AssignedValuesTabProps) => {
     Modal.confirm({
       title: t('credential.assignedValue.deleteConfirmTitle'),
       content: t('credential.assignedValue.deleteConfirmContent', { name: record.user_name }),
-      okText: t('common.confirm'),
+      okText: t('common.delete'),
       cancelText: t('common.cancel'),
-      okButtonProps: { type: 'danger' },
+      type: 'warning',
+      icon: <Trash2 size={20} strokeWidth={2} color="var(--semi-color-danger)" />,
+      okButtonProps: { type: 'danger', theme: 'solid' },
       onOk: () => {
         deleteAssignedValue(credentialId, record.id);
         Toast.success(t('credential.assignedValue.deleteSuccess'));
