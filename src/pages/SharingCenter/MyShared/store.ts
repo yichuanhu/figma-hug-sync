@@ -353,3 +353,65 @@ export function batchApprove(ids: string[]): { approved: number; skipped: number
 export function buildAssetId(prefix: string) {
   return `${prefix}-${Date.now().toString(36)}`;
 }
+
+// ============ 流程发布到共享中心 ============
+const DEV_CENTER_PROCESS_URL = 'https://dev-center.example.com/processes';
+
+/**
+ * 将开发中心已发布的流程发布到共享中心。
+ * 同 processId 已存在 PENDING/PUBLISHED 时，作为新版本资产新增。
+ */
+export function publishWorkflowToShare(sourceAsset: Asset, note: string): string {
+  init();
+  const when = todayStr();
+  const newId = buildAssetId('wf-shared');
+  const versionId = `${newId}-${sourceAsset.currentVersion}`;
+  const newVersion: AssetVersion = {
+    id: versionId,
+    assetId: newId,
+    version: sourceAsset.currentVersion,
+    changeLog: note || '发布到共享中心',
+    content: sourceAsset.workflow?.yaml ?? '',
+    isLatest: true,
+    createdBy: CURRENT_USER_NAME,
+    createdAt: when,
+  };
+  const asset: ShareAsset = {
+    ...sourceAsset,
+    id: newId,
+    currentVersionId: versionId,
+    creatorName: CURRENT_USER_NAME,
+    departmentName: sourceAsset.departmentName,
+    createdAt: when,
+    updatedAt: when,
+    reuseCount: 0,
+    versions: [newVersion],
+    reuseRecords: [],
+    workflow: sourceAsset.workflow ? { ...sourceAsset.workflow } : undefined,
+    isMine: true,
+    shareStatus: 'PENDING_APPROVAL',
+    ownerId: CURRENT_USER_ID,
+    creatorId: CURRENT_USER_ID,
+    originUrl: `${DEV_CENTER_PROCESS_URL}/${sourceAsset.id}`,
+    submittedAt: when,
+    rejectedReason: undefined,
+    archivedAt: undefined,
+    approvalEvents: [
+      { type: 'SUBMITTED', actorName: CURRENT_USER_NAME, at: when, comment: note || '提交审批' },
+    ],
+  };
+  addAsset(asset);
+  return newId;
+}
+
+/** 资产市场可见数据：基础 mock + store 中已 PUBLISHED 的新增资产（按 id 去重）。 */
+export function getMarketAssets(): Asset[] {
+  init();
+  const baseIds = new Set(allAssets.map((a) => a.id));
+  const extras = assets.filter((a) => a.shareStatus === 'PUBLISHED' && !baseIds.has(a.id));
+  return [...allAssets, ...extras];
+}
+
+export function findMarketAsset(id: string): Asset | undefined {
+  return getMarketAssets().find((a) => a.id === id);
+}
