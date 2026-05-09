@@ -98,6 +98,7 @@ const CreateReleasePage: React.FC = () => {
             param_type: dep.param_type || 'TEXT',
             original_name: dep.original_name,
             status: dep.status || 'ACTIVE',
+            credential_type: dep.credential_type,
           });
         });
       });
