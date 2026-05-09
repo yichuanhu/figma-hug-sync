@@ -157,7 +157,7 @@ const AssetDetail = () => {
             onClick={() => navigate(-1)}
           />
         </Tooltip>
-        <Text type="tertiary">{t('sharing.market.detail.back')}</Text>
+        <Text type="tertiary">{asset.type === 'WORKFLOW' ? t('sharing.market.detail.backWorkflow') : t('sharing.market.detail.back')}</Text>
       </div>
 
       <div className="asset-detail-info-card">
