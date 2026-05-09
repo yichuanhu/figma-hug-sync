@@ -149,6 +149,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
     const isCredential = resource.resource_type === 'CREDENTIAL';
     const isQueue = resource.resource_type === 'QUEUE';
     const isFile = resource.resource_type === 'FILE';
+    const isAssignedValueCred = isCredential && resource.credential_type === 'ASSIGNED_VALUE';
 
     return (
       <div key={resource.resource_id} className="release-config-step-resource-card">
