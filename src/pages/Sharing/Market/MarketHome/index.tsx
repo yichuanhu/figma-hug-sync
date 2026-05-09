@@ -1,8 +1,8 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useSyncExternalStore } from 'react';
 import { Typography, Tabs } from '@douyinfe/semi-ui';
 import { useTranslation } from 'react-i18next';
-import { allAssets } from '../mockData';
-import { AssetType, SortKey, SourceFilter, TabFilter } from '../types';
+import { getMarketAssets, subscribe } from '@/pages/SharingCenter/MyShared/store';
+import { SortKey, SourceFilter, TabFilter } from '../types';
 import { filterAndSort, paginate, PAGE_SIZE } from '../utils';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
 import MarketToolbar from '../components/MarketToolbar';
@@ -26,6 +26,8 @@ const MarketHome = () => {
 
   const debouncedSearch = useDebouncedValue(search, 300);
 
+  const allAssets = useSyncExternalStore(subscribe, getMarketAssets, getMarketAssets);
+
   const tabCounts = useMemo(() => {
     const counts: Record<TabFilter, number> = { ALL: 0, SNIPPET: 0, WORKFLOW: 0, KNOWLEDGE: 0, SKILL: 0 };
     allAssets.forEach((a) => {
@@ -33,14 +35,14 @@ const MarketHome = () => {
       counts[a.type] += 1;
     });
     return counts;
-  }, []);
+  }, [allAssets]);
 
   const list = useMemo(() => filterAndSort(allAssets, {
     type: tab,
     keyword: debouncedSearch,
     source: sourceFilter,
     sortBy,
-  }), [tab, debouncedSearch, sourceFilter, sortBy]);
+  }), [allAssets, tab, debouncedSearch, sourceFilter, sortBy]);
 
   const paged = paginate(list, page, PAGE_SIZE);
 

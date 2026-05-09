@@ -14,6 +14,7 @@ import { type ShareAsset, getMine, subscribe } from './store';
 import NewAssetDropdown from './components/NewAssetDropdown';
 import AssetActionsMenu from './components/AssetActionsMenu';
 import BatchActionBar from './components/BatchActionBar';
+import PublishWorkflowModal from './components/PublishWorkflowModal';
 import './index.less';
 
 const { Title, Text } = Typography;
@@ -42,6 +43,26 @@ const MySharedPage = () => {
   const [typeF, setTypeF] = useState<TypeFilter>('ALL');
   const [sourceF, setSourceF] = useState<SourceFilter>('ALL');
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
+  const [publishVisible, setPublishVisible] = useState(false);
+  const [highlightId, setHighlightId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!highlightId) return;
+    const timer = window.setTimeout(() => setHighlightId(null), 2500);
+    const raf = window.requestAnimationFrame(() => {
+      const el = document.querySelector(`tr[data-row-key="${highlightId}"]`);
+      el?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    });
+    return () => { window.clearTimeout(timer); window.cancelAnimationFrame(raf); };
+  }, [highlightId]);
+
+  const handlePublishSuccess = (assetId: string) => {
+    setPublishVisible(false);
+    setTab('PENDING_APPROVAL');
+    setPage(1);
+    setSelectedKeys([]);
+    setHighlightId(assetId);
+  };
 
   useEffect(() => {
     const k = keyword.trim();
@@ -148,7 +169,7 @@ const MySharedPage = () => {
     <div className="my-shared-page">
       <div className="my-shared-header">
         <Title heading={3} className="title">{t('sharing.myShared.pageTitle')}</Title>
-        <NewAssetDropdown />
+        <NewAssetDropdown onPublishWorkflow={() => setPublishVisible(true)} />
       </div>
 
       <Tabs
@@ -209,13 +230,17 @@ const MySharedPage = () => {
           size="small"
           columns={columns}
           dataSource={paged}
-          rowKey="id"
           pagination={false}
           scroll={{ x: 900 }}
+          rowKey="id"
           rowSelection={{
             selectedRowKeys: selectedKeys,
             onChange: (keys) => setSelectedKeys((keys ?? []) as string[]),
           }}
+          onRow={(row) => ({
+            'data-row-key': row?.id,
+            className: row?.id === highlightId ? 'row-highlighted' : '',
+          })}
           empty={
             <div className="my-shared-empty">
               <img src={emptyImg} alt="empty" />
@@ -250,6 +275,12 @@ const MySharedPage = () => {
           />
         </div>
       )}
+
+      <PublishWorkflowModal
+        visible={publishVisible}
+        onCancel={() => setPublishVisible(false)}
+        onSuccess={handlePublishSuccess}
+      />
     </div>
   );
 };

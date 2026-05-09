@@ -40,6 +40,18 @@
     flex: 1;
     min-height: 0;
     overflow: auto;
+
+    .semi-table-tbody > .row-highlighted > .semi-table-row-cell {
+      background-color: var(--semi-color-primary-light-default) !important;
+      transition: background-color 1.4s ease-out;
+      animation: my-shared-row-pulse 1.6s ease-out;
+    }
+  }
+
+  @keyframes my-shared-row-pulse {
+    0%   { background-color: var(--semi-color-primary-light-hover); }
+    60%  { background-color: var(--semi-color-primary-light-default); }
+    100% { background-color: var(--semi-color-primary-light-default); }
   }
 
   .cell-name {

@@ -4001,57 +4001,20 @@
     "required": "请选择所属工作空间"
   },
   "publishToSharing": {
-    "pageTitle": "发布流程到共享中心",
-    "searchPh": "搜索流程名称",
-    "departmentPh": "部门",
-    "tabs": {
-      "all": "全部",
-      "unpublished": "未发布",
-      "pending_approval": "审批中",
-      "published": "已同步",
-      "rejected": "已拒绝"
-    },
-    "col": {
-      "processName": "流程名称",
-      "shareStatus": "共享状态",
-      "version": "版本",
-      "department": "部门",
-      "publisher": "发布人",
-      "publishTime": "发布时间",
-      "action": "操作"
-    },
-    "actions": {
-      "publish": "发布",
-      "viewDetail": "查看详情"
-    },
-    "detail": {
-      "processInfo": "流程信息",
-      "description": "流程描述",
-      "releaseId": "发布单号",
-      "assetId": "共享中心资产 ID",
-      "publishVersion": "发布 {{version}} 到共享中心"
-    },
-    "banner": {
-      "pending": "该流程已提交至共享中心审批，资产 ID：{{assetId}}",
-      "published": "该流程已同步至共享中心市场，资产 ID：{{assetId}}",
-      "rejected": "共享中心审批被拒绝：{{reason}}"
-    },
-    "modal": {
-      "title": "发布到共享中心",
-      "noteLabel": "发布说明（可选）",
-      "notePh": "请输入 5-200 字符的发布说明",
-      "noteOverLimit": "发布说明不能超过 200 字符",
-      "noteMin": "发布说明至少 5 个字符",
-      "confirm": "确认发布"
-    },
-    "toast": {
-      "success": "发布成功，等待共享中心审批",
-      "duplicate": "该版本已发布到共享中心，请勿重复发布",
-      "apiError": "共享中心暂不可用，请稍后重试"
-    },
-    "empty": {
-      "noProcess": "暂无可发布到共享中心的流程，请先到「开发中心-流程发布」完成发布",
-      "noResult": "未找到匹配的流程，请调整筛选条件"
-    }
+    "modalTitle": "发布流程到共享中心",
+    "processLabel": "选择流程",
+    "processPlaceholder": "请选择开发中心已发布的流程",
+    "processRequired": "请选择要发布的流程",
+    "versionLabel": "版本",
+    "deptLabel": "所属部门",
+    "noteLabel": "发布说明",
+    "notePlaceholder": "请输入 5-200 字符的发布说明",
+    "noteRequired": "请填写发布说明",
+    "noteMin": "发布说明至少 5 个字符",
+    "noteMax": "发布说明不能超过 200 字符",
+    "alreadyPending": "审批中",
+    "alreadyPublished": "已上架",
+    "confirmBtn": "确认发布",
+    "successToast": "发布成功，等待共享中心审批"
   }
 }

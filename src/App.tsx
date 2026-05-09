@@ -83,7 +83,6 @@ import AssetDetail from "@/pages/Sharing/Market/AssetDetail";
 // Sharing Center - 我的共享 / 审批 / 配置
 import MySharedPage from "@/pages/SharingCenter/MyShared";
 import KnowledgeCreatePage from "@/pages/SharingCenter/MyShared/Create/Knowledge";
-import PublishProcessPage from "@/pages/SharingCenter/MyShared/PublishProcess";
 import SkillCreatePage from "@/pages/SharingCenter/MyShared/Create/Skill";
 import MySharedEditPage from "@/pages/SharingCenter/MyShared/Edit";
 import MySharedVersionsPage from "@/pages/SharingCenter/MyShared/Versions";
@@ -200,7 +199,7 @@ const App = () => {
           <Route path="/sharing-center/my-shared" element={<MySharedPage />} />
           <Route path="/sharing-center/my-shared/create/knowledge" element={<KnowledgeCreatePage />} />
           <Route path="/sharing-center/my-shared/create/skill" element={<SkillCreatePage />} />
-          <Route path="/sharing-center/my-shared/publish-process" element={<PublishProcessPage />} />
+          
           <Route path="/sharing-center/my-shared/edit/:id" element={<MySharedEditPage />} />
           <Route path="/sharing-center/my-shared/:id/versions" element={<MySharedVersionsPage />} />
           <Route path="/sharing-center/approvals" element={<ApprovalsListPage />} />

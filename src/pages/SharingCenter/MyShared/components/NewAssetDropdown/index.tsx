@@ -3,7 +3,11 @@ import { Plus, ChevronDown, BookOpen, Wrench, Box, GitBranch, Lock } from 'lucid
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-const NewAssetDropdown = () => {
+interface Props {
+  onPublishWorkflow?: () => void;
+}
+
+const NewAssetDropdown = ({ onPublishWorkflow }: Props = {}) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -36,7 +40,7 @@ const NewAssetDropdown = () => {
       <Item icon={<Box size={14} strokeWidth={2} />} label={t('sharing.myShared.newAsset.snippet')}
         hint={t('sharing.myShared.newAsset.disabledHint')} disabled />
       <Item icon={<GitBranch size={14} strokeWidth={2} />} label={t('sharing.myShared.newAsset.workflow')}
-        onClick={() => navigate('/sharing-center/my-shared/publish-process')} />
+        onClick={() => onPublishWorkflow?.()} />
     </Dropdown.Menu>
   );
 
