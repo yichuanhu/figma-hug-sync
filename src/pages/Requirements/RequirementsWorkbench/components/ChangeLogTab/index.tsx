@@ -54,6 +54,17 @@ const ChangeLogTab = ({ requirementId, refreshKey, onRespond, highlightLogId }: 
   const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [logs, setLogs] = useState<RequirementChangeLog[]>([]);
+  const itemRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+  useEffect(() => {
+    if (!highlightLogId || loading) return;
+    const node = itemRefs.current[highlightLogId];
+    if (!node) return;
+    node.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    node.classList.add('change-log-item-highlight');
+    const timer = setTimeout(() => node.classList.remove('change-log-item-highlight'), 2200);
+    return () => clearTimeout(timer);
+  }, [highlightLogId, loading, logs]);
 
   useEffect(() => {
     let alive = true;
