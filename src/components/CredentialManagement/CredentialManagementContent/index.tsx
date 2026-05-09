@@ -522,6 +522,11 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
                 <Dropdown.Item icon={<Pencil size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleEdit(record); }}>
                   {t('common.edit')}
                 </Dropdown.Item>
+                {context === 'scheduling' && record.credential_type === 'ASSIGNED_VALUE' && (
+                  <Dropdown.Item icon={<Upload size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); setImportTarget(record); }}>
+                    {t('credential.actions.import')}
+                  </Dropdown.Item>
+                )}
                 {record.credential_type === 'PERSONAL_REF' && (
                   hasLinkedPersonalCredential(record) ? (
                     <Dropdown.Item icon={<Unlink size={16} strokeWidth={2} />} onClick={(e) => { e.stopPropagation(); handleUnlinkPersonal(record); }}>
@@ -628,11 +633,9 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
               >
                 {t('credential.personalCredentialManagement')}
               </Button>
-              {context === 'development' && (
-                <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
-                  {t('credential.createCredential')}
-                </Button>
-              )}
+              <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
+                {t('credential.createCredential')}
+              </Button>
             </Space>
           </Col>
         </Row>
@@ -767,6 +770,13 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
           setLinkingCredential(null);
           loadData();
         }}
+      />
+
+      <ImportAssignedValueModal
+        visible={!!importTarget}
+        credentialId={importTarget?.credential_id || ''}
+        onCancel={() => setImportTarget(null)}
+        onComplete={() => setImportTarget(null)}
       />
 
       {renderCollaboratorPanel('CREDENTIAL', context)}
