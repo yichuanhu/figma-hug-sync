@@ -1,8 +1,8 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useSyncExternalStore } from 'react';
 import { Typography, Tabs } from '@douyinfe/semi-ui';
 import { useTranslation } from 'react-i18next';
-import { allAssets } from '../mockData';
-import { AssetType, SortKey, SourceFilter, TabFilter } from '../types';
+import { getMarketAssets, subscribe } from '@/pages/SharingCenter/MyShared/store';
+import { SortKey, SourceFilter, TabFilter } from '../types';
 import { filterAndSort, paginate, PAGE_SIZE } from '../utils';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
 import MarketToolbar from '../components/MarketToolbar';
