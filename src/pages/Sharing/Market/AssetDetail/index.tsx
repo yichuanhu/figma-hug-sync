@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Typography, Tabs, Button, Space, Tag, Toast, Table, Modal, Tooltip } from '@douyinfe/semi-ui';
+import { Typography, Tabs, Button, Space, Tag, Toast, Table, Modal, Tooltip, Banner, Descriptions } from '@douyinfe/semi-ui';
 import { ChevronLeft, Star, Repeat2, Copy } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { findAssetById } from '../mockData';
@@ -73,7 +73,26 @@ const AssetDetail = () => {
         </div>
       );
     }
-    const yaml = asset.workflow?.yaml ?? asset.snippet?.yaml ?? '';
+    if (asset.type === 'WORKFLOW') {
+      return (
+        <div className="asset-detail-workflow-readonly">
+          <Descriptions
+            data={[
+              { key: t('sharing.market.detail.workflow.name'), value: asset.name },
+              { key: t('sharing.market.detail.workflow.description'), value: asset.description },
+            ]}
+          />
+          <Banner
+            type="info"
+            fullMode={false}
+            closeIcon={null}
+            description={t('sharing.market.detail.workflow.readOnlyTip')}
+            style={{ marginTop: 16 }}
+          />
+        </div>
+      );
+    }
+    const yaml = asset.snippet?.yaml ?? '';
     return <pre className="asset-detail-yaml">{yaml || t('sharing.market.detail.noContent')}</pre>;
   };
 
@@ -138,7 +157,7 @@ const AssetDetail = () => {
             onClick={() => navigate(-1)}
           />
         </Tooltip>
-        <Text type="tertiary">{t('sharing.market.detail.back')}</Text>
+        <Text type="tertiary">{asset.type === 'WORKFLOW' ? t('sharing.market.detail.backWorkflow') : t('sharing.market.detail.back')}</Text>
       </div>
 
       <div className="asset-detail-info-card">
@@ -193,7 +212,7 @@ const AssetDetail = () => {
           </TabPane>
         )}
         {!isSkill && (
-          <TabPane itemKey="content" tab={t('sharing.market.detail.tabs.content')}>
+          <TabPane itemKey="content" tab={asset.type === 'WORKFLOW' ? t('sharing.market.detail.tabs.contentReadonly') : t('sharing.market.detail.tabs.content')}>
             {renderContentTab()}
           </TabPane>
         )}
@@ -240,7 +259,9 @@ const AssetDetail = () => {
         visible={!!previewVersion}
         title={`${t('sharing.market.detail.versionPreview')} · ${previewVersion?.version ?? ''}`}
         onCancel={() => setPreviewVersion(null)}
-        footer={null}
+        onOk={() => { handleReuse(); setPreviewVersion(null); }}
+        okText={t('sharing.market.detail.reuseThisVersion')}
+        cancelText={t('common.close')}
         width={520}
       >
         <pre className="asset-detail-yaml">{previewVersion?.content}</pre>

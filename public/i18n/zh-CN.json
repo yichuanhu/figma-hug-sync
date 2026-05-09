@@ -3552,6 +3552,7 @@
       },
       "detail": {
         "back": "返回",
+        "backWorkflow": "返回流程库",
         "notFound": "资产不存在",
         "noContent": "暂无内容",
         "noReuse": "暂无复用记录",
@@ -3560,11 +3561,18 @@
         "latest": "最新版本",
         "view": "查看",
         "versionPreview": "版本预览",
+        "reuseThisVersion": "复用此版本",
         "attachments": "附件",
         "reuseDirect": "直接复用",
         "reuseAdaptation": "改编复用",
+        "workflow": {
+          "name": "流程名称",
+          "description": "流程描述",
+          "readOnlyTip": "此内容由开发中心提供，共享中心不可编辑"
+        },
         "tabs": {
           "content": "内容",
+          "contentReadonly": "内容（只读）",
           "exec": "执行",
           "params": "参数",
           "reuses": "复用记录",
