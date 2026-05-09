@@ -18,6 +18,7 @@ import {
   Row,
   Col,
   Space,
+  Banner,
 } from '@douyinfe/semi-ui';
 import type { ReleaseType, ResourceType } from '@/api';
 import type { SelectedProcess, ResourceConfig } from '../../index';
@@ -148,6 +149,7 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
     const isCredential = resource.resource_type === 'CREDENTIAL';
     const isQueue = resource.resource_type === 'QUEUE';
     const isFile = resource.resource_type === 'FILE';
+    const isAssignedValueCred = isCredential && resource.credential_type === 'ASSIGNED_VALUE';
 
     return (
       <div key={resource.resource_id} className="release-config-step-resource-card">
@@ -183,7 +185,19 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
           </div>
         </div>
 
-        {isFile ? null : !isQueue && (
+        {isAssignedValueCred ? (
+          <div className="release-config-step-resource-card-body">
+            <Banner
+              type="info"
+              fullMode={false}
+              closeIcon={null}
+              description={t(
+                'release.create.assignedValueNotice',
+                '该凭据为「分配值」类型，发布后请前往「凭据管理」为该凭据上传分配值名单，否则关联流程的运行账号将无法分发。',
+              )}
+            />
+          </div>
+        ) : isFile ? null : !isQueue && (
           <div className="release-config-step-resource-card-body">
             <Row gutter={16}>
               <Col span={12}>

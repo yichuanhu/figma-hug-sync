@@ -25,6 +25,7 @@ interface AvailableResource {
   test_value?: string;
   is_published?: boolean;
   original_name?: string;
+  credential_type?: 'FIXED_VALUE' | 'PERSONAL_REF' | 'ASSIGNED_VALUE';
 }
 
 interface AddResourceModalProps {
@@ -64,10 +65,10 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
     { id: 'param-4', name: 'DEBUG_MODE', type: 'PARAMETER', test_value: 'true', is_published: true },
     { id: 'param-5', name: 'LOG_LEVEL', type: 'PARAMETER', test_value: 'INFO', is_published: false },
     // Credential
-    { id: 'cred-1', name: 'Database Credential', type: 'CREDENTIAL', test_value: '******', is_published: true },
-    { id: 'cred-2', name: 'API Token', type: 'CREDENTIAL', test_value: '******', is_published: false },
-    { id: 'cred-3', name: 'OAuth Client', type: 'CREDENTIAL', test_value: '******', is_published: false },
-    { id: 'cred-4', name: 'SFTP Credential', type: 'CREDENTIAL', test_value: '******', is_published: true },
+    { id: 'cred-1', name: 'Database Credential', type: 'CREDENTIAL', test_value: '******', is_published: true, credential_type: 'FIXED_VALUE' },
+    { id: 'cred-2', name: 'API Token', type: 'CREDENTIAL', test_value: '******', is_published: false, credential_type: 'FIXED_VALUE' },
+    { id: 'cred-3', name: 'OAuth Client', type: 'CREDENTIAL', test_value: '******', is_published: false, credential_type: 'ASSIGNED_VALUE' },
+    { id: 'cred-4', name: 'SFTP Credential', type: 'CREDENTIAL', test_value: '******', is_published: true, credential_type: 'ASSIGNED_VALUE' },
     // Queue
     { id: 'queue-1', name: 'Task Queue', type: 'QUEUE', is_published: true },
     { id: 'queue-2', name: 'Email Queue', type: 'QUEUE', is_published: false },
@@ -117,6 +118,7 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
         used_by_processes: [],
         is_manual: true,
         original_name: r.original_name,
+        credential_type: r.credential_type,
       }));
 
     onConfirm(selectedResources);
