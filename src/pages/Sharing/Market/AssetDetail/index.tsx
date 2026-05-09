@@ -21,7 +21,7 @@ const AssetDetail = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { type, id } = useParams<{ type: string; id: string }>();
-  const version = useSyncExternalStore(subscribe, () => 0, () => 0);
+  const version = useSyncExternalStore(subscribe, () => getMarketAssets().length);
   const asset = useMemo(() => (id ? findMarketAsset(id) : undefined), [id, version]);
   const { isCollected, toggle } = useCollections();
   const [reuseTick, setReuseTick] = useState(0);
