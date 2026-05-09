@@ -127,7 +127,15 @@ const AssignedValueFormModal = ({
           maxCount={2000}
           autosize={{ minRows: 2, maxRows: 4 }}
         />
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 16 }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          gap: 12,
+          marginTop: 12,
+          paddingTop: 16,
+          paddingBottom: 12,
+          borderTop: '1px solid var(--semi-color-border)',
+        }}>
           <Button theme="light" onClick={onCancel}>{t('common.cancel')}</Button>
           <Button htmlType="submit" theme="solid" type="primary" loading={loading}>
             {t('common.confirm')}
