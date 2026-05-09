@@ -248,7 +248,7 @@
     "actions": {
       "viewUsage": "查看使用记录",
       "linkPersonal": "关联个人凭据",
-      "import": "导入"
+      "import": "导入分配值"
     },
     "linkPersonal": {
       "title": "关联个人凭据",
