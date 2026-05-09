@@ -70,7 +70,7 @@ const PublishWorkflowModal = ({ visible, onCancel, onSuccess }: Props) => {
       if (!source) return;
       setSubmitting(true);
       const newId = publishWorkflowToShare(source, values.note ?? '');
-      Toast.success(t('sharing.publish.successToast'));
+      Toast.success(t('publishToSharing.successToast'));
       onSuccess(newId);
     } catch {
       setSubmitting(false);
@@ -79,12 +79,12 @@ const PublishWorkflowModal = ({ visible, onCancel, onSuccess }: Props) => {
 
   return (
     <Modal
-      title={t('sharing.publish.modalTitle')}
+      title={t('publishToSharing.modalTitle')}
       visible={visible}
       onCancel={onCancel}
       onOk={handleOk}
       confirmLoading={submitting}
-      okText={t('sharing.publish.confirmBtn')}
+      okText={t('publishToSharing.confirmBtn')}
       cancelText={t('common.cancel')}
       width={520}
       maskClosable={false}
@@ -98,10 +98,10 @@ const PublishWorkflowModal = ({ visible, onCancel, onSuccess }: Props) => {
       >
         <Form.Select
           field="processId"
-          label={t('sharing.publish.processLabel')}
-          placeholder={t('sharing.publish.processPlaceholder')}
+          label={t('publishToSharing.processLabel')}
+          placeholder={t('publishToSharing.processPlaceholder')}
           optionList={optionList}
-          rules={[{ required: true, message: t('sharing.publish.processRequired') }]}
+          rules={[{ required: true, message: t('publishToSharing.processRequired') }]}
           trigger={['blur', 'change']}
           filter
           style={{ width: '100%' }}
@@ -110,11 +110,11 @@ const PublishWorkflowModal = ({ visible, onCancel, onSuccess }: Props) => {
         {selected && (
           <div className="pwf-readonly">
             <div className="pwf-readonly-row">
-              <Text type="tertiary">{t('sharing.publish.versionLabel')}</Text>
+              <Text type="tertiary">{t('publishToSharing.versionLabel')}</Text>
               <Text strong>{selected.currentVersion}</Text>
             </div>
             <div className="pwf-readonly-row">
-              <Text type="tertiary">{t('sharing.publish.deptLabel')}</Text>
+              <Text type="tertiary">{t('publishToSharing.deptLabel')}</Text>
               <Text strong>{selected.departmentName}</Text>
             </div>
           </div>
@@ -122,15 +122,15 @@ const PublishWorkflowModal = ({ visible, onCancel, onSuccess }: Props) => {
 
         <Form.TextArea
           field="note"
-          label={t('sharing.publish.noteLabel')}
-          placeholder={t('sharing.publish.notePlaceholder')}
+          label={t('publishToSharing.noteLabel')}
+          placeholder={t('publishToSharing.notePlaceholder')}
           maxCount={200}
           maxLength={200}
           rows={4}
           rules={[
-            { required: true, message: t('sharing.publish.noteRequired') },
-            { min: 5, message: t('sharing.publish.noteMin') },
-            { max: 200, message: t('sharing.publish.noteMax') },
+            { required: true, message: t('publishToSharing.noteRequired') },
+            { min: 5, message: t('publishToSharing.noteMin') },
+            { max: 200, message: t('publishToSharing.noteMax') },
           ]}
           trigger={['blur', 'change']}
         />
