@@ -45,8 +45,14 @@ const RequirementFormModal = ({
   const [ownerId, setOwnerId] = useState<string>(MOCK_CURRENT_USER.id);
   const isEdit = !!editData;
   const isPostProjectEdit = !!editData && isPostProjectStatus(editData.status);
-  const [publishVisible, setPublishVisible] = useState(false);
+  const [step, setStep] = useState<'edit' | 'publish'>('edit');
   const [pendingPatch, setPendingPatch] = useState<RequirementDraft['patch']>({});
+  // Step 2 (发布变更) 状态：仅在弹窗整体关闭时才重置
+  const [publishReason, setPublishReason] = useState('');
+  const [publishDevImpact, setPublishDevImpact] = useState(false);
+  const [publishDiffs, setPublishDiffs] = useState<ChangedFieldDiff[]>([]);
+  const [publishPreviewing, setPublishPreviewing] = useState(false);
+  const [publishLoading, setPublishLoading] = useState(false);
 
   // 草稿态：仅在立项后编辑模式下使用
   const [hasDraft, setHasDraft] = useState(false);
