@@ -179,7 +179,7 @@ const PublishProcessPage = () => {
       render: (_: string, record: PublishProcessRecord) => (
         <UserNameWithCard
           userId={record.publisherName}
-          userName={record.publisherName}
+          name={record.publisherName}
           department={record.publisherDepartment}
         />
       ),
