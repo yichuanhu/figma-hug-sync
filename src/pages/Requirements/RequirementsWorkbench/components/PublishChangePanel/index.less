@@ -1,27 +1,22 @@
-.publish-change-modal {
-  .publish-change-modal-body {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    max-height: 60vh;
-    overflow-y: auto;
-    padding-right: 4px;
-  }
-  .publish-change-modal-loading {
+.publish-change-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  &-loading {
     display: flex;
     justify-content: center;
     padding: 48px 0;
   }
-  .publish-change-modal-row {
+  &-row {
     display: flex;
     align-items: center;
     gap: 12px;
   }
-  .publish-change-modal-section-title {
+  &-section-title {
     display: block;
     margin-bottom: 8px;
   }
-  .publish-change-modal-diff-list {
+  &-diff-list {
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -30,7 +25,7 @@
     padding: 8px 12px;
     background: var(--semi-color-fill-0);
   }
-  .publish-change-modal-diff-item {
+  &-diff-item {
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -40,44 +35,36 @@
       border-bottom: none;
     }
   }
-  .publish-change-modal-diff-key {
+  &-diff-key {
     font-weight: 600;
     font-size: 13px;
     color: var(--semi-color-text-0);
   }
-  .publish-change-modal-diff-values {
+  &-diff-values {
     display: flex;
     align-items: center;
     gap: 8px;
     font-size: 12px;
     flex-wrap: wrap;
   }
-  .publish-change-modal-diff-before {
+  &-diff-before {
     color: var(--semi-color-danger);
     text-decoration: line-through;
     word-break: break-all;
   }
-  .publish-change-modal-diff-arrow {
+  &-diff-arrow {
     color: var(--semi-color-text-2);
   }
-  .publish-change-modal-diff-after {
+  &-diff-after {
     color: var(--semi-color-success);
     font-weight: 500;
     word-break: break-all;
   }
-  .publish-change-modal-confirm {
+  &-confirm {
     display: flex;
     align-items: center;
     gap: 8px;
     cursor: pointer;
     user-select: none;
-  }
-  .publish-change-modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-    padding-top: 16px;
-    margin-top: 8px;
-    border-top: 1px solid var(--semi-color-border);
   }
 }

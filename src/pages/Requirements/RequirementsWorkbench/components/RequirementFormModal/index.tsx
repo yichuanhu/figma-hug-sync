@@ -9,14 +9,14 @@ import {
   Tag,
   useFormState,
 } from '@douyinfe/semi-ui';
-import type { RequirementItem, SchemeField, SchemeFieldDependsOn, RequirementDraft } from '../../types';
+import type { RequirementItem, SchemeField, SchemeFieldDependsOn, RequirementDraft, ChangedFieldDiff } from '../../types';
 import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
 import OwnerSearchSelect from '@/components/OwnerSearchSelect';
 import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
-import { getActiveScheme, getDraft, saveDraft, discardDraft } from '../../mockData';
+import { getActiveScheme, getDraft, saveDraft, discardDraft, publishChange } from '../../mockData';
 import SchemeFieldRenderer from '../SchemeFieldRenderer';
 import { isPostProjectStatus } from '../../utils/fieldEditability';
-import PublishChangeModal from '../PublishChangeModal';
+import PublishChangePanel, { ERROR_MAP, computePublishChangeType } from '../PublishChangePanel';
 import './index.less';
 
 const { Text } = Typography;
@@ -45,8 +45,14 @@ const RequirementFormModal = ({
   const [ownerId, setOwnerId] = useState<string>(MOCK_CURRENT_USER.id);
   const isEdit = !!editData;
   const isPostProjectEdit = !!editData && isPostProjectStatus(editData.status);
-  const [publishVisible, setPublishVisible] = useState(false);
+  const [step, setStep] = useState<'edit' | 'publish'>('edit');
   const [pendingPatch, setPendingPatch] = useState<RequirementDraft['patch']>({});
+  // Step 2 (发布变更) 状态：仅在弹窗整体关闭时才重置
+  const [publishReason, setPublishReason] = useState('');
+  const [publishDevImpact, setPublishDevImpact] = useState(false);
+  const [publishDiffs, setPublishDiffs] = useState<ChangedFieldDiff[]>([]);
+  const [publishPreviewing, setPublishPreviewing] = useState(false);
+  const [publishLoading, setPublishLoading] = useState(false);
 
   // 草稿态：仅在立项后编辑模式下使用
   const [hasDraft, setHasDraft] = useState(false);
@@ -84,10 +90,16 @@ const RequirementFormModal = ({
   // 立项后模式：弹窗打开时尝试读取该用户的草稿并合并
   useEffect(() => {
     if (!visible) {
-      // 关闭时重置脏标记与草稿态
+      // 关闭时重置脏标记、草稿态、步骤与发布信息
       dirtyRef.current = false;
       setHasDraft(false);
       setDraftLoadedAt(null);
+      setStep('edit');
+      setPublishReason('');
+      setPublishDevImpact(false);
+      setPublishDiffs([]);
+      setPublishPreviewing(false);
+      setPendingPatch({});
       return;
     }
     if (!isPostProjectEdit || !editData) return;
@@ -223,7 +235,7 @@ const RequirementFormModal = ({
         // 草稿保存失败不阻断发布流程
       }
       setPendingPatch(patch);
-      setPublishVisible(true);
+      setStep('publish');
       return;
     }
 
@@ -248,23 +260,64 @@ const RequirementFormModal = ({
     ? draftLoadedAt.replace('T', ' ').substring(5, 16)
     : '';
 
+  const publishReasonValid = publishReason.trim().length >= 10;
+  const canPublish =
+    publishDiffs.length > 0 && publishReasonValid && !publishPreviewing;
+
+  const handlePublish = async () => {
+    if (!editData) return;
+    setPublishLoading(true);
+    try {
+      await publishChange({
+        requirementId: editData.id,
+        patch: pendingPatch,
+        reason: publishReason.trim(),
+        changeType: computePublishChangeType(publishDevImpact),
+      });
+      Toast.success(
+        publishDevImpact ? '变更已发布,开发侧需在 7 日内响应' : '变更已发布',
+      );
+      // publishChange 内部会清掉草稿
+      setHasDraft(false);
+      setDraftLoadedAt(null);
+      dirtyRef.current = false;
+      onPublished?.();
+      onCancel();
+    } catch (e) {
+      const code = (e as Error)?.message ?? '';
+      Toast.error(ERROR_MAP[code] || `发布失败: ${code || '未知错误'}`);
+    } finally {
+      setPublishLoading(false);
+    }
+  };
+
+  const isPublishStep = step === 'publish';
+
   return (
-    <>
     <Modal
       title={
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-          {isEdit ? (isPostProjectEdit ? '编辑需求(立项后)' : t('requirements.form.editTitle')) : t('requirements.form.createTitle')}
-          {isPostProjectEdit && hasDraft && (
-            <Tag size="small" color="orange">
-              {`已加载草稿${draftHintTime ? ` · ${draftHintTime}` : ''}`}
-            </Tag>
+          {isPublishStep ? (
+            <>
+              <Text type="tertiary">编辑需求(立项后) ›</Text>
+              <span>发布变更</span>
+            </>
+          ) : (
+            <>
+              {isEdit ? (isPostProjectEdit ? '编辑需求(立项后)' : t('requirements.form.editTitle')) : t('requirements.form.createTitle')}
+              {isPostProjectEdit && hasDraft && (
+                <Tag size="small" color="orange">
+                  {`已加载草稿${draftHintTime ? ` · ${draftHintTime}` : ''}`}
+                </Tag>
+              )}
+            </>
           )}
         </span>
       }
       visible={visible}
       onCancel={handleClose}
       footer={null}
-      width={520}
+      width={isPublishStep ? 600 : 520}
       centered
       closeOnEsc
       maskClosable={false}
@@ -280,7 +333,10 @@ const RequirementFormModal = ({
           dirtyRef.current = true;
         }}
       >
-        <div className="requirement-form-modal-content">
+        <div
+          className="requirement-form-modal-content"
+          style={{ display: isPublishStep ? 'none' : undefined }}
+        >
           {isPostProjectEdit && (
             <div style={{ marginBottom: 12 }}>
               <Text type="warning" size="small">
@@ -360,51 +416,73 @@ const RequirementFormModal = ({
           </div>
         </div>
 
+        {isPublishStep && editData && (
+          <div className="requirement-form-modal-content">
+            <PublishChangePanel
+              requirementId={editData.id}
+              patch={pendingPatch}
+              reason={publishReason}
+              onReasonChange={setPublishReason}
+              devImpact={publishDevImpact}
+              onDevImpactChange={setPublishDevImpact}
+              diffs={publishDiffs}
+              onDiffsChange={setPublishDiffs}
+              previewing={publishPreviewing}
+              onPreviewingChange={setPublishPreviewing}
+            />
+          </div>
+        )}
+
         <div
           className="requirement-form-modal-footer"
           style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}
         >
           <div>
-            {isPostProjectEdit && (
+            {isPublishStep ? (
               <Button
                 theme="borderless"
                 type="tertiary"
-                loading={savingDraft}
-                onClick={handleSaveDraft}
+                disabled={publishLoading}
+                onClick={() => setStep('edit')}
               >
-                保存草稿
+                上一步
               </Button>
+            ) : (
+              isPostProjectEdit && (
+                <Button
+                  theme="borderless"
+                  type="tertiary"
+                  loading={savingDraft}
+                  onClick={handleSaveDraft}
+                >
+                  保存草稿
+                </Button>
+              )
             )}
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
-            <Button theme="light" onClick={handleClose}>
+            <Button theme="light" onClick={handleClose} disabled={publishLoading}>
               {t('common.cancel')}
             </Button>
-            <Button htmlType="submit" theme="solid" type="primary" loading={loading}>
-              {isPostProjectEdit ? '下一步:发布变更' : (isEdit ? t('common.save') : t('common.create'))}
-            </Button>
+            {isPublishStep ? (
+              <Button
+                theme="solid"
+                type="primary"
+                loading={publishLoading}
+                disabled={!canPublish}
+                onClick={handlePublish}
+              >
+                {publishDevImpact ? '确认并发布变更' : '发布变更'}
+              </Button>
+            ) : (
+              <Button htmlType="submit" theme="solid" type="primary" loading={loading}>
+                {isPostProjectEdit ? '下一步:发布变更' : (isEdit ? t('common.save') : t('common.create'))}
+              </Button>
+            )}
           </div>
         </div>
       </Form>
     </Modal>
-    {editData && (
-      <PublishChangeModal
-        visible={publishVisible}
-        requirementId={editData.id}
-        patch={pendingPatch}
-        onCancel={() => setPublishVisible(false)}
-        onPublished={() => {
-          setPublishVisible(false);
-          // publishChange 内部会清掉草稿
-          setHasDraft(false);
-          setDraftLoadedAt(null);
-          dirtyRef.current = false;
-          onPublished?.();
-          onCancel();
-        }}
-      />
-    )}
-    </>
   );
 };
 
