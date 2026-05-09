@@ -2,7 +2,8 @@ import { useMemo, useRef, useState } from 'react';
 import { Modal, Form, Toast, Typography } from '@douyinfe/semi-ui';
 import type { FormApi } from '@douyinfe/semi-ui/lib/es/form';
 import { useTranslation } from 'react-i18next';
-import { allAssets } from '@/pages/Sharing/Market/mockData';
+import { getAllMockProcesses } from '@/components/ProcessManagement/ProcessManagementContent';
+import type { LYProcessResponse } from '@/api';
 import type { Asset } from '@/pages/Sharing/Market/types';
 import { getAll, publishWorkflowToShare } from '../../store';
 import './index.less';
@@ -27,13 +28,13 @@ const PublishWorkflowModal = ({ visible, onCancel, onSuccess }: Props) => {
   const [selectedId, setSelectedId] = useState<string | undefined>();
   const [submitting, setSubmitting] = useState(false);
 
-  // 开发中心已发布的流程（DEV_CENTER + WORKFLOW + PUBLISHED）
-  const candidates: Asset[] = useMemo(
-    () => allAssets.filter((a) => a.type === 'WORKFLOW' && a.source === 'DEV_CENTER' && a.status === 'PUBLISHED'),
-    [],
+  // 「调度中心」已发布的流程（status === 'PUBLISHED'）
+  const candidates: LYProcessResponse[] = useMemo(
+    () => getAllMockProcesses().filter((p) => p.status === 'PUBLISHED'),
+    [visible],
   );
 
-  // 已共享状态映射：processId -> 状态
+  // 已共享状态映射：originUrl 末段保存的 processId -> 状态
   const sharedStatusMap = useMemo(() => {
     const map = new Map<string, 'PENDING_APPROVAL' | 'PUBLISHED'>();
     getAll().forEach((a) => {
@@ -48,13 +49,16 @@ const PublishWorkflowModal = ({ visible, onCancel, onSuccess }: Props) => {
   }, [visible]);
 
   const selected = candidates.find((c) => c.id === selectedId);
+  const selectedVersion = selected?.current_version_id
+    ? `v${(selected.current_version_id.match(/\d/g) || ['1']).slice(0, 1).join('')}.0.0`
+    : 'v1.0.0';
 
-  const optionList = candidates.map((a) => {
-    const shared = sharedStatusMap.get(a.id);
+  const optionList = candidates.map((p) => {
+    const shared = sharedStatusMap.get(p.id);
     const suffix = shared
       ? ` · ${t(shared === 'PUBLISHED' ? 'publishToSharing.alreadyPublished' : 'publishToSharing.alreadyPending')}`
       : '';
-    return { value: a.id, label: `${a.name}${suffix}` };
+    return { value: p.id, label: `${p.name}${suffix}` };
   });
 
   const handleAfterClose = () => {
@@ -69,7 +73,27 @@ const PublishWorkflowModal = ({ visible, onCancel, onSuccess }: Props) => {
       const source = candidates.find((c) => c.id === values.processId);
       if (!source) return;
       setSubmitting(true);
-      const newId = publishWorkflowToShare(source, values.note ?? '');
+      // 适配为 Asset 入参（来源：调度中心已发布流程）
+      const adapted: Asset = {
+        id: source.id,
+        name: source.name,
+        type: 'WORKFLOW',
+        source: 'DEV_CENTER',
+        status: 'PUBLISHED',
+        description: source.description ?? '',
+        creatorName: source.creator_id,
+        departmentName: source.owning_department_name ?? '',
+        reuseCount: 0,
+        tags: [],
+        currentVersion: selectedVersion,
+        currentVersionId: source.current_version_id ?? `${source.id}-v1`,
+        createdAt: source.created_at,
+        updatedAt: source.updated_at,
+        workflow: { yaml: '', nodeCount: 0 },
+        versions: [],
+        reuseRecords: [],
+      };
+      const newId = publishWorkflowToShare(adapted, values.note ?? '');
       Toast.success(t('publishToSharing.successToast'));
       onSuccess(newId);
     } catch {
@@ -111,11 +135,11 @@ const PublishWorkflowModal = ({ visible, onCancel, onSuccess }: Props) => {
           <div className="pwf-readonly">
             <div className="pwf-readonly-row">
               <Text type="tertiary">{t('publishToSharing.versionLabel')}</Text>
-              <Text strong>{selected.currentVersion}</Text>
+              <Text strong>{selectedVersion}</Text>
             </div>
             <div className="pwf-readonly-row">
               <Text type="tertiary">{t('publishToSharing.deptLabel')}</Text>
-              <Text strong>{selected.departmentName}</Text>
+              <Text strong>{selected.owning_department_name}</Text>
             </div>
           </div>
         )}
