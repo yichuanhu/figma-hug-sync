@@ -2868,7 +2868,7 @@
       },
       "alreadyPublished": "Published",
       "manuallyAdded": "Manually Added",
-      "assignedValueNotice": "This credential is of type \"Assigned Value\". After publishing, please go to Credential Management to upload the assigned value list — otherwise the linked processes will have no available accounts in production.",
+      "assignedValueNotice": "This credential is of type \"Assigned Value\". After publishing, please go to Credential Management to upload the assigned value list. If no list is uploaded, linked processes will fall back to this credential's production value at runtime.",
       "usedBy": "From",
       "testValue": "Dev Value",
       "productionValue": "Production Value",
