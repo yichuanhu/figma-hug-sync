@@ -51,8 +51,8 @@ const generateUUID = (): string => {
 const mockCredentialIds = Array.from({ length: 15 }, (_, index) => `cred-${index + 1}`);
 
 const generateMockCredential = (index: number): LYCredentialResponse => {
-  const types: CredentialType[] = ['FIXED_VALUE', 'PERSONAL_REF'];
-  const type = types[index % 2];
+  const types: CredentialType[] = ['FIXED_VALUE', 'PERSONAL_REF', 'ASSIGNED_VALUE'];
+  const type = types[index % 3];
   const names = [
     'Enterprise Email Credential',
     'Database Connection Credential',
@@ -358,6 +358,7 @@ const CredentialManagementContent = ({ context }: CredentialManagementContentPro
   const typeFilterOptions = [
     { value: 'FIXED_VALUE', label: t('credential.type.fixedValue') },
     { value: 'PERSONAL_REF', label: t('credential.type.personalRef') },
+    { value: 'ASSIGNED_VALUE', label: t('credential.type.assignedValue') },
   ];
 
   // 点击行查看详情
