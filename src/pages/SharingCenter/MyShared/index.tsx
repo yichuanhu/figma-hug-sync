@@ -86,6 +86,7 @@ const MySharedPage = () => {
     {
       title: t('sharing.myShared.col.name'),
       dataIndex: 'name',
+      minWidth: 240,
       ellipsis: { showTitle: false },
       render: (_: string, row: ShareAsset) => (
         <div className="cell-name">
@@ -94,9 +95,9 @@ const MySharedPage = () => {
             theme="borderless"
             type="primary"
             onClick={() => goDetail(row)}
-            style={{ padding: 0, height: 'auto', maxWidth: '100%' }}
+            style={{ padding: 0, height: 'auto', minWidth: 0, flex: 1 }}
           >
-            <Text ellipsis={{ showTooltip: true }} style={{ maxWidth: 280 }}>{row.name}</Text>
+            <Text ellipsis={{ showTooltip: true }} style={{ width: '100%' }}>{row.name}</Text>
           </Button>
         </div>
       ),
