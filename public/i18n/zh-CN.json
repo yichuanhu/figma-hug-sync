@@ -480,7 +480,7 @@
       "archived": "已归档"
     },
     "scheme": {
-      "title": "模版管理",
+      "title": "需求模版管理",
       "description": "管理需求模版：表单字段、评估模型与审批流程",
       "searchPlaceholder": "搜索模版名称或编码",
       "upload": "上传模版",
