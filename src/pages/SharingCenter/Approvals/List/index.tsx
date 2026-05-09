@@ -130,10 +130,11 @@ const ApprovalsListPage = () => {
     {
       title: t('sharing.approvals.col.name'),
       dataIndex: 'name',
+      width: 280,
       ellipsis: { showTitle: true },
       render: (v: string, row: ShareAsset) => (
-        <Button theme="borderless" type="primary" onClick={() => goDetail(row)} style={{ padding: 0 }}>
-          {v}
+        <Button theme="borderless" type="primary" onClick={() => goDetail(row)} style={{ padding: 0, maxWidth: '100%' }}>
+          <Text ellipsis={{ showTooltip: true }} style={{ maxWidth: 240 }}>{v}</Text>
         </Button>
       ),
     },
@@ -273,6 +274,7 @@ const ApprovalsListPage = () => {
               dataSource={pendingPage}
               rowKey="id"
               pagination={false}
+              scroll={{ x: 1000 }}
               rowSelection={{
                 selectedRowKeys: selectedKeys,
                 onChange: (keys) => setSelectedKeys((keys as string[]) || []),
@@ -356,6 +358,7 @@ const ApprovalsListPage = () => {
               dataSource={historyPage}
               rowKey="id"
               pagination={false}
+              scroll={{ x: 1140 }}
               empty={
                 <Empty
                   image={<img src={hasHistoryFilter ? noResultImg : noDataImg} alt="" style={{ width: 96 }} />}

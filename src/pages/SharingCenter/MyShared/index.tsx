@@ -86,7 +86,7 @@ const MySharedPage = () => {
     {
       title: t('sharing.myShared.col.name'),
       dataIndex: 'name',
-      minWidth: 240,
+      width: 280,
       ellipsis: { showTitle: false },
       render: (_: string, row: ShareAsset) => (
         <div className="cell-name">
@@ -211,6 +211,7 @@ const MySharedPage = () => {
           dataSource={paged}
           rowKey="id"
           pagination={false}
+          scroll={{ x: 900 }}
           rowSelection={{
             selectedRowKeys: selectedKeys,
             onChange: (keys) => setSelectedKeys((keys ?? []) as string[]),
