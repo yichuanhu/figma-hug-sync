@@ -345,6 +345,9 @@
         "validCount": "有效行数",
         "errorCount": "错误行数",
         "errorListTitle": "错误明细（{{count}} 条）",
+        "tabs": { "valid": "有效数据", "error": "错误明细" },
+        "cols": { "account": "账号", "password": "密码" },
+        "noValidRows": "暂无有效数据，请修正错误后重新上传",
         "errorTypeCol": "错误类型",
         "errorType": {
           "emptyField": "字段为空",
