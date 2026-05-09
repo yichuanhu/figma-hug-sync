@@ -1,0 +1,32 @@
+.import-result-modal {
+  &-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  &-summary {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    padding: 12px;
+    background: var(--semi-color-fill-0);
+    border-radius: 8px;
+
+    &-cell {
+      text-align: center;
+    }
+
+    &-value {
+      font-size: 22px;
+      font-weight: 600;
+      line-height: 1.2;
+      margin-bottom: 2px;
+    }
+  }
+
+  &-footer {
+    display: flex;
+    justify-content: flex-end;
+  }
+}
