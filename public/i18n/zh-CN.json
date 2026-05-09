@@ -150,7 +150,7 @@
     "mySharedAssets": "我的共享",
     "sharingApprovals": "审批管理",
     "marketAll": "全部资产",
-    "marketWorkflow": "工作流",
+    "marketWorkflow": "自动化流程",
     "marketKnowledge": "知识库",
     "marketSkill": "技能",
     "marketSnippet": "流程块",
@@ -3395,7 +3395,7 @@
         },
         "desc": {
           "SNIPPET": "流程块发布默认走 1 级审批",
-          "WORKFLOW": "工作流发布默认走 1 级审批",
+          "WORKFLOW": "自动化流程发布默认走 1 级审批",
           "KNOWLEDGE": "知识库发布默认走 1 级审批",
           "SKILL": "技能发布默认走 1 级审批"
         },
@@ -3491,20 +3491,20 @@
       "searchPlaceholder": "搜索资产名称、描述或作者",
       "tabs": {
         "ALL": "全部",
-        "WORKFLOW": "工作流",
+        "WORKFLOW": "自动化流程",
         "KNOWLEDGE": "知识库",
         "SKILL": "技能",
         "SNIPPET": "流程块"
       },
       "subTitles": {
-        "workflow": "工作流市场",
+        "workflow": "自动化流程市场",
         "knowledge": "知识库市场",
         "skill": "技能市场",
         "snippet": "流程块市场"
       },
       "empty": {
         "default": "暂无资产",
-        "workflow": "暂无工作流",
+        "workflow": "暂无自动化流程",
         "knowledge": "暂无知识库",
         "skill": "暂无技能",
         "snippet": "暂无流程块"
