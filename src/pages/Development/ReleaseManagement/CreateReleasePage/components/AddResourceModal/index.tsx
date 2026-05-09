@@ -118,6 +118,7 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
         used_by_processes: [],
         is_manual: true,
         original_name: r.original_name,
+        credential_type: r.credential_type,
       }));
 
     onConfirm(selectedResources);
