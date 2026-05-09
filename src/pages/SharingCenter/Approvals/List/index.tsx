@@ -144,12 +144,6 @@ const ApprovalsListPage = () => {
       render: (v: string) => t(`sharing.market.tabs.${v}`),
     },
     {
-      title: t('sharing.approvals.col.source'),
-      dataIndex: 'source',
-      width: 120,
-      render: (v: 'NATIVE' | 'DEV_CENTER') => <SourceBadge source={v} />,
-    },
-    {
       title: t('sharing.approvals.col.creator'),
       dataIndex: 'creatorName',
       width: 160,
