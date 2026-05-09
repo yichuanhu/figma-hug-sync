@@ -109,12 +109,6 @@ const MySharedPage = () => {
       render: (v: string) => t(`sharing.market.tabs.${v}`),
     },
     {
-      title: t('sharing.myShared.col.source'),
-      dataIndex: 'source',
-      width: 110,
-      render: (v: 'NATIVE' | 'DEV_CENTER') => <SourceBadge source={v} />,
-    },
-    {
       title: t('sharing.myShared.col.status'),
       dataIndex: 'shareStatus',
       width: 100,
