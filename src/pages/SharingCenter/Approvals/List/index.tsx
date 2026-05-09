@@ -130,10 +130,11 @@ const ApprovalsListPage = () => {
     {
       title: t('sharing.approvals.col.name'),
       dataIndex: 'name',
+      width: 280,
       ellipsis: { showTitle: true },
       render: (v: string, row: ShareAsset) => (
-        <Button theme="borderless" type="primary" onClick={() => goDetail(row)} style={{ padding: 0 }}>
-          {v}
+        <Button theme="borderless" type="primary" onClick={() => goDetail(row)} style={{ padding: 0, maxWidth: '100%' }}>
+          <Text ellipsis={{ showTooltip: true }} style={{ maxWidth: 240 }}>{v}</Text>
         </Button>
       ),
     },
