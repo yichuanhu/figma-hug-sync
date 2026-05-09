@@ -275,6 +275,12 @@ const MySharedPage = () => {
           />
         </div>
       )}
+
+      <PublishWorkflowModal
+        visible={publishVisible}
+        onCancel={() => setPublishVisible(false)}
+        onSuccess={handlePublishSuccess}
+      />
     </div>
   );
 };
