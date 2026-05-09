@@ -192,7 +192,7 @@
     "mySharedAssets": "My Shared",
     "sharingApprovals": "Approvals",
     "marketAll": "All Assets",
-    "marketWorkflow": "Workflow",
+    "marketWorkflow": "Automation Process",
     "marketKnowledge": "Knowledge",
     "marketSkill": "Skill",
     "marketSnippet": "Snippet",
@@ -4027,7 +4027,7 @@
         },
         "desc": {
           "SNIPPET": "Snippet publishing requires single-level approval by default",
-          "WORKFLOW": "Workflow publishing requires single-level approval by default",
+          "WORKFLOW": "Automation Process publishing requires single-level approval by default",
           "KNOWLEDGE": "Knowledge publishing requires single-level approval by default",
           "SKILL": "Skill publishing requires single-level approval by default"
         },
@@ -4124,20 +4124,20 @@
       "searchPlaceholder": "Search by name, description or author",
       "tabs": {
         "ALL": "All",
-        "WORKFLOW": "Workflow",
+        "WORKFLOW": "Automation Process",
         "KNOWLEDGE": "Knowledge",
         "SKILL": "Skill",
         "SNIPPET": "Snippet"
       },
       "subTitles": {
-        "workflow": "Workflow Market",
+        "workflow": "Automation Process Market",
         "knowledge": "Knowledge Market",
         "skill": "Skill Market",
         "snippet": "Snippet Market"
       },
       "empty": {
         "default": "No assets",
-        "workflow": "No workflows",
+        "workflow": "No automation processes",
         "knowledge": "No knowledge",
         "skill": "No skills",
         "snippet": "No snippets"
