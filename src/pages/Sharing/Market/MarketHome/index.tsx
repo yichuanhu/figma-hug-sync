@@ -6,7 +6,7 @@ import { AssetType, SortKey, SourceFilter, TabFilter } from '../types';
 import { filterAndSort, paginate, PAGE_SIZE } from '../utils';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
 import MarketToolbar from '../components/MarketToolbar';
-import CreateAssetDropdown from '../components/CreateAssetDropdown';
+
 import AssetListGrid from '../components/AssetListGrid';
 import './index.less';
 
@@ -55,7 +55,6 @@ const MarketHome = () => {
     <div className="market-page">
       <div className="market-page-header">
         <Title heading={3} className="title">{t('sharing.market.pageTitle')}</Title>
-        <CreateAssetDropdown />
       </div>
 
       <Tabs activeKey={tab} onChange={handleTabChange} className="market-tabs" keepDOM={false}>
