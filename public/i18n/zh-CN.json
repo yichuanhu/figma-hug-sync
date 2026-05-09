@@ -3263,7 +3263,7 @@
         "clear": "清空筛选"
       },
       "newAsset": {
-        "label": "新建资产",
+        "label": "新建共享",
         "knowledge": "知识",
         "skill": "技能",
         "snippet": "流程块",
@@ -3316,7 +3316,7 @@
         "rejected": "暂无被拒绝资产",
         "archived": "暂无已归档资产",
         "noResult": "未找到匹配的资产，请调整筛选条件",
-        "createCta": "去新建资产"
+        "createCta": "去新建共享"
       },
       "col": {
         "version": "版本",

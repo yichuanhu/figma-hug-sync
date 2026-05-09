@@ -3895,7 +3895,7 @@
         "clear": "Clear filters"
       },
       "newAsset": {
-        "label": "New Asset",
+        "label": "New Share",
         "knowledge": "Knowledge",
         "skill": "Skill",
         "snippet": "Snippet",
@@ -3948,7 +3948,7 @@
         "rejected": "No rejected assets",
         "archived": "No archived assets",
         "noResult": "No results, try adjusting filters",
-        "createCta": "Create asset"
+        "createCta": "Create share"
       },
       "col": {
         "version": "Version",
