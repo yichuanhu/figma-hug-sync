@@ -185,8 +185,8 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
           </div>
         </div>
 
-        {isAssignedValueCred ? (
-          <div className="release-config-step-resource-card-body">
+        {isAssignedValueCred && (
+          <div className="release-config-step-resource-card-banner">
             <Banner
               type="info"
               fullMode={false}
@@ -197,7 +197,9 @@ const ReleaseConfigStep: React.FC<ReleaseConfigStepProps> = ({
               )}
             />
           </div>
-        ) : isFile ? null : !isQueue && (
+        )}
+
+        {isFile ? null : !isQueue && (
           <div className="release-config-step-resource-card-body">
             <Row gutter={16}>
               <Col span={12}>
