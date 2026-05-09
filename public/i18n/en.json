@@ -304,7 +304,7 @@
     "actions": {
       "viewUsage": "View Usage",
       "linkPersonal": "Link Personal Credential",
-      "import": "Import"
+      "import": "Import Assigned Values"
     },
     "linkPersonal": {
       "title": "Link Personal Credential",
