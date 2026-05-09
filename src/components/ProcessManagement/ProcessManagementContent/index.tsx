@@ -121,7 +121,7 @@ const generateMockLYProcessResponse = (index: number): LYProcessResponse => {
       { resource_id: `param-${((index + 5) % 8) + 1}`, resource_name: ['Heartbeat Interval', 'Task Timeout', 'Enable Debug Mode', 'Max Concurrency', 'Default Language', 'Retry Count', 'Log Level', 'Cache Duration'][(index + 5) % 8], resource_type: 'PARAMETER' as const, source: 'MANUAL' as const, param_type: 'BOOLEAN' as const, resource_value: 'true', status: 'ACTIVE' as const },
     ] : []),
     ...(index % 3 === 0 ? [
-      { resource_id: `cred-${((index + 2) % 8) + 1}`, resource_name: ['Enterprise Email Credential', 'Database Connection Credential', 'Third-party API Credential', 'SSH Server Credential', 'Git Repository Credential', 'ERP System Credential', 'CRM System Credential', 'OA System Credential'][(index + 2) % 8], resource_type: 'CREDENTIAL' as const, source: 'MANUAL' as const, resource_value: '••••••••', status: 'ACTIVE' as const },
+      { resource_id: `cred-${((index + 2) % 8) + 1}`, resource_name: ['Enterprise Email Credential', 'Database Connection Credential', 'Third-party API Credential', 'SSH Server Credential', 'Git Repository Credential', 'ERP System Credential', 'CRM System Credential', 'OA System Credential'][(index + 2) % 8], resource_type: 'CREDENTIAL' as const, source: 'MANUAL' as const, resource_value: '••••••••', status: 'ACTIVE' as const, credential_type: ([2, 6].includes((index + 2) % 8) ? 'ASSIGNED_VALUE' as const : 'FIXED_VALUE' as const) },
     ] : []),
   ];
 
