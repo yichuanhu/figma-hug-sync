@@ -80,7 +80,7 @@ const PushNotificationDialog = ({ visible, asset, onCancel }: Props) => {
       Toast.warning(t('sharing.myShared.push.notificationBodyPh')); return;
     }
     const check = canPushNotification(asset.id, asset.currentVersionId);
-    if (!check.ok) {
+    if (check.ok === false) {
       Toast.warning(t('sharing.myShared.toast.pushDuplicated', { hours: check.retryAfterHours }));
       return;
     }
