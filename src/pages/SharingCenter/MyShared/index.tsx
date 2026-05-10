@@ -3,6 +3,7 @@ import {
   Typography, Tabs, Button, Input, Select, Pagination,
 } from '@douyinfe/semi-ui';
 import { IconSearch } from '@douyinfe/semi-icons';
+import { Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import emptyImg from '@/assets/empty-state/no-data.png';
@@ -10,8 +11,6 @@ import type { ShareStatus } from '@/components/sharing/StatusTag';
 
 import { type ShareAsset, getMine, subscribe } from './store';
 import { useMyPublishedQuery, type TypeFilter, type SourceFilter } from './hooks/useMyPublishedQuery';
-import NewAssetDropdown from './components/NewAssetDropdown';
-import PublishWorkflowModal from './components/PublishWorkflowModal';
 import SupplyAssetCard from './components/SupplyAssetCard';
 import ReuseSummaryPanel from './components/ReuseSummaryPanel';
 import PushNotificationDialog from './components/PushNotificationDialog';
