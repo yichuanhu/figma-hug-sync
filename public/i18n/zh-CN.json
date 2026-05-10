@@ -851,65 +851,9 @@
       },
       "changeLog": {
         "empty": "暂无变更记录",
-        "type": {
-          "CONTENT": "内容变更",
-          "DEV_IMPACT": "影响开发",
-          "SYSTEM": "系统变更"
-        },
-        "status": {
-          "PENDING": "待响应",
-          "RESOLVED": "已响应",
-          "NONE": "无需响应"
-        },
-        "response": {
-          "ACK": "已知悉",
-          "ADJUSTED": "已调整",
-          "REJECTED": "已驳回"
-        },
-        "overdue": "超时未响应（已超过 {{days}} 天）",
         "publishedBy": "{{name}} 发布于 {{time}}",
-        "respondedBy": "{{name}} {{time}} 响应",
-        "linkedWorkspace": "关联工作空间：{{name}}",
-        "diffTitle": "字段变更",
-        "before": "原值",
-        "after": "新值",
         "reasonTitle": "变更说明"
       },
-      "ownerUnassigned": "未指派",
-      "customFieldsTitle": "需求详情",
-      "customFieldsEmpty": "暂无需求详情",
-      "versionLabel": "版本",
-      "versionLatest": "最新版本",
-      "viewingHistoryBanner": "当前查看历史版本 v{{version}}，仅供回看（只读）",
-      "backToLatest": "返回最新版本",
-      "pendingProject": {
-        "title": "待立项引导",
-        "description": "该需求等待立项中，请将其关联到一个项目下的工作空间，以启动开发。",
-        "linkExisting": "关联到已有工作空间",
-        "createProject": "新建项目并关联",
-        "modalTitle": "关联到工作空间",
-        "modalTip": "选择一个工作空间，将当前需求纳入其中以启动开发。",
-        "linkSuccess": "已关联到工作空间「{{name}}」",
-        "selectPlaceholder": "请选择工作空间"
-      },
-      "devResponse": {
-        "bannerTitle": "存在 {{count}} 条待响应的开发影响变更",
-        "bannerOverdue": "（其中 {{count}} 条已超时）",
-        "bannerAction": "去响应",
-        "modalTitle": "响应变更",
-        "actionLabel": "响应方式",
-        "commentLabel": "响应说明",
-        "commentPlaceholder": "请输入响应说明",
-        "commentRejectedPlaceholder": "请说明驳回理由（≥10 字）",
-        "commentRequired": "驳回时需填写至少 10 字理由",
-        "submit": "提交响应",
-        "successAck": "已确认知悉",
-        "successAdjusted": "已记录调整",
-        "successRejected": "已记录驳回",
-        "errorAlreadyResponded": "该变更已被响应",
-        "errorRejectTooShort": "驳回理由至少 10 字"
-      }
-    },
     "approvalFlow": {
       "title": "审批流程",
       "currentLevel": "第 {{current}}/{{total}} 级 · {{name}}",
