@@ -1,159 +1,162 @@
-## 资产市场 v1.8 改造计划（v2 — 对齐 AIEM 7 个 Story）
+## 目标
 
-依据 Story 001~007（FEAT-106-SC-ASSET-MARKET）+ L1 v1.8.0 / P1-market v1.5.0 / P1-module v2.8.0 对齐 MVP（仅 WORKFLOW + KNOWLEDGE）。
+基于 STORY-001~008（FEAT-107 资产上架）需求文档，将现有「我的共享」（路由 `/sharing-center/my-shared`，表格视图）重构为「资产上架」（`/sharing-center/my-published`，卡片网格 + 5 Tab + 完整生命周期管理）。
 
 ---
 
-### 1. 数据模型与 Mock 扩展（新增）
+## 一、术语与路由迁移
 
-`Asset` 类型补齐"展示包装"和"上架者"字段（现 mock 缺失）：
+| 项目 | 现状 | 目标 |
+|------|------|------|
+| 菜单/页面名 | 我的共享（mySharedAssets） | 资产上架（assetSupply / myPublished） |
+| 路由前缀 | `/sharing-center/my-shared` | `/sharing-center/my-published` |
+| 创建/编辑/上架表单 | `/sharing-center/my-shared/...` | `/sharing-center/market/:type/create`、`/sharing-center/market/:type/:id/edit`、`/sharing-center/my-published/:type/:id/publish` |
+| 视图形态 | Table | 4 列 × 3 行 卡片网格（每页 12，居右分页） |
+| 文件夹 | `src/pages/SharingCenter/MyShared/` | 保持目录名，仅改 i18n 与路由（避免大面积移动） |
 
-- 新增字段：`publishedBy: string`（上架者 ID）、`displayName?: string`、`displayDesc?: string`、`coverImage?: string`、`categoryTags?: string[]`、`overview?: string`（HTML）、`videoUrl?: string`、`originUrl?: string`（仅 DEV_CENTER）。
-- `MyShared/store.ts` mock 数据补齐这些字段；`creatorName/departmentName` 保持，新增 `currentUser`（Mock 常量，用于判断上架者本人 / 复用者）。
-- `AssetVersion` WORKFLOW 类型增加 `isSnapshot?: boolean` 标识 📷 快照（Story 002 §6）。
+旧路由保留 `<Navigate>` 重定向，避免历史链接失效。
 
-### 2. 路由与导航对齐
+---
 
-- `App.tsx`：MVP 仅保留 `workflow`/`knowledge` Tab 与详情；`snippet`/`skill` 路由保留但子市场和详情页改为 P2 占位（`EmptyState` "敬请期待"）。
-- 新增 `/sharing-center/market/:type/:id/edit-display` → 新建 `EditDisplay` 页面（Story 005 完整实现）。
-- 修复历史路径残留：`SubMarketPage` / `AssetCard` 中的 `/sharing/market/...` → `/sharing-center/market/...`。
+## 二、Tab 与卡片操作矩阵（Story 001 §6.2）
 
-### 3. MarketHome（Story 001 + 004）
+5 个 Tab，每个 Tab 显示数量徽标：
+1. **已上架**（PUBLISHED ∪ ARCHIVED，已归档加"已归档"徽标）
+2. **待上架**（DEV_CENTER + PENDING_PUBLISH）
+3. **草稿**（NATIVE + DRAFT）
+4. **待审批**（PENDING_APPROVAL）
+5. **已拒绝**（REJECTED）
 
-- Tab 由 5 改为 4：`ALL` / `WORKFLOW` / `KNOWLEDGE` / `MY_REUSED`。
-- `ALL` 仅聚合 WORKFLOW + KNOWLEDGE。
-- `MY_REUSED` Tab：
-  - 数据源：`store.getMyReusedAssets()`（按 `reusedAt` DESC，仅 PUBLISHED）。
-  - 共享市场页搜索 + 类型筛选（仅 workflow/knowledge），分页 12。
-  - 卡片传 `reuseState='reused'` + `reusedAt`，按钮固定"已复用 ✓ + 时间"。
-  - 空态：`EmptyState noData` + 文案"你尚未复用任何资产" + Button「浏览全部资产」→ 切回 ALL Tab。
-- 工具栏移除"来源"筛选（MVP 1:1 映射）；保留搜索 + 排序。
-- 接收 `location.state.tab`，让"查看我的复用"链接可直接切换到 `MY_REUSED`。
-- 加载态：`AssetListGrid` 接收 `loading` prop，渲染 6 卡片 Skeleton（Story 007 AF3）。
+按钮矩阵按 source × status 渲染（Story 001 表格已明确）。
 
-### 4. AssetCard 完整重构（Story 007）
+---
 
-按 Story 007 §5.1 重写 Props 契约；目录结构 `AssetCard/index.tsx` + `index.less` + `types.ts`。
+## 三、核心改造清单
 
-- 新 Props（保留向后兼容时收敛在内部 adapter）：`id/name/description/displayName/displayDesc/coverImage/categoryTags/type/source/status/version/tags/reuseCount/publishedByName/createdAt/reuseState/reusedAt/isPublishedBy/onView/onReuse/onEdit/onEditDisplay/onDelete`。
-- 展示逻辑：`displayName || name`；`displayDesc || description`；`categoryTags` 有值时额外渲染一行（与现 `tags` 区分）。
-- 复用按钮状态机：
-  - `hidden`：`isPublishedBy === true` → 不渲染。
-  - `default`：primary "复用"。
-  - `loading`：primary + Spin + disabled，文案"复用中..."。
-  - `reused`：disabled + 绿色样式 + ✓ + 下方小字 `reusedAt`。
-- 上架者视角：渲染 `ActionDropdown`（lucide `MoreVertical`），含「编辑展示信息」「编辑内容」（仅 NATIVE）「删除」（NATIVE+DRAFT）；MVP 仅保留「编辑展示信息」可用，其他先 disabled + Tooltip "暂未开放"。
-- 移除 `SourceBadge`（市场侧不展示，组件本身保留供 M2 使用）。
-- 视觉：hover `transform: translateY(-4px)` + 200ms `box-shadow` 过渡。
-- 卡片网格：3 列、gap 16px（沿用现 `.asset-list-grid`）。
-- 封面图：有值时顶部展示，`onError` 回退默认占位渐变；为空时不渲染封面区。
+### 1. 顶部菜单与页面壳（Story 001）
+- `src/components/layout/Sidebar/index.tsx`：菜单 key/路径/i18n 改为 `assetSupply` → `/sharing-center/my-published`
+- `src/App.tsx`：新增 `/sharing-center/my-published` 路由，旧路径保留 Navigate
+- 路由守卫：非上架者角色重定向 `/sharing-center/market`（Story 001 R-05）
 
-### 5. 复用按钮逻辑与 Toast 分叉（Story 003）
+### 2. 主页（资产上架卡片网格）— `MyShared/index.tsx` 重构
+- 工具栏：`[搜索320px] [类型 ▼] [+ 新建资产 ▼]`（去掉来源筛选）
+- Tab 计数 + URL 同步（`?tab=&type=&search=&page=`）
+- **AssetCard 网格**：复用 `src/pages/Sharing/Market/components` 已有 AssetCard，扩展供给侧 props（status 标签、操作按钮组、复用摘要行）
+- 空状态文案随 Tab 切换；搜索/筛选无结果有专属文案；加载失败有重试
+- 分页 12/页，居右
 
-- `MarketHome` 与 `AssetDetail` 共用 hook `useReuseAction`：
-  - 状态：`Map<assetId, 'default'|'loading'|'reused'>`。
-  - 初始：若 `store.hasReused(assetId)` → `reused`；若 `isOwner(assetId)` → `hidden`（由 Card 判断）。
-  - 点击：`loading` → 模拟 800ms → `addReuseRecord` → `reused` + Toast。
-  - 失败兜底（mock 失败概率 0% MVP，但代码保留 catch）→ 回退 `default` + `Toast.error`。
-- Toast 分叉（依据 `asset.type`）：
-  - WORKFLOW：`Toast.success({ content: 'JSX', duration: 6 })` 内含「前往开发中心 →」`<a>` → `window.open('/dev-center/process-development')`。
-  - KNOWLEDGE：Toast 内「查看我的复用 →」→ `navigate('/sharing-center/market', { state: { tab: 'MY_REUSED' } })`。
+### 3. 卡片底部复用摘要（Story 008）
+- reuseCount > 0：`复用 N 次 · 最近: 张三 · 05-09  [查看复用明细 >]`
+- 点击「查看复用明细」打开 `ReuseStatsPanel`（侧边 SideSheet 900px 或 Modal）：统计行（总/本月/本周）+ 表格（姓名/部门/时间/版本）+ 时间范围筛选（全部/本月/本周）+ 分页 10/页
 
-### 6. AssetDetail 重构（Story 002）
+### 4. 创建知识页（Story 002）— 重构现有 `Create/Knowledge`
+- 路由迁移到 `/sharing-center/market/knowledge/create`
+- 字段：名称(2-100)、描述(10-500，必填)、分类 Select（必填，预设枚举）、标签 TagInput、富文本内容（替换现有 TextArea）、附件 Upload（PDF/DOCX/XLSX/PNG/JPG ≤10MB）
+- Semi 原生 blur/change 校验，错误 < 200ms
+- 「保存草稿」→ 跳 `?tab=draft`；「上架」→ PENDING_APPROVAL（首版本 1.0.0），跳 `?tab=pending_approval`
+- 富文本：使用轻量第三方（`react-quill` 已经常见）或保留现有 contenteditable 简版（建议封装 `<RichTextEditor>` 共享组件）
 
-按公共布局 + 类型差异化拆分两个子组件 `WorkflowDetail` / `KnowledgeDetail`，共用 `DetailHeader` / `DisplayInfoSection` / `MetaCollapsible`。
+### 5. 创建技能页（Story 003）— 重构现有 `Create/Skill`
+- 路由迁移到 `/sharing-center/market/skill/create`
+- 同样字段（名称/描述/分类/标签）+ 输入参数表 + 输出参数表 + 超时/重试 + 调用示例（Tabs：JSON/curl/Python）
+- 复用现有参数表逻辑
 
-公共：
-- 顶部 `DetailHeader`：返回 + `displayName||name` + `StatusTag(PUBLISHED)` + 操作按钮区（按类型/角色）。
-- `DisplayInfoSection`（始终可见）：封面图 / 展示名 / 展示描述 / overview 富文本 / categoryTags / videoUrl（有值时 `<video>` 或占位）。
-- TabPane 仅版本历史 + 复用记录（移除现在的 content Tab，内容上移到独立区块）。
-- `MetaCollapsible` 默认收起：名称/描述/版本/归属部门/上架者/发布时间 + 类型差异字段。
-- 移除 `SourceBadge`。
-- 资产不存在或非 PUBLISHED → `EmptyState notFound` + 返回市场。
-- SNIPPET/SKILL 进入 → `EmptyState` "该资产类型在 MVP 不开放，敬请期待"。
+### 6. 编辑 NATIVE 资产 + 发版（Story 004）— 重构现有 `Edit`
+- 路由 `/sharing-center/market/:type/:id/edit`
+- 知识/技能各自的编辑表单
+- 「保存草稿」/「发布新版本」→ 弹 `SemverDialog`（首版固定 1.0.0；后续 PATCH 默认，可选 MINOR/MAJOR），changeLog 必填 5-200 字符
+- 后续版本免审批 → PUBLISHED；首版 → PENDING_APPROVAL
 
-WORKFLOW：
-- Header：`复用` 按钮 + `「在开发中心编辑↗」` 始终可见；上架者可见「编辑展示信息」。
-- 内容区：只读 Banner「内容来自开发中心，只读」+ Descriptions + 「在开发中心编辑↗」按钮（`originUrl` 为空时 disabled + Tooltip "源地址不可用"）。
-- 版本历史：列 `version` / `聚合引用时间` / `📷 快照` 标识；不显示 changeLog。
-- 元信息含 `资源依赖`（mock 给字符串数组）。
+### 7. DEV_CENTER 上架表单页（Story 005）— 新建 `Publish/index.tsx`
+- 路由 `/sharing-center/my-published/:type/:id/publish`
+- 左右两栏：
+  - 左：只读元信息（名称/描述/资源依赖/版本/归属部门/来源）
+  - 右：展示信息可编辑（封面 jpg/png ≤2MB、展示名称、展示描述、分类标签、概览富文本、演示视频 mp4 ≤100MB）
+- 留空回退到原始 name/description
+- 「提交上架」→ status=PENDING_APPROVAL，不创建 AssetVersion
 
-KNOWLEDGE：
-- Header：`复用` + `打包下载`（任意角色，MVP `Toast.success "已生成 ZIP（mock）"`）；上架者额外「编辑」+「编辑展示信息」。
-- 内容区：富文本 `dangerouslySetInnerHTML` + 附件下载列表（无附件不渲染附件区）。
-- 版本历史：列 `version` / `changeLog` / `上架者` / `时间`。
-- 元信息含 `标签`，`上架者本人`时显示 ✅ 可编辑提示。
+### 8. 生命周期管理（Story 006）
+- 4 个确认弹窗组件（归档/下架/撤回/删除），统一封装 `LifecycleConfirmDialog`
+- store 已有 archiveAsset / unlistAsset / deleteAsset；新增 `withdrawAsset`（PENDING_APPROVAL → DRAFT or PENDING_PUBLISH）、`recoverAsset`（已有，对应"重新上架"）
+- 已拒绝 Tab：
+  - NATIVE：展开拒绝原因 + 「修改后重新提交」→ 跳编辑页
+  - DEV_CENTER：展开拒绝原因 + 提示文案"请回开发中心调整"
 
-### 7. EditDisplay 页面（Story 005）
+### 9. 推送通知（Story 007）— 新建 `PushNotificationDialog`
+- 双入口：已上架 Tab 卡片「推送通知」按钮 + 详情页头部按钮
+- 字段：目标组织树多选（TreeSelect 父子级联）、推送标题(10-100)、推送正文(10-500)、☑ 标记为版本升级通知（自动附 changeLog）
+- 底部统计「已选 N 个部门，预计覆盖 M 人」
+- 24h 去重：store 维护 `pushHistory: { [assetId+versionId]: timestamp }`，重复时 Toast
+- 提交后 Toast `推送已发送至 N 个部门`
 
-- 路由 `/sharing-center/market/:type/:id/edit-display`，新文件 `src/pages/Sharing/Market/EditDisplay/{index.tsx, index.less}`。
-- 顶部：返回 + 标题 `编辑展示信息 - {name}`。
-- Form（Semi UI 原生 validation，trigger=blur+change）按 Story 005 §5.1 字段：
-  - `coverImage`（Input + URL 校验）
-  - `displayName *` Input（max 100；预填 `displayName||name`）
-  - `displayDesc` TextArea（max 500）
-  - `categoryTags` `TagInput`（每标签 max 20 字符，最多 10）
-  - `overview` TextArea（max 10000，MVP 用 textarea 占位富文本编辑器）
-  - `videoUrl` Input + URL 校验
-- 底部 Banner 提示「编辑展示信息不会创建新版本，不会触发审批」 + 「取消」「保存」按钮。
-- 保存：调用 `store.updateDisplayInfo(id, payload)` → 不创建版本、不改 reuseCount → `navigate(-1)` 返回详情页 → `useSyncExternalStore` 自动刷新。
-- 权限守卫：非上架者本人或非 PUBLISHED → 直接 `Navigate` 回详情页 + `Toast.warning`。
+### 10. 上架管理详情页（Story 008）
+- 路由 `/sharing-center/my-published/:type/:id`（独立路由，不复用 `/sharing-center/market/:type/:id`）
+- 复用 `Sharing/Market/AssetDetail` 作为"消费者骨架"，通过 prop `mode="supply"` 叠加供给侧扩展：
+  - 头部按钮组：编辑 / 编辑展示信息 / 归档 / 下架 / 推送通知 / 在开发中心编辑↗
+  - 展示信息区右上角「编辑展示信息」入口
+  - 复用记录 Tab 显示完整非脱敏（姓名+部门+时间+版本）
+  - 不显示「复用」按钮（BR-MARKET-008）
 
-### 8. Store 扩展（`SharingCenter/MyShared/store.ts`）
+### 11. Store 扩展（`store.ts`）
+- 新增 `withdrawAsset(id)`、`pushNotification(assetId, payload)`（含 24h 去重）、`canPushNotification(assetId, versionId): {ok, retryAfterHours}`
+- `getMine` 改为按 Tab 维度查询的 `queryMyPublished({ tab, type, search, page, pageSize })`，返回 `{ list, total, tabCounts }`
+- 列表范围：`publishedBy === currentUserId OR (source === DEV_CENTER && 部门权限覆盖)`
 
-新增导出：
-- `currentUser: { id, name }` 常量（Mock）。
-- `addReuseRecord(assetId)`：写入 `ReuseRecord{ reuserName: currentUser.name, reuseType: 'DIRECT', reusedAt }`，`reuseCount++`，幂等（已存在则直接返回旧记录）。
-- `hasReused(assetId): boolean`。
-- `isOwner(assetId): boolean`（基于 `publishedBy === currentUser.id`，mock 数据中至少 1-2 条设为本人）。
-- `getMyReusedAssets(): Array<Asset & { reusedAt }>`（按 `reusedAt` DESC）。
-- `updateDisplayInfo(assetId, fields)`：merge 展示包装字段，`emit()` 通知。
-- 现有 `findMarketAsset`/`getMarketAssets` 保持。
+### 12. i18n
+- 替换所有 `sharing.myShared.*` 为 `sharing.assetSupply.*`（保留旧 key 作为 alias 或同步翻译）
+- 新增 Story 涉及文案（确认弹窗、推送通知、复用统计、上架表单字段、错误提示）
+- `sidebar.mySharedAssets` → `sidebar.assetSupply`，文案"资产上架"
+- 同步 `scripts/check-i18n-market.mjs`
 
-### 9. i18n & 文档清理
+---
 
-- `public/i18n/{zh-CN,en}.json` 新增/调整：
-  - `sharing.market.tabs.MY_REUSED` / `sharing.market.empty.myReused` / `sharing.market.empty.myReusedAction`
-  - `sharing.market.action.reused/reusing/reusedAt`
-  - `sharing.market.toast.workflowReused.{content,link}` / `sharing.market.toast.knowledgeReused.{content,link}` / `sharing.market.toast.reuseFailed`
-  - 详情页：`openInDevCenter` / `openInDevCenterDisabled` / `downloadZip` / `downloadZipMockToast` / `editDisplay` / `editAsset` / `metaCollapsible` / `snapshot` / `mvpUnavailable`
-  - 编辑展示信息页：`editDisplay.title/cover/displayName/displayDesc/categoryTags/overview/videoUrl/notice/save/cancel/saveSuccess/urlInvalid`
-- 移除 `MarketToolbar` 已废弃的 `source.*` UI 文案使用（保留 `sharing.common.source.*` 给供给侧 SourceBadge）。
+## 四、技术细节
 
-### 10. 涉及文件清单
+```text
+src/pages/SharingCenter/MyShared/
+├── index.tsx                  // 卡片网格 + 5 Tab + URL 同步
+├── store.ts                   // 扩展 withdraw/push/queryMyPublished
+├── Create/
+│   ├── Knowledge/             // 富文本 + 附件
+│   └── Skill/                 // 参数表 + 调用示例
+├── Edit/                      // SemverDialog 集成
+├── Publish/                   // 新增：DEV_CENTER 上架表单
+├── Detail/                    // 新增：上架管理详情页（mode=supply 包装 AssetDetail）
+├── Versions/                  // 保留
+└── components/
+    ├── AssetCard/             // 新增：供给侧扩展卡片（含复用摘要 + 操作按钮组）
+    ├── AssetActionsMenu/      // 已有，按矩阵刷新
+    ├── LifecycleConfirmDialog // 新增：归档/下架/撤回/删除
+    ├── PushNotificationDialog // 新增：Story 007
+    ├── ReuseStatsPanel        // 新增：Story 008
+    ├── RichTextEditor         // 新增：富文本编辑器（共享）
+    ├── PublishWorkflowModal/  // 保留（开发中心导入入口）
+    ├── NewAssetDropdown/      // 已有
+    └── BatchActionBar/        // 暂不删除（Story 006 注明 Out of Scope，先隐藏入口）
+```
 
-修改：
-- `src/App.tsx`（路由 + edit-display）
-- `src/pages/Sharing/Market/types.ts`（TabFilter 增 `MY_REUSED`、Asset 字段扩展）
-- `src/pages/Sharing/Market/MarketHome/{index.tsx, index.less}`
-- `src/pages/Sharing/Market/SubMarketPage/index.tsx`（移除来源筛选 + 修路径）
-- `src/pages/Sharing/Market/components/MarketToolbar/index.tsx`（删除来源 Select）
-- `src/pages/Sharing/Market/components/AssetCard/{index.tsx, index.less}`（按 §4 重写）+ 新增 `types.ts`
-- `src/pages/Sharing/Market/components/AssetListGrid/index.tsx`（增 `loading` Skeleton）
-- `src/pages/Sharing/Market/AssetDetail/{index.tsx, index.less}`（按 §6 拆分重构）
-- `src/pages/SharingCenter/MyShared/store.ts`（按 §8 扩展 + mock 数据补字段）
-- `public/i18n/{zh-CN,en}.json`
+新增 `useMyPublishedQuery` hook：封装 URL 同步 + 防抖 + 列表/计数查询。
 
-新增：
-- `src/pages/Sharing/Market/hooks/useReuseAction.ts`
-- `src/pages/Sharing/Market/EditDisplay/{index.tsx, index.less}`
-- `src/pages/Sharing/Market/AssetDetail/components/{DetailHeader, DisplayInfoSection, MetaCollapsible, WorkflowDetail, KnowledgeDetail}/index.tsx`（拆分子组件）
-- `src/pages/Sharing/Market/components/AssetCardSkeleton/index.tsx`
-- `src/pages/Sharing/Market/components/MvpPlaceholder/index.tsx`（snippet/skill 占位）
+---
 
-### 11. 不在本次范围
+## 五、分阶段交付建议
 
-- 资产上架（M2 / FEAT-107）、审批管理、流程块/技能创建编辑、技能详情。
-- ZIP 真实生成、`originUrl` 真实跳转目标、APA Creator 同步知识。
-- 富文本编辑器（用 TextArea 占位）、封面图真实上传（用 URL 输入占位）、并发编辑乐观锁。
-- 后端 API：所有"API"操作通过 `store` 同步 mock 实现。
+执行顺序（每步可独立 PR）：
 
-### 12. 验收对齐（按 Story AC）
+1. **基础迁移**：菜单/路由改名 + 旧路径重定向 + i18n 重命名（Story 001 框架）
+2. **网格视图**：Table → AssetCard 网格 + 5 Tab + URL 同步 + 卡片操作矩阵（Story 001/006）
+3. **复用摘要 + ReuseStatsPanel**（Story 008）
+4. **创建/编辑富文本化**（Story 002/003/004）
+5. **DEV_CENTER 上架表单页**（Story 005）
+6. **推送通知**（Story 007）
+7. **上架管理详情页**（Story 008 详情页部分）
 
-- Story 001 AC1-9：4 Tab + 搜索 + 类型筛选 + 排序 + 12 分页 + 空态。
-- Story 002 AC1-12：差异化详情 + StatusTag + 折叠元信息 + 显示字段回退 + 角色按钮。
-- Story 003 AC1-9：状态机 + 防重复 + Toast 分叉 + 失败回退。
-- Story 004 AC1-7：MY_REUSED Tab 排序、按钮态、空态、筛选共享。
-- Story 005 AC1-9：编辑展示信息按钮可见性、预填、保存、取消、校验。
-- Story 006 AC：知识下载按钮可见、Toast 反馈（MVP mock）。
-- Story 007 AC：AssetCard Props/状态机/hover/Skeleton。
+---
+
+## 六、待确认问题
+
+1. **富文本编辑器选型**：引入 `react-quill`（轻量、约 130KB）/ `tiptap`（更现代，体积大） / 自封装 contenteditable 简版？
+2. **上架管理详情页**是复用 `/sharing-center/market/:type/:id` 通过 query mode 切换，还是独立路由 `/sharing-center/my-published/:type/:id` 内部包装 `<AssetDetail mode="supply">`？后者更清晰，建议采用。
+3. **批量操作**：Story 006 明确 Out of Scope，是否直接移除现有 `BatchActionBar` 与 rowSelection？建议移除以保持需求一致。
+4. **组织架构树数据**：当前项目是否有现成的组织树 mock？没有则在 push dialog 里临时构造（财务部/IT 部/HR 部）。
+5. **菜单命名**：「资产上架」用 i18n key `sidebar.assetSupply` 还是 `sidebar.myPublished`？建议 `assetSupply` 与文档一致。
