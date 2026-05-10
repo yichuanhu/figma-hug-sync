@@ -1,13 +1,15 @@
 export type AssetType = 'SNIPPET' | 'WORKFLOW' | 'KNOWLEDGE' | 'SKILL';
 export type AssetSource = 'NATIVE' | 'DEV_CENTER';
 export type AssetStatus = 'PUBLISHED' | 'UNLISTED' | 'ARCHIVED';
+export type ReuseState = 'hidden' | 'default' | 'loading' | 'reused';
 export type SkillStatus = 'PUBLISHED' | 'DEPRECATED';
 export type ReuseType = 'DIRECT' | 'ADAPTATION';
 export type SkillCategory = 'document' | 'data' | 'content' | 'retrieval' | 'tool' | 'other';
 
 export type SortKey = 'reuseCount' | 'createdAt';
 export type SourceFilter = 'ALL' | AssetSource;
-export type TabFilter = 'ALL' | AssetType;
+/** MVP: ALL/WORKFLOW/KNOWLEDGE/MY_REUSED；SNIPPET/SKILL 暂不在 Tab 展示 */
+export type TabFilter = 'ALL' | 'WORKFLOW' | 'KNOWLEDGE' | 'MY_REUSED';
 
 export interface ParameterDef {
   name: string;
@@ -56,6 +58,8 @@ export interface AssetVersion {
   isLatest: boolean;
   createdBy: string;
   createdAt: string;
+  /** WORKFLOW 资产：是否快照引用 */
+  isSnapshot?: boolean;
 }
 
 export interface ReuseRecord {
@@ -91,4 +95,20 @@ export interface Asset {
   snippet?: WorkflowExtension;
   versions: AssetVersion[];
   reuseRecords: ReuseRecord[];
+  // ===== 展示包装信息（v1.8 新增；为空则回退到 name/description） =====
+  displayName?: string;
+  displayDesc?: string;
+  coverImage?: string;
+  categoryTags?: string[];
+  /** 概览富文本 HTML */
+  overview?: string;
+  /** 演示视频 URL */
+  videoUrl?: string;
+  // ===== 上架者标识 =====
+  /** 上架者用户 ID（用于判断 isOwner） */
+  publishedBy?: string;
+  // ===== DEV_CENTER 资产源链接 =====
+  originUrl?: string;
+  // ===== WORKFLOW 资产元信息 =====
+  resourceDeps?: string[];
 }

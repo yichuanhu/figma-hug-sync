@@ -4,20 +4,34 @@
 
 .asset-card {
   cursor: pointer;
-  transition: box-shadow 0.2s, transform 0.2s;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
   height: 100%;
   display: flex;
   flex-direction: column;
 
   &:hover {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    transform: translateY(-4px);
   }
 
   .semi-card-body {
     height: 100%;
     display: flex;
     flex-direction: column;
+  }
+
+  .asset-card-cover {
+    margin: -16px -16px 12px;
+    height: 96px;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--semi-color-fill-0), var(--semi-color-fill-1));
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
   }
 
   .asset-card-head {
@@ -37,6 +51,10 @@
     .asset-card-name {
       font-size: 14px;
     }
+  }
+
+  .asset-card-reused-badge {
+    flex-shrink: 0;
   }
 
   .asset-card-desc {
@@ -77,6 +95,24 @@
     .asset-card-creator {
       min-width: 0;
       flex: 1;
+    }
+
+    .asset-card-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+  }
+
+  .asset-card-reused {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+
+    .asset-card-reused-at {
+      font-size: 11px;
     }
   }
 }

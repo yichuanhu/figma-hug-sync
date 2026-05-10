@@ -1,12 +1,6 @@
-import SubMarketPage from '../SubMarketPage';
+import MvpPlaceholder from '../components/MvpPlaceholder';
 
-const SnippetMarket = () => (
-  <SubMarketPage
-    type="SNIPPET"
-    titleKey="sharing.market.subTitles.snippet"
-    lockedSource="DEV_CENTER"
-    emptyKey="sharing.market.empty.snippet"
-  />
-);
+// MVP: 流程块库为 P2 后续扩展，当前展示占位
+const SnippetMarket = () => <MvpPlaceholder titleKey="sharing.market.subTitles.snippet" />;
 
 export default SnippetMarket;
