@@ -170,6 +170,12 @@ const SupplyAssetCard = ({ asset, onView, onPush, highlighted }: Props) => {
           </div>
         </div>
       </Card>
+      <ReuseStatsPanel
+        visible={statsVisible}
+        onCancel={() => setStatsVisible(false)}
+        records={asset.reuseRecords ?? []}
+        assetName={title}
+      />
     </div>
   );
 };
