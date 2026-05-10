@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Typography, Toast, Tag } from '@douyinfe/semi-ui';
-import { Lock } from 'lucide-react';
+import { Typography, Tag } from '@douyinfe/semi-ui';
+import { Lock, AlertTriangle } from 'lucide-react';
 import type { SchemeField, SchemeFieldType } from '@/pages/Requirements/RequirementsWorkbench/types';
 import FieldCard from './FieldCard';
 import AddFieldPopover from './AddFieldPopover';
+import { validateAllFields } from './validators';
 
 const { Text } = Typography;
 
