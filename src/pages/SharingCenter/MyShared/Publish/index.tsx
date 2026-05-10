@@ -1,0 +1,113 @@
+import { useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Button, Form, Toast, Typography, Space, Banner, Tag, Upload } from '@douyinfe/semi-ui';
+import { IconChevronLeft, IconImage, IconVideoListStroked } from '@douyinfe/semi-icons';
+import { useTranslation } from 'react-i18next';
+import { findAsset, submitDevCenterPublish } from '@/pages/SharingCenter/MyShared/store';
+import '../Create/Knowledge/index.less';
+
+const { Title, Text } = Typography;
+
+const DevCenterPublishPage = () => {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { id = '' } = useParams();
+  const asset = findAsset(id);
+  const [submitting, setSubmitting] = useState(false);
+
+  if (!asset) {
+    return <div style={{ padding: 64 }}><Text>资产不存在</Text></div>;
+  }
+  if (asset.source !== 'DEV_CENTER') {
+    navigate('/sharing-center/my-published');
+    return null;
+  }
+
+  const submit = async (values: any) => {
+    setSubmitting(true);
+    submitDevCenterPublish(id, {
+      coverImage: values.coverImage,
+      displayName: (values.displayName ?? '').trim() || undefined,
+      displayDesc: (values.displayDesc ?? '').trim() || undefined,
+      categoryTags: Array.isArray(values.categoryTags) ? values.categoryTags : undefined,
+      overview: values.overview,
+      videoUrl: values.videoUrl,
+    });
+    Toast.success(t('sharing.myShared.toast.published'));
+    setSubmitting(false);
+    navigate('/sharing-center/my-published?tab=PENDING_APPROVAL');
+  };
+
+  return (
+    <div className="ms-create-page">
+      <div className="ms-create-header" style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Space>
+          <Button icon={<IconChevronLeft />} theme="borderless" onClick={() => navigate(-1)} />
+          <Title heading={3} style={{ margin: 0 }}>
+            {t('sharing.myShared.publish.pageTitle', { name: asset.name })}
+          </Title>
+        </Space>
+      </div>
+      <div className="ms-create-body" style={{ display: 'grid', gridTemplateColumns: '320px 1fr', gap: 24 }}>
+        {/* 左：只读元信息 */}
+        <div style={{ background: 'var(--semi-color-fill-0)', padding: 16, borderRadius: 6 }}>
+          <Title heading={6}>{t('sharing.myShared.publish.metaTitle')}</Title>
+          <div style={{ display: 'grid', gap: 12, marginTop: 12 }}>
+            <Field label={t('sharing.myShared.publish.metaName')} value={asset.name} />
+            <Field label={t('sharing.myShared.publish.metaDescription')} value={asset.description} />
+            {asset.resourceDeps && asset.resourceDeps.length > 0 && (
+              <Field label={t('sharing.myShared.publish.metaResourceDeps')} value={
+                <ul style={{ margin: 0, paddingLeft: 18 }}>
+                  {asset.resourceDeps.map((d) => <li key={d}>{d}</li>)}
+                </ul>
+              } />
+            )}
+            <Field label={t('sharing.myShared.publish.metaVersion')} value={asset.currentVersion} />
+            <Field label={t('sharing.myShared.publish.metaDept')} value={asset.departmentName} />
+            <Field label={t('sharing.myShared.publish.metaSource')} value={<Tag size="small" color="blue">{t('sharing.common.source.devCenter')}</Tag>} />
+          </div>
+        </div>
+        {/* 右：展示信息可编辑 */}
+        <div>
+          <Title heading={6} style={{ marginBottom: 12 }}>{t('sharing.myShared.publish.displayTitle')}</Title>
+          <Form labelPosition="top" onSubmit={submit} getFormApi={(api) => ((window as any).__pubForm = api)}>
+            <Form.Slot label={t('sharing.myShared.publish.coverImage')}>
+              <Upload action="" accept=".jpg,.jpeg,.png" maxSize={2048} customRequest={({ onSuccess }: any) => setTimeout(() => onSuccess?.({}), 200)}>
+                <Button icon={<IconImage />}>{t('sharing.myShared.publish.coverImage')}</Button>
+              </Upload>
+              <div style={{ color: 'var(--semi-color-text-2)', fontSize: 12, marginTop: 4 }}>{t('sharing.myShared.publish.coverImageHint')}</div>
+            </Form.Slot>
+            <Form.Input field="displayName" label={t('sharing.myShared.publish.displayName')} placeholder={t('sharing.myShared.publish.displayNamePh')} maxLength={100} />
+            <Form.TextArea field="displayDesc" label={t('sharing.myShared.publish.displayDesc')} placeholder={t('sharing.myShared.publish.displayDescPh')} maxLength={500} rows={3} />
+            <Form.TagInput field="categoryTags" label={t('sharing.myShared.publish.categoryTags')} placeholder={t('sharing.myShared.publish.categoryTagsPh')} />
+            <Form.TextArea field="overview" label={t('sharing.myShared.publish.overview')} placeholder={t('sharing.myShared.publish.overviewPh')} maxLength={5000} rows={6} />
+            <Form.Slot label={t('sharing.myShared.publish.videoUrl')}>
+              <Upload action="" accept=".mp4" maxSize={102400} customRequest={({ onSuccess }: any) => setTimeout(() => onSuccess?.({}), 200)}>
+                <Button icon={<IconVideoListStroked />}>{t('sharing.myShared.publish.videoUrl')}</Button>
+              </Upload>
+              <div style={{ color: 'var(--semi-color-text-2)', fontSize: 12, marginTop: 4 }}>{t('sharing.myShared.publish.videoUrlHint')}</div>
+            </Form.Slot>
+          </Form>
+        </div>
+      </div>
+      <div className="ms-create-footer">
+        <Space>
+          <Button onClick={() => navigate(-1)}>{t('common.cancel')}</Button>
+          <Button theme="solid" type="primary" loading={submitting}
+            onClick={() => { const v = (window as any).__pubForm?.getValues(); submit(v || {}); }}>
+            {t('sharing.myShared.publish.submit')}
+          </Button>
+        </Space>
+      </div>
+    </div>
+  );
+};
+
+const Field = ({ label, value }: { label: string; value: React.ReactNode }) => (
+  <div>
+    <div style={{ fontSize: 12, color: 'var(--semi-color-text-2)', marginBottom: 4 }}>{label}</div>
+    <div style={{ fontSize: 13 }}>{value}</div>
+  </div>
+);
+
+export default DevCenterPublishPage;

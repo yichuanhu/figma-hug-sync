@@ -32,6 +32,10 @@ const DEV_CENTER_BASE = 'https://dev-center.example.com/processes';
 
 const statusByIndex: ShareStatus[] = ['PUBLISHED', 'DRAFT', 'PENDING_APPROVAL', 'PUBLISHED', 'REJECTED', 'PUBLISHED'];
 
+// 推送通知 24h 去重记录： key = `${assetId}@${versionId}`
+const pushHistory = new Map<string, number>();
+const PUSH_DEDUP_HOURS = 24;
+
 let assets: ShareAsset[] = [];
 let initialized = false;
 
@@ -70,8 +74,9 @@ const init = () => {
     };
   });
 
-  // 2) 补齐演示资产：归档 / 已下架 / DEV_CENTER 待审批
+  // 2) 补齐演示资产：归档 / 已下架 / DEV_CENTER 待上架/待审批
   const today = '2026-05-08';
+  const devBase = derived.find((a) => a.source === 'DEV_CENTER') ?? derived[0];
   const extras: ShareAsset[] = [
     makeNativeKnowledge('kn-arch-001', 'SAP 操作手册（旧版）', '2025 年版本的 SAP 操作手册，已归档保留参考', 'ARCHIVED', today),
     makeNativeSkill('sk-arch-001', 'PDF 转 Word 技能（旧）', '基于旧引擎的 PDF 转 Word，已被新版替代', 'ARCHIVED', today),
@@ -87,6 +92,67 @@ const init = () => {
       originUrl: `${DEV_CENTER_BASE}/wf-unlisted-demo`,
       submittedAt: today,
       approvalEvents: buildEvents('PUBLISHED', ME, today),
+    },
+    // DEV_CENTER 待上架（PENDING_PUBLISH）
+    {
+      ...devBase,
+      id: 'wf-pp-001',
+      name: '订单审批自动化流程',
+      description: '用于订单审批流程的自动化方案，覆盖单据校验、审批路由与归档',
+      type: 'WORKFLOW',
+      source: 'DEV_CENTER',
+      shareStatus: 'PENDING_PUBLISH',
+      isMine: true,
+      ownerId: CURRENT_USER_ID,
+      publishedBy: CURRENT_USER_ID,
+      originUrl: `${DEV_CENTER_BASE}/wf-pp-001`,
+      resourceDeps: ['队列: order-queue', '凭据: erp-credential'],
+      currentVersion: 'v1.0.0',
+      currentVersionId: 'wf-pp-001-v1.0.0',
+      createdAt: today,
+      updatedAt: today,
+      reuseCount: 0,
+      tags: [],
+      categoryTags: undefined,
+      coverImage: undefined,
+      displayName: undefined,
+      displayDesc: undefined,
+      overview: undefined,
+      videoUrl: undefined,
+      versions: [],
+      reuseRecords: [],
+      submittedAt: today,
+      approvalEvents: [],
+    },
+    {
+      ...devBase,
+      id: 'wf-pp-002',
+      name: 'HR 入职流程',
+      description: '新员工入职信息收集、账号开通、设备分配的端到端流程',
+      type: 'WORKFLOW',
+      source: 'DEV_CENTER',
+      shareStatus: 'PENDING_PUBLISH',
+      isMine: true,
+      ownerId: CURRENT_USER_ID,
+      publishedBy: CURRENT_USER_ID,
+      originUrl: `${DEV_CENTER_BASE}/wf-pp-002`,
+      resourceDeps: ['凭据: ad-admin'],
+      currentVersion: 'v2.1.0',
+      currentVersionId: 'wf-pp-002-v2.1.0',
+      createdAt: today,
+      updatedAt: today,
+      reuseCount: 0,
+      tags: [],
+      categoryTags: undefined,
+      coverImage: undefined,
+      displayName: undefined,
+      displayDesc: undefined,
+      overview: undefined,
+      videoUrl: undefined,
+      versions: [],
+      reuseRecords: [],
+      submittedAt: today,
+      approvalEvents: [],
     },
   ];
 
@@ -232,6 +298,41 @@ function patchAsset(id: string, patch: Partial<ShareAsset>) {
 export function archiveAsset(id: string) { patchAsset(id, { shareStatus: 'ARCHIVED', archivedAt: todayStr() }); }
 export function recoverAsset(id: string) { patchAsset(id, { shareStatus: 'PUBLISHED', archivedAt: undefined }); }
 export function unlistAsset(id: string) { patchAsset(id, { shareStatus: 'UNLISTED' }); }
+
+/** 撤回审批：NATIVE→DRAFT；DEV_CENTER→PENDING_PUBLISH */
+export function withdrawAsset(id: string) {
+  const a = findAsset(id);
+  if (!a || a.shareStatus !== 'PENDING_APPROVAL') return;
+  const next: ShareStatus = a.source === 'DEV_CENTER' ? 'PENDING_PUBLISH' : 'DRAFT';
+  patchAsset(id, { shareStatus: next });
+}
+
+/** DEV_CENTER 资产上架：写入展示信息 + status→PENDING_APPROVAL */
+export function submitDevCenterPublish(id: string, displayPatch: { coverImage?: string; displayName?: string; displayDesc?: string; categoryTags?: string[]; overview?: string; videoUrl?: string }) {
+  const a = findAsset(id);
+  if (!a) return;
+  const when = todayStr();
+  patchAsset(id, {
+    ...displayPatch,
+    shareStatus: 'PENDING_APPROVAL',
+    submittedAt: when,
+    approvalEvents: [{ type: 'SUBMITTED', actorName: CURRENT_USER_NAME, at: when, comment: '提交上架审批' }],
+  } as Partial<ShareAsset>);
+}
+
+// ============ 推送通知 ============
+export function canPushNotification(assetId: string, versionId: string): { ok: true } | { ok: false; retryAfterHours: number } {
+  const key = `${assetId}@${versionId}`;
+  const last = pushHistory.get(key);
+  if (!last) return { ok: true };
+  const elapsedHours = (Date.now() - last) / (1000 * 60 * 60);
+  if (elapsedHours >= PUSH_DEDUP_HOURS) return { ok: true };
+  return { ok: false, retryAfterHours: Math.ceil(PUSH_DEDUP_HOURS - elapsedHours) };
+}
+
+export function recordPushNotification(assetId: string, versionId: string) {
+  pushHistory.set(`${assetId}@${versionId}`, Date.now());
+}
 export function deleteAsset(id: string) {
   assets = assets.filter((a) => a.id !== id);
   notify();
