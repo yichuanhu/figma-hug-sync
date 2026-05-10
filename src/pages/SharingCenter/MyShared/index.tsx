@@ -88,7 +88,7 @@ const MySharedPage = () => {
   const filtered = typeF !== 'ALL' || sourceF !== 'ALL' || !!debounced;
   const clearFilters = () => reset();
 
-  const goDetail = (a: ShareAsset) => navigate(`/sharing-center/market/${typeRoute[a.type]}/${a.id}`);
+  const goDetail = (a: ShareAsset) => navigate(`/sharing-center/my-published/${typeRoute[a.type]}/${a.id}`);
 
   // 「已上架」Tab 顶部聚合复用记录
   const aggregatedReuse = useMemo(() => {
