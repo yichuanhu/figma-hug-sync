@@ -3690,7 +3690,9 @@
           "publishedAt": "发布时间",
           "workflowReadOnly": "⚠️ 完全只读（来源为开发中心，不可在共享中心编辑）",
           "knowledgeEditable": "✅ 上架者本人可点击右上角「编辑展示信息」修改"
-        }
+        },
+        "editKnowledge": "编辑",
+        "editKnowledgeTip": "跳转到知识编辑页（Story 005 范围）"
       },
       "skill": {
         "category": "分类",

@@ -4,11 +4,10 @@ import {
   Typography, Tabs, Button, Space, Tag, Toast, Table, Modal, Tooltip, Banner, Spin, Collapse,
 } from '@douyinfe/semi-ui';
 import {
-  ChevronLeft, Star, Repeat2, ExternalLink, Download, Pencil, Camera, Check,
+  ChevronLeft, Repeat2, ExternalLink, Download, Pencil, Camera, Check, FileText,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { findMarketAsset, getMarketAssets, subscribe, isOwner } from '@/pages/SharingCenter/MyShared/store';
-import { useCollections } from '../hooks/useCollections';
 import { useReuseAction } from '../hooks/useReuseAction';
 import AssetTypeIcon from '../components/AssetTypeIcon';
 import MvpPlaceholder from '../components/MvpPlaceholder';
@@ -28,11 +27,9 @@ const AssetDetail = () => {
   const { type, id } = useParams<{ type: string; id: string }>();
   const version = useSyncExternalStore(subscribe, () => getMarketAssets().length);
   const asset = useMemo(() => (id ? findMarketAsset(id) : undefined), [id, version]);
-  const { isCollected, toggle } = useCollections();
   const { getReuseState, getReusedAt, triggerReuse } = useReuseAction();
   const [previewVersion, setPreviewVersion] = useState<{ version: string; content: string } | null>(null);
 
-  // SNIPPET / SKILL 在 MVP 不开放
   if (type === 'snippet' || type === 'skill') {
     return <MvpPlaceholder titleKey={`sharing.market.subTitles.${type}`} />;
   }
@@ -45,7 +42,6 @@ const AssetDetail = () => {
     );
   }
 
-  const collected = isCollected(asset.id);
   const owner = isOwner(asset.id);
   const reuseState = getReuseState(asset);
   const reusedAt = getReusedAt(asset.id);
@@ -55,21 +51,10 @@ const AssetDetail = () => {
   const categoryTags = asset.categoryTags ?? [];
   const isWorkflow = asset.type === 'WORKFLOW';
 
-  const handleEditDisplay = () => {
-    navigate(`/sharing-center/market/${type}/${asset.id}/edit-display`);
-  };
-
-  const handleEditInDevCenter = () => {
-    if (asset.originUrl) {
-      window.open(asset.originUrl, '_blank');
-    } else {
-      window.open('/dev-center/process-development', '_blank');
-    }
-  };
-
-  const handleDownloadKnowledge = () => {
-    Toast.success(t('sharing.market.detail.knowledgeDownloadStarted'));
-  };
+  const handleEditDisplay = () => navigate(`/sharing-center/market/${type}/${asset.id}/edit-display`);
+  const handleEditInDevCenter = () => window.open(asset.originUrl || '/dev-center/process-development', '_blank');
+  const handleDownloadKnowledge = () => Toast.success(t('sharing.market.detail.knowledgeDownloadStarted'));
+  const handleEditKnowledge = () => Toast.info(t('sharing.market.detail.editKnowledgeTip'));
 
   const renderReuseButton = () => {
     if (reuseState === 'hidden') return null;
@@ -96,27 +81,53 @@ const AssetDetail = () => {
     );
   };
 
-  const renderTypeAction = () => {
-    if (isWorkflow) {
-      return (
-        <Button theme="borderless" type="tertiary" icon={<ExternalLink size={14} strokeWidth={2} />} onClick={handleEditInDevCenter}>
-          {t('sharing.market.detail.editInDevCenter')}
-        </Button>
-      );
-    }
+  // ============ 头部操作行（2 行布局） ============
+  const renderHeaderActions = () => {
+    // 左侧：复用 [+ 打包下载（知识）]
+    const left = (
+      <Space>
+        {renderReuseButton()}
+        {!isWorkflow && (
+          <Button theme="light" type="tertiary" icon={<Download size={14} strokeWidth={2} />} onClick={handleDownloadKnowledge}>
+            {t('sharing.market.detail.downloadZip')}
+          </Button>
+        )}
+      </Space>
+    );
+    // 右侧：[编辑（知识+owner）] [编辑展示信息（owner）] [在开发中心编辑↗（流程）]
+    const right = (
+      <Space>
+        {!isWorkflow && owner && (
+          <Button theme="light" type="tertiary" icon={<Pencil size={14} strokeWidth={2} />} onClick={handleEditKnowledge}>
+            {t('sharing.market.detail.editKnowledge')}
+          </Button>
+        )}
+        {owner && (
+          <Button theme="light" type="tertiary" icon={<FileText size={14} strokeWidth={2} />} onClick={handleEditDisplay}>
+            {t('sharing.market.action.editDisplay')}
+          </Button>
+        )}
+        {isWorkflow && (
+          <Button theme="borderless" type="primary" icon={<ExternalLink size={14} strokeWidth={2} />} onClick={handleEditInDevCenter}>
+            {t('sharing.market.detail.editInDevCenter')}
+          </Button>
+        )}
+      </Space>
+    );
     return (
-      <Button theme="light" type="tertiary" icon={<Download size={14} strokeWidth={2} />} onClick={handleDownloadKnowledge}>
-        {t('sharing.market.detail.downloadZip')}
-      </Button>
+      <div className="asset-detail-header-actions">
+        <div>{left}</div>
+        <div>{right}</div>
+      </div>
     );
   };
 
-  // ============ 展示信息区（始终可见） ============
+  // ============ 展示信息区（封面左 + 内容右） ============
   const renderDisplayInfo = () => (
     <section className="asset-detail-section asset-detail-display">
-      {asset.coverImage && (
-        <div className="display-cover" style={{ backgroundImage: `url(${asset.coverImage})` }} />
-      )}
+      <div className="display-cover" style={asset.coverImage ? { backgroundImage: `url(${asset.coverImage})` } : undefined}>
+        {!asset.coverImage && <AssetTypeIcon type={asset.type} size={36} />}
+      </div>
       <div className="display-body">
         <Title heading={4} style={{ margin: 0 }}>{displayName}</Title>
         <Paragraph type="tertiary" className="display-desc">{displayDesc}</Paragraph>
@@ -142,7 +153,7 @@ const AssetDetail = () => {
     </section>
   );
 
-  // ============ 内容区（始终可见） ============
+  // ============ 内容区 ============
   const renderContentSection = () => {
     if (isWorkflow) {
       const yaml = asset.workflow?.yaml ?? asset.versions.find((v) => v.isLatest)?.content ?? '';
@@ -242,9 +253,9 @@ const AssetDetail = () => {
 
   return (
     <div className="asset-detail">
-      {/* ===== 头部：返回 + 标题 + 状态 + 操作 ===== */}
+      {/* ===== 头部（两行）===== */}
       <div className="asset-detail-header">
-        <div className="header-left">
+        <div className="asset-detail-header-title">
           <Tooltip content={t('common.back')}>
             <Button
               type="tertiary"
@@ -259,32 +270,12 @@ const AssetDetail = () => {
           </Title>
           <Tag color="green" type="light" size="small">{asset.status}</Tag>
         </div>
-        <Space>
-          {owner && (
-            <Button theme="light" type="tertiary" icon={<Pencil size={14} strokeWidth={2} />} onClick={handleEditDisplay}>
-              {t('sharing.market.action.editDisplay')}
-            </Button>
-          )}
-          {renderTypeAction()}
-          <Button
-            theme="light"
-            type="tertiary"
-            icon={<Star size={14} strokeWidth={2} fill={collected ? 'currentColor' : 'none'} />}
-            onClick={() => { toggle(asset.id); Toast.success(collected ? t('sharing.market.toast.uncollected') : t('sharing.market.toast.collected')); }}
-          >
-            {collected ? t('sharing.market.action.uncollect') : t('sharing.market.action.collect')}
-          </Button>
-          {renderReuseButton()}
-        </Space>
+        {renderHeaderActions()}
       </div>
 
-      {/* ===== 展示信息区 ===== */}
       {renderDisplayInfo()}
-
-      {/* ===== 内容区 ===== */}
       {renderContentSection()}
 
-      {/* ===== Tabs：版本历史 / 复用记录 ===== */}
       <Tabs className="asset-detail-tabs" type="line">
         <TabPane itemKey="versions" tab={`${t('sharing.market.detail.tabs.versions')} (${asset.versions.length})`}>
           <Table
@@ -339,7 +330,6 @@ const AssetDetail = () => {
         </TabPane>
       </Tabs>
 
-      {/* ===== 资产元信息（默认折叠） ===== */}
       {renderMetaCollapsible()}
 
       <Modal

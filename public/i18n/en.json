@@ -4322,7 +4322,9 @@
           "publishedAt": "Published At",
           "workflowReadOnly": "⚠️ Read-only (sourced from Dev Center, cannot be edited in Sharing Center)",
           "knowledgeEditable": "✅ Publisher can click \"Edit display info\" in the top right to modify"
-        }
+        },
+        "editKnowledge": "Edit",
+        "editKnowledgeTip": "Redirect to knowledge edit page (Story 005)"
       },
       "skill": {
         "category": "Category",
