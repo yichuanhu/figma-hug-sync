@@ -15,6 +15,7 @@ interface Props {
   onPageChange: (page: number) => void;
   emptyDescription?: string;
   emptyExtra?: React.ReactNode;
+
   loading?: boolean;
   /** 强制卡片显示为已复用（"我已复用"Tab 用） */
   forceReused?: boolean;
@@ -45,7 +46,7 @@ const AssetListGrid = ({
         <EmptyState
           variant="noData"
           description={emptyDescription ?? t('sharing.market.empty.default')}
-          extra={emptyExtra}
+          footer={emptyExtra}
         />
       </div>
     );
