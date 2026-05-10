@@ -960,28 +960,7 @@
       },
       "changeLog": {
         "empty": "No change records",
-        "type": {
-          "CONTENT": "Content Change",
-          "DEV_IMPACT": "Dev Impact",
-          "SYSTEM": "System Change"
-        },
-        "status": {
-          "PENDING": "Pending",
-          "RESOLVED": "Resolved",
-          "NONE": "No Response Needed"
-        },
-        "response": {
-          "ACK": "Acknowledged",
-          "ADJUSTED": "Adjusted",
-          "REJECTED": "Rejected"
-        },
-        "overdue": "Overdue (>{{days}} days)",
         "publishedBy": "Published by {{name}} at {{time}}",
-        "respondedBy": "Responded by {{name}} at {{time}}",
-        "linkedWorkspace": "Workspace: {{name}}",
-        "diffTitle": "Field Changes",
-        "before": "Before",
-        "after": "After",
         "reasonTitle": "Reason"
       },
       "ownerUnassigned": "Unassigned",
@@ -1000,23 +979,6 @@
         "modalTip": "Select a workspace to include this requirement and start development.",
         "linkSuccess": "Linked to workspace \"{{name}}\"",
         "selectPlaceholder": "Select a workspace"
-      },
-      "devResponse": {
-        "bannerTitle": "{{count}} dev-impact change(s) awaiting response",
-        "bannerOverdue": " ({{count}} overdue)",
-        "bannerAction": "Respond",
-        "modalTitle": "Respond to Change",
-        "actionLabel": "Action",
-        "commentLabel": "Comment",
-        "commentPlaceholder": "Enter your response",
-        "commentRejectedPlaceholder": "Reason for rejection (>=10 chars)",
-        "commentRequired": "Rejection requires at least 10 chars",
-        "submit": "Submit Response",
-        "successAck": "Acknowledged",
-        "successAdjusted": "Adjustment recorded",
-        "successRejected": "Rejection recorded",
-        "errorAlreadyResponded": "This change has already been responded to",
-        "errorRejectTooShort": "Rejection comment must be at least 10 chars"
       }
     },
     "approvalFlow": {

@@ -15,11 +15,11 @@ import AssessmentTab from './AssessmentTab';
 import CostEstimateTab from './CostEstimateTab';
 import ApprovalFlowProgress from '../ApprovalFlowProgress';
 import ChangeLogTab from '../ChangeLogTab';
-import DevResponsePanel from '../DevResponsePanel';
+
 import ReadonlySchemeFieldsRenderer from '../ReadonlySchemeFieldsRenderer';
 import { buildSubmitConfirmContent } from '../../utils/submitConfirm';
 import './index.less';
-import { Lightbulb, Pencil, PowerOff, RotateCcw, Send, Trash2, Undo2, Link2, FolderPlus, X, AlertTriangle } from 'lucide-react';
+import { Lightbulb, Pencil, PowerOff, RotateCcw, Send, Trash2, Undo2, Link2, FolderPlus, X } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import WorkspacePickerModal from './WorkspacePickerModal';
 
@@ -353,9 +353,8 @@ const RequirementDetailDrawer = ({
   const [activeTab, setActiveTab] = useState<string>(initialTab);
   const [viewingVersion, setViewingVersion] = useState<'current' | number>('current');
   const [pickerVisible, setPickerVisible] = useState(false);
-  const [pendingLogs, setPendingLogs] = useState<RequirementChangeLog[]>([]);
-  const [respondingLog, setRespondingLog] = useState<RequirementChangeLog | null>(null);
-  const [changeLogRefreshKey, setChangeLogRefreshKey] = useState(0);
+  const [, setPendingLogs] = useState<RequirementChangeLog[]>([]);
+  const [changeLogRefreshKey] = useState(0);
   const location = useLocation();
   const showApprovalSection = context === 'approval';
   const assessmentReadonly = context !== 'assessment';
@@ -407,11 +406,11 @@ const RequirementDetailDrawer = ({
     }
   }, [visible, data?.id, data?.approvalHistory, t]);
 
-  // 加载待响应变更日志（用于 Banner + Panel）
+  // 加载变更日志（仅用于详情面板，开发响应已下线）
   useEffect(() => {
     if (!visible || !data) return;
-    listChangeLogs(data.id).then((list) => {
-      setPendingLogs(list.filter((c) => c.needsDevResponse && c.status === 'PENDING'));
+    listChangeLogs(data.id).then(() => {
+      setPendingLogs([]);
     });
   }, [visible, data?.id, changeLogRefreshKey]);
 
@@ -644,35 +643,6 @@ const RequirementDetailDrawer = ({
           style={{ margin: '0 0 12px' }}
         />
       )}
-      {!isHistoryMode && pendingLogs.length > 0 && (() => {
-        const overdueCount = pendingLogs.filter(
-          (p) => Date.now() - new Date(p.publishedAt).getTime() > 7 * 24 * 60 * 60 * 1000,
-        ).length;
-        const earliest = [...pendingLogs].sort(
-          (a, b) => new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime(),
-        )[0];
-        return (
-          <Banner
-            type={overdueCount > 0 ? 'danger' : 'warning'}
-            fullMode={false}
-            closeIcon={null}
-            icon={<AlertTriangle size={16} strokeWidth={2} />}
-            description={
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-                <span>
-                  {t('requirements.detail.devResponse.bannerTitle', { count: pendingLogs.length })}
-                  {overdueCount > 0 &&
-                    t('requirements.detail.devResponse.bannerOverdue', { count: overdueCount })}
-                </span>
-                <Button size="small" theme="solid" type="warning" onClick={() => setRespondingLog(earliest)}>
-                  {t('requirements.detail.devResponse.bannerAction')}
-                </Button>
-              </div>
-            }
-            style={{ margin: '0 0 12px' }}
-          />
-        );
-      })()}
       <div className="requirement-detail-layout">
         {/* 左侧 Tab 区域 */}
         <div className="requirement-detail-left">
@@ -733,7 +703,6 @@ const RequirementDetailDrawer = ({
                   <ChangeLogTab
                     requirementId={effectiveData.id}
                     refreshKey={new Date(effectiveData.updatedAt).getTime() + changeLogRefreshKey}
-                    onRespond={(log) => setRespondingLog(log)}
                     highlightLogId={highlightLogId}
                   />
                 </div>
@@ -770,16 +739,6 @@ const RequirementDetailDrawer = ({
       departmentId={data.owning_department_id}
       onClose={() => setPickerVisible(false)}
       onSuccess={() => onRefresh?.()}
-    />
-    <DevResponsePanel
-      visible={!!respondingLog}
-      log={respondingLog}
-      onCancel={() => setRespondingLog(null)}
-      onSuccess={() => {
-        setRespondingLog(null);
-        setChangeLogRefreshKey((k) => k + 1);
-        setActiveTab('changeLog');
-      }}
     />
     </>
   );

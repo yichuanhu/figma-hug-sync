@@ -1302,141 +1302,51 @@ export const transitionToDeveloping = async (
 export const getActiveScheme = getEffectiveScheme;
 
 // ============================================================================
-// STORY-014：立项后双步编辑 + 变更日志闭环
+// STORY-014：立项后双步编辑 + 变更日志（仅记录变更说明）
 // ============================================================================
 
 import type {
   RequirementChangeLog,
   RequirementDraft,
-  ChangeType,
-  DevResponseAction,
 } from './types';
-import {
-  computeFieldDiffs,
-  classifyChangeType,
-  isPostProjectStatus,
-} from './utils/fieldEditability';
+import { isPostProjectStatus } from './utils/fieldEditability';
 
 const draftStore = new Map<string, RequirementDraft>();
 const draftKey = (rid: string, uid: string) => `${rid}::${uid}`;
 
-let changeLogStore: RequirementChangeLog[] = [];
+const changeLogStore: RequirementChangeLog[] = [];
 
 const seedChangeLogs = async () => {
   if (changeLogStore.length > 0) return;
-  // 为所有「立项后」状态的需求各 mock 几条变更日志，覆盖三种类型与三种响应状态
   const targets = mockRequirementData.filter((r) =>
     ['PENDING_PROJECT', 'DEVELOPING', 'LAUNCHED', 'OFFLINE'].includes(r.status),
   );
   if (targets.length === 0) return;
 
-  let resolveWs: ((id: string) => { workspace: { id: string; name: string } } | null) | null = null;
-  try {
-    const m = await import('../RequirementsProjects/mockData');
-    resolveWs = (id: string) => m.findWorkspaceByRequirementId?.(id) ?? null;
-  } catch {
-    resolveWs = null;
-  }
-
   const now = Date.now();
   const daysAgo = (n: number) => new Date(now - n * 24 * 60 * 60 * 1000).toISOString();
   const publisher = mockCreators[MOCK_CURRENT_USER_ID]?.name ?? '系统';
-  const responder = mockCreators['user-002']?.name ?? '李工';
 
-  targets.forEach((req, idx) => {
-    const ws = resolveWs?.(req.id) ?? null;
-    const baseId = req.id;
-
-    // 1) CONTENT — 已发布无需响应（5 天前）
+  targets.forEach((req) => {
     changeLogStore.push({
-      id: `chg-${baseId}-content`,
+      id: `chg-${req.id}-content`,
       requirementId: req.id,
-      workspaceId: ws?.workspace?.id,
-      workspaceName: ws?.workspace?.name,
-      changeType: 'CONTENT',
       reason: '完善需求背景描述，补充上下游业务依赖说明，便于开发理解。',
-      diffs: [
-        { key: 'description', label: '需求描述', before: '原描述（节选）...', after: '更新后的描述（包含背景、目标、依赖）...' },
-      ],
       publisherId: MOCK_CURRENT_USER_ID,
       publisherName: publisher,
       publishedAt: daysAgo(5),
-      needsDevResponse: false,
-      status: 'NONE',
     });
-
-    // 2) DEV_IMPACT — 已响应（ACK / ADJUSTED / REJECTED 轮转）
-    if (ws) {
-      const respCycle: Array<'ACK' | 'ADJUSTED' | 'REJECTED'> = ['ACK', 'ADJUSTED', 'REJECTED'];
-      const action = respCycle[idx % 3];
-      changeLogStore.push({
-        id: `chg-${baseId}-resolved`,
-        requirementId: req.id,
-        workspaceId: ws.workspace.id,
-        workspaceName: ws.workspace.name,
-        changeType: 'DEV_IMPACT',
-        reason: '调整自动化比例由 60% 提升至 80%，预期收益翻倍，请评估技术可行性。',
-        diffs: [
-          { key: 'form.automation_ratio', label: '可自动化比例', before: '60%', after: '80%' },
-        ],
-        publisherId: MOCK_CURRENT_USER_ID,
-        publisherName: publisher,
-        publishedAt: daysAgo(3),
-        needsDevResponse: true,
-        status: 'RESOLVED',
-        response: {
-          id: `resp-${baseId}-1`,
-          action,
-          comment:
-            action === 'REJECTED'
-              ? '当前阶段无法支持，建议下一迭代评估，或拆分为独立子需求。'
-              : action === 'ADJUSTED'
-                ? '已按新比例调整排期，预计延后 2 天上线。'
-                : undefined,
-          responderId: 'user-002',
-          responderName: responder,
-          respondedAt: daysAgo(2),
-        },
-      });
-    }
-
-    // 3) DEV_IMPACT — 待响应且超时（>7 天，触发 ⚠️）
-    if (ws) {
-      changeLogStore.push({
-        id: `chg-${baseId}-overdue`,
-        requirementId: req.id,
-        workspaceId: ws.workspace.id,
-        workspaceName: ws.workspace.name,
-        changeType: 'DEV_IMPACT',
-        reason: '将优先级由中调整为高，请评估排期是否需要前置。',
-        diffs: [{ key: 'priority', label: '优先级', before: 'MEDIUM', after: 'HIGH' }],
-        publisherId: MOCK_CURRENT_USER_ID,
-        publisherName: publisher,
-        publishedAt: daysAgo(10),
-        needsDevResponse: true,
-        status: 'PENDING',
-      });
-    }
-
-    // 4) SYSTEM — 系统自动变更（1 天前）
     changeLogStore.push({
-      id: `chg-${baseId}-system`,
+      id: `chg-${req.id}-priority`,
       requirementId: req.id,
-      workspaceId: ws?.workspace?.id,
-      workspaceName: ws?.workspace?.name,
-      changeType: 'SYSTEM',
-      reason: '系统根据立项流程自动同步关联工作空间。',
-      diffs: [
-        { key: 'linkedWorkspace', label: '关联工作空间', before: '-', after: ws?.workspace?.name ?? '-' },
-      ],
-      publisherId: 'system',
-      publisherName: '系统',
-      publishedAt: daysAgo(1),
-      needsDevResponse: false,
-      status: 'NONE',
+      reason: '将优先级由中调整为高，请评估排期是否需要前置。',
+      publisherId: MOCK_CURRENT_USER_ID,
+      publisherName: publisher,
+      publishedAt: daysAgo(2),
     });
   });
 };
+
 let seeded = false;
 let seedingPromise: Promise<void> | null = null;
 const ensureSeeded = (): Promise<void> => {
@@ -1446,7 +1356,6 @@ const ensureSeeded = (): Promise<void> => {
   }
   return seedingPromise;
 };
-
 
 export const getDraft = async (
   requirementId: string,
@@ -1487,8 +1396,6 @@ export interface PublishChangeInput {
   requirementId: string;
   patch: RequirementDraft['patch'];
   reason: string;
-  /** 用户主动声明的变更类型；若未提供则按字段自动分类（兼容旧调用） */
-  changeType?: ChangeType;
 }
 
 export const publishChange = async (
@@ -1502,28 +1409,8 @@ export const publishChange = async (
   const cur = mockRequirementData[idx];
   if (!isPostProjectStatus(cur.status)) throw new Error('NOT_POST_PROJECT_STATUS');
   if (!input.reason || input.reason.trim().length < 10) throw new Error('CHANGE_REASON_TOO_SHORT');
-  const diffs = computeFieldDiffs(cur, input.patch);
-  if (diffs.length === 0) throw new Error('NO_CHANGES');
-  const type: ChangeType = input.changeType ?? classifyChangeType(diffs);
 
-  if (type === 'DEV_IMPACT') {
-    const concurrent = changeLogStore.find(
-      (c) =>
-        c.requirementId === input.requirementId &&
-        c.changeType === 'DEV_IMPACT' &&
-        c.status === 'PENDING',
-    );
-    if (concurrent) throw new Error('DEV_IMPACT_CONCURRENT_PENDING');
-  }
-
-  let wsBinding: { workspace: { id: string; name: string } } | null = null;
-  try {
-    const m = await import('../RequirementsProjects/mockData');
-    wsBinding = m.findWorkspaceByRequirementId?.(input.requirementId) ?? null;
-  } catch { wsBinding = null; }
-  const needsDevResponse = type === 'DEV_IMPACT' && !!wsBinding;
-
-  const next: RequirementItem = {
+  const next = {
     ...cur,
     ...(input.patch.title !== undefined ? { title: input.patch.title } : {}),
     ...(input.patch.description !== undefined ? { description: input.patch.description } : {}),
@@ -1537,52 +1424,14 @@ export const publishChange = async (
   const log: RequirementChangeLog = {
     id: `chg-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
     requirementId: input.requirementId,
-    workspaceId: wsBinding?.workspace?.id,
-    workspaceName: wsBinding?.workspace?.name,
-    changeType: type,
     reason: input.reason.trim(),
-    diffs,
     publisherId: userId,
     publisherName: mockCreators[userId]?.name ?? '当前用户',
     publishedAt: new Date().toISOString(),
-    needsDevResponse,
-    status: needsDevResponse ? 'PENDING' : 'NONE',
   };
   changeLogStore.unshift(log);
   draftStore.delete(draftKey(input.requirementId, userId));
   return log;
-};
-
-export const respondChange = async (
-  changeLogId: string,
-  action: DevResponseAction,
-  comment: string | undefined,
-  userId: string = MOCK_CURRENT_USER_ID,
-): Promise<RequirementChangeLog> => {
-  ensureSeeded();
-  await new Promise((r) => setTimeout(r, 150));
-  const i = changeLogStore.findIndex((c) => c.id === changeLogId);
-  if (i === -1) throw new Error('CHANGE_LOG_NOT_FOUND');
-  const log = changeLogStore[i];
-  if (!log.needsDevResponse) throw new Error('INVALID_DEV_RESPONSE_TARGET');
-  if (log.status !== 'PENDING') throw new Error('ALREADY_RESPONDED');
-  if (action === 'REJECTED' && (!comment || comment.trim().length < 10)) {
-    throw new Error('REJECT_REASON_TOO_SHORT');
-  }
-  const updated: RequirementChangeLog = {
-    ...log,
-    status: 'RESOLVED',
-    response: {
-      id: `resp-${Date.now()}`,
-      action,
-      comment: comment?.trim() || undefined,
-      responderId: userId,
-      responderName: mockCreators[userId]?.name ?? '当前用户',
-      respondedAt: new Date().toISOString(),
-    },
-  };
-  changeLogStore[i] = updated;
-  return updated;
 };
 
 export const listChangeLogs = async (
@@ -1595,52 +1444,15 @@ export const listChangeLogs = async (
     .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
 };
 
-export const countUnackedByWorkspace = (workspaceId: string): number => {
-  ensureSeeded();
-  return changeLogStore.filter(
-    (c) => c.workspaceId === workspaceId && c.status === 'PENDING',
-  ).length;
-};
+// ============= 兼容旧调用：开发响应已下线，相关查询恒返回空 =============
 
-export const earliestPendingAtByWorkspace = (workspaceId: string): string | null => {
-  ensureSeeded();
-  const list = changeLogStore.filter(
-    (c) => c.workspaceId === workspaceId && c.status === 'PENDING',
-  );
-  if (list.length === 0) return null;
-  return list.reduce((min, c) => (c.publishedAt < min ? c.publishedAt : min), list[0].publishedAt);
-};
-
+export const countUnackedByWorkspace = (_workspaceId: string): number => 0;
+export const earliestPendingAtByWorkspace = (_workspaceId: string): string | null => null;
 export const firstPendingChangeByWorkspace = (
-  workspaceId: string,
-): { requirementId: string; changeLogId: string } | null => {
-  ensureSeeded();
-  const log = changeLogStore
-    .filter((c) => c.workspaceId === workspaceId && c.status === 'PENDING')
-    .sort((a, b) => new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime())[0];
-  if (!log) return null;
-  return { requirementId: log.requirementId, changeLogId: log.id };
-};
-
-export const countUnackedByWorkspaces = (workspaceIds: string[]): number => {
-  ensureSeeded();
-  if (!workspaceIds || workspaceIds.length === 0) return 0;
-  const set = new Set(workspaceIds);
-  return changeLogStore.filter(
-    (c) => c.workspaceId && set.has(c.workspaceId) && c.status === 'PENDING',
-  ).length;
-};
-
+  _workspaceId: string,
+): { requirementId: string; changeLogId: string } | null => null;
+export const countUnackedByWorkspaces = (_workspaceIds: string[]): number => 0;
 export const firstPendingChangeByWorkspaces = (
-  workspaceIds: string[],
-): { requirementId: string; changeLogId: string } | null => {
-  ensureSeeded();
-  if (!workspaceIds || workspaceIds.length === 0) return null;
-  const set = new Set(workspaceIds);
-  const log = changeLogStore
-    .filter((c) => c.workspaceId && set.has(c.workspaceId) && c.status === 'PENDING')
-    .sort((a, b) => new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime())[0];
-  if (!log) return null;
-  return { requirementId: log.requirementId, changeLogId: log.id };
-};
+  _workspaceIds: string[],
+): { requirementId: string; changeLogId: string } | null => null;
 

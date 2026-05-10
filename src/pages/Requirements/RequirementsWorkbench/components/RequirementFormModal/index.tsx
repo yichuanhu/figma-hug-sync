@@ -265,7 +265,6 @@ const RequirementFormModal = ({
         requirementId: editData.id,
         patch: pendingPatch,
         reason: publishReason.trim(),
-        changeType: 'CONTENT',
       });
       Toast.success('变更已发布');
       // publishChange 内部会清掉草稿
