@@ -3695,9 +3695,26 @@
           "default": "默认值",
           "desc": "说明"
         }
+      },
+      "editDisplay": {
+        "title": "编辑展示信息",
+        "tip": "展示信息仅影响资产在市场中的呈现，不会创建新版本，也不会影响已复用记录",
+        "coverImage": "封面图（图片 URL）",
+        "displayName": "展示名称",
+        "displayNameRequired": "请输入展示名称",
+        "displayNameMax": "展示名称不超过 60 字",
+        "displayDesc": "展示描述",
+        "categoryTags": "分类标签",
+        "categoryTagsPlaceholder": "回车确认；最多 10 个",
+        "overview": "概览（支持 HTML）",
+        "overviewPlaceholder": "用于详情页展示，支持 HTML 富文本",
+        "videoUrl": "演示视频 URL",
+        "saveSuccess": "展示信息已保存",
+        "saveFailed": "保存失败，请重试",
+        "noPermission": "你没有编辑该资产展示信息的权限",
+        "noVersionTip": "保存不会创建新版本"
       }
     },
-    "status": {
       "PUBLISHED": "已通过",
       "REJECTED": "已拒绝"
     }
