@@ -107,13 +107,12 @@ const OwnerSearchSelect = ({
       dropdownMatchSelectWidth
       dropdownStyle={{ maxHeight: 320, overflow: 'auto' }}
       optionList={options}
-      renderSelectedItem={(option) => {
-        const opt = option as unknown as UserOption;
-        if (multiple) {
-          return { isRenderInTag: true, content: opt.label };
-        }
-        return <span>{opt.label}</span>;
-      }}
+      renderSelectedItem={multiple
+        ? ((option: Record<string, unknown>) => ({
+            isRenderInTag: true,
+            content: (option as unknown as UserOption).label,
+          }))
+        : ((option: Record<string, unknown>) => <span>{(option as unknown as UserOption).label}</span>)}
       renderOptionItem={(props: Record<string, unknown>) => {
         const {
           disabled: optDisabled,
