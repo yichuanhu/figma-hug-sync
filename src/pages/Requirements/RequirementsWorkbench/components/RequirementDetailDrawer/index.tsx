@@ -353,9 +353,8 @@ const RequirementDetailDrawer = ({
   const [activeTab, setActiveTab] = useState<string>(initialTab);
   const [viewingVersion, setViewingVersion] = useState<'current' | number>('current');
   const [pickerVisible, setPickerVisible] = useState(false);
-  const [pendingLogs, setPendingLogs] = useState<RequirementChangeLog[]>([]);
-  const [respondingLog, setRespondingLog] = useState<RequirementChangeLog | null>(null);
-  const [changeLogRefreshKey, setChangeLogRefreshKey] = useState(0);
+  const [, setPendingLogs] = useState<RequirementChangeLog[]>([]);
+  const [changeLogRefreshKey] = useState(0);
   const location = useLocation();
   const showApprovalSection = context === 'approval';
   const assessmentReadonly = context !== 'assessment';
@@ -644,35 +643,6 @@ const RequirementDetailDrawer = ({
           style={{ margin: '0 0 12px' }}
         />
       )}
-      {!isHistoryMode && pendingLogs.length > 0 && (() => {
-        const overdueCount = pendingLogs.filter(
-          (p) => Date.now() - new Date(p.publishedAt).getTime() > 7 * 24 * 60 * 60 * 1000,
-        ).length;
-        const earliest = [...pendingLogs].sort(
-          (a, b) => new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime(),
-        )[0];
-        return (
-          <Banner
-            type={overdueCount > 0 ? 'danger' : 'warning'}
-            fullMode={false}
-            closeIcon={null}
-            icon={<AlertTriangle size={16} strokeWidth={2} />}
-            description={
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-                <span>
-                  {t('requirements.detail.devResponse.bannerTitle', { count: pendingLogs.length })}
-                  {overdueCount > 0 &&
-                    t('requirements.detail.devResponse.bannerOverdue', { count: overdueCount })}
-                </span>
-                <Button size="small" theme="solid" type="warning" onClick={() => setRespondingLog(earliest)}>
-                  {t('requirements.detail.devResponse.bannerAction')}
-                </Button>
-              </div>
-            }
-            style={{ margin: '0 0 12px' }}
-          />
-        );
-      })()}
       <div className="requirement-detail-layout">
         {/* 左侧 Tab 区域 */}
         <div className="requirement-detail-left">
