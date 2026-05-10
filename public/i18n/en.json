@@ -4130,12 +4130,13 @@
         "assetType": "Type",
         "name": "Asset",
         "source": "Source",
-        "creator": "Creator",
+        "creator": "Submitter",
         "submittedAt": "Submitted",
         "result": "Result",
         "action": "Action",
         "comment": "Comment",
-        "decidedAt": "Decided At"
+        "decidedAt": "Decided At",
+        "duration": "Duration"
       },
       "actions": {
         "view": "View",
@@ -4144,7 +4145,7 @@
       },
       "empty": {
         "pending": "No pending approvals",
-        "history": "No approval history",
+        "history": "No approval records",
         "noResult": "No matching records"
       },
       "confirmApproveTitle": "Approve this submission?",
@@ -4152,8 +4153,9 @@
       "toast": {
         "approved": "Approved",
         "rejected": "Rejected",
-        "conflict": "This item has already been processed by another approver",
-        "batchApproved": "Batch approved {{n}} items"
+        "rejectedNative": "Rejected. The supplier can edit and resubmit from the Rejected tab.",
+        "rejectedDevCenter": "Rejected. The supplier needs to adjust in Dev Center and republish.",
+        "conflict": "This item has already been processed by another approver"
       },
       "rejectDialog": {
         "title": "Reject Submission",
@@ -4174,24 +4176,16 @@
         "timeline": "Approval History",
         "version": "Version",
         "tags": "Tags",
-        "description": "Description"
+        "description": "Description",
+        "rejectFlowNative": "This is a native sharing-center asset. The supplier can edit and resubmit from Asset Supply → Rejected.",
+        "rejectFlowDevCenter": "This asset is referenced from Dev Center. The supplier must adjust it in Dev Center and republish — it cannot be edited directly here."
       },
       "filter": {
         "search": "Search asset name",
-        "sourceAll": "All sources",
-        "sourceNative": "Sharing Center",
-        "sourceDev": "Dev Center",
         "result": "Result:",
         "type": "Type:",
-        "source": "Source:",
+        "assetType": "Type:",
         "clear": "Clear"
-      },
-      "batch": {
-        "selected": "{{n}} selected",
-        "clear": "Clear",
-        "approve": "Batch Approve",
-        "confirmTitle": "Confirm Batch Approve",
-        "confirmContent": "You are about to approve the following {{n}} assets:"
       }
     },
     "admin": {

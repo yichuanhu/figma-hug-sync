@@ -42,7 +42,8 @@ const ApprovalLevelsPage = () => {
     Toast.success(t('sharing.admin.approvalLevels.toast.reset'));
   };
 
-  const types: AssetTypeKey[] = ['SNIPPET', 'WORKFLOW', 'KNOWLEDGE', 'SKILL'];
+  // MVP 仅 WORKFLOW + KNOWLEDGE（流程块/技能 P2）
+  const types: AssetTypeKey[] = ['WORKFLOW', 'KNOWLEDGE'];
   const dataSource: Row[] = types.map((k) => ({ type: k, level: config[k] }));
 
   const levelLabel = (lv: ApprovalLevel) => t(`sharing.admin.approvalLevels.levels.${lv}`);
