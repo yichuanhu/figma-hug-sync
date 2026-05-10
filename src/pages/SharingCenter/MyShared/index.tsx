@@ -1,27 +1,26 @@
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import {
-  Typography, Tabs, Table, Button, Input, Select, Pagination, Tag, Space, Tooltip,
+  Typography, Tabs, Button, Input, Select, Pagination,
 } from '@douyinfe/semi-ui';
 import { IconSearch } from '@douyinfe/semi-icons';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { MoreHorizontal } from 'lucide-react';
-import StatusTag, { type ShareStatus } from '@/components/sharing/StatusTag';
-
-import AssetTypeIcon from '@/pages/Sharing/Market/components/AssetTypeIcon';
 import emptyImg from '@/assets/empty-state/no-data.png';
+import type { ShareStatus } from '@/components/sharing/StatusTag';
+
 import { type ShareAsset, getMine, subscribe } from './store';
 import NewAssetDropdown from './components/NewAssetDropdown';
-import AssetActionsMenu from './components/AssetActionsMenu';
-import BatchActionBar from './components/BatchActionBar';
 import PublishWorkflowModal from './components/PublishWorkflowModal';
+import SupplyAssetCard from './components/SupplyAssetCard';
+import ReuseSummaryPanel from './components/ReuseSummaryPanel';
+import PushNotificationDialog from './components/PushNotificationDialog';
 import './index.less';
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 const TabPane = Tabs.TabPane;
 
 const TABS: ShareStatus[] = ['PUBLISHED', 'PENDING_PUBLISH', 'DRAFT', 'PENDING_APPROVAL', 'REJECTED'];
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 12;
 
 type TypeFilter = 'ALL' | 'SNIPPET' | 'WORKFLOW' | 'KNOWLEDGE' | 'SKILL';
 type SourceFilter = 'ALL' | 'NATIVE' | 'DEV_CENTER';
@@ -42,25 +41,20 @@ const MySharedPage = () => {
   const [debounced, setDebounced] = useState('');
   const [typeF, setTypeF] = useState<TypeFilter>('ALL');
   const [sourceF, setSourceF] = useState<SourceFilter>('ALL');
-  const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
   const [publishVisible, setPublishVisible] = useState(false);
   const [highlightId, setHighlightId] = useState<string | null>(null);
+  const [pushAsset, setPushAsset] = useState<ShareAsset | null>(null);
 
   useEffect(() => {
     if (!highlightId) return;
     const timer = window.setTimeout(() => setHighlightId(null), 2500);
-    const raf = window.requestAnimationFrame(() => {
-      const el = document.querySelector(`tr[data-row-key="${highlightId}"]`);
-      el?.scrollIntoView({ block: 'center', behavior: 'smooth' });
-    });
-    return () => { window.clearTimeout(timer); window.cancelAnimationFrame(raf); };
+    return () => window.clearTimeout(timer);
   }, [highlightId]);
 
   const handlePublishSuccess = (assetId: string) => {
     setPublishVisible(false);
     setTab('PENDING_APPROVAL');
     setPage(1);
-    setSelectedKeys([]);
     setHighlightId(assetId);
   };
 
@@ -75,7 +69,6 @@ const MySharedPage = () => {
       PUBLISHED: 0, PENDING_PUBLISH: 0, DRAFT: 0, PENDING_APPROVAL: 0, REJECTED: 0, ARCHIVED: 0, UNLISTED: 0,
     };
     all.forEach((a) => {
-      // 「已上架」Tab 包含 PUBLISHED 与 ARCHIVED
       if (a.shareStatus === 'ARCHIVED') { m.PUBLISHED += 1; return; }
       if (m[a.shareStatus] !== undefined) m[a.shareStatus] += 1;
     });
@@ -84,7 +77,6 @@ const MySharedPage = () => {
 
   const list = useMemo(() => {
     return all.filter((a) => {
-      // Tab 匹配：「已上架」包含 PUBLISHED + ARCHIVED
       if (tab === 'PUBLISHED') {
         if (a.shareStatus !== 'PUBLISHED' && a.shareStatus !== 'ARCHIVED') return false;
       } else if (a.shareStatus !== tab) return false;
@@ -108,69 +100,13 @@ const MySharedPage = () => {
 
   const goDetail = (a: ShareAsset) => navigate(`/sharing-center/market/${typeRoute[a.type]}/${a.id}`);
 
-  const selectedAssets = list.filter((a) => selectedKeys.includes(a.id));
-
-  const columns = [
-    {
-      title: t('sharing.myShared.col.name'),
-      dataIndex: 'name',
-      width: 280,
-      ellipsis: { showTitle: false },
-      render: (_: string, row: ShareAsset) => (
-        <div className="cell-name">
-          <AssetTypeIcon type={row.type} />
-          <Button
-            theme="borderless"
-            type="primary"
-            onClick={() => goDetail(row)}
-            style={{ padding: 0, height: 'auto', minWidth: 0, flex: 1 }}
-          >
-            <Text ellipsis={{ showTooltip: true }} style={{ width: '100%' }}>{row.name}</Text>
-          </Button>
-        </div>
-      ),
-    },
-    {
-      title: t('sharing.myShared.col.type'),
-      dataIndex: 'type',
-      width: 100,
-      render: (v: string) => t(`sharing.market.tabs.${v}`),
-    },
-    {
-      title: t('sharing.myShared.col.status'),
-      dataIndex: 'shareStatus',
-      width: 100,
-      render: (v: ShareStatus) => <StatusTag status={v} />,
-    },
-    {
-      title: t('sharing.myShared.col.version'),
-      dataIndex: 'currentVersion',
-      width: 100,
-    },
-    {
-      title: t('sharing.myShared.col.updatedAt'),
-      dataIndex: 'updatedAt',
-      width: 120,
-    },
-    {
-      title: t('sharing.myShared.col.action'),
-      width: 130,
-      fixed: 'right' as const,
-      render: (_: unknown, row: ShareAsset) => (
-        <div className="cell-actions" onClick={(e) => e.stopPropagation()}>
-          <Button size="small" theme="borderless" type="primary" onClick={() => goDetail(row)}>
-            {t('sharing.myShared.actions.view')}
-          </Button>
-          <AssetActionsMenu
-            asset={row}
-            trigger={
-              <Button size="small" theme="borderless" type="tertiary" icon={<MoreHorizontal size={14} strokeWidth={2} />} />
-            }
-          />
-        </div>
-      ),
-    },
-  ];
+  // 「已上架」Tab 顶部聚合复用记录
+  const aggregatedReuse = useMemo(() => {
+    if (tab !== 'PUBLISHED') return [];
+    return all
+      .filter((a) => a.shareStatus === 'PUBLISHED' || a.shareStatus === 'ARCHIVED')
+      .flatMap((a) => a.reuseRecords ?? []);
+  }, [all, tab]);
 
   return (
     <div className="my-shared-page">
@@ -181,7 +117,7 @@ const MySharedPage = () => {
 
       <Tabs
         activeKey={tab}
-        onChange={(k) => { setTab(k as ShareStatus); setPage(1); setSelectedKeys([]); }}
+        onChange={(k) => { setTab(k as ShareStatus); setPage(1); }}
         className="my-shared-tabs"
         keepDOM={false}
       >
@@ -230,48 +166,48 @@ const MySharedPage = () => {
         )}
       </div>
 
-      <BatchActionBar selected={selectedAssets} onClear={() => setSelectedKeys([])} />
-
       <div className="my-shared-body">
-        <Table
-          size="small"
-          columns={columns}
-          dataSource={paged}
-          pagination={false}
-          scroll={{ x: 900 }}
-          rowKey="id"
-          rowSelection={{
-            selectedRowKeys: selectedKeys,
-            onChange: (keys) => setSelectedKeys((keys ?? []) as string[]),
-          }}
-          onRow={(row) => ({
-            'data-row-key': row?.id,
-            className: row?.id === highlightId ? 'row-highlighted' : '',
-          })}
-          empty={
-            <div className="my-shared-empty">
-              <img src={emptyImg} alt="empty" />
-              <div className="empty-title">
-                {filtered
-                  ? t('sharing.myShared.empty.noResult')
-                  : t(`sharing.myShared.empty.${tab.toLowerCase()}`)}
-              </div>
-              {!filtered && (tab === 'PUBLISHED' || tab === 'DRAFT') && (
-                <Button
-                  theme="solid"
-                  type="primary"
-                  onClick={() => navigate('/sharing-center/my-shared/create/knowledge')}
-                  style={{ marginTop: 12 }}
-                >
-                  {t('sharing.myShared.empty.createCta')}
-                </Button>
-              )}
+        {tab === 'PUBLISHED' && aggregatedReuse.length > 0 && (
+          <div className="my-shared-reuse-summary">
+            <ReuseSummaryPanel records={aggregatedReuse} />
+          </div>
+        )}
+
+        {paged.length === 0 ? (
+          <div className="my-shared-empty">
+            <img src={emptyImg} alt="empty" />
+            <div className="empty-title">
+              {filtered
+                ? t('sharing.myShared.empty.noResult')
+                : t(`sharing.myShared.empty.${tab.toLowerCase()}`)}
             </div>
-          }
-        />
+            {!filtered && (tab === 'PUBLISHED' || tab === 'DRAFT') && (
+              <Button
+                theme="solid"
+                type="primary"
+                onClick={() => navigate('/sharing-center/my-shared/create/knowledge')}
+                style={{ marginTop: 12 }}
+              >
+                {t('sharing.myShared.empty.createCta')}
+              </Button>
+            )}
+          </div>
+        ) : (
+          <div className="my-shared-grid">
+            {paged.map((a) => (
+              <SupplyAssetCard
+                key={a.id}
+                asset={a}
+                highlighted={a.id === highlightId}
+                onView={() => goDetail(a)}
+                onPush={(asset) => setPushAsset(asset)}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
-      {list.length > 0 && (
+      {list.length > PAGE_SIZE && (
         <div className="list-pagination">
           <Pagination
             total={list.length}
@@ -287,6 +223,12 @@ const MySharedPage = () => {
         visible={publishVisible}
         onCancel={() => setPublishVisible(false)}
         onSuccess={handlePublishSuccess}
+      />
+
+      <PushNotificationDialog
+        visible={!!pushAsset}
+        asset={pushAsset}
+        onCancel={() => setPushAsset(null)}
       />
     </div>
   );
