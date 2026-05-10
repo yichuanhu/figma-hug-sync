@@ -704,7 +704,7 @@
         "tabs": {
           "form": "表单",
           "assessment": "评估",
-          "workflow": "工作流",
+          "workflow": "审批配置",
           "cost": "成本"
         },
         "fieldType": {
