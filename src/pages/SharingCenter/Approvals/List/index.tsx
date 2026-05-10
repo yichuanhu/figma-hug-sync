@@ -1,17 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
-  Typography, Tabs, Table, Button, Space, Modal, Toast,
-  Input, Select, DatePicker, Pagination, RadioGroup, Radio, Empty,
+  Typography, Tabs, Table, Button, Modal, Toast,
+  Input, Select, DatePicker, Pagination, Empty,
 } from '@douyinfe/semi-ui';
 import { Search, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import noDataImg from '@/assets/empty-state/no-data.png';
 import noResultImg from '@/assets/empty-state/no-result.png';
-import { ShareAsset, getPendingApprovals, getApprovalHistory, pendingCount } from '../../shared/mockData';
-import { approveAsset, rejectAsset, batchApprove, subscribe } from '@/pages/SharingCenter/MyShared/store';
+import { ShareAsset, getPendingApprovals, getApprovalHistory, pendingCount, getLastDecision } from '../../shared/mockData';
+import { approveAsset, rejectAsset, subscribe } from '@/pages/SharingCenter/MyShared/store';
 import StatusTag from '@/components/sharing/StatusTag';
-import SourceBadge from '@/components/sharing/SourceBadge';
 import RejectReasonDialog from '@/components/sharing/RejectReasonDialog';
 import './index.less';
 
@@ -19,11 +18,19 @@ const { Title, Text } = Typography;
 const TabPane = Tabs.TabPane;
 
 type TabKey = 'pending' | 'history';
-type SourceFilter = 'ALL' | 'NATIVE' | 'DEV_CENTER';
 type ResultFilter = 'ALL' | 'PUBLISHED' | 'REJECTED';
-type TypeFilter = 'ALL' | 'SNIPPET' | 'WORKFLOW' | 'KNOWLEDGE' | 'SKILL';
+type TypeFilter = 'ALL' | 'WORKFLOW' | 'KNOWLEDGE';
 
 const PAGE_SIZE = 20;
+
+function formatDuration(submittedAt: string, decidedAt: string): string {
+  const start = new Date(submittedAt).getTime();
+  const end = new Date(decidedAt).getTime();
+  if (!Number.isFinite(start) || !Number.isFinite(end) || end <= start) return '—';
+  const hours = Math.round((end - start) / (1000 * 60 * 60));
+  if (hours < 24) return `${Math.max(hours, 1)}h`;
+  return `${Math.round(hours / 24)}d`;
+}
 
 const ApprovalsListPage = () => {
   const { t } = useTranslation();
@@ -32,7 +39,6 @@ const ApprovalsListPage = () => {
   const initial = (params.get('tab') as TabKey) || 'pending';
   const [tab, setTab] = useState<TabKey>(initial);
 
-  // store 数据（订阅刷新）
   const [pending, setPending] = useState<ShareAsset[]>(() => getPendingApprovals());
   const [history, setHistory] = useState<ShareAsset[]>(() => getApprovalHistory());
   const [pendingTotal, setPendingTotal] = useState<number>(() => pendingCount());
@@ -44,17 +50,14 @@ const ApprovalsListPage = () => {
   }), []);
 
   // ============ 待审批筛选 ============
-  const [pSource, setPSource] = useState<SourceFilter>('ALL');
+  const [pType, setPType] = useState<TypeFilter>('ALL');
   const [pKw, setPKw] = useState('');
   const [pPage, setPPage] = useState(1);
-  const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
   const [rejectTarget, setRejectTarget] = useState<ShareAsset | null>(null);
-  const [batchVisible, setBatchVisible] = useState(false);
 
   // ============ 历史筛选 ============
   const [hResult, setHResult] = useState<ResultFilter>('ALL');
   const [hType, setHType] = useState<TypeFilter>('ALL');
-  const [hSource, setHSource] = useState<SourceFilter>('ALL');
   const [hRange, setHRange] = useState<[Date, Date] | null>(null);
   const [hPage, setHPage] = useState(1);
 
@@ -63,35 +66,33 @@ const ApprovalsListPage = () => {
     setParams({ tab: k });
   };
 
-  // ============ 派生数据 ============
   const pendingFiltered = useMemo(() => {
     return pending.filter((a) => {
-      if (pSource !== 'ALL' && a.source !== pSource) return false;
+      if (pType !== 'ALL' && a.type !== pType) return false;
       if (pKw && !a.name.toLowerCase().includes(pKw.toLowerCase())) return false;
       return true;
     });
-  }, [pending, pSource, pKw]);
+  }, [pending, pType, pKw]);
   const pendingPage = pendingFiltered.slice((pPage - 1) * PAGE_SIZE, pPage * PAGE_SIZE);
 
   const historyFiltered = useMemo(() => {
     return history.filter((a) => {
       if (hResult !== 'ALL' && a.shareStatus !== hResult) return false;
       if (hType !== 'ALL' && a.type !== hType) return false;
-      if (hSource !== 'ALL' && a.source !== hSource) return false;
       if (hRange) {
-        const ev = a.approvalEvents[a.approvalEvents.length - 1];
-        const at = ev?.at || a.submittedAt;
+        const ev = getLastDecision(a);
+        const at = (ev?.at || a.submittedAt).slice(0, 10);
         const t0 = hRange[0].toISOString().slice(0, 10);
         const t1 = hRange[1].toISOString().slice(0, 10);
         if (at < t0 || at > t1) return false;
       }
       return true;
     });
-  }, [history, hResult, hType, hSource, hRange]);
+  }, [history, hResult, hType, hRange]);
   const historyPage = historyFiltered.slice((hPage - 1) * PAGE_SIZE, hPage * PAGE_SIZE);
 
-  useEffect(() => { setPPage(1); setSelectedKeys([]); }, [pSource, pKw]);
-  useEffect(() => { setHPage(1); }, [hResult, hType, hSource, hRange]);
+  useEffect(() => { setPPage(1); }, [pType, pKw]);
+  useEffect(() => { setHPage(1); }, [hResult, hType, hRange]);
 
   // ============ 操作 ============
   const goDetail = (row: ShareAsset) => navigate(`/sharing-center/approvals/${row.id}`);
@@ -113,16 +114,16 @@ const ApprovalsListPage = () => {
   const handleReject = (reason: string) => {
     if (!rejectTarget) return;
     const r = rejectAsset(rejectTarget.id, reason);
-    if (!r.ok) Toast.warning(t('sharing.approvals.toast.conflict'));
-    else Toast.success(t('sharing.approvals.toast.rejected'));
+    if (!r.ok) {
+      Toast.warning(t('sharing.approvals.toast.conflict'));
+    } else {
+      // BR-APR-004a/b：按来源分流提示
+      const key = rejectTarget.source === 'DEV_CENTER'
+        ? 'sharing.approvals.toast.rejectedDevCenter'
+        : 'sharing.approvals.toast.rejectedNative';
+      Toast.success(t(key));
+    }
     setRejectTarget(null);
-  };
-
-  const doBatchApprove = () => {
-    const r = batchApprove(selectedKeys);
-    Toast.success(t('sharing.approvals.toast.batchApproved', { n: r.approved }));
-    setSelectedKeys([]);
-    setBatchVisible(false);
   };
 
   // ============ 列 ============
@@ -141,13 +142,13 @@ const ApprovalsListPage = () => {
     {
       title: t('sharing.approvals.col.assetType'),
       dataIndex: 'type',
-      width: 96,
+      width: 110,
       render: (v: string) => t(`sharing.market.tabs.${v}`),
     },
     {
       title: t('sharing.approvals.col.creator'),
       dataIndex: 'creatorName',
-      width: 160,
+      width: 180,
       render: (v: string, row: ShareAsset) => (
         <span><Text>{v}</Text> <Text type="tertiary"> · {row.departmentName}</Text></span>
       ),
@@ -156,7 +157,7 @@ const ApprovalsListPage = () => {
 
   const pendingColumns = [
     ...baseColumns,
-    { title: t('sharing.approvals.col.submittedAt'), dataIndex: 'submittedAt', width: 120 },
+    { title: t('sharing.approvals.col.submittedAt'), dataIndex: 'submittedAt', width: 140 },
     {
       title: t('sharing.approvals.col.action'),
       width: 200,
@@ -182,25 +183,30 @@ const ApprovalsListPage = () => {
     {
       title: t('sharing.approvals.col.result'),
       dataIndex: 'shareStatus',
-      width: 120,
+      width: 110,
       render: (v: 'PUBLISHED' | 'REJECTED') => <StatusTag status={v} />,
+    },
+    {
+      title: t('sharing.approvals.col.duration'),
+      width: 90,
+      render: (_: unknown, row: ShareAsset) => {
+        const ev = getLastDecision(row);
+        return ev ? formatDuration(row.submittedAt, ev.at) : '—';
+      },
     },
     {
       title: t('sharing.approvals.col.comment'),
       width: 220,
       ellipsis: { showTitle: true },
       render: (_: unknown, row: ShareAsset) => {
-        const last = row.approvalEvents[row.approvalEvents.length - 1];
-        return <Text type="tertiary" ellipsis={{ showTooltip: true }}>{last?.comment || '—'}</Text>;
+        const ev = getLastDecision(row);
+        return <Text type="tertiary" ellipsis={{ showTooltip: true }}>{ev?.comment || '—'}</Text>;
       },
     },
     {
       title: t('sharing.approvals.col.decidedAt'),
-      width: 120,
-      render: (_: unknown, row: ShareAsset) => {
-        const last = row.approvalEvents[row.approvalEvents.length - 1];
-        return last?.at || row.submittedAt;
-      },
+      width: 140,
+      render: (_: unknown, row: ShareAsset) => getLastDecision(row)?.at || row.submittedAt,
     },
     {
       title: t('sharing.approvals.col.action'),
@@ -218,9 +224,15 @@ const ApprovalsListPage = () => {
     `${t(`sharing.approvals.tabs.${k}`)}${count > 0 ? ` (${count})` : ''}`;
 
   const clearHistoryFilters = () => {
-    setHResult('ALL'); setHType('ALL'); setHSource('ALL'); setHRange(null);
+    setHResult('ALL'); setHType('ALL'); setHRange(null);
   };
-  const hasHistoryFilter = hResult !== 'ALL' || hType !== 'ALL' || hSource !== 'ALL' || !!hRange;
+  const hasHistoryFilter = hResult !== 'ALL' || hType !== 'ALL' || !!hRange;
+
+  const typeOptions = [
+    { label: t('common.all'), value: 'ALL' },
+    { label: t('sharing.market.tabs.WORKFLOW'), value: 'WORKFLOW' },
+    { label: t('sharing.market.tabs.KNOWLEDGE'), value: 'KNOWLEDGE' },
+  ];
 
   return (
     <div className="approvals-list-page app-layout-content-card">
@@ -244,28 +256,14 @@ const ApprovalsListPage = () => {
               showClear
               style={{ width: 320 }}
             />
-            <RadioGroup type="button" value={pSource} onChange={(e) => setPSource(e.target.value)}>
-              <Radio value="ALL">{t('sharing.approvals.filter.sourceAll')}</Radio>
-              <Radio value="NATIVE">{t('sharing.approvals.filter.sourceNative')}</Radio>
-              <Radio value="DEV_CENTER">{t('sharing.approvals.filter.sourceDev')}</Radio>
-            </RadioGroup>
+            <Select
+              prefix={t('sharing.approvals.filter.assetType')}
+              value={pType}
+              onChange={(v) => setPType(v as TypeFilter)}
+              style={{ width: 200 }}
+              optionList={typeOptions}
+            />
           </div>
-
-          {selectedKeys.length > 0 && (
-            <div className="approvals-batch-bar">
-              <Text>
-                {t('sharing.approvals.batch.selected', { n: selectedKeys.length })}
-              </Text>
-              <Space spacing={8}>
-                <Button theme="borderless" onClick={() => setSelectedKeys([])}>
-                  {t('sharing.approvals.batch.clear')}
-                </Button>
-                <Button theme="solid" type="primary" onClick={() => setBatchVisible(true)}>
-                  {t('sharing.approvals.batch.approve')}
-                </Button>
-              </Space>
-            </div>
-          )}
 
           <div className="approvals-body">
             <Table
@@ -275,10 +273,6 @@ const ApprovalsListPage = () => {
               rowKey="id"
               pagination={false}
               scroll={{ x: 1000 }}
-              rowSelection={{
-                selectedRowKeys: selectedKeys,
-                onChange: (keys) => setSelectedKeys((keys as string[]) || []),
-              }}
               empty={
                 <Empty
                   image={<img src={noDataImg} alt="" style={{ width: 96 }} />}
@@ -315,28 +309,11 @@ const ApprovalsListPage = () => {
               ]}
             />
             <Select
-              prefix={t('sharing.approvals.filter.type')}
+              prefix={t('sharing.approvals.filter.assetType')}
               value={hType}
               onChange={(v) => setHType(v as TypeFilter)}
-              style={{ width: 180 }}
-              optionList={[
-                { label: t('common.all'), value: 'ALL' },
-                { label: t('sharing.market.tabs.SNIPPET'), value: 'SNIPPET' },
-                { label: t('sharing.market.tabs.WORKFLOW'), value: 'WORKFLOW' },
-                { label: t('sharing.market.tabs.KNOWLEDGE'), value: 'KNOWLEDGE' },
-                { label: t('sharing.market.tabs.SKILL'), value: 'SKILL' },
-              ]}
-            />
-            <Select
-              prefix={t('sharing.approvals.filter.source')}
-              value={hSource}
-              onChange={(v) => setHSource(v as SourceFilter)}
-              style={{ width: 180 }}
-              optionList={[
-                { label: t('common.all'), value: 'ALL' },
-                { label: t('sharing.approvals.filter.sourceNative'), value: 'NATIVE' },
-                { label: t('sharing.approvals.filter.sourceDev'), value: 'DEV_CENTER' },
-              ]}
+              style={{ width: 200 }}
+              optionList={typeOptions}
             />
             <DatePicker
               type="dateRange"
@@ -388,24 +365,6 @@ const ApprovalsListPage = () => {
         onSubmit={handleReject}
         onCancel={() => setRejectTarget(null)}
       />
-
-      <Modal
-        title={t('sharing.approvals.batch.confirmTitle')}
-        visible={batchVisible}
-        onOk={doBatchApprove}
-        onCancel={() => setBatchVisible(false)}
-        okText={t('sharing.approvals.batch.approve')}
-        cancelText={t('common.cancel')}
-        width={520}
-      >
-        <Text>{t('sharing.approvals.batch.confirmContent', { n: selectedKeys.length })}</Text>
-        <ul className="batch-confirm-list">
-          {pending.filter((a) => selectedKeys.includes(a.id)).slice(0, 8).map((a) => (
-            <li key={a.id}>{a.name}</li>
-          ))}
-          {selectedKeys.length > 8 && <li>…</li>}
-        </ul>
-      </Modal>
     </div>
   );
 };
