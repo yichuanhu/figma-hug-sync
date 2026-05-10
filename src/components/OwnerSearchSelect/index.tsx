@@ -5,12 +5,14 @@ import { ALL_ORG_USERS, OrgUser } from '@/components/CollaboratorManager/mockDat
 import { departmentTree, DeptTreeNode } from '@/mocks/departmentData';
 
 interface OwnerSearchSelectProps {
-  value?: string;
-  onChange?: (value: string) => void;
+  value?: string | string[];
+  onChange?: (value: string | string[]) => void;
   placeholder?: string;
   disabled?: boolean;
   style?: React.CSSProperties;
   className?: string;
+  multiple?: boolean;
+  size?: 'small' | 'default' | 'large';
 }
 
 interface UserOption {
