@@ -89,6 +89,7 @@ import MySharedEditPage from "@/pages/SharingCenter/MyShared/Edit";
 import MySharedVersionsPage from "@/pages/SharingCenter/MyShared/Versions";
 import DevCenterPublishPage from "@/pages/SharingCenter/MyShared/Publish";
 import SupplyAssetDetail from "@/pages/SharingCenter/MyShared/Detail";
+import SupplierGuard from "@/pages/SharingCenter/MyShared/components/SupplierGuard";
 import ApprovalsListPage from "@/pages/SharingCenter/Approvals/List";
 import ApprovalDetailPage from "@/pages/SharingCenter/Approvals/Detail";
 import ApprovalLevelsPage from "@/pages/SharingCenter/Admin/ApprovalLevels";
@@ -200,14 +201,14 @@ const App = () => {
           <Route path="/sharing-center/market/skill" element={<SkillMarket />} />
           <Route path="/sharing-center/market/:type/:id/edit-display" element={<EditDisplay />} />
           <Route path="/sharing-center/market/:type/:id" element={<AssetDetail />} />
-          {/* 资产上架（FEAT-107） */}
-          <Route path="/sharing-center/my-published" element={<MySharedPage />} />
-          <Route path="/sharing-center/my-published/:type/:id" element={<SupplyAssetDetail />} />
-          <Route path="/sharing-center/my-published/:type/:id/publish" element={<DevCenterPublishPage />} />
-          <Route path="/sharing-center/market/knowledge/create" element={<KnowledgeCreatePage />} />
-          
-          <Route path="/sharing-center/market/:type/:id/edit" element={<MySharedEditPage />} />
-          <Route path="/sharing-center/my-published/:id/versions" element={<MySharedVersionsPage />} />
+          {/* 资产上架（FEAT-107）— R-05：仅供应商可访问 */}
+          <Route path="/sharing-center/my-published" element={<SupplierGuard><MySharedPage /></SupplierGuard>} />
+          <Route path="/sharing-center/my-published/:type/:id" element={<SupplierGuard><SupplyAssetDetail /></SupplierGuard>} />
+          <Route path="/sharing-center/my-published/:type/:id/publish" element={<SupplierGuard><DevCenterPublishPage /></SupplierGuard>} />
+          <Route path="/sharing-center/market/knowledge/create" element={<SupplierGuard><KnowledgeCreatePage /></SupplierGuard>} />
+
+          <Route path="/sharing-center/market/:type/:id/edit" element={<SupplierGuard><MySharedEditPage /></SupplierGuard>} />
+          <Route path="/sharing-center/my-published/:id/versions" element={<SupplierGuard><MySharedVersionsPage /></SupplierGuard>} />
           {/* 旧路径兼容 */}
           <Route path="/sharing-center/my-shared" element={<Navigate to="/sharing-center/my-published" replace />} />
           <Route path="/sharing-center/my-shared/create/knowledge" element={<Navigate to="/sharing-center/market/knowledge/create" replace />} />

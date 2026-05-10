@@ -43,12 +43,12 @@ const SupplyAssetDetail = () => {
   const handleConfirm = () => {
     if (!pending) return;
     switch (pending) {
-      case 'archive':  archiveAsset(asset.id);  Toast.success(t('sharing.myShared.toast.archived')); break;
-      case 'recover':  recoverAsset(asset.id);  Toast.success(t('sharing.myShared.toast.recovered')); break;
-      case 'unlist':   unlistAsset(asset.id);   Toast.success(t('sharing.myShared.toast.unlisted')); break;
-      case 'withdraw': withdrawAsset(asset.id); Toast.success(t('sharing.myShared.toast.withdrawn')); break;
+      case 'archive':  archiveAsset(asset.id);  Toast.success(t('sharing.assetSupply.toast.archived')); break;
+      case 'recover':  recoverAsset(asset.id);  Toast.success(t('sharing.assetSupply.toast.recovered')); break;
+      case 'unlist':   unlistAsset(asset.id);   Toast.success(t('sharing.assetSupply.toast.unlisted')); break;
+      case 'withdraw': withdrawAsset(asset.id); Toast.success(t('sharing.assetSupply.toast.withdrawn')); break;
       case 'delete':
-        deleteAsset(asset.id); Toast.success(t('sharing.myShared.toast.deleted'));
+        deleteAsset(asset.id); Toast.success(t('sharing.assetSupply.toast.deleted'));
         navigate('/sharing-center/my-published');
         break;
     }
@@ -65,79 +65,79 @@ const SupplyAssetDetail = () => {
     if (isNative && s === 'PUBLISHED') {
       buttons.push(
         <Button key="edit" theme="light" type="tertiary" icon={<Pencil size={14} strokeWidth={2} />} onClick={goEdit}>
-          {t('sharing.myShared.actions.edit')}
+          {t('sharing.assetSupply.actions.edit')}
         </Button>,
         <Button key="editDisplay" theme="light" type="tertiary" icon={<FileText size={14} strokeWidth={2} />} onClick={goEditDisplay}>
-          {t('sharing.myShared.actions.editDisplay')}
+          {t('sharing.assetSupply.actions.editDisplay')}
         </Button>,
         <Tooltip key="push" content={pushDisabled
-          ? t('sharing.myShared.toast.pushDuplicated', { hours: pushCheck.ok === false ? pushCheck.retryAfterHours : 0 })
-          : t('sharing.myShared.actions.pushNotification')}>
+          ? t('sharing.assetSupply.toast.pushDuplicated', { hours: pushCheck.ok === false ? pushCheck.retryAfterHours : 0 })
+          : t('sharing.assetSupply.actions.pushNotification')}>
           <Button theme="light" type="tertiary" icon={<Send size={14} strokeWidth={2} />} disabled={pushDisabled} onClick={() => setPushOpen(true)}>
-            {t('sharing.myShared.actions.pushNotification')}
+            {t('sharing.assetSupply.actions.pushNotification')}
           </Button>
         </Tooltip>,
         <Button key="archive" theme="borderless" type="warning" icon={<Archive size={14} strokeWidth={2} />} onClick={() => setPending('archive')}>
-          {t('sharing.myShared.actions.archive')}
+          {t('sharing.assetSupply.actions.archive')}
         </Button>,
       );
     } else if (!isNative && s === 'PUBLISHED') {
       buttons.push(
         <Button key="editMeta" theme="light" type="tertiary" icon={<FileText size={14} strokeWidth={2} />} onClick={goEditDisplay}>
-          {t('sharing.myShared.actions.editMeta')}
+          {t('sharing.assetSupply.actions.editMeta')}
         </Button>,
         <Tooltip key="push" content={pushDisabled
-          ? t('sharing.myShared.toast.pushDuplicated', { hours: pushCheck.ok === false ? pushCheck.retryAfterHours : 0 })
-          : t('sharing.myShared.actions.pushNotification')}>
+          ? t('sharing.assetSupply.toast.pushDuplicated', { hours: pushCheck.ok === false ? pushCheck.retryAfterHours : 0 })
+          : t('sharing.assetSupply.actions.pushNotification')}>
           <Button theme="light" type="tertiary" icon={<Send size={14} strokeWidth={2} />} disabled={pushDisabled} onClick={() => setPushOpen(true)}>
-            {t('sharing.myShared.actions.pushNotification')}
+            {t('sharing.assetSupply.actions.pushNotification')}
           </Button>
         </Tooltip>,
         asset.originUrl && (
           <Button key="openDev" theme="borderless" type="primary" icon={<ExternalLink size={14} strokeWidth={2} />} onClick={openDevCenter}>
-            {t('sharing.myShared.actions.openInDevCenter')}
+            {t('sharing.assetSupply.actions.openInDevCenter')}
           </Button>
         ),
         <Button key="unlist" theme="borderless" type="warning" icon={<EyeOff size={14} strokeWidth={2} />} onClick={() => setPending('unlist')}>
-          {t('sharing.myShared.actions.unlist')}
+          {t('sharing.assetSupply.actions.unlist')}
         </Button>,
       );
     } else if (s === 'PENDING_APPROVAL') {
       buttons.push(
         <Button key="withdraw" theme="light" type="tertiary" icon={<Undo2 size={14} strokeWidth={2} />} onClick={() => setPending('withdraw')}>
-          {t('sharing.myShared.actions.withdraw')}
+          {t('sharing.assetSupply.actions.withdraw')}
         </Button>,
       );
     } else if (s === 'PENDING_PUBLISH' && !isNative) {
       buttons.push(
         <Button key="publish" theme="solid" type="primary" icon={<Send size={14} strokeWidth={2} />} onClick={goPublish}>
-          {t('sharing.myShared.actions.publishNow')}
+          {t('sharing.assetSupply.actions.publishNow')}
         </Button>,
       );
     } else if (s === 'DRAFT' && isNative) {
       buttons.push(
         <Button key="edit" theme="light" type="tertiary" icon={<Pencil size={14} strokeWidth={2} />} onClick={goEdit}>
-          {t('sharing.myShared.actions.edit')}
+          {t('sharing.assetSupply.actions.edit')}
         </Button>,
       );
     } else if (s === 'REJECTED') {
       if (isNative) {
         buttons.push(
           <Button key="resubmit" theme="solid" type="primary" icon={<Pencil size={14} strokeWidth={2} />} onClick={goEdit}>
-            {t('sharing.myShared.actions.resubmit')}
+            {t('sharing.assetSupply.actions.resubmit')}
           </Button>,
         );
       } else if (asset.originUrl) {
         buttons.push(
           <Button key="back" theme="solid" type="primary" icon={<ExternalLink size={14} strokeWidth={2} />} onClick={openDevCenter}>
-            {t('sharing.myShared.actions.backToDevCenter')}
+            {t('sharing.assetSupply.actions.backToDevCenter')}
           </Button>,
         );
       }
     } else if (s === 'ARCHIVED' && isNative) {
       buttons.push(
         <Button key="recover" theme="solid" type="primary" icon={<RotateCcw size={14} strokeWidth={2} />} onClick={() => setPending('recover')}>
-          {t('sharing.myShared.actions.recover')}
+          {t('sharing.assetSupply.actions.recover')}
         </Button>,
       );
     }

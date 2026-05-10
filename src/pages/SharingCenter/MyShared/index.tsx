@@ -69,14 +69,14 @@ const MySharedPage = () => {
   return (
     <div className="my-shared-page">
       <div className="my-shared-header">
-        <Title heading={3} className="title">{t('sharing.myShared.pageTitle')}</Title>
+        <Title heading={3} className="title">{t('sharing.assetSupply.pageTitle')}</Title>
         <Button
           theme="solid"
           type="primary"
           icon={<Plus size={14} strokeWidth={2.5} />}
           onClick={() => navigate('/sharing-center/my-shared/create/knowledge')}
         >
-          {t('sharing.myShared.newAsset.knowledge')}
+          {t('sharing.assetSupply.newAsset.knowledge')}
         </Button>
       </div>
 
@@ -87,7 +87,7 @@ const MySharedPage = () => {
         keepDOM={false}
       >
         {TABS.map((k) => (
-          <TabPane key={k} itemKey={k} tab={`${t(`sharing.myShared.tabs.${k.toLowerCase()}`)} (${counts[k]})`} />
+          <TabPane key={k} itemKey={k} tab={`${t(`sharing.assetSupply.tabs.${k.toLowerCase()}`)} (${counts[k]})`} />
         ))}
       </Tabs>
 
@@ -96,7 +96,7 @@ const MySharedPage = () => {
           prefix={<IconSearch />}
           value={keyword}
           onChange={setKeyword}
-          placeholder={t('sharing.myShared.filters.searchPlaceholder')}
+          placeholder={t('sharing.assetSupply.filters.searchPlaceholder')}
           showClear
           style={{ width: 320 }}
         />
@@ -104,27 +104,27 @@ const MySharedPage = () => {
           value={typeF}
           onChange={(v) => setType(v as TypeFilter)}
           style={{ width: 140 }}
-          insetLabel={t('sharing.myShared.filters.type')}
+          insetLabel={t('sharing.assetSupply.filters.type')}
           optionList={[
-            { value: 'ALL', label: t('sharing.myShared.filters.allType') },
-            { value: 'WORKFLOW', label: t('sharing.myShared.newAsset.workflow') },
-            { value: 'KNOWLEDGE', label: t('sharing.myShared.newAsset.knowledge') },
+            { value: 'ALL', label: t('sharing.assetSupply.filters.allType') },
+            { value: 'WORKFLOW', label: t('sharing.assetSupply.newAsset.workflow') },
+            { value: 'KNOWLEDGE', label: t('sharing.assetSupply.newAsset.knowledge') },
           ]}
         />
         <Select
           value={sourceF}
           onChange={(v) => setSource(v as SourceFilter)}
           style={{ width: 160 }}
-          insetLabel={t('sharing.myShared.filters.source')}
+          insetLabel={t('sharing.assetSupply.filters.source')}
           optionList={[
-            { value: 'ALL', label: t('sharing.myShared.filters.allSource') },
+            { value: 'ALL', label: t('sharing.assetSupply.filters.allSource') },
             { value: 'NATIVE', label: t('sharing.common.source.native') },
             { value: 'DEV_CENTER', label: t('sharing.common.source.devCenter') },
           ]}
         />
         {filtered && (
           <Button theme="borderless" type="tertiary" onClick={clearFilters}>
-            {t('sharing.myShared.filters.clear')}
+            {t('sharing.assetSupply.filters.clear')}
           </Button>
         )}
       </div>
@@ -137,7 +137,7 @@ const MySharedPage = () => {
               type="primary"
               onClick={() => setAggregatedStatsVisible(true)}
             >
-              {t('sharing.myShared.card.viewAggregatedReuse', { count: aggregatedReuse.length })}
+              {t('sharing.assetSupply.card.viewAggregatedReuse', { count: aggregatedReuse.length })}
             </Button>
           </div>
         )}
@@ -147,8 +147,8 @@ const MySharedPage = () => {
             <img src={emptyImg} alt="empty" />
             <div className="empty-title">
               {filtered
-                ? t('sharing.myShared.empty.noResult')
-                : t(`sharing.myShared.empty.${tab.toLowerCase()}`)}
+                ? t('sharing.assetSupply.empty.noResult')
+                : t(`sharing.assetSupply.empty.${tab.toLowerCase()}`)}
             </div>
             {!filtered && (tab === 'PUBLISHED' || tab === 'DRAFT') && (
               <Button
@@ -157,7 +157,7 @@ const MySharedPage = () => {
                 onClick={() => navigate('/sharing-center/my-shared/create/knowledge')}
                 style={{ marginTop: 12 }}
               >
-                {t('sharing.myShared.empty.createCta')}
+                {t('sharing.assetSupply.empty.createCta')}
               </Button>
             )}
           </div>

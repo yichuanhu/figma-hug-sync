@@ -44,28 +44,28 @@ const ReuseStatsPanel = ({ visible, onCancel, records, assetName }: Props) => {
   const weekCount = useMemo(() => records.filter((r) => inRange(r.reusedAt, 'week')).length, [records]);
 
   const columns = [
-    { title: t('sharing.myShared.reuseStats.colReuser'), dataIndex: 'reuserName', width: 120 },
-    { title: t('sharing.myShared.reuseStats.colDept'), dataIndex: 'reuserDept', width: 140, render: (v: string) => v || '—' },
+    { title: t('sharing.assetSupply.reuseStats.colReuser'), dataIndex: 'reuserName', width: 120 },
+    { title: t('sharing.assetSupply.reuseStats.colDept'), dataIndex: 'reuserDept', width: 140, render: (v: string) => v || '—' },
     {
-      title: t('sharing.myShared.reuseStats.colTime'),
+      title: t('sharing.assetSupply.reuseStats.colTime'),
       dataIndex: 'reusedAt',
       width: 120,
     },
-    { title: t('sharing.myShared.reuseStats.colVersion'), dataIndex: 'versionNumber', width: 100 },
+    { title: t('sharing.assetSupply.reuseStats.colVersion'), dataIndex: 'versionNumber', width: 100 },
     {
-      title: t('sharing.myShared.reuseStats.colType'),
+      title: t('sharing.assetSupply.reuseStats.colType'),
       dataIndex: 'reuseType',
       width: 100,
       render: (v: string) => (
         <Tag size="small" color={v === 'ADAPTATION' ? 'orange' : 'blue'}>
           {v === 'ADAPTATION'
-            ? t('sharing.myShared.reuseStats.typeAdaptation')
-            : t('sharing.myShared.reuseStats.typeDirect')}
+            ? t('sharing.assetSupply.reuseStats.typeAdaptation')
+            : t('sharing.assetSupply.reuseStats.typeDirect')}
         </Tag>
       ),
     },
     {
-      title: t('sharing.myShared.reuseStats.colNote'),
+      title: t('sharing.assetSupply.reuseStats.colNote'),
       dataIndex: 'adaptationNote',
       ellipsis: { showTitle: false },
       render: (v?: string) => v || '—',
@@ -79,8 +79,8 @@ const ReuseStatsPanel = ({ visible, onCancel, records, assetName }: Props) => {
       visible={visible}
       onCancel={onCancel}
       title={assetName
-        ? t('sharing.myShared.reuseStats.titleWithName', { name: assetName })
-        : t('sharing.myShared.reuseStats.title')}
+        ? t('sharing.assetSupply.reuseStats.titleWithName', { name: assetName })
+        : t('sharing.assetSupply.reuseStats.title')}
       bodyStyle={{ padding: 24 }}
       className="reuse-stats-panel"
     >
@@ -88,27 +88,27 @@ const ReuseStatsPanel = ({ visible, onCancel, records, assetName }: Props) => {
         <Select
           value={range}
           onChange={(v) => { setRange(v as Range); setPage(1); }}
-          insetLabel={t('sharing.myShared.reuseStats.timeRange')}
+          insetLabel={t('sharing.assetSupply.reuseStats.timeRange')}
           style={{ width: 180 }}
           optionList={[
-            { value: 'all', label: t('sharing.myShared.reuseStats.rangeAll') },
-            { value: 'month', label: t('sharing.myShared.reuseStats.rangeMonth') },
-            { value: 'week', label: t('sharing.myShared.reuseStats.rangeWeek') },
+            { value: 'all', label: t('sharing.assetSupply.reuseStats.rangeAll') },
+            { value: 'month', label: t('sharing.assetSupply.reuseStats.rangeMonth') },
+            { value: 'week', label: t('sharing.assetSupply.reuseStats.rangeWeek') },
           ]}
         />
       </div>
 
       <div className="reuse-stats-cards">
         <div className="stat-cell">
-          <Text size="small" type="tertiary">{t('sharing.myShared.reuseStats.total')}</Text>
+          <Text size="small" type="tertiary">{t('sharing.assetSupply.reuseStats.total')}</Text>
           <Title heading={3} style={{ margin: 0 }}>{total}</Title>
         </div>
         <div className="stat-cell">
-          <Text size="small" type="tertiary">{t('sharing.myShared.reuseStats.thisMonth')}</Text>
+          <Text size="small" type="tertiary">{t('sharing.assetSupply.reuseStats.thisMonth')}</Text>
           <Title heading={3} style={{ margin: 0 }}>{monthCount}</Title>
         </div>
         <div className="stat-cell">
-          <Text size="small" type="tertiary">{t('sharing.myShared.reuseStats.thisWeek')}</Text>
+          <Text size="small" type="tertiary">{t('sharing.assetSupply.reuseStats.thisWeek')}</Text>
           <Title heading={3} style={{ margin: 0 }}>{weekCount}</Title>
         </div>
       </div>
@@ -116,7 +116,7 @@ const ReuseStatsPanel = ({ visible, onCancel, records, assetName }: Props) => {
       {filtered.length === 0 ? (
         <Empty
           image={<img src={emptyImg} alt="empty" style={{ width: 120, height: 120 }} />}
-          description={t('sharing.myShared.reuseStats.empty')}
+          description={t('sharing.assetSupply.reuseStats.empty')}
           style={{ padding: '48px 0' }}
         />
       ) : (

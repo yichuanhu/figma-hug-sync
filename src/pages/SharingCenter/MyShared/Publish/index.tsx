@@ -35,17 +35,17 @@ const DevCenterPublishPage = () => {
   const submit = async (values: any) => {
     // 必填校验：封面、展示描述、概览
     if (!coverFile) {
-      Toast.warning(t('sharing.myShared.publish.coverRequired'));
+      Toast.warning(t('sharing.assetSupply.publish.coverRequired'));
       return;
     }
     const displayDesc = (values.displayDesc ?? '').trim();
     if (!displayDesc || displayDesc.length < 10) {
-      Toast.warning(t('sharing.myShared.publish.displayDescRequired'));
+      Toast.warning(t('sharing.assetSupply.publish.displayDescRequired'));
       return;
     }
     const overviewText = overview.replace(/<[^>]+>/g, '').trim();
     if (overviewText.length < 20) {
-      Toast.warning(t('sharing.myShared.publish.overviewRequired'));
+      Toast.warning(t('sharing.assetSupply.publish.overviewRequired'));
       return;
     }
     setSubmitting(true);
@@ -57,18 +57,18 @@ const DevCenterPublishPage = () => {
       overview,
       videoUrl: videoFile?.name,
     });
-    Toast.success(t('sharing.myShared.toast.published'));
+    Toast.success(t('sharing.assetSupply.toast.published'));
     setSubmitting(false);
     navigate('/sharing-center/my-published?tab=PENDING_APPROVAL');
   };
 
   const beforeCover = (file: File) => {
     if (!COVER_ACCEPT.includes(file.type)) {
-      Toast.error(t('sharing.myShared.publish.coverTypeError'));
+      Toast.error(t('sharing.assetSupply.publish.coverTypeError'));
       return false;
     }
     if (file.size / 1024 > COVER_MAX_KB) {
-      Toast.error(t('sharing.myShared.publish.coverSizeError'));
+      Toast.error(t('sharing.assetSupply.publish.coverSizeError'));
       return false;
     }
     return true;
@@ -76,11 +76,11 @@ const DevCenterPublishPage = () => {
 
   const beforeVideo = (file: File) => {
     if (!VIDEO_ACCEPT.includes(file.type) && !file.name.toLowerCase().endsWith('.mp4')) {
-      Toast.error(t('sharing.myShared.publish.videoTypeError'));
+      Toast.error(t('sharing.assetSupply.publish.videoTypeError'));
       return false;
     }
     if (file.size / 1024 > VIDEO_MAX_KB) {
-      Toast.error(t('sharing.myShared.publish.videoSizeError'));
+      Toast.error(t('sharing.assetSupply.publish.videoSizeError'));
       return false;
     }
     return true;
@@ -94,34 +94,34 @@ const DevCenterPublishPage = () => {
         <Space>
           <Button icon={<IconChevronLeft />} theme="borderless" onClick={() => navigate(-1)} />
           <Title heading={3} style={{ margin: 0 }}>
-            {t('sharing.myShared.publish.pageTitle', { name: asset.name })}
+            {t('sharing.assetSupply.publish.pageTitle', { name: asset.name })}
           </Title>
         </Space>
       </div>
       <div className="ms-create-body" style={{ display: 'grid', gridTemplateColumns: '320px 1fr', gap: 24 }}>
         {/* 左：只读元信息 */}
         <div style={{ background: 'var(--semi-color-fill-0)', padding: 16, borderRadius: 6 }}>
-          <Title heading={6}>{t('sharing.myShared.publish.metaTitle')}</Title>
+          <Title heading={6}>{t('sharing.assetSupply.publish.metaTitle')}</Title>
           <div style={{ display: 'grid', gap: 12, marginTop: 12 }}>
-            <Field label={t('sharing.myShared.publish.metaName')} value={asset.name} />
-            <Field label={t('sharing.myShared.publish.metaDescription')} value={asset.description} />
+            <Field label={t('sharing.assetSupply.publish.metaName')} value={asset.name} />
+            <Field label={t('sharing.assetSupply.publish.metaDescription')} value={asset.description} />
             {asset.resourceDeps && asset.resourceDeps.length > 0 && (
-              <Field label={t('sharing.myShared.publish.metaResourceDeps')} value={
+              <Field label={t('sharing.assetSupply.publish.metaResourceDeps')} value={
                 <ul style={{ margin: 0, paddingLeft: 18 }}>
                   {asset.resourceDeps.map((d) => <li key={d}>{d}</li>)}
                 </ul>
               } />
             )}
-            <Field label={t('sharing.myShared.publish.metaVersion')} value={asset.currentVersion} />
-            <Field label={t('sharing.myShared.publish.metaDept')} value={asset.departmentName} />
-            <Field label={t('sharing.myShared.publish.metaSource')} value={<Tag size="small" color="blue">{t('sharing.common.source.devCenter')}</Tag>} />
+            <Field label={t('sharing.assetSupply.publish.metaVersion')} value={asset.currentVersion} />
+            <Field label={t('sharing.assetSupply.publish.metaDept')} value={asset.departmentName} />
+            <Field label={t('sharing.assetSupply.publish.metaSource')} value={<Tag size="small" color="blue">{t('sharing.common.source.devCenter')}</Tag>} />
           </div>
         </div>
         {/* 右：展示信息可编辑 */}
         <div>
-          <Title heading={6} style={{ marginBottom: 12 }}>{t('sharing.myShared.publish.displayTitle')}</Title>
+          <Title heading={6} style={{ marginBottom: 12 }}>{t('sharing.assetSupply.publish.displayTitle')}</Title>
           <Form labelPosition="top" onSubmit={submit} getFormApi={(api) => ((window as any).__pubForm = api)}>
-            <Form.Slot label={{ text: t('sharing.myShared.publish.coverImage'), required: true } as any}>
+            <Form.Slot label={{ text: t('sharing.assetSupply.publish.coverImage'), required: true } as any}>
               <Upload
                 action="" accept=".jpg,.jpeg,.png" maxSize={COVER_MAX_KB} showUploadList={false}
                 beforeUpload={({ file }: any) => beforeCover(file.fileInstance as File)}
@@ -132,7 +132,7 @@ const DevCenterPublishPage = () => {
                   setTimeout(() => onSuccess?.({}), 100);
                 }}
               >
-                <Button icon={<IconImage />}>{coverFile ? t('sharing.myShared.publish.coverReplace') : t('sharing.myShared.publish.coverImage')}</Button>
+                <Button icon={<IconImage />}>{coverFile ? t('sharing.assetSupply.publish.coverReplace') : t('sharing.assetSupply.publish.coverImage')}</Button>
               </Upload>
               {coverFile ? (
                 <div style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -144,16 +144,16 @@ const DevCenterPublishPage = () => {
                   <Button size="small" theme="borderless" type="danger" onClick={() => setCoverFile(null)}>{t('common.remove')}</Button>
                 </div>
               ) : (
-                <div style={{ color: 'var(--semi-color-text-2)', fontSize: 12, marginTop: 4 }}>{t('sharing.myShared.publish.coverImageHint')}</div>
+                <div style={{ color: 'var(--semi-color-text-2)', fontSize: 12, marginTop: 4 }}>{t('sharing.assetSupply.publish.coverImageHint')}</div>
               )}
             </Form.Slot>
-            <Form.Input field="displayName" label={t('sharing.myShared.publish.displayName')} placeholder={t('sharing.myShared.publish.displayNamePh')} maxLength={100} />
-            <Form.TextArea field="displayDesc" label={t('sharing.myShared.publish.displayDesc')} placeholder={t('sharing.myShared.publish.displayDescPh')} maxLength={500} rows={3} rules={[{ required: true, min: 10, max: 500, message: t('sharing.myShared.publish.displayDescRequired') }]} trigger={['blur', 'change']} />
-            <Form.TagInput field="categoryTags" label={t('sharing.myShared.publish.categoryTags')} placeholder={t('sharing.myShared.publish.categoryTagsPh')} />
-            <Form.Slot label={{ text: t('sharing.myShared.publish.overview'), required: true } as any}>
-              <RichTextEditor value={overview} onChange={setOverview} placeholder={t('sharing.myShared.publish.overviewPh')} maxLength={5000} minHeight={240} />
+            <Form.Input field="displayName" label={t('sharing.assetSupply.publish.displayName')} placeholder={t('sharing.assetSupply.publish.displayNamePh')} maxLength={100} />
+            <Form.TextArea field="displayDesc" label={t('sharing.assetSupply.publish.displayDesc')} placeholder={t('sharing.assetSupply.publish.displayDescPh')} maxLength={500} rows={3} rules={[{ required: true, min: 10, max: 500, message: t('sharing.assetSupply.publish.displayDescRequired') }]} trigger={['blur', 'change']} />
+            <Form.TagInput field="categoryTags" label={t('sharing.assetSupply.publish.categoryTags')} placeholder={t('sharing.assetSupply.publish.categoryTagsPh')} />
+            <Form.Slot label={{ text: t('sharing.assetSupply.publish.overview'), required: true } as any}>
+              <RichTextEditor value={overview} onChange={setOverview} placeholder={t('sharing.assetSupply.publish.overviewPh')} maxLength={5000} minHeight={240} />
             </Form.Slot>
-            <Form.Slot label={t('sharing.myShared.publish.videoUrl')}>
+            <Form.Slot label={t('sharing.assetSupply.publish.videoUrl')}>
               <Upload
                 action="" accept=".mp4" maxSize={VIDEO_MAX_KB} showUploadList={false}
                 beforeUpload={({ file }: any) => beforeVideo(file.fileInstance as File)}
@@ -163,7 +163,7 @@ const DevCenterPublishPage = () => {
                   setTimeout(() => onSuccess?.({}), 100);
                 }}
               >
-                <Button icon={<IconVideoListStroked />}>{videoFile ? t('sharing.myShared.publish.videoReplace') : t('sharing.myShared.publish.videoUrl')}</Button>
+                <Button icon={<IconVideoListStroked />}>{videoFile ? t('sharing.assetSupply.publish.videoReplace') : t('sharing.assetSupply.publish.videoUrl')}</Button>
               </Upload>
               {videoFile ? (
                 <div style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 12, fontSize: 12 }}>
@@ -172,7 +172,7 @@ const DevCenterPublishPage = () => {
                   <Button size="small" theme="borderless" type="danger" onClick={() => setVideoFile(null)}>{t('common.remove')}</Button>
                 </div>
               ) : (
-                <div style={{ color: 'var(--semi-color-text-2)', fontSize: 12, marginTop: 4 }}>{t('sharing.myShared.publish.videoUrlHint')}</div>
+                <div style={{ color: 'var(--semi-color-text-2)', fontSize: 12, marginTop: 4 }}>{t('sharing.assetSupply.publish.videoUrlHint')}</div>
               )}
             </Form.Slot>
           </Form>
@@ -183,7 +183,7 @@ const DevCenterPublishPage = () => {
           <Button onClick={() => navigate(-1)}>{t('common.cancel')}</Button>
           <Button theme="solid" type="primary" loading={submitting}
             onClick={() => { const v = (window as any).__pubForm?.getValues(); submit(v || {}); }}>
-            {t('sharing.myShared.publish.submit')}
+            {t('sharing.assetSupply.publish.submit')}
           </Button>
         </Space>
       </div>

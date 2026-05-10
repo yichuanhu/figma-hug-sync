@@ -3845,7 +3845,7 @@
       "changeLog": "Change Log",
       "changeLogPlaceholder": "Describe the changes (5-200 chars)"
     },
-    "myShared": {
+    "assetSupply": {
       "pageTitle": "My Shared",
       "tabs": {
         "published": "Published",

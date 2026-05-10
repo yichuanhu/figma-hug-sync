@@ -72,22 +72,22 @@ const PushNotificationDialog = ({ visible, asset, onCancel }: Props) => {
 
   const handleSubmit = () => {
     if (!asset) return;
-    if (scope.length === 0) { Toast.warning(t('sharing.myShared.push.noTargetHint')); return; }
+    if (scope.length === 0) { Toast.warning(t('sharing.assetSupply.push.noTargetHint')); return; }
     if (title.trim().length < 10 || title.trim().length > 100) {
-      Toast.warning(t('sharing.myShared.push.notificationTitlePh')); return;
+      Toast.warning(t('sharing.assetSupply.push.notificationTitlePh')); return;
     }
     if (body.trim().length < 10 || body.trim().length > 500) {
-      Toast.warning(t('sharing.myShared.push.notificationBodyPh')); return;
+      Toast.warning(t('sharing.assetSupply.push.notificationBodyPh')); return;
     }
     const check = canPushNotification(asset.id, asset.currentVersionId);
     if (check.ok === false) {
-      Toast.warning(t('sharing.myShared.toast.pushDuplicated', { hours: check.retryAfterHours }));
+      Toast.warning(t('sharing.assetSupply.toast.pushDuplicated', { hours: check.retryAfterHours }));
       return;
     }
     setSubmitting(true);
     setTimeout(() => {
       recordPushNotification(asset.id, asset.currentVersionId);
-      Toast.success(t('sharing.myShared.toast.pushSent', { count: scope.length }));
+      Toast.success(t('sharing.assetSupply.toast.pushSent', { count: scope.length }));
       setSubmitting(false);
       reset(); onCancel();
     }, 400);
@@ -95,12 +95,12 @@ const PushNotificationDialog = ({ visible, asset, onCancel }: Props) => {
 
   return (
     <Modal
-      title={t('sharing.myShared.push.title')}
+      title={t('sharing.assetSupply.push.title')}
       visible={visible}
       onCancel={handleCancel}
       onOk={handleSubmit}
-      okText={t('sharing.myShared.push.send')}
-      cancelText={t('sharing.myShared.push.cancel')}
+      okText={t('sharing.assetSupply.push.send')}
+      cancelText={t('sharing.assetSupply.push.cancel')}
       confirmLoading={submitting}
       width={520}
       centered
@@ -111,47 +111,47 @@ const PushNotificationDialog = ({ visible, asset, onCancel }: Props) => {
             {asset.displayName || asset.name} · {asset.currentVersion}
           </Text>
 
-          <Form.Slot label={t('sharing.myShared.push.scope')}>
+          <Form.Slot label={t('sharing.assetSupply.push.scope')}>
             <TreeSelect
               value={scope}
               onChange={(v) => setScope((v as string[]) ?? [])}
               treeData={ORG_TREE}
               multiple
               filterTreeNode
-              placeholder={t('sharing.myShared.push.scopePh')}
+              placeholder={t('sharing.assetSupply.push.scopePh')}
               style={{ width: '100%' }}
               maxTagCount={3}
             />
             <Text type="tertiary" size="small" style={{ marginTop: 4, display: 'block' }}>
-              {t('sharing.myShared.push.selectedSummary', { count: scope.length, recipients })}
+              {t('sharing.assetSupply.push.selectedSummary', { count: scope.length, recipients })}
             </Text>
           </Form.Slot>
 
-          <Form.Slot label={t('sharing.myShared.push.notificationTitle')}>
+          <Form.Slot label={t('sharing.assetSupply.push.notificationTitle')}>
             <Input
               value={title}
               onChange={setTitle}
-              placeholder={t('sharing.myShared.push.notificationTitlePh')}
+              placeholder={t('sharing.assetSupply.push.notificationTitlePh')}
               maxLength={100}
               showClear
             />
           </Form.Slot>
 
-          <Form.Slot label={t('sharing.myShared.push.notificationBody')}>
+          <Form.Slot label={t('sharing.assetSupply.push.notificationBody')}>
             <TextArea
               value={body}
               onChange={setBody}
-              placeholder={t('sharing.myShared.push.notificationBodyPh')}
+              placeholder={t('sharing.assetSupply.push.notificationBodyPh')}
               maxLength={500}
               autosize={{ minRows: 4, maxRows: 8 }}
             />
           </Form.Slot>
 
           <Checkbox checked={isVersion} onChange={(e) => setIsVersion(!!e.target.checked)}>
-            {t('sharing.myShared.push.isVersionUpgrade')}
+            {t('sharing.assetSupply.push.isVersionUpgrade')}
           </Checkbox>
           <Text type="tertiary" size="small" style={{ display: 'block', marginTop: 4 }}>
-            {t('sharing.myShared.push.versionUpgradeHint')}
+            {t('sharing.assetSupply.push.versionUpgradeHint')}
           </Text>
         </Form>
       )}

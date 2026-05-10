@@ -3216,7 +3216,7 @@
       "changeLog": "变更说明",
       "changeLogPlaceholder": "请填写本次变更的说明（5-200 字）"
     },
-    "myShared": {
+    "assetSupply": {
       "pageTitle": "资产上架",
       "tabs": {
         "published": "已上架",

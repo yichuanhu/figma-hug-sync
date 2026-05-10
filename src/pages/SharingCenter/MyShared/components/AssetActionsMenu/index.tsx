@@ -35,11 +35,11 @@ const AssetActionsMenu = ({ asset, trigger, onPush }: Props) => {
   const handleConfirm = () => {
     if (!pending) return;
     switch (pending) {
-      case 'archive':  archiveAsset(asset.id);  Toast.success(t('sharing.myShared.toast.archived')); break;
-      case 'recover':  recoverAsset(asset.id);  Toast.success(t('sharing.myShared.toast.recovered')); break;
-      case 'unlist':   unlistAsset(asset.id);   Toast.success(t('sharing.myShared.toast.unlisted')); break;
-      case 'withdraw': withdrawAsset(asset.id); Toast.success(t('sharing.myShared.toast.withdrawn')); break;
-      case 'delete':   deleteAsset(asset.id);   Toast.success(t('sharing.myShared.toast.deleted')); break;
+      case 'archive':  archiveAsset(asset.id);  Toast.success(t('sharing.assetSupply.toast.archived')); break;
+      case 'recover':  recoverAsset(asset.id);  Toast.success(t('sharing.assetSupply.toast.recovered')); break;
+      case 'unlist':   unlistAsset(asset.id);   Toast.success(t('sharing.assetSupply.toast.unlisted')); break;
+      case 'withdraw': withdrawAsset(asset.id); Toast.success(t('sharing.assetSupply.toast.withdrawn')); break;
+      case 'delete':   deleteAsset(asset.id);   Toast.success(t('sharing.assetSupply.toast.deleted')); break;
     }
     setPending(null);
   };
@@ -54,47 +54,47 @@ const AssetActionsMenu = ({ asset, trigger, onPush }: Props) => {
       );
     };
 
-    Push('view', <Eye size={14} strokeWidth={2} />, t('sharing.myShared.actions.view'), goView);
+    Push('view', <Eye size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.view'), goView);
 
     if (isNative) {
       if (s === 'PUBLISHED') {
-        Push('edit', <Pencil size={14} strokeWidth={2} />, t('sharing.myShared.actions.edit'), goEdit);
-        Push('versions', <History size={14} strokeWidth={2} />, t('sharing.myShared.actions.versions'), goVersions);
-        if (onPush) Push('push', <Send size={14} strokeWidth={2} />, t('sharing.myShared.actions.pushNotification'), () => onPush(asset));
-        Push('archive', <Archive size={14} strokeWidth={2} />, t('sharing.myShared.actions.archive'), () => setPending('archive'));
+        Push('edit', <Pencil size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.edit'), goEdit);
+        Push('versions', <History size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.versions'), goVersions);
+        if (onPush) Push('push', <Send size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.pushNotification'), () => onPush(asset));
+        Push('archive', <Archive size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.archive'), () => setPending('archive'));
       } else if (s === 'DRAFT') {
-        Push('edit', <Pencil size={14} strokeWidth={2} />, t('sharing.myShared.actions.edit'), goEdit);
-        Push('publish', <Send size={14} strokeWidth={2} />, t('sharing.myShared.actions.publish'), goEdit);
-        Push('delete', <Trash2 size={14} strokeWidth={2} />, t('sharing.myShared.actions.delete'), () => setPending('delete'), 'danger');
+        Push('edit', <Pencil size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.edit'), goEdit);
+        Push('publish', <Send size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.publish'), goEdit);
+        Push('delete', <Trash2 size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.delete'), () => setPending('delete'), 'danger');
       } else if (s === 'REJECTED') {
-        Push('resubmit', <Pencil size={14} strokeWidth={2} />, t('sharing.myShared.actions.resubmit'), goEdit);
-        Push('delete', <Trash2 size={14} strokeWidth={2} />, t('sharing.myShared.actions.delete'), () => setPending('delete'), 'danger');
+        Push('resubmit', <Pencil size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.resubmit'), goEdit);
+        Push('delete', <Trash2 size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.delete'), () => setPending('delete'), 'danger');
       } else if (s === 'PENDING_APPROVAL') {
-        Push('withdraw', <Undo2 size={14} strokeWidth={2} />, t('sharing.myShared.actions.withdraw'), () => setPending('withdraw'));
+        Push('withdraw', <Undo2 size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.withdraw'), () => setPending('withdraw'));
       } else if (s === 'ARCHIVED') {
-        Push('recover', <RotateCcw size={14} strokeWidth={2} />, t('sharing.myShared.actions.recover'), () => setPending('recover'));
-        Push('delete', <Trash2 size={14} strokeWidth={2} />, t('sharing.myShared.actions.delete'), () => setPending('delete'), 'danger');
+        Push('recover', <RotateCcw size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.recover'), () => setPending('recover'));
+        Push('delete', <Trash2 size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.delete'), () => setPending('delete'), 'danger');
       }
     } else {
       // DEV_CENTER
       if (s === 'PUBLISHED') {
-        Push('editMeta', <Pencil size={14} strokeWidth={2} />, t('sharing.myShared.actions.editMeta'), goEdit);
-        Push('versions', <History size={14} strokeWidth={2} />, t('sharing.myShared.actions.versions'), goVersions);
-        if (onPush) Push('push', <Send size={14} strokeWidth={2} />, t('sharing.myShared.actions.pushNotification'), () => onPush(asset));
+        Push('editMeta', <Pencil size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.editMeta'), goEdit);
+        Push('versions', <History size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.versions'), goVersions);
+        if (onPush) Push('push', <Send size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.pushNotification'), () => onPush(asset));
         if (asset.originUrl) {
-          Push('open', <ExternalLink size={14} strokeWidth={2} />, t('sharing.myShared.actions.openInDevCenter'), openDevCenter);
+          Push('open', <ExternalLink size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.openInDevCenter'), openDevCenter);
         }
-        Push('unlist', <EyeOff size={14} strokeWidth={2} />, t('sharing.myShared.actions.unlist'), () => setPending('unlist'));
+        Push('unlist', <EyeOff size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.unlist'), () => setPending('unlist'));
       } else if (s === 'PENDING_PUBLISH') {
-        Push('publish', <Send size={14} strokeWidth={2} />, t('sharing.myShared.actions.publishNow'), goPublish);
+        Push('publish', <Send size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.publishNow'), goPublish);
         if (asset.originUrl) {
-          Push('open', <ExternalLink size={14} strokeWidth={2} />, t('sharing.myShared.actions.openInDevCenter'), openDevCenter);
+          Push('open', <ExternalLink size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.openInDevCenter'), openDevCenter);
         }
       } else if (s === 'PENDING_APPROVAL') {
-        Push('withdraw', <Undo2 size={14} strokeWidth={2} />, t('sharing.myShared.actions.withdraw'), () => setPending('withdraw'));
+        Push('withdraw', <Undo2 size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.withdraw'), () => setPending('withdraw'));
       } else if (s === 'REJECTED') {
         if (asset.originUrl) {
-          Push('back', <AlertCircle size={14} strokeWidth={2} />, t('sharing.myShared.actions.backToDevCenter'), openDevCenter);
+          Push('back', <AlertCircle size={14} strokeWidth={2} />, t('sharing.assetSupply.actions.backToDevCenter'), openDevCenter);
         }
       }
     }

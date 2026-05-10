@@ -23,12 +23,12 @@ const VersionsPage = () => {
       <div className="versions-header">
         <Button icon={<IconChevronLeft />} theme="borderless" onClick={() => navigate(-1)} />
         <Title heading={3} style={{ margin: 0, flex: 1 }}>
-          {asset.name} · {t('sharing.myShared.version.title')}
+          {asset.name} · {t('sharing.assetSupply.version.title')}
         </Title>
         {isDev && asset.originUrl && (
           <Button icon={<IconExternalOpen />} theme="light" type="primary"
             onClick={() => window.open(asset.originUrl, '_blank')}>
-            {t('sharing.myShared.version.openInDevCenter')}
+            {t('sharing.assetSupply.version.openInDevCenter')}
           </Button>
         )}
       </div>
@@ -37,12 +37,12 @@ const VersionsPage = () => {
           <div key={v.id} className="version-row">
             <div className="version-main">
               <Text strong className="version-num">{v.version}</Text>
-              {v.isLatest && <Tag size="small" color="green" type="solid">{t('sharing.myShared.version.latest')}</Tag>}
-              {isDev && <Tag size="small" color="cyan" type="light">{t('sharing.myShared.version.snapshot')}</Tag>}
+              {v.isLatest && <Tag size="small" color="green" type="solid">{t('sharing.assetSupply.version.latest')}</Tag>}
+              {isDev && <Tag size="small" color="cyan" type="light">{t('sharing.assetSupply.version.snapshot')}</Tag>}
             </div>
             {!isDev && (
               <Text type="secondary" className="version-log">
-                {v.changeLog || t('sharing.myShared.version.noChangeLog')}
+                {v.changeLog || t('sharing.assetSupply.version.noChangeLog')}
               </Text>
             )}
             <div className="version-meta">

@@ -36,7 +36,7 @@ const SemverDialog = ({ visible, onCancel, onOk, currentVersion, isFirstRelease 
       visible={visible}
       onCancel={onCancel}
       onOk={handleOk}
-      title={isFirstRelease ? t('sharing.myShared.semver.firstTitle') : t('sharing.myShared.semver.title')}
+      title={isFirstRelease ? t('sharing.assetSupply.semver.firstTitle') : t('sharing.assetSupply.semver.title')}
       okText={t('common.confirm')}
       cancelText={t('common.cancel')}
       width={520}
@@ -46,26 +46,26 @@ const SemverDialog = ({ visible, onCancel, onOk, currentVersion, isFirstRelease 
         {!isFirstRelease ? (
           <>
             <div style={{ marginBottom: 12, color: 'var(--semi-color-text-2)', fontSize: 13 }}>
-              {t('sharing.myShared.semver.currentToNext', { current: currentVersion, next })}
+              {t('sharing.assetSupply.semver.currentToNext', { current: currentVersion, next })}
             </div>
-            <Form.Slot label={t('sharing.myShared.semver.bumpType')}>
+            <Form.Slot label={t('sharing.assetSupply.semver.bumpType')}>
               <RadioGroup value={bump} onChange={(e) => setBump(e.target.value)} direction="vertical">
-                <Radio value="patch">{t('sharing.myShared.semver.patch')}</Radio>
-                <Radio value="minor">{t('sharing.myShared.semver.minor')}</Radio>
-                <Radio value="major">{t('sharing.myShared.semver.major')}</Radio>
+                <Radio value="patch">{t('sharing.assetSupply.semver.patch')}</Radio>
+                <Radio value="minor">{t('sharing.assetSupply.semver.minor')}</Radio>
+                <Radio value="major">{t('sharing.assetSupply.semver.major')}</Radio>
               </RadioGroup>
             </Form.Slot>
           </>
         ) : (
           <div style={{ marginBottom: 12, color: 'var(--semi-color-text-2)', fontSize: 13 }}>
-            {t('sharing.myShared.semver.firstVersionHint')}
+            {t('sharing.assetSupply.semver.firstVersionHint')}
           </div>
         )}
-        <Form.Slot label={t('sharing.myShared.semver.changeLog')}>
+        <Form.Slot label={t('sharing.assetSupply.semver.changeLog')}>
           <TextArea
             value={changeLog}
             onChange={(v) => { setChangeLog(v); setErr(''); }}
-            placeholder={t('sharing.myShared.semver.changeLogPh')}
+            placeholder={t('sharing.assetSupply.semver.changeLogPh')}
             maxCount={200}
             maxLength={200}
             rows={4}
