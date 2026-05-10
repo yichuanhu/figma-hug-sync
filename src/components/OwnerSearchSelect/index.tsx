@@ -80,6 +80,8 @@ const OwnerSearchSelect = ({
   disabled = false,
   style,
   className,
+  multiple = false,
+  size,
 }: OwnerSearchSelectProps) => {
   const { t } = useTranslation();
 
@@ -89,10 +91,13 @@ const OwnerSearchSelect = ({
   return (
     <Select
       value={value}
-      onChange={(val) => onChange?.(val as string)}
+      onChange={(val) => onChange?.(val as never)}
       placeholder={placeholder || t('common.ownerPlaceholder')}
       disabled={disabled}
       showClear
+      multiple={multiple}
+      maxTagCount={multiple ? 2 : undefined}
+      size={size}
       filter={(input, option) => {
         const opt = option as unknown as UserOption;
         return (opt.searchText || '').includes((input || '').toLowerCase());
@@ -104,6 +109,9 @@ const OwnerSearchSelect = ({
       optionList={options}
       renderSelectedItem={(option) => {
         const opt = option as unknown as UserOption;
+        if (multiple) {
+          return { isRenderInTag: true, content: opt.label };
+        }
         return <span>{opt.label}</span>;
       }}
       renderOptionItem={(props: Record<string, unknown>) => {
