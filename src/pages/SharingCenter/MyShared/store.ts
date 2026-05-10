@@ -417,8 +417,14 @@ export function getMarketAssets(): Asset[] {
   init();
   if (marketAssetsCache && marketAssetsCacheVersion === storeVersion) return marketAssetsCache;
   const baseIds = new Set(allAssets.map((a) => a.id));
+  // 同 id 时以 store 的 PUBLISHED 资产覆盖（含 reuseRecords 等动态字段）
+  const overrideMap = new Map<string, Asset>();
+  for (const a of assets) {
+    if (a.shareStatus === 'PUBLISHED' && baseIds.has(a.id)) overrideMap.set(a.id, a);
+  }
+  const merged = allAssets.map((a) => overrideMap.get(a.id) ?? a);
   const extras = assets.filter((a) => a.shareStatus === 'PUBLISHED' && !baseIds.has(a.id));
-  marketAssetsCache = [...allAssets, ...extras];
+  marketAssetsCache = [...merged, ...extras];
   marketAssetsCacheVersion = storeVersion;
   return marketAssetsCache;
 }
