@@ -3664,7 +3664,13 @@
           "reuser": "复用者",
           "reuseType": "复用方式",
           "note": "备注"
-        }
+        },
+        "editInDevCenter": "在开发中心编辑",
+        "downloadZip": "打包下载",
+        "knowledgeDownloadStarted": "已开始打包，下载链接将通过通知发送",
+        "reusedAt": "复用时间",
+        "snapshot": "快照",
+        "snapshotTip": "该版本为发布时刻的快照，与开发中心当前版本可能不一致"
       },
       "skill": {
         "category": "分类",
