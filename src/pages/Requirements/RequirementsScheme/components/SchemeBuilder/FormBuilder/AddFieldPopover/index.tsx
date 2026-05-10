@@ -23,7 +23,7 @@ interface Props {
   onAdd: (type: SchemeFieldType) => void;
 }
 
-const ITEMS: Array<{ type: SchemeFieldType; labelKey: string; Icon: React.ComponentType<{ size?: number; strokeWidth?: number }> }> = [
+const ITEMS: Array<{ type: SchemeFieldType; labelKey: string; Icon: React.ElementType }> = [
   { type: 'text', labelKey: 'requirements.scheme.builder.fieldType.text', Icon: Type },
   { type: 'textarea', labelKey: 'requirements.scheme.builder.fieldType.textarea', Icon: AlignLeft },
   { type: 'number', labelKey: 'requirements.scheme.builder.fieldType.number', Icon: Hash },
