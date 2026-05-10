@@ -1,10 +1,12 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, Typography, Tag, Button, Tooltip, Banner } from '@douyinfe/semi-ui';
-import { MoreVertical, Send, Eye, Pencil, ExternalLink, Rocket } from 'lucide-react';
+import { MoreVertical, Send, Eye, Pencil, ExternalLink, Rocket, BarChart2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import StatusTag from '@/components/sharing/StatusTag';
 import AssetTypeIcon from '@/pages/Sharing/Market/components/AssetTypeIcon';
 import AssetActionsMenu from '../AssetActionsMenu';
+import ReuseStatsPanel from '../ReuseStatsPanel';
 import type { ShareAsset } from '@/pages/SharingCenter/MyShared/store';
 import { canPushNotification } from '@/pages/SharingCenter/MyShared/store';
 
