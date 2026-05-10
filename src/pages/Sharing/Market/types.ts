@@ -68,6 +68,8 @@ export interface ReuseRecord {
   versionId: string;
   versionNumber: string;
   reuserName: string;
+  /** 复用人所属部门（供给侧复用明细面板展示） */
+  reuserDept?: string;
   reuseType: ReuseType;
   adaptationNote?: string;
   reusedAt: string;
