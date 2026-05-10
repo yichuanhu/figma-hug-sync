@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Typography, Button, Space, Empty, Card, Toast, Tag } from '@douyinfe/semi-ui';
+import { Typography, Button, Space, Empty, Card, Toast, Tag, Banner } from '@douyinfe/semi-ui';
 import { ChevronLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -41,8 +41,14 @@ const ApprovalDetailPage = () => {
 
   const handleReject = (reason: string) => {
     const r = rejectAsset(asset.id, reason);
-    if (!r.ok) Toast.warning(t('sharing.approvals.toast.conflict'));
-    else Toast.success(t('sharing.approvals.toast.rejected'));
+    if (!r.ok) {
+      Toast.warning(t('sharing.approvals.toast.conflict'));
+    } else {
+      const key = asset.source === 'DEV_CENTER'
+        ? 'sharing.approvals.toast.rejectedDevCenter'
+        : 'sharing.approvals.toast.rejectedNative';
+      Toast.success(t(key));
+    }
     setRejectVisible(false);
   };
 
@@ -93,6 +99,16 @@ const ApprovalDetailPage = () => {
             <Paragraph>{asset.description}</Paragraph>
           </div>
         </Card>
+
+        {asset.shareStatus === 'REJECTED' && (
+          <Banner
+            type="warning"
+            closeIcon={null}
+            description={t(asset.source === 'DEV_CENTER'
+              ? 'sharing.approvals.detail.rejectFlowDevCenter'
+              : 'sharing.approvals.detail.rejectFlowNative')}
+          />
+        )}
 
         <Card className="detail-section" title={t('sharing.approvals.detail.timeline')}>
           <ApprovalTimeline events={asset.approvalEvents} />
