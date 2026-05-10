@@ -86,7 +86,7 @@ const MySharedPage = () => {
   const paged = list.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   const filtered = typeF !== 'ALL' || sourceF !== 'ALL' || !!debounced;
-  const clearFilters = () => { setKeyword(''); setTypeF('ALL'); setSourceF('ALL'); };
+  const clearFilters = () => reset();
 
   const goDetail = (a: ShareAsset) => navigate(`/sharing-center/market/${typeRoute[a.type]}/${a.id}`);
 
@@ -107,7 +107,7 @@ const MySharedPage = () => {
 
       <Tabs
         activeKey={tab}
-        onChange={(k) => { setTab(k as ShareStatus); setPage(1); }}
+        onChange={(k) => setTab(k as ShareStatus)}
         className="my-shared-tabs"
         keepDOM={false}
       >
@@ -120,14 +120,14 @@ const MySharedPage = () => {
         <Input
           prefix={<IconSearch />}
           value={keyword}
-          onChange={(v) => { setKeyword(v); setPage(1); }}
+          onChange={setKeyword}
           placeholder={t('sharing.myShared.filters.searchPlaceholder')}
           showClear
           style={{ width: 320 }}
         />
         <Select
           value={typeF}
-          onChange={(v) => { setTypeF(v as TypeFilter); setPage(1); }}
+          onChange={(v) => setType(v as TypeFilter)}
           style={{ width: 140 }}
           insetLabel={t('sharing.myShared.filters.type')}
           optionList={[
@@ -140,7 +140,7 @@ const MySharedPage = () => {
         />
         <Select
           value={sourceF}
-          onChange={(v) => { setSourceF(v as SourceFilter); setPage(1); }}
+          onChange={(v) => setSource(v as SourceFilter)}
           style={{ width: 160 }}
           insetLabel={t('sharing.myShared.filters.source')}
           optionList={[
