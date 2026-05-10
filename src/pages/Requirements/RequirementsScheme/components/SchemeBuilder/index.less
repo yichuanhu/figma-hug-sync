@@ -93,6 +93,17 @@
     gap: 24px;
   }
 
+  .form-builder-error-banner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: var(--semi-color-danger-light-default);
+    color: var(--semi-color-danger);
+    border-radius: 8px;
+    font-size: 13px;
+  }
+
   .canvas-section {
     .canvas-section-title {
       font-size: 12px;
@@ -167,6 +178,10 @@
 
     &.is-over {
       box-shadow: 0 0 0 2px var(--semi-color-primary);
+    }
+
+    &.has-error {
+      border-color: var(--semi-color-danger);
     }
 
     .card-drag-bar {
