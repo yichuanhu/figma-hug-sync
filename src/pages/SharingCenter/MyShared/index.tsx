@@ -37,7 +37,6 @@ const MySharedPage = () => {
     setTab, setType, setSource, setKeyword, setPage, reset,
   } = useMyPublishedQuery();
 
-  const [publishVisible, setPublishVisible] = useState(false);
   const [highlightId, setHighlightId] = useState<string | null>(null);
   const [pushAsset, setPushAsset] = useState<ShareAsset | null>(null);
 
@@ -46,12 +45,6 @@ const MySharedPage = () => {
     const timer = window.setTimeout(() => setHighlightId(null), 2500);
     return () => window.clearTimeout(timer);
   }, [highlightId]);
-
-  const handlePublishSuccess = (assetId: string) => {
-    setPublishVisible(false);
-    setTab('PENDING_APPROVAL');
-    setHighlightId(assetId);
-  };
 
   // MVP 范围：仅展示「自动化流程」与「知识」两类资产
   const mvpAssets = useMemo(
