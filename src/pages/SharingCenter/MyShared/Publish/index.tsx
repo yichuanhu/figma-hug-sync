@@ -9,6 +9,11 @@ import '../Create/Knowledge/index.less';
 
 const { Title, Text } = Typography;
 
+const COVER_MAX_KB = 2 * 1024;       // 2MB
+const VIDEO_MAX_KB = 100 * 1024;     // 100MB
+const COVER_ACCEPT = ['image/jpeg', 'image/png'];
+const VIDEO_ACCEPT = ['video/mp4'];
+
 const DevCenterPublishPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -16,6 +21,8 @@ const DevCenterPublishPage = () => {
   const asset = findAsset(id);
   const [submitting, setSubmitting] = useState(false);
   const [overview, setOverview] = useState<string>('');
+  const [coverFile, setCoverFile] = useState<{ name: string; size: number; url?: string } | null>(null);
+  const [videoFile, setVideoFile] = useState<{ name: string; size: number } | null>(null);
 
   if (!asset) {
     return <div style={{ padding: 64 }}><Text>资产不存在</Text></div>;
@@ -28,17 +35,43 @@ const DevCenterPublishPage = () => {
   const submit = async (values: any) => {
     setSubmitting(true);
     submitDevCenterPublish(id, {
-      coverImage: values.coverImage,
+      coverImage: coverFile?.url || values.coverImage,
       displayName: (values.displayName ?? '').trim() || undefined,
       displayDesc: (values.displayDesc ?? '').trim() || undefined,
       categoryTags: Array.isArray(values.categoryTags) ? values.categoryTags : undefined,
       overview: overview || values.overview,
-      videoUrl: values.videoUrl,
+      videoUrl: videoFile?.name,
     });
     Toast.success(t('sharing.myShared.toast.published'));
     setSubmitting(false);
     navigate('/sharing-center/my-published?tab=PENDING_APPROVAL');
   };
+
+  const beforeCover = (file: File) => {
+    if (!COVER_ACCEPT.includes(file.type)) {
+      Toast.error(t('sharing.myShared.publish.coverTypeError'));
+      return false;
+    }
+    if (file.size / 1024 > COVER_MAX_KB) {
+      Toast.error(t('sharing.myShared.publish.coverSizeError'));
+      return false;
+    }
+    return true;
+  };
+
+  const beforeVideo = (file: File) => {
+    if (!VIDEO_ACCEPT.includes(file.type) && !file.name.toLowerCase().endsWith('.mp4')) {
+      Toast.error(t('sharing.myShared.publish.videoTypeError'));
+      return false;
+    }
+    if (file.size / 1024 > VIDEO_MAX_KB) {
+      Toast.error(t('sharing.myShared.publish.videoSizeError'));
+      return false;
+    }
+    return true;
+  };
+
+  const fmtSize = (kb: number) => kb > 1024 ? `${(kb / 1024).toFixed(1)} MB` : `${kb.toFixed(0)} KB`;
 
   return (
     <div className="ms-create-page">
