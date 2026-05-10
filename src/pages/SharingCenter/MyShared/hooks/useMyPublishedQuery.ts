@@ -2,7 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import type { ShareStatus } from '@/components/sharing/StatusTag';
 
-export type TypeFilter = 'ALL' | 'SNIPPET' | 'WORKFLOW' | 'KNOWLEDGE' | 'SKILL';
+// MVP 范围：仅支持「自动化流程」与「知识」上架
+export type TypeFilter = 'ALL' | 'WORKFLOW' | 'KNOWLEDGE';
 export type SourceFilter = 'ALL' | 'NATIVE' | 'DEV_CENTER';
 
 export interface MyPublishedQueryState {
