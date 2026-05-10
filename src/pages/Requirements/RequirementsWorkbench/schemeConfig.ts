@@ -560,16 +560,7 @@ export const validateScheme = (id: string): SchemeValidationResult => {
     }
   }
 
-  // Cost
-  if (!s.cost_config || !s.cost_config.working_hours_per_day) {
-    missing.push('cost');
-    errors.push('成本配置必填');
-  } else {
-    const list = s.cost_config.rate_table_v2 ?? [];
-    const ls = list.map((x) => x.level);
-    const dupL = ls.find((x, i) => ls.indexOf(x) !== i);
-    if (dupL) errors.push(`费率表岗位级别名称重复：${dupL}`);
-  }
+  // Cost 配置已从模版中移除，不再校验
 
   return { ok: missing.length === 0 && errors.length === 0, missing, errors };
 };
