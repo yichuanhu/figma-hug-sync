@@ -131,9 +131,6 @@ const AssetDetail = () => {
       <div className="display-body">
         <Title heading={4} style={{ margin: 0 }}>{displayName}</Title>
         <Paragraph type="tertiary" className="display-desc">{displayDesc}</Paragraph>
-        {asset.overview && (
-          <div className="display-overview knowledge-html" dangerouslySetInnerHTML={{ __html: asset.overview }} />
-        )}
         {categoryTags.length > 0 && (
           <div className="display-tags">
             {categoryTags.map((tag) => (
@@ -156,28 +153,31 @@ const AssetDetail = () => {
   // ============ 内容区 ============
   const renderContentSection = () => {
     if (isWorkflow) {
-      const yaml = asset.workflow?.yaml ?? asset.versions.find((v) => v.isLatest)?.content ?? '';
       return (
         <section className="asset-detail-section">
           <div className="section-head">
-            <Title heading={6} style={{ margin: 0 }}>{t('sharing.market.detail.tabs.contentReadonly')}</Title>
+            <Title heading={6} style={{ margin: 0 }}>{t('sharing.market.detail.overview')}</Title>
             <Button theme="borderless" type="primary" size="small"
               icon={<ExternalLink size={14} strokeWidth={2} />} onClick={handleEditInDevCenter}>
               {t('sharing.market.detail.editInDevCenter')}
             </Button>
           </div>
-          {yaml ? <pre className="asset-detail-yaml">{yaml}</pre>
-            : <Paragraph type="tertiary">{t('sharing.market.detail.noContent')}</Paragraph>}
+          {asset.overview
+            ? <div className="knowledge-html" dangerouslySetInnerHTML={{ __html: asset.overview }} />
+            : <Paragraph type="tertiary">{t('sharing.market.detail.noOverview')}</Paragraph>}
         </section>
       );
     }
     const k = asset.knowledge;
+    const hasContent = asset.overview || k?.contentHtml;
     return (
       <section className="asset-detail-section">
         <div className="section-head">
           <Title heading={6} style={{ margin: 0 }}>{t('sharing.market.detail.tabs.content')}</Title>
         </div>
+        {asset.overview && <div className="knowledge-html" dangerouslySetInnerHTML={{ __html: asset.overview }} />}
         {k?.contentHtml && <div className="knowledge-html" dangerouslySetInnerHTML={{ __html: k.contentHtml }} />}
+        {!hasContent && <Paragraph type="tertiary">{t('sharing.market.detail.noContent')}</Paragraph>}
         {k && k.attachments.length > 0 && (
           <div className="knowledge-attachments">
             <Text strong>📎 {t('sharing.market.detail.attachments')}</Text>

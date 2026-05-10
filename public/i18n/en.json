@@ -4324,7 +4324,9 @@
           "knowledgeEditable": "✅ Publisher can click \"Edit display info\" in the top right to modify"
         },
         "editKnowledge": "Edit",
-        "editKnowledgeTip": "Redirect to knowledge edit page (Story 005)"
+        "editKnowledgeTip": "Redirect to knowledge edit page (Story 005)",
+        "overview": "Asset Overview",
+        "noOverview": "No overview yet"
       },
       "skill": {
         "category": "Category",
