@@ -870,7 +870,8 @@
         "modalTip": "选择一个工作空间，将当前需求纳入其中以启动开发。",
         "linkSuccess": "已关联到工作空间「{{name}}」",
         "selectPlaceholder": "请选择工作空间"
-      },
+      }
+    },
     "approvalFlow": {
       "title": "审批流程",
       "currentLevel": "第 {{current}}/{{total}} 级 · {{name}}",
