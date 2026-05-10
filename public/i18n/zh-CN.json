@@ -3322,6 +3322,10 @@
       "create": {
         "knowledgeTitle": "新建知识",
         "skillTitle": "新建技能",
+        "sectionBasic": "基础信息",
+        "sectionDisplay": "上架展示信息",
+        "sectionDisplayHint": "若仅保存草稿可跳过；点击「立即上架」时为必填项。",
+        "selectAttachment": "选择附件",
         "fields": {
           "name": "名称",
           "namePh": "请输入名称（2-100 字符）",
