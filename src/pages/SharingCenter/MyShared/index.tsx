@@ -99,10 +99,10 @@ const MySharedPage = () => {
   // 「已上架」Tab 顶部聚合复用记录
   const aggregatedReuse = useMemo(() => {
     if (tab !== 'PUBLISHED') return [];
-    return all
+    return mvpAssets
       .filter((a) => a.shareStatus === 'PUBLISHED' || a.shareStatus === 'ARCHIVED')
       .flatMap((a) => a.reuseRecords ?? []);
-  }, [all, tab]);
+  }, [mvpAssets, tab]);
 
   return (
     <div className="my-shared-page">
