@@ -59,7 +59,11 @@ const ApproverList = ({
   onChange: (next: WorkflowApprover[]) => void;
 }) => {
   const update = (idx: number, p: WorkflowApprover) => onChange(list.map((x, i) => (i === idx ? p : x)));
-  const remove = (idx: number) => onChange(list.filter((_, i) => i !== idx));
+  const remove = (idx: number) => {
+    const next = list.filter((_, i) => i !== idx);
+    next.forEach((x, i) => (x.priority = i + 1));
+    onChange(next);
+  };
 
   const dragIndexRef = useRef<number | null>(null);
   const [dragIdx, setDragIdx] = useState<number | null>(null);
