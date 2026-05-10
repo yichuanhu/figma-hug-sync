@@ -96,7 +96,7 @@ import ApprovalLevelsPage from "@/pages/SharingCenter/Admin/ApprovalLevels";
 import PermissionsPage from "@/pages/SharingCenter/Admin/Permissions";
 // Notification Center
 import NotificationCenter from "@/pages/NotificationCenter";
-import PreviewDiagnostics from "@/components/dev/PreviewDiagnostics";
+
 
 const queryClient = new QueryClient();
 
@@ -239,7 +239,7 @@ const App = () => {
         {/* 无布局页面 */}
         <Route path="*" element={<NotFound />} />
       </Routes>
-      <PreviewDiagnostics />
+      
     </BrowserRouter>
   </QueryClientProvider>
   </LicenseProvider>
