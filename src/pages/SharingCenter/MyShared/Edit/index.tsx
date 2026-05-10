@@ -7,6 +7,7 @@ import {
   findAsset, updateMeta, updateNativeContent, publishNewVersion, CURRENT_USER_ID,
 } from '@/pages/SharingCenter/MyShared/store';
 import SemverDialog from '@/pages/SharingCenter/MyShared/components/SemverDialog';
+import RichTextEditor from '@/components/RichTextEditor';
 import '../Create/Knowledge/index.less';
 
 const { Title, Text } = Typography;
@@ -93,12 +94,7 @@ const EditPage = () => {
             </Form.Slot>
           ) : (
             <Form.Slot label={t('sharing.myShared.create.fields.content')}>
-              <textarea
-                value={content} onChange={(e) => setContent(e.target.value)}
-                style={{
-                  width: '100%', minHeight: 220, padding: 12, fontSize: 13,
-                  border: '1px solid var(--semi-color-border)', borderRadius: 6, resize: 'vertical',
-                }} />
+              <RichTextEditor value={content} onChange={setContent} maxLength={5000} />
             </Form.Slot>
           )}
         </Form>
