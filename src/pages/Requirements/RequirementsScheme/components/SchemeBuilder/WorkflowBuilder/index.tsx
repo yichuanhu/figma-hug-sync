@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Select, Typography, Empty, Input, Switch, Tag, Toast } from '@douyinfe/semi-ui';
 import { Plus, Trash2, GripVertical, PowerOff } from 'lucide-react';
 import { buildWorkflowFromTemplate } from '@/pages/Requirements/RequirementsWorkbench/schemeConfig';
+import OwnerSearchSelect from '@/components/OwnerSearchSelect';
 import AssessmentBuilder from '../AssessmentBuilder';
 import type {
   WorkflowConfig,
@@ -37,12 +38,6 @@ const MODE_OPTIONS: Array<{ value: WorkflowApprovalMode; label: string }> = [
   { value: 'majority', label: '多数通过' },
 ];
 
-const USER_OPTIONS = [
-  { value: 'user-001', label: 'John Smith' },
-  { value: 'user-002', label: 'Emily Chen' },
-  { value: 'user-003', label: 'Michael Wang' },
-  { value: 'user-004', label: 'Sarah Li' },
-];
 const ROLE_OPTIONS = [
   { value: 'role-line-manager', label: '直属主管' },
   { value: 'role-dept-head', label: '部门负责人' },
@@ -133,10 +128,19 @@ const ApproverList = ({
               <Switch checked={a.required} onChange={(v) => update(idx, { ...a, required: v })} size="small" />
               <Text size="small" type="tertiary">必需</Text>
             </div>
-            {(a.type === 'specific_users' || a.type === 'role') && (
+            {a.type === 'specific_users' && (
+              <OwnerSearchSelect
+                multiple
+                size="small"
+                value={a.target_ids ?? []}
+                onChange={(v: string | string[]) => update(idx, { ...a, target_ids: (Array.isArray(v) ? v : []) as string[] })}
+                placeholder="搜索并选择用户"
+              />
+            )}
+            {a.type === 'role' && (
               <Select multiple value={a.target_ids ?? []} onChange={(v) => update(idx, { ...a, target_ids: v as string[] })}
-                optionList={a.type === 'specific_users' ? USER_OPTIONS : ROLE_OPTIONS}
-                size="small" placeholder={a.type === 'specific_users' ? '选择用户' : '选择角色'} />
+                optionList={ROLE_OPTIONS}
+                size="small" placeholder="选择角色" />
             )}
           </div>
           <Button icon={<Trash2 size={14} strokeWidth={2} />} theme="borderless" type="danger" size="small" onClick={() => remove(idx)} />

@@ -5,12 +5,15 @@ import { ALL_ORG_USERS, OrgUser } from '@/components/CollaboratorManager/mockDat
 import { departmentTree, DeptTreeNode } from '@/mocks/departmentData';
 
 interface OwnerSearchSelectProps {
-  value?: string;
-  onChange?: (value: string) => void;
+  value?: string | string[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onChange?: any;
   placeholder?: string;
   disabled?: boolean;
   style?: React.CSSProperties;
   className?: string;
+  multiple?: boolean;
+  size?: 'small' | 'default' | 'large';
 }
 
 interface UserOption {
@@ -77,6 +80,8 @@ const OwnerSearchSelect = ({
   disabled = false,
   style,
   className,
+  multiple = false,
+  size,
 }: OwnerSearchSelectProps) => {
   const { t } = useTranslation();
 
@@ -86,10 +91,13 @@ const OwnerSearchSelect = ({
   return (
     <Select
       value={value}
-      onChange={(val) => onChange?.(val as string)}
+      onChange={(val) => onChange?.(val as never)}
       placeholder={placeholder || t('common.ownerPlaceholder')}
       disabled={disabled}
       showClear
+      multiple={multiple}
+      maxTagCount={multiple ? 2 : undefined}
+      size={size}
       filter={(input, option) => {
         const opt = option as unknown as UserOption;
         return (opt.searchText || '').includes((input || '').toLowerCase());
@@ -99,10 +107,12 @@ const OwnerSearchSelect = ({
       dropdownMatchSelectWidth
       dropdownStyle={{ maxHeight: 320, overflow: 'auto' }}
       optionList={options}
-      renderSelectedItem={(option) => {
-        const opt = option as unknown as UserOption;
-        return <span>{opt.label}</span>;
-      }}
+      renderSelectedItem={multiple
+        ? ((option: Record<string, unknown>) => ({
+            isRenderInTag: true,
+            content: (option as unknown as UserOption).label,
+          }))
+        : ((option: Record<string, unknown>) => <span>{(option as unknown as UserOption).label}</span>)}
       renderOptionItem={(props: Record<string, unknown>) => {
         const {
           disabled: optDisabled,
