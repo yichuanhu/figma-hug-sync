@@ -165,7 +165,7 @@ const WorkflowBuilder = ({
     if (next) {
       const restored = cachedAssessorsRef.current && cachedAssessorsRef.current.length > 0
         ? cachedAssessorsRef.current
-        : buildWorkflowFromTemplate('simple').assessors;
+        : buildWorkflowFromTemplate('assess-first').assessors;
       updateLists(wf.approvers, restored);
       const cachedAssess = cachedAssessmentRef.current;
       if (cachedAssess && onChangeAssessment) {
