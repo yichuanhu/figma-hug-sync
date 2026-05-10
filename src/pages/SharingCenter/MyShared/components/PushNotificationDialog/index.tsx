@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Modal, Form, TreeSelect, Input, Checkbox, Toast, Typography } from '@douyinfe/semi-ui';
+import { Modal, Form, TreeSelect, Input, TextArea, Checkbox, Toast, Typography } from '@douyinfe/semi-ui';
 import { useTranslation } from 'react-i18next';
 import {
   type ShareAsset,
