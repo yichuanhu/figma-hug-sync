@@ -3,14 +3,16 @@ import { Typography, Table, Select, Button, Toast, Banner, Modal, Space } from '
 import { useTranslation } from 'react-i18next';
 import {
   type AssetTypeKey, type ApprovalLevel, type ApprovalConfig,
-  DEFAULT_APPROVAL_CONFIG, getApprovalConfig, saveApprovalConfig, resetApprovalConfig,
+  getApprovalConfig, saveApprovalConfig,
 } from '@/pages/SharingCenter/shared/approvalConfig';
 import './index.less';
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 type Row = { type: AssetTypeKey; level: ApprovalLevel };
 
+// TODO(权限): 接入 SC_ADMIN_RULE 权限校验，未授权用户重定向至 403 / 首页（STORY-003 AC-FUNC-05 / E1）。
+//             Mock 阶段默认放行，便于预览。
 const ApprovalLevelsPage = () => {
   const { t } = useTranslation();
   const [config, setConfig] = useState<ApprovalConfig>(() => getApprovalConfig());
@@ -28,18 +30,12 @@ const ApprovalLevelsPage = () => {
       title: t('sharing.admin.approvalLevels.confirmSaveTitle'),
       content: t('sharing.admin.approvalLevels.confirmSaveContent'),
       onOk: () => {
+        // TODO(API): PUT /api/sharing-center/admin/approval-config，失败时按 AC-ERR-01 处理（保留用户选择 + Toast 错误）
         saveApprovalConfig(config);
         setDirty(false);
         Toast.success(t('sharing.admin.approvalLevels.toast.saved'));
       },
     });
-  };
-
-  const handleReset = () => {
-    setConfig({ ...DEFAULT_APPROVAL_CONFIG });
-    resetApprovalConfig();
-    setDirty(false);
-    Toast.success(t('sharing.admin.approvalLevels.toast.reset'));
   };
 
   // MVP 仅 WORKFLOW + KNOWLEDGE（流程块/技能 P2）
@@ -56,29 +52,25 @@ const ApprovalLevelsPage = () => {
       render: (v: AssetTypeKey) => t(`sharing.market.tabs.${v}`),
     },
     {
-      title: t('sharing.admin.approvalLevels.col.current'),
-      dataIndex: 'level',
-      width: 200,
-      render: (v: ApprovalLevel) => levelLabel(v),
-    },
-    {
       title: t('sharing.admin.approvalLevels.col.choose'),
-      width: 240,
+      width: 320,
       render: (_: unknown, row: Row) => (
         <Select
           value={row.level}
           onChange={(v) => handleChange(row.type, v as ApprovalLevel)}
-          style={{ width: 200 }}
+          style={{ width: 280 }}
           optionList={[
-            { label: levelLabel('NONE'), value: 'NONE' },
             { label: levelLabel('SINGLE'), value: 'SINGLE' },
+            { label: levelLabel('NONE'), value: 'NONE' },
           ]}
         />
       ),
     },
     {
-      title: t('sharing.admin.approvalLevels.col.desc'),
-      render: (_: unknown, row: Row) => t(`sharing.admin.approvalLevels.desc.${row.type}`),
+      title: '',
+      render: (_: unknown, row: Row) => (
+        <Text type="tertiary">{t(`sharing.admin.approvalLevels.desc.${row.type}`)}</Text>
+      ),
     },
   ];
 
@@ -88,7 +80,7 @@ const ApprovalLevelsPage = () => {
         <Title heading={3} className="title">{t('sharing.admin.approvalLevels.pageTitle')}</Title>
       </div>
 
-      <Banner type="info" closeIcon={null} description={t('sharing.admin.approvalLevels.notice')} />
+      <Text className="page-intro">{t('sharing.admin.approvalLevels.intro')}</Text>
 
       <Table
         size="small"
@@ -98,9 +90,14 @@ const ApprovalLevelsPage = () => {
         pagination={false}
       />
 
+      <Banner type="warning" closeIcon={null} description={t('sharing.admin.approvalLevels.devCenterNotice')} />
+
+      <Text type="tertiary" className="queue-notice">
+        {t('sharing.admin.approvalLevels.queueNotice')}
+      </Text>
+
       <div className="page-footer">
         <Space spacing={8}>
-          <Button onClick={handleReset}>{t('sharing.admin.approvalLevels.reset')}</Button>
           <Button theme="solid" type="primary" disabled={!dirty} onClick={handleSave}>
             {t('common.save')}
           </Button>
