@@ -54,19 +54,25 @@ const MySharedPage = () => {
     setHighlightId(assetId);
   };
 
+  // MVP 范围：仅展示「自动化流程」与「知识」两类资产
+  const mvpAssets = useMemo(
+    () => all.filter((a) => a.type === 'WORKFLOW' || a.type === 'KNOWLEDGE'),
+    [all],
+  );
+
   const counts = useMemo(() => {
     const m: Record<ShareStatus, number> = {
       PUBLISHED: 0, PENDING_PUBLISH: 0, DRAFT: 0, PENDING_APPROVAL: 0, REJECTED: 0, ARCHIVED: 0, UNLISTED: 0,
     };
-    all.forEach((a) => {
+    mvpAssets.forEach((a) => {
       if (a.shareStatus === 'ARCHIVED') { m.PUBLISHED += 1; return; }
       if (m[a.shareStatus] !== undefined) m[a.shareStatus] += 1;
     });
     return m;
-  }, [all]);
+  }, [mvpAssets]);
 
   const list = useMemo(() => {
-    return all.filter((a) => {
+    return mvpAssets.filter((a) => {
       if (tab === 'PUBLISHED') {
         if (a.shareStatus !== 'PUBLISHED' && a.shareStatus !== 'ARCHIVED') return false;
       } else if (a.shareStatus !== tab) return false;
@@ -81,7 +87,7 @@ const MySharedPage = () => {
       }
       return true;
     });
-  }, [all, tab, typeF, sourceF, debounced]);
+  }, [mvpAssets, tab, typeF, sourceF, debounced]);
 
   const paged = list.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
