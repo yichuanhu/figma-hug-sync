@@ -667,48 +667,15 @@ export interface RequirementListResponse {
 
 // ============= STORY-014 立项后变更 =============
 
-/** 变更类型 */
-export type ChangeType = 'CONTENT' | 'DEV_IMPACT' | 'SYSTEM';
-
-/** 单个字段差异 */
-export interface ChangedFieldDiff {
-  /** 字段 key（顶层字段或 form_data 中字段，前缀 `form.` 表示自定义字段） */
-  key: string;
-  /** 字段展示名 */
-  label?: string;
-  before: unknown;
-  after: unknown;
-}
-
-/** 开发响应类型 */
-export type DevResponseAction = 'ACK' | 'ADJUSTED' | 'REJECTED';
-
-export interface DevResponse {
-  id: string;
-  action: DevResponseAction;
-  comment?: string;
-  responderId: string;
-  responderName: string;
-  respondedAt: string;
-}
-
-/** 变更日志条目（PENDING 表示开发侧尚未响应） */
+/** 变更日志条目（仅记录变更说明，不再包含字段对比与开发响应） */
 export interface RequirementChangeLog {
   id: string;
   requirementId: string;
-  workspaceId?: string;
-  workspaceName?: string;
-  changeType: ChangeType;
   /** 变更说明（≥10 字） */
   reason: string;
-  diffs: ChangedFieldDiff[];
   publisherId: string;
   publisherName: string;
   publishedAt: string;
-  /** 是否需要开发响应（DEV_IMPACT + 已绑定工作空间 → true） */
-  needsDevResponse: boolean;
-  status: 'PENDING' | 'RESOLVED' | 'NONE';
-  response?: DevResponse;
 }
 
 /** 草稿（按 `${requirementId}::${userId}` 隔离） */
