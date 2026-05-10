@@ -107,10 +107,30 @@ const DevCenterPublishPage = () => {
           <Title heading={6} style={{ marginBottom: 12 }}>{t('sharing.myShared.publish.displayTitle')}</Title>
           <Form labelPosition="top" onSubmit={submit} getFormApi={(api) => ((window as any).__pubForm = api)}>
             <Form.Slot label={t('sharing.myShared.publish.coverImage')}>
-              <Upload action="" accept=".jpg,.jpeg,.png" maxSize={2048} customRequest={({ onSuccess }: any) => setTimeout(() => onSuccess?.({}), 200)}>
-                <Button icon={<IconImage />}>{t('sharing.myShared.publish.coverImage')}</Button>
+              <Upload
+                action="" accept=".jpg,.jpeg,.png" maxSize={COVER_MAX_KB} showUploadList={false}
+                beforeUpload={({ file }: any) => beforeCover(file.fileInstance as File)}
+                customRequest={({ file, onSuccess }: any) => {
+                  const f = file.fileInstance as File;
+                  const url = URL.createObjectURL(f);
+                  setCoverFile({ name: f.name, size: f.size / 1024, url });
+                  setTimeout(() => onSuccess?.({}), 100);
+                }}
+              >
+                <Button icon={<IconImage />}>{coverFile ? t('sharing.myShared.publish.coverReplace') : t('sharing.myShared.publish.coverImage')}</Button>
               </Upload>
-              <div style={{ color: 'var(--semi-color-text-2)', fontSize: 12, marginTop: 4 }}>{t('sharing.myShared.publish.coverImageHint')}</div>
+              {coverFile ? (
+                <div style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 12 }}>
+                  {coverFile.url && <img src={coverFile.url} alt="" style={{ width: 64, height: 64, borderRadius: 6, objectFit: 'cover', border: '1px solid var(--semi-color-border)' }} />}
+                  <div style={{ fontSize: 12, color: 'var(--semi-color-text-1)' }}>
+                    <div>{coverFile.name}</div>
+                    <div style={{ color: 'var(--semi-color-text-2)' }}>{fmtSize(coverFile.size)}</div>
+                  </div>
+                  <Button size="small" theme="borderless" type="danger" onClick={() => setCoverFile(null)}>{t('common.remove')}</Button>
+                </div>
+              ) : (
+                <div style={{ color: 'var(--semi-color-text-2)', fontSize: 12, marginTop: 4 }}>{t('sharing.myShared.publish.coverImageHint')}</div>
+              )}
             </Form.Slot>
             <Form.Input field="displayName" label={t('sharing.myShared.publish.displayName')} placeholder={t('sharing.myShared.publish.displayNamePh')} maxLength={100} />
             <Form.TextArea field="displayDesc" label={t('sharing.myShared.publish.displayDesc')} placeholder={t('sharing.myShared.publish.displayDescPh')} maxLength={500} rows={3} />
@@ -119,10 +139,26 @@ const DevCenterPublishPage = () => {
               <RichTextEditor value={overview} onChange={setOverview} placeholder={t('sharing.myShared.publish.overviewPh')} maxLength={5000} minHeight={240} />
             </Form.Slot>
             <Form.Slot label={t('sharing.myShared.publish.videoUrl')}>
-              <Upload action="" accept=".mp4" maxSize={102400} customRequest={({ onSuccess }: any) => setTimeout(() => onSuccess?.({}), 200)}>
-                <Button icon={<IconVideoListStroked />}>{t('sharing.myShared.publish.videoUrl')}</Button>
+              <Upload
+                action="" accept=".mp4" maxSize={VIDEO_MAX_KB} showUploadList={false}
+                beforeUpload={({ file }: any) => beforeVideo(file.fileInstance as File)}
+                customRequest={({ file, onSuccess }: any) => {
+                  const f = file.fileInstance as File;
+                  setVideoFile({ name: f.name, size: f.size / 1024 });
+                  setTimeout(() => onSuccess?.({}), 100);
+                }}
+              >
+                <Button icon={<IconVideoListStroked />}>{videoFile ? t('sharing.myShared.publish.videoReplace') : t('sharing.myShared.publish.videoUrl')}</Button>
               </Upload>
-              <div style={{ color: 'var(--semi-color-text-2)', fontSize: 12, marginTop: 4 }}>{t('sharing.myShared.publish.videoUrlHint')}</div>
+              {videoFile ? (
+                <div style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 12, fontSize: 12 }}>
+                  <span style={{ color: 'var(--semi-color-text-1)' }}>{videoFile.name}</span>
+                  <span style={{ color: 'var(--semi-color-text-2)' }}>{fmtSize(videoFile.size)}</span>
+                  <Button size="small" theme="borderless" type="danger" onClick={() => setVideoFile(null)}>{t('common.remove')}</Button>
+                </div>
+              ) : (
+                <div style={{ color: 'var(--semi-color-text-2)', fontSize: 12, marginTop: 4 }}>{t('sharing.myShared.publish.videoUrlHint')}</div>
+              )}
             </Form.Slot>
           </Form>
         </div>
