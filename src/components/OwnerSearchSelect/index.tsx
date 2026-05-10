@@ -6,7 +6,8 @@ import { departmentTree, DeptTreeNode } from '@/mocks/departmentData';
 
 interface OwnerSearchSelectProps {
   value?: string | string[];
-  onChange?: (value: string | string[]) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onChange?: any;
   placeholder?: string;
   disabled?: boolean;
   style?: React.CSSProperties;
