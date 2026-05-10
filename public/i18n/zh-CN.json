@@ -3554,22 +3554,25 @@
       "tabs": {
         "ALL": "全部",
         "WORKFLOW": "自动化流程",
-        "KNOWLEDGE": "知识库",
+        "KNOWLEDGE": "知识",
+        "MY_REUSED": "我已复用",
         "SKILL": "技能",
         "SNIPPET": "流程块"
       },
       "subTitles": {
-        "workflow": "自动化流程市场",
-        "knowledge": "知识库市场",
-        "skill": "技能市场",
-        "snippet": "流程块市场"
+        "workflow": "自动化流程库",
+        "knowledge": "知识中心",
+        "skill": "技能库",
+        "snippet": "流程块库"
       },
       "empty": {
         "default": "暂无资产",
         "workflow": "暂无自动化流程",
-        "knowledge": "暂无知识库",
+        "knowledge": "暂无知识",
         "skill": "暂无技能",
-        "snippet": "暂无流程块"
+        "snippet": "暂无流程块",
+        "myReused": "你尚未复用任何资产",
+        "myReusedAction": "浏览全部资产"
       },
       "filter": {
         "sort": "排序",
@@ -3593,15 +3596,27 @@
       },
       "action": {
         "reuse": "复用",
+        "reusing": "复用中...",
+        "reused": "已复用",
         "collect": "收藏",
-        "uncollect": "取消收藏"
+        "uncollect": "取消收藏",
+        "editDisplay": "编辑展示信息"
       },
+      "badge": {
+        "reused": "已复用"
+      },
+      "mvpUnavailable": "该资产类型在 MVP 不开放，敬请期待",
       "toast": {
         "collected": "已收藏",
         "uncollected": "已取消收藏",
         "copied": "已复制",
         "copyFailed": "复制失败",
-        "reuseSuccess": "复用成功"
+        "reuseSuccess": "复用成功",
+        "reuseFailed": "复用失败，请重试",
+        "workflowReused": "复用成功，可在开发中心查看",
+        "workflowReusedLink": "前往开发中心",
+        "knowledgeReused": "复用成功",
+        "knowledgeReusedLink": "查看我的复用"
       },
       "create": {
         "button": "新建",
