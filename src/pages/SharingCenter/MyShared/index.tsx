@@ -132,10 +132,8 @@ const MySharedPage = () => {
           insetLabel={t('sharing.myShared.filters.type')}
           optionList={[
             { value: 'ALL', label: t('sharing.myShared.filters.allType') },
-            { value: 'SNIPPET', label: t('sharing.myShared.newAsset.snippet') },
             { value: 'WORKFLOW', label: t('sharing.myShared.newAsset.workflow') },
             { value: 'KNOWLEDGE', label: t('sharing.myShared.newAsset.knowledge') },
-            { value: 'SKILL', label: t('sharing.myShared.newAsset.skill') },
           ]}
         />
         <Select
