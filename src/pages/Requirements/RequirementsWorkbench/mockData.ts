@@ -1309,7 +1309,6 @@ import type {
   RequirementChangeLog,
   RequirementDraft,
   ChangeType,
-  ChangedFieldDiff,
   DevResponseAction,
 } from './types';
 import {
