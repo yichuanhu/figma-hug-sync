@@ -10,7 +10,6 @@ interface PublishChangePanelProps {
 
 export const ERROR_MAP: Record<string, string> = {
   CHANGE_REASON_TOO_SHORT: '变更说明至少 10 个字符',
-  NO_CHANGES: '未检测到有效变更',
   NOT_POST_PROJECT_STATUS: '当前需求未进入立项后阶段，无法发布变更',
   REQUIREMENT_NOT_FOUND: '需求不存在或已被删除',
 };
