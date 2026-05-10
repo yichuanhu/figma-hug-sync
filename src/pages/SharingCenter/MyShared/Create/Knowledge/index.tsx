@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import {
   addAsset, makeNativeKnowledge, buildAssetId, publishNewVersion, type ShareAsset,
 } from '@/pages/SharingCenter/MyShared/store';
+import RichTextEditor, { stripHtml } from '@/components/RichTextEditor';
 import './index.less';
 
 const { Title } = Typography;
@@ -73,11 +74,10 @@ const KnowledgeCreatePage = () => {
             rules={[{ required: true, min: 10, max: 500, message: t('sharing.myShared.create.fields.descPh') }]}
             trigger={['blur', 'change']}
           />
-          <Form.TextArea
-            field="content" label={t('sharing.myShared.create.fields.content')}
-            placeholder="支持 Markdown / 富文本（演示版以纯文本为主）"
-            rows={8}
-          />
+          <Form.Slot label={t('sharing.myShared.create.fields.content')}>
+            <Form.Slot.ErrorMessage />
+            <RichTextField field="content" />
+          </Form.Slot>
           <Form.Slot label={t('sharing.myShared.create.fields.attachments')}>
             <Upload
               action="" customRequest={({ onSuccess }: any) => setTimeout(() => onSuccess?.({}), 200)}
