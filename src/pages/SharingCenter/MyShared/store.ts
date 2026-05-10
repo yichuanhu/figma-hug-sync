@@ -53,15 +53,17 @@ const init = () => {
     const isMine = idx % 3 === 0;
     const isDevCenter = a.source === 'DEV_CENTER';
     let shareStatus: ShareStatus = isMine ? statusByIndex[idx % statusByIndex.length] : 'PUBLISHED';
-    // NATIVE 不会有 SNIPPET/WORKFLOW；DEV_CENTER 不会有 KNOWLEDGE/SKILL — 现有数据已符合
     const submittedAt = a.updatedAt;
+    const ownerId = isMine ? CURRENT_USER_ID : `user-${idx}`;
     return {
       ...a,
       isMine,
       shareStatus,
-      ownerId: isMine ? CURRENT_USER_ID : `user-${idx}`,
+      ownerId,
       creatorId: isMine && !isDevCenter ? CURRENT_USER_ID : `user-${idx}`,
-      originUrl: isDevCenter ? `${DEV_CENTER_BASE}/${a.id}` : undefined,
+      publishedBy: a.publishedBy ?? ownerId,
+      originUrl: a.originUrl ?? (isDevCenter ? `${DEV_CENTER_BASE}/${a.id}` : undefined),
+      resourceDeps: a.resourceDeps ?? (isDevCenter ? ['队列-A', 'DB-凭据'] : undefined),
       submittedAt,
       rejectedReason: shareStatus === 'REJECTED' ? '描述信息不充分，请补充示例后重新提交' : undefined,
       approvalEvents: buildEvents(shareStatus, isMine ? ME : a.creatorName, submittedAt),
