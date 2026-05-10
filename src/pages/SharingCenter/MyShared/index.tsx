@@ -212,12 +212,6 @@ const MySharedPage = () => {
         </div>
       )}
 
-      <PublishWorkflowModal
-        visible={publishVisible}
-        onCancel={() => setPublishVisible(false)}
-        onSuccess={handlePublishSuccess}
-      />
-
       <PushNotificationDialog
         visible={!!pushAsset}
         asset={pushAsset}
