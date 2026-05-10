@@ -1,17 +1,6 @@
-import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Select, Typography, Empty, Input, Switch, Tag, Toast, Modal } from '@douyinfe/semi-ui';
-import { Plus, Trash2, ArrowUp, ArrowDown, Workflow as WorkflowIcon, PowerOff } from 'lucide-react';
-import ReactFlow, {
-  Background,
-  Controls,
-  MiniMap,
-  type Node,
-  type Edge,
-  useNodesState,
-  useEdgesState,
-} from 'reactflow';
-import 'reactflow/dist/style.css';
+import { Plus, Trash2, ArrowUp, ArrowDown, PowerOff } from 'lucide-react';
 import { buildWorkflowFromTemplate } from '@/pages/Requirements/RequirementsWorkbench/schemeConfig';
 import AssessmentBuilder from '../AssessmentBuilder';
 import type {
@@ -19,7 +8,6 @@ import type {
   WorkflowApprover,
   WorkflowApproverType,
   WorkflowApprovalMode,
-  WorkflowState,
   AssessmentModel,
   SchemeField,
 } from '@/pages/Requirements/RequirementsWorkbench/types';
@@ -37,13 +25,6 @@ interface Props {
   fields?: SchemeField[];
   onChangeAssessment?: (value?: AssessmentModel, complexity?: AssessmentModel) => void;
 }
-
-const TEMPLATES = [
-  { value: 'simple', label: '简单审批' },
-  { value: 'multi-approval', label: '多级审批' },
-  { value: 'assess-first', label: '评估优先' },
-  { value: 'multi-approval-assess', label: '多级审批 + 评估' },
-];
 
 const APPROVER_TYPE_OPTIONS: Array<{ value: WorkflowApproverType; label: string }> = [
   { value: 'department_leader', label: '部门领导' },
@@ -70,38 +51,6 @@ const ROLE_OPTIONS = [
 ];
 
 const DISABLED_WORKFLOW: WorkflowConfig = { template: 'none', states: [], approvers: [], assessors: [] };
-
-const layoutStates = (states: WorkflowState[]): Node[] =>
-  states.map((s, i) => ({
-    id: s.id,
-    data: { label: s.name + (s.initial ? ' (起)' : '') },
-    position: { x: 60 + (i % 4) * 180, y: 60 + Math.floor(i / 4) * 120 },
-    style: {
-      background: s.role === 'approval' ? '#E6F4FF' : s.role === 'assessment' ? '#FFF7E6' : '#fff',
-      border: '1px solid var(--semi-color-border)',
-      padding: '8px 14px',
-      borderRadius: 6,
-      fontSize: 12,
-    },
-  }));
-
-const buildEdges = (states: WorkflowState[]): Edge[] => {
-  const edges: Edge[] = [];
-  states.forEach((s) => {
-    s.transitions.forEach((tr) => {
-      edges.push({
-        id: `${s.id}-${tr.id}`,
-        source: s.id,
-        target: tr.to,
-        label: tr.label,
-        labelStyle: { fontSize: 11 },
-        style: { stroke: 'var(--semi-color-border)' },
-        animated: false,
-      });
-    });
-  });
-  return edges;
-};
 
 const ApproverList = ({
   title,
@@ -180,30 +129,16 @@ const ApproverList = ({
 };
 
 const WorkflowBuilder = ({ workflow, onChange, onClearAssessment, valueModel, complexityModel, fields = [], onChangeAssessment }: Props) => {
-  const { t } = useTranslation();
+  const { t: _t } = useTranslation();
   const wf: WorkflowConfig = workflow ?? { template: 'simple', states: [], approvers: [], assessors: [] };
   const disabled = wf.template === 'none';
 
-  const nodes = useMemo(() => layoutStates(wf.states), [wf.states]);
-  const edges = useMemo(() => buildEdges(wf.states), [wf.states]);
-  const [rfNodes, setRfNodes, onNodesChange] = useNodesState(nodes);
-  const [rfEdges, setRfEdges, onEdgesChange] = useEdgesState(edges);
-  useEffect(() => { setRfNodes(nodes); setRfEdges(edges); }, [nodes, edges, setRfNodes, setRfEdges]);
-
-  const handleApplyTemplate = (tpl: string) => {
-    const next = buildWorkflowFromTemplate(tpl);
-    onChange(next);
-    Toast.success('已加载模板');
-  };
-
   const handleToggle = (next: boolean) => {
     if (next) {
-      // 启用：加载默认模板
       onChange(buildWorkflowFromTemplate('simple'));
       Toast.success('已启用审批流');
       return;
     }
-    // 关闭前确认
     Modal.confirm({
       title: '关闭审批流',
       content: '关闭后将清空已配置的审批人、评估人与评估模型。提交此模版的需求将跳过审批与评估，直接进入「待立项」。是否继续？',
@@ -220,103 +155,69 @@ const WorkflowBuilder = ({ workflow, onChange, onClearAssessment, valueModel, co
 
   return (
     <div className="workflow-builder">
-      <div className="workflow-preview-card">
-        <div className="scheme-builder-section-title">
-          <span className="title">
-            <WorkflowIcon size={14} strokeWidth={2} style={{ verticalAlign: -2, marginRight: 6 }} />
-            {t('requirements.scheme.builder.workflow.title')}
-            {disabled
-              ? <Tag color="orange" type="light" size="small" style={{ marginLeft: 8 }}>无审批流</Tag>
-              : <Tag color="grey" type="light" size="small" style={{ marginLeft: 8 }}>预览</Tag>}
-          </span>
-          <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
-            {!disabled && (
-              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                <Text type="tertiary" size="small">工作流模板</Text>
-                <Select value={wf.template} onChange={(v) => handleApplyTemplate(v as string)}
-                  placeholder="选择模板" optionList={TEMPLATES} style={{ width: 200 }} />
-              </div>
-            )}
-            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-              <Text type="tertiary" size="small">启用审批流</Text>
-              <Switch checked={!disabled} onChange={handleToggle} />
-            </div>
-          </div>
-        </div>
-
-        {disabled ? (
-          <div className="workflow-disabled-empty">
-            <div className="icon-wrap">
-              <PowerOff size={28} strokeWidth={1.5} />
-            </div>
-            <Title heading={6} style={{ margin: 0 }}>已关闭审批流</Title>
-            <Text type="tertiary" style={{ textAlign: 'center', maxWidth: 480 }}>
-              使用此模版提交的需求将跳过审批与评估环节，直接进入「待立项」状态。
-              如需恢复审批流程，请打开右上角「启用审批流」开关。
-            </Text>
-          </div>
-        ) : (
-          <>
-            <div className="workflow-canvas">
-              {wf.states.length === 0 ? (
-                <Empty description="请先选择模板加载工作流" style={{ paddingTop: 100 }} />
-              ) : (
-                <ReactFlow
-                  nodes={rfNodes}
-                  edges={rfEdges}
-                  onNodesChange={onNodesChange}
-                  onEdgesChange={onEdgesChange}
-                  fitView
-                  nodesDraggable={false}
-                  nodesConnectable={false}
-                  elementsSelectable={false}
-                  proOptions={{ hideAttribution: true }}
-                >
-                  <Background />
-                  <Controls showInteractive={false} />
-                  <MiniMap pannable />
-                </ReactFlow>
-              )}
-            </div>
-            <Text type="tertiary" size="small" style={{ marginTop: 8, display: 'block' }}>
-              状态流转由所选模板决定，仅用于预览。如需调整流程，请切换模板。
-            </Text>
-          </>
-        )}
+      <div className="workflow-toggle-bar" style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '12px 16px', background: 'var(--semi-color-fill-0)', borderRadius: 8, marginBottom: 16,
+      }}>
+        <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <Text strong>审批配置</Text>
+          {disabled
+            ? <Tag color="orange" type="light" size="small">已关闭</Tag>
+            : <Tag color="green" type="light" size="small">已启用</Tag>}
+        </span>
+        <span style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          <Text type="tertiary" size="small">启用审批流</Text>
+          <Switch checked={!disabled} onChange={handleToggle} />
+        </span>
       </div>
 
-      {!disabled && (
-        <div className="workflow-config-grid">
-          <ApproverList
-            title="审批人配置"
-            emptyHint="暂无审批级，点击右上角添加"
-            list={wf.approvers}
-            onChange={(list) => onChange({ ...wf, approvers: list })}
-          />
-          <ApproverList
-            title="技术评估人配置"
-            emptyHint="暂无评估级，点击右上角添加。设置后可在下方配置评估模型。"
-            list={wf.assessors}
-            onChange={(list) => {
-              onChange({ ...wf, assessors: list });
-              // 若移除了所有评估人，同步清空评估模型
-              if (list.length === 0) {
-                onChangeAssessment?.(undefined, undefined);
-              }
-            }}
-          />
+      {disabled ? (
+        <div className="workflow-disabled-empty" style={{
+          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12,
+          padding: '48px 24px', background: 'var(--semi-color-bg-1)', borderRadius: 8,
+        }}>
+          <div className="icon-wrap" style={{ color: 'var(--semi-color-text-2)' }}>
+            <PowerOff size={28} strokeWidth={1.5} />
+          </div>
+          <Title heading={6} style={{ margin: 0 }}>已关闭审批流</Title>
+          <Text type="tertiary" style={{ textAlign: 'center', maxWidth: 480 }}>
+            使用此模版提交的需求将跳过审批与评估环节，直接进入「待立项」状态。
+            如需恢复审批流程，请打开右上角「启用审批流」开关。
+          </Text>
         </div>
-      )}
+      ) : (
+        <>
+          <div className="workflow-config-grid">
+            <ApproverList
+              title="审批人配置"
+              emptyHint="暂无审批级，点击右上角添加"
+              list={wf.approvers}
+              onChange={(list) => onChange({ ...wf, approvers: list })}
+            />
+            <ApproverList
+              title="技术评估人配置"
+              emptyHint="暂无评估级，点击右上角添加。设置后可在下方配置评估模型。"
+              list={wf.assessors}
+              onChange={(list) => {
+                onChange({ ...wf, assessors: list });
+                if (list.length === 0) {
+                  onChangeAssessment?.(undefined, undefined);
+                }
+              }}
+            />
+          </div>
 
-      {!disabled && wf.assessors.length > 0 && onChangeAssessment && (
-        <div style={{ marginTop: 16 }}>
-          <AssessmentBuilder
-            valueModel={valueModel}
-            complexityModel={complexityModel}
-            fields={fields}
-            onChange={onChangeAssessment}
-          />
-        </div>
+          {wf.assessors.length > 0 && onChangeAssessment && (
+            <div style={{ marginTop: 16 }}>
+              <AssessmentBuilder
+                valueModel={valueModel}
+                complexityModel={complexityModel}
+                fields={fields}
+                onChange={onChangeAssessment}
+              />
+            </div>
+          )}
+        </>
       )}
     </div>
   );
