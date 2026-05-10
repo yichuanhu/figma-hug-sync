@@ -65,14 +65,29 @@ const SupplyAssetCard = ({ asset, onView, onPush, highlighted }: Props) => {
             <Tag key={tag} size="small" color="grey" type="light">{tag}</Tag>
           ))}
         </div>
-        <div className="card-reuse">
-          <Text size="small" type="tertiary">{reuseSummary}</Text>
-          {lastReuse && (
-            <Text size="small" type="tertiary" ellipsis={{ showTooltip: true }}>
-              {t('sharing.myShared.card.lastReuser', { name: lastReuse.reuserName, date: lastReuse.reusedAt })}
-            </Text>
-          )}
-        </div>
+        {isRejected && asset.rejectedReason ? (
+          <Banner
+            type="danger"
+            fullMode={false}
+            closeIcon={null}
+            description={
+              <Text size="small">
+                <Text strong size="small">{t('sharing.myShared.rejected.reasonLabel', '拒绝原因')}：</Text>
+                {asset.rejectedReason}
+              </Text>
+            }
+            style={{ marginBottom: 10 }}
+          />
+        ) : (
+          <div className="card-reuse">
+            <Text size="small" type="tertiary">{reuseSummary}</Text>
+            {lastReuse && (
+              <Text size="small" type="tertiary" ellipsis={{ showTooltip: true }}>
+                {t('sharing.myShared.card.lastReuser', { name: lastReuse.reuserName, date: lastReuse.reusedAt })}
+              </Text>
+            )}
+          </div>
+        )}
         <div className="card-footer" onClick={stop}>
           <Text size="small" type="tertiary" ellipsis={{ showTooltip: true }} className="card-creator">
             {asset.creatorName} · {asset.departmentName}
