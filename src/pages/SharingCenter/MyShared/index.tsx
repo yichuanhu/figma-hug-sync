@@ -20,7 +20,7 @@ import './index.less';
 const { Title, Text } = Typography;
 const TabPane = Tabs.TabPane;
 
-const TABS: ShareStatus[] = ['PUBLISHED', 'DRAFT', 'PENDING_APPROVAL', 'REJECTED', 'ARCHIVED'];
+const TABS: ShareStatus[] = ['PUBLISHED', 'PENDING_PUBLISH', 'DRAFT', 'PENDING_APPROVAL', 'REJECTED'];
 const PAGE_SIZE = 10;
 
 type TypeFilter = 'ALL' | 'SNIPPET' | 'WORKFLOW' | 'KNOWLEDGE' | 'SKILL';
@@ -72,15 +72,22 @@ const MySharedPage = () => {
 
   const counts = useMemo(() => {
     const m: Record<ShareStatus, number> = {
-      PUBLISHED: 0, DRAFT: 0, PENDING_APPROVAL: 0, REJECTED: 0, ARCHIVED: 0, UNLISTED: 0,
+      PUBLISHED: 0, PENDING_PUBLISH: 0, DRAFT: 0, PENDING_APPROVAL: 0, REJECTED: 0, ARCHIVED: 0, UNLISTED: 0,
     };
-    all.forEach((a) => { if (m[a.shareStatus] !== undefined) m[a.shareStatus] += 1; });
+    all.forEach((a) => {
+      // 「已上架」Tab 包含 PUBLISHED 与 ARCHIVED
+      if (a.shareStatus === 'ARCHIVED') { m.PUBLISHED += 1; return; }
+      if (m[a.shareStatus] !== undefined) m[a.shareStatus] += 1;
+    });
     return m;
   }, [all]);
 
   const list = useMemo(() => {
     return all.filter((a) => {
-      if (a.shareStatus !== tab) return false;
+      // Tab 匹配：「已上架」包含 PUBLISHED + ARCHIVED
+      if (tab === 'PUBLISHED') {
+        if (a.shareStatus !== 'PUBLISHED' && a.shareStatus !== 'ARCHIVED') return false;
+      } else if (a.shareStatus !== tab) return false;
       if (typeF !== 'ALL' && a.type !== typeF) return false;
       if (sourceF !== 'ALL' && a.source !== sourceF) return false;
       if (debounced) {
