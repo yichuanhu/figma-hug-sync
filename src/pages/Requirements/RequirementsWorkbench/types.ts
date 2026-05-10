@@ -112,6 +112,8 @@ export interface SchemeFieldOption {
   label: string;
   value: string | number;
   description?: string;
+  /** 标记为「其他」选项，填写态需附加文本输入 */
+  isOther?: boolean;
 }
 
 export interface SchemeFieldDependsOn {

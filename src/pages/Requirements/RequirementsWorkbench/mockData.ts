@@ -1492,17 +1492,6 @@ export interface PublishChangeInput {
   changeType?: ChangeType;
 }
 
-export const previewChange = async (
-  requirementId: string,
-  patch: RequirementDraft['patch'],
-): Promise<{ diffs: ChangedFieldDiff[]; type: ChangeType }> => {
-  await new Promise((r) => setTimeout(r, 30));
-  const cur = mockRequirementData.find((r) => r.id === requirementId);
-  if (!cur) throw new Error('REQUIREMENT_NOT_FOUND');
-  const diffs = computeFieldDiffs(cur, patch);
-  return { diffs, type: classifyChangeType(diffs) };
-};
-
 export const publishChange = async (
   input: PublishChangeInput,
   userId: string = MOCK_CURRENT_USER_ID,
