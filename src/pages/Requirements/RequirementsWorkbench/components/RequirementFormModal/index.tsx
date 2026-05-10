@@ -16,7 +16,7 @@ import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 import { getActiveScheme, getDraft, saveDraft, discardDraft, publishChange } from '../../mockData';
 import SchemeFieldRenderer from '../SchemeFieldRenderer';
 import { isPostProjectStatus } from '../../utils/fieldEditability';
-import PublishChangePanel, { ERROR_MAP, computePublishChangeType } from '../PublishChangePanel';
+import PublishChangePanel, { ERROR_MAP } from '../PublishChangePanel';
 import './index.less';
 
 const { Text } = Typography;
@@ -265,7 +265,7 @@ const RequirementFormModal = ({
         requirementId: editData.id,
         patch: pendingPatch,
         reason: publishReason.trim(),
-        changeType: computePublishChangeType(),
+        changeType: 'CONTENT',
       });
       Toast.success('变更已发布');
       // publishChange 内部会清掉草稿

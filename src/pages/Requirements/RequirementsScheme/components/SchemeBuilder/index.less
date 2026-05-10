@@ -93,6 +93,17 @@
     gap: 24px;
   }
 
+  .form-builder-error-banner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: var(--semi-color-danger-light-default);
+    color: var(--semi-color-danger);
+    border-radius: 8px;
+    font-size: 13px;
+  }
+
   .canvas-section {
     .canvas-section-title {
       font-size: 12px;
@@ -167,6 +178,10 @@
 
     &.is-over {
       box-shadow: 0 0 0 2px var(--semi-color-primary);
+    }
+
+    &.has-error {
+      border-color: var(--semi-color-danger);
     }
 
     .card-drag-bar {
@@ -322,21 +337,93 @@
         border-radius: 8px;
         color: var(--semi-color-text-1);
         font-size: 13px;
+      }
 
-        .opt-box {
-          width: 16px;
-          height: 16px;
-          border: 1.5px solid var(--semi-color-border);
-          background: var(--semi-color-bg-0);
-          flex-shrink: 0;
+      .opt-box {
+        width: 16px;
+        height: 16px;
+        border: 1.5px solid var(--semi-color-border);
+        background: var(--semi-color-bg-0);
+        flex-shrink: 0;
 
-          &.round {
-            border-radius: 50%;
+        &.round {
+          border-radius: 50%;
+        }
+
+        &.square {
+          border-radius: 3px;
+        }
+      }
+
+      .preview-number-row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      // ===== 选项编辑器（飞书风格） =====
+      .opts-editor {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+
+        .opt-row {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 6px 10px 6px 4px;
+          background: var(--semi-color-fill-0);
+          border-radius: 8px;
+          border-top: 2px solid transparent;
+          transition: background 0.15s;
+
+          &:hover {
+            background: var(--semi-color-fill-1);
+
+            .opt-handle,
+            .opt-remove {
+              opacity: 1;
+            }
           }
 
-          &.square {
-            border-radius: 3px;
+          &.dragging { opacity: 0.4; }
+          &.over { border-top-color: var(--semi-color-primary); }
+
+          .opt-handle {
+            display: inline-flex;
+            color: var(--semi-color-text-2);
+            cursor: grab;
+            opacity: 0;
+            transition: opacity 0.15s;
+
+            &:active { cursor: grabbing; }
           }
+
+          .opt-input {
+            flex: 1;
+
+            &.semi-input-wrapper {
+              background: transparent;
+              border: none;
+              box-shadow: none;
+            }
+
+            .semi-input {
+              background: transparent;
+              padding-left: 4px;
+            }
+          }
+
+          .opt-remove {
+            opacity: 0;
+            transition: opacity 0.15s;
+          }
+        }
+
+        .opt-actions {
+          display: flex;
+          gap: 4px;
+          padding: 2px 0 0 4px;
         }
       }
     }
@@ -345,25 +432,6 @@
       margin-top: 16px;
       padding-top: 16px;
       border-top: 1px dashed var(--semi-color-border);
-
-      // 重置内联面板的卡片样式
-      .field-config-panel {
-        background: transparent !important;
-        border: none !important;
-        position: static !important;
-        max-height: none !important;
-        box-shadow: none !important;
-
-        .panel-header {
-          padding: 0 0 12px 0;
-          border-bottom: none;
-        }
-
-        .panel-body {
-          padding: 0;
-          overflow: visible;
-        }
-      }
     }
   }
 
@@ -617,5 +685,60 @@
     border-radius: 6px;
     margin-bottom: 16px;
     font-size: 13px;
+  }
+}
+
+// ============= FieldConfigPanel（平铺样式） =============
+.field-config-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .fcp-banner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+
+    &.is-error {
+      background: var(--semi-color-danger-light-default);
+      color: var(--semi-color-danger);
+    }
+    &.is-warning {
+      background: var(--semi-color-warning-light-default);
+      color: var(--semi-color-warning);
+    }
+  }
+
+  .fcp-section {
+    .fcp-section-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--semi-color-text-0);
+      margin-bottom: 10px;
+    }
+  }
+
+  .fcp-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 16px;
+  }
+
+  .fcp-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    &.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 12px;
+      color: var(--semi-color-text-2);
+    }
   }
 }

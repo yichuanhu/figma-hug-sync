@@ -1,5 +1,4 @@
 import { Typography, TextArea } from '@douyinfe/semi-ui';
-import type { ChangeType } from '../../types';
 import './index.less';
 
 const { Text } = Typography;
@@ -15,8 +14,6 @@ export const ERROR_MAP: Record<string, string> = {
   NOT_POST_PROJECT_STATUS: '当前需求未进入立项后阶段，无法发布变更',
   REQUIREMENT_NOT_FOUND: '需求不存在或已被删除',
 };
-
-export const computePublishChangeType = (): ChangeType => 'CONTENT';
 
 const PublishChangePanel = ({ reason, onReasonChange }: PublishChangePanelProps) => {
   const reasonTrim = reason.trim();

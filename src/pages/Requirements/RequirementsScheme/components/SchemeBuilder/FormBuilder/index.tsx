@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Typography, Toast, Tag } from '@douyinfe/semi-ui';
-import { Lock } from 'lucide-react';
+import { Typography, Tag } from '@douyinfe/semi-ui';
+import { Lock, AlertTriangle } from 'lucide-react';
 import type { SchemeField, SchemeFieldType } from '@/pages/Requirements/RequirementsWorkbench/types';
 import FieldCard from './FieldCard';
 import AddFieldPopover from './AddFieldPopover';
+import { validateAllFields } from './validators';
 
 const { Text } = Typography;
 
@@ -71,15 +72,6 @@ const FormBuilder = ({ fields, onChange }: Props) => {
     onChange(fields.map((f, i) => (i === index ? { ...f, ...patch } : f)));
   };
 
-  const submitField = (index: number, next: SchemeField) => {
-    if (fields.some((f, i) => i !== index && f.key === next.key)) {
-      Toast.error(t('requirements.scheme.builder.errors.fieldKeyDuplicate'));
-      return;
-    }
-    onChange(fields.map((f, i) => (i === index ? next : f)));
-    Toast.success(t('common.saved') as string);
-  };
-
   const duplicateField = (index: number) => {
     const f = fields[index];
     const copy: SchemeField = {
@@ -97,6 +89,10 @@ const FormBuilder = ({ fields, onChange }: Props) => {
     if (selectedIndex === index) setSelectedIndex(null);
     else if (selectedIndex !== null && selectedIndex > index) setSelectedIndex(selectedIndex - 1);
   };
+
+  // ============= 校验 =============
+  const validation = useMemo(() => validateAllFields(fields), [fields]);
+  const errorKeySet = useMemo(() => new Set(validation.errorFieldKeys), [validation]);
 
   // ============= 拖拽排序 =============
   const handleDragStart = (e: React.DragEvent, index: number) => {
@@ -146,6 +142,14 @@ const FormBuilder = ({ fields, onChange }: Props) => {
           </div>
         </div>
 
+        {/* 校验汇总条 */}
+        {validation.hasError && (
+          <div className="form-builder-error-banner">
+            <AlertTriangle size={14} strokeWidth={2} />
+            <span>当前有 {validation.errorFieldKeys.length} 个字段配置存在问题，请展开「高级配置」修正</span>
+          </div>
+        )}
+
         {/* 自定义字段 */}
         <div className="canvas-section">
           <div className="canvas-section-title">
@@ -164,10 +168,10 @@ const FormBuilder = ({ fields, onChange }: Props) => {
                   number={idx + 1}
                   field={f}
                   selected={selectedIndex === idx}
+                  hasError={errorKeySet.has(f.key)}
                   allFields={fields}
                   onSelect={() => setSelectedIndex(idx)}
                   onPatch={(patch) => patchField(idx, patch)}
-                  onSubmit={(next) => submitField(idx, next)}
                   onDuplicate={() => duplicateField(idx)}
                   onRemove={() => removeField(idx)}
                   onDragStart={handleDragStart}
