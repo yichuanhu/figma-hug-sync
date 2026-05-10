@@ -19,7 +19,7 @@ import ChangeLogTab from '../ChangeLogTab';
 import ReadonlySchemeFieldsRenderer from '../ReadonlySchemeFieldsRenderer';
 import { buildSubmitConfirmContent } from '../../utils/submitConfirm';
 import './index.less';
-import { Lightbulb, Pencil, PowerOff, RotateCcw, Send, Trash2, Undo2, Link2, FolderPlus, X, AlertTriangle } from 'lucide-react';
+import { Lightbulb, Pencil, PowerOff, RotateCcw, Send, Trash2, Undo2, Link2, FolderPlus, X } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import WorkspacePickerModal from './WorkspacePickerModal';
 
