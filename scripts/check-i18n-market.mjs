@@ -17,6 +17,7 @@ const PREFIX = 'sharing.market.';
 // 已知动态后缀 -> 枚举值（与代码保持同步）
 const DYNAMIC_ENUMS = {
   'sharing.market.tabs.': ['ALL', 'WORKFLOW', 'KNOWLEDGE', 'SKILL', 'SNIPPET'],
+  'sharing.market.subTitles.': ['workflow', 'knowledge', 'skill', 'snippet'],
   'sharing.market.skill.categories.': ['all', 'document', 'data', 'content', 'retrieval', 'tool', 'other'],
   'sharing.market.create.comingSoon.': ['knowledge', 'skill'],
 };
