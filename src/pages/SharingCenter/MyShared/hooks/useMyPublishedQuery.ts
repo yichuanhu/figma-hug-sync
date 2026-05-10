@@ -15,7 +15,7 @@ export interface MyPublishedQueryState {
 }
 
 const VALID_TABS: ShareStatus[] = ['PUBLISHED', 'PENDING_PUBLISH', 'DRAFT', 'PENDING_APPROVAL', 'REJECTED'];
-const VALID_TYPES: TypeFilter[] = ['ALL', 'SNIPPET', 'WORKFLOW', 'KNOWLEDGE', 'SKILL'];
+const VALID_TYPES: TypeFilter[] = ['ALL', 'WORKFLOW', 'KNOWLEDGE'];
 const VALID_SOURCES: SourceFilter[] = ['ALL', 'NATIVE', 'DEV_CENTER'];
 
 const pick = <T extends string>(value: string | null, valid: T[], fallback: T): T =>
