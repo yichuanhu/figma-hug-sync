@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import emptyImg from '@/assets/empty-state/no-data.png';
 import type { ShareStatus } from '@/components/sharing/StatusTag';
 
-import { type ShareAsset, queryMyPublished, getAll, subscribe } from './store';
+import { type ShareAsset, queryMyPublished, getAll, getMine, subscribe } from './store';
 import { useMyPublishedQuery, type TypeFilter, type SourceFilter } from './hooks/useMyPublishedQuery';
 import SupplyAssetCard from './components/SupplyAssetCard';
 import ReuseStatsPanel from './components/ReuseStatsPanel';
@@ -24,13 +24,13 @@ const PAGE_SIZE = 12;
 
 const typeRoute: Record<string, string> = { SNIPPET: 'snippet', WORKFLOW: 'workflow', KNOWLEDGE: 'knowledge', SKILL: 'skill' };
 
-const useStoreVersion = () => useSyncExternalStore(subscribe, () => getMine().length);
+const useStoreVersion = () => useSyncExternalStore(subscribe, () => getAll().length);
 
 const MySharedPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   useStoreVersion();
-  const all = getMine();
+  // 通过 store.queryMyPublished 统一查询（Story 011）
 
   const {
     tab, type: typeF, source: sourceF, keyword, page, debouncedKeyword: debounced,
