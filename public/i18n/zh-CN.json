@@ -345,8 +345,14 @@
         "validCount": "有效行数",
         "errorCount": "错误行数",
         "errorListTitle": "错误明细（{{count}} 条）",
-        "tabs": { "valid": "有效数据", "error": "错误明细" },
-        "cols": { "account": "账号", "password": "密码" },
+        "tabs": {
+          "valid": "有效数据",
+          "error": "错误明细"
+        },
+        "cols": {
+          "account": "账号",
+          "password": "密码"
+        },
         "noValidRows": "暂无有效数据，请修正错误后重新上传",
         "errorTypeCol": "错误类型",
         "errorType": {
@@ -3670,7 +3676,21 @@
         "knowledgeDownloadStarted": "已开始打包，下载链接将通过通知发送",
         "reusedAt": "复用时间",
         "snapshot": "快照",
-        "snapshotTip": "该版本为发布时刻的快照，与开发中心当前版本可能不一致"
+        "snapshotTip": "该版本为发布时刻的快照，与开发中心当前版本可能不一致",
+        "demoVideo": "演示视频",
+        "meta": {
+          "title": "资产元信息",
+          "name": "名称",
+          "description": "描述",
+          "version": "版本",
+          "resourceDeps": "资源依赖",
+          "tags": "标签",
+          "department": "归属部门",
+          "publishedBy": "上架者",
+          "publishedAt": "发布时间",
+          "workflowReadOnly": "⚠️ 完全只读（来源为开发中心，不可在共享中心编辑）",
+          "knowledgeEditable": "✅ 上架者本人可点击右上角「编辑展示信息」修改"
+        }
       },
       "skill": {
         "category": "分类",
