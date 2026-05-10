@@ -3554,30 +3554,28 @@
     "admin": {
       "approvalLevels": {
         "pageTitle": "审批层级配置",
-        "notice": "NONE：免审批，发布后直接 PUBLISHED；SINGLE：1 级审批，任一管理员通过即完成。配置仅对修改后新提交的资产生效；DEV_CENTER 资产每次同步均需审批，不受此配置影响。",
         "levels": {
-          "NONE": "0 级 (NONE) - 免审批",
-          "SINGLE": "1 级 (SINGLE) - 单级审批"
+          "NONE": "0 级 (NONE) — 免审直接上架",
+          "SINGLE": "1 级 (SINGLE) — 管理员审批"
         },
         "desc": {
           "SNIPPET": "流程块发布默认走 1 级审批",
-          "WORKFLOW": "自动化流程发布默认走 1 级审批",
-          "KNOWLEDGE": "知识库发布默认走 1 级审批",
+          "WORKFLOW": "默认 1 级（可选 0 级免审）",
+          "KNOWLEDGE": "默认 1 级（可选 0 级免审）",
           "SKILL": "技能发布默认走 1 级审批"
         },
         "toast": {
-          "saved": "审批层级已保存",
-          "reset": "已恢复默认配置"
+          "saved": "审批层级已保存"
         },
         "col": {
           "type": "资产类型",
-          "current": "当前层级",
-          "choose": "可选层级",
-          "desc": "说明"
+          "choose": "可选层级"
         },
-        "reset": "恢复默认",
         "confirmSaveTitle": "确认保存审批层级配置？",
-        "confirmSaveContent": "保存后立即对新提交的资产生效，已在审批队列中的资产不受影响。"
+        "confirmSaveContent": "保存后立即对新提交的资产生效，已在审批队列中的资产不受影响。",
+        "intro": "按资产类型配置审批层级：",
+        "devCenterNotice": "开发中心资产每次聚合引用均需审批，不受此配置影响",
+        "queueNotice": "配置修改不影响已在审批队列中的资产"
       },
       "permissions": {
         "col": {

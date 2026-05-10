@@ -4191,30 +4191,28 @@
     "admin": {
       "approvalLevels": {
         "pageTitle": "Approval Levels",
-        "notice": "NONE: skip approval and publish directly. SINGLE: any admin approval completes the request. Configuration applies to newly submitted assets only; DEV_CENTER assets always require approval per sync.",
         "levels": {
-          "NONE": "Level 0 (NONE) - No approval",
-          "SINGLE": "Level 1 (SINGLE) - Single approval"
+          "NONE": "Level 0 (NONE) — Publish directly without approval",
+          "SINGLE": "Level 1 (SINGLE) — Admin approval required"
         },
         "desc": {
           "SNIPPET": "Snippet publishing requires single-level approval by default",
-          "WORKFLOW": "Automation Process publishing requires single-level approval by default",
-          "KNOWLEDGE": "Knowledge publishing requires single-level approval by default",
+          "WORKFLOW": "Default Level 1 (Level 0 optional)",
+          "KNOWLEDGE": "Default Level 1 (Level 0 optional)",
           "SKILL": "Skill publishing requires single-level approval by default"
         },
         "toast": {
-          "saved": "Saved",
-          "reset": "Reset to default"
+          "saved": "Saved"
         },
         "col": {
           "type": "Asset Type",
-          "current": "Current Level",
-          "choose": "Select Level",
-          "desc": "Notes"
+          "choose": "Select Level"
         },
-        "reset": "Reset to Default",
         "confirmSaveTitle": "Save approval level configuration?",
-        "confirmSaveContent": "Changes take effect for newly submitted assets only."
+        "confirmSaveContent": "Changes take effect for newly submitted assets only.",
+        "intro": "Configure approval level by asset type:",
+        "devCenterNotice": "Dev Center assets always require approval on each sync, regardless of this configuration",
+        "queueNotice": "Changes do not affect assets already in the approval queue"
       },
       "permissions": {
         "col": {
