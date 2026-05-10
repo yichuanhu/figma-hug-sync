@@ -1,5 +1,5 @@
-import { Dropdown, Tooltip, Button } from '@douyinfe/semi-ui';
-import { Plus, ChevronDown, BookOpen, Wrench, Box, GitBranch, Lock } from 'lucide-react';
+import { Dropdown, Button } from '@douyinfe/semi-ui';
+import { Plus, ChevronDown, BookOpen, GitBranch } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
