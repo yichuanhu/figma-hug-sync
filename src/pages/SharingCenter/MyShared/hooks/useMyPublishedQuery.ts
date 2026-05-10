@@ -2,7 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import type { ShareStatus } from '@/components/sharing/StatusTag';
 
-export type TypeFilter = 'ALL' | 'SNIPPET' | 'WORKFLOW' | 'KNOWLEDGE' | 'SKILL';
+// MVP 范围：仅支持「自动化流程」与「知识」上架
+export type TypeFilter = 'ALL' | 'WORKFLOW' | 'KNOWLEDGE';
 export type SourceFilter = 'ALL' | 'NATIVE' | 'DEV_CENTER';
 
 export interface MyPublishedQueryState {
@@ -14,7 +15,7 @@ export interface MyPublishedQueryState {
 }
 
 const VALID_TABS: ShareStatus[] = ['PUBLISHED', 'PENDING_PUBLISH', 'DRAFT', 'PENDING_APPROVAL', 'REJECTED'];
-const VALID_TYPES: TypeFilter[] = ['ALL', 'SNIPPET', 'WORKFLOW', 'KNOWLEDGE', 'SKILL'];
+const VALID_TYPES: TypeFilter[] = ['ALL', 'WORKFLOW', 'KNOWLEDGE'];
 const VALID_SOURCES: SourceFilter[] = ['ALL', 'NATIVE', 'DEV_CENTER'];
 
 const pick = <T extends string>(value: string | null, valid: T[], fallback: T): T =>
