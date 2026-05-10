@@ -4,7 +4,6 @@ const KnowledgeMarket = () => (
   <SubMarketPage
     type="KNOWLEDGE"
     titleKey="sharing.market.subTitles.knowledge"
-    lockedSource="NATIVE"
     emptyKey="sharing.market.empty.knowledge"
   />
 );
