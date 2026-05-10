@@ -21,29 +21,29 @@ const VARIANTS: Record<LifecycleAction, {
   danger?: boolean;
 }> = {
   archive: {
-    titleKey: 'sharing.myShared.confirm.archiveTitle',
-    contentKey: 'sharing.myShared.confirm.archiveContent',
+    titleKey: 'sharing.assetSupply.confirm.archiveTitle',
+    contentKey: 'sharing.assetSupply.confirm.archiveContent',
     bannerType: 'info',
   },
   unlist: {
-    titleKey: 'sharing.myShared.confirm.unlistTitle',
-    contentKey: 'sharing.myShared.confirm.unlistContent',
+    titleKey: 'sharing.assetSupply.confirm.unlistTitle',
+    contentKey: 'sharing.assetSupply.confirm.unlistContent',
     bannerType: 'warning',
   },
   withdraw: {
-    titleKey: 'sharing.myShared.confirm.withdrawTitle',
-    contentKey: 'sharing.myShared.confirm.withdrawContent',
+    titleKey: 'sharing.assetSupply.confirm.withdrawTitle',
+    contentKey: 'sharing.assetSupply.confirm.withdrawContent',
     bannerType: 'info',
   },
   delete: {
-    titleKey: 'sharing.myShared.confirm.deleteTitle',
-    contentKey: 'sharing.myShared.confirm.deleteContent',
+    titleKey: 'sharing.assetSupply.confirm.deleteTitle',
+    contentKey: 'sharing.assetSupply.confirm.deleteContent',
     bannerType: 'danger',
     danger: true,
   },
   recover: {
-    titleKey: 'sharing.myShared.confirm.recoverTitle',
-    contentKey: 'sharing.myShared.confirm.recoverContent',
+    titleKey: 'sharing.assetSupply.confirm.recoverTitle',
+    contentKey: 'sharing.assetSupply.confirm.recoverContent',
     bannerType: 'info',
   },
 };

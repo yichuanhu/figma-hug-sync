@@ -42,8 +42,8 @@ const SupplyAssetCard = ({ asset, onView, onPush, highlighted }: Props) => {
 
   const lastReuse = asset.reuseRecords?.[0];
   const reuseSummary = (asset.reuseCount ?? 0) > 0
-    ? t('sharing.myShared.card.reuseSummary', { count: asset.reuseCount })
-    : t('sharing.myShared.card.noReuse');
+    ? t('sharing.assetSupply.card.reuseSummary', { count: asset.reuseCount })
+    : t('sharing.assetSupply.card.noReuse');
 
   return (
     <div
@@ -76,7 +76,7 @@ const SupplyAssetCard = ({ asset, onView, onPush, highlighted }: Props) => {
             closeIcon={null}
             description={
               <Text size="small">
-                <Text strong size="small">{t('sharing.myShared.rejected.reasonLabel', '拒绝原因')}：</Text>
+                <Text strong size="small">{t('sharing.assetSupply.rejected.reasonLabel', '拒绝原因')}：</Text>
                 {asset.rejectedReason}
               </Text>
             }
@@ -87,7 +87,7 @@ const SupplyAssetCard = ({ asset, onView, onPush, highlighted }: Props) => {
             <Text size="small" type="tertiary">{reuseSummary}</Text>
             {lastReuse && (
               <Text size="small" type="tertiary" ellipsis={{ showTooltip: true }}>
-                {t('sharing.myShared.card.lastReuser', { name: lastReuse.reuserName, date: lastReuse.reusedAt })}
+                {t('sharing.assetSupply.card.lastReuser', { name: lastReuse.reuserName, date: lastReuse.reusedAt })}
               </Text>
             )}
             {(asset.reuseCount ?? 0) > 0 && (
@@ -99,7 +99,7 @@ const SupplyAssetCard = ({ asset, onView, onPush, highlighted }: Props) => {
                 onClick={() => setStatsVisible(true)}
                 style={{ marginLeft: 'auto' }}
               >
-                {t('sharing.myShared.card.viewReuseDetails')}
+                {t('sharing.assetSupply.card.viewReuseDetails')}
               </Button>
             )}
           </div>
@@ -113,7 +113,7 @@ const SupplyAssetCard = ({ asset, onView, onPush, highlighted }: Props) => {
               icon={<Eye size={14} strokeWidth={2} />}
               onClick={() => onView(asset.id)}
             >
-              {t('sharing.myShared.actions.view')}
+              {t('sharing.assetSupply.actions.view')}
             </Button>
             {isPendingPublish && (
               <Button
@@ -121,7 +121,7 @@ const SupplyAssetCard = ({ asset, onView, onPush, highlighted }: Props) => {
                 icon={<Rocket size={14} strokeWidth={2} />}
                 onClick={() => navigate(`/sharing-center/my-published/${typeRoute[asset.type]}/${asset.id}/publish`)}
               >
-                {t('sharing.myShared.actions.publishNow')}
+                {t('sharing.assetSupply.actions.publishNow')}
               </Button>
             )}
             {isRejected && isNative && (
@@ -130,7 +130,7 @@ const SupplyAssetCard = ({ asset, onView, onPush, highlighted }: Props) => {
                 icon={<Pencil size={14} strokeWidth={2} />}
                 onClick={() => navigate(`/sharing-center/my-shared/edit/${asset.id}`)}
               >
-                {t('sharing.myShared.actions.resubmit')}
+                {t('sharing.assetSupply.actions.resubmit')}
               </Button>
             )}
             {isRejected && !isNative && asset.originUrl && (
@@ -139,14 +139,14 @@ const SupplyAssetCard = ({ asset, onView, onPush, highlighted }: Props) => {
                 icon={<ExternalLink size={14} strokeWidth={2} />}
                 onClick={() => window.open(asset.originUrl, '_blank')}
               >
-                {t('sharing.myShared.actions.backToDevCenter')}
+                {t('sharing.assetSupply.actions.backToDevCenter')}
               </Button>
             )}
             {showPush && (
               <Tooltip
                 content={pushDisabled
-                  ? t('sharing.myShared.toast.pushDuplicated', { hours: pushCheck?.ok === false ? pushCheck.retryAfterHours : 0 })
-                  : t('sharing.myShared.actions.pushNotification')}
+                  ? t('sharing.assetSupply.toast.pushDuplicated', { hours: pushCheck?.ok === false ? pushCheck.retryAfterHours : 0 })
+                  : t('sharing.assetSupply.actions.pushNotification')}
               >
                 <Button
                   size="small"
@@ -156,7 +156,7 @@ const SupplyAssetCard = ({ asset, onView, onPush, highlighted }: Props) => {
                   disabled={!!pushDisabled}
                   onClick={() => onPush(asset)}
                 >
-                  {t('sharing.myShared.actions.pushNotification')}
+                  {t('sharing.assetSupply.actions.pushNotification')}
                 </Button>
               </Tooltip>
             )}
