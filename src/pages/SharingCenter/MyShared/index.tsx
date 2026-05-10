@@ -12,7 +12,7 @@ import type { ShareStatus } from '@/components/sharing/StatusTag';
 import { type ShareAsset, getMine, subscribe } from './store';
 import { useMyPublishedQuery, type TypeFilter, type SourceFilter } from './hooks/useMyPublishedQuery';
 import SupplyAssetCard from './components/SupplyAssetCard';
-import ReuseSummaryPanel from './components/ReuseSummaryPanel';
+import ReuseStatsPanel from './components/ReuseStatsPanel';
 import PushNotificationDialog from './components/PushNotificationDialog';
 import './index.less';
 
@@ -39,6 +39,7 @@ const MySharedPage = () => {
 
   const [highlightId, setHighlightId] = useState<string | null>(null);
   const [pushAsset, setPushAsset] = useState<ShareAsset | null>(null);
+  const [aggregatedStatsVisible, setAggregatedStatsVisible] = useState(false);
 
   useEffect(() => {
     if (!highlightId) return;
@@ -162,7 +163,13 @@ const MySharedPage = () => {
       <div className="my-shared-body">
         {tab === 'PUBLISHED' && aggregatedReuse.length > 0 && (
           <div className="my-shared-reuse-summary">
-            <ReuseSummaryPanel records={aggregatedReuse} />
+            <Button
+              theme="borderless"
+              type="primary"
+              onClick={() => setAggregatedStatsVisible(true)}
+            >
+              {t('sharing.myShared.card.viewAggregatedReuse', { count: aggregatedReuse.length })}
+            </Button>
           </div>
         )}
 
