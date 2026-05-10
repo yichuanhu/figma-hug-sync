@@ -1,7 +1,7 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Select, Typography, Empty, Input, Switch, Tag, Toast } from '@douyinfe/semi-ui';
-import { Plus, Trash2, ArrowUp, ArrowDown, PowerOff } from 'lucide-react';
+import { Plus, Trash2, GripVertical, PowerOff } from 'lucide-react';
 import { buildWorkflowFromTemplate } from '@/pages/Requirements/RequirementsWorkbench/schemeConfig';
 import AssessmentBuilder from '../AssessmentBuilder';
 import type {
@@ -60,11 +60,16 @@ const ApproverList = ({
 }) => {
   const update = (idx: number, p: WorkflowApprover) => onChange(list.map((x, i) => (i === idx ? p : x)));
   const remove = (idx: number) => onChange(list.filter((_, i) => i !== idx));
-  const move = (idx: number, dir: -1 | 1) => {
+
+  const dragIndexRef = useRef<number | null>(null);
+  const [dragIdx, setDragIdx] = useState<number | null>(null);
+  const [overIdx, setOverIdx] = useState<number | null>(null);
+
+  const reorder = (from: number, to: number) => {
+    if (from === to || from < 0 || to < 0 || from >= list.length || to >= list.length) return;
     const next = [...list];
-    const t = idx + dir;
-    if (t < 0 || t >= next.length) return;
-    [next[idx], next[t]] = [next[t], next[idx]];
+    const [moved] = next.splice(from, 1);
+    next.splice(to, 0, moved);
     next.forEach((x, i) => (x.priority = i + 1));
     onChange(next);
   };
@@ -76,7 +81,43 @@ const ApproverList = ({
   return (
     <>
       {list.map((a, idx) => (
-        <div key={a.id} className="approver-row">
+        <div
+          key={a.id}
+          className={`approver-row${dragIdx === idx ? ' is-dragging' : ''}${overIdx === idx && dragIdx !== idx ? ' is-over' : ''}`}
+          onDragOver={(e) => {
+            if (dragIndexRef.current === null) return;
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            if (overIdx !== idx) setOverIdx(idx);
+          }}
+          onDrop={(e) => {
+            e.preventDefault();
+            const from = dragIndexRef.current;
+            if (from !== null) reorder(from, idx);
+            dragIndexRef.current = null;
+            setDragIdx(null);
+            setOverIdx(null);
+          }}
+        >
+          <span
+            className="drag-handle"
+            draggable
+            onDragStart={(e) => {
+              dragIndexRef.current = idx;
+              setDragIdx(idx);
+              e.dataTransfer.effectAllowed = 'move';
+              // Firefox 需要设置数据才能触发拖拽
+              e.dataTransfer.setData('text/plain', String(idx));
+            }}
+            onDragEnd={() => {
+              dragIndexRef.current = null;
+              setDragIdx(null);
+              setOverIdx(null);
+            }}
+            title="拖拽调整顺序"
+          >
+            <GripVertical size={14} strokeWidth={2} />
+          </span>
           <Tag color="blue" type="light" size="small">P{a.priority}</Tag>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
             <Input value={a.name} onChange={(v) => update(idx, { ...a, name: v })} placeholder="名称" size="small" />
@@ -93,10 +134,6 @@ const ApproverList = ({
                 optionList={a.type === 'specific_users' ? USER_OPTIONS : ROLE_OPTIONS}
                 size="small" placeholder={a.type === 'specific_users' ? '选择用户' : '选择角色'} />
             )}
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <Button icon={<ArrowUp size={12} strokeWidth={2} />} theme="borderless" size="small" disabled={idx === 0} onClick={() => move(idx, -1)} />
-            <Button icon={<ArrowDown size={12} strokeWidth={2} />} theme="borderless" size="small" disabled={idx === list.length - 1} onClick={() => move(idx, 1)} />
           </div>
           <Button icon={<Trash2 size={14} strokeWidth={2} />} theme="borderless" type="danger" size="small" onClick={() => remove(idx)} />
         </div>

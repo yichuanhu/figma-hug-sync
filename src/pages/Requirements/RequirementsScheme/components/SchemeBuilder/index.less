@@ -301,6 +301,36 @@
       background: var(--semi-color-fill-0);
       border-radius: 6px;
       margin-bottom: 6px;
+      transition: opacity 0.15s, box-shadow 0.15s, transform 0.15s;
+
+      .drag-handle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 28px;
+        color: var(--semi-color-text-2);
+        cursor: grab;
+        border-radius: 4px;
+        flex-shrink: 0;
+
+        &:hover {
+          background: var(--semi-color-fill-1);
+          color: var(--semi-color-text-0);
+        }
+
+        &:active {
+          cursor: grabbing;
+        }
+      }
+
+      &.is-dragging {
+        opacity: 0.4;
+      }
+
+      &.is-over {
+        box-shadow: 0 0 0 2px var(--semi-color-primary);
+      }
     }
 
     .workflow-disabled-empty {
