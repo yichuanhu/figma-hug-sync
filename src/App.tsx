@@ -196,6 +196,7 @@ const App = () => {
           <Route path="/sharing-center/market/snippet" element={<SnippetMarket />} />
           <Route path="/sharing-center/market/knowledge" element={<KnowledgeMarket />} />
           <Route path="/sharing-center/market/skill" element={<SkillMarket />} />
+          <Route path="/sharing-center/market/:type/:id/edit-display" element={<EditDisplay />} />
           <Route path="/sharing-center/market/:type/:id" element={<AssetDetail />} />
           <Route path="/sharing-center/my-shared" element={<MySharedPage />} />
           <Route path="/sharing-center/my-shared/create/knowledge" element={<KnowledgeCreatePage />} />
