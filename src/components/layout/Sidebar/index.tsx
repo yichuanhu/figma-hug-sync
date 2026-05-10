@@ -322,7 +322,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
   const sharingPendingCount = useApprovalPendingCount();
   const sharingCenterMenu: MenuItem[] = [
     { key: 'assetMarket', labelKey: 'sidebar.assetMarket', icon: <Boxes size={18} strokeWidth={2} />, path: '/sharing-center/market' },
-    { key: 'mySharedAssets', labelKey: 'sidebar.assetSupply', icon: <Forward size={18} strokeWidth={2} />, path: '/sharing-center/my-published' },
+    { key: 'assetSupply', labelKey: 'sidebar.assetSupply', icon: <Forward size={18} strokeWidth={2} />, path: '/sharing-center/my-published' },
     { key: 'sharingApprovals', labelKey: 'sidebar.sharingApprovals', icon: <CheckSquare size={18} strokeWidth={2} />, path: '/sharing-center/approvals', badge: sharingPendingCount },
     { key: 'sharingAdmin', labelKey: 'sidebar.sharingAdmin', isGroupLabel: true },
     { key: 'sharingApprovalLevels', labelKey: 'sidebar.sharingApprovalLevels', icon: <Settings size={18} strokeWidth={2} />, path: '/sharing-center/admin/approval-levels' },
@@ -421,7 +421,7 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     ) {
       return 'assetMarket';
     }
-    if (pathname.startsWith('/sharing-center/my-shared') || pathname.startsWith('/sharing-center/my-published')) return 'mySharedAssets';
+    if (pathname.startsWith('/sharing-center/my-shared') || pathname.startsWith('/sharing-center/my-published')) return 'assetSupply';
     if (pathname.startsWith('/sharing-center/approvals')) return 'sharingApprovals';
     if (pathname.startsWith('/sharing-center/admin/approval-levels')) return 'sharingApprovalLevels';
     if (pathname.startsWith('/sharing-center/admin/permissions')) return 'sharingPermissions';
