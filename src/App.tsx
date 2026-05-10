@@ -198,10 +198,18 @@ const App = () => {
           <Route path="/sharing-center/market/skill" element={<SkillMarket />} />
           <Route path="/sharing-center/market/:type/:id/edit-display" element={<EditDisplay />} />
           <Route path="/sharing-center/market/:type/:id" element={<AssetDetail />} />
-          <Route path="/sharing-center/my-shared" element={<MySharedPage />} />
-          <Route path="/sharing-center/my-shared/create/knowledge" element={<KnowledgeCreatePage />} />
-          <Route path="/sharing-center/my-shared/create/skill" element={<SkillCreatePage />} />
-          
+          {/* 资产上架（FEAT-107） */}
+          <Route path="/sharing-center/my-published" element={<MySharedPage />} />
+          <Route path="/sharing-center/my-published/:type/:id" element={<SupplyAssetDetail />} />
+          <Route path="/sharing-center/my-published/:type/:id/publish" element={<DevCenterPublishPage />} />
+          <Route path="/sharing-center/market/knowledge/create" element={<KnowledgeCreatePage />} />
+          <Route path="/sharing-center/market/skill/create" element={<SkillCreatePage />} />
+          <Route path="/sharing-center/market/:type/:id/edit" element={<MySharedEditPage />} />
+          <Route path="/sharing-center/my-published/:id/versions" element={<MySharedVersionsPage />} />
+          {/* 旧路径兼容 */}
+          <Route path="/sharing-center/my-shared" element={<Navigate to="/sharing-center/my-published" replace />} />
+          <Route path="/sharing-center/my-shared/create/knowledge" element={<Navigate to="/sharing-center/market/knowledge/create" replace />} />
+          <Route path="/sharing-center/my-shared/create/skill" element={<Navigate to="/sharing-center/market/skill/create" replace />} />
           <Route path="/sharing-center/my-shared/edit/:id" element={<MySharedEditPage />} />
           <Route path="/sharing-center/my-shared/:id/versions" element={<MySharedVersionsPage />} />
           <Route path="/sharing-center/approvals" element={<ApprovalsListPage />} />
