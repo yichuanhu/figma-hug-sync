@@ -121,7 +121,7 @@ const DevCenterPublishPage = () => {
         <div>
           <Title heading={6} style={{ marginBottom: 12 }}>{t('sharing.myShared.publish.displayTitle')}</Title>
           <Form labelPosition="top" onSubmit={submit} getFormApi={(api) => ((window as any).__pubForm = api)}>
-            <Form.Slot label={t('sharing.myShared.publish.coverImage')}>
+            <Form.Slot label={t('sharing.myShared.publish.coverImage')} required>
               <Upload
                 action="" accept=".jpg,.jpeg,.png" maxSize={COVER_MAX_KB} showUploadList={false}
                 beforeUpload={({ file }: any) => beforeCover(file.fileInstance as File)}
@@ -148,9 +148,9 @@ const DevCenterPublishPage = () => {
               )}
             </Form.Slot>
             <Form.Input field="displayName" label={t('sharing.myShared.publish.displayName')} placeholder={t('sharing.myShared.publish.displayNamePh')} maxLength={100} />
-            <Form.TextArea field="displayDesc" label={t('sharing.myShared.publish.displayDesc')} placeholder={t('sharing.myShared.publish.displayDescPh')} maxLength={500} rows={3} />
+            <Form.TextArea field="displayDesc" label={t('sharing.myShared.publish.displayDesc')} placeholder={t('sharing.myShared.publish.displayDescPh')} maxLength={500} rows={3} rules={[{ required: true, min: 10, max: 500, message: t('sharing.myShared.publish.displayDescRequired') }]} trigger={['blur', 'change']} />
             <Form.TagInput field="categoryTags" label={t('sharing.myShared.publish.categoryTags')} placeholder={t('sharing.myShared.publish.categoryTagsPh')} />
-            <Form.Slot label={t('sharing.myShared.publish.overview')}>
+            <Form.Slot label={t('sharing.myShared.publish.overview')} required>
               <RichTextEditor value={overview} onChange={setOverview} placeholder={t('sharing.myShared.publish.overviewPh')} maxLength={5000} minHeight={240} />
             </Form.Slot>
             <Form.Slot label={t('sharing.myShared.publish.videoUrl')}>
