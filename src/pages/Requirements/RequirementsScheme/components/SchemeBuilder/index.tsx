@@ -13,9 +13,7 @@ import {
 } from '@/pages/Requirements/RequirementsWorkbench/schemeConfig';
 import type { RequirementScheme } from '@/pages/Requirements/RequirementsWorkbench/types';
 import FormBuilder from './FormBuilder';
-import AssessmentBuilder from './AssessmentBuilder';
 import WorkflowBuilder from './WorkflowBuilder';
-import CostBuilder from './CostBuilder';
 import TestDriveModal from './TestDriveModal';
 import './index.less';
 
@@ -37,7 +35,7 @@ const SchemeBuilderPage = () => {
   // draftScheme：本地编辑缓冲区
   const [draftScheme, setDraftScheme] = useState<RequirementScheme | null>(null);
   const [dirty, setDirty] = useState(false);
-  const [activeTab, setActiveTab] = useState<'form' | 'assessment' | 'workflow' | 'cost'>('form');
+  const [activeTab, setActiveTab] = useState<'form' | 'workflow'>('form');
   const [missingTabs, setMissingTabs] = useState<string[]>([]);
   const [testDriveVisible, setTestDriveVisible] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -271,35 +269,17 @@ const SchemeBuilderPage = () => {
             <FormBuilder fields={draftScheme.custom_fields} onChange={(fields) => patch({ custom_fields: fields })} />
           </TabPane>
           <TabPane
-            tab={<span>{t('requirements.scheme.builder.tabs.assessment')}{tabBadge('assessment')}</span>}
-            itemKey="assessment"
-          >
-            <AssessmentBuilder
-              valueModel={draftScheme.value_assessment_model}
-              complexityModel={draftScheme.complexity_assessment_model}
-              fields={draftScheme.custom_fields}
-              disabled={draftScheme.workflow_config?.template === 'none'}
-              onJumpToWorkflow={() => setActiveTab('workflow')}
-              onChange={(value, complexity) => patch({ value_assessment_model: value, complexity_assessment_model: complexity })}
-            />
-          </TabPane>
-          <TabPane
-            tab={<span>{t('requirements.scheme.builder.tabs.workflow')}{tabBadge('workflow')}</span>}
+            tab={<span>{t('requirements.scheme.builder.tabs.workflow')}{tabBadge('workflow')}{tabBadge('assessment')}</span>}
             itemKey="workflow"
           >
             <WorkflowBuilder
               workflow={draftScheme.workflow_config}
+              valueModel={draftScheme.value_assessment_model}
+              complexityModel={draftScheme.complexity_assessment_model}
+              fields={draftScheme.custom_fields}
               onChange={(wf) => patch({ workflow_config: wf })}
+              onChangeAssessment={(value, complexity) => patch({ value_assessment_model: value, complexity_assessment_model: complexity })}
               onClearAssessment={() => patch({ value_assessment_model: undefined, complexity_assessment_model: undefined })}
-            />
-          </TabPane>
-          <TabPane
-            tab={<span>{t('requirements.scheme.builder.tabs.cost')}{tabBadge('cost')}</span>}
-            itemKey="cost"
-          >
-            <CostBuilder
-              cost={draftScheme.cost_config}
-              onChange={(c) => patch({ cost_config: c })}
             />
           </TabPane>
         </Tabs>

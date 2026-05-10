@@ -13,12 +13,15 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { buildWorkflowFromTemplate } from '@/pages/Requirements/RequirementsWorkbench/schemeConfig';
+import AssessmentBuilder from '../AssessmentBuilder';
 import type {
   WorkflowConfig,
   WorkflowApprover,
   WorkflowApproverType,
   WorkflowApprovalMode,
   WorkflowState,
+  AssessmentModel,
+  SchemeField,
 } from '@/pages/Requirements/RequirementsWorkbench/types';
 
 const { Text, Title } = Typography;
@@ -28,6 +31,11 @@ interface Props {
   onChange: (wf: WorkflowConfig) => void;
   /** 关闭审批流时同步清空评估模型 */
   onClearAssessment?: () => void;
+  /** 评估模型（嵌入显示） */
+  valueModel?: AssessmentModel;
+  complexityModel?: AssessmentModel;
+  fields?: SchemeField[];
+  onChangeAssessment?: (value?: AssessmentModel, complexity?: AssessmentModel) => void;
 }
 
 const TEMPLATES = [
@@ -171,7 +179,7 @@ const ApproverList = ({
   );
 };
 
-const WorkflowBuilder = ({ workflow, onChange, onClearAssessment }: Props) => {
+const WorkflowBuilder = ({ workflow, onChange, onClearAssessment, valueModel, complexityModel, fields = [], onChangeAssessment }: Props) => {
   const { t } = useTranslation();
   const wf: WorkflowConfig = workflow ?? { template: 'simple', states: [], approvers: [], assessors: [] };
   const disabled = wf.template === 'none';
@@ -286,10 +294,27 @@ const WorkflowBuilder = ({ workflow, onChange, onClearAssessment }: Props) => {
             onChange={(list) => onChange({ ...wf, approvers: list })}
           />
           <ApproverList
-            title="评估人配置"
-            emptyHint="暂无评估级，点击右上角添加"
+            title="技术评估人配置"
+            emptyHint="暂无评估级，点击右上角添加。设置后可在下方配置评估模型。"
             list={wf.assessors}
-            onChange={(list) => onChange({ ...wf, assessors: list })}
+            onChange={(list) => {
+              onChange({ ...wf, assessors: list });
+              // 若移除了所有评估人，同步清空评估模型
+              if (list.length === 0) {
+                onChangeAssessment?.(undefined, undefined);
+              }
+            }}
+          />
+        </div>
+      )}
+
+      {!disabled && wf.assessors.length > 0 && onChangeAssessment && (
+        <div style={{ marginTop: 16 }}>
+          <AssessmentBuilder
+            valueModel={valueModel}
+            complexityModel={complexityModel}
+            fields={fields}
+            onChange={onChangeAssessment}
           />
         </div>
       )}
