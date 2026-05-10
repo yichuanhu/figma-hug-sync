@@ -134,10 +134,19 @@ const ApproverList = ({
               <Switch checked={a.required} onChange={(v) => update(idx, { ...a, required: v })} size="small" />
               <Text size="small" type="tertiary">必需</Text>
             </div>
-            {(a.type === 'specific_users' || a.type === 'role') && (
+            {a.type === 'specific_users' && (
+              <OwnerSearchSelect
+                multiple
+                size="small"
+                value={a.target_ids ?? []}
+                onChange={(v: string | string[]) => update(idx, { ...a, target_ids: (Array.isArray(v) ? v : []) as string[] })}
+                placeholder="搜索并选择用户"
+              />
+            )}
+            {a.type === 'role' && (
               <Select multiple value={a.target_ids ?? []} onChange={(v) => update(idx, { ...a, target_ids: v as string[] })}
-                optionList={a.type === 'specific_users' ? USER_OPTIONS : ROLE_OPTIONS}
-                size="small" placeholder={a.type === 'specific_users' ? '选择用户' : '选择角色'} />
+                optionList={ROLE_OPTIONS}
+                size="small" placeholder="选择角色" />
             )}
           </div>
           <Button icon={<Trash2 size={14} strokeWidth={2} />} theme="borderless" type="danger" size="small" onClick={() => remove(idx)} />
