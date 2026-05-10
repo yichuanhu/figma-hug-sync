@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import {
   addAsset, makeNativeKnowledge, buildAssetId, publishNewVersion, type ShareAsset,
 } from '@/pages/SharingCenter/MyShared/store';
+import RichTextEditor, { stripHtml } from '@/components/RichTextEditor';
 import './index.less';
 
 const { Title } = Typography;
@@ -14,6 +15,7 @@ const KnowledgeCreatePage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
+  const [content, setContent] = useState('');
 
   const submit = async (values: any, publish: boolean) => {
     if (!values?.name || values.name.length < 2) {
@@ -25,7 +27,7 @@ const KnowledgeCreatePage = () => {
     const today = new Date().toISOString().slice(0, 10);
     const asset: ShareAsset = makeNativeKnowledge(id, values.name, values.description || '', 'DRAFT', today, {
       knowledgeType: values.knowledgeType,
-      contentHtml: values.content || `<p>${values.description || ''}</p>`,
+      contentHtml: content || `<p>${values.description || ''}</p>`,
     });
     asset.tags = Array.isArray(values.tags) ? values.tags : [];
     addAsset(asset);
@@ -73,11 +75,9 @@ const KnowledgeCreatePage = () => {
             rules={[{ required: true, min: 10, max: 500, message: t('sharing.myShared.create.fields.descPh') }]}
             trigger={['blur', 'change']}
           />
-          <Form.TextArea
-            field="content" label={t('sharing.myShared.create.fields.content')}
-            placeholder="支持 Markdown / 富文本（演示版以纯文本为主）"
-            rows={8}
-          />
+          <Form.Slot label={t('sharing.myShared.create.fields.content')}>
+            <RichTextEditor value={content} onChange={setContent} placeholder={t('sharing.myShared.create.fields.descPh')} maxLength={5000} />
+          </Form.Slot>
           <Form.Slot label={t('sharing.myShared.create.fields.attachments')}>
             <Upload
               action="" customRequest={({ onSuccess }: any) => setTimeout(() => onSuccess?.({}), 200)}

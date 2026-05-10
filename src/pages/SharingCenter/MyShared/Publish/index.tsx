@@ -4,6 +4,7 @@ import { Button, Form, Toast, Typography, Space, Banner, Tag, Upload } from '@do
 import { IconChevronLeft, IconImage, IconVideoListStroked } from '@douyinfe/semi-icons';
 import { useTranslation } from 'react-i18next';
 import { findAsset, submitDevCenterPublish } from '@/pages/SharingCenter/MyShared/store';
+import RichTextEditor from '@/components/RichTextEditor';
 import '../Create/Knowledge/index.less';
 
 const { Title, Text } = Typography;
@@ -14,6 +15,7 @@ const DevCenterPublishPage = () => {
   const { id = '' } = useParams();
   const asset = findAsset(id);
   const [submitting, setSubmitting] = useState(false);
+  const [overview, setOverview] = useState<string>('');
 
   if (!asset) {
     return <div style={{ padding: 64 }}><Text>资产不存在</Text></div>;
@@ -30,7 +32,7 @@ const DevCenterPublishPage = () => {
       displayName: (values.displayName ?? '').trim() || undefined,
       displayDesc: (values.displayDesc ?? '').trim() || undefined,
       categoryTags: Array.isArray(values.categoryTags) ? values.categoryTags : undefined,
-      overview: values.overview,
+      overview: overview || values.overview,
       videoUrl: values.videoUrl,
     });
     Toast.success(t('sharing.myShared.toast.published'));
@@ -80,7 +82,9 @@ const DevCenterPublishPage = () => {
             <Form.Input field="displayName" label={t('sharing.myShared.publish.displayName')} placeholder={t('sharing.myShared.publish.displayNamePh')} maxLength={100} />
             <Form.TextArea field="displayDesc" label={t('sharing.myShared.publish.displayDesc')} placeholder={t('sharing.myShared.publish.displayDescPh')} maxLength={500} rows={3} />
             <Form.TagInput field="categoryTags" label={t('sharing.myShared.publish.categoryTags')} placeholder={t('sharing.myShared.publish.categoryTagsPh')} />
-            <Form.TextArea field="overview" label={t('sharing.myShared.publish.overview')} placeholder={t('sharing.myShared.publish.overviewPh')} maxLength={5000} rows={6} />
+            <Form.Slot label={t('sharing.myShared.publish.overview')}>
+              <RichTextEditor value={overview} onChange={setOverview} placeholder={t('sharing.myShared.publish.overviewPh')} maxLength={5000} minHeight={240} />
+            </Form.Slot>
             <Form.Slot label={t('sharing.myShared.publish.videoUrl')}>
               <Upload action="" accept=".mp4" maxSize={102400} customRequest={({ onSuccess }: any) => setTimeout(() => onSuccess?.({}), 200)}>
                 <Button icon={<IconVideoListStroked />}>{t('sharing.myShared.publish.videoUrl')}</Button>

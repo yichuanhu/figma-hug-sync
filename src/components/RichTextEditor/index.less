@@ -1,0 +1,38 @@
+.rich-text-editor {
+  position: relative;
+
+  .ql-toolbar.ql-snow {
+    border-color: var(--semi-color-border);
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    background: var(--semi-color-fill-0);
+  }
+  .ql-container.ql-snow {
+    border-color: var(--semi-color-border);
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    font-family: inherit;
+    font-size: 13px;
+  }
+  .ql-editor {
+    color: var(--semi-color-text-0);
+    &.ql-blank::before {
+      color: var(--semi-color-text-2);
+      font-style: normal;
+    }
+  }
+
+  .rte-counter {
+    text-align: right;
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--semi-color-text-2);
+    &.is-over { color: var(--semi-color-danger); }
+  }
+
+  &.is-readonly .ql-toolbar { display: none; }
+  &.is-readonly .ql-container.ql-snow {
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+  }
+}
