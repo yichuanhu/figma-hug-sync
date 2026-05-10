@@ -176,10 +176,10 @@ const MySharedPage = () => {
         )}
       </div>
 
-      {list.length > PAGE_SIZE && (
+      {total > PAGE_SIZE && (
         <div className="list-pagination">
           <Pagination
-            total={list.length}
+            total={total}
             pageSize={PAGE_SIZE}
             currentPage={page}
             onPageChange={setPage}
