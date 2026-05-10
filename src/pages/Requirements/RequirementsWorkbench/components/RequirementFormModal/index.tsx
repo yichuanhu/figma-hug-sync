@@ -93,9 +93,6 @@ const RequirementFormModal = ({
       setDraftLoadedAt(null);
       setStep('edit');
       setPublishReason('');
-      setPublishDevImpact(false);
-      setPublishDiffs([]);
-      setPublishPreviewing(false);
       setPendingPatch({});
       return;
     }
