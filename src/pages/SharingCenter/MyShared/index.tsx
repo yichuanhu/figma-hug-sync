@@ -224,6 +224,12 @@ const MySharedPage = () => {
         asset={pushAsset}
         onCancel={() => setPushAsset(null)}
       />
+
+      <ReuseStatsPanel
+        visible={aggregatedStatsVisible}
+        onCancel={() => setAggregatedStatsVisible(false)}
+        records={aggregatedReuse}
+      />
     </div>
   );
 };
