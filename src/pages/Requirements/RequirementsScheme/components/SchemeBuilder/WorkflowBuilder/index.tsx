@@ -13,12 +13,15 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { buildWorkflowFromTemplate } from '@/pages/Requirements/RequirementsWorkbench/schemeConfig';
+import AssessmentBuilder from '../AssessmentBuilder';
 import type {
   WorkflowConfig,
   WorkflowApprover,
   WorkflowApproverType,
   WorkflowApprovalMode,
   WorkflowState,
+  AssessmentModel,
+  SchemeField,
 } from '@/pages/Requirements/RequirementsWorkbench/types';
 
 const { Text, Title } = Typography;
@@ -28,6 +31,11 @@ interface Props {
   onChange: (wf: WorkflowConfig) => void;
   /** 关闭审批流时同步清空评估模型 */
   onClearAssessment?: () => void;
+  /** 评估模型（嵌入显示） */
+  valueModel?: AssessmentModel;
+  complexityModel?: AssessmentModel;
+  fields?: SchemeField[];
+  onChangeAssessment?: (value?: AssessmentModel, complexity?: AssessmentModel) => void;
 }
 
 const TEMPLATES = [
