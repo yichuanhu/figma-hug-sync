@@ -83,12 +83,24 @@ const SupplyAssetCard = ({ asset, onView, onPush, highlighted }: Props) => {
             style={{ marginBottom: 10 }}
           />
         ) : (
-          <div className="card-reuse">
+          <div className="card-reuse" onClick={stop}>
             <Text size="small" type="tertiary">{reuseSummary}</Text>
             {lastReuse && (
               <Text size="small" type="tertiary" ellipsis={{ showTooltip: true }}>
                 {t('sharing.myShared.card.lastReuser', { name: lastReuse.reuserName, date: lastReuse.reusedAt })}
               </Text>
+            )}
+            {(asset.reuseCount ?? 0) > 0 && (
+              <Button
+                size="small"
+                theme="borderless"
+                type="primary"
+                icon={<BarChart2 size={12} strokeWidth={2} />}
+                onClick={() => setStatsVisible(true)}
+                style={{ marginLeft: 'auto' }}
+              >
+                {t('sharing.myShared.card.viewReuseDetails')}
+              </Button>
             )}
           </div>
         )}
