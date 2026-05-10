@@ -99,6 +99,24 @@ const SupplyAssetCard = ({ asset, onView, onPush, highlighted }: Props) => {
             >
               {t('sharing.myShared.actions.view')}
             </Button>
+            {isRejected && isNative && (
+              <Button
+                size="small" theme="borderless" type="primary"
+                icon={<Pencil size={14} strokeWidth={2} />}
+                onClick={() => navigate(`/sharing-center/my-shared/edit/${asset.id}`)}
+              >
+                {t('sharing.myShared.actions.resubmit')}
+              </Button>
+            )}
+            {isRejected && !isNative && asset.originUrl && (
+              <Button
+                size="small" theme="borderless" type="primary"
+                icon={<ExternalLink size={14} strokeWidth={2} />}
+                onClick={() => window.open(asset.originUrl, '_blank')}
+              >
+                {t('sharing.myShared.actions.backToDevCenter')}
+              </Button>
+            )}
             {showPush && (
               <Tooltip
                 content={pushDisabled
@@ -119,6 +137,7 @@ const SupplyAssetCard = ({ asset, onView, onPush, highlighted }: Props) => {
             )}
             <AssetActionsMenu
               asset={asset}
+              onPush={onPush}
               trigger={
                 <Button size="small" theme="borderless" type="tertiary" icon={<MoreVertical size={14} strokeWidth={2} />} />
               }
