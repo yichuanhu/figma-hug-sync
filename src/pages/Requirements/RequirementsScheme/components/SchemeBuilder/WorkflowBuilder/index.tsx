@@ -179,7 +179,7 @@ const ApproverList = ({
   );
 };
 
-const WorkflowBuilder = ({ workflow, onChange, onClearAssessment }: Props) => {
+const WorkflowBuilder = ({ workflow, onChange, onClearAssessment, valueModel, complexityModel, fields = [], onChangeAssessment }: Props) => {
   const { t } = useTranslation();
   const wf: WorkflowConfig = workflow ?? { template: 'simple', states: [], approvers: [], assessors: [] };
   const disabled = wf.template === 'none';
