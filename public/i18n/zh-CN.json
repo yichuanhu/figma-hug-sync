@@ -147,7 +147,8 @@
     "mtMiddlewareStatus": "中间件状态",
     "sharingCenter": "共享中心",
     "assetMarket": "资产市场",
-    "mySharedAssets": "我的共享",
+    "mySharedAssets": "资产上架",
+    "assetSupply": "资产上架",
     "sharingApprovals": "审批管理",
     "marketAll": "全部资产",
     "marketWorkflow": "自动化流程",
@@ -3196,8 +3197,9 @@
       },
       "status": {
         "draft": "草稿",
+        "pendingPublish": "待上架",
         "pending": "待审批",
-        "published": "已发布",
+        "published": "已上架",
         "rejected": "已拒绝",
         "archived": "已归档",
         "unlisted": "已下架"
