@@ -35,8 +35,8 @@ const GROUP_ORDER: GroupKey[] = ['browse', 'operate', 'publish', 'approval', 'ad
 
 const PermissionsPage = () => {
   const { t } = useTranslation();
-  const tp = (k: string, opts?: Record<string, unknown>) =>
-    t(`sharing.admin.permissions.${k}`, opts as never);
+  const tp = (k: string, opts?: Record<string, unknown>): string =>
+    t(`sharing.admin.permissions.${k}`, opts as never) as unknown as string;
 
   const groupedPoints = GROUP_ORDER.map((g) => ({
     key: g,
