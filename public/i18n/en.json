@@ -4296,7 +4296,13 @@
           "reuser": "Reuser",
           "reuseType": "Reuse type",
           "note": "Note"
-        }
+        },
+        "editInDevCenter": "Edit in Dev Center",
+        "downloadZip": "Download ZIP",
+        "knowledgeDownloadStarted": "Packaging started; download link will be sent via notification",
+        "reusedAt": "Reused at",
+        "snapshot": "Snapshot",
+        "snapshotTip": "Snapshot at publish time; may differ from the current version in Dev Center"
       },
       "skill": {
         "category": "Category",
