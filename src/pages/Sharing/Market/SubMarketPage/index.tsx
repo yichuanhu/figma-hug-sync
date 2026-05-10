@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { getMarketAssets, subscribe } from '@/pages/SharingCenter/MyShared/store';
 import type { Asset } from '../types';
-import { AssetType, SortKey, SourceFilter } from '../types';
+import { AssetType, SortKey } from '../types';
 import { filterAndSort, paginate, PAGE_SIZE } from '../utils';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
 import MarketToolbar from '../components/MarketToolbar';
@@ -17,23 +17,17 @@ const { Title } = Typography;
 interface Props {
   type: AssetType;
   titleKey: string;
-  /** 是否锁定来源（流程/流程块固定 DEV_CENTER；知识固定 NATIVE） */
-  lockedSource?: 'NATIVE' | 'DEV_CENTER';
-  /** 自定义工具栏左侧扩展（如技能类型筛选） */
   toolbarExtra?: React.ReactNode;
-  /** 数据进一步过滤（如技能类型） */
   extraFilter?: (assets: Asset[]) => Asset[];
   emptyKey?: string;
 }
 
-const SubMarketPage = ({ type, titleKey, lockedSource, toolbarExtra, extraFilter, emptyKey }: Props) => {
+const SubMarketPage = ({ type, titleKey, toolbarExtra, extraFilter, emptyKey }: Props) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
-  const [sourceFilter, setSourceFilter] = useState<SourceFilter>(lockedSource ?? 'ALL');
   const [sortBy, setSortBy] = useState<SortKey>('reuseCount');
   const [page, setPage] = useState(1);
-  const [, setRerender] = useState(0);
 
   const debouncedSearch = useDebouncedValue(search, 300);
 
@@ -45,10 +39,10 @@ const SubMarketPage = ({ type, titleKey, lockedSource, toolbarExtra, extraFilter
     return filterAndSort(base, {
       type: 'ALL',
       keyword: debouncedSearch,
-      source: lockedSource ?? sourceFilter,
+      source: 'ALL',
       sortBy,
     });
-  }, [allAssets, type, debouncedSearch, sourceFilter, sortBy, lockedSource, extraFilter]);
+  }, [allAssets, type, debouncedSearch, sortBy, extraFilter]);
 
   const paged = paginate(list, page, PAGE_SIZE);
 
@@ -61,7 +55,7 @@ const SubMarketPage = ({ type, titleKey, lockedSource, toolbarExtra, extraFilter
               type="tertiary"
               theme="borderless"
               icon={<ChevronLeft size={18} strokeWidth={2} />}
-              onClick={() => navigate('/sharing/market')}
+              onClick={() => navigate('/sharing-center/market')}
             />
           </Tooltip>
           <Title heading={3} className="title">{t(titleKey)}</Title>
@@ -73,11 +67,8 @@ const SubMarketPage = ({ type, titleKey, lockedSource, toolbarExtra, extraFilter
       <MarketToolbar
         search={search}
         onSearchChange={(v) => { setSearch(v); setPage(1); }}
-        sourceFilter={sourceFilter}
-        onSourceChange={(v) => { setSourceFilter(v); setPage(1); }}
         sortBy={sortBy}
         onSortChange={(v) => { setSortBy(v); setPage(1); }}
-        showSourceFilter={!lockedSource}
       />
 
       <div className="market-page-body">
@@ -87,7 +78,6 @@ const SubMarketPage = ({ type, titleKey, lockedSource, toolbarExtra, extraFilter
           page={page}
           pageSize={PAGE_SIZE}
           onPageChange={setPage}
-          onReused={() => setRerender((x) => x + 1)}
           emptyDescription={emptyKey ? t(emptyKey) : t('sharing.market.empty.default')}
         />
       </div>
