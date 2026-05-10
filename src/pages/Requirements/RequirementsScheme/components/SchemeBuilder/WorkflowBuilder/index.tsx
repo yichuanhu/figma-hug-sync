@@ -38,12 +38,6 @@ const MODE_OPTIONS: Array<{ value: WorkflowApprovalMode; label: string }> = [
   { value: 'majority', label: '多数通过' },
 ];
 
-const USER_OPTIONS = [
-  { value: 'user-001', label: 'John Smith' },
-  { value: 'user-002', label: 'Emily Chen' },
-  { value: 'user-003', label: 'Michael Wang' },
-  { value: 'user-004', label: 'Sarah Li' },
-];
 const ROLE_OPTIONS = [
   { value: 'role-line-manager', label: '直属主管' },
   { value: 'role-dept-head', label: '部门负责人' },
