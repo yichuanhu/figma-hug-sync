@@ -410,16 +410,8 @@ const RequirementFormModal = ({
         {isPublishStep && editData && (
           <div className="requirement-form-modal-content">
             <PublishChangePanel
-              requirementId={editData.id}
-              patch={pendingPatch}
               reason={publishReason}
               onReasonChange={setPublishReason}
-              devImpact={publishDevImpact}
-              onDevImpactChange={setPublishDevImpact}
-              diffs={publishDiffs}
-              onDiffsChange={setPublishDiffs}
-              previewing={publishPreviewing}
-              onPreviewingChange={setPublishPreviewing}
             />
           </div>
         )}
@@ -463,7 +455,7 @@ const RequirementFormModal = ({
                 disabled={!canPublish}
                 onClick={handlePublish}
               >
-                {publishDevImpact ? '确认并发布变更' : '发布变更'}
+                发布变更
               </Button>
             ) : (
               <Button htmlType="submit" theme="solid" type="primary" loading={loading}>
