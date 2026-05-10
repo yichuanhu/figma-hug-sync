@@ -407,11 +407,11 @@ const RequirementDetailDrawer = ({
     }
   }, [visible, data?.id, data?.approvalHistory, t]);
 
-  // 加载待响应变更日志（用于 Banner + Panel）
+  // 加载变更日志（仅用于详情面板，开发响应已下线）
   useEffect(() => {
     if (!visible || !data) return;
-    listChangeLogs(data.id).then((list) => {
-      setPendingLogs(list.filter((c) => c.needsDevResponse && c.status === 'PENDING'));
+    listChangeLogs(data.id).then(() => {
+      setPendingLogs([]);
     });
   }, [visible, data?.id, changeLogRefreshKey]);
 
@@ -733,7 +733,6 @@ const RequirementDetailDrawer = ({
                   <ChangeLogTab
                     requirementId={effectiveData.id}
                     refreshKey={new Date(effectiveData.updatedAt).getTime() + changeLogRefreshKey}
-                    onRespond={(log) => setRespondingLog(log)}
                     highlightLogId={highlightLogId}
                   />
                 </div>
@@ -770,16 +769,6 @@ const RequirementDetailDrawer = ({
       departmentId={data.owning_department_id}
       onClose={() => setPickerVisible(false)}
       onSuccess={() => onRefresh?.()}
-    />
-    <DevResponsePanel
-      visible={!!respondingLog}
-      log={respondingLog}
-      onCancel={() => setRespondingLog(null)}
-      onSuccess={() => {
-        setRespondingLog(null);
-        setChangeLogRefreshKey((k) => k + 1);
-        setActiveTab('changeLog');
-      }}
     />
     </>
   );
