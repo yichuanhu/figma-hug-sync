@@ -9,7 +9,7 @@ import {
   Tag,
   useFormState,
 } from '@douyinfe/semi-ui';
-import type { RequirementItem, SchemeField, SchemeFieldDependsOn, RequirementDraft, ChangedFieldDiff } from '../../types';
+import type { RequirementItem, SchemeField, SchemeFieldDependsOn, RequirementDraft } from '../../types';
 import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
 import OwnerSearchSelect from '@/components/OwnerSearchSelect';
 import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
@@ -49,9 +49,6 @@ const RequirementFormModal = ({
   const [pendingPatch, setPendingPatch] = useState<RequirementDraft['patch']>({});
   // Step 2 (发布变更) 状态：仅在弹窗整体关闭时才重置
   const [publishReason, setPublishReason] = useState('');
-  const [publishDevImpact, setPublishDevImpact] = useState(false);
-  const [publishDiffs, setPublishDiffs] = useState<ChangedFieldDiff[]>([]);
-  const [publishPreviewing, setPublishPreviewing] = useState(false);
   const [publishLoading, setPublishLoading] = useState(false);
 
   // 草稿态：仅在立项后编辑模式下使用
@@ -261,8 +258,7 @@ const RequirementFormModal = ({
     : '';
 
   const publishReasonValid = publishReason.trim().length >= 10;
-  const canPublish =
-    publishDiffs.length > 0 && publishReasonValid && !publishPreviewing;
+  const canPublish = publishReasonValid;
 
   const handlePublish = async () => {
     if (!editData) return;
@@ -272,11 +268,9 @@ const RequirementFormModal = ({
         requirementId: editData.id,
         patch: pendingPatch,
         reason: publishReason.trim(),
-        changeType: computePublishChangeType(publishDevImpact),
+        changeType: computePublishChangeType(),
       });
-      Toast.success(
-        publishDevImpact ? '变更已发布,开发侧需在 7 日内响应' : '变更已发布',
-      );
+      Toast.success('变更已发布');
       // publishChange 内部会清掉草稿
       setHasDraft(false);
       setDraftLoadedAt(null);
