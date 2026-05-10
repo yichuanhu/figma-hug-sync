@@ -100,7 +100,14 @@ const MySharedPage = () => {
     <div className="my-shared-page">
       <div className="my-shared-header">
         <Title heading={3} className="title">{t('sharing.myShared.pageTitle')}</Title>
-        <NewAssetDropdown onPublishWorkflow={() => setPublishVisible(true)} />
+        <Button
+          theme="solid"
+          type="primary"
+          icon={<Plus size={14} strokeWidth={2.5} />}
+          onClick={() => navigate('/sharing-center/my-shared/create/knowledge')}
+        >
+          {t('sharing.myShared.newAsset.knowledge')}
+        </Button>
       </div>
 
       <Tabs
