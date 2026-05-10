@@ -138,7 +138,7 @@ const PushNotificationDialog = ({ visible, asset, onCancel }: Props) => {
           </Form.Slot>
 
           <Form.Slot label={t('sharing.myShared.push.notificationBody')}>
-            <Input.TextArea
+            <TextArea
               value={body}
               onChange={setBody}
               placeholder={t('sharing.myShared.push.notificationBodyPh')}
