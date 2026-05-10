@@ -87,6 +87,8 @@ import KnowledgeCreatePage from "@/pages/SharingCenter/MyShared/Create/Knowledge
 import SkillCreatePage from "@/pages/SharingCenter/MyShared/Create/Skill";
 import MySharedEditPage from "@/pages/SharingCenter/MyShared/Edit";
 import MySharedVersionsPage from "@/pages/SharingCenter/MyShared/Versions";
+import DevCenterPublishPage from "@/pages/SharingCenter/MyShared/Publish";
+import SupplyAssetDetail from "@/pages/SharingCenter/MyShared/Detail";
 import ApprovalsListPage from "@/pages/SharingCenter/Approvals/List";
 import ApprovalDetailPage from "@/pages/SharingCenter/Approvals/Detail";
 import ApprovalLevelsPage from "@/pages/SharingCenter/Admin/ApprovalLevels";
