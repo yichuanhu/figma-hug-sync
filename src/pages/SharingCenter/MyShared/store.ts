@@ -427,3 +427,76 @@ export function findMarketAsset(id: string): Asset | undefined {
   return getMarketAssets().find((a) => a.id === id);
 }
 
+// ============ v1.8 资产市场扩展：当前用户 / 复用 / 我已复用 / 编辑展示信息 ============
+
+export const currentUser = { id: CURRENT_USER_ID, name: CURRENT_USER_NAME };
+
+export function isOwner(assetId: string): boolean {
+  const a = findAsset(assetId);
+  if (!a) return false;
+  return (a.publishedBy ?? a.ownerId) === currentUser.id;
+}
+
+export function hasReused(assetId: string): boolean {
+  const a = findAsset(assetId);
+  if (!a) return false;
+  return a.reuseRecords.some((r) => r.reuserName === currentUser.name);
+}
+
+/** 获取当前用户对该资产的复用时间（最近一次） */
+export function getReusedAt(assetId: string): string | undefined {
+  const a = findAsset(assetId);
+  return a?.reuseRecords.find((r) => r.reuserName === currentUser.name)?.reusedAt;
+}
+
+/** 创建复用记录（幂等：已复用则原样返回） */
+export function addReuseRecord(assetId: string): { ok: true; reusedAt: string } | { ok: false; reason: 'NOT_FOUND' | 'OWNER' } {
+  const a = findAsset(assetId);
+  if (!a) return { ok: false, reason: 'NOT_FOUND' };
+  if (isOwner(assetId)) return { ok: false, reason: 'OWNER' };
+  const existing = a.reuseRecords.find((r) => r.reuserName === currentUser.name);
+  if (existing) return { ok: true, reusedAt: existing.reusedAt };
+  const when = new Date().toISOString().slice(0, 16).replace('T', ' ');
+  const record = {
+    id: `${assetId}-r-${Date.now().toString(36)}`,
+    assetId,
+    versionId: a.currentVersionId,
+    versionNumber: a.currentVersion,
+    reuserName: currentUser.name,
+    reuseType: 'DIRECT' as const,
+    reusedAt: when,
+  };
+  patchAsset(assetId, {
+    reuseRecords: [record, ...a.reuseRecords],
+    reuseCount: a.reuseCount + 1,
+  } as Partial<ShareAsset>);
+  return { ok: true, reusedAt: when };
+}
+
+/** 获取当前用户已复用的资产（按复用时间倒序） */
+export function getMyReusedAssets(): Array<Asset & { myReusedAt: string }> {
+  return getMarketAssets()
+    .filter((a) => a.status === 'PUBLISHED' && a.reuseRecords.some((r) => r.reuserName === currentUser.name))
+    .map((a) => ({
+      ...a,
+      myReusedAt: a.reuseRecords.find((r) => r.reuserName === currentUser.name)!.reusedAt,
+    }))
+    .sort((x, y) => y.myReusedAt.localeCompare(x.myReusedAt));
+}
+
+export interface DisplayInfoPatch {
+  displayName?: string;
+  displayDesc?: string;
+  coverImage?: string;
+  categoryTags?: string[];
+  overview?: string;
+  videoUrl?: string;
+}
+
+export function updateDisplayInfo(assetId: string, patch: DisplayInfoPatch): boolean {
+  const a = findAsset(assetId);
+  if (!a) return false;
+  patchAsset(assetId, patch as Partial<ShareAsset>);
+  return true;
+}
+
