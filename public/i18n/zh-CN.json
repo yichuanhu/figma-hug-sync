@@ -3715,6 +3715,7 @@
         "noVersionTip": "保存不会创建新版本"
       }
     },
+    "status": {
       "PUBLISHED": "已通过",
       "REJECTED": "已拒绝"
     }
