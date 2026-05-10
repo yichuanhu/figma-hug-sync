@@ -80,6 +80,7 @@ import SnippetMarket from "@/pages/Sharing/Market/SnippetMarket";
 import KnowledgeMarket from "@/pages/Sharing/Market/KnowledgeMarket";
 import SkillMarket from "@/pages/Sharing/Market/SkillMarket";
 import AssetDetail from "@/pages/Sharing/Market/AssetDetail";
+import EditDisplay from "@/pages/Sharing/Market/EditDisplay";
 // Sharing Center - 我的共享 / 审批 / 配置
 import MySharedPage from "@/pages/SharingCenter/MyShared";
 import KnowledgeCreatePage from "@/pages/SharingCenter/MyShared/Create/Knowledge";
