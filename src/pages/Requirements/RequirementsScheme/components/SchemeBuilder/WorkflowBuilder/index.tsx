@@ -1,7 +1,7 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Select, Typography, Empty, Input, Switch, Tag, Toast } from '@douyinfe/semi-ui';
-import { Plus, Trash2, ArrowUp, ArrowDown, PowerOff } from 'lucide-react';
+import { Plus, Trash2, GripVertical, PowerOff } from 'lucide-react';
 import { buildWorkflowFromTemplate } from '@/pages/Requirements/RequirementsWorkbench/schemeConfig';
 import AssessmentBuilder from '../AssessmentBuilder';
 import type {
