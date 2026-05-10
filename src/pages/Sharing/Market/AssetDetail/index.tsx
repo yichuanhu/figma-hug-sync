@@ -21,7 +21,14 @@ const typeRouteMap: Record<string, string> = {
   snippet: 'SNIPPET', workflow: 'WORKFLOW', knowledge: 'KNOWLEDGE', skill: 'SKILL',
 };
 
-const AssetDetail = () => {
+interface Props {
+  /** consumer（默认）：消费者视图；supply：上架管理视图，隐藏「复用」与「打包下载」，由 extraActions 提供右侧按钮组 */
+  mode?: 'consumer' | 'supply';
+  /** supply 模式下右侧按钮组（替代默认编辑/在开发中心编辑） */
+  extraActions?: React.ReactNode;
+}
+
+const AssetDetail = ({ mode = 'consumer', extraActions }: Props = {}) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { type, id } = useParams<{ type: string; id: string }>();
