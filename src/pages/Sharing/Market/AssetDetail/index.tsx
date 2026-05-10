@@ -1,7 +1,11 @@
 import { useMemo, useState, useSyncExternalStore } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Typography, Tabs, Button, Space, Tag, Toast, Table, Modal, Tooltip, Banner, Spin } from '@douyinfe/semi-ui';
-import { ChevronLeft, Star, Repeat2, ExternalLink, Download, Pencil, Camera, Check } from 'lucide-react';
+import {
+  Typography, Tabs, Button, Space, Tag, Toast, Table, Modal, Tooltip, Banner, Spin, Collapse,
+} from '@douyinfe/semi-ui';
+import {
+  ChevronLeft, Star, Repeat2, ExternalLink, Download, Pencil, Camera, Check,
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { findMarketAsset, getMarketAssets, subscribe, isOwner } from '@/pages/SharingCenter/MyShared/store';
 import { useCollections } from '../hooks/useCollections';
@@ -49,6 +53,7 @@ const AssetDetail = () => {
   const displayName = asset.displayName || asset.name;
   const displayDesc = asset.displayDesc || asset.description;
   const categoryTags = asset.categoryTags ?? [];
+  const isWorkflow = asset.type === 'WORKFLOW';
 
   const handleEditDisplay = () => {
     navigate(`/sharing-center/market/${type}/${asset.id}/edit-display`);
@@ -92,57 +97,79 @@ const AssetDetail = () => {
   };
 
   const renderTypeAction = () => {
-    if (asset.type === 'WORKFLOW') {
+    if (isWorkflow) {
       return (
         <Button theme="borderless" type="tertiary" icon={<ExternalLink size={14} strokeWidth={2} />} onClick={handleEditInDevCenter}>
           {t('sharing.market.detail.editInDevCenter')}
         </Button>
       );
     }
-    if (asset.type === 'KNOWLEDGE') {
-      return (
-        <Button theme="light" type="tertiary" icon={<Download size={14} strokeWidth={2} />} onClick={handleDownloadKnowledge}>
-          {t('sharing.market.detail.downloadZip')}
-        </Button>
-      );
-    }
-    return null;
+    return (
+      <Button theme="light" type="tertiary" icon={<Download size={14} strokeWidth={2} />} onClick={handleDownloadKnowledge}>
+        {t('sharing.market.detail.downloadZip')}
+      </Button>
+    );
   };
 
-  const renderWorkflowContent = () => (
-    <div className="asset-detail-workflow-content">
-      {asset.overview ? (
-        <div className="knowledge-html" dangerouslySetInnerHTML={{ __html: asset.overview }} />
-      ) : (
-        <Paragraph type="tertiary">{displayDesc}</Paragraph>
+  // ============ 展示信息区（始终可见） ============
+  const renderDisplayInfo = () => (
+    <section className="asset-detail-section asset-detail-display">
+      {asset.coverImage && (
+        <div className="display-cover" style={{ backgroundImage: `url(${asset.coverImage})` }} />
       )}
-      {asset.videoUrl && (
-        <div className="asset-detail-video">
-          <video src={asset.videoUrl} controls style={{ width: '100%', maxWidth: 720, marginTop: 16, borderRadius: 8 }} />
-        </div>
-      )}
-      <Banner
-        type="info"
-        fullMode={false}
-        closeIcon={null}
-        description={t('sharing.market.detail.workflow.readOnlyTip')}
-        style={{ marginTop: 16 }}
-      />
-    </div>
+      <div className="display-body">
+        <Title heading={4} style={{ margin: 0 }}>{displayName}</Title>
+        <Paragraph type="tertiary" className="display-desc">{displayDesc}</Paragraph>
+        {asset.overview && (
+          <div className="display-overview knowledge-html" dangerouslySetInnerHTML={{ __html: asset.overview }} />
+        )}
+        {categoryTags.length > 0 && (
+          <div className="display-tags">
+            {categoryTags.map((tag) => (
+              <Tag key={`c-${tag}`} size="small" color="blue" type="light">{tag}</Tag>
+            ))}
+          </div>
+        )}
+        {asset.videoUrl && (
+          <div className="display-video">
+            <Text type="tertiary" size="small" style={{ display: 'block', marginBottom: 6 }}>
+              🎬 {t('sharing.market.detail.demoVideo')}
+            </Text>
+            <video src={asset.videoUrl} controls style={{ width: '100%', maxWidth: 720, borderRadius: 8 }} />
+          </div>
+        )}
+      </div>
+    </section>
   );
 
-  const renderKnowledgeContent = () => {
+  // ============ 内容区（始终可见） ============
+  const renderContentSection = () => {
+    if (isWorkflow) {
+      const yaml = asset.workflow?.yaml ?? asset.versions.find((v) => v.isLatest)?.content ?? '';
+      return (
+        <section className="asset-detail-section">
+          <div className="section-head">
+            <Title heading={6} style={{ margin: 0 }}>{t('sharing.market.detail.tabs.contentReadonly')}</Title>
+            <Button theme="borderless" type="primary" size="small"
+              icon={<ExternalLink size={14} strokeWidth={2} />} onClick={handleEditInDevCenter}>
+              {t('sharing.market.detail.editInDevCenter')}
+            </Button>
+          </div>
+          {yaml ? <pre className="asset-detail-yaml">{yaml}</pre>
+            : <Paragraph type="tertiary">{t('sharing.market.detail.noContent')}</Paragraph>}
+        </section>
+      );
+    }
     const k = asset.knowledge;
     return (
-      <div className="asset-detail-content-knowledge">
-        {asset.overview && <div className="knowledge-html" dangerouslySetInnerHTML={{ __html: asset.overview }} />}
+      <section className="asset-detail-section">
+        <div className="section-head">
+          <Title heading={6} style={{ margin: 0 }}>{t('sharing.market.detail.tabs.content')}</Title>
+        </div>
         {k?.contentHtml && <div className="knowledge-html" dangerouslySetInnerHTML={{ __html: k.contentHtml }} />}
-        {asset.videoUrl && (
-          <video src={asset.videoUrl} controls style={{ width: '100%', maxWidth: 720, marginTop: 16, borderRadius: 8 }} />
-        )}
         {k && k.attachments.length > 0 && (
           <div className="knowledge-attachments">
-            <Text strong>{t('sharing.market.detail.attachments')}</Text>
+            <Text strong>📎 {t('sharing.market.detail.attachments')}</Text>
             <ul>
               {k.attachments.map((a) => (
                 <li key={a.name}>
@@ -153,70 +180,112 @@ const AssetDetail = () => {
             </ul>
           </div>
         )}
-      </div>
+      </section>
+    );
+  };
+
+  // ============ 资产元信息（默认折叠） ============
+  const renderMetaCollapsible = () => {
+    const metaItems: Array<{ label: string; value: React.ReactNode }> = [
+      { label: t('sharing.market.detail.meta.name'), value: asset.name },
+      { label: t('sharing.market.detail.meta.description'), value: asset.description || '—' },
+      { label: t('sharing.market.detail.meta.version'), value: asset.currentVersion },
+    ];
+    if (isWorkflow) {
+      metaItems.push({
+        label: t('sharing.market.detail.meta.resourceDeps'),
+        value: asset.resourceDeps && asset.resourceDeps.length > 0
+          ? <Space wrap spacing={4}>{asset.resourceDeps.map((d) => <Tag key={d} size="small" color="grey" type="light">{d}</Tag>)}</Space>
+          : '—',
+      });
+    } else {
+      metaItems.push({
+        label: t('sharing.market.detail.meta.tags'),
+        value: asset.tags.length > 0
+          ? <Space wrap spacing={4}>{asset.tags.map((tag) => <Tag key={tag} size="small" color="grey" type="light">{tag}</Tag>)}</Space>
+          : '—',
+      });
+    }
+    metaItems.push(
+      { label: t('sharing.market.detail.meta.department'), value: asset.departmentName },
+      { label: t('sharing.market.detail.meta.publishedBy'), value: asset.creatorName },
+      { label: t('sharing.market.detail.meta.publishedAt'), value: asset.createdAt },
+    );
+
+    return (
+      <Collapse className="asset-detail-meta-collapse" expandIconPosition="right">
+        <Collapse.Panel
+          header={<Text strong>{t('sharing.market.detail.meta.title')}</Text>}
+          itemKey="meta"
+        >
+          <dl className="meta-grid">
+            {metaItems.map((item) => (
+              <div key={item.label} className="meta-row">
+                <dt>{item.label}</dt>
+                <dd>{item.value}</dd>
+              </div>
+            ))}
+          </dl>
+          <Banner
+            type={isWorkflow ? 'warning' : 'success'}
+            fullMode={false}
+            closeIcon={null}
+            description={isWorkflow
+              ? t('sharing.market.detail.meta.workflowReadOnly')
+              : t('sharing.market.detail.meta.knowledgeEditable')}
+            style={{ marginTop: 12 }}
+          />
+        </Collapse.Panel>
+      </Collapse>
     );
   };
 
   return (
     <div className="asset-detail">
-      <div className="asset-detail-back">
-        <Tooltip content={t('common.back')}>
-          <Button
-            type="tertiary"
-            theme="borderless"
-            icon={<ChevronLeft size={18} strokeWidth={2} />}
-            onClick={() => navigate(-1)}
-          />
-        </Tooltip>
-        <Text type="tertiary">{asset.type === 'WORKFLOW' ? t('sharing.market.detail.backWorkflow') : t('sharing.market.detail.back')}</Text>
-      </div>
-
-      <div className="asset-detail-info-card">
-        {asset.coverImage && (
-          <div className="info-card-cover" style={{ backgroundImage: `url(${asset.coverImage})` }} />
-        )}
-        <div className="info-card-head">
-          <AssetTypeIcon type={asset.type} size={22} />
-          <div className="info-card-title">
-            <Title heading={4} style={{ margin: 0 }}>{displayName}</Title>
-          </div>
-          <Space>
-            {owner && (
-              <Button theme="light" type="tertiary" icon={<Pencil size={14} strokeWidth={2} />} onClick={handleEditDisplay}>
-                {t('sharing.market.action.editDisplay')}
-              </Button>
-            )}
-            {renderTypeAction()}
+      {/* ===== 头部：返回 + 标题 + 状态 + 操作 ===== */}
+      <div className="asset-detail-header">
+        <div className="header-left">
+          <Tooltip content={t('common.back')}>
             <Button
-              theme="light"
               type="tertiary"
-              icon={<Star size={14} strokeWidth={2} fill={collected ? 'currentColor' : 'none'} />}
-              onClick={() => { toggle(asset.id); Toast.success(collected ? t('sharing.market.toast.uncollected') : t('sharing.market.toast.collected')); }}
-            >
-              {collected ? t('sharing.market.action.uncollect') : t('sharing.market.action.collect')}
+              theme="borderless"
+              icon={<ChevronLeft size={18} strokeWidth={2} />}
+              onClick={() => navigate(-1)}
+            />
+          </Tooltip>
+          <AssetTypeIcon type={asset.type} size={20} />
+          <Title heading={5} style={{ margin: 0 }} ellipsis={{ showTooltip: true }}>
+            {displayName}
+          </Title>
+          <Tag color="green" type="light" size="small">{asset.status}</Tag>
+        </div>
+        <Space>
+          {owner && (
+            <Button theme="light" type="tertiary" icon={<Pencil size={14} strokeWidth={2} />} onClick={handleEditDisplay}>
+              {t('sharing.market.action.editDisplay')}
             </Button>
-            {renderReuseButton()}
-          </Space>
-        </div>
-        <Paragraph type="tertiary" className="info-card-desc">{displayDesc}</Paragraph>
-        <div className="info-card-meta">
-          <span><Text type="tertiary" size="small">{t('sharing.market.detail.creator')}</Text> {asset.creatorName}</span>
-          <span><Text type="tertiary" size="small">{t('sharing.market.detail.createdAt')}</Text> {asset.createdAt}</span>
-          <span><Text type="tertiary" size="small">{t('sharing.market.metric.reuseCount')}</Text> {asset.reuseCount}</span>
-          <span><Text type="tertiary" size="small">{t('sharing.market.metric.version')}</Text> {asset.currentVersion}</span>
-        </div>
-        {(categoryTags.length > 0 || asset.tags.length > 0) && (
-          <div className="info-card-tags">
-            {categoryTags.map((tag) => <Tag key={`c-${tag}`} size="small" color="blue" type="light">{tag}</Tag>)}
-            {asset.tags.map((tag) => <Tag key={tag} size="small" color="grey" type="light">{tag}</Tag>)}
-          </div>
-        )}
+          )}
+          {renderTypeAction()}
+          <Button
+            theme="light"
+            type="tertiary"
+            icon={<Star size={14} strokeWidth={2} fill={collected ? 'currentColor' : 'none'} />}
+            onClick={() => { toggle(asset.id); Toast.success(collected ? t('sharing.market.toast.uncollected') : t('sharing.market.toast.collected')); }}
+          >
+            {collected ? t('sharing.market.action.uncollect') : t('sharing.market.action.collect')}
+          </Button>
+          {renderReuseButton()}
+        </Space>
       </div>
 
+      {/* ===== 展示信息区 ===== */}
+      {renderDisplayInfo()}
+
+      {/* ===== 内容区 ===== */}
+      {renderContentSection()}
+
+      {/* ===== Tabs：版本历史 / 复用记录 ===== */}
       <Tabs className="asset-detail-tabs" type="line">
-        <TabPane itemKey="content" tab={asset.type === 'WORKFLOW' ? t('sharing.market.detail.tabs.contentReadonly') : t('sharing.market.detail.tabs.content')}>
-          {asset.type === 'WORKFLOW' ? renderWorkflowContent() : renderKnowledgeContent()}
-        </TabPane>
         <TabPane itemKey="versions" tab={`${t('sharing.market.detail.tabs.versions')} (${asset.versions.length})`}>
           <Table
             size="small"
@@ -269,6 +338,9 @@ const AssetDetail = () => {
           )}
         </TabPane>
       </Tabs>
+
+      {/* ===== 资产元信息（默认折叠） ===== */}
+      {renderMetaCollapsible()}
 
       <Modal
         visible={!!previewVersion}

@@ -414,8 +414,14 @@
         "validCount": "Valid Rows",
         "errorCount": "Error Rows",
         "errorListTitle": "Error Details ({{count}})",
-        "tabs": { "valid": "Valid Rows", "error": "Errors" },
-        "cols": { "account": "Account", "password": "Password" },
+        "tabs": {
+          "valid": "Valid Rows",
+          "error": "Errors"
+        },
+        "cols": {
+          "account": "Account",
+          "password": "Password"
+        },
         "noValidRows": "No valid rows. Please fix errors and re-upload.",
         "errorTypeCol": "Error Type",
         "errorType": {
@@ -4302,7 +4308,21 @@
         "knowledgeDownloadStarted": "Packaging started; download link will be sent via notification",
         "reusedAt": "Reused at",
         "snapshot": "Snapshot",
-        "snapshotTip": "Snapshot at publish time; may differ from the current version in Dev Center"
+        "snapshotTip": "Snapshot at publish time; may differ from the current version in Dev Center",
+        "demoVideo": "Demo Video",
+        "meta": {
+          "title": "Asset Meta Information",
+          "name": "Name",
+          "description": "Description",
+          "version": "Version",
+          "resourceDeps": "Resource Dependencies",
+          "tags": "Tags",
+          "department": "Department",
+          "publishedBy": "Publisher",
+          "publishedAt": "Published At",
+          "workflowReadOnly": "⚠️ Read-only (sourced from Dev Center, cannot be edited in Sharing Center)",
+          "knowledgeEditable": "✅ Publisher can click \"Edit display info\" in the top right to modify"
+        }
       },
       "skill": {
         "category": "Category",
