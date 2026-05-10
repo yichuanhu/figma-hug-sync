@@ -13,6 +13,7 @@ import {
 } from '@/pages/Requirements/RequirementsWorkbench/schemeConfig';
 import type { RequirementScheme } from '@/pages/Requirements/RequirementsWorkbench/types';
 import FormBuilder from './FormBuilder';
+import { validateAllFields } from './FormBuilder/validators';
 import WorkflowBuilder from './WorkflowBuilder';
 import TestDriveModal from './TestDriveModal';
 import './index.less';
@@ -113,6 +114,13 @@ const SchemeBuilderPage = () => {
 
   const handleSaveDraft = async () => {
     if (!draftScheme) return;
+    // 字段配置联动校验拦截
+    const fv = validateAllFields(draftScheme.custom_fields ?? []);
+    if (fv.hasError) {
+      Toast.error(`字段配置存在 ${fv.errorFieldKeys.length} 项问题，请先修正`);
+      setActiveTab('form');
+      return;
+    }
     try {
       const updated = await updateSchemeBuilder(draftScheme.id, {
         name: draftScheme.name,
