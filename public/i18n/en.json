@@ -3852,7 +3852,8 @@
         "draft": "Draft",
         "pending_approval": "Pending",
         "rejected": "Rejected",
-        "archived": "Archived"
+        "archived": "Archived",
+        "pending_publish": "待Publish"
       },
       "filters": {
         "searchPlaceholder": "Search name / description / tags",
@@ -3880,7 +3881,18 @@
         "delete": "Delete",
         "unlist": "Unlist",
         "openInDevCenter": "Open in Dev Center",
-        "versions": "Version history"
+        "versions": "Version history",
+        "editKnowledge": "Edit",
+        "editDisplay": "Edit展示信息",
+        "publishNow": "Publish",
+        "republish": "重新Publish",
+        "viewReuse": "查看Reuse明细",
+        "pushNotification": "Push Notification",
+        "withdraw": "Withdraw",
+        "viewApproval": "查看审批进度",
+        "viewReject": "查看拒绝原因",
+        "resubmit": "修改后重新Submit",
+        "backToDevCenter": "回Dev Center调整"
       },
       "batch": {
         "selected": "{{count}} selected",
@@ -3898,7 +3910,9 @@
         "unlistTitle": "Unlist this asset?",
         "unlistContent": "The asset will be hidden from the market.",
         "deleteTitle": "Delete this asset?",
-        "deleteContent": "This action cannot be undone."
+        "deleteContent": "This action cannot be undone.",
+        "withdrawTitle": "确认Withdraw",
+        "withdrawContent": "Withdraw后，「{{name}}」将回到Draft Tab，您需要重新Publish才能再 timesSubmit审批。"
       },
       "toast": {
         "archived": "Archived",
@@ -3906,7 +3920,12 @@
         "unlisted": "Unlisted",
         "deleted": "Deleted",
         "saved": "Saved",
-        "published": "Published"
+        "published": "Published",
+        "withdrawn": "已Withdraw",
+        "publishedDirect": "已Publish",
+        "newVersionPublished": "新Version已发布",
+        "pushSent": "Notification sent至 {{count}} 个Department",
+        "pushDuplicated": "推送过于频繁，同一Asset同一Version {{hours}} 小时内不可重复推送"
       },
       "empty": {
         "title": "Nothing here",
@@ -3916,7 +3935,10 @@
         "rejected": "No rejected assets",
         "archived": "No archived assets",
         "noResult": "No results, try adjusting filters",
-        "createCta": "Create share"
+        "createCta": "Create share",
+        "pending_publish": "暂无待PublishAsset",
+        "loadFailed": "加载失败，请重试",
+        "retry": "重试"
       },
       "col": {
         "version": "Version",
@@ -3978,7 +4000,11 @@
           "exponential": "Exponential"
         },
         "saveDraft": "Save Draft",
-        "publish": "Publish"
+        "publish": "Publish",
+        "sectionBasic": "Basic Info",
+        "sectionDisplay": "Publish展示信息",
+        "sectionDisplayHint": "若仅SaveDraft可跳过；点击「立即Publish」时为必填项。",
+        "selectAttachment": "选择Attachment"
       },
       "edit": {
         "devCenterTitle": "Edit Display Info",
@@ -4009,6 +4035,89 @@
         "major": "MAJOR (breaking changes)",
         "changeLog": "Change Log",
         "changeLogPh": "Describe the changes (5-200 chars)"
+      },
+      "card": {
+        "reuseSummary": "Reuse {{count}}  times",
+        "lastReuser": "最近: {{name}} · {{date}}",
+        "noReuse": "Reuse 0  times",
+        "archivedBadge": "Archived",
+        "viewReuseDetails": "查看Reuse明细",
+        "viewAggregatedReuse": "查看AllReuse明细（{{count}} 条记录）"
+      },
+      "reuseStats": {
+        "title": "Reuse统计",
+        "titleWithName": "Reuse统计 — {{name}}",
+        "total": "总Reuse times数",
+        "thisMonth": "This Month",
+        "thisWeek": "This Week",
+        "timeRange": "时间范围",
+        "rangeAll": "All",
+        "rangeMonth": "This Month",
+        "rangeWeek": "This Week",
+        "colReuser": "Reuse者",
+        "colDept": "Department",
+        "colTime": "Reuse时间",
+        "colVersion": "Version",
+        "colType": "Reuse方式",
+        "colNote": "适配说明",
+        "typeDirect": "直接引用",
+        "typeAdaptation": "适配Reuse",
+        "empty": "暂无Reuse记录"
+      },
+      "push": {
+        "title": "Push Notification",
+        "scope": "推送范围",
+        "scopePh": "选择目标组织或Department",
+        "selectedSummary": "已选 {{count}} 个Department，预计覆盖 {{recipients}} 人",
+        "noTargetHint": "请至少选择一个目标Department",
+        "notificationTitle": "推送标题",
+        "notificationTitlePh": "Please enter推送标题（10-100 字符）",
+        "notificationBody": "推送正文",
+        "notificationBodyPh": "Please enter推送正文（10-500 字符）",
+        "isVersionUpgrade": "标记为Version升级通知",
+        "versionUpgradeHint": "勾选后将在通知中显示Version变更日志",
+        "send": "发送推送",
+        "cancel": "Cancel"
+      },
+      "publish": {
+        "pageTitle": "Publish — {{name}}",
+        "metaTitle": "Asset元信息（只读）",
+        "metaName": "Name",
+        "metaDescription": "Description",
+        "metaResourceDeps": "资源依赖",
+        "metaVersion": "Version",
+        "metaDept": "归属Department",
+        "metaSource": "Source",
+        "displayTitle": "展示信息（可Edit）",
+        "coverImage": "Cover图片",
+        "coverImageHint": "支持 jpg/png，≤2MB",
+        "coverImageError": "图片大小不能超过 2MB，仅支持 jpg/png",
+        "coverTypeError": "Cover图片仅支持 jpg/png 格式",
+        "coverSizeError": "Cover图片大小不能超过 2MB",
+        "coverReplace": "重新选择Cover",
+        "displayName": "展示Name",
+        "displayNamePh": "留空使用原始Name",
+        "displayDesc": "展示Description",
+        "displayDescPh": "留空使用原始Description",
+        "categoryTags": "CategoryTag",
+        "categoryTagsPh": "回车添加Tag",
+        "overview": "OverviewContent",
+        "overviewPh": "支持富文本",
+        "videoUrl": "Demo Video",
+        "videoUrlHint": "支持 mp4，≤100MB",
+        "videoUrlError": "视频大小不能超过 100MB，仅支持 mp4",
+        "videoTypeError": "Demo Video仅支持 mp4 格式",
+        "videoSizeError": "Demo Video大小不能超过 100MB",
+        "videoReplace": "重新选择视频",
+        "coverRequired": "请上传Cover图片",
+        "displayDescRequired": "Please enter展示Description（10-500 字）",
+        "overviewRequired": "Please enterOverviewContent（至少 20 字）",
+        "submit": "SubmitPublish",
+        "cancel": "Cancel"
+      },
+      "rejected": {
+        "reasonLabel": "拒绝原因",
+        "devCenterHint": "此Asset来自Dev Center，请回Dev Center调整后重新聚合引用"
       }
     },
     "approvals": {
