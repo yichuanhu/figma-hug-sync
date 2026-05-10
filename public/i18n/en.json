@@ -4202,7 +4202,13 @@
         "workflow": "No automation processes",
         "knowledge": "No knowledge",
         "skill": "No skills",
-        "snippet": "No snippets"
+        "snippet": "No snippets",
+        "myReused": "You haven't reused any assets yet",
+        "myReusedAction": "Browse all assets"
+      },
+      "mvpUnavailable": "This module is not available in the MVP",
+      "badge": {
+        "reused": "Reused"
       },
       "filter": {
         "sort": "Sort",
@@ -4226,6 +4232,9 @@
       },
       "action": {
         "reuse": "Reuse",
+        "reusing": "Reusing...",
+        "reused": "Reused",
+        "editDisplay": "Edit display info",
         "collect": "Favorite",
         "uncollect": "Unfavorite"
       },
@@ -4234,7 +4243,12 @@
         "uncollected": "Removed from favorites",
         "copied": "Copied",
         "copyFailed": "Copy failed",
-        "reuseSuccess": "Reused successfully"
+        "reuseSuccess": "Reused successfully",
+        "reuseFailed": "Reuse failed",
+        "workflowReused": "Workflow reused. ",
+        "workflowReusedLink": "Go to Dev Center",
+        "knowledgeReused": "Knowledge reused. ",
+        "knowledgeReusedLink": "View in My Reused"
       },
       "create": {
         "button": "Create",
