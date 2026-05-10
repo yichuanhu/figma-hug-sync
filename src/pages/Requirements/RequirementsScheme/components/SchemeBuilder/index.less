@@ -675,7 +675,20 @@
 // ============= TestDriveModal =============
 .test-drive-modal {
   .semi-modal-content {
-    padding: 24px 32px !important;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 0 !important;
+  }
+  .semi-modal-header {
+    padding: 16px 32px;
+    flex-shrink: 0;
+  }
+  .semi-modal-body {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    padding: 16px 32px 32px;
   }
 
   .test-drive-hint {
