@@ -16,24 +16,64 @@
     .section-title { margin: 0; }
   }
 
-  .entity-grid {
+  .permission-groups {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 12px;
   }
 
-  .entity-card {
+  .group-card {
     border-radius: 8px;
-    .entity-card-head {
+    .group-card-head {
       display: flex;
       align-items: baseline;
       justify-content: space-between;
       margin-bottom: 10px;
     }
-    .entity-tags {
+    .point-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
       display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
+      flex-direction: column;
+      gap: 8px;
     }
+    .point-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+  }
+
+  .role-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 12px;
+  }
+
+  .role-card {
+    border-radius: 8px;
+    .role-card-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .role-summary { display: block; margin-bottom: 10px; }
+    .role-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  }
+
+  .matrix-section {
+    .matrix-head {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .semi-table-row-cell { vertical-align: middle; }
+  }
+
+  .rules-section {
+    gap: 6px;
+    padding-top: 4px;
   }
 }

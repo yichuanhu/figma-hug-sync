@@ -4215,29 +4215,64 @@
         "queueNotice": "Changes do not affect assets already in the approval queue"
       },
       "permissions": {
-        "col": {
-          "role": "Business Role",
-          "apa": "APA Built-in Role",
-          "permissions": "Sharing Center Permissions"
+        "pageTitle": "Permissions & Roles",
+        "notice": "Sharing Center registers 12 SC_* permission points (naming: SC_{ENTITY}_{ACTION}) to the APA permission engine. hasPermission() checks are served by APA AuthContext. Role bindings can be adjusted in the APA admin console.",
+        "sectionTitles": {
+          "points": "Permission Points (by category)",
+          "roles": "Built-in Role Templates",
+          "matrix": "Role × Permission Matrix"
         },
-        "entities": {
-          "asset": "Asset",
-          "assetMarket": "Asset Market",
-          "category": "Category",
-          "approvalRule": "Approval Rule",
-          "assetApproval": "Asset Approval"
+        "groups": {
+          "browse": "Asset Browse",
+          "operate": "Asset Operate",
+          "publish": "Display & Publish",
+          "approval": "Approval",
+          "admin": "Administration"
+        },
+        "points": {
+          "SC_ASSET_VIEW": "Browse/search/filter assets and view asset details (including version history & reuse records).",
+          "SC_ASSET_REUSE": "Reuse assets (direct use/adapt) and view my reuse records.",
+          "SC_ASSET_CREATE": "Create NATIVE assets (knowledge / skill).",
+          "SC_ASSET_EDIT": "Edit metadata of own NATIVE assets (non-publisher cannot edit).",
+          "SC_ASSET_DELETE": "Delete own NATIVE assets.",
+          "SC_DISPLAY_EDIT": "Edit display wrapper (cover/displayName/desc/overview/video) for assets of all sources.",
+          "SC_PUBLISH_SUBMIT": "Submit publishing approval (NATIVE initial + every DEV_CENTER aggregated reference).",
+          "SC_PUBLISH_MANAGE": "Unpublish/archive published assets and republish.",
+          "SC_PUBLISH_FEATURE": "Feature published assets and push notifications to target roles (P1).",
+          "SC_APPROVAL_VIEW": "View approval queue (pending) and approval history.",
+          "SC_APPROVAL_HANDLE": "Approve/reject asset publishing requests.",
+          "SC_ADMIN_RULE": "Configure approval levels per asset type (level 0 exempt / level 1 review)."
         },
         "roles": {
-          "creator": "Creator",
-          "consumer": "Consumer",
-          "approver": "Approver",
-          "admin": "Administrator"
+          "admin": {
+            "label": "Sharing Center Admin",
+            "archMapping": "ARCH role: Administrator",
+            "summary": "Full permissions; typically held by group IT admin."
+          },
+          "publisher": {
+            "label": "Asset Publisher",
+            "archMapping": "ARCH role: Publisher",
+            "summary": "Curate, publish and manage own assets."
+          },
+          "approver": {
+            "label": "Asset Approver",
+            "archMapping": "ARCH role: Approver",
+            "summary": "Handle pending approvals and review history."
+          },
+          "consumer": {
+            "label": "Asset Consumer",
+            "archMapping": "ARCH role: Consumer",
+            "summary": "Browse the marketplace and reuse assets."
+          }
         },
-        "pageTitle": "Permissions & Roles",
-        "notice": "19 permissions registered to APA permission engine, following {entityCode}.{actionCode} format.",
-        "entityTitle": "Permissions (by entity)",
-        "roleTitle": "Role Mapping",
-        "allPermissions": "All 19 permissions"
+        "matrix": {
+          "permission": "Permission"
+        },
+        "boundCount": "Bound {count} / 12",
+        "rules": {
+          "br002": "BR-PERM-SC-002: Publishers can only edit/delete assets where publishedBy === currentUserId (business-layer enforced).",
+          "br003": "BR-PERM-SC-003: Metadata of DEV_CENTER assets (name/description/version/content) is always read-only."
+        }
       }
     },
     "creatorComponents": {
