@@ -4347,6 +4347,7 @@
         "noVersionTip": "Saving does not create a new version"
       }
     },
+    "status": {
       "PUBLISHED": "Approved",
       "REJECTED": "Rejected"
     }
