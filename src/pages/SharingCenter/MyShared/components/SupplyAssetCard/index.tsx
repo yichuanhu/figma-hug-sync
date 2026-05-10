@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Card, Typography, Tag, Button, Tooltip, Banner } from '@douyinfe/semi-ui';
-import { MoreVertical, Send, Eye, Pencil, ExternalLink } from 'lucide-react';
+import { MoreVertical, Send, Eye, Pencil, ExternalLink, Rocket } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import StatusTag from '@/components/sharing/StatusTag';
 import AssetTypeIcon from '@/pages/Sharing/Market/components/AssetTypeIcon';
@@ -25,6 +25,7 @@ const SupplyAssetCard = ({ asset, onView, onPush, highlighted }: Props) => {
   const typeRoute: Record<string, string> = { SNIPPET: 'snippet', WORKFLOW: 'workflow', KNOWLEDGE: 'knowledge', SKILL: 'skill' };
   const isRejected = asset.shareStatus === 'REJECTED';
   const isNative = asset.source === 'NATIVE';
+  const isPendingPublish = asset.shareStatus === 'PENDING_PUBLISH' && !isNative;
 
   const title = asset.displayName || asset.name;
   const desc = asset.displayDesc || asset.description;
@@ -99,6 +100,15 @@ const SupplyAssetCard = ({ asset, onView, onPush, highlighted }: Props) => {
             >
               {t('sharing.myShared.actions.view')}
             </Button>
+            {isPendingPublish && (
+              <Button
+                size="small" theme="solid" type="primary"
+                icon={<Rocket size={14} strokeWidth={2} />}
+                onClick={() => navigate(`/sharing-center/my-published/${typeRoute[asset.type]}/${asset.id}/publish`)}
+              >
+                {t('sharing.myShared.actions.publishNow')}
+              </Button>
+            )}
             {isRejected && isNative && (
               <Button
                 size="small" theme="borderless" type="primary"

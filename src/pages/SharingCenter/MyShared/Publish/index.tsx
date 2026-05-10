@@ -33,13 +33,28 @@ const DevCenterPublishPage = () => {
   }
 
   const submit = async (values: any) => {
+    // 必填校验：封面、展示描述、概览
+    if (!coverFile) {
+      Toast.warning(t('sharing.myShared.publish.coverRequired'));
+      return;
+    }
+    const displayDesc = (values.displayDesc ?? '').trim();
+    if (!displayDesc || displayDesc.length < 10) {
+      Toast.warning(t('sharing.myShared.publish.displayDescRequired'));
+      return;
+    }
+    const overviewText = overview.replace(/<[^>]+>/g, '').trim();
+    if (overviewText.length < 20) {
+      Toast.warning(t('sharing.myShared.publish.overviewRequired'));
+      return;
+    }
     setSubmitting(true);
     submitDevCenterPublish(id, {
-      coverImage: coverFile?.url || values.coverImage,
+      coverImage: coverFile.url,
       displayName: (values.displayName ?? '').trim() || undefined,
-      displayDesc: (values.displayDesc ?? '').trim() || undefined,
+      displayDesc,
       categoryTags: Array.isArray(values.categoryTags) ? values.categoryTags : undefined,
-      overview: overview || values.overview,
+      overview,
       videoUrl: videoFile?.name,
     });
     Toast.success(t('sharing.myShared.toast.published'));
@@ -106,7 +121,7 @@ const DevCenterPublishPage = () => {
         <div>
           <Title heading={6} style={{ marginBottom: 12 }}>{t('sharing.myShared.publish.displayTitle')}</Title>
           <Form labelPosition="top" onSubmit={submit} getFormApi={(api) => ((window as any).__pubForm = api)}>
-            <Form.Slot label={t('sharing.myShared.publish.coverImage')}>
+            <Form.Slot label={{ text: t('sharing.myShared.publish.coverImage'), required: true } as any}>
               <Upload
                 action="" accept=".jpg,.jpeg,.png" maxSize={COVER_MAX_KB} showUploadList={false}
                 beforeUpload={({ file }: any) => beforeCover(file.fileInstance as File)}
@@ -133,9 +148,9 @@ const DevCenterPublishPage = () => {
               )}
             </Form.Slot>
             <Form.Input field="displayName" label={t('sharing.myShared.publish.displayName')} placeholder={t('sharing.myShared.publish.displayNamePh')} maxLength={100} />
-            <Form.TextArea field="displayDesc" label={t('sharing.myShared.publish.displayDesc')} placeholder={t('sharing.myShared.publish.displayDescPh')} maxLength={500} rows={3} />
+            <Form.TextArea field="displayDesc" label={t('sharing.myShared.publish.displayDesc')} placeholder={t('sharing.myShared.publish.displayDescPh')} maxLength={500} rows={3} rules={[{ required: true, min: 10, max: 500, message: t('sharing.myShared.publish.displayDescRequired') }]} trigger={['blur', 'change']} />
             <Form.TagInput field="categoryTags" label={t('sharing.myShared.publish.categoryTags')} placeholder={t('sharing.myShared.publish.categoryTagsPh')} />
-            <Form.Slot label={t('sharing.myShared.publish.overview')}>
+            <Form.Slot label={{ text: t('sharing.myShared.publish.overview'), required: true } as any}>
               <RichTextEditor value={overview} onChange={setOverview} placeholder={t('sharing.myShared.publish.overviewPh')} maxLength={5000} minHeight={240} />
             </Form.Slot>
             <Form.Slot label={t('sharing.myShared.publish.videoUrl')}>
