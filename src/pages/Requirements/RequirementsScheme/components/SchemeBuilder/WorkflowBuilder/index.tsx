@@ -1,5 +1,6 @@
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Select, Typography, Empty, Input, Switch, Tag, Toast, Modal } from '@douyinfe/semi-ui';
+import { Button, Select, Typography, Empty, Input, Switch, Tag, Toast } from '@douyinfe/semi-ui';
 import { Plus, Trash2, ArrowUp, ArrowDown, PowerOff } from 'lucide-react';
 import { buildWorkflowFromTemplate } from '@/pages/Requirements/RequirementsWorkbench/schemeConfig';
 import AssessmentBuilder from '../AssessmentBuilder';
@@ -128,29 +129,39 @@ const ApproverList = ({
   );
 };
 
-const WorkflowBuilder = ({ workflow, onChange, onClearAssessment, valueModel, complexityModel, fields = [], onChangeAssessment }: Props) => {
+const WorkflowBuilder = ({ workflow, onChange, valueModel, complexityModel, fields = [], onChangeAssessment }: Props) => {
   const { t: _t } = useTranslation();
   const wf: WorkflowConfig = workflow ?? { template: 'simple', states: [], approvers: [], assessors: [] };
   const disabled = wf.template === 'none';
 
+  // 缓存上一次启用状态下的配置，关闭后再启用可恢复，不丢失已配置内容
+  const cachedWfRef = useRef<WorkflowConfig | null>(null);
+  const cachedAssessmentRef = useRef<{ value?: AssessmentModel; complexity?: AssessmentModel } | null>(null);
+  if (!disabled) {
+    cachedWfRef.current = wf;
+    cachedAssessmentRef.current = { value: valueModel, complexity: complexityModel };
+  }
+
   const handleToggle = (next: boolean) => {
     if (next) {
-      onChange(buildWorkflowFromTemplate('simple'));
-      Toast.success('已启用审批流');
+      // 启用：优先恢复缓存配置；无缓存则用 simple 模板初始化审批人/评估人
+      const restored = cachedWfRef.current;
+      if (restored && restored.template !== 'none' && (restored.approvers.length > 0 || restored.assessors.length > 0)) {
+        onChange(restored);
+        const cachedAssess = cachedAssessmentRef.current;
+        if (cachedAssess && onChangeAssessment) {
+          onChangeAssessment(cachedAssess.value, cachedAssess.complexity);
+        }
+        Toast.success('已恢复审批流配置');
+      } else {
+        onChange(buildWorkflowFromTemplate('simple'));
+        Toast.success('已启用审批流');
+      }
       return;
     }
-    Modal.confirm({
-      title: '关闭审批流',
-      content: '关闭后将清空已配置的审批人、评估人与评估模型。提交此模版的需求将跳过审批与评估，直接进入「待立项」。是否继续？',
-      okText: '关闭审批流',
-      cancelText: '取消',
-      okButtonProps: { type: 'danger' },
-      onOk: () => {
-        onChange(DISABLED_WORKFLOW);
-        onClearAssessment?.();
-        Toast.success('已关闭审批流');
-      },
-    });
+    // 关闭：仅切换为 none，不清空缓存与评估模型；评估模型 UI 会因 assessors 不再显示而隐藏，但数据保留
+    onChange(DISABLED_WORKFLOW);
+    Toast.success('已关闭审批流');
   };
 
   return (
