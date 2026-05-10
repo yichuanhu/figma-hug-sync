@@ -36,6 +36,7 @@
     "yes": "是",
     "no": "否",
     "copy": "复制",
+    "remove": "移除",
     "description": "描述",
     "showingRecords": "显示 {{start}}-{{end}} 条，共 {{total}} 条",
     "totalPages": "共 {{total}} 页",
