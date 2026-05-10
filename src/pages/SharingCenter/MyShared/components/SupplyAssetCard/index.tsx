@@ -1,5 +1,6 @@
-import { Card, Typography, Tag, Button, Tooltip } from '@douyinfe/semi-ui';
-import { MoreVertical, Send, Eye } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Card, Typography, Tag, Button, Tooltip, Banner } from '@douyinfe/semi-ui';
+import { MoreVertical, Send, Eye, Pencil, ExternalLink } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import StatusTag from '@/components/sharing/StatusTag';
 import AssetTypeIcon from '@/pages/Sharing/Market/components/AssetTypeIcon';
@@ -20,6 +21,10 @@ interface Props {
 
 const SupplyAssetCard = ({ asset, onView, onPush, highlighted }: Props) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const typeRoute: Record<string, string> = { SNIPPET: 'snippet', WORKFLOW: 'workflow', KNOWLEDGE: 'knowledge', SKILL: 'skill' };
+  const isRejected = asset.shareStatus === 'REJECTED';
+  const isNative = asset.source === 'NATIVE';
 
   const title = asset.displayName || asset.name;
   const desc = asset.displayDesc || asset.description;
@@ -60,14 +65,29 @@ const SupplyAssetCard = ({ asset, onView, onPush, highlighted }: Props) => {
             <Tag key={tag} size="small" color="grey" type="light">{tag}</Tag>
           ))}
         </div>
-        <div className="card-reuse">
-          <Text size="small" type="tertiary">{reuseSummary}</Text>
-          {lastReuse && (
-            <Text size="small" type="tertiary" ellipsis={{ showTooltip: true }}>
-              {t('sharing.myShared.card.lastReuser', { name: lastReuse.reuserName, date: lastReuse.reusedAt })}
-            </Text>
-          )}
-        </div>
+        {isRejected && asset.rejectedReason ? (
+          <Banner
+            type="danger"
+            fullMode={false}
+            closeIcon={null}
+            description={
+              <Text size="small">
+                <Text strong size="small">{t('sharing.myShared.rejected.reasonLabel', '拒绝原因')}：</Text>
+                {asset.rejectedReason}
+              </Text>
+            }
+            style={{ marginBottom: 10 }}
+          />
+        ) : (
+          <div className="card-reuse">
+            <Text size="small" type="tertiary">{reuseSummary}</Text>
+            {lastReuse && (
+              <Text size="small" type="tertiary" ellipsis={{ showTooltip: true }}>
+                {t('sharing.myShared.card.lastReuser', { name: lastReuse.reuserName, date: lastReuse.reusedAt })}
+              </Text>
+            )}
+          </div>
+        )}
         <div className="card-footer" onClick={stop}>
           <Text size="small" type="tertiary" ellipsis={{ showTooltip: true }} className="card-creator">
             {asset.creatorName} · {asset.departmentName}
@@ -79,6 +99,24 @@ const SupplyAssetCard = ({ asset, onView, onPush, highlighted }: Props) => {
             >
               {t('sharing.myShared.actions.view')}
             </Button>
+            {isRejected && isNative && (
+              <Button
+                size="small" theme="borderless" type="primary"
+                icon={<Pencil size={14} strokeWidth={2} />}
+                onClick={() => navigate(`/sharing-center/my-shared/edit/${asset.id}`)}
+              >
+                {t('sharing.myShared.actions.resubmit')}
+              </Button>
+            )}
+            {isRejected && !isNative && asset.originUrl && (
+              <Button
+                size="small" theme="borderless" type="primary"
+                icon={<ExternalLink size={14} strokeWidth={2} />}
+                onClick={() => window.open(asset.originUrl, '_blank')}
+              >
+                {t('sharing.myShared.actions.backToDevCenter')}
+              </Button>
+            )}
             {showPush && (
               <Tooltip
                 content={pushDisabled
@@ -99,6 +137,7 @@ const SupplyAssetCard = ({ asset, onView, onPush, highlighted }: Props) => {
             )}
             <AssetActionsMenu
               asset={asset}
+              onPush={onPush}
               trigger={
                 <Button size="small" theme="borderless" type="tertiary" icon={<MoreVertical size={14} strokeWidth={2} />} />
               }

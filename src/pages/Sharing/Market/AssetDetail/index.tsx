@@ -21,7 +21,14 @@ const typeRouteMap: Record<string, string> = {
   snippet: 'SNIPPET', workflow: 'WORKFLOW', knowledge: 'KNOWLEDGE', skill: 'SKILL',
 };
 
-const AssetDetail = () => {
+interface Props {
+  /** consumer（默认）：消费者视图；supply：上架管理视图，隐藏「复用」与「打包下载」，由 extraActions 提供右侧按钮组 */
+  mode?: 'consumer' | 'supply';
+  /** supply 模式下右侧按钮组（替代默认编辑/在开发中心编辑） */
+  extraActions?: React.ReactNode;
+}
+
+const AssetDetail = ({ mode = 'consumer', extraActions }: Props = {}) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { type, id } = useParams<{ type: string; id: string }>();
@@ -83,8 +90,9 @@ const AssetDetail = () => {
 
   // ============ 头部操作行（2 行布局） ============
   const renderHeaderActions = () => {
-    // 左侧：复用 [+ 打包下载（知识）]
-    const left = (
+    const isSupply = mode === 'supply';
+    // 左侧：consumer 显示「复用 [+ 打包下载]」；supply 模式按 BR-MARKET-008 隐藏复用
+    const left = isSupply ? null : (
       <Space>
         {renderReuseButton()}
         {!isWorkflow && (
@@ -94,8 +102,8 @@ const AssetDetail = () => {
         )}
       </Space>
     );
-    // 右侧：[编辑（知识+owner）] [编辑展示信息（owner）] [在开发中心编辑↗（流程）]
-    const right = (
+    // 右侧：supply 模式由父组件提供 extraActions；否则使用默认编辑按钮
+    const right = isSupply ? extraActions : (
       <Space>
         {!isWorkflow && owner && (
           <Button theme="light" type="tertiary" icon={<Pencil size={14} strokeWidth={2} />} onClick={handleEditKnowledge}>
@@ -114,6 +122,7 @@ const AssetDetail = () => {
         )}
       </Space>
     );
+    if (!left && !right) return null;
     return (
       <div className="asset-detail-header-actions">
         <div>{left}</div>
