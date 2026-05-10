@@ -33,13 +33,28 @@ const DevCenterPublishPage = () => {
   }
 
   const submit = async (values: any) => {
+    // 必填校验：封面、展示描述、概览
+    if (!coverFile) {
+      Toast.warning(t('sharing.myShared.publish.coverRequired'));
+      return;
+    }
+    const displayDesc = (values.displayDesc ?? '').trim();
+    if (!displayDesc || displayDesc.length < 10) {
+      Toast.warning(t('sharing.myShared.publish.displayDescRequired'));
+      return;
+    }
+    const overviewText = overview.replace(/<[^>]+>/g, '').trim();
+    if (overviewText.length < 20) {
+      Toast.warning(t('sharing.myShared.publish.overviewRequired'));
+      return;
+    }
     setSubmitting(true);
     submitDevCenterPublish(id, {
-      coverImage: coverFile?.url || values.coverImage,
+      coverImage: coverFile.url,
       displayName: (values.displayName ?? '').trim() || undefined,
-      displayDesc: (values.displayDesc ?? '').trim() || undefined,
+      displayDesc,
       categoryTags: Array.isArray(values.categoryTags) ? values.categoryTags : undefined,
-      overview: overview || values.overview,
+      overview,
       videoUrl: videoFile?.name,
     });
     Toast.success(t('sharing.myShared.toast.published'));
