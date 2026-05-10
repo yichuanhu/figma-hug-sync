@@ -280,55 +280,18 @@
   flex-direction: column;
   gap: 16px;
 
-  .workflow-preview-card {
-    background: var(--semi-color-bg-0);
-    border: 1px solid var(--semi-color-border);
-    border-radius: 8px;
-    padding: 16px;
-
-    .workflow-canvas {
-      height: 360px;
-      background: var(--semi-color-fill-0);
-      border-radius: 6px;
-      overflow: hidden;
-    }
-  }
-
-  .workflow-disabled-empty {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    padding: 56px 24px;
-    background: var(--semi-color-fill-0);
-    border-radius: 6px;
-
-    .icon-wrap {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background: var(--semi-color-bg-0);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--semi-color-text-2);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-      margin-bottom: 4px;
-    }
-  }
-
-  .workflow-config-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-  }
-
   .workflow-section {
     background: var(--semi-color-bg-0);
     border: 1px solid var(--semi-color-border);
     border-radius: 8px;
     padding: 16px;
+
+    .workflow-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
 
     .approver-row {
       display: flex;
@@ -338,6 +301,35 @@
       background: var(--semi-color-fill-0);
       border-radius: 6px;
       margin-bottom: 6px;
+    }
+
+    .workflow-disabled-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 32px 24px;
+      background: var(--semi-color-fill-0);
+      border-radius: 6px;
+
+      .icon-wrap {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: var(--semi-color-bg-0);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--semi-color-text-2);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+      }
+    }
+
+    .workflow-assessment-embed {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px dashed var(--semi-color-border);
     }
   }
 }
