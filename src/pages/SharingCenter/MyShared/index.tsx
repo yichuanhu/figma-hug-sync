@@ -3,6 +3,7 @@ import {
   Typography, Tabs, Button, Input, Select, Pagination,
 } from '@douyinfe/semi-ui';
 import { IconSearch } from '@douyinfe/semi-icons';
+import { Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import emptyImg from '@/assets/empty-state/no-data.png';
@@ -10,8 +11,6 @@ import type { ShareStatus } from '@/components/sharing/StatusTag';
 
 import { type ShareAsset, getMine, subscribe } from './store';
 import { useMyPublishedQuery, type TypeFilter, type SourceFilter } from './hooks/useMyPublishedQuery';
-import NewAssetDropdown from './components/NewAssetDropdown';
-import PublishWorkflowModal from './components/PublishWorkflowModal';
 import SupplyAssetCard from './components/SupplyAssetCard';
 import ReuseSummaryPanel from './components/ReuseSummaryPanel';
 import PushNotificationDialog from './components/PushNotificationDialog';
@@ -38,7 +37,6 @@ const MySharedPage = () => {
     setTab, setType, setSource, setKeyword, setPage, reset,
   } = useMyPublishedQuery();
 
-  const [publishVisible, setPublishVisible] = useState(false);
   const [highlightId, setHighlightId] = useState<string | null>(null);
   const [pushAsset, setPushAsset] = useState<ShareAsset | null>(null);
 
@@ -47,12 +45,6 @@ const MySharedPage = () => {
     const timer = window.setTimeout(() => setHighlightId(null), 2500);
     return () => window.clearTimeout(timer);
   }, [highlightId]);
-
-  const handlePublishSuccess = (assetId: string) => {
-    setPublishVisible(false);
-    setTab('PENDING_APPROVAL');
-    setHighlightId(assetId);
-  };
 
   // MVP 范围：仅展示「自动化流程」与「知识」两类资产
   const mvpAssets = useMemo(
@@ -108,7 +100,14 @@ const MySharedPage = () => {
     <div className="my-shared-page">
       <div className="my-shared-header">
         <Title heading={3} className="title">{t('sharing.myShared.pageTitle')}</Title>
-        <NewAssetDropdown onPublishWorkflow={() => setPublishVisible(true)} />
+        <Button
+          theme="solid"
+          type="primary"
+          icon={<Plus size={14} strokeWidth={2.5} />}
+          onClick={() => navigate('/sharing-center/my-shared/create/knowledge')}
+        >
+          {t('sharing.myShared.newAsset.knowledge')}
+        </Button>
       </div>
 
       <Tabs
@@ -212,12 +211,6 @@ const MySharedPage = () => {
           />
         </div>
       )}
-
-      <PublishWorkflowModal
-        visible={publishVisible}
-        onCancel={() => setPublishVisible(false)}
-        onSuccess={handlePublishSuccess}
-      />
 
       <PushNotificationDialog
         visible={!!pushAsset}
