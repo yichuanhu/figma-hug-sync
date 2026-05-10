@@ -24,6 +24,7 @@ interface Props {
 const SupplyAssetCard = ({ asset, onView, onPush, highlighted }: Props) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [statsVisible, setStatsVisible] = useState(false);
   const typeRoute: Record<string, string> = { SNIPPET: 'snippet', WORKFLOW: 'workflow', KNOWLEDGE: 'knowledge', SKILL: 'skill' };
   const isRejected = asset.shareStatus === 'REJECTED';
   const isNative = asset.source === 'NATIVE';
