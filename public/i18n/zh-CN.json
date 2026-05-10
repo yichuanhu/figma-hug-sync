@@ -3493,12 +3493,13 @@
         "assetType": "资产类型",
         "name": "资产名称",
         "source": "来源",
-        "creator": "创建者",
+        "creator": "提交人",
         "submittedAt": "提交时间",
         "result": "结果",
         "action": "操作",
         "comment": "审批意见",
-        "decidedAt": "审批时间"
+        "decidedAt": "审批时间",
+        "duration": "审批耗时"
       },
       "actions": {
         "view": "查看",
@@ -3507,16 +3508,17 @@
       },
       "empty": {
         "pending": "暂无待审批资产",
-        "history": "暂无审批历史",
-        "noResult": "未找到匹配的审批记录"
+        "history": "暂无审批记录",
+        "noResult": "无匹配的审批记录"
       },
       "confirmApproveTitle": "确认通过审批？",
       "confirmApproveContent": "确认通过「{{name}}」的发布申请？",
       "toast": {
         "approved": "已通过",
         "rejected": "已拒绝",
-        "conflict": "该条目已被其他审批者处理",
-        "batchApproved": "已批量通过 {{n}} 条"
+        "rejectedNative": "已拒绝，上架者将在「已拒绝」Tab 修改后重新提交",
+        "rejectedDevCenter": "已拒绝，请上架者回开发中心调整后重新发布",
+        "conflict": "该条目已被其他审批者处理"
       },
       "rejectDialog": {
         "title": "拒绝发布申请",
@@ -3537,24 +3539,16 @@
         "timeline": "审批历史",
         "version": "版本",
         "tags": "标签",
-        "description": "描述"
+        "description": "描述",
+        "rejectFlowNative": "该资产为共享中心原生资产，上架者可在「资产上架 → 已拒绝」中修改后重新提交审批。",
+        "rejectFlowDevCenter": "该资产由开发中心聚合引用，上架者需回开发中心调整后再次发布，不在共享中心直接修改。"
       },
       "filter": {
         "search": "搜索资产名称",
-        "sourceAll": "全部来源",
-        "sourceNative": "共享中心",
-        "sourceDev": "开发中心",
         "result": "结果：",
         "type": "类型：",
-        "source": "来源：",
+        "assetType": "资产类型：",
         "clear": "清空筛选"
-      },
-      "batch": {
-        "selected": "已选 {{n}} 项",
-        "clear": "取消选择",
-        "approve": "批量通过",
-        "confirmTitle": "确认批量通过？",
-        "confirmContent": "将对以下 {{n}} 个待审批资产执行批量通过操作："
       }
     },
     "admin": {
