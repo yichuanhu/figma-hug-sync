@@ -4327,9 +4327,26 @@
           "default": "Default",
           "desc": "Description"
         }
+      },
+      "editDisplay": {
+        "title": "Edit display info",
+        "tip": "Display info only affects how the asset is presented in the market. It does not create a new version or affect existing reuse records.",
+        "coverImage": "Cover image (URL)",
+        "displayName": "Display name",
+        "displayNameRequired": "Please enter a display name",
+        "displayNameMax": "Display name must be 60 characters or fewer",
+        "displayDesc": "Display description",
+        "categoryTags": "Category tags",
+        "categoryTagsPlaceholder": "Press Enter to confirm; up to 10",
+        "overview": "Overview (HTML supported)",
+        "overviewPlaceholder": "Shown on the detail page; HTML rich text supported",
+        "videoUrl": "Demo video URL",
+        "saveSuccess": "Display info saved",
+        "saveFailed": "Save failed, please retry",
+        "noPermission": "You don't have permission to edit this asset's display info",
+        "noVersionTip": "Saving does not create a new version"
       }
     },
-    "status": {
       "PUBLISHED": "Approved",
       "REJECTED": "Rejected"
     }
