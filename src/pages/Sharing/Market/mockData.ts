@@ -12,13 +12,20 @@ const mkVersions = (assetId: string, list: Array<{ v: string; log: string; date:
     createdAt: item.date,
   }));
 
-const mkReuses = (assetId: string, list: Array<{ user: string; v: string; date: string; type?: 'DIRECT' | 'ADAPTATION'; note?: string }>): ReuseRecord[] =>
+// 演示用：根据复用人姓名推断部门
+const DEPT_BY_USER: Record<string, string> = {
+  张三: '财务部', 李四: 'IT 运维', 王五: '人力资源', 赵六: '研发中心',
+  钱七: '客户成功', 孙八: '市场部',
+};
+
+const mkReuses = (assetId: string, list: Array<{ user: string; v: string; date: string; type?: 'DIRECT' | 'ADAPTATION'; note?: string; dept?: string }>): ReuseRecord[] =>
   list.map((item, idx) => ({
     id: `${assetId}-r${idx + 1}`,
     assetId,
     versionId: `${assetId}-${item.v}`,
     versionNumber: item.v,
     reuserName: item.user,
+    reuserDept: item.dept ?? DEPT_BY_USER[item.user] ?? '—',
     reuseType: item.type ?? 'DIRECT',
     adaptationNote: item.note,
     reusedAt: item.date,

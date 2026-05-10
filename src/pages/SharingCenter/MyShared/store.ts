@@ -327,6 +327,75 @@ export function getMine(): ShareAsset[] {
   return getAll().filter((a) => a.isMine && a.shareStatus !== 'UNLISTED');
 }
 
+// ============ 列表查询封装（Story 011） ============
+export type MyPublishedTab = ShareStatus;
+export type MyPublishedTypeFilter = 'ALL' | 'WORKFLOW' | 'KNOWLEDGE';
+export type MyPublishedSourceFilter = 'ALL' | 'NATIVE' | 'DEV_CENTER';
+
+export interface MyPublishedQueryParams {
+  tab: MyPublishedTab;
+  type?: MyPublishedTypeFilter;
+  source?: MyPublishedSourceFilter;
+  search?: string;
+  page?: number;
+  pageSize?: number;
+}
+
+export interface MyPublishedQueryResult {
+  list: ShareAsset[];
+  total: number;
+  tabCounts: Record<ShareStatus, number>;
+}
+
+/**
+ * 资产上架列表统一查询入口（Story 011）
+ * - MVP 范围：仅返回 WORKFLOW / KNOWLEDGE
+ * - PUBLISHED tab 含 ARCHIVED
+ * - 关键词命中：name / description / tags
+ * - 返回 list（已分页）+ total（筛选后）+ tabCounts（按 type/source/search 后的全量统计）
+ */
+export function queryMyPublished(params: MyPublishedQueryParams): MyPublishedQueryResult {
+  const { tab, type = 'ALL', source = 'ALL', search = '', page = 1, pageSize = 12 } = params;
+  // MVP：仅 WORKFLOW + KNOWLEDGE
+  const mine = getMine().filter((a) => a.type === 'WORKFLOW' || a.type === 'KNOWLEDGE');
+
+  // 通用筛选（用于 tabCounts 与 list 共享）
+  const k = search.trim().toLowerCase();
+  const matchesFilters = (a: ShareAsset): boolean => {
+    if (type !== 'ALL' && a.type !== type) return false;
+    if (source !== 'ALL' && a.source !== source) return false;
+    if (k) {
+      const hit = a.name.toLowerCase().includes(k)
+        || a.description.toLowerCase().includes(k)
+        || a.tags.some((tag) => tag.toLowerCase().includes(k));
+      if (!hit) return false;
+    }
+    return true;
+  };
+  const filteredAll = mine.filter(matchesFilters);
+
+  // tabCounts：在当前 type/source/search 上下文下，按状态聚合
+  const tabCounts: Record<ShareStatus, number> = {
+    PUBLISHED: 0, PENDING_PUBLISH: 0, DRAFT: 0, PENDING_APPROVAL: 0, REJECTED: 0, ARCHIVED: 0, UNLISTED: 0,
+  };
+  filteredAll.forEach((a) => {
+    if (a.shareStatus === 'ARCHIVED') tabCounts.PUBLISHED += 1;
+    else if (tabCounts[a.shareStatus] !== undefined) tabCounts[a.shareStatus] += 1;
+  });
+
+  // 按 tab 过滤
+  const listAll = filteredAll.filter((a) => {
+    if (tab === 'PUBLISHED') return a.shareStatus === 'PUBLISHED' || a.shareStatus === 'ARCHIVED';
+    return a.shareStatus === tab;
+  });
+
+  const total = listAll.length;
+  const start = (page - 1) * pageSize;
+  const list = listAll.slice(start, start + pageSize);
+
+  return { list, total, tabCounts };
+}
+
 export function findAsset(id: string): ShareAsset | undefined {
   return getAll().find((a) => a.id === id);
 }

@@ -1,10 +1,12 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, Typography, Tag, Button, Tooltip, Banner } from '@douyinfe/semi-ui';
-import { MoreVertical, Send, Eye, Pencil, ExternalLink, Rocket } from 'lucide-react';
+import { MoreVertical, Send, Eye, Pencil, ExternalLink, Rocket, BarChart2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import StatusTag from '@/components/sharing/StatusTag';
 import AssetTypeIcon from '@/pages/Sharing/Market/components/AssetTypeIcon';
 import AssetActionsMenu from '../AssetActionsMenu';
+import ReuseStatsPanel from '../ReuseStatsPanel';
 import type { ShareAsset } from '@/pages/SharingCenter/MyShared/store';
 import { canPushNotification } from '@/pages/SharingCenter/MyShared/store';
 
@@ -22,6 +24,7 @@ interface Props {
 const SupplyAssetCard = ({ asset, onView, onPush, highlighted }: Props) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [statsVisible, setStatsVisible] = useState(false);
   const typeRoute: Record<string, string> = { SNIPPET: 'snippet', WORKFLOW: 'workflow', KNOWLEDGE: 'knowledge', SKILL: 'skill' };
   const isRejected = asset.shareStatus === 'REJECTED';
   const isNative = asset.source === 'NATIVE';
@@ -80,12 +83,24 @@ const SupplyAssetCard = ({ asset, onView, onPush, highlighted }: Props) => {
             style={{ marginBottom: 10 }}
           />
         ) : (
-          <div className="card-reuse">
+          <div className="card-reuse" onClick={stop}>
             <Text size="small" type="tertiary">{reuseSummary}</Text>
             {lastReuse && (
               <Text size="small" type="tertiary" ellipsis={{ showTooltip: true }}>
                 {t('sharing.myShared.card.lastReuser', { name: lastReuse.reuserName, date: lastReuse.reusedAt })}
               </Text>
+            )}
+            {(asset.reuseCount ?? 0) > 0 && (
+              <Button
+                size="small"
+                theme="borderless"
+                type="primary"
+                icon={<BarChart2 size={12} strokeWidth={2} />}
+                onClick={() => setStatsVisible(true)}
+                style={{ marginLeft: 'auto' }}
+              >
+                {t('sharing.myShared.card.viewReuseDetails')}
+              </Button>
             )}
           </div>
         )}
@@ -155,6 +170,12 @@ const SupplyAssetCard = ({ asset, onView, onPush, highlighted }: Props) => {
           </div>
         </div>
       </Card>
+      <ReuseStatsPanel
+        visible={statsVisible}
+        onCancel={() => setStatsVisible(false)}
+        records={asset.reuseRecords ?? []}
+        assetName={title}
+      />
     </div>
   );
 };

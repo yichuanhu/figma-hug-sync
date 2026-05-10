@@ -3269,7 +3269,9 @@
         "reuseSummary": "复用 {{count}} 次",
         "lastReuser": "最近: {{name}} · {{date}}",
         "noReuse": "复用 0 次",
-        "archivedBadge": "已归档"
+        "archivedBadge": "已归档",
+        "viewReuseDetails": "查看复用明细",
+        "viewAggregatedReuse": "查看全部复用明细（{{count}} 条记录）"
       },
       "confirm": {
         "archiveTitle": "确认归档",
@@ -3407,6 +3409,7 @@
       },
       "reuseStats": {
         "title": "复用统计",
+        "titleWithName": "复用统计 — {{name}}",
         "total": "总复用次数",
         "thisMonth": "本月",
         "thisWeek": "本周",
@@ -3418,6 +3421,10 @@
         "colDept": "部门",
         "colTime": "复用时间",
         "colVersion": "版本",
+        "colType": "复用方式",
+        "colNote": "适配说明",
+        "typeDirect": "直接引用",
+        "typeAdaptation": "适配复用",
         "empty": "暂无复用记录"
       },
       "push": {

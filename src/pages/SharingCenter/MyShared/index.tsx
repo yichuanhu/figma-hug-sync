@@ -9,10 +9,10 @@ import { useNavigate } from 'react-router-dom';
 import emptyImg from '@/assets/empty-state/no-data.png';
 import type { ShareStatus } from '@/components/sharing/StatusTag';
 
-import { type ShareAsset, getMine, subscribe } from './store';
+import { type ShareAsset, queryMyPublished, getAll, getMine, subscribe } from './store';
 import { useMyPublishedQuery, type TypeFilter, type SourceFilter } from './hooks/useMyPublishedQuery';
 import SupplyAssetCard from './components/SupplyAssetCard';
-import ReuseSummaryPanel from './components/ReuseSummaryPanel';
+import ReuseStatsPanel from './components/ReuseStatsPanel';
 import PushNotificationDialog from './components/PushNotificationDialog';
 import './index.less';
 
@@ -24,13 +24,13 @@ const PAGE_SIZE = 12;
 
 const typeRoute: Record<string, string> = { SNIPPET: 'snippet', WORKFLOW: 'workflow', KNOWLEDGE: 'knowledge', SKILL: 'skill' };
 
-const useStoreVersion = () => useSyncExternalStore(subscribe, () => getMine().length);
+const useStoreVersion = () => useSyncExternalStore(subscribe, () => getAll().length);
 
 const MySharedPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   useStoreVersion();
-  const all = getMine();
+  // 通过 store.queryMyPublished 统一查询（Story 011）
 
   const {
     tab, type: typeF, source: sourceF, keyword, page, debouncedKeyword: debounced,
@@ -39,6 +39,7 @@ const MySharedPage = () => {
 
   const [highlightId, setHighlightId] = useState<string | null>(null);
   const [pushAsset, setPushAsset] = useState<ShareAsset | null>(null);
+  const [aggregatedStatsVisible, setAggregatedStatsVisible] = useState(false);
 
   useEffect(() => {
     if (!highlightId) return;
@@ -46,42 +47,10 @@ const MySharedPage = () => {
     return () => window.clearTimeout(timer);
   }, [highlightId]);
 
-  // MVP 范围：仅展示「自动化流程」与「知识」两类资产
-  const mvpAssets = useMemo(
-    () => all.filter((a) => a.type === 'WORKFLOW' || a.type === 'KNOWLEDGE'),
-    [all],
+  const { list: paged, total, tabCounts: counts } = useMemo(
+    () => queryMyPublished({ tab, type: typeF, source: sourceF, search: debounced, page, pageSize: PAGE_SIZE }),
+    [tab, typeF, sourceF, debounced, page],
   );
-
-  const counts = useMemo(() => {
-    const m: Record<ShareStatus, number> = {
-      PUBLISHED: 0, PENDING_PUBLISH: 0, DRAFT: 0, PENDING_APPROVAL: 0, REJECTED: 0, ARCHIVED: 0, UNLISTED: 0,
-    };
-    mvpAssets.forEach((a) => {
-      if (a.shareStatus === 'ARCHIVED') { m.PUBLISHED += 1; return; }
-      if (m[a.shareStatus] !== undefined) m[a.shareStatus] += 1;
-    });
-    return m;
-  }, [mvpAssets]);
-
-  const list = useMemo(() => {
-    return mvpAssets.filter((a) => {
-      if (tab === 'PUBLISHED') {
-        if (a.shareStatus !== 'PUBLISHED' && a.shareStatus !== 'ARCHIVED') return false;
-      } else if (a.shareStatus !== tab) return false;
-      if (typeF !== 'ALL' && a.type !== typeF) return false;
-      if (sourceF !== 'ALL' && a.source !== sourceF) return false;
-      if (debounced) {
-        const k = debounced.toLowerCase();
-        const hit = a.name.toLowerCase().includes(k)
-          || a.description.toLowerCase().includes(k)
-          || a.tags.some((tag) => tag.toLowerCase().includes(k));
-        if (!hit) return false;
-      }
-      return true;
-    });
-  }, [mvpAssets, tab, typeF, sourceF, debounced]);
-
-  const paged = list.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   const filtered = typeF !== 'ALL' || sourceF !== 'ALL' || !!debounced;
   const clearFilters = () => reset();
@@ -91,10 +60,11 @@ const MySharedPage = () => {
   // 「已上架」Tab 顶部聚合复用记录
   const aggregatedReuse = useMemo(() => {
     if (tab !== 'PUBLISHED') return [];
-    return mvpAssets
-      .filter((a) => a.shareStatus === 'PUBLISHED' || a.shareStatus === 'ARCHIVED')
+    return getMine()
+      .filter((a) => (a.type === 'WORKFLOW' || a.type === 'KNOWLEDGE')
+        && (a.shareStatus === 'PUBLISHED' || a.shareStatus === 'ARCHIVED'))
       .flatMap((a) => a.reuseRecords ?? []);
-  }, [mvpAssets, tab]);
+  }, [tab]);
 
   return (
     <div className="my-shared-page">
@@ -162,7 +132,13 @@ const MySharedPage = () => {
       <div className="my-shared-body">
         {tab === 'PUBLISHED' && aggregatedReuse.length > 0 && (
           <div className="my-shared-reuse-summary">
-            <ReuseSummaryPanel records={aggregatedReuse} />
+            <Button
+              theme="borderless"
+              type="primary"
+              onClick={() => setAggregatedStatsVisible(true)}
+            >
+              {t('sharing.myShared.card.viewAggregatedReuse', { count: aggregatedReuse.length })}
+            </Button>
           </div>
         )}
 
@@ -200,10 +176,10 @@ const MySharedPage = () => {
         )}
       </div>
 
-      {list.length > PAGE_SIZE && (
+      {total > PAGE_SIZE && (
         <div className="list-pagination">
           <Pagination
-            total={list.length}
+            total={total}
             pageSize={PAGE_SIZE}
             currentPage={page}
             onPageChange={setPage}
@@ -216,6 +192,12 @@ const MySharedPage = () => {
         visible={!!pushAsset}
         asset={pushAsset}
         onCancel={() => setPushAsset(null)}
+      />
+
+      <ReuseStatsPanel
+        visible={aggregatedStatsVisible}
+        onCancel={() => setAggregatedStatsVisible(false)}
+        records={aggregatedReuse}
       />
     </div>
   );
