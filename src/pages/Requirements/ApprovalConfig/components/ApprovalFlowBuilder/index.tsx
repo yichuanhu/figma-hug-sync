@@ -15,6 +15,7 @@ import {
   type ApprovalFlowTemplate,
 } from '../../mockData';
 import ApproverListEditor from '../ApproverListEditor';
+import AssessmentBuilder from '@/pages/Requirements/RequirementsScheme/components/SchemeBuilder/AssessmentBuilder';
 import './index.less';
 
 const { Title, Text } = Typography;
