@@ -153,6 +153,9 @@ const RequirementFormModal = ({
     activeScheme?.custom_fields.forEach((f) => {
       if (values[f.key] !== undefined) form_data[f.key] = values[f.key];
     });
+    SYSTEM_REQUIRED_KEYS.forEach((k) => {
+      if (values[k] !== undefined) form_data[k] = values[k];
+    });
     return {
       title: values.title as string | undefined,
       priority: values.priority as RequirementItem['priority'] | undefined,
