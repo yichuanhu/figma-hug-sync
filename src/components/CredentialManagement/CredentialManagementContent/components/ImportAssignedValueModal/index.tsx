@@ -37,6 +37,8 @@ const ImportAssignedValueModal = ({
   const [importing, setImporting] = useState(false);
   const [validation, setValidation] = useState<ValidationResult | null>(null);
   const [result, setResult] = useState<ImportSummary | null>(null);
+  const [resultValidation, setResultValidation] = useState<ValidationResult | null>(null);
+  const [resultFileName, setResultFileName] = useState<string>('');
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragOver, setDragOver] = useState(false);
 
