@@ -69,6 +69,7 @@ import RequirementsAssessment from "@/pages/Requirements/RequirementsAssessment"
 import RequirementsScheme from "@/pages/Requirements/RequirementsScheme";
 import SchemeBuilderPage from "@/pages/Requirements/RequirementsScheme/components/SchemeBuilder";
 import ApprovalConfigPage from "@/pages/Requirements/ApprovalConfig";
+import ApprovalFlowBuilderPage from "@/pages/Requirements/ApprovalConfig/components/ApprovalFlowBuilder";
 import RequirementsProjects from "@/pages/Requirements/RequirementsProjects";
 // Maintenance
 import MaintenanceWorkbench from "@/pages/Maintenance/MaintenanceWorkbench";
@@ -178,6 +179,7 @@ const App = () => {
           <Route path="/requirements/scheme" element={<RequirementsScheme />} />
           <Route path="/requirements/scheme/builder/:id" element={<SchemeBuilderPage />} />
           <Route path="/requirements/approval-config" element={<ApprovalConfigPage />} />
+          <Route path="/requirements/approval-config/builder/:id" element={<ApprovalFlowBuilderPage />} />
           <Route path="/requirements/projects" element={<RequirementsProjects />} />
           <Route path="/operations" element={<Navigate to="/operations/dashboard" replace />} />
           <Route path="/operations/dashboard" element={<OperationsDashboard />} />

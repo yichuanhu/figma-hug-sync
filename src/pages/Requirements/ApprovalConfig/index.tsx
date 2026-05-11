@@ -1,4 +1,8 @@
+/**
+ * 审批配置列表页：与「需求模版」一致的卡片网格布局。
+ */
 import { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Typography,
@@ -11,38 +15,30 @@ import {
   Row,
   Col,
   Space,
-  Table,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
-import { Ellipsis, CheckCircle, Pencil, Trash2, Plus, Pause } from 'lucide-react';
+import { Ellipsis, CheckCircle, Eye, Trash2, Pencil, Plus, Copy, Pause } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import {
   fetchApprovalFlows,
-  createApprovalFlow,
-  updateApprovalFlow,
   deleteApprovalFlow,
   activateApprovalFlow,
   deactivateApprovalFlow,
+  createApprovalFlowDraft,
+  cloneApprovalFlowAsDraft,
+  subscribeApprovalFlowChange,
   type ApprovalFlowTemplate,
 } from './mockData';
-import ApprovalFlowEditModal from './components/ApprovalFlowEditModal';
 import './index.less';
 
 const { Title, Text } = Typography;
 
-const formatTime = (iso: string) => {
-  const d = new Date(iso);
-  const pad = (n: number) => String(n).padStart(2, '0');
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-};
-
 const ApprovalConfigPage = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [keyword, setKeyword] = useState('');
   const [flows, setFlows] = useState<ApprovalFlowTemplate[]>([]);
   const [loading, setLoading] = useState(true);
-  const [editVisible, setEditVisible] = useState(false);
-  const [editing, setEditing] = useState<ApprovalFlowTemplate | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -57,22 +53,20 @@ const ApprovalConfigPage = () => {
     load();
   }, [load]);
 
-  const openCreate = () => {
-    setEditing(null);
-    setEditVisible(true);
-  };
-  const openEdit = (f: ApprovalFlowTemplate) => {
-    setEditing(f);
-    setEditVisible(true);
+  useEffect(() => subscribeApprovalFlowChange(() => load()), [load]);
+
+  const goEdit = (f: ApprovalFlowTemplate) => {
+    navigate(`/requirements/approval-config/builder/${f.id}`);
   };
 
-  const handleSubmit = async (payload: Parameters<Parameters<typeof ApprovalFlowEditModal>[0]['onSubmit']>[0]) => {
-    if (editing) {
-      await updateApprovalFlow(editing.id, payload);
-    } else {
-      await createApprovalFlow(payload);
-    }
-    await load();
+  const handleCreateNew = async () => {
+    const draft = await createApprovalFlowDraft();
+    navigate(`/requirements/approval-config/builder/${draft.id}`);
+  };
+
+  const handleClone = async (f: ApprovalFlowTemplate) => {
+    const draft = await cloneApprovalFlowAsDraft(f.id);
+    navigate(`/requirements/approval-config/builder/${draft.id}`);
   };
 
   const handleActivate = (f: ApprovalFlowTemplate) => {
@@ -114,84 +108,6 @@ const ApprovalConfigPage = () => {
     });
   };
 
-  const columns = [
-    {
-      title: '名称',
-      dataIndex: 'name',
-      width: 240,
-      render: (_: unknown, r: ApprovalFlowTemplate) => (
-        <Space>
-          <Text strong ellipsis={{ showTooltip: true }} style={{ maxWidth: 180 }}>{r.name}</Text>
-          {r.is_preset && <Tag color="blue" type="light" size="small">预设</Tag>}
-        </Space>
-      ),
-    },
-    { title: '编码', dataIndex: 'code', width: 140, render: (v: string) => <Text type="tertiary">{v}</Text> },
-    {
-      title: '描述',
-      dataIndex: 'description',
-      render: (v?: string) => (
-        <Text type="secondary" ellipsis={{ showTooltip: true }} style={{ display: 'block' }}>
-          {v || '-'}
-        </Text>
-      ),
-    },
-    {
-      title: '审批节点',
-      dataIndex: 'levels',
-      width: 110,
-      render: (levels: ApprovalFlowTemplate['levels']) => (
-        <Tag color="grey" type="light" size="small">{levels.length} 级</Tag>
-      ),
-    },
-    {
-      title: '状态',
-      dataIndex: 'status',
-      width: 100,
-      render: (s: ApprovalFlowTemplate['status']) =>
-        s === 'active' ? (
-          <Tag color="green" type="solid" size="small">已启用</Tag>
-        ) : (
-          <Tag color="grey" type="light" size="small">未启用</Tag>
-        ),
-    },
-    {
-      title: '更新时间',
-      dataIndex: 'updated_at',
-      width: 160,
-      render: (v: string) => <Text type="tertiary" size="small">{formatTime(v)}</Text>,
-    },
-    {
-      title: '操作',
-      dataIndex: 'op',
-      width: 80,
-      render: (_: unknown, r: ApprovalFlowTemplate) => (
-        <Dropdown
-          trigger="click"
-          clickToHide
-          position="bottomRight"
-          render={
-            <Dropdown.Menu>
-              <Dropdown.Item icon={<Pencil size={14} />} onClick={() => openEdit(r)}>编辑</Dropdown.Item>
-              {r.status !== 'active' ? (
-                <Dropdown.Item icon={<CheckCircle size={14} />} onClick={() => handleActivate(r)}>启用</Dropdown.Item>
-              ) : (
-                <Dropdown.Item icon={<Pause size={14} />} onClick={() => handleDeactivate(r)}>停用</Dropdown.Item>
-              )}
-              {!r.is_preset && (
-                <Dropdown.Item icon={<Trash2 size={14} />} type="danger" onClick={() => handleDelete(r)}>
-                  {t('common.delete')}
-                </Dropdown.Item>
-              )}
-            </Dropdown.Menu>
-          }
-        >
-          <Button icon={<Ellipsis size={16} />} theme="borderless" size="small" />
-        </Dropdown>
-      ),
-    },
-  ];
-
   return (
     <div className="approval-config-page">
       <div className="approval-config-page-header">
@@ -212,9 +128,16 @@ const ApprovalConfigPage = () => {
             />
           </Col>
           <Col>
-            <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={openCreate}>
-              新建审批流
-            </Button>
+            <Space>
+              <Button
+                icon={<Plus size={16} strokeWidth={2} />}
+                theme="solid"
+                type="primary"
+                onClick={handleCreateNew}
+              >
+                新建审批流
+              </Button>
+            </Space>
           </Col>
         </Row>
       </div>
@@ -223,23 +146,129 @@ const ApprovalConfigPage = () => {
         {!loading && flows.length === 0 ? (
           <EmptyState variant="noData" description="暂无审批流，点击右上角新建" />
         ) : (
-          <Table
-            size="small"
-            dataSource={flows}
-            columns={columns}
-            rowKey="id"
-            loading={loading}
-            pagination={false}
-          />
+          <div className="approval-config-page-grid">
+            {flows.map((f) => (
+              <div
+                key={f.id}
+                className={`approval-flow-card ${f.status === 'active' ? 'active' : ''}`}
+                onClick={() => goEdit(f)}
+              >
+                <div className="approval-flow-card-header">
+                  <div className="approval-flow-card-title-row">
+                    <Text strong ellipsis={{ showTooltip: true }} style={{ fontSize: 16 }}>
+                      {f.name}
+                    </Text>
+                    {f.status === 'active' && (
+                      <Tag color="green" type="solid" size="small">已启用</Tag>
+                    )}
+                    {f.is_preset && (
+                      <Tag color="blue" type="light" size="small">预设</Tag>
+                    )}
+                  </div>
+                  <Dropdown
+                    trigger="click"
+                    clickToHide
+                    position="bottomRight"
+                    render={
+                      <Dropdown.Menu>
+                        <Dropdown.Item
+                          icon={<Eye size={14} />}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            goEdit(f);
+                          }}
+                        >
+                          {t('common.viewDetail')}
+                        </Dropdown.Item>
+                        {f.status !== 'active' ? (
+                          <Dropdown.Item
+                            icon={<CheckCircle size={14} />}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleActivate(f);
+                            }}
+                          >
+                            启用
+                          </Dropdown.Item>
+                        ) : (
+                          <Dropdown.Item
+                            icon={<Pause size={14} />}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeactivate(f);
+                            }}
+                          >
+                            停用
+                          </Dropdown.Item>
+                        )}
+                        <Dropdown.Item
+                          icon={<Pencil size={14} />}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            goEdit(f);
+                          }}
+                        >
+                          编辑
+                        </Dropdown.Item>
+                        <Dropdown.Item
+                          icon={<Copy size={14} />}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleClone(f);
+                          }}
+                        >
+                          基于此创建副本
+                        </Dropdown.Item>
+                        {!f.is_preset && (
+                          <Dropdown.Item
+                            icon={<Trash2 size={14} />}
+                            type="danger"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDelete(f);
+                            }}
+                          >
+                            {t('common.delete')}
+                          </Dropdown.Item>
+                        )}
+                      </Dropdown.Menu>
+                    }
+                  >
+                    <Button
+                      icon={<Ellipsis size={16} />}
+                      theme="borderless"
+                      size="small"
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                  </Dropdown>
+                </div>
+                <div className="approval-flow-card-meta">
+                  <Text type="tertiary" size="small">{f.code}</Text>
+                </div>
+                <Text
+                  type="secondary"
+                  size="small"
+                  ellipsis={{ rows: 2 }}
+                  style={{ marginTop: 8 }}
+                >
+                  {f.description || '暂无描述'}
+                </Text>
+                <div className="approval-flow-card-footer">
+                  <Tag size="small" color="grey" type="light">
+                    {f.approvers.length} 级审批
+                  </Tag>
+                  {f.approvers.some((a) => a.approval_mode === 'all') && (
+                    <Tag size="small" color="orange" type="light">含会签</Tag>
+                  )}
+                  {f.approvers.some((a) => a.approval_mode === 'majority') && (
+                    <Tag size="small" color="cyan" type="light">含多数通过</Tag>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
         )}
       </div>
-
-      <ApprovalFlowEditModal
-        visible={editVisible}
-        flow={editing}
-        onClose={() => setEditVisible(false)}
-        onSubmit={handleSubmit}
-      />
     </div>
   );
 };
