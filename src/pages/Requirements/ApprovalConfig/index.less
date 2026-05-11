@@ -1,0 +1,33 @@
+.approval-config-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+
+  &-header {
+    flex-shrink: 0;
+
+    &-title {
+      margin-bottom: 20px;
+
+      .title {
+        margin-bottom: 8px;
+      }
+    }
+
+    &-toolbar {
+      margin-bottom: 12px;
+    }
+  }
+
+  &-search-input {
+    width: 320px;
+    min-width: 320px;
+  }
+
+  &-content {
+    flex: 1;
+    overflow: auto;
+    min-height: 0;
+  }
+}
