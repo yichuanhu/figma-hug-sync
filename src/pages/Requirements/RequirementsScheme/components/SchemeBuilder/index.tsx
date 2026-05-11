@@ -242,14 +242,35 @@ const SchemeBuilderPage = () => {
               onClick={() => guardedNavigate('/requirements/scheme')}
             />
           </Tooltip>
-          <Text
-            strong
-            className="scheme-builder-header-title"
-            style={{ fontSize: 20, lineHeight: '28px' }}
-            editable={{ onEnd: (val) => patch({ name: (val || '').trim() || draftScheme.name }) }}
-          >
-            {draftScheme.name}
-          </Text>
+          {editingName ? (
+            <Input
+              autoFocus
+              value={nameDraft}
+              onChange={setNameDraft}
+              onBlur={() => {
+                const v = (nameDraft || '').trim();
+                if (v && v !== draftScheme.name) patch({ name: v });
+                setEditingName(false);
+              }}
+              onEnterPress={() => {
+                const v = (nameDraft || '').trim();
+                if (v && v !== draftScheme.name) patch({ name: v });
+                setEditingName(false);
+              }}
+              maxLength={50}
+              style={{ width: 240, fontSize: 18, fontWeight: 600 }}
+            />
+          ) : (
+            <Title
+              heading={3}
+              className="scheme-builder-header-title"
+              style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6 }}
+              onClick={() => { setNameDraft(draftScheme.name); setEditingName(true); }}
+            >
+              {draftScheme.name}
+              <Pencil size={14} strokeWidth={2} style={{ color: 'var(--semi-color-text-2)' }} />
+            </Title>
+          )}
           <Text type="tertiary">v{draftScheme.version}</Text>
           {draftScheme.parent_id && <Tag color="blue" type="light" size="small">{t('requirements.scheme.builder.newVersionBadge')}</Tag>}
           {draftScheme.workflow_config?.template === 'none' && <Tag color="grey" type="light" size="small">无审批流</Tag>}
