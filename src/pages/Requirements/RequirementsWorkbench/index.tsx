@@ -28,7 +28,7 @@ import type { RequirementItem, RequirementQueryParams, RequirementStatus } from 
 import {
   fetchRequirementList,
   deleteRequirement,
-  createRequirement,
+  
   updateRequirement,
   updateRequirementStatus,
   resubmitRequirement,
