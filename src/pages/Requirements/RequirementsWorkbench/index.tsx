@@ -586,7 +586,7 @@ const RequirementsWorkbench = () => {
             </Space>
           </Col>
           <Col>
-            <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
+            <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => navigate('/requirements/list/create')}>
               {t('requirements.workbench.newRequirement')}
             </Button>
           </Col>
