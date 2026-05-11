@@ -20,7 +20,7 @@ const SYSTEM_FIELDS: Array<{ key: string; label: string; type: string; required?
   { key: 'department_id', label: '所属部门', type: 'department_select' },
   { key: 'owner_id', label: '需求负责人', type: 'user_select' },
   { key: 'position_level', label: '岗位级别', type: 'select', required: true },
-  { key: 'position_cost', label: '岗位成本', type: 'number (元/小时)', required: true },
+  { key: 'position_cost', label: '岗位成本', type: 'number (元/人天)', required: true },
   { key: 'execution_frequency', label: '执行频率', type: 'select', required: true },
   { key: 'single_duration', label: '单次时长', type: 'number (分钟)', required: true },
 ];
