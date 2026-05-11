@@ -62,6 +62,7 @@ import CostManagement from "@/pages/Operations/CostManagement";
 import PlatformOperations from "@/pages/Operations/PlatformOperations";
 // Requirements & Other
 import RequirementsWorkbench from "@/pages/Requirements/RequirementsWorkbench";
+import RequirementCreatePage from "@/pages/Requirements/RequirementsWorkbench/components/RequirementCreatePage";
 import RequirementsReview from "@/pages/Requirements/RequirementsReview";
 import RequirementsAssessment from "@/pages/Requirements/RequirementsAssessment";
 
