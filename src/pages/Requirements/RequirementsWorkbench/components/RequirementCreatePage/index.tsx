@@ -31,8 +31,8 @@ const { Title, Text } = Typography;
 const STEP_FIELDS: Array<string[]> = [
   // Step 0 基础信息
   ['title', 'department', 'owner', 'priority'],
-  // Step 1 岗位与执行成本
-  ['position_level', 'position_cost', 'execution_frequency', 'single_duration'],
+  // Step 1 岗位与执行成本（全部非必填，无需校验字段）
+  [],
   // Step 2 详情字段会动态收集
   [],
 ];
