@@ -180,6 +180,7 @@ const App = () => {
           <Route path="/requirements/scheme/builder/:id" element={<SchemeBuilderPage />} />
           <Route path="/requirements/approval-config" element={<ApprovalConfigPage />} />
           <Route path="/requirements/approval-config/builder/:id" element={<ApprovalFlowBuilderPage />} />
+          <Route path="/requirements/approval-config/detail/:id" element={<ApprovalFlowBuilderPage />} />
           <Route path="/requirements/projects" element={<RequirementsProjects />} />
           <Route path="/operations" element={<Navigate to="/operations/dashboard" replace />} />
           <Route path="/operations/dashboard" element={<OperationsDashboard />} />
