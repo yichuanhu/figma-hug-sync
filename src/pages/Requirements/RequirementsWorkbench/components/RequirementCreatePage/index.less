@@ -1,0 +1,58 @@
+.requirement-create-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+
+  &-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-shrink: 0;
+
+    .back-btn {
+      margin-right: 8px;
+    }
+
+    .title {
+      margin: 0;
+    }
+  }
+
+  &-steps {
+    margin-bottom: 24px;
+    padding: 0 48px;
+    flex-shrink: 0;
+    max-width: 960px;
+  }
+
+  &-content {
+    flex: 1;
+    overflow: auto;
+    min-height: 0;
+    padding: 8px 48px 24px;
+
+    .form-card {
+      max-width: 720px;
+      margin: 0 auto;
+
+      .semi-form-field {
+        margin-bottom: 16px;
+      }
+    }
+
+    .section-divider {
+      margin: 8px 0 16px;
+      border-top: 1px dashed var(--semi-color-border);
+    }
+  }
+
+  &-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding-top: 16px;
+    border-top: 1px solid var(--semi-color-border);
+    flex-shrink: 0;
+  }
+}
