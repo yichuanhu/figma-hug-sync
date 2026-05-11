@@ -182,7 +182,7 @@ const RequirementCreatePage = () => {
   const handlePrev = () => setCurrentStep((s) => Math.max(0, s - 1));
 
   const handleSubmit = async () => {
-    const ok = await validateCurrentStep();
+    const ok = await validateCurrentStep(true);
     if (!ok) return;
     const values = (formApi?.getValues?.() ?? {}) as Record<string, unknown>;
     const systemKeys = new Set(['title', 'department', 'priority']);
