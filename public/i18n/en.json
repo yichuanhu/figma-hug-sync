@@ -455,6 +455,17 @@
         "status": "Status",
         "subStatus": "Sub-status",
         "reason": "Reason"
+      },
+      "failedExport": {
+        "download": "Download failed rows",
+        "summary": "{{frontend}} client-side validation errors + {{server}} server-side import failures. Download the full list.",
+        "sourceFrontend": "Client validation",
+        "sourceServer": "Server import",
+        "serverFailed": "Import failed",
+        "cols": {
+          "source": "Source",
+          "errorType": "Error type"
+        }
       }
     }
   },
