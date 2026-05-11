@@ -83,6 +83,23 @@ const RequirementCreatePage = () => {
   const [departmentValue, setDepartmentValue] = useState<string | undefined>(undefined);
   const [ownerId, setOwnerId] = useState<string>(MOCK_CURRENT_USER.id);
   const [dirty, setDirty] = useState(false);
+  // 岗位成本列表：可同时录入多个 {岗位级别, 成本}
+  const [positionCosts, setPositionCosts] = useState<Array<{ level?: string; cost?: number }>>([
+    { level: undefined, cost: undefined },
+  ]);
+
+  const updatePositionCost = (idx: number, patch: Partial<{ level: string; cost: number }>) => {
+    setPositionCosts((prev) => prev.map((it, i) => (i === idx ? { ...it, ...patch } : it)));
+    setDirty(true);
+  };
+  const addPositionCost = () => {
+    setPositionCosts((prev) => [...prev, { level: undefined, cost: undefined }]);
+    setDirty(true);
+  };
+  const removePositionCost = (idx: number) => {
+    setPositionCosts((prev) => (prev.length <= 1 ? prev : prev.filter((_, i) => i !== idx)));
+    setDirty(true);
+  };
 
   const activeScheme = useMemo(() => getActiveScheme(), []);
 
