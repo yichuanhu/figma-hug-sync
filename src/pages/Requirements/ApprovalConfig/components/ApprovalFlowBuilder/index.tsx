@@ -18,7 +18,7 @@ import ApproverListEditor from '../ApproverListEditor';
 import AssessmentBuilder from '@/pages/Requirements/RequirementsScheme/components/SchemeBuilder/AssessmentBuilder';
 import './index.less';
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
 const ApprovalFlowBuilderPage = () => {
   const { id } = useParams<{ id: string }>();
