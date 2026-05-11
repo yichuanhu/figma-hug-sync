@@ -140,7 +140,7 @@ export const getApprovalFlowById = (id: string): ApprovalFlowTemplate | undefine
   cache.find((f) => f.id === id);
 
 export const createApprovalFlowDraft = async (
-  payload?: Partial<Pick<ApprovalFlowTemplate, 'name' | 'code' | 'description' | 'approvers'>>,
+  payload?: Partial<Pick<ApprovalFlowTemplate, 'name' | 'code' | 'description' | 'approvers' | 'assessors' | 'value_model' | 'complexity_model'>>,
 ): Promise<ApprovalFlowTemplate> => {
   await delay();
   const now = new Date().toISOString();
@@ -152,6 +152,9 @@ export const createApprovalFlowDraft = async (
     status: 'inactive',
     is_draft: true,
     approvers: payload?.approvers ?? [],
+    assessors: payload?.assessors ?? [],
+    value_model: payload?.value_model,
+    complexity_model: payload?.complexity_model,
     created_at: now,
     updated_at: now,
   };
