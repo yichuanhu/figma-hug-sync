@@ -4,7 +4,7 @@
  * 主体复用「需求模版 → 工作流 → 审批人配置」卡片。
  */
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Typography, Button, Input, Toast, Modal, Space, Tag, Spin, Tooltip } from '@douyinfe/semi-ui';
 import { ChevronLeft, Save, CheckCircle, Pencil } from 'lucide-react';
@@ -23,7 +23,9 @@ const { Title } = Typography;
 const ApprovalFlowBuilderPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useTranslation();
+  const isView = location.pathname.includes('/detail/');
   const [draft, setDraft] = useState<ApprovalFlowTemplate | null>(null);
   const [loading, setLoading] = useState(true);
   const [dirty, setDirty] = useState(false);
