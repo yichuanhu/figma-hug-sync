@@ -43,6 +43,39 @@ const defaultFlows: ApprovalFlowTemplate[] = [
       { id: 'a2', name: 'AI 委员会评审', type: 'role', priority: 2, required: true, approval_mode: 'majority', timeout_days: 7, target_ids: ['role-committee'] },
       { id: 'a3', name: '财务负责人审批', type: 'role', priority: 3, required: true, approval_mode: 'any_one', timeout_days: 3, target_ids: ['role-dept-head'] },
     ],
+    assessors: [
+      { id: 'as1', name: '技术架构评估', type: 'role', priority: 1, required: true, approval_mode: 'majority', timeout_days: 5, target_ids: ['role-committee'] },
+    ],
+    value_model: {
+      key: 'value-model-default',
+      type: 'value',
+      label: '价值评估',
+      description: '基于业务收益与战略契合度评估需求价值',
+      dimensions: [
+        { key: 'dim_biz', label: '业务收益', weight: 0.5, dimension_type: 'manual_score', tiers: [] },
+        { key: 'dim_strategy', label: '战略契合度', weight: 0.5, dimension_type: 'manual_score', tiers: [] },
+      ],
+      tiers: [
+        { condition: '>=80', score: 100, label: '高', color: 'green' },
+        { condition: '60~79', score: 75, label: '中', color: 'blue' },
+        { condition: '<60', score: 40, label: '低', color: 'orange' },
+      ],
+    },
+    complexity_model: {
+      key: 'complexity-model-default',
+      type: 'complexity',
+      label: '复杂度评估',
+      description: '基于实施周期与技术难度评估需求复杂度',
+      dimensions: [
+        { key: 'dim_tech', label: '技术难度', weight: 0.6, dimension_type: 'manual_score', tiers: [] },
+        { key: 'dim_period', label: '实施周期', weight: 0.4, dimension_type: 'manual_score', tiers: [] },
+      ],
+      tiers: [
+        { condition: '>=80', score: 100, label: '高', color: 'red' },
+        { condition: '60~79', score: 75, label: '中', color: 'orange' },
+        { condition: '<60', score: 40, label: '低', color: 'green' },
+      ],
+    },
     created_at: '2025-01-10T09:00:00Z',
     updated_at: '2025-02-20T14:30:00Z',
   },
@@ -56,6 +89,7 @@ const defaultFlows: ApprovalFlowTemplate[] = [
     approvers: [
       { id: 'a1', name: '直属主管审批', type: 'department_leader', priority: 1, required: true, approval_mode: 'any_one', timeout_days: 3 },
     ],
+    assessors: [],
     created_at: '2025-01-12T10:00:00Z',
     updated_at: '2025-01-12T10:00:00Z',
   },
