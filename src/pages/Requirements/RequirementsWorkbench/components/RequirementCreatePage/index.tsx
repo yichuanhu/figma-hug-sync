@@ -146,14 +146,15 @@ const RequirementCreatePage = () => {
     navigate('/requirements/list');
   };
 
-  const validateCurrentStep = async (): Promise<boolean> => {
+  const validateCurrentStep = async (isFinal = false): Promise<boolean> => {
     if (!formApi) return true;
     const fields = STEP_FIELDS[currentStep];
     try {
-      if (fields.length > 0) {
-        await formApi.validate(fields);
-      } else {
+      if (isFinal) {
+        // 最终提交：校验全部字段（含模版自定义必填）
         await formApi.validate();
+      } else if (fields.length > 0) {
+        await formApi.validate(fields);
       }
       // 自定义 Slot 字段（部门 / 归属人）
       if (currentStep === 0) {
@@ -181,7 +182,7 @@ const RequirementCreatePage = () => {
   const handlePrev = () => setCurrentStep((s) => Math.max(0, s - 1));
 
   const handleSubmit = async () => {
-    const ok = await validateCurrentStep();
+    const ok = await validateCurrentStep(true);
     if (!ok) return;
     const values = (formApi?.getValues?.() ?? {}) as Record<string, unknown>;
     const systemKeys = new Set(['title', 'department', 'priority']);
