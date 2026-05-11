@@ -3774,6 +3774,12 @@
     "roiAnalysis": {
       "title": "ROI Analysis",
       "overallRoi": "Overall ROI",
+      "tips": {
+        "overallRoi": "Formula: (Total Saved − Total Invested) / Total Invested × 100%. Reflects overall automation ROI.",
+        "totalSavedCost": "Definition: cumulative labor cost saved by all live processes = Σ(hours saved × dept hourly rate).",
+        "totalInvestmentCost": "Definition: cumulative spend on development + platform license + operations.",
+        "activeRequirements": "Definition: requirements currently in 'Running' status."
+      },
       "timeDimension": "Time Dimension",
       "dimAll": "All",
       "dimDaily": "Daily",
@@ -3848,10 +3854,39 @@
       "runningCount": "Running",
       "costSaved": "Cost Saved",
       "capacityTitle": "Development Capacity",
-      "monthlyDelivered": "Monthly Delivered",
-      "avgCycleDays": "Avg Cycle",
-      "developerCount": "Developers",
-      "capacityTrend": "Delivery Trend"
+      "capacityRequirementGroup": "Requirements",
+      "capacityProcessGroup": "Processes",
+      "monthlyDeliveredRequirement": "Requirements Delivered",
+      "monthlyDeliveredProcess": "Processes Released",
+      "avgCycleDaysRequirement": "Avg Requirement Cycle",
+      "avgCycleDaysProcess": "Avg Process Cycle",
+      "developerCountRequirement": "Requirement Developers",
+      "developerCountProcess": "Process Developers",
+      "capacityTrend": "Delivery Trend",
+      "trendRequirement": "Requirements",
+      "trendProcess": "Processes",
+      "tips": {
+        "todayVolume": "Definition: Total successful executions today across all live processes (excludes failed/timeout).",
+        "totalVolume": "Definition: All-time cumulative successful executions.",
+        "todayHoursSaved": "Formula: Today successful runs × standard manual hours per process. Unit: hours.",
+        "totalHoursSaved": "Definition: All-time cumulative hours saved (same formula).",
+        "funnel": "Stages:\n• Submitted: business submits requirement\n• Reviewed: passed requirement review\n• Developed: development started\n• Launched: process released to production\n• Accepted: business acceptance passed",
+        "typeShare": "Share of currently running processes grouped by requirement business line.",
+        "progress": "Total = sum of all status counts.\n• Submitted: awaiting review\n• Approved: ready to develop\n• Developing: in progress\n• Running: live in production\n• Completed: business accepted",
+        "volumeTrend": "Monthly successful execution counts of live processes.",
+        "hoursTrend": "Monthly hours saved (successful runs × standard hours).",
+        "deptRequirementCount": "Total requirements submitted by this department.",
+        "deptRunningCount": "Requirements currently in 'Running' status.",
+        "deptHoursSaved": "Cumulative hours saved by all processes of this department.",
+        "deptCostSaved": "Hours saved × department hourly cost rate.",
+        "monthlyDeliveredRequirement": "Definition: requirements that passed business acceptance this month.",
+        "monthlyDeliveredProcess": "Definition: automation processes newly released or updated this month.",
+        "avgCycleDaysRequirement": "Definition: average days from 'Approved' to 'Launched' for delivered requirements.",
+        "avgCycleDaysProcess": "Definition: average days from process creation to first release.",
+        "developerCountRequirement": "Developers who delivered at least one requirement this month.",
+        "developerCountProcess": "Developers who released at least one process this month.",
+        "capacityTrend": "Monthly comparison of requirements delivered vs processes released."
+      }
     },
     "costManagement": {
       "title": "Cost Management"

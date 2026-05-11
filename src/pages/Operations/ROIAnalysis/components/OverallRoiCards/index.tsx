@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { ArrowDown, ArrowUp } from 'lucide-react';
 import type { RoiMetrics } from '@/pages/Operations/types';
+import MetricLabel from '@/pages/Operations/BusinessOutcomes/components/MetricLabel';
 import './index.less';
 
 interface Props {
@@ -23,24 +24,28 @@ const OverallRoiCards = ({ data }: Props) => {
     {
       key: 'roi', tone: 'primary',
       label: t('operations.roiAnalysis.overallRoi'),
+      tip: t('operations.roiAnalysis.tips.overallRoi'),
       value: `${overallRoi}%`,
       trend: data.savedCostTrend,
     },
     {
       key: 'savedCost', tone: 'success',
       label: t('operations.dashboard.totalSavedCost'),
+      tip: t('operations.roiAnalysis.tips.totalSavedCost'),
       value: formatCurrency(data.totalSavedCost),
       trend: data.savedCostTrend,
     },
     {
       key: 'investmentCost', tone: 'warning',
       label: t('operations.dashboard.totalInvestmentCost'),
+      tip: t('operations.roiAnalysis.tips.totalInvestmentCost'),
       value: formatCurrency(data.totalInvestmentCost),
       trend: null,
     },
     {
       key: 'requirements', tone: 'purple',
       label: t('operations.dashboard.activeRequirements'),
+      tip: t('operations.roiAnalysis.tips.activeRequirements'),
       value: data.activeRequirements.toString(),
       trend: data.requirementsTrend,
     },
@@ -50,7 +55,7 @@ const OverallRoiCards = ({ data }: Props) => {
     <div className="overall-roi-cards">
       {cards.map(c => (
         <div key={c.key} className={`overall-roi-card ${c.tone}`}>
-          <div className="label">{c.label}</div>
+          <div className="label"><MetricLabel label={c.label} tip={c.tip} /></div>
           <div className="value">{c.value}</div>
           {c.trend !== null && (
             <span className={`trend ${c.trend >= 0 ? 'up' : 'down'}`}>

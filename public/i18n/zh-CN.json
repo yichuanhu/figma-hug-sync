@@ -3144,6 +3144,12 @@
     "roiAnalysis": {
       "title": "ROI深度分析",
       "overallRoi": "整体ROI",
+      "tips": {
+        "overallRoi": "公式：(总节约成本 − 总投入成本) / 总投入成本 × 100%\n反映自动化整体投资回报率",
+        "totalSavedCost": "口径：所有上线流程累计节约的人力成本\n= Σ(节约工时 × 部门人时单价)",
+        "totalInvestmentCost": "口径：开发投入 + 平台许可 + 运维投入的累计支出",
+        "activeRequirements": "口径：当前状态为「运行中」的需求数量"
+      },
       "timeDimension": "时间维度",
       "dimAll": "全部",
       "dimDaily": "按日",
@@ -3218,10 +3224,39 @@
       "runningCount": "运行中",
       "costSaved": "节约成本",
       "capacityTitle": "开发产能",
-      "monthlyDelivered": "本月交付",
-      "avgCycleDays": "平均周期",
-      "developerCount": "开发人员",
-      "capacityTrend": "交付趋势"
+      "capacityRequirementGroup": "需求维度",
+      "capacityProcessGroup": "流程维度",
+      "monthlyDeliveredRequirement": "本月交付需求",
+      "monthlyDeliveredProcess": "本月发布流程",
+      "avgCycleDaysRequirement": "需求平均周期",
+      "avgCycleDaysProcess": "流程平均周期",
+      "developerCountRequirement": "参与开发人数",
+      "developerCountProcess": "活跃流程开发者",
+      "capacityTrend": "交付趋势",
+      "trendRequirement": "需求交付",
+      "trendProcess": "流程发布",
+      "tips": {
+        "todayVolume": "口径：今日所有上线流程的成功执行次数总和（不含失败、超时）",
+        "totalVolume": "口径：历史所有流程的累计成功执行次数",
+        "todayHoursSaved": "口径：今日成功执行次数 × 各流程的标准人工工时\n单位：小时",
+        "totalHoursSaved": "口径：历史累计同口径汇总\n单位：小时",
+        "funnel": "阶段定义：\n• 提报：业务方提交需求\n• 评审：通过需求评审委员会\n• 开发：开发任务已立项\n• 上线：流程已发布投入使用\n• 验收：业务验收通过",
+        "typeShare": "按需求所属业务条线统计当前运行中的流程占比",
+        "progress": "需求总数 = 各状态需求之和\n• 已提报：待评审\n• 已立项：评审通过待开发\n• 开发中：研发进行中\n• 运行中：流程已上线\n• 已完成：业务验收通过",
+        "volumeTrend": "按月统计上线流程的成功执行次数",
+        "hoursTrend": "按月汇总节约工时（成功次数 × 标准工时）",
+        "deptRequirementCount": "该部门累计提报的需求总数",
+        "deptRunningCount": "该部门当前状态为「运行中」的需求数",
+        "deptHoursSaved": "该部门所有流程累计节约工时",
+        "deptCostSaved": "节约工时 × 部门人时单价（部门工资基准）",
+        "monthlyDeliveredRequirement": "口径：本月通过业务验收的需求数量",
+        "monthlyDeliveredProcess": "口径：本月新发布或更新版本的自动化流程数",
+        "avgCycleDaysRequirement": "口径：需求从「立项」到「上线」的天数均值",
+        "avgCycleDaysProcess": "口径：流程从首次创建到首次发布的天数均值",
+        "developerCountRequirement": "口径：本月有需求交付记录的开发人员数",
+        "developerCountProcess": "口径：本月有流程发布行为的开发人员数",
+        "capacityTrend": "按月对比需求交付数与流程发布数"
+      }
     },
     "costManagement": {
       "title": "成本管理"

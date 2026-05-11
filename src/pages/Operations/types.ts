@@ -193,11 +193,20 @@ export interface DepartmentOutcomeItem {
   hoursSaved: number;
   costSaved: number;
 }
+export interface DevCapacityGroup {
+  monthlyDelivered: number;     // 本月交付数量
+  avgCycleDays: number;         // 平均交付周期(天)
+  developerCount: number;       // 参与人数
+}
+export interface CapacityTrendPoint {
+  month: string;
+  requirement: number;          // 当月需求交付数
+  process: number;              // 当月流程发布数
+}
 export interface DevCapacityData {
-  monthlyDelivered: number;
-  avgCycleDays: number;
-  developerCount: number;
-  capacityTrend: { month: string; delivered: number }[];
+  requirement: DevCapacityGroup;
+  process: DevCapacityGroup;
+  capacityTrend: CapacityTrendPoint[];
 }
 export interface BusinessOutcomesData {
   funnel: FunnelStage[];
