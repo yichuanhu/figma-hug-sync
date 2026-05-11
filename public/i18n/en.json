@@ -3876,6 +3876,8 @@
         "source": "Source",
         "allType": "All Types",
         "allSource": "All Sources",
+        "typeWorkflow": "Intelligent Automation",
+        "typeKnowledge": "Knowledge",
         "clear": "Clear filters"
       },
       "newAsset": {
