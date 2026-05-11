@@ -141,6 +141,8 @@ const ImportAssignedValueModal = ({
     await new Promise((r) => setTimeout(r, 600));
     const summary = mockImport(credentialId, file.name, validation.valid_rows);
     setImporting(false);
+    setResultValidation(validation);
+    setResultFileName(file.name);
     setValidation(null);
     setResult(summary);
   };
