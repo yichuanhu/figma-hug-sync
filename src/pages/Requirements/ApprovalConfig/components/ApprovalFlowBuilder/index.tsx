@@ -140,7 +140,7 @@ const ApprovalFlowBuilderPage = () => {
           </Tooltip>
           <div className="approval-flow-builder-title-block">
             <div className="approval-flow-builder-title-row">
-              {editingName ? (
+              {!isView && editingName ? (
                 <Input
                   autoFocus
                   value={nameDraft}
@@ -162,49 +162,71 @@ const ApprovalFlowBuilderPage = () => {
                 <Title
                   heading={3}
                   className="approval-flow-builder-header-title"
-                  style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6, margin: 0 }}
+                  style={{ cursor: isView ? 'default' : 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6, margin: 0 }}
                   onClick={() => {
+                    if (isView) return;
                     setNameDraft(draft.name);
                     setEditingName(true);
                   }}
                 >
                   {draft.name}
-                  <Pencil size={14} strokeWidth={2} style={{ color: 'var(--semi-color-text-2)' }} />
+                  {!isView && <Pencil size={14} strokeWidth={2} style={{ color: 'var(--semi-color-text-2)' }} />}
                 </Title>
               )}
               {draft.status === 'active' && <Tag color="green" type="light" size="small">已启用</Tag>}
               {draft.is_preset && <Tag color="blue" type="light" size="small">预设</Tag>}
               {dirty && <Tag color="red" type="light" size="small">未保存</Tag>}
             </div>
-            <Input
-              value={draft.description ?? ''}
-              onChange={(v) => patch({ description: v })}
-              placeholder="添加描述..."
-              maxLength={120}
-              size="small"
-              className="approval-flow-builder-description-input"
-            />
+            {isView ? (
+              draft.description ? (
+                <Typography.Text type="tertiary" size="small" style={{ marginTop: 4 }}>
+                  {draft.description}
+                </Typography.Text>
+              ) : null
+            ) : (
+              <Input
+                value={draft.description ?? ''}
+                onChange={(v) => patch({ description: v })}
+                placeholder="添加描述..."
+                maxLength={120}
+                size="small"
+                className="approval-flow-builder-description-input"
+              />
+            )}
           </div>
         </div>
         <Space>
-          <Button
-            icon={<Save size={16} strokeWidth={2} />}
-            theme={dirty ? 'solid' : 'light'}
-            type={dirty ? 'primary' : 'tertiary'}
-            onClick={handleSave}
-            disabled={!dirty}
-          >
-            保存
-          </Button>
-          <Button
-            icon={<CheckCircle size={16} strokeWidth={2} />}
-            theme="solid"
-            type="primary"
-            onClick={handleActivate}
-            disabled={draft.status === 'active'}
-          >
-            启用
-          </Button>
+          {isView ? (
+            <Button
+              icon={<Pencil size={16} strokeWidth={2} />}
+              theme="solid"
+              type="primary"
+              onClick={() => navigate(`/requirements/approval-config/builder/${draft.id}`)}
+            >
+              编辑
+            </Button>
+          ) : (
+            <>
+              <Button
+                icon={<Save size={16} strokeWidth={2} />}
+                theme={dirty ? 'solid' : 'light'}
+                type={dirty ? 'primary' : 'tertiary'}
+                onClick={handleSave}
+                disabled={!dirty}
+              >
+                保存
+              </Button>
+              <Button
+                icon={<CheckCircle size={16} strokeWidth={2} />}
+                theme="solid"
+                type="primary"
+                onClick={handleActivate}
+                disabled={draft.status === 'active'}
+              >
+                启用
+              </Button>
+            </>
+          )}
         </Space>
       </div>
 
@@ -216,6 +238,7 @@ const ApprovalFlowBuilderPage = () => {
             onChange={(approvers) => patch({ approvers })}
             emptyHint="暂无审批级，点击右上角添加"
             defaultItemName="新审批级"
+            readOnly={isView}
           />
 
           <ApproverListEditor
@@ -224,6 +247,7 @@ const ApprovalFlowBuilderPage = () => {
             onChange={(assessors) => patch({ assessors })}
             emptyHint="暂无评估级，点击右上角添加"
             defaultItemName="新评估级"
+            readOnly={isView}
             extra={
               draft.assessors.length > 0 ? (
                 <AssessmentBuilder
@@ -231,6 +255,7 @@ const ApprovalFlowBuilderPage = () => {
                   complexityModel={draft.complexity_model}
                   fields={[]}
                   onChange={(value_model, complexity_model) => patch({ value_model, complexity_model })}
+                  disabled={isView}
                 />
               ) : null
             }
