@@ -28,7 +28,7 @@ import type { RequirementItem, RequirementQueryParams, RequirementStatus } from 
 import {
   fetchRequirementList,
   deleteRequirement,
-  createRequirement,
+  
   updateRequirement,
   updateRequirementStatus,
   resubmitRequirement,
@@ -77,7 +77,7 @@ const RequirementsWorkbench = () => {
   // 状态
   const [loading, setLoading] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
-  const [createModalVisible, setCreateModalVisible] = useState(false);
+  // createModalVisible 已废弃：新建走 /requirements/list/create 独立页面
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingRecord, setEditingRecord] = useState<RequirementItem | null>(null);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
@@ -586,7 +586,7 @@ const RequirementsWorkbench = () => {
             </Space>
           </Col>
           <Col>
-            <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => setCreateModalVisible(true)}>
+            <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => navigate('/requirements/list/create')}>
               {t('requirements.workbench.newRequirement')}
             </Button>
           </Col>
@@ -649,15 +649,7 @@ const RequirementsWorkbench = () => {
         )}
       </div>
 
-      {/* 新建需求弹窗 */}
-      <RequirementFormModal
-        visible={createModalVisible}
-        onCancel={() => setCreateModalVisible(false)}
-        onSuccess={async (values) => {
-          await createRequirement(values);
-          loadData();
-        }}
-      />
+      {/* 新建需求改用独立页面 /requirements/list/create */}
 
       {/* 编辑需求弹窗 */}
       <RequirementFormModal

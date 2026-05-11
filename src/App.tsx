@@ -62,6 +62,7 @@ import CostManagement from "@/pages/Operations/CostManagement";
 import PlatformOperations from "@/pages/Operations/PlatformOperations";
 // Requirements & Other
 import RequirementsWorkbench from "@/pages/Requirements/RequirementsWorkbench";
+import RequirementCreatePage from "@/pages/Requirements/RequirementsWorkbench/components/RequirementCreatePage";
 import RequirementsReview from "@/pages/Requirements/RequirementsReview";
 import RequirementsAssessment from "@/pages/Requirements/RequirementsAssessment";
 
@@ -169,6 +170,7 @@ const App = () => {
           {/* 需求中心 */}
           <Route path="/requirements" element={<Navigate to="/requirements/list" replace />} />
           <Route path="/requirements/list" element={<RequirementsWorkbench />} />
+          <Route path="/requirements/list/create" element={<RequirementCreatePage />} />
           <Route path="/requirements/review" element={<RequirementsReview />} />
           <Route path="/requirements/assessment" element={<RequirementsAssessment />} />
           
