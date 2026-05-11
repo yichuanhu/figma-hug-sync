@@ -218,7 +218,7 @@ const RequirementsScheme = () => {
         width={520}
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {schemes.filter((s) => s.is_preset).map((s) => (
+          {schemes.map((s) => (
             <div
               key={s.id}
               onClick={() => handleCloneFromPreset(s.id)}
