@@ -25,10 +25,13 @@
 
   .robot-status-summary {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     gap: 12px;
     margin-bottom: 20px;
 
+    @media (max-width: 1200px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
     @media (max-width: 768px) {
       grid-template-columns: repeat(2, 1fr);
     }
@@ -39,6 +42,10 @@
     border-radius: 8px;
     padding: 12px 16px;
     text-align: center;
+
+    &.highlight {
+      background: linear-gradient(135deg, rgba(59,130,246,0.06), rgba(16,185,129,0.04));
+    }
 
     .status-label {
       font-size: 12px;
@@ -51,6 +58,16 @@
       font-weight: 700;
       color: var(--semi-color-text-0);
       font-variant-numeric: tabular-nums;
+
+      .divider {
+        color: var(--semi-color-text-3);
+        font-weight: 400;
+        margin: 0 2px;
+      }
+      .total {
+        color: var(--semi-color-text-2);
+        font-size: 18px;
+      }
     }
   }
 

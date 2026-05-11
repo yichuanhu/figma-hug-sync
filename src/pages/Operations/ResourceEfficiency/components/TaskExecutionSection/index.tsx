@@ -1,7 +1,9 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import ReactECharts from 'echarts-for-react';
+import { ArrowDown, ArrowUp, Clock } from 'lucide-react';
 import type { ResourceEfficiencyData } from '@/pages/Operations/types';
+import FailedProcessTop from '../FailedProcessTop';
 import './index.less';
 
 interface Props {
@@ -41,6 +43,50 @@ const TaskExecutionSection = ({ data }: Props) => {
     { label: t('operations.resourceEfficiency.runningCount'), value: data.taskStats.running, color: COLORS.warning },
     { label: t('operations.resourceEfficiency.timeoutCount'), value: data.taskStats.timeout, color: COLORS.purple },
   ];
+
+  // Task volume trend (success vs failed stacked bars)
+  const volumeTrendOption = useMemo(() => ({
+    tooltip: { ...TOOLTIP_STYLE, trigger: 'axis', axisPointer: { type: 'shadow' } },
+    legend: {
+      bottom: 0,
+      itemWidth: 12,
+      itemHeight: 12,
+      textStyle: { fontSize: 12, color: '#6B7280' },
+      data: [t('operations.resourceEfficiency.successSeries'), t('operations.resourceEfficiency.failedSeries')],
+    },
+    grid: { left: 56, right: 16, top: 16, bottom: 48 },
+    xAxis: {
+      type: 'category',
+      data: data.taskVolumeTrend.map(d => d.month),
+      axisLabel: { fontSize: 11, color: '#9CA3AF' },
+      axisLine: { lineStyle: { color: '#E5E7EB' } },
+      axisTick: { show: false },
+    },
+    yAxis: {
+      type: 'value',
+      axisLabel: { fontSize: 11, color: '#9CA3AF' },
+      axisLine: { show: false },
+      splitLine: { lineStyle: { color: '#F3F4F6', type: 'dashed' } },
+    },
+    series: [
+      {
+        name: t('operations.resourceEfficiency.successSeries'),
+        type: 'bar',
+        stack: 'total',
+        data: data.taskVolumeTrend.map(d => d.success),
+        barMaxWidth: 28,
+        itemStyle: { color: COLORS.success, borderRadius: [0, 0, 0, 0] },
+      },
+      {
+        name: t('operations.resourceEfficiency.failedSeries'),
+        type: 'bar',
+        stack: 'total',
+        data: data.taskVolumeTrend.map(d => d.failed),
+        barMaxWidth: 28,
+        itemStyle: { color: COLORS.danger, borderRadius: [4, 4, 0, 0] },
+      },
+    ],
+  }), [data.taskVolumeTrend, t]);
 
   // Success rate trend
   const trendOption = useMemo(() => ({
@@ -93,41 +139,61 @@ const TaskExecutionSection = ({ data }: Props) => {
         ))}
       </div>
 
-      {/* Charts row */}
-      <div className="task-exec-charts-row">
-        <div className="task-exec-chart-card">
-          <div className="chart-subtitle">{t('operations.resourceEfficiency.todayCumulative')}</div>
-          <div className="task-today-stats">
-            <div className="today-stat-item">
-              <div className="today-label">{t('operations.dashboard.todayTasks')}</div>
-              <div className="today-value">{data.todayTasks.toLocaleString()}</div>
-            </div>
-            <div className="today-stat-item">
-              <div className="today-label">{t('operations.dashboard.totalTasks')}</div>
-              <div className="today-value">{data.totalTasks.toLocaleString()}</div>
-            </div>
-            <div className="today-stat-item">
-              <div className="today-label">{t('operations.dashboard.todayRuntime')}</div>
-              <div className="today-value">{formatMinutes(data.todayRunMinutes)}</div>
-            </div>
-            <div className="today-stat-item">
-              <div className="today-label">{t('operations.dashboard.totalRuntime')}</div>
-              <div className="today-value">{formatMinutes(data.totalRunMinutes)}</div>
-            </div>
-            <div className="today-stat-item">
-              <div className="today-label">{t('operations.resourceEfficiency.successRateToday')}</div>
-              <div className="today-value" style={{ color: COLORS.success }}>{data.successRateToday}%</div>
-            </div>
-            <div className="today-stat-item">
-              <div className="today-label">{t('operations.resourceEfficiency.successRateTotal')}</div>
-              <div className="today-value" style={{ color: COLORS.primary }}>{data.successRateTotal}%</div>
-            </div>
+      {/* Today/Cumulative + Avg execution time */}
+      <div className="chart-subtitle">{t('operations.resourceEfficiency.todayCumulative')}</div>
+      <div className="task-today-stats">
+        <div className="today-stat-item">
+          <div className="today-label">{t('operations.dashboard.todayTasks')}</div>
+          <div className="today-value">{data.todayTasks.toLocaleString()}</div>
+        </div>
+        <div className="today-stat-item">
+          <div className="today-label">{t('operations.dashboard.totalTasks')}</div>
+          <div className="today-value">{data.totalTasks.toLocaleString()}</div>
+        </div>
+        <div className="today-stat-item">
+          <div className="today-label">{t('operations.dashboard.todayRuntime')}</div>
+          <div className="today-value">{formatMinutes(data.todayRunMinutes)}</div>
+        </div>
+        <div className="today-stat-item">
+          <div className="today-label">{t('operations.dashboard.totalRuntime')}</div>
+          <div className="today-value">{formatMinutes(data.totalRunMinutes)}</div>
+        </div>
+        <div className="today-stat-item">
+          <div className="today-label">{t('operations.resourceEfficiency.successRateToday')}</div>
+          <div className="today-value" style={{ color: COLORS.success }}>{data.successRateToday}%</div>
+        </div>
+        <div className="today-stat-item">
+          <div className="today-label">
+            <Clock size={12} strokeWidth={2} style={{ verticalAlign: -2, marginRight: 4 }} />
+            {t('operations.resourceEfficiency.avgExecutionTime')}
           </div>
+          <div className="today-value" style={{ color: COLORS.primary }}>
+            {data.avgExecutionMinutes} {t('operations.resourceEfficiency.minutesUnit')}
+            <span className={`avg-trend ${data.avgExecutionTrend <= 0 ? 'down' : 'up'}`}>
+              {data.avgExecutionTrend <= 0
+                ? <ArrowDown size={11} strokeWidth={2.5} />
+                : <ArrowUp size={11} strokeWidth={2.5} />}
+              {Math.abs(data.avgExecutionTrend)}%
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Trends row: Volume + Success rate */}
+      <div className="task-exec-charts-row" style={{ marginTop: 16 }}>
+        <div className="task-exec-chart-card">
+          <div className="chart-subtitle">{t('operations.resourceEfficiency.taskVolumeTrend')}</div>
+          <ReactECharts option={volumeTrendOption} style={{ height: 280 }} opts={{ renderer: 'svg' }} />
         </div>
         <div className="task-exec-chart-card">
           <div className="chart-subtitle">{t('operations.resourceEfficiency.successRateTrend')}</div>
           <ReactECharts option={trendOption} style={{ height: 280 }} opts={{ renderer: 'svg' }} />
         </div>
+      </div>
+
+      {/* Failed process top 5 */}
+      <div style={{ marginTop: 16 }}>
+        <FailedProcessTop data={data.failedProcessTop} />
       </div>
     </div>
   );

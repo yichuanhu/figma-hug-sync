@@ -3,6 +3,7 @@ import { Table, Tag } from '@douyinfe/semi-ui';
 import { useTranslation } from 'react-i18next';
 import ReactECharts from 'echarts-for-react';
 import type { ResourceEfficiencyData, RobotDetail } from '@/pages/Operations/types';
+import BusyIdleTopX from '../BusyIdleTopX';
 import './index.less';
 
 interface Props {
@@ -210,6 +211,22 @@ const RobotPerformance = ({ data }: Props) => {
 
       {/* Status summary */}
       <div className="robot-status-summary">
+        <div className="robot-status-card highlight">
+          <div className="status-label">{t('operations.resourceEfficiency.interactiveOnlineLicense')}</div>
+          <div className="status-value">
+            <span style={{ color: COLORS.primary }}>{data.interactiveOnline}</span>
+            <span className="divider"> / </span>
+            <span className="total">{data.interactiveTotal}</span>
+          </div>
+        </div>
+        <div className="robot-status-card highlight">
+          <div className="status-label">{t('operations.resourceEfficiency.unattendedOnlineLicense')}</div>
+          <div className="status-value">
+            <span style={{ color: COLORS.success }}>{data.unattendedOnline}</span>
+            <span className="divider"> / </span>
+            <span className="total">{data.unattendedTotal}</span>
+          </div>
+        </div>
         <div className="robot-status-card">
           <div className="status-label">{t('operations.resourceEfficiency.statusWorking')}</div>
           <div className="status-value" style={{ color: COLORS.success }}>{data.working}</div>
@@ -250,6 +267,12 @@ const RobotPerformance = ({ data }: Props) => {
           <div className="chart-subtitle">{t('operations.resourceEfficiency.groupComparison')}</div>
           <ReactECharts option={barOption} style={{ height: 240 }} opts={{ renderer: 'svg' }} />
         </div>
+      </div>
+
+      {/* Busy / Idle TopX */}
+      <div className="robot-perf-charts-row" style={{ marginBottom: 16 }}>
+        <BusyIdleTopX robots={data.robotDetails} mode="busy" />
+        <BusyIdleTopX robots={data.robotDetails} mode="idle" />
       </div>
 
       {/* Robot detail table */}
