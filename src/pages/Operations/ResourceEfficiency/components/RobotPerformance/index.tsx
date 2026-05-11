@@ -3,6 +3,7 @@ import { Table, Tag } from '@douyinfe/semi-ui';
 import { useTranslation } from 'react-i18next';
 import ReactECharts from 'echarts-for-react';
 import type { ResourceEfficiencyData, RobotDetail } from '@/pages/Operations/types';
+import BusyIdleTopX from '../BusyIdleTopX';
 import './index.less';
 
 interface Props {
@@ -266,6 +267,12 @@ const RobotPerformance = ({ data }: Props) => {
           <div className="chart-subtitle">{t('operations.resourceEfficiency.groupComparison')}</div>
           <ReactECharts option={barOption} style={{ height: 240 }} opts={{ renderer: 'svg' }} />
         </div>
+      </div>
+
+      {/* Busy / Idle TopX */}
+      <div className="robot-perf-charts-row" style={{ marginBottom: 16 }}>
+        <BusyIdleTopX robots={data.robotDetails} mode="busy" />
+        <BusyIdleTopX robots={data.robotDetails} mode="idle" />
       </div>
 
       {/* Robot detail table */}
