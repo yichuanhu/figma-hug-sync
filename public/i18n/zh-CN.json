@@ -3247,6 +3247,8 @@
         "source": "来源",
         "allType": "全部",
         "allSource": "全部",
+        "typeWorkflow": "智能自动化流程",
+        "typeKnowledge": "知识",
         "clear": "清空筛选"
       },
       "newAsset": {
