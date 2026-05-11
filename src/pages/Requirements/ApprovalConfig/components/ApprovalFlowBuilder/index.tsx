@@ -222,10 +222,46 @@ const ApprovalFlowBuilderPage = () => {
           </div>
         </div>
 
-        <ApproverListEditor
-          approvers={draft.approvers}
-          onChange={(approvers) => patch({ approvers })}
-        />
+        <div className="workflow-builder">
+          <ApproverListEditor
+            title="审批人配置"
+            approvers={draft.approvers}
+            onChange={(approvers) => patch({ approvers })}
+            enabled={draft.approvers.length > 0}
+            onToggle={() => { /* 列表变更已在 onChange 中体现 */ }}
+            emptyHint="暂无审批级，点击右上角添加"
+            disabledHint="已关闭审批人配置，需求提交后将跳过审批环节。开启后可配置审批级与审批方式。"
+            enableToastText="已启用审批人配置"
+            disableToastText="已关闭审批人配置"
+            defaultItemName="新审批级"
+          />
+
+          <ApproverListEditor
+            title="技术评估人配置"
+            approvers={draft.assessors}
+            onChange={(assessors) => patch({ assessors })}
+            enabled={draft.assessors.length > 0}
+            onToggle={(next) => {
+              if (!next) {
+                // 关闭评估人时同步清空评估模型
+                patch({ value_model: undefined, complexity_model: undefined });
+              }
+            }}
+            emptyHint="暂无评估级，点击右上角添加"
+            disabledHint="已关闭评估人配置，需求将不进行技术评估。开启后可配置评估人及评估模型。"
+            enableToastText="已启用评估人配置"
+            disableToastText="已关闭评估人配置"
+            defaultItemName="新评估级"
+            extra={
+              <AssessmentBuilder
+                valueModel={draft.value_model}
+                complexityModel={draft.complexity_model}
+                fields={[]}
+                onChange={(value_model, complexity_model) => patch({ value_model, complexity_model })}
+              />
+            }
+          />
+        </div>
       </div>
     </div>
   );
