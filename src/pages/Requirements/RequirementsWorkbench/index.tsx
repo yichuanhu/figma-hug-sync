@@ -649,15 +649,7 @@ const RequirementsWorkbench = () => {
         )}
       </div>
 
-      {/* 新建需求弹窗 */}
-      <RequirementFormModal
-        visible={createModalVisible}
-        onCancel={() => setCreateModalVisible(false)}
-        onSuccess={async (values) => {
-          await createRequirement(values);
-          loadData();
-        }}
-      />
+      {/* 新建需求改用独立页面 /requirements/list/create */}
 
       {/* 编辑需求弹窗 */}
       <RequirementFormModal
