@@ -92,25 +92,29 @@ const ApproverListEditor = ({
     <div className="workflow-section">
       <div className="workflow-card-header">
         <Text strong>{title}</Text>
-        <Button icon={<Plus size={14} strokeWidth={2} />} size="small" onClick={add}>
-          添加
-        </Button>
+        {!readOnly && (
+          <Button icon={<Plus size={14} strokeWidth={2} />} size="small" onClick={add}>
+            添加
+          </Button>
+        )}
       </div>
 
       {approvers.length === 0 ? (
-        <Empty description={emptyHint} style={{ padding: '24px 0' }} />
+        <Empty description={readOnly ? '暂无配置' : emptyHint} style={{ padding: '24px 0' }} />
       ) : (
         approvers.map((a, idx) => (
           <div
             key={a.id}
             className={`approver-row${dragIdx === idx ? ' is-dragging' : ''}${overIdx === idx && dragIdx !== idx ? ' is-over' : ''}`}
             onDragOver={(e) => {
+              if (readOnly) return;
               if (dragIndexRef.current === null) return;
               e.preventDefault();
               e.dataTransfer.dropEffect = 'move';
               if (overIdx !== idx) setOverIdx(idx);
             }}
             onDrop={(e) => {
+              if (readOnly) return;
               e.preventDefault();
               const from = dragIndexRef.current;
               if (from !== null) reorder(from, idx);
@@ -119,24 +123,26 @@ const ApproverListEditor = ({
               setOverIdx(null);
             }}
           >
-            <span
-              className="drag-handle"
-              draggable
-              onDragStart={(e) => {
-                dragIndexRef.current = idx;
-                setDragIdx(idx);
-                e.dataTransfer.effectAllowed = 'move';
-                e.dataTransfer.setData('text/plain', String(idx));
-              }}
-              onDragEnd={() => {
-                dragIndexRef.current = null;
-                setDragIdx(null);
-                setOverIdx(null);
-              }}
-              title="拖拽调整顺序"
-            >
-              <GripVertical size={14} strokeWidth={2} />
-            </span>
+            {!readOnly && (
+              <span
+                className="drag-handle"
+                draggable
+                onDragStart={(e) => {
+                  dragIndexRef.current = idx;
+                  setDragIdx(idx);
+                  e.dataTransfer.effectAllowed = 'move';
+                  e.dataTransfer.setData('text/plain', String(idx));
+                }}
+                onDragEnd={() => {
+                  dragIndexRef.current = null;
+                  setDragIdx(null);
+                  setOverIdx(null);
+                }}
+                title="拖拽调整顺序"
+              >
+                <GripVertical size={14} strokeWidth={2} />
+              </span>
+            )}
             <Tag color="blue" type="light" size="small">P{a.priority}</Tag>
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
               <Input
@@ -144,6 +150,7 @@ const ApproverListEditor = ({
                 onChange={(v) => update(idx, { ...a, name: v })}
                 placeholder="名称"
                 size="small"
+                disabled={readOnly}
               />
               <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
                 <Select
@@ -152,6 +159,7 @@ const ApproverListEditor = ({
                   optionList={APPROVER_TYPE_OPTIONS}
                   size="small"
                   style={{ width: 120 }}
+                  disabled={readOnly}
                 />
                 <Select
                   value={a.approval_mode ?? 'any_one'}
@@ -159,8 +167,9 @@ const ApproverListEditor = ({
                   optionList={MODE_OPTIONS}
                   size="small"
                   style={{ width: 120 }}
+                  disabled={readOnly}
                 />
-                <Switch checked={a.required} onChange={(v) => update(idx, { ...a, required: v })} size="small" />
+                <Switch checked={a.required} onChange={(v) => update(idx, { ...a, required: v })} size="small" disabled={readOnly} />
                 <Text size="small" type="tertiary">必需</Text>
               </div>
               {a.type === 'specific_users' && (
@@ -172,6 +181,7 @@ const ApproverListEditor = ({
                     update(idx, { ...a, target_ids: (Array.isArray(v) ? v : []) as string[] })
                   }
                   placeholder="搜索并选择用户"
+                  disabled={readOnly}
                 />
               )}
               {a.type === 'role' && (
@@ -182,16 +192,19 @@ const ApproverListEditor = ({
                   optionList={ROLE_OPTIONS}
                   size="small"
                   placeholder="选择角色"
+                  disabled={readOnly}
                 />
               )}
             </div>
-            <Button
-              icon={<Trash2 size={14} strokeWidth={2} />}
-              theme="borderless"
-              type="danger"
-              size="small"
-              onClick={() => remove(idx)}
-            />
+            {!readOnly && (
+              <Button
+                icon={<Trash2 size={14} strokeWidth={2} />}
+                theme="borderless"
+                type="danger"
+                size="small"
+                onClick={() => remove(idx)}
+              />
+            )}
           </div>
         ))
       )}
