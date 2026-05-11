@@ -189,9 +189,16 @@ const RequirementCreatePage = () => {
     activeScheme?.custom_fields.forEach((f) => {
       if (values[f.key] !== undefined) form_data[f.key] = values[f.key];
     });
-    SYSTEM_REQUIRED_KEYS.forEach((k) => {
+    OPTIONAL_FORM_KEYS.forEach((k) => {
       if (values[k] !== undefined) form_data[k] = values[k];
     });
+    // 多岗位级别与成本（仅保留至少填写了一项的行）
+    const cleanedPositionCosts = positionCosts
+      .filter((r) => r.level !== undefined || (typeof r.cost === 'number' && !Number.isNaN(r.cost)))
+      .map((r) => ({ level: r.level, cost: r.cost }));
+    if (cleanedPositionCosts.length > 0) {
+      form_data.position_costs = cleanedPositionCosts;
+    }
     const submitValues = { ...values, form_data };
     Object.keys(form_data).forEach((k) => {
       if (!systemKeys.has(k)) delete (submitValues as Record<string, unknown>)[k];
