@@ -164,6 +164,23 @@ export const mockResourceEfficiency: ResourceEfficiencyData = {
     { month: '2026-02', rate: 93.0 },
     { month: '2026-03', rate: 94.2 },
   ],
+  taskVolumeTrend: [
+    { month: '2025-10', success: 9420, failed: 580 },
+    { month: '2025-11', success: 10380, failed: 620 },
+    { month: '2025-12', success: 10920, failed: 540 },
+    { month: '2026-01', success: 11540, failed: 470 },
+    { month: '2026-02', success: 11820, failed: 420 },
+    { month: '2026-03', success: 11450, failed: 420 },
+  ],
+  avgExecutionMinutes: 4.8,
+  avgExecutionTrend: -8.5,
+  failedProcessTop: [
+    { processName: 'Invoice OCR Recognition', failedCount: 128, totalCount: 1850, ratio: 6.9 },
+    { processName: 'Order Sync to ERP', failedCount: 96, totalCount: 1620, ratio: 5.9 },
+    { processName: 'Payroll Calculation', failedCount: 72, totalCount: 980, ratio: 7.3 },
+    { processName: 'Contract Auto-Review', failedCount: 64, totalCount: 720, ratio: 8.9 },
+    { processName: 'Inventory Replenishment', failedCount: 60, totalCount: 1240, ratio: 4.8 },
+  ],
 };
 
 export const mockRobotGroups = [
