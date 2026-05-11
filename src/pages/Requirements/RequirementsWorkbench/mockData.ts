@@ -385,7 +385,7 @@ export const computeCostEstimate = (
 ): CostEstimateData => {
   const dailyRate = config.rateTable[baseline.jobLevel] ?? 0;
   const monthlySavedHours =
-    (baseline.frequency * baseline.durationMinutes * baseline.automationRatio) / 60;
+    (baseline.frequency * baseline.durationMinutes) / 60;
   const monthlySavedPersonDays =
     config.workingHoursPerDay > 0 ? monthlySavedHours / config.workingHoursPerDay : 0;
   const monthlySavedAmount = monthlySavedPersonDays * dailyRate;
