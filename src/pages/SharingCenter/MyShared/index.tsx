@@ -10,7 +10,7 @@ import emptyImg from '@/assets/empty-state/no-data.png';
 import type { ShareStatus } from '@/components/sharing/StatusTag';
 
 import { type ShareAsset, queryMyPublished, getAll, getMine, subscribe } from './store';
-import { useMyPublishedQuery, type TypeFilter, type SourceFilter } from './hooks/useMyPublishedQuery';
+import { useMyPublishedQuery, type TypeFilter } from './hooks/useMyPublishedQuery';
 import SupplyAssetCard from './components/SupplyAssetCard';
 import ReuseStatsPanel from './components/ReuseStatsPanel';
 import PushNotificationDialog from './components/PushNotificationDialog';
@@ -34,7 +34,7 @@ const MySharedPage = () => {
 
   const {
     tab, type: typeF, source: sourceF, keyword, page, debouncedKeyword: debounced,
-    setTab, setType, setSource, setKeyword, setPage, reset,
+    setTab, setType, setKeyword, setPage, reset,
   } = useMyPublishedQuery();
 
   const [highlightId, setHighlightId] = useState<string | null>(null);
@@ -109,17 +109,6 @@ const MySharedPage = () => {
             { value: 'ALL', label: t('sharing.assetSupply.filters.allType') },
             { value: 'WORKFLOW', label: t('sharing.assetSupply.newAsset.workflow') },
             { value: 'KNOWLEDGE', label: t('sharing.assetSupply.newAsset.knowledge') },
-          ]}
-        />
-        <Select
-          value={sourceF}
-          onChange={(v) => setSource(v as SourceFilter)}
-          style={{ width: 160 }}
-          insetLabel={t('sharing.assetSupply.filters.source')}
-          optionList={[
-            { value: 'ALL', label: t('sharing.assetSupply.filters.allSource') },
-            { value: 'NATIVE', label: t('sharing.common.source.native') },
-            { value: 'DEV_CENTER', label: t('sharing.common.source.devCenter') },
           ]}
         />
         {filtered && (
