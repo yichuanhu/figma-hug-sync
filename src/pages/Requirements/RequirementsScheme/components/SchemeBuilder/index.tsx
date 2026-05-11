@@ -240,13 +240,14 @@ const SchemeBuilderPage = () => {
               onClick={() => guardedNavigate('/requirements/scheme')}
             />
           </Tooltip>
-          <Title
-            heading={3}
+          <Text
+            strong
             className="scheme-builder-header-title"
-            editable={{ onChange: (val) => patch({ name: (val || '').trim() || draftScheme.name }) }}
+            style={{ fontSize: 20, lineHeight: '28px' }}
+            editable={{ onEnd: (val) => patch({ name: (val || '').trim() || draftScheme.name }) }}
           >
             {draftScheme.name}
-          </Title>
+          </Text>
           <Text type="tertiary">v{draftScheme.version}</Text>
           {draftScheme.parent_id && <Tag color="blue" type="light" size="small">{t('requirements.scheme.builder.newVersionBadge')}</Tag>}
           {draftScheme.workflow_config?.template === 'none' && <Tag color="grey" type="light" size="small">无审批流</Tag>}
