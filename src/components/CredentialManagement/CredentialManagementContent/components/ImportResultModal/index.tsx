@@ -1,6 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { Modal, Button, Table, Tag, Typography } from '@douyinfe/semi-ui';
-import type { ImportSummary, ImportRowResult } from '../../assignedValueMock';
+import { Download } from 'lucide-react';
+import * as XLSX from 'xlsx';
+import type { ImportSummary, ImportRowResult, ValidationResult, ImportRowError } from '../../assignedValueMock';
 import './index.less';
 
 const { Text } = Typography;
@@ -8,13 +10,19 @@ const { Text } = Typography;
 interface ImportResultModalProps {
   visible: boolean;
   result: ImportSummary | null;
+  validation?: ValidationResult | null;
+  fileName?: string;
   onClose: () => void;
 }
 
-const ImportResultModal = ({ visible, result, onClose }: ImportResultModalProps) => {
+const ImportResultModal = ({ visible, result, validation, fileName, onClose }: ImportResultModalProps) => {
   const { t } = useTranslation();
 
   if (!result) return null;
+
+  const frontendErrors: ImportRowError[] = validation?.errors ?? [];
+  const serverFailed = result.details.filter((r) => r.status === 'FAILED');
+  const totalFailed = frontendErrors.length + serverFailed.length;
 
   const summary = [
     { key: 'total', label: t('credential.import.summary.total'), value: result.total, color: 'var(--semi-color-text-0)' },
@@ -48,6 +56,38 @@ const ImportResultModal = ({ visible, result, onClose }: ImportResultModalProps)
     { title: t('credential.import.cols.reason'), dataIndex: 'reason', key: 'reason', ellipsis: { showTitle: true }, render: (v?: string) => v || '-' },
   ];
 
+  const errorTypeLabel = (type: ImportRowError['type']): string => {
+    if (type === 'EMPTY_FIELD') return t('credential.import.preview.errorType.emptyField');
+    if (type === 'DUPLICATE_USERNAME') return t('credential.import.preview.errorType.duplicate');
+    return t('credential.import.preview.errorType.exceedLimit');
+  };
+
+  const handleDownloadFailed = () => {
+    const sourceFront = t('credential.import.failedExport.sourceFrontend');
+    const sourceServer = t('credential.import.failedExport.sourceServer');
+    const rows: (string | number)[][] = [
+      [
+        t('credential.import.failedExport.cols.source'),
+        t('credential.import.cols.row'),
+        t('credential.import.cols.username'),
+        t('credential.import.failedExport.cols.errorType'),
+        t('credential.import.cols.reason'),
+      ],
+    ];
+    frontendErrors.forEach((e) => {
+      rows.push([sourceFront, e.row_number ?? '-', e.username ?? '-', errorTypeLabel(e.type), e.reason]);
+    });
+    serverFailed.forEach((r) => {
+      rows.push([sourceServer, r.row_number, r.username || '-', t('credential.import.failedExport.serverFailed'), r.reason || '-']);
+    });
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    ws['!cols'] = [{ wch: 14 }, { wch: 8 }, { wch: 20 }, { wch: 16 }, { wch: 60 }];
+    XLSX.utils.book_append_sheet(wb, ws, 'FailedRows');
+    const base = (fileName || 'import').replace(/\.xlsx$/i, '');
+    XLSX.writeFile(wb, `${base}_失败数据.xlsx`);
+  };
+
   return (
     <Modal
       title={t('credential.import.resultTitle')}
@@ -69,6 +109,24 @@ const ImportResultModal = ({ visible, result, onClose }: ImportResultModalProps)
             </div>
           ))}
         </div>
+
+        {totalFailed > 0 && (
+          <div className="import-result-modal-failed-bar">
+            <Text type="tertiary">
+              {t('credential.import.failedExport.summary', {
+                frontend: frontendErrors.length,
+                server: serverFailed.length,
+              })}
+            </Text>
+            <Button
+              icon={<Download size={14} strokeWidth={2} />}
+              onClick={handleDownloadFailed}
+              size="small"
+            >
+              {t('credential.import.failedExport.download')}
+            </Button>
+          </div>
+        )}
 
         <Table
           size="small"

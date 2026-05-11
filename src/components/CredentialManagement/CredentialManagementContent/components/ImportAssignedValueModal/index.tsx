@@ -37,6 +37,8 @@ const ImportAssignedValueModal = ({
   const [importing, setImporting] = useState(false);
   const [validation, setValidation] = useState<ValidationResult | null>(null);
   const [result, setResult] = useState<ImportSummary | null>(null);
+  const [resultValidation, setResultValidation] = useState<ValidationResult | null>(null);
+  const [resultFileName, setResultFileName] = useState<string>('');
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragOver, setDragOver] = useState(false);
 
@@ -139,6 +141,8 @@ const ImportAssignedValueModal = ({
     await new Promise((r) => setTimeout(r, 600));
     const summary = mockImport(credentialId, file.name, validation.valid_rows);
     setImporting(false);
+    setResultValidation(validation);
+    setResultFileName(file.name);
     setValidation(null);
     setResult(summary);
   };
@@ -248,7 +252,9 @@ const ImportAssignedValueModal = ({
       <ImportResultModal
         visible={!!result}
         result={result}
-        onClose={() => { setResult(null); reset(); onComplete(); }}
+        validation={resultValidation}
+        fileName={resultFileName}
+        onClose={() => { setResult(null); setResultValidation(null); reset(); onComplete(); }}
       />
     </>
   );
