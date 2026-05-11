@@ -4,7 +4,7 @@
  * 数据结构与"需求模版 → 工作流 → 审批人配置"完全一致，
  * 直接复用 WorkflowApprover 类型，便于 UI/交互一比一还原。
  */
-import type { WorkflowApprover } from '@/pages/Requirements/RequirementsWorkbench/types';
+import type { WorkflowApprover, AssessmentModel } from '@/pages/Requirements/RequirementsWorkbench/types';
 
 export type ApprovalFlowStatus = 'active' | 'inactive';
 
