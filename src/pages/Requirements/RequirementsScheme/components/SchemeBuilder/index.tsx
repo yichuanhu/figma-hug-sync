@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Typography, Button, Tabs, TabPane, Toast, Modal, Space, Tag, Spin, Tooltip, Banner } from '@douyinfe/semi-ui';
-import { ChevronLeft, Save, Play, CheckCircle, AlertCircle, Clock } from 'lucide-react';
+import { Typography, Button, Tabs, TabPane, Toast, Modal, Space, Tag, Spin, Tooltip, Banner, Input } from '@douyinfe/semi-ui';
+import { ChevronLeft, Save, Play, CheckCircle, AlertCircle, Clock, Pencil } from 'lucide-react';
 import {
   getSchemeById,
   updateSchemeBuilder,
