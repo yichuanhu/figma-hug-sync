@@ -55,9 +55,13 @@ const RequirementsScheme = () => {
   useEffect(() => { load(); }, [load]);
 
   const handleActivate = (s: RequirementScheme) => {
+    const wf = s.workflow_config;
+    const hasNoApproval = !wf || wf.template === 'none' || !wf.states || wf.states.length === 0;
     Modal.confirm({
       title: t('requirements.scheme.activateTitle'),
-      content: t('requirements.scheme.activateContent', { name: s.name }),
+      content: hasNoApproval
+        ? t('requirements.scheme.builder.activateNoApprovalNotice')
+        : t('requirements.scheme.activateContent', { name: s.name }),
       okText: t('requirements.scheme.activate'),
       cancelText: t('common.cancel'),
       onOk: async () => {
@@ -145,6 +149,7 @@ const RequirementsScheme = () => {
                   </div>
                   <Dropdown
                     trigger="click"
+                    clickToHide
                     position="bottomRight"
                     render={
                       <Dropdown.Menu>
