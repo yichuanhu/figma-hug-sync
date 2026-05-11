@@ -437,7 +437,7 @@ const RequirementFormModal = ({
                 field="position_cost"
                 label="岗位成本"
                 placeholder="请输入"
-                suffix={<span style={{ color: 'var(--semi-color-text-2)', paddingRight: 8 }}>元/人天</span>}
+                suffix={<span style={{ color: 'var(--semi-color-text-2)', paddingRight: 8, whiteSpace: 'nowrap' }}>元/人天</span>}
                 min={0}
                 precision={2}
                 hideButtons
@@ -464,7 +464,7 @@ const RequirementFormModal = ({
                 field="single_duration"
                 label="单次时长"
                 placeholder="请输入"
-                suffix={<span style={{ color: 'var(--semi-color-text-2)', paddingRight: 8 }}>分钟</span>}
+                suffix={<span style={{ color: 'var(--semi-color-text-2)', paddingRight: 8, whiteSpace: 'nowrap' }}>分钟</span>}
                 min={0}
                 precision={0}
                 hideButtons
