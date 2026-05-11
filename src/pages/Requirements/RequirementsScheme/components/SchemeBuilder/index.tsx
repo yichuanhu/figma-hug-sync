@@ -166,8 +166,6 @@ const SchemeBuilderPage = () => {
       Toast.warning(t('requirements.scheme.builder.activateDirty'));
       return;
     }
-    const wf = draftScheme.workflow_config;
-    const hasNoApproval = !wf || wf.template === 'none' || !wf.states || wf.states.length === 0;
     const doActivate = async () => {
       try {
         await activateSchemeBuilder(draftScheme.id);
@@ -182,9 +180,7 @@ const SchemeBuilderPage = () => {
     };
     Modal.confirm({
       title: t('requirements.scheme.builder.activateTitle'),
-      content: hasNoApproval
-        ? `${t('requirements.scheme.builder.activateContent', { name: draftScheme.name })} ${t('requirements.scheme.builder.activateNoApprovalNotice')}`
-        : t('requirements.scheme.builder.activateContent', { name: draftScheme.name }),
+      content: t('requirements.scheme.builder.activateContent', { name: draftScheme.name }),
       okText: t('requirements.scheme.activate'),
       cancelText: t('common.cancel'),
       onOk: doActivate,
