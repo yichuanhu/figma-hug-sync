@@ -258,7 +258,8 @@ const ImportAssignedValueModal = ({
         result={result}
         validation={resultValidation}
         fileName={resultFileName}
-        onClose={() => { setResult(null); setResultValidation(null); reset(); onComplete(); }}
+        rawRows={resultRawRows}
+        onClose={() => { setResult(null); setResultValidation(null); setResultRawRows([]); reset(); onComplete(); }}
       />
     </>
   );
