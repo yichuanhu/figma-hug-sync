@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Typography, Tag } from '@douyinfe/semi-ui';
-import { Lock, AlertTriangle } from 'lucide-react';
+import { Lock, AlertTriangle, Settings2 } from 'lucide-react';
 import type { SchemeField, SchemeFieldType } from '@/pages/Requirements/RequirementsWorkbench/types';
 import FieldCard from './FieldCard';
+import FieldConfigPanel from './FieldConfigPanel';
 import AddFieldPopover from './AddFieldPopover';
 import { validateAllFields } from './validators';
 
