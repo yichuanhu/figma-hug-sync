@@ -150,7 +150,7 @@ const ApprovalConfigPage = () => {
               <div
                 key={f.id}
                 className={`approval-flow-card ${f.status === 'active' ? 'active' : ''}`}
-                onClick={() => goEdit(f)}
+                onClick={() => goDetail(f)}
               >
                 <div className="approval-flow-card-header">
                   <div className="approval-flow-card-title-row">
