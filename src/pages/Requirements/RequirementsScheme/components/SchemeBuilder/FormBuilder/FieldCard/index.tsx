@@ -1,8 +1,7 @@
 import { useRef, useState } from 'react';
-import { Input, Button, Switch, Tooltip, Tag } from '@douyinfe/semi-ui';
+import { Input, Button, Tooltip, Tag } from '@douyinfe/semi-ui';
 import {
   GripHorizontal,
-  Settings2,
   Trash2,
   Copy,
   ArrowRight,
