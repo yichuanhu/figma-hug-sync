@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Typography, Tag } from '@douyinfe/semi-ui';
-import { Lock, AlertTriangle } from 'lucide-react';
+import { Lock, AlertTriangle, Settings2 } from 'lucide-react';
 import type { SchemeField, SchemeFieldType } from '@/pages/Requirements/RequirementsWorkbench/types';
 import FieldCard from './FieldCard';
+import FieldConfigPanel from './FieldConfigPanel';
 import AddFieldPopover from './AddFieldPopover';
 import { validateAllFields } from './validators';
 
@@ -124,6 +125,11 @@ const FormBuilder = ({ fields, onChange }: Props) => {
     setOverIndex(null);
   };
 
+  const selectedField =
+    selectedIndex !== null && selectedIndex >= 0 && selectedIndex < fields.length
+      ? fields[selectedIndex]
+      : null;
+
   return (
     <div className="form-builder scheme-builder-pane">
       <div className="form-canvas-wide">
@@ -146,7 +152,7 @@ const FormBuilder = ({ fields, onChange }: Props) => {
         {validation.hasError && (
           <div className="form-builder-error-banner">
             <AlertTriangle size={14} strokeWidth={2} />
-            <span>当前有 {validation.errorFieldKeys.length} 个字段配置存在问题，请展开「高级配置」修正</span>
+            <span>当前有 {validation.errorFieldKeys.length} 个字段配置存在问题，请在右侧面板修正</span>
           </div>
         )}
 
@@ -191,6 +197,38 @@ const FormBuilder = ({ fields, onChange }: Props) => {
           <AddFieldPopover onAdd={addField} />
         </div>
       </div>
+
+      {/* 右侧固定的高级配置面板 */}
+      <aside className="form-config-side">
+        <div className="fcs-header">
+          <Settings2 size={14} strokeWidth={2} />
+          <span className="fcs-title">高级配置</span>
+          {selectedField && (
+            <>
+              <span className="fcs-sep">·</span>
+              <span className="fcs-field-label" title={selectedField.label}>
+                {selectedField.label}
+              </span>
+            </>
+          )}
+        </div>
+        <div className="fcs-body">
+          {selectedField && selectedIndex !== null ? (
+            <FieldConfigPanel
+              field={selectedField}
+              index={selectedIndex}
+              allFields={fields}
+              onPatch={(patch) => patchField(selectedIndex, patch)}
+            />
+          ) : (
+            <div className="fcs-empty">
+              <Text type="tertiary" size="small">
+                在左侧选择一个字段，即可在此编辑其高级配置
+              </Text>
+            </div>
+          )}
+        </div>
+      </aside>
     </div>
   );
 };

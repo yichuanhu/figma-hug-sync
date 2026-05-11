@@ -14,7 +14,6 @@ import type {
   SchemeField,
   SchemeFieldOption,
 } from '@/pages/Requirements/RequirementsWorkbench/types';
-import FieldConfigPanel from '../FieldConfigPanel';
 
 interface Props {
   index: number;
@@ -298,7 +297,7 @@ const FieldCard = ({
   field,
   selected,
   hasError,
-  allFields,
+  allFields: _allFields,
   onSelect,
   onPatch,
   onDuplicate,
@@ -310,7 +309,6 @@ const FieldCard = ({
   draggingIndex,
   overIndex,
 }: Props) => {
-  const [showConfig, setShowConfig] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const isDragging = draggingIndex === index;
   const isOver = overIndex === index && draggingIndex !== index;
@@ -388,10 +386,10 @@ const FieldCard = ({
         <Tooltip content="高级配置">
           <Button
             icon={<Settings2 size={14} strokeWidth={2} />}
-            theme={showConfig ? 'light' : 'borderless'}
-            type={hasError ? 'danger' : 'tertiary'}
+            theme={selected ? 'light' : 'borderless'}
+            type={hasError ? 'danger' : selected ? 'primary' : 'tertiary'}
             size="small"
-            onClick={() => setShowConfig((s) => !s)}
+            onClick={onSelect}
           />
         </Tooltip>
         <Tooltip content="复制">
@@ -413,17 +411,6 @@ const FieldCard = ({
           />
         </Tooltip>
       </div>
-
-      {showConfig && (
-        <div className="card-config-inline" onClick={(e) => e.stopPropagation()}>
-          <FieldConfigPanel
-            field={field}
-            index={index}
-            allFields={allFields}
-            onPatch={onPatch}
-          />
-        </div>
-      )}
     </div>
   );
 };
