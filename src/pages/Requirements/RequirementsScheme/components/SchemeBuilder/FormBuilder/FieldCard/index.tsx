@@ -386,10 +386,10 @@ const FieldCard = ({
         <Tooltip content="高级配置">
           <Button
             icon={<Settings2 size={14} strokeWidth={2} />}
-            theme={showConfig ? 'light' : 'borderless'}
-            type={hasError ? 'danger' : 'tertiary'}
+            theme={selected ? 'light' : 'borderless'}
+            type={hasError ? 'danger' : selected ? 'primary' : 'tertiary'}
             size="small"
-            onClick={() => setShowConfig((s) => !s)}
+            onClick={onSelect}
           />
         </Tooltip>
         <Tooltip content="复制">
@@ -411,17 +411,6 @@ const FieldCard = ({
           />
         </Tooltip>
       </div>
-
-      {showConfig && (
-        <div className="card-config-inline" onClick={(e) => e.stopPropagation()}>
-          <FieldConfigPanel
-            field={field}
-            index={index}
-            allFields={allFields}
-            onPatch={onPatch}
-          />
-        </div>
-      )}
     </div>
   );
 };
