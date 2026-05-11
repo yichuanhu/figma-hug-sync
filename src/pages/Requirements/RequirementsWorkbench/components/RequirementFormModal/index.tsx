@@ -420,6 +420,60 @@ const RequirementFormModal = ({
                 style={{ width: '100%' }}
               />
             </div>
+            <div className="scheme-field-w-medium">
+              <Form.Select
+                field="position_level"
+                label="岗位级别"
+                placeholder="请选择岗位级别"
+                optionList={positionLevelOptions}
+                rules={[{ required: true, message: '请选择岗位级别' }]}
+                trigger={['blur', 'change']}
+                style={{ width: '100%' }}
+                disabled={isPostProjectEdit}
+              />
+            </div>
+            <div className="scheme-field-w-medium">
+              <Form.InputNumber
+                field="position_cost"
+                label="岗位成本"
+                placeholder="请输入"
+                suffix={<span style={{ color: 'var(--semi-color-text-2)', paddingRight: 8 }}>元/小时</span>}
+                min={0}
+                precision={2}
+                hideButtons
+                rules={[{ required: true, message: '请输入岗位成本' }]}
+                trigger={['blur', 'change']}
+                style={{ width: '100%' }}
+                disabled={isPostProjectEdit}
+              />
+            </div>
+            <div className="scheme-field-w-medium">
+              <Form.Select
+                field="execution_frequency"
+                label="执行频率"
+                placeholder="请选择执行频率"
+                optionList={executionFrequencyOptions}
+                rules={[{ required: true, message: '请选择执行频率' }]}
+                trigger={['blur', 'change']}
+                style={{ width: '100%' }}
+                disabled={isPostProjectEdit}
+              />
+            </div>
+            <div className="scheme-field-w-medium">
+              <Form.InputNumber
+                field="single_duration"
+                label="单次时长"
+                placeholder="请输入"
+                suffix={<span style={{ color: 'var(--semi-color-text-2)', paddingRight: 8 }}>分钟</span>}
+                min={0}
+                precision={0}
+                hideButtons
+                rules={[{ required: true, message: '请输入单次时长' }]}
+                trigger={['blur', 'change']}
+                style={{ width: '100%' }}
+                disabled={isPostProjectEdit}
+              />
+            </div>
             {activeScheme && activeScheme.custom_fields.length > 0 ? (
               <SchemeFieldsRenderer
                 fields={activeScheme.custom_fields}
