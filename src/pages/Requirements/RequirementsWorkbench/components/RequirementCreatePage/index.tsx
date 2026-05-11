@@ -127,7 +127,7 @@ const RequirementCreatePage = () => {
     { value: 'YEARLY', label: '每年' },
   ], []);
 
-  const SYSTEM_REQUIRED_KEYS = ['position_level', 'position_cost', 'execution_frequency', 'single_duration'] as const;
+  const OPTIONAL_FORM_KEYS = ['execution_frequency', 'single_duration'] as const;
 
   const baseInitialValues = { priority: 'MEDIUM' as const };
 
