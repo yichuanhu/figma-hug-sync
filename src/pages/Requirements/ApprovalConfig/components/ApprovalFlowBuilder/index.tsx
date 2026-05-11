@@ -200,16 +200,6 @@ const ApprovalFlowBuilderPage = () => {
 
       <div className="approval-flow-builder-body">
         <div className="approval-flow-builder-meta">
-          <div className="approval-flow-builder-meta-item">
-            <Text size="small" type="tertiary">编码</Text>
-            <Input
-              value={draft.code}
-              onChange={(v) => patch({ code: v })}
-              placeholder="如 STD-3LV"
-              maxLength={40}
-              showClear
-            />
-          </div>
           <div className="approval-flow-builder-meta-item full">
             <Text size="small" type="tertiary">描述</Text>
             <Input
