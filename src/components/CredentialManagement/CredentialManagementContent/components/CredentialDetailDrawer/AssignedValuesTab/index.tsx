@@ -156,21 +156,26 @@ const AssignedValuesTab = ({ credentialId }: AssignedValuesTabProps) => {
         }
         pagination={false}
       />
-      {total > PAGE_SIZE && (
-        <div className="list-pagination" style={{ marginTop: 12 }}>
+      {total > 0 && (
+        <div className="list-pagination">
           <Text type="tertiary">
             {t('common.showingRecords', {
-              start: (page - 1) * PAGE_SIZE + 1,
-              end: Math.min(page * PAGE_SIZE, total),
+              start: (page - 1) * pageSize + 1,
+              end: Math.min(page * pageSize, total),
               total,
             })}
           </Text>
-          <Pagination
-            currentPage={page}
-            pageSize={PAGE_SIZE}
-            total={total}
-            onPageChange={setPage}
-          />
+          <div className="list-pagination-right">
+            <Text type="tertiary">{t('common.totalPages', { total: Math.ceil(total / pageSize) })}</Text>
+            <Pagination
+              currentPage={page}
+              pageSize={pageSize}
+              total={total}
+              showSizeChanger
+              onPageChange={setPage}
+              onPageSizeChange={(size: number) => { setPage(1); setPageSize(size); }}
+            />
+          </div>
         </div>
       )}
 
