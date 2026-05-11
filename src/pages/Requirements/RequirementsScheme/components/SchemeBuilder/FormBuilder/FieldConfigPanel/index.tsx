@@ -95,15 +95,6 @@ const FieldConfigPanel = ({ field, index, allFields, onPatch }: Props) => {
                   style={{ width: '100%' }}
                 />
               </div>
-              <div className="fcp-field full">
-                <label>正则表达式</label>
-                <Input
-                  value={v.pattern ?? ''}
-                  onChange={(val) => updateValidation({ pattern: val })}
-                  placeholder="如 ^1[3-9]\d{9}$"
-                />
-                <ErrorText msg={errors.validation?.pattern} />
-              </div>
             </>
           )}
           {showNumber && (
