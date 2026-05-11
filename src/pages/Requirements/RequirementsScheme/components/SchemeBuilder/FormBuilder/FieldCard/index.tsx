@@ -14,7 +14,6 @@ import type {
   SchemeField,
   SchemeFieldOption,
 } from '@/pages/Requirements/RequirementsWorkbench/types';
-import FieldConfigPanel from '../FieldConfigPanel';
 
 interface Props {
   index: number;
