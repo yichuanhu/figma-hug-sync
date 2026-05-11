@@ -19,7 +19,7 @@ interface AssignedValuesTabProps {
   credentialId: string;
 }
 
-const PAGE_SIZE = 10;
+
 
 const AssignedValuesTab = ({ credentialId }: AssignedValuesTabProps) => {
   const { t } = useTranslation();
