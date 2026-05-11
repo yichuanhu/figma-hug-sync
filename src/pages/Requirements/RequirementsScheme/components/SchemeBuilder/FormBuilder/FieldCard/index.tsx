@@ -376,22 +376,6 @@ const FieldCard = ({
       </div>
 
       <div className="card-actions" onClick={(e) => e.stopPropagation()}>
-        <Tooltip content="必填">
-          <Switch
-            size="small"
-            checked={!!field.required}
-            onChange={(v) => onPatch({ required: v })}
-          />
-        </Tooltip>
-        <Tooltip content="高级配置">
-          <Button
-            icon={<Settings2 size={14} strokeWidth={2} />}
-            theme={selected ? 'light' : 'borderless'}
-            type={hasError ? 'danger' : selected ? 'primary' : 'tertiary'}
-            size="small"
-            onClick={onSelect}
-          />
-        </Tooltip>
         <Tooltip content="复制">
           <Button
             icon={<Copy size={14} strokeWidth={2} />}
