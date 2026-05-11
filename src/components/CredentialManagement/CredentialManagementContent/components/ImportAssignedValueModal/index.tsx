@@ -39,6 +39,8 @@ const ImportAssignedValueModal = ({
   const [result, setResult] = useState<ImportSummary | null>(null);
   const [resultValidation, setResultValidation] = useState<ValidationResult | null>(null);
   const [resultFileName, setResultFileName] = useState<string>('');
+  const [rawRows, setRawRows] = useState<ParsedRow[]>([]);
+  const [resultRawRows, setResultRawRows] = useState<ParsedRow[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragOver, setDragOver] = useState(false);
 
