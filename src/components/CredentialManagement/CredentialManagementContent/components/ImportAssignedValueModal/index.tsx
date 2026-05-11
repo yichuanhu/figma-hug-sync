@@ -252,7 +252,9 @@ const ImportAssignedValueModal = ({
       <ImportResultModal
         visible={!!result}
         result={result}
-        onClose={() => { setResult(null); reset(); onComplete(); }}
+        validation={resultValidation}
+        fileName={resultFileName}
+        onClose={() => { setResult(null); setResultValidation(null); reset(); onComplete(); }}
       />
     </>
   );
