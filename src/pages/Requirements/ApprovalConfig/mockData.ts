@@ -98,7 +98,11 @@ const defaultFlows: ApprovalFlowTemplate[] = [
 const load = (): ApprovalFlowTemplate[] => {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw) as ApprovalFlowTemplate[];
+    if (raw) {
+      const parsed = JSON.parse(raw) as ApprovalFlowTemplate[];
+      // 兼容旧版本数据：补全 assessors 字段
+      return parsed.map((f) => ({ ...f, approvers: f.approvers ?? [], assessors: f.assessors ?? [] }));
+    }
   } catch {
     /* noop */
   }
