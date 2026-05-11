@@ -122,13 +122,14 @@ const ImportAssignedValueModal = ({
     if (!file) return;
     setParsing(true);
     try {
-      const rawRows = await parseFile(file);
-      if (rawRows.length === 0) {
+      const parsed = await parseFile(file);
+      if (parsed.length === 0) {
         Toast.warning(t('credential.import.errors.empty'));
         setParsing(false);
         return;
       }
-      const v = validateImportRows(rawRows);
+      setRawRows(parsed);
+      const v = validateImportRows(parsed);
       setValidation(v);
     } catch {
       Toast.error(t('credential.import.errors.parse'));
@@ -145,6 +146,7 @@ const ImportAssignedValueModal = ({
     setImporting(false);
     setResultValidation(validation);
     setResultFileName(file.name);
+    setResultRawRows(rawRows);
     setValidation(null);
     setResult(summary);
   };
