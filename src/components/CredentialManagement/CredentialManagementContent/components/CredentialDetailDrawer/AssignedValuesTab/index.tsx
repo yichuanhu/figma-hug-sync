@@ -24,6 +24,7 @@ const PAGE_SIZE = 10;
 const AssignedValuesTab = ({ credentialId }: AssignedValuesTabProps) => {
   const { t } = useTranslation();
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const [refreshKey, setRefreshKey] = useState(0);
   const [formVisible, setFormVisible] = useState(false);
   const [editing, setEditing] = useState<AssignedValue | null>(null);
@@ -31,7 +32,7 @@ const AssignedValuesTab = ({ credentialId }: AssignedValuesTabProps) => {
 
   const all = useMemo(() => listAssignedValues(credentialId), [credentialId, refreshKey]);
   const total = all.length;
-  const data = all.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const data = all.slice((page - 1) * pageSize, page * pageSize);
 
   const refresh = useCallback(() => setRefreshKey((k) => k + 1), []);
 
