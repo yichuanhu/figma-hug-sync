@@ -68,10 +68,6 @@ const ApprovalFlowBuilderPage = () => {
       Toast.warning('请填写审批流名称');
       return;
     }
-    if (!draft.code.trim()) {
-      Toast.warning('请填写审批流编码');
-      return;
-    }
     if (draft.approvers.length === 0) {
       Toast.warning('至少需要一个审批级');
       return;
