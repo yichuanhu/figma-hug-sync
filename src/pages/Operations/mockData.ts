@@ -235,16 +235,23 @@ export const mockBusinessOutcomes: BusinessOutcomesData = {
     { department: 'IT', requirementCount: 15, runningCount: 9, hoursSaved: 3730, costSaved: 123840 },
   ],
   devCapacity: {
-    monthlyDelivered: 24,
-    avgCycleDays: 12.5,
-    developerCount: 18,
+    requirement: {
+      monthlyDelivered: 24,
+      avgCycleDays: 18.5,
+      developerCount: 18,
+    },
+    process: {
+      monthlyDelivered: 56,
+      avgCycleDays: 6.2,
+      developerCount: 22,
+    },
     capacityTrend: [
-      { month: '2025-10', delivered: 14 },
-      { month: '2025-11', delivered: 18 },
-      { month: '2025-12', delivered: 21 },
-      { month: '2026-01', delivered: 22 },
-      { month: '2026-02', delivered: 25 },
-      { month: '2026-03', delivered: 24 },
+      { month: '2025-10', requirement: 14, process: 32 },
+      { month: '2025-11', requirement: 18, process: 41 },
+      { month: '2025-12', requirement: 21, process: 47 },
+      { month: '2026-01', requirement: 22, process: 50 },
+      { month: '2026-02', requirement: 25, process: 58 },
+      { month: '2026-03', requirement: 24, process: 56 },
     ],
   },
 };
