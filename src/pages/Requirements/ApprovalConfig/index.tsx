@@ -170,15 +170,6 @@ const ApprovalConfigPage = () => {
                     position="bottomRight"
                     render={
                       <Dropdown.Menu>
-                        <Dropdown.Item
-                          icon={<Eye size={14} />}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            goEdit(f);
-                          }}
-                        >
-                          {t('common.viewDetail')}
-                        </Dropdown.Item>
                         {f.status !== 'active' ? (
                           <Dropdown.Item
                             icon={<CheckCircle size={14} />}
@@ -208,15 +199,6 @@ const ApprovalConfigPage = () => {
                           }}
                         >
                           编辑
-                        </Dropdown.Item>
-                        <Dropdown.Item
-                          icon={<Copy size={14} />}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleClone(f);
-                          }}
-                        >
-                          基于此创建副本
                         </Dropdown.Item>
                         {!f.is_preset && (
                           <Dropdown.Item
