@@ -215,16 +215,6 @@ const SchemeBuilderPage = () => {
 
 
 
-  const savedHint = useMemo(() => (
-    <Space spacing={4} align="center" style={{ color: 'var(--semi-color-text-2)', fontSize: 12 }}>
-      <Clock size={12} strokeWidth={2} />
-      <span>
-        {savedScheme?.updated_at
-          ? t('requirements.scheme.builder.lastSavedAt', { time: formatTime(savedScheme.updated_at) })
-          : t('requirements.scheme.builder.neverSaved')}
-      </span>
-    </Space>
-  ), [savedScheme, t]);
 
   if (loading || !draftScheme) {
     return <div className="scheme-builder-loading"><Spin size="large" /></div>;
