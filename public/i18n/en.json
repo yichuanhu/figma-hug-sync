@@ -975,7 +975,7 @@
         "overview": "Overview",
         "approval": "Approval Flow",
         "assessment": "Assessment",
-        "cost": "Cost Estimate",
+        "cost": "Saved Cost",
         "versions": "Version History",
         "changeLog": "Change Log"
       },
@@ -1100,7 +1100,7 @@
       "formulaTitle": "Calculation Formula",
       "formulaDesc": "Transparent breakdown of the calculation for this requirement.",
       "noBaselineTitle": "No Baseline Data",
-      "noBaselineDesc": "Frequency, duration, automation ratio or job level have not been filled in this requirement.",
+      "noBaselineDesc": "Frequency, duration or job level have not been filled in this requirement.",
       "departmentSummary": {
         "title": "Estimated Savings by Department",
         "requirements": "reqs",

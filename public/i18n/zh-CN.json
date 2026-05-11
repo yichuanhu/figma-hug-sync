@@ -868,7 +868,7 @@
         "overview": "概览",
         "approval": "审批流程",
         "assessment": "技术评估",
-        "cost": "成本预估",
+        "cost": "节省成本",
         "versions": "版本历史",
         "changeLog": "变更日志"
       },
@@ -993,7 +993,7 @@
       "formulaTitle": "计算公式",
       "formulaDesc": "透明展示当前需求的计算过程。",
       "noBaselineTitle": "暂无基线数据",
-      "noBaselineDesc": "该需求尚未填写成本计算所需的频率、时长、可自动化比例或岗位级别。",
+      "noBaselineDesc": "该需求尚未填写成本计算所需的频率、时长或岗位级别。",
       "departmentSummary": {
         "title": "按部门预估节省汇总",
         "requirements": "需求",

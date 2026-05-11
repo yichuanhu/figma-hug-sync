@@ -42,7 +42,6 @@ const CostEstimateTab = ({ data }: Props) => {
   const {
     frequency,
     durationMinutes,
-    automationRatio,
     jobLevel,
     workingHoursPerDay,
     dailyRate,
@@ -79,14 +78,6 @@ const CostEstimateTab = ({ data }: Props) => {
             </Text>
             <Title className="cost-baseline-value" heading={4} style={{ margin: 0, fontSize: 16 }}>
               {durationMinutes} {t('requirements.costEstimate.unit.minutes')}
-            </Title>
-          </div>
-          <div className="cost-baseline-item">
-            <Text type="tertiary" size="small">
-              {t('requirements.costEstimate.baseline.automationRatio')}
-            </Text>
-            <Title className="cost-baseline-value" heading={4} style={{ margin: 0, fontSize: 16 }}>
-              {Math.round(automationRatio * 100)}%
             </Title>
           </div>
           <div className="cost-baseline-item">
@@ -146,7 +137,7 @@ const CostEstimateTab = ({ data }: Props) => {
         <div className="cost-formula-block">
           <div>
             {t('requirements.costEstimate.savedHours')} = {frequency} × {durationMinutes}{' '}
-            {t('requirements.costEstimate.unit.minutes')} × {Math.round(automationRatio * 100)}% / 60 ={' '}
+            {t('requirements.costEstimate.unit.minutes')} / 60 ={' '}
             <strong>{fmtNum(monthlySavedHours)} h</strong>
           </div>
           <div>
