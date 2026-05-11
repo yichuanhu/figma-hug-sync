@@ -309,7 +309,6 @@ const FieldCard = ({
   draggingIndex,
   overIndex,
 }: Props) => {
-  const [showConfig, setShowConfig] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const isDragging = draggingIndex === index;
   const isOver = overIndex === index && draggingIndex !== index;
