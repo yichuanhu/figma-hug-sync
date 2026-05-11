@@ -530,35 +530,14 @@ export const validateScheme = (id: string): SchemeValidationResult => {
     if (dup) errors.push(`字段名称重复：${dup}`);
   }
 
-  const wfDisabled = s.workflow_config?.template === 'none';
-
-  // Assessment（关闭审批流时跳过校验）
-  if (!wfDisabled) {
-    if (!s.value_assessment_model && !s.complexity_assessment_model) {
-      missing.push('assessment');
-      errors.push('至少配置一个评估模型');
-    } else {
-      [s.value_assessment_model, s.complexity_assessment_model].forEach((m) => {
-        if (m && (!m.dimensions || m.dimensions.length === 0)) {
-          errors.push(`评估模型「${m.label}」必须至少包含一个维度`);
-        }
-      });
+  // Assessment：评估模型可选；仅当用户已配置但维度为空时报错。
+  [s.value_assessment_model, s.complexity_assessment_model].forEach((m) => {
+    if (m && (!m.dimensions || m.dimensions.length === 0)) {
+      errors.push(`评估模型「${m.label}」必须至少包含一个维度`);
     }
-  }
+  });
 
-  // Workflow（关闭审批流时跳过校验）
-  if (!wfDisabled) {
-    const wf = s.workflow_config;
-    if (!wf || !wf.states || wf.states.length === 0) {
-      missing.push('workflow');
-      errors.push('工作流必须至少包含「草稿」和「待审批」状态');
-    } else {
-      const names = wf.states.map((st) => st.name);
-      if (!names.includes('草稿') || !names.includes('待审批')) {
-        errors.push('工作流必须至少包含「草稿」和「待审批」状态');
-      }
-    }
-  }
+  // Workflow：审批流可选；不再强制必须包含草稿/待审批状态。
 
   // Cost 配置已从模版中移除，不再校验
 

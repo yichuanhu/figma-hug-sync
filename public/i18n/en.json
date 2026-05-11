@@ -790,8 +790,8 @@
       "edit": "Edit Template",
       "builder": {
         "notFound": "Template not found",
-        "saveDraft": "Save Draft",
-        "savedDraft": "Draft saved",
+        "saveDraft": "Save",
+        "savedDraft": "Saved",
         "lastSavedAt": "Last saved: {{time}}",
         "neverSaved": "Not saved yet",
         "unsaved": "Unsaved changes",
