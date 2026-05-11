@@ -197,14 +197,26 @@ const ApprovalFlowBuilderPage = () => {
         </div>
         <Space>
           {isView ? (
-            <Button
-              icon={<Pencil size={16} strokeWidth={2} />}
-              theme="solid"
-              type="primary"
-              onClick={() => navigate(`/requirements/approval-config/builder/${draft.id}`)}
-            >
-              编辑
-            </Button>
+            <>
+              <Button
+                icon={<Pencil size={16} strokeWidth={2} />}
+                theme="light"
+                type="tertiary"
+                onClick={() => navigate(`/requirements/approval-config/builder/${draft.id}`)}
+              >
+                编辑
+              </Button>
+              {draft.status !== 'active' && (
+                <Button
+                  icon={<CheckCircle size={16} strokeWidth={2} />}
+                  theme="solid"
+                  type="primary"
+                  onClick={handleActivate}
+                >
+                  启用
+                </Button>
+              )}
+            </>
           ) : (
             <>
               <Button
