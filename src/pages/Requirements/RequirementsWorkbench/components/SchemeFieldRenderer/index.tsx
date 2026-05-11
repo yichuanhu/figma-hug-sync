@@ -35,7 +35,7 @@ const SchemeFieldRenderer = ({ field, costConfig }: Props) => {
     placeholder: placeholder ?? `请输入${label}`,
     extraText: description,
     initValue: defaultValue,
-    trigger: ['blur', 'change'] as ('blur' | 'change')[],
+    trigger: ['blur'] as ('blur' | 'change')[],
     rules,
   };
 
