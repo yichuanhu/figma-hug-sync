@@ -267,21 +267,29 @@ const BusinessOutcomes = () => {
       <div className="dashboard-card">
         <div className="bo-kpi-grid">
           <div className="bo-kpi-card">
-            <div className="bo-kpi-label">{t('operations.businessOutcomes.todayVolume')}</div>
+            <div className="bo-kpi-label">
+              <MetricLabel label={t('operations.businessOutcomes.todayVolume')} tip={t('operations.businessOutcomes.tips.todayVolume')} />
+            </div>
             <div className="bo-kpi-value">{data.todayVolume.toLocaleString()}</div>
             <div className="bo-kpi-sub">{t('operations.dashboard.count')}</div>
           </div>
           <div className="bo-kpi-card">
-            <div className="bo-kpi-label">{t('operations.businessOutcomes.totalVolume')}</div>
+            <div className="bo-kpi-label">
+              <MetricLabel label={t('operations.businessOutcomes.totalVolume')} tip={t('operations.businessOutcomes.tips.totalVolume')} />
+            </div>
             <div className="bo-kpi-value">{data.totalVolume.toLocaleString()}</div>
             <div className="bo-kpi-sub">{t('operations.dashboard.count')}</div>
           </div>
           <div className="bo-kpi-card">
-            <div className="bo-kpi-label">{t('operations.businessOutcomes.todayHoursSaved')}</div>
+            <div className="bo-kpi-label">
+              <MetricLabel label={t('operations.businessOutcomes.todayHoursSaved')} tip={t('operations.businessOutcomes.tips.todayHoursSaved')} />
+            </div>
             <div className="bo-kpi-value">{data.todayHoursSaved.toLocaleString()} h</div>
           </div>
           <div className="bo-kpi-card">
-            <div className="bo-kpi-label">{t('operations.businessOutcomes.totalHoursSaved')}</div>
+            <div className="bo-kpi-label">
+              <MetricLabel label={t('operations.businessOutcomes.totalHoursSaved')} tip={t('operations.businessOutcomes.tips.totalHoursSaved')} />
+            </div>
             <div className="bo-kpi-value">{data.totalHoursSaved.toLocaleString()} h</div>
           </div>
         </div>
@@ -291,13 +299,17 @@ const BusinessOutcomes = () => {
       <div className="bo-row cols-2" style={{ marginBottom: 20 }}>
         <div className="dashboard-card" style={{ marginBottom: 0 }}>
           <div className="dashboard-card-header">
-            <span className="dashboard-card-title">{t('operations.businessOutcomes.funnelTitle')}</span>
+            <span className="dashboard-card-title">
+              <MetricLabel label={t('operations.businessOutcomes.funnelTitle')} tip={t('operations.businessOutcomes.tips.funnel')} size="medium" />
+            </span>
           </div>
           <ReactECharts option={funnelOption} style={{ height: 320 }} opts={{ renderer: 'svg' }} />
         </div>
         <div className="dashboard-card" style={{ marginBottom: 0 }}>
           <div className="dashboard-card-header">
-            <span className="dashboard-card-title">{t('operations.businessOutcomes.typeShareTitle')}</span>
+            <span className="dashboard-card-title">
+              <MetricLabel label={t('operations.businessOutcomes.typeShareTitle')} tip={t('operations.businessOutcomes.tips.typeShare')} size="medium" />
+            </span>
           </div>
           <ReactECharts option={pieOption} style={{ height: 320 }} opts={{ renderer: 'svg' }} />
         </div>
@@ -306,7 +318,9 @@ const BusinessOutcomes = () => {
       {/* Requirement progress */}
       <div className="dashboard-card">
         <div className="dashboard-card-header">
-          <span className="dashboard-card-title">{t('operations.businessOutcomes.progressTitle')}</span>
+          <span className="dashboard-card-title">
+            <MetricLabel label={t('operations.businessOutcomes.progressTitle')} tip={t('operations.businessOutcomes.tips.progress')} size="medium" />
+          </span>
           <span style={{ fontSize: 12, color: 'var(--semi-color-text-2)' }}>
             {t('operations.businessOutcomes.totalRequirements')}: <b style={{ color: 'var(--semi-color-text-0)' }}>{data.requirementProgress.total}</b>
           </span>
@@ -327,13 +341,17 @@ const BusinessOutcomes = () => {
       <div className="bo-row cols-2" style={{ marginBottom: 20 }}>
         <div className="dashboard-card" style={{ marginBottom: 0 }}>
           <div className="dashboard-card-header">
-            <span className="dashboard-card-title">{t('operations.businessOutcomes.volumeTrendTitle')}</span>
+            <span className="dashboard-card-title">
+              <MetricLabel label={t('operations.businessOutcomes.volumeTrendTitle')} tip={t('operations.businessOutcomes.tips.volumeTrend')} size="medium" />
+            </span>
           </div>
           <ReactECharts option={volumeOption} style={{ height: 280 }} opts={{ renderer: 'svg' }} />
         </div>
         <div className="dashboard-card" style={{ marginBottom: 0 }}>
           <div className="dashboard-card-header">
-            <span className="dashboard-card-title">{t('operations.businessOutcomes.hoursTrendTitle')}</span>
+            <span className="dashboard-card-title">
+              <MetricLabel label={t('operations.businessOutcomes.hoursTrendTitle')} tip={t('operations.businessOutcomes.tips.hoursTrend')} size="medium" />
+            </span>
           </div>
           <ReactECharts option={hoursOption} style={{ height: 280 }} opts={{ renderer: 'svg' }} />
         </div>
@@ -347,27 +365,72 @@ const BusinessOutcomes = () => {
         <Table columns={deptColumns} dataSource={data.departmentOutcomes} rowKey="department" size="small" pagination={false} />
       </div>
 
-      {/* Dev capacity */}
+      {/* Dev capacity - dual dimensions */}
       <div className="dashboard-card">
         <div className="dashboard-card-header">
           <span className="dashboard-card-title">{t('operations.businessOutcomes.capacityTitle')}</span>
         </div>
-        <div className="bo-kpi-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', marginBottom: 16 }}>
-          <div className="bo-kpi-card">
-            <div className="bo-kpi-label">{t('operations.businessOutcomes.monthlyDelivered')}</div>
-            <div className="bo-kpi-value">{data.devCapacity.monthlyDelivered}</div>
+
+        {/* Requirement dimension */}
+        <div className="bo-capacity-group">
+          <div className="bo-capacity-group-title">
+            <span className="dot" style={{ background: COLORS.purple }} />
+            {t('operations.businessOutcomes.capacityRequirementGroup')}
           </div>
-          <div className="bo-kpi-card">
-            <div className="bo-kpi-label">{t('operations.businessOutcomes.avgCycleDays')}</div>
-            <div className="bo-kpi-value">{data.devCapacity.avgCycleDays} d</div>
-          </div>
-          <div className="bo-kpi-card">
-            <div className="bo-kpi-label">{t('operations.businessOutcomes.developerCount')}</div>
-            <div className="bo-kpi-value">{data.devCapacity.developerCount}</div>
+          <div className="bo-kpi-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
+            <div className="bo-kpi-card">
+              <div className="bo-kpi-label">
+                <MetricLabel label={t('operations.businessOutcomes.monthlyDeliveredRequirement')} tip={t('operations.businessOutcomes.tips.monthlyDeliveredRequirement')} />
+              </div>
+              <div className="bo-kpi-value">{data.devCapacity.requirement.monthlyDelivered}</div>
+            </div>
+            <div className="bo-kpi-card">
+              <div className="bo-kpi-label">
+                <MetricLabel label={t('operations.businessOutcomes.avgCycleDaysRequirement')} tip={t('operations.businessOutcomes.tips.avgCycleDaysRequirement')} />
+              </div>
+              <div className="bo-kpi-value">{data.devCapacity.requirement.avgCycleDays} d</div>
+            </div>
+            <div className="bo-kpi-card">
+              <div className="bo-kpi-label">
+                <MetricLabel label={t('operations.businessOutcomes.developerCountRequirement')} tip={t('operations.businessOutcomes.tips.developerCountRequirement')} />
+              </div>
+              <div className="bo-kpi-value">{data.devCapacity.requirement.developerCount}</div>
+            </div>
           </div>
         </div>
-        <div className="chart-subtitle">{t('operations.businessOutcomes.capacityTrend')}</div>
-        <ReactECharts option={capacityOption} style={{ height: 240 }} opts={{ renderer: 'svg' }} />
+
+        {/* Process dimension */}
+        <div className="bo-capacity-group">
+          <div className="bo-capacity-group-title">
+            <span className="dot" style={{ background: COLORS.primary }} />
+            {t('operations.businessOutcomes.capacityProcessGroup')}
+          </div>
+          <div className="bo-kpi-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
+            <div className="bo-kpi-card">
+              <div className="bo-kpi-label">
+                <MetricLabel label={t('operations.businessOutcomes.monthlyDeliveredProcess')} tip={t('operations.businessOutcomes.tips.monthlyDeliveredProcess')} />
+              </div>
+              <div className="bo-kpi-value">{data.devCapacity.process.monthlyDelivered}</div>
+            </div>
+            <div className="bo-kpi-card">
+              <div className="bo-kpi-label">
+                <MetricLabel label={t('operations.businessOutcomes.avgCycleDaysProcess')} tip={t('operations.businessOutcomes.tips.avgCycleDaysProcess')} />
+              </div>
+              <div className="bo-kpi-value">{data.devCapacity.process.avgCycleDays} d</div>
+            </div>
+            <div className="bo-kpi-card">
+              <div className="bo-kpi-label">
+                <MetricLabel label={t('operations.businessOutcomes.developerCountProcess')} tip={t('operations.businessOutcomes.tips.developerCountProcess')} />
+              </div>
+              <div className="bo-kpi-value">{data.devCapacity.process.developerCount}</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="chart-subtitle" style={{ marginTop: 12 }}>
+          <MetricLabel label={t('operations.businessOutcomes.capacityTrend')} tip={t('operations.businessOutcomes.tips.capacityTrend')} />
+        </div>
+        <ReactECharts option={capacityOption} style={{ height: 260 }} opts={{ renderer: 'svg' }} />
       </div>
     </div>
   );
