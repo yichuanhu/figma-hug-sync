@@ -284,36 +284,56 @@ const RequirementCreatePage = () => {
               />
             </div>
 
-            {/* Step 1: 岗位与执行成本 */}
+            {/* Step 1: 岗位与执行成本（全部非必填，岗位支持多条） */}
             <div style={{ display: currentStep === 1 ? 'block' : 'none' }}>
-              <Form.Select
-                field="position_level"
-                label="岗位级别"
-                placeholder="请选择岗位级别"
-                optionList={positionLevelOptions}
-                rules={[{ required: true, message: '请选择岗位级别' }]}
-                trigger={['blur', 'change']}
-                style={{ width: '100%' }}
-              />
-              <Form.InputNumber
-                field="position_cost"
-                label="岗位成本"
-                placeholder="请输入"
-                suffix={<span style={{ color: 'var(--semi-color-text-2)', paddingRight: 8, whiteSpace: 'nowrap' }}>元/人天</span>}
-                min={0}
-                precision={2}
-                hideButtons
-                rules={[{ required: true, message: '请输入岗位成本' }]}
-                trigger={['blur', 'change']}
-                style={{ width: '100%' }}
-              />
+              <Form.Slot label={{ text: '岗位级别与成本' }}>
+                <div className="position-cost-list">
+                  {positionCosts.map((row, idx) => (
+                    <div key={idx} className="position-cost-row">
+                      <Select
+                        placeholder="请选择岗位级别"
+                        value={row.level}
+                        onChange={(v) => updatePositionCost(idx, { level: v as string })}
+                        optionList={positionLevelOptions}
+                        showClear
+                        style={{ flex: 1 }}
+                      />
+                      <InputNumber
+                        placeholder="请输入岗位成本"
+                        value={row.cost}
+                        onChange={(v) => updatePositionCost(idx, { cost: v as number })}
+                        suffix={<span style={{ color: 'var(--semi-color-text-2)', paddingRight: 8, whiteSpace: 'nowrap' }}>元/人天</span>}
+                        min={0}
+                        precision={2}
+                        hideButtons
+                        style={{ flex: 1 }}
+                      />
+                      <Button
+                        icon={<Trash2 size={16} strokeWidth={2} />}
+                        theme="borderless"
+                        type="tertiary"
+                        disabled={positionCosts.length <= 1}
+                        onClick={() => removePositionCost(idx)}
+                      />
+                    </div>
+                  ))}
+                  <Button
+                    icon={<Plus size={16} strokeWidth={2} />}
+                    theme="borderless"
+                    type="primary"
+                    onClick={addPositionCost}
+                    style={{ alignSelf: 'flex-start', paddingLeft: 0 }}
+                  >
+                    添加岗位
+                  </Button>
+                </div>
+              </Form.Slot>
               <Form.Select
                 field="execution_frequency"
                 label="执行频率"
                 placeholder="请选择执行频率"
                 optionList={executionFrequencyOptions}
-                rules={[{ required: true, message: '请选择执行频率' }]}
-                trigger={['blur', 'change']}
+                showClear
                 style={{ width: '100%' }}
               />
               <Form.InputNumber
@@ -324,8 +344,6 @@ const RequirementCreatePage = () => {
                 min={0}
                 precision={0}
                 hideButtons
-                rules={[{ required: true, message: '请输入单次时长' }]}
-                trigger={['blur', 'change']}
                 style={{ width: '100%' }}
               />
             </div>
