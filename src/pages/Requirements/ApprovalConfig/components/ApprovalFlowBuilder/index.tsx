@@ -223,12 +223,14 @@ const ApprovalFlowBuilderPage = () => {
             emptyHint="暂无评估级，点击右上角添加"
             defaultItemName="新评估级"
             extra={
-              <AssessmentBuilder
-                valueModel={draft.value_model}
-                complexityModel={draft.complexity_model}
-                fields={[]}
-                onChange={(value_model, complexity_model) => patch({ value_model, complexity_model })}
-              />
+              draft.assessors.length > 0 ? (
+                <AssessmentBuilder
+                  valueModel={draft.value_model}
+                  complexityModel={draft.complexity_model}
+                  fields={[]}
+                  onChange={(value_model, complexity_model) => patch({ value_model, complexity_model })}
+                />
+              ) : null
             }
           />
         </div>
