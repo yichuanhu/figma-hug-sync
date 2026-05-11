@@ -144,7 +144,10 @@ const FormBuilder = ({ fields, onChange }: Props) => {
             {SYSTEM_FIELDS.map((sf) => (
               <div key={sf.key} className="system-field-row">
                 <Lock size={13} strokeWidth={2} />
-                <span className="sf-label">{sf.label}</span>
+                <span className="sf-label">
+                  {sf.label}
+                  {sf.required && <span style={{ color: 'var(--semi-color-danger)', marginLeft: 4 }}>*</span>}
+                </span>
                 <Text type="tertiary" size="small">({sf.key})</Text>
                 <Tag color="grey" size="small">{sf.type}</Tag>
               </div>
