@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Typography } from '@douyinfe/semi-ui';
 import RoiAnalysisFilterBar from './components/RoiAnalysisFilterBar';
+import OverallRoiCards from './components/OverallRoiCards';
 import RequirementRoiSection from './components/RequirementRoiSection';
 import DepartmentRoiSection from './components/DepartmentRoiSection';
 import ProjectRoiSection from './components/ProjectRoiSection';
 import {
+  mockRoiMetrics,
   mockRequirementRoiDetails,
   mockDepartmentRoiDetails,
   mockProjectRoiDetails,
@@ -32,6 +34,7 @@ const ROIAnalysis = () => {
     <div className="roi-analysis-page">
       <Title heading={3} style={{ marginBottom: 24 }}>{t('operations.roiAnalysis.title')}</Title>
       <RoiAnalysisFilterBar filter={filter} onFilterChange={setFilter} onRefresh={handleRefresh} />
+      <OverallRoiCards data={mockRoiMetrics} />
       <RequirementRoiSection data={mockRequirementRoiDetails} />
       <DepartmentRoiSection data={mockDepartmentRoiDetails} />
       <ProjectRoiSection data={mockProjectRoiDetails} />

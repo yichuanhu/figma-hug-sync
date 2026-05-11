@@ -54,7 +54,6 @@ import PersonalCenter from "@/pages/PersonalCenter";
 import EmptyStatePreview from "@/pages/DevPreview/EmptyStatePreview";
 import EmptyStateOptionsPreview from "@/pages/DevPreview/EmptyStateOptionsPreview";
 // Operations
-import OperationsDashboard from "@/pages/Operations/Dashboard";
 import ROIAnalysis from "@/pages/Operations/ROIAnalysis";
 import ResourceEfficiency from "@/pages/Operations/ResourceEfficiency";
 import BusinessOutcomes from "@/pages/Operations/BusinessOutcomes";
@@ -182,8 +181,8 @@ const App = () => {
           <Route path="/requirements/approval-config/builder/:id" element={<ApprovalFlowBuilderPage />} />
           <Route path="/requirements/approval-config/detail/:id" element={<ApprovalFlowBuilderPage />} />
           <Route path="/requirements/projects" element={<RequirementsProjects />} />
-          <Route path="/operations" element={<Navigate to="/operations/dashboard" replace />} />
-          <Route path="/operations/dashboard" element={<OperationsDashboard />} />
+          <Route path="/operations" element={<Navigate to="/operations/business-outcomes" replace />} />
+          <Route path="/operations/dashboard" element={<Navigate to="/operations/business-outcomes" replace />} />
           <Route path="/operations/roi-analysis" element={<ROIAnalysis />} />
           <Route path="/operations/resource-efficiency" element={<ResourceEfficiency />} />
           <Route path="/operations/business-outcomes" element={<BusinessOutcomes />} />

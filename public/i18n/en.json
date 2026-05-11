@@ -3773,6 +3773,7 @@
     },
     "roiAnalysis": {
       "title": "ROI Analysis",
+      "overallRoi": "Overall ROI",
       "timeDimension": "Time Dimension",
       "dimAll": "All",
       "dimDaily": "Daily",
@@ -3822,7 +3823,35 @@
       "successRateTrend": "Success Rate Trend"
     },
     "businessOutcomes": {
-      "title": "Business Outcomes"
+      "title": "Business Outcomes",
+      "businessType": "Business Line",
+      "todayVolume": "Today Volume",
+      "totalVolume": "Total Volume",
+      "todayHoursSaved": "Today Hours Saved",
+      "totalHoursSaved": "Total Hours Saved",
+      "funnelTitle": "Requirement Conversion Funnel",
+      "typeShareTitle": "Business Line Distribution",
+      "progressTitle": "Requirement Progress",
+      "totalRequirements": "Total Requirements",
+      "progress": {
+        "submitted": "Submitted",
+        "approved": "Approved",
+        "developing": "Developing",
+        "running": "Running",
+        "completed": "Completed"
+      },
+      "volumeTrendTitle": "Business Volume Trend",
+      "hoursTrendTitle": "Hours Saved Trend",
+      "hoursSaved": "Hours Saved",
+      "departmentTitle": "Department Outcomes",
+      "requirementCount": "Requirements",
+      "runningCount": "Running",
+      "costSaved": "Cost Saved",
+      "capacityTitle": "Development Capacity",
+      "monthlyDelivered": "Monthly Delivered",
+      "avgCycleDays": "Avg Cycle",
+      "developerCount": "Developers",
+      "capacityTrend": "Delivery Trend"
     },
     "costManagement": {
       "title": "Cost Management"

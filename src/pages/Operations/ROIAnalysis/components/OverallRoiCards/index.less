@@ -1,0 +1,55 @@
+.overall-roi-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+
+  @media (max-width: 1280px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .overall-roi-card {
+    background-color: var(--semi-color-bg-0);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      opacity: 0.06;
+      transform: translate(30%, -30%);
+    }
+    &.primary::before { background-color: #3B82F6; }
+    &.success::before { background-color: #10B981; }
+    &.warning::before { background-color: #F59E0B; }
+    &.purple::before  { background-color: #8B5CF6; }
+
+    .label {
+      font-size: 13px;
+      color: var(--semi-color-text-2);
+      margin-bottom: 8px;
+    }
+    .value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--semi-color-text-0);
+      line-height: 1.2;
+    }
+    .trend {
+      font-size: 12px;
+      margin-top: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+
+      &.up { color: #10B981; }
+      &.down { color: #EF4444; }
+    }
+  }
+}
