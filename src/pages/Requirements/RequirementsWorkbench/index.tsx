@@ -77,7 +77,7 @@ const RequirementsWorkbench = () => {
   // 状态
   const [loading, setLoading] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
-  const [createModalVisible, setCreateModalVisible] = useState(false);
+  // createModalVisible 已废弃：新建走 /requirements/list/create 独立页面
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingRecord, setEditingRecord] = useState<RequirementItem | null>(null);
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
