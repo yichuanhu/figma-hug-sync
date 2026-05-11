@@ -156,7 +156,14 @@ const RequirementsScheme = () => {
                             {t('requirements.scheme.activate')}
                           </Dropdown.Item>
                         )}
-                        {!s.is_preset && (
+                        {!s.is_preset && s.status === 'active' && (
+                          <Tooltip content={t('requirements.scheme.editDisabledTip')} position="left">
+                            <Dropdown.Item icon={<Pencil size={14} />} disabled>
+                              {t('requirements.scheme.edit')}
+                            </Dropdown.Item>
+                          </Tooltip>
+                        )}
+                        {!s.is_preset && s.status !== 'active' && (
                           <Dropdown.Item icon={<Pencil size={14} />} onClick={(e) => { e.stopPropagation(); goEdit(s); }}>
                             {t('requirements.scheme.edit')}
                           </Dropdown.Item>
