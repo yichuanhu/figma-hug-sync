@@ -38,7 +38,7 @@ const ApprovalFlowBuilderPage = () => {
       navigate('/requirements/approval-config');
       return;
     }
-    setDraft(f);
+    setDraft({ ...f, assessors: f.assessors ?? [], approvers: f.approvers ?? [] });
     setLoading(false);
   }, [id, navigate]);
 
