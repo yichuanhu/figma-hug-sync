@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Input, InputNumber, Select, Typography, Tag } from '@douyinfe/semi-ui';
+import { Input, InputNumber, Select, Switch, Typography, Tag } from '@douyinfe/semi-ui';
 import { AlertTriangle } from 'lucide-react';
 import type {
   SchemeField,
