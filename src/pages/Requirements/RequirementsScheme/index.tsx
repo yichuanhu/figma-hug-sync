@@ -156,9 +156,6 @@ const RequirementsScheme = () => {
                             {t('requirements.scheme.activate')}
                           </Dropdown.Item>
                         )}
-                        <Dropdown.Item icon={<History size={14} />} disabled>
-                          {t('requirements.scheme.versionHistory')}
-                        </Dropdown.Item>
                         {!s.is_preset && (
                           <Dropdown.Item icon={<Pencil size={14} />} onClick={(e) => { e.stopPropagation(); goEdit(s); }}>
                             {t('requirements.scheme.edit')}
