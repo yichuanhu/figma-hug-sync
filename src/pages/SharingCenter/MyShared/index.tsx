@@ -111,17 +111,6 @@ const MySharedPage = () => {
             { value: 'KNOWLEDGE', label: t('sharing.assetSupply.newAsset.knowledge') },
           ]}
         />
-        <Select
-          value={sourceF}
-          onChange={(v) => setSource(v as SourceFilter)}
-          style={{ width: 160 }}
-          insetLabel={t('sharing.assetSupply.filters.source')}
-          optionList={[
-            { value: 'ALL', label: t('sharing.assetSupply.filters.allSource') },
-            { value: 'NATIVE', label: t('sharing.common.source.native') },
-            { value: 'DEV_CENTER', label: t('sharing.common.source.devCenter') },
-          ]}
-        />
         {filtered && (
           <Button theme="borderless" type="tertiary" onClick={clearFilters}>
             {t('sharing.assetSupply.filters.clear')}
