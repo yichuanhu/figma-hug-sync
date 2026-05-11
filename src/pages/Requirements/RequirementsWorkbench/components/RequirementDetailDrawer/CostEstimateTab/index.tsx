@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Empty, Tag, Typography } from '@douyinfe/semi-ui';
-import { Wallet } from 'lucide-react';
+import { Tag, Typography } from '@douyinfe/semi-ui';
 import type { RequirementItem } from '../../../types';
 import { computeCostEstimate, getActiveSchemeCostConfig } from '../../../mockData';
 import './index.less';
@@ -18,7 +17,7 @@ const fmtNum = (n: number, digits = 2) =>
 const CostEstimateTab = ({ data }: Props) => {
   const { t } = useTranslation();
 
-  // 优先使用持久化结果（含基线快照），否则基于 baselineFormData 实时计算
+  // 基线数据为必填项，理论上始终可计算；保底逻辑兜底
   const estimate = useMemo(() => {
     if (data.costEstimate) return data.costEstimate;
     if (data.baselineFormData) {
@@ -27,17 +26,7 @@ const CostEstimateTab = ({ data }: Props) => {
     return null;
   }, [data.costEstimate, data.baselineFormData]);
 
-  if (!estimate) {
-    return (
-      <div className="cost-tab-content">
-        <Empty
-          image={<Wallet size={48} strokeWidth={1.5} color="var(--semi-color-text-2)" />}
-          title={t('requirements.costEstimate.noBaselineTitle')}
-          description={t('requirements.costEstimate.noBaselineDesc')}
-        />
-      </div>
-    );
-  }
+  if (!estimate) return null;
 
   const {
     frequency,
