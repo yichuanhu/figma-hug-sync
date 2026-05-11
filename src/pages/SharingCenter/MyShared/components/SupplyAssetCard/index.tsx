@@ -82,7 +82,7 @@ const SupplyAssetCard = ({ asset, onView, onPush, highlighted }: Props) => {
             }
             style={{ marginBottom: 10 }}
           />
-        ) : (
+        ) : asset.shareStatus === 'PUBLISHED' ? (
           <div className="card-reuse" onClick={stop}>
             <Text size="small" type="tertiary">{reuseSummary}</Text>
             {lastReuse && (
@@ -103,7 +103,7 @@ const SupplyAssetCard = ({ asset, onView, onPush, highlighted }: Props) => {
               </Button>
             )}
           </div>
-        )}
+        ) : null}
         <div className="card-footer" onClick={stop}>
           <Text size="small" type="tertiary" ellipsis={{ showTooltip: true }} className="card-creator">
             {asset.creatorName} · {asset.departmentName}
