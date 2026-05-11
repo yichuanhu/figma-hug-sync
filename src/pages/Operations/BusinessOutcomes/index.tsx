@@ -9,6 +9,7 @@ import {
   mockBusinessTypes,
 } from '@/pages/Operations/mockData';
 import type { BusinessOutcomesFilter } from '@/pages/Operations/types';
+import MetricLabel from './components/MetricLabel';
 import './index.less';
 
 const { Title } = Typography;
@@ -155,10 +156,17 @@ const BusinessOutcomes = () => {
     }],
   }), [data.timeSavedTrend, t]);
 
-  // Dev capacity bar
+  // Dev capacity dual series
   const capacityOption = useMemo(() => ({
     tooltip: { ...TOOLTIP, trigger: 'axis' },
-    grid: { left: 48, right: 16, top: 20, bottom: 32 },
+    legend: {
+      bottom: 0,
+      itemWidth: 12,
+      itemHeight: 12,
+      textStyle: { fontSize: 12, color: '#6B7280' },
+      data: [t('operations.businessOutcomes.trendRequirement'), t('operations.businessOutcomes.trendProcess')],
+    },
+    grid: { left: 48, right: 16, top: 20, bottom: 48 },
     xAxis: {
       type: 'category', data: data.devCapacity.capacityTrend.map(d => d.month),
       axisLabel: { fontSize: 11, color: '#9CA3AF' },
@@ -171,27 +179,54 @@ const BusinessOutcomes = () => {
       axisLine: { show: false },
       splitLine: { lineStyle: { color: '#F3F4F6', type: 'dashed' } },
     },
-    series: [{
-      type: 'bar',
-      data: data.devCapacity.capacityTrend.map(d => d.delivered),
-      barMaxWidth: 28,
-      itemStyle: {
-        color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [
-          { offset: 0, color: '#A78BFA' }, { offset: 1, color: '#8B5CF6' },
-        ]},
-        borderRadius: [4, 4, 0, 0],
+    series: [
+      {
+        name: t('operations.businessOutcomes.trendRequirement'),
+        type: 'bar',
+        data: data.devCapacity.capacityTrend.map(d => d.requirement),
+        barMaxWidth: 24,
+        itemStyle: {
+          color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [
+            { offset: 0, color: '#A78BFA' }, { offset: 1, color: '#8B5CF6' },
+          ]},
+          borderRadius: [4, 4, 0, 0],
+        },
       },
-    }],
-  }), [data.devCapacity]);
+      {
+        name: t('operations.businessOutcomes.trendProcess'),
+        type: 'bar',
+        data: data.devCapacity.capacityTrend.map(d => d.process),
+        barMaxWidth: 24,
+        itemStyle: {
+          color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [
+            { offset: 0, color: '#60A5FA' }, { offset: 1, color: '#3B82F6' },
+          ]},
+          borderRadius: [4, 4, 0, 0],
+        },
+      },
+    ],
+  }), [data.devCapacity, t]);
 
   const deptColumns = [
     { title: t('operations.dashboard.departmentName'), dataIndex: 'department', width: 160 },
-    { title: t('operations.businessOutcomes.requirementCount'), dataIndex: 'requirementCount', width: 110 },
-    { title: t('operations.businessOutcomes.runningCount'), dataIndex: 'runningCount', width: 100 },
-    { title: t('operations.businessOutcomes.hoursSaved'), dataIndex: 'hoursSaved', width: 120,
-      render: (v: number) => `${v.toLocaleString()} h` },
-    { title: t('operations.businessOutcomes.costSaved'), dataIndex: 'costSaved', width: 130,
-      render: (v: number) => `¥${(v / 10000).toFixed(1)}万` },
+    {
+      title: <MetricLabel label={t('operations.businessOutcomes.requirementCount')} tip={t('operations.businessOutcomes.tips.deptRequirementCount')} />,
+      dataIndex: 'requirementCount', width: 140,
+    },
+    {
+      title: <MetricLabel label={t('operations.businessOutcomes.runningCount')} tip={t('operations.businessOutcomes.tips.deptRunningCount')} />,
+      dataIndex: 'runningCount', width: 120,
+    },
+    {
+      title: <MetricLabel label={t('operations.businessOutcomes.hoursSaved')} tip={t('operations.businessOutcomes.tips.deptHoursSaved')} />,
+      dataIndex: 'hoursSaved', width: 140,
+      render: (v: number) => `${v.toLocaleString()} h`,
+    },
+    {
+      title: <MetricLabel label={t('operations.businessOutcomes.costSaved')} tip={t('operations.businessOutcomes.tips.deptCostSaved')} />,
+      dataIndex: 'costSaved', width: 150,
+      render: (v: number) => `¥${(v / 10000).toFixed(1)}万`,
+    },
   ];
 
   const progressItems = [
