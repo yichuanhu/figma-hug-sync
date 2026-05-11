@@ -698,8 +698,8 @@
       "edit": "编辑模版",
       "builder": {
         "notFound": "模版不存在",
-        "saveDraft": "保存草稿",
-        "savedDraft": "草稿已保存",
+        "saveDraft": "保存",
+        "savedDraft": "已保存",
         "lastSavedAt": "上次保存：{{time}}",
         "neverSaved": "尚未保存",
         "unsaved": "未保存更改",
