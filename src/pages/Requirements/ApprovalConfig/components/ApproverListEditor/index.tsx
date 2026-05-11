@@ -53,6 +53,8 @@ interface Props {
   defaultItemName?: string;
   /** 卡片底部嵌入的额外内容（如评估模型配置） */
   extra?: ReactNode;
+  /** 只读模式：隐藏添加/删除/拖拽，所有控件禁用 */
+  readOnly?: boolean;
 }
 
 const ApproverListEditor = ({
@@ -62,6 +64,7 @@ const ApproverListEditor = ({
   emptyHint,
   defaultItemName = '新审批级',
   extra,
+  readOnly = false,
 }: Props) => {
   const update = (idx: number, p: WorkflowApprover) =>
     onChange(approvers.map((x, i) => (i === idx ? p : x)));
