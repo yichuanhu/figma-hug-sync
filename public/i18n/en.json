@@ -785,7 +785,7 @@
         "presetNotEditable": "Preset templates cannot be edited"
       },
       "createNew": "Create New Template",
-      "createBasedOnPreset": "Create from Preset",
+      "createBasedOnPreset": "Create from Template",
       "edit": "Edit Template",
       "builder": {
         "notFound": "Template not found",

@@ -693,7 +693,7 @@
         "presetNotEditable": "预设模版不可编辑审批流"
       },
       "createNew": "创建新模版",
-      "createBasedOnPreset": "基于预设创建",
+      "createBasedOnPreset": "基于模版创建",
       "edit": "编辑模版",
       "builder": {
         "notFound": "模版不存在",
