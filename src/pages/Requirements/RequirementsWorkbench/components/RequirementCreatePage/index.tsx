@@ -10,7 +10,8 @@ import {
   Modal,
   useFormState,
 } from '@douyinfe/semi-ui';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
+import { Select, InputNumber } from '@douyinfe/semi-ui';
 import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
 import OwnerSearchSelect from '@/components/OwnerSearchSelect';
 import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
