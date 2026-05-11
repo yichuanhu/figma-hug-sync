@@ -39,6 +39,8 @@ const ImportAssignedValueModal = ({
   const [result, setResult] = useState<ImportSummary | null>(null);
   const [resultValidation, setResultValidation] = useState<ValidationResult | null>(null);
   const [resultFileName, setResultFileName] = useState<string>('');
+  const [rawRows, setRawRows] = useState<ParsedRow[]>([]);
+  const [resultRawRows, setResultRawRows] = useState<ParsedRow[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragOver, setDragOver] = useState(false);
 
@@ -120,13 +122,14 @@ const ImportAssignedValueModal = ({
     if (!file) return;
     setParsing(true);
     try {
-      const rawRows = await parseFile(file);
-      if (rawRows.length === 0) {
+      const parsed = await parseFile(file);
+      if (parsed.length === 0) {
         Toast.warning(t('credential.import.errors.empty'));
         setParsing(false);
         return;
       }
-      const v = validateImportRows(rawRows);
+      setRawRows(parsed);
+      const v = validateImportRows(parsed);
       setValidation(v);
     } catch {
       Toast.error(t('credential.import.errors.parse'));
@@ -143,6 +146,7 @@ const ImportAssignedValueModal = ({
     setImporting(false);
     setResultValidation(validation);
     setResultFileName(file.name);
+    setResultRawRows(rawRows);
     setValidation(null);
     setResult(summary);
   };
@@ -254,7 +258,8 @@ const ImportAssignedValueModal = ({
         result={result}
         validation={resultValidation}
         fileName={resultFileName}
-        onClose={() => { setResult(null); setResultValidation(null); reset(); onComplete(); }}
+        rawRows={resultRawRows}
+        onClose={() => { setResult(null); setResultValidation(null); setResultRawRows([]); reset(); onComplete(); }}
       />
     </>
   );

@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Modal, Button, Table, Tag, Typography } from '@douyinfe/semi-ui';
 import { Download } from 'lucide-react';
 import * as XLSX from 'xlsx';
-import type { ImportSummary, ImportRowResult, ValidationResult, ImportRowError } from '../../assignedValueMock';
+import type { ImportSummary, ImportRowResult, ValidationResult, ImportRowError, ParsedRow } from '../../assignedValueMock';
 import './index.less';
 
 const { Text } = Typography;
@@ -12,10 +12,11 @@ interface ImportResultModalProps {
   result: ImportSummary | null;
   validation?: ValidationResult | null;
   fileName?: string;
+  rawRows?: ParsedRow[];
   onClose: () => void;
 }
 
-const ImportResultModal = ({ visible, result, validation, fileName, onClose }: ImportResultModalProps) => {
+const ImportResultModal = ({ visible, result, validation, fileName, rawRows, onClose }: ImportResultModalProps) => {
   const { t } = useTranslation();
 
   if (!result) return null;
@@ -63,26 +64,42 @@ const ImportResultModal = ({ visible, result, validation, fileName, onClose }: I
   };
 
   const handleDownloadFailed = () => {
-    const sourceFront = t('credential.import.failedExport.sourceFrontend');
-    const sourceServer = t('credential.import.failedExport.sourceServer');
+    const rowMap = new Map<number, ParsedRow>();
+    (rawRows ?? []).forEach((r) => rowMap.set(r.row_number, r));
+
+    // 与导入模板列保持一致，仅追加 errorType / reason 两列
     const rows: (string | number)[][] = [
-      [
-        t('credential.import.failedExport.cols.source'),
-        t('credential.import.cols.row'),
-        t('credential.import.cols.username'),
+      ['username', 'account', 'password', 'description',
         t('credential.import.failedExport.cols.errorType'),
-        t('credential.import.cols.reason'),
-      ],
+        t('credential.import.cols.reason')],
     ];
+
     frontendErrors.forEach((e) => {
-      rows.push([sourceFront, e.row_number ?? '-', e.username ?? '-', errorTypeLabel(e.type), e.reason]);
+      const src = e.row_number != null ? rowMap.get(e.row_number) : undefined;
+      rows.push([
+        src?.username ?? e.username ?? '',
+        src?.account ?? '',
+        src?.password ?? '',
+        src?.description ?? '',
+        errorTypeLabel(e.type),
+        e.reason,
+      ]);
     });
     serverFailed.forEach((r) => {
-      rows.push([sourceServer, r.row_number, r.username || '-', t('credential.import.failedExport.serverFailed'), r.reason || '-']);
+      const src = rowMap.get(r.row_number);
+      rows.push([
+        src?.username ?? r.username ?? '',
+        src?.account ?? '',
+        src?.password ?? '',
+        src?.description ?? '',
+        t('credential.import.failedExport.serverFailed'),
+        r.reason || '',
+      ]);
     });
+
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.aoa_to_sheet(rows);
-    ws['!cols'] = [{ wch: 14 }, { wch: 8 }, { wch: 20 }, { wch: 16 }, { wch: 60 }];
+    ws['!cols'] = [{ wch: 18 }, { wch: 22 }, { wch: 18 }, { wch: 30 }, { wch: 16 }, { wch: 60 }];
     XLSX.utils.book_append_sheet(wb, ws, 'FailedRows');
     const base = (fileName || 'import').replace(/\.xlsx$/i, '');
     XLSX.writeFile(wb, `${base}_失败数据.xlsx`);
