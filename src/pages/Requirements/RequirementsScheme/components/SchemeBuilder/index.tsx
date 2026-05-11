@@ -166,8 +166,6 @@ const SchemeBuilderPage = () => {
       Toast.warning(t('requirements.scheme.builder.activateDirty'));
       return;
     }
-    const wf = draftScheme.workflow_config;
-    const hasNoApproval = !wf || wf.template === 'none' || !wf.states || wf.states.length === 0;
     const doActivate = async () => {
       try {
         await activateSchemeBuilder(draftScheme.id);
