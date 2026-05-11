@@ -66,6 +66,23 @@ const RequirementFormModal = ({
     [t],
   );
 
+  const positionLevelOptions = useMemo(() => [
+    { value: 'JUNIOR', label: '初级' },
+    { value: 'INTERMEDIATE', label: '中级' },
+    { value: 'SENIOR', label: '高级' },
+    { value: 'EXPERT', label: '专家' },
+  ], []);
+
+  const executionFrequencyOptions = useMemo(() => [
+    { value: 'DAILY', label: '每天' },
+    { value: 'WEEKLY', label: '每周' },
+    { value: 'MONTHLY', label: '每月' },
+    { value: 'QUARTERLY', label: '每季度' },
+    { value: 'YEARLY', label: '每年' },
+  ], []);
+
+  const SYSTEM_REQUIRED_KEYS = ['position_level', 'position_cost', 'execution_frequency', 'single_duration'] as const;
+
   const activeScheme = useMemo(() => getActiveScheme(), []);
 
   const baseInitialValues = useMemo(() => {
