@@ -863,6 +863,9 @@ export function findMarketAsset(id: string): Asset | undefined {
 export const currentUser = { id: CURRENT_USER_ID, name: CURRENT_USER_NAME };
 
 export function isOwner(assetId: string): boolean {
+  // 资产市场以"展示作者"为准：仅当市场卡片显示的 creatorName 是当前用户时，视为本人发布
+  const m = findMarketAsset(assetId);
+  if (m) return m.creatorName === currentUser.name;
   const a = findAsset(assetId);
   if (!a) return false;
   return (a.publishedBy ?? a.ownerId) === currentUser.id;
