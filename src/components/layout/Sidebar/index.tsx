@@ -304,6 +304,8 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     { key: 'requirementsReview', labelKey: 'sidebar.requirementsReview', icon: <CheckSquare size={18} strokeWidth={2} />, path: '/requirements/review' },
     { key: 'requirementsAssessment', labelKey: 'sidebar.requirementsAssessment', icon: <FolderCheck size={18} strokeWidth={2} />, path: '/requirements/assessment' },
     { key: 'requirementsProjects', labelKey: 'sidebar.requirementsProjects', icon: <FolderKanban size={18} strokeWidth={2} />, path: '/requirements/projects' },
+    // 需求配置 - 分组标题
+    { key: 'requirementsConfig', labelKey: 'sidebar.requirementsConfig', isGroupLabel: true },
     { key: 'requirementsScheme', labelKey: 'sidebar.requirementsScheme', icon: <Settings size={18} strokeWidth={2} />, path: '/requirements/scheme' },
   ];
 
