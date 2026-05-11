@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Input, InputNumber, Select, Typography, Tag } from '@douyinfe/semi-ui';
+import { Input, InputNumber, Select, Switch, Typography, Tag } from '@douyinfe/semi-ui';
 import { AlertTriangle } from 'lucide-react';
 import type {
   SchemeField,
@@ -66,6 +66,19 @@ const FieldConfigPanel = ({ field, index, allFields, onPatch }: Props) => {
           </span>
         </div>
       )}
+
+      {/* ====== 基础设置 ====== */}
+      <div className="fcp-section">
+        <div className="fcp-section-title">基础设置</div>
+        <div className="fcp-row-inline">
+          <label>是否必填</label>
+          <Switch
+            size="small"
+            checked={!!field.required}
+            onChange={(val) => onPatch({ required: val })}
+          />
+        </div>
+      </div>
 
       {/* ====== 验证规则 ====== */}
       <div className="fcp-section">
@@ -143,7 +156,7 @@ const FieldConfigPanel = ({ field, index, allFields, onPatch }: Props) => {
       <div className="fcp-section">
         <div className="fcp-section-title">依赖关系</div>
         <div className="fcp-grid">
-          <div className="fcp-field">
+          <div className="fcp-field full">
             <label>依赖字段</label>
             <Select
               value={dep?.field}
