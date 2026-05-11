@@ -18,6 +18,12 @@ export interface ApprovalFlowTemplate {
   is_draft?: boolean;
   /** 审批人列表（priority 升序） */
   approvers: WorkflowApprover[];
+  /** 技术评估人列表（priority 升序）；为空表示已关闭技术评估 */
+  assessors: WorkflowApprover[];
+  /** 价值评估模型 */
+  value_model?: AssessmentModel;
+  /** 复杂度评估模型 */
+  complexity_model?: AssessmentModel;
   created_at: string;
   updated_at: string;
 }
