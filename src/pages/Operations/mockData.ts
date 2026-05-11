@@ -182,3 +182,78 @@ export const mockRobotStatuses = [
   { value: 'offline', label: 'Offline' },
   { value: 'maintenance', label: 'Maintenance' },
 ];
+
+// ============ 业务成果看板 mock ============
+export const mockBusinessOutcomes: BusinessOutcomesData = {
+  funnel: [
+    { name: '需求提报', value: 263 },
+    { name: '需求评审通过', value: 198 },
+    { name: '完成开发', value: 145 },
+    { name: '上线运行', value: 98 },
+    { name: '验收完成', value: 76 },
+  ],
+  requirementProgress: {
+    total: 263,
+    submitted: 18,
+    approved: 24,
+    developing: 23,
+    running: 98,
+    completed: 100,
+  },
+  todayVolume: 1258,
+  totalVolume: 98432,
+  todayHoursSaved: 562,
+  totalHoursSaved: 42180,
+  volumeTrend: [
+    { month: '2025-10', volume: 12450 },
+    { month: '2025-11', volume: 14820 },
+    { month: '2025-12', volume: 16930 },
+    { month: '2026-01', volume: 17820 },
+    { month: '2026-02', volume: 18540 },
+    { month: '2026-03', volume: 17872 },
+  ],
+  timeSavedTrend: [
+    { month: '2025-10', hours: 5240 },
+    { month: '2025-11', hours: 6180 },
+    { month: '2025-12', hours: 7320 },
+    { month: '2026-01', hours: 7820 },
+    { month: '2026-02', hours: 8120 },
+    { month: '2026-03', hours: 7500 },
+  ],
+  businessTypeShare: [
+    { name: 'Finance', value: 32 },
+    { name: 'Operations', value: 26 },
+    { name: 'HR', value: 18 },
+    { name: 'Legal', value: 14 },
+    { name: 'IT', value: 10 },
+  ],
+  departmentOutcomes: [
+    { department: 'Finance', requirementCount: 38, runningCount: 24, hoursSaved: 14820, costSaved: 612000 },
+    { department: 'Operations', requirementCount: 32, runningCount: 21, hoursSaved: 11250, costSaved: 453000 },
+    { department: 'Human Resources', requirementCount: 24, runningCount: 18, hoursSaved: 7860, costSaved: 256000 },
+    { department: 'Legal', requirementCount: 18, runningCount: 12, hoursSaved: 4520, costSaved: 182000 },
+    { department: 'IT', requirementCount: 15, runningCount: 9, hoursSaved: 3730, costSaved: 123840 },
+  ],
+  devCapacity: {
+    monthlyDelivered: 24,
+    avgCycleDays: 12.5,
+    developerCount: 18,
+    capacityTrend: [
+      { month: '2025-10', delivered: 14 },
+      { month: '2025-11', delivered: 18 },
+      { month: '2025-12', delivered: 21 },
+      { month: '2026-01', delivered: 22 },
+      { month: '2026-02', delivered: 25 },
+      { month: '2026-03', delivered: 24 },
+    ],
+  },
+};
+
+export const mockBusinessTypes = [
+  { value: 'all', label: '' },
+  { value: 'finance', label: 'Finance' },
+  { value: 'operations', label: 'Operations' },
+  { value: 'hr', label: 'HR' },
+  { value: 'legal', label: 'Legal' },
+  { value: 'it', label: 'IT' },
+];
