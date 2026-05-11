@@ -213,5 +213,8 @@ export const cloneApprovalFlowAsDraft = async (sourceId: string): Promise<Approv
     code: `${src.code}-COPY`,
     description: src.description,
     approvers: src.approvers.map((a, i) => ({ ...a, id: `appr-${Date.now().toString(36).slice(-4)}-${i + 1}` })),
+    assessors: src.assessors.map((a, i) => ({ ...a, id: `asse-${Date.now().toString(36).slice(-4)}-${i + 1}` })),
+    value_model: src.value_model,
+    complexity_model: src.complexity_model,
   });
 };
