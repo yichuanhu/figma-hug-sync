@@ -4,7 +4,7 @@
  * 数据结构与"需求模版 → 工作流 → 审批人配置"完全一致，
  * 直接复用 WorkflowApprover 类型，便于 UI/交互一比一还原。
  */
-import type { WorkflowApprover } from '@/pages/Requirements/RequirementsWorkbench/types';
+import type { WorkflowApprover, AssessmentModel } from '@/pages/Requirements/RequirementsWorkbench/types';
 
 export type ApprovalFlowStatus = 'active' | 'inactive';
 
@@ -18,6 +18,12 @@ export interface ApprovalFlowTemplate {
   is_draft?: boolean;
   /** 审批人列表（priority 升序） */
   approvers: WorkflowApprover[];
+  /** 技术评估人列表（priority 升序）；为空表示已关闭技术评估 */
+  assessors: WorkflowApprover[];
+  /** 价值评估模型 */
+  value_model?: AssessmentModel;
+  /** 复杂度评估模型 */
+  complexity_model?: AssessmentModel;
   created_at: string;
   updated_at: string;
 }
@@ -37,6 +43,39 @@ const defaultFlows: ApprovalFlowTemplate[] = [
       { id: 'a2', name: 'AI 委员会评审', type: 'role', priority: 2, required: true, approval_mode: 'majority', timeout_days: 7, target_ids: ['role-committee'] },
       { id: 'a3', name: '财务负责人审批', type: 'role', priority: 3, required: true, approval_mode: 'any_one', timeout_days: 3, target_ids: ['role-dept-head'] },
     ],
+    assessors: [
+      { id: 'as1', name: '技术架构评估', type: 'role', priority: 1, required: true, approval_mode: 'majority', timeout_days: 5, target_ids: ['role-committee'] },
+    ],
+    value_model: {
+      key: 'value-model-default',
+      type: 'value',
+      label: '价值评估',
+      description: '基于业务收益与战略契合度评估需求价值',
+      dimensions: [
+        { key: 'dim_biz', label: '业务收益', weight: 0.5, dimension_type: 'manual_score', tiers: [] },
+        { key: 'dim_strategy', label: '战略契合度', weight: 0.5, dimension_type: 'manual_score', tiers: [] },
+      ],
+      tiers: [
+        { condition: '>=80', score: 100, label: '高', color: 'green' },
+        { condition: '60~79', score: 75, label: '中', color: 'blue' },
+        { condition: '<60', score: 40, label: '低', color: 'orange' },
+      ],
+    },
+    complexity_model: {
+      key: 'complexity-model-default',
+      type: 'complexity',
+      label: '复杂度评估',
+      description: '基于实施周期与技术难度评估需求复杂度',
+      dimensions: [
+        { key: 'dim_tech', label: '技术难度', weight: 0.6, dimension_type: 'manual_score', tiers: [] },
+        { key: 'dim_period', label: '实施周期', weight: 0.4, dimension_type: 'manual_score', tiers: [] },
+      ],
+      tiers: [
+        { condition: '>=80', score: 100, label: '高', color: 'red' },
+        { condition: '60~79', score: 75, label: '中', color: 'orange' },
+        { condition: '<60', score: 40, label: '低', color: 'green' },
+      ],
+    },
     created_at: '2025-01-10T09:00:00Z',
     updated_at: '2025-02-20T14:30:00Z',
   },
@@ -50,6 +89,7 @@ const defaultFlows: ApprovalFlowTemplate[] = [
     approvers: [
       { id: 'a1', name: '直属主管审批', type: 'department_leader', priority: 1, required: true, approval_mode: 'any_one', timeout_days: 3 },
     ],
+    assessors: [],
     created_at: '2025-01-12T10:00:00Z',
     updated_at: '2025-01-12T10:00:00Z',
   },
@@ -100,7 +140,7 @@ export const getApprovalFlowById = (id: string): ApprovalFlowTemplate | undefine
   cache.find((f) => f.id === id);
 
 export const createApprovalFlowDraft = async (
-  payload?: Partial<Pick<ApprovalFlowTemplate, 'name' | 'code' | 'description' | 'approvers'>>,
+  payload?: Partial<Pick<ApprovalFlowTemplate, 'name' | 'code' | 'description' | 'approvers' | 'assessors' | 'value_model' | 'complexity_model'>>,
 ): Promise<ApprovalFlowTemplate> => {
   await delay();
   const now = new Date().toISOString();
@@ -112,6 +152,9 @@ export const createApprovalFlowDraft = async (
     status: 'inactive',
     is_draft: true,
     approvers: payload?.approvers ?? [],
+    assessors: payload?.assessors ?? [],
+    value_model: payload?.value_model,
+    complexity_model: payload?.complexity_model,
     created_at: now,
     updated_at: now,
   };
@@ -170,5 +213,8 @@ export const cloneApprovalFlowAsDraft = async (sourceId: string): Promise<Approv
     code: `${src.code}-COPY`,
     description: src.description,
     approvers: src.approvers.map((a, i) => ({ ...a, id: `appr-${Date.now().toString(36).slice(-4)}-${i + 1}` })),
+    assessors: src.assessors.map((a, i) => ({ ...a, id: `asse-${Date.now().toString(36).slice(-4)}-${i + 1}` })),
+    value_model: src.value_model,
+    complexity_model: src.complexity_model,
   });
 };

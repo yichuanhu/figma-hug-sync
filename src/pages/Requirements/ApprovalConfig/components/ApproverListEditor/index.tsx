@@ -1,12 +1,13 @@
 /**
- * 审批人配置编辑器
+ * 审批人/评估人配置卡片
  *
- * 直接复用「需求模版 → 工作流 → 审批人配置」卡片样式与交互
- * （drag 排序、Tag 优先级、类型/模式/必需开关），保持视觉一致。
+ * 完整复用「需求模版 → 工作流」中的 ApproverList 卡片样式与交互
+ * （drag 排序、Tag 优先级、类型/模式/必需开关、启用开关、关闭空态），
+ * 通过 props 复用为「审批人配置」与「技术评估人配置」两张卡片。
  */
-import { useRef, useState } from 'react';
-import { Button, Select, Typography, Empty, Input, Switch, Tag } from '@douyinfe/semi-ui';
-import { Plus, Trash2, GripVertical } from 'lucide-react';
+import { ReactNode, useRef, useState } from 'react';
+import { Button, Select, Typography, Empty, Input, Switch, Tag, Toast } from '@douyinfe/semi-ui';
+import { Plus, Trash2, GripVertical, PowerOff } from 'lucide-react';
 import OwnerSearchSelect from '@/components/OwnerSearchSelect';
 import type {
   WorkflowApprover,
@@ -34,9 +35,9 @@ const ROLE_OPTIONS = [
   { value: 'role-committee', label: '委员会' },
 ];
 
-const makeApprover = (priority: number): WorkflowApprover => ({
+const makeApprover = (priority: number, defaultName: string): WorkflowApprover => ({
   id: `appr-${Date.now().toString(36).slice(-4)}-${priority}`,
-  name: '新审批级',
+  name: defaultName,
   type: 'department_leader',
   priority,
   required: true,
@@ -45,11 +46,33 @@ const makeApprover = (priority: number): WorkflowApprover => ({
 });
 
 interface Props {
+  title: string;
   approvers: WorkflowApprover[];
   onChange: (next: WorkflowApprover[]) => void;
+  enabled: boolean;
+  onToggle: (next: boolean) => void;
+  emptyHint: string;
+  disabledHint: string;
+  enableToastText?: string;
+  disableToastText?: string;
+  defaultItemName?: string;
+  /** 启用时卡片底部嵌入的额外内容（如评估模型配置） */
+  extra?: ReactNode;
 }
 
-const ApproverListEditor = ({ approvers, onChange }: Props) => {
+const ApproverListEditor = ({
+  title,
+  approvers,
+  onChange,
+  enabled,
+  onToggle,
+  emptyHint,
+  disabledHint,
+  enableToastText,
+  disableToastText,
+  defaultItemName = '新审批级',
+  extra,
+}: Props) => {
   const update = (idx: number, p: WorkflowApprover) =>
     onChange(approvers.map((x, i) => (i === idx ? p : x)));
   const remove = (idx: number) => {
@@ -57,8 +80,26 @@ const ApproverListEditor = ({ approvers, onChange }: Props) => {
     next.forEach((x, i) => (x.priority = i + 1));
     onChange(next);
   };
-  const add = () =>
-    onChange([...approvers, makeApprover(approvers.length + 1)]);
+  const add = () => onChange([...approvers, makeApprover(approvers.length + 1, defaultItemName)]);
+
+  const cachedRef = useRef<WorkflowApprover[] | null>(null);
+  if (enabled && approvers.length > 0) cachedRef.current = approvers;
+
+  const handleToggle = (next: boolean) => {
+    if (next) {
+      const restored = cachedRef.current && cachedRef.current.length > 0
+        ? cachedRef.current
+        : [makeApprover(1, defaultItemName)];
+      onChange(restored);
+      onToggle(true);
+      if (enableToastText) Toast.success(enableToastText);
+    } else {
+      cachedRef.current = approvers;
+      onChange([]);
+      onToggle(false);
+      if (disableToastText) Toast.success(disableToastText);
+    }
+  };
 
   const dragIndexRef = useRef<number | null>(null);
   const [dragIdx, setDragIdx] = useState<number | null>(null);
@@ -74,20 +115,27 @@ const ApproverListEditor = ({ approvers, onChange }: Props) => {
   };
 
   return (
-    <div className="workflow-builder">
-      <div className="workflow-section">
-        <div className="workflow-card-header">
-          <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Text strong>审批人配置</Text>
-            <Tag color="green" type="light" size="small">已启用</Tag>
-          </span>
-          <Button icon={<Plus size={14} strokeWidth={2} />} size="small" onClick={add}>
-            添加
-          </Button>
-        </div>
+    <div className="workflow-section">
+      <div className="workflow-card-header">
+        <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <Text strong>{title}</Text>
+          {enabled
+            ? <Tag color="green" type="light" size="small">已启用</Tag>
+            : <Tag color="orange" type="light" size="small">已关闭</Tag>}
+        </span>
+        <span style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          {enabled && (
+            <Button icon={<Plus size={14} strokeWidth={2} />} size="small" onClick={add}>
+              添加
+            </Button>
+          )}
+          <Switch checked={enabled} onChange={handleToggle} />
+        </span>
+      </div>
 
-        {approvers.length === 0 ? (
-          <Empty description="暂无审批级，点击右上角添加" style={{ padding: '24px 0' }} />
+      {enabled ? (
+        approvers.length === 0 ? (
+          <Empty description={emptyHint} style={{ padding: '24px 0' }} />
         ) : (
           approvers.map((a, idx) => (
             <div
@@ -183,8 +231,19 @@ const ApproverListEditor = ({ approvers, onChange }: Props) => {
               />
             </div>
           ))
-        )}
-      </div>
+        )
+      ) : (
+        <div className="workflow-disabled-empty">
+          <div className="icon-wrap">
+            <PowerOff size={24} strokeWidth={1.5} />
+          </div>
+          <Text type="tertiary" size="small" style={{ textAlign: 'center', maxWidth: 420 }}>
+            {disabledHint}
+          </Text>
+        </div>
+      )}
+
+      {enabled && extra && <div className="workflow-assessment-embed">{extra}</div>}
     </div>
   );
 };
