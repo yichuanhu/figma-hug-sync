@@ -17,7 +17,7 @@ import {
   Space,
 } from '@douyinfe/semi-ui';
 import { IconSearchStroked } from '@douyinfe/semi-icons';
-import { Ellipsis, CheckCircle, Eye, Trash2, Pencil, Plus, Copy, Pause } from 'lucide-react';
+import { Ellipsis, CheckCircle, Trash2, Pencil, Plus, Pause } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import {
   fetchApprovalFlows,
@@ -25,7 +25,7 @@ import {
   activateApprovalFlow,
   deactivateApprovalFlow,
   createApprovalFlowDraft,
-  cloneApprovalFlowAsDraft,
+  
   subscribeApprovalFlowChange,
   type ApprovalFlowTemplate,
 } from './mockData';
@@ -59,13 +59,12 @@ const ApprovalConfigPage = () => {
     navigate(`/requirements/approval-config/builder/${f.id}`);
   };
 
-  const handleCreateNew = async () => {
-    const draft = await createApprovalFlowDraft();
-    navigate(`/requirements/approval-config/builder/${draft.id}`);
+  const goDetail = (f: ApprovalFlowTemplate) => {
+    navigate(`/requirements/approval-config/detail/${f.id}`);
   };
 
-  const handleClone = async (f: ApprovalFlowTemplate) => {
-    const draft = await cloneApprovalFlowAsDraft(f.id);
+  const handleCreateNew = async () => {
+    const draft = await createApprovalFlowDraft();
     navigate(`/requirements/approval-config/builder/${draft.id}`);
   };
 
@@ -151,7 +150,7 @@ const ApprovalConfigPage = () => {
               <div
                 key={f.id}
                 className={`approval-flow-card ${f.status === 'active' ? 'active' : ''}`}
-                onClick={() => goEdit(f)}
+                onClick={() => goDetail(f)}
               >
                 <div className="approval-flow-card-header">
                   <div className="approval-flow-card-title-row">
@@ -171,15 +170,6 @@ const ApprovalConfigPage = () => {
                     position="bottomRight"
                     render={
                       <Dropdown.Menu>
-                        <Dropdown.Item
-                          icon={<Eye size={14} />}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            goEdit(f);
-                          }}
-                        >
-                          {t('common.viewDetail')}
-                        </Dropdown.Item>
                         {f.status !== 'active' ? (
                           <Dropdown.Item
                             icon={<CheckCircle size={14} />}
@@ -209,15 +199,6 @@ const ApprovalConfigPage = () => {
                           }}
                         >
                           编辑
-                        </Dropdown.Item>
-                        <Dropdown.Item
-                          icon={<Copy size={14} />}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleClone(f);
-                          }}
-                        >
-                          基于此创建副本
                         </Dropdown.Item>
                         {!f.is_preset && (
                           <Dropdown.Item
