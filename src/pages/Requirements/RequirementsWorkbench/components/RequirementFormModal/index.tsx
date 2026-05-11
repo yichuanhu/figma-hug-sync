@@ -233,6 +233,9 @@ const RequirementFormModal = ({
     activeScheme?.custom_fields.forEach((f) => {
       if (values[f.key] !== undefined) form_data[f.key] = values[f.key];
     });
+    SYSTEM_REQUIRED_KEYS.forEach((k) => {
+      if (values[k] !== undefined) form_data[k] = values[k];
+    });
     const submitValues = { ...values, form_data };
     Object.keys(form_data).forEach((k) => {
       if (!systemKeys.has(k)) delete (submitValues as Record<string, unknown>)[k];
