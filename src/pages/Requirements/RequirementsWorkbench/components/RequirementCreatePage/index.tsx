@@ -10,7 +10,8 @@ import {
   Modal,
   useFormState,
 } from '@douyinfe/semi-ui';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
+import { Select, InputNumber } from '@douyinfe/semi-ui';
 import DepartmentSearchSelect from '@/components/DepartmentSearchSelect';
 import OwnerSearchSelect from '@/components/OwnerSearchSelect';
 import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
@@ -30,8 +31,8 @@ const { Title, Text } = Typography;
 const STEP_FIELDS: Array<string[]> = [
   // Step 0 基础信息
   ['title', 'department', 'owner', 'priority'],
-  // Step 1 岗位与执行成本
-  ['position_level', 'position_cost', 'execution_frequency', 'single_duration'],
+  // Step 1 岗位与执行成本（全部非必填，无需校验字段）
+  [],
   // Step 2 详情字段会动态收集
   [],
 ];
@@ -82,6 +83,23 @@ const RequirementCreatePage = () => {
   const [departmentValue, setDepartmentValue] = useState<string | undefined>(undefined);
   const [ownerId, setOwnerId] = useState<string>(MOCK_CURRENT_USER.id);
   const [dirty, setDirty] = useState(false);
+  // 岗位成本列表：可同时录入多个 {岗位级别, 成本}
+  const [positionCosts, setPositionCosts] = useState<Array<{ level?: string; cost?: number }>>([
+    { level: undefined, cost: undefined },
+  ]);
+
+  const updatePositionCost = (idx: number, patch: Partial<{ level: string; cost: number }>) => {
+    setPositionCosts((prev) => prev.map((it, i) => (i === idx ? { ...it, ...patch } : it)));
+    setDirty(true);
+  };
+  const addPositionCost = () => {
+    setPositionCosts((prev) => [...prev, { level: undefined, cost: undefined }]);
+    setDirty(true);
+  };
+  const removePositionCost = (idx: number) => {
+    setPositionCosts((prev) => (prev.length <= 1 ? prev : prev.filter((_, i) => i !== idx)));
+    setDirty(true);
+  };
 
   const activeScheme = useMemo(() => getActiveScheme(), []);
 
@@ -109,7 +127,7 @@ const RequirementCreatePage = () => {
     { value: 'YEARLY', label: '每年' },
   ], []);
 
-  const SYSTEM_REQUIRED_KEYS = ['position_level', 'position_cost', 'execution_frequency', 'single_duration'] as const;
+  const OPTIONAL_FORM_KEYS = ['execution_frequency', 'single_duration'] as const;
 
   const baseInitialValues = { priority: 'MEDIUM' as const };
 
@@ -171,9 +189,16 @@ const RequirementCreatePage = () => {
     activeScheme?.custom_fields.forEach((f) => {
       if (values[f.key] !== undefined) form_data[f.key] = values[f.key];
     });
-    SYSTEM_REQUIRED_KEYS.forEach((k) => {
+    OPTIONAL_FORM_KEYS.forEach((k) => {
       if (values[k] !== undefined) form_data[k] = values[k];
     });
+    // 多岗位级别与成本（仅保留至少填写了一项的行）
+    const cleanedPositionCosts = positionCosts
+      .filter((r) => r.level !== undefined || (typeof r.cost === 'number' && !Number.isNaN(r.cost)))
+      .map((r) => ({ level: r.level, cost: r.cost }));
+    if (cleanedPositionCosts.length > 0) {
+      form_data.position_costs = cleanedPositionCosts;
+    }
     const submitValues = { ...values, form_data };
     Object.keys(form_data).forEach((k) => {
       if (!systemKeys.has(k)) delete (submitValues as Record<string, unknown>)[k];
@@ -266,36 +291,56 @@ const RequirementCreatePage = () => {
               />
             </div>
 
-            {/* Step 1: 岗位与执行成本 */}
+            {/* Step 1: 岗位与执行成本（全部非必填，岗位支持多条） */}
             <div style={{ display: currentStep === 1 ? 'block' : 'none' }}>
-              <Form.Select
-                field="position_level"
-                label="岗位级别"
-                placeholder="请选择岗位级别"
-                optionList={positionLevelOptions}
-                rules={[{ required: true, message: '请选择岗位级别' }]}
-                trigger={['blur', 'change']}
-                style={{ width: '100%' }}
-              />
-              <Form.InputNumber
-                field="position_cost"
-                label="岗位成本"
-                placeholder="请输入"
-                suffix={<span style={{ color: 'var(--semi-color-text-2)', paddingRight: 8, whiteSpace: 'nowrap' }}>元/人天</span>}
-                min={0}
-                precision={2}
-                hideButtons
-                rules={[{ required: true, message: '请输入岗位成本' }]}
-                trigger={['blur', 'change']}
-                style={{ width: '100%' }}
-              />
+              <Form.Slot label={{ text: '岗位级别与成本' }}>
+                <div className="position-cost-list">
+                  {positionCosts.map((row, idx) => (
+                    <div key={idx} className="position-cost-row">
+                      <Select
+                        placeholder="请选择岗位级别"
+                        value={row.level}
+                        onChange={(v) => updatePositionCost(idx, { level: v as string })}
+                        optionList={positionLevelOptions}
+                        showClear
+                        style={{ flex: 1 }}
+                      />
+                      <InputNumber
+                        placeholder="请输入岗位成本"
+                        value={row.cost}
+                        onChange={(v) => updatePositionCost(idx, { cost: v as number })}
+                        suffix={<span style={{ color: 'var(--semi-color-text-2)', paddingRight: 8, whiteSpace: 'nowrap' }}>元/人天</span>}
+                        min={0}
+                        precision={2}
+                        hideButtons
+                        style={{ flex: 1 }}
+                      />
+                      <Button
+                        icon={<Trash2 size={16} strokeWidth={2} />}
+                        theme="borderless"
+                        type="tertiary"
+                        disabled={positionCosts.length <= 1}
+                        onClick={() => removePositionCost(idx)}
+                      />
+                    </div>
+                  ))}
+                  <Button
+                    icon={<Plus size={16} strokeWidth={2} />}
+                    theme="borderless"
+                    type="primary"
+                    onClick={addPositionCost}
+                    style={{ alignSelf: 'flex-start', paddingLeft: 0 }}
+                  >
+                    添加岗位
+                  </Button>
+                </div>
+              </Form.Slot>
               <Form.Select
                 field="execution_frequency"
                 label="执行频率"
                 placeholder="请选择执行频率"
                 optionList={executionFrequencyOptions}
-                rules={[{ required: true, message: '请选择执行频率' }]}
-                trigger={['blur', 'change']}
+                showClear
                 style={{ width: '100%' }}
               />
               <Form.InputNumber
@@ -306,8 +351,6 @@ const RequirementCreatePage = () => {
                 min={0}
                 precision={0}
                 hideButtons
-                rules={[{ required: true, message: '请输入单次时长' }]}
-                trigger={['blur', 'change']}
                 style={{ width: '100%' }}
               />
             </div>
