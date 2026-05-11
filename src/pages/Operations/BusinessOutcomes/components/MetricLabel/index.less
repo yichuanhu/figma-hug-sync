@@ -1,0 +1,28 @@
+.metric-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+
+  .metric-label-text {
+    line-height: 1.4;
+  }
+
+  .metric-label-icon {
+    color: var(--semi-color-text-3);
+    cursor: help;
+    flex-shrink: 0;
+    transition: color 0.15s;
+
+    &:hover {
+      color: var(--semi-color-primary);
+    }
+  }
+}
+
+.metric-label-tip-content {
+  font-size: 12px;
+  line-height: 1.6;
+  max-width: 260px;
+  white-space: pre-wrap;
+  color: var(--semi-color-text-0);
+}
