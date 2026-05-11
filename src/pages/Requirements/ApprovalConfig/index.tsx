@@ -59,13 +59,12 @@ const ApprovalConfigPage = () => {
     navigate(`/requirements/approval-config/builder/${f.id}`);
   };
 
-  const handleCreateNew = async () => {
-    const draft = await createApprovalFlowDraft();
-    navigate(`/requirements/approval-config/builder/${draft.id}`);
+  const goDetail = (f: ApprovalFlowTemplate) => {
+    navigate(`/requirements/approval-config/detail/${f.id}`);
   };
 
-  const handleClone = async (f: ApprovalFlowTemplate) => {
-    const draft = await cloneApprovalFlowAsDraft(f.id);
+  const handleCreateNew = async () => {
+    const draft = await createApprovalFlowDraft();
     navigate(`/requirements/approval-config/builder/${draft.id}`);
   };
 
