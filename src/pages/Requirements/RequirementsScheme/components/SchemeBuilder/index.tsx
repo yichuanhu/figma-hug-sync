@@ -180,20 +180,9 @@ const SchemeBuilderPage = () => {
     };
     Modal.confirm({
       title: t('requirements.scheme.builder.activateTitle'),
-      content: hasNoApproval ? (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <Banner
-            type="warning"
-            fullMode={false}
-            closeIcon={null}
-            description={t('requirements.scheme.builder.activateNoApprovalNotice')}
-            style={{ borderRadius: 6 }}
-          />
-          <div>{t('requirements.scheme.builder.activateNoApprovalConfirm')}</div>
-        </div>
-      ) : (
-        t('requirements.scheme.builder.activateContent', { name: draftScheme.name })
-      ),
+      content: hasNoApproval
+        ? t('requirements.scheme.builder.activateNoApprovalNotice')
+        : t('requirements.scheme.builder.activateContent', { name: draftScheme.name }),
       okText: t('requirements.scheme.activate'),
       cancelText: t('common.cancel'),
       onOk: doActivate,
