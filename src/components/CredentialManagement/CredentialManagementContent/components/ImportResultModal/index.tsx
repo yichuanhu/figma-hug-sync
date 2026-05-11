@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Modal, Button, Table, Tag, Typography } from '@douyinfe/semi-ui';
 import { Download } from 'lucide-react';
 import * as XLSX from 'xlsx';
-import type { ImportSummary, ImportRowResult, ValidationResult, ImportRowError } from '../../assignedValueMock';
+import type { ImportSummary, ImportRowResult, ValidationResult, ImportRowError, ParsedRow } from '../../assignedValueMock';
 import './index.less';
 
 const { Text } = Typography;
@@ -12,10 +12,11 @@ interface ImportResultModalProps {
   result: ImportSummary | null;
   validation?: ValidationResult | null;
   fileName?: string;
+  rawRows?: ParsedRow[];
   onClose: () => void;
 }
 
-const ImportResultModal = ({ visible, result, validation, fileName, onClose }: ImportResultModalProps) => {
+const ImportResultModal = ({ visible, result, validation, fileName, rawRows, onClose }: ImportResultModalProps) => {
   const { t } = useTranslation();
 
   if (!result) return null;
