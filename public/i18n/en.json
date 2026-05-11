@@ -3774,6 +3774,12 @@
     "roiAnalysis": {
       "title": "ROI Analysis",
       "overallRoi": "Overall ROI",
+      "tips": {
+        "overallRoi": "Formula: (Total Saved − Total Invested) / Total Invested × 100%. Reflects overall automation ROI.",
+        "totalSavedCost": "Definition: cumulative labor cost saved by all live processes = Σ(hours saved × dept hourly rate).",
+        "totalInvestmentCost": "Definition: cumulative spend on development + platform license + operations.",
+        "activeRequirements": "Definition: requirements currently in 'Running' status."
+      },
       "timeDimension": "Time Dimension",
       "dimAll": "All",
       "dimDaily": "Daily",

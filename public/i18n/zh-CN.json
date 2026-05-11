@@ -3144,6 +3144,12 @@
     "roiAnalysis": {
       "title": "ROI深度分析",
       "overallRoi": "整体ROI",
+      "tips": {
+        "overallRoi": "公式：(总节约成本 − 总投入成本) / 总投入成本 × 100%\n反映自动化整体投资回报率",
+        "totalSavedCost": "口径：所有上线流程累计节约的人力成本\n= Σ(节约工时 × 部门人时单价)",
+        "totalInvestmentCost": "口径：开发投入 + 平台许可 + 运维投入的累计支出",
+        "activeRequirements": "口径：当前状态为「运行中」的需求数量"
+      },
       "timeDimension": "时间维度",
       "dimAll": "全部",
       "dimDaily": "按日",
