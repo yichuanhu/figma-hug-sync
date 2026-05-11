@@ -34,7 +34,7 @@ const MySharedPage = () => {
 
   const {
     tab, type: typeF, source: sourceF, keyword, page, debouncedKeyword: debounced,
-    setTab, setType, setSource, setKeyword, setPage, reset,
+    setTab, setType, setKeyword, setPage, reset,
   } = useMyPublishedQuery();
 
   const [highlightId, setHighlightId] = useState<string | null>(null);
