@@ -181,9 +181,50 @@ const RequirementCreatePage = () => {
 
   const handlePrev = () => setCurrentStep((s) => Math.max(0, s - 1));
 
+  const locateFirstError = (errorFields: string[]) => {
+    // 基础信息字段
+    const step0Fields = new Set(['title', 'department', 'owner', 'priority']);
+    // 岗位与执行成本字段
+    const step1Fields = new Set(['execution_frequency', 'single_duration']);
+    let targetStep = 2;
+    const firstError = errorFields[0];
+    if (firstError) {
+      if (step0Fields.has(firstError)) targetStep = 0;
+      else if (step1Fields.has(firstError)) targetStep = 1;
+      else targetStep = 2;
+    }
+    setCurrentStep(targetStep);
+    // 滚动到错误字段
+    setTimeout(() => {
+      const el = document.querySelector(
+        `.requirement-create-page .semi-form-field-error-message`,
+      );
+      el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 100);
+  };
+
   const handleSubmit = async () => {
-    const ok = await validateCurrentStep(true);
-    if (!ok) return;
+    if (!formApi) return;
+    // 自定义 Slot 校验（部门 / 归属人）
+    if (!departmentValue) {
+      setCurrentStep(0);
+      Toast.warning(t('requirements.form.departmentRequired'));
+      return;
+    }
+    if (!ownerId) {
+      setCurrentStep(0);
+      Toast.warning(t('common.ownerRequired'));
+      return;
+    }
+    try {
+      await formApi.validate();
+    } catch (errors) {
+      const errorFields = errors && typeof errors === 'object'
+        ? Object.keys(errors as Record<string, unknown>)
+        : [];
+      locateFirstError(errorFields);
+      return;
+    }
     const values = (formApi?.getValues?.() ?? {}) as Record<string, unknown>;
     const systemKeys = new Set(['title', 'department', 'priority']);
     const form_data: Record<string, unknown> = {};
