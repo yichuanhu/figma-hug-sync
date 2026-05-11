@@ -388,6 +388,17 @@
         "status": "状态",
         "subStatus": "子状态",
         "reason": "原因"
+      },
+      "failedExport": {
+        "download": "下载失败数据",
+        "summary": "失败数据共 {{frontend}} 条前端校验失败 + {{server}} 条服务端导入失败，可下载完整明细",
+        "sourceFrontend": "前端校验",
+        "sourceServer": "服务端导入",
+        "serverFailed": "导入失败",
+        "cols": {
+          "source": "来源",
+          "errorType": "错误类型"
+        }
       }
     }
   },
