@@ -811,6 +811,8 @@
         "incompleteHint": "Please complete the missing items below:",
         "activateTitle": "Activate Template",
         "activateContent": "Activate template \"{{name}}\"? Other templates in this tenant will be deactivated.",
+        "activateNoApprovalNotice": "This template has no approval configured. Submitted requirements will skip approval & assessment and go directly to Pending Project.",
+        "activateNoApprovalConfirm": "Continue activation?",
         "forkTitle": "Create New Version",
         "forkActiveContent": "\"{{name}}\" is active. Editing will create a new draft version (original stays active).",
         "forkPresetContent": "\"{{name}}\" is a preset. Editing will create a new draft based on it.",

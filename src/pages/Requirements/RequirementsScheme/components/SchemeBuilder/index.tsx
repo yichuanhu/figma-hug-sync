@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Typography, Button, Tabs, TabPane, Toast, Modal, Space, Tag, Spin, Tooltip } from '@douyinfe/semi-ui';
+import { Typography, Button, Tabs, TabPane, Toast, Modal, Space, Tag, Spin, Tooltip, Banner } from '@douyinfe/semi-ui';
 import { ChevronLeft, Save, Play, CheckCircle, AlertCircle, Clock } from 'lucide-react';
 import {
   getSchemeById,
@@ -164,24 +164,39 @@ const SchemeBuilderPage = () => {
       Toast.warning(t('requirements.scheme.builder.activateDirty'));
       return;
     }
+    const wf = draftScheme.workflow_config;
+    const hasNoApproval = !wf || wf.template === 'none' || !wf.states || wf.states.length === 0;
+    const doActivate = async () => {
+      try {
+        await activateSchemeBuilder(draftScheme.id);
+        Toast.success(t('requirements.scheme.activateSuccess'));
+        setDirty(false);
+        navigate('/requirements/scheme');
+      } catch (e) {
+        const err = e as Error & { missing?: string[] };
+        if (err.missing) setMissingTabs(err.missing);
+        Toast.error(err.message);
+      }
+    };
     Modal.confirm({
       title: t('requirements.scheme.builder.activateTitle'),
-      content: t('requirements.scheme.builder.activateContent', { name: draftScheme.name }),
+      content: hasNoApproval ? (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <Banner
+            type="warning"
+            fullMode={false}
+            closeIcon={null}
+            description={t('requirements.scheme.builder.activateNoApprovalNotice')}
+            style={{ borderRadius: 6 }}
+          />
+          <div>{t('requirements.scheme.builder.activateNoApprovalConfirm')}</div>
+        </div>
+      ) : (
+        t('requirements.scheme.builder.activateContent', { name: draftScheme.name })
+      ),
       okText: t('requirements.scheme.activate'),
       cancelText: t('common.cancel'),
-      onOk: async () => {
-        try {
-          await activateSchemeBuilder(draftScheme.id);
-          Toast.success(t('requirements.scheme.activateSuccess'));
-          // 已激活，离开无需再确认
-          setDirty(false);
-          navigate('/requirements/scheme');
-        } catch (e) {
-          const err = e as Error & { missing?: string[] };
-          if (err.missing) setMissingTabs(err.missing);
-          Toast.error(err.message);
-        }
-      },
+      onOk: doActivate,
     });
   };
 
