@@ -240,15 +240,19 @@ const SchemeBuilderPage = () => {
               onClick={() => guardedNavigate('/requirements/scheme')}
             />
           </Tooltip>
-          <Title heading={3} className="scheme-builder-header-title">{draftScheme.name}</Title>
+          <Title
+            heading={3}
+            className="scheme-builder-header-title"
+            editable={{ onChange: (val) => patch({ name: (val || '').trim() || draftScheme.name }) }}
+          >
+            {draftScheme.name}
+          </Title>
           <Text type="tertiary">v{draftScheme.version}</Text>
-          {draftScheme.is_draft && <Tag color="orange" type="light" size="small">{t('requirements.scheme.builder.draftBadge')}</Tag>}
           {draftScheme.parent_id && <Tag color="blue" type="light" size="small">{t('requirements.scheme.builder.newVersionBadge')}</Tag>}
           {draftScheme.workflow_config?.template === 'none' && <Tag color="grey" type="light" size="small">无审批流</Tag>}
           {dirty && <Tag color="red" type="light" size="small">{t('requirements.scheme.builder.unsaved')}</Tag>}
         </div>
         <Space>
-          {savedHint}
           <Button icon={<Play size={16} strokeWidth={2} />} onClick={() => setTestDriveVisible(true)}>
             {t('requirements.scheme.builder.testDrive')}
           </Button>
