@@ -156,7 +156,7 @@ const FieldConfigPanel = ({ field, index, allFields, onPatch }: Props) => {
       <div className="fcp-section">
         <div className="fcp-section-title">依赖关系</div>
         <div className="fcp-grid">
-          <div className="fcp-field">
+          <div className="fcp-field full">
             <label>依赖字段</label>
             <Select
               value={dep?.field}
