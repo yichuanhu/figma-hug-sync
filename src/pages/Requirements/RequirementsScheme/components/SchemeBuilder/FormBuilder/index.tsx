@@ -15,12 +15,16 @@ interface Props {
   onChange: (fields: SchemeField[]) => void;
 }
 
-const SYSTEM_FIELDS: Array<{ key: string; label: string; type: string }> = [
+const SYSTEM_FIELDS: Array<{ key: string; label: string; type: string; required?: boolean }> = [
   { key: 'title', label: '标题', type: 'text' },
   { key: 'number', label: '编号', type: '自动生成' },
   { key: 'department_id', label: '所属部门', type: 'department_select' },
   { key: 'owner_id', label: '所属用户', type: 'user_select' },
   { key: 'status', label: '状态', type: '系统' },
+  { key: 'position_level', label: '岗位级别', type: 'select', required: true },
+  { key: 'position_cost', label: '岗位成本', type: 'number (元/小时)', required: true },
+  { key: 'execution_frequency', label: '执行频率', type: 'select', required: true },
+  { key: 'single_duration', label: '单次时长', type: 'number (分钟)', required: true },
 ];
 
 const TYPE_LABEL_KEY: Record<SchemeFieldType, string> = {
