@@ -210,6 +210,22 @@ const RobotPerformance = ({ data }: Props) => {
 
       {/* Status summary */}
       <div className="robot-status-summary">
+        <div className="robot-status-card highlight">
+          <div className="status-label">{t('operations.resourceEfficiency.interactiveOnlineLicense')}</div>
+          <div className="status-value">
+            <span style={{ color: COLORS.primary }}>{data.interactiveOnline}</span>
+            <span className="divider"> / </span>
+            <span className="total">{data.interactiveTotal}</span>
+          </div>
+        </div>
+        <div className="robot-status-card highlight">
+          <div className="status-label">{t('operations.resourceEfficiency.unattendedOnlineLicense')}</div>
+          <div className="status-value">
+            <span style={{ color: COLORS.success }}>{data.unattendedOnline}</span>
+            <span className="divider"> / </span>
+            <span className="total">{data.unattendedTotal}</span>
+          </div>
+        </div>
         <div className="robot-status-card">
           <div className="status-label">{t('operations.resourceEfficiency.statusWorking')}</div>
           <div className="status-value" style={{ color: COLORS.success }}>{data.working}</div>
