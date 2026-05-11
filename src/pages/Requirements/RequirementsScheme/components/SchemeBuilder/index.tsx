@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Typography, Button, Tabs, TabPane, Toast, Modal, Space, Tag, Spin, Tooltip, Banner } from '@douyinfe/semi-ui';
-import { ChevronLeft, Save, Play, CheckCircle, AlertCircle, Clock } from 'lucide-react';
+import { Typography, Button, Tabs, TabPane, Toast, Modal, Space, Tag, Spin, Tooltip, Banner, Input } from '@douyinfe/semi-ui';
+import { ChevronLeft, Save, Play, CheckCircle, AlertCircle, Clock, Pencil } from 'lucide-react';
 import {
   getSchemeById,
   updateSchemeBuilder,
@@ -37,6 +37,8 @@ const SchemeBuilderPage = () => {
   const [draftScheme, setDraftScheme] = useState<RequirementScheme | null>(null);
   const [dirty, setDirty] = useState(false);
   const [activeTab, setActiveTab] = useState<'form' | 'workflow'>('form');
+  const [editingName, setEditingName] = useState(false);
+  const [nameDraft, setNameDraft] = useState('');
   const [missingTabs, setMissingTabs] = useState<string[]>([]);
   const [testDriveVisible, setTestDriveVisible] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -213,16 +215,6 @@ const SchemeBuilderPage = () => {
 
 
 
-  const savedHint = useMemo(() => (
-    <Space spacing={4} align="center" style={{ color: 'var(--semi-color-text-2)', fontSize: 12 }}>
-      <Clock size={12} strokeWidth={2} />
-      <span>
-        {savedScheme?.updated_at
-          ? t('requirements.scheme.builder.lastSavedAt', { time: formatTime(savedScheme.updated_at) })
-          : t('requirements.scheme.builder.neverSaved')}
-      </span>
-    </Space>
-  ), [savedScheme, t]);
 
   if (loading || !draftScheme) {
     return <div className="scheme-builder-loading"><Spin size="large" /></div>;
@@ -240,15 +232,41 @@ const SchemeBuilderPage = () => {
               onClick={() => guardedNavigate('/requirements/scheme')}
             />
           </Tooltip>
-          <Title heading={3} className="scheme-builder-header-title">{draftScheme.name}</Title>
+          {editingName ? (
+            <Input
+              autoFocus
+              value={nameDraft}
+              onChange={setNameDraft}
+              onBlur={() => {
+                const v = (nameDraft || '').trim();
+                if (v && v !== draftScheme.name) patch({ name: v });
+                setEditingName(false);
+              }}
+              onEnterPress={() => {
+                const v = (nameDraft || '').trim();
+                if (v && v !== draftScheme.name) patch({ name: v });
+                setEditingName(false);
+              }}
+              maxLength={50}
+              style={{ width: 240, fontSize: 18, fontWeight: 600 }}
+            />
+          ) : (
+            <Title
+              heading={3}
+              className="scheme-builder-header-title"
+              style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6 }}
+              onClick={() => { setNameDraft(draftScheme.name); setEditingName(true); }}
+            >
+              {draftScheme.name}
+              <Pencil size={14} strokeWidth={2} style={{ color: 'var(--semi-color-text-2)' }} />
+            </Title>
+          )}
           <Text type="tertiary">v{draftScheme.version}</Text>
-          {draftScheme.is_draft && <Tag color="orange" type="light" size="small">{t('requirements.scheme.builder.draftBadge')}</Tag>}
           {draftScheme.parent_id && <Tag color="blue" type="light" size="small">{t('requirements.scheme.builder.newVersionBadge')}</Tag>}
           {draftScheme.workflow_config?.template === 'none' && <Tag color="grey" type="light" size="small">无审批流</Tag>}
           {dirty && <Tag color="red" type="light" size="small">{t('requirements.scheme.builder.unsaved')}</Tag>}
         </div>
         <Space>
-          {savedHint}
           <Button icon={<Play size={16} strokeWidth={2} />} onClick={() => setTestDriveVisible(true)}>
             {t('requirements.scheme.builder.testDrive')}
           </Button>

@@ -801,7 +801,7 @@
         "leaveOk": "Discard & Leave",
         "leaveCancel": "Keep Editing",
         "activateDirty": "You have unsaved changes. Please save the draft before activating.",
-        "testDrive": "Test Drive",
+        "testDrive": "Preview",
         "testDriveTitle": "Test Drive: Preview Form",
         "testDriveHint": "This is what business users will see. Fill in test data to experience the form.",
         "testDriveSubmitted": "Mock submission successful (preview only, not persisted)",
