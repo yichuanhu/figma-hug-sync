@@ -719,6 +719,8 @@
         "incompleteHint": "请完成以下缺失项后再保存：",
         "activateTitle": "激活模版",
         "activateContent": "确定将模版「{{name}}」设为激活状态？同租户下其他模版将自动失效。",
+        "activateNoApprovalNotice": "此模版无审批配置，需求提交后将跳过审批与评估，直接进入待立项状态。",
+        "activateNoApprovalConfirm": "确认要继续激活吗？",
         "forkTitle": "创建新版本",
         "forkActiveContent": "「{{name}}」已激活，编辑将创建新版本草稿（原版本保持激活）。",
         "forkPresetContent": "「{{name}}」为预设模版，编辑将基于其创建新草稿。",
