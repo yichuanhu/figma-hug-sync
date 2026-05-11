@@ -706,6 +706,7 @@
       "uploadSuccess": "Template uploaded successfully",
       "active": "Active",
       "preset": "Preset",
+      "editDisabledTip": "Activated templates cannot be edited directly. Please create a copy.",
       "activate": "Activate",
       "activateTitle": "Activate Template",
       "activateContent": "Activate template \"{{name}}\"? Other templates in this tenant will be deactivated.",
