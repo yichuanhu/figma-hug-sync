@@ -149,6 +149,7 @@ const RequirementsScheme = () => {
                   </div>
                   <Dropdown
                     trigger="click"
+                    clickToHide
                     position="bottomRight"
                     render={
                       <Dropdown.Menu>
