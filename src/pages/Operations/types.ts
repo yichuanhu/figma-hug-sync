@@ -180,3 +180,47 @@ export interface ResourceEfficiencyFilter {
   status: string;
   timeDimension: string;
 }
+
+// ============ 业务成果看板 ============
+export interface FunnelStage { name: string; value: number; }
+export interface BusinessVolumePoint { month: string; volume: number; }
+export interface TimeSavedPoint { month: string; hours: number; }
+export interface BusinessTypeShare { name: string; value: number; }
+export interface DepartmentOutcomeItem {
+  department: string;
+  requirementCount: number;
+  runningCount: number;
+  hoursSaved: number;
+  costSaved: number;
+}
+export interface DevCapacityData {
+  monthlyDelivered: number;
+  avgCycleDays: number;
+  developerCount: number;
+  capacityTrend: { month: string; delivered: number }[];
+}
+export interface BusinessOutcomesData {
+  funnel: FunnelStage[];
+  requirementProgress: {
+    total: number;
+    submitted: number;
+    approved: number;
+    developing: number;
+    running: number;
+    completed: number;
+  };
+  todayVolume: number;
+  totalVolume: number;
+  todayHoursSaved: number;
+  totalHoursSaved: number;
+  volumeTrend: BusinessVolumePoint[];
+  timeSavedTrend: TimeSavedPoint[];
+  businessTypeShare: BusinessTypeShare[];
+  departmentOutcomes: DepartmentOutcomeItem[];
+  devCapacity: DevCapacityData;
+}
+export interface BusinessOutcomesFilter {
+  timeRange: string;
+  department: string;
+  businessType: string;
+}
