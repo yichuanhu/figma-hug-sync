@@ -3143,6 +3143,7 @@
     },
     "roiAnalysis": {
       "title": "ROI深度分析",
+      "overallRoi": "整体ROI",
       "timeDimension": "时间维度",
       "dimAll": "全部",
       "dimDaily": "按日",
@@ -3192,7 +3193,35 @@
       "successRateTrend": "成功率趋势"
     },
     "businessOutcomes": {
-      "title": "业务成果看板"
+      "title": "业务成果看板",
+      "businessType": "业务条线",
+      "todayVolume": "今日业务量",
+      "totalVolume": "累计业务量",
+      "todayHoursSaved": "今日节约工时",
+      "totalHoursSaved": "累计节约工时",
+      "funnelTitle": "需求转化漏斗",
+      "typeShareTitle": "业务条线分布",
+      "progressTitle": "需求进度概览",
+      "totalRequirements": "需求总数",
+      "progress": {
+        "submitted": "已提报",
+        "approved": "已立项",
+        "developing": "开发中",
+        "running": "运行中",
+        "completed": "已完成"
+      },
+      "volumeTrendTitle": "业务量趋势",
+      "hoursTrendTitle": "节约工时趋势",
+      "hoursSaved": "节约工时",
+      "departmentTitle": "部门成果汇总",
+      "requirementCount": "需求数",
+      "runningCount": "运行中",
+      "costSaved": "节约成本",
+      "capacityTitle": "开发产能",
+      "monthlyDelivered": "本月交付",
+      "avgCycleDays": "平均周期",
+      "developerCount": "开发人员",
+      "capacityTrend": "交付趋势"
     },
     "costManagement": {
       "title": "成本管理"
