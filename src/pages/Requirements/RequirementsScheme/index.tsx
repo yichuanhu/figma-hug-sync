@@ -60,7 +60,7 @@ const RequirementsScheme = () => {
     Modal.confirm({
       title: t('requirements.scheme.activateTitle'),
       content: hasNoApproval
-        ? t('requirements.scheme.activateContent', { name: s.name }).replace(/。$/, '，') + t('requirements.scheme.builder.activateNoApprovalNotice')
+        ? `${t('requirements.scheme.activateContent', { name: s.name })} ${t('requirements.scheme.builder.activateNoApprovalNotice')}`
         : t('requirements.scheme.activateContent', { name: s.name }),
       okText: t('requirements.scheme.activate'),
       cancelText: t('common.cancel'),
