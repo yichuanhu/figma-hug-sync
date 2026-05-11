@@ -19,11 +19,12 @@ interface AssignedValuesTabProps {
   credentialId: string;
 }
 
-const PAGE_SIZE = 10;
+
 
 const AssignedValuesTab = ({ credentialId }: AssignedValuesTabProps) => {
   const { t } = useTranslation();
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const [refreshKey, setRefreshKey] = useState(0);
   const [formVisible, setFormVisible] = useState(false);
   const [editing, setEditing] = useState<AssignedValue | null>(null);
@@ -31,7 +32,7 @@ const AssignedValuesTab = ({ credentialId }: AssignedValuesTabProps) => {
 
   const all = useMemo(() => listAssignedValues(credentialId), [credentialId, refreshKey]);
   const total = all.length;
-  const data = all.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const data = all.slice((page - 1) * pageSize, page * pageSize);
 
   const refresh = useCallback(() => setRefreshKey((k) => k + 1), []);
 
@@ -155,21 +156,26 @@ const AssignedValuesTab = ({ credentialId }: AssignedValuesTabProps) => {
         }
         pagination={false}
       />
-      {total > PAGE_SIZE && (
-        <div className="list-pagination" style={{ marginTop: 12 }}>
+      {total > 0 && (
+        <div className="list-pagination">
           <Text type="tertiary">
             {t('common.showingRecords', {
-              start: (page - 1) * PAGE_SIZE + 1,
-              end: Math.min(page * PAGE_SIZE, total),
+              start: (page - 1) * pageSize + 1,
+              end: Math.min(page * pageSize, total),
               total,
             })}
           </Text>
-          <Pagination
-            currentPage={page}
-            pageSize={PAGE_SIZE}
-            total={total}
-            onPageChange={setPage}
-          />
+          <div className="list-pagination-right">
+            <Text type="tertiary">{t('common.totalPages', { total: Math.ceil(total / pageSize) })}</Text>
+            <Pagination
+              currentPage={page}
+              pageSize={pageSize}
+              total={total}
+              showSizeChanger
+              onPageChange={setPage}
+              onPageSizeChange={(size: number) => { setPage(1); setPageSize(size); }}
+            />
+          </div>
         </div>
       )}
 
