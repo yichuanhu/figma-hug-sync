@@ -171,6 +171,12 @@ export interface ResourceEfficiencyData {
   utilizationTrend: UtilizationTrendPoint[];
   groupUtilization: GroupUtilization[];
   successRateTrend: SuccessRateTrendPoint[];
+  // 任务执行量趋势（按月成功 vs 失败）+ 平均执行时长
+  taskVolumeTrend: { month: string; success: number; failed: number }[];
+  avgExecutionMinutes: number;
+  avgExecutionTrend: number; // 环比百分比
+  // 失败关联流程 TopX
+  failedProcessTop: { processName: string; failedCount: number; totalCount: number; ratio: number }[];
 }
 
 // 资源效能 - 筛选条件
