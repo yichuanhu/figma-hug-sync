@@ -297,7 +297,7 @@ const FieldCard = ({
   field,
   selected,
   hasError,
-  allFields,
+  allFields: _allFields,
   onSelect,
   onPatch,
   onDuplicate,
