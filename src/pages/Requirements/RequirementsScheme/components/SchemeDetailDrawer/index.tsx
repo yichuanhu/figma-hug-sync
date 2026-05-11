@@ -289,29 +289,6 @@ const SchemeDetailDrawer = ({
               )}
             </div>
           </TabPane>
-
-          <TabPane tab={t('requirements.scheme.tab.cost')} itemKey="cost">
-            <div className="scheme-detail-drawer-content">
-              {scheme.cost_config ? (
-                <div className="scheme-detail-drawer-meta-grid">
-                  <Text className="label">{t('requirements.scheme.avgHourlyCost')}</Text>
-                  <Text>¥ {scheme.cost_config.avg_hourly_cost}</Text>
-                  <Text className="label">{t('requirements.scheme.workingHoursPerDay')}</Text>
-                  <Text>{scheme.cost_config.working_hours_per_day} h</Text>
-                  <Text className="label">{t('requirements.scheme.workingDaysPerMonth')}</Text>
-                  <Text>{scheme.cost_config.working_days_per_month} d</Text>
-                  {scheme.cost_config.custom_basis && (
-                    <>
-                      <Text className="label">{t('requirements.scheme.customBasis')}</Text>
-                      <Text>{scheme.cost_config.custom_basis}</Text>
-                    </>
-                  )}
-                </div>
-              ) : (
-                <Empty description={t('requirements.scheme.notConfigured')} />
-              )}
-            </div>
-          </TabPane>
         </Tabs>
       )}
     </DetailDrawerWrapper>
