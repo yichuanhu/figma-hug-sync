@@ -181,7 +181,7 @@ const SchemeBuilderPage = () => {
     Modal.confirm({
       title: t('requirements.scheme.builder.activateTitle'),
       content: hasNoApproval
-        ? t('requirements.scheme.builder.activateNoApprovalNotice')
+        ? `${t('requirements.scheme.builder.activateContent', { name: draftScheme.name })} ${t('requirements.scheme.builder.activateNoApprovalNotice')}`
         : t('requirements.scheme.builder.activateContent', { name: draftScheme.name }),
       okText: t('requirements.scheme.activate'),
       cancelText: t('common.cancel'),
