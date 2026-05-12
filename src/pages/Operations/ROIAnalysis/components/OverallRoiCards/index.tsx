@@ -20,6 +20,10 @@ const OverallRoiCards = ({ data }: Props) => {
     ? Math.round(((data.totalSavedCost - data.totalInvestmentCost) / data.totalInvestmentCost) * 100)
     : 0;
 
+  const paybackValue = data.paybackMonths == null
+    ? t('operations.roiAnalysis.notAvailable')
+    : `${data.paybackMonths.toFixed(1)} ${t('operations.roiAnalysis.months')}`;
+
   const cards = [
     {
       key: 'roi', tone: 'primary',
@@ -36,10 +40,10 @@ const OverallRoiCards = ({ data }: Props) => {
       trend: data.savedCostTrend,
     },
     {
-      key: 'investmentCost', tone: 'warning',
-      label: t('operations.dashboard.totalInvestmentCost'),
-      tip: t('operations.roiAnalysis.tips.totalInvestmentCost'),
-      value: formatCurrency(data.totalInvestmentCost),
+      key: 'paybackMonths', tone: 'warning',
+      label: t('operations.roiAnalysis.paybackMonths'),
+      tip: t('operations.roiAnalysis.tips.paybackMonths'),
+      value: paybackValue,
       trend: null,
     },
     {

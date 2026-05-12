@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Typography } from '@douyinfe/semi-ui';
+import { Typography, Spin, Toast } from '@douyinfe/semi-ui';
 import RoiAnalysisFilterBar from './components/RoiAnalysisFilterBar';
 import OverallRoiCards from './components/OverallRoiCards';
 import RequirementRoiSection from './components/RequirementRoiSection';
@@ -24,20 +24,28 @@ const ROIAnalysis = () => {
     department: 'all',
     project: 'all',
     timeDimension: 'monthly',
+    classification: 'all',
   });
+  const [loading, setLoading] = useState(false);
 
   const handleRefresh = () => {
-    // Future API integration
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      Toast.success(t('operations.roiAnalysis.refreshed'));
+    }, 600);
   };
 
   return (
     <div className="roi-analysis-page">
       <Title heading={3} style={{ marginBottom: 24 }}>{t('operations.roiAnalysis.title')}</Title>
       <RoiAnalysisFilterBar filter={filter} onFilterChange={setFilter} onRefresh={handleRefresh} />
-      <OverallRoiCards data={mockRoiMetrics} />
-      <RequirementRoiSection data={mockRequirementRoiDetails} />
-      <DepartmentRoiSection data={mockDepartmentRoiDetails} />
-      <ProjectRoiSection data={mockProjectRoiDetails} />
+      <Spin spinning={loading}>
+        <OverallRoiCards data={mockRoiMetrics} />
+        <RequirementRoiSection data={mockRequirementRoiDetails} />
+        <DepartmentRoiSection data={mockDepartmentRoiDetails} />
+        <ProjectRoiSection data={mockProjectRoiDetails} />
+      </Spin>
     </div>
   );
 };

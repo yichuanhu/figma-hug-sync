@@ -22,8 +22,8 @@ const BusyIdleTopX = ({ robots, mode, topN = 5 }: Props) => {
   const accentColor = mode === 'busy' ? '#EF4444' : '#3B82F6';
   const Icon = mode === 'busy' ? Flame : Snowflake;
   const title = mode === 'busy'
-    ? t('operations.resourceEfficiency.busyTopTitle')
-    : t('operations.resourceEfficiency.idleTopTitle');
+    ? t('operations.resourceEfficiency.busyTopTitleN', { n: topN })
+    : t('operations.resourceEfficiency.idleTopTitleN', { n: topN });
 
   return (
     <div className="busy-idle-top dashboard-card" style={{ marginBottom: 0 }}>

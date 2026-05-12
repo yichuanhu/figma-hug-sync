@@ -8,6 +8,7 @@ import './index.less';
 
 interface Props {
   data: ResourceEfficiencyData;
+  topN?: number;
 }
 
 const COLORS = {
@@ -28,7 +29,7 @@ const TOOLTIP_STYLE = {
   extraCssText: 'box-shadow: 0 4px 16px rgba(0,0,0,0.08); border-radius: 8px;',
 };
 
-const RobotPerformance = ({ data }: Props) => {
+const RobotPerformance = ({ data, topN = 5 }: Props) => {
   const { t } = useTranslation();
 
   const statusMap: Record<string, { label: string; color: string }> = {
@@ -271,8 +272,8 @@ const RobotPerformance = ({ data }: Props) => {
 
       {/* Busy / Idle TopX */}
       <div className="robot-perf-charts-row" style={{ marginBottom: 16 }}>
-        <BusyIdleTopX robots={data.robotDetails} mode="busy" />
-        <BusyIdleTopX robots={data.robotDetails} mode="idle" />
+        <BusyIdleTopX robots={data.robotDetails} mode="busy" topN={topN} />
+        <BusyIdleTopX robots={data.robotDetails} mode="idle" topN={topN} />
       </div>
 
       {/* Robot detail table */}
