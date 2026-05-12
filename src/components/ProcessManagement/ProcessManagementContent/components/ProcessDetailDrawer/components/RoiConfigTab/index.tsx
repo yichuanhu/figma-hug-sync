@@ -114,6 +114,7 @@ const RoiConfigTab = ({
           value={mode}
           onChange={(e) => update({ businessVolumeConfig: e.target.value as BusinessVolumeConfig })}
           className="roi-tab-mode-switch"
+          disabled={!isEditing}
         >
           <Radio value="FIXED">FIXED 固定值</Radio>
           <Radio value="PARAM">PARAM 参数模式</Radio>
