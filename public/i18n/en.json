@@ -979,7 +979,8 @@
         "cost": "Saved Cost",
         "effort": "Dev Effort",
         "versions": "Version History",
-        "changeLog": "Change Log"
+        "changeLog": "Change Log",
+        "devScheme": "Dev Scheme"
       },
       "effort": {
         "unit": "person-days",
@@ -1005,7 +1006,12 @@
       "changeLog": {
         "empty": "No change records",
         "publishedBy": "Published by {{name}} at {{time}}",
-        "reasonTitle": "Reason"
+        "reasonTitle": "Reason",
+        "type": {
+          "content": "Content Change",
+          "devSchemeUploaded": "Dev Scheme Uploaded",
+          "devSchemeDeleted": "Dev Scheme Deleted"
+        }
       },
       "ownerUnassigned": "Unassigned",
       "customFieldsTitle": "Requirement Details",
@@ -1023,6 +1029,47 @@
         "modalTip": "Select a workspace to include this requirement and start development.",
         "linkSuccess": "Linked to workspace \"{{name}}\"",
         "selectPlaceholder": "Select a workspace"
+      }
+    },
+    "devScheme": {
+      "totalCount": "{{count}} version(s) in total",
+      "uploadButton": "Upload New Version",
+      "empty": "No development scheme documents yet",
+      "col": {
+        "version": "Version",
+        "fileName": "File",
+        "size": "Size",
+        "uploader": "Uploader",
+        "uploadedAt": "Uploaded At",
+        "note": "Note",
+        "actions": "Actions"
+      },
+      "delete": {
+        "title": "Delete version v{{version}}",
+        "content": "Are you sure to delete this version? It will be recorded in the change log and cannot be recovered.",
+        "success": "Deleted"
+      },
+      "download": {
+        "started": "Downloading {{fileName}}"
+      },
+      "upload": {
+        "title": "Upload Development Scheme",
+        "confirm": "Upload",
+        "dragHint": "Click or drag a file here to upload",
+        "formatHint": "Supports PDF / DOCX / MD, up to 50MB per file",
+        "noteLabel": "Update note (optional)",
+        "notePlaceholder": "Briefly describe the changes so collaborators understand updates",
+        "nextVersion": "This upload will create v{{version}}",
+        "notifyRecipients": "Recipients will be notified: {{names}}",
+        "success": "Uploaded successfully"
+      },
+      "error": {
+        "generic": "Operation failed, please try again",
+        "fileRequired": "Please choose a file first",
+        "invalidState": "Current requirement status does not allow uploading dev scheme",
+        "unsupportedType": "Only PDF / DOCX / MD files are supported",
+        "fileTooLarge": "File exceeds the 50MB limit",
+        "notMember": "You are not a member of the workspace, cannot manage dev scheme"
       }
     },
     "approvalFlow": {
