@@ -94,7 +94,7 @@ const BusinessOutcomes = () => {
     series: [{
       type: 'funnel',
       left: '5%', right: '5%', top: 16, bottom: 8, width: '90%',
-      min: 0, sort: 'descending', gap: 4,
+      min: 0, minSize: '30%', sort: 'descending', gap: 4,
       label: {
         show: true, position: 'inside', color: '#fff', fontWeight: 600, fontSize: 12,
         formatter: (p: any) => p.data.conversionRate != null
