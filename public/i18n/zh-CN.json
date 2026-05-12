@@ -3473,7 +3473,109 @@
       "title": "成本管理"
     },
     "platformOperations": {
-      "title": "平台运营"
+      "title": "平台运营",
+      "tabs": {
+        "announcements": "公告管理",
+        "resources": "可下载资源管理"
+      },
+      "announcements": {
+        "create": "新建公告",
+        "edit": "编辑公告",
+        "searchPlaceholder": "搜索公告标题",
+        "columns": {
+          "title": "标题",
+          "summary": "摘要",
+          "isBanner": "Banner",
+          "status": "状态",
+          "publishedAt": "发布时间",
+          "actions": "操作"
+        },
+        "status": { "draft": "草稿", "published": "已发布" },
+        "isBanner": { "yes": "是", "no": "否" },
+        "actions": {
+          "publish": "发布",
+          "unpublish": "撤销发布",
+          "edit": "编辑",
+          "delete": "删除"
+        },
+        "form": {
+          "title": "标题",
+          "titlePlaceholder": "请输入公告标题",
+          "summary": "摘要",
+          "summaryPlaceholder": "用于首页侧边栏副标题（可选）",
+          "priority": "优先级",
+          "priorityOptions": { "urgent": "紧急", "important": "重要", "normal": "普通" },
+          "isBanner": "标记为首页 Banner",
+          "bannerImage": "Banner 图片",
+          "bannerImageHint": "支持 JPG / PNG / GIF / WebP，单张不超过 5MB",
+          "bannerVersion": "Banner 角标（可选）",
+          "content": "内容",
+          "contentPlaceholder": "请输入公告内容（v1 仅支持纯文本）"
+        },
+        "validation": {
+          "titleRequired": "标题不能为空",
+          "contentRequired": "内容不能为空",
+          "bannerImageRequired": "Banner 公告需上传 Banner 图片",
+          "imageInvalid": "仅支持 JPG / PNG / GIF / WebP 格式图片",
+          "imageTooLarge": "Banner 图片不能超过 5MB"
+        },
+        "confirm": {
+          "publishTitle": "确认发布该公告？",
+          "publishContent": "发布后，公告将立即出现在首页 Banner / 侧边栏。",
+          "unpublishTitle": "确认撤销发布？",
+          "unpublishContent": "撤销发布后，公告将从首页移除，并回退为草稿状态。",
+          "deleteTitle": "确认删除该公告？",
+          "deletePublishedContent": "该公告已发布，删除后首页将不再展示，且无法恢复。",
+          "deleteDraftContent": "草稿删除后无法恢复。"
+        },
+        "toast": {
+          "created": "公告已创建",
+          "updated": "公告已更新",
+          "published": "公告已发布",
+          "unpublished": "已撤销发布",
+          "deleted": "公告已删除"
+        },
+        "empty": "暂无公告"
+      },
+      "resources": {
+        "upload": "上传资源",
+        "searchPlaceholder": "搜索资源名称",
+        "columns": {
+          "resourceName": "资源名称",
+          "fileName": "文件名",
+          "fileSize": "大小",
+          "resourceType": "类型",
+          "description": "描述",
+          "uploadedBy": "上传者",
+          "createdAt": "上传时间",
+          "actions": "操作"
+        },
+        "actions": { "download": "下载", "delete": "删除" },
+        "types": { "installer": "安装包", "document": "文档", "other": "其他" },
+        "form": {
+          "resourceName": "资源名称",
+          "resourceNamePlaceholder": "请输入资源名称",
+          "file": "上传文件",
+          "fileHint": "单个文件不超过 50MB；同名文件将覆盖旧文件",
+          "resourceType": "资源类型",
+          "description": "描述",
+          "descriptionPlaceholder": "用于在前台展示的简短描述（可选）"
+        },
+        "validation": {
+          "nameRequired": "资源名称不能为空",
+          "fileRequired": "请上传文件",
+          "fileTooLarge": "文件大小不能超过 50MB"
+        },
+        "confirm": {
+          "deleteTitle": "确认删除该资源？",
+          "deleteContent": "删除后用户将无法再下载此资源，且无法恢复。"
+        },
+        "toast": {
+          "uploaded": "资源已上传",
+          "deleted": "资源已删除"
+        },
+        "empty": "暂无可下载资源"
+      }
     }
   },
   "userCard": {

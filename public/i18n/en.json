@@ -4103,7 +4103,109 @@
       "title": "Cost Management"
     },
     "platformOperations": {
-      "title": "Platform Operations"
+      "title": "Platform Operations",
+      "tabs": {
+        "announcements": "Announcements",
+        "resources": "Downloadable Resources"
+      },
+      "announcements": {
+        "create": "New Announcement",
+        "edit": "Edit Announcement",
+        "searchPlaceholder": "Search announcement title",
+        "columns": {
+          "title": "Title",
+          "summary": "Summary",
+          "isBanner": "Banner",
+          "status": "Status",
+          "publishedAt": "Published At",
+          "actions": "Actions"
+        },
+        "status": { "draft": "Draft", "published": "Published" },
+        "isBanner": { "yes": "Yes", "no": "No" },
+        "actions": {
+          "publish": "Publish",
+          "unpublish": "Unpublish",
+          "edit": "Edit",
+          "delete": "Delete"
+        },
+        "form": {
+          "title": "Title",
+          "titlePlaceholder": "Enter announcement title",
+          "summary": "Summary",
+          "summaryPlaceholder": "Used as subtitle on home sidebar (optional)",
+          "priority": "Priority",
+          "priorityOptions": { "urgent": "Urgent", "important": "Important", "normal": "Normal" },
+          "isBanner": "Mark as Home Banner",
+          "bannerImage": "Banner Image",
+          "bannerImageHint": "JPG / PNG / GIF / WebP, up to 5MB",
+          "bannerVersion": "Banner Badge (optional)",
+          "content": "Content",
+          "contentPlaceholder": "Enter announcement content (v1 plain text only)"
+        },
+        "validation": {
+          "titleRequired": "Title is required",
+          "contentRequired": "Content is required",
+          "bannerImageRequired": "Banner image is required for banner announcements",
+          "imageInvalid": "Only JPG / PNG / GIF / WebP images are supported",
+          "imageTooLarge": "Banner image must be smaller than 5MB"
+        },
+        "confirm": {
+          "publishTitle": "Publish this announcement?",
+          "publishContent": "Once published, it will immediately appear on the homepage banner / sidebar.",
+          "unpublishTitle": "Unpublish this announcement?",
+          "unpublishContent": "It will be removed from the homepage and reverted to draft.",
+          "deleteTitle": "Delete this announcement?",
+          "deletePublishedContent": "This announcement is published. Deletion is irreversible and it will be removed from the homepage.",
+          "deleteDraftContent": "Draft deletion is irreversible."
+        },
+        "toast": {
+          "created": "Announcement created",
+          "updated": "Announcement updated",
+          "published": "Announcement published",
+          "unpublished": "Announcement unpublished",
+          "deleted": "Announcement deleted"
+        },
+        "empty": "No announcements yet"
+      },
+      "resources": {
+        "upload": "Upload Resource",
+        "searchPlaceholder": "Search resource name",
+        "columns": {
+          "resourceName": "Resource Name",
+          "fileName": "File Name",
+          "fileSize": "Size",
+          "resourceType": "Type",
+          "description": "Description",
+          "uploadedBy": "Uploaded By",
+          "createdAt": "Uploaded At",
+          "actions": "Actions"
+        },
+        "actions": { "download": "Download", "delete": "Delete" },
+        "types": { "installer": "Installer", "document": "Document", "other": "Other" },
+        "form": {
+          "resourceName": "Resource Name",
+          "resourceNamePlaceholder": "Enter resource name",
+          "file": "File",
+          "fileHint": "Up to 50MB per file. Same file name will overwrite the old one.",
+          "resourceType": "Resource Type",
+          "description": "Description",
+          "descriptionPlaceholder": "Short description shown to end users (optional)"
+        },
+        "validation": {
+          "nameRequired": "Resource name is required",
+          "fileRequired": "Please upload a file",
+          "fileTooLarge": "File must be smaller than 50MB"
+        },
+        "confirm": {
+          "deleteTitle": "Delete this resource?",
+          "deleteContent": "Users will no longer be able to download it, and this action cannot be undone."
+        },
+        "toast": {
+          "uploaded": "Resource uploaded",
+          "deleted": "Resource deleted"
+        },
+        "empty": "No downloadable resources yet"
+      }
     }
   },
   "userCard": {

@@ -1,9 +1,13 @@
-import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tag } from '@douyinfe/semi-ui';
 import useEmblaCarousel from 'embla-carousel-react';
-import { Palette, Cpu } from 'lucide-react';
-import { announcements, banners } from '../../mockData';
+import { useState, useEffect, useCallback } from 'react';
+import { Palette, Cpu, Megaphone } from 'lucide-react';
+import {
+  getBannerAnnouncements,
+  getPublishedAnnouncements,
+  usePlatformOpsData,
+} from '@/pages/Operations/PlatformOperations/mockData';
 import apaCreatorBanner from '@/assets/banners/apa-creator-release.png';
 import apaWorkerBanner from '@/assets/banners/apa-worker-release.png';
 import './index.less';
@@ -16,6 +20,7 @@ const bannerImageMap: Record<string, string> = {
 const bannerIconMap: Record<string, React.ComponentType<any>> = {
   Palette,
   Cpu,
+  Megaphone,
 };
 
 const priorityConfig: Record<string, { color: 'red' | 'orange' | 'blue'; label: string }> = {
@@ -26,8 +31,12 @@ const priorityConfig: Record<string, { color: 'red' | 'orange' | 'blue'; label: 
 
 const AnnouncementSection = () => {
   const { t } = useTranslation();
+  usePlatformOpsData();
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
   const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const banners = getBannerAnnouncements();
+  const announcements = getPublishedAnnouncements(5);
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
@@ -38,17 +47,18 @@ const AnnouncementSection = () => {
     if (!emblaApi) return;
     emblaApi.on('select', onSelect);
     onSelect();
-
-    // Auto-play
-    const interval = setInterval(() => {
-      emblaApi.scrollNext();
-    }, 5000);
-
+    const interval = setInterval(() => emblaApi.scrollNext(), 5000);
     return () => {
       clearInterval(interval);
       emblaApi.off('select', onSelect);
     };
   }, [emblaApi, onSelect]);
+
+  const resolveBannerImage = (b: ReturnType<typeof getBannerAnnouncements>[number]) => {
+    if (b.bannerImageUrl) return b.bannerImageUrl;
+    if (b.bannerImageKey && bannerImageMap[b.bannerImageKey]) return bannerImageMap[b.bannerImageKey];
+    return undefined;
+  };
 
   return (
     <div className="home-card announcement-section">
@@ -56,30 +66,31 @@ const AnnouncementSection = () => {
         <span className="home-card-title">{t('homepage.announcements.title')}</span>
       </div>
 
-      {/* Announcement Body - Side by Side */}
       <div className="announcement-body">
-        {/* Banner Carousel */}
         <div className="banner-carousel" ref={emblaRef}>
           <div className="banner-carousel-container">
             {banners.map((banner) => {
-              const IconComp = bannerIconMap[banner.icon];
+              const img = resolveBannerImage(banner);
+              const IconComp = banner.bannerIcon ? bannerIconMap[banner.bannerIcon] : undefined;
               return (
                 <div
                   key={banner.id}
-                  className={`banner-slide${banner.image && bannerImageMap[banner.image] ? ' has-image' : ''}`}
-                  style={banner.image && bannerImageMap[banner.image] ? undefined : { background: banner.gradient }}
+                  className={`banner-slide${img ? ' has-image' : ''}`}
+                  style={img ? undefined : { background: banner.bannerGradient ?? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}
                 >
-                  {banner.image && bannerImageMap[banner.image] ? (
-                    <img src={bannerImageMap[banner.image]} alt={banner.title} className="banner-slide-image" />
+                  {img ? (
+                    <img src={img} alt={banner.title} className="banner-slide-image" />
                   ) : (
                     <>
                       <div className="banner-slide-content">
                         <div className="banner-slide-title">{banner.title}</div>
-                        <div className="banner-slide-subtitle">{banner.subtitle}</div>
-                        <div className="banner-slide-version">{banner.version}</div>
+                        <div className="banner-slide-subtitle">{banner.summary}</div>
+                        {banner.bannerVersion && (
+                          <div className="banner-slide-version">{banner.bannerVersion}</div>
+                        )}
                       </div>
                       <div className="banner-slide-icon">
-                        {IconComp && <IconComp size={48} strokeWidth={1.5} />}
+                        {IconComp ? <IconComp size={48} strokeWidth={1.5} /> : <Megaphone size={48} strokeWidth={1.5} />}
                       </div>
                     </>
                   )}
@@ -87,18 +98,19 @@ const AnnouncementSection = () => {
               );
             })}
           </div>
-          <div className="banner-dots">
-            {banners.map((_, index) => (
-              <button
-                key={index}
-                className={`banner-dot ${index === selectedIndex ? 'active' : ''}`}
-                onClick={() => emblaApi?.scrollTo(index)}
-              />
-            ))}
-          </div>
+          {banners.length > 1 && (
+            <div className="banner-dots">
+              {banners.map((_, index) => (
+                <button
+                  key={index}
+                  className={`banner-dot ${index === selectedIndex ? 'active' : ''}`}
+                  onClick={() => emblaApi?.scrollTo(index)}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* Announcement List */}
         <div className="announcement-list">
           {announcements.slice(0, 3).map((item) => {
             const config = priorityConfig[item.priority];
@@ -109,9 +121,11 @@ const AnnouncementSection = () => {
                     <Tag color={config.color} size="small">{config.label}</Tag>
                     <span className="announcement-item-title">{item.title}</span>
                   </div>
-                  <div className="announcement-item-subtitle">{item.subtitle}</div>
+                  {item.summary && <div className="announcement-item-subtitle">{item.summary}</div>}
                 </div>
-                <div className="announcement-item-time">{item.time}</div>
+                <div className="announcement-item-time">
+                  {item.publishedAt ? item.publishedAt.slice(0, 10) : ''}
+                </div>
               </div>
             );
           })}
