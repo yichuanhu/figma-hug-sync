@@ -48,31 +48,31 @@ const RoiAnalysisFilterBar = ({ filter, onFilterChange, onRefresh }: Props) => {
       <div className="roi-analysis-filter-items">
         <div className="roi-analysis-filter-item">
           <span className="roi-analysis-filter-label">{t('operations.dashboard.timeRange')}</span>
-          <Select size="small" value={filter.timeRange} optionList={timeRangeOptions}
+          <Select value={filter.timeRange} optionList={timeRangeOptions}
             onChange={(val) => onFilterChange({ ...filter, timeRange: val as string })} style={{ width: 120 }} />
         </div>
         <div className="roi-analysis-filter-item">
           <span className="roi-analysis-filter-label">{t('operations.dashboard.department')}</span>
-          <Select size="small" value={filter.department} optionList={localizedDepartments}
+          <Select value={filter.department} optionList={localizedDepartments}
             onChange={(val) => onFilterChange({ ...filter, department: val as string })} style={{ width: 120 }} />
         </div>
         <div className="roi-analysis-filter-item">
           <span className="roi-analysis-filter-label">{t('operations.dashboard.project')}</span>
-          <Select size="small" value={filter.project} optionList={localizedProjects}
+          <Select value={filter.project} optionList={localizedProjects}
             onChange={(val) => onFilterChange({ ...filter, project: val as string })} style={{ width: 140 }} />
         </div>
         <div className="roi-analysis-filter-item">
           <span className="roi-analysis-filter-label">{t('operations.roiAnalysis.timeDimension')}</span>
-          <Select size="small" value={filter.timeDimension} optionList={timeDimensionOptions}
+          <Select value={filter.timeDimension} optionList={timeDimensionOptions}
             onChange={(val) => onFilterChange({ ...filter, timeDimension: val as string })} style={{ width: 120 }} />
         </div>
         <div className="roi-analysis-filter-item">
           <span className="roi-analysis-filter-label">{t('operations.roiAnalysis.classification')}</span>
-          <Select size="small" value={filter.classification} optionList={localizedClassifications}
+          <Select value={filter.classification} optionList={localizedClassifications}
             onChange={(val) => onFilterChange({ ...filter, classification: val as string })} style={{ width: 140 }} />
         </div>
       </div>
-      <Button icon={<RefreshCw size={16} strokeWidth={2} />} size="small" onClick={onRefresh}>
+      <Button icon={<RefreshCw size={16} strokeWidth={2} />} onClick={onRefresh}>
         {t('common.refresh')}
       </Button>
     </div>

@@ -361,31 +361,31 @@ const BusinessOutcomes = () => {
         <div className="bo-filter-items">
           <div className="bo-filter-item">
             <span className="bo-filter-label">{t('operations.dashboard.timeRange')}</span>
-            <Select size="small" value={filter.timeRange} optionList={timeOptions}
+            <Select value={filter.timeRange} optionList={timeOptions}
               onChange={(v) => setFilter({ ...filter, timeRange: v as string })} style={{ width: 120 }} />
           </div>
           <div className="bo-filter-item">
             <span className="bo-filter-label">{t('operations.dashboard.department')}</span>
-            <Select size="small" value={filter.department} optionList={deptOptions}
+            <Select value={filter.department} optionList={deptOptions}
               onChange={(v) => setFilter({ ...filter, department: v as string })} style={{ width: 140 }} />
           </div>
           <div className="bo-filter-item">
             <span className="bo-filter-label">{t('operations.businessOutcomes.businessType')}</span>
-            <Select size="small" value={filter.businessType} optionList={bizOptions}
+            <Select value={filter.businessType} optionList={bizOptions}
               onChange={(v) => setFilter({ ...filter, businessType: v as string })} style={{ width: 140 }} />
           </div>
           <div className="bo-filter-item">
             <span className="bo-filter-label">{t('operations.businessOutcomes.classification')}</span>
-            <Select size="small" value={filter.classification} optionList={classificationOptions}
+            <Select value={filter.classification} optionList={classificationOptions}
               onChange={(v) => setFilter({ ...filter, classification: v as string })} style={{ width: 140 }} />
           </div>
           <div className="bo-filter-item">
             <span className="bo-filter-label">{t('operations.businessOutcomes.timeDimension')}</span>
-            <Select size="small" value={filter.timeDimension} optionList={timeDimensionOptions}
+            <Select value={filter.timeDimension} optionList={timeDimensionOptions}
               onChange={(v) => setFilter({ ...filter, timeDimension: v as string })} style={{ width: 110 }} />
           </div>
         </div>
-        <Button icon={<RefreshCw size={16} strokeWidth={2} />} size="small" onClick={handleRefresh}>
+        <Button icon={<RefreshCw size={16} strokeWidth={2} />} onClick={handleRefresh}>
           {t('common.refresh')}
         </Button>
       </div>

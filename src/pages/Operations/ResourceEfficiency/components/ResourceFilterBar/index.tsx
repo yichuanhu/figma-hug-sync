@@ -46,13 +46,12 @@ const ResourceFilterBar = ({ filter, onFilterChange, onRefresh }: Props) => {
       <div className="resource-filter-items">
         <div className="resource-filter-item">
           <span className="resource-filter-label">{t('operations.dashboard.timeRange')}</span>
-          <Select size="small" value={filter.timeRange} optionList={timeRangeOptions}
+          <Select value={filter.timeRange} optionList={timeRangeOptions}
             onChange={(val) => onFilterChange({ ...filter, timeRange: val as string })} style={{ width: 120 }} />
         </div>
         <div className="resource-filter-item">
           <span className="resource-filter-label">{t('operations.dashboard.department')}</span>
           <Select
-            size="small"
             multiple
             maxTagCount={2}
             value={filter.departments}
@@ -64,16 +63,16 @@ const ResourceFilterBar = ({ filter, onFilterChange, onRefresh }: Props) => {
         </div>
         <div className="resource-filter-item">
           <span className="resource-filter-label">{t('common.status')}</span>
-          <Select size="small" value={filter.status} optionList={localizedStatuses}
+          <Select value={filter.status} optionList={localizedStatuses}
             onChange={(val) => onFilterChange({ ...filter, status: val as string })} style={{ width: 120 }} />
         </div>
         <div className="resource-filter-item">
           <span className="resource-filter-label">{t('operations.roiAnalysis.timeDimension')}</span>
-          <Select size="small" value={filter.timeDimension} optionList={timeDimensionOptions}
+          <Select value={filter.timeDimension} optionList={timeDimensionOptions}
             onChange={(val) => onFilterChange({ ...filter, timeDimension: val as string })} style={{ width: 120 }} />
         </div>
       </div>
-      <Button icon={<RefreshCw size={16} strokeWidth={2} />} size="small" onClick={onRefresh}>
+      <Button icon={<RefreshCw size={16} strokeWidth={2} />} onClick={onRefresh}>
         {t('common.refresh')}
       </Button>
     </div>
