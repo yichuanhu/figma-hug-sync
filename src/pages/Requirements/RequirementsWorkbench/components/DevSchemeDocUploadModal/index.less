@@ -1,0 +1,45 @@
+.dev-scheme-upload-modal {
+  .semi-upload-drag-area {
+    background: var(--semi-color-fill-0);
+    border: 1px dashed var(--semi-color-border);
+    border-radius: 6px;
+    padding: 24px;
+  }
+  .upload-hint {
+    color: var(--semi-color-text-2);
+    font-size: 12px;
+    margin-top: 8px;
+  }
+  .selected-file {
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    background: var(--semi-color-fill-0);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    .file-meta {
+      color: var(--semi-color-text-2);
+    }
+    .file-remove {
+      margin-left: auto;
+      cursor: pointer;
+      color: var(--semi-color-text-2);
+      &:hover { color: var(--semi-color-danger); }
+    }
+  }
+  .next-version-hint {
+    margin-top: 16px;
+    padding: 8px 12px;
+    background: var(--semi-color-info-light-default);
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--semi-color-text-1);
+  }
+  .notify-recipients {
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--semi-color-text-2);
+  }
+}
