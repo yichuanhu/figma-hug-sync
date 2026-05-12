@@ -630,16 +630,11 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
                           {t('development.processDevelopment.detail.versionDetail.processOutput')}
                         </Text>
                         <Text type="tertiary" size="small" style={{ display: 'block', marginBottom: 8 }}>
-                          标记为「业务量变量」后，可被 ROI 配置中的 PARAM 模式引用
+                          标记为「业务量」的输出变量由客户端开发流程时声明，可被 ROI 配置中的 PARAM 模式引用
                         </Text>
                         <VariableCardList
                           data={selectedVersion.outputs}
                           showBusinessVolume
-                          flags={outputFlags}
-                          onBusinessVolumeChange={(index, checked) => {
-                            const variable = selectedVersion.outputs?.[index];
-                            if (variable) handleBusinessVolumeFlagChange(variable.name, checked);
-                          }}
                           onDescriptionChange={(index, description) => {
                             setVersionData((prevData) =>
                               prevData.map((v) =>
