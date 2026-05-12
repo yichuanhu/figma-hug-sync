@@ -33,6 +33,7 @@ const EffortTab = ({ processId, creatorId }: Props) => {
   const [snapshot, setSnapshot] = useState<EffortSnapshot>(() => getEffort(processId));
   const [estimateInput, setEstimateInput] = useState<number | null>(snapshot.estimate);
   const [modalVisible, setModalVisible] = useState(false);
+  const [editingEntry, setEditingEntry] = useState<LYProcessEffortEntry | null>(null);
 
   useEffect(() => {
     const s = getEffort(processId);
