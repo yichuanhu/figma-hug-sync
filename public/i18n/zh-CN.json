@@ -1235,7 +1235,7 @@
         "tabs": {
           "detail": "基本信息",
           "versions": "版本列表",
-          "effort": "工时"
+          "effort": "工时记录"
         },
         "effort": {
           "unit": "人天",
