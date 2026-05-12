@@ -65,6 +65,13 @@ const EffortTab = ({ processId, creatorId }: Props) => {
     return Math.round((snapshot.actual - snapshot.estimate) * 10) / 10;
   }, [snapshot.estimate, snapshot.actual]);
 
+  const progressPct = useMemo(() => {
+    if (!snapshot.estimate || snapshot.estimate <= 0 || snapshot.actual === null) return 0;
+    return Math.min(100, Math.round((snapshot.actual / snapshot.estimate) * 100));
+  }, [snapshot.estimate, snapshot.actual]);
+
+  const isOver = overTime > 0;
+
   const handleEdit = useCallback((entry: LYProcessEffortEntry) => {
     setEditingEntry(entry);
     setModalVisible(true);
@@ -163,70 +170,84 @@ const EffortTab = ({ processId, creatorId }: Props) => {
 
   return (
     <div className="effort-tab">
-      <div className="effort-tab-cards">
-        <div className="effort-tab-card">
-          <div className="effort-tab-card-label">
-            {t('development.processDevelopment.detail.effort.estimateLabel')}
-            {isCreator && <span className="effort-tab-card-required">*</span>}
+      <div className="effort-tab-summary">
+        <div className="effort-tab-summary-row">
+          <div className="effort-tab-stat">
+            <div className="effort-tab-stat-label">
+              {t('development.processDevelopment.detail.effort.estimateLabel')}
+              {isCreator && <span className="effort-tab-stat-required">*</span>}
+            </div>
+            <div className="effort-tab-stat-value">
+              {isCreator ? (
+                <InputNumber
+                  value={estimateInput ?? undefined}
+                  onChange={(v) => setEstimateInput(v === '' || v === undefined ? null : Number(v))}
+                  onBlur={handleEstimateBlur}
+                  onEnterPress={handleEstimateBlur}
+                  precision={1}
+                  step={0.5}
+                  min={0}
+                  max={9999}
+                  size="small"
+                  style={{ width: 140 }}
+                  suffix={t('development.processDevelopment.detail.effort.unit')}
+                  placeholder={t('development.processDevelopment.detail.effort.estimatePlaceholder')}
+                />
+              ) : snapshot.estimate !== null ? (
+                <>
+                  <span className="effort-tab-stat-num">{formatNumber(snapshot.estimate)}</span>
+                  <span className="effort-tab-stat-unit">{t('development.processDevelopment.detail.effort.unit')}</span>
+                </>
+              ) : (
+                <Text type="tertiary">{t('development.processDevelopment.detail.effort.notSet')}</Text>
+              )}
+            </div>
           </div>
-          <div className="effort-tab-card-value">
-            {isCreator ? (
-              <InputNumber
-                value={estimateInput ?? undefined}
-                onChange={(v) => setEstimateInput(v === '' || v === undefined ? null : Number(v))}
-                onBlur={handleEstimateBlur}
-                onEnterPress={handleEstimateBlur}
-                precision={1}
-                step={0.5}
-                min={0}
-                max={9999}
-                style={{ width: '100%' }}
-                suffix={t('development.processDevelopment.detail.effort.unit')}
-                placeholder={t('development.processDevelopment.detail.effort.estimatePlaceholder')}
-              />
-            ) : (
-              <div className="effort-tab-card-readonly">
-                {snapshot.estimate !== null ? (
-                  <>
-                    <span className="effort-tab-card-num">{formatNumber(snapshot.estimate)}</span>
-                    <span className="effort-tab-card-unit">{t('development.processDevelopment.detail.effort.unit')}</span>
-                  </>
-                ) : (
-                  <Text type="tertiary">{t('development.processDevelopment.detail.effort.notSet')}</Text>
-                )}
-              </div>
-            )}
+
+          <div className="effort-tab-stat-divider" />
+
+          <div className="effort-tab-stat">
+            <div className="effort-tab-stat-label">
+              {t('development.processDevelopment.detail.effort.actualLabel')}
+            </div>
+            <div className="effort-tab-stat-value">
+              {snapshot.actual !== null ? (
+                <>
+                  <span className={`effort-tab-stat-num ${isOver ? 'is-over' : ''}`}>{formatNumber(snapshot.actual)}</span>
+                  <span className="effort-tab-stat-unit">{t('development.processDevelopment.detail.effort.unit')}</span>
+                  {isOver && (
+                    <Tooltip content={t('development.processDevelopment.detail.effort.overTimeTip', { delta: formatNumber(overTime) })}>
+                      <Tag color="red" type="light" prefixIcon={<AlertTriangle size={12} strokeWidth={2} />} style={{ marginLeft: 8 }}>
+                        {t('development.processDevelopment.detail.effort.overTimeTag', { delta: formatNumber(overTime) })}
+                      </Tag>
+                    </Tooltip>
+                  )}
+                </>
+              ) : (
+                <Text type="tertiary">{t('development.processDevelopment.detail.effort.noEntries')}</Text>
+              )}
+            </div>
           </div>
         </div>
 
-        <div className="effort-tab-card">
-          <div className="effort-tab-card-label">
-            {t('development.processDevelopment.detail.effort.actualLabel')}
-          </div>
-          <div className="effort-tab-card-value effort-tab-card-readonly">
-            {snapshot.actual !== null ? (
-              <>
-                <span className="effort-tab-card-num">{formatNumber(snapshot.actual)}</span>
-                <span className="effort-tab-card-unit">{t('development.processDevelopment.detail.effort.unit')}</span>
-                {overTime > 0 && (
-                  <Tooltip content={t('development.processDevelopment.detail.effort.overTimeTip', { delta: formatNumber(overTime) })}>
-                    <Tag color="red" type="light" prefixIcon={<AlertTriangle size={12} strokeWidth={2} />} style={{ marginLeft: 8 }}>
-                      {t('development.processDevelopment.detail.effort.overTimeTag', { delta: formatNumber(overTime) })}
-                    </Tag>
-                  </Tooltip>
-                )}
-              </>
-            ) : (
-              <Text type="tertiary">{t('development.processDevelopment.detail.effort.noEntries')}</Text>
-            )}
-          </div>
-          {snapshot.updated_at && (
-            <div className="effort-tab-card-sub">
-              <Clock size={12} strokeWidth={2} />
-              <span>{t('development.processDevelopment.detail.effort.lastUpdated', { time: formatDateTime(snapshot.updated_at) })}</span>
+        {snapshot.estimate !== null && snapshot.estimate > 0 && snapshot.actual !== null && (
+          <div className="effort-tab-summary-progress">
+            <div className="effort-tab-progress-track">
+              <div
+                className={`effort-tab-progress-fill ${isOver ? 'is-over' : ''}`}
+                style={{ width: `${progressPct}%` }}
+              />
             </div>
-          )}
-        </div>
+            <span className="effort-tab-progress-text">{progressPct}%</span>
+          </div>
+        )}
+
+        {snapshot.updated_at && (
+          <div className="effort-tab-summary-sub">
+            <Clock size={12} strokeWidth={2} />
+            <span>{t('development.processDevelopment.detail.effort.lastUpdated', { time: formatDateTime(snapshot.updated_at) })}</span>
+          </div>
+        )}
       </div>
 
       <div className="effort-tab-section">
