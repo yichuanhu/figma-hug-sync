@@ -1,23 +1,8 @@
 .notification-section {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  min-height: 0;
-  // 视口高度兜底：即使外层 flex 链路断裂，也保证卡片不超过视口可用高度
-  // 预留：顶部导航 64px + AppLayout 内边距 16px + 欢迎区 ~76px + 上下安全间距 ~24px
-  max-height: calc(100vh - 180px);
-  overflow: hidden;
-
-  // 小屏幕上预留更多顶部空间
-  @media (max-height: 720px) {
-    max-height: calc(100vh - 140px);
-  }
 
   &.is-collapsed {
-    // 收起时高度由内容决定，避免空白
-    height: auto;
-    max-height: none;
-
     .home-card-header {
       margin-bottom: 0;
     }
@@ -76,8 +61,7 @@
   .notification-list {
     display: flex;
     flex-direction: column;
-    flex: 1;
-    min-height: 0;
+    max-height: 460px;
     overflow-y: auto;
     margin: 0 -8px;
     padding: 0 8px;
