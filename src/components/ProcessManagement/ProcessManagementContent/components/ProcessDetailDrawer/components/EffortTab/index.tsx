@@ -242,7 +242,7 @@ const EffortTab = ({ processId, creatorId }: Props) => {
               icon={<Plus size={14} strokeWidth={2} />}
               theme="solid"
               size="small"
-              onClick={() => setModalVisible(true)}
+              onClick={() => { setEditingEntry(null); setModalVisible(true); }}
             >
               {t('development.processDevelopment.detail.effort.addEntry')}
             </Button>
