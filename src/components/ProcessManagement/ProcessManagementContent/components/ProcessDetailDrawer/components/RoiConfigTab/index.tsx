@@ -103,21 +103,15 @@ const RoiConfigTab = ({
       )}
 
       <div className="roi-tab-section">
-        <div className="roi-tab-section-title">业务量模式</div>
-
-        <div className="roi-tab-field">
-          <div className="roi-tab-field-label">模式</div>
-          <div className="roi-tab-field-value">
-            <RadioGroup
-              type="button"
-              value={mode}
-              onChange={(e) => update({ businessVolumeConfig: e.target.value as BusinessVolumeConfig })}
-            >
-              <Radio value="FIXED">FIXED 固定值</Radio>
-              <Radio value="PARAM">PARAM 参数模式</Radio>
-            </RadioGroup>
-          </div>
-        </div>
+        <RadioGroup
+          type="button"
+          value={mode}
+          onChange={(e) => update({ businessVolumeConfig: e.target.value as BusinessVolumeConfig })}
+          className="roi-tab-mode-switch"
+        >
+          <Radio value="FIXED">FIXED 固定值</Radio>
+          <Radio value="PARAM">PARAM 参数模式</Radio>
+        </RadioGroup>
 
         {mode === 'FIXED' && (
           <div className="roi-tab-field">
