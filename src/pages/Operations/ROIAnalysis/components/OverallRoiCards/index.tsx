@@ -16,21 +16,25 @@ const formatCurrency = (val: number) => {
 
 const OverallRoiCards = ({ data }: Props) => {
   const { t } = useTranslation();
-  const overallRoi = data.totalInvestmentCost > 0
-    ? Math.round(((data.totalSavedCost - data.totalInvestmentCost) / data.totalInvestmentCost) * 100)
-    : 0;
+  const NA = t('operations.roiAnalysis.notAvailable');
 
-  const paybackValue = data.paybackMonths == null
-    ? t('operations.roiAnalysis.notAvailable')
+  // R-01: 总投入为 0 → N/A
+  const overallRoi = data.totalInvestmentCost > 0
+    ? `${Math.round(((data.totalSavedCost - data.totalInvestmentCost) / data.totalInvestmentCost) * 100)}%`
+    : NA;
+
+  // R-04: paybackMonths null 或 ≤ 0 → N/A
+  const paybackValue = (data.paybackMonths == null || data.paybackMonths <= 0)
+    ? NA
     : `${data.paybackMonths.toFixed(1)} ${t('operations.roiAnalysis.months')}`;
 
   const cards = [
     {
-      key: 'roi', tone: 'primary',
-      label: t('operations.roiAnalysis.overallRoi'),
-      tip: t('operations.roiAnalysis.tips.overallRoi'),
-      value: `${overallRoi}%`,
-      trend: data.savedCostTrend,
+      key: 'investmentCost', tone: 'primary',
+      label: t('operations.dashboard.totalInvestmentCost'),
+      tip: t('operations.roiAnalysis.tips.totalInvestmentCost'),
+      value: formatCurrency(data.totalInvestmentCost),
+      trend: null as number | null,
     },
     {
       key: 'savedCost', tone: 'success',
@@ -40,18 +44,18 @@ const OverallRoiCards = ({ data }: Props) => {
       trend: data.savedCostTrend,
     },
     {
+      key: 'roi', tone: 'purple',
+      label: t('operations.roiAnalysis.overallRoi'),
+      tip: t('operations.roiAnalysis.tips.overallRoi'),
+      value: overallRoi,
+      trend: null,
+    },
+    {
       key: 'paybackMonths', tone: 'warning',
       label: t('operations.roiAnalysis.paybackMonths'),
       tip: t('operations.roiAnalysis.tips.paybackMonths'),
       value: paybackValue,
       trend: null,
-    },
-    {
-      key: 'requirements', tone: 'purple',
-      label: t('operations.dashboard.activeRequirements'),
-      tip: t('operations.roiAnalysis.tips.activeRequirements'),
-      value: data.activeRequirements.toString(),
-      trend: data.requirementsTrend,
     },
   ];
 
