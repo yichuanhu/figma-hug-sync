@@ -444,15 +444,6 @@ const BusinessOutcomes = () => {
             </div>
           </div>
 
-          {/* 完成率进度条 */}
-          <div className="bo-completion-row">
-            <div className="bo-completion-label">
-              <MetricLabel label={t('operations.businessOutcomes.completionRate')} tip={t('operations.businessOutcomes.tips.completionRate')} />
-            </div>
-            <Progress percent={completionRate} stroke={COLORS.success} aria-label="completion" style={{ flex: 1 }} />
-            <div className="bo-completion-value">{completionRate}%</div>
-          </div>
-
           {/* 工时块: 预估/实际/偏差 */}
           <div className="bo-hours-grid">
             <div className="bo-hours-item">
@@ -469,6 +460,15 @@ const BusinessOutcomes = () => {
                 {deviation > 0 ? '+' : ''}{deviation}%
               </div>
             </div>
+          </div>
+
+          {/* 完成率进度条 */}
+          <div className="bo-completion-row">
+            <div className="bo-completion-label">
+              <MetricLabel label={t('operations.businessOutcomes.completionRate')} tip={t('operations.businessOutcomes.tips.completionRate')} />
+            </div>
+            <Progress percent={completionRate} stroke={COLORS.success} aria-label="completion" style={{ flex: 1 }} />
+            <div className="bo-completion-value">{completionRate}%</div>
           </div>
         </div>
       </div>
