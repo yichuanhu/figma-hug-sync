@@ -924,6 +924,48 @@
         "selectPlaceholder": "请选择工作空间"
       }
     },
+    "devScheme": {
+      "totalCount": "共 {{count}} 个版本",
+      "uploadButton": "上传新版本",
+      "empty": "暂无开发方案文档",
+      "col": {
+        "version": "版本",
+        "fileName": "文件",
+        "size": "大小",
+        "uploader": "上传人",
+        "uploadedAt": "上传时间",
+        "note": "备注",
+        "actions": "操作"
+      },
+      "delete": {
+        "title": "删除版本 v{{version}}",
+        "content": "确认删除该版本？将记录到变更日志，且无法恢复。",
+        "success": "已删除"
+      },
+      "download": {
+        "started": "开始下载 {{fileName}}"
+      },
+      "upload": {
+        "title": "上传开发方案",
+        "confirm": "上传",
+        "dragHint": "点击或拖拽文件到此处上传",
+        "formatHint": "支持 PDF / DOCX / MD，单文件不超过 50MB",
+        "noteLabel": "本次更新说明（可选）",
+        "notePlaceholder": "简要描述本次方案的更新点，便于协作者了解变化",
+        "nextVersion": "本次上传将生成 v{{version}}",
+        "notifyRecipients": "上传成功后将通知：{{names}}",
+        "success": "上传成功"
+      },
+      "error": {
+        "generic": "操作失败，请重试",
+        "fileRequired": "请先选择文件",
+        "invalidState": "当前需求状态不允许上传开发方案",
+        "unsupportedType": "仅支持 PDF / DOCX / MD 文件",
+        "fileTooLarge": "文件超过 50MB 上限",
+        "notMember": "您不是该需求所属工作空间的成员，无法管理开发方案"
+      }
+    }
+  },
     "approvalFlow": {
       "title": "审批流程",
       "currentLevel": "第 {{current}}/{{total}} 级 · {{name}}",
