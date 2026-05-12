@@ -16,6 +16,7 @@ import CostEstimateTab from './CostEstimateTab';
 import EffortTab from './EffortTab';
 import ApprovalFlowProgress from '../ApprovalFlowProgress';
 import ChangeLogTab from '../ChangeLogTab';
+import DevSchemeDocsTab from '../DevSchemeDocsTab';
 
 import ReadonlySchemeFieldsRenderer from '../ReadonlySchemeFieldsRenderer';
 import { buildSubmitConfirmContent } from '../../utils/submitConfirm';
@@ -355,7 +356,7 @@ const RequirementDetailDrawer = ({
   const [viewingVersion, setViewingVersion] = useState<'current' | number>('current');
   const [pickerVisible, setPickerVisible] = useState(false);
   const [, setPendingLogs] = useState<RequirementChangeLog[]>([]);
-  const [changeLogRefreshKey] = useState(0);
+  const [changeLogRefreshKey, setChangeLogRefreshKey] = useState(0);
   const location = useLocation();
   const showApprovalSection = context === 'approval';
   const assessmentReadonly = context !== 'assessment';
@@ -702,6 +703,20 @@ const RequirementDetailDrawer = ({
               >
                 <div className="requirement-detail-tab-content">
                   <EffortTab data={effectiveData} />
+                </div>
+              </TabPane>
+            )}
+
+            {!isHistoryMode && isPostProjectStatus(effectiveData.status) && (
+              <TabPane
+                tab={t('requirements.detail.tab.devScheme')}
+                itemKey="devScheme"
+              >
+                <div className="requirement-detail-tab-content">
+                  <DevSchemeDocsTab
+                    requirement={effectiveData}
+                    onChange={() => setChangeLogRefreshKey((k) => k + 1)}
+                  />
                 </div>
               </TabPane>
             )}
