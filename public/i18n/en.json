@@ -1370,6 +1370,9 @@
           "lastUpdated": "Last updated at {{time}}",
           "entriesTitle": "Effort Entries",
           "addEntry": "Add Entry",
+          "deleteSuccess": "Effort entry deleted",
+          "deleteConfirmTitle": "Delete Effort Entry",
+          "deleteConfirmContent": "Are you sure you want to delete this effort entry? This cannot be undone.",
           "table": {
             "workDate": "Work Date",
             "delta": "Delta",
@@ -1379,13 +1382,15 @@
           },
           "modal": {
             "title": "Log Effort",
+            "editTitle": "Edit Effort",
             "deltaLabel": "Delta (MD)",
             "deltaPlaceholder": "Positive or negative, e.g. 0.5 / -0.5",
             "dateLabel": "Work Date",
             "datePlaceholder": "Pick a date",
             "noteLabel": "Note",
             "notePlaceholder": "Optional, up to 200 characters",
-            "successMessage": "Effort entry added"
+            "successMessage": "Effort entry added",
+            "updateSuccess": "Effort entry updated"
           },
           "errors": {
             "forbidden": "Only the process creator can edit effort",

@@ -139,6 +139,56 @@ export const postEntry = (
   return getEffort(processId);
 };
 
+const validateEntryInput = (input: PostEntryInput) => {
+  if (typeof input.delta_days !== 'number' || Number.isNaN(input.delta_days)) throw new EffortError('invalid_delta');
+  if (input.delta_days === 0) throw new EffortError('invalid_delta');
+  if (input.delta_days < -999 || input.delta_days > 999) throw new EffortError('invalid_delta');
+  if (Math.round(input.delta_days * 10) !== input.delta_days * 10) throw new EffortError('invalid_delta');
+  if (!input.work_date || !/^\d{4}-\d{2}-\d{2}$/.test(input.work_date)) throw new EffortError('invalid_date');
+  const today = new Date(); today.setHours(23, 59, 59, 999);
+  const wd = new Date(input.work_date + 'T00:00:00');
+  if (Number.isNaN(wd.getTime())) throw new EffortError('invalid_date');
+  if (wd.getTime() > today.getTime()) throw new EffortError('invalid_date');
+  if (input.note && input.note.length > 200) throw new EffortError('invalid_note');
+};
+
+export const putEntry = (
+  processId: string,
+  creatorId: string,
+  entryId: string,
+  input: PostEntryInput,
+): EffortSnapshot => {
+  if (!isCreator(creatorId)) throw new EffortError('forbidden');
+  validateEntryInput(input);
+  const rec = ensure(processId);
+  const idx = rec.entries.findIndex((e) => e.id === entryId);
+  if (idx < 0) throw new EffortError('not_found');
+  rec.entries[idx] = {
+    ...rec.entries[idx],
+    delta_days: round1(input.delta_days),
+    work_date: input.work_date,
+    note: input.note?.trim() || null,
+  };
+  rec.updatedBy = CURRENT_USER_ID;
+  rec.updatedAt = new Date().toISOString();
+  return getEffort(processId);
+};
+
+export const deleteEntry = (
+  processId: string,
+  creatorId: string,
+  entryId: string,
+): EffortSnapshot => {
+  if (!isCreator(creatorId)) throw new EffortError('forbidden');
+  const rec = ensure(processId);
+  const before = rec.entries.length;
+  rec.entries = rec.entries.filter((e) => e.id !== entryId);
+  if (rec.entries.length === before) throw new EffortError('not_found');
+  rec.updatedBy = CURRENT_USER_ID;
+  rec.updatedAt = new Date().toISOString();
+  return getEffort(processId);
+};
+
 // 初始化少量预置数据
 seedEffort('process-1', {
   estimate: 5,

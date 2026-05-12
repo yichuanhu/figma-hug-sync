@@ -1,11 +1,12 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, InputNumber, Tag, Table, Toast, Tooltip, Typography } from '@douyinfe/semi-ui';
-import { Plus, AlertTriangle, Clock } from 'lucide-react';
+import { Button, InputNumber, Tag, Table, Toast, Tooltip, Typography, Modal, Popconfirm } from '@douyinfe/semi-ui';
+import { Plus, AlertTriangle, Clock, Pencil, Trash2 } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import EffortEntryModal from './EffortEntryModal';
-import { getEffort, putEstimate, EffortError, type EffortSnapshot, CURRENT_USER_ID } from '../../../../mocks/effortStore';
+import { getEffort, putEstimate, deleteEntry, EffortError, type EffortSnapshot, CURRENT_USER_ID } from '../../../../mocks/effortStore';
+import type { LYProcessEffortEntry } from '@/api';
 import './index.less';
 
 const { Text } = Typography;
@@ -32,6 +33,7 @@ const EffortTab = ({ processId, creatorId }: Props) => {
   const [snapshot, setSnapshot] = useState<EffortSnapshot>(() => getEffort(processId));
   const [estimateInput, setEstimateInput] = useState<number | null>(snapshot.estimate);
   const [modalVisible, setModalVisible] = useState(false);
+  const [editingEntry, setEditingEntry] = useState<LYProcessEffortEntry | null>(null);
 
   useEffect(() => {
     const s = getEffort(processId);
@@ -63,6 +65,23 @@ const EffortTab = ({ processId, creatorId }: Props) => {
     return Math.round((snapshot.actual - snapshot.estimate) * 10) / 10;
   }, [snapshot.estimate, snapshot.actual]);
 
+  const handleEdit = useCallback((entry: LYProcessEffortEntry) => {
+    setEditingEntry(entry);
+    setModalVisible(true);
+  }, []);
+
+  const handleDelete = useCallback((entry: LYProcessEffortEntry) => {
+    try {
+      const next = deleteEntry(processId, creatorId, entry.id);
+      setSnapshot(next);
+      Toast.success(t('development.processDevelopment.detail.effort.deleteSuccess'));
+    } catch (e) {
+      if (e instanceof EffortError) {
+        Toast.error(t(`development.processDevelopment.detail.effort.errors.${e.code}`));
+      }
+    }
+  }, [processId, creatorId, t]);
+
   const columns = useMemo(
     () => [
       {
@@ -93,7 +112,7 @@ const EffortTab = ({ processId, creatorId }: Props) => {
         title: t('development.processDevelopment.detail.effort.table.creator'),
         dataIndex: 'created_by_name',
         width: 130,
-        render: (name: string | null, row: typeof snapshot.entries[number]) =>
+        render: (name: string | null, row: LYProcessEffortEntry) =>
           name ? <UserNameWithCard name={name} userId={row.created_by} /> : '-',
       },
       {
@@ -102,8 +121,44 @@ const EffortTab = ({ processId, creatorId }: Props) => {
         width: 150,
         render: (v: string) => <Text type="tertiary">{formatDateTime(v)}</Text>,
       },
+      ...(isCreator
+        ? [{
+            title: t('common.action'),
+            dataIndex: '_action',
+            width: 100,
+            fixed: 'right' as const,
+            render: (_: unknown, row: LYProcessEffortEntry) => (
+              <div style={{ display: 'inline-flex', gap: 4 }}>
+                <Tooltip content={t('common.edit')}>
+                  <Button
+                    icon={<Pencil size={14} strokeWidth={2} />}
+                    theme="borderless"
+                    type="tertiary"
+                    size="small"
+                    onClick={() => handleEdit(row)}
+                  />
+                </Tooltip>
+                <Popconfirm
+                  title={t('development.processDevelopment.detail.effort.deleteConfirmTitle')}
+                  content={t('development.processDevelopment.detail.effort.deleteConfirmContent')}
+                  okType="danger"
+                  okText={t('common.confirm')}
+                  cancelText={t('common.cancel')}
+                  onConfirm={() => handleDelete(row)}
+                >
+                  <Button
+                    icon={<Trash2 size={14} strokeWidth={2} />}
+                    theme="borderless"
+                    type="danger"
+                    size="small"
+                  />
+                </Popconfirm>
+              </div>
+            ),
+          }]
+        : []),
     ],
-    [t],
+    [t, isCreator, handleEdit, handleDelete],
   );
 
   return (
@@ -187,7 +242,7 @@ const EffortTab = ({ processId, creatorId }: Props) => {
               icon={<Plus size={14} strokeWidth={2} />}
               theme="solid"
               size="small"
-              onClick={() => setModalVisible(true)}
+              onClick={() => { setEditingEntry(null); setModalVisible(true); }}
             >
               {t('development.processDevelopment.detail.effort.addEntry')}
             </Button>
@@ -219,7 +274,8 @@ const EffortTab = ({ processId, creatorId }: Props) => {
         visible={modalVisible}
         processId={processId}
         creatorId={creatorId}
-        onCancel={() => setModalVisible(false)}
+        editingEntry={editingEntry}
+        onCancel={() => { setModalVisible(false); setEditingEntry(null); }}
         onSuccess={refresh}
       />
     </div>

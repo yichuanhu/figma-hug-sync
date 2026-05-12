@@ -2,37 +2,58 @@ import { useEffect, useRef } from 'react';
 import { Modal, Form, Toast } from '@douyinfe/semi-ui';
 import type { FormApi } from '@douyinfe/semi-ui/lib/es/form';
 import { useTranslation } from 'react-i18next';
-import { postEntry, EffortError } from '../../../../mocks/effortStore';
+import { postEntry, putEntry, EffortError } from '../../../../mocks/effortStore';
+import type { LYProcessEffortEntry } from '@/api';
 import dayjs from 'dayjs';
 
 interface Props {
   visible: boolean;
   processId: string;
   creatorId: string;
+  /** 传入则为编辑模式 */
+  editingEntry?: LYProcessEffortEntry | null;
   onCancel: () => void;
   onSuccess: () => void;
 }
 
-const EffortEntryModal = ({ visible, processId, creatorId, onCancel, onSuccess }: Props) => {
+const EffortEntryModal = ({ visible, processId, creatorId, editingEntry, onCancel, onSuccess }: Props) => {
   const { t } = useTranslation();
   const formApiRef = useRef<FormApi | null>(null);
+  const isEdit = !!editingEntry;
 
   useEffect(() => {
     if (!visible) return;
-    setTimeout(() => formApiRef.current?.reset(), 0);
-  }, [visible]);
+    setTimeout(() => {
+      if (!formApiRef.current) return;
+      if (editingEntry) {
+        formApiRef.current.setValues({
+          delta_days: editingEntry.delta_days,
+          work_date: new Date(editingEntry.work_date + 'T00:00:00'),
+          note: editingEntry.note || '',
+        });
+      } else {
+        formApiRef.current.reset();
+      }
+    }, 0);
+  }, [visible, editingEntry]);
 
   const submit = async () => {
     if (!formApiRef.current) return;
     try {
       const values = await formApiRef.current.validate();
       const work = values.work_date instanceof Date ? values.work_date : new Date(values.work_date as string);
-      postEntry(processId, creatorId, {
+      const payload = {
         delta_days: Number(values.delta_days),
         work_date: dayjs(work).format('YYYY-MM-DD'),
         note: (values.note as string) || undefined,
-      });
-      Toast.success(t('development.processDevelopment.detail.effort.modal.successMessage'));
+      };
+      if (isEdit && editingEntry) {
+        putEntry(processId, creatorId, editingEntry.id, payload);
+        Toast.success(t('development.processDevelopment.detail.effort.modal.updateSuccess'));
+      } else {
+        postEntry(processId, creatorId, payload);
+        Toast.success(t('development.processDevelopment.detail.effort.modal.successMessage'));
+      }
       onSuccess();
       onCancel();
     } catch (e) {
@@ -51,7 +72,9 @@ const EffortEntryModal = ({ visible, processId, creatorId, onCancel, onSuccess }
 
   return (
     <Modal
-      title={t('development.processDevelopment.detail.effort.modal.title')}
+      title={isEdit
+        ? t('development.processDevelopment.detail.effort.modal.editTitle')
+        : t('development.processDevelopment.detail.effort.modal.title')}
       visible={visible}
       onCancel={onCancel}
       onOk={submit}
