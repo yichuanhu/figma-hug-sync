@@ -16,10 +16,10 @@ const ROIAnalysis = () => {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<RoiAnalysisFilter>({
     timeRange: 'thisMonth',
-    department: 'all',
-    project: 'all',
+    departments: [],
+    projects: [],
     timeDimension: 'monthly',
-    classification: 'all',
+    classifications: [],
   });
   const [seed, setSeed] = useState(1);
   const [loading, setLoading] = useState(false);
