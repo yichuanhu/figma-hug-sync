@@ -677,12 +677,11 @@ const RequirementsWorkbench = () => {
                        <div
                          key={k}
                          className="column-settings-dropdown-item"
-                         onClick={() => toggleOptionalColumn(k)}
+                         onClick={(e) => { e.stopPropagation(); toggleOptionalColumn(k); }}
                        >
                          <Checkbox
                            checked={optionalColumns.includes(k)}
-                           onChange={() => toggleOptionalColumn(k)}
-                           onClick={(e) => e.stopPropagation()}
+                           onChange={() => { /* parent handles toggle */ }}
                          >
                            {t(`requirements.list.columns.${k === 'effort_estimate' ? 'effortEstimate' : k === 'effort_actual' ? 'effortActual' : 'completionRate'}`)}
                          </Checkbox>
