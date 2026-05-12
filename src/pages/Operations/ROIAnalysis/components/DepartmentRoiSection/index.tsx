@@ -96,7 +96,7 @@ const DepartmentRoiSection = ({ data }: Props) => {
   // Multi-line trend
   const trendOption = useMemo(() => {
     const maxLen = Math.max(...data.map(d => d.trend.length));
-    const months = Array.from({ length: maxLen }, (_, i) => `M${i + 1}`);
+    const months = TREND_MONTHS.slice(-maxLen);
     return {
       tooltip: {
         ...TOOLTIP_STYLE, trigger: 'axis',
