@@ -133,6 +133,7 @@ const RoiConfigTab = ({
                 onChange={(v) => update({ baseTimeSavedMinutes: typeof v === 'number' ? v : undefined })}
                 placeholder="请输入"
                 style={{ width: 260 }}
+                disabled={!isEditing}
               />
             </div>
           </div>
