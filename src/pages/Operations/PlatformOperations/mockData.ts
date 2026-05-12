@@ -249,6 +249,6 @@ export const usePlatformOpsData = () => {
   const [, force] = useState(0);
   useEffect(() => {
     const unsub = subscribe(() => force((n) => n + 1));
-    return () => { unsub; };
+    return () => { unsub(); };
   }, []);
 };
