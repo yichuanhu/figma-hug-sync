@@ -85,6 +85,7 @@ const RequirementsWorkbench = () => {
   // 新建/编辑均跳转独立页面
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<RequirementItem | null>(null);
+  const [initialDrawerTab, setInitialDrawerTab] = useState<string | undefined>(undefined);
   
   const [pickerRecord, setPickerRecord] = useState<RequirementItem | null>(null);
 
@@ -163,6 +164,20 @@ const RequirementsWorkbench = () => {
       setDetailDrawerVisible(true);
     }
   }, [location.search, listResponse.list]);
+
+  // URL 直达：?reqNo=REQ-2026-xxxx&tab=xxx（来自通知中心跳转）
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const reqNo = params.get('reqNo');
+    if (!reqNo) return;
+    const hit = listResponse.list.find((r) => r.req_no === reqNo);
+    if (hit) {
+      setSelectedRecord(hit);
+      setInitialDrawerTab(params.get('tab') || undefined);
+      setDetailDrawerVisible(true);
+      navigate(location.pathname, { replace: true });
+    }
+  }, [location.search, location.pathname, listResponse.list, navigate]);
 
   // 搜索防抖
   const debouncedSearch = useMemo(
@@ -767,9 +782,10 @@ const RequirementsWorkbench = () => {
       {/* 需求详情抽屉 */}
       <RequirementDetailDrawer
         visible={detailDrawerVisible}
-        onClose={() => setDetailDrawerVisible(false)}
+        onClose={() => { setDetailDrawerVisible(false); setInitialDrawerTab(undefined); }}
         data={selectedRecord}
         dataList={list}
+        initialTab={initialDrawerTab}
         onNavigate={(item) => setSelectedRecord(item)}
         onEdit={(record) => {
           setDetailDrawerVisible(false);

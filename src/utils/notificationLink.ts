@@ -11,6 +11,7 @@ const TASK_RE = /^\/scheduling\/tasks\/([^/?#]+)/;
 const ROBOT_RE = /^\/scheduling\/robots\/([^/?#]+)/;
 const TRIGGER_RE = /^\/scheduling\/triggers\/([^/?#]+)/;
 const LICENSE_RE = /^\/admin\/licenses\/([^/?#]+)/;
+const REQUIREMENT_RE = /^\/requirements\/([^/?#]+)(?:\?(.*))?$/;
 
 export interface ResolvedLink {
   /** 是否可在 APA 内部跳转 */
@@ -62,6 +63,18 @@ export const resolveNotificationLink = (
       internal: false,
       fallbackMessage: '授权管理属于管理控制台范围，请前往管理后台查看授权详情',
     };
+  }
+  m = linkUrl.match(REQUIREMENT_RE);
+  if (m) {
+    const reqNo = m[1];
+    if (reqNo === 'list') {
+      return { internal: true, path: '/requirements/list' };
+    }
+    const params = new URLSearchParams(m[2] || '');
+    const tab = params.get('tab');
+    const qs = new URLSearchParams({ reqNo });
+    if (tab) qs.set('tab', tab);
+    return { internal: true, path: `/requirements/list?${qs.toString()}` };
   }
   return { internal: false, fallbackMessage: '未识别的通知链接' };
 };
