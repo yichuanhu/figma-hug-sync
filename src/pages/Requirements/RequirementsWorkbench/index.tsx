@@ -464,7 +464,7 @@ const RequirementsWorkbench = () => {
                     navigate(`/requirements/list/edit/${record.id}`);
                   }}
                 >
-                  {t('common.edit')}
+                  {isPostProjectStatus(record.status) ? '变更需求' : t('common.edit')}
                 </Dropdown.Item>
               )}
               {(() => {
