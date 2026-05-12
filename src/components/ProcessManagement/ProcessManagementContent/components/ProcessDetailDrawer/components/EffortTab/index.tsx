@@ -218,7 +218,7 @@ const EffortTab = ({ processId, creatorId }: Props) => {
                 )}
               </span>
             ) : (
-              <Text type="tertiary">{t('development.processDevelopment.detail.effort.noEntries')}</Text>
+              <span className="effort-tab-field-text">-</span>
             )}
 
             {(snapshot.estimate !== null && snapshot.estimate > 0 && snapshot.actual !== null) || snapshot.updated_at ? (
