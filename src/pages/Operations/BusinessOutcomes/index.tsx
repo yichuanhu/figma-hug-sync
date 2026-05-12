@@ -339,16 +339,9 @@ const BusinessOutcomes = () => {
 
   // 业务量排行 - 保留全量 max 用于 bar 宽度参考(切换时视觉一致)
   const rankMax = Math.max(...data.volumeRanking.map(r => r.volume), 1);
-  const rankTypeOptions = useMemo(
-    () => data.volumeRanking.map(r => ({ value: r.name, label: r.name })),
-    [data.volumeRanking],
-  );
   const displayedRanking = useMemo(() => {
-    const filtered = rankFilterTypes.length === 0
-      ? data.volumeRanking
-      : data.volumeRanking.filter(r => rankFilterTypes.includes(r.name));
-    return [...filtered].sort((a, b) => rankSortDesc ? b.volume - a.volume : a.volume - b.volume);
-  }, [data.volumeRanking, rankFilterTypes, rankSortDesc]);
+    return [...data.volumeRanking].sort((a, b) => rankSortDesc ? b.volume - a.volume : a.volume - b.volume);
+  }, [data.volumeRanking, rankSortDesc]);
 
   // 人年换算
   const personYears = (data.totalHoursSaved / data.hoursPerYearFactor).toFixed(1);
