@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Select, Button } from '@douyinfe/semi-ui';
 import { useTranslation } from 'react-i18next';
-import { mockDepartments, mockProjects } from '@/pages/Operations/mockData';
+import { mockDepartments, mockProjects, mockClassifications } from '@/pages/Operations/mockData';
 import type { RoiAnalysisFilter } from '@/pages/Operations/types';
 import './index.less';
 import { RefreshCw } from 'lucide-react';
@@ -38,6 +38,10 @@ const RoiAnalysisFilterBar = ({ filter, onFilterChange, onRefresh }: Props) => {
     mockProjects.map(p => p.value === 'all' ? { ...p, label: t('operations.dashboard.selectAll') } : p),
     [t]
   );
+  const localizedClassifications = useMemo(() =>
+    mockClassifications.map(c => c.value === 'all' ? { ...c, label: t('operations.dashboard.selectAll') } : c),
+    [t]
+  );
 
   return (
     <div className="roi-analysis-filter">
@@ -61,6 +65,11 @@ const RoiAnalysisFilterBar = ({ filter, onFilterChange, onRefresh }: Props) => {
           <span className="roi-analysis-filter-label">{t('operations.roiAnalysis.timeDimension')}</span>
           <Select size="small" value={filter.timeDimension} optionList={timeDimensionOptions}
             onChange={(val) => onFilterChange({ ...filter, timeDimension: val as string })} style={{ width: 120 }} />
+        </div>
+        <div className="roi-analysis-filter-item">
+          <span className="roi-analysis-filter-label">{t('operations.roiAnalysis.classification')}</span>
+          <Select size="small" value={filter.classification} optionList={localizedClassifications}
+            onChange={(val) => onFilterChange({ ...filter, classification: val as string })} style={{ width: 140 }} />
         </div>
       </div>
       <Button icon={<RefreshCw size={16} strokeWidth={2} />} size="small" onClick={onRefresh}>

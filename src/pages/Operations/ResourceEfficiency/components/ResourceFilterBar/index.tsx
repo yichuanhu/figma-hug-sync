@@ -66,6 +66,12 @@ const ResourceFilterBar = ({ filter, onFilterChange, onRefresh }: Props) => {
           <Select size="small" value={filter.timeDimension} optionList={timeDimensionOptions}
             onChange={(val) => onFilterChange({ ...filter, timeDimension: val as string })} style={{ width: 120 }} />
         </div>
+        <div className="resource-filter-item">
+          <span className="resource-filter-label">{t('operations.resourceEfficiency.topN')}</span>
+          <Select size="small" value={filter.topN}
+            optionList={[5, 10, 15, 20].map(n => ({ value: n, label: `Top ${n}` }))}
+            onChange={(val) => onFilterChange({ ...filter, topN: val as number })} style={{ width: 100 }} />
+        </div>
       </div>
       <Button icon={<RefreshCw size={16} strokeWidth={2} />} size="small" onClick={onRefresh}>
         {t('common.refresh')}
