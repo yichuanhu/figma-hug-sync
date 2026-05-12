@@ -1495,6 +1495,7 @@ export const publishChange = async (
     publisherId: userId,
     publisherName: mockCreators[userId]?.name ?? '当前用户',
     publishedAt: new Date().toISOString(),
+    changeType: 'CONTENT',
   };
   changeLogStore.unshift(log);
   draftStore.delete(draftKey(input.requirementId, userId));
