@@ -1255,7 +1255,7 @@
           "deleteConfirmContent": "确定要删除这条工时记录吗？此操作不可撤销。",
           "table": {
             "workDate": "工作日期",
-            "delta": "增量工时",
+            "delta": "工作时长",
             "note": "备注",
             "creator": "登记人",
             "createdAt": "登记时间"
@@ -1263,7 +1263,7 @@
           "modal": {
             "title": "登记工时",
             "editTitle": "编辑工时",
-            "deltaLabel": "增量工时",
+            "deltaLabel": "工作时长",
             "deltaPlaceholder": "可正可负，例如 0.5 / -0.5",
             "dateLabel": "工作日期",
             "datePlaceholder": "请选择工作日期",
@@ -1275,7 +1275,7 @@
           "errors": {
             "forbidden": "仅流程创建者可编辑工时",
             "invalid_estimate": "预估工时需为 0~9999 之间，最多 1 位小数",
-            "invalid_delta": "增量工时不能为空或 0，需在 -999~999 之间，最多 1 位小数",
+            "invalid_delta": "工作时长不能为空或 0，需在 -999~999 之间，最多 1 位小数",
             "invalid_date": "工作日期不能为空且不可晚于今天",
             "invalid_note": "备注最多 200 个字符",
             "not_found": "记录不存在"
