@@ -543,7 +543,6 @@ const RequirementCreatePage = () => {
                         optionList={positionLevelOptions}
                         showClear
                         style={{ flex: 1 }}
-                        disabled={isPostProjectEdit}
                       />
                       <InputNumber
                         placeholder="请输入岗位成本"
@@ -554,13 +553,12 @@ const RequirementCreatePage = () => {
                         precision={2}
                         hideButtons
                         style={{ flex: 1 }}
-                        disabled={isPostProjectEdit}
                       />
                       <Button
                         icon={<Trash2 size={16} strokeWidth={2} />}
                         theme="borderless"
                         type="tertiary"
-                        disabled={positionCosts.length <= 1 || isPostProjectEdit}
+                        disabled={positionCosts.length <= 1}
                         onClick={() => removePositionCost(idx)}
                       />
                     </div>
@@ -571,7 +569,6 @@ const RequirementCreatePage = () => {
                     type="primary"
                     onClick={addPositionCost}
                     style={{ alignSelf: 'flex-start', paddingLeft: 0 }}
-                    disabled={isPostProjectEdit}
                   >
                     添加岗位
                   </Button>
@@ -584,7 +581,6 @@ const RequirementCreatePage = () => {
                 optionList={executionFrequencyOptions}
                 showClear
                 style={{ width: '100%' }}
-                disabled={isPostProjectEdit}
               />
               <Form.InputNumber
                 field="single_duration"
@@ -595,7 +591,6 @@ const RequirementCreatePage = () => {
                 precision={0}
                 hideButtons
                 style={{ width: '100%' }}
-                disabled={isPostProjectEdit}
               />
             </div>
 
