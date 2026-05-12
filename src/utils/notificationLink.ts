@@ -11,6 +11,7 @@ const TASK_RE = /^\/scheduling\/tasks\/([^/?#]+)/;
 const ROBOT_RE = /^\/scheduling\/robots\/([^/?#]+)/;
 const TRIGGER_RE = /^\/scheduling\/triggers\/([^/?#]+)/;
 const LICENSE_RE = /^\/admin\/licenses\/([^/?#]+)/;
+const REQUIREMENT_RE = /^\/requirements\/([^/?#]+)(?:\?(.*))?$/;
 
 export interface ResolvedLink {
   /** 是否可在 APA 内部跳转 */
