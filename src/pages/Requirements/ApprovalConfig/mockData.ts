@@ -1,7 +1,7 @@
 /**
- * 审批流模板（独立于需求模版的全局审批配置）
+ * 审批流模板（独立于需求模板的全局审批配置）
  *
- * 数据结构与"需求模版 → 工作流 → 审批人配置"完全一致，
+ * 数据结构与"需求模板 → 工作流 → 审批人配置"完全一致，
  * 直接复用 WorkflowApprover 类型，便于 UI/交互一比一还原。
  */
 import type { WorkflowApprover, AssessmentModel } from '@/pages/Requirements/RequirementsWorkbench/types';

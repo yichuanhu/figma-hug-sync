@@ -1,7 +1,7 @@
 /**
  * 审批配置 Builder：新建/编辑审批流
  * 头部交互参考 SchemeBuilder（返回、可编辑名称、保存、启用），
- * 主体复用「需求模版 → 工作流 → 审批人配置」卡片。
+ * 主体复用「需求模板 → 工作流 → 审批人配置」卡片。
  */
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
