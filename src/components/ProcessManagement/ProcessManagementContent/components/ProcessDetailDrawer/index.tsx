@@ -14,6 +14,7 @@ import {
   Toast,
   Modal,
   TextArea,
+  Switch,
 } from '@douyinfe/semi-ui';
 import { IconDeleteStroked } from '@douyinfe/semi-icons';
 import type { LYProcessResponse, LYProcessVersionResponse, LYProcessDependency } from '@/api';
@@ -29,6 +30,8 @@ import './index.less';
 import { ExternalLink, HelpCircle, Link, Pencil, PlayCircle, Trash2, Upload } from 'lucide-react';
 import DependencyTab from './components/DependencyTab';
 import EffortTab from './components/EffortTab';
+import RoiConfigTab from './components/RoiConfigTab';
+import { getOutputFlags, setOutputFlag, type OutputVariableFlags } from './roiStorage';
 import {
   fetchAllLinkableRequirements,
   type LinkableRequirementBrief,
@@ -154,9 +157,19 @@ interface VariableCardProps {
   variable: ProcessVariable;
   index: number;
   onDescriptionChange: (index: number, description: string) => void;
+  showBusinessVolume?: boolean;
+  isBusinessVolume?: boolean;
+  onBusinessVolumeChange?: (index: number, checked: boolean) => void;
 }
 
-const VariableCard = ({ variable, index, onDescriptionChange }: VariableCardProps) => {
+const VariableCard = ({
+  variable,
+  index,
+  onDescriptionChange,
+  showBusinessVolume,
+  isBusinessVolume,
+  onBusinessVolumeChange,
+}: VariableCardProps) => {
   const { t } = useTranslation();
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState('');
@@ -189,6 +202,18 @@ const VariableCard = ({ variable, index, onDescriptionChange }: VariableCardProp
             {variable.name}
           </Text>
         </div>
+        {showBusinessVolume && (
+          <Tooltip content="标记为业务量变量后，可在 ROI 配置 PARAM 模式中作为单位业务量来源">
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+              <Text size="small" type="tertiary">业务量变量</Text>
+              <Switch
+                size="small"
+                checked={!!isBusinessVolume}
+                onChange={(checked) => onBusinessVolumeChange?.(index, checked)}
+              />
+            </div>
+          </Tooltip>
+        )}
       </div>
       <div className="process-detail-drawer-variable-card-body">
         <div className="process-detail-drawer-variable-card-row">
@@ -251,13 +276,30 @@ const VariableCard = ({ variable, index, onDescriptionChange }: VariableCardProp
 interface VariableCardListProps {
   data: ProcessVariable[];
   onDescriptionChange: (index: number, description: string) => void;
+  showBusinessVolume?: boolean;
+  flags?: OutputVariableFlags;
+  onBusinessVolumeChange?: (index: number, checked: boolean) => void;
 }
 
-const VariableCardList = ({ data, onDescriptionChange }: VariableCardListProps) => {
+const VariableCardList = ({
+  data,
+  onDescriptionChange,
+  showBusinessVolume,
+  flags,
+  onBusinessVolumeChange,
+}: VariableCardListProps) => {
   return (
     <div className="process-detail-drawer-variable-card-list">
       {data.map((variable, index) => (
-        <VariableCard key={index} variable={variable} index={index} onDescriptionChange={onDescriptionChange} />
+        <VariableCard
+          key={index}
+          variable={variable}
+          index={index}
+          onDescriptionChange={onDescriptionChange}
+          showBusinessVolume={showBusinessVolume}
+          isBusinessVolume={flags ? !!flags[variable.name] : false}
+          onBusinessVolumeChange={onBusinessVolumeChange}
+        />
       ))}
     </div>
   );
@@ -356,9 +398,11 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
 
   // 加载关联需求信息（用于回显项目/工作空间）
   const [linkedRequirement, setLinkedRequirement] = useState<LinkableRequirementBrief | null>(null);
+  const [referenceHourlyRate, setReferenceHourlyRate] = useState<number | null>(null);
   useEffect(() => {
     if (!visible || !processData?.requirement_id) {
       setLinkedRequirement(null);
+      setReferenceHourlyRate(null);
       return;
     }
     let cancelled = false;
@@ -370,10 +414,52 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
       .catch(() => {
         if (!cancelled) setLinkedRequirement(null);
       });
+    // 拉取需求列表，从 costEstimate 中推导参考时薪
+    import('@/pages/Requirements/RequirementsWorkbench/mockData')
+      .then(async ({ fetchRequirementList }) => {
+        const res = await fetchRequirementList({
+          offset: 0,
+          size: 1000,
+          keyword: '',
+          sort_by: 'created_at',
+          sort_order: 'desc',
+        });
+        if (cancelled) return;
+        const req = res.list.find((r) => r.id === processData.requirement_id);
+        const cost = req?.costEstimate;
+        if (cost && cost.dailyRate > 0 && cost.workingHoursPerDay > 0) {
+          setReferenceHourlyRate(cost.dailyRate / cost.workingHoursPerDay);
+        } else {
+          setReferenceHourlyRate(null);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setReferenceHourlyRate(null);
+      });
     return () => {
       cancelled = true;
     };
   }, [visible, processData?.requirement_id]);
+
+  // 输出变量「业务量变量」标记（按 processId + versionId 持久化）
+  const [outputFlags, setOutputFlags] = useState<OutputVariableFlags>({});
+  const selectedVersionIdResolved = selectedVersionId ?? sortedVersionData[0]?.id ?? null;
+  useEffect(() => {
+    if (!processData?.id || !selectedVersionIdResolved) {
+      setOutputFlags({});
+      return;
+    }
+    setOutputFlags(getOutputFlags(processData.id, selectedVersionIdResolved));
+  }, [processData?.id, selectedVersionIdResolved]);
+
+  const handleBusinessVolumeFlagChange = useCallback(
+    (variableName: string, checked: boolean) => {
+      if (!processData?.id || !selectedVersionIdResolved) return;
+      const next = setOutputFlag(processData.id, selectedVersionIdResolved, variableName, checked);
+      setOutputFlags(next);
+    },
+    [processData?.id, selectedVersionIdResolved],
+  );
 
   // 关闭时重置
   const handleClose = () => {
@@ -595,8 +681,17 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
                         <Text className="process-detail-drawer-version-detail-section-title">
                           {t('development.processDevelopment.detail.versionDetail.processOutput')}
                         </Text>
+                        <Text type="tertiary" size="small" style={{ display: 'block', marginBottom: 8 }}>
+                          标记为「业务量变量」后，可被 ROI 配置中的 PARAM 模式引用
+                        </Text>
                         <VariableCardList
                           data={selectedVersion.outputs}
+                          showBusinessVolume
+                          flags={outputFlags}
+                          onBusinessVolumeChange={(index, checked) => {
+                            const variable = selectedVersion.outputs?.[index];
+                            if (variable) handleBusinessVolumeFlagChange(variable.name, checked);
+                          }}
                           onDescriptionChange={(index, description) => {
                             setVersionData((prevData) =>
                               prevData.map((v) =>
@@ -638,6 +733,21 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
 
         <TabPane tab={t('development.processDevelopment.detail.tabs.effort')} itemKey="effort">
           <EffortTab processId={processData.id} creatorId={processData.creator_id} />
+        </TabPane>
+
+        <TabPane tab="ROI 配置" itemKey="roi">
+          <RoiConfigTab
+            processId={processData.id}
+            versionId={selectedVersionIdResolved}
+            versionLabel={selectedVersion?.version}
+            outputs={(selectedVersion?.outputs ?? []).map((o) => ({ name: o.name, displayName: o.name, type: o.type }))}
+            requirement={
+              linkedRequirement
+                ? { id: linkedRequirement.id, reqNo: linkedRequirement.req_no, title: linkedRequirement.title }
+                : null
+            }
+            referenceHourlyRate={referenceHourlyRate}
+          />
         </TabPane>
       </Tabs>
 
