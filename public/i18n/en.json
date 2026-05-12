@@ -1395,7 +1395,7 @@
           "errors": {
             "forbidden": "Only the process creator can edit effort",
             "invalid_estimate": "Estimate must be 0–9999 with at most 1 decimal",
-            "invalid_delta": "Delta cannot be empty or 0; range -999~999, 1 decimal",
+            "invalid_delta": "Work hours must be greater than 0 and up to 999, with 1 decimal",
             "invalid_date": "Work date is required and cannot be later than today",
             "invalid_note": "Note must be at most 200 characters",
             "not_found": "Record not found"
