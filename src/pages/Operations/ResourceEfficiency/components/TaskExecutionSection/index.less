@@ -65,28 +65,47 @@
 
   .task-today-stats {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    height: 100%;
-    align-content: center;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+
+    @media (max-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
 
     .today-stat-item {
-      background-color: var(--semi-color-bg-0);
-      border-radius: 8px;
-      padding: 16px;
+      padding: 16px 20px;
       text-align: center;
+      position: relative;
+
+      &::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 1px;
+        height: 28px;
+        background-color: var(--semi-color-border);
+      }
+
+      &:last-child::after { display: none; }
+
+      @media (max-width: 768px) {
+        &:nth-child(2n)::after { display: none; }
+      }
 
       .today-label {
-        font-size: 12px;
+        font-size: 13px;
         color: var(--semi-color-text-2);
-        margin-bottom: 6px;
+        margin-bottom: 8px;
       }
 
       .today-value {
-        font-size: 20px;
+        font-size: 24px;
         font-weight: 700;
         color: var(--semi-color-text-0);
         font-variant-numeric: tabular-nums;
+        line-height: 32px;
       }
 
       .today-sub {
