@@ -41,7 +41,7 @@ import {
   getRequirementEffortSummary,
 } from './mockData';
 import { statusConfigV2, legacyStatusMap, statusOptionsV2 } from './statusConfig';
-import RequirementFormModal from './components/RequirementFormModal';
+
 import RequirementDetailDrawer from './components/RequirementDetailDrawer';
 import WorkspacePickerModal from './components/RequirementDetailDrawer/WorkspacePickerModal';
 import { findWorkspaceByRequirementId } from '../RequirementsProjects/mockData';
@@ -81,8 +81,7 @@ const RequirementsWorkbench = () => {
   const [loading, setLoading] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   // createModalVisible 已废弃：新建走 /requirements/list/create 独立页面
-  const [editModalVisible, setEditModalVisible] = useState(false);
-  const [editingRecord, setEditingRecord] = useState<RequirementItem | null>(null);
+  // 新建/编辑均跳转独立页面
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<RequirementItem | null>(null);
   
