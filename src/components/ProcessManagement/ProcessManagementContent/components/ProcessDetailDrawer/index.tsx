@@ -157,9 +157,19 @@ interface VariableCardProps {
   variable: ProcessVariable;
   index: number;
   onDescriptionChange: (index: number, description: string) => void;
+  showBusinessVolume?: boolean;
+  isBusinessVolume?: boolean;
+  onBusinessVolumeChange?: (index: number, checked: boolean) => void;
 }
 
-const VariableCard = ({ variable, index, onDescriptionChange }: VariableCardProps) => {
+const VariableCard = ({
+  variable,
+  index,
+  onDescriptionChange,
+  showBusinessVolume,
+  isBusinessVolume,
+  onBusinessVolumeChange,
+}: VariableCardProps) => {
   const { t } = useTranslation();
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState('');
