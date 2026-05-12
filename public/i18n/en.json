@@ -1248,7 +1248,8 @@
         "optionalLabel": "Optional Columns",
         "effortEstimate": "Total Estimate",
         "effortActual": "Total Actual",
-        "completionRate": "Completion"
+        "completionRate": "Completion",
+        "tooltip": "Column settings"
       }
     },
     "projects": {

@@ -1141,7 +1141,8 @@
         "optionalLabel": "可选列",
         "effortEstimate": "预估工时合计",
         "effortActual": "实际工时合计",
-        "completionRate": "完成率"
+        "completionRate": "完成率",
+        "tooltip": "列设置"
       }
     },
     "projects": {
