@@ -536,16 +536,23 @@ export function getResourceEfficiency(
 ): ResourceEfficiencyData {
   const rng = seededRng((seed || 1) ^ hashStr(JSON.stringify(filter)));
   const timeScale = TIME_RANGE_SCALE[filter.timeRange] ?? 1;
-  const groupScale = filter.group !== 'all' ? 0.35 : 1;
+  const deptCount = filter.departments?.length ?? 0;
+  const groupScale = deptCount > 0 ? Math.min(1, 0.35 * deptCount + 0.15) : 1;
   const totalScale = timeScale * groupScale;
 
   let data = clone(mockResourceEfficiency);
 
-  if (filter.group !== 'all') {
-    const groupLabel = mockRobotGroups.find(g => g.value === filter.group)?.label?.toLowerCase();
-    if (groupLabel) {
-      data.robotDetails = data.robotDetails.filter(r => r.group.toLowerCase().includes(groupLabel));
-      data.groupUtilization = data.groupUtilization.filter(g => g.group.toLowerCase().includes(groupLabel));
+  if (deptCount > 0) {
+    const labels = filter.departments
+      .map(v => mockDepartments.find(d => d.value === v)?.label?.toLowerCase())
+      .filter(Boolean) as string[];
+    if (labels.length) {
+      data.robotDetails = data.robotDetails.filter(r =>
+        labels.some(l => r.group.toLowerCase().includes(l) || l.includes(r.group.toLowerCase()))
+      );
+      data.groupUtilization = data.groupUtilization.filter(g =>
+        labels.some(l => g.group.toLowerCase().includes(l) || l.includes(g.group.toLowerCase()))
+      );
     }
   }
   if (filter.status !== 'all') {
@@ -557,6 +564,13 @@ export function getResourceEfficiency(
   if (filter.timeDimension === 'today') {
     data.totalTasks = Math.round(data.totalTasks / 30);
     data.totalRunMinutes = Math.round(data.totalRunMinutes / 30);
+    data.taskStats = {
+      total: Math.round(data.taskStats.total / 30),
+      success: Math.round(data.taskStats.success / 30),
+      failed: Math.round(data.taskStats.failed / 30),
+      running: Math.round(data.taskStats.running / 30),
+      timeout: Math.round(data.taskStats.timeout / 30),
+    };
     data.taskVolumeTrend = data.taskVolumeTrend.slice(-1);
     data.utilizationTrend = data.utilizationTrend.slice(-1);
     data.successRateTrend = data.successRateTrend.slice(-1);
