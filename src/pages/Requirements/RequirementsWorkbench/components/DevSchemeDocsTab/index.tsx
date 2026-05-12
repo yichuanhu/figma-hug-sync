@@ -110,8 +110,10 @@ const DevSchemeDocsTab = ({ requirement, onChange }: Props) => {
     {
       title: t('requirements.devScheme.col.uploadedAt'),
       dataIndex: 'uploadedAt',
-      width: 140,
-      render: (v: string) => <RelativeTime value={v} />,
+      width: 160,
+      render: (v: string) => (
+        <Text type="tertiary">{v ? dayjs(v).format('YYYY-MM-DD HH:mm:ss') : '—'}</Text>
+      ),
     },
     {
       title: t('requirements.devScheme.col.note'),
