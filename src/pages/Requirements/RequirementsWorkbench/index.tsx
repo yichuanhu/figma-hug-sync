@@ -668,26 +668,27 @@ const RequirementsWorkbench = () => {
                 trigger="click"
                 position="bottomRight"
                 clickToHide={false}
-                render={
-                  <Dropdown.Menu>
-                    <Dropdown.Item disabled>
-                      {t('requirements.list.columns.optionalLabel')}
-                    </Dropdown.Item>
-                    {(['effort_estimate', 'effort_actual', 'completion_rate'] as const).map((k) => (
-                      <Dropdown.Item
-                        key={k}
-                        onClick={() => toggleOptionalColumn(k)}
-                      >
-                          <Checkbox
-                            checked={optionalColumns.includes(k)}
-                            onChange={() => toggleOptionalColumn(k)}
-                          >
-                            {t(`requirements.list.columns.${k === 'effort_estimate' ? 'effortEstimate' : k === 'effort_actual' ? 'effortActual' : 'completionRate'}`)}
-                          </Checkbox>
-                      </Dropdown.Item>
-                    ))}
-                  </Dropdown.Menu>
-                }
+                 render={
+                   <div className="column-settings-dropdown">
+                     <div className="column-settings-dropdown-title">
+                       {t('requirements.list.columns.optionalLabel')}
+                     </div>
+                     {(['effort_estimate', 'effort_actual', 'completion_rate'] as const).map((k) => (
+                       <div
+                         key={k}
+                         className="column-settings-dropdown-item"
+                         onClick={(e) => { e.stopPropagation(); toggleOptionalColumn(k); }}
+                       >
+                         <Checkbox
+                           checked={optionalColumns.includes(k)}
+                           onChange={() => { /* parent handles toggle */ }}
+                         >
+                           {t(`requirements.list.columns.${k === 'effort_estimate' ? 'effortEstimate' : k === 'effort_actual' ? 'effortActual' : 'completionRate'}`)}
+                         </Checkbox>
+                       </div>
+                     ))}
+                   </div>
+                 }
               >
                 <Button
                   icon={<Columns3 size={16} strokeWidth={2} />}
