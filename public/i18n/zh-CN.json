@@ -872,7 +872,8 @@
         "cost": "节省成本",
         "effort": "开发工时",
         "versions": "版本历史",
-        "changeLog": "变更日志"
+        "changeLog": "变更日志",
+        "devScheme": "开发方案"
       },
       "effort": {
         "unit": "人天",
@@ -898,7 +899,12 @@
       "changeLog": {
         "empty": "暂无变更记录",
         "publishedBy": "{{name}} 发布于 {{time}}",
-        "reasonTitle": "变更说明"
+        "reasonTitle": "变更说明",
+        "type": {
+          "content": "内容变更",
+          "devSchemeUploaded": "开发方案上传",
+          "devSchemeDeleted": "开发方案删除"
+        }
       },
       "ownerUnassigned": "未指派",
       "customFieldsTitle": "需求详情",
