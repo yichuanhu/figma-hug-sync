@@ -4,7 +4,7 @@ import { Typography, Select, Button, Spin, Toast, Progress } from '@douyinfe/sem
 import ReactECharts from 'echarts-for-react';
 import { RefreshCw } from 'lucide-react';
 import {
-  mockBusinessOutcomes,
+  getBusinessOutcomes,
   mockDepartments,
   mockBusinessTypes,
   mockClassifications,
@@ -37,8 +37,6 @@ const TOOLTIP = {
 
 const BusinessOutcomes = () => {
   const { t } = useTranslation();
-  const data = mockBusinessOutcomes;
-
   const [filter, setFilter] = useState<BusinessOutcomesFilter>({
     timeRange: 'thisMonth',
     department: 'all',
@@ -46,11 +44,15 @@ const BusinessOutcomes = () => {
     classification: 'all',
     timeDimension: 'cumulative',
   });
+  const [seed, setSeed] = useState(1);
   const [loading, setLoading] = useState(false);
+
+  const data = useMemo(() => getBusinessOutcomes(filter, seed), [filter, seed]);
 
   const handleRefresh = () => {
     setLoading(true);
     setTimeout(() => {
+      setSeed(Date.now() & 0xffffffff);
       setLoading(false);
       Toast.success(t('operations.businessOutcomes.refreshed'));
     }, 600);
