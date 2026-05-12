@@ -94,17 +94,25 @@ const BusinessOutcomes = () => {
     series: [{
       type: 'funnel',
       left: '5%', right: '5%', top: 16, bottom: 8, width: '90%',
-      min: 0, sort: 'descending', gap: 4,
+      min: 0, sort: 'descending', gap: 0,
+      funnelAlign: 'center',
       label: {
         show: true, position: 'inside', color: '#fff', fontWeight: 600, fontSize: 12,
         formatter: (p: any) => p.data.conversionRate != null
           ? `${p.name}  ${p.value}  (${p.data.conversionRate}%)`
           : `${p.name}  ${p.value}`,
       },
-      labelLine: { length: 12, lineStyle: { width: 1, type: 'solid' } },
-      itemStyle: { borderColor: '#fff', borderWidth: 2 },
+      labelLine: { show: false },
+      itemStyle: { borderWidth: 0 },
       emphasis: { label: { fontSize: 13 } },
-      data: data.funnel.map((s, i) => ({ ...s, itemStyle: { color: COLORS.funnel[i % COLORS.funnel.length] } })),
+      data: data.funnel.map((s, i, arr) => ({
+        ...s,
+        itemStyle: {
+          color: COLORS.funnel[i % COLORS.funnel.length],
+          // 最后一项底部为矩形（直角），其余按漏斗收窄
+          borderRadius: i === arr.length - 1 ? 0 : 0,
+        },
+      })),
     }],
   }), [data.funnel, t]);
 
