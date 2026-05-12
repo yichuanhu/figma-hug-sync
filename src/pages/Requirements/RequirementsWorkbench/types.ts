@@ -694,7 +694,13 @@ export interface RequirementListResponse {
   list: RequirementItem[];
 }
 
-// ============= STORY-014 立项后变更 =============
+// ============= STORY-014 / STORY-015 立项后变更 =============
+
+/** 变更日志类型枚举（'CONTENT' 为旧版默认） */
+export type RequirementChangeType =
+  | 'CONTENT'
+  | 'DEV_SCHEME_DOC_UPLOADED'
+  | 'DEV_SCHEME_DOC_DELETED';
 
 /** 变更日志条目（仅记录变更说明，不再包含字段对比与开发响应） */
 export interface RequirementChangeLog {
@@ -705,7 +711,42 @@ export interface RequirementChangeLog {
   publisherId: string;
   publisherName: string;
   publishedAt: string;
+  /** 变更类型；缺省按 'CONTENT' 兼容历史 mock */
+  changeType?: RequirementChangeType;
+  /** 变更字段细节（DevSchemeDoc 上传/删除时记录 {version, fileName?, note?}） */
+  changedFields?: Record<string, unknown>;
 }
+
+// ============= STORY-015 开发方案文档 =============
+
+export type DevSchemeDocFileType = 'PDF' | 'DOCX' | 'MD';
+
+/** 单个开发方案文档版本 */
+export interface RequirementDevSchemeDoc {
+  id: string;
+  requirementId: string;
+  /** 该需求范围内单调递增（1, 2, 3, …），(requirementId, version) 唯一 */
+  version: number;
+  fileName: string;
+  fileSize: number;
+  fileType: DevSchemeDocFileType;
+  /** 对象存储路径占位（mock 用 data:/blob: URL） */
+  fileUrl: string;
+  uploadedBy: string;
+  uploaderName: string;
+  uploadedAt: string;
+  note?: string;
+  isDeleted: boolean;
+  deletedBy?: string;
+  deletedAt?: string;
+}
+
+/** 错误码（与后端 API 对齐，UI 转译为对应 i18n 文案） */
+export type DevSchemeDocErrorCode =
+  | 'DEV_SCHEME_DOC_INVALID_STATE'
+  | 'DEV_SCHEME_DOC_UNSUPPORTED_TYPE'
+  | 'DEV_SCHEME_DOC_FILE_TOO_LARGE'
+  | 'DEV_SCHEME_DOC_NOT_WORKSPACE_MEMBER';
 
 /** 草稿（按 `${requirementId}::${userId}` 隔离） */
 export interface RequirementDraft {
