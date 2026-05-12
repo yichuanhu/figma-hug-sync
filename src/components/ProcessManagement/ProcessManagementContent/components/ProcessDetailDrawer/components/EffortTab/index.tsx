@@ -139,37 +139,40 @@ const EffortTab = ({ processId, creatorId }: Props) => {
       },
       ...(isCreator
         ? [{
-            title: t('common.action'),
+            title: t('common.actions'),
             dataIndex: '_action',
-            width: 100,
+            width: 80,
             fixed: 'right' as const,
             render: (_: unknown, row: LYProcessEffortEntry) => (
-              <div style={{ display: 'inline-flex', gap: 4 }}>
-                <Tooltip content={t('common.edit')}>
-                  <Button
-                    icon={<Pencil size={14} strokeWidth={2} />}
-                    theme="borderless"
-                    type="tertiary"
-                    size="small"
-                    onClick={() => handleEdit(row)}
-                  />
-                </Tooltip>
-                <Popconfirm
-                  title={t('development.processDevelopment.detail.effort.deleteConfirmTitle')}
-                  content={t('development.processDevelopment.detail.effort.deleteConfirmContent')}
-                  okType="danger"
-                  okText={t('common.confirm')}
-                  cancelText={t('common.cancel')}
-                  onConfirm={() => handleDelete(row)}
-                >
-                  <Button
-                    icon={<Trash2 size={14} strokeWidth={2} />}
-                    theme="borderless"
-                    type="danger"
-                    size="small"
-                  />
-                </Popconfirm>
-              </div>
+              <Dropdown
+                trigger="click"
+                position="bottomRight"
+                clickToHide
+                render={
+                  <Dropdown.Menu>
+                    <Dropdown.Item
+                      icon={<Pencil size={16} strokeWidth={2} />}
+                      onClick={(e) => { e.stopPropagation(); handleEdit(row); }}
+                    >
+                      {t('common.edit')}
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      icon={<Trash2 size={16} strokeWidth={2} />}
+                      type="danger"
+                      onClick={(e) => { e.stopPropagation(); handleDelete(row); }}
+                    >
+                      {t('common.delete')}
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                }
+              >
+                <Button
+                  icon={<Ellipsis size={16} strokeWidth={2} />}
+                  theme="borderless"
+                  type="tertiary"
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </Dropdown>
             ),
           }]
         : []),
