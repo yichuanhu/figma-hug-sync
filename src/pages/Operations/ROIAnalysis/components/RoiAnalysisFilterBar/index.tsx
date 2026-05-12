@@ -31,16 +31,16 @@ const RoiAnalysisFilterBar = ({ filter, onFilterChange, onRefresh }: Props) => {
   ];
 
   const localizedDepartments = useMemo(() =>
-    mockDepartments.map(d => d.value === 'all' ? { ...d, label: t('operations.dashboard.selectAll') } : d),
-    [t]
+    mockDepartments.filter(d => d.value !== 'all').map(d => ({ value: d.value, label: d.label })),
+    []
   );
   const localizedProjects = useMemo(() =>
-    mockProjects.map(p => p.value === 'all' ? { ...p, label: t('operations.dashboard.selectAll') } : p),
-    [t]
+    mockProjects.filter(p => p.value !== 'all').map(p => ({ value: p.value, label: p.label })),
+    []
   );
   const localizedClassifications = useMemo(() =>
-    mockClassifications.map(c => c.value === 'all' ? { ...c, label: t('operations.dashboard.selectAll') } : c),
-    [t]
+    mockClassifications.filter(c => c.value !== 'all').map(c => ({ value: c.value, label: c.label })),
+    []
   );
 
   return (
@@ -53,13 +53,17 @@ const RoiAnalysisFilterBar = ({ filter, onFilterChange, onRefresh }: Props) => {
         </div>
         <div className="roi-analysis-filter-item">
           <span className="roi-analysis-filter-label">{t('operations.dashboard.department')}</span>
-          <Select value={filter.department} optionList={localizedDepartments}
-            onChange={(val) => onFilterChange({ ...filter, department: val as string })} style={{ width: 120 }} />
+          <Select multiple maxTagCount={2} value={filter.departments} optionList={localizedDepartments}
+            placeholder={t('operations.dashboard.selectAll')}
+            onChange={(val) => onFilterChange({ ...filter, departments: (val as string[]) || [] })}
+            style={{ minWidth: 180, maxWidth: 320 }} />
         </div>
         <div className="roi-analysis-filter-item">
           <span className="roi-analysis-filter-label">{t('operations.dashboard.project')}</span>
-          <Select value={filter.project} optionList={localizedProjects}
-            onChange={(val) => onFilterChange({ ...filter, project: val as string })} style={{ width: 140 }} />
+          <Select multiple maxTagCount={2} value={filter.projects} optionList={localizedProjects}
+            placeholder={t('operations.dashboard.selectAll')}
+            onChange={(val) => onFilterChange({ ...filter, projects: (val as string[]) || [] })}
+            style={{ minWidth: 180, maxWidth: 320 }} />
         </div>
         <div className="roi-analysis-filter-item">
           <span className="roi-analysis-filter-label">{t('operations.roiAnalysis.timeDimension')}</span>
@@ -68,8 +72,10 @@ const RoiAnalysisFilterBar = ({ filter, onFilterChange, onRefresh }: Props) => {
         </div>
         <div className="roi-analysis-filter-item">
           <span className="roi-analysis-filter-label">{t('operations.roiAnalysis.classification')}</span>
-          <Select value={filter.classification} optionList={localizedClassifications}
-            onChange={(val) => onFilterChange({ ...filter, classification: val as string })} style={{ width: 140 }} />
+          <Select multiple maxTagCount={2} value={filter.classifications} optionList={localizedClassifications}
+            placeholder={t('operations.dashboard.selectAll')}
+            onChange={(val) => onFilterChange({ ...filter, classifications: (val as string[]) || [] })}
+            style={{ minWidth: 180, maxWidth: 320 }} />
         </div>
       </div>
       <Button icon={<RefreshCw size={16} strokeWidth={2} />} onClick={onRefresh}>
