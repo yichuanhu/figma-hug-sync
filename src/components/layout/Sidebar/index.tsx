@@ -305,8 +305,8 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     { key: 'requirementsProjects', labelKey: 'sidebar.requirementsProjects', icon: <FolderKanban size={18} strokeWidth={2} />, path: '/requirements/projects' },
     // 需求配置 - 分组标题
     { key: 'requirementsConfig', labelKey: 'sidebar.requirementsConfig', isGroupLabel: true },
-    { key: 'requirementsScheme', labelKey: 'sidebar.requirementsScheme', icon: <Settings size={18} strokeWidth={2} />, path: '/requirements/scheme' },
-    { key: 'requirementsApprovalConfig', labelKey: 'sidebar.requirementsApprovalConfig', icon: <CheckSquare size={18} strokeWidth={2} />, path: '/requirements/approval-config' },
+    { key: 'requirementsScheme', labelKey: 'sidebar.requirementsScheme', icon: <NotepadTextDashed size={18} strokeWidth={2} />, path: '/requirements/scheme' },
+    { key: 'requirementsApprovalConfig', labelKey: 'sidebar.requirementsApprovalConfig', icon: <Columns3Cog size={18} strokeWidth={2} />, path: '/requirements/approval-config' },
   ];
 
   // 运维中心的详细菜单结构 - 使用分组标题样式
