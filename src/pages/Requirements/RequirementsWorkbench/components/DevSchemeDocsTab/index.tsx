@@ -167,13 +167,7 @@ const DevSchemeDocsTab = ({ requirement, onChange }: Props) => {
         <span className="header-count">
           {t('requirements.devScheme.totalCount', { count: docs.length })}
         </span>
-        {perm.canManage ? (
-          uploadButton
-        ) : (
-          <Tooltip content={perm.disabledReasonKey ? t(perm.disabledReasonKey) : ''} position="left">
-            <span>{uploadButton}</span>
-          </Tooltip>
-        )}
+        {perm.canManage && uploadButton}
       </div>
 
       {loading ? (
