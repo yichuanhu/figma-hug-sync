@@ -1,52 +1,31 @@
 .effort-tab {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
   padding: 16px 24px;
 
   &-summary {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    padding: 16px 20px;
-    background-color: var(--semi-color-fill-0);
-    border-radius: 8px;
-
-    &-row {
-      display: flex;
-      align-items: center;
-      gap: 24px;
-    }
-
-    &-progress {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    &-sub {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 12px;
-      color: var(--semi-color-text-2);
-    }
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--semi-color-border);
   }
 
-  &-stat {
+  &-field {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 12px;
-    flex: 1;
-    min-width: 0;
 
     &-label {
+      flex-shrink: 0;
+      width: 84px;
       font-size: 13px;
       color: var(--semi-color-text-2);
+      line-height: 28px;
       display: inline-flex;
       align-items: center;
       gap: 2px;
-      flex-shrink: 0;
     }
 
     &-required {
@@ -54,63 +33,74 @@
     }
 
     &-value {
-      display: inline-flex;
-      align-items: baseline;
-      gap: 4px;
-      min-height: 28px;
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
-    &-num {
-      font-size: 22px;
-      font-weight: 600;
+    &-text {
+      display: inline-flex;
+      align-items: center;
+      font-size: 14px;
       color: var(--semi-color-text-0);
-      line-height: 1;
+      line-height: 28px;
       font-variant-numeric: tabular-nums;
 
       &.is-over {
         color: var(--semi-color-danger);
+        font-weight: 600;
       }
     }
 
-    &-unit {
+    &-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+  }
+
+  &-progress {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 200px;
+
+    &-track {
+      width: 160px;
+      height: 4px;
+      background-color: var(--semi-color-fill-2);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    &-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--semi-color-primary-light-default), var(--semi-color-primary));
+      border-radius: 2px;
+      transition: width 0.3s ease;
+
+      &.is-over {
+        background: linear-gradient(90deg, var(--semi-color-warning), var(--semi-color-danger));
+      }
+    }
+
+    &-text {
       font-size: 12px;
       color: var(--semi-color-text-2);
-    }
-
-    &-divider {
-      width: 1px;
-      align-self: stretch;
-      min-height: 28px;
-      background-color: var(--semi-color-border);
+      font-variant-numeric: tabular-nums;
+      min-width: 32px;
     }
   }
 
-  &-progress-track {
-    flex: 1;
-    height: 6px;
-    background-color: var(--semi-color-fill-2);
-    border-radius: 3px;
-    overflow: hidden;
-  }
-
-  &-progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--semi-color-primary-light-default), var(--semi-color-primary));
-    border-radius: 3px;
-    transition: width 0.3s ease;
-
-    &.is-over {
-      background: linear-gradient(90deg, var(--semi-color-warning), var(--semi-color-danger));
-    }
-  }
-
-  &-progress-text {
+  &-updated {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
     font-size: 12px;
-    font-weight: 600;
-    color: var(--semi-color-text-1);
-    font-variant-numeric: tabular-nums;
-    min-width: 36px;
-    text-align: right;
+    color: var(--semi-color-text-2);
   }
 
   &-section {
