@@ -14,6 +14,7 @@ import {
   Toast,
   Modal,
   TextArea,
+  Switch,
 } from '@douyinfe/semi-ui';
 import { IconDeleteStroked } from '@douyinfe/semi-icons';
 import type { LYProcessResponse, LYProcessVersionResponse, LYProcessDependency } from '@/api';
@@ -29,6 +30,8 @@ import './index.less';
 import { ExternalLink, HelpCircle, Link, Pencil, PlayCircle, Trash2, Upload } from 'lucide-react';
 import DependencyTab from './components/DependencyTab';
 import EffortTab from './components/EffortTab';
+import RoiConfigTab from './components/RoiConfigTab';
+import { getOutputFlags, setOutputFlag, type OutputVariableFlags } from './roiStorage';
 import {
   fetchAllLinkableRequirements,
   type LinkableRequirementBrief,
