@@ -398,9 +398,11 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
 
   // 加载关联需求信息（用于回显项目/工作空间）
   const [linkedRequirement, setLinkedRequirement] = useState<LinkableRequirementBrief | null>(null);
+  const [referenceHourlyRate, setReferenceHourlyRate] = useState<number | null>(null);
   useEffect(() => {
     if (!visible || !processData?.requirement_id) {
       setLinkedRequirement(null);
+      setReferenceHourlyRate(null);
       return;
     }
     let cancelled = false;
@@ -412,10 +414,52 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
       .catch(() => {
         if (!cancelled) setLinkedRequirement(null);
       });
+    // 拉取需求列表，从 costEstimate 中推导参考时薪
+    import('@/pages/Requirements/RequirementsWorkbench/mockData')
+      .then(async ({ fetchRequirementList }) => {
+        const res = await fetchRequirementList({
+          offset: 0,
+          size: 1000,
+          keyword: '',
+          sort_by: 'created_at',
+          sort_order: 'desc',
+        });
+        if (cancelled) return;
+        const req = res.list.find((r) => r.id === processData.requirement_id);
+        const cost = req?.costEstimate;
+        if (cost && cost.dailyRate > 0 && cost.workingHoursPerDay > 0) {
+          setReferenceHourlyRate(cost.dailyRate / cost.workingHoursPerDay);
+        } else {
+          setReferenceHourlyRate(null);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setReferenceHourlyRate(null);
+      });
     return () => {
       cancelled = true;
     };
   }, [visible, processData?.requirement_id]);
+
+  // 输出变量「业务量变量」标记（按 processId + versionId 持久化）
+  const [outputFlags, setOutputFlags] = useState<OutputVariableFlags>({});
+  const selectedVersionIdResolved = selectedVersionId ?? sortedVersionData[0]?.id ?? null;
+  useEffect(() => {
+    if (!processData?.id || !selectedVersionIdResolved) {
+      setOutputFlags({});
+      return;
+    }
+    setOutputFlags(getOutputFlags(processData.id, selectedVersionIdResolved));
+  }, [processData?.id, selectedVersionIdResolved]);
+
+  const handleBusinessVolumeFlagChange = useCallback(
+    (variableName: string, checked: boolean) => {
+      if (!processData?.id || !selectedVersionIdResolved) return;
+      const next = setOutputFlag(processData.id, selectedVersionIdResolved, variableName, checked);
+      setOutputFlags(next);
+    },
+    [processData?.id, selectedVersionIdResolved],
+  );
 
   // 关闭时重置
   const handleClose = () => {
