@@ -1058,11 +1058,11 @@
       "unlinkConfirmContent": "Are you sure you want to unlink \"{{name}}\"?",
       "unlinkSuccess": "Unlinked successfully",
       "status": {
-        "PENDING": "Pending",
-        "DEVELOPING": "Developing",
-        "TESTING": "Testing",
-        "ONLINE": "Online",
-        "FAILED": "Failed"
+        "pending": "Pending",
+        "developing": "Developing",
+        "testing": "Testing",
+        "online": "Online",
+        "failed": "Failed"
       },
       "aggregated": {
         "empty": "None",

@@ -951,11 +951,11 @@
       "unlinkConfirmContent": "确定要解除与「{{name}}」的关联吗？",
       "unlinkSuccess": "已解除关联",
       "status": {
-        "PENDING": "待开发",
-        "DEVELOPING": "开发中",
-        "TESTING": "测试中",
-        "ONLINE": "已上线",
-        "FAILED": "异常"
+        "pending": "待开发",
+        "developing": "开发中",
+        "testing": "测试中",
+        "online": "已上线",
+        "failed": "异常"
       },
       "aggregated": {
         "empty": "暂无",
