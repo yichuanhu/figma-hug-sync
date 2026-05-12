@@ -8,8 +8,8 @@ import './index.less';
 
 interface Props {
   data: ResourceEfficiencyData;
-  topN?: number;
 }
+
 
 const COLORS = {
   primary: '#3B82F6',
