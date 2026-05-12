@@ -9,6 +9,9 @@ interface Props {
   data: DepartmentRoiDetail[];
 }
 
+// 部门 ROI 趋势使用的真实月份（与 mockRoiTrend 保持口径一致，最近 5 个月）
+const TREND_MONTHS = ['2025-11', '2025-12', '2026-01', '2026-02', '2026-03'];
+
 const TOOLTIP_STYLE = {
   backgroundColor: 'rgba(255,255,255,0.96)',
   borderColor: '#E5E7EB',
@@ -19,6 +22,22 @@ const TOOLTIP_STYLE = {
 };
 
 const TREND_COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'];
+
+const renderSparkline = (trend: number[]) => {
+  const option = {
+    grid: { left: 0, right: 0, top: 2, bottom: 2 },
+    xAxis: { type: 'category', show: false, data: trend.map((_, i) => i) },
+    yAxis: { type: 'value', show: false },
+    series: [{
+      type: 'line', data: trend, smooth: true, symbol: 'none',
+      lineStyle: { width: 1.5, color: '#3B82F6' },
+      areaStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [
+        { offset: 0, color: 'rgba(59,130,246,0.2)' }, { offset: 1, color: 'rgba(59,130,246,0)' },
+      ]}},
+    }],
+  };
+  return <ReactECharts option={option} style={{ width: 80, height: 28 }} opts={{ renderer: 'svg' }} />;
+};
 
 const DepartmentRoiSection = ({ data }: Props) => {
   const { t } = useTranslation();
@@ -34,6 +53,8 @@ const DepartmentRoiSection = ({ data }: Props) => {
     )},
     { title: t('operations.roiAnalysis.reqCount'), dataIndex: 'requirementCount', width: 80 },
     { title: t('operations.roiAnalysis.robotCount'), dataIndex: 'robotCount', width: 80 },
+    { title: t('operations.dashboard.trendLabel'), dataIndex: 'trend', width: 110,
+      render: (trend: number[]) => renderSparkline(trend) },
   ];
 
   // Bar chart
