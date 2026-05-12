@@ -99,7 +99,8 @@ export interface RoiAnalysisFilter {
   timeRange: string;
   department: string;
   project: string;
-  timeDimension: string;
+  timeDimension: string;       // cumulative/today/week/month/custom
+  classification: string;      // 分类筛选 ('all' or classification id)
 }
 
 // 筛选条件
@@ -185,14 +186,16 @@ export interface ResourceEfficiencyFilter {
   timeRange: string;
   group: string;
   status: string;
-  timeDimension: string;
+  timeDimension: string;       // cumulative/today
+  topN: number;                // TopX 数量, 默认 5, 最大 20
 }
 
 // ============ 业务成果看板 ============
-export interface FunnelStage { name: string; value: number; }
+export interface FunnelStage { name: string; value: number; conversionRate?: number; }
 export interface BusinessVolumePoint { month: string; volume: number; }
-export interface TimeSavedPoint { month: string; hours: number; }
+export interface TimeSavedPoint { month: string; hours: number; cumulative?: number; }
 export interface BusinessTypeShare { name: string; value: number; }
+export interface BusinessVolumeRankItem { name: string; volume: number; }
 export interface DepartmentOutcomeItem {
   department: string;
   requirementCount: number;
@@ -210,33 +213,66 @@ export interface CapacityTrendPoint {
   requirement: number;          // 当月需求交付数
   process: number;              // 当月流程发布数
 }
+// FEAT-023 开发产能 KPI
+export interface DevCapacityKpi {
+  totalEstimatedHours: number;  // 总预估工时
+  totalActualHours: number;     // 总实际工时
+  completionRate: number;       // 完成率 %
+  unregisteredProcessCount: number; // 未登记预估工时的流程数
+}
+// 预估准确率散点
+export interface AccuracyScatterPoint {
+  processName: string;
+  estimatedHours: number;
+  actualHours: number;
+}
+// 产能时间线
+export interface CapacityTimelinePoint {
+  period: string;               // YYYY-WW or YYYY-MM
+  delivered: number;
+  planned: number;
+}
 export interface DevCapacityData {
   requirement: DevCapacityGroup;
   process: DevCapacityGroup;
   capacityTrend: CapacityTrendPoint[];
+  // FEAT-023 严格规格
+  kpi: DevCapacityKpi;
+  accuracyScatter: AccuracyScatterPoint[];
+  capacityTimeline: CapacityTimelinePoint[];
+}
+export interface RequirementProgress {
+  total: number;
+  submitted: number;
+  approved: number;
+  developing: number;
+  running: number;
+  completed: number;
+  estimatedHours: number;       // 预估总工时
+  actualHours: number;          // 实际总工时
 }
 export interface BusinessOutcomesData {
   funnel: FunnelStage[];
-  requirementProgress: {
-    total: number;
-    submitted: number;
-    approved: number;
-    developing: number;
-    running: number;
-    completed: number;
-  };
+  requirementProgress: RequirementProgress;
   todayVolume: number;
   totalVolume: number;
+  volumeGrowthMoM: number;      // 业务量环比增长率(%)
   todayHoursSaved: number;
   totalHoursSaved: number;
+  hoursPerYearFactor: number;   // 人年换算系数 (固定 2000)
   volumeTrend: BusinessVolumePoint[];
+  volumeRanking: BusinessVolumeRankItem[];  // 业务量排行(按业务类型 Top)
   timeSavedTrend: TimeSavedPoint[];
   businessTypeShare: BusinessTypeShare[];
   departmentOutcomes: DepartmentOutcomeItem[];
   devCapacity: DevCapacityData;
+  // 趋势分析: 业务增长率% vs 工时节省 h
+  growthVsHours: { month: string; growthRate: number; hoursSaved: number }[];
 }
 export interface BusinessOutcomesFilter {
   timeRange: string;
   department: string;
   businessType: string;
+  classification: string;       // 分类筛选
+  timeDimension: string;        // cumulative/today
 }
