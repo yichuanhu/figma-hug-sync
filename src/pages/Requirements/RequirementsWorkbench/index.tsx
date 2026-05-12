@@ -661,9 +661,41 @@ const RequirementsWorkbench = () => {
             </Space>
           </Col>
           <Col>
-            <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => navigate('/requirements/list/create')}>
-              {t('requirements.workbench.newRequirement')}
-            </Button>
+            <Space>
+              <Dropdown
+                trigger="click"
+                position="bottomRight"
+                clickToHide={false}
+                render={
+                  <Dropdown.Menu>
+                    <Dropdown.Item disabled>
+                      {t('requirements.list.columns.optionalLabel')}
+                    </Dropdown.Item>
+                    {(['effort_estimate', 'effort_actual', 'completion_rate'] as const).map((k) => (
+                      <Dropdown.Item
+                        key={k}
+                        onClick={() => toggleOptionalColumn(k)}
+                      >
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                          <input
+                            type="checkbox"
+                            checked={optionalColumns.includes(k)}
+                            readOnly
+                            style={{ pointerEvents: 'none' }}
+                          />
+                          {t(`requirements.list.columns.${k === 'effort_estimate' ? 'effortEstimate' : k === 'effort_actual' ? 'effortActual' : 'completionRate'}`)}
+                        </span>
+                      </Dropdown.Item>
+                    ))}
+                  </Dropdown.Menu>
+                }
+              >
+                <Button icon={<Columns3 size={16} strokeWidth={2} />} theme="borderless" type="tertiary" />
+              </Dropdown>
+              <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => navigate('/requirements/list/create')}>
+                {t('requirements.workbench.newRequirement')}
+              </Button>
+            </Space>
           </Col>
         </Row>
       </div>
