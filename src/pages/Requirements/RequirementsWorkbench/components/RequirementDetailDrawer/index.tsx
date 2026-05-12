@@ -374,12 +374,20 @@ const RequirementDetailDrawer = ({
     setViewingVersion('current');
   }, [data?.id]);
 
-  // 当模版不含评估时，自动从已隐藏的 tab 回退到 overview
+  // 切换上一条/下一条时，若当前 tab 在新需求中不可用，则回退到 overview
   useEffect(() => {
-    if (!hasAssessment && (activeTab === 'assessment' || activeTab === 'cost')) {
+    if (!data) return;
+    const isHistory = viewingVersion !== 'current';
+    const availableTabs: string[] = ['overview'];
+    if (hasApproval && data.approvalFlowConfig && !isHistory) availableTabs.push('approval');
+    if (hasAssessment && context !== 'approval') availableTabs.push('assessment');
+    if (hasAssessment && context !== 'assessment') availableTabs.push('cost');
+    if (!isHistory && context !== 'approval' && context !== 'assessment' && isDevelopmentOrAfterStatus(data.status)) availableTabs.push('effort');
+    if (!isHistory && isDevelopmentOrAfterStatus(data.status)) availableTabs.push('devScheme');
+    if (!availableTabs.includes(activeTab)) {
       setActiveTab('overview');
     }
-  }, [hasAssessment, activeTab]);
+  }, [data?.id, data?.status, hasApproval, hasAssessment, context, viewingVersion, activeTab, data]);
 
   useEffect(() => {
     if (visible && data) {
