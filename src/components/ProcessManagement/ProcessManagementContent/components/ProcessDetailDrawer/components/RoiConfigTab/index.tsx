@@ -97,14 +97,6 @@ const RoiConfigTab = ({
 
   return (
     <div className="roi-tab">
-      {versionLabel && (
-        <div className="roi-tab-version-bar">
-          <Info size={12} strokeWidth={2} />
-          业务量变量取自当前版本
-          <Tag size="small" type="light" color="blue">{versionLabel}</Tag>
-        </div>
-      )}
-
       <div className="roi-tab-section">
         <RadioGroup
           type="button"
