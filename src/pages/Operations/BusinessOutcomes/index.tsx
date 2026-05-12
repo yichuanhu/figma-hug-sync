@@ -415,65 +415,66 @@ const BusinessOutcomes = () => {
       </div>
 
       <Spin spinning={loading}>
-      {/* 1. 漏斗图 */}
-      <div className="dashboard-card">
-        <div className="dashboard-card-header">
-          <span className="dashboard-card-title">
-            <MetricLabel label={t('operations.businessOutcomes.funnelTitle')} tip={t('operations.businessOutcomes.tips.funnel')} size="medium" />
-          </span>
-        </div>
-        <ReactECharts option={funnelOption} style={{ height: 320 }} opts={{ renderer: 'svg' }} />
-      </div>
-
-      {/* 2. 需求开发进度: 3 段卡 + 完成率进度条 + 工时块 */}
-      <div className="dashboard-card">
-        <div className="dashboard-card-header">
-          <span className="dashboard-card-title">
-            <MetricLabel label={t('operations.businessOutcomes.progressTitle')} tip={t('operations.businessOutcomes.tips.progressBuckets')} size="medium" />
-          </span>
-          <span style={{ fontSize: 12, color: 'var(--semi-color-text-2)' }}>
-            {t('operations.businessOutcomes.totalRequirements')}: <b style={{ color: 'var(--semi-color-text-0)' }}>{rp.total}</b>
-          </span>
+      {/* 1 & 2. 漏斗图 + 需求开发进度 横向并排 */}
+      <div className="bo-row cols-2" style={{ marginBottom: 20 }}>
+        <div className="dashboard-card" style={{ marginBottom: 0 }}>
+          <div className="dashboard-card-header">
+            <span className="dashboard-card-title">
+              <MetricLabel label={t('operations.businessOutcomes.funnelTitle')} tip={t('operations.businessOutcomes.tips.funnel')} size="medium" />
+            </span>
+          </div>
+          <ReactECharts option={funnelOption} style={{ height: 320 }} opts={{ renderer: 'svg' }} />
         </div>
 
-        <div className="bo-progress-grid bo-progress-grid-3">
-          <div className="bo-progress-item">
-            <div className="lbl">{t('operations.businessOutcomes.progressBucketPending')}</div>
-            <div className="val" style={{ color: COLORS.primary }}>{pendingCount}</div>
+        <div className="dashboard-card" style={{ marginBottom: 0 }}>
+          <div className="dashboard-card-header">
+            <span className="dashboard-card-title">
+              <MetricLabel label={t('operations.businessOutcomes.progressTitle')} tip={t('operations.businessOutcomes.tips.progressBuckets')} size="medium" />
+            </span>
+            <span style={{ fontSize: 12, color: 'var(--semi-color-text-2)' }}>
+              {t('operations.businessOutcomes.totalRequirements')}: <b style={{ color: 'var(--semi-color-text-0)' }}>{rp.total}</b>
+            </span>
           </div>
-          <div className="bo-progress-item">
-            <div className="lbl">{t('operations.businessOutcomes.progressBucketDeveloping')}</div>
-            <div className="val" style={{ color: COLORS.warning }}>{developingCount}</div>
-          </div>
-          <div className="bo-progress-item">
-            <div className="lbl">{t('operations.businessOutcomes.progressBucketLive')}</div>
-            <div className="val" style={{ color: COLORS.success }}>{liveCount}</div>
-          </div>
-        </div>
 
-        {/* 完成率进度条 */}
-        <div className="bo-completion-row">
-          <div className="bo-completion-label">
-            <MetricLabel label={t('operations.businessOutcomes.completionRate')} tip={t('operations.businessOutcomes.tips.completionRate')} />
+          <div className="bo-progress-grid bo-progress-grid-3">
+            <div className="bo-progress-item">
+              <div className="lbl">{t('operations.businessOutcomes.progressBucketPending')}</div>
+              <div className="val" style={{ color: COLORS.primary }}>{pendingCount}</div>
+            </div>
+            <div className="bo-progress-item">
+              <div className="lbl">{t('operations.businessOutcomes.progressBucketDeveloping')}</div>
+              <div className="val" style={{ color: COLORS.warning }}>{developingCount}</div>
+            </div>
+            <div className="bo-progress-item">
+              <div className="lbl">{t('operations.businessOutcomes.progressBucketLive')}</div>
+              <div className="val" style={{ color: COLORS.success }}>{liveCount}</div>
+            </div>
           </div>
-          <Progress percent={completionRate} stroke={COLORS.success} aria-label="completion" style={{ flex: 1 }} />
-          <div className="bo-completion-value">{completionRate}%</div>
-        </div>
 
-        {/* 工时块: 预估/实际/偏差 */}
-        <div className="bo-hours-grid">
-          <div className="bo-hours-item">
-            <div className="lbl"><MetricLabel label={t('operations.businessOutcomes.estimatedHours')} tip={t('operations.businessOutcomes.tips.estimatedHours')} /></div>
-            <div className="val">{rp.estimatedHours.toLocaleString()} h</div>
+          {/* 完成率进度条 */}
+          <div className="bo-completion-row">
+            <div className="bo-completion-label">
+              <MetricLabel label={t('operations.businessOutcomes.completionRate')} tip={t('operations.businessOutcomes.tips.completionRate')} />
+            </div>
+            <Progress percent={completionRate} stroke={COLORS.success} aria-label="completion" style={{ flex: 1 }} />
+            <div className="bo-completion-value">{completionRate}%</div>
           </div>
-          <div className="bo-hours-item">
-            <div className="lbl"><MetricLabel label={t('operations.businessOutcomes.actualHours')} tip={t('operations.businessOutcomes.tips.actualHours')} /></div>
-            <div className="val">{rp.actualHours.toLocaleString()} h</div>
-          </div>
-          <div className="bo-hours-item">
-            <div className="lbl"><MetricLabel label={t('operations.businessOutcomes.deviation')} tip={t('operations.businessOutcomes.tips.deviation')} /></div>
-            <div className="val" style={{ color: deviation > 0 ? COLORS.danger : COLORS.success }}>
-              {deviation > 0 ? '+' : ''}{deviation}%
+
+          {/* 工时块: 预估/实际/偏差 */}
+          <div className="bo-hours-grid">
+            <div className="bo-hours-item">
+              <div className="lbl"><MetricLabel label={t('operations.businessOutcomes.estimatedHours')} tip={t('operations.businessOutcomes.tips.estimatedHours')} /></div>
+              <div className="val">{rp.estimatedHours.toLocaleString()} h</div>
+            </div>
+            <div className="bo-hours-item">
+              <div className="lbl"><MetricLabel label={t('operations.businessOutcomes.actualHours')} tip={t('operations.businessOutcomes.tips.actualHours')} /></div>
+              <div className="val">{rp.actualHours.toLocaleString()} h</div>
+            </div>
+            <div className="bo-hours-item">
+              <div className="lbl"><MetricLabel label={t('operations.businessOutcomes.deviation')} tip={t('operations.businessOutcomes.tips.deviation')} /></div>
+              <div className="val" style={{ color: deviation > 0 ? COLORS.danger : COLORS.success }}>
+                {deviation > 0 ? '+' : ''}{deviation}%
+              </div>
             </div>
           </div>
         </div>
