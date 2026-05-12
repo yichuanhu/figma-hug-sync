@@ -385,15 +385,6 @@ const RequirementsWorkbench = () => {
       onHeaderCell: () => ({ onClick: () => handleSort('created_at') }),
       render: (value: string | null) => <RelativeTime value={value} />,
     },
-    {
-      title: t('common.createTime', '创建时间'),
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      width: 130,
-      sorter: true,
-      onHeaderCell: () => ({ onClick: () => handleSort('created_at') }),
-      render: (value: string | null) => <RelativeTime value={value} />,
-    },
     ...(optionalColumns.includes('effort_estimate')
       ? [{
           title: t('requirements.list.columns.effortEstimate'),
