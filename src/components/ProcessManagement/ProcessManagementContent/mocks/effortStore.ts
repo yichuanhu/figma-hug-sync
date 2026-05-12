@@ -110,8 +110,8 @@ export const postEntry = (
   if (!isCreator(creatorId)) throw new EffortError('forbidden');
   // 校验 delta
   if (typeof input.delta_days !== 'number' || Number.isNaN(input.delta_days)) throw new EffortError('invalid_delta');
-  if (input.delta_days === 0) throw new EffortError('invalid_delta');
-  if (input.delta_days < -999 || input.delta_days > 999) throw new EffortError('invalid_delta');
+  if (input.delta_days <= 0) throw new EffortError('invalid_delta');
+  if (input.delta_days > 999) throw new EffortError('invalid_delta');
   if (Math.round(input.delta_days * 10) !== input.delta_days * 10) throw new EffortError('invalid_delta');
   // 校验日期
   if (!input.work_date || !/^\d{4}-\d{2}-\d{2}$/.test(input.work_date)) throw new EffortError('invalid_date');
