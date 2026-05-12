@@ -104,14 +104,14 @@ const DevSchemeDocsTab = ({ requirement, onChange }: Props) => {
       dataIndex: 'uploaderName',
       width: 130,
       render: (_: string, doc: RequirementDevSchemeDoc) => (
-        <UserNameWithCard userId={doc.uploadedBy} userName={doc.uploaderName} />
+        <UserNameWithCard userId={doc.uploadedBy} name={doc.uploaderName} />
       ),
     },
     {
       title: t('requirements.devScheme.col.uploadedAt'),
       dataIndex: 'uploadedAt',
       width: 140,
-      render: (v: string) => <RelativeTime time={v} />,
+      render: (v: string) => <RelativeTime value={v} />,
     },
     {
       title: t('requirements.devScheme.col.note'),
