@@ -9,6 +9,12 @@
   border: none !important;
   position: relative;
 
+  .app-layout-content-main {
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
   // 首页专属蓝色晕影直接挂到外层卡片，避免被 .home-page 的滚动容器裁切
   &::before {
     content: '';
