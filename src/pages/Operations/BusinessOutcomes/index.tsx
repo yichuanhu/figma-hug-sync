@@ -511,11 +511,34 @@ const BusinessOutcomes = () => {
         </div>
 
         <div style={{ marginTop: 16 }}>
-          <div className="chart-subtitle">
-            <MetricLabel label={t('operations.businessOutcomes.volumeRankingTitle')} tip={t('operations.businessOutcomes.tips.volumeRanking')} />
+          <div className="bo-ranking-header">
+            <div className="chart-subtitle" style={{ marginBottom: 0 }}>
+              <MetricLabel label={t('operations.businessOutcomes.volumeRankingTitle')} tip={t('operations.businessOutcomes.tips.volumeRanking')} />
+            </div>
+            <div className="bo-ranking-controls">
+              <Select
+                multiple
+                maxTagCount={1}
+                value={rankFilterTypes}
+                optionList={rankTypeOptions}
+                placeholder={t('operations.businessOutcomes.rankFilterPlaceholder')}
+                onChange={(v) => setRankFilterTypes((v as string[]) || [])}
+                style={{ width: 200 }}
+              />
+              <Tooltip content={rankSortDesc ? t('operations.businessOutcomes.rankSortDesc') : t('operations.businessOutcomes.rankSortAsc')}>
+                <Button
+                  icon={rankSortDesc
+                    ? <ArrowDownWideNarrow size={16} strokeWidth={2} />
+                    : <ArrowUpNarrowWide size={16} strokeWidth={2} />}
+                  onClick={() => setRankSortDesc(v => !v)}
+                />
+              </Tooltip>
+            </div>
           </div>
           <div className="bo-ranking-list">
-            {data.volumeRanking.map((r, i) => (
+            {displayedRanking.length === 0 ? (
+              <div className="bo-ranking-empty">{t('operations.businessOutcomes.rankEmpty')}</div>
+            ) : displayedRanking.map((r, i) => (
               <div key={r.name} className="bo-ranking-item">
                 <span className={`rank rank-${i + 1}`}>{i + 1}</span>
                 <div className="info">
