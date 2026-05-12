@@ -1,34 +1,62 @@
 .dev-scheme-upload-modal {
-  .semi-upload-drag-area {
-    background: var(--semi-color-fill-0);
-    border: 1px dashed var(--semi-color-border);
-    border-radius: 6px;
-    padding: 24px;
+  .dev-scheme-upload-uploader {
+    .semi-upload {
+      .semi-upload-drag {
+        padding: 32px 16px;
+        border: 1px dashed var(--semi-color-border) !important;
+        border-radius: 4px;
+        background-color: var(--semi-color-fill-0) !important;
+      }
+
+      .semi-upload-drag:hover,
+      .semi-upload-drag.semi-upload-drag-area-legal,
+      .semi-upload-drag.semi-upload-drag-area-legal-main {
+        border-color: var(--semi-color-text-2) !important;
+        background-color: var(--semi-color-fill-1) !important;
+      }
+    }
+
+    .semi-upload-drag-area-main-text {
+      color: var(--semi-color-text-0);
+      font-weight: 500;
+    }
+
+    .semi-upload-drag-area-sub-text {
+      color: var(--semi-color-text-2);
+      margin-top: 4px;
+    }
+
+    .semi-upload-file-list {
+      display: none;
+    }
   }
-  .upload-hint {
-    color: var(--semi-color-text-2);
-    font-size: 12px;
-    margin-top: 8px;
-  }
-  .selected-file {
-    margin-top: 12px;
-    padding: 10px 12px;
-    border-radius: 6px;
-    background: var(--semi-color-fill-0);
+
+  .dev-scheme-upload-file-info {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 13px;
-    .file-meta {
-      color: var(--semi-color-text-2);
-    }
-    .file-remove {
-      margin-left: auto;
-      cursor: pointer;
-      color: var(--semi-color-text-2);
-      &:hover { color: var(--semi-color-danger); }
+    justify-content: space-between;
+    margin-top: 12px;
+    padding: 8px 12px;
+    background-color: var(--semi-color-fill-0);
+    border-radius: 4px;
+    border: 1px solid var(--semi-color-border);
+
+    .file-info-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow: hidden;
+
+      .file-name {
+        font-size: 14px;
+        color: var(--semi-color-text-0);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
     }
   }
+
   .next-version-hint {
     margin-top: 16px;
     padding: 8px 12px;
@@ -37,9 +65,19 @@
     font-size: 13px;
     color: var(--semi-color-text-1);
   }
+
   .notify-recipients {
     margin-top: 12px;
     font-size: 12px;
     color: var(--semi-color-text-2);
   }
+}
+
+.dev-scheme-upload-modal .semi-upload-drag {
+  transition: all 0.2s ease-out;
+}
+
+.dev-scheme-upload-modal .semi-upload-drag.semi-upload-drag-area-legal {
+  border-color: var(--semi-color-text-0) !important;
+  background-color: var(--semi-color-fill-2) !important;
 }
