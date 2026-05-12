@@ -3297,7 +3297,9 @@
         "growthVsHours": "双 Y 轴折线:左轴业务量环比增长率,右轴工时节省;仅展示历史数据",
         "accuracyScatter": "每个点为一个流程,横轴预估工时、纵轴实际工时;接近对角线 y=x 表示估算越准",
         "capacityTimeline": "按周/月对比实际交付数量与计划数量",
-        "unregisteredProcess": "尚未登记预估工时的自动化流程数,提示需补登"
+        "unregisteredProcess": "尚未登记预估工时的自动化流程数,提示需补登",
+        "activeDeveloperCount": "统计周期内提交过流程的开发者人数",
+        "timeoutProcessCount": "实际工时超出预估工时 25% 的流程数"
       },
       "classification": "分类",
       "timeDimension": "时间维度",
@@ -3333,7 +3335,9 @@
       "planned": "计划",
       "estVsActualX": "预估工时(h)",
       "estVsActualY": "实际工时(h)",
-      "diagonal": "参考线 y=x"
+      "diagonal": "参考线 y=x",
+      "activeDeveloperCount": "活跃开发者数",
+      "timeoutProcessCount": "超时流程数"
     },
     "costManagement": {
       "title": "成本管理"

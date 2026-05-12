@@ -3927,7 +3927,9 @@
         "growthVsHours": "Dual axis line: left growth rate %, right hours saved; historical only.",
         "accuracyScatter": "Each dot is a process; closer to y=x means more accurate estimation.",
         "capacityTimeline": "Delivered vs planned per period.",
-        "unregisteredProcess": "Processes missing estimated hours."
+        "unregisteredProcess": "Processes missing estimated hours.",
+        "activeDeveloperCount": "Developers who submitted processes in the period.",
+        "timeoutProcessCount": "Processes whose actual hours exceed estimate by >25%."
       },
       "classification": "Classification",
       "timeDimension": "Time Dim",
@@ -3963,7 +3965,9 @@
       "planned": "Planned",
       "estVsActualX": "Estimated (h)",
       "estVsActualY": "Actual (h)",
-      "diagonal": "Reference y=x"
+      "diagonal": "Reference y=x",
+      "activeDeveloperCount": "Active Developers",
+      "timeoutProcessCount": "Timeout Processes"
     },
     "costManagement": {
       "title": "Cost Management"
