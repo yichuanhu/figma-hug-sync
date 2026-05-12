@@ -1249,7 +1249,7 @@
           "overTimeTip": "实际工时已超出预估 {{delta}} 人天",
           "lastUpdated": "最近更新于 {{time}}",
           "entriesTitle": "工时登记",
-          "addEntry": "登记一笔",
+          "addEntry": "登记工时",
           "deleteSuccess": "工时记录已删除",
           "deleteConfirmTitle": "删除工时记录",
           "deleteConfirmContent": "确定要删除这条工时记录吗？此操作不可撤销。",
