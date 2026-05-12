@@ -315,7 +315,7 @@ interface RequirementDetailDrawerProps {
   onDelete: (record: RequirementItem) => void;
   onStatusChange: (id: string, newStatus: string, comment?: string) => Promise<void>;
   onResubmit?: (record: RequirementItem) => void;
-  onOffline?: (record: RequirementItem) => void;
+  
   onRefresh?: () => void;
   pagination: PaginationInfo;
   onPageChange?: (page: number, direction: 'prev' | 'next') => void;
