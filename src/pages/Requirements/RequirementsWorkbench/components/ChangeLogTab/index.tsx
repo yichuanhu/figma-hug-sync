@@ -1,14 +1,26 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Timeline, Typography, Spin } from '@douyinfe/semi-ui';
+import { Timeline, Typography, Spin, Tag } from '@douyinfe/semi-ui';
+import { FileEdit, FilePlus2, FileX2 } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
-import type { RequirementChangeLog } from '../../types';
+import type { RequirementChangeLog, RequirementChangeType } from '../../types';
 import { listChangeLogs } from '../../mockData';
 import './index.less';
 
 const { Text } = Typography;
 
 const formatTime = (iso: string) => iso.replace('T', ' ').substring(0, 19);
+
+const typeMeta = (type: RequirementChangeType | undefined) => {
+  switch (type) {
+    case 'DEV_SCHEME_DOC_UPLOADED':
+      return { icon: <FilePlus2 size={14} strokeWidth={2} />, color: 'green' as const, key: 'requirements.detail.changeLog.type.devSchemeUploaded' };
+    case 'DEV_SCHEME_DOC_DELETED':
+      return { icon: <FileX2 size={14} strokeWidth={2} />, color: 'red' as const, key: 'requirements.detail.changeLog.type.devSchemeDeleted' };
+    default:
+      return { icon: <FileEdit size={14} strokeWidth={2} />, color: 'blue' as const, key: 'requirements.detail.changeLog.type.content' };
+  }
+};
 
 interface Props {
   requirementId: string;
@@ -62,32 +74,38 @@ const ChangeLogTab = ({ requirementId, refreshKey, highlightLogId }: Props) => {
   return (
     <div className="change-log-tab">
       <Timeline mode="left">
-        {logs.map((log) => (
-          <Timeline.Item key={log.id} type="ongoing" time={formatTime(log.publishedAt)}>
-            <div
-              className="change-log-item"
-              ref={(el) => {
-                itemRefs.current[log.id] = el;
-              }}
-            >
-              <div className="change-log-item-meta">
-                <Text type="tertiary" size="small">
-                  {t('requirements.detail.changeLog.publishedBy', {
-                    name: log.publisherName,
-                    time: formatTime(log.publishedAt),
-                  })}
-                </Text>
-              </div>
-
-              <div className="change-log-item-section">
-                <div className="change-log-item-section-title">
-                  {t('requirements.detail.changeLog.reasonTitle')}
+        {logs.map((log) => {
+          const meta = typeMeta(log.changeType);
+          return (
+            <Timeline.Item key={log.id} type="ongoing" time={formatTime(log.publishedAt)}>
+              <div
+                className="change-log-item"
+                ref={(el) => {
+                  itemRefs.current[log.id] = el;
+                }}
+              >
+                <div className="change-log-item-meta" style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                  <Tag color={meta.color} prefixIcon={meta.icon} size="small">
+                    {t(meta.key)}
+                  </Tag>
+                  <Text type="tertiary" size="small">
+                    {t('requirements.detail.changeLog.publishedBy', {
+                      name: log.publisherName,
+                      time: formatTime(log.publishedAt),
+                    })}
+                  </Text>
                 </div>
-                <div className="change-log-item-reason">{log.reason}</div>
+
+                <div className="change-log-item-section">
+                  <div className="change-log-item-section-title">
+                    {t('requirements.detail.changeLog.reasonTitle')}
+                  </div>
+                  <div className="change-log-item-reason">{log.reason}</div>
+                </div>
               </div>
-            </div>
-          </Timeline.Item>
-        ))}
+            </Timeline.Item>
+          );
+        })}
       </Timeline>
     </div>
   );
