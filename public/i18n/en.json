@@ -1384,7 +1384,7 @@
             "title": "Log Effort",
             "editTitle": "Edit Effort",
             "deltaLabel": "Delta (MD)",
-            "deltaPlaceholder": "Positive or negative, e.g. 0.5 / -0.5",
+            "deltaPlaceholder": "Enter work hours, e.g. 0.5 / 1",
             "dateLabel": "Work Date",
             "datePlaceholder": "Pick a date",
             "noteLabel": "Note",
