@@ -11,6 +11,7 @@ import {
 } from '@/pages/Operations/mockData';
 import type { BusinessOutcomesFilter } from '@/pages/Operations/types';
 import MetricLabel from './components/MetricLabel';
+import RectFunnel from './components/RectFunnel';
 import './index.less';
 
 const { Title } = Typography;
