@@ -280,8 +280,8 @@ const RobotPerformance = ({ data }: Props) => {
 
       {/* Busy / Idle TopX */}
       <div className="robot-perf-charts-row" style={{ marginBottom: 16 }}>
-        <BusyIdleTopX robots={data.robotDetails} mode="busy" topN={topN} />
-        <BusyIdleTopX robots={data.robotDetails} mode="idle" topN={topN} />
+        <BusyIdleTopX robots={data.robotDetails} mode="busy" />
+        <BusyIdleTopX robots={data.robotDetails} mode="idle" />
       </div>
 
       {/* Robot detail table */}
