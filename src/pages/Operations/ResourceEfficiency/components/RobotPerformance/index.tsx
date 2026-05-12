@@ -29,7 +29,7 @@ const TOOLTIP_STYLE = {
   extraCssText: 'box-shadow: 0 4px 16px rgba(0,0,0,0.08); border-radius: 8px;',
 };
 
-const RobotPerformance = ({ data, topN = 5 }: Props) => {
+const RobotPerformance = ({ data }: Props) => {
   const { t } = useTranslation();
 
   const statusMap: Record<string, { label: string; color: string }> = {
