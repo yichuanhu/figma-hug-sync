@@ -78,15 +78,24 @@ const EffortTab = ({ processId, creatorId }: Props) => {
   }, []);
 
   const handleDelete = useCallback((entry: LYProcessEffortEntry) => {
-    try {
-      const next = deleteEntry(processId, creatorId, entry.id);
-      setSnapshot(next);
-      Toast.success(t('development.processDevelopment.detail.effort.deleteSuccess'));
-    } catch (e) {
-      if (e instanceof EffortError) {
-        Toast.error(t(`development.processDevelopment.detail.effort.errors.${e.code}`));
-      }
-    }
+    Modal.confirm({
+      title: t('development.processDevelopment.detail.effort.deleteConfirmTitle'),
+      content: t('development.processDevelopment.detail.effort.deleteConfirmContent'),
+      okType: 'danger',
+      okText: t('common.confirm'),
+      cancelText: t('common.cancel'),
+      onOk: () => {
+        try {
+          const next = deleteEntry(processId, creatorId, entry.id);
+          setSnapshot(next);
+          Toast.success(t('development.processDevelopment.detail.effort.deleteSuccess'));
+        } catch (e) {
+          if (e instanceof EffortError) {
+            Toast.error(t(`development.processDevelopment.detail.effort.errors.${e.code}`));
+          }
+        }
+      },
+    });
   }, [processId, creatorId, t]);
 
   const columns = useMemo(
