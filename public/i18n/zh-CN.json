@@ -3218,6 +3218,7 @@
       "failedRatio": "失败占比",
       "failedTimes": "失败次数",
       "totalRuns": "执行次数",
+      "processName": "流程名称",
       "taskVolumeTrend": "任务执行量趋势",
       "successSeries": "成功",
       "failedSeries": "失败",

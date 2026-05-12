@@ -3848,6 +3848,7 @@
       "failedRatio": "Failure Rate",
       "failedTimes": "Failures",
       "totalRuns": "Total Runs",
+      "processName": "Process Name",
       "taskVolumeTrend": "Task Volume Trend",
       "successSeries": "Success",
       "failedSeries": "Failed",
