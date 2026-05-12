@@ -695,6 +695,17 @@ const RequirementDetailDrawer = ({
               </TabPane>
             )}
 
+            {!isHistoryMode && context !== 'approval' && context !== 'assessment' && (
+              <TabPane
+                tab={t('requirements.detail.tab.effort')}
+                itemKey="effort"
+              >
+                <div className="requirement-detail-tab-content">
+                  <EffortTab data={effectiveData} />
+                </div>
+              </TabPane>
+            )}
+
             {!isHistoryMode && isPostProjectStatus(effectiveData.status) && (
               <TabPane
                 tab={t('requirements.detail.tab.changeLog')}
