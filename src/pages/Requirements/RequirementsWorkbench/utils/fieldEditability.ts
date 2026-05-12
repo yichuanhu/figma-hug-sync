@@ -16,6 +16,16 @@ export const POST_PROJECT_STATUSES: RequirementStatus[] = [
 export const isPostProjectStatus = (status: RequirementStatus): boolean =>
   POST_PROJECT_STATUSES.includes(status);
 
+/** 开发阶段及之后（不含 PENDING_PROJECT 待开发） */
+export const DEVELOPMENT_OR_AFTER_STATUSES: RequirementStatus[] = [
+  'DEVELOPING',
+  'LAUNCHED',
+  'OFFLINE',
+];
+
+export const isDevelopmentOrAfterStatus = (status: RequirementStatus): boolean =>
+  DEVELOPMENT_OR_AFTER_STATUSES.includes(status);
+
 /** 立项后系统锁定字段（不可编辑） */
 export const SYSTEM_LOCKED_FIELDS = new Set<string>([
   'id',
