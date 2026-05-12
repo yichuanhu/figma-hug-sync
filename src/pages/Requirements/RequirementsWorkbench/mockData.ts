@@ -1400,6 +1400,7 @@ const seedChangeLogs = async () => {
       publisherId: MOCK_CURRENT_USER_ID,
       publisherName: publisher,
       publishedAt: daysAgo(5),
+      changeType: 'CONTENT',
     });
     changeLogStore.push({
       id: `chg-${req.id}-priority`,
@@ -1408,6 +1409,7 @@ const seedChangeLogs = async () => {
       publisherId: MOCK_CURRENT_USER_ID,
       publisherName: publisher,
       publishedAt: daysAgo(2),
+      changeType: 'CONTENT',
     });
   });
 };
