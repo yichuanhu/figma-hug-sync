@@ -65,6 +65,13 @@ const EffortTab = ({ processId, creatorId }: Props) => {
     return Math.round((snapshot.actual - snapshot.estimate) * 10) / 10;
   }, [snapshot.estimate, snapshot.actual]);
 
+  const progressPct = useMemo(() => {
+    if (!snapshot.estimate || snapshot.estimate <= 0 || snapshot.actual === null) return 0;
+    return Math.min(100, Math.round((snapshot.actual / snapshot.estimate) * 100));
+  }, [snapshot.estimate, snapshot.actual]);
+
+  const isOver = overTime > 0;
+
   const handleEdit = useCallback((entry: LYProcessEffortEntry) => {
     setEditingEntry(entry);
     setModalVisible(true);
