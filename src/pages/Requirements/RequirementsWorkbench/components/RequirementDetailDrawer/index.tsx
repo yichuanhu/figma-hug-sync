@@ -13,6 +13,7 @@ import { isPostProjectStatus } from '../../utils/fieldEditability';
 import ApprovalSection from './ApprovalSection';
 import AssessmentTab from './AssessmentTab';
 import CostEstimateTab from './CostEstimateTab';
+import EffortTab from './EffortTab';
 import ApprovalFlowProgress from '../ApprovalFlowProgress';
 import ChangeLogTab from '../ChangeLogTab';
 
