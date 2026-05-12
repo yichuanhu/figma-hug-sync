@@ -782,9 +782,10 @@ const RequirementsWorkbench = () => {
       {/* 需求详情抽屉 */}
       <RequirementDetailDrawer
         visible={detailDrawerVisible}
-        onClose={() => setDetailDrawerVisible(false)}
+        onClose={() => { setDetailDrawerVisible(false); setInitialDrawerTab(undefined); }}
         data={selectedRecord}
         dataList={list}
+        initialTab={initialDrawerTab}
         onNavigate={(item) => setSelectedRecord(item)}
         onEdit={(record) => {
           setDetailDrawerVisible(false);
