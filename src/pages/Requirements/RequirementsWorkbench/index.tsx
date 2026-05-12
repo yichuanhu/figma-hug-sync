@@ -381,10 +381,10 @@ const RequirementsWorkbench = () => {
       title: t('common.createTime', '创建时间'),
       dataIndex: 'createdAt',
       key: 'createdAt',
-      width: 130,
+      width: 160,
       sorter: true,
       onHeaderCell: () => ({ onClick: () => handleSort('created_at') }),
-      render: (value: string | null) => <RelativeTime value={value} />,
+      render: (value: string | null) => value ? <span>{value.replace('T', ' ').substring(0, 16)}</span> : <span>--</span>,
     },
     ...(optionalColumns.includes('effort_estimate')
       ? [{
