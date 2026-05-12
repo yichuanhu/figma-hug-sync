@@ -19,7 +19,7 @@ import {
 import DepartmentSelect from '@/components/DepartmentSelect';
 import FilterPopover from '@/components/FilterPopover';
 import { IconSearchStroked, IconDeleteStroked } from '@douyinfe/semi-icons';
-import { Ellipsis, Pencil, Plus, Send, Trash2, RotateCcw, PowerOff, Undo2, Link2, FolderPlus } from 'lucide-react';
+import { Ellipsis, Pencil, Plus, Send, Trash2, RotateCcw, PowerOff, Undo2, Link2, FolderPlus, Columns3 } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import TableSkeleton from '@/components/TableSkeleton';
 
@@ -36,6 +36,7 @@ import {
   useSchemeFlags,
   MOCK_CURRENT_USER_ID,
   MOCK_PROJECT_POOL,
+  getRequirementEffortSummary,
 } from './mockData';
 import { statusConfigV2, legacyStatusMap, statusOptionsV2 } from './statusConfig';
 import RequirementFormModal from './components/RequirementFormModal';
@@ -84,6 +85,24 @@ const RequirementsWorkbench = () => {
   const [selectedRecord, setSelectedRecord] = useState<RequirementItem | null>(null);
   
   const [pickerRecord, setPickerRecord] = useState<RequirementItem | null>(null);
+
+  // 可选列（持久化到 localStorage）
+  const OPTIONAL_COLUMNS_KEY = 'requirements.list.optionalColumns';
+  type OptionalColumnKey = 'effort_estimate' | 'effort_actual' | 'completion_rate';
+  const [optionalColumns, setOptionalColumns] = useState<OptionalColumnKey[]>(() => {
+    try {
+      const raw = localStorage.getItem(OPTIONAL_COLUMNS_KEY);
+      if (raw) return JSON.parse(raw) as OptionalColumnKey[];
+    } catch { /* ignore */ }
+    return [];
+  });
+  const toggleOptionalColumn = (key: OptionalColumnKey) => {
+    setOptionalColumns((prev) => {
+      const next = prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key];
+      try { localStorage.setItem(OPTIONAL_COLUMNS_KEY, JSON.stringify(next)); } catch { /* ignore */ }
+      return next;
+    });
+  };
 
   // 列表数据
   const [listResponse, setListResponse] = useState<{
@@ -366,6 +385,62 @@ const RequirementsWorkbench = () => {
       onHeaderCell: () => ({ onClick: () => handleSort('created_at') }),
       render: (value: string | null) => <RelativeTime value={value} />,
     },
+    ...(optionalColumns.includes('effort_estimate')
+      ? [{
+          title: t('requirements.list.columns.effortEstimate'),
+          dataIndex: '_effort_estimate',
+          key: '_effort_estimate',
+          width: 110,
+          align: 'right' as const,
+          render: (_: unknown, record: RequirementItem) => {
+            const s = getRequirementEffortSummary(record);
+            return s.total_process_count === 0 ? (
+              <Text type="tertiary">-</Text>
+            ) : (
+              <span style={{ fontVariantNumeric: 'tabular-nums' }}>
+                {s.effort_estimate_total.toFixed(1).replace(/\.0$/, '')} {t('requirements.detail.effort.unit')}
+              </span>
+            );
+          },
+        }]
+      : []),
+    ...(optionalColumns.includes('effort_actual')
+      ? [{
+          title: t('requirements.list.columns.effortActual'),
+          dataIndex: '_effort_actual',
+          key: '_effort_actual',
+          width: 110,
+          align: 'right' as const,
+          render: (_: unknown, record: RequirementItem) => {
+            const s = getRequirementEffortSummary(record);
+            if (s.total_process_count === 0) return <Text type="tertiary">-</Text>;
+            const over = s.effort_actual_total > s.effort_estimate_total && s.effort_estimate_total > 0;
+            return (
+              <span style={{ fontVariantNumeric: 'tabular-nums', color: over ? 'var(--semi-color-danger)' : undefined }}>
+                {s.effort_actual_total.toFixed(1).replace(/\.0$/, '')} {t('requirements.detail.effort.unit')}
+              </span>
+            );
+          },
+        }]
+      : []),
+    ...(optionalColumns.includes('completion_rate')
+      ? [{
+          title: t('requirements.list.columns.completionRate'),
+          dataIndex: '_completion_rate',
+          key: '_completion_rate',
+          width: 110,
+          align: 'right' as const,
+          render: (_: unknown, record: RequirementItem) => {
+            const s = getRequirementEffortSummary(record);
+            if (s.total_process_count - s.retired_process_count === 0) return <Text type="tertiary">-</Text>;
+            return (
+              <span style={{ fontVariantNumeric: 'tabular-nums' }}>
+                {Math.round(s.completion_rate * 100)}%
+              </span>
+            );
+          },
+        }]
+      : []),
     {
       title: t('common.actions'),
       dataIndex: 'action',
@@ -586,9 +661,41 @@ const RequirementsWorkbench = () => {
             </Space>
           </Col>
           <Col>
-            <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => navigate('/requirements/list/create')}>
-              {t('requirements.workbench.newRequirement')}
-            </Button>
+            <Space>
+              <Dropdown
+                trigger="click"
+                position="bottomRight"
+                clickToHide={false}
+                render={
+                  <Dropdown.Menu>
+                    <Dropdown.Item disabled>
+                      {t('requirements.list.columns.optionalLabel')}
+                    </Dropdown.Item>
+                    {(['effort_estimate', 'effort_actual', 'completion_rate'] as const).map((k) => (
+                      <Dropdown.Item
+                        key={k}
+                        onClick={() => toggleOptionalColumn(k)}
+                      >
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                          <input
+                            type="checkbox"
+                            checked={optionalColumns.includes(k)}
+                            readOnly
+                            style={{ pointerEvents: 'none' }}
+                          />
+                          {t(`requirements.list.columns.${k === 'effort_estimate' ? 'effortEstimate' : k === 'effort_actual' ? 'effortActual' : 'completionRate'}`)}
+                        </span>
+                      </Dropdown.Item>
+                    ))}
+                  </Dropdown.Menu>
+                }
+              >
+                <Button icon={<Columns3 size={16} strokeWidth={2} />} theme="borderless" type="tertiary" />
+              </Dropdown>
+              <Button icon={<Plus size={16} strokeWidth={2} />} theme="solid" type="primary" onClick={() => navigate('/requirements/list/create')}>
+                {t('requirements.workbench.newRequirement')}
+              </Button>
+            </Space>
           </Col>
         </Row>
       </div>

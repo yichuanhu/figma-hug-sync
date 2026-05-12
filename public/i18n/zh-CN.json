@@ -573,6 +573,14 @@
       "viewTable": "表格",
       "viewBoard": "看板"
     },
+    "list": {
+      "columns": {
+        "optionalLabel": "可选列",
+        "effortEstimate": "预估工时合计",
+        "effortActual": "实际工时合计",
+        "completionRate": "完成率"
+      }
+    },
     "fields": {
       "title": "需求标题",
       "department": "部门",
@@ -870,8 +878,30 @@
         "approval": "审批流程",
         "assessment": "技术评估",
         "cost": "节省成本",
+        "effort": "开发工时",
         "versions": "版本历史",
         "changeLog": "变更日志"
+      },
+      "effort": {
+        "unit": "人天",
+        "empty": "尚未关联流程，工时数据将在流程创建后自动汇总。",
+        "retired": "已退役",
+        "processListTitle": "流程明细",
+        "overTip": "实际工时已超出预估 {{delta}} 人天",
+        "unestimatedWarning": "有 {{count}} 个流程尚未填写预估工时，建议尽快补齐。",
+        "kpi": {
+          "estimateTotal": "预估工时合计",
+          "actualTotal": "实际工时合计",
+          "completionRate": "完成率",
+          "completionMeta": "{{published}} / {{denom}} 个流程已发布",
+          "retiredExcluded": "已排除 {{count}} 个退役流程"
+        },
+        "table": {
+          "process": "流程",
+          "estimate": "预估工时",
+          "actual": "实际工时",
+          "overrun": "超时"
+        }
       },
       "changeLog": {
         "empty": "暂无变更记录",

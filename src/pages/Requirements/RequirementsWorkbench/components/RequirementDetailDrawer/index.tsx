@@ -13,6 +13,7 @@ import { isPostProjectStatus } from '../../utils/fieldEditability';
 import ApprovalSection from './ApprovalSection';
 import AssessmentTab from './AssessmentTab';
 import CostEstimateTab from './CostEstimateTab';
+import EffortTab from './EffortTab';
 import ApprovalFlowProgress from '../ApprovalFlowProgress';
 import ChangeLogTab from '../ChangeLogTab';
 
@@ -690,6 +691,17 @@ const RequirementDetailDrawer = ({
               >
                 <div className="requirement-detail-tab-content">
                   <CostEstimateTab data={effectiveData} />
+                </div>
+              </TabPane>
+            )}
+
+            {!isHistoryMode && context !== 'approval' && context !== 'assessment' && (
+              <TabPane
+                tab={t('requirements.detail.tab.effort')}
+                itemKey="effort"
+              >
+                <div className="requirement-detail-tab-content">
+                  <EffortTab data={effectiveData} />
                 </div>
               </TabPane>
             )}

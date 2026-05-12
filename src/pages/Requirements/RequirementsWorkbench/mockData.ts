@@ -256,7 +256,7 @@ const generateMockRequirements = (): RequirementItem[] => {
       baselineFormData,
       costEstimate,
       historyVersions: generateMockVersions(tpl.status, index, tpl.title, tpl.description, tpl.priority),
-      linkedProcesses: generateMockLinkedProcesses(tpl.status, index),
+      linkedProcesses: enrichLinkedProcesses(generateMockLinkedProcesses(tpl.status, index), tpl.status, index),
       linkedProject: generateMockLinkedProject(tpl.status, index),
       linkedWorkspace: generateMockLinkedWorkspace(tpl.status, index),
       unboundProcessCount: generateMockUnboundCount(tpl.status, index),
@@ -508,6 +508,67 @@ const generateMockLinkedProcesses = (status: RequirementStatus, idx: number): Li
     return launchedMix[idx % launchedMix.length];
   }
   return MOCK_PROCESS_POOL.slice(0, (idx % 3) + 1);
+};
+
+// 给关联流程注入工时/版本/退役元数据（确定性，便于 demo）
+const enrichLinkedProcesses = (
+  list: LinkedProcess[] | undefined,
+  status: RequirementStatus,
+  idx: number,
+): LinkedProcess[] | undefined => {
+  if (!list || list.length === 0) return list;
+  return list.map((p, i) => {
+    const seed = idx * 13 + i * 7;
+    // 第一个流程留作未估算样本（仅 idx % 3 === 0 时）
+    const unestimated = i === 0 && idx % 3 === 0;
+    const estimate = unestimated ? null : Math.round((2 + (seed % 9) + 0.5) * 2) / 2; // 2.5~10.5
+    // 实际：状态为 ONLINE 接近预估；DEVELOPING 部分进度；TESTING 偏接近；其他 0
+    let actual: number | null = 0;
+    if (estimate !== null) {
+      if (p.status === 'ONLINE') actual = Math.round((estimate + ((seed % 3) - 1) * 0.5) * 2) / 2;
+      else if (p.status === 'TESTING') actual = Math.round(estimate * 0.85 * 2) / 2;
+      else if (p.status === 'DEVELOPING') actual = Math.round(estimate * 0.45 * 2) / 2;
+      else actual = 0;
+    } else {
+      actual = null;
+    }
+    const has_published_version = p.status === 'ONLINE';
+    // OFFLINE 状态下，第二个流程标记为退役
+    const is_retired = status === 'OFFLINE' && i === 1;
+    return { ...p, effort_estimate_days: estimate, effort_actual_days: actual, has_published_version, is_retired };
+  });
+};
+
+/** 计算单个需求的开发工时聚合（基于 linkedProcesses，未持久化）。 */
+export const getRequirementEffortSummary = (item: RequirementItem) => {
+  const processes = (item.linkedProcesses ?? []) as LinkedProcess[];
+  const total_process_count = processes.length;
+  const retired_process_count = processes.filter((p) => p.is_retired).length;
+  const active = processes.filter((p) => !p.is_retired);
+  const published_process_count = active.filter((p) => p.has_published_version).length;
+  const active_process_count = active.length - published_process_count;
+  const unestimated_process_count = active.filter(
+    (p) => p.effort_estimate_days === null || p.effort_estimate_days === undefined,
+  ).length;
+  const sum = (key: 'effort_estimate_days' | 'effort_actual_days') =>
+    Math.round(
+      processes.reduce((acc, p) => acc + (typeof p[key] === 'number' ? (p[key] as number) : 0), 0) * 10,
+    ) / 10;
+  const effort_estimate_total = sum('effort_estimate_days');
+  const effort_actual_total = sum('effort_actual_days');
+  const denom = active.length;
+  const completion_rate = denom > 0 ? published_process_count / denom : 0;
+  return {
+    total_process_count,
+    retired_process_count,
+    published_process_count,
+    active_process_count,
+    unestimated_process_count,
+    effort_estimate_total,
+    effort_actual_total,
+    completion_rate,
+    processes,
+  };
 };
 
 // 与 RequirementsProjects/mockData.ts 中的 projects 数组一一对应（id/name），用于列表筛选下拉。

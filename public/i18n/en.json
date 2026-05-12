@@ -665,6 +665,14 @@
       "viewTable": "Table",
       "viewBoard": "Board"
     },
+    "list": {
+      "columns": {
+        "optionalLabel": "Optional Columns",
+        "effortEstimate": "Total Estimate",
+        "effortActual": "Total Actual",
+        "completionRate": "Completion"
+      }
+    },
     "fields": {
       "title": "Title",
       "department": "Department",
@@ -977,8 +985,30 @@
         "approval": "Approval Flow",
         "assessment": "Assessment",
         "cost": "Saved Cost",
+        "effort": "Dev Effort",
         "versions": "Version History",
         "changeLog": "Change Log"
+      },
+      "effort": {
+        "unit": "person-days",
+        "empty": "No linked processes yet. Effort data will aggregate here once processes are created.",
+        "retired": "Retired",
+        "processListTitle": "Process Detail",
+        "overTip": "Actual effort exceeds estimate by {{delta}} person-days",
+        "unestimatedWarning": "{{count}} process(es) have no estimate yet — please complete them.",
+        "kpi": {
+          "estimateTotal": "Total Estimate",
+          "actualTotal": "Total Actual",
+          "completionRate": "Completion",
+          "completionMeta": "{{published}} / {{denom}} processes published",
+          "retiredExcluded": "{{count}} retired excluded"
+        },
+        "table": {
+          "process": "Process",
+          "estimate": "Estimate",
+          "actual": "Actual",
+          "overrun": "Overrun"
+        }
       },
       "changeLog": {
         "empty": "No change records",
