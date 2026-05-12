@@ -74,7 +74,6 @@
   .home-content {
     display: grid;
     grid-template-columns: 1.5fr 1fr;
-    grid-auto-rows: auto;
     gap: 24px;
 
     @media (max-width: 1200px) {
@@ -86,29 +85,19 @@
     }
   }
 
-  // 通知卡片纵跨左侧"快速开始 + 核心指标"两行，使其底部与核心指标对齐
-  .home-cell-shortcuts { grid-column: 1; grid-row: 1; min-width: 0; }
-  .home-cell-metrics { grid-column: 1; grid-row: 2; min-width: 0; }
-  .home-cell-notification {
-    grid-column: 2;
-    grid-row: 1 / span 2;
-    min-width: 0;
+  .home-left-column,
+  .home-right-column {
     display: flex;
     flex-direction: column;
+    gap: 24px;
+    min-width: 0;
 
-    > * { flex: 1; min-height: 0; }
-  }
-  .home-cell-announcement { grid-column: 1; grid-row: 3; min-width: 0; }
-  .home-cell-resource { grid-column: 2; grid-row: 3; min-width: 0; }
+    > * {
+      flex-shrink: 0;
+    }
 
-  @media (max-width: 960px) {
-    .home-cell-shortcuts,
-    .home-cell-metrics,
-    .home-cell-notification,
-    .home-cell-announcement,
-    .home-cell-resource {
-      grid-column: 1;
-      grid-row: auto;
+    &:empty {
+      display: none;
     }
   }
 
