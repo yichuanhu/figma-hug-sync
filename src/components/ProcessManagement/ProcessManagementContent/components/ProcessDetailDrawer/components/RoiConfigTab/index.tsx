@@ -149,7 +149,7 @@ const RoiConfigTab = ({
                   onChange={(v) => update({ selectedBusinessVolumeVariable: v as string })}
                   placeholder={hasBusinessVolume ? '请选择' : '当前版本无业务量变量'}
                   style={{ width: 320 }}
-                  disabled={!hasBusinessVolume}
+                  disabled={!hasBusinessVolume || !isEditing}
                   emptyContent="当前版本无业务量变量"
                 >
                   {businessVolumeOptions.map((o) => (
