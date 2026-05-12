@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Select, Button } from '@douyinfe/semi-ui';
 import { useTranslation } from 'react-i18next';
-import { mockRobotGroups, mockRobotStatuses } from '@/pages/Operations/mockData';
+import { mockDepartments, mockRobotStatuses } from '@/pages/Operations/mockData';
 import type { ResourceEfficiencyFilter } from '@/pages/Operations/types';
 import './index.less';
 import { RefreshCw } from 'lucide-react';
@@ -24,15 +24,13 @@ const ResourceFilterBar = ({ filter, onFilterChange, onRefresh }: Props) => {
   ];
 
   const timeDimensionOptions = [
-    { value: 'all', label: t('operations.roiAnalysis.dimAll') },
-    { value: 'daily', label: t('operations.roiAnalysis.dimDaily') },
-    { value: 'weekly', label: t('operations.roiAnalysis.dimWeekly') },
-    { value: 'monthly', label: t('operations.roiAnalysis.dimMonthly') },
+    { value: 'cumulative', label: t('operations.resourceEfficiency.timeDimCumulative') },
+    { value: 'today', label: t('operations.resourceEfficiency.timeDimToday') },
   ];
 
-  const localizedGroups = useMemo(() =>
-    mockRobotGroups.map(g => g.value === 'all' ? { ...g, label: t('operations.dashboard.selectAll') } : g),
-    [t]
+  const departmentOptions = useMemo(
+    () => mockDepartments.filter(d => d.value !== 'all').map(d => ({ value: d.value, label: d.label })),
+    []
   );
 
   const localizedStatuses = useMemo(() =>
@@ -52,9 +50,17 @@ const ResourceFilterBar = ({ filter, onFilterChange, onRefresh }: Props) => {
             onChange={(val) => onFilterChange({ ...filter, timeRange: val as string })} style={{ width: 120 }} />
         </div>
         <div className="resource-filter-item">
-          <span className="resource-filter-label">{t('operations.resourceEfficiency.group')}</span>
-          <Select size="small" value={filter.group} optionList={localizedGroups}
-            onChange={(val) => onFilterChange({ ...filter, group: val as string })} style={{ width: 120 }} />
+          <span className="resource-filter-label">{t('operations.dashboard.department')}</span>
+          <Select
+            size="small"
+            multiple
+            maxTagCount={2}
+            value={filter.departments}
+            optionList={departmentOptions}
+            placeholder={t('operations.dashboard.selectAll')}
+            onChange={(val) => onFilterChange({ ...filter, departments: (val as string[]) || [] })}
+            style={{ minWidth: 180, maxWidth: 320 }}
+          />
         </div>
         <div className="resource-filter-item">
           <span className="resource-filter-label">{t('common.status')}</span>
@@ -65,12 +71,6 @@ const ResourceFilterBar = ({ filter, onFilterChange, onRefresh }: Props) => {
           <span className="resource-filter-label">{t('operations.roiAnalysis.timeDimension')}</span>
           <Select size="small" value={filter.timeDimension} optionList={timeDimensionOptions}
             onChange={(val) => onFilterChange({ ...filter, timeDimension: val as string })} style={{ width: 120 }} />
-        </div>
-        <div className="resource-filter-item">
-          <span className="resource-filter-label">{t('operations.resourceEfficiency.topN')}</span>
-          <Select size="small" value={filter.topN}
-            optionList={[5, 10, 15, 20].map(n => ({ value: n, label: `Top ${n}` }))}
-            onChange={(val) => onFilterChange({ ...filter, topN: val as number })} style={{ width: 100 }} />
         </div>
       </div>
       <Button icon={<RefreshCw size={16} strokeWidth={2} />} size="small" onClick={onRefresh}>
