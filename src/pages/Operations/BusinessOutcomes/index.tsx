@@ -11,6 +11,7 @@ import {
 } from '@/pages/Operations/mockData';
 import type { BusinessOutcomesFilter } from '@/pages/Operations/types';
 import MetricLabel from './components/MetricLabel';
+import RectFunnel from './components/RectFunnel';
 import './index.less';
 
 const { Title } = Typography;
@@ -84,90 +85,8 @@ const BusinessOutcomes = () => {
     [],
   );
 
-  // ============ 矩形转化漏斗：突出每阶段绝对数量对比 ============
-  const funnelOption = useMemo(() => {
-    const stages = data.funnel;
-    const maxVal = Math.max(...stages.map((s) => s.value), 1);
-    // 反向显示：让最大值在顶部
-    const categories = stages.map((s) => s.name).reverse();
-    const values = stages.map((s) => s.value).reverse();
-    const rawList = [...stages].reverse();
-    return {
-      tooltip: {
-        ...TOOLTIP,
-        trigger: 'axis',
-        axisPointer: { type: 'shadow' },
-        formatter: (params: any) => {
-          const p = params[0];
-          const idx = p.dataIndex;
-          const item = rawList[idx];
-          // rawList 已反向，原序号 = stages.length - 1 - idx
-          const origIdx = stages.length - 1 - idx;
-          const prev = origIdx > 0 ? stages[origIdx - 1] : null;
-          const dropConv = prev ? ((item.value / prev.value) * 100).toFixed(1) : null;
-          const drop = prev ? prev.value - item.value : null;
-          return (
-            `<div style="font-weight:600;margin-bottom:4px">${item.name}</div>` +
-            `<div>${t('operations.dashboard.count')}: <b>${item.value}</b></div>` +
-            (item.conversionRate != null ? `<div>${t('operations.businessOutcomes.conversion')}: <b>${item.conversionRate}%</b></div>` : '') +
-            (prev ? `<div style="color:#9CA3AF">较上一阶段: -${drop} (${dropConv}%)</div>` : '')
-          );
-        },
-      },
-      grid: { left: 110, right: 90, top: 16, bottom: 16, containLabel: false },
-      xAxis: {
-        type: 'value',
-        max: maxVal,
-        show: false,
-      },
-      yAxis: {
-        type: 'category',
-        data: categories,
-        axisLine: { show: false },
-        axisTick: { show: false },
-        axisLabel: { color: '#374151', fontWeight: 600, fontSize: 12 },
-      },
-      series: [{
-        type: 'bar',
-        data: values.map((v, i) => ({
-          value: v,
-          itemStyle: {
-            color: COLORS.funnel[(stages.length - 1 - i) % COLORS.funnel.length],
-            borderRadius: 4,
-          },
-        })),
-        barCategoryGap: '30%',
-        label: {
-          show: true,
-          position: 'insideRight',
-          color: '#fff',
-          fontWeight: 700,
-          fontSize: 13,
-          formatter: '{c}',
-        },
-        labelLayout: { hideOverlap: false },
-        // 右侧标注转化率
-        markPoint: undefined,
-      }, {
-        // 透明系列：右侧显示转化率/占比
-        type: 'bar',
-        data: values.map(() => 0),
-        barGap: '-100%',
-        itemStyle: { color: 'transparent' },
-        label: {
-          show: true,
-          position: 'right',
-          color: '#6B7280',
-          fontSize: 12,
-          formatter: (p: any) => {
-            const item = rawList[p.dataIndex];
-            return item.conversionRate != null ? `${item.conversionRate}%` : '';
-          },
-        },
-        silent: true,
-      }],
-    };
-  }, [data.funnel, t]);
+  // 矩形转化漏斗使用独立 SVG 组件渲染（见 RectFunnel）
+
 
   // ============ Type share pie ============
   const pieOption = useMemo(() => ({
@@ -483,7 +402,7 @@ const BusinessOutcomes = () => {
             <MetricLabel label={t('operations.businessOutcomes.funnelTitle')} tip={t('operations.businessOutcomes.tips.funnel')} size="medium" />
           </span>
         </div>
-        <ReactECharts option={funnelOption} style={{ height: 320 }} opts={{ renderer: 'svg' }} />
+        <RectFunnel data={data.funnel} height={340} />
       </div>
 
       {/* 2. 需求开发进度: 3 段卡 + 完成率进度条 + 工时块 */}
