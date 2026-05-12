@@ -258,14 +258,13 @@ const EffortTab = ({ processId, creatorId }: Props) => {
             <Button
               icon={<Plus size={14} strokeWidth={2} />}
               theme="solid"
-              size="small"
               onClick={() => { setEditingEntry(null); setModalVisible(true); }}
             >
               {t('development.processDevelopment.detail.effort.addEntry')}
             </Button>
           ) : (
             <Tooltip content={t('development.processDevelopment.detail.effort.errors.forbidden')}>
-              <Button icon={<Plus size={14} strokeWidth={2} />} theme="solid" size="small" disabled>
+              <Button icon={<Plus size={14} strokeWidth={2} />} theme="solid" disabled>
                 {t('development.processDevelopment.detail.effort.addEntry')}
               </Button>
             </Tooltip>
