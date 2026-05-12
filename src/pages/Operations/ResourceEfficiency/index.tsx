@@ -14,10 +14,9 @@ const ResourceEfficiency = () => {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<ResourceEfficiencyFilter>({
     timeRange: 'thisMonth',
-    group: 'all',
+    departments: [],
     status: 'all',
-    timeDimension: 'monthly',
-    topN: 5,
+    timeDimension: 'cumulative',
   });
   const [seed, setSeed] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -38,8 +37,8 @@ const ResourceEfficiency = () => {
       <Title heading={3} style={{ marginBottom: 24 }}>{t('operations.resourceEfficiency.title')}</Title>
       <ResourceFilterBar filter={filter} onFilterChange={setFilter} onRefresh={handleRefresh} />
       <Spin spinning={loading}>
-        <RobotPerformance data={data} topN={filter.topN} />
-        <TaskExecutionSection data={data} topN={filter.topN} />
+        <RobotPerformance data={data} />
+        <TaskExecutionSection data={data} />
       </Spin>
     </div>
   );
