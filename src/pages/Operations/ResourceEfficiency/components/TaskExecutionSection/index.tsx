@@ -175,7 +175,7 @@ const TaskExecutionSection = ({ data }: Props) => {
 
       {/* Failed process top 5 */}
       <div style={{ marginTop: 16 }}>
-        <FailedProcessTop data={data.failedProcessTop.slice(0, topN)} topN={topN} />
+        <FailedProcessTop data={data.failedProcessTop} />
       </div>
     </div>
   );
