@@ -274,7 +274,8 @@ const EffortTab = ({ processId, creatorId }: Props) => {
         visible={modalVisible}
         processId={processId}
         creatorId={creatorId}
-        onCancel={() => setModalVisible(false)}
+        editingEntry={editingEntry}
+        onCancel={() => { setModalVisible(false); setEditingEntry(null); }}
         onSuccess={refresh}
       />
     </div>
