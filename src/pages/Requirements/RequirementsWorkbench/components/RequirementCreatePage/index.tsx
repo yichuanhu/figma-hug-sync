@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Typography,
@@ -8,6 +8,8 @@ import {
   Form,
   Toast,
   Modal,
+  Tag,
+  Spin,
   useFormState,
 } from '@douyinfe/semi-ui';
 import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
@@ -17,27 +19,35 @@ import OwnerSearchSelect from '@/components/OwnerSearchSelect';
 import { MOCK_CURRENT_USER } from '@/mocks/departmentData';
 import {
   createRequirement,
+  updateRequirement,
+  getRequirementById,
   getActiveScheme,
+  getDraft,
+  saveDraft,
+  discardDraft,
+  publishChange,
 } from '../../mockData';
 import type {
   SchemeField,
   SchemeFieldDependsOn,
+  RequirementItem,
+  RequirementDraft,
 } from '../../types';
+import { isPostProjectStatus } from '../../utils/fieldEditability';
 import SchemeFieldRenderer from '../SchemeFieldRenderer';
+import PublishChangePanel, { ERROR_MAP } from '../PublishChangePanel';
 import './index.less';
 
 const { Title, Text } = Typography;
 
 const STEP_FIELDS: Array<string[]> = [
-  // Step 0 基础信息
   ['title', 'department', 'owner', 'priority'],
-  // Step 1 岗位与执行成本（全部非必填，无需校验字段）
   [],
-  // Step 2 详情字段会动态收集
   [],
+  [], // Step 3 (post-project edit only): 发布变更
 ];
 
-/** 动态 scheme 字段渲染器（与 Modal 内一致） */
+/** 动态 scheme 字段渲染器 */
 const SchemeFieldsRenderer = ({
   fields,
   costConfig,
@@ -77,16 +87,33 @@ const SchemeFieldsRenderer = ({
 const RequirementCreatePage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { id: editId } = useParams<{ id?: string }>();
+  const isEdit = !!editId;
+
+  const [editLoading, setEditLoading] = useState(isEdit);
+  const [editData, setEditData] = useState<RequirementItem | null>(null);
+  const isPostProjectEdit = !!editData && isPostProjectStatus(editData.status);
+
   const [currentStep, setCurrentStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
+  const [savingDraft, setSavingDraft] = useState(false);
   const [formApi, setFormApi] = useState<any>(null);
   const [departmentValue, setDepartmentValue] = useState<string | undefined>(undefined);
   const [ownerId, setOwnerId] = useState<string>(MOCK_CURRENT_USER.id);
-  const [dirty, setDirty] = useState(false);
-  // 岗位成本列表：可同时录入多个 {岗位级别, 成本}
+  const dirtyRef = useRef(false);
+  const [, forceTick] = useState(0);
+  const setDirty = (v = true) => {
+    dirtyRef.current = v;
+    forceTick((k) => k + 1);
+  };
   const [positionCosts, setPositionCosts] = useState<Array<{ level?: string; cost?: number }>>([
     { level: undefined, cost: undefined },
   ]);
+
+  // 草稿 / 发布变更 状态
+  const [hasDraft, setHasDraft] = useState(false);
+  const [draftLoadedAt, setDraftLoadedAt] = useState<string | null>(null);
+  const [publishReason, setPublishReason] = useState('');
 
   const updatePositionCost = (idx: number, patch: Partial<{ level: string; cost: number }>) => {
     setPositionCosts((prev) => prev.map((it, i) => (i === idx ? { ...it, ...patch } : it)));
@@ -129,10 +156,80 @@ const RequirementCreatePage = () => {
 
   const OPTIONAL_FORM_KEYS = ['execution_frequency', 'single_duration'] as const;
 
-  const baseInitialValues = { priority: 'MEDIUM' as const };
+  const baseInitialValues = useMemo(() => {
+    if (isEdit && editData) {
+      const formData = (editData.form_data ?? {}) as Record<string, unknown>;
+      return {
+        title: editData.title,
+        department: editData.owning_department_name,
+        priority: editData.priority,
+        ...formData,
+      };
+    }
+    return { priority: 'MEDIUM' as const };
+  }, [isEdit, editData]);
+
+  /** 加载需求 + 草稿 */
+  useEffect(() => {
+    if (!isEdit || !editId) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const item = await getRequirementById(editId);
+        if (cancelled) return;
+        if (!item) {
+          Toast.error('需求不存在或已被删除');
+          navigate('/requirements/list', { replace: true });
+          return;
+        }
+        setEditData(item);
+        setDepartmentValue(item.owning_department_name);
+        setOwnerId(item.owner_id || MOCK_CURRENT_USER.id);
+        // 还原岗位成本：优先 form_data.position_costs 数组；否则尝试从 position_level/position_cost 兼容
+        const fd = (item.form_data ?? {}) as Record<string, unknown>;
+        const arr = fd.position_costs as Array<{ level?: string; cost?: number }> | undefined;
+        if (Array.isArray(arr) && arr.length > 0) {
+          setPositionCosts(arr.map((r) => ({ level: r?.level, cost: r?.cost })));
+        } else if (fd.position_level || fd.position_cost) {
+          setPositionCosts([{ level: fd.position_level as string | undefined, cost: fd.position_cost as number | undefined }]);
+        }
+
+        // 立项后：尝试加载草稿合并
+        if (isPostProjectStatus(item.status)) {
+          const draft = await getDraft(item.id);
+          if (draft && !cancelled) {
+            const patch = draft.patch ?? {};
+            setHasDraft(true);
+            setDraftLoadedAt(draft.updatedAt);
+            // 草稿覆盖
+            setTimeout(() => {
+              if (patch.title !== undefined) formApi?.setValue?.('title', patch.title);
+              if (patch.priority !== undefined) formApi?.setValue?.('priority', patch.priority);
+              if (patch.form_data) {
+                Object.entries(patch.form_data).forEach(([k, v]) => formApi?.setValue?.(k, v));
+                const da = (patch.form_data as Record<string, unknown>).position_costs as
+                  | Array<{ level?: string; cost?: number }>
+                  | undefined;
+                if (Array.isArray(da) && da.length > 0) {
+                  setPositionCosts(da.map((r) => ({ level: r?.level, cost: r?.cost })));
+                }
+              }
+            }, 0);
+          }
+        }
+      } finally {
+        if (!cancelled) setEditLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+    // formApi 在 setValue 时使用，初次为 null 时延迟到下一帧；不放入依赖避免重复加载
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isEdit, editId]);
 
   const handleBack = () => {
-    if (dirty) {
+    if (dirtyRef.current) {
       Modal.confirm({
         title: '确认离开？',
         content: '当前已填写的内容将不会保存。',
@@ -146,17 +243,11 @@ const RequirementCreatePage = () => {
     navigate('/requirements/list');
   };
 
-  const validateCurrentStep = async (isFinal = false): Promise<boolean> => {
+  const validateCurrentStep = async (): Promise<boolean> => {
     if (!formApi) return true;
     const fields = STEP_FIELDS[currentStep];
     try {
-      if (isFinal) {
-        // 最终提交：校验全部字段（含模版自定义必填）
-        await formApi.validate();
-      } else if (fields.length > 0) {
-        await formApi.validate(fields);
-      }
-      // 自定义 Slot 字段（部门 / 归属人）
+      if (fields.length > 0) await formApi.validate(fields);
       if (currentStep === 0) {
         if (!departmentValue) {
           Toast.warning(t('requirements.form.departmentRequired'));
@@ -173,39 +264,95 @@ const RequirementCreatePage = () => {
     }
   };
 
+  const totalSteps = isPostProjectEdit ? 4 : 3;
+  const lastFormStep = isPostProjectEdit ? 2 : 2; // 详情页索引
+  const isPublishStep = isPostProjectEdit && currentStep === 3;
+
   const handleNext = async () => {
     const ok = await validateCurrentStep();
     if (!ok) return;
-    setCurrentStep((s) => Math.min(2, s + 1));
+    setCurrentStep((s) => Math.min(totalSteps - 1, s + 1));
   };
 
   const handlePrev = () => setCurrentStep((s) => Math.max(0, s - 1));
 
   const locateFirstError = (errorFields: string[]) => {
-    // 基础信息字段
-    const step0Fields = new Set(['title', 'department', 'owner', 'priority']);
-    // 岗位与执行成本字段
-    const step1Fields = new Set(['execution_frequency', 'single_duration']);
-    let targetStep = 2;
-    const firstError = errorFields[0];
-    if (firstError) {
-      if (step0Fields.has(firstError)) targetStep = 0;
-      else if (step1Fields.has(firstError)) targetStep = 1;
-      else targetStep = 2;
+    const step0 = new Set(['title', 'department', 'owner', 'priority']);
+    const step1 = new Set(['execution_frequency', 'single_duration']);
+    let target = 2;
+    const first = errorFields[0];
+    if (first) {
+      if (step0.has(first)) target = 0;
+      else if (step1.has(first)) target = 1;
     }
-    setCurrentStep(targetStep);
-    // 滚动到错误字段
+    setCurrentStep(target);
     setTimeout(() => {
-      const el = document.querySelector(
-        `.requirement-create-page .semi-form-field-error-message`,
-      );
+      const el = document.querySelector('.requirement-create-page .semi-form-field-error-message');
       el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, 100);
   };
 
+  /** 收集表单值 → submitValues / patch 通用 */
+  const buildSubmitValues = () => {
+    const values = (formApi?.getValues?.() ?? {}) as Record<string, unknown>;
+    const systemKeys = new Set(['title', 'department', 'priority']);
+    const form_data: Record<string, unknown> = {};
+    activeScheme?.custom_fields.forEach((f) => {
+      if (values[f.key] !== undefined) form_data[f.key] = values[f.key];
+    });
+    OPTIONAL_FORM_KEYS.forEach((k) => {
+      if (values[k] !== undefined) form_data[k] = values[k];
+    });
+    const cleanedPositionCosts = positionCosts
+      .filter((r) => r.level !== undefined || (typeof r.cost === 'number' && !Number.isNaN(r.cost)))
+      .map((r) => ({ level: r.level, cost: r.cost }));
+    if (cleanedPositionCosts.length > 0) {
+      form_data.position_costs = cleanedPositionCosts;
+    }
+    const submitValues = { ...values, form_data };
+    Object.keys(form_data).forEach((k) => {
+      if (!systemKeys.has(k)) delete (submitValues as Record<string, unknown>)[k];
+    });
+    return { submitValues, values, form_data };
+  };
+
+  /** 立项后构造 patch */
+  const buildPatch = (): RequirementDraft['patch'] => {
+    const { values, form_data } = buildSubmitValues();
+    return {
+      title: values.title as string | undefined,
+      priority: values.priority as RequirementItem['priority'] | undefined,
+      form_data,
+    };
+  };
+
+  const handleSaveDraft = async () => {
+    if (!editData || !isPostProjectEdit) return;
+    try {
+      setSavingDraft(true);
+      await saveDraft(editData.id, buildPatch());
+      Toast.success('草稿已保存');
+      setHasDraft(true);
+      setDraftLoadedAt(new Date().toISOString());
+      dirtyRef.current = false;
+      navigate('/requirements/list');
+    } catch {
+      Toast.error('草稿保存失败');
+    } finally {
+      setSavingDraft(false);
+    }
+  };
+
+  const handleDiscardDraft = async () => {
+    if (!editData) return;
+    await discardDraft(editData.id);
+    setHasDraft(false);
+    setDraftLoadedAt(null);
+    Toast.success('草稿已丢弃');
+  };
+
   const handleSubmit = async () => {
     if (!formApi) return;
-    // 自定义 Slot 校验（部门 / 归属人）
     if (!departmentValue) {
       setCurrentStep(0);
       Toast.warning(t('requirements.form.departmentRequired'));
@@ -219,37 +366,33 @@ const RequirementCreatePage = () => {
     try {
       await formApi.validate();
     } catch (errors) {
-      const errorFields = errors && typeof errors === 'object'
-        ? Object.keys(errors as Record<string, unknown>)
-        : [];
-      locateFirstError(errorFields);
+      const fields = errors && typeof errors === 'object' ? Object.keys(errors as Record<string, unknown>) : [];
+      locateFirstError(fields);
       return;
     }
-    const values = (formApi?.getValues?.() ?? {}) as Record<string, unknown>;
-    const systemKeys = new Set(['title', 'department', 'priority']);
-    const form_data: Record<string, unknown> = {};
-    activeScheme?.custom_fields.forEach((f) => {
-      if (values[f.key] !== undefined) form_data[f.key] = values[f.key];
-    });
-    OPTIONAL_FORM_KEYS.forEach((k) => {
-      if (values[k] !== undefined) form_data[k] = values[k];
-    });
-    // 多岗位级别与成本（仅保留至少填写了一项的行）
-    const cleanedPositionCosts = positionCosts
-      .filter((r) => r.level !== undefined || (typeof r.cost === 'number' && !Number.isNaN(r.cost)))
-      .map((r) => ({ level: r.level, cost: r.cost }));
-    if (cleanedPositionCosts.length > 0) {
-      form_data.position_costs = cleanedPositionCosts;
-    }
-    const submitValues = { ...values, form_data };
-    Object.keys(form_data).forEach((k) => {
-      if (!systemKeys.has(k)) delete (submitValues as Record<string, unknown>)[k];
-    });
 
+    // 立项后：进入发布变更步骤
+    if (isPostProjectEdit && editData) {
+      try {
+        await saveDraft(editData.id, buildPatch());
+        setHasDraft(true);
+      } catch {
+        // 不阻塞
+      }
+      setCurrentStep(3);
+      return;
+    }
+
+    const { submitValues } = buildSubmitValues();
     setSubmitting(true);
     try {
-      await createRequirement(submitValues);
-      Toast.success(t('requirements.form.createSuccess'));
+      if (isEdit && editData) {
+        await updateRequirement(editData.id, submitValues);
+        Toast.success(t('requirements.form.editSuccess'));
+      } else {
+        await createRequirement(submitValues);
+        Toast.success(t('requirements.form.createSuccess'));
+      }
       navigate('/requirements/list');
     } catch {
       Toast.error(t('requirements.form.submitError'));
@@ -257,6 +400,48 @@ const RequirementCreatePage = () => {
       setSubmitting(false);
     }
   };
+
+  const handlePublish = async () => {
+    if (!editData) return;
+    if (publishReason.trim().length < 10) {
+      Toast.warning('变更说明至少 10 个字符');
+      return;
+    }
+    setSubmitting(true);
+    try {
+      await publishChange({
+        requirementId: editData.id,
+        patch: buildPatch(),
+        reason: publishReason.trim(),
+      });
+      Toast.success('变更已发布');
+      setHasDraft(false);
+      navigate('/requirements/list');
+    } catch (e) {
+      const code = (e as Error)?.message ?? '';
+      Toast.error(ERROR_MAP[code] || `发布失败: ${code || '未知错误'}`);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const draftHintTime = draftLoadedAt
+    ? draftLoadedAt.replace('T', ' ').substring(5, 16)
+    : '';
+
+  const titleText = isEdit
+    ? (isPostProjectEdit ? '编辑需求(立项后)' : t('requirements.form.editTitle'))
+    : t('requirements.form.createTitle');
+
+  if (editLoading) {
+    return (
+      <div className="requirement-create-page">
+        <div style={{ padding: 80, textAlign: 'center' }}>
+          <Spin />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="requirement-create-page">
@@ -269,8 +454,13 @@ const RequirementCreatePage = () => {
           onClick={handleBack}
         />
         <Title heading={3} className="title">
-          {t('requirements.form.createTitle')}
+          {titleText}
         </Title>
+        {isPostProjectEdit && hasDraft && (
+          <Tag size="small" color="orange" style={{ marginLeft: 8 }}>
+            {`已加载草稿${draftHintTime ? ` · ${draftHintTime}` : ''}`}
+          </Tag>
+        )}
       </div>
 
       <div className="requirement-create-page-steps">
@@ -278,8 +468,19 @@ const RequirementCreatePage = () => {
           <Steps.Step title="基础信息" description="标题、部门、归属人、优先级" />
           <Steps.Step title="岗位与执行成本" description="人力级别、成本、执行频率、时长" />
           <Steps.Step title="需求详情" description="按模版填写业务字段" />
+          {isPostProjectEdit && (
+            <Steps.Step title="发布变更" description="填写变更说明并发布" />
+          )}
         </Steps>
       </div>
+
+      {isPostProjectEdit && !isPublishStep && (
+        <div style={{ padding: '0 24px 8px' }}>
+          <Text type="warning" size="small">
+            立项后部门、归属人等系统字段已锁定；保存将以「发布变更」形式提交，需要填写变更说明。
+          </Text>
+        </div>
+      )}
 
       <div className="requirement-create-page-content">
         <div className="form-card">
@@ -288,8 +489,9 @@ const RequirementCreatePage = () => {
             initValues={baseInitialValues}
             getFormApi={setFormApi}
             onValueChange={() => setDirty(true)}
+            key={editData?.id || 'create'}
           >
-            {/* Step 0: 基础信息 */}
+            {/* Step 0 */}
             <div style={{ display: currentStep === 0 ? 'block' : 'none' }}>
               <Form.Input
                 field="title"
@@ -313,6 +515,7 @@ const RequirementCreatePage = () => {
                   }}
                   useNameAsValue
                   placeholder={t('requirements.form.departmentPlaceholder')}
+                  disabled={isPostProjectEdit}
                 />
               </Form.Slot>
               <Form.Slot label={{ text: t('requirements.form.requirementOwnerLabel'), required: true }}>
@@ -322,6 +525,7 @@ const RequirementCreatePage = () => {
                     setOwnerId(v);
                     setDirty(true);
                   }}
+                  disabled={isPostProjectEdit}
                 />
               </Form.Slot>
               <Form.Select
@@ -333,7 +537,7 @@ const RequirementCreatePage = () => {
               />
             </div>
 
-            {/* Step 1: 岗位与执行成本（全部非必填，岗位支持多条） */}
+            {/* Step 1 */}
             <div style={{ display: currentStep === 1 ? 'block' : 'none' }}>
               <Form.Slot label={{ text: '岗位级别与成本' }}>
                 <div className="position-cost-list">
@@ -346,6 +550,7 @@ const RequirementCreatePage = () => {
                         optionList={positionLevelOptions}
                         showClear
                         style={{ flex: 1 }}
+                        disabled={isPostProjectEdit}
                       />
                       <InputNumber
                         placeholder="请输入岗位成本"
@@ -356,12 +561,13 @@ const RequirementCreatePage = () => {
                         precision={2}
                         hideButtons
                         style={{ flex: 1 }}
+                        disabled={isPostProjectEdit}
                       />
                       <Button
                         icon={<Trash2 size={16} strokeWidth={2} />}
                         theme="borderless"
                         type="tertiary"
-                        disabled={positionCosts.length <= 1}
+                        disabled={positionCosts.length <= 1 || isPostProjectEdit}
                         onClick={() => removePositionCost(idx)}
                       />
                     </div>
@@ -372,6 +578,7 @@ const RequirementCreatePage = () => {
                     type="primary"
                     onClick={addPositionCost}
                     style={{ alignSelf: 'flex-start', paddingLeft: 0 }}
+                    disabled={isPostProjectEdit}
                   >
                     添加岗位
                   </Button>
@@ -384,6 +591,7 @@ const RequirementCreatePage = () => {
                 optionList={executionFrequencyOptions}
                 showClear
                 style={{ width: '100%' }}
+                disabled={isPostProjectEdit}
               />
               <Form.InputNumber
                 field="single_duration"
@@ -394,10 +602,11 @@ const RequirementCreatePage = () => {
                 precision={0}
                 hideButtons
                 style={{ width: '100%' }}
+                disabled={isPostProjectEdit}
               />
             </div>
 
-            {/* Step 2: 需求详情（合并 scheme 自定义字段） */}
+            {/* Step 2 */}
             <div style={{ display: currentStep === 2 ? 'block' : 'none' }}>
               {activeScheme && activeScheme.custom_fields.length > 0 ? (
                 <SchemeFieldsRenderer
@@ -409,28 +618,66 @@ const RequirementCreatePage = () => {
               )}
             </div>
           </Form>
+
+          {/* Step 3: 发布变更（仅立项后编辑） */}
+          {isPublishStep && editData && (
+            <PublishChangePanel
+              reason={publishReason}
+              onReasonChange={setPublishReason}
+            />
+          )}
         </div>
       </div>
 
       <div className="requirement-create-page-footer">
-        <Button onClick={handleBack} disabled={submitting}>
-          {t('common.cancel')}
-        </Button>
-        {currentStep > 0 && (
-          <Button onClick={handlePrev} disabled={submitting}>
-            上一步
+        <div style={{ display: 'flex', gap: 8 }}>
+          {isPostProjectEdit && !isPublishStep && (
+            <Button
+              theme="borderless"
+              type="tertiary"
+              loading={savingDraft}
+              onClick={handleSaveDraft}
+            >
+              保存草稿
+            </Button>
+          )}
+          {isPostProjectEdit && hasDraft && !isPublishStep && (
+            <Button theme="borderless" type="danger" onClick={handleDiscardDraft}>
+              丢弃草稿
+            </Button>
+          )}
+        </div>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <Button onClick={handleBack} disabled={submitting}>
+            {t('common.cancel')}
           </Button>
-        )}
-        {currentStep < 2 && (
-          <Button theme="solid" type="primary" onClick={handleNext}>
-            下一步
-          </Button>
-        )}
-        {currentStep === 2 && (
-          <Button theme="solid" type="primary" loading={submitting} onClick={handleSubmit}>
-            {t('common.create')}
-          </Button>
-        )}
+          {currentStep > 0 && (
+            <Button onClick={handlePrev} disabled={submitting}>
+              上一步
+            </Button>
+          )}
+          {currentStep < lastFormStep && (
+            <Button theme="solid" type="primary" onClick={handleNext}>
+              下一步
+            </Button>
+          )}
+          {currentStep === lastFormStep && (
+            <Button theme="solid" type="primary" loading={submitting} onClick={handleSubmit}>
+              {isPostProjectEdit ? '下一步：发布变更' : (isEdit ? t('common.save') : t('common.create'))}
+            </Button>
+          )}
+          {isPublishStep && (
+            <Button
+              theme="solid"
+              type="primary"
+              loading={submitting}
+              disabled={publishReason.trim().length < 10}
+              onClick={handlePublish}
+            >
+              发布变更
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );

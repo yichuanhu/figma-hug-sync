@@ -948,6 +948,11 @@ export const createRequirement = async (values: Record<string, unknown>): Promis
   return newItem;
 };
 
+export const getRequirementById = async (id: string): Promise<RequirementItem | null> => {
+  await new Promise((r) => setTimeout(r, 50));
+  return mockRequirementData.find((item) => item.id === id) ?? null;
+};
+
 export const updateRequirement = async (id: string, values: Record<string, unknown>): Promise<RequirementItem | null> => {
   await new Promise((resolve) => setTimeout(resolve, 300));
   const index = mockRequirementData.findIndex((item) => item.id === id);
