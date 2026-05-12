@@ -12,8 +12,11 @@ interface Props {
 const BusyIdleTopX = ({ robots, mode, topN = 5 }: Props) => {
   const { t } = useTranslation();
 
-  // Online robots only (working/idle), exclude offline/maintenance
-  const candidates = robots.filter(r => r.status === 'working' || r.status === 'idle');
+  // R-03: 在线机器人 (working/idle)。idle 模式额外要求 utilization > 0
+  const candidates = robots.filter(r =>
+    (r.status === 'working' || r.status === 'idle') &&
+    (mode === 'busy' || r.utilization > 0)
+  );
   const sorted = [...candidates].sort((a, b) =>
     mode === 'busy' ? b.utilization - a.utilization : a.utilization - b.utilization
   );

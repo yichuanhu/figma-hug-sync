@@ -210,23 +210,11 @@ const RobotPerformance = ({ data, topN = 5 }: Props) => {
         <span className="dashboard-card-title">{t('operations.resourceEfficiency.robotPerformance')}</span>
       </div>
 
-      {/* Status summary */}
+      {/* 状态分布 5 卡: 总数/工作中/空闲/离线/维护 */}
       <div className="robot-status-summary">
-        <div className="robot-status-card highlight">
-          <div className="status-label">{t('operations.resourceEfficiency.interactiveOnlineLicense')}</div>
-          <div className="status-value">
-            <span style={{ color: COLORS.primary }}>{data.interactiveOnline}</span>
-            <span className="divider"> / </span>
-            <span className="total">{data.interactiveTotal}</span>
-          </div>
-        </div>
-        <div className="robot-status-card highlight">
-          <div className="status-label">{t('operations.resourceEfficiency.unattendedOnlineLicense')}</div>
-          <div className="status-value">
-            <span style={{ color: COLORS.success }}>{data.unattendedOnline}</span>
-            <span className="divider"> / </span>
-            <span className="total">{data.unattendedTotal}</span>
-          </div>
+        <div className="robot-status-card">
+          <div className="status-label">{t('operations.resourceEfficiency.totalRobots')}</div>
+          <div className="status-value" style={{ color: COLORS.primary }}>{data.totalRobots}</div>
         </div>
         <div className="robot-status-card">
           <div className="status-label">{t('operations.resourceEfficiency.statusWorking')}</div>
@@ -242,7 +230,27 @@ const RobotPerformance = ({ data, topN = 5 }: Props) => {
         </div>
         <div className="robot-status-card">
           <div className="status-label">{t('operations.resourceEfficiency.statusMaintenance')}</div>
-          <div className="status-value" style={{ color: COLORS.primary }}>{data.maintenance}</div>
+          <div className="status-value" style={{ color: COLORS.purple }}>{data.maintenance}</div>
+        </div>
+      </div>
+
+      {/* 类型分布 4 卡 */}
+      <div className="robot-status-summary" style={{ marginTop: 12 }}>
+        <div className="robot-status-card">
+          <div className="status-label">{t('operations.resourceEfficiency.interactiveOnline')}</div>
+          <div className="status-value" style={{ color: COLORS.primary }}>{data.interactiveOnline}</div>
+        </div>
+        <div className="robot-status-card">
+          <div className="status-label">{t('operations.resourceEfficiency.interactiveLicensed')}</div>
+          <div className="status-value" style={{ color: COLORS.primary }}>{data.interactiveTotal}</div>
+        </div>
+        <div className="robot-status-card">
+          <div className="status-label">{t('operations.resourceEfficiency.unattendedOnline')}</div>
+          <div className="status-value" style={{ color: COLORS.success }}>{data.unattendedOnline}</div>
+        </div>
+        <div className="robot-status-card">
+          <div className="status-label">{t('operations.resourceEfficiency.unattendedLicensed')}</div>
+          <div className="status-value" style={{ color: COLORS.success }}>{data.unattendedTotal}</div>
         </div>
       </div>
 
@@ -282,7 +290,7 @@ const RobotPerformance = ({ data, topN = 5 }: Props) => {
         dataSource={data.robotDetails}
         rowKey="id"
         size="small"
-        pagination={false}
+        pagination={{ pageSize: 50, hideOnSinglePage: true }}
       />
     </div>
   );

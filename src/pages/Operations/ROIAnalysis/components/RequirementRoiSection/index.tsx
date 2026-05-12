@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Table, Tag } from '@douyinfe/semi-ui';
+import { Table } from '@douyinfe/semi-ui';
 import { useTranslation } from 'react-i18next';
 import ReactECharts from 'echarts-for-react';
 import type { RequirementRoiDetail } from '@/pages/Operations/types';
@@ -9,7 +9,6 @@ interface Props {
   data: RequirementRoiDetail[];
 }
 
-/* Professional analytics palette */
 const COLORS = {
   primary: '#3B82F6',
   success: '#10B981',
@@ -33,31 +32,19 @@ const TOOLTIP_STYLE = {
 const RequirementRoiSection = ({ data }: Props) => {
   const { t } = useTranslation();
 
-  const statusMap: Record<string, { label: string; color: string }> = {
-    running: { label: t('operations.dashboard.statusRunning'), color: 'green' },
-    completed: { label: t('operations.dashboard.statusCompleted'), color: 'blue' },
-    developing: { label: t('operations.dashboard.statusDeveloping'), color: 'orange' },
-  };
-
   const columns = [
     { title: '#', dataIndex: 'id', width: 50, render: (_: string, __: RequirementRoiDetail, idx: number) => (
       <span className={`roi-rank-badge ${idx < 3 ? 'top' : ''}`}>{idx + 1}</span>
     )},
-    { title: t('operations.roiAnalysis.reqName'), dataIndex: 'name', width: 220 },
-    { title: t('operations.dashboard.departmentName'), dataIndex: 'department', width: 120 },
-    { title: 'ROI', dataIndex: 'roi', width: 80, render: (v: number) => (
+    { title: t('operations.roiAnalysis.reqName'), dataIndex: 'name', width: 240 },
+    { title: t('operations.dashboard.departmentName'), dataIndex: 'department', width: 140 },
+    { title: 'ROI', dataIndex: 'roi', width: 90, render: (v: number) => (
       <span style={{ color: v >= 200 ? COLORS.success : v >= 100 ? COLORS.primary : COLORS.warning, fontWeight: 600 }}>{v}%</span>
     )},
-    { title: t('operations.roiAnalysis.investmentCost'), dataIndex: 'investmentCost', width: 120,
+    { title: t('operations.roiAnalysis.investmentCost'), dataIndex: 'investmentCost', width: 130,
       render: (v: number) => `$${(v / 1000).toFixed(0)}K` },
-    { title: t('operations.roiAnalysis.savedCost'), dataIndex: 'savedCost', width: 120,
+    { title: t('operations.roiAnalysis.savedCost'), dataIndex: 'savedCost', width: 130,
       render: (v: number) => `$${(v / 1000).toFixed(0)}K` },
-    { title: t('common.status'), dataIndex: 'status', width: 100,
-      render: (s: string) => {
-        const info = statusMap[s] || { label: s, color: 'grey' };
-        return <Tag color={info.color as any} size="small">{info.label}</Tag>;
-      }
-    },
   ];
 
   // Pie chart - ROI distribution

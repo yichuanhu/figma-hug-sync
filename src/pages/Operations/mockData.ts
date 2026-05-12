@@ -289,6 +289,8 @@ export const mockBusinessOutcomes: BusinessOutcomesData = {
       totalActualHours: 2800,
       completionRate: 65,
       unregisteredProcessCount: 8,
+      activeDeveloperCount: 22,
+      timeoutProcessCount: 5,
     },
     accuracyScatter: [
       { processName: '发票识别录入', estimatedHours: 80, actualHours: 92 },
