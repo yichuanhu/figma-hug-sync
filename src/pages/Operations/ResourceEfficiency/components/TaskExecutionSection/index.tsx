@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import ReactECharts from 'echarts-for-react';
-import { ArrowDown, ArrowUp, Clock } from 'lucide-react';
+// (today/cumulative trend icons removed: spec only requires 4 stat cards)
 import type { ResourceEfficiencyData } from '@/pages/Operations/types';
 import FailedProcessTop from '../FailedProcessTop';
 import './index.less';
