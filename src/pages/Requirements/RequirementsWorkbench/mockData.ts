@@ -1522,5 +1522,244 @@ export const firstPendingChangeByWorkspace = (
 export const countUnackedByWorkspaces = (_workspaceIds: string[]): number => 0;
 export const firstPendingChangeByWorkspaces = (
   _workspaceIds: string[],
-): { requirementId: string; changeLogId: string } | null => null;
+
+// ============= STORY-015 开发方案文档 =============
+
+const DEV_SCHEME_DOC_MAX_SIZE = 50 * 1024 * 1024;
+const DEV_SCHEME_DOC_ALLOWED_EXT: Record<string, DevSchemeDocFileType> = {
+  pdf: 'PDF',
+  docx: 'DOCX',
+  md: 'MD',
+};
+
+const devSchemeDocStore: RequirementDevSchemeDoc[] = [];
+let devSchemeDocSeeded = false;
+
+const seedDevSchemeDocs = () => {
+  if (devSchemeDocSeeded) return;
+  devSchemeDocSeeded = true;
+  const targets = mockRequirementData
+    .filter((r) => ['DEVELOPING', 'LAUNCHED', 'OFFLINE'].includes(r.status))
+    .slice(0, 3);
+  const now = Date.now();
+  const daysAgo = (n: number) => new Date(now - n * 86400_000).toISOString();
+  targets.forEach((req, i) => {
+    const uploaderId = req.creatorId;
+    const uploaderName = mockCreators[uploaderId]?.name ?? 'Unknown';
+    devSchemeDocStore.push({
+      id: `dsd-${req.id}-1`,
+      requirementId: req.id,
+      version: 1,
+      fileName: `scheme-v1.docx`,
+      fileSize: 2_456_320,
+      fileType: 'DOCX',
+      fileUrl: `mock://dev-scheme/${req.id}/v1`,
+      uploadedBy: uploaderId,
+      uploaderName,
+      uploadedAt: daysAgo(7 + i),
+      note: '初版开发方案，与业务方对齐主流程及异常分支。',
+      isDeleted: false,
+    });
+    devSchemeDocStore.push({
+      id: `dsd-${req.id}-2`,
+      requirementId: req.id,
+      version: 2,
+      fileName: `scheme-v2.pdf`,
+      fileSize: 3_812_745,
+      fileType: 'PDF',
+      fileUrl: `mock://dev-scheme/${req.id}/v2`,
+      uploadedBy: uploaderId,
+      uploaderName,
+      uploadedAt: daysAgo(2 + i),
+      note: '新增银行回执校对环节，调整第 3 步抓取规则。',
+      isDeleted: false,
+    });
+  });
+};
+
+export const listDevSchemeDocs = async (
+  requirementId: string,
+): Promise<RequirementDevSchemeDoc[]> => {
+  seedDevSchemeDocs();
+  await new Promise((r) => setTimeout(r, 100));
+  return devSchemeDocStore
+    .filter((d) => d.requirementId === requirementId && !d.isDeleted)
+    .sort((a, b) => b.version - a.version);
+};
+
+/** Creator 端 latest 接口契约（仅返回轻量元数据；本 Web 项目不直接用 UI） */
+export const getLatestDevSchemeDoc = async (
+  requirementId: string,
+): Promise<Pick<RequirementDevSchemeDoc, 'version' | 'fileName' | 'fileSize' | 'fileType' | 'uploadedAt'> | null> => {
+  const list = await listDevSchemeDocs(requirementId);
+  if (list.length === 0) return null;
+  const top = list[0];
+  return {
+    version: top.version,
+    fileName: top.fileName,
+    fileSize: top.fileSize,
+    fileType: top.fileType,
+    uploadedAt: top.uploadedAt,
+  };
+};
+
+const detectFileType = (fileName: string): DevSchemeDocFileType | null => {
+  const ext = fileName.split('.').pop()?.toLowerCase() ?? '';
+  return DEV_SCHEME_DOC_ALLOWED_EXT[ext] ?? null;
+};
+
+const isWorkspaceMember = async (
+  workspaceId: string,
+  userId: string,
+): Promise<boolean> => {
+  const members = await fetchWorkspaceMembers(workspaceId);
+  return members.some((m) => m.userId === userId);
+};
+
+export interface UploadDevSchemeDocInput {
+  requirementId: string;
+  file: File;
+  note?: string;
+}
+
+export const uploadDevSchemeDoc = async (
+  input: UploadDevSchemeDocInput,
+  userId: string = MOCK_CURRENT_USER_ID,
+): Promise<RequirementDevSchemeDoc> => {
+  seedDevSchemeDocs();
+  await new Promise((r) => setTimeout(r, 200));
+
+  const req = mockRequirementData.find((r) => r.id === input.requirementId);
+  if (!req) throw new Error('REQUIREMENT_NOT_FOUND');
+  if (!isPostProjectStatus(req.status)) throw new Error('DEV_SCHEME_DOC_INVALID_STATE');
+
+  const wsId = req.linkedWorkspace?.id;
+  if (!wsId) throw new Error('DEV_SCHEME_DOC_NOT_WORKSPACE_MEMBER');
+  const member = await isWorkspaceMember(wsId, userId);
+  if (!member) throw new Error('DEV_SCHEME_DOC_NOT_WORKSPACE_MEMBER');
+
+  const fileType = detectFileType(input.file.name);
+  if (!fileType) throw new Error('DEV_SCHEME_DOC_UNSUPPORTED_TYPE');
+  if (input.file.size > DEV_SCHEME_DOC_MAX_SIZE) throw new Error('DEV_SCHEME_DOC_FILE_TOO_LARGE');
+
+  const maxVersion = devSchemeDocStore
+    .filter((d) => d.requirementId === input.requirementId)
+    .reduce((m, d) => Math.max(m, d.version), 0);
+
+  const newDoc: RequirementDevSchemeDoc = {
+    id: `dsd-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+    requirementId: input.requirementId,
+    version: maxVersion + 1,
+    fileName: input.file.name,
+    fileSize: input.file.size,
+    fileType,
+    fileUrl: `mock://dev-scheme/${input.requirementId}/v${maxVersion + 1}`,
+    uploadedBy: userId,
+    uploaderName: mockCreators[userId]?.name ?? '当前用户',
+    uploadedAt: new Date().toISOString(),
+    note: input.note?.trim() || undefined,
+    isDeleted: false,
+  };
+  devSchemeDocStore.push(newDoc);
+
+  // 写 ChangeLog
+  ensureSeeded();
+  changeLogStore.unshift({
+    id: `chg-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+    requirementId: input.requirementId,
+    reason: `上传开发方案文档 v${newDoc.version}：${newDoc.fileName}`,
+    publisherId: userId,
+    publisherName: newDoc.uploaderName,
+    publishedAt: newDoc.uploadedAt,
+    changeType: 'DEV_SCHEME_DOC_UPLOADED',
+    changedFields: { version: newDoc.version, fileName: newDoc.fileName, note: newDoc.note },
+  });
+
+  // 触发 FEAT-022 通知（mock — 写入通知中心 store）
+  try {
+    const mod = await import('@/mocks/apaNotificationDispatch');
+    const recipients = Array.from(new Set([req.owner_id, req.creatorId].filter(Boolean) as string[]));
+    mod.dispatchApaNotification({
+      templateId: 'APA_REQUIREMENT_DEV_SCHEME_DOC_UPLOADED',
+      recipients,
+      requestId: `req-devschemedoc-${input.requirementId}-${newDoc.id}`,
+      variables: {
+        requirementTitle: req.title,
+        requirementId: input.requirementId,
+        docVersion: String(newDoc.version),
+        fileName: newDoc.fileName,
+        uploaderName: newDoc.uploaderName,
+        uploadedAt: newDoc.uploadedAt,
+      },
+    });
+  } catch (e) {
+    // 不阻塞主路径；FEAT-022 可用性降级
+    console.warn('[DevSchemeDoc] notification dispatch skipped:', e);
+  }
+
+  return newDoc;
+};
+
+export const deleteDevSchemeDoc = async (
+  requirementId: string,
+  version: number,
+  userId: string = MOCK_CURRENT_USER_ID,
+): Promise<void> => {
+  seedDevSchemeDocs();
+  await new Promise((r) => setTimeout(r, 150));
+
+  const req = mockRequirementData.find((r) => r.id === requirementId);
+  if (!req) throw new Error('REQUIREMENT_NOT_FOUND');
+  if (!isPostProjectStatus(req.status)) throw new Error('DEV_SCHEME_DOC_INVALID_STATE');
+
+  const wsId = req.linkedWorkspace?.id;
+  if (!wsId) throw new Error('DEV_SCHEME_DOC_NOT_WORKSPACE_MEMBER');
+  const member = await isWorkspaceMember(wsId, userId);
+  if (!member) throw new Error('DEV_SCHEME_DOC_NOT_WORKSPACE_MEMBER');
+
+  const idx = devSchemeDocStore.findIndex(
+    (d) => d.requirementId === requirementId && d.version === version && !d.isDeleted,
+  );
+  if (idx === -1) return;
+  const doc = devSchemeDocStore[idx];
+  devSchemeDocStore[idx] = {
+    ...doc,
+    isDeleted: true,
+    deletedBy: userId,
+    deletedAt: new Date().toISOString(),
+  };
+
+  // 写 ChangeLog（不发通知）
+  ensureSeeded();
+  changeLogStore.unshift({
+    id: `chg-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+    requirementId,
+    reason: `删除开发方案文档 v${version}`,
+    publisherId: userId,
+    publisherName: mockCreators[userId]?.name ?? '当前用户',
+    publishedAt: new Date().toISOString(),
+    changeType: 'DEV_SCHEME_DOC_DELETED',
+    changedFields: { version },
+  });
+};
+
+/** 检查当前用户是否为该需求关联工作空间的成员 */
+export const checkDevSchemeDocCanManage = async (
+  requirementId: string,
+  userId: string = MOCK_CURRENT_USER_ID,
+): Promise<{ isPostProject: boolean; hasWorkspace: boolean; isMember: boolean }> => {
+  const req = mockRequirementData.find((r) => r.id === requirementId);
+  if (!req) return { isPostProject: false, hasWorkspace: false, isMember: false };
+  const isPostProject = isPostProjectStatus(req.status);
+  const wsId = req.linkedWorkspace?.id;
+  if (!wsId) return { isPostProject, hasWorkspace: false, isMember: false };
+  const isMember = await isWorkspaceMember(wsId, userId);
+  return { isPostProject, hasWorkspace: true, isMember };
+};
+
+/** Creator 端能力探测占位（仅契约，不在 Web UI 中使用） */
+export const probeRequirementCenterCapability = async (): Promise<{ available: true }> => {
+  return { available: true };
+};
+
 
