@@ -15,6 +15,7 @@ export type NotificationTemplateId =
   | 'trigger.queue_invalid'
   | 'license.expiring'
   | 'license.expired'
+  | 'APA_REQUIREMENT_CHANGED'
   | 'APA_REQUIREMENT_DEV_SCHEME_DOC_UPLOADED';
 
 export interface Notification {
