@@ -3,14 +3,20 @@ import { Sparkles } from 'lucide-react';
 import WelcomeSection from './components/WelcomeSection';
 import ShortcutsSection from './components/ShortcutsSection';
 import MetricsSection from './components/MetricsSection';
+import AnnouncementSection from './components/AnnouncementSection';
 import NotificationSection from './components/NotificationSection';
+import ResourceSection from './components/ResourceSection';
 import ColumnEmpty from './components/ColumnEmpty';
 import './index.less';
 
 const Home = () => {
   const navigate = useNavigate();
 
-  const leftModules = [<ShortcutsSection key="s" />, <MetricsSection key="m" />].filter(Boolean);
+  const leftModules = [
+    <ShortcutsSection key="s" />,
+    <MetricsSection key="m" />,
+    <AnnouncementSection key="a" />,
+  ].filter(Boolean);
 
   return (
     <div className="home-page">
@@ -31,6 +37,7 @@ const Home = () => {
         </div>
         <div className="home-right-column">
           <NotificationSection />
+          <ResourceSection />
         </div>
       </div>
     </div>
