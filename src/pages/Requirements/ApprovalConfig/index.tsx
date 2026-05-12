@@ -1,5 +1,5 @@
 /**
- * 审批配置列表页：与「需求模版」一致的卡片网格布局。
+ * 审批配置列表页：与「需求模板」一致的卡片网格布局。
  */
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -112,7 +112,7 @@ const ApprovalConfigPage = () => {
       <div className="approval-config-page-header">
         <div className="approval-config-page-header-title">
           <Title heading={3} className="title">审批配置</Title>
-          <Text type="tertiary">集中管理需求审批流模板，与具体的需求模版解耦，支持创建、编辑、启用与停用。</Text>
+          <Text type="tertiary">集中管理需求审批流模板，与具体的需求模板解耦，支持创建、编辑、启用与停用。</Text>
         </div>
         <Row type="flex" justify="space-between" align="middle" className="approval-config-page-header-toolbar">
           <Col>

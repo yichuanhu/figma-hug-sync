@@ -7,7 +7,7 @@ import { UserInfoDropdown } from '../UserInfoDropdown';
 import NotificationDrawer from '../NotificationDrawer';
 import { mockNotifications } from '@/pages/NotificationCenter/mockData';
 import { useApprovalPendingCount } from '@/pages/SharingCenter/shared/useApprovalPendingCount';
-import { Activity, Airplay, AlertTriangle, Bell, BookOpen, Bot, Boxes, CalendarClock, ChartSpline, CheckSquare, ChevronDown, ChevronUp, ClipboardList, Cloud, CodeXml, Component, Database, FileText, Folder, FolderCheck, FolderKanban, Forward, GitBranch, History, Home, LayoutGrid, LibraryBig, ListStart, MonitorCheck, MonitorCog, Parentheses, Play, ScrollText, Settings, Shield, Sparkles, Target, TrendingUp, Users, Workflow, Wrench } from 'lucide-react';
+import { Activity, Airplay, AlertTriangle, Bell, BookOpen, Bot, Boxes, CalendarClock, ChartSpline, CheckSquare, ChevronDown, ChevronUp, ClipboardList, Cloud, CodeXml, Columns3Cog, Component, Database, FileText, Folder, FolderCheck, FolderKanban, Forward, GitBranch, History, Home, LayoutGrid, LibraryBig, ListStart, MonitorCheck, MonitorCog, NotepadTextDashed, Parentheses, Play, ScrollText, Settings, Shield, Sparkles, Target, TrendingUp, Users, Workflow, Wrench } from 'lucide-react';
 
 const LayoutIcon = () => (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -305,8 +305,8 @@ const Sidebar = ({ collapsed, onToggleCollapse, disableHover = false, detailPane
     { key: 'requirementsProjects', labelKey: 'sidebar.requirementsProjects', icon: <FolderKanban size={18} strokeWidth={2} />, path: '/requirements/projects' },
     // 需求配置 - 分组标题
     { key: 'requirementsConfig', labelKey: 'sidebar.requirementsConfig', isGroupLabel: true },
-    { key: 'requirementsScheme', labelKey: 'sidebar.requirementsScheme', icon: <Settings size={18} strokeWidth={2} />, path: '/requirements/scheme' },
-    { key: 'requirementsApprovalConfig', labelKey: 'sidebar.requirementsApprovalConfig', icon: <CheckSquare size={18} strokeWidth={2} />, path: '/requirements/approval-config' },
+    { key: 'requirementsScheme', labelKey: 'sidebar.requirementsScheme', icon: <NotepadTextDashed size={18} strokeWidth={2} />, path: '/requirements/scheme' },
+    { key: 'requirementsApprovalConfig', labelKey: 'sidebar.requirementsApprovalConfig', icon: <Columns3Cog size={18} strokeWidth={2} />, path: '/requirements/approval-config' },
   ];
 
   // 运维中心的详细菜单结构 - 使用分组标题样式
