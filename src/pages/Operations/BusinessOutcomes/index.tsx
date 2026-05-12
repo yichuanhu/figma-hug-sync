@@ -47,7 +47,7 @@ const BusinessOutcomes = () => {
   const [seed, setSeed] = useState(1);
   const [loading, setLoading] = useState(false);
   const [rankSortDesc, setRankSortDesc] = useState(true);
-  const [rankFilterTypes, setRankFilterTypes] = useState<string[]>([]);
+  
 
   const data = useMemo(() => getBusinessOutcomes(filter, seed), [filter, seed]);
 
