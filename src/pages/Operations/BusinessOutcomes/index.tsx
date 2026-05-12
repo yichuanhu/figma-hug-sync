@@ -84,35 +84,72 @@ const BusinessOutcomes = () => {
     [],
   );
 
-  // ============ Funnel: 标注转化率 ============
+  // ============ Funnel: 矩形转化漏斗图（水平条形居中） ============
   const funnelOption = useMemo(() => {
     const sorted = [...data.funnel].sort((a, b) => b.value - a.value);
-    const lastValue = sorted[sorted.length - 1]?.value ?? 0;
+    const max = sorted[0]?.value ?? 1;
+    const names = sorted.map((s) => s.name);
+    const offsets = sorted.map((s) => (max - s.value) / 2);
+    const values = sorted.map((s) => s.value);
     return {
-      tooltip: { ...TOOLTIP, trigger: 'item', formatter: (p: any) =>
-        `<div style="font-weight:600">${p.name}</div>` +
-        `<div>${t('operations.dashboard.count')}: <b>${p.value}</b></div>` +
-        (p.data.conversionRate != null ? `<div>${t('operations.businessOutcomes.conversion')}: <b>${p.data.conversionRate}%</b></div>` : '')
-      },
-      series: [{
-        type: 'funnel',
-        left: '5%', right: '5%', top: 16, bottom: 8, width: '90%',
-        min: lastValue, sort: 'descending', gap: 0,
-        funnelAlign: 'center',
-        label: {
-          show: true, position: 'inside', color: '#fff', fontWeight: 600, fontSize: 12,
-          formatter: (p: any) => p.data.conversionRate != null
-            ? `${p.name}  ${p.value}  (${p.data.conversionRate}%)`
-            : `${p.name}  ${p.value}`,
+      tooltip: {
+        ...TOOLTIP,
+        trigger: 'item',
+        formatter: (p: any) => {
+          if (p.seriesIndex !== 1) return '';
+          const item = sorted[p.dataIndex];
+          return `<div style="font-weight:600">${item.name}</div>`
+            + `<div>${t('operations.dashboard.count')}: <b>${item.value}</b></div>`
+            + (item.conversionRate != null
+              ? `<div>${t('operations.businessOutcomes.conversion')}: <b>${item.conversionRate}%</b></div>`
+              : '');
         },
-        labelLine: { show: false },
-        itemStyle: { borderWidth: 0 },
-        emphasis: { label: { fontSize: 13 } },
-        data: data.funnel.map((s, i) => ({
-          ...s,
-          itemStyle: { color: COLORS.funnel[i % COLORS.funnel.length] },
-        })),
-      }],
+      },
+      grid: { left: 8, right: 8, top: 8, bottom: 8, containLabel: false },
+      xAxis: { type: 'value', max, show: false },
+      yAxis: {
+        type: 'category',
+        data: names,
+        inverse: false,
+        show: false,
+        axisLine: { show: false },
+        axisTick: { show: false },
+        splitLine: { show: false },
+      },
+      series: [
+        {
+          type: 'bar',
+          stack: 'funnel',
+          silent: true,
+          data: offsets,
+          itemStyle: { color: 'transparent' },
+          emphasis: { disabled: true },
+          barCategoryGap: '8%',
+        },
+        {
+          type: 'bar',
+          stack: 'funnel',
+          data: values.map((v, i) => ({
+            value: v,
+            itemStyle: { color: COLORS.funnel[i % COLORS.funnel.length] },
+          })),
+          label: {
+            show: true,
+            position: 'inside',
+            color: '#fff',
+            fontWeight: 600,
+            fontSize: 12,
+            formatter: (p: any) => {
+              const item = sorted[p.dataIndex];
+              return item.conversionRate != null
+                ? `${item.name}  ${item.value}  (${item.conversionRate}%)`
+                : `${item.name}  ${item.value}`;
+            },
+          },
+          emphasis: { focus: 'self' },
+          barCategoryGap: '8%',
+        },
+      ],
     };
   }, [data.funnel, t]);
 
