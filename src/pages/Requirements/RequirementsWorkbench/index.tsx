@@ -31,7 +31,7 @@ import {
   fetchRequirementList,
   deleteRequirement,
   
-  updateRequirement,
+  
   updateRequirementStatus,
   resubmitRequirement,
   withdrawRequirement,
