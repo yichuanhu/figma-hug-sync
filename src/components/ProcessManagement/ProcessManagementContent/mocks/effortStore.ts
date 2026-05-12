@@ -140,7 +140,7 @@ export const postEntry = (
 };
 
 // 初始化少量预置数据
-seedEffort('proc-001', {
+seedEffort('process-1', {
   estimate: 5,
   entries: [
     { delta_days: 1, work_date: '2025-05-06', note: '需求拆解与方案设计', created_by: CURRENT_USER_ID, created_by_name: CURRENT_USER_NAME, created_at: '2025-05-06T18:30:00.000Z' },
@@ -149,4 +149,4 @@ seedEffort('proc-001', {
     { delta_days: 1, work_date: '2025-05-09', note: '问题修复', created_by: CURRENT_USER_ID, created_by_name: CURRENT_USER_NAME, created_at: '2025-05-09T18:30:00.000Z' },
   ],
 });
-seedEffort('proc-002', { estimate: 3 });
+seedEffort('process-6', { estimate: 3 });
