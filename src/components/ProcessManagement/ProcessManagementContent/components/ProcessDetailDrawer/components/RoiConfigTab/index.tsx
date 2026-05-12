@@ -121,7 +121,7 @@ const RoiConfigTab = ({
                 min={0}
                 precision={0}
                 step={1}
-                suffix={<span style={{ paddingRight: 8, color: 'var(--semi-color-text-2)' }}>分钟</span>}
+                suffix={<span style={{ paddingRight: 8, color: 'var(--semi-color-text-2)', whiteSpace: 'nowrap' }}>分钟</span>}
                 value={config.baseTimeSavedMinutes}
                 onChange={(v) => update({ baseTimeSavedMinutes: typeof v === 'number' ? v : undefined })}
                 placeholder="请输入"
@@ -166,7 +166,7 @@ const RoiConfigTab = ({
                   min={0}
                   precision={0}
                   step={1}
-                  suffix={<span style={{ paddingRight: 8, color: 'var(--semi-color-text-2)' }}>分钟</span>}
+                  suffix={<span style={{ paddingRight: 8, color: 'var(--semi-color-text-2)', whiteSpace: 'nowrap' }}>分钟</span>}
                   value={config.baseTimeSavedMinutes}
                   onChange={(v) => update({ baseTimeSavedMinutes: typeof v === 'number' ? v : undefined })}
                   placeholder="请输入"
