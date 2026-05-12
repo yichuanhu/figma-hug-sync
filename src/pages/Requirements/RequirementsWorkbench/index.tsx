@@ -85,6 +85,7 @@ const RequirementsWorkbench = () => {
   // 新建/编辑均跳转独立页面
   const [detailDrawerVisible, setDetailDrawerVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<RequirementItem | null>(null);
+  const [initialDrawerTab, setInitialDrawerTab] = useState<string | undefined>(undefined);
   
   const [pickerRecord, setPickerRecord] = useState<RequirementItem | null>(null);
 
