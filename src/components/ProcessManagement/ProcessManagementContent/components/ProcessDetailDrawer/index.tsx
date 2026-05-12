@@ -272,16 +272,12 @@ interface VariableCardListProps {
   data: ProcessVariable[];
   onDescriptionChange: (index: number, description: string) => void;
   showBusinessVolume?: boolean;
-  flags?: OutputVariableFlags;
-  onBusinessVolumeChange?: (index: number, checked: boolean) => void;
 }
 
 const VariableCardList = ({
   data,
   onDescriptionChange,
   showBusinessVolume,
-  flags,
-  onBusinessVolumeChange,
 }: VariableCardListProps) => {
   return (
     <div className="process-detail-drawer-variable-card-list">
@@ -292,8 +288,7 @@ const VariableCardList = ({
           index={index}
           onDescriptionChange={onDescriptionChange}
           showBusinessVolume={showBusinessVolume}
-          isBusinessVolume={flags ? !!flags[variable.name] : false}
-          onBusinessVolumeChange={onBusinessVolumeChange}
+          isBusinessVolume={!!variable.isBusinessVolume}
         />
       ))}
     </div>
@@ -412,25 +407,7 @@ content: t('development.processDevelopment.detail.versionList.deleteConfirmConte
     };
   }, [visible, processData?.requirement_id]);
 
-  // 输出变量「业务量变量」标记（按 processId + versionId 持久化）
-  const [outputFlags, setOutputFlags] = useState<OutputVariableFlags>({});
   const selectedVersionIdResolved = selectedVersionId ?? sortedVersionData[0]?.id ?? null;
-  useEffect(() => {
-    if (!processData?.id || !selectedVersionIdResolved) {
-      setOutputFlags({});
-      return;
-    }
-    setOutputFlags(getOutputFlags(processData.id, selectedVersionIdResolved));
-  }, [processData?.id, selectedVersionIdResolved]);
-
-  const handleBusinessVolumeFlagChange = useCallback(
-    (variableName: string, checked: boolean) => {
-      if (!processData?.id || !selectedVersionIdResolved) return;
-      const next = setOutputFlag(processData.id, selectedVersionIdResolved, variableName, checked);
-      setOutputFlags(next);
-    },
-    [processData?.id, selectedVersionIdResolved],
-  );
 
   // 关闭时重置
   const handleClose = () => {
