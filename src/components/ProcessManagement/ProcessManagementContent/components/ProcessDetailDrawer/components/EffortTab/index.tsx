@@ -1,11 +1,12 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, InputNumber, Tag, Table, Toast, Tooltip, Typography } from '@douyinfe/semi-ui';
-import { Plus, AlertTriangle, Clock } from 'lucide-react';
+import { Button, InputNumber, Tag, Table, Toast, Tooltip, Typography, Modal, Popconfirm } from '@douyinfe/semi-ui';
+import { Plus, AlertTriangle, Clock, Pencil, Trash2 } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import UserNameWithCard from '@/components/layout/UserNameWithCard';
 import EffortEntryModal from './EffortEntryModal';
-import { getEffort, putEstimate, EffortError, type EffortSnapshot, CURRENT_USER_ID } from '../../../../mocks/effortStore';
+import { getEffort, putEstimate, deleteEntry, EffortError, type EffortSnapshot, CURRENT_USER_ID } from '../../../../mocks/effortStore';
+import type { LYProcessEffortEntry } from '@/api';
 import './index.less';
 
 const { Text } = Typography;
