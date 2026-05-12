@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Modal, Form, Upload, Toast, Typography, Button,
+  Modal, Form, Upload, Toast, Button,
 } from '@douyinfe/semi-ui';
 import { Inbox, X, Image as ImageIcon } from 'lucide-react';
 import type { FileItem } from '@douyinfe/semi-ui/lib/es/upload';
@@ -13,7 +13,7 @@ import {
 } from '../../mockData';
 import './index.less';
 
-const { Text } = Typography;
+
 
 const MAX_IMG = 5 * 1024 * 1024;
 const ALLOWED_IMG = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
