@@ -1355,7 +1355,7 @@
           "versions": "Versions",
           "runs": "Run History",
           "changes": "Change History",
-          "effort": "Effort"
+          "effort": "Effort Records"
         },
         "effort": {
           "unit": "MD",
