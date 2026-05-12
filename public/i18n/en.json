@@ -3808,6 +3808,11 @@
     "resourceEfficiency": {
       "title": "Resource Efficiency",
       "group": "Group",
+      "totalRobots": "Total Robots",
+      "interactiveOnline": "Interactive Online",
+      "interactiveLicensed": "Interactive Licensed",
+      "unattendedOnline": "Unattended Online",
+      "unattendedLicensed": "Unattended Licensed",
       "robotPerformance": "Robot Performance",
       "taskExecution": "Task Execution Statistics",
       "overallUtilization": "Overall Utilization",
