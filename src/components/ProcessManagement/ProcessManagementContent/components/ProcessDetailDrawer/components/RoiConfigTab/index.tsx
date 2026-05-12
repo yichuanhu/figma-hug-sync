@@ -13,7 +13,6 @@ import { AlertTriangle, Info } from 'lucide-react';
 import {
   getRoiConfig,
   saveRoiConfig,
-  getOutputFlags,
   type ProcessRoiConfig,
   type BusinessVolumeConfig,
 } from '../../roiStorage';
@@ -23,6 +22,7 @@ export interface RoiOutputVariable {
   name: string;
   displayName?: string;
   type?: string;
+  isBusinessVolume?: boolean;
 }
 
 interface RoiConfigTabProps {
@@ -46,9 +46,8 @@ const RoiConfigTab = ({
 
   const businessVolumeOptions = useMemo(() => {
     if (!versionId) return [] as RoiOutputVariable[];
-    const flags = getOutputFlags(processId, versionId);
-    return outputs.filter((o) => flags[o.name]);
-  }, [processId, versionId, outputs]);
+    return outputs.filter((o) => o.isBusinessVolume);
+  }, [versionId, outputs]);
 
   const hasBusinessVolume = businessVolumeOptions.length > 0;
   const mode: BusinessVolumeConfig = config.businessVolumeConfig ?? 'FIXED';
@@ -139,10 +138,10 @@ const RoiConfigTab = ({
                 <Select
                   value={config.selectedBusinessVolumeVariable}
                   onChange={(v) => update({ selectedBusinessVolumeVariable: v as string })}
-                  placeholder={hasBusinessVolume ? '请选择' : '暂无可用的业务量变量'}
+                  placeholder={hasBusinessVolume ? '请选择' : '当前版本无业务量变量'}
                   style={{ width: 320 }}
                   disabled={!hasBusinessVolume}
-                  emptyContent="暂无可用的业务量变量"
+                  emptyContent="当前版本无业务量变量"
                 >
                   {businessVolumeOptions.map((o) => (
                     <Select.Option key={o.name} value={o.name}>
@@ -153,7 +152,7 @@ const RoiConfigTab = ({
                 {!hasBusinessVolume && (
                   <div className="roi-tab-warning">
                     <AlertTriangle size={14} strokeWidth={2} />
-                    请先在『版本列表』当前版本的「流程输出」中开启「业务量变量」开关
+                    当前版本未声明业务量变量，请在客户端开发流程时将相关输出变量标记为业务量
                   </div>
                 )}
               </div>
