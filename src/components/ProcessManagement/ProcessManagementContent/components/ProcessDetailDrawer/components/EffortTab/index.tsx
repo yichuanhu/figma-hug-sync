@@ -208,7 +208,7 @@ const EffortTab = ({ processId, creatorId }: Props) => {
                 {formatNumber(snapshot.estimate)} {t('development.processDevelopment.detail.effort.unit')}
               </span>
             ) : (
-              <Text type="tertiary">{t('development.processDevelopment.detail.effort.notSet')}</Text>
+              <span className="effort-tab-field-text">-</span>
             )}
           </div>
         </div>
@@ -266,7 +266,7 @@ const EffortTab = ({ processId, creatorId }: Props) => {
               ({snapshot.entries.length})
             </Text>
           </Text>
-          {isCreator ? (
+          {isCreator && (
             <Button
               icon={<Plus size={14} strokeWidth={2} />}
               theme="solid"
@@ -274,12 +274,6 @@ const EffortTab = ({ processId, creatorId }: Props) => {
             >
               {t('development.processDevelopment.detail.effort.addEntry')}
             </Button>
-          ) : (
-            <Tooltip content={t('development.processDevelopment.detail.effort.errors.forbidden')}>
-              <Button icon={<Plus size={14} strokeWidth={2} />} theme="solid" disabled>
-                {t('development.processDevelopment.detail.effort.addEntry')}
-              </Button>
-            </Tooltip>
           )}
         </div>
 
